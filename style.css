@@ -1,0 +1,98 @@
+@font-face {
+    font-family: MathJax_Main;
+    src: url("http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Main-Regular.otf");
+}
+
+@font-face {
+    font-family: MathJax_Main;
+    src: url("http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Main-Italic.otf");
+    font-style: italic;
+}
+
+@font-face {
+    font-family: MathJax_Math;
+    src: url("http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Math-Italic.otf");
+    font-style: italic;
+}
+
+/*
+thin space: 1/6 quad
+medium space: 2/9 quad
+thick space: 5/18 quad
+
+things to do:
+^ _ and styles
+\sin
+\sum, \int, \lim
+\frac
+\sqrt
+big parens
+*/
+
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+input {
+    margin: 0px;
+    font-size: 100%;
+}
+
+#math {
+    font-family: MathJax_Main;
+}
+
+.mathit {
+    font: italic 100% MathJax_Math;
+}
+
+.mord + .mbin {
+    margin-left: 0.22222em;
+}
+
+.mbin + .mord {
+    margin-left: 0.22222em;
+}
+
+.msub {
+    vertical-align: bottom;
+    font-size: 70%;
+    position: relative;
+    top: 0.2em;
+}
+
+.msup {
+    position: relative;
+    top: -0.5em;
+    font-size: 70%;
+}
+
+.msupsub {
+    display: inline-table;
+    table-layout: fixed;
+    vertical-align: middle;
+}
+
+.msupsub > .msup, .msupsub > .msub {
+    display: table-row;
+    vertical-align: baseline;
+    line-height: 1em;
+}
+
+.mfrac {
+    display: inline-table;
+    vertical-align: 0.88em;
+}
+
+.mfracnum, .mfracmid, .mfracden {
+    display: table-row;
+    text-align: center;
+}
+
+.mfracmid > span {
+    background: black;
+    display: block;
+    height: 0.05em;
+    min-height: 1px;
+}
