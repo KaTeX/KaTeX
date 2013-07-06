@@ -30,7 +30,7 @@ var MJLite = (function() {
             var className = "mbin";
             if (prev == null || prev.type === "bin" || prev.type === "open") {
                 group.type = "ord";
-                elem.className = "mord";
+                className = "mord";
             }
             return makeSpan(className, textit(group.value));
         } else if (group.type === "sup") {
@@ -64,7 +64,9 @@ var MJLite = (function() {
     var charLookup = {
         '*': '\u2217',
         '-': '\u2212',
-        'cdot': '\u22C5'
+        'cdot': '\u22C5',
+        'lvert': '|',
+        'rvert': '|'
     };
 
     var textit = function(value) {

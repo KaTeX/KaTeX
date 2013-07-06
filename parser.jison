@@ -7,7 +7,9 @@
 \s+                   /* skip whitespace */
 cdot                  return 'CDOT'
 frac                  return 'FRAC'
-[/a-zA-Z0-9]          return 'ORD'
+lvert                 return 'LVERT'
+rvert                 return 'RVERT'
+[/|a-zA-Z0-9]         return 'ORD'
 [*+-]                 return 'BIN'
 \^                    return '^'
 [_]                   return '_'
@@ -66,6 +68,10 @@ func
         {$$ = [{type: 'bin', value: yytext}];}
     | 'FRAC' group group
         {$$ = [{type: 'frac', value: {numer: $2, denom: $3}}];}
+    | 'LVERT'
+        {$$ = [{type: 'open', value: yytext}];}
+    | 'RVERT'
+        {$$ = [{type: 'close', value: yytext}];}
     ;
 
 atom
