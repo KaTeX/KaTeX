@@ -55,6 +55,14 @@ input {
     margin-left: 0.22222em;
 }
 
+.mbin + .mopen {
+    margin-left: 0.22222em;
+}
+
+.mclose + .mbin {
+    margin-left: 0.22222em;
+}
+
 .msub {
     vertical-align: bottom;
     font-size: 70%;
