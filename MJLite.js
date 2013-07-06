@@ -62,11 +62,13 @@ var MJLite = (function() {
     };
 
     var charLookup = {
-        '*': '\u2217',
-        '-': '\u2212',
-        'cdot': '\u22C5',
-        'lvert': '|',
-        'rvert': '|'
+        "*": "\u2217",
+        "-": "\u2212",
+        "cdot": "\u22C5",
+        "lvert": "|",
+        "rvert": "|",
+        "pm": "\u00b1",
+        "div": "\u00f7"
     };
 
     var textit = function(value) {

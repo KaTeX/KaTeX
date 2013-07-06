@@ -9,6 +9,8 @@ cdot                  return 'CDOT'
 frac                  return 'FRAC'
 lvert                 return 'LVERT'
 rvert                 return 'RVERT'
+pm                    return 'PM'
+div                   return 'DIV'
 [/|a-zA-Z0-9]         return 'ORD'
 [*+-]                 return 'BIN'
 \^                    return '^'
@@ -65,6 +67,10 @@ group
 
 func
     : 'CDOT'
+        {$$ = [{type: 'bin', value: yytext}];}
+    | 'PM'
+        {$$ = [{type: 'bin', value: yytext}];}
+    | 'DIV'
         {$$ = [{type: 'bin', value: yytext}];}
     | 'FRAC' group group
         {$$ = [{type: 'frac', value: {numer: $2, denom: $3}}];}
