@@ -87,9 +87,10 @@ var MJLite = (function() {
     };
 
     var clearNode = function(node) {
-        var children = node.childNodes;
-        for (var i = children.length - 1; i >= 0; i--) {
-            node.removeChild(children[i]);
+        if ("textContent" in node) {
+            node.textContent = "";
+        } else {
+            node.innerText = "";
         }
     };
 
