@@ -32,7 +32,7 @@ var MJLite = (function() {
                 group.type = "ord";
                 elem.className = "mord";
             }
-            return makeSpan(className, mathit(group.value));
+            return makeSpan(className, textit(group.value));
         } else if (group.type === "sup") {
             var sup = makeSpan("msup", buildExpression(group.value.sup));
             return makeSpan("mord", buildExpression(group.value.base).concat(sup));
@@ -47,11 +47,9 @@ var MJLite = (function() {
 
             return makeSpan("mord", buildExpression(group.value.base, elem).concat(supsub));
         } else if (group.type === "open") {
-            return makeSpan("mopen", mathit(group.value));
+            return makeSpan("mopen", textit(group.value));
         } else if (group.type === "close") {
-            return makeSpan("mclose", mathit(group.value));
-        } else if (group.type === "cdot") {
-            return makeSpan("mbin", textit("cdot"));
+            return makeSpan("mclose", textit(group.value));
         } else if (group.type === "frac") {
             var numer = makeSpan("mfracnum", buildExpression(group.value.numer, numer));
             var mid = makeSpan("mfracmid", makeSpan());
