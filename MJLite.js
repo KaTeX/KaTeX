@@ -10,7 +10,7 @@ var buildExpression = function(expression) {
 
 var makeSpan = function(className, children) {
     var span = document.createElement("span");
-    span.className = className;
+    span.className = className || "";
 
     if (_.isArray(children)) {
         _.each(children, function(v) {
