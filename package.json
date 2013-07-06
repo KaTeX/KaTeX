@@ -2,6 +2,7 @@
     "name": "mjlite",
     "version": "0.0.1",
     "devDependencies": {
-        "jison": "~0.4.6"
+        "jison": "~0.4.6",
+        "watchify": "~0.1.0"
     }
 }
