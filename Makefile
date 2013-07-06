@@ -1,6 +1,6 @@
 FILES=parser.js style.css build.js index.html
 
-.PHONY: build ship copy watch
+.PHONY: build ship copy server
 build: parser.js
 
 ship: build
@@ -14,5 +14,5 @@ copy: build
 parser.js: parser.jison
 	./node_modules/.bin/jison parser.jison
 
-watch:
-	./node_modules/.bin/watchify MJLite.js --standalone MJLite -o build/MJLite.js
+server:
+	node server.js

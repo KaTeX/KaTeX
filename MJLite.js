@@ -1,4 +1,4 @@
-var parser = require("./parser");
+var parser = require("./parser.jison");
 
 var buildExpression = function(expression) {
     return _.map(expression, function(ex, i) {
