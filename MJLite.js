@@ -38,14 +38,14 @@ var buildGroup = function(group, prev) {
         return makeSpan("mord", buildExpression(group.value.base).concat(sup));
     } else if (group.type === "sub") {
         var sub = makeSpan("msub", buildExpression(group.value.sub, sub));
-        return makeSpan("mord", buildExpression(group.value.base, elem).concat(sub));
+        return makeSpan("mord", buildExpression(group.value.base).concat(sub));
     } else if (group.type === "supsub") {
         var sup = makeSpan("msup", buildExpression(group.value.sup, sup));
         var sub = makeSpan("msub", buildExpression(group.value.sub, sub));
 
         var supsub = makeSpan("msupsub", [sup, sub]);
 
-        return makeSpan("mord", buildExpression(group.value.base, elem).concat(supsub));
+        return makeSpan("mord", buildExpression(group.value.base).concat(supsub));
     } else if (group.type === "open") {
         return makeSpan("mopen", textit(group.value));
     } else if (group.type === "close") {
