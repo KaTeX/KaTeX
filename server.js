@@ -9,21 +9,29 @@ var app = express();
 
 app.use(express.logger());
 
-app.get("/MJLite.js", function(req, res) {
+app.get("/MJLite.js", function(req, res, next) {
     var b = browserify();
     b.add("./MJLite");
     b.transform(jisonify);
 
     var stream = b.bundle({standalone: "MJLite"});
+
     var body = "";
     stream.on("data", function(s) { body += s; });
+    stream.on("error", function(e) { next(e); });
     stream.on("end", function() {
         res.setHeader("Content-Type", "text/javascript");
         res.send(body);
     });
 });
 
-app.use(express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, "static")));
+
+app.use(function(err, req, res, next) {
+    console.error(err.stack);
+    res.setHeader("Content-Type", "text/plain");
+    res.send(500, err.stack);
+});
 
 app.listen(7936);
 console.log("Serving on http://0.0.0.0:7936/ ...");

@@ -1,6 +1,6 @@
 FILES=parser.js style.css build.js index.html
 
-.PHONY: build ship copy server
+.PHONY: build ship copy serve
 build: parser.js
 
 ship: build
@@ -14,5 +14,5 @@ copy: build
 parser.js: parser.jison
 	./node_modules/.bin/jison parser.jison
 
-server:
+serve:
 	node server.js
