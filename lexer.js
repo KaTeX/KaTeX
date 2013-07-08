@@ -54,7 +54,7 @@ Lexer.prototype.lex = function() {
         }
     }
 
-    throw "Unexpected character: '" + toMatch[0] + "' at position " + this._pos;
+    throw "Unexpected character: '" + this._input[0] + "' at position " + this._pos;
 };
 
 Lexer.prototype.setInput = function(input) {
