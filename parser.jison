@@ -4,22 +4,6 @@
 %lex
 %%
 
-\s+                   /* skip whitespace */
-cdot                  return 'CDOT'
-frac                  return 'FRAC'
-lvert                 return 'LVERT'
-rvert                 return 'RVERT'
-pm                    return 'PM'
-div                   return 'DIV'
-[/|a-zA-Z0-9]         return 'ORD'
-[*+-]                 return 'BIN'
-\^                    return '^'
-[_]                   return '_'
-[{]                   return '{'
-[}]                   return '}'
-[(]                   return 'OPEN'
-[)]                   return 'CLOSE'
-[\\]                  return '\\'
 <<EOF>>               return 'EOF'
 
 /lex
@@ -37,7 +21,7 @@ div                   return 'DIV'
 %% /* language grammar */
 
 expression
-    : ex EOF
+    : ex 'EOF'
         {return $1;}
     ;
 
@@ -61,22 +45,22 @@ group
         {$$ = $1;}
     | '{' ex '}'
         {$$ = $2;}
-    | '\\' func
+    | '\' func
         {$$ = $2;}
     ;
 
 func
-    : 'CDOT'
+    : 'cdot'
         {$$ = [{type: 'bin', value: yytext}];}
-    | 'PM'
+    | 'pm'
         {$$ = [{type: 'bin', value: yytext}];}
-    | 'DIV'
+    | 'div'
         {$$ = [{type: 'bin', value: yytext}];}
-    | 'FRAC' group group
+    | 'frac' group group
         {$$ = [{type: 'frac', value: {numer: $2, denom: $3}}];}
-    | 'LVERT'
+    | 'lvert'
         {$$ = [{type: 'open', value: yytext}];}
-    | 'RVERT'
+    | 'rvert'
         {$$ = [{type: 'close', value: yytext}];}
     ;
 
