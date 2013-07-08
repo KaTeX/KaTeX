@@ -1,13 +1,5 @@
 /* description: Parses end executes mathematical expressions. */
 
-/* lexical grammar */
-%lex
-%%
-
-<<EOF>>               return 'EOF'
-
-/lex
-
 /* operator associations and precedence */
 
 %left '^'
@@ -45,8 +37,8 @@ group
         {$$ = $1;}
     | '{' ex '}'
         {$$ = $2;}
-    | '\' func
-        {$$ = $2;}
+    | func
+        {$$ = $1;}
     ;
 
 func

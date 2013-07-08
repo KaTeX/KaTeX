@@ -1,12 +1,5 @@
-var DEFAULT_STATE = 0,
-    FUNC_STATE = 1;
-
 function Lexer() {
 };
-
-var funcs = [
-    'cdot', 'frac', 'lvert', 'rvert', 'pm', 'div'
-];
 
 var normals = [
     [/^[/|a-zA-Z0-9.]/, 'ORD'],
@@ -19,6 +12,11 @@ var normals = [
     [/^[)\]]/, 'CLOSE']
 ];
 
+var funcs = [
+    'cdot', 'frac', 'lvert', 'rvert', 'pm', 'div'
+];
+var anyFunc = new RegExp("^\\\\(" + funcs.join("|") + ")(?![a-zA-Z])");
+
 Lexer.prototype.doMatch = function(match) {
     this.yytext = match;
     this.yyleng = match.length;
@@ -27,46 +25,31 @@ Lexer.prototype.doMatch = function(match) {
     this.yylloc.last_column = this._pos + match.length;
 
     this._pos += match.length;
+    this._input = this._input.slice(match.length);
 };
 
 Lexer.prototype.lex = function() {
     // Get rid of whitespace
-    var whitespace = this._input.substr(this._pos).match(/^\s*/)[0];
+    var whitespace = this._input.match(/^\s*/)[0];
     this._pos += whitespace.length;
+    this._input = this._input.slice(whitespace.length);
 
-    if (this._pos >= this._input.length) {
+    if (this._input.length === 0) {
         return 'EOF';
     }
 
-    var toMatch = this._input.substr(this._pos);
+    var match;
 
-    if (this.state === DEFAULT_STATE) {
-        if (/^\\/.test(toMatch)) {
-            this.state = FUNC_STATE;
-            this.doMatch('\\');
-            return '\\';
-        } else {
-            for (var i = 0; i < normals.length; i++) {
-                var normal = normals[i];
+    if ((match = this._input.match(anyFunc))) {
+        this.doMatch(match[0]);
+        return match[1];
+    } else {
+        for (var i = 0; i < normals.length; i++) {
+            var normal = normals[i];
 
-                var match = toMatch.match(normal[0]);
-                if (match) {
-                    this.doMatch(match[0]);
-                    return normal[1];
-                }
-            }
-        }
-    } else if (this.state === FUNC_STATE) {
-        for (var i = 0; i < funcs.length; i++) {
-            var func = funcs[i];
-
-            var regex = new RegExp('^' + func + '(?!a-zA-Z)');
-
-            var match = toMatch.match(regex);
-            if (match) {
+            if ((match = this._input.match(normal[0]))) {
                 this.doMatch(match[0]);
-                this.state = DEFAULT_STATE;
-                return func;
+                return normal[1];
             }
         }
     }
@@ -87,8 +70,6 @@ Lexer.prototype.setInput = function(input) {
         last_line: 1,
         last_column: 0
     };
-
-    this.state = DEFAULT_STATE;
 };
 
 module.exports = new Lexer();
