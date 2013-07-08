@@ -1,17 +1,17 @@
 @font-face {
     font-family: MathJax_Main;
-    src: url("http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Main-Regular.otf");
+    src: url("fonts/otf/MathJax_Main-Regular.otf");
 }
 
 @font-face {
     font-family: MathJax_Main;
-    src: url("http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Main-Italic.otf");
+    src: url("fonts/otf/MathJax_Main-Italic.otf");
     font-style: italic;
 }
 
 @font-face {
     font-family: MathJax_Math;
-    src: url("http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Math-Italic.otf");
+    src: url("fonts/otf/MathJax_Math-Italic.otf");
     font-style: italic;
 }
 
@@ -90,7 +90,7 @@ input {
 
 .mfrac {
     display: inline-table;
-    vertical-align: 0.88em;
+    vertical-align: 0.61em;
 }
 
 .mfracnum, .mfracmid, .mfracden {
