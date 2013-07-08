@@ -13,7 +13,7 @@ var normals = [
 ];
 
 var funcs = [
-    'cdot', 'frac', 'lvert', 'rvert', 'pm', 'div'
+    'cdot', 'dfrac', 'lvert', 'rvert', 'pm', 'div'
 ];
 var anyFunc = new RegExp("^\\\\(" + funcs.join("|") + ")(?![a-zA-Z])");
 

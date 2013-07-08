@@ -51,8 +51,8 @@ var buildGroup = function(group, prev) {
         return makeSpan("mopen", textit(group.value));
     } else if (group.type === "close") {
         return makeSpan("mclose", textit(group.value));
-    } else if (group.type === "frac") {
-        var numer = makeSpan("mfracnum", buildExpression(group.value.numer, numer));
+    } else if (group.type === "dfrac") {
+        var numer = makeSpan("mfracnum", makeSpan("", buildExpression(group.value.numer, numer)));
         var mid = makeSpan("mfracmid", makeSpan());
         var denom = makeSpan("mfracden", buildExpression(group.value.denom, denom));
 

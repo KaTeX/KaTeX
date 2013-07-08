@@ -104,3 +104,8 @@ input {
     height: 0.05em;
     min-height: 1px;
 }
+
+.mfracnum > span {
+    display: inline-block;
+    vertical-align: bottom;
+}

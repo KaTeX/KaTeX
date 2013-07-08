@@ -48,8 +48,8 @@ func
         {$$ = [{type: 'bin', value: yytext}];}
     | 'div'
         {$$ = [{type: 'bin', value: yytext}];}
-    | 'frac' group group
-        {$$ = [{type: 'frac', value: {numer: $2, denom: $3}}];}
+    | 'dfrac' group group
+        {$$ = [{type: 'dfrac', value: {numer: $2, denom: $3}}];}
     | 'lvert'
         {$$ = [{type: 'open', value: yytext}];}
     | 'rvert'
