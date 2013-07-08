@@ -57,6 +57,8 @@ var buildGroup = function(group, prev) {
         var denom = makeSpan("mfracden", buildExpression(group.value.denom, denom));
 
         return makeSpan("mord mfrac", [numer, mid, denom]);
+    } else if (group.type === "color") {
+        return makeSpan("mord " + group.value.color, buildExpression(group.value.value));
     } else {
         console.log("Unknown type:", group.type);
     }

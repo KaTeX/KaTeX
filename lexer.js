@@ -13,7 +13,12 @@ var normals = [
 ];
 
 var funcs = [
-    'cdot', 'dfrac', 'lvert', 'rvert', 'pm', 'div'
+    // Symbols
+    'cdot', 'lvert', 'rvert', 'pm', 'div',
+    // Colors
+    'blue', 'orange', 'pink', 'red', 'green', 'gray', 'purple',
+    // Other functions
+    'dfrac'
 ];
 var anyFunc = new RegExp("^\\\\(" + funcs.join("|") + ")(?![a-zA-Z])");
 
