@@ -115,6 +115,31 @@ input {
     vertical-align: bottom;
 }
 
+.mspace {
+    display: inline-block;
+}
+
+.mspace.thinspace {
+    width: 0.16667em;
+}
+
+.mspace.mediumspace {
+    width: 0.22222em;
+}
+
+.mspace.thickspace {
+    width: 0.27778em;
+}
+
+.mspace.quad {
+    width: 1em;
+}
+
+.mspace.qquad {
+    width: 2em;
+}
+
+
 .mord.blue { color: #6495ed; }
 .mord.orange { color: #ffa500; }
 .mord.pink { color: #ff00af; }

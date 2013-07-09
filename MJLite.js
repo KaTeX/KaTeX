@@ -66,6 +66,20 @@ var buildGroup = function(group, prev) {
         return makeSpan("mord mfrac", [numer, mid, denom]);
     } else if (group.type === "color") {
         return makeSpan("mord " + group.value.color, buildExpression(group.value.value));
+    } else if (group.type === "spacing") {
+        if (group.value === "\\ " || group.value === "\\space") {
+            return makeSpan("mord mspace", textit(group.value));
+        } else {
+            var spacingClassMap = {
+                "\\qquad": "qquad",
+                "\\quad": "quad",
+                "\\;": "thickspace",
+                "\\:": "mediumspace",
+                "\\,": "thinspace"
+            };
+
+            return makeSpan("mord mspace " + spacingClassMap[group.value]);
+        }
     } else {
         console.log("Unknown type:", group.type);
     }
@@ -83,7 +97,9 @@ var charLookup = {
     "\\geq": "\u2265",
     "\\neq": "\u2260",
     "\\nleq": "\u2270",
-    "\\ngeq": "\u2271"
+    "\\ngeq": "\u2271",
+    "\\ ": "\u00a0",
+    "\\space": "\u00a0"
 };
 
 var textit = function(value) {

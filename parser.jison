@@ -62,6 +62,18 @@ func
         {$$ = [{type: 'rel', value: yytext}];}
     | 'ngeq'
         {$$ = [{type: 'rel', value: yytext}];}
+    | 'qquad'
+        {$$ = [{type: 'spacing', value: yytext}];}
+    | 'quad'
+        {$$ = [{type: 'spacing', value: yytext}];}
+    | 'space'
+        {$$ = [{type: 'spacing', value: yytext}];}
+    | ','
+        {$$ = [{type: 'spacing', value: yytext}];}
+    | ':'
+        {$$ = [{type: 'spacing', value: yytext}];}
+    | ';'
+        {$$ = [{type: 'spacing', value: yytext}];}
     | 'blue' group
         {$$ = [{type: 'color', value: {color: 'blue', value: $2}}];}
     | 'orange' group

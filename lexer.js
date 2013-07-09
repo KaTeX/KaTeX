@@ -20,6 +20,8 @@ var funcs = [
     'leq', 'geq', 'neq', 'nleq', 'ngeq',
     // Open/close symbols
     'lvert', 'rvert',
+    // Spacing symbols
+    'qquad', 'quad', ' ', 'space', ',', ':', ';',
     // Colors
     'blue', 'orange', 'pink', 'red', 'green', 'gray', 'purple',
     // Other functions
@@ -52,6 +54,10 @@ Lexer.prototype.lex = function() {
 
     if ((match = this._input.match(anyFunc))) {
         this.doMatch(match[0]);
+
+        if (match[1] === " ") {
+            return "space";
+        }
         return match[1];
     } else {
         for (var i = 0; i < normals.length; i++) {
