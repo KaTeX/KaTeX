@@ -129,6 +129,20 @@ big parens
     width: 2em;
 }
 
+.llap, .rlap {
+    width: 0;
+    position: relative;
+}
+
+.llap > span {
+    position: absolute;
+    right: 0;
+}
+
+.rlap > span {
+    position: absolute;
+    left: 0;
+}
 
 .mord.blue { color: #6495ed; }
 .mord.orange { color: #ffa500; }

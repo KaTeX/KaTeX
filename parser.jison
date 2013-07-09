@@ -90,6 +90,10 @@ func
         {$$ = [{type: 'color', value: {color: 'purple', value: $2}}];}
     | 'dfrac' group group
         {$$ = [{type: 'dfrac', value: {numer: $2, denom: $3}}];}
+    | 'llap' group
+        {$$ = [{type: 'llap', value: $2}];}
+    | 'rlap' group
+        {$$ = [{type: 'rlap', value: $2}];}
     ;
 
 atom

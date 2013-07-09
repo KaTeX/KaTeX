@@ -25,7 +25,7 @@ var funcs = [
     // Colors
     'blue', 'orange', 'pink', 'red', 'green', 'gray', 'purple',
     // Other functions
-    'dfrac'
+    'dfrac', 'llap', 'rlap'
 ];
 var anyFunc = new RegExp("^\\\\(" + funcs.join("|") + ")(?![a-zA-Z])");
 

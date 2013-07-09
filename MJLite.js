@@ -80,6 +80,12 @@ var buildGroup = function(group, prev) {
 
             return makeSpan("mord mspace " + spacingClassMap[group.value]);
         }
+    } else if (group.type === "llap") {
+        var inner = makeSpan("", buildExpression(group.value));
+        return makeSpan("llap", inner);
+    } else if (group.type === "rlap") {
+        var inner = makeSpan("", buildExpression(group.value));
+        return makeSpan("rlap", inner);
     } else {
         console.log("Unknown type:", group.type);
     }
