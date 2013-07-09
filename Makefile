@@ -1,18 +1,16 @@
-FILES=parser.js style.css build.js index.html
+.PHONY: build copy serve clean
+build: build/MJLite.js
 
-.PHONY: build ship copy serve
-build: parser.js
-
-ship: build
-	scp $(FILES) prgmr:/var/www/www.rampancylabs.com/parser/
+build/MJLite.js: MJLite.js parser.jison lexer.js
+	./node_modules/.bin/browserify $< --standalone MJLite -t ./jisonify > $@
 
 copy: build
-	cp parser.js ../exercises/utils/mjlite-parser.js
-	cp MJLite.js ../exercises/utils/MJLite.js
-	cp style.js ../exercises/css/mjlite.css
-
-parser.js: parser.jison
-	./node_modules/.bin/jison parser.jison
+	cp build/MJLite.js ../exercises/utils/MJLite.js
+	cp static/style.css ../exercises/css/mjlite.css
+	cp -R static/fonts ../exercises/css/
 
 serve:
 	node server.js
+
+clean:
+	rm -rf build/*
