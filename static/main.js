@@ -2,9 +2,15 @@ window.onload = function() {
     var input = document.getElementById("input");
     var math = document.getElementById("math");
 
-    MJLite.process(input.value, math);
+    reprocess();
 
-    input.oninput = function() {
+    if ("oninput" in input) {
+        input.addEventListener("input", reprocess, false);
+    } else {
+        input.attachEvent("onkeyup", reprocess);
+    }
+
+    function reprocess() {
         MJLite.process(input.value, math);
-    };
+    }
 };

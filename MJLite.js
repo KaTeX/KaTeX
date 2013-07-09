@@ -1,5 +1,10 @@
 var parser = require("./parser.jison");
 parser.lexer = require("./lexer");
+parser.yy = {
+    parseError: function(str) {
+        throw new Error(str);
+    }
+};
 
 var buildExpression = function(expression) {
     return _.map(expression, function(ex, i) {

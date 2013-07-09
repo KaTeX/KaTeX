@@ -1,0 +1,239 @@
+@font-face {
+    font-family: 'mjlite_ams';
+    src: url('mjlite_ams-regular.eot');
+    src: url('mjlite_ams-regular.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_ams-regular.woff') format('woff'),
+         url('mjlite_ams-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_caligraphic';
+    src: url('mjlite_caligraphic-bold.eot');
+    src: url('mjlite_caligraphic-bold.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_caligraphic-bold.woff') format('woff'),
+         url('mjlite_caligraphic-bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_caligraphic';
+    src: url('mjlite_caligraphic-regular.eot');
+    src: url('mjlite_caligraphic-regular.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_caligraphic-regular.woff') format('woff'),
+         url('mjlite_caligraphic-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_fraktur';
+    src: url('mjlite_fraktur-bold.eot');
+    src: url('mjlite_fraktur-bold.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_fraktur-bold.woff') format('woff'),
+         url('mjlite_fraktur-bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_fraktur';
+    src: url('mjlite_fraktur-regular.eot');
+    src: url('mjlite_fraktur-regular.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_fraktur-regular.woff') format('woff'),
+         url('mjlite_fraktur-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_greek';
+    src: url('mjlite_greek-bold.eot');
+    src: url('mjlite_greek-bold.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_greek-bold.woff') format('woff'),
+         url('mjlite_greek-bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_greek';
+    src: url('mjlite_greek-bolditalic.eot');
+    src: url('mjlite_greek-bolditalic.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_greek-bolditalic.woff') format('woff'),
+         url('mjlite_greek-bolditalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'mjlite_greek';
+    src: url('mjlite_greek-italic.eot');
+    src: url('mjlite_greek-italic.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_greek-italic.woff') format('woff'),
+         url('mjlite_greek-italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'mjlite_greek';
+    src: url('mjlite_greek-regular.eot');
+    src: url('mjlite_greek-regular.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_greek-regular.woff') format('woff'),
+         url('mjlite_greek-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_main';
+    src: url('mjlite_main-bold.eot');
+    src: url('mjlite_main-bold.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_main-bold.woff') format('woff'),
+         url('mjlite_main-bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_main';
+    src: url('mjlite_main-italic.eot');
+    src: url('mjlite_main-italic.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_main-italic.woff') format('woff'),
+         url('mjlite_main-italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'mjlite_main';
+    src: url('mjlite_main-regular.eot');
+    src: url('mjlite_main-regular.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_main-regular.woff') format('woff'),
+         url('mjlite_main-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_math';
+    src: url('mjlite_math-bolditalic.eot');
+    src: url('mjlite_math-bolditalic.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_math-bolditalic.woff') format('woff'),
+         url('mjlite_math-bolditalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'mjlite_math';
+    src: url('mjlite_math-italic.eot');
+    src: url('mjlite_math-italic.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_math-italic.woff') format('woff'),
+         url('mjlite_math-italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'mjlite_math';
+    src: url('mjlite_math-regular.eot');
+    src: url('mjlite_math-regular.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_math-regular.woff') format('woff'),
+         url('mjlite_math-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_sansserif';
+    src: url('mjlite_sansserif-bold.eot');
+    src: url('mjlite_sansserif-bold.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_sansserif-bold.woff') format('woff'),
+         url('mjlite_sansserif-bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_sansserif';
+    src: url('mjlite_sansserif-italic.eot');
+    src: url('mjlite_sansserif-italic.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_sansserif-italic.woff') format('woff'),
+         url('mjlite_sansserif-italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'mjlite_sansserif';
+    src: url('mjlite_sansserif-regular.eot');
+    src: url('mjlite_sansserif-regular.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_sansserif-regular.woff') format('woff'),
+         url('mjlite_sansserif-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_script';
+    src: url('mjlite_script-regular.eot');
+    src: url('mjlite_script-regular.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_script-regular.woff') format('woff'),
+         url('mjlite_script-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_size1';
+    src: url('mjlite_size1-regular.eot');
+    src: url('mjlite_size1-regular.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_size1-regular.woff') format('woff'),
+         url('mjlite_size1-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_size2';
+    src: url('mjlite_size2-regular.eot');
+    src: url('mjlite_size2-regular.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_size2-regular.woff') format('woff'),
+         url('mjlite_size2-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_size3';
+    src: url('mjlite_size3-regular.eot');
+    src: url('mjlite_size3-regular.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_size3-regular.woff') format('woff'),
+         url('mjlite_size3-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_size4';
+    src: url('mjlite_size4-regular.eot');
+    src: url('mjlite_size4-regular.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_size4-regular.woff') format('woff'),
+         url('mjlite_size4-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mjlite_typewriter';
+    src: url('mjlite_typewriter-regular.eot');
+    src: url('mjlite_typewriter-regular.eot?#iefix') format('embedded-opentype'),
+         url('mjlite_typewriter-regular.woff') format('woff'),
+         url('mjlite_typewriter-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}

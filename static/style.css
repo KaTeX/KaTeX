@@ -1,19 +1,4 @@
-@font-face {
-    font-family: MathJax_Main;
-    src: url("fonts/otf/MathJax_Main-Regular.otf");
-}
-
-@font-face {
-    font-family: MathJax_Main;
-    src: url("fonts/otf/MathJax_Main-Italic.otf");
-    font-style: italic;
-}
-
-@font-face {
-    font-family: MathJax_Math;
-    src: url("fonts/otf/MathJax_Math-Italic.otf");
-    font-style: italic;
-}
+@import "fonts/fonts.css";
 
 /*
 thin space: 1/6 quad
@@ -40,11 +25,13 @@ input {
 }
 
 #math {
-    font-family: MathJax_Main;
+    font-family: mjlite_main;
+    line-height: 1.4;
 }
 
 .mathit {
-    font: italic 100% MathJax_Math;
+    font-family: mjlite_math;
+    font-style: italic;
 }
 
 .mord + .mbin {
@@ -90,7 +77,7 @@ input {
 
 .mfrac {
     display: inline-table;
-    vertical-align: 0.61em;
+    vertical-align: 0.66em;
 }
 
 .mfracnum, .mfracmid, .mfracden {
