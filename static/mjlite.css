@@ -14,18 +14,8 @@ things to do:
 big parens
 */
 
-body {
-    margin: 0px;
-    padding: 0px;
-}
-
-input {
-    margin: 0px;
-    font-size: 100%;
-}
-
-#math {
-    font-family: mjlite_main;
+.mathmathmath {
+    font: normal 1.21em mjlite_main;
     line-height: 1.4;
 }
 
