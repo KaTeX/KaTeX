@@ -34,11 +34,13 @@ var buildGroup = function(group, prev) {
         return makeSpan("mord", mathit(group.value));
     } else if (group.type === "bin") {
         var className = "mbin";
-        if (prev == null || prev.type === "bin" || prev.type === "open") {
+        if (prev == null || _.contains(["bin", "open", "rel"], prev.type)) {
             group.type = "ord";
             className = "mord";
         }
         return makeSpan(className, textit(group.value));
+    } else if (group.type === "rel") {
+        return makeSpan("mrel", textit(group.value));
     } else if (group.type === "sup") {
         var sup = makeSpan("msup", buildExpression(group.value.sup));
         return makeSpan("mord", buildExpression(group.value.base).concat(sup));
@@ -76,7 +78,12 @@ var charLookup = {
     "\\lvert": "|",
     "\\rvert": "|",
     "\\pm": "\u00b1",
-    "\\div": "\u00f7"
+    "\\div": "\u00f7",
+    "\\leq": "\u2264",
+    "\\geq": "\u2265",
+    "\\neq": "\u2260",
+    "\\nleq": "\u2270",
+    "\\ngeq": "\u2271"
 };
 
 var textit = function(value) {

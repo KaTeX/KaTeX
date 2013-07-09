@@ -52,6 +52,16 @@ func
         {$$ = [{type: 'open', value: yytext}];}
     | 'rvert'
         {$$ = [{type: 'close', value: yytext}];}
+    | 'leq'
+        {$$ = [{type: 'rel', value: yytext}];}
+    | 'geq'
+        {$$ = [{type: 'rel', value: yytext}];}
+    | 'neq'
+        {$$ = [{type: 'rel', value: yytext}];}
+    | 'nleq'
+        {$$ = [{type: 'rel', value: yytext}];}
+    | 'ngeq'
+        {$$ = [{type: 'rel', value: yytext}];}
     | 'blue' group
         {$$ = [{type: 'color', value: {color: 'blue', value: $2}}];}
     | 'orange' group
@@ -75,6 +85,8 @@ atom
         {$$ = [{type: 'ord', value: yytext}];}
     | 'BIN'
         {$$ = [{type: 'bin', value: yytext}];}
+    | 'REL'
+        {$$ = [{type: 'rel', value: yytext}];}
     | 'OPEN'
         {$$ = [{type: 'open', value: yytext}];}
     | 'CLOSE'

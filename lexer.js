@@ -4,6 +4,7 @@ function Lexer() {
 var normals = [
     [/^[/|a-zA-Z0-9.]/, 'ORD'],
     [/^[*+-]/, 'BIN'],
+    [/^[=<>]/, 'REL'],
     [/^\^/, '^'],
     [/^_/, '_'],
     [/^{/, '{'],
@@ -13,8 +14,12 @@ var normals = [
 ];
 
 var funcs = [
-    // Symbols
-    'cdot', 'lvert', 'rvert', 'pm', 'div',
+    // Bin symbols
+    'cdot', 'pm', 'div',
+    // Rel symbols
+    'leq', 'geq', 'neq', 'nleq', 'ngeq',
+    // Open/close symbols
+    'lvert', 'rvert',
     // Colors
     'blue', 'orange', 'pink', 'red', 'green', 'gray', 'purple',
     // Other functions

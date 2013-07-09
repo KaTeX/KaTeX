@@ -50,6 +50,22 @@ input {
     margin-left: 0.22222em;
 }
 
+.mrel + .mord {
+    margin-left: 0.27778em;
+}
+
+.mord + .mrel {
+    margin-left: 0.27778em;
+}
+
+.mrel + .mopen {
+    margin-left: 0.27778em;
+}
+
+.mclose + .mrel {
+    margin-left: 0.27778em;
+}
+
 .msub {
     vertical-align: bottom;
     font-size: 70%;
