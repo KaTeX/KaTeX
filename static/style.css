@@ -94,6 +94,8 @@ input {
 .mfrac {
     display: inline-table;
     vertical-align: 0.66em;
+    padding-left: 0.16667em;
+    padding-right: 0.16667em;
 }
 
 .mfracnum, .mfracmid, .mfracden {
