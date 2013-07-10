@@ -88,6 +88,8 @@ var buildGroup = function(group, prev) {
         return makeSpan("rlap", inner);
     } else if (group.type === "punct") {
         return makeSpan("mpunct", textit(group.value));
+    } else if (group.type === "ordgroup") {
+        return makeSpan("mord", buildExpression(group.value));
     } else {
         console.log("Unknown type:", group.type);
     }

@@ -36,7 +36,7 @@ group
     : atom
         {$$ = $1;}
     | '{' ex '}'
-        {$$ = $2;}
+        {$$ = [{type: 'ordgroup', value: $2}];}
     | func
         {$$ = $1;}
     ;
