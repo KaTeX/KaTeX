@@ -86,6 +86,8 @@ var buildGroup = function(group, prev) {
     } else if (group.type === "rlap") {
         var inner = makeSpan("", buildExpression(group.value));
         return makeSpan("rlap", inner);
+    } else if (group.type === "punct") {
+        return makeSpan("mpunct", textit(group.value));
     } else {
         console.log("Unknown type:", group.type);
     }
@@ -105,7 +107,8 @@ var charLookup = {
     "\\nleq": "\u2270",
     "\\ngeq": "\u2271",
     "\\ ": "\u00a0",
-    "\\space": "\u00a0"
+    "\\space": "\u00a0",
+    "\\colon": ":"
 };
 
 var textit = function(value) {

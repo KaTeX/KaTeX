@@ -74,6 +74,8 @@ func
         {$$ = [{type: 'spacing', value: yytext}];}
     | ';'
         {$$ = [{type: 'spacing', value: yytext}];}
+    | 'colon'
+        {$$ = [{type: 'punct', value: yytext}];}
     | 'blue' group
         {$$ = [{type: 'color', value: {color: 'blue', value: $2}}];}
     | 'orange' group
@@ -103,6 +105,8 @@ atom
         {$$ = [{type: 'bin', value: yytext}];}
     | 'REL'
         {$$ = [{type: 'rel', value: yytext}];}
+    | 'PUNCT'
+        {$$ = [{type: 'punct', value: yytext}];}
     | 'OPEN'
         {$$ = [{type: 'open', value: yytext}];}
     | 'CLOSE'

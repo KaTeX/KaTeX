@@ -5,6 +5,7 @@ var normals = [
     [/^[/|a-zA-Z0-9.]/, 'ORD'],
     [/^[*+-]/, 'BIN'],
     [/^[=<>]/, 'REL'],
+    [/^[,;]/, 'PUNCT'],
     [/^\^/, '^'],
     [/^_/, '_'],
     [/^{/, '{'],
@@ -20,6 +21,8 @@ var funcs = [
     'leq', 'geq', 'neq', 'nleq', 'ngeq',
     // Open/close symbols
     'lvert', 'rvert',
+    // Punct symbols
+    'colon',
     // Spacing symbols
     'qquad', 'quad', ' ', 'space', ',', ':', ';',
     // Colors
