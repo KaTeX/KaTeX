@@ -2,7 +2,8 @@ function Lexer() {
 };
 
 var normals = [
-    [/^[/|@."`0-9]+/, 'TEXTORD'],
+    [/^[/|@."0-9]+/, 'TEXTORD'],
+    [/^[`]/, 'TEXTORD'],
     [/^[a-zA-Z]+/, 'MATHORD'],
     [/^[*+-]/, 'BIN'],
     [/^[=<>]/, 'REL'],

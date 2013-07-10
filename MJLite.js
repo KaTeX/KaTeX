@@ -102,6 +102,7 @@ var buildGroup = function(group, prev) {
 var charLookup = {
     "*": "\u2217",
     "-": "\u2212",
+    "`": "\u2018",
     "\\cdot": "\u22C5",
     "\\lvert": "|",
     "\\rvert": "|",
