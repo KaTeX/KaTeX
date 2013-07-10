@@ -30,8 +30,10 @@ var makeSpan = function(className, children) {
 };
 
 var buildGroup = function(group, prev) {
-    if (group.type === "ord") {
+    if (group.type === "mathord") {
         return makeSpan("mord", mathit(group.value));
+    } else if (group.type === "textord") {
+        return makeSpan("mord", textit(group.value));
     } else if (group.type === "bin") {
         var className = "mbin";
         if (prev == null || _.contains(["bin", "open", "rel"], prev.type)) {
@@ -123,13 +125,7 @@ var textit = function(value) {
 };
 
 var mathit = function(value) {
-    var text = textit(value);
-
-    if (/[a-zA-Z]/.test(value)) {
-        return makeSpan("mathit", text);
-    } else {
-        return text;
-    }
+    return makeSpan("mathit", textit(value));
 };
 
 var clearNode = function(node) {

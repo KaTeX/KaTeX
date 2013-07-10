@@ -143,8 +143,10 @@ func
     ;
 
 atom
-    : 'ORD'
-        {$$ = [{type: 'ord', value: yytext}];}
+    : 'TEXTORD'
+        {$$ = [{type: 'textord', value: yytext}];}
+    | 'MATHORD'
+        {$$ = [{type: 'mathord', value: yytext}];}
     | 'BIN'
         {$$ = [{type: 'bin', value: yytext}];}
     | 'REL'
