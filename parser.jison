@@ -96,6 +96,50 @@ func
         {$$ = [{type: 'llap', value: $2}];}
     | 'rlap' group
         {$$ = [{type: 'rlap', value: $2}];}
+    | 'arcsin'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'arccos'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'arctan'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'arg'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'cos'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'cosh'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'cot'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'coth'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'csc'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'deg'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'dim'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'exp'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'hom'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'ker'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'lg'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'ln'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'log'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'sec'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'sin'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'sinh'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'tan'
+        {$$ = [{type: 'namedfn', value: yytext}];}
+    | 'tanh'
+        {$$ = [{type: 'namedfn', value: yytext}];}
     ;
 
 atom

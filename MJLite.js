@@ -90,6 +90,8 @@ var buildGroup = function(group, prev) {
         return makeSpan("mpunct", textit(group.value));
     } else if (group.type === "ordgroup") {
         return makeSpan("mord", buildExpression(group.value));
+    } else if (group.type === "namedfn") {
+        return makeSpan("mop", textit(group.value.slice(1)));
     } else {
         console.log("Unknown type:", group.type);
     }

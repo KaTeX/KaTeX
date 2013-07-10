@@ -27,6 +27,10 @@ var funcs = [
     'qquad', 'quad', ' ', 'space', ',', ':', ';',
     // Colors
     'blue', 'orange', 'pink', 'red', 'green', 'gray', 'purple',
+    // Mathy functions
+    "arcsin", "arccos", "arctan", "arg", "cos", "cosh", "cot", "coth", "csc",
+    "deg", "dim", "exp", "hom", "ker", "lg", "ln", "log", "sec", "sin", "sinh",
+    "tan", "tanh",
     // Other functions
     'dfrac', 'llap', 'rlap'
 ];

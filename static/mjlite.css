@@ -124,6 +124,46 @@ big parens
     margin-left: 0.16667em;
 }
 
+.mop + .mord {
+    margin-left: 0.16667em;
+}
+
+.mop + .mop {
+    margin-left: 0.16667em;
+}
+
+.mop + .mrel {
+    margin-left: 0.27778em;
+}
+
+.mop + .minner {
+    margin-left: 0.16667em;
+}
+
+.mord + .mop {
+    margin-left: 0.16667em;
+}
+
+.mbin + .mop {
+    margin-left: 0.22222em;
+}
+
+.mrel + .mop {
+    margin-left: 0.27778em;
+}
+
+.mclose + .mop {
+    margin-left: 0.16667em;
+}
+
+.mpunct + .mop {
+    margin-left: 0.16667em;
+}
+
+.minner + .mop {
+    margin-left: 0.16667em;
+}
+
 .msub {
     vertical-align: bottom;
     font-size: 70%;
