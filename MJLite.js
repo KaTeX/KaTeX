@@ -63,7 +63,7 @@ var buildGroup = function(group, prev) {
         var mid = makeSpan("mfracmid", makeSpan());
         var denom = makeSpan("mfracden", buildExpression(group.value.denom, denom));
 
-        return makeSpan("mord mfrac", [numer, mid, denom]);
+        return makeSpan("minner mfrac", [numer, mid, denom]);
     } else if (group.type === "color") {
         return makeSpan("mord " + group.value.color, buildExpression(group.value.value));
     } else if (group.type === "spacing") {

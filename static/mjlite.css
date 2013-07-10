@@ -80,6 +80,50 @@ big parens
     margin-left: 0.16667em;
 }
 
+.minner + .mord {
+    margin-left: 0.16667em;
+}
+
+.minner + .mbin {
+    margin-left: 0.22222em;
+}
+
+.minner + .mrel {
+    margin-left: 0.27778em;
+}
+
+.minner + .mopen {
+    margin-left: 0.16667em;
+}
+
+.minner + .mpunct {
+    margin-left: 0.16667em;
+}
+
+.minner + .minner {
+    margin-left: 0.16667em;
+}
+
+.mord + .minner {
+    margin-left: 0.16667em;
+}
+
+.mbin + .minner {
+    margin-left: 0.22222em;
+}
+
+.mrel + .minner {
+    margin-left: 0.27778em;
+}
+
+.mclose + .minner {
+    margin-left: 0.16667em;
+}
+
+.mpunct + .minner {
+    margin-left: 0.16667em;
+}
+
 .msub {
     vertical-align: bottom;
     font-size: 70%;
@@ -108,8 +152,6 @@ big parens
 .mfrac {
     display: inline-table;
     vertical-align: 0.66em;
-    padding-left: 0.16667em;
-    padding-right: 0.16667em;
 }
 
 .mfracnum, .mfracmid, .mfracden {
