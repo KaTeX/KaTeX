@@ -11,6 +11,6 @@ window.onload = function() {
     }
 
     function reprocess() {
-        MJLite.process(input.value, math);
+        katex.process(input.value, math);
     }
 };

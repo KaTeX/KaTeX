@@ -9,12 +9,12 @@ var app = express();
 
 app.use(express.logger());
 
-app.get("/MJLite.js", function(req, res, next) {
+app.get("/katex.js", function(req, res, next) {
     var b = browserify();
-    b.add("./MJLite");
+    b.add("./katex");
     b.transform(jisonify);
 
-    var stream = b.bundle({standalone: "MJLite"});
+    var stream = b.bundle({standalone: "katex"});
 
     var body = "";
     stream.on("data", function(s) { body += s; });

@@ -1,5 +1,5 @@
 {
-    "name": "mjlite",
+    "name": "katex",
     "version": "0.0.1",
     "devDependencies": {
         "browserify": "~2.23.1",

@@ -15,12 +15,12 @@ big parens
 */
 
 .mathmathmath {
-    font: normal 1.21em mjlite_main;
+    font: normal 1.21em katex_main;
     line-height: 1.4;
 }
 
 .mathit {
-    font-family: mjlite_math;
+    font-family: katex_math;
     font-style: italic;
 }
 

@@ -1,12 +1,12 @@
 .PHONY: build copy serve clean
-build: build/MJLite.js
+build: build/katex.js
 
-build/MJLite.js: MJLite.js parser.jison lexer.js
-	./node_modules/.bin/browserify $< --standalone MJLite -t ./jisonify > $@
+build/katex.js: katex.js parser.jison lexer.js
+	./node_modules/.bin/browserify $< --standalone katex -t ./jisonify > $@
 
 copy: build
-	cp build/MJLite.js ../exercises/utils/MJLite.js
-	cp static/mjlite.css ../exercises/css/
+	cp build/katex.js ../exercises/utils/katex.js
+	cp static/katex.css ../exercises/css/
 	cp -R static/fonts ../exercises/css/
 
 serve:
