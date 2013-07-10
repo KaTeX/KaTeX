@@ -45,11 +45,11 @@ var buildGroup = function(group, prev) {
         var sup = makeSpan("msup", buildExpression(group.value.sup));
         return makeSpan("mord", buildExpression(group.value.base).concat(sup));
     } else if (group.type === "sub") {
-        var sub = makeSpan("msub", buildExpression(group.value.sub, sub));
+        var sub = makeSpan("msub", buildExpression(group.value.sub));
         return makeSpan("mord", buildExpression(group.value.base).concat(sub));
     } else if (group.type === "supsub") {
-        var sup = makeSpan("msup", buildExpression(group.value.sup, sup));
-        var sub = makeSpan("msub", buildExpression(group.value.sub, sub));
+        var sup = makeSpan("msup", buildExpression(group.value.sup));
+        var sub = makeSpan("msub", buildExpression(group.value.sub));
 
         var supsub = makeSpan("msupsub", [sup, sub]);
 
@@ -59,9 +59,9 @@ var buildGroup = function(group, prev) {
     } else if (group.type === "close") {
         return makeSpan("mclose", textit(group.value));
     } else if (group.type === "dfrac") {
-        var numer = makeSpan("mfracnum", makeSpan("", buildExpression(group.value.numer, numer)));
+        var numer = makeSpan("mfracnum", makeSpan("", buildExpression(group.value.numer)));
         var mid = makeSpan("mfracmid", makeSpan());
-        var denom = makeSpan("mfracden", buildExpression(group.value.denom, denom));
+        var denom = makeSpan("mfracden", buildExpression(group.value.denom));
 
         return makeSpan("minner mfrac", [numer, mid, denom]);
     } else if (group.type === "color") {
