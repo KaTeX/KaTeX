@@ -1,10 +1,4 @@
-var parser = require("./parser.jison");
-parser.lexer = require("./lexer");
-parser.yy = {
-    parseError: function(str) {
-        throw new Error(str);
-    }
-};
+var parseTree = require("./parseTree");
 
 var buildExpression = function(expression) {
     return _.map(expression, function(ex, i) {
@@ -138,7 +132,7 @@ var clearNode = function(node) {
 };
 
 var process = function(toParse, baseElem) {
-    var tree = parser.parse(toParse);
+    var tree = parseTree(toParse);
     clearNode(baseElem);
     _.each(buildExpression(tree), function(elem) {
         baseElem.appendChild(elem);
