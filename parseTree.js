@@ -1,10 +1,5 @@
-var parser = require("./parser.jison");
-parser.lexer = require("./lexer");
-parser.yy = {
-    parseError: function(str) {
-        throw new Error(str);
-    }
-};
+var Parser = require("./Parser");
+var parser = new Parser({verbose: true});
 
 var parseTree = function(toParse) {
     return parser.parse(toParse);

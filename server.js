@@ -3,8 +3,6 @@ var path = require("path");
 var browserify = require("browserify");
 var express = require("express");
 
-var jisonify = require("./jisonify");
-
 var app = express();
 
 app.use(express.logger());
@@ -12,7 +10,6 @@ app.use(express.logger());
 app.get("/katex.js", function(req, res, next) {
     var b = browserify();
     b.add("./katex");
-    b.transform(jisonify);
 
     var stream = b.bundle({standalone: "katex"});
 
@@ -28,7 +25,6 @@ app.get("/katex.js", function(req, res, next) {
 app.get("/test/katex-tests.js", function(req, res, next) {
     var b = browserify();
     b.add("./test/katex-tests");
-    b.transform(jisonify);
 
     var stream = b.bundle({});
 

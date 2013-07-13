@@ -207,6 +207,18 @@ describe("A subscript and superscript parser", function() {
         expect(parseA).toEqual(parseB);
     });
 
+    it("should not parse x^x^x", function() {
+        expect(function() {
+            parseTree("x^x^x");
+        }).toThrow();
+    });
+
+    it("should not parse x_x_x", function() {
+        expect(function() {
+            parseTruee("x_x_x");
+        }).toThrow();
+    });
+
     it("should work correctly with {}s", function() {
         expect(function() {
             parseTree("x^{2+3}");

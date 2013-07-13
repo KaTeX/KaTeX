@@ -12,12 +12,10 @@ var makeSpan = function(className, children) {
     var span = document.createElement("span");
     span.className = className || "";
 
-    if (_.isArray(children)) {
-        _.each(children, function(v) {
-            span.appendChild(v);
-        });
-    } else if (children) {
-        span.appendChild(children);
+    if (children) {
+        for (var i = 0; i < children.length; i++) {
+            span.appendChild(children[i]);
+        }
     }
 
     return span;
@@ -25,46 +23,46 @@ var makeSpan = function(className, children) {
 
 var buildGroup = function(group, prev) {
     if (group.type === "mathord") {
-        return makeSpan("mord", mathit(group.value));
+        return makeSpan("mord", [mathit(group.value)]);
     } else if (group.type === "textord") {
-        return makeSpan("mord", textit(group.value));
+        return makeSpan("mord", [textit(group.value)]);
     } else if (group.type === "bin") {
         var className = "mbin";
         if (prev == null || _.contains(["bin", "open", "rel"], prev.type)) {
             group.type = "ord";
             className = "mord";
         }
-        return makeSpan(className, textit(group.value));
+        return makeSpan(className, [textit(group.value)]);
     } else if (group.type === "rel") {
-        return makeSpan("mrel", textit(group.value));
+        return makeSpan("mrel", [textit(group.value)]);
     } else if (group.type === "sup") {
-        var sup = makeSpan("msup", buildExpression(group.value.sup));
-        return makeSpan("mord", buildExpression(group.value.base).concat(sup));
+        var sup = makeSpan("msup", [buildGroup(group.value.sup)]);
+        return makeSpan("mord", [buildGroup(group.value.base), sup]);
     } else if (group.type === "sub") {
-        var sub = makeSpan("msub", buildExpression(group.value.sub));
-        return makeSpan("mord", buildExpression(group.value.base).concat(sub));
+        var sub = makeSpan("msub", [buildGroup(group.value.sub)]);
+        return makeSpan("mord", [buildGroup(group.value.base), sub]);
     } else if (group.type === "supsub") {
-        var sup = makeSpan("msup", buildExpression(group.value.sup));
-        var sub = makeSpan("msub", buildExpression(group.value.sub));
+        var sup = makeSpan("msup", [buildGroup(group.value.sup)]);
+        var sub = makeSpan("msub", [buildGroup(group.value.sub)]);
 
         var supsub = makeSpan("msupsub", [sup, sub]);
 
-        return makeSpan("mord", buildExpression(group.value.base).concat(supsub));
+        return makeSpan("mord", [buildGroup(group.value.base), supsub]);
     } else if (group.type === "open") {
-        return makeSpan("mopen", textit(group.value));
+        return makeSpan("mopen", [textit(group.value)]);
     } else if (group.type === "close") {
-        return makeSpan("mclose", textit(group.value));
+        return makeSpan("mclose", [textit(group.value)]);
     } else if (group.type === "dfrac") {
-        var numer = makeSpan("mfracnum", makeSpan("", buildExpression(group.value.numer)));
-        var mid = makeSpan("mfracmid", makeSpan());
-        var denom = makeSpan("mfracden", buildExpression(group.value.denom));
+        var numer = makeSpan("mfracnum", [makeSpan("", [buildGroup(group.value.numer)])]);
+        var mid = makeSpan("mfracmid", [makeSpan()]);
+        var denom = makeSpan("mfracden", [buildGroup(group.value.denom)]);
 
         return makeSpan("minner mfrac", [numer, mid, denom]);
     } else if (group.type === "color") {
-        return makeSpan("mord " + group.value.color, buildExpression(group.value.value));
+        return makeSpan("mord " + group.value.color, [buildGroup(group.value.value)]);
     } else if (group.type === "spacing") {
         if (group.value === "\\ " || group.value === "\\space") {
-            return makeSpan("mord mspace", textit(group.value));
+            return makeSpan("mord mspace", [textit(group.value)]);
         } else {
             var spacingClassMap = {
                 "\\qquad": "qquad",
@@ -78,18 +76,18 @@ var buildGroup = function(group, prev) {
         }
     } else if (group.type === "llap") {
         var inner = makeSpan("", buildExpression(group.value));
-        return makeSpan("llap", inner);
+        return makeSpan("llap", [inner]);
     } else if (group.type === "rlap") {
         var inner = makeSpan("", buildExpression(group.value));
-        return makeSpan("rlap", inner);
+        return makeSpan("rlap", [inner]);
     } else if (group.type === "punct") {
-        return makeSpan("mpunct", textit(group.value));
+        return makeSpan("mpunct", [textit(group.value)]);
     } else if (group.type === "ordgroup") {
         return makeSpan("mord", buildExpression(group.value));
     } else if (group.type === "namedfn") {
-        return makeSpan("mop", textit(group.value.slice(1)));
+        return makeSpan("mop", [textit(group.value.slice(1))]);
     } else {
-        console.log("Unknown type:", group.type);
+        throw "Lex error: Got group of unknown type: '" + group.type + "'";
     }
 };
 
@@ -120,7 +118,7 @@ var textit = function(value) {
 };
 
 var mathit = function(value) {
-    return makeSpan("mathit", textit(value));
+    return makeSpan("mathit", [textit(value)]);
 };
 
 var clearNode = function(node) {
@@ -133,10 +131,16 @@ var clearNode = function(node) {
 
 var process = function(toParse, baseElem) {
     var tree = parseTree(toParse);
-    clearNode(baseElem);
-    _.each(buildExpression(tree), function(elem) {
-        baseElem.appendChild(elem);
-    });
+    if (tree) {
+        clearNode(baseElem);
+        var expression = buildExpression(tree);
+        for (var i = 0; i < expression.length; i++) {
+            baseElem.appendChild(expression[i]);
+        }
+        return true;
+    } else {
+        return false;
+    }
 };
 
 module.exports = {
