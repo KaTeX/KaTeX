@@ -319,6 +319,12 @@ describe("A function parser", function() {
             parseTree("\\dfrac12");
         }).not.toThrow();
     });
+
+    it("should parse some functions with text right after it", function() {
+        expect(function() {
+            parseTree("\\;x");
+        }).not.toThrow();
+    });
 });
 
 describe("A dfrac parser", function() {

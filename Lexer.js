@@ -25,29 +25,8 @@ var normals = [
     [/^[)\]?!]/, 'close']
 ];
 
-// Different functions
-var funcs = [
-    // Bin symbols
-    'cdot', 'pm', 'div',
-    // Rel symbols
-    'leq', 'geq', 'neq', 'nleq', 'ngeq',
-    // Open/close symbols
-    'lvert', 'rvert',
-    // Punct symbols
-    'colon',
-    // Spacing symbols
-    'qquad', 'quad', ' ', 'space', ',', ':', ';',
-    // Colors
-    'blue', 'orange', 'pink', 'red', 'green', 'gray', 'purple',
-    // Mathy functions
-    "arcsin", "arccos", "arctan", "arg", "cos", "cosh", "cot", "coth", "csc",
-    "deg", "dim", "exp", "hom", "ker", "lg", "ln", "log", "sec", "sin", "sinh",
-    "tan", "tanh",
-    // Other functions
-    'dfrac', 'llap', 'rlap'
-];
 // Build a regex to easily parse the functions
-var anyFunc = new RegExp("^\\\\(" + funcs.join("|") + ")(?![a-zA-Z])");
+var anyFunc = /^\\([a-zA-Z]+|.)/;
 
 // Lex a single token
 Lexer.prototype.lex = function(pos) {
