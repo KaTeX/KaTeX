@@ -215,7 +215,7 @@ describe("A subscript and superscript parser", function() {
 
     it("should not parse x_x_x", function() {
         expect(function() {
-            parseTruee("x_x_x");
+            parseTree("x_x_x");
         }).toThrow();
     });
 
