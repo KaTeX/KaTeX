@@ -172,7 +172,7 @@ function contains(list, elem) {
 
 // A list of 1-argument color functions
 var colorFuncs = [
-    "blue", "orange", "pink", "red", "green", "gray", "purple"
+    "\\blue", "\\orange", "\\pink", "\\red", "\\green", "\\gray", "\\purple"
 ];
 
 // A map of elements that don't have arguments, and should simply be placed
@@ -185,15 +185,16 @@ var colorFuncs = [
 var copyFuncs = {
     "textord": ["textord"],
     "mathord": ["mathord"],
-    "bin": ["bin", "pm", "div", "cdot"],
-    "open": ["open", "lvert"],
-    "close": ["close", "rvert"],
-    "rel": ["rel", "leq", "geq", "neq", "nleq", "ngeq"],
-    "spacing": ["qquad", "quad", "space", " ", ",", ":", ";"],
-    "punct": ["punct", "colon"],
-    "namedfn": ["arcsin", "arccos", "arctan", "arg", "cos", "cosh", "cot",
-        "coth", "csc", "deg", "dim", "exp", "hom", "ker", "lg", "ln", "log",
-        "sec", "sin", "sinh", "tan", "tanh"]
+    "bin": ["bin", "\\pm", "\\div", "\\cdot"],
+    "open": ["open", "\\lvert"],
+    "close": ["close", "\\rvert"],
+    "rel": ["rel", "\\leq", "\\geq", "\\neq", "\\nleq", "\\ngeq"],
+    "spacing": ["\\qquad", "\\quad", "\\space", "\\ ", "\\,", "\\:", "\\;"],
+    "punct": ["punct", "\\colon"],
+    "namedfn": ["\\arcsin", "\\arccos", "\\arctan", "\\arg", "\\cos", "\\cosh",
+        "\\cot", "\\coth", "\\csc", "\\deg", "\\dim", "\\exp", "\\hom",
+        "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin", "\\sinh", "\\tan",
+        "\\tanh"]
 };
 
 // Build a list of all of the different functions in the copyFuncs list, to
@@ -217,22 +218,22 @@ Parser.prototype.parseNucleus = function(pos) {
         if (group) {
             return new ParseResult(
                 new ParseNode("color",
-                    {color: nucleus.type, value: group.result}),
+                    {color: nucleus.type.slice(1), value: group.result}),
                 group.position);
         } else {
             throw "Parse error: Expected group after '" + nucleus.text + "'";
         }
-    } else if (nucleus.type === "llap" || nucleus.type === "rlap") {
+    } else if (nucleus.type === "\\llap" || nucleus.type === "\\rlap") {
         // If this is an llap or rlap, parse its argument and return
         var group = this.parseGroup(nucleus.position);
         if (group) {
             return new ParseResult(
-                new ParseNode(nucleus.type, nucleus.text),
+                new ParseNode(nucleus.type.slice(1), nucleus.text),
                 group.position);
         } else {
             throw "Parse error: Expected group after '" + nucleus.text + "'";
         }
-    } else if (nucleus.type === "dfrac") {
+    } else if (nucleus.type === "\\dfrac") {
         // If this is a dfrac, parse its two arguments and return
         var numer = this.parseGroup(nucleus.position);
         if (numer) {

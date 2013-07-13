@@ -45,7 +45,7 @@ Lexer.prototype.lex = function(pos) {
     var match;
     if ((match = input.match(anyFunc))) {
         // If we match one of the tokens, extract the type
-        return new LexResult(match[1], match[0], pos + match[0].length);
+        return new LexResult(match[0], match[0], pos + match[0].length);
     } else {
         // Otherwise, we look through the normal token regexes and see if it's
         // one of them.
