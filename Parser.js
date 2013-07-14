@@ -229,21 +229,27 @@ Parser.prototype.parseNucleus = function(pos) {
         } else {
             throw "Parse error: Expected group after '" + nucleus.text + "'";
         }
-    } else if (nucleus.type === "\\dfrac") {
-        // If this is a dfrac, parse its two arguments and return
+    } else if (nucleus.type === "\\dfrac" || nucleus.type === "\\frac" ||
+            nucleus.type === "\\tfrac") {
+        // If this is a frac, parse its two arguments and return
         var numer = this.parseGroup(nucleus.position);
         if (numer) {
             var denom = this.parseGroup(numer.position);
             if (denom) {
                 return new ParseResult(
-                    new ParseNode("dfrac",
-                        {numer: numer.result, denom: denom.result}),
+                    new ParseNode("frac", {
+                        numer: numer.result,
+                        denom: denom.result,
+                        size: nucleus.type.slice(1)
+                    }),
                     denom.position);
             } else {
-                throw "Parse error: Expected denominator after '\\dfrac'";
+                throw "Parse error: Expected denominator after '" +
+                        nucleus.type + "'";
             }
         } else {
-            throw "Parse error: Expected numerator after '\\dfrac'"
+            throw "Parse error: Expected numerator after '" + nucleus.type +
+                    "'";
         }
     } else if (funcToType[nucleus.type]) {
         // Otherwise if this is a no-argument function, find the type it

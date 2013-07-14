@@ -16,7 +16,7 @@ big parens
 
 .mathmathmath {
     font: normal 1.21em katex_main;
-    line-height: 1.4;
+    line-height: 1.2;
 }
 
 .mathit {
@@ -24,149 +24,47 @@ big parens
     font-style: italic;
 }
 
-.mord + .mbin {
-    margin-left: 0.22222em;
-}
+.textstyle > .mbin + .minner { margin-left: 0.22222em; }
+.textstyle > .mbin + .mop { margin-left: 0.22222em; }
+.textstyle > .mbin + .mopen { margin-left: 0.22222em; }
+.textstyle > .mbin + .mord { margin-left: 0.22222em; }
+.textstyle > .mclose + .mbin { margin-left: 0.22222em; }
+.textstyle > .mclose + .minner { margin-left: 0.16667em; }
+             .mclose + .mop { margin-left: 0.16667em; }
+.textstyle > .mclose + .mrel { margin-left: 0.27778em; }
+.textstyle > .minner + .mbin { margin-left: 0.22222em; }
+.textstyle > .minner + .minner { margin-left: 0.16667em; }
+             .minner + .mop { margin-left: 0.16667em; }
+.textstyle > .minner + .mopen { margin-left: 0.16667em; }
+.textstyle > .minner + .mord { margin-left: 0.16667em; }
+.textstyle > .minner + .mpunct { margin-left: 0.16667em; }
+.textstyle > .minner + .mrel { margin-left: 0.27778em; }
+.textstyle > .mop + .minner { margin-left: 0.16667em; }
+             .mop + .mop { margin-left: 0.16667em; }
+             .mop + .mord { margin-left: 0.16667em; }
+.textstyle > .mop + .mrel { margin-left: 0.27778em; }
+.textstyle > .mord + .mbin { margin-left: 0.22222em; }
+.textstyle > .mord + .minner { margin-left: 0.16667em; }
+             .mord + .mop { margin-left: 0.16667em; }
+.textstyle > .mord + .mrel { margin-left: 0.27778em; }
+.textstyle > .mpunct + .mbin { margin-left: 0.16667em; }
+.textstyle > .mpunct + .mclose { margin-left: 0.16667em; }
+.textstyle > .mpunct + .minner { margin-left: 0.16667em; }
+.textstyle > .mpunct + .mop { margin-left: 0.16667em; }
+.textstyle > .mpunct + .mopen { margin-left: 0.16667em; }
+.textstyle > .mpunct + .mord { margin-left: 0.16667em; }
+.textstyle > .mpunct + .mpunct { margin-left: 0.16667em; }
+.textstyle > .mpunct + .mrel { margin-left: 0.16667em; }
+.textstyle > .mrel + .minner { margin-left: 0.27778em; }
+.textstyle > .mrel + .mop { margin-left: 0.27778em; }
+.textstyle > .mrel + .mopen { margin-left: 0.27778em; }
+.textstyle > .mrel + .mord { margin-left: 0.27778em; }
 
-.mbin + .mord {
-    margin-left: 0.22222em;
-}
-
-.mbin + .mopen {
-    margin-left: 0.22222em;
-}
-
-.mclose + .mbin {
-    margin-left: 0.22222em;
-}
-
-.mrel + .mord {
-    margin-left: 0.27778em;
-}
-
-.mord + .mrel {
-    margin-left: 0.27778em;
-}
-
-.mrel + .mopen {
-    margin-left: 0.27778em;
-}
-
-.mclose + .mrel {
-    margin-left: 0.27778em;
-}
-
-.mpunct + .mord {
-    margin-left: 0.16667em;
-}
-
-.mpunct + .mbin {
-    margin-left: 0.16667em;
-}
-
-.mpunct + .mrel {
-    margin-left: 0.16667em;
-}
-
-.mpunct + .mopen {
-    margin-left: 0.16667em;
-}
-
-.mpunct + .mclose {
-    margin-left: 0.16667em;
-}
-
-.mpunct + .mpunct {
-    margin-left: 0.16667em;
-}
-
-.minner + .mord {
-    margin-left: 0.16667em;
-}
-
-.minner + .mbin {
-    margin-left: 0.22222em;
-}
-
-.minner + .mrel {
-    margin-left: 0.27778em;
-}
-
-.minner + .mopen {
-    margin-left: 0.16667em;
-}
-
-.minner + .mpunct {
-    margin-left: 0.16667em;
-}
-
-.minner + .minner {
-    margin-left: 0.16667em;
-}
-
-.mord + .minner {
-    margin-left: 0.16667em;
-}
-
-.mbin + .minner {
-    margin-left: 0.22222em;
-}
-
-.mrel + .minner {
-    margin-left: 0.27778em;
-}
-
-.mclose + .minner {
-    margin-left: 0.16667em;
-}
-
-.mpunct + .minner {
-    margin-left: 0.16667em;
-}
-
-.mop + .mord {
-    margin-left: 0.16667em;
-}
-
-.mop + .mop {
-    margin-left: 0.16667em;
-}
-
-.mop + .mrel {
-    margin-left: 0.27778em;
-}
-
-.mop + .minner {
-    margin-left: 0.16667em;
-}
-
-.mord + .mop {
-    margin-left: 0.16667em;
-}
-
-.mbin + .mop {
-    margin-left: 0.22222em;
-}
-
-.mrel + .mop {
-    margin-left: 0.27778em;
-}
-
-.mclose + .mop {
-    margin-left: 0.16667em;
-}
-
-.mpunct + .mop {
-    margin-left: 0.16667em;
-}
-
-.minner + .mop {
-    margin-left: 0.16667em;
-}
+.textstyle > .scriptstyle { font-size: 0.66667em; }
+.scriptstyle > .scriptscriptstyle { font-size: 0.75em; }
 
 .msub {
     vertical-align: bottom;
-    font-size: 70%;
     position: relative;
     top: 0.2em;
 }
@@ -174,7 +72,6 @@ big parens
 .msup {
     position: relative;
     top: -0.5em;
-    font-size: 70%;
 }
 
 .msupsub {
@@ -186,13 +83,15 @@ big parens
 .msupsub > .msup, .msupsub > .msub {
     display: table-row;
     vertical-align: baseline;
-    line-height: 1em;
 }
 
-.mfrac {
-    display: inline-table;
-    vertical-align: 0.66em;
-}
+.mfrac { display: inline-table; }
+
+/* TODO(alpert): Where do these numbers come from? */
+.mfrac.textstyle.displaystyle { vertical-align: 0.58em; }
+.mfrac.textstyle { vertical-align: 0.50em; }
+.mfrac.scriptstyle { vertical-align: 0.50em; }
+.mfrac.scriptscriptstyle { vertical-align: 0.6em; }
 
 .mfracnum, .mfracmid, .mfracden {
     display: table-row;
