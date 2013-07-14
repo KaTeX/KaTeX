@@ -1,8 +1,7 @@
 var Lexer = require("./Lexer");
 
 // Main Parser class
-function Parser(options) {
-    this.options = options;
+function Parser() {
 };
 
 // Returned by the Parser.parse... functions. Stores the current results and

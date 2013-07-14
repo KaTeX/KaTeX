@@ -130,15 +130,16 @@ var clearNode = function(node) {
 };
 
 var process = function(toParse, baseElem) {
-    var tree = parseTree(toParse);
-    if (tree) {
+    try {
+        var tree = parseTree(toParse);
         clearNode(baseElem);
         var expression = buildExpression(tree);
         for (var i = 0; i < expression.length; i++) {
             baseElem.appendChild(expression[i]);
         }
         return true;
-    } else {
+    } catch (e) {
+        console.error(e);
         return false;
     }
 };
