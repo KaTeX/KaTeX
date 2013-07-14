@@ -1,4 +1,5 @@
 var Lexer = require("./Lexer");
+var utils = require("./utils");
 
 // Main Parser class
 function Parser() {
@@ -164,10 +165,6 @@ Parser.prototype.parseGroup = function(pos) {
     }
 };
 
-// Tests whether an element is in a list
-function contains(list, elem) {
-    return list.indexOf(elem) !== -1;
-}
 
 // A list of 1-argument color functions
 var colorFuncs = [
@@ -211,7 +208,7 @@ for (var type in copyFuncs) {
 Parser.prototype.parseNucleus = function(pos) {
     var nucleus = this.lexer.lex(pos);
 
-    if (contains(colorFuncs, nucleus.type)) {
+    if (utils.contains(colorFuncs, nucleus.type)) {
         // If this is a color function, parse its argument and return
         var group = this.parseGroup(nucleus.position);
         if (group) {

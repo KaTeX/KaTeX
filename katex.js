@@ -1,11 +1,16 @@
 var parseTree = require("./parseTree");
 
+var utils = require("./utils");
+
 var buildExpression = function(expression) {
-    return _.map(expression, function(ex, i) {
+    var groups = [];
+    for (var i = 0; i < expression.length; i++) {
+        var group = expression[i];
         var prev = i > 0 ? expression[i-1] : null;
 
-        return buildGroup(ex, prev);
-    });
+        groups.push(buildGroup(group, prev));
+    };
+    return groups;
 };
 
 var makeSpan = function(className, children) {
@@ -28,7 +33,7 @@ var buildGroup = function(group, prev) {
         return makeSpan("mord", [textit(group.value)]);
     } else if (group.type === "bin") {
         var className = "mbin";
-        if (prev == null || _.contains(["bin", "open", "rel"], prev.type)) {
+        if (prev == null || utils.contains(["bin", "open", "rel"], prev.type)) {
             group.type = "ord";
             className = "mord";
         }
