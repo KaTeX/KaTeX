@@ -137,16 +137,16 @@ var clearNode = function(node) {
 var process = function(toParse, baseElem) {
     try {
         var tree = parseTree(toParse);
-        clearNode(baseElem);
-        var expression = buildExpression(tree);
-        for (var i = 0; i < expression.length; i++) {
-            baseElem.appendChild(expression[i]);
-        }
-        return true;
     } catch (e) {
         console.error(e);
         return false;
     }
+    clearNode(baseElem);
+    var expression = buildExpression(tree);
+    for (var i = 0; i < expression.length; i++) {
+        baseElem.appendChild(expression[i]);
+    }
+    return true;
 };
 
 module.exports = {

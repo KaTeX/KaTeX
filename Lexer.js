@@ -26,7 +26,7 @@ var normals = [
 ];
 
 // Build a regex to easily parse the functions
-var anyFunc = /^\\([a-zA-Z]+|.)/;
+var anyFunc = /^\\(?:[a-zA-Z]+|.)/;
 
 // Lex a single token
 Lexer.prototype.lex = function(pos) {
