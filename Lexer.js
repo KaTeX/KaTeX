@@ -62,7 +62,7 @@ Lexer.prototype.lex = function(pos) {
     }
 
     // We didn't match any of the tokens, so throw an error.
-    throw "Unexpected character: '" + input[0] + "' at position " + this._pos;
+    throw "Unexpected character: '" + input[0] + "' at position " + pos;
 };
 
 module.exports = Lexer;

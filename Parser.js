@@ -337,7 +337,7 @@ Parser.prototype.parseNucleus = function(pos) {
         var group = this.parseGroup(nucleus.position);
         if (group) {
             return new ParseResult(
-                new ParseNode(nucleus.type.slice(1), nucleus.text),
+                new ParseNode(nucleus.type.slice(1), group.result),
                 group.position);
         } else {
             throw "Parse error: Expected group after '" + nucleus.text + "'";

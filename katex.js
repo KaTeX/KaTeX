@@ -129,10 +129,10 @@ var buildGroup = function(style, color, group, prev) {
             return makeSpan("mord mspace " + spacingClassMap[group.value]);
         }
     } else if (group.type === "llap") {
-        var inner = makeSpan("", buildExpression(style, color, group.value));
+        var inner = makeSpan("", [buildGroup(style, color, group.value)]);
         return makeSpan("llap " + style.cls(), [inner]);
     } else if (group.type === "rlap") {
-        var inner = makeSpan("", buildExpression(style, color, group.value));
+        var inner = makeSpan("", [buildGroup(style, color, group.value)]);
         return makeSpan("rlap " + style.cls(), [inner]);
     } else if (group.type === "punct") {
         return makeSpan("mpunct" + color, [textit(group.value)]);
