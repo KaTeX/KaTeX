@@ -78,6 +78,10 @@ Parser.prototype.parseSuperscript = function(pos) {
             // Throw an error if we didn't find a group
             throw "Parse error: Couldn't find group after '^'";
         }
+    } else if (sup.type === "'") {
+        var pos = sup.position;
+        return new ParseResult(
+            new ParseNode("textord", "\\prime"), sup.position);
     } else {
         return null;
     }
@@ -179,18 +183,78 @@ var colorFuncs = [
 // For example, if the lexer returns something of type "colon", we should
 // return a node of type "punct"
 var copyFuncs = {
-    "textord": ["textord"],
+    "textord": [
+        "textord",
+        "\\angle",
+        "\\infty",
+        "\\prime"
+    ],
     "mathord": ["mathord"],
-    "bin": ["bin", "\\pm", "\\div", "\\cdot"],
-    "open": ["open", "\\lvert"],
-    "close": ["close", "\\rvert"],
-    "rel": ["rel", "\\leq", "\\geq", "\\neq", "\\nleq", "\\ngeq"],
-    "spacing": ["\\qquad", "\\quad", "\\space", "\\ ", "\\,", "\\:", "\\;"],
-    "punct": ["punct", "\\colon"],
-    "namedfn": ["\\arcsin", "\\arccos", "\\arctan", "\\arg", "\\cos", "\\cosh",
-        "\\cot", "\\coth", "\\csc", "\\deg", "\\dim", "\\exp", "\\hom",
-        "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin", "\\sinh", "\\tan",
-        "\\tanh"]
+    "bin": [
+        "bin",
+        "\\cdot",
+        "\\circ",
+        "\\div",
+        "\\pm",
+        "\\times"
+    ],
+    "open": [
+        "open",
+        "\\lvert"
+    ],
+    "close": [
+        "close",
+        "\\rvert"
+    ],
+    "rel": [
+        "rel",
+        "\\geq",
+        "\\gets",
+        "\\leftarrow",
+        "\\leq",
+        "\\neq",
+        "\\ngeq",
+        "\\nleq",
+        "\\rightarrow",
+        "\\to"
+    ],
+    "spacing": [
+        "\\ ",
+        "\\,",
+        "\\:",
+        "\\;",
+        "\\qquad",
+        "\\quad",
+        "\\space"
+    ],
+    "punct": [
+        "punct",
+        "\\colon"
+    ],
+    "namedfn": [
+        "\\arcsin",
+        "\\arccos",
+        "\\arctan",
+        "\\arg",
+        "\\cos",
+        "\\cosh",
+        "\\cot",
+        "\\coth",
+        "\\csc",
+        "\\deg",
+        "\\dim",
+        "\\exp",
+        "\\hom",
+        "\\ker",
+        "\\lg",
+        "\\ln",
+        "\\log",
+        "\\sec",
+        "\\sin",
+        "\\sinh",
+        "\\tan",
+        "\\tanh"
+    ]
 };
 
 // Build a list of all of the different functions in the copyFuncs list, to
