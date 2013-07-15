@@ -94,7 +94,7 @@ var buildGroup = function(style, color, group, prev) {
         var numer = makeSpan("mfracnum " + nstyle.cls(), [
             makeSpan("", [buildGroup(nstyle, color, group.value.numer)])
         ]);
-        var mid = makeSpan("mfracmid", [makeSpan()]);
+        var mid = makeSpan("mfracmid");
         var denom = makeSpan("mfracden " + dstyle.cls(), [
             makeSpan("", [buildGroup(dstyle, color, group.value.denom)])
         ]);
