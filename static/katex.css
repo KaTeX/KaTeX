@@ -149,18 +149,18 @@ big parens
     left: 0;
 }
 
-.mord.blue { color: #6495ed; }
-.mord.orange { color: #ffa500; }
-.mord.pink { color: #ff00af; }
-.mord.red { color: #df0030; }
-.mord.green { color: #28ae7b; }
-.mord.gray { color: gray; }
-.mord.purple { color: #9d38bd; }
+.blue { color: #6495ed; }
+.orange { color: #ffa500; }
+.pink { color: #ff00af; }
+.red { color: #df0030; }
+.green { color: #28ae7b; }
+.gray { color: gray; }
+.purple { color: #9d38bd; }
 
-.blue .mfracmid > span { background: #6495ed; }
-.orange .mfracmid > span { background: #ffa500; }
-.pink .mfracmid > span { background: #ff00af; }
-.red .mfracmid > span { background: #df0030; }
-.green .mfracmid > span { background: #28ae7b; }
-.gray .mfracmid > span { background: gray; }
-.purple .mfracmid > span { background: #9d38bd; }
+.blue > .mfracmid > span { background: #6495ed; }
+.orange > .mfracmid > span { background: #ffa500; }
+.pink > .mfracmid > span { background: #ff00af; }
+.red > .mfracmid > span { background: #df0030; }
+.green > .mfracmid > span { background: #28ae7b; }
+.gray > .mfracmid > span { background: gray; }
+.purple > .mfracmid > span { background: #9d38bd; }

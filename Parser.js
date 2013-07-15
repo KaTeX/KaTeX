@@ -212,9 +212,15 @@ Parser.prototype.parseNucleus = function(pos) {
         // If this is a color function, parse its argument and return
         var group = this.parseGroup(nucleus.position);
         if (group) {
+            var atoms;
+            if (group.result.type === "ordgroup") {
+                atoms = group.result.value;
+            } else {
+                atoms = [group.result];
+            }
             return new ParseResult(
                 new ParseNode("color",
-                    {color: nucleus.type.slice(1), value: group.result}),
+                    {color: nucleus.type.slice(1), value: atoms}),
                 group.position);
         } else {
             throw "Parse error: Expected group after '" + nucleus.text + "'";

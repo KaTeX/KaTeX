@@ -3,13 +3,12 @@ var Style = require("./Style");
 var parseTree = require("./parseTree");
 var utils = require("./utils");
 
-var buildExpression = function(style, expression) {
+var buildExpression = function(style, color, expression, prev) {
     var groups = [];
     for (var i = 0; i < expression.length; i++) {
         var group = expression[i];
-        var prev = i > 0 ? expression[i-1] : null;
-
-        groups.push(buildGroup(style, group, prev));
+        groups.push(buildGroup(style, color, group, prev));
+        prev = group;
     };
     return groups;
 };
@@ -27,49 +26,60 @@ var makeSpan = function(className, children) {
     return span;
 };
 
-var buildGroup = function(style, group, prev) {
+var buildGroup = function(style, color, group, prev) {
     if (group.type === "mathord") {
-        return makeSpan("mord", [mathit(group.value)]);
+        return makeSpan("mord" + color, [mathit(group.value)]);
     } else if (group.type === "textord") {
-        return makeSpan("mord", [textit(group.value)]);
+        return makeSpan("mord" + color, [textit(group.value)]);
     } else if (group.type === "bin") {
         var className = "mbin";
-        if (prev == null || utils.contains(["bin", "open", "rel"], prev.type)) {
+        var prevAtom = prev;
+        while (prevAtom && prevAtom.type == "color") {
+            var atoms = prevAtom.value.value;
+            prevAtom = atoms[atoms.length - 1];
+        }
+        if (!prev || utils.contains(["bin", "open", "rel"], prevAtom.type)) {
             group.type = "ord";
             className = "mord";
         }
-        return makeSpan(className, [textit(group.value)]);
+        return makeSpan(className + color, [textit(group.value)]);
     } else if (group.type === "rel") {
-        return makeSpan("mrel", [textit(group.value)]);
+        return makeSpan("mrel" + color, [textit(group.value)]);
     } else if (group.type === "sup") {
         var sup = makeSpan("msup " + style.cls(), [
             makeSpan(style.sup().cls(), [
-                buildGroup(style.sup(), group.value.sup)
+                buildGroup(style.sup(), color, group.value.sup)
             ])
         ]);
-        return makeSpan("mord", [buildGroup(style, group.value.base), sup]);
+        return makeSpan("mord", [
+            buildGroup(style, color, group.value.base), sup
+        ]);
     } else if (group.type === "sub") {
         var sub = makeSpan("msub " + style.cls(), [
             makeSpan(style.sub().cls(), [
-                buildGroup(style.sub(), group.value.sub)
+                buildGroup(style.sub(), color, group.value.sub)
             ])
         ]);
-        return makeSpan("mord", [buildGroup(style, group.value.base), sub]);
+        return makeSpan("mord", [
+            buildGroup(style, color, group.value.base), sub
+        ]);
     } else if (group.type === "supsub") {
         var sup = makeSpan("msup " + style.sup().cls(), [
-            buildGroup(style.sup(), group.value.sup)
+            buildGroup(style.sup(), color, group.value.sup)
         ]);
         var sub = makeSpan("msub " + style.sub().cls(), [
-            buildGroup(style.sub(), group.value.sub)
+            buildGroup(style.sub(), color, group.value.sub)
         ]);
 
         var supsub = makeSpan("msupsub " + style.cls(), [sup, sub]);
 
-        return makeSpan("mord", [buildGroup(style, group.value.base), supsub]);
+        return makeSpan("mord", [
+            buildGroup(style, color, group.value.base), supsub
+        ]);
     } else if (group.type === "open") {
-        return makeSpan("mopen", [textit(group.value)]);
+        return makeSpan("mopen" + color, [textit(group.value)]);
     } else if (group.type === "close") {
-        return makeSpan("mclose", [textit(group.value)]);
+        return makeSpan("mclose" + color, [textit(group.value)]);
     } else if (group.type === "frac") {
         var fstyle = style;
         if (group.value.size === "dfrac") {
@@ -82,16 +92,28 @@ var buildGroup = function(style, group, prev) {
         var dstyle = fstyle.fracDen();
 
         var numer = makeSpan("mfracnum " + nstyle.cls(), [
-            makeSpan("", [buildGroup(nstyle, group.value.numer)])
+            makeSpan("", [buildGroup(nstyle, color, group.value.numer)])
         ]);
         var mid = makeSpan("mfracmid", [makeSpan()]);
         var denom = makeSpan("mfracden " + dstyle.cls(), [
-            makeSpan("", [buildGroup(dstyle, group.value.denom)])
+            makeSpan("", [buildGroup(dstyle, color, group.value.denom)])
         ]);
 
-        return makeSpan("minner mfrac " + fstyle.cls(), [numer, mid, denom]);
+        return makeSpan("minner mfrac " + fstyle.cls() + color, [
+            numer, mid, denom
+        ]);
     } else if (group.type === "color") {
-        return makeSpan("mord " + group.value.color, [buildGroup(style, group.value.value)]);
+        var frag = document.createDocumentFragment();
+        var els = buildExpression(
+            style,
+            " " + group.value.color,
+            group.value.value,
+            prev
+        );
+        for (var i = 0; i < els.length; i++) {
+            frag.appendChild(els[i]);
+        }
+        return frag;
     } else if (group.type === "spacing") {
         if (group.value === "\\ " || group.value === "\\space") {
             return makeSpan("mord mspace", [textit(group.value)]);
@@ -107,17 +129,19 @@ var buildGroup = function(style, group, prev) {
             return makeSpan("mord mspace " + spacingClassMap[group.value]);
         }
     } else if (group.type === "llap") {
-        var inner = makeSpan("", buildExpression(style, group.value));
+        var inner = makeSpan("", buildExpression(style, color, group.value));
         return makeSpan("llap " + style.cls(), [inner]);
     } else if (group.type === "rlap") {
-        var inner = makeSpan("", buildExpression(style, group.value));
+        var inner = makeSpan("", buildExpression(style, color, group.value));
         return makeSpan("rlap " + style.cls(), [inner]);
     } else if (group.type === "punct") {
-        return makeSpan("mpunct", [textit(group.value)]);
+        return makeSpan("mpunct" + color, [textit(group.value)]);
     } else if (group.type === "ordgroup") {
-        return makeSpan("mord " + style.cls(), buildExpression(style, group.value));
+        return makeSpan("mord " + style.cls(),
+            buildExpression(style, color, group.value)
+        );
     } else if (group.type === "namedfn") {
-        return makeSpan("mop", [textit(group.value.slice(1))]);
+        return makeSpan("mop" + color, [textit(group.value.slice(1))]);
     } else {
         throw "Lex error: Got group of unknown type: '" + group.type + "'";
     }
@@ -170,7 +194,7 @@ var process = function(toParse, baseElem) {
     }
 
     var style = Style.TEXT;
-    var expression = buildExpression(style, tree);
+    var expression = buildExpression(style, /* color: */ "", tree);
     var span = makeSpan(style.cls(), expression);
 
     clearNode(baseElem);
