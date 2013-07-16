@@ -1,5 +1,8 @@
-.PHONY: build copy serve clean
-build: build/katex.js
+.PHONY: build setup copy serve clean
+build: setup build/katex.js
+
+setup:
+	npm install
 
 compress: build/katex.min.js
 	@printf "Minified, gzipped size: "
