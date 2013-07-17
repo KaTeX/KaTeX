@@ -1,6 +1,8 @@
 var Lexer = require("./Lexer");
 var utils = require("./utils");
 
+var ParseError = require("./ParseError");
+
 // Main Parser class
 function Parser() {
 };
@@ -22,7 +24,8 @@ function ParseNode(type, value) {
 // appropriate error otherwise.
 var expect = function(result, type) {
     if (result.type !== type) {
-        throw "Failed parsing: Expected '" + type + "', got '" + result.type + "'";
+        throw new ParseError(
+            "Expected '" + type + "', got '" + result.type + "'");
     }
 };
 
@@ -76,7 +79,7 @@ Parser.prototype.parseSuperscript = function(pos) {
             return group;
         } else {
             // Throw an error if we didn't find a group
-            throw "Parse error: Couldn't find group after '^'";
+            throw new ParseError("Couldn't find group after '^'");
         }
     } else if (sup.type === "'") {
         var pos = sup.position;
@@ -98,7 +101,7 @@ Parser.prototype.parseSubscript = function(pos) {
             return group;
         } else {
             // Throw an error if we didn't find a group
-            throw "Parse error: Couldn't find group after '_'";
+            throw new ParseError("Couldn't find group after '_'");
         }
     } else {
         return null;
@@ -343,7 +346,8 @@ Parser.prototype.parseNucleus = function(pos) {
                     {color: nucleus.type.slice(1), value: atoms}),
                 group.position);
         } else {
-            throw "Parse error: Expected group after '" + nucleus.text + "'";
+            throw new ParseError(
+                "Expected group after '" + nucleus.text + "'");
         }
     } else if (nucleus.type === "\\llap" || nucleus.type === "\\rlap") {
         // If this is an llap or rlap, parse its argument and return
@@ -353,7 +357,8 @@ Parser.prototype.parseNucleus = function(pos) {
                 new ParseNode(nucleus.type.slice(1), group.result),
                 group.position);
         } else {
-            throw "Parse error: Expected group after '" + nucleus.text + "'";
+            throw new ParseError(
+                "Expected group after '" + nucleus.text + "'");
         }
     } else if (nucleus.type === "\\dfrac" || nucleus.type === "\\frac" ||
             nucleus.type === "\\tfrac") {
@@ -370,12 +375,12 @@ Parser.prototype.parseNucleus = function(pos) {
                     }),
                     denom.position);
             } else {
-                throw "Parse error: Expected denominator after '" +
-                        nucleus.type + "'";
+                throw new ParseError("Expected denominator after '" +
+                    nucleus.type + "'");
             }
         } else {
-            throw "Parse error: Expected numerator after '" + nucleus.type +
-                    "'";
+            throw new ParseError("Parse error: Expected numerator after '" +
+                nucleus.type + "'");
         }
     } else if (funcToType[nucleus.type]) {
         // Otherwise if this is a no-argument function, find the type it

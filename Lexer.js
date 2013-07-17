@@ -1,3 +1,5 @@
+var ParseError = require("./ParseError");
+
 // The main lexer class
 function Lexer(input) {
     this._input = input;
@@ -62,7 +64,8 @@ Lexer.prototype.lex = function(pos) {
     }
 
     // We didn't match any of the tokens, so throw an error.
-    throw "Unexpected character: '" + input[0] + "' at position " + pos;
+    throw new ParseError("Unexpected character: '" + input[0] +
+        "' at position " + pos);
 };
 
 module.exports = Lexer;

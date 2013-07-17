@@ -1,4 +1,5 @@
 var Style = require("./Style");
+var ParseError = require("./ParseError");
 
 var parseTree = require("./parseTree");
 var utils = require("./utils");
@@ -240,23 +241,19 @@ var clearNode = function(node) {
     }
 };
 
-var process = function(toParse, baseElem) {
-    try {
-        var tree = parseTree(toParse);
-    } catch (e) {
-        console.error(e);
-        return false;
-    }
+var process = function(toParse, baseNode) {
+    var tree = parseTree(toParse);
 
     var style = Style.TEXT;
     var expression = buildExpression(style, /* color: */ "", tree);
     var span = makeSpan(style.cls(), expression);
+    var katexNode = makeSpan("katex", [span]);
 
-    clearNode(baseElem);
-    baseElem.appendChild(span);
-    return true;
+    clearNode(baseNode);
+    baseNode.appendChild(katexNode);
 };
 
 module.exports = {
-    process: process
+    process: process,
+    ParseError: ParseError
 };
