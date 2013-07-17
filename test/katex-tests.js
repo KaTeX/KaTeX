@@ -288,7 +288,7 @@ describe("A function parser", function() {
 
     it("should parse 2 argument functions", function() {
         expect(function() {
-            parseTree("\\dfrac 1 2");
+            parseTree("\\frac 1 2");
         }).not.toThrow();
     });
 
@@ -300,11 +300,11 @@ describe("A function parser", function() {
 
     it("should not parse 2 argument functions with 0 or 1 arguments", function() {
         expect(function() {
-            parseTree("\\dfrac");
+            parseTree("\\frac");
         }).toThrow();
 
         expect(function() {
-            parseTree("\\dfrac 1");
+            parseTree("\\frac 1");
         }).toThrow();
     });
 
@@ -316,7 +316,7 @@ describe("A function parser", function() {
 
     it("should parse a function with a number right after it", function() {
         expect(function() {
-            parseTree("\\dfrac12");
+            parseTree("\\frac12");
         }).not.toThrow();
     });
 
@@ -327,8 +327,10 @@ describe("A function parser", function() {
     });
 });
 
-describe("A dfrac parser", function() {
-    var expression = "\\dfrac{x}{y}";
+describe("A frac parser", function() {
+    var expression = "\\frac{x}{y}";
+    var dfracExpression = "\\dfrac{x}{y}";
+    var tfracExpression = "\\tfrac{x}{y}";
 
     it("should not fail", function() {
         expect(function() {
@@ -336,11 +338,35 @@ describe("A dfrac parser", function() {
         }).not.toThrow();
     });
 
-    it("should produce a dfrac", function() {
+    it("should produce a frac", function() {
         var parse = parseTree(expression)[0];
 
-        expect(parse.type).toMatch("dfrac");
+        expect(parse.type).toMatch("frac");
         expect(parse.value.numer).toBeDefined();
         expect(parse.value.denom).toBeDefined();
+    });
+
+    it("should also parse dfrac and tfrac", function() {
+        expect(function() {
+            parseTree(dfracExpression);
+        }).not.toThrow();
+
+        expect(function() {
+            parseTree(tfracExpression);
+        }).not.toThrow();
+    });
+
+    it("should parse dfrac and tfrac as fracs", function() {
+        var dfracParse = parseTree(dfracExpression)[0];
+
+        expect(dfracParse.type).toMatch("frac");
+        expect(dfracParse.value.numer).toBeDefined();
+        expect(dfracParse.value.denom).toBeDefined();
+
+        var tfracParse = parseTree(tfracExpression)[0];
+
+        expect(tfracParse.type).toMatch("frac");
+        expect(tfracParse.value.numer).toBeDefined();
+        expect(tfracParse.value.denom).toBeDefined();
     });
 });
