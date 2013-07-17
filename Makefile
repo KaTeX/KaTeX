@@ -2,7 +2,7 @@
 build: build/katex.js
 
 compress: build/katex.min.js
-	@echo -n "Minified, gzipped size: "
+	@printf "Minified, gzipped size: "
 	@gzip -c $^ | wc -c
 
 build/katex.js: katex.js Parser.js Lexer.js
