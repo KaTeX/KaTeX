@@ -164,6 +164,24 @@ describe("A subscript and superscript parser", function() {
         }).not.toThrow();
     });
 
+    it("should not fail when there is no nucleus", function() {
+        expect(function() {
+            parseTree("^3");
+        }).not.toThrow();
+
+        expect(function() {
+            parseTree("_2");
+        }).not.toThrow();
+
+        expect(function() {
+            parseTree("^3_2");
+        }).not.toThrow();
+
+        expect(function() {
+            parseTree("_2^3");
+        }).not.toThrow();
+    });
+
     it("should produce sups for superscript", function() {
         var parse = parseTree("x^2")[0];
 
@@ -207,15 +225,29 @@ describe("A subscript and superscript parser", function() {
         expect(parseA).toEqual(parseB);
     });
 
-    it("should not parse x^x^x", function() {
+    it("should not parse double subscripts or superscripts", function() {
         expect(function() {
             parseTree("x^x^x");
         }).toThrow();
-    });
 
-    it("should not parse x_x_x", function() {
         expect(function() {
             parseTree("x_x_x");
+        }).toThrow();
+
+        expect(function() {
+            parseTree("x_x^x_x");
+        }).toThrow();
+
+        expect(function() {
+            parseTree("x_x^x^x");
+        }).toThrow();
+
+        expect(function() {
+            parseTree("x^x_x_x");
+        }).toThrow();
+
+        expect(function() {
+            parseTree("x^x_x^x");
         }).toThrow();
     });
 

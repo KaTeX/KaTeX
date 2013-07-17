@@ -110,42 +110,55 @@ Parser.prototype.parseSubscript = function(pos) {
 Parser.prototype.parseAtom = function(pos) {
     // Parse the nucleus
     var nucleus = this.parseGroup(pos);
+    var nextPos = pos;
+    var nucleusNode;
+
     if (nucleus) {
-        // Now, we try to parse a subscript or a superscript. If one of those
-        // succeeds, we then try to parse the opposite one, and depending on
-        // whether that succeeds, we return the correct type.
-        var sup, sub;
-        if (sup = this.parseSuperscript(nucleus.position)) {
-            if (sub = this.parseSubscript(sup.position)) {
-                return new ParseResult(
-                    new ParseNode("supsub",
-                        {base: nucleus.result, sup: sup.result,
-                            sub: sub.result}),
-                    sub.position);
-            } else {
-                return new ParseResult(
-                    new ParseNode("sup",
-                        {base: nucleus.result, sup: sup.result}),
-                    sup.position);
+        nextPos = nucleus.position;
+        nucleusNode = nucleus.result;
+    }
+
+    var sup;
+    var sub;
+
+    // Now, we try to parse a subscript or a superscript (or both!), and
+    // depending on whether those succeed, we return the correct type.
+    while (true) {
+        var node;
+        if ((node = this.parseSuperscript(nextPos))) {
+            if (sup) {
+                throw "Parse error: Double superscript";
             }
-        } else if (sub = this.parseSubscript(nucleus.position)) {
-            if (sup = this.parseSuperscript(sub.position)) {
-                return new ParseResult(
-                    new ParseNode("supsub",
-                        {base: nucleus.result, sup: sup.result,
-                            sub: sub.result}),
-                    sup.position);
-            } else {
-                return new ParseResult(
-                    new ParseNode("sub",
-                        {base: nucleus.result, sub: sub.result}),
-                    sub.position);
-            }
-        } else {
-            return nucleus;
+            nextPos = node.position;
+            sup = node.result;
+            continue;
         }
+        if ((node = this.parseSubscript(nextPos))) {
+            if (sub) {
+                throw "Parse error: Double subscript";
+            }
+            nextPos = node.position;
+            sub = node.result;
+            continue;
+        }
+        break;
+    }
+
+    if (sup && sub) {
+        return new ParseResult(
+            new ParseNode("supsub", {base: nucleusNode, sup: sup,
+                    sub: sub}),
+            nextPos);
+    } else if (sup) {
+        return new ParseResult(
+            new ParseNode("sup", {base: nucleusNode, sup: sup}),
+            nextPos);
+    } else if (sub) {
+        return new ParseResult(
+            new ParseNode("sub", {base: nucleusNode, sub: sub}),
+            nextPos);
     } else {
-        return null;
+        return nucleus;
     }
 }
 

@@ -27,6 +27,10 @@ var makeSpan = function(className, children) {
 };
 
 var buildGroup = function(style, color, group, prev) {
+    if (!group) {
+        return makeSpan();
+    }
+
     if (group.type === "mathord") {
         return makeSpan("mord" + color, [mathit(group.value)]);
     } else if (group.type === "textord") {
