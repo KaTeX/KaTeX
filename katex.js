@@ -209,6 +209,7 @@ var charLookup = {
     "\\varrho": "\u03f1",
     "\\varsigma": "\u03c2",
     "\\varphi": "\u03c6",
+
     "\\Gamma": "\u0393",
     "\\Delta": "\u0394",
     "\\Theta": "\u0398",

@@ -203,7 +203,18 @@ var copyFuncs = {
         "textord",
         "\\angle",
         "\\infty",
-        "\\prime"
+        "\\prime",
+        "\\Gamma",
+        "\\Delta",
+        "\\Theta",
+        "\\Lambda",
+        "\\Xi",
+        "\\Pi",
+        "\\Sigma",
+        "\\Upsilon",
+        "\\Phi",
+        "\\Psi",
+        "\\Omega"
     ],
     "mathord": [
         "mathord",
@@ -236,18 +247,7 @@ var copyFuncs = {
         "\\varpi",
         "\\varrho",
         "\\varsigma",
-        "\\varphi",
-        "\\Gamma",
-        "\\Delta",
-        "\\Theta",
-        "\\Lambda",
-        "\\Xi",
-        "\\Pi",
-        "\\Sigma",
-        "\\Upsilon",
-        "\\Phi",
-        "\\Psi",
-        "\\Omega"
+        "\\varphi"
     ],
     "bin": [
         "bin",
