@@ -201,6 +201,7 @@ var colorFuncs = [
 var copyFuncs = {
     "textord": [
         "textord",
+        "\\$",
         "\\angle",
         "\\infty",
         "\\prime",
