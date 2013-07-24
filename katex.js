@@ -244,6 +244,7 @@ var clearNode = function(node) {
 };
 
 var process = function(toParse, baseNode) {
+    clearNode(baseNode);
     var tree = parseTree(toParse);
 
     var style = Style.TEXT;
@@ -251,7 +252,6 @@ var process = function(toParse, baseNode) {
     var span = makeSpan(style.cls(), expression);
     var katexNode = makeSpan("katex", [span]);
 
-    clearNode(baseNode);
     baseNode.appendChild(katexNode);
 };
 
