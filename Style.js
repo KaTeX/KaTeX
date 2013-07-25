@@ -27,13 +27,13 @@ Style.prototype.cls = function() {
     return sizeNames[this.size] + (this.cramped ? " cramped" : " uncramped");
 };
 
-var D   = 0;
-var Dc  = 1;
-var T   = 2;
-var Tc  = 3;
-var S   = 4;
-var Sc  = 5;
-var SS  = 6;
+var D = 0;
+var Dc = 1;
+var T = 2;
+var Tc = 3;
+var S = 4;
+var Sc = 5;
+var SS = 6;
 var SSc = 7;
 
 var sizeNames = [
@@ -61,5 +61,5 @@ var fracDen = [Tc, Tc, Sc, Sc, SSc, SSc, SSc, SSc];
 
 module.exports = {
     DISPLAY: styles[D],
-    TEXT: styles[T],
+    TEXT: styles[T]
 };

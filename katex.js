@@ -10,7 +10,7 @@ var buildExpression = function(style, color, expression, prev) {
         var group = expression[i];
         groups.push(buildGroup(style, color, group, prev));
         prev = group;
-    };
+    }
     return groups;
 };
 

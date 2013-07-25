@@ -14,18 +14,18 @@ function LexResult(type, text, position) {
 
 // "normal" types of tokens
 var normals = [
-    [/^[/|@."`0-9]/, 'textord'],
-    [/^[a-zA-Z]/, 'mathord'],
-    [/^[*+-]/, 'bin'],
-    [/^[=<>]/, 'rel'],
-    [/^[,;]/, 'punct'],
+    [/^[/|@."`0-9]/, "textord"],
+    [/^[a-zA-Z]/, "mathord"],
+    [/^[*+-]/, "bin"],
+    [/^[=<>]/, "rel"],
+    [/^[,;]/, "punct"],
     [/^'/, "'"],
-    [/^\^/, '^'],
-    [/^_/, '_'],
-    [/^{/, '{'],
-    [/^}/, '}'],
-    [/^[(\[]/, 'open'],
-    [/^[)\]?!]/, 'close']
+    [/^\^/, "^"],
+    [/^_/, "_"],
+    [/^{/, "{"],
+    [/^}/, "}"],
+    [/^[(\[]/, "open"],
+    [/^[)\]?!]/, "close"]
 ];
 
 // Build a regex to easily parse the functions
@@ -42,7 +42,7 @@ Lexer.prototype.lex = function(pos) {
 
     // If there's no more input to parse, return an EOF token
     if (input.length === 0) {
-        return new LexResult('EOF', null, pos);
+        return new LexResult("EOF", null, pos);
     }
 
     var match;

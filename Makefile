@@ -5,7 +5,7 @@ compress: build/katex.min.js
 	@printf "Minified, gzipped size: "
 	@gzip -c $^ | wc -c
 
-build/katex.js: katex.js Parser.js Lexer.js
+build/katex.js: katex.js $(wildcard *.js)
 	./node_modules/.bin/browserify $< --standalone katex > $@
 
 build/katex.min.js: build/katex.js

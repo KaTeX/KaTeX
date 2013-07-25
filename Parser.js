@@ -46,7 +46,7 @@ Parser.prototype.parseInput = function(pos) {
     var expression = this.parseExpression(pos);
     // If we succeeded, make sure there's an EOF at the end
     var EOF = this.lexer.lex(expression.position);
-    expect(EOF, 'EOF');
+    expect(EOF, "EOF");
     return expression;
 };
 

@@ -15,4 +15,4 @@ var contains = Array.prototype.indexOf ? fastContains : slowContains;
 
 module.exports = {
     contains: contains
-}
+};
