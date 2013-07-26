@@ -86,6 +86,10 @@ var buildGroup = function(style, color, group, prev) {
     } else if (group.type === "close") {
         return makeSpan("mclose" + color, [textit(group.value)]);
     } else if (group.type === "frac") {
+        if (utils.isSafari) {
+            throw new ParseError("KaTeX fractions don't work in Safari");
+        }
+
         var fstyle = style;
         if (group.value.size === "dfrac") {
             fstyle = Style.DISPLAY;
@@ -244,10 +248,6 @@ var clearNode = function(node) {
 };
 
 var process = function(toParse, baseNode) {
-    if (utils.isSafari) {
-        throw new ParseError("KaTeX doesn't work on Safari");
-    }
-
     clearNode(baseNode);
     var tree = parseTree(toParse);
 
