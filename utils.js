@@ -13,6 +13,17 @@ function slowContains(list, elem) {
 
 var contains = Array.prototype.indexOf ? fastContains : slowContains;
 
+function isSafari() {
+    var userAgent = navigator.userAgent.toLowerCase();
+
+    // Steal these regexes from jQuery migrate for browser detection
+    var webkit = /(webkit)[ \/]([\w.]+)/.exec(userAgent);
+    var chrome = /(chrome)[ \/]([\w.]+)/.exec(userAgent);
+
+    return webkit && !chrome;
+}
+
 module.exports = {
-    contains: contains
+    contains: contains,
+    isSafari: isSafari()
 };

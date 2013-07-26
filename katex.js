@@ -244,6 +244,10 @@ var clearNode = function(node) {
 };
 
 var process = function(toParse, baseNode) {
+    if (utils.isSafari) {
+        throw new ParseError("KaTeX doesn't work on Safari");
+    }
+
     clearNode(baseNode);
     var tree = parseTree(toParse);
 
