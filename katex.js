@@ -152,7 +152,8 @@ var buildGroup = function(style, color, group, prev) {
     } else if (group.type === "namedfn") {
         return makeSpan("mop" + color, [textit(group.value.slice(1))]);
     } else {
-        throw "Lex error: Got group of unknown type: '" + group.type + "'";
+        throw new ParseError(
+            "Lex error: Got group of unknown type: '" + group.type + "'");
     }
 };
 

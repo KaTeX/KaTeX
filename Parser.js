@@ -130,7 +130,7 @@ Parser.prototype.parseAtom = function(pos) {
         var node;
         if ((node = this.parseSuperscript(nextPos))) {
             if (sup) {
-                throw "Parse error: Double superscript";
+                throw new ParseError("Parse error: Double superscript");
             }
             nextPos = node.position;
             sup = node.result;
@@ -138,7 +138,7 @@ Parser.prototype.parseAtom = function(pos) {
         }
         if ((node = this.parseSubscript(nextPos))) {
             if (sub) {
-                throw "Parse error: Double subscript";
+                throw new ParseError("Parse error: Double subscript");
             }
             nextPos = node.position;
             sub = node.result;
