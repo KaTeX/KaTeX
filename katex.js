@@ -86,8 +86,9 @@ var buildGroup = function(style, color, group, prev) {
     } else if (group.type === "close") {
         return makeSpan("mclose" + color, [textit(group.value)]);
     } else if (group.type === "frac") {
-        if (utils.isSafari) {
-            throw new ParseError("KaTeX fractions don't work in Safari");
+        if (utils.isBuggyWebKit) {
+            throw new ParseError(
+                    "KaTeX fractions don't work in WebKit <= 537.1");
         }
 
         var fstyle = style;

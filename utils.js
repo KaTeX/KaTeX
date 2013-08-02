@@ -13,17 +13,37 @@ function slowContains(list, elem) {
 
 var contains = Array.prototype.indexOf ? fastContains : slowContains;
 
-function isSafari() {
+function isBuggyWebKit() {
     var userAgent = navigator.userAgent.toLowerCase();
 
-    // Steal these regexes from jQuery migrate for browser detection
-    var webkit = /(webkit)[ \/]([\w.]+)/.exec(userAgent);
-    var chrome = /(chrome)[ \/]([\w.]+)/.exec(userAgent);
+    var webkit = (/applewebkit\/(\d+)\.(\d+)/).exec(userAgent);
+    if (!webkit) {
+        return false;
+    }
 
-    return webkit && !chrome;
+    var major = +webkit[1];
+    var minor = +webkit[2];
+
+    // 537.1 is last buggy, according to Chrome's bisect-builds.py which says:
+    //
+    // You are probably looking for a change made after 137695 (known bad), but
+    // no later than 137702 (first known good).
+    // CHANGELOG URL:
+    //   http://build.chromium.org/f/chromium/perf/dashboard/ui/changelog.html?url=/trunk/src&range=137695%3A137702
+    //
+    // Downloading these two builds:
+    //   http://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac/137695/chrome-mac.zip
+    //   http://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac/137702/chrome-mac.zip
+    // verifies this claim. The respective WebKit versions (r117232 and
+    // r117456) both are called 537.1 so let's throw out 537.1 as well as
+    // everything older.
+    //
+    // The responsible WebKit changeset appears to be this one:
+    //   http://trac.webkit.org/changeset/117339/
+    return major < 537 || (major == 537 && minor <= 1);
 }
 
 module.exports = {
     contains: contains,
-    isSafari: isSafari()
+    isBuggyWebKit: isBuggyWebKit()
 };
