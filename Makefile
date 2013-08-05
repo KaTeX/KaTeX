@@ -27,8 +27,8 @@ copy-perseus: build
 	cp -R build/katex.js static/katex.css static/fonts ../perseus/lib/katex/
 
 copy-khan-exercises: build
-	cp build/katex.js ../exercises/utils/katex.js
-	cp -R static/katex.css static/fonts ../exercises/css/
+	cp build/katex.js ../exercises/local-only/katex/
+	cp -R static/katex.css static/fonts ../exercises/local-only/katex/
 
 serve:
 	node server.js
