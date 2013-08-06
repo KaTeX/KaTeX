@@ -43,7 +43,26 @@ function isBuggyWebKit() {
     return major < 537 || (major == 537 && minor <= 1);
 }
 
+var setTextContent;
+
+var testNode = document.createElement("span");
+if ("textContent" in testNode) {
+    setTextContent = function(node, text) {
+        node.textContent = text;
+    };
+} else {
+    setTextContent = function(node, text) {
+        node.innerText = text;
+    };
+}
+
+function clearNode(node) {
+    setTextContent(node, "");
+}
+
 module.exports = {
     contains: contains,
-    isBuggyWebKit: isBuggyWebKit()
+    isBuggyWebKit: isBuggyWebKit(),
+    setTextContent: setTextContent,
+    clearNode: clearNode
 };
