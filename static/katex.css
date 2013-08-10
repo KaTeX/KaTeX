@@ -165,3 +165,21 @@ big parens
 .katex .green { color: #28ae7b; }
 .katex .gray { color: gray; }
 .katex .purple { color: #9d38bd; }
+
+.katex .katex-logo .a {
+    font-size: 0.75em;
+    margin-left: -0.32em;
+    position: relative;
+    top: -0.2em;
+}
+.katex .katex-logo .t {
+    margin-left: -0.23em;
+}
+.katex .katex-logo .e {
+    margin-left: -0.1667em;
+    position: relative;
+    top: 0.2155em;
+}
+.katex .katex-logo .x {
+    margin-left: -0.125em;
+}

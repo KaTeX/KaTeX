@@ -3,6 +3,8 @@ var Style = require("./Style");
 var parseTree = require("./parseTree");
 var utils = require("./utils");
 
+var ParseError = require("./ParseError");
+
 function Options(style, color) {
     this.style = style;
     this.color = color;
@@ -197,6 +199,16 @@ var groupTypes = {
 
     namedfn: function(group, options, prev) {
         return makeSpan("mop" + options.color, [textit(group.value.slice(1))]);
+    },
+
+    katex: function(group, options, prev) {
+        return makeSpan("katex-logo", [
+            makeSpan("k", [textit("K")]),
+            makeSpan("a", [textit("A")]),
+            makeSpan("t", [textit("T")]),
+            makeSpan("e", [textit("E")]),
+            makeSpan("x", [textit("X")])
+        ]);
     }
 };
 

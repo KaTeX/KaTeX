@@ -383,6 +383,11 @@ Parser.prototype.parseNucleus = function(pos) {
             throw new ParseError("Parse error: Expected numerator after '" +
                 nucleus.type + "'");
         }
+    } else if (nucleus.type === "\\KaTeX") {
+        return new ParseResult(
+            new ParseNode("katex", null),
+            nucleus.position
+        );
     } else if (funcToType[nucleus.type]) {
         // Otherwise if this is a no-argument function, find the type it
         // corresponds to in the map and return
