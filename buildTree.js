@@ -57,7 +57,8 @@ var groupTypes = {
             var atoms = prevAtom.value.value;
             prevAtom = atoms[atoms.length - 1];
         }
-        if (!prev || utils.contains(["bin", "open", "rel"], prevAtom.type)) {
+        if (!prev || utils.contains(["bin", "open", "rel", "op", "punct"],
+                prevAtom.type)) {
             group.type = "ord";
             className = "mord";
         }
