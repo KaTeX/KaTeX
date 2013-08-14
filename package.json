@@ -4,7 +4,7 @@
     "devDependencies": {
         "browserify": "~2.23.1",
         "express": "~3.3.3",
-        "less": "~1.4.2"
-        "through": "~2.3.4",
+        "less": "~1.4.2",
+        "through": "~2.3.4"
     }
 }
