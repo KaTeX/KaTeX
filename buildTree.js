@@ -444,10 +444,9 @@ var makeText = function(value, style) {
     if (metrics) {
         var textNode = new domTree.textNode(value, metrics.height,
             metrics.depth);
-        if (metrics.italicCorrection > 0) {
+        if (metrics.italic > 0) {
             var span = makeSpan([], [textNode]);
-
-            span.style["margin-right"] = metrics.italicCorrection + "em";
+            span.style["margin-right"] = metrics.italic + "em";
 
             return span;
         } else {
@@ -461,11 +460,11 @@ var makeText = function(value, style) {
 };
 
 var mathit = function(value) {
-    return makeSpan(["mathit"], [makeText(value, "italic")]);
+    return makeSpan(["mathit"], [makeText(value, "math-italic")]);
 };
 
 var mathrm = function(value) {
-    return makeText(value, "roman");
+    return makeText(value, "main-regular");
 };
 
 var buildTree = function(tree) {
