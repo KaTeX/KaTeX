@@ -43,10 +43,11 @@ def read_pl(pl_file):
 
 
 class Metric:
-    def __init__(self, char, height, depth):
+    def __init__(self, char, height, depth, italic_correction):
         self.char = char
         self.height = float(height) / 1000
         self.depth = float(depth) / 1000
+        self.italic_correction = float(italic_correction) / 1000
 
     def __repr__(self):
         return "Char {0} ({1:.3f}+{2:.3f})".format(
@@ -281,6 +282,7 @@ def read_metrics(pl_file, metrics):
 
             char_height = 0
             char_depth = 0
+            italic_correction = 0
 
             for metric in elem[3:]:
                 if metric[0] == "comment":
@@ -289,9 +291,12 @@ def read_metrics(pl_file, metrics):
                     char_height = int(metric[2])
                 elif metric[0] == "CHARDP":
                     char_depth = int(metric[2])
+                elif metric[0] == "CHARIC":
+                    italic_correction = int(metric[2])
 
             metrics[map_style].append(
-                    Metric(map_char, char_height, char_depth))
+                    Metric(map_char, char_height, char_depth,
+                            italic_correction))
 
 
 def print_metrics(metrics):
@@ -302,6 +307,9 @@ def print_metrics(metrics):
             },
             "depth": {
                 metric.char: metric.depth for metric in metric_list
+            },
+            "italicCorrection": {
+                metric.char: metric.italic_correction for metric in metric_list
             },
         } for style, metric_list in metrics.iteritems()
     }
@@ -323,6 +331,6 @@ if __name__ == "__main__":
     for metric_file in file_map:
         read_metrics(metric_file, metrics)
 
-    metrics["roman"].append(Metric(u'\u00a0', 0, 0))
+    metrics["roman"].append(Metric(u'\u00a0', 0, 0, 0))
 
     print_metrics(metrics)

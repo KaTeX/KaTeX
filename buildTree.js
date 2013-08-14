@@ -442,7 +442,17 @@ var makeText = function(value, style) {
     var metrics = fontMetrics.getCharacterMetrics(value, style);
 
     if (metrics) {
-        return new domTree.textNode(value, metrics.height, metrics.depth);
+        var textNode = new domTree.textNode(value, metrics.height,
+            metrics.depth);
+        if (metrics.italicCorrection > 0) {
+            var span = makeSpan([], [textNode]);
+
+            span.style["margin-right"] = metrics.italicCorrection + "em";
+
+            return span;
+        } else {
+            return textNode;
+        }
     } else {
         console && console.warn("No character metrics for '" + value +
             "' in style '" + style + "'");
