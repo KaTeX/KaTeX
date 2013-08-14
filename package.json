@@ -3,10 +3,8 @@
     "version": "0.0.1",
     "devDependencies": {
         "browserify": "~2.23.1",
-        "ebnf-parser": "~0.1.5",
         "express": "~3.3.3",
-        "lex-parser": "~0.1.2",
-        "jison": "~0.4.6",
-        "through": "~2.3.4"
+        "less": "~1.4.2"
+        "through": "~2.3.4",
     }
 }

@@ -38,6 +38,7 @@ app.get("/test/katex-tests.js", function(req, res, next) {
 });
 
 app.use(express.static(path.join(__dirname, "static")));
+app.use(express.static(path.join(__dirname, "build")));
 app.use("/test", express.static(path.join(__dirname, "test")));
 
 app.use(function(err, req, res, next) {

@@ -1,0 +1,289 @@
+@import "fonts/fonts.css";
+
+/*
+things to do:
+\sum, \int, \lim
+\sqrt
+big parens
+*/
+
+.katex {
+    display: inline-block;
+    font: normal 1.21em katex_main;
+    line-height: 1.2;
+    white-space: nowrap;
+
+    .base {
+        display: inline-block;
+    }
+
+    .strut {
+        display: inline-block;
+
+        &.bottom {
+            vertical-align: top;
+        }
+    }
+
+    .mathit {
+        font-family: katex_math;
+        font-style: italic;
+    }
+
+    @thinspace: 0.16667em;
+    @mediumspace: 0.22222em;
+    @thickspace: 0.27778em;
+
+    .textstyle {
+        > .mord {
+            & + .mord {}
+            & + .mop { margin-left: @thinspace; }
+            & + .mbin { margin-left: @mediumspace; }
+            & + .mrel { margin-left: @thickspace; }
+            & + .mopen {}
+            & + .mclose {}
+            & + .mpunct {}
+            & + .minner { margin-left: @thinspace; }
+        }
+
+        > .mop {
+            & + .mord { margin-left: @thinspace; }
+            & + .mop { margin-left: @thinspace; }
+            & + .mbin {}
+            & + .mrel { margin-left: @thickspace; }
+            & + .mopen {}
+            & + .mclose {}
+            & + .mpunct {}
+            & + .minner { margin-left: @thinspace; }
+        }
+
+        > .mbin {
+            & + .mord { margin-left: @mediumspace; }
+            & + .mop { margin-left: @mediumspace; }
+            & + .mbin {}
+            & + .mrel {}
+            & + .mopen { margin-left: @mediumspace; }
+            & + .mclose {}
+            & + .mpunct {}
+            & + .minner { margin-left: @mediumspace; }
+        }
+
+        > .mrel {
+            & + .mord { margin-left: @thickspace; }
+            & + .mop { margin-left: @thickspace; }
+            & + .mbin {}
+            & + .mrel {}
+            & + .mopen { margin-left: @thickspace; }
+            & + .mclose {}
+            & + .mpunct {}
+            & + .minner { margin-left: @thickspace; }
+        }
+
+        > .mopen {
+            & + .mord {}
+            & + .mop {}
+            & + .mbin {}
+            & + .mrel {}
+            & + .mopen {}
+            & + .mclose {}
+            & + .mpunct {}
+            & + .minner {}
+        }
+
+        > .mclose {
+            & + .mord {}
+            & + .mop { margin-left: @thinspace; }
+            & + .mbin { margin-left: @mediumspace; }
+            & + .mrel { margin-left: @thickspace; }
+            & + .mopen {}
+            & + .mclose {}
+            & + .mpunct {}
+            & + .minner { margin-left: @thinspace; }
+        }
+
+        > .mpunct {
+            & + .mord { margin-left: @thinspace; }
+            & + .mop { margin-left: @thinspace; }
+            & + .mbin {}
+            & + .mrel { margin-left: @thinspace; }
+            & + .mopen { margin-left: @thinspace; }
+            & + .mclose { margin-left: @thinspace; }
+            & + .mpunct { margin-left: @thinspace; }
+            & + .minner { margin-left: @thinspace; }
+        }
+
+        > .minner {
+            & + .mord { margin-left: @thinspace; }
+            & + .mop { margin-left: @thinspace; }
+            & + .mbin { margin-left: @mediumspace; }
+            & + .mrel { margin-left: @thickspace; }
+            & + .mopen { margin-left: @thinspace; }
+            & + .mclose {}
+            & + .mpunct { margin-left: @thinspace; }
+            & + .minner { margin-left: @thinspace; }
+        }
+    }
+
+    .mord {
+        & + .mop { margin-left: @thinspace; }
+    }
+
+    .mop {
+        & + .mord { margin-left: @thinspace; }
+        & + .mop { margin-left: @thinspace; }
+    }
+
+    .mclose {
+        & + .mop { margin-left: @thinspace; }
+    }
+
+    .minner {
+        & + .mop { margin-left: @thinspace; }
+    }
+
+    .reset-textstyle.textstyle { font-size: 1em; }
+    .reset-textstyle.scriptstyle { font-size: 0.66667em; }
+    .reset-textstyle.scriptscriptstyle { font-size: 0.5em; }
+
+    .reset-scriptstyle.textstyle { font-size: 1.5em; }
+    .reset-scriptstyle.scriptstyle { font-size: 1em; }
+    .reset-scriptstyle.scriptscriptstyle { font-size: 0.75em; }
+
+    .reset-scriptscriptstyle.textstyle { font-size: 2em; }
+    .reset-scriptscriptstyle.scriptstyle { font-size: 1.5em; }
+    .reset-scriptscriptstyle.scriptscriptstyle { font-size: 1em; }
+
+    .baseline-align-hack-outer {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .baseline-align-hack-middle {
+        display: block;
+        height: 0;
+    }
+
+    .baseline-align-hack-inner {
+        display: inline-block;
+    }
+
+    .msupsub {
+        .baseline-align-hack-outer;
+        text-align: left;
+
+        .msup,
+        .msub {
+            .baseline-align-hack-middle;
+            position: relative;
+
+            > span {
+                .baseline-align-hack-inner;
+            }
+        }
+    }
+
+    .mfrac {
+        .baseline-align-hack-outer;
+
+        .mfracnum,
+        .mfracmid,
+        .mfracden {
+            .baseline-align-hack-middle;
+            position: relative;
+            text-align: center;
+
+            > span {
+                .baseline-align-hack-inner;
+            }
+        }
+
+        .mfracmid > span {
+            width: 100%;
+
+            &:before {
+                border-bottom-style: solid;
+                border-bottom-width: 1px;
+                content: "";
+                display: block;
+            }
+
+            &:after {
+                border-bottom-style: solid;
+                border-bottom-width: 0.05em;
+                content: "";
+                display: block;
+                margin-top: -1px;
+            }
+        }
+    }
+
+    .mspace {
+        display: inline-block;
+
+        &.thinspace {
+            width: @thinspace;
+        }
+
+        &.mediumspace {
+            width: @mediumspace;
+        }
+
+        &.thickspace {
+            width: @thickspace;
+        }
+
+        &.quad {
+            width: 1em;
+        }
+
+        &.qquad {
+            width: 2em;
+        }
+    }
+
+    .llap,
+    .rlap {
+        width: 0;
+        position: relative;
+
+        > span {
+            position: absolute;
+        }
+    }
+
+    .llap > span {
+        right: 0;
+    }
+
+    .rlap > span {
+        left: 0;
+    }
+
+    .blue { color: #6495ed; }
+    .orange { color: #ffa500; }
+    .pink { color: #ff00af; }
+    .red { color: #df0030; }
+    .green { color: #28ae7b; }
+    .gray { color: gray; }
+    .purple { color: #9d38bd; }
+
+    .katex-logo {
+        .a {
+            font-size: 0.75em;
+            margin-left: -0.32em;
+            position: relative;
+            top: -0.2em;
+        }
+        .t {
+            margin-left: -0.23em;
+        }
+        .e {
+            margin-left: -0.1667em;
+            position: relative;
+            top: 0.2155em;
+        }
+        .x {
+            margin-left: -0.125em;
+        }
+    }
+}

@@ -1,22 +1,11 @@
+var Options = require("./Options");
+var ParseError = require("./ParseError");
 var Style = require("./Style");
 
+var domTree = require("./domTree");
+var fontMetrics = require("./fontMetrics");
 var parseTree = require("./parseTree");
 var utils = require("./utils");
-
-var ParseError = require("./ParseError");
-
-function Options(style, color) {
-    this.style = style;
-    this.color = color;
-}
-
-Options.prototype.withStyle = function(style) {
-    return new Options(style, this.color);
-}
-
-Options.prototype.withColor = function(color) {
-    return new Options(this.style, color);
-}
 
 var buildExpression = function(expression, options, prev) {
     var groups = [];
@@ -28,26 +17,58 @@ var buildExpression = function(expression, options, prev) {
     return groups;
 };
 
-var makeSpan = function(className, children) {
-    var span = document.createElement("span");
-    span.className = className || "";
+var makeSpan = function(classes, children) {
+    var height = 0;
+    var depth = 0;
 
     if (children) {
         for (var i = 0; i < children.length; i++) {
-            span.appendChild(children[i]);
+            if (children[i].height > height) {
+                height = children[i].height;
+            }
+            if (children[i].depth > depth) {
+                depth = children[i].depth;
+            }
         }
     }
 
-    return span;
+    return new domTree.span(classes, children, height, depth);
+};
+
+var groupToType = {
+    mathord: "mord",
+    textord: "mord",
+    bin: "mbin",
+    rel: "mrel",
+    open: "mopen",
+    close: "mclose",
+    frac: "minner",
+    spacing: "mord",
+    punct: "mpunct",
+    ordgroup: "mord",
+    namedfn: "mop",
+    katex: "mord",
+};
+
+var getTypeOfGroup = function(group) {
+    if (group.type === "supsub") {
+        return getTypeOfGroup(group.value.base);
+    } else if (group.type === "llap" || group.type === "rlap") {
+        return getTypeOfGroup(group.value);
+    } else if (group.type === "color") {
+        return getTypeOfGroup(group.value.value);
+    } else {
+        return groupToType[group.type];
+    }
 };
 
 var groupTypes = {
     mathord: function(group, options, prev) {
-        return makeSpan("mord" + options.color, [mathit(group.value)]);
+        return makeSpan(["mord", options.color], [mathit(group.value)]);
     },
 
     textord: function(group, options, prev) {
-        return makeSpan("mord" + options.color, [textit(group.value)]);
+        return makeSpan(["mord", options.color], [mathrm(group.value)]);
     },
 
     bin: function(group, options, prev) {
@@ -62,66 +83,106 @@ var groupTypes = {
             group.type = "ord";
             className = "mord";
         }
-        return makeSpan(className + options.color, [textit(group.value)]);
+        return makeSpan([className, options.color], [mathrm(group.value)]);
     },
 
     rel: function(group, options, prev) {
-        return makeSpan("mrel" + options.color, [textit(group.value)]);
-    },
-
-    sup: function(group, options, prev) {
-        var sup = makeSpan("msup " + options.style.cls(), [
-            makeSpan(options.style.sup().cls(), [
-                buildGroup(group.value.sup,
-                    options.withStyle(options.style.sup()))
-            ])
-        ]);
-        return makeSpan("mord", [
-            buildGroup(group.value.base, options), sup
-        ]);
-    },
-
-    sub: function(group, options, prev) {
-        var sub = makeSpan("msub " + options.style.cls(), [
-            makeSpan(options.style.sub().cls(), [
-                buildGroup(group.value.sub,
-                    options.withStyle(options.style.sub()))
-            ])
-        ]);
-        return makeSpan("mord", [
-            buildGroup(group.value.base, options), sub
-        ]);
+        return makeSpan(["mrel", options.color], [mathrm(group.value)]);
     },
 
     supsub: function(group, options, prev) {
-        var sup = makeSpan("msup " + options.style.sup().cls(), [
-            buildGroup(group.value.sup, options.withStyle(options.style.sup()))
-        ]);
-        var sub = makeSpan("msub " + options.style.sub().cls(), [
-            buildGroup(group.value.sub, options.withStyle(options.style.sub()))
-        ]);
+        var base = buildGroup(group.value.base, options.reset());
 
-        var supsub = makeSpan("msupsub " + options.style.cls(), [sup, sub]);
+        if (group.value.sup) {
+            var sup = buildGroup(group.value.sup,
+                    options.withStyle(options.style.sup()));
+            var supmid = makeSpan(
+                    [options.style.reset(), options.style.sup().cls()], [sup]);
+            var supwrap = makeSpan(["msup", options.style.reset()], [supmid]);
+        }
 
-        return makeSpan("mord", [
-            buildGroup(group.value.base, options), supsub
-        ]);
+        if (group.value.sub) {
+            var sub = buildGroup(group.value.sub,
+                    options.withStyle(options.style.sub()));
+            var submid = makeSpan(
+                    [options.style.reset(), options.style.sub().cls()], [sub]);
+            var subwrap = makeSpan(["msub"], [submid]);
+        }
+
+        var u = base.height - fontMetrics.metrics.supDrop;
+        var v = base.depth + fontMetrics.metrics.subDrop;
+
+        var p;
+        if (options.style === Style.DISPLAY) {
+            p = fontMetrics.metrics.sup1;
+        } else if (options.style.cramped) {
+            p = fontMetrics.metrics.sup3;
+        } else {
+            p = fontMetrics.metrics.sup2;
+        }
+
+        var supsub;
+
+        if (!group.value.sup) {
+            v = Math.max(v, fontMetrics.metrics.sub1,
+                sub.height - 0.8 * fontMetrics.metrics.xHeight);
+
+            subwrap.style.top = v + "em";
+
+            subwrap.depth = subwrap.depth + v;
+            subwrap.height = 0;
+
+            supsub = makeSpan(["msupsub"], [subwrap]);
+        } else if (!group.value.sub) {
+            u = Math.max(u, p,
+                sup.depth + 0.25 * fontMetrics.metrics.xHeight);
+
+            supwrap.style.top = -u + "em";
+
+            supwrap.height = supwrap.height + u;
+            supwrap.depth = 0;
+
+            supsub = makeSpan(["msupsub"], [supwrap]);
+        } else {
+            u = Math.max(u, p,
+                sup.depth + 0.25 * fontMetrics.metrics.xHeight);
+            v = Math.max(v, fontMetrics.metrics.sub2);
+
+            var theta = fontMetrics.metrics.defaultRuleThickness;
+
+            if ((u - sup.depth) - (sub.height - v) < 4 * theta) {
+                v = 4 * theta - (u - sup.depth) + sub.height;
+                var psi = 0.8 * fontMetrics.metrics.xHeight - (u - sup.depth);
+                if (psi > 0) {
+                    u += psi;
+                    v -= psi;
+                }
+            }
+
+            supwrap.style.top = -u + "em";
+            subwrap.style.top = v + "em";
+
+            supwrap.height = supwrap.height + u;
+            supwrap.depth = 0;
+
+            subwrap.height = 0;
+            subwrap.depth = subwrap.depth + v;
+
+            supsub = makeSpan(["msupsub"], [supwrap, subwrap]);
+        }
+
+        return makeSpan([getTypeOfGroup(group.value.base)], [base, supsub]);
     },
 
     open: function(group, options, prev) {
-        return makeSpan("mopen" + options.color, [textit(group.value)]);
+        return makeSpan(["mopen", options.color], [mathrm(group.value)]);
     },
 
     close: function(group, options, prev) {
-        return makeSpan("mclose" + options.color, [textit(group.value)]);
+        return makeSpan(["mclose", options.color], [mathrm(group.value)]);
     },
 
     frac: function(group, options, prev) {
-        if (utils.isBuggyWebKit) {
-            throw new ParseError(
-                    "KaTeX fractions don't work in WebKit <= 537.1");
-        }
-
         var fstyle = options.style;
         if (group.value.size === "dfrac") {
             fstyle = Style.DISPLAY;
@@ -132,39 +193,86 @@ var groupTypes = {
         var nstyle = fstyle.fracNum();
         var dstyle = fstyle.fracDen();
 
-        var numer = makeSpan("mfracnum " + nstyle.cls(), [
-            makeSpan("", [
-                buildGroup(group.value.numer, options.withStyle(nstyle))
-            ])
-        ]);
-        var mid = makeSpan("mfracmid");
-        var denom = makeSpan("mfracden " + dstyle.cls(), [
-            makeSpan("", [
-                buildGroup(group.value.denom, options.withStyle(dstyle))
-            ])
-        ]);
+        var numer = buildGroup(group.value.numer, options.withStyle(nstyle));
+        var numernumer = makeSpan([fstyle.reset(), nstyle.cls()], [numer]);
+        var numerrow = makeSpan(["mfracnum"], [numernumer]);
 
-        return makeSpan("minner mfrac " + fstyle.cls() + options.color, [
-            numer, mid, denom
+        var mid = makeSpan(["mfracmid"], [makeSpan()]);
+
+        var denom = buildGroup(group.value.denom, options.withStyle(dstyle));
+        var denomdenom = makeSpan([fstyle.reset(), dstyle.cls()], [denom])
+        var denomrow = makeSpan(["mfracden"], [denomdenom]);
+
+        var theta = fontMetrics.metrics.defaultRuleThickness;
+
+        var u, v, phi;
+        if (fstyle.size === Style.DISPLAY.size) {
+            u = fontMetrics.metrics.num1;
+            v = fontMetrics.metrics.denom1;
+            phi = 3 * theta;
+        } else {
+            u = fontMetrics.metrics.num2;
+            v = fontMetrics.metrics.denom2;
+            phi = theta;
+        }
+
+        var a = fontMetrics.metrics.axisHeight;
+
+        if ((u - numer.depth) - (a + 0.5 * theta) < phi) {
+            u += phi - ((u - numer.depth) - (a + 0.5 * theta));
+        }
+
+        if ((a - 0.5 * theta) - (denom.height - v) < phi) {
+            v += phi - ((a - 0.5 * theta) - (denom.height - v));
+        }
+
+        numerrow.style.top = -u + "em";
+        mid.style.top = -(a - 0.5 * theta) + "em";
+        denomrow.style.top = v + "em";
+
+        numerrow.height = numerrow.height + u;
+        numerrow.depth = 0;
+
+        denomrow.height = 0;
+        denomrow.depth = denomrow.depth + v;
+
+        var frac = makeSpan([], [numerrow, mid, denomrow]);
+
+        frac.height *= fstyle.sizeMultiplier / options.style.sizeMultiplier;
+        frac.depth *= fstyle.sizeMultiplier / options.style.sizeMultiplier;
+
+        var wrap = makeSpan([options.style.reset(), fstyle.cls()], [frac]);
+
+        return makeSpan(["minner", options.color], [
+            makeSpan(["mfrac"], [wrap])
         ]);
     },
 
     color: function(group, options, prev) {
-        var frag = document.createDocumentFragment();
         var els = buildExpression(
             group.value.value,
-            options.withColor(" " + group.value.color),
+            options.withColor(group.value.color),
             prev
         );
+
+        var height = 0;
+        var depth = 0;
+
         for (var i = 0; i < els.length; i++) {
-            frag.appendChild(els[i]);
+            if (els[i].height > height) {
+                var height = els[i].height;
+            }
+            if (els[i].depth > depth) {
+                var depth = els[i].depth;
+            }
         }
-        return frag;
+
+        return new domTree.documentFragment(els, height, depth);
     },
 
     spacing: function(group, options, prev) {
         if (group.value === "\\ " || group.value === "\\space") {
-            return makeSpan("mord mspace", [textit(group.value)]);
+            return makeSpan(["mord", "mspace"], [mathrm(group.value)]);
         } else {
             var spacingClassMap = {
                 "\\qquad": "qquad",
@@ -174,42 +282,55 @@ var groupTypes = {
                 "\\,": "thinspace"
             };
 
-            return makeSpan("mord mspace " + spacingClassMap[group.value]);
+            return makeSpan(["mord", "mspace", spacingClassMap[group.value]]);
         }
     },
 
     llap: function(group, options, prev) {
-        var inner = makeSpan("", [buildGroup(group.value, options)]);
-        return makeSpan("llap " + options.style.cls(), [inner]);
+        var inner = makeSpan([], [buildGroup(group.value, options.reset())]);
+        return makeSpan(["llap", options.style.cls()], [inner]);
     },
 
     rlap: function(group, options, prev) {
-        var inner = makeSpan("", [buildGroup(group.value, options)]);
-        return makeSpan("rlap " + options.style.cls(), [inner]);
+        var inner = makeSpan([], [buildGroup(group.value, options.reset())]);
+        return makeSpan(["rlap", options.style.cls()], [inner]);
     },
 
     punct: function(group, options, prev) {
-        return makeSpan("mpunct" + options.color, [textit(group.value)]);
+        return makeSpan(["mpunct", options.color], [mathrm(group.value)]);
     },
 
     ordgroup: function(group, options, prev) {
-        return makeSpan("mord " + options.style.cls(),
-            buildExpression(group.value, options)
+        return makeSpan(["mord", options.style.cls()],
+            buildExpression(group.value, options.reset())
         );
     },
 
     namedfn: function(group, options, prev) {
-        return makeSpan("mop" + options.color, [textit(group.value.slice(1))]);
+        var chars = [];
+        for (var i = 1; i < group.value.length; i++) {
+            chars.push(mathrm(group.value[i]));
+        }
+
+        return makeSpan(["mop", options.color], chars);
     },
 
     katex: function(group, options, prev) {
-        return makeSpan("katex-logo", [
-            makeSpan("k", [textit("K")]),
-            makeSpan("a", [textit("A")]),
-            makeSpan("t", [textit("T")]),
-            makeSpan("e", [textit("E")]),
-            makeSpan("x", [textit("X")])
-        ]);
+        var k = makeSpan(["k"], [mathrm("K")]);
+        var a = makeSpan(["a"], [mathrm("A")]);
+
+        a.height = (a.height + 0.2) * 0.75;
+        a.depth = (a.height - 0.2) * 0.75;
+
+        var t = makeSpan(["t"], [mathrm("T")]);
+        var e = makeSpan(["e"], [mathrm("E")]);
+
+        e.height = (e.height - 0.2155);
+        e.depth = (e.depth + 0.2155);
+
+        var x = makeSpan(["x"], [mathrm("X")]);
+
+        return makeSpan(["katex-logo", options.color], [k, a, t, e, x]);
     }
 };
 
@@ -219,7 +340,22 @@ var buildGroup = function(group, options, prev) {
     }
 
     if (groupTypes[group.type]) {
-        return groupTypes[group.type](group, options, prev);
+        var groupNode = groupTypes[group.type](group, options, prev);
+
+        if (options.style !== options.parentStyle) {
+            var multiplier = options.style.sizeMultiplier /
+                    options.parentStyle.sizeMultiplier;
+
+            if (multiplier > 1) {
+                throw new ParseError(
+                    "Error: Can't go from small to large style");
+            }
+
+            groupNode.height *= multiplier;
+            groupNode.depth *= multiplier;
+        }
+
+        return groupNode;
     } else {
         throw new ParseError(
             "Lex error: Got group of unknown type: '" + group.type + "'");
@@ -268,7 +404,7 @@ var charLookup = {
     "\\mu": "\u03bc",
     "\\nu": "\u03bd",
     "\\xi": "\u03be",
-    "\\omicron": "\u03bf",
+    "\\omicron": "o",
     "\\pi": "\u03c0",
     "\\rho": "\u03c1",
     "\\sigma": "\u03c3",
@@ -298,33 +434,45 @@ var charLookup = {
     "\\Omega": "\u03a9"
 };
 
-var textit = function(value) {
+var makeText = function(value, style) {
     if (value in charLookup) {
         value = charLookup[value];
     }
-    return document.createTextNode(value);
-};
 
-var mathit = function(value) {
-    return makeSpan("mathit", [textit(value)]);
-};
+    var metrics = fontMetrics.getCharacterMetrics(value, style);
 
-var clearNode = function(node) {
-    if ("textContent" in node) {
-        node.textContent = "";
+    if (metrics) {
+        return new domTree.textNode(value, metrics.height, metrics.depth);
     } else {
-        node.innerText = "";
+        console && console.warn("No character metrics for '" + value +
+            "' in style '" + style + "'");
+        return new domTree.textNode(value, 0, 0);
     }
 };
 
+var mathit = function(value) {
+    return makeSpan(["mathit"], [makeText(value, "italic")]);
+};
+
+var mathrm = function(value) {
+    return makeText(value, "roman");
+};
+
 var buildTree = function(tree) {
+    // Setup the default options
     var options = new Options(Style.TEXT, "");
 
     var expression = buildExpression(tree, options);
-    var span = makeSpan(options.style.cls(), expression);
-    var katexNode = makeSpan("katex", [span]);
+    var span = makeSpan(["base", options.style.cls()], expression);
+    var topStrut = makeSpan(["strut"]);
+    var bottomStrut = makeSpan(["strut", "bottom"]);
 
-    return katexNode;
+    topStrut.style.height = span.height + "em";
+    bottomStrut.style.height = (span.height + span.depth) + "em";
+
+    var katexNode = makeSpan(["katex"], [topStrut, bottomStrut, span]);
+
+    return katexNode.toDOM();
 };
 
 module.exports = buildTree;

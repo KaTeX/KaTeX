@@ -1,5 +1,5 @@
 .PHONY: build setup copy serve clean
-build: setup build/katex.js
+build: setup build/katex.js build/katex.less.css
 
 setup:
 	npm install
@@ -13,6 +13,9 @@ build/katex.js: katex.js $(wildcard *.js)
 
 build/katex.min.js: build/katex.js
 	uglifyjs --mangle < $< > $@
+
+build/katex.less.css: static/katex.less
+	./node_modules/.bin/lessc $< > $@
 
 serve:
 	node server.js

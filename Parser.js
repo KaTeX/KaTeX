@@ -147,18 +147,10 @@ Parser.prototype.parseAtom = function(pos) {
         break;
     }
 
-    if (sup && sub) {
+    if (sup || sub) {
         return new ParseResult(
             new ParseNode("supsub", {base: nucleusNode, sup: sup,
                     sub: sub}),
-            nextPos);
-    } else if (sup) {
-        return new ParseResult(
-            new ParseNode("sup", {base: nucleusNode, sup: sup}),
-            nextPos);
-    } else if (sub) {
-        return new ParseResult(
-            new ParseNode("sub", {base: nucleusNode, sub: sub}),
             nextPos);
     } else {
         return nucleus;

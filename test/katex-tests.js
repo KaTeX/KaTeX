@@ -182,19 +182,19 @@ describe("A subscript and superscript parser", function() {
         }).not.toThrow();
     });
 
-    it("should produce sups for superscript", function() {
+    it("should produce supsubs for superscript", function() {
         var parse = parseTree("x^2")[0];
 
-        expect(parse.type).toBe("sup");
+        expect(parse.type).toBe("supsub");
         expect(parse.value.base).toBeDefined();
         expect(parse.value.sup).toBeDefined();
         expect(parse.value.sub).toBeUndefined();
     });
 
-    it("should produce subs for subscript", function() {
+    it("should produce supsubs for subscript", function() {
         var parse = parseTree("x_3")[0];
 
-        expect(parse.type).toBe("sub");
+        expect(parse.type).toBe("supsub");
         expect(parse.value.base).toBeDefined();
         expect(parse.value.sub).toBeDefined();
         expect(parse.value.sup).toBeUndefined();

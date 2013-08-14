@@ -1,7 +1,8 @@
-var parseTree = require("./parseTree");
-var buildTree = require("./buildTree");
-var utils = require("./utils");
 var ParseError = require("./ParseError");
+
+var buildTree = require("./buildTree");
+var parseTree = require("./parseTree");
+var utils = require("./utils");
 
 var process = function(toParse, baseNode) {
     var tree = parseTree(toParse);
