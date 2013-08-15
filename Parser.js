@@ -265,10 +265,12 @@ var copyFuncs = {
         "\\leftarrow",
         "\\leq",
         "\\neq",
-        "\\ngeq",
-        "\\nleq",
         "\\rightarrow",
         "\\to"
+    ],
+    "amsrel": [
+        "\\ngeq",
+        "\\nleq"
     ],
     "spacing": [
         "\\ ",

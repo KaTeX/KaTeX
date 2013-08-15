@@ -40,6 +40,7 @@ var groupToType = {
     textord: "mord",
     bin: "mbin",
     rel: "mrel",
+    amsrel: "mrel",
     open: "mopen",
     close: "mclose",
     frac: "minner",
@@ -88,6 +89,10 @@ var groupTypes = {
 
     rel: function(group, options, prev) {
         return makeSpan(["mrel", options.color], [mathrm(group.value)]);
+    },
+
+    amsrel: function(group, options, prev) {
+        return makeSpan(["mrel", options.color], [amsrm(group.value)]);
     },
 
     supsub: function(group, options, prev) {
@@ -465,6 +470,10 @@ var mathit = function(value) {
 
 var mathrm = function(value) {
     return makeText(value, "main-regular");
+};
+
+var amsrm = function(value) {
+    return makeSpan(["amsrm"], [makeText(value, "ams-regular")]);
 };
 
 var buildTree = function(tree) {
