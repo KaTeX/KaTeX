@@ -1,3 +1,4 @@
+var buildTree = require("../buildTree");
 var parseTree = require("../parseTree");
 
 describe("A parser", function() {
@@ -282,6 +283,26 @@ describe("A subscript and superscript parser", function() {
 
         expect(function() {
             parseTree("x_{3-2}^2");
+        }).not.toThrow();
+    });
+});
+
+describe("A subscript and superscript tree-builder", function() {
+    it("should not fail when there is no nucleus", function() {
+        expect(function() {
+            buildTree(parseTree("^3"));
+        }).not.toThrow();
+
+        expect(function() {
+            buildTree(parseTree("_2"));
+        }).not.toThrow();
+
+        expect(function() {
+            buildTree(parseTree("^3_2"));
+        }).not.toThrow();
+
+        expect(function() {
+            buildTree(parseTree("_2^3"));
         }).not.toThrow();
     });
 });

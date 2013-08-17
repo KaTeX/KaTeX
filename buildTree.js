@@ -52,7 +52,10 @@ var groupToType = {
 };
 
 var getTypeOfGroup = function(group) {
-    if (group.type === "supsub") {
+    if (group == null) {
+        // Like when typesetting $^3$
+        return groupToType.ord;
+    } else if (group.type === "supsub") {
         return getTypeOfGroup(group.value.base);
     } else if (group.type === "llap" || group.type === "rlap") {
         return getTypeOfGroup(group.value);
