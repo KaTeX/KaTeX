@@ -339,7 +339,30 @@ var groupTypes = {
         var x = makeSpan(["x"], [mathrm("X")]);
 
         return makeSpan(["katex-logo", options.color], [k, a, t, e, x]);
+    },
+
+    sizing: function(group, options, prev) {
+        var inner = buildGroup(group.value.value,
+                options.withSize(group.value.size), prev);
+
+        return makeSpan(
+            ["reset-" + options.size, group.value.size,
+                getTypeOfGroup(group.value.value)],
+            [inner]);
     }
+};
+
+var sizingMultiplier = {
+    size1: 0.5,
+    size2: 0.7,
+    size3: 0.8,
+    size4: 0.9,
+    size5: 1.0,
+    size6: 1.2,
+    size7: 1.44,
+    size8: 1.73,
+    size9: 2.07,
+    size10: 2.49
 };
 
 var buildGroup = function(group, options, prev) {
@@ -357,6 +380,24 @@ var buildGroup = function(group, options, prev) {
             if (multiplier > 1) {
                 throw new ParseError(
                     "Error: Can't go from small to large style");
+            }
+
+            groupNode.height *= multiplier;
+            groupNode.depth *= multiplier;
+        }
+
+        if (options.size !== options.parentSize) {
+            var multiplier = sizingMultiplier[options.size] /
+                    sizingMultiplier[options.parentSize];
+
+            if (multiplier > 1) {
+                throw new ParseError(
+                    "Error: Can't go from small to large size");
+            }
+
+            if (options.depth > 1) {
+                throw new ParseError(
+                    "Error: Can't use sizing outside of the root node");
             }
 
             groupNode.height *= multiplier;
@@ -481,7 +522,7 @@ var amsrm = function(value) {
 
 var buildTree = function(tree) {
     // Setup the default options
-    var options = new Options(Style.TEXT, "");
+    var options = new Options(Style.TEXT, "size5", "");
 
     var expression = buildExpression(tree, options);
     var span = makeSpan(["base", options.style.cls()], expression);

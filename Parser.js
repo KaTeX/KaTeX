@@ -183,6 +183,12 @@ var colorFuncs = [
     "\\blue", "\\orange", "\\pink", "\\red", "\\green", "\\gray", "\\purple"
 ];
 
+// A list of 1-argument sizing functions
+var sizeFuncs = [
+    "\\tiny", "\\scriptsize", "\\footnotesize", "\\small", "\\normalsize",
+    "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge"
+];
+
 // A map of elements that don't have arguments, and should simply be placed
 // into a group depending on their type. The keys are the groups that items can
 // be placed in, and the values are lists of element types that should be
@@ -339,6 +345,20 @@ Parser.prototype.parseNucleus = function(pos) {
             return new ParseResult(
                 new ParseNode("color",
                     {color: nucleus.type.slice(1), value: atoms}),
+                group.position);
+        } else {
+            throw new ParseError(
+                "Expected group after '" + nucleus.text + "'");
+        }
+    } else if (utils.contains(sizeFuncs, nucleus.type)) {
+        // If this is a color function, parse its argument and return
+        var group = this.parseGroup(nucleus.position);
+        if (group) {
+            return new ParseResult(
+                new ParseNode("sizing", {
+                    size: "size" + (sizeFuncs.indexOf(nucleus.type) + 1),
+                    value: group.result
+                }),
                 group.position);
         } else {
             throw new ParseError(
