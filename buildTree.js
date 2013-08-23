@@ -346,7 +346,7 @@ var groupTypes = {
                 options.withSize(group.value.size), prev);
 
         return makeSpan(
-            ["reset-" + options.size, group.value.size,
+            ["sizing", "reset-" + options.size, group.value.size,
                 getTypeOfGroup(group.value.value)],
             [inner]);
     }
