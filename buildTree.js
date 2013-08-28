@@ -438,6 +438,7 @@ var charLookup = {
     "\\space": "\u00a0",
     "\\times": "\u00d7",
     "\\to": "\u2192",
+    "\\triangle": "\u25b3",
 
     "\\alpha": "\u03b1",
     "\\beta": "\u03b2",

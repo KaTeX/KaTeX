@@ -203,6 +203,7 @@ var copyFuncs = {
         "\\angle",
         "\\infty",
         "\\prime",
+        "\\triangle",
         "\\Gamma",
         "\\Delta",
         "\\Theta",
