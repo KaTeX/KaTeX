@@ -268,6 +268,7 @@ var copyFuncs = {
     ],
     "rel": [
         "rel",
+        "\\approx",
         "\\geq",
         "\\gets",
         "\\leftarrow",
