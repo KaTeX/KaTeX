@@ -535,7 +535,9 @@ var buildTree = function(tree) {
     topStrut.style.height = span.height + "em";
     bottomStrut.style.height = (span.height + span.depth) + "em";
 
-    var katexNode = makeSpan(["katex"], [topStrut, bottomStrut, span]);
+    var katexNode = makeSpan(["katex"], [
+        makeSpan(["katex-inner"], [topStrut, bottomStrut, span])
+    ]);
 
     return katexNode.toDOM();
 };

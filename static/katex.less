@@ -6,10 +6,16 @@ big parens
 */
 
 .katex {
-    display: inline-block;
     font: normal 1.21em katex_main;
     line-height: 1.2;
     white-space: nowrap;
+
+    .katex-inner {
+        // Making .katex inline-block allows line breaks before and after,
+        // which is undesireable ("to $x$,"). Instead, adjust the .katex-inner
+        // style and put nowrap on the inline .katex element.
+        display: inline-block;
+    }
 
     .base {
         display: inline-block;
