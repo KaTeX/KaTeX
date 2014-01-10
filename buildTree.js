@@ -426,6 +426,7 @@ var charLookup = {
     "\\div": "\u00f7",
     "\\geq": "\u2265",
     "\\gets": "\u2190",
+    "\\in": "\u2208",
     "\\infty": "\u221e",
     "\\leftarrow": "\u2190",
     "\\leq": "\u2264",

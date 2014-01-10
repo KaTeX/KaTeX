@@ -271,6 +271,7 @@ var copyFuncs = {
         "\\approx",
         "\\geq",
         "\\gets",
+        "\\in",
         "\\leftarrow",
         "\\leq",
         "\\neq",
