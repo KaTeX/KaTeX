@@ -269,11 +269,14 @@ var copyFuncs = {
     "rel": [
         "rel",
         "\\approx",
+        "\\ge",
         "\\geq",
         "\\gets",
         "\\in",
         "\\leftarrow",
+        "\\le",
         "\\leq",
+        "\\ne",
         "\\neq",
         "\\rightarrow",
         "\\to"
