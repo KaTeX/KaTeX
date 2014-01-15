@@ -1,17 +1,38 @@
-function fastContains(list, elem) {
-    return list.indexOf(elem) !== -1;
-}
-
-function slowContains(list, elem) {
-    for (var i = 0; i < list.length; i++) {
-        if (list[i] === elem) {
-            return true;
+// From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
+if (!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function (searchElement, fromIndex) {
+        if ( this === undefined || this === null ) {
+            throw new TypeError( '"this" is null or not defined' );
         }
-    }
-    return false;
+
+        var length = this.length >>> 0; // Hack to convert object.length to a UInt32
+
+        fromIndex = +fromIndex || 0;
+
+        if (Math.abs(fromIndex) === Infinity) {
+            fromIndex = 0;
+        }
+
+        if (fromIndex < 0) {
+            fromIndex += length;
+            if (fromIndex < 0) {
+                fromIndex = 0;
+            }
+        }
+
+        for (;fromIndex < length; fromIndex++) {
+            if (this[fromIndex] === searchElement) {
+                return fromIndex;
+            }
+        }
+
+        return -1;
+    };
 }
 
-var contains = Array.prototype.indexOf ? fastContains : slowContains;
+var contains = function(list, elem) {
+    return list.indexOf(elem) !== -1;
+};
 
 var setTextContent;
 
