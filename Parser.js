@@ -260,10 +260,12 @@ var copyFuncs = {
     ],
     "open": [
         "open",
+        "\\langle",
         "\\lvert"
     ],
     "close": [
         "close",
+        "\\rangle",
         "\\rvert"
     ],
     "rel": [
