@@ -287,7 +287,8 @@ var groupTypes = {
                 "\\quad": "quad",
                 "\\;": "thickspace",
                 "\\:": "mediumspace",
-                "\\,": "thinspace"
+                "\\,": "thinspace",
+                "\\!": "negativethinspace"
             };
 
             return makeSpan(["mord", "mspace", spacingClassMap[group.value]]);

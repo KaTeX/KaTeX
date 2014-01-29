@@ -232,6 +232,10 @@ big parens
     .mspace {
         display: inline-block;
 
+        &.negativethinspace {
+            margin-left: -@thinspace;
+        }        
+
         &.thinspace {
             width: @thinspace;
         }

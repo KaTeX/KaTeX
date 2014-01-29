@@ -289,6 +289,7 @@ var copyFuncs = {
         "\\nleq"
     ],
     "spacing": [
+        "\\!",
         "\\ ",
         "\\,",
         "\\:",
