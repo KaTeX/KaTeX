@@ -271,6 +271,7 @@ var copyFuncs = {
     "rel": [
         "rel",
         "\\approx",
+        "\\cong",
         "\\ge",
         "\\geq",
         "\\gets",
@@ -360,7 +361,7 @@ Parser.prototype.parseNucleus = function(pos) {
                 "Expected group after '" + nucleus.text + "'");
         }
     } else if (utils.contains(sizeFuncs, nucleus.type)) {
-        // If this is a color function, parse its argument and return
+        // If this is a size function, parse its argument and return
         var group = this.parseGroup(nucleus.position);
         if (group) {
             return new ParseResult(

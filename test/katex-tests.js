@@ -63,7 +63,7 @@ describe("A bin parser", function() {
 });
 
 describe("A rel parser", function() {
-    var expression = "=<>\\leq\\geq\\neq\\nleq\\ngeq";
+    var expression = "=<>\\leq\\geq\\neq\\nleq\\ngeq\\cong";
 
     it("should not fail", function() {
         expect(function() {

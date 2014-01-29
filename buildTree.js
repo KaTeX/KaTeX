@@ -423,6 +423,7 @@ var charLookup = {
     "\\cdot": "\u22c5",
     "\\circ": "\u2218",
     "\\colon": ":",
+    "\\cong": "\u2245",
     "\\div": "\u00f7",
     "\\ge": "\u2265",
     "\\geq": "\u2265",
