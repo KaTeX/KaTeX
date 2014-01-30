@@ -31,7 +31,7 @@ serve:
 
 pdiff:
 	@printf "Creating new pdiff image...\n"
-	@webkit2png http://localhost:7936/test/pdiff.html -F --transparent -D build -o pdiff >/dev/null 2>&1
+	@webkit2png http://localhost:7936/test/pdiff.html -F --transparent -D build -o pdiff
 	@mv build/pdiff-full.png build/pdiff.png
 	@printf "Comparing to reference pdiff image...\n"
 	@node test/pdiff.js
