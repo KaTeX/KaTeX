@@ -294,6 +294,7 @@ var copyFuncs = {
         "\\,",
         "\\:",
         "\\;",
+        "\\enspace",
         "\\qquad",
         "\\quad",
         "\\space"

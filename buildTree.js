@@ -285,6 +285,7 @@ var groupTypes = {
             var spacingClassMap = {
                 "\\qquad": "qquad",
                 "\\quad": "quad",
+                "\\enspace": "enspace",
                 "\\;": "thickspace",
                 "\\:": "mediumspace",
                 "\\,": "thinspace",
