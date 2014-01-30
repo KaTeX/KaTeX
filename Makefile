@@ -1,8 +1,10 @@
 .PHONY: build setup copy serve clean
-build: setup build/katex.js build/katex.less.css
+build: setup build/katex.js build/katex.less.css pdiff
 
 setup:
 	npm install
+	brew install webkit2png
+	brew install graphicsmagick
 
 compress: build/katex.min.js
 	@printf "Minified, gzipped size: "
@@ -19,6 +21,13 @@ build/katex.less.css: static/katex.less
 
 serve:
 	node server.js
+
+pdiff:
+	@printf "Creating new pdiff image...\n"
+	@webkit2png http://localhost:7936/test/pdiff.html -F --transparent -D build -o pdiff >/dev/null 2>&1
+	@mv build/pdiff-full.png build/pdiff.png
+	@printf "Comparing to reference pdiff image...\n"
+	@node test/pdiff.js
 
 clean:
 	rm -rf build/*
