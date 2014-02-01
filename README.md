@@ -15,3 +15,7 @@ To run locally
 Perceptual diff
 ---------------
     make pdiff
+
+License
+-------
+[MIT License](http://opensource.org/licenses/MIT)
