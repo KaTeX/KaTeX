@@ -1,0 +1,32 @@
+[BasicTest]
+url=http://localhost:7936/test/huxley/test.html#a
+
+[FractionTest]
+url=http://localhost:7936/test/huxley/test.html#\dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}
+
+[NestedFractions]
+url=http://localhost:7936/test/huxley/test.html#\dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}{\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
+
+[Exponents]
+url=http://localhost:7936/test/huxley/test.html#a^{a^a_a}_{a^a_a}
+
+[Colors]
+url=http://localhost:7936/test/huxley/test.html#\blue{a}\green{b}\red{c}
+
+[GreekLetters]
+url=http://localhost:7936/test/huxley/test.html#\alpha\beta\gamma\omega
+
+[Baseline]
+url=http://localhost:7936/test/huxley/test.html#a+b-c\cdot d/e
+
+[Spacing]
+url=http://localhost:7936/test/huxley/test.html#[-1][1-1]1=1(=1)\lvert a\rvert
+
+[Functions]
+url=http://localhost:7936/test/huxley/test.html#\sin\cos\tan\ln\log
+
+[Lap]
+url=http://localhost:7936/test/huxley/test.html#ab\llap{f}cd\rlap{g}h
+
+[KaTeX]
+url=http://localhost:7936/test/huxley/test.html#\KaTeX
