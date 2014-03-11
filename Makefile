@@ -1,10 +1,17 @@
+UNAME=$(shell uname)
+
 .PHONY: build setup copy serve clean
-build: setup build/katex.js build/katex.less.css pdiff
+build: setup build/katex.js build/katex.less.css
+ifeq ($(UNAME),Darwin)
+build: pdiff
+endif
 
 setup:
 	npm install
+ifeq ($(UNAME),Darwin)
 	brew install webkit2png
 	brew install graphicsmagick
+endif
 
 compress: build/katex.min.js
 	@printf "Minified, gzipped size: "
