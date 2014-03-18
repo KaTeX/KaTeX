@@ -507,7 +507,7 @@ var makeText = function(value, style) {
             metrics.depth);
         if (metrics.italic > 0) {
             var span = makeSpan([], [textNode]);
-            span.style["margin-right"] = metrics.italic + "em";
+            span.style.marginRight = metrics.italic + "em";
 
             return span;
         } else {
