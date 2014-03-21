@@ -1,7 +1,9 @@
+var fs = require("fs");
 var path = require("path");
 
 var browserify = require("browserify");
 var express = require("express");
+var less = require("less");
 
 var app = express();
 
@@ -19,6 +21,23 @@ app.get("/katex.js", function(req, res, next) {
     stream.on("end", function() {
         res.setHeader("Content-Type", "text/javascript");
         res.send(body);
+    });
+});
+
+app.get("/katex.css", function(req, res, next) {
+    fs.readFile("static/katex.less", {encoding: "utf8"}, function(err, data) {
+        if (err) {
+            next(err);
+            return;
+        }
+        less.render(data, function(err, css) {
+            if (err) {
+                next(err);
+                return;
+            }
+            res.setHeader("Content-Type", "text/css");
+            res.send(css);
+        });
     });
 });
 
