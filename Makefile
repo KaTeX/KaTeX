@@ -9,8 +9,8 @@ endif
 setup:
 	npm install
 ifeq ($(UNAME),Darwin)
-	brew install webkit2png
-	brew install graphicsmagick
+	which webkit2png || brew install webkit2png
+	which gm || brew install graphicsmagick
 endif
 
 compress: build/katex.min.js
