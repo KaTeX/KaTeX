@@ -6,17 +6,27 @@
     <link href="/fonts/fonts.css" rel="stylesheet" type="text/css">
     <link href="/katex.less.css" rel="stylesheet" type="text/css">
     <style type="text/css">
-      #math {
+      #math, #pre, #post {
         font-size: 4em;
       }
     </style>
   </head>
   <body>
-    <div id="math"></div>
+    <span id="pre"></span>
+    <span id="math"></span>
+    <span id="post"></span>
     <script type="text/javascript">
-      var hash = window.location.hash.slice(1);
+      var query = {};
+      var queryVars = window.location.search.slice(1).split("&");
+      console.log(queryVars);
+      for (var i = 0; i < queryVars.length; i++) {
+        var split = queryVars[i].split("=");
+        query[split[0]] = decodeURIComponent(split[1]);
+      }
       var mathNode = document.getElementById("math");
-      katex.process(hash, mathNode);
+      katex.process(query["m"], mathNode);
+      document.getElementById("pre").innerHTML = query["pre"] || "";
+      document.getElementById("post").innerHTML = query["post"] || "";
     </script>
   </body>
 </html>

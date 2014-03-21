@@ -163,7 +163,6 @@ big parens
 
     .baseline-align-hack-outer() {
         display: inline-block;
-        vertical-align: top;
     }
 
     .baseline-align-hack-middle() {
@@ -184,13 +183,18 @@ big parens
         margin-left: 0.05em;
 
         .msup,
-        .msub {
+        .msub,
+        .fix-ie {
             .baseline-align-hack-middle;
             position: relative;
 
             > span {
                 .baseline-align-hack-inner;
             }
+        }
+
+        .fix-ie {
+            display: inline-block;
         }
     }
 
@@ -199,7 +203,8 @@ big parens
 
         .mfracnum,
         .mfracmid,
-        .mfracden {
+        .mfracden,
+        .fix-ie {
             .baseline-align-hack-middle;
             position: relative;
             text-align: center;
@@ -207,6 +212,10 @@ big parens
             > span {
                 .baseline-align-hack-inner;
             }
+        }
+
+        .fix-ie {
+            display: inline-block;
         }
 
         .mfracmid > span {

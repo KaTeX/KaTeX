@@ -130,6 +130,7 @@ var groupTypes = {
         }
 
         var supsub;
+        var fixIE = makeSpan(["fix-ie"], []);
 
         if (!group.value.sup) {
             v = Math.max(v, fontMetrics.metrics.sub1,
@@ -140,7 +141,7 @@ var groupTypes = {
             subwrap.depth = subwrap.depth + v;
             subwrap.height = 0;
 
-            supsub = makeSpan(["msupsub"], [subwrap]);
+            supsub = makeSpan(["msupsub"], [subwrap, fixIE]);
         } else if (!group.value.sub) {
             u = Math.max(u, p,
                 sup.depth + 0.25 * fontMetrics.metrics.xHeight);
@@ -150,7 +151,7 @@ var groupTypes = {
             supwrap.height = supwrap.height + u;
             supwrap.depth = 0;
 
-            supsub = makeSpan(["msupsub"], [supwrap]);
+            supsub = makeSpan(["msupsub"], [supwrap, fixIE]);
         } else {
             u = Math.max(u, p,
                 sup.depth + 0.25 * fontMetrics.metrics.xHeight);
@@ -176,7 +177,7 @@ var groupTypes = {
             subwrap.height = 0;
             subwrap.depth = subwrap.depth + v;
 
-            supsub = makeSpan(["msupsub"], [supwrap, subwrap]);
+            supsub = makeSpan(["msupsub"], [supwrap, subwrap, fixIE]);
         }
 
         return makeSpan([getTypeOfGroup(group.value.base)], [base, supsub]);
@@ -244,7 +245,9 @@ var groupTypes = {
         denomrow.height = 0;
         denomrow.depth = denomrow.depth + v;
 
-        var frac = makeSpan([], [numerrow, mid, denomrow]);
+        var fixIE = makeSpan(["fix-ie"], []);
+
+        var frac = makeSpan([], [numerrow, mid, denomrow, fixIE]);
 
         frac.height *= fstyle.sizeMultiplier / options.style.sizeMultiplier;
         frac.depth *= fstyle.sizeMultiplier / options.style.sizeMultiplier;
@@ -379,11 +382,6 @@ var buildGroup = function(group, options, prev) {
             var multiplier = options.style.sizeMultiplier /
                     options.parentStyle.sizeMultiplier;
 
-            if (multiplier > 1) {
-                throw new ParseError(
-                    "Error: Can't go from small to large style");
-            }
-
             groupNode.height *= multiplier;
             groupNode.depth *= multiplier;
         }
@@ -391,11 +389,6 @@ var buildGroup = function(group, options, prev) {
         if (options.size !== options.parentSize) {
             var multiplier = sizingMultiplier[options.size] /
                     sizingMultiplier[options.parentSize];
-
-            if (multiplier > 1) {
-                throw new ParseError(
-                    "Error: Can't go from small to large size");
-            }
 
             if (options.depth > 1) {
                 throw new ParseError(

@@ -1,32 +1,38 @@
 [BasicTest]
-url=http://localhost:7936/test/huxley/test.html#a
+url=http://localhost:7936/test/huxley/test.html?m=a
 
 [FractionTest]
-url=http://localhost:7936/test/huxley/test.html#\dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}
+url=http://localhost:7936/test/huxley/test.html?m=\dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}
 
 [NestedFractions]
-url=http://localhost:7936/test/huxley/test.html#\dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}{\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
+url=http://localhost:7936/test/huxley/test.html?m=\dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}{\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
 
 [Exponents]
-url=http://localhost:7936/test/huxley/test.html#a^{a^a_a}_{a^a_a}
+url=http://localhost:7936/test/huxley/test.html?m=a^{a^a_a}_{a^a_a}
 
 [Colors]
-url=http://localhost:7936/test/huxley/test.html#\blue{a}\green{b}\red{c}
+url=http://localhost:7936/test/huxley/test.html?m=\blue{a}\green{b}\red{c}
 
 [GreekLetters]
-url=http://localhost:7936/test/huxley/test.html#\alpha\beta\gamma\omega
+url=http://localhost:7936/test/huxley/test.html?m=\alpha\beta\gamma\omega
 
 [Baseline]
-url=http://localhost:7936/test/huxley/test.html#a+b-c\cdot d/e
+url=http://localhost:7936/test/huxley/test.html?m=a+b-c\cdot d/e
 
 [Spacing]
-url=http://localhost:7936/test/huxley/test.html#[-1][1-1]1=1(=1)\lvert a\rvert
+url=http://localhost:7936/test/huxley/test.html?m=[-1][1-1]1%%3D1(%%3D1)\lvert a\rvert
 
 [Functions]
-url=http://localhost:7936/test/huxley/test.html#\sin\cos\tan\ln\log
+url=http://localhost:7936/test/huxley/test.html?m=\sin\cos\tan\ln\log
 
 [Lap]
-url=http://localhost:7936/test/huxley/test.html#ab\llap{f}cd\rlap{g}h
+url=http://localhost:7936/test/huxley/test.html?m=ab\llap{f}cd\rlap{g}h
+
+[Sizing]
+url=http://localhost:7936/test/huxley/test.html?m=\Huge{x}\LARGE{y}\normalsize{z}\scriptsize{w}
+
+[SizingBaseline]
+url=http://localhost:7936/test/huxley/test.html?m=\tiny{a+b}a+b\Huge{a+b}&pre=x&post=M
 
 [KaTeX]
-url=http://localhost:7936/test/huxley/test.html#\KaTeX
+url=http://localhost:7936/test/huxley/test.html?m=\KaTeX

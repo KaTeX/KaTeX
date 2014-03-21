@@ -423,3 +423,27 @@ describe("A frac parser", function() {
         expect(tfracParse.value.denom).toBeDefined();
     });
 });
+
+describe("A sizing parser", function() {
+    var sizeExpression = "\\Huge{x}\\small{x}";
+    var nestedSizeExpression = "\\Huge{\\small{x}}";
+
+    it("should not fail", function() {
+        expect(function() {
+            parseTree(sizeExpression);
+        }).not.toThrow();
+    });
+
+    it("should produce a sizing node", function() {
+        var parse = parseTree(sizeExpression)[0];
+
+        expect(parse.type).toMatch("sizing");
+        expect(parse.value).toBeDefined();
+    });
+
+    it("should not parse a nested size expression", function() {
+        expect(function() {
+            parseExpression(nestedSizeExpression);
+        }).toThrow();
+    });
+});
