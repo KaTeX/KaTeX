@@ -6,6 +6,7 @@ var domTree = require("./domTree");
 var fontMetrics = require("./fontMetrics");
 var parseTree = require("./parseTree");
 var utils = require("./utils");
+var symbols = require("./symbols");
 
 var buildExpression = function(expression, options, prev) {
     var groups = [];
@@ -406,91 +407,9 @@ var buildGroup = function(group, options, prev) {
     }
 };
 
-var charLookup = {
-    "*": "\u2217",
-    "-": "\u2212",
-    "`": "\u2018",
-    "\\ ": "\u00a0",
-    "\\$": "$",
-    "\\%": "%",
-    "\\angle": "\u2220",
-    "\\approx": "\u2248",
-    "\\cdot": "\u22c5",
-    "\\circ": "\u2218",
-    "\\colon": ":",
-    "\\cong": "\u2245",
-    "\\div": "\u00f7",
-    "\\ge": "\u2265",
-    "\\geq": "\u2265",
-    "\\gets": "\u2190",
-    "\\in": "\u2208",
-    "\\infty": "\u221e",
-    "\\langle": "\u27e8",
-    "\\leftarrow": "\u2190",
-    "\\le": "\u2264",
-    "\\leq": "\u2264",
-    "\\lvert": "|",
-    "\\ne": "\u2260",
-    "\\neq": "\u2260",
-    "\\ngeq": "\u2271",
-    "\\nleq": "\u2270",
-    "\\pm": "\u00b1",
-    "\\prime": "\u2032",
-    "\\rangle": "\u27e9",
-    "\\rightarrow": "\u2192",
-    "\\rvert": "|",
-    "\\space": "\u00a0",
-    "\\times": "\u00d7",
-    "\\to": "\u2192",
-    "\\triangle": "\u25b3",
-
-    "\\alpha": "\u03b1",
-    "\\beta": "\u03b2",
-    "\\gamma": "\u03b3",
-    "\\delta": "\u03b4",
-    "\\epsilon": "\u03f5",
-    "\\zeta": "\u03b6",
-    "\\eta": "\u03b7",
-    "\\theta": "\u03b8",
-    "\\iota": "\u03b9",
-    "\\kappa": "\u03ba",
-    "\\lambda": "\u03bb",
-    "\\mu": "\u03bc",
-    "\\nu": "\u03bd",
-    "\\xi": "\u03be",
-    "\\omicron": "o",
-    "\\pi": "\u03c0",
-    "\\rho": "\u03c1",
-    "\\sigma": "\u03c3",
-    "\\tau": "\u03c4",
-    "\\upsilon": "\u03c5",
-    "\\phi": "\u03d5",
-    "\\chi": "\u03c7",
-    "\\psi": "\u03c8",
-    "\\omega": "\u03c9",
-    "\\varepsilon": "\u03b5",
-    "\\vartheta": "\u03d1",
-    "\\varpi": "\u03d6",
-    "\\varrho": "\u03f1",
-    "\\varsigma": "\u03c2",
-    "\\varphi": "\u03c6",
-
-    "\\Gamma": "\u0393",
-    "\\Delta": "\u0394",
-    "\\Theta": "\u0398",
-    "\\Lambda": "\u039b",
-    "\\Xi": "\u039e",
-    "\\Pi": "\u03a0",
-    "\\Sigma": "\u03a3",
-    "\\Upsilon": "\u03a5",
-    "\\Phi": "\u03a6",
-    "\\Psi": "\u03a8",
-    "\\Omega": "\u03a9"
-};
-
 var makeText = function(value, style) {
-    if (value in charLookup) {
-        value = charLookup[value];
+    if (symbols[value].replace) {
+        value = symbols[value].replace;
     }
 
     var metrics = fontMetrics.getCharacterMetrics(value, style);
@@ -518,11 +437,11 @@ var mathit = function(value) {
 };
 
 var mathrm = function(value) {
-    return makeText(value, "main-regular");
-};
-
-var amsrm = function(value) {
-    return makeSpan(["amsrm"], [makeText(value, "ams-regular")]);
+    if (symbols[value].font === "main") {
+        return makeText(value, "main-regular");
+    } else {
+        return makeSpan(["amsrm"], [makeText(value, "ams-regular")]);
+    }
 };
 
 var buildTree = function(tree) {

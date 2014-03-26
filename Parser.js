@@ -1,5 +1,6 @@
 var Lexer = require("./Lexer");
 var utils = require("./utils");
+var symbols = require("./symbols");
 
 var ParseError = require("./ParseError");
 
@@ -189,155 +190,13 @@ var sizeFuncs = [
     "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge"
 ];
 
-// A map of elements that don't have arguments, and should simply be placed
-// into a group depending on their type. The keys are the groups that items can
-// be placed in, and the values are lists of element types that should be
-// placed in those groups.
-//
-// For example, if the lexer returns something of type "colon", we should
-// return a node of type "punct"
-var copyFuncs = {
-    "textord": [
-        "textord",
-        "\\$",
-        "\\%",
-        "\\angle",
-        "\\infty",
-        "\\prime",
-        "\\triangle",
-        "\\Gamma",
-        "\\Delta",
-        "\\Theta",
-        "\\Lambda",
-        "\\Xi",
-        "\\Pi",
-        "\\Sigma",
-        "\\Upsilon",
-        "\\Phi",
-        "\\Psi",
-        "\\Omega"
-    ],
-    "mathord": [
-        "mathord",
-        "\\alpha",
-        "\\beta",
-        "\\gamma",
-        "\\delta",
-        "\\epsilon",
-        "\\zeta",
-        "\\eta",
-        "\\theta",
-        "\\iota",
-        "\\kappa",
-        "\\lambda",
-        "\\mu",
-        "\\nu",
-        "\\xi",
-        "\\omicron",
-        "\\pi",
-        "\\rho",
-        "\\sigma",
-        "\\tau",
-        "\\upsilon",
-        "\\phi",
-        "\\chi",
-        "\\psi",
-        "\\omega",
-        "\\varepsilon",
-        "\\vartheta",
-        "\\varpi",
-        "\\varrho",
-        "\\varsigma",
-        "\\varphi"
-    ],
-    "bin": [
-        "bin",
-        "\\cdot",
-        "\\circ",
-        "\\div",
-        "\\pm",
-        "\\times"
-    ],
-    "open": [
-        "open",
-        "\\langle",
-        "\\lvert"
-    ],
-    "close": [
-        "close",
-        "\\rangle",
-        "\\rvert"
-    ],
-    "rel": [
-        "rel",
-        "\\approx",
-        "\\cong",
-        "\\ge",
-        "\\geq",
-        "\\gets",
-        "\\in",
-        "\\leftarrow",
-        "\\le",
-        "\\leq",
-        "\\ne",
-        "\\neq",
-        "\\rightarrow",
-        "\\to"
-    ],
-    "amsrel": [
-        "\\ngeq",
-        "\\nleq"
-    ],
-    "spacing": [
-        "\\!",
-        "\\ ",
-        "\\,",
-        "\\:",
-        "\\;",
-        "\\enspace",
-        "\\qquad",
-        "\\quad",
-        "\\space"
-    ],
-    "punct": [
-        "punct",
-        "\\colon"
-    ],
-    "namedfn": [
-        "\\arcsin",
-        "\\arccos",
-        "\\arctan",
-        "\\arg",
-        "\\cos",
-        "\\cosh",
-        "\\cot",
-        "\\coth",
-        "\\csc",
-        "\\deg",
-        "\\dim",
-        "\\exp",
-        "\\hom",
-        "\\ker",
-        "\\lg",
-        "\\ln",
-        "\\log",
-        "\\sec",
-        "\\sin",
-        "\\sinh",
-        "\\tan",
-        "\\tanh"
-    ]
-};
-
-// Build a list of all of the different functions in the copyFuncs list, to
-// quickly check if the function should be interpreted by the map.
-var funcToType = {};
-for (var type in copyFuncs) {
-    for (var i = 0; i < copyFuncs[type].length; i++) {
-        var func = copyFuncs[type][i];
-        funcToType[func] = type;
-    }
-}
+// A list of math functions replaced by their names
+var namedFns = [
+    "\\arcsin", "\\arccos", "\\arctan", "\\arg", "\\cos", "\\cosh",
+    "\\cot", "\\coth", "\\csc", "\\deg", "\\dim", "\\exp", "\\hom",
+    "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin", "\\sinh",
+    "\\tan","\\tanh"
+];
 
 // Parses a "nucleus", which is either a single token from the tokenizer or a
 // function and its arguments
@@ -376,6 +235,11 @@ Parser.prototype.parseNucleus = function(pos) {
             throw new ParseError(
                 "Expected group after '" + nucleus.text + "'");
         }
+    } else if (utils.contains(namedFns, nucleus.type)) {
+        // If this is a named function, just return it plain
+        return new ParseResult(
+            new ParseNode("namedfn", nucleus.text),
+            nucleus.position);
     } else if (nucleus.type === "\\llap" || nucleus.type === "\\rlap") {
         // If this is an llap or rlap, parse its argument and return
         var group = this.parseGroup(nucleus.position);
@@ -410,15 +274,16 @@ Parser.prototype.parseNucleus = function(pos) {
                 nucleus.type + "'");
         }
     } else if (nucleus.type === "\\KaTeX") {
+        // If this is a KaTeX node, return the special katex result
         return new ParseResult(
             new ParseNode("katex", null),
             nucleus.position
         );
-    } else if (funcToType[nucleus.type]) {
+    } else if (symbols[nucleus.text]) {
         // Otherwise if this is a no-argument function, find the type it
-        // corresponds to in the map and return
+        // corresponds to in the symbols map
         return new ParseResult(
-            new ParseNode(funcToType[nucleus.type], nucleus.text),
+            new ParseNode(symbols[nucleus.text].group, nucleus.text),
             nucleus.position);
     } else {
         // Otherwise, we couldn't parse it
