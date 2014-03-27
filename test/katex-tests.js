@@ -534,3 +534,40 @@ describe("A color parser", function() {
         }).toThrow();
     });
 });
+
+describe("A tie parser", function() {
+    var mathTie = "a~b";
+    var textTie = "\\text{a~ b}";
+
+    it("should parse ties in math mode", function() {
+        expect(function() {
+            parseTree(mathTie);
+        }).not.toThrow();
+    });
+
+    it("should parse ties in text mode", function() {
+        expect(function() {
+            parseTree(textTie);
+        }).not.toThrow();
+    });
+
+    it("should produce spacing in math mode", function() {
+        var parse = parseTree(mathTie);
+
+        expect(parse[1].type).toMatch("spacing");
+    });
+
+    it("should produce spacing in text mode", function() {
+        var text = parseTree(textTie)[0];
+        var parse = text.value.value;
+
+        expect(parse[1].type).toMatch("spacing");
+    });
+
+    it("should not contract with spaces in text mode", function() {
+        var text = parseTree(textTie)[0];
+        var parse = text.value.value;
+
+        expect(parse[2].type).toMatch("spacing");
+    });
+});

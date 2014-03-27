@@ -20,7 +20,7 @@ url=http://localhost:7936/test/huxley/test.html?m=\alpha\beta\gamma\omega
 url=http://localhost:7936/test/huxley/test.html?m=a+b-c\cdot d/e
 
 [Spacing]
-url=http://localhost:7936/test/huxley/test.html?m=[-1][1-1]1%%3D1(%%3D1)\lvert a\rvert
+url=http://localhost:7936/test/huxley/test.html?m=[-1][1-1]1%%3D1(%%3D1)\lvert a\rvert~b
 
 [Functions]
 url=http://localhost:7936/test/huxley/test.html?m=\sin\cos\tan\ln\log
@@ -35,7 +35,7 @@ url=http://localhost:7936/test/huxley/test.html?m=\Huge{x}\LARGE{y}\normalsize{z
 url=http://localhost:7936/test/huxley/test.html?m=\tiny{a+b}a+b\Huge{a+b}&pre=x&post=M
 
 [Text]
-url=http://localhost:7936/test/huxley/test.html?m=\frac{a}{b}\text{c {ab} \ e}+fg
+url=http://localhost:7936/test/huxley/test.html?m=\frac{a}{b}\text{c~ {ab} \ e}+fg
 
 [KaTeX]
 url=http://localhost:7936/test/huxley/test.html?m=\KaTeX

@@ -317,13 +317,11 @@ var groupTypes = {
 
     spacing: function(group, options, prev) {
         if (group.value === "\\ " || group.value === "\\space" ||
-            group.value === " ") {
+            group.value === " " || group.value === "~") {
             return makeSpan(
                 ["mord", "mspace"],
                 [mathrm(group.value, group.mode)]
             );
-        } else if(group.value === "~") {
-            return makeSpan(["mord", "mspace"], [mathrm(" ", group.mode)]);
         } else {
             var spacingClassMap = {
                 "\\qquad": "qquad",

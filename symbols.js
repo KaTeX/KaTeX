@@ -437,6 +437,11 @@ var symbols = {
             group: "spacing",
             replace: "\u00a0"
         },
+        "~": {
+            font: "main",
+            group: "spacing",
+            replace: "\u00a0"
+        },
         "\\,": {
             font: "main",
             group: "spacing"
@@ -562,6 +567,11 @@ var symbols = {
             replace: "\u00a0"
         },
         " ": {
+            font: "main",
+            group: "spacing",
+            replace: "\u00a0"
+        },
+        "~": {
             font: "main",
             group: "spacing",
             replace: "\u00a0"

@@ -25,13 +25,15 @@ var mathNormals = [
     [/^{/, "{"],
     [/^}/, "}"],
     [/^[(\[]/, "open"],
-    [/^[)\]?!]/, "close"]
+    [/^[)\]?!]/, "close"],
+    [/^~/, "spacing"]
 ];
 
 var textNormals = [
     [/^[a-zA-Z0-9`!@*()-=+\[\]'";:?\/.,]/, "textord"],
     [/^{/, "{"],
-    [/^}/, "}"]
+    [/^}/, "}"],
+    [/^~/, "spacing"]
 ];
 
 // Build a regex to easily parse the functions
