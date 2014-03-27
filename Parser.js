@@ -193,6 +193,26 @@ Parser.prototype.parseGroup = function(pos, mode) {
     }
 };
 
+// Parses a custom color group, which looks like "{#ffffff}"
+Parser.prototype.parseColorGroup = function(pos, mode) {
+    var start = this.lexer.lex(pos, mode);
+    // Try to parse an open brace
+    if (start.type === "{") {
+        // Parse the color
+        var color = this.lexer.lex(start.position, "color");
+        // Make sure we get a close brace
+        var closeBrace = this.lexer.lex(color.position, mode);
+        expect(closeBrace, "}");
+        return new ParseResult(
+            new ParseNode("color", color.text),
+            closeBrace.position);
+    } else {
+        // It has to have an open brace, so if it doesn't we throw
+        throw new ParseError(
+            "Parse error: There must be braces around colors");
+    }
+};
+
 // A list of 1-argument color functions
 var colorFuncs = [
     "\\blue", "\\orange", "\\pink", "\\red", "\\green", "\\gray", "\\purple"
@@ -229,11 +249,38 @@ Parser.prototype.parseNucleus = function(pos, mode) {
             }
             return new ParseResult(
                 new ParseNode("color",
-                    {color: nucleus.type.slice(1), value: atoms}, mode),
+                    {color: "katex-" + nucleus.type.slice(1), value: atoms},
+                    mode),
                 group.position);
         } else {
             throw new ParseError(
                 "Expected group after '" + nucleus.text + "'");
+        }
+    } else if (nucleus.type === "\\color") {
+        // If this is a custom color function, parse its first argument as a
+        // custom color and its second argument normally
+        var color = this.parseColorGroup(nucleus.position, mode);
+        if (color) {
+            var inner = this.parseGroup(color.position, mode);
+            if (inner) {
+                var atoms;
+                if (inner.result.type === "ordgroup") {
+                    atoms = inner.result.value;
+                } else {
+                    atoms = [inner.result];
+                }
+                return new ParseResult(
+                    new ParseNode("color",
+                        {color: color.result.value, value: atoms},
+                        mode),
+                    inner.position);
+            } else {
+                throw new ParseError(
+                    "Expected second group after '" + nucleus.text + "'");
+            }
+        } else {
+            throw new ParseError(
+                "Expected color after '" + nucleus.text + "'");
         }
     } else if (mode === "math" && utils.contains(sizeFuncs, nucleus.type)) {
         // If this is a size function, parse its argument and return

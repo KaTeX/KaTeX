@@ -81,12 +81,35 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
         "' at position " + pos);
 }
 
+// A regex to match a CSS color (like #ffffff or BlueViolet)
+var cssColor = /^(#[a-z0-9]+|[a-z]+)/i;
+
+Lexer.prototype._innerLexColor = function(pos) {
+    var input = this._input.slice(pos);
+
+    // Ignore whitespace
+    var whitespace = input.match(/^\s*/)[0];
+    pos += whitespace.length;
+    input = input.slice(whitespace.length);
+
+    var match;
+    if ((match = input.match(cssColor))) {
+        // If we look like a color, return a color
+        return new LexResult("color", match[0], pos + match[0].length);
+    }
+
+    // We didn't match a color, so throw an error.
+    throw new ParseError("Invalid color at position " + pos);
+};
+
 // Lex a single token
 Lexer.prototype.lex = function(pos, mode) {
     if (mode === "math") {
         return this._innerLex(pos, mathNormals, true);
     } else if (mode === "text") {
         return this._innerLex(pos, textNormals, false);
+    } else if (mode === "color") {
+        return this._innerLexColor(pos);
     }
 };
 

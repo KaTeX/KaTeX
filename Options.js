@@ -40,4 +40,18 @@ Options.prototype.reset = function() {
         this.style, this.size);
 };
 
+var colorMap = {
+    "katex-blue": "#6495ed",
+    "katex-orange": "#ffa500",
+    "katex-pink": "#ff00af",
+    "katex-red": "#df0030",
+    "katex-green": "#28ae7b",
+    "katex-gray": "gray",
+    "katex-purple": "#9d38bd"
+};
+
+Options.prototype.getColor = function() {
+    return colorMap[this.color] || this.color;
+};
+
 module.exports = Options;

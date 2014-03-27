@@ -11,7 +11,7 @@ url=http://localhost:7936/test/huxley/test.html?m=\dfrac{\frac{a}{b}}{\frac{c}{d
 url=http://localhost:7936/test/huxley/test.html?m=a^{a^a_a}_{a^a_a}
 
 [Colors]
-url=http://localhost:7936/test/huxley/test.html?m=\blue{a}\green{b}\red{c}
+url=http://localhost:7936/test/huxley/test.html?m=\blue{a}\color{%%230f0}{b}\color{red}{c}
 
 [GreekLetters]
 url=http://localhost:7936/test/huxley/test.html?m=\alpha\beta\gamma\omega

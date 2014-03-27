@@ -496,3 +496,41 @@ describe("A text parser", function() {
         expect(group[3].type).toMatch("spacing");
     });
 });
+
+describe("A color parser", function() {
+    var colorExpression = "\\blue{x}";
+    var customColorExpression = "\\color{#fA6}{x}";
+    var badCustomColorExpression = "\\color{bad-color}{x}";
+
+    it("should not fail", function() {
+        expect(function() {
+            parseTree(colorExpression);
+        }).not.toThrow();
+    });
+
+    it("should build a color node", function() {
+        var parse = parseTree(colorExpression)[0];
+
+        expect(parse.type).toMatch("color");
+        expect(parse.value.color).toBeDefined();
+        expect(parse.value.value).toBeDefined();
+    });
+
+    it("should parse a custom color", function() {
+        expect(function() {
+            parseTree(customColorExpression);
+        }).not.toThrow();
+    });
+
+    it("should correctly extract the custom color", function() {
+        var parse = parseTree(customColorExpression)[0];
+
+        expect(parse.value.color).toMatch("#fA6");
+    });
+
+    it("should not parse a bad custom color", function() {
+        expect(function() {
+            parseTree(badCustomColorExpression);
+        }).toThrow();
+    });
+});
