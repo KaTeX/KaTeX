@@ -50,6 +50,7 @@ var groupToType = {
     ordgroup: "mord",
     namedfn: "mop",
     katex: "mord",
+    text: "mord",
 };
 
 var getTypeOfGroup = function(group) {
@@ -69,11 +70,17 @@ var getTypeOfGroup = function(group) {
 
 var groupTypes = {
     mathord: function(group, options, prev) {
-        return makeSpan(["mord", options.color], [mathit(group.value)]);
+        return makeSpan(
+            ["mord", options.color],
+            [mathit(group.value, group.mode)]
+        );
     },
 
     textord: function(group, options, prev) {
-        return makeSpan(["mord", options.color], [mathrm(group.value)]);
+        return makeSpan(
+            ["mord", options.color],
+            [mathrm(group.value, group.mode)]
+        );
     },
 
     bin: function(group, options, prev) {
@@ -88,15 +95,23 @@ var groupTypes = {
             group.type = "ord";
             className = "mord";
         }
-        return makeSpan([className, options.color], [mathrm(group.value)]);
+        return makeSpan(
+            [className, options.color],
+            [mathrm(group.value, group.mode)]
+        );
     },
 
     rel: function(group, options, prev) {
-        return makeSpan(["mrel", options.color], [mathrm(group.value)]);
+        return makeSpan(
+            ["mrel", options.color],
+            [mathrm(group.value, group.mode)]
+        );
     },
 
-    amsrel: function(group, options, prev) {
-        return makeSpan(["mrel", options.color], [amsrm(group.value)]);
+    text: function(group, options, prev) {
+        return makeSpan(["text mord", options.style.cls()],
+            [buildGroup(group.value, options.reset())]
+        );
     },
 
     supsub: function(group, options, prev) {
@@ -185,11 +200,17 @@ var groupTypes = {
     },
 
     open: function(group, options, prev) {
-        return makeSpan(["mopen", options.color], [mathrm(group.value)]);
+        return makeSpan(
+            ["mopen", options.color],
+            [mathrm(group.value, group.mode)]
+        );
     },
 
     close: function(group, options, prev) {
-        return makeSpan(["mclose", options.color], [mathrm(group.value)]);
+        return makeSpan(
+            ["mclose", options.color],
+            [mathrm(group.value, group.mode)]
+        );
     },
 
     frac: function(group, options, prev) {
@@ -283,8 +304,14 @@ var groupTypes = {
     },
 
     spacing: function(group, options, prev) {
-        if (group.value === "\\ " || group.value === "\\space") {
-            return makeSpan(["mord", "mspace"], [mathrm(group.value)]);
+        if (group.value === "\\ " || group.value === "\\space" ||
+            group.value === " ") {
+            return makeSpan(
+                ["mord", "mspace"],
+                [mathrm(group.value, group.mode)]
+            );
+        } else if(group.value === "~") {
+            return makeSpan(["mord", "mspace"], [mathrm(" ", group.mode)]);
         } else {
             var spacingClassMap = {
                 "\\qquad": "qquad",
@@ -311,7 +338,10 @@ var groupTypes = {
     },
 
     punct: function(group, options, prev) {
-        return makeSpan(["mpunct", options.color], [mathrm(group.value)]);
+        return makeSpan(
+            ["mpunct", options.color],
+            [mathrm(group.value, group.mode)]
+        );
     },
 
     ordgroup: function(group, options, prev) {
@@ -323,26 +353,26 @@ var groupTypes = {
     namedfn: function(group, options, prev) {
         var chars = [];
         for (var i = 1; i < group.value.length; i++) {
-            chars.push(mathrm(group.value[i]));
+            chars.push(mathrm(group.value[i], group.mode));
         }
 
         return makeSpan(["mop", options.color], chars);
     },
 
     katex: function(group, options, prev) {
-        var k = makeSpan(["k"], [mathrm("K")]);
-        var a = makeSpan(["a"], [mathrm("A")]);
+        var k = makeSpan(["k"], [mathrm("K", group.mode)]);
+        var a = makeSpan(["a"], [mathrm("A", group.mode)]);
 
         a.height = (a.height + 0.2) * 0.75;
         a.depth = (a.height - 0.2) * 0.75;
 
-        var t = makeSpan(["t"], [mathrm("T")]);
-        var e = makeSpan(["e"], [mathrm("E")]);
+        var t = makeSpan(["t"], [mathrm("T", group.mode)]);
+        var e = makeSpan(["e"], [mathrm("E", group.mode)]);
 
         e.height = (e.height - 0.2155);
         e.depth = (e.depth + 0.2155);
 
-        var x = makeSpan(["x"], [mathrm("X")]);
+        var x = makeSpan(["x"], [mathrm("X", group.mode)]);
 
         return makeSpan(["katex-logo", options.color], [k, a, t, e, x]);
     },
@@ -407,9 +437,9 @@ var buildGroup = function(group, options, prev) {
     }
 };
 
-var makeText = function(value, style) {
-    if (symbols[value].replace) {
-        value = symbols[value].replace;
+var makeText = function(value, style, mode) {
+    if (symbols[mode][value].replace) {
+        value = symbols[mode][value].replace;
     }
 
     var metrics = fontMetrics.getCharacterMetrics(value, style);
@@ -432,15 +462,15 @@ var makeText = function(value, style) {
     }
 };
 
-var mathit = function(value) {
-    return makeSpan(["mathit"], [makeText(value, "math-italic")]);
+var mathit = function(value, mode) {
+    return makeSpan(["mathit"], [makeText(value, "math-italic", mode)]);
 };
 
-var mathrm = function(value) {
-    if (symbols[value].font === "main") {
-        return makeText(value, "main-regular");
+var mathrm = function(value, mode) {
+    if (symbols[mode][value].font === "main") {
+        return makeText(value, "main-regular", mode);
     } else {
-        return makeSpan(["amsrm"], [makeText(value, "ams-regular")]);
+        return makeSpan(["amsrm"], [makeText(value, "ams-regular", mode)]);
     }
 };
 

@@ -447,3 +447,52 @@ describe("A sizing parser", function() {
         }).toThrow();
     });
 });
+
+describe("A text parser", function() {
+    var textExpression = "\\text{a b}";
+    var badTextExpression = "\\text{a b%}";
+    var nestedTextExpression = "\\text{a {b} \\blue{c}}";
+    var spaceTextExpression = "\\text{  a \\ }";
+
+    it("should not fail", function() {
+        expect(function() {
+            parseTree(textExpression);
+        }).not.toThrow();
+    });
+
+    it("should produce a text", function() {
+        var parse = parseTree(textExpression)[0];
+
+        expect(parse.type).toMatch("text");
+        expect(parse.value).toBeDefined();
+    });
+
+    it("should produce textords instead of mathords", function() {
+        var parse = parseTree(textExpression)[0];
+        var group = parse.value.value;
+
+        expect(group[0].type).toMatch("textord");
+    });
+
+    it("should not parse bad text", function() {
+        expect(function() {
+            parseTree(badTextExpression);
+        }).toThrow();
+    });
+
+    it("should parse nested expressions", function() {
+        expect(function() {
+            parseTree(nestedTextExpression);
+        }).not.toThrow();
+    });
+
+    it("should contract spaces", function() {
+        var parse = parseTree(spaceTextExpression)[0];
+        var group = parse.value.value;
+
+        expect(group[0].type).toMatch("spacing");
+        expect(group[1].type).toMatch("textord");
+        expect(group[2].type).toMatch("spacing");
+        expect(group[3].type).toMatch("spacing");
+    });
+});

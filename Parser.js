@@ -16,9 +16,10 @@ function ParseResult(result, newPosition) {
 }
 
 // The resulting parse tree nodes of the parse tree.
-function ParseNode(type, value) {
+function ParseNode(type, value, mode) {
     this.type = type;
     this.value = value;
+    this.mode = mode;
 }
 
 // Checks a result to make sure it has the right type, and throws an
@@ -37,27 +38,27 @@ Parser.prototype.parse = function(input) {
     this.lexer = new Lexer(input);
 
     // Try to parse the input
-    var parse = this.parseInput(0);
+    var parse = this.parseInput(0, "math");
     return parse.result;
 };
 
 // Parses an entire input tree
-Parser.prototype.parseInput = function(pos) {
+Parser.prototype.parseInput = function(pos, mode) {
     // Parse an expression
-    var expression = this.parseExpression(pos);
+    var expression = this.parseExpression(pos, mode);
     // If we succeeded, make sure there's an EOF at the end
-    var EOF = this.lexer.lex(expression.position);
+    var EOF = this.lexer.lex(expression.position, mode);
     expect(EOF, "EOF");
     return expression;
 };
 
 // Parses an "expression", which is a list of atoms
-Parser.prototype.parseExpression = function(pos) {
+Parser.prototype.parseExpression = function(pos, mode) {
     // Start with a list of nodes
     var expression = [];
     while (true) {
         // Try to parse atoms
-        var parse = this.parseAtom(pos);
+        var parse = this.parseAtom(pos, mode);
         if (parse) {
             // Copy them into the list
             expression.push(parse.result);
@@ -70,12 +71,16 @@ Parser.prototype.parseExpression = function(pos) {
 };
 
 // Parses a superscript expression, like "^3"
-Parser.prototype.parseSuperscript = function(pos) {
+Parser.prototype.parseSuperscript = function(pos, mode) {
+    if (mode !== "math") {
+        throw new ParseError("Trying to parse superscript in non-math mode");
+    }
+
     // Try to parse a "^" character
-    var sup = this.lexer.lex(pos);
+    var sup = this.lexer.lex(pos, mode);
     if (sup.type === "^") {
         // If we got one, parse the corresponding group
-        var group = this.parseGroup(sup.position);
+        var group = this.parseGroup(sup.position, mode);
         if (group) {
             return group;
         } else {
@@ -85,19 +90,23 @@ Parser.prototype.parseSuperscript = function(pos) {
     } else if (sup.type === "'") {
         var pos = sup.position;
         return new ParseResult(
-            new ParseNode("textord", "\\prime"), sup.position);
+            new ParseNode("textord", "\\prime"), sup.position, mode);
     } else {
         return null;
     }
 };
 
 // Parses a subscript expression, like "_3"
-Parser.prototype.parseSubscript = function(pos) {
+Parser.prototype.parseSubscript = function(pos, mode) {
+    if (mode !== "math") {
+        throw new ParseError("Trying to parse subscript in non-math mode");
+    }
+
     // Try to parse a "_" character
-    var sub = this.lexer.lex(pos);
+    var sub = this.lexer.lex(pos, mode);
     if (sub.type === "_") {
         // If we got one, parse the corresponding group
-        var group = this.parseGroup(sub.position);
+        var group = this.parseGroup(sub.position, mode);
         if (group) {
             return group;
         } else {
@@ -111,11 +120,17 @@ Parser.prototype.parseSubscript = function(pos) {
 
 // Parses an atom, which consists of a nucleus, and an optional superscript and
 // subscript
-Parser.prototype.parseAtom = function(pos) {
+Parser.prototype.parseAtom = function(pos, mode) {
     // Parse the nucleus
-    var nucleus = this.parseGroup(pos);
+    var nucleus = this.parseGroup(pos, mode);
     var nextPos = pos;
     var nucleusNode;
+
+    // Text mode doesn't have superscripts or subscripts, so we only parse the
+    // nucleus in this case
+    if (mode === "text") {
+        return nucleus;
+    }
 
     if (nucleus) {
         nextPos = nucleus.position;
@@ -129,7 +144,7 @@ Parser.prototype.parseAtom = function(pos) {
     // depending on whether those succeed, we return the correct type.
     while (true) {
         var node;
-        if ((node = this.parseSuperscript(nextPos))) {
+        if ((node = this.parseSuperscript(nextPos, mode))) {
             if (sup) {
                 throw new ParseError("Parse error: Double superscript");
             }
@@ -137,7 +152,7 @@ Parser.prototype.parseAtom = function(pos) {
             sup = node.result;
             continue;
         }
-        if ((node = this.parseSubscript(nextPos))) {
+        if ((node = this.parseSubscript(nextPos, mode))) {
             if (sub) {
                 throw new ParseError("Parse error: Double subscript");
             }
@@ -151,7 +166,7 @@ Parser.prototype.parseAtom = function(pos) {
     if (sup || sub) {
         return new ParseResult(
             new ParseNode("supsub", {base: nucleusNode, sup: sup,
-                    sub: sub}),
+                    sub: sub}, mode),
             nextPos);
     } else {
         return nucleus;
@@ -160,24 +175,23 @@ Parser.prototype.parseAtom = function(pos) {
 
 // Parses a group, which is either a single nucleus (like "x") or an expression
 // in braces (like "{x+y}")
-Parser.prototype.parseGroup = function(pos) {
-    var start = this.lexer.lex(pos);
+Parser.prototype.parseGroup = function(pos, mode) {
+    var start = this.lexer.lex(pos, mode);
     // Try to parse an open brace
     if (start.type === "{") {
         // If we get a brace, parse an expression
-        var expression = this.parseExpression(start.position);
+        var expression = this.parseExpression(start.position, mode);
         // Make sure we get a close brace
-        var closeBrace = this.lexer.lex(expression.position);
+        var closeBrace = this.lexer.lex(expression.position, mode);
         expect(closeBrace, "}");
         return new ParseResult(
-            new ParseNode("ordgroup", expression.result),
+            new ParseNode("ordgroup", expression.result, mode),
             closeBrace.position);
     } else {
         // Otherwise, just return a nucleus
-        return this.parseNucleus(pos);
+        return this.parseNucleus(pos, mode);
     }
 };
-
 
 // A list of 1-argument color functions
 var colorFuncs = [
@@ -200,12 +214,12 @@ var namedFns = [
 
 // Parses a "nucleus", which is either a single token from the tokenizer or a
 // function and its arguments
-Parser.prototype.parseNucleus = function(pos) {
-    var nucleus = this.lexer.lex(pos);
+Parser.prototype.parseNucleus = function(pos, mode) {
+    var nucleus = this.lexer.lex(pos, mode);
 
     if (utils.contains(colorFuncs, nucleus.type)) {
         // If this is a color function, parse its argument and return
-        var group = this.parseGroup(nucleus.position);
+        var group = this.parseGroup(nucleus.position, mode);
         if (group) {
             var atoms;
             if (group.result.type === "ordgroup") {
@@ -215,55 +229,66 @@ Parser.prototype.parseNucleus = function(pos) {
             }
             return new ParseResult(
                 new ParseNode("color",
-                    {color: nucleus.type.slice(1), value: atoms}),
+                    {color: nucleus.type.slice(1), value: atoms}, mode),
                 group.position);
         } else {
             throw new ParseError(
                 "Expected group after '" + nucleus.text + "'");
         }
-    } else if (utils.contains(sizeFuncs, nucleus.type)) {
+    } else if (mode === "math" && utils.contains(sizeFuncs, nucleus.type)) {
         // If this is a size function, parse its argument and return
-        var group = this.parseGroup(nucleus.position);
+        var group = this.parseGroup(nucleus.position, mode);
         if (group) {
             return new ParseResult(
                 new ParseNode("sizing", {
                     size: "size" + (utils.indexOf(sizeFuncs, nucleus.type) + 1),
                     value: group.result
-                }),
+                }, mode),
                 group.position);
         } else {
             throw new ParseError(
                 "Expected group after '" + nucleus.text + "'");
         }
-    } else if (utils.contains(namedFns, nucleus.type)) {
+    } else if (mode === "math" && utils.contains(namedFns, nucleus.type)) {
         // If this is a named function, just return it plain
         return new ParseResult(
-            new ParseNode("namedfn", nucleus.text),
+            new ParseNode("namedfn", nucleus.text, mode),
             nucleus.position);
     } else if (nucleus.type === "\\llap" || nucleus.type === "\\rlap") {
         // If this is an llap or rlap, parse its argument and return
-        var group = this.parseGroup(nucleus.position);
+        var group = this.parseGroup(nucleus.position, mode);
         if (group) {
             return new ParseResult(
-                new ParseNode(nucleus.type.slice(1), group.result),
+                new ParseNode(nucleus.type.slice(1), group.result, mode),
                 group.position);
         } else {
             throw new ParseError(
                 "Expected group after '" + nucleus.text + "'");
         }
-    } else if (nucleus.type === "\\dfrac" || nucleus.type === "\\frac" ||
-            nucleus.type === "\\tfrac") {
+    } else if (mode === "math" && nucleus.type === "\\text") {
+        var group = this.parseGroup(nucleus.position, "text");
+        if (group) {
+            return new ParseResult(
+                new ParseNode(nucleus.type.slice(1), group.result, mode),
+                group.position);
+        } else {
+            throw new ParseError(
+                "Expected group after '" + nucleus.text + "'");
+        }
+    } else if (mode === "math" && (nucleus.type === "\\dfrac" ||
+                                   nucleus.type === "\\frac" ||
+                                   nucleus.type === "\\tfrac")) {
         // If this is a frac, parse its two arguments and return
-        var numer = this.parseGroup(nucleus.position);
+        var numer = this.parseGroup(nucleus.position, mode);
         if (numer) {
-            var denom = this.parseGroup(numer.position);
+            var denom = this.parseGroup(numer.position, mode);
             if (denom) {
                 return new ParseResult(
                     new ParseNode("frac", {
                         numer: numer.result,
                         denom: denom.result,
                         size: nucleus.type.slice(1)
-                    }),
+                    }, mode),
                     denom.position);
             } else {
                 throw new ParseError("Expected denominator after '" +
@@ -273,17 +298,17 @@ Parser.prototype.parseNucleus = function(pos) {
             throw new ParseError("Parse error: Expected numerator after '" +
                 nucleus.type + "'");
         }
-    } else if (nucleus.type === "\\KaTeX") {
+    } else if (mode === "math" && nucleus.type === "\\KaTeX") {
         // If this is a KaTeX node, return the special katex result
         return new ParseResult(
-            new ParseNode("katex", null),
+            new ParseNode("katex", null, mode),
             nucleus.position
         );
-    } else if (symbols[nucleus.text]) {
+    } else if (symbols[mode][nucleus.text]) {
         // Otherwise if this is a no-argument function, find the type it
         // corresponds to in the symbols map
         return new ParseResult(
-            new ParseNode(symbols[nucleus.text].group, nucleus.text),
+            new ParseNode(symbols[mode][nucleus.text].group, nucleus.text, mode),
             nucleus.position);
     } else {
         // Otherwise, we couldn't parse it

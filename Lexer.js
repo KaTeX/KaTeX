@@ -13,7 +13,7 @@ function LexResult(type, text, position) {
 }
 
 // "normal" types of tokens
-var normals = [
+var mathNormals = [
     [/^[/|@."`0-9]/, "textord"],
     [/^[a-zA-Z]/, "mathord"],
     [/^[*+-]/, "bin"],
@@ -28,17 +28,30 @@ var normals = [
     [/^[)\]?!]/, "close"]
 ];
 
+var textNormals = [
+    [/^[a-zA-Z0-9`!@*()-=+\[\]'";:?\/.,]/, "textord"],
+    [/^{/, "{"],
+    [/^}/, "}"]
+];
+
 // Build a regex to easily parse the functions
 var anyFunc = /^\\(?:[a-zA-Z]+|.)/;
 
-// Lex a single token
-Lexer.prototype.lex = function(pos) {
+Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
     var input = this._input.slice(pos);
 
     // Get rid of whitespace
-    var whitespace = input.match(/^\s*/)[0];
-    pos += whitespace.length;
-    input = input.slice(whitespace.length);
+    if (ignoreWhitespace) {
+        var whitespace = input.match(/^\s*/)[0];
+        pos += whitespace.length;
+        input = input.slice(whitespace.length);
+    } else {
+        // Do the funky concatenation of whitespace
+        var whitespace = input.match(/^( +|\\  +)/);
+        if (whitespace !== null) {
+            return new LexResult(" ", " ", pos + whitespace[0].length);
+        }
+    }
 
     // If there's no more input to parse, return an EOF token
     if (input.length === 0) {
@@ -66,6 +79,15 @@ Lexer.prototype.lex = function(pos) {
     // We didn't match any of the tokens, so throw an error.
     throw new ParseError("Unexpected character: '" + input[0] +
         "' at position " + pos);
+}
+
+// Lex a single token
+Lexer.prototype.lex = function(pos, mode) {
+    if (mode === "math") {
+        return this._innerLex(pos, mathNormals, true);
+    } else if (mode === "text") {
+        return this._innerLex(pos, textNormals, false);
+    }
 };
 
 module.exports = Lexer;

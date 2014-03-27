@@ -34,5 +34,8 @@ url=http://localhost:7936/test/huxley/test.html?m=\Huge{x}\LARGE{y}\normalsize{z
 [SizingBaseline]
 url=http://localhost:7936/test/huxley/test.html?m=\tiny{a+b}a+b\Huge{a+b}&pre=x&post=M
 
+[Text]
+url=http://localhost:7936/test/huxley/test.html?m=\frac{a}{b}\text{c {ab} \ e}+fg
+
 [KaTeX]
 url=http://localhost:7936/test/huxley/test.html?m=\KaTeX
