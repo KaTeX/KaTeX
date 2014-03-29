@@ -47,7 +47,7 @@ var groupToType = {
     textord: "mord",
     bin: "mbin",
     rel: "mrel",
-    amsrel: "mrel",
+    text: "mord",
     open: "mopen",
     close: "mclose",
     frac: "minner",
@@ -55,19 +55,20 @@ var groupToType = {
     punct: "mpunct",
     ordgroup: "mord",
     namedfn: "mop",
-    katex: "mord",
-    text: "mord",
+    katex: "mord"
 };
 
 var getTypeOfGroup = function(group) {
     if (group == null) {
         // Like when typesetting $^3$
-        return groupToType.ord;
+        return groupToType.mathord;
     } else if (group.type === "supsub") {
         return getTypeOfGroup(group.value.base);
     } else if (group.type === "llap" || group.type === "rlap") {
         return getTypeOfGroup(group.value);
     } else if (group.type === "color") {
+        return getTypeOfGroup(group.value.value);
+    } else if (group.type === "sizing") {
         return getTypeOfGroup(group.value.value);
     } else {
         return groupToType[group.type];

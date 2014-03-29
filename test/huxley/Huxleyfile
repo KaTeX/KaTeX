@@ -20,7 +20,7 @@ url=http://localhost:7936/test/huxley/test.html?m=\alpha\beta\gamma\omega
 url=http://localhost:7936/test/huxley/test.html?m=a+b-c\cdot d/e
 
 [Spacing]
-url=http://localhost:7936/test/huxley/test.html?m=[-1][1-1]1%%3D1(%%3D1)\lvert a\rvert~b
+url=http://localhost:7936/test/huxley/test.html?m=^3+[-1][1-1]1%%3D1(%%3D1)\lvert a\rvert~b
 
 [Functions]
 url=http://localhost:7936/test/huxley/test.html?m=\sin\cos\tan\ln\log
