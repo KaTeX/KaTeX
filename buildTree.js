@@ -440,7 +440,7 @@ var buildGroup = function(group, options, prev) {
 
             if (options.depth > 1) {
                 throw new ParseError(
-                    "Error: Can't use sizing outside of the root node");
+                    "Can't use sizing outside of the root node");
             }
 
             groupNode.height *= multiplier;
@@ -450,7 +450,7 @@ var buildGroup = function(group, options, prev) {
         return groupNode;
     } else {
         throw new ParseError(
-            "Lex error: Got group of unknown type: '" + group.type + "'");
+            "Got group of unknown type: '" + group.type + "'");
     }
 };
 

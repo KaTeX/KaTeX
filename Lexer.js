@@ -80,7 +80,7 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
 
     // We didn't match any of the tokens, so throw an error.
     throw new ParseError("Unexpected character: '" + input[0] +
-        "' at position " + pos);
+        "'", this, pos);
 }
 
 // A regex to match a CSS color (like #ffffff or BlueViolet)
@@ -101,7 +101,7 @@ Lexer.prototype._innerLexColor = function(pos) {
     }
 
     // We didn't match a color, so throw an error.
-    throw new ParseError("Invalid color at position " + pos);
+    throw new ParseError("Invalid color", this, pos);
 };
 
 // Lex a single token

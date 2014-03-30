@@ -24,10 +24,12 @@ function ParseNode(type, value, mode) {
 
 // Checks a result to make sure it has the right type, and throws an
 // appropriate error otherwise.
-var expect = function(result, type) {
+Parser.prototype.expect = function(result, type) {
     if (result.type !== type) {
         throw new ParseError(
-            "Expected '" + type + "', got '" + result.type + "'");
+            "Expected '" + type + "', got '" + result.type + "'",
+            this.lexer, result.position
+        );
     }
 };
 
@@ -48,7 +50,7 @@ Parser.prototype.parseInput = function(pos, mode) {
     var expression = this.parseExpression(pos, mode);
     // If we succeeded, make sure there's an EOF at the end
     var EOF = this.lexer.lex(expression.position, mode);
-    expect(EOF, "EOF");
+    this.expect(EOF, "EOF");
     return expression;
 };
 
@@ -73,7 +75,8 @@ Parser.prototype.parseExpression = function(pos, mode) {
 // Parses a superscript expression, like "^3"
 Parser.prototype.parseSuperscript = function(pos, mode) {
     if (mode !== "math") {
-        throw new ParseError("Trying to parse superscript in non-math mode");
+        throw new ParseError(
+            "Trying to parse superscript in non-math mode", this.lexer, pos);
     }
 
     // Try to parse a "^" character
@@ -85,7 +88,8 @@ Parser.prototype.parseSuperscript = function(pos, mode) {
             return group;
         } else {
             // Throw an error if we didn't find a group
-            throw new ParseError("Couldn't find group after '^'");
+            throw new ParseError(
+                "Couldn't find group after '^'", this.lexer, sup.position);
         }
     } else if (sup.type === "'") {
         var pos = sup.position;
@@ -99,7 +103,8 @@ Parser.prototype.parseSuperscript = function(pos, mode) {
 // Parses a subscript expression, like "_3"
 Parser.prototype.parseSubscript = function(pos, mode) {
     if (mode !== "math") {
-        throw new ParseError("Trying to parse subscript in non-math mode");
+        throw new ParseError(
+            "Trying to parse subscript in non-math mode", this.lexer, pos);
     }
 
     // Try to parse a "_" character
@@ -111,7 +116,8 @@ Parser.prototype.parseSubscript = function(pos, mode) {
             return group;
         } else {
             // Throw an error if we didn't find a group
-            throw new ParseError("Couldn't find group after '_'");
+            throw new ParseError(
+                "Couldn't find group after '_'", this.lexer, sub.position);
         }
     } else {
         return null;
@@ -146,7 +152,8 @@ Parser.prototype.parseAtom = function(pos, mode) {
         var node;
         if ((node = this.parseSuperscript(nextPos, mode))) {
             if (sup) {
-                throw new ParseError("Parse error: Double superscript");
+                throw new ParseError(
+                    "Double superscript", this.lexer, nextPos);
             }
             nextPos = node.position;
             sup = node.result;
@@ -154,7 +161,8 @@ Parser.prototype.parseAtom = function(pos, mode) {
         }
         if ((node = this.parseSubscript(nextPos, mode))) {
             if (sub) {
-                throw new ParseError("Parse error: Double subscript");
+                throw new ParseError(
+                    "Double subscript", this.lexer, nextPos);
             }
             nextPos = node.position;
             sub = node.result;
@@ -183,7 +191,7 @@ Parser.prototype.parseGroup = function(pos, mode) {
         var expression = this.parseExpression(start.position, mode);
         // Make sure we get a close brace
         var closeBrace = this.lexer.lex(expression.position, mode);
-        expect(closeBrace, "}");
+        this.expect(closeBrace, "}");
         return new ParseResult(
             new ParseNode("ordgroup", expression.result, mode),
             closeBrace.position);
@@ -202,14 +210,16 @@ Parser.prototype.parseColorGroup = function(pos, mode) {
         var color = this.lexer.lex(start.position, "color");
         // Make sure we get a close brace
         var closeBrace = this.lexer.lex(color.position, mode);
-        expect(closeBrace, "}");
+        this.expect(closeBrace, "}");
         return new ParseResult(
             new ParseNode("color", color.text),
             closeBrace.position);
     } else {
         // It has to have an open brace, so if it doesn't we throw
         throw new ParseError(
-            "Parse error: There must be braces around colors");
+            "There must be braces around colors",
+            this.lexer, pos
+        );
     }
 };
 
@@ -254,7 +264,9 @@ Parser.prototype.parseNucleus = function(pos, mode) {
                 group.position);
         } else {
             throw new ParseError(
-                "Expected group after '" + nucleus.text + "'");
+                "Expected group after '" + nucleus.text + "'",
+                this.lexer, nucleus.position
+            );
         }
     } else if (nucleus.type === "\\color") {
         // If this is a custom color function, parse its first argument as a
@@ -276,11 +288,15 @@ Parser.prototype.parseNucleus = function(pos, mode) {
                     inner.position);
             } else {
                 throw new ParseError(
-                    "Expected second group after '" + nucleus.text + "'");
+                    "Expected second group after '" + nucleus.text + "'",
+                    this.lexer, color.position
+                );
             }
         } else {
             throw new ParseError(
-                "Expected color after '" + nucleus.text + "'");
+                "Expected color after '" + nucleus.text + "'",
+                    this.lexer, nucleus.position
+                );
         }
     } else if (mode === "math" && utils.contains(sizeFuncs, nucleus.type)) {
         // If this is a size function, parse its argument and return
@@ -294,7 +310,9 @@ Parser.prototype.parseNucleus = function(pos, mode) {
                 group.position);
         } else {
             throw new ParseError(
-                "Expected group after '" + nucleus.text + "'");
+                "Expected group after '" + nucleus.text + "'",
+                this.lexer, nucleus.position
+            );
         }
     } else if (mode === "math" && utils.contains(namedFns, nucleus.type)) {
         // If this is a named function, just return it plain
@@ -310,7 +328,9 @@ Parser.prototype.parseNucleus = function(pos, mode) {
                 group.position);
         } else {
             throw new ParseError(
-                "Expected group after '" + nucleus.text + "'");
+                "Expected group after '" + nucleus.text + "'",
+                this.lexer, nucleus.position
+            );
         }
     } else if (mode === "math" && nucleus.type === "\\text") {
         var group = this.parseGroup(nucleus.position, "text");
@@ -320,7 +340,9 @@ Parser.prototype.parseNucleus = function(pos, mode) {
                 group.position);
         } else {
             throw new ParseError(
-                "Expected group after '" + nucleus.text + "'");
+                "Expected group after '" + nucleus.text + "'",
+                this.lexer, nucleus.position
+            );
         }
     } else if (mode === "math" && (nucleus.type === "\\dfrac" ||
                                    nucleus.type === "\\frac" ||
@@ -339,11 +361,15 @@ Parser.prototype.parseNucleus = function(pos, mode) {
                     denom.position);
             } else {
                 throw new ParseError("Expected denominator after '" +
-                    nucleus.type + "'");
+                    nucleus.type + "'",
+                    this.lexer, numer.position
+                );
             }
         } else {
-            throw new ParseError("Parse error: Expected numerator after '" +
-                nucleus.type + "'");
+            throw new ParseError("Expected numerator after '" +
+                nucleus.type + "'",
+                this.lexer, nucleus.position
+            );
         }
     } else if (mode === "math" && nucleus.type === "\\KaTeX") {
         // If this is a KaTeX node, return the special katex result
