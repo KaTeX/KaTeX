@@ -1,0 +1,1 @@
+{"py/object": "huxley.run.Test", "screen_size": {"py/tuple": [1024, 768]}, "steps": [{"py/object": "huxley.steps.ScreenshotTestStep", "index": 0, "offset_time": 0}]}

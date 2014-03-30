@@ -39,3 +39,6 @@ url=http://localhost:7936/test/huxley/test.html?m=\frac{a}{b}\text{c~ {ab} \ e}+
 
 [KaTeX]
 url=http://localhost:7936/test/huxley/test.html?m=\KaTeX
+
+[RlapBug]
+url=http://localhost:7936/test/huxley/test.html?m=\rlap{x}

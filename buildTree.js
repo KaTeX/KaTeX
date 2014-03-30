@@ -339,13 +339,17 @@ var groupTypes = {
     },
 
     llap: function(group, options, prev) {
-        var inner = makeSpan([], [buildGroup(group.value, options.reset())]);
-        return makeSpan(["llap", options.style.cls()], [inner]);
+        var inner = makeSpan(
+            ["inner"], [buildGroup(group.value, options.reset())]);
+        var fix = makeSpan(["fix"], []);
+        return makeSpan(["llap", options.style.cls()], [inner, fix]);
     },
 
     rlap: function(group, options, prev) {
-        var inner = makeSpan([], [buildGroup(group.value, options.reset())]);
-        return makeSpan(["rlap", options.style.cls()], [inner]);
+        var inner = makeSpan(
+            ["inner"], [buildGroup(group.value, options.reset())]);
+        var fix = makeSpan(["fix"], []);
+        return makeSpan(["rlap", options.style.cls()], [inner, fix]);
     },
 
     punct: function(group, options, prev) {

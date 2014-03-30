@@ -275,16 +275,20 @@ big parens
         width: 0;
         position: relative;
 
-        > span {
+        > .inner {
             position: absolute;
+        }
+
+        > .fix {
+            display: inline-block;
         }
     }
 
-    .llap > span {
+    .llap > .inner {
         right: 0;
     }
 
-    .rlap > span {
+    .rlap > .inner {
         left: 0;
     }
 
