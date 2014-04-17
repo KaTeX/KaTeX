@@ -42,3 +42,6 @@ url=http://localhost:7936/test/huxley/test.html?m=\KaTeX
 
 [RlapBug]
 url=http://localhost:7936/test/huxley/test.html?m=\frac{\rlap{x}}{2}
+
+[SupSubCharacterBox]
+url=http://localhost:7936/test/huxley/test.html?m=a_2f_2{f}_2{aa}_2{af}_2

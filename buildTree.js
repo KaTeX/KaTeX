@@ -75,6 +75,24 @@ var getTypeOfGroup = function(group) {
     }
 };
 
+var isCharacterBox = function(group) {
+    if (group == null) {
+        return false;
+    } else if (group.type === "mathord" ||
+               group.type === "textord" ||
+               group.type === "bin" ||
+               group.type === "rel" ||
+               group.type === "open" ||
+               group.type === "close" ||
+               group.type === "punct") {
+        return true;
+    } else if (group.type === "ordgroup") {
+        return group.value.length === 1 && isCharacterBox(group.value[0]);
+    } else {
+        return false;
+    }
+};
+
 var groupTypes = {
     mathord: function(group, options, prev) {
         return makeSpan(
@@ -144,8 +162,13 @@ var groupTypes = {
             var subwrap = makeSpan(["msub"], [submid]);
         }
 
-        var u = base.height - fontMetrics.metrics.supDrop;
-        var v = base.depth + fontMetrics.metrics.subDrop;
+        if (isCharacterBox(group.value.base)) {
+            var u = 0;
+            var v = 0;
+        } else {
+            var u = base.height - fontMetrics.metrics.supDrop;
+            var v = base.depth + fontMetrics.metrics.subDrop;
+        }
 
         var p;
         if (options.style === Style.DISPLAY) {
