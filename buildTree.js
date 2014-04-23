@@ -525,6 +525,10 @@ var buildTree = function(tree) {
 
     topStrut.style.height = span.height + "em";
     bottomStrut.style.height = (span.height + span.depth) + "em";
+    // We'd like to use `vertical-align: top` but in IE 9 this lowers the
+    // baseline of the box to the bottom of this strut (instead staying in the
+    // normal place) so we use an absolute value for vertical-align instead
+    bottomStrut.style.verticalAlign = -span.depth + "em";
 
     var katexNode = makeSpan(["katex"], [
         makeSpan(["katex-inner"], [topStrut, bottomStrut, span])
