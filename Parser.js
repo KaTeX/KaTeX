@@ -94,7 +94,7 @@ Parser.prototype.parseSuperscript = function(pos, mode) {
     } else if (sup.type === "'") {
         var pos = sup.position;
         return new ParseResult(
-            new ParseNode("textord", "\\prime"), sup.position, mode);
+            new ParseNode("textord", "\\prime", mode), sup.position, mode);
     } else {
         return null;
     }
