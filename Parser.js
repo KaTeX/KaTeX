@@ -223,6 +223,28 @@ Parser.prototype.parseColorGroup = function(pos, mode) {
     }
 };
 
+// Parses a text group, which looks like "{#ffffff}"
+Parser.prototype.parseTextGroup = function(pos, mode) {
+    var start = this.lexer.lex(pos, mode);
+    // Try to parse an open brace
+    if (start.type === "{") {
+        // Parse the text
+        var text = this.parseExpression(start.position, "text");
+        // Make sure we get a close brace
+        var closeBrace = this.lexer.lex(text.position, mode);
+        this.expect(closeBrace, "}");
+        return new ParseResult(
+            new ParseNode("ordgroup", text.result, "text"),
+            closeBrace.position);
+    } else {
+        // It has to have an open brace, so if it doesn't we throw
+        throw new ParseError(
+            "There must be braces around text",
+            this.lexer, pos
+        );
+    }
+};
+
 // A list of 1-argument color functions
 var colorFuncs = [
     "\\blue", "\\orange", "\\pink", "\\red", "\\green", "\\gray", "\\purple"
@@ -333,7 +355,7 @@ Parser.prototype.parseNucleus = function(pos, mode) {
             );
         }
     } else if (mode === "math" && nucleus.type === "\\text") {
-        var group = this.parseGroup(nucleus.position, "text");
+        var group = this.parseTextGroup(nucleus.position, mode);
         if (group) {
             return new ParseResult(
                 new ParseNode(nucleus.type.slice(1), group.result, mode),

@@ -451,8 +451,10 @@ describe("A sizing parser", function() {
 describe("A text parser", function() {
     var textExpression = "\\text{a b}";
     var badTextExpression = "\\text{a b%}";
+    var badTextExpression2 = "\\text x";
     var nestedTextExpression = "\\text{a {b} \\blue{c}}";
     var spaceTextExpression = "\\text{  a \\ }";
+    var leadingSpaceTextExpression = "\\text {moo}";
 
     it("should not fail", function() {
         expect(function() {
@@ -478,6 +480,9 @@ describe("A text parser", function() {
         expect(function() {
             parseTree(badTextExpression);
         }).toThrow();
+        expect(function() {
+            parseTree(badTextExpression2);
+        }).toThrow();
     });
 
     it("should parse nested expressions", function() {
@@ -494,6 +499,15 @@ describe("A text parser", function() {
         expect(group[1].type).toMatch("textord");
         expect(group[2].type).toMatch("spacing");
         expect(group[3].type).toMatch("spacing");
+    });
+
+    it("should ignore a space before the text group", function() {
+        var parse = parseTree(leadingSpaceTextExpression)[0];
+        // [m, o, o]
+        expect(parse.value.value.length).toBe(3);
+        expect(
+            parse.value.value.map(function(n) { return n.value; }).join("")
+        ).toBe("moo");
     });
 });
 
