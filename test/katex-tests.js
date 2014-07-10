@@ -326,6 +326,47 @@ describe("A group parser", function() {
     });
 });
 
+describe("An implicit group parser", function() {
+    it("should not fail", function() {
+        expect(function() {
+            parseTree("\\Large x");
+            parseTree("abc {abc \Large xyz} abc");
+        }).not.toThrow();
+    });
+
+    it("should produce a single object", function() {
+        var parse = parseTree("\\Large abc");
+
+        expect(parse.length).toBe(1);
+
+        var sizing = parse[0];
+
+        expect(sizing.type).toMatch("sizing");
+        expect(sizing.value).toBeTruthy();
+    });
+
+    it("should apply only after the function", function() {
+        var parse = parseTree("a \\Large abc");
+
+        expect(parse.length).toBe(2);
+
+        var sizing = parse[1];
+
+        expect(sizing.type).toMatch("sizing");
+        expect(sizing.value.value.value.length).toBe(3);
+    });
+
+    it("should stop at the ends of groups", function() {
+        var parse = parseTree("a { b \\Large c } d");
+
+        var group = parse[1];
+        var sizing = group.value[1];
+
+        expect(sizing.type).toMatch("sizing");
+        expect(sizing.value.value.value.length).toBe(1);
+    });
+});
+
 describe("A function parser", function() {
     it("should parse no argument functions", function() {
         expect(function() {

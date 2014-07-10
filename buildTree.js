@@ -139,7 +139,7 @@ var groupTypes = {
 
     text: function(group, options, prev) {
         return makeSpan(["text mord", options.style.cls()],
-            [buildGroup(group.value, options.reset())]
+            [buildGroup(group.value, options.deepen())]
         );
     },
 
@@ -148,7 +148,7 @@ var groupTypes = {
 
         if (group.value.sup) {
             var sup = buildGroup(group.value.sup,
-                    options.withStyle(options.style.sup()));
+                    options.withStyle(options.style.sup()).deepen());
             var supmid = makeSpan(
                     [options.style.reset(), options.style.sup().cls()], [sup]);
             var supwrap = makeSpan(["msup", options.style.reset()], [supmid]);
@@ -156,7 +156,7 @@ var groupTypes = {
 
         if (group.value.sub) {
             var sub = buildGroup(group.value.sub,
-                    options.withStyle(options.style.sub()));
+                    options.withStyle(options.style.sub()).deepen());
             var submid = makeSpan(
                     [options.style.reset(), options.style.sub().cls()], [sub]);
             var subwrap = makeSpan(["msub"], [submid]);
@@ -260,13 +260,13 @@ var groupTypes = {
         var nstyle = fstyle.fracNum();
         var dstyle = fstyle.fracDen();
 
-        var numer = buildGroup(group.value.numer, options.withStyle(nstyle));
+        var numer = buildGroup(group.value.numer, options.withStyle(nstyle).deepen());
         var numernumer = makeSpan([fstyle.reset(), nstyle.cls()], [numer]);
         var numerrow = makeSpan(["mfracnum"], [numernumer]);
 
         var mid = makeSpan(["mfracmid"], [makeSpan()]);
 
-        var denom = buildGroup(group.value.denom, options.withStyle(dstyle));
+        var denom = buildGroup(group.value.denom, options.withStyle(dstyle).deepen());
         var denomdenom = makeSpan([fstyle.reset(), dstyle.cls()], [denom])
         var denomrow = makeSpan(["mfracden"], [denomdenom]);
 
@@ -363,14 +363,14 @@ var groupTypes = {
 
     llap: function(group, options, prev) {
         var inner = makeSpan(
-            ["inner"], [buildGroup(group.value, options.reset())]);
+            ["inner"], [buildGroup(group.value, options.deepen())]);
         var fix = makeSpan(["fix"], []);
         return makeSpan(["llap", options.style.cls()], [inner, fix]);
     },
 
     rlap: function(group, options, prev) {
         var inner = makeSpan(
-            ["inner"], [buildGroup(group.value, options.reset())]);
+            ["inner"], [buildGroup(group.value, options.deepen())]);
         var fix = makeSpan(["fix"], []);
         return makeSpan(["rlap", options.style.cls()], [inner, fix]);
     },
@@ -461,7 +461,7 @@ var buildGroup = function(group, options, prev) {
             var multiplier = sizingMultiplier[options.size] /
                     sizingMultiplier[options.parentSize];
 
-            if (options.depth > 1) {
+            if (options.deep) {
                 throw new ParseError(
                     "Can't use sizing outside of the root node");
             }

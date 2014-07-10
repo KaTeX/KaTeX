@@ -201,6 +201,20 @@ Parser.prototype.parseGroup = function(pos, mode) {
     }
 };
 
+// Parses an implicit group, which is a group that starts where you want it, and
+// ends right before a higher explicit group ends, or at EOL. It is used for
+// functions that appear to affect the current style, like \Large or \textrm,
+// where instead of keeping a style we just pretend that there is an implicit
+// grouping after it until the end of the group.
+Parser.prototype.parseImplicitGroup = function(pos, mode) {
+    // Since parseExpression already ends where we want it to, we just need to
+    // call that and it does what we want.
+    var expression = this.parseExpression(pos, mode);
+    return new ParseResult(
+        new ParseNode("ordgroup", expression.result, mode),
+        expression.position);
+};
+
 // Parses a custom color group, which looks like "{#ffffff}"
 Parser.prototype.parseColorGroup = function(pos, mode) {
     var start = this.lexer.lex(pos, mode);
@@ -322,20 +336,13 @@ Parser.prototype.parseNucleus = function(pos, mode) {
         }
     } else if (mode === "math" && utils.contains(sizeFuncs, nucleus.type)) {
         // If this is a size function, parse its argument and return
-        var group = this.parseGroup(nucleus.position, mode);
-        if (group) {
-            return new ParseResult(
-                new ParseNode("sizing", {
-                    size: "size" + (utils.indexOf(sizeFuncs, nucleus.type) + 1),
-                    value: group.result
-                }, mode),
-                group.position);
-        } else {
-            throw new ParseError(
-                "Expected group after '" + nucleus.text + "'",
-                this.lexer, nucleus.position
-            );
-        }
+        var group = this.parseImplicitGroup(nucleus.position, mode);
+        return new ParseResult(
+            new ParseNode("sizing", {
+                size: "size" + (utils.indexOf(sizeFuncs, nucleus.type) + 1),
+                value: group.result
+            }, mode),
+            group.position);
     } else if (mode === "math" && utils.contains(namedFns, nucleus.type)) {
         // If this is a named function, just return it plain
         return new ParseResult(
