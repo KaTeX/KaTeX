@@ -29,6 +29,11 @@ var symbols = {
             group: "textord",
             replace: "%"
         },
+        "\\_": {
+            font: "main",
+            group: "textord",
+            replace: "_"
+        },
         "\\angle": {
             font: "main",
             group: "textord",
