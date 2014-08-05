@@ -308,38 +308,63 @@ big parens
         }
     }
 
-    .sizing { display: inline-block; }
+    .sizing {
+        display: inline-block;
 
-    @size-1: 0.5;
-    @size-2: 0.7;
-    @size-3: 0.8;
-    @size-4: 0.9;
-    @size-5: 1.0;
-    @size-6: 1.2;
-    @size-7: 1.44;
-    @size-8: 1.73;
-    @size-9: 2.07;
-    @size-10: 2.49;
+        @size-1: 0.5;
+        @size-2: 0.7;
+        @size-3: 0.8;
+        @size-4: 0.9;
+        @size-5: 1.0;
+        @size-6: 1.2;
+        @size-7: 1.44;
+        @size-8: 1.73;
+        @size-9: 2.07;
+        @size-10: 2.49;
 
-    .generate-size-change(@from, @to) {
-        .reset-size@{from}.size@{to} {
-            @sizeFromVariable: ~"size-@{from}";
-            @sizeToVariable: ~"size-@{to}";
-            font-size: (@@sizeToVariable / @@sizeFromVariable) * 1em;
+        .generate-size-change(@from, @to) {
+            &.reset-size@{from}.size@{to} {
+                @sizeFromVariable: ~"size-@{from}";
+                @sizeToVariable: ~"size-@{to}";
+                font-size: (@@sizeToVariable / @@sizeFromVariable) * 1em;
+            }
+        }
+
+        .generate-to-size-change(@from, @currTo) when (@currTo =< 10) {
+            .generate-size-change(@from, @currTo);
+
+            .generate-to-size-change(@from, (@currTo + 1));
+        }
+
+        .generate-from-size-change(@currFrom) when (@currFrom =< 10) {
+            .generate-to-size-change(@currFrom, 1);
+
+            .generate-from-size-change((@currFrom + 1));
+        }
+
+        .generate-from-size-change(1);
+    }
+
+    .delimsizing {
+        &.size1 { font-family: katex_size1; }
+        &.size2 { font-family: katex_size2; }
+        &.size3 { font-family: katex_size3; }
+        &.size4 { font-family: katex_size4; }
+
+        &.mult {
+            .baseline-align-hack-outer;
+
+            > .fix-ie,
+            > .delimsizinginner {
+                .baseline-align-hack-middle;
+                position: relative;
+
+                &.size1 {
+                    > span {
+                        font-family: katex_size1;
+                    }
+                }
+            }
         }
     }
-
-    .generate-to-size-change(@from, @currTo) when (@currTo =< 10) {
-        .generate-size-change(@from, @currTo);
-
-        .generate-to-size-change(@from, (@currTo + 1));
-    }
-
-    .generate-from-size-change(@currFrom) when (@currFrom =< 10) {
-        .generate-to-size-change(@currFrom, 1);
-
-        .generate-from-size-change((@currFrom + 1));
-    }
-
-    .generate-from-size-change(1);
 }

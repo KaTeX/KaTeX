@@ -259,6 +259,30 @@ Parser.prototype.parseTextGroup = function(pos, mode) {
     }
 };
 
+var delimiters = [
+    "(", ")", "[", "\\lbrack", "]", "\\rbrack",
+    "\\{", "\\lbrace", "\\}", "\\rbrace",
+    "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
+    "<", ">", "\\langle", "\\rangle",
+    "/", "\\backslash",
+    "|", "\\vert", "\\|", "\\Vert",
+    "\\uparrow", "\\Uparrow",
+    "\\downarrow", "\\Downarrow",
+    "\\updownarrow", "\\Updownarrow"
+];
+
+// Parse a single delimiter
+Parser.prototype.parseDelimiter = function(pos, mode) {
+    var delim = this.lexer.lex(pos, mode);
+    if (utils.contains(delimiters, delim.text)) {
+        return new ParseResult(
+            new ParseNode("delimiter", delim.text),
+            delim.position);
+    } else {
+        return null;
+    }
+};
+
 // A list of 1-argument color functions
 var colorFuncs = [
     "\\blue", "\\orange", "\\pink", "\\red", "\\green", "\\gray", "\\purple"
@@ -277,6 +301,25 @@ var namedFns = [
     "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin", "\\sinh",
     "\\tan","\\tanh"
 ];
+
+var delimiterSizes = {
+    "\\bigl" : {type: "open",    size: 1},
+    "\\Bigl" : {type: "open",    size: 2},
+    "\\biggl": {type: "open",    size: 3},
+    "\\Biggl": {type: "open",    size: 4},
+    "\\bigr" : {type: "close",   size: 1},
+    "\\Bigr" : {type: "close",   size: 2},
+    "\\biggr": {type: "close",   size: 3},
+    "\\Biggr": {type: "close",   size: 4},
+    "\\bigm" : {type: "rel",     size: 1},
+    "\\Bigm" : {type: "rel",     size: 2},
+    "\\biggm": {type: "rel",     size: 3},
+    "\\Biggm": {type: "rel",     size: 4},
+    "\\big"  : {type: "textord", size: 1},
+    "\\Big"  : {type: "textord", size: 2},
+    "\\bigg" : {type: "textord", size: 3},
+    "\\Bigg" : {type: "textord", size: 4}
+};
 
 // Parses a "nucleus", which is either a single token from the tokenizer or a
 // function and its arguments
@@ -348,6 +391,23 @@ Parser.prototype.parseNucleus = function(pos, mode) {
         return new ParseResult(
             new ParseNode("namedfn", nucleus.text, mode),
             nucleus.position);
+    } else if (mode === "math" && delimiterSizes[nucleus.type]) {
+        // If this is a delimiter size function, we parse a single delimiter
+        var delim = this.parseDelimiter(nucleus.position, mode);
+        if (delim) {
+            var type = delimiterSizes[nucleus.type].type;
+
+            return new ParseResult(
+                new ParseNode("delimsizing", {
+                    size: delimiterSizes[nucleus.type].size,
+                    type: delimiterSizes[nucleus.type].type,
+                    value: delim.result.value
+                }, mode),
+                delim.position);
+        } else {
+            throw new ParseError(
+                "Expected delimiter after '" + nucleus.text + "'");
+        }
     } else if (nucleus.type === "\\llap" || nucleus.type === "\\rlap") {
         // If this is an llap or rlap, parse its argument and return
         var group = this.parseGroup(nucleus.position, mode);

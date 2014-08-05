@@ -93,5 +93,11 @@
         "name": "Lap",
         "screenSize": [1024, 768],
         "url": "http://localhost:7936/test/huxley/test.html?m=ab\\llap{f}cd\\rlap{g}h"
+    },
+
+    {
+        "name": "DelimiterSizing",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m=\\bigl\\uparrow\\Bigl\\downarrow\\biggl\\updownarrow\\Biggl\\Uparrow\\Biggr\\Downarrow\\biggr\\langle\\Bigr\\}\\bigr\\rfloor"
     }
 ]

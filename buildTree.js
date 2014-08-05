@@ -70,6 +70,8 @@ var getTypeOfGroup = function(group) {
         return getTypeOfGroup(group.value.value);
     } else if (group.type === "sizing") {
         return getTypeOfGroup(group.value.value);
+    } else if (group.type === "delimsizing") {
+        return group.value.type;
     } else {
         return groupToType[group.type];
     }
@@ -180,7 +182,7 @@ var groupTypes = {
         }
 
         var supsub;
-        var fixIE = makeSpan(["fix-ie"], []);
+        var fixIE = makeSpan(["fix-ie"], [new domTree.textNode("\u00a0")]);
 
         if (!group.value.sup) {
             v = Math.max(v, fontMetrics.metrics.sub1,
@@ -303,7 +305,7 @@ var groupTypes = {
         denomrow.height = 0;
         denomrow.depth = denomrow.depth + v;
 
-        var fixIE = makeSpan(["fix-ie"], []);
+        var fixIE = makeSpan(["fix-ie"], [new domTree.textNode("\u00a0")]);
 
         var frac = makeSpan([], [numerrow, mid, denomrow, fixIE]);
 
@@ -425,6 +427,165 @@ var groupTypes = {
             ["sizing", "reset-" + options.size, group.value.size,
                 getTypeOfGroup(group.value.value)],
             [inner]);
+    },
+
+    delimsizing: function(group, options, prev) {
+        var normalDelimiters = [
+            "(", ")", "[", "\\lbrack", "]", "\\rbrack",
+            "\\{", "\\lbrace", "\\}", "\\rbrace",
+            "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
+            "<", ">", "\\langle", "\\rangle", "/", "\\backslash"
+        ];
+
+        var stackDelimiters = [
+            "\\uparrow", "\\downarrow", "\\updownarrow",
+            "\\Uparrow", "\\Downarrow", "\\Updownarrow",
+            "|", "\\|", "\\vert", "\\Vert"
+        ];
+
+        // Metrics of the different sizes. Found by looking at TeX's output of
+        // $\bigl| \Bigl| \biggl| \Biggl| \showlists$
+        var sizeToMetrics = {
+            1: {height: .85, depth: .35},
+            2: {height: 1.15, depth: .65},
+            3: {height: 1.45, depth: .95},
+            4: {height: 1.75, depth: 1.25}
+        };
+
+        // Make an inner span with the given offset and in the given font
+        var makeInner = function(symbol, offset, font) {
+            var sizeClass;
+            if (font === "size1-regular") {
+                sizeClass = "size1";
+            }
+
+            var inner = makeSpan(
+                ["delimsizinginner", sizeClass],
+                [makeSpan([], [makeText(symbol, font, group.mode)])]);
+
+            inner.style.top = offset + "em";
+            inner.height -= offset;
+            inner.depth += offset;
+
+            return inner;
+        };
+
+        // Get the metrics for a given symbol and font, after transformation
+        var getMetrics = function(symbol, font) {
+            if (symbols["math"][symbol] && symbols["math"][symbol].replace) {
+                return fontMetrics.getCharacterMetrics(
+                    symbols["math"][symbol].replace, font);
+            } else {
+                return fontMetrics.getCharacterMetrics(
+                    symbol, font);
+            }
+        };
+
+        var original = group.value.value;
+
+        if (utils.contains(normalDelimiters, original)) {
+            // These delimiters can be created by simply using the size1-size4
+            // fonts, so they don't require special treatment
+            if (original === "<") {
+                original = "\\langle";
+            } else if (original === ">") {
+                original = "\\rangle";
+            }
+
+            var size = "size" + group.value.size;
+            var inner = mathrmSize(
+                original, group.value.size, group.mode);
+
+            return makeSpan(
+                ["delimsizing", size, groupToType[group.value.type]],
+                [inner], options.getColor());
+        } else if (utils.contains(stackDelimiters, original)) {
+            // These delimiters can be created by stacking other delimiters on
+            // top of each other to create the correct size
+
+            // There are three parts, the top, a repeated middle, and a bottom.
+            var top = middle = bottom = original;
+            var font = "size1-regular";
+            var overlap = false;
+
+            // We set the parts and font based on the symbol. Note that we use
+            // '\u23d0' instead of '|' and '\u2016' instead of '\\|' for the
+            // middles of the arrows
+            if (original === "\\uparrow") {
+                middle = bottom = "\u23d0";
+            } else if (original === "\\Uparrow") {
+                middle = bottom = "\u2016";
+            } else if (original === "\\downarrow") {
+                top = middle = "\u23d0";
+            } else if (original === "\\Downarrow") {
+                top = middle = "\u2016";
+            } else if (original === "\\updownarrow") {
+                top = "\\uparrow";
+                middle = "\u23d0";
+                bottom = "\\downarrow";
+            } else if (original === "\\Updownarrow") {
+                top = "\\Uparrow";
+                middle = "\u2016";
+                bottom = "\\Downarrow";
+            } else if (original === "|" || original === "\\vert") {
+                overlap = true;
+            } else if (original === "\\|" || original === "\\Vert") {
+                overlap = true;
+            }
+
+            // Get the metrics of the final symbol
+            var metrics = sizeToMetrics[group.value.size];
+            var heightTotal = metrics.height + metrics.depth;
+
+            // Get the metrics of the three sections
+            var topMetrics = getMetrics(top, font);
+            var topHeightTotal = topMetrics.height + topMetrics.depth;
+            var middleMetrics = getMetrics(middle, font);
+            var middleHeightTotal = middleMetrics.height + middleMetrics.depth;
+            var bottomMetrics = getMetrics(bottom, font);
+            var bottomHeightTotal = bottomMetrics.height + bottomMetrics.depth;
+
+            var middleHeight = heightTotal - topHeightTotal - bottomHeightTotal;
+            var symbolCount = Math.ceil(middleHeight / middleHeightTotal);
+
+            if (overlap) {
+                // 2 * overlapAmount + middleHeight =
+                // (symbolCount - 1) * (middleHeightTotal - overlapAmount) +
+                //     middleHeightTotal
+                var overlapAmount = (symbolCount * middleHeightTotal -
+                                     middleHeight) / (symbolCount + 1);
+            } else {
+                var overlapAmount = 0;
+            }
+
+            // Keep a list of the inner spans
+            var inners = [];
+
+            // Add the top symbol
+            inners.push(
+                makeInner(top, topMetrics.height - metrics.height, font));
+
+            // Add middle symbols until there's only space for the bottom symbol
+            var curr_height = metrics.height - topHeightTotal + overlapAmount;
+            for (var i = 0; i < symbolCount; i++) {
+                inners.push(
+                    makeInner(middle, middleMetrics.height - curr_height, font));
+                curr_height -= middleHeightTotal - overlapAmount;
+            }
+
+            // Add the bottom symbol
+            inners.push(
+                makeInner(bottom, metrics.depth - bottomMetrics.depth, font));
+
+            var fixIE = makeSpan(["fix-ie"], [new domTree.textNode("\u00a0")]);
+            inners.push(fixIE);
+
+            return makeSpan(
+                ["delimsizing", "mult", groupToType[group.value.type]],
+                inners, options.getColor());
+        } else {
+            throw new ParseError("Illegal delimiter: '" + original + "'");
+        }
     }
 };
 
@@ -478,7 +639,7 @@ var buildGroup = function(group, options, prev) {
 };
 
 var makeText = function(value, style, mode) {
-    if (symbols[mode][value].replace) {
+    if (symbols[mode][value] && symbols[mode][value].replace) {
         value = symbols[mode][value].replace;
     }
 
@@ -513,6 +674,10 @@ var mathrm = function(value, mode) {
         return makeSpan(["amsrm"], [makeText(value, "ams-regular", mode)]);
     }
 };
+
+var mathrmSize = function(value, size, mode) {
+    return makeText(value, "size" + size + "-regular", mode);
+}
 
 var buildTree = function(tree) {
     // Setup the default options

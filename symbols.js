@@ -314,7 +314,7 @@ var symbols = {
         "\\lvert": {
             font: "main",
             group: "open",
-            replace: "|"
+            replace: "\u2223"
         },
         ")": {
             font: "main",
@@ -340,7 +340,7 @@ var symbols = {
         "\\rvert": {
             font: "main",
             group: "close",
-            replace: "|"
+            replace: "\u2223"
         },
         "=": {
             font: "main",
@@ -563,6 +563,111 @@ var symbols = {
             font: "main",
             group: "textord",
             replace: "\u25b9"
+        },
+        "\\{": {
+            font: "main",
+            group: "open",
+            replace: "{"
+        },
+        "\\}": {
+            font: "main",
+            group: "close",
+            replace: "}"
+        },
+        "\\lbrace": {
+            font: "main",
+            group: "open",
+            replace: "{"
+        },
+        "\\rbrace": {
+            font: "main",
+            group: "close",
+            replace: "}"
+        },
+        "\\lbrack": {
+            font: "main",
+            group: "open",
+            replace: "["
+        },
+        "\\rbrack": {
+            font: "main",
+            group: "close",
+            replace: "]"
+        },
+        "\\lfloor": {
+            font: "main",
+            group: "open",
+            replace: "\u230a"
+        },
+        "\\rfloor": {
+            font: "main",
+            group: "close",
+            replace: "\u230b"
+        },
+        "\\lceil": {
+            font: "main",
+            group: "open",
+            replace: "\u2308"
+        },
+        "\\rceil": {
+            font: "main",
+            group: "close",
+            replace: "\u2309"
+        },
+        "\\backslash": {
+            font: "main",
+            group: "textord",
+            replace: "\\"
+        },
+        "|": {
+            font: "main",
+            group: "textord",
+            replace: "\u2223"
+        },
+        "\\vert": {
+            font: "main",
+            group: "textord",
+            replace: "\u2223"
+        },
+        "\\|": {
+            font: "main",
+            group: "textord",
+            replace: "\u2225"
+        },
+        "\\Vert": {
+            font: "main",
+            group: "textord",
+            replace: "\u2225"
+        },
+        "\\uparrow": {
+            font: "main",
+            group: "textord",
+            replace: "\u2191"
+        },
+        "\\Uparrow": {
+            font: "main",
+            group: "textord",
+            replace: "\u21d1"
+        },
+        "\\downarrow": {
+            font: "main",
+            group: "textord",
+            replace: "\u2193"
+        },
+        "\\Downarrow": {
+            font: "main",
+            group: "textord",
+            replace: "\u21d3"
+        },
+        "\\updownarrow": {
+            font: "main",
+            group: "textord",
+            replace: "\u2195"
+        },
+        "\\Updownarrow": {
+            font: "main",
+            group: "textord",
+            replace: "\u21d5"
         }
     },
     "text": {
@@ -584,7 +689,7 @@ var symbols = {
     }
 };
 
-var mathTextSymbols = "0123456789/|@.\"";
+var mathTextSymbols = "0123456789/@.\"";
 for (var i = 0; i < mathTextSymbols.length; i++) {
     var ch = mathTextSymbols.charAt(i);
     symbols["math"][ch] = {

@@ -626,3 +626,44 @@ describe("A tie parser", function() {
         expect(parse[2].type).toMatch("spacing");
     });
 });
+
+describe("A delimiter sizing parser", function() {
+    var normalDelim = "\\bigl |";
+    var notDelim = "\\bigl x";
+    var bigDelim = "\\Biggr \\langle";
+
+    it("should parse normal delimiters", function() {
+        expect(function() {
+            parseTree(normalDelim);
+            parseTree(bigDelim);
+        }).not.toThrow();
+    });
+
+    it("should not parse not-delimiters", function() {
+        expect(function() {
+            parseTree(notDelim);
+        }).toThrow();
+    });
+
+    it("should produce a delimsizing", function() {
+        var parse = parseTree(normalDelim)[0];
+
+        expect(parse.type).toMatch("delimsizing");
+    });
+
+    it("should produce the correct direction delimiter", function() {
+        var leftParse = parseTree(normalDelim)[0];
+        var rightParse = parseTree(bigDelim)[0];
+
+        expect(leftParse.value.type).toMatch("open");
+        expect(rightParse.value.type).toMatch("close");
+    });
+
+    it("should parse the correct size delimiter", function() {
+        var smallParse = parseTree(normalDelim)[0];
+        var bigParse = parseTree(bigDelim)[0];
+
+        expect(smallParse.value.size).toEqual(1);
+        expect(bigParse.value.size).toEqual(4);
+    });
+});
