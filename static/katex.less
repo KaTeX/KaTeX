@@ -311,21 +311,21 @@ big parens
     .sizing {
         display: inline-block;
 
-        @size-1: 0.5;
-        @size-2: 0.7;
-        @size-3: 0.8;
-        @size-4: 0.9;
-        @size-5: 1.0;
-        @size-6: 1.2;
-        @size-7: 1.44;
-        @size-8: 1.73;
-        @size-9: 2.07;
-        @size-10: 2.49;
+        @size1: 0.5;
+        @size2: 0.7;
+        @size3: 0.8;
+        @size4: 0.9;
+        @size5: 1.0;
+        @size6: 1.2;
+        @size7: 1.44;
+        @size8: 1.73;
+        @size9: 2.07;
+        @size10: 2.49;
 
         .generate-size-change(@from, @to) {
             &.reset-size@{from}.size@{to} {
-                @sizeFromVariable: ~"size-@{from}";
-                @sizeToVariable: ~"size-@{to}";
+                @sizeFromVariable: ~"size@{from}";
+                @sizeToVariable: ~"size@{to}";
                 font-size: (@@sizeToVariable / @@sizeFromVariable) * 1em;
             }
         }
