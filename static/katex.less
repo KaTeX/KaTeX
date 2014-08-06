@@ -308,6 +308,45 @@ big parens
         }
     }
 
+    .overline {
+        .baseline-align-hack-outer;
+
+        > .overline-line,
+        > .overline-inner,
+        > .fix-ie {
+            .baseline-align-hack-middle;
+            position: relative;
+            text-align: center;
+
+            > span {
+                .baseline-align-hack-inner;
+            }
+        }
+
+        > .fix-ie {
+            display: inline-block;
+        }
+
+        > .overline-line > span {
+            width: 100%;
+
+            &:before {
+                border-bottom-style: solid;
+                border-bottom-width: 1px;
+                content: "";
+                display: block;
+            }
+
+            &:after {
+                border-bottom-style: solid;
+                border-bottom-width: 0.04em;
+                content: "";
+                display: block;
+                margin-top: -1px;
+            }
+        }
+    }
+
     .sizing {
         display: inline-block;
 

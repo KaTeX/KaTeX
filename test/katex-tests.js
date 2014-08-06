@@ -667,3 +667,19 @@ describe("A delimiter sizing parser", function() {
         expect(bigParse.value.size).toEqual(4);
     });
 });
+
+describe("An overline parser", function() {
+    var overline = "\\overline{x}";
+
+    it("should not fail", function() {
+        expect(function() {
+            parseTree(overline);
+        }).not.toThrow();
+    });
+
+    it("should produce an overline", function() {
+        var parse = parseTree(overline)[0];
+
+        expect(parse.type).toMatch("overline");
+    });
+});

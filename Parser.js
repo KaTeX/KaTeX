@@ -466,6 +466,19 @@ Parser.prototype.parseNucleus = function(pos, mode) {
             new ParseNode("katex", null, mode),
             nucleus.position
         );
+    } else if (mode === "math" && nucleus.type === "\\overline") {
+        // If this is an overline, parse its argument and return
+        var group = this.parseGroup(nucleus.position, mode);
+        if (group) {
+            return new ParseResult(
+                new ParseNode("overline", group, mode),
+                group.position);
+        } else {
+            throw new ParseError("Expected group after '" +
+                nucleus.type + "'",
+                this.lexer, nucleus.position
+            );
+        }
     } else if (symbols[mode][nucleus.text]) {
         // Otherwise if this is a no-argument function, find the type it
         // corresponds to in the symbols map

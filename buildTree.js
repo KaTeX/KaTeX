@@ -55,7 +55,8 @@ var groupToType = {
     punct: "mpunct",
     ordgroup: "mord",
     namedfn: "mop",
-    katex: "mord"
+    katex: "mord",
+    overline: "mord"
 };
 
 var getTypeOfGroup = function(group) {
@@ -417,6 +418,27 @@ var groupTypes = {
         var x = makeSpan(["x"], [mathrm("X", group.mode)]);
 
         return makeSpan(["katex-logo"], [k, a, t, e, x], options.getColor());
+    },
+
+    overline: function(group, options, prev) {
+        var innerGroup = buildGroup(group.value.result,
+                options.withStyle(options.style.cramp()).deepen());
+
+        // The theta variable in the TeXbook
+        var lineWidth = fontMetrics.metrics.defaultRuleThickness;
+
+        var line = makeSpan(["overline-line"], [makeSpan([])]);
+        var inner = makeSpan(["overline-inner"], [innerGroup]);
+        var fixIE = makeSpan(["fix-ie"], []);
+
+        line.style.top = (-inner.height - 3 * lineWidth) + "em";
+        // The line is supposed to have 1 extra line width above it in height
+        // (TeXbook pg. 443, nr. 9)
+        line.height = inner.height + 5 * lineWidth;
+
+        return makeSpan(["overline", "mord"], [
+            line, inner, fixIE
+        ], options.getColor());
     },
 
     sizing: function(group, options, prev) {

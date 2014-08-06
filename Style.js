@@ -21,6 +21,10 @@ Style.prototype.fracDen = function() {
     return styles[fracDen[this.id]];
 };
 
+Style.prototype.cramp = function() {
+    return styles[cramp[this.id]];
+};
+
 // HTML class name, like "displaystyle cramped"
 Style.prototype.cls = function() {
     return sizeNames[this.size] + (this.cramped ? " cramped" : " uncramped");
@@ -69,6 +73,7 @@ var sup = [S, Sc, S, Sc, SS, SSc, SS, SSc];
 var sub = [Sc, Sc, Sc, Sc, SSc, SSc, SSc, SSc];
 var fracNum = [T, Tc, S, Sc, SS, SSc, SS, SSc];
 var fracDen = [Tc, Tc, Sc, Sc, SSc, SSc, SSc, SSc];
+var cramp = [Dc, Dc, Tc, Tc, Sc, Sc, SSc, SSc];
 
 module.exports = {
     DISPLAY: styles[D],
