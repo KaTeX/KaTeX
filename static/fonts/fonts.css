@@ -1,239 +1,239 @@
 @font-face {
-    font-family: 'katex_ams';
-    src: url('katex_ams-regular.eot');
-    src: url('katex_ams-regular.eot?#iefix') format('embedded-opentype'),
-         url('katex_ams-regular.woff') format('woff'),
-         url('katex_ams-regular.ttf') format('truetype');
+    font-family: 'KaTeX_AMS';
+    src: url('KaTeX_AMS-Regular.eot');
+    src: url('KaTeX_AMS-Regular.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_AMS-Regular.woff') format('woff'),
+         url('KaTeX_AMS-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'katex_caligraphic';
-    src: url('katex_caligraphic-bold.eot');
-    src: url('katex_caligraphic-bold.eot?#iefix') format('embedded-opentype'),
-         url('katex_caligraphic-bold.woff') format('woff'),
-         url('katex_caligraphic-bold.ttf') format('truetype');
+    font-family: 'KaTeX_Caligraphic';
+    src: url('KaTeX_Caligraphic-Bold.eot');
+    src: url('KaTeX_Caligraphic-Bold.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Caligraphic-Bold.woff') format('woff'),
+         url('KaTeX_Caligraphic-Bold.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'katex_caligraphic';
-    src: url('katex_caligraphic-regular.eot');
-    src: url('katex_caligraphic-regular.eot?#iefix') format('embedded-opentype'),
-         url('katex_caligraphic-regular.woff') format('woff'),
-         url('katex_caligraphic-regular.ttf') format('truetype');
+    font-family: 'KaTeX_Caligraphic';
+    src: url('KaTeX_Caligraphic-Regular.eot');
+    src: url('KaTeX_Caligraphic-Regular.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Caligraphic-Regular.woff') format('woff'),
+         url('KaTeX_Caligraphic-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'katex_fraktur';
-    src: url('katex_fraktur-bold.eot');
-    src: url('katex_fraktur-bold.eot?#iefix') format('embedded-opentype'),
-         url('katex_fraktur-bold.woff') format('woff'),
-         url('katex_fraktur-bold.ttf') format('truetype');
+    font-family: 'KaTeX_Fraktur';
+    src: url('KaTeX_Fraktur-Bold.eot');
+    src: url('KaTeX_Fraktur-Bold.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Fraktur-Bold.woff') format('woff'),
+         url('KaTeX_Fraktur-Bold.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'katex_fraktur';
-    src: url('katex_fraktur-regular.eot');
-    src: url('katex_fraktur-regular.eot?#iefix') format('embedded-opentype'),
-         url('katex_fraktur-regular.woff') format('woff'),
-         url('katex_fraktur-regular.ttf') format('truetype');
+    font-family: 'KaTeX_Fraktur';
+    src: url('KaTeX_Fraktur-Regular.eot');
+    src: url('KaTeX_Fraktur-Regular.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Fraktur-Regular.woff') format('woff'),
+         url('KaTeX_Fraktur-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'katex_greek';
-    src: url('katex_greek-bold.eot');
-    src: url('katex_greek-bold.eot?#iefix') format('embedded-opentype'),
-         url('katex_greek-bold.woff') format('woff'),
-         url('katex_greek-bold.ttf') format('truetype');
+    font-family: 'KaTeX_Greek';
+    src: url('KaTeX_Greek-Bold.eot');
+    src: url('KaTeX_Greek-Bold.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Greek-Bold.woff') format('woff'),
+         url('KaTeX_Greek-Bold.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'katex_greek';
-    src: url('katex_greek-bolditalic.eot');
-    src: url('katex_greek-bolditalic.eot?#iefix') format('embedded-opentype'),
-         url('katex_greek-bolditalic.woff') format('woff'),
-         url('katex_greek-bolditalic.ttf') format('truetype');
-    font-weight: bold;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'katex_greek';
-    src: url('katex_greek-italic.eot');
-    src: url('katex_greek-italic.eot?#iefix') format('embedded-opentype'),
-         url('katex_greek-italic.woff') format('woff'),
-         url('katex_greek-italic.ttf') format('truetype');
-    font-weight: normal;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'katex_greek';
-    src: url('katex_greek-regular.eot');
-    src: url('katex_greek-regular.eot?#iefix') format('embedded-opentype'),
-         url('katex_greek-regular.woff') format('woff'),
-         url('katex_greek-regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'katex_main';
-    src: url('katex_main-bold.eot');
-    src: url('katex_main-bold.eot?#iefix') format('embedded-opentype'),
-         url('katex_main-bold.woff') format('woff'),
-         url('katex_main-bold.ttf') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'katex_main';
-    src: url('katex_main-italic.eot');
-    src: url('katex_main-italic.eot?#iefix') format('embedded-opentype'),
-         url('katex_main-italic.woff') format('woff'),
-         url('katex_main-italic.ttf') format('truetype');
-    font-weight: normal;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'katex_main';
-    src: url('katex_main-regular.eot');
-    src: url('katex_main-regular.eot?#iefix') format('embedded-opentype'),
-         url('katex_main-regular.woff') format('woff'),
-         url('katex_main-regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'katex_math';
-    src: url('katex_math-bolditalic.eot');
-    src: url('katex_math-bolditalic.eot?#iefix') format('embedded-opentype'),
-         url('katex_math-bolditalic.woff') format('woff'),
-         url('katex_math-bolditalic.ttf') format('truetype');
+    font-family: 'KaTeX_Greek';
+    src: url('KaTeX_Greek-BoldItalic.eot');
+    src: url('KaTeX_Greek-BoldItalic.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Greek-BoldItalic.woff') format('woff'),
+         url('KaTeX_Greek-BoldItalic.ttf') format('truetype');
     font-weight: bold;
     font-style: italic;
 }
 
 @font-face {
-    font-family: 'katex_math';
-    src: url('katex_math-italic.eot');
-    src: url('katex_math-italic.eot?#iefix') format('embedded-opentype'),
-         url('katex_math-italic.woff') format('woff'),
-         url('katex_math-italic.ttf') format('truetype');
+    font-family: 'KaTeX_Greek';
+    src: url('KaTeX_Greek-Italic.eot');
+    src: url('KaTeX_Greek-Italic.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Greek-Italic.woff') format('woff'),
+         url('KaTeX_Greek-Italic.ttf') format('truetype');
     font-weight: normal;
     font-style: italic;
 }
 
 @font-face {
-    font-family: 'katex_math';
-    src: url('katex_math-regular.eot');
-    src: url('katex_math-regular.eot?#iefix') format('embedded-opentype'),
-         url('katex_math-regular.woff') format('woff'),
-         url('katex_math-regular.ttf') format('truetype');
+    font-family: 'KaTeX_Greek';
+    src: url('KaTeX_Greek-Regular.eot');
+    src: url('KaTeX_Greek-Regular.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Greek-Regular.woff') format('woff'),
+         url('KaTeX_Greek-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'katex_sansserif';
-    src: url('katex_sansserif-bold.eot');
-    src: url('katex_sansserif-bold.eot?#iefix') format('embedded-opentype'),
-         url('katex_sansserif-bold.woff') format('woff'),
-         url('katex_sansserif-bold.ttf') format('truetype');
+    font-family: 'KaTeX_Main';
+    src: url('KaTeX_Main-Bold.eot');
+    src: url('KaTeX_Main-Bold.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Main-Bold.woff') format('woff'),
+         url('KaTeX_Main-Bold.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'katex_sansserif';
-    src: url('katex_sansserif-italic.eot');
-    src: url('katex_sansserif-italic.eot?#iefix') format('embedded-opentype'),
-         url('katex_sansserif-italic.woff') format('woff'),
-         url('katex_sansserif-italic.ttf') format('truetype');
+    font-family: 'KaTeX_Main';
+    src: url('KaTeX_Main-Italic.eot');
+    src: url('KaTeX_Main-Italic.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Main-Italic.woff') format('woff'),
+         url('KaTeX_Main-Italic.ttf') format('truetype');
     font-weight: normal;
     font-style: italic;
 }
 
 @font-face {
-    font-family: 'katex_sansserif';
-    src: url('katex_sansserif-regular.eot');
-    src: url('katex_sansserif-regular.eot?#iefix') format('embedded-opentype'),
-         url('katex_sansserif-regular.woff') format('woff'),
-         url('katex_sansserif-regular.ttf') format('truetype');
+    font-family: 'KaTeX_Main';
+    src: url('KaTeX_Main-Regular.eot');
+    src: url('KaTeX_Main-Regular.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Main-Regular.woff') format('woff'),
+         url('KaTeX_Main-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'katex_script';
-    src: url('katex_script-regular.eot');
-    src: url('katex_script-regular.eot?#iefix') format('embedded-opentype'),
-         url('katex_script-regular.woff') format('woff'),
-         url('katex_script-regular.ttf') format('truetype');
+    font-family: 'KaTeX_Math';
+    src: url('KaTeX_Math-BoldItalic.eot');
+    src: url('KaTeX_Math-BoldItalic.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Math-BoldItalic.woff') format('woff'),
+         url('KaTeX_Math-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'KaTeX_Math';
+    src: url('KaTeX_Math-Italic.eot');
+    src: url('KaTeX_Math-Italic.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Math-Italic.woff') format('woff'),
+         url('KaTeX_Math-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'KaTeX_Math';
+    src: url('KaTeX_Math-Regular.eot');
+    src: url('KaTeX_Math-Regular.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Math-Regular.woff') format('woff'),
+         url('KaTeX_Math-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'katex_size1';
-    src: url('katex_size1-regular.eot');
-    src: url('katex_size1-regular.eot?#iefix') format('embedded-opentype'),
-         url('katex_size1-regular.woff') format('woff'),
-         url('katex_size1-regular.ttf') format('truetype');
+    font-family: 'KaTeX_SansSerif';
+    src: url('KaTeX_SansSerif-Bold.eot');
+    src: url('KaTeX_SansSerif-Bold.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_SansSerif-Bold.woff') format('woff'),
+         url('KaTeX_SansSerif-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'KaTeX_SansSerif';
+    src: url('KaTeX_SansSerif-Italic.eot');
+    src: url('KaTeX_SansSerif-Italic.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_SansSerif-Italic.woff') format('woff'),
+         url('KaTeX_SansSerif-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'KaTeX_SansSerif';
+    src: url('KaTeX_SansSerif-Regular.eot');
+    src: url('KaTeX_SansSerif-Regular.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_SansSerif-Regular.woff') format('woff'),
+         url('KaTeX_SansSerif-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'katex_size2';
-    src: url('katex_size2-regular.eot');
-    src: url('katex_size2-regular.eot?#iefix') format('embedded-opentype'),
-         url('katex_size2-regular.woff') format('woff'),
-         url('katex_size2-regular.ttf') format('truetype');
+    font-family: 'KaTeX_Script';
+    src: url('KaTeX_Script-Regular.eot');
+    src: url('KaTeX_Script-Regular.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Script-Regular.woff') format('woff'),
+         url('KaTeX_Script-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'katex_size3';
-    src: url('katex_size3-regular.eot');
-    src: url('katex_size3-regular.eot?#iefix') format('embedded-opentype'),
-         url('katex_size3-regular.woff') format('woff'),
-         url('katex_size3-regular.ttf') format('truetype');
+    font-family: 'KaTeX_Size1';
+    src: url('KaTeX_Size1-Regular.eot');
+    src: url('KaTeX_Size1-Regular.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Size1-Regular.woff') format('woff'),
+         url('KaTeX_Size1-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'katex_size4';
-    src: url('katex_size4-regular.eot');
-    src: url('katex_size4-regular.eot?#iefix') format('embedded-opentype'),
-         url('katex_size4-regular.woff') format('woff'),
-         url('katex_size4-regular.ttf') format('truetype');
+    font-family: 'KaTeX_Size2';
+    src: url('KaTeX_Size2-Regular.eot');
+    src: url('KaTeX_Size2-Regular.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Size2-Regular.woff') format('woff'),
+         url('KaTeX_Size2-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'katex_typewriter';
-    src: url('katex_typewriter-regular.eot');
-    src: url('katex_typewriter-regular.eot?#iefix') format('embedded-opentype'),
-         url('katex_typewriter-regular.woff') format('woff'),
-         url('katex_typewriter-regular.ttf') format('truetype');
+    font-family: 'KaTeX_Size3';
+    src: url('KaTeX_Size3-Regular.eot');
+    src: url('KaTeX_Size3-Regular.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Size3-Regular.woff') format('woff'),
+         url('KaTeX_Size3-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'KaTeX_Size4';
+    src: url('KaTeX_Size4-Regular.eot');
+    src: url('KaTeX_Size4-Regular.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Size4-Regular.woff') format('woff'),
+         url('KaTeX_Size4-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'KaTeX_Typewriter';
+    src: url('KaTeX_Typewriter-Regular.eot');
+    src: url('KaTeX_Typewriter-Regular.eot?#iefix') format('embedded-opentype'),
+         url('KaTeX_Typewriter-Regular.woff') format('woff'),
+         url('KaTeX_Typewriter-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }

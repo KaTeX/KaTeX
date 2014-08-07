@@ -477,7 +477,7 @@ var groupTypes = {
         // Make an inner span with the given offset and in the given font
         var makeInner = function(symbol, offset, font) {
             var sizeClass;
-            if (font === "size1-regular") {
+            if (font === "Size1-Regular") {
                 sizeClass = "size1";
             }
 
@@ -527,7 +527,7 @@ var groupTypes = {
 
             // There are three parts, the top, a repeated middle, and a bottom.
             var top = middle = bottom = original;
-            var font = "size1-regular";
+            var font = "Size1-Regular";
             var overlap = false;
 
             // We set the parts and font based on the symbol. Note that we use
@@ -686,19 +686,19 @@ var makeText = function(value, style, mode) {
 };
 
 var mathit = function(value, mode) {
-    return makeSpan(["mathit"], [makeText(value, "math-italic", mode)]);
+    return makeSpan(["mathit"], [makeText(value, "Math-Italic", mode)]);
 };
 
 var mathrm = function(value, mode) {
     if (symbols[mode][value].font === "main") {
-        return makeText(value, "main-regular", mode);
+        return makeText(value, "Main-Regular", mode);
     } else {
-        return makeSpan(["amsrm"], [makeText(value, "ams-regular", mode)]);
+        return makeSpan(["amsrm"], [makeText(value, "AMS-Regular", mode)]);
     }
 };
 
 var mathrmSize = function(value, size, mode) {
-    return makeText(value, "size" + size + "-regular", mode);
+    return makeText(value, "Size" + size + "-Regular", mode);
 }
 
 var buildTree = function(tree) {
