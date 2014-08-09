@@ -3,7 +3,8 @@ MAINTAINER xymostech <xymostech@gmail.com>
 
 # Install things
 RUN apt-get -qq update
-RUN apt-get -qqy install git dvipng default-jre default-jdk texlive wget fontforge mftrace fonttools optipng advancecomp man-db build-essential unzip zlib1g-dev || true
+RUN apt-get -qqy install git dvipng default-jre default-jdk texlive wget fontforge mftrace fonttools optipng advancecomp man-db build-essential unzip zlib1g-dev python-fontforge ruby || true
+RUN gem install ttfunk --version 1.1.1
 
 # Download yuicompressor
 RUN mkdir /usr/share/yui-compressor/
@@ -27,18 +28,8 @@ RUN unzip -d sfnt2woff woff-code-latest.zip
 RUN make -C sfnt2woff
 RUN mv sfnt2woff/sfnt2woff /usr/bin/
 
-# Add a symlink so MathJax can find the TeX fonts
-RUN ln -s /usr/share/texlive/texmf-dist /usr/share/
-
 # Download and setup MathJax-dev
-RUN git clone "https://github.com/mathjax/MathJax-dev.git"
+RUN git clone "https://github.com/khan/MathJax-dev.git"
 RUN cp MathJax-dev/default.cfg MathJax-dev/custom.cfg
 RUN make -C MathJax-dev custom.cfg.pl
-
-# Fix for a new version of ttx
-RUN sed -i "s/Space.otf/Space.ttf/" MathJax-dev/fonts/OTF/TeX/makeFF
-
-# Change the names of the generated fonts and font files to KaTeX
-RUN sed -i "s/MathJax/KaTeX/g" MathJax-dev/fonts/OTF/TeX/makeFF
-RUN sed -i "s/MathJax/KaTeX/g" MathJax-dev/fonts/OTF/TeX/Makefile
 
