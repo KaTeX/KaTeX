@@ -18,7 +18,6 @@
     <script type="text/javascript">
       var query = {};
       var queryVars = window.location.search.slice(1).split("&");
-      console.log(queryVars);
       for (var i = 0; i < queryVars.length; i++) {
         var split = queryVars[i].split("=");
         query[split[0]] = decodeURIComponent(split[1]);
