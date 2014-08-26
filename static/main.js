@@ -9,9 +9,15 @@ function init() {
         input.attachEvent("onkeyup", reprocess);
     }
 
-    permalink.addEventListener("click", function() {
-        window.location.search = "?text=" + encodeURIComponent(input.value);
-    });
+    if ("addEventListener" in permalink) {
+        permalink.addEventListener("click", function() {
+            window.location.search = "?text=" + encodeURIComponent(input.value);
+        });
+    } else {
+        permalink.attachEvent("click", function() {
+            window.location.search = "?text=" + encodeURIComponent(input.value);
+        });
+    }
 
     var match = (/(?:^\?|&)text=([^&]+)/).exec(window.location.search);
     if (match) {
