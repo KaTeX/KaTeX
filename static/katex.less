@@ -34,6 +34,11 @@ big parens
         font-family: KaTeX_AMS;
     }
 
+    .fix-ie {
+        display: inline-table;
+        table-layout: fixed;
+    }
+
     @thinspace: 0.16667em;
     @mediumspace: 0.22222em;
     @thickspace: 0.27778em;
@@ -188,10 +193,6 @@ big parens
                 .baseline-align-hack-inner;
             }
         }
-
-        .fix-ie {
-            display: inline-block;
-        }
     }
 
     .mfrac {
@@ -210,11 +211,7 @@ big parens
             }
         }
 
-        .fix-ie {
-            display: inline-block;
-        }
-
-        .mfracmid > span {
+        .mfracmid > .line {
             width: 100%;
 
             &:before {
@@ -323,11 +320,7 @@ big parens
             }
         }
 
-        > .fix-ie {
-            display: inline-block;
-        }
-
-        > .overline-line > span {
+        > .overline-line > .line {
             width: 100%;
 
             &:before {
@@ -347,7 +340,7 @@ big parens
         }
     }
 
-    .sizing {
+    .sizing, .fontsize-ensurer {
         display: inline-block;
 
         @size1: 0.5;

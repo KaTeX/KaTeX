@@ -3,11 +3,12 @@
 // function. They are useful for both storing extra properties on the nodes, as
 // well as providing a way to easily work with the DOM.
 
-function span(classes, children, height, depth, style) {
+function span(classes, children, height, depth, maxFontSize, style) {
     this.classes = classes || [];
     this.children = children || [];
     this.height = height || 0;
     this.depth = depth || 0;
+    this.maxFontSize = maxFontSize || 0;
     this.style = style || {};
 }
 

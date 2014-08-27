@@ -105,5 +105,17 @@
         "name": "Overline",
         "screenSize": [1024, 768],
         "url": "http://localhost:7936/test/huxley/test.html?m=\\overline{x}\\overline{x}\\overline{x^{x^{x^x}}} \\blue\\overline{y}"
+    },
+
+    {
+        "name": "DeepFontSizing",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m=a^{\\big| x^{\\big(}}_{\\Big\\uparrow} + i^{i^{\\Huge x}_y}_{\\Huge z} + \\dfrac{\\Huge x}{y}"
+    },
+
+    {
+        "name": "VerticalSpacing",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?pre=potato<br>&post=<br>moo&m=x^{\\Huge y}z"
     }
 ]

@@ -21,6 +21,7 @@ var buildExpression = function(expression, options, prev) {
 var makeSpan = function(classes, children, color) {
     var height = 0;
     var depth = 0;
+    var maxFontSize = 0;
 
     if (children) {
         for (var i = 0; i < children.length; i++) {
@@ -30,16 +31,31 @@ var makeSpan = function(classes, children, color) {
             if (children[i].depth > depth) {
                 depth = children[i].depth;
             }
+            if (children[i].maxFontSize > maxFontSize) {
+                maxFontSize = children[i].maxFontSize;
+            }
         }
     }
 
-    var span = new domTree.span(classes, children, height, depth);
+    var span = new domTree.span(
+        classes, children, height, depth, maxFontSize);
 
     if (color) {
         span.style.color = color;
     }
 
     return span;
+};
+
+var makeFontSizer = function(options, fontSize) {
+    var fontSizeInner = makeSpan([], [new domTree.textNode("\u200b")]);
+    fontSizeInner.style.fontSize = (fontSize / options.style.sizeMultiplier) + "em";
+
+    var fontSizer = makeSpan(
+        ["fontsize-ensurer", "reset-" + options.size, "size5"],
+        [fontSizeInner]);
+
+    return fontSizer;
 };
 
 var groupToType = {
@@ -142,7 +158,7 @@ var groupTypes = {
 
     text: function(group, options, prev) {
         return makeSpan(["text mord", options.style.cls()],
-            [buildGroup(group.value, options.deepen())]
+            [buildGroup(group.value, options.reset())]
         );
     },
 
@@ -151,18 +167,16 @@ var groupTypes = {
 
         if (group.value.sup) {
             var sup = buildGroup(group.value.sup,
-                    options.withStyle(options.style.sup()).deepen());
+                    options.withStyle(options.style.sup()));
             var supmid = makeSpan(
                     [options.style.reset(), options.style.sup().cls()], [sup]);
-            var supwrap = makeSpan(["msup", options.style.reset()], [supmid]);
         }
 
         if (group.value.sub) {
             var sub = buildGroup(group.value.sub,
-                    options.withStyle(options.style.sub()).deepen());
+                    options.withStyle(options.style.sub()));
             var submid = makeSpan(
                     [options.style.reset(), options.style.sub().cls()], [sub]);
-            var subwrap = makeSpan(["msub"], [submid]);
         }
 
         if (isCharacterBox(group.value.base)) {
@@ -183,9 +197,11 @@ var groupTypes = {
         }
 
         var supsub;
-        var fixIE = makeSpan(["fix-ie"], [new domTree.textNode("\u00a0")]);
 
         if (!group.value.sup) {
+            var fontSizer = makeFontSizer(options, submid.maxFontSize);
+            var subwrap = makeSpan(["msub"], [fontSizer, submid]);
+
             v = Math.max(v, fontMetrics.metrics.sub1,
                 sub.height - 0.8 * fontMetrics.metrics.xHeight);
 
@@ -194,8 +210,13 @@ var groupTypes = {
             subwrap.depth = subwrap.depth + v;
             subwrap.height = 0;
 
+            var fixIE = makeSpan(["fix-ie"], [fontSizer, new domTree.textNode("\u00a0")]);
+
             supsub = makeSpan(["msupsub"], [subwrap, fixIE]);
         } else if (!group.value.sub) {
+            var fontSizer = makeFontSizer(options, supmid.maxFontSize);
+            var supwrap = makeSpan(["msup"], [fontSizer, supmid]);
+
             u = Math.max(u, p,
                 sup.depth + 0.25 * fontMetrics.metrics.xHeight);
 
@@ -204,8 +225,15 @@ var groupTypes = {
             supwrap.height = supwrap.height + u;
             supwrap.depth = 0;
 
+            var fixIE = makeSpan(["fix-ie"], [fontSizer, new domTree.textNode("\u00a0")]);
+
             supsub = makeSpan(["msupsub"], [supwrap, fixIE]);
         } else {
+            var fontSizer = makeFontSizer(options,
+                Math.max(submid.maxFontSize, supmid.maxFontSize));
+            var subwrap = makeSpan(["msub"], [fontSizer, submid]);
+            var supwrap = makeSpan(["msup"], [fontSizer, supmid]);
+
             u = Math.max(u, p,
                 sup.depth + 0.25 * fontMetrics.metrics.xHeight);
             v = Math.max(v, fontMetrics.metrics.sub2);
@@ -229,6 +257,8 @@ var groupTypes = {
 
             subwrap.height = 0;
             subwrap.depth = subwrap.depth + v;
+
+            var fixIE = makeSpan(["fix-ie"], [fontSizer, new domTree.textNode("\u00a0")]);
 
             supsub = makeSpan(["msupsub"], [supwrap, subwrap, fixIE]);
         }
@@ -263,15 +293,18 @@ var groupTypes = {
         var nstyle = fstyle.fracNum();
         var dstyle = fstyle.fracDen();
 
-        var numer = buildGroup(group.value.numer, options.withStyle(nstyle).deepen());
+        var numer = buildGroup(group.value.numer, options.withStyle(nstyle));
         var numernumer = makeSpan([fstyle.reset(), nstyle.cls()], [numer]);
-        var numerrow = makeSpan(["mfracnum"], [numernumer]);
 
-        var mid = makeSpan(["mfracmid"], [makeSpan()]);
-
-        var denom = buildGroup(group.value.denom, options.withStyle(dstyle).deepen());
+        var denom = buildGroup(group.value.denom, options.withStyle(dstyle));
         var denomdenom = makeSpan([fstyle.reset(), dstyle.cls()], [denom])
-        var denomrow = makeSpan(["mfracden"], [denomdenom]);
+
+        var fontSizer = makeFontSizer(options,
+            Math.max(numer.maxFontSize, denom.maxFontSize));
+
+        var numerrow = makeSpan(["mfracnum"], [fontSizer, numernumer]);
+        var mid = makeSpan(["mfracmid"], [fontSizer, makeSpan(["line"])]);
+        var denomrow = makeSpan(["mfracden"], [fontSizer, denomdenom]);
 
         var theta = fontMetrics.metrics.defaultRuleThickness;
 
@@ -306,7 +339,8 @@ var groupTypes = {
         denomrow.height = 0;
         denomrow.depth = denomrow.depth + v;
 
-        var fixIE = makeSpan(["fix-ie"], [new domTree.textNode("\u00a0")]);
+        var fixIE = makeSpan(["fix-ie"], [
+            fontSizer, new domTree.textNode("\u00a0")]);
 
         var frac = makeSpan([], [numerrow, mid, denomrow, fixIE]);
 
@@ -366,14 +400,14 @@ var groupTypes = {
 
     llap: function(group, options, prev) {
         var inner = makeSpan(
-            ["inner"], [buildGroup(group.value, options.deepen())]);
+            ["inner"], [buildGroup(group.value, options.reset())]);
         var fix = makeSpan(["fix"], []);
         return makeSpan(["llap", options.style.cls()], [inner, fix]);
     },
 
     rlap: function(group, options, prev) {
         var inner = makeSpan(
-            ["inner"], [buildGroup(group.value, options.deepen())]);
+            ["inner"], [buildGroup(group.value, options.reset())]);
         var fix = makeSpan(["fix"], []);
         return makeSpan(["rlap", options.style.cls()], [inner, fix]);
     },
@@ -422,14 +456,18 @@ var groupTypes = {
 
     overline: function(group, options, prev) {
         var innerGroup = buildGroup(group.value.result,
-                options.withStyle(options.style.cramp()).deepen());
+                options.withStyle(options.style.cramp()));
+
+        var fontSizer = makeFontSizer(options, innerGroup.maxFontSize);
 
         // The theta variable in the TeXbook
         var lineWidth = fontMetrics.metrics.defaultRuleThickness;
 
-        var line = makeSpan(["overline-line"], [makeSpan([])]);
-        var inner = makeSpan(["overline-inner"], [innerGroup]);
-        var fixIE = makeSpan(["fix-ie"], []);
+        var line = makeSpan(
+            ["overline-line"], [fontSizer, makeSpan(["line"])]);
+        var inner = makeSpan(["overline-inner"], [fontSizer, innerGroup]);
+        var fixIE = makeSpan(
+            ["fix-ie"], [fontSizer, new domTree.textNode("\u00a0")]);
 
         line.style.top = (-inner.height - 3 * lineWidth) + "em";
         // The line is supposed to have 1 extra line width above it in height
@@ -445,10 +483,27 @@ var groupTypes = {
         var inner = buildGroup(group.value.value,
                 options.withSize(group.value.size), prev);
 
-        return makeSpan(
-            ["sizing", "reset-" + options.size, group.value.size,
-                getTypeOfGroup(group.value.value)],
-            [inner]);
+        var span = makeSpan([getTypeOfGroup(group.value.value)],
+            [makeSpan(["sizing", "reset-" + options.size, group.value.size],
+                      [inner])]);
+
+        var sizeToFontSize = {
+            "size1": 0.5,
+            "size2": 0.7,
+            "size3": 0.8,
+            "size4": 0.9,
+            "size5": 1.0,
+            "size6": 1.2,
+            "size7": 1.44,
+            "size8": 1.73,
+            "size9": 2.07,
+            "size10": 2.49
+        };
+
+        var fontSize = sizeToFontSize[group.value.size];
+        span.maxFontSize = fontSize * options.style.sizeMultiplier;
+
+        return span;
     },
 
     delimsizing: function(group, options, prev) {
@@ -518,9 +573,21 @@ var groupTypes = {
             var inner = mathrmSize(
                 original, group.value.size, group.mode);
 
-            return makeSpan(
-                ["delimsizing", size, groupToType[group.value.type]],
-                [inner], options.getColor());
+            var node = makeSpan(
+                [options.style.reset(), Style.TEXT.cls(),
+                 groupToType[group.value.type]],
+                [makeSpan(
+                    ["delimsizing", size, groupToType[group.value.type]],
+                    [inner], options.getColor())]);
+
+            var multiplier = Style.TEXT.sizeMultiplier /
+                    options.style.sizeMultiplier;
+
+            node.height *= multiplier;
+            node.depth *= multiplier;
+            node.maxFontSize = 1.0;
+
+            return node;
         } else if (utils.contains(stackDelimiters, original)) {
             // These delimiters can be created by stacking other delimiters on
             // top of each other to create the correct size
@@ -602,9 +669,20 @@ var groupTypes = {
             var fixIE = makeSpan(["fix-ie"], [new domTree.textNode("\u00a0")]);
             inners.push(fixIE);
 
-            return makeSpan(
-                ["delimsizing", "mult", groupToType[group.value.type]],
-                inners, options.getColor());
+            var node = makeSpan(
+                [options.style.reset(), Style.TEXT.cls(),
+                 groupToType[group.value.type]],
+                [makeSpan(["delimsizing", "mult"],
+                          inners, options.getColor())]);
+
+            var multiplier = Style.TEXT.sizeMultiplier /
+                    options.style.sizeMultiplier;
+
+            node.height *= multiplier;
+            node.depth *= multiplier;
+            node.maxFontSize = 1.0;
+
+            return node;
         } else {
             throw new ParseError("Illegal delimiter: '" + original + "'");
         }
@@ -643,11 +721,6 @@ var buildGroup = function(group, options, prev) {
         if (options.size !== options.parentSize) {
             var multiplier = sizingMultiplier[options.size] /
                     sizingMultiplier[options.parentSize];
-
-            if (options.deep) {
-                throw new ParseError(
-                    "Can't use sizing outside of the root node");
-            }
 
             groupNode.height *= multiplier;
             groupNode.depth *= multiplier;
