@@ -116,6 +116,6 @@
     {
         "name": "VerticalSpacing",
         "screenSize": [1024, 768],
-        "url": "http://localhost:7936/test/huxley/test.html?pre=potato<br>&post=<br>moo&m=x^{\\Huge y}z"
+        "url": "http://localhost:7936/test/huxley/test.html?pre=potato<br>blah&post=<br>moo&m=x^{\\Huge y}z"
     }
 ]
