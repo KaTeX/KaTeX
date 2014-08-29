@@ -196,6 +196,11 @@ var groupTypes = {
             p = fontMetrics.metrics.sup2;
         }
 
+        var multiplier = Style.TEXT.sizeMultiplier *
+                options.style.sizeMultiplier;
+        // \scriptspace is 0.5pt = 0.05em * 10pt/em
+        var scriptspace = 0.05 / multiplier + "em";
+
         var supsub;
 
         if (!group.value.sup) {
@@ -206,6 +211,7 @@ var groupTypes = {
                 sub.height - 0.8 * fontMetrics.metrics.xHeight);
 
             subwrap.style.top = v + "em";
+            subwrap.style.marginRight = scriptspace;
 
             subwrap.depth = subwrap.depth + v;
             subwrap.height = 0;
@@ -221,6 +227,7 @@ var groupTypes = {
                 sup.depth + 0.25 * fontMetrics.metrics.xHeight);
 
             supwrap.style.top = -u + "em";
+            supwrap.style.marginRight = scriptspace;
 
             supwrap.height = supwrap.height + u;
             supwrap.depth = 0;
@@ -251,6 +258,9 @@ var groupTypes = {
 
             supwrap.style.top = -u + "em";
             subwrap.style.top = v + "em";
+
+            supwrap.style.marginRight = scriptspace;
+            subwrap.style.marginRight = scriptspace;
 
             supwrap.height = supwrap.height + u;
             supwrap.depth = 0;
