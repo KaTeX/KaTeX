@@ -259,6 +259,27 @@ Parser.prototype.parseTextGroup = function(pos, mode) {
     }
 };
 
+Parser.prototype.parseSizeGroup = function(pos, mode) {
+    var start = this.lexer.lex(pos, mode);
+    // Try to parse an open brace
+    if (start.type === "{") {
+        // Parse the size
+        var size = this.lexer.lex(start.position, "size");
+        // Make sure we get a close brace
+        var closeBrace = this.lexer.lex(size.position, mode);
+        this.expect(closeBrace, "}");
+        return new ParseResult(
+            new ParseNode("size", size.text),
+            closeBrace.position);
+    } else {
+        // It has to have an open brace, so if it doesn't we throw
+        throw new ParseError(
+            "There must be braces around sizes",
+            this.lexer, pos
+        );
+    }
+};
+
 var delimiters = [
     "(", ")", "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
@@ -475,6 +496,31 @@ Parser.prototype.parseNucleus = function(pos, mode) {
                 group.position);
         } else {
             throw new ParseError("Expected group after '" +
+                nucleus.type + "'",
+                this.lexer, nucleus.position
+            );
+        }
+    } else if (mode === "math" && nucleus.type === "\\rule") {
+        // Parse the width of the rule
+        var widthGroup = this.parseSizeGroup(nucleus.position, mode);
+        if (widthGroup) {
+            // Parse the height of the rule
+            var heightGroup = this.parseSizeGroup(widthGroup.position, mode);
+            if (heightGroup) {
+                return new ParseResult(
+                    new ParseNode("rule", {
+                        width: widthGroup.result.value,
+                        height: heightGroup.result.value
+                    }, mode),
+                    heightGroup.position);
+            } else {
+                throw new ParseError("Expected second size group after '" +
+                    nucleus.type + "'",
+                    this.lexer, nucleus.position
+                );
+            }
+        } else {
+            throw new ParseError("Expected size group after '" +
                 nucleus.type + "'",
                 this.lexer, nucleus.position
             );

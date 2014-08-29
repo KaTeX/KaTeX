@@ -72,7 +72,8 @@ var groupToType = {
     ordgroup: "mord",
     namedfn: "mop",
     katex: "mord",
-    overline: "mord"
+    overline: "mord",
+    rule: "mord"
 };
 
 var getTypeOfGroup = function(group) {
@@ -696,6 +697,31 @@ var groupTypes = {
         } else {
             throw new ParseError("Illegal delimiter: '" + original + "'");
         }
+    },
+
+    rule: function(group, options, prev) {
+        // Make an empty span for the rule
+        var rule = makeSpan(["mord", "rule"], []);
+
+        var width = group.value.width.number;
+        if (group.value.width.unit === "ex") {
+            width *= fontMetrics.metrics.xHeight;
+        }
+
+        var height = group.value.height.number;
+        if (group.value.height.unit === "ex") {
+            height *= fontMetrics.metrics.xHeight;
+        }
+
+        // Style the rule to the right size
+        rule.style.borderRightWidth = width + "em";
+        rule.style.borderTopWidth = height + "em";
+
+        // Record the height and width
+        rule.width = width;
+        rule.height = height;
+
+        return rule;
     }
 };
 

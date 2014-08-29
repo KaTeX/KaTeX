@@ -683,3 +683,59 @@ describe("An overline parser", function() {
         expect(parse.type).toMatch("overline");
     });
 });
+
+describe("A rule parser", function() {
+    var emRule = "\\rule{1em}{2em}";
+    var exRule = "\\rule{1ex}{2em}";
+    var badUnitRule = "\\rule{1px}{2em}";
+    var noNumberRule = "\\rule{1em}{em}";
+    var incompleteRule = "\\rule{1em}";
+    var hardNumberRule = "\\rule{   01.24ex}{2.450   em   }";
+
+    it("should not fail", function() {
+        expect(function() {
+            parseTree(emRule);
+            parseTree(exRule);
+        }).not.toThrow();
+    });
+
+    it("should not parse invalid units", function() {
+        expect(function() {
+            parseTree(badUnitRule);
+        }).toThrow();
+
+        expect(function() {
+            parseTree(noNumberRule);
+        }).toThrow();
+    });
+
+    it("should not parse incomplete rules", function() {
+        expect(function() {
+            parseTree(incompleteRule);
+        }).toThrow();
+    });
+
+    it("should produce a rule", function() {
+        var parse = parseTree(emRule)[0];
+
+        expect(parse.type).toMatch("rule");
+    });
+
+    it("should list the correct units", function() {
+        var emParse = parseTree(emRule)[0];
+        var exParse = parseTree(exRule)[0];
+
+        expect(emParse.value.width.unit).toMatch("em");
+        expect(emParse.value.height.unit).toMatch("em");
+
+        expect(exParse.value.width.unit).toMatch("ex");
+        expect(exParse.value.height.unit).toMatch("em");
+    });
+
+    it("should parse the number correctly", function() {
+        var hardNumberParse = parseTree(hardNumberRule)[0];
+
+        expect(hardNumberParse.value.width.number).toBeCloseTo(1.24);
+        expect(hardNumberParse.value.height.number).toBeCloseTo(2.45);
+    });
+});

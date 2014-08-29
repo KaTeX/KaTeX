@@ -36,6 +36,9 @@ var textNormals = [
     [/^~/, "spacing"]
 ];
 
+var whitespaceRegex = /^\s*/;
+var whitespaceConcatRegex = /^( +|\\  +)/;
+
 // Build a regex to easily parse the functions
 var anyFunc = /^\\(?:[a-zA-Z]+|.)/;
 
@@ -44,12 +47,12 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
 
     // Get rid of whitespace
     if (ignoreWhitespace) {
-        var whitespace = input.match(/^\s*/)[0];
+        var whitespace = input.match(whitespaceRegex)[0];
         pos += whitespace.length;
         input = input.slice(whitespace.length);
     } else {
         // Do the funky concatenation of whitespace
-        var whitespace = input.match(/^( +|\\  +)/);
+        var whitespace = input.match(whitespaceConcatRegex);
         if (whitespace !== null) {
             return new LexResult(" ", " ", pos + whitespace[0].length);
         }
@@ -90,7 +93,7 @@ Lexer.prototype._innerLexColor = function(pos) {
     var input = this._input.slice(pos);
 
     // Ignore whitespace
-    var whitespace = input.match(/^\s*/)[0];
+    var whitespace = input.match(whitespaceRegex)[0];
     pos += whitespace.length;
     input = input.slice(whitespace.length);
 
@@ -104,6 +107,31 @@ Lexer.prototype._innerLexColor = function(pos) {
     throw new ParseError("Invalid color", this, pos);
 };
 
+var sizeRegex = /^(\d+(?:\.\d*)?|\.\d+)\s*([a-z]{2})/;
+
+Lexer.prototype._innerLexSize = function(pos) {
+    var input = this._input.slice(pos);
+
+    // Ignore whitespace
+    var whitespace = input.match(whitespaceRegex)[0];
+    pos += whitespace.length;
+    input = input.slice(whitespace.length);
+
+    var match;
+    if ((match = input.match(sizeRegex))) {
+        var unit = match[2];
+        if (unit !== "em" && unit !== "ex") {
+            throw new ParseError("Invalid unit: '" + unit + "'", this, pos);
+        }
+        return new LexResult("size", {
+                number: +match[1],
+                unit: unit
+            }, pos + match[0].length);
+    }
+
+    throw new ParseError("Invalid size", this, pos);
+};
+
 // Lex a single token
 Lexer.prototype.lex = function(pos, mode) {
     if (mode === "math") {
@@ -112,6 +140,8 @@ Lexer.prototype.lex = function(pos, mode) {
         return this._innerLex(pos, textNormals, false);
     } else if (mode === "color") {
         return this._innerLexColor(pos);
+    } else if (mode === "size") {
+        return this._innerLexSize(pos);
     }
 };
 
