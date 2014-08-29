@@ -604,7 +604,8 @@ var groupTypes = {
             // top of each other to create the correct size
 
             // There are three parts, the top, a repeated middle, and a bottom.
-            var top = middle = bottom = original;
+            var top, middle, bottom;
+            top = middle = bottom = original;
             var font = "Size1-Regular";
             var overlap = false;
 
