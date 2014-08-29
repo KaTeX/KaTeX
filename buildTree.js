@@ -308,7 +308,7 @@ var groupTypes = {
         var numernumer = makeSpan([fstyle.reset(), nstyle.cls()], [numer]);
 
         var denom = buildGroup(group.value.denom, options.withStyle(dstyle));
-        var denomdenom = makeSpan([fstyle.reset(), dstyle.cls()], [denom])
+        var denomdenom = makeSpan([fstyle.reset(), dstyle.cls()], [denom]);
 
         var fontSizer = makeFontSizer(options,
             Math.max(numer.maxFontSize, denom.maxFontSize));
@@ -377,10 +377,10 @@ var groupTypes = {
 
         for (var i = 0; i < els.length; i++) {
             if (els[i].height > height) {
-                var height = els[i].height;
+                height = els[i].height;
             }
             if (els[i].depth > depth) {
-                var depth = els[i].depth;
+                depth = els[i].depth;
             }
         }
 
@@ -604,7 +604,8 @@ var groupTypes = {
             // top of each other to create the correct size
 
             // There are three parts, the top, a repeated middle, and a bottom.
-            var top = middle = bottom = original;
+            var top, middle, bottom;
+            top = middle = bottom = original;
             var font = "Size1-Regular";
             var overlap = false;
 
