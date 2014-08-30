@@ -6,7 +6,7 @@ var ParseError = require("./ParseError");
 
 // Main Parser class
 function Parser() {
-};
+}
 
 // Returned by the Parser.parse... functions. Stores the current results and
 // the new lexer position.
@@ -92,7 +92,6 @@ Parser.prototype.parseSuperscript = function(pos, mode) {
                 "Couldn't find group after '^'", this.lexer, sup.position);
         }
     } else if (sup.type === "'") {
-        var pos = sup.position;
         return new ParseResult(
             new ParseNode("textord", "\\prime", mode), sup.position, mode);
     } else {
@@ -179,7 +178,7 @@ Parser.prototype.parseAtom = function(pos, mode) {
     } else {
         return nucleus;
     }
-}
+};
 
 // Parses a group, which is either a single nucleus (like "x") or an expression
 // in braces (like "{x+y}")
