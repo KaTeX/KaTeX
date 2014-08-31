@@ -11,7 +11,7 @@ for this to work). This will build a docker image with the mathjaxfonts tag,
 which you can then use to run dockers based on them. Then, run a mathjaxfonts
 docker with
 
-  sudo docker run --interactive --tty mathjaxfonts --name mjf /bin/bash
+  sudo docker run --interactive --tty --name mjf mathjaxfonts /bin/bash
 
 We name this docker "mjf" so we can reference it later when we want to copy the
 files off. (If you get an error about the name being in use, perhaps because you
