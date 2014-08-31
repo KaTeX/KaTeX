@@ -713,6 +713,9 @@ var groupTypes = {
             height *= fontMetrics.metrics.xHeight;
         }
 
+        width /= options.style.sizeMultiplier;
+        height /= options.style.sizeMultiplier;
+
         // Style the rule to the right size
         rule.style.borderRightWidth = width + "em";
         rule.style.borderTopWidth = height + "em";
