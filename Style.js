@@ -55,7 +55,7 @@ var resetNames = [
     "reset-textstyle",
     "reset-textstyle",
     "reset-scriptstyle",
-    "reset-scriptscriptstyle",
+    "reset-scriptscriptstyle"
 ];
 
 var styles = [

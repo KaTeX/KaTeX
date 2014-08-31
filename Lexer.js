@@ -3,7 +3,7 @@ var ParseError = require("./ParseError");
 // The main lexer class
 function Lexer(input) {
     this._input = input;
-};
+}
 
 // The result of a single lex
 function LexResult(type, text, position) {
@@ -84,7 +84,7 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
     // We didn't match any of the tokens, so throw an error.
     throw new ParseError("Unexpected character: '" + input[0] +
         "'", this, pos);
-}
+};
 
 // A regex to match a CSS color (like #ffffff or BlueViolet)
 var cssColor = /^(#[a-z0-9]+|[a-z]+)/i;
