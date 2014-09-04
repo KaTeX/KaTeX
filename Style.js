@@ -63,8 +63,8 @@ var styles = [
     new Style(Dc, 0, 1.0, true),
     new Style(T, 1, 1.0, false),
     new Style(Tc, 1, 1.0, true),
-    new Style(S, 2, 0.66667, false),
-    new Style(Sc, 2, 0.66667, true),
+    new Style(S, 2, 0.7, false),
+    new Style(Sc, 2, 0.7, true),
     new Style(SS, 3, 0.5, false),
     new Style(SSc, 3, 0.5, true)
 ];
