@@ -1,6 +1,6 @@
 UNAME=$(shell uname)
 
-.PHONY: build setup copy serve clean
+.PHONY: build setup copy serve clean metrics
 build: setup build/katex.js build/katex.less.css
 ifeq ($(UNAME),Darwin)
 build: pdiff
@@ -35,6 +35,9 @@ pdiff:
 	@mv build/pdiff-full.png build/pdiff.png
 	@printf "Comparing to reference pdiff image...\n"
 	@node test/pdiff.js
+
+metrics:
+	cd metrics && ./mapping.pl | ./extract_tfms.py | ./replace_line.py
 
 clean:
 	rm -rf build/*

@@ -129,5 +129,11 @@
         "name": "Rule",
         "screenSize": [1024, 768],
         "url": "http://localhost:7936/test/huxley/test.html?m=\\rule{1em}{0.5em}\\rule{1ex}{2ex}\\rule{1em}{1ex}\\rule{1em}{0.431ex}"
+    },
+
+    {
+        "name": "PrimeSpacing",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m=f'+f_2'+f^{f'}"
     }
 ]
