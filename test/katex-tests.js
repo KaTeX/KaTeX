@@ -739,3 +739,62 @@ describe("A rule parser", function() {
         expect(hardNumberParse.value.height.number).toBeCloseTo(2.45);
     });
 });
+
+describe("A left/right parser", function() {
+    var normalLeftRight = "\\left( \\dfrac{x}{y} \\right)";
+    var emptyRight = "\\left( \\dfrac{x}{y} \\right.";
+
+    it("should not fail", function() {
+        expect(function() {
+            parseTree(normalLeftRight);
+        }).not.toThrow();
+    });
+
+    it("should produce a leftright", function() {
+        var parse = parseTree(normalLeftRight)[0];
+
+        expect(parse.type).toMatch("leftright");
+        expect(parse.value.left).toMatch("\\(");
+        expect(parse.value.right).toMatch("\\)");
+    });
+
+    it("should error when it is mismatched", function() {
+        var unmatchedLeft = "\\left( \\dfrac{x}{y}";
+        var unmatchedRight = "\\dfrac{x}{y} \\right)";
+
+        expect(function() {
+            parseTree(unmatchedLeft);
+        }).toThrow();
+
+        expect(function() {
+            parseTree(unmatchedRight);
+        }).toThrow();
+    });
+
+    it("should error when braces are mismatched", function() {
+        var unmatched = "{ \\left( \\dfrac{x}{y} } \\right)";
+        expect(function() {
+            parseTree(unmatched);
+        }).toThrow();
+    });
+
+    it("should error when non-delimiters are provided", function() {
+        var nonDelimiter = "\\left$ \\dfrac{x}{y} \\right)";
+        expect(function() {
+            parseTree(nonDelimiter);
+        }).toThrow();
+    });
+
+    it("should parse the empty '.' delimiter", function() {
+        expect(function() {
+            parseTree(emptyRight);
+        }).not.toThrow();
+    });
+
+    it("should parse the '.' delimiter with normal sizes", function() {
+        var normalEmpty = "\\Bigl .";
+        expect(function() {
+            parseTree(normalEmpty);
+        }).not.toThrow();
+    });
+});

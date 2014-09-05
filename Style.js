@@ -77,5 +77,7 @@ var cramp = [Dc, Dc, Tc, Tc, Sc, Sc, SSc, SSc];
 
 module.exports = {
     DISPLAY: styles[D],
-    TEXT: styles[T]
+    TEXT: styles[T],
+    SCRIPT: styles[S],
+    SCRIPTSCRIPT: styles[SS]
 };

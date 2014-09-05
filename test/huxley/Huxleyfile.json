@@ -132,8 +132,26 @@
     },
 
     {
+        "name": "LeftRight",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m=\\left( x^2 \\right) \\left\\{ x^{x^{x^{x^x}}} \\right."
+    },
+
+    {
+        "name": "LeftRightStyleSizing",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m=+\\left\\{\\rule{0.1em}{1em}\\right.x^{+\\left\\{\\rule{0.1em}{1em}\\right.x^{+\\left\\{\\rule{0.1em}{1em}\\right.}}"
+    },
+
+    {
         "name": "PrimeSpacing",
         "screenSize": [1024, 768],
         "url": "http://localhost:7936/test/huxley/test.html?m=f'+f_2'+f^{f'}"
+    },
+
+    {
+        "name": "NullDelimiterInteraction",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m=a \\bigl. + 2 \\quad \\left. + a \\right)"
     }
 ]

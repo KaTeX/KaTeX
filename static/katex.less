@@ -39,6 +39,11 @@ big parens
         table-layout: fixed;
     }
 
+    // This value is also used in fontMetrics.js, if you change it make sure the
+    // values match.
+    @ptperem: 10.0;
+    @nulldelimiterspace: 1.2em / @ptperem;
+
     @thinspace: 0.16667em;
     @mediumspace: 0.22222em;
     @thickspace: 0.27778em;
@@ -161,6 +166,10 @@ big parens
     .reset-scriptscriptstyle.textstyle { font-size: 2em; }
     .reset-scriptscriptstyle.scriptstyle { font-size: 1.4em; }
     .reset-scriptscriptstyle.scriptscriptstyle { font-size: 1em; }
+
+    .style-wrap {
+        position: relative;
+    }
 
     .baseline-align-hack-outer() {
         display: inline-block;
@@ -392,12 +401,18 @@ big parens
                 .baseline-align-hack-middle;
                 position: relative;
 
-                &.size1 {
-                    > span {
-                        font-family: KaTeX_Size1;
-                    }
+                &.size1 > span {
+                    font-family: Katex_Size1;
+                }
+                &.size4 > span {
+                    font-family: Katex_Size4;
                 }
             }
         }
+    }
+
+    .nulldelimiter {
+        display: inline-block;
+        width: @nulldelimiterspace;
     }
 }

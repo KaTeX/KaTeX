@@ -53,9 +53,9 @@ def main():
 
             tfm_char = font_name_to_tfm[font].get_char_metrics(tex_char_num)
 
-            height = round(tfm_char.height + yshift / 1000.0, 3)
-            depth = round(tfm_char.depth - yshift / 1000.0, 3)
-            italic = round(tfm_char.italic_correction, 3)
+            height = round(tfm_char.height + yshift / 1000.0, 5)
+            depth = round(tfm_char.depth - yshift / 1000.0, 5)
+            italic = round(tfm_char.italic_correction, 5)
 
             families[family][char_num] = {
                 'height': height,

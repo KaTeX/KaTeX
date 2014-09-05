@@ -289,7 +289,8 @@ var delimiters = [
     "|", "\\vert", "\\|", "\\Vert",
     "\\uparrow", "\\Uparrow",
     "\\downarrow", "\\Downarrow",
-    "\\updownarrow", "\\Updownarrow"
+    "\\updownarrow", "\\Updownarrow",
+    "."
 ];
 
 // Parse a single delimiter
@@ -429,6 +430,40 @@ Parser.prototype.parseNucleus = function(pos, mode) {
             throw new ParseError(
                 "Expected delimiter after '" + nucleus.text + "'");
         }
+    } else if (mode === "math" && nucleus.type === "\\left") {
+        // If we see a \left, first we parse the left delimiter
+        var leftDelim = this.parseDelimiter(nucleus.position, mode);
+        if (leftDelim) {
+            // Then, we parse an inner expression. Due to the handling of \right
+            // below, this should end just before the \right
+            var expression = this.parseExpression(leftDelim.position, mode);
+
+            // Make sure we see a \right
+            var right = this.lexer.lex(expression.position, mode);
+            this.expect(right, "\\right");
+
+            // Parse the right delimiter
+            var rightDelim = this.parseDelimiter(right.position, mode);
+            if (rightDelim) {
+                return new ParseResult(
+                    new ParseNode("leftright", {
+                        left: leftDelim.result.value,
+                        right: rightDelim.result.value,
+                        body: expression.result
+                    }, mode),
+                    rightDelim.position);
+            } else {
+                throw new ParseError(
+                    "Expected delimiter after '" + right.text + "'");
+            }
+        } else {
+            throw new ParseError(
+                "Expected delimiter after '" + nucleus.text + "'");
+        }
+    } else if (mode === "math" && nucleus.type === "\\right") {
+        // If we see a right, we explicitly return null to break out of the
+        // parseExpression loop. The code for \left will handle the delimiter
+        return null;
     } else if (nucleus.type === "\\llap" || nucleus.type === "\\rlap") {
         // If this is an llap or rlap, parse its argument and return
         var group = this.parseGroup(nucleus.position, mode);
