@@ -1,17 +1,8 @@
-UNAME=$(shell uname)
-
 .PHONY: build setup copy serve clean metrics
 build: setup build/katex.js build/katex.less.css
-ifeq ($(UNAME),Darwin)
-build: pdiff
-endif
 
 setup:
 	npm install
-ifeq ($(UNAME),Darwin)
-	which webkit2png || brew install webkit2png
-	which gm || brew install graphicsmagick
-endif
 
 compress: build/katex.min.js
 	@printf "Minified, gzipped size: "
@@ -28,13 +19,6 @@ build/katex.less.css: static/katex.less
 
 serve:
 	node server.js
-
-pdiff:
-	@printf "Creating new pdiff image...\n"
-	@webkit2png http://localhost:7936/test/pdiff.html -F --transparent -D build -o pdiff
-	@mv build/pdiff-full.png build/pdiff.png
-	@printf "Comparing to reference pdiff image...\n"
-	@node test/pdiff.js
 
 metrics:
 	cd metrics && ./mapping.pl | ./extract_tfms.py | ./replace_line.py
