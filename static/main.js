@@ -19,7 +19,7 @@ function init() {
         });
     }
 
-    var match = (/(?:^\?|&)text=([^&]+)/).exec(window.location.search);
+    var match = (/(?:^\?|&)text=([^&]*)/).exec(window.location.search);
     if (match) {
         input.value = decodeURIComponent(match[1]);
     }
