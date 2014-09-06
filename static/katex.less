@@ -350,6 +350,46 @@ big parens
         }
     }
 
+    .sqrt {
+        > .sqrt-sign {
+            position: relative;
+        }
+
+        > .sqrt-body {
+            .baseline-align-hack-outer;
+
+            > .sqrt-line,
+            > .sqrt-inner,
+            > .fix-ie {
+                .baseline-align-hack-middle;
+                position: relative;
+
+                > span {
+                    .baseline-align-hack-inner;
+                }
+            }
+
+            > .sqrt-line > .line {
+                width: 100%;
+
+                &:before {
+                    border-bottom-style: solid;
+                    border-bottom-width: 1px;
+                    content: "";
+                    display: block;
+                }
+
+                &:after {
+                    border-bottom-style: solid;
+                    border-bottom-width: 0.04em;
+                    content: "";
+                    display: block;
+                    margin-top: -1px;
+                }
+            }
+        }
+    }
+
     .sizing, .fontsize-ensurer {
         display: inline-block;
 

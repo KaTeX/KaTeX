@@ -191,6 +191,12 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
         bottom = "\u23ad";
         repeat = "\u23aa";
         font = "Size4-Regular";
+    } else if (delim === "\\surd") {
+        top = "\ue001";
+        bottom = "\u23b7";
+        repeat = "\ue000";
+        font = "Size4-Regular";
+        overlap = true;
     }
 
     // Get the metrics of the three sections
@@ -312,7 +318,8 @@ var normalDelimiters = [
     "(", ")", "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
-    "<", ">", "\\langle", "\\rangle", "/", "\\backslash"
+    "<", ">", "\\langle", "\\rangle", "/", "\\backslash",
+    "\\surd"
 ];
 
 var stackDelimiters = [

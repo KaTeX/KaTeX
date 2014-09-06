@@ -298,6 +298,11 @@ var symbols = {
             group: "bin",
             replace: "\u00d7"
         },
+        "\\surd": {
+            font: "main",
+            group: "textord",
+            replace: "\u221a"
+        },
         "(": {
             font: "main",
             group: "open"

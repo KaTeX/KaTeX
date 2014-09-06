@@ -153,5 +153,11 @@
         "name": "NullDelimiterInteraction",
         "screenSize": [1024, 768],
         "url": "http://localhost:7936/test/huxley/test.html?m=a \\bigl. + 2 \\quad \\left. + a \\right)"
+    },
+
+    {
+        "name": "Sqrt",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m=\\sqrt{\\sqrt{\\sqrt{x}}}_{\\sqrt{\\sqrt{x}}}^{\\sqrt{\\sqrt{\\sqrt{x}}}^{\\sqrt{\\sqrt{\\sqrt{x}}}}}"
     }
 ]

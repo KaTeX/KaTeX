@@ -535,6 +535,19 @@ Parser.prototype.parseNucleus = function(pos, mode) {
                 this.lexer, nucleus.position
             );
         }
+    } else if (mode === "math" && nucleus.type === "\\sqrt") {
+        // If this is a square root, parse its argument and return
+        var group = this.parseGroup(nucleus.position, mode);
+        if (group) {
+            return new ParseResult(
+                new ParseNode("sqrt", group, mode),
+                group.position);
+        } else {
+            throw new ParseError("Expected group after '" +
+                nucleus.type + "'",
+                this.lexer, nucleus.position
+            );
+        }
     } else if (mode === "math" && nucleus.type === "\\rule") {
         // Parse the width of the rule
         var widthGroup = this.parseSizeGroup(nucleus.position, mode);

@@ -38,7 +38,8 @@ var groupToType = {
     katex: "mord",
     overline: "mord",
     rule: "mord",
-    leftright: "minner"
+    leftright: "minner",
+    sqrt: "mord"
 };
 
 var getTypeOfGroup = function(group) {
@@ -427,6 +428,68 @@ var groupTypes = {
 
         return makeSpan(
             ["katex-logo"], [k, a, t, e, x], options.getColor());
+    },
+
+    sqrt: function(group, options, prev) {
+        var innerGroup = buildGroup(group.value.result,
+                options.withStyle(options.style.cramp()));
+
+        var fontSizer = buildCommon.makeFontSizer(
+            options, Math.max(innerGroup.maxFontSize, 1.0));
+
+        // The theta variable in the TeXbook
+        var lineWidth = fontMetrics.metrics.defaultRuleThickness;
+
+        var lineInner =
+            makeSpan([options.style.reset(), Style.TEXT.cls(), "line"]);
+        lineInner.maxFontSize = 1.0;
+        var line = makeSpan(["sqrt-line"], [fontSizer, lineInner]);
+
+        var inner = makeSpan(["sqrt-inner"], [fontSizer, innerGroup]);
+        var fixIE = makeSpan(
+            ["fix-ie"], [fontSizer, new domTree.textNode("\u00a0")]);
+
+        var theta = fontMetrics.metrics.defaultRuleThickness /
+            options.style.sizeMultiplier;
+        var phi = theta;
+        if (options.style.id < Style.TEXT.id) {
+            phi = fontMetrics.metrics.xHeight;
+        }
+
+        var psi = theta + phi / 4;
+
+        var innerHeight =
+            (inner.height + inner.depth) * options.style.sizeMultiplier;
+        var minDelimiterHeight = innerHeight + psi + theta;
+
+        var delim = makeSpan(["sqrt-sign"], [
+            delimiter.customSizedDelim("\\surd", minDelimiterHeight,
+                                       false, options, group.mode)]);
+
+        var delimDepth = delim.height + delim.depth;
+
+        if (delimDepth > inner.height + inner.depth + psi) {
+            psi = (psi + delimDepth - inner.height - inner.depth) / 2;
+        }
+
+        delim.style.top = (-inner.height - psi + delim.height - theta) + "em";
+
+        line.style.top = (-inner.height - psi) + "em";
+        line.height = inner.height + psi + 2 * theta;
+
+        // We add a special case here, because even when `inner` is empty, we
+        // still get a line. So, we use a simple heuristic to decide if we
+        // should omit the body entirely. (note this doesn't work for something
+        // like `\sqrt{\rlap{x}}`, but if someone is doing that they deserve for
+        // it not to work.
+        var body;
+        if (inner.height === 0 && inner.depth === 0) {
+            body = makeSpan();
+        } else {
+            body = makeSpan(["sqrt-body"], [line, inner, fixIE]);
+        }
+
+        return makeSpan(["sqrt", "mord"], [delim, body]);
     },
 
     overline: function(group, options, prev) {

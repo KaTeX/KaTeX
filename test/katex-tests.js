@@ -798,3 +798,26 @@ describe("A left/right parser", function() {
         }).not.toThrow();
     });
 });
+
+describe("A sqrt parser", function() {
+    var sqrt = "\\sqrt{x}";
+    var missingGroup = "\\sqrt";
+
+    it("should parse square roots", function() {
+        expect(function() {
+            parseTree(sqrt);
+        }).not.toThrow();
+    });
+
+    it("should error when there is no group", function() {
+        expect(function() {
+            parseTree(missingGroup);
+        }).toThrow();
+    });
+
+    it("should produce sqrts", function() {
+        var parse = parseTree(sqrt)[0];
+
+        expect(parse.type).toMatch("sqrt");
+    });
+});
