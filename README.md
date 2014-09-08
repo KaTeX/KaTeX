@@ -10,11 +10,6 @@ To run locally
 
 * [Test page](http://localhost:7936/)
 * [Unit tests](http://localhost:7936/test/test.html)
-* [Perceptual diff](http://localhost:7936/test/pdiff.html)
-
-Perceptual diff
----------------
-    make pdiff
 
 License
 -------
