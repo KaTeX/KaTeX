@@ -55,7 +55,7 @@ var getTypeOfGroup = function(group) {
     } else if (group.type === "sizing") {
         return getTypeOfGroup(group.value.value);
     } else if (group.type === "delimsizing") {
-        return groupToType[group.value.type];
+        return groupToType[group.value.delimType];
     } else {
         return groupToType[group.type];
     }
@@ -125,8 +125,7 @@ var groupTypes = {
 
     text: function(group, options, prev) {
         return makeSpan(["text mord", options.style.cls()],
-            [buildGroup(group.value, options.reset())]
-        );
+            buildExpression(group.value.body, options.reset()));
     },
 
     supsub: function(group, options, prev) {
@@ -368,7 +367,7 @@ var groupTypes = {
 
     llap: function(group, options, prev) {
         var inner = makeSpan(
-            ["inner"], [buildGroup(group.value, options.reset())]);
+            ["inner"], [buildGroup(group.value.body, options.reset())]);
         var fix = makeSpan(["fix"], []);
         return makeSpan(
             ["llap", options.style.cls()], [inner, fix]);
@@ -376,7 +375,7 @@ var groupTypes = {
 
     rlap: function(group, options, prev) {
         var inner = makeSpan(
-            ["inner"], [buildGroup(group.value, options.reset())]);
+            ["inner"], [buildGroup(group.value.body, options.reset())]);
         var fix = makeSpan(["fix"], []);
         return makeSpan(
             ["rlap", options.style.cls()], [inner, fix]);
@@ -399,8 +398,8 @@ var groupTypes = {
 
     namedfn: function(group, options, prev) {
         var chars = [];
-        for (var i = 1; i < group.value.length; i++) {
-            chars.push(buildCommon.mathrm(group.value[i], group.mode));
+        for (var i = 1; i < group.value.body.length; i++) {
+            chars.push(buildCommon.mathrm(group.value.body[i], group.mode));
         }
 
         return makeSpan(["mop"], chars, options.getColor());
@@ -431,7 +430,7 @@ var groupTypes = {
     },
 
     sqrt: function(group, options, prev) {
-        var innerGroup = buildGroup(group.value.result,
+        var innerGroup = buildGroup(group.value.body,
                 options.withStyle(options.style.cramp()));
 
         var fontSizer = buildCommon.makeFontSizer(
@@ -493,7 +492,7 @@ var groupTypes = {
     },
 
     overline: function(group, options, prev) {
-        var innerGroup = buildGroup(group.value.result,
+        var innerGroup = buildGroup(group.value.body,
                 options.withStyle(options.style.cramp()));
 
         var fontSizer = buildCommon.makeFontSizer(options, innerGroup.maxFontSize);
@@ -518,12 +517,13 @@ var groupTypes = {
     },
 
     sizing: function(group, options, prev) {
-        var inner = buildGroup(group.value.value,
+        var inner = buildExpression(group.value.value,
                 options.withSize(group.value.size), prev);
 
-        var span = makeSpan([getTypeOfGroup(group.value.value)],
-            [makeSpan(["sizing", "reset-" + options.size, group.value.size],
-                      [inner])]);
+        var span = makeSpan(["mord"],
+            [makeSpan(["sizing", "reset-" + options.size, group.value.size,
+                       options.style.cls()],
+                      inner)]);
 
         var sizeToFontSize = {
             "size1": 0.5,
@@ -548,11 +548,13 @@ var groupTypes = {
         var delim = group.value.value;
 
         if (delim === ".") {
-            return buildCommon.makeSpan([groupToType[group.value.type]]);
+            return makeSpan([groupToType[group.value.delimType]]);
         }
 
-        return delimiter.sizedDelim(
-            delim, group.value.size, options, group.mode);
+        return makeSpan(
+            [groupToType[group.value.delimType]],
+            [delimiter.sizedDelim(
+                delim, group.value.size, options, group.mode)]);
     },
 
     leftright: function(group, options, prev) {
@@ -594,7 +596,7 @@ var groupTypes = {
 
     rule: function(group, options, prev) {
         // Make an empty span for the rule
-        var rule = makeSpan(["mord", "rule"], []);
+        var rule = makeSpan(["mord", "rule"], [], options.getColor());
 
         var width = group.value.width.number;
         if (group.value.width.unit === "ex") {

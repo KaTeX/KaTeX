@@ -1,11 +1,95 @@
 var buildTree = require("../buildTree");
 var parseTree = require("../parseTree");
+var ParseError = require("../ParseError");
+
+beforeEach(function() {
+    jasmine.addMatchers({
+        toParse: function() {
+            return {
+                compare: function(actual) {
+                    var result = {
+                        pass: true,
+                        message: "'" + actual + "' succeeded parsing"
+                    };
+
+                    try {
+                        parseTree(actual);
+                    } catch (e) {
+                        result.pass = false;
+                        if (e instanceof ParseError) {
+                            result.message = "'" + actual + "' failed " +
+                                "parsing with error: " + e.message;
+                        } else {
+                            result.message = "'" + actual + "' failed " +
+                                "parsing with unknown error: " + e.message;
+                        }
+                    }
+
+                    return result;
+                }
+            };
+        },
+
+        toNotParse: function() {
+            return {
+                compare: function(actual) {
+                    var result = {
+                        pass: false,
+                        message: "Expected '" + actual + "' to fail " +
+                            "parsing, but it succeeded"
+                    };
+
+                    try {
+                        parseTree(actual);
+                    } catch (e) {
+                        if (e instanceof ParseError) {
+                            result.pass = true;
+                            result.message = "'" + actual + "' correctly " +
+                                "didn't parse with error: " + e.message;
+                        } else {
+                            result.message = "'" + actual + "' failed " +
+                                "parsing with unknown error: " + e.message;
+                        }
+                    }
+
+                    return result;
+                }
+            };
+        },
+
+        toBuild: function() {
+            return {
+                compare: function(actual) {
+                    var result = {
+                        pass: true,
+                        message: "'" + actual + "' succeeded in building"
+                    };
+
+                    expect(actual).toParse();
+
+                    try {
+                        buildTree(parseTree(actual));
+                    } catch (e) {
+                        result.pass = false;
+                        if (e instanceof ParseError) {
+                            result.message = "'" + actual + "' failed to " +
+                                "build with error: " + e.message;
+                        } else {
+                            result.message = "'" + actual + "' failed " +
+                                "building with unknown error: " + e.message;
+                        }
+                    }
+
+                    return result;
+                }
+            };
+        }
+    });
+});
 
 describe("A parser", function() {
     it("should not fail on an empty string", function() {
-        expect(function() {
-            parseTree("");
-        }).not.toThrow();
+        expect("").toParse();
     });
 
     it("should ignore whitespace", function() {
@@ -19,9 +103,7 @@ describe("An ord parser", function() {
     var expression = "1234|/@.\"`abcdefgzABCDEFGZ";
 
     it("should not fail", function() {
-        expect(function() {
-            parseTree(expression);
-        }).not.toThrow();
+        expect(expression).toParse();
     });
 
     it("should build a list of ords", function() {
@@ -46,9 +128,7 @@ describe("A bin parser", function() {
     var expression = "+-*\\cdot\\pm\\div";
 
     it("should not fail", function() {
-        expect(function() {
-            parseTree(expression);
-        }).not.toThrow();
+        expect(expression).toParse();
     });
 
     it("should build a list of bins", function() {
@@ -66,9 +146,7 @@ describe("A rel parser", function() {
     var expression = "=<>\\leq\\geq\\neq\\nleq\\ngeq\\cong";
 
     it("should not fail", function() {
-        expect(function() {
-            parseTree(expression);
-        }).not.toThrow();
+        expect(expression).toParse();
     });
 
     it("should build a list of rels", function() {
@@ -86,9 +164,7 @@ describe("A punct parser", function() {
     var expression = ",;\\colon";
 
     it("should not fail", function() {
-        expect(function() {
-            parseTree(expression);
-        }).not.toThrow();
+        expect(expression).toParse();
     });
 
     it("should build a list of puncts", function() {
@@ -106,9 +182,7 @@ describe("An open parser", function() {
     var expression = "([";
 
     it("should not fail", function() {
-        expect(function() {
-            parseTree(expression);
-        }).not.toThrow();
+        expect(expression).toParse();
     });
 
     it("should build a list of opens", function() {
@@ -126,9 +200,7 @@ describe("A close parser", function() {
     var expression = ")]?!";
 
     it("should not fail", function() {
-        expect(function() {
-            parseTree(expression);
-        }).not.toThrow();
+        expect(expression).toParse();
     });
 
     it("should build a list of closes", function() {
@@ -142,45 +214,32 @@ describe("A close parser", function() {
     });
 });
 
+describe("A \\KaTeX parser", function() {
+    it("should not fail", function() {
+        expect("\\KaTeX").toParse();
+    });
+});
+
 describe("A subscript and superscript parser", function() {
     it("should not fail on superscripts", function() {
-        expect(function() {
-            parseTree("x^2");
-        }).not.toThrow();
+        expect("x^2").toParse();
     });
 
     it("should not fail on subscripts", function() {
-        expect(function() {
-            parseTree("x_3");
-        }).not.toThrow();
+        expect("x_3").toParse();
     });
 
     it("should not fail on both subscripts and superscripts", function() {
-        expect(function() {
-            parseTree("x^2_3");
-        }).not.toThrow();
+        expect("x^2_3").toParse();
 
-        expect(function() {
-            parseTree("x_2^3");
-        }).not.toThrow();
+        expect("x_2^3").toParse();
     });
 
     it("should not fail when there is no nucleus", function() {
-        expect(function() {
-            parseTree("^3");
-        }).not.toThrow();
-
-        expect(function() {
-            parseTree("_2");
-        }).not.toThrow();
-
-        expect(function() {
-            parseTree("^3_2");
-        }).not.toThrow();
-
-        expect(function() {
-            parseTree("_2^3");
-        }).not.toThrow();
+        expect("^3").toParse();
+        expect("_2").toParse();
+        expect("^3_2").toParse();
+        expect("_2^3").toParse();
     });
 
     it("should produce supsubs for superscript", function() {
@@ -227,91 +286,57 @@ describe("A subscript and superscript parser", function() {
     });
 
     it("should not parse double subscripts or superscripts", function() {
-        expect(function() {
-            parseTree("x^x^x");
-        }).toThrow();
+        expect("x^x^x").toNotParse();
 
-        expect(function() {
-            parseTree("x_x_x");
-        }).toThrow();
+        expect("x_x_x").toNotParse();
 
-        expect(function() {
-            parseTree("x_x^x_x");
-        }).toThrow();
+        expect("x_x^x_x").toNotParse();
 
-        expect(function() {
-            parseTree("x_x^x^x");
-        }).toThrow();
+        expect("x_x^x^x").toNotParse();
 
-        expect(function() {
-            parseTree("x^x_x_x");
-        }).toThrow();
+        expect("x^x_x_x").toNotParse();
 
-        expect(function() {
-            parseTree("x^x_x^x");
-        }).toThrow();
+        expect("x^x_x^x").toNotParse();
     });
 
     it("should work correctly with {}s", function() {
-        expect(function() {
-            parseTree("x^{2+3}");
-        }).not.toThrow();
+        expect("x^{2+3}").toParse();
 
-        expect(function() {
-            parseTree("x_{3-2}");
-        }).not.toThrow();
+        expect("x_{3-2}").toParse();
 
-        expect(function() {
-            parseTree("x^{2+3}_3");
-        }).not.toThrow();
+        expect("x^{2+3}_3").toParse();
 
-        expect(function() {
-            parseTree("x^2_{3-2}");
-        }).not.toThrow();
+        expect("x^2_{3-2}").toParse();
 
-        expect(function() {
-            parseTree("x^{2+3}_{3-2}");
-        }).not.toThrow();
+        expect("x^{2+3}_{3-2}").toParse();
 
-        expect(function() {
-            parseTree("x_{3-2}^{2+3}");
-        }).not.toThrow();
+        expect("x_{3-2}^{2+3}").toParse();
 
-        expect(function() {
-            parseTree("x_3^{2+3}");
-        }).not.toThrow();
+        expect("x_3^{2+3}").toParse();
 
-        expect(function() {
-            parseTree("x_{3-2}^2");
-        }).not.toThrow();
+        expect("x_{3-2}^2").toParse();
+    });
+
+    it("should work with nested super/subscripts", function() {
+        expect("x^{x^x}").toParse();
+        expect("x^{x_x}").toParse();
+        expect("x_{x^x}").toParse();
+        expect("x_{x_x}").toParse();
     });
 });
 
 describe("A subscript and superscript tree-builder", function() {
     it("should not fail when there is no nucleus", function() {
-        expect(function() {
-            buildTree(parseTree("^3"));
-        }).not.toThrow();
-
-        expect(function() {
-            buildTree(parseTree("_2"));
-        }).not.toThrow();
-
-        expect(function() {
-            buildTree(parseTree("^3_2"));
-        }).not.toThrow();
-
-        expect(function() {
-            buildTree(parseTree("_2^3"));
-        }).not.toThrow();
+        expect("^3").toBuild();
+        expect("_2").toBuild();
+        expect("^3_2").toBuild();
+        expect("_2^3").toBuild();
     });
 });
 
 describe("A group parser", function() {
     it("should not fail", function() {
-        expect(function() {
-            parseTree("{xy}");
-        }).not.toThrow();
+        expect("{xy}").toParse();
     });
 
     it("should produce a single ord", function() {
@@ -328,10 +353,8 @@ describe("A group parser", function() {
 
 describe("An implicit group parser", function() {
     it("should not fail", function() {
-        expect(function() {
-            parseTree("\\Large x");
-            parseTree("abc {abc \Large xyz} abc");
-        }).not.toThrow();
+        expect("\\Large x").toParse();
+        expect("abc {abc \\Large xyz} abc").toParse();
     });
 
     it("should produce a single object", function() {
@@ -353,7 +376,7 @@ describe("An implicit group parser", function() {
         var sizing = parse[1];
 
         expect(sizing.type).toMatch("sizing");
-        expect(sizing.value.value.value.length).toBe(3);
+        expect(sizing.value.value.length).toBe(3);
     });
 
     it("should stop at the ends of groups", function() {
@@ -363,61 +386,43 @@ describe("An implicit group parser", function() {
         var sizing = group.value[1];
 
         expect(sizing.type).toMatch("sizing");
-        expect(sizing.value.value.value.length).toBe(1);
+        expect(sizing.value.value.length).toBe(1);
     });
 });
 
 describe("A function parser", function() {
     it("should parse no argument functions", function() {
-        expect(function() {
-            parseTree("\\div");
-        }).not.toThrow();
+        expect("\\div").toParse();
     });
 
     it("should parse 1 argument functions", function() {
-        expect(function() {
-            parseTree("\\blue x");
-        }).not.toThrow();
+        expect("\\blue x").toParse();
     });
 
     it("should parse 2 argument functions", function() {
-        expect(function() {
-            parseTree("\\frac 1 2");
-        }).not.toThrow();
+        expect("\\frac 1 2").toParse();
     });
 
     it("should not parse 1 argument functions with no arguments", function() {
-        expect(function() {
-            parseTree("\\blue");
-        }).toThrow();
+        expect("\\blue").toNotParse();
     });
 
     it("should not parse 2 argument functions with 0 or 1 arguments", function() {
-        expect(function() {
-            parseTree("\\frac");
-        }).toThrow();
+        expect("\\frac").toNotParse();
 
-        expect(function() {
-            parseTree("\\frac 1");
-        }).toThrow();
+        expect("\\frac 1").toNotParse();
     });
 
     it("should not parse a function with text right after it", function() {
-        expect(function() {
-            parseTree("\\redx");
-        }).toThrow();
+        expect("\\redx").toNotParse();
     });
 
     it("should parse a function with a number right after it", function() {
-        expect(function() {
-            parseTree("\\frac12");
-        }).not.toThrow();
+        expect("\\frac12").toParse();
     });
 
     it("should parse some functions with text right after it", function() {
-        expect(function() {
-            parseTree("\\;x");
-        }).not.toThrow();
+        expect("\\;x").toParse();
     });
 });
 
@@ -427,9 +432,7 @@ describe("A frac parser", function() {
     var tfracExpression = "\\tfrac{x}{y}";
 
     it("should not fail", function() {
-        expect(function() {
-            parseTree(expression);
-        }).not.toThrow();
+        expect(expression).toParse();
     });
 
     it("should produce a frac", function() {
@@ -441,13 +444,9 @@ describe("A frac parser", function() {
     });
 
     it("should also parse dfrac and tfrac", function() {
-        expect(function() {
-            parseTree(dfracExpression);
-        }).not.toThrow();
+        expect(dfracExpression).toParse();
 
-        expect(function() {
-            parseTree(tfracExpression);
-        }).not.toThrow();
+        expect(tfracExpression).toParse();
     });
 
     it("should parse dfrac and tfrac as fracs", function() {
@@ -470,9 +469,7 @@ describe("A sizing parser", function() {
     var nestedSizeExpression = "\\Huge{\\small{x}}";
 
     it("should not fail", function() {
-        expect(function() {
-            parseTree(sizeExpression);
-        }).not.toThrow();
+        expect(sizeExpression).toParse();
     });
 
     it("should produce a sizing node", function() {
@@ -481,26 +478,20 @@ describe("A sizing parser", function() {
         expect(parse.type).toMatch("sizing");
         expect(parse.value).toBeDefined();
     });
-
-    it("should not parse a nested size expression", function() {
-        expect(function() {
-            parseExpression(nestedSizeExpression);
-        }).toThrow();
-    });
 });
 
 describe("A text parser", function() {
     var textExpression = "\\text{a b}";
-    var badTextExpression = "\\text{a b%}";
-    var badTextExpression2 = "\\text x";
-    var nestedTextExpression = "\\text{a {b} \\blue{c}}";
+    var noBraceTextExpression = "\\text x";
+    var nestedTextExpression =
+        "\\text{a {b} \\blue{c} \\color{#fff}{x} \\llap{x}}";
     var spaceTextExpression = "\\text{  a \\ }";
     var leadingSpaceTextExpression = "\\text {moo}";
+    var badTextExpression = "\\text{a b%}";
+    var badFunctionExpression = "\\text{\\sqrt{x}}";
 
     it("should not fail", function() {
-        expect(function() {
-            parseTree(textExpression);
-        }).not.toThrow();
+        expect(textExpression).toParse();
     });
 
     it("should produce a text", function() {
@@ -512,29 +503,30 @@ describe("A text parser", function() {
 
     it("should produce textords instead of mathords", function() {
         var parse = parseTree(textExpression)[0];
-        var group = parse.value.value;
+        var group = parse.value.body;
 
         expect(group[0].type).toMatch("textord");
     });
 
     it("should not parse bad text", function() {
-        expect(function() {
-            parseTree(badTextExpression);
-        }).toThrow();
-        expect(function() {
-            parseTree(badTextExpression2);
-        }).toThrow();
+        expect(badTextExpression).toNotParse();
+    });
+
+    it("should not parse bad functions inside text", function() {
+        expect(badFunctionExpression).toNotParse();
+    });
+
+    it("should parse text with no braces around it", function() {
+        expect(noBraceTextExpression).toParse();
     });
 
     it("should parse nested expressions", function() {
-        expect(function() {
-            parseTree(nestedTextExpression);
-        }).not.toThrow();
+        expect(nestedTextExpression).toParse();
     });
 
     it("should contract spaces", function() {
         var parse = parseTree(spaceTextExpression)[0];
-        var group = parse.value.value;
+        var group = parse.value.body;
 
         expect(group[0].type).toMatch("spacing");
         expect(group[1].type).toMatch("textord");
@@ -545,9 +537,9 @@ describe("A text parser", function() {
     it("should ignore a space before the text group", function() {
         var parse = parseTree(leadingSpaceTextExpression)[0];
         // [m, o, o]
-        expect(parse.value.value.length).toBe(3);
+        expect(parse.value.body.length).toBe(3);
         expect(
-            parse.value.value.map(function(n) { return n.value; }).join("")
+            parse.value.body.map(function(n) { return n.value; }).join("")
         ).toBe("moo");
     });
 });
@@ -558,9 +550,7 @@ describe("A color parser", function() {
     var badCustomColorExpression = "\\color{bad-color}{x}";
 
     it("should not fail", function() {
-        expect(function() {
-            parseTree(colorExpression);
-        }).not.toThrow();
+        expect(colorExpression).toParse();
     });
 
     it("should build a color node", function() {
@@ -572,9 +562,7 @@ describe("A color parser", function() {
     });
 
     it("should parse a custom color", function() {
-        expect(function() {
-            parseTree(customColorExpression);
-        }).not.toThrow();
+        expect(customColorExpression).toParse();
     });
 
     it("should correctly extract the custom color", function() {
@@ -584,9 +572,7 @@ describe("A color parser", function() {
     });
 
     it("should not parse a bad custom color", function() {
-        expect(function() {
-            parseTree(badCustomColorExpression);
-        }).toThrow();
+        expect(badCustomColorExpression).toNotParse();
     });
 });
 
@@ -595,15 +581,11 @@ describe("A tie parser", function() {
     var textTie = "\\text{a~ b}";
 
     it("should parse ties in math mode", function() {
-        expect(function() {
-            parseTree(mathTie);
-        }).not.toThrow();
+        expect(mathTie).toParse();
     });
 
     it("should parse ties in text mode", function() {
-        expect(function() {
-            parseTree(textTie);
-        }).not.toThrow();
+        expect(textTie).toParse();
     });
 
     it("should produce spacing in math mode", function() {
@@ -614,14 +596,14 @@ describe("A tie parser", function() {
 
     it("should produce spacing in text mode", function() {
         var text = parseTree(textTie)[0];
-        var parse = text.value.value;
+        var parse = text.value.body;
 
         expect(parse[1].type).toMatch("spacing");
     });
 
     it("should not contract with spaces in text mode", function() {
         var text = parseTree(textTie)[0];
-        var parse = text.value.value;
+        var parse = text.value.body;
 
         expect(parse[2].type).toMatch("spacing");
     });
@@ -633,16 +615,12 @@ describe("A delimiter sizing parser", function() {
     var bigDelim = "\\Biggr \\langle";
 
     it("should parse normal delimiters", function() {
-        expect(function() {
-            parseTree(normalDelim);
-            parseTree(bigDelim);
-        }).not.toThrow();
+        expect(normalDelim).toParse();
+        expect(bigDelim).toParse();
     });
 
     it("should not parse not-delimiters", function() {
-        expect(function() {
-            parseTree(notDelim);
-        }).toThrow();
+        expect(notDelim).toNotParse();
     });
 
     it("should produce a delimsizing", function() {
@@ -655,8 +633,8 @@ describe("A delimiter sizing parser", function() {
         var leftParse = parseTree(normalDelim)[0];
         var rightParse = parseTree(bigDelim)[0];
 
-        expect(leftParse.value.type).toMatch("open");
-        expect(rightParse.value.type).toMatch("close");
+        expect(leftParse.value.delimType).toMatch("open");
+        expect(rightParse.value.delimType).toMatch("close");
     });
 
     it("should parse the correct size delimiter", function() {
@@ -672,9 +650,7 @@ describe("An overline parser", function() {
     var overline = "\\overline{x}";
 
     it("should not fail", function() {
-        expect(function() {
-            parseTree(overline);
-        }).not.toThrow();
+        expect(overline).toParse();
     });
 
     it("should produce an overline", function() {
@@ -693,26 +669,18 @@ describe("A rule parser", function() {
     var hardNumberRule = "\\rule{   01.24ex}{2.450   em   }";
 
     it("should not fail", function() {
-        expect(function() {
-            parseTree(emRule);
-            parseTree(exRule);
-        }).not.toThrow();
+        expect(emRule).toParse();
+        expect(exRule).toParse();
     });
 
     it("should not parse invalid units", function() {
-        expect(function() {
-            parseTree(badUnitRule);
-        }).toThrow();
+        expect(badUnitRule).toNotParse();
 
-        expect(function() {
-            parseTree(noNumberRule);
-        }).toThrow();
+        expect(noNumberRule).toNotParse();
     });
 
     it("should not parse incomplete rules", function() {
-        expect(function() {
-            parseTree(incompleteRule);
-        }).toThrow();
+        expect(incompleteRule).toNotParse();
     });
 
     it("should produce a rule", function() {
@@ -745,9 +713,7 @@ describe("A left/right parser", function() {
     var emptyRight = "\\left( \\dfrac{x}{y} \\right.";
 
     it("should not fail", function() {
-        expect(function() {
-            parseTree(normalLeftRight);
-        }).not.toThrow();
+        expect(normalLeftRight).toParse();
     });
 
     it("should produce a leftright", function() {
@@ -762,40 +728,28 @@ describe("A left/right parser", function() {
         var unmatchedLeft = "\\left( \\dfrac{x}{y}";
         var unmatchedRight = "\\dfrac{x}{y} \\right)";
 
-        expect(function() {
-            parseTree(unmatchedLeft);
-        }).toThrow();
+        expect(unmatchedLeft).toNotParse();
 
-        expect(function() {
-            parseTree(unmatchedRight);
-        }).toThrow();
+        expect(unmatchedRight).toNotParse();
     });
 
     it("should error when braces are mismatched", function() {
         var unmatched = "{ \\left( \\dfrac{x}{y} } \\right)";
-        expect(function() {
-            parseTree(unmatched);
-        }).toThrow();
+        expect(unmatched).toNotParse();
     });
 
     it("should error when non-delimiters are provided", function() {
         var nonDelimiter = "\\left$ \\dfrac{x}{y} \\right)";
-        expect(function() {
-            parseTree(nonDelimiter);
-        }).toThrow();
+        expect(nonDelimiter).toNotParse();
     });
 
     it("should parse the empty '.' delimiter", function() {
-        expect(function() {
-            parseTree(emptyRight);
-        }).not.toThrow();
+        expect(emptyRight).toParse();
     });
 
     it("should parse the '.' delimiter with normal sizes", function() {
         var normalEmpty = "\\Bigl .";
-        expect(function() {
-            parseTree(normalEmpty);
-        }).not.toThrow();
+        expect(normalEmpty).toParse();
     });
 });
 
@@ -804,20 +758,161 @@ describe("A sqrt parser", function() {
     var missingGroup = "\\sqrt";
 
     it("should parse square roots", function() {
-        expect(function() {
-            parseTree(sqrt);
-        }).not.toThrow();
+        expect(sqrt).toParse();
     });
 
     it("should error when there is no group", function() {
-        expect(function() {
-            parseTree(missingGroup);
-        }).toThrow();
+        expect(missingGroup).toNotParse();
     });
 
     it("should produce sqrts", function() {
         var parse = parseTree(sqrt)[0];
 
         expect(parse.type).toMatch("sqrt");
+    });
+});
+
+describe("A TeX-compliant parser", function() {
+    it("should work", function() {
+        expect("\\frac 2 3").toParse();
+    });
+
+    it("should fail if there are not enough arguments", function() {
+        var missingGroups = [
+            "\\frac{x}",
+            "\\color{#fff}",
+            "\\rule{1em}",
+            "\\llap",
+            "\\bigl",
+            "\\text"
+        ];
+
+        for (var i = 0; i < missingGroups.length; i++) {
+            expect(missingGroups[i]).toNotParse();
+        }
+    });
+
+    it("should fail when there are missing sup/subscripts", function() {
+        expect("x^").toNotParse();
+        expect("x_").toNotParse();
+    });
+
+    it("should fail when arguments require arguments", function() {
+        var badArguments = [
+            "\\frac \\frac x y z",
+            "\\frac x \\frac y z",
+            "\\frac \\sqrt x y",
+            "\\frac x \\sqrt y",
+            "\\frac \\llap x y",
+            "\\frac x \\llap y",
+            // This actually doesn't work in real TeX, but it is suprisingly
+            // hard to get this to correctly work. So, we take hit of very small
+            // amounts of non-compatiblity in order for the rest of the tests to
+            // work
+            // "\\llap \\frac x y",
+            "\\llap \\llap x",
+            "\\sqrt \\llap x"
+        ];
+
+        for (var i = 0; i < badArguments.length; i++) {
+            expect(badArguments[i]).toNotParse();
+        }
+    });
+
+    it("should work when the arguments have braces", function() {
+        var goodArguments = [
+            "\\frac {\\frac x y} z",
+            "\\frac x {\\frac y z}",
+            "\\frac {\\sqrt x} y",
+            "\\frac x {\\sqrt y}",
+            "\\frac {\\llap x} y",
+            "\\frac x {\\llap y}",
+            "\\llap {\\frac x y}",
+            "\\llap {\\llap x}",
+            "\\sqrt {\\llap x}"
+        ];
+
+        for (var i = 0; i < goodArguments.length; i++) {
+            expect(goodArguments[i]).toParse();
+        }
+    });
+
+    it("should fail when sup/subscripts require arguments", function() {
+        var badSupSubscripts = [
+            "x^\\sqrt x",
+            "x^\\llap x",
+            "x_\\sqrt x",
+            "x_\\llap x"
+        ];
+
+        for (var i = 0; i < badSupSubscripts.length; i++) {
+            expect(badSupSubscripts[i]).toNotParse();
+        }
+    });
+
+    it("should work when sup/subscripts arguments have braces", function() {
+        var goodSupSubscripts = [
+            "x^{\\sqrt x}",
+            "x^{\\llap x}",
+            "x_{\\sqrt x}",
+            "x_{\\llap x}"
+        ];
+
+        for (var i = 0; i < goodSupSubscripts.length; i++) {
+            expect(goodSupSubscripts[i]).toParse();
+        }
+    });
+
+    it("should parse multiple primes correctly", function() {
+        expect("x''''").toParse();
+        expect("x_2''").toParse();
+        expect("x''_2").toParse();
+        expect("x'_2'").toParse();
+    });
+
+    it("should fail when sup/subscripts are interspersed with arguments", function() {
+        expect("\\sqrt^23").toNotParse();
+        expect("\\frac^234").toNotParse();
+        expect("\\frac2^34").toNotParse();
+    });
+
+    it("should succeed when sup/subscripts come after whole functions", function() {
+        expect("\\sqrt2^3").toParse();
+        expect("\\frac23^4").toParse();
+    });
+
+    it("should succeed with a sqrt around a text/frac", function() {
+        expect("\\sqrt \\frac x y").toParse();
+        expect("\\sqrt \\text x").toParse();
+        expect("x^\\frac x y").toParse();
+        expect("x_\\text x").toParse();
+    });
+
+    it("should fail when arguments are \\left", function() {
+        var badLeftArguments = [
+            "\\frac \\left( x \\right) y",
+            "\\frac x \\left( y \\right)",
+            "\\llap \\left( x \\right)",
+            "\\sqrt \\left( x \\right)",
+            "x^\\left( x \\right)"
+        ];
+
+        for (var i = 0; i < badLeftArguments.length; i++) {
+            expect(badLeftArguments[i]).toNotParse();
+        }
+    });
+
+    it("should succeed when there are braces around the \\left/\\right", function() {
+        var goodLeftArguments = [
+            "\\frac {\\left( x \\right)} y",
+            "\\frac x {\\left( y \\right)}",
+            "\\llap {\\left( x \\right)}",
+            "\\sqrt {\\left( x \\right)}",
+            "x^{\\left( x \\right)}"
+        ];
+
+        for (var i = 0; i < goodLeftArguments.length; i++) {
+            expect(goodLeftArguments[i]).toParse();
+        }
     });
 });

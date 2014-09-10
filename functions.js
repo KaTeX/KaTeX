@@ -1,0 +1,349 @@
+var utils = require("./utils");
+var ParseError = require("./ParseError");
+
+// This file contains a list of functions that we parse. The functions map
+// contains the following data:
+
+/*
+ * Keys are the name of the functions to parse
+ * The data contains the following keys:
+ *  - numArgs: The number of arguments the function takes.
+ *  - argTypes: (optional) An array corresponding to each argument of the
+ *              function, giving the type of argument that should be parsed.
+ *              Valid types:
+ *               - "size": A size-like thing, such as "1em" or "5ex"
+ *               - "color": An html color, like "#abc" or "blue"
+ *               - "original": The same type as the environment that the
+ *                             function being parsed is in (e.g. used for the
+ *                             bodies of functions like \color where the first
+ *                             argument is special and the second argument is
+ *                             parsed normally)
+ *              Other possible types (probably shouldn't be used)
+ *               - "text": Text-like (e.g. \text)
+ *               - "math": Normal math
+ *              If undefined, this will be treated as an appropriate length
+ *              array of "original" strings
+ *  - greediness: (optional) The greediness of the function to use ungrouped
+ *                arguments.
+ *
+ *                E.g. if you have an expression
+ *                  \sqrt \frac 1 2
+ *                since \frac has greediness=2 vs \sqrt's greediness=1, \frac
+ *                will use the two arguments '1' and '2' as its two arguments,
+ *                then that whole function will be used as the argument to
+ *                \sqrt. On the other hand, the expressions
+ *                  \frac \frac 1 2 3
+ *                and
+ *                  \frac \sqrt 1 2
+ *                will fail because \frac and \frac have equal greediness
+ *                and \sqrt has a lower greediness than \frac respectively. To
+ *                make these parse, we would have to change them to:
+ *                  \frac {\frac 1 2} 3
+ *                and
+ *                  \frac {\sqrt 1} 2
+ *
+ *                The default value is `1`
+ *  - allowedInText: (optional) Whether or not the function is allowed inside
+ *                   text mode (default false)
+ *  - handler: The function that is called to handle this function and its
+ *             arguments. The arguments are:
+ *              - func: the text of the function
+ *              - [args]: the next arguments are the arguments to the function,
+ *                        of which there are numArgs of them
+ *              - positions: the positions in the overall string of the function
+ *                           and the arguments. Should only be used to produce
+ *                           error messages
+ *             The function should return an object with the following keys:
+ *              - type: The type of element that this is. This is then used in
+ *                      buildTree to determine which function should be called
+ *                      to build this node into a DOM node
+ *             Any other data can be added to the object, which will be passed
+ *             in to the function in buildTree as `group.value`.
+ */
+
+var functions = {
+    // A normal square root
+    "\\sqrt": {
+        numArgs: 1,
+        handler: function(func, body) {
+            return {
+                type: "sqrt",
+                body: body
+            };
+        }
+    },
+
+    // Some non-mathy text
+    "\\text": {
+        numArgs: 1,
+        argTypes: ["text"],
+        greediness: 2,
+        handler: function(func, body) {
+            // Since the corresponding buildTree function expects a list of
+            // elements, we normalize for different kinds of arguments
+            // TODO(emily): maybe this should be done somewhere else
+            var inner;
+            if (body.type === "ordgroup") {
+                inner = body.value;
+            } else {
+                inner = [body];
+            }
+
+            return {
+                type: "text",
+                body: inner
+            };
+        }
+    },
+
+    // A two-argument custom color
+    "\\color": {
+        numArgs: 2,
+        allowedInText: true,
+        argTypes: ["color", "original"],
+        handler: function(func, color, body) {
+            // Normalize the different kinds of bodies (see \text above)
+            var inner;
+            if (body.type === "ordgroup") {
+                inner = body.value;
+            } else {
+                inner = [body];
+            }
+
+            return {
+                type: "color",
+                color: color.value,
+                value: inner
+            };
+        }
+    },
+
+    // An overline
+    "\\overline": {
+        numArgs: 1,
+        handler: function(func, body) {
+            return {
+                type: "overline",
+                body: body
+            };
+        }
+    },
+
+    // A box of the width and height
+    "\\rule": {
+        numArgs: 2,
+        argTypes: ["size", "size"],
+        handler: function(func, width, height) {
+            return {
+                type: "rule",
+                width: width.value,
+                height: height.value
+            };
+        }
+    },
+
+    // A KaTeX logo
+    "\\KaTeX": {
+        numArgs: 0,
+        handler: function(func) {
+            return {
+                type: "katex"
+            };
+        }
+    }
+};
+
+// Extra data needed for the delimiter handler down below
+var delimiterSizes = {
+    "\\bigl" : {type: "open",    size: 1},
+    "\\Bigl" : {type: "open",    size: 2},
+    "\\biggl": {type: "open",    size: 3},
+    "\\Biggl": {type: "open",    size: 4},
+    "\\bigr" : {type: "close",   size: 1},
+    "\\Bigr" : {type: "close",   size: 2},
+    "\\biggr": {type: "close",   size: 3},
+    "\\Biggr": {type: "close",   size: 4},
+    "\\bigm" : {type: "rel",     size: 1},
+    "\\Bigm" : {type: "rel",     size: 2},
+    "\\biggm": {type: "rel",     size: 3},
+    "\\Biggm": {type: "rel",     size: 4},
+    "\\big"  : {type: "textord", size: 1},
+    "\\Big"  : {type: "textord", size: 2},
+    "\\bigg" : {type: "textord", size: 3},
+    "\\Bigg" : {type: "textord", size: 4}
+};
+
+var delimiters = [
+    "(", ")", "[", "\\lbrack", "]", "\\rbrack",
+    "\\{", "\\lbrace", "\\}", "\\rbrace",
+    "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
+    "<", ">", "\\langle", "\\rangle",
+    "/", "\\backslash",
+    "|", "\\vert", "\\|", "\\Vert",
+    "\\uparrow", "\\Uparrow",
+    "\\downarrow", "\\Downarrow",
+    "\\updownarrow", "\\Updownarrow",
+    "."
+];
+
+/*
+ * This is a list of functions which each have the same function but have
+ * different names so that we don't have to duplicate the data a bunch of times.
+ * Each element in the list is an object with the following keys:
+ *  - funcs: A list of function names to be associated with the data
+ *  - data: An objecty with the same data as in each value of the `function`
+ *          table above
+ */
+var duplicatedFunctions = [
+    // Single-argument color functions
+    {
+        funcs: [
+            "\\blue", "\\orange", "\\pink", "\\red",
+            "\\green", "\\gray", "\\purple"
+        ],
+        data: {
+            numArgs: 1,
+            allowedInText: true,
+            handler: function(func, body) {
+                var atoms;
+                if (body.type === "ordgroup") {
+                    atoms = body.value;
+                } else {
+                    atoms = [body];
+                }
+
+                return {
+                    type: "color",
+                    color: "katex-" + func.slice(1),
+                    value: atoms
+                };
+            }
+        }
+    },
+
+    // No-argument mathy operators
+    {
+        funcs: [
+            "\\arcsin", "\\arccos", "\\arctan", "\\arg", "\\cos", "\\cosh",
+            "\\cot", "\\coth", "\\csc", "\\deg", "\\dim", "\\exp", "\\hom",
+            "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin", "\\sinh",
+            "\\tan","\\tanh"
+        ],
+        data: {
+            numArgs: 0,
+            handler: function(func) {
+                return {
+                    type: "namedfn",
+                    body: func
+                };
+            }
+        }
+    },
+
+    // Fractions
+    {
+        funcs: ["\\dfrac", "\\frac", "\\tfrac"],
+        data: {
+            numArgs: 2,
+            greediness: 2,
+            handler: function(func, numer, denom) {
+                return {
+                    type: "frac",
+                    numer: numer,
+                    denom: denom,
+                    size: func.slice(1)
+                };
+            }
+        }
+    },
+
+    // Left and right overlap functions
+    {
+        funcs: ["\\llap", "\\rlap"],
+        data: {
+            numArgs: 1,
+            allowedInText: true,
+            handler: function(func, body) {
+                return {
+                    type: func.slice(1),
+                    body: body
+                };
+            }
+        }
+    },
+
+    // Delimiter functions
+    {
+        funcs: [
+            "\\bigl", "\\Bigl", "\\biggl", "\\Biggl",
+            "\\bigr", "\\Bigr", "\\biggr", "\\Biggr",
+            "\\bigm", "\\Bigm", "\\biggm", "\\Biggm",
+            "\\big",  "\\Big",  "\\bigg",  "\\Bigg",
+            "\\left", "\\right"
+        ],
+        data: {
+            numArgs: 1,
+            handler: function(func, delim, positions) {
+                if (!utils.contains(delimiters, delim.value)) {
+                    throw new ParseError(
+                        "Invalid delimiter: '" + delim.value + "' after '" +
+                            func + "'",
+                        this.lexer, positions[1]);
+                }
+
+                // left and right are caught somewhere in Parser.js, which is
+                // why this data doesn't match what is in buildTree
+                if (func === "\\left" || func === "\\right") {
+                    return {
+                        type: "leftright",
+                        value: delim.value
+                    };
+                } else {
+                    return {
+                        type: "delimsizing",
+                        size: delimiterSizes[func].size,
+                        delimType: delimiterSizes[func].type,
+                        value: delim.value
+                    };
+                }
+            }
+        }
+    },
+
+    // Sizing functions
+    {
+        funcs: [
+            "\\tiny", "\\scriptsize", "\\footnotesize", "\\small",
+            "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge"
+        ],
+        data: {
+            numArgs: 0
+        }
+    }
+];
+
+var addFuncsWithData = function(funcs, data) {
+    for (var i = 0; i < funcs.length; i++) {
+        functions[funcs[i]] = data;
+    }
+};
+
+// Add all of the functions in duplicatedFunctions to the functions map
+for (var i = 0; i < duplicatedFunctions.length; i++) {
+    addFuncsWithData(duplicatedFunctions[i].funcs, duplicatedFunctions[i].data);
+}
+
+// Returns the greediness of a given function. Since greediness is optional, we
+// use this function to put in the default value if it is undefined.
+var getGreediness = function(func) {
+    if (functions[func].greediness === undefined) {
+        return 1;
+    } else {
+        return functions[func].greediness;
+    }
+};
+
+module.exports = {
+    funcs: functions,
+    getGreediness: getGreediness
+};

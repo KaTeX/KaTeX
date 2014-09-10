@@ -132,6 +132,15 @@ Lexer.prototype._innerLexSize = function(pos) {
     throw new ParseError("Invalid size", this, pos);
 };
 
+Lexer.prototype._innerLexWhitespace = function(pos) {
+    var input = this._input.slice(pos);
+
+    var whitespace = input.match(whitespaceRegex)[0];
+    pos += whitespace.length;
+
+    return new LexResult("whitespace", whitespace, pos);
+};
+
 // Lex a single token
 Lexer.prototype.lex = function(pos, mode) {
     if (mode === "math") {
@@ -142,6 +151,8 @@ Lexer.prototype.lex = function(pos, mode) {
         return this._innerLexColor(pos);
     } else if (mode === "size") {
         return this._innerLexSize(pos);
+    } else if (mode === "whitespace") {
+        return this._innerLexWhitespace(pos);
     }
 };
 

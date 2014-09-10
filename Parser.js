@@ -1,25 +1,74 @@
+var functions = require("./functions");
 var Lexer = require("./Lexer");
-var utils = require("./utils");
 var symbols = require("./symbols");
+var utils = require("./utils");
 
 var ParseError = require("./ParseError");
 
-// Main Parser class
-function Parser() {
-};
+// This file contains the parser used to parse out a TeX expression from the
+// input. Since TeX isn't context-free, standard parsers don't work particularly
+// well.
 
-// Returned by the Parser.parse... functions. Stores the current results and
-// the new lexer position.
-function ParseResult(result, newPosition) {
-    this.result = result;
-    this.position = newPosition;
-}
+// The strategy of this parser is as such:
+//
+// The main functions (the `.parse...` ones) take a position in the current
+// parse string to parse tokens from. The lexer (found in Lexer.js, stored at
+// this.lexer) also supports pulling out tokens at arbitrary places. When
+// individual tokens are needed at a position, the lexer is called to pull out a
+// token, which is then used.
+//
+// The main functions also take a mode that the parser is currently in
+// (currently "math" or "text"), which denotes whether the current environment
+// is a math-y one or a text-y one (e.g. inside \text). Currently, this serves
+// to limit the functions which can be used in text mode.
+//
+// The main functions then return an object which contains the useful data that
+// was parsed at its given point, and a new position at the end of the parsed
+// data. The main functions can call each other and continue the parsing by
+// using the returned position as a new starting point.
+//
+// There are also extra `.handle...` functions, which pull out some reused
+// functionality into self-contained functions.
+//
+// The earlier functions return `ParseResult`s, which contain a ParseNode and a
+// new position.
+//
+// The later functions (which are called deeper in the parse) sometimes return
+// ParseFuncOrArgument, which contain a ParseResult as well as some data about
+// whether the parsed object is a function which is missing some arguments, or a
+// standalone object which can be used as an argument to another function.
+
+// Main Parser class
+function Parser(input) {
+    // Make a new lexer
+    this.lexer = new Lexer(input);
+};
 
 // The resulting parse tree nodes of the parse tree.
 function ParseNode(type, value, mode) {
     this.type = type;
     this.value = value;
     this.mode = mode;
+}
+
+// A result and final position returned by the `.parse...` functions.
+function ParseResult(result, newPosition) {
+    this.result = result;
+    this.position = newPosition;
+}
+
+// An initial function (without its arguments), or an argument to a function.
+// The `result` argument should be a ParseResult.
+function ParseFuncOrArgument(result, isFunction, allowedInText, numArgs, argTypes) {
+    this.result = result;
+    // Is this a function (i.e. is it something defined in functions.js)?
+    this.isFunction = isFunction;
+    // Is it allowed in text mode?
+    this.allowedInText = allowedInText;
+    // How many arguments?
+    this.numArgs = numArgs;
+    // What types of arguments?
+    this.argTypes = argTypes;
 }
 
 // Checks a result to make sure it has the right type, and throws an
@@ -36,9 +85,6 @@ Parser.prototype.expect = function(result, type) {
 // Main parsing function, which parses an entire input. Returns either a list
 // of parseNodes or null if the parse fails.
 Parser.prototype.parse = function(input) {
-    // Make a new lexer
-    this.lexer = new Lexer(input);
-
     // Try to parse the input
     var parse = this.parseInput(0, "math");
     return parse.result;
@@ -54,135 +100,312 @@ Parser.prototype.parseInput = function(pos, mode) {
     return expression;
 };
 
+// Handles a body of an expression
+Parser.prototype.handleExpressionBody = function(pos, mode) {
+    var body = [];
+    var atom;
+    // Keep adding atoms to the body until we can't parse any more atoms (either
+    // we reached the end, a }, or a \right)
+    while ((atom = this.parseAtom(pos, mode))) {
+        body.push(atom.result);
+        pos = atom.position;
+    }
+    return {
+        body: body,
+        position: pos
+    };
+};
+
 // Parses an "expression", which is a list of atoms
+//
+// Returns ParseResult
 Parser.prototype.parseExpression = function(pos, mode) {
-    // Start with a list of nodes
-    var expression = [];
-    while (true) {
-        // Try to parse atoms
-        var parse = this.parseAtom(pos, mode);
-        if (parse) {
-            // Copy them into the list
-            expression.push(parse.result);
-            pos = parse.position;
+    var body = this.handleExpressionBody(pos, mode);
+    return new ParseResult(body.body, body.position);
+};
+
+// The greediness of a superscript or subscript
+var SUPSUB_GREEDINESS = 1;
+
+// Handle a subscript or superscript with nice errors
+Parser.prototype.handleSupSubscript = function(pos, mode, symbol, name) {
+    var group = this.parseGroup(pos, mode);
+
+    if (!group) {
+        throw new ParseError(
+            "Expected group after '" + symbol + "'", this.lexer, pos);
+    } else if (group.numArgs > 0) {
+        // ^ and _ have a greediness, so handle interactions with functions'
+        // greediness
+        var funcGreediness = functions.getGreediness(group.result.result);
+        if (funcGreediness > SUPSUB_GREEDINESS) {
+            return this.parseFunction(pos, mode);
         } else {
+            throw new ParseError(
+                "Got function '" + group.result.result + "' with no arguments " +
+                    "as " + name,
+                this.lexer, pos);
+        }
+    } else {
+        return group.result;
+    }
+};
+
+// Parses a group with optional super/subscripts
+//
+// Returns ParseResult or null
+Parser.prototype.parseAtom = function(pos, mode) {
+    // The body of an atom is an implicit group, so that things like
+    // \left(x\right)^2 work correctly.
+    var base = this.parseImplicitGroup(pos, mode);
+
+    // In text mode, we don't have superscripts or subscripts
+    if (mode === "text") {
+        return base;
+    }
+
+    // Handle an empty base
+    var currPos;
+    if (!base) {
+        currPos = pos;
+        base = undefined;
+    } else {
+        currPos = base.position;
+    }
+
+    var superscript;
+    var subscript;
+    while (true) {
+        // Lex the first token
+        var lex = this.lexer.lex(currPos, mode);
+
+        var group;
+        if (lex.type === "^") {
+            // We got a superscript start
+            if (superscript) {
+                throw new ParseError(
+                    "Double superscript", this.lexer, currPos);
+            }
+            var result = this.handleSupSubscript(
+                lex.position, mode, lex.type, "superscript");
+            currPos = result.position;
+            superscript = result.result;
+        } else if (lex.type === "_") {
+            // We got a subscript start
+            if (subscript) {
+                throw new ParseError(
+                    "Double subscript", this.lexer, currPos);
+            }
+            var result = this.handleSupSubscript(
+                lex.position, mode, lex.type, "subscript");
+            currPos = result.position;
+            subscript = result.result;
+        } else if (lex.type === "'") {
+            // We got a prime
+            var prime = new ParseNode("textord", "\\prime", mode);
+
+            // Many primes can be grouped together, so we handle this here
+            var primes = [prime];
+            currPos = lex.position;
+            // Keep lexing tokens until we get something that's not a prime
+            while ((lex = this.lexer.lex(currPos, mode)).type === "'") {
+                // For each one, add another prime to the list
+                primes.push(prime);
+                currPos = lex.position;
+            }
+            // Put them into an ordgroup as the superscript
+            superscript = new ParseNode("ordgroup", primes, mode);
+        } else {
+            // If it wasn't ^, _, or ', stop parsing super/subscripts
             break;
         }
     }
-    return new ParseResult(expression, pos);
+
+    if (superscript || subscript) {
+        // If we got either a superscript or subscript, create a supsub
+        return new ParseResult(
+            new ParseNode("supsub", {
+                base: base && base.result,
+                sup: superscript,
+                sub: subscript
+            }, mode),
+            currPos);
+    } else {
+        // Otherwise return the original body
+        return base;
+    }
 };
 
-// Parses a superscript expression, like "^3"
-Parser.prototype.parseSuperscript = function(pos, mode) {
-    if (mode !== "math") {
-        throw new ParseError(
-            "Trying to parse superscript in non-math mode", this.lexer, pos);
+// A list of the size-changing functions, for use in parseImplicitGroup
+var sizeFuncs = [
+    "\\tiny", "\\scriptsize", "\\footnotesize", "\\small", "\\normalsize",
+    "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge"
+];
+
+// Parses an implicit group, which is a group that starts at the end of a
+// specified, and ends right before a higher explicit group ends, or at EOL. It
+// is used for functions that appear to affect the current style, like \Large or
+// \textrm, where instead of keeping a style we just pretend that there is an
+// implicit grouping after it until the end of the group. E.g.
+//   small text {\Large large text} small text again
+// It is also used for \left and \right to get the correct grouping.
+//
+// Returns ParseResult or null
+Parser.prototype.parseImplicitGroup = function(pos, mode) {
+    var start = this.parseSymbol(pos, mode);
+
+    if (!start || !start.result) {
+        // If we didn't get anything we handle, fall back to parseFunction
+        return this.parseFunction(pos, mode);
     }
 
-    // Try to parse a "^" character
-    var sup = this.lexer.lex(pos, mode);
-    if (sup.type === "^") {
-        // If we got one, parse the corresponding group
-        var group = this.parseGroup(sup.position, mode);
-        if (group) {
-            return group;
+    if (start.result.result === "\\left") {
+        // If we see a left:
+        // Parse the entire left function (including the delimiter)
+        var left = this.parseFunction(pos, mode);
+        // Parse out the implicit body
+        var body = this.handleExpressionBody(left.position, mode);
+        // Check the next token
+        var rightLex = this.parseSymbol(body.position, mode);
+
+        if (rightLex && rightLex.result.result === "\\right") {
+            // If it's a \right, parse the entire right function (including the delimiter)
+            var right = this.parseFunction(body.position, mode);
+
+            return new ParseResult(
+                new ParseNode("leftright", {
+                    body: body.body,
+                    left: left.result.value.value,
+                    right: right.result.value.value
+                }, mode),
+                right.position);
         } else {
-            // Throw an error if we didn't find a group
-            throw new ParseError(
-                "Couldn't find group after '^'", this.lexer, sup.position);
+            throw new ParseError("Missing \\right", this.lexer, body.position);
         }
-    } else if (sup.type === "'") {
-        var pos = sup.position;
+    } else if (start.result.result === "\\right") {
+        // If we see a right, explicitly fail the parsing here so the \left
+        // handling ends the group
+        return null;
+    } else if (utils.contains(sizeFuncs, start.result.result)) {
+        // If we see a sizing function, parse out the implict body
+        var body = this.handleExpressionBody(start.result.position, mode);
         return new ParseResult(
-            new ParseNode("textord", "\\prime", mode), sup.position, mode);
+            new ParseNode("sizing", {
+                // Figure out what size to use based on the list of functions above
+                size: "size" + (utils.indexOf(sizeFuncs, start.result.result) + 1),
+                value: body.body
+            }, mode),
+            body.position);
+    } else {
+        // Defer to parseFunction if it's not a function we handle
+        return this.parseFunction(pos, mode);
+    }
+};
+
+// Parses an entire function, including its base and all of its arguments
+//
+// Returns ParseResult or null
+Parser.prototype.parseFunction = function(pos, mode) {
+    var baseGroup = this.parseGroup(pos, mode);
+
+    if (baseGroup) {
+        if (baseGroup.isFunction) {
+            var func = baseGroup.result.result;
+            if (mode === "text" && !baseGroup.allowedInText) {
+                throw new ParseError(
+                    "Can't use function '" + func + "' in text mode",
+                    this.lexer, baseGroup.position);
+            }
+
+            var newPos = baseGroup.result.position;
+            var result;
+            if (baseGroup.numArgs > 0) {
+                var baseGreediness = functions.getGreediness(func);
+                var args = [func];
+                var positions = [newPos];
+                for (var i = 0; i < baseGroup.numArgs; i++) {
+                    var argType = baseGroup.argTypes && baseGroup.argTypes[i];
+                    if (argType) {
+                        var arg = this.parseSpecialGroup(newPos, argType, mode);
+                    } else {
+                        var arg = this.parseGroup(newPos, mode);
+                    }
+                    if (!arg) {
+                        throw new ParseError(
+                            "Expected group after '" + baseGroup.result.result +
+                                "'",
+                            this.lexer, newPos);
+                    }
+                    var argNode;
+                    if (arg.numArgs > 0) {
+                        var argGreediness = functions.getGreediness(arg.result.result);
+                        if (argGreediness > baseGreediness) {
+                            argNode = this.parseFunction(newPos, mode);
+                        } else {
+                            throw new ParseError(
+                                "Got function '" + arg.result.result + "' as " +
+                                    "argument to function '" +
+                                    baseGroup.result.result + "'",
+                                this.lexer, arg.result.position - 1);
+                        }
+                    } else {
+                        argNode = arg.result;
+                    }
+                    args.push(argNode.result);
+                    positions.push(argNode.position);
+                    newPos = argNode.position;
+                }
+
+                args.push(positions);
+
+                result = functions.funcs[func].handler.apply(this, args);
+            } else {
+                result = functions.funcs[func].handler.apply(this, [func]);
+            }
+
+            return new ParseResult(
+                new ParseNode(result.type, result, mode),
+                newPos);
+        } else {
+            return baseGroup.result;
+        }
     } else {
         return null;
     }
 };
 
-// Parses a subscript expression, like "_3"
-Parser.prototype.parseSubscript = function(pos, mode) {
-    if (mode !== "math") {
-        throw new ParseError(
-            "Trying to parse subscript in non-math mode", this.lexer, pos);
-    }
-
-    // Try to parse a "_" character
-    var sub = this.lexer.lex(pos, mode);
-    if (sub.type === "_") {
-        // If we got one, parse the corresponding group
-        var group = this.parseGroup(sub.position, mode);
-        if (group) {
-            return group;
-        } else {
-            // Throw an error if we didn't find a group
-            throw new ParseError(
-                "Couldn't find group after '_'", this.lexer, sub.position);
-        }
+// Parses a group when the mode is changing. Takes a position, a new mode, and
+// an outer mode that is used to parse the outside.
+//
+// Returns a ParseFuncOrArgument or null
+Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
+    if (mode === "color" || mode === "size") {
+        // color and size modes are special because they should have braces and
+        // should only lex a single symbol inside
+        var openBrace = this.lexer.lex(pos, outerMode);
+        this.expect(openBrace, "{");
+        var inner = this.lexer.lex(openBrace.position, mode);
+        var closeBrace = this.lexer.lex(inner.position, outerMode);
+        this.expect(closeBrace, "}");
+        return new ParseFuncOrArgument(
+            new ParseResult(
+                new ParseNode("color", inner.text, outerMode),
+                closeBrace.position),
+            false);
+    } else if (mode === "text") {
+        // text mode is special because it should ignore the whitespace before
+        // it
+        var whitespace = this.lexer.lex(pos, "whitespace");
+        return this.parseGroup(whitespace.position, mode);
     } else {
-        return null;
+        return this.parseGroup(pos, mode);
     }
 };
-
-// Parses an atom, which consists of a nucleus, and an optional superscript and
-// subscript
-Parser.prototype.parseAtom = function(pos, mode) {
-    // Parse the nucleus
-    var nucleus = this.parseGroup(pos, mode);
-    var nextPos = pos;
-    var nucleusNode;
-
-    // Text mode doesn't have superscripts or subscripts, so we only parse the
-    // nucleus in this case
-    if (mode === "text") {
-        return nucleus;
-    }
-
-    if (nucleus) {
-        nextPos = nucleus.position;
-        nucleusNode = nucleus.result;
-    }
-
-    var sup;
-    var sub;
-
-    // Now, we try to parse a subscript or a superscript (or both!), and
-    // depending on whether those succeed, we return the correct type.
-    while (true) {
-        var node;
-        if ((node = this.parseSuperscript(nextPos, mode))) {
-            if (sup) {
-                throw new ParseError(
-                    "Double superscript", this.lexer, nextPos);
-            }
-            nextPos = node.position;
-            sup = node.result;
-            continue;
-        }
-        if ((node = this.parseSubscript(nextPos, mode))) {
-            if (sub) {
-                throw new ParseError(
-                    "Double subscript", this.lexer, nextPos);
-            }
-            nextPos = node.position;
-            sub = node.result;
-            continue;
-        }
-        break;
-    }
-
-    if (sup || sub) {
-        return new ParseResult(
-            new ParseNode("supsub", {base: nucleusNode, sup: sup,
-                    sub: sub}, mode),
-            nextPos);
-    } else {
-        return nucleus;
-    }
-}
 
 // Parses a group, which is either a single nucleus (like "x") or an expression
 // in braces (like "{x+y}")
+//
+// Returns a ParseFuncOrArgument or null
 Parser.prototype.parseGroup = function(pos, mode) {
     var start = this.lexer.lex(pos, mode);
     // Try to parse an open brace
@@ -192,395 +415,52 @@ Parser.prototype.parseGroup = function(pos, mode) {
         // Make sure we get a close brace
         var closeBrace = this.lexer.lex(expression.position, mode);
         this.expect(closeBrace, "}");
-        return new ParseResult(
-            new ParseNode("ordgroup", expression.result, mode),
-            closeBrace.position);
+        return new ParseFuncOrArgument(
+            new ParseResult(
+                new ParseNode("ordgroup", expression.result, mode),
+                closeBrace.position),
+            false);
     } else {
         // Otherwise, just return a nucleus
-        return this.parseNucleus(pos, mode);
+        return this.parseSymbol(pos, mode);
     }
 };
 
-// Parses an implicit group, which is a group that starts where you want it, and
-// ends right before a higher explicit group ends, or at EOL. It is used for
-// functions that appear to affect the current style, like \Large or \textrm,
-// where instead of keeping a style we just pretend that there is an implicit
-// grouping after it until the end of the group.
-Parser.prototype.parseImplicitGroup = function(pos, mode) {
-    // Since parseExpression already ends where we want it to, we just need to
-    // call that and it does what we want.
-    var expression = this.parseExpression(pos, mode);
-    return new ParseResult(
-        new ParseNode("ordgroup", expression.result, mode),
-        expression.position);
-};
-
-// Parses a custom color group, which looks like "{#ffffff}"
-Parser.prototype.parseColorGroup = function(pos, mode) {
-    var start = this.lexer.lex(pos, mode);
-    // Try to parse an open brace
-    if (start.type === "{") {
-        // Parse the color
-        var color = this.lexer.lex(start.position, "color");
-        // Make sure we get a close brace
-        var closeBrace = this.lexer.lex(color.position, mode);
-        this.expect(closeBrace, "}");
-        return new ParseResult(
-            new ParseNode("color", color.text),
-            closeBrace.position);
-    } else {
-        // It has to have an open brace, so if it doesn't we throw
-        throw new ParseError(
-            "There must be braces around colors",
-            this.lexer, pos
-        );
-    }
-};
-
-// Parses a text group, which looks like "{#ffffff}"
-Parser.prototype.parseTextGroup = function(pos, mode) {
-    var start = this.lexer.lex(pos, mode);
-    // Try to parse an open brace
-    if (start.type === "{") {
-        // Parse the text
-        var text = this.parseExpression(start.position, "text");
-        // Make sure we get a close brace
-        var closeBrace = this.lexer.lex(text.position, mode);
-        this.expect(closeBrace, "}");
-        return new ParseResult(
-            new ParseNode("ordgroup", text.result, "text"),
-            closeBrace.position);
-    } else {
-        // It has to have an open brace, so if it doesn't we throw
-        throw new ParseError(
-            "There must be braces around text",
-            this.lexer, pos
-        );
-    }
-};
-
-Parser.prototype.parseSizeGroup = function(pos, mode) {
-    var start = this.lexer.lex(pos, mode);
-    // Try to parse an open brace
-    if (start.type === "{") {
-        // Parse the size
-        var size = this.lexer.lex(start.position, "size");
-        // Make sure we get a close brace
-        var closeBrace = this.lexer.lex(size.position, mode);
-        this.expect(closeBrace, "}");
-        return new ParseResult(
-            new ParseNode("size", size.text),
-            closeBrace.position);
-    } else {
-        // It has to have an open brace, so if it doesn't we throw
-        throw new ParseError(
-            "There must be braces around sizes",
-            this.lexer, pos
-        );
-    }
-};
-
-var delimiters = [
-    "(", ")", "[", "\\lbrack", "]", "\\rbrack",
-    "\\{", "\\lbrace", "\\}", "\\rbrace",
-    "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
-    "<", ">", "\\langle", "\\rangle",
-    "/", "\\backslash",
-    "|", "\\vert", "\\|", "\\Vert",
-    "\\uparrow", "\\Uparrow",
-    "\\downarrow", "\\Downarrow",
-    "\\updownarrow", "\\Updownarrow",
-    "."
-];
-
-// Parse a single delimiter
-Parser.prototype.parseDelimiter = function(pos, mode) {
-    var delim = this.lexer.lex(pos, mode);
-    if (utils.contains(delimiters, delim.text)) {
-        return new ParseResult(
-            new ParseNode("delimiter", delim.text),
-            delim.position);
-    } else {
-        return null;
-    }
-};
-
-// A list of 1-argument color functions
-var colorFuncs = [
-    "\\blue", "\\orange", "\\pink", "\\red", "\\green", "\\gray", "\\purple"
-];
-
-// A list of 1-argument sizing functions
-var sizeFuncs = [
-    "\\tiny", "\\scriptsize", "\\footnotesize", "\\small", "\\normalsize",
-    "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge"
-];
-
-// A list of math functions replaced by their names
-var namedFns = [
-    "\\arcsin", "\\arccos", "\\arctan", "\\arg", "\\cos", "\\cosh",
-    "\\cot", "\\coth", "\\csc", "\\deg", "\\dim", "\\exp", "\\hom",
-    "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin", "\\sinh",
-    "\\tan","\\tanh"
-];
-
-var delimiterSizes = {
-    "\\bigl" : {type: "open",    size: 1},
-    "\\Bigl" : {type: "open",    size: 2},
-    "\\biggl": {type: "open",    size: 3},
-    "\\Biggl": {type: "open",    size: 4},
-    "\\bigr" : {type: "close",   size: 1},
-    "\\Bigr" : {type: "close",   size: 2},
-    "\\biggr": {type: "close",   size: 3},
-    "\\Biggr": {type: "close",   size: 4},
-    "\\bigm" : {type: "rel",     size: 1},
-    "\\Bigm" : {type: "rel",     size: 2},
-    "\\biggm": {type: "rel",     size: 3},
-    "\\Biggm": {type: "rel",     size: 4},
-    "\\big"  : {type: "textord", size: 1},
-    "\\Big"  : {type: "textord", size: 2},
-    "\\bigg" : {type: "textord", size: 3},
-    "\\Bigg" : {type: "textord", size: 4}
-};
-
-// Parses a "nucleus", which is either a single token from the tokenizer or a
-// function and its arguments
-Parser.prototype.parseNucleus = function(pos, mode) {
+// Parse a single symbol out of the string. Here, we handle both the functions
+// we have defined, as well as the single character symbols
+//
+// Returns a ParseFuncOrArgument or null
+Parser.prototype.parseSymbol = function(pos, mode) {
     var nucleus = this.lexer.lex(pos, mode);
 
-    if (utils.contains(colorFuncs, nucleus.type)) {
-        // If this is a color function, parse its argument and return
-        var group = this.parseGroup(nucleus.position, mode);
-        if (group) {
-            var atoms;
-            if (group.result.type === "ordgroup") {
-                atoms = group.result.value;
-            } else {
-                atoms = [group.result];
-            }
-            return new ParseResult(
-                new ParseNode("color",
-                    {color: "katex-" + nucleus.type.slice(1), value: atoms},
-                    mode),
-                group.position);
-        } else {
-            throw new ParseError(
-                "Expected group after '" + nucleus.text + "'",
-                this.lexer, nucleus.position
-            );
-        }
-    } else if (nucleus.type === "\\color") {
-        // If this is a custom color function, parse its first argument as a
-        // custom color and its second argument normally
-        var color = this.parseColorGroup(nucleus.position, mode);
-        if (color) {
-            var inner = this.parseGroup(color.position, mode);
-            if (inner) {
-                var atoms;
-                if (inner.result.type === "ordgroup") {
-                    atoms = inner.result.value;
-                } else {
-                    atoms = [inner.result];
+    if (functions.funcs[nucleus.type]) {
+        // If there is a function with this name, we use its data
+        var func = functions.funcs[nucleus.type];
+
+        // Here, we replace "original" argTypes with the current mode
+        var argTypes = func.argTypes;
+        if (argTypes) {
+            argTypes = argTypes.slice();
+            for (var i = 0; i < argTypes.length; i++) {
+                if (argTypes[i] === "original") {
+                    argTypes[i] = mode;
                 }
-                return new ParseResult(
-                    new ParseNode("color",
-                        {color: color.result.value, value: atoms},
-                        mode),
-                    inner.position);
-            } else {
-                throw new ParseError(
-                    "Expected second group after '" + nucleus.text + "'",
-                    this.lexer, color.position
-                );
             }
-        } else {
-            throw new ParseError(
-                "Expected color after '" + nucleus.text + "'",
-                    this.lexer, nucleus.position
-                );
         }
-    } else if (mode === "math" && utils.contains(sizeFuncs, nucleus.type)) {
-        // If this is a size function, parse its argument and return
-        var group = this.parseImplicitGroup(nucleus.position, mode);
-        return new ParseResult(
-            new ParseNode("sizing", {
-                size: "size" + (utils.indexOf(sizeFuncs, nucleus.type) + 1),
-                value: group.result
-            }, mode),
-            group.position);
-    } else if (mode === "math" && utils.contains(namedFns, nucleus.type)) {
-        // If this is a named function, just return it plain
-        return new ParseResult(
-            new ParseNode("namedfn", nucleus.text, mode),
-            nucleus.position);
-    } else if (mode === "math" && delimiterSizes[nucleus.type]) {
-        // If this is a delimiter size function, we parse a single delimiter
-        var delim = this.parseDelimiter(nucleus.position, mode);
-        if (delim) {
-            var type = delimiterSizes[nucleus.type].type;
 
-            return new ParseResult(
-                new ParseNode("delimsizing", {
-                    size: delimiterSizes[nucleus.type].size,
-                    type: delimiterSizes[nucleus.type].type,
-                    value: delim.result.value
-                }, mode),
-                delim.position);
-        } else {
-            throw new ParseError(
-                "Expected delimiter after '" + nucleus.text + "'");
-        }
-    } else if (mode === "math" && nucleus.type === "\\left") {
-        // If we see a \left, first we parse the left delimiter
-        var leftDelim = this.parseDelimiter(nucleus.position, mode);
-        if (leftDelim) {
-            // Then, we parse an inner expression. Due to the handling of \right
-            // below, this should end just before the \right
-            var expression = this.parseExpression(leftDelim.position, mode);
-
-            // Make sure we see a \right
-            var right = this.lexer.lex(expression.position, mode);
-            this.expect(right, "\\right");
-
-            // Parse the right delimiter
-            var rightDelim = this.parseDelimiter(right.position, mode);
-            if (rightDelim) {
-                return new ParseResult(
-                    new ParseNode("leftright", {
-                        left: leftDelim.result.value,
-                        right: rightDelim.result.value,
-                        body: expression.result
-                    }, mode),
-                    rightDelim.position);
-            } else {
-                throw new ParseError(
-                    "Expected delimiter after '" + right.text + "'");
-            }
-        } else {
-            throw new ParseError(
-                "Expected delimiter after '" + nucleus.text + "'");
-        }
-    } else if (mode === "math" && nucleus.type === "\\right") {
-        // If we see a right, we explicitly return null to break out of the
-        // parseExpression loop. The code for \left will handle the delimiter
-        return null;
-    } else if (nucleus.type === "\\llap" || nucleus.type === "\\rlap") {
-        // If this is an llap or rlap, parse its argument and return
-        var group = this.parseGroup(nucleus.position, mode);
-        if (group) {
-            return new ParseResult(
-                new ParseNode(nucleus.type.slice(1), group.result, mode),
-                group.position);
-        } else {
-            throw new ParseError(
-                "Expected group after '" + nucleus.text + "'",
-                this.lexer, nucleus.position
-            );
-        }
-    } else if (mode === "math" && nucleus.type === "\\text") {
-        var group = this.parseTextGroup(nucleus.position, mode);
-        if (group) {
-            return new ParseResult(
-                new ParseNode(nucleus.type.slice(1), group.result, mode),
-                group.position);
-        } else {
-            throw new ParseError(
-                "Expected group after '" + nucleus.text + "'",
-                this.lexer, nucleus.position
-            );
-        }
-    } else if (mode === "math" && (nucleus.type === "\\dfrac" ||
-                                   nucleus.type === "\\frac" ||
-                                   nucleus.type === "\\tfrac")) {
-        // If this is a frac, parse its two arguments and return
-        var numer = this.parseGroup(nucleus.position, mode);
-        if (numer) {
-            var denom = this.parseGroup(numer.position, mode);
-            if (denom) {
-                return new ParseResult(
-                    new ParseNode("frac", {
-                        numer: numer.result,
-                        denom: denom.result,
-                        size: nucleus.type.slice(1)
-                    }, mode),
-                    denom.position);
-            } else {
-                throw new ParseError("Expected denominator after '" +
-                    nucleus.type + "'",
-                    this.lexer, numer.position
-                );
-            }
-        } else {
-            throw new ParseError("Expected numerator after '" +
-                nucleus.type + "'",
-                this.lexer, nucleus.position
-            );
-        }
-    } else if (mode === "math" && nucleus.type === "\\KaTeX") {
-        // If this is a KaTeX node, return the special katex result
-        return new ParseResult(
-            new ParseNode("katex", null, mode),
-            nucleus.position
-        );
-    } else if (mode === "math" && nucleus.type === "\\overline") {
-        // If this is an overline, parse its argument and return
-        var group = this.parseGroup(nucleus.position, mode);
-        if (group) {
-            return new ParseResult(
-                new ParseNode("overline", group, mode),
-                group.position);
-        } else {
-            throw new ParseError("Expected group after '" +
-                nucleus.type + "'",
-                this.lexer, nucleus.position
-            );
-        }
-    } else if (mode === "math" && nucleus.type === "\\sqrt") {
-        // If this is a square root, parse its argument and return
-        var group = this.parseGroup(nucleus.position, mode);
-        if (group) {
-            return new ParseResult(
-                new ParseNode("sqrt", group, mode),
-                group.position);
-        } else {
-            throw new ParseError("Expected group after '" +
-                nucleus.type + "'",
-                this.lexer, nucleus.position
-            );
-        }
-    } else if (mode === "math" && nucleus.type === "\\rule") {
-        // Parse the width of the rule
-        var widthGroup = this.parseSizeGroup(nucleus.position, mode);
-        if (widthGroup) {
-            // Parse the height of the rule
-            var heightGroup = this.parseSizeGroup(widthGroup.position, mode);
-            if (heightGroup) {
-                return new ParseResult(
-                    new ParseNode("rule", {
-                        width: widthGroup.result.value,
-                        height: heightGroup.result.value
-                    }, mode),
-                    heightGroup.position);
-            } else {
-                throw new ParseError("Expected second size group after '" +
-                    nucleus.type + "'",
-                    this.lexer, nucleus.position
-                );
-            }
-        } else {
-            throw new ParseError("Expected size group after '" +
-                nucleus.type + "'",
-                this.lexer, nucleus.position
-            );
-        }
+        return new ParseFuncOrArgument(
+            new ParseResult(nucleus.type, nucleus.position),
+            true, func.allowedInText, func.numArgs, argTypes);
     } else if (symbols[mode][nucleus.text]) {
         // Otherwise if this is a no-argument function, find the type it
         // corresponds to in the symbols map
-        return new ParseResult(
-            new ParseNode(symbols[mode][nucleus.text].group, nucleus.text, mode),
-            nucleus.position);
+        return new ParseFuncOrArgument(
+            new ParseResult(
+                new ParseNode(symbols[mode][nucleus.text].group,
+                              nucleus.text, mode),
+                nucleus.position),
+            false);
     } else {
-        // Otherwise, we couldn't parse it
         return null;
     }
 };

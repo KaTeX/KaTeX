@@ -104,7 +104,7 @@
     {
         "name": "Overline",
         "screenSize": [1024, 768],
-        "url": "http://localhost:7936/test/huxley/test.html?m=\\overline{x}\\overline{x}\\overline{x^{x^{x^x}}} \\blue\\overline{y}"
+        "url": "http://localhost:7936/test/huxley/test.html?m=\\overline{x}\\overline{x}\\overline{x^{x^{x^x}}} \\blue{\\overline{y}}"
     },
 
     {
