@@ -1,0 +1,14 @@
+body {
+    font-size: 20px;
+}
+
+#main {
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 300px;
+    max-width: 600px;
+}
+
+#example {
+    font-size: 30px;
+}
