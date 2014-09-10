@@ -279,11 +279,13 @@ var groupTypes = {
         var fontSizer = buildCommon.makeFontSizer(options,
             Math.max(numer.maxFontSize, denom.maxFontSize));
 
+        var line = makeSpan([options.style.reset(), Style.TEXT.cls(), "line"]);
+
         var numerrow = makeSpan(["mfracnum"], [fontSizer, numernumer]);
-        var mid = makeSpan(["mfracmid"], [fontSizer, makeSpan(["line"])]);
+        var mid = makeSpan(["mfracmid"], [fontSizer, line]);
         var denomrow = makeSpan(["mfracden"], [fontSizer, denomdenom]);
 
-        var theta = fontMetrics.metrics.defaultRuleThickness;
+        var theta = fontMetrics.metrics.defaultRuleThickness / options.style.sizeMultiplier;
 
         var u, v, phi;
         if (fstyle.size === Style.DISPLAY.size) {
@@ -498,10 +500,11 @@ var groupTypes = {
         var fontSizer = buildCommon.makeFontSizer(options, innerGroup.maxFontSize);
 
         // The theta variable in the TeXbook
-        var lineWidth = fontMetrics.metrics.defaultRuleThickness;
+        var lineWidth = fontMetrics.metrics.defaultRuleThickness /
+            options.style.sizeMultiplier;
 
         var line = makeSpan(
-            ["overline-line"], [fontSizer, makeSpan(["line"])]);
+            ["overline-line"], [fontSizer, makeSpan([options.style.reset(), Style.TEXT.cls(), "line"])]);
         var inner = makeSpan(["overline-inner"], [fontSizer, innerGroup]);
         var fixIE = makeSpan(
             ["fix-ie"], [fontSizer, new domTree.textNode("\u00a0")]);
