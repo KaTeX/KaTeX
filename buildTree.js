@@ -54,6 +54,8 @@ var getTypeOfGroup = function(group) {
         return getTypeOfGroup(group.value.value);
     } else if (group.type === "sizing") {
         return getTypeOfGroup(group.value.value);
+    } else if (group.type === "styling") {
+        return getTypeOfGroup(group.value.value);
     } else if (group.type === "delimsizing") {
         return groupToType[group.value.delimType];
     } else {
@@ -545,6 +547,22 @@ var groupTypes = {
         span.maxFontSize = fontSize * options.style.sizeMultiplier;
 
         return span;
+    },
+
+    styling: function(group, options, prev) {
+        var style = {
+            "display": Style.DISPLAY,
+            "text": Style.TEXT,
+            "script": Style.SCRIPT,
+            "scriptscript": Style.SCRIPTSCRIPT
+        };
+
+        var newStyle = style[group.value.style];
+
+        var inner = buildExpression(
+            group.value.value, options.withStyle(newStyle), prev);
+
+        return makeSpan([options.style.reset(), newStyle.cls()], inner);
     },
 
     delimsizing: function(group, options, prev) {

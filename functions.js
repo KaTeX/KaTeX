@@ -310,11 +310,23 @@ var duplicatedFunctions = [
         }
     },
 
-    // Sizing functions
+    // Sizing functions (handled in Parser.js explicitly, hence no handler)
     {
         funcs: [
             "\\tiny", "\\scriptsize", "\\footnotesize", "\\small",
             "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge"
+        ],
+        data: {
+            numArgs: 0
+        }
+    },
+
+    // Style changing functions (handled in Parser.js explicitly, hence no
+    // handler)
+    {
+        funcs: [
+            "\\displaystyle", "\\textstyle", "\\scriptstyle",
+            "\\scriptscriptstyle"
         ],
         data: {
             numArgs: 0

@@ -242,6 +242,11 @@ var sizeFuncs = [
     "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge"
 ];
 
+// A list of the style-changing functions, for use in parseImplicitGroup
+var styleFuncs = [
+    "\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle"
+];
+
 // Parses an implicit group, which is a group that starts at the end of a
 // specified, and ends right before a higher explicit group ends, or at EOL. It
 // is used for functions that appear to affect the current style, like \Large or
@@ -259,7 +264,9 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
         return this.parseFunction(pos, mode);
     }
 
-    if (start.result.result === "\\left") {
+    var func = start.result.result;
+
+    if (func === "\\left") {
         // If we see a left:
         // Parse the entire left function (including the delimiter)
         var left = this.parseFunction(pos, mode);
@@ -282,17 +289,28 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
         } else {
             throw new ParseError("Missing \\right", this.lexer, body.position);
         }
-    } else if (start.result.result === "\\right") {
+    } else if (func === "\\right") {
         // If we see a right, explicitly fail the parsing here so the \left
         // handling ends the group
         return null;
-    } else if (utils.contains(sizeFuncs, start.result.result)) {
+    } else if (utils.contains(sizeFuncs, func)) {
         // If we see a sizing function, parse out the implict body
         var body = this.handleExpressionBody(start.result.position, mode);
         return new ParseResult(
             new ParseNode("sizing", {
                 // Figure out what size to use based on the list of functions above
-                size: "size" + (utils.indexOf(sizeFuncs, start.result.result) + 1),
+                size: "size" + (utils.indexOf(sizeFuncs, func) + 1),
+                value: body.body
+            }, mode),
+            body.position);
+    } else if (utils.contains(styleFuncs, func)) {
+        // If we see a styling function, parse out the implict body
+        var body = this.handleExpressionBody(start.result.position, mode);
+        return new ParseResult(
+            new ParseNode("styling", {
+                // Figure out what style to use by pulling out the style from
+                // the function name
+                style: func.slice(1, func.length - 5),
                 value: body.body
             }, mode),
             body.position);

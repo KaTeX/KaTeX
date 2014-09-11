@@ -916,3 +916,36 @@ describe("A TeX-compliant parser", function() {
         }
     });
 });
+
+describe("A style change parser", function() {
+    it("should not fail", function() {
+        expect("\\displaystyle x").toParse();
+        expect("\\textstyle x").toParse();
+        expect("\\scriptstyle x").toParse();
+        expect("\\scriptscriptstyle x").toParse();
+    });
+
+    it("should produce the correct style", function() {
+        var displayParse = parseTree("\\displaystyle x")[0];
+        expect(displayParse.value.style).toMatch("display");
+
+        var scriptscriptParse = parseTree("\\scriptscriptstyle x")[0];
+        expect(scriptscriptParse.value.style).toMatch("scriptscript");
+    });
+
+    it("should only change the style within its group", function() {
+        var text = "a b { c d \\displaystyle e f } g h";
+        expect(text).toParse();
+
+        var parse = parseTree(text);
+
+        var displayNode = parse[2].value[2];
+
+        expect(displayNode.type).toMatch("styling");
+
+        var displayBody = displayNode.value.value;
+
+        expect(displayBody.length).toEqual(2);
+        expect(displayBody[0].value).toMatch("e");
+    });
+});

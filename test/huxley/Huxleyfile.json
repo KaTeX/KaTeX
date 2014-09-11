@@ -159,5 +159,11 @@
         "name": "Sqrt",
         "screenSize": [1024, 768],
         "url": "http://localhost:7936/test/huxley/test.html?m=\\sqrt{\\sqrt{\\sqrt{x}}}_{\\sqrt{\\sqrt{x}}}^{\\sqrt{\\sqrt{\\sqrt{x}}}^{\\sqrt{\\sqrt{\\sqrt{x}}}}}"
+    },
+
+    {
+        "name": "DisplayStyle",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m={\\displaystyle\\sqrt{x}}{\\sqrt{x}}{\\displaystyle \\frac12}{\\frac12}{\\displaystyle x^1_2}{x^1_2}"
     }
 ]
