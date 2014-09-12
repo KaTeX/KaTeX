@@ -10,6 +10,10 @@ metrics_to_extract = {
         u"\u2245",
         u"\u0020",
         u"\u00a0",
+        u"\u2026",
+        u"\u22ef",
+        u"\u22f1",
+        u"\u22ee",
     ]
 }
 
