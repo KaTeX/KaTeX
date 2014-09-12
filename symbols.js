@@ -673,6 +673,96 @@ var symbols = {
             font: "main",
             group: "textord",
             replace: "\u21d5"
+        },
+        "\\coprod": {
+            font: "math",
+            group: "op",
+            replace: "\u2210"
+        },
+        "\\bigvee": {
+            font: "math",
+            group: "op",
+            replace: "\u22c1"
+        },
+        "\\bigwedge": {
+            font: "math",
+            group: "op",
+            replace: "\u22c0"
+        },
+        "\\biguplus": {
+            font: "math",
+            group: "op",
+            replace: "\u2a04"
+        },
+        "\\bigcap": {
+            font: "math",
+            group: "op",
+            replace: "\u22c2"
+        },
+        "\\bigcup": {
+            font: "math",
+            group: "op",
+            replace: "\u22c3"
+        },
+        "\\int": {
+            font: "math",
+            group: "op",
+            replace: "\u222b"
+        },
+        "\\intop": {
+            font: "math",
+            group: "op",
+            replace: "\u222b"
+        },
+        "\\iint": {
+            font: "math",
+            group: "op",
+            replace: "\u222c"
+        },
+        "\\iiint": {
+            font: "math",
+            group: "op",
+            replace: "\u222d"
+        },
+        "\\prod": {
+            font: "math",
+            group: "op",
+            replace: "\u220f"
+        },
+        "\\sum": {
+            font: "math",
+            group: "op",
+            replace: "\u2211"
+        },
+        "\\bigotimes": {
+            font: "math",
+            group: "op",
+            replace: "\u2a02"
+        },
+        "\\bigoplus": {
+            font: "math",
+            group: "op",
+            replace: "\u2a01"
+        },
+        "\\bigodot": {
+            font: "math",
+            group: "op",
+            replace: "\u2a00"
+        },
+        "\\oint": {
+            font: "math",
+            group: "op",
+            replace: "\u222e"
+        },
+        "\\bigsqcup": {
+            font: "math",
+            group: "op",
+            replace: "\u2a06"
+        },
+        "\\smallint": {
+            font: "math",
+            group: "op",
+            replace: "\u222b"
         }
     },
     "text": {

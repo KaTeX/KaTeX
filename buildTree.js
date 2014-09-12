@@ -34,7 +34,7 @@ var groupToType = {
     spacing: "mord",
     punct: "mpunct",
     ordgroup: "mord",
-    namedfn: "mop",
+    op: "mop",
     katex: "mord",
     overline: "mord",
     rule: "mord",
@@ -81,21 +81,25 @@ var isCharacterBox = function(group) {
     }
 };
 
+var shouldHandleSupSub = function(group, options) {
+    if (group == null) {
+        return false;
+    } else if (group.type === "op") {
+        return group.value.limits && options.style.id === Style.DISPLAY.id;
+    } else {
+        return null;
+    }
+};
+
 var groupTypes = {
     mathord: function(group, options, prev) {
-        return makeSpan(
-            ["mord"],
-            [buildCommon.mathit(group.value, group.mode)],
-            options.getColor()
-        );
+        return buildCommon.mathit(
+            group.value, group.mode, options.getColor(), ["mord"]);
     },
 
     textord: function(group, options, prev) {
-        return makeSpan(
-            ["mord"],
-            [buildCommon.mathrm(group.value, group.mode)],
-            options.getColor()
-        );
+        return buildCommon.mathrm(
+            group.value, group.mode, options.getColor(), ["mord"]);
     },
 
     bin: function(group, options, prev) {
@@ -110,27 +114,28 @@ var groupTypes = {
             group.type = "ord";
             className = "mord";
         }
-        return makeSpan(
-            [className],
-            [buildCommon.mathrm(group.value, group.mode)],
-            options.getColor()
-        );
+
+        return buildCommon.mathrm(
+            group.value, group.mode, options.getColor(), [className]);
     },
 
     rel: function(group, options, prev) {
-        return makeSpan(
-            ["mrel"],
-            [buildCommon.mathrm(group.value, group.mode)],
-            options.getColor()
-        );
+        return buildCommon.mathrm(
+            group.value, group.mode, options.getColor(), ["mrel"]);
     },
 
     text: function(group, options, prev) {
-        return makeSpan(["text mord", options.style.cls()],
+        return makeSpan(["text", "mord", options.style.cls()],
             buildExpression(group.value.body, options.reset()));
     },
 
     supsub: function(group, options, prev) {
+        var baseGroup = group.value.base;
+
+        if (shouldHandleSupSub(group.value.base, options)) {
+            return groupTypes[group.value.base.type](group, options, prev);
+        }
+
         var base = buildGroup(group.value.base, options.reset());
 
         if (group.value.sup) {
@@ -181,6 +186,10 @@ var groupTypes = {
             ], "shift", v, options);
 
             supsub.children[0].style.marginRight = scriptspace;
+
+            if (base instanceof domTree.symbolNode) {
+                supsub.children[0].style.marginLeft = -base.italic + "em";
+            }
         } else if (!group.value.sub) {
             u = Math.max(u, p,
                 sup.depth + 0.25 * fontMetrics.metrics.xHeight);
@@ -211,6 +220,11 @@ var groupTypes = {
                 {type: "elem", elem: supmid, shift: -u}
             ], "individualShift", null, options);
 
+            if (base instanceof domTree.symbolNode) {
+                supsub.children[1].style.marginLeft = base.italic + "em";
+                base.italic = 0;
+            }
+
             supsub.children[0].style.marginRight = scriptspace;
             supsub.children[1].style.marginRight = scriptspace;
         }
@@ -220,19 +234,13 @@ var groupTypes = {
     },
 
     open: function(group, options, prev) {
-        return makeSpan(
-            ["mopen"],
-            [buildCommon.mathrm(group.value, group.mode)],
-            options.getColor()
-        );
+        return buildCommon.mathrm(
+            group.value, group.mode, options.getColor(), ["mopen"]);
     },
 
     close: function(group, options, prev) {
-        return makeSpan(
-            ["mclose"],
-            [buildCommon.mathrm(group.value, group.mode)],
-            options.getColor()
-        );
+        return buildCommon.mathrm(
+            group.value, group.mode, options.getColor(), ["mclose"]);
     },
 
     frac: function(group, options, prev) {
@@ -344,11 +352,8 @@ var groupTypes = {
     },
 
     punct: function(group, options, prev) {
-        return makeSpan(
-            ["mpunct"],
-            [buildCommon.mathrm(group.value, group.mode)],
-            options.getColor()
-        );
+        return buildCommon.mathrm(
+            group.value, group.mode, options.getColor(), ["mpunct"]);
     },
 
     ordgroup: function(group, options, prev) {
@@ -358,13 +363,129 @@ var groupTypes = {
         );
     },
 
-    namedfn: function(group, options, prev) {
-        var chars = [];
-        for (var i = 1; i < group.value.body.length; i++) {
-            chars.push(buildCommon.mathrm(group.value.body[i], group.mode));
+    op: function(group, options, prev) {
+        var supGroup;
+        var subGroup;
+        var hasLimits = false;
+        if (group.type === "supsub" ) {
+            supGroup = group.value.sup;
+            subGroup = group.value.sub;
+            group = group.value.base;
+            hasLimits = true;
         }
 
-        return makeSpan(["mop"], chars, options.getColor());
+        // Most operators have a large successor symbol, but these don't.
+        var noSuccessor = [
+            "\\smallint"
+        ];
+
+        var large = false;
+
+        if (options.style.id === Style.DISPLAY.id &&
+            group.value.symbol &&
+            !utils.contains(noSuccessor, group.value.body)) {
+
+            // Make symbols larger in displaystyle, except for smallint
+            large = true;
+        }
+
+        var base;
+        var baseShift = 0;
+        var delta = 0;
+        if (group.value.symbol) {
+            var style = large ? "Size2-Regular" : "Size1-Regular";
+            base = buildCommon.makeSymbol(
+                group.value.body, style, "math", options.getColor(),
+                ["op-symbol", large ? "large-op" : "small-op", "mop"]);
+
+            baseShift = (base.height - base.depth) / 2 -
+                fontMetrics.metrics.axisHeight *
+                options.style.sizeMultiplier;
+            delta = base.italic;
+        } else {
+            var output = [];
+            for (var i = 1; i < group.value.body.length; i++) {
+                output.push(buildCommon.mathrm(group.value.body[i], group.mode));
+            }
+            base = makeSpan(["mop"], output, options.getColor());
+        }
+
+        if (hasLimits) {
+            if (supGroup) {
+                var sup = buildGroup(supGroup,
+                        options.withStyle(options.style.sup()));
+                var supmid = makeSpan(
+                    [options.style.reset(), options.style.sup().cls()], [sup]);
+
+                var supKern = Math.max(
+                    fontMetrics.metrics.bigOpSpacing1,
+                    fontMetrics.metrics.bigOpSpacing3 - sup.depth);
+            }
+
+            if (subGroup) {
+                var sub = buildGroup(subGroup,
+                        options.withStyle(options.style.sub()));
+                var submid = makeSpan(
+                        [options.style.reset(), options.style.sub().cls()], [sub]);
+
+                var subKern = Math.max(
+                    fontMetrics.metrics.bigOpSpacing2,
+                    fontMetrics.metrics.bigOpSpacing4 - sub.height);
+            }
+
+            var finalGroup;
+            if (!supGroup) {
+                var top = base.height - baseShift;
+
+                finalGroup = buildCommon.makeVList([
+                    {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
+                    {type: "elem", elem: submid},
+                    {type: "kern", size: subKern},
+                    {type: "elem", elem: base}
+                ], "top", top, options);
+
+                finalGroup.children[0].style.marginLeft = -delta + "em";
+            } else if (!subGroup) {
+                var bottom = base.depth + baseShift;
+
+                finalGroup = buildCommon.makeVList([
+                    {type: "elem", elem: base},
+                    {type: "kern", size: supKern},
+                    {type: "elem", elem: supmid},
+                    {type: "kern", size: fontMetrics.metrics.bigOpSpacing5}
+                ], "bottom", bottom, options);
+
+                finalGroup.children[1].style.marginLeft = delta + "em";
+            } else if (!supGroup && !subGroup) {
+                return base;
+            } else {
+                var bottom = fontMetrics.metrics.bigOpSpacing5 +
+                    submid.height + submid.depth +
+                    subKern +
+                    base.depth + baseShift;
+
+                finalGroup = buildCommon.makeVList([
+                    {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
+                    {type: "elem", elem: submid},
+                    {type: "kern", size: subKern},
+                    {type: "elem", elem: base},
+                    {type: "kern", size: supKern},
+                    {type: "elem", elem: supmid},
+                    {type: "kern", size: fontMetrics.metrics.bigOpSpacing5}
+                ], "bottom", bottom, options);
+
+                finalGroup.children[0].style.marginLeft = -delta + "em";
+                finalGroup.children[2].style.marginLeft = delta + "em";
+            }
+
+            return makeSpan(["mop", "op-limits"], [finalGroup]);
+        } else {
+            if (group.value.symbol) {
+                base.style.top = baseShift + "em";
+            }
+
+            return base;
+        }
     },
 
     katex: function(group, options, prev) {

@@ -221,7 +221,11 @@ var duplicatedFunctions = [
         }
     },
 
-    // No-argument mathy operators
+    // There are 2 flags for operators; whether they produce limits in
+    // displaystyle, and whether they are symbols and should grow in
+    // displaystyle. These four groups cover the four possible choices.
+
+    // No limits, not symbols
     {
         funcs: [
             "\\arcsin", "\\arccos", "\\arctan", "\\arg", "\\cos", "\\cosh",
@@ -233,7 +237,66 @@ var duplicatedFunctions = [
             numArgs: 0,
             handler: function(func) {
                 return {
-                    type: "namedfn",
+                    type: "op",
+                    limits: false,
+                    symbol: false,
+                    body: func
+                };
+            }
+        }
+    },
+
+    // Limits, not symbols
+    {
+        funcs: [
+            "\\det", "\\gcd", "\\inf", "\\lim", "\\liminf", "\\limsup", "\\max",
+            "\\min", "\\Pr", "\\sup"
+        ],
+        data: {
+            numArgs: 0,
+            handler: function(func) {
+                return {
+                    type: "op",
+                    limits: true,
+                    symbol: false,
+                    body: func
+                };
+            }
+        }
+    },
+
+    // No limits, symbols
+    {
+        funcs: [
+            "\\int", "\\iint", "\\iiint", "\\oint"
+        ],
+        data: {
+            numArgs: 0,
+            handler: function(func) {
+                return {
+                    type: "op",
+                    limits: false,
+                    symbol: true,
+                    body: func
+                };
+            }
+        }
+    },
+
+    // Limits, symbols
+    {
+        funcs: [
+            "\\coprod", "\\bigvee", "\\bigwedge", "\\biguplus", "\\bigcap",
+            "\\bigcup", "\\intop", "\\prod", "\\sum", "\\bigotimes",
+            "\\bigoplus", "\\bigodot", "\\bigsqcup", "\\smallint"
+        ],
+        data: {
+            numArgs: 0,
+            handler: function(func) {
+                return {
+                    type: "op",
+                    limits: true,
+                    symbol: true,
                     body: func
                 };
             }

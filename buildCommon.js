@@ -2,40 +2,41 @@ var domTree = require("./domTree");
 var fontMetrics = require("./fontMetrics");
 var symbols = require("./symbols");
 
-var makeText = function(value, style, mode) {
+var makeSymbol = function(value, style, mode, color, classes) {
     if (symbols[mode][value] && symbols[mode][value].replace) {
         value = symbols[mode][value].replace;
     }
 
     var metrics = fontMetrics.getCharacterMetrics(value, style);
 
+    var symbolNode;
     if (metrics) {
-        var textNode = new domTree.textNode(value, metrics.height,
-            metrics.depth);
-        if (metrics.italic > 0) {
-            var span = makeSpan([], [textNode]);
-            span.style.marginRight = metrics.italic + "em";
-
-            return span;
-        } else {
-            return textNode;
-        }
+        symbolNode = new domTree.symbolNode(
+            value, metrics.height, metrics.depth, metrics.italic, classes);
     } else {
         console && console.warn("No character metrics for '" + value +
             "' in style '" + style + "'");
-        return new domTree.textNode(value, 0, 0);
+        symbolNode = new domTree.symbolNode(value, 0, 0, 0, classes);
     }
+
+    if (color) {
+        symbolNode.style.color = color;
+    }
+
+    return symbolNode;
 };
 
-var mathit = function(value, mode) {
-    return makeSpan(["mathit"], [makeText(value, "Math-Italic", mode)]);
+var mathit = function(value, mode, color, classes) {
+    return makeSymbol(
+        value, "Math-Italic", mode, color, classes.concat(["mathit"]));
 };
 
-var mathrm = function(value, mode) {
+var mathrm = function(value, mode, color, classes) {
     if (symbols[mode][value].font === "main") {
-        return makeText(value, "Main-Regular", mode);
+        return makeSymbol(value, "Main-Regular", mode, color, classes);
     } else {
-        return makeSpan(["amsrm"], [makeText(value, "AMS-Regular", mode)]);
+        return makeSymbol(
+            value, "AMS-Regular", mode, color, classes.concat(["amsrm"]));
     }
 };
 
@@ -84,7 +85,7 @@ var makeFragment = function(children) {
 };
 
 var makeFontSizer = function(options, fontSize) {
-    var fontSizeInner = makeSpan([], [new domTree.textNode("\u200b")]);
+    var fontSizeInner = makeSpan([], [new domTree.symbolNode("\u200b")]);
     fontSizeInner.style.fontSize = (fontSize / options.style.sizeMultiplier) + "em";
 
     var fontSizer = makeSpan(
@@ -210,7 +211,7 @@ var makeVList = function(children, positionType, positionData, options) {
     // Add in an element at the end with no offset to fix the calculation of
     // baselines in some browsers (namely IE, sometimes safari)
     var baselineFix = makeSpan(
-        ["baseline-fix"], [fontSizer, new domTree.textNode("\u00a0")]);
+        ["baseline-fix"], [fontSizer, new domTree.symbolNode("\u200b")]);
     realChildren.push(baselineFix);
 
     var vlist = makeSpan(["vlist"], realChildren);
@@ -222,7 +223,7 @@ var makeVList = function(children, positionType, positionData, options) {
 };
 
 module.exports = {
-    makeText: makeText,
+    makeSymbol: makeSymbol,
     mathit: mathit,
     mathrm: mathrm,
     makeSpan: makeSpan,

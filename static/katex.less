@@ -385,10 +385,10 @@ big parens
 
         &.mult {
             .delim-size1 > span {
-                font-family: Katex_Size1;
+                font-family: KaTeX_Size1;
             }
             .delim-size4 > span {
-                font-family: Katex_Size4;
+                font-family: KaTeX_Size4;
             }
         }
     }
@@ -396,5 +396,22 @@ big parens
     .nulldelimiter {
         display: inline-block;
         width: @nulldelimiterspace;
+    }
+
+    .op-symbol {
+        position: relative;
+
+        &.small-op {
+            font-family: KaTeX_Size1;
+        }
+        &.large-op {
+            font-family: KaTeX_Size2;
+        }
+    }
+
+    .op-limits {
+        > .vlist > span {
+            text-align: center;
+        }
     }
 }

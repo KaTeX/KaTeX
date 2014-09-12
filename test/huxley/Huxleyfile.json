@@ -165,5 +165,17 @@
         "name": "DisplayStyle",
         "screenSize": [1024, 768],
         "url": "http://localhost:7936/test/huxley/test.html?m={\\displaystyle\\sqrt{x}}{\\sqrt{x}}{\\displaystyle \\frac12}{\\frac12}{\\displaystyle x^1_2}{x^1_2}"
+    },
+
+    {
+        "name": "OpLimits",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m={\\sin_2^2 \\lim_2^2 \\int_2^2 \\sum_2^2}{\\displaystyle \\lim_2^2 \\int_2^2 \\intop_2^2 \\sum_2^2}"
+    },
+
+    {
+        "name": "SupSubOffsets",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m=\\displaystyle \\int_{2+3}x f^{2+3}+3\\lim_{2+3+4+5}f"
     }
 ]

@@ -3,6 +3,17 @@
 // function. They are useful for both storing extra properties on the nodes, as
 // well as providing a way to easily work with the DOM.
 
+var createClass = function(classes) {
+    classes = classes.slice();
+    for (var i = classes.length - 1; i >= 0; i--) {
+        if (!classes[i]) {
+            classes.splice(i, 1);
+        }
+    }
+
+    return classes.join(" ");
+};
+
 function span(classes, children, height, depth, maxFontSize, style) {
     this.classes = classes || [];
     this.children = children || [];
@@ -15,14 +26,7 @@ function span(classes, children, height, depth, maxFontSize, style) {
 span.prototype.toDOM = function() {
     var span = document.createElement("span");
 
-    var classes = this.classes.slice();
-    for (var i = classes.length - 1; i >= 0; i--) {
-        if (!classes[i]) {
-            classes.splice(i, 1);
-        }
-    }
-
-    span.className = classes.join(" ");
+    span.className = createClass(this.classes);
 
     for (var style in this.style) {
         if (this.style.hasOwnProperty(style)) {
@@ -54,18 +58,46 @@ documentFragment.prototype.toDOM = function() {
     return frag;
 };
 
-function textNode(value, height, depth) {
+function symbolNode(value, height, depth, italic, classes, style) {
     this.value = value || "";
     this.height = height || 0;
     this.depth = depth || 0;
+    this.italic = italic || 0;
+    this.classes = classes || [];
+    this.style = style || {};
 }
 
-textNode.prototype.toDOM = function() {
-    return document.createTextNode(this.value);
+symbolNode.prototype.toDOM = function() {
+    var node = document.createTextNode(this.value);
+    var span = null;
+
+    if (this.italic > 0) {
+        span = document.createElement("span");
+        span.style.marginRight = this.italic + "em";
+    }
+
+    if (this.classes.length > 0) {
+        span = span || document.createElement("span");
+        span.className = createClass(this.classes);
+    }
+
+    for (var style in this.style) {
+        if (this.style.hasOwnProperty(style)) {
+            span = span || document.createElement("span");
+            span.style[style] = this.style[style];
+        }
+    }
+
+    if (span) {
+        span.appendChild(node);
+        return span;
+    } else {
+        return node;
+    }
 };
 
 module.exports = {
     span: span,
     documentFragment: documentFragment,
-    textNode: textNode
+    symbolNode: symbolNode
 };

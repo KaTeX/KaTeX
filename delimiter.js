@@ -23,7 +23,7 @@ var getMetrics = function(symbol, font) {
 };
 
 var mathrmSize = function(value, size, mode) {
-    return buildCommon.makeText(value, "Size" + size + "-Regular", mode);
+    return buildCommon.makeSymbol(value, "Size" + size + "-Regular", mode);
 };
 
 var styleWrap = function(delim, toStyle, options) {
@@ -39,7 +39,7 @@ var styleWrap = function(delim, toStyle, options) {
 };
 
 var makeSmallDelim = function(delim, style, center, options, mode) {
-    var text = buildCommon.makeText(delim, "Main-Regular", mode);
+    var text = buildCommon.makeSymbol(delim, "Main-Regular", mode);
 
     var span = styleWrap(text, style, options);
 
@@ -87,7 +87,7 @@ var makeInner = function(symbol, font, mode) {
 
     var inner = makeSpan(
         ["delimsizinginner", sizeClass],
-        [makeSpan([], [buildCommon.makeText(symbol, font, mode)])]);
+        [makeSpan([], [buildCommon.makeSymbol(symbol, font, mode)])]);
 
     return {type: "elem", elem: inner};
 };
