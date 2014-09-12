@@ -21,15 +21,17 @@ var contains = function(list, elem) {
 
 var setTextContent;
 
-var testNode = document.createElement("span");
-if ("textContent" in testNode) {
-    setTextContent = function(node, text) {
-        node.textContent = text;
-    };
-} else {
-    setTextContent = function(node, text) {
-        node.innerText = text;
-    };
+if (typeof document !== "undefined") {
+    var testNode = document.createElement("span");
+    if ("textContent" in testNode) {
+        setTextContent = function(node, text) {
+            node.textContent = text;
+        };
+    } else {
+        setTextContent = function(node, text) {
+            node.innerText = text;
+        };
+    }
 }
 
 function clearNode(node) {

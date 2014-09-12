@@ -2,6 +2,15 @@ var buildTree = require("../buildTree");
 var parseTree = require("../parseTree");
 var ParseError = require("../ParseError");
 
+var getBuilt = function(expr) {
+    expect(expr).toBuild();
+
+    var built = buildTree(parseTree(expr));
+
+    // Remove the outer .katex and .katex-inner layers
+    return built.children[0].children[2].children;
+};
+
 beforeEach(function() {
     jasmine.addMatchers({
         toParse: function() {
@@ -947,5 +956,33 @@ describe("A style change parser", function() {
 
         expect(displayBody.length).toEqual(2);
         expect(displayBody[0].value).toMatch("e");
+    });
+});
+
+describe("A bin builder", function() {
+    it("should create mbins normally", function() {
+        var built = getBuilt("x + y");
+
+        expect(built[1].classes).toContain("mbin");
+    });
+
+    it("should create ords when at the beginning of lists", function() {
+        var built = getBuilt("+ x");
+
+        expect(built[0].classes).toContain("mord");
+        expect(built[0].classes).not.toContain("mbin");
+    });
+
+    it("should create ords after some other objects", function() {
+        expect(getBuilt("x + + 2")[2].classes).toContain("mord");
+        expect(getBuilt("( + 2")[1].classes).toContain("mord");
+        expect(getBuilt("= + 2")[1].classes).toContain("mord");
+        expect(getBuilt("\\sin + 2")[1].classes).toContain("mord");
+        expect(getBuilt(", + 2")[1].classes).toContain("mord");
+    });
+
+    it("should correctly interact with color objects", function() {
+        expect(getBuilt("\\blue{x}+y")[1].classes).toContain("mbin");
+        expect(getBuilt("\\blue{x+}+y")[1].classes).toContain("mord");
     });
 });

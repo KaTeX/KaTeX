@@ -8,7 +8,7 @@ var process = function(toParse, baseNode) {
     utils.clearNode(baseNode);
 
     var tree = parseTree(toParse);
-    var node = buildTree(tree);
+    var node = buildTree(tree).toDOM();
 
     baseNode.appendChild(node);
 };

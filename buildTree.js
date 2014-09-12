@@ -708,7 +708,7 @@ var buildTree = function(tree) {
         makeSpan(["katex-inner"], [topStrut, bottomStrut, span])
     ]);
 
-    return katexNode.toDOM();
+    return katexNode;
 };
 
 module.exports = buildTree;

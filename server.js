@@ -41,9 +41,9 @@ app.get("/katex.css", function(req, res, next) {
     });
 });
 
-app.get("/test/katex-tests.js", function(req, res, next) {
+app.get("/test/katex-spec.js", function(req, res, next) {
     var b = browserify();
-    b.add("./test/katex-tests");
+    b.add("./test/katex-spec");
 
     var stream = b.bundle({});
 

@@ -1,4 +1,4 @@
-.PHONY: build setup copy serve clean metrics
+.PHONY: build setup copy serve clean metrics test
 build: setup build/katex.min.js build/katex.min.css compress
 
 setup:
@@ -26,6 +26,9 @@ compress: build/katex.min.js build/katex.min.css
 
 serve:
 	node server.js
+
+test:
+	./node_modules/.bin/jasmine-node test/katex-spec.js
 
 metrics:
 	cd metrics && ./mapping.pl | ./extract_tfms.py | ./replace_line.py
