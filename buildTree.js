@@ -411,6 +411,10 @@ var groupTypes = {
         }
 
         if (hasLimits) {
+            // IE 8 clips \int if it is in a display: inline-block. We wrap it
+            // in a new span so it is an inline, and works.
+            var base = makeSpan([], [base]);
+
             if (supGroup) {
                 var sup = buildGroup(supGroup,
                         options.withStyle(options.style.sup()));
