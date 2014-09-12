@@ -65,6 +65,7 @@ function symbolNode(value, height, depth, italic, classes, style) {
     this.italic = italic || 0;
     this.classes = classes || [];
     this.style = style || {};
+    this.maxFontSize = 0;
 }
 
 symbolNode.prototype.toDOM = function() {
