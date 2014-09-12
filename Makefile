@@ -31,7 +31,7 @@ test:
 	./node_modules/.bin/jasmine-node test/katex-spec.js
 
 metrics:
-	cd metrics && ./mapping.pl | ./extract_tfms.py | ./replace_line.py
+	cd metrics && ./mapping.pl | ./extract_tfms.py | ./extract_ttfs.py | ./replace_line.py
 
 clean:
 	rm -rf build/*
