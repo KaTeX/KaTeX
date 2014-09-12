@@ -147,12 +147,13 @@ var groupTypes = {
                     [options.style.reset(), options.style.sub().cls()], [sub]);
         }
 
+        var u, v;
         if (isCharacterBox(group.value.base)) {
-            var u = 0;
-            var v = 0;
+            u = 0;
+            v = 0;
         } else {
-            var u = base.height - fontMetrics.metrics.supDrop;
-            var v = base.depth + fontMetrics.metrics.subDrop;
+            u = base.height - fontMetrics.metrics.supDrop;
+            v = base.depth + fontMetrics.metrics.subDrop;
         }
 
         var p;
@@ -172,43 +173,24 @@ var groupTypes = {
         var supsub;
 
         if (!group.value.sup) {
-            var fontSizer = buildCommon.makeFontSizer(options, submid.maxFontSize);
-            var subwrap = makeSpan(["msub"], [fontSizer, submid]);
-
             v = Math.max(v, fontMetrics.metrics.sub1,
                 sub.height - 0.8 * fontMetrics.metrics.xHeight);
 
-            subwrap.style.top = v + "em";
-            subwrap.style.marginRight = scriptspace;
+            supsub = buildCommon.makeVList([
+                {type: "elem", elem: submid}
+            ], "shift", v, options);
 
-            subwrap.depth = subwrap.depth + v;
-            subwrap.height = 0;
-
-            var fixIE = makeSpan(["fix-ie"], [fontSizer, new domTree.textNode("\u00a0")]);
-
-            supsub = makeSpan(["msupsub"], [subwrap, fixIE]);
+            supsub.children[0].style.marginRight = scriptspace;
         } else if (!group.value.sub) {
-            var fontSizer = buildCommon.makeFontSizer(options, supmid.maxFontSize);
-            var supwrap = makeSpan(["msup"], [fontSizer, supmid]);
-
             u = Math.max(u, p,
                 sup.depth + 0.25 * fontMetrics.metrics.xHeight);
 
-            supwrap.style.top = -u + "em";
-            supwrap.style.marginRight = scriptspace;
+            supsub = buildCommon.makeVList([
+                {type: "elem", elem: supmid}
+            ], "shift", -u, options);
 
-            supwrap.height = supwrap.height + u;
-            supwrap.depth = 0;
-
-            var fixIE = makeSpan(["fix-ie"], [fontSizer, new domTree.textNode("\u00a0")]);
-
-            supsub = makeSpan(["msupsub"], [supwrap, fixIE]);
+            supsub.children[0].style.marginRight = scriptspace;
         } else {
-            var fontSizer = buildCommon.makeFontSizer(options,
-                Math.max(submid.maxFontSize, supmid.maxFontSize));
-            var subwrap = makeSpan(["msub"], [fontSizer, submid]);
-            var supwrap = makeSpan(["msup"], [fontSizer, supmid]);
-
             u = Math.max(u, p,
                 sup.depth + 0.25 * fontMetrics.metrics.xHeight);
             v = Math.max(v, fontMetrics.metrics.sub2);
@@ -224,21 +206,13 @@ var groupTypes = {
                 }
             }
 
-            supwrap.style.top = -u + "em";
-            subwrap.style.top = v + "em";
+            supsub = buildCommon.makeVList([
+                {type: "elem", elem: submid, shift: v},
+                {type: "elem", elem: supmid, shift: -u}
+            ], "individualShift", null, options);
 
-            supwrap.style.marginRight = scriptspace;
-            subwrap.style.marginRight = scriptspace;
-
-            supwrap.height = supwrap.height + u;
-            supwrap.depth = 0;
-
-            subwrap.height = 0;
-            subwrap.depth = subwrap.depth + v;
-
-            var fixIE = makeSpan(["fix-ie"], [fontSizer, new domTree.textNode("\u00a0")]);
-
-            supsub = makeSpan(["msupsub"], [supwrap, subwrap, fixIE]);
+            supsub.children[0].style.marginRight = scriptspace;
+            supsub.children[1].style.marginRight = scriptspace;
         }
 
         return makeSpan([getTypeOfGroup(group.value.base)],
@@ -273,21 +247,15 @@ var groupTypes = {
         var dstyle = fstyle.fracDen();
 
         var numer = buildGroup(group.value.numer, options.withStyle(nstyle));
-        var numernumer = makeSpan([fstyle.reset(), nstyle.cls()], [numer]);
+        var numerreset = makeSpan([fstyle.reset(), nstyle.cls()], [numer]);
 
         var denom = buildGroup(group.value.denom, options.withStyle(dstyle));
-        var denomdenom = makeSpan([fstyle.reset(), dstyle.cls()], [denom])
-
-        var fontSizer = buildCommon.makeFontSizer(options,
-            Math.max(numer.maxFontSize, denom.maxFontSize));
-
-        var line = makeSpan([options.style.reset(), Style.TEXT.cls(), "line"]);
-
-        var numerrow = makeSpan(["mfracnum"], [fontSizer, numernumer]);
-        var mid = makeSpan(["mfracmid"], [fontSizer, line]);
-        var denomrow = makeSpan(["mfracden"], [fontSizer, denomdenom]);
+        var denomreset = makeSpan([fstyle.reset(), dstyle.cls()], [denom])
 
         var theta = fontMetrics.metrics.defaultRuleThickness / options.style.sizeMultiplier;
+
+        var mid = makeSpan([options.style.reset(), Style.TEXT.cls(), "frac-line"]);
+        mid.height = theta;
 
         var u, v, phi;
         if (fstyle.size === Style.DISPLAY.size) {
@@ -310,30 +278,20 @@ var groupTypes = {
             v += phi - ((a - 0.5 * theta) - (denom.height - v));
         }
 
-        numerrow.style.top = -u + "em";
-        mid.style.top = -(a - 0.5 * theta) + "em";
-        denomrow.style.top = v + "em";
+        var midShift = -(a - 0.5 * theta);
 
-        numerrow.height = numerrow.height + u;
-        numerrow.depth = 0;
-
-        denomrow.height = 0;
-        denomrow.depth = denomrow.depth + v;
-
-        var fixIE = makeSpan(["fix-ie"], [
-            fontSizer, new domTree.textNode("\u00a0")]);
-
-        var frac = makeSpan([], [numerrow, mid, denomrow, fixIE]);
+        var frac = buildCommon.makeVList([
+            {type: "elem", elem: denomreset, shift: v},
+            {type: "elem", elem: mid,        shift: midShift},
+            {type: "elem", elem: numerreset, shift: -u}
+        ], "individualShift", null, options);
 
         frac.height *= fstyle.sizeMultiplier / options.style.sizeMultiplier;
         frac.depth *= fstyle.sizeMultiplier / options.style.sizeMultiplier;
 
-        var wrap = makeSpan(
-                [options.style.reset(), fstyle.cls()], [frac]);
-
-        return makeSpan(["minner"], [
-            makeSpan(["mfrac"], [wrap])
-        ], options.getColor());
+        return makeSpan(
+            ["minner", "mfrac", options.style.reset(), fstyle.cls()],
+            [frac], options.getColor());
     },
 
     color: function(group, options, prev) {
@@ -434,26 +392,18 @@ var groupTypes = {
     },
 
     sqrt: function(group, options, prev) {
-        var innerGroup = buildGroup(group.value.body,
+        var inner = buildGroup(group.value.body,
                 options.withStyle(options.style.cramp()));
-
-        var fontSizer = buildCommon.makeFontSizer(
-            options, Math.max(innerGroup.maxFontSize, 1.0));
-
-        // The theta variable in the TeXbook
-        var lineWidth = fontMetrics.metrics.defaultRuleThickness;
-
-        var lineInner =
-            makeSpan([options.style.reset(), Style.TEXT.cls(), "line"]);
-        lineInner.maxFontSize = 1.0;
-        var line = makeSpan(["sqrt-line"], [fontSizer, lineInner]);
-
-        var inner = makeSpan(["sqrt-inner"], [fontSizer, innerGroup]);
-        var fixIE = makeSpan(
-            ["fix-ie"], [fontSizer, new domTree.textNode("\u00a0")]);
 
         var theta = fontMetrics.metrics.defaultRuleThickness /
             options.style.sizeMultiplier;
+
+        var line = makeSpan(
+            [options.style.reset(), Style.TEXT.cls(), "sqrt-line"], [],
+            options.getColor());
+        line.height = theta;
+        line.maxFontSize = 1.0;
+
         var phi = theta;
         if (options.style.id < Style.TEXT.id) {
             phi = fontMetrics.metrics.xHeight;
@@ -467,18 +417,19 @@ var groupTypes = {
 
         var delim = makeSpan(["sqrt-sign"], [
             delimiter.customSizedDelim("\\surd", minDelimiterHeight,
-                                       false, options, group.mode)]);
+                                       false, options, group.mode)],
+                             options.getColor());
 
-        var delimDepth = delim.height + delim.depth;
+        var delimDepth = (delim.height + delim.depth) - theta;
 
         if (delimDepth > inner.height + inner.depth + psi) {
             psi = (psi + delimDepth - inner.height - inner.depth) / 2;
         }
 
-        delim.style.top = (-inner.height - psi + delim.height - theta) + "em";
-
-        line.style.top = (-inner.height - psi) + "em";
-        line.height = inner.height + psi + 2 * theta;
+        delimShift = -(inner.height + psi + theta) + delim.height;
+        delim.style.top = delimShift + "em";
+        delim.height -= delimShift;
+        delim.depth += delimShift;
 
         // We add a special case here, because even when `inner` is empty, we
         // still get a line. So, we use a simple heuristic to decide if we
@@ -489,7 +440,12 @@ var groupTypes = {
         if (inner.height === 0 && inner.depth === 0) {
             body = makeSpan();
         } else {
-            body = makeSpan(["sqrt-body"], [line, inner, fixIE]);
+            body = buildCommon.makeVList([
+                {type: "elem", elem: inner},
+                {type: "kern", size: psi},
+                {type: "elem", elem: line},
+                {type: "kern", size: theta}
+            ], "firstBaseline", null, options);
         }
 
         return makeSpan(["sqrt", "mord"], [delim, body]);
@@ -499,26 +455,22 @@ var groupTypes = {
         var innerGroup = buildGroup(group.value.body,
                 options.withStyle(options.style.cramp()));
 
-        var fontSizer = buildCommon.makeFontSizer(options, innerGroup.maxFontSize);
-
-        // The theta variable in the TeXbook
-        var lineWidth = fontMetrics.metrics.defaultRuleThickness /
+        var theta = fontMetrics.metrics.defaultRuleThickness /
             options.style.sizeMultiplier;
 
         var line = makeSpan(
-            ["overline-line"], [fontSizer, makeSpan([options.style.reset(), Style.TEXT.cls(), "line"])]);
-        var inner = makeSpan(["overline-inner"], [fontSizer, innerGroup]);
-        var fixIE = makeSpan(
-            ["fix-ie"], [fontSizer, new domTree.textNode("\u00a0")]);
+            [options.style.reset(), Style.TEXT.cls(), "overline-line"]);
+        line.height = theta;
+        line.maxFontSize = 1.0;
 
-        line.style.top = (-inner.height - 3 * lineWidth) + "em";
-        // The line is supposed to have 1 extra line width above it in height
-        // (TeXbook pg. 443, nr. 9)
-        line.height = inner.height + 5 * lineWidth;
+        var vlist = buildCommon.makeVList([
+            {type: "elem", elem: innerGroup},
+            {type: "kern", size: 3 * theta},
+            {type: "elem", elem: line},
+            {type: "kern", size: theta}
+        ], "firstBaseline", null, options);
 
-        return makeSpan(["overline", "mord"], [
-            line, inner, fixIE
-        ], options.getColor());
+        return makeSpan(["overline", "mord"], [vlist], options.getColor());
     },
 
     sizing: function(group, options, prev) {

@@ -77,23 +77,19 @@ var makeLargeDelim = function(delim, size, center, options, mode) {
 };
 
 // Make an inner span with the given offset and in the given font
-var makeInner = function(symbol, offset, font, mode) {
+var makeInner = function(symbol, font, mode) {
     var sizeClass;
     if (font === "Size1-Regular") {
-        sizeClass = "size1";
+        sizeClass = "delim-size1";
     } else if (font === "Size4-Regular") {
-        sizeClass = "size4";
+        sizeClass = "delim-size4";
     }
 
     var inner = makeSpan(
         ["delimsizinginner", sizeClass],
         [makeSpan([], [buildCommon.makeText(symbol, font, mode)])]);
 
-    inner.style.top = offset + "em";
-    inner.height -= offset;
-    inner.depth += offset;
-
-    return inner;
+    return {type: "elem", elem: inner};
 };
 
 var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
@@ -102,7 +98,6 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
     top = repeat = bottom = delim;
     middle = null;
     var font = "Size1-Regular";
-    var overlap = false;
 
     // We set the parts and font based on the symbol. Note that we use
     // '\u23d0' instead of '|' and '\u2016' instead of '\\|' for the
@@ -123,62 +118,44 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
         top = "\\Uparrow";
         repeat = "\u2016";
         bottom = "\\Downarrow";
-
-        // For some reason, the sizes of this one delimiter don't work out
-        // right, so we shrink it a bit to make it now add an extraneous
-        // repeating part
-        if (height + depth <= 1.21) {
-            height -= 0.01;
-            depth -= 0.01;
-        }
     } else if (delim === "|" || delim === "\\vert") {
-        overlap = true;
     } else if (delim === "\\|" || delim === "\\Vert") {
-        overlap = true;
     } else if (delim === "[" || delim === "\\lbrack") {
         top = "\u23a1";
         repeat = "\u23a2";
         bottom = "\u23a3";
         font = "Size4-Regular";
-        overlap = true;
     } else if (delim === "]" || delim === "\\rbrack") {
         top = "\u23a4";
         repeat = "\u23a5";
         bottom = "\u23a6";
         font = "Size4-Regular";
-        overlap = true;
     } else if (delim === "\\lfloor") {
         repeat = top = "\u23a2";
         bottom = "\u23a3";
         font = "Size4-Regular";
-        overlap = true;
     } else if (delim === "\\lceil") {
         top = "\u23a1";
         repeat = bottom = "\u23a2";
         font = "Size4-Regular";
-        overlap = true;
     } else if (delim === "\\rfloor") {
         repeat = top = "\u23a5";
         bottom = "\u23a6";
         font = "Size4-Regular";
-        overlap = true;
     } else if (delim === "\\rceil") {
         top = "\u23a4";
         repeat = bottom = "\u23a5";
         font = "Size4-Regular";
-        overlap = true;
     } else if (delim === "(") {
         top = "\u239b";
         repeat = "\u239c";
         bottom = "\u239d";
         font = "Size4-Regular";
-        overlap = true;
     } else if (delim === ")") {
         top = "\u239e";
         repeat = "\u239f";
         bottom = "\u23a0";
         font = "Size4-Regular";
-        overlap = true;
     } else if (delim === "\\{" || delim === "\\lbrace") {
         top = "\u23a7";
         middle = "\u23a8";
@@ -196,7 +173,6 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
         bottom = "\u23b7";
         repeat = "\ue000";
         font = "Size4-Regular";
-        overlap = true;
     }
 
     // Get the metrics of the three sections
@@ -234,32 +210,16 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
     // Keep a list of the inner spans
     var inners = [];
 
-    // Add the top symbol
-    inners.push(
-        makeInner(top, topMetrics.height - height, font, mode));
+    // Add the bottom symbol
+    inners.push(makeInner(bottom, font, mode));
 
     if (middle === null) {
         var repeatHeight = realHeightTotal - topHeightTotal - bottomHeightTotal;
         var symbolCount = Math.ceil(repeatHeight / repeatHeightTotal);
 
-        var overlapAmount;
-        if (overlap) {
-            // 2 * overlapAmount + repeatHeight =
-            // (symbolCount - 1) * (repeatHeightTotal - overlapAmount) +
-            //     repeatHeightTotal
-            overlapAmount = (symbolCount * repeatHeightTotal -
-                                 repeatHeight) / (symbolCount + 1);
-        } else {
-            overlapAmount = 0;
-        }
-
         // Add repeat symbols until there's only space for the bottom symbol
-        var currHeight = height - topHeightTotal + overlapAmount;
         for (var i = 0; i < symbolCount; i++) {
-            inners.push(
-                makeInner(repeat,
-                    repeatMetrics.height - currHeight, font, mode));
-            currHeight -= repeatHeightTotal - overlapAmount;
+            inners.push(makeInner(repeat, font, mode));
         }
     } else {
         // When there is a middle bit, we need the middle part and two repeated
@@ -277,40 +237,25 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
             Math.ceil(bottomRepeatHeight / repeatHeightTotal);
 
         // Add the top repeated part
-        var currHeight = height - topHeightTotal;
         for (var i = 0; i < topSymbolCount; i++) {
-            inners.push(
-                makeInner(repeat,
-                    repeatMetrics.height - currHeight, font, mode));
-            currHeight -= repeatHeightTotal;
+            inners.push(makeInner(repeat, font, mode));
         }
 
         // Add the middle piece
-        var midPoint = realHeightTotal / 2 - depth;
-        inners.push(
-            makeInner(middle,
-                      middleMetrics.height - midPoint - middleHeightTotal / 2,
-                      font, mode));
+        inners.push(makeInner(middle, font, mode));
 
         // Add the bottom repeated part
-        currHeight = midPoint - middleHeightTotal / 2;
         for (var i = 0; i < bottomSymbolCount; i++) {
-            inners.push(
-                makeInner(repeat,
-                    repeatMetrics.height - currHeight, font, mode));
-            currHeight -= repeatHeightTotal;
+            inners.push(makeInner(repeat, font, mode));
         }
     }
 
-    // Add the bottom symbol
-    inners.push(
-        makeInner(bottom, depth - bottomMetrics.depth, font, mode));
+    inners.push(makeInner(top, font, mode));
 
-    var fixIE = makeSpan(["fix-ie"], [new domTree.textNode("\u00a0")]);
-    inners.push(fixIE);
+    var inner = buildCommon.makeVList(inners, "bottom", depth, options);
 
     return styleWrap(
-        makeSpan(["delimsizing", "mult"], inners, options.getColor()),
+        makeSpan(["delimsizing", "mult"], [inner], options.getColor()),
         Style.TEXT, options);
 };
 

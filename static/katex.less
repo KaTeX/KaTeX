@@ -34,11 +34,6 @@ big parens
         font-family: KaTeX_AMS;
     }
 
-    .fix-ie {
-        display: inline-table;
-        table-layout: fixed;
-    }
-
     // This value is also used in fontMetrics.js, if you change it make sure the
     // values match.
     @ptperem: 10.0;
@@ -171,52 +166,35 @@ big parens
         position: relative;
     }
 
-    .baseline-align-hack-outer() {
+    .vlist {
         display: inline-block;
-    }
 
-    .baseline-align-hack-middle() {
-        display: block;
-        height: 0;
-    }
+        > span {
+            display: block;
+            height: 0;
+            position: relative;
 
-    .baseline-align-hack-inner() {
-        display: inline-block;
+            > span {
+                display: inline-block;
+            }
+        }
+
+        .baseline-fix {
+            display: inline-table;
+            table-layout: fixed;
+        }
     }
 
     .msupsub {
-        .baseline-align-hack-outer;
         text-align: left;
-
-        .msup,
-        .msub,
-        .fix-ie {
-            .baseline-align-hack-middle;
-            position: relative;
-
-            > span {
-                .baseline-align-hack-inner;
-            }
-        }
     }
 
     .mfrac {
-        .baseline-align-hack-outer;
-
-        .mfracnum,
-        .mfracmid,
-        .mfracden,
-        .fix-ie {
-            .baseline-align-hack-middle;
-            position: relative;
+        > span > span {
             text-align: center;
-
-            > span {
-                .baseline-align-hack-inner;
-            }
         }
 
-        .mfracmid > .line {
+       .frac-line {
             width: 100%;
 
             &:before {
@@ -316,21 +294,8 @@ big parens
     }
 
     .overline {
-        .baseline-align-hack-outer;
 
-        > .overline-line,
-        > .overline-inner,
-        > .fix-ie {
-            .baseline-align-hack-middle;
-            position: relative;
-            text-align: center;
-
-            > span {
-                .baseline-align-hack-inner;
-            }
-        }
-
-        > .overline-line > .line {
+        .overline-line {
             width: 100%;
 
             &:before {
@@ -355,37 +320,22 @@ big parens
             position: relative;
         }
 
-        > .sqrt-body {
-            .baseline-align-hack-outer;
+        .sqrt-line {
+            width: 100%;
 
-            > .sqrt-line,
-            > .sqrt-inner,
-            > .fix-ie {
-                .baseline-align-hack-middle;
-                position: relative;
-
-                > span {
-                    .baseline-align-hack-inner;
-                }
+            &:before {
+                border-bottom-style: solid;
+                border-bottom-width: 1px;
+                content: "";
+                display: block;
             }
 
-            > .sqrt-line > .line {
-                width: 100%;
-
-                &:before {
-                    border-bottom-style: solid;
-                    border-bottom-width: 1px;
-                    content: "";
-                    display: block;
-                }
-
-                &:after {
-                    border-bottom-style: solid;
-                    border-bottom-width: 0.04em;
-                    content: "";
-                    display: block;
-                    margin-top: -1px;
-                }
+            &:after {
+                border-bottom-style: solid;
+                border-bottom-width: 0.04em;
+                content: "";
+                display: block;
+                margin-top: -1px;
             }
         }
     }
@@ -434,19 +384,11 @@ big parens
         &.size4 { font-family: KaTeX_Size4; }
 
         &.mult {
-            .baseline-align-hack-outer;
-
-            > .fix-ie,
-            > .delimsizinginner {
-                .baseline-align-hack-middle;
-                position: relative;
-
-                &.size1 > span {
-                    font-family: Katex_Size1;
-                }
-                &.size4 > span {
-                    font-family: Katex_Size4;
-                }
+            .delim-size1 > span {
+                font-family: Katex_Size1;
+            }
+            .delim-size4 > span {
+                font-family: Katex_Size4;
             }
         }
     }
