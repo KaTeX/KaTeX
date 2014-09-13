@@ -689,7 +689,8 @@ var groupTypes = {
         }
         inner.push(rightDelim);
 
-        return makeSpan(["minner"], inner, options.getColor());
+        return makeSpan(
+            ["minner", options.style.cls()], inner, options.getColor());
     },
 
     rule: function(group, options, prev) {

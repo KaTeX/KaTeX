@@ -144,6 +144,12 @@
     },
 
     {
+        "name": "LeftRightListStyling",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m=a+\\left(x+y\\right)-x"
+    },
+
+    {
         "name": "PrimeSpacing",
         "screenSize": [1024, 768],
         "url": "http://localhost:7936/test/huxley/test.html?m=f'+f_2'+f^{f'}"
