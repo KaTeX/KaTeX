@@ -19,6 +19,37 @@ var contains = function(list, elem) {
     return indexOf(list, elem) !== -1;
 };
 
+// hyphenate and escape adapted from Facebook's React under Apache 2 license
+
+var uppercase = /([A-Z])/g;
+var hyphenate = function(str) {
+    return str.replace(uppercase, "-$1").toLowerCase();
+};
+
+var ESCAPE_LOOKUP = {
+  "&": "&amp;",
+  ">": "&gt;",
+  "<": "&lt;",
+  "\"": "&quot;",
+  "'": "&#x27;"
+};
+
+var ESCAPE_REGEX = /[&><"']/g;
+
+function escaper(match) {
+  return ESCAPE_LOOKUP[match];
+}
+
+/**
+ * Escapes text to prevent scripting attacks.
+ *
+ * @param {*} text Text value to escape.
+ * @return {string} An escaped string.
+ */
+function escape(text) {
+  return ('' + text).replace(ESCAPE_REGEX, escaper);
+}
+
 var setTextContent;
 
 if (typeof document !== "undefined") {
@@ -40,6 +71,8 @@ function clearNode(node) {
 
 module.exports = {
     contains: contains,
+    escape: escape,
+    hyphenate: hyphenate,
     indexOf: indexOf,
     setTextContent: setTextContent,
     clearNode: clearNode

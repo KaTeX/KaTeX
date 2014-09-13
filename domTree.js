@@ -1,7 +1,10 @@
 // These objects store the data about the DOM nodes we create, as well as some
-// extra data. They can then be transformed into real DOM nodes with the toDOM
-// function. They are useful for both storing extra properties on the nodes, as
-// well as providing a way to easily work with the DOM.
+// extra data. They can then be transformed into real DOM nodes with the toNode
+// function or HTML markup using toMarkup. They are useful for both storing
+// extra properties on the nodes, as well as providing a way to easily work
+// with the DOM.
+
+var utils = require("./utils");
 
 var createClass = function(classes) {
     classes = classes.slice();
@@ -23,7 +26,7 @@ function span(classes, children, height, depth, maxFontSize, style) {
     this.style = style || {};
 }
 
-span.prototype.toDOM = function() {
+span.prototype.toNode = function() {
     var span = document.createElement("span");
 
     span.className = createClass(this.classes);
@@ -35,10 +38,42 @@ span.prototype.toDOM = function() {
     }
 
     for (var i = 0; i < this.children.length; i++) {
-        span.appendChild(this.children[i].toDOM());
+        span.appendChild(this.children[i].toNode());
     }
 
     return span;
+};
+
+span.prototype.toMarkup = function() {
+    var markup = "<span";
+
+    if (this.classes.length) {
+        markup += " class=\"";
+        markup += utils.escape(createClass(this.classes));
+        markup += "\"";
+    }
+
+    var styles = "";
+
+    for (var style in this.style) {
+        if (this.style.hasOwnProperty(style)) {
+            styles += utils.hyphenate(style) + ":" + this.style[style] + ";";
+        }
+    }
+
+    if (styles) {
+        markup += " style=\"" + utils.escape(styles) + "\"";
+    }
+
+    markup += ">";
+
+    for (var i = 0; i < this.children.length; i++) {
+        markup += this.children[i].toMarkup();
+    }
+
+    markup += "</span>";
+
+    return markup;
 };
 
 function documentFragment(children, height, depth, maxFontSize) {
@@ -48,14 +83,24 @@ function documentFragment(children, height, depth, maxFontSize) {
     this.maxFontSize = maxFontSize || 0;
 }
 
-documentFragment.prototype.toDOM = function() {
+documentFragment.prototype.toNode = function() {
     var frag = document.createDocumentFragment();
 
     for (var i = 0; i < this.children.length; i++) {
-        frag.appendChild(this.children[i].toDOM());
+        frag.appendChild(this.children[i].toNode());
     }
 
     return frag;
+};
+
+documentFragment.prototype.toMarkup = function() {
+    var markup = "";
+
+    for (var i = 0; i < this.children.length; i++) {
+        markup += this.children[i].toMarkup();
+    }
+
+    return markup;
 };
 
 function symbolNode(value, height, depth, italic, classes, style) {
@@ -68,7 +113,7 @@ function symbolNode(value, height, depth, italic, classes, style) {
     this.maxFontSize = 0;
 }
 
-symbolNode.prototype.toDOM = function() {
+symbolNode.prototype.toNode = function() {
     var node = document.createTextNode(this.value);
     var span = null;
 
@@ -94,6 +139,47 @@ symbolNode.prototype.toDOM = function() {
         return span;
     } else {
         return node;
+    }
+};
+
+symbolNode.prototype.toMarkup = function() {
+    // TODO(alpert): More duplication than I'd like from
+    // span.prototype.toMarkup and symbolNode.prototype.toNode...
+    var needsSpan = false;
+
+    var markup = "<span";
+
+    if (this.classes.length) {
+        needsSpan = true;
+        markup += " class=\"";
+        markup += utils.escape(createClass(this.classes));
+        markup += "\"";
+    }
+
+    var styles = "";
+
+    if (this.italic > 0) {
+        styles += "margin-right:" + this.italic + "em;";
+    }
+    for (var style in this.style) {
+        if (this.style.hasOwnProperty(style)) {
+            styles += utils.hyphenate(style) + ":" + this.style[style] + ";";
+        }
+    }
+
+    if (styles) {
+        needsSpan = true;
+        markup += " style=\"" + utils.escape(styles) + "\"";
+    }
+
+    var escaped = utils.escape(this.value);
+    if (needsSpan) {
+        markup += ">";
+        markup += escaped;
+        markup += "</span>";
+        return markup;
+    } else {
+        return escaped;
     }
 };
 

@@ -1,3 +1,4 @@
+var katex = require("../katex");
 var buildTree = require("../buildTree");
 var parseTree = require("../parseTree");
 var ParseError = require("../ParseError");
@@ -984,5 +985,16 @@ describe("A bin builder", function() {
     it("should correctly interact with color objects", function() {
         expect(getBuilt("\\blue{x}+y")[1].classes).toContain("mbin");
         expect(getBuilt("\\blue{x+}+y")[1].classes).toContain("mord");
+    });
+});
+
+describe("A markup generator", function() {
+    it("marks trees up", function() {
+        // Just a few quick sanity checks here...
+        var markup = katex.renderToString("\\sigma^2");
+        expect(markup.indexOf("<span")).toBe(0);
+        expect(markup).toContain("\u03c3");  // sigma
+        expect(markup).toContain("margin-right");
+        expect(markup).not.toContain("marginRight");
     });
 });
