@@ -769,37 +769,7 @@ var symbols = {
             group: "punct",
             replace: "\u2026"
         },
-        "\\dotsc": {
-            font: "main",
-            group: "punct",
-            replace: "\u2026"
-        },
-        "\\dotso": {
-            font: "main",
-            group: "punct",
-            replace: "\u2026"
-        },
-        "\\dots": {
-            font: "main",
-            group: "punct",
-            replace: "\u2026"
-        },
         "\\cdots": {
-            font: "main",
-            group: "punct",
-            replace: "\u22ef"
-        },
-        "\\dotsb": {
-            font: "main",
-            group: "punct",
-            replace: "\u22ef"
-        },
-        "\\dotsm": {
-            font: "main",
-            group: "punct",
-            replace: "\u22ef"
-        },
-        "\\dotsi": {
             font: "main",
             group: "punct",
             replace: "\u22ef"

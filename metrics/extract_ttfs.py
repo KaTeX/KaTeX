@@ -6,14 +6,14 @@ import json
 
 metrics_to_extract = {
     "Main-Regular": [
-        u"\u2260",
-        u"\u2245",
-        u"\u0020",
-        u"\u00a0",
-        u"\u2026",
-        u"\u22ef",
-        u"\u22f1",
-        u"\u22ee",
+        u"\u2260",  # \neq
+        u"\u2245",  # \cong
+        u"\u0020",  # space
+        u"\u00a0",  # nbsp
+        u"\u2026",  # \ldots
+        u"\u22ef",  # \cdots
+        u"\u22f1",  # \ddots
+        u"\u22ee",  # \vdots
     ]
 }
 
