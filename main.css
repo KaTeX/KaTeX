@@ -8,11 +8,14 @@ body {
     width: 800px;
 }
 
-.header {
+.header, .footer {
     color: #fff;
     background: #329894;
-    padding: 40px 0 0;
     overflow: hidden;
+}
+
+.header {
+    padding: 40px 0 0;
 }
 
 .logo {
@@ -120,4 +123,14 @@ body {
     font-size: 15px;
     text-align: center;
     margin: 30px 0;
+}
+
+.footer {
+    padding: 30px 0;
+    font-size: 21px;
+}
+
+.ka-logo img {
+    border: none;
+    vertical-align: -1px;
 }
