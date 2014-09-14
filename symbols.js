@@ -771,17 +771,17 @@ var symbols = {
         },
         "\\cdots": {
             font: "main",
-            group: "punct",
+            group: "inner",
             replace: "\u22ef"
         },
         "\\ddots": {
             font: "main",
-            group: "punct",
+            group: "inner",
             replace: "\u22f1"
         },
         "\\vdots": {
             font: "main",
-            group: "punct",
+            group: "textord",
             replace: "\u22ee"
         }
     },

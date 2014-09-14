@@ -30,6 +30,7 @@ var groupToType = {
     text: "mord",
     open: "mopen",
     close: "mclose",
+    inner: "minner",
     frac: "minner",
     spacing: "mord",
     punct: "mpunct",
@@ -241,6 +242,11 @@ var groupTypes = {
     close: function(group, options, prev) {
         return buildCommon.mathrm(
             group.value, group.mode, options.getColor(), ["mclose"]);
+    },
+
+    inner: function(group, options, prev) {
+        return buildCommon.mathrm(
+            group.value, group.mode, options.getColor(), ["minner"]);
     },
 
     frac: function(group, options, prev) {
