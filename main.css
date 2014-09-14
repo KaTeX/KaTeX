@@ -103,6 +103,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     min-height: 400px;
     position: relative;
+    padding: 10px 0;
 }
 
 .subtagline {
@@ -114,6 +115,7 @@ body {
 }
 
 .main .example {
-    font-size: 22px;
+    font-size: 15px;
     text-align: center;
+    margin: 30px 0;
 }
