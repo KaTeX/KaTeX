@@ -40,7 +40,8 @@ var groupToType = {
     overline: "mord",
     rule: "mord",
     leftright: "minner",
-    sqrt: "mord"
+    sqrt: "mord",
+    accent: "mord"
 };
 
 var getTypeOfGroup = function(group) {
@@ -64,32 +65,48 @@ var getTypeOfGroup = function(group) {
     }
 };
 
-var isCharacterBox = function(group) {
-    if (group == null) {
-        return false;
-    } else if (group.type === "mathord" ||
-               group.type === "textord" ||
-               group.type === "bin" ||
-               group.type === "rel" ||
-               group.type === "open" ||
-               group.type === "close" ||
-               group.type === "punct") {
-        return true;
-    } else if (group.type === "ordgroup") {
-        return group.value.length === 1 && isCharacterBox(group.value[0]);
-    } else {
-        return false;
-    }
-};
-
 var shouldHandleSupSub = function(group, options) {
     if (group == null) {
         return false;
     } else if (group.type === "op") {
         return group.value.limits && options.style.id === Style.DISPLAY.id;
+    } else if (group.type === "accent") {
+        return isCharacterBox(group.value.base);
     } else {
         return null;
     }
+};
+
+var getBaseElem = function(group) {
+    if (group == null) {
+        return false;
+    } else if (group.type === "ordgroup") {
+        if (group.value.length === 1) {
+            return getBaseElem(group.value[0]);
+        } else {
+            return group;
+        }
+    } else if (group.type === "color") {
+        if (group.value.value.length === 1) {
+            return getBaseElem(group.value.value[0]);
+        } else {
+            return group;
+        }
+    } else {
+        return group;
+    }
+};
+
+var isCharacterBox = function(group) {
+    var baseElem = getBaseElem(group);
+
+    return baseElem.type === "mathord" ||
+        baseElem.type === "textord" ||
+        baseElem.type === "bin" ||
+        baseElem.type === "rel" ||
+        baseElem.type === "open" ||
+        baseElem.type === "close" ||
+        baseElem.type === "punct";
 };
 
 var groupTypes = {
@@ -112,7 +129,7 @@ var groupTypes = {
         }
         if (!prev || utils.contains(["mbin", "mopen", "mrel", "mop", "mpunct"],
                 getTypeOfGroup(prevAtom))) {
-            group.type = "ord";
+            group.type = "textord";
             className = "mord";
         }
 
@@ -725,6 +742,76 @@ var groupTypes = {
         rule.height = height;
 
         return rule;
+    },
+
+    accent: function(group, options, prev) {
+        var base = group.value.base;
+
+        var supsubGroup;
+        if (group.type === "supsub") {
+            var supsub = group;
+            group = group.value.base;
+            base = group.value.base;
+            supsub.value.base = base;
+
+            supsubGroup = buildGroup(
+                supsub, options.reset());
+        }
+
+        var body = buildGroup(
+            base, options.withStyle(options.style.cramp()));
+
+        var s;
+        if (isCharacterBox(group.value.base)) {
+            var baseChar = getBaseElem(group.value.base);
+            var baseGroup = buildGroup(
+                baseChar, options.withStyle(options.style.cramp()));
+            s = baseGroup.skew;
+        } else {
+            s = 0;
+        }
+
+        var delta = Math.min(body.height, fontMetrics.metrics.xHeight);
+
+        var accent = buildCommon.makeSymbol(
+            group.value.accent, "Main-Regular", "math", options.getColor());
+        accent.italic = 0;
+
+        // The \vec character that the fonts use is a combining character, and
+        // thus shows up much too far to the left. To account for this, we add a
+        // specific class which shifts the accent over to where we want it.
+        // TODO(emily): Fix this in a better way, like by changing the font
+        var vecClass = group.value.accent === "\\vec" ? "accent-vec" : null;
+
+        var accentBody = makeSpan(["accent-body", vecClass], [
+            makeSpan([], [accent])]);
+
+        var accentBody = buildCommon.makeVList([
+            {type: "elem", elem: body},
+            {type: "kern", size: -delta},
+            {type: "elem", elem: accentBody}
+        ], "firstBaseline", null, options);
+
+        accentBody.children[1].style.marginLeft = 2 * s + "em";
+
+        var accentWrap = makeSpan(["mord", "accent"], [accentBody]);
+
+        if (supsubGroup) {
+            // Here, we replace the "base" child of the supsub with our newly
+            // generated accent.
+            supsubGroup.children[0] = accentWrap;
+
+            // Since we don't rerun the height calculation after replacing the
+            // accent, we manually recalculate height.
+            supsubGroup.height = Math.max(accentWrap.height, supsubGroup.height);
+
+            // Accents should always be ords, even when their innards are not.
+            supsubGroup.classes[0] = "mord";
+
+            return supsubGroup;
+        } else {
+            return accentWrap;
+        }
     }
 };
 

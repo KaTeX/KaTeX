@@ -12,18 +12,48 @@ class CharInfoWord(object):
         self.tag = b3 & 0b11
         self.remainder = b4
 
+    def has_ligkern(self):
+        return self.tag == 1
+
+    def ligkern_start(self):
+        return self.remainder
+
+
+class LigKernProgram(object):
+    def __init__(self, program):
+        self.program = program
+
+    def execute(self, start, next_char):
+        curr_instruction = start
+        while True:
+            instruction = self.program[curr_instruction]
+            (skip, inst_next_char, op, remainder) = instruction
+
+            if inst_next_char == next_char:
+                if op < 128:
+                    # Don't worry about ligatures for now, we only need kerns
+                    return None
+                else:
+                    return 256 * (op - 128) + remainder
+            elif skip >= 128:
+                return None
+            else:
+                curr_instruction += 1 + skip
+
 
 class TfmCharMetrics(object):
-    def __init__(self, width, height, depth, italic):
+    def __init__(self, width, height, depth, italic, kern_table):
         self.width = width
         self.height = height
         self.depth = depth
         self.italic_correction = italic
+        self.kern_table = kern_table
 
 
 class TfmFile(object):
     def __init__(self, start_char, end_char, char_info, width_table,
-                 height_table, depth_table, italic_table):
+                 height_table, depth_table, italic_table, ligkern_table,
+                 kern_table):
         self.start_char = start_char
         self.end_char = end_char
         self.char_info = char_info
@@ -31,6 +61,8 @@ class TfmFile(object):
         self.height_table = height_table
         self.depth_table = depth_table
         self.italic_table = italic_table
+        self.ligkern_program = LigKernProgram(ligkern_table)
+        self.kern_table = kern_table
 
     def get_char_metrics(self, char_num):
         if char_num < self.start_char or char_num > self.end_char:
@@ -38,11 +70,19 @@ class TfmFile(object):
 
         info = self.char_info[char_num + self.start_char]
 
+        char_kern_table = {}
+        if info.has_ligkern():
+            for char in range(self.start_char, self.end_char + 1):
+                kern = self.ligkern_program.execute(info.ligkern_start(), char)
+                if kern:
+                    char_kern_table[char] = self.kern_table[kern]
+
         return TfmCharMetrics(
             self.width_table[info.width_index],
             self.height_table[info.height_index],
             self.depth_table[info.depth_index],
-            self.italic_table[info.italic_index])
+            self.italic_table[info.italic_index],
+            char_kern_table)
 
 
 class TfmReader(object):
@@ -96,10 +136,8 @@ def read_tfm_file(file_name):
         depth_table_size = reader.read_halfword()
         italic_table_size = reader.read_halfword()
 
-        # ligkern_table_size
-        reader.read_halfword()
-        # kern_table_size
-        reader.read_halfword()
+        ligkern_table_size = reader.read_halfword()
+        kern_table_size = reader.read_halfword()
 
         # extensible_table_size
         reader.read_halfword()
@@ -142,8 +180,22 @@ def read_tfm_file(file_name):
         for i in range(italic_table_size):
             italic_table.append(reader.read_fixword())
 
+        ligkern_table = []
+        for i in range(ligkern_table_size):
+            skip = reader.read_byte()
+            next_char = reader.read_byte()
+            op = reader.read_byte()
+            remainder = reader.read_byte()
+
+            ligkern_table.append((skip, next_char, op, remainder))
+
+        kern_table = []
+        for i in range(kern_table_size):
+            kern_table.append(reader.read_fixword())
+
         # There is more information, like the ligkern, kern, extensible, and
         # param table, but we don't need these for now
 
         return TfmFile(start_char, end_char, char_info, width_table,
-                       height_table, depth_table, italic_table)
+                       height_table, depth_table, italic_table,
+                       ligkern_table, kern_table)

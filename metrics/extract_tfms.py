@@ -34,6 +34,23 @@ def main():
         'msbm10.tfm'
     ]
 
+    # Extracted by running `\font\a=<font>` and then `\showthe\skewchar\a` in
+    # TeX, where `<font>` is the name of the font listed here. The skewchar
+    # will be printed out in the output. If it outputs `-1`, that means there
+    # is no skewchar, so we use `None` here.
+    font_skewchar = {
+        'cmbsy10': None,
+        'cmbx10': None,
+        'cmex10': None,
+        'cmmi10': 127,
+        'cmmib10': None,
+        'cmr10': None,
+        'cmsy10': 48,
+        'cmti10': None,
+        'msam10': None,
+        'msbm10': None
+    }
+
     font_name_to_tfm = {}
 
     for font_name in fonts:
@@ -57,10 +74,17 @@ def main():
             depth = round(tfm_char.depth - yshift / 1000.0, 5)
             italic = round(tfm_char.italic_correction, 5)
 
+            skewkern = 0.0
+            if (font_skewchar[font] and
+                    font_skewchar[font] in tfm_char.kern_table):
+                skewkern = round(
+                    tfm_char.kern_table[font_skewchar[font]], 5)
+
             families[family][char_num] = {
                 'height': height,
                 'depth': depth,
-                'italic': italic
+                'italic': italic,
+                'skew': skewkern,
             }
 
     sys.stdout.write(

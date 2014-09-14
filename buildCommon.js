@@ -12,11 +12,12 @@ var makeSymbol = function(value, style, mode, color, classes) {
     var symbolNode;
     if (metrics) {
         symbolNode = new domTree.symbolNode(
-            value, metrics.height, metrics.depth, metrics.italic, classes);
+            value, metrics.height, metrics.depth, metrics.italic, metrics.skew,
+            classes);
     } else {
         console && console.warn("No character metrics for '" + value +
             "' in style '" + style + "'");
-        symbolNode = new domTree.symbolNode(value, 0, 0, 0, classes);
+        symbolNode = new domTree.symbolNode(value, 0, 0, 0, 0, classes);
     }
 
     if (color) {

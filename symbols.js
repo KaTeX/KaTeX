@@ -783,6 +783,56 @@ var symbols = {
             font: "main",
             group: "textord",
             replace: "\u22ee"
+        },
+        "\\acute": {
+            font: "main",
+            group: "accent",
+            replace: "\u00b4"
+        },
+        "\\grave": {
+            font: "main",
+            group: "accent",
+            replace: "\u0060"
+        },
+        "\\ddot": {
+            font: "main",
+            group: "accent",
+            replace: "\u00a8"
+        },
+        "\\tilde": {
+            font: "main",
+            group: "accent",
+            replace: "\u007e"
+        },
+        "\\bar": {
+            font: "main",
+            group: "accent",
+            replace: "\u00af"
+        },
+        "\\breve": {
+            font: "main",
+            group: "accent",
+            replace: "\u02d8"
+        },
+        "\\check": {
+            font: "main",
+            group: "accent",
+            replace: "\u02c7"
+        },
+        "\\hat": {
+            font: "main",
+            group: "accent",
+            replace: "\u005e"
+        },
+        "\\vec": {
+            font: "main",
+            group: "accent",
+            replace: "\u20d7"
+        },
+        "\\dot": {
+            font: "main",
+            group: "accent",
+            replace: "\u02d9"
         }
     },
     "text": {

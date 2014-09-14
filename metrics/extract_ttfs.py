@@ -37,11 +37,13 @@ def main():
 
                 # TODO(emily): Figure out a real way to calculate this
                 italic = 0
+                skew = 0
 
                 start_json[font][ord(char)] = {
                     height: height / fontInfo.em,
                     depth: depth / fontInfo.em,
                     italic: italic / fontInfo.em,
+                    skew: skew / fontInfo.em,
                 }
 
     sys.stdout.write(

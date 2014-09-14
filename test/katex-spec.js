@@ -998,3 +998,45 @@ describe("A markup generator", function() {
         expect(markup).not.toContain("marginRight");
     });
 });
+
+describe("An accent parser", function() {
+    it("should not fail", function() {
+        expect("\\vec{x}").toParse();
+        expect("\\vec{x^2}").toParse();
+        expect("\\vec{x}^2").toParse();
+        expect("\\vec x").toParse();
+    });
+
+    it("should produce accents", function() {
+        var parse = parseTree("\\vec x")[0];
+
+        expect(parse.type).toMatch("accent");
+    });
+
+    it("should be grouped more tightly than supsubs", function() {
+        var parse = parseTree("\\vec x^2")[0];
+
+        expect(parse.type).toMatch("supsub");
+    });
+
+    it("should not parse expanding accents", function() {
+        expect("\\widehat{x}").toNotParse();
+    });
+});
+
+describe("An accent builder", function() {
+    it("should not fail", function() {
+        expect("\\vec{x}").toBuild();
+        expect("\\vec{x}^2").toBuild();
+        expect("\\vec{x}_2").toBuild();
+        expect("\\vec{x}_2^2").toBuild();
+    });
+
+    it("should produce mords", function() {
+        expect(getBuilt("\\vec x")[0].classes).toContain("mord");
+        expect(getBuilt("\\vec +")[0].classes).toContain("mord");
+        expect(getBuilt("\\vec +")[0].classes).not.toContain("mbin");
+        expect(getBuilt("\\vec )^2")[0].classes).toContain("mord");
+        expect(getBuilt("\\vec )^2")[0].classes).not.toContain("mclose");
+    });
+});

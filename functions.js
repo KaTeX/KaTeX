@@ -394,6 +394,26 @@ var duplicatedFunctions = [
         data: {
             numArgs: 0
         }
+    },
+
+    // Accents
+    {
+        funcs: [
+            "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
+            "\\check", "\\hat", "\\vec", "\\dot"
+            // We don't support expanding accents yet
+            // "\\widetilde", "\\widehat"
+        ],
+        data: {
+            numArgs: 1,
+            handler: function(func, base) {
+                return {
+                    type: "accent",
+                    accent: func,
+                    base: base
+                };
+            }
+        }
     }
 ];
 

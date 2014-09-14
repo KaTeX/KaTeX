@@ -414,4 +414,21 @@ big parens
             text-align: center;
         }
     }
+
+    .accent {
+        > .vlist > span {
+            text-align: center;
+        }
+
+        .accent-body > span {
+            width: 0;
+        }
+
+        .accent-body.accent-vec > span {
+            position: relative;
+            // This value is half of the value that the MathJax's makeFF shifts
+            // it left. We center it by shifting it half way right again.
+            left: 0.326em;
+        }
+    }
 }

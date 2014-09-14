@@ -183,5 +183,11 @@
         "name": "SupSubOffsets",
         "screenSize": [1024, 768],
         "url": "http://localhost:7936/test/huxley/test.html?m=\\displaystyle \\int_{2+3}x f^{2+3}+3\\lim_{2+3+4+5}f"
+    },
+
+    {
+        "name": "Accents",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m=\\vec{A}\\vec{x}\\vec x^2\\vec{x}_2^2\\vec{A}^2\\vec{xA}^2"
     }
 ]
