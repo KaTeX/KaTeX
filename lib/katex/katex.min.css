@@ -746,3 +746,13 @@ big parens
 .katex .op-limits > .vlist > span {
   text-align: center;
 }
+.katex .accent > .vlist > span {
+  text-align: center;
+}
+.katex .accent .accent-body > span {
+  width: 0;
+}
+.katex .accent .accent-body.accent-vec > span {
+  position: relative;
+  left: 0.326em;
+}

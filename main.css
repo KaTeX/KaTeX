@@ -14,6 +14,20 @@ body {
     overflow: hidden;
 }
 
+.cta {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.cta a {
+    border-radius: 3px;
+    display: inline-block;
+    font-weight: 600;
+    margin: 0 10px;
+    padding: 8px 24px;
+    text-decoration: none;
+}
+
 .header {
     padding: 40px 0 0;
 }
@@ -35,21 +49,13 @@ body {
     font-weight: 600;
 }
 
-.cta {
-    margin: 10px 0;
-    text-align: center;
+.header .cta a {
+    border: 3px solid;
+    color: #fff;
 }
 
-.cta a {
-    background: #329894;
-    border-radius: 3px;
-    border: 3px solid #fff;
-    color: #fff;
-    display: inline-block;
-    font-weight: 600;
-    margin: 0 10px;
-    padding: 8px 24px;
-    text-decoration: none;
+.header .cta a:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .demo {
@@ -98,7 +104,7 @@ body {
 }
 
 #demo-output {
-    font-size: 20px;
+    font-size: 18px;
     padding: 10px 0;
     overflow: auto;
 }
@@ -108,14 +114,14 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     min-height: 400px;
     position: relative;
-    padding: 10px 0;
+    padding: 30px 0;
 }
 
 .subtagline {
     color: #329894;
     font-size: 24px;
     font-weight: 600;
-    padding: 30px 0;
+    padding: 10px 0;
     text-align: center;
 }
 
@@ -123,6 +129,19 @@ body {
     font-size: 15px;
     text-align: center;
     margin: 30px 0;
+}
+
+.main .cta {
+    padding-top: 30px;
+}
+
+.main .cta a {
+    border: 3px solid;
+    color: #329894;
+}
+
+.main .cta a:hover {
+    background: rgba(50, 152, 148, 0.1);
 }
 
 .footer {
