@@ -1,5 +1,4 @@
-KaTeX
-=====
+# KaTeX [![Build Status](https://travis-ci.org/Khan/KaTeX.svg?branch=master)](https://travis-ci.org/Khan/KaTeX)
 
 Fast math!
 
