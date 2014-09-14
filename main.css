@@ -58,7 +58,7 @@ body {
 .demo,
 .demo-left,
 .demo-right {
-    height: 300px;
+    height: 260px;
 }
 
 .demo-left,
@@ -83,7 +83,7 @@ body {
     box-sizing: border-box;
     color: #fff;
     font: 14px Menlo, monospace;
-    height: 120px;
+    height: 160px;
     padding: 10px;
     resize: none;
     width: 100%;
@@ -94,8 +94,10 @@ body {
     color: #444;
 }
 
-.demo-right #demo-output {
+#demo-output {
     font-size: 20px;
+    padding: 10px 0;
+    overflow: auto;
 }
 
 .main {
