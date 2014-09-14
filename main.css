@@ -1,14 +1,119 @@
 body {
+    font: 16px/1.5 "Proxima Nova";
+}
+
+.container {
+    margin: 0 auto;
+    margin: 0 auto;
+    width: 800px;
+}
+
+.header {
+    color: #fff;
+    background: #329894;
+    padding: 40px 0 0;
+    overflow: hidden;
+}
+
+.logo {
+    color: #fff;
+    font-size: 45px;
+    margin: 0;
+}
+
+.tagline {
+    font-size: 28px;
+    font-weight: 300;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.tagline em {
+    font-weight: 600;
+}
+
+.cta {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.cta a {
+    background: #329894;
+    border-radius: 3px;
+    border: 3px solid #fff;
+    color: #fff;
+    display: inline-block;
+    font-weight: 600;
+    margin: 0 10px;
+    padding: 8px 24px;
+    text-decoration: none;
+}
+
+.demo {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    font-size: 18px;
+    margin: 50px 0 0;
+}
+
+.demo,
+.demo-left,
+.demo-right {
+    height: 300px;
+}
+
+.demo-left,
+.demo-right {
+    box-sizing: border-box;
+    float: left;
+    padding: 30px;
+    width: 50%;
+}
+
+.demo-instructions {
+    margin-bottom: 10px;
+}
+
+.demo-left {
+    background: #444;
+}
+
+.demo-left textarea {
+    background: #000;
+    border: none;
+    box-sizing: border-box;
+    color: #fff;
+    font: 14px Menlo, monospace;
+    height: 120px;
+    padding: 10px;
+    resize: none;
+    width: 100%;
+}
+
+.demo-right {
+    background: #fff;
+    color: #444;
+}
+
+.demo-right #demo-output {
     font-size: 20px;
 }
 
-#main {
-    margin-left: auto;
-    margin-right: auto;
-    min-width: 300px;
-    max-width: 600px;
+.main {
+    background: #fff2e7;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    min-height: 400px;
+    position: relative;
 }
 
-#example {
-    font-size: 30px;
+.subtagline {
+    color: #329894;
+    font-size: 24px;
+    font-weight: 600;
+    padding: 30px 0;
+    text-align: center;
+}
+
+.main .example {
+    font-size: 22px;
+    text-align: center;
 }

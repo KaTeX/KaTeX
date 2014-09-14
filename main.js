@@ -1,12 +1,11 @@
 window.startup = function() {
-    var title = document.getElementById("title");
-    katex.process("\\KaTeX", title);
-
-    var example = document.getElementById("example");
-    katex.process("\\frac{1}{\\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}} {1+\\frac{e^{-8\\pi}} {1+...} } } }", example);
+    var tex = document.getElementsByClassName("tex");
+    Array.prototype.forEach.call(tex, function(el) {
+        katex.process(el.getAttribute("data-expr"), el);
+    });
 
     var demoInput = document.getElementById("demo-input");
-    var demoOutput = document.getElementById("demo");
+    var demoOutput = document.getElementById("demo-output");
 
     function doDemo() {
         katex.process(demoInput.value, demoOutput);

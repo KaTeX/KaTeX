@@ -1,38 +1,48 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>KaTeX - Fast online math rendering</title>
-    <script src="lib/katex/katex.min.js" type="text/javascript"></script>
-    <link href="lib/katex/katex.min.css" type="text/css" rel="stylesheet" />
-    <link href="lib/katex/fonts/fonts.css" type="text/css" rel="stylesheet" />
-
-    <script src="main.js" type="text/javascript"></script>
-    <link href="main.css" type="text/css" rel="stylesheet" />
+    <meta charset="utf-8">
+    <title>KaTeX – The fastest math typesetting library for the web</title>
+    <link href="lib/katex/katex.min.css" type="text/css" rel="stylesheet">
+    <link href="lib/katex/fonts/fonts.css" type="text/css" rel="stylesheet">
+    <link href="lib/normalize.css" type="text/css" rel="stylesheet">
+    <link href="lib/font-awesome/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="main.css" type="text/css" rel="stylesheet">
   </head>
   <body>
-    <div id="main">
-      <h1 id="title"></h1>
-      What is KaTeX? <br>
-      KaTeX is a math typesetting library for the web.<br><br>
+    <div class="header"><div class="container">
+      <h1 class="logo tex" data-expr="\KaTeX">KaTeX</h1>
+      <div class="tagline">
+        The <em>fastest</em> math typesetting library for the web.
+      </div>
+      <div class="cta">
+        <a href="#" role="button"><i class="fa fa-download"></i> Download</a><a href="https://github.com/Khan/KaTeX" role="button"><i class="fa fa-github"></i> View on GitHub</a>
+      </div>
+      <div class="demo">
+        <div class="demo-left">
+          <div class="demo-instructions">
+            Type an expression:
+          </div>
+          <textarea id="demo-input">x = \dfrac{-b \pm \sqrt{b^2-4ac}}{2a}</textarea>
+        </div>
+        <div class="demo-right">
+          <div class="demo-instructions">
+            See how it renders with <span class="tex" data-expr="\KaTeX">KaTeX</span>:
+          </div>
+          <div id="demo-output"></div>
+        </div>
+      </div>
+    </div></div>
 
-      Advantages: <br>
-      <ul>
-        <li>Fast</li>
-        <li>Simple API</li>
-        <li>No dependencies</li>
-        <li>Supports all major browsers including IE 8 through IE 11</li>
-      </ul>
+    <div class="main"><div class="container">
+      <div class="subtagline">
+        Simple API, no dependencies – yet super-fast on all major browsers.
+      </div>
+      <div class="example tex" data-expr="\displaystyle \frac{1}{\Bigl(\sqrt{\phi \sqrt{5}}-\phi\Bigr) e^{\frac25 \pi}} = 1+\frac{e^{-2\pi}} {1+\frac{e^{-4\pi}} {1+\frac{e^{-6\pi}} {1+\frac{e^{-8\pi}} {1+\cdots} } } }"></div>
+    </div></div>
 
-      Interactive demo:<br>
-      <input id="demo-input" type="text" value="x=\dfrac{-b\pm\sqrt{b^2-4ac}}{2a}" /> <br>
-      <span id="demo"></span> <br><br>
-
-      Examples:<br>
-      <span id="example"></span> <br><br>
-
-      <a href="http://jsperf.com/katex-vs-mathjax">Performance comparison</a>
-    </div>
-
+    <script src="lib/katex/katex.min.js" type="text/javascript"></script>
+    <script src="main.js" type="text/javascript"></script>
     <script type="text/javascript">
       startup();
     </script>
