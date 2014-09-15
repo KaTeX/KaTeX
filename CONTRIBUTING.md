@@ -18,7 +18,8 @@ function in the interactive demo at
 #### Single symbols
 
 There are many individual symbols that KaTeX doesn't yet support. Read through
-the [symbols.js](symbols.js) file for more information on how to add a symbol.
+the [symbols.js](src/symbols.js) file for more information on how to add a
+symbol.
 
 To figure out the unicode symbol for the symbol you are trying to add, try using
 the symbol in MathJax to see what unicode symbol it outputs. An interactive
@@ -36,14 +37,14 @@ If you do, check out [extract_ttfs.py](metrics/extract_ttfs.py).
 
 #### Adding new functions
 
-Most functions are handled in the [functions.js](functions.js) file. Read the
-comments in there to get started. If the function you want to add has similar
-output to an existing function, see if you can add a new line to that file to
-get it to work.
+Most functions are handled in the [functions.js](src/functions.js) file. Read
+the comments in there to get started. If the function you want to add has
+similar output to an existing function, see if you can add a new line to that
+file to get it to work.
 
 If your function isn't similar to an existing function, you'll need to add a
 line to `functions.js` as well as adding an output function in
-[buildTree.js](buildTree.js).
+[buildTree.js](src/buildTree.js).
 
 ## Testing
 
