@@ -27,7 +27,7 @@ function init() {
     reprocess();
 
     function reprocess() {
-        katex.process(input.value, math);
+        katex.render(input.value, math);
     }
 }
 

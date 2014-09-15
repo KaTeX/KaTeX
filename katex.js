@@ -16,7 +16,7 @@ var utils = require("./utils");
  * Parse and build an expression, and place that expression in the DOM node
  * given.
  */
-var process = function(toParse, baseNode) {
+var render = function(toParse, baseNode) {
     utils.clearNode(baseNode);
 
     var tree = parseTree(toParse);
@@ -34,7 +34,7 @@ var renderToString = function(toParse) {
 };
 
 module.exports = {
-    process: process,
+    render: render,
     renderToString: renderToString,
     ParseError: ParseError
 };

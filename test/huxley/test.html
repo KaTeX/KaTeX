@@ -23,7 +23,7 @@
         query[split[0]] = decodeURIComponent(split[1]);
       }
       var mathNode = document.getElementById("math");
-      katex.process(query["m"], mathNode);
+      katex.render(query["m"], mathNode);
       document.getElementById("pre").innerHTML = query["pre"] || "";
       document.getElementById("post").innerHTML = query["post"] || "";
     </script>
