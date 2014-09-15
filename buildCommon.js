@@ -1,8 +1,19 @@
+/**
+ * This module contains general functions that can be used for building
+ * different kinds of domTree nodes in a consistent manner.
+ */
+
 var domTree = require("./domTree");
 var fontMetrics = require("./fontMetrics");
 var symbols = require("./symbols");
 
+/**
+ * Makes a symbolNode after translation via the list of symbols in symbols.js.
+ * Correctly pulls out metrics for the character, and optionally takes a list of
+ * classes to be attached to the node.
+ */
 var makeSymbol = function(value, style, mode, color, classes) {
+    // Replace the value with its replaced value from symbol.js
     if (symbols[mode][value] && symbols[mode][value].replace) {
         value = symbols[mode][value].replace;
     }
@@ -15,8 +26,10 @@ var makeSymbol = function(value, style, mode, color, classes) {
             value, metrics.height, metrics.depth, metrics.italic, metrics.skew,
             classes);
     } else {
-        console && console.warn("No character metrics for '" + value +
-            "' in style '" + style + "'");
+        // TODO(emily): Figure out a good way to only print this in development
+        typeof console !== "undefined" && console.warn(
+            "No character metrics for '" + value + "' in style '" +
+                style + "'");
         symbolNode = new domTree.symbolNode(value, 0, 0, 0, 0, classes);
     }
 
@@ -27,12 +40,20 @@ var makeSymbol = function(value, style, mode, color, classes) {
     return symbolNode;
 };
 
+/**
+ * Makes a symbol in the italic math font.
+ */
 var mathit = function(value, mode, color, classes) {
     return makeSymbol(
         value, "Math-Italic", mode, color, classes.concat(["mathit"]));
 };
 
+/**
+ * Makes a symbol in the upright roman font.
+ */
 var mathrm = function(value, mode, color, classes) {
+    // Decide what font to render the symbol in by its entry in the symbols
+    // table.
     if (symbols[mode][value].font === "main") {
         return makeSymbol(value, "Main-Regular", mode, color, classes);
     } else {
@@ -41,6 +62,10 @@ var mathrm = function(value, mode, color, classes) {
     }
 };
 
+/**
+ * Calculate the height, depth, and maxFontSize of an element based on its
+ * children.
+ */
 var sizeElementFromChildren = function(elem) {
     var height = 0;
     var depth = 0;
@@ -65,6 +90,9 @@ var sizeElementFromChildren = function(elem) {
     elem.maxFontSize = maxFontSize;
 };
 
+/**
+ * Makes a span with the given list of classes, list of children, and color.
+ */
 var makeSpan = function(classes, children, color) {
     var span = new domTree.span(classes, children);
 
@@ -77,6 +105,9 @@ var makeSpan = function(classes, children, color) {
     return span;
 };
 
+/**
+ * Makes a document fragment with the given list of children.
+ */
 var makeFragment = function(children) {
     var fragment = new domTree.documentFragment(children);
 
@@ -85,6 +116,11 @@ var makeFragment = function(children) {
     return fragment;
 };
 
+/**
+ * Makes an element placed in each of the vlist elements to ensure that each
+ * element has the same max font size. To do this, we create a zero-width space
+ * with the correct font size.
+ */
 var makeFontSizer = function(options, fontSize) {
     var fontSizeInner = makeSpan([], [new domTree.symbolNode("\u200b")]);
     fontSizeInner.style.fontSize = (fontSize / options.style.sizeMultiplier) + "em";
@@ -96,7 +132,7 @@ var makeFontSizer = function(options, fontSize) {
     return fontSizer;
 };
 
-/*
+/**
  * Makes a vertical list by stacking elements and kerns on top of each other.
  * Allows for many different ways of specifying the positioning method.
  *
@@ -229,6 +265,5 @@ module.exports = {
     mathrm: mathrm,
     makeSpan: makeSpan,
     makeFragment: makeFragment,
-    makeFontSizer: makeFontSizer,
     makeVList: makeVList
 };

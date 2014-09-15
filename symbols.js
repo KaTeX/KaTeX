@@ -1,15 +1,18 @@
-/* This file holds a list of all no-argument functions and single-character
- * symbols (like 'a' or ';'). For each of the symbols, there are three
- * properties they can have:
- * - font (required): the font to be used for this * symbol. Either "main" (the
-     normal font), or "ams" (the ams fonts)
+/**
+ * This file holds a list of all no-argument functions and single-character
+ * symbols (like 'a' or ';').
+ *
+ * For each of the symbols, there are three properties they can have:
+ * - font (required): the font to be used for this symbol. Either "main" (the
+     normal font), or "ams" (the ams fonts).
  * - group (required): the ParseNode group type the symbol should have (i.e.
-     "textord" or "mathord" or
- * - replace (optiona): the character that this symbol or function should be
+     "textord", "mathord", etc).
+ * - replace (optional): the character that this symbol or function should be
  *   replaced with (i.e. "\phi" has a replace value of "\u03d5", the phi
- *   character in the main font)
- * There outermost map in the table indicates what mode the symbols should be
- * accepted in (e.g. "math" or "text")
+ *   character in the main font).
+ *
+ * The outermost map in the table indicates what mode the symbols should be
+ * accepted in (e.g. "math" or "text").
  */
 
 var symbols = {
@@ -854,6 +857,9 @@ var symbols = {
     }
 };
 
+// There are lots of symbols which are the same, so we add them in afterwards.
+
+// All of these are textords in math mode
 var mathTextSymbols = "0123456789/@.\"";
 for (var i = 0; i < mathTextSymbols.length; i++) {
     var ch = mathTextSymbols.charAt(i);
@@ -863,6 +869,7 @@ for (var i = 0; i < mathTextSymbols.length; i++) {
     };
 }
 
+// All of these are textords in text mode
 var textSymbols = "0123456789`!@*()-=+[]'\";:?/.,";
 for (var i = 0; i < textSymbols.length; i++) {
     var ch = textSymbols.charAt(i);
@@ -872,6 +879,7 @@ for (var i = 0; i < textSymbols.length; i++) {
     };
 }
 
+// All of these are textords in text mode, and mathords in math mode
 var letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 for (var i = 0; i < letters.length; i++) {
     var ch = letters.charAt(i);

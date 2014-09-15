@@ -1,3 +1,12 @@
+/**
+ * This file contains a list of utility functions which are useful in other
+ * files.
+ */
+
+/**
+ * Provide an `indexOf` function which works in IE8, but defers to native if
+ * possible.
+ */
 var nativeIndexOf = Array.prototype.indexOf;
 var indexOf = function(list, elem) {
     if (list == null) {
@@ -15,6 +24,9 @@ var indexOf = function(list, elem) {
     return -1;
 };
 
+/**
+ * Return whether an element is contained in a list
+ */
 var contains = function(list, elem) {
     return indexOf(list, elem) !== -1;
 };
@@ -50,8 +62,11 @@ function escape(text) {
   return ('' + text).replace(ESCAPE_REGEX, escaper);
 }
 
+/**
+ * A function to set the text content of a DOM element in all supported
+ * browsers. Note that we don't define this if there is no document.
+ */
 var setTextContent;
-
 if (typeof document !== "undefined") {
     var testNode = document.createElement("span");
     if ("textContent" in testNode) {
@@ -65,6 +80,9 @@ if (typeof document !== "undefined") {
     }
 }
 
+/**
+ * A function to clear a node.
+ */
 function clearNode(node) {
     setTextContent(node, "");
 }

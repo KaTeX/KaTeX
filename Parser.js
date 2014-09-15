@@ -5,60 +5,70 @@ var utils = require("./utils");
 
 var ParseError = require("./ParseError");
 
-// This file contains the parser used to parse out a TeX expression from the
-// input. Since TeX isn't context-free, standard parsers don't work particularly
-// well.
+/**
+ * This file contains the parser used to parse out a TeX expression from the
+ * input. Since TeX isn't context-free, standard parsers don't work particularly
+ * well.
+ *
+ * The strategy of this parser is as such:
+ *
+ * The main functions (the `.parse...` ones) take a position in the current
+ * parse string to parse tokens from. The lexer (found in Lexer.js, stored at
+ * this.lexer) also supports pulling out tokens at arbitrary places. When
+ * individual tokens are needed at a position, the lexer is called to pull out a
+ * token, which is then used.
+ *
+ * The main functions also take a mode that the parser is currently in
+ * (currently "math" or "text"), which denotes whether the current environment
+ * is a math-y one or a text-y one (e.g. inside \text). Currently, this serves
+ * to limit the functions which can be used in text mode.
+ *
+ * The main functions then return an object which contains the useful data that
+ * was parsed at its given point, and a new position at the end of the parsed
+ * data. The main functions can call each other and continue the parsing by
+ * using the returned position as a new starting point.
+ *
+ * There are also extra `.handle...` functions, which pull out some reused
+ * functionality into self-contained functions.
+ *
+ * The earlier functions return `ParseResult`s, which contain a ParseNode and a
+ * new position.
+ *
+ * The later functions (which are called deeper in the parse) sometimes return
+ * ParseFuncOrArgument, which contain a ParseResult as well as some data about
+ * whether the parsed object is a function which is missing some arguments, or a
+ * standalone object which can be used as an argument to another function.
+ */
 
-// The strategy of this parser is as such:
-//
-// The main functions (the `.parse...` ones) take a position in the current
-// parse string to parse tokens from. The lexer (found in Lexer.js, stored at
-// this.lexer) also supports pulling out tokens at arbitrary places. When
-// individual tokens are needed at a position, the lexer is called to pull out a
-// token, which is then used.
-//
-// The main functions also take a mode that the parser is currently in
-// (currently "math" or "text"), which denotes whether the current environment
-// is a math-y one or a text-y one (e.g. inside \text). Currently, this serves
-// to limit the functions which can be used in text mode.
-//
-// The main functions then return an object which contains the useful data that
-// was parsed at its given point, and a new position at the end of the parsed
-// data. The main functions can call each other and continue the parsing by
-// using the returned position as a new starting point.
-//
-// There are also extra `.handle...` functions, which pull out some reused
-// functionality into self-contained functions.
-//
-// The earlier functions return `ParseResult`s, which contain a ParseNode and a
-// new position.
-//
-// The later functions (which are called deeper in the parse) sometimes return
-// ParseFuncOrArgument, which contain a ParseResult as well as some data about
-// whether the parsed object is a function which is missing some arguments, or a
-// standalone object which can be used as an argument to another function.
-
-// Main Parser class
+/**
+ * Main Parser class
+ */
 function Parser(input) {
     // Make a new lexer
     this.lexer = new Lexer(input);
 };
 
-// The resulting parse tree nodes of the parse tree.
+/**
+ * The resulting parse tree nodes of the parse tree.
+ */
 function ParseNode(type, value, mode) {
     this.type = type;
     this.value = value;
     this.mode = mode;
 }
 
-// A result and final position returned by the `.parse...` functions.
+/**
+ * A result and final position returned by the `.parse...` functions.
+ */
 function ParseResult(result, newPosition) {
     this.result = result;
     this.position = newPosition;
 }
 
-// An initial function (without its arguments), or an argument to a function.
-// The `result` argument should be a ParseResult.
+/**
+ * An initial function (without its arguments), or an argument to a function.
+ * The `result` argument should be a ParseResult.
+ */
 function ParseFuncOrArgument(result, isFunction, allowedInText, numArgs, argTypes) {
     this.result = result;
     // Is this a function (i.e. is it something defined in functions.js)?
@@ -71,8 +81,10 @@ function ParseFuncOrArgument(result, isFunction, allowedInText, numArgs, argType
     this.argTypes = argTypes;
 }
 
-// Checks a result to make sure it has the right type, and throws an
-// appropriate error otherwise.
+/**
+ * Checks a result to make sure it has the right type, and throws an
+ * appropriate error otherwise.
+ */
 Parser.prototype.expect = function(result, type) {
     if (result.type !== type) {
         throw new ParseError(
@@ -82,15 +94,20 @@ Parser.prototype.expect = function(result, type) {
     }
 };
 
-// Main parsing function, which parses an entire input. Returns either a list
-// of parseNodes or null if the parse fails.
+/**
+ * Main parsing function, which parses an entire input.
+ *
+ * @return {?Array.<ParseNode>}
+ */
 Parser.prototype.parse = function(input) {
     // Try to parse the input
     var parse = this.parseInput(0, "math");
     return parse.result;
 };
 
-// Parses an entire input tree
+/**
+ * Parses an entire input tree.
+ */
 Parser.prototype.parseInput = function(pos, mode) {
     // Parse an expression
     var expression = this.parseExpression(pos, mode);
@@ -100,7 +117,9 @@ Parser.prototype.parseInput = function(pos, mode) {
     return expression;
 };
 
-// Handles a body of an expression
+/**
+ * Handles a body of an expression.
+ */
 Parser.prototype.handleExpressionBody = function(pos, mode) {
     var body = [];
     var atom;
@@ -116,9 +135,11 @@ Parser.prototype.handleExpressionBody = function(pos, mode) {
     };
 };
 
-// Parses an "expression", which is a list of atoms
-//
-// Returns ParseResult
+/**
+ * Parses an "expression", which is a list of atoms.
+ *
+ * @return {ParseResult}
+ */
 Parser.prototype.parseExpression = function(pos, mode) {
     var body = this.handleExpressionBody(pos, mode);
     return new ParseResult(body.body, body.position);
@@ -127,7 +148,9 @@ Parser.prototype.parseExpression = function(pos, mode) {
 // The greediness of a superscript or subscript
 var SUPSUB_GREEDINESS = 1;
 
-// Handle a subscript or superscript with nice errors
+/**
+ * Handle a subscript or superscript with nice errors.
+ */
 Parser.prototype.handleSupSubscript = function(pos, mode, symbol, name) {
     var group = this.parseGroup(pos, mode);
 
@@ -151,9 +174,11 @@ Parser.prototype.handleSupSubscript = function(pos, mode, symbol, name) {
     }
 };
 
-// Parses a group with optional super/subscripts
-//
-// Returns ParseResult or null
+/**
+ * Parses a group with optional super/subscripts.
+ *
+ * @return {?ParseResult}
+ */
 Parser.prototype.parseAtom = function(pos, mode) {
     // The body of an atom is an implicit group, so that things like
     // \left(x\right)^2 work correctly.
@@ -247,15 +272,17 @@ var styleFuncs = [
     "\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle"
 ];
 
-// Parses an implicit group, which is a group that starts at the end of a
-// specified, and ends right before a higher explicit group ends, or at EOL. It
-// is used for functions that appear to affect the current style, like \Large or
-// \textrm, where instead of keeping a style we just pretend that there is an
-// implicit grouping after it until the end of the group. E.g.
-//   small text {\Large large text} small text again
-// It is also used for \left and \right to get the correct grouping.
-//
-// Returns ParseResult or null
+/**
+ * Parses an implicit group, which is a group that starts at the end of a
+ * specified, and ends right before a higher explicit group ends, or at EOL. It
+ * is used for functions that appear to affect the current style, like \Large or
+ * \textrm, where instead of keeping a style we just pretend that there is an
+ * implicit grouping after it until the end of the group. E.g.
+ *   small text {\Large large text} small text again
+ * It is also used for \left and \right to get the correct grouping.
+ *
+ * @return {?ParseResult}
+ */
 Parser.prototype.parseImplicitGroup = function(pos, mode) {
     var start = this.parseSymbol(pos, mode);
 
@@ -320,9 +347,11 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
     }
 };
 
-// Parses an entire function, including its base and all of its arguments
-//
-// Returns ParseResult or null
+/**
+ * Parses an entire function, including its base and all of its arguments
+ *
+ * @return {?ParseResult}
+ */
 Parser.prototype.parseFunction = function(pos, mode) {
     var baseGroup = this.parseGroup(pos, mode);
 
@@ -392,10 +421,12 @@ Parser.prototype.parseFunction = function(pos, mode) {
     }
 };
 
-// Parses a group when the mode is changing. Takes a position, a new mode, and
-// an outer mode that is used to parse the outside.
-//
-// Returns a ParseFuncOrArgument or null
+/**
+ * Parses a group when the mode is changing. Takes a position, a new mode, and
+ * an outer mode that is used to parse the outside.
+ *
+ * @return {?ParseFuncOrArgument}
+ */
 Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
     if (mode === "color" || mode === "size") {
         // color and size modes are special because they should have braces and
@@ -420,10 +451,12 @@ Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
     }
 };
 
-// Parses a group, which is either a single nucleus (like "x") or an expression
-// in braces (like "{x+y}")
-//
-// Returns a ParseFuncOrArgument or null
+/**
+ * Parses a group, which is either a single nucleus (like "x") or an expression
+ * in braces (like "{x+y}")
+ *
+ * @return {?ParseFuncOrArgument}
+ */
 Parser.prototype.parseGroup = function(pos, mode) {
     var start = this.lexer.lex(pos, mode);
     // Try to parse an open brace
@@ -444,10 +477,12 @@ Parser.prototype.parseGroup = function(pos, mode) {
     }
 };
 
-// Parse a single symbol out of the string. Here, we handle both the functions
-// we have defined, as well as the single character symbols
-//
-// Returns a ParseFuncOrArgument or null
+/**
+ * Parse a single symbol out of the string. Here, we handle both the functions
+ * we have defined, as well as the single character symbols
+ *
+ * @return {?ParseFuncOrArgument}
+ */
 Parser.prototype.parseSymbol = function(pos, mode) {
     var nucleus = this.lexer.lex(pos, mode);
 
