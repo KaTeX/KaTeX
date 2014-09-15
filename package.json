@@ -1,12 +1,16 @@
 {
     "name": "katex",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "Fast math!",
     "main": "katex.js",
     "repository": {
         "type": "git",
         "url": "git://github.com/Khan/KaTeX.git"
     },
+    "files": [
+        "katex.js",
+        "src/"
+    ],
     "license": "MIT",
     "devDependencies": {
         "browserify": "~2.29.1",

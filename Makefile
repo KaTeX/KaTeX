@@ -28,7 +28,7 @@ build/fonts:
 	done
 
 .PHONY: build/katex
-build/katex: build/katex.min.js build/katex.min.css build/fonts
+build/katex: build/katex.min.js build/katex.min.css build/fonts README.md
 	mkdir -p build/katex
 	cp -r $^ build/katex
 
