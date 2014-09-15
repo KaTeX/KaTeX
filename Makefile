@@ -4,7 +4,7 @@ build: setup build/katex.min.js build/katex.min.css zip compress
 setup:
 	npm install
 
-build/katex.js: katex.js $(wildcard *.js)
+build/katex.js: katex.js $(wildcard src/*.js)
 	./node_modules/.bin/browserify $< --standalone katex > $@
 
 build/katex.min.js: build/katex.js

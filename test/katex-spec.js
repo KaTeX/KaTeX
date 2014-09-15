@@ -1,7 +1,7 @@
 var katex = require("../katex");
-var buildTree = require("../buildTree");
-var parseTree = require("../parseTree");
-var ParseError = require("../ParseError");
+var buildTree = require("../src/buildTree");
+var parseTree = require("../src/parseTree");
+var ParseError = require("../src/ParseError");
 
 var getBuilt = function(expr) {
     expect(expr).toBuild();

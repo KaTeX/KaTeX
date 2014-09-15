@@ -6,11 +6,11 @@
  * errors in the expression, or errors in javascript handling.
  */
 
-var ParseError = require("./ParseError");
+var ParseError = require("./src/ParseError");
 
-var buildTree = require("./buildTree");
-var parseTree = require("./parseTree");
-var utils = require("./utils");
+var buildTree = require("./src/buildTree");
+var parseTree = require("./src/parseTree");
+var utils = require("./src/utils");
 
 /**
  * Parse and build an expression, and place that expression in the DOM node
