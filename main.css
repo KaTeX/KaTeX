@@ -80,6 +80,7 @@ body {
 
 .demo-instructions {
     margin-bottom: 10px;
+    opacity: 0.8;
 }
 
 .demo-left {
