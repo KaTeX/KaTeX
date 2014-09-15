@@ -1,5 +1,5 @@
 body {
-    font: 16px/1.5 "proxima-nova", "Helvetica Neue", Arial, Helvetica, sans-serif;
+    font: 16px/1.4 "proxima-nova", "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 
 .container {
@@ -79,6 +79,7 @@ body {
 }
 
 .demo-instructions {
+    line-height: 1.5;
     margin-bottom: 10px;
     opacity: 0.8;
 }
@@ -126,10 +127,14 @@ body {
     text-align: center;
 }
 
-.main .features {
+.features {
     font-size: 20px;
     margin: 0 auto;
     width: 540px;
+}
+
+.features > li {
+    margin: 10px 0;
 }
 
 .main .examples {
