@@ -401,6 +401,26 @@ var symbols = {
             group: "rel",
             replace: "\u2190"
         },
+        "\\Leftarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21d0"
+        },
+        "\\longleftarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u27f5"
+        },
+        "\\leftrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u2194"
+        },
+        "\\longleftrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u27f7"
+        },
         "\\le": {
             font: "main",
             group: "rel",
@@ -426,10 +446,35 @@ var symbols = {
             group: "rel",
             replace: "\u2192"
         },
+        "\\Rightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21d2"
+        },
+        "\\longrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u27f6"
+        },
         "\\to": {
             font: "main",
             group: "rel",
             replace: "\u2192"
+        },
+        "\\leadsto": {
+            font: "main",
+            group: "rel",
+            replace: "\u21dd"
+        },
+        "\\mapsto": {
+            font: "main",
+            group: "rel",
+            replace: "\u21a6"
+        },
+        "\\longmapsto": {
+            font: "main",
+            group: "rel",
+            replace: "\u27fc"
         },
         "\\ngeq": {
             font: "ams",
