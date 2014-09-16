@@ -14,6 +14,14 @@ metrics_to_extract = {
         u"\u22ef",  # \cdots
         u"\u22f1",  # \ddots
         u"\u22ee",  # \vdots
+    ],
+    "Size1-Regular": [
+        u"\u222c",  # \iint
+        u"\u222d",  # \iiint
+    ],
+    "Size2-Regular": [
+        u"\u222c",  # \iint
+        u"\u222d",  # \iiint
     ]
 }
 
@@ -40,10 +48,10 @@ def main():
                 skew = 0
 
                 start_json[font][ord(char)] = {
-                    height: height / fontInfo.em,
-                    depth: depth / fontInfo.em,
-                    italic: italic / fontInfo.em,
-                    skew: skew / fontInfo.em,
+                    "height": height / fontInfo.em,
+                    "depth": depth / fontInfo.em,
+                    "italic": italic / fontInfo.em,
+                    "skew": skew / fontInfo.em,
                 }
 
     sys.stdout.write(
