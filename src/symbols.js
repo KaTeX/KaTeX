@@ -893,4 +893,66 @@ for (var i = 0; i < letters.length; i++) {
     };
 }
 
+//provides a range function
+function range(n1, n2) {
+    var ret = [];
+    for( var i = n1; i < n2; i++ ) {
+        ret.push(i);
+    }
+    return ret;
+}
+
+
+//relations, see http://www.fileformat.info/info/unicode/block/mathematical_operators/utf8test.htm
+var letters = "∈∉∊∋∌∍∶∷∸∹∺∻∼∽∾∿≀≁≂≃≄≅≆≇≈≉≊≋≌≍≎≏≐≑≒≓≔≕≖≗≘≙≚≛≜≝≞≟≠≡≢≣≤≥≦≧≨≩≪≫≬≭≮≯≰≱≲≳≴≵≶≷≸≹≺≻≼≽≾≿⊂⊃⊄⊅⊆⊇⊈⊉⊊⊋⊌⊍⊎⊏⊐⊑⊒⊓⊔⋖⋗⋘⋙⋚⋛⋜⋝⋞⋟⋠⋡⋢⋣⋤⋥⋦⋧⋨⋩⋪⋫⋬⋭";
+for (var i = 0; i < letters.length; i++) {
+    var ch = letters.charAt(i);
+    symbols["math"][ch] = {
+    font: "main",
+    group: "rel"
+    };
+}
+//relations, see http://www.fileformat.info/info/unicode/block/mathematical_operators/utf8test.htm
+var letters = "−∓∔∕∖∗∘∙";
+for (var i = 0; i < letters.length; i++) {
+    var ch = letters.charAt(i);
+    symbols["math"][ch] = {
+    font: "main",
+    group: "bin"
+    };
+}
+
+
+//Get the upright greek small letter range
+//see http://www.fileformat.info/info/unicode/block/greek_and_coptic/utf8test.htm
+var letters = String.fromCharCode.apply(String, range(945,969));
+for (var i = 0; i < letters.length; i++) {
+    var ch = letters.charAt(i);
+    symbols["math"][ch] = {
+    font: "main",
+    group: "mathord"
+    };
+    symbols["text"][ch] = {
+    font: "main",
+    group: "textord"
+    };
+}
+
+//Greek Capital Letters
+var letters = String.fromCharCode.apply(String, range(913,937));
+//Letterlike Symbols Block (including blackboard letters)
+letters += String.fromCharCode.apply(String, range(8448,8527));
+for (var i = 0; i < letters.length; i++) {
+    var ch = letters.charAt(i);
+    symbols["math"][ch] = {
+    font: "main",
+    group: "textord"
+    };
+    symbols["text"][ch] = {
+    font: "main",
+    group: "textord"
+    };
+}
+
+
 module.exports = symbols;
