@@ -112,6 +112,16 @@ var symbols = {
             group: "textord",
             replace: "\u03a9"
         },
+        "\\forall": {
+            font: "main",
+            group: "textord",
+            replace: "\u2200"
+        },
+        "\\exists": {
+            font: "main",
+            group: "textord",
+            replace: "\u2203"
+        },
         "\\alpha": {
             font: "main",
             group: "mathord",
