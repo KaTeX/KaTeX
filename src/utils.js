@@ -87,11 +87,26 @@ function clearNode(node) {
     setTextContent(node, "");
 }
 
+function isIOS() {
+  return /iphone|ipad/i.test(navigator.userAgent);
+}
+
+function isMac() {
+  return navigator.platform.indexOf('Mac') === 0;
+}
+
+function isChrome() {
+  return !!window.chrome;
+}
+
 module.exports = {
     contains: contains,
     escape: escape,
     hyphenate: hyphenate,
     indexOf: indexOf,
     setTextContent: setTextContent,
-    clearNode: clearNode
+    clearNode: clearNode,
+    isIOS: isIOS,
+    isMac: isMac,
+    isChrome: isChrome
 };
