@@ -893,6 +893,119 @@ for (var i = 0; i < letters.length; i++) {
     };
 }
 
+//-------UNICODE SECTION --------
+
+//general function to add a string of symbols in a specific group with a specific font
+var addMathSymbolGroup = function(stringOfSymbols , symbolgroup ,symbolfont) {
+    console.log(stringOfSymbols);
+    for (var i = 0; i < stringOfSymbols.length; i++) {
+        var ch = stringOfSymbols.charAt(i);
+        symbols["math"][ch] = {
+        font: symbolfont,
+        group: symbolgroup
+        };
+    }
+}
+
+// All of the following symbols are in the main font --------------------------
+
+//small greek letters see http://www.fileformat.info/info/unicode/block/greek_and_coptic/utf8test.htm
+var mainmathord = String.fromCharCode.apply(String, range(945,969));
+addMathSymbolGroup(mainmathord,"mathord","main");
+
+ //greek capital letters
+var maintextord = String.fromCharCode.apply(String, range(913,937));
+maintextord += "←↑→↓↔↕↖↗↘↙↦↩↪↼↽⇀⇁⇌⇐⇑⇒⇓⇔⟵⟶⟷⟸⟹⟺⟼";
+maintextord += "ℓ℘ℵıȷℜℑ∝∞";
+maintextord += "∅∀∂∃∧∨∇¬⊢⊣⊤⊥⊨⋈";
+maintextord += "°†‡♭♮♯♠♡♢♣";
+maintextord += "△▹▽◃◯";
+maintextord += "⋮";
+maintextord += "√∫⨿";
+addMathSymbolGroup(maintextord,"textord","main");
+
+var mainbin = "−±×÷∓∕∖∗∘∙⊙⋅⋆⋄⊕⊖⊗⊘⊙";
+addMathSymbolGroup(mainbin,"bin","main");
+
+var mainrel = "∩∪∼≀≃≅≈≍≐≠≡≤≥≪≫≺≻⊂⊃⊆⊇⊎⊑⊒⊓⊔⪯⪰";
+addMathSymbolGroup(mainrel,"rel","main");
+
+var mainopen = "⌈⌊⟨⟮";
+addMathSymbolGroup(mainopen,"open","main");
+
+var mainclose = "⌉⌋⟩⟯";
+addMathSymbolGroup(mainclose,"close","main");
+
+var maininner = "⋯⋱";
+addMathSymbolGroup(maininner,"inner","main");
+
+var mainpunct = "…";
+addMathSymbolGroup(mainpunct,"punct","main");
+
+/* these are all the glyphs from AMS-Regular
+ ABCDEFGHIJKLMNOPQRSTUVWXYZk ¥®ðħˆ˜̂̃ϝϰ‵ℏ℧Ⅎℶℷℸ⅁←→↚↛↞↠↢↣↫↬↭↮↰↱↶↷↺↻↾↿⇂⇃⇄⇆⇇⇈⇉⇊⇋⇌⇍⇎⇏⇚⇛⇝⇠⇢∁∄∅∍−∔∖∝∠∡∢∣∤∥∦∴∵∼∽≁≂≆≈≊≎≏≑≒≓≖≗≜≦≧≨≩≬≮≯≰≱≲≳≶≷≼≽≾≿⊀⊁⊈⊉⊊⊋⊏⊐⊚⊛⊝⊞⊟⊠⊡⊨⊩⊪⊬⊭⊮⊯⊲⊳⊴⊵⊸⊺⊻⊼⋅⋇⋉⋊⋋⋌⋍⋎⋏⋐⋑⋒⋓⋔⋖⋗⋘⋙⋚⋛⋞⋟⋠⋡⋦⋧⋨⋩⋪⋫⋬⋭⌢⌣Ⓢ┌┐└┘╱╲■□▲△▶▼▽◀◊★✓✠⧫⩞⩽⩾⪅⪆⪇⪈⪉⪊⪋⪌⪕⪖⪵⪶⪷⪸⪹⪺⫅⫆⫋⫌
+The symbols below are all from this font.
+ */
+
+
+var amstextord = "ðħϝϰℏℲ¥®Ⓢ℧ℶℷℸ⅁∁";
+amstextord += "∅✓★✠∄∠∡∢"
+amstextord += "←→↚↛↞↠↢↣↫↬↭↮↰↱↶↷↺↻↾↿⇂⇃⇄⇆⇇⇈⇉⇊⇋⇌⇍⇎⇏⇠⇢⇚⇛⇝";
+amstextord += "■□▲△▶▼▽◀◊";
+addMathSymbolGroup(amstextord,"textord","ams");
+
+var amsbin = "−∔∖";
+addMathSymbolGroup(amsbin,"bin","ams");
+
+var amsrel = "∝∍∣∤∥∦∴∵∼∽≁≂≆≈≊≎≏≑≒≓≖≗≜≦≧≨≩≬≮≯≰≱≲≳≶≷≼≽≾≿⊀⊁⊈⊉⊊⊋⊏⊐⊚⊛⊝⊞⊟⊠⊡⊨⊩⊪⊬⊭⊮⊯⊲⊳⊴⊵⊸⊺⊻⊼⋅⋇⋉⋊⋋⋌⋍⋎⋏⋐⋑⋒⋓⋔⋖⋗⋘⋙⋚⋛⋞⋟⋠⋡⋦⋧⋨⋩⋪⋫⋬⋭⧫⩞⩽⩾⪅⪆⪇⪈⪉⪊⪋⪌⪕⪖⪵⪶⪷⪸⪹⪺⫅⫆⫋⫌";
+addMathSymbolGroup(amsrel,"rel","ams");
+
+var amsopen = "┌└";
+addMathSymbolGroup(amsopen,"open","ams");
+
+var amsclose = "┐┘";
+addMathSymbolGroup(amsclose,"close","ams");
+
+var doublestruck = {
+    "𝔸" : "A",
+    "𝔹" : "B",
+    "ℂ" : "C",
+    "𝔻" : "D",
+	"𝔼" : "E",
+    "𝔽" : "F" ,
+    "𝔾" : "G",
+    "ℍ" : "H",
+    "𝕀" : "I",
+    "𝕁" : "J",
+    "𝕂" : "K",
+    "𝕃" : "L",
+    "𝕄" : "M",
+    "ℕ" : "N",
+    "𝕆" : "O" ,
+    "ℙ" : "P",
+    "ℚ" : "Q",
+    "ℝ" : "R",
+    "𝕊" : "S",
+    "𝕋" : "T",
+    "𝕌" : "U",
+    "𝕍" : "V",
+    "𝕎" : "W",
+    "𝕏" : "X",
+    "𝕐" : "Y",
+    "ℤ" : "Z",
+    "𝕜" : "k"
+}
+
+for (ch in doublestruck) {
+    var replace = doublestruck[ch];
+    console.log(ch,replace);
+    symbols["math"][ch] = {
+    font: "ams",
+    group: "textord",
+    replace: doublestruck[ch]
+    };
+}
+
 //provides a range function
 function range(n1, n2) {
     var ret = [];
@@ -901,58 +1014,5 @@ function range(n1, n2) {
     }
     return ret;
 }
-
-
-//relations, see http://www.fileformat.info/info/unicode/block/mathematical_operators/utf8test.htm
-var letters = "∈∉∊∋∌∍∶∷∸∹∺∻∼∽∾∿≀≁≂≃≄≅≆≇≈≉≊≋≌≍≎≏≐≑≒≓≔≕≖≗≘≙≚≛≜≝≞≟≠≡≢≣≤≥≦≧≨≩≪≫≬≭≮≯≰≱≲≳≴≵≶≷≸≹≺≻≼≽≾≿⊂⊃⊄⊅⊆⊇⊈⊉⊊⊋⊌⊍⊎⊏⊐⊑⊒⊓⊔⋖⋗⋘⋙⋚⋛⋜⋝⋞⋟⋠⋡⋢⋣⋤⋥⋦⋧⋨⋩⋪⋫⋬⋭";
-for (var i = 0; i < letters.length; i++) {
-    var ch = letters.charAt(i);
-    symbols["math"][ch] = {
-    font: "main",
-    group: "rel"
-    };
-}
-//relations, see http://www.fileformat.info/info/unicode/block/mathematical_operators/utf8test.htm
-var letters = "−∓∔∕∖∗∘∙";
-for (var i = 0; i < letters.length; i++) {
-    var ch = letters.charAt(i);
-    symbols["math"][ch] = {
-    font: "main",
-    group: "bin"
-    };
-}
-
-
-//Get the upright greek small letter range
-//see http://www.fileformat.info/info/unicode/block/greek_and_coptic/utf8test.htm
-var letters = String.fromCharCode.apply(String, range(945,969));
-for (var i = 0; i < letters.length; i++) {
-    var ch = letters.charAt(i);
-    symbols["math"][ch] = {
-    font: "main",
-    group: "mathord"
-    };
-    symbols["text"][ch] = {
-    font: "main",
-    group: "textord"
-    };
-}
-
-//Greek Capital Letters
-var letters = String.fromCharCode.apply(String, range(913,937));
-//Letterlike Symbols Block (including blackboard letters)
-letters += String.fromCharCode.apply(String, range(8448,8527));
-for (var i = 0; i < letters.length; i++) {
-    var ch = letters.charAt(i);
-    symbols["math"][ch] = {
-    font: "main",
-    group: "textord"
-    };
-    symbols["text"][ch] = {
-    font: "main",
-    group: "textord"
-    };
-}
-
 
 module.exports = symbols;
