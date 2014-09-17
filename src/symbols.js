@@ -897,7 +897,6 @@ for (var i = 0; i < letters.length; i++) {
 
 //general function to add a string of symbols in a specific group with a specific font
 var addMathSymbolGroup = function(stringOfSymbols , symbolgroup ,symbolfont) {
-    console.log(stringOfSymbols);
     for (var i = 0; i < stringOfSymbols.length; i++) {
         var ch = stringOfSymbols.charAt(i);
         symbols["math"][ch] = {
@@ -921,7 +920,6 @@ maintextord += "∅∀∂∃∧∨∇¬⊢⊣⊤⊥⊨⋈";
 maintextord += "°†‡♭♮♯♠♡♢♣";
 maintextord += "△▹▽◃◯";
 maintextord += "⋮";
-maintextord += "√∫⨿";
 addMathSymbolGroup(maintextord,"textord","main");
 
 var mainbin = "−±×÷∓∕∖∗∘∙⊙⋅⋆⋄⊕⊖⊗⊘⊙";
@@ -935,6 +933,9 @@ addMathSymbolGroup(mainopen,"open","main");
 
 var mainclose = "⌉⌋⟩⟯";
 addMathSymbolGroup(mainclose,"close","main");
+
+var mainop = "∑∏∐∫";
+addMathSymbolGroup(mainop,"op","math");
 
 var maininner = "⋯⋱";
 addMathSymbolGroup(maininner,"inner","main");

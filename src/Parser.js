@@ -485,11 +485,9 @@ Parser.prototype.parseGroup = function(pos, mode) {
  */
 Parser.prototype.parseSymbol = function(pos, mode) {
     var nucleus = this.lexer.lex(pos, mode);
-
-    if (functions.funcs[nucleus.type]) {
+    if (functions.funcs[nucleus.text]) {
         // If there is a function with this name, we use its data
-        var func = functions.funcs[nucleus.type];
-
+        var func = functions.funcs[nucleus.text];
         // Here, we replace "original" argTypes with the current mode
         var argTypes = func.argTypes;
         if (argTypes) {
@@ -502,7 +500,7 @@ Parser.prototype.parseSymbol = function(pos, mode) {
         }
 
         return new ParseFuncOrArgument(
-            new ParseResult(nucleus.type, nucleus.position),
+            new ParseResult(nucleus.text, nucleus.position),
             true, func.allowedInText, func.numArgs, argTypes);
     } else if (symbols[mode][nucleus.text]) {
         // Otherwise if this is a no-argument function, find the type it
