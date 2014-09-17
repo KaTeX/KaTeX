@@ -87,14 +87,26 @@ function clearNode(node) {
     setTextContent(node, "");
 }
 
+/**
+ * Returns true if we're on an iPhone or iPad
+ * @returns {boolean}
+ */
 function isIOS() {
   return /iphone|ipad/i.test(navigator.userAgent);
 }
 
+/**
+ * Returns true if we're on a Mac
+ * @returns {boolean}
+ */
 function isMac() {
   return navigator.platform.indexOf('Mac') === 0;
 }
 
+/**
+ * Returns ture if we're in Chrome on any OS
+ * @returns {boolean}
+ */
 function isChrome() {
   return !!window.chrome;
 }
