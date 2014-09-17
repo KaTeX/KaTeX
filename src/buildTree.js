@@ -18,6 +18,7 @@ var symbols = require("./symbols");
 var utils = require("./utils");
 
 var makeSpan = buildCommon.makeSpan;
+var adjustSqrtOverline = utils.isChrome() || utils.isMac(); // iOS needs adjustment, but the amount is different
 
 /**
  * Take a list of nodes, build them in order, and return a list of the built
@@ -743,8 +744,12 @@ var groupTypes = {
         }
 
         // Shift the delimiter so that its top lines up with the top of the line
-        delimShift = -(inner.height + lineClearance + ruleWidth) + delim.height;
-        delim.style.top = delimShift + "em";
+        var delimShift = -(inner.height + lineClearance + ruleWidth) + delim.height;
+        if (adjustSqrtOverline) {
+            delim.style.top = (delimShift + line.height / 2) + "em";
+        } else {
+            delim.style.top = delimShift + "em";
+        }
         delim.height -= delimShift;
         delim.depth += delimShift;
 
