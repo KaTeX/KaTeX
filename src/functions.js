@@ -96,6 +96,24 @@ var functions = {
         }
     },
 
+    // double struck letters
+    "\\mathbb": {
+        numArgs: 1,
+        handler: function(func, body) {
+            var inner;
+            if (body.type === "ordgroup") {
+                inner = body.value;
+            } else {
+                inner = [body];
+            }
+
+            return {
+                type: "mathbb",
+                body: inner
+            };
+        }
+    },
+    
     // A two-argument custom color
     "\\color": {
         numArgs: 2,

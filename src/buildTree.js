@@ -171,6 +171,12 @@ var groupTypes = {
             group.value, group.mode, options.getColor(), ["mord"]);
     },
 
+    mathbb: function(group, options, prev) {
+        return makeSpan(["amsrm", "mord", options.style.cls()],
+            buildExpression(group.value.body, options.reset()));
+    },
+
+
     bin: function(group, options, prev) {
         var className = "mbin";
         // Pull out the most recent element. Do some special handling to find
