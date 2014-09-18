@@ -103,6 +103,10 @@ Code
 
 In general, try to make your code blend in with the surrounding code.
 
+## CLA
+
+In order to contribute to KaTeX, you must first sign the CLA, found at www.khanacademy.org/r/cla
+
 ## License
 
 KaTeX is licenced under the [MIT License](http://opensource.org/licenses/MIT).

@@ -18,6 +18,12 @@ Download the built files from [the releases page](https://github.com/khan/katex/
 <script src="/path/to/katex.min.js" type="text/javascript"></script>
 ```
 
+Specify UTF-8 as your content type:
+
+```html
+<meta charset="utf-8">
+```
+
 Call `katex.render` with a TeX expression and a DOM element to render into:
 
 ```js
@@ -39,4 +45,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
 
-KaTeX is licenced under the [MIT License](http://opensource.org/licenses/MIT).
+KaTeX is licensed under the [MIT License](http://opensource.org/licenses/MIT).

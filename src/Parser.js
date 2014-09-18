@@ -130,9 +130,44 @@ Parser.prototype.handleExpressionBody = function(pos, mode) {
         pos = atom.position;
     }
     return {
-        body: body,
+        body: this.rewriteOverAsFrac(body, mode),
         position: pos
     };
+};
+
+/**
+ * There can only be one \over per group.  Everything before \over is the
+ * numerator and everything after is the denominator.
+ *
+ * @returns {Array}
+ */
+Parser.prototype.rewriteOverAsFrac = function (body, mode) {
+
+    var overIndex = -1;
+    for (var i = 0; i < body.length; i++) {
+        var node = body[i];
+        if (node.type === "over") {
+            if (overIndex !== -1) {
+                throw new ParseError("only one \\over per group body",
+                    this.lexer, -1);
+            }
+            overIndex = i;
+        }
+    }
+
+    if (overIndex !== -1) {
+        var numerBody = body.slice(0, overIndex);
+        var denomBody = body.slice(overIndex + 1);
+
+        var numerNode = new ParseNode("ordgroup", numerBody, mode);
+        var denomNode = new ParseNode("ordgroup", denomBody, mode);
+
+        var func = functions.funcs["\\frac"];
+        var value = func.handler("\\frac", numerNode, denomNode);
+        return [new ParseNode(value.type, value, mode)];
+    } else {
+        return body;
+    }
 };
 
 /**

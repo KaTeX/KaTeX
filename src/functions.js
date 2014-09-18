@@ -150,6 +150,15 @@ var functions = {
                 type: "katex"
             };
         }
+    },
+
+    "\\over": {
+        numArgs: 0, // it's an infix operator we can't parse its args normally
+        handler: function (func) {
+            return {
+                type: "over"
+            }
+        }
     }
 };
 

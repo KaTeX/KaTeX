@@ -474,6 +474,71 @@ describe("A frac parser", function() {
     });
 });
 
+describe("An over parser", function() {
+    var simpleOver = "1 \\over x";
+    var complexOver = "1+2i \\over 3+4i";
+    var badMultipleOvers = "1 \\over 2 + 3 \\over 4";
+    var emptyNumerator = "\\over x";
+    var emptyDenominator = "1 \\over";
+
+    it("should not fail", function () {
+        expect(simpleOver).toParse();
+        expect(complexOver).toParse();
+    });
+
+    it("should produce a frac", function() {
+        var parse;
+
+        parse = parseTree(simpleOver)[0];
+
+        expect(parse.type).toMatch("frac");
+        expect(parse.value.numer).toBeDefined();
+        expect(parse.value.denom).toBeDefined();
+
+        parse = parseTree(complexOver)[0];
+
+        expect(parse.type).toMatch("frac");
+        expect(parse.value.numer).toBeDefined();
+        expect(parse.value.denom).toBeDefined();
+    });
+
+    it("should create a numerator from with before the \\over", function () {
+        var parse = parseTree(complexOver)[0];
+
+        var numer = parse.value.numer;
+        expect(numer.value.length).toEqual(4);
+    });
+
+    it("should create a demonimator from with after the \\over", function () {
+        var parse = parseTree(complexOver)[0];
+
+        var denom = parse.value.numer;
+        expect(denom.value.length).toEqual(4);
+    });
+
+    it("should handle empty numerators", function () {
+        expect(emptyNumerator).toParse();
+
+        var parse = parseTree(emptyNumerator)[0];
+        expect(parse.type).toMatch("frac");
+        expect(parse.value.numer).toBeDefined();
+        expect(parse.value.denom).toBeDefined();
+    });
+
+    it("should handle empty denominators", function () {
+        expect(emptyDenominator).toParse();
+
+        var parse = parseTree(emptyDenominator)[0];
+        expect(parse.type).toMatch("frac");
+        expect(parse.value.numer).toBeDefined();
+        expect(parse.value.denom).toBeDefined();
+    });
+
+    it("should fail with multiple overs in the same group", function () {
+        expect(badMultipleOvers).toNotParse();
+    });
+});
+
 describe("A sizing parser", function() {
     var sizeExpression = "\\Huge{x}\\small{x}";
     var nestedSizeExpression = "\\Huge{\\small{x}}";
