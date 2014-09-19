@@ -46,7 +46,7 @@ var ParseError = require("./ParseError");
 function Parser(input) {
     // Make a new lexer
     this.lexer = new Lexer(input);
-};
+}
 
 /**
  * The resulting parse tree nodes of the parse tree.
@@ -97,12 +97,14 @@ function ParseFunc(result, allowedInText, numArgs, argTypes) {
 /**
  * Checks a result to make sure it has the right type, and throws an
  * appropriate error otherwise.
+ *
+ * @result {Token}
  */
-Parser.prototype.expect = function(result, type) {
-    if (result.type !== type) {
+Parser.prototype.expect = function(token, type) {
+    if (token.type !== type) {
         throw new ParseError(
-            "Expected '" + type + "', got '" + result.type + "'",
-            this.lexer, result.position
+            "Expected '" + type + "', got '" + token.type + "'",
+            this.lexer, token.position
         );
     }
 };

@@ -16,10 +16,10 @@ var ParseError = require("./ParseError");
 // The main lexer class
 function Lexer(input) {
     this._input = input;
-};
+}
 
 // The resulting token returned from `lex`.
-function LexResult(type, text, position) {
+function Token(type, text, position) {
     this.type = type;
     this.text = text;
     this.position = position;
@@ -77,19 +77,19 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
         // Do the funky concatenation of whitespace that happens in text mode.
         var whitespace = input.match(whitespaceConcatRegex);
         if (whitespace !== null) {
-            return new LexResult(" ", " ", pos + whitespace[0].length);
+            return new Token(" ", " ", pos + whitespace[0].length);
         }
     }
 
     // If there's no more input to parse, return an EOF token
     if (input.length === 0) {
-        return new LexResult("EOF", null, pos);
+        return new Token("EOF", null, pos);
     }
 
     var match;
     if ((match = input.match(anyFunc))) {
         // If we match a function token, return it
-        return new LexResult(match[0], match[0], pos + match[0].length);
+        return new Token(match[0], match[0], pos + match[0].length);
     } else {
         // Otherwise, we look through the normal token regexes and see if it's
         // one of them.
@@ -98,7 +98,7 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
 
             if ((match = input.match(normal[0]))) {
                 // If it is, return it
-                return new LexResult(
+                return new Token(
                     normal[1], match[0], pos + match[0].length);
             }
         }
@@ -125,7 +125,7 @@ Lexer.prototype._innerLexColor = function(pos) {
     var match;
     if ((match = input.match(cssColor))) {
         // If we look like a color, return a color
-        return new LexResult("color", match[0], pos + match[0].length);
+        return new Token("color", match[0], pos + match[0].length);
     } else {
         throw new ParseError("Invalid color", this, pos);
     }
@@ -153,7 +153,7 @@ Lexer.prototype._innerLexSize = function(pos) {
         if (unit !== "em" && unit !== "ex") {
             throw new ParseError("Invalid unit: '" + unit + "'", this, pos);
         }
-        return new LexResult("size", {
+        return new Token("size", {
                 number: +match[1],
                 unit: unit
             }, pos + match[0].length);
@@ -171,12 +171,16 @@ Lexer.prototype._innerLexWhitespace = function(pos) {
     var whitespace = input.match(whitespaceRegex)[0];
     pos += whitespace.length;
 
-    return new LexResult("whitespace", whitespace, pos);
+    return new Token("whitespace", whitespace, pos);
 };
 
 /**
  * This function lexes a single token starting at `pos` and of the given mode.
  * Based on the mode, we defer to one of the `_innerLex` functions.
+ *
+ * @param {Number} pos
+ * @param {String} mode
+ * @return {Token}
  */
 Lexer.prototype.lex = function(pos, mode) {
     if (mode === "math") {
