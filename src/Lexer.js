@@ -131,6 +131,30 @@ Lexer.prototype._innerLexColor = function(pos) {
     }
 };
 
+
+// A regex to match letters
+var regLetters = /[a-zA-Z]+/i;
+
+/**
+ * This function lexes a raw string of letters.
+ */
+Lexer.prototype._innerLexRawLetters = function(pos) {
+    var input = this._input.slice(pos);
+
+    // Ignore whitespace
+    var whitespace = input.match(whitespaceRegex)[0];
+    pos += whitespace.length;
+    input = input.slice(whitespace.length);
+
+    var match;
+    if ((match = input.match(regLetters))) {
+        // If we look like a letter, return a letter
+        return new LexResult("raw", match[0], pos + match[0].length);
+    } else {
+        throw new ParseError("Not a letter", this, pos);
+    }
+};
+
 // A regex to match a dimension. Dimensions look like
 // "1.2em" or ".4pt" or "1 ex"
 var sizeRegex = /^(\d+(?:\.\d*)?|\.\d+)\s*([a-z]{2})/;
@@ -189,6 +213,8 @@ Lexer.prototype.lex = function(pos, mode) {
         return this._innerLexSize(pos);
     } else if (mode === "whitespace") {
         return this._innerLexWhitespace(pos);
+    } else if (mode === "raw") {
+        return this._innerLexRawLetters(pos);
     }
 };
 

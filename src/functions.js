@@ -1,6 +1,5 @@
 var utils = require("./utils");
 var ParseError = require("./ParseError");
-
 // This file contains a list of functions that we parse. The functions map
 // contains the following data:
 
@@ -68,6 +67,17 @@ var functions = {
         handler: function(func, body) {
             return {
                 type: "sqrt",
+                body: body
+            };
+        }
+    },
+
+    "\\mathbb": {
+        numArgs: 1,
+        argTypes: ["raw"],
+        handler: function(func, body) {
+            return {
+                type: "mathbb",
                 body: body
             };
         }
