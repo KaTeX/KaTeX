@@ -116,11 +116,7 @@ Parser.prototype.handleExpressionBody = function(pos, mode) {
         body.push(atom.result);
         pos = atom.position;
     }
-    // TODO: update to use ParseResult
-    return {
-        body: body,
-        position: pos
-    };
+    return new ParseResult(body, pos);
 };
 
 /**
@@ -129,8 +125,7 @@ Parser.prototype.handleExpressionBody = function(pos, mode) {
  * @return {ParseResult}
  */
 Parser.prototype.parseExpression = function(pos, mode) {
-    var body = this.handleExpressionBody(pos, mode);
-    return new ParseResult(body.body, body.position);
+    return this.handleExpressionBody(pos, mode);
 };
 
 // The greediness of a superscript or subscript
@@ -264,6 +259,71 @@ var styleFuncs = [
     "\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle"
 ];
 
+
+/**
+ * Parses an implicit group, which is a group that starts at the end of a
+ * specified, and ends right before a higher explicit group ends, or at EOL. It
+ * is used for functions that appear to affect the current style, like \Large or
+ * \textrm, where instead of keeping a style we just pretend that there is an
+ * implicit grouping after it until the end of the group. E.g.
+ *   small text {\Large large text} small text again
+ * It is also used for \left and \right to get the correct grouping.
+ *
+ * @return {?ParseResult}
+ */
+Parser.prototype.parseImplicitGroup = function(pos, mode) {
+    var start = this.parseSymbol(pos, mode);
+
+    if (!start || !start.result) {
+        // If we didn't get anything we handle, fall back to parseFunction
+        return this.parseFunction(pos, mode);
+    }
+
+    var funcName = start.result.type;
+
+    // TODO: should we handle \\bigl and the other delimiter functions here too?
+    if (funcName === "\\left") {
+        return this.parseLeftRight(pos, mode);
+    } else if (funcName === "\\right") {
+        // If we see a right, explicitly fail the parsing here so the \left
+        // handling ends the group
+        return null;
+    } else if (utils.contains(sizeFuncs, funcName)) {
+        // If we see a sizing function, parse out the implict body
+        var body = this.handleExpressionBody(start.position, mode);
+        return new ParseResult(
+            new ParseNode("sizing", {
+                // Figure out what size to use based on the list of functions above
+                size: "size" + (utils.indexOf(sizeFuncs, funcName) + 1),
+                value: body.result
+            }, mode),
+            body.position);
+    } else if (utils.contains(styleFuncs, funcName)) {
+        // If we see a styling function, parse out the implict body
+        var body = this.handleExpressionBody(start.position, mode);
+        return new ParseResult(
+            new ParseNode("styling", {
+                // Figure out what style to use by pulling out the style from
+                // the function name
+                style: funcName.slice(1, funcName.length - 5),
+                value: body.result
+            }, mode),
+            body.position);
+    } else {
+        // Defer to parseFunction if it's not a function we handle
+        return this.parseFunction(pos, mode);
+    }
+};
+
+
+/**
+ * Parses as \left( ... \right) block and produces a ParseResult containing
+ * a "leftright" ParseNode as the result
+ *
+ * @param {Number} pos
+ * @param {String} mode
+ * @returns {ParseResult}
+ */
 Parser.prototype.parseLeftRight = function (pos, mode) {
     var left = this.lexer.lex(pos, mode);
     var leftDelim = this.lexer.lex(left.position, mode);
@@ -287,7 +347,7 @@ Parser.prototype.parseLeftRight = function (pos, mode) {
 
             return new ParseResult(
                 new ParseNode("leftright", {
-                    body: body.body,
+                    body: body.result,
                     left: leftDelim.text,
                     right: rightDelim.text
                 }, mode),
@@ -302,61 +362,6 @@ Parser.prototype.parseLeftRight = function (pos, mode) {
         throw new ParseError("Missing \\right", this.lexer, body.position);
     }
 };
-
-/**
- * Parses an implicit group, which is a group that starts at the end of a
- * specified, and ends right before a higher explicit group ends, or at EOL. It
- * is used for functions that appear to affect the current style, like \Large or
- * \textrm, where instead of keeping a style we just pretend that there is an
- * implicit grouping after it until the end of the group. E.g.
- *   small text {\Large large text} small text again
- * It is also used for \left and \right to get the correct grouping.
- *
- * @return {?ParseResult}
- */
-Parser.prototype.parseImplicitGroup = function(pos, mode) {
-    var start = this.parseSymbol(pos, mode);
-
-    if (!start || !start.result) {
-        // If we didn't get anything we handle, fall back to parseFunction
-        return this.parseFunction(pos, mode);
-    }
-
-    var funcName = start.result.type;
-
-    if (funcName === "\\left") {
-        return this.parseLeftRight(pos, mode);
-    } else if (funcName === "\\right") {
-        // If we see a right, explicitly fail the parsing here so the \left
-        // handling ends the group
-        return null;
-    } else if (utils.contains(sizeFuncs, funcName)) {
-        // If we see a sizing function, parse out the implict body
-        var body = this.handleExpressionBody(start.position, mode);
-        return new ParseResult(
-            new ParseNode("sizing", {
-                // Figure out what size to use based on the list of functions above
-                size: "size" + (utils.indexOf(sizeFuncs, funcName) + 1),
-                value: body.body
-            }, mode),
-            body.position);
-    } else if (utils.contains(styleFuncs, funcName)) {
-        // If we see a styling function, parse out the implict body
-        var body = this.handleExpressionBody(start.position, mode);
-        return new ParseResult(
-            new ParseNode("styling", {
-                // Figure out what style to use by pulling out the style from
-                // the function name
-                style: funcName.slice(1, funcName.length - 5),
-                value: body.body
-            }, mode),
-            body.position);
-    } else {
-        // Defer to parseFunction if it's not a function we handle
-        return this.parseFunction(pos, mode);
-    }
-};
-
 
 
 /**
@@ -402,8 +407,6 @@ Parser.prototype.parseFunction = function(pos, mode) {
 
                     var argNode;
                     var argName = arg.result.type;
-                    // TODO: once we get rid of the extra level of indirection
-                    // TODO: reintroduce numArgs
                     if (arg.result.isFunction && functions.funcs[argName].numArgs > 0) {
                         var argGreediness = functions.getGreediness(argName);
                         if (argGreediness > baseGreediness) {
@@ -502,7 +505,6 @@ Parser.prototype.parseSymbol = function(pos, mode) {
     var node;
 
     if (functions.funcs[nucleus.type]) {
-        // If there is a function with this name, we use its data
         node = new ParseNode(nucleus.type, nucleus.text, mode);
         node.isFunction = true;
         return new ParseResult(node, nucleus.position);
