@@ -39,4 +39,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
 
-KaTeX is licenced under the [MIT License](http://opensource.org/licenses/MIT).
+KaTeX is licensed under the [MIT License](http://opensource.org/licenses/MIT).
