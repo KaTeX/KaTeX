@@ -527,13 +527,13 @@ var symbols = {
              group: "textord",
              replace: "\u2210"
              
-        }
+        },
         "\\ell": {
              font: "main",
              group: "textord",
-             replace: "\u2213"
+             replace: "\u2113"
              
-        }
+        },
         "\\oslash": {
             font: "main",
             group: "textord",
