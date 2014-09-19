@@ -627,6 +627,11 @@ var symbols = {
             group: "textord",
             replace: "\u2297"
         },
+        "\\partial":{
+            font: "main",
+            group: "textord",
+            replace: "\u2202"
+        },
         "\\oslash": {
             font: "main",
             group: "textord",
