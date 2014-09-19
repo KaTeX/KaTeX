@@ -25,6 +25,20 @@ var render = function(toParse, baseNode) {
     baseNode.appendChild(node);
 };
 
+// KaTeX's styles don't work properly in quirks mode. Print out an error, and
+// disable rendering.
+if (typeof document !== "undefined") {
+    if (document.compatMode !== "CSS1Compat") {
+        typeof console !== "undefined" && console.warn(
+            "Warning: KaTeX doesn't work in quirks mode. Make sure your " +
+                "website has a suitable doctype.");
+
+        render = function() {
+            throw new ParseError("KaTeX doesn't work in quirks mode.");
+        };
+    }
+}
+
 /**
  * Parse and build an expression, and return the markup for that.
  */
