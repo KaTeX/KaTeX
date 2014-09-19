@@ -9,6 +9,7 @@
     },
     "files": [
         "katex.js",
+        "cli.js",
         "src/"
     ],
     "license": "MIT",
@@ -21,6 +22,7 @@
         "huxley": "~0.7.4",
         "jasmine-node": "git://github.com/mhevery/jasmine-node.git#Jasmine2.0"
     },
+    "bin": "cli.js",
     "scripts": {
         "test": "make test"
     }
