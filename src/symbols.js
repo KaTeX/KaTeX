@@ -107,6 +107,11 @@ var symbols = {
             group: "textord",
             replace: "\u03a8"
         },
+        "\\psi": {
+            font: "main",
+            group: "mathord",
+            replace: "\u03c8"
+        },
         "\\Omega": {
             font: "main",
             group: "textord",
@@ -221,11 +226,6 @@ var symbols = {
             font: "main",
             group: "mathord",
             replace: "\u03c7"
-        },
-        "\\psi": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03c8"
         },
         "\\omega": {
             font: "main",
@@ -516,6 +516,11 @@ var symbols = {
             font: "main",
             group: "textord",
             replace: "\u2295"
+        },
+        "\\ominus": {
+            font: "main",
+            group: "textord",
+            replace: "\u2296"
         },
         "\\otimes": {
             font: "main",
