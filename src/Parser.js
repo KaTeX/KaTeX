@@ -65,33 +65,15 @@ function ParseResult(result, newPosition) {
     this.position = newPosition;
 }
 
-/**
- * An initial function (without its arguments), or an argument to a function.
- * The `result` argument should be a ParseResult.
- */
-function ParseFuncOrArgument(result, isFunction, allowedInText, numArgs, argTypes) {
-    this.result = result;
-    // Is this a function (i.e. is it something defined in functions.js)?
-    this.isFunction = isFunction;
-    // Is it allowed in text mode?
-    this.allowedInText = allowedInText;
-    // How many arguments?
-    this.numArgs = numArgs;
-    // What types of arguments?
-    this.argTypes = argTypes;
-}
 
-function ParseArgument(result) {
-    this.result = result;
+function ArgumentNode(result) {
+    this.result = result;    // TODO: ParseResult.result is a ParseNode... fix this
     this.isFunction = false; // TODO: eventually remove this once we have a better AST
 }
 
-function ParseFunc(result, allowedInText, numArgs, argTypes) {
-    this.result = result;
+function FunctionNode(result) {
+    this.result = result;    // TODO: ParseResult.result is a ParseNode... fix this
     this.isFunction = true;
-    this.allowedInText = allowedInText;
-    this.numArgs = numArgs;
-    this.argTypes = argTypes;
 }
 
 /**
@@ -172,21 +154,24 @@ Parser.prototype.handleSupSubscript = function(pos, mode, symbol, name) {
     if (!group) {
         throw new ParseError(
             "Expected group after '" + symbol + "'", this.lexer, pos);
-    } else if (group.numArgs > 0) {
-        // ^ and _ have a greediness, so handle interactions with functions'
-        // greediness
-        var funcGreediness = functions.getGreediness(group.result.result);
-        if (funcGreediness > SUPSUB_GREEDINESS) {
-            return this.parseFunction(pos, mode);
-        } else {
-            throw new ParseError(
-                "Got function '" + group.result.result + "' with no arguments " +
-                    "as " + name,
-                this.lexer, pos);
+    } else if (group.isFunction) {
+        var func = functions.funcs[group.result.result];
+        if (func.numArgs > 0) {
+            // ^ and _ have a greediness, so handle interactions with functions'
+            // greediness
+            var funcGreediness = functions.getGreediness(group.result.result);
+            if (funcGreediness > SUPSUB_GREEDINESS) {
+                return this.parseFunction(pos, mode);
+            } else {
+                throw new ParseError(
+                        "Got function '" + group.result.result + "' with no arguments " +
+                        "as " + name,
+                    this.lexer, pos);
+            }
         }
-    } else {
-        return group.result;
     }
+    // fall-through
+    return group.result;
 };
 
 /**
@@ -392,21 +377,26 @@ Parser.prototype.parseFunction = function(pos, mode) {
 
     if (baseGroup) {
         if (baseGroup.isFunction) {
-            var func = baseGroup.result.result;
-            if (mode === "text" && !baseGroup.allowedInText) {
+            var funcName = baseGroup.result.result;
+            var func = functions.funcs[funcName];
+
+            if (mode === "text" && !func.allowedInText) {
                 throw new ParseError(
-                    "Can't use function '" + func + "' in text mode",
-                    this.lexer, baseGroup.position);
+                    "Can't use function '" + funcName + "' in text mode",
+                    this.lexer, baseGroup.result.position);
             }
 
             var newPos = baseGroup.result.position;
             var result;
-            if (baseGroup.numArgs > 0) {
-                var baseGreediness = functions.getGreediness(func);
-                var args = [func];
+
+            var argTypes = this.getArgTypes(func, mode);
+
+            if (func.numArgs > 0) {
+                var baseGreediness = functions.getGreediness(funcName);
+                var args = [funcName];
                 var positions = [newPos];
-                for (var i = 0; i < baseGroup.numArgs; i++) {
-                    var argType = baseGroup.argTypes && baseGroup.argTypes[i];
+                for (var i = 0; i < func.numArgs; i++) {
+                    var argType = argTypes && argTypes[i];
                     if (argType) {
                         var arg = this.parseSpecialGroup(newPos, argType, mode);
                     } else {
@@ -414,20 +404,22 @@ Parser.prototype.parseFunction = function(pos, mode) {
                     }
                     if (!arg) {
                         throw new ParseError(
-                            "Expected group after '" + baseGroup.result.result +
-                                "'",
+                            "Expected group after '" + funcName + "'",
                             this.lexer, newPos);
                     }
+
                     var argNode;
-                    if (arg.numArgs > 0) {
-                        var argGreediness = functions.getGreediness(arg.result.result);
+                    var argName = arg.result.result;
+                    // TODO: once we get rid of the extra level of indirection
+                    // TODO: reintroduce numArgs
+                    if (arg.isFunction && functions.funcs[argName].numArgs > 0) {
+                        var argGreediness = functions.getGreediness(argName);
                         if (argGreediness > baseGreediness) {
                             argNode = this.parseFunction(newPos, mode);
                         } else {
                             throw new ParseError(
-                                "Got function '" + arg.result.result + "' as " +
-                                    "argument to function '" +
-                                    baseGroup.result.result + "'",
+                                "Got function '" + argName + "' as " +
+                                    "argument to function '" + funcName + "'",
                                 this.lexer, arg.result.position - 1);
                         }
                     } else {
@@ -440,14 +432,13 @@ Parser.prototype.parseFunction = function(pos, mode) {
 
                 args.push(positions);
 
-                result = functions.funcs[func].handler.apply(this, args);
+                result = functions.funcs[funcName].handler.apply(this, args);
             } else {
-                result = functions.funcs[func].handler.apply(this, [func]);
+                result = functions.funcs[funcName].handler.apply(this, [funcName]);
             }
 
-            return new ParseResult(
-                new ParseNode(result.type, result, mode),
-                newPos);
+            var node = new ParseNode(result.type, result, mode);
+            return new ParseResult(node, newPos);
         } else {
             return baseGroup.result;
         }
@@ -460,7 +451,7 @@ Parser.prototype.parseFunction = function(pos, mode) {
  * Parses a group when the mode is changing. Takes a position, a new mode, and
  * an outer mode that is used to parse the outside.
  *
- * @return {?ParseFunc|?ParseArgument}
+ * @return {?FunctionNode|?ArgumentNode}
  */
 Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
     if (mode === "color" || mode === "size") {
@@ -474,7 +465,7 @@ Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
 
         var node = new ParseNode("color", inner.text, outerMode);
         var result = new ParseResult(node, closeBrace.position);
-        return new ParseArgument(result);
+        return new ArgumentNode(result);
     } else if (mode === "text") {
         // text mode is special because it should ignore the whitespace before
         // it
@@ -489,7 +480,7 @@ Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
  * Parses a group, which is either a single nucleus (like "x") or an expression
  * in braces (like "{x+y}")
  *
- * @return {?ParseFunc|?ParseArgument}
+ * @return {?FunctionNode|?ArgumentNode}
  */
 Parser.prototype.parseGroup = function(pos, mode) {
     var start = this.lexer.lex(pos, mode);
@@ -503,7 +494,7 @@ Parser.prototype.parseGroup = function(pos, mode) {
 
         var node = new ParseNode("ordgroup", expression.result, mode);
         var result = new ParseResult(node, closeBrace.position);
-        return new ParseArgument(result);
+        return new ArgumentNode(result);
     } else {
         // Otherwise, just return a nucleus
         return this.parseSymbol(pos, mode);
@@ -514,37 +505,38 @@ Parser.prototype.parseGroup = function(pos, mode) {
  * Parse a single symbol out of the string. Here, we handle both the functions
  * we have defined, as well as the single character symbols
  *
- * @return {?ParseFunc|?ParseArgument}
+ * @return {?FunctionNode|?ArgumentNode}
  */
 Parser.prototype.parseSymbol = function(pos, mode) {
     var nucleus = this.lexer.lex(pos, mode);
 
     if (functions.funcs[nucleus.type]) {
         // If there is a function with this name, we use its data
-        var func = functions.funcs[nucleus.type];
-
-        // Here, we replace "original" argTypes with the current mode
-        var argTypes = func.argTypes;
-        if (argTypes) {
-            argTypes = argTypes.slice();
-            for (var i = 0; i < argTypes.length; i++) {
-                if (argTypes[i] === "original") {
-                    argTypes[i] = mode;
-                }
-            }
-        }
-
         var result = new ParseResult(nucleus.type, nucleus.position);
-        return new ParseFunc(result, func.allowedInText, func.numArgs, argTypes);
+        return new FunctionNode(result);
     } else if (symbols[mode][nucleus.text]) {
         // Otherwise if this is a no-argument function, find the type it
         // corresponds to in the symbols map
         var node = new ParseNode(symbols[mode][nucleus.text].group, nucleus.text, mode);
         var result = new ParseResult(node, nucleus.position);
-        return new ParseArgument(result);
+        return new ArgumentNode(result);
     } else {
         return null;
     }
+};
+
+// Here, we replace "original" argTypes with the current mode
+Parser.prototype.getArgTypes = function (func, mode) {
+    var argTypes = func.argTypes;
+    if (argTypes) {
+        argTypes = argTypes.slice();
+        for (var i = 0; i < argTypes.length; i++) {
+            if (argTypes[i] === "original") {
+                argTypes[i] = mode;
+            }
+        }
+    }
+    return argTypes;
 };
 
 module.exports = Parser;
