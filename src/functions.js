@@ -440,5 +440,6 @@ var getGreediness = function(func) {
 
 module.exports = {
     funcs: functions,
-    getGreediness: getGreediness
+    getGreediness: getGreediness,
+    delimiters: delimiters
 };

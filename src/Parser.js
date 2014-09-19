@@ -287,6 +287,45 @@ var styleFuncs = [
     "\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle"
 ];
 
+Parser.prototype.parseLeftRight = function (pos, mode) {
+    var left = this.lexer.lex(pos, mode);
+    var leftDelim = this.lexer.lex(left.position, mode);
+
+    if (!utils.contains(functions.delimiters, leftDelim.text)) {
+        throw new ParseError(
+                "Invalid delimiter: '" + leftDelim.text + "' after '" +
+                func + "'",
+            this.lexer, leftDelim.position);
+    }
+
+    // Parse out the implicit body
+    var body = this.handleExpressionBody(leftDelim.position, mode);
+
+    // Check the next token
+    var right = this.lexer.lex(body.position, mode);
+    var rightDelim = this.lexer.lex(right.position, mode);
+
+    if (right && right.type === "\\right") {
+        if (utils.contains(functions.delimiters, rightDelim.text)) {
+
+            return new ParseResult(
+                new ParseNode("leftright", {
+                    body: body.body,
+                    left: leftDelim.text,
+                    right: rightDelim.text
+                }, mode),
+                rightDelim.position);
+        } else {
+            throw new ParseError(
+                    "Invalid delimiter: '" + rightDelim.text + "' after '" +
+                    func + "'",
+                this.lexer, rightDelim.position);
+        }
+    } else {
+        throw new ParseError("Missing \\right", this.lexer, body.position);
+    }
+};
+
 /**
  * Parses an implicit group, which is a group that starts at the end of a
  * specified, and ends right before a higher explicit group ends, or at EOL. It
@@ -309,28 +348,7 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
     var func = start.result.result;
 
     if (func === "\\left") {
-        // If we see a left:
-        // Parse the entire left function (including the delimiter)
-        var left = this.parseFunction(pos, mode);
-        // Parse out the implicit body
-        var body = this.handleExpressionBody(left.position, mode);
-        // Check the next token
-        var rightLex = this.parseSymbol(body.position, mode);
-
-        if (rightLex && rightLex.result.result === "\\right") {
-            // If it's a \right, parse the entire right function (including the delimiter)
-            var right = this.parseFunction(body.position, mode);
-
-            return new ParseResult(
-                new ParseNode("leftright", {
-                    body: body.body,
-                    left: left.result.value.value,
-                    right: right.result.value.value
-                }, mode),
-                right.position);
-        } else {
-            throw new ParseError("Missing \\right", this.lexer, body.position);
-        }
+        return this.parseLeftRight(pos, mode);
     } else if (func === "\\right") {
         // If we see a right, explicitly fail the parsing here so the \left
         // handling ends the group
@@ -361,6 +379,8 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
         return this.parseFunction(pos, mode);
     }
 };
+
+
 
 /**
  * Parses an entire function, including its base and all of its arguments
