@@ -81,6 +81,19 @@ function ParseFuncOrArgument(result, isFunction, allowedInText, numArgs, argType
     this.argTypes = argTypes;
 }
 
+function ParseArgument(result) {
+    this.result = result;
+    this.isFunction = false; // TODO: eventually remove this once we have a better AST
+}
+
+function ParseFunc(result, allowedInText, numArgs, argTypes) {
+    this.result = result;
+    this.isFunction = true;
+    this.allowedInText = allowedInText;
+    this.numArgs = numArgs;
+    this.argTypes = argTypes;
+}
+
 /**
  * Checks a result to make sure it has the right type, and throws an
  * appropriate error otherwise.
@@ -425,7 +438,7 @@ Parser.prototype.parseFunction = function(pos, mode) {
  * Parses a group when the mode is changing. Takes a position, a new mode, and
  * an outer mode that is used to parse the outside.
  *
- * @return {?ParseFuncOrArgument}
+ * @return {?ParseFunc|?ParseArgument}
  */
 Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
     if (mode === "color" || mode === "size") {
@@ -436,11 +449,10 @@ Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
         var inner = this.lexer.lex(openBrace.position, mode);
         var closeBrace = this.lexer.lex(inner.position, outerMode);
         this.expect(closeBrace, "}");
-        return new ParseFuncOrArgument(
-            new ParseResult(
-                new ParseNode("color", inner.text, outerMode),
-                closeBrace.position),
-            false);
+
+        var node = new ParseNode("color", inner.text, outerMode);
+        var result = new ParseResult(node, closeBrace.position);
+        return new ParseArgument(result);
     } else if (mode === "text") {
         // text mode is special because it should ignore the whitespace before
         // it
@@ -455,7 +467,7 @@ Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
  * Parses a group, which is either a single nucleus (like "x") or an expression
  * in braces (like "{x+y}")
  *
- * @return {?ParseFuncOrArgument}
+ * @return {?ParseFunc|?ParseArgument}
  */
 Parser.prototype.parseGroup = function(pos, mode) {
     var start = this.lexer.lex(pos, mode);
@@ -466,11 +478,10 @@ Parser.prototype.parseGroup = function(pos, mode) {
         // Make sure we get a close brace
         var closeBrace = this.lexer.lex(expression.position, mode);
         this.expect(closeBrace, "}");
-        return new ParseFuncOrArgument(
-            new ParseResult(
-                new ParseNode("ordgroup", expression.result, mode),
-                closeBrace.position),
-            false);
+
+        var node = new ParseNode("ordgroup", expression.result, mode);
+        var result = new ParseResult(node, closeBrace.position);
+        return new ParseArgument(result);
     } else {
         // Otherwise, just return a nucleus
         return this.parseSymbol(pos, mode);
@@ -481,7 +492,7 @@ Parser.prototype.parseGroup = function(pos, mode) {
  * Parse a single symbol out of the string. Here, we handle both the functions
  * we have defined, as well as the single character symbols
  *
- * @return {?ParseFuncOrArgument}
+ * @return {?ParseFunc|?ParseArgument}
  */
 Parser.prototype.parseSymbol = function(pos, mode) {
     var nucleus = this.lexer.lex(pos, mode);
@@ -501,18 +512,14 @@ Parser.prototype.parseSymbol = function(pos, mode) {
             }
         }
 
-        return new ParseFuncOrArgument(
-            new ParseResult(nucleus.type, nucleus.position),
-            true, func.allowedInText, func.numArgs, argTypes);
+        var result = new ParseResult(nucleus.type, nucleus.position);
+        return new ParseFunc(result, func.allowedInText, func.numArgs, argTypes);
     } else if (symbols[mode][nucleus.text]) {
         // Otherwise if this is a no-argument function, find the type it
         // corresponds to in the symbols map
-        return new ParseFuncOrArgument(
-            new ParseResult(
-                new ParseNode(symbols[mode][nucleus.text].group,
-                              nucleus.text, mode),
-                nucleus.position),
-            false);
+        var node = new ParseNode(symbols[mode][nucleus.text].group, nucleus.text, mode);
+        var result = new ParseResult(node, nucleus.position);
+        return new ParseArgument(result);
     } else {
         return null;
     }
