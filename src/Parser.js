@@ -189,41 +189,40 @@ Parser.prototype.parseAtom = function(pos, mode) {
     var subscript;
     while (true) {
         // Lex the first token
-        var lex = this.lexer.lex(currPos, mode);
+        var token = this.lexer.lex(currPos, mode);
 
-        var group;
-        if (lex.type === "^") {
+        if (token.type === "^") {
             // We got a superscript start
             if (superscript) {
                 throw new ParseError(
                     "Double superscript", this.lexer, currPos);
             }
             var result = this.handleSupSubscript(
-                lex.position, mode, lex.type, "superscript");
+                token.position, mode, token.type, "superscript");
             currPos = result.position;
             superscript = result.result;
-        } else if (lex.type === "_") {
+        } else if (token.type === "_") {
             // We got a subscript start
             if (subscript) {
                 throw new ParseError(
                     "Double subscript", this.lexer, currPos);
             }
             var result = this.handleSupSubscript(
-                lex.position, mode, lex.type, "subscript");
+                token.position, mode, token.type, "subscript");
             currPos = result.position;
             subscript = result.result;
-        } else if (lex.type === "'") {
+        } else if (token.type === "'") {
             // We got a prime
             var prime = new ParseNode("textord", "\\prime", mode);
 
             // Many primes can be grouped together, so we handle this here
             var primes = [prime];
-            currPos = lex.position;
+            currPos = token.position;
             // Keep lexing tokens until we get something that's not a prime
-            while ((lex = this.lexer.lex(currPos, mode)).type === "'") {
+            while ((token = this.lexer.lex(currPos, mode)).type === "'") {
                 // For each one, add another prime to the list
                 primes.push(prime);
-                currPos = lex.position;
+                currPos = token.position;
             }
             // Put them into an ordgroup as the superscript
             superscript = new ParseNode("ordgroup", primes, mode);
@@ -281,7 +280,6 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
 
     var funcName = start.result.type;
 
-    // TODO: should we handle \\bigl and the other delimiter functions here too?
     if (funcName === "\\left") {
         return this.parseLeftRight(pos, mode);
     } else if (funcName === "\\right") {
@@ -389,7 +387,7 @@ Parser.prototype.parseFunction = function(pos, mode) {
             var argTypes = this.getArgTypes(func, mode);
 
             if (func.numArgs > 0) {
-                var baseGreediness = functions.getGreediness(funcName);
+                var funcGreediness = functions.getGreediness(funcName);
                 var args = [funcName];
                 var positions = [newPos];
                 for (var i = 0; i < func.numArgs; i++) {
@@ -405,12 +403,12 @@ Parser.prototype.parseFunction = function(pos, mode) {
                             this.lexer, newPos);
                     }
 
-                    var argNode;
+                    var argResult;  // ParseResult
                     var argName = arg.result.type;
                     if (arg.result.isFunction && functions.funcs[argName].numArgs > 0) {
                         var argGreediness = functions.getGreediness(argName);
-                        if (argGreediness > baseGreediness) {
-                            argNode = this.parseFunction(newPos, mode);
+                        if (argGreediness > funcGreediness) {
+                            argResult = this.parseFunction(newPos, mode);
                         } else {
                             throw new ParseError(
                                 "Got function '" + argName + "' as " +
@@ -418,11 +416,11 @@ Parser.prototype.parseFunction = function(pos, mode) {
                                 this.lexer, arg.position - 1);
                         }
                     } else {
-                        argNode = arg;
+                        argResult = arg;
                     }
-                    args.push(argNode.result);
-                    positions.push(argNode.position);
-                    newPos = argNode.position;
+                    args.push(argResult.result);
+                    positions.push(argResult.position);
+                    newPos = argResult.position;
                 }
 
                 args.push(positions);

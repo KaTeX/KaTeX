@@ -106,7 +106,7 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
 
     throw new ParseError("Unexpected character: '" + input[0] +
         "'", this, pos);
-}
+};
 
 // A regex to match a CSS color (like #ffffff or BlueViolet)
 var cssColor = /^(#[a-z0-9]+|[a-z]+)/i;
