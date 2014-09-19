@@ -18,6 +18,8 @@ Download the built files from [the releases page](https://github.com/khan/katex/
 <script src="/path/to/katex.min.js" type="text/javascript"></script>
 ```
 
+With the `fonts` directory unpacked/copied to the same location as the `katex.min.css` file.
+
 Call `katex.render` with a TeX expression and a DOM element to render into:
 
 ```js
