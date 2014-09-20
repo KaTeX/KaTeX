@@ -318,8 +318,6 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
  * Parses as \left( ... \right) block and produces a ParseResult containing
  * a "leftright" ParseNode as the result
  *
- * @param {Number} pos
- * @param {String} mode
  * @returns {ParseResult}
  */
 Parser.prototype.parseLeftRight = function (pos, mode) {
@@ -342,7 +340,6 @@ Parser.prototype.parseLeftRight = function (pos, mode) {
 
     if (right && right.type === "\\right") {
         if (utils.contains(functions.delimiters, rightDelim.text)) {
-
             return new ParseResult(
                 new ParseNode("leftright", {
                     body: body.result,
@@ -381,38 +378,14 @@ Parser.prototype.parseFunction = function(pos, mode) {
                     this.lexer, baseGroup.position);
             }
 
-            var newPos = baseGroup.position;
-            var argTypes = this.getArgTypes(func, mode);
             var args = [funcName];
+            var newPos = baseGroup.position;
             var positions = [newPos];
 
-            var funcGreediness = functions.getGreediness(funcName);
-
             for (var i = 0; i < func.numArgs; i++) {
-                var argType = argTypes && argTypes[i];
-                if (argType) {
-                    var arg = this.parseSpecialGroup(newPos, argType, mode);
-                } else {
-                    var arg = this.parseGroup(newPos, mode);
-                }
-                if (!arg) {
-                    throw new ParseError(
-                            "Expected group after '" + funcName + "'",
-                        this.lexer, newPos);
-                }
+                var argType = func.argTypes && func.argTypes[i];
+                var arg = this.parseArgument(newPos, mode, funcName, argType);
 
-                var argName = arg.result.type;
-                if (arg.result.isFunction && functions.funcs[argName].numArgs > 0) {
-                    var argGreediness = functions.getGreediness(argName);
-                    if (argGreediness > funcGreediness) {
-                        arg = this.parseFunction(newPos, mode);
-                    } else {
-                        throw new ParseError(
-                                "Got function '" + argName + "' as " +
-                                "argument to function '" + funcName + "'",
-                            this.lexer, arg.position - 1);
-                    }
-                }
                 args.push(arg.result);
                 positions.push(arg.position);
                 newPos = arg.position;
@@ -431,30 +404,68 @@ Parser.prototype.parseFunction = function(pos, mode) {
 };
 
 /**
+ * Parses an argument.
+ *
+ * @returns {?ParseResult}
+ */
+Parser.prototype.parseArgument = function (pos, mode, funcName, argType) {
+    var arg;
+
+    if (argType) {
+        arg = this.parseSpecialGroup(pos, argType, mode);
+    } else {
+        arg = this.parseGroup(pos, mode);
+    }
+    if (!arg) {
+        throw new ParseError("Expected group after '" + funcName + "'",
+            this.lexer, pos);
+    }
+
+    var argName = arg.result.type;
+    if (arg.result.isFunction && functions.funcs[argName].numArgs > 0) {
+        var argGreediness = functions.getGreediness(argName);
+        var funcGreediness = functions.getGreediness(funcName);
+
+        if (argGreediness > funcGreediness) {
+            arg = this.parseFunction(pos, mode);
+        } else {
+            throw new ParseError(
+                    "Got function '" + argName + "' as " +
+                    "argument to function '" + funcName + "'",
+                this.lexer, arg.position - 1);
+        }
+    }
+
+    return arg;
+};
+
+/**
  * Parses a group when the mode is changing. Takes a position, a new mode, and
  * an outer mode that is used to parse the outside.
  *
  * @return {?ParseResult}
  */
-Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
-    if (mode === "color" || mode === "size") {
+Parser.prototype.parseSpecialGroup = function(pos, argType, mode) {
+    if (argType === "color" || argType === "size") {
         // color and size modes are special because they should have braces and
         // should only lex a single symbol inside
-        var openBrace = this.lexer.lex(pos, outerMode);
+        var openBrace = this.lexer.lex(pos, mode);
         this.expect(openBrace, "{");
-        var inner = this.lexer.lex(openBrace.position, mode);
-        var closeBrace = this.lexer.lex(inner.position, outerMode);
+        var inner = this.lexer.lex(openBrace.position, argType);
+        var closeBrace = this.lexer.lex(inner.position, mode);
         this.expect(closeBrace, "}");
 
-        var node = new ParseNode("color", inner.text, outerMode);
+        var node = new ParseNode("color", inner.text, mode);
         return new ParseResult(node, closeBrace.position);
-    } else if (mode === "text") {
+    } else if (argType === "text") {
         // text mode is special because it should ignore the whitespace before
         // it
         var whitespace = this.lexer.lex(pos, "whitespace");
-        return this.parseGroup(whitespace.position, mode);
-    } else {
+        return this.parseGroup(whitespace.position, argType);
+    } else if (argType === "original") {
         return this.parseGroup(pos, mode);
+    } else {
+        throw new ParseError("Can't handle arguments of type '" + argType + "'");
     }
 };
 
@@ -505,20 +516,6 @@ Parser.prototype.parseSymbol = function(pos, mode) {
     } else {
         return null;
     }
-};
-
-// Here, we replace "original" argTypes with the current mode
-Parser.prototype.getArgTypes = function (func, mode) {
-    var argTypes = func.argTypes;
-    if (argTypes) {
-        argTypes = argTypes.slice();
-        for (var i = 0; i < argTypes.length; i++) {
-            if (argTypes[i] === "original") {
-                argTypes[i] = mode;
-            }
-        }
-    }
-    return argTypes;
 };
 
 module.exports = Parser;
