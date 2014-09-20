@@ -382,54 +382,44 @@ Parser.prototype.parseFunction = function(pos, mode) {
             }
 
             var newPos = baseGroup.position;
-            var result;
-
             var argTypes = this.getArgTypes(func, mode);
+            var args = [funcName];
+            var positions = [newPos];
 
-            if (func.numArgs > 0) {
-                var funcGreediness = functions.getGreediness(funcName);
-                var args = [funcName];
-                var positions = [newPos];
-                for (var i = 0; i < func.numArgs; i++) {
-                    var argType = argTypes && argTypes[i];
-                    if (argType) {
-                        var arg = this.parseSpecialGroup(newPos, argType, mode);
-                    } else {
-                        var arg = this.parseGroup(newPos, mode);
-                    }
-                    if (!arg) {
-                        throw new ParseError(
+            var funcGreediness = functions.getGreediness(funcName);
+
+            for (var i = 0; i < func.numArgs; i++) {
+                var argType = argTypes && argTypes[i];
+                if (argType) {
+                    var arg = this.parseSpecialGroup(newPos, argType, mode);
+                } else {
+                    var arg = this.parseGroup(newPos, mode);
+                }
+                if (!arg) {
+                    throw new ParseError(
                             "Expected group after '" + funcName + "'",
-                            this.lexer, newPos);
-                    }
-
-                    var argResult;  // ParseResult
-                    var argName = arg.result.type;
-                    if (arg.result.isFunction && functions.funcs[argName].numArgs > 0) {
-                        var argGreediness = functions.getGreediness(argName);
-                        if (argGreediness > funcGreediness) {
-                            argResult = this.parseFunction(newPos, mode);
-                        } else {
-                            throw new ParseError(
-                                "Got function '" + argName + "' as " +
-                                    "argument to function '" + funcName + "'",
-                                this.lexer, arg.position - 1);
-                        }
-                    } else {
-                        argResult = arg;
-                    }
-                    args.push(argResult.result);
-                    positions.push(argResult.position);
-                    newPos = argResult.position;
+                        this.lexer, newPos);
                 }
 
-                args.push(positions);
-
-                result = functions.funcs[funcName].handler.apply(this, args);
-            } else {
-                result = functions.funcs[funcName].handler.apply(this, [funcName]);
+                var argName = arg.result.type;
+                if (arg.result.isFunction && functions.funcs[argName].numArgs > 0) {
+                    var argGreediness = functions.getGreediness(argName);
+                    if (argGreediness > funcGreediness) {
+                        arg = this.parseFunction(newPos, mode);
+                    } else {
+                        throw new ParseError(
+                                "Got function '" + argName + "' as " +
+                                "argument to function '" + funcName + "'",
+                            this.lexer, arg.position - 1);
+                    }
+                }
+                args.push(arg.result);
+                positions.push(arg.position);
+                newPos = arg.position;
             }
+            args.push(positions);
 
+            var result = func.handler.apply(this, args);
             var node = new ParseNode(result.type, result, mode);
             return new ParseResult(node, newPos);
         } else {
