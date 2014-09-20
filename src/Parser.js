@@ -281,7 +281,7 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
     var funcName = start.result.type;
 
     if (funcName === "\\left") {
-        return this.parseLeftRight(pos, mode);
+        return this.parseLeftRight(pos, mode, funcName);
     } else if (funcName === "\\right") {
         // If we see a right, explicitly fail the parsing here so the \left
         // handling ends the group
@@ -320,14 +320,15 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
  *
  * @returns {ParseResult}
  */
-Parser.prototype.parseLeftRight = function (pos, mode) {
+Parser.prototype.parseLeftRight = function (pos, mode, funcName) {
     var left = this.lexer.lex(pos, mode);
     var leftDelim = this.lexer.lex(left.position, mode);
 
     if (!utils.contains(functions.delimiters, leftDelim.text)) {
+        // TODO: write a test for this failure mode
         throw new ParseError(
                 "Invalid delimiter: '" + leftDelim.text + "' after '" +
-                func + "'",
+                funcName + "'",
             this.lexer, leftDelim.position);
     }
 
@@ -348,9 +349,10 @@ Parser.prototype.parseLeftRight = function (pos, mode) {
                 }, mode),
                 rightDelim.position);
         } else {
+            // TODO: write a test for this failure mode
             throw new ParseError(
                     "Invalid delimiter: '" + rightDelim.text + "' after '" +
-                    func + "'",
+                    funcName + "'",
                 this.lexer, rightDelim.position);
         }
     } else {
