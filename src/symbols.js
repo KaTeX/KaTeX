@@ -137,6 +137,26 @@ var symbols = {
             group: "textord",
             replace: "\u2205"
         },
+        "\\R": {
+            font: "ams",
+            group: "textord",
+            replace: "\u211d"
+        },
+        "\\Z": {
+            font: "ams",
+            group: "textord",
+            replace: "\u2124"
+        },
+        "\\Q": {
+            font: "ams",
+            group: "textord",
+            replace: "\u211a"
+        },
+        "\\N": {
+            font: "ams",
+            group: "textord",
+            replace: "\u2115"
+        },
         "\\varnothing": {
             font: "ams",
             group: "textord",
@@ -440,6 +460,11 @@ var symbols = {
             font: "main",
             group: "rel",
             replace: "\u2245"
+        },
+        "\\parallel": {
+            font: "main",
+            group: "rel",
+            replace: "\u2225"
         },
         "\\ge": {
             font: "main",
