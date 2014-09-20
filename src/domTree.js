@@ -58,6 +58,10 @@ span.prototype.toNode = function() {
         span.appendChild(this.children[i].toNode());
     }
 
+    if (this.id) {
+        span.setAttribute("id", this.id);
+    }
+
     return span;
 };
 

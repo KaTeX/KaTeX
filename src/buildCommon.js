@@ -105,6 +105,16 @@ var makeSpan = function(classes, children, color) {
     return span;
 };
 
+var makeSpanWithId = function(children, id) {
+    var span = makeSpan([], children);
+
+    if (id) {
+        span.id = id;
+    }
+
+    return span;
+};
+
 /**
  * Makes a document fragment with the given list of children.
  */
@@ -264,6 +274,7 @@ module.exports = {
     mathit: mathit,
     mathrm: mathrm,
     makeSpan: makeSpan,
+    makeSpanWithId: makeSpanWithId,
     makeFragment: makeFragment,
     makeVList: makeVList
 };
