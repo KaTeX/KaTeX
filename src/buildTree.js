@@ -264,10 +264,13 @@ var groupTypes = {
             elements[0].id = group.value.id;
             return elements[0];
         } else {
-            throw new Error("\\cssId with a body that contains multiple atoms" +
-                "will produce incorrect spacing");
-            // TODO: need to set the class on the span based on the last child/atom
-//            return buildCommon.makeSpanWithId(elements, group.value.id);
+            var classes = [];
+            if (elements.length > 1) {
+                var lastChild = elements[elements.length - 1];
+                classes = lastChild.classes.slice(0);
+            }
+            classes.push(options.style.cls());
+            return buildCommon.makeSpanWithId(classes, elements, group.value.id);
         }
     },
 

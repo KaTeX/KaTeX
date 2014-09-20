@@ -105,8 +105,11 @@ var makeSpan = function(classes, children, color) {
     return span;
 };
 
-var makeSpanWithId = function(children, id) {
-    var span = makeSpan([], children);
+// TODO: combine with makeSpan and make third param be an options dictionary?
+var makeSpanWithId = function(classes, children, id) {
+    var span = new domTree.span(classes, children);
+
+    sizeElementFromChildren(span);
 
     if (id) {
         span.id = id;
