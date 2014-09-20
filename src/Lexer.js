@@ -131,6 +131,27 @@ Lexer.prototype._innerLexColor = function(pos) {
     }
 };
 
+var cssIdRegex = /^([a-z\-\_][a-z0-9\-\_]*)/i;
+
+/**
+ * This function lexes a CSS id.
+ */
+Lexer.prototype._innerLexCssId = function(pos) {
+    var input = this._input.slice(pos);
+
+    // Ignore whitespace
+    var whitespace = input.match(whitespaceRegex)[0];
+    pos += whitespace.length;
+    input = input.slice(whitespace.length);
+
+    var match;
+    if ((match = input.match(cssIdRegex))) {
+        return new LexResult("cssId", match[0], pos + match[0].length);
+    } else {
+        throw new ParseError("Invalid id", this, pos);
+    }
+};
+
 // A regex to match a dimension. Dimensions look like
 // "1.2em" or ".4pt" or "1 ex"
 var sizeRegex = /^(\d+(?:\.\d*)?|\.\d+)\s*([a-z]{2})/;
@@ -185,6 +206,8 @@ Lexer.prototype.lex = function(pos, mode) {
         return this._innerLex(pos, textNormals, false);
     } else if (mode === "color") {
         return this._innerLexColor(pos);
+    } else if (mode === "cssId") {
+        return this._innerLexCssId(pos);
     } else if (mode === "size") {
         return this._innerLexSize(pos);
     } else if (mode === "whitespace") {
