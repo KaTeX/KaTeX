@@ -27,7 +27,15 @@ function init() {
     reprocess();
 
     function reprocess() {
-        katex.render(input.value, math);
+        try {
+            katex.render(input.value, math);
+        } catch (e) {
+            if (e.__proto__ == katex.ParseError.prototype) {
+                console.error(e);
+            } else {
+                throw e;
+            }
+        }
     }
 }
 
