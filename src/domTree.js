@@ -58,6 +58,10 @@ span.prototype.toNode = function() {
         span.appendChild(this.children[i].toNode());
     }
 
+    if (this.id) {
+        span.setAttribute("id", this.id);
+    }
+
     return span;
 };
 
@@ -72,6 +76,10 @@ span.prototype.toMarkup = function() {
         markup += " class=\"";
         markup += utils.escape(createClass(this.classes));
         markup += "\"";
+    }
+
+    if (this.id) {
+        markup += " id=\"" + this.id + "\"";
     }
 
     var styles = "";
@@ -182,6 +190,10 @@ symbolNode.prototype.toNode = function() {
         }
     }
 
+    if (this.id) {
+        span.setAttribute("id", this.id);
+    }
+
     if (span) {
         span.appendChild(node);
         return span;
@@ -205,6 +217,10 @@ symbolNode.prototype.toMarkup = function() {
         markup += " class=\"";
         markup += utils.escape(createClass(this.classes));
         markup += "\"";
+    }
+
+    if (this.id) {
+        markup += " id=\"" + this.id + "\"";
     }
 
     var styles = "";

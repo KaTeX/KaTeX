@@ -106,7 +106,7 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
 
     throw new ParseError("Unexpected character: '" + input[0] +
         "'", this, pos);
-}
+};
 
 // A regex to match a CSS color (like #ffffff or BlueViolet)
 var cssColor = /^(#[a-z0-9]+|[a-z]+)/i;
@@ -128,6 +128,27 @@ Lexer.prototype._innerLexColor = function(pos) {
         return new LexResult("color", match[0], pos + match[0].length);
     } else {
         throw new ParseError("Invalid color", this, pos);
+    }
+};
+
+var cssIdRegex = /^([a-z\-\_][a-z0-9\-\_]*)/i;
+
+/**
+ * This function lexes a CSS id.
+ */
+Lexer.prototype._innerLexCssId = function(pos) {
+    var input = this._input.slice(pos);
+
+    // Ignore whitespace
+    var whitespace = input.match(whitespaceRegex)[0];
+    pos += whitespace.length;
+    input = input.slice(whitespace.length);
+
+    var match;
+    if ((match = input.match(cssIdRegex))) {
+        return new LexResult("cssId", match[0], pos + match[0].length);
+    } else {
+        throw new ParseError("Invalid id", this, pos);
     }
 };
 
@@ -185,6 +206,8 @@ Lexer.prototype.lex = function(pos, mode) {
         return this._innerLex(pos, textNormals, false);
     } else if (mode === "color") {
         return this._innerLexColor(pos);
+    } else if (mode === "cssId") {
+        return this._innerLexCssId(pos);
     } else if (mode === "size") {
         return this._innerLexSize(pos);
     } else if (mode === "whitespace") {

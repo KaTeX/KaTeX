@@ -586,6 +586,93 @@ describe("A color parser", function() {
     });
 });
 
+describe("A cssId parser", function () {
+    var cssIdExpressionWithGroup = "\\cssId{_id_1-a}{1+2}";
+    var cssIdExpressionWithAtom = "\\cssId{id_1-a}\\frac{1}{x}";
+    var badCssIdExpression = "\\cssId{\\theta}{1+2}";
+
+    it("should not fail", function () {
+        expect(cssIdExpressionWithGroup).toParse();
+        expect(cssIdExpressionWithAtom).toParse();
+    });
+
+    it("should build a cssId node", function () {
+        var node = parseTree(cssIdExpressionWithGroup)[0];
+
+        expect(node.type).toMatch("cssId");
+        expect(node.value.id).toMatch("_id_1-a");
+        expect(node.value.value).toBeDefined();
+    });
+
+    it("should parse a group body", function () {
+        var node = parseTree(cssIdExpressionWithGroup)[0];
+
+        var inner = node.value.value;
+        expect(inner.length).toBe(3);
+        expect(inner[0].type).toMatch("textord");
+        expect(inner[1].type).toMatch("bin");
+        expect(inner[2].type).toMatch("textord");
+    });
+
+    it("should parse an atom body", function () {
+        var node = parseTree(cssIdExpressionWithAtom)[0];
+
+        var inner = node.value.value;
+        expect(inner.length).toBe(1);
+        expect(inner[0].type).toMatch("frac");
+    });
+
+    it("should not parse a id", function () {
+        expect(badCssIdExpression).toNotParse();
+    });
+});
+
+describe("A cssId tree-builder", function () {
+    it("should render a number with an id", function () {
+        var tree = parseTree("\\cssId{id1}{1}");
+        var markup = buildTree(tree).toMarkup();
+        expect(markup.indexOf('id="id1"')).not.toBe(-1);
+    });
+
+    it("should render a symbol with an id", function () {
+        var tree = parseTree("\\cssId{id1}\\pi");
+        var markup = buildTree(tree).toMarkup();
+        expect(markup.indexOf('id="id1"')).not.toBe(-1);
+    });
+
+    it("should render a variable with an id", function () {
+        var tree = parseTree("\\cssId{id1}x");
+        var markup = buildTree(tree).toMarkup();
+        expect(markup.indexOf('id="id1"')).not.toBe(-1);
+    });
+
+    it("should render an operator with an id", function () {
+        var tree = parseTree("\\cssId{id1}+");
+        var markup = buildTree(tree).toMarkup();
+        expect(markup.indexOf('id="id1"')).not.toBe(-1);
+    });
+
+    it("should render a relationship with an id", function () {
+        var tree = parseTree("\\cssId{id1}>");
+        var markup = buildTree(tree).toMarkup();
+        expect(markup.indexOf('id="id1"')).not.toBe(-1);
+    });
+
+    it("should render the numerator and denomator with different ids", function () {
+        var tree = parseTree("\\frac{\\cssId{numer}{x}}{\\cssId{denom}{x+1}}");
+        var markup = buildTree(tree).toMarkup();
+        expect(markup.indexOf('id="numer"')).not.toBe(-1);
+        expect(markup.indexOf('id="denom"')).not.toBe(-1);
+    });
+
+    it("should render a function with unique id and not its children", function () {
+        var tree = parseTree("\\cssId{id1}{\\frac{x}{x+1}}");
+        var markup = buildTree(tree).toMarkup();
+        var matches = markup.match(/id="id1"/g);
+        expect(matches.length).toBe(1);
+    });
+});
+
 describe("A tie parser", function() {
     var mathTie = "a~b";
     var textTie = "\\text{a~ b}";
