@@ -10,4 +10,4 @@ RUN echo "java -jar /selenium-server-standalone-2.42.2.jar > /dev/null &" >> ~/r
 RUN echo "Xvfb :1 2> /dev/null &" >> ~/run.sh
 RUN echo "make -C /KaTeX serve > /dev/null &" >> ~/run.sh
 RUN echo "sleep 2" >> ~/run.sh
-RUN echo "/KaTeX/node_modules/.bin/hux --update /KaTeX/test/huxley/" >> ~/run.sh
+RUN echo "/KaTeX/node_modules/.bin/hux --write /KaTeX/test/huxley/" >> ~/run.sh
