@@ -474,6 +474,94 @@ describe("A frac parser", function() {
     });
 });
 
+describe("An over parser", function() {
+    var simpleOver = "1 \\over x";
+    var complexOver = "1+2i \\over 3+4i";
+
+    it("should not fail", function () {
+        expect(simpleOver).toParse();
+        expect(complexOver).toParse();
+    });
+
+    it("should produce a frac", function() {
+        var parse;
+
+        parse = parseTree(simpleOver)[0];
+
+        expect(parse.type).toMatch("frac");
+        expect(parse.value.numer).toBeDefined();
+        expect(parse.value.denom).toBeDefined();
+
+        parse = parseTree(complexOver)[0];
+
+        expect(parse.type).toMatch("frac");
+        expect(parse.value.numer).toBeDefined();
+        expect(parse.value.denom).toBeDefined();
+    });
+
+    it("should create a numerator from the atoms before \\over", function () {
+        var parse = parseTree(complexOver)[0];
+
+        var numer = parse.value.numer;
+        expect(numer.value.length).toEqual(4);
+    });
+
+    it("should create a demonimator from the atoms after \\over", function () {
+        var parse = parseTree(complexOver)[0];
+
+        var denom = parse.value.numer;
+        expect(denom.value.length).toEqual(4);
+    });
+
+    it("should handle empty numerators", function () {
+        var emptyNumerator = "\\over x";
+        expect(emptyNumerator).toParse();
+
+        var parse = parseTree(emptyNumerator)[0];
+        expect(parse.type).toMatch("frac");
+        expect(parse.value.numer).toBeDefined();
+        expect(parse.value.denom).toBeDefined();
+    });
+
+    it("should handle empty denominators", function () {
+        var emptyDenominator = "1 \\over";
+        expect(emptyDenominator).toParse();
+
+        var parse = parseTree(emptyDenominator)[0];
+        expect(parse.type).toMatch("frac");
+        expect(parse.value.numer).toBeDefined();
+        expect(parse.value.denom).toBeDefined();
+    });
+
+    it("should handle \\displaystyle correctly", function () {
+        var displaystyleExpression = "\\displaystyle 1 \\over 2";
+        expect(displaystyleExpression).toParse();
+
+        var parse = parseTree(displaystyleExpression)[0];
+        expect(parse.type).toMatch("frac");
+        expect(parse.value.numer.value[0].type).toMatch("styling");
+        expect(parse.value.denom).toBeDefined();
+    });
+
+    it("should handle nested factions", function () {
+        var nestedOverExpression = "{1 \\over 2} \\over 3";
+        expect(nestedOverExpression).toParse();
+
+        var parse = parseTree(nestedOverExpression)[0];
+        expect(parse.type).toMatch("frac");
+        expect(parse.value.numer.value[0].type).toMatch("frac");
+        expect(parse.value.numer.value[0].value.numer.value[0].value).toMatch(1);
+        expect(parse.value.numer.value[0].value.denom.value[0].value).toMatch(2);
+        expect(parse.value.denom).toBeDefined();
+        expect(parse.value.denom.value[0].value).toMatch(3);
+    });
+
+    it("should fail with multiple overs in the same group", function () {
+        var badMultipleOvers = "1 \\over 2 + 3 \\over 4";
+        expect(badMultipleOvers).toNotParse();
+    });
+});
+
 describe("A sizing parser", function() {
     var sizeExpression = "\\Huge{x}\\small{x}";
     var nestedSizeExpression = "\\Huge{\\small{x}}";
