@@ -10,13 +10,10 @@ build/katex.js: katex.js $(wildcard src/*.js)
 build/katex.min.js: build/katex.js
 	./node_modules/.bin/uglifyjs --mangle < $< > $@
 
-build/katex.less.css: static/katex.less
-	./node_modules/.bin/lessc $< > $@
+build/%.less.css: static/%.less
+	./node_modules/.bin/lessc $< $@
 
-build/katex.css: build/katex.less.css static/fonts.css
-	cat $^ > $@
-
-build/katex.min.css: build/katex.css
+build/katex.min.css: build/katex.less.css
 	./node_modules/.bin/cleancss -o $@ $<
 
 .PHONY: build/fonts

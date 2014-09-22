@@ -30,13 +30,20 @@ app.get("/katex.css", function(req, res, next) {
             next(err);
             return;
         }
-        less.render(data, function(err, css) {
+
+        var parser = new less.Parser({
+            paths: ["./static"],
+            filename: "katex.less"
+        });
+
+        parser.parse(data, function(err, tree) {
             if (err) {
                 next(err);
                 return;
             }
+
             res.setHeader("Content-Type", "text/css");
-            res.send(css);
+            res.send(tree.toCSS());
         });
     });
 });

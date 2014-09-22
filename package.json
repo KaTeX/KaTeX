@@ -16,7 +16,7 @@
     "devDependencies": {
         "browserify": "~2.29.1",
         "express": "~3.3.3",
-        "less": "~1.4.2",
+        "less": "~1.7.5",
         "uglify-js": "~2.4.15",
         "clean-css": "~2.2.15",
         "huxley": "~0.8.1",
