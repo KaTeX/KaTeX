@@ -743,8 +743,8 @@ var groupTypes = {
         }
 
         // Shift the delimiter so that its top lines up with the top of the line
-        delimShift = -(inner.height + lineClearance + ruleWidth) + delim.height;
-        delim.style.top = delimShift + "em";
+        var delimShift = -(inner.height + lineClearance + ruleWidth) + delim.height;
+        delim.style.top = (delimShift + line.height / 2) + "em";
         delim.height -= delimShift;
         delim.depth += delimShift;
 
