@@ -1,5 +1,5 @@
 /**
- * This file does the main work of building a domTree sturcture from a parse
+ * This file does the main work of building a domTree structure from a parse
  * tree. The entry point is the `buildTree` function, which takes a parse tree.
  * Then, the buildExpression, buildGroup, and various groupTypes functions are
  * called, to produce a final tree.
