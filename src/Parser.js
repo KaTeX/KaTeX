@@ -441,6 +441,28 @@ Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
                 new ParseNode("color", inner.text, outerMode),
                 closeBrace.position),
             false);
+    }
+    else if (mode === "raw") {
+        var start = this.lexer.lex(pos, outerMode);
+        if (start.type === "{") {
+            var openBrace = start;
+            var inner = this.lexer.lex(openBrace.position, mode);
+            console.log(inner);
+            var closeBrace = this.lexer.lex(inner.position, outerMode);
+            return new ParseFuncOrArgument(
+                new ParseResult(
+                    new ParseNode("raw", inner.text, outerMode),
+                    closeBrace.position),
+                false);
+        }
+        else {
+            var inner = this.lexer.lex(start.position-1, "math");
+            return new ParseFuncOrArgument(
+                new ParseResult(
+                    new ParseNode("raw", inner.text, outerMode),
+                    start.position),
+                false);
+        }
     } else if (mode === "text") {
         // text mode is special because it should ignore the whitespace before
         // it

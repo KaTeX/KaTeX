@@ -171,6 +171,12 @@ var groupTypes = {
             group.value, group.mode, options.getColor(), ["mord"]);
     },
 
+    mathbb: function(group, options, prev) {
+        var rawString = group.value.body.value;
+        var metrics = fontMetrics.getCharacterMetrics(rawString, "AMS-Regular");
+        return new domTree.symbolNode(rawString, metrics.height, metrics.depth, metrics.italic, metrics.skew, ["amsrm"]);
+    },
+
     bin: function(group, options, prev) {
         var className = "mbin";
         // Pull out the most recent element. Do some special handling to find
