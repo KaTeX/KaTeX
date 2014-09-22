@@ -29,6 +29,8 @@ function ParseError(message, lexer, position) {
     var self = new Error(error);
     self.name = "ParseError";
     self.__proto__ = ParseError.prototype;
+
+    self.position = position;
     return self;
 }
 

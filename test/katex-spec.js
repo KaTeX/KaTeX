@@ -1040,3 +1040,13 @@ describe("An accent builder", function() {
         expect(getBuilt("\\vec )^2")[0].classes).not.toContain("mclose");
     });
 });
+
+describe("A parser error", function () {
+    it("should report the position of an error", function () {
+        try {
+            parseTree("\\sqrt}");
+        } catch (e) {
+            expect(e.position).toEqual(5);
+        }
+    });
+});
