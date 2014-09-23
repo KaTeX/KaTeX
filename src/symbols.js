@@ -467,7 +467,7 @@ var symbols = {
             replace: "\u21dd"
         },
         "\\mapsto": {
-            font: "main",
+            font: "ams",
             group: "rel",
             replace: "\u21a6"
         },
