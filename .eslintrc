@@ -1,0 +1,19 @@
+{
+    "env": {
+        "node": true
+    },
+
+    "rules": {
+        "brace-style": [2, "1tbs"],
+        "default-case": 2,
+        "guard-for-in": 2,
+        "space-after-keywords": [2, "always"],
+        "strict": 0,
+        "dot-notation": 0,
+        "new-cap": 0,
+        "no-underscore-dangle": 0,
+        "quotes": [2, "double"],
+        "no-constant-condition": 0,
+        "no-redeclare": 0
+    }
+}

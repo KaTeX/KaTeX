@@ -48,6 +48,9 @@ compress: build/katex.min.js build/katex.min.css
 serve:
 	node server.js
 
+lint:
+	./node_modules/eslint/bin/eslint.js src
+
 test:
 	./node_modules/.bin/jasmine-node test/katex-spec.js
 

@@ -27,9 +27,11 @@ var makeSymbol = function(value, style, mode, color, classes) {
             classes);
     } else {
         // TODO(emily): Figure out a good way to only print this in development
-        typeof console !== "undefined" && console.warn(
-            "No character metrics for '" + value + "' in style '" +
-                style + "'");
+        if (typeof console !== "undefined") {
+            console.warn(
+                    "No character metrics for '" + value + "' in style '" +
+                    style + "'");
+        }
         symbolNode = new domTree.symbolNode(value, 0, 0, 0, 0, classes);
     }
 

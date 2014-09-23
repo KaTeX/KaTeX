@@ -46,7 +46,7 @@ var ParseError = require("./ParseError");
 function Parser(input) {
     // Make a new lexer
     this.lexer = new Lexer(input);
-};
+}
 
 /**
  * The resulting parse tree nodes of the parse tree.
@@ -99,7 +99,7 @@ Parser.prototype.expect = function(result, type) {
  *
  * @return {?Array.<ParseNode>}
  */
-Parser.prototype.parse = function(input) {
+Parser.prototype.parse = function() {
     // Try to parse the input
     var parse = this.parseInput(0, "math");
     return parse.result;
@@ -204,7 +204,6 @@ Parser.prototype.parseAtom = function(pos, mode) {
         // Lex the first token
         var lex = this.lexer.lex(currPos, mode);
 
-        var group;
         if (lex.type === "^") {
             // We got a superscript start
             if (superscript) {

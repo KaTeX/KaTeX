@@ -1,3 +1,4 @@
+/*eslint no-regex-spaces:0 */
 /**
  * The Lexer class handles tokenizing the input in various ways. Since our
  * parser expects us to be able to backtrack, the lexer allows lexing from any
@@ -16,7 +17,7 @@ var ParseError = require("./ParseError");
 // The main lexer class
 function Lexer(input) {
     this._input = input;
-};
+}
 
 // The resulting token returned from `lex`.
 function LexResult(type, text, position) {
@@ -106,7 +107,7 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
 
     throw new ParseError("Unexpected character: '" + input[0] +
         "'", this, pos);
-}
+};
 
 // A regex to match a CSS color (like #ffffff or BlueViolet)
 var cssColor = /^(#[a-z0-9]+|[a-z]+)/i;

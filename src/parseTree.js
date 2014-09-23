@@ -12,6 +12,6 @@ var parseTree = function(toParse) {
     var parser = new Parser(toParse);
 
     return parser.parse();
-}
+};
 
 module.exports = parseTree;
