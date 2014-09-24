@@ -12,7 +12,6 @@
  */
 
 var Token = require("./Token");
-var extensions = require("./extensions");
 var ParseError = require("./ParseError");
 
 // The main lexer class
@@ -188,25 +187,29 @@ var innerLexers = {
 /**
  * This function lexes a single token starting at `pos` and of the given mode.
  * Based on the mode, we defer to one of the `_innerLex` functions.
+ *
+ * @param {Number} pos
+ * @param {String} mode
+ * @return {Token}
  */
 Lexer.prototype.lex = function(pos, mode) {
-    if (mode instanceof Function) {
-        return mode.call(this, pos);
-    }
-
     if (innerLexers.hasOwnProperty(mode)) {
         return innerLexers[mode].call(this, pos, mode);
     }
-
-    for (var i = 0; i < extensions.exts.length; i++) {
-        var ext = extensions.exts[i];
-        if (ext.mode === mode && ext.lexer) {
-            return ext.lexer.call(this, pos);
-        }
-    }
-
-    throw new ParseError("The '" + mode + "' is not supported yet",
+    throw new ParseError("The '" + mode + "' is not supported.",
         this, pos);
+};
+
+/**
+ * This function lexes a single token start at `pos` using the given custom
+ * lexer.
+ *
+ * @param {Number} pos
+ * @param {Function} lexer
+ * @returns {Token}
+ */
+Lexer.prototype.lexWithCustomLexer = function(pos, lexer) {
+    return lexer.call(this, pos);
 };
 
 module.exports = Lexer;

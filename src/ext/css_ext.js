@@ -33,7 +33,8 @@ var CssExtension = {
         if (mode === "css") {
             var openBrace = this.lexer.lex(pos, outerMode);
             this.expect(openBrace, "{");
-            var inner = this.lexer.lex(openBrace.position, cssLexer);
+            var inner = this.lexer.lexWithCustomLexer(
+                openBrace.position, cssLexer);
             var closeBrace = this.lexer.lex(inner.position, outerMode);
             this.expect(closeBrace, "}");
 
