@@ -20,14 +20,11 @@
  * used in `\left` and `\right`.
  */
 
-var Options = require("./Options");
 var ParseError = require("./ParseError");
 var Style = require("./Style");
 
 var buildCommon = require("./buildCommon");
-var domTree = require("./domTree");
 var fontMetrics = require("./fontMetrics");
-var parseTree = require("./parseTree");
 var symbols = require("./symbols");
 var utils = require("./utils");
 

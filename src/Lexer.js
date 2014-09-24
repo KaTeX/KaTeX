@@ -11,18 +11,13 @@
  * kinds.
  */
 
+var Token = require("./Token");
+var extensions = require("./extensions");
 var ParseError = require("./ParseError");
 
 // The main lexer class
 function Lexer(input) {
     this._input = input;
-};
-
-// The resulting token returned from `lex`.
-function LexResult(type, text, position) {
-    this.type = type;
-    this.text = text;
-    this.position = position;
 }
 
 // "normal" types of tokens. These are tokens which can be matched by a simple
@@ -77,19 +72,19 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
         // Do the funky concatenation of whitespace that happens in text mode.
         var whitespace = input.match(whitespaceConcatRegex);
         if (whitespace !== null) {
-            return new LexResult(" ", " ", pos + whitespace[0].length);
+            return new Token(" ", " ", pos + whitespace[0].length);
         }
     }
 
     // If there's no more input to parse, return an EOF token
     if (input.length === 0) {
-        return new LexResult("EOF", null, pos);
+        return new Token("EOF", null, pos);
     }
 
     var match;
     if ((match = input.match(anyFunc))) {
         // If we match a function token, return it
-        return new LexResult(match[0], match[0], pos + match[0].length);
+        return new Token(match[0], match[0], pos + match[0].length);
     } else {
         // Otherwise, we look through the normal token regexes and see if it's
         // one of them.
@@ -98,7 +93,7 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
 
             if ((match = input.match(normal[0]))) {
                 // If it is, return it
-                return new LexResult(
+                return new Token(
                     normal[1], match[0], pos + match[0].length);
             }
         }
@@ -125,30 +120,9 @@ Lexer.prototype._innerLexColor = function(pos) {
     var match;
     if ((match = input.match(cssColor))) {
         // If we look like a color, return a color
-        return new LexResult("color", match[0], pos + match[0].length);
+        return new Token("color", match[0], pos + match[0].length);
     } else {
         throw new ParseError("Invalid color", this, pos);
-    }
-};
-
-var cssIdRegex = /^([a-z\-\_][a-z0-9\-\_]*)/i;
-
-/**
- * This function lexes a CSS id.
- */
-Lexer.prototype._innerLexCssId = function(pos) {
-    var input = this._input.slice(pos);
-
-    // Ignore whitespace
-    var whitespace = input.match(whitespaceRegex)[0];
-    pos += whitespace.length;
-    input = input.slice(whitespace.length);
-
-    var match;
-    if ((match = input.match(cssIdRegex))) {
-        return new LexResult("cssId", match[0], pos + match[0].length);
-    } else {
-        throw new ParseError("Invalid id", this, pos);
     }
 };
 
@@ -174,7 +148,7 @@ Lexer.prototype._innerLexSize = function(pos) {
         if (unit !== "em" && unit !== "ex") {
             throw new ParseError("Invalid unit: '" + unit + "'", this, pos);
         }
-        return new LexResult("size", {
+        return new Token("size", {
                 number: +match[1],
                 unit: unit
             }, pos + match[0].length);
@@ -192,7 +166,23 @@ Lexer.prototype._innerLexWhitespace = function(pos) {
     var whitespace = input.match(whitespaceRegex)[0];
     pos += whitespace.length;
 
-    return new LexResult("whitespace", whitespace, pos);
+    return new Token("whitespace", whitespace, pos);
+};
+
+Lexer.prototype._innerLexMath = function(pos) {
+    return this._innerLex(pos, mathNormals, true);
+};
+
+Lexer.prototype._innerLexText = function(pos) {
+    return this._innerLex(pos, textNormals, false);
+};
+
+var innerLexers = {
+    math: Lexer.prototype._innerLexMath,
+    text: Lexer.prototype._innerLexText,
+    color: Lexer.prototype._innerLexColor,
+    size: Lexer.prototype._innerLexSize,
+    whitespace: Lexer.prototype._innerLexWhitespace
 };
 
 /**
@@ -200,19 +190,19 @@ Lexer.prototype._innerLexWhitespace = function(pos) {
  * Based on the mode, we defer to one of the `_innerLex` functions.
  */
 Lexer.prototype.lex = function(pos, mode) {
-    if (mode === "math") {
-        return this._innerLex(pos, mathNormals, true);
-    } else if (mode === "text") {
-        return this._innerLex(pos, textNormals, false);
-    } else if (mode === "color") {
-        return this._innerLexColor(pos);
-    } else if (mode === "cssId") {
-        return this._innerLexCssId(pos);
-    } else if (mode === "size") {
-        return this._innerLexSize(pos);
-    } else if (mode === "whitespace") {
-        return this._innerLexWhitespace(pos);
+    if (innerLexers.hasOwnProperty(mode)) {
+        return innerLexers[mode].call(this, pos, mode);
     }
+
+    for (var i = 0; i < extensions.exts.length; i++) {
+        var ext = extensions.exts[i];
+        if (ext.mode === mode && ext.lexer) {
+            return ext.lexer.call(this, pos);
+        }
+    }
+
+    throw new ParseError("The '" + mode + "' is not supported yet",
+        this, pos);
 };
 
 module.exports = Lexer;

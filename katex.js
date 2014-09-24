@@ -11,6 +11,10 @@ var ParseError = require("./src/ParseError");
 var buildTree = require("./src/buildTree");
 var parseTree = require("./src/parseTree");
 var utils = require("./src/utils");
+var extensions = require("./src/extensions");
+var css_ext = require("./src/ext/css_ext");
+
+extensions.register(css_ext);
 
 /**
  * Parse and build an expression, and place that expression in the DOM node
@@ -20,7 +24,7 @@ var render = function(toParse, baseNode) {
     utils.clearNode(baseNode);
 
     var tree = parseTree(toParse);
-    var node = buildTree(tree).toNode();
+    var node = buildTree.buildTree(tree).toNode();
 
     baseNode.appendChild(node);
 };
@@ -44,7 +48,7 @@ if (typeof document !== "undefined") {
  */
 var renderToString = function(toParse) {
     var tree = parseTree(toParse);
-    return buildTree(tree).toMarkup();
+    return buildTree.buildTree(tree).toMarkup();
 };
 
 module.exports = {

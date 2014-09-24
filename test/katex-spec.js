@@ -3,6 +3,8 @@ var buildTree = require("../src/buildTree");
 var parseTree = require("../src/parseTree");
 var ParseError = require("../src/ParseError");
 
+buildTree = buildTree.buildTree;
+
 var getBuilt = function(expr) {
     expect(expr).toBuild();
 
@@ -670,6 +672,37 @@ describe("A cssId tree-builder", function () {
         var markup = buildTree(tree).toMarkup();
         var matches = markup.match(/id="id1"/g);
         expect(matches.length).toBe(1);
+    });
+});
+
+describe("A class parser", function () {
+    var classExpressionWithGroup = "\\class{sum}{1+2}, \\class{sum}{3+4}";
+    var badClassExpression = "\\class{\\theta}{1+2}";
+
+    it("should not fail", function () {
+        expect(classExpressionWithGroup).toParse();
+    });
+
+    it("should build a class node", function () {
+        var node = parseTree(classExpressionWithGroup)[0];
+
+        expect(node.type).toMatch("class");
+        expect(node.value.className).toMatch("sum");
+        expect(node.value.value).toBeDefined();
+    });
+
+    it("should parse a group body", function () {
+        var node = parseTree(classExpressionWithGroup)[0];
+
+        var inner = node.value.value;
+        expect(inner.length).toBe(3);
+        expect(inner[0].type).toMatch("textord");
+        expect(inner[1].type).toMatch("bin");
+        expect(inner[2].type).toMatch("textord");
+    });
+
+    it("should not parse a bad class", function () {
+        expect(badClassExpression).toNotParse();
     });
 });
 

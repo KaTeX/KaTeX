@@ -1,3 +1,4 @@
+var extensions = require("./extensions");
 var functions = require("./functions");
 var Lexer = require("./Lexer");
 var symbols = require("./symbols");
@@ -46,7 +47,7 @@ var ParseError = require("./ParseError");
 function Parser(input) {
     // Make a new lexer
     this.lexer = new Lexer(input);
-};
+}
 
 /**
  * The resulting parse tree nodes of the parse tree.
@@ -428,7 +429,7 @@ Parser.prototype.parseFunction = function(pos, mode) {
  * @return {?ParseFuncOrArgument}
  */
 Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
-    if (mode === "color" || mode === "size" || mode === "cssId") {
+    if (mode === "color" || mode === "size") {
         // color and size modes are special because they should have braces and
         // should only lex a single symbol inside
         var openBrace = this.lexer.lex(pos, outerMode);
@@ -446,8 +447,15 @@ Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
         // it
         var whitespace = this.lexer.lex(pos, "whitespace");
         return this.parseGroup(whitespace.position, mode);
-    } else {
+    } else if (mode === "math") {
         return this.parseGroup(pos, mode);
+    } else {
+        for (var i = 0; i < extensions.exts.length; i++) {
+            var ext = extensions.exts[i];
+            if (ext.mode === mode && ext.parseSpecialGroup) {
+                return ext.parseSpecialGroup.call(this, pos, mode, outerMode);
+            }
+        }
     }
 };
 
@@ -518,4 +526,9 @@ Parser.prototype.parseSymbol = function(pos, mode) {
     }
 };
 
-module.exports = Parser;
+module.exports = {
+    Parser: Parser,
+    ParseNode: ParseNode,
+    ParseResult: ParseResult,
+    ParseFuncOrArgument: ParseFuncOrArgument
+};

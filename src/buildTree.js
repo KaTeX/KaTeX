@@ -13,7 +13,6 @@ var buildCommon = require("./buildCommon");
 var delimiter = require("./delimiter");
 var domTree = require("./domTree");
 var fontMetrics = require("./fontMetrics");
-var parseTree = require("./parseTree");
 var symbols = require("./symbols");
 var utils = require("./utils");
 
@@ -251,27 +250,6 @@ var groupTypes = {
         // elements will be able to directly interact with their neighbors. For
         // example, `\color{red}{2 +} 3` has the same spacing as `2 + 3`
         return new buildCommon.makeFragment(elements);
-    },
-
-    cssId: function(group, options, prev) {
-        var elements = buildExpression(
-            group.value.value,
-            options,
-            prev
-        );
-
-        if (elements.length === 1) {
-            elements[0].id = group.value.id;
-            return elements[0];
-        } else {
-            var classes = [];
-            if (elements.length > 1) {
-                var lastChild = elements[elements.length - 1];
-                classes = lastChild.classes.slice(0);
-            }
-            classes.push(options.style.cls());
-            return buildCommon.makeSpanWithId(classes, elements, group.value.id);
-        }
     },
 
     supsub: function(group, options, prev) {
@@ -1125,4 +1103,9 @@ var buildTree = function(tree) {
     return katexNode;
 };
 
-module.exports = buildTree;
+module.exports = {
+    buildTree: buildTree,
+    buildGroup: buildGroup,
+    buildExpression: buildExpression,
+    groupTypes: groupTypes
+};
