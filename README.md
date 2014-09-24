@@ -1,4 +1,4 @@
-# [<img src="https://khan.github.io/KaTeX/katex-logo.svg" width="130" alt="KaTeX">](http://khan.github.io/KaTeX/) [![Build Status](https://travis-ci.org/Khan/KaTeX.svg?branch=master)](https://travis-ci.org/Khan/KaTeX)
+# [<img src="https://khan.github.io/KaTeX/katex-logo.svg" width="130" alt="KaTeX">](https://khan.github.io/KaTeX/) [![Build Status](https://travis-ci.org/Khan/KaTeX.svg?branch=master)](https://travis-ci.org/Khan/KaTeX)
 
 KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the web.
 
@@ -14,8 +14,8 @@ KaTeX supports all major browsers, including Chrome, Safari, Firefox, Opera, and
 Download the built files from [the releases page](https://github.com/khan/katex/releases). Include the `katex.min.js` and `katex.min.css` files on your page:
 
 ```html
-<link rel="stylesheet" type="text/css" href="/path/to/katex.min.css">
-<script src="/path/to/katex.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="/path/to/katex.min.css">
+<script src="/path/to/katex.min.js"></script>
 ```
 
 Specify UTF-8 as your content type:
