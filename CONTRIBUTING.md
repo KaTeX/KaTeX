@@ -49,7 +49,7 @@ line to `functions.js` as well as adding an output function in
 ## Testing
 
 Local testing can be done by running the node server in `server.js`. Run `make
-setup` to insteall dependencies, and then `make serve` to start the server.
+setup` to install dependencies, and then `make serve` to start the server.
 
 This will host an interactive editor at
 [http://localhost:7936/](http://localhost:7936/) to play around with and test
