@@ -374,7 +374,7 @@ Parser.prototype.parseFunction = function(pos, mode) {
                 for (var i = 0; i < baseGroup.numArgs; i++) {
                     var argType = baseGroup.argTypes && baseGroup.argTypes[i];
                     if (argType) {
-                        var arg = this.parseSpecialGroup(newPos, argType, mode);
+                        var arg = this.parseSpecialGroup(newPos, argType, mode, func);
                     } else {
                         var arg = this.parseGroup(newPos, mode);
                     }
@@ -428,7 +428,7 @@ Parser.prototype.parseFunction = function(pos, mode) {
  *
  * @return {?ParseFuncOrArgument}
  */
-Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
+Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode, funcName) {
     if (mode === "color" || mode === "size") {
         // color and size modes are special because they should have braces and
         // should only lex a single symbol inside
@@ -449,14 +449,18 @@ Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
         return this.parseGroup(whitespace.position, mode);
     } else if (mode === "math") {
         return this.parseGroup(pos, mode);
-    } else {
+    } else if (funcName !== undefined) {
         for (var i = 0; i < extensions.exts.length; i++) {
             var ext = extensions.exts[i];
-            if (ext.mode === mode && ext.parseSpecialGroup) {
+            if (ext.funcs.hasOwnProperty(funcName) && ext.parseSpecialGroup) {
                 return ext.parseSpecialGroup.call(this, pos, mode, outerMode);
             }
         }
+        throw new ParseError("can't parse argType '" + mode + "' for function" +
+            "'" + funcName + "'", this.lexer, pos);
     }
+    throw new ParseError("can't parse special group of mode '" + mode + "'",
+        this.lexer, pos);
 };
 
 /**

@@ -190,6 +190,10 @@ var innerLexers = {
  * Based on the mode, we defer to one of the `_innerLex` functions.
  */
 Lexer.prototype.lex = function(pos, mode) {
+    if (mode instanceof Function) {
+        return mode.call(this, pos);
+    }
+
     if (innerLexers.hasOwnProperty(mode)) {
         return innerLexers[mode].call(this, pos, mode);
     }
