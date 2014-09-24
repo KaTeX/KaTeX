@@ -66,7 +66,7 @@ The Jasmine tests should be run after every change, even the addition of small
 symbols. However, [Travis](https://travis-ci.org/Khan/KaTeX/) will run these
 tests when you submit a pull request, in case you forget.
 
-If you make any changes to Parser.js, add jasmine tests to ensure they work.
+If you make any changes to Parser.js, add Jasmine tests to ensure they work.
 
 #### Huxley tests
 
