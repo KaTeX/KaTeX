@@ -72,7 +72,15 @@ var functions = {
             };
         }
     },
-
+    "√": {
+    numArgs: 1,
+    handler: function(func, body) {
+        return {
+        type: "sqrt",
+        body: body
+        };
+    }
+    },
     // Some non-mathy text
     "\\text": {
         numArgs: 1,
@@ -278,7 +286,7 @@ var duplicatedFunctions = [
     // No limits, symbols
     {
         funcs: [
-            "\\int", "\\iint", "\\iiint", "\\oint"
+            "\\int", "\\iint", "\\iiint", "\\oint", "∫"
         ],
         data: {
             numArgs: 0,
@@ -298,7 +306,7 @@ var duplicatedFunctions = [
         funcs: [
             "\\coprod", "\\bigvee", "\\bigwedge", "\\biguplus", "\\bigcap",
             "\\bigcup", "\\intop", "\\prod", "\\sum", "\\bigotimes",
-            "\\bigoplus", "\\bigodot", "\\bigsqcup", "\\smallint"
+            "\\bigoplus", "\\bigodot", "\\bigsqcup", "\\smallint", "∑", "∏", "∐"
         ],
         data: {
             numArgs: 0,
