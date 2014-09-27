@@ -150,6 +150,16 @@ var functions = {
                 type: "katex"
             };
         }
+    },
+
+    "\\over": {
+        numArgs: 0,
+        handler: function (func) {
+            return {
+                type: "infix",
+                replaceWith: "\\frac"
+            }
+        }
     }
 };
 

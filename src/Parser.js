@@ -120,19 +120,75 @@ Parser.prototype.parseInput = function(pos, mode) {
 /**
  * Handles a body of an expression.
  */
-Parser.prototype.handleExpressionBody = function(pos, mode) {
+Parser.prototype.handleExpressionBody = function(pos, mode, breakOnInfix) {
     var body = [];
     var atom;
     // Keep adding atoms to the body until we can't parse any more atoms (either
     // we reached the end, a }, or a \right)
     while ((atom = this.parseAtom(pos, mode))) {
-        body.push(atom.result);
-        pos = atom.position;
+        if (breakOnInfix && atom.result.type === "infix") {
+            break;
+        } else {
+            body.push(atom.result);
+            pos = atom.position;
+        }
     }
     return {
-        body: body,
+        body: this.handleInfixNodes(body, mode),
         position: pos
     };
+};
+
+/**
+ * Rewrites infix operators such as \over with corresponding commands such
+ * as \frac.
+ *
+ * There can only be one infix operator per group.  If there's more than one
+ * then the expression is ambiguous.  This can be resolved by adding {}.
+ *
+ * @returns {Array}
+ */
+Parser.prototype.handleInfixNodes = function (body, mode) {
+    var overIndex = -1;
+    var func;
+    var funcName;
+
+    for (var i = 0; i < body.length; i++) {
+        var node = body[i];
+        if (node.type === "infix") {
+            if (overIndex !== -1) {
+                throw new ParseError("only one infix operator per group",
+                    this.lexer, -1);
+            }
+            overIndex = i;
+            funcName = node.value.replaceWith;
+            func = functions.funcs[funcName];
+        }
+    }
+
+    if (overIndex !== -1) {
+        var numerNode, denomNode;
+
+        var numerBody = body.slice(0, overIndex);
+        var denomBody = body.slice(overIndex + 1);
+
+        if (numerBody.length === 1 && numerBody[0].type === "ordgroup") {
+            numerNode = numerBody[0];
+        } else {
+            numerNode = new ParseNode("ordgroup", numerBody, mode);
+        }
+
+        if (denomBody.length === 1 && denomBody[0].type === "ordgroup") {
+            denomNode = denomBody[0];
+        } else {
+            denomNode = new ParseNode("ordgroup", denomBody, mode);
+        }
+
+        var value = func.handler(funcName, numerNode, denomNode);
+        return [new ParseNode(value.type, value, mode)];
+    } else {
+        return body;
+    }
 };
 
 /**
@@ -332,7 +388,7 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
             body.position);
     } else if (utils.contains(styleFuncs, func)) {
         // If we see a styling function, parse out the implict body
-        var body = this.handleExpressionBody(start.result.position, mode);
+        var body = this.handleExpressionBody(start.result.position, mode, true);
         return new ParseResult(
             new ParseNode("styling", {
                 // Figure out what style to use by pulling out the style from
