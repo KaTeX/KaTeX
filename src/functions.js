@@ -118,6 +118,26 @@ var functions = {
         }
     },
 
+    "\\cssId": {
+        numArgs: 2,
+        argTypes: ["cssId", "original"],
+        handler: function(func, id, body) {
+            // Normalize the different kinds of bodies (see \text above)
+            var inner;
+            if (body.type === "ordgroup") {
+                inner = body.value;
+            } else {
+                inner = [body];
+            }
+
+            return {
+                type: "cssId",
+                id: id.value,
+                value: inner
+            };
+        }
+    },
+
     // An overline
     "\\overline": {
         numArgs: 1,

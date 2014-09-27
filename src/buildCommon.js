@@ -105,6 +105,22 @@ var makeSpan = function(classes, children, color) {
     return span;
 };
 
+// TODO: combine with makeSpan and make third param be an options dictionary?
+/**
+ * Makes a span with the given list of classes, list of children, and id.
+ */
+var makeSpanWithId = function(classes, children, id) {
+    var span = new domTree.span(classes, children);
+
+    sizeElementFromChildren(span);
+
+    if (id) {
+        span.id = id;
+    }
+
+    return span;
+};
+
 /**
  * Makes a document fragment with the given list of children.
  */
@@ -264,6 +280,7 @@ module.exports = {
     mathit: mathit,
     mathrm: mathrm,
     makeSpan: makeSpan,
+    makeSpanWithId: makeSpanWithId,
     makeFragment: makeFragment,
     makeVList: makeVList
 };

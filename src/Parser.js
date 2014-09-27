@@ -484,7 +484,7 @@ Parser.prototype.parseFunction = function(pos, mode) {
  * @return {?ParseFuncOrArgument}
  */
 Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode) {
-    if (mode === "color" || mode === "size") {
+    if (mode === "color" || mode === "size" || mode === "cssId") {
         // color and size modes are special because they should have braces and
         // should only lex a single symbol inside
         var openBrace = this.lexer.lex(pos, outerMode);

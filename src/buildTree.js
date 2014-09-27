@@ -81,6 +81,8 @@ var getTypeOfGroup = function(group) {
         return getTypeOfGroup(group.value);
     } else if (group.type === "color") {
         return getTypeOfGroup(group.value.value);
+    } else if (group.type === "cssId") {
+        return getTypeOfGroup(group.value.value);
     } else if (group.type === "sizing") {
         return getTypeOfGroup(group.value.value);
     } else if (group.type === "styling") {
@@ -127,6 +129,12 @@ var getBaseElem = function(group) {
             return group;
         }
     } else if (group.type === "color") {
+        if (group.value.value.length === 1) {
+            return getBaseElem(group.value.value[0]);
+        } else {
+            return group;
+        }
+    } else if (group.type === "cssId") {
         if (group.value.value.length === 1) {
             return getBaseElem(group.value.value[0]);
         } else {
@@ -243,6 +251,27 @@ var groupTypes = {
         // elements will be able to directly interact with their neighbors. For
         // example, `\color{red}{2 +} 3` has the same spacing as `2 + 3`
         return new buildCommon.makeFragment(elements);
+    },
+
+    cssId: function(group, options, prev) {
+        var elements = buildExpression(
+            group.value.value,
+            options,
+            prev
+        );
+
+        if (elements.length === 1) {
+            elements[0].id = group.value.id;
+            return elements[0];
+        } else {
+            var classes = [];
+            if (elements.length > 1) {
+                var lastChild = elements[elements.length - 1];
+                classes = lastChild.classes.slice(0);
+            }
+            classes.push(options.style.cls());
+            return buildCommon.makeSpanWithId(classes, elements, group.value.id);
+        }
     },
 
     supsub: function(group, options, prev) {
