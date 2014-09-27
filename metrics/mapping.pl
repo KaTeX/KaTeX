@@ -7,6 +7,8 @@
 # accurately extract the metrics from the corresponding .tfm (TeX font metric)
 # files
 
+# Source: https://github.com/Khan/MathJax-dev/blob/master/fonts/OTF/TeX/makeFF
+
 use JSON;
 
 $map{cmr10} = {
@@ -152,7 +154,11 @@ $map{cmmi10} = {
     0x7C => 0x237,          # \jmath
     0x7D => 0x2118,         # \wp
     0x7E => [0x20D7,-653,0],# \vec
-  ]
+  ],
+
+  "Caligraphic-Regular" => [
+    [0x30,0x39] => 0x30,    # Oldstyle 0-9
+  ],
 };
 
 $map{cmsy10} = {
@@ -255,6 +261,10 @@ $map{cmsy10} = {
 
   "Math-Italic" => [
     0x36 => 0x2F            # \not
+  ],
+
+  "Caligraphic-Regular" => [
+    [0x41,0x5A] => 0x41,    # A-Z
   ],
 };
 
@@ -941,6 +951,106 @@ $map{msbm10} = {
     0x7D => 0x210F,         # \hslash
     0x7E => 0x0127,         # \hbar
     0x7F => 0x220D,         # \backepsilon
+  ],
+};
+
+$map{eufm10} = {
+  "Fraktur-Regular" => [
+    [0,7] => 0xE300,        # variants
+    0x12 => 0x2018,         # left quote
+    0x13 => 0x2019,         # right quote
+    0x21 => 0x21,           # !
+    [0x26,0x2F] => 0x26,    # &, ', (, ), *, +, comma, -, ., /
+    [0x30,0x39] => 0x30,    # 0-9
+    [0x3A,0x3B] => 0x3A,    # :, ;
+    0x3D => 0x3D,           # =
+    0x3F => 0x3F,           # ?
+    [0x41,0x5A] => 0x41,    # A-Z
+    0x5B => 0x5B,           # [
+    [0x5D,0x5E] => 0x5D,    # ], ^
+    [0x61,0x7A] => 0x61,    # a-z
+    0x7D => 0x22,           # "
+  ],
+};
+
+$map{cmtt10} = {
+  "Typewriter-Regular" => [
+    [0,1] => 0x393,         # \Gamma, \Delta
+    2 => 0x398,             # \Theta
+    3 => 0x39B,             # \Lambda
+    4 => 0x39E,             # \Xi
+    5 => 0x3A0,             # \Pi
+    6 => 0x3A3,             # \Sigma
+    [7,8] => 0x3A5,         # \Upsilon, \Phi
+    [9,0xA] => 0x3A8,       # \Psi, \Omega
+    0xD => 0x2032,          # '
+
+    0x10 => 0x131,          # \imath (roman)
+    0x11 => 0x237,          # \jmath (roman)
+    0x12 => [0x300,-525,0], # \grave (combining)
+    0x13 => [0x301,-525,0], # \acute (combining)
+    0x14 => [0x30C,-525,0], # \check (combining)
+    0x15 => [0x306,-525,0], # \breve (combining)
+    0x16 => [0x304,-525,0], # \bar (combining)
+    0x17 => [0x30A,-525,0], # ring above (combining)
+
+    [0x21,0x7F] => 0x21,
+
+    0x27 => 2018,           # left quote
+    0x60 => 2019,           # right quote
+    0x5E => [0x302,-525,0], # \hat (combining)
+    0x7E => [0x303,-525,0], # \tilde (combining)
+    0x7F => [0x308,-525,0], # \ddot (combining)
+  ],
+};
+
+$map{rsfs10} = {
+  "Script-Regular" => [
+    [0x41,0x5A] => 0x41,    # A-Z
+  ],
+};
+
+$map{cmss10} = {
+  "SansSerif-Regular" => [
+    [0,1] => 0x393,         # \Gamma, \Delta
+    2 => 0x398,             # \Theta
+    3 => 0x39B,             # \Lambda
+    4 => 0x39E,             # \Xi
+    5 => 0x3A0,             # \Pi
+    6 => 0x3A3,             # \Sigma
+    [7,8] => 0x3A5,         # \Upsilon, \Phi
+    [9,0xA] => 0x3A8,       # \Psi, \Omega
+
+    0x10 => 0x131,          # \imath (roman)
+    0x11 => 0x237,          # \jmath (roman)
+    0x12 => [0x300,-500,0], # \grave (combining)
+    0x13 => [0x301,-500,0], # \acute (combining)
+    0x14 => [0x30C,-500,0], # \check (combining)
+    0x15 => [0x306,-500,0], # \breve (combining)
+    0x16 => [0x304,-500,0], # \bar (combining)
+    0x17 => [0x30A,-542,0], # ring above (combining)
+
+    [0x21,0x2F] => 0x21,    # !, ", #, $, %, &, ', (, ), *, +, comma, -, ., /
+    0x22 => 0x201D,         # "
+    0x27 => 0x2019,         # '
+    [0x30,0x39] => 0x30,    # 0-9
+    [0x3A,0x3B] => 0x3A,    # :, ;
+    0x3D => 0x3D,           # =
+    [0x3F,0x40] => 0x3F,    # ?, @
+    [0x41,0x5A] => 0x41,    # A-Z
+    0x5B => 0x5B,           # [
+    0x5C => 0x201C,         # ``
+    [0x5D,0x5E] => 0x5D,    # ], ^
+    0x5E => [0x302,-500,0], # \hat (combining)
+    0x5F => [0x307,-389,0], # \dot (combining)
+    0x60 => 0x2018,         # `
+    [0x61,0x7A] => 0x61,    # a-z
+    [0x7B,0x7C] => 0x2013,  # \endash, \emdash
+    0x7B => [0x5F,0,-350],  # underline
+    0x7D => [0x30B,-500,0], # double acute (combining)
+    0x7E => [0x7E,0,-350],  # ~
+    0x7E => [0x303,-500,0], # \tilde (combining)
+    0x7F => [0x308,-500,0], # \ddot (combining)
   ],
 };
 

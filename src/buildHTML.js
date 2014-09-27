@@ -161,13 +161,11 @@ var isCharacterBox = function(group) {
  */
 var groupTypes = {
     mathord: function(group, options, prev) {
-        return buildCommon.mathit(
-            group.value, group.mode, options.getColor(), ["mord"]);
+        return buildCommon.makeOrd(group, options, "mathord");
     },
 
     textord: function(group, options, prev) {
-        return buildCommon.mathrm(
-            group.value, group.mode, options.getColor(), ["mord"]);
+        return buildCommon.makeOrd(group, options, "textord");
     },
 
     bin: function(group, options, prev) {
@@ -189,32 +187,32 @@ var groupTypes = {
             className = "mord";
         }
 
-        return buildCommon.mathrm(
+        return buildCommon.mathsym(
             group.value, group.mode, options.getColor(), [className]);
     },
 
     rel: function(group, options, prev) {
-        return buildCommon.mathrm(
+        return buildCommon.mathsym(
             group.value, group.mode, options.getColor(), ["mrel"]);
     },
 
     open: function(group, options, prev) {
-        return buildCommon.mathrm(
+        return buildCommon.mathsym(
             group.value, group.mode, options.getColor(), ["mopen"]);
     },
 
     close: function(group, options, prev) {
-        return buildCommon.mathrm(
+        return buildCommon.mathsym(
             group.value, group.mode, options.getColor(), ["mclose"]);
     },
 
     inner: function(group, options, prev) {
-        return buildCommon.mathrm(
+        return buildCommon.mathsym(
             group.value, group.mode, options.getColor(), ["minner"]);
     },
 
     punct: function(group, options, prev) {
-        return buildCommon.mathrm(
+        return buildCommon.mathsym(
             group.value, group.mode, options.getColor(), ["mpunct"]);
     },
 
@@ -609,7 +607,7 @@ var groupTypes = {
             // into appropriate outputs.
             return makeSpan(
                 ["mord", "mspace"],
-                [buildCommon.mathrm(group.value, group.mode)]
+                [buildCommon.mathsym(group.value, group.mode)]
             );
         } else {
             // Other kinds of spaces are of arbitrary width. We use CSS to
@@ -693,7 +691,7 @@ var groupTypes = {
             // operators, like \limsup
             var output = [];
             for (var i = 1; i < group.value.body.length; i++) {
-                output.push(buildCommon.mathrm(group.value.body[i], group.mode));
+                output.push(buildCommon.mathsym(group.value.body[i], group.mode));
             }
             base = makeSpan(["mop"], output, options.getColor());
         }
@@ -800,23 +798,23 @@ var groupTypes = {
         // good, but the offsets for the T, E, and X were taken from the
         // definition of \TeX in TeX (see TeXbook pg. 356)
         var k = makeSpan(
-            ["k"], [buildCommon.mathrm("K", group.mode)]);
+            ["k"], [buildCommon.mathsym("K", group.mode)]);
         var a = makeSpan(
-            ["a"], [buildCommon.mathrm("A", group.mode)]);
+            ["a"], [buildCommon.mathsym("A", group.mode)]);
 
         a.height = (a.height + 0.2) * 0.75;
         a.depth = (a.height - 0.2) * 0.75;
 
         var t = makeSpan(
-            ["t"], [buildCommon.mathrm("T", group.mode)]);
+            ["t"], [buildCommon.mathsym("T", group.mode)]);
         var e = makeSpan(
-            ["e"], [buildCommon.mathrm("E", group.mode)]);
+            ["e"], [buildCommon.mathsym("E", group.mode)]);
 
         e.height = (e.height - 0.2155);
         e.depth = (e.depth + 0.2155);
 
         var x = makeSpan(
-            ["x"], [buildCommon.mathrm("X", group.mode)]);
+            ["x"], [buildCommon.mathsym("X", group.mode)]);
 
         return makeSpan(
             ["katex-logo"], [k, a, t, e, x], options.getColor());
@@ -985,6 +983,11 @@ var groupTypes = {
             group.value.value, options.withStyle(newStyle), prev);
 
         return makeSpan([options.style.reset(), newStyle.cls()], inner);
+    },
+
+    font: function(group, options, prev) {
+        var font = group.value.font;
+        return buildGroup(group.value.body, options.withFont(font), prev);
     },
 
     delimsizing: function(group, options, prev) {

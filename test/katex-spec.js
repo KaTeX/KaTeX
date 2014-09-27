@@ -1116,6 +1116,245 @@ describe("A style change parser", function() {
     });
 });
 
+describe("A font parser", function () {
+    it("should parse \\mathrm, \\mathbb, and \\mathit", function () {
+        expect("\\mathrm x").toParse();
+        expect("\\mathbb x").toParse();
+        expect("\\mathit x").toParse();
+        expect("\\mathrm {x + 1}").toParse();
+        expect("\\mathbb {x + 1}").toParse();
+        expect("\\mathit {x + 1}").toParse();
+    });
+
+    it("should parse \\mathcal and \\mathfrak", function () {
+        expect("\\mathcal{ABC123}").toParse();
+        expect("\\mathfrak{abcABC123}").toParse();
+    });
+
+    it("should produce the correct fonts", function () {
+        var mathbbParse = parseTree("\\mathbb x")[0];
+        expect(mathbbParse.value.font).toMatch("mathbb");
+        expect(mathbbParse.value.type).toMatch("font");
+
+        var mathrmParse = parseTree("\\mathrm x")[0];
+        expect(mathrmParse.value.font).toMatch("mathrm");
+        expect(mathrmParse.value.type).toMatch("font");
+
+        var mathitParse = parseTree("\\mathit x")[0];
+        expect(mathitParse.value.font).toMatch("mathit");
+        expect(mathitParse.value.type).toMatch("font");
+
+        var mathcalParse = parseTree("\\mathcal C")[0];
+        expect(mathcalParse.value.font).toMatch("mathcal");
+        expect(mathcalParse.value.type).toMatch("font");
+
+        var mathfrakParse = parseTree("\\mathfrak C")[0];
+        expect(mathfrakParse.value.font).toMatch("mathfrak");
+        expect(mathfrakParse.value.type).toMatch("font");
+    });
+
+    it("should parse nested font commands", function () {
+        var nestedParse = parseTree("\\mathbb{R \\neq \\mathrm{R}}")[0];
+        expect(nestedParse.value.font).toMatch("mathbb");
+        expect(nestedParse.value.type).toMatch("font");
+
+        expect(nestedParse.value.body.value.length).toMatch(3);
+        var bbBody = nestedParse.value.body.value;
+        expect(bbBody[0].type).toMatch("mathord");
+        expect(bbBody[1].type).toMatch("rel");
+        expect(bbBody[2].type).toMatch("font");
+        expect(bbBody[2].value.font).toMatch("mathrm");
+        expect(bbBody[2].value.type).toMatch("font");
+    });
+
+    it("should work with \\color", function () {
+        var colorMathbbParse = parseTree("\\color{blue}{\\mathbb R}")[0];
+        expect(colorMathbbParse.value.type).toMatch("color");
+        expect(colorMathbbParse.value.color).toMatch("blue");
+        var body = colorMathbbParse.value.value;
+        expect(body.length).toMatch(1);
+        expect(body[0].value.type).toMatch("font");
+        expect(body[0].value.font).toMatch("mathbb");
+    });
+
+    it("should not parse a series of font commands", function () {
+        expect("\\mathbb \\mathrm R").toNotParse();
+    });
+});
+
+describe("An HTML font tree-builder", function () {
+    it("should render \\mathbb{R} with the correct font", function () {
+        var tree = parseTree("\\mathbb{R}");
+        var markup = buildHTML(tree, defaultSettings).toMarkup();
+        expect(markup).toContain("<span class=\"mord mathbb\">R</span>");
+    });
+
+    it("should render \\mathrm{R} with the correct font", function () {
+        var tree = parseTree("\\mathrm{R}");
+        var markup = buildHTML(tree, defaultSettings).toMarkup();
+        expect(markup).toContain("<span class=\"mord mathrm\">R</span>");
+    });
+
+    it("should render \\mathcal{R} with the correct font", function () {
+        var tree = parseTree("\\mathcal{R}");
+        var markup = buildHTML(tree, defaultSettings).toMarkup();
+        expect(markup).toContain("<span class=\"mord mathcal\">R</span>");
+    });
+
+    it("should render \\mathfrak{R} with the correct font", function () {
+        var tree = parseTree("\\mathfrak{R}");
+        var markup = buildHTML(tree, defaultSettings).toMarkup();
+        expect(markup).toContain("<span class=\"mord mathfrak\">R</span>");
+    });
+
+    it("should render a combination of font and color changes", function () {
+        var tree = parseTree("\\color{blue}{\\mathbb R}");
+        var markup = buildHTML(tree, defaultSettings).toMarkup();
+        var span = "<span class=\"mord mathbb\" style=\"color:blue;\">R</span>";
+        expect(markup).toContain(span);
+
+        tree = parseTree("\\mathbb{\\color{blue}{R}}");
+        markup = buildHTML(tree, defaultSettings).toMarkup();
+        span = "<span class=\"mord mathbb\" style=\"color:blue;\">R</span>";
+        expect(markup).toContain(span);
+    });
+});
+
+describe("A MathML font tree-builder", function () {
+    var contents = "Ax2k\\omega\\Omega\\imath+";
+
+    it("should render " + contents + " with the correct mathvariants", function () {
+        var tree = parseTree(contents);
+        var markup = buildMathML(tree, defaultSettings).toMarkup();
+        expect(markup).toContain("<mi>A</mi>");
+        expect(markup).toContain("<mi>x</mi>");
+        expect(markup).toContain("<mn>2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathbb{" + contents + "} with the correct mathvariants", function () {
+        var tree = parseTree("\\mathbb{" + contents + "}");
+        var markup = buildMathML(tree, defaultSettings).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"double-struck\">A</mi>");
+        expect(markup).toContain("<mi>x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathrm{" + contents + "} with the correct mathvariants", function () {
+        var tree = parseTree("\\mathrm{" + contents + "}");
+        var markup = buildMathML(tree, defaultSettings).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"normal\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"normal\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathit{" + contents + "} with the correct mathvariants", function () {
+        var tree = parseTree("\\mathit{" + contents + "}");
+        var markup = buildMathML(tree, defaultSettings).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"italic\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"italic\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"italic\">2</mn>");
+        expect(markup).toContain("<mi mathvariant=\"italic\">\u03c9</mi>");   // \omega
+        expect(markup).toContain("<mi mathvariant=\"italic\">\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi mathvariant=\"italic\">\u0131</mi>");   // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathbf{" + contents + "} with the correct mathvariants", function () {
+        var tree = parseTree("\\mathbf{" + contents + "}");
+        var markup = buildMathML(tree, defaultSettings).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"bold\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"bold\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"bold\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"bold\">\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathcal{" + contents + "} with the correct mathvariants", function () {
+        var tree = parseTree("\\mathcal{" + contents + "}");
+        var markup = buildMathML(tree, defaultSettings).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"script\">A</mi>");
+        expect(markup).toContain("<mi>x</mi>");                             // script is caps only
+        expect(markup).toContain("<mn mathvariant=\"script\">2</mn>");
+        // MathJax marks everything below as "script" except \omega
+        // We don't have these glyphs in "caligraphic" and neither does MathJax
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathfrak{" + contents + "} with the correct mathvariants", function () {
+        var tree = parseTree("\\mathfrak{" + contents + "}");
+        var markup = buildMathML(tree, defaultSettings).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"fraktur\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"fraktur\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"fraktur\">2</mn>");
+        // MathJax marks everything below as "fraktur" except \omega
+        // We don't have these glyphs in "fraktur" and neither does MathJax
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathscr{" + contents + "} with the correct mathvariants", function () {
+        var tree = parseTree("\\mathscr{" + contents + "}");
+        var markup = buildMathML(tree, defaultSettings).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"script\">A</mi>");
+        // MathJax marks everything below as "script" except \omega
+        // We don't have these glyphs in "script" and neither does MathJax
+        expect(markup).toContain("<mi>x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathsf{" + contents + "} with the correct mathvariants", function () {
+        var tree = parseTree("\\mathsf{" + contents + "}");
+        var markup = buildMathML(tree, defaultSettings).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"sans-serif\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"sans-serif\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"sans-serif\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");                            // \omega
+        expect(markup).toContain("<mi mathvariant=\"sans-serif\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                            // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render a combination of font and color changes", function () {
+        var tree = parseTree("\\color{blue}{\\mathbb R}");
+        var markup = buildMathML(tree, defaultSettings).toMarkup();
+        var node = "<mstyle mathcolor=\"blue\">" +
+            "<mi mathvariant=\"double-struck\">R</mi>" +
+            "</mstyle>";
+        expect(markup).toContain(node);
+
+        // reverse the order of the commands
+        tree = parseTree("\\mathbb{\\color{blue}{R}}");
+        markup = buildMathML(tree, defaultSettings).toMarkup();
+        node = "<mstyle mathcolor=\"blue\">" +
+            "<mi mathvariant=\"double-struck\">R</mi>" +
+            "</mstyle>";
+        expect(markup).toContain(node);
+    });
+});
+
 describe("A bin builder", function() {
     it("should create mbins normally", function() {
         var built = getBuilt("x + y");

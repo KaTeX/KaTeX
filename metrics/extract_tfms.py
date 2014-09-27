@@ -31,7 +31,11 @@ def main():
         'cmsy10.tfm',
         'cmti10.tfm',
         'msam10.tfm',
-        'msbm10.tfm'
+        'msbm10.tfm',
+        'eufm10.tfm',
+        'cmtt10.tfm',
+        'rsfs10.tfm',
+        'cmss10.tfm',
     ]
 
     # Extracted by running `\font\a=<font>` and then `\showthe\skewchar\a` in
@@ -48,7 +52,11 @@ def main():
         'cmsy10': 48,
         'cmti10': None,
         'msam10': None,
-        'msbm10': None
+        'msbm10': None,
+        'eufm10': None,
+        'cmtt10': None,
+        'rsfs10': None,
+        'cmss10': None,
     }
 
     font_name_to_tfm = {}
@@ -68,7 +76,10 @@ def main():
             tex_char_num = int(char_data['char'])
             yshift = float(char_data['yshift'])
 
-            tfm_char = font_name_to_tfm[font].get_char_metrics(tex_char_num)
+            if family == "Script-Regular":
+                tfm_char = font_name_to_tfm[font].get_char_metrics(tex_char_num, zero_indexed=True)
+            else:
+                tfm_char = font_name_to_tfm[font].get_char_metrics(tex_char_num)
 
             height = round(tfm_char.height + yshift / 1000.0, 5)
             depth = round(tfm_char.depth - yshift / 1000.0, 5)
