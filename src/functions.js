@@ -320,7 +320,7 @@ var duplicatedFunctions = [
     // Fractions
     {
         funcs: [
-            "\\dfrac", "\\frac", "\\tfrac",
+            "\\dfrac", "\\frac", "\\tfrac", "\\cfrac",
             "\\dbinom", "\\binom", "\\tbinom"
         ],
         data: {
@@ -336,6 +336,7 @@ var duplicatedFunctions = [
                     case "\\dfrac":
                     case "\\frac":
                     case "\\tfrac":
+                    case "\\cfrac":
                         hasBarLine = true;
                         break;
                     case "\\dbinom":
@@ -351,6 +352,7 @@ var duplicatedFunctions = [
 
                 switch (func) {
                     case "\\dfrac":
+                    case "\\cfrac":
                     case "\\dbinom":
                         size = "display";
                         break;

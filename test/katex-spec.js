@@ -440,6 +440,7 @@ describe("A frac parser", function() {
     var expression = "\\frac{x}{y}";
     var dfracExpression = "\\dfrac{x}{y}";
     var tfracExpression = "\\tfrac{x}{y}";
+    var cfracExpression = "\\cfrac{x}{y}";
 
     it("should not fail", function() {
         expect(expression).toParse();
@@ -471,6 +472,12 @@ describe("A frac parser", function() {
         expect(tfracParse.type).toMatch("frac");
         expect(tfracParse.value.numer).toBeDefined();
         expect(tfracParse.value.denom).toBeDefined();
+
+        var cfracParse = parseTree(cfracExpression)[0];
+
+        expect(cfracParse.type).toMatch("frac");
+        expect(cfracParse.value.numer).toBeDefined();
+        expect(cfracParse.value.denom).toBeDefined();
     });
 });
 

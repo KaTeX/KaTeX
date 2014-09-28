@@ -369,6 +369,7 @@ var groupTypes = {
         // Figure out what style this fraction should be in based on the
         // function used
         var fstyle = options.style;
+
         if (group.value.size === "display") {
             fstyle = Style.DISPLAY;
         } else if (group.value.size === "text") {
