@@ -1141,6 +1141,23 @@ describe("An accent builder", function() {
     });
 });
 
+describe("A text operator builder", function() {
+    it("should not fail", function () {
+        expect("\\limsup").toBuild();
+        expect("\\liminf").toBuild();
+    });
+
+    it("should insert a thinspace after \"lim\"", function () {
+        var limsupTree = parseTree("\\limsup");
+        expect(buildTree(limsupTree).toMarkup()).toContain(
+            "lim<span class=\"mord mspace thinspace\"></span>sup");
+
+        var liminfTree = parseTree("\\liminf");
+        expect(buildTree(liminfTree).toMarkup()).toContain(
+            "lim<span class=\"mord mspace thinspace\"></span>in");
+    });
+});
+
 describe("A parser error", function () {
     it("should report the position of an error", function () {
         try {

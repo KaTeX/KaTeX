@@ -595,11 +595,13 @@ var groupTypes = {
         } else {
             // Otherwise, this is a text operator. Build the text from the
             // operator's name.
-            // TODO(emily): Add a space in the middle of some of these
-            // operators, like \limsup
             var output = [];
-            for (var i = 1; i < group.value.body.length; i++) {
-                output.push(buildCommon.mathrm(group.value.body[i], group.mode));
+            var body = group.value.body;
+            for (var i = 1; i < body.length; i++) {
+                output.push(buildCommon.mathrm(body[i], group.mode));
+            }
+            if (body === "\\limsup" || body === "\\liminf") {
+                output.splice(3, 0, makeSpan(["mord", "mspace", "thinspace"]));
             }
             base = makeSpan(["mop"], output, options.getColor());
         }
