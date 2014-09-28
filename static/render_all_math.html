@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <title>KaTeX: Render All Math</title>
+    <script src="katex.js" type="text/javascript"></script>
+    <link href="katex.css" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('script[type="text/katex"]').each(function () {
+                var math = $(this).text();
+                var span = document.createElement('span');
+                katex.render(math, span);
+                $(this).replaceWith(span);
+            })
+        });
+    </script>
+</head>
+<body>
+<h1>KaTeX: Render All Math</h1>
+
+<h2>Pythagoras' Theorem</h2>
+<script type="text/katex">
+a^2 + b^2 = c^2
+</script>
+
+<h2>Quadratic Equation</h2>
+<script type="text/katex">
+x = \frac{b\pm\sqrt{b^2-4ac}}{2a}
+</script>
+
+<h2>Euler's Identity</h2>
+<script type="text/katex">
+e^{i\pi} = -1
+</script>
+
+</body>
+</html>
