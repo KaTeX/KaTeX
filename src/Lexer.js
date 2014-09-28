@@ -40,7 +40,8 @@ var mathNormals = [
     [/^}/, "}"],
     [/^[(\[]/, "open"],
     [/^[)\]?!]/, "close"],
-    [/^~/, "spacing"]
+    [/^~/, "spacing"],
+    [/[^\x00-\x7F]/, "unicode"]
 ];
 
 // These are "normal" tokens like above, but should instead be parsed in text
