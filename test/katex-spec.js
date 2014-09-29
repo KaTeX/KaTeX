@@ -578,6 +578,22 @@ describe("A sizing parser", function() {
     });
 });
 
+describe("A sizing builder", function () {
+    it("should produce the correct spacing in \"a \\Huge +\"", function () {
+        var parse = parseTree("a \\Huge +");
+        var markup = buildTree(parse).toMarkup();
+        expect(markup).toContain(
+            "<span class=\"mord\"></span><span class=\"mbin\">+</span>");
+    });
+
+    it("should produce the correct spacing in \"1 \\Large +\"", function () {
+        var parse = parseTree("a \\Huge +");
+        var markup = buildTree(parse).toMarkup();
+        expect(markup).toContain(
+            "<span class=\"mord\"></span><span class=\"mbin\">+</span>");
+    });
+});
+
 describe("A text parser", function() {
     var textExpression = "\\text{a b}";
     var noBraceTextExpression = "\\text x";
