@@ -1,3 +1,4 @@
+/*eslint no-use-before-define:0 */
 /**
  * This file contains information and classes for the various kinds of styles
  * used in TeX. It provides a generic `Style` class, which holds information
@@ -94,7 +95,7 @@ var resetNames = [
     "reset-textstyle",
     "reset-textstyle",
     "reset-scriptstyle",
-    "reset-scriptscriptstyle",
+    "reset-scriptscriptstyle"
 ];
 
 // Instances of the different styles

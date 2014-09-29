@@ -1,3 +1,4 @@
+/*eslint no-use-before-define:0, no-unused-vars:[2,{"vars": "all", "args": "none"}] */
 /**
  * This file does the main work of building a domTree structure from a parse
  * tree. The entry point is the `buildTree` function, which takes a parse tree.
@@ -13,8 +14,6 @@ var buildCommon = require("./buildCommon");
 var delimiter = require("./delimiter");
 var domTree = require("./domTree");
 var fontMetrics = require("./fontMetrics");
-var parseTree = require("./parseTree");
-var symbols = require("./symbols");
 var utils = require("./utils");
 
 var makeSpan = buildCommon.makeSpan;
@@ -177,7 +176,7 @@ var groupTypes = {
         // things at the end of a \color group. Note that we don't use the same
         // logic for ordgroups (which count as ords).
         var prevAtom = prev;
-        while (prevAtom && prevAtom.type == "color") {
+        while (prevAtom && prevAtom.type === "color") {
             var atoms = prevAtom.value.value;
             prevAtom = atoms[atoms.length - 1];
         }
@@ -248,7 +247,6 @@ var groupTypes = {
     supsub: function(group, options, prev) {
         // Superscript and subscripts are handled in the TeXbook on page
         // 445-446, rules 18(a-f).
-        var baseGroup = group.value.base;
 
         // Here is where we defer to the inner group if it should handle
         // superscripts and subscripts itself.
@@ -384,7 +382,7 @@ var groupTypes = {
         var numerreset = makeSpan([fstyle.reset(), nstyle.cls()], [numer]);
 
         var denom = buildGroup(group.value.denom, options.withStyle(dstyle));
-        var denomreset = makeSpan([fstyle.reset(), dstyle.cls()], [denom])
+        var denomreset = makeSpan([fstyle.reset(), dstyle.cls()], [denom]);
 
         var ruleWidth = fontMetrics.metrics.defaultRuleThickness /
             options.style.sizeMultiplier;
@@ -743,7 +741,7 @@ var groupTypes = {
         }
 
         // Shift the delimiter so that its top lines up with the top of the line
-        delimShift = -(inner.height + lineClearance + ruleWidth) + delim.height;
+        var delimShift = -(inner.height + lineClearance + ruleWidth) + delim.height;
         delim.style.top = delimShift + "em";
         delim.height -= delimShift;
         delim.depth += delimShift;
@@ -978,7 +976,7 @@ var groupTypes = {
         var accentBody = makeSpan(["accent-body", vecClass], [
             makeSpan([], [accent])]);
 
-        var accentBody = buildCommon.makeVList([
+        accentBody = buildCommon.makeVList([
             {type: "elem", elem: body},
             {type: "kern", size: -clearance},
             {type: "elem", elem: accentBody}

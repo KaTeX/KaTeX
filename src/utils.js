@@ -1,3 +1,4 @@
+/*global document */
 /**
  * This file contains a list of utility functions which are useful in other
  * files.
@@ -59,7 +60,7 @@ function escaper(match) {
  * @return {string} An escaped string.
  */
 function escape(text) {
-  return ('' + text).replace(ESCAPE_REGEX, escaper);
+  return ("" + text).replace(ESCAPE_REGEX, escaper);
 }
 
 /**

@@ -145,7 +145,7 @@ var functions = {
     // A KaTeX logo
     "\\KaTeX": {
         numArgs: 0,
-        handler: function(func) {
+        handler: function() {
             return {
                 type: "katex"
             };

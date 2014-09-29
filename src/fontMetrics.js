@@ -1,3 +1,4 @@
+/*eslint no-unused-vars:0 */
 /**
  * This file contains metrics regarding fonts and individual symbols. The sigma
  * and xi variables, as well as the metricMap map contain data extracted from

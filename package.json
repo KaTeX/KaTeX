@@ -15,12 +15,13 @@
     "license": "MIT",
     "devDependencies": {
         "browserify": "~2.29.1",
-        "express": "~3.3.3",
-        "less": "~1.7.5",
-        "uglify-js": "~2.4.15",
         "clean-css": "~2.2.15",
+        "eslint": "^0.8.2",
+        "express": "~3.3.3",
         "huxley": "~0.8.1",
-        "jasmine-node": "git://github.com/mhevery/jasmine-node.git#Jasmine2.0"
+        "jasmine-node": "git://github.com/mhevery/jasmine-node.git#Jasmine2.0",
+        "less": "~1.7.5",
+        "uglify-js": "~2.4.15"
     },
     "bin": "cli.js",
     "scripts": {

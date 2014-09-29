@@ -20,14 +20,11 @@
  * used in `\left` and `\right`.
  */
 
-var Options = require("./Options");
 var ParseError = require("./ParseError");
 var Style = require("./Style");
 
 var buildCommon = require("./buildCommon");
-var domTree = require("./domTree");
 var fontMetrics = require("./fontMetrics");
-var parseTree = require("./parseTree");
 var symbols = require("./symbols");
 var utils = require("./utils");
 
@@ -145,6 +142,7 @@ var makeInner = function(symbol, font, mode) {
  * least `heightTotal`. This routine is mentioned on page 442 of the TeXbook.
  */
 var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
+    /*eslint no-empty:0 */
     // There are four parts, the top, an optional middle, a repeated part, and a
     // bottom.
     var top, middle, repeat, bottom;
@@ -267,8 +265,7 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
     if (center) {
         axisHeight *= options.style.sizeMultiplier;
     }
-    // Calculate the height and depth
-    var height = realHeightTotal / 2 + axisHeight;
+    // Calculate the depth
     var depth = realHeightTotal / 2 - axisHeight;
 
     // Now, we start building the pieces that will go into the vlist
@@ -364,8 +361,6 @@ var makeSizedDelim = function(delim, size, options, mode) {
     } else if (delim === ">") {
         delim = "\\rangle";
     }
-
-    var retDelim;
 
     // Sized delimiters are never centered.
     if (utils.contains(stackLargeDelimiters, delim) ||

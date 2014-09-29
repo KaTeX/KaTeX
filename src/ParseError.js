@@ -1,3 +1,4 @@
+/*eslint no-proto:0 */
 /**
  * This is the ParseError class, which is the main error thrown by KaTeX
  * functions when something has gone wrong. This is used to distinguish internal
