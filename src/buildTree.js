@@ -774,8 +774,10 @@ var groupTypes = {
         // handling.
         var inner = buildExpression(group.value.value,
                 options.withSize(group.value.size), prev);
-        if (prev.type === "mathord" || prev.type === "textord") {
-            inner.unshift(new domTree.symbolNode("", 0, 0, 0, 0, ["mord"]));
+        if (prev) {
+            if (prev.type === "mathord" || prev.type === "textord") {
+                inner.unshift(new domTree.symbolNode("", 0, 0, 0, 0, ["mord"]));
+            }
         }
 
         var span = makeSpan(["mord"],

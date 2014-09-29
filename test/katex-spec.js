@@ -592,6 +592,10 @@ describe("A sizing builder", function () {
         expect(markup).toContain(
             "<span class=\"mord\"></span><span class=\"mbin\">+</span>");
     });
+
+    it("should not fail", function () {
+        expect("\\Huge x + 1").toBuild();
+    });
 });
 
 describe("A text parser", function() {
