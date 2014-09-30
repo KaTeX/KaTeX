@@ -775,7 +775,7 @@ var groupTypes = {
         var inner = buildExpression(group.value.value,
                 options.withSize(group.value.size), prev);
         var type = "mord";
-        if (prev && inner[0].type == "mbin") {
+        if (prev && group.value.value[0].type == "bin") {
             if (prev.type === "mathord" || prev.type === "textord" ||
                 prev.type === "close") {
                 type = "mbin";
