@@ -774,13 +774,15 @@ var groupTypes = {
         // handling.
         var inner = buildExpression(group.value.value,
                 options.withSize(group.value.size), prev);
-        if (prev) {
-            if (prev.type === "mathord" || prev.type === "textord") {
-                inner.unshift(new domTree.symbolNode("", 0, 0, 0, 0, ["mord"]));
+        var type = "mord";
+        if (prev && inner[0].type == "mbin") {
+            if (prev.type === "mathord" || prev.type === "textord" ||
+                prev.type === "close") {
+                type = "mbin";
             }
         }
 
-        var span = makeSpan(["mord"],
+        var span = makeSpan([type],
             [makeSpan(["sizing", "reset-" + options.size, group.value.size,
                        options.style.cls()],
                       inner)]);

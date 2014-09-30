@@ -579,20 +579,6 @@ describe("A sizing parser", function() {
 });
 
 describe("A sizing builder", function () {
-    it("should produce the correct spacing in \"a \\Huge +\"", function () {
-        var parse = parseTree("a \\Huge +");
-        var markup = buildTree(parse).toMarkup();
-        expect(markup).toContain(
-            "<span class=\"mord\"></span><span class=\"mbin\">+</span>");
-    });
-
-    it("should produce the correct spacing in \"1 \\Large +\"", function () {
-        var parse = parseTree("a \\Huge +");
-        var markup = buildTree(parse).toMarkup();
-        expect(markup).toContain(
-            "<span class=\"mord\"></span><span class=\"mbin\">+</span>");
-    });
-
     it("should not fail", function () {
         expect("\\Huge x + 1").toBuild();
     });
