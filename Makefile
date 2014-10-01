@@ -8,7 +8,7 @@ build/katex.js: katex.js $(wildcard src/*.js)
 	./node_modules/.bin/browserify $< --standalone katex > $@
 
 build/katex.min.js: build/katex.js
-	./node_modules/.bin/uglifyjs --mangle < $< > $@
+	./node_modules/.bin/uglifyjs --mangle --beautify ascii_only=true,beautify=false < $< > $@
 
 build/%.less.css: static/%.less
 	./node_modules/.bin/lessc $< $@

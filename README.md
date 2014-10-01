@@ -18,12 +18,6 @@ Download the built files from [the releases page](https://github.com/khan/katex/
 <script src="/path/to/katex.min.js"></script>
 ```
 
-Specify UTF-8 as your content type:
-
-```html
-<meta charset="utf-8">
-```
-
 Call `katex.render` with a TeX expression and a DOM element to render into:
 
 ```js
