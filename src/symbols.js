@@ -57,6 +57,26 @@ var symbols = {
             group: "textord",
             replace: "\u25b3"
         },
+        "\\forall": {
+            font: "main",
+            group: "textord",
+            replace: "\u2200"
+        },
+        "\\notforall": {
+            font: "main",
+            group: "textord",
+            replace: "\u2201"
+        },
+        "\\exists": {
+            font: "main",
+            group: "textord",
+            replace: "\u2203"
+        },
+        "\\nexists": {
+            font: "main",
+            group: "textord",
+            replace: "\u2204"
+        },
         "\\Gamma": {
             font: "main",
             group: "textord",
@@ -530,6 +550,16 @@ var symbols = {
             font: "main",
             group: "rel",
             replace: "\u2192"
+        },
+        "\\implies": {
+            font: "main",
+            group: "rel",
+            replace: "\u21D2"
+        },
+        "\\iff": {
+            font: "main",
+            group: "rel",
+            replace: "\u21D4"
         },
         "\\to": {
             font: "main",
