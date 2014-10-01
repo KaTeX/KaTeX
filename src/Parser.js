@@ -46,7 +46,7 @@ var ParseError = require("./ParseError");
 function Parser(input) {
     // Make a new lexer
     this.lexer = new Lexer(input);
-};
+}
 
 /**
  * The resulting parse tree nodes of the parse tree.
