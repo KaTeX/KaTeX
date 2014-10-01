@@ -172,7 +172,7 @@ var functions = {
             return {
                 type: "infix",
                 replaceWith: "\\frac"
-            }
+            };
         }
     }
 };

@@ -13,8 +13,6 @@ var buildCommon = require("./buildCommon");
 var delimiter = require("./delimiter");
 var domTree = require("./domTree");
 var fontMetrics = require("./fontMetrics");
-var parseTree = require("./parseTree");
-var symbols = require("./symbols");
 var utils = require("./utils");
 
 var makeSpan = buildCommon.makeSpan;
@@ -99,7 +97,7 @@ var getTypeOfGroup = function(group) {
  * handling them itself.
  */
 var shouldHandleSupSub = function(group, options) {
-    if (group == null) {
+    if (!group) {
         return false;
     } else if (group.type === "op") {
         // Operators handle supsubs differently when they have limits
@@ -118,7 +116,7 @@ var shouldHandleSupSub = function(group, options) {
  * a single element, we want to pull that out.
  */
 var getBaseElem = function(group) {
-    if (group == null) {
+    if (!group) {
         return false;
     } else if (group.type === "ordgroup") {
         if (group.value.length === 1) {
@@ -248,7 +246,6 @@ var groupTypes = {
     supsub: function(group, options, prev) {
         // Superscript and subscripts are handled in the TeXbook on page
         // 445-446, rules 18(a-f).
-        var baseGroup = group.value.base;
 
         // Here is where we defer to the inner group if it should handle
         // superscripts and subscripts itself.
@@ -257,18 +254,19 @@ var groupTypes = {
         }
 
         var base = buildGroup(group.value.base, options.reset());
+        var supmid, submid, sup, sub;
 
         if (group.value.sup) {
-            var sup = buildGroup(group.value.sup,
+            sup = buildGroup(group.value.sup,
                     options.withStyle(options.style.sup()));
-            var supmid = makeSpan(
+            supmid = makeSpan(
                     [options.style.reset(), options.style.sup().cls()], [sup]);
         }
 
         if (group.value.sub) {
-            var sub = buildGroup(group.value.sub,
+            sub = buildGroup(group.value.sub,
                     options.withStyle(options.style.sub()));
-            var submid = makeSpan(
+            submid = makeSpan(
                     [options.style.reset(), options.style.sub().cls()], [sub]);
         }
 
@@ -384,7 +382,7 @@ var groupTypes = {
         var numerreset = makeSpan([fstyle.reset(), nstyle.cls()], [numer]);
 
         var denom = buildGroup(group.value.denom, options.withStyle(dstyle));
-        var denomreset = makeSpan([fstyle.reset(), dstyle.cls()], [denom])
+        var denomreset = makeSpan([fstyle.reset(), dstyle.cls()], [denom]);
 
         var ruleWidth = fontMetrics.metrics.defaultRuleThickness /
             options.style.sizeMultiplier;
@@ -551,7 +549,7 @@ var groupTypes = {
         if (hasLimits) {
             // IE 8 clips \int if it is in a display: inline-block. We wrap it
             // in a new span so it is an inline, and works.
-            var base = makeSpan([], [base]);
+            base = makeSpan([], [base]);
 
             var supmid, supKern, submid, subKern;
             // We manually have to handle the superscripts and subscripts. This,
@@ -581,9 +579,9 @@ var groupTypes = {
 
             // Build the final group as a vlist of the possible subscript, base,
             // and possible superscript.
-            var finalGroup;
+            var finalGroup, top, bottom;
             if (!supGroup) {
-                var top = base.height - baseShift;
+                top = base.height - baseShift;
 
                 finalGroup = buildCommon.makeVList([
                     {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
@@ -598,7 +596,7 @@ var groupTypes = {
                 // margin will shift by 1/2 that.
                 finalGroup.children[0].style.marginLeft = -slant + "em";
             } else if (!subGroup) {
-                var bottom = base.depth + baseShift;
+                bottom = base.depth + baseShift;
 
                 finalGroup = buildCommon.makeVList([
                     {type: "elem", elem: base},
@@ -615,7 +613,7 @@ var groupTypes = {
                 // subscript) but be safe.
                 return base;
             } else {
-                var bottom = fontMetrics.metrics.bigOpSpacing5 +
+                bottom = fontMetrics.metrics.bigOpSpacing5 +
                     submid.height + submid.depth +
                     subKern +
                     base.depth + baseShift;
@@ -743,7 +741,7 @@ var groupTypes = {
         }
 
         // Shift the delimiter so that its top lines up with the top of the line
-        delimShift = -(inner.height + lineClearance + ruleWidth) + delim.height;
+        var delimShift = -(inner.height + lineClearance + ruleWidth) + delim.height;
         delim.style.top = delimShift + "em";
         delim.height -= delimShift;
         delim.depth += delimShift;
@@ -989,7 +987,7 @@ var groupTypes = {
         var accentBody = makeSpan(["accent-body", vecClass], [
             makeSpan([], [accent])]);
 
-        var accentBody = buildCommon.makeVList([
+        accentBody = buildCommon.makeVList([
             {type: "elem", elem: body},
             {type: "kern", size: -clearance},
             {type: "elem", elem: accentBody}
@@ -1047,11 +1045,12 @@ var buildGroup = function(group, options, prev) {
     if (groupTypes[group.type]) {
         // Call the groupTypes function
         var groupNode = groupTypes[group.type](group, options, prev);
+        var multiplier;
 
         // If the style changed between the parent and the current group,
         // account for the size difference
         if (options.style !== options.parentStyle) {
-            var multiplier = options.style.sizeMultiplier /
+            multiplier = options.style.sizeMultiplier /
                     options.parentStyle.sizeMultiplier;
 
             groupNode.height *= multiplier;
@@ -1061,7 +1060,7 @@ var buildGroup = function(group, options, prev) {
         // If the size changed between the parent and the current group, account
         // for that size difference.
         if (options.size !== options.parentSize) {
-            var multiplier = sizingMultiplier[options.size] /
+            multiplier = sizingMultiplier[options.size] /
                     sizingMultiplier[options.parentSize];
 
             groupNode.height *= multiplier;

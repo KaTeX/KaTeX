@@ -20,14 +20,11 @@
  * used in `\left` and `\right`.
  */
 
-var Options = require("./Options");
 var ParseError = require("./ParseError");
 var Style = require("./Style");
 
 var buildCommon = require("./buildCommon");
-var domTree = require("./domTree");
 var fontMetrics = require("./fontMetrics");
-var parseTree = require("./parseTree");
 var symbols = require("./symbols");
 var utils = require("./utils");
 
@@ -38,9 +35,9 @@ var makeSpan = buildCommon.makeSpan;
  * after following replacement from symbols.js)
  */
 var getMetrics = function(symbol, font) {
-    if (symbols["math"][symbol] && symbols["math"][symbol].replace) {
+    if (symbols.math[symbol] && symbols.math[symbol].replace) {
         return fontMetrics.getCharacterMetrics(
-            symbols["math"][symbol].replace, font);
+            symbols.math[symbol].replace, font);
     } else {
         return fontMetrics.getCharacterMetrics(
             symbol, font);
@@ -172,8 +169,6 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
         top = "\\Uparrow";
         repeat = "\u2016";
         bottom = "\\Downarrow";
-    } else if (delim === "|" || delim === "\\vert") {
-    } else if (delim === "\\|" || delim === "\\Vert") {
     } else if (delim === "[" || delim === "\\lbrack") {
         top = "\u23a1";
         repeat = "\u23a2";
@@ -267,8 +262,7 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
     if (center) {
         axisHeight *= options.style.sizeMultiplier;
     }
-    // Calculate the height and depth
-    var height = realHeightTotal / 2 + axisHeight;
+    // Calculate the depth
     var depth = realHeightTotal / 2 - axisHeight;
 
     // Now, we start building the pieces that will go into the vlist
@@ -279,13 +273,14 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
     // Add the bottom symbol
     inners.push(makeInner(bottom, font, mode));
 
+    var i;
     if (middle === null) {
         // Calculate the number of repeated symbols we need
         var repeatHeight = realHeightTotal - topHeightTotal - bottomHeightTotal;
         var symbolCount = Math.ceil(repeatHeight / repeatHeightTotal);
 
         // Add that many symbols
-        for (var i = 0; i < symbolCount; i++) {
+        for (i = 0; i < symbolCount; i++) {
             inners.push(makeInner(repeat, font, mode));
         }
     } else {
@@ -304,7 +299,7 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
             Math.ceil(bottomRepeatHeight / repeatHeightTotal);
 
         // Add the top repeated part
-        for (var i = 0; i < topSymbolCount; i++) {
+        for (i = 0; i < topSymbolCount; i++) {
             inners.push(makeInner(repeat, font, mode));
         }
 
@@ -312,7 +307,7 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
         inners.push(makeInner(middle, font, mode));
 
         // Add the bottom repeated part
-        for (var i = 0; i < bottomSymbolCount; i++) {
+        for (i = 0; i < bottomSymbolCount; i++) {
             inners.push(makeInner(repeat, font, mode));
         }
     }
@@ -364,8 +359,6 @@ var makeSizedDelim = function(delim, size, options, mode) {
     } else if (delim === ">") {
         delim = "\\rangle";
     }
-
-    var retDelim;
 
     // Sized delimiters are never centered.
     if (utils.contains(stackLargeDelimiters, delim) ||

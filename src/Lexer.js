@@ -16,7 +16,7 @@ var ParseError = require("./ParseError");
 // The main lexer class
 function Lexer(input) {
     this._input = input;
-};
+}
 
 // The resulting token returned from `lex`.
 function Token(text, data, position) {
@@ -35,7 +35,7 @@ var mathNormals = [
     /^['\^_{}]/, // misc
     /^[(\[]/, // opens
     /^[)\]?!]/, // closes
-    /^~/, // spacing
+    /^~/ // spacing
 ];
 
 // These are "normal" tokens like above, but should instead be parsed in text
@@ -43,7 +43,7 @@ var mathNormals = [
 var textNormals = [
     /^[a-zA-Z0-9`!@*()-=+\[\]'";:?\/.,]/, // ords
     /^[{}]/, // grouping
-    /^~/, // spacing
+    /^~/ // spacing
 ];
 
 // Regexes for matching whitespace
@@ -61,15 +61,16 @@ var anyFunc = /^\\(?:[a-zA-Z]+|.)/;
  */
 Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
     var input = this._input.slice(pos);
+    var whitespace;
 
     if (ignoreWhitespace) {
         // Get rid of whitespace.
-        var whitespace = input.match(whitespaceRegex)[0];
+        whitespace = input.match(whitespaceRegex)[0];
         pos += whitespace.length;
         input = input.slice(whitespace.length);
     } else {
         // Do the funky concatenation of whitespace that happens in text mode.
-        var whitespace = input.match(whitespaceConcatRegex);
+        whitespace = input.match(whitespaceConcatRegex);
         if (whitespace !== null) {
             return new Token(" ", null, pos + whitespace[0].length);
         }
@@ -100,7 +101,7 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
 
     throw new ParseError("Unexpected character: '" + input[0] +
         "'", this, pos);
-}
+};
 
 // A regex to match a CSS color (like #ffffff or BlueViolet)
 var cssColor = /^(#[a-z0-9]+|[a-z]+)/i;

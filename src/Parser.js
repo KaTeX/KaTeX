@@ -46,7 +46,7 @@ var ParseError = require("./ParseError");
 function Parser(input) {
     // Make a new lexer
     this.lexer = new Lexer(input);
-};
+}
 
 /**
  * The resulting parse tree nodes of the parse tree.
@@ -260,18 +260,18 @@ Parser.prototype.parseAtom = function(pos, mode) {
 
     var superscript;
     var subscript;
+    var result;
     while (true) {
         // Lex the first token
         var lex = this.lexer.lex(currPos, mode);
 
-        var group;
         if (lex.text === "^") {
             // We got a superscript start
             if (superscript) {
                 throw new ParseError(
                     "Double superscript", this.lexer, currPos);
             }
-            var result = this.handleSupSubscript(
+            result = this.handleSupSubscript(
                 lex.position, mode, lex.text, "superscript");
             currPos = result.position;
             superscript = result.result;
@@ -281,7 +281,7 @@ Parser.prototype.parseAtom = function(pos, mode) {
                 throw new ParseError(
                     "Double subscript", this.lexer, currPos);
             }
-            var result = this.handleSupSubscript(
+            result = this.handleSupSubscript(
                 lex.position, mode, lex.text, "subscript");
             currPos = result.position;
             subscript = result.result;
@@ -352,13 +352,14 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
     }
 
     var func = start.result.result;
+    var body;
 
     if (func === "\\left") {
         // If we see a left:
         // Parse the entire left function (including the delimiter)
         var left = this.parseFunction(pos, mode);
         // Parse out the implicit body
-        var body = this.parseExpression(left.position, mode, false, "}");
+        body = this.parseExpression(left.position, mode, false, "}");
         // Check the next token
         var rightLex = this.parseSymbol(body.position, mode);
 
@@ -382,7 +383,7 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
         return null;
     } else if (utils.contains(sizeFuncs, func)) {
         // If we see a sizing function, parse out the implict body
-        var body = this.parseExpression(start.result.position, mode, false, "}");
+        body = this.parseExpression(start.result.position, mode, false, "}");
         return new ParseResult(
             new ParseNode("sizing", {
                 // Figure out what size to use based on the list of functions above
@@ -392,7 +393,7 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
             body.position);
     } else if (utils.contains(styleFuncs, func)) {
         // If we see a styling function, parse out the implict body
-        var body = this.parseExpression(start.result.position, mode, true, "}");
+        body = this.parseExpression(start.result.position, mode, true, "}");
         return new ParseResult(
             new ParseNode("styling", {
                 // Figure out what style to use by pulling out the style from

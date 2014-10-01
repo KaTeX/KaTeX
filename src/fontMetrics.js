@@ -1,3 +1,5 @@
+/* jshint unused:false */
+
 /**
  * This file contains metrics regarding fonts and individual symbols. The sigma
  * and xi variables, as well as the metricMap map contain data extracted from
@@ -45,15 +47,15 @@ var xi1 = 0;
 var xi2 = 0;
 var xi3 = 0;
 var xi4 = 0;
-var xi5 = .431;
+var xi5 = 0.431;
 var xi6 = 1;
 var xi7 = 0;
-var xi8 = .04;
-var xi9 = .111;
-var xi10 = .166;
-var xi11 = .2;
-var xi12 = .6;
-var xi13 = .1;
+var xi8 = 0.04;
+var xi9 = 0.111;
+var xi10 = 0.166;
+var xi11 = 0.2;
+var xi12 = 0.6;
+var xi13 = 0.1;
 
 // This value determines how large a pt is, for metrics which are defined in
 // terms of pts.
