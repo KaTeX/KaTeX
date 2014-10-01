@@ -804,6 +804,15 @@ describe("A rule parser", function() {
         expect(hardNumberParse.value.width.number).toBeCloseTo(1.24);
         expect(hardNumberParse.value.height.number).toBeCloseTo(2.45);
     });
+
+    it("should parse negative sizes", function() {
+        expect("\\rule{-1em}{- 0.2em}").toParse();
+
+        var parse = parseTree("\\rule{-1em}{- 0.2em}")[0];
+
+        expect(parse.value.width.number).toBeCloseTo(-1);
+        expect(parse.value.height.number).toBeCloseTo(-0.2);
+    });
 });
 
 describe("A left/right parser", function() {
@@ -1136,5 +1145,32 @@ describe("A parser error", function () {
         } catch (e) {
             expect(e.position).toEqual(5);
         }
+    });
+});
+
+describe("An optional argument parser", function() {
+    it("should not fail", function() {
+        // Note this doesn't actually make an optional argument, but still
+        // should work
+        expect("\\frac[1]{2}{3}").toParse();
+
+        expect("\\rule[0.2em]{1em}{1em}").toParse();
+    });
+
+    it("should fail on sqrts for now", function() {
+        expect("\\sqrt[3]{2}").toNotParse();
+    });
+
+    it("should work when the optional argument is missing", function() {
+        expect("\\sqrt{2}").toParse();
+        expect("\\rule{1em}{2em}").toParse();
+    });
+
+    it("should fail when the optional argument is malformed", function() {
+        expect("\\rule[1]{2em}{3em}").toNotParse();
+    });
+
+    it("should not work if the optional argument isn't closed", function() {
+        expect("\\sqrt[").toNotParse();
     });
 });

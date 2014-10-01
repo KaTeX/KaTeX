@@ -19,37 +19,31 @@ function Lexer(input) {
 };
 
 // The resulting token returned from `lex`.
-function LexResult(type, text, position) {
-    this.type = type;
+function Token(text, data, position) {
     this.text = text;
+    this.data = data;
     this.position = position;
 }
 
 // "normal" types of tokens. These are tokens which can be matched by a simple
-// regex, and have a type which is listed.
+// regex
 var mathNormals = [
-    [/^[/|@."`0-9]/, "textord"],
-    [/^[a-zA-Z]/, "mathord"],
-    [/^[*+-]/, "bin"],
-    [/^[=<>:]/, "rel"],
-    [/^[,;]/, "punct"],
-    [/^'/, "'"],
-    [/^\^/, "^"],
-    [/^_/, "_"],
-    [/^{/, "{"],
-    [/^}/, "}"],
-    [/^[(\[]/, "open"],
-    [/^[)\]?!]/, "close"],
-    [/^~/, "spacing"]
+    /^[/|@.""`0-9a-zA-Z]/, // ords
+    /^[*+-]/, // bins
+    /^[=<>:]/, // rels
+    /^[,;]/, // punctuation
+    /^['\^_{}]/, // misc
+    /^[(\[]/, // opens
+    /^[)\]?!]/, // closes
+    /^~/, // spacing
 ];
 
 // These are "normal" tokens like above, but should instead be parsed in text
 // mode.
 var textNormals = [
-    [/^[a-zA-Z0-9`!@*()-=+\[\]'";:?\/.,]/, "textord"],
-    [/^{/, "{"],
-    [/^}/, "}"],
-    [/^~/, "spacing"]
+    /^[a-zA-Z0-9`!@*()-=+\[\]'";:?\/.,]/, // ords
+    /^[{}]/, // grouping
+    /^~/, // spacing
 ];
 
 // Regexes for matching whitespace
@@ -77,29 +71,29 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
         // Do the funky concatenation of whitespace that happens in text mode.
         var whitespace = input.match(whitespaceConcatRegex);
         if (whitespace !== null) {
-            return new LexResult(" ", " ", pos + whitespace[0].length);
+            return new Token(" ", null, pos + whitespace[0].length);
         }
     }
 
     // If there's no more input to parse, return an EOF token
     if (input.length === 0) {
-        return new LexResult("EOF", null, pos);
+        return new Token("EOF", null, pos);
     }
 
     var match;
     if ((match = input.match(anyFunc))) {
         // If we match a function token, return it
-        return new LexResult(match[0], match[0], pos + match[0].length);
+        return new Token(match[0], null, pos + match[0].length);
     } else {
         // Otherwise, we look through the normal token regexes and see if it's
         // one of them.
         for (var i = 0; i < normals.length; i++) {
             var normal = normals[i];
 
-            if ((match = input.match(normal[0]))) {
+            if ((match = input.match(normal))) {
                 // If it is, return it
-                return new LexResult(
-                    normal[1], match[0], pos + match[0].length);
+                return new Token(
+                    match[0], null, pos + match[0].length);
             }
         }
     }
@@ -125,7 +119,7 @@ Lexer.prototype._innerLexColor = function(pos) {
     var match;
     if ((match = input.match(cssColor))) {
         // If we look like a color, return a color
-        return new LexResult("color", match[0], pos + match[0].length);
+        return new Token(match[0], null, pos + match[0].length);
     } else {
         throw new ParseError("Invalid color", this, pos);
     }
@@ -133,7 +127,7 @@ Lexer.prototype._innerLexColor = function(pos) {
 
 // A regex to match a dimension. Dimensions look like
 // "1.2em" or ".4pt" or "1 ex"
-var sizeRegex = /^(\d+(?:\.\d*)?|\.\d+)\s*([a-z]{2})/;
+var sizeRegex = /^(-?)\s*(\d+(?:\.\d*)?|\.\d+)\s*([a-z]{2})/;
 
 /**
  * This function lexes a dimension.
@@ -148,13 +142,13 @@ Lexer.prototype._innerLexSize = function(pos) {
 
     var match;
     if ((match = input.match(sizeRegex))) {
-        var unit = match[2];
+        var unit = match[3];
         // We only currently handle "em" and "ex" units
         if (unit !== "em" && unit !== "ex") {
             throw new ParseError("Invalid unit: '" + unit + "'", this, pos);
         }
-        return new LexResult("size", {
-                number: +match[1],
+        return new Token(match[0], {
+                number: +(match[1] + match[2]),
                 unit: unit
             }, pos + match[0].length);
     }
@@ -171,7 +165,7 @@ Lexer.prototype._innerLexWhitespace = function(pos) {
     var whitespace = input.match(whitespaceRegex)[0];
     pos += whitespace.length;
 
-    return new LexResult("whitespace", whitespace, pos);
+    return new Token(whitespace, null, pos);
 };
 
 /**

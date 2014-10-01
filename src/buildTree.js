@@ -876,7 +876,15 @@ var groupTypes = {
         // Make an empty span for the rule
         var rule = makeSpan(["mord", "rule"], [], options.getColor());
 
-        // Calculate the width and height of the rule, and account for units
+        // Calculate the shift, width, and height of the rule, and account for units
+        var shift = 0;
+        if (group.value.shift) {
+            shift = group.value.shift.number;
+            if (group.value.shift.unit === "ex") {
+                shift *= fontMetrics.metrics.xHeight;
+            }
+        }
+
         var width = group.value.width.number;
         if (group.value.width.unit === "ex") {
             width *= fontMetrics.metrics.xHeight;
@@ -889,16 +897,19 @@ var groupTypes = {
 
         // The sizes of rules are absolute, so make it larger if we are in a
         // smaller style.
+        shift /= options.style.sizeMultiplier;
         width /= options.style.sizeMultiplier;
         height /= options.style.sizeMultiplier;
 
         // Style the rule to the right size
         rule.style.borderRightWidth = width + "em";
         rule.style.borderTopWidth = height + "em";
+        rule.style.bottom = shift + "em";
 
         // Record the height and width
         rule.width = width;
-        rule.height = height;
+        rule.height = height + shift;
+        rule.depth = -shift;
 
         return rule;
     },
