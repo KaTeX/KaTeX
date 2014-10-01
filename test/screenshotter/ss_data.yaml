@@ -147,6 +147,11 @@ NegativeSpaceBetweenRel: A =\!= B
 NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
     {\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
+Not: |
+    \begin{array}{l}
+        \not=\not>\not\geq\not\in\not<\not\leq\not{abc} \\
+        \not xy + ab \not xy
+    \end{array}
 NullDelimiterInteraction: a \bigl. + 2 \quad \left. + a \right)
 OldFont: |
     \begin{matrix}

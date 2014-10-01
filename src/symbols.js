@@ -500,6 +500,7 @@ defineSymbol(math, main, rel, "\u2190", "\\gets");
 defineSymbol(math, main, rel, ">", "\\gt");
 defineSymbol(math, main, rel, "\u2208", "\\in");
 defineSymbol(math, main, rel, "\u2209", "\\notin");
+defineSymbol(math, main, rel, "\u0338", "\\not");
 defineSymbol(math, main, rel, "\u2282", "\\subset");
 defineSymbol(math, main, rel, "\u2283", "\\supset");
 defineSymbol(math, main, rel, "\u2286", "\\subseteq");

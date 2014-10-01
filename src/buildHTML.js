@@ -120,6 +120,40 @@ const buildExpression = function(expression, options, isRealGroup) {
         }
     }
 
+    // Process \\not commands within the group.
+    // TODO(kevinb): Handle multiple \\not commands in a row.
+    // TODO(kevinb): Handle \\not{abc} correctly.  The \\not should appear over
+    // the 'a' instead of the 'c'.
+    for (let i = 0; i < groups.length; i++) {
+        if (groups[i].value === "\u0338" && i + 1 < groups.length) {
+            const children = groups.slice(i, i + 2);
+
+            children[0].classes = ["mainrm"];
+            // \u0338 is a combining glyph so we could reorder the children so
+            // that it comes after the other glyph.  This works correctly on
+            // most browsers except for Safari.  Instead we absolutely position
+            // the glyph and set it's right side to match that of the other
+            // glyph which is visually equivalent.
+            children[0].style.position = "absolute";
+            children[0].style.right = "0";
+
+            // Copy the classes from the second glyph to the new container.
+            // This is so it behaves the same as though there was no \\not.
+            const classes = groups[i + 1].classes;
+            const container = makeSpan(classes, children);
+
+            // LaTeX adds a space between ords separated by a \\not.
+            if (classes.indexOf("mord") !== -1) {
+                // \glue(\thickmuskip) 2.77771 plus 2.77771
+                container.style.paddingLeft = "0.277771em";
+            }
+
+            // Ensure that the \u0338 is positioned relative to the container.
+            container.style.position = "relative";
+            groups.splice(i, 2, container);
+        }
+    }
+
     return groups;
 };
 
