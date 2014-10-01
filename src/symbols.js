@@ -62,11 +62,6 @@ var symbols = {
             group: "textord",
             replace: "\u2200"
         },
-        "\\notforall": {
-            font: "main",
-            group: "textord",
-            replace: "\u2201"
-        },
         "\\exists": {
             font: "main",
             group: "textord",

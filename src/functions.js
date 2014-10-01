@@ -241,7 +241,7 @@ var duplicatedFunctions = [
             "\\arcsin", "\\arccos", "\\arctan", "\\arg", "\\cos", "\\cosh",
             "\\cot", "\\coth", "\\csc", "\\deg", "\\dim", "\\exp", "\\hom",
             "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin", "\\sinh",
-            "\\tan","\\tanh"
+            "\\span", "\\tan", "\\tanh"
         ],
         data: {
             numArgs: 0,
