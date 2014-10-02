@@ -1,8 +1,11 @@
-.PHONY: build setup copy serve clean metrics test zip
-build: setup build/katex.min.js build/katex.min.css zip compress
+.PHONY: build lint setup copy serve clean metrics test zip
+build: setup lint build/katex.min.js build/katex.min.css zip compress
 
 setup:
 	npm install
+
+lint: katex.js $(wildcard src/*.js)
+	./node_modules/.bin/jshint $^
 
 build/katex.js: katex.js $(wildcard src/*.js)
 	./node_modules/.bin/browserify $< --standalone katex > $@

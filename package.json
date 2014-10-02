@@ -1,29 +1,30 @@
 {
-    "name": "katex",
-    "version": "0.1.0",
-    "description": "Fast math!",
-    "main": "katex.js",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/Khan/KaTeX.git"
-    },
-    "files": [
-        "katex.js",
-        "cli.js",
-        "src/"
-    ],
-    "license": "MIT",
-    "devDependencies": {
-        "browserify": "~2.29.1",
-        "express": "~3.3.3",
-        "less": "~1.7.5",
-        "uglify-js": "~2.4.15",
-        "clean-css": "~2.2.15",
-        "huxley": "~0.8.1",
-        "jasmine-node": "git://github.com/mhevery/jasmine-node.git#Jasmine2.0"
-    },
-    "bin": "cli.js",
-    "scripts": {
-        "test": "make test"
-    }
+  "name": "katex",
+  "version": "0.1.0",
+  "description": "Fast math!",
+  "main": "katex.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Khan/KaTeX.git"
+  },
+  "files": [
+    "katex.js",
+    "cli.js",
+    "src/"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "~2.29.1",
+    "clean-css": "~2.2.15",
+    "express": "~3.3.3",
+    "huxley": "~0.8.1",
+    "jasmine-node": "git://github.com/mhevery/jasmine-node.git#Jasmine2.0",
+    "jshint": "^2.5.6",
+    "less": "~1.7.5",
+    "uglify-js": "~2.4.15"
+  },
+  "bin": "cli.js",
+  "scripts": {
+    "test": "make lint test"
+  }
 }

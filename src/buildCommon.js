@@ -173,6 +173,8 @@ var makeFontSizer = function(options, fontSize) {
  */
 var makeVList = function(children, positionType, positionData, options) {
     var depth;
+    var currPos;
+    var i;
     if (positionType === "individualShift") {
         var oldChildren = children;
         children = [oldChildren[0]];
@@ -180,8 +182,8 @@ var makeVList = function(children, positionType, positionData, options) {
         // Add in kerns to the list of children to get each element to be
         // shifted to the correct specified shift
         depth = -oldChildren[0].shift - oldChildren[0].elem.depth;
-        var currPos = depth;
-        for (var i = 1; i < oldChildren.length; i++) {
+        currPos = depth;
+        for (i = 1; i < oldChildren.length; i++) {
             var diff = -oldChildren[i].shift - currPos -
                 oldChildren[i].elem.depth;
             var size = diff -
@@ -197,7 +199,7 @@ var makeVList = function(children, positionType, positionData, options) {
         // We always start at the bottom, so calculate the bottom by adding up
         // all the sizes
         var bottom = positionData;
-        for (var i = 0; i < children.length; i++) {
+        for (i = 0; i < children.length; i++) {
             if (children[i].type === "kern") {
                 bottom -= children[i].size;
             } else {
@@ -217,7 +219,7 @@ var makeVList = function(children, positionType, positionData, options) {
 
     // Make the fontSizer
     var maxFontSize = 0;
-    for (var i = 0; i < children.length; i++) {
+    for (i = 0; i < children.length; i++) {
         if (children[i].type === "elem") {
             maxFontSize = Math.max(maxFontSize, children[i].elem.maxFontSize);
         }
@@ -226,8 +228,8 @@ var makeVList = function(children, positionType, positionData, options) {
 
     // Create a new list of actual children at the correct offsets
     var realChildren = [];
-    var currPos = depth;
-    for (var i = 0; i < children.length; i++) {
+    currPos = depth;
+    for (i = 0; i < children.length; i++) {
         if (children[i].type === "kern") {
             currPos += children[i].size;
         } else {

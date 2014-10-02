@@ -973,7 +973,7 @@ var symbols = {
 var mathTextSymbols = "0123456789/@.\"";
 for (var i = 0; i < mathTextSymbols.length; i++) {
     var ch = mathTextSymbols.charAt(i);
-    symbols["math"][ch] = {
+    symbols.math[ch] = {
         font: "main",
         group: "textord"
     };
@@ -983,7 +983,7 @@ for (var i = 0; i < mathTextSymbols.length; i++) {
 var textSymbols = "0123456789`!@*()-=+[]'\";:?/.,";
 for (var i = 0; i < textSymbols.length; i++) {
     var ch = textSymbols.charAt(i);
-    symbols["text"][ch] = {
+    symbols.text[ch] = {
         font: "main",
         group: "textord"
     };
@@ -993,11 +993,11 @@ for (var i = 0; i < textSymbols.length; i++) {
 var letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 for (var i = 0; i < letters.length; i++) {
     var ch = letters.charAt(i);
-    symbols["math"][ch] = {
+    symbols.math[ch] = {
         font: "main",
         group: "mathord"
     };
-    symbols["text"][ch] = {
+    symbols.text[ch] = {
         font: "main",
         group: "textord"
     };

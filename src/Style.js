@@ -94,7 +94,7 @@ var resetNames = [
     "reset-textstyle",
     "reset-textstyle",
     "reset-scriptstyle",
-    "reset-scriptscriptstyle",
+    "reset-scriptscriptstyle"
 ];
 
 // Instances of the different styles
