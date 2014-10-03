@@ -2,10 +2,15 @@
 @use-eot: true;
 @use-ttf: true;
 @use-woff: true;
+@use-woff2: true;
 
 .use-eot(@family, @family-suffix) when (@use-eot = true) {
     src: url('@{font-folder}/KaTeX_@{family}-@{family-suffix}.eot');
     src+: url('@{font-folder}/KaTeX_@{family}-@{family-suffix}.eot#iefix') format('embedded-opentype')
+}
+
+.use-woff2(@family, @family-suffix) when (@use-woff2 = true) {
+    src+: url('@{font-folder}/KaTeX_@{family}-@{family-suffix}.woff2') format('woff2')
 }
 
 .use-woff(@family, @family-suffix) when (@use-woff = true) {
@@ -34,6 +39,7 @@
     @font-face {
         font-family: 'KaTeX_@{family}';
         .use-eot(@family, @suffix);
+        .use-woff2(@family, @suffix);
         .use-woff(@family, @suffix);
         .use-ttf(@family, @suffix);
         font-weight: @weight;
