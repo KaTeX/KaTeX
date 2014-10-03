@@ -2,3 +2,19 @@ language: node_js
 node_js:
 - "0.11"
 - "0.10"
+addons:
+  firefox: "28.0"
+before_install:
+- wget http://mirrors.kernel.org/ubuntu/pool/main/f/freetype/libfreetype6_2.5.2-1ubuntu2_amd64.deb
+- sudo dpkg -i libfreetype6_2.5.2-1ubuntu2_amd64.deb
+- "export DISPLAY=:99.0"
+- "sh -e /etc/init.d/xvfb start"
+before_script:
+- wget http://selenium-release.storage.googleapis.com/2.42/selenium-server-standalone-2.42.2.jar
+- java -jar selenium-server-standalone-2.42.2.jar -port 4445 > /dev/null &
+- make build/fonts
+- node server.js > /dev/null &
+script:
+- sleep 2
+- ./node_modules/.bin/hux --server http://localhost:4445/wd/hub --write ./test/huxley/ > /dev/null
+- make lint test functest

@@ -1,4 +1,4 @@
-.PHONY: build lint setup copy serve clean metrics test zip
+.PHONY: build lint setup copy serve clean metrics test functest zip
 build: setup lint build/katex.min.js build/katex.min.css zip compress
 
 setup:
@@ -53,6 +53,9 @@ serve:
 
 test:
 	./node_modules/.bin/jasmine-node test/katex-spec.js
+
+functest:
+	 cd test/compare && node compare.js && cd ../../
 
 metrics:
 	cd metrics && ./mapping.pl | ./extract_tfms.py | ./extract_ttfs.py | ./replace_line.py
