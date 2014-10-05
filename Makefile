@@ -54,7 +54,7 @@ serve:
 test:
 	./node_modules/.bin/jasmine-node test/katex-spec.js
 
-functest:
+compare:
 	 cd test/compare && node compare.js && cd ../../
 
 metrics:

@@ -17,4 +17,4 @@ before_script:
 script:
 - sleep 2
 - ./node_modules/.bin/hux --server http://localhost:4444/wd/hub --write ./test/huxley/ > /dev/null
-- make lint test functest
+- make lint test compare
