@@ -5,7 +5,6 @@ var Promise = require("bluebird");
 var start = Date.now();
 var tests = JSON.parse(fs.readFileSync("../huxley/Huxleyfile.json"));
 
-
 var promise = new Promise(function (resolve, reject) {
     resolve();
 });
