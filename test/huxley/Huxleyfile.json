@@ -2,7 +2,7 @@
     {
         "name": "BasicTest",
         "screenSize": [1024, 768],
-        "url": "http://localhost:7936/test/huxley/test.html?m=b"
+        "url": "http://localhost:7936/test/huxley/test.html?m=a"
     },
 
     {
