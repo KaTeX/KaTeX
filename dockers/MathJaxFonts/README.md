@@ -23,26 +23,15 @@ or use a different name.) This will get you into the docker in the root
 directory. From there, cd into the `/MathJax-dev/fonts/OTF/TeX` directory, and
 run
 
-    make ttf eot woff
+    make ttf eot woff woff2
 
 to build all of the fonts that we need. Finally, leave the docker and copy all
-the files off with
+the files off with the `copy_fonts.sh` script:
 
-    docker cp mjf:/MathJax-dev/fonts/OTF/TeX/ttf ./
-    docker cp mjf:/MathJax-dev/fonts/OTF/TeX/eot ./
-    docker cp mjf:/MathJax-dev/fonts/OTF/TeX/woff ./
+    ./copy_fonts.sh mjf
 
-(note we're using `mjf:` to specify the name of the docker we created above)
-Compile the fonts into a single directory
-
-    mv {ttf,eot,woff}/* ./
-
-Remove the WinIE6 and WinChrome fonts
-
-    rm KaTeX_Win*
-
-And you're good to go! Don't forget to update the font metrics with the
-metric_parse.rb script once you're done.
+And you're good to go! Don't forget to update the font metrics with `make
+metrics`.
 
 ### General Docker Help
 -----------------------

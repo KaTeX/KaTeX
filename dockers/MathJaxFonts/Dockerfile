@@ -3,7 +3,7 @@ MAINTAINER xymostech <xymostech@gmail.com>
 
 # Install things
 RUN apt-get -qq update
-RUN apt-get -qqy install git dvipng default-jre default-jdk texlive wget fontforge mftrace fonttools optipng advancecomp man-db build-essential unzip zlib1g-dev python-fontforge ruby || true
+RUN apt-get -qqy install git dvipng default-jre default-jdk texlive wget fontforge mftrace fonttools optipng advancecomp man-db build-essential unzip zlib1g-dev python-fontforge ruby woff-tools || true
 RUN gem install ttfunk --version 1.1.1
 
 # Download yuicompressor
@@ -22,11 +22,10 @@ RUN sed -i "1s/^/#include <cstddef>/" ttf2eot-0.0.2-2/OpenTypeUtilities.h
 RUN make -C ttf2eot-0.0.2-2/
 RUN mv ttf2eot-0.0.2-2/ttf2eot /usr/bin/
 
-# Download and compile sfnt2woff
-RUN wget "http://people.mozilla.org/~jkew/woff/woff-code-latest.zip"
-RUN unzip -d sfnt2woff woff-code-latest.zip
-RUN make -C sfnt2woff
-RUN mv sfnt2woff/sfnt2woff /usr/bin/
+# Download and compile woff2_compress
+RUN git clone "https://code.google.com/p/font-compression-reference/" woff2_compress
+RUN make -C woff2_compress/woff2/
+RUN mv woff2_compress/woff2/woff2_compress /usr/bin/
 
 # Download and setup MathJax-dev
 RUN git clone "https://github.com/khan/MathJax-dev.git"
