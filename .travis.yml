@@ -12,7 +12,7 @@ before_install:
 before_script:
 - wget http://selenium-release.storage.googleapis.com/2.42/selenium-server-standalone-2.42.2.jar
 - sleep 15
-- java -jar selenium-server-standalone-2.42.2.jar -port 4444 &
+- java -jar selenium-server-standalone-2.42.2.jar -port 4444 > /dev/null &
 - make build/fonts
 - node server.js > /dev/null &
 script:
