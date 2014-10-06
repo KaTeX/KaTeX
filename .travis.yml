@@ -11,10 +11,11 @@ before_install:
 - "sh -e /etc/init.d/xvfb start"
 before_script:
 - wget http://selenium-release.storage.googleapis.com/2.42/selenium-server-standalone-2.42.2.jar
-- java -jar selenium-server-standalone-2.42.2.jar -port 4444 > /dev/null &
+- sleep 15
+- java -jar selenium-server-standalone-2.42.2.jar -port 4444 &
 - make build/fonts
 - node server.js > /dev/null &
 script:
-- sleep 2
+- sleep 15
 - ./node_modules/.bin/hux --server http://localhost:4444/wd/hub --write ./test/huxley/ > /dev/null
 - make lint test compare
