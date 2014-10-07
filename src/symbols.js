@@ -766,11 +766,6 @@ var symbols = {
             group: "rel",
             replace: "\u27fa"
         },
-        "\\notin": {
-            font: "main",
-            group: "rel",
-            replace: "\u2209"
-        },
         "\\Leftrightarrow": {
             font: "main",
             group: "rel",
