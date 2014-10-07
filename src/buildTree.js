@@ -670,6 +670,32 @@ var groupTypes = {
             ["katex-logo"], [k, a, t, e, x], options.getColor());
     },
 
+    latex: function(group, options, prev) {
+        // The LaTeX logo. Taken directly from KaTeX symbol, with K
+        // replaced with L.
+        var l = makeSpan(
+            ["l"], [buildCommon.mathrm("L", group.mode)]);
+        var a = makeSpan(
+            ["a"], [buildCommon.mathrm("A", group.mode)]);
+
+        a.height = (a.height + 0.2) * 0.75;
+        a.depth = (a.height - 0.2) * 0.75;
+
+        var t = makeSpan(
+            ["t"], [buildCommon.mathrm("T", group.mode)]);
+        var e = makeSpan(
+            ["e"], [buildCommon.mathrm("E", group.mode)]);
+
+        e.height = (e.height - 0.2155);
+        e.depth = (e.depth + 0.2155);
+
+        var x = makeSpan(
+            ["x"], [buildCommon.mathrm("X", group.mode)]);
+
+        return makeSpan(
+            ["latex-logo"], [l, a, t, e, x], options.getColor());
+    },
+
     overline: function(group, options, prev) {
         // Overlines are handled in the TeXbook pg 443, Rule 9.
 

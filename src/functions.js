@@ -166,6 +166,16 @@ var functions = {
         }
     },
 
+    // A LaTeX logo
+    "\\LaTeX": {
+        numArgs: 0,
+        handler: function(func) {
+            return {
+                type: "latex"
+            };
+        }
+    },
+
     "\\over": {
         numArgs: 0,
         handler: function (func) {
