@@ -366,6 +366,61 @@ var symbols = {
             group: "bin",
             replace: "\u2228"
         },
+        "\\mp": {
+            font: "main",
+            group: "bin",
+            replace: "\u2213"
+        },
+        "\\ominus": {
+            font: "main",
+            group: "textord",
+            replace: "\u2296"
+        },
+        "\\uplus": {
+            font: "main",
+            group: "textord",
+            replace: "\u228e"
+        },
+        "\\sqcap": {
+            font: "main",
+            group: "bin",
+            replace: "\u2293"
+        },
+        "\\ast": {
+            font: "main",
+            group: "bin",
+            replace: "\u2217"
+        },
+        "\\sqcup": {
+            font: "main",
+            group: "bin",
+            replace: "\u2294"
+        },
+        "\\bigcirc": {
+            font: "main",
+            group: "bin",
+            replace: "\u25cb"
+        },
+        "\\bullet": {
+            font: "main",
+            group: "textord",
+            replace: "\u2219"
+        },
+        "\\ddagger": {
+            font: "main",
+            group: "textord",
+            replace: "\u2021"
+        },
+        "\\wr": {
+            font: "main",
+            group: "bin",
+            replace: "\u2240"
+        },
+        "\\amalg": {
+            font: "main",
+            group: "bin",
+            replace: "\u2a3f"
+        },
         "\\surd": {
             font: "main",
             group: "textord",
