@@ -546,6 +546,131 @@ var symbols = {
             group: "rel",
             replace: "\u2270"
         },
+        "\\ll": {
+            font: "main",
+            group: "rel",
+            replace: "\u226a"
+        },
+        "\\gg": {
+            font: "main",
+            group: "rel",
+            replace: "\u226b"
+        },
+        "\\sqsubset": {
+            font: "main",
+            group: "rel",
+            replace: "\u228f"
+        },
+        "\\sqsubseteq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2291"
+        },
+        "\\sqsupset": {
+            font: "main",
+            group: "rel",
+            replace: "\u2290"
+        },
+        "\\sqsupseteq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2292"
+        },
+        "\\prec": {
+            font: "main",
+            group: "rel",
+            replace: "\u227a"
+        },
+        "\\preceq": {
+            font: "main",
+            group: "rel",
+            replace: "\u227c"
+        },
+        "\\succ": {
+            font: "main",
+            group: "rel",
+            replace: "\u227b"
+        },
+        "\\succeq": {
+            font: "main",
+            group: "rel",
+            replace: "\u227d"
+        },
+        "\\doteq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2250"
+        },
+        "\\equiv": {
+            font: "main",
+            group: "rel",
+            replace: "\u2261"
+        },
+        "\\simeq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2243"
+        },
+        "\\sim": {
+            font: "main",
+            group: "rel",
+            replace: "\u223c"
+        },
+        "\\parallel": {
+            font: "main",
+            group: "rel",
+            replace: "\u2225"
+        },
+        "\\nparallel": {
+            font: "main",
+            group: "rel",
+            replace: "\u2226"
+        },
+        "\\perp": {
+            font: "main",
+            group: "rel",
+            replace: "\u22a5"
+        },
+        "\\asymp": {
+            font: "main",
+            group: "rel",
+            replace: "\u224d"
+        },
+        "\\vdash": {
+            font: "main",
+            group: "rel",
+            replace: "\u22a2"
+        },
+        "\\smile": {
+            font: "main",
+            group: "rel",
+            replace: "\u2323"
+        },
+        "\\frown": {
+            font: "main",
+            group: "rel",
+            replace: "\u2322"
+        },
+        "\\bowtie": {
+            font: "main",
+            group: "rel",
+            replace: "\u22c8"
+        },
+        "\\dashv": {
+            font: "main",
+            group: "rel",
+            replace: "\u22a3"
+        },
+        "\\ni": {
+            font: "main",
+            group: "rel",
+            replace: "\u220b"
+        },
+        "\\mid": {
+            font: "main",
+            group: "rel",
+            replace: "\u2223"
+        },
         "\\!": {
             font: "main",
             group: "spacing"
