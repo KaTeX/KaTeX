@@ -272,6 +272,11 @@ var symbols = {
             group: "mathord",
             replace: "\u03d1"
         },
+        "\\varkappa": {
+            font: "main",
+            group: "mathord",
+            replace: "\u03f0"
+        },
         "\\varpi": {
             font: "main",
             group: "mathord",
