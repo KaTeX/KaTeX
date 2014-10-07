@@ -726,6 +726,56 @@ var symbols = {
             group: "rel",
             replace: "\u2223"
         },
+        "\\exists": {
+            font: "main",
+            group: "textord",
+            replace: "\u2203"
+        },
+        "\\nexists": {
+            font: "main",
+            group: "textord",
+            replace: "\u2204"
+        },
+        "\\forall": {
+            font: "main",
+            group: "textord",
+            replace: "\u2200"
+        },
+        "\\mapsto": {
+            font: "main",
+            group: "rel",
+            replace: "\u21a6"
+        },
+        "\\implies": {
+            font: "main",
+            group: "rel",
+            replace: "\u21d2"
+        },
+        "\\Rightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21d2"
+        },
+        "\\leftrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u2194"
+        },
+        "\\iff": {
+            font: "main",
+            group: "rel",
+            replace: "\u27fa"
+        },
+        "\\notin": {
+            font: "main",
+            group: "rel",
+            replace: "\u2209"
+        },
+        "\\Leftrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21d4"
+        },
         "\\!": {
             font: "main",
             group: "spacing"
