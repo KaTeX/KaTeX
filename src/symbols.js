@@ -877,6 +877,51 @@ var symbols = {
             group: "textord",
             replace: "\u22a1"
         },
+        "\\hbar": {
+            font: "main",
+            group: "textord",
+            replace: "\u210f"
+        },
+        "\\imath": {
+            font: "main",
+            group: "mathord",
+            replace: "\u0131"
+        },
+        "\\jmath": {
+            font: "main",
+            group: "mathord",
+            replace: "\u0237"
+        },
+        "\\ell": {
+            font: "main",
+            group: "textord",
+            replace: "\u2113"
+        },
+        "\\Re": {
+            font: "main",
+            group: "textord",
+            replace: "\u211c"
+        },
+        "\\Im": {
+            font: "main",
+            group: "textord",
+            replace: "\u2111"
+        },
+        "\\wp": {
+            font: "main",
+            group: "textord",
+            replace: "\u2118"
+        },
+        "\\nabla": {
+            font: "main",
+            group: "textord",
+            replace: "\u2207"
+        },
+        "\\Box": {
+            font: "main",
+            group: "textord",
+            replace: "\u25a1"
+        },
         "\\bigtriangleup": {
             font: "main",
             group: "textord",
@@ -912,6 +957,7 @@ var symbols = {
             group: "textord",
             replace: "\u25b9"
         },
+
         "\\{": {
             font: "main",
             group: "open",
