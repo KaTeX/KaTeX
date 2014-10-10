@@ -15,5 +15,6 @@ before_script:
 - java -jar selenium-server-standalone-2.42.2.jar -port 4444 &
 - node server.js > /dev/null &
 script:
+- sleep 2
 - ./node_modules/.bin/hux --server http://localhost:4444/wd/hub --write ./test/huxley/ > /dev/null
 - make lint test compare
