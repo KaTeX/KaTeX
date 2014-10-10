@@ -14,6 +14,7 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "bluebird": "^2.3.4",
     "browserify": "~2.29.1",
     "clean-css": "~2.2.15",
     "express": "~3.3.3",
@@ -21,6 +22,7 @@
     "jasmine-node": "git://github.com/mhevery/jasmine-node.git#Jasmine2.0",
     "jshint": "^2.5.6",
     "less": "~1.7.5",
+    "selenium-webdriver": "^2.43.5",
     "uglify-js": "~2.4.15"
   },
   "bin": "cli.js",
