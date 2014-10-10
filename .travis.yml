@@ -12,8 +12,8 @@ before_install:
 before_script:
 - wget http://selenium-release.storage.googleapis.com/2.42/selenium-server-standalone-2.42.2.jar
 - while echo "" > /dev/tcp/127.0.0.1/4444; do sleep 1; done
-- java -jar selenium-server-standalone-2.42.2.jar -port 4444 > /dev/null &
+- java -jar selenium-server-standalone-2.42.2.jar -port 4444 &
 - node server.js > /dev/null &
-- ./node_modules/.bin/hux --server http://localhost:4444/wd/hub --write ./test/huxley/ > /dev/null
 script:
+- ./node_modules/.bin/hux --server http://localhost:4444/wd/hub --write ./test/huxley/ > /dev/null
 - make lint test compare
