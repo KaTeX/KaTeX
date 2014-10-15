@@ -559,6 +559,9 @@ describe("An over parser", function() {
     it("should fail with multiple overs in the same group", function () {
         var badMultipleOvers = "1 \\over 2 + 3 \\over 4";
         expect(badMultipleOvers).toNotParse();
+
+        var badOverChoose = "1 \\over 2 \\choose 3";
+        expect(badOverChoose).toNotParse();
     });
 });
 

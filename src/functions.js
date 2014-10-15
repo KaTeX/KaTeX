@@ -164,16 +164,6 @@ var functions = {
                 type: "katex"
             };
         }
-    },
-
-    "\\over": {
-        numArgs: 0,
-        handler: function (func) {
-            return {
-                type: "infix",
-                replaceWith: "\\frac"
-            };
-        }
     }
 };
 
@@ -474,6 +464,31 @@ var duplicatedFunctions = [
                     type: "accent",
                     accent: func,
                     base: base
+                };
+            }
+        }
+    },
+
+    // Infix generalized fractions
+    {
+        funcs: ["\\over", "\\choose"],
+        data: {
+            numArgs: 0,
+            handler: function (func) {
+                var replaceWith;
+                switch (func) {
+                    case "\\over":
+                        replaceWith = "\\frac";
+                        break;
+                    case "\\choose":
+                        replaceWith = "\\binom";
+                        break;
+                    default:
+                        throw new Error("Unrecognized infix genfrac command");
+                }
+                return {
+                    type: "infix",
+                    replaceWith: replaceWith
                 };
             }
         }
