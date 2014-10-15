@@ -60,10 +60,10 @@ var ParseError = require("./ParseError");
  *                           error messages
  *             The function should return an object with the following keys:
  *              - type: The type of element that this is. This is then used in
- *                      buildTree to determine which function should be called
- *                      to build this node into a DOM node
+ *                      buildHTML/buildMathML to determine which function
+ *                      should be called to build this node into a DOM node
  *             Any other data can be added to the object, which will be passed
- *             in to the function in buildTree as `group.value`.
+ *             in to the function in buildHTML/buildMathML as `group.value`.
  */
 
 var functions = {
@@ -91,8 +91,8 @@ var functions = {
         argTypes: ["text"],
         greediness: 2,
         handler: function(func, body) {
-            // Since the corresponding buildTree function expects a list of
-            // elements, we normalize for different kinds of arguments
+            // Since the corresponding buildHTML/buildMathML function expects a
+            // list of elements, we normalize for different kinds of arguments
             // TODO(emily): maybe this should be done somewhere else
             var inner;
             if (body.type === "ordgroup") {
@@ -407,8 +407,8 @@ var duplicatedFunctions = [
                         this.lexer, positions[1]);
                 }
 
-                // left and right are caught somewhere in Parser.js, which is
-                // why this data doesn't match what is in buildTree
+                // \left and \right are caught somewhere in Parser.js, which is
+                // why this data doesn't match what is in buildHTML.
                 if (func === "\\left" || func === "\\right") {
                     return {
                         type: "leftright",

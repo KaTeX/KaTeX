@@ -10,16 +10,33 @@
     }
 }
 
+math.katex {
+    font-size: 1.21em;
+    line-height: 1.2;
+}
+
 .katex {
     font: normal 1.21em KaTeX_Main;
     line-height: 1.2;
     white-space: nowrap;
 
-    .katex-inner {
+    .katex-html {
         // Making .katex inline-block allows line breaks before and after,
-        // which is undesireable ("to $x$,"). Instead, adjust the .katex-inner
+        // which is undesireable ("to $x$,"). Instead, adjust the .katex-html
         // style and put nowrap on the inline .katex element.
         display: inline-block;
+    }
+
+    .katex-mathml {
+        // Accessibility hack to only show to screen readers
+        // Found at: http://a11yproject.com/posts/how-to-hide-content/
+        position: absolute !important;
+        clip: rect(1px, 1px, 1px, 1px);
+        padding: 0 !important;
+        border: 0 !important;
+        height: 1px !important;
+        width: 1px !important;
+        overflow: hidden;
     }
 
     .base {
