@@ -364,14 +364,14 @@ var groupTypes = {
             [base, supsub]);
     },
 
-    frac: function(group, options, prev) {
+    genfrac: function(group, options, prev) {
         // Fractions are handled in the TeXbook on pages 444-445, rules 15(a-e).
         // Figure out what style this fraction should be in based on the
         // function used
         var fstyle = options.style;
-        if (group.value.size === "dfrac") {
+        if (group.value.size === "display") {
             fstyle = Style.DISPLAY;
-        } else if (group.value.size === "tfrac") {
+        } else if (group.value.size === "text") {
             fstyle = Style.TEXT;
         }
 
@@ -384,60 +384,118 @@ var groupTypes = {
         var denom = buildGroup(group.value.denom, options.withStyle(dstyle));
         var denomreset = makeSpan([fstyle.reset(), dstyle.cls()], [denom]);
 
-        var ruleWidth = fontMetrics.metrics.defaultRuleThickness /
-            options.style.sizeMultiplier;
+        var ruleWidth;
+        if (group.value.hasBarLine) {
+            ruleWidth = fontMetrics.metrics.defaultRuleThickness /
+                options.style.sizeMultiplier;
+        } else {
+            ruleWidth = 0;
+        }
 
-        var mid = makeSpan(
-            [options.style.reset(), Style.TEXT.cls(), "frac-line"]);
-        // Manually set the height of the line because its height is created in
-        // CSS
-        mid.height = ruleWidth;
-
-        // Rule 15b, 15d
-        var numShift, denomShift, clearance;
+        // Rule 15b
+        var numShift;
+        var clearance;
+        var denomShift;
         if (fstyle.size === Style.DISPLAY.size) {
             numShift = fontMetrics.metrics.num1;
+            if (ruleWidth > 0) {
+                clearance = 3 * ruleWidth;
+            } else {
+                clearance = 7 * fontMetrics.metrics.defaultRuleThickness;
+            }
             denomShift = fontMetrics.metrics.denom1;
-            clearance = 3 * ruleWidth;
         } else {
-            numShift = fontMetrics.metrics.num2;
+            if (ruleWidth > 0) {
+                numShift = fontMetrics.metrics.num2;
+                clearance = ruleWidth;
+            } else {
+                numShift = fontMetrics.metrics.num3;
+                clearance = 3 * fontMetrics.metrics.defaultRuleThickness;
+            }
             denomShift = fontMetrics.metrics.denom2;
-            clearance = ruleWidth;
         }
 
-        var axisHeight = fontMetrics.metrics.axisHeight;
+        var frac;
+        if (ruleWidth === 0) {
+            // Rule 15c
+            var candiateClearance =
+                (numShift - numer.depth) - (denom.height - denomShift);
+            if (candiateClearance < clearance) {
+                numShift += 0.5 * (clearance - candiateClearance);
+                denomShift += 0.5 * (clearance - candiateClearance);
+            }
 
-        // Rule 15d
-        if ((numShift - numer.depth) - (axisHeight + 0.5 * ruleWidth)
-                < clearance) {
-            numShift +=
-                clearance - ((numShift - numer.depth) -
-                             (axisHeight + 0.5 * ruleWidth));
+            frac = buildCommon.makeVList([
+                {type: "elem", elem: denomreset, shift: denomShift},
+                {type: "elem", elem: numerreset, shift: -numShift}
+            ], "individualShift", null, options);
+        } else {
+            // Rule 15d
+            var axisHeight = fontMetrics.metrics.axisHeight;
+
+            if ((numShift - numer.depth) - (axisHeight + 0.5 * ruleWidth)
+                    < clearance) {
+                numShift +=
+                    clearance - ((numShift - numer.depth) -
+                                 (axisHeight + 0.5 * ruleWidth));
+            }
+
+            if ((axisHeight - 0.5 * ruleWidth) - (denom.height - denomShift)
+                    < clearance) {
+                denomShift +=
+                    clearance - ((axisHeight - 0.5 * ruleWidth) -
+                                 (denom.height - denomShift));
+            }
+
+            var mid = makeSpan(
+                [options.style.reset(), Style.TEXT.cls(), "frac-line"]);
+            // Manually set the height of the line because its height is
+            // created in CSS
+            mid.height = ruleWidth;
+
+            var midShift = -(axisHeight - 0.5 * ruleWidth);
+
+            frac = buildCommon.makeVList([
+                {type: "elem", elem: denomreset, shift: denomShift},
+                {type: "elem", elem: mid,        shift: midShift},
+                {type: "elem", elem: numerreset, shift: -numShift}
+            ], "individualShift", null, options);
         }
-
-        if ((axisHeight - 0.5 * ruleWidth) - (denom.height - denomShift)
-                < clearance) {
-            denomShift +=
-                clearance - ((axisHeight - 0.5 * ruleWidth) -
-                             (denom.height - denomShift));
-        }
-
-        var midShift = -(axisHeight - 0.5 * ruleWidth);
-
-        var frac = buildCommon.makeVList([
-            {type: "elem", elem: denomreset, shift: denomShift},
-            {type: "elem", elem: mid,        shift: midShift},
-            {type: "elem", elem: numerreset, shift: -numShift}
-        ], "individualShift", null, options);
 
         // Since we manually change the style sometimes (with \dfrac or \tfrac),
         // account for the possible size change here.
         frac.height *= fstyle.sizeMultiplier / options.style.sizeMultiplier;
         frac.depth *= fstyle.sizeMultiplier / options.style.sizeMultiplier;
 
+        // Rule 15e
+        var innerChildren = [makeSpan(["mfrac"], [frac])];
+
+        var delimSize;
+        if (fstyle.size === Style.DISPLAY.size) {
+            delimSize = fontMetrics.metrics.delim1;
+        } else {
+            delimSize = fontMetrics.metrics.getDelim2(fstyle);
+        }
+
+        if (group.value.leftDelim != null) {
+            innerChildren.unshift(
+                delimiter.customSizedDelim(
+                    group.value.leftDelim, delimSize, true,
+                    options.withStyle(fstyle), group.mode)
+            );
+        }
+        if (group.value.rightDelim != null) {
+            innerChildren.push(
+                delimiter.customSizedDelim(
+                    group.value.rightDelim, delimSize, true,
+                    options.withStyle(fstyle), group.mode)
+            );
+        }
+
         return makeSpan(
-            ["minner", "mfrac", options.style.reset(), fstyle.cls()],
-            [frac], options.getColor());
+            ["minner", options.style.reset(), fstyle.cls()],
+            innerChildren,
+            options.getColor());
     },
 
     spacing: function(group, options, prev) {

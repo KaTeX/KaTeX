@@ -329,16 +329,55 @@ var duplicatedFunctions = [
 
     // Fractions
     {
-        funcs: ["\\dfrac", "\\frac", "\\tfrac"],
+        funcs: [
+            "\\dfrac", "\\frac", "\\tfrac",
+            "\\dbinom", "\\binom", "\\tbinom"
+        ],
         data: {
             numArgs: 2,
             greediness: 2,
             handler: function(func, numer, denom) {
+                var hasBarLine;
+                var leftDelim = null;
+                var rightDelim = null;
+                var size = "auto";
+
+                switch (func) {
+                    case "\\dfrac":
+                    case "\\frac":
+                    case "\\tfrac":
+                        hasBarLine = true;
+                        break;
+                    case "\\dbinom":
+                    case "\\binom":
+                    case "\\tbinom":
+                        hasBarLine = false;
+                        leftDelim = "(";
+                        rightDelim = ")";
+                        break;
+                    default:
+                        throw new Error("Unrecognized genfrac command");
+                }
+
+                switch (func) {
+                    case "\\dfrac":
+                    case "\\dbinom":
+                        size = "display";
+                        break;
+                    case "\\tfrac":
+                    case "\\tbinom":
+                        size = "text";
+                        break;
+                }
+
                 return {
-                    type: "frac",
+                    type: "genfrac",
                     numer: numer,
                     denom: denom,
-                    size: func.slice(1)
+                    hasBarLine: hasBarLine,
+                    leftDelim: leftDelim,
+                    rightDelim: rightDelim,
+                    size: size
                 };
             }
         }

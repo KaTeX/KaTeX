@@ -1,5 +1,7 @@
 /* jshint unused:false */
 
+var Style = require("./Style");
+
 /**
  * This file contains metrics regarding fonts and individual symbols. The sigma
  * and xi variables, as well as the metricMap map contain data extracted from
@@ -35,7 +37,9 @@ var sigma17 = 0.247;
 var sigma18 = 0.386;
 var sigma19 = 0.050;
 var sigma20 = 2.390;
-var sigma21 = 0.101;
+var sigma21 = 1.01;
+var sigma21Script = 0.81;
+var sigma21ScriptScript = 0.71;
 var sigma22 = 0.250;
 
 // These font metrics are extracted from TeX by using
@@ -81,8 +85,6 @@ var metrics = {
     sub2: sigma17,
     supDrop: sigma18,
     subDrop: sigma19,
-    delim1: sigma20,
-    delim2: sigma21,
     axisHeight: sigma22,
     defaultRuleThickness: xi8,
     bigOpSpacing1: xi9,
@@ -90,7 +92,21 @@ var metrics = {
     bigOpSpacing3: xi11,
     bigOpSpacing4: xi12,
     bigOpSpacing5: xi13,
-    ptPerEm: ptPerEm
+    ptPerEm: ptPerEm,
+
+    // TODO(alpert): Missing parallel structure here. We should probably add
+    // style-specific metrics for all of these.
+    delim1: sigma20,
+    getDelim2: function(style) {
+        if (style.size === Style.TEXT.size) {
+            return sigma21;
+        } else if (style.size === Style.SCRIPT.size) {
+            return sigma21Script;
+        } else if (style.size === Style.SCRIPTSCRIPT.size) {
+            return sigma21ScriptScript;
+        }
+        throw new Error("Unexpected style size: " + style.size);
+    }
 };
 
 // This map contains a mapping from font name and character code to character

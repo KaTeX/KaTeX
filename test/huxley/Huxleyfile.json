@@ -12,6 +12,12 @@
     },
 
     {
+        "name": "BinomTest",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m=\\dbinom{a}{b}\\tbinom{a}{b}^{\\binom{a}{b}+17}"
+    },
+
+    {
         "name": "NestedFractions",
         "screenSize": [1024, 768],
         "url": "http://localhost:7936/test/huxley/test.html?m=\\dfrac{\\frac{a}{b}}{\\frac{c}{d}}\\dfrac{\\dfrac{a}{b}}{\\dfrac{c}{d}}\\frac{\\frac{a}{b}}{\\frac{c}{d}}"
