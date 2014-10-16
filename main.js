@@ -8,7 +8,7 @@ window.startup = function() {
     var demoOutput = document.getElementById("demo-output");
 
     function doDemo() {
-        katex.render("\\displaystyle " + demoInput.value, demoOutput);
+        katex.render("\\displaystyle{" + demoInput.value + "}", demoOutput);
     }
 
     demoInput.addEventListener("input", function() {
