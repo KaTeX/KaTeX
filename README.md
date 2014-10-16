@@ -36,9 +36,9 @@ Make sure to include the CSS and font files, but there is no need to include the
 These APIs default to inline math typesetting; for display math you can prepend `\displaystyle` ([#66](https://github.com/Khan/KaTeX/issues/66)):
 
 ```js
-katex.render("\\displaystyle {" + formula + "}, element);
+katex.render("\\displaystyle {" + formula + "}", element);
 // OR
-var html = katex.renderToString("\\displaystyle " + formula);
+var html = katex.renderToString("\\displaystyle {" + formula + "}");
 ```
 
 ## Contributing
