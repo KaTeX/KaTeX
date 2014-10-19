@@ -11,11 +11,11 @@ KaTeX supports all major browsers, including Chrome, Safari, Firefox, Opera, and
 
 ## Usage
 
-Download the built files from [the releases page](https://github.com/khan/katex/releases). Include the `katex.min.js` and `katex.min.css` files on your page:
+You can [download KaTeX](https://github.com/khan/katex/releases) and host it on your server or include the `katex.min.js` and `katex.min.css` files on your page directly from a CDN:
 
 ```html
-<link rel="stylesheet" href="/path/to/katex.min.css">
-<script src="/path/to/katex.min.js"></script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.1.1/katex.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.1.1/katex.min.js"></script>
 ```
 
 Call `katex.render` with a TeX expression and a DOM element to render into:
