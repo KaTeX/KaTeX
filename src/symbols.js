@@ -456,6 +456,16 @@ var symbols = {
             group: "rel",
             replace: "\u2190"
         },
+        "\\hookleftarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21a9"
+        },
+        "\\hookrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21aa"
+        },
         "\\in": {
             font: "main",
             group: "rel",
@@ -496,15 +506,85 @@ var symbols = {
             group: "rel",
             replace: "\u2289"
         },
+        "\\mapsto": {
+            font: "main",
+            group: "rel",
+            replace: "\u21a6"
+        },
+        "\\longmapsto": {
+            font: "main",
+            group: "rel",
+            replace: "\u27fc"
+        },
         "\\models": {
             font: "main",
             group: "rel",
             replace: "\u22a8"
         },
+        "\\leadsto": {
+            font: "main",
+            group: "rel",
+            replace: "\u21DD"
+        },
+        "\\leftrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u2194"
+        },
+        "\\leftrightharpoons": {
+            font: "main",
+            group: "rel",
+            replace: "\u21cb"
+        },
+        "\\rightleftharpoons": {
+            font: "main",
+            group: "rel",
+            replace: "\u21cc"
+        },
+        "\\longleftrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u27f7"
+        },
+        "\\Leftrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21d4"
+        },
+        "\\Longleftrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u27fa"
+        },
         "\\leftarrow": {
             font: "main",
             group: "rel",
             replace: "\u2190"
+        },
+        "\\longleftarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u27f5"
+        },
+        "\\Leftarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21d0"
+        },
+        "\\Longleftarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u27f8"
+        },
+        "\\leftharpoondown": {
+            font: "main",
+            group: "rel",
+            replace: "\u21bd"
+        },
+        "\\leftharpoonup": {
+            font: "main",
+            group: "rel",
+            replace: "\u21bc"
         },
         "\\le": {
             font: "main",
@@ -526,10 +606,55 @@ var symbols = {
             group: "rel",
             replace: "\u2260"
         },
+        "\\nearrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u2197"
+        },
+        "\\searrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u2198"
+        },
+        "\\swarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u2199"
+        },
+        "\\nwarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u2196"
+        },
         "\\rightarrow": {
             font: "main",
             group: "rel",
             replace: "\u2192"
+        },
+        "\\longrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u27f6"
+        },
+        "\\Rightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21d2"
+        },
+        "\\Longrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u27f9"
+        },
+        "\\rightharpoondown": {
+            font: "main",
+            group: "rel",
+            replace: "\u21c1"
+        },
+        "\\rightharpoonup": {
+            font: "main",
+            group: "rel",
+            replace: "\u21c0"
         },
         "\\to": {
             font: "main",
