@@ -262,6 +262,11 @@ var symbols = {
             group: "mathord",
             replace: "\u03c9"
         },
+        "\\ell": {
+            font: "main",
+            group: "mathord",
+            replace: "\u2113"
+        },
         "\\varepsilon": {
             font: "main",
             group: "mathord",
@@ -325,6 +330,41 @@ var symbols = {
             font: "main",
             group: "bin",
             replace: "\u00b1"
+        },
+        "\\parallel": {
+            font: "main",
+            group: "rel",
+            replace: "\u2225"
+        },
+        "\\nparallel": {
+            font: "main",
+            group: "rel",
+            replace: "\u2226"
+        },
+        "\\mid": {
+            font: "main",
+            group: "rel",
+            replace: "\u2223"
+        },
+        "\\asymp": {
+            font: "main",
+            group: "rel",
+            replace: "\u224d"
+        },
+        "\\bowtie": {
+            font: "main",
+            group: "rel",
+            replace: "\u22c8"
+        },
+        "\\smile": {
+            font: "main",
+            group: "rel",
+            replace: "\u2323"
+        },
+        "\\frown": {
+            font: "main",
+            group: "rel",
+            replace: "\u2322"
         },
         "\\times": {
             font: "main",
@@ -451,6 +491,11 @@ var symbols = {
             group: "rel",
             replace: "\u2265"
         },
+        "\\gg": {
+            font: "main",
+            group: "rel",
+            replace: "\u226b"
+        },
         "\\gets": {
             font: "main",
             group: "rel",
@@ -460,6 +505,11 @@ var symbols = {
             font: "main",
             group: "rel",
             replace: "\u2208"
+        },
+        "\\ni": {
+            font: "main",
+            group: "rel",
+            replace: "\u220b"
         },
         "\\notin": {
             font: "main",
@@ -496,15 +546,75 @@ var symbols = {
             group: "rel",
             replace: "\u2289"
         },
+        "\\sqsubset": {
+            font: "main",
+            group: "rel",
+            replace: "\u228f"
+        },
+        "\\sqsupset": {
+            font: "main",
+            group: "rel",
+            replace: "\u2290"
+        },
+        "\\sqsubseteq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2291"
+        },
+        "\\sqsupseteq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2292"
+        },
         "\\models": {
             font: "main",
             group: "rel",
             replace: "\u22a8"
         },
+        "\\vdash": {
+            font: "main",
+            group: "rel",
+            replace: "\u22a2"
+        },
+        "\\dashv": {
+            font: "main",
+            group: "rel",
+            replace: "\u22a3"
+        },
+        "\\perp": {
+            font: "main",
+            group: "rel",
+            replace: "\u22a5"
+        },
         "\\leftarrow": {
             font: "main",
             group: "rel",
             replace: "\u2190"
+        },
+        "\\equiv": {
+            font: "main",
+            group: "rel",
+            replace: "\u2261"
+        },
+        "\\doteq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2250"
+        },
+        "\\simeq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2243"
+        },
+        "\\sim": {
+            font: "main",
+            group: "rel",
+            replace: "\u223c"
+        },
+        "\\propto": {
+            font: "main",
+            group: "rel",
+            replace: "\u221d"
         },
         "\\le": {
             font: "main",
@@ -515,6 +625,11 @@ var symbols = {
             font: "main",
             group: "rel",
             replace: "\u2264"
+        },
+        "\\ll": {
+            font: "main",
+            group: "rel",
+            replace: "\u226a"
         },
         "\\ne": {
             font: "main",
@@ -545,6 +660,26 @@ var symbols = {
             font: "ams",
             group: "rel",
             replace: "\u2270"
+        },
+        "\\prec": {
+            font: "main",
+            group: "rel",
+            replace: "\u227a"
+        },
+        "\\succ": {
+            font: "main",
+            group: "rel",
+            replace: "\u227b"
+        },
+        "\\preceq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2aaf"
+        },
+        "\\succeq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2ab0"
         },
         "\\!": {
             font: "main",
