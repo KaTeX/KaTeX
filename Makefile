@@ -13,7 +13,7 @@ build/katex.js: katex.js $(wildcard src/*.js)
 build/katex.min.js: build/katex.js
 	./node_modules/.bin/uglifyjs --mangle --beautify ascii_only=true,beautify=false < $< > $@
 
-build/%.less.css: static/%.less
+build/katex.less.css: static/katex.less $(wildcard static/*.less)
 	./node_modules/.bin/lessc $< $@
 
 build/katex.min.css: build/katex.less.css
