@@ -479,9 +479,9 @@ var groupTypes = {
         // Rule 15e
         var innerChildren = [makeSpan(["mfrac"], [frac])];
 
-        var nullDelimiter = fontMetrics.metrics.nullDelimiter;
+        var nulldelimiterspace = fontMetrics.metrics.nulldelimiterspace;
         if (group.value.continued) {
-            innerChildren.push(buildCommon.makeKern(-nullDelimiter));
+            innerChildren.push(buildCommon.makeKern(-nulldelimiterspace));
         }
 
         var delimSize;
@@ -499,7 +499,7 @@ var groupTypes = {
             );
         } else {
             // create a null delimiter
-            innerChildren.unshift(buildCommon.makeKern(nullDelimiter));
+            innerChildren.unshift(buildCommon.makeKern(nulldelimiterspace));
         }
         if (group.value.rightDelim != null) {
             innerChildren.push(
@@ -509,7 +509,7 @@ var groupTypes = {
             );
         } else {
             // create a null delimiter
-            innerChildren.push(buildCommon.makeKern(nullDelimiter));
+            innerChildren.push(buildCommon.makeKern(nulldelimiterspace));
         }
 
         return makeSpan(

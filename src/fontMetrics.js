@@ -109,7 +109,7 @@ var metrics = {
     },
 
     // \nulldelimiterspace=1.2pt, pg. 344 TeXbook
-    nullDelimiter: 1.2 / ptPerEm
+    nulldelimiterspace: 1.2 / ptPerEm
 };
 
 // This map contains a mapping from font name and character code to character
