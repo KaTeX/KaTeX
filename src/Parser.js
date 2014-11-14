@@ -4,6 +4,7 @@ var symbols = require("./symbols");
 var utils = require("./utils");
 
 var ParseError = require("./ParseError");
+var ParseNode = require("./ParseNode");
 
 /**
  * This file contains the parser used to parse out a TeX expression from the
@@ -46,15 +47,6 @@ var ParseError = require("./ParseError");
 function Parser(input) {
     // Make a new lexer
     this.lexer = new Lexer(input);
-}
-
-/**
- * The resulting parse tree nodes of the parse tree.
- */
-function ParseNode(type, value, mode) {
-    this.type = type;
-    this.value = value;
-    this.mode = mode;
 }
 
 /**

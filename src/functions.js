@@ -1,5 +1,6 @@
 var utils = require("./utils");
 var ParseError = require("./ParseError");
+var ParseNode = require("./ParseNode");
 
 // This file contains a list of functions that we parse. The functions map
 // contains the following data:
@@ -362,8 +363,17 @@ var duplicatedFunctions = [
                         break;
                 }
 
+                if (func === "\\cfrac") {
+                    if (numer.type === "ordgroup") {
+                        numer.value.push(new ParseNode("strut", null, "math"));
+                    } else {
+                        throw new Error("expect an 'ordgroup' for the numerator");
+                    }
+                }
+
                 return {
                     type: "genfrac",
+                    continued: func === "\\cfrac",
                     numer: numer,
                     denom: denom,
                     hasBarLine: hasBarLine,
