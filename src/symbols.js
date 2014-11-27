@@ -409,7 +409,7 @@ var symbols = {
 	"\\ominus": {
 	    font: "main",
 	    group: "textord",
-	    replace: "\u2297"
+	    replace: "\u2296"
 	},
         "(": {
             font: "main",
@@ -614,7 +614,7 @@ var symbols = {
 	"\\ni": {
 	    font: "main",
 	    group: "rel",
-	    replace: "\u2204"
+	    replace: "\u220d"
 	},
         "\\!": {
             font: "main",
