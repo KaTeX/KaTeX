@@ -501,6 +501,11 @@ var symbols = {
             group: "rel",
             replace: "\u22a8"
         },
+        "\\impliedby": {
+            font: "main",
+            group: "rel",
+            replace: "\u27f8"
+        },
         "\\leftarrow": {
             font: "main",
             group: "rel",
