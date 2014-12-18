@@ -569,6 +569,10 @@ var symbols = {
             font: "main",
             group: "spacing"
         },
+        "\\thinspace": {
+            font: "main",
+            group: "spacing"
+        },
         "\\:": {
             font: "main",
             group: "spacing"
