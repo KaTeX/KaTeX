@@ -614,17 +614,17 @@ var symbols = {
         },
         "\\odot": {
             font: "main",
-            group: "textord",
+            group: "bin",
             replace: "\u2299"
         },
         "\\oplus": {
             font: "main",
-            group: "textord",
+            group: "bin",
             replace: "\u2295"
         },
         "\\otimes": {
             font: "main",
-            group: "textord",
+            group: "bin",
             replace: "\u2297"
         },
         "\\partial":{
@@ -634,7 +634,7 @@ var symbols = {
         },
         "\\oslash": {
             font: "main",
-            group: "textord",
+            group: "bin",
             replace: "\u2298"
         },
         "\\circledcirc": {
@@ -649,37 +649,37 @@ var symbols = {
         },
         "\\bigtriangleup": {
             font: "main",
-            group: "textord",
+            group: "bin",
             replace: "\u25b3"
         },
         "\\bigtriangledown": {
             font: "main",
-            group: "textord",
+            group: "bin",
             replace: "\u25bd"
         },
         "\\dagger": {
             font: "main",
-            group: "textord",
+            group: "bin",
             replace: "\u2020"
         },
         "\\diamond": {
             font: "main",
-            group: "textord",
+            group: "bin",
             replace: "\u22c4"
         },
         "\\star": {
             font: "main",
-            group: "textord",
+            group: "bin",
             replace: "\u22c6"
         },
         "\\triangleleft": {
             font: "main",
-            group: "textord",
+            group: "bin",
             replace: "\u25c3"
         },
         "\\triangleright": {
             font: "main",
-            group: "textord",
+            group: "bin",
             replace: "\u25b9"
         },
         "\\{": {
