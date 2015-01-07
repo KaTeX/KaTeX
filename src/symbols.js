@@ -506,6 +506,11 @@ var symbols = {
             group: "rel",
             replace: "\u2190"
         },
+        "\\Leftarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21D0"
+        },
         "\\le": {
             font: "main",
             group: "rel",
@@ -530,6 +535,11 @@ var symbols = {
             font: "main",
             group: "rel",
             replace: "\u2192"
+        },
+        "\\Rightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21D2"
         },
         "\\to": {
             font: "main",
