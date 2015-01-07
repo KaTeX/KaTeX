@@ -456,11 +456,6 @@ var symbols = {
             group: "rel",
             replace: "\u2265"
         },
-        "\\succsim": {
-            font: "main",
-            group: "rel",
-            replace: "\u227f"
-        },
         "\\succ": {
             font: "main",
             group: "rel",
@@ -540,11 +535,6 @@ var symbols = {
             font: "main",
             group: "rel",
             replace: "\u227a"
-        },
-        "\\precsim": {
-            font: "main",
-            group: "rel",
-            replace: "\u227e"
         },
         "\\ne": {
             font: "main",
