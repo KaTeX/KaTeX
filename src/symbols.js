@@ -461,6 +461,11 @@ var symbols = {
             group: "rel",
             replace: "\u227b"
         },
+        "\\succeq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2ab0"
+        },
         "\\gets": {
             font: "main",
             group: "rel",
@@ -535,6 +540,11 @@ var symbols = {
             font: "main",
             group: "rel",
             replace: "\u227a"
+        },
+        "\\preceq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2aaf"
         },
         "\\ne": {
             font: "main",
