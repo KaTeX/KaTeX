@@ -426,13 +426,10 @@ Parser.prototype.parseFunction = function(pos, mode) {
             }
 
             var newPos = baseGroup.result.position;
-            var result;
-
             var totalArgs = baseGroup.numArgs + baseGroup.numOptionalArgs;
-
+            var args = [func];
             if (totalArgs > 0) {
                 var baseGreediness = functions.getGreediness(func);
-                var args = [func];
                 var positions = [newPos];
 
                 for (var i = 0; i < totalArgs; i++) {
@@ -442,7 +439,7 @@ Parser.prototype.parseFunction = function(pos, mode) {
                         if (argType) {
                             arg = this.parseSpecialGroup(newPos, argType, mode, true);
                         } else {
-                            arg = this.parseOptionalGroup(newPos, mode);
+                            arg = this.parseGroup(newPos, mode, true);
                         }
                         if (!arg) {
                             args.push(null);
@@ -483,12 +480,9 @@ Parser.prototype.parseFunction = function(pos, mode) {
                 }
 
                 args.push(positions);
-
-                result = functions.funcs[func].handler.apply(this, args);
-            } else {
-                result = functions.funcs[func].handler.apply(this, [func]);
             }
 
+            var result = functions.funcs[func].handler.apply(this, args);
             return new ParseResult(
                 new ParseNode(result.type, result, mode),
                 newPos);
@@ -517,17 +511,11 @@ Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode, optional) {
         }
         this.expect(openBrace, optional ? "[" : "{");
         var inner = this.lexer.lex(openBrace.position, mode);
-        var data;
-        if (mode === "color") {
-            data = inner.text;
-        } else {
-            data = inner.data;
-        }
         var closeBrace = this.lexer.lex(inner.position, outerMode);
         this.expect(closeBrace, optional ? "]" : "}");
         return new ParseFuncOrArgument(
             new ParseResult(
-                new ParseNode(mode, data, outerMode),
+                new ParseNode(mode, inner.data, outerMode),
                 closeBrace.position),
             false);
     } else if (mode === "text") {
@@ -537,61 +525,36 @@ Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode, optional) {
         pos = whitespace.position;
     }
 
-    if (optional) {
-        return this.parseOptionalGroup(pos, mode);
-    } else {
-        return this.parseGroup(pos, mode);
-    }
+    return this.parseGroup(pos, mode, optional);
 };
 
 /**
  * Parses a group, which is either a single nucleus (like "x") or an expression
- * in braces (like "{x+y}")
+ * in braces (like "{x+y}").  If optional is true, parses an expression in
+ * brackets (like "[x+y]").
  *
  * @return {?ParseFuncOrArgument}
  */
-Parser.prototype.parseGroup = function(pos, mode) {
+Parser.prototype.parseGroup = function(pos, mode, optional) {
+    var opener = optional ? "[" : "{";
+    var closer = optional ? "]" : "}";
+
     var start = this.lexer.lex(pos, mode);
-    // Try to parse an open brace
-    if (start.text === "{") {
-        // If we get a brace, parse an expression
-        var expression = this.parseExpression(start.position, mode, false, "}");
-        // Make sure we get a close brace
+    // Try to parse the opener
+    if (start.text === opener) {
+        // If we get the correct opener, parse an expression
+        var expression = this.parseExpression(start.position, mode, false, closer);
+        // Make sure we get the matching closer
         var closeBrace = this.lexer.lex(expression.position, mode);
-        this.expect(closeBrace, "}");
+        this.expect(closeBrace, closer);
         return new ParseFuncOrArgument(
             new ParseResult(
                 new ParseNode("ordgroup", expression.result, mode),
                 closeBrace.position),
             false);
     } else {
-        // Otherwise, just return a nucleus
-        return this.parseSymbol(pos, mode);
-    }
-};
-
-/**
- * Parses a group, which is an expression in brackets (like "[x+y]")
- *
- * @return {?ParseFuncOrArgument}
- */
-Parser.prototype.parseOptionalGroup = function(pos, mode) {
-    var start = this.lexer.lex(pos, mode);
-    // Try to parse an open bracket
-    if (start.text === "[") {
-        // If we get a brace, parse an expression
-        var expression = this.parseExpression(start.position, mode, false, "]");
-        // Make sure we get a close bracket
-        var closeBracket = this.lexer.lex(expression.position, mode);
-        this.expect(closeBracket, "]");
-        return new ParseFuncOrArgument(
-            new ParseResult(
-                new ParseNode("ordgroup", expression.result, mode),
-                closeBracket.position),
-            false);
-    } else {
-        // Otherwise, return null,
-        return null;
+        // Otherwise, just return a nucleus or null
+        return optional ? null : this.parseSymbol(pos, mode);
     }
 };
 

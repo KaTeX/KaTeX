@@ -120,7 +120,7 @@ Lexer.prototype._innerLexColor = function(pos) {
     var match;
     if ((match = input.match(cssColor))) {
         // If we look like a color, return a color
-        return new Token(match[0], null, pos + match[0].length);
+        return new Token(match[0], match[0], pos + match[0].length);
     } else {
         throw new ParseError("Invalid color", this, pos);
     }
