@@ -7,6 +7,10 @@ import json
 # map of characters to extract
 metrics_to_extract = {
     # Font name
+    "AMS-Regular": {
+        u"\u21e2": None,  # \dashrightarrow
+        u"\u21e0": None,  # \dashleftarrow
+    },
     "Main-Regular": {
         # Skew and italic metrics can't be easily parsed from the TTF. Instead,
         # we map each character to a "base character", which is a character
@@ -21,6 +25,25 @@ metrics_to_extract = {
         u"\u22ef": None,  # \cdots
         u"\u22f1": None,  # \ddots
         u"\u22ee": None,  # \vdots
+        u"\u22ee": None,  # \vdots
+        u"\u22a8": None,  # \models
+        u"\u22c8": None,  # \bowtie
+        u"\u2250": None,  # \doteq
+        u"\u23b0": None,  # \lmoustache
+        u"\u23b1": None,  # \rmoustache
+        u"\u27ee": None,  # \lgroup
+        u"\u27ef": None,  # \rgroup
+        u"\u27f5": None,  # \longleftarrow
+        u"\u27f8": None,  # \Longleftarrow
+        u"\u27f6": None,  # \longrightarrow
+        u"\u27f9": None,  # \Longrightarrow
+        u"\u27f7": None,  # \longleftrightarrow
+        u"\u27fa": None,  # \Longleftrightarrow
+        u"\u21a6": None,  # \mapsto
+        u"\u27fc": None,  # \longmapsto
+        u"\u21a9": None,  # \hookleftarrow
+        u"\u21aa": None,  # \hookrightarrow
+        u"\u21cc": None,  # \rightleftharpoons
     },
     "Size1-Regular": {
         u"\u222c": u"\u222b",  # \iint, based on \int
