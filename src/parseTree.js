@@ -8,8 +8,8 @@ var Parser = require("./Parser");
 /**
  * Parses an expression using a Parser, then returns the parsed result.
  */
-var parseTree = function(toParse) {
-    var parser = new Parser(toParse);
+var parseTree = function(toParse, settings) {
+    var parser = new Parser(toParse, settings);
 
     return parser.parse();
 };

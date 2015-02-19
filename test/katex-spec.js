@@ -1,15 +1,24 @@
-var katex = require("../katex");
 var buildTree = require("../src/buildTree");
-var parseTree = require("../src/parseTree");
+var katex = require("../katex");
 var ParseError = require("../src/ParseError");
+var parseTree = require("../src/parseTree");
+var Settings = require("../src/Settings");
+
+var defaultSettings = new Settings({});
 
 var getBuilt = function(expr) {
     expect(expr).toBuild();
 
-    var built = buildTree(parseTree(expr));
+    var built = buildTree(parseTree(expr), defaultSettings);
 
     // Remove the outer .katex and .katex-inner layers
     return built.children[0].children[2].children;
+};
+
+var getParsed = function(expr) {
+    expect(expr).toParse();
+
+    return parseTree(expr, defaultSettings);
 };
 
 beforeEach(function() {
@@ -23,7 +32,7 @@ beforeEach(function() {
                     };
 
                     try {
-                        parseTree(actual);
+                        parseTree(actual, defaultSettings);
                     } catch (e) {
                         result.pass = false;
                         if (e instanceof ParseError) {
@@ -50,7 +59,7 @@ beforeEach(function() {
                     };
 
                     try {
-                        parseTree(actual);
+                        parseTree(actual, defaultSettings);
                     } catch (e) {
                         if (e instanceof ParseError) {
                             result.pass = true;
@@ -78,7 +87,7 @@ beforeEach(function() {
                     expect(actual).toParse();
 
                     try {
-                        buildTree(parseTree(actual));
+                        buildTree(parseTree(actual), defaultSettings);
                     } catch (e) {
                         result.pass = false;
                         if (e instanceof ParseError) {
@@ -103,8 +112,8 @@ describe("A parser", function() {
     });
 
     it("should ignore whitespace", function() {
-        var parseA = parseTree("    x    y    ");
-        var parseB = parseTree("xy");
+        var parseA = getParsed("    x    y    ");
+        var parseB = getParsed("xy");
         expect(parseA).toEqual(parseB);
     });
 });
@@ -117,7 +126,7 @@ describe("An ord parser", function() {
     });
 
     it("should build a list of ords", function() {
-        var parse = parseTree(expression);
+        var parse = getParsed(expression);
 
         expect(parse).toBeTruthy();
 
@@ -128,7 +137,7 @@ describe("An ord parser", function() {
     });
 
     it("should parse the right number of ords", function() {
-        var parse = parseTree(expression);
+        var parse = getParsed(expression);
 
         expect(parse.length).toBe(expression.length);
     });
@@ -142,7 +151,7 @@ describe("A bin parser", function() {
     });
 
     it("should build a list of bins", function() {
-        var parse = parseTree(expression);
+        var parse = getParsed(expression);
         expect(parse).toBeTruthy();
 
         for (var i = 0; i < parse.length; i++) {
@@ -160,7 +169,7 @@ describe("A rel parser", function() {
     });
 
     it("should build a list of rels", function() {
-        var parse = parseTree(expression);
+        var parse = getParsed(expression);
         expect(parse).toBeTruthy();
 
         for (var i = 0; i < parse.length; i++) {
@@ -178,7 +187,7 @@ describe("A punct parser", function() {
     });
 
     it("should build a list of puncts", function() {
-        var parse = parseTree(expression);
+        var parse = getParsed(expression);
         expect(parse).toBeTruthy();
 
         for (var i = 0; i < parse.length; i++) {
@@ -196,7 +205,7 @@ describe("An open parser", function() {
     });
 
     it("should build a list of opens", function() {
-        var parse = parseTree(expression);
+        var parse = getParsed(expression);
         expect(parse).toBeTruthy();
 
         for (var i = 0; i < parse.length; i++) {
@@ -214,7 +223,7 @@ describe("A close parser", function() {
     });
 
     it("should build a list of closes", function() {
-        var parse = parseTree(expression);
+        var parse = getParsed(expression);
         expect(parse).toBeTruthy();
 
         for (var i = 0; i < parse.length; i++) {
@@ -253,7 +262,7 @@ describe("A subscript and superscript parser", function() {
     });
 
     it("should produce supsubs for superscript", function() {
-        var parse = parseTree("x^2")[0];
+        var parse = getParsed("x^2")[0];
 
         expect(parse.type).toBe("supsub");
         expect(parse.value.base).toBeDefined();
@@ -262,7 +271,7 @@ describe("A subscript and superscript parser", function() {
     });
 
     it("should produce supsubs for subscript", function() {
-        var parse = parseTree("x_3")[0];
+        var parse = getParsed("x_3")[0];
 
         expect(parse.type).toBe("supsub");
         expect(parse.value.base).toBeDefined();
@@ -271,7 +280,7 @@ describe("A subscript and superscript parser", function() {
     });
 
     it("should produce supsubs for ^_", function() {
-        var parse = parseTree("x^2_3")[0];
+        var parse = getParsed("x^2_3")[0];
 
         expect(parse.type).toBe("supsub");
         expect(parse.value.base).toBeDefined();
@@ -280,7 +289,7 @@ describe("A subscript and superscript parser", function() {
     });
 
     it("should produce supsubs for _^", function() {
-        var parse = parseTree("x_3^2")[0];
+        var parse = getParsed("x_3^2")[0];
 
         expect(parse.type).toBe("supsub");
         expect(parse.value.base).toBeDefined();
@@ -289,8 +298,8 @@ describe("A subscript and superscript parser", function() {
     });
 
     it("should produce the same thing regardless of order", function() {
-        var parseA = parseTree("x^2_3");
-        var parseB = parseTree("x_3^2");
+        var parseA = getParsed("x^2_3");
+        var parseB = getParsed("x_3^2");
 
         expect(parseA).toEqual(parseB);
     });
@@ -350,7 +359,7 @@ describe("A group parser", function() {
     });
 
     it("should produce a single ord", function() {
-        var parse = parseTree("{xy}");
+        var parse = getParsed("{xy}");
 
         expect(parse.length).toBe(1);
 
@@ -368,7 +377,7 @@ describe("An implicit group parser", function() {
     });
 
     it("should produce a single object", function() {
-        var parse = parseTree("\\Large abc");
+        var parse = getParsed("\\Large abc");
 
         expect(parse.length).toBe(1);
 
@@ -379,7 +388,7 @@ describe("An implicit group parser", function() {
     });
 
     it("should apply only after the function", function() {
-        var parse = parseTree("a \\Large abc");
+        var parse = getParsed("a \\Large abc");
 
         expect(parse.length).toBe(2);
 
@@ -390,7 +399,7 @@ describe("An implicit group parser", function() {
     });
 
     it("should stop at the ends of groups", function() {
-        var parse = parseTree("a { b \\Large c } d");
+        var parse = getParsed("a { b \\Large c } d");
 
         var group = parse[1];
         var sizing = group.value[1];
@@ -446,7 +455,7 @@ describe("A frac parser", function() {
     });
 
     it("should produce a frac", function() {
-        var parse = parseTree(expression)[0];
+        var parse = getParsed(expression)[0];
 
         expect(parse.type).toMatch("frac");
         expect(parse.value.numer).toBeDefined();
@@ -460,13 +469,13 @@ describe("A frac parser", function() {
     });
 
     it("should parse dfrac and tfrac as fracs", function() {
-        var dfracParse = parseTree(dfracExpression)[0];
+        var dfracParse = getParsed(dfracExpression)[0];
 
         expect(dfracParse.type).toMatch("frac");
         expect(dfracParse.value.numer).toBeDefined();
         expect(dfracParse.value.denom).toBeDefined();
 
-        var tfracParse = parseTree(tfracExpression)[0];
+        var tfracParse = getParsed(tfracExpression)[0];
 
         expect(tfracParse.type).toMatch("frac");
         expect(tfracParse.value.numer).toBeDefined();
@@ -486,13 +495,13 @@ describe("An over parser", function() {
     it("should produce a frac", function() {
         var parse;
 
-        parse = parseTree(simpleOver)[0];
+        parse = getParsed(simpleOver)[0];
 
         expect(parse.type).toMatch("frac");
         expect(parse.value.numer).toBeDefined();
         expect(parse.value.denom).toBeDefined();
 
-        parse = parseTree(complexOver)[0];
+        parse = getParsed(complexOver)[0];
 
         expect(parse.type).toMatch("frac");
         expect(parse.value.numer).toBeDefined();
@@ -500,14 +509,14 @@ describe("An over parser", function() {
     });
 
     it("should create a numerator from the atoms before \\over", function () {
-        var parse = parseTree(complexOver)[0];
+        var parse = getParsed(complexOver)[0];
 
         var numer = parse.value.numer;
         expect(numer.value.length).toEqual(4);
     });
 
     it("should create a demonimator from the atoms after \\over", function () {
-        var parse = parseTree(complexOver)[0];
+        var parse = getParsed(complexOver)[0];
 
         var denom = parse.value.numer;
         expect(denom.value.length).toEqual(4);
@@ -515,9 +524,7 @@ describe("An over parser", function() {
 
     it("should handle empty numerators", function () {
         var emptyNumerator = "\\over x";
-        expect(emptyNumerator).toParse();
-
-        var parse = parseTree(emptyNumerator)[0];
+        var parse = getParsed(emptyNumerator)[0];
         expect(parse.type).toMatch("frac");
         expect(parse.value.numer).toBeDefined();
         expect(parse.value.denom).toBeDefined();
@@ -525,9 +532,7 @@ describe("An over parser", function() {
 
     it("should handle empty denominators", function () {
         var emptyDenominator = "1 \\over";
-        expect(emptyDenominator).toParse();
-
-        var parse = parseTree(emptyDenominator)[0];
+        var parse = getParsed(emptyDenominator)[0];
         expect(parse.type).toMatch("frac");
         expect(parse.value.numer).toBeDefined();
         expect(parse.value.denom).toBeDefined();
@@ -535,9 +540,7 @@ describe("An over parser", function() {
 
     it("should handle \\displaystyle correctly", function () {
         var displaystyleExpression = "\\displaystyle 1 \\over 2";
-        expect(displaystyleExpression).toParse();
-
-        var parse = parseTree(displaystyleExpression)[0];
+        var parse = getParsed(displaystyleExpression)[0];
         expect(parse.type).toMatch("frac");
         expect(parse.value.numer.value[0].type).toMatch("styling");
         expect(parse.value.denom).toBeDefined();
@@ -545,9 +548,7 @@ describe("An over parser", function() {
 
     it("should handle nested factions", function () {
         var nestedOverExpression = "{1 \\over 2} \\over 3";
-        expect(nestedOverExpression).toParse();
-
-        var parse = parseTree(nestedOverExpression)[0];
+        var parse = getParsed(nestedOverExpression)[0];
         expect(parse.type).toMatch("frac");
         expect(parse.value.numer.value[0].type).toMatch("frac");
         expect(parse.value.numer.value[0].value.numer.value[0].value).toMatch(1);
@@ -574,7 +575,7 @@ describe("A sizing parser", function() {
     });
 
     it("should produce a sizing node", function() {
-        var parse = parseTree(sizeExpression)[0];
+        var parse = getParsed(sizeExpression)[0];
 
         expect(parse.type).toMatch("sizing");
         expect(parse.value).toBeDefined();
@@ -596,14 +597,14 @@ describe("A text parser", function() {
     });
 
     it("should produce a text", function() {
-        var parse = parseTree(textExpression)[0];
+        var parse = getParsed(textExpression)[0];
 
         expect(parse.type).toMatch("text");
         expect(parse.value).toBeDefined();
     });
 
     it("should produce textords instead of mathords", function() {
-        var parse = parseTree(textExpression)[0];
+        var parse = getParsed(textExpression)[0];
         var group = parse.value.body;
 
         expect(group[0].type).toMatch("textord");
@@ -626,7 +627,7 @@ describe("A text parser", function() {
     });
 
     it("should contract spaces", function() {
-        var parse = parseTree(spaceTextExpression)[0];
+        var parse = getParsed(spaceTextExpression)[0];
         var group = parse.value.body;
 
         expect(group[0].type).toMatch("spacing");
@@ -636,7 +637,7 @@ describe("A text parser", function() {
     });
 
     it("should ignore a space before the text group", function() {
-        var parse = parseTree(leadingSpaceTextExpression)[0];
+        var parse = getParsed(leadingSpaceTextExpression)[0];
         // [m, o, o]
         expect(parse.value.body.length).toBe(3);
         expect(
@@ -655,7 +656,7 @@ describe("A color parser", function() {
     });
 
     it("should build a color node", function() {
-        var parse = parseTree(colorExpression)[0];
+        var parse = getParsed(colorExpression)[0];
 
         expect(parse.type).toMatch("color");
         expect(parse.value.color).toBeDefined();
@@ -667,7 +668,7 @@ describe("A color parser", function() {
     });
 
     it("should correctly extract the custom color", function() {
-        var parse = parseTree(customColorExpression)[0];
+        var parse = getParsed(customColorExpression)[0];
 
         expect(parse.value.color).toMatch("#fA6");
     });
@@ -690,20 +691,20 @@ describe("A tie parser", function() {
     });
 
     it("should produce spacing in math mode", function() {
-        var parse = parseTree(mathTie);
+        var parse = getParsed(mathTie);
 
         expect(parse[1].type).toMatch("spacing");
     });
 
     it("should produce spacing in text mode", function() {
-        var text = parseTree(textTie)[0];
+        var text = getParsed(textTie)[0];
         var parse = text.value.body;
 
         expect(parse[1].type).toMatch("spacing");
     });
 
     it("should not contract with spaces in text mode", function() {
-        var text = parseTree(textTie)[0];
+        var text = getParsed(textTie)[0];
         var parse = text.value.body;
 
         expect(parse[2].type).toMatch("spacing");
@@ -725,22 +726,22 @@ describe("A delimiter sizing parser", function() {
     });
 
     it("should produce a delimsizing", function() {
-        var parse = parseTree(normalDelim)[0];
+        var parse = getParsed(normalDelim)[0];
 
         expect(parse.type).toMatch("delimsizing");
     });
 
     it("should produce the correct direction delimiter", function() {
-        var leftParse = parseTree(normalDelim)[0];
-        var rightParse = parseTree(bigDelim)[0];
+        var leftParse = getParsed(normalDelim)[0];
+        var rightParse = getParsed(bigDelim)[0];
 
         expect(leftParse.value.delimType).toMatch("open");
         expect(rightParse.value.delimType).toMatch("close");
     });
 
     it("should parse the correct size delimiter", function() {
-        var smallParse = parseTree(normalDelim)[0];
-        var bigParse = parseTree(bigDelim)[0];
+        var smallParse = getParsed(normalDelim)[0];
+        var bigParse = getParsed(bigDelim)[0];
 
         expect(smallParse.value.size).toEqual(1);
         expect(bigParse.value.size).toEqual(4);
@@ -755,7 +756,7 @@ describe("An overline parser", function() {
     });
 
     it("should produce an overline", function() {
-        var parse = parseTree(overline)[0];
+        var parse = getParsed(overline)[0];
 
         expect(parse.type).toMatch("overline");
     });
@@ -785,14 +786,14 @@ describe("A rule parser", function() {
     });
 
     it("should produce a rule", function() {
-        var parse = parseTree(emRule)[0];
+        var parse = getParsed(emRule)[0];
 
         expect(parse.type).toMatch("rule");
     });
 
     it("should list the correct units", function() {
-        var emParse = parseTree(emRule)[0];
-        var exParse = parseTree(exRule)[0];
+        var emParse = getParsed(emRule)[0];
+        var exParse = getParsed(exRule)[0];
 
         expect(emParse.value.width.unit).toMatch("em");
         expect(emParse.value.height.unit).toMatch("em");
@@ -802,16 +803,14 @@ describe("A rule parser", function() {
     });
 
     it("should parse the number correctly", function() {
-        var hardNumberParse = parseTree(hardNumberRule)[0];
+        var hardNumberParse = getParsed(hardNumberRule)[0];
 
         expect(hardNumberParse.value.width.number).toBeCloseTo(1.24);
         expect(hardNumberParse.value.height.number).toBeCloseTo(2.45);
     });
 
     it("should parse negative sizes", function() {
-        expect("\\rule{-1em}{- 0.2em}").toParse();
-
-        var parse = parseTree("\\rule{-1em}{- 0.2em}")[0];
+        var parse = getParsed("\\rule{-1em}{- 0.2em}")[0];
 
         expect(parse.value.width.number).toBeCloseTo(-1);
         expect(parse.value.height.number).toBeCloseTo(-0.2);
@@ -827,7 +826,7 @@ describe("A left/right parser", function() {
     });
 
     it("should produce a leftright", function() {
-        var parse = parseTree(normalLeftRight)[0];
+        var parse = getParsed(normalLeftRight)[0];
 
         expect(parse.type).toMatch("leftright");
         expect(parse.value.left).toMatch("\\(");
@@ -876,7 +875,7 @@ describe("A sqrt parser", function() {
     });
 
     it("should produce sqrts", function() {
-        var parse = parseTree(sqrt)[0];
+        var parse = getParsed(sqrt)[0];
 
         expect(parse.type).toMatch("sqrt");
     });
@@ -1036,18 +1035,16 @@ describe("A style change parser", function() {
     });
 
     it("should produce the correct style", function() {
-        var displayParse = parseTree("\\displaystyle x")[0];
+        var displayParse = getParsed("\\displaystyle x")[0];
         expect(displayParse.value.style).toMatch("display");
 
-        var scriptscriptParse = parseTree("\\scriptscriptstyle x")[0];
+        var scriptscriptParse = getParsed("\\scriptscriptstyle x")[0];
         expect(scriptscriptParse.value.style).toMatch("scriptscript");
     });
 
     it("should only change the style within its group", function() {
         var text = "a b { c d \\displaystyle e f } g h";
-        expect(text).toParse();
-
-        var parse = parseTree(text);
+        var parse = getParsed(text);
 
         var displayNode = parse[2].value[2];
 
@@ -1108,13 +1105,13 @@ describe("An accent parser", function() {
     });
 
     it("should produce accents", function() {
-        var parse = parseTree("\\vec x")[0];
+        var parse = getParsed("\\vec x")[0];
 
         expect(parse.type).toMatch("accent");
     });
 
     it("should be grouped more tightly than supsubs", function() {
-        var parse = parseTree("\\vec x^2")[0];
+        var parse = getParsed("\\vec x^2")[0];
 
         expect(parse.type).toMatch("supsub");
     });
@@ -1144,7 +1141,7 @@ describe("An accent builder", function() {
 describe("A parser error", function () {
     it("should report the position of an error", function () {
         try {
-            parseTree("\\sqrt}");
+            parseTree("\\sqrt}", defaultSettings);
         } catch (e) {
             expect(e.position).toEqual(5);
         }

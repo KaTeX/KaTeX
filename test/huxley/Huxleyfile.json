@@ -195,5 +195,11 @@
         "name": "Accents",
         "screenSize": [1024, 768],
         "url": "http://localhost:7936/test/huxley/test.html?m=\\vec{A}\\vec{x}\\vec x^2\\vec{x}_2^2\\vec{A}^2\\vec{xA}^2"
+    },
+
+    {
+        "name": "DisplayMode",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m=\\sum_{i=0}^\\infty \\frac{1}{i}&pre=pre&post=post&display=1"
     }
 ]

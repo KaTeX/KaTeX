@@ -506,16 +506,6 @@ for (var i = 0; i < duplicatedFunctions.length; i++) {
     addFuncsWithData(duplicatedFunctions[i].funcs, duplicatedFunctions[i].data);
 }
 
-// Returns the greediness of a given function. Since greediness is optional, we
-// use this function to put in the default value if it is undefined.
-var getGreediness = function(func) {
-    if (functions[func].greediness === undefined) {
-        return 1;
-    } else {
-        return functions[func].greediness;
-    }
-};
-
 // Set default values of functions
 for (var f in functions) {
     if (functions.hasOwnProperty(f)) {
@@ -534,6 +524,5 @@ for (var f in functions) {
 }
 
 module.exports = {
-    funcs: functions,
-    getGreediness: getGreediness
+    funcs: functions
 };

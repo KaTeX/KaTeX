@@ -43,9 +43,11 @@ var ParseError = require("./ParseError");
 /**
  * Main Parser class
  */
-function Parser(input) {
+function Parser(input, settings) {
     // Make a new lexer
     this.lexer = new Lexer(input);
+    // Store the settings for use in parsing
+    this.settings = settings;
 }
 
 /**
@@ -69,18 +71,10 @@ function ParseResult(result, newPosition) {
  * An initial function (without its arguments), or an argument to a function.
  * The `result` argument should be a ParseResult.
  */
-function ParseFuncOrArgument(result, isFunction, allowedInText, numArgs, numOptionalArgs, argTypes) {
+function ParseFuncOrArgument(result, isFunction) {
     this.result = result;
     // Is this a function (i.e. is it something defined in functions.js)?
     this.isFunction = isFunction;
-    // Is it allowed in text mode?
-    this.allowedInText = allowedInText;
-    // How many arguments?
-    this.numArgs = numArgs;
-    // How many optional arguments?
-    this.numOptionalArgs = numOptionalArgs;
-    // What types of arguments?
-    this.argTypes = argTypes;
 }
 
 /**
@@ -217,10 +211,10 @@ Parser.prototype.handleSupSubscript = function(pos, mode, symbol, name) {
     if (!group) {
         throw new ParseError(
             "Expected group after '" + symbol + "'", this.lexer, pos);
-    } else if (group.numArgs > 0) {
+    } else if (group.isFunction) {
         // ^ and _ have a greediness, so handle interactions with functions'
         // greediness
-        var funcGreediness = functions.getGreediness(group.result.result);
+        var funcGreediness = functions.funcs[group.result.result].greediness;
         if (funcGreediness > SUPSUB_GREEDINESS) {
             return this.parseFunction(pos, mode);
         } else {
@@ -419,7 +413,8 @@ Parser.prototype.parseFunction = function(pos, mode) {
     if (baseGroup) {
         if (baseGroup.isFunction) {
             var func = baseGroup.result.result;
-            if (mode === "text" && !baseGroup.allowedInText) {
+            var funcData = functions.funcs[func];
+            if (mode === "text" && !funcData.allowedInText) {
                 throw new ParseError(
                     "Can't use function '" + func + "' in text mode",
                     this.lexer, baseGroup.position);
@@ -428,17 +423,17 @@ Parser.prototype.parseFunction = function(pos, mode) {
             var newPos = baseGroup.result.position;
             var result;
 
-            var totalArgs = baseGroup.numArgs + baseGroup.numOptionalArgs;
+            var totalArgs = funcData.numArgs + funcData.numOptionalArgs;
 
             if (totalArgs > 0) {
-                var baseGreediness = functions.getGreediness(func);
+                var baseGreediness = funcData.greediness;
                 var args = [func];
                 var positions = [newPos];
 
                 for (var i = 0; i < totalArgs; i++) {
-                    var argType = baseGroup.argTypes && baseGroup.argTypes[i];
+                    var argType = funcData.argTypes && funcData.argTypes[i];
                     var arg;
-                    if (i < baseGroup.numOptionalArgs) {
+                    if (i < funcData.numOptionalArgs) {
                         if (argType) {
                             arg = this.parseSpecialGroup(newPos, argType, mode, true);
                         } else {
@@ -463,8 +458,9 @@ Parser.prototype.parseFunction = function(pos, mode) {
                         }
                     }
                     var argNode;
-                    if (arg.numArgs > 0) {
-                        var argGreediness = functions.getGreediness(arg.result.result);
+                    if (arg.isFunction) {
+                        var argGreediness =
+                            functions.funcs[arg.result.result].greediness;
                         if (argGreediness > baseGreediness) {
                             argNode = this.parseFunction(newPos, mode);
                         } else {
@@ -507,6 +503,11 @@ Parser.prototype.parseFunction = function(pos, mode) {
  * @return {?ParseFuncOrArgument}
  */
 Parser.prototype.parseSpecialGroup = function(pos, mode, outerMode, optional) {
+    // Handle `original` argTypes
+    if (mode === "original") {
+        mode = outerMode;
+    }
+
     if (mode === "color" || mode === "size") {
         // color and size modes are special because they should have braces and
         // should only lex a single symbol inside
@@ -605,23 +606,11 @@ Parser.prototype.parseSymbol = function(pos, mode) {
     var nucleus = this.lexer.lex(pos, mode);
 
     if (functions.funcs[nucleus.text]) {
-        // If there is a function with this name, we use its data
-        var func = functions.funcs[nucleus.text];
-
-        // Here, we replace "original" argTypes with the current mode
-        var argTypes = func.argTypes;
-        if (argTypes) {
-            argTypes = argTypes.slice();
-            for (var i = 0; i < argTypes.length; i++) {
-                if (argTypes[i] === "original") {
-                    argTypes[i] = mode;
-                }
-            }
-        }
-
+        // If there exists a function with this name, we return the function and
+        // say that it is a function.
         return new ParseFuncOrArgument(
             new ParseResult(nucleus.text, nucleus.position),
-            true, func.allowedInText, func.numArgs, func.numOptionalArgs, argTypes);
+            true);
     } else if (symbols[mode][nucleus.text]) {
         // Otherwise if this is a no-argument function, find the type it
         // corresponds to in the symbols map

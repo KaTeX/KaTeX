@@ -1135,9 +1135,14 @@ var buildGroup = function(group, options, prev) {
 /**
  * Take an entire parse tree, and build it into an appropriate set of nodes.
  */
-var buildTree = function(tree) {
+var buildTree = function(tree, settings) {
+    var startStyle = Style.TEXT;
+    if (settings.displayMode) {
+        startStyle = Style.DISPLAY;
+    }
+
     // Setup the default options
-    var options = new Options(Style.TEXT, "size5", "");
+    var options = new Options(startStyle, "size5", "");
 
     // Build the expression contained in the tree
     var expression = buildExpression(tree, options);
@@ -1161,7 +1166,11 @@ var buildTree = function(tree) {
         makeSpan(["katex-inner"], [topStrut, bottomStrut, body])
     ]);
 
-    return katexNode;
+    if (settings.displayMode) {
+        return makeSpan(["katex-display"], [katexNode]);
+    } else {
+        return katexNode;
+    }
 };
 
 module.exports = buildTree;

@@ -16,13 +16,15 @@
     <span id="post"></span>
     <script type="text/javascript">
       var query = {};
-      var queryVars = window.location.search.slice(1).split("&");
-      for (var i = 0; i < queryVars.length; i++) {
-        var split = queryVars[i].split("=");
-        query[split[0]] = decodeURIComponent(split[1]);
+      var re = /(?:^\?|&)([^&=]+)(?:=([^&]+))?/g;
+      var match;
+      while (match = re.exec(window.location.search)) {
+          query[match[1]] = decodeURIComponent(match[2]);
       }
       var mathNode = document.getElementById("math");
-      katex.render(query["m"], mathNode);
+      katex.render(query["m"], mathNode, {
+          displayMode: !!query["display"]
+      });
       document.getElementById("pre").innerHTML = query["pre"] || "";
       document.getElementById("post").innerHTML = query["post"] || "";
     </script>
