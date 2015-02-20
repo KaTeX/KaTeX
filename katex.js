@@ -52,8 +52,22 @@ var renderToString = function(toParse, options) {
     return buildTree(tree, settings).toMarkup();
 };
 
+var renderByClass = function(classToParse){
+    var elements = document.getElementsByClassName(classToParse);
+    // Loop through the elements
+    for (var i = 0; i < elements.length; i++){
+        // Get the current html for that element
+        var currentHTML = elements[i].innerHTML;
+        // Render 
+        var renderedHTML = renderToString(currentHTML);
+        // Update the HTML
+        elements[i].innerHTML = renderedHTML;
+    }
+}
+
 module.exports = {
     render: render,
     renderToString: renderToString,
+    renderByClass: renderByClass,
     ParseError: ParseError
 };
