@@ -186,6 +186,12 @@
     },
 
     {
+        "name": "LimsupLiminf",
+        "screenSize": [1024, 768],
+        "url": "http://localhost:7936/test/huxley/test.html?m=\\limsup\\liminf"
+    },
+
+    {
         "name": "SupSubOffsets",
         "screenSize": [1024, 768],
         "url": "http://localhost:7936/test/huxley/test.html?m=\\displaystyle \\int_{2+3}x f^{2+3}+3\\lim_{2+3+4+5}f"
