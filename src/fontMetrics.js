@@ -106,7 +106,10 @@ var metrics = {
             return sigma21ScriptScript;
         }
         throw new Error("Unexpected style size: " + style.size);
-    }
+    },
+
+    // \nulldelimiterspace=1.2pt, pg. 344 TeXbook
+    nulldelimiterspace: 1.2 / ptPerEm
 };
 
 // This map contains a mapping from font name and character code to character

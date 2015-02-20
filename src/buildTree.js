@@ -169,6 +169,14 @@ var groupTypes = {
             group.value, group.mode, options.getColor(), ["mord"]);
     },
 
+    strut: function(group, options, prev) {
+        return buildCommon.makeStrut();
+    },
+
+    kern: function(group, options, prev) {
+        return buildCommon.makeStrut(group.value);
+    },
+
     bin: function(group, options, prev) {
         var className = "mbin";
         // Pull out the most recent element. Do some special handling to find
@@ -369,6 +377,7 @@ var groupTypes = {
         // Figure out what style this fraction should be in based on the
         // function used
         var fstyle = options.style;
+
         if (group.value.size === "display") {
             fstyle = Style.DISPLAY;
         } else if (group.value.size === "text") {
@@ -470,6 +479,11 @@ var groupTypes = {
         // Rule 15e
         var innerChildren = [makeSpan(["mfrac"], [frac])];
 
+        var nulldelimiterspace = fontMetrics.metrics.nulldelimiterspace;
+        if (group.value.continued) {
+            innerChildren.push(buildCommon.makeKern(-nulldelimiterspace));
+        }
+
         var delimSize;
         if (fstyle.size === Style.DISPLAY.size) {
             delimSize = fontMetrics.metrics.delim1;
@@ -483,6 +497,9 @@ var groupTypes = {
                     group.value.leftDelim, delimSize, true,
                     options.withStyle(fstyle), group.mode)
             );
+        } else {
+            // create a null delimiter
+            innerChildren.unshift(buildCommon.makeKern(nulldelimiterspace));
         }
         if (group.value.rightDelim != null) {
             innerChildren.push(
@@ -490,6 +507,9 @@ var groupTypes = {
                     group.value.rightDelim, delimSize, true,
                     options.withStyle(fstyle), group.mode)
             );
+        } else {
+            // create a null delimiter
+            innerChildren.push(buildCommon.makeKern(nulldelimiterspace));
         }
 
         return makeSpan(

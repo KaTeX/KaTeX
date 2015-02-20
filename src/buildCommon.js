@@ -41,6 +41,23 @@ var makeSymbol = function(value, style, mode, color, classes) {
 };
 
 /**
+ * Makes a strut
+ */
+var makeStrut = function() {
+    return new domTree.symbolNode("", 0.85, 0.35);
+};
+
+/**
+ * Inserts kerning where value is specified in ems.
+ * @param value
+ */
+var makeKern = function(value) {
+    var span = new domTree.span(["kern"], [new domTree.symbolNode("\u200b")]);
+    span.style.marginRight = value + "em";
+    return span;
+};
+
+/**
  * Makes a symbol in the italic math font.
  */
 var mathit = function(value, mode, color, classes) {
@@ -267,5 +284,7 @@ module.exports = {
     mathrm: mathrm,
     makeSpan: makeSpan,
     makeFragment: makeFragment,
-    makeVList: makeVList
+    makeVList: makeVList,
+    makeStrut: makeStrut,
+    makeKern: makeKern
 };
