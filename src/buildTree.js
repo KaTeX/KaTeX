@@ -518,6 +518,7 @@ var groupTypes = {
                 "\\;": "thickspace",
                 "\\:": "mediumspace",
                 "\\,": "thinspace",
+                "\\thinspace": "thinspace",
                 "\\!": "negativethinspace"
             };
 
