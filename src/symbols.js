@@ -1809,6 +1809,11 @@ var symbols = {
             group: "mathord",
             replace: "\u03d1"
         },
+        "\\varkappa": {
+            font: "main",
+            group: "mathord",
+            replace: "\u03f0"
+        },
         "\\varpi": {
             font: "main",
             group: "mathord",
@@ -1902,6 +1907,61 @@ var symbols = {
             font: "main",
             group: "bin",
             replace: "\u2228"
+        },
+        "\\mp": {
+            font: "main",
+            group: "bin",
+            replace: "\u2213"
+        },
+        "\\ominus": {
+            font: "main",
+            group: "textord",
+            replace: "\u2296"
+        },
+        "\\uplus": {
+            font: "main",
+            group: "textord",
+            replace: "\u228e"
+        },
+        "\\sqcap": {
+            font: "main",
+            group: "bin",
+            replace: "\u2293"
+        },
+        "\\ast": {
+            font: "main",
+            group: "bin",
+            replace: "\u2217"
+        },
+        "\\sqcup": {
+            font: "main",
+            group: "bin",
+            replace: "\u2294"
+        },
+        "\\bigcirc": {
+            font: "main",
+            group: "bin",
+            replace: "\u25cb"
+        },
+        "\\bullet": {
+            font: "main",
+            group: "textord",
+            replace: "\u2219"
+        },
+        "\\ddagger": {
+            font: "main",
+            group: "textord",
+            replace: "\u2021"
+        },
+        "\\wr": {
+            font: "main",
+            group: "bin",
+            replace: "\u2240"
+        },
+        "\\amalg": {
+            font: "main",
+            group: "bin",
+            replace: "\u2a3f"
         },
         "\\surd": {
             font: "main",
@@ -2083,6 +2143,176 @@ var symbols = {
             group: "rel",
             replace: "\u2270"
         },
+        "\\ll": {
+            font: "main",
+            group: "rel",
+            replace: "\u226a"
+        },
+        "\\gg": {
+            font: "main",
+            group: "rel",
+            replace: "\u226b"
+        },
+        "\\sqsubset": {
+            font: "main",
+            group: "rel",
+            replace: "\u228f"
+        },
+        "\\sqsubseteq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2291"
+        },
+        "\\sqsupset": {
+            font: "main",
+            group: "rel",
+            replace: "\u2290"
+        },
+        "\\sqsupseteq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2292"
+        },
+        "\\prec": {
+            font: "main",
+            group: "rel",
+            replace: "\u227a"
+        },
+        "\\preceq": {
+            font: "main",
+            group: "rel",
+            replace: "\u227c"
+        },
+        "\\succ": {
+            font: "main",
+            group: "rel",
+            replace: "\u227b"
+        },
+        "\\succeq": {
+            font: "main",
+            group: "rel",
+            replace: "\u227d"
+        },
+        "\\doteq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2250"
+        },
+        "\\equiv": {
+            font: "main",
+            group: "rel",
+            replace: "\u2261"
+        },
+        "\\simeq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2243"
+        },
+        "\\sim": {
+            font: "main",
+            group: "rel",
+            replace: "\u223c"
+        },
+        "\\parallel": {
+            font: "main",
+            group: "rel",
+            replace: "\u2225"
+        },
+        "\\nparallel": {
+            font: "main",
+            group: "rel",
+            replace: "\u2226"
+        },
+        "\\perp": {
+            font: "main",
+            group: "rel",
+            replace: "\u22a5"
+        },
+        "\\asymp": {
+            font: "main",
+            group: "rel",
+            replace: "\u224d"
+        },
+        "\\vdash": {
+            font: "main",
+            group: "rel",
+            replace: "\u22a2"
+        },
+        "\\smile": {
+            font: "main",
+            group: "rel",
+            replace: "\u2323"
+        },
+        "\\frown": {
+            font: "main",
+            group: "rel",
+            replace: "\u2322"
+        },
+        "\\bowtie": {
+            font: "main",
+            group: "rel",
+            replace: "\u22c8"
+        },
+        "\\dashv": {
+            font: "main",
+            group: "rel",
+            replace: "\u22a3"
+        },
+        "\\ni": {
+            font: "main",
+            group: "rel",
+            replace: "\u220b"
+        },
+        "\\mid": {
+            font: "main",
+            group: "rel",
+            replace: "\u2223"
+        },
+        "\\exists": {
+            font: "main",
+            group: "textord",
+            replace: "\u2203"
+        },
+        "\\nexists": {
+            font: "main",
+            group: "textord",
+            replace: "\u2204"
+        },
+        "\\forall": {
+            font: "main",
+            group: "textord",
+            replace: "\u2200"
+        },
+        "\\mapsto": {
+            font: "main",
+            group: "rel",
+            replace: "\u21a6"
+        },
+        "\\implies": {
+            font: "main",
+            group: "rel",
+            replace: "\u21d2"
+        },
+        "\\Rightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21d2"
+        },
+        "\\leftrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u2194"
+        },
+        "\\iff": {
+            font: "main",
+            group: "rel",
+            replace: "\u27fa"
+        },
+        "\\Leftrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21d4"
+        },
         "\\!": {
             font: "main",
             group: "spacing"
@@ -2184,6 +2414,51 @@ var symbols = {
             group: "textord",
             replace: "\u22a1"
         },
+        "\\hbar": {
+            font: "main",
+            group: "textord",
+            replace: "\u210f"
+        },
+        "\\imath": {
+            font: "main",
+            group: "mathord",
+            replace: "\u0131"
+        },
+        "\\jmath": {
+            font: "main",
+            group: "mathord",
+            replace: "\u0237"
+        },
+        "\\ell": {
+            font: "main",
+            group: "textord",
+            replace: "\u2113"
+        },
+        "\\Re": {
+            font: "main",
+            group: "textord",
+            replace: "\u211c"
+        },
+        "\\Im": {
+            font: "main",
+            group: "textord",
+            replace: "\u2111"
+        },
+        "\\wp": {
+            font: "main",
+            group: "textord",
+            replace: "\u2118"
+        },
+        "\\nabla": {
+            font: "main",
+            group: "textord",
+            replace: "\u2207"
+        },
+        "\\Box": {
+            font: "main",
+            group: "textord",
+            replace: "\u25a1"
+        },
         "\\bigtriangleup": {
             font: "main",
             group: "textord",
@@ -2219,6 +2494,7 @@ var symbols = {
             group: "textord",
             replace: "\u25b9"
         },
+
         "\\{": {
             font: "main",
             group: "open",
