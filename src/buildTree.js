@@ -830,8 +830,15 @@ var groupTypes = {
         // handling.
         var inner = buildExpression(group.value.value,
                 options.withSize(group.value.size), prev);
+        var type = "mord";
+        if (prev && group.value.value[0].type == "bin") {
+            if (prev.type === "mathord" || prev.type === "textord" ||
+                prev.type === "close") {
+                type = "mbin";
+            }
+        }
 
-        var span = makeSpan(["mord"],
+        var span = makeSpan([type],
             [makeSpan(["sizing", "reset-" + options.size, group.value.size,
                        options.style.cls()],
                       inner)]);

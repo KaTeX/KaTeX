@@ -582,6 +582,12 @@ describe("A sizing parser", function() {
     });
 });
 
+describe("A sizing builder", function () {
+    it("should not fail", function () {
+        expect("\\Huge x + 1").toBuild();
+    });
+});
+
 describe("A text parser", function() {
     var textExpression = "\\text{a b}";
     var noBraceTextExpression = "\\text x";
