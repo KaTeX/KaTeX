@@ -1863,6 +1863,11 @@ var symbols = {
             group: "bin",
             replace: "\u00b1"
         },
+	"\\mp": {
+	    font: "main",
+	    group: "bin",
+	    replace: "\u2213"
+	},
         "\\times": {
             font: "main",
             group: "bin",
@@ -1878,6 +1883,21 @@ var symbols = {
             group: "bin",
             replace: "\u222a"
         },
+	"\\uplus": {
+	    font: "main",
+	    group: "bin",
+	    replace: "\u228e"
+	},
+	"\\sqcap": {
+	    font: "main",
+	    group: "bin",
+	    replace: "\u2293"
+	},
+	"\\sqcup": {
+	    font: "main",
+	    group: "bin",
+	    replace: "\u2294"
+	},
         "\\setminus": {
             font: "main",
             group: "bin",
@@ -1903,11 +1923,31 @@ var symbols = {
             group: "bin",
             replace: "\u2228"
         },
+	"\\bigcirc": {
+	    font: "main",
+	    group: "bin",
+	    replace: "\u25ef"
+	},
+	"\\amalg": {
+	    font: "main",
+	    group: "bin",
+	    replace: "\u2a3f"
+	},
         "\\surd": {
             font: "main",
             group: "textord",
             replace: "\u221a"
         },
+	"\\ddagger": {
+	    font: "main",
+	    group: "textord",
+	    replace: "\u2021"
+	},
+	"\\ominus": {
+	    font: "main",
+	    group: "textord",
+	    replace: "\u2296"
+	},
         "(": {
             font: "main",
             group: "open"
@@ -2083,6 +2123,36 @@ var symbols = {
             group: "rel",
             replace: "\u2270"
         },
+	"\\forall": {
+	    font: "main",
+	    group: "rel",
+	    replace: "\u2200"
+	},
+	"\\exists": {
+	    font: "main",
+	    group: "rel",
+	    replace: "\u2203"
+	},
+	"\\nexists": {
+	    font: "main",
+	    group: "rel",
+	    replace: "\u2204"
+	},
+	"\\implies": {
+	    font: "main",
+	    group: "rel",
+	    replace: "\u21d2"
+	},
+	"\\iff": {
+	    font: "main",
+	    group: "rel",
+	    replace: "\u21d4"
+	},
+	"\\ni": {
+	    font: "main",
+	    group: "rel",
+	    replace: "\u220d"
+	},
         "\\!": {
             font: "main",
             group: "spacing"
