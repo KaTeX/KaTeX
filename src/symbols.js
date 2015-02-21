@@ -1973,6 +1973,11 @@ var symbols = {
             group: "rel",
             replace: "\u2248"
         },
+        "\\sim": {
+            font: "main",
+            group: "rel",
+            replace: "\u223c"
+        },
         "\\cong": {
             font: "main",
             group: "rel",
@@ -1987,6 +1992,16 @@ var symbols = {
             font: "main",
             group: "rel",
             replace: "\u2265"
+        },
+        "\\succ": {
+            font: "main",
+            group: "rel",
+            replace: "\u227b"
+        },
+        "\\succeq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2ab0"
         },
         "\\gets": {
             font: "main",
@@ -2043,6 +2058,11 @@ var symbols = {
             group: "rel",
             replace: "\u2190"
         },
+        "\\Leftarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21D0"
+        },
         "\\le": {
             font: "main",
             group: "rel",
@@ -2052,6 +2072,16 @@ var symbols = {
             font: "main",
             group: "rel",
             replace: "\u2264"
+        },
+        "\\prec": {
+            font: "main",
+            group: "rel",
+            replace: "\u227a"
+        },
+        "\\preceq": {
+            font: "main",
+            group: "rel",
+            replace: "\u2aaf"
         },
         "\\ne": {
             font: "main",
@@ -2063,10 +2093,20 @@ var symbols = {
             group: "rel",
             replace: "\u2260"
         },
+        "\\nsim": {
+            font: "main",
+            group: "rel",
+            replace: "\u2241"
+        },
         "\\rightarrow": {
             font: "main",
             group: "rel",
             replace: "\u2192"
+        },
+        "\\Rightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21D2"
         },
         "\\to": {
             font: "main",
