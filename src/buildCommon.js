@@ -261,11 +261,26 @@ var makeVList = function(children, positionType, positionData, options) {
     return vlist;
 };
 
+// A table of size -> font size for the different sizing functions
+var sizingMultiplier = {
+    size1: 0.5,
+    size2: 0.7,
+    size3: 0.8,
+    size4: 0.9,
+    size5: 1.0,
+    size6: 1.2,
+    size7: 1.44,
+    size8: 1.73,
+    size9: 2.07,
+    size10: 2.49
+};
+
 module.exports = {
     makeSymbol: makeSymbol,
     mathit: mathit,
     mathrm: mathrm,
     makeSpan: makeSpan,
     makeFragment: makeFragment,
-    makeVList: makeVList
+    makeVList: makeVList,
+    sizingMultiplier: sizingMultiplier
 };

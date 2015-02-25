@@ -335,10 +335,13 @@ var groupTypes = {
     },
 
     sizing: function(group) {
-        var node = new mathMLTree.MathNode("mrow");
+        var node = new mathMLTree.MathNode("mstyle");
 
-        // TODO(emily): Figure out if there's an actual way to say that the
-        // font size got bigger.
+        // TODO(emily): This doesn't produce the correct size for nested size
+        // changes, because we don't keep state of what style we're currently
+        // in, so we can't reset the size to normal before changing it.
+        node.setAttribute(
+            "mathsize", buildCommon.sizingMultiplier[group.value.size] + "em");
 
         var inner = buildExpression(group.value.value);
         for (var i = 0; i < inner.length; i++) {

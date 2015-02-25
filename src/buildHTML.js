@@ -837,7 +837,7 @@ var groupTypes = {
                       inner)]);
 
         // Calculate the correct maxFontSize manually
-        var fontSize = sizingMultiplier[group.value.size];
+        var fontSize = buildCommon.sizingMultiplier[group.value.size];
         span.maxFontSize = fontSize * options.style.sizeMultiplier;
 
         return span;
@@ -1077,19 +1077,6 @@ var groupTypes = {
     }
 };
 
-var sizingMultiplier = {
-    size1: 0.5,
-    size2: 0.7,
-    size3: 0.8,
-    size4: 0.9,
-    size5: 1.0,
-    size6: 1.2,
-    size7: 1.44,
-    size8: 1.73,
-    size9: 2.07,
-    size10: 2.49
-};
-
 /**
  * buildGroup is the function that takes a group and calls the correct groupType
  * function for it. It also handles the interaction of size and style changes
@@ -1118,8 +1105,8 @@ var buildGroup = function(group, options, prev) {
         // If the size changed between the parent and the current group, account
         // for that size difference.
         if (options.size !== options.parentSize) {
-            multiplier = sizingMultiplier[options.size] /
-                    sizingMultiplier[options.parentSize];
+            multiplier = buildCommon.sizingMultiplier[options.size] /
+                    buildCommon.sizingMultiplier[options.parentSize];
 
             groupNode.height *= multiplier;
             groupNode.depth *= multiplier;
