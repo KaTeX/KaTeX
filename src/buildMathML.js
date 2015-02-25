@@ -5,7 +5,6 @@
  */
 
 var buildCommon = require("./buildCommon");
-var domTree = require("./domTree");
 var mathMLTree = require("./mathMLTree");
 var ParseError = require("./ParseError");
 var symbols = require("./symbols");

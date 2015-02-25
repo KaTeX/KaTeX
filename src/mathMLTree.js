@@ -88,7 +88,7 @@ MathNode.prototype.toMarkup = function() {
  */
 function TextNode(text) {
     this.text = text;
-};
+}
 
 /**
  * Converts the text node into a DOM text node.
