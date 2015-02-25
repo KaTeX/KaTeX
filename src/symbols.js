@@ -2159,6 +2159,11 @@ var symbols = {
             group: "textord",
             replace: "\u2295"
         },
+        "\\ominus": {
+            font: "main",
+            group: "textord",
+            replace: "\u2296"
+        },
         "\\otimes": {
             font: "main",
             group: "textord",
