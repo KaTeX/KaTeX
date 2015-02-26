@@ -1200,19 +1200,19 @@ describe("A MathML builder", function() {
     });
 
     it("should generate appropriate MathML types", function() {
-        var identifier = getMathML("x");
+        var identifier = getMathML("x").children[0].children[0];
         expect(identifier.children[0].type).toEqual("mi");
 
-        var number = getMathML("1");
+        var number = getMathML("1").children[0].children[0];
         expect(number.children[0].type).toEqual("mn");
 
-        var operator = getMathML("+");
+        var operator = getMathML("+").children[0].children[0];
         expect(operator.children[0].type).toEqual("mo");
 
-        var space = getMathML("\\;");
+        var space = getMathML("\\;").children[0].children[0];
         expect(space.children[0].type).toEqual("mspace");
 
-        var text = getMathML("\\text{a}");
+        var text = getMathML("\\text{a}").children[0].children[0];
         expect(text.children[0].type).toEqual("mtext");
     });
 });

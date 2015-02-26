@@ -45,11 +45,11 @@ if (typeof document !== "undefined") {
 /**
  * Parse and build an expression, and return the markup for that.
  */
-var renderToString = function(toParse, options) {
+var renderToString = function(expression, options) {
     var settings = new Settings(options);
 
-    var tree = parseTree(toParse, settings);
-    return buildTree(tree, settings).toMarkup();
+    var tree = parseTree(expression, settings);
+    return buildTree(tree, expression, settings).toMarkup();
 };
 
 module.exports = {
