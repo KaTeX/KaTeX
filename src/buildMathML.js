@@ -431,18 +431,38 @@ var buildGroup = function(group) {
 };
 
 /**
- * Takes a full parse tree and settings and builds a MathML representation of it.
+ * Takes a full parse tree and settings and builds a MathML representation of
+ * it. In particular, we put the elements from building the parse tree into a
+ * <semantics> tag so we can also include that TeX source as an annotation.
  *
  * Note that we actually return a domTree element with a `<math>` inside it so
  * we can do appropriate styling.
  */
-var buildMathML = function(tree, settings) {
+var buildMathML = function(tree, texExpression, settings) {
     var expression = buildExpression(tree);
-    var math = new mathMLTree.MathNode("math");
+
+    // Wrap up the expression in an mrow so it is presented in the semantics
+    // tag correctly.
+    var wrapper = new mathMLTree.MathNode("mrow");
 
     for (var i = 0; i < expression.length; i++) {
-        math.addChild(expression[i]);
+        wrapper.addChild(expression[i]);
     }
+
+    // Build a TeX annotation of the source
+    var annotation = new mathMLTree.MathNode("annotation");
+
+    annotation.setAttribute("encoding", "application/x-tex");
+    annotation.addChild(new mathMLTree.TextNode(texExpression));
+
+    var semantics = new mathMLTree.MathNode("semantics");
+
+    semantics.addChild(wrapper);
+    semantics.addChild(annotation);
+
+    var math = new mathMLTree.MathNode("math");
+
+    math.addChild(semantics);
 
     // You can't style <math> nodes, so we wrap the node in a span.
     return makeSpan(["katex-mathml"], [math]);

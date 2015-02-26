@@ -5,10 +5,10 @@ var buildCommon = require("./buildCommon");
 
 var makeSpan = buildCommon.makeSpan;
 
-var buildTree = function(tree, settings) {
+var buildTree = function(tree, expression, settings) {
     // `buildHTML` sometimes messes with the parse tree (like turning bins ->
     // ords), so we build the MathML version first.
-    var mathMLNode = buildMathML(tree, settings);
+    var mathMLNode = buildMathML(tree, expression, settings);
     var htmlNode = buildHTML(tree, settings);
 
     var katexNode = makeSpan(["katex"], [

@@ -17,13 +17,13 @@ var utils = require("./src/utils");
  * Parse and build an expression, and place that expression in the DOM node
  * given.
  */
-var render = function(toParse, baseNode, options) {
+var render = function(expression, baseNode, options) {
     utils.clearNode(baseNode);
 
     var settings = new Settings(options);
 
-    var tree = parseTree(toParse, settings);
-    var node = buildTree(tree, settings).toNode();
+    var tree = parseTree(expression, settings);
+    var node = buildTree(tree, expression, settings).toNode();
 
     baseNode.appendChild(node);
 };
