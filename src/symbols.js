@@ -2083,6 +2083,36 @@ var symbols = {
             group: "rel",
             replace: "\u2270"
         },
+        "\\nLeftarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21cd"
+        },
+        "\\nLeftrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21ce"
+        },
+        "\\nRightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21cf"
+        },
+        "\\Leftarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21d0"
+        },
+        "\\Leftrightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21d4"
+        },
+        "\\Rightarrow": {
+            font: "main",
+            group: "rel",
+            replace: "\u21d2"
+        },
         "\\!": {
             font: "main",
             group: "spacing"
