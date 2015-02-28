@@ -15,10 +15,10 @@ var utils = require("./utils");
  * constructor requires the type of node to create (for example, `"mo"` or
  * `"mspace"`, corresponding to `<mo>` and `<mspace>` tags).
  */
-function MathNode(type) {
+function MathNode(type, children) {
     this.type = type;
     this.attributes = {};
-    this.children = [];
+    this.children = children || [];
 }
 
 /**
@@ -27,14 +27,6 @@ function MathNode(type) {
  */
 MathNode.prototype.setAttribute = function(name, value) {
     this.attributes[name] = value;
-};
-
-
-/**
- * Adds a child node to this math node.
- */
-MathNode.prototype.addChild = function(child) {
-    this.children.push(child);
 };
 
 /**

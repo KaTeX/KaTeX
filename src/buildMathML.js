@@ -29,164 +29,156 @@ var makeText = function(text, mode) {
  */
 var groupTypes = {
     mathord: function(group) {
-        var node = new mathMLTree.MathNode("mi");
-
-        node.addChild(makeText(group.value, group.mode));
+        var node = new mathMLTree.MathNode(
+            "mi",
+            [makeText(group.value, group.mode)]);
 
         return node;
     },
 
     textord: function(group) {
+        var text = makeText(group.value, group.mode);
+
         var node;
         if (/[0-9]/.test(group.value)) {
-            node = new mathMLTree.MathNode("mn");
+            node = new mathMLTree.MathNode("mn", [text]);
         } else {
-            node = new mathMLTree.MathNode("mi");
+            node = new mathMLTree.MathNode("mi", [text]);
             node.setAttribute("mathvariant", "normal");
         }
-
-        node.addChild(makeText(group.value, group.mode));
 
         return node;
     },
 
     bin: function(group) {
-        var node = new mathMLTree.MathNode("mo");
-
-        node.addChild(makeText(group.value, group.mode));
+        var node = new mathMLTree.MathNode(
+            "mo", [makeText(group.value, group.mode)]);
 
         return node;
     },
 
     rel: function(group) {
-        var node = new mathMLTree.MathNode("mo");
-
-        node.addChild(makeText(group.value, group.mode));
+        var node = new mathMLTree.MathNode(
+            "mo", [makeText(group.value, group.mode)]);
 
         return node;
     },
 
     open: function(group) {
-        var node = new mathMLTree.MathNode("mo");
-
-        node.addChild(makeText(group.value, group.mode));
+        var node = new mathMLTree.MathNode(
+            "mo", [makeText(group.value, group.mode)]);
 
         return node;
     },
 
     close: function(group) {
-        var node = new mathMLTree.MathNode("mo");
-
-        node.addChild(makeText(group.value, group.mode));
+        var node = new mathMLTree.MathNode(
+            "mo", [makeText(group.value, group.mode)]);
 
         return node;
     },
 
     inner: function(group) {
-        var node = new mathMLTree.MathNode("mo");
-
-        node.addChild(makeText(group.value, group.mode));
+        var node = new mathMLTree.MathNode(
+            "mo", [makeText(group.value, group.mode)]);
 
         return node;
     },
 
     punct: function(group) {
-        var node = new mathMLTree.MathNode("mo");
+        var node = new mathMLTree.MathNode(
+            "mo", [makeText(group.value, group.mode)]);
 
         node.setAttribute("separator", "true");
-
-        node.addChild(makeText(group.value, group.mode));
 
         return node;
     },
 
     ordgroup: function(group) {
-        var node = new mathMLTree.MathNode("mrow");
-
         var inner = buildExpression(group.value);
 
-        for (var i = 0; i < inner.length; i++) {
-            node.addChild(inner[i]);
-        }
+        var node = new mathMLTree.MathNode("mrow", inner);
 
         return node;
     },
 
     text: function(group) {
-        var node = new mathMLTree.MathNode("mtext");
+        var inner = buildExpression(group.value.body);
+
+        var node = new mathMLTree.MathNode("mtext", inner);
 
         return node;
     },
 
     color: function(group) {
-        var node = new mathMLTree.MathNode("mstyle");
+        var inner = buildExpression(group.value.value);
+
+        var node = new mathMLTree.MathNode("mstyle", inner);
 
         node.setAttribute("mathcolor", group.value.color);
-
-        var inner = buildExpression(group.value.value);
-        for (var i = 0; i < inner.length; i++) {
-            node.addChild(inner[i]);
-        }
 
         return node;
     },
 
     supsub: function(group) {
-        var node;
-
-        if (!group.value.sub) {
-            node = new mathMLTree.MathNode("msup");
-        } else if (!group.value.sup) {
-            node = new mathMLTree.MathNode("msub");
-        } else {
-            node = new mathMLTree.MathNode("msubsup");
-        }
-
-        node.addChild(buildGroup(group.value.base));
+        var children = [buildGroup(group.value.base)];
 
         if (group.value.sub) {
-            node.addChild(buildGroup(group.value.sub));
+            children.push(buildGroup(group.value.sub));
         }
 
         if (group.value.sup) {
-            node.addChild(buildGroup(group.value.sup));
+            children.push(buildGroup(group.value.sup));
         }
+
+        var nodeType;
+        if (!group.value.sub) {
+            nodeType = "msup";
+        } else if (!group.value.sup) {
+            nodeType = "msub";
+        } else {
+            nodeType = "msubsup";
+        }
+
+        var node = new mathMLTree.MathNode(nodeType, children);
 
         return node;
     },
 
     genfrac: function(group) {
-        var node = new mathMLTree.MathNode("mfrac");
-
-        node.addChild(buildGroup(group.value.numer));
-        node.addChild(buildGroup(group.value.denom));
+        var node = new mathMLTree.MathNode(
+            "mfrac",
+            [buildGroup(group.value.numer),
+             buildGroup(group.value.denom)]);
 
         if (!group.value.hasBarLine) {
             node.setAttribute("linethickness", "0px");
         }
 
         if (group.value.leftDelim != null || group.value.rightDelim != null) {
-            var outerNode = new mathMLTree.MathNode("mrow");
+            var withDelims = [];
 
             if (group.value.leftDelim != null) {
-                var leftOp = new mathMLTree.MathNode("mo");
+                var leftOp = new mathMLTree.MathNode(
+                    "mo", [new mathMLTree.TextNode(group.value.leftDelim)]);
 
                 leftOp.setAttribute("fence", "true");
-                leftOp.addChild(new mathMLTree.TextNode(group.value.leftDelim));
 
-                outerNode.addChild(leftOp);
+                withDelims.push(leftOp);
             }
 
-            outerNode.addChild(node);
+            withDelims.push(node);
 
             if (group.value.rightDelim != null) {
-                var rightOp = new mathMLTree.MathNode("mo");
+                var rightOp = new mathMLTree.MathNode(
+                    "mo", [new mathMLTree.TextNode(group.value.rightDelim)]);
 
                 rightOp.setAttribute("fence", "true");
-                rightOp.addChild(new mathMLTree.TextNode(group.value.rightDelim));
 
-                outerNode.addChild(rightOp);
+                withDelims.push(rightOp);
             }
+
+            var outerNode = new mathMLTree.MathNode("mrow", withDelims);
 
             return outerNode;
         }
@@ -195,52 +187,48 @@ var groupTypes = {
     },
 
     sqrt: function(group) {
-        var node = new mathMLTree.MathNode("msqrt");
-
-        node.addChild(buildGroup(group.value.body));
+        var node = new mathMLTree.MathNode(
+            "msqrt", [buildGroup(group.value.body)]);
 
         return node;
     },
 
     leftright: function(group) {
-        var outerNode = new mathMLTree.MathNode("mrow");
+        var inner = buildExpression(group.value.body);
 
         if (group.value.left !== ".") {
-            var leftNode = new mathMLTree.MathNode("mo");
+            var leftNode = new mathMLTree.MathNode(
+                "mo", [makeText(group.value.left, group.mode)]);
+
             leftNode.setAttribute("fence", "true");
 
-            leftNode.addChild(makeText(group.value.left, group.mode));
-
-            outerNode.addChild(leftNode);
-        }
-
-        var inner = buildExpression(group.value.body);
-        for (var i = 0; i < inner.length; i++) {
-            outerNode.addChild(inner[i]);
+            inner.unshift(leftNode);
         }
 
         if (group.value.right !== ".") {
-            var rightNode = new mathMLTree.MathNode("mo");
+            var rightNode = new mathMLTree.MathNode(
+                "mo", [makeText(group.value.right, group.mode)]);
+
             rightNode.setAttribute("fence", "true");
 
-            rightNode.addChild(makeText(group.value.right, group.mode));
-
-            outerNode.addChild(rightNode);
+            inner.push(rightNode);
         }
+
+        var outerNode = new mathMLTree.MathNode("mrow", inner);
 
         return outerNode;
     },
 
     accent: function(group) {
-        var node = new mathMLTree.MathNode("mover");
+        var accentNode = new mathMLTree.MathNode(
+            "mo", [makeText(group.value.accent, group.mode)]);
+
+        var node = new mathMLTree.MathNode(
+            "mover",
+            [buildGroup(group.value.base),
+             accentNode]);
+
         node.setAttribute("accent", "true");
-
-        node.addChild(buildGroup(group.value.base));
-
-        var accentNode = new mathMLTree.MathNode("mo");
-        accentNode.addChild(makeText(group.value.accent, group.mode));
-
-        node.addChild(accentNode);
 
         return node;
     },
@@ -250,9 +238,8 @@ var groupTypes = {
 
         if (group.value === "\\ " || group.value === "\\space" ||
             group.value === " " || group.value === "~") {
-            node = new mathMLTree.MathNode("mtext");
-
-            node.addChild(new mathMLTree.TextNode("\u00a0"));
+            node = new mathMLTree.MathNode(
+                "mtext", [new mathMLTree.TextNode("\u00a0")]);
         } else {
             node = new mathMLTree.MathNode("mspace");
 
@@ -264,40 +251,41 @@ var groupTypes = {
     },
 
     op: function(group) {
-        var node = new mathMLTree.MathNode("mo");
+        var node;
 
         // TODO(emily): handle big operators using the `largeop` attribute
 
         if (group.value.symbol) {
             // This is a symbol. Just add the symbol.
-            node.addChild(makeText(group.value.body, group.mode));
+            node = new mathMLTree.MathNode(
+                "mo", [makeText(group.value.body, group.mode)]);
         } else {
             // This is a text operator. Add all of the characters from the
             // operator's name.
             // TODO(emily): Add a space in the middle of some of these
             // operators, like \limsup.
-            node.addChild(new mathMLTree.TextNode(group.value.body.slice(1)));
+            node = new mathMLTree.MathNode(
+                "mo", [new mathMLTree.TextNode(group.value.body.slice(1))]);
         }
 
         return node;
     },
 
     katex: function(group) {
-        var node = new mathMLTree.MathNode("mtext");
-
-        node.addChild(new mathMLTree.TextNode("KaTeX"));
+        var node = new mathMLTree.MathNode(
+            "mtext", [new mathMLTree.TextNode("KaTeX")]);
 
         return node;
     },
 
     delimsizing: function(group) {
-        var node = new mathMLTree.MathNode("mo");
+        var children = [];
 
-        if (group.value.value === ".") {
-            return node;
+        if (group.value.value !== ".") {
+            children.push(makeText(group.value.value, group.mode));
         }
 
-        node.addChild(makeText(group.value.value, group.mode));
+        var node = new mathMLTree.MathNode("mo", children);
 
         if (group.value.delimType === "open" ||
             group.value.delimType === "close") {
@@ -314,7 +302,9 @@ var groupTypes = {
     },
 
     styling: function(group) {
-        var node = new mathMLTree.MathNode("mstyle");
+        var inner = buildExpression(group.value.value, inner);
+
+        var node = new mathMLTree.MathNode("mstyle", inner);
 
         var styleAttributes = {
             "display": ["0", "true"],
@@ -328,16 +318,13 @@ var groupTypes = {
         node.setAttribute("scriptlevel", attr[0]);
         node.setAttribute("displaystyle", attr[1]);
 
-        var inner = buildExpression(group.value.value);
-        for (var i = 0; i < inner.length; i++) {
-            node.addChild(inner[i]);
-        }
-
         return node;
     },
 
     sizing: function(group) {
-        var node = new mathMLTree.MathNode("mstyle");
+        var inner = buildExpression(group.value.value);
+
+        var node = new mathMLTree.MathNode("mstyle", inner);
 
         // TODO(emily): This doesn't produce the correct size for nested size
         // changes, because we don't keep state of what style we're currently
@@ -345,27 +332,19 @@ var groupTypes = {
         node.setAttribute(
             "mathsize", buildCommon.sizingMultiplier[group.value.size] + "em");
 
-        var inner = buildExpression(group.value.value);
-        for (var i = 0; i < inner.length; i++) {
-            node.addChild(inner[i]);
-        }
-
         return node;
     },
 
     overline: function(group) {
-        var node = new mathMLTree.MathNode("mover");
-
-        node.setAttribute("accent", "true");
-
-        node.addChild(buildGroup(group.value.body));
-
-        var operator = new mathMLTree.MathNode("mo");
-
+        var operator = new mathMLTree.MathNode(
+            "mo", [new mathMLTree.TextNode("\u203e")]);
         operator.setAttribute("stretchy", "true");
-        operator.addChild(new mathMLTree.TextNode("\u203e"));
 
-        node.addChild(operator);
+        var node = new mathMLTree.MathNode(
+            "mover",
+            [buildGroup(group.value.body),
+             operator]);
+        node.setAttribute("accent", "true");
 
         return node;
     },
@@ -379,22 +358,20 @@ var groupTypes = {
     },
 
     llap: function(group) {
-        var node = new mathMLTree.MathNode("mpadded");
+        var node = new mathMLTree.MathNode(
+            "mpadded", [buildGroup(group.value.body)]);
 
         node.setAttribute("lspace", "-1width");
         node.setAttribute("width", "0px");
-
-        node.addChild(buildGroup(group.value.body));
 
         return node;
     },
 
     rlap: function(group) {
-        var node = new mathMLTree.MathNode("mpadded");
+        var node = new mathMLTree.MathNode(
+            "mpadded", [buildGroup(group.value.body)]);
 
         node.setAttribute("width", "0px");
-
-        node.addChild(buildGroup(group.value.body));
 
         return node;
     }
@@ -445,26 +422,18 @@ var buildMathML = function(tree, texExpression, settings) {
 
     // Wrap up the expression in an mrow so it is presented in the semantics
     // tag correctly.
-    var wrapper = new mathMLTree.MathNode("mrow");
-
-    for (var i = 0; i < expression.length; i++) {
-        wrapper.addChild(expression[i]);
-    }
+    var wrapper = new mathMLTree.MathNode("mrow", expression);
 
     // Build a TeX annotation of the source
-    var annotation = new mathMLTree.MathNode("annotation");
+    var annotation = new mathMLTree.MathNode(
+        "annotation", [new mathMLTree.TextNode(texExpression)]);
 
     annotation.setAttribute("encoding", "application/x-tex");
-    annotation.addChild(new mathMLTree.TextNode(texExpression));
 
-    var semantics = new mathMLTree.MathNode("semantics");
+    var semantics = new mathMLTree.MathNode(
+        "semantics", [wrapper, annotation]);
 
-    semantics.addChild(wrapper);
-    semantics.addChild(annotation);
-
-    var math = new mathMLTree.MathNode("math");
-
-    math.addChild(semantics);
+    var math = new mathMLTree.MathNode("math", [semantics]);
 
     // You can't style <math> nodes, so we wrap the node in a span.
     return makeSpan(["katex-mathml"], [math]);
