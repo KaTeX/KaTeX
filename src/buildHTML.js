@@ -511,18 +511,9 @@ var groupTypes = {
         } else {
             // Other kinds of spaces are of arbitrary width. We use CSS to
             // generate these.
-            var spacingClassMap = {
-                "\\qquad": "qquad",
-                "\\quad": "quad",
-                "\\enspace": "enspace",
-                "\\;": "thickspace",
-                "\\:": "mediumspace",
-                "\\,": "thinspace",
-                "\\!": "negativethinspace"
-            };
-
             return makeSpan(
-                ["mord", "mspace", spacingClassMap[group.value]]);
+                ["mord", "mspace",
+                 buildCommon.spacingFunctions[group.value].className]);
         }
     },
 

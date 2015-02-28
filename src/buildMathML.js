@@ -256,17 +256,8 @@ var groupTypes = {
         } else {
             node = new mathMLTree.MathNode("mspace");
 
-            var spaceMap = {
-                "\\qquad": "2em",
-                "\\quad": "1em",
-                "\\enspace": "0.5em",
-                "\\;": "0.277778em",
-                "\\:": "0.22222em",
-                "\\,": "0.16667em",
-                "\\!": "-0.16667em"
-            };
-
-            node.setAttribute("width", spaceMap[group.value]);
+            node.setAttribute(
+                "width", buildCommon.spacingFunctions[group.value].size);
         }
 
         return node;
