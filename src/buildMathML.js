@@ -274,6 +274,8 @@ var groupTypes = {
         } else {
             // This is a text operator. Add all of the characters from the
             // operator's name.
+            // TODO(emily): Add a space in the middle of some of these
+            // operators, like \limsup.
             node.addChild(new mathMLTree.TextNode(group.value.body.slice(1)));
         }
 
@@ -297,7 +299,16 @@ var groupTypes = {
 
         node.addChild(makeText(group.value.value, group.mode));
 
-        node.setAttribute("fence", "true");
+        if (group.value.delimType === "open" ||
+            group.value.delimType === "close") {
+            // Only some of the delimsizing functions act as fences, and they
+            // return "open" or "close" delimTypes.
+            node.setAttribute("fence", "true");
+        } else {
+            // Explicitly disable fencing if it's not a fence, to override the
+            // defaults.
+            node.setAttribute("fence", "false");
+        }
 
         return node;
     },
