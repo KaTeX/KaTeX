@@ -1,9 +1,11 @@
 /**
  * These objects store the data about the DOM nodes we create, as well as some
- * extra data. They can then be transformed into real DOM nodes with the toNode
- * function or HTML markup using toMarkup. They are useful for both storing
- * extra properties on the nodes, as well as providing a way to easily work
- * with the DOM.
+ * extra data. They can then be transformed into real DOM nodes with the
+ * `toNode` function or HTML markup using `toMarkup`. They are useful for both
+ * storing extra properties on the nodes, as well as providing a way to easily
+ * work with the DOM.
+ *
+ * Similar functions for working with MathML nodes exist in mathMLTree.js.
  */
 
 var utils = require("./utils");
@@ -35,7 +37,17 @@ function span(classes, children, height, depth, maxFontSize, style) {
     this.depth = depth || 0;
     this.maxFontSize = maxFontSize || 0;
     this.style = style || {};
+    this.attributes = {};
 }
+
+/**
+ * Sets an arbitrary attribute on the span. Warning: use this wisely. Not all
+ * browsers support attributes the same, and having too many custom attributes
+ * is probably bad.
+ */
+span.prototype.setAttribute = function(attribute, value) {
+    this.attributes[attribute] = value;
+};
 
 /**
  * Convert the span into an HTML node
@@ -48,8 +60,15 @@ span.prototype.toNode = function() {
 
     // Apply inline styles
     for (var style in this.style) {
-        if (this.style.hasOwnProperty(style)) {
+        if (Object.prototype.hasOwnProperty.call(this.style, style)) {
             span.style[style] = this.style[style];
+        }
+    }
+
+    // Apply attributes
+    for (var attr in this.attributes) {
+        if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+            span.setAttribute(attr, this.attributes[attr]);
         }
     }
 
@@ -85,6 +104,15 @@ span.prototype.toMarkup = function() {
 
     if (styles) {
         markup += " style=\"" + utils.escape(styles) + "\"";
+    }
+
+    // Add the attributes
+    for (var attr in this.attributes) {
+        if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+            markup += " " + attr + "=\"";
+            markup += utils.escape(this.attributes[attr]);
+            markup += "\"";
+        }
     }
 
     markup += ">";

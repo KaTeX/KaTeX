@@ -44,7 +44,7 @@ file to get it to work.
 
 If your function isn't similar to an existing function, you'll need to add a
 line to `functions.js` as well as adding an output function in
-[buildTree.js](src/buildTree.js).
+[buildHTML.js](src/buildHTML.js) and [buildMathML.js](src/buildMathML.js).
 
 ## Testing
 

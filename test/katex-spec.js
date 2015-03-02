@@ -1,4 +1,5 @@
-var buildTree = require("../src/buildTree");
+var buildHTML = require("../src/buildHTML");
+var buildMathML = require("../src/buildMathML");
 var katex = require("../katex");
 var ParseError = require("../src/ParseError");
 var parseTree = require("../src/parseTree");
@@ -9,10 +10,10 @@ var defaultSettings = new Settings({});
 var getBuilt = function(expr) {
     expect(expr).toBuild();
 
-    var built = buildTree(parseTree(expr), defaultSettings);
+    var built = buildHTML(parseTree(expr), defaultSettings);
 
     // Remove the outer .katex and .katex-inner layers
-    return built.children[0].children[2].children;
+    return built.children[2].children;
 };
 
 var getParsed = function(expr) {
@@ -87,7 +88,7 @@ beforeEach(function() {
                     expect(actual).toParse();
 
                     try {
-                        buildTree(parseTree(actual), defaultSettings);
+                        buildHTML(parseTree(actual), defaultSettings);
                     } catch (e) {
                         result.pass = false;
                         if (e instanceof ParseError) {
@@ -1094,6 +1095,13 @@ describe("A markup generator", function() {
         expect(markup).toContain("margin-right");
         expect(markup).not.toContain("marginRight");
     });
+
+    it("generates both MathML and HTML", function() {
+        var markup = katex.renderToString("a");
+
+        expect(markup).toContain("<span");
+        expect(markup).toContain("<math");
+    });
 });
 
 describe("An accent parser", function() {
@@ -1172,5 +1180,39 @@ describe("An optional argument parser", function() {
 
     it("should not work if the optional argument isn't closed", function() {
         expect("\\sqrt[").toNotParse();
+    });
+});
+
+var getMathML = function(expr) {
+    expect(expr).toParse();
+
+    var built = buildMathML(parseTree(expr));
+
+    // Strip off the surrounding <span>
+    return built.children[0];
+};
+
+describe("A MathML builder", function() {
+    it("should generate math nodes", function() {
+        var node = getMathML("x^2");
+
+        expect(node.type).toEqual("math");
+    });
+
+    it("should generate appropriate MathML types", function() {
+        var identifier = getMathML("x").children[0].children[0];
+        expect(identifier.children[0].type).toEqual("mi");
+
+        var number = getMathML("1").children[0].children[0];
+        expect(number.children[0].type).toEqual("mn");
+
+        var operator = getMathML("+").children[0].children[0];
+        expect(operator.children[0].type).toEqual("mo");
+
+        var space = getMathML("\\;").children[0].children[0];
+        expect(space.children[0].type).toEqual("mspace");
+
+        var text = getMathML("\\text{a}").children[0].children[0];
+        expect(text.children[0].type).toEqual("mtext");
     });
 });
