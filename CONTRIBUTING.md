@@ -100,6 +100,7 @@ Code
  - 4 spaces for indentation
  - 80 character line length
  - commas last
+ - declare variables in the outermost scope that they are used
 
 In general, try to make your code blend in with the surrounding code.
 
