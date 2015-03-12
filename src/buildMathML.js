@@ -435,6 +435,10 @@ var buildMathML = function(tree, texExpression, settings) {
 
     var math = new mathMLTree.MathNode("math", [semantics]);
 
+    if (typeof settings === "object" && settings.displayMode && settings.onlyMathML) {
+        math.setAttribute("display", "block");
+    }
+
     // You can't style <math> nodes, so we wrap the node in a span.
     return makeSpan(["katex-mathml"], [math]);
 };

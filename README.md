@@ -43,11 +43,14 @@ You can provide an object of options as the last argument to `katex.render` and 
 
 - `displayMode`: `boolean`. If `true` the math will be rendered in display mode, which will put the math in display style (so `\int` and `\sum` are large, for example), and will center the math on the page on its own line. If `false` the math will be rendered in inline mode. (default: `false`)
 
+
 For example:
 
 ```js
 katex.render("c = \\pm\\sqrt{a^2 + b^2}", element, { displayMode: true });
 ```
+
+- `onlyMathML`: `boolean`. If `true` the resulting markup will only contain MathML. (default: `false`)
 
 ## Contributing
 

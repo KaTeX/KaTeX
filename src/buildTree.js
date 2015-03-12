@@ -9,6 +9,12 @@ var buildTree = function(tree, expression, settings) {
     // `buildHTML` sometimes messes with the parse tree (like turning bins ->
     // ords), so we build the MathML version first.
     var mathMLNode = buildMathML(tree, expression, settings);
+    
+    if (settings.onlyMathML) {
+        // mathMLNode is wrapped in a <span>
+        return mathMLNode.children[0];
+    }
+
     var htmlNode = buildHTML(tree, settings);
 
     var katexNode = makeSpan(["katex"], [
