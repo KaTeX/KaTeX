@@ -8,6 +8,7 @@ var args = minimist(process.argv.slice(2));
 
 var settings = new Settings({
   displayMode: args.d || args.display,
+  onlyMathML: args.m || args.mathml
 });
 
 var katex = require("./");
