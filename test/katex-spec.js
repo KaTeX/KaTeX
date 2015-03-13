@@ -1214,5 +1214,8 @@ describe("A MathML builder", function() {
 
         var text = getMathML("\\text{a}").children[0].children[0];
         expect(text.children[0].type).toEqual("mtext");
+
+        var textop = getMathML("\\sin").children[0].children[0];
+        expect(textop.children[0].type).toEqual("mi");
     });
 });

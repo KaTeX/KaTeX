@@ -265,7 +265,7 @@ var groupTypes = {
             // TODO(emily): Add a space in the middle of some of these
             // operators, like \limsup.
             node = new mathMLTree.MathNode(
-                "mo", [new mathMLTree.TextNode(group.value.body.slice(1))]);
+                "mi", [new mathMLTree.TextNode(group.value.body.slice(1))]);
         }
 
         return node;
