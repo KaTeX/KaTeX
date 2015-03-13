@@ -164,6 +164,23 @@ var functions = {
                 type: "katex"
             };
         }
+    },
+
+    "\\phantom": {
+        numArgs: 1,
+        handler: function(func, body) {
+            var inner;
+            if (body.type === "ordgroup") {
+                inner = body.value;
+            } else {
+                inner = [body];
+            }
+
+            return {
+                type: "phantom",
+                value: inner
+            };
+        }
     }
 };
 

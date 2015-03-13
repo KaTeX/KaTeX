@@ -21,6 +21,7 @@
     "NullDelimiterInteraction": "http://localhost:7936/test/screenshotter/test.html?m=a \\bigl. + 2 \\quad \\left. + a \\right)",
     "OpLimits": "http://localhost:7936/test/screenshotter/test.html?m={\\sin_2^2 \\lim_2^2 \\int_2^2 \\sum_2^2}{\\displaystyle \\lim_2^2 \\int_2^2 \\intop_2^2 \\sum_2^2}",
     "Overline": "http://localhost:7936/test/screenshotter/test.html?m=\\overline{x}\\overline{x}\\overline{x^{x^{x^x}}} \\blue{\\overline{y}}",
+    "Phantom": "http://localhost:7936/test/screenshotter/test.html?m=\\dfrac{1+\\phantom{x^{\\blue{2}}} = x}{1+x^{\\blue{2}} = x}",
     "PrimeSpacing": "http://localhost:7936/test/screenshotter/test.html?m=f'+f_2'+f^{f'}",
     "RlapBug": "http://localhost:7936/test/screenshotter/test.html?m=\\frac{\\rlap{x}}{2}",
     "Rule": "http://localhost:7936/test/screenshotter/test.html?m=\\rule{1em}{0.5em}\\rule{1ex}{2ex}\\rule{1em}{1ex}\\rule{1em}{0.431ex}",

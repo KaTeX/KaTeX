@@ -374,6 +374,11 @@ var groupTypes = {
         node.setAttribute("width", "0px");
 
         return node;
+    },
+
+    phantom: function(group, options, prev) {
+        var inner = buildExpression(group.value.value);
+        return new mathMLTree.MathNode("mphantom", inner);
     }
 };
 

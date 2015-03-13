@@ -569,7 +569,6 @@ describe("An over parser", function() {
 
 describe("A sizing parser", function() {
     var sizeExpression = "\\Huge{x}\\small{x}";
-    var nestedSizeExpression = "\\Huge{\\small{x}}";
 
     it("should not fail", function() {
         expect(sizeExpression).toParse();
@@ -1146,6 +1145,45 @@ describe("An accent builder", function() {
     });
 });
 
+describe("A phantom parser", function() {
+    it("should not fail", function() {
+        expect("\\phantom{x}").toParse();
+        expect("\\phantom{x^2}").toParse();
+        expect("\\phantom{x}^2").toParse();
+        expect("\\phantom x").toParse();
+    });
+
+    it("should build a phantom node", function() {
+        var parse = getParsed("\\phantom{x}")[0];
+
+        expect(parse.type).toMatch("phantom");
+        expect(parse.value.value).toBeDefined();
+    });
+});
+
+describe("A phantom builder", function() {
+    it("should not fail", function() {
+        expect("\\phantom{x}").toBuild();
+        expect("\\phantom{x^2}").toBuild();
+        expect("\\phantom{x}^2").toBuild();
+        expect("\\phantom x").toBuild();
+    });
+
+    it("should make the children transparent", function() {
+        var children = getBuilt("\\phantom{x+1}")[0].children;
+        expect(children[0].style.color).toBe("transparent");
+        expect(children[1].style.color).toBe("transparent");
+        expect(children[2].style.color).toBe("transparent");
+    });
+
+    it("should make all descendants transparent", function() {
+        var children = getBuilt("\\phantom{x+\\blue{1}}")[0].children;
+        expect(children[0].style.color).toBe("transparent");
+        expect(children[1].style.color).toBe("transparent");
+        expect(children[2].children[0].style.color).toBe("transparent");
+    });
+});
+
 describe("A parser error", function () {
     it("should report the position of an error", function () {
         try {
@@ -1217,5 +1255,10 @@ describe("A MathML builder", function() {
 
         var textop = getMathML("\\sin").children[0].children[0];
         expect(textop.children[0].type).toEqual("mi");
+    });
+
+    it("should generate a <mphantom> node for \\phantom", function() {
+        var phantom = getMathML("\\phantom{x}").children[0].children[0];
+        expect(phantom.children[0].type).toEqual("mphantom");
     });
 });

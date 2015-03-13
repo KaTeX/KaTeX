@@ -175,7 +175,7 @@ var groupTypes = {
         // things at the end of a \color group. Note that we don't use the same
         // logic for ordgroups (which count as ords).
         var prevAtom = prev;
-        while (prevAtom && prevAtom.type == "color") {
+        while (prevAtom && prevAtom.type === "color") {
             var atoms = prevAtom.value.value;
             prevAtom = atoms[atoms.length - 1];
         }
@@ -433,15 +433,15 @@ var groupTypes = {
             // Rule 15d
             var axisHeight = fontMetrics.metrics.axisHeight;
 
-            if ((numShift - numer.depth) - (axisHeight + 0.5 * ruleWidth)
-                    < clearance) {
+            if ((numShift - numer.depth) - (axisHeight + 0.5 * ruleWidth) <
+                    clearance) {
                 numShift +=
                     clearance - ((numShift - numer.depth) -
                                  (axisHeight + 0.5 * ruleWidth));
             }
 
-            if ((axisHeight - 0.5 * ruleWidth) - (denom.height - denomShift)
-                    < clearance) {
+            if ((axisHeight - 0.5 * ruleWidth) - (denom.height - denomShift) <
+                    clearance) {
                 denomShift +=
                     clearance - ((axisHeight - 0.5 * ruleWidth) -
                                  (denom.height - denomShift));
@@ -1065,6 +1065,18 @@ var groupTypes = {
         } else {
             return accentWrap;
         }
+    },
+
+    phantom: function(group, options, prev) {
+        var elements = buildExpression(
+            group.value.value,
+            options.withPhantom(),
+            prev
+        );
+
+        // \phantom isn't supposed to affect the elements it contains.
+        // See "color" for more details.
+        return new buildCommon.makeFragment(elements);
     }
 };
 
@@ -1121,7 +1133,10 @@ var buildHTML = function(tree, settings) {
     }
 
     // Setup the default options
-    var options = new Options(startStyle, "size5", "");
+    var options = new Options({
+        style: startStyle,
+        size: "size5"
+    });
 
     // Build the expression contained in the tree
     var expression = buildExpression(tree, options);
