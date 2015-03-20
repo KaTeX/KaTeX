@@ -21,6 +21,7 @@ function Settings(options) {
     // allow null options
     options = options || {};
     this.displayMode = get(options.displayMode, false);
+    this.onlyMathML = get(options.onlyMathML, false);
 }
 
 module.exports = Settings;

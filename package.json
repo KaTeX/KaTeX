@@ -25,5 +25,8 @@
   "bin": "cli.js",
   "scripts": {
     "test": "make lint test"
+  },
+  "dependencies": {
+    "minimist": "^1.1.1"
   }
 }
