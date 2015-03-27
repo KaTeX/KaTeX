@@ -73,9 +73,14 @@ var functions = {
         numOptionalArgs: 1,
         handler: function(func, optional, body, positions) {
             if (optional != null) {
-                throw new ParseError(
-                    "Optional arguments to \\sqrt aren't supported yet",
-                    this.lexer, positions[1] - 1);
+                return {
+                    type: "sqrt",
+                    body: body,
+                    optional: optional
+                };
+                // throw new ParseError(
+                //     "Optional arguments to \\sqrt aren't supported yet",
+                //     this.lexer, positions[1] - 1);
             }
 
             return {

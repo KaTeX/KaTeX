@@ -812,7 +812,26 @@ var groupTypes = {
             ], "firstBaseline", null, options);
         }
 
-        return makeSpan(["sqrt", "mord"], [delim, body]);
+        if(!group.value.optional) {
+            return makeSpan(["sqrt", "mord"], [delim, body]);            
+        } else {
+            var optionInner = buildGroup(group.value.optional,
+                options.withStyle(options.style.sup()));
+            var optionInnerSpan;
+            optionInnerSpan = makeSpan(
+                [options.style.reset(), options.style.sup().cls()], [optionInner]);
+
+            var toShift; //determines vertical shift
+            if (options.style === Style.DISPLAY) {
+                toShift = fontMetrics.metrics.sup1;
+            } else if (options.style.cramped) {            
+                toShift = fontMetrics.metrics.sup3;
+            } else {
+                toShift = fontMetrics.metrics.sup2;
+            }
+            var rootpower = buildCommon.makeVList([{type: "elem", elem: optionInnerSpan}],"shift", -toShift, options);
+            return makeSpan(["sqrt", "mord", "optional"], [rootpower, delim, body]); 
+        }
     },
 
     sizing: function(group, options, prev) {
