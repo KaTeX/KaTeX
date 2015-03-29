@@ -152,6 +152,16 @@ var symbols = {
         },
 
         // Misc Symbols
+        "\\#": {
+          font: "main",
+          group: "textord",
+          replace: "\u0023"
+        },
+        "\\&": {
+          font: "main",
+          group: "textord",
+          replace: "\u0026"
+        },
         "\\aleph": {
             font: "main",
             group: "textord",
