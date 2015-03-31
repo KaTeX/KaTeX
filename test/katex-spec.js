@@ -1203,8 +1203,8 @@ describe("An optional argument parser", function() {
         expect("\\rule[0.2em]{1em}{1em}").toParse();
     });
 
-    it("should fail on sqrts for now", function() {
-        expect("\\sqrt[3]{2}").toNotParse();
+    it("should work with sqrts with optional arguments", function() {
+        expect("\\sqrt[3]{2}").toParse();
     });
 
     it("should work when the optional argument is missing", function() {
