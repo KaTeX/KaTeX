@@ -49,6 +49,10 @@ For example:
 katex.render("c = \\pm\\sqrt{a^2 + b^2}", element, { displayMode: true });
 ```
 
+#### Automatic rendering of math on a page
+
+Math on the page can be automatically rendered using the auto-render extension. See [the Auto-render README](contrib/auto-render/README.md) for more information.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)

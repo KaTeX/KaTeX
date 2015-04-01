@@ -1,5 +1,13 @@
-.PHONY: build lint setup copy serve clean metrics test zip
-build: setup lint build/katex.min.js build/katex.min.css zip compress
+.PHONY: build lint setup copy serve clean metrics test zip contrib
+build: setup lint build/katex.min.js build/katex.min.css contrib zip compress
+
+# Export these variables for use in contrib Makefiles
+export BUILDDIR = $(realpath build)
+export BROWSERIFY = $(realpath ./node_modules/.bin/browserify)
+export UGLIFYJS = $(realpath ./node_modules/.bin/uglifyjs) \
+	--mangle \
+	--beautify \
+	ascii_only=true,beautify=false
 
 setup:
 	npm install
@@ -8,10 +16,10 @@ lint: katex.js $(wildcard src/*.js)
 	./node_modules/.bin/jshint $^
 
 build/katex.js: katex.js $(wildcard src/*.js)
-	./node_modules/.bin/browserify $< --standalone katex > $@
+	$(BROWSERIFY) $< --standalone katex > $@
 
 build/katex.min.js: build/katex.js
-	./node_modules/.bin/uglifyjs --mangle --beautify ascii_only=true,beautify=false < $< > $@
+	$(UGLIFYJS) < $< > $@
 
 build/katex.less.css: static/katex.less $(wildcard static/*.less)
 	./node_modules/.bin/lessc $< $@
@@ -27,15 +35,27 @@ build/fonts:
 		cp static/fonts/$$font* $@; \
 	done
 
+contrib: build/contrib
+
+.PHONY: build/contrib
+build/contrib:
+	mkdir -p build/contrib
+	# Since everything in build/contrib is put in the built files, make sure
+	# there's nothing in there we don't want.
+	rm -rf build/contrib/*
+	$(MAKE) -C contrib/auto-render
+
 .PHONY: build/katex
-build/katex: build/katex.min.js build/katex.min.css build/fonts README.md
+build/katex: build/katex.min.js build/katex.min.css build/fonts README.md build/contrib
 	mkdir -p build/katex
+	rm -rf build/katex/*
 	cp -r $^ build/katex
 
 build/katex.tar.gz: build/katex
 	cd build && tar czf katex.tar.gz katex/
 
 build/katex.zip: build/katex
+	rm -f $@
 	cd build && zip -rq katex.zip katex/
 
 zip: build/katex.tar.gz build/katex.zip
@@ -53,6 +73,7 @@ serve:
 
 test:
 	./node_modules/.bin/jasmine-node test/katex-spec.js
+	./node_modules/.bin/jasmine-node contrib/auto-render/auto-render-spec.js
 
 metrics:
 	cd metrics && ./mapping.pl | ./extract_tfms.py | ./extract_ttfs.py | ./replace_line.py
