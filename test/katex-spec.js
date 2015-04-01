@@ -676,6 +676,13 @@ describe("A color parser", function() {
     it("should not parse a bad custom color", function() {
         expect(badCustomColorExpression).toNotParse();
     });
+
+    it("should have correct greediness", function() {
+        expect("\\color{red}a").toParse();
+        expect("\\color{red}{\\text{a}}").toParse();
+        expect("\\color{red}\\text{a}").toNotParse();
+        expect("\\color{red}\\frac12").toNotParse();
+    });
 });
 
 describe("A tie parser", function() {

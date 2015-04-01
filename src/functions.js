@@ -112,6 +112,7 @@ var functions = {
     "\\color": {
         numArgs: 2,
         allowedInText: true,
+        greediness: 3,
         argTypes: ["color", "original"],
         handler: function(func, color, body) {
             // Normalize the different kinds of bodies (see \text above)
@@ -235,6 +236,7 @@ var duplicatedFunctions = [
         data: {
             numArgs: 1,
             allowedInText: true,
+            greediness: 3,
             handler: function(func, body) {
                 var atoms;
                 if (body.type === "ordgroup") {
