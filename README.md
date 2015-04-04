@@ -26,6 +26,8 @@ Call `katex.render` with a TeX expression and a DOM element to render into:
 katex.render("c = \\pm\\sqrt{a^2 + b^2}", element);
 ```
 
+If KaTeX can't parse the expression, it throws a `katex.ParseError` error.
+
 #### Server side rendering or rendering to a string
 
 To generate HTML on the server or to generate an HTML string of the rendered math, you can use `katex.renderToString`:
@@ -35,7 +37,7 @@ var html = katex.renderToString("c = \\pm\\sqrt{a^2 + b^2}");
 // '<span class="katex">...</span>'
 ```
 
-Make sure to include the CSS and font files, but there is no need to include the JavaScript.
+Make sure to include the CSS and font files, but there is no need to include the JavaScript. Like `render`, `renderToString` throws if it can't parse the expression.
 
 #### Rendering options
 
