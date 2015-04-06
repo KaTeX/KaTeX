@@ -11,6 +11,8 @@
  * kinds.
  */
 
+var matchAt = require("match-at");
+
 var ParseError = require("./ParseError");
 
 // The main lexer class
@@ -28,31 +30,31 @@ function Token(text, data, position) {
 // "normal" types of tokens. These are tokens which can be matched by a simple
 // regex
 var mathNormals = [
-    /^[/|@.""`0-9a-zA-Z]/, // ords
-    /^[*+-]/, // bins
-    /^[=<>:]/, // rels
-    /^[,;]/, // punctuation
-    /^['\^_{}]/, // misc
-    /^[(\[]/, // opens
-    /^[)\]?!]/, // closes
-    /^~/ // spacing
+    /[/|@.""`0-9a-zA-Z]/, // ords
+    /[*+-]/, // bins
+    /[=<>:]/, // rels
+    /[,;]/, // punctuation
+    /['\^_{}]/, // misc
+    /[(\[]/, // opens
+    /[)\]?!]/, // closes
+    /~/ // spacing
 ];
 
 // These are "normal" tokens like above, but should instead be parsed in text
 // mode.
 var textNormals = [
-    /^[a-zA-Z0-9`!@*()-=+\[\]'";:?\/.,]/, // ords
-    /^[{}]/, // grouping
-    /^~/ // spacing
+    /[a-zA-Z0-9`!@*()-=+\[\]'";:?\/.,]/, // ords
+    /[{}]/, // grouping
+    /~/ // spacing
 ];
 
 // Regexes for matching whitespace
-var whitespaceRegex = /^\s*/;
-var whitespaceConcatRegex = /^( +|\\  +)/;
+var whitespaceRegex = /\s*/;
+var whitespaceConcatRegex = / +|\\  +/;
 
 // This regex matches any other TeX function, which is a backslash followed by a
 // word or a single symbol
-var anyFunc = /^\\(?:[a-zA-Z]+|.)/;
+var anyFunc = /\\(?:[a-zA-Z]+|.)/;
 
 /**
  * This function lexes a single normal token. It takes a position, a list of
@@ -60,29 +62,28 @@ var anyFunc = /^\\(?:[a-zA-Z]+|.)/;
  * not.
  */
 Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
-    var input = this._input.slice(pos);
+    var input = this._input;
     var whitespace;
 
     if (ignoreWhitespace) {
         // Get rid of whitespace.
-        whitespace = input.match(whitespaceRegex)[0];
+        whitespace = matchAt(whitespaceRegex, input, pos)[0];
         pos += whitespace.length;
-        input = input.slice(whitespace.length);
     } else {
         // Do the funky concatenation of whitespace that happens in text mode.
-        whitespace = input.match(whitespaceConcatRegex);
+        whitespace = matchAt(whitespaceConcatRegex, input, pos);
         if (whitespace !== null) {
             return new Token(" ", null, pos + whitespace[0].length);
         }
     }
 
     // If there's no more input to parse, return an EOF token
-    if (input.length === 0) {
+    if (pos === input.length) {
         return new Token("EOF", null, pos);
     }
 
     var match;
-    if ((match = input.match(anyFunc))) {
+    if ((match = matchAt(anyFunc, input, pos))) {
         // If we match a function token, return it
         return new Token(match[0], null, pos + match[0].length);
     } else {
@@ -91,7 +92,7 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
         for (var i = 0; i < normals.length; i++) {
             var normal = normals[i];
 
-            if ((match = input.match(normal))) {
+            if ((match = matchAt(normal, input, pos))) {
                 // If it is, return it
                 return new Token(
                     match[0], null, pos + match[0].length);
@@ -99,26 +100,26 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
         }
     }
 
-    throw new ParseError("Unexpected character: '" + input[0] +
-        "'", this, pos);
+    throw new ParseError(
+            "Unexpected character: '" + input[pos] + "'",
+            this, pos);
 };
 
 // A regex to match a CSS color (like #ffffff or BlueViolet)
-var cssColor = /^(#[a-z0-9]+|[a-z]+)/i;
+var cssColor = /#[a-z0-9]+|[a-z]+/i;
 
 /**
  * This function lexes a CSS color.
  */
 Lexer.prototype._innerLexColor = function(pos) {
-    var input = this._input.slice(pos);
+    var input = this._input;
 
     // Ignore whitespace
-    var whitespace = input.match(whitespaceRegex)[0];
+    var whitespace = matchAt(whitespaceRegex, input, pos)[0];
     pos += whitespace.length;
-    input = input.slice(whitespace.length);
 
     var match;
-    if ((match = input.match(cssColor))) {
+    if ((match = matchAt(cssColor, input, pos))) {
         // If we look like a color, return a color
         return new Token(match[0], null, pos + match[0].length);
     } else {
@@ -128,21 +129,20 @@ Lexer.prototype._innerLexColor = function(pos) {
 
 // A regex to match a dimension. Dimensions look like
 // "1.2em" or ".4pt" or "1 ex"
-var sizeRegex = /^(-?)\s*(\d+(?:\.\d*)?|\.\d+)\s*([a-z]{2})/;
+var sizeRegex = /(-?)\s*(\d+(?:\.\d*)?|\.\d+)\s*([a-z]{2})/;
 
 /**
  * This function lexes a dimension.
  */
 Lexer.prototype._innerLexSize = function(pos) {
-    var input = this._input.slice(pos);
+    var input = this._input;
 
     // Ignore whitespace
-    var whitespace = input.match(whitespaceRegex)[0];
+    var whitespace = matchAt(whitespaceRegex, input, pos)[0];
     pos += whitespace.length;
-    input = input.slice(whitespace.length);
 
     var match;
-    if ((match = input.match(sizeRegex))) {
+    if ((match = matchAt(sizeRegex, input, pos))) {
         var unit = match[3];
         // We only currently handle "em" and "ex" units
         if (unit !== "em" && unit !== "ex") {
@@ -161,12 +161,12 @@ Lexer.prototype._innerLexSize = function(pos) {
  * This function lexes a string of whitespace.
  */
 Lexer.prototype._innerLexWhitespace = function(pos) {
-    var input = this._input.slice(pos);
+    var input = this._input;
 
-    var whitespace = input.match(whitespaceRegex)[0];
+    var whitespace = matchAt(whitespaceRegex, input, pos)[0];
     pos += whitespace.length;
 
-    return new Token(whitespace, null, pos);
+    return new Token(whitespace[0], null, pos);
 };
 
 /**
