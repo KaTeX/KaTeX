@@ -15,6 +15,9 @@
     line-height: 1.2;
     white-space: nowrap;
 
+    // Protect elements inside .katex from inheriting text-indent.
+    text-indent: 0;
+
     .katex-html {
         // Making .katex inline-block allows line breaks before and after,
         // which is undesireable ("to $x$,"). Instead, adjust the .katex-html
