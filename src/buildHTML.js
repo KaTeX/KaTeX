@@ -826,12 +826,12 @@ var groupTypes = {
                 [root]);
 
             // Figure out the height and depth of the inner part
-            var innerHeight = Math.max(delim.height, body.height);
-            var innerDepth = Math.max(delim.depth, body.depth);
+            var innerRootHeight = Math.max(delim.height, body.height);
+            var innerRootDepth = Math.max(delim.depth, body.depth);
 
             // The amount the index is shifted by. This is taken from the TeX
             // source, in the definition of `\r@@t`.
-            var toShift = 0.6 * (innerHeight - innerDepth);
+            var toShift = 0.6 * (innerRootHeight - innerRootDepth);
 
             // Build a VList with the superscript shifted up correctly
             var rootVList = buildCommon.makeVList(
