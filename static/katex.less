@@ -1,5 +1,8 @@
 @import "fonts.less";
 
+// The mu unit is defined as 1/18 em
+@mu: 1.0/18.0em;
+
 .katex-display {
     display: block;
     margin: 1em 0;
@@ -358,6 +361,13 @@
                 display: block;
                 margin-top: -1px;
             }
+        }
+
+        > .root {
+            // These values are taken from the definition of `\r@@t`,
+            // `\mkern 5mu` and `\mkern -10mu`.
+            margin-left: 5*@mu;
+            margin-right: -10*@mu;
         }
     }
 

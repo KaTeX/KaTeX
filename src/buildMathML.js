@@ -187,8 +187,17 @@ var groupTypes = {
     },
 
     sqrt: function(group) {
-        var node = new mathMLTree.MathNode(
-            "msqrt", [buildGroup(group.value.body)]);
+        var node;
+        if (group.value.index) {
+            node = new mathMLTree.MathNode(
+                "mroot", [
+                    buildGroup(group.value.body),
+                    buildGroup(group.value.index)
+                ]);
+        } else {
+            node = new mathMLTree.MathNode(
+                "msqrt", [buildGroup(group.value.body)]);
+        }
 
         return node;
     },

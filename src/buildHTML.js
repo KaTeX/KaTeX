@@ -812,7 +812,37 @@ var groupTypes = {
             ], "firstBaseline", null, options);
         }
 
-        return makeSpan(["sqrt", "mord"], [delim, body]);
+        if (!group.value.index) {
+            return makeSpan(["sqrt", "mord"], [delim, body]);
+        } else {
+            // Handle the optional root index
+
+            // The index is always in scriptscript style
+            var root = buildGroup(
+                group.value.index,
+                options.withStyle(Style.SCRIPTSCRIPT));
+            var rootWrap = makeSpan(
+                [options.style.reset(), Style.SCRIPTSCRIPT.cls()],
+                [root]);
+
+            // Figure out the height and depth of the inner part
+            var innerHeight = Math.max(delim.height, body.height);
+            var innerDepth = Math.max(delim.depth, body.depth);
+
+            // The amount the index is shifted by. This is taken from the TeX
+            // source, in the definition of `\r@@t`.
+            var toShift = 0.6 * (innerHeight - innerDepth);
+
+            // Build a VList with the superscript shifted up correctly
+            var rootVList = buildCommon.makeVList(
+                [{type: "elem", elem: rootWrap}],
+                "shift", -toShift, options);
+            // Add a class surrounding it so we can add on the appropriate
+            // kerning
+            var rootVListWrap = makeSpan(["root"], [rootVList]);
+
+            return makeSpan(["sqrt", "mord"], [rootVListWrap, delim, body]);
+        }
     },
 
     sizing: function(group, options, prev) {
