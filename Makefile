@@ -12,7 +12,7 @@ export UGLIFYJS = $(realpath ./node_modules/.bin/uglifyjs) \
 setup:
 	npm install
 
-lint: katex.js $(wildcard src/*.js)
+lint: katex.js server.js cli.js $(wildcard src/*.js) $(wildcard test/*.js) $(wildcard contrib/*/*.js)
 	./node_modules/.bin/jshint $^
 
 build/katex.js: katex.js $(wildcard src/*.js)

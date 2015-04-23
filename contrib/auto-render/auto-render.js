@@ -1,3 +1,5 @@
+/* global katex */
+
 var splitAtDelimiters = require("./splitAtDelimiters");
 
 var splitWithDelimiters = function(text, delimiters) {
@@ -48,9 +50,8 @@ var renderElem = function(elem, delimiters, ignoredTags) {
             if (shouldRender) {
                 renderElem(childNode, delimiters, ignoredTags);
             }
-        } else {
-            // Something else, ignore
         }
+        // Otherwise, it's something else, and ignore it.
     }
 };
 

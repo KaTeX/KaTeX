@@ -1,3 +1,9 @@
+/* global beforeEach: false */
+/* global jasmine: false */
+/* global expect: false */
+/* global it: false */
+/* global describe: false */
+
 var buildHTML = require("../src/buildHTML");
 var buildMathML = require("../src/buildMathML");
 var katex = require("../katex");

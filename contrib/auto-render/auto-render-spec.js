@@ -1,3 +1,9 @@
+/* global beforeEach: false */
+/* global jasmine: false */
+/* global expect: false */
+/* global it: false */
+/* global describe: false */
+
 var splitAtDelimiters = require("./splitAtDelimiters");
 
 beforeEach(function() {
@@ -28,6 +34,7 @@ beforeEach(function() {
                         var correct = result[i];
 
                         var good = true;
+                        var diff;
 
                         if (real.type !== correct.type) {
                             good = false;
