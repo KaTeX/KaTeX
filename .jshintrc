@@ -62,6 +62,7 @@
   "wsh"           : false,
   "yui"           : false,
   "globals": {
+    "JSON": false,
     "console": true
   }
 }
