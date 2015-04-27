@@ -24,9 +24,22 @@ var renderMathInText = function(text, delimiters) {
         } else {
             var span = document.createElement("span");
             var math = data[i].data;
-            katex.render(math, span, {
-                displayMode: data[i].display
-            });
+            try {
+                katex.render(math, span, {
+                    displayMode: data[i].display
+                });
+            } catch (e) {
+                if (!(e instanceof katex.ParseError)) {
+                    throw e;
+                }
+                console.error(
+                    "KaTeX auto-render: Failed to parse `" + data[i].data +
+                    "` with ",
+                    e
+                );
+                fragment.appendChild(document.createTextNode(data[i].rawData));
+                continue;
+            }
             fragment.appendChild(span);
         }
     }

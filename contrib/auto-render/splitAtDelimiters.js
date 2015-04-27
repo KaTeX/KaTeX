@@ -74,6 +74,9 @@ var splitAtDelimiters = function(startData, leftDelim, rightDelim, display) {
                         data: text.slice(
                             currIndex + leftDelim.length,
                             nextIndex),
+                        rawData: text.slice(
+                            currIndex,
+                            nextIndex + rightDelim.length),
                         display: display
                     });
 
