@@ -1116,6 +1116,31 @@ describe("A markup generator", function() {
     });
 });
 
+describe("A parse tree generator", function() {
+    it("generates a tree", function() {
+        var tree = katex.__parse("\\sigma^2");
+        expect(JSON.stringify(tree)).toEqual(JSON.stringify([
+            {
+                "type": "supsub",
+                "value": {
+                    "base": {
+                        "type": "mathord",
+                        "value": "\\sigma",
+                        "mode": "math"
+                    },
+                    "sup": {
+                        "type": "textord",
+                        "value": "2",
+                        "mode": "math"
+                    },
+                    "sub": undefined
+                },
+                "mode": "math"
+            }
+        ]));
+    });
+});
+
 describe("An accent parser", function() {
     it("should not fail", function() {
         expect("\\vec{x}").toParse();
