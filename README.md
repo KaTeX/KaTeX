@@ -18,6 +18,10 @@ You can [download KaTeX](https://github.com/khan/katex/releases) and host it on 
 <script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.2.0/katex.min.js"></script>
 ```
 
+#### Syntax
+
+KaTeX uses [MathJax](http://en.wikipedia.org/wiki/Help:Displaying_a_formula#Using_MathJax) syntax. See [StackExchange Mathematics Meta #5020](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference) for a quick tutorial.
+
 #### In-browser rendering
 
 Call `katex.render` with a TeX expression and a DOM element to render into:
