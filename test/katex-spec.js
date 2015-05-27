@@ -654,6 +654,7 @@ describe("A text parser", function() {
 
 describe("A color parser", function() {
     var colorExpression = "\\blue{x}";
+    var newColorExpression = "\\redA{x}";
     var customColorExpression = "\\color{#fA6}{x}";
     var badCustomColorExpression = "\\color{bad-color}{x}";
 
@@ -681,6 +682,10 @@ describe("A color parser", function() {
 
     it("should not parse a bad custom color", function() {
         expect(badCustomColorExpression).toNotParse();
+    });
+
+    it("should parse new colors from the branding guide", function(){
+        expect(newColorExpression).toParse();
     });
 
     it("should have correct greediness", function() {

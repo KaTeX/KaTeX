@@ -226,7 +226,18 @@ var duplicatedFunctions = [
     {
         funcs: [
             "\\blue", "\\orange", "\\pink", "\\red",
-            "\\green", "\\gray", "\\purple"
+            "\\green", "\\gray", "\\purple",
+            "\\blueA", "\\blueB", "\\blueC", "\\blueD", "\\blueE",
+            "\\tealA", "\\tealB", "\\tealC", "\\tealD", "\\tealE",
+            "\\greenA", "\\greenB", "\\greenC", "\\greenD", "\\greenE",
+            "\\goldA", "\\goldB", "\\goldC", "\\goldD", "\\goldE",
+            "\\redA", "\\redB", "\\redC", "\\redD", "\\redE",
+            "\\maroonA", "\\maroonB", "\\maroonC", "\\maroonD", "\\maroonE",
+            "\\purpleA", "\\purpleB", "\\purpleC", "\\purpleD", "\\purpleE",
+            "\\mintA", "\\mintB", "\\mintC",
+            "\\grayA", "\\grayB", "\\grayC", "\\grayD", "\\grayE",
+            "\\grayF", "\\grayG", "\\grayH", "\\grayI",
+            "\\kaBlue", "\\kaGreen"
         ],
         data: {
             numArgs: 1,
