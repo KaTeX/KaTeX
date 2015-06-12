@@ -93,6 +93,7 @@ var metrics = {
     bigOpSpacing4: xi12,
     bigOpSpacing5: xi13,
     ptPerEm: ptPerEm,
+    emPerEx: sigma5 / sigma6,
 
     // TODO(alpert): Missing parallel structure here. We should probably add
     // style-specific metrics for all of these.

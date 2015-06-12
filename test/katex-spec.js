@@ -880,6 +880,47 @@ describe("A left/right parser", function() {
     });
 });
 
+describe("A begin/end parser", function() {
+
+    it("should parse a simple environment", function() {
+        expect("\\begin{matrix}a&b\\\\c&d\\end{matrix}").toParse();
+    });
+
+    it("should parse an environment with argument", function() {
+        expect("\\begin{array}{cc}a&b\\\\c&d\\end{array}").toParse();
+    });
+
+    it("should error when name is mismatched", function() {
+        expect("\\begin{matrix}a&b\\\\c&d\\end{pmatrix}").toNotParse();
+    });
+
+    it("should error when commands are mismatched", function() {
+        expect("\\begin{matrix}a&b\\\\c&d\\right{pmatrix}").toNotParse();
+    });
+
+    it("should error when end is missing", function() {
+        expect("\\begin{matrix}a&b\\\\c&d").toNotParse();
+    });
+
+    it("should error when braces are mismatched", function() {
+        expect("{\\begin{matrix}a&b\\\\c&d}\\end{matrix}").toNotParse();
+    });
+
+    it("should cooperate with infix notation", function() {
+        expect("\\begin{matrix}0&1\\over2&3\\\\4&5&6\\end{matrix}").toParse();
+    });
+
+    it("should nest", function() {
+        var m1 = "\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}";
+        var m2 = "\\begin{array}{rl}" + m1 + "&0\\\\0&" + m1 + "\\end{array}";
+        expect(m2).toParse();
+    });
+
+    it("should allow \\cr as a line terminator", function() {
+        expect("\\begin{matrix}a&b\\cr c&d\\end{matrix}").toParse();
+    });
+});
+
 describe("A sqrt parser", function() {
     var sqrt = "\\sqrt{x}";
     var missingGroup = "\\sqrt";
@@ -1262,6 +1303,16 @@ describe("An optional argument parser", function() {
     it("should not work if the optional argument isn't closed", function() {
         expect("\\sqrt[").toNotParse();
     });
+});
+
+describe("An array environment", function() {
+
+    it("should accept a single alignment character", function() {
+        var parse = getParsed("\\begin{array}r1\\\\20\\end{array}");
+        expect(parse[0].type).toBe("array");
+        expect(parse[0].value.colalign).toEqual(["r"]);
+    });
+
 });
 
 var getMathML = function(expr) {
