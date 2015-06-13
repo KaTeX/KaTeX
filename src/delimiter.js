@@ -231,28 +231,25 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
     var repeatHeightTotal = repeatMetrics.height + repeatMetrics.depth;
     var bottomMetrics = getMetrics(bottom, font);
     var bottomHeightTotal = bottomMetrics.height + bottomMetrics.depth;
-    var middleMetrics, middleHeightTotal;
+    var middleHeightTotal = 0;
+    var middleFactor = 1;
     if (middle !== null) {
-        middleMetrics = getMetrics(middle, font);
+        var middleMetrics = getMetrics(middle, font);
         middleHeightTotal = middleMetrics.height + middleMetrics.depth;
+        middleFactor = 2; // repeat symmetrically above and below middle
     }
 
-    // Calcuate the real height that the delimiter will have. It is at least the
-    // size of the top, bottom, and optional middle combined.
-    var realHeightTotal = topHeightTotal + bottomHeightTotal;
-    if (middle !== null) {
-        realHeightTotal += middleHeightTotal;
-    }
+    // Calcuate the minimal height that the delimiter can have.
+    // It is at least the size of the top, bottom, and optional middle combined.
+    var minHeight = topHeightTotal + bottomHeightTotal + middleHeightTotal;
 
-    // Then add repeated pieces until we reach the specified height.
-    while (realHeightTotal < heightTotal) {
-        realHeightTotal += repeatHeightTotal;
-        if (middle !== null) {
-            // If there is a middle section, we need an equal number of pieces
-            // on the top and bottom.
-            realHeightTotal += repeatHeightTotal;
-        }
-    }
+    // Compute the number of copies of the repeat symbol we will need
+    var repeatCount = Math.ceil(
+        (heightTotal - minHeight) / (middleFactor * repeatHeightTotal));
+
+    // Compute the total height of the delimiter including all the symbols
+    var realHeightTotal =
+        minHeight + repeatCount * middleFactor * repeatHeightTotal;
 
     // The center of the delimiter is placed at the center of the axis. Note
     // that in this context, "center" means that the delimiter should be
@@ -275,39 +272,18 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
 
     var i;
     if (middle === null) {
-        // Calculate the number of repeated symbols we need
-        var repeatHeight = realHeightTotal - topHeightTotal - bottomHeightTotal;
-        var symbolCount = Math.ceil(repeatHeight / repeatHeightTotal);
-
         // Add that many symbols
-        for (i = 0; i < symbolCount; i++) {
+        for (i = 0; i < repeatCount; i++) {
             inners.push(makeInner(repeat, font, mode));
         }
     } else {
         // When there is a middle bit, we need the middle part and two repeated
         // sections
-
-        // Calculate the number of symbols needed for the top and bottom
-        // repeated parts
-        var topRepeatHeight =
-            realHeightTotal / 2 - topHeightTotal - middleHeightTotal / 2;
-        var topSymbolCount = Math.ceil(topRepeatHeight / repeatHeightTotal);
-
-        var bottomRepeatHeight =
-            realHeightTotal / 2 - topHeightTotal - middleHeightTotal / 2;
-        var bottomSymbolCount =
-            Math.ceil(bottomRepeatHeight / repeatHeightTotal);
-
-        // Add the top repeated part
-        for (i = 0; i < topSymbolCount; i++) {
+        for (i = 0; i < repeatCount; i++) {
             inners.push(makeInner(repeat, font, mode));
         }
-
-        // Add the middle piece
         inners.push(makeInner(middle, font, mode));
-
-        // Add the bottom repeated part
-        for (i = 0; i < bottomSymbolCount; i++) {
+        for (i = 0; i < repeatCount; i++) {
             inners.push(makeInner(repeat, font, mode));
         }
     }
