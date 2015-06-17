@@ -9,7 +9,9 @@
 var ParseError = require("./src/ParseError");
 var Settings = require("./src/Settings");
 
+var buildHTML = require("./src/buildHTML");
 var buildTree = require("./src/buildTree");
+var canvasRenderer = require("./src/canvasRenderer");
 var parseTree = require("./src/parseTree");
 var utils = require("./src/utils");
 
@@ -53,6 +55,18 @@ var renderToString = function(expression, options) {
 };
 
 /**
+ * Parse and build an expression, and render that expression to the
+ * canvas at the specified position.
+ */
+var renderToCanvas = function(expression, canvas, x, y, options) {
+    var settings = new Settings(options);
+
+    var tree = parseTree(expression, settings);
+    var dom = buildHTML(tree, settings);
+    canvasRenderer.render(dom, canvas, x, y, options);
+};
+
+/**
  * Parse an expression and return the parse tree.
  */
 var generateParseTree = function(expression, options) {
@@ -63,6 +77,7 @@ var generateParseTree = function(expression, options) {
 module.exports = {
     render: render,
     renderToString: renderToString,
+    renderToCanvas: renderToCanvas,
     /**
      * NOTE: This method is not currently recommended for public use.
      * The internal tree representation is unstable and is very likely
