@@ -130,12 +130,21 @@ var spacePairs = {
 CanvasRenderer.prototype.prepare = function(node) {
     var prevState = this.state;
 
+    var classes = node.classes.filter(function(className) {
+        return className !== null;
+    }).join(" ");
+    if (classes === "") {
+        classes = [];
+    } else {
+        classes = classes.split(" ");
+    }
+
     var key, val, i, size = null;
-    function findSize(other) {
+    function findSize() {
         if (size === null) {
             var j = i - 1;
-            while (j--) {
-                var className = node.classes[j];
+            while (j-- > 0) {
+                var className = classes[j];
                 if (!className) {
                     continue;
                 }
@@ -143,9 +152,6 @@ CanvasRenderer.prototype.prepare = function(node) {
                     size = +className.substr(4);
                     break;
                 }
-            }
-            if (j < 0) {
-                throw new Error(node.classes[i] + " without size");
             }
         }
         return size;
@@ -155,20 +161,32 @@ CanvasRenderer.prototype.prepare = function(node) {
     var nodeClass = "";
     var marginLeft = null;
     var marginRight = 0;
-    i = node.classes.length;
+    i = classes.length;
     while (i--) {
-        var className = node.classes[i];
-        if (!className) {
-            continue;
-        }
+        var className = classes[i];
         switch(className) {
         case "delimsizing":
-            this.state = this.state.withFace("", "KaTeX_Size" + findSize());
+            if (findSize() !== null) {
+                this.state = this.state.withFace("", "KaTeX_Size" + size);
+            }
+            break;
+        case "delim-size1":
+            this.state = this.state.withFace("", "KaTeX_Size1");
+            break;
+        case "delim-size4":
+            this.state = this.state.withFace("", "KaTeX_Size4");
+            break;
+        case "delimsizing":
+            if (findSize() !== null) {
+                this.state = this.state.withFace("", "KaTeX_Size" + size);
+            }
             break;
 
         case "fontsize-ensurer":
         case "sizing":
-            this.state = this.state.withSize(findSize());
+            if (findSize() !== null) {
+                this.state = this.state.withSize(size);
+            }
             break;
 
         case "frac-line":
@@ -202,17 +220,13 @@ CanvasRenderer.prototype.prepare = function(node) {
             nodeClass = className;
             break;
 
-        case "scriptscriptstyle cramped":
-        case "scriptscriptstyle uncramped":
+        case "scriptscriptstyle":
             this.state = this.state.withStyle(0.5);
             break;
-        case "scriptstyle cramped":
-        case "scriptstyle uncramped":
+        case "scriptstyle":
             this.state = this.state.withStyle(0.7);
             break;
-        case "textstyle cramped":
-        case "textstyle uncramped":
-        case "displaystyle textstyle uncramped":
+        case "textstyle":
             this.state = this.state.withStyle(1.0);
             break;
 
@@ -258,8 +272,12 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "base":
         case "baseline-fix":
         case "bottom":
+        case "cramped":
+        case "delimsizinginner":
+        case "displaystyle":
         case "katex-html":
         case "mspace":
+        case "mult":
         case "reset-scriptstyle":
         case "reset-size1":
         case "reset-size2":
@@ -277,6 +295,7 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "strut":
         case "style-wrap":
         case "text":
+        case "uncramped":
             // Not special handling (yet?)
             break;
 
