@@ -58,7 +58,7 @@ function CanvasRenderer(ctxt, options) {
     this.bottom = -Infinity;
     this.x = 0;
     this.outList = [];
-    this.fracLines = [];
+    this.horizontalLines = [];
     this.prevClass = "";
     this.baseSize = options.fontSize || (16 * 1.21);
     this.state = new CanvasState({
@@ -163,10 +163,15 @@ CanvasRenderer.prototype.prepare = function(node) {
             break;
 
         case "frac-line":
-            this.fracLines.push({
+        case "sqrt-line":
+            this.horizontalLines.push({
                 y: this.state.ypos,
                 height: Math.max(1, 0.04 * this.state.em)
             });
+            break;
+        case "root":
+            marginLeft = 5/18;
+            marginRight = -10/18;
             break;
 
         case "mathit":
@@ -233,9 +238,11 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "reset-size9":
         case "reset-size10":
         case "reset-textstyle":
+        case "sqrt":
+        case "sqrt-sign":
         case "strut":
         case "style-wrap":
-            // Not handled yet
+            // Not special handling (yet?)
             break;
 
         default:
@@ -332,8 +339,8 @@ CanvasRenderer.prototype.prepare = function(node) {
 // Alignment is one of 0 (left), 0.5 (centered) or 1 (right).
 CanvasRenderer.prototype.halign = function(children, alignment) {
     var i, shift;
-    var oldLines = this.fracLines;
-    this.fracLines = [];
+    var oldLines = this.horizontalLines;
+    this.horizontalLines = [];
     var outList = this.outList;
     var oldX = this.x;
     var mark1 = outList.length;
@@ -355,14 +362,14 @@ CanvasRenderer.prototype.halign = function(children, alignment) {
     while (mark1 < outList.length) {
         outList[mark1++].x += shift;
     }
-    for (i = 0; i < this.fracLines.length; ++i) {
-        var fracLine = this.fracLines[i];
+    for (i = 0; i < this.horizontalLines.length; ++i) {
+        var fracLine = this.horizontalLines[i];
         fracLine.x = oldX;
         fracLine.width = maxWidth;
         outList.push(fracLine);
     }
     this.x = oldX + maxWidth;
-    this.fracLines = oldLines;
+    this.horizontalLines = oldLines;
 };
 
 CanvasRenderer.prototype.render = function(root, x, y) {
@@ -375,7 +382,8 @@ CanvasRenderer.prototype.render = function(root, x, y) {
             ctxt.font = atom.font;
             ctxt.fillText(atom.text, atom.x + x, atom.y + y);
         } else if (atom.width || atom.height) {
-            ctxt.fillRect(atom.x + x, atom.y + y, atom.width, atom.height);
+            ctxt.fillRect(atom.x + x, atom.y + y - atom.height,
+                          atom.width, atom.height);
         }
     }
 };
