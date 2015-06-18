@@ -1,8 +1,10 @@
 var functions = require("./functions");
+var environments = require("./environments");
 var Lexer = require("./Lexer");
 var symbols = require("./symbols");
 var utils = require("./utils");
 
+var parseData = require("./parseData");
 var ParseError = require("./ParseError");
 
 /**
@@ -50,22 +52,8 @@ function Parser(input, settings) {
     this.settings = settings;
 }
 
-/**
- * The resulting parse tree nodes of the parse tree.
- */
-function ParseNode(type, value, mode) {
-    this.type = type;
-    this.value = value;
-    this.mode = mode;
-}
-
-/**
- * A result and final position returned by the `.parse...` functions.
- */
-function ParseResult(result, newPosition) {
-    this.result = result;
-    this.position = newPosition;
-}
+var ParseNode = parseData.ParseNode;
+var ParseResult = parseData.ParseResult;
 
 /**
  * An initial function (without its arguments), or an argument to a function.
@@ -106,12 +94,13 @@ Parser.prototype.parse = function(input) {
  */
 Parser.prototype.parseInput = function(pos, mode) {
     // Parse an expression
-    var expression = this.parseExpression(pos, mode, false, null);
+    var expression = this.parseExpression(pos, mode, false);
     // If we succeeded, make sure there's an EOF at the end
-    var EOF = this.lexer.lex(expression.position, mode);
-    this.expect(EOF, "EOF");
+    this.expect(expression.peek, "EOF");
     return expression;
 };
+
+var endOfExpression = ["}", "\\end", "\\right", "&", "\\\\", "\\cr"];
 
 /**
  * Parses an "expression", which is a list of atoms.
@@ -127,11 +116,15 @@ Parser.prototype.parseInput = function(pos, mode) {
  */
 Parser.prototype.parseExpression = function(pos, mode, breakOnInfix, breakOnToken) {
     var body = [];
+    var lex = null;
     // Keep adding atoms to the body until we can't parse any more atoms (either
     // we reached the end, a }, or a \right)
     while (true) {
-        var lex = this.lexer.lex(pos, mode);
-        if (breakOnToken != null && lex.text === breakOnToken) {
+        lex = this.lexer.lex(pos, mode);
+        if (endOfExpression.indexOf(lex.text) !== -1) {
+            break;
+        }
+        if (breakOnToken && lex.text === breakOnToken) {
             break;
         }
         var atom = this.parseAtom(pos, mode);
@@ -144,7 +137,9 @@ Parser.prototype.parseExpression = function(pos, mode, breakOnInfix, breakOnToke
         body.push(atom.result);
         pos = atom.position;
     }
-    return new ParseResult(this.handleInfixNodes(body, mode), pos);
+    var res = new ParseResult(this.handleInfixNodes(body, mode), pos);
+    res.peek = lex;
+    return res;
 };
 
 /**
@@ -353,31 +348,48 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
         // Parse the entire left function (including the delimiter)
         var left = this.parseFunction(pos, mode);
         // Parse out the implicit body
-        body = this.parseExpression(left.position, mode, false, "}");
+        body = this.parseExpression(left.position, mode, false);
         // Check the next token
-        var rightLex = this.parseSymbol(body.position, mode);
-
-        if (rightLex && rightLex.result.result === "\\right") {
-            // If it's a \right, parse the entire right function (including the delimiter)
-            var right = this.parseFunction(body.position, mode);
-
-            return new ParseResult(
-                new ParseNode("leftright", {
-                    body: body.result,
-                    left: left.result.value.value,
-                    right: right.result.value.value
-                }, mode),
-                right.position);
-        } else {
-            throw new ParseError("Missing \\right", this.lexer, body.position);
+        this.expect(body.peek, "\\right");
+        var right = this.parseFunction(body.position, mode);
+        return new ParseResult(
+            new ParseNode("leftright", {
+                body: body.result,
+                left: left.result.value.value,
+                right: right.result.value.value
+            }, mode),
+            right.position);
+    } else if (func === "\\begin") {
+        // begin...end is similar to left...right
+        var begin = this.parseFunction(pos, mode);
+        var envName = begin.result.value.name;
+        if (!environments.hasOwnProperty(envName)) {
+            throw new ParseError(
+                "No such environment: " + envName,
+                this.lexer, begin.result.value.namepos);
         }
-    } else if (func === "\\right") {
-        // If we see a right, explicitly fail the parsing here so the \left
-        // handling ends the group
-        return null;
+        // Build the environment object. Arguments and other information will
+        // be made available to the begin and end methods using properties.
+        var env = environments[envName];
+        var args = [null, mode, envName];
+        var newPos = this.parseArguments(
+            begin.position, mode, "\\begin{" + envName + "}", env, args);
+        args[0] = newPos;
+        var result = env.handler.apply(this, args);
+        var endLex = this.lexer.lex(result.position, mode);
+        this.expect(endLex, "\\end");
+        var end = this.parseFunction(result.position, mode);
+        if (end.result.value.name !== envName) {
+            throw new ParseError(
+                "Mismatch: \\begin{" + envName + "} matched " +
+                "by \\end{" + end.result.value.name + "}",
+                this.lexer, end.namepos);
+        }
+        result.position = end.position;
+        return result;
     } else if (utils.contains(sizeFuncs, func)) {
         // If we see a sizing function, parse out the implict body
-        body = this.parseExpression(start.result.position, mode, false, "}");
+        body = this.parseExpression(start.result.position, mode, false);
         return new ParseResult(
             new ParseNode("sizing", {
                 // Figure out what size to use based on the list of functions above
@@ -387,7 +399,7 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
             body.position);
     } else if (utils.contains(styleFuncs, func)) {
         // If we see a styling function, parse out the implict body
-        body = this.parseExpression(start.result.position, mode, true, "}");
+        body = this.parseExpression(start.result.position, mode, true);
         return new ParseResult(
             new ParseNode("styling", {
                 // Figure out what style to use by pulling out the style from
@@ -420,71 +432,10 @@ Parser.prototype.parseFunction = function(pos, mode) {
                     this.lexer, baseGroup.position);
             }
 
-            var newPos = baseGroup.result.position;
-            var result;
-
-            var totalArgs = funcData.numArgs + funcData.numOptionalArgs;
-
-            if (totalArgs > 0) {
-                var baseGreediness = funcData.greediness;
-                var args = [func];
-                var positions = [newPos];
-
-                for (var i = 0; i < totalArgs; i++) {
-                    var argType = funcData.argTypes && funcData.argTypes[i];
-                    var arg;
-                    if (i < funcData.numOptionalArgs) {
-                        if (argType) {
-                            arg = this.parseSpecialGroup(newPos, argType, mode, true);
-                        } else {
-                            arg = this.parseOptionalGroup(newPos, mode);
-                        }
-                        if (!arg) {
-                            args.push(null);
-                            positions.push(newPos);
-                            continue;
-                        }
-                    } else {
-                        if (argType) {
-                            arg = this.parseSpecialGroup(newPos, argType, mode);
-                        } else {
-                            arg = this.parseGroup(newPos, mode);
-                        }
-                        if (!arg) {
-                            throw new ParseError(
-                                "Expected group after '" + baseGroup.result.result +
-                                    "'",
-                                this.lexer, newPos);
-                        }
-                    }
-                    var argNode;
-                    if (arg.isFunction) {
-                        var argGreediness =
-                            functions.funcs[arg.result.result].greediness;
-                        if (argGreediness > baseGreediness) {
-                            argNode = this.parseFunction(newPos, mode);
-                        } else {
-                            throw new ParseError(
-                                "Got function '" + arg.result.result + "' as " +
-                                    "argument to function '" +
-                                    baseGroup.result.result + "'",
-                                this.lexer, arg.result.position - 1);
-                        }
-                    } else {
-                        argNode = arg.result;
-                    }
-                    args.push(argNode.result);
-                    positions.push(argNode.position);
-                    newPos = argNode.position;
-                }
-
-                args.push(positions);
-
-                result = functions.funcs[func].handler.apply(this, args);
-            } else {
-                result = functions.funcs[func].handler.apply(this, [func]);
-            }
-
+            var args = [func];
+            var newPos = this.parseArguments(
+                baseGroup.result.position, mode, func, funcData, args);
+            var result = functions.funcs[func].handler.apply(this, args);
             return new ParseResult(
                 new ParseNode(result.type, result, mode),
                 newPos);
@@ -495,6 +446,77 @@ Parser.prototype.parseFunction = function(pos, mode) {
         return null;
     }
 };
+
+
+/**
+ * Parses the arguments of a function or environment
+ *
+ * @param {string} func  "\name" or "\begin{name}"
+ * @param {{numArgs:number,numOptionalArgs:number|undefined}} funcData
+ * @param {Array} args  list of arguments to which new ones will be pushed
+ * @return the position after all arguments have been parsed
+ */
+Parser.prototype.parseArguments = function(pos, mode, func, funcData, args) {
+    var totalArgs = funcData.numArgs + funcData.numOptionalArgs;
+    if (totalArgs === 0) {
+        return pos;
+    }
+
+    var newPos = pos;
+    var baseGreediness = funcData.greediness;
+    var positions = [newPos];
+
+    for (var i = 0; i < totalArgs; i++) {
+        var argType = funcData.argTypes && funcData.argTypes[i];
+        var arg;
+        if (i < funcData.numOptionalArgs) {
+            if (argType) {
+                arg = this.parseSpecialGroup(newPos, argType, mode, true);
+            } else {
+                arg = this.parseOptionalGroup(newPos, mode);
+            }
+            if (!arg) {
+                args.push(null);
+                positions.push(newPos);
+                continue;
+            }
+        } else {
+            if (argType) {
+                arg = this.parseSpecialGroup(newPos, argType, mode);
+            } else {
+                arg = this.parseGroup(newPos, mode);
+            }
+            if (!arg) {
+                throw new ParseError(
+                    "Expected group after '" + func + "'",
+                    this.lexer, newPos);
+            }
+        }
+        var argNode;
+        if (arg.isFunction) {
+            var argGreediness =
+                functions.funcs[arg.result.result].greediness;
+            if (argGreediness > baseGreediness) {
+                argNode = this.parseFunction(newPos, mode);
+            } else {
+                throw new ParseError(
+                    "Got function '" + arg.result.result + "' as " +
+                    "argument to '" + func + "'",
+                    this.lexer, arg.result.position - 1);
+            }
+        } else {
+            argNode = arg.result;
+        }
+        args.push(argNode.result);
+        positions.push(argNode.position);
+        newPos = argNode.position;
+    }
+
+    args.push(positions);
+
+    return newPos;
+};
+
 
 /**
  * Parses a group when the mode is changing. Takes a position, a new mode, and
@@ -556,7 +578,7 @@ Parser.prototype.parseGroup = function(pos, mode) {
     // Try to parse an open brace
     if (start.text === "{") {
         // If we get a brace, parse an expression
-        var expression = this.parseExpression(start.position, mode, false, "}");
+        var expression = this.parseExpression(start.position, mode, false);
         // Make sure we get a close brace
         var closeBrace = this.lexer.lex(expression.position, mode);
         this.expect(closeBrace, "}");
@@ -624,5 +646,7 @@ Parser.prototype.parseSymbol = function(pos, mode) {
         return null;
     }
 };
+
+Parser.prototype.ParseNode = ParseNode;
 
 module.exports = Parser;

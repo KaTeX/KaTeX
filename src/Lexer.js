@@ -37,7 +37,9 @@ var mathNormals = [
     /['\^_{}]/, // misc
     /[(\[]/, // opens
     /[)\]?!]/, // closes
-    /~/ // spacing
+    /~/, // spacing
+    /&/, // horizontal alignment
+    /\\\\/ // line break
 ];
 
 // These are "normal" tokens like above, but should instead be parsed in text
@@ -45,7 +47,9 @@ var mathNormals = [
 var textNormals = [
     /[a-zA-Z0-9`!@*()-=+\[\]'";:?\/.,]/, // ords
     /[{}]/, // grouping
-    /~/ // spacing
+    /~/, // spacing
+    /&/, // horizontal alignment
+    /\\\\/ // line break
 ];
 
 // Regexes for matching whitespace

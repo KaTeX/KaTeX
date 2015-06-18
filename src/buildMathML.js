@@ -186,6 +186,17 @@ var groupTypes = {
         return node;
     },
 
+    array: function(group) {
+        return new mathMLTree.MathNode(
+            "mtable", group.value.body.map(function(row) {
+                return new mathMLTree.MathNode(
+                    "mtr", row.map(function(cell) {
+                        return new mathMLTree.MathNode(
+                            "mtd", [buildGroup(cell)]);
+                    }));
+            }));
+    },
+
     sqrt: function(group) {
         var node;
         if (group.value.index) {
