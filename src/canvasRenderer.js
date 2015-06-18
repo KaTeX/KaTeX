@@ -214,6 +214,7 @@ CanvasRenderer.prototype.prepare = function(node) {
             break;
         case "mfrac":
         case "accent":
+        case "op-limits":
             this.state = this.state.withHAlign(align.center);
             break;
         case "root":
@@ -241,6 +242,10 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "mpunct":
         case "minner":
             nodeClass = className;
+            break;
+
+        case "msupsub":
+            this.state = this.state.withHAlign(align.left);
             break;
 
         case "scriptscriptstyle":
