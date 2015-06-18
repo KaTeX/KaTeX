@@ -36,7 +36,7 @@ function init() {
             ctxt.lineTo(math.width, 200);
             ctxt.stroke();
             katex.renderToCanvas(input.value, ctxt, 10, 200, {
-                fontSize: 74
+                fontSize: 74 * 1.21
             });
         } catch (e) {
             if (e.__proto__ == katex.ParseError.prototype) {

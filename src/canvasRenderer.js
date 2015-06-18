@@ -60,7 +60,7 @@ function CanvasRenderer(ctxt, options) {
     this.outList = [];
     this.fracLines = [];
     this.prevClass = "";
-    this.baseSize = options.fontSize || 16;
+    this.baseSize = options.fontSize || (16 * 1.21);
     this.state = new CanvasState({
         baseSize: this.baseSize,
         sizeIndex: 5,
