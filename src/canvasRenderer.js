@@ -309,6 +309,9 @@ CanvasRenderer.prototype.prepare = function(node) {
         this.ctxt.font = this.state.font;
         var measurement = this.ctxt.measureText(node.value);
         var width = measurement.width;
+        if (node.italic) {
+            marginRight += node.italic;
+        }
         var atom = {
             x: this.x,
             y: this.state.ypos,
