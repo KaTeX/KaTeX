@@ -206,6 +206,7 @@ CanvasRenderer.prototype.prepare = function(node) {
 
         case "frac-line":
         case "sqrt-line":
+        case "overline-line":
             this.horizontalLines.push({
                 y: this.state.ypos,
                 height: Math.max(1, 0.04 * this.state.em),
@@ -329,6 +330,8 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "mspace":
         case "mult":
         case "op-symbol":
+        case "overline":
+        case "reset-scriptscriptstyle":
         case "reset-scriptstyle":
         case "reset-size1":
         case "reset-size2":
