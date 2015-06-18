@@ -229,6 +229,28 @@ CanvasRenderer.prototype.prepare = function(node) {
             size = +className.substr(4);
             break;
 
+        case "negativethinspace":
+            marginRight += -thinspace;
+            break;
+        case "thinspace":
+            marginRight += thinspace;
+            break;
+        case "mediumspace":
+            marginRight += mediumspace;
+            break;
+        case "thickspace":
+            marginRight += thickspace;
+            break;
+        case "enspace":
+            marginRight += 0.5;
+            break;
+        case "quad":
+            marginRight += 1;
+            break;
+        case "qquad":
+            marginRight += 2;
+            break;
+
         case "vlist":
             isVlist = true;
             break;
@@ -237,6 +259,7 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "baseline-fix":
         case "bottom":
         case "katex-html":
+        case "mspace":
         case "reset-scriptstyle":
         case "reset-size1":
         case "reset-size2":
@@ -253,6 +276,7 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "sqrt-sign":
         case "strut":
         case "style-wrap":
+        case "text":
             // Not special handling (yet?)
             break;
 
