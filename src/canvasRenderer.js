@@ -173,7 +173,11 @@ CanvasRenderer.prototype.prepare = function(node) {
             }
             break;
         case "delim-size1":
+        case "small-op":
             this.state = this.state.withFace("", "KaTeX_Size1");
+            break;
+        case "large-op":
+            this.state = this.state.withFace("", "KaTeX_Size2");
             break;
         case "delim-size4":
             this.state = this.state.withFace("", "KaTeX_Size4");
@@ -280,6 +284,7 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "katex-html":
         case "mspace":
         case "mult":
+        case "op-symbol":
         case "reset-scriptstyle":
         case "reset-size1":
         case "reset-size2":
