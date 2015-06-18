@@ -163,6 +163,7 @@ CanvasRenderer.prototype.prepare = function(node) {
     var nodeClass = "";
     var marginLeft = null;
     var marginRight = 0;
+    var resetX = null;
     i = classes.length;
     while (i--) {
         var className = classes[i];
@@ -203,11 +204,18 @@ CanvasRenderer.prototype.prepare = function(node) {
             });
             break;
         case "mfrac":
+        case "accent":
             this.state = this.state.withHAlign(align.center);
             break;
         case "root":
             marginLeft = 5/18;
             marginRight = -10/18;
+            break;
+        case "accent-vec":
+            marginLeft += 0.326;
+            break;
+        case "accent-body":
+            resetX = this.x;
             break;
 
         case "mathit":
@@ -392,6 +400,9 @@ CanvasRenderer.prototype.prepare = function(node) {
         this.x += width;
     }
     this.x += marginRight * this.state.em;
+    if (resetX !== null) {
+        this.x = resetX;
+    }
     this.state = prevState;
     this.prevClass = nodeClass;
 };
