@@ -57,6 +57,12 @@ CanvasState.prototype.withHAlign = function(halign) {
     return res;
 };
 
+CanvasState.prototype.withColor = function(color) {
+    var res = new CanvasState(this);
+    res.color = color;
+    return res;
+};
+
 function CanvasRenderer(ctxt, options) {
     this.ctxt = ctxt;
     this.fontSize = 16; // px
@@ -76,6 +82,7 @@ function CanvasRenderer(ctxt, options) {
         variant: "",
         weight: "",
         family: "KaTeX_Main",
+        color: "black",
         ypos: 0,
         halign: options.halign || align.left
     });
@@ -132,7 +139,7 @@ var spacePairs = {
 CanvasRenderer.prototype.prepare = function(node) {
     var prevState = this.state;
 
-    var classes = node.classes.filter(function(className) {
+    var classes = !node.classes ? "" : node.classes.filter(function(className) {
         return className !== null;
     }).join(" ");
     if (classes === "") {
@@ -200,7 +207,8 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "sqrt-line":
             this.horizontalLines.push({
                 y: this.state.ypos,
-                height: Math.max(1, 0.04 * this.state.em)
+                height: Math.max(1, 0.04 * this.state.em),
+                color: this.state.color
             });
             break;
         case "mfrac":
@@ -348,6 +356,9 @@ CanvasRenderer.prototype.prepare = function(node) {
             }
             marginRight = +val.substr(0, val.length - 2);
             break;
+        case "color":
+            this.state = this.state.withColor(val);
+            break;
         case "height":
         case "verticalAlign":
             // These two usually are for struts
@@ -394,6 +405,7 @@ CanvasRenderer.prototype.prepare = function(node) {
             x: this.x,
             y: this.state.ypos,
             font: this.state.font,
+            color: this.state.color,
             text: node.value
         };
         this.outList.push(atom);
@@ -464,9 +476,9 @@ function PreparedBox(canvas, atoms, xshift) {
     this.renderAt = function(x, y) {
         x -= xshift;
         backupCanvasState(canvas, function(ctxt) {
-            ctxt.fillStyle = "black";
             for (var i = 0; i < atoms.length; ++i) {
                 var atom = atoms[i];
+                ctxt.fillStyle = atom.color;
                 if (atom.text) {
                     ctxt.font = atom.font;
                     ctxt.fillText(atom.text, atom.x + x, atom.y + y);
