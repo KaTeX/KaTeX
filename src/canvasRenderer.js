@@ -171,6 +171,7 @@ CanvasRenderer.prototype.prepare = function(node) {
     var marginLeft = null;
     var marginRight = 0;
     var resetX = null;
+    var lap = null;
     i = classes.length;
     while (i--) {
         var className = classes[i];
@@ -307,6 +308,10 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "vlist":
             isVlist = true;
             break;
+        case "llap":
+        case "rlap":
+            lap = className;
+            break;
 
         case "base":
         case "baseline-fix":
@@ -410,6 +415,8 @@ CanvasRenderer.prototype.prepare = function(node) {
     }
     if (isVlist) {
         this.halign(node.children, this.state.halign);
+    } else if (lap) {
+        this.lap(lap, node.children);
     } else if (node.children) {
         node.children.forEach(this.prepare.bind(this));
     } else {
@@ -472,6 +479,21 @@ CanvasRenderer.prototype.halign = function(children, alignment) {
     }
     this.x = oldX + maxWidth;
     this.horizontalLines = oldLines;
+};
+
+CanvasRenderer.prototype.lap = function(lap, children) {
+    var child = children[0];
+    var oldX = this.x;
+    var outList = this.outList;
+    var mark = outList.length;
+    this.prepare(child);
+    var width = this.x - oldX;
+    this.x = oldX;
+    if (lap == "llap") {
+        while (mark < outList.length) {
+            outList[mark++].x -= width;
+        }
+    }
 };
 
 function backupCanvasState(canvas, callback) {
