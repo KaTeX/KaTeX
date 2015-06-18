@@ -156,7 +156,6 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "delimsizing":
             this.state = this.state.withFace("", "KaTeX_Size" + findSize());
             break;
-            break;
 
         case "fontsize-ensurer":
         case "sizing":
@@ -297,6 +296,9 @@ CanvasRenderer.prototype.prepare = function(node) {
     var classPair = this.prevClass + "_" + nodeClass;
     if (marginLeft === null) {
         marginLeft = spacePairs[classPair];
+        if (marginLeft === undefined && this.state.styleFactor === 1) {
+            marginLeft = spacePairsTextStyle[classPair];
+        }
     }
     if (marginLeft) {
         this.x += marginLeft * this.state.em;
