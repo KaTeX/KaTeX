@@ -1,5 +1,7 @@
 "use strict";
 
+var align = { left: 0, center: 0.5, right: 1 };
+
 var sizes = [
     null, 0.5, 0.7, 0.8, 0.9, 1.0, 1.2, 1.44, 1.73, 2.07, 2.49
 ];
@@ -49,6 +51,12 @@ CanvasState.prototype.withYShift = function(y) {
     return res;
 };
 
+CanvasState.prototype.withHAlign = function(halign) {
+    var res = new CanvasState(this);
+    res.halign = halign;
+    return res;
+};
+
 function CanvasRenderer(ctxt, options) {
     this.ctxt = ctxt;
     this.fontSize = 16; // px
@@ -68,7 +76,8 @@ function CanvasRenderer(ctxt, options) {
         variant: "",
         weight: "",
         family: "KaTeX_Main",
-        ypos: 0
+        ypos: 0,
+        halign: options.halign || align.left
     });
     this.state.sizeChanged();
 }
@@ -169,6 +178,9 @@ CanvasRenderer.prototype.prepare = function(node) {
                 height: Math.max(1, 0.04 * this.state.em)
             });
             break;
+        case "mfrac":
+            this.state = this.state.withHAlign(align.center);
+            break;
         case "root":
             marginLeft = 5/18;
             marginRight = -10/18;
@@ -225,7 +237,6 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "baseline-fix":
         case "bottom":
         case "katex-html":
-        case "mfrac":
         case "reset-scriptstyle":
         case "reset-size1":
         case "reset-size2":
@@ -311,7 +322,7 @@ CanvasRenderer.prototype.prepare = function(node) {
         this.x += marginLeft * this.state.em;
     }
     if (isVlist) {
-        this.halign(node.children, 0.5);
+        this.halign(node.children, this.state.halign);
     } else if (node.children) {
         node.children.forEach(this.prepare.bind(this));
     } else {
@@ -394,7 +405,9 @@ function render(dom, canvas, x, y, options) {
     var oldFill = ctxt.fillStyle;
     var renderer = new CanvasRenderer(ctxt, options);
     renderer.prepare(dom);
-    renderer.render(dom, x, y);
+    var totalWidth = renderer.x;
+    var halign = options.halign || align.left;
+    renderer.render(dom, x - halign * totalWidth, y);
     ctxt.font = oldFont;
     ctxt.fillStyle = oldFill;
 }
