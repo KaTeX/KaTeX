@@ -407,35 +407,61 @@ CanvasRenderer.prototype.halign = function(children, alignment) {
     this.horizontalLines = oldLines;
 };
 
-CanvasRenderer.prototype.render = function(root, x, y) {
-    var ctxt = this.ctxt;
-    var outList = this.outList;
-    ctxt.fillStyle = "black";
-    for (var i = 0; i < outList.length; ++i) {
-        var atom = outList[i];
-        if (atom.text) {
-            ctxt.font = atom.font;
-            ctxt.fillText(atom.text, atom.x + x, atom.y + y);
-        } else if (atom.width || atom.height) {
-            ctxt.fillRect(atom.x + x, atom.y + y - atom.height,
-                          atom.width, atom.height);
-        }
-    }
-};
-
-function render(dom, canvas, x, y, options) {
+function backupCanvasState(canvas, callback) {
     var ctxt = canvas.getContext ? canvas.getContext("2d") : canvas;
     var oldFont = ctxt.font;
     var oldFill = ctxt.fillStyle;
-    var renderer = new CanvasRenderer(ctxt, options);
-    renderer.prepare(dom);
-    var totalWidth = renderer.x;
-    var halign = options.halign || align.left;
-    renderer.render(dom, x - halign * totalWidth, y);
-    ctxt.font = oldFont;
-    ctxt.fillStyle = oldFill;
+    try {
+        var res = callback(ctxt);
+        ctxt.font = oldFont;
+        ctxt.fillStyle = oldFill;
+        return res;
+    } catch (e) {
+        ctxt.font = oldFont;
+        ctxt.fillStyle = oldFill;
+        throw e;
+    }
+}
+
+function PreparedBox(canvas, atoms, xshift) {
+    this.renderAt = function(x, y) {
+        x -= xshift;
+        backupCanvasState(canvas, function(ctxt) {
+            ctxt.fillStyle = "black";
+            for (var i = 0; i < atoms.length; ++i) {
+                var atom = atoms[i];
+                if (atom.text) {
+                    ctxt.font = atom.font;
+                    ctxt.fillText(atom.text, atom.x + x, atom.y + y);
+                } else if (atom.width || atom.height) {
+                    ctxt.fillRect(atom.x + x, atom.y + y - atom.height,
+                                  atom.width, atom.height);
+                }
+            }
+        });
+    };
+}
+
+function prepare(dom, canvas, options) {
+    return backupCanvasState(canvas, function(ctxt) {
+        var halign = options.halign || align.left;
+        var renderer = new CanvasRenderer(ctxt, options);
+        renderer.prepare(dom);
+        var em = renderer.state.em;
+        var xshift = renderer.x * halign;
+        var box = new PreparedBox(ctxt, renderer.outList, xshift);
+        box.width = renderer.x;
+        box.depth = dom.depth * em;
+        box.height = dom.height * em;
+        return box;
+    });
+}
+
+function render(dom, canvas, x, y, options) {
+    prepare(dom, canvas, options).renderAt(x, y);
 }
 
 module.exports = {
+    prepare: prepare,
     render: render
 };

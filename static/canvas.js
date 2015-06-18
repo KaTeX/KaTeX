@@ -30,14 +30,18 @@ function init() {
     function reprocess() {
         try {
             ctxt.clearRect(0, 0, math.width, math.height);
-            ctxt.strokeStyle = "#00ffff";
-            ctxt.beginPath();
-            ctxt.moveTo(10, 200);
-            ctxt.lineTo(math.width, 200);
-            ctxt.stroke();
-            katex.renderToCanvas(input.value, ctxt, 10, 200, {
+            var box = katex.canvasBox(input.value, ctxt, {
                 fontSize: 74 * 1.21
-            });
+            })
+            var x = 10, y = Math.max(200, box.height);
+            ctxt.strokeStyle = "#00ffff";
+            ctxt.strokeRect(x, y - box.height, box.width,
+                            box.height + box.depth);
+            ctxt.beginPath();
+            ctxt.moveTo(x, y);
+            ctxt.lineTo(x + box.width, y);
+            ctxt.stroke();
+            box.renderAt(x, y);
         } catch (e) {
             if (e.__proto__ == katex.ParseError.prototype) {
                 console.error(e);

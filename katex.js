@@ -67,6 +67,19 @@ var renderToCanvas = function(expression, canvas, x, y, options) {
 };
 
 /**
+ * Parse and build an expression, and measure it for rendering to the
+ * specified canvas.  The returned object has some dimensions as well
+ * as a renderAt method which can be used to render the whole box.
+ */
+var canvasBox = function(expression, canvas, options) {
+    var settings = new Settings(options);
+
+    var tree = parseTree(expression, settings);
+    var dom = buildHTML(tree, settings);
+    return canvasRenderer.prepare(dom, canvas, options);
+};
+
+/**
  * Parse an expression and return the parse tree.
  */
 var generateParseTree = function(expression, options) {
@@ -78,6 +91,7 @@ module.exports = {
     render: render,
     renderToString: renderToString,
     renderToCanvas: renderToCanvas,
+    canvasBox: canvasBox,
     /**
      * NOTE: This method is not currently recommended for public use.
      * The internal tree representation is unstable and is very likely
