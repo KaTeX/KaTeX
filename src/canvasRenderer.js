@@ -47,7 +47,7 @@ CanvasState.prototype.withFace = function(variant, family) {
 
 CanvasState.prototype.withYShift = function(y) {
     var res = new CanvasState(this);
-    res.ypos += y;
+    res.ypos += y * res.em;
     return res;
 };
 
@@ -287,6 +287,23 @@ CanvasRenderer.prototype.prepare = function(node) {
             marginRight += 2;
             break;
 
+        case "k":
+            break;
+        case "a":
+            this.state = this.state.withStyle(0.75).withYShift(-0.2);
+            marginLeft = -0.32;
+            break;
+        case "t":
+            marginLeft = -0.23;
+            break;
+        case "e":
+            this.state = this.state.withYShift(0.2155);
+            marginLeft = -0.1667;
+            break;
+        case "x":
+            marginLeft = -0.125;
+            break;
+
         case "vlist":
             isVlist = true;
             break;
@@ -297,6 +314,7 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "cramped":
         case "delimsizinginner":
         case "displaystyle":
+        case "katex-logo":
         case "katex-html":
         case "mspace":
         case "mult":
@@ -335,7 +353,7 @@ CanvasRenderer.prototype.prepare = function(node) {
                 throw new Error("em is the only supported unit.");
             }
             val = +val.substr(0, val.length - 2);
-            this.state = this.state.withYShift(val * this.state.em);
+            this.state = this.state.withYShift(val);
             break;
         case "fontSize":
             if (val === "0em") {
