@@ -43,6 +43,7 @@ var groupToType = {
     close: "mclose",
     inner: "minner",
     genfrac: "minner",
+    array: "minner",
     spacing: "mord",
     punct: "mpunct",
     ordgroup: "mord",
@@ -496,6 +497,108 @@ var groupTypes = {
             ["minner", options.style.reset(), fstyle.cls()],
             innerChildren,
             options.getColor());
+    },
+
+    array: function(group, options, prev) {
+        var r, c;
+        var nr = group.value.body.length;
+        var nc = 0;
+        var body = new Array(nr);
+
+        // Horizontal spacing
+        var pt = 1 / fontMetrics.metrics.ptPerEm;
+        var arraycolsep = 5 * pt; // \arraycolsep in article.cls
+
+        // Vertical spacing
+        var baselineskip = 12 * pt; // see size10.clo
+        var arraystretch = 1; // factor, see lttab.dtx
+        var arrayskip = arraystretch * baselineskip;
+        var arstrutHeight = 0.7 * arrayskip; // \strutbox in ltfsstrc.dtx and
+        var arstrutDepth = 0.3 * arrayskip;  // \@arstrutbox in lttab.dtx
+
+        var totalHeight = 0;
+        for (r = 0; r < group.value.body.length; ++r) {
+            var inrow = group.value.body[r];
+            var height = arstrutHeight; // \@array adds an \@arstrut
+            var depth = arstrutDepth;   // to each tow (via the template)
+            if (nc < inrow.length) {
+                nc = inrow.length;
+            }
+            var outrow = new Array(inrow.length);
+            for (c = 0; c < inrow.length; ++c) {
+                var elt = buildGroup(inrow[c], options);
+                if (depth < elt.depth) {
+                    depth = elt.depth;
+                }
+                if (height < elt.height) {
+                    height = elt.height;
+                }
+                outrow[c] = elt;
+            }
+            var gap = 0;
+            if (group.value.rowGaps[r]) {
+                gap = group.value.rowGaps[r].value;
+                switch (gap.unit) {
+                case "em":
+                    gap = gap.number;
+                    break;
+                case "ex":
+                    gap = gap.number * fontMetrics.metrics.emPerEx;
+                    break;
+                default:
+                    console.error("Can't handle unit " + gap.unit);
+                    gap = 0;
+                }
+                if (gap > 0) { // \@argarraycr
+                    gap += arstrutDepth;
+                    if (depth < gap) {
+                        depth = gap; // \@xargarraycr
+                    }
+                    gap = 0;
+                }
+            }
+            outrow.height = height;
+            outrow.depth = depth;
+            totalHeight += height;
+            outrow.pos = totalHeight;
+            totalHeight += depth + gap; // \@yargarraycr
+            body[r] = outrow;
+        }
+        var offset = totalHeight / 2 + fontMetrics.metrics.axisHeight;
+        var colalign = group.value.colalign || [];
+        var cols = [];
+        var colsep;
+        for (c = 0; c < nc; ++c) {
+            if (c > 0 || group.value.hskipBeforeAndAfter) {
+                colsep = makeSpan(["arraycolsep"], []);
+                colsep.style.width = arraycolsep + "em";
+                cols.push(colsep);
+            }
+            var col = [];
+            for (r = 0; r < nr; ++r) {
+                var row = body[r];
+                var elem = row[c];
+                if (!elem) {
+                    continue;
+                }
+                var shift = row.pos - offset;
+                elem.depth = row.depth;
+                elem.height = row.height;
+                col.push({type: "elem", elem: elem, shift: shift});
+            }
+            col = buildCommon.makeVList(col, "individualShift", null, options);
+            col = makeSpan(
+                ["col-align-" + (colalign[c] || "c")],
+                [col]);
+            cols.push(col);
+            if (c < nc - 1 || group.value.hskipBeforeAndAfter) {
+                colsep = makeSpan(["arraycolsep"], []);
+                colsep.style.width = arraycolsep + "em";
+                cols.push(colsep);
+            }
+        }
+        body = makeSpan(["mtable"], cols);
+        return makeSpan(["minner"], [body], options.getColor());
     },
 
     spacing: function(group, options, prev) {

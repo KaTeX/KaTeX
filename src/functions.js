@@ -517,6 +517,47 @@ var duplicatedFunctions = [
                 };
             }
         }
+    },
+
+    // Row breaks for aligned data
+    {
+        funcs: ["\\\\", "\\cr"],
+        data: {
+            numArgs: 0,
+            numOptionalArgs: 1,
+            argTypes: ["size"],
+            handler: function(func, size) {
+                return {
+                    type: "cr",
+                    size: size
+                };
+            }
+        }
+    },
+
+    // Environment delimiters
+    {
+        funcs: ["\\begin", "\\end"],
+        data: {
+            numArgs: 1,
+            argTypes: ["text"],
+            handler: function(func, nameGroup, positions) {
+                if (nameGroup.type !== "ordgroup") {
+                    throw new ParseError(
+                        "Invalid environment name",
+                        this.lexer, positions[1]);
+                }
+                var name = "";
+                for (var i = 0; i < nameGroup.value.length; ++i) {
+                    name += nameGroup.value[i].value;
+                }
+                return {
+                    type: "environment",
+                    name: name,
+                    namepos: positions[1]
+                };
+            }
+        }
     }
 ];
 
