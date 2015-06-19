@@ -437,19 +437,22 @@ CanvasRenderer.prototype.prepare = function(node) {
         node.children.forEach(this.prepare.bind(this));
     } else {
         this.ctxt.font = this.state.font;
-        var measurement = this.ctxt.measureText(node.value);
+        var text = node.value;
+        var measurement = this.ctxt.measureText(text);
         var width = measurement.width;
         if (node.italic) {
             marginRight += node.italic;
         }
-        var atom = {
-            x: this.x,
-            y: this.state.ypos,
-            font: this.state.font,
-            color: this.state.color,
-            text: node.value
-        };
-        this.outList.push(atom);
+        if (text !== "" && text !== "\u200b") {
+            var atom = {
+                x: this.x,
+                y: this.state.ypos,
+                font: this.state.font,
+                color: this.state.color,
+                text: text
+            };
+            this.outList.push(atom);
+        }
         this.x += width;
     }
     this.x += marginRight * this.state.em;
