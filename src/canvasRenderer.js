@@ -216,6 +216,7 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "mfrac":
         case "accent":
         case "op-limits":
+        case "col-align-c":
             this.state = this.state.withHAlign(align.center);
             break;
         case "root":
@@ -246,7 +247,11 @@ CanvasRenderer.prototype.prepare = function(node) {
             break;
 
         case "msupsub":
+        case "col-align-l":
             this.state = this.state.withHAlign(align.left);
+            break;
+        case "col-align-r":
+            this.state = this.state.withHAlign(align.right);
             break;
 
         case "scriptscriptstyle":
@@ -319,6 +324,7 @@ CanvasRenderer.prototype.prepare = function(node) {
             lap = className;
             break;
 
+        case "arraycolsep":
         case "base":
         case "baseline-fix":
         case "bottom":
@@ -328,6 +334,7 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "katex-logo":
         case "katex-html":
         case "mspace":
+        case "mtable":
         case "mult":
         case "op-symbol":
         case "overline":
@@ -382,6 +389,7 @@ CanvasRenderer.prototype.prepare = function(node) {
             marginLeft = +val.substr(0, val.length - 2);
             break;
         case "marginRight":
+        case "width":
             if (val.substr(val.length - 2) !== "em") {
                 throw new Error("em is the only supported unit.");
             }
