@@ -82,7 +82,7 @@ function CanvasRenderer(ctxt, options) {
         variant: "",
         weight: "",
         family: "KaTeX_Main",
-        color: "black",
+        color: null,
         ypos: 0,
         halign: options.halign || align.left
     });
@@ -535,9 +535,11 @@ function PreparedBox(canvas, atoms, xshift) {
     this.renderAt = function(x, y) {
         x -= xshift;
         backupCanvasState(canvas, function(ctxt) {
+            var initialColor = ctxt.fillStyle;
             for (var i = 0; i < atoms.length; ++i) {
                 var atom = atoms[i];
-                ctxt.fillStyle = atom.color;
+                ctxt.fillStyle =
+                    (atom.color === null ? initialColor : atom.color);
                 if (atom.text) {
                     ctxt.font = atom.font;
                     ctxt.fillText(atom.text, atom.x + x, atom.y + y);
