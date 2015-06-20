@@ -399,6 +399,44 @@ var groupTypes = {
     phantom: function(group, options, prev) {
         var inner = buildExpression(group.value.value);
         return new mathMLTree.MathNode("mphantom", inner);
+    },
+
+    specialfont: function(group, options, prev) {
+        var body = group.value.body;
+        var chars;
+        if (body.type === "ordgroup") {
+            chars = body.value.slice();
+        } else {
+            chars = [body];
+        }
+        var spec = buildCommon.specialFonts[group.value.font];
+        for (var i = 0; i < chars.length; ++i) {
+            var chr = chars[i];
+            var idx = spec.support.indexOf(chr.value);
+            if (chr.type === "mathord" && chr.value.length === 1 &&
+                idx !== -1) {
+                var unipos = 0;
+                while (idx--) {
+                    if ((spec.unicode.charCodeAt(unipos) & 0xfc00) === 0xd800) {
+                        unipos += 2; // surrogate pair
+                    } else {
+                        unipos += 1;
+                    }
+                }
+                var str;
+                if ((spec.unicode.charCodeAt(unipos) & 0xfc00) === 0xd800) {
+                    str = spec.unicode.substr(unipos, 2);
+                } else {
+                    str = spec.unicode.substr(unipos, 1);
+                }
+                chars[i] = new mathMLTree.MathNode("mi", [
+                    new mathMLTree.TextNode(str)]);
+            } else {
+                chars[i] = buildGroup(chr, options, prev);
+            }
+            prev = chr; //(gagern) Is this correct?
+        }
+        return new mathMLTree.MathNode("mrow", chars);
     }
 };
 

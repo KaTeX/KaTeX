@@ -308,6 +308,28 @@ var spacingFunctions = {
     }
 };
 
+var specialFonts = {
+    "\\mathbb": {
+        font: "AMS-Regular",
+        support: "ABCDEFGHIJKLMNOPQRSTUVWXYZk",
+        unicode: "𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕜",
+        classes: ["amsrm", "mathbb"]
+    },
+    "\\mathcal": {
+        font: "Caligraphic-Regular",
+        support: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        unicode: "𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵",
+        classes: ["mathcal"]
+    },
+    "\\mathscr": {
+        font: "Script-Regular",
+        support: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        unicode: "𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵",
+        classes: ["mathscr"]
+    }
+};
+specialFonts["\\Bbb"] = specialFonts["\\mathbb"];
+
 module.exports = {
     makeSymbol: makeSymbol,
     mathit: mathit,
@@ -316,5 +338,6 @@ module.exports = {
     makeFragment: makeFragment,
     makeVList: makeVList,
     sizingMultiplier: sizingMultiplier,
-    spacingFunctions: spacingFunctions
+    spacingFunctions: spacingFunctions,
+    specialFonts: specialFonts
 };

@@ -1210,6 +1210,30 @@ var groupTypes = {
         // \phantom isn't supposed to affect the elements it contains.
         // See "color" for more details.
         return new buildCommon.makeFragment(elements);
+    },
+
+    specialfont: function(group, options, prev) {
+        var body = group.value.body;
+        var chars;
+        if (body.type === "ordgroup") {
+            chars = body.value.slice();
+        } else {
+            chars = [body];
+        }
+        var spec = buildCommon.specialFonts[group.value.font];
+        for (var i = 0; i < chars.length; ++i) {
+            var chr = chars[i];
+            if (chr.type === "mathord" && chr.value.length === 1 &&
+                spec.support.indexOf(chr.value) !== -1) {
+                chars[i] = buildCommon.makeSymbol(
+                    chr.value, spec.font, "math",
+                    options.getColor(), spec.classes);
+            } else {
+                chars[i] = buildGroup(chr, options, prev);
+            }
+            prev = chr; //(gagern) Is this correct?
+        }
+        return new buildCommon.makeFragment(chars);
     }
 };
 

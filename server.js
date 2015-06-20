@@ -65,6 +65,7 @@ app.use(express["static"](path.join(__dirname, "static")));
 app.use(express["static"](path.join(__dirname, "build")));
 app.use("/test", express["static"](path.join(__dirname, "test")));
 app.use("/contrib", express["static"](path.join(__dirname, "contrib")));
+app.use("/tools", express["static"](path.join(__dirname, "tools")));
 
 app.use(function(err, req, res, next) {
     console.error(err.stack);
