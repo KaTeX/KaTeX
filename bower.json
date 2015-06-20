@@ -1,7 +1,7 @@
 {
   "name": "KaTeX",
-  "version": "0.4.1",
-  "name": [
+  "version": "0.4.2",
+  "main": [
     "dist/katex.min.js",
     "dist/katex.min.css",
     "dist/contrib/auto-render.min.js",
