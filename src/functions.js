@@ -494,6 +494,24 @@ var duplicatedFunctions = [
         }
     },
 
+    // Special fonts
+    {
+        funcs: [
+            "\\mathbb", "\\Bbb",
+            // these require additional metrics: "\\mathcal", "\\mathscr"
+        ],
+        data: {
+            numArgs: 1,
+            handler: function(func, body) {
+                return {
+                    type: "specialfont",
+                    font: func,
+                    body: body
+                };
+            }
+        }
+    },
+
     // Infix generalized fractions
     {
         funcs: ["\\over", "\\choose"],
