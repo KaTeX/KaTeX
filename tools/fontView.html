@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!--
+ Display all characters of a font.  First extract font data to *ttx files
+ using the TTX tool from https://github.com/behdad/fonttools/.
+ Run "ttx -t cmap static/fonts/*.ttf" to extract that.
+ Then run "node server.js" and open "http://localhost:7936/tools/fontView.html".
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="fontView.js"></script>
+  </head>
+  <body>
+    <div id="select">
+      <ul>
+        <li><a href="fontView.html?f=KaTeX_AMS-Regular">AMS</a></li>
+        <li><a href="fontView.html?f=KaTeX_Caligraphic-Regular">Caligraphic</a></li>
+        <li><a href="fontView.html?f=KaTeX_Fraktur-Regular">Fraktur</a></li>
+        <li><a href="fontView.html?f=KaTeX_Main-Regular">Main</a></li>
+        <li><a href="fontView.html?f=KaTeX_Math-Regular">Math</a></li>
+        <li><a href="fontView.html?f=KaTeX_SansSerif-Regular">SansSerif</a></li>
+        <li><a href="fontView.html?f=KaTeX_Script-Regular">Script</a></li>
+        <li><a href="fontView.html?f=KaTeX_Size1-Regular">Size1</a></li>
+        <li><a href="fontView.html?f=KaTeX_Size2-Regular">Size2</a></li>
+        <li><a href="fontView.html?f=KaTeX_Size3-Regular">Size3</a></li>
+        <li><a href="fontView.html?f=KaTeX_Size4-Regular">Size4</a></li>
+        <li><a href="fontView.html?f=KaTeX_Typewriter-Regular">Typewriter</a></li>
+      </ul>
+    </div>
+    <div id="table"></div>
+  </body>
+</html>
