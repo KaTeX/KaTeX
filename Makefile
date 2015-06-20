@@ -2,7 +2,8 @@
 build: setup lint build/katex.min.js build/katex.min.css contrib zip compress
 
 dist: build
-	cp --recursive build/katex dist
+	rm -rf dist/
+	cp --recursive build/katex/ dist/
 
 # Export these variables for use in contrib Makefiles
 export BUILDDIR = $(realpath build)
@@ -43,8 +44,8 @@ contrib: build/contrib
 .PHONY: build/contrib
 build/contrib:
 	mkdir -p build/contrib
-	# Since everything in build/contrib is put in the built files, make sure
-	# there's nothing in there we don't want.
+	@# Since everything in build/contrib is put in the built files, make sure
+	@# there's nothing in there we don't want.
 	rm -rf build/contrib/*
 	$(MAKE) -C contrib/auto-render
 
