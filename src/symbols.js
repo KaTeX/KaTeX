@@ -15,6 +15,8 @@
  * accepted in (e.g. "math" or "text").
  */
 
+var utils = require("./utils");
+
 var symbols = {
     "math": {
         // Relation Symbols
@@ -2548,6 +2550,22 @@ for (var i = 0; i < letters.length; i++) {
         font: "main",
         group: "textord"
     };
+}
+
+// We let unicode symbols represent themselves
+var syntax = "^_";
+for (var mode in symbols) {
+    for (var symbol in symbols[mode]) {
+        var spec = symbols[mode][symbol];
+        if (spec.replace && !(spec.replace in symbols[mode]) &&
+            !utils.contains(syntax, spec.replace)) {
+            
+            symbols[mode][spec.replace] = {
+                font: spec.font,
+                group: spec.group
+            };
+        }
+    }
 }
 
 module.exports = symbols;
