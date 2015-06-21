@@ -1116,6 +1116,20 @@ describe("A style change parser", function() {
     });
 });
 
+describe("A symbol parser", function() {
+    it("should work", function() {
+        var parse = getParsed("\\sigma")[0];
+        expect(parse.type).toBe("mathord");
+    });
+    
+    it("should have unicode aliases", function() {
+        var parseCommand = getParsed("\\sigma")[0];
+        var parseUnicode = getParsed("\u03c3")[0];
+
+        expect(parseCommand.type).toBe(parseUnicode.type);
+    });
+});
+
 describe("A bin builder", function() {
     it("should create mbins normally", function() {
         var built = getBuilt("x + y");
