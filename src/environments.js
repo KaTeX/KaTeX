@@ -18,17 +18,20 @@ var ParseResult = parseData.ParseResult;
  *  - numOptionalArgs: (optional) Just like for a function
  * A bare number instead of that object indicates the numArgs value.
  *
- * The handler function will receive the following arguments:
+ * The handler function will receive two arguments
+ * - context: information and references provided by the parser
+ * - args: an array of arguments passed to \begin{name}
+ * The context contains the following properties:
  * - pos: the current position of the parser.
  * - mode: the current parsing mode.
  * - envName: the name of the environment, one of the listed names.
- * - [args]: the arguments passed to \begin.
- * - positions: the positions associated with these arguments.
- * The handler is called with `this` referring to the parser.
- * It must return a ParseResult.
+ * - parser: the parser object
+ * - lexer: the lexer object
+ * - positions: the positions associated with these arguments from args.
+ * The handler must return a ParseResult.
  */
 
-function declareEnvironment(names, props, handler) {
+function defineEnvironment(names, props, handler) {
     if (typeof names === "string") {
         names = [names];
     }
@@ -83,10 +86,12 @@ function parseArray(parser, pos, mode, result) {
 
 // Arrays are part of LaTeX, defined in lttab.dtx so its documentation
 // is part of the source2e.pdf file of LaTeX2e source documentation.
-declareEnvironment("array", {
+defineEnvironment("array", {
     numArgs: 1
-}, function(pos, mode, envName, colalign, positions) {
-    var parser = this;
+}, function(context, args) {
+    var colalign = args[0];
+    var lexer = context.lexer;
+    var positions = context.positions;
     // Currently only supports alignment, no separators like | yet.
     colalign = colalign.value.map ? colalign.value : [colalign];
     colalign = colalign.map(function(node) {
@@ -96,14 +101,14 @@ declareEnvironment("array", {
         }
         throw new ParseError(
             "Unknown column alignment: " + node.value,
-            parser.lexer, positions[1]);
+            lexer, positions[1]);
     });
     var res = {
         type: "array",
         colalign: colalign,
         hskipBeforeAndAfter: true // \@preamble in lttab.dtx
     };
-    res = parseArray(parser, pos, mode, res);
+    res = parseArray(context.parser, context.pos, context.mode, res);
     return res;
 });
     
@@ -117,21 +122,21 @@ var matrixDelimiters = {
 
 // The matrix environments of amsmath builds on the array environment
 // of LaTeX, which is discussed above.
-declareEnvironment(["matrix", "pmatrix", "bmatrix", "vmatrix", "Vmatrix"], {
+defineEnvironment(["matrix", "pmatrix", "bmatrix", "vmatrix", "Vmatrix"], {
     numArgs: 0
-}, function(pos, mode, envName) {
-    var delimiters = matrixDelimiters[envName];
+}, function(context) {
+    var delimiters = matrixDelimiters[context.envName];
     var res = {
         type: "array",
         hskipBeforeAndAfter: false // \hskip -\arraycolsep in amsmath
     };
-    res = parseArray(this, pos, mode, res);
+    res = parseArray(context.parser, context.pos, context.mode, res);
     if (delimiters) {
         res.result = new ParseNode("leftright", {
             body: [res.result],
             left: delimiters[0],
             right: delimiters[1]
-        }, mode);
+        }, context.mode);
     }
     return res;
 });

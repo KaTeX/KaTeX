@@ -2,9 +2,9 @@ var utils = require("./utils");
 var ParseError = require("./ParseError");
 
 /* This file contains a list of functions that we parse, identified by
- * the calls to declareFunction.
+ * the calls to defineFunction.
  *
- * The first argument to declareFunction is a single name or a list of names.
+ * The first argument to defineFunction is a single name or a list of names.
  * All functions named in such a list will share a single implementation.
  *
  * Each declared function can have associated properties, which
@@ -58,14 +58,17 @@ var ParseError = require("./ParseError");
  *
  * The last argument is that implementation, the handler for the function(s).
  * It is called to handle these functions and their arguments.
- * Its own arguments are:
- * - func: the text of the function
- * - [args]: the next arguments are the arguments to the function,
- *           of which there are numArgs of them
+ * It receives two arguments:
+ * - context contains information and references provided by the parser
+ * - args is an array of arguments obtained from TeX input
+ * The context contains the following properties:
+ * - func: the text (i.e. name) of the function, including \
+ * - parser: the parser object
+ * - lexer: the lexer object
  * - positions: the positions in the overall string of the function
- *              and the arguments. Should only be used to produce
- *              error messages
- * The handler is called with `this` referring to the parser.
+ *              and the arguments.
+ * The latter three should only be used to produce error messages.
+ *
  * The function should return an object with the following keys:
  * - type: The type of element that this is. This is then used in
  *         buildHTML/buildMathML to determine which function
@@ -74,7 +77,7 @@ var ParseError = require("./ParseError");
  * in to the function in buildHTML/buildMathML as `group.value`.
  */
 
-function declareFunction(names, props, handler) {
+function defineFunction(names, props, handler) {
     if (typeof names === "string") {
         names = [names];
     }
@@ -96,10 +99,12 @@ function declareFunction(names, props, handler) {
 }
 
 // A normal square root
-declareFunction("\\sqrt", {
+defineFunction("\\sqrt", {
     numArgs: 1,
     numOptionalArgs: 1
-}, function(func, index, body, positions) {
+}, function(context, args) {
+    var index = args[0];
+    var body = args[1];
     return {
         type: "sqrt",
         body: body,
@@ -108,11 +113,12 @@ declareFunction("\\sqrt", {
 });
 
 // Some non-mathy text
-declareFunction("\\text", {
+defineFunction("\\text", {
     numArgs: 1,
     argTypes: ["text"],
     greediness: 2
-}, function(func, body) {
+}, function(context, args) {
+    var body = args[0];
     // Since the corresponding buildHTML/buildMathML function expects a
     // list of elements, we normalize for different kinds of arguments
     // TODO(emily): maybe this should be done somewhere else
@@ -130,12 +136,14 @@ declareFunction("\\text", {
 });
 
 // A two-argument custom color
-declareFunction("\\color", {
+defineFunction("\\color", {
     numArgs: 2,
     allowedInText: true,
     greediness: 3,
     argTypes: ["color", "original"]
-}, function(func, color, body) {
+}, function(context, args) {
+    var color = args[0];
+    var body = args[1];
     // Normalize the different kinds of bodies (see \text above)
     var inner;
     if (body.type === "ordgroup") {
@@ -152,9 +160,10 @@ declareFunction("\\color", {
 });
 
 // An overline
-declareFunction("\\overline", {
+defineFunction("\\overline", {
     numArgs: 1
-}, function(func, body) {
+}, function(context, args) {
+    var body = args[0];
     return {
         type: "overline",
         body: body
@@ -162,11 +171,14 @@ declareFunction("\\overline", {
 });
 
 // A box of the width and height
-declareFunction("\\rule", {
+defineFunction("\\rule", {
     numArgs: 2,
     numOptionalArgs: 1,
     argTypes: ["size", "size", "size"]
-}, function(func, shift, width, height) {
+}, function(context, args) {
+    var shift = args[0];
+    var width = args[1];
+    var height = args[2];
     return {
         type: "rule",
         shift: shift && shift.value,
@@ -176,17 +188,18 @@ declareFunction("\\rule", {
 });
 
 // A KaTeX logo
-declareFunction("\\KaTeX", {
+defineFunction("\\KaTeX", {
     numArgs: 0
-}, function(func) {
+}, function(context) {
     return {
         type: "katex"
     };
 });
 
-declareFunction("\\phantom", {
+defineFunction("\\phantom", {
     numArgs: 1
-}, function(func, body) {
+}, function(context, args) {
+    var body = args[0];
     var inner;
     if (body.type === "ordgroup") {
         inner = body.value;
@@ -234,7 +247,7 @@ var delimiters = [
 ];
 
 // Single-argument color functions
-declareFunction([
+defineFunction([
     "\\blue", "\\orange", "\\pink", "\\red",
     "\\green", "\\gray", "\\purple",
     "\\blueA", "\\blueB", "\\blueC", "\\blueD", "\\blueE",
@@ -252,7 +265,8 @@ declareFunction([
     numArgs: 1,
     allowedInText: true,
     greediness: 3
-}, function(func, body) {
+}, function(context, args) {
+    var body = args[0];
     var atoms;
     if (body.type === "ordgroup") {
         atoms = body.value;
@@ -262,7 +276,7 @@ declareFunction([
 
     return {
         type: "color",
-        color: "katex-" + func.slice(1),
+        color: "katex-" + context.func.slice(1),
         value: atoms
     };
 });
@@ -272,81 +286,83 @@ declareFunction([
 // displaystyle. These four groups cover the four possible choices.
 
 // No limits, not symbols
-declareFunction([
+defineFunction([
     "\\arcsin", "\\arccos", "\\arctan", "\\arg", "\\cos", "\\cosh",
     "\\cot", "\\coth", "\\csc", "\\deg", "\\dim", "\\exp", "\\hom",
     "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin", "\\sinh",
     "\\tan","\\tanh"
 ], {
     numArgs: 0
-}, function(func) {
+}, function(context) {
     return {
         type: "op",
         limits: false,
         symbol: false,
-        body: func
+        body: context.func
     };
 });
 
 // Limits, not symbols
-declareFunction([
+defineFunction([
     "\\det", "\\gcd", "\\inf", "\\lim", "\\liminf", "\\limsup", "\\max",
     "\\min", "\\Pr", "\\sup"
 ], {
     numArgs: 0
-}, function(func) {
+}, function(context) {
     return {
         type: "op",
         limits: true,
         symbol: false,
-        body: func
+        body: context.func
     };
 });
 
 // No limits, symbols
-declareFunction([
+defineFunction([
     "\\int", "\\iint", "\\iiint", "\\oint"
 ], {
     numArgs: 0
-}, function(func) {
+}, function(context) {
     return {
         type: "op",
         limits: false,
         symbol: true,
-        body: func
+        body: context.func
     };
 });
 
 // Limits, symbols
-declareFunction([
+defineFunction([
     "\\coprod", "\\bigvee", "\\bigwedge", "\\biguplus", "\\bigcap",
     "\\bigcup", "\\intop", "\\prod", "\\sum", "\\bigotimes",
     "\\bigoplus", "\\bigodot", "\\bigsqcup", "\\smallint"
 ], {
     numArgs: 0
-}, function(func) {
+}, function(context) {
     return {
         type: "op",
         limits: true,
         symbol: true,
-        body: func
+        body: context.func
     };
 });
 
 // Fractions
-declareFunction([
+defineFunction([
     "\\dfrac", "\\frac", "\\tfrac",
     "\\dbinom", "\\binom", "\\tbinom"
 ], {
     numArgs: 2,
     greediness: 2
-}, function(func, numer, denom) {
+}, function(context, args) {
+    var numer = args[0];
+    var denom = args[1];
     var hasBarLine;
     var leftDelim = null;
     var rightDelim = null;
     var size = "auto";
 
-    switch (func) {
+    switch (context.func) {
     case "\\dfrac":
     case "\\frac":
     case "\\tfrac":
@@ -363,7 +379,7 @@ declareFunction([
         throw new Error("Unrecognized genfrac command");
     }
 
-    switch (func) {
+    switch (context.func) {
     case "\\dfrac":
     case "\\dbinom":
         size = "display";
@@ -386,18 +402,19 @@ declareFunction([
 });
 
 // Left and right overlap functions
-declareFunction(["\\llap", "\\rlap"], {
+defineFunction(["\\llap", "\\rlap"], {
     numArgs: 1,
     allowedInText: true
-}, function(func, body) {
+}, function(context, args) {
+    var body = args[0];
     return {
-        type: func.slice(1),
+        type: context.func.slice(1),
         body: body
     };
 });
 
 // Delimiter functions
-declareFunction([
+defineFunction([
     "\\bigl", "\\Bigl", "\\biggl", "\\Biggl",
     "\\bigr", "\\Bigr", "\\biggr", "\\Biggr",
     "\\bigm", "\\Bigm", "\\biggm", "\\Biggm",
@@ -405,17 +422,18 @@ declareFunction([
     "\\left", "\\right"
 ], {
     numArgs: 1
-}, function(func, delim, positions) {
+}, function(context, args) {
+    var delim = args[0];
     if (!utils.contains(delimiters, delim.value)) {
         throw new ParseError(
             "Invalid delimiter: '" + delim.value + "' after '" +
-                func + "'",
-            this.lexer, positions[1]);
+                context.func + "'",
+            context.lexer, context.positions[1]);
     }
 
     // \left and \right are caught somewhere in Parser.js, which is
     // why this data doesn't match what is in buildHTML.
-    if (func === "\\left" || func === "\\right") {
+    if (context.func === "\\left" || context.func === "\\right") {
         return {
             type: "leftright",
             value: delim.value
@@ -423,48 +441,49 @@ declareFunction([
     } else {
         return {
             type: "delimsizing",
-            size: delimiterSizes[func].size,
-            delimType: delimiterSizes[func].type,
+            size: delimiterSizes[context.func].size,
+            delimType: delimiterSizes[context.func].type,
             value: delim.value
         };
     }
 });
 
 // Sizing functions (handled in Parser.js explicitly, hence no handler)
-declareFunction([
+defineFunction([
     "\\tiny", "\\scriptsize", "\\footnotesize", "\\small",
     "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge"
 ], 0, null);
 
 // Style changing functions (handled in Parser.js explicitly, hence no
 // handler)
-declareFunction([
+defineFunction([
     "\\displaystyle", "\\textstyle", "\\scriptstyle",
     "\\scriptscriptstyle"
 ], 0, null);
 
 // Accents
-declareFunction([
+defineFunction([
     "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
     "\\check", "\\hat", "\\vec", "\\dot"
     // We don't support expanding accents yet
     // "\\widetilde", "\\widehat"
 ], {
     numArgs: 1
-}, function(func, base) {
+}, function(context, args) {
+    var base = args[0];
     return {
         type: "accent",
-        accent: func,
+        accent: context.func,
         base: base
     };
 });
 
 // Infix generalized fractions
-declareFunction(["\\over", "\\choose"], {
+defineFunction(["\\over", "\\choose"], {
     numArgs: 0
-}, function (func) {
+}, function (context) {
     var replaceWith;
-    switch (func) {
+    switch (context.func) {
     case "\\over":
         replaceWith = "\\frac";
         break;
@@ -481,11 +500,12 @@ declareFunction(["\\over", "\\choose"], {
 });
 
 // Row breaks for aligned data
-declareFunction(["\\\\", "\\cr"], {
+defineFunction(["\\\\", "\\cr"], {
     numArgs: 0,
     numOptionalArgs: 1,
     argTypes: ["size"]
-}, function(func, size) {
+}, function(context, args) {
+    var size = args[0];
     return {
         type: "cr",
         size: size
@@ -493,14 +513,15 @@ declareFunction(["\\\\", "\\cr"], {
 });
 
 // Environment delimiters
-declareFunction(["\\begin", "\\end"], {
+defineFunction(["\\begin", "\\end"], {
     numArgs: 1,
     argTypes: ["text"]
-}, function(func, nameGroup, positions) {
+}, function(context, args) {
+    var nameGroup = args[0];
     if (nameGroup.type !== "ordgroup") {
         throw new ParseError(
             "Invalid environment name",
-            this.lexer, positions[1]);
+            context.lexer, context.positions[1]);
     }
     var name = "";
     for (var i = 0; i < nameGroup.value.length; ++i) {
@@ -509,6 +530,6 @@ declareFunction(["\\begin", "\\end"], {
     return {
         type: "environment",
         name: name,
-        namepos: positions[1]
+        namepos: context.positions[1]
     };
 });
