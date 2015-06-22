@@ -31,6 +31,8 @@ manually.  Example run for Firefox:
     docker stop ${container}
     docker rm ${container}
 
+For Chrome, simply replace both occurrences of `firefox` with `chrome`.
+
 ## Use without docker
 
 It is possible to run `screenshotter.js` without the use of Docker:
