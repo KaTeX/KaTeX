@@ -41,7 +41,7 @@ var symbols = {
         "\\perp": {
             font: "main",
             group: "rel",
-            replace: "\u22a5"
+            replace: "\u27C2"
         },
         "\\preceq": {
             font: "main",
