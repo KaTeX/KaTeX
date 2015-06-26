@@ -1,0 +1,9 @@
+{
+  "linters": {
+    "katex-linter": {
+      "type": "script-and-regex",
+      "script-and-regex.script": "make lint || true",
+      "script-and-regex.regex": "/^(?P<file>\\S+): line (?P<line>\\d+), col \\d+, (?P<message>.*)$/m"
+    }
+  }
+}
