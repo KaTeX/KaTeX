@@ -31,6 +31,13 @@ var contains = function(list, elem) {
     return indexOf(list, elem) !== -1;
 };
 
+/**
+ * Provide a default value if a setting is undefined
+ */
+var deflt = function(setting, defaultIfUndefined) {
+    return setting === undefined ? defaultIfUndefined : setting;
+};
+
 // hyphenate and escape adapted from Facebook's React under Apache 2 license
 
 var uppercase = /([A-Z])/g;
@@ -89,6 +96,7 @@ function clearNode(node) {
 
 module.exports = {
     contains: contains,
+    deflt: deflt,
     escape: escape,
     hyphenate: hyphenate,
     indexOf: indexOf,

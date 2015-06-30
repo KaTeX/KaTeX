@@ -4,6 +4,7 @@
     "Baseline": "http://localhost:7936/test/screenshotter/test.html?m=a+b-c\\cdot d/e",
     "BasicTest": "http://localhost:7936/test/screenshotter/test.html?m=a",
     "BinomTest": "http://localhost:7936/test/screenshotter/test.html?m=\\dbinom{a}{b}\\tbinom{a}{b}^{\\binom{a}{b}+17}",
+    "Cases": "http://localhost:7936/test/screenshotter/test.html?m=f(a,b)=\\begin{cases}a+1%26\\text{if }b\\text{ is odd}\\\\a%26\\text{if }b=0\\\\a-1%26\\text{otherwise}\\end{cases}",
     "Colors": "http://localhost:7936/test/screenshotter/test.html?m=\\blue{a}\\color{%230f0}{b}\\color{red}{c}",
     "DeepFontSizing": "http://localhost:7936/test/screenshotter/test.html?m=a^{\\big| x^{\\big(}}_{\\Big\\uparrow} + i^{i^{\\Huge x}_y}_{\\Huge z} + \\dfrac{\\Huge x}{y}",
     "DelimiterSizing": "http://localhost:7936/test/screenshotter/test.html?m=\\bigl\\uparrow\\Bigl\\downarrow\\biggl\\updownarrow\\Biggl\\Uparrow\\Biggr\\Downarrow\\biggr\\langle\\Bigr\\}\\bigr\\rfloor",
