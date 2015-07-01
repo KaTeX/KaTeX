@@ -1988,6 +1988,11 @@ var symbols = {
             group: "rel",
             replace: "\u2245"
         },
+        "\\gt": {
+            font: "main",
+            group: "rel",
+            replace: ">"
+        },
         "\\ge": {
             font: "main",
             group: "rel",
@@ -2053,6 +2058,11 @@ var symbols = {
             group: "rel",
             replace: "\u2190"
         },
+        "\\lt": {
+            font: "main",
+            group: "rel",
+            replace: "<"
+        },
         "\\le": {
             font: "main",
             group: "rel",
@@ -2062,6 +2072,11 @@ var symbols = {
             font: "main",
             group: "rel",
             replace: "\u2264"
+        },
+        "\\eq": {
+            font: "main",
+            group: "rel",
+            replace: "="
         },
         "\\ne": {
             font: "main",
