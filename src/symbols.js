@@ -771,6 +771,11 @@ var symbols = {
             group: "textord",
             replace: "\u24c8"
         },
+        "\\circledR": {
+            font: "ams",
+            group: "textord",
+            replace: "\u00ae"
+        },
         "\\measuredangle": {
             font: "ams",
             group: "textord",
@@ -875,6 +880,11 @@ var symbols = {
             font: "ams",
             group: "textord",
             replace: "\u00a5"
+        },
+        "\\checkmark": {
+            font: "ams",
+            group: "textord",
+            replace: "\u2713"
         },
 
         // AMS Hebrew
