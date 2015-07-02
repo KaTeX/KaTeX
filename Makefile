@@ -3,7 +3,7 @@ build: setup lint build/katex.min.js build/katex.min.css contrib zip compress
 
 dist: build
 	rm -rf dist/
-	cp --recursive build/katex/ dist/
+	cp -R build/katex/ dist/
 
 # Export these variables for use in contrib Makefiles
 export BUILDDIR = $(realpath build)
