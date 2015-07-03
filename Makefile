@@ -50,7 +50,7 @@ build/contrib:
 	$(MAKE) -C contrib/auto-render
 
 .PHONY: build/katex
-build/katex: build/katex.min.js build/katex.min.css build/fonts README.md build/contrib
+build/katex: build/katex.min.js build/katex.min.css build/fonts README.md build/contrib build/katex.js build/katex.less.css
 	mkdir -p build/katex
 	rm -rf build/katex/*
 	cp -r $^ build/katex
