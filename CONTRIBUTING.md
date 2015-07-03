@@ -100,8 +100,17 @@ Code
  - 80 character line length
  - commas last
  - declare variables in the outermost scope that they are used
+ - camelCase for variables in JavaScript
+ - snake_case for variables in Python
 
 In general, try to make your code blend in with the surrounding code.
+
+## Pull Requests
+ 
+ - link back to the original issue(s) whenever possible
+ - new commands should be added to the [wiki](https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX)
+ - commits should be squashed before merging
+ - large pull requests should be broken into separate pull requests (or multiple logically cohesive commits), if possible
 
 ## CLA
 
