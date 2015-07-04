@@ -435,6 +435,7 @@ var fontMap = {
 };
 
 module.exports = {
+    fontMap: fontMap,
     makeSymbol: makeSymbol,
     mathsym: mathsym,
     makeSpan: makeSpan,
