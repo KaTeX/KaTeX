@@ -64,11 +64,21 @@ class TfmFile(object):
         self.ligkern_program = LigKernProgram(ligkern_table)
         self.kern_table = kern_table
 
-    def get_char_metrics(self, char_num):
+    def get_char_metrics(self, char_num, fix_rsfs=False):
+        """Return glyph metrics for a unicode code point.
+
+        Arguments:
+            char_num: a unicode code point
+            fix_rsfs: adjust for rsfs10.tfm's different indexing system
+        """
         if char_num < self.start_char or char_num > self.end_char:
             raise RuntimeError("Invalid character number")
 
-        info = self.char_info[char_num + self.start_char]
+        if fix_rsfs:
+            # all of the char_nums contained start from zero in rsfs10.tfm
+            info = self.char_info[char_num - self.start_char]
+        else:
+            info = self.char_info[char_num + self.start_char]
 
         char_kern_table = {}
         if info.has_ligkern():
