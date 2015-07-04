@@ -65,6 +65,16 @@ LeftRightStyleSizing: |
 LimitControls: |
     \displaystyle\int\limits_2^3 3x^2\,dx + \sum\nolimits^n_{i=1}i +
     \textstyle\int\limits_x^y z
+MathDefaultFonts: Ax2k\breve{a}\omega\Omega\imath+\KaTeX
+MathBb: \mathbb{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathBf: \mathbf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathCal: \mathcal{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathFrak: \mathfrak{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathIt: \mathit{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathRm: \mathrm{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathSf: \mathsf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathScr: \mathscr{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathTt: \mathtt{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
     {\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}

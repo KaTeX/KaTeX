@@ -6,6 +6,26 @@
 var domTree = require("./domTree");
 var fontMetrics = require("./fontMetrics");
 var symbols = require("./symbols");
+var utils = require("./utils");
+
+var greekCapitals = [
+    "\\Gamma",
+    "\\Delta",
+    "\\Theta",
+    "\\Lambda",
+    "\\Xi",
+    "\\Pi",
+    "\\Sigma",
+    "\\Upsilon",
+    "\\Phi",
+    "\\Psi",
+    "\\Omega"
+];
+
+var dotlessLetters = [
+    "\u0131",   // dotless i, \imath
+    "\u0237"    // dotless j, \jmath
+];
 
 /**
  * Makes a symbolNode after translation via the list of symbols in symbols.js.
@@ -41,17 +61,10 @@ var makeSymbol = function(value, style, mode, color, classes) {
 };
 
 /**
- * Makes a symbol in the italic math font.
+ * Makes a symbol in Main-Regular or AMS-Regular.
+ * Used for rel, bin, open, close, inner, and punct.
  */
-var mathit = function(value, mode, color, classes) {
-    return makeSymbol(
-        value, "Math-Italic", mode, color, classes.concat(["mathit"]));
-};
-
-/**
- * Makes a symbol in the upright roman font.
- */
-var mathrm = function(value, mode, color, classes) {
+var mathsym = function(value, mode, color, classes) {
     // Decide what font to render the symbol in by its entry in the symbols
     // table.
     // Have a special case for when the value = \ because the \ is used as a
@@ -63,6 +76,67 @@ var mathrm = function(value, mode, color, classes) {
     } else {
         return makeSymbol(
             value, "AMS-Regular", mode, color, classes.concat(["amsrm"]));
+    }
+};
+
+/**
+ * Makes a symbol in the default font for mathords and textords.
+ */
+var mathDefault = function(value, mode, color, classes, type) {
+    if (type === "mathord") {
+        return mathit(value, mode, color, classes);
+    } else if (type === "textord") {
+        return makeSymbol(
+            value, "Main-Regular", mode, color, classes.concat(["mathrm"]));
+    } else {
+        throw new Error("unexpected type: " + type + " in mathDefault");
+    }
+};
+
+/**
+ * Makes a symbol in the italic math font.
+ */
+var mathit = function(value, mode, color, classes) {
+    if (/[0-9]/.test(value.charAt(0)) ||
+            // glyphs for \imath and \jmath do not exist in Math-Italic so we
+            // need to use Main-Italic instead
+            utils.contains(dotlessLetters, value) ||
+            utils.contains(greekCapitals, value)) {
+        return makeSymbol(
+            value, "Main-Italic", mode, color, classes.concat(["mainit"]));
+    } else {
+        return makeSymbol(
+            value, "Math-Italic", mode, color, classes.concat(["mathit"]));
+    }
+};
+
+/**
+ * Makes either a mathord or textord in the correct font and color.
+ */
+var makeOrd = function(group, options, type) {
+    var mode = group.mode;
+    var value = group.value;
+    if (symbols[mode][value] && symbols[mode][value].replace) {
+        value = symbols[mode][value].replace;
+    }
+
+    var classes = ["mord"];
+    var color = options.getColor();
+
+    var font = options.font;
+    if (font) {
+        if (font === "mathit" || utils.contains(dotlessLetters, value)) {
+            return mathit(value, mode, color, classes);
+        } else {
+            var fontName = fontMap[font].fontName;
+            if (fontMetrics.getCharacterMetrics(value, fontName)) {
+                return makeSymbol(value, fontName, mode, color, classes.concat([font]));
+            } else {
+                return mathDefault(value, mode, color, classes, type);
+            }
+        }
+    } else {
+        return mathDefault(value, mode, color, classes, type);
     }
 };
 
@@ -312,13 +386,61 @@ var spacingFunctions = {
     }
 };
 
+/**
+ * Maps TeX font commands to objects containing:
+ * - variant: string used for "mathvariant" attribute in buildMathML.js
+ * - fontName: the "style" parameter to fontMetrics.getCharacterMetrics
+ */
+// A map between tex font commands an MathML mathvariant attribute values
+var fontMap = {
+    // styles
+    "mathbf": {
+        variant: "bold",
+        fontName: "Main-Bold"
+    },
+    "mathrm": {
+        variant: "normal",
+        fontName: "Main-Regular"
+    },
+
+    // "mathit" is missing because it requires the use of two fonts: Main-Italic
+    // and Math-Italic.  This is handled by a special case in makeOrd which ends
+    // up calling mathit.
+
+    // families
+    "mathbb": {
+        variant: "double-struck",
+        fontName: "AMS-Regular"
+    },
+    "mathcal": {
+        variant: "script",
+        fontName: "Caligraphic-Regular"
+    },
+    "mathfrak": {
+        variant: "fraktur",
+        fontName: "Fraktur-Regular"
+    },
+    "mathscr": {
+        variant: "script",
+        fontName: "Script-Regular"
+    },
+    "mathsf": {
+        variant: "sans-serif",
+        fontName: "SansSerif-Regular"
+    },
+    "mathtt": {
+        variant: "monospace",
+        fontName: "Typewriter-Regular"
+    }
+};
+
 module.exports = {
     makeSymbol: makeSymbol,
-    mathit: mathit,
-    mathrm: mathrm,
+    mathsym: mathsym,
     makeSpan: makeSpan,
     makeFragment: makeFragment,
     makeVList: makeVList,
+    makeOrd: makeOrd,
     sizingMultiplier: sizingMultiplier,
     spacingFunctions: spacingFunctions
 };

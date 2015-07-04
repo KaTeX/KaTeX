@@ -252,6 +252,11 @@ var groupTypes = {
 
         return node;
     },
+    
+    font: function(group) {
+        // pass through so we can render something without throwing
+        return buildGroup(group.value.body);
+    },
 
     spacing: function(group) {
         var node;
