@@ -920,22 +920,22 @@ var symbols = {
         // AMS Delimiters
         "\\ulcorner": {
             font: "ams",
-            group: "textord",
+            group: "open",
             replace: "\u250c"
         },
         "\\urcorner": {
             font: "ams",
-            group: "textord",
+            group: "close",
             replace: "\u2510"
         },
         "\\llcorner": {
             font: "ams",
-            group: "textord",
+            group: "open",
             replace: "\u2514"
         },
         "\\lrcorner": {
             font: "ams",
-            group: "textord",
+            group: "close",
             replace: "\u2518"
         },
 
@@ -2172,12 +2172,12 @@ var symbols = {
         },
         "\\barwedge": {
             font: "ams",
-            group: "textord",
+            group: "bin",
             replace: "\u22bc"
         },
         "\\veebar": {
             font: "ams",
-            group: "textord",
+            group: "bin",
             replace: "\u22bb"
         },
         "\\odot": {
@@ -2207,12 +2207,12 @@ var symbols = {
         },
         "\\circledcirc": {
             font: "ams",
-            group: "textord",
+            group: "bin",
             replace: "\u229a"
         },
         "\\boxdot": {
             font: "ams",
-            group: "textord",
+            group: "bin",
             replace: "\u22a1"
         },
         "\\bigtriangleup": {
@@ -2327,32 +2327,32 @@ var symbols = {
         },
         "\\uparrow": {
             font: "main",
-            group: "textord",
+            group: "rel",
             replace: "\u2191"
         },
         "\\Uparrow": {
             font: "main",
-            group: "textord",
+            group: "rel",
             replace: "\u21d1"
         },
         "\\downarrow": {
             font: "main",
-            group: "textord",
+            group: "rel",
             replace: "\u2193"
         },
         "\\Downarrow": {
             font: "main",
-            group: "textord",
+            group: "rel",
             replace: "\u21d3"
         },
         "\\updownarrow": {
             font: "main",
-            group: "textord",
+            group: "rel",
             replace: "\u2195"
         },
         "\\Updownarrow": {
             font: "main",
-            group: "textord",
+            group: "rel",
             replace: "\u21d5"
         },
         "\\coprod": {
@@ -2447,7 +2447,7 @@ var symbols = {
         },
         "\\ldots": {
             font: "main",
-            group: "punct",
+            group: "inner",
             replace: "\u2026"
         },
         "\\cdots": {
