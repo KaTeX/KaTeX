@@ -32,7 +32,8 @@ var buildExpression = function(expression, options, prev) {
     return groups;
 };
 
-// List of types used by getTypeOfGroup
+// List of types used by getTypeOfGroup,
+// see https://github.com/Khan/KaTeX/wiki/Examining-TeX#group-types
 var groupToType = {
     mathord: "mord",
     textord: "mord",

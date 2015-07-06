@@ -7,6 +7,7 @@
      normal font), or "ams" (the ams fonts).
  * - group (required): the ParseNode group type the symbol should have (i.e.
      "textord", "mathord", etc).
+     See https://github.com/Khan/KaTeX/wiki/Examining-TeX#group-types
  * - replace (optional): the character that this symbol or function should be
  *   replaced with (i.e. "\phi" has a replace value of "\u03d5", the phi
  *   character in the main font).
