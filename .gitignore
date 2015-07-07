@@ -3,3 +3,5 @@ node_modules
 npm-debug.log
 last.png
 diff.png
+/test/screenshotter/tex/
+/test/screenshotter/diff/
