@@ -55,6 +55,7 @@ var ParseError = require("./ParseError");
  *                     should parse. If the optional arguments aren't found,
  *                     `null` will be passed to the handler in their place.
  *                     (default 0)
+ *  - infix: (optional) Must be true if the function is an infix operator.
  *
  * The last argument is that implementation, the handler for the function(s).
  * It is called to handle these functions and their arguments.
@@ -91,6 +92,7 @@ function defineFunction(names, props, handler) {
         greediness: (props.greediness === undefined) ? 1 : props.greediness,
         allowedInText: !!props.allowedInText,
         numOptionalArgs: props.numOptionalArgs || 0,
+        infix: !!props.infix,
         handler: handler,
     };
     for (var i = 0; i < names.length; ++i) {
@@ -535,6 +537,7 @@ defineFunction([
 // Infix generalized fractions
 defineFunction(["\\over", "\\choose"], {
     numArgs: 0,
+    infix: true,
 }, function(context) {
     var replaceWith;
     switch (context.funcName) {

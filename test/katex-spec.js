@@ -58,21 +58,38 @@ var getParsed = function(expr, settings) {
 };
 
 var stripPositions = function(expr) {
+    if (typeof expr !== "object" || expr === null) {
+        return expr;
+    }
     if (expr.lexer && typeof expr.start === "number") {
         delete expr.lexer;
         delete expr.start;
         delete expr.end;
     }
     Object.keys(expr).forEach(function(key) {
-        if (typeof expr[key] === "object") {
-            stripPositions(expr[key]);
-        }
+        stripPositions(expr[key]);
     });
     return expr;
 };
 
+var parseAndSetResult = function(expr, result, settings) {
+    try {
+        return parseTree(expr, settings || defaultSettings);
+    } catch (e) {
+        result.pass = false;
+        if (e instanceof ParseError) {
+            result.message = "'" + expr + "' failed " +
+                "parsing with error: " + e.message;
+        } else {
+            result.message = "'" + expr + "' failed " +
+                "parsing with unknown error: " + e.message;
+        }
+    }
+};
+
 beforeEach(function() {
     jasmine.addMatchers({
+
         toParse: function() {
             return {
                 compare: function(actual, settings) {
@@ -82,20 +99,7 @@ beforeEach(function() {
                         pass: true,
                         message: "'" + actual + "' succeeded parsing",
                     };
-
-                    try {
-                        parseTree(actual, usedSettings);
-                    } catch (e) {
-                        result.pass = false;
-                        if (e instanceof ParseError) {
-                            result.message = "'" + actual + "' failed " +
-                                "parsing with error: " + e.message;
-                        } else {
-                            result.message = "'" + actual + "' failed " +
-                                "parsing with unknown error: " + e.message;
-                        }
-                    }
-
+                    parseAndSetResult(actual, result, usedSettings);
                     return result;
                 },
             };
@@ -159,6 +163,36 @@ beforeEach(function() {
                 },
             };
         },
+
+        toParseLike: function(util, baton) {
+            return {
+                compare: function(actual, expected) {
+                    var result = {
+                        pass: true,
+                        message: "Parse trees of '" + actual +
+                            "' and '" + expected + "' are equivalent",
+                    };
+
+                    var actualTree = parseAndSetResult(actual, result);
+                    if (!actualTree) {
+                        return result;
+                    }
+                    var expectedTree = parseAndSetResult(expected, result);
+                    if (!expectedTree) {
+                        return result;
+                    }
+                    stripPositions(actualTree);
+                    stripPositions(expectedTree);
+                    if (!util.equals(actualTree, expectedTree, baton)) {
+                        result.pass = false;
+                        result.message = "Parse trees of '" + actual +
+                            "' and '" + expected + "' are not equivalent";
+                    }
+                    return result;
+                },
+            };
+        },
+
     });
 });
 
@@ -635,6 +669,13 @@ describe("An over parser", function() {
         expect(parse.type).toEqual("genfrac");
         expect(parse.value.numer.value[0].type).toEqual("styling");
         expect(parse.value.denom).toBeDefined();
+    });
+
+    it("should handle \\textstyle correctly", function() {
+        expect("\\textstyle 1 \\over 2")
+            .toParseLike("\\frac{\\textstyle 1}{2}");
+        expect("{\\textstyle 1} \\over 2")
+            .toParseLike("\\frac{\\textstyle 1}{2}");
     });
 
     it("should handle nested factions", function() {
@@ -1814,5 +1855,26 @@ describe("The symbol table integraty", function() {
         expect(getBuilt(">")).toEqual(getBuilt("\\gt"));
         expect(getBuilt("\\left<\\frac{1}{x}\\right>"))
             .toEqual(getBuilt("\\left\\lt\\frac{1}{x}\\right\\gt"));
+    });
+});
+
+describe("A macro expander", function() {
+
+    var compareParseTree = function(actual, expected, macros) {
+        var settings = new Settings({macros: macros});
+        actual = stripPositions(parseTree(actual, settings));
+        expected = stripPositions(parseTree(expected, defaultSettings));
+        expect(actual).toEqual(expected);
+    };
+
+    it("should produce individual tokens", function() {
+        compareParseTree("e^\\foo", "e^1 23", {"\\foo": "123"});
+    });
+
+    it("should allow for multiple expansion", function() {
+        compareParseTree("1\\foo2", "1aa2", {
+            "\\foo": "\\bar\\bar",
+            "\\bar": "a",
+        });
     });
 });
