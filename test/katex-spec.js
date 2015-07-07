@@ -665,6 +665,7 @@ describe("A text parser", function() {
     var leadingSpaceTextExpression = "\\text {moo}";
     var badTextExpression = "\\text{a b%}";
     var badFunctionExpression = "\\text{\\sqrt{x}}";
+    var mathTokenAfterText = "\\text{sin}^2";
 
     it("should not fail", function() {
         expect(textExpression).toParse();
@@ -708,6 +709,10 @@ describe("A text parser", function() {
         expect(group[1].type).toMatch("textord");
         expect(group[2].type).toMatch("spacing");
         expect(group[3].type).toMatch("spacing");
+    });
+
+    it("should accept math mode tokens after its argument", function() {
+        expect(mathTokenAfterText).toParse();
     });
 
     it("should ignore a space before the text group", function() {
