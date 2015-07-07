@@ -1,7 +1,7 @@
 /* eslint no-constant-condition:0 */
 var functions = require("./functions");
 var environments = require("./environments");
-var Lexer = require("./Lexer");
+var MacroExpander = require("./MacroExpander");
 var symbols = require("./symbols");
 var utils = require("./utils");
 
@@ -47,7 +47,7 @@ var ParseError = require("./ParseError");
  */
 function Parser(input, settings) {
     // Make a new lexer
-    this.lexer = new Lexer(input);
+    this.gullet = new MacroExpander(input, settings && settings.macros);
     // Store the settings for use in parsing
     this.settings = settings;
 }
@@ -58,10 +58,11 @@ var ParseNode = parseData.ParseNode;
  * An initial function (without its arguments), or an argument to a function.
  * The `result` argument should be a ParseNode.
  */
-function ParseFuncOrArgument(result, isFunction) {
+function ParseFuncOrArgument(result, isFunction, token) {
     this.result = result;
     // Is this a function (i.e. is it something defined in functions.js)?
     this.isFunction = isFunction;
+    this.token = token;
 }
 
 /**
@@ -75,7 +76,7 @@ Parser.prototype.expect = function(text, consume) {
     if (this.nextToken.text !== text) {
         throw new ParseError(
             "Expected '" + text + "', got '" + this.nextToken.text + "'",
-            this.lexer, this.nextToken.position
+            this.nextToken
         );
     }
     if (consume !== false) {
@@ -88,8 +89,13 @@ Parser.prototype.expect = function(text, consume) {
  * and fetches the one after that as the new look ahead.
  */
 Parser.prototype.consume = function() {
-    this.pos = this.nextToken.position;
-    this.nextToken = this.lexer.lex(this.pos, this.mode);
+    this.nextToken = this.gullet.get(this.mode === "math");
+};
+
+Parser.prototype.switchMode = function(newMode) {
+    this.gullet.unget(this.nextToken);
+    this.mode = newMode;
+    this.consume();
 };
 
 /**
@@ -100,8 +106,7 @@ Parser.prototype.consume = function() {
 Parser.prototype.parse = function() {
     // Try to parse the input
     this.mode = "math";
-    this.pos = 0;
-    this.nextToken = this.lexer.lex(this.pos, this.mode);
+    this.consume();
     var parse = this.parseInput();
     return parse;
 };
@@ -184,8 +189,9 @@ Parser.prototype.handleInfixNodes = function(body) {
         var node = body[i];
         if (node.type === "infix") {
             if (overIndex !== -1) {
-                throw new ParseError("only one infix operator per group",
-                    this.lexer, -1);
+                throw new ParseError(
+                    "only one infix operator per group",
+                    node.value.token);
             }
             overIndex = i;
             funcName = node.value.replaceWith;
@@ -226,8 +232,8 @@ var SUPSUB_GREEDINESS = 1;
  * Handle a subscript or superscript with nice errors.
  */
 Parser.prototype.handleSupSubscript = function(name) {
-    var symbol = this.nextToken.text;
-    var symPos = this.pos;
+    var symbolToken = this.nextToken;
+    var symbol = symbolToken.text;
     this.consume();
     var group = this.parseGroup();
 
@@ -237,8 +243,7 @@ Parser.prototype.handleSupSubscript = function(name) {
         } else {
             throw new ParseError(
                 "Expected group after '" + symbol + "'",
-                this.lexer,
-                symPos + 1
+                symbolToken
             );
         }
     } else if (group.isFunction) {
@@ -250,8 +255,7 @@ Parser.prototype.handleSupSubscript = function(name) {
         } else {
             throw new ParseError(
                 "Got function '" + group.result + "' with no arguments " +
-                    "as " + name,
-                this.lexer, symPos + 1);
+                    "as " + name, symbolToken);
         }
     } else {
         return group.result;
@@ -319,7 +323,7 @@ Parser.prototype.parseAtom = function() {
             if (!base || base.type !== "op") {
                 throw new ParseError(
                     "Limit controls must follow a math operator",
-                    this.lexer, this.pos);
+                    lex);
             } else {
                 var limits = lex.text === "\\limits";
                 base.value.limits = limits;
@@ -329,15 +333,13 @@ Parser.prototype.parseAtom = function() {
         } else if (lex.text === "^") {
             // We got a superscript start
             if (superscript) {
-                throw new ParseError(
-                    "Double superscript", this.lexer, this.pos);
+                throw new ParseError("Double superscript", lex);
             }
             superscript = this.handleSupSubscript("superscript");
         } else if (lex.text === "_") {
             // We got a subscript start
             if (subscript) {
-                throw new ParseError(
-                    "Double subscript", this.lexer, this.pos);
+                throw new ParseError("Double subscript", lex);
             }
             subscript = this.handleSupSubscript("subscript");
         } else if (lex.text === "'") {
@@ -427,8 +429,7 @@ Parser.prototype.parseImplicitGroup = function() {
         var envName = begin.value.name;
         if (!environments.hasOwnProperty(envName)) {
             throw new ParseError(
-                "No such environment: " + envName,
-                this.lexer, begin.value.namepos);
+                "No such environment: " + envName, begin.value.nameGroup);
         }
         // Build the environment object. Arguments and other information will
         // be made available to the begin and end methods using properties.
@@ -438,19 +439,17 @@ Parser.prototype.parseImplicitGroup = function() {
             mode: this.mode,
             envName: envName,
             parser: this,
-            lexer: this.lexer,
             positions: args.pop(),
         };
         var result = env.handler(context, args);
         this.expect("\\end", false);
+        var endNameToken = this.nextToken;
         var end = this.parseFunction();
         if (end.value.name !== envName) {
             throw new ParseError(
                 "Mismatch: \\begin{" + envName + "} matched " +
                 "by \\end{" + end.value.name + "}",
-                this.lexer /* , end.value.namepos */);
-            // TODO: Add position to the above line and adjust test case,
-            // requires #385 to get merged first
+                endNameToken);
         }
         result.position = end.position;
         return result;
@@ -497,11 +496,12 @@ Parser.prototype.parseFunction = function(baseGroup) {
             if (this.mode === "text" && !funcData.allowedInText) {
                 throw new ParseError(
                     "Can't use function '" + func + "' in text mode",
-                    this.lexer, baseGroup.position);
+                    baseGroup.token);
             }
 
             var args = this.parseArguments(func, funcData);
-            var result = this.callFunction(func, args, args.pop());
+            var token = baseGroup.token;
+            var result = this.callFunction(func, args, args.pop(), token);
             return new ParseNode(result.type, result, this.mode);
         } else {
             return baseGroup.result;
@@ -514,12 +514,12 @@ Parser.prototype.parseFunction = function(baseGroup) {
 /**
  * Call a function handler with a suitable context and arguments.
  */
-Parser.prototype.callFunction = function(name, args, positions) {
+Parser.prototype.callFunction = function(name, args, positions, token) {
     var context = {
         funcName: name,
         parser: this,
-        lexer: this.lexer,
         positions: positions,
+        token: token,
     };
     return functions[name].handler(context, args);
 };
@@ -542,11 +542,12 @@ Parser.prototype.parseArguments = function(func, funcData) {
     var args = [];
 
     for (var i = 0; i < totalArgs; i++) {
+        var nextToken = this.nextToken;
         var argType = funcData.argTypes && funcData.argTypes[i];
         var arg;
         if (i < funcData.numOptionalArgs) {
             if (argType) {
-                arg = this.parseSpecialGroup(argType, true);
+                arg = this.parseGroupOfType(argType, true);
             } else {
                 arg = this.parseOptionalGroup();
             }
@@ -557,7 +558,7 @@ Parser.prototype.parseArguments = function(func, funcData) {
             }
         } else {
             if (argType) {
-                arg = this.parseSpecialGroup(argType);
+                arg = this.parseGroupOfType(argType);
             } else {
                 arg = this.parseGroup();
             }
@@ -569,8 +570,7 @@ Parser.prototype.parseArguments = function(func, funcData) {
                         false);
                 } else {
                     throw new ParseError(
-                        "Expected group after '" + func + "'",
-                        this.lexer, this.pos);
+                        "Expected group after '" + func + "'", nextToken);
                 }
             }
         }
@@ -583,8 +583,7 @@ Parser.prototype.parseArguments = function(func, funcData) {
             } else {
                 throw new ParseError(
                     "Got function '" + arg.result + "' as " +
-                    "argument to '" + func + "'",
-                    this.lexer, this.pos - 1);
+                    "argument to '" + func + "'", nextToken);
             }
         } else {
             argNode = arg.result;
@@ -600,62 +599,127 @@ Parser.prototype.parseArguments = function(func, funcData) {
 
 
 /**
- * Parses a group when the mode is changing. Takes a position, a new mode, and
- * an outer mode that is used to parse the outside.
+ * Parses a group when the mode is changing.
  *
  * @return {?ParseFuncOrArgument}
  */
-Parser.prototype.parseSpecialGroup = function(innerMode, optional) {
+Parser.prototype.parseGroupOfType = function(innerMode, optional) {
     var outerMode = this.mode;
     // Handle `original` argTypes
     if (innerMode === "original") {
         innerMode = outerMode;
     }
 
-    if (innerMode === "color" || innerMode === "size") {
-        // color and size modes are special because they should have braces and
-        // should only lex a single symbol inside
-        var openBrace = this.nextToken;
-        if (optional && openBrace.text !== "[") {
-            // optional arguments should return null if they don't exist
-            return null;
-        }
-        // The call to expect will lex the token after the '{' in inner mode
-        this.mode = innerMode;
-        this.expect(optional ? "[" : "{");
-        var inner = this.nextToken;
-        this.mode = outerMode;
-        var data;
-        if (innerMode === "color") {
-            data = inner.text;
-        } else {
-            data = inner.data;
-        }
-        this.consume(); // consume the token stored in inner
-        this.expect(optional ? "]" : "}");
-        return new ParseFuncOrArgument(
-            new ParseNode(innerMode, data, outerMode),
-            false);
-    } else if (innerMode === "text") {
-        // text mode is special because it should ignore the whitespace before
-        // it
-        var whitespace = this.lexer.lex(this.pos, "whitespace");
-        this.pos = whitespace.position;
+    if (innerMode === "color") {
+        return this.parseColorGroup(optional);
+    }
+    if (innerMode === "size") {
+        return this.parseSizeGroup(optional);
     }
 
+    this.switchMode(innerMode);
+    if (innerMode === "text") {
+        // text mode is special because it should ignore the whitespace before
+        // it
+        while (this.nextToken.text === " ") {
+            this.consume();
+        }
+    }
     // By the time we get here, innerMode is one of "text" or "math".
     // We switch the mode of the parser, recurse, then restore the old mode.
-    this.mode = innerMode;
-    this.nextToken = this.lexer.lex(this.pos, innerMode);
     var res;
     if (optional) {
         res = this.parseOptionalGroup();
     } else {
         res = this.parseGroup();
     }
-    this.mode = outerMode;
-    this.nextToken = this.lexer.lex(this.pos, outerMode);
+    this.switchMode(outerMode);
     return res;
+};
+
+/**
+ * Parses a group where the string formed by the brace-enclosed tokens
+ * must conform to some regular expression.
+ *
+ * @param modeName {string} Used to describe the mode in error messages
+ * @param optional {boolean} Whether the group is optional or required
+ * @param reOnline {!RegExp} This regular expression must match
+ *     the final result as well as any non-empty prefix of a final result
+ * @param reFinal {!RegExp} This regular expression must match
+ *     the final result, and that match will be returned
+ */
+Parser.prototype.parseSpecialGroup = function(modeName, optional,
+                                              reOnline, reFinal) {
+    if (optional && this.nextToken.text !== "[") {
+        return null;
+    }
+    var outerMode = this.mode;
+    this.mode = "text";
+    this.expect(optional ? "[" : "{");
+    var str = "";
+    var firstToken = this.nextToken;
+    var lastToken = firstToken;
+    while (this.nextToken.text !== (optional ? "]" : "}")) {
+        lastToken = this.nextToken;
+        str += lastToken.text;
+        if (!reOnline.test(str)) {
+            throw new ParseError(
+                "Invalid " + modeName + ": '" + str + "…'",
+                firstToken.range(lastToken, str));
+        }
+        this.consume();
+    }
+    var match = reFinal.exec(str);
+    if (!match) {
+        throw new ParseError(
+            "Invalid " + modeName + ": '" + str + "'",
+            firstToken.range(lastToken, str));
+    }
+    this.mode = outerMode;
+    this.expect(optional ? "]" : "}");
+    return {
+        match: match,
+        range: firstToken.range(lastToken, str),
+    };
+};
+
+/**
+ * Parses a color description.
+ */
+Parser.prototype.parseColorGroup = function(optional) {
+    var res = this.parseSpecialGroup(
+        "color", optional,
+        /^(#[a-z0-9]*|[a-z]+)$/i,
+        /^(#[a-z0-9]+|[a-z]+)$/i);
+    if (!res) {
+        return null;
+    }
+    return new ParseFuncOrArgument(
+        new ParseNode("color", res.match[0], this.mode),
+        false);
+};
+
+/**
+ * Parses a size specification, consisting of magnitude and unit.
+ */
+Parser.prototype.parseSizeGroup = function(optional) {
+    var res = this.parseSpecialGroup(
+        "size", optional,
+        /^ *(-?) *(?:(?:\d+(?:\.\d*)?|\.\d+) *[a-z]{0,2} *)?$/,
+        /(-?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/);
+    if (!res) {
+        return null;
+    }
+    var data = {
+        number: +(res.match[1] + res.match[2]),
+        unit: res.match[3],
+    };
+    if (data.unit !== "em" && data.unit !== "ex") {
+        throw new ParseError("Invalid unit: '" + data.unit + "'", res.range);
+    }
+    return new ParseFuncOrArgument(
+        new ParseNode("color", data, this.mode),
+        false);
 };
 
 /**
@@ -665,15 +729,18 @@ Parser.prototype.parseSpecialGroup = function(innerMode, optional) {
  * @return {?ParseFuncOrArgument}
  */
 Parser.prototype.parseGroup = function() {
+    var firstToken = this.nextToken;
     // Try to parse an open brace
     if (this.nextToken.text === "{") {
         // If we get a brace, parse an expression
         this.consume();
         var expression = this.parseExpression(false);
+        var lastToken = this.nextToken;
         // Make sure we get a close brace
         this.expect("}");
         return new ParseFuncOrArgument(
-            new ParseNode("ordgroup", expression, this.mode),
+            new ParseNode("ordgroup", expression, this.mode,
+                          firstToken, lastToken),
             false);
     } else {
         // Otherwise, just return a nucleus
@@ -687,15 +754,18 @@ Parser.prototype.parseGroup = function() {
  * @return {?ParseFuncOrArgument}
  */
 Parser.prototype.parseOptionalGroup = function() {
+    var firstToken = this.nextToken;
     // Try to parse an open bracket
     if (this.nextToken.text === "[") {
         // If we get a brace, parse an expression
         this.consume();
         var expression = this.parseExpression(false, "]");
+        var lastToken = this.nextToken;
         // Make sure we get a close bracket
         this.expect("]");
         return new ParseFuncOrArgument(
-            new ParseNode("ordgroup", expression, this.mode),
+            new ParseNode("ordgroup", expression, this.mode,
+                          firstToken, lastToken),
             false);
     } else {
         // Otherwise, return null,
@@ -718,15 +788,15 @@ Parser.prototype.parseSymbol = function() {
         // say that it is a function.
         return new ParseFuncOrArgument(
             nucleus.text,
-            true);
+            true, nucleus);
     } else if (symbols[this.mode][nucleus.text]) {
         this.consume();
         // Otherwise if this is a no-argument function, find the type it
         // corresponds to in the symbols map
         return new ParseFuncOrArgument(
             new ParseNode(symbols[this.mode][nucleus.text].group,
-                          nucleus.text, this.mode),
-            false);
+                          nucleus.text, this.mode, nucleus),
+            false, nucleus);
     } else {
         return null;
     }

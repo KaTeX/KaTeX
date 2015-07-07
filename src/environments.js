@@ -28,10 +28,8 @@ function parseArray(parser, result) {
             row = [];
             body.push(row);
         } else {
-            // TODO: Clean up the following hack once #385 got merged
-            var pos = Math.min(parser.pos + 1, parser.lexer._input.length);
             throw new ParseError("Expected & or \\\\ or \\end",
-                                 parser.lexer, pos);
+                                 parser.nextToken);
         }
     }
     result.body = body;
@@ -106,7 +104,7 @@ defineEnvironment("array", {
         }
         throw new ParseError(
             "Unknown column alignment: " + node.value,
-            context.lexer, context.positions[1]);
+            node);
     });
     var res = {
         type: "array",

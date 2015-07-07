@@ -23,6 +23,7 @@ function Settings(options) {
     this.displayMode = get(options.displayMode, false);
     this.throwOnError = get(options.throwOnError, true);
     this.errorColor = get(options.errorColor, "#cc0000");
+    this.macros = options.macros;
 }
 
 module.exports = Settings;

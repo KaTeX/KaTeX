@@ -57,6 +57,20 @@ var getParsed = function(expr, settings) {
     return parseTree(expr, usedSettings);
 };
 
+var stripPositions = function(expr) {
+    if (expr.lexer && typeof expr.start === "number") {
+        delete expr.lexer;
+        delete expr.start;
+        delete expr.end;
+    }
+    Object.keys(expr).forEach(function(key) {
+        if (typeof expr[key] === "object") {
+            stripPositions(expr[key]);
+        }
+    });
+    return expr;
+};
+
 beforeEach(function() {
     jasmine.addMatchers({
         toParse: function() {
@@ -154,8 +168,8 @@ describe("A parser", function() {
     });
 
     it("should ignore whitespace", function() {
-        var parseA = getParsed("    x    y    ");
-        var parseB = getParsed("xy");
+        var parseA = stripPositions(getParsed("    x    y    "));
+        var parseB = stripPositions(getParsed("xy"));
         expect(parseA).toEqual(parseB);
     });
 });
@@ -340,8 +354,8 @@ describe("A subscript and superscript parser", function() {
     });
 
     it("should produce the same thing regardless of order", function() {
-        var parseA = getParsed("x^2_3");
-        var parseB = getParsed("x_3^2");
+        var parseA = stripPositions(getParsed("x^2_3"));
+        var parseB = stripPositions(getParsed("x_3^2"));
 
         expect(parseA).toEqual(parseB);
     });
@@ -1523,7 +1537,7 @@ describe("A markup generator", function() {
 
 describe("A parse tree generator", function() {
     it("generates a tree", function() {
-        var tree = katex.__parse("\\sigma^2");
+        var tree = stripPositions(katex.__parse("\\sigma^2"));
         expect(JSON.stringify(tree)).toEqual(JSON.stringify([
             {
                 "type": "supsub",

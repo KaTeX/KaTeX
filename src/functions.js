@@ -456,8 +456,7 @@ defineFunction([
     if (!utils.contains(delimiters, delim.value)) {
         throw new ParseError(
             "Invalid delimiter: '" + delim.value + "' after '" +
-                context.funcName + "'",
-            context.lexer, context.positions[1]);
+            context.funcName + "'", delim);
     }
 
     // \left and \right are caught somewhere in Parser.js, which is
@@ -551,6 +550,7 @@ defineFunction(["\\over", "\\choose"], {
     return {
         type: "infix",
         replaceWith: replaceWith,
+        token: context.token,
     };
 });
 
@@ -574,9 +574,7 @@ defineFunction(["\\begin", "\\end"], {
 }, function(context, args) {
     var nameGroup = args[0];
     if (nameGroup.type !== "ordgroup") {
-        throw new ParseError(
-            "Invalid environment name",
-            context.lexer, context.positions[1]);
+        throw new ParseError("Invalid environment name", nameGroup);
     }
     var name = "";
     for (var i = 0; i < nameGroup.value.length; ++i) {
@@ -585,6 +583,6 @@ defineFunction(["\\begin", "\\end"], {
     return {
         type: "environment",
         name: name,
-        namepos: context.positions[1],
+        nameGroup: nameGroup,
     };
 });
