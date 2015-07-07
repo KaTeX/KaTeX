@@ -10,13 +10,9 @@ function init() {
     }
 
     if ("addEventListener" in permalink) {
-        permalink.addEventListener("click", function() {
-            window.location.search = "?text=" + encodeURIComponent(input.value);
-        });
+        permalink.addEventListener("click", setSearch);
     } else {
-        permalink.attachEvent("click", function() {
-            window.location.search = "?text=" + encodeURIComponent(input.value);
-        });
+        permalink.attachEvent("click", setSearch);
     }
 
     var match = (/(?:^\?|&)text=([^&]*)/).exec(window.location.search);
@@ -24,11 +20,26 @@ function init() {
         input.value = decodeURIComponent(match[1]);
     }
 
+    var macros = {};
+    var options = {};
+    var reMacro = /(?:^\?|&)(?:\\|%5[Cc])([A-Za-z]+)=([^&]*)/g;
+    var macroString = "";
+    while ((match = reMacro.exec(window.location.search)) !== null) {
+        options.macros = macros;
+        macros["\\" + match[1]] = decodeURIComponent(match[2]);
+        macroString += "&" + match[0].substr(1);
+    }
+
     reprocess();
+
+    function setSearch() {
+        window.location.search =
+            "?text=" + encodeURIComponent(input.value) + macroString;
+    }
 
     function reprocess() {
         try {
-            katex.render(input.value, math);
+            katex.render(input.value, math, options);
         } catch (e) {
             if (e.__proto__ == katex.ParseError.prototype) {
                 console.error(e);
