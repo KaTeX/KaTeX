@@ -11,7 +11,7 @@
     "DisplayMode": "http://localhost:7936/test/screenshotter/test.html?m=\\sum_{i=0}^\\infty \\frac{1}{i}&pre=pre&post=post&display=1",
     "DisplayStyle": "http://localhost:7936/test/screenshotter/test.html?m={\\displaystyle\\sqrt{x}}{\\sqrt{x}}{\\displaystyle \\frac12}{\\frac12}{\\displaystyle x^1_2}{x^1_2}",
     "Exponents": "http://localhost:7936/test/screenshotter/test.html?m=a^{a^a_a}_{a^a_a}",
-    "FractionTest": "http://localhost:7936/test/screenshotter/test.html?m=\\dfrac{a}{b}\\frac{a}{b}\\tfrac{a}{b}",
+    "FractionTest": "http://localhost:7936/test/screenshotter/test.html?m=\\dfrac{a}{b}\\frac{a}{b}\\tfrac{a}{b}\\;-\\dfrac12\\;1\\tfrac12",
     "Functions": "http://localhost:7936/test/screenshotter/test.html?m=\\sin\\cos\\tan\\ln\\log",
     "GreekLetters": "http://localhost:7936/test/screenshotter/test.html?m=\\alpha\\beta\\gamma\\omega",
     "KaTeX": "http://localhost:7936/test/screenshotter/test.html?m=\\KaTeX",

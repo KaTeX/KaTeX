@@ -42,7 +42,7 @@ var groupToType = {
     open: "mopen",
     close: "mclose",
     inner: "minner",
-    genfrac: "minner",
+    genfrac: "mord",
     array: "minner",
     spacing: "mord",
     punct: "mpunct",
@@ -153,6 +153,14 @@ var isCharacterBox = function(group) {
         baseElem.type === "open" ||
         baseElem.type === "close" ||
         baseElem.type === "punct";
+};
+
+var makeNullDelimiter = function(options) {
+    return makeSpan([
+        "sizing", "reset-" + options.size, "size5",
+        options.style.reset(), Style.TEXT.cls(),
+        "nulldelimiter"
+    ]);
 };
 
 /**
@@ -469,8 +477,6 @@ var groupTypes = {
         frac.depth *= fstyle.sizeMultiplier / options.style.sizeMultiplier;
 
         // Rule 15e
-        var innerChildren = [makeSpan(["mfrac"], [frac])];
-
         var delimSize;
         if (fstyle.size === Style.DISPLAY.size) {
             delimSize = fontMetrics.metrics.delim1;
@@ -478,24 +484,25 @@ var groupTypes = {
             delimSize = fontMetrics.metrics.getDelim2(fstyle);
         }
 
-        if (group.value.leftDelim != null) {
-            innerChildren.unshift(
-                delimiter.customSizedDelim(
-                    group.value.leftDelim, delimSize, true,
-                    options.withStyle(fstyle), group.mode)
-            );
+        var leftDelim, rightDelim;
+        if (group.value.leftDelim == null) {
+            leftDelim = makeNullDelimiter(options);
+        } else {
+            leftDelim = delimiter.customSizedDelim(
+                group.value.leftDelim, delimSize, true,
+                options.withStyle(fstyle), group.mode);
         }
-        if (group.value.rightDelim != null) {
-            innerChildren.push(
-                delimiter.customSizedDelim(
-                    group.value.rightDelim, delimSize, true,
-                    options.withStyle(fstyle), group.mode)
-            );
+        if (group.value.rightDelim == null) {
+            rightDelim = makeNullDelimiter(options);
+        } else {
+            rightDelim = delimiter.customSizedDelim(
+                group.value.rightDelim, delimSize, true,
+                options.withStyle(fstyle), group.mode);
         }
 
         return makeSpan(
-            ["minner", options.style.reset(), fstyle.cls()],
-            innerChildren,
+            ["mord", options.style.reset(), fstyle.cls()],
+            [leftDelim, makeSpan(["mfrac"], [frac]), rightDelim],
             options.getColor());
     },
 
@@ -1035,7 +1042,7 @@ var groupTypes = {
         var leftDelim;
         if (group.value.left === ".") {
             // Empty delimiters in \left and \right make null delimiter spaces.
-            leftDelim = makeSpan(["nulldelimiter"]);
+            leftDelim = makeNullDelimiter(options);
         } else {
             // Otherwise, use leftRightDelim to generate the correct sized
             // delimiter.
@@ -1049,7 +1056,7 @@ var groupTypes = {
         var rightDelim;
         // Same for the right delimiter
         if (group.value.right === ".") {
-            rightDelim = makeSpan(["nulldelimiter"]);
+            rightDelim = makeNullDelimiter(options);
         } else {
             rightDelim = delimiter.leftRightDelim(
                 group.value.right, innerHeight, innerDepth, options,
