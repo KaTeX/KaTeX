@@ -233,6 +233,35 @@ CanvasRenderer.prototype.prepare = function(node) {
         case "mathit":
             this.state = this.state.withFace("italic ", "KaTeX_Math");
             break;
+        case "mathbf":
+            this.state = this.state.withFace("bold ", "KaTeX_Main");
+            break;
+        case "amsrm":
+            this.state = this.state.withFace("", "KaTeX_AMS");
+            break;
+        case "mathbb":
+            this.state = this.state.withFace("", "KaTeX_AMS");
+            break;
+        case "mathcal":
+            this.state = this.state.withFace("", "KaTeX_Caligraphic");
+            break;
+        case "mathfrak":
+            this.state = this.state.withFace("", "KaTeX_Fraktur");
+            break;
+        case "mathtt":
+            this.state = this.state.withFace("", "KaTeX_Typewriter");
+            break;
+        case "mathscr":
+            this.state = this.state.withFace("", "KaTeX_Script");
+            break;
+        case "mathsf":
+            this.state = this.state.withFace("", "KaTeX_SansSerif");
+            break;
+        case "mainit":
+            this.state = this.state.withFace("italic ", "KaTeX_Main");
+            break;
+        case "mathrm":
+            break;
 
         case "mord":
         case "mop":
