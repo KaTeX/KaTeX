@@ -223,6 +223,7 @@ defineSymbol(math, ams, textord, "\u210f", "\\hslash");
 defineSymbol(math, ams, textord, "\u25bd", "\\triangledown");
 defineSymbol(math, ams, textord, "\u25ca", "\\lozenge");
 defineSymbol(math, ams, textord, "\u24c8", "\\circledS");
+defineSymbol(math, ams, textord, "\u00ae", "\\circledR");
 defineSymbol(math, ams, textord, "\u2221", "\\measuredangle");
 defineSymbol(math, ams, textord, "\u2204", "\\nexists");
 defineSymbol(math, ams, textord, "\u2127", "\\mho");
@@ -244,6 +245,7 @@ defineSymbol(math, ams, textord, "\u25a1", "\\square");
 defineSymbol(math, ams, textord, "\u25a1", "\\Box");
 defineSymbol(math, ams, textord, "\u25ca", "\\Diamond");
 defineSymbol(math, ams, textord, "\u00a5", "\\yen");
+defineSymbol(math, ams, textord, "\u2713", "\\checkmark");
 
 // AMS Hebrew
 defineSymbol(math, ams, textord, "\u2136", "\\beth");

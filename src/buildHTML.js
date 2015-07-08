@@ -512,7 +512,9 @@ groupTypes.array = function(group, options, prev) {
 
     // Vertical spacing
     var baselineskip = 12 * pt; // see size10.clo
-    var arraystretch = 1; // factor, see lttab.dtx
+    // Default \arraystretch from lttab.dtx
+    // TODO(gagern): may get redefined once we have user-defined macros
+    var arraystretch = utils.deflt(group.value.arraystretch, 1);
     var arrayskip = arraystretch * baselineskip;
     var arstrutHeight = 0.7 * arrayskip; // \strutbox in ltfsstrc.dtx and
     var arstrutDepth = 0.3 * arrayskip;  // \@arstrutbox in lttab.dtx
@@ -566,14 +568,19 @@ groupTypes.array = function(group, options, prev) {
         body[r] = outrow;
     }
     var offset = totalHeight / 2 + fontMetrics.metrics.axisHeight;
-    var colalign = group.value.colalign || [];
+    var coldescriptions = group.value.cols || [];
     var cols = [];
     var colsep;
     for (c = 0; c < nc; ++c) {
+        var coldescr = coldescriptions[c] || {};
+        var sepwidth;
         if (c > 0 || group.value.hskipBeforeAndAfter) {
-            colsep = makeSpan(["arraycolsep"], []);
-            colsep.style.width = arraycolsep + "em";
-            cols.push(colsep);
+            sepwidth = utils.deflt(coldescr.pregap, arraycolsep);
+            if (sepwidth !== 0) {
+                colsep = makeSpan(["arraycolsep"], []);
+                colsep.style.width = sepwidth + "em";
+                cols.push(colsep);
+            }
         }
         var col = [];
         for (r = 0; r < nr; ++r) {
@@ -589,13 +596,16 @@ groupTypes.array = function(group, options, prev) {
         }
         col = buildCommon.makeVList(col, "individualShift", null, options);
         col = makeSpan(
-            ["col-align-" + (colalign[c] || "c")],
+            ["col-align-" + (coldescr.align || "c")],
             [col]);
         cols.push(col);
         if (c < nc - 1 || group.value.hskipBeforeAndAfter) {
-            colsep = makeSpan(["arraycolsep"], []);
-            colsep.style.width = arraycolsep + "em";
-            cols.push(colsep);
+            sepwidth = utils.deflt(coldescr.postgap, arraycolsep);
+            if (sepwidth !== 0) {
+                colsep = makeSpan(["arraycolsep"], []);
+                colsep.style.width = sepwidth + "em";
+                cols.push(colsep);
+            }
         }
     }
     body = makeSpan(["mtable"], cols);

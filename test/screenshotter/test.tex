@@ -1,0 +1,32 @@
+\documentclass[10pt]{article}
+
+\usepackage{amsmath,amssymb}
+\usepackage[papersize={133pt,100pt},margin=0.5pt]{geometry}
+\usepackage{color}
+\usepackage{etoolbox}
+\setlength{\parindent}{0pt}
+\pagestyle{empty}
+
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+
+% Thanks to http://tex.stackexchange.com/a/26017/16923
+\newtoks\kasizetoks
+\def\kasizecollect#1{\afterassignment\kasizeapply\kasizetoks=\bgroup#1$}
+\def\kasizeapply{\mbox{\the\kasizetoks$\egroup}}
+\def\kasize#1{\csletcs{ka#1}{#1}%
+\csdef{#1}{\ifmmode\expandafter\kasizecollect\csname ka#1\endcsname%
+\else\csname ka#1\endcsname\fi}}
+\kasize{tiny}
+\kasize{scriptsize}
+\kasize{footnotesize}
+\kasize{small}
+\kasize{normalsize}
+\kasize{large}
+\kasize{Large}
+\kasize{LARGE}
+\kasize{huge}
+\kasize{Huge}
+
+\begin{document}
+$...$
+\end{document}

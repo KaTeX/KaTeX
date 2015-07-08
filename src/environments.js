@@ -1,3 +1,4 @@
+var fontMetrics = require("./fontMetrics");
 var parseData = require("./parseData");
 var ParseError = require("./ParseError");
 
@@ -94,10 +95,12 @@ defineEnvironment("array", {
     var positions = context.positions;
     // Currently only supports alignment, no separators like | yet.
     colalign = colalign.value.map ? colalign.value : [colalign];
-    colalign = colalign.map(function(node) {
+            var cols = colalign.map(function(node) {
         var ca = node.value;
         if ("lcr".indexOf(ca) !== -1) {
-            return ca;
+                    return {
+                        align: ca
+                    };
         }
         throw new ParseError(
             "Unknown column alignment: " + node.value,
@@ -105,7 +108,7 @@ defineEnvironment("array", {
     });
     var res = {
         type: "array",
-        colalign: colalign,
+                cols: cols,
         hskipBeforeAndAfter: true // \@preamble in lttab.dtx
     };
     res = parseArray(context.parser, context.pos, context.mode, res);
@@ -138,5 +141,33 @@ defineEnvironment(["matrix", "pmatrix", "bmatrix", "vmatrix", "Vmatrix"], {
             right: delimiters[1]
         }, context.mode);
     }
+    return res;
+});
+
+// A cases environment (in amsmath.sty) is almost equivalent to
+// \def\arraystretch{1.2}%
+// \left\{\begin{array}{@{}l@{\quad}l@{}} … \end{array}\right.
+defineEnvironment("cases", {
+    numArgs: 0
+}, function(context) {
+    var res = {
+        type: "array",
+        arraystretch: 1.2,
+        cols: [{
+            align: "l",
+            pregap: 0,
+            postgap: fontMetrics.metrics.quad
+        }, {
+            align: "l",
+            pregap: 0,
+            postgap: 0
+        }]
+    };
+    res = parseArray(context.parser, context.pos, context.mode, res);
+    res.result = new ParseNode("leftright", {
+        body: [res.result],
+        left: "\\{",
+        right: "."
+    }, context.mode);
     return res;
 });

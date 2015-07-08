@@ -1310,7 +1310,17 @@ describe("An array environment", function() {
     it("should accept a single alignment character", function() {
         var parse = getParsed("\\begin{array}r1\\\\20\\end{array}");
         expect(parse[0].type).toBe("array");
-        expect(parse[0].value.colalign).toEqual(["r"]);
+        expect(parse[0].value.cols).toEqual([{align:"r"}]);
+    });
+
+});
+
+describe("A cases environment", function() {
+
+    it("should parse its input", function() {
+        expect("f(a,b)=\\begin{cases}a+1&\\text{if }b\\text{ is odd}\\\\" +
+               "a&\\text{if }b=0\\\\a-1&\\text{otherwise}\\end{cases}")
+            .toParse();
     });
 
 });
