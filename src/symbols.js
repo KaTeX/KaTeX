@@ -1946,6 +1946,11 @@ var symbols = {
             group: "open",
             replace: "\u2223"
         },
+        "\\lVert": {
+            font: "main",
+            group: "open",
+            replace: "\u2225"
+        },
         ")": {
             font: "main",
             group: "close"
@@ -1971,6 +1976,11 @@ var symbols = {
             font: "main",
             group: "close",
             replace: "\u2223"
+        },
+        "\\rVert": {
+            font: "main",
+            group: "close",
+            replace: "\u2225"
         },
         "=": {
             font: "main",
