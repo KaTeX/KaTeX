@@ -91,12 +91,20 @@ var environmentDefinitions = [
     // The matrix environments of amsmath builds on the array environment
     // of LaTeX, which is discussed above.
     {
-        names: ["matrix", "pmatrix", "bmatrix", "vmatrix", "Vmatrix"],
+        names: [
+            "matrix",
+            "pmatrix",
+            "bmatrix",
+            "Bmatrix",
+            "vmatrix",
+            "Vmatrix"
+        ],
         handler: function(pos, mode, envName) {
             var delimiters = {
                 "matrix": null,
                 "pmatrix": ["(", ")"],
                 "bmatrix": ["[", "]"],
+                "Bmatrix": ["\\{", "\\}"],
                 "vmatrix": ["|", "|"],
                 "Vmatrix": ["\\Vert", "\\Vert"]
             }[envName];
