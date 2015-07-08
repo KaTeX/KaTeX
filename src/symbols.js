@@ -7,7 +7,7 @@
      normal font), or "ams" (the ams fonts).
  * - group (required): the ParseNode group type the symbol should have (i.e.
      "textord", "mathord", etc).
- * - replace (optional): the character that this symbol or function should be
+ * - replace: the character that this symbol or function should be
  *   replaced with (i.e. "\phi" has a replace value of "\u03d5", the phi
  *   character in the main font).
  *
@@ -15,2514 +15,579 @@
  * accepted in (e.g. "math" or "text").
  */
 
-var symbols = {
-    "math": {
-        // Relation Symbols
-        "\\equiv": {
-            font: "main",
-            group: "rel",
-            replace: "\u2261"
-        },
-        "\\prec": {
-            font: "main",
-            group: "rel",
-            replace: "\u227a"
-        },
-        "\\succ": {
-            font: "main",
-            group: "rel",
-            replace: "\u227b"
-        },
-        "\\sim": {
-            font: "main",
-            group: "rel",
-            replace: "\u223c"
-        },
-        "\\perp": {
-            font: "main",
-            group: "rel",
-            replace: "\u22a5"
-        },
-        "\\preceq": {
-            font: "main",
-            group: "rel",
-            replace: "\u2aaf"
-        },
-        "\\succeq": {
-            font: "main",
-            group: "rel",
-            replace: "\u2ab0"
-        },
-        "\\simeq": {
-            font: "main",
-            group: "rel",
-            replace: "\u2243"
-        },
-        "\\mid": {
-            font: "main",
-            group: "rel",
-            replace: "\u2223"
-        },
-        "\\ll": {
-            font: "main",
-            group: "rel",
-            replace: "\u226a"
-        },
-        "\\gg": {
-            font: "main",
-            group: "rel",
-            replace: "\u226b"
-        },
-        "\\asymp": {
-            font: "main",
-            group: "rel",
-            replace: "\u224d"
-        },
-        "\\parallel": {
-            font: "main",
-            group: "rel",
-            replace: "\u2225"
-        },
-        "\\bowtie": {
-            font: "main",
-            group: "rel",
-            replace: "\u22c8"
-        },
-        "\\smile": {
-            font: "main",
-            group: "rel",
-            replace: "\u2323"
-        },
-        "\\sqsubseteq": {
-            font: "main",
-            group: "rel",
-            replace: "\u2291"
-        },
-        "\\sqsupseteq": {
-            font: "main",
-            group: "rel",
-            replace: "\u2292"
-        },
-        "\\doteq": {
-            font: "main",
-            group: "rel",
-            replace: "\u2250"
-        },
-        "\\frown": {
-            font: "main",
-            group: "rel",
-            replace: "\u2322"
-        },
-        "\\ni": {
-            font: "main",
-            group: "rel",
-            replace: "\u220b"
-        },
-        "\\propto": {
-            font: "main",
-            group: "rel",
-            replace: "\u221d"
-        },
-        "\\vdash": {
-            font: "main",
-            group: "rel",
-            replace: "\u22a2"
-        },
-        "\\dashv": {
-            font: "main",
-            group: "rel",
-            replace: "\u22a3"
-        },
-        "\\owns": {
-            font: "main",
-            group: "rel",
-            replace: "\u220b"
-        },
-
-        // Punctuation
-        "\\ldotp": {
-            font: "main",
-            group: "punct",
-            replace: "\u002e"
-        },
-        "\\cdotp": {
-            font: "main",
-            group: "punct",
-            replace: "\u22c5"
-        },
-
-        // Misc Symbols
-        "\\#": {
-          font: "main",
-          group: "textord",
-          replace: "\u0023"
-        },
-        "\\&": {
-          font: "main",
-          group: "textord",
-          replace: "\u0026"
-        },
-        "\\aleph": {
-            font: "main",
-            group: "textord",
-            replace: "\u2135"
-        },
-        "\\forall": {
-            font: "main",
-            group: "textord",
-            replace: "\u2200"
-        },
-        "\\hbar": {
-            font: "main",
-            group: "textord",
-            replace: "\u210f"
-        },
-        "\\exists": {
-            font: "main",
-            group: "textord",
-            replace: "\u2203"
-        },
-        "\\nabla": {
-            font: "main",
-            group: "textord",
-            replace: "\u2207"
-        },
-        "\\flat": {
-            font: "main",
-            group: "textord",
-            replace: "\u266d"
-        },
-        "\\ell": {
-            font: "main",
-            group: "textord",
-            replace: "\u2113"
-        },
-        "\\natural": {
-            font: "main",
-            group: "textord",
-            replace: "\u266e"
-        },
-        "\\clubsuit": {
-            font: "main",
-            group: "textord",
-            replace: "\u2663"
-        },
-        "\\wp": {
-            font: "main",
-            group: "textord",
-            replace: "\u2118"
-        },
-        "\\sharp": {
-            font: "main",
-            group: "textord",
-            replace: "\u266f"
-        },
-        "\\diamondsuit": {
-            font: "main",
-            group: "textord",
-            replace: "\u2662"
-        },
-        "\\Re": {
-            font: "main",
-            group: "textord",
-            replace: "\u211c"
-        },
-        "\\heartsuit": {
-            font: "main",
-            group: "textord",
-            replace: "\u2661"
-        },
-        "\\Im": {
-            font: "main",
-            group: "textord",
-            replace: "\u2111"
-        },
-        "\\spadesuit": {
-            font: "main",
-            group: "textord",
-            replace: "\u2660"
-        },
-
-        // Math and Text
-        "\\dag": {
-            font: "main",
-            group: "textord",
-            replace: "\u2020"
-        },
-        "\\ddag": {
-            font: "main",
-            group: "textord",
-            replace: "\u2021"
-        },
-
-        // Large Delimiters
-        "\\rmoustache": {
-            font: "main",
-            group: "close",
-            replace: "\u23b1"
-        },
-        "\\lmoustache": {
-            font: "main",
-            group: "open",
-            replace: "\u23b0"
-        },
-        "\\rgroup": {
-            font: "main",
-            group: "close",
-            replace: "\u27ef"
-        },
-        "\\lgroup": {
-            font: "main",
-            group: "open",
-            replace: "\u27ee"
-        },
-
-        // Binary Operators
-        "\\mp": {
-            font: "main",
-            group: "bin",
-            replace: "\u2213"
-        },
-        "\\ominus": {
-            font: "main",
-            group: "bin",
-            replace: "\u2296"
-        },
-        "\\uplus": {
-            font: "main",
-            group: "bin",
-            replace: "\u228e"
-        },
-        "\\sqcap": {
-            font: "main",
-            group: "bin",
-            replace: "\u2293"
-        },
-        "\\ast": {
-            font: "main",
-            group: "bin",
-            replace: "\u2217"
-        },
-        "\\sqcup": {
-            font: "main",
-            group: "bin",
-            replace: "\u2294"
-        },
-        "\\bigcirc": {
-            font: "main",
-            group: "bin",
-            replace: "\u25ef"
-        },
-        "\\bullet": {
-            font: "main",
-            group: "bin",
-            replace: "\u2219"
-        },
-        "\\ddagger": {
-            font: "main",
-            group: "bin",
-            replace: "\u2021"
-        },
-        "\\wr": {
-            font: "main",
-            group: "bin",
-            replace: "\u2240"
-        },
-        "\\amalg": {
-            font: "main",
-            group: "bin",
-            replace: "\u2a3f"
-        },
-
-        // Arrow Symbols
-        "\\longleftarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u27f5"
-        },
-        "\\Leftarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u21d0"
-        },
-        "\\Longleftarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u27f8"
-        },
-        "\\longrightarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u27f6"
-        },
-        "\\Rightarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u21d2"
-        },
-        "\\Longrightarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u27f9"
-        },
-        "\\leftrightarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u2194"
-        },
-        "\\longleftrightarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u27f7"
-        },
-        "\\Leftrightarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u21d4"
-        },
-        "\\Longleftrightarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u27fa"
-        },
-        "\\mapsto": {
-            font: "main",
-            group: "rel",
-            replace: "\u21a6"
-        },
-        "\\longmapsto": {
-            font: "main",
-            group: "rel",
-            replace: "\u27fc"
-        },
-        "\\nearrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u2197"
-        },
-        "\\hookleftarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u21a9"
-        },
-        "\\hookrightarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u21aa"
-        },
-        "\\searrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u2198"
-        },
-        "\\leftharpoonup": {
-            font: "main",
-            group: "rel",
-            replace: "\u21bc"
-        },
-        "\\rightharpoonup": {
-            font: "main",
-            group: "rel",
-            replace: "\u21c0"
-        },
-        "\\swarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u2199"
-        },
-        "\\leftharpoondown": {
-            font: "main",
-            group: "rel",
-            replace: "\u21bd"
-        },
-        "\\rightharpoondown": {
-            font: "main",
-            group: "rel",
-            replace: "\u21c1"
-        },
-        "\\nwarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u2196"
-        },
-        "\\rightleftharpoons": {
-            font: "main",
-            group: "rel",
-            replace: "\u21cc"
-        },
-
-        // AMS Negated Binary Relations
-        "\\nless": {
-            font: "ams",
-            group: "rel",
-            replace: "\u226e"
-        },
-        "\\nleqslant": {
-            font: "ams",
-            group: "rel",
-            replace: "\ue010"
-        },
-        "\\nleqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\ue011"
-        },
-        "\\lneq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2a87"
-        },
-        "\\lneqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2268"
-        },
-        "\\lvertneqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\ue00c"
-        },
-        "\\lnsim": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22e6"
-        },
-        "\\lnapprox": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2a89"
-        },
-        "\\nprec": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2280"
-        },
-        "\\npreceq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22e0"
-        },
-        "\\precnsim": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22e8"
-        },
-        "\\precnapprox": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2ab9"
-        },
-        "\\nsim": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2241"
-        },
-        "\\nshortmid": {
-            font: "ams",
-            group: "rel",
-            replace: "\ue006"
-        },
-        "\\nmid": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2224"
-        },
-        "\\nvdash": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22ac"
-        },
-        "\\nvDash": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22ad"
-        },
-        "\\ntriangleleft": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22ea"
-        },
-        "\\ntrianglelefteq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22ec"
-        },
-        "\\subsetneq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u228a"
-        },
-        "\\varsubsetneq": {
-            font: "ams",
-            group: "rel",
-            replace: "\ue01a"
-        },
-        "\\subsetneqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2acb"
-        },
-        "\\varsubsetneqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\ue017"
-        },
-        "\\ngtr": {
-            font: "ams",
-            group: "rel",
-            replace: "\u226f"
-        },
-        "\\ngeqslant": {
-            font: "ams",
-            group: "rel",
-            replace: "\ue00f"
-        },
-        "\\ngeqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\ue00e"
-        },
-        "\\gneq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2a88"
-        },
-        "\\gneqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2269"
-        },
-        "\\gvertneqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\ue00d"
-        },
-        "\\gnsim": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22e7"
-        },
-        "\\gnapprox": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2a8a"
-        },
-        "\\nsucc": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2281"
-        },
-        "\\nsucceq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22e1"
-        },
-        "\\succnsim": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22e9"
-        },
-        "\\succnapprox": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2aba"
-        },
-        "\\ncong": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2246"
-        },
-        "\\nshortparallel": {
-            font: "ams",
-            group: "rel",
-            replace: "\ue007"
-        },
-        "\\nparallel": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2226"
-        },
-        "\\nVDash": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22af"
-        },
-        "\\ntriangleright": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22eb"
-        },
-        "\\ntrianglerighteq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22ed"
-        },
-        "\\nsupseteqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\ue018"
-        },
-        "\\supsetneq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u228b"
-        },
-        "\\varsupsetneq": {
-            font: "ams",
-            group: "rel",
-            replace: "\ue01b"
-        },
-        "\\supsetneqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2acc"
-        },
-        "\\varsupsetneqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\ue019"
-        },
-        "\\nVdash": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22ae"
-        },
-        "\\precneqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2ab5"
-        },
-        "\\succneqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2ab6"
-        },
-        "\\nsubseteqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\ue016"
-        },
-        "\\unlhd": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22b4"
-        },
-        "\\unrhd": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22b5"
-        },
-
-        // AMS Negated Arrows
-         "\\nleftarrow": {
-            font: "ams",
-            group: "rel",
-            replace: "\u219a"
-        },
-        "\\nrightarrow": {
-            font: "ams",
-            group: "rel",
-            replace: "\u219b"
-        },
-        "\\nLeftarrow": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21cd"
-        },
-        "\\nRightarrow": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21cf"
-        },
-        "\\nleftrightarrow": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21ae"
-        },
-        "\\nLeftrightarrow": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21ce"
-        },
-
-        // AMS Misc
-        "\\vartriangle": {
-            font: "ams",
-            group: "rel",
-            replace: "\u25b3"
-        },
-        "\\hslash": {
-            font: "ams",
-            group: "textord",
-            replace: "\u210f"
-        },
-        "\\triangledown": {
-            font: "ams",
-            group: "textord",
-            replace: "\u25bd"
-        },
-        "\\lozenge": {
-            font: "ams",
-            group: "textord",
-            replace: "\u25ca"
-        },
-        "\\circledS": {
-            font: "ams",
-            group: "textord",
-            replace: "\u24c8"
-        },
-        "\\circledR": {
-            font: "ams",
-            group: "textord",
-            replace: "\u00ae"
-        },
-        "\\measuredangle": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2221"
-        },
-        "\\nexists": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2204"
-        },
-        "\\mho": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2127"
-        },
-        "\\Finv": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2132"
-        },
-        "\\Game": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2141"
-        },
-        "\\Bbbk": {
-            font: "ams",
-            group: "textord",
-            replace: "\u006b"
-        },
-        "\\backprime": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2035"
-        },
-        "\\blacktriangle": {
-            font: "ams",
-            group: "textord",
-            replace: "\u25b2"
-        },
-        "\\blacktriangledown": {
-            font: "ams",
-            group: "textord",
-            replace: "\u25bc"
-        },
-        "\\blacksquare": {
-            font: "ams",
-            group: "textord",
-            replace: "\u25a0"
-        },
-        "\\blacklozenge": {
-            font: "ams",
-            group: "textord",
-            replace: "\u29eb"
-        },
-        "\\bigstar": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2605"
-        },
-        "\\sphericalangle": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2222"
-        },
-        "\\complement": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2201"
-        },
-        "\\eth": {
-            font: "ams",
-            group: "textord",
-            replace: "\u00f0"
-        },
-        "\\diagup": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2571"
-        },
-        "\\diagdown": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2572"
-        },
-        "\\square": {
-            font: "ams",
-            group: "textord",
-            replace: "\u25a1"
-        },
-        "\\Box": {
-            font: "ams",
-            group: "textord",
-            replace: "\u25a1"
-        },
-        "\\Diamond": {
-            font: "ams",
-            group: "textord",
-            replace: "\u25ca"
-        },
-        "\\yen": {
-            font: "ams",
-            group: "textord",
-            replace: "\u00a5"
-        },
-        "\\checkmark": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2713"
-        },
-
-        // AMS Hebrew
-        "\\beth": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2136"
-        },
-        "\\daleth": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2138"
-        },
-        "\\gimel": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2137"
-        },
-
-        // AMS Greek
-        "\\digamma": {
-            font: "ams",
-            group: "textord",
-            replace: "\u03dd"
-        },
-        "\\varkappa": {
-            font: "ams",
-            group: "textord",
-            replace: "\u03f0"
-        },
-
-        // AMS Delimiters
-        "\\ulcorner": {
-            font: "ams",
-            group: "textord",
-            replace: "\u250c"
-        },
-        "\\urcorner": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2510"
-        },
-        "\\llcorner": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2514"
-        },
-        "\\lrcorner": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2518"
-        },
-
-        // AMS Binary Relations
-        "\\leqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2266"
-        },
-        "\\leqslant": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2a7d"
-        },
-        "\\eqslantless": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2a95"
-        },
-        "\\lesssim": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2272"
-        },
-        "\\lessapprox": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2a85"
-        },
-        "\\approxeq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u224a"
-        },
-        "\\lessdot": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22d6"
-        },
-        "\\lll": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22d8"
-        },
-        "\\lessgtr": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2276"
-        },
-        "\\lesseqgtr": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22da"
-        },
-        "\\lesseqqgtr": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2a8b"
-        },
-        "\\doteqdot": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2251"
-        },
-        "\\risingdotseq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2253"
-        },
-        "\\fallingdotseq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2252"
-        },
-        "\\backsim": {
-            font: "ams",
-            group: "rel",
-            replace: "\u223d"
-        },
-        "\\backsimeq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22cd"
-        },
-        "\\subseteqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2ac5"
-        },
-        "\\Subset": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22d0"
-        },
-        "\\sqsubset": {
-            font: "ams",
-            group: "rel",
-            replace: "\u228f"
-        },
-        "\\preccurlyeq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u227c"
-        },
-        "\\curlyeqprec": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22de"
-        },
-        "\\precsim": {
-            font: "ams",
-            group: "rel",
-            replace: "\u227e"
-        },
-        "\\precapprox": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2ab7"
-        },
-        "\\vartriangleleft": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22b2"
-        },
-        "\\trianglelefteq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22b4"
-        },
-        "\\vDash": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22a8"
-        },
-        "\\Vvdash": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22aa"
-        },
-        "\\smallsmile": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2323"
-        },
-        "\\smallfrown": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2322"
-        },
-        "\\bumpeq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u224f"
-        },
-        "\\Bumpeq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u224e"
-        },
-        "\\geqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2267"
-        },
-        "\\geqslant": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2a7e"
-        },
-        "\\eqslantgtr": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2a96"
-        },
-        "\\gtrsim": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2273"
-        },
-        "\\gtrapprox": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2a86"
-        },
-        "\\gtrdot": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22d7"
-        },
-        "\\ggg": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22d9"
-        },
-        "\\gtrless": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2277"
-        },
-        "\\gtreqless": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22db"
-        },
-        "\\gtreqqless": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2a8c"
-        },
-        "\\eqcirc": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2256"
-        },
-        "\\circeq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2257"
-        },
-        "\\triangleq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u225c"
-        },
-        "\\thicksim": {
-            font: "ams",
-            group: "rel",
-            replace: "\u223c"
-        },
-        "\\thickapprox": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2248"
-        },
-        "\\supseteqq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2ac6"
-        },
-        "\\Supset": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22d1"
-        },
-        "\\sqsupset": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2290"
-        },
-        "\\succcurlyeq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u227d"
-        },
-        "\\curlyeqsucc": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22df"
-        },
-        "\\succsim": {
-            font: "ams",
-            group: "rel",
-            replace: "\u227f"
-        },
-        "\\succapprox": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2ab8"
-        },
-        "\\vartriangleright": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22b3"
-        },
-        "\\trianglerighteq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22b5"
-        },
-        "\\Vdash": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22a9"
-        },
-        "\\shortmid": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2223"
-        },
-        "\\shortparallel": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2225"
-        },
-        "\\between": {
-            font: "ams",
-            group: "rel",
-            replace: "\u226c"
-        },
-        "\\pitchfork": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22d4"
-        },
-        "\\varpropto": {
-            font: "ams",
-            group: "rel",
-            replace: "\u221d"
-        },
-        "\\blacktriangleleft": {
-            font: "ams",
-            group: "rel",
-            replace: "\u25c0"
-        },
-        "\\therefore": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2234"
-        },
-        "\\backepsilon": {
-            font: "ams",
-            group: "rel",
-            replace: "\u220d"
-        },
-        "\\blacktriangleright": {
-            font: "ams",
-            group: "rel",
-            replace: "\u25b6"
-        },
-        "\\because": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2235"
-        },
-        "\\llless": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22d8"
-        },
-        "\\gggtr": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22d9"
-        },
-        "\\lhd": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22b2"
-        },
-        "\\rhd": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22b3"
-        },
-        "\\eqsim": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2242"
-        },
-        "\\Join": {
-            font: "main",
-            group: "rel",
-            replace: "\u22c8"
-        },
-        "\\Doteq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2251"
-        },
-
-        // AMS Binary Operators
-        "\\dotplus": {
-            font: "ams",
-            group: "bin",
-            replace: "\u2214"
-        },
-        "\\smallsetminus": {
-            font: "ams",
-            group: "bin",
-            replace: "\u2216"
-        },
-        "\\Cap": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22d2"
-        },
-        "\\Cup": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22d3"
-        },
-        "\\doublebarwedge": {
-            font: "ams",
-            group: "bin",
-            replace: "\u2a5e"
-        },
-        "\\boxminus": {
-            font: "ams",
-            group: "bin",
-            replace: "\u229f"
-        },
-        "\\boxplus": {
-            font: "ams",
-            group: "bin",
-            replace: "\u229e"
-        },
-        "\\divideontimes": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22c7"
-        },
-        "\\ltimes": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22c9"
-        },
-        "\\rtimes": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22ca"
-        },
-        "\\leftthreetimes": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22cb"
-        },
-        "\\rightthreetimes": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22cc"
-        },
-        "\\curlywedge": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22cf"
-        },
-        "\\curlyvee": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22ce"
-        },
-        "\\circleddash": {
-            font: "ams",
-            group: "bin",
-            replace: "\u229d"
-        },
-        "\\circledast": {
-            font: "ams",
-            group: "bin",
-            replace: "\u229b"
-        },
-        "\\centerdot": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22c5"
-        },
-        "\\intercal": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22ba"
-        },
-        "\\doublecap": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22d2"
-        },
-        "\\doublecup": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22d3"
-        },
-        "\\boxtimes": {
-            font: "ams",
-            group: "bin",
-            replace: "\u22a0"
-        },
-
-        // AMS Arrows
-        "\\dashrightarrow": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21e2"
-        },
-        "\\dashleftarrow": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21e0"
-        },
-        "\\leftleftarrows": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21c7"
-        },
-        "\\leftrightarrows": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21c6"
-        },
-        "\\Lleftarrow": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21da"
-        },
-        "\\twoheadleftarrow": {
-            font: "ams",
-            group: "rel",
-            replace: "\u219e"
-        },
-        "\\leftarrowtail": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21a2"
-        },
-        "\\looparrowleft": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21ab"
-        },
-        "\\leftrightharpoons": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21cb"
-        },
-        "\\curvearrowleft": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21b6"
-        },
-        "\\circlearrowleft": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21ba"
-        },
-        "\\Lsh": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21b0"
-        },
-        "\\upuparrows": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21c8"
-        },
-        "\\upharpoonleft": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21bf"
-        },
-        "\\downharpoonleft": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21c3"
-        },
-        "\\multimap": {
-            font: "ams",
-            group: "rel",
-            replace: "\u22b8"
-        },
-        "\\leftrightsquigarrow": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21ad"
-        },
-        "\\rightrightarrows": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21c9"
-        },
-        "\\rightleftarrows": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21c4"
-        },
-        "\\twoheadrightarrow": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21a0"
-        },
-        "\\rightarrowtail": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21a3"
-        },
-        "\\looparrowright": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21ac"
-        },
-        "\\curvearrowright": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21b7"
-        },
-        "\\circlearrowright": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21bb"
-        },
-        "\\Rsh": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21b1"
-        },
-        "\\downdownarrows": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21ca"
-        },
-        "\\upharpoonright": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21be"
-        },
-        "\\downharpoonright": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21c2"
-        },
-        "\\rightsquigarrow": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21dd"
-        },
-        "\\leadsto": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21dd"
-        },
-        "\\Rrightarrow": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21db"
-        },
-        "\\restriction": {
-            font: "ams",
-            group: "rel",
-            replace: "\u21be"
-        },
-
-        "`": {
-            font: "main",
-            group: "textord",
-            replace: "\u2018"
-        },
-        "\\$": {
-            font: "main",
-            group: "textord",
-            replace: "$"
-        },
-        "\\%": {
-            font: "main",
-            group: "textord",
-            replace: "%"
-        },
-        "\\_": {
-            font: "main",
-            group: "textord",
-            replace: "_"
-        },
-        "\\angle": {
-            font: "main",
-            group: "textord",
-            replace: "\u2220"
-        },
-        "\\infty": {
-            font: "main",
-            group: "textord",
-            replace: "\u221e"
-        },
-        "\\prime": {
-            font: "main",
-            group: "textord",
-            replace: "\u2032"
-        },
-        "\\triangle": {
-            font: "main",
-            group: "textord",
-            replace: "\u25b3"
-        },
-        "\\Gamma": {
-            font: "main",
-            group: "textord",
-            replace: "\u0393"
-        },
-        "\\Delta": {
-            font: "main",
-            group: "textord",
-            replace: "\u0394"
-        },
-        "\\Theta": {
-            font: "main",
-            group: "textord",
-            replace: "\u0398"
-        },
-        "\\Lambda": {
-            font: "main",
-            group: "textord",
-            replace: "\u039b"
-        },
-        "\\Xi": {
-            font: "main",
-            group: "textord",
-            replace: "\u039e"
-        },
-        "\\Pi": {
-            font: "main",
-            group: "textord",
-            replace: "\u03a0"
-        },
-        "\\Sigma": {
-            font: "main",
-            group: "textord",
-            replace: "\u03a3"
-        },
-        "\\Upsilon": {
-            font: "main",
-            group: "textord",
-            replace: "\u03a5"
-        },
-        "\\Phi": {
-            font: "main",
-            group: "textord",
-            replace: "\u03a6"
-        },
-        "\\Psi": {
-            font: "main",
-            group: "textord",
-            replace: "\u03a8"
-        },
-        "\\Omega": {
-            font: "main",
-            group: "textord",
-            replace: "\u03a9"
-        },
-        "\\neg": {
-            font: "main",
-            group: "textord",
-            replace: "\u00ac"
-        },
-        "\\lnot": {
-            font: "main",
-            group: "textord",
-            replace: "\u00ac"
-        },
-        "\\top": {
-            font: "main",
-            group: "textord",
-            replace: "\u22a4"
-        },
-        "\\bot": {
-            font: "main",
-            group: "textord",
-            replace: "\u22a5"
-        },
-        "\\emptyset": {
-            font: "main",
-            group: "textord",
-            replace: "\u2205"
-        },
-        "\\varnothing": {
-            font: "ams",
-            group: "textord",
-            replace: "\u2205"
-        },
-        "\\alpha": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03b1"
-        },
-        "\\beta": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03b2"
-        },
-        "\\gamma": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03b3"
-        },
-        "\\delta": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03b4"
-        },
-        "\\epsilon": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03f5"
-        },
-        "\\zeta": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03b6"
-        },
-        "\\eta": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03b7"
-        },
-        "\\theta": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03b8"
-        },
-        "\\iota": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03b9"
-        },
-        "\\kappa": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03ba"
-        },
-        "\\lambda": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03bb"
-        },
-        "\\mu": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03bc"
-        },
-        "\\nu": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03bd"
-        },
-        "\\xi": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03be"
-        },
-        "\\omicron": {
-            font: "main",
-            group: "mathord",
-            replace: "o"
-        },
-        "\\pi": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03c0"
-        },
-        "\\rho": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03c1"
-        },
-        "\\sigma": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03c3"
-        },
-        "\\tau": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03c4"
-        },
-        "\\upsilon": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03c5"
-        },
-        "\\phi": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03d5"
-        },
-        "\\chi": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03c7"
-        },
-        "\\psi": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03c8"
-        },
-        "\\omega": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03c9"
-        },
-        "\\varepsilon": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03b5"
-        },
-        "\\vartheta": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03d1"
-        },
-        "\\varpi": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03d6"
-        },
-        "\\varrho": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03f1"
-        },
-        "\\varsigma": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03c2"
-        },
-        "\\varphi": {
-            font: "main",
-            group: "mathord",
-            replace: "\u03c6"
-        },
-        "*": {
-            font: "main",
-            group: "bin",
-            replace: "\u2217"
-        },
-        "+": {
-            font: "main",
-            group: "bin"
-        },
-        "-": {
-            font: "main",
-            group: "bin",
-            replace: "\u2212"
-        },
-        "\\cdot": {
-            font: "main",
-            group: "bin",
-            replace: "\u22c5"
-        },
-        "\\circ": {
-            font: "main",
-            group: "bin",
-            replace: "\u2218"
-        },
-        "\\div": {
-            font: "main",
-            group: "bin",
-            replace: "\u00f7"
-        },
-        "\\pm": {
-            font: "main",
-            group: "bin",
-            replace: "\u00b1"
-        },
-        "\\times": {
-            font: "main",
-            group: "bin",
-            replace: "\u00d7"
-        },
-        "\\cap": {
-            font: "main",
-            group: "bin",
-            replace: "\u2229"
-        },
-        "\\cup": {
-            font: "main",
-            group: "bin",
-            replace: "\u222a"
-        },
-        "\\setminus": {
-            font: "main",
-            group: "bin",
-            replace: "\u2216"
-        },
-        "\\land": {
-            font: "main",
-            group: "bin",
-            replace: "\u2227"
-        },
-        "\\lor": {
-            font: "main",
-            group: "bin",
-            replace: "\u2228"
-        },
-        "\\wedge": {
-            font: "main",
-            group: "bin",
-            replace: "\u2227"
-        },
-        "\\vee": {
-            font: "main",
-            group: "bin",
-            replace: "\u2228"
-        },
-        "\\surd": {
-            font: "main",
-            group: "textord",
-            replace: "\u221a"
-        },
-        "(": {
-            font: "main",
-            group: "open"
-        },
-        "[": {
-            font: "main",
-            group: "open"
-        },
-        "\\langle": {
-            font: "main",
-            group: "open",
-            replace: "\u27e8"
-        },
-        "\\lvert": {
-            font: "main",
-            group: "open",
-            replace: "\u2223"
-        },
-        ")": {
-            font: "main",
-            group: "close"
-        },
-        "]": {
-            font: "main",
-            group: "close"
-        },
-        "?": {
-            font: "main",
-            group: "close"
-        },
-        "!": {
-            font: "main",
-            group: "close"
-        },
-        "\\rangle": {
-            font: "main",
-            group: "close",
-            replace: "\u27e9"
-        },
-        "\\rvert": {
-            font: "main",
-            group: "close",
-            replace: "\u2223"
-        },
-        "=": {
-            font: "main",
-            group: "rel"
-        },
-        "<": {
-            font: "main",
-            group: "rel"
-        },
-        ">": {
-            font: "main",
-            group: "rel"
-        },
-        ":": {
-            font: "main",
-            group: "rel"
-        },
-        "\\approx": {
-            font: "main",
-            group: "rel",
-            replace: "\u2248"
-        },
-        "\\cong": {
-            font: "main",
-            group: "rel",
-            replace: "\u2245"
-        },
-        "\\ge": {
-            font: "main",
-            group: "rel",
-            replace: "\u2265"
-        },
-        "\\geq": {
-            font: "main",
-            group: "rel",
-            replace: "\u2265"
-        },
-        "\\gets": {
-            font: "main",
-            group: "rel",
-            replace: "\u2190"
-        },
-        "\\in": {
-            font: "main",
-            group: "rel",
-            replace: "\u2208"
-        },
-        "\\notin": {
-            font: "main",
-            group: "rel",
-            replace: "\u2209"
-        },
-        "\\subset": {
-            font: "main",
-            group: "rel",
-            replace: "\u2282"
-        },
-        "\\supset": {
-            font: "main",
-            group: "rel",
-            replace: "\u2283"
-        },
-        "\\subseteq": {
-            font: "main",
-            group: "rel",
-            replace: "\u2286"
-        },
-        "\\supseteq": {
-            font: "main",
-            group: "rel",
-            replace: "\u2287"
-        },
-        "\\nsubseteq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2288"
-        },
-        "\\nsupseteq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2289"
-        },
-        "\\models": {
-            font: "main",
-            group: "rel",
-            replace: "\u22a8"
-        },
-        "\\leftarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u2190"
-        },
-        "\\le": {
-            font: "main",
-            group: "rel",
-            replace: "\u2264"
-        },
-        "\\leq": {
-            font: "main",
-            group: "rel",
-            replace: "\u2264"
-        },
-        "\\ne": {
-            font: "main",
-            group: "rel",
-            replace: "\u2260"
-        },
-        "\\neq": {
-            font: "main",
-            group: "rel",
-            replace: "\u2260"
-        },
-        "\\rightarrow": {
-            font: "main",
-            group: "rel",
-            replace: "\u2192"
-        },
-        "\\to": {
-            font: "main",
-            group: "rel",
-            replace: "\u2192"
-        },
-        "\\ngeq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2271"
-        },
-        "\\nleq": {
-            font: "ams",
-            group: "rel",
-            replace: "\u2270"
-        },
-        "\\!": {
-            font: "main",
-            group: "spacing"
-        },
-        "\\ ": {
-            font: "main",
-            group: "spacing",
-            replace: "\u00a0"
-        },
-        "~": {
-            font: "main",
-            group: "spacing",
-            replace: "\u00a0"
-        },
-        "\\,": {
-            font: "main",
-            group: "spacing"
-        },
-        "\\:": {
-            font: "main",
-            group: "spacing"
-        },
-        "\\;": {
-            font: "main",
-            group: "spacing"
-        },
-        "\\enspace": {
-            font: "main",
-            group: "spacing"
-        },
-        "\\qquad": {
-            font: "main",
-            group: "spacing"
-        },
-        "\\quad": {
-            font: "main",
-            group: "spacing"
-        },
-        "\\space": {
-            font: "main",
-            group: "spacing",
-            replace: "\u00a0"
-        },
-        ",": {
-            font: "main",
-            group: "punct"
-        },
-        ";": {
-            font: "main",
-            group: "punct"
-        },
-        "\\colon": {
-            font: "main",
-            group: "punct",
-            replace: ":"
-        },
-        "\\barwedge": {
-            font: "ams",
-            group: "textord",
-            replace: "\u22bc"
-        },
-        "\\veebar": {
-            font: "ams",
-            group: "textord",
-            replace: "\u22bb"
-        },
-        "\\odot": {
-            font: "main",
-            group: "bin",
-            replace: "\u2299"
-        },
-        "\\oplus": {
-            font: "main",
-            group: "bin",
-            replace: "\u2295"
-        },
-        "\\otimes": {
-            font: "main",
-            group: "bin",
-            replace: "\u2297"
-        },
-        "\\partial":{
-            font: "main",
-            group: "textord",
-            replace: "\u2202"
-        },
-        "\\oslash": {
-            font: "main",
-            group: "bin",
-            replace: "\u2298"
-        },
-        "\\circledcirc": {
-            font: "ams",
-            group: "textord",
-            replace: "\u229a"
-        },
-        "\\boxdot": {
-            font: "ams",
-            group: "textord",
-            replace: "\u22a1"
-        },
-        "\\bigtriangleup": {
-            font: "main",
-            group: "bin",
-            replace: "\u25b3"
-        },
-        "\\bigtriangledown": {
-            font: "main",
-            group: "bin",
-            replace: "\u25bd"
-        },
-        "\\dagger": {
-            font: "main",
-            group: "bin",
-            replace: "\u2020"
-        },
-        "\\diamond": {
-            font: "main",
-            group: "bin",
-            replace: "\u22c4"
-        },
-        "\\star": {
-            font: "main",
-            group: "bin",
-            replace: "\u22c6"
-        },
-        "\\triangleleft": {
-            font: "main",
-            group: "bin",
-            replace: "\u25c3"
-        },
-        "\\triangleright": {
-            font: "main",
-            group: "bin",
-            replace: "\u25b9"
-        },
-        "\\{": {
-            font: "main",
-            group: "open",
-            replace: "{"
-        },
-        "\\}": {
-            font: "main",
-            group: "close",
-            replace: "}"
-        },
-        "\\lbrace": {
-            font: "main",
-            group: "open",
-            replace: "{"
-        },
-        "\\rbrace": {
-            font: "main",
-            group: "close",
-            replace: "}"
-        },
-        "\\lbrack": {
-            font: "main",
-            group: "open",
-            replace: "["
-        },
-        "\\rbrack": {
-            font: "main",
-            group: "close",
-            replace: "]"
-        },
-        "\\lfloor": {
-            font: "main",
-            group: "open",
-            replace: "\u230a"
-        },
-        "\\rfloor": {
-            font: "main",
-            group: "close",
-            replace: "\u230b"
-        },
-        "\\lceil": {
-            font: "main",
-            group: "open",
-            replace: "\u2308"
-        },
-        "\\rceil": {
-            font: "main",
-            group: "close",
-            replace: "\u2309"
-        },
-        "\\backslash": {
-            font: "main",
-            group: "textord",
-            replace: "\\"
-        },
-        "|": {
-            font: "main",
-            group: "textord",
-            replace: "\u2223"
-        },
-        "\\vert": {
-            font: "main",
-            group: "textord",
-            replace: "\u2223"
-        },
-        "\\|": {
-            font: "main",
-            group: "textord",
-            replace: "\u2225"
-        },
-        "\\Vert": {
-            font: "main",
-            group: "textord",
-            replace: "\u2225"
-        },
-        "\\uparrow": {
-            font: "main",
-            group: "textord",
-            replace: "\u2191"
-        },
-        "\\Uparrow": {
-            font: "main",
-            group: "textord",
-            replace: "\u21d1"
-        },
-        "\\downarrow": {
-            font: "main",
-            group: "textord",
-            replace: "\u2193"
-        },
-        "\\Downarrow": {
-            font: "main",
-            group: "textord",
-            replace: "\u21d3"
-        },
-        "\\updownarrow": {
-            font: "main",
-            group: "textord",
-            replace: "\u2195"
-        },
-        "\\Updownarrow": {
-            font: "main",
-            group: "textord",
-            replace: "\u21d5"
-        },
-        "\\coprod": {
-            font: "math",
-            group: "op",
-            replace: "\u2210"
-        },
-        "\\bigvee": {
-            font: "math",
-            group: "op",
-            replace: "\u22c1"
-        },
-        "\\bigwedge": {
-            font: "math",
-            group: "op",
-            replace: "\u22c0"
-        },
-        "\\biguplus": {
-            font: "math",
-            group: "op",
-            replace: "\u2a04"
-        },
-        "\\bigcap": {
-            font: "math",
-            group: "op",
-            replace: "\u22c2"
-        },
-        "\\bigcup": {
-            font: "math",
-            group: "op",
-            replace: "\u22c3"
-        },
-        "\\int": {
-            font: "math",
-            group: "op",
-            replace: "\u222b"
-        },
-        "\\intop": {
-            font: "math",
-            group: "op",
-            replace: "\u222b"
-        },
-        "\\iint": {
-            font: "math",
-            group: "op",
-            replace: "\u222c"
-        },
-        "\\iiint": {
-            font: "math",
-            group: "op",
-            replace: "\u222d"
-        },
-        "\\prod": {
-            font: "math",
-            group: "op",
-            replace: "\u220f"
-        },
-        "\\sum": {
-            font: "math",
-            group: "op",
-            replace: "\u2211"
-        },
-        "\\bigotimes": {
-            font: "math",
-            group: "op",
-            replace: "\u2a02"
-        },
-        "\\bigoplus": {
-            font: "math",
-            group: "op",
-            replace: "\u2a01"
-        },
-        "\\bigodot": {
-            font: "math",
-            group: "op",
-            replace: "\u2a00"
-        },
-        "\\oint": {
-            font: "math",
-            group: "op",
-            replace: "\u222e"
-        },
-        "\\bigsqcup": {
-            font: "math",
-            group: "op",
-            replace: "\u2a06"
-        },
-        "\\smallint": {
-            font: "math",
-            group: "op",
-            replace: "\u222b"
-        },
-        "\\ldots": {
-            font: "main",
-            group: "punct",
-            replace: "\u2026"
-        },
-        "\\cdots": {
-            font: "main",
-            group: "inner",
-            replace: "\u22ef"
-        },
-        "\\ddots": {
-            font: "main",
-            group: "inner",
-            replace: "\u22f1"
-        },
-        "\\vdots": {
-            font: "main",
-            group: "textord",
-            replace: "\u22ee"
-        },
-        "\\acute": {
-            font: "main",
-            group: "accent",
-            replace: "\u00b4"
-        },
-        "\\grave": {
-            font: "main",
-            group: "accent",
-            replace: "\u0060"
-        },
-        "\\ddot": {
-            font: "main",
-            group: "accent",
-            replace: "\u00a8"
-        },
-        "\\tilde": {
-            font: "main",
-            group: "accent",
-            replace: "\u007e"
-        },
-        "\\bar": {
-            font: "main",
-            group: "accent",
-            replace: "\u00af"
-        },
-        "\\breve": {
-            font: "main",
-            group: "accent",
-            replace: "\u02d8"
-        },
-        "\\check": {
-            font: "main",
-            group: "accent",
-            replace: "\u02c7"
-        },
-        "\\hat": {
-            font: "main",
-            group: "accent",
-            replace: "\u005e"
-        },
-        "\\vec": {
-            font: "main",
-            group: "accent",
-            replace: "\u20d7"
-        },
-        "\\dot": {
-            font: "main",
-            group: "accent",
-            replace: "\u02d9"
-        }
-    },
-    "text": {
-        "\\ ": {
-            font: "main",
-            group: "spacing",
-            replace: "\u00a0"
-        },
-        " ": {
-            font: "main",
-            group: "spacing",
-            replace: "\u00a0"
-        },
-        "~": {
-            font: "main",
-            group: "spacing",
-            replace: "\u00a0"
-        }
-    }
+module.exports = {
+    math: {},
+    text: {}
 };
+
+function defineSymbol(mode, font, group, replace, name) {
+    module.exports[mode][name] = {
+        font: font,
+        group: group,
+        replace: replace
+    };
+}
+
+// (For some reason jshint believes open and close to be global symbols.)
+/* globals -open, -close */
+
+// Some abbreviations for commonly used strings.
+// This helps minify the code, and also spotting typos using jshint.
+
+// modes:
+var math = "math";
+var text = "text";
+
+// fonts:
+var main = "main";
+var ams = "ams";
+
+// groups:
+var accent = "accent";
+var bin = "bin";
+var close = "close";
+var inner = "inner";
+var mathord = "mathord";
+var op = "op";
+var open = "open";
+var punct = "punct";
+var rel = "rel";
+var spacing = "spacing";
+var textord = "textord";
+
+// Now comes the symbol table
+
+// Relation Symbols
+defineSymbol(math, main, rel, "\u2261", "\\equiv");
+defineSymbol(math, main, rel, "\u227a", "\\prec");
+defineSymbol(math, main, rel, "\u227b", "\\succ");
+defineSymbol(math, main, rel, "\u223c", "\\sim");
+defineSymbol(math, main, rel, "\u22a5", "\\perp");
+defineSymbol(math, main, rel, "\u2aaf", "\\preceq");
+defineSymbol(math, main, rel, "\u2ab0", "\\succeq");
+defineSymbol(math, main, rel, "\u2243", "\\simeq");
+defineSymbol(math, main, rel, "\u2223", "\\mid");
+defineSymbol(math, main, rel, "\u226a", "\\ll");
+defineSymbol(math, main, rel, "\u226b", "\\gg");
+defineSymbol(math, main, rel, "\u224d", "\\asymp");
+defineSymbol(math, main, rel, "\u2225", "\\parallel");
+defineSymbol(math, main, rel, "\u22c8", "\\bowtie");
+defineSymbol(math, main, rel, "\u2323", "\\smile");
+defineSymbol(math, main, rel, "\u2291", "\\sqsubseteq");
+defineSymbol(math, main, rel, "\u2292", "\\sqsupseteq");
+defineSymbol(math, main, rel, "\u2250", "\\doteq");
+defineSymbol(math, main, rel, "\u2322", "\\frown");
+defineSymbol(math, main, rel, "\u220b", "\\ni");
+defineSymbol(math, main, rel, "\u221d", "\\propto");
+defineSymbol(math, main, rel, "\u22a2", "\\vdash");
+defineSymbol(math, main, rel, "\u22a3", "\\dashv");
+defineSymbol(math, main, rel, "\u220b", "\\owns");
+
+// Punctuation
+defineSymbol(math, main, punct, "\u002e", "\\ldotp");
+defineSymbol(math, main, punct, "\u22c5", "\\cdotp");
+
+// Misc Symbols
+defineSymbol(math, main, textord, "\u0023", "\\#");
+defineSymbol(math, main, textord, "\u0026", "\\&");
+defineSymbol(math, main, textord, "\u2135", "\\aleph");
+defineSymbol(math, main, textord, "\u2200", "\\forall");
+defineSymbol(math, main, textord, "\u210f", "\\hbar");
+defineSymbol(math, main, textord, "\u2203", "\\exists");
+defineSymbol(math, main, textord, "\u2207", "\\nabla");
+defineSymbol(math, main, textord, "\u266d", "\\flat");
+defineSymbol(math, main, textord, "\u2113", "\\ell");
+defineSymbol(math, main, textord, "\u266e", "\\natural");
+defineSymbol(math, main, textord, "\u2663", "\\clubsuit");
+defineSymbol(math, main, textord, "\u2118", "\\wp");
+defineSymbol(math, main, textord, "\u266f", "\\sharp");
+defineSymbol(math, main, textord, "\u2662", "\\diamondsuit");
+defineSymbol(math, main, textord, "\u211c", "\\Re");
+defineSymbol(math, main, textord, "\u2661", "\\heartsuit");
+defineSymbol(math, main, textord, "\u2111", "\\Im");
+defineSymbol(math, main, textord, "\u2660", "\\spadesuit");
+
+// Math and Text
+defineSymbol(math, main, textord, "\u2020", "\\dag");
+defineSymbol(math, main, textord, "\u2021", "\\ddag");
+
+// Large Delimiters
+defineSymbol(math, main, close, "\u23b1", "\\rmoustache");
+defineSymbol(math, main, open, "\u23b0", "\\lmoustache");
+defineSymbol(math, main, close, "\u27ef", "\\rgroup");
+defineSymbol(math, main, open, "\u27ee", "\\lgroup");
+
+// Binary Operators
+defineSymbol(math, main, bin, "\u2213", "\\mp");
+defineSymbol(math, main, bin, "\u2296", "\\ominus");
+defineSymbol(math, main, bin, "\u228e", "\\uplus");
+defineSymbol(math, main, bin, "\u2293", "\\sqcap");
+defineSymbol(math, main, bin, "\u2217", "\\ast");
+defineSymbol(math, main, bin, "\u2294", "\\sqcup");
+defineSymbol(math, main, bin, "\u25ef", "\\bigcirc");
+defineSymbol(math, main, bin, "\u2219", "\\bullet");
+defineSymbol(math, main, bin, "\u2021", "\\ddagger");
+defineSymbol(math, main, bin, "\u2240", "\\wr");
+defineSymbol(math, main, bin, "\u2a3f", "\\amalg");
+
+// Arrow Symbols
+defineSymbol(math, main, rel, "\u27f5", "\\longleftarrow");
+defineSymbol(math, main, rel, "\u21d0", "\\Leftarrow");
+defineSymbol(math, main, rel, "\u27f8", "\\Longleftarrow");
+defineSymbol(math, main, rel, "\u27f6", "\\longrightarrow");
+defineSymbol(math, main, rel, "\u21d2", "\\Rightarrow");
+defineSymbol(math, main, rel, "\u27f9", "\\Longrightarrow");
+defineSymbol(math, main, rel, "\u2194", "\\leftrightarrow");
+defineSymbol(math, main, rel, "\u27f7", "\\longleftrightarrow");
+defineSymbol(math, main, rel, "\u21d4", "\\Leftrightarrow");
+defineSymbol(math, main, rel, "\u27fa", "\\Longleftrightarrow");
+defineSymbol(math, main, rel, "\u21a6", "\\mapsto");
+defineSymbol(math, main, rel, "\u27fc", "\\longmapsto");
+defineSymbol(math, main, rel, "\u2197", "\\nearrow");
+defineSymbol(math, main, rel, "\u21a9", "\\hookleftarrow");
+defineSymbol(math, main, rel, "\u21aa", "\\hookrightarrow");
+defineSymbol(math, main, rel, "\u2198", "\\searrow");
+defineSymbol(math, main, rel, "\u21bc", "\\leftharpoonup");
+defineSymbol(math, main, rel, "\u21c0", "\\rightharpoonup");
+defineSymbol(math, main, rel, "\u2199", "\\swarrow");
+defineSymbol(math, main, rel, "\u21bd", "\\leftharpoondown");
+defineSymbol(math, main, rel, "\u21c1", "\\rightharpoondown");
+defineSymbol(math, main, rel, "\u2196", "\\nwarrow");
+defineSymbol(math, main, rel, "\u21cc", "\\rightleftharpoons");
+
+// AMS Negated Binary Relations
+defineSymbol(math, ams, rel, "\u226e", "\\nless");
+defineSymbol(math, ams, rel, "\ue010", "\\nleqslant");
+defineSymbol(math, ams, rel, "\ue011", "\\nleqq");
+defineSymbol(math, ams, rel, "\u2a87", "\\lneq");
+defineSymbol(math, ams, rel, "\u2268", "\\lneqq");
+defineSymbol(math, ams, rel, "\ue00c", "\\lvertneqq");
+defineSymbol(math, ams, rel, "\u22e6", "\\lnsim");
+defineSymbol(math, ams, rel, "\u2a89", "\\lnapprox");
+defineSymbol(math, ams, rel, "\u2280", "\\nprec");
+defineSymbol(math, ams, rel, "\u22e0", "\\npreceq");
+defineSymbol(math, ams, rel, "\u22e8", "\\precnsim");
+defineSymbol(math, ams, rel, "\u2ab9", "\\precnapprox");
+defineSymbol(math, ams, rel, "\u2241", "\\nsim");
+defineSymbol(math, ams, rel, "\ue006", "\\nshortmid");
+defineSymbol(math, ams, rel, "\u2224", "\\nmid");
+defineSymbol(math, ams, rel, "\u22ac", "\\nvdash");
+defineSymbol(math, ams, rel, "\u22ad", "\\nvDash");
+defineSymbol(math, ams, rel, "\u22ea", "\\ntriangleleft");
+defineSymbol(math, ams, rel, "\u22ec", "\\ntrianglelefteq");
+defineSymbol(math, ams, rel, "\u228a", "\\subsetneq");
+defineSymbol(math, ams, rel, "\ue01a", "\\varsubsetneq");
+defineSymbol(math, ams, rel, "\u2acb", "\\subsetneqq");
+defineSymbol(math, ams, rel, "\ue017", "\\varsubsetneqq");
+defineSymbol(math, ams, rel, "\u226f", "\\ngtr");
+defineSymbol(math, ams, rel, "\ue00f", "\\ngeqslant");
+defineSymbol(math, ams, rel, "\ue00e", "\\ngeqq");
+defineSymbol(math, ams, rel, "\u2a88", "\\gneq");
+defineSymbol(math, ams, rel, "\u2269", "\\gneqq");
+defineSymbol(math, ams, rel, "\ue00d", "\\gvertneqq");
+defineSymbol(math, ams, rel, "\u22e7", "\\gnsim");
+defineSymbol(math, ams, rel, "\u2a8a", "\\gnapprox");
+defineSymbol(math, ams, rel, "\u2281", "\\nsucc");
+defineSymbol(math, ams, rel, "\u22e1", "\\nsucceq");
+defineSymbol(math, ams, rel, "\u22e9", "\\succnsim");
+defineSymbol(math, ams, rel, "\u2aba", "\\succnapprox");
+defineSymbol(math, ams, rel, "\u2246", "\\ncong");
+defineSymbol(math, ams, rel, "\ue007", "\\nshortparallel");
+defineSymbol(math, ams, rel, "\u2226", "\\nparallel");
+defineSymbol(math, ams, rel, "\u22af", "\\nVDash");
+defineSymbol(math, ams, rel, "\u22eb", "\\ntriangleright");
+defineSymbol(math, ams, rel, "\u22ed", "\\ntrianglerighteq");
+defineSymbol(math, ams, rel, "\ue018", "\\nsupseteqq");
+defineSymbol(math, ams, rel, "\u228b", "\\supsetneq");
+defineSymbol(math, ams, rel, "\ue01b", "\\varsupsetneq");
+defineSymbol(math, ams, rel, "\u2acc", "\\supsetneqq");
+defineSymbol(math, ams, rel, "\ue019", "\\varsupsetneqq");
+defineSymbol(math, ams, rel, "\u22ae", "\\nVdash");
+defineSymbol(math, ams, rel, "\u2ab5", "\\precneqq");
+defineSymbol(math, ams, rel, "\u2ab6", "\\succneqq");
+defineSymbol(math, ams, rel, "\ue016", "\\nsubseteqq");
+defineSymbol(math, ams, bin, "\u22b4", "\\unlhd");
+defineSymbol(math, ams, bin, "\u22b5", "\\unrhd");
+
+// AMS Negated Arrows
+defineSymbol(math, ams, rel, "\u219a", "\\nleftarrow");
+defineSymbol(math, ams, rel, "\u219b", "\\nrightarrow");
+defineSymbol(math, ams, rel, "\u21cd", "\\nLeftarrow");
+defineSymbol(math, ams, rel, "\u21cf", "\\nRightarrow");
+defineSymbol(math, ams, rel, "\u21ae", "\\nleftrightarrow");
+defineSymbol(math, ams, rel, "\u21ce", "\\nLeftrightarrow");
+
+// AMS Misc
+defineSymbol(math, ams, rel, "\u25b3", "\\vartriangle");
+defineSymbol(math, ams, textord, "\u210f", "\\hslash");
+defineSymbol(math, ams, textord, "\u25bd", "\\triangledown");
+defineSymbol(math, ams, textord, "\u25ca", "\\lozenge");
+defineSymbol(math, ams, textord, "\u24c8", "\\circledS");
+defineSymbol(math, ams, textord, "\u00ae", "\\circledR");
+defineSymbol(math, ams, textord, "\u2221", "\\measuredangle");
+defineSymbol(math, ams, textord, "\u2204", "\\nexists");
+defineSymbol(math, ams, textord, "\u2127", "\\mho");
+defineSymbol(math, ams, textord, "\u2132", "\\Finv");
+defineSymbol(math, ams, textord, "\u2141", "\\Game");
+defineSymbol(math, ams, textord, "\u006b", "\\Bbbk");
+defineSymbol(math, ams, textord, "\u2035", "\\backprime");
+defineSymbol(math, ams, textord, "\u25b2", "\\blacktriangle");
+defineSymbol(math, ams, textord, "\u25bc", "\\blacktriangledown");
+defineSymbol(math, ams, textord, "\u25a0", "\\blacksquare");
+defineSymbol(math, ams, textord, "\u29eb", "\\blacklozenge");
+defineSymbol(math, ams, textord, "\u2605", "\\bigstar");
+defineSymbol(math, ams, textord, "\u2222", "\\sphericalangle");
+defineSymbol(math, ams, textord, "\u2201", "\\complement");
+defineSymbol(math, ams, textord, "\u00f0", "\\eth");
+defineSymbol(math, ams, textord, "\u2571", "\\diagup");
+defineSymbol(math, ams, textord, "\u2572", "\\diagdown");
+defineSymbol(math, ams, textord, "\u25a1", "\\square");
+defineSymbol(math, ams, textord, "\u25a1", "\\Box");
+defineSymbol(math, ams, textord, "\u25ca", "\\Diamond");
+defineSymbol(math, ams, textord, "\u00a5", "\\yen");
+defineSymbol(math, ams, textord, "\u2713", "\\checkmark");
+
+// AMS Hebrew
+defineSymbol(math, ams, textord, "\u2136", "\\beth");
+defineSymbol(math, ams, textord, "\u2138", "\\daleth");
+defineSymbol(math, ams, textord, "\u2137", "\\gimel");
+
+// AMS Greek
+defineSymbol(math, ams, textord, "\u03dd", "\\digamma");
+defineSymbol(math, ams, textord, "\u03f0", "\\varkappa");
+
+// AMS Delimiters
+defineSymbol(math, ams, textord, "\u250c", "\\ulcorner");
+defineSymbol(math, ams, textord, "\u2510", "\\urcorner");
+defineSymbol(math, ams, textord, "\u2514", "\\llcorner");
+defineSymbol(math, ams, textord, "\u2518", "\\lrcorner");
+
+// AMS Binary Relations
+defineSymbol(math, ams, rel, "\u2266", "\\leqq");
+defineSymbol(math, ams, rel, "\u2a7d", "\\leqslant");
+defineSymbol(math, ams, rel, "\u2a95", "\\eqslantless");
+defineSymbol(math, ams, rel, "\u2272", "\\lesssim");
+defineSymbol(math, ams, rel, "\u2a85", "\\lessapprox");
+defineSymbol(math, ams, rel, "\u224a", "\\approxeq");
+defineSymbol(math, ams, bin, "\u22d6", "\\lessdot");
+defineSymbol(math, ams, rel, "\u22d8", "\\lll");
+defineSymbol(math, ams, rel, "\u2276", "\\lessgtr");
+defineSymbol(math, ams, rel, "\u22da", "\\lesseqgtr");
+defineSymbol(math, ams, rel, "\u2a8b", "\\lesseqqgtr");
+defineSymbol(math, ams, rel, "\u2251", "\\doteqdot");
+defineSymbol(math, ams, rel, "\u2253", "\\risingdotseq");
+defineSymbol(math, ams, rel, "\u2252", "\\fallingdotseq");
+defineSymbol(math, ams, rel, "\u223d", "\\backsim");
+defineSymbol(math, ams, rel, "\u22cd", "\\backsimeq");
+defineSymbol(math, ams, rel, "\u2ac5", "\\subseteqq");
+defineSymbol(math, ams, rel, "\u22d0", "\\Subset");
+defineSymbol(math, ams, rel, "\u228f", "\\sqsubset");
+defineSymbol(math, ams, rel, "\u227c", "\\preccurlyeq");
+defineSymbol(math, ams, rel, "\u22de", "\\curlyeqprec");
+defineSymbol(math, ams, rel, "\u227e", "\\precsim");
+defineSymbol(math, ams, rel, "\u2ab7", "\\precapprox");
+defineSymbol(math, ams, rel, "\u22b2", "\\vartriangleleft");
+defineSymbol(math, ams, rel, "\u22b4", "\\trianglelefteq");
+defineSymbol(math, ams, rel, "\u22a8", "\\vDash");
+defineSymbol(math, ams, rel, "\u22aa", "\\Vvdash");
+defineSymbol(math, ams, rel, "\u2323", "\\smallsmile");
+defineSymbol(math, ams, rel, "\u2322", "\\smallfrown");
+defineSymbol(math, ams, rel, "\u224f", "\\bumpeq");
+defineSymbol(math, ams, rel, "\u224e", "\\Bumpeq");
+defineSymbol(math, ams, rel, "\u2267", "\\geqq");
+defineSymbol(math, ams, rel, "\u2a7e", "\\geqslant");
+defineSymbol(math, ams, rel, "\u2a96", "\\eqslantgtr");
+defineSymbol(math, ams, rel, "\u2273", "\\gtrsim");
+defineSymbol(math, ams, rel, "\u2a86", "\\gtrapprox");
+defineSymbol(math, ams, bin, "\u22d7", "\\gtrdot");
+defineSymbol(math, ams, rel, "\u22d9", "\\ggg");
+defineSymbol(math, ams, rel, "\u2277", "\\gtrless");
+defineSymbol(math, ams, rel, "\u22db", "\\gtreqless");
+defineSymbol(math, ams, rel, "\u2a8c", "\\gtreqqless");
+defineSymbol(math, ams, rel, "\u2256", "\\eqcirc");
+defineSymbol(math, ams, rel, "\u2257", "\\circeq");
+defineSymbol(math, ams, rel, "\u225c", "\\triangleq");
+defineSymbol(math, ams, rel, "\u223c", "\\thicksim");
+defineSymbol(math, ams, rel, "\u2248", "\\thickapprox");
+defineSymbol(math, ams, rel, "\u2ac6", "\\supseteqq");
+defineSymbol(math, ams, rel, "\u22d1", "\\Supset");
+defineSymbol(math, ams, rel, "\u2290", "\\sqsupset");
+defineSymbol(math, ams, rel, "\u227d", "\\succcurlyeq");
+defineSymbol(math, ams, rel, "\u22df", "\\curlyeqsucc");
+defineSymbol(math, ams, rel, "\u227f", "\\succsim");
+defineSymbol(math, ams, rel, "\u2ab8", "\\succapprox");
+defineSymbol(math, ams, rel, "\u22b3", "\\vartriangleright");
+defineSymbol(math, ams, rel, "\u22b5", "\\trianglerighteq");
+defineSymbol(math, ams, rel, "\u22a9", "\\Vdash");
+defineSymbol(math, ams, rel, "\u2223", "\\shortmid");
+defineSymbol(math, ams, rel, "\u2225", "\\shortparallel");
+defineSymbol(math, ams, rel, "\u226c", "\\between");
+defineSymbol(math, ams, rel, "\u22d4", "\\pitchfork");
+defineSymbol(math, ams, rel, "\u221d", "\\varpropto");
+defineSymbol(math, ams, rel, "\u25c0", "\\blacktriangleleft");
+defineSymbol(math, ams, rel, "\u2234", "\\therefore");
+defineSymbol(math, ams, rel, "\u220d", "\\backepsilon");
+defineSymbol(math, ams, rel, "\u25b6", "\\blacktriangleright");
+defineSymbol(math, ams, rel, "\u2235", "\\because");
+defineSymbol(math, ams, rel, "\u22d8", "\\llless");
+defineSymbol(math, ams, rel, "\u22d9", "\\gggtr");
+defineSymbol(math, ams, bin, "\u22b2", "\\lhd");
+defineSymbol(math, ams, bin, "\u22b3", "\\rhd");
+defineSymbol(math, ams, rel, "\u2242", "\\eqsim");
+defineSymbol(math, main, rel, "\u22c8", "\\Join");
+defineSymbol(math, ams, rel, "\u2251", "\\Doteq");
+
+// AMS Binary Operators
+defineSymbol(math, ams, bin, "\u2214", "\\dotplus");
+defineSymbol(math, ams, bin, "\u2216", "\\smallsetminus");
+defineSymbol(math, ams, bin, "\u22d2", "\\Cap");
+defineSymbol(math, ams, bin, "\u22d3", "\\Cup");
+defineSymbol(math, ams, bin, "\u2a5e", "\\doublebarwedge");
+defineSymbol(math, ams, bin, "\u229f", "\\boxminus");
+defineSymbol(math, ams, bin, "\u229e", "\\boxplus");
+defineSymbol(math, ams, bin, "\u22c7", "\\divideontimes");
+defineSymbol(math, ams, bin, "\u22c9", "\\ltimes");
+defineSymbol(math, ams, bin, "\u22ca", "\\rtimes");
+defineSymbol(math, ams, bin, "\u22cb", "\\leftthreetimes");
+defineSymbol(math, ams, bin, "\u22cc", "\\rightthreetimes");
+defineSymbol(math, ams, bin, "\u22cf", "\\curlywedge");
+defineSymbol(math, ams, bin, "\u22ce", "\\curlyvee");
+defineSymbol(math, ams, bin, "\u229d", "\\circleddash");
+defineSymbol(math, ams, bin, "\u229b", "\\circledast");
+defineSymbol(math, ams, bin, "\u22c5", "\\centerdot");
+defineSymbol(math, ams, bin, "\u22ba", "\\intercal");
+defineSymbol(math, ams, bin, "\u22d2", "\\doublecap");
+defineSymbol(math, ams, bin, "\u22d3", "\\doublecup");
+defineSymbol(math, ams, bin, "\u22a0", "\\boxtimes");
+
+// AMS Arrows
+defineSymbol(math, ams, rel, "\u21e2", "\\dashrightarrow");
+defineSymbol(math, ams, rel, "\u21e0", "\\dashleftarrow");
+defineSymbol(math, ams, rel, "\u21c7", "\\leftleftarrows");
+defineSymbol(math, ams, rel, "\u21c6", "\\leftrightarrows");
+defineSymbol(math, ams, rel, "\u21da", "\\Lleftarrow");
+defineSymbol(math, ams, rel, "\u219e", "\\twoheadleftarrow");
+defineSymbol(math, ams, rel, "\u21a2", "\\leftarrowtail");
+defineSymbol(math, ams, rel, "\u21ab", "\\looparrowleft");
+defineSymbol(math, ams, rel, "\u21cb", "\\leftrightharpoons");
+defineSymbol(math, ams, rel, "\u21b6", "\\curvearrowleft");
+defineSymbol(math, ams, rel, "\u21ba", "\\circlearrowleft");
+defineSymbol(math, ams, rel, "\u21b0", "\\Lsh");
+defineSymbol(math, ams, rel, "\u21c8", "\\upuparrows");
+defineSymbol(math, ams, rel, "\u21bf", "\\upharpoonleft");
+defineSymbol(math, ams, rel, "\u21c3", "\\downharpoonleft");
+defineSymbol(math, ams, rel, "\u22b8", "\\multimap");
+defineSymbol(math, ams, rel, "\u21ad", "\\leftrightsquigarrow");
+defineSymbol(math, ams, rel, "\u21c9", "\\rightrightarrows");
+defineSymbol(math, ams, rel, "\u21c4", "\\rightleftarrows");
+defineSymbol(math, ams, rel, "\u21a0", "\\twoheadrightarrow");
+defineSymbol(math, ams, rel, "\u21a3", "\\rightarrowtail");
+defineSymbol(math, ams, rel, "\u21ac", "\\looparrowright");
+defineSymbol(math, ams, rel, "\u21b7", "\\curvearrowright");
+defineSymbol(math, ams, rel, "\u21bb", "\\circlearrowright");
+defineSymbol(math, ams, rel, "\u21b1", "\\Rsh");
+defineSymbol(math, ams, rel, "\u21ca", "\\downdownarrows");
+defineSymbol(math, ams, rel, "\u21be", "\\upharpoonright");
+defineSymbol(math, ams, rel, "\u21c2", "\\downharpoonright");
+defineSymbol(math, ams, rel, "\u21dd", "\\rightsquigarrow");
+defineSymbol(math, ams, rel, "\u21dd", "\\leadsto");
+defineSymbol(math, ams, rel, "\u21db", "\\Rrightarrow");
+defineSymbol(math, ams, rel, "\u21be", "\\restriction");
+
+defineSymbol(math, main, textord, "\u2018", "`");
+defineSymbol(math, main, textord, "$", "\\$");
+defineSymbol(math, main, textord, "%", "\\%");
+defineSymbol(math, main, textord, "_", "\\_");
+defineSymbol(math, main, textord, "\u2220", "\\angle");
+defineSymbol(math, main, textord, "\u221e", "\\infty");
+defineSymbol(math, main, textord, "\u2032", "\\prime");
+defineSymbol(math, main, textord, "\u25b3", "\\triangle");
+defineSymbol(math, main, textord, "\u0393", "\\Gamma");
+defineSymbol(math, main, textord, "\u0394", "\\Delta");
+defineSymbol(math, main, textord, "\u0398", "\\Theta");
+defineSymbol(math, main, textord, "\u039b", "\\Lambda");
+defineSymbol(math, main, textord, "\u039e", "\\Xi");
+defineSymbol(math, main, textord, "\u03a0", "\\Pi");
+defineSymbol(math, main, textord, "\u03a3", "\\Sigma");
+defineSymbol(math, main, textord, "\u03a5", "\\Upsilon");
+defineSymbol(math, main, textord, "\u03a6", "\\Phi");
+defineSymbol(math, main, textord, "\u03a8", "\\Psi");
+defineSymbol(math, main, textord, "\u03a9", "\\Omega");
+defineSymbol(math, main, textord, "\u00ac", "\\neg");
+defineSymbol(math, main, textord, "\u00ac", "\\lnot");
+defineSymbol(math, main, textord, "\u22a4", "\\top");
+defineSymbol(math, main, textord, "\u22a5", "\\bot");
+defineSymbol(math, main, textord, "\u2205", "\\emptyset");
+defineSymbol(math, ams, textord, "\u2205", "\\varnothing");
+defineSymbol(math, main, mathord, "\u03b1", "\\alpha");
+defineSymbol(math, main, mathord, "\u03b2", "\\beta");
+defineSymbol(math, main, mathord, "\u03b3", "\\gamma");
+defineSymbol(math, main, mathord, "\u03b4", "\\delta");
+defineSymbol(math, main, mathord, "\u03f5", "\\epsilon");
+defineSymbol(math, main, mathord, "\u03b6", "\\zeta");
+defineSymbol(math, main, mathord, "\u03b7", "\\eta");
+defineSymbol(math, main, mathord, "\u03b8", "\\theta");
+defineSymbol(math, main, mathord, "\u03b9", "\\iota");
+defineSymbol(math, main, mathord, "\u03ba", "\\kappa");
+defineSymbol(math, main, mathord, "\u03bb", "\\lambda");
+defineSymbol(math, main, mathord, "\u03bc", "\\mu");
+defineSymbol(math, main, mathord, "\u03bd", "\\nu");
+defineSymbol(math, main, mathord, "\u03be", "\\xi");
+defineSymbol(math, main, mathord, "o", "\\omicron");
+defineSymbol(math, main, mathord, "\u03c0", "\\pi");
+defineSymbol(math, main, mathord, "\u03c1", "\\rho");
+defineSymbol(math, main, mathord, "\u03c3", "\\sigma");
+defineSymbol(math, main, mathord, "\u03c4", "\\tau");
+defineSymbol(math, main, mathord, "\u03c5", "\\upsilon");
+defineSymbol(math, main, mathord, "\u03d5", "\\phi");
+defineSymbol(math, main, mathord, "\u03c7", "\\chi");
+defineSymbol(math, main, mathord, "\u03c8", "\\psi");
+defineSymbol(math, main, mathord, "\u03c9", "\\omega");
+defineSymbol(math, main, mathord, "\u03b5", "\\varepsilon");
+defineSymbol(math, main, mathord, "\u03d1", "\\vartheta");
+defineSymbol(math, main, mathord, "\u03d6", "\\varpi");
+defineSymbol(math, main, mathord, "\u03f1", "\\varrho");
+defineSymbol(math, main, mathord, "\u03c2", "\\varsigma");
+defineSymbol(math, main, mathord, "\u03c6", "\\varphi");
+defineSymbol(math, main, bin, "\u2217", "*");
+defineSymbol(math, main, bin, "+", "+");
+defineSymbol(math, main, bin, "\u2212", "-");
+defineSymbol(math, main, bin, "\u22c5", "\\cdot");
+defineSymbol(math, main, bin, "\u2218", "\\circ");
+defineSymbol(math, main, bin, "\u00f7", "\\div");
+defineSymbol(math, main, bin, "\u00b1", "\\pm");
+defineSymbol(math, main, bin, "\u00d7", "\\times");
+defineSymbol(math, main, bin, "\u2229", "\\cap");
+defineSymbol(math, main, bin, "\u222a", "\\cup");
+defineSymbol(math, main, bin, "\u2216", "\\setminus");
+defineSymbol(math, main, bin, "\u2227", "\\land");
+defineSymbol(math, main, bin, "\u2228", "\\lor");
+defineSymbol(math, main, bin, "\u2227", "\\wedge");
+defineSymbol(math, main, bin, "\u2228", "\\vee");
+defineSymbol(math, main, textord, "\u221a", "\\surd");
+defineSymbol(math, main, open, "(", "(");
+defineSymbol(math, main, open, "[", "[");
+defineSymbol(math, main, open, "\u27e8", "\\langle");
+defineSymbol(math, main, open, "\u2223", "\\lvert");
+defineSymbol(math, main, close, ")", ")");
+defineSymbol(math, main, close, "]", "]");
+defineSymbol(math, main, close, "?", "?");
+defineSymbol(math, main, close, "!", "!");
+defineSymbol(math, main, close, "\u27e9", "\\rangle");
+defineSymbol(math, main, close, "\u2223", "\\rvert");
+defineSymbol(math, main, rel, "=", "=");
+defineSymbol(math, main, rel, "<", "<");
+defineSymbol(math, main, rel, ">", ">");
+defineSymbol(math, main, rel, ":", ":");
+defineSymbol(math, main, rel, "\u2248", "\\approx");
+defineSymbol(math, main, rel, "\u2245", "\\cong");
+defineSymbol(math, main, rel, "\u2265", "\\ge");
+defineSymbol(math, main, rel, "\u2265", "\\geq");
+defineSymbol(math, main, rel, "\u2190", "\\gets");
+defineSymbol(math, main, rel, "\u2208", "\\in");
+defineSymbol(math, main, rel, "\u2209", "\\notin");
+defineSymbol(math, main, rel, "\u2282", "\\subset");
+defineSymbol(math, main, rel, "\u2283", "\\supset");
+defineSymbol(math, main, rel, "\u2286", "\\subseteq");
+defineSymbol(math, main, rel, "\u2287", "\\supseteq");
+defineSymbol(math, ams, rel, "\u2288", "\\nsubseteq");
+defineSymbol(math, ams, rel, "\u2289", "\\nsupseteq");
+defineSymbol(math, main, rel, "\u22a8", "\\models");
+defineSymbol(math, main, rel, "\u2190", "\\leftarrow");
+defineSymbol(math, main, rel, "\u2264", "\\le");
+defineSymbol(math, main, rel, "\u2264", "\\leq");
+defineSymbol(math, main, rel, "\u2260", "\\ne");
+defineSymbol(math, main, rel, "\u2260", "\\neq");
+defineSymbol(math, main, rel, "\u2192", "\\rightarrow");
+defineSymbol(math, main, rel, "\u2192", "\\to");
+defineSymbol(math, ams, rel, "\u2271", "\\ngeq");
+defineSymbol(math, ams, rel, "\u2270", "\\nleq");
+defineSymbol(math, main, spacing, null, "\\!");
+defineSymbol(math, main, spacing, "\u00a0", "\\ ");
+defineSymbol(math, main, spacing, "\u00a0", "~");
+defineSymbol(math, main, spacing, null, "\\,");
+defineSymbol(math, main, spacing, null, "\\:");
+defineSymbol(math, main, spacing, null, "\\;");
+defineSymbol(math, main, spacing, null, "\\enspace");
+defineSymbol(math, main, spacing, null, "\\qquad");
+defineSymbol(math, main, spacing, null, "\\quad");
+defineSymbol(math, main, spacing, "\u00a0", "\\space");
+defineSymbol(math, main, punct, ",", ",");
+defineSymbol(math, main, punct, ";", ";");
+defineSymbol(math, main, punct, ":", "\\colon");
+defineSymbol(math, ams, textord, "\u22bc", "\\barwedge");
+defineSymbol(math, ams, textord, "\u22bb", "\\veebar");
+defineSymbol(math, main, bin, "\u2299", "\\odot");
+defineSymbol(math, main, bin, "\u2295", "\\oplus");
+defineSymbol(math, main, bin, "\u2297", "\\otimes");
+defineSymbol(math, main, textord, "\u2202", "\\partial");
+defineSymbol(math, main, bin, "\u2298", "\\oslash");
+defineSymbol(math, ams, textord, "\u229a", "\\circledcirc");
+defineSymbol(math, ams, textord, "\u22a1", "\\boxdot");
+defineSymbol(math, main, bin, "\u25b3", "\\bigtriangleup");
+defineSymbol(math, main, bin, "\u25bd", "\\bigtriangledown");
+defineSymbol(math, main, bin, "\u2020", "\\dagger");
+defineSymbol(math, main, bin, "\u22c4", "\\diamond");
+defineSymbol(math, main, bin, "\u22c6", "\\star");
+defineSymbol(math, main, bin, "\u25c3", "\\triangleleft");
+defineSymbol(math, main, bin, "\u25b9", "\\triangleright");
+defineSymbol(math, main, open, "{", "\\{");
+defineSymbol(math, main, close, "}", "\\}");
+defineSymbol(math, main, open, "{", "\\lbrace");
+defineSymbol(math, main, close, "}", "\\rbrace");
+defineSymbol(math, main, open, "[", "\\lbrack");
+defineSymbol(math, main, close, "]", "\\rbrack");
+defineSymbol(math, main, open, "\u230a", "\\lfloor");
+defineSymbol(math, main, close, "\u230b", "\\rfloor");
+defineSymbol(math, main, open, "\u2308", "\\lceil");
+defineSymbol(math, main, close, "\u2309", "\\rceil");
+defineSymbol(math, main, textord, "\\", "\\backslash");
+defineSymbol(math, main, textord, "\u2223", "|");
+defineSymbol(math, main, textord, "\u2223", "\\vert");
+defineSymbol(math, main, textord, "\u2225", "\\|");
+defineSymbol(math, main, textord, "\u2225", "\\Vert");
+defineSymbol(math, main, textord, "\u2191", "\\uparrow");
+defineSymbol(math, main, textord, "\u21d1", "\\Uparrow");
+defineSymbol(math, main, textord, "\u2193", "\\downarrow");
+defineSymbol(math, main, textord, "\u21d3", "\\Downarrow");
+defineSymbol(math, main, textord, "\u2195", "\\updownarrow");
+defineSymbol(math, main, textord, "\u21d5", "\\Updownarrow");
+defineSymbol(math, math, op, "\u2210", "\\coprod");
+defineSymbol(math, math, op, "\u22c1", "\\bigvee");
+defineSymbol(math, math, op, "\u22c0", "\\bigwedge");
+defineSymbol(math, math, op, "\u2a04", "\\biguplus");
+defineSymbol(math, math, op, "\u22c2", "\\bigcap");
+defineSymbol(math, math, op, "\u22c3", "\\bigcup");
+defineSymbol(math, math, op, "\u222b", "\\int");
+defineSymbol(math, math, op, "\u222b", "\\intop");
+defineSymbol(math, math, op, "\u222c", "\\iint");
+defineSymbol(math, math, op, "\u222d", "\\iiint");
+defineSymbol(math, math, op, "\u220f", "\\prod");
+defineSymbol(math, math, op, "\u2211", "\\sum");
+defineSymbol(math, math, op, "\u2a02", "\\bigotimes");
+defineSymbol(math, math, op, "\u2a01", "\\bigoplus");
+defineSymbol(math, math, op, "\u2a00", "\\bigodot");
+defineSymbol(math, math, op, "\u222e", "\\oint");
+defineSymbol(math, math, op, "\u2a06", "\\bigsqcup");
+defineSymbol(math, math, op, "\u222b", "\\smallint");
+defineSymbol(math, main, punct, "\u2026", "\\ldots");
+defineSymbol(math, main, inner, "\u22ef", "\\cdots");
+defineSymbol(math, main, inner, "\u22f1", "\\ddots");
+defineSymbol(math, main, textord, "\u22ee", "\\vdots");
+defineSymbol(math, main, accent, "\u00b4", "\\acute");
+defineSymbol(math, main, accent, "\u0060", "\\grave");
+defineSymbol(math, main, accent, "\u00a8", "\\ddot");
+defineSymbol(math, main, accent, "\u007e", "\\tilde");
+defineSymbol(math, main, accent, "\u00af", "\\bar");
+defineSymbol(math, main, accent, "\u02d8", "\\breve");
+defineSymbol(math, main, accent, "\u02c7", "\\check");
+defineSymbol(math, main, accent, "\u005e", "\\hat");
+defineSymbol(math, main, accent, "\u20d7", "\\vec");
+defineSymbol(math, main, accent, "\u02d9", "\\dot");
+
+defineSymbol(text, main, spacing, "\u00a0", "\\ ");
+defineSymbol(text, main, spacing, "\u00a0", " ");
+defineSymbol(text, main, spacing, "\u00a0", "~");
 
 // There are lots of symbols which are the same, so we add them in afterwards.
 
@@ -2530,34 +595,20 @@ var symbols = {
 var mathTextSymbols = "0123456789/@.\"";
 for (var i = 0; i < mathTextSymbols.length; i++) {
     var ch = mathTextSymbols.charAt(i);
-    symbols.math[ch] = {
-        font: "main",
-        group: "textord"
-    };
+    defineSymbol(math, main, textord, ch, ch);
 }
 
 // All of these are textords in text mode
 var textSymbols = "0123456789`!@*()-=+[]'\";:?/.,";
 for (var i = 0; i < textSymbols.length; i++) {
     var ch = textSymbols.charAt(i);
-    symbols.text[ch] = {
-        font: "main",
-        group: "textord"
-    };
+    defineSymbol(text, main, textord, ch, ch);
 }
 
 // All of these are textords in text mode, and mathords in math mode
 var letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 for (var i = 0; i < letters.length; i++) {
     var ch = letters.charAt(i);
-    symbols.math[ch] = {
-        font: "main",
-        group: "mathord"
-    };
-    symbols.text[ch] = {
-        font: "main",
-        group: "textord"
-    };
+    defineSymbol(math, main, mathord, ch, ch);
+    defineSymbol(text, main, textord, ch, ch);
 }
-
-module.exports = symbols;

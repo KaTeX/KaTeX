@@ -165,7 +165,7 @@ Parser.prototype.handleInfixNodes = function (body, mode) {
             }
             overIndex = i;
             funcName = node.value.replaceWith;
-            func = functions.funcs[funcName];
+            func = functions[funcName];
         }
     }
 
@@ -187,7 +187,8 @@ Parser.prototype.handleInfixNodes = function (body, mode) {
             denomNode = new ParseNode("ordgroup", denomBody, mode);
         }
 
-        var value = func.handler(funcName, numerNode, denomNode);
+        var value = this.callFunction(
+            funcName, func, [numerNode, denomNode], null);
         return [new ParseNode(value.type, value, mode)];
     } else {
         return body;
@@ -209,7 +210,7 @@ Parser.prototype.handleSupSubscript = function(pos, mode, symbol, name) {
     } else if (group.isFunction) {
         // ^ and _ have a greediness, so handle interactions with functions'
         // greediness
-        var funcGreediness = functions.funcs[group.result.result].greediness;
+        var funcGreediness = functions[group.result.result].greediness;
         if (funcGreediness > SUPSUB_GREEDINESS) {
             return this.parseFunction(pos, mode);
         } else {
@@ -371,11 +372,18 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
         // Build the environment object. Arguments and other information will
         // be made available to the begin and end methods using properties.
         var env = environments[envName];
-        var args = [null, mode, envName];
+        var args = [];
         var newPos = this.parseArguments(
             begin.position, mode, "\\begin{" + envName + "}", env, args);
-        args[0] = newPos;
-        var result = env.handler.apply(this, args);
+        var context = {
+            pos: newPos,
+            mode: mode,
+            envName: envName,
+            parser: this,
+            lexer: this.lexer,
+            positions: args.pop()
+        };
+        var result = env.handler(context, args);
         var endLex = this.lexer.lex(result.position, mode);
         this.expect(endLex, "\\end");
         var end = this.parseFunction(result.position, mode);
@@ -425,17 +433,17 @@ Parser.prototype.parseFunction = function(pos, mode) {
     if (baseGroup) {
         if (baseGroup.isFunction) {
             var func = baseGroup.result.result;
-            var funcData = functions.funcs[func];
+            var funcData = functions[func];
             if (mode === "text" && !funcData.allowedInText) {
                 throw new ParseError(
                     "Can't use function '" + func + "' in text mode",
                     this.lexer, baseGroup.position);
             }
 
-            var args = [func];
+            var args = [];
             var newPos = this.parseArguments(
                 baseGroup.result.position, mode, func, funcData, args);
-            var result = functions.funcs[func].handler.apply(this, args);
+            var result = this.callFunction(func, funcData, args, args.pop());
             return new ParseResult(
                 new ParseNode(result.type, result, mode),
                 newPos);
@@ -447,6 +455,18 @@ Parser.prototype.parseFunction = function(pos, mode) {
     }
 };
 
+/**
+ * Call a function handler with a suitable context and arguments.
+ */
+Parser.prototype.callFunction = function(name, data, args, positions) {
+    var context = {
+        func: name,
+        parser: this,
+        lexer: this.lexer,
+        positions: positions
+    };
+    return data.handler(context, args);
+};
 
 /**
  * Parses the arguments of a function or environment
@@ -495,7 +515,7 @@ Parser.prototype.parseArguments = function(pos, mode, func, funcData, args) {
         var argNode;
         if (arg.isFunction) {
             var argGreediness =
-                functions.funcs[arg.result.result].greediness;
+                functions[arg.result.result].greediness;
             if (argGreediness > baseGreediness) {
                 argNode = this.parseFunction(newPos, mode);
             } else {
@@ -627,7 +647,7 @@ Parser.prototype.parseOptionalGroup = function(pos, mode) {
 Parser.prototype.parseSymbol = function(pos, mode) {
     var nucleus = this.lexer.lex(pos, mode);
 
-    if (functions.funcs[nucleus.text]) {
+    if (functions[nucleus.text]) {
         // If there exists a function with this name, we return the function and
         // say that it is a function.
         return new ParseFuncOrArgument(
