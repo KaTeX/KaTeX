@@ -17,5 +17,5 @@ Once you have these things, run
 
     make metrics
 
-which should generate new metrics and place them into `fontMetrics.js`. You're
-done!
+which should generate new metrics and place them into `fontMetricsData.json`.
+You're done!

@@ -83,7 +83,7 @@ PERL=perl
 PYTHON=$(shell python2 --version >/dev/null 2>&1 && echo python2 || echo python)
 
 metrics:
-	cd metrics && $(PERL) ./mapping.pl | $(PYTHON) ./extract_tfms.py | $(PYTHON) ./extract_ttfs.py | $(PYTHON) ./replace_line.py
+	cd metrics && $(PERL) ./mapping.pl | $(PYTHON) ./extract_tfms.py | $(PYTHON) ./extract_ttfs.py > ../src/fontMetricsData.json
 
 clean:
 	rm -rf build/*
