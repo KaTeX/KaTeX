@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import fontforge
+from fontTools.ttLib import TTFont
 import sys
 import json
 
@@ -60,36 +60,50 @@ def main():
     start_json = json.load(sys.stdin)
 
     for font, chars in metrics_to_extract.iteritems():
-        fontInfo = fontforge.open("../static/fonts/KaTeX_" + font + ".ttf")
+        fontInfo = TTFont("../static/fonts/KaTeX_" + font + ".ttf")
+        glyf = fontInfo["glyf"]
+        unitsPerEm = float(fontInfo["head"].unitsPerEm)
 
-        for glyph in fontInfo.glyphs():
-            try:
-                char = unichr(glyph.unicode)
-            except ValueError:
+        # We keep ALL Unicode cmaps, not just fontInfo["cmap"].getcmap(3, 1).
+        # This is playing it extra safe, since it reports inconsistencies.
+        # Platform 0 is Unicode, platform 3 is Windows. For platform 3,
+        # encoding 1 is UCS-2 and encoding 10 is UCS-4.
+        cmap = [t.cmap for t in fontInfo["cmap"].tables
+                if (t.platformID == 0)
+                or (t.platformID == 3 and t.platEncID in (1, 10))]
+
+        for char, base_char in chars.iteritems():
+            code = ord(char)
+            names = set(t.get(code) for t in cmap)
+            if not names:
+                sys.stderr.write(
+                    "Codepoint {} of font {} maps to no name\n"
+                    .format(code, font))
                 continue
+            if len(names) != 1:
+                sys.stderr.write(
+                    "Codepoint {} of font {} maps to multiple names: {}\n"
+                    .format(code, font, ", ".join(sorted(names))))
+                continue
+            name = names.pop()
 
-            if char in chars:
-                _, depth, _, height = glyph.boundingBox()
+            height = depth = italic = skew = 0
+            glyph = glyf[name]
+            if glyph.numberOfContours:
+                height = glyph.yMax
+                depth = -glyph.yMin
+            if base_char:
+                base_char_str = str(ord(base_char))
+                base_metrics = start_json[font][base_char_str]
+                italic = base_metrics["italic"]
+                skew = base_metrics["skew"]
 
-                depth = -depth
-
-                base_char = chars[char]
-                if base_char:
-                    base_char_str = str(ord(base_char))
-                    base_metrics = start_json[font][base_char_str]
-
-                    italic = base_metrics["italic"]
-                    skew = base_metrics["skew"]
-                else:
-                    italic = 0
-                    skew = 0
-
-                start_json[font][str(ord(char))] = {
-                    "height": height / fontInfo.em,
-                    "depth": depth / fontInfo.em,
-                    "italic": italic,
-                    "skew": skew,
-                }
+            start_json[font][str(code)] = {
+                "height": height / unitsPerEm,
+                "depth": depth / unitsPerEm,
+                "italic": italic,
+                "skew": skew,
+            }
 
     sys.stdout.write(
         json.dumps(start_json, separators=(',', ':'), sort_keys=True))

@@ -632,7 +632,7 @@
   "8463": {"depth": 0.0, "height": 0.68889, "italic": 0.0, "skew": 0.0}
 },
 "Main-Regular": {
-  "32": {"depth": -0.0, "height": 0.0, "italic": 0, "skew": 0},
+  "32": {"depth": 0.0, "height": 0.0, "italic": 0, "skew": 0},
   "33": {"depth": 0.0, "height": 0.69444, "italic": 0.0, "skew": 0.0},
   "34": {"depth": 0.0, "height": 0.69444, "italic": 0.0, "skew": 0.0},
   "35": {"depth": 0.19444, "height": 0.69444, "italic": 0.0, "skew": 0.0},
@@ -727,7 +727,7 @@
   "124": {"depth": 0.25, "height": 0.75, "italic": 0.0, "skew": 0.0},
   "125": {"depth": 0.25, "height": 0.75, "italic": 0.0, "skew": 0.0},
   "126": {"depth": 0.35, "height": 0.31786, "italic": 0.0, "skew": 0.0},
-  "160": {"depth": -0.0, "height": 0.0, "italic": 0, "skew": 0},
+  "160": {"depth": 0.0, "height": 0.0, "italic": 0, "skew": 0},
   "168": {"depth": 0.0, "height": 0.66786, "italic": 0.0, "skew": 0.0},
   "172": {"depth": 0.0, "height": 0.43056, "italic": 0.0, "skew": 0.0},
   "175": {"depth": 0.0, "height": 0.56778, "italic": 0.0, "skew": 0.0},
@@ -778,7 +778,7 @@
   "8221": {"depth": 0.0, "height": 0.69444, "italic": 0.0, "skew": 0.0},
   "8224": {"depth": 0.19444, "height": 0.69444, "italic": 0.0, "skew": 0.0},
   "8225": {"depth": 0.19444, "height": 0.69444, "italic": 0.0, "skew": 0.0},
-  "8230": {"depth": -0.0, "height": 0.12, "italic": 0, "skew": 0},
+  "8230": {"depth": 0.0, "height": 0.12, "italic": 0, "skew": 0},
   "8242": {"depth": 0.0, "height": 0.55556, "italic": 0.0, "skew": 0.0},
   "8407": {"depth": 0.0, "height": 0.71444, "italic": 0.15382, "skew": 0.0},
   "8463": {"depth": 0.0, "height": 0.68889, "italic": 0.0, "skew": 0.0},
