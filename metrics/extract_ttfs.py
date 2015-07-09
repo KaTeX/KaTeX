@@ -84,7 +84,7 @@ def main():
                     italic = 0
                     skew = 0
 
-                start_json[font][ord(char)] = {
+                start_json[font][str(ord(char))] = {
                     "height": height / fontInfo.em,
                     "depth": depth / fontInfo.em,
                     "italic": italic,

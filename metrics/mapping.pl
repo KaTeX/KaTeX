@@ -135,8 +135,6 @@ $map{cmmi10} = {
     0x2E => 0x25B9,         # \triangleright
     0x2F => 0x25C3,         # \triangleleft
 
-    0x3A => 0x2E,           # .
-    0x3B => 0x2C,           # ,
     0x3C => 0x3C,           # <
     0x3D => 0x2215,         # /
     0x3E => 0x3E,           # >
@@ -148,16 +146,19 @@ $map{cmmi10} = {
     0x5F => 0x2322,         # \frown
     0x60 => 0x2113,         # \ell
 
-    0x7B => 0x131,          # \imath
-    0x7C => 0x237,          # \jmath
     0x7D => 0x2118,         # \wp
     0x7E => [0x20D7,-653,0],# \vec
+  ],
+
+  "Main-Italic" => [
+    0x7B => 0x131,          # \imath
+    0x7C => 0x237,          # \jmath
   ]
 };
 
 $map{cmsy10} = {
   "Main-Regular" => [
-    [0,1] => 0x2212,        # -
+    0 => 0x2212,            # -
     1 => 0x22C5,            # \cdot
     2 => 0xD7,              # \times
     3 => 0x2217,            # \ast
@@ -425,8 +426,6 @@ $map{cmti10} = {
     [7,8] => 0x3A5,         # \Upsilon, \Phi
     [9,0xA] => 0x3A8,       # \Psi, \Omega
 
-    0x10 => 0x131,          # \imath (roman)
-    0x11 => 0x237,          # \jmath (roman)
     0x12 => [0x300,-511,0], # \grave (combining)
     0x13 => [0x301,-511,0], # \acute (combining)
     0x14 => [0x30C,-511,0], # \check (combining)
@@ -557,8 +556,6 @@ $map{cmmib10} = {
     0x2E => 0x25B9,         # \triangleright
     0x2F => 0x25C3,         # \triangleleft
 
-    0x3A => 0x2E,           # .
-    0x3B => 0x2C,           # ,
     0x3C => 0x3C,           # <
     0x3D => 0x2215,         # /
     0x3E => 0x3E,           # >
@@ -571,8 +568,6 @@ $map{cmmib10} = {
     0x60 => 0x2113,         # \ell
     0x68 => 0x210F,         # \hbar (bar added below)
 
-    0x7B => 0x131,          # \imath
-    0x7C => 0x237,          # \jmath
     0x7D => 0x2118,         # \wp
     0x7E => [0x20D7,-729,0],# \vec
   ],
@@ -580,7 +575,7 @@ $map{cmmib10} = {
 
 $map{cmbsy10} = {
   "Main-Bold" => [
-    [0,1] => 0x2212,        # -
+    0 => 0x2212,            # -
     1 => 0x22C5,            # \cdot
     2 => 0xD7,              # \times
     3 => 0x2217,            # \ast
@@ -973,6 +968,12 @@ sub add_to_output {
         "yshift" => $yshift
     };
 
+    if (defined($output{$mjfont}{$to})) {
+        print STDERR "Duplicate mapping $to for $mjfont: " .
+            $output{$mjfont}{$to}{font} . ":" .
+            $output{$mjfont}{$to}{char} . " vs. $cmfont:$from\n";
+        die "Duplicate mapping!"; # disable this line to see all of them
+    }
     $output{$mjfont}{$to} = $data;
 }
 
