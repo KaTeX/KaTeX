@@ -10,7 +10,10 @@ freenode](http://webchat.freenode.net/?channels=katex).
 If you'd like to contribute, try contributing new symbols or functions that
 KaTeX doesn't currently support. The wiki has a page which lists [all of the
 supported
-functions](https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX). You
+functions](https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX) as 
+well as a page that describes how to [examine TeX commands and where to find
+rules](https://github.com/Khan/KaTeX/wiki/Examining-TeX) which can be quite
+useful when adding new commands. You
 can check there to see if we don't support a function you like, or try your
 function in the interactive demo at
 [http://khan.github.io/KaTeX/](http://khan.github.io/KaTeX/).
