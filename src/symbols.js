@@ -2503,6 +2503,17 @@ var symbols = {
             font: "main",
             group: "accent",
             replace: "\u02d9"
+        },
+
+        "\\imath": {
+            font: "main",
+            group: "mathord",
+            replace: "\u0131"
+        },
+        "\\jmath": {
+            font: "main",
+            group: "mathord",
+            replace: "\u0237"
         }
     },
     "text": {

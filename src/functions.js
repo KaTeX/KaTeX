@@ -213,6 +213,20 @@ var delimiters = [
     "."
 ];
 
+var fontAliases = {
+    // amstex.sty
+    "\\frak": "\\mathfrak",
+    "\\Bbb": "\\mathbb",
+    "\\bold": "\\mathbf",
+    // article.cls
+    "\\rm": "\\mathrm",
+    "\\sf": "\\mathsf",
+    "\\tt": "\\mathtt",
+    "\\bf": "\\mathbf",
+    "\\it": "\\mathit",
+    "\\cal": "\\mathcal"
+};
+
 /*
  * This is a list of functions which each have the same function but have
  * different names so that we don't have to duplicate the data a bunch of times.
@@ -471,6 +485,30 @@ var duplicatedFunctions = [
         ],
         data: {
             numArgs: 0
+        }
+    },
+
+    {
+        funcs: [
+            // styles
+            "\\mathrm", "\\mathit", "\\mathbf",
+
+            // families
+            "\\mathbb",  "\\mathcal", "\\mathfrak", "\\mathscr", "\\mathsf",
+            "\\mathtt"
+        ],
+        data: {
+            numArgs: 1,
+            handler: function (func, body) {
+                if (func in fontAliases) {
+                    func = fontAliases[func];
+                }
+                return {
+                    type: "font",
+                    font: func.slice(1),
+                    body: body
+                };
+            }
         }
     },
 

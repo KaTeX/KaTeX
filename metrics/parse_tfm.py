@@ -64,11 +64,14 @@ class TfmFile(object):
         self.ligkern_program = LigKernProgram(ligkern_table)
         self.kern_table = kern_table
 
-    def get_char_metrics(self, char_num):
+    def get_char_metrics(self, char_num, zero_indexed=False):
         if char_num < self.start_char or char_num > self.end_char:
             raise RuntimeError("Invalid character number")
 
-        info = self.char_info[char_num + self.start_char]
+        if zero_indexed:
+            info = self.char_info[char_num - self.start_char]
+        else:
+            info = self.char_info[char_num + self.start_char]
 
         char_kern_table = {}
         if info.has_ligkern():

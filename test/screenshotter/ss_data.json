@@ -19,6 +19,18 @@
     "LeftRight": "http://localhost:7936/test/screenshotter/test.html?m=\\left( x^2 \\right) \\left\\{ x^{x^{x^{x^x}}} \\right.",
     "LeftRightListStyling": "http://localhost:7936/test/screenshotter/test.html?m=a+\\left(x+y\\right)-x",
     "LeftRightStyleSizing": "http://localhost:7936/test/screenshotter/test.html?m=+\\left\\{\\rule{0.1em}{1em}\\right.x^{+\\left\\{\\rule{0.1em}{1em}\\right.x^{+\\left\\{\\rule{0.1em}{1em}\\right.}}",
+
+    "MathDefaultFonts": "http://localhost:7936/test/screenshotter/test.html?m=Ax2k\\breve{a}\\omega\\Omega\\imath+\\KaTeX",
+    "MathBb": "http://localhost:7936/test/screenshotter/test.html?m=\\mathbb{Ax2k\\breve{a}\\omega\\Omega\\imath+\\KaTeX}",
+    "MathBf": "http://localhost:7936/test/screenshotter/test.html?m=\\mathbf{Ax2k\\breve{a}\\omega\\Omega\\imath+\\KaTeX}",
+    "MathCal": "http://localhost:7936/test/screenshotter/test.html?m=\\mathcal{Ax2k\\breve{a}\\omega\\Omega\\imath+\\KaTeX}",
+    "MathFrak": "http://localhost:7936/test/screenshotter/test.html?m=\\mathfrak{Ax2k\\breve{a}\\omega\\Omega\\imath+\\KaTeX}",
+    "MathIt": "http://localhost:7936/test/screenshotter/test.html?m=\\mathit{Ax2k\\breve{a}\\omega\\Omega\\imath+\\KaTeX}",
+    "MathRm": "http://localhost:7936/test/screenshotter/test.html?m=\\mathrm{Ax2k\\breve{a}\\omega\\Omega\\imath+\\KaTeX}",
+    "MathSf": "http://localhost:7936/test/screenshotter/test.html?m=\\mathsf{Ax2k\\breve{a}\\omega\\Omega\\imath+\\KaTeX}",
+    "MathScr": "http://localhost:7936/test/screenshotter/test.html?m=\\mathscr{Ax2k\\breve{a}\\omega\\Omega\\imath+\\KaTeX}",
+    "MathTt": "http://localhost:7936/test/screenshotter/test.html?m=\\mathtt{Ax2k\\breve{a}\\omega\\Omega\\imath+\\KaTeX}",
+
     "NestedFractions": "http://localhost:7936/test/screenshotter/test.html?m=\\dfrac{\\frac{a}{b}}{\\frac{c}{d}}\\dfrac{\\dfrac{a}{b}}{\\dfrac{c}{d}}\\frac{\\frac{a}{b}}{\\frac{c}{d}}",
     "NullDelimiterInteraction": "http://localhost:7936/test/screenshotter/test.html?m=a \\bigl. + 2 \\quad \\left. + a \\right)",
     "OpLimits": "http://localhost:7936/test/screenshotter/test.html?m={\\sin_2^2 \\lim_2^2 \\int_2^2 \\sum_2^2}{\\displaystyle \\lim_2^2 \\int_2^2 \\intop_2^2 \\sum_2^2}",
