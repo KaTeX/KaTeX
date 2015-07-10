@@ -1,6 +1,7 @@
 {
     "Accents": "http://localhost:7936/test/screenshotter/test.html?m=\\vec{A}\\vec{x}\\vec x^2\\vec{x}_2^2\\vec{A}^2\\vec{xA}^2",
     "Arrays": "http://localhost:7936/test/screenshotter/test.html?m=\\left(\\begin{array}{rlc}1%262%263\\\\1+1%262+1%263+1\\cr1\\over2%26\\scriptstyle 1/2%26\\frac12\\\\[1ex]\\begin{pmatrix}x\\\\y\\end{pmatrix}%260%26\\begin{vmatrix}a%26b\\\\c%26d\\end{vmatrix}\\end{array}\\right]",
+    "ArrayType": "http://localhost:7936/test/screenshotter/test.html?m=1\\begin{array}{c}2\\\\3\\end{array}4",
     "Baseline": "http://localhost:7936/test/screenshotter/test.html?m=a+b-c\\cdot d/e",
     "BasicTest": "http://localhost:7936/test/screenshotter/test.html?m=a",
     "BinomTest": "http://localhost:7936/test/screenshotter/test.html?m=\\dbinom{a}{b}\\tbinom{a}{b}^{\\binom{a}{b}+17}",

@@ -32,7 +32,8 @@ var buildExpression = function(expression, options, prev) {
     return groups;
 };
 
-// List of types used by getTypeOfGroup
+// List of types used by getTypeOfGroup,
+// see https://github.com/Khan/KaTeX/wiki/Examining-TeX#group-types
 var groupToType = {
     mathord: "mord",
     textord: "mord",
@@ -43,7 +44,7 @@ var groupToType = {
     close: "mclose",
     inner: "minner",
     genfrac: "mord",
-    array: "minner",
+    array: "mord",
     spacing: "mord",
     punct: "mpunct",
     ordgroup: "mord",
@@ -615,7 +616,7 @@ var groupTypes = {
             }
         }
         body = makeSpan(["mtable"], cols);
-        return makeSpan(["minner"], [body], options.getColor());
+        return makeSpan(["mord"], [body], options.getColor());
     },
 
     spacing: function(group, options, prev) {
