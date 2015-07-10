@@ -14,7 +14,7 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "browserify": "~2.29.1",
+    "browserify": "^10.2.4",
     "clean-css": "~2.2.15",
     "express": "~3.3.3",
     "jasmine-node": "2.0.0-beta4",

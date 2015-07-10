@@ -79,8 +79,11 @@ test:
 	./node_modules/.bin/jasmine-node test/katex-spec.js
 	./node_modules/.bin/jasmine-node contrib/auto-render/auto-render-spec.js
 
+PERL=perl
+PYTHON=$(shell python2 --version >/dev/null 2>&1 && echo python2 || echo python)
+
 metrics:
-	cd metrics && ./mapping.pl | ./extract_tfms.py | ./extract_ttfs.py | ./replace_line.py
+	cd metrics && $(PERL) ./mapping.pl | $(PYTHON) ./extract_tfms.py | $(PYTHON) ./extract_ttfs.py | $(PYTHON) ./format_json.py > ../src/fontMetricsData.json
 
 clean:
 	rm -rf build/*
