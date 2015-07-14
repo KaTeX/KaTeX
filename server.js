@@ -7,7 +7,9 @@ var less = require("less");
 
 var app = express();
 
-app.use(express.logger());
+if (require.main === module) {
+    app.use(express.logger());
+}
 
 var serveBrowserified = function(file, standaloneName) {
     return function(req, res, next) {
@@ -69,5 +71,9 @@ app.use(function(err, req, res, next) {
     res.send(500, err.stack);
 });
 
-app.listen(7936);
-console.log("Serving on http://0.0.0.0:7936/ ...");
+if (require.main === module) {
+    app.listen(7936);
+    console.log("Serving on http://0.0.0.0:7936/ ...");
+}
+
+module.exports = app;
