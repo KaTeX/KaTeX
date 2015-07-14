@@ -11,15 +11,12 @@ app.use(express.logger());
 
 var serveBrowserified = function(file, standaloneName) {
     return function(req, res, next) {
-        var b = browserify();
-        b.add(file);
-
         var options = {};
         if (standaloneName) {
             options.standalone = standaloneName;
         }
-
-        var stream = b.bundle(options);
+        var b = browserify([file], options);
+        var stream = b.bundle();
 
         var body = "";
         stream.on("data", function(s) { body += s; });
