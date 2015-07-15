@@ -4,12 +4,8 @@
 
 Now you too can generate screenshots from your own computer, and (hopefully)
 have them look mostly the same as the current ones! Make sure you have docker
-installed and running. Also make sure that the development server is running,
-or start it by running
-
-    node server.js
-
-in the top level directory of the source tree. If all you want is (re)create
+installed and running.
+If all you want is (re)create
 all the snapshots for all the browsers, then you can do so by running the
 `screenshotter.sh` script:
 

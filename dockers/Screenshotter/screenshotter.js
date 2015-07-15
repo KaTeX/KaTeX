@@ -2,10 +2,12 @@
 
 var childProcess = require("child_process");
 var fs = require("fs");
+var http = require("http");
 var path = require("path");
 var net = require("net");
 var selenium = require("selenium-webdriver");
 
+var app = require("../../server");
 var data = require("../../test/screenshotter/ss_data.json");
 
 var dstDir = path.normalize(
@@ -49,7 +51,6 @@ var opts = require("nomnom")
     })
     .option("katexPort", {
         full: "katex-port",
-        "default": 7936,
         help: "Port number of the KaTeX development server"
     })
     .option("include", {
@@ -76,10 +77,11 @@ if (opts.exclude) {
 }
 
 var seleniumURL = opts.seleniumURL;
-var katexURL = opts.katexURL;
 var seleniumIP = opts.seleniumIP;
 var seleniumPort = opts.seleniumPort;
+var katexURL = opts.katexURL;
 var katexIP = opts.katexIP;
+var katexPort = opts.katexPort;
 
 //////////////////////////////////////////////////////////////////////
 // Work out connection to selenium docker container
@@ -128,17 +130,54 @@ if (seleniumURL) {
     console.log("Selenium driver in local session");
 }
 
-if (!katexURL) {
-    katexURL = "http://" + katexIP + ":" + opts.katexPort + "/";
-}
 var toStrip = "http://localhost:7936/"; // remove this from testcase URLs
+
+process.nextTick(startServer);
+var attempts = 0;
+
+//////////////////////////////////////////////////////////////////////
+// Start up development server
+
+var devServer = null;
+var minPort = 32768;
+var maxPort = 61000;
+
+function startServer() {
+    if (katexURL || katexPort) {
+        process.nextTick(tryConnect);
+        return;
+    }
+    var port = Math.floor(Math.random() * (maxPort - minPort)) + minPort;
+    var server = http.createServer(app).listen(port);
+    server.once("listening", function() {
+        devServer = server;
+        katexPort = port;
+        attempts = 0;
+        process.nextTick(tryConnect);
+    });
+    server.on("error", function(err) {
+        if (devServer !== null) { // error after we started listening
+            throw err;
+        } else if (++attempts > 50) {
+            throw new Error("Failed to start up dev server");
+        } else {
+            process.nextTick(startServer);
+        }
+    });
+}
 
 //////////////////////////////////////////////////////////////////////
 // Wait for container to become ready
 
-var attempts = 0;
-process.nextTick(seleniumIP ? tryConnect : buildDriver);
 function tryConnect() {
+    if (!katexURL) {
+        katexURL = "http://" + katexIP + ":" + katexPort + "/";
+        console.log("KaTeX URL is " + katexURL);
+    }
+    if (!seleniumIP) {
+        process.nextTick(buildDriver);
+        return;
+    }
     var sock = net.connect({
         host: seleniumIP,
         port: +seleniumPort
@@ -146,7 +185,7 @@ function tryConnect() {
     sock.on("connect", function() {
         sock.end();
         attempts = 0;
-        setTimeout(buildDriver, 0);
+        process.nextTick(buildDriver);
     }).on("error", function() {
         if (++attempts > 50) {
             throw new Error("Failed to connect selenium server.");
@@ -202,6 +241,8 @@ function imageDimensions(img) {
 //////////////////////////////////////////////////////////////////////
 // Take the screenshots
 
+var countdown = listOfCases.length;
+
 function takeScreenshots() {
     listOfCases.forEach(takeScreenshot);
 }
@@ -231,7 +272,20 @@ function takeScreenshot(key) {
             key += "_alt";
         }
         var file = path.join(dstDir, key + "-" + opts.browser + ".png");
-        fs.writeFile(file, img.buf, check);
+        var deferred = new selenium.promise.Deferred();
+        fs.writeFile(file, img.buf, function(err) {
+            if (err) {
+                deferred.reject(err);
+            } else {
+                deferred.fulfill();
+            }
+        });
+        return deferred.promise;
+    }).then(function() {
         console.log(key);
+        if (--countdown === 0) {
+            // devServer.close(cb) will take too long.
+            process.exit(0);
+        }
     }, check);
 }
