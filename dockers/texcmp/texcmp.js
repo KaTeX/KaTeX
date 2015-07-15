@@ -1,6 +1,5 @@
 "use strict";
 
-var querystring = require("querystring");
 var childProcess = require("child_process");
 var fs = require("fs");
 var path = require("path");
@@ -16,18 +15,12 @@ var readFile = Q.denodeify(fs.readFile);
 var writeFile = Q.denodeify(fs.writeFile);
 var mkdir = Q.denodeify(fs.mkdir);
 
-// ignore some tests, since they contain commands not supported by LaTeX
-var blacklist = {
-    Colors: "Color handling differs",
-    DeepFontSizing: "\\Huge inside \\dfrac doesn't work for some reason",
-    KaTeX: "Custom command, doesn't exist in LaTeX"
-};
 var todo;
 if (process.argv.length > 2) {
     todo = process.argv.slice(2);
 } else {
     todo = Object.keys(data).filter(function(key) {
-        return !blacklist[key];
+        return !data[key].nolatex;
     });
 }
 
@@ -63,22 +56,16 @@ Q.all([
 
 // Process a single test case: rasterize, then create diff
 function processTestCase(key) {
-    if (blacklist[key]) {
-        return;
+    var itm = data[key];
+    var tex = "$" + itm.tex + "$";
+    if (itm.display) {
+        tex = "\\[" + itm.tex + "\\]";
     }
-    var url = data[key];
-    var query = url.replace(/^.*?\?/, ""); // extract query string
-    query = query.replace(/\+/g, "%2B"); // plus doesn't mean space here
-    query = querystring.parse(query);
-    var tex = "$" + query.m + "$";
-    if (query.display) {
-        tex = "$$" + query.m + "$$";
+    if (itm.pre) {
+        tex = itm.pre.replace("<br>", "\\\\") + tex;
     }
-    if (query.pre) {
-        tex = query.pre.replace("<br>", "\\\\") + tex;
-    }
-    if (query.post) {
-        tex = tex + query.post.replace("<br>", "\\\\");
+    if (itm.post) {
+        tex = tex + itm.post.replace("<br>", "\\\\");
     }
     tex = template.replace(/\$.*\$/, tex.replace(/\$/g, "$$$$"));
     var texFile = path.join(tmpDir, key + ".tex");

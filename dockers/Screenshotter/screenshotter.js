@@ -8,7 +8,7 @@ var net = require("net");
 var selenium = require("selenium-webdriver");
 
 var app = require("../../server");
-var data = require("../../test/screenshotter/ss_data.json");
+var data = require("../../test/screenshotter/ss_data");
 
 var dstDir = path.normalize(
     path.join(__dirname, "..", "..", "test", "screenshotter", "images"));
@@ -130,8 +130,6 @@ if (seleniumURL) {
     console.log("Selenium driver in local session");
 }
 
-var toStrip = "http://localhost:7936/"; // remove this from testcase URLs
-
 process.nextTick(startServer);
 var attempts = 0;
 
@@ -248,12 +246,12 @@ function takeScreenshots() {
 }
 
 function takeScreenshot(key) {
-    var url = data[key];
-    if (!url) {
+    var itm = data[key];
+    if (!itm) {
         console.error("Test case " + key + " not known!");
         return;
     }
-    url = katexURL + url.substr(toStrip.length);
+    var url = katexURL + "test/screenshotter/test.html?" + itm.query;
     driver.get(url);
     driver.takeScreenshot().then(function haveScreenshot(img) {
         img = imageDimensions(img);
