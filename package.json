@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "Fast math typesetting for the web.",
   "main": "katex.js",
   "repository": {
