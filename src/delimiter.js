@@ -217,6 +217,26 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
         bottom = "\u23ad";
         repeat = "\u23aa";
         font = "Size4-Regular";
+    } else if (delim === "\\lgroup") {
+        top = "\u23a7";
+        bottom = "\u23a9";
+        repeat = "\u23aa";
+        font = "Size4-Regular";
+    } else if (delim === "\\rgroup") {
+        top = "\u23ab";
+        bottom = "\u23ad";
+        repeat = "\u23aa";
+        font = "Size4-Regular";
+    } else if (delim === "\\lmoustache") {
+        top = "\u23a7";
+        bottom = "\u23ad";
+        repeat = "\u23aa";
+        font = "Size4-Regular";
+    } else if (delim === "\\rmoustache") {
+        top = "\u23ab";
+        bottom = "\u23a9";
+        repeat = "\u23aa";
+        font = "Size4-Regular";
     } else if (delim === "\\surd") {
         top = "\ue001";
         bottom = "\u23b7";
@@ -312,7 +332,9 @@ var stackLargeDelimiters = [
 var stackAlwaysDelimiters = [
     "\\uparrow", "\\downarrow", "\\updownarrow",
     "\\Uparrow", "\\Downarrow", "\\Updownarrow",
-    "|", "\\|", "\\vert", "\\Vert"
+    "|", "\\|", "\\vert", "\\Vert",
+    "\\lvert", "\\rvert", "\\lVert", "\\rVert",
+    "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache"
 ];
 
 // and delimiters that never stack
