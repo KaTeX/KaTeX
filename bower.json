@@ -27,7 +27,6 @@
     "/build",
     "/test",
     "/src",
-    "/contrib",
     "/dockers",
     "/metrics",
     "/static"
