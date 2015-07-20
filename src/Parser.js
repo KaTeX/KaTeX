@@ -254,7 +254,18 @@ Parser.prototype.parseAtom = function(pos, mode) {
         // Lex the first token
         var lex = this.lexer.lex(currPos, mode);
 
-        if (lex.text === "^") {
+        if (lex.text === "\\limits" || lex.text === "\\nolimits") {
+            // We got a limit control
+            if (!base || base.result.type !== "op") {
+                throw new ParseError("Limit controls must follow a math operator",
+                    this.lexer, currPos);
+            }
+            else {
+                var limits = lex.text == "\\limits";
+                base.result.value.limits = limits;
+                currPos = lex.position;
+            }
+        } else if (lex.text === "^") {
             // We got a superscript start
             if (superscript) {
                 throw new ParseError(

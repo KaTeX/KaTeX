@@ -360,6 +360,40 @@ describe("A subscript and superscript tree-builder", function() {
     });
 });
 
+describe("A parser with limit controls", function() {
+    it("should fail when the limit control is not preceded by an op node", function() {
+        expect("3\\nolimits_2^2").toNotParse();
+        expect("\\sqrt\\limits_2^2").toNotParse();
+        expect("45 +\\nolimits 45").toNotParse();
+    });
+
+    it("should parse when the limit control directly follows an op node", function() {
+        expect("\\int\\limits_2^2 3").toParse();
+        expect("\\sum\\nolimits_3^4 4").toParse();
+    });
+
+    it("should parse when the limit control is in the sup/sub area of an op node", function() {
+        expect("\\int_2^2\\limits").toParse();
+        expect("\\int^2\\nolimits_2").toParse();
+        expect("\\int_2\\limits^2").toParse();
+    });
+
+    it("should allow multiple limit controls in the sup/sub area of an op node", function() {
+        expect("\\int_2\\nolimits^2\\limits 3").toParse();
+        expect("\\int\\nolimits\\limits_2^2").toParse();
+        expect("\\int\\limits\\limits\\limits_2^2").toParse();
+    });
+
+    it("should have the rightmost limit control determine the limits property " +
+        "of the preceding op node", function() {
+            var parsedInput = getParsed("\\int\\nolimits\\limits_2^2");
+            expect(parsedInput[0].value.base.value.limits).toBe(true);
+
+            parsedInput = getParsed("\\int\\limits_2\\nolimits^2");
+            expect(parsedInput[0].value.base.value.limits).toBe(false);
+    });
+});
+
 describe("A group parser", function() {
     it("should not fail", function() {
         expect("{xy}").toParse();
