@@ -25,9 +25,16 @@
           query[match[1]] = decodeURIComponent(match[2]);
       }
       var mathNode = document.getElementById("math");
-      katex.render(query["m"], mathNode, {
-          displayMode: !!query["display"]
-      });
+
+      var settings = {
+          displayMode: !!query["display"],
+          breakOnUnsupportedCmds: !query["doNotBreak"]
+      };
+      if (query["errorColor"]) {
+          settings.errorColor = query["errorColor"];
+      }
+
+      katex.render(query["m"], mathNode, settings);
       document.getElementById("pre").innerHTML = query["pre"] || "";
       document.getElementById("post").innerHTML = query["post"] || "";
     </script>
