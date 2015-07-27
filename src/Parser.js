@@ -261,8 +261,9 @@ Parser.prototype.parseAtom = function(pos, mode) {
                     this.lexer, currPos);
             }
             else {
-                var limits = lex.text == "\\limits";
+                var limits = lex.text === "\\limits";
                 base.result.value.limits = limits;
+                base.result.value.alwaysHandleSupSub = true;
                 currPos = lex.position;
             }
         } else if (lex.text === "^") {
