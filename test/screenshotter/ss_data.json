@@ -38,5 +38,6 @@
     "SupSubHorizSpacing": "http://localhost:7936/test/screenshotter/test.html?m=x^{x^{x}}\\Big|x_{x_{x_{x_{x}}}}\\bigg|x^{x^{x_{x_{x_{x_{x}}}}}}\\bigg|",
     "SupSubOffsets": "http://localhost:7936/test/screenshotter/test.html?m=\\displaystyle \\int_{2+3}x f^{2+3}+3\\lim_{2+3+4+5}f",
     "Text": "http://localhost:7936/test/screenshotter/test.html?m=\\frac{a}{b}\\text{c~ {ab} \\ e}+fg",
+    "UnsupportedCmds": "http://localhost:7936/test/screenshotter/test.html?m=\\err\\,\\frac\\fracerr3\\,2^\\superr_\\suberr\\,\\sqrt\\sqrterr&doNotBreak=1&errorColor=%23dd4c4c",
     "VerticalSpacing": "http://localhost:7936/test/screenshotter/test.html?pre=potato<br>blah&post=<br>moo&m=x^{\\Huge y}z"
 }

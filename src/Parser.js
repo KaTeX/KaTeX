@@ -129,6 +129,14 @@ Parser.prototype.parseExpression = function(pos, mode, breakOnInfix, breakOnToke
         }
         var atom = this.parseAtom(pos, mode);
         if (!atom) {
+            if (!this.settings.breakOnUnsupportedCmds && lex.text[0] === "\\") {
+                var errorNode = this.handleUnsupportedCmd(lex.text, mode);
+                body.push(errorNode);
+
+                pos = lex.position;
+                continue;
+            }
+
             break;
         }
         if (breakOnInfix && atom.result.type === "infix") {
@@ -204,8 +212,16 @@ Parser.prototype.handleSupSubscript = function(pos, mode, symbol, name) {
     var group = this.parseGroup(pos, mode);
 
     if (!group) {
-        throw new ParseError(
-            "Expected group after '" + symbol + "'", this.lexer, pos);
+        var lex = this.lexer.lex(pos, mode);
+
+        if (!this.settings.breakOnUnsupportedCmds && lex.text[0] === "\\") {
+            return new ParseResult(
+                this.handleUnsupportedCmd(lex.text, mode),
+                lex.position);
+        } else {
+            throw new ParseError(
+                "Expected group after '" + symbol + "'", this.lexer, pos);
+        }
     } else if (group.isFunction) {
         // ^ and _ have a greediness, so handle interactions with functions'
         // greediness
@@ -222,6 +238,37 @@ Parser.prototype.handleSupSubscript = function(pos, mode, symbol, name) {
         return group.result;
     }
 };
+
+/**
+ * Converts the textual input of an unsupported command into a text node
+ * contained within a color node whose color is determined by errorColor
+ */
+ Parser.prototype.handleUnsupportedCmd = function(text, mode) {
+     var textordArray = [];
+
+     for (var i = 0; i < text.length; i++) {
+        textordArray.push(new ParseNode("textord", text[i], "text"));
+     }
+
+     var textNode = new ParseNode(
+         "text",
+         {
+             body: textordArray,
+             type: "text"
+         },
+         mode);
+
+     var colorNode = new ParseNode(
+        "color",
+        {
+            color: this.settings.errorColor,
+            value: [textNode],
+            type: "color"
+        },
+        mode);
+
+     return colorNode;
+ };
 
 /**
  * Parses a group with optional super/subscripts.
@@ -499,9 +546,18 @@ Parser.prototype.parseArguments = function(pos, mode, func, funcData, args) {
                 arg = this.parseGroup(newPos, mode);
             }
             if (!arg) {
-                throw new ParseError(
-                    "Expected group after '" + func + "'",
-                    this.lexer, newPos);
+                var lex = this.lexer.lex(newPos, mode);
+
+                if (!this.settings.breakOnUnsupportedCmds && lex.text[0] === "\\") {
+                    arg = new ParseFuncOrArgument(
+                        new ParseResult(
+                            this.handleUnsupportedCmd(lex.text, mode),
+                            lex.position),
+                        false);
+                } else {
+                    throw new ParseError(
+                        "Expected group after '" + func + "'", this.lexer, pos);
+                }
             }
         }
         var argNode;

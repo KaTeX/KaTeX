@@ -54,7 +54,11 @@ var mathit = function(value, mode, color, classes) {
 var mathrm = function(value, mode, color, classes) {
     // Decide what font to render the symbol in by its entry in the symbols
     // table.
-    if (symbols[mode][value].font === "main") {
+    // Have a special case for when the value = \ because the \ is used as a
+    // textord in unsupported command errors but cannot be parsed as a regular
+    // text ordinal and is therefore not present as a symbol in the symbols
+    // table for text
+    if (value === "\\" || symbols[mode][value].font === "main") {
         return makeSymbol(value, "Main-Regular", mode, color, classes);
     } else {
         return makeSymbol(

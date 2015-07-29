@@ -21,6 +21,8 @@ function Settings(options) {
     // allow null options
     options = options || {};
     this.displayMode = get(options.displayMode, false);
+    this.breakOnUnsupportedCmds = get(options.breakOnUnsupportedCmds, true);
+    this.errorColor = get(options.errorColor, "#cc0000");
 }
 
 module.exports = Settings;
