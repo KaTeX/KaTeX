@@ -29,11 +29,34 @@ function init() {
 
     function reprocess() {
         try {
-            ctxt.clearRect(0, 0, math.width, math.height);
+            // Prepare box to get its dimensions
             var box = katex.canvasBox(input.value, ctxt, {
                 fontSize: 74 * 1.21
             })
-            var x = 10, y = Math.max(200, box.height);
+            var padding = 4;
+            var x = padding, y = box.height + padding;
+
+            // Deal with HiDPI or zoom. The following is thanks to Paul Lewis,
+            // http://www.html5rocks.com/en/tutorials/canvas/hidpi/
+            var devicePixelRatio = window.devicePixelRatio || 1;
+            var backingStoreRatio = ctxt.webkitBackingStorePixelRatio ||
+                ctxt.mozBackingStorePixelRatio ||
+                ctxt.msBackingStorePixelRatio ||
+                ctxt.oBackingStorePixelRatio ||
+                ctxt.backingStorePixelRatio || 1;
+            var ratio = devicePixelRatio / backingStoreRatio;
+
+            // Resize canvas to fit the math box with padding
+            var w = box.width + 2 * padding;
+            var h = (box.height + box.depth) + 2 * padding;
+            math.style.width = w + "px";
+            math.style.height = h + "px";
+            math.width = w * ratio;
+            math.height = h * ratio;
+            ctxt.clearRect(0, 0, math.width, math.height);
+            ctxt.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+            // Draw enclosing box and baseline, for reference
             ctxt.strokeStyle = "#00ffff";
             ctxt.strokeRect(x, y - box.height, box.width,
                             box.height + box.depth);
@@ -41,8 +64,11 @@ function init() {
             ctxt.moveTo(x, y);
             ctxt.lineTo(x + box.width, y);
             ctxt.stroke();
+
+            // Render the actual math
             box.renderAt(x, y);
         } catch (e) {
+            ctxt.clearRect(0, 0, math.width, math.height);
             if (e.__proto__ == katex.ParseError.prototype) {
                 console.error(e);
             } else {
