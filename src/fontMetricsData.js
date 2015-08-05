@@ -1,4 +1,4 @@
-{
+module.exports = {
 "AMS-Regular": {
   "65": {"depth": 0.0, "height": 0.68889, "italic": 0.0, "skew": 0.0},
   "66": {"depth": 0.0, "height": 0.68889, "italic": 0.0, "skew": 0.0},
