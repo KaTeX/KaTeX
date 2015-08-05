@@ -6,6 +6,12 @@ var sizes = [
     null, 0.5, 0.7, 0.8, 0.9, 1.0, 1.2, 1.44, 1.73, 2.07, 2.49
 ];
 
+var fontVariants = {
+    i4: "italic ",
+    n4: "",
+    n7: "bold "
+};
+
 function CanvasState(orig) {
     for (var key in orig) {
         if (orig.hasOwnProperty(key)) {
@@ -37,10 +43,11 @@ CanvasState.prototype.withSize = function(sizeIndex) {
     return res;
 };
 
-CanvasState.prototype.withFace = function(variant, family) {
+CanvasState.prototype.withFace = function(family, vd) {
     var res = new CanvasState(this);
-    res.variant = variant;
+    res.variant = fontVariants[vd];
     res.family = family;
+    res.fvd = family + ":" + vd;
     res.fontChanged();
     return res;
 };
@@ -72,6 +79,7 @@ function CanvasRenderer(ctxt, options) {
     this.bottom = -Infinity;
     this.x = 0;
     this.outList = [];
+    this.fontsUsed = {};
     this.horizontalLines = [];
     this.prevClass = "";
     this.baseSize = options.fontSize || (16 * 1.21);
@@ -82,6 +90,7 @@ function CanvasRenderer(ctxt, options) {
         variant: "",
         weight: "",
         family: "KaTeX_Main",
+        fvd: "KaTeX_Main:n4",
         color: null,
         ypos: 0,
         halign: options.halign || align.left
@@ -178,22 +187,22 @@ CanvasRenderer.prototype.prepare = function(node) {
         switch(className) {
         case "delimsizing":
             if (findSize() !== null) {
-                this.state = this.state.withFace("", "KaTeX_Size" + size);
+                this.state = this.state.withFace("KaTeX_Size" + size, "n4");
             }
             break;
         case "delim-size1":
         case "small-op":
-            this.state = this.state.withFace("", "KaTeX_Size1");
+            this.state = this.state.withFace("KaTeX_Size1", "n4");
             break;
         case "large-op":
-            this.state = this.state.withFace("", "KaTeX_Size2");
+            this.state = this.state.withFace("KaTeX_Size2", "n4");
             break;
         case "delim-size4":
-            this.state = this.state.withFace("", "KaTeX_Size4");
+            this.state = this.state.withFace("KaTeX_Size4", "n4");
             break;
         case "delimsizing":
             if (findSize() !== null) {
-                this.state = this.state.withFace("", "KaTeX_Size" + size);
+                this.state = this.state.withFace("KaTeX_Size" + size, "n4");
             }
             break;
 
@@ -231,34 +240,34 @@ CanvasRenderer.prototype.prepare = function(node) {
             break;
 
         case "mathit":
-            this.state = this.state.withFace("italic ", "KaTeX_Math");
+            this.state = this.state.withFace("KaTeX_Math", "i4");
             break;
         case "mathbf":
-            this.state = this.state.withFace("bold ", "KaTeX_Main");
+            this.state = this.state.withFace("KaTeX_Main", "n7");
             break;
         case "amsrm":
-            this.state = this.state.withFace("", "KaTeX_AMS");
+            this.state = this.state.withFace("KaTeX_AMS", "n4");
             break;
         case "mathbb":
-            this.state = this.state.withFace("", "KaTeX_AMS");
+            this.state = this.state.withFace("KaTeX_AMS", "n4");
             break;
         case "mathcal":
-            this.state = this.state.withFace("", "KaTeX_Caligraphic");
+            this.state = this.state.withFace("KaTeX_Caligraphic", "n4");
             break;
         case "mathfrak":
-            this.state = this.state.withFace("", "KaTeX_Fraktur");
+            this.state = this.state.withFace("KaTeX_Fraktur", "n4");
             break;
         case "mathtt":
-            this.state = this.state.withFace("", "KaTeX_Typewriter");
+            this.state = this.state.withFace("KaTeX_Typewriter", "n4");
             break;
         case "mathscr":
-            this.state = this.state.withFace("", "KaTeX_Script");
+            this.state = this.state.withFace("KaTeX_Script", "n4");
             break;
         case "mathsf":
-            this.state = this.state.withFace("", "KaTeX_SansSerif");
+            this.state = this.state.withFace("KaTeX_SansSerif", "n4");
             break;
         case "mainit":
-            this.state = this.state.withFace("italic ", "KaTeX_Main");
+            this.state = this.state.withFace("KaTeX_Main", "i4");
             break;
         case "mathrm":
             break;
@@ -481,6 +490,7 @@ CanvasRenderer.prototype.prepare = function(node) {
                 text: text
             };
             this.outList.push(atom);
+            this.fontsUsed[this.state.fvd] = this.state.font;
         }
         this.x += width;
     }
@@ -560,7 +570,8 @@ function backupCanvasState(canvas, callback) {
     }
 }
 
-function PreparedBox(canvas, atoms, xshift) {
+function PreparedBox(canvas, atoms, fontsUsed, xshift) {
+    this.fontsUsed = fontsUsed;
     this.renderAt = function(x, y) {
         x -= xshift;
         backupCanvasState(canvas, function(ctxt) {
@@ -588,7 +599,8 @@ function prepare(dom, canvas, options) {
         renderer.prepare(dom);
         var em = renderer.state.em;
         var xshift = renderer.x * halign;
-        var box = new PreparedBox(ctxt, renderer.outList, xshift);
+        var box = new PreparedBox(
+            ctxt, renderer.outList, renderer.fontsUsed, xshift);
         box.width = renderer.x;
         box.depth = dom.depth * em;
         box.height = dom.height * em;
