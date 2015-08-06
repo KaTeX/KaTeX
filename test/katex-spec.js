@@ -13,33 +13,39 @@ var Settings = require("../src/Settings");
 
 var defaultSettings = new Settings({});
 
-var getBuilt = function(expr) {
-    expect(expr).toBuild();
+var getBuilt = function(expr, settings) {
+    var usedSettings = settings ? settings : defaultSettings;
 
-    var built = buildHTML(parseTree(expr), defaultSettings);
+    expect(expr).toBuild(usedSettings);
+
+    var parsedTree = parseTree(expr, usedSettings);
+    var built = buildHTML(parsedTree, usedSettings);
 
     // Remove the outer .katex and .katex-inner layers
     return built.children[2].children;
 };
 
-var getParsed = function(expr) {
-    expect(expr).toParse();
+var getParsed = function(expr, settings) {
+    var usedSettings = settings ? settings : defaultSettings;
 
-    return parseTree(expr, defaultSettings);
+    expect(expr).toParse(usedSettings);
+    return parseTree(expr, usedSettings);
 };
 
 beforeEach(function() {
     jasmine.addMatchers({
         toParse: function() {
             return {
-                compare: function(actual) {
+                compare: function(actual, settings) {
+                    var usedSettings = settings ? settings : defaultSettings;
+
                     var result = {
                         pass: true,
                         message: "'" + actual + "' succeeded parsing"
                     };
 
                     try {
-                        parseTree(actual, defaultSettings);
+                        parseTree(actual, usedSettings);
                     } catch (e) {
                         result.pass = false;
                         if (e instanceof ParseError) {
@@ -58,7 +64,9 @@ beforeEach(function() {
 
         toNotParse: function() {
             return {
-                compare: function(actual) {
+                compare: function(actual, settings) {
+                    var usedSettings = settings ? settings : defaultSettings;
+
                     var result = {
                         pass: false,
                         message: "Expected '" + actual + "' to fail " +
@@ -66,7 +74,7 @@ beforeEach(function() {
                     };
 
                     try {
-                        parseTree(actual, defaultSettings);
+                        parseTree(actual, usedSettings);
                     } catch (e) {
                         if (e instanceof ParseError) {
                             result.pass = true;
@@ -85,16 +93,18 @@ beforeEach(function() {
 
         toBuild: function() {
             return {
-                compare: function(actual) {
+                compare: function(actual, settings) {
+                    var usedSettings = settings ? settings : defaultSettings;
+
                     var result = {
                         pass: true,
                         message: "'" + actual + "' succeeded in building"
                     };
 
-                    expect(actual).toParse();
+                    expect(actual).toParse(usedSettings);
 
                     try {
-                        buildHTML(parseTree(actual), defaultSettings);
+                        buildHTML(parseTree(actual, usedSettings), usedSettings);
                     } catch (e) {
                         result.pass = false;
                         if (e instanceof ParseError) {
@@ -357,6 +367,40 @@ describe("A subscript and superscript tree-builder", function() {
         expect("_2").toBuild();
         expect("^3_2").toBuild();
         expect("_2^3").toBuild();
+    });
+});
+
+describe("A parser with limit controls", function() {
+    it("should fail when the limit control is not preceded by an op node", function() {
+        expect("3\\nolimits_2^2").toNotParse();
+        expect("\\sqrt\\limits_2^2").toNotParse();
+        expect("45 +\\nolimits 45").toNotParse();
+    });
+
+    it("should parse when the limit control directly follows an op node", function() {
+        expect("\\int\\limits_2^2 3").toParse();
+        expect("\\sum\\nolimits_3^4 4").toParse();
+    });
+
+    it("should parse when the limit control is in the sup/sub area of an op node", function() {
+        expect("\\int_2^2\\limits").toParse();
+        expect("\\int^2\\nolimits_2").toParse();
+        expect("\\int_2\\limits^2").toParse();
+    });
+
+    it("should allow multiple limit controls in the sup/sub area of an op node", function() {
+        expect("\\int_2\\nolimits^2\\limits 3").toParse();
+        expect("\\int\\nolimits\\limits_2^2").toParse();
+        expect("\\int\\limits\\limits\\limits_2^2").toParse();
+    });
+
+    it("should have the rightmost limit control determine the limits property " +
+        "of the preceding op node", function() {
+            var parsedInput = getParsed("\\int\\nolimits\\limits_2^2");
+            expect(parsedInput[0].value.base.value.limits).toBe(true);
+
+            parsedInput = getParsed("\\int\\limits_2\\nolimits^2");
+            expect(parsedInput[0].value.base.value.limits).toBe(false);
     });
 });
 
@@ -1325,10 +1369,12 @@ describe("A cases environment", function() {
 
 });
 
-var getMathML = function(expr) {
-    expect(expr).toParse();
+var getMathML = function(expr, settings) {
+    var usedSettings = settings ? settings : defaultSettings;
 
-    var built = buildMathML(parseTree(expr));
+    expect(expr).toParse(usedSettings);
+
+    var built = buildMathML(parseTree(expr, usedSettings), expr, usedSettings);
 
     // Strip off the surrounding <span>
     return built.children[0];
@@ -1364,5 +1410,47 @@ describe("A MathML builder", function() {
     it("should generate a <mphantom> node for \\phantom", function() {
         var phantom = getMathML("\\phantom{x}").children[0].children[0];
         expect(phantom.children[0].type).toEqual("mphantom");
+    });
+});
+
+describe("A parser that does not break on unsupported commands", function() {
+    // The parser breaks on unsupported commands unless it is explicitly
+    // told not to
+    var errorColor = "#933";
+    var doNotBreakSettings = new Settings({
+        breakOnUnsupportedCmds: false,
+        errorColor: errorColor
+    });
+
+    it("should still parse on unrecognized control sequences", function() {
+        expect("\\error").toParse(doNotBreakSettings);
+    });
+
+    describe("should allow unrecognized controls sequences anywhere, including", function() {
+        it("in superscripts and subscripts", function() {
+            expect("2_\\error").toBuild(doNotBreakSettings);
+            expect("3^{\\error}_\\error").toBuild(doNotBreakSettings);
+            expect("\\int\\nolimits^\\error_\\error").toBuild(doNotBreakSettings);
+        });
+
+        it("in fractions", function() {
+            expect("\\frac{345}{\\error}").toBuild(doNotBreakSettings);
+            expect("\\frac\\error{\\error}").toBuild(doNotBreakSettings);
+        });
+
+        it("in square roots", function() {
+            expect("\\sqrt\\error").toBuild(doNotBreakSettings);
+            expect("\\sqrt{234\\error}").toBuild(doNotBreakSettings);
+        });
+
+        it("in text boxes", function() {
+            expect("\\text{\\error}").toBuild(doNotBreakSettings);
+        });
+    });
+
+    it("should produce color nodes with a color value given by errorColor", function() {
+        var parsedInput = getParsed("\\error", doNotBreakSettings);
+        expect(parsedInput[0].type).toBe("color");
+        expect(parsedInput[0].value.color).toBe(errorColor);
     });
 });

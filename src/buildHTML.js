@@ -104,7 +104,8 @@ var shouldHandleSupSub = function(group, options) {
     } else if (group.type === "op") {
         // Operators handle supsubs differently when they have limits
         // (e.g. `\displaystyle\sum_2^3`)
-        return group.value.limits && options.style.size === Style.DISPLAY.size;
+        return group.value.limits &&
+            (options.style.size === Style.DISPLAY.size || group.value.alwaysHandleSupSub);
     } else if (group.type === "accent") {
         return isCharacterBox(group.value.base);
     } else {

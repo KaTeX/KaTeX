@@ -89,4 +89,4 @@ clean:
 	rm -rf build/*
 
 screenshots:
-	docker run --volume=$(shell pwd):/KaTeX ss
+	dockers/Screenshotter/screenshotter.sh

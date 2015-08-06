@@ -11,7 +11,7 @@ var fs = require("fs");
 var jsyaml = require("js-yaml");
 var querystring = require("querystring");
 
-var queryKeys = ["tex", "pre", "post", "display"];
+var queryKeys = ["tex", "pre", "post", "display", "doNotBreak", "errorColor"];
 var dict = fs.readFileSync(require.resolve("./ss_data.yaml"));
 dict = jsyaml.safeLoad(dict);
 for (var key in dict) {

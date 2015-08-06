@@ -205,6 +205,8 @@ var delimiters = [
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
     "<", ">", "\\langle", "\\rangle",
+    "\\lvert", "\\rvert", "\\lVert", "\\rVert",
+    "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache",
     "/", "\\backslash",
     "|", "\\vert", "\\|", "\\Vert",
     "\\uparrow", "\\Uparrow",
