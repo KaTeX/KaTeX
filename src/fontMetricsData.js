@@ -1748,4 +1748,4 @@ module.exports = {
   "2018": {"depth": 0.0, "height": 0.61111, "italic": 0.0, "skew": 0.0},
   "2019": {"depth": 0.0, "height": 0.61111, "italic": 0.0, "skew": 0.0},
   "8242": {"depth": 0.0, "height": 0.61111, "italic": 0.0, "skew": 0.0}
-}}
+}};

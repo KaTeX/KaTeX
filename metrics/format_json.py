@@ -13,4 +13,4 @@ for font in sorted(data):
       sys.stdout.write(json.dumps(data[font][glyph], sort_keys=True))
       sep = ",\n  "
   sep = "\n},\n"
-sys.stdout.write("\n}}\n");
+sys.stdout.write("\n}};\n");
