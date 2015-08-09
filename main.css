@@ -189,16 +189,20 @@ body {
     font-size: 21px;
 }
 
+.ka-logo {
+    float: right;
+}
+
 .ka-logo img {
     border: none;
     vertical-align: -1px;
 }
 
-.created-by {
-    float: right;
-    font-size: 18px;
+.credits {
+    float: left;
+    font-size: 16px;
 }
 
-.created-by a {
+.credits a {
     color: white;
 }
