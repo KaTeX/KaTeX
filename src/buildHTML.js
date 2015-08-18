@@ -532,9 +532,11 @@ var groupTypes = {
             var inrow = group.value.body[r];
             var height = arstrutHeight; // \@array adds an \@arstrut
             var depth = arstrutDepth;   // to each tow (via the template)
+
             if (nc < inrow.length) {
                 nc = inrow.length;
             }
+
             var outrow = new Array(inrow.length);
             for (c = 0; c < inrow.length; ++c) {
                 var elt = buildGroup(inrow[c], options);
@@ -546,6 +548,7 @@ var groupTypes = {
                 }
                 outrow[c] = elt;
             }
+
             var gap = 0;
             if (group.value.rowGaps[r]) {
                 gap = group.value.rowGaps[r].value;
@@ -568,6 +571,7 @@ var groupTypes = {
                     gap = 0;
                 }
             }
+
             outrow.height = height;
             outrow.depth = depth;
             totalHeight += height;
@@ -575,21 +579,64 @@ var groupTypes = {
             totalHeight += depth + gap; // \@yargarraycr
             body[r] = outrow;
         }
+
         var offset = totalHeight / 2 + fontMetrics.metrics.axisHeight;
-        var coldescriptions = group.value.cols || [];
+        var colDescriptions = group.value.cols || [];
         var cols = [];
-        var colsep;
-        for (c = 0; c < nc; ++c) {
-            var coldescr = coldescriptions[c] || {};
+        var colSep;
+        var colDescrNum;
+        for (c = 0, colDescrNum = 0;
+             // Continue while either there are more columns or more column
+             // descriptions, so trailing separators don't get lost.
+             c < nc || colDescrNum < colDescriptions.length;
+             ++c, ++colDescrNum) {
+
+            var colDescr = colDescriptions[colDescrNum] || {};
+
+            var firstSeparator = true;
+            while (colDescr.type === "separator") {
+                // If there is more than one separator in a row, add a space
+                // between them.
+                if (!firstSeparator) {
+                    colSep = makeSpan(["arraycolsep"], []);
+                    colSep.style.width =
+                        fontMetrics.metrics.doubleRuleSep + "em";
+                    cols.push(colSep);
+                }
+
+                if (colDescr.separator === "|") {
+                    var separator = makeSpan(
+                        ["vertical-separator"],
+                        []);
+                    separator.style.height = totalHeight + "em";
+                    separator.style.verticalAlign =
+                        -(totalHeight - offset) + "em";
+
+                    cols.push(separator);
+                } else {
+                    throw new ParseError(
+                        "Invalid separator type: " + colDescr.separator);
+                }
+
+                colDescrNum++;
+                colDescr = colDescriptions[colDescrNum] || {};
+                firstSeparator = false;
+            }
+
+            if (c >= nc) {
+                continue;
+            }
+
             var sepwidth;
             if (c > 0 || group.value.hskipBeforeAndAfter) {
-                sepwidth = utils.deflt(coldescr.pregap, arraycolsep);
+                sepwidth = utils.deflt(colDescr.pregap, arraycolsep);
                 if (sepwidth !== 0) {
-                    colsep = makeSpan(["arraycolsep"], []);
-                    colsep.style.width = sepwidth + "em";
-                    cols.push(colsep);
+                    colSep = makeSpan(["arraycolsep"], []);
+                    colSep.style.width = sepwidth + "em";
+                    cols.push(colSep);
                 }
             }
+
             var col = [];
             for (r = 0; r < nr; ++r) {
                 var row = body[r];
@@ -602,17 +649,19 @@ var groupTypes = {
                 elem.height = row.height;
                 col.push({type: "elem", elem: elem, shift: shift});
             }
+
             col = buildCommon.makeVList(col, "individualShift", null, options);
             col = makeSpan(
-                ["col-align-" + (coldescr.align || "c")],
+                ["col-align-" + (colDescr.align || "c")],
                 [col]);
             cols.push(col);
+
             if (c < nc - 1 || group.value.hskipBeforeAndAfter) {
-                sepwidth = utils.deflt(coldescr.postgap, arraycolsep);
+                sepwidth = utils.deflt(colDescr.postgap, arraycolsep);
                 if (sepwidth !== 0) {
-                    colsep = makeSpan(["arraycolsep"], []);
-                    colsep.style.width = sepwidth + "em";
-                    cols.push(colsep);
+                    colSep = makeSpan(["arraycolsep"], []);
+                    colSep.style.width = sepwidth + "em";
+                    cols.push(colSep);
                 }
             }
         }

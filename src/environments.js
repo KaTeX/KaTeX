@@ -65,13 +65,18 @@ var environmentDefinitions = [
         numArgs: 1,
         handler: function(pos, mode, envName, colalign, positions) {
             var parser = this;
-            // Currently only supports alignment, no separators like | yet.
             colalign = colalign.value.map ? colalign.value : [colalign];
             var cols = colalign.map(function(node) {
                 var ca = node.value;
                 if ("lcr".indexOf(ca) !== -1) {
                     return {
+                        type: "align",
                         align: ca
+                    };
+                } else if (ca === "|") {
+                    return {
+                        type: "separator",
+                        separator: "|"
                     };
                 }
                 throw new ParseError(
@@ -134,10 +139,12 @@ var environmentDefinitions = [
                 type: "array",
                 arraystretch: 1.2,
                 cols: [{
+                    type: "align",
                     align: "l",
                     pregap: 0,
                     postgap: fontMetrics.metrics.quad
                 }, {
+                    type: "align",
                     align: "l",
                     pregap: 0,
                     postgap: 0

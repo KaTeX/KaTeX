@@ -1354,7 +1354,22 @@ describe("An array environment", function() {
     it("should accept a single alignment character", function() {
         var parse = getParsed("\\begin{array}r1\\\\20\\end{array}");
         expect(parse[0].type).toBe("array");
-        expect(parse[0].value.cols).toEqual([{align:"r"}]);
+        expect(parse[0].value.cols).toEqual([
+            { type: "align", align: "r" }
+        ]);
+    });
+
+    it("should accept vertical separators", function() {
+        var parse = getParsed("\\begin{array}{|l||c|}\\end{array}");
+        expect(parse[0].type).toBe("array");
+        expect(parse[0].value.cols).toEqual([
+            { type: "separator", separator: "|" },
+            { type: "align", align: "l" },
+            { type: "separator", separator: "|" },
+            { type: "separator", separator: "|" },
+            { type: "align", align: "c" },
+            { type: "separator", separator: "|" }
+        ]);
     });
 
 });
