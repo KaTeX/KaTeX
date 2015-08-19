@@ -3,8 +3,10 @@
 var childProcess = require("child_process");
 var fs = require("fs");
 var http = require("http");
-var path = require("path");
+var jspngopt = require("jspngopt");
 var net = require("net");
+var pako = require("pako");
+var path = require("path");
 var selenium = require("selenium-webdriver");
 
 var app = require("../../server");
@@ -271,10 +273,15 @@ function takeScreenshot(key) {
         }
         var file = path.join(dstDir, key + "-" + opts.browser + ".png");
         var deferred = new selenium.promise.Deferred();
-        fs.writeFile(file, img.buf, function(err) {
+        var opt = new jspngopt.Optimizer({
+            pako: pako
+        });
+        var buf = opt.bufferSync(img.buf);
+        fs.writeFile(file, buf, function(err) {
             if (err) {
                 deferred.reject(err);
-            } else {
+            }
+            else {
                 deferred.fulfill();
             }
         });
