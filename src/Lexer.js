@@ -13,6 +13,7 @@
 
 var matchAt = require("match-at");
 
+var symbols = require("./symbols");
 var ParseError = require("./ParseError");
 
 // The main lexer class
@@ -102,6 +103,10 @@ Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
                     match[0], null, pos + match[0].length);
             }
         }
+    }
+    
+    if (input[pos] in symbols.text || input[pos] in symbols.math) {
+        return new Token(input[pos], null, pos + 1);
     }
 
     throw new ParseError(
