@@ -18,10 +18,11 @@
     "clean-css": "~2.2.15",
     "express": "~3.3.3",
     "jasmine-node": "2.0.0-beta4",
+    "js-yaml": "^3.3.1",
     "jshint": "^2.5.6",
     "less": "~1.7.5",
-    "selenium-webdriver": "^2.46.1",
     "nomnom": "^1.8.1",
+    "selenium-webdriver": "^2.46.1",
     "uglify-js": "~2.4.15"
   },
   "bin": "cli.js",
