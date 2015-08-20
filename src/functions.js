@@ -215,6 +215,12 @@ var delimiters = [
     "."
 ];
 
+var fontAliases = {
+    "\\Bbb": "\\mathbb",
+    "\\bold": "\\mathbf",
+    "\\frak": "\\mathfrak"
+};
+
 /*
  * This is a list of functions which each have the same function but have
  * different names so that we don't have to duplicate the data a bunch of times.
@@ -473,6 +479,33 @@ var duplicatedFunctions = [
         ],
         data: {
             numArgs: 0
+        }
+    },
+
+    {
+        funcs: [
+            // styles
+            "\\mathrm", "\\mathit", "\\mathbf",
+
+            // families
+            "\\mathbb", "\\mathcal", "\\mathfrak", "\\mathscr", "\\mathsf",
+            "\\mathtt",
+
+            // aliases
+            "\\Bbb", "\\bold", "\\frak"
+        ],
+        data: {
+            numArgs: 1,
+            handler: function (func, body) {
+                if (func in fontAliases) {
+                    func = fontAliases[func];
+                }
+                return {
+                    type: "font",
+                    font: func.slice(1),
+                    body: body
+                };
+            }
         }
     },
 
