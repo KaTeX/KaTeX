@@ -67,6 +67,10 @@ var xi13 = 0.1;
 // match.
 var ptPerEm = 10.0;
 
+// The space between adjacent `|` columns in an array definition. From
+// `\showthe\doublerulesep` in LaTeX.
+var doubleRuleSep = 2.0 / ptPerEm;
+
 /**
  * This is just a mapping from common names to real metrics
  */
@@ -94,6 +98,7 @@ var metrics = {
     bigOpSpacing5: xi13,
     ptPerEm: ptPerEm,
     emPerEx: sigma5 / sigma6,
+    doubleRuleSep: doubleRuleSep,
 
     // TODO(alpert): Missing parallel structure here. We should probably add
     // style-specific metrics for all of these.

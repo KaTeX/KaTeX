@@ -497,20 +497,28 @@
         }
     }
 
-    .arraycolsep {
-        display: inline-block;
-    }
+    .mtable {
+        .vertical-separator {
+            display: inline-block;
+            margin: 0 -0.025em;
+            border-right: 0.05em solid black;
+        }
 
-    .col-align-c > .vlist {
-        text-align: center;
-    }
+        .arraycolsep {
+            display: inline-block;
+        }
 
-    .col-align-l > .vlist {
-        text-align: left;
-    }
+        .col-align-c > .vlist {
+            text-align: center;
+        }
 
-    .col-align-r > .vlist {
-        text-align: right;
+        .col-align-l > .vlist {
+            text-align: left;
+        }
+
+        .col-align-r > .vlist {
+            text-align: right;
+        }
     }
 
 }
