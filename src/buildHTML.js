@@ -5,7 +5,6 @@
  * called, to produce a final HTML tree.
  */
 
-var Options = require("./Options");
 var ParseError = require("./ParseError");
 var Style = require("./Style");
 
@@ -1330,21 +1329,10 @@ var buildGroup = function(group, options, prev) {
  * Take an entire parse tree, and build it into an appropriate set of HTML
  * nodes.
  */
-var buildHTML = function(tree, settings) {
+var buildHTML = function(tree, options) {
     // buildExpression is destructive, so we need to make a clone
     // of the incoming tree so that it isn't accidentally changed
     tree = JSON.parse(JSON.stringify(tree));
-
-    var startStyle = Style.TEXT;
-    if (settings.displayMode) {
-        startStyle = Style.DISPLAY;
-    }
-
-    // Setup the default options
-    var options = new Options({
-        style: startStyle,
-        size: "size5"
-    });
 
     // Build the expression contained in the tree
     var expression = buildExpression(tree, options);

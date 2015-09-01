@@ -4,27 +4,51 @@
 /* global it: false */
 /* global describe: false */
 
-var buildHTML = require("../src/buildHTML");
 var buildMathML = require("../src/buildMathML");
+var buildTree = require("../src/buildTree");
 var katex = require("../katex");
 var ParseError = require("../src/ParseError");
 var parseTree = require("../src/parseTree");
+var Options = require("../src/Options");
 var Settings = require("../src/Settings");
+var Style = require("../src/Style");
 
 var defaultSettings = new Settings({});
+var defaultOptions = new Options({
+    style: Style.TEXT,
+    size: "size5"
+});
 
-var getBuilt = function(expr, settings) {
+var _getBuilt = function(expr, settings) {
     var usedSettings = settings ? settings : defaultSettings;
-
-    expect(expr).toBuild(usedSettings);
-
     var parsedTree = parseTree(expr, usedSettings);
-    var built = buildHTML(parsedTree, usedSettings);
+    var rootNode = buildTree(parsedTree, expr, usedSettings);
+
+    // grab the root node of the HTML rendering
+    var builtHTML = rootNode.children[1];
 
     // Remove the outer .katex and .katex-inner layers
-    return built.children[2].children;
+    return builtHTML.children[2].children;
 };
 
+/**
+ * Return the root node of the rendered HTML.
+ * @param expr
+ * @param settings
+ * @returns {Object}
+ */
+var getBuilt = function(expr, settings) {
+    var usedSettings = settings ? settings : defaultSettings;
+    expect(expr).toBuild(usedSettings);
+    return _getBuilt(expr, settings);
+};
+
+/**
+ * Return the root node of the parse tree.
+ * @param expr
+ * @param settings
+ * @returns {Object}
+ */
 var getParsed = function(expr, settings) {
     var usedSettings = settings ? settings : defaultSettings;
 
@@ -104,7 +128,7 @@ beforeEach(function() {
                     expect(actual).toParse(usedSettings);
 
                     try {
-                        buildHTML(parseTree(actual, usedSettings), usedSettings);
+                        _getBuilt(actual, settings);
                     } catch (e) {
                         result.pass = false;
                         if (e instanceof ParseError) {
@@ -1266,6 +1290,152 @@ describe("An HTML font tree-builder", function () {
         markup = katex.renderToString("\\mathbb{\\color{blue}{R}}");
         span = "<span class=\"mord mathbb\" style=\"color:blue;\">R</span>";
         expect(markup).toContain(span);
+    });
+});
+
+
+describe("A MathML font tree-builder", function () {
+    var contents = "Ax2k\\omega\\Omega\\imath+";
+
+    it("should render " + contents + " with the correct mathvariants", function () {
+        var tree = getParsed(contents);
+        var markup = buildMathML(tree, contents, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi>A</mi>");
+        expect(markup).toContain("<mi>x</mi>");
+        expect(markup).toContain("<mn>2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathbb{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathbb{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"double-struck\">A</mi>");
+        expect(markup).toContain("<mi>x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathrm{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathrm{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"normal\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"normal\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathit{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathit{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"italic\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"italic\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"italic\">2</mn>");
+        expect(markup).toContain("<mi mathvariant=\"italic\">\u03c9</mi>");   // \omega
+        expect(markup).toContain("<mi mathvariant=\"italic\">\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi mathvariant=\"italic\">\u0131</mi>");   // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathbf{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathbf{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"bold\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"bold\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"bold\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"bold\">\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathcal{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathcal{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"script\">A</mi>");
+        expect(markup).toContain("<mi>x</mi>");                             // script is caps only
+        expect(markup).toContain("<mn mathvariant=\"script\">2</mn>");
+        // MathJax marks everything below as "script" except \omega
+        // We don't have these glyphs in "caligraphic" and neither does MathJax
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathfrak{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathfrak{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"fraktur\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"fraktur\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"fraktur\">2</mn>");
+        // MathJax marks everything below as "fraktur" except \omega
+        // We don't have these glyphs in "fraktur" and neither does MathJax
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathscr{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathscr{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"script\">A</mi>");
+        // MathJax marks everything below as "script" except \omega
+        // We don't have these glyphs in "script" and neither does MathJax
+        expect(markup).toContain("<mi>x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathsf{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathsf{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"sans-serif\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"sans-serif\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"sans-serif\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");                            // \omega
+        expect(markup).toContain("<mi mathvariant=\"sans-serif\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                            // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render a combination of font and color changes", function () {
+        var tex = "\\color{blue}{\\mathbb R}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        var node = "<mstyle mathcolor=\"blue\">" +
+            "<mi mathvariant=\"double-struck\">R</mi>" +
+            "</mstyle>";
+        expect(markup).toContain(node);
+
+        // reverse the order of the commands
+        tex = "\\mathbb{\\color{blue}{R}}";
+        tree = getParsed(tex);
+        markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        node = "<mstyle mathcolor=\"blue\">" +
+            "<mi mathvariant=\"double-struck\">R</mi>" +
+            "</mstyle>";
+        expect(markup).toContain(node);
     });
 });
 

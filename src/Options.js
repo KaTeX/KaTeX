@@ -6,7 +6,7 @@
  */
 
 /**
- * This is the main options class. It contains the style, size, color and font
+ * This is the main options class. It contains the style, size, color, and font
  * of the current parse level. It also contains the style and size of the parent
  * parse level, so size changes can be handled efficiently.
  *
