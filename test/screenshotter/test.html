@@ -28,7 +28,7 @@
 
       var settings = {
           displayMode: !!query["display"],
-          breakOnUnsupportedCmds: !query["doNotBreak"]
+          throwOnError: !query["noThrow"]
       };
       if (query["errorColor"]) {
           settings.errorColor = query["errorColor"];

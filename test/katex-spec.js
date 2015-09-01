@@ -1707,43 +1707,43 @@ describe("A MathML builder", function() {
     });
 });
 
-describe("A parser that does not break on unsupported commands", function() {
+describe("A parser that does not throw on unsupported commands", function() {
     // The parser breaks on unsupported commands unless it is explicitly
     // told not to
     var errorColor = "#933";
-    var doNotBreakSettings = new Settings({
-        breakOnUnsupportedCmds: false,
+    var noThrowSettings = new Settings({
+        throwOnError: false,
         errorColor: errorColor
     });
 
     it("should still parse on unrecognized control sequences", function() {
-        expect("\\error").toParse(doNotBreakSettings);
+        expect("\\error").toParse(noThrowSettings);
     });
 
     describe("should allow unrecognized controls sequences anywhere, including", function() {
         it("in superscripts and subscripts", function() {
-            expect("2_\\error").toBuild(doNotBreakSettings);
-            expect("3^{\\error}_\\error").toBuild(doNotBreakSettings);
-            expect("\\int\\nolimits^\\error_\\error").toBuild(doNotBreakSettings);
+            expect("2_\\error").toBuild(noThrowSettings);
+            expect("3^{\\error}_\\error").toBuild(noThrowSettings);
+            expect("\\int\\nolimits^\\error_\\error").toBuild(noThrowSettings);
         });
 
         it("in fractions", function() {
-            expect("\\frac{345}{\\error}").toBuild(doNotBreakSettings);
-            expect("\\frac\\error{\\error}").toBuild(doNotBreakSettings);
+            expect("\\frac{345}{\\error}").toBuild(noThrowSettings);
+            expect("\\frac\\error{\\error}").toBuild(noThrowSettings);
         });
 
         it("in square roots", function() {
-            expect("\\sqrt\\error").toBuild(doNotBreakSettings);
-            expect("\\sqrt{234\\error}").toBuild(doNotBreakSettings);
+            expect("\\sqrt\\error").toBuild(noThrowSettings);
+            expect("\\sqrt{234\\error}").toBuild(noThrowSettings);
         });
 
         it("in text boxes", function() {
-            expect("\\text{\\error}").toBuild(doNotBreakSettings);
+            expect("\\text{\\error}").toBuild(noThrowSettings);
         });
     });
 
     it("should produce color nodes with a color value given by errorColor", function() {
-        var parsedInput = getParsed("\\error", doNotBreakSettings);
+        var parsedInput = getParsed("\\error", noThrowSettings);
         expect(parsedInput[0].type).toBe("color");
         expect(parsedInput[0].value.color).toBe(errorColor);
     });

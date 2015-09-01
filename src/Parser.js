@@ -129,7 +129,7 @@ Parser.prototype.parseExpression = function(pos, mode, breakOnInfix, breakOnToke
         }
         var atom = this.parseAtom(pos, mode);
         if (!atom) {
-            if (!this.settings.breakOnUnsupportedCmds && lex.text[0] === "\\") {
+            if (!this.settings.throwOnError && lex.text[0] === "\\") {
                 var errorNode = this.handleUnsupportedCmd(lex.text, mode);
                 body.push(errorNode);
 
@@ -214,7 +214,7 @@ Parser.prototype.handleSupSubscript = function(pos, mode, symbol, name) {
     if (!group) {
         var lex = this.lexer.lex(pos, mode);
 
-        if (!this.settings.breakOnUnsupportedCmds && lex.text[0] === "\\") {
+        if (!this.settings.throwOnError && lex.text[0] === "\\") {
             return new ParseResult(
                 this.handleUnsupportedCmd(lex.text, mode),
                 lex.position);
@@ -548,7 +548,7 @@ Parser.prototype.parseArguments = function(pos, mode, func, funcData, args) {
             if (!arg) {
                 var lex = this.lexer.lex(newPos, mode);
 
-                if (!this.settings.breakOnUnsupportedCmds && lex.text[0] === "\\") {
+                if (!this.settings.throwOnError && lex.text[0] === "\\") {
                     arg = new ParseFuncOrArgument(
                         new ParseResult(
                             this.handleUnsupportedCmd(lex.text, mode),
