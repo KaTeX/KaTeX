@@ -173,7 +173,7 @@ Parser.prototype.handleInfixNodes = function (body, mode) {
             }
             overIndex = i;
             funcName = node.value.replaceWith;
-            func = functions.funcs[funcName];
+            func = functions[funcName];
         }
     }
 
@@ -225,7 +225,7 @@ Parser.prototype.handleSupSubscript = function(pos, mode, symbol, name) {
     } else if (group.isFunction) {
         // ^ and _ have a greediness, so handle interactions with functions'
         // greediness
-        var funcGreediness = functions.funcs[group.result.result].greediness;
+        var funcGreediness = functions[group.result.result].greediness;
         if (funcGreediness > SUPSUB_GREEDINESS) {
             return this.parseFunction(pos, mode);
         } else {
@@ -484,7 +484,7 @@ Parser.prototype.parseFunction = function(pos, mode) {
     if (baseGroup) {
         if (baseGroup.isFunction) {
             var func = baseGroup.result.result;
-            var funcData = functions.funcs[func];
+            var funcData = functions[func];
             if (mode === "text" && !funcData.allowedInText) {
                 throw new ParseError(
                     "Can't use function '" + func + "' in text mode",
@@ -494,7 +494,7 @@ Parser.prototype.parseFunction = function(pos, mode) {
             var args = [func];
             var newPos = this.parseArguments(
                 baseGroup.result.position, mode, func, funcData, args);
-            var result = functions.funcs[func].handler.apply(this, args);
+            var result = functions[func].handler.apply(this, args);
             return new ParseResult(
                 new ParseNode(result.type, result, mode),
                 newPos);
@@ -563,7 +563,7 @@ Parser.prototype.parseArguments = function(pos, mode, func, funcData, args) {
         var argNode;
         if (arg.isFunction) {
             var argGreediness =
-                functions.funcs[arg.result.result].greediness;
+                functions[arg.result.result].greediness;
             if (argGreediness > baseGreediness) {
                 argNode = this.parseFunction(newPos, mode);
             } else {
@@ -695,7 +695,7 @@ Parser.prototype.parseOptionalGroup = function(pos, mode) {
 Parser.prototype.parseSymbol = function(pos, mode) {
     var nucleus = this.lexer.lex(pos, mode);
 
-    if (functions.funcs[nucleus.text]) {
+    if (functions[nucleus.text]) {
         // If there exists a function with this name, we return the function and
         // say that it is a function.
         return new ParseFuncOrArgument(

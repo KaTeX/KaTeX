@@ -624,6 +624,4 @@ for (var f in functions) {
     }
 }
 
-module.exports = {
-    funcs: functions
-};
+module.exports = functions;
