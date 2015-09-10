@@ -74,7 +74,7 @@ var ParseError = require("./ParseError");
  * in to the function in buildHTML/buildMathML as `group.value`.
  */
 
-function declareFunction(names, props, handler) {
+function defineFunction(names, props, handler) {
     if (typeof names === "string") {
         names = [names];
     }
@@ -96,7 +96,7 @@ function declareFunction(names, props, handler) {
 }
 
 // A normal square root
-declareFunction("\\sqrt", {
+defineFunction("\\sqrt", {
     numArgs: 1,
     numOptionalArgs: 1
 }, function(func, index, body, positions) {
@@ -108,7 +108,7 @@ declareFunction("\\sqrt", {
 });
 
 // Some non-mathy text
-declareFunction("\\text", {
+defineFunction("\\text", {
     numArgs: 1,
     argTypes: ["text"],
     greediness: 2
@@ -130,7 +130,7 @@ declareFunction("\\text", {
 });
 
 // A two-argument custom color
-declareFunction("\\color", {
+defineFunction("\\color", {
     numArgs: 2,
     allowedInText: true,
     greediness: 3,
@@ -152,7 +152,7 @@ declareFunction("\\color", {
 });
 
 // An overline
-declareFunction("\\overline", {
+defineFunction("\\overline", {
     numArgs: 1
 }, function(func, body) {
     return {
@@ -162,7 +162,7 @@ declareFunction("\\overline", {
 });
 
 // A box of the width and height
-declareFunction("\\rule", {
+defineFunction("\\rule", {
     numArgs: 2,
     numOptionalArgs: 1,
     argTypes: ["size", "size", "size"]
@@ -176,7 +176,7 @@ declareFunction("\\rule", {
 });
 
 // A KaTeX logo
-declareFunction("\\KaTeX", {
+defineFunction("\\KaTeX", {
     numArgs: 0
 }, function(func) {
     return {
@@ -184,7 +184,7 @@ declareFunction("\\KaTeX", {
     };
 });
 
-declareFunction("\\phantom", {
+defineFunction("\\phantom", {
     numArgs: 1
 }, function(func, body) {
     var inner;
@@ -242,7 +242,7 @@ var fontAliases = {
 };
 
 // Single-argument color functions
-declareFunction([
+defineFunction([
     "\\blue", "\\orange", "\\pink", "\\red",
     "\\green", "\\gray", "\\purple",
     "\\blueA", "\\blueB", "\\blueC", "\\blueD", "\\blueE",
@@ -280,7 +280,7 @@ declareFunction([
 // displaystyle. These four groups cover the four possible choices.
 
 // No limits, not symbols
-declareFunction([
+defineFunction([
     "\\arcsin", "\\arccos", "\\arctan", "\\arg", "\\cos", "\\cosh",
     "\\cot", "\\coth", "\\csc", "\\deg", "\\dim", "\\exp", "\\hom",
     "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin", "\\sinh",
@@ -297,7 +297,7 @@ declareFunction([
 });
 
 // Limits, not symbols
-declareFunction([
+defineFunction([
     "\\det", "\\gcd", "\\inf", "\\lim", "\\liminf", "\\limsup", "\\max",
     "\\min", "\\Pr", "\\sup"
 ], {
@@ -312,7 +312,7 @@ declareFunction([
 });
 
 // No limits, symbols
-declareFunction([
+defineFunction([
     "\\int", "\\iint", "\\iiint", "\\oint"
 ], {
     numArgs: 0
@@ -326,7 +326,7 @@ declareFunction([
 });
 
 // Limits, symbols
-declareFunction([
+defineFunction([
     "\\coprod", "\\bigvee", "\\bigwedge", "\\biguplus", "\\bigcap",
     "\\bigcup", "\\intop", "\\prod", "\\sum", "\\bigotimes",
     "\\bigoplus", "\\bigodot", "\\bigsqcup", "\\smallint"
@@ -342,7 +342,7 @@ declareFunction([
 });
 
 // Fractions
-declareFunction([
+defineFunction([
     "\\dfrac", "\\frac", "\\tfrac",
     "\\dbinom", "\\binom", "\\tbinom"
 ], {
@@ -394,7 +394,7 @@ declareFunction([
 });
 
 // Left and right overlap functions
-declareFunction(["\\llap", "\\rlap"], {
+defineFunction(["\\llap", "\\rlap"], {
     numArgs: 1,
     allowedInText: true
 }, function(func, body) {
@@ -405,7 +405,7 @@ declareFunction(["\\llap", "\\rlap"], {
 });
 
 // Delimiter functions
-declareFunction([
+defineFunction([
     "\\bigl", "\\Bigl", "\\biggl", "\\Biggl",
     "\\bigr", "\\Bigr", "\\biggr", "\\Biggr",
     "\\bigm", "\\Bigm", "\\biggm", "\\Biggm",
@@ -439,19 +439,19 @@ declareFunction([
 });
 
 // Sizing functions (handled in Parser.js explicitly, hence no handler)
-declareFunction([
+defineFunction([
     "\\tiny", "\\scriptsize", "\\footnotesize", "\\small",
     "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge"
 ], 0, null);
 
 // Style changing functions (handled in Parser.js explicitly, hence no
 // handler)
-declareFunction([
+defineFunction([
     "\\displaystyle", "\\textstyle", "\\scriptstyle",
     "\\scriptscriptstyle"
 ], 0, null);
 
-declareFunction([
+defineFunction([
     // styles
     "\\mathrm", "\\mathit", "\\mathbf",
 
@@ -475,7 +475,7 @@ declareFunction([
 });
 
 // Accents
-declareFunction([
+defineFunction([
     "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
     "\\check", "\\hat", "\\vec", "\\dot"
     // We don't support expanding accents yet
@@ -491,7 +491,7 @@ declareFunction([
 });
 
 // Infix generalized fractions
-declareFunction(["\\over", "\\choose"], {
+defineFunction(["\\over", "\\choose"], {
     numArgs: 0
 }, function (func) {
     var replaceWith;
@@ -512,7 +512,7 @@ declareFunction(["\\over", "\\choose"], {
 });
 
 // Row breaks for aligned data
-declareFunction(["\\\\", "\\cr"], {
+defineFunction(["\\\\", "\\cr"], {
     numArgs: 0,
     numOptionalArgs: 1,
     argTypes: ["size"]
@@ -524,7 +524,7 @@ declareFunction(["\\\\", "\\cr"], {
 });
 
 // Environment delimiters
-declareFunction(["\\begin", "\\end"], {
+defineFunction(["\\begin", "\\end"], {
     numArgs: 1,
     argTypes: ["text"]
 }, function(func, nameGroup, positions) {
