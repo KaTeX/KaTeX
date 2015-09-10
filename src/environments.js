@@ -81,98 +81,98 @@ function defineEnvironment(names, props, handler) {
     }
 }
 
-    // Arrays are part of LaTeX, defined in lttab.dtx so its documentation
-    // is part of the source2e.pdf file of LaTeX2e source documentation.
-    defineEnvironment("array", {
-        numArgs: 1
-    }, function(pos, mode, envName, colalign, positions) {
-            var parser = this;
-            colalign = colalign.value.map ? colalign.value : [colalign];
-            var cols = colalign.map(function(node) {
-                var ca = node.value;
-                if ("lcr".indexOf(ca) !== -1) {
-                    return {
-                        type: "align",
-                        align: ca
-                    };
-                } else if (ca === "|") {
-                    return {
-                        type: "separator",
-                        separator: "|"
-                    };
-                }
-                throw new ParseError(
-                    "Unknown column alignment: " + node.value,
-                    parser.lexer, positions[1]);
-            });
-            var res = {
-                type: "array",
-                cols: cols,
-                hskipBeforeAndAfter: true // \@preamble in lttab.dtx
+// Arrays are part of LaTeX, defined in lttab.dtx so its documentation
+// is part of the source2e.pdf file of LaTeX2e source documentation.
+defineEnvironment("array", {
+    numArgs: 1
+}, function(pos, mode, envName, colalign, positions) {
+    var parser = this;
+    colalign = colalign.value.map ? colalign.value : [colalign];
+    var cols = colalign.map(function(node) {
+        var ca = node.value;
+        if ("lcr".indexOf(ca) !== -1) {
+            return {
+                type: "align",
+                align: ca
             };
-            res = parseArray(parser, pos, mode, res);
-            return res;
-        });
+        } else if (ca === "|") {
+            return {
+                type: "separator",
+                separator: "|"
+            };
+        }
+        throw new ParseError(
+            "Unknown column alignment: " + node.value,
+            parser.lexer, positions[1]);
+    });
+    var res = {
+        type: "array",
+        cols: cols,
+        hskipBeforeAndAfter: true // \@preamble in lttab.dtx
+    };
+    res = parseArray(parser, pos, mode, res);
+    return res;
+});
 
-    // The matrix environments of amsmath builds on the array environment
-    // of LaTeX, which is discussed above.
-    defineEnvironment([
-            "matrix",
-            "pmatrix",
-            "bmatrix",
-            "Bmatrix",
-            "vmatrix",
-            "Vmatrix"
-        ], {
-    }, function(pos, mode, envName) {
-            var delimiters = {
-                "matrix": null,
-                "pmatrix": ["(", ")"],
-                "bmatrix": ["[", "]"],
-                "Bmatrix": ["\\{", "\\}"],
-                "vmatrix": ["|", "|"],
-                "Vmatrix": ["\\Vert", "\\Vert"]
-            }[envName];
-            var res = {
-                type: "array",
-                hskipBeforeAndAfter: false // \hskip -\arraycolsep in amsmath
-            };
-            res = parseArray(this, pos, mode, res);
-            if (delimiters) {
-                res.result = new ParseNode("leftright", {
-                    body: [res.result],
-                    left: delimiters[0],
-                    right: delimiters[1]
-                }, mode);
-            }
-            return res;
-        });
+// The matrix environments of amsmath builds on the array environment
+// of LaTeX, which is discussed above.
+defineEnvironment([
+    "matrix",
+    "pmatrix",
+    "bmatrix",
+    "Bmatrix",
+    "vmatrix",
+    "Vmatrix"
+], {
+}, function(pos, mode, envName) {
+    var delimiters = {
+        "matrix": null,
+        "pmatrix": ["(", ")"],
+        "bmatrix": ["[", "]"],
+        "Bmatrix": ["\\{", "\\}"],
+        "vmatrix": ["|", "|"],
+        "Vmatrix": ["\\Vert", "\\Vert"]
+    }[envName];
+    var res = {
+        type: "array",
+        hskipBeforeAndAfter: false // \hskip -\arraycolsep in amsmath
+    };
+    res = parseArray(this, pos, mode, res);
+    if (delimiters) {
+        res.result = new ParseNode("leftright", {
+            body: [res.result],
+            left: delimiters[0],
+            right: delimiters[1]
+        }, mode);
+    }
+    return res;
+});
 
-    // A cases environment (in amsmath.sty) is almost equivalent to
-    // \def\arraystretch{1.2}%
-    // \left\{\begin{array}{@{}l@{\quad}l@{}} … \end{array}\right.
-    defineEnvironment("cases", {
-    }, function(pos, mode, envName) {
-            var res = {
-                type: "array",
-                arraystretch: 1.2,
-                cols: [{
-                    type: "align",
-                    align: "l",
-                    pregap: 0,
-                    postgap: fontMetrics.metrics.quad
-                }, {
-                    type: "align",
-                    align: "l",
-                    pregap: 0,
-                    postgap: 0
-                }]
-            };
-            res = parseArray(this, pos, mode, res);
-            res.result = new ParseNode("leftright", {
-                body: [res.result],
-                left: "\\{",
-                right: "."
-            }, mode);
-            return res;
-        });
+// A cases environment (in amsmath.sty) is almost equivalent to
+// \def\arraystretch{1.2}%
+// \left\{\begin{array}{@{}l@{\quad}l@{}} … \end{array}\right.
+defineEnvironment("cases", {
+}, function(pos, mode, envName) {
+    var res = {
+        type: "array",
+        arraystretch: 1.2,
+        cols: [{
+            type: "align",
+            align: "l",
+            pregap: 0,
+            postgap: fontMetrics.metrics.quad
+        }, {
+            type: "align",
+            align: "l",
+            pregap: 0,
+            postgap: 0
+        }]
+    };
+    res = parseArray(this, pos, mode, res);
+    res.result = new ParseNode("leftright", {
+        body: [res.result],
+        left: "\\{",
+        right: "."
+    }, mode);
+    return res;
+});
