@@ -51,11 +51,11 @@ function parseArray(parser, pos, mode, result) {
  * A bare number instead of that object indicates the numArgs value.
  *
  * The handler function will receive the following arguments:
- *             - pos: the current position of the parser.
- *             - mode: the current parsing mode.
- *             - envName: the name of the environment, one of the listed names.
- *             - [args]: the arguments passed to \begin.
- *             - positions: the positions associated with these arguments.
+ *  - pos: the current position of the parser.
+ *  - mode: the current parsing mode.
+ *  - envName: the name of the environment, one of the listed names.
+ *  - [args]: the arguments passed to \begin.
+ *  - positions: the positions associated with these arguments.
  * The handler is called with `this` referring to the parser.
  * It must return a ParseResult.
  */
