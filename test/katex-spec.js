@@ -1259,6 +1259,10 @@ describe("A font parser", function () {
         expect(bf.value.body.value[1].value.font).toMatch("mathrm");
         expect(bf.value.body.value[2].value).toMatch("c");
     });
+    
+    it("should have the correct greediness", function() {
+        expect("e^\\mathbf{x}").toParse();
+    });
 });
 
 describe("An HTML font tree-builder", function () {
