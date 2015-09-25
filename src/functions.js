@@ -462,7 +462,8 @@ defineFunction([
     // aliases
     "\\Bbb", "\\bold", "\\frak"
 ], {
-    numArgs: 1
+    numArgs: 1,
+    greediness: 2
 }, function (func, body) {
     if (func in fontAliases) {
         func = fontAliases[func];
