@@ -87,22 +87,25 @@ def main():
                 continue
             name = names.pop()
 
-            height = depth = italic = skew = 0
+            height = depth = italic = skew = width = 0
             glyph = glyf[name]
             if glyph.numberOfContours:
                 height = glyph.yMax
                 depth = -glyph.yMin
+                width = glyph.xMax - glyph.xMin
             if base_char:
                 base_char_str = str(ord(base_char))
                 base_metrics = start_json[font][base_char_str]
                 italic = base_metrics["italic"]
                 skew = base_metrics["skew"]
+                width = base_metrics["width"]
 
             start_json[font][str(code)] = {
                 "height": height / unitsPerEm,
                 "depth": depth / unitsPerEm,
                 "italic": italic,
                 "skew": skew,
+                "width": width
             }
 
     sys.stdout.write(

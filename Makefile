@@ -85,6 +85,9 @@ PYTHON=$(shell python2 --version >/dev/null 2>&1 && echo python2 || echo python)
 metrics:
 	cd metrics && $(PERL) ./mapping.pl | $(PYTHON) ./extract_tfms.py | $(PYTHON) ./extract_ttfs.py | $(PYTHON) ./format_json.py > ../src/fontMetricsData.js
 
+extended_metrics:
+	cd metrics && $(PERL) ./mapping.pl | $(PYTHON) ./extract_tfms.py | $(PYTHON) ./extract_ttfs.py | $(PYTHON) ./format_json.py --width > ../src/fontMetricsData.js
+
 clean:
 	rm -rf build/*
 

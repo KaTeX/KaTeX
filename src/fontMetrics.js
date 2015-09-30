@@ -123,7 +123,10 @@ var metricMap = require("./fontMetricsData");
 
 /**
  * This function is a convenience function for looking up information in the
- * metricMap table. It takes a character as a string, and a style
+ * metricMap table. It takes a character as a string, and a style.
+ * 
+ * Note: the `width` property may be undefined if fontMetricsData.js wasn't
+ * built using `Make extended_metrics`.
  */
 var getCharacterMetrics = function(character, style) {
     var metrics = metricMap[style][character.charCodeAt(0)];
@@ -132,7 +135,8 @@ var getCharacterMetrics = function(character, style) {
             depth: metrics[0],
             height: metrics[1],
             italic: metrics[2],
-            skew: metrics[3]
+            skew: metrics[3],
+            width: metrics[4]
         };
     }
 };
