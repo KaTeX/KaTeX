@@ -195,7 +195,8 @@ Parser.prototype.handleInfixNodes = function (body, mode) {
             denomNode = new ParseNode("ordgroup", denomBody, mode);
         }
 
-        var value = func.handler(funcName, numerNode, denomNode);
+        var value = this.callFunction(
+            funcName, [numerNode, denomNode], null);
         return [new ParseNode(value.type, value, mode)];
     } else {
         return body;
@@ -430,11 +431,18 @@ Parser.prototype.parseImplicitGroup = function(pos, mode) {
         // Build the environment object. Arguments and other information will
         // be made available to the begin and end methods using properties.
         var env = environments[envName];
-        var args = [null, mode, envName];
+        var args = [];
         var newPos = this.parseArguments(
             begin.position, mode, "\\begin{" + envName + "}", env, args);
-        args[0] = newPos;
-        var result = env.handler.apply(this, args);
+        var context = {
+            pos: newPos,
+            mode: mode,
+            envName: envName,
+            parser: this,
+            lexer: this.lexer,
+            positions: args.pop()
+        };
+        var result = env.handler(context, args);
         var endLex = this.lexer.lex(result.position, mode);
         this.expect(endLex, "\\end");
         var end = this.parseFunction(result.position, mode);
@@ -491,10 +499,10 @@ Parser.prototype.parseFunction = function(pos, mode) {
                     this.lexer, baseGroup.position);
             }
 
-            var args = [func];
+            var args = [];
             var newPos = this.parseArguments(
                 baseGroup.result.position, mode, func, funcData, args);
-            var result = functions[func].handler.apply(this, args);
+            var result = this.callFunction(func, args, args.pop());
             return new ParseResult(
                 new ParseNode(result.type, result, mode),
                 newPos);
@@ -506,6 +514,18 @@ Parser.prototype.parseFunction = function(pos, mode) {
     }
 };
 
+/**
+ * Call a function handler with a suitable context and arguments.
+ */
+Parser.prototype.callFunction = function(name, args, positions) {
+    var context = {
+        funcName: name,
+        parser: this,
+        lexer: this.lexer,
+        positions: positions
+    };
+    return functions[name].handler(context, args);
+};
 
 /**
  * Parses the arguments of a function or environment
