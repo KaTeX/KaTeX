@@ -339,7 +339,7 @@ var stackAlwaysDelimiters = [
 
 // and delimiters that never stack
 var stackNeverDelimiters = [
-    "<", ">", "\\langle", "\\rangle", "/", "\\backslash"
+    "<", ">", "\\langle", "\\rangle", "/", "\\backslash", "\\lt", "\\gt"
 ];
 
 // Metrics of the different sizes. Found by looking at TeX's output of
@@ -352,9 +352,9 @@ var sizeToMaxHeight = [0, 1.2, 1.8, 2.4, 3.0];
  */
 var makeSizedDelim = function(delim, size, options, mode) {
     // < and > turn into \langle and \rangle in delimiters
-    if (delim === "<") {
+    if (delim === "<" || delim === "\\lt") {
         delim = "\\langle";
-    } else if (delim === ">") {
+    } else if (delim === ">" || delim === "\\gt") {
         delim = "\\rangle";
     }
 
@@ -468,9 +468,9 @@ var traverseSequence = function(delim, height, sequence, options) {
  * traverse the sequences, and create a delimiter that the sequence tells us to.
  */
 var makeCustomSizedDelim = function(delim, height, center, options, mode) {
-    if (delim === "<") {
+    if (delim === "<" || delim === "\\lt") {
         delim = "\\langle";
-    } else if (delim === ">") {
+    } else if (delim === ">" || delim === "\\gt") {
         delim = "\\rangle";
     }
 

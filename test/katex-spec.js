@@ -1253,7 +1253,7 @@ describe("A font parser", function () {
     it("should not parse a series of font commands", function () {
         expect("\\mathbb \\mathrm R").toNotParse();
     });
-    
+
     it("should nest fonts correctly", function () {
         var bf = getParsed("\\mathbf{a\\mathrm{b}c}")[0];
         expect(bf.value.type).toMatch("font");
@@ -1264,7 +1264,7 @@ describe("A font parser", function () {
         expect(bf.value.body.value[1].value.font).toMatch("mathrm");
         expect(bf.value.body.value[2].value).toMatch("c");
     });
-    
+
     it("should have the correct greediness", function() {
         expect("e^\\mathbf{x}").toParse();
     });
@@ -1755,5 +1755,14 @@ describe("A parser that does not throw on unsupported commands", function() {
         var parsedInput = getParsed("\\error", noThrowSettings);
         expect(parsedInput[0].type).toBe("color");
         expect(parsedInput[0].value.color).toBe(errorColor);
+    });
+});
+
+describe("The symbol table integraty", function() {
+    it("should treat certain symbols as synonyms", function() {
+        expect(getBuilt("<")).toEqual(getBuilt("\\lt"));
+        expect(getBuilt(">")).toEqual(getBuilt("\\gt"));
+        expect(getBuilt("\\left<\\frac{1}{x}\\right>"))
+            .toEqual(getBuilt("\\left\\lt\\frac{1}{x}\\right\\gt"));
     });
 });

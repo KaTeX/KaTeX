@@ -237,7 +237,7 @@ var delimiters = [
     "(", ")", "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
-    "<", ">", "\\langle", "\\rangle",
+    "<", ">", "\\langle", "\\rangle", "\\lt", "\\gt",
     "\\lvert", "\\rvert", "\\lVert", "\\rVert",
     "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache",
     "/", "\\backslash",
