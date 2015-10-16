@@ -85,6 +85,7 @@ def main():
             height = round(tfm_char.height + yshift / 1000.0, 5)
             depth = round(tfm_char.depth - yshift / 1000.0, 5)
             italic = round(tfm_char.italic_correction, 5)
+            width = round(tfm_char.width, 5)
 
             skewkern = 0.0
             if (font_skewchar[font] and
@@ -97,6 +98,7 @@ def main():
                 'depth': depth,
                 'italic': italic,
                 'skew': skewkern,
+                'width': width
             }
 
     sys.stdout.write(
