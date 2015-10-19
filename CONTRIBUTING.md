@@ -85,7 +85,7 @@ changed and why. Otherwise, figure out what is causing the changes and fix it!
 
 If you add a feature that is dependent on the final output looking the way you
 created it, add a screenshot test. See
-[ss_data.json](test/screenshotter/ss_data.json).
+[ss_data.json](test/screenshotter/ss_data.yaml).
 
 #### Testing in other browsers
 
