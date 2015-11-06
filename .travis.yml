@@ -9,5 +9,4 @@ before_script:
   - docker pull selenium/standalone-chrome:2.46.0
 script:
   - npm test
-  - dockers/Screenshotter/screenshotter.sh
-  - git diff --name-only --exit-code
+  - dockers/Screenshotter/screenshotter.sh --verify
