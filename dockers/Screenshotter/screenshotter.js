@@ -63,6 +63,10 @@ var opts = require("nomnom")
         abbr: "x",
         help: "Comma-separated list of test cases to exclude"
     })
+    .option("verify", {
+        flag: true,
+        help: "Check whether screenshot matches current file content"
+    })
     .parse();
 
 var listOfCases;
@@ -204,7 +208,9 @@ function buildDriver() {
         builder.usingServer(seleniumURL);
     }
     driver = builder.build();
-    setSize(targetW, targetH);
+    driver.manage().timeouts().setScriptTimeout(3000).then(function() {
+        setSize(targetW, targetH);
+    });
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -243,6 +249,9 @@ function imageDimensions(img) {
 
 var countdown = listOfCases.length;
 
+var exitStatus = 0;
+var listOfFailed = [];
+
 function takeScreenshots() {
     listOfCases.forEach(takeScreenshot);
 }
@@ -253,9 +262,27 @@ function takeScreenshot(key) {
         console.error("Test case " + key + " not known!");
         return;
     }
+
+    var file = path.join(dstDir, key + "-" + opts.browser + ".png");
+    var retry = 0;
+    var loadExpected = null;
+    if (opts.verify) {
+        loadExpected = promisify(fs.readFile, file);
+    }
+
     var url = katexURL + "test/screenshotter/test.html?" + itm.query;
     driver.get(url);
-    driver.takeScreenshot().then(function haveScreenshot(img) {
+    driver.takeScreenshot().then(haveScreenshot).then(function() {
+        if (--countdown === 0) {
+            if (listOfFailed.length) {
+                console.error("Failed: " + listOfFailed.join(" "));
+            }
+            // devServer.close(cb) will take too long.
+            process.exit(exitStatus);
+        }
+    }, check);
+
+    function haveScreenshot(img) {
         img = imageDimensions(img);
         if (img.width !== targetW || img.height !== targetH) {
             throw new Error("Excpected " + targetW + " x " + targetH +
@@ -270,27 +297,63 @@ function takeScreenshot(key) {
              * output file name for one of these cases, we accept both.
              */
             key += "_alt";
+            file = path.join(dstDir, key + "-" + opts.browser + ".png");
+            if (loadExpected) {
+                loadExpected = promisify(fs.readFile, file);
+            }
         }
-        var file = path.join(dstDir, key + "-" + opts.browser + ".png");
-        var deferred = new selenium.promise.Deferred();
         var opt = new jspngopt.Optimizer({
             pako: pako
         });
         var buf = opt.bufferSync(img.buf);
-        fs.writeFile(file, buf, function(err) {
-            if (err) {
-                deferred.reject(err);
-            }
-            else {
-                deferred.fulfill();
-            }
-        });
-        return deferred.promise;
-    }).then(function() {
-        console.log(key);
-        if (--countdown === 0) {
-            // devServer.close(cb) will take too long.
-            process.exit(0);
+        if (loadExpected) {
+            return loadExpected.then(function(expected) {
+                if (!buf.equals(expected)) {
+                    if (++retry === 5) {
+                        console.error("FAIL! " + key);
+                        listOfFailed.push(key);
+                        exitStatus = 3;
+                    } else {
+                        console.log("error " + key);
+                        driver.get(url);
+                        browserSideWait(500 * retry);
+                        return driver.takeScreenshot().then(haveScreenshot);
+                    }
+                } else {
+                    console.log("* ok  " + key);
+                }
+            });
+        } else {
+            return promisify(fs.writeFile, file, buf).then(function() {
+                console.log(key);
+            });
         }
-    }, check);
+    }
+}
+
+// Wait using a timeout call in the browser, to ensure that the wait
+// time doesn't start before the page has reportedly been loaded.
+function browserSideWait(milliseconds) {
+    // The last argument (arguments[1] here) is the callback to selenium
+    return driver.executeAsyncScript(
+        "window.setTimeout(arguments[1], arguments[0]);",
+        milliseconds);
+}
+
+// Turn node callback style into a call returning a promise,
+// like Q.nfcall but using Selenium promises instead of Q ones.
+// Second and later arguments are passed to the function named in the
+// first argument, and a callback is added as last argument.
+function promisify(f) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    var deferred = new selenium.promise.Deferred();
+    args.push(function(err, val) {
+        if (err) {
+            deferred.reject(err);
+        } else {
+            deferred.fulfill(val);
+        }
+    });
+    f.apply(null, args);
+    return deferred.promise;
 }
