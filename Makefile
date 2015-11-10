@@ -76,8 +76,7 @@ serve:
 	node server.js
 
 test:
-	./node_modules/.bin/jasmine-node test/katex-spec.js
-	./node_modules/.bin/jasmine-node contrib/auto-render/auto-render-spec.js
+	JASMINE_CONFIG_PATH=test/jasmine.json node_modules/.bin/jasmine
 
 PERL=perl
 PYTHON=$(shell python2 --version >/dev/null 2>&1 && echo python2 || echo python)
