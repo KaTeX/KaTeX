@@ -3,6 +3,7 @@ var path = require("path");
 
 var browserify = require("browserify");
 var express = require("express");
+var glob = require("glob");
 var less = require("less");
 
 var app = express();
@@ -13,11 +14,20 @@ if (require.main === module) {
 
 var serveBrowserified = function(file, standaloneName) {
     return function(req, res, next) {
+        var files;
+        if (Array.isArray(file)) {
+            files = file;
+        } else if (file.indexOf("*") !== -1) {
+            files = glob.sync(file);
+        } else {
+            files = [file];
+        }
+
         var options = {};
         if (standaloneName) {
             options.standalone = standaloneName;
         }
-        var b = browserify([file], options);
+        var b = browserify(files, options);
         var stream = b.bundle();
 
         var body = "";
@@ -31,7 +41,8 @@ var serveBrowserified = function(file, standaloneName) {
 };
 
 app.get("/katex.js", serveBrowserified("./katex", "katex"));
-app.get("/test/katex-spec.js", serveBrowserified("./test/katex-spec"));
+app.use("/test/jasmine", express["static"](path.dirname(require.resolve("jasmine-core/lib/jasmine-core/jasmine.js"))));
+app.get("/test/katex-spec.js", serveBrowserified("./test/*[Ss]pec.js"));
 app.get("/contrib/auto-render/auto-render.js",
         serveBrowserified("./contrib/auto-render/auto-render",
                           "renderMathInElement"));
