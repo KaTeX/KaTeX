@@ -5,8 +5,8 @@ sudo: required
 services:
   - docker
 before_script:
-  - docker pull selenium/standalone-firefox:2.46.0
-  - docker pull selenium/standalone-chrome:2.46.0
+  - docker pull selenium/standalone-firefox:2.48.2
+  - docker pull selenium/standalone-chrome:2.48.2
 script:
   - npm test
   - dockers/Screenshotter/screenshotter.sh --verify
