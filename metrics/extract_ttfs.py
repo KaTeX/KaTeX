@@ -16,7 +16,6 @@ metrics_to_extract = {
         # we map each character to a "base character", which is a character
         # from the same font with correct italic and skew metrics. A character
         # maps to None if it doesn't have a base.
-
         u"\u2260": None,  # \neq
         u"\u2245": None,  # \cong
         u"\u0020": None,  # space
@@ -44,6 +43,13 @@ metrics_to_extract = {
         u"\u21a9": None,  # \hookleftarrow
         u"\u21aa": None,  # \hookrightarrow
         u"\u21cc": None,  # \rightleftharpoons
+        u"\u20ac": None,  # \euro
+    },
+    "Main-Bold": {
+      u"\u20ac": None,  # \euro
+    },
+    "Main-Italic": {
+      u"\u20ac": None,  # \euro
     },
     "Size1-Regular": {
         u"\u222c": u"\u222b",  # \iint, based on \int
