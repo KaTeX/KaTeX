@@ -6,7 +6,7 @@ var path = require("path");
 var Q = require("q"); // To debug, pass Q_DEBUG=1 in the environment
 var pngparse = require("pngparse");
 var fft = require("ndarray-fft");
-var ndarray = require("ndarray-fft/node_modules/ndarray");
+var Ndarray = require("ndarray-fft/node_modules/ndarray");
 
 var data = require("../../test/screenshotter/ss_data");
 
@@ -248,5 +248,5 @@ function fftImage(image) {
 // Create a new matrix of preconfigured dimensions, initialized to zero
 function createMatrix() {
     var array = new Float64Array(alignWidth * alignHeight);
-    return new ndarray(array, [alignWidth, alignHeight]);
+    return new Ndarray(array, [alignWidth, alignHeight]);
 }
