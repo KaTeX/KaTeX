@@ -87,6 +87,7 @@ defineSymbol(math, main, rel, "\u220b", "\\owns");
 // Punctuation
 defineSymbol(math, main, punct, "\u002e", "\\ldotp");
 defineSymbol(math, main, punct, "\u22c5", "\\cdotp");
+defineSymbol(math, main, punct, "\u2026", "\\dots");
 
 // Misc Symbols
 defineSymbol(math, main, textord, "\u0023", "\\#");
