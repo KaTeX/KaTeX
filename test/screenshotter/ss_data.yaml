@@ -12,6 +12,11 @@
 # on the next line. See http://www.yaml.org/ for syntax details.
 
 Accents: \vec{A}\vec{x}\vec x^2\vec{x}_2^2\vec{A}^2\vec{xA}^2
+Aligned: |
+    \begin{aligned}
+        a &= 1 & b &= 2 \\
+        3a &= 3 & 17b &= 34
+    \end{aligned}
 Arrays: |
     \left(\begin{array}{|rl|c||}
         1&2&3\\
