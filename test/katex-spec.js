@@ -1672,6 +1672,15 @@ describe("A cases environment", function() {
 
 });
 
+describe("An aligned environment", function() {
+
+    it("should parse its input", function() {
+        expect("\\begin{aligned}a&=b&c&=d\\\\e&=f\\end{aligned}")
+            .toParse();
+    });
+
+});
+
 var getMathML = function(expr, settings) {
     var usedSettings = settings ? settings : defaultSettings;
 
