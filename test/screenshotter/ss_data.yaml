@@ -107,6 +107,7 @@ SupSubHorizSpacing: |
     x^{x^{x}}\Big|x_{x_{x_{x_{x}}}}\bigg|x^{x^{x_{x_{x_{x_{x}}}}}}\bigg|
 SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
+Unicode: \text{ßæœøÆŒØ}
 UnsupportedCmds:
     tex: \err\,\frac\fracerr3\,2^\superr_\suberr\,\sqrt\sqrterr
     noThrow: 1
