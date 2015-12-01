@@ -7,6 +7,7 @@ services:
 before_script:
   - docker pull selenium/standalone-firefox:2.48.2
   - docker pull selenium/standalone-chrome:2.48.2
+  - docker images --no-trunc
 script:
   - npm test
   - dockers/Screenshotter/screenshotter.sh --verify
