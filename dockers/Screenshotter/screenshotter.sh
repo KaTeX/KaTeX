@@ -8,7 +8,7 @@
 # directly.
 
 status=0
-for browserTag in firefox:2.46.0 chrome:2.46.0; do
+for browserTag in firefox:2.48.2 chrome:2.48.2; do
     browser=${browserTag%:*}
     image=selenium/standalone-${browserTag}
     echo "Starting container for ${image}"
