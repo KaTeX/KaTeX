@@ -8,6 +8,7 @@ var net = require("net");
 var pako = require("pako");
 var path = require("path");
 var selenium = require("selenium-webdriver");
+var firefox = require("selenium-webdriver/firefox");
 
 var app = require("../../server");
 var data = require("../../test/screenshotter/ss_data");
@@ -204,6 +205,12 @@ function tryConnect() {
 var driver;
 function buildDriver() {
     var builder = new selenium.Builder().forBrowser(opts.browser);
+    var ffProfile = new firefox.Profile();
+    ffProfile.setPreference(
+        "browser.startup.homepage_override.mstone", "ignore");
+    ffProfile.setPreference("browser.startup.page", 0);
+    var ffOptions = new firefox.Options().setProfile(ffProfile);
+    builder.setFirefoxOptions(ffOptions);
     if (seleniumURL) {
         builder.usingServer(seleniumURL);
     }
