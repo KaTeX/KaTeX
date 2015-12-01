@@ -15,7 +15,8 @@ var indexOf = function(list, elem) {
     if (nativeIndexOf && list.indexOf === nativeIndexOf) {
         return list.indexOf(elem);
     }
-    var i = 0, l = list.length;
+    var i = 0;
+    var l = list.length;
     for (; i < l; i++) {
         if (list[i] === elem) {
             return i;
@@ -46,17 +47,17 @@ var hyphenate = function(str) {
 };
 
 var ESCAPE_LOOKUP = {
-  "&": "&amp;",
-  ">": "&gt;",
-  "<": "&lt;",
-  "\"": "&quot;",
-  "'": "&#x27;"
+    "&": "&amp;",
+    ">": "&gt;",
+    "<": "&lt;",
+    "\"": "&quot;",
+    "'": "&#x27;",
 };
 
 var ESCAPE_REGEX = /[&><"']/g;
 
 function escaper(match) {
-  return ESCAPE_LOOKUP[match];
+    return ESCAPE_LOOKUP[match];
 }
 
 /**
@@ -66,7 +67,7 @@ function escaper(match) {
  * @return {string} An escaped string.
  */
 function escape(text) {
-  return ("" + text).replace(ESCAPE_REGEX, escaper);
+    return ("" + text).replace(ESCAPE_REGEX, escaper);
 }
 
 /**
@@ -101,5 +102,5 @@ module.exports = {
     hyphenate: hyphenate,
     indexOf: indexOf,
     setTextContent: setTextContent,
-    clearNode: clearNode
+    clearNode: clearNode,
 };

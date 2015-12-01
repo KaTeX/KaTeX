@@ -18,19 +18,16 @@
 
 module.exports = {
     math: {},
-    text: {}
+    text: {},
 };
 
 function defineSymbol(mode, font, group, replace, name) {
     module.exports[mode][name] = {
         font: font,
         group: group,
-        replace: replace
+        replace: replace,
     };
 }
-
-// (For some reason jshint believes open and close to be global symbols.)
-/* globals -open, -close */
 
 // Some abbreviations for commonly used strings.
 // This helps minify the code, and also spotting typos using jshint.
@@ -597,25 +594,27 @@ defineSymbol(text, main, spacing, "\u00a0", " ");
 defineSymbol(text, main, spacing, "\u00a0", "~");
 
 // There are lots of symbols which are the same, so we add them in afterwards.
+var i;
+var ch;
 
 // All of these are textords in math mode
 var mathTextSymbols = "0123456789/@.\"";
-for (var i = 0; i < mathTextSymbols.length; i++) {
-    var ch = mathTextSymbols.charAt(i);
+for (i = 0; i < mathTextSymbols.length; i++) {
+    ch = mathTextSymbols.charAt(i);
     defineSymbol(math, main, textord, ch, ch);
 }
 
 // All of these are textords in text mode
 var textSymbols = "0123456789`!@*()-=+[]'\";:?/.,";
-for (var i = 0; i < textSymbols.length; i++) {
-    var ch = textSymbols.charAt(i);
+for (i = 0; i < textSymbols.length; i++) {
+    ch = textSymbols.charAt(i);
     defineSymbol(text, main, textord, ch, ch);
 }
 
 // All of these are textords in text mode, and mathords in math mode
 var letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-for (var i = 0; i < letters.length; i++) {
-    var ch = letters.charAt(i);
+for (i = 0; i < letters.length; i++) {
+    ch = letters.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }

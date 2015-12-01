@@ -46,7 +46,7 @@ Options.prototype.extend = function(extension) {
         parentStyle: this.style,
         parentSize: this.size,
         phantom: this.phantom,
-        font: this.font
+        font: this.font,
     };
 
     for (var key in extension) {
@@ -63,7 +63,7 @@ Options.prototype.extend = function(extension) {
  */
 Options.prototype.withStyle = function(style) {
     return this.extend({
-        style: style
+        style: style,
     });
 };
 
@@ -72,7 +72,7 @@ Options.prototype.withStyle = function(style) {
  */
 Options.prototype.withSize = function(size) {
     return this.extend({
-        size: size
+        size: size,
     });
 };
 
@@ -81,7 +81,7 @@ Options.prototype.withSize = function(size) {
  */
 Options.prototype.withColor = function(color) {
     return this.extend({
-        color: color
+        color: color,
     });
 };
 
@@ -90,7 +90,7 @@ Options.prototype.withColor = function(color) {
  */
 Options.prototype.withPhantom = function() {
     return this.extend({
-        phantom: true
+        phantom: true,
     });
 };
 
@@ -99,7 +99,7 @@ Options.prototype.withPhantom = function() {
  */
 Options.prototype.withFont = function(font) {
     return this.extend({
-        font: font
+        font: font,
     });
 };
 
@@ -171,7 +171,7 @@ var colorMap = {
     "katex-grayH": "#555555",
     "katex-grayI": "#333333",
     "katex-kaBlue": "#314453",
-    "katex-kaGreen": "#639b24"
+    "katex-kaGreen": "#639b24",
 };
 
 /**

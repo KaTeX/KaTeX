@@ -86,7 +86,7 @@ var sizeNames = [
     "displaystyle textstyle",
     "textstyle",
     "scriptstyle",
-    "scriptscriptstyle"
+    "scriptscriptstyle",
 ];
 
 // Reset names for the different sizes
@@ -94,7 +94,7 @@ var resetNames = [
     "reset-textstyle",
     "reset-textstyle",
     "reset-scriptstyle",
-    "reset-scriptscriptstyle"
+    "reset-scriptscriptstyle",
 ];
 
 // Instances of the different styles
@@ -106,7 +106,7 @@ var styles = [
     new Style(S, 2, 0.7, false),
     new Style(Sc, 2, 0.7, true),
     new Style(SS, 3, 0.5, false),
-    new Style(SSc, 3, 0.5, true)
+    new Style(SSc, 3, 0.5, true),
 ];
 
 // Lookup tables for switching from one style to another
@@ -122,5 +122,5 @@ module.exports = {
     DISPLAY: styles[D],
     TEXT: styles[T],
     SCRIPT: styles[S],
-    SCRIPTSCRIPT: styles[SS]
+    SCRIPTSCRIPT: styles[SS],
 };

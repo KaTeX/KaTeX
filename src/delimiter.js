@@ -144,7 +144,10 @@ var makeInner = function(symbol, font, mode) {
 var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
     // There are four parts, the top, an optional middle, a repeated part, and a
     // bottom.
-    var top, middle, repeat, bottom;
+    var top;
+    var middle;
+    var repeat;
+    var bottom;
     top = repeat = bottom = delim;
     middle = null;
     // Also keep track of what font the delimiters are in
@@ -325,7 +328,7 @@ var stackLargeDelimiters = [
     "(", ")", "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
-    "\\surd"
+    "\\surd",
 ];
 
 // delimiters that always stack
@@ -334,12 +337,12 @@ var stackAlwaysDelimiters = [
     "\\Uparrow", "\\Downarrow", "\\Updownarrow",
     "|", "\\|", "\\vert", "\\Vert",
     "\\lvert", "\\rvert", "\\lVert", "\\rVert",
-    "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache"
+    "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache",
 ];
 
 // and delimiters that never stack
 var stackNeverDelimiters = [
-    "<", ">", "\\langle", "\\rangle", "/", "\\backslash", "\\lt", "\\gt"
+    "<", ">", "\\langle", "\\rangle", "/", "\\backslash", "\\lt", "\\gt",
 ];
 
 // Metrics of the different sizes. Found by looking at TeX's output of
@@ -390,7 +393,7 @@ var stackNeverDelimiterSequence = [
     {type: "large", size: 1},
     {type: "large", size: 2},
     {type: "large", size: 3},
-    {type: "large", size: 4}
+    {type: "large", size: 4},
 ];
 
 // Delimiters that always stack try the small delimiters first, then stack
@@ -398,7 +401,7 @@ var stackAlwaysDelimiterSequence = [
     {type: "small", style: Style.SCRIPTSCRIPT},
     {type: "small", style: Style.SCRIPT},
     {type: "small", style: Style.TEXT},
-    {type: "stack"}
+    {type: "stack"},
 ];
 
 // Delimiters that stack when large try the small and then large delimiters, and
@@ -411,7 +414,7 @@ var stackLargeDelimiterSequence = [
     {type: "large", size: 2},
     {type: "large", size: 3},
     {type: "large", size: 4},
-    {type: "stack"}
+    {type: "stack"},
 ];
 
 /**
@@ -535,5 +538,5 @@ var makeLeftRightDelim = function(delim, height, depth, options, mode) {
 module.exports = {
     sizedDelim: makeSizedDelim,
     customSizedDelim: makeCustomSizedDelim,
-    leftRightDelim: makeLeftRightDelim
+    leftRightDelim: makeLeftRightDelim,
 };

@@ -60,7 +60,7 @@ var whitespaceRegex = /\s*/;
  */
 Lexer.prototype._innerLex = function(pos, ignoreWhitespace) {
     var input = this._input;
-    if (pos == input.length) {
+    if (pos === input.length) {
         return new Token("EOF", null, pos);
     }
     var match = matchAt(tokenRegex, input, pos);
@@ -121,9 +121,9 @@ Lexer.prototype._innerLexSize = function(pos) {
             throw new ParseError("Invalid unit: '" + unit + "'", this, pos);
         }
         return new Token(match[0], {
-                number: +(match[1] + match[2]),
-                unit: unit
-            }, pos + match[0].length);
+            number: +(match[1] + match[2]),
+            unit: unit,
+        }, pos + match[0].length);
     }
 
     throw new ParseError("Invalid size", this, pos);
