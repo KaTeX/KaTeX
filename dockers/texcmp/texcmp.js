@@ -1,3 +1,4 @@
+/* eslint no-console:0 */
 "use strict";
 
 var childProcess = require("child_process");
@@ -47,7 +48,7 @@ Q.all([
     readFile(path.join(ssDir, "test.tex"), "utf-8"),
     ensureDir(tmpDir),
     ensureDir(teximgDir),
-    ensureDir(diffDir)
+    ensureDir(diffDir),
 ]).spread(function(data) {
     template = data;
     // dirs have been created, template has been read, now rasterize.
@@ -78,14 +79,14 @@ function processTestCase(key) {
     var fftLatex = writeFile(texFile, tex).then(function() {
         // Step 2: call "pdflatex key" to create key.pdf
         return execFile("pdflatex", [
-            "-interaction", "nonstopmode", key
+            "-interaction", "nonstopmode", key,
         ], {cwd: tmpDir});
     }).then(function() {
         console.log("Typeset " + key);
         // Step 3: call "convert ... key.pdf key.png" to create key.png
         return execFile("convert", [
             "-density", dpi, "-units", "PixelsPerInch", "-flatten",
-            pdfFile, pngFile
+            pdfFile, pngFile,
         ]);
     }).then(function() {
         console.log("Rasterized " + key);
@@ -96,10 +97,11 @@ function processTestCase(key) {
     var fftBrowser = readPNG(browserFile).then(fftImage);
 
     return Q.all([fftBrowser, fftLatex]).spread(function(browser, latex) {
-        // Now we have the FFT result from both 
+        // Now we have the FFT result from both
         // Step 6: find alignment which maximizes overlap.
         // This uses a FFT-based correlation computation.
-        var x, y;
+        var x;
+        var y;
         var real = createMatrix();
         var imag = createMatrix();
 
@@ -164,8 +166,8 @@ function processTestCase(key) {
             "(", "-clone", "0-1", "-compose", "darken", "-composite", ")",
             // First image is red, second green, third blue channel of result
             "-channel", "RGB", "-combine",
-            "-trim", // remove everything that has the same color as the corners
-            diffFile // output file name
+            "-trim",  // remove everything with the same color as the corners
+            diffFile, // output file name
         ]);
     }).then(function() {
         console.log("Compared " + key);
@@ -241,7 +243,7 @@ function fftImage(image) {
         real: real,
         imag: imag,
         width: image.width,
-        height: image.height
+        height: image.height,
     };
 }
 

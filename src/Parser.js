@@ -1,3 +1,4 @@
+/* eslint no-constant-condition:0 */
 var functions = require("./functions");
 var environments = require("./environments");
 var Lexer = require("./Lexer");
@@ -175,9 +176,8 @@ Parser.prototype.parseExpression = function(breakOnInfix, breakOnToken) {
  *
  * @returns {Array}
  */
-Parser.prototype.handleInfixNodes = function (body) {
+Parser.prototype.handleInfixNodes = function(body) {
     var overIndex = -1;
-    var func;
     var funcName;
 
     for (var i = 0; i < body.length; i++) {
@@ -189,12 +189,12 @@ Parser.prototype.handleInfixNodes = function (body) {
             }
             overIndex = i;
             funcName = node.value.replaceWith;
-            func = functions[funcName];
         }
     }
 
     if (overIndex !== -1) {
-        var numerNode, denomNode;
+        var numerNode;
+        var denomNode;
 
         var numerBody = body.slice(0, overIndex);
         var denomBody = body.slice(overIndex + 1);
@@ -236,7 +236,10 @@ Parser.prototype.handleSupSubscript = function(name) {
             return this.handleUnsupportedCmd();
         } else {
             throw new ParseError(
-                "Expected group after '" + symbol + "'", this.lexer, symPos + 1);
+                "Expected group after '" + symbol + "'",
+                this.lexer,
+                symPos + 1
+            );
         }
     } else if (group.isFunction) {
         // ^ and _ have a greediness, so handle interactions with functions'
@@ -259,34 +262,34 @@ Parser.prototype.handleSupSubscript = function(name) {
  * Converts the textual input of an unsupported command into a text node
  * contained within a color node whose color is determined by errorColor
  */
- Parser.prototype.handleUnsupportedCmd = function() {
-     var text = this.nextToken.text;
-     var textordArray = [];
+Parser.prototype.handleUnsupportedCmd = function() {
+    var text = this.nextToken.text;
+    var textordArray = [];
 
-     for (var i = 0; i < text.length; i++) {
+    for (var i = 0; i < text.length; i++) {
         textordArray.push(new ParseNode("textord", text[i], "text"));
-     }
+    }
 
-     var textNode = new ParseNode(
-         "text",
-         {
-             body: textordArray,
-             type: "text"
-         },
-         this.mode);
+    var textNode = new ParseNode(
+        "text",
+        {
+            body: textordArray,
+            type: "text",
+        },
+        this.mode);
 
-     var colorNode = new ParseNode(
+    var colorNode = new ParseNode(
         "color",
         {
             color: this.settings.errorColor,
             value: [textNode],
-            type: "color"
+            type: "color",
         },
         this.mode);
 
-     this.consume();
-     return colorNode;
- };
+    this.consume();
+    return colorNode;
+};
 
 /**
  * Parses a group with optional super/subscripts.
@@ -314,10 +317,10 @@ Parser.prototype.parseAtom = function() {
         if (lex.text === "\\limits" || lex.text === "\\nolimits") {
             // We got a limit control
             if (!base || base.type !== "op") {
-                throw new ParseError("Limit controls must follow a math operator",
+                throw new ParseError(
+                    "Limit controls must follow a math operator",
                     this.lexer, this.pos);
-            }
-            else {
+            } else {
                 var limits = lex.text === "\\limits";
                 base.value.limits = limits;
                 base.value.alwaysHandleSupSub = true;
@@ -363,7 +366,7 @@ Parser.prototype.parseAtom = function() {
         return new ParseNode("supsub", {
             base: base,
             sup: superscript,
-            sub: subscript
+            sub: subscript,
         }, this.mode);
     } else {
         // Otherwise return the original body
@@ -374,12 +377,12 @@ Parser.prototype.parseAtom = function() {
 // A list of the size-changing functions, for use in parseImplicitGroup
 var sizeFuncs = [
     "\\tiny", "\\scriptsize", "\\footnotesize", "\\small", "\\normalsize",
-    "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge"
+    "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
 ];
 
 // A list of the style-changing functions, for use in parseImplicitGroup
 var styleFuncs = [
-    "\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle"
+    "\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle",
 ];
 
 /**
@@ -416,7 +419,7 @@ Parser.prototype.parseImplicitGroup = function() {
         return new ParseNode("leftright", {
             body: body,
             left: left.value.value,
-            right: right.value.value
+            right: right.value.value,
         }, this.mode);
     } else if (func === "\\begin") {
         // begin...end is similar to left...right
@@ -436,7 +439,7 @@ Parser.prototype.parseImplicitGroup = function() {
             envName: envName,
             parser: this,
             lexer: this.lexer,
-            positions: args.pop()
+            positions: args.pop(),
         };
         var result = env.handler(context, args);
         this.expect("\\end", false);
@@ -457,7 +460,7 @@ Parser.prototype.parseImplicitGroup = function() {
         return new ParseNode("sizing", {
             // Figure out what size to use based on the list of functions above
             size: "size" + (utils.indexOf(sizeFuncs, func) + 1),
-            value: body
+            value: body,
         }, this.mode);
     } else if (utils.contains(styleFuncs, func)) {
         // If we see a styling function, parse out the implict body
@@ -466,7 +469,7 @@ Parser.prototype.parseImplicitGroup = function() {
             // Figure out what style to use by pulling out the style from
             // the function name
             style: func.slice(1, func.length - 5),
-            value: body
+            value: body,
         }, this.mode);
     } else {
         // Defer to parseFunction if it's not a function we handle
@@ -516,7 +519,7 @@ Parser.prototype.callFunction = function(name, args, positions) {
         funcName: name,
         parser: this,
         lexer: this.lexer,
-        positions: positions
+        positions: positions,
     };
     return functions[name].handler(context, args);
 };

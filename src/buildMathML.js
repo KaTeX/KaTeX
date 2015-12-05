@@ -249,7 +249,7 @@ groupTypes.sqrt = function(group, options) {
         node = new mathMLTree.MathNode(
             "mroot", [
                 buildGroup(group.value.body, options),
-                buildGroup(group.value.index, options)
+                buildGroup(group.value.index, options),
             ]);
     } else {
         node = new mathMLTree.MathNode(
@@ -381,7 +381,7 @@ groupTypes.styling = function(group, options) {
         "display": ["0", "true"],
         "text": ["0", "false"],
         "script": ["1", "false"],
-        "scriptscript": ["2", "false"]
+        "scriptscript": ["2", "false"],
     };
 
     var attr = styleAttributes[group.value.style];

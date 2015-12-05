@@ -8,6 +8,6 @@ function ParseNode(type, value, mode) {
 }
 
 module.exports = {
-    ParseNode: ParseNode
+    ParseNode: ParseNode,
 };
 

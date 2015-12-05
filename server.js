@@ -1,3 +1,4 @@
+/* eslint no-console:0 */
 var fs = require("fs");
 var path = require("path");
 
@@ -41,7 +42,13 @@ var serveBrowserified = function(file, standaloneName) {
 };
 
 app.get("/katex.js", serveBrowserified("./katex", "katex"));
-app.use("/test/jasmine", express["static"](path.dirname(require.resolve("jasmine-core/lib/jasmine-core/jasmine.js"))));
+app.use("/test/jasmine",
+    express["static"](
+        path.dirname(
+            require.resolve("jasmine-core/lib/jasmine-core/jasmine.js")
+        )
+    )
+);
 app.get("/test/katex-spec.js", serveBrowserified("./test/*[Ss]pec.js"));
 app.get("/contrib/auto-render/auto-render.js",
         serveBrowserified("./contrib/auto-render/auto-render",
@@ -56,7 +63,7 @@ app.get("/katex.css", function(req, res, next) {
 
         var parser = new less.Parser({
             paths: ["./static"],
-            filename: "katex.less"
+            filename: "katex.less",
         });
 
         parser.parse(data, function(err, tree) {

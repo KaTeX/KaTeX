@@ -1,3 +1,4 @@
+/* eslint no-console:0 */
 /**
  * This file does the main work of building a domTree structure from a parse
  * tree. The entry point is the `buildHTML` function, which takes a parse tree.
@@ -53,7 +54,7 @@ var groupToType = {
     rule: "mord",
     leftright: "minner",
     sqrt: "mord",
-    accent: "mord"
+    accent: "mord",
 };
 
 /**
@@ -104,7 +105,8 @@ var shouldHandleSupSub = function(group, options) {
         // Operators handle supsubs differently when they have limits
         // (e.g. `\displaystyle\sum_2^3`)
         return group.value.limits &&
-            (options.style.size === Style.DISPLAY.size || group.value.alwaysHandleSupSub);
+            (options.style.size === Style.DISPLAY.size ||
+            group.value.alwaysHandleSupSub);
     } else if (group.type === "accent") {
         return isCharacterBox(group.value.base);
     } else {
@@ -160,7 +162,7 @@ var makeNullDelimiter = function(options) {
     return makeSpan([
         "sizing", "reset-" + options.size, "size5",
         options.style.reset(), Style.TEXT.cls(),
-        "nulldelimiter"
+        "nulldelimiter",
     ]);
 };
 
@@ -263,7 +265,10 @@ groupTypes.supsub = function(group, options, prev) {
     }
 
     var base = buildGroup(group.value.base, options.reset());
-    var supmid, submid, sup, sub;
+    var supmid;
+    var submid;
+    var sup;
+    var sub;
 
     if (group.value.sup) {
         sup = buildGroup(group.value.sup,
@@ -280,7 +285,8 @@ groupTypes.supsub = function(group, options, prev) {
     }
 
     // Rule 18a
-    var supShift, subShift;
+    var supShift;
+    var subShift;
     if (isCharacterBox(group.value.base)) {
         supShift = 0;
         subShift = 0;
@@ -314,7 +320,7 @@ groupTypes.supsub = function(group, options, prev) {
             sub.height - 0.8 * fontMetrics.metrics.xHeight);
 
         supsub = buildCommon.makeVList([
-            {type: "elem", elem: submid}
+            {type: "elem", elem: submid},
         ], "shift", subShift, options);
 
         supsub.children[0].style.marginRight = scriptspace;
@@ -331,7 +337,7 @@ groupTypes.supsub = function(group, options, prev) {
             sup.depth + 0.25 * fontMetrics.metrics.xHeight);
 
         supsub = buildCommon.makeVList([
-            {type: "elem", elem: supmid}
+            {type: "elem", elem: supmid},
         ], "shift", -supShift, options);
 
         supsub.children[0].style.marginRight = scriptspace;
@@ -357,7 +363,7 @@ groupTypes.supsub = function(group, options, prev) {
 
         supsub = buildCommon.makeVList([
             {type: "elem", elem: submid, shift: subShift},
-            {type: "elem", elem: supmid, shift: -supShift}
+            {type: "elem", elem: supmid, shift: -supShift},
         ], "individualShift", null, options);
 
         // See comment above about subscripts not being shifted
@@ -436,7 +442,7 @@ groupTypes.genfrac = function(group, options, prev) {
 
         frac = buildCommon.makeVList([
             {type: "elem", elem: denomreset, shift: denomShift},
-            {type: "elem", elem: numerreset, shift: -numShift}
+            {type: "elem", elem: numerreset, shift: -numShift},
         ], "individualShift", null, options);
     } else {
         // Rule 15d
@@ -467,7 +473,7 @@ groupTypes.genfrac = function(group, options, prev) {
         frac = buildCommon.makeVList([
             {type: "elem", elem: denomreset, shift: denomShift},
             {type: "elem", elem: mid,        shift: midShift},
-            {type: "elem", elem: numerreset, shift: -numShift}
+            {type: "elem", elem: numerreset, shift: -numShift},
         ], "individualShift", null, options);
     }
 
@@ -484,7 +490,8 @@ groupTypes.genfrac = function(group, options, prev) {
         delimSize = fontMetrics.metrics.getDelim2(fstyle);
     }
 
-    var leftDelim, rightDelim;
+    var leftDelim;
+    var rightDelim;
     if (group.value.leftDelim == null) {
         leftDelim = makeNullDelimiter(options);
     } else {
@@ -507,7 +514,8 @@ groupTypes.genfrac = function(group, options, prev) {
 };
 
 groupTypes.array = function(group, options, prev) {
-    var r, c;
+    var r;
+    var c;
     var nr = group.value.body.length;
     var nc = 0;
     var body = new Array(nr);
@@ -551,15 +559,15 @@ groupTypes.array = function(group, options, prev) {
         if (group.value.rowGaps[r]) {
             gap = group.value.rowGaps[r].value;
             switch (gap.unit) {
-            case "em":
-                gap = gap.number;
-                break;
-            case "ex":
-                gap = gap.number * fontMetrics.metrics.emPerEx;
-                break;
-            default:
-                console.error("Can't handle unit " + gap.unit);
-                gap = 0;
+                case "em":
+                    gap = gap.number;
+                    break;
+                case "ex":
+                    gap = gap.number * fontMetrics.metrics.emPerEx;
+                    break;
+                default:
+                    console.error("Can't handle unit " + gap.unit);
+                    gap = 0;
             }
             if (gap > 0) { // \@argarraycr
                 gap += arstrutDepth;
@@ -719,7 +727,7 @@ groupTypes.op = function(group, options, prev) {
 
     // Most operators have a large successor symbol, but these don't.
     var noSuccessor = [
-        "\\smallint"
+        "\\smallint",
     ];
 
     var large = false;
@@ -769,7 +777,10 @@ groupTypes.op = function(group, options, prev) {
         // in a new span so it is an inline, and works.
         base = makeSpan([], [base]);
 
-        var supmid, supKern, submid, subKern;
+        var supmid;
+        var supKern;
+        var submid;
+        var subKern;
         // We manually have to handle the superscripts and subscripts. This,
         // aside from the kern calculations, is copied from supsub.
         if (supGroup) {
@@ -797,7 +808,9 @@ groupTypes.op = function(group, options, prev) {
 
         // Build the final group as a vlist of the possible subscript, base,
         // and possible superscript.
-        var finalGroup, top, bottom;
+        var finalGroup;
+        var top;
+        var bottom;
         if (!supGroup) {
             top = base.height - baseShift;
 
@@ -805,7 +818,7 @@ groupTypes.op = function(group, options, prev) {
                 {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
                 {type: "elem", elem: submid},
                 {type: "kern", size: subKern},
-                {type: "elem", elem: base}
+                {type: "elem", elem: base},
             ], "top", top, options);
 
             // Here, we shift the limits by the slant of the symbol. Note
@@ -820,7 +833,7 @@ groupTypes.op = function(group, options, prev) {
                 {type: "elem", elem: base},
                 {type: "kern", size: supKern},
                 {type: "elem", elem: supmid},
-                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5}
+                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
             ], "bottom", bottom, options);
 
             // See comment above about slants
@@ -843,7 +856,7 @@ groupTypes.op = function(group, options, prev) {
                 {type: "elem", elem: base},
                 {type: "kern", size: supKern},
                 {type: "elem", elem: supmid},
-                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5}
+                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
             ], "bottom", bottom, options);
 
             // See comment above about slants
@@ -909,7 +922,7 @@ groupTypes.overline = function(group, options, prev) {
         {type: "elem", elem: innerGroup},
         {type: "kern", size: 3 * ruleWidth},
         {type: "elem", elem: line},
-        {type: "kern", size: ruleWidth}
+        {type: "kern", size: ruleWidth},
     ], "firstBaseline", null, options);
 
     return makeSpan(["overline", "mord"], [vlist], options.getColor());
@@ -977,7 +990,7 @@ groupTypes.sqrt = function(group, options, prev) {
             {type: "elem", elem: inner},
             {type: "kern", size: lineClearance},
             {type: "elem", elem: line},
-            {type: "kern", size: ruleWidth}
+            {type: "kern", size: ruleWidth},
         ], "firstBaseline", null, options);
     }
 
@@ -1041,7 +1054,7 @@ groupTypes.styling = function(group, options, prev) {
         "display": Style.DISPLAY,
         "text": Style.TEXT,
         "script": Style.SCRIPT,
-        "scriptscript": Style.SCRIPTSCRIPT
+        "scriptscript": Style.SCRIPTSCRIPT,
     };
 
     var newStyle = style[group.value.style];
@@ -1243,7 +1256,7 @@ groupTypes.accent = function(group, options, prev) {
     accentBody = buildCommon.makeVList([
         {type: "elem", elem: body},
         {type: "kern", size: -clearance},
-        {type: "elem", elem: accentBody}
+        {type: "elem", elem: accentBody},
     ], "firstBaseline", null, options);
 
     // Shift the accent over by the skew. Note we shift by twice the skew
