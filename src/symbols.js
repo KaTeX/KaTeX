@@ -352,7 +352,7 @@ defineSymbol(math, ams, bin, "\u22cf", "\\curlywedge");
 defineSymbol(math, ams, bin, "\u22ce", "\\curlyvee");
 defineSymbol(math, ams, bin, "\u229d", "\\circleddash");
 defineSymbol(math, ams, bin, "\u229b", "\\circledast");
-defineSymbol(math, main, bin, "\u22c5", "\\centerdot");
+defineSymbol(math, ams, bin, "\u22c5", "\\centerdot");
 defineSymbol(math, ams, bin, "\u22ba", "\\intercal");
 defineSymbol(math, ams, bin, "\u22d2", "\\doublecap");
 defineSymbol(math, ams, bin, "\u22d3", "\\doublecup");
