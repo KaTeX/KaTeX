@@ -1178,6 +1178,25 @@ groupTypes.rule = function(group, options, prev) {
     return rule;
 };
 
+groupTypes.kern = function(group, options, prev) {
+    // Make an empty span for the rule
+    var rule = makeSpan(["mord", "rule"], [], options.getColor());
+
+    var dimension = 0;
+    if (group.value.dimension) {
+        dimension = group.value.dimension.number;
+        if (group.value.dimension.unit === "ex") {
+            dimension *= fontMetrics.metrics.xHeight;
+        }
+    }
+
+    dimension /= options.style.sizeMultiplier;
+
+    rule.style.marginLeft = dimension + "em";
+
+    return rule;
+};
+
 groupTypes.accent = function(group, options, prev) {
     // Accents are handled in the TeXbook pg. 443, rule 12.
     var base = group.value.base;

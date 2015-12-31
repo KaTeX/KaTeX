@@ -430,6 +430,13 @@ groupTypes.rule = function(group) {
     return node;
 };
 
+groupTypes.kern = function(group) {
+    // TODO(kevin): Figure out if there's a way to add space in MathML
+    var node = new mathMLTree.MathNode("mrow");
+
+    return node;
+};
+
 groupTypes.llap = function(group, options) {
     var node = new mathMLTree.MathNode(
         "mpadded", [buildGroup(group.value.body, options)]);

@@ -187,6 +187,16 @@ defineFunction("\\rule", {
     };
 });
 
+defineFunction("\\kern", {
+    numArgs: 1,
+    argTypes: ["size"],
+}, function(context, args) {
+    return {
+        type: "kern",
+        dimension: args[0].value,
+    };
+});
+
 // A KaTeX logo
 defineFunction("\\KaTeX", {
     numArgs: 0,

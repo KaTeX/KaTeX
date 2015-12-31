@@ -58,6 +58,7 @@ FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12
 Functions: \sin\cos\tan\ln\log
 GreekLetters: \alpha\beta\gamma\omega
 KaTeX: \KaTeX
+Kern: \frac{a\kern{1em}b}{c}a\kern{1em}b\kern{1ex}c\kern{-0.25em}d
 Lap: ab\llap{f}cd\rlap{g}h
 LeftRight: \left( x^2 \right) \left\{ x^{x^{x^{x^x}}} \right.
 LeftRightListStyling: a+\left(x+y\right)-x
