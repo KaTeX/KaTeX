@@ -615,6 +615,7 @@ for (i = 0; i < textSymbols.length; i++) {
 var extendedLatinBase = "äåöøÄÅÖ";
 for (i = 0; i < extendedLatinBase.length; i++) {
     ch = extendedLatinBase.charAt(i);
+    defineSymbol(math, main, textord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
 
