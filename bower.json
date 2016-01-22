@@ -29,7 +29,6 @@
     "/src",
     "/contrib",
     "/dockers",
-    "/metrics",
     "/static"
   ]
 }
