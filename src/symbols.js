@@ -612,7 +612,7 @@ for (i = 0; i < textSymbols.length; i++) {
 }
 
 // All of these are textords in text mode
-var extendedLatinBase = "äåöøÆŒØ";
+var extendedLatinBase = "äåöøÄÅÖ";
 for (i = 0; i < extendedLatinBase.length; i++) {
     ch = extendedLatinBase.charAt(i);
     defineSymbol(text, main, textord, ch, ch);
