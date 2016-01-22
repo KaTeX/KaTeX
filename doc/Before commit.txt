@@ -1,8 +1,9 @@
-Copy files from
+Run 
+	$ make
 
+Copy files from
 	build/katex.min.js
 	build/katex.min.css 
 
 to 
-
 	dist/
