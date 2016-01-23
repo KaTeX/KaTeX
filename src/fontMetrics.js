@@ -129,7 +129,7 @@ var metricMap = require("./fontMetricsData");
  * built using `Make extended_metrics`.
  */
 var getCharacterMetrics = function(character, style) {
-    console.log(character.charCodeAt(0)); // get dec value of char
+    //console.log(character.charCodeAt(0)); // get dec value of char
     var metrics = metricMap[style][character.charCodeAt(0)];
     if (metrics) {
         return {
