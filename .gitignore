@@ -1,4 +1,12 @@
-build
+build/contrib
+build/katex
+build/auto-render.js
+build/katex.js
+build/katex.less.css
+build/katex.tar.gz
+build/katex.zip
+doc
+metrics
 node_modules
 npm-debug.log
 last.png
