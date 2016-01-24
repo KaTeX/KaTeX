@@ -616,7 +616,7 @@ var extendedLatinBase = "äåöøÄÅÖ";
 for (i = 0; i < extendedLatinBase.length; i++) {
     ch = extendedLatinBase.charAt(i);
     defineSymbol(math, main, textord, ch, ch);
-    defineSymbol(text, main, textord, ch, ch);
+    defineSymbol(text, main, mathord, ch, ch);
 }
 
 // All of these are textords in text mode, and mathords in math mode
