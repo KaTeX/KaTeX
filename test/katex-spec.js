@@ -1779,11 +1779,11 @@ describe("The symbol table integraty", function() {
 
 
 describe("Unicode", function() {
-     it("should parse all lower case Greek letters", function() {
-         expect("αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω").toParse();
-     });
- 
-     it("should parse 'ΓΔΘΞΠΣΦΨΩ'", function() {
-         expect("ΓΔΘΞΠΣΦΨΩ").toParse();
-     });
- });
+    it("should parse all lower case Greek letters", function() {
+        expect("αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω").toParse();
+    });
+
+    it("should parse 'ΓΔΘΞΠΣΦΨΩ'", function() {
+        expect("ΓΔΘΞΠΣΦΨΩ").toParse();
+    });
+});
