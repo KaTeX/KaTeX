@@ -626,3 +626,16 @@ for (i = 0; i < letters.length; i++) {
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
+
+
+var lowercaseGreekLetters = "αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω";
+ for (i = 0; i < letters.length; i++) {
+     ch = lowercaseGreekLetters.charAt(i);
+     defineSymbol(math, main, mathord, ch, ch);
+ }
+ 
+ var uppercaseGreekLetters = "ΓΔΘΞΠΣΦΨΩ";
+ for (i = 0; i < letters.length; i++) {
+     ch = uppercaseGreekLetters.charAt(i);
+     defineSymbol(math, main, textord, ch, ch);
+ }
