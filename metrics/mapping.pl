@@ -64,6 +64,13 @@ $map{cmr10} = {
     0x7E => [0x303,-500,0], # \tilde (combining)
     0x7F => 0xA8,           # \ddot
     0x7F => [0x308,-500,0], # \ddot (combining)
+    0x19 => 0xDF,           # sharp S                                                                                                                                                                                                         
+    0x1A => 0xE6,           # ae ligature                                                                                                                                                                                                     
+    0x1B => 0x153,          # oe ligature                                                                                                                                                                                                     
+    0x1C => 0xF8,           # o with slash                                                                                                                                                                                                    
+    0x1D => 0xC4,                                                                                                                                                                                                             
+    0x1E => 0xC5,                                                                                                                                                                                                            
+    0x1F => 0xD6,          
   ],
 };
 
@@ -464,6 +471,13 @@ $map{cmti10} = {
     0x7E => [0x7E,0,-350],  # ~
     0x7E => [0x303,-511,0], # \tilde (combining)
     0x7F => [0x308,-511,0], # \ddot (combining)
+    0x19 => 0xDF,           # sharp S                                                                                                                                                                                                         
+    0x1A => 0xE6,           # ae ligature                                                                                                                                                                                                     
+    0x1B => 0x153,          # oe ligature                                                                                                                                                                                                     
+    0x1C => 0xF8,           # o with slash                                                                                                                                                                                                    
+    0x1D => 0xC4,                                                                                                                                                                                                    
+    0x1E => 0xC5,                                                                                                                                                                                                   
+    0x1F => 0xD6, 
   ],
 };
 
@@ -522,6 +536,13 @@ $map{cmbx10} = {
     0x7E => [0x303,-575,0], # \tilde (combining)
     0x7F => 0xA8,           # \ddot
     0x7F => [0x308,-575,0], # \ddot (combining)
+    0x19 => 0xDF,           # sharp S                                                                                                                                                                                                         
+    0x1A => 0xE6,           # ae ligature                                                                                                                                                                                                     
+    0x1B => 0x153,          # oe ligature                                                                                                                                                                                                     
+    0x1C => 0xF8,           # o with slash                                                                                                                                                                                                    
+    0x1D => 0xC4,                                                                                                                                                                                                             
+    0x1E => 0xC5,                                                                                                                                                                                                            
+    0x1F => 0xD6,          
   ],
 };
 

@@ -421,12 +421,12 @@ describe("A parser with limit controls", function() {
 
     it("should have the rightmost limit control determine the limits property " +
         "of the preceding op node", function() {
-            var parsedInput = getParsed("\\int\\nolimits\\limits_2^2");
-            expect(parsedInput[0].value.base.value.limits).toBe(true);
+        var parsedInput = getParsed("\\int\\nolimits\\limits_2^2");
+        expect(parsedInput[0].value.base.value.limits).toBe(true);
 
-            parsedInput = getParsed("\\int\\limits_2\\nolimits^2");
-            expect(parsedInput[0].value.base.value.limits).toBe(false);
-        });
+        parsedInput = getParsed("\\int\\limits_2\\nolimits^2");
+        expect(parsedInput[0].value.base.value.limits).toBe(false);
+    });
 });
 
 describe("A group parser", function() {
@@ -1774,5 +1774,16 @@ describe("The symbol table integraty", function() {
         expect(getBuilt(">")).toEqual(getBuilt("\\gt"));
         expect(getBuilt("\\left<\\frac{1}{x}\\right>"))
             .toEqual(getBuilt("\\left\\lt\\frac{1}{x}\\right\\gt"));
+    });
+});
+
+
+describe("Unicode", function() {
+    it("should parse all lower case Greek letters", function() {
+        expect("αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω").toParse();
+    });
+
+    it("should parse 'ΓΔΘΞΠΣΦΨΩ'", function() {
+        expect("ΓΔΘΞΠΣΦΨΩ").toParse();
     });
 });

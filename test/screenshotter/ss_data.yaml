@@ -57,6 +57,7 @@ Exponents: a^{a^a_a}_{a^a_a}
 FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12
 Functions: \sin\cos\tan\ln\log
 GreekLetters: \alpha\beta\gamma\omega
+GreekUnicode: \frac{αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω}{ΓΔΘΞΠΣΦΨΩ}
 KaTeX: \KaTeX
 Lap: ab\llap{f}cd\rlap{g}h
 LeftRight: \left( x^2 \right) \left\{ x^{x^{x^{x^x}}} \right.

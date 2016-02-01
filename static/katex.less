@@ -382,18 +382,19 @@
             width: 100%;
 
             &:before {
-                border-bottom-style: solid;
-                border-bottom-width: 1px;
                 content: "";
                 display: block;
             }
 
             &:after {
                 border-bottom-style: solid;
-                border-bottom-width: 0.04em;
+                border-bottom-width: 0.05em; /* Chrome: 0.04em, Safari: 0.05em  */
                 content: "";
                 display: block;
-                margin-top: -1px;
+                position: relative;
+                bottom: 0.01em; /* Chrome: 0.14em, Safari: 0.01em  */
+                left: 0.00em; /* Chrome: 0.07em, Safari: 0em  */
+                margin-top: 10px;
             }
         }
 
@@ -493,7 +494,8 @@
             position: relative;
             // This value is half of the value that the MathJax's makeFF shifts
             // it left. We center it by shifting it half way right again.
-            left: 0.326em;
+            left: 0.35em; /* For Chrome -0.15, for Safari 0.7, for firefox 0.35 */
+
         }
     }
 
