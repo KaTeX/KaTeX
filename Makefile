@@ -1,5 +1,5 @@
 .PHONY: build dist lint setup copy serve clean metrics test zip contrib
-build: setup lint build/katex.min.js build/katex.min.css contrib zip compress
+build: lint build/katex.min.js build/katex.min.css contrib zip compress
 
 dist: build
 	rm -rf dist/

@@ -10,7 +10,8 @@
   "files": [
     "katex.js",
     "cli.js",
-    "src/"
+    "src/",
+    "dist/"
   ],
   "license": "MIT",
   "devDependencies": {
@@ -31,7 +32,8 @@
   },
   "bin": "cli.js",
   "scripts": {
-    "test": "make lint test"
+    "test": "make lint test",
+    "prepublish": "make dist"
   },
   "dependencies": {
     "match-at": "^0.1.0"
