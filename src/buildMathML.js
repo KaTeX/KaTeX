@@ -422,6 +422,20 @@ groupTypes.overline = function(group, options) {
     return node;
 };
 
+groupTypes.underline = function(group, options) {
+    var operator = new mathMLTree.MathNode(
+        "mo", [new mathMLTree.TextNode("\u203e")]);
+    operator.setAttribute("stretchy", "true");
+
+    var node = new mathMLTree.MathNode(
+        "munder",
+        [buildGroup(group.value.body, options),
+         operator]);
+    node.setAttribute("accentunder", "true");
+
+    return node;
+};
+
 groupTypes.rule = function(group) {
     // TODO(emily): Figure out if there's an actual way to draw black boxes
     // in MathML.
