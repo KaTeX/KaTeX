@@ -170,6 +170,17 @@ defineFunction("\\overline", {
     };
 });
 
+// An underline
+defineFunction("\\underline", {
+    numArgs: 1,
+}, function(context, args) {
+    var body = args[0];
+    return {
+        type: "underline",
+        body: body,
+    };
+});
+
 // A box of the width and height
 defineFunction("\\rule", {
     numArgs: 2,
