@@ -1,6 +1,6 @@
 {
   "name": "KaTeX",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "main": [
     "dist/katex.min.js",
     "dist/katex.min.css"
@@ -32,13 +32,14 @@
     "/metrics",
     "/static"
   ],
-  "_release": "0.5.1",
+  "_release": "0.6.0",
   "_resolution": {
     "type": "version",
-    "tag": "v0.5.1",
-    "commit": "2e773e2f837dbb41fb2fc815e8cf46aa3e9cbf03"
+    "tag": "v0.6.0",
+    "commit": "b94fc6534d5c23f944906a52a592bee4e0090665"
   },
-  "_source": "git://github.com/Khan/KaTeX.git",
-  "_target": "~0.5.0",
-  "_originalSource": "katex"
+  "_source": "https://github.com/Khan/KaTeX.git",
+  "_target": "^0.6.0",
+  "_originalSource": "katex",
+  "_direct": true
 }
