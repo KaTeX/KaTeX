@@ -22,6 +22,7 @@
     "/*.txt",
     "/*.js",
     "/*.md",
+    "/*.sh",
     "/package.json",
     "/Makefile",
     "/build",
