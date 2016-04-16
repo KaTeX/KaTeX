@@ -66,5 +66,5 @@ fi
 
 echo "The automatic parts are done!"
 echo "Now all that's left is to create the release on github."
-echo "Visit https://github.com/Khan/KaTeX/releases/tag/$VERSION to edit the release notes"
+echo "Visit https://github.com/Khan/KaTeX/releases/new?tag=v$VERSION to edit the release notes"
 echo "Don't forget to upload build/katex.tar.gz and build/katex.zip to the release!"
