@@ -41,7 +41,7 @@ sed -i "" -E 's|"version": "[^"]+",|"version": "'$VERSION'",|' bower.json
 
 # Make the commit and tag, and push them.
 git add package.json bower.json
-git commit -m "v$VERSION"
+git commit -n -m "v$VERSION"
 git tag "v$VERSION"
 git push origin "v$VERSION"
 
@@ -57,7 +57,7 @@ if [ ! -z "$NEXT_VERSION" ]; then
     sed -i "" -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' bower.json
 
     git add package.json bower.json
-    git commit -m "Bump master to v$NEXT_VERSION-pre"
+    git commit -n -m "Bump master to v$NEXT_VERSION-pre"
     git push origin master
 
     # Go back to the tag which has build/katex.tar.gz and build/katex.zip
