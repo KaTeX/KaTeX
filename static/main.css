@@ -1,12 +1,17 @@
 body {
     margin: 0px;
     padding: 0px;
-    font-size: 72px;
+    font-size: 32px;
 }
 
 #input {
     margin: 0px;
-    font-size: 100%;
+    font-size: 16px;
     width: 100%;
     box-sizing: border-box;
+}
+
+.math.constrained {
+    margin: 80px auto;
+    max-width: 460px;
 }
