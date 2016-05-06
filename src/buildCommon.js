@@ -406,6 +406,10 @@ var fontMap = {
         fontName: "Main-Regular",
     },
 
+    "textsc": {
+        variant: "normal",
+        fontName: "Main-Regular",
+    },
     // "mathit" is missing because it requires the use of two fonts: Main-Italic
     // and Math-Italic.  This is handled by a special case in makeOrd which ends
     // up calling mathit.

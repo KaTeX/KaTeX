@@ -492,7 +492,7 @@ defineFunction([
 
 defineFunction([
     // styles
-    "\\mathrm", "\\mathit", "\\mathbf",
+    "\\mathrm", "\\mathit", "\\mathbf", "\\textsc",
 
     // families
     "\\mathbb", "\\mathcal", "\\mathfrak", "\\mathscr", "\\mathsf",
