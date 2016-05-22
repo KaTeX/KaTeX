@@ -38,6 +38,11 @@ ArrayMode:
         \end{matrix}
     display: 1
 ArrayType: 1\begin{array}{c}2\\3\end{array}4
+ArrayRemoveEmptyLine: |
+    \begin{pmatrix}
+        1 \\
+        2 \\
+    \end{pmatrix}
 Baseline: a+b-c\cdot d/e
 BasicTest: a
 BinCancellation: |
