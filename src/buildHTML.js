@@ -174,6 +174,12 @@ var makeNullDelimiter = function(options) {
 var groupTypes = {};
 
 groupTypes.mathord = function(group, options, prev) {
+    if (group.value.value) {
+        return makeSpan(
+            ["mord", options.style.cls()],
+            buildExpression(group.value.value, options.reset())
+        );
+    }
     return buildCommon.makeOrd(group, options, "mathord");
 };
 
@@ -205,6 +211,12 @@ groupTypes.bin = function(group, options, prev) {
 };
 
 groupTypes.rel = function(group, options, prev) {
+    if (group.value.value) {
+        return makeSpan(
+            ["mrel", options.style.cls()],
+            buildExpression(group.value.value, options.reset())
+        );      
+    }
     return buildCommon.mathsym(
         group.value, group.mode, options.getColor(), ["mrel"]);
 };
@@ -716,6 +728,9 @@ groupTypes.op = function(group, options, prev) {
     var supGroup;
     var subGroup;
     var hasLimits = false;
+    
+    // TODO(cbreeden) investigate the possibility of putting the supsub
+    //   tages in the atoms themselves.  Allow for easier recursion?? 
     if (group.type === "supsub" ) {
         // If we have limits, supsub will pass us its group to handle. Pull
         // out the superscript and subscript and set the group to the op in
@@ -740,6 +755,10 @@ groupTypes.op = function(group, options, prev) {
         large = true;
     }
 
+    // TODO(cbreeden) Currentl mathop atoms have the assumed structure:
+    //   group<atom>.value === { body, symbol, limits, type }
+    //   this may make it difficult for ops that are not either
+    //   a single symbol or list of text.
     var base;
     var baseShift = 0;
     var slant = 0;
@@ -761,6 +780,12 @@ groupTypes.op = function(group, options, prev) {
 
         // The slant of the symbol is just its italic correction.
         slant = base.italic;
+    } else if (group.value.value) {
+        // We have an operator that is wrapped around a mathlist
+        // so wrap our mathlist in an "mop" span, process the inner
+        // body and continue.
+        var inner = buildExpression(group.value.value, options.reset());
+        base = makeSpan(["mop"], inner, options.getColor());
     } else {
         // Otherwise, this is a text operator. Build the text from the
         // operator's name.

@@ -159,6 +159,94 @@ defineFunction("\\color", {
     };
 });
 
+defineFunction("\\mathord", {
+    numArgs: 1,
+}, function(context, args) {
+   var body = args[0];
+   
+   // normalize the different kinds of bodies
+   // this may no longer be necessary once we implement
+   // recursive atom parsing of all types.
+   if (body.type === "ordgroup") {
+       // We already have an ordgroup, do nothing
+       return {
+           type: "mathord",
+           value: body.value,
+       }
+   } else {
+       return {
+           type: "mathord",
+           value: [body],
+       }
+   }
+});
+
+defineFunction("\\mathop", {
+    numArgs: 1,
+}, function(context, args) {
+   var body = args[0];
+   
+   // normalize the different kinds of bodies
+   // this may no longer be necessary once we implement
+   // recursive atom parsing of all types.
+   if (body.type === "ordgroup") {
+       // We already have an ordgroup, do nothing
+       return {
+           type: "op",
+           value: body.value,
+       }
+   } else {
+       return {
+           type: "op",
+           value: [body],
+       }
+   }
+});
+
+defineFunction("\\mathop", {
+    numArgs: 1,
+}, function(context, args) {
+   var body = args[0];
+   
+   // normalize the different kinds of bodies
+   // this may no longer be necessary once we implement
+   // recursive atom parsing of all types.
+   if (body.type === "ordgroup") {
+       // We already have an ordgroup, do nothing
+       return {
+           type: "op",
+           value: body.value,
+       }
+   } else {
+       return {
+           type: "op",
+           value: [body],
+       }
+   }
+});
+
+defineFunction("\\mathrel", {
+    numArgs: 1,
+}, function(context, args) {
+   var body = args[0];
+   
+   // normalize the different kinds of bodies
+   // this may no longer be necessary once we implement
+   // recursive atom parsing of all types.
+   if (body.type === "ordgroup") {
+       // We already have an ordgroup, do nothing
+       return {
+           type: "rel",
+           value: body.value,
+       }
+   } else {
+       return {
+           type: "rel",
+           value: [body],
+       }
+   }
+});
+
 // An overline
 defineFunction("\\overline", {
     numArgs: 1,
