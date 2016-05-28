@@ -163,10 +163,11 @@ defineFunction("\\mathord", {
     numArgs: 1,
 }, function(context, args) {
    var body = args[0];
-   
-   // normalize the different kinds of bodies
-   // this may no longer be necessary once we implement
-   // recursive atom parsing of all types.
+
+   // Argument Parsing will give us an ordgroup when the arguments are
+   // enclosed by brackets.  We need to unwrap these if that's the case
+   // since TeX doesn't wrap {Args} in ord atoms when parsing for
+   // function arguments.
    if (body.type === "ordgroup") {
        // We already have an ordgroup, do nothing
        return {
@@ -180,37 +181,15 @@ defineFunction("\\mathord", {
        }
    }
 });
-
 defineFunction("\\mathop", {
     numArgs: 1,
 }, function(context, args) {
    var body = args[0];
-   
-   // normalize the different kinds of bodies
-   // this may no longer be necessary once we implement
-   // recursive atom parsing of all types.
-   if (body.type === "ordgroup") {
-       // We already have an ordgroup, do nothing
-       return {
-           type: "op",
-           value: body.value,
-       }
-   } else {
-       return {
-           type: "op",
-           value: [body],
-       }
-   }
-});
 
-defineFunction("\\mathop", {
-    numArgs: 1,
-}, function(context, args) {
-   var body = args[0];
-   
-   // normalize the different kinds of bodies
-   // this may no longer be necessary once we implement
-   // recursive atom parsing of all types.
+   // Argument Parsing will give us an ordgroup when the arguments are
+   // enclosed by brackets.  We need to unwrap these if that's the case
+   // since TeX doesn't wrap {Args} in ord atoms when parsing for
+   // function arguments.
    if (body.type === "ordgroup") {
        // We already have an ordgroup, do nothing
        return {
@@ -229,10 +208,11 @@ defineFunction("\\mathrel", {
     numArgs: 1,
 }, function(context, args) {
    var body = args[0];
-   
-   // normalize the different kinds of bodies
-   // this may no longer be necessary once we implement
-   // recursive atom parsing of all types.
+
+   // Argument Parsing will give us an ordgroup when the arguments are
+   // enclosed by brackets.  We need to unwrap these if that's the case
+   // since TeX doesn't wrap {Args} in ord atoms when parsing for
+   // function arguments.
    if (body.type === "ordgroup") {
        // We already have an ordgroup, do nothing
        return {
