@@ -79,6 +79,8 @@ MathRm: \mathrm{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathSf: \mathsf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathScr: \mathscr{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathTt: \mathtt{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathAtom: a\mathrel{\mathop{=}\limits^{\blue ?}}b
+MathAtom2: \mathop{\overline\mathrm{lim}}\limits_{x\to\infty}f(x)
 NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
     {\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
