@@ -215,7 +215,7 @@ groupTypes.rel = function(group, options, prev) {
         return makeSpan(
             ["mrel", options.style.cls()],
             buildExpression(group.value.value, options.reset())
-        );      
+        );
     }
     return buildCommon.mathsym(
         group.value, group.mode, options.getColor(), ["mrel"]);
@@ -728,9 +728,9 @@ groupTypes.op = function(group, options, prev) {
     var supGroup;
     var subGroup;
     var hasLimits = false;
-    
+
     // TODO(cbreeden) investigate the possibility of putting the supsub
-    //   tages in the atoms themselves.  Allow for easier recursion?? 
+    //   tages in the atoms themselves.  Allow for easier recursion?
     if (group.type === "supsub" ) {
         // If we have limits, supsub will pass us its group to handle. Pull
         // out the superscript and subscript and set the group to the op in

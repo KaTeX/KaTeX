@@ -328,8 +328,8 @@ groupTypes.op = function(group, options) {
     } else if (group.value.value) {
         // do nothing for now
         var inner = buildExpression(group.value.value, options);
-        var node = new mathMLTree.MathNode("mo", inner);
-    }else {
+        node = new mathMLTree.MathNode("mo", inner);
+    } else {
         // This is a text operator. Add all of the characters from the
         // operator's name.
         // TODO(emily): Add a space in the middle of some of these

@@ -162,69 +162,40 @@ defineFunction("\\color", {
 defineFunction("\\mathord", {
     numArgs: 1,
 }, function(context, args) {
-   var body = args[0];
+    var body = args[0];
 
-   // Argument Parsing will give us an ordgroup when the arguments are
-   // enclosed by brackets.  We need to unwrap these if that's the case
-   // since TeX doesn't wrap {Args} in ord atoms when parsing for
-   // function arguments.
-   if (body.type === "ordgroup") {
-       // We already have an ordgroup, do nothing
-       return {
-           type: "mathord",
-           value: body.value,
-       }
-   } else {
-       return {
-           type: "mathord",
-           value: [body],
-       }
-   }
+    // Argument Parsing will give us an ordgroup when the arguments are
+    // enclosed by brackets.  We need to unwrap these if that's the case
+    // since TeX doesn't wrap {Args} in ord atoms when parsing for
+    // function arguments.
+    return {
+        type: "mathord",
+        value: body.type === "ordgroup" ? body.value : [body],
+    };
 });
+
 defineFunction("\\mathop", {
     numArgs: 1,
 }, function(context, args) {
-   var body = args[0];
+    var body = args[0];
 
-   // Argument Parsing will give us an ordgroup when the arguments are
-   // enclosed by brackets.  We need to unwrap these if that's the case
-   // since TeX doesn't wrap {Args} in ord atoms when parsing for
-   // function arguments.
-   if (body.type === "ordgroup") {
-       // We already have an ordgroup, do nothing
-       return {
-           type: "op",
-           value: body.value,
-       }
-   } else {
-       return {
-           type: "op",
-           value: [body],
-       }
-   }
+    // Unwrap arguments.  (see \mathord above)
+    return {
+        type: "op",
+        value: body.type === "ordgroup" ? body.value : [body],
+    };
 });
 
 defineFunction("\\mathrel", {
     numArgs: 1,
 }, function(context, args) {
-   var body = args[0];
+    var body = args[0];
 
-   // Argument Parsing will give us an ordgroup when the arguments are
-   // enclosed by brackets.  We need to unwrap these if that's the case
-   // since TeX doesn't wrap {Args} in ord atoms when parsing for
-   // function arguments.
-   if (body.type === "ordgroup") {
-       // We already have an ordgroup, do nothing
-       return {
-           type: "rel",
-           value: body.value,
-       }
-   } else {
-       return {
-           type: "rel",
-           value: [body],
-       }
-   }
+    // Unwrap arguments.  (see \mathord above)
+    return {
+        type: "rel",
+        value: body.type === "ordgroup" ? body.value : [body],
+    };
 });
 
 // An overline
