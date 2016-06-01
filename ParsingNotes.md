@@ -25,10 +25,10 @@ syntax tree which is simply an array of `ParseNode`s.
 The folowing is a list of currently implemented ParseNodes.  They can roughly
 categorized into four different groups.
 
-1. **Symbols**
-2. **Functions**
-3. **Math Lists**
-4. **Wrappers**
+1. [**Symbols**](#Symbols)
+2. [**Math Lists**](#Math-Lists)
+3. [**Functions**](#Functions)
+4. [**Wrappers**](#Wrappers)
 
 ### Symbols
 
@@ -147,6 +147,7 @@ You can find these examples in
  - Styling: `\displaystyle`, `\textstyle`, etc.
  - Sizing: `\Large`, `\huge`, `\tiny`, etc.
  - Font Changes: `\mathit`, `\mathbb`, `\mathrm`, etc.
+ 
  
  These are desgined to be a transparent as possible when being passed through the renderer
  and so these usually have the structure of something like this (this particular example is
