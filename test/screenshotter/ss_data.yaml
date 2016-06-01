@@ -106,6 +106,8 @@ SqrtRoot: |
 SupSubCharacterBox: a_2f_2{f}_2{aa}_2{af}_2
 SupSubHorizSpacing: |
     x^{x^{x}}\Big|x_{x_{x_{x_{x}}}}\bigg|x^{x^{x_{x_{x_{x_{x}}}}}}\bigg|
+SupSubLeftAlignReset: |
+    \omega^8_{888} \quad \frac{1}{\hat{\omega}^{8}_{888}} \quad \displaystyle\sum_{\omega^{8}_{888}}
 SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
 UnsupportedCmds:

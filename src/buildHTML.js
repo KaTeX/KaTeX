@@ -376,8 +376,9 @@ groupTypes.supsub = function(group, options, prev) {
         supsub.children[1].style.marginRight = scriptspace;
     }
 
+    // We ensure to wrap the supsub vlist in a span.msupsub to reset text-align
     return makeSpan([getTypeOfGroup(group.value.base)],
-        [base, supsub]);
+        [base, makeSpan(["msupsub"], [supsub])]);
 };
 
 groupTypes.genfrac = function(group, options, prev) {
