@@ -25,10 +25,10 @@ syntax tree which is simply an array of `ParseNode`s.
 The folowing is a list of currently implemented ParseNodes.  They can roughly
 categorized into four different groups.
 
-1. [Symbols](#Symbols)
-2. [Math Lists](#Math-Lists)
-3. [Functions](#Functions)
-4. [Wrappers](#Wrappers)
+1. [Symbols](#symbols)
+2. [Math Lists](#math-lists)
+3. [Functions](#functions)
+4. [Wrappers](#wrappers)
 
 ### Symbols
 
