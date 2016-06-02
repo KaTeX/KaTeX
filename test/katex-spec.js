@@ -634,6 +634,17 @@ describe("An over parser", function() {
         expect(parse.value.denom.value[0].value).toEqual("3");
     });
 
+    it("should handle nested fractions in denominator", function() {
+        var nestedOverExpression = "1 \\over {2 \\over 3}";
+        var parse = getParsed(nestedOverExpression)[0];
+        expect(parse.type).toEqual("genfrac");
+        expect(parse.value.denom.value[0].type).toEqual("genfrac");
+        expect(parse.value.denom.value[0].value.numer.value[0].value).toEqual("2");
+        expect(parse.value.denom.value[0].value.denom.value[0].value).toEqual("3");
+        expect(parse.value.numer).toBeDefined();
+        expect(parse.value.numer.value[0].value).toEqual("1");
+    });
+
     it("should fail with multiple overs in the same group", function() {
         var badMultipleOvers = "1 \\over 2 + 3 \\over 4";
         expect(badMultipleOvers).toNotParse();
