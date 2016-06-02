@@ -137,34 +137,75 @@ Parser.prototype.parseExpression = function(breakOnInfix, breakOnToken) {
     // we reached the end, a }, or a \right)
     while (true) {
         var lex = this.nextToken;
-        var pos = this.pos;
+        var numer;
+        var denom;
+
         if (endOfExpression.indexOf(lex.text) !== -1) {
             break;
         }
         if (breakOnToken && lex.text === breakOnToken) {
             break;
         }
+
+        if (this.infix_defer) {
+            // We had an infix operator that needs to be wrapped still.
+            // We are now handling the defer, so reset tracker
+            var deferValue   = this.infix_defer;
+            this.infix_defer = null;
+
+            numer = body;
+            denom = this.parseExpression();
+
+            // An infix will consume an entire mathlist.
+            body = [ this.handleInfix(deferValue, numer, denom) ];
+
+            // We have finished processing infixes, so reset tracker.
+            this.infix = false;
+            break;
+        }
+
         var atom = this.parseAtom();
         if (!atom) {
             if (!this.settings.throwOnError && lex.text[0] === "\\") {
                 var errorNode = this.handleUnsupportedCmd();
                 body.push(errorNode);
-
-                pos = lex.position;
                 continue;
             }
 
             break;
         }
-        if (breakOnInfix && atom.type === "infix") {
-            // rewind so we can parse the infix atom again
-            this.pos = pos;
-            this.nextToken = lex;
-            break;
+
+        if (atom.type === "infix") {
+            if (this.infix) {
+                // We already have found an infix; multiple infixes in a
+                // group is not allowed.
+                throw new ParseError("only one infix operator per group",
+                    this.lexer, -1);
+            }
+
+            this.infix = true;
+            if (breakOnInfix) {
+                // We are inside a style change that we want to allow to
+                // continue past infixes.  So defer infix to be handled later.
+                this.infix_defer = atom.value;
+                return body;
+            }
+
+            numer = body;
+            denom = this.parseExpression();
+
+            // An infix will consume an entire mathlist.
+            body = [ this.handleInfix(atom.value, numer, denom) ];
+
+            // We have finished processing infixes so reset tracker.
+            this.infix = false;
+            return body;
         }
+
         body.push(atom);
     }
-    return this.handleInfixNodes(body);
+
+    return body;
 };
 
 /**
@@ -174,49 +215,30 @@ Parser.prototype.parseExpression = function(breakOnInfix, breakOnToken) {
  * There can only be one infix operator per group.  If there's more than one
  * then the expression is ambiguous.  This can be resolved by adding {}.
  *
- * @returns {Array}
+ * @returns {ParseNode}
  */
-Parser.prototype.handleInfixNodes = function(body) {
-    var overIndex = -1;
-    var funcName;
+Parser.prototype.handleInfix = function(func, numerBody, denomBody) {
+    var funcName  = func.replaceWith;
+    var numerNode;
+    var denomNode;
 
-    for (var i = 0; i < body.length; i++) {
-        var node = body[i];
-        if (node.type === "infix") {
-            if (overIndex !== -1) {
-                throw new ParseError("only one infix operator per group",
-                    this.lexer, -1);
-            }
-            overIndex = i;
-            funcName = node.value.replaceWith;
-        }
-    }
-
-    if (overIndex !== -1) {
-        var numerNode;
-        var denomNode;
-
-        var numerBody = body.slice(0, overIndex);
-        var denomBody = body.slice(overIndex + 1);
-
-        if (numerBody.length === 1 && numerBody[0].type === "ordgroup") {
-            numerNode = numerBody[0];
-        } else {
-            numerNode = new ParseNode("ordgroup", numerBody, this.mode);
-        }
-
-        if (denomBody.length === 1 && denomBody[0].type === "ordgroup") {
-            denomNode = denomBody[0];
-        } else {
-            denomNode = new ParseNode("ordgroup", denomBody, this.mode);
-        }
-
-        var value = this.callFunction(
-            funcName, [numerNode, denomNode], null);
-        return [new ParseNode(value.type, value, this.mode)];
+    // It's generally bad practice to wrape an ord in an ordgroup
+    // if it's already wrapped in an ordgroup.
+    if (numerBody.length === 1 && numerBody[0].type === "ordgroup") {
+        numerNode = numerBody[0];
     } else {
-        return body;
+        numerNode = new ParseNode("ordgroup", numerBody, this.mode);
     }
+
+    if (denomBody.length === 1 && denomBody[0].type === "ordgroup") {
+        denomNode = denomBody[0];
+    } else {
+        denomNode = new ParseNode("ordgroup", denomBody, this.mode);
+    }
+
+    var value = this.callFunction(funcName, [numerNode, denomNode], null);
+
+    return new ParseNode(value.type, value, this.mode);
 };
 
 // The greediness of a superscript or subscript
