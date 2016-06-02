@@ -67,7 +67,7 @@ mode: "math"
 Functions in `functions.js` will _always_ get this kind of node when the parameters
 of the argument are enclosed in brackets `{` and `}`.  For instance, if you call
 `\sqrt 2`, then the function `\sqrt` will get a single _symbol_ `ParseNode` with
-the a `value` of `2`.  In contrast if you call `\sqrt{2}`, then `\sqrt` will be passed
+a `value` of `2`.  In contrast if you call `\sqrt{2}`, then `\sqrt` will be passed
 a single _ordgroup_ `ParseNode` with a `value` being a list containing a single
 symbol parse node `[ ParseNode("mathord", "2", "math") ]`.  And of course if you called
 `\sqrt{2+1}` then you would also get an _ordgroup_ `ParseNode` with a `value` of a list
@@ -140,7 +140,7 @@ that the following list of nodes should follow the following styles.  While this
 not how most reference TeX implementations will parse their input, this method
 most easily translates for how this information will be processed by css when rendered.
 
-You can find these type of nodes in
+You can find this type of nodes in
 
  - `\text`, `\phantom`, `\color`
  - Styling: `\displaystyle`, `\textstyle`, etc.
