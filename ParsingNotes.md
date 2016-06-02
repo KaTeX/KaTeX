@@ -25,14 +25,14 @@ syntax tree which is simply an array of `ParseNode`s.
 The folowing is a list of currently implemented ParseNodes.  They can roughly
 categorized into four different groups.
 
-1. [**Symbols**](#Symbols)
-2. [**Math Lists**](#Math-Lists)
-3. [**Functions**](#Functions)
-4. [**Wrappers**](#Wrappers)
+1. [Symbols](#Symbols)
+2. [Math Lists](#Math-Lists)
+3. [Functions](#Functions)
+4. [Wrappers](#Wrappers)
 
 ### Symbols
 
-Syombols are the easiest of the four groups in that they have a minimal structure.
+Symbols are the easiest of the four groups in that they have a minimal structure.
 A typical example is the following:
 
 ```
@@ -45,19 +45,18 @@ in either `math` mode or `text` mode, and the type can be any of the basic `atom
 types defined in TeX--accent, bin, close, inner, mathord, op, open, punct, rel--but
 also include two special cases: spacing, textord.  The value is simply the unicode
 character corresponding to the given symbol, for example `\u222b` is the symbol
-corresponding to the integration operator `\int`; This is the replace field in the
-definition of a symbol, and is not included in the `ParseNode`. The file `symbols.js` 
-also contains information about which font the unicode symbol is placed in.  The
-general design rule for not including this information in the `ParseNode` is to not
-incorporate more infromation that is necessary for `buildMathML` to do it's job.
+corresponding to the integration operator `\int`; this is the `replace` field in the
+definition of a symbol, and is not included in the `ParseNode`. The file `symbols.js`
+also contains information about which font the unicode symbol is placed in.
 
 ### Math Lists
 
-Math lists are supposed to be like a new list of `ParseNodes`.  This allows for
-easy recursion while rendering in the same spirit that most reference TeX
-implementations will compile.  As of right now there is only on example, the
-`ordgroup`, but once `\mathord`, `\mathop`, and friends are implemented there
-will be a few more.  The structure of an `ordgroup` is:
+Math lists are supposed to be like a new list of `ParseNodes`, but these are wrapped
+in an atomic type: accent, bin, op, rel, ord, etc.  As of right now there is only
+one example, the `ordgroup`, but once `\mathord`, `\mathop`, and friends are
+implemented there will be a few more that have this structure.
+The definine characteristic of these nodes is that the `value` is an
+array of `ParseNode`s.  The structure of an `ordgroup` is:
 
 ```
 type: "ordgroup"
@@ -67,12 +66,12 @@ mode: "math"
 
 Functions in `functions.js` will _always_ get this kind of node when the parameters
 of the argument are enclosed in brackets `{` and `}`.  For instance, if you call
-`\sqrt 2`, then the function `\sqrt` will get a single _symbol_ `ParseNode` as defined
-in (1) containing 2.  In contrast if you call `\sqrt{2}`, then `\sqrt` will be passed
-a single _ordgroup_ `ParseNode` with a value being a list containing a single
-symbol parse node `[ ParseNode("mathord", 2) ]`.  And of course if you called 
-`\sqrt{2+1}` then you would also get an _ordgroup_ `ParseNode` with a value of a list
-containing three `ParseNode`s for each symbol in the arguments.
+`\sqrt 2`, then the function `\sqrt` will get a single _symbol_ `ParseNode` with
+the a `value` of `2`.  In contrast if you call `\sqrt{2}`, then `\sqrt` will be passed
+a single _ordgroup_ `ParseNode` with a `value` being a list containing a single
+symbol parse node `[ ParseNode("mathord", "2", "math") ]`.  And of course if you called
+`\sqrt{2+1}` then you would also get an _ordgroup_ `ParseNode` with a `value` of a list
+containing three `ParseNode`s, one for each symbol in the arguments.
 
 ### Functions
 
@@ -81,13 +80,13 @@ These _usually_ aren't the kind of tokens that you would see in a reference
 implementation of TeX, but are more of a hard-coded shortcut of _most_ of the
 commands that people find useful while using TeX.  Perhaps one of the easiest
 examples is the `\sqrt` function.  The `\sqrt` function will have a `ParseNode`
-that looks like this: 
+that looks like this:
 
 ```
 type: "\\sqrt"
 value:
     type: "\\sqrt"
-    body: PaseNode("ordgroup")
+    body: PaseNode("ordgroup") \\ or a symbol ParseNode
 mode: "math"
 ```
 
@@ -96,13 +95,13 @@ We have already discussed in the previous section why we will _usually_ expect a
 It could simply be a symbol `ParseNode`.  But functions to use their arguments to
 construct a richer structure which could be useful for processing later one.
 On exmaple comes from the generalized fractions: `\frac`, `\dfrac`, `\binom`, etc.
-These usually generate a structure that looks like: 
+These usually generate a structure that looks like:
 
 ```
 type: "genfrac"
 value:
     type: "genfrac"
-    numer: 
+    numer:
         type: "ordgroup"        // Always wrapped in single ordgroup
         value: Array(ParseNode)
         mode: "math"
@@ -116,8 +115,8 @@ value:
     size: "display"/"auto"/"text"
 mode: "math"
 ```
-In contrast to most functions, these will _always_ have `ordgroup`s in their numer
-and denom, but this has more to do with how infix operators are parsed in general
+In contrast to most functions, these will _always_ have `ordgroup`s in their `numer`
+and `denom`, but this has more to do with how infix operators are parsed in general
 than with whether or not we use braces to enclose our arguments.
 
 One thing to keep in mind with functions is that they may have additional information
@@ -141,18 +140,18 @@ that the following list of nodes should follow the following styles.  While this
 not how most reference TeX implementations will parse their input, this method
 most easily translates for how this information will be processed by css when rendered.
 
-You can find these examples in 
+You can find these type of nodes in
 
  - `\text`, `\phantom`, `\color`
  - Styling: `\displaystyle`, `\textstyle`, etc.
  - Sizing: `\Large`, `\huge`, `\tiny`, etc.
  - Font Changes: `\mathit`, `\mathbb`, `\mathrm`, etc.
- 
- 
- These are desgined to be a transparent as possible when being passed through the renderer
+
+
+ These are desgined to be as transparent as possible when being passed to the the renderer
  and so these usually have the structure of something like this (this particular example is
  for `\Large`):
- 
+
 ```
 type: "styling"
 value:
@@ -161,7 +160,7 @@ value:
 mode: "math"
 ```
 
-The `Array(ParseNode)` in the value is to allow for an easy and immediate recursion when
-rendering, but also, and more importantly, the need to avoid `ordgroup` types since these
-will impose additional structure to the rendering and may interfere with spacing in the
-end result.
+The defining characteristic is the `Array(ParseNode)` in the `value.value`.  This is
+to allow for an easy recursion when rendering, but also, and more importantly,
+the need to avoid `ordgroup` types since these will impose additional structure to the
+rendering and may interfere with spacing in the end result.
