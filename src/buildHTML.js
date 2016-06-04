@@ -30,8 +30,8 @@ var buildExpression = function(expression, options, prev, next) {
         // While in a subtree, next should be the next sibling
         // If at the last node, next is the parent's next sibling.
         if (i + 1 < expression.length) {
-            localnext = expression[i+1];
-        } else { 
+            localnext = expression[i + 1];
+        } else {
             localnext = next;
         }
         groups.push(buildGroup(group, options, prev, localnext));
@@ -195,9 +195,9 @@ groupTypes.bin = function(group, options, prev, next) {
     // things at the end of a \color group. Note that we don't use the same
     // logic for ordgroups (which count as ords).
     var prevAtom = prev;
-    while (prevAtom && 
+    while (prevAtom &&
           (prevAtom.type === "color" || prevAtom.type === "phantom")) {
-        atoms = prevAtom.value.value;
+        var atoms = prevAtom.value.value;
         prevAtom = atoms[atoms.length - 1];
     }
     // See TeXbook pg. 442-446, Rules 5 and 6, and the text before Rule 19.
@@ -214,11 +214,11 @@ groupTypes.bin = function(group, options, prev, next) {
               (nextAtom.type === "color" || nextAtom.type === "phantom")) {
             nextAtom = nextAtom.value.value[0];
         }
-        
+
         if (!nextAtom || utils.contains(["mrel", "mclose", "mpunct"],
                 getTypeOfGroup(nextAtom))) {
             group.type = "textord";
-            className = "mord";            
+            className = "mord";
         }
     }
 

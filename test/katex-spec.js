@@ -1488,10 +1488,10 @@ describe("A bin builder", function() {
         expect(built[0].classes).toContain("mord");
         expect(built[0].classes).not.toContain("mbin");
     });
-    
+
     it("should create ords when at the end of a list", function() {
         var built = getBuilt("1\times");
-        
+
         expect(built[1].classes).toContain("mord");
         expect(built[1].classes).not.toContain("mbin");
     });
@@ -1510,19 +1510,19 @@ describe("A bin builder", function() {
         expect(getBuilt("\\sin + 2")[1].classes).toContain("mord");
         expect(getBuilt(", + 2")[1].classes).toContain("mord");
     });
-    
+
     it("should correctly interact with color objects", function() {
         expect(getBuilt("\\blue{x}+y")[1].classes).toContain("mbin");
         expect(getBuilt("\\blue{x+}+y")[1].classes).toContain("mord");
     });
-    
+
     it("should correctly interact with phantom objects", function() {
         expect(getBuilt("\\phantom{x}+y")[1].classes).toContain("mbin");
         expect(getBuilt("\\phantom{x+}+y")[1].classes).toContain("mord");
         expect(getBuilt("x + \\phantom{y}")[1].classes).toContain("mbin");
         expect(getBuilt("x + \\phantom{+ y}")[2]
                     .children[0].classes).toContain("mord");
-    })
+    });
 });
 
 describe("A markup generator", function() {
