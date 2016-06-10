@@ -16,7 +16,7 @@
 
 .katex {
     font: normal 1.21em KaTeX_Main;
-    line-height: 1.2;
+    display: inline-block;
     white-space: nowrap;
 
     // Protect elements inside .katex from inheriting text-indent.
@@ -27,6 +27,7 @@
         // which is undesireable ("to $x$,"). Instead, adjust the .katex-html
         // style and put nowrap on the inline .katex element.
         display: inline-block;
+        white-space: initial;
     }
 
     .katex-mathml {
@@ -442,10 +443,10 @@
     }
 
     .delimsizing {
-        &.size1 { font-family: KaTeX_Size1; }
-        &.size2 { font-family: KaTeX_Size2; }
-        &.size3 { font-family: KaTeX_Size3; }
-        &.size4 { font-family: KaTeX_Size4; }
+        &.size1 { font-family: KaTeX_Size1; line-height: 1; }
+        &.size2 { font-family: KaTeX_Size2; line-height: 2; }
+        &.size3 { font-family: KaTeX_Size3; line-height: 3; }
+        &.size4 { font-family: KaTeX_Size4; line-height: 4; }
 
         &.mult {
             .delim-size1 > span {

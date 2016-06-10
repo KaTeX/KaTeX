@@ -1,6 +1,11 @@
+/* eslint-disable no-console */
+/* global katex:true */
+
 function init() {
     var input = document.getElementById("input");
-    var math = document.getElementById("math");
+    var outputs = Array.prototype.slice.call(
+        document.querySelectorAll(".math")
+    );
     var permalink = document.getElementById("permalink");
 
     if ("oninput" in input) {
@@ -28,9 +33,9 @@ function init() {
 
     function reprocess() {
         try {
-            katex.render(input.value, math);
+            outputs.forEach(el => katex.render(input.value, el));
         } catch (e) {
-            if (e.__proto__ == katex.ParseError.prototype) {
+            if (e.__proto__ === katex.ParseError.prototype) {
                 console.error(e);
             } else {
                 throw e;
