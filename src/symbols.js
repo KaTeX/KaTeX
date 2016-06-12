@@ -611,6 +611,13 @@ for (i = 0; i < textSymbols.length; i++) {
     defineSymbol(text, main, textord, ch, ch);
 }
 
+// All of these are textords in text mode
+var extendedLatinBase = "ßæœøÆŒØ";
+for (i = 0; i < extendedLatinBase.length; i++) {
+    ch = extendedLatinBase.charAt(i);
+    defineSymbol(text, main, textord, ch, ch);
+}
+
 // All of these are textords in text mode, and mathords in math mode
 var letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 for (i = 0; i < letters.length; i++) {

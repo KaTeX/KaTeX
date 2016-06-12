@@ -46,6 +46,7 @@ function Token(text, data, position) {
 var tokenRegex = new RegExp(
     "([ \r\n\t]+)|(" +                                // whitespace
     "---?" +                                          // special combinations
+    "|[\u00C0-\u00FF]" +
     "|[!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
     "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair
     "|\\\\(?:[a-zA-Z]+|[^\uD800-\uDFFF])" +           // function name

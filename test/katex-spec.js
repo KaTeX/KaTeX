@@ -1802,3 +1802,9 @@ describe("The symbol table integraty", function() {
             .toEqual(getBuilt("\\left\\lt\\frac{1}{x}\\right\\gt"));
     });
 });
+
+describe("Unicode in \\text{}", function() {
+    it("should parse ßæœøÆŒØ", function() {
+        expect("\\text{ßæœøÆŒØ}").toParse();
+    });
+});
