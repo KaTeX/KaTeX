@@ -233,6 +233,16 @@ describe("Parser.expect calls:", function() {
                    "Invalid size: '1em{…' at position 7:" +
                    " \\rule[1̲e̲m̲{̲2em}{3em}");
         });
+        it("complains about missing ] for size at end of input", function() {
+            expect("\\rule[1em").toFailWithParseError(
+                   "Unexpected end of input in size" +
+                   " at position 7: \\rule[1̲e̲m̲");
+        });
+        it("complains about missing } for color at end of input", function() {
+            expect("\\color{#123456").toFailWithParseError(
+                   "Unexpected end of input in color" +
+                   " at position 8: \\color{#̲1̲2̲3̲4̲5̲6̲");
+        });
     });
 
     describe("#parseGroup expecting }", function() {

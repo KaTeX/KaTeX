@@ -654,6 +654,11 @@ Parser.prototype.parseSpecialGroup = function(modeName, optional,
     var firstToken = this.nextToken;
     var lastToken = firstToken;
     while (this.nextToken.text !== (optional ? "]" : "}")) {
+        if (this.nextToken.text === "EOF") {
+            throw new ParseError(
+                "Unexpected end of input in " + modeName,
+                firstToken.range(this.nextToken, str));
+        }
         lastToken = this.nextToken;
         str += lastToken.text;
         if (!reOnline.test(str)) {
