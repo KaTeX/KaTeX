@@ -225,13 +225,13 @@ describe("Parser.expect calls:", function() {
         // Can't test for the [ of an optional group since it's optional
         it("complains about missing } for color", function() {
             expect("\\color{#ffffff{text}").toFailWithParseError(
-                   "Invalid color: '#ffffff{…' at position 8:" +
-                   " \\color{#̲f̲f̲f̲f̲f̲f̲{̲text}");
+                   "Invalid color: '#ffffff{text' at position 8:" +
+                   " \\color{#̲f̲f̲f̲f̲f̲f̲{̲t̲e̲x̲t̲}");
         });
         it("complains about missing ] for size", function() {
             expect("\\rule[1em{2em}{3em}").toFailWithParseError(
-                   "Invalid size: '1em{…' at position 7:" +
-                   " \\rule[1̲e̲m̲{̲2em}{3em}");
+                   "Unexpected end of input in size" +
+                   " at position 7: \\rule[1̲e̲m̲{̲2̲e̲m̲}̲{̲3̲e̲m̲}̲");
         });
         it("complains about missing ] for size at end of input", function() {
             expect("\\rule[1em").toFailWithParseError(
@@ -332,7 +332,8 @@ describe("Lexer:", function() {
     describe("#_innerLexColor", function() {
         it("reject hex notation without #", function() {
             expect("\\color{1a2b3c}{foo}").toFailWithParseError(
-                   "Invalid color: '1…' at position 8: \\color{1̲a2b3c}{foo}");
+                   "Invalid color: '1a2b3c'" +
+                   " at position 8: \\color{1̲a̲2̲b̲3̲c̲}{foo}");
         });
     });
 
@@ -347,7 +348,7 @@ describe("Lexer:", function() {
         });
         it("reject size without number", function() {
             expect("\\rule{em}{2em}").toFailWithParseError(
-                   "Invalid size: 'e…' at position 7: \\rule{e̲m}{2em}");
+                   "Invalid size: 'em' at position 7: \\rule{e̲m̲}{2em}");
         });
     });
 

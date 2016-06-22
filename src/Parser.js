@@ -632,18 +632,13 @@ Parser.prototype.parseGroupOfType = function(innerMode, optional) {
 };
 
 /**
- * Parses a group where the string formed by the brace-enclosed tokens
- * must conform to some regular expression.
+ * Parses a group, essentially returning the string formed by the
+ * brace-enclosed tokens plus some position information.
  *
  * @param modeName {string} Used to describe the mode in error messages
  * @param optional {boolean} Whether the group is optional or required
- * @param reOnline {!RegExp} This regular expression must match
- *     the final result as well as any non-empty prefix of a final result
- * @param reFinal {!RegExp} This regular expression must match
- *     the final result, and that match will be returned
  */
-Parser.prototype.parseSpecialGroup = function(modeName, optional,
-                                              reOnline, reFinal) {
+Parser.prototype.parseSpecialGroup = function(modeName, optional) {
     if (optional && this.nextToken.text !== "[") {
         return null;
     }
@@ -661,40 +656,27 @@ Parser.prototype.parseSpecialGroup = function(modeName, optional,
         }
         lastToken = this.nextToken;
         str += lastToken.text;
-        if (!reOnline.test(str)) {
-            throw new ParseError(
-                "Invalid " + modeName + ": '" + str + "…'",
-                firstToken.range(lastToken, str));
-        }
         this.consume();
-    }
-    var match = reFinal.exec(str);
-    if (!match) {
-        throw new ParseError(
-            "Invalid " + modeName + ": '" + str + "'",
-            firstToken.range(lastToken, str));
     }
     this.mode = outerMode;
     this.expect(optional ? "]" : "}");
-    return {
-        match: match,
-        range: firstToken.range(lastToken, str),
-    };
+    return firstToken.range(lastToken, str);
 };
 
 /**
  * Parses a color description.
  */
 Parser.prototype.parseColorGroup = function(optional) {
-    var res = this.parseSpecialGroup(
-        "color", optional,
-        /^(#[a-z0-9]*|[a-z]+)$/i,
-        /^(#[a-z0-9]+|[a-z]+)$/i);
+    var res = this.parseSpecialGroup("color", optional);
     if (!res) {
         return null;
     }
+    var match = (/^(#[a-z0-9]+|[a-z]+)$/i).exec(res.text);
+    if (!match) {
+        throw new ParseError("Invalid color: '" + res.text + "'", res);
+    }
     return new ParseFuncOrArgument(
-        new ParseNode("color", res.match[0], this.mode),
+        new ParseNode("color", match[0], this.mode),
         false);
 };
 
@@ -702,19 +684,20 @@ Parser.prototype.parseColorGroup = function(optional) {
  * Parses a size specification, consisting of magnitude and unit.
  */
 Parser.prototype.parseSizeGroup = function(optional) {
-    var res = this.parseSpecialGroup(
-        "size", optional,
-        /^ *(-?) *(?:(?:\d+(?:\.\d*)?|\.\d+) *[a-z]{0,2} *)?$/,
-        /(-?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/);
+    var res = this.parseSpecialGroup("size", optional);
     if (!res) {
         return null;
     }
+    var match = (/(-?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(res.text);
+    if (!match) {
+        throw new ParseError("Invalid size: '" + res.text + "'", res);
+    }
     var data = {
-        number: +(res.match[1] + res.match[2]),
-        unit: res.match[3],
+        number: +(match[1] + match[2]),
+        unit: match[3],
     };
     if (data.unit !== "em" && data.unit !== "ex") {
-        throw new ParseError("Invalid unit: '" + data.unit + "'", res.range);
+        throw new ParseError("Invalid unit: '" + data.unit + "'", res);
     }
     return new ParseFuncOrArgument(
         new ParseNode("color", data, this.mode),
