@@ -19,7 +19,7 @@ function ParseNode(type, value, mode, firstToken, lastToken) {
     this.type = type;
     this.value = value;
     this.mode = mode;
-    if (firstToken) {
+    if (firstToken && (!lastToken || lastToken.lexer === firstToken.lexer)) {
         this.lexer = firstToken.lexer;
         this.start = firstToken.start;
         this.end = (lastToken || firstToken).end;

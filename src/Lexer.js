@@ -55,6 +55,9 @@ function Token(text, start, end, lexer) {
  * @param {string} text      the text of the newly constructed token
  */
 Token.prototype.range = function(endToken, text) {
+    if (endToken.lexer !== this.lexer) {
+        return new Token(text); // sorry, no position information available
+    }
     return new Token(text, this.start, endToken.end, this.lexer);
 };
 

@@ -14,7 +14,7 @@ function ParseError(message, token) {
     var start;
     var end;
 
-    if (token && token.lexer) {
+    if (token && token.lexer && token.start <= token.end) {
         // If we have the input and a position, make the error a bit fancier
 
         // Get the input
