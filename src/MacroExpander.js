@@ -7,20 +7,24 @@ var Lexer = require("./Lexer");
 
 function MacroExpander(input, macros) {
     this.lexer = new Lexer(input);
-    this.macros = macros || {};
+    this.macros = macros;
     this.stack = []; // contains tokens in REVERSE order
     this.discardedWhiteSpace = [];
 }
 
+/**
+ * Expand first token while that is expandable,
+ * return first non-expandable token that remains.
+ */
 MacroExpander.prototype.nextToken = function() {
     for (;;) {
         if (this.stack.length === 0) {
             this.stack.push(this.lexer.lex());
         }
-        var top = this.stack.pop();
-        var name = top.text;
+        var topToken = this.stack.pop();
+        var name = topToken.text;
         if (!(name.charAt(0) === "\\" && this.macros.hasOwnProperty(name))) {
-            return top;
+            return topToken;
         }
         var expansion = this.macros[name];
         if (typeof expansion === "string") {
@@ -31,7 +35,7 @@ MacroExpander.prototype.nextToken = function() {
                 expansion.push(tok);
                 tok = bodyLexer.lex();
             }
-            expansion.reverse();
+            expansion.reverse(); // to fit in with stack using push and pop
             this.macros[name] = expansion;
         }
         this.stack = this.stack.concat(expansion);
@@ -50,6 +54,13 @@ MacroExpander.prototype.get = function(ignoreSpace) {
     return token;
 };
 
+/**
+ * Undo the effect of the preceding call to the get method.
+ * A call to this method MUST be immediately preceded and immediately followed
+ * by a call to get.  Only used during mode switching, i.e. after one token
+ * was got in the old mode but should bet got again in a new mode
+ * with possibly different whitespace handling.
+ */
 MacroExpander.prototype.unget = function(token) {
     this.stack.push(token);
     while (this.discardedWhiteSpace.length !== 0) {

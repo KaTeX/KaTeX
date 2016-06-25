@@ -46,8 +46,9 @@ var ParseError = require("./ParseError");
  * Main Parser class
  */
 function Parser(input, settings) {
-    // Make a new lexer
-    this.gullet = new MacroExpander(input, settings && settings.macros);
+    // Make a new lexer (mouth) and macro expander (gullet)
+    // for this parser (stomach, in the language of TeX)
+    this.gullet = new MacroExpander(input, settings.macros);
     // Store the settings for use in parsing
     this.settings = settings;
 }
@@ -127,16 +128,17 @@ var endOfExpression = ["}", "\\end", "\\right", "&", "\\\\", "\\cr"];
 /**
  * Parses an "expression", which is a list of atoms.
  *
- * @param {boolean} breakOnInfix Should the parsing stop when we hit infix
+ * @param {boolean} breakOnInfix  Should the parsing stop when we hit infix
  *                  nodes? This happens when functions have higher precendence
  *                  than infix nodes in implicit parses.
  *
- * @param {?string} breakOnToken The token that the expression should end with,
- *                  or `null` if something else should end the expression.
+ * @param {?string} breakOnTokenText  The text of the token that the expression
+ *                  should end with, or `null` if something else should end the
+ *                  expression.
  *
  * @return {ParseNode}
  */
-Parser.prototype.parseExpression = function(breakOnInfix, breakOnToken) {
+Parser.prototype.parseExpression = function(breakOnInfix, breakOnTokenText) {
     var body = [];
     // Keep adding atoms to the body until we can't parse any more atoms (either
     // we reached the end, a }, or a \right)
@@ -145,7 +147,7 @@ Parser.prototype.parseExpression = function(breakOnInfix, breakOnToken) {
         if (endOfExpression.indexOf(lex.text) !== -1) {
             break;
         }
-        if (breakOnToken && lex.text === breakOnToken) {
+        if (breakOnTokenText && lex.text === breakOnTokenText) {
             break;
         }
         if (breakOnInfix && functions[lex.text] && functions[lex.text].infix) {
@@ -635,10 +637,10 @@ Parser.prototype.parseGroupOfType = function(innerMode, optional) {
  * Parses a group, essentially returning the string formed by the
  * brace-enclosed tokens plus some position information.
  *
- * @param modeName {string} Used to describe the mode in error messages
- * @param optional {boolean} Whether the group is optional or required
+ * @param {string} modeName  Used to describe the mode in error messages
+ * @param {boolean} optional  Whether the group is optional or required
  */
-Parser.prototype.parseSpecialGroup = function(modeName, optional) {
+Parser.prototype.parseStringGroup = function(modeName, optional) {
     if (optional && this.nextToken.text !== "[") {
         return null;
     }
@@ -667,7 +669,7 @@ Parser.prototype.parseSpecialGroup = function(modeName, optional) {
  * Parses a color description.
  */
 Parser.prototype.parseColorGroup = function(optional) {
-    var res = this.parseSpecialGroup("color", optional);
+    var res = this.parseStringGroup("color", optional);
     if (!res) {
         return null;
     }
@@ -684,7 +686,7 @@ Parser.prototype.parseColorGroup = function(optional) {
  * Parses a size specification, consisting of magnitude and unit.
  */
 Parser.prototype.parseSizeGroup = function(optional) {
-    var res = this.parseSpecialGroup("size", optional);
+    var res = this.parseStringGroup("size", optional);
     if (!res) {
         return null;
     }
@@ -693,7 +695,7 @@ Parser.prototype.parseSizeGroup = function(optional) {
         throw new ParseError("Invalid size: '" + res.text + "'", res);
     }
     var data = {
-        number: +(match[1] + match[2]),
+        number: +(match[1] + match[2]), // sign + magnitude, cast to number
         unit: match[3],
     };
     if (data.unit !== "em" && data.unit !== "ex") {

@@ -22,9 +22,9 @@ function init() {
 
     var macros = {};
     var options = {};
-    var reMacro = /(?:^\?|&)(?:\\|%5[Cc])([A-Za-z]+)=([^&]*)/g;
+    var macroRegex = /(?:^\?|&)(?:\\|%5[Cc])([A-Za-z]+)=([^&]*)/g;
     var macroString = "";
-    while ((match = reMacro.exec(window.location.search)) !== null) {
+    while ((match = macroRegex.exec(window.location.search)) !== null) {
         options.macros = macros;
         macros["\\" + match[1]] = decodeURIComponent(match[2]);
         macroString += "&" + match[0].substr(1);

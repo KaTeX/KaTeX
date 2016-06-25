@@ -21,7 +21,25 @@ function Lexer(input) {
     this.pos = 0;
 }
 
-// The resulting token returned from `lex`.
+/**
+ * The resulting token returned from `lex`.
+ *
+ * It consists of the token text plus some position information.
+ * The position information is essentially a range in an input string,
+ * but instead of referencing the bare input string, we refer to the lexer.
+ * That way it is possible to attach extra metadata to the input string,
+ * like for example a file name or similar.
+ *
+ * The position information (all three parameters) is optional,
+ * so it is OK to construct synthetic tokens if appropriate.
+ * Not providing available position information may lead to
+ * degraded error reporting, though.
+ *
+ * @param {string}  text   the text of this token
+ * @param {number=} start  the start offset, zero-based inclusive
+ * @param {number=} end    the end offset, zero-based exclusive
+ * @param {Lexer=}  lexer  the lexer which in turn holds the input string
+ */
 function Token(text, start, end, lexer) {
     this.text = text;
     this.start = start;
@@ -29,6 +47,13 @@ function Token(text, start, end, lexer) {
     this.lexer = lexer;
 }
 
+/**
+ * Given a pair of tokens (this and endToken), compute a “Token” encompassing
+ * the whole input range enclosed by these two.
+ *
+ * @param {Token}  endToken  last token of the range, inclusive
+ * @param {string} text      the text of the newly constructed token
+ */
 Token.prototype.range = function(endToken, text) {
     return new Token(text, this.start, endToken.end, this.lexer);
 };
