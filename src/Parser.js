@@ -545,7 +545,7 @@ Parser.prototype.parseArguments = function(func, funcData) {
             if (argType) {
                 arg = this.parseGroupOfType(argType, true);
             } else {
-                arg = this.parseOptionalGroup();
+                arg = this.parseGroup(true);
             }
             if (!arg) {
                 args.push(null);
@@ -623,12 +623,7 @@ Parser.prototype.parseGroupOfType = function(innerMode, optional) {
     }
     // By the time we get here, innerMode is one of "text" or "math".
     // We switch the mode of the parser, recurse, then restore the old mode.
-    var res;
-    if (optional) {
-        res = this.parseOptionalGroup();
-    } else {
-        res = this.parseGroup();
-    }
+    var res = this.parseGroup(optional);
     this.switchMode(outerMode);
     return res;
 };
@@ -638,7 +633,7 @@ Parser.prototype.parseGroupOfType = function(innerMode, optional) {
  * brace-enclosed tokens plus some position information.
  *
  * @param {string} modeName  Used to describe the mode in error messages
- * @param {boolean} optional  Whether the group is optional or required
+ * @param {boolean=} optional  Whether the group is optional or required
  */
 Parser.prototype.parseStringGroup = function(modeName, optional) {
     if (optional && this.nextToken.text !== "[") {
@@ -707,53 +702,71 @@ Parser.prototype.parseSizeGroup = function(optional) {
 };
 
 /**
- * Parses a group, which is either a single nucleus (like "x") or an expression
- * in braces (like "{x+y}")
+ * If the argument is false or absent, this parses an ordinary group,
+ * which is either a single nucleus (like "x") or an expression
+ * in braces (like "{x+y}").
+ * If the argument is true, it parses either a bracket-delimited expression
+ * (like "[x+y]") or returns null to indicate the absence of a
+ * bracket-enclosed group.
  *
+ * @param {boolean=} optional  Whether the group is optional or required
  * @return {?ParseFuncOrArgument}
  */
-Parser.prototype.parseGroup = function() {
+Parser.prototype.parseGroup = function(optional) {
     var firstToken = this.nextToken;
     // Try to parse an open brace
-    if (this.nextToken.text === "{") {
+    if (this.nextToken.text === (optional ? "[" : "{")) {
         // If we get a brace, parse an expression
         this.consume();
-        var expression = this.parseExpression(false);
+        var expression = this.parseExpression(false, optional ? "]" : null);
         var lastToken = this.nextToken;
         // Make sure we get a close brace
-        this.expect("}");
+        this.expect(optional ? "]" : "}");
+        if (this.mode === "text") {
+            this.formLigatures(expression);
+        }
         return new ParseFuncOrArgument(
             new ParseNode("ordgroup", expression, this.mode,
                           firstToken, lastToken),
             false);
     } else {
-        // Otherwise, just return a nucleus
-        return this.parseSymbol();
+        // Otherwise, just return a nucleus, or nothing for an optional group
+        return optional ? null : this.parseSymbol();
     }
 };
 
 /**
- * Parses a group, which is an expression in brackets (like "[x+y]")
+ * Form ligature-like combinations of characters for text mode.
+ * This includes inputs like "--", "---", "``" and "''".
+ * The result will simply replace multiple textord nodes with a single
+ * character in each value by a single textord node having multiple
+ * characters in its value.  The representation is still ASCII source.
  *
- * @return {?ParseFuncOrArgument}
+ * @param {Array.<ParseNode>} group  the nodes of this group,
+ *                                   list will be moified in place
  */
-Parser.prototype.parseOptionalGroup = function() {
-    var firstToken = this.nextToken;
-    // Try to parse an open bracket
-    if (this.nextToken.text === "[") {
-        // If we get a brace, parse an expression
-        this.consume();
-        var expression = this.parseExpression(false, "]");
-        var lastToken = this.nextToken;
-        // Make sure we get a close bracket
-        this.expect("]");
-        return new ParseFuncOrArgument(
-            new ParseNode("ordgroup", expression, this.mode,
-                          firstToken, lastToken),
-            false);
-    } else {
-        // Otherwise, return null,
-        return null;
+Parser.prototype.formLigatures = function(group) {
+    var i;
+    var n = group.length - 1;
+    for (i = 0; i < n; ++i) {
+        var a = group[i];
+        var v = a.value;
+        if (v === "-" && group[i + 1].value === "-") {
+            if (i + 1 < n && group[i + 2].value === "-") {
+                group.splice(i, 3, new ParseNode(
+                    "textord", "---", "text", a, group[i + 2]));
+                n -= 2;
+            } else {
+                group.splice(i, 2, new ParseNode(
+                    "textord", "--", "text", a, group[i + 1]));
+                n -= 1;
+            }
+        }
+        if ((v === "'" || v === "`") && group[i + 1].value === v) {
+            group.splice(i, 2, new ParseNode(
+                "textord", v + v, "text", a, group[i + 1]));
+            n -= 1;
+        }
     }
 };
 
