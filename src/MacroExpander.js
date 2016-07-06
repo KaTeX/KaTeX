@@ -13,8 +13,7 @@ function MacroExpander(input, macros) {
 }
 
 /**
- * Expand first token while that is expandable,
- * return first non-expandable token that remains.
+ * Recursively expand first token, then return first non-expandable token.
  */
 MacroExpander.prototype.nextToken = function() {
     for (;;) {
@@ -58,7 +57,7 @@ MacroExpander.prototype.get = function(ignoreSpace) {
  * Undo the effect of the preceding call to the get method.
  * A call to this method MUST be immediately preceded and immediately followed
  * by a call to get.  Only used during mode switching, i.e. after one token
- * was got in the old mode but should bet got again in a new mode
+ * was got in the old mode but should get got again in a new mode
  * with possibly different whitespace handling.
  */
 MacroExpander.prototype.unget = function(token) {

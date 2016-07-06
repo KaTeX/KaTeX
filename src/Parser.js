@@ -46,8 +46,8 @@ var ParseError = require("./ParseError");
  * Main Parser class
  */
 function Parser(input, settings) {
-    // Make a new lexer (mouth) and macro expander (gullet)
-    // for this parser (stomach, in the language of TeX)
+    // Create a new macro expander (gullet) and (indirectly via that) also a
+    // new lexer (mouth) for this parser (stomach, in the language of TeX)
     this.gullet = new MacroExpander(input, settings.macros);
     // Store the settings for use in parsing
     this.settings = settings;
