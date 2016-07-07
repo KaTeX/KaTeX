@@ -184,7 +184,7 @@ defineEnvironment("cases", {
 // except it operates within math mode.
 // Note that we assume \nomallineskiplimit to be zero,
 // so that \strut@ is the same as \strut.
-defineEnvironment("aligned", {
+defineEnvironment(["aligned", "align", "align*"], {
 }, function(context) {
     var res = {
         type: "array",
