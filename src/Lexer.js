@@ -17,15 +17,49 @@ var ParseError = require("./ParseError");
 
 // The main lexer class
 function Lexer(input) {
-    this._input = input;
+    this.input = input;
+    this.pos = 0;
 }
 
-// The resulting token returned from `lex`.
-function Token(text, data, position) {
+/**
+ * The resulting token returned from `lex`.
+ *
+ * It consists of the token text plus some position information.
+ * The position information is essentially a range in an input string,
+ * but instead of referencing the bare input string, we refer to the lexer.
+ * That way it is possible to attach extra metadata to the input string,
+ * like for example a file name or similar.
+ *
+ * The position information (all three parameters) is optional,
+ * so it is OK to construct synthetic tokens if appropriate.
+ * Not providing available position information may lead to
+ * degraded error reporting, though.
+ *
+ * @param {string}  text   the text of this token
+ * @param {number=} start  the start offset, zero-based inclusive
+ * @param {number=} end    the end offset, zero-based exclusive
+ * @param {Lexer=}  lexer  the lexer which in turn holds the input string
+ */
+function Token(text, start, end, lexer) {
     this.text = text;
-    this.data = data;
-    this.position = position;
+    this.start = start;
+    this.end = end;
+    this.lexer = lexer;
 }
+
+/**
+ * Given a pair of tokens (this and endToken), compute a “Token” encompassing
+ * the whole input range enclosed by these two.
+ *
+ * @param {Token}  endToken  last token of the range, inclusive
+ * @param {string} text      the text of the newly constructed token
+ */
+Token.prototype.range = function(endToken, text) {
+    if (endToken.lexer !== this.lexer) {
+        return new Token(text); // sorry, no position information available
+    }
+    return new Token(text, this.start, endToken.end, this.lexer);
+};
 
 /* The following tokenRegex
  * - matches typical whitespace (but not NBSP etc.) using its first group
@@ -52,111 +86,26 @@ var tokenRegex = new RegExp(
     ")"
 );
 
-var whitespaceRegex = /\s*/;
-
 /**
- * This function lexes a single normal token. It takes a position and
- * whether it should completely ignore whitespace or not.
+ * This function lexes a single token.
  */
-Lexer.prototype._innerLex = function(pos, ignoreWhitespace) {
-    var input = this._input;
+Lexer.prototype.lex = function() {
+    var input = this.input;
+    var pos = this.pos;
     if (pos === input.length) {
-        return new Token("EOF", null, pos);
+        return new Token("EOF", pos, pos, this);
     }
     var match = matchAt(tokenRegex, input, pos);
     if (match === null) {
         throw new ParseError(
             "Unexpected character: '" + input[pos] + "'",
-            this, pos);
-    } else if (match[2]) { // matched non-whitespace
-        return new Token(match[2], null, pos + match[2].length);
-    } else if (ignoreWhitespace) {
-        return this._innerLex(pos + match[1].length, true);
-    } else { // concatenate whitespace to a single space
-        return new Token(" ", null, pos + match[1].length);
+            new Token(input[pos], pos, pos + 1, this));
     }
-};
-
-// A regex to match a CSS color (like #ffffff or BlueViolet)
-var cssColor = /#[a-z0-9]+|[a-z]+/i;
-
-/**
- * This function lexes a CSS color.
- */
-Lexer.prototype._innerLexColor = function(pos) {
-    var input = this._input;
-
-    // Ignore whitespace
-    var whitespace = matchAt(whitespaceRegex, input, pos)[0];
-    pos += whitespace.length;
-
-    var match;
-    if ((match = matchAt(cssColor, input, pos))) {
-        // If we look like a color, return a color
-        return new Token(match[0], null, pos + match[0].length);
-    } else {
-        throw new ParseError("Invalid color", this, pos);
-    }
-};
-
-// A regex to match a dimension. Dimensions look like
-// "1.2em" or ".4pt" or "1 ex"
-var sizeRegex = /(-?)\s*(\d+(?:\.\d*)?|\.\d+)\s*([a-z]{2})/;
-
-/**
- * This function lexes a dimension.
- */
-Lexer.prototype._innerLexSize = function(pos) {
-    var input = this._input;
-
-    // Ignore whitespace
-    var whitespace = matchAt(whitespaceRegex, input, pos)[0];
-    pos += whitespace.length;
-
-    var match;
-    if ((match = matchAt(sizeRegex, input, pos))) {
-        var unit = match[3];
-        // We only currently handle "em" and "ex" units
-        if (unit !== "em" && unit !== "ex") {
-            throw new ParseError("Invalid unit: '" + unit + "'", this, pos);
-        }
-        return new Token(match[0], {
-            number: +(match[1] + match[2]),
-            unit: unit,
-        }, pos + match[0].length);
-    }
-
-    throw new ParseError("Invalid size", this, pos);
-};
-
-/**
- * This function lexes a string of whitespace.
- */
-Lexer.prototype._innerLexWhitespace = function(pos) {
-    var input = this._input;
-
-    var whitespace = matchAt(whitespaceRegex, input, pos)[0];
-    pos += whitespace.length;
-
-    return new Token(whitespace[0], null, pos);
-};
-
-/**
- * This function lexes a single token starting at `pos` and of the given mode.
- * Based on the mode, we defer to one of the `_innerLex` functions.
- */
-Lexer.prototype.lex = function(pos, mode) {
-    if (mode === "math") {
-        return this._innerLex(pos, true);
-    } else if (mode === "text") {
-        return this._innerLex(pos, false);
-    } else if (mode === "color") {
-        return this._innerLexColor(pos);
-    } else if (mode === "size") {
-        return this._innerLexSize(pos);
-    } else if (mode === "whitespace") {
-        return this._innerLexWhitespace(pos);
-    }
+    var text = match[2] || " ";
+    var start = this.pos;
+    this.pos += match[0].length;
+    var end = this.pos;
+    return new Token(text, start, end, this);
 };
 
 module.exports = Lexer;

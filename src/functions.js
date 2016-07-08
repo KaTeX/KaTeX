@@ -55,6 +55,7 @@ var ParseError = require("./ParseError");
  *                     should parse. If the optional arguments aren't found,
  *                     `null` will be passed to the handler in their place.
  *                     (default 0)
+ *  - infix: (optional) Must be true if the function is an infix operator.
  *
  * The last argument is that implementation, the handler for the function(s).
  * It is called to handle these functions and their arguments.
@@ -91,6 +92,7 @@ function defineFunction(names, props, handler) {
         greediness: (props.greediness === undefined) ? 1 : props.greediness,
         allowedInText: !!props.allowedInText,
         numOptionalArgs: props.numOptionalArgs || 0,
+        infix: !!props.infix,
         handler: handler,
     };
     for (var i = 0; i < names.length; ++i) {
@@ -456,8 +458,7 @@ defineFunction([
     if (!utils.contains(delimiters, delim.value)) {
         throw new ParseError(
             "Invalid delimiter: '" + delim.value + "' after '" +
-                context.funcName + "'",
-            context.lexer, context.positions[1]);
+            context.funcName + "'", delim);
     }
 
     // \left and \right are caught somewhere in Parser.js, which is
@@ -536,6 +537,7 @@ defineFunction([
 // Infix generalized fractions
 defineFunction(["\\over", "\\choose"], {
     numArgs: 0,
+    infix: true,
 }, function(context) {
     var replaceWith;
     switch (context.funcName) {
@@ -551,6 +553,7 @@ defineFunction(["\\over", "\\choose"], {
     return {
         type: "infix",
         replaceWith: replaceWith,
+        token: context.token,
     };
 });
 
@@ -574,9 +577,7 @@ defineFunction(["\\begin", "\\end"], {
 }, function(context, args) {
     var nameGroup = args[0];
     if (nameGroup.type !== "ordgroup") {
-        throw new ParseError(
-            "Invalid environment name",
-            context.lexer, context.positions[1]);
+        throw new ParseError("Invalid environment name", nameGroup);
     }
     var name = "";
     for (var i = 0; i < nameGroup.value.length; ++i) {
@@ -585,6 +586,6 @@ defineFunction(["\\begin", "\\end"], {
     return {
         type: "environment",
         name: name,
-        namepos: context.positions[1],
+        nameGroup: nameGroup,
     };
 });
