@@ -61,19 +61,18 @@ app.get("/katex.css", function(req, res, next) {
             return;
         }
 
-        var parser = new less.Parser({
+        less.render(data, {
             paths: ["./static"],
             filename: "katex.less",
-        });
-
-        parser.parse(data, function(err, tree) {
+        }, function(err, output) {
             if (err) {
+                console.error(String(err));
                 next(err);
                 return;
             }
 
             res.setHeader("Content-Type", "text/css");
-            res.send(tree.toCSS());
+            res.send(output.css);
         });
     });
 });
