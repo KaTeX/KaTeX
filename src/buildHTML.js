@@ -1164,6 +1164,42 @@ groupTypes.leftright = function(group, options, prev) {
         ["minner", options.style.cls()], inner, options.getColor());
 };
 
+groupTypes.cursor = function(group, options, prev) {
+    // Make an empty span for the rule
+    var cursor = makeSpan(["cursor"], [], options.getColor());
+
+    // Calculate the shift and height of the cursor, and account for units
+    var shift = 0;
+    if (group.value.shift) {
+        shift = group.value.shift.number;
+        if (group.value.shift.unit === "ex") {
+            shift *= fontMetrics.metrics.xHeight;
+        }
+    }
+    var height = group.value.height.number;
+    if (group.value.height.unit === "ex") {
+        height *= fontMetrics.metrics.xHeight;
+    }
+
+    // The sizes of cursors are absolute, so make it larger if we are in a
+    // smaller style.
+    //shift /= options.style.sizeMultiplier;
+    //height /= options.style.sizeMultiplier;
+
+    // Style the cursor to the right size
+    cursor.style.marginRight = "-1px";
+    cursor.style.borderRight = "1px solid";
+    cursor.style.marginBottom = shift + "em";
+    cursor.style.height = height + "em";
+
+    // Record the height and width
+    cursor.width = 1;
+    cursor.height = height + shift;
+    cursor.depth = -shift;
+
+    return cursor;
+};
+
 groupTypes.rule = function(group, options, prev) {
     // Make an empty span for the rule
     var rule = makeSpan(["mord", "rule"], [], options.getColor());

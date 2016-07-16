@@ -200,6 +200,20 @@ defineFunction("\\rule", {
     };
 });
 
+defineFunction("\\cursor", {
+    numArgs: 1,
+    numOptionalArgs: 1,
+    argTypes: ["size", "size"],
+}, function(context, args) {
+    var shift = args[0];
+    var height = args[1];
+    return {
+        type: "cursor",
+        shift: shift && shift.value,
+        height: height.value,
+    };
+});
+
 defineFunction("\\kern", {
     numArgs: 1,
     argTypes: ["size"],
