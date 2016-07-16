@@ -612,6 +612,10 @@ Parser.prototype.parseGroupOfType = function(innerMode, optional) {
     if (innerMode === "size") {
         return this.parseSizeGroup(optional);
     }
+    if (innerMode === "string") {
+        var val = this.parseStringGroup("string", optional);
+        return new ParseFuncOrArgument(val.text, false);
+    }
 
     this.switchMode(innerMode);
     if (innerMode === "text") {

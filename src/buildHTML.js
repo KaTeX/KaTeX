@@ -241,6 +241,20 @@ groupTypes.text = function(group, options, prev) {
         buildExpression(group.value.body, options.reset()));
 };
 
+groupTypes.xmlClass = function(group, options, prev) {
+    var elements = buildExpression(
+        group.value.value,
+        options.withColor(),
+        prev
+    );
+
+    // \color isn't supposed to affect the type of the elements it contains.
+    // To accomplish this, we wrap the results in a fragment, so the inner
+    // elements will be able to directly interact with their neighbors. For
+    // example, `\color{red}{2 +} 3` has the same spacing as `2 + 3`
+    return new buildCommon.makeFragment(elements, [group.value.cl]);
+};
+
 groupTypes.color = function(group, options, prev) {
     var elements = buildExpression(
         group.value.value,
