@@ -337,6 +337,13 @@ groupTypes.op = function(group) {
     return node;
 };
 
+groupTypes.cursor = function(group) {
+    var node = new mathMLTree.MathNode(
+        "mtext", [new mathMLTree.TextNode("|")]);
+
+    return node;
+};
+
 groupTypes.katex = function(group) {
     var node = new mathMLTree.MathNode(
         "mtext", [new mathMLTree.TextNode("KaTeX")]);

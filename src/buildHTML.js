@@ -191,10 +191,13 @@ groupTypes.bin = function(group, options, prev) {
         var atoms = prevAtom.value.value;
         prevAtom = atoms[atoms.length - 1];
     }
+    if (prevAtom && prevAtom.type === "cursor") {
+        prevAtom = prevAtom.value.previous;
+    }
     // See TeXbook pg. 442-446, Rules 5 and 6, and the text before Rule 19.
     // Here, we determine whether the bin should turn into an ord. We
     // currently only apply Rule 5.
-    if (!prev || utils.contains(["mbin", "mopen", "mrel", "mop", "mpunct"],
+    if (!prevAtom || utils.contains(["mbin", "mopen", "mrel", "mop", "mpunct"],
             getTypeOfGroup(prevAtom))) {
         group.type = "textord";
         className = "mord";
@@ -239,6 +242,16 @@ groupTypes.ordgroup = function(group, options, prev) {
 groupTypes.text = function(group, options, prev) {
     return makeSpan(["text", "mord", options.style.cls()],
         buildExpression(group.value.body, options.reset()));
+};
+
+groupTypes.xmlClass = function(group, options, prev) {
+    var elements = buildExpression(
+        group.value.value,
+        options.withColor(),
+        prev
+    );
+
+    return new buildCommon.makeFragment(elements, [group.value.cl]);
 };
 
 groupTypes.color = function(group, options, prev) {
@@ -1162,6 +1175,43 @@ groupTypes.leftright = function(group, options, prev) {
 
     return makeSpan(
         ["minner", options.style.cls()], inner, options.getColor());
+};
+
+groupTypes.cursor = function(group, options, prev) {
+    // Make an empty span for the rule
+    var cursor = makeSpan(["cursor"], [], options.getColor());
+
+    // Calculate the shift and height of the cursor, and account for units
+    var shift = 0;
+    if (group.value.shift) {
+        shift = group.value.shift.number;
+        if (group.value.shift.unit === "ex") {
+            shift *= fontMetrics.metrics.xHeight;
+        }
+    }
+    var height = group.value.height.number;
+    if (group.value.height.unit === "ex") {
+        height *= fontMetrics.metrics.xHeight;
+    }
+
+    // The sizes of cursors are absolute, so make it larger if we are in a
+    // smaller style.
+    //shift /= options.style.sizeMultiplier;
+    //height /= options.style.sizeMultiplier;
+
+    // Style the cursor to the right size
+    cursor.style.marginRight = "-1px";
+    cursor.style.borderRight = "1px solid";
+    cursor.style.marginBottom = shift + "em";
+    cursor.style.height = height + "em";
+
+    // Record the height and width
+    cursor.width = 1;
+    cursor.height = height + shift;
+    cursor.depth = -shift;
+    group.value.previous = prev;
+
+    return cursor;
 };
 
 groupTypes.rule = function(group, options, prev) {
