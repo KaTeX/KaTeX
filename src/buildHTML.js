@@ -53,6 +53,7 @@ var groupToType = {
     overline: "mord",
     underline: "mord",
     rule: "mord",
+    cursor: "cursor",
     leftright: "minner",
     sqrt: "mord",
     accent: "mord",
