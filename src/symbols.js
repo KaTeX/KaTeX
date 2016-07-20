@@ -618,3 +618,25 @@ for (i = 0; i < letters.length; i++) {
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
+
+// Latin-1 letters
+for (i = 0x00C0; i <= 0x00D6; i++) {
+    ch = String.fromCharCode(i);
+    defineSymbol(text, main, textord, ch, ch);
+}
+
+for (i = 0x00D8; i <= 0x00F6; i++) {
+    ch = String.fromCharCode(i);
+    defineSymbol(text, main, textord, ch, ch);
+}
+
+for (i = 0x00F8; i <= 0x00FF; i++) {
+    ch = String.fromCharCode(i);
+    defineSymbol(text, main, textord, ch, ch);
+}
+
+// Cyrillic
+for (i = 0x0410; i <= 0x044F; i++) {
+    ch = String.fromCharCode(i);
+    defineSymbol(text, main, textord, ch, ch);
+}

@@ -1,6 +1,7 @@
 /* eslint no-unused-vars:0 */
 
 var Style = require("./Style");
+var cjkRegex = require("./unicodeRegexes").cjkRegex;
 
 /**
  * This file contains metrics regarding fonts and individual symbols. The sigma
@@ -121,6 +122,145 @@ var metrics = {
 // This map is generated via `make metrics`. It should not be changed manually.
 var metricMap = require("./fontMetricsData");
 
+// These are very rough approximations.  We default to Times New Roman which
+// should have Latin-1 and Cyrillic characters, but may not depending on the
+// operating system.  The metrics do not account for extra height from the
+// accents.  In the case of Cyrillic characters which have both ascenders and
+// descenders we prefer approximations with ascenders, primarily to prevent
+// the fraction bar or root line from intersecting the glyph.
+// TODO(kevinb) allow union of multiple glyph metrics for better accuracy.
+var extraCharacterMap = {
+    // Latin-1
+    'À': 'A',
+    'Á': 'A',
+    'Â': 'A',
+    'Ã': 'A',
+    'Ä': 'A',
+    'Å': 'A',
+    'Æ': 'A',
+    'Ç': 'C',
+    'È': 'E',
+    'É': 'E',
+    'Ê': 'E',
+    'Ë': 'E',
+    'Ì': 'I',
+    'Í': 'I',
+    'Î': 'I',
+    'Ï': 'I',
+    'Ð': 'D',
+    'Ñ': 'N',
+    'Ò': 'O',
+    'Ó': 'O',
+    'Ô': 'O',
+    'Õ': 'O',
+    'Ö': 'O',
+    'Ø': 'O',
+    'Ù': 'U',
+    'Ú': 'U',
+    'Û': 'U',
+    'Ü': 'U',
+    'Ý': 'Y',
+    'Þ': 'o',
+    'ß': 'B',
+    'à': 'a',
+    'á': 'a',
+    'â': 'a',
+    'ã': 'a',
+    'ä': 'a',
+    'å': 'a',
+    'æ': 'a',
+    'ç': 'c',
+    'è': 'e',
+    'é': 'e',
+    'ê': 'e',
+    'ë': 'e',
+    'ì': 'i',
+    'í': 'i',
+    'î': 'i',
+    'ï': 'i',
+    'ð': 'd',
+    'ñ': 'n',
+    'ò': 'o',
+    'ó': 'o',
+    'ô': 'o',
+    'õ': 'o',
+    'ö': 'o',
+    'ø': 'o',
+    'ù': 'u',
+    'ú': 'u',
+    'û': 'u',
+    'ü': 'u',
+    'ý': 'y',
+    'þ': 'o',
+    'ÿ': 'y',
+
+    // Cyrillic
+    'А': 'A',
+    'Б': 'B',
+    'В': 'B',
+    'Г': 'F',
+    'Д': 'A',
+    'Е': 'E',
+    'Ж': 'K',
+    'З': '3',
+    'И': 'N',
+    'Й': 'N',
+    'К': 'K',
+    'Л': 'N',
+    'М': 'M',
+    'Н': 'H',
+    'О': 'O',
+    'П': 'N',
+    'Р': 'P',
+    'С': 'C',
+    'Т': 'T',
+    'У': 'y',
+    'Ф': 'O',
+    'Х': 'X',
+    'Ц': 'U',
+    'Ч': 'h',
+    'Ш': 'W',
+    'Щ': 'W',
+    'Ъ': 'B',
+    'Ы': 'X',
+    'Ь': 'B',
+    'Э': '3',
+    'Ю': 'X',
+    'Я': 'R',
+    'а': 'a',
+    'б': 'b',
+    'в': 'a',
+    'г': 'r',
+    'д': 'y',
+    'е': 'e',
+    'ж': 'm',
+    'з': 'e',
+    'и': 'n',
+    'й': 'n',
+    'к': 'n',
+    'л': 'n',
+    'м': 'm',
+    'н': 'n',
+    'о': 'o',
+    'п': 'n',
+    'р': 'p',
+    'с': 'c',
+    'т': 'o',
+    'у': 'y',
+    'ф': 'b',
+    'х': 'x',
+    'ц': 'n',
+    'ч': 'n',
+    'ш': 'w',
+    'щ': 'w',
+    'ъ': 'a',
+    'ы': 'm',
+    'ь': 'a',
+    'э': 'e',
+    'ю': 'm',
+    'я': 'r',
+};
+
 /**
  * This function is a convenience function for looking up information in the
  * metricMap table. It takes a character as a string, and a style.
@@ -129,7 +269,13 @@ var metricMap = require("./fontMetricsData");
  * built using `Make extended_metrics`.
  */
 var getCharacterMetrics = function(character, style) {
-    var metrics = metricMap[style][character.charCodeAt(0)];
+    var ch = character.charCodeAt(0);
+    if (character[0] in extraCharacterMap) {
+        ch = extraCharacterMap[character[0]].charCodeAt(0);
+    } else if (cjkRegex.test(character[0])) {
+        ch = 'M'.charCodeAt(0);
+    }
+    var metrics = metricMap[style][ch];
     if (metrics) {
         return {
             depth: metrics[0],

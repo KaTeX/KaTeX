@@ -39,6 +39,12 @@ build/fonts:
 		cp static/fonts/$$font* $@; \
 	done
 
+test/screenshotter/unicode-fonts:
+	git clone https://github.com/Khan/KaTeX-test-fonts test/screenshotter/unicode-fonts
+	cd test/screenshotter/unicode-fonts && \
+	git checkout 99fa66a2da643218754c8236b9f9151cac71ba7c && \
+	cd ../../../
+
 contrib: build/contrib
 
 .PHONY: build/contrib
@@ -90,5 +96,5 @@ extended_metrics:
 clean:
 	rm -rf build/*
 
-screenshots:
+screenshots: test/screenshotter/unicode-fonts
 	dockers/Screenshotter/screenshotter.sh

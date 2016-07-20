@@ -4,6 +4,7 @@ var environments = require("./environments");
 var MacroExpander = require("./MacroExpander");
 var symbols = require("./symbols");
 var utils = require("./utils");
+var cjkRegex = require("./unicodeRegexes").cjkRegex;
 
 var parseData = require("./parseData");
 var ParseError = require("./ParseError");
@@ -780,6 +781,11 @@ Parser.prototype.parseSymbol = function() {
         return new ParseFuncOrArgument(
             new ParseNode(symbols[this.mode][nucleus.text].group,
                           nucleus.text, this.mode, nucleus),
+            false, nucleus);
+    } else if (this.mode === "text" && cjkRegex.test(nucleus.text)) {
+        this.consume();
+        return new ParseFuncOrArgument(
+            new ParseNode("textord", nucleus.text, this.mode, nucleus),
             false, nucleus);
     } else {
         return null;
