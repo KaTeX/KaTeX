@@ -23,9 +23,11 @@ var greekCapitals = [
     "\\Omega",
 ];
 
-var dotlessLetters = [
+// The following have to be loaded from Main-Italic font, using class mainit
+var mainitLetters = [
     "\u0131",   // dotless i, \imath
     "\u0237",   // dotless j, \jmath
+    "\u00a3",   // \pounds
 ];
 
 /**
@@ -101,7 +103,7 @@ var mathit = function(value, mode, color, classes) {
     if (/[0-9]/.test(value.charAt(0)) ||
             // glyphs for \imath and \jmath do not exist in Math-Italic so we
             // need to use Main-Italic instead
-            utils.contains(dotlessLetters, value) ||
+            utils.contains(mainitLetters, value) ||
             utils.contains(greekCapitals, value)) {
         return makeSymbol(
             value, "Main-Italic", mode, color, classes.concat(["mainit"]));
@@ -126,7 +128,7 @@ var makeOrd = function(group, options, type) {
 
     var font = options.font;
     if (font) {
-        if (font === "mathit" || utils.contains(dotlessLetters, value)) {
+        if (font === "mathit" || utils.contains(mainitLetters, value)) {
             return mathit(value, mode, color, classes);
         } else {
             var fontName = fontMap[font].fontName;

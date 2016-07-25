@@ -36,6 +36,7 @@ Cases: |
 Colors:
     tex: \blue{a}\color{#0f0}{b}\color{red}{c}
     nolatex: different syntax and different scope
+DashesAndQuotes: \text{``a'' b---c -- d----`e'-{-}-f}--``x''
 DeepFontSizing:
     tex: |
         a^{\big| x^{\big(}}_{\Big\uparrow} +
@@ -109,6 +110,9 @@ SupSubHorizSpacing: |
 SupSubLeftAlignReset: |
     \omega^8_{888} \quad \frac{1}{\hat{\omega}^{8}_{888}} \quad \displaystyle\sum_{\omega^{8}_{888}}
 SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
+Symbols1: |
+    \maltese\degree\pounds\$
+    \text{\maltese\degree}
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
 UnsupportedCmds:
     tex: \err\,\frac\fracerr3\,2^\superr_\suberr\,\sqrt\sqrterr

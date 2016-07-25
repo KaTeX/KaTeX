@@ -63,7 +63,6 @@ Token.prototype.range = function(endToken, text) {
 
 /* The following tokenRegex
  * - matches typical whitespace (but not NBSP etc.) using its first group
- * - matches symbol combinations which result in a single output character
  * - does not match any control character \x00-\x1f except whitespace
  * - does not match a bare backslash
  * - matches any ASCII character except those just mentioned
@@ -78,9 +77,8 @@ Token.prototype.range = function(endToken, text) {
  * still reject the input.
  */
 var tokenRegex = new RegExp(
-    "([ \r\n\t]+)|(" +                                // whitespace
-    "---?" +                                          // special combinations
-    "|[!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
+    "([ \r\n\t]+)|" +                                 // whitespace
+    "([!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
     "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair
     "|\\\\(?:[a-zA-Z]+|[^\uD800-\uDFFF])" +           // function name
     ")"
