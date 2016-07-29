@@ -69,6 +69,9 @@ var opts = require("nomnom")
         flag: true,
         help: "Check whether screenshot matches current file content",
     })
+    .option("wait", {
+        help: "Wait this many seconds between page load and screenshot",
+    })
     .parse();
 
 var listOfCases;
@@ -281,6 +284,9 @@ function takeScreenshot(key) {
 
     var url = katexURL + "test/screenshotter/test.html?" + itm.query;
     driver.get(url);
+    if (opts.wait) {
+        browserSideWait(1000 * opts.wait);
+    }
     driver.takeScreenshot().then(haveScreenshot).then(function() {
         if (--countdown === 0) {
             if (listOfFailed.length) {
