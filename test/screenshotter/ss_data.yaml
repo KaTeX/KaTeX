@@ -114,6 +114,7 @@ Symbols1: |
     \maltese\degree\pounds\$
     \text{\maltese\degree}
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
+Unicode: \begin{matrix}\text{ÀàÇçÉéÏïÖöÛû} \\ \text{БГДЖЗЙЛФЦШЫЮЯ} \\ \text{여보세요} \\ \text{私はバナナです} \end{matrix}
 UnsupportedCmds:
     tex: \err\,\frac\fracerr3\,2^\superr_\suberr\,\sqrt\sqrterr
     noThrow: 1

@@ -11,6 +11,20 @@
       body {
         font-family: "DejaVu Serif",serif;
       }
+      @font-face {
+        font-family: "Mincho";
+        src: url("unicode-fonts/mincho/font_1_honokamin.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Batang";
+        src: url("unicode-fonts/batang/batang.ttf") format("truetype");
+      }
+      .katex .cjk_fallback {
+          font-family: "Mincho",serif;
+      }
+      .katex .hangul_fallback {
+          font-family: "Batang",serif;
+      }
     </style>
   </head>
   <body>

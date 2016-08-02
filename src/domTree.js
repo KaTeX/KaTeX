@@ -7,7 +7,7 @@
  *
  * Similar functions for working with MathML nodes exist in mathMLTree.js.
  */
-
+var unicodeRegexes = require("./unicodeRegexes");
 var utils = require("./utils");
 
 /**
@@ -169,6 +169,14 @@ documentFragment.prototype.toMarkup = function() {
     return markup;
 };
 
+var iCombinations = {
+    'î': '\u0131\u0302',
+    'ï': '\u0131\u0308',
+    'í': '\u0131\u0301',
+    // 'ī': '\u0131\u0304', // enable when we add Extended Latin
+    'ì': '\u0131\u0300',
+};
+
 /**
  * A symbol node contains information about a single symbol. It either renders
  * to a single text node, or a span with a single text node in it, depending on
@@ -183,6 +191,25 @@ function symbolNode(value, height, depth, italic, skew, classes, style) {
     this.classes = classes || [];
     this.style = style || {};
     this.maxFontSize = 0;
+
+    // Mark CJK characters with specific classes so that we can specify which
+    // fonts to use.  This allows us to render these characters with a serif
+    // font in situations where the browser would either default to a sans serif
+    // or render a placeholder character.
+    if (unicodeRegexes.cjkRegex.test(value)) {
+        // I couldn't find any fonts that contained Hangul as well as all of
+        // the other characters we wanted to test there for it gets its own
+        // CSS class.
+        if (unicodeRegexes.hangulRegex.test(value)) {
+            this.classes.push('hangul_fallback');
+        } else {
+            this.classes.push('cjk_fallback');
+        }
+    }
+
+    if (/[îïíì]/.test(this.value)) {    // add ī when we add Extended Latin
+        this.value = iCombinations[this.value];
+    }
 }
 
 /**
