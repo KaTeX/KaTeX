@@ -33,7 +33,7 @@
   "bin": "cli.js",
   "scripts": {
     "test": "make lint test",
-    "prepublish": "make dist"
+    "prepublish": "make NIS= dist"
   },
   "dependencies": {
     "match-at": "^0.1.0"
