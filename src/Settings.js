@@ -24,7 +24,7 @@ function Settings(options) {
     // allow null options
     options = options || {};
     this.displayMode = get(options.displayMode, false);
-    this.breakOnUnsupportedCmds = get(options.breakOnUnsupportedCmds, true);
+    this.throwOnError = get(options.throwOnError, true);
     this.errorColor = get(options.errorColor, "#cc0000");
 }
 
@@ -37,7 +37,7 @@ Settings.prototype.initialOptions = function() {
     // Setup the default options
     var options = new Options({
         style: startStyle,
-        size: "size5"
+        size: "size5",
     });
 
     return options;

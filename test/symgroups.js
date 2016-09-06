@@ -1,3 +1,4 @@
+/* eslint no-console:0 */
 "use strict";
 
 var fs = require("fs");
@@ -6,7 +7,7 @@ var childProcess = require("child_process");
 var opts = require("nomnom")
     .option("spacing", {
         flag: true,
-        help: "Print mismatches involving spacing commands"
+        help: "Print mismatches involving spacing commands",
     })
     .parse();
 
@@ -15,7 +16,7 @@ var keys = Object.keys(symbols.math);
 keys.sort();
 var types = [
     "mathord", "op", "bin", "rel", "open", "close", "punct", "inner",
-    "spacing", "accent", "textord"
+    "spacing", "accent", "textord",
 ];
 
 process.nextTick(writeTexFile);
@@ -94,7 +95,8 @@ function evaluate(err, log) {
         throw err;
     }
 
-    var match, nextIndex = 0;
+    var match;
+    var nextIndex = 0;
     while ((match = reMM.exec(log)) !== null) {
         var list = match[1];
         match = reParts.exec(list);
@@ -143,7 +145,8 @@ function evaluate(err, log) {
 }
 
 function extractDigits(str) {
-    var match, res = "";
+    var match;
+    var res = "";
     while ((match = reDigit.exec(str)) !== null) {
         res += match[1];
     }

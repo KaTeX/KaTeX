@@ -17,7 +17,7 @@ setup:
 	npm install
 
 lint: katex.js server.js cli.js $(wildcard src/*.js) $(wildcard test/*.js) $(wildcard contrib/*/*.js) $(wildcard dockers/*/*.js)
-	./node_modules/.bin/jshint $^
+	./node_modules/.bin/eslint --fix $^
 
 build/katex.js: katex.js $(wildcard src/*.js)
 	$(BROWSERIFY) $< --standalone katex > $@
@@ -76,14 +76,16 @@ serve:
 	node server.js
 
 test:
-	./node_modules/.bin/jasmine-node test/katex-spec.js
-	./node_modules/.bin/jasmine-node contrib/auto-render/auto-render-spec.js
+	JASMINE_CONFIG_PATH=test/jasmine.json node_modules/.bin/jasmine
 
 PERL=perl
 PYTHON=$(shell python2 --version >/dev/null 2>&1 && echo python2 || echo python)
 
 metrics:
 	cd metrics && $(PERL) ./mapping.pl | $(PYTHON) ./extract_tfms.py | $(PYTHON) ./extract_ttfs.py | $(PYTHON) ./format_json.py > ../src/fontMetricsData.js
+
+extended_metrics:
+	cd metrics && $(PERL) ./mapping.pl | $(PYTHON) ./extract_tfms.py | $(PYTHON) ./extract_ttfs.py | $(PYTHON) ./format_json.py --width > ../src/fontMetricsData.js
 
 clean:
 	rm -rf build/*

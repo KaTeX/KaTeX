@@ -27,86 +27,54 @@ function Token(text, data, position) {
     this.position = position;
 }
 
-// "normal" types of tokens. These are tokens which can be matched by a simple
-// regex
-var mathNormals = [
-    /[/|@.""`0-9a-zA-Z]/, // ords
-    /[*+-]/, // bins
-    /[=<>:]/, // rels
-    /[,;]/, // punctuation
-    /['\^_{}]/, // misc
-    /[(\[]/, // opens
-    /[)\]?!]/, // closes
-    /~/, // spacing
-    /&/, // horizontal alignment
-    /\\\\/ // line break
-];
+/* The following tokenRegex
+ * - matches typical whitespace (but not NBSP etc.) using its first group
+ * - matches symbol combinations which result in a single output character
+ * - does not match any control character \x00-\x1f except whitespace
+ * - does not match a bare backslash
+ * - matches any ASCII character except those just mentioned
+ * - does not match the BMP private use area \uE000-\uF8FF
+ * - does not match bare surrogate code units
+ * - matches any BMP character except for those just described
+ * - matches any valid Unicode surrogate pair
+ * - matches a backslash followed by one or more letters
+ * - matches a backslash followed by any BMP character, including newline
+ * Just because the Lexer matches something doesn't mean it's valid input:
+ * If there is no matching function or symbol definition, the Parser will
+ * still reject the input.
+ */
+var tokenRegex = new RegExp(
+    "([ \r\n\t]+)|(" +                                // whitespace
+    "---?" +                                          // special combinations
+    "|[!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
+    "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair
+    "|\\\\(?:[a-zA-Z]+|[^\uD800-\uDFFF])" +           // function name
+    ")"
+);
 
-// These are "normal" tokens like above, but should instead be parsed in text
-// mode.
-var textNormals = [
-    /[a-zA-Z0-9`!@*()-=+\[\]'";:?\/.,]/, // ords
-    /[{}]/, // grouping
-    /~/, // spacing
-    /&/, // horizontal alignment
-    /\\\\/ // line break
-];
-
-// Regexes for matching whitespace
 var whitespaceRegex = /\s*/;
-var whitespaceConcatRegex = / +|\\  +/;
-
-// This regex matches any other TeX function, which is a backslash followed by a
-// word or a single symbol
-var anyFunc = /\\(?:[a-zA-Z]+|.)/;
 
 /**
- * This function lexes a single normal token. It takes a position, a list of
- * "normal" tokens to try, and whether it should completely ignore whitespace or
- * not.
+ * This function lexes a single normal token. It takes a position and
+ * whether it should completely ignore whitespace or not.
  */
-Lexer.prototype._innerLex = function(pos, normals, ignoreWhitespace) {
+Lexer.prototype._innerLex = function(pos, ignoreWhitespace) {
     var input = this._input;
-    var whitespace;
-
-    if (ignoreWhitespace) {
-        // Get rid of whitespace.
-        whitespace = matchAt(whitespaceRegex, input, pos)[0];
-        pos += whitespace.length;
-    } else {
-        // Do the funky concatenation of whitespace that happens in text mode.
-        whitespace = matchAt(whitespaceConcatRegex, input, pos);
-        if (whitespace !== null) {
-            return new Token(" ", null, pos + whitespace[0].length);
-        }
-    }
-
-    // If there's no more input to parse, return an EOF token
     if (pos === input.length) {
         return new Token("EOF", null, pos);
     }
-
-    var match;
-    if ((match = matchAt(anyFunc, input, pos))) {
-        // If we match a function token, return it
-        return new Token(match[0], null, pos + match[0].length);
-    } else {
-        // Otherwise, we look through the normal token regexes and see if it's
-        // one of them.
-        for (var i = 0; i < normals.length; i++) {
-            var normal = normals[i];
-
-            if ((match = matchAt(normal, input, pos))) {
-                // If it is, return it
-                return new Token(
-                    match[0], null, pos + match[0].length);
-            }
-        }
-    }
-
-    throw new ParseError(
+    var match = matchAt(tokenRegex, input, pos);
+    if (match === null) {
+        throw new ParseError(
             "Unexpected character: '" + input[pos] + "'",
             this, pos);
+    } else if (match[2]) { // matched non-whitespace
+        return new Token(match[2], null, pos + match[2].length);
+    } else if (ignoreWhitespace) {
+        return this._innerLex(pos + match[1].length, true);
+    } else { // concatenate whitespace to a single space
+        return new Token(" ", null, pos + match[1].length);
+    }
 };
 
 // A regex to match a CSS color (like #ffffff or BlueViolet)
@@ -153,9 +121,9 @@ Lexer.prototype._innerLexSize = function(pos) {
             throw new ParseError("Invalid unit: '" + unit + "'", this, pos);
         }
         return new Token(match[0], {
-                number: +(match[1] + match[2]),
-                unit: unit
-            }, pos + match[0].length);
+            number: +(match[1] + match[2]),
+            unit: unit,
+        }, pos + match[0].length);
     }
 
     throw new ParseError("Invalid size", this, pos);
@@ -179,9 +147,9 @@ Lexer.prototype._innerLexWhitespace = function(pos) {
  */
 Lexer.prototype.lex = function(pos, mode) {
     if (mode === "math") {
-        return this._innerLex(pos, mathNormals, true);
+        return this._innerLex(pos, true);
     } else if (mode === "text") {
-        return this._innerLex(pos, textNormals, false);
+        return this._innerLex(pos, false);
     } else if (mode === "color") {
         return this._innerLexColor(pos);
     } else if (mode === "size") {

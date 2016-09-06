@@ -12,8 +12,13 @@
 # on the next line. See http://www.yaml.org/ for syntax details.
 
 Accents: \vec{A}\vec{x}\vec x^2\vec{x}_2^2\vec{A}^2\vec{xA}^2
+Aligned: |
+    \begin{aligned}
+        a &= 1 & b &= 2 \\
+        3a &= 3 & 17b &= 34
+    \end{aligned}
 Arrays: |
-    \left(\begin{array}{rlc}
+    \left(\begin{array}{|rl|c||}
         1&2&3\\
         1+1&2+1&3+1\cr1\over2&\scriptstyle 1/2&\frac12\\[1ex]
         \begin{pmatrix}x\\y\end{pmatrix}&0&\begin{vmatrix}a&b\\c&d\end{vmatrix}
@@ -52,9 +57,7 @@ Exponents: a^{a^a_a}_{a^a_a}
 FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12
 Functions: \sin\cos\tan\ln\log
 GreekLetters: \alpha\beta\gamma\omega
-KaTeX:
-    tex: \KaTeX
-    nolatex: There is no LaTeX command for this (yet)
+KaTeX: \KaTeX
 Lap: ab\llap{f}cd\rlap{g}h
 LeftRight: \left( x^2 \right) \left\{ x^{x^{x^{x^x}}} \right.
 LeftRightListStyling: a+\left(x+y\right)-x
@@ -106,8 +109,9 @@ SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
 UnsupportedCmds:
     tex: \err\,\frac\fracerr3\,2^\superr_\suberr\,\sqrt\sqrterr
-    doNotBreak: 1
+    noThrow: 1
     errorColor: "#dd4c4c"
+    nolatex: deliberately does not compile
 VerticalSpacing:
     pre: potato<br>blah
     tex: x^{\Huge y}z

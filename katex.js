@@ -1,3 +1,4 @@
+/* eslint no-console:0 */
 /**
  * This is the main entry point for KaTeX. Here, we expose functions for
  * rendering expressions either to DOM nodes or to markup strings.

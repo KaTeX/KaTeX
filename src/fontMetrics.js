@@ -1,4 +1,4 @@
-/* jshint unused:false */
+/* eslint no-unused-vars:0 */
 
 var Style = require("./Style");
 
@@ -67,6 +67,10 @@ var xi13 = 0.1;
 // match.
 var ptPerEm = 10.0;
 
+// The space between adjacent `|` columns in an array definition. From
+// `\showthe\doublerulesep` in LaTeX.
+var doubleRuleSep = 2.0 / ptPerEm;
+
 /**
  * This is just a mapping from common names to real metrics
  */
@@ -94,6 +98,7 @@ var metrics = {
     bigOpSpacing5: xi13,
     ptPerEm: ptPerEm,
     emPerEx: sigma5 / sigma6,
+    doubleRuleSep: doubleRuleSep,
 
     // TODO(alpert): Missing parallel structure here. We should probably add
     // style-specific metrics for all of these.
@@ -107,7 +112,7 @@ var metrics = {
             return sigma21ScriptScript;
         }
         throw new Error("Unexpected style size: " + style.size);
-    }
+    },
 };
 
 // This map contains a mapping from font name and character code to character
@@ -117,14 +122,26 @@ var metrics = {
 var metricMap = require("./fontMetricsData");
 
 /**
- * This function is a convience function for looking up information in the
- * metricMap table. It takes a character as a string, and a style
+ * This function is a convenience function for looking up information in the
+ * metricMap table. It takes a character as a string, and a style.
+ *
+ * Note: the `width` property may be undefined if fontMetricsData.js wasn't
+ * built using `Make extended_metrics`.
  */
 var getCharacterMetrics = function(character, style) {
-    return metricMap[style][character.charCodeAt(0)];
+    var metrics = metricMap[style][character.charCodeAt(0)];
+    if (metrics) {
+        return {
+            depth: metrics[0],
+            height: metrics[1],
+            italic: metrics[2],
+            skew: metrics[3],
+            width: metrics[4],
+        };
+    }
 };
 
 module.exports = {
     metrics: metrics,
-    getCharacterMetrics: getCharacterMetrics
+    getCharacterMetrics: getCharacterMetrics,
 };

@@ -1,0 +1,86 @@
+{
+    "rules": {
+        "arrow-spacing": 2,
+        "brace-style": [2, "1tbs", { "allowSingleLine": true }],
+        // We'd possibly like to remove the 'properties': 'never' one day.
+        "camelcase": [2, { "properties": "never" }],
+        "comma-dangle": [2, "always-multiline"],
+        "comma-spacing": [2, { "before": false, "after": true }],
+        "constructor-super": 2,
+        "curly": 2,
+        "eol-last": 2,
+        "eqeqeq": [2, "allow-null"],
+        "guard-for-in": 2,
+        "indent": [2, 4, {"SwitchCase": 1}],
+        "linebreak-style": [2, "unix"],
+        "max-len": [2, 80, 4, { "ignoreUrls": true, "ignorePattern": "\\brequire\\([\"']|eslint-disable" }],
+        "no-alert": 2,
+        "no-array-constructor": 2,
+        "no-console": 2,
+        "no-const-assign": 2,
+        "no-debugger": 2,
+        "no-dupe-class-members": 2,
+        "no-dupe-keys": 2,
+        "no-extra-bind": 2,
+        "no-new": 2,
+        "no-new-func": 2,
+        "no-new-object": 2,
+        "no-spaced-func": 2,
+        "no-this-before-super": 2,
+        "no-throw-literal": 2,
+        "no-trailing-spaces": 2,
+        "no-undef": 2,
+        "no-unexpected-multiline": 2,
+        "no-unreachable": 2,
+        "no-unused-vars": [2, {"args": "none", "varsIgnorePattern": "^_*$"}],
+        "no-useless-call": 2,
+        "no-with": 2,
+        "one-var": [2, "never"],
+        "prefer-const": 2,
+        "prefer-spread": 2,
+        "semi": [2, "always"],
+        "space-after-keywords": 2,
+        "space-before-blocks": 2,
+        "space-before-function-paren": [2, "never"],
+        "space-before-keywords": 2,
+        "space-infix-ops": 2,
+        "space-return-throw-case": 2,
+        "space-unary-ops": 2,
+        // ---------------------------------------
+        // Stuff we explicitly disable.
+        // We turned this off because it complains when you have a
+        // multi-line string, which I think is going too far.
+        "prefer-template": 0,
+        // We've decided explicitly not to care about this.
+        "arrow-parens": 0,
+        // ---------------------------------------
+        // Stuff that's disabled for now, but maybe shouldn't be.
+        // disabled because KaTeX doesn't use ES6
+        "no-var": 0,
+        // TODO(csilvers): enable these if/when community agrees on it.
+        "prefer-arrow-callback": 0,
+        "object-curly-spacing": [0, "always"],
+        // Might be nice to turn this on one day, but since we don't
+        // use jsdoc anywhere it seems silly to require it yet.
+        "valid-jsdoc": 0,
+        "require-jsdoc": 0
+    },
+    "ecmaFeatures": {
+        "arrowFunctions": true,
+        "blockBindings": true,
+        "classes": true,
+        "destructuring": true,
+        "experimentalObjectRestSpread": true,
+        "forOf": true,
+        "jsx": true,
+        "restParams": true,
+        "spread": true,
+        "templateStrings": true
+    },
+    "env": {
+        // "es6": true,
+        "node": true,
+        "browser": true
+    },
+    "extends": "eslint:recommended"
+}

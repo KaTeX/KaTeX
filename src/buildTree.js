@@ -15,7 +15,7 @@ var buildTree = function(tree, expression, settings) {
     var htmlNode = buildHTML(tree, options);
 
     var katexNode = makeSpan(["katex"], [
-        mathMLNode, htmlNode
+        mathMLNode, htmlNode,
     ]);
 
     if (settings.displayMode) {

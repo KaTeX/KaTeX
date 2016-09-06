@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Simple CLI for KaTeX.
 // Reads TeX from stdin, outputs HTML to stdout.
+/* eslint no-console:0 */
 
 var katex = require("./");
 var input = "";
@@ -8,7 +9,7 @@ var input = "";
 // Skip the first two args, which are just "node" and "cli.js"
 var args = process.argv.slice(2);
 
-if (args.indexOf("--help") != -1) {
+if (args.indexOf("--help") !== -1) {
     console.log(process.argv[0] + " " + process.argv[1] +
                 " [ --help ]" +
                 " [ --display-mode ]");
@@ -25,7 +26,7 @@ process.stdin.on("data", function(chunk) {
 });
 
 process.stdin.on("end", function() {
-    var options = { displayMode: args.indexOf("--display-mode") != -1 };
+    var options = { displayMode: args.indexOf("--display-mode") !== -1 };
     var output = katex.renderToString(input, options);
     console.log(output);
 });

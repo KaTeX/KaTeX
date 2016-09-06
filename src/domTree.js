@@ -265,5 +265,5 @@ symbolNode.prototype.toMarkup = function() {
 module.exports = {
     span: span,
     documentFragment: documentFragment,
-    symbolNode: symbolNode
+    symbolNode: symbolNode,
 };

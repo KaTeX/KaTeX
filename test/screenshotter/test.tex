@@ -1,6 +1,8 @@
 \documentclass[10pt]{article}
 
 \usepackage{amsmath,amssymb}
+\usepackage[mathscr]{eucal}
+\usepackage{eufrak}
 \usepackage[papersize={133pt,100pt},margin=0.5pt]{geometry}
 \usepackage{color}
 \usepackage{etoolbox}
@@ -8,6 +10,14 @@
 \pagestyle{empty}
 
 \newcommand{\blue}[1]{\textcolor{blue}{#1}}
+
+\DeclareRobustCommand{\KaTeX}{\mbox{%
+K\kern-.26em%
+{\sbox0 T\vbox to\ht0{\kern.05em\hbox%
+  {\fontsize{.75em}{1em}\selectfont A}%
+\vss}}%
+\kern-.23em%
+\TeX}}
 
 % Thanks to http://tex.stackexchange.com/a/26017/16923
 \newtoks\kasizetoks

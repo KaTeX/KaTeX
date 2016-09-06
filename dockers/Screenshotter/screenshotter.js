@@ -1,11 +1,15 @@
+/* eslint no-console:0, prefer-spread:0 */
 "use strict";
 
 var childProcess = require("child_process");
 var fs = require("fs");
 var http = require("http");
-var path = require("path");
+var jspngopt = require("jspngopt");
 var net = require("net");
+var pako = require("pako");
+var path = require("path");
 var selenium = require("selenium-webdriver");
+var firefox = require("selenium-webdriver/firefox");
 
 var app = require("../../server");
 var data = require("../../test/screenshotter/ss_data");
@@ -20,46 +24,50 @@ var opts = require("nomnom")
     .option("browser", {
         abbr: "b",
         "default": "firefox",
-        help: "Name of the browser to use"
+        help: "Name of the browser to use",
     })
     .option("container", {
         abbr: "c",
         type: "string",
-        help: "Name or ID of a running docker container to contact"
+        help: "Name or ID of a running docker container to contact",
     })
     .option("seleniumURL", {
         full: "selenium-url",
-        help: "Full URL of the Selenium web driver"
+        help: "Full URL of the Selenium web driver",
     })
     .option("seleniumIP", {
         full: "selenium-ip",
-        help: "IP address of the Selenium web driver"
+        help: "IP address of the Selenium web driver",
     })
     .option("seleniumPort", {
         full: "selenium-port",
         "default": 4444,
-        help: "Port number of the Selenium web driver"
+        help: "Port number of the Selenium web driver",
     })
     .option("katexURL", {
         full: "katex-url",
-        help: "Full URL of the KaTeX development server"
+        help: "Full URL of the KaTeX development server",
     })
     .option("katexIP", {
         full: "katex-ip",
         "default": "localhost",
-        help: "Full URL of the KaTeX development server"
+        help: "Full URL of the KaTeX development server",
     })
     .option("katexPort", {
         full: "katex-port",
-        help: "Port number of the KaTeX development server"
+        help: "Port number of the KaTeX development server",
     })
     .option("include", {
         abbr: "i",
-        help: "Comma-separated list of test cases to process"
+        help: "Comma-separated list of test cases to process",
     })
     .option("exclude", {
         abbr: "x",
-        help: "Comma-separated list of test cases to exclude"
+        help: "Comma-separated list of test cases to exclude",
+    })
+    .option("verify", {
+        flag: true,
+        help: "Check whether screenshot matches current file content",
     })
     .parse();
 
@@ -114,7 +122,7 @@ if (!seleniumURL && opts.container) {
             process.exit(2);
         }
         katexIP = config[1];
-    } catch(e) {
+    } catch (e) {
         seleniumIP = katexIP = dockerCmd(
             "inspect", "-f", "{{.NetworkSettings.Gateway}}", opts.container);
     }
@@ -178,7 +186,7 @@ function tryConnect() {
     }
     var sock = net.connect({
         host: seleniumIP,
-        port: +seleniumPort
+        port: +seleniumPort,
     });
     sock.on("connect", function() {
         sock.end();
@@ -198,17 +206,26 @@ function tryConnect() {
 var driver;
 function buildDriver() {
     var builder = new selenium.Builder().forBrowser(opts.browser);
+    var ffProfile = new firefox.Profile();
+    ffProfile.setPreference(
+        "browser.startup.homepage_override.mstone", "ignore");
+    ffProfile.setPreference("browser.startup.page", 0);
+    var ffOptions = new firefox.Options().setProfile(ffProfile);
+    builder.setFirefoxOptions(ffOptions);
     if (seleniumURL) {
         builder.usingServer(seleniumURL);
     }
     driver = builder.build();
-    setSize(targetW, targetH);
+    driver.manage().timeouts().setScriptTimeout(3000).then(function() {
+        setSize(targetW, targetH);
+    });
 }
 
 //////////////////////////////////////////////////////////////////////
 // Set the screen size
 
-var targetW = 1024, targetH = 768;
+var targetW = 1024;
+var targetH = 768;
 function setSize(reqW, reqH) {
     return driver.manage().window().setSize(reqW, reqH).then(function() {
         return driver.takeScreenshot();
@@ -232,7 +249,7 @@ function imageDimensions(img) {
     return {
         buf: buf,
         width: buf.readUInt32BE(16),
-        height: buf.readUInt32BE(20)
+        height: buf.readUInt32BE(20),
     };
 }
 
@@ -240,6 +257,9 @@ function imageDimensions(img) {
 // Take the screenshots
 
 var countdown = listOfCases.length;
+
+var exitStatus = 0;
+var listOfFailed = [];
 
 function takeScreenshots() {
     listOfCases.forEach(takeScreenshot);
@@ -251,9 +271,27 @@ function takeScreenshot(key) {
         console.error("Test case " + key + " not known!");
         return;
     }
+
+    var file = path.join(dstDir, key + "-" + opts.browser + ".png");
+    var retry = 0;
+    var loadExpected = null;
+    if (opts.verify) {
+        loadExpected = promisify(fs.readFile, file);
+    }
+
     var url = katexURL + "test/screenshotter/test.html?" + itm.query;
     driver.get(url);
-    driver.takeScreenshot().then(function haveScreenshot(img) {
+    driver.takeScreenshot().then(haveScreenshot).then(function() {
+        if (--countdown === 0) {
+            if (listOfFailed.length) {
+                console.error("Failed: " + listOfFailed.join(" "));
+            }
+            // devServer.close(cb) will take too long.
+            process.exit(exitStatus);
+        }
+    }, check);
+
+    function haveScreenshot(img) {
         img = imageDimensions(img);
         if (img.width !== targetW || img.height !== targetH) {
             throw new Error("Excpected " + targetW + " x " + targetH +
@@ -268,22 +306,63 @@ function takeScreenshot(key) {
              * output file name for one of these cases, we accept both.
              */
             key += "_alt";
-        }
-        var file = path.join(dstDir, key + "-" + opts.browser + ".png");
-        var deferred = new selenium.promise.Deferred();
-        fs.writeFile(file, img.buf, function(err) {
-            if (err) {
-                deferred.reject(err);
-            } else {
-                deferred.fulfill();
+            file = path.join(dstDir, key + "-" + opts.browser + ".png");
+            if (loadExpected) {
+                loadExpected = promisify(fs.readFile, file);
             }
-        });
-        return deferred.promise;
-    }).then(function() {
-        console.log(key);
-        if (--countdown === 0) {
-            // devServer.close(cb) will take too long.
-            process.exit(0);
         }
-    }, check);
+        var opt = new jspngopt.Optimizer({
+            pako: pako,
+        });
+        var buf = opt.bufferSync(img.buf);
+        if (loadExpected) {
+            return loadExpected.then(function(expected) {
+                if (!buf.equals(expected)) {
+                    if (++retry === 5) {
+                        console.error("FAIL! " + key);
+                        listOfFailed.push(key);
+                        exitStatus = 3;
+                    } else {
+                        console.log("error " + key);
+                        driver.get(url);
+                        browserSideWait(500 * retry);
+                        return driver.takeScreenshot().then(haveScreenshot);
+                    }
+                } else {
+                    console.log("* ok  " + key);
+                }
+            });
+        } else {
+            return promisify(fs.writeFile, file, buf).then(function() {
+                console.log(key);
+            });
+        }
+    }
+}
+
+// Wait using a timeout call in the browser, to ensure that the wait
+// time doesn't start before the page has reportedly been loaded.
+function browserSideWait(milliseconds) {
+    // The last argument (arguments[1] here) is the callback to selenium
+    return driver.executeAsyncScript(
+        "window.setTimeout(arguments[1], arguments[0]);",
+        milliseconds);
+}
+
+// Turn node callback style into a call returning a promise,
+// like Q.nfcall but using Selenium promises instead of Q ones.
+// Second and later arguments are passed to the function named in the
+// first argument, and a callback is added as last argument.
+function promisify(f) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    var deferred = new selenium.promise.Deferred();
+    args.push(function(err, val) {
+        if (err) {
+            deferred.reject(err);
+        } else {
+            deferred.fulfill(val);
+        }
+    });
+    f.apply(null, args);
+    return deferred.promise;
 }
