@@ -24,6 +24,12 @@ function init() {
     if (match) {
         input.value = decodeURIComponent(match[1]);
     }
+    var size = 74 * 1.21;
+    match = (/(?:^\?|&)size=([^&]*)/).exec(window.location.search);
+    console.log(match);
+    if (match && isFinite(+match[1]) && +match[1] > 0) {
+        size = +match[1];
+    }
 
     reprocess();
 
@@ -31,7 +37,7 @@ function init() {
         try {
             // Prepare box to get its dimensions
             var box = katex.canvasBox(input.value, ctxt, {
-                fontSize: 74 * 1.21
+                fontSize: size,
             })
             var padding = 4;
             var x = padding, y = box.height + padding;
