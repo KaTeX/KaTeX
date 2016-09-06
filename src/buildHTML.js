@@ -51,6 +51,7 @@ var groupToType = {
     op: "mop",
     katex: "mord",
     overline: "mord",
+    overrightarrow: "mord",
     underline: "mord",
     rule: "mord",
     leftright: "minner",
@@ -928,6 +929,33 @@ groupTypes.overline = function(group, options, prev) {
     ], "firstBaseline", null, options);
 
     return makeSpan(["overline", "mord"], [vlist], options.getColor());
+};
+
+groupTypes.overrightarrow = function(group, options, prev) {
+    // Overlines are handled in the TeXbook pg 443, Rule 9.
+
+    // Build the inner group in the cramped style.
+    var innerGroup = buildGroup(group.value.body,
+            options.withStyle(options.style.cramp()));
+
+    var ruleWidth = fontMetrics.metrics.defaultRuleThickness /
+        options.style.sizeMultiplier;
+
+    // Create the line above the body
+    var line = makeSpan(
+        [options.style.reset(), Style.TEXT.cls(), "overrightarrow-line"]);
+    line.height = ruleWidth;
+    line.maxFontSize = 1.0;
+
+    // Generate the vlist, with the appropriate kerns
+    var vlist = buildCommon.makeVList([
+        {type: "elem", elem: innerGroup},
+        {type: "kern", size: 3 * ruleWidth},
+        {type: "elem", elem: line},
+        {type: "kern", size: ruleWidth},
+    ], "firstBaseline", null, options);
+
+    return makeSpan(["overrightarrow", "mord"], [vlist], options.getColor());
 };
 
 groupTypes.underline = function(group, options, prev) {

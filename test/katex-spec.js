@@ -910,6 +910,20 @@ describe("An overline parser", function() {
     });
 });
 
+describe("An overrightarrow parser", function() {
+    var overrightarrow = "\\overrightarrow{x}";
+
+    it("should not fail", function() {
+        expect(overrightarrow).toParse();
+    });
+
+    it("should produce an overline", function() {
+        var parse = getParsed(overrightarrow)[0];
+
+        expect(parse.type).toEqual("overrightarrow");
+    });
+});
+
 describe("A rule parser", function() {
     var emRule = "\\rule{1em}{2em}";
     var exRule = "\\rule{1ex}{2em}";

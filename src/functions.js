@@ -161,6 +161,17 @@ defineFunction("\\color", {
     };
 });
 
+// An overrightarrow
+defineFunction("\\overrightarrow", {
+    numArgs: 1,
+}, function(context, args) {
+    var body = args[0];
+    return {
+        type: "overrightarrow",
+        body: body,
+    };
+});
+
 // An overline
 defineFunction("\\overline", {
     numArgs: 1,

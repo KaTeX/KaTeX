@@ -372,6 +372,36 @@
         }
     }
 
+    .overrightarrow {
+        .overrightarrow-line {
+            width: 100%;
+            position: relative;
+
+            &:before {
+                width: 100%;
+                top:-3*@mu;
+                left:0px;
+                border-bottom-style: solid;
+                border-bottom-width: 1*@mu;  
+                position: absolute;
+                content: "";
+            }
+
+            &:after {
+                content: "";
+                top: -6.5*@mu;
+                right: -1*@mu;
+                width: 0px;
+                height: 0px;
+                position: absolute;
+                border-top: 4*@mu solid transparent;
+                border-left-style: solid;
+                border-left-width: 8*@mu;
+                border-bottom: 4*@mu solid transparent;
+            }
+        }
+    }
+
     .sqrt {
         > .sqrt-sign {
             position: relative;

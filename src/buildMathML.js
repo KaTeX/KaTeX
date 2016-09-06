@@ -422,6 +422,20 @@ groupTypes.overline = function(group, options) {
     return node;
 };
 
+groupTypes.overrightarrow = function(group, options) {
+    var operator = new mathMLTree.MathNode(
+        "mo", [new mathMLTree.TextNode("\u203e")]);
+    operator.setAttribute("stretchy", "true");
+
+    var node = new mathMLTree.MathNode(
+        "mover",
+        [buildGroup(group.value.body, options),
+         operator]);
+    node.setAttribute("accent", "true");
+
+    return node;
+};
+
 groupTypes.underline = function(group, options) {
     var operator = new mathMLTree.MathNode(
         "mo", [new mathMLTree.TextNode("\u203e")]);
