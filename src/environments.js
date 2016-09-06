@@ -1,3 +1,4 @@
+var fontMetrics = require("./fontMetrics");
 var parseData = require("./parseData");
 var ParseError = require("./ParseError");
 
@@ -66,10 +67,12 @@ var environmentDefinitions = [
             var parser = this;
             // Currently only supports alignment, no separators like | yet.
             colalign = colalign.value.map ? colalign.value : [colalign];
-            colalign = colalign.map(function(node) {
+            var cols = colalign.map(function(node) {
                 var ca = node.value;
                 if ("lcr".indexOf(ca) !== -1) {
-                    return ca;
+                    return {
+                        align: ca
+                    };
                 }
                 throw new ParseError(
                     "Unknown column alignment: " + node.value,
@@ -77,7 +80,7 @@ var environmentDefinitions = [
             });
             var res = {
                 type: "array",
-                colalign: colalign,
+                cols: cols,
                 hskipBeforeAndAfter: true // \@preamble in lttab.dtx
             };
             res = parseArray(parser, pos, mode, res);
@@ -88,12 +91,20 @@ var environmentDefinitions = [
     // The matrix environments of amsmath builds on the array environment
     // of LaTeX, which is discussed above.
     {
-        names: ["matrix", "pmatrix", "bmatrix", "vmatrix", "Vmatrix"],
+        names: [
+            "matrix",
+            "pmatrix",
+            "bmatrix",
+            "Bmatrix",
+            "vmatrix",
+            "Vmatrix"
+        ],
         handler: function(pos, mode, envName) {
             var delimiters = {
                 "matrix": null,
                 "pmatrix": ["(", ")"],
                 "bmatrix": ["[", "]"],
+                "Bmatrix": ["\\{", "\\}"],
                 "vmatrix": ["|", "|"],
                 "Vmatrix": ["\\Vert", "\\Vert"]
             }[envName];
@@ -111,8 +122,36 @@ var environmentDefinitions = [
             }
             return res;
         }
-    }
+    },
 
+    // A cases environment (in amsmath.sty) is almost equivalent to
+    // \def\arraystretch{1.2}%
+    // \left\{\begin{array}{@{}l@{\quad}l@{}} … \end{array}\right.
+    {
+        names: ["cases"],
+        handler: function(pos, mode, envName) {
+            var res = {
+                type: "array",
+                arraystretch: 1.2,
+                cols: [{
+                    align: "l",
+                    pregap: 0,
+                    postgap: fontMetrics.metrics.quad
+                }, {
+                    align: "l",
+                    pregap: 0,
+                    postgap: 0
+                }]
+            };
+            res = parseArray(this, pos, mode, res);
+            res.result = new ParseNode("leftright", {
+                body: [res.result],
+                left: "\\{",
+                right: "."
+            }, mode);
+            return res;
+        }
+    }
 ];
 
 module.exports = (function() {

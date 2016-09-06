@@ -2,7 +2,8 @@
 build: setup lint build/katex.min.js build/katex.min.css contrib zip compress
 
 dist: build
-	cp --recursive build/katex dist
+	rm -rf dist/
+	cp -R build/katex/ dist/
 
 # Export these variables for use in contrib Makefiles
 export BUILDDIR = $(realpath build)
@@ -15,7 +16,7 @@ export UGLIFYJS = $(realpath ./node_modules/.bin/uglifyjs) \
 setup:
 	npm install
 
-lint: katex.js server.js cli.js $(wildcard src/*.js) $(wildcard test/*.js) $(wildcard contrib/*/*.js)
+lint: katex.js server.js cli.js $(wildcard src/*.js) $(wildcard test/*.js) $(wildcard contrib/*/*.js) $(wildcard dockers/*/*.js)
 	./node_modules/.bin/jshint $^
 
 build/katex.js: katex.js $(wildcard src/*.js)
@@ -43,8 +44,8 @@ contrib: build/contrib
 .PHONY: build/contrib
 build/contrib:
 	mkdir -p build/contrib
-	# Since everything in build/contrib is put in the built files, make sure
-	# there's nothing in there we don't want.
+	@# Since everything in build/contrib is put in the built files, make sure
+	@# there's nothing in there we don't want.
 	rm -rf build/contrib/*
 	$(MAKE) -C contrib/auto-render
 
@@ -78,11 +79,14 @@ test:
 	./node_modules/.bin/jasmine-node test/katex-spec.js
 	./node_modules/.bin/jasmine-node contrib/auto-render/auto-render-spec.js
 
+PERL=perl
+PYTHON=$(shell python2 --version >/dev/null 2>&1 && echo python2 || echo python)
+
 metrics:
-	cd metrics && ./mapping.pl | ./extract_tfms.py | ./extract_ttfs.py | ./replace_line.py
+	cd metrics && $(PERL) ./mapping.pl | $(PYTHON) ./extract_tfms.py | $(PYTHON) ./extract_ttfs.py | $(PYTHON) ./format_json.py > ../src/fontMetricsData.js
 
 clean:
 	rm -rf build/*
 
 screenshots:
-	docker run --volume=$(shell pwd):/KaTeX ss
+	dockers/Screenshotter/screenshotter.sh

@@ -10,7 +10,10 @@ freenode](http://webchat.freenode.net/?channels=katex).
 If you'd like to contribute, try contributing new symbols or functions that
 KaTeX doesn't currently support. The wiki has a page which lists [all of the
 supported
-functions](https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX). You
+functions](https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX) as 
+well as a page that describes how to [examine TeX commands and where to find
+rules](https://github.com/Khan/KaTeX/wiki/Examining-TeX) which can be quite
+useful when adding new commands. You
 can check there to see if we don't support a function you like, or try your
 function in the interactive demo at
 [http://khan.github.io/KaTeX/](http://khan.github.io/KaTeX/).
@@ -100,8 +103,17 @@ Code
  - 80 character line length
  - commas last
  - declare variables in the outermost scope that they are used
+ - camelCase for variables in JavaScript
+ - snake_case for variables in Python
 
 In general, try to make your code blend in with the surrounding code.
+
+## Pull Requests
+ 
+ - link back to the original issue(s) whenever possible
+ - new commands should be added to the [wiki](https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX)
+ - commits should be squashed before merging
+ - large pull requests should be broken into separate pull requests (or multiple logically cohesive commits), if possible
 
 ## CLA
 

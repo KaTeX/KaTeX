@@ -1,8 +1,5 @@
 {
     "project_id": "KaTeX",
     "conduit_uri": "https://phabricator.khanacademy.org/",
-    "lint.engine": "ArcanistSingleLintEngine",
-    "lint.engine.single.linter": "ArcanistScriptAndRegexLinter",
-    "linter.scriptandregex.regex": "/^(?P<file>\\S+): line (?P<line>\\d+), col \\d+, (?P<message>.*)$/m",
-    "linter.scriptandregex.script": "make lint || true"
+    "lint.engine": "ArcanistConfigurationDrivenLintEngine"
 }

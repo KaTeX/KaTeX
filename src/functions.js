@@ -205,6 +205,8 @@ var delimiters = [
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
     "<", ">", "\\langle", "\\rangle",
+    "\\lvert", "\\rvert", "\\lVert", "\\rVert",
+    "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache",
     "/", "\\backslash",
     "|", "\\vert", "\\|", "\\Vert",
     "\\uparrow", "\\Uparrow",
@@ -212,6 +214,12 @@ var delimiters = [
     "\\updownarrow", "\\Updownarrow",
     "."
 ];
+
+var fontAliases = {
+    "\\Bbb": "\\mathbb",
+    "\\bold": "\\mathbf",
+    "\\frak": "\\mathfrak"
+};
 
 /*
  * This is a list of functions which each have the same function but have
@@ -471,6 +479,33 @@ var duplicatedFunctions = [
         ],
         data: {
             numArgs: 0
+        }
+    },
+
+    {
+        funcs: [
+            // styles
+            "\\mathrm", "\\mathit", "\\mathbf",
+
+            // families
+            "\\mathbb", "\\mathcal", "\\mathfrak", "\\mathscr", "\\mathsf",
+            "\\mathtt",
+
+            // aliases
+            "\\Bbb", "\\bold", "\\frak"
+        ],
+        data: {
+            numArgs: 1,
+            handler: function (func, body) {
+                if (func in fontAliases) {
+                    func = fontAliases[func];
+                }
+                return {
+                    type: "font",
+                    font: func.slice(1),
+                    body: body
+                };
+            }
         }
     },
 

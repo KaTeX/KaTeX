@@ -5,7 +5,6 @@
  * called, to produce a final HTML tree.
  */
 
-var Options = require("./Options");
 var ParseError = require("./ParseError");
 var Style = require("./Style");
 
@@ -32,7 +31,8 @@ var buildExpression = function(expression, options, prev) {
     return groups;
 };
 
-// List of types used by getTypeOfGroup
+// List of types used by getTypeOfGroup,
+// see https://github.com/Khan/KaTeX/wiki/Examining-TeX#group-types
 var groupToType = {
     mathord: "mord",
     textord: "mord",
@@ -42,8 +42,8 @@ var groupToType = {
     open: "mopen",
     close: "mclose",
     inner: "minner",
-    genfrac: "minner",
-    array: "minner",
+    genfrac: "mord",
+    array: "mord",
     spacing: "mord",
     punct: "mpunct",
     ordgroup: "mord",
@@ -103,7 +103,8 @@ var shouldHandleSupSub = function(group, options) {
     } else if (group.type === "op") {
         // Operators handle supsubs differently when they have limits
         // (e.g. `\displaystyle\sum_2^3`)
-        return group.value.limits && options.style.size === Style.DISPLAY.size;
+        return group.value.limits &&
+            (options.style.size === Style.DISPLAY.size || group.value.alwaysHandleSupSub);
     } else if (group.type === "accent") {
         return isCharacterBox(group.value.base);
     } else {
@@ -155,19 +156,25 @@ var isCharacterBox = function(group) {
         baseElem.type === "punct";
 };
 
+var makeNullDelimiter = function(options) {
+    return makeSpan([
+        "sizing", "reset-" + options.size, "size5",
+        options.style.reset(), Style.TEXT.cls(),
+        "nulldelimiter"
+    ]);
+};
+
 /**
  * This is a map of group types to the function used to handle that type.
  * Simpler types come at the beginning, while complicated types come afterwards.
  */
 var groupTypes = {
     mathord: function(group, options, prev) {
-        return buildCommon.mathit(
-            group.value, group.mode, options.getColor(), ["mord"]);
+        return buildCommon.makeOrd(group, options, "mathord");
     },
 
     textord: function(group, options, prev) {
-        return buildCommon.mathrm(
-            group.value, group.mode, options.getColor(), ["mord"]);
+        return buildCommon.makeOrd(group, options, "textord");
     },
 
     bin: function(group, options, prev) {
@@ -189,32 +196,32 @@ var groupTypes = {
             className = "mord";
         }
 
-        return buildCommon.mathrm(
+        return buildCommon.mathsym(
             group.value, group.mode, options.getColor(), [className]);
     },
 
     rel: function(group, options, prev) {
-        return buildCommon.mathrm(
+        return buildCommon.mathsym(
             group.value, group.mode, options.getColor(), ["mrel"]);
     },
 
     open: function(group, options, prev) {
-        return buildCommon.mathrm(
+        return buildCommon.mathsym(
             group.value, group.mode, options.getColor(), ["mopen"]);
     },
 
     close: function(group, options, prev) {
-        return buildCommon.mathrm(
+        return buildCommon.mathsym(
             group.value, group.mode, options.getColor(), ["mclose"]);
     },
 
     inner: function(group, options, prev) {
-        return buildCommon.mathrm(
+        return buildCommon.mathsym(
             group.value, group.mode, options.getColor(), ["minner"]);
     },
 
     punct: function(group, options, prev) {
-        return buildCommon.mathrm(
+        return buildCommon.mathsym(
             group.value, group.mode, options.getColor(), ["mpunct"]);
     },
 
@@ -469,8 +476,6 @@ var groupTypes = {
         frac.depth *= fstyle.sizeMultiplier / options.style.sizeMultiplier;
 
         // Rule 15e
-        var innerChildren = [makeSpan(["mfrac"], [frac])];
-
         var delimSize;
         if (fstyle.size === Style.DISPLAY.size) {
             delimSize = fontMetrics.metrics.delim1;
@@ -478,24 +483,25 @@ var groupTypes = {
             delimSize = fontMetrics.metrics.getDelim2(fstyle);
         }
 
-        if (group.value.leftDelim != null) {
-            innerChildren.unshift(
-                delimiter.customSizedDelim(
-                    group.value.leftDelim, delimSize, true,
-                    options.withStyle(fstyle), group.mode)
-            );
+        var leftDelim, rightDelim;
+        if (group.value.leftDelim == null) {
+            leftDelim = makeNullDelimiter(options);
+        } else {
+            leftDelim = delimiter.customSizedDelim(
+                group.value.leftDelim, delimSize, true,
+                options.withStyle(fstyle), group.mode);
         }
-        if (group.value.rightDelim != null) {
-            innerChildren.push(
-                delimiter.customSizedDelim(
-                    group.value.rightDelim, delimSize, true,
-                    options.withStyle(fstyle), group.mode)
-            );
+        if (group.value.rightDelim == null) {
+            rightDelim = makeNullDelimiter(options);
+        } else {
+            rightDelim = delimiter.customSizedDelim(
+                group.value.rightDelim, delimSize, true,
+                options.withStyle(fstyle), group.mode);
         }
 
         return makeSpan(
-            ["minner", options.style.reset(), fstyle.cls()],
-            innerChildren,
+            ["mord", options.style.reset(), fstyle.cls()],
+            [leftDelim, makeSpan(["mfrac"], [frac]), rightDelim],
             options.getColor());
     },
 
@@ -511,7 +517,9 @@ var groupTypes = {
 
         // Vertical spacing
         var baselineskip = 12 * pt; // see size10.clo
-        var arraystretch = 1; // factor, see lttab.dtx
+        // Default \arraystretch from lttab.dtx
+        // TODO(gagern): may get redefined once we have user-defined macros
+        var arraystretch = utils.deflt(group.value.arraystretch, 1);
         var arrayskip = arraystretch * baselineskip;
         var arstrutHeight = 0.7 * arrayskip; // \strutbox in ltfsstrc.dtx and
         var arstrutDepth = 0.3 * arrayskip;  // \@arstrutbox in lttab.dtx
@@ -565,14 +573,19 @@ var groupTypes = {
             body[r] = outrow;
         }
         var offset = totalHeight / 2 + fontMetrics.metrics.axisHeight;
-        var colalign = group.value.colalign || [];
+        var coldescriptions = group.value.cols || [];
         var cols = [];
         var colsep;
         for (c = 0; c < nc; ++c) {
+            var coldescr = coldescriptions[c] || {};
+            var sepwidth;
             if (c > 0 || group.value.hskipBeforeAndAfter) {
-                colsep = makeSpan(["arraycolsep"], []);
-                colsep.style.width = arraycolsep + "em";
-                cols.push(colsep);
+                sepwidth = utils.deflt(coldescr.pregap, arraycolsep);
+                if (sepwidth !== 0) {
+                    colsep = makeSpan(["arraycolsep"], []);
+                    colsep.style.width = sepwidth + "em";
+                    cols.push(colsep);
+                }
             }
             var col = [];
             for (r = 0; r < nr; ++r) {
@@ -588,17 +601,20 @@ var groupTypes = {
             }
             col = buildCommon.makeVList(col, "individualShift", null, options);
             col = makeSpan(
-                ["col-align-" + (colalign[c] || "c")],
+                ["col-align-" + (coldescr.align || "c")],
                 [col]);
             cols.push(col);
             if (c < nc - 1 || group.value.hskipBeforeAndAfter) {
-                colsep = makeSpan(["arraycolsep"], []);
-                colsep.style.width = arraycolsep + "em";
-                cols.push(colsep);
+                sepwidth = utils.deflt(coldescr.postgap, arraycolsep);
+                if (sepwidth !== 0) {
+                    colsep = makeSpan(["arraycolsep"], []);
+                    colsep.style.width = sepwidth + "em";
+                    cols.push(colsep);
+                }
             }
         }
         body = makeSpan(["mtable"], cols);
-        return makeSpan(["minner"], [body], options.getColor());
+        return makeSpan(["mord"], [body], options.getColor());
     },
 
     spacing: function(group, options, prev) {
@@ -609,7 +625,7 @@ var groupTypes = {
             // into appropriate outputs.
             return makeSpan(
                 ["mord", "mspace"],
-                [buildCommon.mathrm(group.value, group.mode)]
+                [buildCommon.mathsym(group.value, group.mode)]
             );
         } else {
             // Other kinds of spaces are of arbitrary width. We use CSS to
@@ -693,7 +709,7 @@ var groupTypes = {
             // operators, like \limsup
             var output = [];
             for (var i = 1; i < group.value.body.length; i++) {
-                output.push(buildCommon.mathrm(group.value.body[i], group.mode));
+                output.push(buildCommon.mathsym(group.value.body[i], group.mode));
             }
             base = makeSpan(["mop"], output, options.getColor());
         }
@@ -800,26 +816,26 @@ var groupTypes = {
         // good, but the offsets for the T, E, and X were taken from the
         // definition of \TeX in TeX (see TeXbook pg. 356)
         var k = makeSpan(
-            ["k"], [buildCommon.mathrm("K", group.mode)]);
+            ["k"], [buildCommon.mathsym("K", group.mode)]);
         var a = makeSpan(
-            ["a"], [buildCommon.mathrm("A", group.mode)]);
+            ["a"], [buildCommon.mathsym("A", group.mode)]);
 
         a.height = (a.height + 0.2) * 0.75;
         a.depth = (a.height - 0.2) * 0.75;
 
         var t = makeSpan(
-            ["t"], [buildCommon.mathrm("T", group.mode)]);
+            ["t"], [buildCommon.mathsym("T", group.mode)]);
         var e = makeSpan(
-            ["e"], [buildCommon.mathrm("E", group.mode)]);
+            ["e"], [buildCommon.mathsym("E", group.mode)]);
 
         e.height = (e.height - 0.2155);
         e.depth = (e.depth + 0.2155);
 
         var x = makeSpan(
-            ["x"], [buildCommon.mathrm("X", group.mode)]);
+            ["x"], [buildCommon.mathsym("X", group.mode)]);
 
         return makeSpan(
-            ["katex-logo"], [k, a, t, e, x], options.getColor());
+            ["katex-logo", "mord"], [k, a, t, e, x], options.getColor());
     },
 
     overline: function(group, options, prev) {
@@ -987,6 +1003,11 @@ var groupTypes = {
         return makeSpan([options.style.reset(), newStyle.cls()], inner);
     },
 
+    font: function(group, options, prev) {
+        var font = group.value.font;
+        return buildGroup(group.value.body, options.withFont(font), prev);
+    },
+
     delimsizing: function(group, options, prev) {
         var delim = group.value.value;
 
@@ -1025,7 +1046,7 @@ var groupTypes = {
         var leftDelim;
         if (group.value.left === ".") {
             // Empty delimiters in \left and \right make null delimiter spaces.
-            leftDelim = makeSpan(["nulldelimiter"]);
+            leftDelim = makeNullDelimiter(options);
         } else {
             // Otherwise, use leftRightDelim to generate the correct sized
             // delimiter.
@@ -1039,7 +1060,7 @@ var groupTypes = {
         var rightDelim;
         // Same for the right delimiter
         if (group.value.right === ".") {
-            rightDelim = makeSpan(["nulldelimiter"]);
+            rightDelim = makeNullDelimiter(options);
         } else {
             rightDelim = delimiter.leftRightDelim(
                 group.value.right, innerHeight, innerDepth, options,
@@ -1259,21 +1280,10 @@ var buildGroup = function(group, options, prev) {
  * Take an entire parse tree, and build it into an appropriate set of HTML
  * nodes.
  */
-var buildHTML = function(tree, settings) {
+var buildHTML = function(tree, options) {
     // buildExpression is destructive, so we need to make a clone
     // of the incoming tree so that it isn't accidentally changed
     tree = JSON.parse(JSON.stringify(tree));
-
-    var startStyle = Style.TEXT;
-    if (settings.displayMode) {
-        startStyle = Style.DISPLAY;
-    }
-
-    // Setup the default options
-    var options = new Options({
-        style: startStyle,
-        size: "size5"
-    });
 
     // Build the expression contained in the tree
     var expression = buildExpression(tree, options);

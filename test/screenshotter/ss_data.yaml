@@ -1,0 +1,114 @@
+# List of test cases for which we create screenshots and other documents.
+# Each value in the top level dictionary is either a string or a dict
+# which may contain the following keys:
+# - tex: the KaTeX input string
+# - pre: some HTML to insert before the KaTeX content
+# - post: some HTML to insert after the KaTeX content
+# - display: set this to 1 in order to use display style
+#
+# Note that YAML will treat a value starting in { as a flow mapping.
+# To avoid that, either enclose the value in '…' or use a block scalar style,
+# writing | (or >) as the first symbol of the value and then continuing
+# on the next line. See http://www.yaml.org/ for syntax details.
+
+Accents: \vec{A}\vec{x}\vec x^2\vec{x}_2^2\vec{A}^2\vec{xA}^2
+Arrays: |
+    \left(\begin{array}{rlc}
+        1&2&3\\
+        1+1&2+1&3+1\cr1\over2&\scriptstyle 1/2&\frac12\\[1ex]
+        \begin{pmatrix}x\\y\end{pmatrix}&0&\begin{vmatrix}a&b\\c&d\end{vmatrix}
+    \end{array}\right]
+ArrayType: 1\begin{array}{c}2\\3\end{array}4
+Baseline: a+b-c\cdot d/e
+BasicTest: a
+BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}
+Cases: |
+    f(a,b)=\begin{cases}
+        a+1&\text{if }b\text{ is odd} \\
+        a&\text{if }b=0 \\
+        a-1&\text{otherwise}
+    \end{cases}
+Colors:
+    tex: \blue{a}\color{#0f0}{b}\color{red}{c}
+    nolatex: different syntax and different scope
+DeepFontSizing:
+    tex: |
+        a^{\big| x^{\big(}}_{\Big\uparrow} +
+        i^{i^{\Huge x}_y}_{\Huge z} +
+        \dfrac{\Huge x}{y}
+    nolatex: \Huge inside \dfrac doesn't work, needs an extra {…}
+DelimiterSizing: |
+    \bigl\uparrow\Bigl\downarrow\biggl\updownarrow
+    \Biggl\Uparrow\Biggr\Downarrow\biggr\langle\Bigr\}\bigr\rfloor
+DisplayMode:
+    tex: \sum_{i=0}^\infty \frac{1}{i}
+    pre: pre
+    post: post
+    display: 1
+DisplayStyle: |
+    {\displaystyle\sqrt{x}}{\sqrt{x}}
+    {\displaystyle \frac12}{\frac12}{\displaystyle x^1_2}{x^1_2}
+Exponents: a^{a^a_a}_{a^a_a}
+FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12
+Functions: \sin\cos\tan\ln\log
+GreekLetters: \alpha\beta\gamma\omega
+KaTeX:
+    tex: \KaTeX
+    nolatex: There is no LaTeX command for this (yet)
+Lap: ab\llap{f}cd\rlap{g}h
+LeftRight: \left( x^2 \right) \left\{ x^{x^{x^{x^x}}} \right.
+LeftRightListStyling: a+\left(x+y\right)-x
+LeftRightStyleSizing: |
+    +\left\{\rule{0.1em}{1em}\right.
+    x^{+\left\{\rule{0.1em}{1em}\right.
+    x^{+\left\{\rule{0.1em}{1em}\right.}}
+LimitControls: |
+    \displaystyle\int\limits_2^3 3x^2\,dx + \sum\nolimits^n_{i=1}i +
+    \textstyle\int\limits_x^y z
+MathDefaultFonts: Ax2k\breve{a}\omega\Omega\imath+\KaTeX
+MathBb: \mathbb{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathBf: \mathbf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathCal: \mathcal{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathFrak: \mathfrak{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathIt: \mathit{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathRm: \mathrm{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathSf: \mathsf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathScr: \mathscr{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathTt: \mathtt{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+NestedFractions: |
+    \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
+    {\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
+NullDelimiterInteraction: a \bigl. + 2 \quad \left. + a \right)
+OpLimits: |
+    {\sin_2^2 \lim_2^2 \int_2^2 \sum_2^2}
+    {\displaystyle \lim_2^2 \int_2^2 \intop_2^2 \sum_2^2}
+Overline: \overline{x}\overline{x}\overline{x^{x^{x^x}}} \blue{\overline{y}}
+Phantom: \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x}
+PrimeSpacing: f'+f_2'+f^{f'}
+RlapBug: \frac{\rlap{x}}{2}
+Rule: \rule{1em}{0.5em}\rule{1ex}{2ex}\rule{1em}{1ex}\rule{1em}{0.431ex}
+SizingBaseline:
+    tex: '{\tiny a+b}a+b{\Huge a+b}'
+    pre: x
+    post: M
+Sizing: |
+    {\Huge x}{\LARGE y}{\normalsize z}{\scriptsize w}
+Spacing: ^3+[-1][1-1]1=1(=1)\lvert a\rvert~b
+Sqrt: |
+    \sqrt{\sqrt{\sqrt{x}}}_{\sqrt{\sqrt{x}}}^{\sqrt{\sqrt{\sqrt{x}}}
+    ^{\sqrt{\sqrt{\sqrt{x}}}}}
+SqrtRoot: |
+    1+\sqrt[3]{2}+\sqrt[1923^234]{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^2}}}}}}}}}}}
+SupSubCharacterBox: a_2f_2{f}_2{aa}_2{af}_2
+SupSubHorizSpacing: |
+    x^{x^{x}}\Big|x_{x_{x_{x_{x}}}}\bigg|x^{x^{x_{x_{x_{x_{x}}}}}}\bigg|
+SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
+Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
+UnsupportedCmds:
+    tex: \err\,\frac\fracerr3\,2^\superr_\suberr\,\sqrt\sqrterr
+    doNotBreak: 1
+    errorColor: "#dd4c4c"
+VerticalSpacing:
+    pre: potato<br>blah
+    tex: x^{\Huge y}z
+    post: <br>moo

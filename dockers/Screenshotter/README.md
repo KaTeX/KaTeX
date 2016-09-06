@@ -1,29 +1,63 @@
-### How to generate screenshotter images
-----------------------------------------
+# How to generate screenshotter images
+
+## Automatic generation of screen shots
 
 Now you too can generate screenshots from your own computer, and (hopefully)
-have them look mostly the same as the current ones! To start, make a docker
-image from the included Dockerfile using a command like
+have them look mostly the same as the current ones! Make sure you have docker
+installed and running.
+If all you want is (re)create
+all the snapshots for all the browsers, then you can do so by running the
+`screenshotter.sh` script:
 
-    docker build --tag=ss .
+    dockers/Screenshotter/screenshotter.sh
 
-from within this directory (note you need to have docker installed and running
-for this to work). This will build a docker image with the `ss` tag, which you
-can then use to run dockers based on it.
+It will fetch all required selenium docker images, and use them to
+take screenshots.
 
-This Dockerfile is set up such that it will run everything and generate all the
-screenshots when the docker is run, so no interactive input is required. All
-that you need to do is mount the KaTeX directory you want to test into the
-`/KaTeX` directory in the docker, and run the `ss` docker, like so:
+## Manual generation
 
-    docker run --volume=/your/KaTeX/:/KaTeX ss
+If you are creating screenshots on a regular basis, you can keep the
+docker containers with the selenium setups running.  Essentially you
+are encouraged to reproduce the steps from `screenshotter.sh`
+manually.  Example run for Firefox:
 
-The `--volume=/your/KaTeX:/KaTeX` switch mounts your KaTeX directory into the
-docker. Note this is a read-write mounting, so the new screenshots will be
-directly placed into your KaTeX directory.
+    container=$(docker run -d -P selenium/standalone-firefox:2.46.0)
+    node dockers/Screenshotter/screenshotter.js -b firefox -c ${container}
+    # possibly repeat the above command as often as you need, then eventually
+    docker stop ${container}
+    docker rm ${container}
 
-Since this docker is very self-contained, there should be no need to do
-interactive management of the docker, but if you feel the need, you can read the
-General Docker Help section of the MathJaxFonts docker readme.
+For Chrome, simply replace both occurrences of `firefox` with `chrome`.
 
-That's it!
+## Use without docker
+
+It is possible to run `screenshotter.js` without the use of Docker:
+
+    npm install selenium-webdriver
+    node dockers/Screenshotter/screenshotter.js
+
+This will generate screenshots using the Firefox installed on your system.
+Browsers other than Firefox can be targeted using the `--browser` option.
+For a complete list of options pass `--help` as an argument to
+`screenshotter.js`.  Using these it should be possible to have the script
+connect to almost any Selenium web driver you might have access to.
+
+Note that screenshots taken without Docker are very likely to disagree
+from the ones stored in the repository, due to different versions of
+various software components being used.  The screenshots taken in this
+fashion are well suited for visual inspection, but for exact binary
+comparisons it would be neccessary to carefully set up the environment
+to match the one used by the Docker approach.
+
+## Choosing the list of test cases
+
+Both `screenshotter.js` and `screenshotter.sh` will accept
+an `--include` option (short `-i`) which can be used to specify
+a list of test cases to be processed, as a comma separated list.
+Conversely, the `--exclude` option (short `-x`) can be used
+to specify a list of cases which are not being processed.
+
+Examples:
+
+    node dockers/Screenshotter/screenshotter.js -i Sqrt,SqrtRoot
+    dockers/Screenshotter/screenshotter.sh --exclude=GreekLetters

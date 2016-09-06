@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.3.0",
+  "version": "0.6.0-pre",
   "description": "Fast math typesetting for the web.",
   "main": "katex.js",
   "repository": {
@@ -14,12 +14,15 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "browserify": "~2.29.1",
+    "browserify": "^10.2.4",
     "clean-css": "~2.2.15",
     "express": "~3.3.3",
     "jasmine-node": "2.0.0-beta4",
+    "js-yaml": "^3.3.1",
     "jshint": "^2.5.6",
     "less": "~1.7.5",
+    "nomnom": "^1.8.1",
+    "selenium-webdriver": "^2.46.1",
     "uglify-js": "~2.4.15"
   },
   "bin": "cli.js",

@@ -4,42 +4,72 @@
 /* global it: false */
 /* global describe: false */
 
-var buildHTML = require("../src/buildHTML");
 var buildMathML = require("../src/buildMathML");
+var buildTree = require("../src/buildTree");
 var katex = require("../katex");
 var ParseError = require("../src/ParseError");
 var parseTree = require("../src/parseTree");
+var Options = require("../src/Options");
 var Settings = require("../src/Settings");
+var Style = require("../src/Style");
 
 var defaultSettings = new Settings({});
+var defaultOptions = new Options({
+    style: Style.TEXT,
+    size: "size5"
+});
 
-var getBuilt = function(expr) {
-    expect(expr).toBuild();
+var _getBuilt = function(expr, settings) {
+    var usedSettings = settings ? settings : defaultSettings;
+    var parsedTree = parseTree(expr, usedSettings);
+    var rootNode = buildTree(parsedTree, expr, usedSettings);
 
-    var built = buildHTML(parseTree(expr), defaultSettings);
+    // grab the root node of the HTML rendering
+    var builtHTML = rootNode.children[1];
 
     // Remove the outer .katex and .katex-inner layers
-    return built.children[2].children;
+    return builtHTML.children[2].children;
 };
 
-var getParsed = function(expr) {
-    expect(expr).toParse();
+/**
+ * Return the root node of the rendered HTML.
+ * @param expr
+ * @param settings
+ * @returns {Object}
+ */
+var getBuilt = function(expr, settings) {
+    var usedSettings = settings ? settings : defaultSettings;
+    expect(expr).toBuild(usedSettings);
+    return _getBuilt(expr, settings);
+};
 
-    return parseTree(expr, defaultSettings);
+/**
+ * Return the root node of the parse tree.
+ * @param expr
+ * @param settings
+ * @returns {Object}
+ */
+var getParsed = function(expr, settings) {
+    var usedSettings = settings ? settings : defaultSettings;
+
+    expect(expr).toParse(usedSettings);
+    return parseTree(expr, usedSettings);
 };
 
 beforeEach(function() {
     jasmine.addMatchers({
         toParse: function() {
             return {
-                compare: function(actual) {
+                compare: function(actual, settings) {
+                    var usedSettings = settings ? settings : defaultSettings;
+
                     var result = {
                         pass: true,
                         message: "'" + actual + "' succeeded parsing"
                     };
 
                     try {
-                        parseTree(actual, defaultSettings);
+                        parseTree(actual, usedSettings);
                     } catch (e) {
                         result.pass = false;
                         if (e instanceof ParseError) {
@@ -58,7 +88,9 @@ beforeEach(function() {
 
         toNotParse: function() {
             return {
-                compare: function(actual) {
+                compare: function(actual, settings) {
+                    var usedSettings = settings ? settings : defaultSettings;
+
                     var result = {
                         pass: false,
                         message: "Expected '" + actual + "' to fail " +
@@ -66,7 +98,7 @@ beforeEach(function() {
                     };
 
                     try {
-                        parseTree(actual, defaultSettings);
+                        parseTree(actual, usedSettings);
                     } catch (e) {
                         if (e instanceof ParseError) {
                             result.pass = true;
@@ -85,16 +117,18 @@ beforeEach(function() {
 
         toBuild: function() {
             return {
-                compare: function(actual) {
+                compare: function(actual, settings) {
+                    var usedSettings = settings ? settings : defaultSettings;
+
                     var result = {
                         pass: true,
                         message: "'" + actual + "' succeeded in building"
                     };
 
-                    expect(actual).toParse();
+                    expect(actual).toParse(usedSettings);
 
                     try {
-                        buildHTML(parseTree(actual), defaultSettings);
+                        _getBuilt(actual, settings);
                     } catch (e) {
                         result.pass = false;
                         if (e instanceof ParseError) {
@@ -357,6 +391,40 @@ describe("A subscript and superscript tree-builder", function() {
         expect("_2").toBuild();
         expect("^3_2").toBuild();
         expect("_2^3").toBuild();
+    });
+});
+
+describe("A parser with limit controls", function() {
+    it("should fail when the limit control is not preceded by an op node", function() {
+        expect("3\\nolimits_2^2").toNotParse();
+        expect("\\sqrt\\limits_2^2").toNotParse();
+        expect("45 +\\nolimits 45").toNotParse();
+    });
+
+    it("should parse when the limit control directly follows an op node", function() {
+        expect("\\int\\limits_2^2 3").toParse();
+        expect("\\sum\\nolimits_3^4 4").toParse();
+    });
+
+    it("should parse when the limit control is in the sup/sub area of an op node", function() {
+        expect("\\int_2^2\\limits").toParse();
+        expect("\\int^2\\nolimits_2").toParse();
+        expect("\\int_2\\limits^2").toParse();
+    });
+
+    it("should allow multiple limit controls in the sup/sub area of an op node", function() {
+        expect("\\int_2\\nolimits^2\\limits 3").toParse();
+        expect("\\int\\nolimits\\limits_2^2").toParse();
+        expect("\\int\\limits\\limits\\limits_2^2").toParse();
+    });
+
+    it("should have the rightmost limit control determine the limits property " +
+        "of the preceding op node", function() {
+            var parsedInput = getParsed("\\int\\nolimits\\limits_2^2");
+            expect(parsedInput[0].value.base.value.limits).toBe(true);
+
+            parsedInput = getParsed("\\int\\limits_2\\nolimits^2");
+            expect(parsedInput[0].value.base.value.limits).toBe(false);
     });
 });
 
@@ -1116,6 +1184,261 @@ describe("A style change parser", function() {
     });
 });
 
+describe("A font parser", function () {
+    it("should parse \\mathrm, \\mathbb, and \\mathit", function () {
+        expect("\\mathrm x").toParse();
+        expect("\\mathbb x").toParse();
+        expect("\\mathit x").toParse();
+        expect("\\mathrm {x + 1}").toParse();
+        expect("\\mathbb {x + 1}").toParse();
+        expect("\\mathit {x + 1}").toParse();
+    });
+
+    it("should parse \\mathcal and \\mathfrak", function () {
+        expect("\\mathcal{ABC123}").toParse();
+        expect("\\mathfrak{abcABC123}").toParse();
+    });
+
+    it("should produce the correct fonts", function () {
+        var mathbbParse = getParsed("\\mathbb x")[0];
+        expect(mathbbParse.value.font).toMatch("mathbb");
+        expect(mathbbParse.value.type).toMatch("font");
+
+        var mathrmParse = getParsed("\\mathrm x")[0];
+        expect(mathrmParse.value.font).toMatch("mathrm");
+        expect(mathrmParse.value.type).toMatch("font");
+
+        var mathitParse = getParsed("\\mathit x")[0];
+        expect(mathitParse.value.font).toMatch("mathit");
+        expect(mathitParse.value.type).toMatch("font");
+
+        var mathcalParse = getParsed("\\mathcal C")[0];
+        expect(mathcalParse.value.font).toMatch("mathcal");
+        expect(mathcalParse.value.type).toMatch("font");
+
+        var mathfrakParse = getParsed("\\mathfrak C")[0];
+        expect(mathfrakParse.value.font).toMatch("mathfrak");
+        expect(mathfrakParse.value.type).toMatch("font");
+    });
+
+    it("should parse nested font commands", function () {
+        var nestedParse = getParsed("\\mathbb{R \\neq \\mathrm{R}}")[0];
+        expect(nestedParse.value.font).toMatch("mathbb");
+        expect(nestedParse.value.type).toMatch("font");
+
+        expect(nestedParse.value.body.value.length).toMatch(3);
+        var bbBody = nestedParse.value.body.value;
+        expect(bbBody[0].type).toMatch("mathord");
+        expect(bbBody[1].type).toMatch("rel");
+        expect(bbBody[2].type).toMatch("font");
+        expect(bbBody[2].value.font).toMatch("mathrm");
+        expect(bbBody[2].value.type).toMatch("font");
+    });
+
+    it("should work with \\color", function () {
+        var colorMathbbParse = getParsed("\\color{blue}{\\mathbb R}")[0];
+        expect(colorMathbbParse.value.type).toMatch("color");
+        expect(colorMathbbParse.value.color).toMatch("blue");
+        var body = colorMathbbParse.value.value;
+        expect(body.length).toMatch(1);
+        expect(body[0].value.type).toMatch("font");
+        expect(body[0].value.font).toMatch("mathbb");
+    });
+
+    it("should not parse a series of font commands", function () {
+        expect("\\mathbb \\mathrm R").toNotParse();
+    });
+    
+    it("should nest fonts correctly", function () {
+        var bf = getParsed("\\mathbf{a\\mathrm{b}c}")[0];
+        expect(bf.value.type).toMatch("font");
+        expect(bf.value.font).toMatch("mathbf");
+        expect(bf.value.body.value.length).toMatch(3);
+        expect(bf.value.body.value[0].value).toMatch("a");
+        expect(bf.value.body.value[1].value.type).toMatch("font");
+        expect(bf.value.body.value[1].value.font).toMatch("mathrm");
+        expect(bf.value.body.value[2].value).toMatch("c");
+    });
+});
+
+describe("An HTML font tree-builder", function () {
+    it("should render \\mathbb{R} with the correct font", function () {
+        var markup = katex.renderToString("\\mathbb{R}");
+        expect(markup).toContain("<span class=\"mord mathbb\">R</span>");
+    });
+
+    it("should render \\mathrm{R} with the correct font", function () {
+        var markup = katex.renderToString("\\mathrm{R}");
+        expect(markup).toContain("<span class=\"mord mathrm\">R</span>");
+    });
+
+    it("should render \\mathcal{R} with the correct font", function () {
+        var markup = katex.renderToString("\\mathcal{R}");
+        expect(markup).toContain("<span class=\"mord mathcal\">R</span>");
+    });
+
+    it("should render \\mathfrak{R} with the correct font", function () {
+        var markup = katex.renderToString("\\mathfrak{R}");
+        expect(markup).toContain("<span class=\"mord mathfrak\">R</span>");
+    });
+
+    it("should render a combination of font and color changes", function () {
+        var markup = katex.renderToString("\\color{blue}{\\mathbb R}");
+        var span = "<span class=\"mord mathbb\" style=\"color:blue;\">R</span>";
+        expect(markup).toContain(span);
+
+        markup = katex.renderToString("\\mathbb{\\color{blue}{R}}");
+        span = "<span class=\"mord mathbb\" style=\"color:blue;\">R</span>";
+        expect(markup).toContain(span);
+    });
+});
+
+
+describe("A MathML font tree-builder", function () {
+    var contents = "Ax2k\\omega\\Omega\\imath+";
+
+    it("should render " + contents + " with the correct mathvariants", function () {
+        var tree = getParsed(contents);
+        var markup = buildMathML(tree, contents, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi>A</mi>");
+        expect(markup).toContain("<mi>x</mi>");
+        expect(markup).toContain("<mn>2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathbb{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathbb{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"double-struck\">A</mi>");
+        expect(markup).toContain("<mi>x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathrm{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathrm{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"normal\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"normal\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathit{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathit{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"italic\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"italic\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"italic\">2</mn>");
+        expect(markup).toContain("<mi mathvariant=\"italic\">\u03c9</mi>");   // \omega
+        expect(markup).toContain("<mi mathvariant=\"italic\">\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi mathvariant=\"italic\">\u0131</mi>");   // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathbf{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathbf{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"bold\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"bold\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"bold\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"bold\">\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathcal{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathcal{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"script\">A</mi>");
+        expect(markup).toContain("<mi>x</mi>");                             // script is caps only
+        expect(markup).toContain("<mn mathvariant=\"script\">2</mn>");
+        // MathJax marks everything below as "script" except \omega
+        // We don't have these glyphs in "caligraphic" and neither does MathJax
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathfrak{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathfrak{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"fraktur\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"fraktur\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"fraktur\">2</mn>");
+        // MathJax marks everything below as "fraktur" except \omega
+        // We don't have these glyphs in "fraktur" and neither does MathJax
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathscr{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathscr{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"script\">A</mi>");
+        // MathJax marks everything below as "script" except \omega
+        // We don't have these glyphs in "script" and neither does MathJax
+        expect(markup).toContain("<mi>x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathsf{" + contents + "} with the correct mathvariants", function () {
+        var tex = "\\mathsf{" + contents + "}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"sans-serif\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"sans-serif\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"sans-serif\">2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");                            // \omega
+        expect(markup).toContain("<mi mathvariant=\"sans-serif\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                            // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render a combination of font and color changes", function () {
+        var tex = "\\color{blue}{\\mathbb R}";
+        var tree = getParsed(tex);
+        var markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        var node = "<mstyle mathcolor=\"blue\">" +
+            "<mi mathvariant=\"double-struck\">R</mi>" +
+            "</mstyle>";
+        expect(markup).toContain(node);
+
+        // reverse the order of the commands
+        tex = "\\mathbb{\\color{blue}{R}}";
+        tree = getParsed(tex);
+        markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        node = "<mstyle mathcolor=\"blue\">" +
+            "<mi mathvariant=\"double-struck\">R</mi>" +
+            "</mstyle>";
+        expect(markup).toContain(node);
+    });
+});
+
 describe("A bin builder", function() {
     it("should create mbins normally", function() {
         var built = getBuilt("x + y");
@@ -1310,15 +1633,27 @@ describe("An array environment", function() {
     it("should accept a single alignment character", function() {
         var parse = getParsed("\\begin{array}r1\\\\20\\end{array}");
         expect(parse[0].type).toBe("array");
-        expect(parse[0].value.colalign).toEqual(["r"]);
+        expect(parse[0].value.cols).toEqual([{align:"r"}]);
     });
 
 });
 
-var getMathML = function(expr) {
-    expect(expr).toParse();
+describe("A cases environment", function() {
 
-    var built = buildMathML(parseTree(expr));
+    it("should parse its input", function() {
+        expect("f(a,b)=\\begin{cases}a+1&\\text{if }b\\text{ is odd}\\\\" +
+               "a&\\text{if }b=0\\\\a-1&\\text{otherwise}\\end{cases}")
+            .toParse();
+    });
+
+});
+
+var getMathML = function(expr, settings) {
+    var usedSettings = settings ? settings : defaultSettings;
+
+    expect(expr).toParse(usedSettings);
+
+    var built = buildMathML(parseTree(expr, usedSettings), expr, usedSettings);
 
     // Strip off the surrounding <span>
     return built.children[0];
@@ -1354,5 +1689,47 @@ describe("A MathML builder", function() {
     it("should generate a <mphantom> node for \\phantom", function() {
         var phantom = getMathML("\\phantom{x}").children[0].children[0];
         expect(phantom.children[0].type).toEqual("mphantom");
+    });
+});
+
+describe("A parser that does not break on unsupported commands", function() {
+    // The parser breaks on unsupported commands unless it is explicitly
+    // told not to
+    var errorColor = "#933";
+    var doNotBreakSettings = new Settings({
+        breakOnUnsupportedCmds: false,
+        errorColor: errorColor
+    });
+
+    it("should still parse on unrecognized control sequences", function() {
+        expect("\\error").toParse(doNotBreakSettings);
+    });
+
+    describe("should allow unrecognized controls sequences anywhere, including", function() {
+        it("in superscripts and subscripts", function() {
+            expect("2_\\error").toBuild(doNotBreakSettings);
+            expect("3^{\\error}_\\error").toBuild(doNotBreakSettings);
+            expect("\\int\\nolimits^\\error_\\error").toBuild(doNotBreakSettings);
+        });
+
+        it("in fractions", function() {
+            expect("\\frac{345}{\\error}").toBuild(doNotBreakSettings);
+            expect("\\frac\\error{\\error}").toBuild(doNotBreakSettings);
+        });
+
+        it("in square roots", function() {
+            expect("\\sqrt\\error").toBuild(doNotBreakSettings);
+            expect("\\sqrt{234\\error}").toBuild(doNotBreakSettings);
+        });
+
+        it("in text boxes", function() {
+            expect("\\text{\\error}").toBuild(doNotBreakSettings);
+        });
+    });
+
+    it("should produce color nodes with a color value given by errorColor", function() {
+        var parsedInput = getParsed("\\error", doNotBreakSettings);
+        expect(parsedInput[0].type).toBe("color");
+        expect(parsedInput[0].value.color).toBe(errorColor);
     });
 });

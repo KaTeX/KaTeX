@@ -7,6 +7,7 @@
      normal font), or "ams" (the ams fonts).
  * - group (required): the ParseNode group type the symbol should have (i.e.
      "textord", "mathord", etc).
+     See https://github.com/Khan/KaTeX/wiki/Examining-TeX#group-types
  * - replace (optional): the character that this symbol or function should be
  *   replaced with (i.e. "\phi" has a replace value of "\u03d5", the phi
  *   character in the main font).
@@ -771,6 +772,11 @@ var symbols = {
             group: "textord",
             replace: "\u24c8"
         },
+        "\\circledR": {
+            font: "ams",
+            group: "textord",
+            replace: "\u00ae"
+        },
         "\\measuredangle": {
             font: "ams",
             group: "textord",
@@ -876,6 +882,11 @@ var symbols = {
             group: "textord",
             replace: "\u00a5"
         },
+        "\\checkmark": {
+            font: "ams",
+            group: "textord",
+            replace: "\u2713"
+        },
 
         // AMS Hebrew
         "\\beth": {
@@ -909,22 +920,22 @@ var symbols = {
         // AMS Delimiters
         "\\ulcorner": {
             font: "ams",
-            group: "textord",
+            group: "open",
             replace: "\u250c"
         },
         "\\urcorner": {
             font: "ams",
-            group: "textord",
+            group: "close",
             replace: "\u2510"
         },
         "\\llcorner": {
             font: "ams",
-            group: "textord",
+            group: "open",
             replace: "\u2514"
         },
         "\\lrcorner": {
             font: "ams",
-            group: "textord",
+            group: "close",
             replace: "\u2518"
         },
 
@@ -1936,6 +1947,11 @@ var symbols = {
             group: "open",
             replace: "\u2223"
         },
+        "\\lVert": {
+            font: "main",
+            group: "open",
+            replace: "\u2225"
+        },
         ")": {
             font: "main",
             group: "close"
@@ -1961,6 +1977,11 @@ var symbols = {
             font: "main",
             group: "close",
             replace: "\u2223"
+        },
+        "\\rVert": {
+            font: "main",
+            group: "close",
+            replace: "\u2225"
         },
         "=": {
             font: "main",
@@ -2151,12 +2172,12 @@ var symbols = {
         },
         "\\barwedge": {
             font: "ams",
-            group: "textord",
+            group: "bin",
             replace: "\u22bc"
         },
         "\\veebar": {
             font: "ams",
-            group: "textord",
+            group: "bin",
             replace: "\u22bb"
         },
         "\\odot": {
@@ -2186,12 +2207,12 @@ var symbols = {
         },
         "\\circledcirc": {
             font: "ams",
-            group: "textord",
+            group: "bin",
             replace: "\u229a"
         },
         "\\boxdot": {
             font: "ams",
-            group: "textord",
+            group: "bin",
             replace: "\u22a1"
         },
         "\\bigtriangleup": {
@@ -2306,32 +2327,32 @@ var symbols = {
         },
         "\\uparrow": {
             font: "main",
-            group: "textord",
+            group: "rel",
             replace: "\u2191"
         },
         "\\Uparrow": {
             font: "main",
-            group: "textord",
+            group: "rel",
             replace: "\u21d1"
         },
         "\\downarrow": {
             font: "main",
-            group: "textord",
+            group: "rel",
             replace: "\u2193"
         },
         "\\Downarrow": {
             font: "main",
-            group: "textord",
+            group: "rel",
             replace: "\u21d3"
         },
         "\\updownarrow": {
             font: "main",
-            group: "textord",
+            group: "rel",
             replace: "\u2195"
         },
         "\\Updownarrow": {
             font: "main",
-            group: "textord",
+            group: "rel",
             replace: "\u21d5"
         },
         "\\coprod": {
@@ -2426,7 +2447,7 @@ var symbols = {
         },
         "\\ldots": {
             font: "main",
-            group: "punct",
+            group: "inner",
             replace: "\u2026"
         },
         "\\cdots": {
@@ -2493,6 +2514,17 @@ var symbols = {
             font: "main",
             group: "accent",
             replace: "\u02d9"
+        },
+
+        "\\imath": {
+            font: "main",
+            group: "mathord",
+            replace: "\u0131"
+        },
+        "\\jmath": {
+            font: "main",
+            group: "mathord",
+            replace: "\u0237"
         }
     },
     "text": {
