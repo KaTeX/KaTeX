@@ -10,3 +10,6 @@ diff.png
 /test/symgroups.log
 /test/symgroups.pdf
 /test/screenshotter/unicode-fonts
+.DS_Store
+.npm-install.stamp
+dist/
