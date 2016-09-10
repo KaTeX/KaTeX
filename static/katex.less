@@ -372,31 +372,22 @@
         }
     }
 
+
+
     .overrightarrow {
         .overrightarrow-line {
             width: 100%;
+            height: 1em;
             position: relative;
+            overflow: hidden;
 
             &:before {
-                width: 100%;
-                top:-3*@mu;
-                left:0px;
-                border-bottom-style: solid;
-                border-bottom-width: 1*@mu;  
+                content: "−−−−−−−−−−−−−−−−−→";
+                right: 0.15em;
+                height: 1em;
+                text-align: right;
                 position: absolute;
-                content: "";
-            }
-
-            &:after {
-                content: "\27A4";
-                position: absolute;
-                transform: scale(0.6,0.5);
-                -webkit-transform: scale(0.6,0.5);
-                -moz-transform: scale(0.6,0.5);
-                -ms-transform: scale(0.6,0.5);
-                -o-transform: scale(0.6,0.5);
-                right:-5*@mu;
-                top:-13*@mu;
+                letter-spacing: -0.19em;
             }
         }
     }
