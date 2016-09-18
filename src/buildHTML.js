@@ -135,6 +135,8 @@ var getBaseElem = function(group) {
         } else {
             return group;
         }
+    } else if (group.type === "font") {
+        return getBaseElem(group.value.body);
     } else {
         return group;
     }

@@ -104,7 +104,7 @@ Sqrt: |
     ^{\sqrt{\sqrt{\sqrt{x}}}}}
 SqrtRoot: |
     1+\sqrt[3]{2}+\sqrt[1923^234]{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^2}}}}}}}}}}}
-SupSubCharacterBox: a_2f_2{f}_2{aa}_2{af}_2
+SupSubCharacterBox: a_2f_2{f}_2{aa}_2{af}_2\mathbf{y}_Ay_A
 SupSubHorizSpacing: |
     x^{x^{x}}\Big|x_{x_{x_{x_{x}}}}\bigg|x^{x^{x_{x_{x_{x_{x}}}}}}\bigg|
 SupSubLeftAlignReset: |
