@@ -1382,6 +1382,33 @@ describe("An HTML font tree-builder", function() {
         span = "<span class=\"mord mathbb\" style=\"color:blue;\">R</span>";
         expect(markup).toContain(span);
     });
+
+    it("should throw TypeError when the expression is of the wrong type", function() {
+        expect(function() {
+            katex.renderToString({badInputType: "yes"});
+        }).toThrowError(TypeError);
+        expect(function() {
+            katex.renderToString([1, 2]);
+        }).toThrowError(TypeError);
+        expect(function() {
+            katex.renderToString(undefined);
+        }).toThrowError(TypeError);
+        expect(function() {
+            katex.renderToString(null);
+        }).toThrowError(TypeError);
+        expect(function() {
+            katex.renderToString(1.234);
+        }).toThrowError(TypeError);
+    });
+
+    it("should not throw TypeError when the expression is a supported type", function() {
+        expect(function() {
+            katex.renderToString("\\sqrt{123}");
+        }).not.toThrowError(TypeError);
+        expect(function() {
+            katex.renderToString(new String("\\sqrt{123}"));
+        }).not.toThrowError(TypeError);
+    });
 });
 
 
@@ -1876,5 +1903,17 @@ describe("A macro expander", function() {
             "\\foo": "\\bar\\bar",
             "\\bar": "a",
         });
+    });
+});
+
+describe("A parser taking String objects", function() {
+    it("should not fail on an empty String object", function() {
+        expect(new String("")).toParse();
+    });
+
+    it("should parse the same as a regular string", function() {
+        expect(new String("xy")).toParseLike("xy");
+        expect(new String("\\div")).toParseLike("\\div");
+        expect(new String("\\frac 1 2")).toParseLike("\\frac 1 2");
     });
 });
