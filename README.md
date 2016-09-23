@@ -55,17 +55,6 @@ For example:
 katex.render("c = \\pm\\sqrt{a^2 + b^2}", element, { displayMode: true });
 ```
 
-Note that the `throwOnError` option only deals with how TeX related parsing errors are handled.
-Other errors such as passing in an incorrect type for an expression will still throw a TypeError even if the `throwOnError` option is `false`.
-
-For example:
-
-```js
-katex.render("\\unsupportedCommand", element, { throwOnError: true }); // throws ParseError
-katex.render("\\unsupportedCommand", element, { throwOnError: false }); // does not throw ParseError
-katex.render({invalidInputDataType: "yes this is!"}, element, { throwOnError: false }); // throws TypeError
-```
-
 #### Automatic rendering of math on a page
 
 Math on the page can be automatically rendered using the auto-render extension. See [the Auto-render README](contrib/auto-render/README.md) for more information.
