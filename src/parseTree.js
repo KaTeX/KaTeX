@@ -9,7 +9,7 @@ var Parser = require("./Parser");
  * Parses an expression using a Parser, then returns the parsed result.
  */
 var parseTree = function(toParse, settings) {
-    if (!(typeof expression === 'string' || expression instanceof String)) {
+    if (!(typeof toParse === 'string' || toParse instanceof String)) {
         throw new TypeError('KaTeX can only parse string typed expression');
     }
     var parser = new Parser(toParse, settings);
