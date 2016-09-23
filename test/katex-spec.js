@@ -1400,7 +1400,6 @@ describe("An HTML font tree-builder", function() {
             katex.renderToString(1.234);
         }).toThrowError(TypeError);
     });
-    });
 });
 
 
