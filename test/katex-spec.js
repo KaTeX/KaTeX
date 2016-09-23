@@ -1916,4 +1916,4 @@ describe("A parser taking String objects", function() {
         expect(new String("\\div")).toParseLike("\\div");
         expect(new String("\\frac 1 2")).toParseLike("\\frac 1 2");
     });
-};
+});
