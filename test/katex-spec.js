@@ -1388,8 +1388,18 @@ describe("An HTML font tree-builder", function() {
             katex.renderToString({badInputType: "yes"});
         }).toThrowError(TypeError);
         expect(function() {
-            katex.renderToString(["foo", {badInputType: "yes"}]);
+            katex.renderToString([1, 2]);
         }).toThrowError(TypeError);
+        expect(function() {
+            katex.renderToString(undefined);
+        }).toThrowError(TypeError);
+        expect(function() {
+            katex.renderToString(null);
+        }).toThrowError(TypeError);
+        expect(function() {
+            katex.renderToString(1.234);
+        }).toThrowError(TypeError);
+    });
     });
 });
 
