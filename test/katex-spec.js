@@ -1384,8 +1384,12 @@ describe("An HTML font tree-builder", function() {
     });
 
     it("should throw TypeError when the expression is of the wrong type", function() {
-        expect(katex.renderToString({badInputType: "yes"})).toThrowError(TypeError);
-        expect(katex.renderToString(["foo", {badInputType: "yes"}])).toThrowError(TypeError);
+        expect(function(){
+            katex.renderToString({badInputType: "yes"})
+        }).toThrowError(TypeError);
+        expect(function(){
+            katex.renderToString(["foo", {badInputType: "yes"}])
+        }).toThrowError(TypeError);
     });
 });
 
