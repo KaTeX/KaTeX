@@ -61,8 +61,8 @@ Other errors such as passing in an incorrect type for an expression will still t
 For example:
 
 ```js
-katex.render("\unsupportedCommand", element, { throwOnError: true }); // throws ParseError
-katex.render("\unsupportedCommand", element, { throwOnError: false }); // does not throw ParseError
+katex.render("\\unsupportedCommand", element, { throwOnError: true }); // throws ParseError
+katex.render("\\unsupportedCommand", element, { throwOnError: false }); // does not throw ParseError
 katex.render({invalidInputDataType: "yes this is!"}, element, { throwOnError: false }); // throws TypeError
 ```
 
