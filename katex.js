@@ -19,6 +19,9 @@ var utils = require("./src/utils");
  * given.
  */
 var render = function(expression, baseNode, options) {
+    if (!(typeof expression === 'string' || expression instanceof String)) {
+        throw new TypeError('render requires string typed expression');
+    }
     utils.clearNode(baseNode);
 
     var settings = new Settings(options);
@@ -47,6 +50,9 @@ if (typeof document !== "undefined") {
  * Parse and build an expression, and return the markup for that.
  */
 var renderToString = function(expression, options) {
+    if (!(typeof expression === 'string' || expression instanceof String)) {
+        throw new TypeError('renderToString requires string typed expression');
+    }
     var settings = new Settings(options);
 
     var tree = parseTree(expression, settings);
