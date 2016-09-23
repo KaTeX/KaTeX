@@ -1400,6 +1400,16 @@ describe("An HTML font tree-builder", function() {
             katex.renderToString(1.234);
         }).toThrowError(TypeError);
     });
+
+    it("should not throw TypeError when the expression is a supported type", function() {
+        expect(function() {
+            katex.renderToString("\\sqrt{123}");
+        }).not.toThrowError(TypeError);
+        expect(function() {
+            katex.renderToString(new String("\\sqrt{123}"));
+        }).not.toThrowError(TypeError);
+    });
+    
 });
 
 
