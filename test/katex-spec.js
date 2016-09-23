@@ -1409,7 +1409,6 @@ describe("An HTML font tree-builder", function() {
             katex.renderToString(new String("\\sqrt{123}"));
         }).not.toThrowError(TypeError);
     });
-    
 });
 
 
@@ -1906,3 +1905,15 @@ describe("A macro expander", function() {
         });
     });
 });
+
+describe("A parser taking String objects", function() {
+    it("should not fail on an empty String object", function() {
+        expect(new String("")).toParse();
+    });
+
+    it("should parse the same as a regular string", function() {
+        expect(new String("xy")).toParseLike("xy");
+        expect(new String("\\div")).toParseLike("\\div");
+        expect(new String("\\frac 1 2")).toParseLike("\\frac 1 2");
+    });
+};
