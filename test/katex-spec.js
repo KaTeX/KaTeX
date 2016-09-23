@@ -1382,6 +1382,11 @@ describe("An HTML font tree-builder", function() {
         span = "<span class=\"mord mathbb\" style=\"color:blue;\">R</span>";
         expect(markup).toContain(span);
     });
+
+    it("should throw TypeError when the expression is of the wrong type", function() {
+        expect(katek.renderToString({badInputType: yes})).toThrow(new Exception("TypeError"));
+        expect(katek.renderToString(["foo", {badInputType: yes}])).toThrow(new Exception("TypeError"));
+    });
 });
 
 
