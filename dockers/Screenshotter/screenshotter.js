@@ -106,19 +106,25 @@ function check(err) {
     process.exit(1);
 }
 
-function dockerCmd() {
+function cmd() {
     var args = Array.prototype.slice.call(arguments);
+    var cmd = args.shift();
     return childProcess.execFileSync(
-        "docker", args, { encoding: "utf-8" }).replace(/\n$/, "");
+        cmd, args, { encoding: "utf-8" }).replace(/\n$/, "");
 }
 
-if (!seleniumURL && opts.container) {
+function guessDockerIPs() {
+    if (process.env.DOCKER_MACHINE_NAME) {
+        var machine = process.env.DOCKER_MACHINE_NAME;
+        seleniumIP = cmd("docker-machine", "ip", machine);
+        katexIP = cmd("docker-machine", "ssh", machine,
+            "echo ${SSH_CONNECTION%% *}");
+        return;
+    }
     try {
         // When using boot2docker, seleniumIP and katexIP are distinct.
-        seleniumIP = childProcess.execFileSync(
-            "boot2docker", ["ip"], { encoding: "utf-8" }).replace(/\n$/, "");
-        var config = childProcess.execFileSync(
-            "boot2docker", ["config"], { encoding: "utf-8" });
+        seleniumIP = cmd("boot2docker", "ip");
+        var config = cmd("boot2docker", "config");
         config = (/^HostIP = "(.*)"$/m).exec(config);
         if (!config) {
             console.error("Failed to find HostIP");
@@ -126,10 +132,14 @@ if (!seleniumURL && opts.container) {
         }
         katexIP = config[1];
     } catch (e) {
-        seleniumIP = katexIP = dockerCmd(
-            "inspect", "-f", "{{.NetworkSettings.Gateway}}", opts.container);
+        seleniumIP = katexIP = cmd("docker", "inspect",
+            "-f", "{{.NetworkSettings.Gateway}}", opts.container);
     }
-    seleniumPort = dockerCmd("port", opts.container, seleniumPort);
+}
+
+if (!seleniumURL && opts.container) {
+    guessDockerIPs();
+    seleniumPort = cmd("docker", "port", opts.container, seleniumPort);
     seleniumPort = seleniumPort.replace(/^.*:/, "");
 }
 if (!seleniumURL && seleniumIP) {

@@ -7,6 +7,15 @@
 # suitable containers themselves, calling the screenshotter.js script
 # directly.
 
+cleanup() {
+    [[ "${container}" ]] \
+        && docker stop "${container}" >/dev/null \
+        && docker rm "${container}" >/dev/null
+    container=
+}
+
+container=
+trap cleanup EXIT
 status=0
 for browserTag in firefox:2.48.2 chrome:2.48.2; do
     browser=${browserTag%:*}
@@ -23,6 +32,6 @@ for browserTag in firefox:2.48.2 chrome:2.48.2; do
         status=1
     fi
     echo "${res} taking screenshots, stopping and removing ${container:0:12}"
-    docker stop ${container} >/dev/null && docker rm ${container} >/dev/null
+    cleanup
 done
 exit ${status}
