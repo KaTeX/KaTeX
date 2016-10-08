@@ -2,6 +2,7 @@
 var fontMetrics = require("./fontMetrics");
 var parseData = require("./parseData");
 var ParseError = require("./ParseError");
+var Style = require("./Style");
 
 var ParseNode = parseData.ParseNode;
 
@@ -161,7 +162,8 @@ defineEnvironment("cases", {
             type: "align",
             align: "l",
             pregap: 0,
-            postgap: fontMetrics.metrics.quad,
+            // TODO(kevinb) get the current style
+            postgap: fontMetrics.metrics.getQuad(Style.TEXT),
         }, {
             type: "align",
             align: "l",
