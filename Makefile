@@ -1,9 +1,17 @@
 .PHONY: build dist lint setup copy serve clean metrics test zip contrib
 build: lint build/katex.min.js build/katex.min.css contrib zip compress
 
+ifeq ($(KATEX_DIST),skip)
+
+dist:
+
+else
+
 dist: build
 	rm -rf dist/
 	cp -R build/katex/ dist/
+
+endif
 
 # Export these variables for use in contrib Makefiles
 export BUILDDIR = $(realpath build)
@@ -18,7 +26,7 @@ export UGLIFYJS = $(realpath ./node_modules/.bin/uglifyjs) \
 NIS = .npm-install.stamp
 
 $(NIS) setup: package.json
-	npm install
+	KATEX_DIST=skip npm install # dependencies only, don't build
 	@touch $(NIS)
 
 lint: $(NIS) katex.js server.js cli.js $(wildcard src/*.js) $(wildcard test/*.js) $(wildcard contrib/*/*.js) $(wildcard dockers/*/*.js)
