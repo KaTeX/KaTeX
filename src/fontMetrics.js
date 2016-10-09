@@ -10,21 +10,36 @@ var cjkRegex = require("./unicodeRegexes").cjkRegex;
  * `metrics` variable and the getCharacterMetrics function.
  */
 
-// These font metrics are extracted from TeX by using
-// \font\a=cmmi10
-// \showthe\fontdimenX\a
-// where X is the corresponding variable number. These correspond to the font
-// parameters of the symbol fonts. In TeX, there are actually three sets of
-// dimensions, one for each of textstyle, scriptstyle, and scriptscriptstyle,
-// but we only use the textstyle ones, and scale certain dimensions accordingly.
-// See the TeXbook, page 441.
-var sigma1 = 0.025;                  // slant
-var sigma2 = 0;                      // space
-var sigma3 = 0;                      // stretch
-var sigma4 = 0;                      // shrink
-var sigma5 = 0.431;                  // xheight
+// In TeX, there are actually three sets of dimensions, one for each of
+// textstyle, scriptstyle, and scriptscriptstyle.  These are provided in the
+// the arrays below, in that order.  Metrics with only a single value are
+// assumed to be the same for all three font styles.
+//
+// The font metrics are stored in fonts cmsy10, cmsy7, and cmsy5 respsectively.
+// This was determined by running the folllowing script:
+//
+//     latex -interaction=nonstopmode \
+//     '\documentclass{article}\usepackage{amsmath}\begin{document}' \
+//     '$a$ \expandafter\show\the\textfont2' \
+//     '\expandafter\show\the\scriptfont2' \
+//     '\expandafter\show\the\scriptscriptfont2' \
+//     '\stop'
+//
+// The metrics themselves were retreived using the following commands:
+//
+//     tftopl cmsy10
+//     tftopl cmsy7
+//     tftopl cmsy5
+//
+// The output of each of these commands is quite lengthy.  The only part we
+// care about is the FONTDIMEN section. Each value is measured in EMs.
+var sigma1 = [0.250, 0.250, 0.250];  // slant
+var sigma2 = [0.000, 0.000, 0.000];  // space
+var sigma3 = [0.000, 0.000, 0.000];  // stretch
+var sigma4 = [0.000, 0.000, 0.000];  // shrink
+var sigma5 = [0.431, 0.431, 0.431];  // xheight
 var sigma6 = [1.000, 1.171, 1.472];  // quad
-var sigma7 = 0;                      // extraspace
+var sigma7 = [0.000, 0.000, 0.000];  // extraspace
 var sigma8 = [0.677, 0.732, 0.925];  // num1
 var sigma9 = [0.394, 0.384, 0.387];  // num2
 var sigma10 = [0.444, 0.471, 0.504]; // num3
@@ -90,7 +105,7 @@ function createMetricsGetter(metrics) {
  * This is just a mapping from common names to real metrics
  */
 var metrics = {
-    xHeight: sigma5,
+    getXHeight: createMetricsGetter(sigma5),
     getQuad: createMetricsGetter(sigma6),
     getNum1: createMetricsGetter(sigma8),
     getNum2: createMetricsGetter(sigma9),

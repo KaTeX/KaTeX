@@ -320,7 +320,7 @@ groupTypes.supsub = function(group, options, prev) {
         // Rule 18b
         subShift = Math.max(
             subShift, fontMetrics.metrics.getSub1(options.style),
-            sub.height - 0.8 * fontMetrics.metrics.xHeight);
+            sub.height - 0.8 * fontMetrics.metrics.getXHeight(options.style));
 
         supsub = buildCommon.makeVList([
             {type: "elem", elem: submid},
@@ -337,7 +337,7 @@ groupTypes.supsub = function(group, options, prev) {
     } else if (!group.value.sub) {
         // Rule 18c, d
         supShift = Math.max(supShift, minSupShift,
-            sup.depth + 0.25 * fontMetrics.metrics.xHeight);
+            sup.depth + 0.25 * fontMetrics.metrics.getXHeight(options.style));
 
         supsub = buildCommon.makeVList([
             {type: "elem", elem: supmid},
@@ -347,7 +347,7 @@ groupTypes.supsub = function(group, options, prev) {
     } else {
         supShift = Math.max(
             supShift, minSupShift,
-            sup.depth + 0.25 * fontMetrics.metrics.xHeight);
+            sup.depth + 0.25 * fontMetrics.metrics.getXHeight(options.style));
         subShift = Math.max(
             subShift,
             fontMetrics.metrics.getSub2(options.style));
@@ -358,7 +358,7 @@ groupTypes.supsub = function(group, options, prev) {
         if ((supShift - sup.depth) - (sub.height - subShift) <
                 4 * ruleWidth) {
             subShift = 4 * ruleWidth - (supShift - sup.depth) + sub.height;
-            var psi = 0.8 * fontMetrics.metrics.xHeight -
+            var psi = 0.8 * fontMetrics.metrics.getXHeight(options.style) -
                 (supShift - sup.depth);
             if (psi > 0) {
                 supShift += psi;
@@ -983,7 +983,7 @@ groupTypes.sqrt = function(group, options, prev) {
 
     var phi = ruleWidth;
     if (options.style.id < Style.TEXT.id) {
-        phi = fontMetrics.metrics.xHeight;
+        phi = fontMetrics.metrics.getXHeight(options.style);
     }
 
     // Calculate the clearance between the body and line
@@ -1181,18 +1181,18 @@ groupTypes.rule = function(group, options, prev) {
     if (group.value.shift) {
         shift = group.value.shift.number;
         if (group.value.shift.unit === "ex") {
-            shift *= fontMetrics.metrics.xHeight;
+            shift *= fontMetrics.metrics.getXHeight(options.style);
         }
     }
 
     var width = group.value.width.number;
     if (group.value.width.unit === "ex") {
-        width *= fontMetrics.metrics.xHeight;
+        width *= fontMetrics.metrics.getXHeight(options.style);
     }
 
     var height = group.value.height.number;
     if (group.value.height.unit === "ex") {
-        height *= fontMetrics.metrics.xHeight;
+        height *= fontMetrics.metrics.getXHeight(options.style);
     }
 
     // The sizes of rules are absolute, so make it larger if we are in a
@@ -1222,7 +1222,7 @@ groupTypes.kern = function(group, options, prev) {
     if (group.value.dimension) {
         dimension = group.value.dimension.number;
         if (group.value.dimension.unit === "ex") {
-            dimension *= fontMetrics.metrics.xHeight;
+            dimension *= fontMetrics.metrics.getXHeight(options.style);
         }
     }
 
@@ -1290,7 +1290,9 @@ groupTypes.accent = function(group, options, prev) {
     }
 
     // calculate the amount of space between the body and the accent
-    var clearance = Math.min(body.height, fontMetrics.metrics.xHeight);
+    var clearance = Math.min(
+        body.height,
+        fontMetrics.metrics.getXHeight(options.style));
 
     // Build the accent
     var accent = buildCommon.makeSymbol(

@@ -162,7 +162,10 @@ defineEnvironment("cases", {
             type: "align",
             align: "l",
             pregap: 0,
-            // TODO(kevinb) get the current style
+            // TODO(kevinb) get the current style.
+            // For now we use the metrics for TEXT style which is what we were
+            // doing before.  Before attempting to get the current style we
+            // should look at TeX's behavior especially for \over and matrices.
             postgap: fontMetrics.metrics.getQuad(Style.TEXT),
         }, {
             type: "align",
