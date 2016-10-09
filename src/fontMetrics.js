@@ -131,7 +131,7 @@ var metrics = {
     bigOpSpacing5: xi13,
     ptPerEm: ptPerEm,
     getEmPerEx: function(style) {
-        return sigma5 / metrics.getQuad(style);
+        return metrics.getXHeight(style) / metrics.getQuad(style);
     },
     doubleRuleSep: doubleRuleSep,
 };
