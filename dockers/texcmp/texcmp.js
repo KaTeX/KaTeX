@@ -86,7 +86,7 @@ function processTestCase(key) {
         // Step 3: call "convert ... key.pdf key.png" to create key.png
         return execFile("convert", [
             "-density", dpi, "-units", "PixelsPerInch", "-flatten",
-            pdfFile, pngFile,
+            "-depth", "8", pdfFile, pngFile,
         ]);
     }).then(function() {
         console.log("Rasterized " + key);
@@ -209,6 +209,7 @@ function readPNG(file) {
     stream.on("error", onerror);
     pngparse.parseStream(stream, function(err, image) {
         if (err) {
+            console.log("Failed to load " + file);
             onerror(err);
             return;
         }
