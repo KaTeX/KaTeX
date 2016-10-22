@@ -303,9 +303,9 @@ groupTypes.supsub = function(group, options, prev) {
     if (options.style === Style.DISPLAY) {
         minSupShift = options.style.metrics.sup1;
     } else if (options.style.cramped) {
-        minSupShift = options.style.metrics.sup2;
-    } else {
         minSupShift = options.style.metrics.sup3;
+    } else {
+        minSupShift = options.style.metrics.sup2;
     }
 
     // scriptspace is a font-size-independent size, so scale it

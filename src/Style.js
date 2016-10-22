@@ -29,7 +29,7 @@ function Style(id, size, multiplier, cramped) {
     this.size = size;
     this.cramped = cramped;
     this.sizeMultiplier = multiplier;
-    this.metrics = metrics[size > 0 ? size - 1 : size];
+    this.metrics = metrics[size > 0 ? size - 1 : 0];
 }
 
 /**
