@@ -294,18 +294,18 @@ groupTypes.supsub = function(group, options, prev) {
         supShift = 0;
         subShift = 0;
     } else {
-        supShift = base.height - fontMetrics.metrics.getSupDrop(options.style);
-        subShift = base.depth + fontMetrics.metrics.getSubDrop(options.style);
+        supShift = base.height - options.style.metrics.supDrop;
+        subShift = base.depth + options.style.metrics.subDrop;
     }
 
     // Rule 18c
     var minSupShift;
     if (options.style === Style.DISPLAY) {
-        minSupShift = fontMetrics.metrics.getSup1(options.style);
+        minSupShift = options.style.metrics.sup1;
     } else if (options.style.cramped) {
-        minSupShift = fontMetrics.metrics.getSup3(options.style);
+        minSupShift = options.style.metrics.sup2;
     } else {
-        minSupShift = fontMetrics.metrics.getSup2(options.style);
+        minSupShift = options.style.metrics.sup3;
     }
 
     // scriptspace is a font-size-independent size, so scale it
@@ -319,8 +319,8 @@ groupTypes.supsub = function(group, options, prev) {
     if (!group.value.sup) {
         // Rule 18b
         subShift = Math.max(
-            subShift, fontMetrics.metrics.getSub1(options.style),
-            sub.height - 0.8 * fontMetrics.metrics.getXHeight(options.style));
+            subShift, options.style.metrics.sub1,
+            sub.height - 0.8 * options.style.metrics.xHeight);
 
         supsub = buildCommon.makeVList([
             {type: "elem", elem: submid},
@@ -337,7 +337,7 @@ groupTypes.supsub = function(group, options, prev) {
     } else if (!group.value.sub) {
         // Rule 18c, d
         supShift = Math.max(supShift, minSupShift,
-            sup.depth + 0.25 * fontMetrics.metrics.getXHeight(options.style));
+            sup.depth + 0.25 * options.style.metrics.xHeight);
 
         supsub = buildCommon.makeVList([
             {type: "elem", elem: supmid},
@@ -347,10 +347,10 @@ groupTypes.supsub = function(group, options, prev) {
     } else {
         supShift = Math.max(
             supShift, minSupShift,
-            sup.depth + 0.25 * fontMetrics.metrics.getXHeight(options.style));
+            sup.depth + 0.25 * options.style.metrics.xHeight);
         subShift = Math.max(
             subShift,
-            fontMetrics.metrics.getSub2(options.style));
+            options.style.metrics.sub2);
 
         var ruleWidth = fontMetrics.metrics.defaultRuleThickness;
 
@@ -358,7 +358,7 @@ groupTypes.supsub = function(group, options, prev) {
         if ((supShift - sup.depth) - (sub.height - subShift) <
                 4 * ruleWidth) {
             subShift = 4 * ruleWidth - (supShift - sup.depth) + sub.height;
-            var psi = 0.8 * fontMetrics.metrics.getXHeight(options.style) -
+            var psi = 0.8 * options.style.metrics.xHeight -
                 (supShift - sup.depth);
             if (psi > 0) {
                 supShift += psi;
@@ -418,22 +418,22 @@ groupTypes.genfrac = function(group, options, prev) {
     var clearance;
     var denomShift;
     if (fstyle.size === Style.DISPLAY.size) {
-        numShift = fontMetrics.metrics.getNum1(fstyle);
+        numShift = fstyle.metrics.num1;
         if (ruleWidth > 0) {
             clearance = 3 * ruleWidth;
         } else {
             clearance = 7 * fontMetrics.metrics.defaultRuleThickness;
         }
-        denomShift = fontMetrics.metrics.getDenom1(fstyle);
+        denomShift = fstyle.metrics.denom1;
     } else {
         if (ruleWidth > 0) {
-            numShift = fontMetrics.metrics.getNum2(fstyle);
+            numShift = fstyle.metrics.num2;
             clearance = ruleWidth;
         } else {
-            numShift = fontMetrics.metrics.getNum3(fstyle);
+            numShift = fstyle.metrics.num3;
             clearance = 3 * fontMetrics.metrics.defaultRuleThickness;
         }
-        denomShift = fontMetrics.metrics.getDenom2(fstyle);
+        denomShift = fstyle.metrics.denom2;
     }
 
     var frac;
@@ -452,7 +452,7 @@ groupTypes.genfrac = function(group, options, prev) {
         ], "individualShift", null, options);
     } else {
         // Rule 15d
-        var axisHeight = fontMetrics.metrics.getAxisHeight(fstyle);
+        var axisHeight = fstyle.metrics.axisHeight;
 
         if ((numShift - numer.depth) - (axisHeight + 0.5 * ruleWidth) <
                 clearance) {
@@ -491,9 +491,9 @@ groupTypes.genfrac = function(group, options, prev) {
     // Rule 15e
     var delimSize;
     if (fstyle.size === Style.DISPLAY.size) {
-        delimSize = fontMetrics.metrics.getDelim1(fstyle);
+        delimSize = fstyle.metrics.delim1;
     } else {
-        delimSize = fontMetrics.metrics.getDelim2(fstyle);
+        delimSize = fstyle.metrics.delim2;
     }
 
     var leftDelim;
@@ -526,7 +526,6 @@ groupTypes.array = function(group, options, prev) {
     var nc = 0;
     var body = new Array(nr);
 
-    var metrics = fontMetrics.metrics;
     var style = options.style;
 
     // Horizontal spacing
@@ -572,7 +571,7 @@ groupTypes.array = function(group, options, prev) {
                     gap = gap.number;
                     break;
                 case "ex":
-                    gap = gap.number * metrics.getEmPerEx(style);
+                    gap = gap.number * style.metrics.emPerEx;
                     break;
                 default:
                     console.error("Can't handle unit " + gap.unit);
@@ -596,7 +595,7 @@ groupTypes.array = function(group, options, prev) {
     }
 
     var offset =
-        totalHeight / 2 + fontMetrics.metrics.getAxisHeight(style);
+        totalHeight / 2 + style.metrics.axisHeight;
     var colDescriptions = group.value.cols || [];
     var cols = [];
     var colSep;
@@ -765,7 +764,7 @@ groupTypes.op = function(group, options, prev) {
         // don't actually apply this here, but instead it is used either in
         // the vlist creation or separately when there are no limits.
         baseShift = (base.height - base.depth) / 2 -
-            fontMetrics.metrics.getAxisHeight(options.style) *
+            options.style.metrics.axisHeight *
             options.style.sizeMultiplier;
 
         // The slant of the symbol is just its italic correction.
@@ -983,7 +982,7 @@ groupTypes.sqrt = function(group, options, prev) {
 
     var phi = ruleWidth;
     if (options.style.id < Style.TEXT.id) {
-        phi = fontMetrics.metrics.getXHeight(options.style);
+        phi = options.style.metrics.xHeight;
     }
 
     // Calculate the clearance between the body and line
@@ -1181,18 +1180,18 @@ groupTypes.rule = function(group, options, prev) {
     if (group.value.shift) {
         shift = group.value.shift.number;
         if (group.value.shift.unit === "ex") {
-            shift *= fontMetrics.metrics.getXHeight(options.style);
+            shift *= options.style.metrics.xHeight;
         }
     }
 
     var width = group.value.width.number;
     if (group.value.width.unit === "ex") {
-        width *= fontMetrics.metrics.getXHeight(options.style);
+        width *= options.style.metrics.xHeight;
     }
 
     var height = group.value.height.number;
     if (group.value.height.unit === "ex") {
-        height *= fontMetrics.metrics.getXHeight(options.style);
+        height *= options.style.metrics.xHeight;
     }
 
     // The sizes of rules are absolute, so make it larger if we are in a
@@ -1222,7 +1221,7 @@ groupTypes.kern = function(group, options, prev) {
     if (group.value.dimension) {
         dimension = group.value.dimension.number;
         if (group.value.dimension.unit === "ex") {
-            dimension *= fontMetrics.metrics.getXHeight(options.style);
+            dimension *= options.style.metrics.xHeight;
         }
     }
 
@@ -1292,7 +1291,7 @@ groupTypes.accent = function(group, options, prev) {
     // calculate the amount of space between the body and the accent
     var clearance = Math.min(
         body.height,
-        fontMetrics.metrics.getXHeight(options.style));
+        options.style.metrics.xHeight);
 
     // Build the accent
     var accent = buildCommon.makeSymbol(

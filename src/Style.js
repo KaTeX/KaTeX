@@ -6,6 +6,18 @@
  * information about them.
  */
 
+var sigmas = require("./fontMetrics.js").sigmas;
+
+var metrics = [];
+
+for (var i = 0; i < 3; i++) {
+    metrics[i] = Object.keys(sigmas).reduce(function(res, key) {
+        res[key] = sigmas[key][i];
+        return res;
+    }, {});
+    metrics[i].emPerEx = sigmas.xHeight[i] / sigmas.quad[i];
+}
+
 /**
  * The main style class. Contains a unique id for the style, a size (which is
  * the same for cramped and uncramped version of a style), a cramped flag, and a
@@ -17,6 +29,7 @@ function Style(id, size, multiplier, cramped) {
     this.size = size;
     this.cramped = cramped;
     this.sizeMultiplier = multiplier;
+    this.metrics = metrics[size > 0 ? size - 1 : size];
 }
 
 /**

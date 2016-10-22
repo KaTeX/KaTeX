@@ -33,28 +33,30 @@ var cjkRegex = require("./unicodeRegexes").cjkRegex;
 //
 // The output of each of these commands is quite lengthy.  The only part we
 // care about is the FONTDIMEN section. Each value is measured in EMs.
-var sigma1 = [0.250, 0.250, 0.250];  // slant
-var sigma2 = [0.000, 0.000, 0.000];  // space
-var sigma3 = [0.000, 0.000, 0.000];  // stretch
-var sigma4 = [0.000, 0.000, 0.000];  // shrink
-var sigma5 = [0.431, 0.431, 0.431];  // xheight
-var sigma6 = [1.000, 1.171, 1.472];  // quad
-var sigma7 = [0.000, 0.000, 0.000];  // extraspace
-var sigma8 = [0.677, 0.732, 0.925];  // num1
-var sigma9 = [0.394, 0.384, 0.387];  // num2
-var sigma10 = [0.444, 0.471, 0.504]; // num3
-var sigma11 = [0.686, 0.752, 1.025]; // denom1
-var sigma12 = [0.345, 0.344, 0.532]; // denom2
-var sigma13 = [0.413, 0.503, 0.504]; // sup1
-var sigma14 = [0.363, 0.431, 0.404]; // sup2
-var sigma15 = [0.289, 0.286, 0.294]; // sup3
-var sigma16 = [0.150, 0.143, 0.200]; // sub1
-var sigma17 = [0.247, 0.286, 0.400]; // sub2
-var sigma18 = [0.386, 0.353, 0.494]; // supdrop
-var sigma19 = [0.050, 0.071, 0.100]; // subdrop
-var sigma20 = [2.390, 1.700, 1.980]; // delim1
-var sigma21 = [1.010, 1.157, 1.420]; // delim2
-var sigma22 = [0.250, 0.250, 0.250]; // axisHeight
+var sigmas = {
+    slant: [0.250, 0.250, 0.250],       // sigma1
+    space: [0.000, 0.000, 0.000],       // sigma2
+    stretch: [0.000, 0.000, 0.000],     // sigma3
+    shrink: [0.000, 0.000, 0.000],      // sigma4
+    xHeight: [0.431, 0.431, 0.431],     // sigma5
+    quad: [1.000, 1.171, 1.472],        // sigma6
+    extraSpace: [0.000, 0.000, 0.000],  // sigma7
+    num1: [0.677, 0.732, 0.925],        // sigma8
+    num2: [0.394, 0.384, 0.387],        // sigma9
+    num3: [0.444, 0.471, 0.504],        // sigma10
+    denom1: [0.686, 0.752, 1.025],      // sigma11
+    denom2: [0.345, 0.344, 0.532],      // sigma12
+    sup1: [0.413, 0.503, 0.504],        // sigma13
+    sup2: [0.363, 0.431, 0.404],        // sigma14
+    sup3: [0.289, 0.286, 0.294],        // sigma15
+    sub1: [0.150, 0.143, 0.200],        // sigma16
+    sub2: [0.247, 0.286, 0.400],        // sigma17
+    supDrop: [0.386, 0.353, 0.494],     // sigma18
+    subDrop: [0.050, 0.071, 0.100],     // sigma19
+    delim1: [2.390, 1.700, 1.980],      // sigma20
+    delim2: [1.010, 1.157, 1.420],      // sigma21
+    axisHeight: [0.250, 0.250, 0.250],  // sigma22
+};
 
 // These font metrics are extracted from TeX by using
 // \font\a=cmex10
@@ -85,44 +87,10 @@ var ptPerEm = 10.0;
 // `\showthe\doublerulesep` in LaTeX.
 var doubleRuleSep = 2.0 / ptPerEm;
 
-// Return a function that will return the style specific value for the given
-// array of metric values.
-function createMetricsGetter(metrics) {
-    return function(style) {
-        var size = style.size;
-        if (size === Style.TEXT.size || size === Style.DISPLAY.size) {
-            return metrics[0];
-        } else if (size === Style.SCRIPT.size) {
-            return metrics[1];
-        } else if (size === Style.SCRIPTSCRIPT.size) {
-            return metrics[2];
-        }
-        throw new Error("Unexpected style size: " + style.size);
-    };
-}
-
 /**
  * This is just a mapping from common names to real metrics
  */
 var metrics = {
-    getXHeight: createMetricsGetter(sigma5),
-    getQuad: createMetricsGetter(sigma6),
-    getNum1: createMetricsGetter(sigma8),
-    getNum2: createMetricsGetter(sigma9),
-    getNum3: createMetricsGetter(sigma10),
-    getDenom1: createMetricsGetter(sigma11),
-    getDenom2: createMetricsGetter(sigma12),
-    getSup1: createMetricsGetter(sigma13),
-    getSup2: createMetricsGetter(sigma14),
-    getSup3: createMetricsGetter(sigma15),
-    getSub1: createMetricsGetter(sigma16),
-    getSub2: createMetricsGetter(sigma17),
-    getSupDrop: createMetricsGetter(sigma18),
-    getSubDrop: createMetricsGetter(sigma19),
-    getDelim1: createMetricsGetter(sigma20),
-    getDelim2: createMetricsGetter(sigma21),
-    getAxisHeight: createMetricsGetter(sigma22),
-
     defaultRuleThickness: xi8,
     bigOpSpacing1: xi9,
     bigOpSpacing2: xi10,
@@ -130,9 +98,6 @@ var metrics = {
     bigOpSpacing4: xi12,
     bigOpSpacing5: xi13,
     ptPerEm: ptPerEm,
-    getEmPerEx: function(style) {
-        return metrics.getXHeight(style) / metrics.getQuad(style);
-    },
     doubleRuleSep: doubleRuleSep,
 };
 
@@ -309,5 +274,6 @@ var getCharacterMetrics = function(character, style) {
 
 module.exports = {
     metrics: metrics,
+    sigmas: sigmas,
     getCharacterMetrics: getCharacterMetrics,
 };
