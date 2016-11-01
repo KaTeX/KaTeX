@@ -30,10 +30,10 @@ build/katex.js: katex.js $(wildcard src/*.js) $(NIS)
 build/katex.min.js: build/katex.js
 	$(UGLIFYJS) < $< > $@
 
-build/katex.less.css: static/katex.less $(wildcard static/*.less) $(NIS)
+build/katex.css: static/katex.less $(wildcard static/*.less) $(NIS)
 	./node_modules/.bin/lessc $< $@
 
-build/katex.min.css: build/katex.less.css
+build/katex.min.css: build/katex.css
 	./node_modules/.bin/cleancss -o $@ $<
 
 .PHONY: build/fonts
@@ -61,7 +61,7 @@ build/contrib:
 	$(MAKE) -C contrib/auto-render
 
 .PHONY: build/katex
-build/katex: build/katex.min.js build/katex.min.css build/fonts README.md build/contrib
+build/katex: build/katex.js build/katex.min.js build/katex.css build/katex.min.css build/fonts README.md build/contrib
 	mkdir -p build/katex
 	rm -rf build/katex/*
 	cp -r $^ build/katex
