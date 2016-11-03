@@ -1,6 +1,5 @@
 .npm-install.stamp
 build
-dist
 node_modules
 npm-debug.log
 last.png

@@ -12,8 +12,7 @@ var cjkRegex = require("./unicodeRegexes").cjkRegex;
 
 // In TeX, there are actually three sets of dimensions, one for each of
 // textstyle, scriptstyle, and scriptscriptstyle.  These are provided in the
-// the arrays below, in that order.  Metrics with only a single value are
-// assumed to be the same for all three font styles.
+// the arrays below, in that order.
 //
 // The font metrics are stored in fonts cmsy10, cmsy7, and cmsy5 respsectively.
 // This was determined by running the folllowing script:
