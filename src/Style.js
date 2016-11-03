@@ -9,12 +9,15 @@
 var sigmas = require("./fontMetrics.js").sigmas;
 
 var metrics = [{}, {}, {}];
+var i;
 for (var key in sigmas) {
-    for (var i = 0; i < 3; i++) {
-        metrics[i][key] = sigmas[key][i];
+    if (sigmas.hasOwnProperty(key)) {
+        for (i = 0; i < 3; i++) {
+            metrics[i][key] = sigmas[key][i];
+        }
     }
 }
-for (var i = 0; i < 3; i++) {
+for (i = 0; i < 3; i++) {
     metrics[i].emPerEx = sigmas.xHeight[i] / sigmas.quad[i];
 }
 
