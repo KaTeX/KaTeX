@@ -81,7 +81,7 @@ var makeSmallDelim = function(delim, style, center, options, mode) {
     if (center) {
         var shift =
             (1 - options.style.sizeMultiplier / style.sizeMultiplier) *
-            fontMetrics.metrics.axisHeight;
+            options.style.metrics.axisHeight;
 
         span.style.top = shift + "em";
         span.height -= shift;
@@ -105,7 +105,7 @@ var makeLargeDelim = function(delim, size, center, options, mode) {
 
     if (center) {
         var shift = (1 - options.style.sizeMultiplier) *
-            fontMetrics.metrics.axisHeight;
+            options.style.metrics.axisHeight;
 
         span.style.top = shift + "em";
         span.height -= shift;
@@ -278,7 +278,7 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
     // that in this context, "center" means that the delimiter should be
     // centered around the axis in the current style, while normally it is
     // centered around the axis in textstyle.
-    var axisHeight = fontMetrics.metrics.axisHeight;
+    var axisHeight = options.style.metrics.axisHeight;
     if (center) {
         axisHeight *= options.style.sizeMultiplier;
     }
@@ -508,7 +508,7 @@ var makeCustomSizedDelim = function(delim, height, center, options, mode) {
 var makeLeftRightDelim = function(delim, height, depth, options, mode) {
     // We always center \left/\right delimiters, so the axis is always shifted
     var axisHeight =
-        fontMetrics.metrics.axisHeight * options.style.sizeMultiplier;
+        options.style.metrics.axisHeight * options.style.sizeMultiplier;
 
     // Taken from TeX source, tex.web, function make_left_right
     var delimiterFactor = 901;

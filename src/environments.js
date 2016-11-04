@@ -1,7 +1,7 @@
 /* eslint no-constant-condition:0 */
-var fontMetrics = require("./fontMetrics");
 var parseData = require("./parseData");
 var ParseError = require("./ParseError");
+var Style = require("./Style");
 
 var ParseNode = parseData.ParseNode;
 
@@ -161,7 +161,11 @@ defineEnvironment("cases", {
             type: "align",
             align: "l",
             pregap: 0,
-            postgap: fontMetrics.metrics.quad,
+            // TODO(kevinb) get the current style.
+            // For now we use the metrics for TEXT style which is what we were
+            // doing before.  Before attempting to get the current style we
+            // should look at TeX's behavior especially for \over and matrices.
+            postgap: Style.TEXT.metrics.quad,
         }, {
             type: "align",
             align: "l",
