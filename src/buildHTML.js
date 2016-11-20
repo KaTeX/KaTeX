@@ -86,6 +86,8 @@ var getTypeOfGroup = function(group) {
         return getTypeOfGroup(group.value.value);
     } else if (group.type === "styling") {
         return getTypeOfGroup(group.value.value);
+    } else if (group.type === "font") {
+        return getTypeOfGroup(group.value.body);
     } else if (group.type === "delimsizing") {
         return groupToType[group.value.delimType];
     } else {
