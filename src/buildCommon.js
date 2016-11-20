@@ -188,9 +188,31 @@ var makeSpan = function(classes, children, color) {
 };
 
 /**
+ * Flattens a list of fragments and/or nodes into nodes only.
+ */
+var flattenChildren = function(children, result) {
+    for (var i = 0; i < children.length; ++i) {
+        if (children[i] instanceof domTree.documentFragment) {
+            flattenChildren(children[i].children, result);
+        } else {
+            result.push(children[i]);
+        }
+    }
+};
+
+/**
  * Makes a document fragment with the given list of children.
  */
-var makeFragment = function(children) {
+var makeFragment = function(children, classes) {
+    if (classes) {
+        var newChildren = [];
+        flattenChildren(children, newChildren);
+        for (var i = 0; i < newChildren.length; ++i) {
+            [].push.apply(newChildren[i].classes, classes);
+        }
+        children = newChildren;
+    }
+
     var fragment = new domTree.documentFragment(children);
 
     sizeElementFromChildren(fragment);

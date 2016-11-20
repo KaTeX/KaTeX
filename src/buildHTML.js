@@ -1089,7 +1089,8 @@ groupTypes.styling = function(group, options, prev) {
     var inner = buildExpression(
         group.value.value, options.withStyle(newStyle), prev);
 
-    return makeSpan([options.style.reset(), newStyle.cls()], inner);
+    return new buildCommon.makeFragment(
+        inner, [options.style.reset(), newStyle.cls()]);
 };
 
 groupTypes.font = function(group, options, prev) {
