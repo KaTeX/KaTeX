@@ -138,7 +138,9 @@ function guessDockerIPs() {
 }
 
 if (!seleniumURL && opts.container) {
-    guessDockerIPs();
+    if (!seleniumIP) {
+        guessDockerIPs();
+    }
     seleniumPort = cmd("docker", "port", opts.container, seleniumPort);
     seleniumPort = seleniumPort.replace(/^.*:/, "");
 }
