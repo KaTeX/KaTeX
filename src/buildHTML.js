@@ -80,12 +80,11 @@ var getTypeOfGroup = function(group) {
         return getTypeOfGroup(group.value.base);
     } else if (group.type === "llap" || group.type === "rlap") {
         return getTypeOfGroup(group.value);
-    } else if (group.type === "color") {
-        return getTypeOfGroup(group.value.value);
-    } else if (group.type === "sizing") {
-        return getTypeOfGroup(group.value.value);
-    } else if (group.type === "styling") {
-        return getTypeOfGroup(group.value.value);
+    } else if (group.type === "color" || group.type === "sizing"
+               || group.type === "styling") {
+        // Return type of rightmost element of group.
+        var atoms = group.value.value;
+        return getTypeOfGroup(atoms[atoms.length - 1]);
     } else if (group.type === "font") {
         return getTypeOfGroup(group.value.body);
     } else if (group.type === "delimsizing") {
