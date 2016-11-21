@@ -50,7 +50,6 @@ var opts = require("nomnom")
     })
     .option("katexIP", {
         full: "katex-ip",
-        "default": "localhost",
         help: "Full URL of the KaTeX development server",
     })
     .option("katexPort", {
@@ -116,29 +115,31 @@ function cmd() {
 function guessDockerIPs() {
     if (process.env.DOCKER_MACHINE_NAME) {
         var machine = process.env.DOCKER_MACHINE_NAME;
-        seleniumIP = cmd("docker-machine", "ip", machine);
-        katexIP = cmd("docker-machine", "ssh", machine,
+        seleniumIP = seleniumIP || cmd("docker-machine", "ip", machine);
+        katexIP = katexIP || cmd("docker-machine", "ssh", machine,
             "echo ${SSH_CONNECTION%% *}");
         return;
     }
     try {
         // When using boot2docker, seleniumIP and katexIP are distinct.
-        seleniumIP = cmd("boot2docker", "ip");
+        seleniumIP = seleniumIP || cmd("boot2docker", "ip");
         var config = cmd("boot2docker", "config");
         config = (/^HostIP = "(.*)"$/m).exec(config);
         if (!config) {
             console.error("Failed to find HostIP");
             process.exit(2);
         }
-        katexIP = config[1];
+        katexIP = katexIP || config[1];
     } catch (e) {
-        seleniumIP = katexIP = cmd("docker", "inspect",
+        var ip = cmd("docker", "inspect",
             "-f", "{{.NetworkSettings.Gateway}}", opts.container);
+        seleniumIP = seleniumIP || ip;
+        katexIP = katexIP || ip;
     }
 }
 
 if (!seleniumURL && opts.container) {
-    if (!seleniumIP) {
+    if (!seleniumIP || !katexIP) {
         guessDockerIPs();
     }
     seleniumPort = cmd("docker", "port", opts.container, seleniumPort);
@@ -191,6 +192,9 @@ function startServer() {
 // Wait for container to become ready
 
 function tryConnect() {
+    if (!katexIP) {
+        katexIP = "localhost";
+    }
     if (!katexURL) {
         katexURL = "http://" + katexIP + ":" + katexPort + "/";
         console.log("KaTeX URL is " + katexURL);
