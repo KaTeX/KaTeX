@@ -17,18 +17,57 @@ var utils = require("./utils");
 
 var makeSpan = buildCommon.makeSpan;
 
+var isSpace = function(node) {
+    return node instanceof domTree.span && node.classes[0] === "mspace";
+};
+
 /**
  * Take a list of nodes, build them in order, and return a list of the built
  * nodes. This function handles the `prev` node correctly, and passes the
- * previous element from the list as the prev of the next element.
+ * previous element from the list as the prev of the next element, ignoring
+ * spaces. documentFragments are flattened into their contents, so the
+ * returned list contains no fragments.
  */
 var buildExpression = function(expression, options, prev) {
+    // Parse expressions into `groups`.
     var groups = [];
     for (var i = 0; i < expression.length; i++) {
         var group = expression[i];
-        groups.push(buildGroup(group, options, prev));
-        prev = group;
+        var output = buildGroup(group, options, prev);
+        if (output instanceof domTree.documentFragment) {
+            Array.prototype.push.apply(groups, output.children);
+        } else {
+            groups.push(output);
+        }
+        if (!isSpace(output)) {
+            prev = group;
+        }
     }
+    // At this point `groups` consists entirely of `symbolNode`s and `span`s.
+
+    // Explicit spaces (e.g., \;, \,) should be ignored with respect to atom
+    // spacing (e.g., "add thick space between mord and mrel"). Since CSS
+    // adjacency rules implement atom spacing, spaces should be invisible to
+    // CSS. So we splice them out of `groups` and into the atoms themselves.
+    var spaces = null;
+    for (i = 0; i < groups.length; i++) {
+        if (isSpace(groups[i])) {
+            spaces = spaces || [];
+            spaces.push(groups[i]);
+            groups.splice(i, 1);
+            i--;
+        } else if (spaces) {
+            if (groups[i] instanceof domTree.symbolNode) {
+                groups[i] = makeSpan(groups[i].classes, [groups[i]]);
+            }
+            buildCommon.prependChildren(groups[i], spaces);
+            spaces = null;
+        }
+    }
+    if (spaces) {
+        Array.prototype.push.apply(groups, spaces);
+    }
+
     return groups;
 };
 
@@ -80,12 +119,13 @@ var getTypeOfGroup = function(group) {
         return getTypeOfGroup(group.value.base);
     } else if (group.type === "llap" || group.type === "rlap") {
         return getTypeOfGroup(group.value);
-    } else if (group.type === "color") {
-        return getTypeOfGroup(group.value.value);
-    } else if (group.type === "sizing") {
-        return getTypeOfGroup(group.value.value);
-    } else if (group.type === "styling") {
-        return getTypeOfGroup(group.value.value);
+    } else if (group.type === "color" || group.type === "sizing"
+               || group.type === "styling") {
+        // Return type of rightmost element of group.
+        var atoms = group.value.value;
+        return getTypeOfGroup(atoms[atoms.length - 1]);
+    } else if (group.type === "font") {
+        return getTypeOfGroup(group.value.body);
     } else if (group.type === "delimsizing") {
         return groupToType[group.value.delimType];
     } else {
@@ -697,14 +737,14 @@ groupTypes.spacing = function(group, options, prev) {
         // things has an entry in the symbols table, so these will be turned
         // into appropriate outputs.
         return makeSpan(
-            ["mord", "mspace"],
+            ["mspace"],
             [buildCommon.mathsym(group.value, group.mode)]
         );
     } else {
         // Other kinds of spaces are of arbitrary width. We use CSS to
         // generate these.
         return makeSpan(
-            ["mord", "mspace",
+            ["mspace",
              buildCommon.spacingFunctions[group.value].className]);
     }
 };
@@ -1109,7 +1149,19 @@ groupTypes.styling = function(group, options, prev) {
     var inner = buildExpression(
         group.value.value, newOptions, prev);
 
-    return makeSpan([options.style.reset(), newStyle.cls()], inner, newOptions);
+    // Add style-resetting classes to the inner list. Handle nested changes.
+    for (var i = 0; i < inner.length; i++) {
+        var pos = utils.indexOf(inner[i].classes, newStyle.reset());
+        if (pos < 0) {
+            inner[i].classes.push(options.style.reset(), newStyle.cls());
+        } else {
+            // This is a nested style change, as `\textstyle a\scriptstyle b`.
+            // Only override the old style (the reset class).
+            inner[i].classes[pos] = options.style.reset();
+        }
+    }
+
+    return new buildCommon.makeFragment(inner);
 };
 
 groupTypes.font = function(group, options, prev) {

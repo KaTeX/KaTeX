@@ -34,14 +34,16 @@ var mainitLetters = [
  * Makes a symbolNode after translation via the list of symbols in symbols.js.
  * Correctly pulls out metrics for the character, and optionally takes a list of
  * classes to be attached to the node.
+ *
+ * TODO: make argument order closer to makeSpan
  */
-var makeSymbol = function(value, style, mode, options, classes) {
+var makeSymbol = function(value, fontFamily, mode, options, classes) {
     // Replace the value with its replaced value from symbol.js
     if (symbols[mode][value] && symbols[mode][value].replace) {
         value = symbols[mode][value].replace;
     }
 
-    var metrics = fontMetrics.getCharacterMetrics(value, style);
+    var metrics = fontMetrics.getCharacterMetrics(value, fontFamily);
 
     var symbolNode;
     if (metrics) {
@@ -52,7 +54,7 @@ var makeSymbol = function(value, style, mode, options, classes) {
         // TODO(emily): Figure out a good way to only print this in development
         typeof console !== "undefined" && console.warn(
             "No character metrics for '" + value + "' in style '" +
-                style + "'");
+                fontFamily + "'");
         symbolNode = new domTree.symbolNode(value, 0, 0, 0, 0, classes);
     }
 
@@ -188,6 +190,16 @@ var makeSpan = function(classes, children, options) {
     sizeElementFromChildren(span);
 
     return span;
+};
+
+/**
+ * Prepends the given children to the given span, updating height, depth, and
+ * maxFontSize.
+ */
+var prependChildren = function(span, children) {
+    span.children = children.concat(span.children);
+
+    sizeElementFromChildren(span);
 };
 
 /**
@@ -450,6 +462,7 @@ module.exports = {
     makeFragment: makeFragment,
     makeVList: makeVList,
     makeOrd: makeOrd,
+    prependChildren: prependChildren,
     sizingMultiplier: sizingMultiplier,
     spacingFunctions: spacingFunctions,
 };
