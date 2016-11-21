@@ -36,6 +36,8 @@ var mainitLetters = [
  * classes to be attached to the node.
  *
  * TODO: make argument order closer to makeSpan
+ * TODO: add a separate argument for math class (e.g. `mop`, `mbin`), which
+ * should if present come first in `classes`.
  */
 var makeSymbol = function(value, fontFamily, mode, options, classes) {
     // Replace the value with its replaced value from symbol.js
@@ -183,6 +185,8 @@ var sizeElementFromChildren = function(elem) {
  *
  * TODO: Ensure that `options` is always provided (currently some call sites
  * don't pass it).
+ * TODO: add a separate argument for math class (e.g. `mop`, `mbin`), which
+ * should if present come first in `classes`.
  */
 var makeSpan = function(classes, children, options) {
     var span = new domTree.span(classes, children, options);

@@ -26,6 +26,11 @@ Arrays: |
 ArrayType: 1\begin{array}{c}2\\3\end{array}4
 Baseline: a+b-c\cdot d/e
 BasicTest: a
+BinCancellation: |
+    \begin{array}{ccc}
+        +1 & 1+ & 1+1 \\
+        1++1 & 3\times) & 1+,
+    \end{array}
 BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}
 BoldSpacing: \mathbf{A}^2+\mathbf{B}_3*\mathscr{C}'
 Cases: |

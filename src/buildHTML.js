@@ -21,26 +21,51 @@ var isSpace = function(node) {
     return node instanceof domTree.span && node.classes[0] === "mspace";
 };
 
+// Binary atoms (first class `mbin`) change into ordinary atoms (`mord`)
+// depending on their surroundings. See TeXbook pg. 442-446, Rules 5 and 6,
+// and the text before Rule 19.
+
+var isBin = function(node) {
+    return node && node.classes[0] === "mbin";
+};
+
+var isBinLeftCanceller = function(node, isRealGroup) {
+    // TODO: This code assumes that a node's math class is the first element
+    // of its `classes` array. A later cleanup should ensure this, for
+    // instance by changing the signature of `makeSpan`.
+    if (node) {
+        return utils.contains(["mbin", "mopen", "mrel", "mop", "mpunct"],
+                              node.classes[0]);
+    } else {
+        return isRealGroup;
+    }
+};
+
+var isBinRightCanceller = function(node, isRealGroup) {
+    if (node) {
+        return utils.contains(["mrel", "mclose", "mpunct"], node.classes[0]);
+    } else {
+        return isRealGroup;
+    }
+};
+
 /**
  * Take a list of nodes, build them in order, and return a list of the built
- * nodes. This function handles the `prev` node correctly, and passes the
- * previous element from the list as the prev of the next element, ignoring
- * spaces. documentFragments are flattened into their contents, so the
- * returned list contains no fragments.
+ * nodes. documentFragments are flattened into their contents, so the
+ * returned list contains no fragments. `isRealGroup` is true if `expression`
+ * is a real group (no atoms will be added on either side), as opposed to
+ * a partial group (e.g. one created by \color).
  */
-var buildExpression = function(expression, options, prev) {
+var buildExpression = function(expression, options, isRealGroup) {
     // Parse expressions into `groups`.
     var groups = [];
     for (var i = 0; i < expression.length; i++) {
         var group = expression[i];
-        var output = buildGroup(group, options, prev);
+        var output = buildGroup(group, options);
         if (output instanceof domTree.documentFragment) {
             Array.prototype.push.apply(groups, output.children);
         } else {
             groups.push(output);
-        }
-        if (!isSpace(output)) {
-            prev = group;
         }
     }
     // At this point `groups` consists entirely of `symbolNode`s and `span`s.
@@ -66,6 +91,15 @@ var buildExpression = function(expression, options, prev) {
     }
     if (spaces) {
         Array.prototype.push.apply(groups, spaces);
+    }
+
+    // Binary operators change to ordinary symbols in some contexts.
+    for (i = 0; i < groups.length; i++) {
+        if (isBin(groups[i])
+            && (isBinLeftCanceller(groups[i - 1], isRealGroup)
+                || isBinRightCanceller(groups[i + 1], isRealGroup))) {
+            groups[i].classes[0] = "mord";
+        }
     }
 
     return groups;
@@ -215,81 +249,63 @@ var makeNullDelimiter = function(options) {
  */
 var groupTypes = {};
 
-groupTypes.mathord = function(group, options, prev) {
+groupTypes.mathord = function(group, options) {
     return buildCommon.makeOrd(group, options, "mathord");
 };
 
-groupTypes.textord = function(group, options, prev) {
+groupTypes.textord = function(group, options) {
     return buildCommon.makeOrd(group, options, "textord");
 };
 
-groupTypes.bin = function(group, options, prev) {
-    var className = "mbin";
-    // Pull out the most recent element. Do some special handling to find
-    // things at the end of a \color group. Note that we don't use the same
-    // logic for ordgroups (which count as ords).
-    var prevAtom = prev;
-    while (prevAtom && prevAtom.type === "color") {
-        var atoms = prevAtom.value.value;
-        prevAtom = atoms[atoms.length - 1];
-    }
-    // See TeXbook pg. 442-446, Rules 5 and 6, and the text before Rule 19.
-    // Here, we determine whether the bin should turn into an ord. We
-    // currently only apply Rule 5.
-    if (!prev || utils.contains(["mbin", "mopen", "mrel", "mop", "mpunct"],
-            getTypeOfGroup(prevAtom))) {
-        group.type = "textord";
-        className = "mord";
-    }
-
+groupTypes.bin = function(group, options) {
     return buildCommon.mathsym(
-        group.value, group.mode, options, [className]);
+        group.value, group.mode, options, ["mbin"]);
 };
 
-groupTypes.rel = function(group, options, prev) {
+groupTypes.rel = function(group, options) {
     return buildCommon.mathsym(
         group.value, group.mode, options, ["mrel"]);
 };
 
-groupTypes.open = function(group, options, prev) {
+groupTypes.open = function(group, options) {
     return buildCommon.mathsym(
         group.value, group.mode, options, ["mopen"]);
 };
 
-groupTypes.close = function(group, options, prev) {
+groupTypes.close = function(group, options) {
     return buildCommon.mathsym(
         group.value, group.mode, options, ["mclose"]);
 };
 
-groupTypes.inner = function(group, options, prev) {
+groupTypes.inner = function(group, options) {
     return buildCommon.mathsym(
         group.value, group.mode, options, ["minner"]);
 };
 
-groupTypes.punct = function(group, options, prev) {
+groupTypes.punct = function(group, options) {
     return buildCommon.mathsym(
         group.value, group.mode, options, ["mpunct"]);
 };
 
-groupTypes.ordgroup = function(group, options, prev) {
+groupTypes.ordgroup = function(group, options) {
     return makeSpan(
         ["mord", options.style.cls()],
-        buildExpression(group.value, options.reset()),
+        buildExpression(group.value, options.reset(), true),
         options
     );
 };
 
-groupTypes.text = function(group, options, prev) {
+groupTypes.text = function(group, options) {
     return makeSpan(["mord", "text", options.style.cls()],
-        buildExpression(group.value.body, options.reset()),
+        buildExpression(group.value.body, options.reset(), true),
         options);
 };
 
-groupTypes.color = function(group, options, prev) {
+groupTypes.color = function(group, options) {
     var elements = buildExpression(
         group.value.value,
         options.withColor(group.value.color),
-        prev
+        false
     );
 
     // \color isn't supposed to affect the type of the elements it contains.
@@ -299,14 +315,14 @@ groupTypes.color = function(group, options, prev) {
     return new buildCommon.makeFragment(elements);
 };
 
-groupTypes.supsub = function(group, options, prev) {
+groupTypes.supsub = function(group, options) {
     // Superscript and subscripts are handled in the TeXbook on page
     // 445-446, rules 18(a-f).
 
     // Here is where we defer to the inner group if it should handle
     // superscripts and subscripts itself.
     if (shouldHandleSupSub(group.value.base, options)) {
-        return groupTypes[group.value.base.type](group, options, prev);
+        return groupTypes[group.value.base.type](group, options);
     }
 
     var base = buildGroup(group.value.base, options.reset());
@@ -427,7 +443,7 @@ groupTypes.supsub = function(group, options, prev) {
         options);
 };
 
-groupTypes.genfrac = function(group, options, prev) {
+groupTypes.genfrac = function(group, options) {
     // Fractions are handled in the TeXbook on pages 444-445, rules 15(a-e).
     // Figure out what style this fraction should be in based on the
     // function used
@@ -566,7 +582,7 @@ groupTypes.genfrac = function(group, options, prev) {
         options);
 };
 
-groupTypes.array = function(group, options, prev) {
+groupTypes.array = function(group, options) {
     var r;
     var c;
     var nr = group.value.body.length;
@@ -730,7 +746,7 @@ groupTypes.array = function(group, options, prev) {
     return makeSpan(["mord"], [body], options);
 };
 
-groupTypes.spacing = function(group, options, prev) {
+groupTypes.spacing = function(group, options) {
     if (group.value === "\\ " || group.value === "\\space" ||
         group.value === " " || group.value === "~") {
         // Spaces are generated by adding an actual space. Each of these
@@ -749,7 +765,7 @@ groupTypes.spacing = function(group, options, prev) {
     }
 };
 
-groupTypes.llap = function(group, options, prev) {
+groupTypes.llap = function(group, options) {
     var inner = makeSpan(
         ["inner"], [buildGroup(group.value.body, options.reset())]);
     var fix = makeSpan(["fix"], []);
@@ -757,7 +773,7 @@ groupTypes.llap = function(group, options, prev) {
         ["llap", options.style.cls()], [inner, fix], options);
 };
 
-groupTypes.rlap = function(group, options, prev) {
+groupTypes.rlap = function(group, options) {
     var inner = makeSpan(
         ["inner"], [buildGroup(group.value.body, options.reset())]);
     var fix = makeSpan(["fix"], []);
@@ -765,12 +781,12 @@ groupTypes.rlap = function(group, options, prev) {
         ["rlap", options.style.cls()], [inner, fix], options);
 };
 
-groupTypes.op = function(group, options, prev) {
+groupTypes.op = function(group, options) {
     // Operators are handled in the TeXbook pg. 443-444, rule 13(a).
     var supGroup;
     var subGroup;
     var hasLimits = false;
-    if (group.type === "supsub" ) {
+    if (group.type === "supsub") {
         // If we have limits, supsub will pass us its group to handle. Pull
         // out the superscript and subscript and set the group to the op in
         // its base.
@@ -930,7 +946,7 @@ groupTypes.op = function(group, options, prev) {
     }
 };
 
-groupTypes.katex = function(group, options, prev) {
+groupTypes.katex = function(group, options) {
     // The KaTeX logo. The offsets for the K and a were chosen to look
     // good, but the offsets for the T, E, and X were taken from the
     // definition of \TeX in TeX (see TeXbook pg. 356)
@@ -957,7 +973,7 @@ groupTypes.katex = function(group, options, prev) {
         ["mord", "katex-logo"], [k, a, t, e, x], options);
 };
 
-groupTypes.overline = function(group, options, prev) {
+groupTypes.overline = function(group, options) {
     // Overlines are handled in the TeXbook pg 443, Rule 9.
     var style = options.style;
 
@@ -985,7 +1001,7 @@ groupTypes.overline = function(group, options, prev) {
     return makeSpan(["mord", "overline"], [vlist], options);
 };
 
-groupTypes.underline = function(group, options, prev) {
+groupTypes.underline = function(group, options) {
     // Underlines are handled in the TeXbook pg 443, Rule 10.
     var style = options.style;
 
@@ -1011,7 +1027,7 @@ groupTypes.underline = function(group, options, prev) {
     return makeSpan(["mord", "underline"], [vlist], options);
 };
 
-groupTypes.sqrt = function(group, options, prev) {
+groupTypes.sqrt = function(group, options) {
     // Square roots are handled in the TeXbook pg. 443, Rule 11.
     var style = options.style;
 
@@ -1110,12 +1126,12 @@ groupTypes.sqrt = function(group, options, prev) {
     }
 };
 
-groupTypes.sizing = function(group, options, prev) {
+groupTypes.sizing = function(group, options) {
     // Handle sizing operators like \Huge. Real TeX doesn't actually allow
     // these functions inside of math expressions, so we do some special
     // handling.
     var inner = buildExpression(group.value.value,
-            options.withSize(group.value.size), prev);
+            options.withSize(group.value.size), false);
 
     // Compute the correct maxFontSize.
     var style = options.style;
@@ -1141,7 +1157,7 @@ groupTypes.sizing = function(group, options, prev) {
     return buildCommon.makeFragment(inner);
 };
 
-groupTypes.styling = function(group, options, prev) {
+groupTypes.styling = function(group, options) {
     // Style changes are handled in the TeXbook on pg. 442, Rule 3.
 
     // Figure out what style we're changing to.
@@ -1157,7 +1173,7 @@ groupTypes.styling = function(group, options, prev) {
 
     // Build the inner expression in the new style.
     var inner = buildExpression(
-        group.value.value, newOptions, prev);
+        group.value.value, newOptions, false);
 
     // Add style-resetting classes to the inner list. Handle nested changes.
     for (var i = 0; i < inner.length; i++) {
@@ -1174,12 +1190,12 @@ groupTypes.styling = function(group, options, prev) {
     return new buildCommon.makeFragment(inner);
 };
 
-groupTypes.font = function(group, options, prev) {
+groupTypes.font = function(group, options) {
     var font = group.value.font;
-    return buildGroup(group.value.body, options.withFont(font), prev);
+    return buildGroup(group.value.body, options.withFont(font));
 };
 
-groupTypes.delimsizing = function(group, options, prev) {
+groupTypes.delimsizing = function(group, options) {
     var delim = group.value.value;
 
     if (delim === ".") {
@@ -1196,9 +1212,9 @@ groupTypes.delimsizing = function(group, options, prev) {
         options);
 };
 
-groupTypes.leftright = function(group, options, prev) {
+groupTypes.leftright = function(group, options) {
     // Build the inner expression
-    var inner = buildExpression(group.value.body, options.reset());
+    var inner = buildExpression(group.value.body, options.reset(), true);
 
     var innerHeight = 0;
     var innerDepth = 0;
@@ -1247,7 +1263,7 @@ groupTypes.leftright = function(group, options, prev) {
         ["minner", style.cls()], inner, options);
 };
 
-groupTypes.rule = function(group, options, prev) {
+groupTypes.rule = function(group, options) {
     // Make an empty span for the rule
     var rule = makeSpan(["mord", "rule"], [], options);
     var style = options.style;
@@ -1290,7 +1306,7 @@ groupTypes.rule = function(group, options, prev) {
     return rule;
 };
 
-groupTypes.kern = function(group, options, prev) {
+groupTypes.kern = function(group, options) {
     // Make an empty span for the rule
     var rule = makeSpan(["mord", "rule"], [], options);
     var style = options.style;
@@ -1310,7 +1326,7 @@ groupTypes.kern = function(group, options, prev) {
     return rule;
 };
 
-groupTypes.accent = function(group, options, prev) {
+groupTypes.accent = function(group, options) {
     // Accents are handled in the TeXbook pg. 443, rule 12.
     var base = group.value.base;
     var style = options.style;
@@ -1337,7 +1353,7 @@ groupTypes.accent = function(group, options, prev) {
         // Rerender the supsub group with its new base, and store that
         // result.
         supsubGroup = buildGroup(
-            supsub, options.reset(), prev);
+            supsub, options.reset());
     }
 
     // Build the base group
@@ -1419,11 +1435,11 @@ groupTypes.accent = function(group, options, prev) {
     }
 };
 
-groupTypes.phantom = function(group, options, prev) {
+groupTypes.phantom = function(group, options) {
     var elements = buildExpression(
         group.value.value,
         options.withPhantom(),
-        prev
+        false
     );
 
     // \phantom isn't supposed to affect the elements it contains.
@@ -1436,14 +1452,14 @@ groupTypes.phantom = function(group, options, prev) {
  * function for it. It also handles the interaction of size and style changes
  * between parents and children.
  */
-var buildGroup = function(group, options, prev) {
+var buildGroup = function(group, options) {
     if (!group) {
         return makeSpan();
     }
 
     if (groupTypes[group.type]) {
         // Call the groupTypes function
-        var groupNode = groupTypes[group.type](group, options, prev);
+        var groupNode = groupTypes[group.type](group, options);
         var multiplier;
 
         // If the style changed between the parent and the current group,
@@ -1483,7 +1499,7 @@ var buildHTML = function(tree, options) {
     tree = JSON.parse(JSON.stringify(tree));
 
     // Build the expression contained in the tree
-    var expression = buildExpression(tree, options);
+    var expression = buildExpression(tree, options, true);
     var body = makeSpan(["base", options.style.cls()], expression, options);
 
     // Add struts, which ensure that the top of the HTML element falls at the

@@ -470,7 +470,7 @@ groupTypes.rlap = function(group, options) {
     return node;
 };
 
-groupTypes.phantom = function(group, options, prev) {
+groupTypes.phantom = function(group, options) {
     var inner = buildExpression(group.value.value, options);
     return new mathMLTree.MathNode("mphantom", inner);
 };
