@@ -17,11 +17,11 @@ var serveBrowserified = function(file, standaloneName) {
     return function(req, res, next) {
         var files;
         if (Array.isArray(file)) {
-            files = file;
+            files = file.map(function(f) { return path.join(__dirname, f); });
         } else if (file.indexOf("*") !== -1) {
-            files = glob.sync(file);
+            files = glob.sync(file, {cwd: __dirname});
         } else {
-            files = [file];
+            files = [path.join(__dirname, file)];
         }
 
         var options = {};
@@ -41,7 +41,7 @@ var serveBrowserified = function(file, standaloneName) {
     };
 };
 
-app.get("/katex.js", serveBrowserified("./katex", "katex"));
+app.get("/katex.js", serveBrowserified("katex", "katex"));
 app.use("/test/jasmine",
     express["static"](
         path.dirname(
@@ -49,20 +49,21 @@ app.use("/test/jasmine",
         )
     )
 );
-app.get("/test/katex-spec.js", serveBrowserified("./test/*[Ss]pec.js"));
+app.get("/test/katex-spec.js", serveBrowserified("test/*[Ss]pec.js"));
 app.get("/contrib/auto-render/auto-render.js",
-        serveBrowserified("./contrib/auto-render/auto-render",
+        serveBrowserified("contrib/auto-render/auto-render",
                           "renderMathInElement"));
 
 app.get("/katex.css", function(req, res, next) {
-    fs.readFile("static/katex.less", {encoding: "utf8"}, function(err, data) {
+    var lessfile = path.join(__dirname, "static", "katex.less");
+    fs.readFile(lessfile, {encoding: "utf8"}, function(err, data) {
         if (err) {
             next(err);
             return;
         }
 
         less.render(data, {
-            paths: ["./static"],
+            paths: [path.join(__dirname, "static")],
             filename: "katex.less",
         }, function(err, output) {
             if (err) {
