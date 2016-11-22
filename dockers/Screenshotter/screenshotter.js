@@ -288,6 +288,11 @@ function takeScreenshot(key) {
     var itm = data[key];
     if (!itm) {
         console.error("Test case " + key + " not known!");
+        listOfFailed.push(key);
+        if (exitStatus === 0) {
+            exitStatus = 1;
+        }
+        oneDone();
         return;
     }
 
@@ -303,15 +308,7 @@ function takeScreenshot(key) {
     if (opts.wait) {
         browserSideWait(1000 * opts.wait);
     }
-    driver.takeScreenshot().then(haveScreenshot).then(function() {
-        if (--countdown === 0) {
-            if (listOfFailed.length) {
-                console.error("Failed: " + listOfFailed.join(" "));
-            }
-            // devServer.close(cb) will take too long.
-            process.exit(exitStatus);
-        }
-    }, check);
+    driver.takeScreenshot().then(haveScreenshot).then(oneDone, check);
 
     function haveScreenshot(img) {
         img = imageDimensions(img);
@@ -358,6 +355,16 @@ function takeScreenshot(key) {
             return promisify(fs.writeFile, file, buf).then(function() {
                 console.log(key);
             });
+        }
+    }
+
+    function oneDone() {
+        if (--countdown === 0) {
+            if (listOfFailed.length) {
+                console.error("Failed: " + listOfFailed.join(" "));
+            }
+            // devServer.close(cb) will take too long.
+            process.exit(exitStatus);
         }
     }
 }
