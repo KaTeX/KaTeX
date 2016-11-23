@@ -786,6 +786,11 @@ groupTypes.op = function(group, options) {
 
         // The slant of the symbol is just its italic correction.
         slant = base.italic;
+    } else if (group.value.value) {
+        // If this is a list, compose that list.
+        var inner = buildExpression(group.value.value, options, true);
+
+        base = makeSpan(["mop"], inner, options);
     } else {
         // Otherwise, this is a text operator. Build the text from the
         // operator's name.
@@ -1397,6 +1402,12 @@ groupTypes.phantom = function(group, options) {
     // \phantom isn't supposed to affect the elements it contains.
     // See "color" for more details.
     return new buildCommon.makeFragment(elements);
+};
+
+groupTypes.mclass = function(group, options) {
+    var elements = buildExpression(group.value.value, options, true);
+
+    return makeSpan([group.value.mclass], elements, options);
 };
 
 /**

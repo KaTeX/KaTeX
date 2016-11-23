@@ -100,6 +100,16 @@ function defineFunction(names, props, handler) {
     }
 }
 
+// Since the corresponding buildHTML/buildMathML function expects a
+// list of elements, we normalize for different kinds of arguments
+var ordargument = function(arg) {
+    if (arg.type === "ordgroup") {
+        return arg.value;
+    } else {
+        return [arg];
+    }
+};
+
 // A normal square root
 defineFunction("\\sqrt", {
     numArgs: 1,
@@ -121,19 +131,9 @@ defineFunction("\\text", {
     greediness: 2,
 }, function(context, args) {
     var body = args[0];
-    // Since the corresponding buildHTML/buildMathML function expects a
-    // list of elements, we normalize for different kinds of arguments
-    // TODO(emily): maybe this should be done somewhere else
-    var inner;
-    if (body.type === "ordgroup") {
-        inner = body.value;
-    } else {
-        inner = [body];
-    }
-
     return {
         type: "text",
-        body: inner,
+        body: ordargument(body),
     };
 });
 
@@ -146,18 +146,10 @@ defineFunction("\\color", {
 }, function(context, args) {
     var color = args[0];
     var body = args[1];
-    // Normalize the different kinds of bodies (see \text above)
-    var inner;
-    if (body.type === "ordgroup") {
-        inner = body.value;
-    } else {
-        inner = [body];
-    }
-
     return {
         type: "color",
         color: color.value,
-        value: inner,
+        value: ordargument(body),
     };
 });
 
@@ -223,16 +215,24 @@ defineFunction("\\phantom", {
     numArgs: 1,
 }, function(context, args) {
     var body = args[0];
-    var inner;
-    if (body.type === "ordgroup") {
-        inner = body.value;
-    } else {
-        inner = [body];
-    }
-
     return {
         type: "phantom",
-        value: inner,
+        value: ordargument(body),
+    };
+});
+
+// Math class commands except \mathop
+defineFunction([
+    "\\mathord", "\\mathbin", "\\mathrel", "\\mathopen",
+    "\\mathclose", "\\mathpunct", "\\mathinner",
+], {
+    numArgs: 1,
+}, function(context, args) {
+    var body = args[0];
+    return {
+        type: "mclass",
+        mclass: "m" + context.funcName.substr(5),
+        value: ordargument(body),
     };
 });
 
@@ -298,17 +298,10 @@ defineFunction([
     greediness: 3,
 }, function(context, args) {
     var body = args[0];
-    var atoms;
-    if (body.type === "ordgroup") {
-        atoms = body.value;
-    } else {
-        atoms = [body];
-    }
-
     return {
         type: "color",
         color: "katex-" + context.funcName.slice(1),
-        value: atoms,
+        value: ordargument(body),
     };
 });
 
@@ -375,6 +368,19 @@ defineFunction([
         limits: true,
         symbol: true,
         body: context.funcName,
+    };
+});
+
+// \mathop class command
+defineFunction("\\mathop", {
+    numArgs: 1,
+}, function(context, args) {
+    var body = args[0];
+    return {
+        type: "op",
+        limits: false,
+        symbol: false,
+        value: ordargument(body),
     };
 });
 
