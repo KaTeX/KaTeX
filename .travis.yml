@@ -10,5 +10,4 @@ before_script:
   - docker images --no-trunc
 script:
   - npm test
-  - git clone https://github.com/Khan/KaTeX-test-fonts test/screenshotter/unicode-fonts
   - dockers/Screenshotter/screenshotter.sh --verify
