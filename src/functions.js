@@ -418,6 +418,7 @@ defineFunction("\\mathop", {
 defineFunction([
     "\\dfrac", "\\frac", "\\tfrac",
     "\\dbinom", "\\binom", "\\tbinom",
+    "\\\\atopfrac", // can’t be entered directly
 ], {
     numArgs: 2,
     greediness: 2,
@@ -434,6 +435,9 @@ defineFunction([
         case "\\frac":
         case "\\tfrac":
             hasBarLine = true;
+            break;
+        case "\\\\atopfrac":
+            hasBarLine = false;
             break;
         case "\\dbinom":
         case "\\binom":
@@ -571,7 +575,7 @@ defineFunction([
 });
 
 // Infix generalized fractions
-defineFunction(["\\over", "\\choose"], {
+defineFunction(["\\over", "\\choose", "\\atop"], {
     numArgs: 0,
     infix: true,
 }, function(context) {
@@ -582,6 +586,9 @@ defineFunction(["\\over", "\\choose"], {
             break;
         case "\\choose":
             replaceWith = "\\binom";
+            break;
+        case "\\atop":
+            replaceWith = "\\\\atopfrac";
             break;
         default:
             throw new Error("Unrecognized infix genfrac command");

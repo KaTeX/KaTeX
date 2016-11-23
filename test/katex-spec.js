@@ -606,6 +606,15 @@ describe("A frac parser", function() {
         expect(tfracParse.value.numer).toBeDefined();
         expect(tfracParse.value.denom).toBeDefined();
     });
+
+    it("should parse atop", function() {
+        var parse = getParsed("x \\atop y")[0];
+
+        expect(parse.type).toEqual("genfrac");
+        expect(parse.value.numer).toBeDefined();
+        expect(parse.value.denom).toBeDefined();
+        expect(parse.value.hasBarLine).toEqual(false);
+    });
 });
 
 describe("An over parser", function() {
