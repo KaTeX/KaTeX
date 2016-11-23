@@ -27,6 +27,7 @@ ArrayType: 1\begin{array}{c}2\\3\end{array}4
 Baseline: a+b-c\cdot d/e
 BasicTest: a
 BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}
+BoldSpacing: \mathbf{A}^2+\mathbf{B}_3*\mathscr{C}'
 Cases: |
     f(a,b)=\begin{cases}
         a+1&\text{if }b\text{ is odd} \\
@@ -36,6 +37,7 @@ Cases: |
 Colors:
     tex: \blue{a}\color{#0f0}{b}\color{red}{c}
     nolatex: different syntax and different scope
+ColorSpacing: \color{black}{\displaystyle \int x} + 1
 DashesAndQuotes: \text{``a'' b---c -- d----`e'-{-}-f}--``x''
 DeepFontSizing:
     tex: |
