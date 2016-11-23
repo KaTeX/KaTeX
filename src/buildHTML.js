@@ -1117,18 +1117,28 @@ groupTypes.sizing = function(group, options, prev) {
     var inner = buildExpression(group.value.value,
             options.withSize(group.value.size), prev);
 
+    // Compute the correct maxFontSize.
     var style = options.style;
-    var span = makeSpan(["mord"],
-        [makeSpan(["sizing", "reset-" + options.size, group.value.size,
-                   style.cls()],
-                  inner)],
-        options);
-
-    // Calculate the correct maxFontSize manually
     var fontSize = buildCommon.sizingMultiplier[group.value.size];
-    span.maxFontSize = fontSize * style.sizeMultiplier;
+    fontSize = fontSize * style.sizeMultiplier;
 
-    return span;
+    // Add size-resetting classes to the inner list and set maxFontSize
+    // manually. Handle nested size changes.
+    for (var i = 0; i < inner.length; i++) {
+        var pos = utils.indexOf(inner[i].classes, "sizing");
+        if (pos < 0) {
+            inner[i].classes.push("sizing", "reset-" + options.size,
+                                  group.value.size, style.cls());
+            inner[i].maxFontSize = fontSize;
+        } else if (inner[i].classes[pos + 1] === "reset-" + group.value.size) {
+            // This is a nested size change: e.g., inner[i] is the "b" in
+            // `\Huge a \small b`. Override the old size (the `reset-` class)
+            // but not the new size.
+            inner[i].classes[pos + 1] = "reset-" + options.size;
+        }
+    }
+
+    return buildCommon.makeFragment(inner);
 };
 
 groupTypes.styling = function(group, options, prev) {
