@@ -652,3 +652,11 @@ for (i = 0x0410; i <= 0x044F; i++) {
     ch = String.fromCharCode(i);
     defineSymbol(text, main, textord, ch, ch);
 }
+
+// Unicode versions of existing characters
+defineSymbol(text, main, textord, "\u2013", "–");
+defineSymbol(text, main, textord, "\u2014", "—");
+defineSymbol(text, main, textord, "\u2018", "‘");
+defineSymbol(text, main, textord, "\u2019", "’");
+defineSymbol(text, main, textord, "\u201c", "“");
+defineSymbol(text, main, textord, "\u201d", "”");
