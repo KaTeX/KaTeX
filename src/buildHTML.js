@@ -203,44 +203,46 @@ groupTypes.bin = function(group, options, prev) {
     }
 
     return buildCommon.mathsym(
-        group.value, group.mode, options.getColor(), [className]);
+        group.value, group.mode, options, [className]);
 };
 
 groupTypes.rel = function(group, options, prev) {
     return buildCommon.mathsym(
-        group.value, group.mode, options.getColor(), ["mrel"]);
+        group.value, group.mode, options, ["mrel"]);
 };
 
 groupTypes.open = function(group, options, prev) {
     return buildCommon.mathsym(
-        group.value, group.mode, options.getColor(), ["mopen"]);
+        group.value, group.mode, options, ["mopen"]);
 };
 
 groupTypes.close = function(group, options, prev) {
     return buildCommon.mathsym(
-        group.value, group.mode, options.getColor(), ["mclose"]);
+        group.value, group.mode, options, ["mclose"]);
 };
 
 groupTypes.inner = function(group, options, prev) {
     return buildCommon.mathsym(
-        group.value, group.mode, options.getColor(), ["minner"]);
+        group.value, group.mode, options, ["minner"]);
 };
 
 groupTypes.punct = function(group, options, prev) {
     return buildCommon.mathsym(
-        group.value, group.mode, options.getColor(), ["mpunct"]);
+        group.value, group.mode, options, ["mpunct"]);
 };
 
 groupTypes.ordgroup = function(group, options, prev) {
     return makeSpan(
         ["mord", options.style.cls()],
-        buildExpression(group.value, options.reset())
+        buildExpression(group.value, options.reset()),
+        options
     );
 };
 
 groupTypes.text = function(group, options, prev) {
     return makeSpan(["text", "mord", options.style.cls()],
-        buildExpression(group.value.body, options.reset()));
+        buildExpression(group.value.body, options.reset()),
+        options);
 };
 
 groupTypes.color = function(group, options, prev) {
@@ -274,15 +276,20 @@ groupTypes.supsub = function(group, options, prev) {
     var sub;
 
     var style = options.style;
+    var newOptions;
 
     if (group.value.sup) {
-        sup = buildGroup(group.value.sup, options.withStyle(style.sup()));
-        supmid = makeSpan([style.reset(), style.sup().cls()], [sup]);
+        newOptions = options.withStyle(style.sup());
+        sup = buildGroup(group.value.sup, newOptions);
+        supmid = makeSpan([style.reset(), style.sup().cls()],
+            [sup], newOptions);
     }
 
     if (group.value.sub) {
-        sub = buildGroup(group.value.sub, options.withStyle(style.sub()));
-        submid = makeSpan([style.reset(), style.sub().cls()], [sub]);
+        newOptions = options.withStyle(style.sub());
+        sub = buildGroup(group.value.sub, newOptions);
+        submid = makeSpan([style.reset(), style.sub().cls()],
+            [sub], newOptions);
     }
 
     // Rule 18a
@@ -376,7 +383,8 @@ groupTypes.supsub = function(group, options, prev) {
 
     // We ensure to wrap the supsub vlist in a span.msupsub to reset text-align
     return makeSpan([getTypeOfGroup(group.value.base)],
-        [base, makeSpan(["msupsub"], [supsub])]);
+        [base, makeSpan(["msupsub"], [supsub])],
+        options);
 };
 
 groupTypes.genfrac = function(group, options, prev) {
@@ -392,12 +400,17 @@ groupTypes.genfrac = function(group, options, prev) {
 
     var nstyle = style.fracNum();
     var dstyle = style.fracDen();
+    var newOptions;
 
-    var numer = buildGroup(group.value.numer, options.withStyle(nstyle));
-    var numerreset = makeSpan([style.reset(), nstyle.cls()], [numer]);
+    newOptions = options.withStyle(nstyle);
+    var numer = buildGroup(group.value.numer, newOptions);
+    var numerreset = makeSpan([style.reset(), nstyle.cls()],
+        [numer], newOptions);
 
-    var denom = buildGroup(group.value.denom, options.withStyle(dstyle));
-    var denomreset = makeSpan([style.reset(), dstyle.cls()], [denom]);
+    newOptions = options.withStyle(dstyle);
+    var denom = buildGroup(group.value.denom, newOptions);
+    var denomreset = makeSpan([style.reset(), dstyle.cls()],
+        [denom], newOptions);
 
     var ruleWidth;
     if (group.value.hasBarLine) {
@@ -510,7 +523,7 @@ groupTypes.genfrac = function(group, options, prev) {
     return makeSpan(
         ["mord", options.style.reset(), style.cls()],
         [leftDelim, makeSpan(["mfrac"], [frac]), rightDelim],
-        options.getColor());
+        options);
 };
 
 groupTypes.array = function(group, options, prev) {
@@ -674,7 +687,7 @@ groupTypes.array = function(group, options, prev) {
         }
     }
     body = makeSpan(["mtable"], cols);
-    return makeSpan(["mord"], [body], options.getColor());
+    return makeSpan(["mord"], [body], options);
 };
 
 groupTypes.spacing = function(group, options, prev) {
@@ -701,7 +714,7 @@ groupTypes.llap = function(group, options, prev) {
         ["inner"], [buildGroup(group.value.body, options.reset())]);
     var fix = makeSpan(["fix"], []);
     return makeSpan(
-        ["llap", options.style.cls()], [inner, fix]);
+        ["llap", options.style.cls()], [inner, fix], options);
 };
 
 groupTypes.rlap = function(group, options, prev) {
@@ -709,7 +722,7 @@ groupTypes.rlap = function(group, options, prev) {
         ["inner"], [buildGroup(group.value.body, options.reset())]);
     var fix = makeSpan(["fix"], []);
     return makeSpan(
-        ["rlap", options.style.cls()], [inner, fix]);
+        ["rlap", options.style.cls()], [inner, fix], options);
 };
 
 groupTypes.op = function(group, options, prev) {
@@ -750,7 +763,7 @@ groupTypes.op = function(group, options, prev) {
         // If this is a symbol, create the symbol.
         var fontName = large ? "Size2-Regular" : "Size1-Regular";
         base = buildCommon.makeSymbol(
-            group.value.body, fontName, "math", options.getColor(),
+            group.value.body, fontName, "math", options,
             ["op-symbol", large ? "large-op" : "small-op", "mop"]);
 
         // Shift the symbol so its center lies on the axis (rule 13). It
@@ -772,7 +785,7 @@ groupTypes.op = function(group, options, prev) {
         for (var i = 1; i < group.value.body.length; i++) {
             output.push(buildCommon.mathsym(group.value.body[i], group.mode));
         }
-        base = makeSpan(["mop"], output, options.getColor());
+        base = makeSpan(["mop"], output, options);
     }
 
     if (hasLimits) {
@@ -784,11 +797,14 @@ groupTypes.op = function(group, options, prev) {
         var supKern;
         var submid;
         var subKern;
+        var newOptions;
         // We manually have to handle the superscripts and subscripts. This,
         // aside from the kern calculations, is copied from supsub.
         if (supGroup) {
-            var sup = buildGroup(supGroup, options.withStyle(style.sup()));
-            supmid = makeSpan([style.reset(), style.sup().cls()], [sup]);
+            newOptions = options.withStyle(style.sup());
+            var sup = buildGroup(supGroup, newOptions);
+            supmid = makeSpan([style.reset(), style.sup().cls()],
+                [sup], newOptions);
 
             supKern = Math.max(
                 fontMetrics.metrics.bigOpSpacing1,
@@ -796,8 +812,10 @@ groupTypes.op = function(group, options, prev) {
         }
 
         if (subGroup) {
-            var sub = buildGroup(subGroup, options.withStyle(style.sub()));
-            submid = makeSpan([style.reset(), style.sub().cls()], [sub]);
+            newOptions = options.withStyle(style.sub());
+            var sub = buildGroup(subGroup, newOptions);
+            submid = makeSpan([style.reset(), style.sub().cls()],
+                [sub], newOptions);
 
             subKern = Math.max(
                 fontMetrics.metrics.bigOpSpacing2,
@@ -862,7 +880,7 @@ groupTypes.op = function(group, options, prev) {
             finalGroup.children[2].style.marginLeft = slant + "em";
         }
 
-        return makeSpan(["mop", "op-limits"], [finalGroup]);
+        return makeSpan(["mop", "op-limits"], [finalGroup], options);
     } else {
         if (group.value.symbol) {
             base.style.top = baseShift + "em";
@@ -877,26 +895,26 @@ groupTypes.katex = function(group, options, prev) {
     // good, but the offsets for the T, E, and X were taken from the
     // definition of \TeX in TeX (see TeXbook pg. 356)
     var k = makeSpan(
-        ["k"], [buildCommon.mathsym("K", group.mode)]);
+        ["k"], [buildCommon.mathsym("K", group.mode)], options);
     var a = makeSpan(
-        ["a"], [buildCommon.mathsym("A", group.mode)]);
+        ["a"], [buildCommon.mathsym("A", group.mode)], options);
 
     a.height = (a.height + 0.2) * 0.75;
     a.depth = (a.height - 0.2) * 0.75;
 
     var t = makeSpan(
-        ["t"], [buildCommon.mathsym("T", group.mode)]);
+        ["t"], [buildCommon.mathsym("T", group.mode)], options);
     var e = makeSpan(
-        ["e"], [buildCommon.mathsym("E", group.mode)]);
+        ["e"], [buildCommon.mathsym("E", group.mode)], options);
 
     e.height = (e.height - 0.2155);
     e.depth = (e.depth + 0.2155);
 
     var x = makeSpan(
-        ["x"], [buildCommon.mathsym("X", group.mode)]);
+        ["x"], [buildCommon.mathsym("X", group.mode)], options);
 
     return makeSpan(
-        ["katex-logo", "mord"], [k, a, t, e, x], options.getColor());
+        ["katex-logo", "mord"], [k, a, t, e, x], options);
 };
 
 groupTypes.overline = function(group, options, prev) {
@@ -924,7 +942,7 @@ groupTypes.overline = function(group, options, prev) {
         {type: "kern", size: ruleWidth},
     ], "firstBaseline", null, options);
 
-    return makeSpan(["overline", "mord"], [vlist], options.getColor());
+    return makeSpan(["overline", "mord"], [vlist], options);
 };
 
 groupTypes.underline = function(group, options, prev) {
@@ -950,7 +968,7 @@ groupTypes.underline = function(group, options, prev) {
         {type: "elem", elem: innerGroup},
     ], "top", innerGroup.height, options);
 
-    return makeSpan(["underline", "mord"], [vlist], options.getColor());
+    return makeSpan(["underline", "mord"], [vlist], options);
 };
 
 groupTypes.sqrt = function(group, options, prev) {
@@ -966,7 +984,7 @@ groupTypes.sqrt = function(group, options, prev) {
 
     var line = makeSpan(
         [style.reset(), Style.TEXT.cls(), "sqrt-line"], [],
-        options.getColor());
+        options);
     line.height = ruleWidth;
     line.maxFontSize = 1.0;
 
@@ -985,7 +1003,7 @@ groupTypes.sqrt = function(group, options, prev) {
     var delim = makeSpan(["sqrt-sign"], [
         delimiter.customSizedDelim("\\surd", minDelimiterHeight,
                                    false, options, group.mode)],
-                         options.getColor());
+                         options);
 
     var delimDepth = (delim.height + delim.depth) - ruleWidth;
 
@@ -1019,17 +1037,17 @@ groupTypes.sqrt = function(group, options, prev) {
     }
 
     if (!group.value.index) {
-        return makeSpan(["sqrt", "mord"], [delim, body]);
+        return makeSpan(["sqrt", "mord"], [delim, body], options);
     } else {
         // Handle the optional root index
 
         // The index is always in scriptscript style
-        var root = buildGroup(
-            group.value.index,
-            options.withStyle(Style.SCRIPTSCRIPT));
+        var newOptions = options.withStyle(Style.SCRIPTSCRIPT);
+        var root = buildGroup(group.value.index, newOptions);
         var rootWrap = makeSpan(
             [style.reset(), Style.SCRIPTSCRIPT.cls()],
-            [root]);
+            [root],
+            newOptions);
 
         // Figure out the height and depth of the inner part
         var innerRootHeight = Math.max(delim.height, body.height);
@@ -1047,7 +1065,8 @@ groupTypes.sqrt = function(group, options, prev) {
         // kerning
         var rootVListWrap = makeSpan(["root"], [rootVList]);
 
-        return makeSpan(["sqrt", "mord"], [rootVListWrap, delim, body]);
+        return makeSpan(["sqrt", "mord"],
+            [rootVListWrap, delim, body], options);
     }
 };
 
@@ -1062,7 +1081,8 @@ groupTypes.sizing = function(group, options, prev) {
     var span = makeSpan(["mord"],
         [makeSpan(["sizing", "reset-" + options.size, group.value.size,
                    style.cls()],
-                  inner)]);
+                  inner)],
+        options);
 
     // Calculate the correct maxFontSize manually
     var fontSize = buildCommon.sizingMultiplier[group.value.size];
@@ -1083,12 +1103,13 @@ groupTypes.styling = function(group, options, prev) {
     };
 
     var newStyle = styleMap[group.value.style];
+    var newOptions = options.withStyle(newStyle);
 
     // Build the inner expression in the new style.
     var inner = buildExpression(
-        group.value.value, options.withStyle(newStyle), prev);
+        group.value.value, newOptions, prev);
 
-    return makeSpan([options.style.reset(), newStyle.cls()], inner);
+    return makeSpan([options.style.reset(), newStyle.cls()], inner, newOptions);
 };
 
 groupTypes.font = function(group, options, prev) {
@@ -1109,7 +1130,8 @@ groupTypes.delimsizing = function(group, options, prev) {
     return makeSpan(
         [groupToType[group.value.delimType]],
         [delimiter.sizedDelim(
-            delim, group.value.size, options, group.mode)]);
+            delim, group.value.size, options, group.mode)],
+        options);
 };
 
 groupTypes.leftright = function(group, options, prev) {
@@ -1160,12 +1182,12 @@ groupTypes.leftright = function(group, options, prev) {
     inner.push(rightDelim);
 
     return makeSpan(
-        ["minner", style.cls()], inner, options.getColor());
+        ["minner", style.cls()], inner, options);
 };
 
 groupTypes.rule = function(group, options, prev) {
     // Make an empty span for the rule
-    var rule = makeSpan(["mord", "rule"], [], options.getColor());
+    var rule = makeSpan(["mord", "rule"], [], options);
     var style = options.style;
 
     // Calculate the shift, width, and height of the rule, and account for units
@@ -1208,7 +1230,7 @@ groupTypes.rule = function(group, options, prev) {
 
 groupTypes.kern = function(group, options, prev) {
     // Make an empty span for the rule
-    var rule = makeSpan(["mord", "rule"], [], options.getColor());
+    var rule = makeSpan(["mord", "rule"], [], options);
     var style = options.style;
 
     var dimension = 0;
@@ -1290,7 +1312,7 @@ groupTypes.accent = function(group, options, prev) {
 
     // Build the accent
     var accent = buildCommon.makeSymbol(
-        group.value.accent, "Main-Regular", "math", options.getColor());
+        group.value.accent, "Main-Regular", "math", options);
     // Remove the italic correction of the accent, because it only serves to
     // shift the accent over to a place we don't want.
     accent.italic = 0;
@@ -1315,7 +1337,7 @@ groupTypes.accent = function(group, options, prev) {
     // we shift it to the right by 1*skew.
     accentBody.children[1].style.marginLeft = 2 * skew + "em";
 
-    var accentWrap = makeSpan(["mord", "accent"], [accentBody]);
+    var accentWrap = makeSpan(["mord", "accent"], [accentBody], options);
 
     if (supsubGroup) {
         // Here, we replace the "base" child of the supsub with our newly
@@ -1400,7 +1422,7 @@ var buildHTML = function(tree, options) {
 
     // Build the expression contained in the tree
     var expression = buildExpression(tree, options);
-    var body = makeSpan(["base", options.style.cls()], expression);
+    var body = makeSpan(["base", options.style.cls()], expression, options);
 
     // Add struts, which ensure that the top of the HTML element falls at the
     // height of the expression, and the bottom of the HTML element falls at the
