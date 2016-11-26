@@ -240,7 +240,7 @@ groupTypes.ordgroup = function(group, options, prev) {
 };
 
 groupTypes.text = function(group, options, prev) {
-    return makeSpan(["text", "mord", options.style.cls()],
+    return makeSpan(["mord", "text", options.style.cls()],
         buildExpression(group.value.body, options.reset()),
         options);
 };
@@ -764,7 +764,7 @@ groupTypes.op = function(group, options, prev) {
         var fontName = large ? "Size2-Regular" : "Size1-Regular";
         base = buildCommon.makeSymbol(
             group.value.body, fontName, "math", options,
-            ["op-symbol", large ? "large-op" : "small-op", "mop"]);
+            ["mop", "op-symbol", large ? "large-op" : "small-op"]);
 
         // Shift the symbol so its center lies on the axis (rule 13). It
         // appears that our fonts have the centers of the symbols already
@@ -914,7 +914,7 @@ groupTypes.katex = function(group, options, prev) {
         ["x"], [buildCommon.mathsym("X", group.mode)], options);
 
     return makeSpan(
-        ["katex-logo", "mord"], [k, a, t, e, x], options);
+        ["mord", "katex-logo"], [k, a, t, e, x], options);
 };
 
 groupTypes.overline = function(group, options, prev) {
@@ -942,7 +942,7 @@ groupTypes.overline = function(group, options, prev) {
         {type: "kern", size: ruleWidth},
     ], "firstBaseline", null, options);
 
-    return makeSpan(["overline", "mord"], [vlist], options);
+    return makeSpan(["mord", "overline"], [vlist], options);
 };
 
 groupTypes.underline = function(group, options, prev) {
@@ -968,7 +968,7 @@ groupTypes.underline = function(group, options, prev) {
         {type: "elem", elem: innerGroup},
     ], "top", innerGroup.height, options);
 
-    return makeSpan(["underline", "mord"], [vlist], options);
+    return makeSpan(["mord", "underline"], [vlist], options);
 };
 
 groupTypes.sqrt = function(group, options, prev) {
@@ -1037,7 +1037,7 @@ groupTypes.sqrt = function(group, options, prev) {
     }
 
     if (!group.value.index) {
-        return makeSpan(["sqrt", "mord"], [delim, body], options);
+        return makeSpan(["mord", "sqrt"], [delim, body], options);
     } else {
         // Handle the optional root index
 
@@ -1065,7 +1065,7 @@ groupTypes.sqrt = function(group, options, prev) {
         // kerning
         var rootVListWrap = makeSpan(["root"], [rootVList]);
 
-        return makeSpan(["sqrt", "mord"],
+        return makeSpan(["mord", "sqrt"],
             [rootVListWrap, delim, body], options);
     }
 };

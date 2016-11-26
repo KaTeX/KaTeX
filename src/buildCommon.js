@@ -56,8 +56,13 @@ var makeSymbol = function(value, style, mode, options, classes) {
         symbolNode = new domTree.symbolNode(value, 0, 0, 0, 0, classes);
     }
 
-    if (options && options.getColor()) {
-        symbolNode.style.color = options.getColor();
+    if (options) {
+        if (options.style.isTight()) {
+            symbolNode.classes.push("mtight");
+        }
+        if (options.getColor()) {
+            symbolNode.style.color = options.getColor();
+        }
     }
 
     return symbolNode;

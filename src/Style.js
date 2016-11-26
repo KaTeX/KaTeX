@@ -87,6 +87,13 @@ Style.prototype.reset = function() {
     return resetNames[this.size];
 };
 
+/**
+ * Return if this style is tightly spaced (scriptstyle/scriptscriptstyle)
+ */
+Style.prototype.isTight = function() {
+    return this.size >= 2;
+};
+
 // IDs of the different styles
 var D = 0;
 var Dc = 1;

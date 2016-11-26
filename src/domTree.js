@@ -39,6 +39,9 @@ function span(classes, children, options) {
     this.style = {};
     this.attributes = {};
     if (options) {
+        if (options.style.isTight()) {
+            this.classes.push("mtight");
+        }
         if (options.getColor()) {
             this.style.color = options.getColor();
         }
