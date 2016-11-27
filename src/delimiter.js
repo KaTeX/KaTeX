@@ -56,9 +56,11 @@ var mathrmSize = function(value, size, mode, options) {
  * Puts a delimiter span in a given style, and adds appropriate height, depth,
  * and maxFontSizes.
  */
-var styleWrap = function(delim, toStyle, options) {
+var styleWrap = function(delim, toStyle, options, classes) {
+    classes = classes || [];
     var span = makeSpan(
-        ["style-wrap", options.style.reset(), toStyle.cls()], [delim], options);
+        classes.concat(["style-wrap", options.style.reset(), toStyle.cls()]),
+        [delim], options);
 
     var multiplier = toStyle.sizeMultiplier / options.style.sizeMultiplier;
 
@@ -74,10 +76,10 @@ var styleWrap = function(delim, toStyle, options) {
  * font, but is restyled to either be in textstyle, scriptstyle, or
  * scriptscriptstyle.
  */
-var makeSmallDelim = function(delim, style, center, options, mode) {
+var makeSmallDelim = function(delim, style, center, options, mode, classes) {
     var text = buildCommon.makeSymbol(delim, "Main-Regular", mode, options);
 
-    var span = styleWrap(text, style, options);
+    var span = styleWrap(text, style, options, classes);
 
     if (center) {
         var shift =
@@ -96,13 +98,12 @@ var makeSmallDelim = function(delim, style, center, options, mode) {
  * Makes a large delimiter. This is a delimiter that comes in the Size1, Size2,
  * Size3, or Size4 fonts. It is always rendered in textstyle.
  */
-var makeLargeDelim = function(delim, size, center, options, mode) {
+var makeLargeDelim = function(delim, size, center, options, mode, classes) {
     var inner = mathrmSize(delim, size, mode, options);
 
     var span = styleWrap(
-        makeSpan(["delimsizing", "size" + size],
-                 [inner], options),
-        Style.TEXT, options);
+        makeSpan(["delimsizing", "size" + size], [inner], options),
+        Style.TEXT, options, classes);
 
     if (center) {
         var shift = (1 - options.style.sizeMultiplier) *
@@ -142,7 +143,8 @@ var makeInner = function(symbol, font, mode) {
  * Make a stacked delimiter out of a given delimiter, with the total height at
  * least `heightTotal`. This routine is mentioned on page 442 of the TeXbook.
  */
-var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
+var makeStackedDelim = function(delim, heightTotal, center, options, mode,
+                                classes) {
     // There are four parts, the top, an optional middle, a repeated part, and a
     // bottom.
     var top;
@@ -320,7 +322,7 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
 
     return styleWrap(
         makeSpan(["delimsizing", "mult"], [inner], options),
-        Style.TEXT, options);
+        Style.TEXT, options, classes);
 };
 
 // There are three kinds of delimiters, delimiters that stack when they become
@@ -354,7 +356,7 @@ var sizeToMaxHeight = [0, 1.2, 1.8, 2.4, 3.0];
 /**
  * Used to create a delimiter of a specific size, where `size` is 1, 2, 3, or 4.
  */
-var makeSizedDelim = function(delim, size, options, mode) {
+var makeSizedDelim = function(delim, size, options, mode, classes) {
     // < and > turn into \langle and \rangle in delimiters
     if (delim === "<" || delim === "\\lt") {
         delim = "\\langle";
@@ -365,10 +367,10 @@ var makeSizedDelim = function(delim, size, options, mode) {
     // Sized delimiters are never centered.
     if (utils.contains(stackLargeDelimiters, delim) ||
         utils.contains(stackNeverDelimiters, delim)) {
-        return makeLargeDelim(delim, size, false, options, mode);
+        return makeLargeDelim(delim, size, false, options, mode, classes);
     } else if (utils.contains(stackAlwaysDelimiters, delim)) {
         return makeStackedDelim(
-            delim, sizeToMaxHeight[size], false, options, mode);
+            delim, sizeToMaxHeight[size], false, options, mode, classes);
     } else {
         throw new ParseError("Illegal delimiter: '" + delim + "'");
     }
@@ -471,7 +473,8 @@ var traverseSequence = function(delim, height, sequence, options) {
  * Make a delimiter of a given height+depth, with optional centering. Here, we
  * traverse the sequences, and create a delimiter that the sequence tells us to.
  */
-var makeCustomSizedDelim = function(delim, height, center, options, mode) {
+var makeCustomSizedDelim = function(delim, height, center, options, mode,
+                                    classes) {
     if (delim === "<" || delim === "\\lt") {
         delim = "\\langle";
     } else if (delim === ">" || delim === "\\gt") {
@@ -494,11 +497,13 @@ var makeCustomSizedDelim = function(delim, height, center, options, mode) {
     // Depending on the sequence element we decided on, call the appropriate
     // function.
     if (delimType.type === "small") {
-        return makeSmallDelim(delim, delimType.style, center, options, mode);
+        return makeSmallDelim(delim, delimType.style, center, options, mode,
+                              classes);
     } else if (delimType.type === "large") {
-        return makeLargeDelim(delim, delimType.size, center, options, mode);
+        return makeLargeDelim(delim, delimType.size, center, options, mode,
+                              classes);
     } else if (delimType.type === "stack") {
-        return makeStackedDelim(delim, height, center, options, mode);
+        return makeStackedDelim(delim, height, center, options, mode, classes);
     }
 };
 
@@ -506,7 +511,8 @@ var makeCustomSizedDelim = function(delim, height, center, options, mode) {
  * Make a delimiter for use with `\left` and `\right`, given a height and depth
  * of an expression that the delimiters surround.
  */
-var makeLeftRightDelim = function(delim, height, depth, options, mode) {
+var makeLeftRightDelim = function(delim, height, depth, options, mode,
+                                  classes) {
     // We always center \left/\right delimiters, so the axis is always shifted
     var axisHeight =
         options.style.metrics.axisHeight * options.style.sizeMultiplier;
@@ -533,7 +539,8 @@ var makeLeftRightDelim = function(delim, height, depth, options, mode) {
 
     // Finally, we defer to `makeCustomSizedDelim` with our calculated total
     // height
-    return makeCustomSizedDelim(delim, totalHeight, true, options, mode);
+    return makeCustomSizedDelim(delim, totalHeight, true, options, mode,
+                                classes);
 };
 
 module.exports = {

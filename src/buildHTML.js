@@ -235,12 +235,11 @@ var isCharacterBox = function(group) {
         baseElem.type === "punct";
 };
 
-var makeNullDelimiter = function(options) {
-    return makeSpan([
+var makeNullDelimiter = function(options, classes) {
+    return makeSpan(classes.concat([
         "sizing", "reset-" + options.size, "size5",
         options.style.reset(), Style.TEXT.cls(),
-        "nulldelimiter",
-    ]);
+        "nulldelimiter"]));
 };
 
 /**
@@ -562,18 +561,18 @@ groupTypes.genfrac = function(group, options) {
     var leftDelim;
     var rightDelim;
     if (group.value.leftDelim == null) {
-        leftDelim = makeNullDelimiter(options);
+        leftDelim = makeNullDelimiter(options, ["mopen"]);
     } else {
         leftDelim = delimiter.customSizedDelim(
             group.value.leftDelim, delimSize, true,
-            options.withStyle(style), group.mode);
+            options.withStyle(style), group.mode, ["mopen"]);
     }
     if (group.value.rightDelim == null) {
-        rightDelim = makeNullDelimiter(options);
+        rightDelim = makeNullDelimiter(options, ["mclose"]);
     } else {
         rightDelim = delimiter.customSizedDelim(
             group.value.rightDelim, delimSize, true,
-            options.withStyle(style), group.mode);
+            options.withStyle(style), group.mode, ["mclose"]);
     }
 
     return makeSpan(
@@ -1205,11 +1204,9 @@ groupTypes.delimsizing = function(group, options) {
     }
 
     // Use delimiter.sizedDelim to generate the delimiter.
-    return makeSpan(
-        [groupToType[group.value.delimType]],
-        [delimiter.sizedDelim(
-            delim, group.value.size, options, group.mode)],
-        options);
+    return delimiter.sizedDelim(
+            delim, group.value.size, options, group.mode,
+            [groupToType[group.value.delimType]]);
 };
 
 groupTypes.leftright = function(group, options) {
@@ -1236,13 +1233,13 @@ groupTypes.leftright = function(group, options) {
     var leftDelim;
     if (group.value.left === ".") {
         // Empty delimiters in \left and \right make null delimiter spaces.
-        leftDelim = makeNullDelimiter(options);
+        leftDelim = makeNullDelimiter(options, ["mopen"]);
     } else {
         // Otherwise, use leftRightDelim to generate the correct sized
         // delimiter.
         leftDelim = delimiter.leftRightDelim(
             group.value.left, innerHeight, innerDepth, options,
-            group.mode);
+            group.mode, ["mopen"]);
     }
     // Add it to the beginning of the expression
     inner.unshift(leftDelim);
@@ -1250,11 +1247,11 @@ groupTypes.leftright = function(group, options) {
     var rightDelim;
     // Same for the right delimiter
     if (group.value.right === ".") {
-        rightDelim = makeNullDelimiter(options);
+        rightDelim = makeNullDelimiter(options, ["mclose"]);
     } else {
         rightDelim = delimiter.leftRightDelim(
             group.value.right, innerHeight, innerDepth, options,
-            group.mode);
+            group.mode, ["mclose"]);
     }
     // Add it to the end of the expression.
     inner.push(rightDelim);
