@@ -129,6 +129,8 @@ var groupToType = {
     leftright: "minner",
     sqrt: "mord",
     accent: "mord",
+    llap: "mord",
+    rlap: "mord",
 };
 
 /**
@@ -151,8 +153,6 @@ var getTypeOfGroup = function(group) {
         return groupToType.mathord;
     } else if (group.type === "supsub") {
         return getTypeOfGroup(group.value.base);
-    } else if (group.type === "llap" || group.type === "rlap") {
-        return getTypeOfGroup(group.value);
     } else if (group.type === "color" || group.type === "sizing"
                || group.type === "styling") {
         // Return type of rightmost element of group.
@@ -770,7 +770,7 @@ groupTypes.llap = function(group, options) {
         ["inner"], [buildGroup(group.value.body, options.reset())]);
     var fix = makeSpan(["fix"], []);
     return makeSpan(
-        ["llap", options.style.cls()], [inner, fix], options);
+        ["mord", "llap", options.style.cls()], [inner, fix], options);
 };
 
 groupTypes.rlap = function(group, options) {
@@ -778,7 +778,7 @@ groupTypes.rlap = function(group, options) {
         ["inner"], [buildGroup(group.value.body, options.reset())]);
     var fix = makeSpan(["fix"], []);
     return makeSpan(
-        ["rlap", options.style.cls()], [inner, fix], options);
+        ["mord", "rlap", options.style.cls()], [inner, fix], options);
 };
 
 groupTypes.op = function(group, options) {
