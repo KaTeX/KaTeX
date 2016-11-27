@@ -238,22 +238,22 @@ defineFunction("\\phantom", {
 
 // Extra data needed for the delimiter handler down below
 var delimiterSizes = {
-    "\\bigl" : {type: "open",    size: 1},
-    "\\Bigl" : {type: "open",    size: 2},
-    "\\biggl": {type: "open",    size: 3},
-    "\\Biggl": {type: "open",    size: 4},
-    "\\bigr" : {type: "close",   size: 1},
-    "\\Bigr" : {type: "close",   size: 2},
-    "\\biggr": {type: "close",   size: 3},
-    "\\Biggr": {type: "close",   size: 4},
-    "\\bigm" : {type: "rel",     size: 1},
-    "\\Bigm" : {type: "rel",     size: 2},
-    "\\biggm": {type: "rel",     size: 3},
-    "\\Biggm": {type: "rel",     size: 4},
-    "\\big"  : {type: "textord", size: 1},
-    "\\Big"  : {type: "textord", size: 2},
-    "\\bigg" : {type: "textord", size: 3},
-    "\\Bigg" : {type: "textord", size: 4},
+    "\\bigl" : {mclass: "mopen",    size: 1},
+    "\\Bigl" : {mclass: "mopen",    size: 2},
+    "\\biggl": {mclass: "mopen",    size: 3},
+    "\\Biggl": {mclass: "mopen",    size: 4},
+    "\\bigr" : {mclass: "mclose",   size: 1},
+    "\\Bigr" : {mclass: "mclose",   size: 2},
+    "\\biggr": {mclass: "mclose",   size: 3},
+    "\\Biggr": {mclass: "mclose",   size: 4},
+    "\\bigm" : {mclass: "mrel",     size: 1},
+    "\\Bigm" : {mclass: "mrel",     size: 2},
+    "\\biggm": {mclass: "mrel",     size: 3},
+    "\\Biggm": {mclass: "mrel",     size: 4},
+    "\\big"  : {mclass: "mord",     size: 1},
+    "\\Big"  : {mclass: "mord",     size: 2},
+    "\\bigg" : {mclass: "mord",     size: 3},
+    "\\Bigg" : {mclass: "mord",     size: 4},
 };
 
 var delimiters = [
@@ -472,7 +472,7 @@ defineFunction([
         return {
             type: "delimsizing",
             size: delimiterSizes[context.funcName].size,
-            delimType: delimiterSizes[context.funcName].type,
+            mclass: delimiterSizes[context.funcName].mclass,
             value: delim.value,
         };
     }

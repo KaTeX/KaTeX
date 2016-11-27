@@ -105,66 +105,20 @@ var buildExpression = function(expression, options, isRealGroup) {
     return groups;
 };
 
-// List of types used by getTypeOfGroup,
-// see https://github.com/Khan/KaTeX/wiki/Examining-TeX#group-types
-var groupToType = {
-    mathord: "mord",
-    textord: "mord",
-    bin: "mbin",
-    rel: "mrel",
-    text: "mord",
-    open: "mopen",
-    close: "mclose",
-    inner: "minner",
-    genfrac: "mord",
-    array: "mord",
-    spacing: "mord",
-    punct: "mpunct",
-    ordgroup: "mord",
-    op: "mop",
-    katex: "mord",
-    overline: "mord",
-    underline: "mord",
-    rule: "mord",
-    leftright: "minner",
-    sqrt: "mord",
-    accent: "mord",
-    llap: "mord",
-    rlap: "mord",
-};
-
-/**
- * Gets the final math type of an expression, given its group type. This type is
- * used to determine spacing between elements, and affects bin elements by
- * causing them to change depending on what types are around them. This type
- * must be attached to the outermost node of an element as a CSS class so that
- * spacing with its surrounding elements works correctly.
- *
- * Some elements can be mapped one-to-one from group type to math type, and
- * those are listed in the `groupToType` table.
- *
- * Others (usually elements that wrap around other elements) often have
- * recursive definitions, and thus call `getTypeOfGroup` on their inner
- * elements.
- */
-var getTypeOfGroup = function(group) {
-    if (group == null) {
-        // Like when typesetting $^3$
-        return groupToType.mathord;
-    } else if (group.type === "supsub") {
-        return getTypeOfGroup(group.value.base);
-    } else if (group.type === "color" || group.type === "sizing"
-               || group.type === "styling") {
-        // Return type of rightmost element of group.
-        var atoms = group.value.value;
-        return getTypeOfGroup(atoms[atoms.length - 1]);
-    } else if (group.type === "font") {
-        return getTypeOfGroup(group.value.body);
-    } else if (group.type === "delimsizing") {
-        return groupToType[group.value.delimType];
+// Return math atom class (mclass) of a domTree.
+var getTypeOfDomTree = function(node) {
+    if (node instanceof domTree.documentFragment) {
+        if (node.children.length) {
+            return getTypeOfDomTree(
+                node.children[node.children.length - 1]);
+        }
     } else {
-        return groupToType[group.type];
+        if (utils.contains(["mord", "mop", "mbin", "mrel", "mopen", "mclose",
+                            "mpunct", "minner"], node.classes[0])) {
+            return node.classes[0];
+        }
     }
+    return null;
 };
 
 /**
@@ -437,7 +391,8 @@ groupTypes.supsub = function(group, options) {
     }
 
     // We ensure to wrap the supsub vlist in a span.msupsub to reset text-align
-    return makeSpan([getTypeOfGroup(group.value.base)],
+    var mclass = getTypeOfDomTree(base) || "mord";
+    return makeSpan([mclass],
         [base, makeSpan(["msupsub"], [supsub])],
         options);
 };
@@ -1200,13 +1155,13 @@ groupTypes.delimsizing = function(group, options) {
     if (delim === ".") {
         // Empty delimiters still count as elements, even though they don't
         // show anything.
-        return makeSpan([groupToType[group.value.delimType]]);
+        return makeSpan([group.value.mclass]);
     }
 
     // Use delimiter.sizedDelim to generate the delimiter.
     return delimiter.sizedDelim(
             delim, group.value.size, options, group.mode,
-            [groupToType[group.value.delimType]]);
+            [group.value.mclass]);
 };
 
 groupTypes.leftright = function(group, options) {

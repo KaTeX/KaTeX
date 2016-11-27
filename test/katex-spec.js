@@ -883,8 +883,8 @@ describe("A delimiter sizing parser", function() {
         var leftParse = getParsed(normalDelim)[0];
         var rightParse = getParsed(bigDelim)[0];
 
-        expect(leftParse.value.delimType).toEqual("open");
-        expect(rightParse.value.delimType).toEqual("close");
+        expect(leftParse.value.mclass).toEqual("mopen");
+        expect(rightParse.value.mclass).toEqual("mclose");
     });
 
     it("should parse the correct size delimiter", function() {

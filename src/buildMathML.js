@@ -358,10 +358,10 @@ groupTypes.delimsizing = function(group) {
 
     var node = new mathMLTree.MathNode("mo", children);
 
-    if (group.value.delimType === "open" ||
-        group.value.delimType === "close") {
+    if (group.value.mclass === "mopen" ||
+        group.value.mclass === "mclose") {
         // Only some of the delimsizing functions act as fences, and they
-        // return "open" or "close" delimTypes.
+        // return "mopen" or "mclose" mclass.
         node.setAttribute("fence", "true");
     } else {
         // Explicitly disable fencing if it's not a fence, to override the
