@@ -1,5 +1,7 @@
 var utils = require("./utils");
 var ParseError = require("./ParseError");
+var parseData = require("./parseData");
+var ParseNode = parseData.ParseNode;
 
 /* This file contains a list of functions that we parse, identified by
  * the calls to defineFunction.
@@ -233,6 +235,34 @@ defineFunction([
         type: "mclass",
         mclass: "m" + context.funcName.substr(5),
         value: ordargument(body),
+    };
+});
+
+// Build a relation by placing one symbol on top of another
+defineFunction("\\stackrel", {
+    numArgs: 2,
+}, function(context, args) {
+    var top = args[0];
+    var bottom = args[1];
+
+    var bottomop = new ParseNode("op", {
+        type: "op",
+        limits: true,
+        alwaysHandleSupSub: true,
+        symbol: false,
+        value: ordargument(bottom),
+    }, bottom.mode);
+
+    var supsub = new ParseNode("supsub", {
+        base: bottomop,
+        sup: top,
+        sub: null,
+    }, top.mode);
+
+    return {
+        type: "mclass",
+        mclass: "mrel",
+        value: [supsub],
     };
 });
 
