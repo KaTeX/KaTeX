@@ -92,6 +92,11 @@
         font-style: italic;
     }
 
+    .cursor {
+      display:inline-block;
+      min-height:2px;
+    }
+
     // This value is also used in fontMetrics.js, if you change it make sure the
     // values match.
     @ptperem: 10.0;
@@ -102,9 +107,9 @@
     @thickspace: 0.27778em;
 
     .textstyle {
-        > .mord {
+        > .mord, > .mord + .cursor {
             & + .mord {}
-            & + .mop { margin-left: @thinspace; }
+            & + .mop  { margin-left: @thinspace; }
             & + .mbin { margin-left: @mediumspace; }
             & + .mrel { margin-left: @thickspace; }
             & + .mopen {}
@@ -113,7 +118,7 @@
             & + .minner { margin-left: @thinspace; }
         }
 
-        > .mop {
+        > .mop, > .mop + .cursor {
             & + .mord { margin-left: @thinspace; }
             & + .mop { margin-left: @thinspace; }
             & + .mbin {}
@@ -124,7 +129,7 @@
             & + .minner { margin-left: @thinspace; }
         }
 
-        > .mbin {
+        > .mbin, > .mbin + .cursor {
             & + .mord { margin-left: @mediumspace; }
             & + .mop { margin-left: @mediumspace; }
             & + .mbin {}
@@ -135,7 +140,7 @@
             & + .minner { margin-left: @mediumspace; }
         }
 
-        > .mrel {
+        > .mrel, > .mrel + .cursor {
             & + .mord { margin-left: @thickspace; }
             & + .mop { margin-left: @thickspace; }
             & + .mbin {}
@@ -146,7 +151,7 @@
             & + .minner { margin-left: @thickspace; }
         }
 
-        > .mopen {
+        > .mopen, > .mopen + .cursor {
             & + .mord {}
             & + .mop {}
             & + .mbin {}
@@ -157,7 +162,7 @@
             & + .minner {}
         }
 
-        > .mclose {
+        > .mclose, > .mclose + .cursor {
             & + .mord {}
             & + .mop { margin-left: @thinspace; }
             & + .mbin { margin-left: @mediumspace; }
@@ -168,7 +173,7 @@
             & + .minner { margin-left: @thinspace; }
         }
 
-        > .mpunct {
+        > .mpunct, > .mpunct + .cursor {
             & + .mord { margin-left: @thinspace; }
             & + .mop { margin-left: @thinspace; }
             & + .mbin {}
@@ -179,7 +184,7 @@
             & + .minner { margin-left: @thinspace; }
         }
 
-        > .minner {
+        > .minner, > .minner + .cursor {
             & + .mord { margin-left: @thinspace; }
             & + .mop { margin-left: @thinspace; }
             & + .mbin { margin-left: @mediumspace; }
@@ -193,19 +198,24 @@
 
     .mord {
         & + .mop { margin-left: @thinspace; }
+        & + .cursor + .mop { margin-left: @thinspace; }
     }
 
     .mop {
         & + .mord { margin-left: @thinspace; }
         & + .mop { margin-left: @thinspace; }
+        & + .cursor + .mord { margin-left: @thinspace; }
+        & + .cursor + .mop { margin-left: @thinspace; }
     }
 
     .mclose {
         & + .mop { margin-left: @thinspace; }
+        & + .cursor + .mop { margin-left: @thinspace; }
     }
 
     .minner {
         & + .mop { margin-left: @thinspace; }
+        & + .cursor + .mop { margin-left: @thinspace; }
     }
 
     .reset-textstyle.textstyle { font-size: 1em; }
