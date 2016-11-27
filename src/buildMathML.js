@@ -316,7 +316,7 @@ groupTypes.spacing = function(group) {
     return node;
 };
 
-groupTypes.op = function(group) {
+groupTypes.op = function(group, options) {
     var node;
 
     // TODO(emily): handle big operators using the `largeop` attribute
@@ -325,6 +325,10 @@ groupTypes.op = function(group) {
         // This is a symbol. Just add the symbol.
         node = new mathMLTree.MathNode(
             "mo", [makeText(group.value.body, group.mode)]);
+    } else if (group.value.value) {
+        // do nothing for now
+        var inner = buildExpression(group.value.value, options);
+        node = new mathMLTree.MathNode("mo", inner);
     } else {
         // This is a text operator. Add all of the characters from the
         // operator's name.
