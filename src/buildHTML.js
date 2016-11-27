@@ -243,6 +243,16 @@ groupTypes.text = function(group, options, prev) {
         buildExpression(group.value.body, options.reset()));
 };
 
+groupTypes.xmlClass = function(group, options, prev) {
+    var elements = buildExpression(
+        group.value.value,
+        options.withColor(),
+        prev
+    );
+
+    return new buildCommon.makeFragment(elements, [group.value.cl]);
+};
+
 groupTypes.color = function(group, options, prev) {
     var elements = buildExpression(
         group.value.value,

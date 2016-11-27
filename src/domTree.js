@@ -133,11 +133,12 @@ span.prototype.toMarkup = function() {
  * contains children and doesn't have any HTML properties. It also keeps track
  * of a height, depth, and maxFontSize.
  */
-function documentFragment(children, height, depth, maxFontSize) {
+function documentFragment(children, height, depth, maxFontSize, classes) {
     this.children = children || [];
     this.height = height || 0;
     this.depth = depth || 0;
     this.maxFontSize = maxFontSize || 0;
+    this.classes = classes || [];
 }
 
 /**
@@ -149,7 +150,12 @@ documentFragment.prototype.toNode = function() {
 
     // Append the children
     for (var i = 0; i < this.children.length; i++) {
-        frag.appendChild(this.children[i].toNode());
+        var c = this.children[i].toNode();
+        for (var j = 0; j < this.classes.length; j++) {
+            c.setAttribute("class", c.getAttribute("class") +
+                " " + this.classes[j]);
+        }
+        frag.appendChild(c);
     }
 
     return frag;

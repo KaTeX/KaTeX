@@ -166,6 +166,16 @@ groupTypes.color = function(group, options) {
     return node;
 };
 
+groupTypes.xmlClass = function(group, options) {
+    var inner = buildExpression(group.value.value, options);
+
+    var node = new mathMLTree.MathNode("mstyle", inner);
+
+    node.setAttribute("class", group.value.cl);
+
+    return node;
+};
+
 groupTypes.supsub = function(group, options) {
     var children = [buildGroup(group.value.base, options)];
 

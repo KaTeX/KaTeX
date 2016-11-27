@@ -190,8 +190,9 @@ var makeSpan = function(classes, children, color) {
 /**
  * Makes a document fragment with the given list of children.
  */
-var makeFragment = function(children) {
-    var fragment = new domTree.documentFragment(children);
+var makeFragment = function(children, classes) {
+    var fragment = new domTree.documentFragment(children, null, null, null,
+        classes);
 
     sizeElementFromChildren(fragment);
 

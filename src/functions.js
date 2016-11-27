@@ -137,6 +137,29 @@ defineFunction("\\text", {
     };
 });
 
+// XML attributes
+defineFunction("\\xmlClass", {
+    numArgs: 2,
+    allowedInText: true,
+    greediness: 3,
+    argTypes: ["string", "original"],
+}, function(context, args) {
+    var cl = args[0];
+    var body = args[1];
+    // Normalize the different kinds of bodies (see \text above)
+    var inner;
+    if (body.type === "ordgroup") {
+        inner = body.value;
+    } else {
+        inner = [body];
+    }
+    return {
+        type: "xmlClass",
+        cl: cl,
+        value: inner,
+    };
+});
+
 // A two-argument custom color
 defineFunction("\\color", {
     numArgs: 2,
