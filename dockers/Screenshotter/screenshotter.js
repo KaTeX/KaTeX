@@ -6,6 +6,7 @@ var fs = require("fs");
 var http = require("http");
 var jspngopt = require("jspngopt");
 var net = require("net");
+var os = require("os");
 var pako = require("pako");
 var path = require("path");
 var selenium = require("selenium-webdriver");
@@ -130,12 +131,21 @@ function guessDockerIPs() {
             process.exit(2);
         }
         katexIP = katexIP || config[1];
+        return;
     } catch (e) {
-        var ip = cmd("docker", "inspect",
-            "-f", "{{.NetworkSettings.Gateway}}", opts.container);
-        seleniumIP = seleniumIP || ip;
-        katexIP = katexIP || ip;
+        // Apparently no boot2docker, continue
     }
+    if (!process.env.DOCKER_HOST && os.type() === "Darwin") {
+        // Docker for Mac
+        seleniumIP = seleniumIP || "localhost";
+        katexIP = katexIP || "*any*"; // see findHostIP
+        return;
+    }
+    // Native Docker on Linux or remote Docker daemon or similar
+    var gatewayIP = cmd("docker", "inspect",
+      "-f", "{{.NetworkSettings.Gateway}}", opts.container);
+    seleniumIP = seleniumIP || gatewayIP;
+    katexIP = katexIP || gatewayIP;
 }
 
 if (!seleniumURL && opts.container) {
@@ -192,13 +202,6 @@ function startServer() {
 // Wait for container to become ready
 
 function tryConnect() {
-    if (!katexIP) {
-        katexIP = "localhost";
-    }
-    if (!katexURL) {
-        katexURL = "http://" + katexIP + ":" + katexPort + "/";
-        console.log("KaTeX URL is " + katexURL);
-    }
     if (!seleniumIP) {
         process.nextTick(buildDriver);
         return;
@@ -253,7 +256,7 @@ function setSize(reqW, reqH) {
         var actualW = img.width;
         var actualH = img.height;
         if (actualW === targetW && actualH === targetH) {
-            process.nextTick(takeScreenshots);
+            findHostIP();
             return;
         }
         if (++attempts > 5) {
@@ -273,6 +276,64 @@ function imageDimensions(img) {
 }
 
 //////////////////////////////////////////////////////////////////////
+// Work out how to connect to host KaTeX server
+
+function findHostIP() {
+    if (!katexIP) {
+        katexIP = "localhost";
+    }
+    if (katexIP !== "*any*" || katexURL) {
+        if (!katexURL) {
+            katexURL = "http://" + katexIP + ":" + katexPort + "/";
+            console.log("KaTeX URL is " + katexURL);
+        }
+        process.nextTick(takeScreenshots);
+        return;
+    }
+
+    // Now we need to find an IP the container can connect to.
+    // First, install a server component to get notified of successful connects
+    app.get("/ss-connect.js", function(req, res, next) {
+        if (!katexURL) {
+            katexIP = req.query.ip;
+            katexURL = "http://" + katexIP + ":" + katexPort + "/";
+            console.log("KaTeX URL is " + katexURL);
+            process.nextTick(takeScreenshots);
+        }
+        res.setHeader("Content-Type", "text/javascript");
+        res.send("//OK");
+    });
+
+    // Next, enumerate all network addresses
+    var ips = [];
+    var devs = os.networkInterfaces();
+    for (var dev in devs) {
+        if (devs.hasOwnProperty(dev)) {
+            var addrs = devs[dev];
+            for (var i = 0; i < addrs.length; ++i) {
+                var addr = addrs[i].address;
+                if (/:/.test(addr)) {
+                    addr = "[" + addr + "]";
+                }
+                ips.push(addr);
+            }
+        }
+    }
+    console.log("Looking for host IP among " + ips.join(", "));
+
+    // Load a data: URI document which attempts to contact each of these IPs
+    var html = "<!doctype html>\n<html><body>\n";
+    html += ips.map(function(ip) {
+        return '<script src="http://' + ip + ':' + katexPort +
+            '/ss-connect.js?ip=' + encodeURIComponent(ip) +
+            '" defer></script>';
+    }).join("\n");
+    html += "\n</body></html>";
+    html = "data:text/html," + encodeURIComponent(html);
+    driver.get(html);
+}
+
+//////////////////////////////////////////////////////////////////////
 // Take the screenshots
 
 var countdown = listOfCases.length;
@@ -288,6 +349,11 @@ function takeScreenshot(key) {
     var itm = data[key];
     if (!itm) {
         console.error("Test case " + key + " not known!");
+        listOfFailed.push(key);
+        if (exitStatus === 0) {
+            exitStatus = 1;
+        }
+        oneDone();
         return;
     }
 
@@ -303,15 +369,7 @@ function takeScreenshot(key) {
     if (opts.wait) {
         browserSideWait(1000 * opts.wait);
     }
-    driver.takeScreenshot().then(haveScreenshot).then(function() {
-        if (--countdown === 0) {
-            if (listOfFailed.length) {
-                console.error("Failed: " + listOfFailed.join(" "));
-            }
-            // devServer.close(cb) will take too long.
-            process.exit(exitStatus);
-        }
-    }, check);
+    driver.takeScreenshot().then(haveScreenshot).then(oneDone, check);
 
     function haveScreenshot(img) {
         img = imageDimensions(img);
@@ -358,6 +416,16 @@ function takeScreenshot(key) {
             return promisify(fs.writeFile, file, buf).then(function() {
                 console.log(key);
             });
+        }
+    }
+
+    function oneDone() {
+        if (--countdown === 0) {
+            if (listOfFailed.length) {
+                console.error("Failed: " + listOfFailed.join(" "));
+            }
+            // devServer.close(cb) will take too long.
+            process.exit(exitStatus);
         }
     }
 }
