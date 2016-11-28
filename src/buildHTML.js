@@ -22,11 +22,19 @@ var makeSpan = buildCommon.makeSpan;
  * nodes. This function handles the `prev` node correctly, and passes the
  * previous element from the list as the prev of the next element.
  */
-var buildExpression = function(expression, options, prev) {
+var buildExpression = function(expression, options, prev, next) {
     var groups = [];
+    var localnext;
     for (var i = 0; i < expression.length; i++) {
         var group = expression[i];
-        groups.push(buildGroup(group, options, prev));
+        // While in a subtree, next should be the next sibling
+        // If at the last node, next is the parent's next sibling.
+        if (i + 1 < expression.length) {
+            localnext = expression[i + 1];
+        } else {
+            localnext = next;
+        }
+        groups.push(buildGroup(group, options, prev, localnext));
         prev = group;
     }
     return groups;
@@ -183,23 +191,37 @@ groupTypes.textord = function(group, options, prev) {
     return buildCommon.makeOrd(group, options, "textord");
 };
 
-groupTypes.bin = function(group, options, prev) {
+groupTypes.bin = function(group, options, prev, next) {
     var className = "mbin";
     // Pull out the most recent element. Do some special handling to find
     // things at the end of a \color group. Note that we don't use the same
     // logic for ordgroups (which count as ords).
     var prevAtom = prev;
-    while (prevAtom && prevAtom.type === "color") {
+    while (prevAtom &&
+          (prevAtom.type === "color" || prevAtom.type === "phantom")) {
         var atoms = prevAtom.value.value;
         prevAtom = atoms[atoms.length - 1];
     }
     // See TeXbook pg. 442-446, Rules 5 and 6, and the text before Rule 19.
-    // Here, we determine whether the bin should turn into an ord. We
-    // currently only apply Rule 5.
+    // Here, we determine whether the bin should turn into an ord.
     if (!prev || utils.contains(["mbin", "mopen", "mrel", "mop", "mpunct"],
             getTypeOfGroup(prevAtom))) {
         group.type = "textord";
         className = "mord";
+    } else {
+        // We only check the next atom if we didn't do anything with the
+        // previous atom.
+        var nextAtom = next;
+        while (nextAtom &&
+              (nextAtom.type === "color" || nextAtom.type === "phantom")) {
+            nextAtom = nextAtom.value.value[0];
+        }
+
+        if (!nextAtom || utils.contains(["mrel", "mclose", "mpunct"],
+                getTypeOfGroup(nextAtom))) {
+            group.type = "textord";
+            className = "mord";
+        }
     }
 
     return buildCommon.mathsym(
@@ -231,23 +253,24 @@ groupTypes.punct = function(group, options, prev) {
         group.value, group.mode, options.getColor(), ["mpunct"]);
 };
 
-groupTypes.ordgroup = function(group, options, prev) {
+groupTypes.ordgroup = function(group, options, prev, next) {
     return makeSpan(
         ["mord", options.style.cls()],
-        buildExpression(group.value, options.reset())
+        buildExpression(group.value, options.reset(), prev, next)
     );
 };
 
-groupTypes.text = function(group, options, prev) {
+groupTypes.text = function(group, options, prev, next) {
     return makeSpan(["text", "mord", options.style.cls()],
-        buildExpression(group.value.body, options.reset()));
+        buildExpression(group.value.body, options.reset(), prev, next));
 };
 
-groupTypes.color = function(group, options, prev) {
+groupTypes.color = function(group, options, prev, next) {
     var elements = buildExpression(
         group.value.value,
         options.withColor(group.value.color),
-        prev
+        prev,
+        next
     );
 
     // \color isn't supposed to affect the type of the elements it contains.
@@ -1051,12 +1074,12 @@ groupTypes.sqrt = function(group, options, prev) {
     }
 };
 
-groupTypes.sizing = function(group, options, prev) {
+groupTypes.sizing = function(group, options, prev, next) {
     // Handle sizing operators like \Huge. Real TeX doesn't actually allow
     // these functions inside of math expressions, so we do some special
     // handling.
     var inner = buildExpression(group.value.value,
-            options.withSize(group.value.size), prev);
+            options.withSize(group.value.size), prev, next);
 
     var style = options.style;
     var span = makeSpan(["mord"],
@@ -1071,7 +1094,7 @@ groupTypes.sizing = function(group, options, prev) {
     return span;
 };
 
-groupTypes.styling = function(group, options, prev) {
+groupTypes.styling = function(group, options, prev, next) {
     // Style changes are handled in the TeXbook on pg. 442, Rule 3.
 
     // Figure out what style we're changing to.
@@ -1086,14 +1109,14 @@ groupTypes.styling = function(group, options, prev) {
 
     // Build the inner expression in the new style.
     var inner = buildExpression(
-        group.value.value, options.withStyle(newStyle), prev);
+        group.value.value, options.withStyle(newStyle), prev, next);
 
     return makeSpan([options.style.reset(), newStyle.cls()], inner);
 };
 
-groupTypes.font = function(group, options, prev) {
+groupTypes.font = function(group, options, prev, next) {
     var font = group.value.font;
-    return buildGroup(group.value.body, options.withFont(font), prev);
+    return buildGroup(group.value.body, options.withFont(font), prev, next);
 };
 
 groupTypes.delimsizing = function(group, options, prev) {
@@ -1226,7 +1249,7 @@ groupTypes.kern = function(group, options, prev) {
     return rule;
 };
 
-groupTypes.accent = function(group, options, prev) {
+groupTypes.accent = function(group, options, prev, next) {
     // Accents are handled in the TeXbook pg. 443, rule 12.
     var base = group.value.base;
     var style = options.style;
@@ -1253,7 +1276,7 @@ groupTypes.accent = function(group, options, prev) {
         // Rerender the supsub group with its new base, and store that
         // result.
         supsubGroup = buildGroup(
-            supsub, options.reset(), prev);
+            supsub, options.reset(), prev, next);
     }
 
     // Build the base group
@@ -1335,11 +1358,12 @@ groupTypes.accent = function(group, options, prev) {
     }
 };
 
-groupTypes.phantom = function(group, options, prev) {
+groupTypes.phantom = function(group, options, prev, next) {
     var elements = buildExpression(
         group.value.value,
         options.withPhantom(),
-        prev
+        prev,
+        next
     );
 
     // \phantom isn't supposed to affect the elements it contains.
@@ -1352,14 +1376,14 @@ groupTypes.phantom = function(group, options, prev) {
  * function for it. It also handles the interaction of size and style changes
  * between parents and children.
  */
-var buildGroup = function(group, options, prev) {
+var buildGroup = function(group, options, prev, next) {
     if (!group) {
         return makeSpan();
     }
 
     if (groupTypes[group.type]) {
         // Call the groupTypes function
-        var groupNode = groupTypes[group.type](group, options, prev);
+        var groupNode = groupTypes[group.type](group, options, prev, next);
         var multiplier;
 
         // If the style changed between the parent and the current group,
