@@ -1581,7 +1581,8 @@ describe("A bin builder", function() {
 
     it("should correctly interact with color objects", function() {
         expect(getBuilt("\\blue{x}+y")[1].classes).toContain("mbin");
-        expect(getBuilt("\\blue{x+}+y")[1].classes).toContain("mord");
+        expect(getBuilt("\\blue{x+}+y")[1].classes).toContain("mbin");
+        expect(getBuilt("\\blue{x+}+y")[2].classes).toContain("mord");
     });
 });
 
@@ -1695,17 +1696,17 @@ describe("A phantom builder", function() {
     });
 
     it("should make the children transparent", function() {
-        var children = getBuilt("\\phantom{x+1}")[0].children;
+        var children = getBuilt("\\phantom{x+1}");
         expect(children[0].style.color).toBe("transparent");
         expect(children[1].style.color).toBe("transparent");
         expect(children[2].style.color).toBe("transparent");
     });
 
     it("should make all descendants transparent", function() {
-        var children = getBuilt("\\phantom{x+\\blue{1}}")[0].children;
+        var children = getBuilt("\\phantom{x+\\blue{1}}");
         expect(children[0].style.color).toBe("transparent");
         expect(children[1].style.color).toBe("transparent");
-        expect(children[2].children[0].style.color).toBe("transparent");
+        expect(children[2].style.color).toBe("transparent");
     });
 });
 

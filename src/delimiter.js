@@ -47,8 +47,9 @@ var getMetrics = function(symbol, font) {
 /**
  * Builds a symbol in the given font size (note size is an integer)
  */
-var mathrmSize = function(value, size, mode) {
-    return buildCommon.makeSymbol(value, "Size" + size + "-Regular", mode);
+var mathrmSize = function(value, size, mode, options) {
+    return buildCommon.makeSymbol(value, "Size" + size + "-Regular",
+        mode, options);
 };
 
 /**
@@ -57,7 +58,7 @@ var mathrmSize = function(value, size, mode) {
  */
 var styleWrap = function(delim, toStyle, options) {
     var span = makeSpan(
-        ["style-wrap", options.style.reset(), toStyle.cls()], [delim]);
+        ["style-wrap", options.style.reset(), toStyle.cls()], [delim], options);
 
     var multiplier = toStyle.sizeMultiplier / options.style.sizeMultiplier;
 
@@ -74,7 +75,7 @@ var styleWrap = function(delim, toStyle, options) {
  * scriptscriptstyle.
  */
 var makeSmallDelim = function(delim, style, center, options, mode) {
-    var text = buildCommon.makeSymbol(delim, "Main-Regular", mode);
+    var text = buildCommon.makeSymbol(delim, "Main-Regular", mode, options);
 
     var span = styleWrap(text, style, options);
 
@@ -96,11 +97,11 @@ var makeSmallDelim = function(delim, style, center, options, mode) {
  * Size3, or Size4 fonts. It is always rendered in textstyle.
  */
 var makeLargeDelim = function(delim, size, center, options, mode) {
-    var inner = mathrmSize(delim, size, mode);
+    var inner = mathrmSize(delim, size, mode, options);
 
     var span = styleWrap(
         makeSpan(["delimsizing", "size" + size],
-                 [inner], options.getColor()),
+                 [inner], options),
         Style.TEXT, options);
 
     if (center) {
@@ -318,7 +319,7 @@ var makeStackedDelim = function(delim, heightTotal, center, options, mode) {
     var inner = buildCommon.makeVList(inners, "bottom", depth, options);
 
     return styleWrap(
-        makeSpan(["delimsizing", "mult"], [inner], options.getColor()),
+        makeSpan(["delimsizing", "mult"], [inner], options),
         Style.TEXT, options);
 };
 

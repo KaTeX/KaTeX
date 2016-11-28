@@ -34,14 +34,16 @@ var mainitLetters = [
  * Makes a symbolNode after translation via the list of symbols in symbols.js.
  * Correctly pulls out metrics for the character, and optionally takes a list of
  * classes to be attached to the node.
+ *
+ * TODO: make argument order closer to makeSpan
  */
-var makeSymbol = function(value, style, mode, color, classes) {
+var makeSymbol = function(value, fontFamily, mode, options, classes) {
     // Replace the value with its replaced value from symbol.js
     if (symbols[mode][value] && symbols[mode][value].replace) {
         value = symbols[mode][value].replace;
     }
 
-    var metrics = fontMetrics.getCharacterMetrics(value, style);
+    var metrics = fontMetrics.getCharacterMetrics(value, fontFamily);
 
     var symbolNode;
     if (metrics) {
@@ -52,12 +54,17 @@ var makeSymbol = function(value, style, mode, color, classes) {
         // TODO(emily): Figure out a good way to only print this in development
         typeof console !== "undefined" && console.warn(
             "No character metrics for '" + value + "' in style '" +
-                style + "'");
+                fontFamily + "'");
         symbolNode = new domTree.symbolNode(value, 0, 0, 0, 0, classes);
     }
 
-    if (color) {
-        symbolNode.style.color = color;
+    if (options) {
+        if (options.style.isTight()) {
+            symbolNode.classes.push("mtight");
+        }
+        if (options.getColor()) {
+            symbolNode.style.color = options.getColor();
+        }
     }
 
     return symbolNode;
@@ -67,7 +74,7 @@ var makeSymbol = function(value, style, mode, color, classes) {
  * Makes a symbol in Main-Regular or AMS-Regular.
  * Used for rel, bin, open, close, inner, and punct.
  */
-var mathsym = function(value, mode, color, classes) {
+var mathsym = function(value, mode, options, classes) {
     // Decide what font to render the symbol in by its entry in the symbols
     // table.
     // Have a special case for when the value = \ because the \ is used as a
@@ -75,22 +82,22 @@ var mathsym = function(value, mode, color, classes) {
     // text ordinal and is therefore not present as a symbol in the symbols
     // table for text
     if (value === "\\" || symbols[mode][value].font === "main") {
-        return makeSymbol(value, "Main-Regular", mode, color, classes);
+        return makeSymbol(value, "Main-Regular", mode, options, classes);
     } else {
         return makeSymbol(
-            value, "AMS-Regular", mode, color, classes.concat(["amsrm"]));
+            value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
     }
 };
 
 /**
  * Makes a symbol in the default font for mathords and textords.
  */
-var mathDefault = function(value, mode, color, classes, type) {
+var mathDefault = function(value, mode, options, classes, type) {
     if (type === "mathord") {
-        return mathit(value, mode, color, classes);
+        return mathit(value, mode, options, classes);
     } else if (type === "textord") {
         return makeSymbol(
-            value, "Main-Regular", mode, color, classes.concat(["mathrm"]));
+            value, "Main-Regular", mode, options, classes.concat(["mathrm"]));
     } else {
         throw new Error("unexpected type: " + type + " in mathDefault");
     }
@@ -99,17 +106,17 @@ var mathDefault = function(value, mode, color, classes, type) {
 /**
  * Makes a symbol in the italic math font.
  */
-var mathit = function(value, mode, color, classes) {
+var mathit = function(value, mode, options, classes) {
     if (/[0-9]/.test(value.charAt(0)) ||
             // glyphs for \imath and \jmath do not exist in Math-Italic so we
             // need to use Main-Italic instead
             utils.contains(mainitLetters, value) ||
             utils.contains(greekCapitals, value)) {
         return makeSymbol(
-            value, "Main-Italic", mode, color, classes.concat(["mainit"]));
+            value, "Main-Italic", mode, options, classes.concat(["mainit"]));
     } else {
         return makeSymbol(
-            value, "Math-Italic", mode, color, classes.concat(["mathit"]));
+            value, "Math-Italic", mode, options, classes.concat(["mathit"]));
     }
 };
 
@@ -124,23 +131,22 @@ var makeOrd = function(group, options, type) {
     }
 
     var classes = ["mord"];
-    var color = options.getColor();
 
     var font = options.font;
     if (font) {
         if (font === "mathit" || utils.contains(mainitLetters, value)) {
-            return mathit(value, mode, color, classes);
+            return mathit(value, mode, options, classes);
         } else {
             var fontName = fontMap[font].fontName;
             if (fontMetrics.getCharacterMetrics(value, fontName)) {
                 return makeSymbol(
-                    value, fontName, mode, color, classes.concat([font]));
+                    value, fontName, mode, options, classes.concat([font]));
             } else {
-                return mathDefault(value, mode, color, classes, type);
+                return mathDefault(value, mode, options, classes, type);
             }
         }
     } else {
-        return mathDefault(value, mode, color, classes, type);
+        return mathDefault(value, mode, options, classes, type);
     }
 };
 
@@ -173,18 +179,27 @@ var sizeElementFromChildren = function(elem) {
 };
 
 /**
- * Makes a span with the given list of classes, list of children, and color.
+ * Makes a span with the given list of classes, list of children, and options.
+ *
+ * TODO: Ensure that `options` is always provided (currently some call sites
+ * don't pass it).
  */
-var makeSpan = function(classes, children, color) {
-    var span = new domTree.span(classes, children);
+var makeSpan = function(classes, children, options) {
+    var span = new domTree.span(classes, children, options);
 
     sizeElementFromChildren(span);
 
-    if (color) {
-        span.style.color = color;
-    }
-
     return span;
+};
+
+/**
+ * Prepends the given children to the given span, updating height, depth, and
+ * maxFontSize.
+ */
+var prependChildren = function(span, children) {
+    span.children = children.concat(span.children);
+
+    sizeElementFromChildren(span);
 };
 
 /**
@@ -447,6 +462,7 @@ module.exports = {
     makeFragment: makeFragment,
     makeVList: makeVList,
     makeOrd: makeOrd,
+    prependChildren: prependChildren,
     sizingMultiplier: sizingMultiplier,
     spacingFunctions: spacingFunctions,
 };
