@@ -126,16 +126,27 @@ defineFunction("\\sqrt", {
     };
 });
 
-// Some non-mathy text
-defineFunction("\\text", {
+// Non-mathy text, possibly in a font
+var textFunctionStyles = {
+    "\\text": undefined, "\\textrm": "mathrm", "\\textsf": "mathsf",
+    "\\texttt": "mathtt", "\\textnormal": "mathrm", "\\textbf": "mathbf",
+    "\\textit": "textit",
+};
+
+defineFunction([
+    "\\text", "\\textrm", "\\textsf", "\\texttt", "\\textnormal",
+    "\\textbf", "\\textit",
+], {
     numArgs: 1,
     argTypes: ["text"],
     greediness: 2,
+    allowedInText: true,
 }, function(context, args) {
     var body = args[0];
     return {
         type: "text",
         body: ordargument(body),
+        style: textFunctionStyles[context.funcName],
     };
 });
 

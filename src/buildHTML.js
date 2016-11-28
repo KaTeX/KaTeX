@@ -249,15 +249,16 @@ groupTypes.ordgroup = function(group, options) {
 };
 
 groupTypes.text = function(group, options) {
-    var inner = buildExpression(group.value.body, options, true);
+    var newOptions = options.withFont(group.value.style);
+    var inner = buildExpression(group.value.body, newOptions, true);
     for (var i = 0; i < inner.length - 1; i++) {
         if (inner[i].tryCombine(inner[i + 1])) {
             inner.splice(i + 1, 1);
             i--;
         }
     }
-    return makeSpan(["mord", "text", options.style.cls()],
-        inner, options);
+    return makeSpan(["mord", "text", newOptions.style.cls()],
+        inner, newOptions);
 };
 
 groupTypes.color = function(group, options) {

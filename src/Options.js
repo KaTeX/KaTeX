@@ -99,7 +99,7 @@ Options.prototype.withPhantom = function() {
  */
 Options.prototype.withFont = function(font) {
     return this.extend({
-        font: font,
+        font: font || this.font,
     });
 };
 
