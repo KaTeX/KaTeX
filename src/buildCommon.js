@@ -49,8 +49,12 @@ var makeSymbol = function(value, fontFamily, mode, options, classes) {
 
     var symbolNode;
     if (metrics) {
+        var italic = metrics.italic;
+        if (mode === "text") {
+            italic = 0;
+        }
         symbolNode = new domTree.symbolNode(
-            value, metrics.height, metrics.depth, metrics.italic, metrics.skew,
+            value, metrics.height, metrics.depth, italic, metrics.skew,
             classes);
     } else {
         // TODO(emily): Figure out a good way to only print this in development
