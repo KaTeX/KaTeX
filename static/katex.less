@@ -381,6 +381,26 @@
         }
     }
 
+
+
+    .overrightarrow {
+        .overrightarrow-line {
+            width: 100%;
+            height: 1em;
+            position: relative;
+            overflow: hidden;
+
+            &:before {
+                content: "−−−−−−−−−−−−−−−−−→";
+                right: 0.15em;
+                height: 1em;
+                text-align: right;
+                position: absolute;
+                letter-spacing: -0.19em;
+            }
+        }
+    }
+
     .sqrt {
         > .sqrt-sign {
             position: relative;
