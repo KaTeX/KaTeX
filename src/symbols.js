@@ -84,6 +84,7 @@ defineSymbol(math, main, rel, "\u220b", "\\owns");
 // Punctuation
 defineSymbol(math, main, punct, "\u002e", "\\ldotp");
 defineSymbol(math, main, punct, "\u22c5", "\\cdotp");
+defineSymbol(math, main, punct, "\u2026", "\\dots");
 
 // Misc Symbols
 defineSymbol(math, main, textord, "\u0023", "\\#");
@@ -394,6 +395,8 @@ defineSymbol(math, ams, rel, "\u21be", "\\restriction");
 
 defineSymbol(math, main, textord, "\u2018", "`");
 defineSymbol(math, main, textord, "$", "\\$");
+defineSymbol(math, main, textord, "\u20ac", "\\euro");
+defineSymbol(math, main, textord, "\u20ac", "\\€");
 defineSymbol(math, main, textord, "%", "\\%");
 defineSymbol(math, main, textord, "_", "\\_");
 defineSymbol(math, main, textord, "\u2220", "\\angle");
