@@ -1,5 +1,7 @@
 var utils = require("./utils");
 var ParseError = require("./ParseError");
+var parseData = require("./parseData");
+var ParseNode = parseData.ParseNode;
 
 /* This file contains a list of functions that we parse, identified by
  * the calls to defineFunction.
@@ -100,6 +102,16 @@ function defineFunction(names, props, handler) {
     }
 }
 
+// Since the corresponding buildHTML/buildMathML function expects a
+// list of elements, we normalize for different kinds of arguments
+var ordargument = function(arg) {
+    if (arg.type === "ordgroup") {
+        return arg.value;
+    } else {
+        return [arg];
+    }
+};
+
 // A normal square root
 defineFunction("\\sqrt", {
     numArgs: 1,
@@ -114,26 +126,27 @@ defineFunction("\\sqrt", {
     };
 });
 
-// Some non-mathy text
-defineFunction("\\text", {
+// Non-mathy text, possibly in a font
+var textFunctionStyles = {
+    "\\text": undefined, "\\textrm": "mathrm", "\\textsf": "mathsf",
+    "\\texttt": "mathtt", "\\textnormal": "mathrm", "\\textbf": "mathbf",
+    "\\textit": "textit",
+};
+
+defineFunction([
+    "\\text", "\\textrm", "\\textsf", "\\texttt", "\\textnormal",
+    "\\textbf", "\\textit",
+], {
     numArgs: 1,
     argTypes: ["text"],
     greediness: 2,
+    allowedInText: true,
 }, function(context, args) {
     var body = args[0];
-    // Since the corresponding buildHTML/buildMathML function expects a
-    // list of elements, we normalize for different kinds of arguments
-    // TODO(emily): maybe this should be done somewhere else
-    var inner;
-    if (body.type === "ordgroup") {
-        inner = body.value;
-    } else {
-        inner = [body];
-    }
-
     return {
         type: "text",
-        body: inner,
+        body: ordargument(body),
+        style: textFunctionStyles[context.funcName],
     };
 });
 
@@ -146,18 +159,10 @@ defineFunction("\\color", {
 }, function(context, args) {
     var color = args[0];
     var body = args[1];
-    // Normalize the different kinds of bodies (see \text above)
-    var inner;
-    if (body.type === "ordgroup") {
-        inner = body.value;
-    } else {
-        inner = [body];
-    }
-
     return {
         type: "color",
         color: color.value,
-        value: inner,
+        value: ordargument(body),
     };
 });
 
@@ -223,37 +228,73 @@ defineFunction("\\phantom", {
     numArgs: 1,
 }, function(context, args) {
     var body = args[0];
-    var inner;
-    if (body.type === "ordgroup") {
-        inner = body.value;
-    } else {
-        inner = [body];
-    }
-
     return {
         type: "phantom",
-        value: inner,
+        value: ordargument(body),
+    };
+});
+
+// Math class commands except \mathop
+defineFunction([
+    "\\mathord", "\\mathbin", "\\mathrel", "\\mathopen",
+    "\\mathclose", "\\mathpunct", "\\mathinner",
+], {
+    numArgs: 1,
+}, function(context, args) {
+    var body = args[0];
+    return {
+        type: "mclass",
+        mclass: "m" + context.funcName.substr(5),
+        value: ordargument(body),
+    };
+});
+
+// Build a relation by placing one symbol on top of another
+defineFunction("\\stackrel", {
+    numArgs: 2,
+}, function(context, args) {
+    var top = args[0];
+    var bottom = args[1];
+
+    var bottomop = new ParseNode("op", {
+        type: "op",
+        limits: true,
+        alwaysHandleSupSub: true,
+        symbol: false,
+        value: ordargument(bottom),
+    }, bottom.mode);
+
+    var supsub = new ParseNode("supsub", {
+        base: bottomop,
+        sup: top,
+        sub: null,
+    }, top.mode);
+
+    return {
+        type: "mclass",
+        mclass: "mrel",
+        value: [supsub],
     };
 });
 
 // Extra data needed for the delimiter handler down below
 var delimiterSizes = {
-    "\\bigl" : {type: "open",    size: 1},
-    "\\Bigl" : {type: "open",    size: 2},
-    "\\biggl": {type: "open",    size: 3},
-    "\\Biggl": {type: "open",    size: 4},
-    "\\bigr" : {type: "close",   size: 1},
-    "\\Bigr" : {type: "close",   size: 2},
-    "\\biggr": {type: "close",   size: 3},
-    "\\Biggr": {type: "close",   size: 4},
-    "\\bigm" : {type: "rel",     size: 1},
-    "\\Bigm" : {type: "rel",     size: 2},
-    "\\biggm": {type: "rel",     size: 3},
-    "\\Biggm": {type: "rel",     size: 4},
-    "\\big"  : {type: "textord", size: 1},
-    "\\Big"  : {type: "textord", size: 2},
-    "\\bigg" : {type: "textord", size: 3},
-    "\\Bigg" : {type: "textord", size: 4},
+    "\\bigl" : {mclass: "mopen",    size: 1},
+    "\\Bigl" : {mclass: "mopen",    size: 2},
+    "\\biggl": {mclass: "mopen",    size: 3},
+    "\\Biggl": {mclass: "mopen",    size: 4},
+    "\\bigr" : {mclass: "mclose",   size: 1},
+    "\\Bigr" : {mclass: "mclose",   size: 2},
+    "\\biggr": {mclass: "mclose",   size: 3},
+    "\\Biggr": {mclass: "mclose",   size: 4},
+    "\\bigm" : {mclass: "mrel",     size: 1},
+    "\\Bigm" : {mclass: "mrel",     size: 2},
+    "\\biggm": {mclass: "mrel",     size: 3},
+    "\\Biggm": {mclass: "mrel",     size: 4},
+    "\\big"  : {mclass: "mord",     size: 1},
+    "\\Big"  : {mclass: "mord",     size: 2},
+    "\\bigg" : {mclass: "mord",     size: 3},
+    "\\Bigg" : {mclass: "mord",     size: 4},
 };
 
 var delimiters = [
@@ -298,17 +339,10 @@ defineFunction([
     greediness: 3,
 }, function(context, args) {
     var body = args[0];
-    var atoms;
-    if (body.type === "ordgroup") {
-        atoms = body.value;
-    } else {
-        atoms = [body];
-    }
-
     return {
         type: "color",
         color: "katex-" + context.funcName.slice(1),
-        value: atoms,
+        value: ordargument(body),
     };
 });
 
@@ -378,10 +412,24 @@ defineFunction([
     };
 });
 
+// \mathop class command
+defineFunction("\\mathop", {
+    numArgs: 1,
+}, function(context, args) {
+    var body = args[0];
+    return {
+        type: "op",
+        limits: false,
+        symbol: false,
+        value: ordargument(body),
+    };
+});
+
 // Fractions
 defineFunction([
     "\\dfrac", "\\frac", "\\tfrac",
     "\\dbinom", "\\binom", "\\tbinom",
+    "\\\\atopfrac", // can’t be entered directly
 ], {
     numArgs: 2,
     greediness: 2,
@@ -398,6 +446,9 @@ defineFunction([
         case "\\frac":
         case "\\tfrac":
             hasBarLine = true;
+            break;
+        case "\\\\atopfrac":
+            hasBarLine = false;
             break;
         case "\\dbinom":
         case "\\binom":
@@ -472,7 +523,7 @@ defineFunction([
         return {
             type: "delimsizing",
             size: delimiterSizes[context.funcName].size,
-            delimType: delimiterSizes[context.funcName].type,
+            mclass: delimiterSizes[context.funcName].mclass,
             value: delim.value,
         };
     }
@@ -535,7 +586,7 @@ defineFunction([
 });
 
 // Infix generalized fractions
-defineFunction(["\\over", "\\choose"], {
+defineFunction(["\\over", "\\choose", "\\atop"], {
     numArgs: 0,
     infix: true,
 }, function(context) {
@@ -546,6 +597,9 @@ defineFunction(["\\over", "\\choose"], {
             break;
         case "\\choose":
             replaceWith = "\\binom";
+            break;
+        case "\\atop":
+            replaceWith = "\\\\atopfrac";
             break;
         default:
             throw new Error("Unrecognized infix genfrac command");

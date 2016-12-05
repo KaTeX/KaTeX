@@ -36,6 +36,8 @@ var mainitLetters = [
  * classes to be attached to the node.
  *
  * TODO: make argument order closer to makeSpan
+ * TODO: add a separate argument for math class (e.g. `mop`, `mbin`), which
+ * should if present come first in `classes`.
  */
 var makeSymbol = function(value, fontFamily, mode, options, classes) {
     // Replace the value with its replaced value from symbol.js
@@ -47,8 +49,12 @@ var makeSymbol = function(value, fontFamily, mode, options, classes) {
 
     var symbolNode;
     if (metrics) {
+        var italic = metrics.italic;
+        if (mode === "text") {
+            italic = 0;
+        }
         symbolNode = new domTree.symbolNode(
-            value, metrics.height, metrics.depth, metrics.italic, metrics.skew,
+            value, metrics.height, metrics.depth, italic, metrics.skew,
             classes);
     } else {
         // TODO(emily): Figure out a good way to only print this in development
@@ -183,6 +189,8 @@ var sizeElementFromChildren = function(elem) {
  *
  * TODO: Ensure that `options` is always provided (currently some call sites
  * don't pass it).
+ * TODO: add a separate argument for math class (e.g. `mop`, `mbin`), which
+ * should if present come first in `classes`.
  */
 var makeSpan = function(classes, children, options) {
     var span = new domTree.span(classes, children, options);
@@ -421,6 +429,10 @@ var fontMap = {
     "mathrm": {
         variant: "normal",
         fontName: "Main-Regular",
+    },
+    "textit": {
+        variant: "italic",
+        fontName: "Main-Italic",
     },
 
     // "mathit" is missing because it requires the use of two fonts: Main-Italic

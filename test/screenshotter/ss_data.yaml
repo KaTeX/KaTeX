@@ -26,6 +26,11 @@ Arrays: |
 ArrayType: 1\begin{array}{c}2\\3\end{array}4
 Baseline: a+b-c\cdot d/e
 BasicTest: a
+BinCancellation: |
+    \begin{array}{ccc}
+        +1 & 1+ & 1+1 & (,) \\
+        1++1 & 3\times) & 1+, & \left(,\right)
+    \end{array}
 BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}
 BoldSpacing: \mathbf{A}^2+\mathbf{B}_3*\mathscr{C}'
 Cases: |
@@ -57,7 +62,7 @@ DisplayStyle: |
     {\displaystyle\sqrt{x}}{\sqrt{x}}
     {\displaystyle \frac12}{\frac12}{\displaystyle x^1_2}{x^1_2}
 Exponents: a^{a^a_a}_{a^a_a}
-FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12
+FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}
 Functions: \sin\cos\tan\ln\log
 GreekLetters: \alpha\beta\gamma\omega
 KaTeX: \KaTeX
@@ -74,6 +79,8 @@ LeftRightStyleSizing: |
 LimitControls: |
     \displaystyle\int\limits_2^3 3x^2\,dx + \sum\nolimits^n_{i=1}i +
     \textstyle\int\limits_x^y z
+MathAtom: a\mathrel{\mathop{=}\limits^{\blue ?}}b
+MathAtom2: \mathop{\overline\mathrm{lim}}\limits_{x\to\infty}f(x)
 MathDefaultFonts: Ax2k\breve{a}\omega\Omega\imath+\KaTeX
 MathBb: \mathbb{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathBf: \mathbf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
@@ -109,6 +116,7 @@ Sqrt: |
     ^{\sqrt{\sqrt{\sqrt{x}}}}}
 SqrtRoot: |
     1+\sqrt[3]{2}+\sqrt[1923^234]{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^2}}}}}}}}}}}
+StackRel: a \stackrel{?}{=} b \stackrel{\text{def}}{=} c
 StyleSwitching: a\cdot b\scriptstyle a\cdot ba\textstyle\cdot ba\scriptstyle\cdot b
 SupSubCharacterBox: a_2f_2{f}_2{aa}_2{af}_2\mathbf{y}_Ay_A
 SupSubHorizSpacing: |

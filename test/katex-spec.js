@@ -606,6 +606,15 @@ describe("A frac parser", function() {
         expect(tfracParse.value.numer).toBeDefined();
         expect(tfracParse.value.denom).toBeDefined();
     });
+
+    it("should parse atop", function() {
+        var parse = getParsed("x \\atop y")[0];
+
+        expect(parse.type).toEqual("genfrac");
+        expect(parse.value.numer).toBeDefined();
+        expect(parse.value.denom).toBeDefined();
+        expect(parse.value.hasBarLine).toEqual(false);
+    });
 });
 
 describe("An over parser", function() {
@@ -883,8 +892,8 @@ describe("A delimiter sizing parser", function() {
         var leftParse = getParsed(normalDelim)[0];
         var rightParse = getParsed(bigDelim)[0];
 
-        expect(leftParse.value.delimType).toEqual("open");
-        expect(rightParse.value.delimType).toEqual("close");
+        expect(leftParse.value.mclass).toEqual("mopen");
+        expect(rightParse.value.mclass).toEqual("mclose");
     });
 
     it("should parse the correct size delimiter", function() {
@@ -1371,6 +1380,43 @@ describe("An HTML font tree-builder", function() {
     it("should render \\mathfrak{R} with the correct font", function() {
         var markup = katex.renderToString("\\mathfrak{R}");
         expect(markup).toContain("<span class=\"mord mathfrak\">R</span>");
+    });
+
+    it("should render \\text{R} with the correct font", function() {
+        var markup = katex.renderToString("\\text{R}");
+        expect(markup).toContain("<span class=\"mord mathrm\">R</span>");
+    });
+
+    it("should render \\textit{R} with the correct font", function() {
+        var markup = katex.renderToString("\\textit{R}");
+        expect(markup).toContain("<span class=\"mord textit\">R</span>");
+    });
+
+    it("should render \\text{\\textit{R}} with the correct font", function() {
+        var markup = katex.renderToString("\\text{\\textit{R}}");
+        expect(markup).toContain("<span class=\"mord textit\">R</span>");
+    });
+
+    it("should render \\text{R\\textit{S}T} with the correct fonts", function() {
+        var markup = katex.renderToString("\\text{R\\textit{S}T}");
+        expect(markup).toContain("<span class=\"mord mathrm\">R</span>");
+        expect(markup).toContain("<span class=\"mord textit\">S</span>");
+        expect(markup).toContain("<span class=\"mord mathrm\">T</span>");
+    });
+
+    it("should render \\textbf{R} with the correct font", function() {
+        var markup = katex.renderToString("\\textbf{R}");
+        expect(markup).toContain("<span class=\"mord mathbf\">R</span>");
+    });
+
+    it("should render \\textsf{R} with the correct font", function() {
+        var markup = katex.renderToString("\\textsf{R}");
+        expect(markup).toContain("<span class=\"mord mathsf\">R</span>");
+    });
+
+    it("should render \\texttt{R} with the correct font", function() {
+        var markup = katex.renderToString("\\texttt{R}");
+        expect(markup).toContain("<span class=\"mord mathtt\">R</span>");
     });
 
     it("should render a combination of font and color changes", function() {
