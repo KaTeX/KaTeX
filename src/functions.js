@@ -279,6 +279,28 @@ defineFunction("\\stackrel", {
     };
 });
 
+// \mod-type functions
+defineFunction("\\bmod", {
+    numArgs: 0,
+}, function(context, args) {
+    return {
+        type: "mod",
+        modType: "bmod",
+        value: null,
+    };
+});
+
+defineFunction(["\\pod", "\\pmod", "\\mod"], {
+    numArgs: 1,
+}, function(context, args) {
+    var body = args[0];
+    return {
+        type: "mod",
+        modType: context.funcName.substr(1),
+        value: ordargument(body),
+    };
+});
+
 // Extra data needed for the delimiter handler down below
 var delimiterSizes = {
     "\\bigl" : {mclass: "mopen",    size: 1},

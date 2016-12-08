@@ -105,9 +105,9 @@
     @ptperem: 10.0;
     @nulldelimiterspace: 1.2em / @ptperem;
 
-    @thinspace: 0.16667em;
-    @mediumspace: 0.22222em;
-    @thickspace: 0.27778em;
+    @thinspace: 0.16667em;      // 3mu
+    @mediumspace: 0.22222em;    // 4mu
+    @thickspace: 0.27778em;     // 5mu
 
     // These spacings apply in textstyle and displaystyle.
     .mord {
@@ -300,6 +300,10 @@
             width: @thinspace;
         }
 
+        &.negativemediumspace {
+            margin-left: -@mediumspace;
+        }
+
         &.mediumspace {
             width: @mediumspace;
         }
@@ -308,8 +312,20 @@
             width: @thickspace;
         }
 
+        &.sixmuspace {
+            width: 0.333333em;
+        }
+
+        &.eightmuspace {
+            width: 0.444444em;
+        }
+
         &.enspace {
             width: 0.5em;
+        }
+
+        &.twelvemuspace {
+            width: 0.666667em;
         }
 
         &.quad {
