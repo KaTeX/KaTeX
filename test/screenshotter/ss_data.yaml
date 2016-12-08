@@ -92,6 +92,18 @@ MathRm: \mathrm{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathSf: \mathsf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathScr: \mathscr{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathTt: \mathtt{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+Mod: |
+    \begin{array}{cc}
+        a \bmod 2 & b \pod 3 \\
+        c \pmod{4} & d \mod{56} \\
+        \displaystyle a\bmod 2 & \displaystyle b \pod 3 \\
+        \displaystyle c\pmod{4} & \displaystyle d \mod{56}
+    \end{array}
+ModScript: |
+    \begin{array}{cc}
+        \scriptstyle a\bmod 2 & \scriptstyle b \pod 3 \\
+        \scriptstyle c\pmod{4} & \scriptstyle d \mod{56}
+    \end{array}
 NegativeSpaceBetweenRel: A =\!= B
 NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
