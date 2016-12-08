@@ -496,37 +496,61 @@ defineFunction(["\\llap", "\\rlap"], {
 });
 
 // Delimiter functions
+var checkDelimiter = function(delim, context) {
+    if (utils.contains(delimiters, delim.value)) {
+        return delim;
+    } else {
+        throw new ParseError(
+            "Invalid delimiter: '" + delim.value + "' after '" +
+            context.funcName + "'", delim);
+    }
+};
+
 defineFunction([
     "\\bigl", "\\Bigl", "\\biggl", "\\Biggl",
     "\\bigr", "\\Bigr", "\\biggr", "\\Biggr",
     "\\bigm", "\\Bigm", "\\biggm", "\\Biggm",
     "\\big",  "\\Big",  "\\bigg",  "\\Bigg",
+], {
+    numArgs: 1,
+}, function(context, args) {
+    var delim = checkDelimiter(args[0], context);
+
+    return {
+        type: "delimsizing",
+        size: delimiterSizes[context.funcName].size,
+        mclass: delimiterSizes[context.funcName].mclass,
+        value: delim.value,
+    };
+});
+
+defineFunction([
     "\\left", "\\right",
 ], {
     numArgs: 1,
 }, function(context, args) {
-    var delim = args[0];
-    if (!utils.contains(delimiters, delim.value)) {
-        throw new ParseError(
-            "Invalid delimiter: '" + delim.value + "' after '" +
-            context.funcName + "'", delim);
-    }
+    var delim = checkDelimiter(args[0], context);
 
     // \left and \right are caught somewhere in Parser.js, which is
     // why this data doesn't match what is in buildHTML.
-    if (context.funcName === "\\left" || context.funcName === "\\right") {
-        return {
-            type: "leftright",
-            value: delim.value,
-        };
-    } else {
-        return {
-            type: "delimsizing",
-            size: delimiterSizes[context.funcName].size,
-            mclass: delimiterSizes[context.funcName].mclass,
-            value: delim.value,
-        };
+    return {
+        type: "leftright",
+        value: delim.value,
+    };
+});
+
+defineFunction("\\middle", {
+    numArgs: 1,
+}, function(context, args) {
+    var delim = checkDelimiter(args[0], context);
+    if (!context.parser.leftrightDepth) {
+        throw new ParseError("\\middle without preceding \\left", delim);
     }
+
+    return {
+        type: "middle",
+        value: delim.value,
+    };
 });
 
 // Sizing functions (handled in Parser.js explicitly, hence no handler)

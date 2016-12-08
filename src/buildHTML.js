@@ -1186,11 +1186,16 @@ groupTypes.leftright = function(group, options) {
 
     var innerHeight = 0;
     var innerDepth = 0;
+    var hadMiddle = false;
 
     // Calculate its height and depth
     for (var i = 0; i < inner.length; i++) {
-        innerHeight = Math.max(inner[i].height, innerHeight);
-        innerDepth = Math.max(inner[i].depth, innerDepth);
+        if (inner[i].isMiddle) {
+            hadMiddle = true;
+        } else {
+            innerHeight = Math.max(inner[i].height, innerHeight);
+            innerDepth = Math.max(inner[i].depth, innerDepth);
+        }
     }
 
     var style = options.style;
@@ -1215,6 +1220,18 @@ groupTypes.leftright = function(group, options) {
     // Add it to the beginning of the expression
     inner.unshift(leftDelim);
 
+    // Handle middle delimiters
+    if (hadMiddle) {
+        for (i = 1; i < inner.length; i++) {
+            if (inner[i].isMiddle) {
+                // Apply the options that were active when \middle was called
+                inner[i] = delimiter.leftRightDelim(
+                    inner[i].isMiddle.value, innerHeight, innerDepth,
+                    inner[i].isMiddle.options, group.mode, []);
+            }
+        }
+    }
+
     var rightDelim;
     // Same for the right delimiter
     if (group.value.right === ".") {
@@ -1229,6 +1246,19 @@ groupTypes.leftright = function(group, options) {
 
     return makeSpan(
         ["minner", style.cls()], inner, options);
+};
+
+groupTypes.middle = function(group, options) {
+    var middleDelim;
+    if (group.value.value === ".") {
+        middleDelim = makeNullDelimiter(options, []);
+    } else {
+        middleDelim = delimiter.sizedDelim(
+            group.value.value, 1, options,
+            group.mode, []);
+        middleDelim.isMiddle = {value: group.value.value, options: options};
+    }
+    return middleDelim;
 };
 
 groupTypes.rule = function(group, options) {

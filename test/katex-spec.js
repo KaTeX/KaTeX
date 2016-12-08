@@ -1042,6 +1042,26 @@ describe("A left/right parser", function() {
         var normalEmpty = "\\Bigl .";
         expect(normalEmpty).toParse();
     });
+
+    it("should handle \\middle", function() {
+        var normalMiddle = "\\left( \\dfrac{x}{y} \\middle| \\dfrac{y}{z} \\right)";
+        expect(normalMiddle).toParse();
+    });
+
+    it("should handle multiple \\middles", function() {
+        var multiMiddle = "\\left( \\dfrac{x}{y} \\middle| \\dfrac{y}{z} \\middle/ \\dfrac{z}{q} \\right)";
+        expect(multiMiddle).toParse();
+    });
+
+    it("should handle nested \\middles", function() {
+        var nestedMiddle = "\\left( a^2 \\middle| \\left( b \\middle/ c \\right) \\right)";
+        expect(nestedMiddle).toParse();
+    });
+
+    it("should error when \\middle is not in \\left...\\right", function() {
+        var unmatchedMiddle = "(\\middle|\\dfrac{x}{y})";
+        expect(unmatchedMiddle).toNotParse();
+    });
 });
 
 describe("A begin/end parser", function() {

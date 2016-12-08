@@ -52,6 +52,8 @@ function Parser(input, settings) {
     this.gullet = new MacroExpander(input, settings.macros);
     // Store the settings for use in parsing
     this.settings = settings;
+    // Count leftright depth (for \middle errors)
+    this.leftrightDepth = 0;
 }
 
 var ParseNode = parseData.ParseNode;
@@ -411,7 +413,9 @@ Parser.prototype.parseImplicitGroup = function() {
         // Parse the entire left function (including the delimiter)
         var left = this.parseFunction(start);
         // Parse out the implicit body
+        ++this.leftrightDepth;
         body = this.parseExpression(false);
+        --this.leftrightDepth;
         // Check the next token
         this.expect("\\right", false);
         var right = this.parseFunction();
