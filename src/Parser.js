@@ -662,6 +662,35 @@ Parser.prototype.parseStringGroup = function(modeName, optional) {
 };
 
 /**
+ * Parses a regex-delimited group: the largest sequence of tokens
+ * whose concatenated strings match `regex`. Returns the string
+ * formed by the tokens plus some position information.
+ *
+ * @param {RegExp} regex
+ * @param {string} modeName  Used to describe the mode in error messages
+ */
+Parser.prototype.parseRegexGroup = function(regex, modeName) {
+    var outerMode = this.mode;
+    this.mode = "text";
+    var firstToken = this.nextToken;
+    var lastToken = firstToken;
+    var str = "";
+    while (this.nextToken.text !== "EOF"
+           && regex.test(str + this.nextToken.text)) {
+        lastToken = this.nextToken;
+        str += lastToken.text;
+        this.consume();
+    }
+    if (str === "") {
+        throw new ParseError(
+            "Invalid " + modeName + ": '" + firstToken.text + "'",
+            firstToken);
+    }
+    this.mode = outerMode;
+    return firstToken.range(lastToken, str);
+};
+
+/**
  * Parses a color description.
  */
 Parser.prototype.parseColorGroup = function(optional) {
@@ -682,11 +711,17 @@ Parser.prototype.parseColorGroup = function(optional) {
  * Parses a size specification, consisting of magnitude and unit.
  */
 Parser.prototype.parseSizeGroup = function(optional) {
-    var res = this.parseStringGroup("size", optional);
+    var res;
+    if (!optional && this.nextToken.text !== "{") {
+        res = this.parseRegexGroup(
+            /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2}$/, "size");
+    } else {
+        res = this.parseStringGroup("size", optional);
+    }
     if (!res) {
         return null;
     }
-    var match = (/(-?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(res.text);
+    var match = (/([-+]?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(res.text);
     if (!match) {
         throw new ParseError("Invalid size: '" + res.text + "'", res);
     }

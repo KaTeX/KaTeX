@@ -220,7 +220,7 @@ describe("Parser.expect calls:", function() {
         });
         it("complains about missing { for size", function() {
             expect("\\rule{1em}[2em]").toFailWithParseError(
-                   "Expected '{', got '[' at position 11: \\rule{1em}[̲2em]");
+                   "Invalid size: '[' at position 11: \\rule{1em}[̲2em]");
         });
         // Can't test for the [ of an optional group since it's optional
         it("complains about missing } for color", function() {
