@@ -83,7 +83,7 @@ var buildExpression = function(expression, options, isRealGroup) {
             i--;
         } else if (spaces) {
             if (groups[i] instanceof domTree.symbolNode) {
-                groups[i] = makeSpan(groups[i].classes, [groups[i]]);
+                groups[i] = makeSpan([].concat(groups[i].classes), [groups[i]]);
             }
             buildCommon.prependChildren(groups[i], spaces);
             spaces = null;

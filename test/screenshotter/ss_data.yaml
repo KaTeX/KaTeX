@@ -117,6 +117,7 @@ Sqrt: |
 SqrtRoot: |
     1+\sqrt[3]{2}+\sqrt[1923^234]{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^2}}}}}}}}}}}
 StackRel: a \stackrel{?}{=} b \stackrel{\text{def}}{=} c
+StyleSpacing: \scriptstyle ab\;cd
 StyleSwitching: a\cdot b\scriptstyle a\cdot ba\textstyle\cdot ba\scriptstyle\cdot b
 SupSubCharacterBox: a_2f_2{f}_2{aa}_2{af}_2\mathbf{y}_Ay_A
 SupSubHorizSpacing: |
