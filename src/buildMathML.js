@@ -285,6 +285,13 @@ groupTypes.leftright = function(group, options) {
     return outerNode;
 };
 
+groupTypes.middle = function(group, options) {
+    var middleNode = new mathMLTree.MathNode(
+        "mo", [makeText(group.value.middle, group.mode)]);
+    middleNode.setAttribute("fence", "true");
+    return middleNode;
+};
+
 groupTypes.accent = function(group, options) {
     var accentNode = new mathMLTree.MathNode(
         "mo", [makeText(group.value.accent, group.mode)]);
