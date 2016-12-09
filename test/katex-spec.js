@@ -997,6 +997,41 @@ describe("A kern parser", function() {
         var parse = getParsed("\\kern{-1em}")[0];
         expect(parse.value.dimension.number).toBeCloseTo(-1);
     });
+
+    it("should parse positive sizes", function() {
+        var parse = getParsed("\\kern{+1em}")[0];
+        expect(parse.value.dimension.number).toBeCloseTo(1);
+    });
+});
+
+describe("A non-braced kern parser", function() {
+    var emKern = "\\kern1em";
+    var exKern = "\\kern 1 ex";
+    var badUnitRule = "\\kern1px";
+    var noNumberRule = "\\kern em";
+
+    it("should list the correct units", function() {
+        var emParse = getParsed(emKern)[0];
+        var exParse = getParsed(exKern)[0];
+
+        expect(emParse.value.dimension.unit).toEqual("em");
+        expect(exParse.value.dimension.unit).toEqual("ex");
+    });
+
+    it("should not parse invalid units", function() {
+        expect(badUnitRule).toNotParse();
+        expect(noNumberRule).toNotParse();
+    });
+
+    it("should parse negative sizes", function() {
+        var parse = getParsed("\\kern-1em")[0];
+        expect(parse.value.dimension.number).toBeCloseTo(-1);
+    });
+
+    it("should parse positive sizes", function() {
+        var parse = getParsed("\\kern+1em")[0];
+        expect(parse.value.dimension.number).toBeCloseTo(1);
+    });
 });
 
 describe("A left/right parser", function() {
