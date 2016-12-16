@@ -463,11 +463,11 @@ groupTypes.genfrac = function(group, options) {
     var frac;
     if (ruleWidth === 0) {
         // Rule 15c
-        var candiateClearance =
+        var candidateClearance =
             (numShift - numer.depth) - (denom.height - denomShift);
-        if (candiateClearance < clearance) {
-            numShift += 0.5 * (clearance - candiateClearance);
-            denomShift += 0.5 * (clearance - candiateClearance);
+        if (candidateClearance < clearance) {
+            numShift += 0.5 * (clearance - candidateClearance);
+            denomShift += 0.5 * (clearance - candidateClearance);
         }
 
         frac = buildCommon.makeVList([
