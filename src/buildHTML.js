@@ -543,6 +543,16 @@ groupTypes.genfrac = function(group, options) {
         options);
 };
 
+var calculateSize = function(sizeValue, style) {
+    var x = sizeValue.number;
+    if (sizeValue.unit === "ex") {
+        x *= style.metrics.emPerEx;
+    } else if (sizeValue.unit === "mu") {
+        x /= 18;
+    }
+    return x;
+};
+
 groupTypes.array = function(group, options) {
     var r;
     var c;
@@ -589,18 +599,7 @@ groupTypes.array = function(group, options) {
 
         var gap = 0;
         if (group.value.rowGaps[r]) {
-            gap = group.value.rowGaps[r].value;
-            switch (gap.unit) {
-                case "em":
-                    gap = gap.number;
-                    break;
-                case "ex":
-                    gap = gap.number * style.metrics.emPerEx;
-                    break;
-                default:
-                    console.error("Can't handle unit " + gap.unit);
-                    gap = 0;
-            }
+            gap = calculateSize(group.value.rowGaps[r].value, style);
             if (gap > 0) { // \@argarraycr
                 gap += arstrutDepth;
                 if (depth < gap) {
@@ -1269,21 +1268,11 @@ groupTypes.rule = function(group, options) {
     // Calculate the shift, width, and height of the rule, and account for units
     var shift = 0;
     if (group.value.shift) {
-        shift = group.value.shift.number;
-        if (group.value.shift.unit === "ex") {
-            shift *= style.metrics.xHeight;
-        }
+        shift = calculateSize(group.value.shift, style);
     }
 
-    var width = group.value.width.number;
-    if (group.value.width.unit === "ex") {
-        width *= style.metrics.xHeight;
-    }
-
-    var height = group.value.height.number;
-    if (group.value.height.unit === "ex") {
-        height *= style.metrics.xHeight;
-    }
+    var width = calculateSize(group.value.width, style);
+    var height = calculateSize(group.value.height, style);
 
     // The sizes of rules are absolute, so make it larger if we are in a
     // smaller style.
@@ -1311,10 +1300,7 @@ groupTypes.kern = function(group, options) {
 
     var dimension = 0;
     if (group.value.dimension) {
-        dimension = group.value.dimension.number;
-        if (group.value.dimension.unit === "ex") {
-            dimension *= style.metrics.xHeight;
-        }
+        dimension = calculateSize(group.value.dimension, style);
     }
 
     dimension /= style.sizeMultiplier;

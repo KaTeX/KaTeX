@@ -977,15 +977,18 @@ describe("A rule parser", function() {
 describe("A kern parser", function() {
     var emKern = "\\kern{1em}";
     var exKern = "\\kern{1ex}";
+    var muKern = "\\kern{1mu}";
     var badUnitRule = "\\kern{1px}";
     var noNumberRule = "\\kern{em}";
 
     it("should list the correct units", function() {
         var emParse = getParsed(emKern)[0];
         var exParse = getParsed(exKern)[0];
+        var muParse = getParsed(muKern)[0];
 
         expect(emParse.value.dimension.unit).toEqual("em");
         expect(exParse.value.dimension.unit).toEqual("ex");
+        expect(muParse.value.dimension.unit).toEqual("mu");
     });
 
     it("should not parse invalid units", function() {
@@ -1007,15 +1010,18 @@ describe("A kern parser", function() {
 describe("A non-braced kern parser", function() {
     var emKern = "\\kern1em";
     var exKern = "\\kern 1 ex";
+    var muKern = "\\kern 1mu";
     var badUnitRule = "\\kern1px";
     var noNumberRule = "\\kern em";
 
     it("should list the correct units", function() {
         var emParse = getParsed(emKern)[0];
         var exParse = getParsed(exKern)[0];
+        var muParse = getParsed(muKern)[0];
 
         expect(emParse.value.dimension.unit).toEqual("em");
         expect(exParse.value.dimension.unit).toEqual("ex");
+        expect(muParse.value.dimension.unit).toEqual("mu");
     });
 
     it("should not parse invalid units", function() {

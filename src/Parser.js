@@ -733,7 +733,7 @@ Parser.prototype.parseSizeGroup = function(optional) {
         number: +(match[1] + match[2]), // sign + magnitude, cast to number
         unit: match[3],
     };
-    if (data.unit !== "em" && data.unit !== "ex") {
+    if (data.unit !== "em" && data.unit !== "ex" && data.unit !== "mu") {
         throw new ParseError("Invalid unit: '" + data.unit + "'", res);
     }
     return new ParseFuncOrArgument(
