@@ -1,3 +1,4 @@
+var symbols = require("./symbols");
 var utils = require("./utils");
 var ParseError = require("./ParseError");
 var parseData = require("./parseData");
@@ -757,29 +758,23 @@ var dotsByToken = {
 defineFunction(["\\dots"], {
     numArgs: 0,
 }, function(context) {
-    //var c = console;
+    var thedots = '\\dotso';
     if (context.parser.nextToken.text in dotsByToken) {
-        return {
-            type: "op",
-            limits: false,
-            symbol: true,
-            body: dotsByToken[context.parser.nextToken.text],
-        };
+        thedots = dotsByToken[context.parser.nextToken.text];
     } else if (context.parser.nextToken.text.substr(0, 4) === '\\not') {
-        return {
-            type: "op",
-            limits: false,
-            symbol: true,
-            body: '\\dotsb',
-        };
-    } else {
-        return {
-            type: "op",
-            limits: false,
-            symbol: true,
-            body: '\\dotso',
-        };
+        thedots = '\\dotsb';
+    } else if (context.parser.nextToken.text in symbols.math) {
+        if (utils.contains(['bin', 'rel'],
+                symbols.math[context.parser.nextToken.text].group)) {
+            thedots = '\\dotsb';
+        }
     }
+    return {
+        type: "op",
+        limits: false,
+        symbol: true,
+        body: thedots,
+    };
 });
 
 //TODO: \dotso should expand to \ldots\, when followed by one of the following:
