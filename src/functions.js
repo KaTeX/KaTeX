@@ -757,16 +757,22 @@ var dotsByToken = {
 
 defineFunction(["\\dots"], {
     numArgs: 0,
+    allowedInText: true,
 }, function(context) {
-    var thedots = '\\dotso';
-    if (context.parser.nextToken.text in dotsByToken) {
-        thedots = dotsByToken[context.parser.nextToken.text];
-    } else if (context.parser.nextToken.text.substr(0, 4) === '\\not') {
-        thedots = '\\dotsb';
-    } else if (context.parser.nextToken.text in symbols.math) {
-        if (utils.contains(['bin', 'rel'],
-                symbols.math[context.parser.nextToken.text].group)) {
+    var thedots;
+    if (context.parser.mode === 'text') {
+        thedots = '\\ldots';
+    } else {
+        thedots = '\\dotso';
+        if (context.parser.nextToken.text in dotsByToken) {
+            thedots = dotsByToken[context.parser.nextToken.text];
+        } else if (context.parser.nextToken.text.substr(0, 4) === '\\not') {
             thedots = '\\dotsb';
+        } else if (context.parser.nextToken.text in symbols.math) {
+            if (utils.contains(['bin', 'rel'],
+                    symbols.math[context.parser.nextToken.text].group)) {
+                thedots = '\\dotsb';
+            }
         }
     }
     return {
