@@ -761,7 +761,7 @@ defineFunction(["\\dots"], {
 }, function(context) {
     var thedots;
     if (context.parser.mode === 'text') {
-        thedots = '\\ldots';
+        thedots = '\\textellipsis';
     } else {
         thedots = '\\dotso';
         if (context.parser.nextToken.text in dotsByToken) {

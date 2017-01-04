@@ -580,6 +580,8 @@ defineSymbol(math, math, op, "\u222e", "\\oint");
 defineSymbol(math, math, op, "\u2a06", "\\bigsqcup");
 defineSymbol(math, math, op, "\u222b", "\\smallint");
 defineSymbol(text, main, inner, "\u2026", "\\textellipsis");
+defineSymbol(math, main, inner, "\u2026", "\\textellipsis");
+defineSymbol(text, main, inner, "\u2026", "\\mathellipsis");
 defineSymbol(math, main, inner, "\u2026", "\\mathellipsis");
 defineSymbol(text, main, inner, "\u2026", "\\ldots");
 defineSymbol(math, main, inner, "\u2026", "\\ldots");
