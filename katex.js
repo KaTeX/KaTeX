@@ -29,8 +29,8 @@ var render = function(expression, baseNode, options) {
     baseNode.appendChild(node);
 };
 
-// KaTeX's styles don't work properly in quirks mode. Print out an error, and
-// disable rendering.
+// KaTeX's styles don't work properly in quirks mode or in XHTML mode.
+// Print out an error, and disable rendering.
 if (typeof document !== "undefined") {
     if (document.compatMode !== "CSS1Compat") {
         typeof console !== "undefined" && console.warn(
@@ -39,6 +39,16 @@ if (typeof document !== "undefined") {
 
         render = function() {
             throw new ParseError("KaTeX doesn't work in quirks mode.");
+        };
+    } else if (document.doctype && document.doctype.publicId &&
+               document.doctype.publicId.indexOf &&
+               document.doctype.publicId.indexOf("XHTML") >= 0) {
+        typeof console !== "undefined" && console.warn(
+            "Warning: KaTeX doesn't work in XHTML mode. Make sure your " +
+                "website has a suitable doctype.");
+
+        render = function() {
+            throw new ParseError("KaTeX doesn't work in XHTML mode.");
         };
     }
 }
