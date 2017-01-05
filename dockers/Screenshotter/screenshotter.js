@@ -239,6 +239,13 @@ function buildDriver() {
     }
     driver = builder.build();
     driver.manage().timeouts().setScriptTimeout(3000).then(function() {
+        var html = '<!DOCTYPE html>' +
+            '<html><head><style type="text/css">html,body{' +
+            'width:100%;height:100%;margin:0;padding:0;overflow:hidden;' +
+            '}</style></head><body><p>Test</p></body></html>';
+        html = "data:text/html," + encodeURIComponent(html);
+        return driver.get(html);
+    }).then(function() {
         setSize(targetW, targetH);
     });
 }
