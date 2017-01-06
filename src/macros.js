@@ -9,6 +9,13 @@ function defineMacro(name, body) {
 }
 
 //////////////////////////////////////////////////////////////////////
+// basics
+defineMacro("\\bgroup", "{");
+defineMacro("\\egroup", "}");
+defineMacro("\\begingroup", "{");
+defineMacro("\\endgroup", "}");
+
+//////////////////////////////////////////////////////////////////////
 // amsmath.sty
 
 // \def\overset#1#2{\binrel@{#2}\binrel@@{\mathop{\kern\z@#2}\limits^{#1}}}

@@ -74,6 +74,11 @@ Exponents: a^{a^a_a}_{a^a_a}
 FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}
 Functions: \sin\cos\tan\ln\log
 GreekLetters: \alpha\beta\gamma\omega
+GroupMacros:
+    macros:
+        \startExp: e^\bgroup
+        \endExp: \egroup
+    tex: \startExp a+b\endExp
 KaTeX: \KaTeX
 Kern:
     tex: \frac{a\kern{1em}b}{c}a\kern{1em}b\kern{1ex}c\kern{-0.25em}d
