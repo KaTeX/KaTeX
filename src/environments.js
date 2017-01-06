@@ -8,15 +8,24 @@ var ParseNode = parseData.ParseNode;
 /**
  * Parse the body of the environment, with rows delimited by \\ and
  * columns delimited by &, and create a nested list in row-major order
- * with one group per cell.
+ * with one group per cell.  If given an optional argument style
+ * ("text", "display", etc.), then each cell is cast into that style.
  */
-function parseArray(parser, result) {
+function parseArray(parser, result, style) {
     var row = [];
     var body = [row];
     var rowGaps = [];
     while (true) {
         var cell = parser.parseExpression(false, null);
-        row.push(new ParseNode("ordgroup", cell, parser.mode));
+        if (style) {
+            cell = new ParseNode("styling", {
+                style: style,
+                value: cell,
+            }, parser.mode);
+        } else {
+            cell = new ParseNode("ordgroup", cell, parser.mode);
+        }
+        row.push(cell);
         var next = parser.nextToken.text;
         if (next === "&") {
             parser.consume();
@@ -82,9 +91,21 @@ function defineEnvironment(names, props, handler) {
     }
 }
 
+// Decides on a style for cells in an array according to whether the given
+// environment name starts with the letter 'd'.
+function dCellStyle(envName) {
+    if (envName.substr(0, 1) === "d") {
+        return "display";
+    } else {
+        return "text";
+    }
+}
+
 // Arrays are part of LaTeX, defined in lttab.dtx so its documentation
 // is part of the source2e.pdf file of LaTeX2e source documentation.
-defineEnvironment("array", {
+// {darray} is an {array} environment where cells are set in \displaystyle,
+// as defined in nccmath.sty.
+defineEnvironment(["array", "darray"], {
     numArgs: 1,
 }, function(context, args) {
     var colalign = args[0];
@@ -111,7 +132,7 @@ defineEnvironment("array", {
         cols: cols,
         hskipBeforeAndAfter: true, // \@preamble in lttab.dtx
     };
-    res = parseArray(context.parser, res);
+    res = parseArray(context.parser, res, dCellStyle(context.envName));
     return res;
 });
 
@@ -138,7 +159,7 @@ defineEnvironment([
         type: "array",
         hskipBeforeAndAfter: false, // \hskip -\arraycolsep in amsmath
     };
-    res = parseArray(context.parser, res);
+    res = parseArray(context.parser, res, dCellStyle(context.envName));
     if (delimiters) {
         res = new ParseNode("leftright", {
             body: [res],
@@ -152,7 +173,12 @@ defineEnvironment([
 // A cases environment (in amsmath.sty) is almost equivalent to
 // \def\arraystretch{1.2}%
 // \left\{\begin{array}{@{}l@{\quad}l@{}} … \end{array}\right.
-defineEnvironment("cases", {
+// {dcases} is a {cases} environment where cells are set in \displaystyle,
+// as defined in mathtools.sty.
+defineEnvironment([
+    "cases",
+    "dcases",
+], {
 }, function(context) {
     var res = {
         type: "array",
@@ -173,7 +199,7 @@ defineEnvironment("cases", {
             postgap: 0,
         }],
     };
-    res = parseArray(context.parser, res);
+    res = parseArray(context.parser, res, dCellStyle(context.envName));
     res = new ParseNode("leftright", {
         body: [res],
         left: "\\{",
