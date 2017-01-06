@@ -3,13 +3,14 @@
  * This can be used to define some commands in terms of others.
  */
 
-module.exports = {
+// This function might one day accept additional argument and do more things.
+function defineMacro(name, body) {
+    module.exports[name] = body;
+}
 
-    //////////////////////////////////////////////////////////////////////
-    // amsmath.sty
+//////////////////////////////////////////////////////////////////////
+// amsmath.sty
 
-    // \def\overset#1#2{\binrel@{#2}\binrel@@{\mathop{\kern\z@#2}\limits^{#1}}}
-    "\\overset": "\\mathop{#2}\\limits^{#1}",
-    "\\underset": "\\mathop{#2}\\limits_{#1}",
-
-};
+// \def\overset#1#2{\binrel@{#2}\binrel@@{\mathop{\kern\z@#2}\limits^{#1}}}
+defineMacro("\\overset", "\\mathop{#2}\\limits^{#1}");
+defineMacro("\\underset", "\\mathop{#2}\\limits_{#1}");
