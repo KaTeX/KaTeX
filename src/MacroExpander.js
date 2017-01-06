@@ -17,6 +17,10 @@ function MacroExpander(input, macros) {
 
 /**
  * Recursively expand first token, then return first non-expandable token.
+ *
+ * At the moment, macro expansion doesn't handle delimited macros,
+ * i.e. things like those defined by \def\foo#1\end{…}.
+ * See the TeX book page 202ff. for details on how those should behave.
  */
 MacroExpander.prototype.nextToken = function() {
     for (;;) {
