@@ -72,11 +72,13 @@ var opts = require("nomnom")
     .option("wait", {
         help: "Wait this many seconds between page load and screenshot",
     })
-    .option("quirks", {
-        flag: true,
-        "default": false,
-        help: "Render the screenshots in quirks mode. " +
-            "Default: no-quirks mode.",
+    .option("mode", {
+        choices: ["no-quirks", "limited-quirks", "quirks", "all"],
+        list: true,
+        help: "Render mode, determined by doctype, " +
+            "may be given multiple times, " +
+            "values [no-quirks|limited-quirks|quirks|all], " +
+            "defaults to all for --verify or no-quirks otherwise",
     })
     .parse();
 
@@ -93,13 +95,23 @@ if (opts.exclude) {
     });
 }
 
+var modes = opts.mode || [];
+if (!modes.length) {
+    modes = [opts.verify ? "all" : "no-quirks"];
+}
+if (modes.indexOf("all") !== -1) {
+    modes = ["no-quirks", "limited-quirks", "quirks"];
+}
+if (modes.length > 1 && !opts.verify) {
+    modes.length = 1;
+}
+
 var seleniumURL = opts.seleniumURL;
 var seleniumIP = opts.seleniumIP;
 var seleniumPort = opts.seleniumPort;
 var katexURL = opts.katexURL;
 var katexIP = opts.katexIP;
 var katexPort = opts.katexPort;
-var quirks = opts.quirks;
 
 //////////////////////////////////////////////////////////////////////
 // Work out connection to selenium docker container
@@ -350,16 +362,39 @@ function findHostIP() {
 //////////////////////////////////////////////////////////////////////
 // Take the screenshots
 
-var countdown = listOfCases.length;
+var countdown = listOfCases.length * modes.length;
 
 var exitStatus = 0;
 var listOfFailed = [];
 
+var doctypes = {
+    "no-quirks": "<!DOCTYPE html>",
+    "limited-quirks": '<!DOCTYPE HTML PUBLIC ' +
+        '"-//W3C//DTD HTML 4.01 Transitional//EN" ' +
+        '"http://www.w3.org/TR/html4/loose.dtd">',
+    "quirks": '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Draft//">',
+};
+
+var qabbr = {
+    "no-quirks": "nq",
+    "limited-quirks": "lq",
+    "quirks": " q",
+};
+
 function takeScreenshots() {
-    listOfCases.forEach(takeScreenshot);
+    var html = fs.readFileSync(require.resolve(
+        "../../test/screenshotter/test.html"));
+    app.get("/ss-render.html", function(req, res, next) {
+        res.send(doctypes[req.query.mode] + "\n" + html);
+    });
+    modes.forEach(function(mode) {
+        listOfCases.forEach(function(key) {
+            takeScreenshot(key, mode);
+        });
+    });
 }
 
-function takeScreenshot(key) {
+function takeScreenshot(key, mode) {
     var itm = data[key];
     if (!itm) {
         console.error("Test case " + key + " not known!");
@@ -371,18 +406,19 @@ function takeScreenshot(key) {
         return;
     }
 
-    var file = path.join(
-        dstDir,
-        key + "-" + opts.browser + (quirks ? "-quirks" : "") + ".png");
+    var basename = key + "-" + opts.browser;
+    if (itm.quirky && itm.quirky.indexOf(mode) !== -1) {
+        // a test case known to differ depending on mode may make use of this
+        basename += "-" + qabbr[mode];
+    }
+    var file = path.join(dstDir, basename + ".png");
     var retry = 0;
     var loadExpected = null;
     if (opts.verify) {
         loadExpected = promisify(fs.readFile, file);
     }
 
-    var url = katexURL +
-        "test/screenshotter/test" + (quirks ? "-quirks" : "") + ".html?" +
-        itm.query;
+    var url = katexURL + "ss-render.html?mode=" + mode + "&" + itm.query;
     driver.get(url);
     if (opts.wait) {
         browserSideWait(1000 * opts.wait);
@@ -404,9 +440,8 @@ function takeScreenshot(key) {
              * output file name for one of these cases, we accept both.
              */
             key += "_alt";
-            file = path.join(
-                dstDir,
-                key + "-" + opts.browser + (quirks ? "-quirks" : "") + ".png");
+            basename = key + basename.slice(key.length - 4);
+            file = path.join(dstDir, basename + ".png");
             if (loadExpected) {
                 loadExpected = promisify(fs.readFile, file);
             }
@@ -415,26 +450,27 @@ function takeScreenshot(key) {
             pako: pako,
         });
         var buf = opt.bufferSync(img.buf);
+        var line = qabbr[mode] + " " + key;
         if (loadExpected) {
             return loadExpected.then(function(expected) {
                 if (!buf.equals(expected)) {
                     if (++retry === 5) {
-                        console.error("FAIL! " + key);
-                        listOfFailed.push(key);
+                        console.error("FAIL! " + line);
+                        listOfFailed.push(key + "[" + qabbr[mode] + "]");
                         exitStatus = 3;
                     } else {
-                        console.log("error " + key);
+                        console.log("error " + line);
                         driver.get(url);
                         browserSideWait(500 * retry);
                         return driver.takeScreenshot().then(haveScreenshot);
                     }
                 } else {
-                    console.log("* ok  " + key);
+                    console.log("* ok  " + line);
                 }
             });
         } else {
             return promisify(fs.writeFile, file, buf).then(function() {
-                console.log(key);
+                console.log(line);
             });
         }
     }
