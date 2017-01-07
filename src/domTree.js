@@ -88,6 +88,9 @@ span.prototype.toNode = function() {
     for (var i = 0; i < this.children.length; i++) {
         span.appendChild(this.children[i].toNode());
     }
+    if (this.children.length) {
+        span.appendChild(document.createTextNode("\u200b"));
+    }
 
     return span;
 };
@@ -132,6 +135,9 @@ span.prototype.toMarkup = function() {
     // Add the markup of the children, also as markup
     for (var i = 0; i < this.children.length; i++) {
         markup += this.children[i].toMarkup();
+    }
+    if (this.children.length) {
+        markup += "&#x200b;";
     }
 
     markup += "</span>";
