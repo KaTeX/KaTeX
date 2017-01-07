@@ -1,14 +1,14 @@
 /* eslint no-console:0 */
-var fs = require("fs");
-var path = require("path");
+const fs = require("fs");
+const path = require("path");
 
-var babelify = require("babelify");
-var browserify = require("browserify");
-var express = require("express");
-var glob = require("glob");
-var less = require("less");
+const babelify = require("babelify");
+const browserify = require("browserify");
+const express = require("express");
+const glob = require("glob");
+const less = require("less");
 
-var app = express();
+const app = express();
 
 if (require.main === module) {
     app.use(express.logger());
@@ -16,7 +16,7 @@ if (require.main === module) {
 
 var serveBrowserified = function(file, standaloneName) {
     return function(req, res, next) {
-        var files;
+        let files;
         if (Array.isArray(file)) {
             files = file.map(function(f) { return path.join(__dirname, f); });
         } else if (file.indexOf("*") !== -1) {
@@ -25,16 +25,16 @@ var serveBrowserified = function(file, standaloneName) {
             files = [path.join(__dirname, file)];
         }
 
-        var options = {
+        const options = {
             transform: [babelify]
         };
         if (standaloneName) {
             options.standalone = standaloneName;
         }
-        var b = browserify(files, options);
-        var stream = b.bundle();
+        const b = browserify(files, options);
+        const stream = b.bundle();
 
-        var body = "";
+        let body = "";
         stream.on("data", function(s) { body += s; });
         stream.on("error", function(e) { next(e); });
         stream.on("end", function() {
@@ -58,7 +58,7 @@ app.get("/contrib/auto-render/auto-render.js",
                           "renderMathInElement"));
 
 app.get("/katex.css", function(req, res, next) {
-    var lessfile = path.join(__dirname, "static", "katex.less");
+    const lessfile = path.join(__dirname, "static", "katex.less");
     fs.readFile(lessfile, {encoding: "utf8"}, function(err, data) {
         if (err) {
             next(err);

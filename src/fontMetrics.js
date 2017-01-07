@@ -1,7 +1,7 @@
 /* eslint no-unused-vars:0 */
 
-var Style = require("./Style");
-var cjkRegex = require("./unicodeRegexes").cjkRegex;
+const Style = require("./Style");
+const cjkRegex = require("./unicodeRegexes").cjkRegex;
 
 /**
  * This file contains metrics regarding fonts and individual symbols. The sigma
@@ -32,7 +32,7 @@ var cjkRegex = require("./unicodeRegexes").cjkRegex;
 //
 // The output of each of these commands is quite lengthy.  The only part we
 // care about is the FONTDIMEN section. Each value is measured in EMs.
-var sigmas = {
+const sigmas = {
     slant: [0.250, 0.250, 0.250],       // sigma1
     space: [0.000, 0.000, 0.000],       // sigma2
     stretch: [0.000, 0.000, 0.000],     // sigma3
@@ -62,34 +62,34 @@ var sigmas = {
 // \showthe\fontdimenX\a
 // where X is the corresponding variable number. These correspond to the font
 // parameters of the extension fonts (family 3). See the TeXbook, page 441.
-var xi1 = 0;
-var xi2 = 0;
-var xi3 = 0;
-var xi4 = 0;
-var xi5 = 0.431;
-var xi6 = 1;
-var xi7 = 0;
-var xi8 = 0.04;
-var xi9 = 0.111;
-var xi10 = 0.166;
-var xi11 = 0.2;
-var xi12 = 0.6;
-var xi13 = 0.1;
+const xi1 = 0;
+const xi2 = 0;
+const xi3 = 0;
+const xi4 = 0;
+const xi5 = 0.431;
+const xi6 = 1;
+const xi7 = 0;
+const xi8 = 0.04;
+const xi9 = 0.111;
+const xi10 = 0.166;
+const xi11 = 0.2;
+const xi12 = 0.6;
+const xi13 = 0.1;
 
 // This value determines how large a pt is, for metrics which are defined in
 // terms of pts.
 // This value is also used in katex.less; if you change it make sure the values
 // match.
-var ptPerEm = 10.0;
+const ptPerEm = 10.0;
 
 // The space between adjacent `|` columns in an array definition. From
 // `\showthe\doublerulesep` in LaTeX.
-var doubleRuleSep = 2.0 / ptPerEm;
+const doubleRuleSep = 2.0 / ptPerEm;
 
 /**
  * This is just a mapping from common names to real metrics
  */
-var metrics = {
+const metrics = {
     defaultRuleThickness: xi8,
     bigOpSpacing1: xi9,
     bigOpSpacing2: xi10,
@@ -104,7 +104,7 @@ var metrics = {
 // metrics, including height, depth, italic correction, and skew (kern from the
 // character to the corresponding \skewchar)
 // This map is generated via `make metrics`. It should not be changed manually.
-var metricMap = require("./fontMetricsData");
+const metricMap = require("./fontMetricsData");
 
 // These are very rough approximations.  We default to Times New Roman which
 // should have Latin-1 and Cyrillic characters, but may not depending on the
@@ -113,7 +113,7 @@ var metricMap = require("./fontMetricsData");
 // descenders we prefer approximations with ascenders, primarily to prevent
 // the fraction bar or root line from intersecting the glyph.
 // TODO(kevinb) allow union of multiple glyph metrics for better accuracy.
-var extraCharacterMap = {
+const extraCharacterMap = {
     // Latin-1
     'À': 'A',
     'Á': 'A',
@@ -252,14 +252,14 @@ var extraCharacterMap = {
  * Note: the `width` property may be undefined if fontMetricsData.js wasn't
  * built using `Make extended_metrics`.
  */
-var getCharacterMetrics = function(character, style) {
-    var ch = character.charCodeAt(0);
+const getCharacterMetrics = function(character, style) {
+    let ch = character.charCodeAt(0);
     if (character[0] in extraCharacterMap) {
         ch = extraCharacterMap[character[0]].charCodeAt(0);
     } else if (cjkRegex.test(character[0])) {
         ch = 'M'.charCodeAt(0);
     }
-    var metrics = metricMap[style][ch];
+    const metrics = metricMap[style][ch];
     if (metrics) {
         return {
             depth: metrics[0],

@@ -39,7 +39,7 @@ function Options(data) {
  * from "extension" will be copied to the new options object.
  */
 Options.prototype.extend = function(extension) {
-    var data = {
+    const data = {
         style: this.style,
         size: this.size,
         color: this.color,
@@ -49,7 +49,7 @@ Options.prototype.extend = function(extension) {
         font: this.font,
     };
 
-    for (var key in extension) {
+    for (const key in extension) {
         if (extension.hasOwnProperty(key)) {
             data[key] = extension[key];
         }
@@ -115,7 +115,7 @@ Options.prototype.reset = function() {
  * A map of color names to CSS colors.
  * TODO(emily): Remove this when we have real macros
  */
-var colorMap = {
+const colorMap = {
     "katex-blue": "#6495ed",
     "katex-orange": "#ffa500",
     "katex-pink": "#ff00af",
