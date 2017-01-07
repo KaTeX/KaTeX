@@ -38,7 +38,7 @@ git add dist/
 # Edit package.json and bower.json to the right version (see
 # http://stackoverflow.com/a/22084103 for why we need the .bak file to make
 # this mac & linux compatible)
-sed -i.bak 's|"version": "[^"]+",|"version": "'$VERSION'",|' package.json
+sed -i.bak -E 's|"version": "[^"]+",|"version": "'$VERSION'",|' package.json
 sed -i.bak -E 's|"version": "[^"]+",|"version": "'$VERSION'",|' bower.json
 rm -f package.json.bak bower.json.bak
 
@@ -56,8 +56,8 @@ if [ ! -z "$NEXT_VERSION" ]; then
     git checkout master
 
     # Edit package.json and bower.json to the right version
-    sed -i.bak -e 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' package.json
-    sed -i.bak -e 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' bower.json
+    sed -i.bak -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' package.json
+    sed -i.bak -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' bower.json
     rm -f package.json.bak bower.json.bak
 
     git add package.json bower.json
