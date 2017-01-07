@@ -72,6 +72,12 @@ var opts = require("nomnom")
     .option("wait", {
         help: "Wait this many seconds between page load and screenshot",
     })
+    .option("quirks", {
+        flag: true,
+        "default": false,
+        help: "Render the screenshots in quirks mode. " +
+            "Default: no-quirks mode.",
+    })
     .parse();
 
 var listOfCases;
@@ -93,6 +99,7 @@ var seleniumPort = opts.seleniumPort;
 var katexURL = opts.katexURL;
 var katexIP = opts.katexIP;
 var katexPort = opts.katexPort;
+var quirks = opts.quirks;
 
 //////////////////////////////////////////////////////////////////////
 // Work out connection to selenium docker container
@@ -364,14 +371,18 @@ function takeScreenshot(key) {
         return;
     }
 
-    var file = path.join(dstDir, key + "-" + opts.browser + ".png");
+    var file = path.join(
+        dstDir,
+        key + "-" + opts.browser + (quirks ? "-quirks" : "") + ".png");
     var retry = 0;
     var loadExpected = null;
     if (opts.verify) {
         loadExpected = promisify(fs.readFile, file);
     }
 
-    var url = katexURL + "test/screenshotter/test.html?" + itm.query;
+    var url = katexURL +
+        "test/screenshotter/test" + (quirks ? "-quirks" : "") + ".html?" +
+        itm.query;
     driver.get(url);
     if (opts.wait) {
         browserSideWait(1000 * opts.wait);
@@ -393,7 +404,9 @@ function takeScreenshot(key) {
              * output file name for one of these cases, we accept both.
              */
             key += "_alt";
-            file = path.join(dstDir, key + "-" + opts.browser + ".png");
+            file = path.join(
+                dstDir,
+                key + "-" + opts.browser + (quirks ? "-quirks" : "") + ".png");
             if (loadExpected) {
                 loadExpected = promisify(fs.readFile, file);
             }

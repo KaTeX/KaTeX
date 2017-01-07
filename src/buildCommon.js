@@ -344,7 +344,8 @@ var makeVList = function(children, positionType, positionData, options) {
             var shift = -child.depth - currPos;
             currPos += child.height + child.depth;
 
-            var childWrap = makeSpan([], [fontSizer, child]);
+            var childWrap = makeSpan(
+                [], [fontSizer, child, new domTree.symbolNode("\u200b")]);
             childWrap.height -= shift;
             childWrap.depth += shift;
             childWrap.style.top = shift + "em";

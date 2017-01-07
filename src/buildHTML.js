@@ -730,17 +730,19 @@ groupTypes.spacing = function(group, options) {
 };
 
 groupTypes.llap = function(group, options) {
-    var inner = makeSpan(
-        ["inner"], [buildGroup(group.value.body, options.reset())]);
-    var fix = makeSpan(["fix"], []);
+    var inner = makeSpan(["inner"], [
+        buildGroup(group.value.body, options.reset()),
+        new domTree.symbolNode("\u200b")]);
+    var fix = makeSpan(["fix"], [new domTree.symbolNode("\u200b")]);
     return makeSpan(
         ["mord", "llap", options.style.cls()], [inner, fix], options);
 };
 
 groupTypes.rlap = function(group, options) {
-    var inner = makeSpan(
-        ["inner"], [buildGroup(group.value.body, options.reset())]);
-    var fix = makeSpan(["fix"], []);
+    var inner = makeSpan(["inner"], [
+        buildGroup(group.value.body, options.reset()),
+        new domTree.symbolNode("\u200b")]);
+    var fix = makeSpan(["fix"], [new domTree.symbolNode("\u200b")]);
     return makeSpan(
         ["mord", "rlap", options.style.cls()], [inner, fix], options);
 };
@@ -1559,7 +1561,10 @@ var buildHTML = function(tree, options) {
     bottomStrut.style.verticalAlign = -body.depth + "em";
 
     // Wrap the struts and body together
-    var htmlNode = makeSpan(["katex-html"], [topStrut, bottomStrut, body]);
+    var htmlNode = makeSpan(["katex-html"], [
+        topStrut, bottomStrut, body,
+        // Quirks mode fix
+        new domTree.symbolNode("\u200b")]);
 
     htmlNode.setAttribute("aria-hidden", "true");
 
