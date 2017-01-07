@@ -2,6 +2,7 @@
 var fs = require("fs");
 var path = require("path");
 
+var babelify = require("babelify");
 var browserify = require("browserify");
 var express = require("express");
 var glob = require("glob");
@@ -25,7 +26,9 @@ var serveBrowserified = function(file, standaloneName) {
             files = [path.join(__dirname, file)];
         }
 
-        var options = {};
+        var options = {
+            transform: [babelify]
+        };
         if (standaloneName) {
             options.standalone = standaloneName;
         }
