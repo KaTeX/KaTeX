@@ -17,13 +17,12 @@ function parseArray(parser, result, style) {
     var rowGaps = [];
     while (true) {
         var cell = parser.parseExpression(false, null);
+        cell = new ParseNode("ordgroup", cell, parser.mode);
         if (style) {
             cell = new ParseNode("styling", {
                 style: style,
-                value: cell,
+                value: [cell],
             }, parser.mode);
-        } else {
-            cell = new ParseNode("ordgroup", cell, parser.mode);
         }
         row.push(cell);
         var next = parser.nextToken.text;
