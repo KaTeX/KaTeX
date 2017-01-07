@@ -4,7 +4,9 @@
         "brace-style": [2, "1tbs", { "allowSingleLine": true }],
         // We'd possibly like to remove the 'properties': 'never' one day.
         "camelcase": [2, { "properties": "never" }],
-        "comma-dangle": [2, "always-multiline"],
+        // IE 9 doesn't like trailing commas. TODO(emily): change this back to
+        // always-multiline once we babelify the code.
+        "comma-dangle": [2, "never"],
         "comma-spacing": [2, { "before": false, "after": true }],
         "constructor-super": 2,
         "curly": 2,

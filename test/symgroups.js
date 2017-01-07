@@ -7,7 +7,7 @@ var childProcess = require("child_process");
 var opts = require("nomnom")
     .option("spacing", {
         flag: true,
-        help: "Print mismatches involving spacing commands",
+        help: "Print mismatches involving spacing commands"
     })
     .parse();
 
@@ -16,7 +16,7 @@ var keys = Object.keys(symbols.math);
 keys.sort();
 var types = [
     "mathord", "op", "bin", "rel", "open", "close", "punct", "inner",
-    "spacing", "accent", "textord",
+    "spacing", "accent", "textord"
 ];
 
 process.nextTick(writeTexFile);

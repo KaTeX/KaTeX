@@ -17,7 +17,7 @@
   "devDependencies": {
     "browserify": "^10.2.4",
     "clean-css": "~2.2.15",
-    "eslint": "^1.10.2",
+    "eslint": "^1.10.3",
     "express": "~3.3.3",
     "glob": "^5.0.15",
     "jasmine": "^2.3.2",

@@ -11,5 +11,5 @@ var cjkRegex =
 
 module.exports = {
     cjkRegex: cjkRegex,
-    hangulRegex: hangulRegex,
+    hangulRegex: hangulRegex
 };

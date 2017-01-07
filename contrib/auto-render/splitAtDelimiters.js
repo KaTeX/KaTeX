@@ -43,7 +43,7 @@ var splitAtDelimiters = function(startData, leftDelim, rightDelim, display) {
                 currIndex = nextIndex;
                 finalData.push({
                     type: "text",
-                    data: text.slice(0, currIndex),
+                    data: text.slice(0, currIndex)
                 });
                 lookingForLeft = false;
             }
@@ -57,7 +57,7 @@ var splitAtDelimiters = function(startData, leftDelim, rightDelim, display) {
 
                     finalData.push({
                         type: "text",
-                        data: text.slice(currIndex, nextIndex),
+                        data: text.slice(currIndex, nextIndex)
                     });
 
                     currIndex = nextIndex;
@@ -78,7 +78,7 @@ var splitAtDelimiters = function(startData, leftDelim, rightDelim, display) {
                         rawData: text.slice(
                             currIndex,
                             nextIndex + rightDelim.length),
-                        display: display,
+                        display: display
                     });
 
                     currIndex = nextIndex + rightDelim.length;
@@ -89,7 +89,7 @@ var splitAtDelimiters = function(startData, leftDelim, rightDelim, display) {
 
             finalData.push({
                 type: "text",
-                data: text.slice(currIndex),
+                data: text.slice(currIndex)
             });
         } else {
             finalData.push(startData[i]);

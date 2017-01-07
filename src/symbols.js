@@ -18,14 +18,14 @@
 
 module.exports = {
     math: {},
-    text: {},
+    text: {}
 };
 
 function defineSymbol(mode, font, group, replace, name) {
     module.exports[mode][name] = {
         font: font,
         group: group,
-        replace: replace,
+        replace: replace
     };
 }
 

@@ -27,6 +27,6 @@ function ParseNode(type, value, mode, firstToken, lastToken) {
 }
 
 module.exports = {
-    ParseNode: ParseNode,
+    ParseNode: ParseNode
 };
 

@@ -54,7 +54,7 @@ var sigmas = {
     subDrop: [0.050, 0.071, 0.100],     // sigma19
     delim1: [2.390, 1.700, 1.980],      // sigma20
     delim2: [1.010, 1.157, 1.420],      // sigma21
-    axisHeight: [0.250, 0.250, 0.250],  // sigma22
+    axisHeight: [0.250, 0.250, 0.250]  // sigma22
 };
 
 // These font metrics are extracted from TeX by using
@@ -97,7 +97,7 @@ var metrics = {
     bigOpSpacing4: xi12,
     bigOpSpacing5: xi13,
     ptPerEm: ptPerEm,
-    doubleRuleSep: doubleRuleSep,
+    doubleRuleSep: doubleRuleSep
 };
 
 // This map contains a mapping from font name and character code to character
@@ -242,7 +242,7 @@ var extraCharacterMap = {
     'ь': 'a',
     'э': 'e',
     'ю': 'm',
-    'я': 'r',
+    'я': 'r'
 };
 
 /**
@@ -266,7 +266,7 @@ var getCharacterMetrics = function(character, style) {
             height: metrics[1],
             italic: metrics[2],
             skew: metrics[3],
-            width: metrics[4],
+            width: metrics[4]
         };
     }
 };
@@ -274,5 +274,5 @@ var getCharacterMetrics = function(character, style) {
 module.exports = {
     metrics: metrics,
     sigmas: sigmas,
-    getCharacterMetrics: getCharacterMetrics,
+    getCharacterMetrics: getCharacterMetrics
 };

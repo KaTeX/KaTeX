@@ -186,7 +186,7 @@ var iCombinations = {
     'ï': '\u0131\u0308',
     'í': '\u0131\u0301',
     // 'ī': '\u0131\u0304', // enable when we add Extended Latin
-    'ì': '\u0131\u0300',
+    'ì': '\u0131\u0300'
 };
 
 /**
@@ -332,5 +332,5 @@ symbolNode.prototype.toMarkup = function() {
 module.exports = {
     span: span,
     documentFragment: documentFragment,
-    symbolNode: symbolNode,
+    symbolNode: symbolNode
 };

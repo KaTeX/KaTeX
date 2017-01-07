@@ -36,11 +36,11 @@ describe("unicode", function() {
 
                         var result = {
                             pass: true,
-                            message: "'" + actual + "' succeeded parsing",
+                            message: "'" + actual + "' succeeded parsing"
                         };
                         parseAndSetResult(actual, result, usedSettings);
                         return result;
-                    },
+                    }
                 };
             },
 
@@ -52,7 +52,7 @@ describe("unicode", function() {
                         var result = {
                             pass: false,
                             message: "Expected '" + actual + "' to fail " +
-                                "parsing, but it succeeded",
+                                "parsing, but it succeeded"
                         };
 
                         try {
@@ -69,9 +69,9 @@ describe("unicode", function() {
                         }
 
                         return result;
-                    },
+                    }
                 };
-            },
+            }
         });
     });
 
