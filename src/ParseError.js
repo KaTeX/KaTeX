@@ -10,15 +10,15 @@
  * @param {(Token|ParseNode)=} token  An object providing position information
  */
 function ParseError(message, token) {
-    var error = "KaTeX parse error: " + message;
-    var start;
-    var end;
+    let error = "KaTeX parse error: " + message;
+    let start;
+    let end;
 
     if (token && token.lexer && token.start <= token.end) {
         // If we have the input and a position, make the error a bit fancier
 
         // Get the input
-        var input = token.lexer.input;
+        const input = token.lexer.input;
 
         // Prepend some information
         start = token.start;
@@ -30,16 +30,16 @@ function ParseError(message, token) {
         }
 
         // Underline token in question using combining underscores
-        var underlined = input.slice(start, end).replace(/[^]/g, "$&\u0332");
+        const underlined = input.slice(start, end).replace(/[^]/g, "$&\u0332");
 
         // Extract some context from the input and add it to the error
-        var left;
+        let left;
         if (start > 15) {
             left = "…" + input.slice(start - 15, start);
         } else {
             left = input.slice(0, start);
         }
-        var right;
+        let right;
         if (end + 15 < input.length) {
             right = input.slice(end, end + 15) + "…";
         } else {
@@ -50,7 +50,7 @@ function ParseError(message, token) {
 
     // Some hackery to make ParseError a prototype of Error
     // See http://stackoverflow.com/a/8460753
-    var self = new Error(error);
+    const self = new Error(error);
     self.name = "ParseError";
     self.__proto__ = ParseError.prototype;
 

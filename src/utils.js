@@ -7,17 +7,16 @@
  * Provide an `indexOf` function which works in IE8, but defers to native if
  * possible.
  */
-var nativeIndexOf = Array.prototype.indexOf;
-var indexOf = function(list, elem) {
+const nativeIndexOf = Array.prototype.indexOf;
+const indexOf = function(list, elem) {
     if (list == null) {
         return -1;
     }
     if (nativeIndexOf && list.indexOf === nativeIndexOf) {
         return list.indexOf(elem);
     }
-    var i = 0;
-    var l = list.length;
-    for (; i < l; i++) {
+    const l = list.length;
+    for (let i = 0; i < l; i++) {
         if (list[i] === elem) {
             return i;
         }
@@ -28,25 +27,25 @@ var indexOf = function(list, elem) {
 /**
  * Return whether an element is contained in a list
  */
-var contains = function(list, elem) {
+const contains = function(list, elem) {
     return indexOf(list, elem) !== -1;
 };
 
 /**
  * Provide a default value if a setting is undefined
  */
-var deflt = function(setting, defaultIfUndefined) {
+const deflt = function(setting, defaultIfUndefined) {
     return setting === undefined ? defaultIfUndefined : setting;
 };
 
 // hyphenate and escape adapted from Facebook's React under Apache 2 license
 
-var uppercase = /([A-Z])/g;
-var hyphenate = function(str) {
+const uppercase = /([A-Z])/g;
+const hyphenate = function(str) {
     return str.replace(uppercase, "-$1").toLowerCase();
 };
 
-var ESCAPE_LOOKUP = {
+const ESCAPE_LOOKUP = {
     "&": "&amp;",
     ">": "&gt;",
     "<": "&lt;",
@@ -54,7 +53,7 @@ var ESCAPE_LOOKUP = {
     "'": "&#x27;",
 };
 
-var ESCAPE_REGEX = /[&><"']/g;
+const ESCAPE_REGEX = /[&><"']/g;
 
 function escaper(match) {
     return ESCAPE_LOOKUP[match];
@@ -74,9 +73,9 @@ function escape(text) {
  * A function to set the text content of a DOM element in all supported
  * browsers. Note that we don't define this if there is no document.
  */
-var setTextContent;
+let setTextContent;
 if (typeof document !== "undefined") {
-    var testNode = document.createElement("span");
+    const testNode = document.createElement("span");
     if ("textContent" in testNode) {
         setTextContent = function(node, text) {
             node.textContent = text;

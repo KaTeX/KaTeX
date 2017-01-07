@@ -1,14 +1,14 @@
 /* eslint no-constant-condition:0 */
-var findEndOfMath = function(delimiter, text, startIndex) {
+const findEndOfMath = function(delimiter, text, startIndex) {
     // Adapted from
     // https://github.com/Khan/perseus/blob/master/src/perseus-markdown.jsx
-    var index = startIndex;
-    var braceLevel = 0;
+    let index = startIndex;
+    let braceLevel = 0;
 
-    var delimLength = delimiter.length;
+    const delimLength = delimiter.length;
 
     while (index < text.length) {
-        var character = text[index];
+        const character = text[index];
 
         if (braceLevel <= 0 &&
             text.slice(index, index + delimLength) === delimiter) {
@@ -27,16 +27,16 @@ var findEndOfMath = function(delimiter, text, startIndex) {
     return -1;
 };
 
-var splitAtDelimiters = function(startData, leftDelim, rightDelim, display) {
-    var finalData = [];
+const splitAtDelimiters = function(startData, leftDelim, rightDelim, display) {
+    const finalData = [];
 
-    for (var i = 0; i < startData.length; i++) {
+    for (let i = 0; i < startData.length; i++) {
         if (startData[i].type === "text") {
-            var text = startData[i].data;
+            const text = startData[i].data;
 
-            var lookingForLeft = true;
-            var currIndex = 0;
-            var nextIndex;
+            let lookingForLeft = true;
+            let currIndex = 0;
+            let nextIndex;
 
             nextIndex = text.indexOf(leftDelim);
             if (nextIndex !== -1) {
