@@ -16,20 +16,21 @@ fi
 
 VERSION=$1
 NEXT_VERSION=$2
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 if [ -z "$NEXT_VERSION" ]; then
-    PROMPT="About to release $VERSION. Look good? [y/n] "
+    echo "About to release $VERSION from $BRANCH. "
 else
-    PROMPT="About to release $VERSION and bump master to $NEXT_VERSION-pre. Look good? [y/n] "
+    echo "About to release $VERSION from $BRANCH and bump to $NEXT_VERSION-pre."
 fi
 
-read -r -p "$PROMPT" CONFIRM
+read -r -p "Look good? [y/n] " CONFIRM
 if [ "$CONFIRM" != "y" ]; then
-    exit
+    exit 1
 fi
 
 # Make a new detached HEAD
-git checkout master
+git checkout "$BRANCH"
 git pull
 git checkout --detach
 
@@ -58,7 +59,7 @@ npm publish
 
 if [ ! -z "$NEXT_VERSION" ]; then
     # Go back to master to bump
-    git checkout master
+    git checkout "$BRANCH"
 
     # Edit package.json and bower.json to the right version
     sed -i.bak -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' package.json
@@ -67,7 +68,7 @@ if [ ! -z "$NEXT_VERSION" ]; then
 
     git add package.json bower.json
     git commit -n -m "Bump master to v$NEXT_VERSION-pre"
-    git push origin master
+    git push origin "$BRANCH"
 
     # Go back to the tag which has build/katex.tar.gz and build/katex.zip
     git checkout "v$VERSION"
