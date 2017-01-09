@@ -50,7 +50,7 @@ rm -f package.json.bak
 # Make the commit and tag, and push them.
 git add package.json bower.json
 git commit -n -m "v$VERSION"
-git tag "v$VERSION"
+git tag -a "v$VERSION" -m "v$VERSION"
 git push origin "v$VERSION"
 
 # Update npm (bower and cdnjs update automatically)
