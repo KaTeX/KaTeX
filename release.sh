@@ -45,8 +45,7 @@ git add .gitignore dist/
 # http://stackoverflow.com/a/22084103 for why we need the .bak file to make
 # this mac & linux compatible)
 sed -i.bak -E 's|"version": "[^"]+",|"version": "'$VERSION'",|' package.json
-sed -i.bak -E 's|"version": "[^"]+",|"version": "'$VERSION'",|' bower.json
-rm -f package.json.bak bower.json.bak
+rm -f package.json.bak
 
 # Make the commit and tag, and push them.
 git add package.json bower.json
@@ -63,8 +62,7 @@ if [ ! -z "$NEXT_VERSION" ]; then
 
     # Edit package.json and bower.json to the right version
     sed -i.bak -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' package.json
-    sed -i.bak -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' bower.json
-    rm -f package.json.bak bower.json.bak
+    rm -f package.json.bak
 
     git add package.json bower.json
     git commit -n -m "Bump master to v$NEXT_VERSION-pre"

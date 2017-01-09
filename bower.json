@@ -1,6 +1,5 @@
 {
   "name": "katex",
-  "version": "0.8.0-pre",
   "main": [
     "dist/katex.js",
     "dist/katex.css"
