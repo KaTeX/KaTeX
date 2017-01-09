@@ -1,9 +1,9 @@
 {
-  "name": "KaTeX",
+  "name": "katex",
   "version": "0.8.0-pre",
   "main": [
-    "dist/katex.min.js",
-    "dist/katex.min.css"
+    "dist/katex.js",
+    "dist/katex.css"
   ],
   "homepage": "http://khan.github.io/KaTeX/",
   "description": "Fast math typesetting for the web.",
