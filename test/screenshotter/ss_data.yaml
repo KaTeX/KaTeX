@@ -251,6 +251,8 @@ UnsupportedCmds:
     noThrow: 1
     errorColor: "#dd4c4c"
     nolatex: deliberately does not compile
+Verb:
+    \verb \verb , \verb|\verb|, \verb!<x> & </y>!
 VerticalSpacing:
     pre: potato<br>blah
     tex: x^{\Huge y}z
