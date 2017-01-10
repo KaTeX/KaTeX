@@ -25,9 +25,9 @@ var greekCapitals = [
 
 // The following have to be loaded from Main-Italic font, using class mainit
 var mainitLetters = [
-    "\u0131",   // dotless i, \imath
-    "\u0237",   // dotless j, \jmath
-    "\u00a3"   // \pounds
+    "\\imath",   // dotless i
+    "\\jmath",   // dotless j
+    "\\pounds"   // pounds symbol
 ];
 
 /**
