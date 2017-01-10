@@ -30,7 +30,7 @@ $(NIS) setup: package.json
 	@touch $(NIS)
 
 lint: $(NIS) katex.js server.js cli.js $(wildcard src/*.js) $(wildcard test/*.js) $(wildcard contrib/*/*.js) $(wildcard dockers/*/*.js)
-	./node_modules/.bin/eslint $(filter-out *.stamp,$^)
+	./node_modules/.bin/eslint $(filter-out %.stamp,$^)
 
 build/katex.js: katex.js $(wildcard src/*.js) $(NIS)
 	$(BROWSERIFY) $< --standalone katex > $@

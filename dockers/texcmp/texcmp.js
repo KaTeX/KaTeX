@@ -1,4 +1,5 @@
-/* eslint no-console:0 */
+/* eslint-env node, es6 */
+/* eslint-disable no-console */
 "use strict";
 
 var childProcess = require("child_process");
