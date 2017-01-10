@@ -119,15 +119,13 @@ var mathDefault = function(value, mode, options, classes, type) {
             classes.concat([fontLookup.fontClass]));
     } else if (type === "textord") {
         var font = symbols[mode][value] && symbols[mode][value].font;
-        if (font === "main") {
+        if (font === "ams") {
+            return makeSymbol(
+                value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
+        } else { // if (font === "main") {
             return makeSymbol(
                 value, "Main-Regular", mode, options,
                 classes.concat(["mathrm"]));
-        } else if (font === "ams") {
-            return makeSymbol(
-                value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
-        } else {
-            throw new Error("unexpected font: " + font + " in mathDefault");
         }
     } else {
         throw new Error("unexpected type: " + type + " in mathDefault");
