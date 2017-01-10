@@ -31,6 +31,21 @@ var mainitLetters = [
 ];
 
 /**
+ * Looks up the given symbol in fontMetrics, after applying any symbol
+ * replacements defined in symbol.js
+ */
+var lookupSymbol = function(value, fontFamily, mode) {
+    // Replace the value with its replaced value from symbol.js
+    if (symbols[mode][value] && symbols[mode][value].replace) {
+        value = symbols[mode][value].replace;
+    }
+    return {
+        value: value,
+        metrics: fontMetrics.getCharacterMetrics(value, fontFamily)
+    };
+};
+
+/**
  * Makes a symbolNode after translation via the list of symbols in symbols.js.
  * Correctly pulls out metrics for the character, and optionally takes a list of
  * classes to be attached to the node.
@@ -40,12 +55,9 @@ var mainitLetters = [
  * should if present come first in `classes`.
  */
 var makeSymbol = function(value, fontFamily, mode, options, classes) {
-    // Replace the value with its replaced value from symbol.js
-    if (symbols[mode][value] && symbols[mode][value].replace) {
-        value = symbols[mode][value].replace;
-    }
-
-    var metrics = fontMetrics.getCharacterMetrics(value, fontFamily);
+    var lookup = lookupSymbol(value, fontFamily, mode);
+    var metrics = lookup.metrics;
+    value = lookup.value;
 
     var symbolNode;
     if (metrics) {
@@ -102,8 +114,17 @@ var mathDefault = function(value, mode, options, classes, type) {
     if (type === "mathord") {
         return mathit(value, mode, options, classes);
     } else if (type === "textord") {
-        return makeSymbol(
-            value, "Main-Regular", mode, options, classes.concat(["mathrm"]));
+        var font = symbols[mode][value] && symbols[mode][value].font;
+        if (font === "main") {
+            return makeSymbol(
+                value, "Main-Regular", mode, options,
+                classes.concat(["mathrm"]));
+        } else if (font === "ams") {
+            return makeSymbol(
+                value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
+        } else {
+            return mathit(value, mode, options, classes);
+        }
     } else {
         throw new Error("unexpected type: " + type + " in mathDefault");
     }
@@ -132,19 +153,16 @@ var mathit = function(value, mode, options, classes) {
 var makeOrd = function(group, options, type) {
     var mode = group.mode;
     var value = group.value;
-    if (symbols[mode][value] && symbols[mode][value].replace) {
-        value = symbols[mode][value].replace;
-    }
 
     var classes = ["mord"];
 
     var font = options.font;
     if (font) {
         if (font === "mathit" || utils.contains(mainitLetters, value)) {
-            return mathit(value, mode, options, classes);
+            return mathDefault(value, mode, options, classes, type);
         } else {
             var fontName = fontMap[font].fontName;
-            if (fontMetrics.getCharacterMetrics(value, fontName)) {
+            if (lookupSymbol(value, fontName, mode).metrics) {
                 return makeSymbol(
                     value, fontName, mode, options, classes.concat([font]));
             } else {
