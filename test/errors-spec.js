@@ -178,6 +178,17 @@ describe("Parser:", function() {
         });
     });
 
+    describe("#verb", function() {
+        it("complains about mismatched \\verb with end of string", function() {
+            expect("\\verb|hello").toFailWithParseError(
+                "\\verb ended by end of line instead of matching delimiter");
+        });
+        it("complains about mismatched \\verb with end of line", function() {
+            expect("\\verb|hello\nworld|").toFailWithParseError(
+                "\\verb ended by end of line instead of matching delimiter");
+        });
+    });
+
 });
 
 describe("Parser.expect calls:", function() {
