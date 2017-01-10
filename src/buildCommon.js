@@ -112,7 +112,9 @@ var mathsym = function(value, mode, options, classes) {
  */
 var mathDefault = function(value, mode, options, classes, type) {
     if (type === "mathord") {
-        return mathit(value, mode, options, classes);
+        var fontLookup = mathit(value, mode, options, classes);
+        return makeSymbol(value, fontLookup.fontName, mode, options,
+            classes.concat([fontLookup.fontClass]));
     } else if (type === "textord") {
         var font = symbols[mode][value] && symbols[mode][value].font;
         if (font === "main") {
@@ -123,7 +125,7 @@ var mathDefault = function(value, mode, options, classes, type) {
             return makeSymbol(
                 value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
         } else {
-            return mathit(value, mode, options, classes);
+            throw new Error("unexpected font: " + font + " in mathDefault");
         }
     } else {
         throw new Error("unexpected type: " + type + " in mathDefault");
@@ -139,11 +141,15 @@ var mathit = function(value, mode, options, classes) {
             // need to use Main-Italic instead
             utils.contains(mainitLetters, value) ||
             utils.contains(greekCapitals, value)) {
-        return makeSymbol(
-            value, "Main-Italic", mode, options, classes.concat(["mainit"]));
+        return {
+            fontName: "Main-Italic",
+            fontClass: "mainit"
+        };
     } else {
-        return makeSymbol(
-            value, "Math-Italic", mode, options, classes.concat(["mathit"]));
+        return {
+            fontName: "Math-Italic",
+            fontClass: "mathit"
+        };
     }
 };
 
@@ -158,16 +164,17 @@ var makeOrd = function(group, options, type) {
 
     var font = options.font;
     if (font) {
+        var fontLookup;
         if (font === "mathit" || utils.contains(mainitLetters, value)) {
-            return mathDefault(value, mode, options, classes, type);
+            fontLookup = mathit(value, mode, options, classes);
         } else {
-            var fontName = fontMap[font].fontName;
-            if (lookupSymbol(value, fontName, mode).metrics) {
-                return makeSymbol(
-                    value, fontName, mode, options, classes.concat([font]));
-            } else {
-                return mathDefault(value, mode, options, classes, type);
-            }
+            fontLookup = fontMap[font];
+        }
+        if (lookupSymbol(value, fontLookup.fontName, mode).metrics) {
+            return makeSymbol(value, fontLookup.fontName, mode, options,
+                classes.concat([fontLookup.fontClass || font]));
+        } else {
+            return mathDefault(value, mode, options, classes, type);
         }
     } else {
         return mathDefault(value, mode, options, classes, type);
