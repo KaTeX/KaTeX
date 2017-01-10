@@ -9,6 +9,7 @@ var fontMetrics = require("./fontMetrics");
 var symbols = require("./symbols");
 var utils = require("./utils");
 
+/* No longer needed; see mathit below.
 var greekCapitals = [
     "\\Gamma",
     "\\Delta",
@@ -22,6 +23,7 @@ var greekCapitals = [
     "\\Psi",
     "\\Omega"
 ];
+*/
 
 // The following have to be loaded from Main-Italic font, using class mainit
 var mainitLetters = [
@@ -139,8 +141,10 @@ var mathit = function(value, mode, options, classes) {
     if (/[0-9]/.test(value.charAt(0)) ||
             // glyphs for \imath and \jmath do not exist in Math-Italic so we
             // need to use Main-Italic instead
-            utils.contains(mainitLetters, value) ||
-            utils.contains(greekCapitals, value)) {
+            utils.contains(mainitLetters, value)) {
+            // For greek capitals, we have a choice, but Math-Italic
+            // seems closer to LaTeX.
+            //|| utils.contains(greekCapitals, value)) {
         return {
             fontName: "Main-Italic",
             fontClass: "mainit"
