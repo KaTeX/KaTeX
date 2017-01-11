@@ -113,8 +113,10 @@ var getTypeOfDomTree = function(node) {
                 node.children[node.children.length - 1]);
         }
     } else {
-        if (utils.contains(["mord", "mop", "mbin", "mrel", "mopen", "mclose",
-            "mpunct", "minner"], node.classes[0])) {
+        if (utils.contains([
+            "mord", "mop", "mbin", "mrel", "mopen", "mclose",
+            "mpunct", "minner",
+        ], node.classes[0])) {
             return node.classes[0];
         }
     }
@@ -344,7 +346,7 @@ groupTypes.supsub = function(group, options) {
             sub.height - 0.8 * style.metrics.xHeight);
 
         supsub = buildCommon.makeVList([
-            {type: "elem", elem: submid}
+            {type: "elem", elem: submid},
         ], "shift", subShift, options);
 
         supsub.children[0].style.marginRight = scriptspace;
@@ -361,7 +363,7 @@ groupTypes.supsub = function(group, options) {
             sup.depth + 0.25 * style.metrics.xHeight);
 
         supsub = buildCommon.makeVList([
-            {type: "elem", elem: supmid}
+            {type: "elem", elem: supmid},
         ], "shift", -supShift, options);
 
         supsub.children[0].style.marginRight = scriptspace;
@@ -385,7 +387,7 @@ groupTypes.supsub = function(group, options) {
 
         supsub = buildCommon.makeVList([
             {type: "elem", elem: submid, shift: subShift},
-            {type: "elem", elem: supmid, shift: -supShift}
+            {type: "elem", elem: supmid, shift: -supShift},
         ], "individualShift", null, options);
 
         // See comment above about subscripts not being shifted
@@ -472,7 +474,7 @@ groupTypes.genfrac = function(group, options) {
 
         frac = buildCommon.makeVList([
             {type: "elem", elem: denomreset, shift: denomShift},
-            {type: "elem", elem: numerreset, shift: -numShift}
+            {type: "elem", elem: numerreset, shift: -numShift},
         ], "individualShift", null, options);
     } else {
         // Rule 15d
@@ -503,7 +505,7 @@ groupTypes.genfrac = function(group, options) {
         frac = buildCommon.makeVList([
             {type: "elem", elem: denomreset, shift: denomShift},
             {type: "elem", elem: mid,        shift: midShift},
-            {type: "elem", elem: numerreset, shift: -numShift}
+            {type: "elem", elem: numerreset, shift: -numShift},
         ], "individualShift", null, options);
     }
 
@@ -723,8 +725,7 @@ groupTypes.spacing = function(group, options) {
         // Other kinds of spaces are of arbitrary width. We use CSS to
         // generate these.
         return makeSpan(
-            ["mspace",
-                buildCommon.spacingFunctions[group.value].className],
+            ["mspace", buildCommon.spacingFunctions[group.value].className],
             [], options);
     }
 };
@@ -764,7 +765,7 @@ groupTypes.op = function(group, options) {
 
     // Most operators have a large successor symbol, but these don't.
     var noSuccessor = [
-        "\\smallint"
+        "\\smallint",
     ];
 
     var large = false;
@@ -859,7 +860,7 @@ groupTypes.op = function(group, options) {
                 {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
                 {type: "elem", elem: submid},
                 {type: "kern", size: subKern},
-                {type: "elem", elem: base}
+                {type: "elem", elem: base},
             ], "top", top, options);
 
             // Here, we shift the limits by the slant of the symbol. Note
@@ -874,7 +875,7 @@ groupTypes.op = function(group, options) {
                 {type: "elem", elem: base},
                 {type: "kern", size: supKern},
                 {type: "elem", elem: supmid},
-                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5}
+                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
             ], "bottom", bottom, options);
 
             // See comment above about slants
@@ -897,7 +898,7 @@ groupTypes.op = function(group, options) {
                 {type: "elem", elem: base},
                 {type: "kern", size: supKern},
                 {type: "elem", elem: supmid},
-                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5}
+                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
             ], "bottom", bottom, options);
 
             // See comment above about slants
@@ -1017,7 +1018,7 @@ groupTypes.overline = function(group, options) {
         {type: "elem", elem: innerGroup},
         {type: "kern", size: 3 * ruleWidth},
         {type: "elem", elem: line},
-        {type: "kern", size: ruleWidth}
+        {type: "kern", size: ruleWidth},
     ], "firstBaseline", null, options);
 
     return makeSpan(["mord", "overline"], [vlist], options);
@@ -1043,7 +1044,7 @@ groupTypes.underline = function(group, options) {
         {type: "kern", size: ruleWidth},
         {type: "elem", elem: line},
         {type: "kern", size: 3 * ruleWidth},
-        {type: "elem", elem: innerGroup}
+        {type: "elem", elem: innerGroup},
     ], "top", innerGroup.height, options);
 
     return makeSpan(["mord", "underline"], [vlist], options);
@@ -1110,7 +1111,7 @@ groupTypes.sqrt = function(group, options) {
             {type: "elem", elem: inner},
             {type: "kern", size: lineClearance},
             {type: "elem", elem: line},
-            {type: "kern", size: ruleWidth}
+            {type: "kern", size: ruleWidth},
         ], "firstBaseline", null, options);
     }
 
@@ -1187,7 +1188,7 @@ groupTypes.styling = function(group, options) {
         "display": Style.DISPLAY,
         "text": Style.TEXT,
         "script": Style.SCRIPT,
-        "scriptscript": Style.SCRIPTSCRIPT
+        "scriptscript": Style.SCRIPTSCRIPT,
     };
 
     var newStyle = styleMap[group.value.style];
@@ -1444,7 +1445,7 @@ groupTypes.accent = function(group, options) {
     accentBody = buildCommon.makeVList([
         {type: "elem", elem: body},
         {type: "kern", size: -clearance},
-        {type: "elem", elem: accentBody}
+        {type: "elem", elem: accentBody},
     ], "firstBaseline", null, options);
 
     // Shift the accent over by the skew. Note we shift by twice the skew

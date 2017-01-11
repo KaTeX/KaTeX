@@ -277,7 +277,7 @@ Parser.prototype.handleUnsupportedCmd = function() {
         "text",
         {
             body: textordArray,
-            type: "text"
+            type: "text",
         },
         this.mode);
 
@@ -286,7 +286,7 @@ Parser.prototype.handleUnsupportedCmd = function() {
         {
             color: this.settings.errorColor,
             value: [textNode],
-            type: "color"
+            type: "color",
         },
         this.mode);
 
@@ -367,7 +367,7 @@ Parser.prototype.parseAtom = function() {
         return new ParseNode("supsub", {
             base: base,
             sup: superscript,
-            sub: subscript
+            sub: subscript,
         }, this.mode);
     } else {
         // Otherwise return the original body
@@ -378,12 +378,12 @@ Parser.prototype.parseAtom = function() {
 // A list of the size-changing functions, for use in parseImplicitGroup
 var sizeFuncs = [
     "\\tiny", "\\scriptsize", "\\footnotesize", "\\small", "\\normalsize",
-    "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge"
+    "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
 ];
 
 // A list of the style-changing functions, for use in parseImplicitGroup
 var styleFuncs = [
-    "\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle"
+    "\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle",
 ];
 
 /**
@@ -422,7 +422,7 @@ Parser.prototype.parseImplicitGroup = function() {
         return new ParseNode("leftright", {
             body: body,
             left: left.value.value,
-            right: right.value.value
+            right: right.value.value,
         }, this.mode);
     } else if (func === "\\begin") {
         // begin...end is similar to left...right
@@ -440,7 +440,7 @@ Parser.prototype.parseImplicitGroup = function() {
             mode: this.mode,
             envName: envName,
             parser: this,
-            positions: args.pop()
+            positions: args.pop(),
         };
         var result = env.handler(context, args);
         this.expect("\\end", false);
@@ -460,7 +460,7 @@ Parser.prototype.parseImplicitGroup = function() {
         return new ParseNode("sizing", {
             // Figure out what size to use based on the list of functions above
             size: "size" + (utils.indexOf(sizeFuncs, func) + 1),
-            value: body
+            value: body,
         }, this.mode);
     } else if (utils.contains(styleFuncs, func)) {
         // If we see a styling function, parse out the implict body
@@ -469,7 +469,7 @@ Parser.prototype.parseImplicitGroup = function() {
             // Figure out what style to use by pulling out the style from
             // the function name
             style: func.slice(1, func.length - 5),
-            value: body
+            value: body,
         }, this.mode);
     } else {
         // Defer to parseFunction if it's not a function we handle
@@ -520,7 +520,7 @@ Parser.prototype.callFunction = function(name, args, positions, token) {
         funcName: name,
         parser: this,
         positions: positions,
-        token: token
+        token: token,
     };
     return functions[name].handler(context, args);
 };
@@ -731,7 +731,7 @@ Parser.prototype.parseSizeGroup = function(optional) {
     }
     var data = {
         number: +(match[1] + match[2]), // sign + magnitude, cast to number
-        unit: match[3]
+        unit: match[3],
     };
     if (data.unit !== "em" && data.unit !== "ex" && data.unit !== "mu") {
         throw new ParseError("Invalid unit: '" + data.unit + "'", res);

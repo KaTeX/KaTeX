@@ -27,7 +27,7 @@ var renderMathInText = function(text, delimiters) {
             var math = data[i].data;
             try {
                 katex.render(math, span, {
-                    displayMode: data[i].display
+                    displayMode: data[i].display,
                 });
             } catch (e) {
                 if (!(e instanceof katex.ParseError)) {
@@ -73,14 +73,14 @@ var defaultOptions = {
     delimiters: [
         {left: "$$", right: "$$", display: true},
         {left: "\\[", right: "\\]", display: true},
-        {left: "\\(", right: "\\)", display: false}
+        {left: "\\(", right: "\\)", display: false},
         // LaTeX uses this, but it ruins the display of normal `$` in text:
         // {left: "$", right: "$", display: false},
     ],
 
     ignoredTags: [
-        "script", "noscript", "style", "textarea", "pre", "code"
-    ]
+        "script", "noscript", "style", "textarea", "pre", "code",
+    ],
 };
 
 var extend = function(obj) {

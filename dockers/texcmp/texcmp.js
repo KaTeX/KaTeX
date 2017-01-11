@@ -49,7 +49,7 @@ Q.all([
     readFile(path.join(ssDir, "test.tex"), "utf-8"),
     ensureDir(tmpDir),
     ensureDir(teximgDir),
-    ensureDir(diffDir)
+    ensureDir(diffDir),
 ]).spread(function(data) {
     template = data;
     // dirs have been created, template has been read, now rasterize.
@@ -80,14 +80,14 @@ function processTestCase(key) {
     var fftLatex = writeFile(texFile, tex).then(function() {
         // Step 2: call "pdflatex key" to create key.pdf
         return execFile("pdflatex", [
-            "-interaction", "nonstopmode", key
+            "-interaction", "nonstopmode", key,
         ], {cwd: tmpDir});
     }).then(function() {
         console.log("Typeset " + key);
         // Step 3: call "convert ... key.pdf key.png" to create key.png
         return execFile("convert", [
             "-density", dpi, "-units", "PixelsPerInch", "-flatten",
-            "-depth", "8", pdfFile, pngFile
+            "-depth", "8", pdfFile, pngFile,
         ]);
     }).then(function() {
         console.log("Rasterized " + key);
@@ -168,7 +168,7 @@ function processTestCase(key) {
             // First image is red, second green, third blue channel of result
             "-channel", "RGB", "-combine",
             "-trim",  // remove everything with the same color as the corners
-            diffFile // output file name
+            diffFile, // output file name
         ]);
     }).then(function() {
         console.log("Compared " + key);
@@ -245,7 +245,7 @@ function fftImage(image) {
         real: real,
         imag: imag,
         width: image.width,
-        height: image.height
+        height: image.height,
     };
 }
 
