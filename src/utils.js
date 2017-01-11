@@ -51,7 +51,7 @@ var ESCAPE_LOOKUP = {
     ">": "&gt;",
     "<": "&lt;",
     "\"": "&quot;",
-    "'": "&#x27;"
+    "'": "&#x27;",
 };
 
 var ESCAPE_REGEX = /[&><"']/g;
@@ -102,5 +102,5 @@ module.exports = {
     hyphenate: hyphenate,
     indexOf: indexOf,
     setTextContent: setTextContent,
-    clearNode: clearNode
+    clearNode: clearNode,
 };

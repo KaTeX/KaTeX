@@ -13,7 +13,7 @@ beforeEach(function() {
                 compare: function(actual, left, right, result) {
                     var message = {
                         pass: true,
-                        message: "'" + actual + "' split correctly"
+                        message: "'" + actual + "' split correctly",
                     };
 
                     var startData = [{type: "text", data: actual}];
@@ -59,9 +59,9 @@ beforeEach(function() {
                     }
 
                     return message;
-                }
+                },
             };
-        }
+        },
     });
 });
 
@@ -75,7 +75,7 @@ describe("A delimiter splitter", function() {
             "(", ")",
             [
                 {type: "text", data: "hello "},
-                {type: "text", data: "( world"}
+                {type: "text", data: "( world"},
             ]);
     });
 
@@ -83,7 +83,7 @@ describe("A delimiter splitter", function() {
         expect("hello ) world").toSplitInto(
             "(", ")",
             [
-                {type: "text", data: "hello ) world"}
+                {type: "text", data: "hello ) world"},
             ]);
     });
 
@@ -94,7 +94,7 @@ describe("A delimiter splitter", function() {
                 {type: "text", data: "hello "},
                 {type: "math", data: " world ",
                     rawData: "( world )", display: false},
-                {type: "text", data: " boo"}
+                {type: "text", data: " boo"},
             ]);
     });
 
@@ -105,7 +105,7 @@ describe("A delimiter splitter", function() {
                 {type: "text", data: "hello "},
                 {type: "math", data: " world ",
                     rawData: "[[ world ]]", display: false},
-                {type: "text", data: " boo"}
+                {type: "text", data: " boo"},
             ]);
     });
 
@@ -119,7 +119,7 @@ describe("A delimiter splitter", function() {
                 {type: "text", data: " boo "},
                 {type: "math", data: " more ",
                     rawData: "( more )", display: false},
-                {type: "text", data: " stuff"}
+                {type: "text", data: " stuff"},
             ]);
     });
 
@@ -131,7 +131,7 @@ describe("A delimiter splitter", function() {
                 {type: "math", data: " world ",
                     rawData: "( world )", display: false},
                 {type: "text", data: " boo "},
-                {type: "text", data: "( left"}
+                {type: "text", data: "( left"},
             ]);
     });
 
@@ -142,7 +142,7 @@ describe("A delimiter splitter", function() {
                 {type: "text", data: "hello "},
                 {type: "math", data: " world { ) } ",
                     rawData: "( world { ) } )", display: false},
-                {type: "text", data: " boo"}
+                {type: "text", data: " boo"},
             ]);
 
         expect("hello ( world { { } ) } ) boo").toSplitInto(
@@ -151,7 +151,7 @@ describe("A delimiter splitter", function() {
                 {type: "text", data: "hello "},
                 {type: "math", data: " world { { } ) } ",
                     rawData: "( world { { } ) } )", display: false},
-                {type: "text", data: " boo"}
+                {type: "text", data: " boo"},
             ]);
     });
 
@@ -162,7 +162,7 @@ describe("A delimiter splitter", function() {
                 {type: "text", data: "hello "},
                 {type: "math", data: " world \\) ",
                     rawData: "( world \\) )", display: false},
-                {type: "text", data: " boo"}
+                {type: "text", data: " boo"},
             ]);
 
         /* TODO(emily): make this work maybe?
@@ -184,7 +184,7 @@ describe("A delimiter splitter", function() {
                 {type: "text", data: "hello "},
                 {type: "math", data: " world ",
                     rawData: "$ world $", display: false},
-                {type: "text", data: " boo"}
+                {type: "text", data: " boo"},
             ]);
     });
 
@@ -196,7 +196,7 @@ describe("A delimiter splitter", function() {
                 {type: "text", data: "hello "},
                 {type: "math", data: " world ",
                     rawData: "( world )", display: true},
-                {type: "text", data: " boo"}
+                {type: "text", data: " boo"},
             ]);
     });
 
@@ -204,7 +204,7 @@ describe("A delimiter splitter", function() {
         var startData = [
             {type: "text", data: "hello ( world ) boo"},
             {type: "math", data: "math", rawData: "(math)", display: true},
-            {type: "text", data: "hello ( world ) boo"}
+            {type: "text", data: "hello ( world ) boo"},
         ];
 
         expect(splitAtDelimiters(startData, "(", ")", false)).toEqual(
@@ -217,7 +217,7 @@ describe("A delimiter splitter", function() {
                 {type: "text", data: "hello "},
                 {type: "math", data: " world ",
                     rawData: "( world )", display: false},
-                {type: "text", data: " boo"}
+                {type: "text", data: " boo"},
             ]);
     });
 
@@ -225,7 +225,7 @@ describe("A delimiter splitter", function() {
         var startData = [
             {type: "text", data: "hello ( world ) boo"},
             {type: "math", data: "hello ( world ) boo",
-                rawData: "(hello ( world ) boo)", display: true}
+                rawData: "(hello ( world ) boo)", display: true},
         ];
 
         expect(splitAtDelimiters(startData, "(", ")", false)).toEqual(
@@ -235,7 +235,7 @@ describe("A delimiter splitter", function() {
                     rawData: "( world )", display: false},
                 {type: "text", data: " boo"},
                 {type: "math", data: "hello ( world ) boo",
-                    rawData: "(hello ( world ) boo)", display: true}
+                    rawData: "(hello ( world ) boo)", display: true},
             ]);
     });
 });

@@ -17,7 +17,7 @@ var Style = require("../src/Style");
 var defaultSettings = new Settings({});
 var defaultOptions = new Options({
     style: Style.TEXT,
-    size: "size5"
+    size: "size5",
 });
 
 var _getBuilt = function(expr, settings) {
@@ -97,11 +97,11 @@ beforeEach(function() {
 
                     var result = {
                         pass: true,
-                        message: "'" + actual + "' succeeded parsing"
+                        message: "'" + actual + "' succeeded parsing",
                     };
                     parseAndSetResult(actual, result, usedSettings);
                     return result;
-                }
+                },
             };
         },
 
@@ -113,7 +113,7 @@ beforeEach(function() {
                     var result = {
                         pass: false,
                         message: "Expected '" + actual + "' to fail " +
-                            "parsing, but it succeeded"
+                            "parsing, but it succeeded",
                     };
 
                     try {
@@ -130,7 +130,7 @@ beforeEach(function() {
                     }
 
                     return result;
-                }
+                },
             };
         },
 
@@ -141,7 +141,7 @@ beforeEach(function() {
 
                     var result = {
                         pass: true,
-                        message: "'" + actual + "' succeeded in building"
+                        message: "'" + actual + "' succeeded in building",
                     };
 
                     expect(actual).toParse(usedSettings);
@@ -160,7 +160,7 @@ beforeEach(function() {
                     }
 
                     return result;
-                }
+                },
             };
         },
 
@@ -170,7 +170,7 @@ beforeEach(function() {
                     var result = {
                         pass: true,
                         message: "Parse trees of '" + actual +
-                            "' and '" + expected + "' are equivalent"
+                            "' and '" + expected + "' are equivalent",
                     };
 
                     var actualTree = parseAndSetResult(actual, result);
@@ -189,9 +189,9 @@ beforeEach(function() {
                             "' and '" + expected + "' are not equivalent";
                     }
                     return result;
-                }
+                },
             };
-        }
+        },
 
     });
 });
@@ -1177,7 +1177,7 @@ describe("A TeX-compliant parser", function() {
             "\\rule{1em}",
             "\\llap",
             "\\bigl",
-            "\\text"
+            "\\text",
         ];
 
         for (var i = 0; i < missingGroups.length; i++) {
@@ -1204,7 +1204,7 @@ describe("A TeX-compliant parser", function() {
             // work
             // "\\llap \\frac x y",
             "\\llap \\llap x",
-            "\\sqrt \\llap x"
+            "\\sqrt \\llap x",
         ];
 
         for (var i = 0; i < badArguments.length; i++) {
@@ -1222,7 +1222,7 @@ describe("A TeX-compliant parser", function() {
             "\\frac x {\\llap y}",
             "\\llap {\\frac x y}",
             "\\llap {\\llap x}",
-            "\\sqrt {\\llap x}"
+            "\\sqrt {\\llap x}",
         ];
 
         for (var i = 0; i < goodArguments.length; i++) {
@@ -1235,7 +1235,7 @@ describe("A TeX-compliant parser", function() {
             "x^\\sqrt x",
             "x^\\llap x",
             "x_\\sqrt x",
-            "x_\\llap x"
+            "x_\\llap x",
         ];
 
         for (var i = 0; i < badSupSubscripts.length; i++) {
@@ -1248,7 +1248,7 @@ describe("A TeX-compliant parser", function() {
             "x^{\\sqrt x}",
             "x^{\\llap x}",
             "x_{\\sqrt x}",
-            "x_{\\llap x}"
+            "x_{\\llap x}",
         ];
 
         for (var i = 0; i < goodSupSubscripts.length; i++) {
@@ -1287,7 +1287,7 @@ describe("A TeX-compliant parser", function() {
             "\\frac x \\left( y \\right)",
             "\\llap \\left( x \\right)",
             "\\sqrt \\left( x \\right)",
-            "x^\\left( x \\right)"
+            "x^\\left( x \\right)",
         ];
 
         for (var i = 0; i < badLeftArguments.length; i++) {
@@ -1301,7 +1301,7 @@ describe("A TeX-compliant parser", function() {
             "\\frac x {\\left( y \\right)}",
             "\\llap {\\left( x \\right)}",
             "\\sqrt {\\left( x \\right)}",
-            "x^{\\left( x \\right)}"
+            "x^{\\left( x \\right)}",
         ];
 
         for (var i = 0; i < goodLeftArguments.length; i++) {
@@ -1721,17 +1721,17 @@ describe("A parse tree generator", function() {
                     "base": {
                         "type": "mathord",
                         "value": "\\sigma",
-                        "mode": "math"
+                        "mode": "math",
                     },
                     "sup": {
                         "type": "textord",
                         "value": "2",
-                        "mode": "math"
+                        "mode": "math",
                     },
-                    "sub": undefined
+                    "sub": undefined,
                 },
-                "mode": "math"
-            }
+                "mode": "math",
+            },
         ]));
     });
 });
@@ -1860,7 +1860,7 @@ describe("An array environment", function() {
         var parse = getParsed("\\begin{array}r1\\\\20\\end{array}");
         expect(parse[0].type).toBe("array");
         expect(parse[0].value.cols).toEqual([
-            { type: "align", align: "r" }
+            { type: "align", align: "r" },
         ]);
     });
 
@@ -1873,7 +1873,7 @@ describe("An array environment", function() {
             { type: "separator", separator: "|" },
             { type: "separator", separator: "|" },
             { type: "align", align: "c" },
-            { type: "separator", separator: "|" }
+            { type: "separator", separator: "|" },
         ]);
     });
 
@@ -1948,7 +1948,7 @@ describe("A parser that does not throw on unsupported commands", function() {
     var errorColor = "#933";
     var noThrowSettings = new Settings({
         throwOnError: false,
-        errorColor: errorColor
+        errorColor: errorColor,
     });
 
     it("should still parse on unrecognized control sequences", function() {
@@ -2009,7 +2009,7 @@ describe("A macro expander", function() {
     it("should allow for multiple expansion", function() {
         compareParseTree("1\\foo2", "1aa2", {
             "\\foo": "\\bar\\bar",
-            "\\bar": "a"
+            "\\bar": "a",
         });
     });
 });

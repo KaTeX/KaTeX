@@ -64,7 +64,7 @@ app.get("/katex.css", function(req, res, next) {
 
         less.render(data, {
             paths: [path.join(__dirname, "static")],
-            filename: "katex.less"
+            filename: "katex.less",
         }, function(err, output) {
             if (err) {
                 console.error(String(err));

@@ -18,7 +18,7 @@ var buildTree = function(tree, expression, settings) {
     // Setup the default options
     var options = new Options({
         style: startStyle,
-        size: "size5"
+        size: "size5",
     });
 
     // `buildHTML` sometimes messes with the parse tree (like turning bins ->
@@ -27,7 +27,7 @@ var buildTree = function(tree, expression, settings) {
     var htmlNode = buildHTML(tree, options);
 
     var katexNode = makeSpan(["katex"], [
-        mathMLNode, htmlNode
+        mathMLNode, htmlNode,
     ]);
 
     if (settings.displayMode) {

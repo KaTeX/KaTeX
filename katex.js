@@ -70,5 +70,5 @@ module.exports = {
      * to change. Use at your own risk.
      */
     __parse: generateParseTree,
-    ParseError: ParseError
+    ParseError: ParseError,
 };

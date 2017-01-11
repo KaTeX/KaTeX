@@ -20,14 +20,14 @@ var greekCapitals = [
     "\\Upsilon",
     "\\Phi",
     "\\Psi",
-    "\\Omega"
+    "\\Omega",
 ];
 
 // The following have to be loaded from Main-Italic font, using class mainit
 var mainitLetters = [
     "\u0131",   // dotless i, \imath
     "\u0237",   // dotless j, \jmath
-    "\u00a3"   // \pounds
+    "\u00a3",   // \pounds
 ];
 
 /**
@@ -378,7 +378,7 @@ var sizingMultiplier = {
     size7: 1.44,
     size8: 1.73,
     size9: 2.07,
-    size10: 2.49
+    size10: 2.49,
 };
 
 // A map of spacing functions to their attributes, like size and corresponding
@@ -386,32 +386,32 @@ var sizingMultiplier = {
 var spacingFunctions = {
     "\\qquad": {
         size: "2em",
-        className: "qquad"
+        className: "qquad",
     },
     "\\quad": {
         size: "1em",
-        className: "quad"
+        className: "quad",
     },
     "\\enspace": {
         size: "0.5em",
-        className: "enspace"
+        className: "enspace",
     },
     "\\;": {
         size: "0.277778em",
-        className: "thickspace"
+        className: "thickspace",
     },
     "\\:": {
         size: "0.22222em",
-        className: "mediumspace"
+        className: "mediumspace",
     },
     "\\,": {
         size: "0.16667em",
-        className: "thinspace"
+        className: "thinspace",
     },
     "\\!": {
         size: "-0.16667em",
-        className: "negativethinspace"
-    }
+        className: "negativethinspace",
+    },
 };
 
 /**
@@ -424,15 +424,15 @@ var fontMap = {
     // styles
     "mathbf": {
         variant: "bold",
-        fontName: "Main-Bold"
+        fontName: "Main-Bold",
     },
     "mathrm": {
         variant: "normal",
-        fontName: "Main-Regular"
+        fontName: "Main-Regular",
     },
     "textit": {
         variant: "italic",
-        fontName: "Main-Italic"
+        fontName: "Main-Italic",
     },
 
     // "mathit" is missing because it requires the use of two fonts: Main-Italic
@@ -442,28 +442,28 @@ var fontMap = {
     // families
     "mathbb": {
         variant: "double-struck",
-        fontName: "AMS-Regular"
+        fontName: "AMS-Regular",
     },
     "mathcal": {
         variant: "script",
-        fontName: "Caligraphic-Regular"
+        fontName: "Caligraphic-Regular",
     },
     "mathfrak": {
         variant: "fraktur",
-        fontName: "Fraktur-Regular"
+        fontName: "Fraktur-Regular",
     },
     "mathscr": {
         variant: "script",
-        fontName: "Script-Regular"
+        fontName: "Script-Regular",
     },
     "mathsf": {
         variant: "sans-serif",
-        fontName: "SansSerif-Regular"
+        fontName: "SansSerif-Regular",
     },
     "mathtt": {
         variant: "monospace",
-        fontName: "Typewriter-Regular"
-    }
+        fontName: "Typewriter-Regular",
+    },
 };
 
 module.exports = {
@@ -476,5 +476,5 @@ module.exports = {
     makeOrd: makeOrd,
     prependChildren: prependChildren,
     sizingMultiplier: sizingMultiplier,
-    spacingFunctions: spacingFunctions
+    spacingFunctions: spacingFunctions,
 };

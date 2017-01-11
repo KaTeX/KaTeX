@@ -95,7 +95,7 @@ function defineFunction(names, props, handler) {
         allowedInText: !!props.allowedInText,
         numOptionalArgs: props.numOptionalArgs || 0,
         infix: !!props.infix,
-        handler: handler
+        handler: handler,
     };
     for (var i = 0; i < names.length; ++i) {
         module.exports[names[i]] = data;
@@ -115,14 +115,14 @@ var ordargument = function(arg) {
 // A normal square root
 defineFunction("\\sqrt", {
     numArgs: 1,
-    numOptionalArgs: 1
+    numOptionalArgs: 1,
 }, function(context, args) {
     var index = args[0];
     var body = args[1];
     return {
         type: "sqrt",
         body: body,
-        index: index
+        index: index,
     };
 });
 
@@ -130,23 +130,23 @@ defineFunction("\\sqrt", {
 var textFunctionStyles = {
     "\\text": undefined, "\\textrm": "mathrm", "\\textsf": "mathsf",
     "\\texttt": "mathtt", "\\textnormal": "mathrm", "\\textbf": "mathbf",
-    "\\textit": "textit"
+    "\\textit": "textit",
 };
 
 defineFunction([
     "\\text", "\\textrm", "\\textsf", "\\texttt", "\\textnormal",
-    "\\textbf", "\\textit"
+    "\\textbf", "\\textit",
 ], {
     numArgs: 1,
     argTypes: ["text"],
     greediness: 2,
-    allowedInText: true
+    allowedInText: true,
 }, function(context, args) {
     var body = args[0];
     return {
         type: "text",
         body: ordargument(body),
-        style: textFunctionStyles[context.funcName]
+        style: textFunctionStyles[context.funcName],
     };
 });
 
@@ -155,36 +155,36 @@ defineFunction("\\color", {
     numArgs: 2,
     allowedInText: true,
     greediness: 3,
-    argTypes: ["color", "original"]
+    argTypes: ["color", "original"],
 }, function(context, args) {
     var color = args[0];
     var body = args[1];
     return {
         type: "color",
         color: color.value,
-        value: ordargument(body)
+        value: ordargument(body),
     };
 });
 
 // An overline
 defineFunction("\\overline", {
-    numArgs: 1
+    numArgs: 1,
 }, function(context, args) {
     var body = args[0];
     return {
         type: "overline",
-        body: body
+        body: body,
     };
 });
 
 // An underline
 defineFunction("\\underline", {
-    numArgs: 1
+    numArgs: 1,
 }, function(context, args) {
     var body = args[0];
     return {
         type: "underline",
-        body: body
+        body: body,
     };
 });
 
@@ -192,7 +192,7 @@ defineFunction("\\underline", {
 defineFunction("\\rule", {
     numArgs: 2,
     numOptionalArgs: 1,
-    argTypes: ["size", "size", "size"]
+    argTypes: ["size", "size", "size"],
 }, function(context, args) {
     var shift = args[0];
     var width = args[1];
@@ -201,7 +201,7 @@ defineFunction("\\rule", {
         type: "rule",
         shift: shift && shift.value,
         width: width.value,
-        height: height.value
+        height: height.value,
     };
 });
 
@@ -209,51 +209,51 @@ defineFunction("\\rule", {
 // mu-units. In current KaTeX we relax this; both commands accept any unit.
 defineFunction(["\\kern", "\\mkern"], {
     numArgs: 1,
-    argTypes: ["size"]
+    argTypes: ["size"],
 }, function(context, args) {
     return {
         type: "kern",
-        dimension: args[0].value
+        dimension: args[0].value,
     };
 });
 
 // A KaTeX logo
 defineFunction("\\KaTeX", {
-    numArgs: 0
+    numArgs: 0,
 }, function(context) {
     return {
-        type: "katex"
+        type: "katex",
     };
 });
 
 defineFunction("\\phantom", {
-    numArgs: 1
+    numArgs: 1,
 }, function(context, args) {
     var body = args[0];
     return {
         type: "phantom",
-        value: ordargument(body)
+        value: ordargument(body),
     };
 });
 
 // Math class commands except \mathop
 defineFunction([
     "\\mathord", "\\mathbin", "\\mathrel", "\\mathopen",
-    "\\mathclose", "\\mathpunct", "\\mathinner"
+    "\\mathclose", "\\mathpunct", "\\mathinner",
 ], {
-    numArgs: 1
+    numArgs: 1,
 }, function(context, args) {
     var body = args[0];
     return {
         type: "mclass",
         mclass: "m" + context.funcName.substr(5),
-        value: ordargument(body)
+        value: ordargument(body),
     };
 });
 
 // Build a relation by placing one symbol on top of another
 defineFunction("\\stackrel", {
-    numArgs: 2
+    numArgs: 2,
 }, function(context, args) {
     var top = args[0];
     var bottom = args[1];
@@ -263,41 +263,41 @@ defineFunction("\\stackrel", {
         limits: true,
         alwaysHandleSupSub: true,
         symbol: false,
-        value: ordargument(bottom)
+        value: ordargument(bottom),
     }, bottom.mode);
 
     var supsub = new ParseNode("supsub", {
         base: bottomop,
         sup: top,
-        sub: null
+        sub: null,
     }, top.mode);
 
     return {
         type: "mclass",
         mclass: "mrel",
-        value: [supsub]
+        value: [supsub],
     };
 });
 
 // \mod-type functions
 defineFunction("\\bmod", {
-    numArgs: 0
+    numArgs: 0,
 }, function(context, args) {
     return {
         type: "mod",
         modType: "bmod",
-        value: null
+        value: null,
     };
 });
 
 defineFunction(["\\pod", "\\pmod", "\\mod"], {
-    numArgs: 1
+    numArgs: 1,
 }, function(context, args) {
     var body = args[0];
     return {
         type: "mod",
         modType: context.funcName.substr(1),
-        value: ordargument(body)
+        value: ordargument(body),
     };
 });
 
@@ -318,7 +318,7 @@ var delimiterSizes = {
     "\\big"  : {mclass: "mord",     size: 1},
     "\\Big"  : {mclass: "mord",     size: 2},
     "\\bigg" : {mclass: "mord",     size: 3},
-    "\\Bigg" : {mclass: "mord",     size: 4}
+    "\\Bigg" : {mclass: "mord",     size: 4},
 };
 
 var delimiters = [
@@ -333,13 +333,13 @@ var delimiters = [
     "\\uparrow", "\\Uparrow",
     "\\downarrow", "\\Downarrow",
     "\\updownarrow", "\\Updownarrow",
-    "."
+    ".",
 ];
 
 var fontAliases = {
     "\\Bbb": "\\mathbb",
     "\\bold": "\\mathbf",
-    "\\frak": "\\mathfrak"
+    "\\frak": "\\mathfrak",
 };
 
 // Single-argument color functions
@@ -356,17 +356,17 @@ defineFunction([
     "\\mintA", "\\mintB", "\\mintC",
     "\\grayA", "\\grayB", "\\grayC", "\\grayD", "\\grayE",
     "\\grayF", "\\grayG", "\\grayH", "\\grayI",
-    "\\kaBlue", "\\kaGreen"
+    "\\kaBlue", "\\kaGreen",
 ], {
     numArgs: 1,
     allowedInText: true,
-    greediness: 3
+    greediness: 3,
 }, function(context, args) {
     var body = args[0];
     return {
         type: "color",
         color: "katex-" + context.funcName.slice(1),
-        value: ordargument(body)
+        value: ordargument(body),
     };
 });
 
@@ -379,44 +379,44 @@ defineFunction([
     "\\arcsin", "\\arccos", "\\arctan", "\\arg", "\\cos", "\\cosh",
     "\\cot", "\\coth", "\\csc", "\\deg", "\\dim", "\\exp", "\\hom",
     "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin", "\\sinh",
-    "\\tan", "\\tanh"
+    "\\tan", "\\tanh",
 ], {
-    numArgs: 0
+    numArgs: 0,
 }, function(context) {
     return {
         type: "op",
         limits: false,
         symbol: false,
-        body: context.funcName
+        body: context.funcName,
     };
 });
 
 // Limits, not symbols
 defineFunction([
     "\\det", "\\gcd", "\\inf", "\\lim", "\\liminf", "\\limsup", "\\max",
-    "\\min", "\\Pr", "\\sup"
+    "\\min", "\\Pr", "\\sup",
 ], {
-    numArgs: 0
+    numArgs: 0,
 }, function(context) {
     return {
         type: "op",
         limits: true,
         symbol: false,
-        body: context.funcName
+        body: context.funcName,
     };
 });
 
 // No limits, symbols
 defineFunction([
-    "\\int", "\\iint", "\\iiint", "\\oint"
+    "\\int", "\\iint", "\\iiint", "\\oint",
 ], {
-    numArgs: 0
+    numArgs: 0,
 }, function(context) {
     return {
         type: "op",
         limits: false,
         symbol: true,
-        body: context.funcName
+        body: context.funcName,
     };
 });
 
@@ -424,28 +424,28 @@ defineFunction([
 defineFunction([
     "\\coprod", "\\bigvee", "\\bigwedge", "\\biguplus", "\\bigcap",
     "\\bigcup", "\\intop", "\\prod", "\\sum", "\\bigotimes",
-    "\\bigoplus", "\\bigodot", "\\bigsqcup", "\\smallint"
+    "\\bigoplus", "\\bigodot", "\\bigsqcup", "\\smallint",
 ], {
-    numArgs: 0
+    numArgs: 0,
 }, function(context) {
     return {
         type: "op",
         limits: true,
         symbol: true,
-        body: context.funcName
+        body: context.funcName,
     };
 });
 
 // \mathop class command
 defineFunction("\\mathop", {
-    numArgs: 1
+    numArgs: 1,
 }, function(context, args) {
     var body = args[0];
     return {
         type: "op",
         limits: false,
         symbol: false,
-        value: ordargument(body)
+        value: ordargument(body),
     };
 });
 
@@ -453,10 +453,10 @@ defineFunction("\\mathop", {
 defineFunction([
     "\\dfrac", "\\frac", "\\tfrac",
     "\\dbinom", "\\binom", "\\tbinom",
-    "\\\\atopfrac" // can’t be entered directly
+    "\\\\atopfrac", // can’t be entered directly
 ], {
     numArgs: 2,
-    greediness: 2
+    greediness: 2,
 }, function(context, args) {
     var numer = args[0];
     var denom = args[1];
@@ -503,19 +503,19 @@ defineFunction([
         hasBarLine: hasBarLine,
         leftDelim: leftDelim,
         rightDelim: rightDelim,
-        size: size
+        size: size,
     };
 });
 
 // Left and right overlap functions
 defineFunction(["\\llap", "\\rlap"], {
     numArgs: 1,
-    allowedInText: true
+    allowedInText: true,
 }, function(context, args) {
     var body = args[0];
     return {
         type: context.funcName.slice(1),
-        body: body
+        body: body,
     };
 });
 
@@ -534,9 +534,9 @@ defineFunction([
     "\\bigl", "\\Bigl", "\\biggl", "\\Biggl",
     "\\bigr", "\\Bigr", "\\biggr", "\\Biggr",
     "\\bigm", "\\Bigm", "\\biggm", "\\Biggm",
-    "\\big",  "\\Big",  "\\bigg",  "\\Bigg"
+    "\\big",  "\\Big",  "\\bigg",  "\\Bigg",
 ], {
-    numArgs: 1
+    numArgs: 1,
 }, function(context, args) {
     var delim = checkDelimiter(args[0], context);
 
@@ -544,14 +544,14 @@ defineFunction([
         type: "delimsizing",
         size: delimiterSizes[context.funcName].size,
         mclass: delimiterSizes[context.funcName].mclass,
-        value: delim.value
+        value: delim.value,
     };
 });
 
 defineFunction([
-    "\\left", "\\right"
+    "\\left", "\\right",
 ], {
-    numArgs: 1
+    numArgs: 1,
 }, function(context, args) {
     var delim = checkDelimiter(args[0], context);
 
@@ -559,12 +559,12 @@ defineFunction([
     // why this data doesn't match what is in buildHTML.
     return {
         type: "leftright",
-        value: delim.value
+        value: delim.value,
     };
 });
 
 defineFunction("\\middle", {
-    numArgs: 1
+    numArgs: 1,
 }, function(context, args) {
     var delim = checkDelimiter(args[0], context);
     if (!context.parser.leftrightDepth) {
@@ -573,21 +573,21 @@ defineFunction("\\middle", {
 
     return {
         type: "middle",
-        value: delim.value
+        value: delim.value,
     };
 });
 
 // Sizing functions (handled in Parser.js explicitly, hence no handler)
 defineFunction([
     "\\tiny", "\\scriptsize", "\\footnotesize", "\\small",
-    "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge"
+    "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
 ], 0, null);
 
 // Style changing functions (handled in Parser.js explicitly, hence no
 // handler)
 defineFunction([
     "\\displaystyle", "\\textstyle", "\\scriptstyle",
-    "\\scriptscriptstyle"
+    "\\scriptscriptstyle",
 ], 0, null);
 
 defineFunction([
@@ -599,10 +599,10 @@ defineFunction([
     "\\mathtt",
 
     // aliases
-    "\\Bbb", "\\bold", "\\frak"
+    "\\Bbb", "\\bold", "\\frak",
 ], {
     numArgs: 1,
-    greediness: 2
+    greediness: 2,
 }, function(context, args) {
     var body = args[0];
     var func = context.funcName;
@@ -612,31 +612,31 @@ defineFunction([
     return {
         type: "font",
         font: func.slice(1),
-        body: body
+        body: body,
     };
 });
 
 // Accents
 defineFunction([
     "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
-    "\\check", "\\hat", "\\vec", "\\dot"
+    "\\check", "\\hat", "\\vec", "\\dot",
     // We don't support expanding accents yet
     // "\\widetilde", "\\widehat"
 ], {
-    numArgs: 1
+    numArgs: 1,
 }, function(context, args) {
     var base = args[0];
     return {
         type: "accent",
         accent: context.funcName,
-        base: base
+        base: base,
     };
 });
 
 // Infix generalized fractions
 defineFunction(["\\over", "\\choose", "\\atop"], {
     numArgs: 0,
-    infix: true
+    infix: true,
 }, function(context) {
     var replaceWith;
     switch (context.funcName) {
@@ -655,7 +655,7 @@ defineFunction(["\\over", "\\choose", "\\atop"], {
     return {
         type: "infix",
         replaceWith: replaceWith,
-        token: context.token
+        token: context.token,
     };
 });
 
@@ -663,19 +663,19 @@ defineFunction(["\\over", "\\choose", "\\atop"], {
 defineFunction(["\\\\", "\\cr"], {
     numArgs: 0,
     numOptionalArgs: 1,
-    argTypes: ["size"]
+    argTypes: ["size"],
 }, function(context, args) {
     var size = args[0];
     return {
         type: "cr",
-        size: size
+        size: size,
     };
 });
 
 // Environment delimiters
 defineFunction(["\\begin", "\\end"], {
     numArgs: 1,
-    argTypes: ["text"]
+    argTypes: ["text"],
 }, function(context, args) {
     var nameGroup = args[0];
     if (nameGroup.type !== "ordgroup") {
@@ -688,6 +688,6 @@ defineFunction(["\\begin", "\\end"], {
     return {
         type: "environment",
         name: name,
-        nameGroup: nameGroup
+        nameGroup: nameGroup,
     };
 });

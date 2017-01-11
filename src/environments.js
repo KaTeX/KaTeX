@@ -75,7 +75,7 @@ function defineEnvironment(names, props, handler) {
         greediness: 1,
         allowedInText: !!props.allowedInText,
         numOptionalArgs: props.numOptionalArgs || 0,
-        handler: handler
+        handler: handler,
     };
     for (var i = 0; i < names.length; ++i) {
         module.exports[names[i]] = data;
@@ -85,7 +85,7 @@ function defineEnvironment(names, props, handler) {
 // Arrays are part of LaTeX, defined in lttab.dtx so its documentation
 // is part of the source2e.pdf file of LaTeX2e source documentation.
 defineEnvironment("array", {
-    numArgs: 1
+    numArgs: 1,
 }, function(context, args) {
     var colalign = args[0];
     colalign = colalign.value.map ? colalign.value : [colalign];
@@ -94,12 +94,12 @@ defineEnvironment("array", {
         if ("lcr".indexOf(ca) !== -1) {
             return {
                 type: "align",
-                align: ca
+                align: ca,
             };
         } else if (ca === "|") {
             return {
                 type: "separator",
-                separator: "|"
+                separator: "|",
             };
         }
         throw new ParseError(
@@ -109,7 +109,7 @@ defineEnvironment("array", {
     var res = {
         type: "array",
         cols: cols,
-        hskipBeforeAndAfter: true // \@preamble in lttab.dtx
+        hskipBeforeAndAfter: true, // \@preamble in lttab.dtx
     };
     res = parseArray(context.parser, res);
     return res;
@@ -123,7 +123,7 @@ defineEnvironment([
     "bmatrix",
     "Bmatrix",
     "vmatrix",
-    "Vmatrix"
+    "Vmatrix",
 ], {
 }, function(context) {
     var delimiters = {
@@ -132,18 +132,18 @@ defineEnvironment([
         "bmatrix": ["[", "]"],
         "Bmatrix": ["\\{", "\\}"],
         "vmatrix": ["|", "|"],
-        "Vmatrix": ["\\Vert", "\\Vert"]
+        "Vmatrix": ["\\Vert", "\\Vert"],
     }[context.envName];
     var res = {
         type: "array",
-        hskipBeforeAndAfter: false // \hskip -\arraycolsep in amsmath
+        hskipBeforeAndAfter: false, // \hskip -\arraycolsep in amsmath
     };
     res = parseArray(context.parser, res);
     if (delimiters) {
         res = new ParseNode("leftright", {
             body: [res],
             left: delimiters[0],
-            right: delimiters[1]
+            right: delimiters[1],
         }, context.mode);
     }
     return res;
@@ -165,19 +165,19 @@ defineEnvironment("cases", {
             // For now we use the metrics for TEXT style which is what we were
             // doing before.  Before attempting to get the current style we
             // should look at TeX's behavior especially for \over and matrices.
-            postgap: Style.TEXT.metrics.quad
+            postgap: Style.TEXT.metrics.quad,
         }, {
             type: "align",
             align: "l",
             pregap: 0,
-            postgap: 0
-        }]
+            postgap: 0,
+        }],
     };
     res = parseArray(context.parser, res);
     res = new ParseNode("leftright", {
         body: [res],
         left: "\\{",
-        right: "."
+        right: ".",
     }, context.mode);
     return res;
 });
@@ -190,7 +190,7 @@ defineEnvironment("aligned", {
 }, function(context) {
     var res = {
         type: "array",
-        cols: []
+        cols: [],
     };
     res = parseArray(context.parser, res);
     var emptyGroup = new ParseNode("ordgroup", [], context.mode);
@@ -216,7 +216,7 @@ defineEnvironment("aligned", {
             type: "align",
             align: align,
             pregap: pregap,
-            postgap: 0
+            postgap: 0,
         };
     }
     return res;

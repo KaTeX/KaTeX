@@ -98,5 +98,5 @@ TextNode.prototype.toMarkup = function() {
 
 module.exports = {
     MathNode: MathNode,
-    TextNode: TextNode
+    TextNode: TextNode,
 };
