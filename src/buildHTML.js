@@ -113,8 +113,10 @@ var getTypeOfDomTree = function(node) {
                 node.children[node.children.length - 1]);
         }
     } else {
-        if (utils.contains(["mord", "mop", "mbin", "mrel", "mopen", "mclose",
-                            "mpunct", "minner"], node.classes[0])) {
+        if (utils.contains([
+            "mord", "mop", "mbin", "mrel", "mopen", "mclose",
+            "mpunct", "minner",
+        ], node.classes[0])) {
             return node.classes[0];
         }
     }
@@ -723,8 +725,7 @@ groupTypes.spacing = function(group, options) {
         // Other kinds of spaces are of arbitrary width. We use CSS to
         // generate these.
         return makeSpan(
-            ["mspace",
-             buildCommon.spacingFunctions[group.value].className],
+            ["mspace", buildCommon.spacingFunctions[group.value].className],
             [], options);
     }
 };

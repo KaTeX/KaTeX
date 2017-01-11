@@ -194,8 +194,10 @@ groupTypes.supsub = function(group, options) {
 groupTypes.genfrac = function(group, options) {
     var node = new mathMLTree.MathNode(
         "mfrac",
-        [buildGroup(group.value.numer, options),
-         buildGroup(group.value.denom, options)]);
+        [
+            buildGroup(group.value.numer, options),
+            buildGroup(group.value.denom, options),
+        ]);
 
     if (!group.value.hasBarLine) {
         node.setAttribute("linethickness", "0px");
@@ -298,8 +300,7 @@ groupTypes.accent = function(group, options) {
 
     var node = new mathMLTree.MathNode(
         "mover",
-        [buildGroup(group.value.base, options),
-         accentNode]);
+        [buildGroup(group.value.base, options), accentNode]);
 
     node.setAttribute("accent", "true");
 
@@ -451,8 +452,7 @@ groupTypes.overline = function(group, options) {
 
     var node = new mathMLTree.MathNode(
         "mover",
-        [buildGroup(group.value.body, options),
-         operator]);
+        [buildGroup(group.value.body, options), operator]);
     node.setAttribute("accent", "true");
 
     return node;
@@ -465,8 +465,7 @@ groupTypes.underline = function(group, options) {
 
     var node = new mathMLTree.MathNode(
         "munder",
-        [buildGroup(group.value.body, options),
-         operator]);
+        [buildGroup(group.value.body, options), operator]);
     node.setAttribute("accentunder", "true");
 
     return node;
