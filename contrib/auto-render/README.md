@@ -27,6 +27,21 @@ before the close body tag:
 
 See [index.html](index.html) for an example.
 
+If you prefer to have all your setup inside the header,
+you can use the following script there
+(instead of the one above at the end of the document):
+
+```html
+<head>
+  ...
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body);
+    });
+  </script>
+</head>
+```
+
 ### API
 
 This extension exposes a single function, `window.renderMathInElement`, with
