@@ -27,9 +27,9 @@ before the close body tag:
 
 See [index.html](index.html) for an example.
 
-If you prefer to have all your setup inside the header,
+If you prefer to have all your setup inside the html `<head>`,
 you can use the following script there
-(instead of the one above at the end of the document):
+(instead of the one above at the end of the `<body>`):
 
 ```html
 <head>
@@ -39,6 +39,7 @@ you can use the following script there
       renderMathInElement(document.body);
     });
   </script>
+  ...
 </head>
 ```
 
