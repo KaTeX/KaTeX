@@ -1,29 +1,94 @@
 #!/usr/bin/env bash
 
 set -e -o pipefail
+shopt -s extglob
 
-if [ $# -lt 1 ]; then
+VERSION=
+NEXT_VERSION=
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+NARGS=0
+DRY_RUN=
+INSANE="exit 1"
+
+# usage [ERROR-MESSAGES...] EXIT-STATUS
+usage() {
+    while [[ $# -gt 1 ]]; do
+        echo "$1" >&2
+        shift
+    done
     echo "Usage:"
-    echo "./release.sh <VERSION_TO_RELEASE> [NEXT_VERSION]"
+    echo "./release.sh [OPTIONS] <VERSION_TO_RELEASE> [NEXT_VERSION]"
+    echo ""
+    echo "Options:"
+    echo " --dry-run|-n: only print commands, do not execute them."
+    echo " --insane:     skip sanity checks, use at your own risk."
     echo ""
     echo "Examples:"
     echo " When releasing a new point release:"
     echo "   ./release.sh 0.6.3"
     echo " When releasing a new major version:"
     echo "   ./release.sh 0.7.0 0.8.0"
-    exit
+    exit $1
+}
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --dry-run|-n|--just-print)
+            DRY_RUN=true
+            git() { echo "git $*"; }
+            npm() { echo "npm $*"; }
+            ;;
+        --insane)
+            INSANE="echo Continuing despite failed sanity check"
+            ;;
+        -h|-\?|--help)
+            usage 0
+            ;;
+        -*)
+            usage "Unknown option: $1" "" 1
+            ;;
+        *)
+            case "$NARGS" in
+                0)
+                    VERSION="$1"
+                    NARGS=1
+                    ;;
+                1)
+                    NEXT_VERSION="$1"
+                    NARGS=2
+                    ;;
+                *)
+                    usage "Too many arguments: $1" "" 1
+                    ;;
+            esac
+            ;;
+    esac
+    shift
+done
+
+if [[ $NARGS = 0 ]]; then
+    usage "Missing argument: version number" "" 1
 fi
 
-VERSION=$1
-NEXT_VERSION=$2
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
+# Some sanity checks up front
+if ! command git diff --stat --exit-code HEAD; then
+    echo "Please make sure you have no uncommitted changes" >&2
+    $INSANE
+fi
+if ! command npm owner ls katex | grep -q "^$(command npm whoami) <"; then
+    echo "You don't seem do be logged into npm, use \`npm login\`" >&2
+    $INSANE
+fi
+if [[ $BRANCH != @(v*|master) ]]; then
+    echo "'$BRANCH' does not like a release branch to me" >&2
+    $INSANE
+fi
 
 if [ -z "$NEXT_VERSION" ]; then
     echo "About to release $VERSION from $BRANCH. "
 else
     echo "About to release $VERSION from $BRANCH and bump to $NEXT_VERSION-pre."
 fi
-
 read -r -p "Look good? [y/n] " CONFIRM
 if [ "$CONFIRM" != "y" ]; then
     exit 1
@@ -72,7 +137,18 @@ if [ ! -z "$NEXT_VERSION" ]; then
     git checkout "v$VERSION"
 fi
 
+echo ""
 echo "The automatic parts are done!"
 echo "Now all that's left is to create the release on github."
 echo "Visit https://github.com/Khan/KaTeX/releases/new?tag=v$VERSION to edit the release notes"
 echo "Don't forget to upload build/katex.tar.gz and build/katex.zip to the release!"
+
+if [[ ${DRY_RUN} ]]; then
+    echo ""
+    echo "This was a dry run."
+    echo "Operations using git or npm were printed not executed."
+    echo "Some files got modified, though, so you might want to undo "
+    echo "these changes now, e.g. using \`git checkout -- .\` or similar."
+    echo ""
+    command git diff --stat
+fi
