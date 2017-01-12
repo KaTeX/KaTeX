@@ -1203,7 +1203,7 @@ groupTypes.verb = function(group, options) {
     const body = [];
     for (let i = 0; i < text.length; i++) {
         body.push(buildCommon.makeSymbol(
-            text[i], "Main-Regular", group.mode, options, ["mathtt"]));
+            text[i], "Typewriter-Regular", group.mode, options, ["mathtt"]));
     }
     buildCommon.tryCombineChars(body);
     return makeSpan(["mord"], body, options);
