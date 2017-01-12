@@ -25,6 +25,7 @@
     "js-yaml": "^3.3.1",
     "jspngopt": "^0.2.0",
     "less": "~2.7.1",
+    "morgan": "^1.7.0",
     "nomnom": "^1.8.1",
     "pako": "1.0.4",
     "selenium-webdriver": "^2.48.2",
