@@ -10,7 +10,8 @@ var less = require("less");
 var app = express();
 
 if (require.main === module) {
-    app.use(express.logger());
+    app.use(require("morgan")(
+        ":date[iso] :method :url HTTP/:http-version - :status"));
 }
 
 var serveBrowserified = function(file, standaloneName) {
