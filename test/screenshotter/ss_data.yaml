@@ -253,8 +253,8 @@ UnsupportedCmds:
     nolatex: deliberately does not compile
 Verb: |
     \begin{array}{ll}
-      \verb \verb ,   & \verb|\verb | \\
-      \verb* \verb* , & \verb*|\verb* | \\
+      \verb \verb ,   & \verb|\verb  |, \\
+      \verb* \verb* , & \verb*|\verb* |, \\
       \verb!<x> & </y>! \\
       \verb*!<x> & </y>!
     \end{array}
