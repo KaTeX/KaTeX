@@ -112,6 +112,10 @@ git add .gitignore dist/
 sed -i.bak -E 's|"version": "[^"]+",|"version": "'$VERSION'",|' package.json
 rm -f package.json.bak
 
+# Update the version number in CDN URLs included in the README files,
+# and regenerate the Subresource Integrity hash for these files.
+node update-sri.js "${VERSION}" README.md contrib/*/README.md
+
 # Make the commit and tag, and push them.
 git add package.json bower.json
 git commit -n -m "v$VERSION"
@@ -128,6 +132,10 @@ if [ ! -z "$NEXT_VERSION" ]; then
     # Edit package.json and bower.json to the right version
     sed -i.bak -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' package.json
     rm -f package.json.bak
+
+    # Refer to the just-released version in the documentation of the
+    # development branch, too.  Most people will read docs on master.
+    node update-sri.js "${VERSION}" README.md contrib/*/README.md
 
     git add package.json bower.json
     git commit -n -m "Bump master to v$NEXT_VERSION-pre"

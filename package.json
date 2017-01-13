@@ -29,6 +29,7 @@
     "nomnom": "^1.8.1",
     "pako": "1.0.4",
     "selenium-webdriver": "^2.48.2",
+    "sri-toolbox": "^0.2.0",
     "uglify-js": "~2.7.5"
   },
   "bin": "cli.js",
