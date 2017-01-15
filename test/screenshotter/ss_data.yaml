@@ -23,11 +23,20 @@ Arrays: |
         1+1&2+1&3+1\cr1\over2&\scriptstyle 1/2&\frac12\\[1ex]
         \begin{pmatrix}x\\y\end{pmatrix}&0&\begin{vmatrix}a&b\\c&d\end{vmatrix}
     \end{array}\right]
+ArrayMode:
+    tex: |
+        \begin{matrix}
+            \frac{\partial^2 f}{\partial x_1^2} & \frac{\partial^2 f}{\partial x_1\,\partial x_2} & \cdots & \frac{\partial^2 f}{\partial x_1\,\partial x_n} \\
+            \frac{\partial^2 f}{\partial x_2\,\partial x_1} & \frac{\partial^2 f}{\partial x_2^2} & \cdots & \frac{\partial^2 f}{\partial x_2\,\partial x_n} \\
+            \vdots & \vdots & \ddots & \vdots \\
+            \frac{\partial^2 f}{\partial x_n\,\partial x_1} & \frac{\partial^2 f}{\partial x_n\,\partial x_2} & \cdots & \frac{\partial^2 f}{\partial x_n^2}
+        \end{matrix}
+    display: 1
 ArrayType: 1\begin{array}{c}2\\3\end{array}4
 Baseline: a+b-c\cdot d/e
 BasicTest: a
 BinCancellation: |
-    \begin{array}{ccc}
+    \begin{array}{cccc}
         +1 & 1+ & 1+1 & (,) \\
         1++1 & 3\times) & 1+, & \left(,\right)
     \end{array}
