@@ -8,7 +8,20 @@ window.startup = function() {
     var demoOutput = document.getElementById("demo-output");
 
     function doDemo() {
-        katex.render("\\displaystyle{" + demoInput.value + "}", demoOutput);
+        try {
+            katex.render(demoInput.value, demoOutput, {
+                displayMode: true
+            });
+        } catch(err) {
+            while(demoOutput.lastChild) {
+                demoOutput.removeChild(demoOutput.lastChild);
+            }
+            var msg = document.createTextNode(err.message);
+            var span = document.createElement("span");
+            span.appendChild(msg);
+            demoOutput.appendChild(span);
+            span.setAttribute("class", "errorMessage");
+        }
     }
 
     demoInput.addEventListener("input", function() {
