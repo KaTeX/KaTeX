@@ -13,6 +13,12 @@ dist: build
 
 endif
 
+NODE := node # pass NODE=nodejs on Debian without package nodejs-legacy
+NODECHK := $(shell $(NODE) ./check-node-version.js)
+ifneq ($(NODECHK),OK)
+$(error "Node not found or wrong version")
+endif
+
 # Export these variables for use in contrib Makefiles
 export BUILDDIR = $(realpath build)
 export BROWSERIFY = $(realpath ./node_modules/.bin/browserify)
@@ -33,7 +39,7 @@ lint: $(NIS) katex.js server.js cli.js $(wildcard src/*.js) $(wildcard test/*.js
 	./node_modules/.bin/eslint $(filter-out %.stamp,$^)
 
 build/katex.js: katex.js $(wildcard src/*.js) $(NIS)
-	$(BROWSERIFY) $< --standalone katex > $@
+	$(BROWSERIFY) -t [ babelify ] $< --standalone katex > $@
 
 build/katex.min.js: build/katex.js
 	$(UGLIFYJS) < $< > $@
@@ -92,7 +98,7 @@ compress: build/katex.min.js build/katex.min.css
 	@printf "Total:                 %6d\n" "${TOTAL}"
 
 serve: $(NIS)
-	node server.js
+	$(NODE) server.js
 
 test: $(NIS)
 	JASMINE_CONFIG_PATH=test/jasmine.json node_modules/.bin/jasmine

@@ -1,20 +1,20 @@
 /* eslint no-console:0 */
 "use strict";
 
-var fs = require("fs");
-var childProcess = require("child_process");
+const fs = require("fs");
+const childProcess = require("child_process");
 
-var opts = require("nomnom")
+const opts = require("nomnom")
     .option("spacing", {
         flag: true,
         help: "Print mismatches involving spacing commands",
     })
     .parse();
 
-var symbols = require("../src/symbols");
-var keys = Object.keys(symbols.math);
+const symbols = require("../src/symbols");
+const keys = Object.keys(symbols.math);
 keys.sort();
-var types = [
+const types = [
     "mathord", "op", "bin", "rel", "open", "close", "punct", "inner",
     "spacing", "accent", "textord",
 ];
@@ -22,22 +22,22 @@ var types = [
 process.nextTick(writeTexFile);
 
 function writeTexFile() {
-    var tex = fs.createWriteStream("symgroups.tex");
+    const tex = fs.createWriteStream("symgroups.tex");
     tex.on("finish", typeset);
     tex.write("\\documentclass{article}\n" +
               "\\usepackage{textcomp,amsmath,amssymb,gensymb}\n" +
               "\\begin{document}\n" +
               "\\showboxbreadth=\\maxdimen\\showboxdepth=\\maxdimen\n\n");
     keys.forEach(function(key, idx) {
-        var sym = symbols.math[key];
-        var type = types.indexOf(sym.group) + 1;
+        const sym = symbols.math[key];
+        const type = types.indexOf(sym.group) + 1;
         tex.write("$" + idx + "+" + key + "+" + type + "\\showlists$\n\n");
     });
     tex.end("\\end{document}\n");
 }
 
 function typeset() {
-    var proc = childProcess.spawn(
+    const proc = childProcess.spawn(
         "pdflatex", ["--interaction=nonstopmode", "symgroups"],
         {stdio: "ignore"});
     proc.on("exit", function(code, signal) {
@@ -76,29 +76,29 @@ function typeset() {
  */
 
 // Extract individual blocks, from switch to math mode up to switch back.
-var reMM = /^### math mode entered.*\n([^]*?)###/mg;
+const reMM = /^### math mode entered.*\n([^]*?)###/mg;
 
 // Identify the parts separated by the plus signs
-var reParts = /([^]*^\.\\fam0 \+\n)([^]+)(\\mathbin\n\.+\\fam0 \+[^]*)/m;
+const reParts = /([^]*^\.\\fam0 \+\n)([^]+)(\\mathbin\n\.+\\fam0 \+[^]*)/m;
 
 // Variation of the above in case we have nothing between the plus signs
-var reEmpty = /^\.\\fam0 \+\n\\mathbin\n\.\\fam0 \+/m;
+const reEmpty = /^\.\\fam0 \+\n\\mathbin\n\.\\fam0 \+/m;
 
 // Match any printed digit in the first or last of these parts
-var reDigit = /^\.\\fam0 ([0-9])/mg;
+const reDigit = /^\.\\fam0 ([0-9])/mg;
 
 // Match the atom type, i.e. "\mathrel" in the above example
-var reAtom = /\\([a-z]+)/;
+const reAtom = /\\([a-z]+)/;
 
 function evaluate(err, log) {
     if (err) {
         throw err;
     }
 
-    var match;
-    var nextIndex = 0;
+    let match;
+    let nextIndex = 0;
     while ((match = reMM.exec(log)) !== null) {
-        var list = match[1];
+        const list = match[1];
         match = reParts.exec(list);
         if (!match) {
             match = reEmpty.exec(list);
@@ -113,9 +113,9 @@ function evaluate(err, log) {
             console.error(list);
             process.exit(2);
         }
-        var idx = extractDigits(match[1]);
-        var atom = match[2];
-        var katexType = types[extractDigits(match[3]) - 1] || "???";
+        const idx = extractDigits(match[1]);
+        const atom = match[2];
+        const katexType = types[extractDigits(match[3]) - 1] || "???";
         match = reAtom.exec(atom);
         if (!match) {
             console.error("Failed to find atom type");
@@ -123,7 +123,7 @@ function evaluate(err, log) {
             console.error(list);
             process.exit(3);
         }
-        var latexType = match[1];
+        const latexType = match[1];
         if (katexType !== latexType && "math" + katexType !== latexType &&
             (katexType !== "textord" || latexType !== "mathord") &&
             (katexType !== "spacing" || opts.spacing)) {
@@ -145,8 +145,8 @@ function evaluate(err, log) {
 }
 
 function extractDigits(str) {
-    var match;
-    var res = "";
+    let match;
+    let res = "";
     while ((match = reDigit.exec(str)) !== null) {
         res += match[1];
     }

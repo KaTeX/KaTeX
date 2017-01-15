@@ -6,18 +6,17 @@
  * information about them.
  */
 
-var sigmas = require("./fontMetrics.js").sigmas;
+const sigmas = require("./fontMetrics.js").sigmas;
 
-var metrics = [{}, {}, {}];
-var i;
-for (var key in sigmas) {
+const metrics = [{}, {}, {}];
+for (const key in sigmas) {
     if (sigmas.hasOwnProperty(key)) {
-        for (i = 0; i < 3; i++) {
+        for (let i = 0; i < 3; i++) {
             metrics[i][key] = sigmas[key][i];
         }
     }
 }
-for (i = 0; i < 3; i++) {
+for (let i = 0; i < 3; i++) {
     metrics[i].emPerEx = sigmas.xHeight[i] / sigmas.quad[i];
 }
 
@@ -95,17 +94,17 @@ Style.prototype.isTight = function() {
 };
 
 // IDs of the different styles
-var D = 0;
-var Dc = 1;
-var T = 2;
-var Tc = 3;
-var S = 4;
-var Sc = 5;
-var SS = 6;
-var SSc = 7;
+const D = 0;
+const Dc = 1;
+const T = 2;
+const Tc = 3;
+const S = 4;
+const Sc = 5;
+const SS = 6;
+const SSc = 7;
 
 // String names for the different sizes
-var sizeNames = [
+const sizeNames = [
     "displaystyle textstyle",
     "textstyle",
     "scriptstyle",
@@ -113,7 +112,7 @@ var sizeNames = [
 ];
 
 // Reset names for the different sizes
-var resetNames = [
+const resetNames = [
     "reset-textstyle",
     "reset-textstyle",
     "reset-scriptstyle",
@@ -121,7 +120,7 @@ var resetNames = [
 ];
 
 // Instances of the different styles
-var styles = [
+const styles = [
     new Style(D, 0, 1.0, false),
     new Style(Dc, 0, 1.0, true),
     new Style(T, 1, 1.0, false),
@@ -133,11 +132,11 @@ var styles = [
 ];
 
 // Lookup tables for switching from one style to another
-var sup = [S, Sc, S, Sc, SS, SSc, SS, SSc];
-var sub = [Sc, Sc, Sc, Sc, SSc, SSc, SSc, SSc];
-var fracNum = [T, Tc, S, Sc, SS, SSc, SS, SSc];
-var fracDen = [Tc, Tc, Sc, Sc, SSc, SSc, SSc, SSc];
-var cramp = [Dc, Dc, Tc, Tc, Sc, Sc, SSc, SSc];
+const sup = [S, Sc, S, Sc, SS, SSc, SS, SSc];
+const sub = [Sc, Sc, Sc, Sc, SSc, SSc, SSc, SSc];
+const fracNum = [T, Tc, S, Sc, SS, SSc, SS, SSc];
+const fracDen = [Tc, Tc, Sc, Sc, SSc, SSc, SSc, SSc];
+const cramp = [Dc, Dc, Tc, Tc, Sc, Sc, SSc, SSc];
 
 // We only export some of the styles. Also, we don't export the `Style` class so
 // no more styles can be generated.

@@ -1,22 +1,23 @@
 /* eslint no-console:0 */
-var fs = require("fs");
-var path = require("path");
+const fs = require("fs");
+const path = require("path");
 
-var browserify = require("browserify");
-var express = require("express");
-var glob = require("glob");
-var less = require("less");
+const babelify = require("babelify");
+const browserify = require("browserify");
+const express = require("express");
+const glob = require("glob");
+const less = require("less");
 
-var app = express();
+const app = express();
 
 if (require.main === module) {
     app.use(require("morgan")(
         ":date[iso] :method :url HTTP/:http-version - :status"));
 }
 
-var serveBrowserified = function(file, standaloneName) {
+function serveBrowserified(file, standaloneName, doBabelify) {
     return function(req, res, next) {
-        var files;
+        let files;
         if (Array.isArray(file)) {
             files = file.map(function(f) { return path.join(__dirname, f); });
         } else if (file.indexOf("*") !== -1) {
@@ -25,14 +26,17 @@ var serveBrowserified = function(file, standaloneName) {
             files = [path.join(__dirname, file)];
         }
 
-        var options = {};
+        const options = {};
+        if (doBabelify) {
+            options.transform = [babelify];
+        }
         if (standaloneName) {
             options.standalone = standaloneName;
         }
-        var b = browserify(files, options);
-        var stream = b.bundle();
+        const b = browserify(files, options);
+        const stream = b.bundle();
 
-        var body = "";
+        let body = "";
         stream.on("data", function(s) { body += s; });
         stream.on("error", function(e) { next(e); });
         stream.on("end", function() {
@@ -40,23 +44,33 @@ var serveBrowserified = function(file, standaloneName) {
             res.send(body);
         });
     };
-};
+}
 
-app.get("/katex.js", serveBrowserified("katex", "katex"));
-app.use("/test/jasmine",
-    express["static"](
-        path.dirname(
-            require.resolve("jasmine-core/lib/jasmine-core/jasmine.js")
-        )
-    )
-);
-app.get("/test/katex-spec.js", serveBrowserified("test/*[Ss]pec.js"));
-app.get("/contrib/auto-render/auto-render.js",
-        serveBrowserified("contrib/auto-render/auto-render",
-                          "renderMathInElement"));
+function twoBrowserified(url, file, standaloneName) {
+    app.get(url, serveBrowserified(file, standaloneName, false));
+    app.get("/babel" + url, serveBrowserified(file, standaloneName, true));
+}
 
-app.get("/katex.css", function(req, res, next) {
-    var lessfile = path.join(__dirname, "static", "katex.less");
+function twoUse(url, handler) {
+    app.use(url, handler);
+    app.use("/babel" + url, handler);
+}
+
+function twoStatic(url, file) {
+    twoUse(url, express.static(path.join(__dirname, file)));
+}
+
+twoBrowserified("/katex.js", "katex", "katex");
+twoUse("/test/jasmine", express.static(path.dirname(
+    require.resolve("jasmine-core/lib/jasmine-core/jasmine.js"))));
+twoBrowserified("/test/katex-spec.js", "test/*[Ss]pec.js");
+twoBrowserified(
+    "/contrib/auto-render/auto-render.js",
+    "contrib/auto-render/auto-render",
+    "renderMathInElement");
+
+twoUse("/katex.css", function(req, res, next) {
+    const lessfile = path.join(__dirname, "static", "katex.less");
     fs.readFile(lessfile, {encoding: "utf8"}, function(err, data) {
         if (err) {
             next(err);
@@ -79,12 +93,10 @@ app.get("/katex.css", function(req, res, next) {
     });
 });
 
-app.use(express["static"](path.join(__dirname, "static")));
-app.use(express["static"](path.join(__dirname, "build")));
-app.use("/test", express["static"](path.join(__dirname, "test")));
-app.use("/contrib", express["static"](path.join(__dirname, "contrib")));
-// app.use("/unicode-fonts",
-//     express["static"](path.join(__dirname, "static", "unicode-fonts")));
+twoStatic("", "static");
+twoStatic("", "build");
+twoStatic("/test", "test");
+twoStatic("/contrib", "contrib");
 
 app.use(function(err, req, res, next) {
     console.error(err.stack);

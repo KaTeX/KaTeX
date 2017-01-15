@@ -3,16 +3,16 @@
  * TODO(emily): Remove this
  */
 
-var Parser = require("./Parser");
+const Parser = require("./Parser");
 
 /**
  * Parses an expression using a Parser, then returns the parsed result.
  */
-var parseTree = function(toParse, settings) {
+const parseTree = function(toParse, settings) {
     if (!(typeof toParse === 'string' || toParse instanceof String)) {
         throw new TypeError('KaTeX can only parse string typed expression');
     }
-    var parser = new Parser(toParse, settings);
+    const parser = new Parser(toParse, settings);
 
     return parser.parse();
 };
