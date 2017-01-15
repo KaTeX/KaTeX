@@ -4,13 +4,13 @@
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
-var ParseError = require("../src/ParseError");
-var parseTree = require("../src/parseTree");
-var Settings = require("../src/Settings");
+const ParseError = require("../src/ParseError");
+const parseTree = require("../src/parseTree");
+const Settings = require("../src/Settings");
 
-var defaultSettings = new Settings({});
+const defaultSettings = new Settings({});
 
-var parseAndSetResult = function(expr, result, settings) {
+const parseAndSetResult = function(expr, result, settings) {
     try {
         return parseTree(expr, settings || defaultSettings);
     } catch (e) {
@@ -32,27 +32,27 @@ describe("unicode", function() {
             toParse: function() {
                 return {
                     compare: function(actual, settings) {
-                        var usedSettings = settings ? settings : defaultSettings;
+                        const usedSettings = settings ? settings : defaultSettings;
 
-                        var result = {
+                        const result = {
                             pass: true,
-                            message: "'" + actual + "' succeeded parsing"
+                            message: "'" + actual + "' succeeded parsing",
                         };
                         parseAndSetResult(actual, result, usedSettings);
                         return result;
-                    }
+                    },
                 };
             },
 
             toNotParse: function() {
                 return {
                     compare: function(actual, settings) {
-                        var usedSettings = settings ? settings : defaultSettings;
+                        const usedSettings = settings ? settings : defaultSettings;
 
-                        var result = {
+                        const result = {
                             pass: false,
                             message: "Expected '" + actual + "' to fail " +
-                                "parsing, but it succeeded"
+                                "parsing, but it succeeded",
                         };
 
                         try {
@@ -69,9 +69,9 @@ describe("unicode", function() {
                         }
 
                         return result;
-                    }
+                    },
                 };
-            }
+            },
         });
     });
 

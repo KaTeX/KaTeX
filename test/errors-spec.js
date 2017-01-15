@@ -4,57 +4,57 @@
 /* global it: false */
 /* global describe: false */
 
-var parseTree = require("../src/parseTree");
-var Settings = require("../src/Settings");
+const parseTree = require("../src/parseTree");
+const Settings = require("../src/Settings");
 
-var defaultSettings = new Settings({});
+const defaultSettings = new Settings({});
 
 beforeEach(function() {
     jasmine.addMatchers({
         toFailWithParseError: function(util, customEqualityTesters) {
-            var prefix = "KaTeX parse error: ";
+            const prefix = "KaTeX parse error: ";
             return {
                 compare: function(actual, expected) {
                     try {
                         parseTree(actual, defaultSettings);
                         return {
                             pass: false,
-                            message: "'" + actual + "' parsed without error"
+                            message: "'" + actual + "' parsed without error",
                         };
                     } catch (e) {
                         if (expected === undefined) {
                             return {
                                 pass: true,
-                                message: "'" + actual + "' parsed with error"
+                                message: "'" + actual + "' parsed with error",
                             };
                         }
-                        var msg = e.message;
-                        var exp = prefix + expected;
+                        const msg = e.message;
+                        const exp = prefix + expected;
                         if (msg === exp) {
                             return {
                                 pass: true,
                                 message: "'" + actual + "'" +
-                                    " parsed with error '" + expected + "'"
+                                    " parsed with error '" + expected + "'",
                             };
                         } else if (msg.slice(0, 19) === prefix) {
                             return {
                                 pass: false,
                                 message: "'" + actual + "'" +
                                     " parsed with error '" + msg.slice(19) +
-                                    "' but expected '" + expected + "'"
+                                    "' but expected '" + expected + "'",
                             };
                         } else {
                             return {
                                 pass: false,
                                 message: "'" + actual + "'" +
                                     " caused error '" + msg +
-                                    "' but expected '" + exp + "'"
+                                    "' but expected '" + exp + "'",
                             };
                         }
                     }
-                }
+                },
             };
-        }
+        },
     });
 });
 

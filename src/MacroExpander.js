@@ -3,7 +3,7 @@
  * until only non-macro tokens remain.
  */
 
-var Lexer = require("./Lexer");
+const Lexer = require("./Lexer");
 
 function MacroExpander(input, macros) {
     this.lexer = new Lexer(input);
@@ -20,16 +20,16 @@ MacroExpander.prototype.nextToken = function() {
         if (this.stack.length === 0) {
             this.stack.push(this.lexer.lex());
         }
-        var topToken = this.stack.pop();
-        var name = topToken.text;
+        const topToken = this.stack.pop();
+        const name = topToken.text;
         if (!(name.charAt(0) === "\\" && this.macros.hasOwnProperty(name))) {
             return topToken;
         }
-        var expansion = this.macros[name];
+        let expansion = this.macros[name];
         if (typeof expansion === "string") {
-            var bodyLexer = new Lexer(expansion);
+            const bodyLexer = new Lexer(expansion);
             expansion = [];
-            var tok = bodyLexer.lex();
+            let tok = bodyLexer.lex();
             while (tok.text !== "EOF") {
                 expansion.push(tok);
                 tok = bodyLexer.lex();
@@ -43,7 +43,7 @@ MacroExpander.prototype.nextToken = function() {
 
 MacroExpander.prototype.get = function(ignoreSpace) {
     this.discardedWhiteSpace = [];
-    var token = this.nextToken();
+    let token = this.nextToken();
     if (ignoreSpace) {
         while (token.text === " ") {
             this.discardedWhiteSpace.push(token);
