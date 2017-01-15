@@ -206,3 +206,7 @@ body {
 .credits a {
     color: white;
 }
+
+.errorMessage {
+    color: red;
+}
