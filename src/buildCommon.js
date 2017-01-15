@@ -133,7 +133,10 @@ var mathDefault = function(value, mode, options, classes, type) {
 };
 
 /**
- * Makes a symbol in the italic math font.
+ * Determines which of the two font names (Main-Italic and Math-Italic) and
+ * corresponding style tags (mainit or mathit) to use for font "mathit",
+ * depending on the symbol.  Use this function instead of fontMap for font
+ * "mathit".
  */
 var mathit = function(value, mode, options, classes) {
     if (/[0-9]/.test(value.charAt(0)) ||
