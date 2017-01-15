@@ -29,7 +29,7 @@ const greekCapitals = [
 const mainitLetters = [
     "\\imath",   // dotless i
     "\\jmath",   // dotless j
-    "\\pounds"   // pounds symbol
+    "\\pounds",  // pounds symbol
 ];
 
 /**
@@ -43,7 +43,7 @@ const lookupSymbol = function(value, fontFamily, mode) {
     }
     return {
         value: value,
-        metrics: fontMetrics.getCharacterMetrics(value, fontFamily)
+        metrics: fontMetrics.getCharacterMetrics(value, fontFamily),
     };
 };
 
@@ -148,12 +148,12 @@ const mathit = function(value, mode, options, classes) {
             //|| utils.contains(greekCapitals, value)) {
         return {
             fontName: "Main-Italic",
-            fontClass: "mainit"
+            fontClass: "mainit",
         };
     } else {
         return {
             fontName: "Math-Italic",
-            fontClass: "mathit"
+            fontClass: "mathit",
         };
     }
 };
