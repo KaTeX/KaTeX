@@ -9,7 +9,9 @@ window.startup = function() {
 
     function doDemo() {
         try {
-            katex.render("\\displaystyle{" + demoInput.value + "}", demoOutput);
+            katex.render(demoInput.value, demoOutput, {
+                displayMode: true
+            });
         } catch(err) {
             while(demoOutput.lastChild) {
                 demoOutput.removeChild(demoOutput.lastChild);
