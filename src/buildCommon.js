@@ -36,7 +36,7 @@ const mainitLetters = [
  * Looks up the given symbol in fontMetrics, after applying any symbol
  * replacements defined in symbol.js
  */
-var lookupSymbol = function(value, fontFamily, mode) {
+const lookupSymbol = function(value, fontFamily, mode) {
     // Replace the value with its replaced value from symbol.js
     if (symbols[mode][value] && symbols[mode][value].replace) {
         value = symbols[mode][value].replace;
@@ -114,11 +114,11 @@ const mathsym = function(value, mode, options, classes) {
  */
 const mathDefault = function(value, mode, options, classes, type) {
     if (type === "mathord") {
-        var fontLookup = mathit(value, mode, options, classes);
+        const fontLookup = mathit(value, mode, options, classes);
         return makeSymbol(value, fontLookup.fontName, mode, options,
             classes.concat([fontLookup.fontClass]));
     } else if (type === "textord") {
-        var font = symbols[mode][value] && symbols[mode][value].font;
+        const font = symbols[mode][value] && symbols[mode][value].font;
         if (font === "ams") {
             return makeSymbol(
                 value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
