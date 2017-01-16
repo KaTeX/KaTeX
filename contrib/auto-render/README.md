@@ -10,7 +10,7 @@ This extension isn't part of KaTeX proper, so the script should be separately
 included in the page:
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/contrib/auto-render.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/contrib/auto-render.min.js" integrity="sha384-v0hOo8Okju1/6E2iC8uuVf29cmfGZBHsPKw2LVlfjvJ08HnN2aj0P3/lWNKtzBWK" crossorigin="anonymous"></script>
 ```
 
 Then, call the exposed `renderMathInElement` function in a script tag
@@ -26,6 +26,22 @@ before the close body tag:
 ```
 
 See [index.html](index.html) for an example.
+
+If you prefer to have all your setup inside the html `<head>`,
+you can use the following script there
+(instead of the one above at the end of the `<body>`):
+
+```html
+<head>
+  ...
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body);
+    });
+  </script>
+  ...
+</head>
+```
 
 ### API
 
