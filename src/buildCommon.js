@@ -9,26 +9,27 @@ const fontMetrics = require("./fontMetrics");
 const symbols = require("./symbols");
 const utils = require("./utils");
 
-const greekCapitals = [
-    "\\Gamma",
-    "\\Delta",
-    "\\Theta",
-    "\\Lambda",
-    "\\Xi",
-    "\\Pi",
-    "\\Sigma",
-    "\\Upsilon",
-    "\\Phi",
-    "\\Psi",
-    "\\Omega",
-];
-
 // The following have to be loaded from Main-Italic font, using class mainit
 const mainitLetters = [
-    "\u0131",   // dotless i, \imath
-    "\u0237",   // dotless j, \jmath
-    "\u00a3",   // \pounds
+    "\\imath",   // dotless i
+    "\\jmath",   // dotless j
+    "\\pounds",  // pounds symbol
 ];
+
+/**
+ * Looks up the given symbol in fontMetrics, after applying any symbol
+ * replacements defined in symbol.js
+ */
+const lookupSymbol = function(value, fontFamily, mode) {
+    // Replace the value with its replaced value from symbol.js
+    if (symbols[mode][value] && symbols[mode][value].replace) {
+        value = symbols[mode][value].replace;
+    }
+    return {
+        value: value,
+        metrics: fontMetrics.getCharacterMetrics(value, fontFamily),
+    };
+};
 
 /**
  * Makes a symbolNode after translation via the list of symbols in symbols.js.
@@ -40,12 +41,9 @@ const mainitLetters = [
  * should if present come first in `classes`.
  */
 const makeSymbol = function(value, fontFamily, mode, options, classes) {
-    // Replace the value with its replaced value from symbol.js
-    if (symbols[mode][value] && symbols[mode][value].replace) {
-        value = symbols[mode][value].replace;
-    }
-
-    const metrics = fontMetrics.getCharacterMetrics(value, fontFamily);
+    const lookup = lookupSymbol(value, fontFamily, mode);
+    const metrics = lookup.metrics;
+    value = lookup.value;
 
     let symbolNode;
     if (metrics) {
@@ -100,29 +98,44 @@ const mathsym = function(value, mode, options, classes) {
  */
 const mathDefault = function(value, mode, options, classes, type) {
     if (type === "mathord") {
-        return mathit(value, mode, options, classes);
+        const fontLookup = mathit(value, mode, options, classes);
+        return makeSymbol(value, fontLookup.fontName, mode, options,
+            classes.concat([fontLookup.fontClass]));
     } else if (type === "textord") {
-        return makeSymbol(
-            value, "Main-Regular", mode, options, classes.concat(["mathrm"]));
+        const font = symbols[mode][value] && symbols[mode][value].font;
+        if (font === "ams") {
+            return makeSymbol(
+                value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
+        } else { // if (font === "main") {
+            return makeSymbol(
+                value, "Main-Regular", mode, options,
+                classes.concat(["mathrm"]));
+        }
     } else {
         throw new Error("unexpected type: " + type + " in mathDefault");
     }
 };
 
 /**
- * Makes a symbol in the italic math font.
+ * Determines which of the two font names (Main-Italic and Math-Italic) and
+ * corresponding style tags (mainit or mathit) to use for font "mathit",
+ * depending on the symbol.  Use this function instead of fontMap for font
+ * "mathit".
  */
 const mathit = function(value, mode, options, classes) {
     if (/[0-9]/.test(value.charAt(0)) ||
             // glyphs for \imath and \jmath do not exist in Math-Italic so we
             // need to use Main-Italic instead
-            utils.contains(mainitLetters, value) ||
-            utils.contains(greekCapitals, value)) {
-        return makeSymbol(
-            value, "Main-Italic", mode, options, classes.concat(["mainit"]));
+            utils.contains(mainitLetters, value)) {
+        return {
+            fontName: "Main-Italic",
+            fontClass: "mainit",
+        };
     } else {
-        return makeSymbol(
-            value, "Math-Italic", mode, options, classes.concat(["mathit"]));
+        return {
+            fontName: "Math-Italic",
+            fontClass: "mathit",
+        };
     }
 };
 
@@ -131,25 +144,23 @@ const mathit = function(value, mode, options, classes) {
  */
 const makeOrd = function(group, options, type) {
     const mode = group.mode;
-    let value = group.value;
-    if (symbols[mode][value] && symbols[mode][value].replace) {
-        value = symbols[mode][value].replace;
-    }
+    const value = group.value;
 
     const classes = ["mord"];
 
     const font = options.font;
     if (font) {
+        let fontLookup;
         if (font === "mathit" || utils.contains(mainitLetters, value)) {
-            return mathit(value, mode, options, classes);
+            fontLookup = mathit(value, mode, options, classes);
         } else {
-            const fontName = fontMap[font].fontName;
-            if (fontMetrics.getCharacterMetrics(value, fontName)) {
-                return makeSymbol(
-                    value, fontName, mode, options, classes.concat([font]));
-            } else {
-                return mathDefault(value, mode, options, classes, type);
-            }
+            fontLookup = fontMap[font];
+        }
+        if (lookupSymbol(value, fontLookup.fontName, mode).metrics) {
+            return makeSymbol(value, fontLookup.fontName, mode, options,
+                classes.concat([fontLookup.fontClass || font]));
+        } else {
+            return mathDefault(value, mode, options, classes, type);
         }
     } else {
         return mathDefault(value, mode, options, classes, type);
