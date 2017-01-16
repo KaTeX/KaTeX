@@ -50,23 +50,6 @@ app.use("/test/jasmine",
     )
 );
 app.get("/test/katex-spec.js", serveBrowserified("test/*[Ss]pec.js"));
-// Serve the test html file but with the doctype removed to trigger quirks
-// mode.
-app.get("/test/screenshotter/test-quirks.html", function(req, res, next) {
-    var testFile = path.join(__dirname, "test", "screenshotter", "test.html");
-    fs.readFile(testFile, {encoding: "utf8"}, function(err, data) {
-        if (err) {
-            next(err);
-            return;
-        }
-
-        res.setHeader("Content-Type", "text/html");
-        const lines = data.split('\n');
-        // We remove the first line of the file, which contains the doctype.
-        lines.splice(0, 1);
-        res.send(lines.join('\n'));
-    });
-});
 app.get("/contrib/auto-render/auto-render.js",
         serveBrowserified("contrib/auto-render/auto-render",
                           "renderMathInElement"));

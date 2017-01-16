@@ -375,6 +375,7 @@ var doctypes = {
     "quirks": '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Draft//">',
 };
 
+// Use two characters per abbreviation for better alignment of output
 var qabbr = {
     "no-quirks": "nq",
     "limited-quirks": "lq",
@@ -439,8 +440,8 @@ function takeScreenshot(key, mode) {
              * the other has something else.  By using a different
              * output file name for one of these cases, we accept both.
              */
+            basename = basename.replace(key, key + "_alt");
             key += "_alt";
-            basename = key + basename.slice(key.length - 4);
             file = path.join(dstDir, basename + ".png");
             if (loadExpected) {
                 loadExpected = promisify(fs.readFile, file);
