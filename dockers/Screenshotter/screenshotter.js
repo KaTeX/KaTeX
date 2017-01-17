@@ -385,9 +385,11 @@ const qabbr = {
 function takeScreenshots() {
     const html = fs.readFileSync(require.resolve(
         "../../test/screenshotter/test.html"));
-    app.get("/ss-render.html", function(req, res, next) {
+    function handler(req, res, next) {
         res.send(doctypes[req.query.mode] + "\n" + html);
-    });
+    }
+    app.get("/ss-render.html", handler);
+    app.get("/babel/ss-render.html", handler);
     modes.forEach(function(mode) {
         listOfCases.forEach(function(key) {
             takeScreenshot(key, mode);
