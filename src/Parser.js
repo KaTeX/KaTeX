@@ -354,7 +354,12 @@ Parser.prototype.parseAtom = function() {
                 primes.push(prime);
                 this.consume();
             }
-            // Put them into an ordgroup as the superscript
+            // If there's a superscript following the primes, combine that
+            // superscript in with the primes.
+            if (this.nextToken.text === "^") {
+                primes.push(this.handleSupSubscript("superscript"));
+            }
+            // Put everything into an ordgroup as the superscript
             superscript = new ParseNode("ordgroup", primes, this.mode);
         } else {
             // If it wasn't ^, _, or ', stop parsing super/subscripts
