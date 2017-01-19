@@ -343,6 +343,9 @@ Parser.prototype.parseAtom = function() {
             subscript = this.handleSupSubscript("subscript");
         } else if (lex.text === "'") {
             // We got a prime
+            if (superscript) {
+                throw new ParseError("Double superscript", lex);
+            }
             const prime = new ParseNode("textord", "\\prime", this.mode);
 
             // Many primes can be grouped together, so we handle this here

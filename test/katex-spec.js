@@ -1260,7 +1260,6 @@ describe("A TeX-compliant parser", function() {
         expect("x''''").toParse();
         expect("x_2''").toParse();
         expect("x''_2").toParse();
-        expect("x'_2'").toParse();
     });
 
     it("should fail when sup/subscripts are interspersed with arguments", function() {

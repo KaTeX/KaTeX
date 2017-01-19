@@ -106,6 +106,16 @@ describe("Parser:", function() {
             expect("1^{2+3}_4^5").toFailWithParseError(
                    "Double superscript at position 10: 1^{2+3}_4^̲5");
         });
+        it("rejects double superscripts involving primes", function() {
+            expect("1'_2^3").toFailWithParseError(
+                   "Double superscript at position 5: 1'_2^̲3");
+            expect("1^2'").toFailWithParseError(
+                   "Double superscript at position 4: 1^2'̲");
+            expect("1^2_3'").toFailWithParseError(
+                   "Double superscript at position 6: 1^2_3'̲");
+            expect("1'_2'").toFailWithParseError(
+                   "Double superscript at position 5: 1'_2'̲");
+        });
         it("rejects double subscripts", function() {
             expect("1_2_3").toFailWithParseError(
                    "Double subscript at position 4: 1_2_̲3");
