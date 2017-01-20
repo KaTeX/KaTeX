@@ -513,10 +513,10 @@ Parser.prototype.parseImplicitGroup = function() {
         }
         this.consume();
         const outerMode = this.mode;
-        this.mode = "math";
+        this.switchMode("math");
         const body = this.parseExpression(false, "$");
-        this.mode = outerMode;
         this.expect("$", true);
+        this.switchMode(outerMode);
         return new ParseNode("styling", {
             style: "text",
             value: body,
