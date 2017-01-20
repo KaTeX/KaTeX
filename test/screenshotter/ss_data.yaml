@@ -52,7 +52,7 @@ Colors:
     tex: \blue{a}\textcolor{#0f0}{b}\textcolor{red}{c}
     nolatex: different syntax and different scope
 ColorSpacing: \textcolor{red}{\displaystyle \int x} + 1
-ColorImplicit: \color{red}red\color{blue}blue
+ColorImplicit: bl{ack\color{red}red\textcolor{green}{green}red\color{blue}blue}black
 DashesAndQuotes: \text{``a'' b---c -- d----`e'-{-}-f}--``x''
 DeepFontSizing:
     tex: |
