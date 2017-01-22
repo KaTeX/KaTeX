@@ -139,9 +139,9 @@ if [ ! -z "$NEXT_VERSION" ]; then
 
     # Refer to the just-released version in the documentation of the
     # development branch, too.  Most people will read docs on master.
-    node update-sri.js "${VERSION}" README.md contrib/*/README.md
+    git checkout "v${VERSION}" -- README.md contrib/*/README.md
 
-    git add package.json bower.json README.md contrib/*/README.md
+    git add package.json bower.json
     git commit -n -m "Bump $BRANCH to v$NEXT_VERSION-pre"
     git push origin "$BRANCH"
 
