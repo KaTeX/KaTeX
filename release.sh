@@ -24,9 +24,12 @@ usage() {
     echo ""
     echo "Examples:"
     echo " When releasing a new point release:"
-    echo "   ./release.sh 0.6.3"
+    echo "   ./release.sh 0.6.3 0.6.4"
     echo " When releasing a new major version:"
     echo "   ./release.sh 0.7.0 0.8.0"
+    echo ""
+    echo "You may omit NEXT_VERSION in order to avoid creating a commit on"
+    echo "the branch from which the release was created.  Not recommended."
     exit $1
 }
 
@@ -114,11 +117,12 @@ rm -f package.json.bak
 
 # Update the version number in CDN URLs included in the README files,
 # and regenerate the Subresource Integrity hash for these files.
-node update-sri.js "${VERSION}" README.md contrib/*/README.md
+node update-sri.js "${VERSION}" README.md contrib/*/README.md dist/README.md
 
 # Make the commit and tag, and push them.
-git add package.json bower.json
+git add package.json bower.json README.md contrib/*/README.md dist/README.md
 git commit -n -m "v$VERSION"
+git diff --stat --exit-status # check for uncommitted changes
 git tag -a "v$VERSION" -m "v$VERSION"
 git push origin "v$VERSION"
 
@@ -126,7 +130,7 @@ git push origin "v$VERSION"
 npm publish
 
 if [ ! -z "$NEXT_VERSION" ]; then
-    # Go back to master to bump
+    # Go back to original branch to bump
     git checkout "$BRANCH"
 
     # Edit package.json and bower.json to the right version
@@ -135,10 +139,10 @@ if [ ! -z "$NEXT_VERSION" ]; then
 
     # Refer to the just-released version in the documentation of the
     # development branch, too.  Most people will read docs on master.
-    node update-sri.js "${VERSION}" README.md contrib/*/README.md
+    git checkout "v${VERSION}" -- README.md contrib/*/README.md
 
     git add package.json bower.json
-    git commit -n -m "Bump master to v$NEXT_VERSION-pre"
+    git commit -n -m "Bump $BRANCH to v$NEXT_VERSION-pre"
     git push origin "$BRANCH"
 
     # Go back to the tag which has build/katex.tar.gz and build/katex.zip
