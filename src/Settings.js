@@ -3,12 +3,7 @@
  * default settings.
  */
 
-/**
- * Helper function for getting a default value if the value is undefined
- */
-function get(option, defaultValue) {
-    return option === undefined ? defaultValue : option;
-}
+var utils = require("./utils");
 
 /**
  * The main Settings object
@@ -20,9 +15,9 @@ function get(option, defaultValue) {
 function Settings(options) {
     // allow null options
     options = options || {};
-    this.displayMode = get(options.displayMode, false);
-    this.throwOnError = get(options.throwOnError, true);
-    this.errorColor = get(options.errorColor, "#cc0000");
+    this.displayMode = utils.deflt(options.displayMode, false);
+    this.throwOnError = utils.deflt(options.throwOnError, true);
+    this.errorColor = utils.deflt(options.errorColor, "#cc0000");
     this.macros = options.macros || {};
 }
 
