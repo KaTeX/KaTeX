@@ -3,7 +3,7 @@
  * default settings.
  */
 
-var utils = require("./utils");
+const utils = require("./utils");
 
 /**
  * The main Settings object
