@@ -376,10 +376,11 @@ defineFunction([
 
 // No limits, not symbols
 defineFunction([
-    "\\arcsin", "\\arccos", "\\arctan", "\\arg", "\\cos", "\\cosh",
-    "\\cot", "\\coth", "\\csc", "\\deg", "\\dim", "\\exp", "\\hom",
-    "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin", "\\sinh",
-    "\\tan", "\\tanh",
+    "\\arcsin", "\\arccos", "\\arctan", "\\arctg", "\\arcctg",
+    "\\arg", "\\ch", "\\cos", "\\cosec", "\\cosh", "\\cot", "\\cotg",
+    "\\coth", "\\csc", "\\ctg", "\\cth", "\\deg", "\\dim", "\\exp",
+    "\\hom", "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin",
+    "\\sinh", "\\sh", "\\tan", "\\tanh", "\\tg", "\\th",
 ], {
     numArgs: 0,
 }, function(context) {
