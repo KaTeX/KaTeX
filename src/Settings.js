@@ -14,7 +14,7 @@ function get(option, defaultValue) {
  * The main Settings object
  *
  * The current options stored are:
- *  - displayMode: Whether the typesetter is in display mode (in which case it 
+ *  - displayMode: Whether the typesetter is in display mode (in which case it
  *                 uses displaystyle) or not (in which case it uses textstyle)
  */
 function Settings(options) {
