@@ -380,7 +380,7 @@ defineFunction([
     "\\arg", "\\ch", "\\cos", "\\cosec", "\\cosh", "\\cot", "\\cotg",
     "\\coth", "\\csc", "\\ctg", "\\cth", "\\deg", "\\dim", "\\exp",
     "\\hom", "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin",
-    "\\sinh", "\\sh", "\\tan", "\\tanh", "\\tg", "\\th"
+    "\\sinh", "\\sh", "\\tan", "\\tanh", "\\tg", "\\th",
 ], {
     numArgs: 0,
 }, function(context) {
