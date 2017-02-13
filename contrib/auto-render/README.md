@@ -78,3 +78,6 @@ nodes inside this element and render the math in them.
 - `ignoredTags`: This is a list of DOM node types to ignore when recursing
   through. The default value is
   `["script", "noscript", "style", "textarea", "pre", "code"]`.
+  
+- `errorCallback`: A callback method returning a message and an error stack
+  in case of an critical error during rendering. The default uses `console.error`.

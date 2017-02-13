@@ -14,7 +14,7 @@ const splitWithDelimiters = function(text, delimiters) {
     return data;
 };
 
-const renderMathInText = function(text, delimiters) {
+const renderMathInText = function(text, delimiters, errorCallback) {
     const data = splitWithDelimiters(text, delimiters);
 
     const fragment = document.createDocumentFragment();
@@ -33,7 +33,7 @@ const renderMathInText = function(text, delimiters) {
                 if (!(e instanceof katex.ParseError)) {
                     throw e;
                 }
-                console.error(
+                errorCallback(
                     "KaTeX auto-render: Failed to parse `" + data[i].data +
                     "` with ",
                     e
@@ -48,12 +48,16 @@ const renderMathInText = function(text, delimiters) {
     return fragment;
 };
 
-const renderElem = function(elem, delimiters, ignoredTags) {
+const renderElem = function(elem, delimiters, ignoredTags, errorCallback) {
     for (let i = 0; i < elem.childNodes.length; i++) {
         const childNode = elem.childNodes[i];
         if (childNode.nodeType === 3) {
             // Text node
-            const frag = renderMathInText(childNode.textContent, delimiters);
+            const frag = renderMathInText(
+                childNode.textContent,
+                delimiters,
+                errorCallback);
+
             i += frag.childNodes.length - 1;
             elem.replaceChild(frag, childNode);
         } else if (childNode.nodeType === 1) {
@@ -62,7 +66,7 @@ const renderElem = function(elem, delimiters, ignoredTags) {
                 childNode.nodeName.toLowerCase()) === -1;
 
             if (shouldRender) {
-                renderElem(childNode, delimiters, ignoredTags);
+                renderElem(childNode, delimiters, ignoredTags, errorCallback);
             }
         }
         // Otherwise, it's something else, and ignore it.
@@ -81,6 +85,10 @@ const defaultOptions = {
     ignoredTags: [
         "script", "noscript", "style", "textarea", "pre", "code",
     ],
+
+    errorCallback: function(msg, err) {
+        console.error(msg, err);
+    },
 };
 
 const extend = function(obj) {
@@ -106,7 +114,10 @@ const renderMathInElement = function(elem, options) {
 
     options = extend({}, defaultOptions, options);
 
-    renderElem(elem, options.delimiters, options.ignoredTags);
+    renderElem(elem,
+        options.delimiters,
+        options.ignoredTags,
+        options.errorCallback);
 };
 
 module.exports = renderMathInElement;
