@@ -14,7 +14,7 @@
         "indent": [2, 4, {"SwitchCase": 1}],
         "keyword-spacing": 2,
         "linebreak-style": [2, "unix"],
-        "max-len": [2, 80, 4, { "ignoreUrls": true, "ignorePattern": "\\brequire\\([\"']|eslint-disable" }],
+        "max-len": [2, 90, 4, { "ignoreUrls": true, "ignorePattern": "\\brequire\\([\"']|eslint-disable" }],
         "no-alert": 2,
         "no-array-constructor": 2,
         "no-console": 2,
