@@ -1,4 +1,5 @@
 {
+    "parser": "babel-eslint",
     "rules": {
         "arrow-spacing": 2,
         "brace-style": [2, "1tbs", { "allowSingleLine": true }],
