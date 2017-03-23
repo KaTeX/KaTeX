@@ -47,18 +47,6 @@ const ParseError = require("./ParseError");
  * constants
  */
 const ParseNode = parseData.ParseNode;
-const endOfExpression = ["}", "\\end", "\\right", "&", "\\\\", "\\cr"];
-// The greediness of a superscript or subscript
-const SUPSUB_GREEDINESS = 1;
-// A list of the size-changing functions, for use in parseImplicitGroup
-const sizeFuncs = [
-    "\\tiny", "\\scriptsize", "\\footnotesize", "\\small", "\\normalsize",
-    "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
-];
-// A list of the style-changing functions, for use in parseImplicitGroup
-const styleFuncs = [
-    "\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle",
-];
 
 /**
  * Main Parser class
@@ -131,6 +119,8 @@ class Parser {
         return expression;
     }
 
+    static endOfExpression = ["}", "\\end", "\\right", "&", "\\\\", "\\cr"];
+
     /**
      * Parses an "expression", which is a list of atoms.
      *
@@ -150,7 +140,7 @@ class Parser {
         // we reached the end, a }, or a \right)
         while (true) {
             const lex = this.nextToken;
-            if (endOfExpression.indexOf(lex.text) !== -1) {
+            if (Parser.endOfExpression.indexOf(lex.text) !== -1) {
                 break;
             }
             if (breakOnTokenText && lex.text === breakOnTokenText) {
@@ -227,6 +217,9 @@ class Parser {
         }
     }
 
+    // The greediness of a superscript or subscript
+    static SUPSUB_GREEDINESS = 1;
+
     /**
      * Handle a subscript or superscript with nice errors.
      */
@@ -249,7 +242,7 @@ class Parser {
             // ^ and _ have a greediness, so handle interactions with functions'
             // greediness
             const funcGreediness = functions[group.result].greediness;
-            if (funcGreediness > SUPSUB_GREEDINESS) {
+            if (funcGreediness > Parser.SUPSUB_GREEDINESS) {
                 return this.parseFunction(group);
             } else {
                 throw new ParseError(
@@ -383,6 +376,17 @@ class Parser {
         }
     }
 
+    // A list of the size-changing functions, for use in parseImplicitGroup
+    static sizeFuncs = [
+        "\\tiny", "\\scriptsize", "\\footnotesize", "\\small", "\\normalsize",
+        "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
+    ];
+
+    // A list of the style-changing functions, for use in parseImplicitGroup
+    static styleFuncs = [
+        "\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle",
+    ];
+
     /**
      * Parses an implicit group, which is a group that starts at the end of a
      * specified, and ends right before a higher explicit group ends, or at EOL. It
@@ -450,15 +454,15 @@ class Parser {
             }
             result.position = end.position;
             return result;
-        } else if (utils.contains(sizeFuncs, func)) {
+        } else if (utils.contains(Parser.sizeFuncs, func)) {
             // If we see a sizing function, parse out the implict body
             const body = this.parseExpression(false);
             return new ParseNode("sizing", {
                 // Figure out what size to use based on the list of functions above
-                size: "size" + (utils.indexOf(sizeFuncs, func) + 1),
+                size: "size" + (utils.indexOf(Parser.sizeFuncs, func) + 1),
                 value: body,
             }, this.mode);
-        } else if (utils.contains(styleFuncs, func)) {
+        } else if (utils.contains(Parser.styleFuncs, func)) {
             // If we see a styling function, parse out the implict body
             const body = this.parseExpression(true);
             return new ParseNode("styling", {
