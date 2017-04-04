@@ -14,6 +14,7 @@ const delimiter = require("./delimiter");
 const domTree = require("./domTree");
 const fontMetrics = require("./fontMetrics");
 const utils = require("./utils");
+const stretchy = require("./stretchy");
 
 const makeSpan = buildCommon.makeSpan;
 
@@ -129,7 +130,7 @@ const getTypeOfDomTree = function(node) {
  * its inner element should handle the superscripts and subscripts instead of
  * handling them itself.
  */
-const shouldHandleSupSub = function(group, options) {
+const shouldHandleSupSub = function(group, options, isSup) {
     if (!group) {
         return false;
     } else if (group.type === "op") {
@@ -140,6 +141,8 @@ const shouldHandleSupSub = function(group, options) {
             group.value.alwaysHandleSupSub);
     } else if (group.type === "accent") {
         return isCharacterBox(group.value.base);
+    } else if (group.type === "horizBrace") {
+        return (isSup === group.value.isOver);
     } else {
         return null;
     }
@@ -283,7 +286,8 @@ groupTypes.supsub = function(group, options) {
 
     // Here is where we defer to the inner group if it should handle
     // superscripts and subscripts itself.
-    if (shouldHandleSupSub(group.value.base, options)) {
+    const isSup = (group.value.sub ? false : true);
+    if (shouldHandleSupSub(group.value.base, options, isSup)) {
         return groupTypes[group.value.base.type](group, options);
     }
 
@@ -1400,13 +1404,16 @@ groupTypes.accent = function(group, options) {
     const body = buildGroup(
         base, options.withStyle(style.cramp()));
 
+    // Does the accent need to shift for the skew of a character?
+    const mustShift = group.value.isShifty && isCharacterBox(base);
+
     // Calculate the skew of the accent. This is based on the line "If the
     // nucleus is not a single character, let s = 0; otherwise set s to the
     // kern amount for the nucleus followed by the \skewchar of its font."
     // Note that our skew metrics are just the kern between each character
     // and the skewchar.
     let skew = 0;
-    if (isCharacterBox(base)) {
+    if (mustShift) {
         // If the base is a character box, then we want the skew of the
         // innermost character. To do that, we find the innermost character:
         const baseChar = getBaseElem(base);
@@ -1427,31 +1434,52 @@ groupTypes.accent = function(group, options) {
         style.metrics.xHeight);
 
     // Build the accent
-    const accent = buildCommon.makeSymbol(
-        group.value.accent, "Main-Regular", "math", options);
-    // Remove the italic correction of the accent, because it only serves to
-    // shift the accent over to a place we don't want.
-    accent.italic = 0;
+    let accentBody;
+    if (!group.value.isStretchy) {
+        const accent = buildCommon.makeSymbol(
+            group.value.label, "Main-Regular", "math", options);
+        // Remove the italic correction of the accent, because it only serves to
+        // shift the accent over to a place we don't want.
+        accent.italic = 0;
 
-    // The \vec character that the fonts use is a combining character, and
-    // thus shows up much too far to the left. To account for this, we add a
-    // specific class which shifts the accent over to where we want it.
-    // TODO(emily): Fix this in a better way, like by changing the font
-    const vecClass = group.value.accent === "\\vec" ? "accent-vec" : null;
+        // The \vec character that the fonts use is a combining character, and
+        // thus shows up much too far to the left. To account for this, we add a
+        // specific class which shifts the accent over to where we want it.
+        // TODO(emily): Fix this in a better way, like by changing the font
+        const vecClass = group.value.label === "\\vec" ? "accent-vec" : null;
 
-    let accentBody = makeSpan(["accent-body", vecClass], [
-        makeSpan([], [accent])]);
+        accentBody = makeSpan(["accent-body", vecClass], [
+            makeSpan([], [accent])]);
 
-    accentBody = buildCommon.makeVList([
-        {type: "elem", elem: body},
-        {type: "kern", size: -clearance},
-        {type: "elem", elem: accentBody},
-    ], "firstBaseline", null, options);
+        // Shift the accent over by the skew. Note we shift by twice the skew
+        // because we are centering the accent, so by adding 2*skew to the left,
+        // we shift it to the right by 1*skew.
+        accentBody.style.marginLeft = 2 * skew + "em";
 
-    // Shift the accent over by the skew. Note we shift by twice the skew
-    // because we are centering the accent, so by adding 2*skew to the left,
-    // we shift it to the right by 1*skew.
-    accentBody.children[1].style.marginLeft = 2 * skew + "em";
+        accentBody = buildCommon.makeVList([
+            {type: "elem", elem: body},
+            {type: "kern", size: -clearance},
+            {type: "elem", elem: accentBody},
+        ], "firstBaseline", null, options);
+
+    } else {
+        const ruleWidth = fontMetrics.metrics.defaultRuleThickness /
+            style.sizeMultiplier;
+
+        accentBody = stretchy.svgSpan(group, options);
+
+        if (skew > 0) {
+            // Nudge the accent to the right.
+            const adjSize = "calc(100% - " + 2 * skew + "em) 100%";
+            accentBody.style.backgroundSize = adjSize;
+        }
+
+        accentBody = buildCommon.makeVList([
+            {type: "elem", elem: body},
+            {type: "kern", size: 2 * ruleWidth},
+            {type: "elem", elem: accentBody},
+        ], "firstBaseline", null, options);
+    }
 
     const accentWrap = makeSpan(["mord", "accent"], [accentBody], options);
 
@@ -1471,6 +1499,233 @@ groupTypes.accent = function(group, options) {
     } else {
         return accentWrap;
     }
+};
+
+groupTypes.horizBrace = function(group, options) {
+    const style = options.style;
+    const ruleWidth = fontMetrics.metrics.defaultRuleThickness /
+        style.sizeMultiplier;
+
+    const haveNote = (group.type === "supsub");
+    let note;
+    let newOptions;
+    let noteReset;
+    if (haveNote) {
+        if (group.value.sup) {
+            newOptions = options.withStyle(style.fracNum());
+            note = buildGroup(group.value.sup, newOptions);
+            noteReset =  makeSpan([style.reset(), style.fracNum().cls()],
+                [note], newOptions);
+        } else {
+            newOptions = options.withStyle(style.fracDen());
+            note = buildGroup(group.value.sub, newOptions);
+            noteReset =  makeSpan([style.reset(), style.fracDen().cls()],
+                [note], newOptions);
+        }
+        group = group.value.base;
+    }
+
+    // Build the base group
+    const body = buildGroup(
+       group.value.base, options.withStyle(style.cramp()));
+
+    // If a custom bracket, convert units.
+    if (group.value.thickness) {
+        group.value.thickness.value = calculateSize(group.value.thickness.value,
+                options.style);
+    }
+    if (group.value.height) {
+        group.value.height = calculateSize(group.value.height.value,
+                options.style);
+    }
+
+    // Create the stretchy element
+    const braceBody = stretchy.svgSpan(group, options);
+
+    // Generate the vlist, with the appropriate kerns
+    const braceShift = (group.value.isOver ? -body.height - 3 * ruleWidth :
+                        body.depth + braceBody.height + 3 * ruleWidth);
+
+    let vlist = buildCommon.makeVList([
+        {type: "elem", elem: body, shift: 0},
+        {type: "elem", elem: braceBody, shift: braceShift},
+    ], "individualShift", null, options);
+
+    // In the vlist above, the brace takes its width from the subject matter.
+    // Don't put the optional note in that vlist. The note might set the width.
+    // Instead, put the note, if any, in a parent vlist.
+
+    if (haveNote) {
+        let noteShift;
+        if (group.value.isOver) {
+            noteShift = braceShift - braceBody.height - 3 * ruleWidth;
+        } else {
+            noteShift = braceShift + noteReset.height + 3 * ruleWidth;
+        }
+
+        const vSpan = makeSpan(["mord",
+            (group.value.isOver ? "mover" : "munder")],
+            [vlist], options);
+
+        vlist = buildCommon.makeVList([
+            {type: "elem", elem: vSpan, shift: 0},
+            {type: "elem", elem: noteReset, shift: noteShift},
+        ], "individualShift", null, options);
+    }
+
+    return makeSpan(["mord", (group.value.isOver ? "mover" : "munder")],
+        [vlist], options);
+};
+
+groupTypes.accentunder = function(group, options) {
+    // Treat under accents much like underlines.
+    const innerGroup = buildGroup(group.value.body, options);
+
+    const ruleWidth = fontMetrics.metrics.defaultRuleThickness /
+        options.style.sizeMultiplier;
+
+    const accentBody = stretchy.svgSpan(group, options);
+    const accentShift = innerGroup.depth + 2 * ruleWidth + accentBody.height;
+
+    // Generate the vlist, with the appropriate kerns
+    const vlist = buildCommon.makeVList([
+        {type: "elem", elem: innerGroup, shift: 0},
+        {type: "elem", elem: accentBody, shift: accentShift},
+    ], "individualShift", innerGroup.height, options);
+
+    return makeSpan(["mord", "accentunder"], [vlist], options);
+};
+
+groupTypes.strikeThru = function(group, options) {
+    const innerGroup = buildGroup(group.value.body, options);
+    const style = options.style;
+
+    if (group.value.label === "\\sout") {
+        const line = makeSpan(
+            [style.reset(), Style.TEXT.cls(), "stretchy", "sout"]);
+        line.height = fontMetrics.metrics.defaultRuleThickness /
+            style.sizeMultiplier;
+        line.maxFontSize = 1.0;
+
+        const lineShift = -0.5 * style.metrics.xHeight;
+        const vlist = buildCommon.makeVList([
+            {type: "elem", elem: innerGroup, shift: 0},
+            {type: "elem", elem: line, shift: lineShift},
+        ], "individualShift", null, options);
+        return makeSpan(["mord"], [vlist], options);
+
+    } else {
+        //  \cancel, \bcancel, \xcancel
+        let node = makeSpan([], [innerGroup], options);
+
+        // buildCommon.makeVList does not work well with a tall image span.
+        // So work out vertical placement here.
+
+        // Create a strut with which to enforce a span height.
+        const strut = makeSpan([style.reset(), "strut"], [], options);
+        const totalHeight = innerGroup.depth + innerGroup.height + 0.4;
+        strut.style.height = totalHeight + "em";
+        strut.style.verticalAlign = -(innerGroup.depth + 0.2) + "em";
+
+        node = makeSpan(["inner-wrap"], [node, strut], options);
+
+        // Create a span, strikeThru, with the background-image.
+        const strikeThru = stretchy.strikeSpan(group.value.label.substr(1),
+            options);
+        strikeThru.style.height = totalHeight + "em";
+        if (innerGroup.height <= style.metrics.xHeight) {
+            strikeThru.style.top = 0.2 + "em";
+        }
+
+        // Wrap the position:absolute span with a position:relative span.
+        node = makeSpan(["outer-wrap"], [node, strikeThru], options);
+        node.height = innerGroup.height + 0.2;
+        node.maxFontSize = innerGroup.maxFontSize;
+        node.depth = innerGroup.depth + 0.2;
+
+        // Prevent buildExpression from shifting a space into the span.
+        return makeSpan(["mord"], [new domTree.symbolNode("\u200b"), node],
+            options);
+    }
+};
+
+groupTypes.boxed = function(group, options) {
+    const innerGroup = buildGroup(group.value.body, options);
+    let node = makeSpan([], [innerGroup], options);
+
+    // Create a strut with which to enforce a span height.
+    const strut = makeSpan([options.style.reset(), "strut"], [], options);
+    strut.style.height = (innerGroup.depth + innerGroup.height + 0.528) + "em";
+    strut.style.verticalAlign = -(innerGroup.depth + 0.25) + "em";
+
+    node = makeSpan(["mord", "boxed"], [node, strut], options);
+    node.height = (innerGroup.height + 0.425);
+    node.maxFontSize = innerGroup.maxFontSize;
+    node.depth = (innerGroup.depth + 0.325);
+    if (options.color) {
+        node.style.borderColor = options.color;
+    }
+
+    // Prevent buildExpression from shifting a space into the span.
+    return makeSpan(["mord"], [new domTree.symbolNode("\u200b"), node],
+        options);
+};
+
+groupTypes.xArrow = function(group, options) {
+    const style = options.style;
+
+    // Build the inner group.
+    const upperGroup = buildGroup(group.value.body, options);
+
+    let lowerGroup;
+    if (group.value.below) {
+        // Build the lower group
+        lowerGroup = buildGroup(group.value.below, options);
+    }
+
+    const ruleWidth = fontMetrics.metrics.defaultRuleThickness /
+        style.sizeMultiplier;
+
+    const arrowBody = stretchy.svgSpan(group, options);
+
+    const arrowShift = -style.metrics.axisHeight + arrowBody.depth;
+    const upperShift = -style.metrics.axisHeight - arrowBody.height -
+        3 * ruleWidth;
+
+    // Generate the vlist
+    let vlist;
+    if (group.value.below) {
+        const lowerShift = -style.metrics.axisHeight
+            + lowerGroup.height + arrowBody.height
+            + 3 * ruleWidth;
+        vlist = buildCommon.makeVList([
+            {type: "elem", elem: upperGroup, shift: upperShift},
+            {type: "elem", elem: arrowBody,  shift: arrowShift},
+            {type: "elem", elem: lowerGroup, shift: lowerShift},
+        ], "individualShift", null, options);
+    } else {
+        vlist = buildCommon.makeVList([
+            {type: "elem", elem: upperGroup, shift: upperShift},
+            {type: "elem", elem: arrowBody,  shift: arrowShift},
+        ], "individualShift", null, options);
+    }
+
+    const node = makeSpan(["mrel", "x-arrow"], [vlist], options);
+    node.depth = node.depth + ruleWidth;
+    node.height = node.height + ruleWidth;
+    return node;
+};
+
+groupTypes.phantom = function(group, options) {
+    const elements = buildExpression(
+        group.value.value,
+        options.withPhantom(),
+        false
+    );
+
+    // \phantom isn't supposed to affect the elements it contains.
+    // See "color" for more details.
+    return new buildCommon.makeFragment(elements);
 };
 
 groupTypes.phantom = function(group, options) {

@@ -626,16 +626,114 @@ defineFunction([
 defineFunction([
     "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
     "\\check", "\\hat", "\\vec", "\\dot",
-    // We don't support expanding accents yet
-    // "\\widetilde", "\\widehat"
+    "\\widehat", "\\widetilde", "\\overrightarrow", "\\overleftarrow",
+    "\\Overrightarrow", "\\overleftrightarrow", "\\overgroup",
+    "\\overlinesegment", "\\overleftharpoon", "\\overrightharpoon",
 ], {
     numArgs: 1,
 }, function(context, args) {
     const base = args[0];
+
+    const isStretchy = !utils.contains([
+        "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
+        "\\check", "\\hat", "\\vec", "\\dot",
+    ], context.funcName);
+
+    const isShifty = !isStretchy || utils.contains([
+        "\\widehat", "\\widetilde", "\\overrightarrow", "\\overrightharpoon",
+    ], context.funcName);
+
     return {
         type: "accent",
-        accent: context.funcName,
+        label: context.funcName,
+        isStretchy: isStretchy,
+        isShifty: isShifty,
+        value: ordargument(base),
         base: base,
+    };
+});
+
+// Horizontal stretchy braces and brackets
+defineFunction([
+    "\\overbrace", "\\overbracket", "\\underbrace", "\\underbracket",
+], {
+    numArgs: 1,
+    numOptionalArgs: 2,
+    argTypes: ["size", "size", "original"],
+}, function(context, args) {
+    const thickness = args[0];
+    const height = args[1];
+    const base = args[2];
+    return {
+        type: "horizBrace",
+        label: context.funcName,
+        isOver: (context.funcName.substr(1, 2) === "ov"),
+        thickness: thickness,
+        height: height,
+        base: base,
+    };
+});
+
+// Stretchy accents under the body
+defineFunction([
+    "\\underleftarrow", "\\underrightarrow", "\\underleftrightarrow",
+    "\\undergroup", "\\underlinesegment", "\\undertilde",
+], {
+    numArgs: 1,
+}, function(context, args) {
+    const body = args[0];
+    return {
+        type: "accentunder",
+        label: context.funcName,
+        value: ordargument(body),
+        body: body,
+    };
+});
+
+// Stretchy arrows with an optional argument
+defineFunction([
+    "\\xleftarrow", "\\xrightarrow", "\\xLeftarrow", "\\xRightarrow",
+    "\\xleftrightarrow", "\\xLeftrightarrow", "\\xhookleftarrow",
+    "\\xhookrightarrow", "\\xmapsto", "\\xrightharpoondown",
+    "\\xrightharpoonup", "\\xleftharpoondown", "\\xleftharpoonup",
+    "\\xrightleftharpoons", "\\xleftrightharpoons", "\\xLongequal",
+    "\\xtwoheadrightarrow", "\\xtwoheadleftarrow", "\\xLongequal",
+    "\\xtofrom",
+], {
+    numArgs: 1,
+    numOptionalArgs: 1,
+}, function(context, args) {
+    const below = args[0];
+    const body = args[1];
+    return {
+        type: "xArrow",   // x for extensible
+        label: context.funcName,
+        body: body,
+        below: below,
+    };
+});
+
+// strike-thru
+defineFunction(["\\cancel", "\\bcancel", "\\xcancel", "\\sout"], {
+    numArgs: 1,
+}, function(context, args) {
+    const body = args[0];
+    return {
+        type: "strikeThru",
+        label: context.funcName,
+        body: body,
+    };
+});
+
+// boxed
+defineFunction("\\boxed", {
+    numArgs: 1,
+}, function(context, args) {
+    const body = args[0];
+    return {
+        type: "boxed",
+        value: ordargument(body),
+        body: body,
     };
 });
 
