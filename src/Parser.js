@@ -394,6 +394,17 @@ const styleFuncs = [
     "\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle",
 ];
 
+// Old font functions
+const oldFontFuncs = {
+    "\\rm": "mathrm",
+    "\\sf": "mathsf",
+    "\\tt": "mathtt",
+    "\\bf": "mathbf",
+    "\\it": "mathit",
+    //"\\sl": "textsl",
+    //"\\sc": "textsc",
+};
+
 /**
  * Parses an implicit group, which is a group that starts at the end of a
  * specified, and ends right before a higher explicit group ends, or at EOL. It
@@ -462,7 +473,7 @@ Parser.prototype.parseImplicitGroup = function() {
         result.position = end.position;
         return result;
     } else if (utils.contains(sizeFuncs, func)) {
-        // If we see a sizing function, parse out the implict body
+        // If we see a sizing function, parse out the implicit body
         const body = this.parseExpression(false);
         return new ParseNode("sizing", {
             // Figure out what size to use based on the list of functions above
@@ -470,7 +481,7 @@ Parser.prototype.parseImplicitGroup = function() {
             value: body,
         }, this.mode);
     } else if (utils.contains(styleFuncs, func)) {
-        // If we see a styling function, parse out the implict body
+        // If we see a styling function, parse out the implicit body
         const body = this.parseExpression(true);
         return new ParseNode("styling", {
             // Figure out what style to use by pulling out the style from
@@ -478,6 +489,21 @@ Parser.prototype.parseImplicitGroup = function() {
             style: func.slice(1, func.length - 5),
             value: body,
         }, this.mode);
+    } else if (func in oldFontFuncs) {
+        const style = oldFontFuncs[func];
+        // If we see an old font function, parse out the implicit body
+        const body = this.parseExpression(true);
+        if (style.slice(0, 4) === 'text') {
+            return new ParseNode("text", {
+                style: style,
+                body: new ParseNode("ordgroup", body, this.mode),
+            }, this.mode);
+        } else {
+            return new ParseNode("font", {
+                font: style,
+                body: new ParseNode("ordgroup", body, this.mode),
+            }, this.mode);
+        }
     } else {
         // Defer to parseFunction if it's not a function we handle
         return this.parseFunction(start);

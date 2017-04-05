@@ -591,6 +591,11 @@ defineFunction([
     "\\scriptscriptstyle",
 ], 0, null);
 
+// Old font changing functions
+defineFunction([
+    "\\rm", "\\sf", "\\tt", "\\bf", "\\it", //"\\sl", "\\sc",
+], 0, null);
+
 defineFunction([
     // styles
     "\\mathrm", "\\mathit", "\\mathbf",
