@@ -474,6 +474,7 @@ Parser.prototype.parseImplicitGroup = function() {
         return result;
     } else if (utils.contains(sizeFuncs, func)) {
         // If we see a sizing function, parse out the implicit body
+        this.consumeSpaces();
         const body = this.parseExpression(false);
         return new ParseNode("sizing", {
             // Figure out what size to use based on the list of functions above
@@ -482,6 +483,7 @@ Parser.prototype.parseImplicitGroup = function() {
         }, this.mode);
     } else if (utils.contains(styleFuncs, func)) {
         // If we see a styling function, parse out the implicit body
+        this.consumeSpaces();
         const body = this.parseExpression(true);
         return new ParseNode("styling", {
             // Figure out what style to use by pulling out the style from
@@ -492,6 +494,7 @@ Parser.prototype.parseImplicitGroup = function() {
     } else if (func in oldFontFuncs) {
         const style = oldFontFuncs[func];
         // If we see an old font function, parse out the implicit body
+        this.consumeSpaces();
         const body = this.parseExpression(true);
         if (style.slice(0, 4) === 'text') {
             return new ParseNode("text", {
@@ -655,15 +658,19 @@ Parser.prototype.parseGroupOfType = function(innerMode, optional) {
     if (innerMode === "text") {
         // text mode is special because it should ignore the whitespace before
         // it
-        while (this.nextToken.text === " ") {
-            this.consume();
-        }
+        this.consumeSpaces();
     }
     // By the time we get here, innerMode is one of "text" or "math".
     // We switch the mode of the parser, recurse, then restore the old mode.
     const res = this.parseGroup(optional);
     this.switchMode(outerMode);
     return res;
+};
+
+Parser.prototype.consumeSpaces = function() {
+    while (this.nextToken.text === " ") {
+        this.consume();
+    }
 };
 
 /**
