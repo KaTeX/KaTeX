@@ -118,6 +118,12 @@ NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
     {\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
 NullDelimiterInteraction: a \bigl. + 2 \quad \left. + a \right)
+OldFont: |
+    \begin{matrix}
+      \rm rm & it & \it it & \bf bf & \sf sf & \tt tt \\
+      \text{\rm rm} & \text{rm} & \text{\it it} & \text{\bf bf} & \text{\sf sf} & \text{\tt tt} \\
+      i\rm r\it i & \text{r\it i\rm r}
+    \end{matrix}
 OpLimits: |
     {\sin_2^2 \lim_2^2 \int_2^2 \sum_2^2}
     {\displaystyle \lim_2^2 \int_2^2 \intop_2^2 \sum_2^2}
