@@ -1,13 +1,12 @@
 /* eslint no-constant-condition:0 */
-const functions = require("./functions");
-const environments = require("./environments");
-const MacroExpander = require("./MacroExpander");
-const symbols = require("./symbols");
-const utils = require("./utils");
-const cjkRegex = require("./unicodeRegexes").cjkRegex;
-
-const parseData = require("./parseData");
-const ParseError = require("./ParseError");
+import functions from "./functions";
+import environments from "./environments";
+import MacroExpander from "./MacroExpander";
+import symbols from "./symbols";
+import utils from "./utils";
+import { cjkRegex } from "./unicodeRegexes";
+import { ParseNode } from "./parseData";
+import ParseError from "./ParseError";
 
 /**
  * This file contains the parser used to parse out a TeX expression from the
@@ -42,11 +41,6 @@ const ParseError = require("./ParseError");
  * whether the parsed object is a function which is missing some arguments, or a
  * standalone object which can be used as an argument to another function.
  */
-
-/**
- * constants
- */
-const ParseNode = parseData.ParseNode;
 
 /**
  * Main Parser class

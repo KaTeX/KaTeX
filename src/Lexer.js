@@ -11,8 +11,8 @@
  * kinds.
  */
 
-const matchAt = require("match-at");
-const ParseError = require("./ParseError");
+import matchAt from "match-at";
+import ParseError from "./ParseError";
 
 /**
  * The resulting token returned from `lex`.
@@ -40,6 +40,7 @@ class Token {
         this.end = end;
         this.lexer = lexer;
     }
+
     /**
      * Given a pair of tokens (this and endToken), compute a “Token” encompassing
      * the whole input range enclosed by these two.

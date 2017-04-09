@@ -6,7 +6,7 @@
  * information about them.
  */
 
-const sigmas = require("./fontMetrics.js").sigmas;
+import { sigmas } from "./fontMetrics.js";
 
 const metrics = [{}, {}, {}];
 for (const key in sigmas) {
@@ -26,72 +26,74 @@ for (let i = 0; i < 3; i++) {
  * size multiplier, which gives the size difference between a style and
  * textstyle.
  */
-function Style(id, size, multiplier, cramped) {
-    this.id = id;
-    this.size = size;
-    this.cramped = cramped;
-    this.sizeMultiplier = multiplier;
-    this.metrics = metrics[size > 0 ? size - 1 : 0];
+class Style {
+    constructor(id, size, multiplier, cramped) {
+        this.id = id;
+        this.size = size;
+        this.cramped = cramped;
+        this.sizeMultiplier = multiplier;
+        this.metrics = metrics[size > 0 ? size - 1 : 0];
+    }
+
+    /**
+     * Get the style of a superscript given a base in the current style.
+     */
+    sup() {
+        return styles[sup[this.id]];
+    }
+
+    /**
+     * Get the style of a subscript given a base in the current style.
+     */
+    sub() {
+        return styles[sub[this.id]];
+    }
+
+    /**
+     * Get the style of a fraction numerator given the fraction in the current
+     * style.
+     */
+    fracNum() {
+        return styles[fracNum[this.id]];
+    }
+
+    /**
+     * Get the style of a fraction denominator given the fraction in the current
+     * style.
+     */
+    fracDen() {
+        return styles[fracDen[this.id]];
+    }
+
+    /**
+     * Get the cramped version of a style (in particular, cramping a cramped style
+     * doesn't change the style).
+     */
+    cramp() {
+        return styles[cramp[this.id]];
+    }
+
+    /**
+     * HTML class name, like "displaystyle cramped"
+     */
+    cls() {
+        return sizeNames[this.size] + (this.cramped ? " cramped" : " uncramped");
+    }
+
+    /**
+     * HTML Reset class name, like "reset-textstyle"
+     */
+    reset() {
+        return resetNames[this.size];
+    }
+
+    /**
+     * Return if this style is tightly spaced (scriptstyle/scriptscriptstyle)
+     */
+    isTight() {
+        return this.size >= 2;
+    }
 }
-
-/**
- * Get the style of a superscript given a base in the current style.
- */
-Style.prototype.sup = function() {
-    return styles[sup[this.id]];
-};
-
-/**
- * Get the style of a subscript given a base in the current style.
- */
-Style.prototype.sub = function() {
-    return styles[sub[this.id]];
-};
-
-/**
- * Get the style of a fraction numerator given the fraction in the current
- * style.
- */
-Style.prototype.fracNum = function() {
-    return styles[fracNum[this.id]];
-};
-
-/**
- * Get the style of a fraction denominator given the fraction in the current
- * style.
- */
-Style.prototype.fracDen = function() {
-    return styles[fracDen[this.id]];
-};
-
-/**
- * Get the cramped version of a style (in particular, cramping a cramped style
- * doesn't change the style).
- */
-Style.prototype.cramp = function() {
-    return styles[cramp[this.id]];
-};
-
-/**
- * HTML class name, like "displaystyle cramped"
- */
-Style.prototype.cls = function() {
-    return sizeNames[this.size] + (this.cramped ? " cramped" : " uncramped");
-};
-
-/**
- * HTML Reset class name, like "reset-textstyle"
- */
-Style.prototype.reset = function() {
-    return resetNames[this.size];
-};
-
-/**
- * Return if this style is tightly spaced (scriptstyle/scriptscriptstyle)
- */
-Style.prototype.isTight = function() {
-    return this.size >= 2;
-};
 
 // IDs of the different styles
 const D = 0;

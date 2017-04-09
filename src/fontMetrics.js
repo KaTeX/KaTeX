@@ -1,7 +1,7 @@
 /* eslint no-unused-vars:0 */
 
-const Style = require("./Style");
-const cjkRegex = require("./unicodeRegexes").cjkRegex;
+import Style from "./Style";
+import { cjkRegex } from "./unicodeRegexes";
 
 /**
  * This file contains metrics regarding fonts and individual symbols. The sigma
@@ -104,7 +104,7 @@ const metrics = {
 // metrics, including height, depth, italic correction, and skew (kern from the
 // character to the corresponding \skewchar)
 // This map is generated via `make metrics`. It should not be changed manually.
-const metricMap = require("./fontMetricsData");
+import metricMap from "./fontMetricsData";
 
 // These are very rough approximations.  We default to Times New Roman which
 // should have Latin-1 and Cyrillic characters, but may not depending on the

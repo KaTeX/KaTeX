@@ -1,7 +1,6 @@
-const utils = require("./utils");
-const ParseError = require("./ParseError");
-const parseData = require("./parseData");
-const ParseNode = parseData.ParseNode;
+import utils from "./utils";
+import ParseError from "./ParseError";
+import { ParseNode } from "./parseData";
 
 /* This file contains a list of functions that we parse, identified by
  * the calls to defineFunction.

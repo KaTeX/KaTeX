@@ -4,8 +4,8 @@
 /* global it: false */
 /* global describe: false */
 
-const parseTree = require("../src/parseTree");
-const Settings = require("../src/Settings");
+import parseTree from "../src/parseTree";
+import Settings from "../src/Settings";
 
 const defaultSettings = new Settings({});
 

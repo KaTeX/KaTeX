@@ -4,6 +4,7 @@ npm-debug.log
 last.png
 diff.png
 /.npm-install.stamp
+/.vscode
 /dist/
 /test/screenshotter/tex/
 /test/screenshotter/diff/

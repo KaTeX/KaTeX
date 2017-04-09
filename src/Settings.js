@@ -3,7 +3,7 @@
  * default settings.
  */
 
-const utils = require("./utils");
+import utils from "./utils";
 
 /**
  * The main Settings object
@@ -12,13 +12,15 @@ const utils = require("./utils");
  *  - displayMode: Whether the expression should be typeset by default in
  *                 textstyle or displaystyle (default false)
  */
-function Settings(options) {
-    // allow null options
-    options = options || {};
-    this.displayMode = utils.deflt(options.displayMode, false);
-    this.throwOnError = utils.deflt(options.throwOnError, true);
-    this.errorColor = utils.deflt(options.errorColor, "#cc0000");
-    this.macros = options.macros || {};
+class Settings {
+    constructor(options) {
+        // allow null options
+        options = options || {};
+        this.displayMode = utils.deflt(options.displayMode, false);
+        this.throwOnError = utils.deflt(options.throwOnError, true);
+        this.errorColor = utils.deflt(options.errorColor, "#cc0000");
+        this.macros = options.macros || {};
+    }
 }
 
 module.exports = Settings;
