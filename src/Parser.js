@@ -381,6 +381,17 @@ class Parser {
         "\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle",
     ];
 
+    // Old font functions
+    static oldFontFuncs = {
+        "\\rm": "mathrm",
+        "\\sf": "mathsf",
+        "\\tt": "mathtt",
+        "\\bf": "mathbf",
+        "\\it": "mathit",
+        //"\\sl": "textsl",
+        //"\\sc": "textsc",
+    };
+
     /**
      * Parses an implicit group, which is a group that starts at the end of a
      * specified, and ends right before a higher explicit group ends, or at EOL. It
@@ -449,7 +460,8 @@ class Parser {
             result.position = end.position;
             return result;
         } else if (utils.contains(Parser.sizeFuncs, func)) {
-            // If we see a sizing function, parse out the implict body
+            // If we see a sizing function, parse out the implicit body
+            this.consumeSpaces();
             const body = this.parseExpression(false);
             return new ParseNode("sizing", {
                 // Figure out what size to use based on the list of functions above
@@ -457,7 +469,8 @@ class Parser {
                 value: body,
             }, this.mode);
         } else if (utils.contains(Parser.styleFuncs, func)) {
-            // If we see a styling function, parse out the implict body
+            // If we see a styling function, parse out the implicit body
+            this.consumeSpaces();
             const body = this.parseExpression(true);
             return new ParseNode("styling", {
                 // Figure out what style to use by pulling out the style from
@@ -465,6 +478,22 @@ class Parser {
                 style: func.slice(1, func.length - 5),
                 value: body,
             }, this.mode);
+        } else if (func in Parser.oldFontFuncs) {
+            const style = Parser.oldFontFuncs[func];
+            // If we see an old font function, parse out the implicit body
+            this.consumeSpaces();
+            const body = this.parseExpression(true);
+            if (style.slice(0, 4) === 'text') {
+                return new ParseNode("text", {
+                    style: style,
+                    body: new ParseNode("ordgroup", body, this.mode),
+                }, this.mode);
+            } else {
+                return new ParseNode("font", {
+                    font: style,
+                    body: new ParseNode("ordgroup", body, this.mode),
+                }, this.mode);
+            }
         } else {
             // Defer to parseFunction if it's not a function we handle
             return this.parseFunction(start);
@@ -615,15 +644,19 @@ class Parser {
         if (innerMode === "text") {
             // text mode is special because it should ignore the whitespace before
             // it
-            while (this.nextToken.text === " ") {
-                this.consume();
-            }
+            this.consumeSpaces();
         }
         // By the time we get here, innerMode is one of "text" or "math".
         // We switch the mode of the parser, recurse, then restore the old mode.
         const res = this.parseGroup(optional);
         this.switchMode(outerMode);
         return res;
+    }
+
+    consumeSpaces() {
+        while (this.nextToken.text === " ") {
+            this.consume();
+        }
     }
 
     /**
