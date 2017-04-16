@@ -40,7 +40,7 @@
         "no-with": 2,
         "one-var": [2, "never"],
         "prefer-const": 2,
-        "prefer-spread": 2,
+        "prefer-spread": 0, // re-enable once we use es6
         "semi": [2, "always"],
         "space-before-blocks": 2,
         "space-before-function-paren": [2, "never"],
