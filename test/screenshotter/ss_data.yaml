@@ -74,6 +74,11 @@ Exponents: a^{a^a_a}_{a^a_a}
 FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}
 Functions: \sin\cos\tan\ln\log
 GreekLetters: \alpha\beta\gamma\omega
+GroupMacros:
+    macros:
+        \startExp: e^\bgroup
+        \endExp: \egroup
+    tex: \startExp a+b\endExp
 KaTeX: \KaTeX
 Kern:
     tex: \frac{a\kern{1em}b}{c}a\kern{1em}b\kern{1ex}c\kern{-0.25em}d
@@ -128,6 +133,13 @@ OpLimits: |
     {\sin_2^2 \lim_2^2 \int_2^2 \sum_2^2}
     {\displaystyle \lim_2^2 \int_2^2 \intop_2^2 \sum_2^2}
 OverUnderline: x\underline{x}\underline{\underline{x}}\underline{x_{x_{x_x}}}\underline{x^{x^{x^x}}}\overline{x}\overline{x}\overline{x^{x^{x^x}}} \blue{\overline{\underline{x}}\underline{\overline{x}}}
+OverUnderset: |
+    \begin{array}{l}
+    x\overset?=1\\
+    {\displaystyle\lim_{t\underset{>0}\to0}}\\
+    a+b+c+d\overset{b+c=0}\longrightarrow a+d\\
+    \overset { x = y } { \sqrt { a b } }
+    \end{array}
 Phantom: \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x}
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
