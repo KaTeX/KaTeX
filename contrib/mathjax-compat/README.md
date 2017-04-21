@@ -9,7 +9,7 @@ included in the page.
 This include should be loaded after all uses of MathJax.
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/mathjax-compat.min.js" integrity="sha384-OLBgp1GsljhM2TJ+sbHjaiH9txEUvgdDTAzHv2P24donTt6/529l+9Ua0vFImLlb"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/mathjax-compat.min.js" integrity="sha384-o+v+EkJWQmZj7XwHBxehTGJKE18182WyyN2glZMTPw9g5XxjN1uwrquNuMX/NJiF"></script>
 ```
 
 That's it.
