@@ -1,17 +1,17 @@
 /* global katex */
 
 function replaceMathJaxInline(node) {
-    const katexinline = document.createElement("span");
-    katexinline.setAttribute("class", "inline-equation");
-    katexinline.innerHTML = katex.renderToString(node.text);
-    node.parentNode.replaceChild(katexinline, node);
+    const katexelement = document.createElement("span");
+    katexelement.setAttribute("class", "inline-equation");
+    katex.render(node.text, katexelement);
+    node.parentNode.replaceChild(katexelement, node);
 }
 
 function replaceMathJaxDisplay(node) {
-    const katexinline = document.createElement("div");
-    katexinline.setAttribute("class", "equation");
-    katexinline.innerHTML = "\\displaystyle " + katex.renderToString(node.text);
-    node.parentNode.replaceChild(katexinline, node);
+    const katexelement = document.createElement("div");
+    katexelement.setAttribute("class", "equation");
+    katex.render(node.text, katexelement, {displayMode: true});
+    node.parentNode.replaceChild(katexelement, node);
 }
 
 {
