@@ -1631,6 +1631,22 @@ groupTypes.mclass = function(group, options) {
     return makeSpan([group.value.mclass], elements, options);
 };
 
+groupTypes.transform = function(group, options) {
+    const span = groupTypes.text(group, options);
+    if (group.value.dy) {
+        const dy = group.value.dy.value;
+        span.style.top = "" + (-dy.number) + dy.unit;
+        // Not working yet:
+        if (dy.number > 0) {
+            span.height += calculateSize(dy.number, options.style);
+        } else {
+            span.depth -= calculateSize(dy.number, options.style);
+        }
+        span.style.position = "relative";
+    }
+    return span;
+};
+
 /**
  * buildGroup is the function that takes a group and calls the correct groupType
  * function for it. It also handles the interaction of size and style changes

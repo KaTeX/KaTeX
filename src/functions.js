@@ -650,3 +650,18 @@ defineFunction(["\\begin", "\\end"], {
         nameGroup: nameGroup,
     };
 });
+
+// Box manipulation
+defineFunction(["\\raisebox"], {
+    numArgs: 2,
+    argTypes: ["size", "text"],
+    allowedInText: true,
+}, function(context, args) {
+    const amount = args[0];
+    const body = args[1];
+    return {
+        type: "transform",
+        dy: amount,
+        body: ordargument(body),
+    };
+});

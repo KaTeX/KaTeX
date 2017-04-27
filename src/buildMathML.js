@@ -601,6 +601,10 @@ groupTypes.mclass = function(group, options) {
     return new mathMLTree.MathNode("mstyle", inner);
 };
 
+// Transforms (translation/rotation) don't seem to have a representation
+// in MathML, so just treat them like \text{...}
+groupTypes.transform = groupTypes.text;
+
 /**
  * Takes a list of nodes, builds them, and returns a list of the generated
  * MathML nodes. A little simpler than the HTML version because we don't do any
