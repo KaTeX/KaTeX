@@ -14,8 +14,11 @@ function get(option, defaultValue) {
  * The main Settings object
  *
  * The current options stored are:
- *  - displayMode: Whether the typesetter is in display mode (in which case it
- *                 uses displaystyle) or not (in which case it uses textstyle)
+ *  - displayMode: Whether the expression should be typeset as inline math
+ *                 (false, the default), meaning that the math starts in
+ *                 \textstyle and is placed in an inline-block); or as display
+ *                 math (true), meaning that the math starts in \displaystyle
+ *                 and is placed in a block with vertical margin.
  */
 function Settings(options) {
     // allow null options
