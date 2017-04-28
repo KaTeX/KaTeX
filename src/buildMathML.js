@@ -81,15 +81,16 @@ groupTypes.textord = function(group, options) {
     const variant = getVariant(group, options) || "normal";
 
     let node;
-    if (/[0-9]/.test(group.value)) {
+    if (group.mode === 'text') {
+        node = new mathMLTree.MathNode("mtext", [text]);
+    } else if (/[0-9]/.test(group.value)) {
         // TODO(kevinb) merge adjacent <mn> nodes
         // do it as a post processing step
         node = new mathMLTree.MathNode("mn", [text]);
-        if (options.font) {
-            node.setAttribute("mathvariant", variant);
-        }
     } else {
         node = new mathMLTree.MathNode("mi", [text]);
+    }
+    if (options.font) {
         node.setAttribute("mathvariant", variant);
     }
 
@@ -149,11 +150,25 @@ groupTypes.ordgroup = function(group, options) {
 };
 
 groupTypes.text = function(group, options) {
-    const inner = buildExpression(group.value.body, options);
-
-    const node = new mathMLTree.MathNode("mtext", inner);
-
-    return node;
+    const body = group.value.body;
+    const inner = [];
+    let currentText = null;
+    for (let i = 0; i < body.length; i++) {
+        const group = buildGroup(body[i], options);
+        if (group.type === 'mtext' && currentText != null) {
+            Array.prototype.push.apply(currentText.children, group.children);
+        } else {
+            inner.push(group);
+            if (group.type === 'mtext') {
+                currentText = group;
+            }
+        }
+    }
+    if (inner.length === 1) {
+        return inner[0];
+    } else {
+        return new mathMLTree.MathNode("mrow", inner);
+    }
 };
 
 groupTypes.color = function(group, options) {
