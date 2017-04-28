@@ -507,6 +507,20 @@ Parser.prototype.parseImplicitGroup = function() {
                 body: new ParseNode("ordgroup", body, this.mode),
             }, this.mode);
         }
+    } else if (func === "$") {
+        if (this.mode === "math") {
+            throw new ParseError("$ within math mode");
+        }
+        this.consume();
+        const outerMode = this.mode;
+        this.mode = "math";
+        const body = this.parseExpression(false, "$");
+        this.mode = outerMode;
+        this.expect("$", true);
+        return new ParseNode("styling", {
+            style: "text",
+            value: body,
+        }, "math");
     } else {
         // Defer to parseFunction if it's not a function we handle
         return this.parseFunction(start);
@@ -877,6 +891,10 @@ Parser.prototype.parseSymbol = function() {
         this.consume();
         return new ParseFuncOrArgument(
             new ParseNode("textord", nucleus.text, this.mode, nucleus),
+            false, nucleus);
+    } else if (nucleus.text === "$") {
+        return new ParseFuncOrArgument(
+            nucleus.text,
             false, nucleus);
     } else {
         return null;
