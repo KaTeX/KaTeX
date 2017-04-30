@@ -50,6 +50,23 @@ const isBinRightCanceller = function(node, isRealGroup) {
 };
 
 /**
+ * Splice out any spaces from `children` starting at position `i`, and return
+ * the spliced-out array. Returns null if `children[i]` does not exist or is not
+ * a space.
+ */
+const spliceSpaces = function(children, i) {
+    let j = i;
+    while (j < children.length && isSpace(children[j])) {
+        j++;
+    }
+    if (j === i) {
+        return null;
+    } else {
+        return children.splice(i, j - i);
+    }
+};
+
+/**
  * Take a list of nodes, build them in order, and return a list of the built
  * nodes. documentFragments are flattened into their contents, so the
  * returned list contains no fragments. `isRealGroup` is true if `expression`
@@ -74,23 +91,17 @@ const buildExpression = function(expression, options, isRealGroup) {
     // spacing (e.g., "add thick space between mord and mrel"). Since CSS
     // adjacency rules implement atom spacing, spaces should be invisible to
     // CSS. So we splice them out of `groups` and into the atoms themselves.
-    let spaces = null;
     for (let i = 0; i < groups.length; i++) {
-        if (isSpace(groups[i])) {
-            spaces = spaces || [];
-            spaces.push(groups[i]);
-            groups.splice(i, 1);
-            i--;
-        } else if (spaces) {
+        const spaces = spliceSpaces(groups, i);
+        if (spaces && i < groups.length) {
             if (groups[i] instanceof domTree.symbolNode) {
                 groups[i] = makeSpan([].concat(groups[i].classes), [groups[i]]);
             }
             buildCommon.prependChildren(groups[i], spaces);
-            spaces = null;
+        } else if (spaces) {
+            Array.prototype.push.apply(groups, spaces);
+            break;
         }
-    }
-    if (spaces) {
-        Array.prototype.push.apply(groups, spaces);
     }
 
     // Binary operators change to ordinary symbols in some contexts.
@@ -1278,11 +1289,17 @@ groupTypes.leftright = function(group, options) {
     // Handle middle delimiters
     if (hadMiddle) {
         for (let i = 1; i < inner.length; i++) {
-            if (inner[i].isMiddle) {
+            const middleDelim = inner[i];
+            if (middleDelim.isMiddle) {
                 // Apply the options that were active when \middle was called
                 inner[i] = delimiter.leftRightDelim(
-                    inner[i].isMiddle.value, innerHeight, innerDepth,
-                    inner[i].isMiddle.options, group.mode, []);
+                    middleDelim.isMiddle.value, innerHeight, innerDepth,
+                    middleDelim.isMiddle.options, group.mode, []);
+                // Add back spaces shifted into the delimiter
+                const spaces = spliceSpaces(middleDelim.children, 0);
+                if (spaces) {
+                    buildCommon.prependChildren(inner[i], spaces);
+                }
             }
         }
     }
