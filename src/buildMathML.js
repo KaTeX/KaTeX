@@ -63,13 +63,19 @@ const getVariant = function(group, options) {
  */
 const groupTypes = {};
 
+const defaultVariant = {
+    "mi": "italic",
+    "mn": "normal",
+    "mtext": "normal",
+};
+
 groupTypes.mathord = function(group, options) {
     const node = new mathMLTree.MathNode(
         "mi",
         [makeText(group.value, group.mode)]);
 
-    const variant = getVariant(group, options);
-    if (variant) {
+    const variant = getVariant(group, options) || "italic";
+    if (variant !== defaultVariant[node.type]) {
         node.setAttribute("mathvariant", variant);
     }
     return node;
@@ -90,7 +96,7 @@ groupTypes.textord = function(group, options) {
     } else {
         node = new mathMLTree.MathNode("mi", [text]);
     }
-    if (options.font) {
+    if (variant !== defaultVariant[node.type]) {
         node.setAttribute("mathvariant", variant);
     }
 
@@ -151,6 +157,10 @@ groupTypes.ordgroup = function(group, options) {
 
 groupTypes.text = function(group, options) {
     const body = group.value.body;
+
+    // Convert each element of the body into MathML, and combine consecutive
+    // <mtext> outputs into a single <mtext> tag.  In this way, we don't
+    // nest non-text items (e.g., $nested-math$) within an <mtext>.
     const inner = [];
     let currentText = null;
     for (let i = 0; i < body.length; i++) {
@@ -164,6 +174,9 @@ groupTypes.text = function(group, options) {
             }
         }
     }
+
+    // If there is a single tag in the end (presumably <mtext>),
+    // just return it.  Otherwise, wrap them in an <mrow>.
     if (inner.length === 1) {
         return inner[0];
     } else {

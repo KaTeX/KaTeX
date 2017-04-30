@@ -1539,7 +1539,7 @@ describe("A MathML font tree-builder", function() {
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         expect(markup).toContain("<mi mathvariant=\"double-struck\">A</mi>");
         expect(markup).toContain("<mi>x</mi>");
-        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
         expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
@@ -1552,7 +1552,7 @@ describe("A MathML font tree-builder", function() {
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         expect(markup).toContain("<mi mathvariant=\"normal\">A</mi>");
         expect(markup).toContain("<mi mathvariant=\"normal\">x</mi>");
-        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
         expect(markup).toContain("<mi>\u0131</mi>");   // \imath
@@ -1563,12 +1563,12 @@ describe("A MathML font tree-builder", function() {
         const tex = "\\mathit{" + contents + "}";
         const tree = getParsed(tex);
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
-        expect(markup).toContain("<mi mathvariant=\"italic\">A</mi>");
-        expect(markup).toContain("<mi mathvariant=\"italic\">x</mi>");
+        expect(markup).toContain("<mi>A</mi>");
+        expect(markup).toContain("<mi>x</mi>");
         expect(markup).toContain("<mn mathvariant=\"italic\">2</mn>");
-        expect(markup).toContain("<mi mathvariant=\"italic\">\u03c9</mi>");   // \omega
-        expect(markup).toContain("<mi mathvariant=\"italic\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi mathvariant=\"italic\">\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
+        expect(markup).toContain("<mi>\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1623,7 +1623,7 @@ describe("A MathML font tree-builder", function() {
         // MathJax marks everything below as "script" except \omega
         // We don't have these glyphs in "script" and neither does MathJax
         expect(markup).toContain("<mi>x</mi>");
-        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
         expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
