@@ -93,14 +93,20 @@ const buildExpression = function(expression, options, isRealGroup) {
     // CSS. So we splice them out of `groups` and into the atoms themselves.
     for (let i = 0; i < groups.length; i++) {
         const spaces = spliceSpaces(groups, i);
-        if (spaces && i < groups.length) {
-            if (groups[i] instanceof domTree.symbolNode) {
-                groups[i] = makeSpan([].concat(groups[i].classes), [groups[i]]);
+        if (spaces) {
+            // Splicing of spaces may have removed all remaining groups.
+            if (i < groups.length) {
+                // If there is a following group, move space within it.
+                if (groups[i] instanceof domTree.symbolNode) {
+                    groups[i] = makeSpan([].concat(groups[i].classes),
+                        [groups[i]]);
+                }
+                buildCommon.prependChildren(groups[i], spaces);
+            } else {
+                // Otherwise, put any spaces back at the end of the groups.
+                Array.prototype.push.apply(groups, spaces);
+                break;
             }
-            buildCommon.prependChildren(groups[i], spaces);
-        } else if (spaces) {
-            Array.prototype.push.apply(groups, spaces);
-            break;
         }
     }
 
