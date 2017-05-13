@@ -1,1 +1,2316 @@
-<!DOCTYPE html><html lang="en"><head>    <meta charset="utf-8">    <meta name="viewport" content="initial-scale=1">    <title>Function Support in KaTeX</title>    <link rel="icon" href="http://khan.github.io/favicon.ico">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script><style type="text/css">* { margin:0; padding:0; }  /* reset */body { font-family: Calibri, Arial, Helvetica, sans-serif; }@media all {body {font-size: 18px;}}@media (max-width:767px){body {font-size: 16px;}}#main {  position: absolute;  top: 0;  padding: 0px 2.5px 0px 2.5px;}#sidebar {  position: fixed;  top: 0;  margin: 0px 2.5px 0px 2.5px;  overflow:fixed;}@media all {  #sidebar {left:  40px; width: 160px; }  #main    {left: 220px; width:600px; }}@media (max-width:767px) {  #sidebar {left: 0px; width:  5%; }  #main    {left:  7%; width: 90%; }}h1, h2, h3 {  font-family: Verdana, sans-serif;  font-variant: small-caps;  letter-spacing: 0.05em;  margin-top: 3em;}h1 { font-size: 140%; margin-top: 1em; }h2 { font-size: 110%; margin-bottom: 0.5em; margin-top: 2em; }h3 { font-size: 110%; margin-bottom: 0.5em; margin-top: 0.5em; }p {  margin-top: 0.5em;  line-height: 1.35;  text-align: justify;}/* Style subscripts and superscripts to avoid wide line spacing. */sub, sup {  font-size: 75%;  line-height: 0;  position: relative;  vertical-align: baseline;}sup { top: -0.5em; }sub { bottom: -0.25em; }.katex      { font-size: 1em !important; }.katex-html { margin-top: 0.3em; margin-bottom: 0.3em; }.indented   { margin-left: 0.8em; }.reduced    { font-size:60%; }.footer     { margin-top:   3em;  text-align: center; font-size: 70%; }table {  border-collapse: collapse;  width: auto;}table td {  padding: 0.3em 0.8em 0.3em 0.8em;  text-align: left;  vertical-align: center;  hyphens: none; }table th {  font-size: 95%;  padding: 0.3rem 0.5rem 0.3rem 0.5rem;  line-height: 1.05;  text-align: left;  border-bottom: 1px solid #ccc;}table.symbol td:nth-child(odd) {  font-family: KaTeX_Main, KaTeX_AMS;  font-size: 110%;  font-weight: normal;  font-style: normal;  text-align: center;  padding: 0.1em 0.4em 0.1em 0.8em;}table.all-code,table.explain td:nth-child(1),table.symbol td:nth-child(even) {  font-size: 80%;  font-family: Consolas, "Courier New", monospace;  padding-left: 0em;}table#math-tbl  td:nth-child(6) {border-right: solid 1px; }table#style-tbl td:nth-child(3) {  font-family: Calibri, Helvetica, sans-serif;  font-size: 1.1rem;  text-align: left;}table.tall td {height: 2.5em;}.footer table { margin: auto; width: 75%;}.footer table td {text-align: center;}a {  text-decoration: underline;  color: inherit;}pre {  margin: 0px;  padding: 12px 12px 12px 12px;  line-height: 1.5;  display: block;  overflow: auto;}code {  font-family: Consolas,"Courier New",Courier,monospace;  font-size: 85%;  color: #404040;}/* Table of Contents, sidebar version */#sidebar {  cursor: pointer;  font-family: Calibri, sans-serif;  background:#fff;}#sidebar li {  list-style: none;  line-height: 1.35;  position: relative;  left: 0em;}#sidebar ul li li { left: 1.4em; width:88%; }#sidebar a,#mobile-nav a {  text-decoration: none;  color: inherit;}#toc li ul         { display: none; }      /* default is closed */#toc li.li-open ul { display: block; }     /* opened by a click *//* Table of Contents, mobile version */#mobile-nav {  display: none;     /* hidden on large screens */  position: fixed;}/* On small screens, switch from sidebar TOC to navicon and drop-down menu */@media screen and (max-width: 767px) {  #mobile-nav  { display: block; }  #sidebar     { display: none;}  .margin-note { position : absolute; top: -9999px; left: -9999px; color: black; display: block; }  .margin-indicator:focus .margin-note { position : inherit; }  .margin-note:hover                   { position : inherit; }  .margin-note:focus                   { position : inherit; }}#mobile-menu {  position: absolute;  top: -9999px;  left: -9999px;  display: block;  background:#fff;  border:1px solid #aaa;  padding-right: 3em;}#mobile-menu.menu-on { position : inherit; }#mobile-nav li {  list-style: none;  margin: 0;  padding: 0.2em;}#mobile-nav li a { width: 60px; }</style></head><body><div id="main">       <!-- excludes sidebar and mobile-nav --><h1 id="top">Function Support in <span style="font-size:130%;">\(\KaTeX\)</span></h1>    <p>This is a list of TeX functions supported by KaTeX. It is sorted into logical groups.</p><h2 id="accents">Accents</h2>    <table class="symbol">        <tr>            <td>\(a'\)</td>            <td>a'</td>            <td>\(\bar{y}\)</td>            <td>\bar{y}</td>            <td>\(\ddot{a}\)</td>            <td>\ddot{a}</td>            <td>\(\vec{F}\)</td>            <td>\vec{F}</td>        </tr>        <tr>            <td>\(a''\)</td>            <td>a''</td>            <td>\(\breve{a}\)</td>            <td>\breve{a}</td>            <td>\(\grave{a}\)</td>            <td>\grave{a}</td>            <td>\(\overline{AB}\)</td>            <td>\overline{AB}</td>        </tr>        <tr>            <td>\(a^{\prime}\)</td>            <td>a^{\prime}</td>            <td>\(\check{a}\)</td>            <td>\check{a}</td>            <td>\(\hat{\theta}\)</td>            <td>\hat{\theta}</td>            <td>\(\underline{AB}\)</td>            <td>\underline{AB}</td>        </tr>        <tr>            <td>\(\acute{a}\)</td>            <td>\acute{a}</td>            <td>\(\dot{a}\)</td>            <td>\dot{a}</td>            <td>\(\tilde{a}\)</td>            <td>\tilde{a}</td>            <td></td>            <td></td>        </tr>    </table><h2 id="delimiters">Delimiters</h2>    <table class="symbol tall">        <tr>            <td>\((\,)\)</td>            <td>( )</td>            <td>\(\lgroup\:\rgroup\)</td>            <td>\lgroup<br>\rgroup</td>            <td>\(\lceil\:\rceil\)</td>            <td>\lceil<br>\rceil</td>            <td>\(\uparrow\)</td>            <td>\uparrow</td>        </tr>        <tr>            <td>\([\:]\)</td>            <td>[ ]</td>            <td>\(\lbrack\:\rbrack\)</td>            <td>\lbrack<br>\rbrack</td>            <td>\(\lfloor\:\rfloor\)</td>            <td>\lfloor<br>\rfloor</td>            <td>\(\downarrow\)</td>            <td>\downarrow</td>        </tr>        <tr>            <td>\(\{\,\}\)</td>            <td>\{&nbsp;\}</td>            <td>\(\lbrace\:\rbrace\)</td>            <td>\lbrace<br>\rbrace</td>            <td>\(\ulcorner \urcorner\)</td>            <td>\ulcorner<br>\urcorner</td>            <td>\(\updownarrow\)</td>            <td>\updownarrow</td>        </tr>        <tr>            <td>\(\langle\:\rangle\)</td>            <td>\langle<br>\rangle</td>            <td>\(\lt\:\gt\)</td>            <td>\lt<br>\gt</td>            <td>\(\llcorner \lrcorner\)</td>            <td>\llcorner<br>\lrcorner</td>            <td>\(\Uparrow\)</td>            <td>\Uparrow</td>        </tr>        <tr>            <td>\(|\)</td>            <td>|</td>            <td>\(\vert\)</td>            <td>\vert</td>            <td>\(\backslash\)</td>            <td>\backslash</td>            <td>\(\Downarrow\)</td>            <td>\Downarrow</td>        </tr>        <tr>            <td>\(\|\)</td>            <td>\|</td>            <td>\(\Vert\)</td>            <td>\Vert</td>            <td>\(\lmoustache\:\rmoustache\)</td>            <td>\lmoustache<br>\rmoustache</td>            <td>\(\Updownarrow\)</td>            <td>\Updownarrow</td>        </tr>        <tr>            <td>\(\lvert\;\rvert\)</td>            <td>\lvert<br>\rvert</td>            <td>\(\lVert\;\rVert\)</td>            <td>\lVert<br>\rVert</td>            <td></td>            <td>\left.</td>            <td></td>            <td>\right.</td>        </tr>    </table><h3 id="delimiter-sizing">Delimiter Sizing</h3>    <table class="all-code">        <tr>            <td rowspan="2">\(\left(\LARGE{AB}\right)\)</td>            <td rowspan="2" style="border-right: solid 1px;">\left( \LARGE{AB} \right)</td>            <td>\left</td>            <td>\big</td>            <td>\bigl</td>            <td>\bigr</td>        </tr>        <tr>            <td>\middle</td>            <td>\Big</td>            <td>\Bigl</td>            <td>\Bigr</td>        </tr>        <tr>            <td rowspan="2">\(( \big( \Big( \bigg( \Bigg(\)</td>            <td rowspan="2" style="border-right: solid 1px;">( \big( \Big( \bigg( \Bigg(</td>            <td>\right</td>            <td>\bigg</td>            <td>\biggl</td>            <td>\biggr</td>        </tr>        <tr>            <td></td>            <td>\Bigg</td>            <td>\Biggl</td>            <td>\Biggr</td>        </tr>    </table><h2 id="environments">Environments</h2>    <table class="symbol">        <tr>            <td>\(\begin{matrix} a & b \\ c & d \end{matrix}\)</td>            <td>                <pre><code>\begin{matrix}   a &amp; b \\   c &amp; d\end{matrix}</code></pre>            </td>            <td>\(\begin{array}{c|c} a & b \\ c & d \end{array}\)</td>            <td>                <pre><code>\begin{array}{c|c}   a &amp; b \\   c &amp; d\end{array}</code></pre>            </td>        </tr>        <tr>            <td>\(\begin{pmatrix} a & b \\ c & d \end{pmatrix}\)</td>            <td>                <pre><code>\begin{pmatrix}   a &amp; b \\   c &amp; d\end{pmatrix}</code></pre>            </td>            <td>\(\begin{bmatrix} a & b \\ c & d \end{bmatrix}\)</td>            <td>                <pre><code>\begin{bmatrix}   a &amp; b \\   c &amp; d\end{bmatrix}</code></pre>            </td>        </tr>        <tr>            <td>\(\begin{vmatrix} a & b \\ c & d \end{vmatrix}\)</td>            <td>                <pre><code>\begin{vmatrix}   a &amp; b \\   c &amp; d\end{vmatrix}</code></pre>            </td>            <td>\(\begin{Vmatrix} a & b \\ c & d \end{Vmatrix}\)</td>            <td>                <pre><code>\begin{Vmatrix}   a &amp; b \\   c &amp; d\end{Vmatrix}</code></pre>            </td>        </tr>        <tr>            <td>\(\begin{Bmatrix} a & b \\ c & d \end{Bmatrix}\)</td>            <td>                <pre><code>\begin{Bmatrix}   a &amp; b \\   c &amp; d\end{Bmatrix}</code></pre>            </td>            <td>\(x = \begin{cases} a &\text{if } b \\ c &\text{if } d \end{cases}\)</td>            <td>                <pre><code>x = \begin{cases}   a &amp;\text{if } b  \\   c &amp;\text{if } d\end{cases}</code></pre>            </td>        </tr>        <tr>            <td></td><td></td>            <td>\(\begin{aligned} a&=b+c \\ d+e&=f \end{aligned}\)</td>            <td>                <pre><code>\begin{aligned}   a&amp;=b+c \\   d+e&=f\end{aligned}</code></pre>            </td>        </tr>    </table>    <div class="indented">        <p>Acceptable line separators include: <code>\\</code>, <code>\cr</code>, and <code>\\[<em>distance</em>]</code>. <em>Distance</em> can be written with units of <code>em</code>, <code>ex</code>, or<code> mu</code>.</p>        <p>The <code>{array}</code> environment does not yet support <code>\hline</code>.</p>        <p><code>{darray}</code> and <code>{dcases}</code> are committed to master but are not part of the latest release.</p>    </div><h2 id="letters">Greek Letters</h2>    <table class="symbol">        <tr>            <td>Γ</td>            <td>\Gamma</td>            <td>Δ</td>            <td>\Delta</td>            <td>Θ</td>            <td>\Theta</td>            <td>Λ</td>            <td>\Lambda</td>        </tr>        <tr>            <td>Ξ</td>            <td>\Xi</td>            <td>Π</td>            <td>\Pi</td>            <td>Σ</td>            <td>\Sigma</td>            <td>Υ</td>            <td>\Upsilon</td>        </tr>        <tr>            <td>Φ</td>            <td>\Phi</td>            <td>Ψ</td>            <td>\Psi</td>            <td>Ω</td>            <td>\Omega</td>            <td></td>            <td></td>        </tr>        <tr>            <td>α</td>            <td>\alpha</td>            <td>β</td>            <td>\beta</td>            <td>γ</td>            <td>\gamma</td>            <td>δ</td>            <td>\delta</td>        </tr>        <tr>            <td>ϵ</td>            <td>\epsilon</td>            <td>ζ</td>            <td>\zeta</td>            <td>η</td>            <td>\eta</td>            <td>θ</td>            <td>\theta</td>        </tr>        <tr>            <td>ι</td>            <td>\iota</td>            <td>κ</td>            <td>\kappa</td>            <td>λ</td>            <td>\lambda</td>            <td>μ</td>            <td>\mu</td>        </tr>        <tr>            <td>ν</td>            <td>\nu</td>            <td>ξ</td>            <td>\xi</td>            <td>o</td>            <td>\omicron</td>            <td>π</td>            <td>\pi</td>        </tr>        <tr>            <td>ρ</td>            <td>\rho</td>            <td>σ</td>            <td>\sigma</td>            <td>τ</td>            <td>\tau</td>            <td>υ</td>            <td>\upsilon</td>        </tr>        <tr>            <td>ϕ</td>            <td>\phi</td>            <td>χ</td>            <td>\chi</td>            <td>ψ</td>            <td>\psi</td>            <td>ω</td>            <td>\omega</td>        </tr>        <tr>            <td>ε</td>            <td>\varepsilon</td>            <td>ϰ</td>            <td>\varkappa</td>            <td>ϑ</td>            <td>\vartheta</td>            <td>ϖ</td>            <td>\varpi</td>        </tr>        <tr>            <td>ϱ</td>            <td>\varrho</td>            <td>ς</td>            <td>\varsigma</td>            <td>φ</td>            <td>\varphi</td>            <td>ϝ</td>            <td>\digamma</td>        </tr>    </table><h3 id="other-letters">Other Letters</h3>    <table class="symbol">        <tr>            <td>\(\imath\)</td>            <td>\imath</td>            <td>\(\jmath\)</td>            <td>\jmath</td>            <td>ℵ</td>            <td>\aleph</td>            <td>ℶ</td>            <td>\beth</td>            <td>ℷ</td>            <td>\gimel</td>        </tr>        <tr>            <td>ℸ</td>            <td>\daleth</td>            <td>ð</td>            <td>\eth</td>            <td>Ⅎ</td>            <td>\Finv</td>            <td>⅁</td>            <td>\Game</td>            <td>ℓ</td>            <td>\ell</td>        </tr>        <tr>            <td>ℏ</td>            <td>\hbar</td>            <td>ℏ</td>            <td>\hslash</td>            <td>ℑ</td>            <td>\Im</td>            <td>ℜ</td>            <td>\Re</td>            <td>℘</td>            <td>\wp</td>        </tr>        <tr>            <td>∂</td>            <td>\partial</td>            <td>∇</td>            <td>\nabla</td>            <td></td>            <td></td>            <td></td>            <td></td>            <td></td>            <td></td>        </tr>    </table>    <p class="indented"><code>\text{…}</code> will accept characters from <a href="http://www.unicode.org/charts/PDF/U0080.pdf">Latin-1</a>, <a href="http://unicode.org/charts/PDF/U0400.pdf">Cyrillic</a>, or CJK (Hiragana, Katakana, CJK ideograms, and Hangul).</p><h2 id="overlap">Overlap</h2>    <table class="symbol">        <tr>            <td>\({=}\llap{/\,}\)</td>  <td>&nbsp;&nbsp;&nbsp;{=}<strong>\llap</strong>{/\,}</td>        </tr>        <tr>            <td>\(\rlap{\,/}{=}\)</td>   <td>&nbsp;&nbsp;&nbsp;<strong>\rlap</strong>{\,/}{=}</td>        </tr>    </table><h3 id="spacing">Spacing</h3>    <table class="explain">        <thead>        <tr>            <th>Function</th>            <th>Produces</th>        </tr>        </thead>        <tbody>            <tr>                <td>\!</td>         <td>– ³∕₁₈ em space</td>            </tr>            <tr>                <td>\,</td>         <td>³∕₁₈ em space</td>            </tr>            <tr>                <td>\:</td>         <td>⁴∕₁₈ em space</td>            </tr>            <tr>                <td>\;</td>         <td>⁵∕₁₈ em space</td>            </tr>            <tr>                <td>\enspace</td>   <td>½ em space</td>            </tr>            <tr>                <td>\quad</td>      <td>1 em space</td>            </tr>            <tr>                <td>\qquad</td>     <td>2 em space</td>            </tr>            <tr>                <td>~</td>          <td>non-breaking space</td>            </tr>            <tr>                <td>\space</td>     <td>non-breaking space</td>            </tr>            <tr>                <td>\<em>space</em></td>                <td>non-breaking space</td>            </tr>            <tr>                <td>\phantom{<em>content</em>}</td>                <td>space the width and height of <em>content</em></td>            </tr>            <tr>                <td>\kern{<em>distance</em>}</td>                <td>space, width = <em>distance</em> <br>Accepts <code>em</code>, <code>ex</code>, or<code> mu</code> units.</td>            </tr>        </tbody>    </table><h3 id="vertical">Vertical Layout</h3>    <table class="symbol">        <tr>            <td>\(x_n\)</td>            <td>x_n</td>            <td>\(\stackrel{!}{=}\)</td>            <td>\stackrel{!}{=}</td>            <td>\( a \atop b \)</td>            <td>a \atop b</td>        </tr>        <tr>            <td>\(e^x\)</td>            <td>e^x</td>            <td></td>            <td>\overset{!}{=}</td>            <td></td>            <td></td>        </tr>        <tr>            <td>\(_u^o\)</td>            <td>_u^o</td>            <td></td>            <td>\underset{!}{=}</td>            <td></td>            <td></td>        </tr>    </table>    <div class="indented">        <p>Also see <a href="#environments">environments</a>.</p>        <p><code>\overset</code> and <code>\underset</code> are committed to master but are not yet included in the latest release.</p>    </div><h2 id="logic">Logic and Set Theory</h2>    <table class="symbol">        <tr>            <td>∀</td>            <td>\forall</td>            <td>∁</td>            <td>\complement</td>            <td>∴</td>            <td>\therefore</td>            <td>¬</td>            <td>\neg or \lnot</td>        </tr>        <tr>            <td>∃</td>            <td>\exists</td>            <td>⊂</td>            <td>\subset</td>            <td>∵</td>            <td>\because</td>            <td>∅</td>            <td>\emptyset or \varnothing</td>        </tr>        <tr>            <td>∄</td>            <td>\nexists</td>            <td>⊃</td>            <td>\supset</td>            <td>↦</td>            <td>\mapsto</td>            <td></td>            <td></td>        </tr>        <tr>            <td>∈</td>            <td>\in</td>            <td>∣</td>            <td>\mid</td>            <td>→</td>            <td>\to</td>            <td>⟹</td>            <td>\implies†</td>        </tr>        <tr>            <td>∉</td>            <td>\notin</td>            <td>∧</td>            <td>\land</td>            <td>←</td>            <td>\gets</td>            <td>⟸</td>            <td>\impliedby†</td>        </tr>        <tr>            <td>∋</td>            <td>\ni</td>            <td>∨</td>            <td>\lor</td>            <td>↔</td>            <td>\leftrightarrow</td>            <td>⟺</td>            <td>\iff†</td>        </tr>    </table>    <div class="indented">        <p>See also <a href="#relations">relations</a> and <a href="#binary">binary operators</a>.</p>        <p>†<code>\iff</code>, <code>\implies</code>, and <code>\impliedby</code> have a pending pull request but are not yet included in the latest release.</p>    </div><h2 id="big">Big Operators</h2>    <table class="symbol">        <tr>            <td>\(\sum\)</td>            <td>\sum</td>            <td>\(\prod\)</td>            <td>\prod</td>            <td>\(\bigvee\)</td>            <td>\bigvee</td>            <td>\(\bigotimes\)</td>            <td>\bigotimes</td>        </tr>        <tr>            <td>\(\int\)</td>            <td>\int</td>            <td>\(\coprod\)</td>            <td>\coprod</td>            <td>\(\bigwedge\)</td>            <td>\bigwedge</td>            <td>\(\bigoplus\)</td>            <td>\bigoplus</td>        </tr>        <tr>            <td>\(\iint\)</td>            <td>\iint</td>            <td>\(\intop\)</td>            <td>\intop</td>            <td>\(\bigcap\)</td>            <td>\bigcap</td>            <td>\(\bigodot\)</td>            <td>\bigodot</td>        </tr>        <tr>            <td>\(\iiint\)</td>            <td>\iiint</td>            <td>\(\smallint\)</td>            <td>\smallint</td>            <td>\(\bigcup\)</td>            <td>\bigcup</td>            <td>\(\biguplus\)</td>            <td>\biguplus</td>        </tr>        <tr>            <td>\(\oint\)</td>            <td>\oint</td>            <td>\(\)</td>            <td></td>            <td>\(\bigsqcup\)</td>            <td>\bigsqcup</td>            <td>\(\)</td>            <td></td>        </tr>    </table><h3 id="binary">Binary Operators</h3>    <!-- Scripts for: \centerdot, \pmod, \pod, and \smallsetminus -->    <table class="symbol">        <tr>            <td>+</td>            <td>+</td>            <td>⋅</td>            <td>\cdotp</td>            <td>⊺</td>            <td>\intercal</td>            <td>\(x \pod a\)</td>            <td>x \pod a</td>        </tr>        <tr>            <td>−</td>            <td>-</td>            <td>\(\centerdot\)</td>            <td>\centerdot</td>            <td>∧</td>            <td>\land</td>            <td>⊳</td>            <td>\rhd</td>        </tr>        <tr>            <td>/</td>            <td>/</td>            <td>∘</td>            <td>\circ</td>            <td>⋋</td>            <td>\leftthreetimes</td>            <td>⋌</td>            <td>\rightthreetimes</td>        </tr>        <tr>            <td>∗</td>            <td>&ast;</td>            <td>⊛</td>            <td>\circledast</td>            <td>.</td>            <td>\ldotp</td>            <td>⋊</td>            <td>\rtimes</td>        </tr>        <tr>            <td>⨿</td>            <td>\amalg</td>            <td>⊚</td>            <td>\circledcirc</td>            <td>∨</td>            <td>\lor</td>            <td>∖</td>            <td>\setminus</td>        </tr>        <tr>            <td>∗</td>            <td>\ast</td>            <td>⊝</td>            <td>\circleddash</td>            <td>⋖</td>            <td>\lessdot</td>            <td>\(\smallsetminus\)</td>            <td>\smallsetminus</td>        </tr>        <tr>            <td>⊼</td>            <td>\barwedge</td>            <td>⋓</td>            <td>\Cup</td>            <td>⊲</td>            <td>\lhd</td>            <td>⊓</td>            <td>\sqcap</td>        </tr>        <tr>            <td>◯</td>            <td>\bigcirc</td>            <td>∪</td>            <td>\cup</td>            <td>⋉</td>            <td>\ltimes</td>            <td>⊔</td>            <td>\sqcup</td>        </tr>        <tr>            <td>mod</td>            <td>\bmod</td>            <td>⋎</td>            <td>\curlyvee</td>            <td>mod</td>            <td>\mod</td>            <td>×</td>            <td>\times</td>        </tr>        <tr>            <td>⊡</td>            <td>\boxdot</td>            <td>⋏</td>            <td>\curlywedge</td>            <td>∓</td>            <td>\mp</td>            <td>⊴</td>            <td>\unlhd</td>        </tr>        <tr>            <td>⊟</td>            <td>\boxminus</td>            <td>÷</td>            <td>\div</td>            <td>⊙</td>            <td>\odot</td>            <td>⊵</td>            <td>\unrhd</td>        </tr>        <tr>            <td>⊞</td>            <td>\boxplus</td>            <td>⋇</td>            <td>\divideontimes</td>            <td>⊖</td>            <td>\ominus</td>            <td>⊎</td>            <td>\uplus</td>        </tr>        <tr>            <td>⊠</td>            <td>\boxtimes</td>            <td>∔</td>            <td>\dotplus</td>            <td>⊕</td>            <td>\oplus</td>            <td>∨</td>            <td>\vee</td>        </tr>        <tr>            <td>∙</td>            <td>\bullet</td>            <td>⩞</td>            <td>\doublebarwedge</td>            <td>⊗</td>            <td>\otimes</td>            <td>⊻</td>            <td>\veebar</td>        </tr>        <tr>            <td>⋒</td>            <td>\Cap</td>            <td>⋒</td>            <td>\doublecap</td>            <td>⊘</td>            <td>\oslash</td>            <td>∧</td>            <td>\wedge</td>        </tr>        <tr>            <td>∩</td>            <td>\cap</td>            <td>⋓</td>            <td>\doublecup</td>            <td>±</td>            <td>\pm</td>            <td>≀</td>            <td>\wr</td>        </tr>        <tr>            <td>⋅</td>            <td>\cdot</td>            <td>⋗</td>            <td>\gtrdot</td>            <td>\(x \pmod a\)</td>            <td>x \pmod a</td>            <td></td>            <td></td>        </tr>    </table><h3 id="binomial">Binomial Coefficients</h3>    <table class="symbol">        <tr>            <td>\(\binom{n}{k}\)</td>            <td>\binom{n}{k}</td>            <td>\(\dbinom{n}{k}\)</td>            <td>\dbinom{n}{k}</td>            <td>\(\left\langle n \atop k \right\rangle\)</td>            <td>\left\langle<br>n \atop k<br>\right\rangle</td>        </tr>        <tr>            <td>\({n}\choose{k}\)</td>            <td>{n}\choose{k}</td>            <td>\(\tbinom{n}{k}\)</td>            <td>\tbinom{n}{k}</td>            <td></td>            <td></td>        </tr>    </table><h3 id="fractions">Fractions</h3>    <table class="symbol">        <tr>            <td>\(\frac{a}{b}\)</td>            <td>\frac{a}{b}</td>            <td>\(\dfrac{a}{b}\)</td>            <td>\dfrac{a}{b}</td>            <td>\({a}/{b}\)</td>            <td>{a}/{b}</td>        </tr>        <tr>            <td>\({a}\over{b}\)</td>            <td>{a}\over{b}</td>            <td>\(\tfrac{a}{b}\)</td>            <td>\tfrac{a}{b}</td>            <td></td>            <td></td>        </tr>    </table><h3 id="math">Math Operators</h3>    <table id="math-tbl" class="symbol">        <tr>            <td>arcsin</td>            <td>\arcsin</td>            <td>cotg</td>            <td>\cotg†</td>            <td>ln</td>            <td>\ln</td>            <td>det</td>            <td>\det</td>        </tr>        <tr>            <td>arccos</td>            <td>\arccos</td>            <td>coth</td>            <td>\coth†</td>            <td>log</td>            <td>\log</td>            <td>gcd</td>            <td>\gcd</td>        </tr>        <tr>            <td>arctan</td>            <td>\arctan</td>            <td>csc</td>            <td>\csc</td>            <td>sec</td>            <td>\sec</td>            <td>inf</td>            <td>\inf</td>        </tr>        <tr>            <td>arctg</td>            <td>\arctg†</td>            <td>ctg</td>            <td>\ctg†</td>            <td>sin</td>            <td>\sin</td>            <td>lim</td>            <td>\lim</td>        </tr>        <tr>            <td>arcctg</td>            <td>\arcctg†</td>            <td>cth</td>            <td>\cth†</td>            <td>sinh</td>            <td>\sinh</td>            <td>liminf</td>            <td>\liminf</td>        </tr>        <tr>            <td>arg</td>            <td>\arg</td>            <td>deg</td>            <td>\deg</td>            <td>sh</td>            <td>\sh†</td>            <td>limsup</td>            <td>\limsup</td>        </tr>        <tr>            <td>ch</td>            <td>\ch†</td>            <td>dim</td>            <td>\dim</td>            <td>tan</td>            <td>\tan</td>            <td>max</td>            <td>\max</td>        </tr>        <tr>            <td>cos</td>            <td>\cos</td>            <td>exp</td>            <td>\exp</td>            <td>tanh</td>            <td>\tanh</td>            <td>min</td>            <td>\min</td>        </tr>        <tr>            <td>cosec</td>            <td>\cosec</td>            <td>hom</td>            <td>\hom</td>            <td>tg</td>            <td>\tg†</td>            <td>Pr</td>            <td>\Pr</td>        </tr>        <tr>            <td>cosh</td>            <td>\cosh</td>            <td>ker</td>            <td>\ker</td>            <td>th</td>            <td>\th†</td>            <td>sup</td>            <td>\sup</td>        </tr>        <tr>            <td>cot</td>            <td>\cot</td>            <td>lg</td>            <td>\lg</td>            <td></td>            <td></td>            <td></td>            <td></td>        </tr>    </table>    <div class="indented">        <p>Functions on the right side of this table can take <a href="#limits">\limits</a>.<span style="position:relative; top:-0.6em;">↗</span><br>        † committed to master but not in the most recent release.</p>    </div><h3 id="sqrt">Sqrt</h3>    <table class="symbol">        <tr>            <td>\(\sqrt{x}\)</td>            <td>&nbsp;\sqrt{x}</td>        </tr>        <tr>            <td>\(\sqrt[3]{x}\)</td>            <td>&nbsp;\sqrt[3]{x}</td>        </tr>    </table><h2 id="relations">Relations</h2>    <!-- This table has scripts for \smallfrown & \smallsmile -->    <table class="symbol">        <tr>            <td>=</td>            <td>=</td>            <td>≒</td>            <td>\fallingdotseq</td>            <td>⋘</td>            <td>\lll</td>            <td>⊒</td>            <td>\sqsupseteq</td>        </tr>        <tr>            <td>&lt;</td>            <td>&lt;</td>            <td>⌢</td>            <td>\frown</td>            <td>⋘</td>            <td>\llless</td>            <td>⋐</td>            <td>\Subset</td>        </tr>        <tr>            <td>&gt;</td>            <td>&gt;</td>            <td>≥</td>            <td>\ge</td>            <td>&lt;</td>            <td>\lt</td>            <td>⊂</td>            <td>\subset</td>        </tr>        <tr>            <td>:</td>            <td>:</td>            <td>≥</td>            <td>\geq</td>            <td>∣</td>            <td>\mid</td>            <td>⊆</td>            <td>\subseteq</td>        </tr>        <tr>            <td>≈</td>            <td>\approx</td>            <td>≧</td>            <td>\geqq</td>            <td>⊨</td>            <td>\models</td>            <td>⫅</td>            <td>\subseteqq</td>        </tr>        <tr>            <td>≊</td>            <td>\approxeq</td>            <td>⩾</td>            <td>\geqslant</td>            <td>⊸</td>            <td>\multimap</td>            <td>≻</td>            <td>\succ</td>        </tr>        <tr>            <td>≍</td>            <td>\asymp</td>            <td>≫</td>            <td>\gg</td>            <td>∋</td>            <td>\owns</td>            <td>⪸</td>            <td>\succapprox</td>        </tr>        <tr>            <td>∍</td>            <td>\backepsilon</td>            <td>⋙</td>            <td>\ggg</td>            <td>∥</td>            <td>\parallel</td>            <td>≽</td>            <td>\succcurlyeq</td>        </tr>        <tr>            <td>∽</td>            <td>\backsim</td>            <td>⋙</td>            <td>\gggtr</td>            <td>⊥</td>            <td>\perp</td>            <td>⪰</td>            <td>\succeq</td>        </tr>        <tr>            <td>⋍</td>            <td>\backsimeq</td>            <td>&gt;</td>            <td>\gt</td>            <td>⋔</td>            <td>\pitchfork</td>            <td>≿</td>            <td>\succsim</td>        </tr>        <tr>            <td>≬</td>            <td>\between</td>            <td>⪆</td>            <td>\gtrapprox</td>            <td>≺</td>            <td>\prec</td>            <td>⋑</td>            <td>\Supset</td>        </tr>        <tr>            <td>⋈</td>            <td>\bowtie</td>            <td>⋛</td>            <td>\gtreqless</td>            <td>⪷</td>            <td>\precapprox</td>            <td>⊃</td>            <td>\supset</td>        </tr>        <tr>            <td>≏</td>            <td>\bumpeq</td>            <td>⪌</td>            <td>\gtreqqless</td>            <td>≼</td>            <td>\preccurlyeq</td>            <td>⊇</td>            <td>\supseteq</td>        </tr>        <tr>            <td>≎</td>            <td>\Bumpeq</td>            <td>≷</td>            <td>\gtrless</td>            <td>⪯</td>            <td>\preceq</td>            <td>⫆</td>            <td>\supseteqq</td>        </tr>        <tr>            <td>≗</td>            <td>\circeq</td>            <td>≳</td>            <td>\gtrsim</td>            <td>≾</td>            <td>\precsim</td>            <td>≈</td>            <td>\thickapprox</td>        </tr>        <tr>            <td>≅</td>            <td>\cong</td>            <td>∈</td>            <td>\in</td>            <td>∝</td>            <td>\propto</td>            <td>∼</td>            <td>\thicksim</td>        </tr>        <tr>            <td>⋞</td>            <td>\curlyeqprec</td>            <td>⋈</td>            <td>\Join</td>            <td>≓</td>            <td>\risingdotseq</td>            <td>⊴</td>            <td>\trianglelefteq</td>        </tr>        <tr>            <td>⋟</td>            <td>\curlyeqsucc</td>            <td>≤</td>            <td>\le</td>            <td>∣</td>            <td>\shortmid</td>            <td>≜</td>            <td>\triangleq</td>        </tr>        <tr>            <td>⊣</td>            <td>\dashv</td>            <td>≤</td>            <td>\leq</td>            <td>∥</td>            <td>\shortparallel</td>            <td>⊵</td>            <td>\trianglerighteq</td>        </tr>        <tr>            <td>≐</td>            <td>\doteq</td>            <td>≦</td>            <td>\leqq</td>            <td>∼</td>            <td>\sim</td>            <td>∝</td>            <td>\varpropto</td>        </tr>        <tr>            <td>≑</td>            <td>\Doteq</td>            <td>⩽</td>            <td>\leqslant</td>            <td>≃</td>            <td>\simeq</td>            <td>△</td>            <td>\vartriangle</td>        </tr>        <tr>            <td>≑</td>            <td>\doteqdot</td>            <td>⪅</td>            <td>\lessapprox</td>            <td>\(\smallfrown\)</td>            <td>\smallfrown</td>            <td>⊲</td>            <td>\vartriangleleft</td>        </tr>        <tr>            <td>≖</td>            <td>\eqcirc</td>            <td>⋚</td>            <td>\lesseqgtr</td>            <td>\(\smallsmile\)</td>            <td>\smallsmile</td>            <td>⊳</td>            <td>\vartriangleright</td>        </tr>        <tr>            <td>≂</td>            <td>\eqsim</td>            <td>⪋</td>            <td>\lesseqqgtr</td>            <td>⌣</td>            <td>\smile</td>            <td>⊢</td>            <td>\vdash</td>        </tr>        <tr>            <td>⪖</td>            <td>\eqslantgtr</td>            <td>≶</td>            <td>\lessgtr</td>            <td>⊏</td>            <td>\sqsubset</td>            <td>⊨</td>            <td>\vDash</td>        </tr>        <tr>            <td>⪕</td>            <td>\eqslantless</td>            <td>≲</td>            <td>\lesssim</td>            <td>⊑</td>            <td>\sqsubseteq</td>            <td>⊩</td>            <td>\Vdash</td>        </tr>        <tr>            <td>≡</td>            <td>\equiv</td>            <td>≪</td>            <td>\ll</td>            <td>⊐</td>            <td>\sqsupset</td>            <td>⊪</td>            <td>\Vvdash</td>        </tr>    </table><h2 id="negated-relations">Negated Relations</h2>    <table class="symbol">        <tr>            <td>⪊</td>            <td>\gnapprox</td>            <td></td>            <td>\ngeqslant</td>            <td>⊈</td>            <td>\nsubseteq</td>            <td>⪵</td>            <td>\precneqq</td>        </tr>        <tr>            <td>⪈</td>            <td>\gneq</td>            <td>≯</td>            <td>\ngtr</td>            <td></td>            <td>\nsubseteqq</td>            <td>⋨</td>            <td>\precnsim</td>        </tr>        <tr>            <td>≩</td>            <td>\gneqq</td>            <td>∋</td>            <td>\ni</td>            <td>⊁</td>            <td>\nsucc</td>            <td>⊊</td>            <td>\subsetneq</td>        </tr>        <tr>            <td>⋧</td>            <td>\gnsim</td>            <td>≰</td>            <td>\nleq</td>            <td>⋡</td>            <td>\nsucceq</td>            <td>⫋</td>            <td>\subsetneqq</td>        </tr>        <tr>            <td></td>            <td>\gvertneqq</td>            <td></td>            <td>\nleqq</td>            <td>⊉</td>            <td>\nsupseteq</td>            <td>⪺</td>            <td>\succnapprox</td>        </tr>        <tr>            <td>⪉</td>            <td>\lnapprox</td>            <td></td>            <td>\nleqslant</td>            <td></td>            <td>\nsupseteqq</td>            <td>⪶</td>            <td>\succneqq</td>        </tr>        <tr>            <td>⪇</td>            <td>\lneq</td>            <td>≮</td>            <td>\nless</td>            <td>⋪</td>            <td>\ntriangleleft</td>            <td>⋩</td>            <td>\succnsim</td>        </tr>        <tr>            <td>≨</td>            <td>\lneqq</td>            <td>∤</td>            <td>\nmid</td>            <td>⋬</td>            <td>\ntrianglelefteq</td>            <td>⊋</td>            <td>\supsetneq</td>        </tr>        <tr>            <td>⋦</td>            <td>\lnsim</td>            <td>∉</td>            <td>\notin</td>            <td>⋫</td>            <td>\ntriangleright</td>            <td>⫌</td>            <td>\supsetneqq</td>        </tr>        <tr>            <td></td>            <td>\lvertneqq</td>            <td>∦</td>            <td>\nparallel</td>            <td>⋭</td>            <td>\ntrianglerighteq</td>            <td></td>            <td>\varsubsetneq</td>        </tr>        <tr>            <td>≆</td>            <td>\ncong</td>            <td>⊀</td>            <td>\nprec</td>            <td>⊬</td>            <td>\nvdash</td>            <td></td>            <td>\varsubsetneqq</td>        </tr>        <tr>            <td>≠</td>            <td>\ne</td>            <td>⋠</td>            <td>\npreceq</td>            <td>⊭</td>            <td>\nvDash</td>            <td></td>            <td>\varsupsetneq</td>        </tr>        <tr>            <td>≠</td>            <td>\neq</td>            <td></td>            <td>\nshortmid</td>            <td>⊯</td>            <td>\nVDash</td>            <td></td>            <td>\varsupsetneqq</td>        </tr>        <tr>            <td>≱</td>            <td>\ngeq</td>            <td></td>            <td>\nshortparallel</td>            <td>⊮</td>            <td>\nVdash</td>            <td></td>            <td></td>        </tr>        <tr>            <td>&#xe00e;</td>            <td>\ngeqq</td>            <td>≁</td>            <td>\nsim</td>            <td>⪹</td>            <td>\precnapprox</td>            <td></td>            <td></td>        </tr>    </table><h3 id="arrows">Arrows</h3>    <table class="symbol">        <tr>            <td>↺</td>            <td>\circlearrowleft</td>            <td>⇐</td>            <td>\Leftarrow</td>            <td>↬</td>            <td>\looparrowright</td>            <td>⇉</td>            <td>\rightrightarrows</td>        </tr>        <tr>            <td>↻</td>            <td>\circlearrowright</td>            <td>↢</td>            <td>\leftarrowtail</td>            <td>↰</td>            <td>\Lsh</td>            <td>⇝</td>            <td>\rightsquigarrow</td>        </tr>        <tr>            <td>↶</td>            <td>\curvearrowleft</td>            <td>↽</td>            <td>\leftharpoondown</td>            <td>↦</td>            <td>\mapsto</td>            <td>⇛</td>            <td>\Rrightarrow</td>        </tr>        <tr>            <td>↷</td>            <td>\curvearrowright</td>            <td>↼</td>            <td>\leftharpoonup</td>            <td>↗</td>            <td>\nearrow</td>            <td>↱</td>            <td>\Rsh</td>        </tr>        <tr>            <td>⇠</td>            <td>\dashleftarrow</td>            <td>⇇</td>            <td>\leftleftarrows</td>            <td>↚</td>            <td>\nleftarrow</td>            <td>↘</td>            <td>\searrow</td>        </tr>        <tr>            <td>⇢</td>            <td>\dashrightarrow</td>            <td>↔</td>            <td>\leftrightarrow</td>            <td>⇍</td>            <td>\nLeftarrow</td>            <td>↙</td>            <td>\swarrow</td>        </tr>        <tr>            <td>↓</td>            <td>\downarrow</td>            <td>⇔</td>            <td>\Leftrightarrow</td>            <td>↮</td>            <td>\nleftrightarrow</td>            <td>→</td>            <td>\to</td>        </tr>        <tr>            <td>⇓</td>            <td>\Downarrow</td>            <td>⇆</td>            <td>\leftrightarrows</td>            <td>⇎</td>            <td>\nLeftrightarrow</td>            <td>↞</td>            <td>\twoheadleftarrow</td>        </tr>        <tr>            <td>⇊</td>            <td>\downdownarrows</td>            <td>⇋</td>            <td>\leftrightharpoons</td>            <td>↛</td>            <td>\nrightarrow</td>            <td>↠</td>            <td>\twoheadrightarrow</td>        </tr>        <tr>            <td>⇃</td>            <td>\downharpoonleft</td>            <td>↭</td>            <td>\leftrightsquigarrow</td>            <td>⇏</td>            <td>\nRightarrow</td>            <td>↑</td>            <td>\uparrow</td>        </tr>        <tr>            <td>⇂</td>            <td>\downharpoonright</td>            <td>⇚</td>            <td>\Lleftarrow</td>            <td>↖</td>            <td>\nwarrow</td>            <td>⇑</td>            <td>\Uparrow</td>        </tr>        <tr>            <td>←</td>            <td>\gets</td>            <td>⟵</td>            <td>\longleftarrow</td>            <td>↾</td>            <td>\restriction</td>            <td>↕</td>            <td>\updownarrow</td>        </tr>        <tr>            <td>↩</td>            <td>\hookleftarrow</td>            <td>⟸</td>            <td>\Longleftarrow</td>            <td>→</td>            <td>\rightarrow</td>            <td>⇕</td>            <td>\Updownarrow</td>        </tr>        <tr>            <td>↪</td>            <td>\hookrightarrow</td>            <td>⟷</td>            <td>\longleftrightarrow</td>            <td>⇒</td>            <td>\Rightarrow</td>            <td>↿</td>            <td>\upharpoonleft</td>        </tr>        <tr>            <td>⟺</td>            <td>\iff</td>            <td>⟺</td>            <td>\Longleftrightarrow</td>            <td>↣</td>            <td>\rightarrowtail</td>            <td>↾</td>            <td>\upharpoonright</td>        </tr>        <tr>            <td>⟸</td>            <td>\impliedby</td>            <td>⟼</td>            <td>\longmapsto</td>            <td>⇁</td>            <td>\rightharpoondown</td>            <td>⇈</td>            <td>\upuparrows</td>        </tr>        <tr>            <td>⟹</td>            <td>\implies</td>            <td>⟶</td>            <td>\longrightarrow</td>            <td>⇀</td>            <td>\rightharpoonup</td>            <td></td>            <td></td>        </tr>        <tr>            <td>⇝</td>            <td>\leadsto</td>            <td>⟹</td>            <td>\Longrightarrow</td>            <td>⇄</td>            <td>\rightleftarrows</td>            <td></td>            <td></td>        </tr>        <tr>            <td>←</td>            <td>\leftarrow</td>            <td>↫</td>            <td>\looparrowleft</td>            <td>⇌</td>            <td>\rightleftharpoons</td>            <td></td>            <td></td>        </tr>    </table><h2 id="class">Class Assignment</h2>    <table class="all-code">        <tr>            <td>\mathbin</td>            <td>\mathclose</td>            <td>\mathinner</td>            <td>\mathop</td>        </tr>        <tr>            <td>\mathopen</td>            <td>\mathord</td>            <td>\mathpunct</td>            <td>\mathrel</td>        </tr>    </table><h3 id="color">Color</h3>    <table class="symbol">        <tr>            <td>\(\color{blue}{F=ma}\)</td>            <td>\color{blue}{F=ma}</td>        </tr>        <tr>            <td>\(\color{#228B22}{F=ma}\)</td>            <td>\color{#228B22}{F=ma}</td>        </tr>    </table>    <div class="indented">        <p><code>\color</code> follows MathJax syntax and expects the affected math to be a parameter of the function, as in <span style="white-space: nowrap;"><code>\color{blue}{math&nbsp;content}</code>.</span></p>        <p>For color definition, <code>\color</code> will accept the standard HTML <a href="https://www.w3schools.com/colors/colors_names.asp">predefined color names</a>. It will also accept an RGB argument in CSS hexadecimal style.</p>    </div><h3 id="font">Font</h3>    <table class="symbol">        <tr>            <td>\(\mathrm{AB}\)</td>            <td>\mathrm{AB}</td>            <td>\(\mathbf{AB}\)</td>            <td>\mathbf{AB}</td>            <td>\(\mathit{AB}\)</td>            <td>\mathit{AB}</td>            <td>\(\mathsf{AB}\)</td>            <td>\mathsf{AB}</td>            <td>\(\mathtt{AB}\)</td>            <td>\mathtt{AB}</td>        </tr>        <tr>            <td>\(\textrm{AB}\)</td>            <td>\textrm{AB}</td>            <td>\(\textbf{AB}\)</td>            <td>\textbf{AB}</td>            <td>\(\textit{AB}\)</td>            <td>\textit{AB}</td>            <td>\(\textsf{AB}\)</td>            <td>\textsf{AB}</td>            <td>\(\texttt{AB}\)</td>            <td>\texttt{AB}</td>        </tr>        <tr>            <td></td>            <td>\rm{AB}</td>            <td></td>            <td>\bf{AB}</td>            <td></td>            <td>\it{AB}</td>            <td></td>            <td>\sf{AB}</td>            <td></td>            <td>\tt{AB}</td>        </tr>        <tr>            <td>\(\textnormal{AB}\)</td>            <td>\textnormal{AB}</td>            <td>\(\bold{AB}\)</td>            <td>\bold{AB}</td>            <td>\(\Bbb{AB}\)</td>            <td>\Bbb{AB}</td>            <td>\(\frak{AB}\)</td>            <td>\frak{AB}</td>            <td></td>            <td></td>        </tr>        <tr>            <td>\(\text{AB}\)</td>            <td>\text{AB}</td>            <td>\(\mathcal{AB}\)</td>            <td>\mathcal{AB}</td>            <td>\(\mathbb{AB}\)</td>            <td>\mathbb{AB}</td>            <td>\(\mathfrak{AB}\)</td>            <td>\mathfrak{AB}</td>            <td>\(\mathscr{AB}\)</td>            <td>\mathscr{AB}</td>        </tr>    </table>    <p class="indented"><code>\rm</code>, <code>\bf</code>, <code>\it</code>, <code>\sf</code>, and <code>\tt</code> are committed to master but are not yet part of the latest release.</p><h3 id="size">Size</h3>    <table class="symbol">        <tr>            <td>\(\Huge AB\)</td>            <td>\Huge AB</td>            <td>\(\normalsize AB\)</td>            <td>\normalsize AB</td>        </tr>        <tr>            <td>\(\huge AB\)</td>            <td>\huge AB</td>            <td>\(\small AB\)</td>            <td>\small AB</td>        </tr>        <tr>            <td>\(\LARGE AB\)</td>            <td>\LARGE AB</td>            <td>\(\footnotesize AB\)</td>            <td>\footnotesize AB</td>        </tr>        <tr>            <td>\(\Large AB\)</td>            <td>\Large AB</td>            <td>\(\scriptsize AB\)</td>            <td>\scriptsize AB</td>        </tr>        <tr>            <td>\(\large AB\)</td>            <td>\large AB</td>            <td>\(\tiny AB\)</td>            <td>\tiny AB</td>        </tr>    </table><h3 id="style">Style</h3>    <table id="style-tbl" class="symbol">        <tr>            <td>\(\displaystyle\sum_{i=1}^n\)</td>            <td><strong>\displaystyle</strong>\sum_{i=1}^n</td>            <td></td>        </tr>        <tr>            <td>\(\textstyle\sum_{i=1}^n\)</td>            <td><strong>\textstyle</strong>\sum_{i=1}^n</td>            <td></td>        </tr>        <tr>            <td>\(\scriptstyle x\)</td>            <td><strong>\scriptstyle</strong> x</td>            <td>The size of a first sub/superscript</td>        </tr>        <tr>            <td>\(\scriptscriptstyle x\)</td>            <td><strong>\scriptscriptstyle</strong> x</td>            <td>The size of subsequent sub/superscripts</td>        </tr>        <tr id="limits">            <td>\(\lim\limits_x\)</td>            <td>\lim<strong>\limits</strong>_x</td>            <td></td>        </tr>        <tr>            <td>\(\lim\nolimits_x\)</td>            <td>\lim<strong>\nolimits</strong>_x</td>            <td></td>        </tr>        <tr>            <td>\(\text{x}\)</td>            <td><strong>\text</strong>{x}</td>            <td><code>\text{…}</code> will accept characters from <a href="http://www.unicode.org/charts/PDF/U0080.pdf">Latin-1</a>, <a href="http://unicode.org/charts/PDF/U0400.pdf">Cyrillic</a>, or CJK (Hiragana, Katakana, CJK ideograms, and Hangul).</td>        </tr>    </table><h2 id="symbols">Symbols and Punctuation</h2>    <table class="symbol">        <tr>            <td>%</td>            <td>\%</td>            <td>□</td>            <td>\Box</td>            <td>⋯</td>            <td>\cdots</td>            <td>✓</td>            <td>\checkmark</td>        </tr>        <tr>            <td>#</td>            <td>\#</td>            <td>□</td>            <td>\square</td>            <td>⋱</td>            <td>\ddots</td>            <td>†</td>            <td>\dag</td>        </tr>        <tr>            <td>&amp;</td>            <td>\&amp;</td>            <td>■</td>            <td>\blacksquare</td>            <td>…</td>            <td>\ldots</td>            <td>†</td>            <td>\dagger</td>        </tr>        <tr>            <td>_</td>            <td>\_</td>            <td>△</td>            <td>\triangle</td>            <td>⋮</td>            <td>\vdots</td>            <td>‡</td>            <td>\ddag</td>        </tr>        <tr>            <td>–</td>            <td>--</td>            <td>▽</td>            <td>\triangledown</td>            <td>…</td>            <td>\mathellipsis</td>            <td>‡</td>            <td>\ddagger</td>        </tr>        <tr>            <td>—</td>            <td>---</td>            <td>◃</td>            <td>\triangleleft</td>            <td>…</td>            <td>\textellipsis</td>            <td>$</td>            <td>\$</td>        </tr>        <tr>            <td>‘</td>            <td>`</td>            <td>▹</td>            <td>\triangleright</td>            <td>⋆</td>            <td>\star</td>            <td>£</td>            <td>\pounds</td>        </tr>        <tr>            <td>‘‘</td>            <td>``</td>            <td>▽</td>            <td>\bigtriangledown</td>            <td>★</td>            <td>\bigstar</td>            <td>¥</td>            <td>\yen</td>        </tr>        <tr>            <td>&quot;</td>            <td>&quot;</td>            <td>△</td>            <td>\bigtriangleup</td>            <td>♭</td>            <td>\flat</td>            <td>√</td>            <td>\surd</td>        </tr>        <tr>            <td>:</td>            <td>\colon</td>            <td>▲</td>            <td>\blacktriangle</td>            <td>♮</td>            <td>\natural</td>            <td>°</td>            <td>\degree</td>        </tr>        <tr>            <td>‵</td>            <td>\backprime</td>            <td>▼</td>            <td>\blacktriangledown</td>            <td>♯</td>            <td>\sharp</td>            <td>╲</td>            <td>\diagdown</td>        </tr>        <tr>            <td>′</td>            <td>\prime</td>            <td>◀</td>            <td>\blacktriangleleft</td>            <td>®</td>            <td>\circledR</td>            <td>╱</td>            <td>\diagup</td>        </tr>        <tr>            <td>∠</td>            <td>\angle</td>            <td>▶</td>            <td>\blacktriangleright</td>            <td>Ⓢ</td>            <td>\circledS</td>            <td>℧</td>            <td>\mho</td>        </tr>        <tr>            <td>∡</td>            <td>\measuredangle</td>            <td>⋄</td>            <td>\diamond</td>            <td>♣</td>            <td>\clubsuit</td>            <td>✠</td>            <td>\maltese</td>        </tr>        <tr>            <td>∢</td>            <td>\sphericalangle</td>            <td>◊</td>            <td>\Diamond</td>            <td>♢</td>            <td>\diamondsuit</td>            <td>∇</td>            <td>\nabla</td>        </tr>        <tr>            <td>⊤</td>            <td>\top</td>            <td>◊</td>            <td>\lozenge</td>            <td>♡</td>            <td>\heartsuit</td>            <td>∞</td>            <td>\infty</td>        </tr>        <tr>            <td>⊥</td>            <td>\bot</td>            <td>⧫</td>            <td>\blacklozenge</td>            <td>♠</td>            <td>\spadesuit</td>            <td></td>            <td></td>        </tr>    </table>    <table class="symbol">        <tr>            <td>\(\KaTeX\)</td>            <td>\KaTeX</td>        </tr>    </table>    <div class="footer">    <table>        <tr>            <td>Copyright © 2017 Khan Academy</td>            <td>Released under the <a href="https://opensource.org/licenses/MIT/">MIT License</a></td>        </tr>    </table>    </div>    <br></div>   <!-- main --><div id="sidebar">    <p><a href="https://khan.github.io/KaTeX/">\(\KaTeX\)</a></p>    <h3><a href="#top">Contents</a></h3>    <ul id="toc">        <li><a href="#accents">Accents</a></li>        <li><a href="#delimiters">Delimiters</a></li>        <li><a href="#environments">Environments</a></li>        <li><a href="#letters">Letters</a></li>        <li>Layout <span class="reduced">▼</span>            <ul>                <li><a href="#overlap">Overlap</a></li>                <li><a href="#spacing">Spacing</a></li>                <li><a href="#vertical">Vertical</a></li>            </ul>        </li>        <li><a href="#logic">Logic/Set</a></li>        <li>Operators <span class="reduced">▼</span>            <ul>                <li><a href="#big">Big</a></li>                <li><a href="#binary">Binary</a></li>                <li><a href="#binomial">Binomial</a></li>                <li><a href="#fractions">Fractions</a></li>                <li><a href="#math">Math</a></li>                <li><a href="#sqrt">Sqrt</a></li>            </ul>        </li>        <li>Relations <span class="reduced">▼</span>            <ul>                <li><a href="#relations">Relations</a></li>                <li><a href="#negated-relations">Negated</a></li>                <li><a href="#arrows">Arrows</a></li>            </ul>        </li>        <li>Style <span class="reduced">▼</span>            <ul>                <li><a href="#class">Class</a></li>                <li><a href="#color">Color</a></li>                <li><a href="#font">Font</a></li>                <li><a href="#size">Size</a></li>                <li><a href="#style">Style</a></li>            </ul>        </li>        <li><a href="#symbols">Symbols</a></li>    </ul>    <h3>Links</h3>    <ul>        <li><a href="https://khan.github.io/KaTeX/">Home</a></li>        <li><a href="https://github.com/Khan/KaTeX">Repository</a></li>        <li><a href="https://github.com/Khan/KaTeX#user-content-usage">Installation</a></li>        <li><a href="https://github.com/Khan/KaTeX/releases">Download</a></li>        <li><a href="https://github.com/Khan/KaTeX/wiki">Wiki</a></li>    </ul></div>      <!-- sidebar --><div id="mobile-nav">    <!--On very small screens, the sidebar TOC is replaced by a button with a drop-down menu. -->    <div id="navicon">        <svg width="24" height="24" viewBox="0 0 512 512"><path d="M96 241h320v32H96zM96 145h320v32H96zM96 337h320v32H96z"/></svg>        <div id="mobile-menu">            <ul>                <li><a href="#accents">Accents</a></li>                <li><a href="#delimiters">Delimiters</a></li>                <li><a href="#environments">Environments</a></li>                <li><a href="#letters">Letters</a></li>                <li><a href="#layout">Layout</a></li>                <li><a href="#logic">Logic/Set</a></li>                <li><a href="#big">Operators</a></li>                <li><a href="#relations">Relations</a></li>                <li><a href="#class">Style</a></li>                <li><a href="#symbols">Symbols</a></li>            </ul>        </div>    </div></div><script>    setTreeToggleEvents(document.getElementById("toc"));  <!-- Table of Contents -->    renderMathInElement(document.body,{delimiters:[       <!-- KaTeX -->        {left: "\\[", right: "\\]", display: true},        {left: "\\(", right: "\\)", display: false}    ]});    document.getElementById("mobile-nav").addEventListener('click', toggleMobileMenu, false)    function setTreeToggleEvents(toc) {        toc.addEventListener('click', stopBubble, false);        for (var i=0; i<toc.childNodes.length; i++) {            var li=toc.childNodes[i];            if (li.nodeName=="LI" && li.childNodes.length>1) {                li.addEventListener('click', function () {                    this.className = (this.className == 'li-open' ? 'li-closed' : 'li-open' );                } , false);                for (var j=0; j<li.childNodes.length; j++) {                    var ul = li.childNodes[j];                    if (ul.nodeName=="UL") {                        ul.addEventListener('click', stopBubble, false);                    }                }            }        }    }    function toggleMobileMenu() {        var m = document.getElementById("mobile-menu");        m.className = (m.className == 'menu-on' ? 'menu-off' : 'menu-on' );        return true;    }    function stopBubble(event) {         event.stopPropagation();    }</script></body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>Function Support in KaTeX</title>
+    <link rel="icon" href="http://khan.github.io/favicon.ico">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+
+<style type="text/css">
+* { margin:0; padding:0; }  /* reset */
+
+body { font-family: Calibri, Arial, Helvetica, sans-serif; }
+
+@media all {body {font-size: 18px;}}
+@media (max-width:767px){body {font-size: 16px;}}
+
+#main {
+  position: absolute;
+  top: 0;
+  padding: 0px 2.5px 0px 2.5px;
+}
+
+#sidebar {
+  position: fixed;
+  top: 0;
+  margin: 0px 2.5px 0px 2.5px;
+  overflow:fixed;
+}
+
+@media all {
+  #sidebar {left:  40px; width: 160px; }
+  #main    {left: 220px; width:600px; }
+}
+
+@media (max-width:767px) {
+  #sidebar {left: 0px; width:  5%; }
+  #main    {left:  7%; width: 90%; }
+}
+
+h1, h2, h3 {
+  font-family: Verdana, sans-serif;
+  font-variant: small-caps;
+  letter-spacing: 0.05em;
+  margin-top: 3em;
+}
+
+h1 { font-size: 140%; margin-top: 1em; }
+h2 { font-size: 110%; margin-bottom: 0.5em; margin-top: 2em; }
+h3 { font-size: 110%; margin-bottom: 0.5em; margin-top: 0.5em; }
+
+p {
+  margin-top: 0.5em;
+  line-height: 1.35;
+  text-align: justify;
+}
+
+/* Style subscripts and superscripts to avoid wide line spacing. */
+sub, sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+
+.katex      { font-size: 1em !important; }
+.katex-html { margin-top: 0.3em; margin-bottom: 0.3em; }
+
+.indented   { margin-left: 0.8em; }
+.reduced    { font-size:60%; }
+.footer     { margin-top:   3em;  text-align: center; font-size: 70%; }
+
+table {
+  border-collapse: collapse;
+  width: auto;
+}
+
+table td {
+  padding: 0.3em 0.8em 0.3em 0.8em;
+  text-align: left;
+  vertical-align: center;
+  hyphens: none; }
+
+table th {
+  font-size: 95%;
+  padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+  line-height: 1.05;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+table.symbol td:nth-child(odd) {
+  font-family: KaTeX_Main, KaTeX_AMS;
+  font-size: 110%;
+  font-weight: normal;
+  font-style: normal;
+  text-align: center;
+  padding: 0.1em 0.4em 0.1em 0.8em;
+}
+
+table.all-code,
+table.explain td:nth-child(1),
+table.symbol td:nth-child(even) {
+  font-size: 80%;
+  font-family: Consolas, "Courier New", monospace;
+  padding-left: 0em;
+}
+
+table#math-tbl  td:nth-child(6) {border-right: solid 1px; }
+table#style-tbl td:nth-child(3) {
+  font-family: Calibri, Helvetica, sans-serif;
+  font-size: 1.1rem;
+  text-align: left;
+}
+table.tall td {height: 2.5em;}
+.footer table { margin: auto; width: 75%;}
+.footer table td {text-align: center;}
+
+a {
+  text-decoration: underline;
+  color: inherit;
+}
+
+pre {
+  margin: 0px;
+  padding: 12px 12px 12px 12px;
+  line-height: 1.5;
+  display: block;
+  overflow: auto;
+}
+
+code {
+  font-family: Consolas,"Courier New",Courier,monospace;
+  font-size: 85%;
+  color: #404040;
+}
+
+
+/* Table of Contents, sidebar version */
+#sidebar {
+  cursor: pointer;
+  font-family: Calibri, sans-serif;
+  background:#fff;
+}
+
+#sidebar li {
+  list-style: none;
+  line-height: 1.35;
+  position: relative;
+  left: 0em;
+}
+
+#sidebar ul li li { left: 1.4em; width:88%; }
+
+#sidebar a,
+#mobile-nav a {
+  text-decoration: none;
+  color: inherit;
+}
+
+#toc li ul         { display: none; }      /* default is closed */
+#toc li.li-open ul { display: block; }     /* opened by a click */
+
+
+/* Table of Contents, mobile version */
+#mobile-nav {
+  display: none;     /* hidden on large screens */
+  position: fixed;
+}
+
+/* On small screens, switch from sidebar TOC to navicon and drop-down menu */
+@media screen and (max-width: 767px) {
+  #mobile-nav  { display: block; }
+  #sidebar     { display: none;}
+  .margin-note { position : absolute; top: -9999px; left: -9999px; color: black; display: block; }
+  .margin-indicator:focus .margin-note { position : inherit; }
+  .margin-note:hover                   { position : inherit; }
+  .margin-note:focus                   { position : inherit; }
+}
+
+#mobile-menu {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  display: block;
+  background:#fff;
+  border:1px solid #aaa;
+  padding-right: 3em;
+}
+
+#mobile-menu.menu-on { position : inherit; }
+
+#mobile-nav li {
+  list-style: none;
+  margin: 0;
+  padding: 0.2em;
+}
+
+#mobile-nav li a { width: 60px; }
+
+</style>
+
+</head>
+
+<body>
+
+<div id="main">       <!-- excludes sidebar and mobile-nav -->
+
+<h1 id="top">Function Support in <span style="font-size:130%;">\(\KaTeX\)</span></h1>
+
+    <p>This is a list of TeX functions supported by KaTeX. It is sorted into logical groups.</p>
+
+<h2 id="accents">Accents</h2>
+
+    <table class="symbol">
+        <tr>
+            <td>\(a'\)</td>
+            <td>a'</td>
+            <td>\(\bar{y}\)</td>
+            <td>\bar{y}</td>
+            <td>\(\ddot{a}\)</td>
+            <td>\ddot{a}</td>
+            <td>\(\vec{F}\)</td>
+            <td>\vec{F}</td>
+        </tr>
+        <tr>
+            <td>\(a''\)</td>
+            <td>a''</td>
+            <td>\(\breve{a}\)</td>
+            <td>\breve{a}</td>
+            <td>\(\grave{a}\)</td>
+            <td>\grave{a}</td>
+            <td>\(\overline{AB}\)</td>
+            <td>\overline{AB}</td>
+        </tr>
+        <tr>
+            <td>\(a^{\prime}\)</td>
+            <td>a^{\prime}</td>
+            <td>\(\check{a}\)</td>
+            <td>\check{a}</td>
+            <td>\(\hat{\theta}\)</td>
+            <td>\hat{\theta}</td>
+            <td>\(\underline{AB}\)</td>
+            <td>\underline{AB}</td>
+        </tr>
+        <tr>
+            <td>\(\acute{a}\)</td>
+            <td>\acute{a}</td>
+            <td>\(\dot{a}\)</td>
+            <td>\dot{a}</td>
+            <td>\(\tilde{a}\)</td>
+            <td>\tilde{a}</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+
+<h2 id="delimiters">Delimiters</h2>
+
+    <table class="symbol tall">
+        <tr>
+            <td>\((\,)\)</td>
+            <td>( )</td>
+            <td>\(\lgroup\:\rgroup\)</td>
+            <td>\lgroup<br>\rgroup</td>
+            <td>\(\lceil\:\rceil\)</td>
+            <td>\lceil<br>\rceil</td>
+            <td>\(\uparrow\)</td>
+            <td>\uparrow</td>
+        </tr>
+        <tr>
+            <td>\([\:]\)</td>
+            <td>[ ]</td>
+            <td>\(\lbrack\:\rbrack\)</td>
+            <td>\lbrack<br>\rbrack</td>
+            <td>\(\lfloor\:\rfloor\)</td>
+            <td>\lfloor<br>\rfloor</td>
+            <td>\(\downarrow\)</td>
+            <td>\downarrow</td>
+        </tr>
+        <tr>
+            <td>\(\{\,\}\)</td>
+            <td>\{&nbsp;\}</td>
+            <td>\(\lbrace\:\rbrace\)</td>
+            <td>\lbrace<br>\rbrace</td>
+            <td>\(\ulcorner \urcorner\)</td>
+            <td>\ulcorner<br>\urcorner</td>
+            <td>\(\updownarrow\)</td>
+            <td>\updownarrow</td>
+        </tr>
+        <tr>
+            <td>\(\langle\:\rangle\)</td>
+            <td>\langle<br>\rangle</td>
+            <td>\(\lt\:\gt\)</td>
+            <td>\lt<br>\gt</td>
+            <td>\(\llcorner \lrcorner\)</td>
+            <td>\llcorner<br>\lrcorner</td>
+            <td>\(\Uparrow\)</td>
+            <td>\Uparrow</td>
+        </tr>
+        <tr>
+            <td>\(|\)</td>
+            <td>|</td>
+            <td>\(\vert\)</td>
+            <td>\vert</td>
+            <td>\(\backslash\)</td>
+            <td>\backslash</td>
+            <td>\(\Downarrow\)</td>
+            <td>\Downarrow</td>
+        </tr>
+        <tr>
+            <td>\(\|\)</td>
+            <td>\|</td>
+            <td>\(\Vert\)</td>
+            <td>\Vert</td>
+            <td>\(\lmoustache\:\rmoustache\)</td>
+            <td>\lmoustache<br>\rmoustache</td>
+            <td>\(\Updownarrow\)</td>
+            <td>\Updownarrow</td>
+        </tr>
+        <tr>
+            <td>\(\lvert\;\rvert\)</td>
+            <td>\lvert<br>\rvert</td>
+            <td>\(\lVert\;\rVert\)</td>
+            <td>\lVert<br>\rVert</td>
+            <td></td>
+            <td>\left.</td>
+            <td></td>
+            <td>\right.</td>
+        </tr>
+    </table>
+
+<h3 id="delimiter-sizing">Delimiter Sizing</h3>
+
+    <table class="all-code">
+        <tr>
+            <td rowspan="2">\(\left(\LARGE{AB}\right)\)</td>
+            <td rowspan="2" style="border-right: solid 1px;">\left( \LARGE{AB} \right)</td>
+            <td>\left</td>
+            <td>\big</td>
+            <td>\bigl</td>
+            <td>\bigr</td>
+        </tr>
+        <tr>
+            <td>\middle</td>
+            <td>\Big</td>
+            <td>\Bigl</td>
+            <td>\Bigr</td>
+        </tr>
+        <tr>
+            <td rowspan="2">\(( \big( \Big( \bigg( \Bigg(\)</td>
+            <td rowspan="2" style="border-right: solid 1px;">( \big( \Big( \bigg( \Bigg(</td>
+            <td>\right</td>
+            <td>\bigg</td>
+            <td>\biggl</td>
+            <td>\biggr</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>\Bigg</td>
+            <td>\Biggl</td>
+            <td>\Biggr</td>
+        </tr>
+    </table>
+
+<h2 id="environments">Environments</h2>
+
+    <table class="symbol">
+        <tr>
+            <td>\(\begin{matrix} a & b \\ c & d \end{matrix}\)</td>
+            <td>
+                <pre><code>\begin{matrix}
+   a &amp; b \\
+   c &amp; d
+\end{matrix}</code></pre>
+            </td>
+            <td>\(\begin{array}{c|c} a & b \\ c & d \end{array}\)</td>
+            <td>
+                <pre><code>\begin{array}{c|c}
+   a &amp; b \\
+   c &amp; d
+\end{array}</code></pre>
+            </td>
+        </tr>
+        <tr>
+            <td>\(\begin{pmatrix} a & b \\ c & d \end{pmatrix}\)</td>
+            <td>
+                <pre><code>\begin{pmatrix}
+   a &amp; b \\
+   c &amp; d
+\end{pmatrix}</code></pre>
+            </td>
+            <td>\(\begin{bmatrix} a & b \\ c & d \end{bmatrix}\)</td>
+            <td>
+                <pre><code>\begin{bmatrix}
+   a &amp; b \\
+   c &amp; d
+\end{bmatrix}</code></pre>
+            </td>
+        </tr>
+        <tr>
+            <td>\(\begin{vmatrix} a & b \\ c & d \end{vmatrix}\)</td>
+            <td>
+                <pre><code>\begin{vmatrix}
+   a &amp; b \\
+   c &amp; d
+\end{vmatrix}</code></pre>
+            </td>
+            <td>\(\begin{Vmatrix} a & b \\ c & d \end{Vmatrix}\)</td>
+            <td>
+                <pre><code>\begin{Vmatrix}
+   a &amp; b \\
+   c &amp; d
+\end{Vmatrix}</code></pre>
+            </td>
+        </tr>
+        <tr>
+            <td>\(\begin{Bmatrix} a & b \\ c & d \end{Bmatrix}\)</td>
+            <td>
+                <pre><code>\begin{Bmatrix}
+   a &amp; b \\
+   c &amp; d
+\end{Bmatrix}</code></pre>
+            </td>
+            <td>\(x = \begin{cases} a &\text{if } b \\ c &\text{if } d \end{cases}\)</td>
+            <td>
+                <pre><code>x = \begin{cases}
+   a &amp;\text{if } b  \\
+   c &amp;\text{if } d
+\end{cases}</code></pre>
+            </td>
+        </tr>
+        <tr>
+            <td></td><td></td>
+            <td>\(\begin{aligned} a&=b+c \\ d+e&=f \end{aligned}\)</td>
+            <td>
+                <pre><code>\begin{aligned}
+   a&amp;=b+c \\
+   d+e&=f
+\end{aligned}</code></pre>
+            </td>
+        </tr>
+    </table>
+
+    <div class="indented">
+        <p>Acceptable line separators include: <code>\\</code>, <code>\cr</code>, and <code>\\[<em>distance</em>]</code>. <em>Distance</em> can be written with units of <code>em</code>, <code>ex</code>, or<code> mu</code>.</p>
+
+        <p>The <code>{array}</code> environment does not yet support <code>\hline</code>.</p>
+
+        <p><code>{darray}</code> and <code>{dcases}</code> are committed to master but are not part of the latest release.</p>
+    </div>
+
+<h2 id="letters">Greek Letters</h2>
+
+    <table class="symbol">
+        <tr>
+            <td>Γ</td>
+            <td>\Gamma</td>
+            <td>Δ</td>
+            <td>\Delta</td>
+            <td>Θ</td>
+            <td>\Theta</td>
+            <td>Λ</td>
+            <td>\Lambda</td>
+        </tr>
+        <tr>
+            <td>Ξ</td>
+            <td>\Xi</td>
+            <td>Π</td>
+            <td>\Pi</td>
+            <td>Σ</td>
+            <td>\Sigma</td>
+            <td>Υ</td>
+            <td>\Upsilon</td>
+        </tr>
+        <tr>
+            <td>Φ</td>
+            <td>\Phi</td>
+            <td>Ψ</td>
+            <td>\Psi</td>
+            <td>Ω</td>
+            <td>\Omega</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>α</td>
+            <td>\alpha</td>
+            <td>β</td>
+            <td>\beta</td>
+            <td>γ</td>
+            <td>\gamma</td>
+            <td>δ</td>
+            <td>\delta</td>
+        </tr>
+        <tr>
+            <td>ϵ</td>
+            <td>\epsilon</td>
+            <td>ζ</td>
+            <td>\zeta</td>
+            <td>η</td>
+            <td>\eta</td>
+            <td>θ</td>
+            <td>\theta</td>
+        </tr>
+        <tr>
+            <td>ι</td>
+            <td>\iota</td>
+            <td>κ</td>
+            <td>\kappa</td>
+            <td>λ</td>
+            <td>\lambda</td>
+            <td>μ</td>
+            <td>\mu</td>
+        </tr>
+        <tr>
+            <td>ν</td>
+            <td>\nu</td>
+            <td>ξ</td>
+            <td>\xi</td>
+            <td>o</td>
+            <td>\omicron</td>
+            <td>π</td>
+            <td>\pi</td>
+        </tr>
+        <tr>
+            <td>ρ</td>
+            <td>\rho</td>
+            <td>σ</td>
+            <td>\sigma</td>
+            <td>τ</td>
+            <td>\tau</td>
+            <td>υ</td>
+            <td>\upsilon</td>
+        </tr>
+        <tr>
+            <td>ϕ</td>
+            <td>\phi</td>
+            <td>χ</td>
+            <td>\chi</td>
+            <td>ψ</td>
+            <td>\psi</td>
+            <td>ω</td>
+            <td>\omega</td>
+        </tr>
+        <tr>
+            <td>ε</td>
+            <td>\varepsilon</td>
+            <td>ϰ</td>
+            <td>\varkappa</td>
+            <td>ϑ</td>
+            <td>\vartheta</td>
+            <td>ϖ</td>
+            <td>\varpi</td>
+        </tr>
+        <tr>
+            <td>ϱ</td>
+            <td>\varrho</td>
+            <td>ς</td>
+            <td>\varsigma</td>
+            <td>φ</td>
+            <td>\varphi</td>
+            <td>ϝ</td>
+            <td>\digamma</td>
+        </tr>
+    </table>
+
+<h3 id="other-letters">Other Letters</h3>
+
+    <table class="symbol">
+        <tr>
+            <td>\(\imath\)</td>
+            <td>\imath</td>
+            <td>\(\jmath\)</td>
+            <td>\jmath</td>
+            <td>ℵ</td>
+            <td>\aleph</td>
+            <td>ℶ</td>
+            <td>\beth</td>
+            <td>ℷ</td>
+            <td>\gimel</td>
+        </tr>
+        <tr>
+            <td>ℸ</td>
+            <td>\daleth</td>
+            <td>ð</td>
+            <td>\eth</td>
+            <td>Ⅎ</td>
+            <td>\Finv</td>
+            <td>⅁</td>
+            <td>\Game</td>
+            <td>ℓ</td>
+            <td>\ell</td>
+        </tr>
+        <tr>
+            <td>ℏ</td>
+            <td>\hbar</td>
+            <td>ℏ</td>
+            <td>\hslash</td>
+            <td>ℑ</td>
+            <td>\Im</td>
+            <td>ℜ</td>
+            <td>\Re</td>
+            <td>℘</td>
+            <td>\wp</td>
+        </tr>
+        <tr>
+            <td>∂</td>
+            <td>\partial</td>
+            <td>∇</td>
+            <td>\nabla</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+
+    <p class="indented"><code>\text{…}</code> will accept characters from <a href="http://www.unicode.org/charts/PDF/U0080.pdf">Latin-1</a>, <a href="http://unicode.org/charts/PDF/U0400.pdf">Cyrillic</a>, or CJK (Hiragana, Katakana, CJK ideograms, and Hangul).</p>
+
+<h2 id="overlap">Overlap</h2>
+
+    <table class="symbol">
+        <tr>
+            <td>\({=}\llap{/\,}\)</td>  <td>&nbsp;&nbsp;&nbsp;{=}<strong>\llap</strong>{/\,}</td>
+        </tr>
+        <tr>
+            <td>\(\rlap{\,/}{=}\)</td>   <td>&nbsp;&nbsp;&nbsp;<strong>\rlap</strong>{\,/}{=}</td>
+        </tr>
+    </table>
+
+<h3 id="spacing">Spacing</h3>
+
+    <table class="explain">
+        <thead>
+        <tr>
+            <th>Function</th>
+            <th>Produces</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>\!</td>         <td>– ³∕₁₈ em space</td>
+            </tr>
+            <tr>
+                <td>\,</td>         <td>³∕₁₈ em space</td>
+            </tr>
+            <tr>
+                <td>\:</td>         <td>⁴∕₁₈ em space</td>
+            </tr>
+            <tr>
+                <td>\;</td>         <td>⁵∕₁₈ em space</td>
+            </tr>
+            <tr>
+                <td>\enspace</td>   <td>½ em space</td>
+            </tr>
+            <tr>
+                <td>\quad</td>      <td>1 em space</td>
+            </tr>
+            <tr>
+                <td>\qquad</td>     <td>2 em space</td>
+            </tr>
+            <tr>
+                <td>~</td>          <td>non-breaking space</td>
+            </tr>
+            <tr>
+                <td>\space</td>     <td>non-breaking space</td>
+            </tr>
+            <tr>
+                <td>\<em>space</em></td>
+                <td>non-breaking space</td>
+            </tr>
+            <tr>
+                <td>\phantom{<em>content</em>}</td>
+                <td>space the width and height of <em>content</em></td>
+            </tr>
+            <tr>
+                <td>\kern{<em>distance</em>}</td>
+                <td>space, width = <em>distance</em> <br>Accepts <code>em</code>, <code>ex</code>, or<code> mu</code> units.</td>
+            </tr>
+        </tbody>
+    </table>
+
+<h3 id="vertical">Vertical Layout</h3>
+
+    <table class="symbol">
+        <tr>
+            <td>\(x_n\)</td>
+            <td>x_n</td>
+            <td>\(\stackrel{!}{=}\)</td>
+            <td>\stackrel{!}{=}</td>
+            <td>\( a \atop b \)</td>
+            <td>a \atop b</td>
+        </tr>
+        <tr>
+            <td>\(e^x\)</td>
+            <td>e^x</td>
+            <td></td>
+            <td>\overset{!}{=}</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>\(_u^o\)</td>
+            <td>_u^o</td>
+            <td></td>
+            <td>\underset{!}{=}</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+
+    <div class="indented">
+        <p>Also see <a href="#environments">environments</a>.</p>
+        <p><code>\overset</code> and <code>\underset</code> are committed to master but are not yet included in the latest release.</p>
+    </div>
+
+<h2 id="logic">Logic and Set Theory</h2>
+
+    <table class="symbol">
+        <tr>
+            <td>∀</td>
+            <td>\forall</td>
+            <td>∁</td>
+            <td>\complement</td>
+            <td>∴</td>
+            <td>\therefore</td>
+            <td>¬</td>
+            <td>\neg or \lnot</td>
+        </tr>
+        <tr>
+            <td>∃</td>
+            <td>\exists</td>
+            <td>⊂</td>
+            <td>\subset</td>
+            <td>∵</td>
+            <td>\because</td>
+            <td>∅</td>
+            <td>\emptyset or \varnothing</td>
+        </tr>
+        <tr>
+            <td>∄</td>
+            <td>\nexists</td>
+            <td>⊃</td>
+            <td>\supset</td>
+            <td>↦</td>
+            <td>\mapsto</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>∈</td>
+            <td>\in</td>
+            <td>∣</td>
+            <td>\mid</td>
+            <td>→</td>
+            <td>\to</td>
+            <td>⟹</td>
+            <td>\implies†</td>
+        </tr>
+        <tr>
+            <td>∉</td>
+            <td>\notin</td>
+            <td>∧</td>
+            <td>\land</td>
+            <td>←</td>
+            <td>\gets</td>
+            <td>⟸</td>
+            <td>\impliedby†</td>
+        </tr>
+        <tr>
+            <td>∋</td>
+            <td>\ni</td>
+            <td>∨</td>
+            <td>\lor</td>
+            <td>↔</td>
+            <td>\leftrightarrow</td>
+            <td>⟺</td>
+            <td>\iff†</td>
+        </tr>
+    </table>
+
+    <div class="indented">
+        <p>See also <a href="#relations">relations</a> and <a href="#binary">binary operators</a>.</p>
+        <p>†<code>\iff</code>, <code>\implies</code>, and <code>\impliedby</code> have a pending pull request but are not yet included in the latest release.</p>
+    </div>
+
+
+<h2 id="big">Big Operators</h2>
+
+    <table class="symbol">
+        <tr>
+            <td>\(\sum\)</td>
+            <td>\sum</td>
+            <td>\(\prod\)</td>
+            <td>\prod</td>
+            <td>\(\bigvee\)</td>
+            <td>\bigvee</td>
+            <td>\(\bigotimes\)</td>
+            <td>\bigotimes</td>
+        </tr>
+        <tr>
+            <td>\(\int\)</td>
+            <td>\int</td>
+            <td>\(\coprod\)</td>
+            <td>\coprod</td>
+            <td>\(\bigwedge\)</td>
+            <td>\bigwedge</td>
+            <td>\(\bigoplus\)</td>
+            <td>\bigoplus</td>
+        </tr>
+        <tr>
+            <td>\(\iint\)</td>
+            <td>\iint</td>
+            <td>\(\intop\)</td>
+            <td>\intop</td>
+            <td>\(\bigcap\)</td>
+            <td>\bigcap</td>
+            <td>\(\bigodot\)</td>
+            <td>\bigodot</td>
+        </tr>
+        <tr>
+            <td>\(\iiint\)</td>
+            <td>\iiint</td>
+            <td>\(\smallint\)</td>
+            <td>\smallint</td>
+            <td>\(\bigcup\)</td>
+            <td>\bigcup</td>
+            <td>\(\biguplus\)</td>
+            <td>\biguplus</td>
+        </tr>
+        <tr>
+            <td>\(\oint\)</td>
+            <td>\oint</td>
+            <td>\(\)</td>
+            <td></td>
+            <td>\(\bigsqcup\)</td>
+            <td>\bigsqcup</td>
+            <td>\(\)</td>
+            <td></td>
+        </tr>
+    </table>
+
+<h3 id="binary">Binary Operators</h3>
+
+    <!-- Scripts for: \centerdot, \pmod, \pod, and \smallsetminus -->
+    <table class="symbol">
+        <tr>
+            <td>+</td>
+            <td>+</td>
+            <td>⋅</td>
+            <td>\cdotp</td>
+            <td>⊺</td>
+            <td>\intercal</td>
+            <td>\(x \pod a\)</td>
+            <td>x \pod a</td>
+        </tr>
+        <tr>
+            <td>−</td>
+            <td>-</td>
+            <td>\(\centerdot\)</td>
+            <td>\centerdot</td>
+            <td>∧</td>
+            <td>\land</td>
+            <td>⊳</td>
+            <td>\rhd</td>
+        </tr>
+        <tr>
+            <td>/</td>
+            <td>/</td>
+            <td>∘</td>
+            <td>\circ</td>
+            <td>⋋</td>
+            <td>\leftthreetimes</td>
+            <td>⋌</td>
+            <td>\rightthreetimes</td>
+        </tr>
+        <tr>
+            <td>∗</td>
+            <td>&ast;</td>
+            <td>⊛</td>
+            <td>\circledast</td>
+            <td>.</td>
+            <td>\ldotp</td>
+            <td>⋊</td>
+            <td>\rtimes</td>
+        </tr>
+        <tr>
+            <td>⨿</td>
+            <td>\amalg</td>
+            <td>⊚</td>
+            <td>\circledcirc</td>
+            <td>∨</td>
+            <td>\lor</td>
+            <td>∖</td>
+            <td>\setminus</td>
+        </tr>
+        <tr>
+            <td>∗</td>
+            <td>\ast</td>
+            <td>⊝</td>
+            <td>\circleddash</td>
+            <td>⋖</td>
+            <td>\lessdot</td>
+            <td>\(\smallsetminus\)</td>
+            <td>\smallsetminus</td>
+        </tr>
+        <tr>
+            <td>⊼</td>
+            <td>\barwedge</td>
+            <td>⋓</td>
+            <td>\Cup</td>
+            <td>⊲</td>
+            <td>\lhd</td>
+            <td>⊓</td>
+            <td>\sqcap</td>
+        </tr>
+        <tr>
+            <td>◯</td>
+            <td>\bigcirc</td>
+            <td>∪</td>
+            <td>\cup</td>
+            <td>⋉</td>
+            <td>\ltimes</td>
+            <td>⊔</td>
+            <td>\sqcup</td>
+        </tr>
+        <tr>
+            <td>mod</td>
+            <td>\bmod</td>
+            <td>⋎</td>
+            <td>\curlyvee</td>
+            <td>mod</td>
+            <td>\mod</td>
+            <td>×</td>
+            <td>\times</td>
+        </tr>
+        <tr>
+            <td>⊡</td>
+            <td>\boxdot</td>
+            <td>⋏</td>
+            <td>\curlywedge</td>
+            <td>∓</td>
+            <td>\mp</td>
+            <td>⊴</td>
+            <td>\unlhd</td>
+        </tr>
+        <tr>
+            <td>⊟</td>
+            <td>\boxminus</td>
+            <td>÷</td>
+            <td>\div</td>
+            <td>⊙</td>
+            <td>\odot</td>
+            <td>⊵</td>
+            <td>\unrhd</td>
+        </tr>
+        <tr>
+            <td>⊞</td>
+            <td>\boxplus</td>
+            <td>⋇</td>
+            <td>\divideontimes</td>
+            <td>⊖</td>
+            <td>\ominus</td>
+            <td>⊎</td>
+            <td>\uplus</td>
+        </tr>
+        <tr>
+            <td>⊠</td>
+            <td>\boxtimes</td>
+            <td>∔</td>
+            <td>\dotplus</td>
+            <td>⊕</td>
+            <td>\oplus</td>
+            <td>∨</td>
+            <td>\vee</td>
+        </tr>
+        <tr>
+            <td>∙</td>
+            <td>\bullet</td>
+            <td>⩞</td>
+            <td>\doublebarwedge</td>
+            <td>⊗</td>
+            <td>\otimes</td>
+            <td>⊻</td>
+            <td>\veebar</td>
+        </tr>
+        <tr>
+            <td>⋒</td>
+            <td>\Cap</td>
+            <td>⋒</td>
+            <td>\doublecap</td>
+            <td>⊘</td>
+            <td>\oslash</td>
+            <td>∧</td>
+            <td>\wedge</td>
+        </tr>
+        <tr>
+            <td>∩</td>
+            <td>\cap</td>
+            <td>⋓</td>
+            <td>\doublecup</td>
+            <td>±</td>
+            <td>\pm</td>
+            <td>≀</td>
+            <td>\wr</td>
+        </tr>
+        <tr>
+            <td>⋅</td>
+            <td>\cdot</td>
+            <td>⋗</td>
+            <td>\gtrdot</td>
+            <td>\(x \pmod a\)</td>
+            <td>x \pmod a</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+
+<h3 id="binomial">Binomial Coefficients</h3>
+
+    <table class="symbol">
+        <tr>
+            <td>\(\binom{n}{k}\)</td>
+            <td>\binom{n}{k}</td>
+            <td>\(\dbinom{n}{k}\)</td>
+            <td>\dbinom{n}{k}</td>
+            <td>\(\left\langle n \atop k \right\rangle\)</td>
+            <td>\left\langle<br>n \atop k<br>\right\rangle</td>
+        </tr>
+        <tr>
+            <td>\({n}\choose{k}\)</td>
+            <td>{n}\choose{k}</td>
+            <td>\(\tbinom{n}{k}\)</td>
+            <td>\tbinom{n}{k}</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+
+<h3 id="fractions">Fractions</h3>
+
+    <table class="symbol">
+        <tr>
+            <td>\(\frac{a}{b}\)</td>
+            <td>\frac{a}{b}</td>
+            <td>\(\dfrac{a}{b}\)</td>
+            <td>\dfrac{a}{b}</td>
+            <td>\({a}/{b}\)</td>
+            <td>{a}/{b}</td>
+        </tr>
+        <tr>
+            <td>\({a}\over{b}\)</td>
+            <td>{a}\over{b}</td>
+            <td>\(\tfrac{a}{b}\)</td>
+            <td>\tfrac{a}{b}</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+
+<h3 id="math">Math Operators</h3>
+
+    <table id="math-tbl" class="symbol">
+        <tr>
+            <td>arcsin</td>
+            <td>\arcsin</td>
+            <td>cotg</td>
+            <td>\cotg†</td>
+            <td>ln</td>
+            <td>\ln</td>
+            <td>det</td>
+            <td>\det</td>
+        </tr>
+        <tr>
+            <td>arccos</td>
+            <td>\arccos</td>
+            <td>coth</td>
+            <td>\coth†</td>
+            <td>log</td>
+            <td>\log</td>
+            <td>gcd</td>
+            <td>\gcd</td>
+        </tr>
+        <tr>
+            <td>arctan</td>
+            <td>\arctan</td>
+            <td>csc</td>
+            <td>\csc</td>
+            <td>sec</td>
+            <td>\sec</td>
+            <td>inf</td>
+            <td>\inf</td>
+        </tr>
+        <tr>
+            <td>arctg</td>
+            <td>\arctg†</td>
+            <td>ctg</td>
+            <td>\ctg†</td>
+            <td>sin</td>
+            <td>\sin</td>
+            <td>lim</td>
+            <td>\lim</td>
+        </tr>
+        <tr>
+            <td>arcctg</td>
+            <td>\arcctg†</td>
+            <td>cth</td>
+            <td>\cth†</td>
+            <td>sinh</td>
+            <td>\sinh</td>
+            <td>liminf</td>
+            <td>\liminf</td>
+        </tr>
+        <tr>
+            <td>arg</td>
+            <td>\arg</td>
+            <td>deg</td>
+            <td>\deg</td>
+            <td>sh</td>
+            <td>\sh†</td>
+            <td>limsup</td>
+            <td>\limsup</td>
+        </tr>
+        <tr>
+            <td>ch</td>
+            <td>\ch†</td>
+            <td>dim</td>
+            <td>\dim</td>
+            <td>tan</td>
+            <td>\tan</td>
+            <td>max</td>
+            <td>\max</td>
+        </tr>
+        <tr>
+            <td>cos</td>
+            <td>\cos</td>
+            <td>exp</td>
+            <td>\exp</td>
+            <td>tanh</td>
+            <td>\tanh</td>
+            <td>min</td>
+            <td>\min</td>
+        </tr>
+        <tr>
+            <td>cosec</td>
+            <td>\cosec</td>
+            <td>hom</td>
+            <td>\hom</td>
+            <td>tg</td>
+            <td>\tg†</td>
+            <td>Pr</td>
+            <td>\Pr</td>
+        </tr>
+        <tr>
+            <td>cosh</td>
+            <td>\cosh</td>
+            <td>ker</td>
+            <td>\ker</td>
+            <td>th</td>
+            <td>\th†</td>
+            <td>sup</td>
+            <td>\sup</td>
+        </tr>
+        <tr>
+            <td>cot</td>
+            <td>\cot</td>
+            <td>lg</td>
+            <td>\lg</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+
+    <div class="indented">
+        <p>Functions on the right side of this table can take <a href="#limits">\limits</a>.<span style="position:relative; top:-0.6em;">↗</span><br>
+        † committed to master but not in the most recent release.</p>
+    </div>
+
+<h3 id="sqrt">Sqrt</h3>
+
+    <table class="symbol">
+        <tr>
+            <td>\(\sqrt{x}\)</td>
+            <td>&nbsp;\sqrt{x}</td>
+        </tr>
+        <tr>
+            <td>\(\sqrt[3]{x}\)</td>
+            <td>&nbsp;\sqrt[3]{x}</td>
+        </tr>
+    </table>
+
+
+<h2 id="relations">Relations</h2>
+
+    <!-- This table has scripts for \smallfrown & \smallsmile -->
+    <table class="symbol">
+        <tr>
+            <td>=</td>
+            <td>=</td>
+            <td>≒</td>
+            <td>\fallingdotseq</td>
+            <td>⋘</td>
+            <td>\lll</td>
+            <td>⊒</td>
+            <td>\sqsupseteq</td>
+        </tr>
+        <tr>
+            <td>&lt;</td>
+            <td>&lt;</td>
+            <td>⌢</td>
+            <td>\frown</td>
+            <td>⋘</td>
+            <td>\llless</td>
+            <td>⋐</td>
+            <td>\Subset</td>
+        </tr>
+        <tr>
+            <td>&gt;</td>
+            <td>&gt;</td>
+            <td>≥</td>
+            <td>\ge</td>
+            <td>&lt;</td>
+            <td>\lt</td>
+            <td>⊂</td>
+            <td>\subset</td>
+        </tr>
+        <tr>
+            <td>:</td>
+            <td>:</td>
+            <td>≥</td>
+            <td>\geq</td>
+            <td>∣</td>
+            <td>\mid</td>
+            <td>⊆</td>
+            <td>\subseteq</td>
+        </tr>
+        <tr>
+            <td>≈</td>
+            <td>\approx</td>
+            <td>≧</td>
+            <td>\geqq</td>
+            <td>⊨</td>
+            <td>\models</td>
+            <td>⫅</td>
+            <td>\subseteqq</td>
+        </tr>
+        <tr>
+            <td>≊</td>
+            <td>\approxeq</td>
+            <td>⩾</td>
+            <td>\geqslant</td>
+            <td>⊸</td>
+            <td>\multimap</td>
+            <td>≻</td>
+            <td>\succ</td>
+        </tr>
+        <tr>
+            <td>≍</td>
+            <td>\asymp</td>
+            <td>≫</td>
+            <td>\gg</td>
+            <td>∋</td>
+            <td>\owns</td>
+            <td>⪸</td>
+            <td>\succapprox</td>
+        </tr>
+        <tr>
+            <td>∍</td>
+            <td>\backepsilon</td>
+            <td>⋙</td>
+            <td>\ggg</td>
+            <td>∥</td>
+            <td>\parallel</td>
+            <td>≽</td>
+            <td>\succcurlyeq</td>
+        </tr>
+        <tr>
+            <td>∽</td>
+            <td>\backsim</td>
+            <td>⋙</td>
+            <td>\gggtr</td>
+            <td>⊥</td>
+            <td>\perp</td>
+            <td>⪰</td>
+            <td>\succeq</td>
+        </tr>
+        <tr>
+            <td>⋍</td>
+            <td>\backsimeq</td>
+            <td>&gt;</td>
+            <td>\gt</td>
+            <td>⋔</td>
+            <td>\pitchfork</td>
+            <td>≿</td>
+            <td>\succsim</td>
+        </tr>
+        <tr>
+            <td>≬</td>
+            <td>\between</td>
+            <td>⪆</td>
+            <td>\gtrapprox</td>
+            <td>≺</td>
+            <td>\prec</td>
+            <td>⋑</td>
+            <td>\Supset</td>
+        </tr>
+        <tr>
+            <td>⋈</td>
+            <td>\bowtie</td>
+            <td>⋛</td>
+            <td>\gtreqless</td>
+            <td>⪷</td>
+            <td>\precapprox</td>
+            <td>⊃</td>
+            <td>\supset</td>
+        </tr>
+        <tr>
+            <td>≏</td>
+            <td>\bumpeq</td>
+            <td>⪌</td>
+            <td>\gtreqqless</td>
+            <td>≼</td>
+            <td>\preccurlyeq</td>
+            <td>⊇</td>
+            <td>\supseteq</td>
+        </tr>
+        <tr>
+            <td>≎</td>
+            <td>\Bumpeq</td>
+            <td>≷</td>
+            <td>\gtrless</td>
+            <td>⪯</td>
+            <td>\preceq</td>
+            <td>⫆</td>
+            <td>\supseteqq</td>
+        </tr>
+        <tr>
+            <td>≗</td>
+            <td>\circeq</td>
+            <td>≳</td>
+            <td>\gtrsim</td>
+            <td>≾</td>
+            <td>\precsim</td>
+            <td>≈</td>
+            <td>\thickapprox</td>
+        </tr>
+        <tr>
+            <td>≅</td>
+            <td>\cong</td>
+            <td>∈</td>
+            <td>\in</td>
+            <td>∝</td>
+            <td>\propto</td>
+            <td>∼</td>
+            <td>\thicksim</td>
+        </tr>
+        <tr>
+            <td>⋞</td>
+            <td>\curlyeqprec</td>
+            <td>⋈</td>
+            <td>\Join</td>
+            <td>≓</td>
+            <td>\risingdotseq</td>
+            <td>⊴</td>
+            <td>\trianglelefteq</td>
+        </tr>
+        <tr>
+            <td>⋟</td>
+            <td>\curlyeqsucc</td>
+            <td>≤</td>
+            <td>\le</td>
+            <td>∣</td>
+            <td>\shortmid</td>
+            <td>≜</td>
+            <td>\triangleq</td>
+        </tr>
+        <tr>
+            <td>⊣</td>
+            <td>\dashv</td>
+            <td>≤</td>
+            <td>\leq</td>
+            <td>∥</td>
+            <td>\shortparallel</td>
+            <td>⊵</td>
+            <td>\trianglerighteq</td>
+        </tr>
+        <tr>
+            <td>≐</td>
+            <td>\doteq</td>
+            <td>≦</td>
+            <td>\leqq</td>
+            <td>∼</td>
+            <td>\sim</td>
+            <td>∝</td>
+            <td>\varpropto</td>
+        </tr>
+        <tr>
+            <td>≑</td>
+            <td>\Doteq</td>
+            <td>⩽</td>
+            <td>\leqslant</td>
+            <td>≃</td>
+            <td>\simeq</td>
+            <td>△</td>
+            <td>\vartriangle</td>
+        </tr>
+        <tr>
+            <td>≑</td>
+            <td>\doteqdot</td>
+            <td>⪅</td>
+            <td>\lessapprox</td>
+            <td>\(\smallfrown\)</td>
+            <td>\smallfrown</td>
+            <td>⊲</td>
+            <td>\vartriangleleft</td>
+        </tr>
+        <tr>
+            <td>≖</td>
+            <td>\eqcirc</td>
+            <td>⋚</td>
+            <td>\lesseqgtr</td>
+            <td>\(\smallsmile\)</td>
+            <td>\smallsmile</td>
+            <td>⊳</td>
+            <td>\vartriangleright</td>
+        </tr>
+        <tr>
+            <td>≂</td>
+            <td>\eqsim</td>
+            <td>⪋</td>
+            <td>\lesseqqgtr</td>
+            <td>⌣</td>
+            <td>\smile</td>
+            <td>⊢</td>
+            <td>\vdash</td>
+        </tr>
+        <tr>
+            <td>⪖</td>
+            <td>\eqslantgtr</td>
+            <td>≶</td>
+            <td>\lessgtr</td>
+            <td>⊏</td>
+            <td>\sqsubset</td>
+            <td>⊨</td>
+            <td>\vDash</td>
+        </tr>
+        <tr>
+            <td>⪕</td>
+            <td>\eqslantless</td>
+            <td>≲</td>
+            <td>\lesssim</td>
+            <td>⊑</td>
+            <td>\sqsubseteq</td>
+            <td>⊩</td>
+            <td>\Vdash</td>
+        </tr>
+        <tr>
+            <td>≡</td>
+            <td>\equiv</td>
+            <td>≪</td>
+            <td>\ll</td>
+            <td>⊐</td>
+            <td>\sqsupset</td>
+            <td>⊪</td>
+            <td>\Vvdash</td>
+        </tr>
+    </table>
+
+<h2 id="negated-relations">Negated Relations</h2>
+
+    <table class="symbol">
+        <tr>
+            <td>⪊</td>
+            <td>\gnapprox</td>
+            <td></td>
+            <td>\ngeqslant</td>
+            <td>⊈</td>
+            <td>\nsubseteq</td>
+            <td>⪵</td>
+            <td>\precneqq</td>
+        </tr>
+        <tr>
+            <td>⪈</td>
+            <td>\gneq</td>
+            <td>≯</td>
+            <td>\ngtr</td>
+            <td></td>
+            <td>\nsubseteqq</td>
+            <td>⋨</td>
+            <td>\precnsim</td>
+        </tr>
+        <tr>
+            <td>≩</td>
+            <td>\gneqq</td>
+            <td>∋</td>
+            <td>\ni</td>
+            <td>⊁</td>
+            <td>\nsucc</td>
+            <td>⊊</td>
+            <td>\subsetneq</td>
+        </tr>
+        <tr>
+            <td>⋧</td>
+            <td>\gnsim</td>
+            <td>≰</td>
+            <td>\nleq</td>
+            <td>⋡</td>
+            <td>\nsucceq</td>
+            <td>⫋</td>
+            <td>\subsetneqq</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>\gvertneqq</td>
+            <td></td>
+            <td>\nleqq</td>
+            <td>⊉</td>
+            <td>\nsupseteq</td>
+            <td>⪺</td>
+            <td>\succnapprox</td>
+        </tr>
+        <tr>
+            <td>⪉</td>
+            <td>\lnapprox</td>
+            <td></td>
+            <td>\nleqslant</td>
+            <td></td>
+            <td>\nsupseteqq</td>
+            <td>⪶</td>
+            <td>\succneqq</td>
+        </tr>
+        <tr>
+            <td>⪇</td>
+            <td>\lneq</td>
+            <td>≮</td>
+            <td>\nless</td>
+            <td>⋪</td>
+            <td>\ntriangleleft</td>
+            <td>⋩</td>
+            <td>\succnsim</td>
+        </tr>
+        <tr>
+            <td>≨</td>
+            <td>\lneqq</td>
+            <td>∤</td>
+            <td>\nmid</td>
+            <td>⋬</td>
+            <td>\ntrianglelefteq</td>
+            <td>⊋</td>
+            <td>\supsetneq</td>
+        </tr>
+        <tr>
+            <td>⋦</td>
+            <td>\lnsim</td>
+            <td>∉</td>
+            <td>\notin</td>
+            <td>⋫</td>
+            <td>\ntriangleright</td>
+            <td>⫌</td>
+            <td>\supsetneqq</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>\lvertneqq</td>
+            <td>∦</td>
+            <td>\nparallel</td>
+            <td>⋭</td>
+            <td>\ntrianglerighteq</td>
+            <td></td>
+            <td>\varsubsetneq</td>
+        </tr>
+        <tr>
+            <td>≆</td>
+            <td>\ncong</td>
+            <td>⊀</td>
+            <td>\nprec</td>
+            <td>⊬</td>
+            <td>\nvdash</td>
+            <td></td>
+            <td>\varsubsetneqq</td>
+        </tr>
+        <tr>
+            <td>≠</td>
+            <td>\ne</td>
+            <td>⋠</td>
+            <td>\npreceq</td>
+            <td>⊭</td>
+            <td>\nvDash</td>
+            <td></td>
+            <td>\varsupsetneq</td>
+        </tr>
+        <tr>
+            <td>≠</td>
+            <td>\neq</td>
+            <td></td>
+            <td>\nshortmid</td>
+            <td>⊯</td>
+            <td>\nVDash</td>
+            <td></td>
+            <td>\varsupsetneqq</td>
+        </tr>
+        <tr>
+            <td>≱</td>
+            <td>\ngeq</td>
+            <td></td>
+            <td>\nshortparallel</td>
+            <td>⊮</td>
+            <td>\nVdash</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>&#xe00e;</td>
+            <td>\ngeqq</td>
+            <td>≁</td>
+            <td>\nsim</td>
+            <td>⪹</td>
+            <td>\precnapprox</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+
+<h3 id="arrows">Arrows</h3>
+
+    <table class="symbol">
+        <tr>
+            <td>↺</td>
+            <td>\circlearrowleft</td>
+            <td>⇐</td>
+            <td>\Leftarrow</td>
+            <td>↬</td>
+            <td>\looparrowright</td>
+            <td>⇉</td>
+            <td>\rightrightarrows</td>
+        </tr>
+        <tr>
+            <td>↻</td>
+            <td>\circlearrowright</td>
+            <td>↢</td>
+            <td>\leftarrowtail</td>
+            <td>↰</td>
+            <td>\Lsh</td>
+            <td>⇝</td>
+            <td>\rightsquigarrow</td>
+        </tr>
+        <tr>
+            <td>↶</td>
+            <td>\curvearrowleft</td>
+            <td>↽</td>
+            <td>\leftharpoondown</td>
+            <td>↦</td>
+            <td>\mapsto</td>
+            <td>⇛</td>
+            <td>\Rrightarrow</td>
+        </tr>
+        <tr>
+            <td>↷</td>
+            <td>\curvearrowright</td>
+            <td>↼</td>
+            <td>\leftharpoonup</td>
+            <td>↗</td>
+            <td>\nearrow</td>
+            <td>↱</td>
+            <td>\Rsh</td>
+        </tr>
+        <tr>
+            <td>⇠</td>
+            <td>\dashleftarrow</td>
+            <td>⇇</td>
+            <td>\leftleftarrows</td>
+            <td>↚</td>
+            <td>\nleftarrow</td>
+            <td>↘</td>
+            <td>\searrow</td>
+        </tr>
+        <tr>
+            <td>⇢</td>
+            <td>\dashrightarrow</td>
+            <td>↔</td>
+            <td>\leftrightarrow</td>
+            <td>⇍</td>
+            <td>\nLeftarrow</td>
+            <td>↙</td>
+            <td>\swarrow</td>
+        </tr>
+        <tr>
+            <td>↓</td>
+            <td>\downarrow</td>
+            <td>⇔</td>
+            <td>\Leftrightarrow</td>
+            <td>↮</td>
+            <td>\nleftrightarrow</td>
+            <td>→</td>
+            <td>\to</td>
+        </tr>
+        <tr>
+            <td>⇓</td>
+            <td>\Downarrow</td>
+            <td>⇆</td>
+            <td>\leftrightarrows</td>
+            <td>⇎</td>
+            <td>\nLeftrightarrow</td>
+            <td>↞</td>
+            <td>\twoheadleftarrow</td>
+        </tr>
+        <tr>
+            <td>⇊</td>
+            <td>\downdownarrows</td>
+            <td>⇋</td>
+            <td>\leftrightharpoons</td>
+            <td>↛</td>
+            <td>\nrightarrow</td>
+            <td>↠</td>
+            <td>\twoheadrightarrow</td>
+        </tr>
+        <tr>
+            <td>⇃</td>
+            <td>\downharpoonleft</td>
+            <td>↭</td>
+            <td>\leftrightsquigarrow</td>
+            <td>⇏</td>
+            <td>\nRightarrow</td>
+            <td>↑</td>
+            <td>\uparrow</td>
+        </tr>
+        <tr>
+            <td>⇂</td>
+            <td>\downharpoonright</td>
+            <td>⇚</td>
+            <td>\Lleftarrow</td>
+            <td>↖</td>
+            <td>\nwarrow</td>
+            <td>⇑</td>
+            <td>\Uparrow</td>
+        </tr>
+        <tr>
+            <td>←</td>
+            <td>\gets</td>
+            <td>⟵</td>
+            <td>\longleftarrow</td>
+            <td>↾</td>
+            <td>\restriction</td>
+            <td>↕</td>
+            <td>\updownarrow</td>
+        </tr>
+        <tr>
+            <td>↩</td>
+            <td>\hookleftarrow</td>
+            <td>⟸</td>
+            <td>\Longleftarrow</td>
+            <td>→</td>
+            <td>\rightarrow</td>
+            <td>⇕</td>
+            <td>\Updownarrow</td>
+        </tr>
+        <tr>
+            <td>↪</td>
+            <td>\hookrightarrow</td>
+            <td>⟷</td>
+            <td>\longleftrightarrow</td>
+            <td>⇒</td>
+            <td>\Rightarrow</td>
+            <td>↿</td>
+            <td>\upharpoonleft</td>
+        </tr>
+        <tr>
+            <td>⟺</td>
+            <td>\iff</td>
+            <td>⟺</td>
+            <td>\Longleftrightarrow</td>
+            <td>↣</td>
+            <td>\rightarrowtail</td>
+            <td>↾</td>
+            <td>\upharpoonright</td>
+        </tr>
+        <tr>
+            <td>⟸</td>
+            <td>\impliedby</td>
+            <td>⟼</td>
+            <td>\longmapsto</td>
+            <td>⇁</td>
+            <td>\rightharpoondown</td>
+            <td>⇈</td>
+            <td>\upuparrows</td>
+        </tr>
+        <tr>
+            <td>⟹</td>
+            <td>\implies</td>
+            <td>⟶</td>
+            <td>\longrightarrow</td>
+            <td>⇀</td>
+            <td>\rightharpoonup</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>⇝</td>
+            <td>\leadsto</td>
+            <td>⟹</td>
+            <td>\Longrightarrow</td>
+            <td>⇄</td>
+            <td>\rightleftarrows</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>←</td>
+            <td>\leftarrow</td>
+            <td>↫</td>
+            <td>\looparrowleft</td>
+            <td>⇌</td>
+            <td>\rightleftharpoons</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+
+
+<h2 id="class">Class Assignment</h2>
+
+    <table class="all-code">
+        <tr>
+            <td>\mathbin</td>
+            <td>\mathclose</td>
+            <td>\mathinner</td>
+            <td>\mathop</td>
+        </tr>
+        <tr>
+            <td>\mathopen</td>
+            <td>\mathord</td>
+            <td>\mathpunct</td>
+            <td>\mathrel</td>
+        </tr>
+    </table>
+
+<h3 id="color">Color</h3>
+
+    <table class="symbol">
+        <tr>
+            <td>\(\color{blue}{F=ma}\)</td>
+            <td>\color{blue}{F=ma}</td>
+        </tr>
+        <tr>
+            <td>\(\color{#228B22}{F=ma}\)</td>
+            <td>\color{#228B22}{F=ma}</td>
+        </tr>
+    </table>
+
+    <div class="indented">
+        <p><code>\color</code> follows MathJax syntax and expects the affected math to be a parameter of the function, as in <span style="white-space: nowrap;"><code>\color{blue}{math&nbsp;content}</code>.</span></p>
+
+        <p>For color definition, <code>\color</code> will accept the standard HTML <a href="https://www.w3schools.com/colors/colors_names.asp">predefined color names</a>. It will also accept an RGB argument in CSS hexadecimal style.</p>
+    </div>
+
+<h3 id="font">Font</h3>
+
+    <table class="symbol">
+        <tr>
+            <td>\(\mathrm{AB}\)</td>
+            <td>\mathrm{AB}</td>
+            <td>\(\mathbf{AB}\)</td>
+            <td>\mathbf{AB}</td>
+            <td>\(\mathit{AB}\)</td>
+            <td>\mathit{AB}</td>
+            <td>\(\mathsf{AB}\)</td>
+            <td>\mathsf{AB}</td>
+            <td>\(\mathtt{AB}\)</td>
+            <td>\mathtt{AB}</td>
+        </tr>
+        <tr>
+            <td>\(\textrm{AB}\)</td>
+            <td>\textrm{AB}</td>
+            <td>\(\textbf{AB}\)</td>
+            <td>\textbf{AB}</td>
+            <td>\(\textit{AB}\)</td>
+            <td>\textit{AB}</td>
+            <td>\(\textsf{AB}\)</td>
+            <td>\textsf{AB}</td>
+            <td>\(\texttt{AB}\)</td>
+            <td>\texttt{AB}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>\rm{AB}</td>
+            <td></td>
+            <td>\bf{AB}</td>
+            <td></td>
+            <td>\it{AB}</td>
+            <td></td>
+            <td>\sf{AB}</td>
+            <td></td>
+            <td>\tt{AB}</td>
+        </tr>
+        <tr>
+            <td>\(\textnormal{AB}\)</td>
+            <td>\textnormal{AB}</td>
+            <td>\(\bold{AB}\)</td>
+            <td>\bold{AB}</td>
+            <td>\(\Bbb{AB}\)</td>
+            <td>\Bbb{AB}</td>
+            <td>\(\frak{AB}\)</td>
+            <td>\frak{AB}</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>\(\text{AB}\)</td>
+            <td>\text{AB}</td>
+            <td>\(\mathcal{AB}\)</td>
+            <td>\mathcal{AB}</td>
+            <td>\(\mathbb{AB}\)</td>
+            <td>\mathbb{AB}</td>
+            <td>\(\mathfrak{AB}\)</td>
+            <td>\mathfrak{AB}</td>
+            <td>\(\mathscr{AB}\)</td>
+            <td>\mathscr{AB}</td>
+        </tr>
+    </table>
+
+    <p class="indented"><code>\rm</code>, <code>\bf</code>, <code>\it</code>, <code>\sf</code>, and <code>\tt</code> are committed to master but are not yet part of the latest release.</p>
+
+<h3 id="size">Size</h3>
+
+    <table class="symbol">
+        <tr>
+            <td>\(\Huge AB\)</td>
+            <td>\Huge AB</td>
+            <td>\(\normalsize AB\)</td>
+            <td>\normalsize AB</td>
+        </tr>
+        <tr>
+            <td>\(\huge AB\)</td>
+            <td>\huge AB</td>
+            <td>\(\small AB\)</td>
+            <td>\small AB</td>
+        </tr>
+        <tr>
+            <td>\(\LARGE AB\)</td>
+            <td>\LARGE AB</td>
+            <td>\(\footnotesize AB\)</td>
+            <td>\footnotesize AB</td>
+        </tr>
+        <tr>
+            <td>\(\Large AB\)</td>
+            <td>\Large AB</td>
+            <td>\(\scriptsize AB\)</td>
+            <td>\scriptsize AB</td>
+        </tr>
+        <tr>
+            <td>\(\large AB\)</td>
+            <td>\large AB</td>
+            <td>\(\tiny AB\)</td>
+            <td>\tiny AB</td>
+        </tr>
+    </table>
+
+<h3 id="style">Style</h3>
+
+    <table id="style-tbl" class="symbol">
+        <tr>
+            <td>\(\displaystyle\sum_{i=1}^n\)</td>
+            <td><strong>\displaystyle</strong>\sum_{i=1}^n</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>\(\textstyle\sum_{i=1}^n\)</td>
+            <td><strong>\textstyle</strong>\sum_{i=1}^n</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>\(\scriptstyle x\)</td>
+            <td><strong>\scriptstyle</strong> x</td>
+            <td>The size of a first sub/superscript</td>
+        </tr>
+        <tr>
+            <td>\(\scriptscriptstyle x\)</td>
+            <td><strong>\scriptscriptstyle</strong> x</td>
+            <td>The size of subsequent sub/superscripts</td>
+        </tr>
+        <tr id="limits">
+            <td>\(\lim\limits_x\)</td>
+            <td>\lim<strong>\limits</strong>_x</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>\(\lim\nolimits_x\)</td>
+            <td>\lim<strong>\nolimits</strong>_x</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>\(\text{x}\)</td>
+            <td><strong>\text</strong>{x}</td>
+            <td><code>\text{…}</code> will accept characters from <a href="http://www.unicode.org/charts/PDF/U0080.pdf">Latin-1</a>, <a href="http://unicode.org/charts/PDF/U0400.pdf">Cyrillic</a>, or CJK (Hiragana, Katakana, CJK ideograms, and Hangul).</td>
+        </tr>
+    </table>
+
+<h2 id="symbols">Symbols and Punctuation</h2>
+
+    <table class="symbol">
+        <tr>
+            <td>%</td>
+            <td>\%</td>
+            <td>□</td>
+            <td>\Box</td>
+            <td>⋯</td>
+            <td>\cdots</td>
+            <td>✓</td>
+            <td>\checkmark</td>
+        </tr>
+        <tr>
+            <td>#</td>
+            <td>\#</td>
+            <td>□</td>
+            <td>\square</td>
+            <td>⋱</td>
+            <td>\ddots</td>
+            <td>†</td>
+            <td>\dag</td>
+        </tr>
+        <tr>
+            <td>&amp;</td>
+            <td>\&amp;</td>
+            <td>■</td>
+            <td>\blacksquare</td>
+            <td>…</td>
+            <td>\ldots</td>
+            <td>†</td>
+            <td>\dagger</td>
+        </tr>
+        <tr>
+            <td>_</td>
+            <td>\_</td>
+            <td>△</td>
+            <td>\triangle</td>
+            <td>⋮</td>
+            <td>\vdots</td>
+            <td>‡</td>
+            <td>\ddag</td>
+        </tr>
+        <tr>
+            <td>–</td>
+            <td>--</td>
+            <td>▽</td>
+            <td>\triangledown</td>
+            <td>…</td>
+            <td>\mathellipsis</td>
+            <td>‡</td>
+            <td>\ddagger</td>
+        </tr>
+        <tr>
+            <td>—</td>
+            <td>---</td>
+            <td>◃</td>
+            <td>\triangleleft</td>
+            <td>…</td>
+            <td>\textellipsis</td>
+            <td>$</td>
+            <td>\$</td>
+        </tr>
+        <tr>
+            <td>‘</td>
+            <td>`</td>
+            <td>▹</td>
+            <td>\triangleright</td>
+            <td>⋆</td>
+            <td>\star</td>
+            <td>£</td>
+            <td>\pounds</td>
+        </tr>
+        <tr>
+            <td>‘‘</td>
+            <td>``</td>
+            <td>▽</td>
+            <td>\bigtriangledown</td>
+            <td>★</td>
+            <td>\bigstar</td>
+            <td>¥</td>
+            <td>\yen</td>
+        </tr>
+        <tr>
+            <td>&quot;</td>
+            <td>&quot;</td>
+            <td>△</td>
+            <td>\bigtriangleup</td>
+            <td>♭</td>
+            <td>\flat</td>
+            <td>√</td>
+            <td>\surd</td>
+        </tr>
+        <tr>
+            <td>:</td>
+            <td>\colon</td>
+            <td>▲</td>
+            <td>\blacktriangle</td>
+            <td>♮</td>
+            <td>\natural</td>
+            <td>°</td>
+            <td>\degree</td>
+        </tr>
+        <tr>
+            <td>‵</td>
+            <td>\backprime</td>
+            <td>▼</td>
+            <td>\blacktriangledown</td>
+            <td>♯</td>
+            <td>\sharp</td>
+            <td>╲</td>
+            <td>\diagdown</td>
+        </tr>
+        <tr>
+            <td>′</td>
+            <td>\prime</td>
+            <td>◀</td>
+            <td>\blacktriangleleft</td>
+            <td>®</td>
+            <td>\circledR</td>
+            <td>╱</td>
+            <td>\diagup</td>
+        </tr>
+        <tr>
+            <td>∠</td>
+            <td>\angle</td>
+            <td>▶</td>
+            <td>\blacktriangleright</td>
+            <td>Ⓢ</td>
+            <td>\circledS</td>
+            <td>℧</td>
+            <td>\mho</td>
+        </tr>
+        <tr>
+            <td>∡</td>
+            <td>\measuredangle</td>
+            <td>⋄</td>
+            <td>\diamond</td>
+            <td>♣</td>
+            <td>\clubsuit</td>
+            <td>✠</td>
+            <td>\maltese</td>
+        </tr>
+        <tr>
+            <td>∢</td>
+            <td>\sphericalangle</td>
+            <td>◊</td>
+            <td>\Diamond</td>
+            <td>♢</td>
+            <td>\diamondsuit</td>
+            <td>∇</td>
+            <td>\nabla</td>
+        </tr>
+        <tr>
+            <td>⊤</td>
+            <td>\top</td>
+            <td>◊</td>
+            <td>\lozenge</td>
+            <td>♡</td>
+            <td>\heartsuit</td>
+            <td>∞</td>
+            <td>\infty</td>
+        </tr>
+        <tr>
+            <td>⊥</td>
+            <td>\bot</td>
+            <td>⧫</td>
+            <td>\blacklozenge</td>
+            <td>♠</td>
+            <td>\spadesuit</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+
+    <table class="symbol">
+        <tr>
+            <td>\(\KaTeX\)</td>
+            <td>\KaTeX</td>
+        </tr>
+    </table>
+
+    <div class="footer">
+    <table>
+        <tr>
+            <td>Copyright © 2017 Khan Academy</td>
+            <td>Released under the <a href="https://opensource.org/licenses/MIT/">MIT License</a></td>
+        </tr>
+    </table>
+    </div>
+    <br>
+
+</div>   <!-- main -->
+
+<div id="sidebar">
+    <p><a href="https://khan.github.io/KaTeX/">\(\KaTeX\)</a></p>
+    <h3><a href="#top">Contents</a></h3>
+    <ul id="toc">
+        <li><a href="#accents">Accents</a></li>
+        <li><a href="#delimiters">Delimiters</a></li>
+        <li><a href="#environments">Environments</a></li>
+        <li><a href="#letters">Letters</a></li>
+        <li>Layout <span class="reduced">▼</span>
+            <ul>
+                <li><a href="#overlap">Overlap</a></li>
+                <li><a href="#spacing">Spacing</a></li>
+                <li><a href="#vertical">Vertical</a></li>
+            </ul>
+        </li>
+        <li><a href="#logic">Logic/Set</a></li>
+        <li>Operators <span class="reduced">▼</span>
+            <ul>
+                <li><a href="#big">Big</a></li>
+                <li><a href="#binary">Binary</a></li>
+                <li><a href="#binomial">Binomial</a></li>
+                <li><a href="#fractions">Fractions</a></li>
+                <li><a href="#math">Math</a></li>
+                <li><a href="#sqrt">Sqrt</a></li>
+            </ul>
+        </li>
+        <li>Relations <span class="reduced">▼</span>
+            <ul>
+                <li><a href="#relations">Relations</a></li>
+                <li><a href="#negated-relations">Negated</a></li>
+                <li><a href="#arrows">Arrows</a></li>
+            </ul>
+        </li>
+        <li>Style <span class="reduced">▼</span>
+            <ul>
+                <li><a href="#class">Class</a></li>
+                <li><a href="#color">Color</a></li>
+                <li><a href="#font">Font</a></li>
+                <li><a href="#size">Size</a></li>
+                <li><a href="#style">Style</a></li>
+            </ul>
+        </li>
+        <li><a href="#symbols">Symbols</a></li>
+    </ul>
+
+    <h3>Links</h3>
+    <ul>
+        <li><a href="https://khan.github.io/KaTeX/">Home</a></li>
+        <li><a href="https://github.com/Khan/KaTeX">Repository</a></li>
+        <li><a href="https://github.com/Khan/KaTeX#user-content-usage">Installation</a></li>
+        <li><a href="https://github.com/Khan/KaTeX/releases">Download</a></li>
+        <li><a href="https://github.com/Khan/KaTeX/wiki">Wiki</a></li>
+    </ul>
+</div>      <!-- sidebar -->
+
+<div id="mobile-nav">
+    <!--On very small screens, the sidebar TOC is replaced by a button with a drop-down menu. -->
+    <div id="navicon">
+        <svg width="24" height="24" viewBox="0 0 512 512"><path d="M96 241h320v32H96zM96 145h320v32H96zM96 337h320v32H96z"/></svg>
+        <div id="mobile-menu">
+            <ul>
+                <li><a href="#accents">Accents</a></li>
+                <li><a href="#delimiters">Delimiters</a></li>
+                <li><a href="#environments">Environments</a></li>
+                <li><a href="#letters">Letters</a></li>
+                <li><a href="#layout">Layout</a></li>
+                <li><a href="#logic">Logic/Set</a></li>
+                <li><a href="#big">Operators</a></li>
+                <li><a href="#relations">Relations</a></li>
+                <li><a href="#class">Style</a></li>
+                <li><a href="#symbols">Symbols</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    setTreeToggleEvents(document.getElementById("toc"));  <!-- Table of Contents -->
+    renderMathInElement(document.body,{delimiters:[       <!-- KaTeX -->
+        {left: "\\[", right: "\\]", display: true},
+        {left: "\\(", right: "\\)", display: false}
+    ]});
+    document.getElementById("mobile-nav").addEventListener('click', toggleMobileMenu, false)
+
+    function setTreeToggleEvents(toc) {
+        toc.addEventListener('click', stopBubble, false);
+        for (var i=0; i<toc.childNodes.length; i++) {
+            var li=toc.childNodes[i];
+            if (li.nodeName=="LI" && li.childNodes.length>1) {
+                li.addEventListener('click', function () {
+                    this.className = (this.className == 'li-open' ? 'li-closed' : 'li-open' );
+                } , false);
+
+                for (var j=0; j<li.childNodes.length; j++) {
+                    var ul = li.childNodes[j];
+                    if (ul.nodeName=="UL") {
+                        ul.addEventListener('click', stopBubble, false);
+                    }
+                }
+            }
+        }
+    }
+
+    function toggleMobileMenu() {
+        var m = document.getElementById("mobile-menu");
+        m.className = (m.className == 'menu-on' ? 'menu-off' : 'menu-on' );
+        return true;
+    }
+
+    function stopBubble(event) {
+         event.stopPropagation();
+    }
+</script>
+
+</body>
