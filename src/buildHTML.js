@@ -1631,15 +1631,13 @@ groupTypes.mclass = function(group, options) {
     return makeSpan([group.value.mclass], elements, options);
 };
 
-groupTypes.transform = function(group, options) {
+groupTypes.raisebox = function(group, options) {
     const span = groupTypes.text(group, options);
-    if (group.value.dy) {
-        const dy = calculateSize(group.value.dy.value, options.style);
-        span.height += dy;
-        span.depth -= dy;
-        span.style.top = -dy + "em";
-        span.style.position = "relative";
-    }
+    const dy = calculateSize(group.value.dy.value, options.style);
+    span.height += dy;
+    span.depth -= dy;
+    span.style.top = -dy + "em";
+    span.style.position = "relative";
     return span;
 };
 

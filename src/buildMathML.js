@@ -603,7 +603,7 @@ groupTypes.mclass = function(group, options) {
 
 // Transforms (translation/rotation) don't seem to have a representation
 // in MathML, so just treat them like \text{...}
-groupTypes.transform = groupTypes.text;
+groupTypes.raisebox = groupTypes.text;
 
 /**
  * Takes a list of nodes, builds them, and returns a list of the generated

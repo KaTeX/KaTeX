@@ -660,7 +660,7 @@ defineFunction(["\\raisebox"], {
     const amount = args[0];
     const body = args[1];
     return {
-        type: "transform",
+        type: "raisebox",
         dy: amount,
         body: ordargument(body),
     };
