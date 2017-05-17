@@ -1893,6 +1893,10 @@ describe("An aligned environment", function() {
     it("should parse its input", function() {
         expect("\\begin{aligned}a&=b&c&=d\\\\e&=f\\end{aligned}")
             .toParse();
+        expect("\\begin{align}a&=b&c&=d\\\\e&=f\\end{align}")
+            .toParse();
+        expect("\\begin{align*}a&=b&c&=d\\\\e&=f\\end{align*}")
+            .toParse();
     });
 
 });
