@@ -168,7 +168,7 @@ SupSubLeftAlignReset: |
 SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
 Symbols1: |
     \maltese\degree\pounds\$
-    \text{\maltese\degree}
+    \text{\maltese\degree\pounds\textdollar}
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
 Unicode: \begin{matrix}\text{ÀàÇçÉéÏïÖöÛû} \\ \text{БГДЖЗЙЛФЦШЫЮЯ} \\ \text{여보세요} \\ \text{私はバナナです} \end{matrix}
 UnsupportedCmds:
