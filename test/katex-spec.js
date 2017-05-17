@@ -2012,11 +2012,17 @@ describe("A macro expander", function() {
         });
     });
 
-    it("should expand the \overset macro as expected", function() {
+    it("should expand the \\overset macro as expected", function() {
         expect("\\overset?=").toParseLike("\\mathop{=}\\limits^{?}");
         expect("\\overset{x=y}{\sqrt{ab}}")
             .toParseLike("\\mathop{\sqrt{ab}}\\limits^{x=y}");
         expect("\\overset {?} =").toParseLike("\\mathop{=}\\limits^{?}");
+    });
+
+    it("should build \\iff, \\implies, \\impliedby", function() {
+        expect("X \\iff Y").toBuild();
+        expect("X \\implies Y").toBuild();
+        expect("X \\impliedby Y").toBuild();
     });
 });
 
