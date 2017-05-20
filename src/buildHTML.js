@@ -1512,14 +1512,14 @@ groupTypes.horizBrace = function(group, options) {
     let noteReset;
     if (haveNote) {
         if (group.value.sup) {
-            newOptions = options.withStyle(style.fracNum());
+            newOptions = options.withStyle(style.sup());
             note = buildGroup(group.value.sup, newOptions);
-            noteReset =  makeSpan([style.reset(), style.fracNum().cls()],
+            noteReset =  makeSpan([style.reset(), style.sup().cls()],
                 [note], newOptions);
         } else {
-            newOptions = options.withStyle(style.fracDen());
+            newOptions = options.withStyle(style.sub());
             note = buildGroup(group.value.sub, newOptions);
-            noteReset =  makeSpan([style.reset(), style.fracDen().cls()],
+            noteReset =  makeSpan([style.reset(), style.sub().cls()],
                 [note], newOptions);
         }
         group = group.value.base;
@@ -1558,9 +1558,9 @@ groupTypes.horizBrace = function(group, options) {
     if (haveNote) {
         let noteShift;
         if (group.value.isOver) {
-            noteShift = braceShift - braceBody.height - 3 * ruleWidth;
+            noteShift = braceShift - braceBody.height - 4 * ruleWidth;
         } else {
-            noteShift = braceShift + noteReset.height + 3 * ruleWidth;
+            noteShift = braceShift + noteReset.height + 4 * ruleWidth;
         }
 
         const vSpan = makeSpan(["mord",
@@ -1674,13 +1674,22 @@ groupTypes.boxed = function(group, options) {
 groupTypes.xArrow = function(group, options) {
     const style = options.style;
 
-    // Build the inner group.
-    const upperGroup = buildGroup(group.value.body, options);
+    // Build the argument groups in the appropriate style.
+    // Ref: amsmath.dtx:   \hbox{$\scriptstyle\mkern#3mu{#6}\mkern#4mu$}%
+
+    let newOptions = options.withStyle(style.sup());
+    const upperGroup = buildGroup(group.value.body, newOptions);
+    const upperGroupWrap = makeSpan([style.reset(), style.sup().cls()],
+        [upperGroup], newOptions);
 
     let lowerGroup;
+    let lowerGroupWrap;
     if (group.value.below) {
         // Build the lower group
-        lowerGroup = buildGroup(group.value.below, options);
+        newOptions = options.withStyle(style.sub());
+        lowerGroup = buildGroup(group.value.below, newOptions);
+        lowerGroupWrap = makeSpan([style.reset(), style.sub().cls()],
+            [lowerGroup], newOptions);
     }
 
     const ruleWidth = fontMetrics.metrics.defaultRuleThickness /
@@ -1690,22 +1699,22 @@ groupTypes.xArrow = function(group, options) {
 
     const arrowShift = -style.metrics.axisHeight + arrowBody.depth;
     const upperShift = -style.metrics.axisHeight - arrowBody.height -
-        3 * ruleWidth;
+        2 * ruleWidth;
 
     // Generate the vlist
     let vlist;
     if (group.value.below) {
         const lowerShift = -style.metrics.axisHeight
-            + lowerGroup.height + arrowBody.height
+            + lowerGroupWrap.height + arrowBody.height
             + 3 * ruleWidth;
         vlist = buildCommon.makeVList([
-            {type: "elem", elem: upperGroup, shift: upperShift},
+            {type: "elem", elem: upperGroupWrap, shift: upperShift},
             {type: "elem", elem: arrowBody,  shift: arrowShift},
-            {type: "elem", elem: lowerGroup, shift: lowerShift},
+            {type: "elem", elem: lowerGroupWrap, shift: lowerShift},
         ], "individualShift", null, options);
     } else {
         vlist = buildCommon.makeVList([
-            {type: "elem", elem: upperGroup, shift: upperShift},
+            {type: "elem", elem: upperGroupWrap, shift: upperShift},
             {type: "elem", elem: arrowBody,  shift: arrowShift},
         ], "individualShift", null, options);
     }
@@ -1714,18 +1723,6 @@ groupTypes.xArrow = function(group, options) {
     node.depth = node.depth + ruleWidth;
     node.height = node.height + ruleWidth;
     return node;
-};
-
-groupTypes.phantom = function(group, options) {
-    const elements = buildExpression(
-        group.value.value,
-        options.withPhantom(),
-        false
-    );
-
-    // \phantom isn't supposed to affect the elements it contains.
-    // See "color" for more details.
-    return new buildCommon.makeFragment(elements);
 };
 
 groupTypes.phantom = function(group, options) {
