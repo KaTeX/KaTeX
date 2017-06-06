@@ -334,8 +334,13 @@ groupTypes.supsub = function(group, options) {
         supShift = 0;
         subShift = 0;
     } else {
-        supShift = base.height - style.metrics.supDrop;
-        subShift = base.depth + style.metrics.subDrop;
+        const supstyle = style.sup();
+        supShift = base.height - supstyle.metrics.supDrop
+            * supstyle.sizeMultiplier;
+
+        const substyle = style.sub();
+        subShift = base.depth + substyle.metrics.subDrop
+            * substyle.sizeMultiplier;
     }
 
     // Rule 18c
