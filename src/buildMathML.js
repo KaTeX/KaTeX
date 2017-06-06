@@ -480,7 +480,8 @@ groupTypes.styling = function(group, options) {
 };
 
 groupTypes.sizing = function(group, options) {
-    const inner = buildExpression(group.value.value, options);
+    const newOptions = options.havingSize(group.value.size);
+    const inner = buildExpression(group.value.value, newOptions);
 
     const node = new mathMLTree.MathNode("mstyle", inner);
 
@@ -489,8 +490,7 @@ groupTypes.sizing = function(group, options) {
     // in, so we can't reset the size to normal before changing it.  Now
     // that we're passing an options parameter we should be able to fix
     // this.
-    node.setAttribute(
-        "mathsize", buildCommon.sizingMultiplier[group.value.size] + "em");
+    node.setAttribute("mathsize", newOptions.sizeMultiplier + "em");
 
     return node;
 };

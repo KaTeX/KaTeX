@@ -5,33 +5,42 @@
  * `.reset` functions.
  */
 
+const Style = require("./Style");
+
+const sizeStyleMap = [
+    // Each element contains [textsize, scriptsize, scriptscriptsize].
+    // Obtained by rounding [1x, 0.7x, 0.5x] the base size.
+    [1, 1, 1],    // size1: 0.5
+    [2, 1, 1],    // size2: 0.7
+    [3, 2, 1],    // size3: 0.8
+    [4, 2, 1],    // size4: 0.9
+    [5, 2, 1],    // size5: 1.0
+    [6, 3, 2],    // size6: 1.2
+    [7, 5, 2],    // size7: 1.44
+    [8, 6, 4],    // size8: 1.73
+    [9, 7, 5],    // size9: 2.07
+    [10, 8, 6],   // size10: 2.49
+];
+
+const sizeMultipliers = [
+    0.5, 0.7, 0.8, 0.9, 1.0, 1.2, 1.44, 1.73, 2.07, 2.49,
+];
+
 /**
- * This is the main options class. It contains the style, size, color, and font
- * of the current parse level. It also contains the style and size of the parent
- * parse level, so size changes can be handled efficiently.
+ * This is the main options class. It contains the current style, size, color,
+ * and font.
  *
- * Each of the `.with*` and `.reset` functions passes its current style and size
- * as the parentStyle and parentSize of the new options class, so parent
- * handling is taken care of automatically.
+ * Options objects should not be modified. To create a new Options with
+ * different properties, call a `.having*` method.
  */
 function Options(data) {
     this.style = data.style;
     this.color = data.color;
     this.size = data.size;
+    this.baseSize = data.baseSize || this.size;
     this.phantom = data.phantom;
     this.font = data.font;
-
-    if (data.parentStyle === undefined) {
-        this.parentStyle = data.style;
-    } else {
-        this.parentStyle = data.parentStyle;
-    }
-
-    if (data.parentSize === undefined) {
-        this.parentSize = data.size;
-    } else {
-        this.parentSize = data.parentSize;
-    }
+    this.sizeMultiplier = sizeMultipliers[this.size - 1];
 }
 
 /**
@@ -42,6 +51,7 @@ Options.prototype.extend = function(extension) {
     const data = {
         style: this.style,
         size: this.size,
+        baseSize: this.baseSize,
         color: this.color,
         parentStyle: this.style,
         parentSize: this.size,
@@ -58,22 +68,70 @@ Options.prototype.extend = function(extension) {
     return new Options(data);
 };
 
+function sizeAtStyle(size, style) {
+    return style.size < 2 ? size : sizeStyleMap[size - 1][style.size - 1];
+}
+
 /**
- * Create a new options object with the given style.
+ * Return an options object with the given style. If `this.style === style`,
+ * returns `this`.
  */
-Options.prototype.withStyle = function(style) {
-    return this.extend({
-        style: style,
-    });
+Options.prototype.havingStyle = function(style) {
+    if (this.style === style) {
+        return this;
+    } else {
+        return this.extend({
+            style: style,
+            size: sizeAtStyle(this.baseSize, style),
+        });
+    }
 };
 
 /**
- * Create a new options object with the given size.
+ * Return an options object with a cramped version of the current style. If
+ * the current style is cramped, returns `this`.
  */
-Options.prototype.withSize = function(size) {
-    return this.extend({
-        size: size,
-    });
+Options.prototype.havingCrampedStyle = function() {
+    return this.havingStyle(this.style.cramp());
+};
+
+/**
+ * Return an options object with the given size and baseSize. If
+ * `this.size === size && this.baseSize === size`, returns `this`.
+ * Also resets the style to be at least `\textstyle`.
+ */
+Options.prototype.havingSize = function(size) {
+    if (this.size === size && this.baseSize === size) {
+        return this;
+    } else {
+        // Ensure style is at least `\textstyle`.
+        let style = this.style;
+        if (style.size > 1) {
+            style = style.cramped ? Style.TEXT.cramp() : Style.TEXT;
+        }
+
+        return this.extend({
+            style: style,
+            size: size,
+            baseSize: size,
+        });
+    }
+};
+
+/**
+ * Like `this.havingSize(5).havingStyle(style)`.
+ */
+Options.prototype.havingBaseStyle = function(style) {
+    const wantSize = sizeAtStyle(5, style);
+    if (this.size === wantSize && this.baseSize === 5 && this.style === style) {
+        return this;
+    } else {
+        return this.extend({
+            style: style,
+            size: wantSize,
+            baseSize: 5,
+        });
+    }
 };
 
 /**
@@ -104,11 +162,15 @@ Options.prototype.withFont = function(font) {
 };
 
 /**
- * Create a new options object with the same style, size, and color. This is
- * used so that parent style and size changes are handled correctly.
+ * Return the CSS sizing classes required to switch from enclosing options
+ * `oldOptions` to `this`. Returns an array of classes.
  */
-Options.prototype.reset = function() {
-    return this.extend({});
+Options.prototype.sizingClasses = function(oldOptions) {
+    if (oldOptions.size !== this.size) {
+        return ["sizing", "reset-size" + oldOptions.size, "size" + this.size];
+    } else {
+        return [];
+    }
 };
 
 /**

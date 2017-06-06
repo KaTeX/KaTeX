@@ -17,7 +17,7 @@ const Style = require("../src/Style");
 const defaultSettings = new Settings({});
 const defaultOptions = new Options({
     style: Style.TEXT,
-    size: "size5",
+    size: 5,
 });
 
 const _getBuilt = function(expr, settings) {

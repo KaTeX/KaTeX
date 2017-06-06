@@ -63,6 +63,7 @@ const makeSymbol = function(value, fontFamily, mode, options, classes) {
     }
 
     if (options) {
+        symbolNode.maxFontSize = options.sizeMultiplier;
         if (options.style.isTight()) {
             symbolNode.classes.push("mtight");
         }
@@ -239,11 +240,10 @@ const makeFragment = function(children) {
  */
 const makeFontSizer = function(options, fontSize) {
     const fontSizeInner = makeSpan([], [new domTree.symbolNode("\u200b")]);
-    fontSizeInner.style.fontSize =
-        (fontSize / options.style.sizeMultiplier) + "em";
+    fontSizeInner.style.fontSize = fontSize + "em";
 
     const fontSizer = makeSpan(
-        ["fontsize-ensurer", "reset-" + options.size, "size5"],
+        ["fontsize-ensurer", "reset-size" + options.size, "size5"],
         [fontSizeInner]);
 
     return fontSizer;
@@ -378,20 +378,6 @@ const makeVList = function(children, positionType, positionData, options) {
     return vlist;
 };
 
-// A table of size -> font size for the different sizing functions
-const sizingMultiplier = {
-    size1: 0.5,
-    size2: 0.7,
-    size3: 0.8,
-    size4: 0.9,
-    size5: 1.0,
-    size6: 1.2,
-    size7: 1.44,
-    size8: 1.73,
-    size9: 2.07,
-    size10: 2.49,
-};
-
 // A map of spacing functions to their attributes, like size and corresponding
 // CSS class
 const spacingFunctions = {
@@ -486,6 +472,5 @@ module.exports = {
     makeVList: makeVList,
     makeOrd: makeOrd,
     prependChildren: prependChildren,
-    sizingMultiplier: sizingMultiplier,
     spacingFunctions: spacingFunctions,
 };
