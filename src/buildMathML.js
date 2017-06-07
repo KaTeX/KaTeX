@@ -493,7 +493,7 @@ groupTypes.underline = function(group, options) {
     return node;
 };
 
-groupTypes.accentunder = function(group, options) {
+groupTypes.accentUnder = function(group, options) {
     const accentNode = stretchy.mathMLnode(group.value.label);
     const node = new mathMLTree.MathNode(
         "munder",
@@ -503,9 +503,9 @@ groupTypes.accentunder = function(group, options) {
     return node;
 };
 
-groupTypes.strikeThru = function(group, options) {
+groupTypes.enclose = function(group, options) {
     const node = new mathMLTree.MathNode(
-        "memclose", [buildGroup(group.value.body, options)]);
+        "menclose", [buildGroup(group.value.body, options)]);
     let notation = "";
     switch (group.value.label) {
         case "\\bcancel":
@@ -514,17 +514,13 @@ groupTypes.strikeThru = function(group, options) {
         case "\\sout":
             notation = "horizontalstrike";
             break;
+        case "\\fbox":
+            notation = "box";
+            break;
         default:
             notation = "updiagonalstrike";
     }
     node.setAttribute("notation", notation);
-    return node;
-};
-
-groupTypes.boxed = function(group, options) {
-    const inner = buildExpression(group.value.value, options);
-    const node = new mathMLTree.MathNode("menclose", inner);
-    node.setAttribute("notation", "box");
     return node;
 };
 
@@ -538,18 +534,26 @@ groupTypes.horizBrace = function(group, options) {
 
 groupTypes.xArrow = function(group, options) {
     const arrowNode = stretchy.mathMLnode(group.value.label);
-    const upperNode = buildGroup(group.value.body, options);
     let node;
+    let lowerNode;
 
-    if (group.value.below) {
-        const lowerNode = buildGroup(group.value.below, options);
-        node = new mathMLTree.MathNode(
-            "munderover", [arrowNode, lowerNode, upperNode]
-        );
+    if (group.value.body) {
+        const upperNode = buildGroup(group.value.body, options);
+        if (group.value.below) {
+            lowerNode = buildGroup(group.value.below, options);
+            node = new mathMLTree.MathNode(
+                "munderover", [arrowNode, lowerNode, upperNode]
+            );
+        } else {
+            node = new mathMLTree.MathNode("mover", [arrowNode, upperNode]);
+        }
+    } else if (group.value.below) {
+        lowerNode = buildGroup(group.value.below, options);
+        node = new mathMLTree.MathNode("munder", [arrowNode, lowerNode]);
     } else {
-        node = new mathMLTree.MathNode("mover", [arrowNode, upperNode]);
+        node = new mathMLTree.MathNode("mover", [arrowNode]);
     }
-    return node;
+     return node;
 };
 
 groupTypes.rule = function(group) {

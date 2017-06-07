@@ -1755,8 +1755,12 @@ describe("An accent parser", function() {
         expect(parse.type).toEqual("supsub");
     });
 
-    it("should parse expanding accents", function() {
+    it("should parse stretchy, shifty accents", function() {
         expect("\\widehat{x}").toParse();
+    });
+
+    it("should parse stretchy, non-shifty accents", function() {
+        expect("\\overrightarrow{x}").toParse();
     });
 });
 
@@ -1777,6 +1781,40 @@ describe("An accent builder", function() {
     });
 });
 
+describe("A stretchy and shifty accent builder", function() {
+    it("should not fail", function() {
+        expect("\\widehat{AB}").toBuild();
+        expect("\\widehat{AB}^2").toBuild();
+        expect("\\widehat{AB}_2").toBuild();
+        expect("\\widehat{AB}_2^2").toBuild();
+    });
+
+    it("should produce mords", function() {
+        expect(getBuilt("\\widehat{AB}")[0].classes).toContain("mord");
+        expect(getBuilt("\\widehat +")[0].classes).toContain("mord");
+        expect(getBuilt("\\widehat +")[0].classes).not.toContain("mbin");
+        expect(getBuilt("\\widehat )^2")[0].classes).toContain("mord");
+        expect(getBuilt("\\widehat )^2")[0].classes).not.toContain("mclose");
+    });
+});
+
+describe("A stretchy and non-shifty accent builder", function() {
+    it("should not fail", function() {
+        expect("\\overrightarrow{AB}").toBuild();
+        expect("\\overrightarrow{AB}^2").toBuild();
+        expect("\\overrightarrow{AB}_2").toBuild();
+        expect("\\overrightarrow{AB}_2^2").toBuild();
+    });
+
+    it("should produce mords", function() {
+        expect(getBuilt("\\overrightarrow{AB}")[0].classes).toContain("mord");
+        expect(getBuilt("\\overrightarrow +")[0].classes).toContain("mord");
+        expect(getBuilt("\\overrightarrow +")[0].classes).not.toContain("mbin");
+        expect(getBuilt("\\overrightarrow )^2")[0].classes).toContain("mord");
+        expect(getBuilt("\\overrightarrow )^2")[0].classes).not.toContain("mclose");
+    });
+});
+
 describe("An under-accent parser", function() {
     it("should not fail", function() {
         expect("\\underrightarrow{x}").toParse();
@@ -1785,10 +1823,10 @@ describe("An under-accent parser", function() {
         expect("\\underrightarrow x").toParse();
     });
 
-    it("should produce accentunder", function() {
+    it("should produce accentUnder", function() {
         const parse = getParsed("\\underrightarrow x")[0];
 
-        expect(parse.type).toEqual("accentunder");
+        expect(parse.type).toEqual("accentUnder");
     });
 
     it("should be grouped more tightly than supsubs", function() {
@@ -1862,6 +1900,8 @@ describe("A horizontal brace parser", function() {
         expect("\\overbrace{x^2}").toParse();
         expect("\\overbrace{x}^2").toParse();
         expect("\\overbrace x").toParse();
+        expect("\\underbrace{x}_2").toParse();
+        expect("\\underbrace{x}_2^2").toParse();
     });
 
     it("should produce horizBrace", function() {
@@ -1887,24 +1927,11 @@ describe("A horizontal brace builder", function() {
 
     it("should produce mords", function() {
         expect(getBuilt("\\overbrace x")[0].classes).toContain("mord");
+        expect(getBuilt("\\overbrace{x}^2")[0].classes).toContain("mord");
         expect(getBuilt("\\overbrace +")[0].classes).toContain("mord");
         expect(getBuilt("\\overbrace +")[0].classes).not.toContain("mbin");
         expect(getBuilt("\\overbrace )^2")[0].classes).toContain("mord");
         expect(getBuilt("\\overbrace )^2")[0].classes).not.toContain("mclose");
-    });
-});
-
-describe("A horizontal bracket parser", function() {
-    it("should not fail, given optional arguments", function() {
-        expect("\\overbracket[0.15em][1.2em]{x}").toParse();
-        expect("\\overbracket[0.15em]{x}").toParse();
-    });
-});
-
-describe("A horizontal bracket builder", function() {
-    it("should not fail, given optional arguments", function() {
-        expect("\\overbracket[0.15em][1.2em]{x}").toBuild();
-        expect("\\overbracket[0.15em]{x}").toBuild();
     });
 });
 
@@ -1916,10 +1943,10 @@ describe("A boxed parser", function() {
         expect("\\boxed x").toParse();
     });
 
-    it("should produce boxed", function() {
+    it("should produce enclose", function() {
         const parse = getParsed("\\boxed x")[0];
 
-        expect(parse.type).toEqual("boxed");
+        expect(parse.type).toEqual("enclose");
     });
 });
 
@@ -1927,8 +1954,8 @@ describe("A boxed builder", function() {
     it("should not fail", function() {
         expect("\\boxed{x}").toBuild();
         expect("\\boxed{x}^2").toBuild();
-        expect("\\underbrace{x}_2").toBuild();
-        expect("\\underbrace{x}_2^2").toBuild();
+        expect("\\boxed{x}_2").toBuild();
+        expect("\\boxed{x}_2^2").toBuild();
     });
 
     it("should produce mords", function() {
@@ -1948,10 +1975,10 @@ describe("A strike-through parser", function() {
         expect("\\cancel x").toParse();
     });
 
-    it("should produce strikeThru", function() {
+    it("should produce enclose", function() {
         const parse = getParsed("\\cancel x")[0];
 
-        expect(parse.type).toEqual("strikeThru");
+        expect(parse.type).toEqual("enclose");
     });
 
     it("should be grouped more tightly than supsubs", function() {

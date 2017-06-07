@@ -18,10 +18,8 @@ const stretchyCodePoint = {
     overrightarrow: "\u2192",
     underrightarrow: "\u2192",
     xrightarrow : "\u2192",
-    overbracket : "\u23b4",
     underbrace : "\u23b5",
     overbrace : "\u23de",
-    underbracket : "\u23df",
     overleftrightarrow : "\u2194",
     underleftrightarrow : "\u2194",
     xleftrightarrow : "\u2194",
@@ -53,40 +51,46 @@ const mathMLnode = function(label) {
     return node;
 };
 
+// In the katexImagesData object just below, the dimensions all
+// correspond to path geometry inside the relevant SVG file.
+// For example, \rightarrow uses the same arrowhead as glyph U+2192
+// from the KaTeX Main font. The scaling factor is 1000.
+// That is, inside the font, that arrowhead is 522 units tall, which
+// corresponds to 0.522 em inside the document.
+// And for extensible arrows, we split that distance around the math axis.
+
 const katexImagesData = {
                  // height, depth, fileName
-    overleftarrow : [0.334, 0, "leftarrow"],
-    underleftarrow : [0.334, 0, "leftarrow"],
-    xleftarrow : [0.261, 0.261, "xleftarrow"],
-    overrightarrow : [0.334, 0, "rightarrow"],
-    underrightarrow : [0.334, 0, "rightarrow"],
-    xrightarrow : [0.261, 0.261, "xrightarrow"],
+    overleftarrow : [0.522, 0, "leftarrow"],
+    underleftarrow : [0.522, 0, "leftarrow"],
+    xleftarrow : [0.261, 0.261, "leftarrow"],
+    overrightarrow : [0.522, 0, "rightarrow"],
+    underrightarrow : [0.522, 0, "rightarrow"],
+    xrightarrow : [0.261, 0.261, "rightarrow"],
     overbrace : [0.548, 0, "overbrace"],
     underbrace : [0.548, 0, "underbrace"],
-    overbracket : [0.3, 0, "overbracket"],
-    underbracket : [0.3, 0, "underbracket"],
-    overleftrightarrow : [0.334, 0, "leftrightarrow"],
-    underleftrightarrow : [0.334, 0, "leftrightarrow"],
-    xleftrightarrow : [0.261, 0.261, "xleftrightarrow"],
+    overleftrightarrow : [0.522, 0, "leftrightarrow"],
+    underleftrightarrow : [0.522, 0, "leftrightarrow"],
+    xleftrightarrow : [0.261, 0.261, "leftrightarrow"],
     Overrightarrow : [0.56, 0, "doublerightarrow"],
     xLeftarrow : [0.28, 0.28, "doubleleftarrow"],
     xRightarrow : [0.28, 0.28, "doublerightarrow"],
     xLeftrightarrow : [0.28, 0.28, "doubleleftrightarrow"],
-    overleftharpoon : [0.334, 0, "leftharpoon"],
-    overrightharpoon : [0.334, 0, "rightharpoon"],
-    xleftharpoonup : [0.261, 0.261, "xleftharpoon"],
-    xrightharpoonup : [0.261, 0.261, "xrightharpoon"],
+    overleftharpoon : [0.522, 0, "leftharpoon"],
+    overrightharpoon : [0.522, 0, "rightharpoon"],
+    xleftharpoonup : [0.261, 0.261, "leftharpoon"],
+    xrightharpoonup : [0.261, 0.261, "rightharpoon"],
     xhookleftarrow : [0.261, 0.261, "hookleftarrow"],
     xhookrightarrow : [0.261, 0.261, "hookrightarrow"],
-    overlinesegment : [0.334, 0, "linesegment"],
-    underlinesegment : [0.334, 0, "linesegment"],
+    overlinesegment : [0.414, 0, "linesegment"],
+    underlinesegment : [0.414, 0, "linesegment"],
     xmapsto : [0.261, 0.261, "mapsto"],
-    xrightharpoondown : [0.261, 0.261, "xrightharpoondown"],
-    xleftharpoondown : [0.261, 0.261, "xleftharpoondown"],
+    xrightharpoondown : [0.261, 0.261, "rightharpoondown"],
+    xleftharpoondown : [0.261, 0.261, "leftharpoondown"],
     xrightleftharpoons : [0.358, 0.358, "rightleftharpoons"],
     xleftrightharpoons : [0.358, 0.358, "leftrightharpoons"],
-    overgroup : [0.262, 0, "overgroup"],
-    undergroup : [0.262, 0, "undergroup"],
+    overgroup : [0.322, 0, "overgroup"],
+    undergroup : [0.322, 0, "undergroup"],
     xtwoheadleftarrow : [0.167, 0.167, "twoheadleftarrow"],
     xtwoheadrightarrow : [0.167, 0.167, "twoheadrightarrow"],
     xLongequal : [0.167, 0.167, "longequal"],
@@ -107,15 +111,15 @@ const svgSpan = function(group, options) {
         // Choose a taller image when there are more characters.
         const numChars = group.value.value.length;
         if (numChars > 5) {
-            height = 0.34;
+            height = 0.312;
             fileName = (label === "widehat" ? "widehat" : "tilde") + "4";
         } else {
             const imgIndex = [1, 1, 2, 2, 3, 3][numChars];
             if (label === "widehat") {
-                height = [0, 0.16, 0.23, 0.23, 0.28, 0.28][numChars];
+                height = [0, 0.24, 0.30, 0.30, 0.36, 0.36][numChars];
                 fileName = "widehat" + imgIndex;
             } else {
-                height = [0, 0.15, 0.195, 0.195, 0.26, 0.26][numChars];
+                height = [0, 0.26, 0.30, 0.30, 0.34, 0.34][numChars];
                 fileName = "tilde" + imgIndex;
             }
         }
@@ -130,22 +134,13 @@ const svgSpan = function(group, options) {
     }
 
     let node;
-    if (utils.contains(["overbracket", "underbracket"], label)) {
-        node = buildCommon.makeSpan(["stretchy", label], [], options);
-        // Deal with the optional arguments.
-        if (group.value.thickness) {
-            const lineWt = group.value.thickness.value + "em";
-            node.style.borderWidth = (group.value.isOver ? lineWt : 0) + " " +
-                lineWt + " " + (group.value.isOver ? 0 : lineWt) + " " + lineWt;
-        }
-        if (group.value.height) {
-            height = group.value.height;
-            node.style.height = height + "em";
-        }
-
-    } else if (options.color) {
+    if (options.color) {
         classArray.push(fileName);         // Set span height and IE image.
-        classArray.push("mask");           // Over-ride image in most browsers.
+        // The next two lines each add a class that CSS will apply
+        // only to browsers that support CSS mask.
+        // IE will not recognize that CSS, so it will fall back to
+        // the background-image set in the previous line of code.
+        classArray.push("mask");             // Over-ride image.
         classArray.push(fileName + "-mask"); // Set mask-image.
         node = buildCommon.makeSpan(classArray, [], options);
         node.style.backgroundColor = options.color;
@@ -156,24 +151,36 @@ const svgSpan = function(group, options) {
 
     node.height = height;
     node.depth = depth;
-    node.maxFontSize = (height > 1.0 ? 1.1 * height : 1.0);
+    node.maxFontSize = 1;
     return node;
 };
 
-const strikeSpan = function(label, options) {
-    // Return a span for \cancel, \bcancel, or \xcancel
-    let node;
+const encloseSpan = function(inner, isCharBox, label, pad, options) {
+    // Return an image span for \cancel, \bcancel, \xcancel, or \fbox
+    const img = buildCommon.makeSpan(["stretchy", label], [], options);
+
     if (options.color) {
-        node = buildCommon.makeSpan(["strike", label + "-mask"], [], options);
-        node.style.backgroundColor = options.color;
-    } else {
-        node = buildCommon.makeSpan(["strike", label], [], options);
+        if (label === "fbox") {
+            img.style.borderColor = options.color;
+        } else {
+            img.classes[2] = label + "-mask";
+            img.style.backgroundColor = options.color;
+        }
     }
-    return node;
+
+    img.height = inner.height + inner.depth + 2 * pad;
+    img.style.height = img.height + "em";
+
+    if (/cancel/.test(label) && isCharBox) {
+        img.maxFontSize = 1.2; // Make line box tall enough for image to fit.
+    } else {
+        img.maxFontSize = 1;
+    }
+    return img;
 };
 
 module.exports = {
+    encloseSpan: encloseSpan,
     mathMLnode: mathMLnode,
-    strikeSpan: strikeSpan,
     svgSpan: svgSpan,
 };

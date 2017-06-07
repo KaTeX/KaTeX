@@ -567,14 +567,13 @@
         &:before,
         &:after {
             content: "";
-            display: block;
         }
     }
 
     // Lengthen the extensible arrows via padding.
-    .x-arrow > span > span > span {
+    .x-arrow > span > span {
         text-align: center;
-        > .mord {
+        > span > .mord {
             padding: 0 0.5em 0 0.5em;
         }
     }
@@ -584,107 +583,79 @@
         text-align: center;   // above and below a horizontal brace
     }
 
-    .boxed {
-        display: inline-block;
-        padding: 0 0.278em 0 0.25em;
-        border: 0.04em solid black;
+    .boxpad {
+        padding: 0 0.3em 0 0.3em;      // \fboxsep = 3pt
     }
-
-    // \cancel, \bcancel, and \xcancel
-    .outer-wrap {
-        display: inline-block;
-        position: relative;
-
-        > .inner-wrap {
-            display: inline-block;
-            padding: 0;
-        }
-
-        > .strike {
-            width: 100%;
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-size: 100% 100%;
-
-            &:before,
-            &:after {
-                content: "";
-            }
-        }
+    .fbox {
+        box-sizing: border-box;
+        border: 0.04em solid black;   // \fboxrule = 0.4pt
     }
-
+    .cancel-pad {
+        padding: 0 0.2em 0 0.2em;    // ref: cancel package  \advance\dimen@ 2\p@ %  "+2"
+    }
+    .mord + .cancel-lap {
+        margin-left: -0.2em;
+    }
+    .cancel-lap + .mord,
+    .cancel-lap + .msupsub {
+        margin-left: -0.2em;
+    }
     .sout {
         border-bottom-style: solid;
         border-bottom-width: 0.08em;
     }
 
-    .overbracket, .underbracket {
-        box-sizing: border-box;
-        height: 0.3em;
-        border-style: solid;
-    }
-    .overbracket {
-        border-width: 0.12em 0.12em 0 0.12em;
-    }
-    .underbracket {
-        border-width: 0 0.12em 0.12em 0.12em;
-    }
-
     .widehat1 {
-        height: 0.16em;
+        height: 0.24em;
         background-image: url(images/widehat1.svg);
     }
     .widehat2 {
-        height: 0.23em;
+        height: 0.30em;
         background-image: url(images/widehat2.svg);
     }
     .widehat3 {
-        height: 0.28em;
+        height: 0.36em;
         background-image: url(images/widehat3.svg);
     }
     .widehat4 {
-        height: 0.34em;
+        height: 0.42em;
         background-image: url(images/widehat4.svg);
     }
     .tilde1 {
-        height: 0.14em;
+        height: 0.26em;
         background-image: url(images/tilde1.svg);
     }
     .tilde2 {
-        height: 0.195em;
+        height: 0.29em;
         background-image: url(images/tilde2.svg);
     }
     .tilde3 {
-        height: 0.26em;
+        height: 0.306em;
         background-image: url(images/tilde3.svg);
     }
     .tilde4 {
-        height: 0.334em;
+        height: 0.312em;
         background-image: url(images/tilde4.svg);
     }
     .rightarrow {
-        height: 0.334em;
+        height: 0.522em;
         min-width: 0.5em;
         background-image: url(images/rightarrow.svg);
     }
     .xrightarrow {
         height: 0.522em;
         min-width: 0.783em;
-        background-image: url(images/xrightarrow.svg);
+        background-image: url(images/rightarrow.svg);
     }
     .leftarrow {
-        height: 0.334em;
+        height: 0.522em;
         min-width: 0.5em;
         background-image: url(images/leftarrow.svg);
     }
     .xleftarrow {
         height: 0.522em;
         min-width: 0.783em;
-        background-image: url(images/xleftarrow.svg);
+        background-image: url(images/leftarrow.svg);
     }
     .overbrace {
         height: 0.548em;
@@ -697,14 +668,14 @@
         background-image: url(images/underbrace.svg);
     }
     .leftrightarrow {
-        height: 0.334em;
+        height: 0.522em;
         min-width: 0.5em;
         background-image: url(images/leftrightarrow.svg);
     }
     .xleftrightarrow {
         height: 0.522em;
         min-width: 0.783em;
-        background-image: url(images/xleftrightarrow.svg);
+        background-image: url(images/leftrightarrow.svg);
     }
     .doublerightarrow {
         height: 0.56em;
@@ -722,24 +693,24 @@
         background-image: url(images/doubleleftrightarrow.svg);
     }
     .leftharpoon {
-        height: 0.334em;
+        height: 0.522em;
         min-width: 0.5em;
         background-image: url(images/leftharpoon.svg);
     }
-    .xleftharpoon {
+    .leftharpoon {
         height: 0.522em;
         min-width: 0.783em;
-        background-image: url(images/xleftharpoon.svg);
+        background-image: url(images/leftharpoon.svg);
     }
     .rightharpoon {
-        height: 0.334em;
+        height: 0.522em;
         min-width: 0.5em;
         background-image: url(images/rightharpoon.svg);
     }
     .xrightharpoon {
         height: 0.522em;
         min-width: 0.783em;
-        background-image: url(images/xrightharpoon.svg);
+        background-image: url(images/rightharpoon.svg);
     }
     .hookleftarrow {
         height: 0.522em;
@@ -757,24 +728,24 @@
         background-image: url(images/mapsto.svg);
     }
     .leftharpoondown {
-        height: 0.334em;
+        height: 0.522em;
         min-width: 0.5em;
         background-image: url(images/leftharpoondown.svg);
     }
-    .xleftharpoondown {
+    .leftharpoondown {
         height: 0.522em;
         min-width: 0.783em;
-        background-image: url(images/xleftharpoondown.svg);
+        background-image: url(images/leftharpoondown.svg);
     }
     .rightharpoondown {
-        height: 0.334em;
+        height: 0.522em;
         min-width: 0.5em;
         background-image: url(images/rightharpoondown.svg);
     }
     .xrightharpoondown {
         height: 0.522em;
         min-width: 0.783em;
-        background-image: url(images/xrightharpoondown.svg);
+        background-image: url(images/rightharpoondown.svg);
     }
     .rightleftharpoons {
         height: 0.716em;
@@ -787,12 +758,12 @@
         background-image: url(images/leftrightharpoons.svg);
     }
     .overgroup {
-        height: 0.262em;
+        height: 0.322em;
         min-width: 0.87em;
         background-image: url(images/overgroup.svg);
     }
     .undergroup {
-        height: 0.262em;
+        height: 0.322em;
         min-width: 0.87em;
         background-image: url(images/undergroup.svg);
     }
@@ -807,7 +778,7 @@
         background-image: url(images/twoheadrightarrow.svg);
     }
     .linesegment {
-        height: 0.334em;
+        height: 0.414em;
         min-width: 0.5em;
         background-image: url(images/linesegment.svg);
     }
@@ -823,74 +794,73 @@
     }
 
     // \cancel, \bcancel, and \xcancel again.
-    // This time, define the detailed background-image for the span.
+    // Define the detailed background-image for the span.
     // Use a linear-gradient to draw a diagonal line that is 0.08 ems wide,
     // that is, 0.04 ems on each side of the line on the diagonal of the span.
-    .outer-wrap {
-        > .cancel {
-            background:
-               linear-gradient(to top left,
-                   rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) 100%);
-        }
+    .cancel {
+        background:
+           linear-gradient(to top left,
+               rgba(0,0,0,0) 0%,
+               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) 100%);
+    }
 
-        > .bcancel {
-            background:
-               linear-gradient(to top right,
-                   rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) 100%);
-        }
+    .bcancel {
+        background:
+           linear-gradient(to top right,
+               rgba(0,0,0,0) 0%,
+               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) 100%);
+    }
 
-        > .xcancel {
-            background:
-               linear-gradient(to top left,
-                   rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) 100%),
-               linear-gradient(to top right,
-                   rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) 100%);
-        }
+    .xcancel {
+        background:
+           linear-gradient(to top left,
+               rgba(0,0,0,0) 0%,
+               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) 100%),
+           linear-gradient(to top right,
+               rgba(0,0,0,0) 0%,
+               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) 100%);
     }
 
     @media screen and (min-width:~"0\0") {
         // CSS hack for IE 9, 10, & 11.
         // IE doesn't recognize @supports. Hence the media screen hack.
 
-        // Prevent a blob of color.
-        .stretchy,
-        .strike {background-color: transparent !important;}
+        .mask {
+            background-color: transparent !important;
+        }
 
         // Instead of a linear gradient, use an SVG to draw the diagonal line for \cancel.
         // This line unfortunately has a width that varies with the size of the span.
-        .outer-wrap {
-            > .bcancel,
-            > .bcancel-mask {
-                background-image: url(images/bcancel.svg);
-            }
-            > .cancel,
-            > .cancel-mask {
-                background-image: url(images/cancel.svg);
-            }
-            > .xcancel,
-            > .xcancel-mask {
-                background-image: url(images/xcancel.svg);
-            }
+        .bcancel,
+        .bcancel-mask {
+            background-color: transparent !important;    // Prevent a blob of color.
+            background-image: url(images/bcancel.svg);
+        }
+        .cancel,
+        .cancel-mask {
+            background-color: transparent !important;
+            background-image: url(images/cancel.svg);
+        }
+        .xcancel,
+        .xcancel-mask {
+            background-color: transparent !important;
+            background-image: url(images/xcancel.svg);
         }
     }
 
@@ -908,146 +878,143 @@
     @supports not ((mask-image:none) or (-webkit-mask:none)) {
         //  Fall back for older browswers that do not support CSS mask.
 
-        // Prevent a blob of color.
-        .stretchy,
-        .strike {background-color: transparent !important;}
+        .mask {
+            background-color: transparent !important;
+        }
 
         // For \cancel, use a background:linear-gradient, not a mask-image:linear-gradient.
-        .outer-wrap {
-            > .cancel-mask {
-                background:
-                   linear-gradient(to top left,
-                       rgba(0,0,0,0) 0%,
-                       rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                       rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                       rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                       rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                       rgba(0,0,0,0) 100%);
-            }
+        .cancel-mask {
+            background-color: transparent !important;
+            background:
+               linear-gradient(to top left,
+                   rgba(0,0,0,0) 0%,
+                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+                   rgba(0,0,0,0) 100%);
+        }
 
-            > .bcancel-mask {
-                background:
-                   linear-gradient(to top right,
-                       rgba(0,0,0,0) 0%,
-                       rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                       rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                       rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                       rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                       rgba(0,0,0,0) 100%);
-            }
+        .bcancel-mask {
+            background-color: transparent !important;
+            background:
+               linear-gradient(to top right,
+                   rgba(0,0,0,0) 0%,
+                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+                   rgba(0,0,0,0) 100%);
+        }
 
-            > .xcancel-mask {
-                background:
-                   linear-gradient(to top left,
-                       rgba(0,0,0,0) 0%,
-                       rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                       rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                       rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                       rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                       rgba(0,0,0,0) 100%),
-                   linear-gradient(to top right,
-                       rgba(0,0,0,0) 0%,
-                       rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                       rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                       rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                       rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                       rgba(0,0,0,0) 100%);
-            }
+        .xcancel-mask {
+            background-color: transparent !important;
+            background:
+               linear-gradient(to top left,
+                   rgba(0,0,0,0) 0%,
+                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+                   rgba(0,0,0,0) 100%),
+               linear-gradient(to top right,
+                   rgba(0,0,0,0) 0%,
+                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+                   rgba(0,0,0,0) 100%);
         }
     }
 
-    .outer-wrap {
-        > .cancel-mask {
-            mask-image:
-               linear-gradient(to top left,
-                   rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) 100%);
-            -webkit-mask-image:
-               linear-gradient(to top left,
-                   rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) 100%);
-        }
+    .cancel-mask {
+        mask-image:
+           linear-gradient(to top left,
+               rgba(0,0,0,0) 0%,
+               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) 100%);
+        -webkit-mask-image:
+           linear-gradient(to top left,
+               rgba(0,0,0,0) 0%,
+               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) 100%);
+    }
 
-        > .bcancel-mask {
-            mask-image:
-               linear-gradient(to top right,
-                   rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) 100%);
-            -webkit-mask-image:
-               linear-gradient(to top right,
-                   rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) 100%);
-        }
+    .bcancel-mask {
+        mask-image:
+           linear-gradient(to top right,
+               rgba(0,0,0,0) 0%,
+               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) 100%);
+        -webkit-mask-image:
+           linear-gradient(to top right,
+               rgba(0,0,0,0) 0%,
+               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) 100%);
+    }
 
-        > .xcancel-mask {
-            mask-image:
-               linear-gradient(to top left,
-                   rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) 100%),
-               linear-gradient(to top right,
-                   rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) 100%);
-            -webkit-mask-image:
-               linear-gradient(to top left,
-                   rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) 100%),
-               linear-gradient(to top right,
-                   rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% - 0.04em)",
-                   rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) 100%);
-        }
+    .xcancel-mask {
+        mask-image:
+           linear-gradient(to top left,
+               rgba(0,0,0,0) 0%,
+               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) 100%),
+           linear-gradient(to top right,
+               rgba(0,0,0,0) 0%,
+               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) 100%);
+        -webkit-mask-image:
+           linear-gradient(to top left,
+               rgba(0,0,0,0) 0%,
+               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) 100%),
+           linear-gradient(to top right,
+               rgba(0,0,0,0) 0%,
+               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,1) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) 100%);
     }
 
     @supports (-ms-touch-action: none) {
         // CSS hack for Edge
-        .mask {
+        // TODO(ron): If/When Edge fixes its CSS calc() bug, delete the next few lines and use gradients for \cancel.
+        .bcancel,
+        .bcancel-mask {
             background-color: transparent !important;
+            background-image: url(images/bcancel.svg);
         }
-        // TODO(ron): If/When Edge fixes its CSS calc() bug, delete the next 14 lines and use gradients for \cancel.
-        .outer-wrap {
-            > .bcancel,
-            > .bcancel-mask {
-                background-image: url(images/bcancel.svg);
-            }
-            > .cancel,
-            > .cancel-mask {
-                background-image: url(images/cancel.svg);
-            }
-            > .xcancel,
-            > .xcancel-mask {
-                background-image: url(images/xcancel.svg);
-            }
+        .cancel,
+        .cancel-mask {
+            background-color: transparent !important;
+            background-image: url(images/cancel.svg);
+        }
+        .xcancel,
+        .xcancel-mask {
+            background-color: transparent !important;
+            background-image: url(images/xcancel.svg);
         }
     }
 
@@ -1089,16 +1056,16 @@
         -webkit-mask: url(images/rightarrow.svg);
     }
     .xrightarrow-mask {
-        mask: url(images/xrightarrow.svg);
-        -webkit-mask: url(images/xrightarrow.svg);
+        mask: url(images/rightarrow.svg);
+        -webkit-mask: url(images/rightarrow.svg);
     }
     .leftarrow-mask {
         mask: url(images/leftarrow.svg);
         -webkit-mask: url(images/leftarrow.svg);
     }
     .xleftarrow-mask {
-        mask: url(images/xleftarrow.svg);
-        -webkit-mask: url(images/xleftarrow.svg);
+        mask: url(images/leftarrow.svg);
+        -webkit-mask: url(images/leftarrow.svg);
     }
     .overbrace-mask {
         min-width: 1.6em;
@@ -1115,8 +1082,8 @@
         -webkit-mask: url(images/leftrightarrow.svg);
     }
     .xleftrightarrow-mask {
-        mask: url(images/xleftrightarrow.svg);
-        -webkit-mask: url(images/xleftrightarrow.svg);
+        mask: url(images/leftrightarrow.svg);
+        -webkit-mask: url(images/leftrightarrow.svg);
     }
     .doublerightarrow-mask {
         mask: url(images/doublerightarrow.svg);
@@ -1135,16 +1102,16 @@
         -webkit-mask: url(images/leftharpoon.svg);
     }
     .xleftharpoon-mask {
-        mask: url(images/xleftharpoon.svg);
-        -webkit-mask: url(images/xleftharpoon.svg);
+        mask: url(images/leftharpoon.svg);
+        -webkit-mask: url(images/leftharpoon.svg);
     }
     .rightharpoon-mask {
         mask: url(images/rightharpoon.svg);
         -webkit-mask: url(images/rightharpoon.svg);
     }
     .xrightharpoon-mask {
-        mask: url(images/xrightharpoon.svg);
-        -webkit-mask: url(images/xrightharpoon.svg);
+        mask: url(images/rightharpoon.svg);
+        -webkit-mask: url(images/rightharpoon.svg);
     }
     .hookleftarrow-mask {
         mask: url(images/hookleftarrow.svg);
@@ -1163,16 +1130,16 @@
         -webkit-mask: url(images/leftharpoondown.svg);
     }
     .xleftharpoondown-mask {
-        mask: url(images/xleftharpoondown.svg);
-        -webkit-mask: url(images/xleftharpoondown.svg);
+        mask: url(images/leftharpoondown.svg);
+        -webkit-mask: url(images/leftharpoondown.svg);
     }
     .rightharpoondown-mask {
         mask: url(images/rightharpoondown.svg);
         -webkit-mask: url(images/rightharpoondown.svg);
     }
     .xrightharpoondown-mask {
-        mask: url(images/xrightharpoondown.svg);
-        -webkit-mask: url(images/xrightharpoondown.svg);
+        mask: url(images/rightharpoondown.svg);
+        -webkit-mask: url(images/rightharpoondown.svg);
     }
     .rightleftharpoons-mask {
         mask: url(images/rightleftharpoons.svg);

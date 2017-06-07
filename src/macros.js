@@ -21,3 +21,6 @@ defineMacro("\\endgroup", "}");
 // \def\overset#1#2{\binrel@{#2}\binrel@@{\mathop{\kern\z@#2}\limits^{#1}}}
 defineMacro("\\overset", "\\mathop{#2}\\limits^{#1}");
 defineMacro("\\underset", "\\mathop{#2}\\limits_{#1}");
+
+// \newcommand{\boxed}[1]{\fbox{\m@th$\displaystyle#1$}}
+defineMacro("\\boxed", "\\fbox{\\displaystyle{#1}}");

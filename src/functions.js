@@ -640,7 +640,7 @@ defineFunction([
     ], context.funcName);
 
     const isShifty = !isStretchy || utils.contains([
-        "\\widehat", "\\widetilde", "\\overrightarrow", "\\overrightharpoon",
+        "\\widehat", "\\widetilde",
     ], context.funcName);
 
     return {
@@ -653,23 +653,17 @@ defineFunction([
     };
 });
 
-// Horizontal stretchy braces and brackets
+// Horizontal stretchy braces
 defineFunction([
-    "\\overbrace", "\\overbracket", "\\underbrace", "\\underbracket",
+    "\\overbrace", "\\underbrace",
 ], {
     numArgs: 1,
-    numOptionalArgs: 2,
-    argTypes: ["size", "size", "original"],
 }, function(context, args) {
-    const thickness = args[0];
-    const height = args[1];
-    const base = args[2];
+    const base = args[0];
     return {
         type: "horizBrace",
         label: context.funcName,
-        isOver: (context.funcName.substr(1, 2) === "ov"),
-        thickness: thickness,
-        height: height,
+        isOver: /^\\over/.test(context.funcName),
         base: base,
     };
 });
@@ -683,7 +677,7 @@ defineFunction([
 }, function(context, args) {
     const body = args[0];
     return {
-        type: "accentunder",
+        type: "accentUnder",
         label: context.funcName,
         value: ordargument(body),
         body: body,
@@ -713,26 +707,14 @@ defineFunction([
     };
 });
 
-// strike-thru
-defineFunction(["\\cancel", "\\bcancel", "\\xcancel", "\\sout"], {
+// enclose
+defineFunction(["\\cancel", "\\bcancel", "\\xcancel", "\\sout", "\\fbox"], {
     numArgs: 1,
 }, function(context, args) {
     const body = args[0];
     return {
-        type: "strikeThru",
+        type: "enclose",
         label: context.funcName,
-        body: body,
-    };
-});
-
-// boxed
-defineFunction("\\boxed", {
-    numArgs: 1,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "boxed",
-        value: ordargument(body),
         body: body,
     };
 });

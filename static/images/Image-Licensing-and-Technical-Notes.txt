@@ -14,27 +14,20 @@ The license terms above apply to the following images:
     doublerightarrow.svg      U+21D2             KaTeX Main
     hookleftarrow.svg         U+21A9             KaTeX Main
     hookrightarrow.svg        U+21AA             KaTeX Main
-    leftarrow.svg             U+21A2             KaTeX AMS Regular
-    leftharpoon.svg           U+21BF             KaTeX AMS Regular
-    leftrightarrow.svg        U+21A2/21A3        KaTeX AMS Regular
+    leftarrow.svg             U+2190             KaTeX Main
+    leftharpoon.svg           U+21BD             KaTeX Main
+    leftrightarrow.svg        U+2194             KaTeX Main
     leftrightharpoons.svg     U+21BC/21B1        KaTeX Main
     mapsto.svg                U+21A6             KaTeX Main
     overbrace.svg             U+23A9/23A8/23A7   KaTeX Size 4 Regular
-    rightarrow.svg            U+21A3             KaTeX AMS Regular
-    rightharpoon.svg          U+21C0             KaTeX AMS Regular
+    rightarrow.svg            U+2192             KaTeX Main
+    rightharpoon.svg          U+21C0             KaTeX Main
     rightharpoondown.svg      U+21C1             KaTeX Main
     rightleftharpoons.svg     U+21CC             KaTeX Main
     tofrom.svg                U+21C4             KaTeX AMS Regular
     twoheadleftarrow.svg      U+219E             KaTeX AMS Regular
     twoheadrightarrow.svg     U+21A0             KaTeX AMS Regular
     underbrace.svg            U+23A9/23A8/23A7   KaTeX Size 4 Regular
-    xleftarrow.svg            U+2190             KaTeX Main
-    xleftharpoon.svg          U+21BC             KaTeX Main
-    xleftharpoondown.svg      U+21BD             KaTeX Main
-    xleftrightarrow.svg       U+2194             KaTeX Main
-    xrightarrow.svg           U+2192             KaTeX Main
-    xrightharpoon.svg         U+21C0             KaTeX Main
-    xrightharpoondown.svg     U+21C1             KaTeX Main
 
 Images for \widehat, \widetilde, \overgroup, and \undergroup have been adapted (and modified)
 from font glyphs in the MnSymbol package. These fonts are in the public domain.
