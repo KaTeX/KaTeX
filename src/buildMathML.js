@@ -553,7 +553,7 @@ groupTypes.xArrow = function(group, options) {
     } else {
         node = new mathMLTree.MathNode("mover", [arrowNode]);
     }
-     return node;
+    return node;
 };
 
 groupTypes.rule = function(group) {

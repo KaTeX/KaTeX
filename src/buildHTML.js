@@ -1494,9 +1494,6 @@ groupTypes.accent = function(group, options) {
         ], "firstBaseline", null, options);
 
     } else {
-        const ruleWidth = fontMetrics.metrics.defaultRuleThickness /
-            style.sizeMultiplier;
-
         accentBody = stretchy.svgSpan(group, options);
 
         if (skew > 0) {
@@ -1658,7 +1655,7 @@ groupTypes.enclose = function(group, options) {
         img = stretchy.encloseSpan(inner, isCharBox, label, pad, options);
     }
 
-    let vlist = buildCommon.makeVList([
+    const vlist = buildCommon.makeVList([
         {type: "elem", elem: inner, shift: 0},
         {type: "elem", elem: img, shift: imgShift},
     ], "individualShift", null, options);
@@ -1666,7 +1663,8 @@ groupTypes.enclose = function(group, options) {
     if (label === "fbox") {
         // Correct for an issue in makeVList. It placed the image top at
         // the top of the line box created by a 1 em maxFontSize.
-        vlist.children[1].style.top = -(inner.height + pad - 0.9 / scale) + "em";
+        vlist.children[1].style.top = -(inner.height + pad - 0.9 / scale)
+            + "em";
     }
 
     if (/cancel/.test(label)) {
