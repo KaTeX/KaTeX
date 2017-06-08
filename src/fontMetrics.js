@@ -15,7 +15,7 @@ const cjkRegex = require("./unicodeRegexes").cjkRegex;
 // the arrays below, in that order.
 //
 // The font metrics are stored in fonts cmsy10, cmsy7, and cmsy5 respsectively.
-// This was determined by running the folllowing script:
+// This was determined by running the following script:
 //
 //     latex -interaction=nonstopmode \
 //     '\documentclass{article}\usepackage{amsmath}\begin{document}' \
