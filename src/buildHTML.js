@@ -1329,6 +1329,10 @@ groupTypes.rule = function(group, options) {
     rule.width = width;
     rule.height = height + shift;
     rule.depth = -shift;
+    // Font size is the number large enough that the browser will
+    // reserve at least `absHeight` space above the baseline.
+    // The 1.125 factor was empirically determined
+    rule.maxFontSize = height * 1.125 * options.sizeMultiplier;
 
     return rule;
 };
