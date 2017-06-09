@@ -95,7 +95,7 @@ LimitControls: |
     \displaystyle\int\limits_2^3 3x^2\,dx + \sum\nolimits^n_{i=1}i +
     \textstyle\int\limits_x^y z
 MathAtom: a\mathrel{\mathop{=}\limits^{\blue ?}}b
-MathAtom2: \mathop{\overline\mathrm{lim}}\limits_{x\to\infty}f(x)
+MathAtom2: \mathop{\overline{\mathrm{lim}}}\limits_{x\to\infty}f(x)
 MathDefaultFonts: Ax2k\breve{a}\omega\Omega\imath+\KaTeX
 MathBb: \mathbb{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathBf: \mathbf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
