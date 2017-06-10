@@ -732,6 +732,7 @@ describe("A text parser", function() {
     const badTextExpression = "\\text{a b%}";
     const badFunctionExpression = "\\text{\\sqrt{x}}";
     const mathTokenAfterText = "\\text{sin}^2";
+    const textWithEmbeddedMath = "\\text{graph: $y = mx + b$}";
 
     it("should not fail", function() {
         expect(textExpression).toParse();
@@ -788,6 +789,10 @@ describe("A text parser", function() {
         expect(
             parse.value.body.map(function(n) { return n.value; }).join("")
         ).toBe("moo");
+    });
+
+    it("should parse math within text group", function() {
+        expect(textWithEmbeddedMath).toParse();
     });
 });
 
@@ -1539,7 +1544,7 @@ describe("A MathML font tree-builder", function() {
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         expect(markup).toContain("<mi mathvariant=\"double-struck\">A</mi>");
         expect(markup).toContain("<mi>x</mi>");
-        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
         expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
@@ -1552,7 +1557,7 @@ describe("A MathML font tree-builder", function() {
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         expect(markup).toContain("<mi mathvariant=\"normal\">A</mi>");
         expect(markup).toContain("<mi mathvariant=\"normal\">x</mi>");
-        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
         expect(markup).toContain("<mi>\u0131</mi>");   // \imath
@@ -1563,12 +1568,12 @@ describe("A MathML font tree-builder", function() {
         const tex = "\\mathit{" + contents + "}";
         const tree = getParsed(tex);
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
-        expect(markup).toContain("<mi mathvariant=\"italic\">A</mi>");
-        expect(markup).toContain("<mi mathvariant=\"italic\">x</mi>");
+        expect(markup).toContain("<mi>A</mi>");
+        expect(markup).toContain("<mi>x</mi>");
         expect(markup).toContain("<mn mathvariant=\"italic\">2</mn>");
-        expect(markup).toContain("<mi mathvariant=\"italic\">\u03c9</mi>");   // \omega
-        expect(markup).toContain("<mi mathvariant=\"italic\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi mathvariant=\"italic\">\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
+        expect(markup).toContain("<mi>\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1623,7 +1628,7 @@ describe("A MathML font tree-builder", function() {
         // MathJax marks everything below as "script" except \omega
         // We don't have these glyphs in "script" and neither does MathJax
         expect(markup).toContain("<mi>x</mi>");
-        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
         expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
@@ -1660,6 +1665,22 @@ describe("A MathML font tree-builder", function() {
             "<mi mathvariant=\"double-struck\">R</mi>" +
             "</mstyle>";
         expect(markup).toContain(node);
+    });
+
+    it("should render text as <mtext>", function() {
+        const tex = "\\text{for }";
+        const tree = getParsed(tex);
+        const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mtext>for\u00a0</mtext>");
+    });
+
+    it("should render math within text as side-by-side children", function() {
+        const tex = "\\text{graph: $y = mx + b$}";
+        const tree = getParsed(tex);
+        const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mrow><mtext>graph:\u00a0</mtext>");
+        expect(markup).toContain(
+            "<mi>y</mi><mo>=</mo><mi>m</mi><mi>x</mi><mo>+</mo><mi>b</mi>");
     });
 });
 
