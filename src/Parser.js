@@ -507,6 +507,17 @@ Parser.prototype.parseImplicitGroup = function() {
                 body: new ParseNode("ordgroup", body, this.mode),
             }, this.mode);
         }
+    } else if (func === "\\color") {
+        // If we see a styling function, parse out the implicit body
+        const color = this.parseColorGroup(false);
+        if (!color) {
+            throw new ParseError("\\color not followed by color");
+        }
+        const body = this.parseExpression(true);
+        return new ParseNode("color", {
+            color: color.result.value,
+            value: body,
+        }, this.mode);
     } else if (func === "$") {
         if (this.mode === "math") {
             throw new ParseError("$ within math mode");

@@ -151,7 +151,7 @@ defineFunction([
 });
 
 // A two-argument custom color
-defineFunction("\\color", {
+defineFunction("\\textcolor", {
     numArgs: 2,
     allowedInText: true,
     greediness: 3,
@@ -165,6 +165,14 @@ defineFunction("\\color", {
         value: ordargument(body),
     };
 });
+
+// \color is handled in Parser.js's parseImplicitGroup
+defineFunction("\\color", {
+    numArgs: 1,
+    allowedInText: true,
+    greediness: 3,
+    argTypes: ["color"],
+}, null);
 
 // An overline
 defineFunction("\\overline", {
