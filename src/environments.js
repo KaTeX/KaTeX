@@ -216,6 +216,7 @@ defineEnvironment("aligned", {
     let res = {
         type: "array",
         cols: [],
+        rowsAreLines: true,
     };
     res = parseArray(context.parser, res);
     const emptyGroup = new ParseNode("ordgroup", [], context.mode);
