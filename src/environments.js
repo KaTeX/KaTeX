@@ -252,3 +252,20 @@ defineEnvironment("aligned", {
     }
     return res;
 });
+
+// A gathered environment is like an array environment with one centered
+// column, but where rows are considered lines so get \jot line spacing
+// and contents are set in \displaystyle.
+defineEnvironment("gathered", {
+}, function(context) {
+    let res = {
+        type: "array",
+        cols: [{
+            type: "align",
+            align: "c",
+        }],
+        rowsAreLines: true,
+    };
+    res = parseArray(context.parser, res, "display");
+    return res;
+});

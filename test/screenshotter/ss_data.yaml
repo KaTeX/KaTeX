@@ -73,6 +73,15 @@ DisplayStyle: |
 Exponents: a^{a^a_a}_{a^a_a}
 FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}
 Functions: \sin\cos\tan\ln\log
+Gathered: |
+    \begin{gathered}
+      x = \frac{1}{2} \\
+      y = \sum_{i=1}^n i
+    \end{gathered} \approx
+    \begin{array}{c}
+      x = \frac{1}{2} \\
+      y = \sum_{i=1}^n i
+    \end{array}
 GreekLetters: \alpha\beta\gamma\omega
 GroupMacros:
     macros:
