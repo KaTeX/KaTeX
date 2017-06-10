@@ -216,13 +216,13 @@ defineEnvironment("aligned", {
     let res = {
         type: "array",
         cols: [],
-        rowsAreLines: true,
+        addJot: true,
     };
     res = parseArray(context.parser, res, "display");
     // Count number of columns = maximum number of cells in each row.
     // At the same time, prepend empty group {} at beginning of every second
     // cell in each row (starting with second cell) so that operators become
-    // binary.
+    // binary.  This behavior is implemented in amsmath's \start@aligned.
     const emptyGroup = new ParseNode("ordgroup", [], context.mode);
     let numCols = 0;
     res.value.body.forEach(function(row) {
@@ -264,7 +264,7 @@ defineEnvironment("gathered", {
             type: "align",
             align: "c",
         }],
-        rowsAreLines: true,
+        addJot: true,
     };
     res = parseArray(context.parser, res, "display");
     return res;
