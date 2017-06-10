@@ -50,6 +50,11 @@ function Parser(input, settings) {
     // Create a new macro expander (gullet) and (indirectly via that) also a
     // new lexer (mouth) for this parser (stomach, in the language of TeX)
     this.gullet = new MacroExpander(input, settings.macros);
+    // Use old \color behavior (same as LaTeX's \textcolor) if requested.
+    // We do this after the macros object has been copied by MacroExpander.
+    if (settings.colorIsTextColor) {
+        this.gullet.macros["\\color"] = "\\textcolor";
+    }
     // Store the settings for use in parsing
     this.settings = settings;
     // Count leftright depth (for \middle errors)
@@ -515,6 +520,7 @@ Parser.prototype.parseImplicitGroup = function() {
         }
         const body = this.parseExpression(true);
         return new ParseNode("color", {
+            type: "color",
             color: color.result.value,
             value: body,
         }, this.mode);

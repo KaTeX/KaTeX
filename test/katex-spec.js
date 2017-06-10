@@ -166,18 +166,22 @@ beforeEach(function() {
 
         toParseLike: function(util, baton) {
             return {
-                compare: function(actual, expected) {
+                compare: function(actual, expected, settings) {
+                    const usedSettings = settings ? settings : defaultSettings;
+
                     const result = {
                         pass: true,
                         message: "Parse trees of '" + actual +
                             "' and '" + expected + "' are equivalent",
                     };
 
-                    const actualTree = parseAndSetResult(actual, result);
+                    const actualTree = parseAndSetResult(actual, result,
+                        usedSettings);
                     if (!actualTree) {
                         return result;
                     }
-                    const expectedTree = parseAndSetResult(expected, result);
+                    const expectedTree = parseAndSetResult(expected, result,
+                        usedSettings);
                     if (!expectedTree) {
                         return result;
                     }
@@ -801,6 +805,7 @@ describe("A color parser", function() {
     const newColorExpression = "\\redA{x}";
     const customColorExpression = "\\textcolor{#fA6}{x}";
     const badCustomColorExpression = "\\textcolor{bad-color}{x}";
+    const oldColorExpression = "\\color{#fA6}xy";
 
     it("should not fail", function() {
         expect(colorExpression).toParse();
@@ -837,6 +842,22 @@ describe("A color parser", function() {
         expect("\\textcolor{red}{\\text{a}}").toParse();
         expect("\\textcolor{red}\\text{a}").toNotParse();
         expect("\\textcolor{red}\\frac12").toNotParse();
+    });
+
+    it("should use one-argument \\color by default", function() {
+        expect(oldColorExpression).toParseLike("\\textcolor{#fA6}{xy}");
+    });
+
+    it("should use one-argument \\color if requested", function() {
+        expect(oldColorExpression).toParseLike("\\textcolor{#fA6}{xy}", {
+            colorIsTextColor: false,
+        });
+    });
+
+    it("should use two-argument \\color if requested", function() {
+        expect(oldColorExpression).toParseLike("\\textcolor{#fA6}{x}y", {
+            colorIsTextColor: true,
+        });
     });
 });
 

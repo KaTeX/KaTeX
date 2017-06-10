@@ -23,9 +23,9 @@ const ParseNode = parseData.ParseNode;
  *               - "color": An html color, like "#abc" or "blue"
  *               - "original": The same type as the environment that the
  *                             function being parsed is in (e.g. used for the
- *                             bodies of functions like \color where the first
- *                             argument is special and the second argument is
- *                             parsed normally)
+ *                             bodies of functions like \textcolor where the
+ *                             first argument is special and the second
+ *                             argument is parsed normally)
  *              Other possible types (probably shouldn't be used)
  *               - "text": Text-like (e.g. \text)
  *               - "math": Normal math
