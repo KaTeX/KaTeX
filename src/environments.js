@@ -218,12 +218,18 @@ defineEnvironment("aligned", {
         cols: [],
         rowsAreLines: true,
     };
-    res = parseArray(context.parser, res);
+    res = parseArray(context.parser, res, "display");
+    // Count number of columns = maximum number of cells in each row.
+    // At the same time, prepend empty group {} at beginning of every second
+    // cell in each row (starting with second cell) so that operators become
+    // binary.
     const emptyGroup = new ParseNode("ordgroup", [], context.mode);
     let numCols = 0;
     res.value.body.forEach(function(row) {
         for (let i = 1; i < row.length; i += 2) {
-            row[i].value.unshift(emptyGroup);
+            // Modify ordgroup node within styling node
+            const ordgroup = row[i].value.value[0];
+            ordgroup.value.unshift(emptyGroup);
         }
         if (numCols < row.length) {
             numCols = row.length;
