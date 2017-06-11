@@ -30,7 +30,7 @@ tar c dockers/texcmp/{texcmp.js,package.json} \
     | docker cp - "${container}:/KaTeX"
 docker start -a "${container}"
 docker cp "${container}:/KaTeX/test/screenshotter/tex" - \
-    | ( cd test/screenshotter/tex; tar xv; ) || exit $?
+    | ( cd test/screenshotter/tex; tar xov; ) || exit $?
 docker cp "${container}:/KaTeX/test/screenshotter/diff" - \
-    | ( cd test/screenshotter/diff; tar xv; ) || exit $?
+    | ( cd test/screenshotter/diff; tar xov; ) || exit $?
 cleanup
