@@ -74,7 +74,8 @@ DisplayStyle: |
 Exponents: a^{a^a_a}_{a^a_a}
 ExtensibleArrows: |
     \begin{array}{l}
-        \xrightarrow[ab]{ABC} + \xRightarrow{ABC} + \xrightleftharpoons[ab]{ABC} + \xhookrightarrow[ab]{ABC} \\
+        \xrightarrow[ab]{ABC} + \xRightarrow{ABC} \\
+        \xrightleftharpoons[ab]{ABC} + \xhookrightarrow[ab]{ABC} \\
         \xtwoheadrightarrow{ABC} + \frac{\xrightarrow[ab]{ABC}}{\xrightarrow[ab]{ABC}} + \left\lvert\xrightarrow[ab]{ABC}\right\rvert
     \end{array}
 FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}
@@ -174,17 +175,18 @@ SqrtRoot: |
 StackRel: a \stackrel{?}{=} b \stackrel{\text{def}}{=} c
 StretchyAccent: |
     \begin{array}{l}
-        \overrightarrow{AB} \quad \overleftarrow{AB} \quad \Overrightarrow{AB} \quad \overleftrightarrow{AB} \\
-        \overgroup{AB} \quad \overlinesegment{AB} \quad \overleftharpoon{AB} \quad \overrightharpoon{AB} \quad \color{red}{\overrightarrow{AB}} \\
-        \widehat{\theta} \quad \widehat{AB} \quad \widehat{ABC} \quad \widetilde{A} \quad \widetilde{AB} \quad \widetilde{ABC} \\
+        \overrightarrow{AB} \quad \overleftarrow{AB} \quad \Overrightarrow{AB} \quad \overleftrightarrow{AB} \quad \overgroup{AB} \\
+        \overlinesegment{AB} \quad \overleftharpoon{AB} \quad \overrightharpoon{AB} \quad \color{red}{\overrightarrow{AB}} \quad \widehat{\theta} \widetilde{A} \\
+        \widehat{AB} \quad \widehat{ABC} \quad \widetilde{AB} \quad \widetilde{ABC} \\
         \overrightarrow{F} + \overrightarrow{AB} + \overrightarrow{F}^2 + \overrightarrow{F}_2 + \overrightarrow{F}_1^2 \\
-        \overrightarrow{AB}^2+\frac{\overrightarrow{AB}}{\overrightarrow{AB}} + \sqrt{\overrightarrow{AB}} + \left\lvert\overrightarrow{AB}\right\rvert + \left(\overrightarrow{AB}\right)
+        \overrightarrow{AB}^2+\frac{\overrightarrow{AB}}{\overrightarrow{AB}} + \sqrt{\overrightarrow{AB}} + \left\lvert\overrightarrow{AB}\right\rvert
     \end{array}
 StrikeThrough: |
     \begin{array}{l}
         \cancel x \quad \cancel{2B} + \bcancel 5 +\bcancel{5ay} \\
         \sout{5ab} + \sout{5ABC} + \xcancel{\oint_S{\vec E\cdot\hat n\,\mathrm d a}} \\
-        \frac{x+\cancel B}{x+\cancel x} + \frac{x+\cancel y}{x} + \cancel{B}_1^2 + \cancel{B^2} + \left\lvert\cancel{ac}\right\rvert
+        \frac{x+\cancel B}{x+\cancel x} + \frac{x+\cancel y}{x} + \cancel{B}_1^2 + \cancel{B^2} \\
+        \left\lvert\cancel{ac}\right\rvert
     \end{array}
 StyleSpacing: \scriptstyle ab\;cd
 StyleSwitching: a\cdot b\scriptstyle a\cdot ba\textstyle\cdot ba\scriptstyle\cdot b
