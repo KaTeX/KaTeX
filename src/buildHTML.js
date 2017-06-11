@@ -1649,7 +1649,7 @@ groupTypes.enclose = function(group, options) {
     if (label === "sout") {
         img = makeSpan(["stretchy", "sout"]);
         img.height = fontMetrics.metrics.defaultRuleThickness / scale;
-        img.maxFontSize = 1.0
+        img.maxFontSize = 1.0;
         imgShift = -0.5 * options.style.metrics.xHeight;
     } else {
         // Add horizontal padding
@@ -1675,9 +1675,9 @@ groupTypes.enclose = function(group, options) {
         // the top of the line box created by a 1 em maxFontSize.
         vlist.children[1].style.top = -(inner.height + pad - 0.9 / scale)
             + "em";
-		// The 0.9 in the previous line is there because the KaTeX fonts
-		// have an ascent = 0.9 em. We're setting the top of the image
-		// relative to the top of that line box.
+        // The 0.9 in the previous line is there because the KaTeX fonts
+        // have an ascent = 0.9 em. We're setting the top of the image
+        // relative to the top of that line box.
     }
 
     if (/cancel/.test(label)) {
