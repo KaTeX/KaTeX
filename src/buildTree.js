@@ -1,20 +1,20 @@
-var buildHTML = require("./buildHTML");
-var buildMathML = require("./buildMathML");
-var buildCommon = require("./buildCommon");
-var Settings = require("./Settings");
+const buildHTML = require("./buildHTML");
+const buildMathML = require("./buildMathML");
+const buildCommon = require("./buildCommon");
+const Settings = require("./Settings");
 
-var makeSpan = buildCommon.makeSpan;
+const makeSpan = buildCommon.makeSpan;
 
-var buildTree = function(tree, expression, settings) {
+const buildTree = function(tree, expression, settings) {
     settings = settings || new Settings({});
-    var options = settings.initialOptions();
+    const options = settings.initialOptions();
 
     // `buildHTML` sometimes messes with the parse tree (like turning bins ->
     // ords), so we build the MathML version first.
-    var mathMLNode = buildMathML(tree, expression, options);
-    var htmlNode = buildHTML(tree, options);
+    const mathMLNode = buildMathML(tree, expression, options);
+    const htmlNode = buildHTML(tree, options);
 
-    var katexNode = makeSpan(["katex"], [
+    const katexNode = makeSpan(["katex"], [
         mathMLNode, htmlNode,
     ]);
 

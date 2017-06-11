@@ -1,19 +1,19 @@
 "use strict";
 
-var align = { left: 0, center: 0.5, right: 1 };
+const align = { left: 0, center: 0.5, right: 1 };
 
-var sizes = [
+const sizes = [
     null, 0.5, 0.7, 0.8, 0.9, 1.0, 1.2, 1.44, 1.73, 2.07, 2.49,
 ];
 
-var fontVariants = {
+const fontVariants = {
     i4: "italic ",
     n4: "",
     n7: "bold ",
 };
 
 function CanvasState(orig) {
-    for (var key in orig) {
+    for (const key in orig) {
         if (orig.hasOwnProperty(key)) {
             this[key] = orig[key];
         }
@@ -30,21 +30,21 @@ CanvasState.prototype.fontChanged = function() {
 };
 
 CanvasState.prototype.withStyle = function(styleFactor) {
-    var res = new CanvasState(this);
+    const res = new CanvasState(this);
     res.styleFactor = styleFactor;
     res.sizeChanged();
     return res;
 };
 
 CanvasState.prototype.withSize = function(sizeIndex) {
-    var res = new CanvasState(this);
+    const res = new CanvasState(this);
     res.sizeIndex = sizeIndex;
     res.sizeChanged();
     return res;
 };
 
 CanvasState.prototype.withFace = function(family, vd) {
-    var res = new CanvasState(this);
+    const res = new CanvasState(this);
     res.variant = fontVariants[vd];
     res.family = family;
     res.fvd = family + ":" + vd;
@@ -53,19 +53,19 @@ CanvasState.prototype.withFace = function(family, vd) {
 };
 
 CanvasState.prototype.withYShift = function(y) {
-    var res = new CanvasState(this);
+    const res = new CanvasState(this);
     res.ypos += y * res.em;
     return res;
 };
 
 CanvasState.prototype.withHAlign = function(halign) {
-    var res = new CanvasState(this);
+    const res = new CanvasState(this);
     res.halign = halign;
     return res;
 };
 
 CanvasState.prototype.withColor = function(color) {
-    var res = new CanvasState(this);
+    const res = new CanvasState(this);
     res.color = color;
     return res;
 };
@@ -98,10 +98,10 @@ function CanvasRenderer(ctxt, options) {
     this.state.sizeChanged();
 }
 
-var thinspace = 0.16667;
-var mediumspace = 0.22222;
-var thickspace = 0.27778;
-var spacePairsTextStyle = {
+const thinspace = 0.16667;
+const mediumspace = 0.22222;
+const thickspace = 0.27778;
+const spacePairsTextStyle = {
     "mord_mop": thinspace,
     "mord_mbin": mediumspace,
     "mord_mrel": thickspace,
@@ -137,7 +137,7 @@ var spacePairsTextStyle = {
     "minner_mpunct": thinspace,
     "minner_minner": thinspace,
 };
-var spacePairs = {
+const spacePairs = {
     "mord_mop": thinspace,
     "mop_mord": thinspace,
     "mop_mop": thinspace,
@@ -146,26 +146,27 @@ var spacePairs = {
 };
 
 CanvasRenderer.prototype.prepare = function(node) {
-    var prevState = this.state;
+    const prevState = this.state;
 
-    var classes = !node.classes ? "" : node.classes.filter(function(className) {
-        return className !== null;
-    }).join(" ");
+    let classes = !node.classes ? "" : node.classes.filter(
+        function(className) {
+            return className !== null;
+        }).join(" ");
     if (classes === "") {
         classes = [];
     } else {
         classes = classes.split(" ");
     }
 
-    var key;
-    var val;
-    var i;
-    var size = null;
+    let key;
+    let val;
+    let i;
+    let size = null;
     function findSize() {
         if (size === null) {
-            var j = i - 1;
+            let j = i - 1;
             while (j-- > 0) {
-                var className = classes[j];
+                const className = classes[j];
                 if (!className) {
                     continue;
                 }
@@ -178,15 +179,15 @@ CanvasRenderer.prototype.prepare = function(node) {
         return size;
     }
 
-    var isVlist = false;
-    var nodeClass = "";
-    var marginLeft = null;
-    var marginRight = 0;
-    var resetX = null;
-    var lap = null;
+    let isVlist = false;
+    let nodeClass = "";
+    let marginLeft = null;
+    let marginRight = 0;
+    let resetX = null;
+    let lap = null;
     i = classes.length;
     while (i--) {
-        var className = classes[i];
+        const className = classes[i];
         switch (className) {
             case "delimsizing":
                 if (findSize() !== null) {
@@ -458,7 +459,7 @@ CanvasRenderer.prototype.prepare = function(node) {
         }
     }
 
-    var classPair = this.prevClass + "_" + nodeClass;
+    const classPair = this.prevClass + "_" + nodeClass;
     if (marginLeft === null) {
         marginLeft = spacePairs[classPair];
         if (marginLeft === undefined && this.state.styleFactor === 1) {
@@ -476,14 +477,14 @@ CanvasRenderer.prototype.prepare = function(node) {
         node.children.forEach(this.prepare.bind(this));
     } else {
         this.ctxt.font = this.state.font;
-        var text = node.value;
-        var measurement = this.ctxt.measureText(text);
-        var width = measurement.width;
+        const text = node.value;
+        const measurement = this.ctxt.measureText(text);
+        const width = measurement.width;
         if (node.italic) {
             marginRight += node.italic;
         }
         if (text !== "" && text !== "\u200b") {
-            var atom = {
+            const atom = {
                 x: this.x,
                 y: this.state.ypos,
                 font: this.state.font,
@@ -506,19 +507,19 @@ CanvasRenderer.prototype.prepare = function(node) {
 // Align a list of children to a common vertical axis.
 // Alignment is one of 0 (left), 0.5 (centered) or 1 (right).
 CanvasRenderer.prototype.halign = function(children, alignment) {
-    var i;
-    var shift;
-    var oldLines = this.horizontalLines;
+    let i;
+    let shift;
+    const oldLines = this.horizontalLines;
     this.horizontalLines = [];
-    var outList = this.outList;
-    var oldX = this.x;
-    var mark1 = outList.length;
-    var maxWidth = 0;
+    const outList = this.outList;
+    const oldX = this.x;
+    let mark1 = outList.length;
+    let maxWidth = 0;
     for (i = 0; i < children.length; ++i) {
-        var mark2 = outList.length;
+        let mark2 = outList.length;
         this.x = 0;
         this.prepare(children[i]);
-        var width = this.x;
+        const width = this.x;
         if (maxWidth < width) {
             maxWidth = width;
         }
@@ -532,7 +533,7 @@ CanvasRenderer.prototype.halign = function(children, alignment) {
         outList[mark1++].x += shift;
     }
     for (i = 0; i < this.horizontalLines.length; ++i) {
-        var fracLine = this.horizontalLines[i];
+        const fracLine = this.horizontalLines[i];
         fracLine.x = oldX;
         fracLine.width = maxWidth;
         outList.push(fracLine);
@@ -542,12 +543,12 @@ CanvasRenderer.prototype.halign = function(children, alignment) {
 };
 
 CanvasRenderer.prototype.lap = function(lap, children) {
-    var child = children[0];
-    var oldX = this.x;
-    var outList = this.outList;
-    var mark = outList.length;
+    const child = children[0];
+    const oldX = this.x;
+    const outList = this.outList;
+    let mark = outList.length;
     this.prepare(child);
-    var width = this.x - oldX;
+    const width = this.x - oldX;
     this.x = oldX;
     if (lap === "llap") {
         while (mark < outList.length) {
@@ -557,11 +558,11 @@ CanvasRenderer.prototype.lap = function(lap, children) {
 };
 
 function backupCanvasState(canvas, callback) {
-    var ctxt = canvas.getContext ? canvas.getContext("2d") : canvas;
-    var oldFont = ctxt.font;
-    var oldFill = ctxt.fillStyle;
+    const ctxt = canvas.getContext ? canvas.getContext("2d") : canvas;
+    const oldFont = ctxt.font;
+    const oldFill = ctxt.fillStyle;
     try {
-        var res = callback(ctxt);
+        const res = callback(ctxt);
         ctxt.font = oldFont;
         ctxt.fillStyle = oldFill;
         return res;
@@ -577,9 +578,9 @@ function PreparedBox(canvas, atoms, fontsUsed, xshift) {
     this.renderAt = function(x, y) {
         x -= xshift;
         backupCanvasState(canvas, function(ctxt) {
-            var initialColor = ctxt.fillStyle;
-            for (var i = 0; i < atoms.length; ++i) {
-                var atom = atoms[i];
+            const initialColor = ctxt.fillStyle;
+            for (let i = 0; i < atoms.length; ++i) {
+                const atom = atoms[i];
                 ctxt.fillStyle =
                     (atom.color === null ? initialColor : atom.color);
                 if (atom.text) {
@@ -596,12 +597,12 @@ function PreparedBox(canvas, atoms, fontsUsed, xshift) {
 
 function prepare(dom, canvas, options) {
     return backupCanvasState(canvas, function(ctxt) {
-        var halign = options.halign || align.left;
-        var renderer = new CanvasRenderer(ctxt, options);
+        const halign = options.halign || align.left;
+        const renderer = new CanvasRenderer(ctxt, options);
         renderer.prepare(dom);
-        var em = renderer.state.em;
-        var xshift = renderer.x * halign;
-        var box = new PreparedBox(
+        const em = renderer.state.em;
+        const xshift = renderer.x * halign;
+        const box = new PreparedBox(
             ctxt, renderer.outList, renderer.fontsUsed, xshift);
         box.width = renderer.x;
         box.depth = dom.depth * em;

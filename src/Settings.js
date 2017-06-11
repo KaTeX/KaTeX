@@ -1,5 +1,5 @@
-var Options = require("./Options");
-var Style = require("./Style");
+const Options = require("./Options");
+const Style = require("./Style");
 
 /**
  * This is a module for storing settings passed into KaTeX. It correctly handles
@@ -26,16 +26,17 @@ function Settings(options) {
     this.displayMode = get(options.displayMode, false);
     this.throwOnError = get(options.throwOnError, true);
     this.errorColor = get(options.errorColor, "#cc0000");
+    this.macros = options.macros || {};
 }
 
 Settings.prototype.initialOptions = function() {
-    var startStyle = Style.TEXT;
+    let startStyle = Style.TEXT;
     if (this.displayMode) {
         startStyle = Style.DISPLAY;
     }
 
     // Setup the default options
-    var options = new Options({
+    const options = new Options({
         style: startStyle,
         size: "size5",
     });

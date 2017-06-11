@@ -7,16 +7,16 @@
  *
  * Similar functions for working with MathML nodes exist in mathMLTree.js.
  */
-
-var utils = require("./utils");
+const unicodeRegexes = require("./unicodeRegexes");
+const utils = require("./utils");
 
 /**
  * Create an HTML className based on a list of classes. In addition to joining
  * with spaces, we also remove null or empty classes.
  */
-var createClass = function(classes) {
+const createClass = function(classes) {
     classes = classes.slice();
-    for (var i = classes.length - 1; i >= 0; i--) {
+    for (let i = classes.length - 1; i >= 0; i--) {
         if (!classes[i]) {
             classes.splice(i, 1);
         }
@@ -30,14 +30,22 @@ var createClass = function(classes) {
  * an inline style. It also contains information about its height, depth, and
  * maxFontSize.
  */
-function span(classes, children, height, depth, maxFontSize, style) {
+function span(classes, children, options) {
     this.classes = classes || [];
     this.children = children || [];
-    this.height = height || 0;
-    this.depth = depth || 0;
-    this.maxFontSize = maxFontSize || 0;
-    this.style = style || {};
+    this.height = 0;
+    this.depth = 0;
+    this.maxFontSize = 0;
+    this.style = {};
     this.attributes = {};
+    if (options) {
+        if (options.style.isTight()) {
+            this.classes.push("mtight");
+        }
+        if (options.getColor()) {
+            this.style.color = options.getColor();
+        }
+    }
 }
 
 /**
@@ -49,31 +57,35 @@ span.prototype.setAttribute = function(attribute, value) {
     this.attributes[attribute] = value;
 };
 
+span.prototype.tryCombine = function(sibling) {
+    return false;
+};
+
 /**
  * Convert the span into an HTML node
  */
 span.prototype.toNode = function() {
-    var span = document.createElement("span");
+    const span = document.createElement("span");
 
     // Apply the class
     span.className = createClass(this.classes);
 
     // Apply inline styles
-    for (var style in this.style) {
+    for (const style in this.style) {
         if (Object.prototype.hasOwnProperty.call(this.style, style)) {
             span.style[style] = this.style[style];
         }
     }
 
     // Apply attributes
-    for (var attr in this.attributes) {
+    for (const attr in this.attributes) {
         if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
             span.setAttribute(attr, this.attributes[attr]);
         }
     }
 
     // Append the children, also as HTML nodes
-    for (var i = 0; i < this.children.length; i++) {
+    for (let i = 0; i < this.children.length; i++) {
         span.appendChild(this.children[i].toNode());
     }
 
@@ -84,7 +96,7 @@ span.prototype.toNode = function() {
  * Convert the span into an HTML markup string
  */
 span.prototype.toMarkup = function() {
-    var markup = "<span";
+    let markup = "<span";
 
     // Add the class
     if (this.classes.length) {
@@ -93,10 +105,10 @@ span.prototype.toMarkup = function() {
         markup += "\"";
     }
 
-    var styles = "";
+    let styles = "";
 
     // Add the styles, after hyphenation
-    for (var style in this.style) {
+    for (const style in this.style) {
         if (this.style.hasOwnProperty(style)) {
             styles += utils.hyphenate(style) + ":" + this.style[style] + ";";
         }
@@ -107,7 +119,7 @@ span.prototype.toMarkup = function() {
     }
 
     // Add the attributes
-    for (var attr in this.attributes) {
+    for (const attr in this.attributes) {
         if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
             markup += " " + attr + "=\"";
             markup += utils.escape(this.attributes[attr]);
@@ -118,7 +130,7 @@ span.prototype.toMarkup = function() {
     markup += ">";
 
     // Add the markup of the children, also as markup
-    for (var i = 0; i < this.children.length; i++) {
+    for (let i = 0; i < this.children.length; i++) {
         markup += this.children[i].toMarkup();
     }
 
@@ -133,11 +145,11 @@ span.prototype.toMarkup = function() {
  * contains children and doesn't have any HTML properties. It also keeps track
  * of a height, depth, and maxFontSize.
  */
-function documentFragment(children, height, depth, maxFontSize) {
+function documentFragment(children) {
     this.children = children || [];
-    this.height = height || 0;
-    this.depth = depth || 0;
-    this.maxFontSize = maxFontSize || 0;
+    this.height = 0;
+    this.depth = 0;
+    this.maxFontSize = 0;
 }
 
 /**
@@ -145,10 +157,10 @@ function documentFragment(children, height, depth, maxFontSize) {
  */
 documentFragment.prototype.toNode = function() {
     // Create a fragment
-    var frag = document.createDocumentFragment();
+    const frag = document.createDocumentFragment();
 
     // Append the children
-    for (var i = 0; i < this.children.length; i++) {
+    for (let i = 0; i < this.children.length; i++) {
         frag.appendChild(this.children[i].toNode());
     }
 
@@ -159,14 +171,22 @@ documentFragment.prototype.toNode = function() {
  * Convert the fragment into HTML markup
  */
 documentFragment.prototype.toMarkup = function() {
-    var markup = "";
+    let markup = "";
 
     // Simply concatenate the markup for the children together
-    for (var i = 0; i < this.children.length; i++) {
+    for (let i = 0; i < this.children.length; i++) {
         markup += this.children[i].toMarkup();
     }
 
     return markup;
+};
+
+const iCombinations = {
+    'î': '\u0131\u0302',
+    'ï': '\u0131\u0308',
+    'í': '\u0131\u0301',
+    // 'ī': '\u0131\u0304', // enable when we add Extended Latin
+    'ì': '\u0131\u0300',
 };
 
 /**
@@ -183,15 +203,62 @@ function symbolNode(value, height, depth, italic, skew, classes, style) {
     this.classes = classes || [];
     this.style = style || {};
     this.maxFontSize = 0;
+
+    // Mark CJK characters with specific classes so that we can specify which
+    // fonts to use.  This allows us to render these characters with a serif
+    // font in situations where the browser would either default to a sans serif
+    // or render a placeholder character.
+    if (unicodeRegexes.cjkRegex.test(value)) {
+        // I couldn't find any fonts that contained Hangul as well as all of
+        // the other characters we wanted to test there for it gets its own
+        // CSS class.
+        if (unicodeRegexes.hangulRegex.test(value)) {
+            this.classes.push('hangul_fallback');
+        } else {
+            this.classes.push('cjk_fallback');
+        }
+    }
+
+    if (/[îïíì]/.test(this.value)) {    // add ī when we add Extended Latin
+        this.value = iCombinations[this.value];
+    }
 }
+
+symbolNode.prototype.tryCombine = function(sibling) {
+    if (!sibling
+        || !(sibling instanceof symbolNode)
+        || this.italic > 0
+        || createClass(this.classes) !== createClass(sibling.classes)
+        || this.skew !== sibling.skew
+        || this.maxFontSize !== sibling.maxFontSize) {
+        return false;
+    }
+    for (const style in this.style) {
+        if (this.style.hasOwnProperty(style)
+            && this.style[style] !== sibling.style[style]) {
+            return false;
+        }
+    }
+    for (const style in sibling.style) {
+        if (sibling.style.hasOwnProperty(style)
+            && this.style[style] !== sibling.style[style]) {
+            return false;
+        }
+    }
+    this.value += sibling.value;
+    this.height = Math.max(this.height, sibling.height);
+    this.depth = Math.max(this.depth, sibling.depth);
+    this.italic = sibling.italic;
+    return true;
+};
 
 /**
  * Creates a text node or span from a symbol node. Note that a span is only
  * created if it is needed.
  */
 symbolNode.prototype.toNode = function() {
-    var node = document.createTextNode(this.value);
-    var span = null;
+    const node = document.createTextNode(this.value);
+    let span = null;
 
     if (this.italic > 0) {
         span = document.createElement("span");
@@ -203,7 +270,7 @@ symbolNode.prototype.toNode = function() {
         span.className = createClass(this.classes);
     }
 
-    for (var style in this.style) {
+    for (const style in this.style) {
         if (this.style.hasOwnProperty(style)) {
             span = span || document.createElement("span");
             span.style[style] = this.style[style];
@@ -224,9 +291,9 @@ symbolNode.prototype.toNode = function() {
 symbolNode.prototype.toMarkup = function() {
     // TODO(alpert): More duplication than I'd like from
     // span.prototype.toMarkup and symbolNode.prototype.toNode...
-    var needsSpan = false;
+    let needsSpan = false;
 
-    var markup = "<span";
+    let markup = "<span";
 
     if (this.classes.length) {
         needsSpan = true;
@@ -235,12 +302,12 @@ symbolNode.prototype.toMarkup = function() {
         markup += "\"";
     }
 
-    var styles = "";
+    let styles = "";
 
     if (this.italic > 0) {
         styles += "margin-right:" + this.italic + "em;";
     }
-    for (var style in this.style) {
+    for (const style in this.style) {
         if (this.style.hasOwnProperty(style)) {
             styles += utils.hyphenate(style) + ":" + this.style[style] + ";";
         }
@@ -251,7 +318,7 @@ symbolNode.prototype.toMarkup = function() {
         markup += " style=\"" + utils.escape(styles) + "\"";
     }
 
-    var escaped = utils.escape(this.value);
+    const escaped = utils.escape(this.value);
     if (needsSpan) {
         markup += ">";
         markup += escaped;

@@ -18,7 +18,7 @@
 }
 
 .use-ttf(@family, @family-suffix) when (@use-ttf = true) {
-    src+: url('@{font-folder}/KaTeX_@{family}-@{family-suffix}.ttf') format('ttf')
+    src+: url('@{font-folder}/KaTeX_@{family}-@{family-suffix}.ttf') format('truetype')
 }
 
 .generate-suffix(@weight, @style) when (@weight = normal) and (@style = normal) {

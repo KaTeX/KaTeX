@@ -7,6 +7,27 @@
 # suitable containers themselves, calling the screenshotter.js script
 # directly.
 
+cleanup() {
+    [[ "${container}" ]] \
+        && docker stop "${container}" >/dev/null \
+        && docker rm "${container}" >/dev/null
+    container=
+}
+
+SS_DIR=$(dirname "$0")
+TOP_DIR=${SS_DIR}/../..
+FONTS_DIR=${TOP_DIR}/test/screenshotter/unicode-fonts
+if [[ ! -d "${FONTS_DIR}" ]]; then
+    echo "Cloning test fonts repository"
+    git clone https://github.com/Khan/KaTeX-test-fonts "${FONTS_DIR}" \
+        || exit 2
+fi
+pushd "${FONTS_DIR}" || exit 2
+git checkout --detach 99fa66a2da643218754c8236b9f9151cac71ba7c || exit 2
+popd || exit 2
+
+container=
+trap cleanup EXIT
 status=0
 for browserTag in firefox:2.48.2 chrome:2.48.2; do
     browser=${browserTag%:*}
@@ -23,6 +44,6 @@ for browserTag in firefox:2.48.2 chrome:2.48.2; do
         status=1
     fi
     echo "${res} taking screenshots, stopping and removing ${container:0:12}"
-    docker stop ${container} >/dev/null && docker rm ${container} >/dev/null
+    cleanup
 done
 exit ${status}

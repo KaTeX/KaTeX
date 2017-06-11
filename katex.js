@@ -7,26 +7,26 @@
  * errors in the expression, or errors in javascript handling.
  */
 
-var ParseError = require("./src/ParseError");
-var Settings = require("./src/Settings");
+const ParseError = require("./src/ParseError");
+const Settings = require("./src/Settings");
 
-var buildHTML = require("./src/buildHTML");
-var buildTree = require("./src/buildTree");
-var canvasRenderer = require("./src/canvasRenderer");
-var parseTree = require("./src/parseTree");
-var utils = require("./src/utils");
+const buildHTML = require("./src/buildHTML");
+const buildTree = require("./src/buildTree");
+const canvasRenderer = require("./src/canvasRenderer");
+const parseTree = require("./src/parseTree");
+const utils = require("./src/utils");
 
 /**
  * Parse and build an expression, and place that expression in the DOM node
  * given.
  */
-var render = function(expression, baseNode, options) {
+let render = function(expression, baseNode, options) {
     utils.clearNode(baseNode);
 
-    var settings = new Settings(options);
+    const settings = new Settings(options);
 
-    var tree = parseTree(expression, settings);
-    var node = buildTree(tree, expression, settings).toNode();
+    const tree = parseTree(expression, settings);
+    const node = buildTree(tree, expression, settings).toNode();
 
     baseNode.appendChild(node);
 };
@@ -48,10 +48,10 @@ if (typeof document !== "undefined") {
 /**
  * Parse and build an expression, and return the markup for that.
  */
-var renderToString = function(expression, options) {
-    var settings = new Settings(options);
+const renderToString = function(expression, options) {
+    const settings = new Settings(options);
 
-    var tree = parseTree(expression, settings);
+    const tree = parseTree(expression, settings);
     return buildTree(tree, expression, settings).toMarkup();
 };
 
@@ -59,11 +59,11 @@ var renderToString = function(expression, options) {
  * Parse and build an expression, and render that expression to the
  * canvas at the specified position.
  */
-var renderToCanvas = function(expression, canvas, x, y, options) {
-    var settings = new Settings(options);
+const renderToCanvas = function(expression, canvas, x, y, options) {
+    const settings = new Settings(options);
 
-    var tree = parseTree(expression, settings);
-    var dom = buildHTML(tree, settings.initialOptions());
+    const tree = parseTree(expression, settings);
+    const dom = buildHTML(tree, settings.initialOptions());
     canvasRenderer.render(dom, canvas, x, y, options);
 };
 
@@ -72,19 +72,19 @@ var renderToCanvas = function(expression, canvas, x, y, options) {
  * specified canvas.  The returned object has some dimensions as well
  * as a renderAt method which can be used to render the whole box.
  */
-var canvasBox = function(expression, canvas, options) {
-    var settings = new Settings(options);
+const canvasBox = function(expression, canvas, options) {
+    const settings = new Settings(options);
 
-    var tree = parseTree(expression, settings);
-    var dom = buildHTML(tree, settings.initialOptions());
+    const tree = parseTree(expression, settings);
+    const dom = buildHTML(tree, settings.initialOptions());
     return canvasRenderer.prepare(dom, canvas, options);
 };
 
 /**
  * Parse an expression and return the parse tree.
  */
-var generateParseTree = function(expression, options) {
-    var settings = new Settings(options);
+const generateParseTree = function(expression, options) {
+    const settings = new Settings(options);
     return parseTree(expression, settings);
 };
 

@@ -3,11 +3,11 @@
 // Reads TeX from stdin, outputs HTML to stdout.
 /* eslint no-console:0 */
 
-var katex = require("./");
-var input = "";
+const katex = require("./");
+let input = "";
 
 // Skip the first two args, which are just "node" and "cli.js"
-var args = process.argv.slice(2);
+const args = process.argv.slice(2);
 
 if (args.indexOf("--help") !== -1) {
     console.log(process.argv[0] + " " + process.argv[1] +
@@ -26,7 +26,7 @@ process.stdin.on("data", function(chunk) {
 });
 
 process.stdin.on("end", function() {
-    var options = { displayMode: args.indexOf("--display-mode") !== -1 };
-    var output = katex.renderToString(input, options);
+    const options = { displayMode: args.indexOf("--display-mode") !== -1 };
+    const output = katex.renderToString(input, options);
     console.log(output);
 });

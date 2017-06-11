@@ -12,6 +12,7 @@
         "eqeqeq": [2, "allow-null"],
         "guard-for-in": 2,
         "indent": [2, 4, {"SwitchCase": 1}],
+        "keyword-spacing": 2,
         "linebreak-style": [2, "unix"],
         "max-len": [2, 80, 4, { "ignoreUrls": true, "ignorePattern": "\\brequire\\([\"']|eslint-disable" }],
         "no-alert": 2,
@@ -34,17 +35,15 @@
         "no-unreachable": 2,
         "no-unused-vars": [2, {"args": "none", "varsIgnorePattern": "^_*$"}],
         "no-useless-call": 2,
+        "no-var": 2,
         "no-with": 2,
         "one-var": [2, "never"],
         "prefer-const": 2,
         "prefer-spread": 2,
         "semi": [2, "always"],
-        "space-after-keywords": 2,
         "space-before-blocks": 2,
         "space-before-function-paren": [2, "never"],
-        "space-before-keywords": 2,
         "space-infix-ops": 2,
-        "space-return-throw-case": 2,
         "space-unary-ops": 2,
         // ---------------------------------------
         // Stuff we explicitly disable.
@@ -54,9 +53,6 @@
         // We've decided explicitly not to care about this.
         "arrow-parens": 0,
         // ---------------------------------------
-        // Stuff that's disabled for now, but maybe shouldn't be.
-        // disabled because KaTeX doesn't use ES6
-        "no-var": 0,
         // TODO(csilvers): enable these if/when community agrees on it.
         "prefer-arrow-callback": 0,
         "object-curly-spacing": [0, "always"],
@@ -78,9 +74,10 @@
         "templateStrings": true
     },
     "env": {
-        // "es6": true,
+        "es6": true,
         "node": true,
         "browser": true
     },
-    "extends": "eslint:recommended"
+    "extends": "eslint:recommended",
+    "root": true
 }

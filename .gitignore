@@ -3,9 +3,12 @@ node_modules
 npm-debug.log
 last.png
 diff.png
+/.npm-install.stamp
+/dist/
 /test/screenshotter/tex/
 /test/screenshotter/diff/
 /test/symgroups.tex
 /test/symgroups.aux
 /test/symgroups.log
 /test/symgroups.pdf
+/test/screenshotter/unicode-fonts

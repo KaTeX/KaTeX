@@ -10,11 +10,12 @@
 
     > .katex {
         display: inline-block;
+        text-align: initial;
     }
 }
 
 .katex {
-    font: normal 1.21em KaTeX_Main;
+    font: normal 1.21em KaTeX_Main, Times New Roman, serif;
     line-height: 1.2;
     white-space: nowrap;
 
@@ -46,6 +47,14 @@
 
     .strut {
         display: inline-block;
+    }
+
+    .mathrm {
+        font-style: normal;
+    }
+
+    .textit {
+        font-style: italic;
     }
 
     .mathit {
@@ -96,115 +105,124 @@
     @ptperem: 10.0;
     @nulldelimiterspace: 1.2em / @ptperem;
 
-    @thinspace: 0.16667em;
-    @mediumspace: 0.22222em;
-    @thickspace: 0.27778em;
+    @thinspace: 0.16667em;      // 3mu
+    @mediumspace: 0.22222em;    // 4mu
+    @thickspace: 0.27778em;     // 5mu
 
-    .textstyle {
-        > .mord {
-            & + .mord {}
-            & + .mop { margin-left: @thinspace; }
-            & + .mbin { margin-left: @mediumspace; }
-            & + .mrel { margin-left: @thickspace; }
-            & + .mopen {}
-            & + .mclose {}
-            & + .mpunct {}
-            & + .minner { margin-left: @thinspace; }
-        }
-
-        > .mop {
-            & + .mord { margin-left: @thinspace; }
-            & + .mop { margin-left: @thinspace; }
-            & + .mbin {}
-            & + .mrel { margin-left: @thickspace; }
-            & + .mopen {}
-            & + .mclose {}
-            & + .mpunct {}
-            & + .minner { margin-left: @thinspace; }
-        }
-
-        > .mbin {
-            & + .mord { margin-left: @mediumspace; }
-            & + .mop { margin-left: @mediumspace; }
-            & + .mbin {}
-            & + .mrel {}
-            & + .mopen { margin-left: @mediumspace; }
-            & + .mclose {}
-            & + .mpunct {}
-            & + .minner { margin-left: @mediumspace; }
-        }
-
-        > .mrel {
-            & + .mord { margin-left: @thickspace; }
-            & + .mop { margin-left: @thickspace; }
-            & + .mbin {}
-            & + .mrel {}
-            & + .mopen { margin-left: @thickspace; }
-            & + .mclose {}
-            & + .mpunct {}
-            & + .minner { margin-left: @thickspace; }
-        }
-
-        > .mopen {
-            & + .mord {}
-            & + .mop {}
-            & + .mbin {}
-            & + .mrel {}
-            & + .mopen {}
-            & + .mclose {}
-            & + .mpunct {}
-            & + .minner {}
-        }
-
-        > .mclose {
-            & + .mord {}
-            & + .mop { margin-left: @thinspace; }
-            & + .mbin { margin-left: @mediumspace; }
-            & + .mrel { margin-left: @thickspace; }
-            & + .mopen {}
-            & + .mclose {}
-            & + .mpunct {}
-            & + .minner { margin-left: @thinspace; }
-        }
-
-        > .mpunct {
-            & + .mord { margin-left: @thinspace; }
-            & + .mop { margin-left: @thinspace; }
-            & + .mbin {}
-            & + .mrel { margin-left: @thinspace; }
-            & + .mopen { margin-left: @thinspace; }
-            & + .mclose { margin-left: @thinspace; }
-            & + .mpunct { margin-left: @thinspace; }
-            & + .minner { margin-left: @thinspace; }
-        }
-
-        > .minner {
-            & + .mord { margin-left: @thinspace; }
-            & + .mop { margin-left: @thinspace; }
-            & + .mbin { margin-left: @mediumspace; }
-            & + .mrel { margin-left: @thickspace; }
-            & + .mopen { margin-left: @thinspace; }
-            & + .mclose {}
-            & + .mpunct { margin-left: @thinspace; }
-            & + .minner { margin-left: @thinspace; }
-        }
-    }
-
+    // These spacings apply in textstyle and displaystyle.
     .mord {
+        & + .mord {}
         & + .mop { margin-left: @thinspace; }
+        & + .mbin { margin-left: @mediumspace; }
+        & + .mrel { margin-left: @thickspace; }
+        & + .mopen {}
+        & + .mclose {}
+        & + .mpunct {}
+        & + .minner { margin-left: @thinspace; }
     }
 
     .mop {
         & + .mord { margin-left: @thinspace; }
         & + .mop { margin-left: @thinspace; }
+        & + .mbin {}
+        & + .mrel { margin-left: @thickspace; }
+        & + .mopen {}
+        & + .mclose {}
+        & + .mpunct {}
+        & + .minner { margin-left: @thinspace; }
+    }
+
+    .mbin {
+        & + .mord { margin-left: @mediumspace; }
+        & + .mop { margin-left: @mediumspace; }
+        & + .mbin {}
+        & + .mrel {}
+        & + .mopen { margin-left: @mediumspace; }
+        & + .mclose {}
+        & + .mpunct {}
+        & + .minner { margin-left: @mediumspace; }
+    }
+
+    .mrel {
+        & + .mord { margin-left: @thickspace; }
+        & + .mop { margin-left: @thickspace; }
+        & + .mbin {}
+        & + .mrel {}
+        & + .mopen { margin-left: @thickspace; }
+        & + .mclose {}
+        & + .mpunct {}
+        & + .minner { margin-left: @thickspace; }
+    }
+
+    .mopen {
+        & + .mord {}
+        & + .mop {}
+        & + .mbin {}
+        & + .mrel {}
+        & + .mopen {}
+        & + .mclose {}
+        & + .mpunct {}
+        & + .minner {}
     }
 
     .mclose {
+        & + .mord {}
         & + .mop { margin-left: @thinspace; }
+        & + .mbin { margin-left: @mediumspace; }
+        & + .mrel { margin-left: @thickspace; }
+        & + .mopen {}
+        & + .mclose {}
+        & + .mpunct {}
+        & + .minner { margin-left: @thinspace; }
+    }
+
+    .mpunct {
+        & + .mord { margin-left: @thinspace; }
+        & + .mop { margin-left: @thinspace; }
+        & + .mbin {}
+        & + .mrel { margin-left: @thinspace; }
+        & + .mopen { margin-left: @thinspace; }
+        & + .mclose { margin-left: @thinspace; }
+        & + .mpunct { margin-left: @thinspace; }
+        & + .minner { margin-left: @thinspace; }
     }
 
     .minner {
+        & + .mord { margin-left: @thinspace; }
         & + .mop { margin-left: @thinspace; }
+        & + .mbin { margin-left: @mediumspace; }
+        & + .mrel { margin-left: @thickspace; }
+        & + .mopen { margin-left: @thinspace; }
+        & + .mclose {}
+        & + .mpunct { margin-left: @thinspace; }
+        & + .minner { margin-left: @thinspace; }
+    }
+
+    // These tighter spacings apply in scriptstyle and scriptscriptstyle.
+    .mord.mtight { margin-left: 0; }
+    .mop.mtight { margin-left: 0; }
+    .mbin.mtight { margin-left: 0; }
+    .mrel.mtight { margin-left: 0; }
+    .mopen.mtight { margin-left: 0; }
+    .mclose.mtight { margin-left: 0; }
+    .mpunct.mtight { margin-left: 0; }
+    .minner.mtight { margin-left: 0; }
+
+    .mord {
+        & + .mop.mtight { margin-left: @thinspace; }
+    }
+
+    .mop {
+        & + .mord.mtight { margin-left: @thinspace; }
+        & + .mop.mtight { margin-left: @thinspace; }
+    }
+
+    .mclose {
+        & + .mop.mtight { margin-left: @thinspace; }
+    }
+
+    .minner {
+        & + .mop.mtight { margin-left: @thinspace; }
     }
 
     .reset-textstyle.textstyle { font-size: 1em; }
@@ -282,6 +300,10 @@
             width: @thinspace;
         }
 
+        &.negativemediumspace {
+            margin-left: -@mediumspace;
+        }
+
         &.mediumspace {
             width: @mediumspace;
         }
@@ -290,8 +312,20 @@
             width: @thickspace;
         }
 
+        &.sixmuspace {
+            width: 0.333333em;
+        }
+
+        &.eightmuspace {
+            width: 0.444444em;
+        }
+
         &.enspace {
             width: 0.5em;
+        }
+
+        &.twelvemuspace {
+            width: 0.666667em;
         }
 
         &.quad {
@@ -351,25 +385,23 @@
         position: relative;
     }
 
-    .overline {
+    .overline .overline-line,
+    .underline .underline-line {
+        width: 100%;
 
-        .overline-line {
-            width: 100%;
+        &:before {
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+            content: "";
+            display: block;
+        }
 
-            &:before {
-                border-bottom-style: solid;
-                border-bottom-width: 1px;
-                content: "";
-                display: block;
-            }
-
-            &:after {
-                border-bottom-style: solid;
-                border-bottom-width: 0.04em;
-                content: "";
-                display: block;
-                margin-top: -1px;
-            }
+        &:after {
+            border-bottom-style: solid;
+            border-bottom-width: 0.04em;
+            content: "";
+            display: block;
+            margin-top: -1px;
         }
     }
 

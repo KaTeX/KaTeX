@@ -2,35 +2,59 @@
  * This is the ParseError class, which is the main error thrown by KaTeX
  * functions when something has gone wrong. This is used to distinguish internal
  * errors from errors in the expression that the user provided.
+ *
+ * If possible, a caller should provide a Token or ParseNode with information
+ * about where in the source string the problem occurred.
+ *
+ * @param {string} message  The error message
+ * @param {(Token|ParseNode)=} token  An object providing position information
  */
-function ParseError(message, lexer, position) {
-    var error = "KaTeX parse error: " + message;
+function ParseError(message, token) {
+    let error = "KaTeX parse error: " + message;
+    let start;
+    let end;
 
-    if (lexer !== undefined && position !== undefined) {
+    if (token && token.lexer && token.start <= token.end) {
         // If we have the input and a position, make the error a bit fancier
 
-        // Prepend some information
-        error += " at position " + position + ": ";
-
         // Get the input
-        var input = lexer._input;
-        // Insert a combining underscore at the correct position
-        input = input.slice(0, position) + "\u0332" +
-            input.slice(position);
+        const input = token.lexer.input;
+
+        // Prepend some information
+        start = token.start;
+        end = token.end;
+        if (start === input.length) {
+            error += " at end of input: ";
+        } else {
+            error += " at position " + (start + 1) + ": ";
+        }
+
+        // Underline token in question using combining underscores
+        const underlined = input.slice(start, end).replace(/[^]/g, "$&\u0332");
 
         // Extract some context from the input and add it to the error
-        var begin = Math.max(0, position - 15);
-        var end = position + 15;
-        error += input.slice(begin, end);
+        let left;
+        if (start > 15) {
+            left = "…" + input.slice(start - 15, start);
+        } else {
+            left = input.slice(0, start);
+        }
+        let right;
+        if (end + 15 < input.length) {
+            right = input.slice(end, end + 15) + "…";
+        } else {
+            right = input.slice(end);
+        }
+        error += left + underlined + right;
     }
 
     // Some hackery to make ParseError a prototype of Error
     // See http://stackoverflow.com/a/8460753
-    var self = new Error(error);
+    const self = new Error(error);
     self.name = "ParseError";
     self.__proto__ = ParseError.prototype;
 
-    self.position = position;
+    self.position = start;
     return self;
 }
 

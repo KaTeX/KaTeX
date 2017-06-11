@@ -39,7 +39,7 @@ function Options(data) {
  * from "extension" will be copied to the new options object.
  */
 Options.prototype.extend = function(extension) {
-    var data = {
+    const data = {
         style: this.style,
         size: this.size,
         color: this.color,
@@ -49,7 +49,7 @@ Options.prototype.extend = function(extension) {
         font: this.font,
     };
 
-    for (var key in extension) {
+    for (const key in extension) {
         if (extension.hasOwnProperty(key)) {
             data[key] = extension[key];
         }
@@ -99,7 +99,7 @@ Options.prototype.withPhantom = function() {
  */
 Options.prototype.withFont = function(font) {
     return this.extend({
-        font: font,
+        font: font || this.font,
     });
 };
 
@@ -115,7 +115,7 @@ Options.prototype.reset = function() {
  * A map of color names to CSS colors.
  * TODO(emily): Remove this when we have real macros
  */
-var colorMap = {
+const colorMap = {
     "katex-blue": "#6495ed",
     "katex-orange": "#ffa500",
     "katex-pink": "#ff00af",
@@ -123,55 +123,55 @@ var colorMap = {
     "katex-green": "#28ae7b",
     "katex-gray": "gray",
     "katex-purple": "#9d38bd",
-    "katex-blueA": "#c7e9f1",
-    "katex-blueB": "#9cdceb",
-    "katex-blueC": "#58c4dd",
-    "katex-blueD": "#29abca",
-    "katex-blueE": "#1c758a",
-    "katex-tealA": "#acead7",
-    "katex-tealB": "#76ddc0",
-    "katex-tealC": "#5cd0b3",
-    "katex-tealD": "#55c1a7",
-    "katex-tealE": "#49a88f",
-    "katex-greenA": "#c9e2ae",
-    "katex-greenB": "#a6cf8c",
-    "katex-greenC": "#83c167",
-    "katex-greenD": "#77b05d",
-    "katex-greenE": "#699c52",
-    "katex-goldA": "#f7c797",
-    "katex-goldB": "#f9b775",
-    "katex-goldC": "#f0ac5f",
-    "katex-goldD": "#e1a158",
-    "katex-goldE": "#c78d46",
-    "katex-redA": "#f7a1a3",
-    "katex-redB": "#ff8080",
-    "katex-redC": "#fc6255",
-    "katex-redD": "#e65a4c",
-    "katex-redE": "#cf5044",
-    "katex-maroonA": "#ecabc1",
-    "katex-maroonB": "#ec92ab",
-    "katex-maroonC": "#c55f73",
-    "katex-maroonD": "#a24d61",
-    "katex-maroonE": "#94424f",
-    "katex-purpleA": "#caa3e8",
-    "katex-purpleB": "#b189c6",
-    "katex-purpleC": "#9a72ac",
-    "katex-purpleD": "#715582",
-    "katex-purpleE": "#644172",
+    "katex-blueA": "#ccfaff",
+    "katex-blueB": "#80f6ff",
+    "katex-blueC": "#63d9ea",
+    "katex-blueD": "#11accd",
+    "katex-blueE": "#0c7f99",
+    "katex-tealA": "#94fff5",
+    "katex-tealB": "#26edd5",
+    "katex-tealC": "#01d1c1",
+    "katex-tealD": "#01a995",
+    "katex-tealE": "#208170",
+    "katex-greenA": "#b6ffb0",
+    "katex-greenB": "#8af281",
+    "katex-greenC": "#74cf70",
+    "katex-greenD": "#1fab54",
+    "katex-greenE": "#0d923f",
+    "katex-goldA": "#ffd0a9",
+    "katex-goldB": "#ffbb71",
+    "katex-goldC": "#ff9c39",
+    "katex-goldD": "#e07d10",
+    "katex-goldE": "#a75a05",
+    "katex-redA": "#fca9a9",
+    "katex-redB": "#ff8482",
+    "katex-redC": "#f9685d",
+    "katex-redD": "#e84d39",
+    "katex-redE": "#bc2612",
+    "katex-maroonA": "#ffbde0",
+    "katex-maroonB": "#ff92c6",
+    "katex-maroonC": "#ed5fa6",
+    "katex-maroonD": "#ca337c",
+    "katex-maroonE": "#9e034e",
+    "katex-purpleA": "#ddd7ff",
+    "katex-purpleB": "#c6b9fc",
+    "katex-purpleC": "#aa87ff",
+    "katex-purpleD": "#7854ab",
+    "katex-purpleE": "#543b78",
     "katex-mintA": "#f5f9e8",
     "katex-mintB": "#edf2df",
     "katex-mintC": "#e0e5cc",
-    "katex-grayA": "#fdfdfd",
-    "katex-grayB": "#f7f7f7",
-    "katex-grayC": "#eeeeee",
-    "katex-grayD": "#dddddd",
-    "katex-grayE": "#cccccc",
-    "katex-grayF": "#aaaaaa",
-    "katex-grayG": "#999999",
-    "katex-grayH": "#555555",
-    "katex-grayI": "#333333",
+    "katex-grayA": "#f6f7f7",
+    "katex-grayB": "#f0f1f2",
+    "katex-grayC": "#e3e5e6",
+    "katex-grayD": "#d6d8da",
+    "katex-grayE": "#babec2",
+    "katex-grayF": "#888d93",
+    "katex-grayG": "#626569",
+    "katex-grayH": "#3b3e40",
+    "katex-grayI": "#21242c",
     "katex-kaBlue": "#314453",
-    "katex-kaGreen": "#639b24",
+    "katex-kaGreen": "#71B307",
 };
 
 /**
