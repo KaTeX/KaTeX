@@ -25,6 +25,12 @@ RUN sed -i 's/^\(deb.*updates\)/#\1/' /etc/apt/sources.list \
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
 RUN useradd --create-home --home-dir /KaTeX katex \
- && mkdir -p /KaTeX/dockers/texcmp
+ && mkdir -p /KaTeX/dockers/texcmp /KaTeX/test/screenshotter
 
-# USER katex # does not work well with docker cp copying stuff into our dirs
+ADD package.json /KaTeX/dockers/texcmp/package.json
+
+RUN ( cd /KaTeX/dockers/texcmp; npm install; ) \
+ && ( cd /KaTeX/test/screenshotter; npm install js-yaml; ) \
+ && chown -R katex:katex /KaTeX
+
+USER katex
