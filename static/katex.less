@@ -24,6 +24,9 @@
 
     // Prevent a rendering bug that misplaces \vec in Chrome.
     text-rendering: auto;
+  
+    // Prevent background resetting in Windows's high-contrast mode.
+    -ms-high-contrast-adjust: none !important;
 
     .katex-html {
         // Making .katex inline-block allows line breaks before and after,

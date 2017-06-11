@@ -599,6 +599,9 @@ groupTypes.array = function(group, options) {
 
     // Vertical spacing
     const baselineskip = 12 * pt; // see size10.clo
+    // Default \jot from ltmath.dtx
+    // TODO(edemaine): allow overriding \jot via \setlength (#687)
+    const jot = 3 * pt;
     // Default \arraystretch from lttab.dtx
     // TODO(gagern): may get redefined once we have user-defined macros
     const arraystretch = utils.deflt(group.value.arraystretch, 1);
@@ -638,6 +641,12 @@ groupTypes.array = function(group, options) {
                 }
                 gap = 0;
             }
+        }
+        // In AMS multiline environments such as aligned and gathered, rows
+        // correspond to lines that have additional \jot added to the
+        // \baselineskip via \openup.
+        if (group.value.addJot) {
+            depth += jot;
         }
 
         outrow.height = height;
