@@ -173,11 +173,11 @@ function processTestCase(key) {
         const uh = Math.max(browser.height + by, latex.height + ly); // u. h.
         return execFile("convert", [
             // First image: latex rendering, converted to grayscale and padded
-            "(", pngFile, "-grayscale", "Rec709Luminance",
+            "(", pngFile, "-colorspace", "Gray",
             "-extent", uw + "x" + uh + "-" + lx + "-" + ly,
             ")",
             // Second image: browser screenshot, to grayscale and padded
-            "(", browserFile, "-grayscale", "Rec709Luminance",
+            "(", browserFile, "-colorspace", "Gray",
             "-extent", uw + "x" + uh + "-" + bx + "-" + by,
             ")",
             // Third image: the per-pixel minimum of the first two images
