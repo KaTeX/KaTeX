@@ -13,7 +13,7 @@ cd ../..
 mkdir -p test/screenshotter/{tex,diff}
 
 cleanup() {
-    [[ "${container}" ]] && false \
+    [[ "${container}" ]] \
         && docker stop "${container}" >/dev/null \
         && docker rm "${container}" >/dev/null
     container=
@@ -29,8 +29,8 @@ tar c dockers/texcmp/{texcmp.js,package.json} \
     test/screenshotter/{ss_data.{js,yaml},images/*-firefox.png,test.tex} \
     | docker cp - "${container}:/KaTeX"
 docker start -a "${container}"
-docker cp "${container}:/KaTeX/test/screenshotter/tex" - \
-    | ( cd test/screenshotter/tex; tar xov; ) || exit $?
-docker cp "${container}:/KaTeX/test/screenshotter/diff" - \
-    | ( cd test/screenshotter/diff; tar xov; ) || exit $?
+docker cp "${container}:/KaTeX/test/screenshotter/tex" test/screenshotter \
+    || exit $?
+docker cp "${container}:/KaTeX/test/screenshotter/diff" test/screenshotter \
+    || exit $?
 cleanup
