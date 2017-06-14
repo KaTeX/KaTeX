@@ -1602,15 +1602,15 @@ groupTypes.horizBrace = function(group, options) {
         if (group.value.isOver) {
             vlist = buildCommon.makeVList([
                 {type: "elem", elem: vSpan},
-                {type: "kern", size: 0.3}, // Ref: LaTeX source2e: \kern3\p
+                {type: "kern", size: 0.2},
                 {type: "elem", elem: supSubReset},
             ], "firstBaseline", null, options);
         } else {
             vlist = buildCommon.makeVList([
                 {type: "elem", elem: supSubReset},
-                {type: "kern", size: 0.3},
+                {type: "kern", size: 0.2},
                 {type: "elem", elem: vSpan},
-            ], "bottom", vSpan.depth + 0.3 + supSubReset.height,
+            ], "bottom", vSpan.depth + 0.2 + supSubReset.height,
             options);
         }
     }

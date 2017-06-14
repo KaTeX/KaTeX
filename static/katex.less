@@ -596,10 +596,12 @@
     .cancel-pad {
         padding: 0 0.2em 0 0.2em;    // ref: cancel package  \advance\dimen@ 2\p@ %  "+2"
     }
-    .mord + .cancel-lap {
+    .mord + .cancel-lap,
+    .mbin + .cancel-lap {
         margin-left: -0.2em;
     }
     .cancel-lap + .mord,
+    .cancel-lap + .mbin,
     .cancel-lap + .msupsub {
         margin-left: -0.2em;
     }
@@ -761,12 +763,12 @@
         background-image: url(images/leftrightharpoons.svg);
     }
     .overgroup {
-        height: 0.322em;
+        height: 0.342em;
         min-width: 0.87em;
         background-image: url(images/overgroup.svg);
     }
     .undergroup {
-        height: 0.322em;
+        height: 0.342em;
         min-width: 0.87em;
         background-image: url(images/undergroup.svg);
     }
