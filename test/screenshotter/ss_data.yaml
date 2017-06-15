@@ -49,9 +49,10 @@ Cases: |
         a-1&\text{otherwise}
     \end{cases}
 Colors:
-    tex: \blue{a}\color{#0f0}{b}\color{red}{c}
+    tex: \blue{a}\textcolor{#0f0}{b}\textcolor{red}{c}
     nolatex: different syntax and different scope
-ColorSpacing: \color{red}{\displaystyle \int x} + 1
+ColorSpacing: \textcolor{red}{\displaystyle \int x} + 1
+ColorImplicit: bl{ack\color{red}red\textcolor{green}{green}red\color{blue}blue}black
 DashesAndQuotes: \text{``a'' b---c -- d----`e'-{-}-f}--``x''
 DeepFontSizing:
     tex: |
@@ -73,7 +74,21 @@ DisplayStyle: |
 Exponents: a^{a^a_a}_{a^a_a}
 FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}
 Functions: \sin\cos\tan\ln\log
+Gathered: |
+    \begin{gathered}
+      x = \frac{1}{2} \\
+      y = \sum_{i=1}^n i
+    \end{gathered} \approx
+    \begin{array}{c}
+      x = \frac{1}{2} \\
+      y = \sum_{i=1}^n i
+    \end{array}
 GreekLetters: \alpha\beta\gamma\omega
+GroupMacros:
+    macros:
+        \startExp: e^\bgroup
+        \endExp: \egroup
+    tex: \startExp a+b\endExp
 KaTeX: \KaTeX
 Kern:
     tex: \frac{a\kern{1em}b}{c}a\kern{1em}b\kern{1ex}c\kern{-0.25em}d
@@ -81,7 +96,7 @@ Kern:
 Lap: ab\llap{f}cd\rlap{g}h
 LeftRight: \left( x^2 \right) \left\{ x^{x^{x^{x^x}}} \right.
 LeftRightListStyling: a+\left(x+y\right)-x
-LeftRightMiddle: \left( x^2 \middle/ \right) \left\{ x^{x^{x^{x^x}}} \middle/ y \right.
+LeftRightMiddle: \left( x^2 \middle/ \right) \left\{ x^{x^{x^{x^x}}} \middle/ y \right.\left(x\middle|y\,\middle|\,z\right)
 LeftRightStyleSizing: |
     +\left\{\rule{0.1em}{1em}\right.
     x^{+\left\{\rule{0.1em}{1em}\right.
@@ -90,7 +105,7 @@ LimitControls: |
     \displaystyle\int\limits_2^3 3x^2\,dx + \sum\nolimits^n_{i=1}i +
     \textstyle\int\limits_x^y z
 MathAtom: a\mathrel{\mathop{=}\limits^{\blue ?}}b
-MathAtom2: \mathop{\overline\mathrm{lim}}\limits_{x\to\infty}f(x)
+MathAtom2: \mathop{\overline{\mathrm{lim}}}\limits_{x\to\infty}f(x)
 MathDefaultFonts: Ax2k\breve{a}\omega\Omega\imath+\KaTeX
 MathBb: \mathbb{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathBf: \mathbf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
@@ -118,10 +133,23 @@ NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
     {\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
 NullDelimiterInteraction: a \bigl. + 2 \quad \left. + a \right)
+OldFont: |
+    \begin{matrix}
+      \rm rm & it & \it it & \bf bf & \sf sf & \tt tt \\
+      \text{\rm rm} & \text{rm} & \text{\it it} & \text{\bf bf} & \text{\sf sf} & \text{\tt tt} \\
+      i\rm r\it i & \text{r\it i\rm r}
+    \end{matrix}
 OpLimits: |
     {\sin_2^2 \lim_2^2 \int_2^2 \sum_2^2}
     {\displaystyle \lim_2^2 \int_2^2 \intop_2^2 \sum_2^2}
 OverUnderline: x\underline{x}\underline{\underline{x}}\underline{x_{x_{x_x}}}\underline{x^{x^{x^x}}}\overline{x}\overline{x}\overline{x^{x^{x^x}}} \blue{\overline{\underline{x}}\underline{\overline{x}}}
+OverUnderset: |
+    \begin{array}{l}
+    x\overset?=1\\
+    {\displaystyle\lim_{t\underset{>0}\to0}}\\
+    a+b+c+d\overset{b+c=0}\longrightarrow a+d\\
+    \overset { x = y } { \sqrt { a b } }
+    \end{array}
 Phantom: \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x}
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
@@ -150,8 +178,9 @@ SupSubLeftAlignReset: |
 SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
 Symbols1: |
     \maltese\degree\pounds\$
-    \text{\maltese\degree}
+    \text{\maltese\degree\pounds\textdollar}
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
+TextWithMath: \text{for $a < b$ and $ c < d $}.
 Unicode: \begin{matrix}\text{ÀàÇçÉéÏïÖöÛû} \\ \text{БГДЖЗЙЛФЦШЫЮЯ} \\ \text{여보세요} \\ \text{私はバナナです} \end{matrix}
 UnsupportedCmds:
     tex: \err\,\frac\fracerr3\,2^\superr_\suberr\,\sqrt\sqrterr

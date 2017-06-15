@@ -166,18 +166,22 @@ beforeEach(function() {
 
         toParseLike: function(util, baton) {
             return {
-                compare: function(actual, expected) {
+                compare: function(actual, expected, settings) {
+                    const usedSettings = settings ? settings : defaultSettings;
+
                     const result = {
                         pass: true,
                         message: "Parse trees of '" + actual +
                             "' and '" + expected + "' are equivalent",
                     };
 
-                    const actualTree = parseAndSetResult(actual, result);
+                    const actualTree = parseAndSetResult(actual, result,
+                        usedSettings);
                     if (!actualTree) {
                         return result;
                     }
-                    const expectedTree = parseAndSetResult(expected, result);
+                    const expectedTree = parseAndSetResult(expected, result,
+                        usedSettings);
                     if (!expectedTree) {
                         return result;
                     }
@@ -726,12 +730,13 @@ describe("A text parser", function() {
     const textExpression = "\\text{a b}";
     const noBraceTextExpression = "\\text x";
     const nestedTextExpression =
-        "\\text{a {b} \\blue{c} \\color{#fff}{x} \\llap{x}}";
+        "\\text{a {b} \\blue{c} \\textcolor{#fff}{x} \\llap{x}}";
     const spaceTextExpression = "\\text{  a \\ }";
     const leadingSpaceTextExpression = "\\text {moo}";
     const badTextExpression = "\\text{a b%}";
     const badFunctionExpression = "\\text{\\sqrt{x}}";
     const mathTokenAfterText = "\\text{sin}^2";
+    const textWithEmbeddedMath = "\\text{graph: $y = mx + b$}";
 
     it("should not fail", function() {
         expect(textExpression).toParse();
@@ -789,13 +794,18 @@ describe("A text parser", function() {
             parse.value.body.map(function(n) { return n.value; }).join("")
         ).toBe("moo");
     });
+
+    it("should parse math within text group", function() {
+        expect(textWithEmbeddedMath).toParse();
+    });
 });
 
 describe("A color parser", function() {
     const colorExpression = "\\blue{x}";
     const newColorExpression = "\\redA{x}";
-    const customColorExpression = "\\color{#fA6}{x}";
-    const badCustomColorExpression = "\\color{bad-color}{x}";
+    const customColorExpression = "\\textcolor{#fA6}{x}";
+    const badCustomColorExpression = "\\textcolor{bad-color}{x}";
+    const oldColorExpression = "\\color{#fA6}xy";
 
     it("should not fail", function() {
         expect(colorExpression).toParse();
@@ -828,10 +838,26 @@ describe("A color parser", function() {
     });
 
     it("should have correct greediness", function() {
-        expect("\\color{red}a").toParse();
-        expect("\\color{red}{\\text{a}}").toParse();
-        expect("\\color{red}\\text{a}").toNotParse();
-        expect("\\color{red}\\frac12").toNotParse();
+        expect("\\textcolor{red}a").toParse();
+        expect("\\textcolor{red}{\\text{a}}").toParse();
+        expect("\\textcolor{red}\\text{a}").toNotParse();
+        expect("\\textcolor{red}\\frac12").toNotParse();
+    });
+
+    it("should use one-argument \\color by default", function() {
+        expect(oldColorExpression).toParseLike("\\textcolor{#fA6}{xy}");
+    });
+
+    it("should use one-argument \\color if requested", function() {
+        expect(oldColorExpression).toParseLike("\\textcolor{#fA6}{xy}", {
+            colorIsTextColor: false,
+        });
+    });
+
+    it("should use two-argument \\color if requested", function() {
+        expect(oldColorExpression).toParseLike("\\textcolor{#fA6}{x}y", {
+            colorIsTextColor: true,
+        });
     });
 });
 
@@ -1173,7 +1199,7 @@ describe("A TeX-compliant parser", function() {
     it("should fail if there are not enough arguments", function() {
         const missingGroups = [
             "\\frac{x}",
-            "\\color{#fff}",
+            "\\textcolor{#fff}",
             "\\rule{1em}",
             "\\llap",
             "\\bigl",
@@ -1391,8 +1417,8 @@ describe("A font parser", function() {
         expect(bbBody[2].value.type).toEqual("font");
     });
 
-    it("should work with \\color", function() {
-        const colorMathbbParse = getParsed("\\color{blue}{\\mathbb R}")[0];
+    it("should work with \\textcolor", function() {
+        const colorMathbbParse = getParsed("\\textcolor{blue}{\\mathbb R}")[0];
         expect(colorMathbbParse.value.type).toEqual("color");
         expect(colorMathbbParse.value.color).toEqual("blue");
         const body = colorMathbbParse.value.value;
@@ -1480,11 +1506,11 @@ describe("An HTML font tree-builder", function() {
     });
 
     it("should render a combination of font and color changes", function() {
-        let markup = katex.renderToString("\\color{blue}{\\mathbb R}");
+        let markup = katex.renderToString("\\textcolor{blue}{\\mathbb R}");
         let span = "<span class=\"mord mathbb\" style=\"color:blue;\">R</span>";
         expect(markup).toContain(span);
 
-        markup = katex.renderToString("\\mathbb{\\color{blue}{R}}");
+        markup = katex.renderToString("\\mathbb{\\textcolor{blue}{R}}");
         span = "<span class=\"mord mathbb\" style=\"color:blue;\">R</span>";
         expect(markup).toContain(span);
     });
@@ -1539,7 +1565,7 @@ describe("A MathML font tree-builder", function() {
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         expect(markup).toContain("<mi mathvariant=\"double-struck\">A</mi>");
         expect(markup).toContain("<mi>x</mi>");
-        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
         expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
@@ -1552,7 +1578,7 @@ describe("A MathML font tree-builder", function() {
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         expect(markup).toContain("<mi mathvariant=\"normal\">A</mi>");
         expect(markup).toContain("<mi mathvariant=\"normal\">x</mi>");
-        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
         expect(markup).toContain("<mi>\u0131</mi>");   // \imath
@@ -1563,12 +1589,12 @@ describe("A MathML font tree-builder", function() {
         const tex = "\\mathit{" + contents + "}";
         const tree = getParsed(tex);
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
-        expect(markup).toContain("<mi mathvariant=\"italic\">A</mi>");
-        expect(markup).toContain("<mi mathvariant=\"italic\">x</mi>");
+        expect(markup).toContain("<mi>A</mi>");
+        expect(markup).toContain("<mi>x</mi>");
         expect(markup).toContain("<mn mathvariant=\"italic\">2</mn>");
-        expect(markup).toContain("<mi mathvariant=\"italic\">\u03c9</mi>");   // \omega
-        expect(markup).toContain("<mi mathvariant=\"italic\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi mathvariant=\"italic\">\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
+        expect(markup).toContain("<mi>\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1623,7 +1649,7 @@ describe("A MathML font tree-builder", function() {
         // MathJax marks everything below as "script" except \omega
         // We don't have these glyphs in "script" and neither does MathJax
         expect(markup).toContain("<mi>x</mi>");
-        expect(markup).toContain("<mn mathvariant=\"normal\">2</mn>");
+        expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
         expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
@@ -1644,7 +1670,7 @@ describe("A MathML font tree-builder", function() {
     });
 
     it("should render a combination of font and color changes", function() {
-        let tex = "\\color{blue}{\\mathbb R}";
+        let tex = "\\textcolor{blue}{\\mathbb R}";
         let tree = getParsed(tex);
         let markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         let node = "<mstyle mathcolor=\"blue\">" +
@@ -1653,13 +1679,29 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain(node);
 
         // reverse the order of the commands
-        tex = "\\mathbb{\\color{blue}{R}}";
+        tex = "\\mathbb{\\textcolor{blue}{R}}";
         tree = getParsed(tex);
         markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         node = "<mstyle mathcolor=\"blue\">" +
             "<mi mathvariant=\"double-struck\">R</mi>" +
             "</mstyle>";
         expect(markup).toContain(node);
+    });
+
+    it("should render text as <mtext>", function() {
+        const tex = "\\text{for }";
+        const tree = getParsed(tex);
+        const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mtext>for\u00a0</mtext>");
+    });
+
+    it("should render math within text as side-by-side children", function() {
+        const tex = "\\text{graph: $y = mx + b$}";
+        const tree = getParsed(tex);
+        const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mrow><mtext>graph:\u00a0</mtext>");
+        expect(markup).toContain(
+            "<mi>y</mi><mo>=</mo><mi>m</mi><mi>x</mi><mo>+</mo><mi>b</mi>");
     });
 });
 
@@ -2010,6 +2052,19 @@ describe("A macro expander", function() {
             "\\foo": "\\bar\\bar",
             "\\bar": "a",
         });
+    });
+
+    it("should expand the \\overset macro as expected", function() {
+        expect("\\overset?=").toParseLike("\\mathop{=}\\limits^{?}");
+        expect("\\overset{x=y}{\sqrt{ab}}")
+            .toParseLike("\\mathop{\sqrt{ab}}\\limits^{x=y}");
+        expect("\\overset {?} =").toParseLike("\\mathop{=}\\limits^{?}");
+    });
+
+    it("should build \\iff, \\implies, \\impliedby", function() {
+        expect("X \\iff Y").toBuild();
+        expect("X \\implies Y").toBuild();
+        expect("X \\impliedby Y").toBuild();
     });
 });
 

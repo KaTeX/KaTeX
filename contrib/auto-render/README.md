@@ -55,7 +55,9 @@ function renderMathInElement(elem, options)
 `elem` is an HTML DOM element. The function will recursively search for text
 nodes inside this element and render the math in them.
 
-`options` is an optional object argument with the following keys:
+`options` is an optional object argument that can have the same keys as [the 
+object passed to `katex.render`](https://github.com/Khan/KaTeX/#rendering-options),
+in addition to two auto-render-specific keys:
 
 - `delimiters`: This is a list of delimiters to look for math. Each delimiter
   has three properties:
@@ -77,7 +79,11 @@ nodes inside this element and render the math in them.
 
 - `ignoredTags`: This is a list of DOM node types to ignore when recursing
   through. The default value is
-  `["script", "noscript", "style", "textarea", "pre", "code"]`.
+  `["script", "noscript", "style", "textarea", "pre", "code"]`. 
   
 - `errorCallback`: A callback method returning a message and an error stack
   in case of an critical error during rendering. The default uses `console.error`.
+
+Note that the `displayMode` property of the options object is ignored, and is 
+instead taken from the `display` key of the corresponding entry in the 
+`delimiters` key.

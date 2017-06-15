@@ -50,6 +50,23 @@ const isBinRightCanceller = function(node, isRealGroup) {
 };
 
 /**
+ * Splice out any spaces from `children` starting at position `i`, and return
+ * the spliced-out array. Returns null if `children[i]` does not exist or is not
+ * a space.
+ */
+const spliceSpaces = function(children, i) {
+    let j = i;
+    while (j < children.length && isSpace(children[j])) {
+        j++;
+    }
+    if (j === i) {
+        return null;
+    } else {
+        return children.splice(i, j - i);
+    }
+};
+
+/**
  * Take a list of nodes, build them in order, and return a list of the built
  * nodes. documentFragments are flattened into their contents, so the
  * returned list contains no fragments. `isRealGroup` is true if `expression`
@@ -74,23 +91,23 @@ const buildExpression = function(expression, options, isRealGroup) {
     // spacing (e.g., "add thick space between mord and mrel"). Since CSS
     // adjacency rules implement atom spacing, spaces should be invisible to
     // CSS. So we splice them out of `groups` and into the atoms themselves.
-    let spaces = null;
     for (let i = 0; i < groups.length; i++) {
-        if (isSpace(groups[i])) {
-            spaces = spaces || [];
-            spaces.push(groups[i]);
-            groups.splice(i, 1);
-            i--;
-        } else if (spaces) {
-            if (groups[i] instanceof domTree.symbolNode) {
-                groups[i] = makeSpan([].concat(groups[i].classes), [groups[i]]);
+        const spaces = spliceSpaces(groups, i);
+        if (spaces) {
+            // Splicing of spaces may have removed all remaining groups.
+            if (i < groups.length) {
+                // If there is a following group, move space within it.
+                if (groups[i] instanceof domTree.symbolNode) {
+                    groups[i] = makeSpan([].concat(groups[i].classes),
+                        [groups[i]]);
+                }
+                buildCommon.prependChildren(groups[i], spaces);
+            } else {
+                // Otherwise, put any spaces back at the end of the groups.
+                Array.prototype.push.apply(groups, spaces);
+                break;
             }
-            buildCommon.prependChildren(groups[i], spaces);
-            spaces = null;
         }
-    }
-    if (spaces) {
-        Array.prototype.push.apply(groups, spaces);
     }
 
     // Binary operators change to ordinary symbols in some contexts.
@@ -317,8 +334,13 @@ groupTypes.supsub = function(group, options) {
         supShift = 0;
         subShift = 0;
     } else {
-        supShift = base.height - style.metrics.supDrop;
-        subShift = base.depth + style.metrics.subDrop;
+        const supstyle = style.sup();
+        supShift = base.height - supstyle.metrics.supDrop
+            * supstyle.sizeMultiplier;
+
+        const substyle = style.sub();
+        subShift = base.depth + substyle.metrics.subDrop
+            * substyle.sizeMultiplier;
     }
 
     // Rule 18c
@@ -570,6 +592,9 @@ groupTypes.array = function(group, options) {
 
     // Vertical spacing
     const baselineskip = 12 * pt; // see size10.clo
+    // Default \jot from ltmath.dtx
+    // TODO(edemaine): allow overriding \jot via \setlength (#687)
+    const jot = 3 * pt;
     // Default \arraystretch from lttab.dtx
     // TODO(gagern): may get redefined once we have user-defined macros
     const arraystretch = utils.deflt(group.value.arraystretch, 1);
@@ -609,6 +634,12 @@ groupTypes.array = function(group, options) {
                 }
                 gap = 0;
             }
+        }
+        // In AMS multiline environments such as aligned and gathered, rows
+        // correspond to lines that have additional \jot added to the
+        // \baselineskip via \openup.
+        if (group.value.addJot) {
+            depth += jot;
         }
 
         outrow.height = height;
@@ -1278,11 +1309,17 @@ groupTypes.leftright = function(group, options) {
     // Handle middle delimiters
     if (hadMiddle) {
         for (let i = 1; i < inner.length; i++) {
-            if (inner[i].isMiddle) {
+            const middleDelim = inner[i];
+            if (middleDelim.isMiddle) {
                 // Apply the options that were active when \middle was called
                 inner[i] = delimiter.leftRightDelim(
-                    inner[i].isMiddle.value, innerHeight, innerDepth,
-                    inner[i].isMiddle.options, group.mode, []);
+                    middleDelim.isMiddle.value, innerHeight, innerDepth,
+                    middleDelim.isMiddle.options, group.mode, []);
+                // Add back spaces shifted into the delimiter
+                const spaces = spliceSpaces(middleDelim.children, 0);
+                if (spaces) {
+                    buildCommon.prependChildren(inner[i], spaces);
+                }
             }
         }
     }

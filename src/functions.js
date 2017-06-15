@@ -23,9 +23,9 @@ const ParseNode = parseData.ParseNode;
  *               - "color": An html color, like "#abc" or "blue"
  *               - "original": The same type as the environment that the
  *                             function being parsed is in (e.g. used for the
- *                             bodies of functions like \color where the first
- *                             argument is special and the second argument is
- *                             parsed normally)
+ *                             bodies of functions like \textcolor where the
+ *                             first argument is special and the second
+ *                             argument is parsed normally)
  *              Other possible types (probably shouldn't be used)
  *               - "text": Text-like (e.g. \text)
  *               - "math": Normal math
@@ -151,7 +151,7 @@ defineFunction([
 });
 
 // A two-argument custom color
-defineFunction("\\color", {
+defineFunction("\\textcolor", {
     numArgs: 2,
     allowedInText: true,
     greediness: 3,
@@ -165,6 +165,14 @@ defineFunction("\\color", {
         value: ordargument(body),
     };
 });
+
+// \color is handled in Parser.js's parseImplicitGroup
+defineFunction("\\color", {
+    numArgs: 1,
+    allowedInText: true,
+    greediness: 3,
+    argTypes: ["color"],
+}, null);
 
 // An overline
 defineFunction("\\overline", {
@@ -589,6 +597,11 @@ defineFunction([
 defineFunction([
     "\\displaystyle", "\\textstyle", "\\scriptstyle",
     "\\scriptscriptstyle",
+], 0, null);
+
+// Old font changing functions
+defineFunction([
+    "\\rm", "\\sf", "\\tt", "\\bf", "\\it", //"\\sl", "\\sc",
 ], 0, null);
 
 defineFunction([

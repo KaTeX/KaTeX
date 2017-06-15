@@ -224,9 +224,9 @@ describe("Parser.expect calls:", function() {
 
     describe("#parseSpecialGroup expecting braces", function() {
         it("complains about missing { for color", function() {
-            expect("\\color#ffffff{text}").toFailWithParseError(
-                   "Expected '{', got '#' at position 7:" +
-                   " \\color#̲ffffff{text}");
+            expect("\\textcolor#ffffff{text}").toFailWithParseError(
+                   "Expected '{', got '#' at position 11:" +
+                   " \\textcolor#̲ffffff{text}");
         });
         it("complains about missing { for size", function() {
             expect("\\rule{1em}[2em]").toFailWithParseError(
@@ -234,9 +234,9 @@ describe("Parser.expect calls:", function() {
         });
         // Can't test for the [ of an optional group since it's optional
         it("complains about missing } for color", function() {
-            expect("\\color{#ffffff{text}").toFailWithParseError(
-                   "Invalid color: '#ffffff{text' at position 8:" +
-                   " \\color{#̲f̲f̲f̲f̲f̲f̲{̲t̲e̲x̲t̲}");
+            expect("\\textcolor{#ffffff{text}").toFailWithParseError(
+                   "Invalid color: '#ffffff{text' at position 12:" +
+                   " \\textcolor{#̲f̲f̲f̲f̲f̲f̲{̲t̲e̲x̲t̲}");
         });
         it("complains about missing ] for size", function() {
             expect("\\rule[1em{2em}{3em}").toFailWithParseError(
@@ -249,9 +249,9 @@ describe("Parser.expect calls:", function() {
                    " at position 7: \\rule[1̲e̲m̲");
         });
         it("complains about missing } for color at end of input", function() {
-            expect("\\color{#123456").toFailWithParseError(
+            expect("\\textcolor{#123456").toFailWithParseError(
                    "Unexpected end of input in color" +
-                   " at position 8: \\color{#̲1̲2̲3̲4̲5̲6̲");
+                   " at position 12: \\textcolor{#̲1̲2̲3̲4̲5̲6̲");
         });
     });
 
@@ -341,9 +341,9 @@ describe("Lexer:", function() {
 
     describe("#_innerLexColor", function() {
         it("reject hex notation without #", function() {
-            expect("\\color{1a2b3c}{foo}").toFailWithParseError(
+            expect("\\textcolor{1a2b3c}{foo}").toFailWithParseError(
                    "Invalid color: '1a2b3c'" +
-                   " at position 8: \\color{1̲a̲2̲b̲3̲c̲}{foo}");
+                   " at position 12: \\textcolor{1̲a̲2̲b̲3̲c̲}{foo}");
         });
     });
 

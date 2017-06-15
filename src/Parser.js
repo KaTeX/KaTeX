@@ -50,6 +50,11 @@ function Parser(input, settings) {
     // Create a new macro expander (gullet) and (indirectly via that) also a
     // new lexer (mouth) for this parser (stomach, in the language of TeX)
     this.gullet = new MacroExpander(input, settings.macros);
+    // Use old \color behavior (same as LaTeX's \textcolor) if requested.
+    // We do this after the macros object has been copied by MacroExpander.
+    if (settings.colorIsTextColor) {
+        this.gullet.macros["\\color"] = "\\textcolor";
+    }
     // Store the settings for use in parsing
     this.settings = settings;
     // Count leftright depth (for \middle errors)
@@ -394,6 +399,17 @@ const styleFuncs = [
     "\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle",
 ];
 
+// Old font functions
+const oldFontFuncs = {
+    "\\rm": "mathrm",
+    "\\sf": "mathsf",
+    "\\tt": "mathtt",
+    "\\bf": "mathbf",
+    "\\it": "mathit",
+    //"\\sl": "textsl",
+    //"\\sc": "textsc",
+};
+
 /**
  * Parses an implicit group, which is a group that starts at the end of a
  * specified, and ends right before a higher explicit group ends, or at EOL. It
@@ -462,7 +478,8 @@ Parser.prototype.parseImplicitGroup = function() {
         result.position = end.position;
         return result;
     } else if (utils.contains(sizeFuncs, func)) {
-        // If we see a sizing function, parse out the implict body
+        // If we see a sizing function, parse out the implicit body
+        this.consumeSpaces();
         const body = this.parseExpression(false);
         return new ParseNode("sizing", {
             // Figure out what size to use based on the list of functions above
@@ -470,7 +487,8 @@ Parser.prototype.parseImplicitGroup = function() {
             value: body,
         }, this.mode);
     } else if (utils.contains(styleFuncs, func)) {
-        // If we see a styling function, parse out the implict body
+        // If we see a styling function, parse out the implicit body
+        this.consumeSpaces();
         const body = this.parseExpression(true);
         return new ParseNode("styling", {
             // Figure out what style to use by pulling out the style from
@@ -478,6 +496,48 @@ Parser.prototype.parseImplicitGroup = function() {
             style: func.slice(1, func.length - 5),
             value: body,
         }, this.mode);
+    } else if (func in oldFontFuncs) {
+        const style = oldFontFuncs[func];
+        // If we see an old font function, parse out the implicit body
+        this.consumeSpaces();
+        const body = this.parseExpression(true);
+        if (style.slice(0, 4) === 'text') {
+            return new ParseNode("text", {
+                style: style,
+                body: new ParseNode("ordgroup", body, this.mode),
+            }, this.mode);
+        } else {
+            return new ParseNode("font", {
+                font: style,
+                body: new ParseNode("ordgroup", body, this.mode),
+            }, this.mode);
+        }
+    } else if (func === "\\color") {
+        // If we see a styling function, parse out the implicit body
+        const color = this.parseColorGroup(false);
+        if (!color) {
+            throw new ParseError("\\color not followed by color");
+        }
+        const body = this.parseExpression(true);
+        return new ParseNode("color", {
+            type: "color",
+            color: color.result.value,
+            value: body,
+        }, this.mode);
+    } else if (func === "$") {
+        if (this.mode === "math") {
+            throw new ParseError("$ within math mode");
+        }
+        this.consume();
+        const outerMode = this.mode;
+        this.switchMode("math");
+        const body = this.parseExpression(false, "$");
+        this.expect("$", true);
+        this.switchMode(outerMode);
+        return new ParseNode("styling", {
+            style: "text",
+            value: body,
+        }, "math");
     } else {
         // Defer to parseFunction if it's not a function we handle
         return this.parseFunction(start);
@@ -629,15 +689,19 @@ Parser.prototype.parseGroupOfType = function(innerMode, optional) {
     if (innerMode === "text") {
         // text mode is special because it should ignore the whitespace before
         // it
-        while (this.nextToken.text === " ") {
-            this.consume();
-        }
+        this.consumeSpaces();
     }
     // By the time we get here, innerMode is one of "text" or "math".
     // We switch the mode of the parser, recurse, then restore the old mode.
     const res = this.parseGroup(optional);
     this.switchMode(outerMode);
     return res;
+};
+
+Parser.prototype.consumeSpaces = function() {
+    while (this.nextToken.text === " ") {
+        this.consume();
+    }
 };
 
 /**
@@ -844,6 +908,10 @@ Parser.prototype.parseSymbol = function() {
         this.consume();
         return new ParseFuncOrArgument(
             new ParseNode("textord", nucleus.text, this.mode, nucleus),
+            false, nucleus);
+    } else if (nucleus.text === "$") {
+        return new ParseFuncOrArgument(
+            nucleus.text,
             false, nucleus);
     } else {
         return null;
