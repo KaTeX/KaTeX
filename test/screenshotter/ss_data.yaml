@@ -50,9 +50,10 @@ Cases: |
         a-1&\text{otherwise}
     \end{cases}
 Colors:
-    tex: \blue{a}\color{#0f0}{b}\color{red}{c}
+    tex: \blue{a}\textcolor{#0f0}{b}\textcolor{red}{c}
     nolatex: different syntax and different scope
-ColorSpacing: \color{red}{\displaystyle \int x} + 1
+ColorSpacing: \textcolor{red}{\displaystyle \int x} + 1
+ColorImplicit: bl{ack\color{red}red\textcolor{green}{green}red\color{blue}blue}black
 DashesAndQuotes: \text{``a'' b---c -- d----`e'-{-}-f}--``x''
 DeepFontSizing:
     tex: |

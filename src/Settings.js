@@ -22,6 +22,7 @@ function Settings(options) {
     this.throwOnError = utils.deflt(options.throwOnError, true);
     this.errorColor = utils.deflt(options.errorColor, "#cc0000");
     this.macros = options.macros || {};
+    this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
 }
 
 module.exports = Settings;
