@@ -22,6 +22,9 @@ defineMacro("\\endgroup", "}");
 defineMacro("\\overset", "\\mathop{#2}\\limits^{#1}");
 defineMacro("\\underset", "\\mathop{#2}\\limits_{#1}");
 
+// \newcommand{\boxed}[1]{\fbox{\m@th$\displaystyle#1$}}
+defineMacro("\\boxed", "\\fbox{\\displaystyle{#1}}");
+
 //TODO: When implementing \dots, should ideally add the \DOTSB indicator
 //      into the macro, to indicate these are binary operators.
 // \def\iff{\DOTSB\;\Longleftrightarrow\;}
@@ -30,3 +33,4 @@ defineMacro("\\underset", "\\mathop{#2}\\limits_{#1}");
 defineMacro("\\iff", "\\;\\Longleftrightarrow\\;");
 defineMacro("\\implies", "\\;\\Longrightarrow\\;");
 defineMacro("\\impliedby", "\\;\\Longleftarrow\\;");
+

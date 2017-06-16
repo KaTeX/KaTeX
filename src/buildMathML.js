@@ -10,6 +10,7 @@ const mathMLTree = require("./mathMLTree");
 const ParseError = require("./ParseError");
 const symbols = require("./symbols");
 const utils = require("./utils");
+const stretchy = require("./stretchy");
 
 const makeSpan = buildCommon.makeSpan;
 const fontMap = buildCommon.fontMap;
@@ -195,6 +196,20 @@ groupTypes.color = function(group, options) {
 };
 
 groupTypes.supsub = function(group, options) {
+    // Is the inner group a relevant horizonal brace?
+    let isBrace = false;
+    let isOver;
+    let isSup;
+    if (group.value.base) {
+        if (group.value.base.value.type === "horizBrace") {
+            isSup = (group.value.sup ? true : false);
+            if (isSup === group.value.base.value.isOver) {
+                isBrace = true;
+                isOver = group.value.base.value.isOver;
+            }
+        }
+    }
+
     const children = [buildGroup(group.value.base, options)];
 
     if (group.value.sub) {
@@ -206,7 +221,9 @@ groupTypes.supsub = function(group, options) {
     }
 
     let nodeType;
-    if (!group.value.sub) {
+    if (isBrace) {
+        nodeType = (isOver ? "mover" : "munder");
+    } else if (!group.value.sub) {
         nodeType = "msup";
     } else if (!group.value.sup) {
         nodeType = "msub";
@@ -323,8 +340,13 @@ groupTypes.middle = function(group, options) {
 };
 
 groupTypes.accent = function(group, options) {
-    const accentNode = new mathMLTree.MathNode(
-        "mo", [makeText(group.value.accent, group.mode)]);
+    let accentNode;
+    if (group.value.isStretchy) {
+        accentNode = stretchy.mathMLnode(group.value.label);
+    } else {
+        accentNode = new mathMLTree.MathNode(
+            "mo", [makeText(group.value.label, group.mode)]);
+    }
 
     const node = new mathMLTree.MathNode(
         "mover",
@@ -496,6 +518,69 @@ groupTypes.underline = function(group, options) {
         [buildGroup(group.value.body, options), operator]);
     node.setAttribute("accentunder", "true");
 
+    return node;
+};
+
+groupTypes.accentUnder = function(group, options) {
+    const accentNode = stretchy.mathMLnode(group.value.label);
+    const node = new mathMLTree.MathNode(
+        "munder",
+        [buildGroup(group.value.body, options), accentNode]
+    );
+    node.setAttribute("accentunder", "true");
+    return node;
+};
+
+groupTypes.enclose = function(group, options) {
+    const node = new mathMLTree.MathNode(
+        "menclose", [buildGroup(group.value.body, options)]);
+    let notation = "";
+    switch (group.value.label) {
+        case "\\bcancel":
+            notation = "downdiagonalstrike";
+            break;
+        case "\\sout":
+            notation = "horizontalstrike";
+            break;
+        case "\\fbox":
+            notation = "box";
+            break;
+        default:
+            notation = "updiagonalstrike";
+    }
+    node.setAttribute("notation", notation);
+    return node;
+};
+
+groupTypes.horizBrace = function(group, options) {
+    const accentNode = stretchy.mathMLnode(group.value.label);
+    return new mathMLTree.MathNode(
+        (group.value.isOver ? "mover" : "munder"),
+        [buildGroup(group.value.base, options), accentNode]
+    );
+};
+
+groupTypes.xArrow = function(group, options) {
+    const arrowNode = stretchy.mathMLnode(group.value.label);
+    let node;
+    let lowerNode;
+
+    if (group.value.body) {
+        const upperNode = buildGroup(group.value.body, options);
+        if (group.value.below) {
+            lowerNode = buildGroup(group.value.below, options);
+            node = new mathMLTree.MathNode(
+                "munderover", [arrowNode, lowerNode, upperNode]
+            );
+        } else {
+            node = new mathMLTree.MathNode("mover", [arrowNode, upperNode]);
+        }
+    } else if (group.value.below) {
+        lowerNode = buildGroup(group.value.below, options);
+        node = new mathMLTree.MathNode("munder", [arrowNode, lowerNode]);
+    } else {
+        node = new mathMLTree.MathNode("mover", [arrowNode]);
+    }
     return node;
 };
 
