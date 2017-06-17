@@ -17,6 +17,8 @@ const data = require("../../test/screenshotter/ss_data");
 
 const dstDir = path.normalize(
     path.join(__dirname, "..", "..", "test", "screenshotter", "images"));
+const diffDir = path.normalize(
+    path.join(__dirname, "..", "..", "test", "screenshotter", "diff"));
 
 //////////////////////////////////////////////////////////////////////
 // Process command line arguments
@@ -72,6 +74,14 @@ const opts = require("nomnom")
     .option("verify", {
         flag: true,
         help: "Check whether screenshot matches current file content",
+    })
+    .option("diff", {
+        flag: true,
+        help: "With `--verify`, produce image diffs when match fails",
+    })
+    .option("attempts", {
+        help: "Retry this many times before reporting failure",
+        "default": 5,
     })
     .option("wait", {
         help: "Wait this many seconds between page load and screenshot",
@@ -271,7 +281,7 @@ function setSize(reqW, reqH) {
             findHostIP();
             return;
         }
-        if (++attempts > 5) {
+        if (++attempts > opts.attempts) {
             throw new Error("Failed to set window size correctly.");
         }
         return setSize(targetW + reqW - actualW, targetH + reqH - actualH);
@@ -426,10 +436,13 @@ function takeScreenshot(key) {
         if (loadExpected) {
             return loadExpected.then(function(expected) {
                 if (!buf.equals(expected)) {
-                    if (++retry === 5) {
+                    if (++retry >= opts.attempts) {
                         console.error("FAIL! " + key);
                         listOfFailed.push(key);
                         exitStatus = 3;
+                        if (opts.diff) {
+                            return saveScreenshotDiff(key, buf);
+                        }
                     } else {
                         console.log("error " + key);
                         browserSideWait(300 * retry);
@@ -447,6 +460,36 @@ function takeScreenshot(key) {
                 console.log(key);
             });
         }
+    }
+
+    function saveScreenshotDiff(key, buf) {
+        const filenamePrefix = key + "-" + opts.browser;
+        const baseFile = path.join(dstDir, filenamePrefix + ".png");
+        const diffFile = path.join(diffDir, filenamePrefix + "-diff.png");
+        const bufFile = path.join(diffDir, filenamePrefix + "-fail.png");
+
+        return promisify(fs.mkdir, diffDir)
+            .then(null, function() { }) /* Ignore EEXIST error (XXX & others) */
+            .then(function() {
+                return promisify(fs.writeFile, bufFile, buf);
+            })
+            .then(function() {
+                return execFile("convert", [
+                    "-fill", "white",
+                    // First image: saved screenshot in red
+                    "(", baseFile, "-colorize", "100,0,0", ")",
+                    // Second image: new screenshot in green
+                    "(", bufFile, "-colorize", "0,80,0", ")",
+                    // Composite them
+                    "-compose", "darken", "-composite",
+                    "-trim",  // remove everything with the same color as the
+                              // corners
+                    diffFile, // output file name
+                ]);
+            })
+            .then(function() {
+                return promisify(fs.unlink, bufFile);
+            });
     }
 
     function oneDone() {
@@ -484,5 +527,23 @@ function promisify(f) {
         }
     });
     f.apply(null, args);
+    return deferred.promise;
+}
+
+// Execute a given command, and return a promise to its output.
+// Don't denodeify here, since fail branch needs access to stderr.
+function execFile(cmd, args, opts) {
+    const deferred = new selenium.promise.Deferred();
+    childProcess.execFile(cmd, args, opts, function(err, stdout, stderr) {
+        if (err) {
+            console.error("Error executing " + cmd + " " + args.join(" "));
+            console.error(stdout + stderr);
+            err.stdout = stdout;
+            err.stderr = stderr;
+            deferred.reject(err);
+        } else {
+            deferred.fulfill(stdout);
+        }
+    });
     return deferred.promise;
 }
