@@ -243,7 +243,7 @@ const makeFontSizer = function(options, fontSize) {
     fontSizeInner.style.fontSize = fontSize + "em";
 
     const fontSizer = makeSpan(
-        ["fontsize-ensurer", "reset-size" + options.size, "size5"],
+        ["fontsize-ensurer"].concat(options.baseSizingClasses()),
         [fontSizeInner]);
 
     return fontSizer;

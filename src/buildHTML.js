@@ -216,10 +216,7 @@ const isCharacterBox = function(group) {
 };
 
 const makeNullDelimiter = function(options, classes) {
-    const moreClasses = ["nulldelimiter"];
-    if (options.size !== 5) {
-        moreClasses.push("sizing", "reset-size" + options.size, "size5");
-    }
+    const moreClasses = ["nulldelimiter"].concat(options.baseSizingClasses());
     return makeSpan(classes.concat(moreClasses));
 };
 
@@ -1012,9 +1009,9 @@ groupTypes.katex = function(group, options) {
 };
 
 const makeLineSpan = function(className, options) {
-    const size5Options = options.havingSize(5);
+    const baseOptions = options.havingBaseStyle();
     const line = makeSpan(
-        [className].concat(size5Options.sizingClasses(options)),
+        [className].concat(baseOptions.sizingClasses(options)),
         [], options);
     line.height = fontMetrics.metrics.defaultRuleThickness /
         options.sizeMultiplier;

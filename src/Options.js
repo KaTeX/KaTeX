@@ -5,25 +5,26 @@
  * `.reset` functions.
  */
 
-const Style = require("./Style");
+const BASESIZE = 6;
 
 const sizeStyleMap = [
     // Each element contains [textsize, scriptsize, scriptscriptsize].
-    // Obtained by rounding [1x, 0.7x, 0.5x] the base size.
-    [1, 1, 1],    // size1: 0.5
-    [2, 1, 1],    // size2: 0.7
-    [3, 2, 1],    // size3: 0.8
-    [4, 2, 1],    // size4: 0.9
-    [5, 2, 1],    // size5: 1.0
-    [6, 3, 2],    // size6: 1.2
-    [7, 5, 2],    // size7: 1.44
-    [8, 6, 4],    // size8: 1.73
-    [9, 7, 5],    // size9: 2.07
-    [10, 8, 6],   // size10: 2.49
+    // The size mappings are taken from TeX with \normalsize=10pt.
+    [1, 1, 1],    // size1: [5, 5, 5]              \tiny
+    [2, 1, 1],    // size2: [6, 5, 5]
+    [3, 1, 1],    // size3: [7, 5, 5]              \scriptsize
+    [4, 2, 1],    // size4: [8, 6, 5]              \footnotesize
+    [5, 2, 1],    // size5: [9, 6, 5]              \small
+    [6, 3, 1],    // size6: [10, 7, 5]             \normalsize
+    [7, 4, 2],    // size7: [12, 8, 6]             \large
+    [8, 6, 3],    // size8: [14.4, 10, 7]          \Large
+    [9, 7, 6],    // size9: [17.28, 12, 10]        \LARGE
+    [10, 8, 7],   // size10: [20.74, 14.4, 12]     \huge
+    [11, 10, 9],  // size11: [24.88, 20.74, 17.28] \HUGE
 ];
 
 const sizeMultipliers = [
-    0.5, 0.7, 0.8, 0.9, 1.0, 1.2, 1.44, 1.73, 2.07, 2.49,
+    0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.44, 1.728, 2.074, 2.488,
 ];
 
 /**
@@ -36,8 +37,8 @@ const sizeMultipliers = [
 function Options(data) {
     this.style = data.style;
     this.color = data.color;
-    this.size = data.size;
-    this.baseSize = data.baseSize || this.size;
+    this.size = data.size || BASESIZE;
+    this.textSize = data.textSize || this.size;
     this.phantom = data.phantom;
     this.font = data.font;
     this.sizeMultiplier = sizeMultipliers[this.size - 1];
@@ -51,7 +52,7 @@ Options.prototype.extend = function(extension) {
     const data = {
         style: this.style,
         size: this.size,
-        baseSize: this.baseSize,
+        textSize: this.textSize,
         color: this.color,
         parentStyle: this.style,
         parentSize: this.size,
@@ -82,7 +83,7 @@ Options.prototype.havingStyle = function(style) {
     } else {
         return this.extend({
             style: style,
-            size: sizeAtStyle(this.baseSize, style),
+            size: sizeAtStyle(this.textSize, style),
         });
     }
 };
@@ -96,40 +97,36 @@ Options.prototype.havingCrampedStyle = function() {
 };
 
 /**
- * Return an options object with the given size and baseSize. If
- * `this.size === size && this.baseSize === size`, returns `this`.
- * Also resets the style to be at least `\textstyle`.
+ * Return an options object with the given size and in at least `\textstyle`.
+ * Returns `this` if appropriate.
  */
 Options.prototype.havingSize = function(size) {
-    if (this.size === size && this.baseSize === size) {
+    if (this.size === size && this.textSize === size) {
         return this;
     } else {
-        // Ensure style is at least `\textstyle`.
-        let style = this.style;
-        if (style.size > 1) {
-            style = style.cramped ? Style.TEXT.cramp() : Style.TEXT;
-        }
-
         return this.extend({
-            style: style,
+            style: this.style.text(),
             size: size,
-            baseSize: size,
+            textSize: size,
         });
     }
 };
 
 /**
- * Like `this.havingSize(5).havingStyle(style)`.
+ * Like `this.havingSize(BASESIZE).havingStyle(style)`. If `style` is omitted,
+ * changes to at least `\textstyle`.
  */
 Options.prototype.havingBaseStyle = function(style) {
-    const wantSize = sizeAtStyle(5, style);
-    if (this.size === wantSize && this.baseSize === 5 && this.style === style) {
+    style = style || this.style.text();
+    const wantSize = sizeAtStyle(BASESIZE, style);
+    if (this.size === wantSize && this.textSize === BASESIZE
+        && this.style === style) {
         return this;
     } else {
         return this.extend({
             style: style,
             size: wantSize,
-            baseSize: 5,
+            baseSize: BASESIZE,
         });
     }
 };
@@ -168,6 +165,18 @@ Options.prototype.withFont = function(font) {
 Options.prototype.sizingClasses = function(oldOptions) {
     if (oldOptions.size !== this.size) {
         return ["sizing", "reset-size" + oldOptions.size, "size" + this.size];
+    } else {
+        return [];
+    }
+};
+
+/**
+ * Return the CSS sizing classes required to switch to the base size. Like
+ * `this.havingSize(BASESIZE).sizingClasses(this)`.
+ */
+Options.prototype.baseSizingClasses = function() {
+    if (this.size !== BASESIZE) {
+        return ["sizing", "reset-size" + this.size, "size" + BASESIZE];
     } else {
         return [];
     }
@@ -247,5 +256,10 @@ Options.prototype.getColor = function() {
         return colorMap[this.color] || this.color;
     }
 };
+
+/**
+ * The base size index.
+ */
+Options.BASESIZE = BASESIZE;
 
 module.exports = Options;

@@ -70,6 +70,13 @@ Style.prototype.cramp = function() {
 };
 
 /**
+ * Get a text or display version of this style.
+ */
+Style.prototype.text = function() {
+    return styles[text[this.id]];
+};
+
+/**
  * Return if this style is tightly spaced (scriptstyle/scriptscriptstyle)
  */
 Style.prototype.isTight = function() {
@@ -104,6 +111,7 @@ const sub = [Sc, Sc, Sc, Sc, SSc, SSc, SSc, SSc];
 const fracNum = [T, Tc, S, Sc, SS, SSc, SS, SSc];
 const fracDen = [Tc, Tc, Sc, Sc, SSc, SSc, SSc, SSc];
 const cramp = [Dc, Dc, Tc, Tc, Sc, Sc, SSc, SSc];
+const text = [D, Dc, T, Tc, T, Tc, T, Tc];
 
 // We only export some of the styles. Also, we don't export the `Style` class so
 // no more styles can be generated.
