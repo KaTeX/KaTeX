@@ -92,10 +92,10 @@ created it, add a screenshot test. See
 
 #### Testing in other browsers
 
-KaTeX supports all major browsers, including IE 8 and newer. Unfortunately, it
+KaTeX supports all major browsers, including IE 9 and newer. Unfortunately, it
 is hard to test new changes in many browsers. If you can, please test your
 changes in as many browsers as possible. In particular, if you make CSS changes,
-try to test in IE 8, using [modern.ie](http://modern.ie) VMs.
+try to test in IE 9, using [modern.ie](http://modern.ie) VMs.
 
 ## Style guide
 
