@@ -1,25 +1,13 @@
 const buildHTML = require("./buildHTML");
 const buildMathML = require("./buildMathML");
 const buildCommon = require("./buildCommon");
-const Options = require("./Options");
 const Settings = require("./Settings");
-const Style = require("./Style");
 
 const makeSpan = buildCommon.makeSpan;
 
 const buildTree = function(tree, expression, settings) {
     settings = settings || new Settings({});
-
-    let startStyle = Style.TEXT;
-    if (settings.displayMode) {
-        startStyle = Style.DISPLAY;
-    }
-
-    // Setup the default options
-    const options = new Options({
-        style: startStyle,
-        size: "size5",
-    });
+    const options = settings.initialOptions();
 
     // `buildHTML` sometimes messes with the parse tree (like turning bins ->
     // ords), so we build the MathML version first.

@@ -1,3 +1,6 @@
+const Options = require("./Options");
+const Style = require("./Style");
+
 /**
  * This is a module for storing settings passed into KaTeX. It correctly handles
  * default settings.
@@ -24,5 +27,20 @@ function Settings(options) {
     this.macros = options.macros || {};
     this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
 }
+
+Settings.prototype.initialOptions = function() {
+    let startStyle = Style.TEXT;
+    if (this.displayMode) {
+        startStyle = Style.DISPLAY;
+    }
+
+    // Setup the default options
+    const options = new Options({
+        style: startStyle,
+        size: "size5",
+    });
+
+    return options;
+};
 
 module.exports = Settings;

@@ -10,7 +10,9 @@
 const ParseError = require("./src/ParseError");
 const Settings = require("./src/Settings");
 
+const buildHTML = require("./src/buildHTML");
 const buildTree = require("./src/buildTree");
+const canvasRenderer = require("./src/canvasRenderer");
 const parseTree = require("./src/parseTree");
 const utils = require("./src/utils");
 
@@ -54,6 +56,31 @@ const renderToString = function(expression, options) {
 };
 
 /**
+ * Parse and build an expression, and render that expression to the
+ * canvas at the specified position.
+ */
+const renderToCanvas = function(expression, canvas, x, y, options) {
+    const settings = new Settings(options);
+
+    const tree = parseTree(expression, settings);
+    const dom = buildHTML(tree, settings.initialOptions());
+    canvasRenderer.render(dom, canvas, x, y, options);
+};
+
+/**
+ * Parse and build an expression, and measure it for rendering to the
+ * specified canvas.  The returned object has some dimensions as well
+ * as a renderAt method which can be used to render the whole box.
+ */
+const canvasBox = function(expression, canvas, options) {
+    const settings = new Settings(options);
+
+    const tree = parseTree(expression, settings);
+    const dom = buildHTML(tree, settings.initialOptions());
+    return canvasRenderer.prepare(dom, canvas, options);
+};
+
+/**
  * Parse an expression and return the parse tree.
  */
 const generateParseTree = function(expression, options) {
@@ -64,6 +91,8 @@ const generateParseTree = function(expression, options) {
 module.exports = {
     render: render,
     renderToString: renderToString,
+    renderToCanvas: renderToCanvas,
+    canvasBox: canvasBox,
     /**
      * NOTE: This method is not currently recommended for public use.
      * The internal tree representation is unstable and is very likely
