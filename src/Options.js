@@ -54,8 +54,6 @@ Options.prototype.extend = function(extension) {
         size: this.size,
         textSize: this.textSize,
         color: this.color,
-        parentStyle: this.style,
-        parentSize: this.size,
         phantom: this.phantom,
         font: this.font,
     };

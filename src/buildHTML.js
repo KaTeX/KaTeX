@@ -442,13 +442,13 @@ groupTypes.genfrac = function(group, options) {
     newOptions = options.havingStyle(dstyle);
     const denomm = buildGroup(group.value.denom, newOptions, options);
 
-    let ruleWidth;
+    let rule;
     if (group.value.hasBarLine) {
-        ruleWidth = fontMetrics.metrics.defaultRuleThickness /
-            options.sizeMultiplier;
+        rule = makeLineSpan("frac-line", options);
     } else {
-        ruleWidth = 0;
+        rule = null;
     }
+    const ruleWidth = rule ? rule.height : 0;
 
     // Rule 15b
     let numShift;
@@ -505,12 +505,11 @@ groupTypes.genfrac = function(group, options) {
                              (denomm.height - denomShift));
         }
 
-        const mid = makeLineSpan("frac-line", options);
         const midShift = -(axisHeight - 0.5 * ruleWidth);
 
         frac = buildCommon.makeVList([
             {type: "elem", elem: denomm, shift: denomShift},
-            {type: "elem", elem: mid,    shift: midShift},
+            {type: "elem", elem: rule,   shift: midShift},
             {type: "elem", elem: numerm, shift: -numShift},
         ], "individualShift", null, options);
     }
@@ -1157,8 +1156,8 @@ function sizingGroup(value, options, baseOptions) {
     for (let i = 0; i < inner.length; i++) {
         const pos = utils.indexOf(inner[i].classes, "sizing");
         if (pos < 0) {
-            inner[i].classes.push("sizing", "reset-size" + baseOptions.size,
-                                  "size" + options.size);
+            Array.prototype.push.apply(inner[i].classes,
+                options.sizingClasses(baseOptions));
         } else if (inner[i].classes[pos + 1] === "reset-size" + options.size) {
             // This is a nested size change: e.g., inner[i] is the "b" in
             // `\Huge a \small b`. Override the old size (the `reset-` class)
