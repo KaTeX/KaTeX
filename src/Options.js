@@ -5,6 +5,8 @@
  * `.reset` functions.
  */
 
+const fontMetrics = require("./fontMetrics");
+
 const BASESIZE = 6;
 
 const sizeStyleMap = [
@@ -24,6 +26,7 @@ const sizeStyleMap = [
 ];
 
 const sizeMultipliers = [
+    // fontMetrics.js:getFontMetrics also uses size indexes.
     0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.44, 1.728, 2.074, 2.488,
 ];
 
@@ -42,6 +45,7 @@ function Options(data) {
     this.phantom = data.phantom;
     this.font = data.font;
     this.sizeMultiplier = sizeMultipliers[this.size - 1];
+    this._fontMetrics = null;
 }
 
 /**
@@ -178,6 +182,16 @@ Options.prototype.baseSizingClasses = function() {
     } else {
         return [];
     }
+};
+
+/**
+ * Return the font metrics for this size.
+ */
+Options.prototype.fontMetrics = function() {
+    if (!this._fontMetrics) {
+        this._fontMetrics = fontMetrics.getFontMetrics(this.size);
+    }
+    return this._fontMetrics;
 };
 
 /**
