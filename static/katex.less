@@ -232,22 +232,6 @@
         & + .mop.mtight { margin-left: @thinspace; }
     }
 
-    .reset-textstyle.textstyle { font-size: 1em; }
-    .reset-textstyle.scriptstyle { font-size: 0.7em; }
-    .reset-textstyle.scriptscriptstyle { font-size: 0.5em; }
-
-    .reset-scriptstyle.textstyle { font-size: 1.42857em; }
-    .reset-scriptstyle.scriptstyle { font-size: 1em; }
-    .reset-scriptstyle.scriptscriptstyle { font-size: 0.71429em; }
-
-    .reset-scriptscriptstyle.textstyle { font-size: 2em; }
-    .reset-scriptscriptstyle.scriptstyle { font-size: 1.4em; }
-    .reset-scriptscriptstyle.scriptscriptstyle { font-size: 1em; }
-
-    .style-wrap {
-        position: relative;
-    }
-
     .vlist {
         display: inline-block;
 
@@ -448,15 +432,16 @@
         display: inline-block;
 
         @size1: 0.5;
-        @size2: 0.7;
-        @size3: 0.8;
-        @size4: 0.9;
-        @size5: 1.0;
-        @size6: 1.2;
-        @size7: 1.44;
-        @size8: 1.73;
-        @size9: 2.07;
-        @size10: 2.49;
+        @size2: 0.6;
+        @size3: 0.7;
+        @size4: 0.8;
+        @size5: 0.9;
+        @size6: 1.0;
+        @size7: 1.2;
+        @size8: 1.44;
+        @size9: 1.728;
+        @size10: 2.074;
+        @size11: 2.488;
 
         .generate-size-change(@from, @to) {
             &.reset-size@{from}.size@{to} {
@@ -466,13 +451,13 @@
             }
         }
 
-        .generate-to-size-change(@from, @currTo) when (@currTo =< 10) {
+        .generate-to-size-change(@from, @currTo) when (@currTo =< 11) {
             .generate-size-change(@from, @currTo);
 
             .generate-to-size-change(@from, (@currTo + 1));
         }
 
-        .generate-from-size-change(@currFrom) when (@currFrom =< 10) {
+        .generate-from-size-change(@currFrom) when (@currFrom =< 11) {
             .generate-to-size-change(@currFrom, 1);
 
             .generate-from-size-change((@currFrom + 1));
@@ -500,6 +485,10 @@
     .nulldelimiter {
         display: inline-block;
         width: @nulldelimiterspace;
+    }
+
+    .delimcenter {
+        position: relative;
     }
 
     .op-symbol {

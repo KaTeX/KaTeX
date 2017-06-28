@@ -216,10 +216,8 @@ const isCharacterBox = function(group) {
 };
 
 const makeNullDelimiter = function(options, classes) {
-    return makeSpan(classes.concat([
-        "sizing", "reset-" + options.size, "size5",
-        options.style.reset(), Style.TEXT.cls(),
-        "nulldelimiter"]));
+    const moreClasses = ["nulldelimiter"].concat(options.baseSizingClasses());
+    return makeSpan(classes.concat(moreClasses));
 };
 
 /**
@@ -267,9 +265,8 @@ groupTypes.punct = function(group, options) {
 };
 
 groupTypes.ordgroup = function(group, options) {
-    return makeSpan(
-        ["mord", options.style.cls()],
-        buildExpression(group.value, options.reset(), true),
+    return makeSpan(["mord"],
+        buildExpression(group.value, options, true),
         options
     );
 };
@@ -283,7 +280,7 @@ groupTypes.text = function(group, options) {
             i--;
         }
     }
-    return makeSpan(["mord", "text", newOptions.style.cls()],
+    return makeSpan(["mord", "text"],
         inner, newOptions);
 };
 
@@ -311,43 +308,33 @@ groupTypes.supsub = function(group, options) {
         return groupTypes[group.value.base.type](group, options);
     }
 
-    const base = buildGroup(group.value.base, options.reset());
-    let supmid;
-    let submid;
-    let sup;
-    let sub;
+    const base = buildGroup(group.value.base, options);
+    let supm;
+    let subm;
 
     const style = options.style;
     let newOptions;
 
+    // Rule 18a
+    let supShift = 0;
+    let subShift = 0;
+
     if (group.value.sup) {
-        newOptions = options.withStyle(style.sup());
-        sup = buildGroup(group.value.sup, newOptions);
-        supmid = makeSpan([style.reset(), style.sup().cls()],
-            [sup], newOptions);
+        newOptions = options.havingStyle(style.sup());
+        supm = buildGroup(group.value.sup, newOptions, options);
+        if (!isCharacterBox(group.value.base)) {
+            supShift = base.height - newOptions.style.metrics.supDrop
+                * newOptions.sizeMultiplier / options.sizeMultiplier;
+        }
     }
 
     if (group.value.sub) {
-        newOptions = options.withStyle(style.sub());
-        sub = buildGroup(group.value.sub, newOptions);
-        submid = makeSpan([style.reset(), style.sub().cls()],
-            [sub], newOptions);
-    }
-
-    // Rule 18a
-    let supShift;
-    let subShift;
-    if (isCharacterBox(group.value.base)) {
-        supShift = 0;
-        subShift = 0;
-    } else {
-        const supstyle = style.sup();
-        supShift = base.height - supstyle.metrics.supDrop
-            * supstyle.sizeMultiplier;
-
-        const substyle = style.sub();
-        subShift = base.depth + substyle.metrics.subDrop
-            * substyle.sizeMultiplier;
+        newOptions = options.havingStyle(style.sub());
+        subm = buildGroup(group.value.sub, newOptions, options);
+        if (!isCharacterBox(group.value.base)) {
+            subShift = base.depth + newOptions.style.metrics.subDrop
+                * newOptions.sizeMultiplier / options.sizeMultiplier;
+        }
     }
 
     // Rule 18c
@@ -362,8 +349,7 @@ groupTypes.supsub = function(group, options) {
 
     // scriptspace is a font-size-independent size, so scale it
     // appropriately
-    const multiplier = Style.TEXT.sizeMultiplier *
-            style.sizeMultiplier;
+    const multiplier = options.sizeMultiplier;
     const scriptspace =
         (0.5 / fontMetrics.metrics.ptPerEm) / multiplier + "em";
 
@@ -372,10 +358,10 @@ groupTypes.supsub = function(group, options) {
         // Rule 18b
         subShift = Math.max(
             subShift, style.metrics.sub1,
-            sub.height - 0.8 * style.metrics.xHeight);
+            subm.height - 0.8 * style.metrics.xHeight);
 
         supsub = buildCommon.makeVList([
-            {type: "elem", elem: submid},
+            {type: "elem", elem: subm},
         ], "shift", subShift, options);
 
         supsub.children[0].style.marginRight = scriptspace;
@@ -389,25 +375,25 @@ groupTypes.supsub = function(group, options) {
     } else if (!group.value.sub) {
         // Rule 18c, d
         supShift = Math.max(supShift, minSupShift,
-            sup.depth + 0.25 * style.metrics.xHeight);
+            supm.depth + 0.25 * style.metrics.xHeight);
 
         supsub = buildCommon.makeVList([
-            {type: "elem", elem: supmid},
+            {type: "elem", elem: supm},
         ], "shift", -supShift, options);
 
         supsub.children[0].style.marginRight = scriptspace;
     } else {
         supShift = Math.max(
-            supShift, minSupShift, sup.depth + 0.25 * style.metrics.xHeight);
+            supShift, minSupShift, supm.depth + 0.25 * style.metrics.xHeight);
         subShift = Math.max(subShift, style.metrics.sub2);
 
         const ruleWidth = fontMetrics.metrics.defaultRuleThickness;
 
         // Rule 18e
-        if ((supShift - sup.depth) - (sub.height - subShift) <
+        if ((supShift - supm.depth) - (subm.height - subShift) <
                 4 * ruleWidth) {
-            subShift = 4 * ruleWidth - (supShift - sup.depth) + sub.height;
-            const psi = 0.8 * style.metrics.xHeight - (supShift - sup.depth);
+            subShift = 4 * ruleWidth - (supShift - supm.depth) + subm.height;
+            const psi = 0.8 * style.metrics.xHeight - (supShift - supm.depth);
             if (psi > 0) {
                 supShift += psi;
                 subShift -= psi;
@@ -415,8 +401,8 @@ groupTypes.supsub = function(group, options) {
         }
 
         supsub = buildCommon.makeVList([
-            {type: "elem", elem: submid, shift: subShift},
-            {type: "elem", elem: supmid, shift: -supShift},
+            {type: "elem", elem: subm, shift: subShift},
+            {type: "elem", elem: supm, shift: -supShift},
         ], "individualShift", null, options);
 
         // See comment above about subscripts not being shifted
@@ -450,23 +436,19 @@ groupTypes.genfrac = function(group, options) {
     const dstyle = style.fracDen();
     let newOptions;
 
-    newOptions = options.withStyle(nstyle);
-    const numer = buildGroup(group.value.numer, newOptions);
-    const numerreset = makeSpan([style.reset(), nstyle.cls()],
-        [numer], newOptions);
+    newOptions = options.havingStyle(nstyle);
+    const numerm = buildGroup(group.value.numer, newOptions, options);
 
-    newOptions = options.withStyle(dstyle);
-    const denom = buildGroup(group.value.denom, newOptions);
-    const denomreset = makeSpan([style.reset(), dstyle.cls()],
-        [denom], newOptions);
+    newOptions = options.havingStyle(dstyle);
+    const denomm = buildGroup(group.value.denom, newOptions, options);
 
-    let ruleWidth;
+    let rule;
     if (group.value.hasBarLine) {
-        ruleWidth = fontMetrics.metrics.defaultRuleThickness /
-            options.style.sizeMultiplier;
+        rule = makeLineSpan("frac-line", options);
     } else {
-        ruleWidth = 0;
+        rule = null;
     }
+    const ruleWidth = rule ? rule.height : 0;
 
     // Rule 15b
     let numShift;
@@ -495,53 +477,48 @@ groupTypes.genfrac = function(group, options) {
     if (ruleWidth === 0) {
         // Rule 15c
         const candidateClearance =
-            (numShift - numer.depth) - (denom.height - denomShift);
+            (numShift - numerm.depth) - (denomm.height - denomShift);
         if (candidateClearance < clearance) {
             numShift += 0.5 * (clearance - candidateClearance);
             denomShift += 0.5 * (clearance - candidateClearance);
         }
 
         frac = buildCommon.makeVList([
-            {type: "elem", elem: denomreset, shift: denomShift},
-            {type: "elem", elem: numerreset, shift: -numShift},
+            {type: "elem", elem: denomm, shift: denomShift},
+            {type: "elem", elem: numerm, shift: -numShift},
         ], "individualShift", null, options);
     } else {
         // Rule 15d
         const axisHeight = style.metrics.axisHeight;
 
-        if ((numShift - numer.depth) - (axisHeight + 0.5 * ruleWidth) <
+        if ((numShift - numerm.depth) - (axisHeight + 0.5 * ruleWidth) <
                 clearance) {
             numShift +=
-                clearance - ((numShift - numer.depth) -
+                clearance - ((numShift - numerm.depth) -
                              (axisHeight + 0.5 * ruleWidth));
         }
 
-        if ((axisHeight - 0.5 * ruleWidth) - (denom.height - denomShift) <
+        if ((axisHeight - 0.5 * ruleWidth) - (denomm.height - denomShift) <
                 clearance) {
             denomShift +=
                 clearance - ((axisHeight - 0.5 * ruleWidth) -
-                             (denom.height - denomShift));
+                             (denomm.height - denomShift));
         }
-
-        const mid = makeSpan(
-            [options.style.reset(), Style.TEXT.cls(), "frac-line"]);
-        // Manually set the height of the line because its height is
-        // created in CSS
-        mid.height = ruleWidth;
 
         const midShift = -(axisHeight - 0.5 * ruleWidth);
 
         frac = buildCommon.makeVList([
-            {type: "elem", elem: denomreset, shift: denomShift},
-            {type: "elem", elem: mid,        shift: midShift},
-            {type: "elem", elem: numerreset, shift: -numShift},
+            {type: "elem", elem: denomm, shift: denomShift},
+            {type: "elem", elem: rule,   shift: midShift},
+            {type: "elem", elem: numerm, shift: -numShift},
         ], "individualShift", null, options);
     }
 
     // Since we manually change the style sometimes (with \dfrac or \tfrac),
     // account for the possible size change here.
-    frac.height *= style.sizeMultiplier / options.style.sizeMultiplier;
-    frac.depth *= style.sizeMultiplier / options.style.sizeMultiplier;
+    newOptions = options.havingStyle(style);
+    frac.height *= newOptions.sizeMultiplier / options.sizeMultiplier;
+    frac.depth *= newOptions.sizeMultiplier / options.sizeMultiplier;
 
     // Rule 15e
     let delimSize;
@@ -558,18 +535,18 @@ groupTypes.genfrac = function(group, options) {
     } else {
         leftDelim = delimiter.customSizedDelim(
             group.value.leftDelim, delimSize, true,
-            options.withStyle(style), group.mode, ["mopen"]);
+            options.havingStyle(style), group.mode, ["mopen"]);
     }
     if (group.value.rightDelim == null) {
         rightDelim = makeNullDelimiter(options, ["mclose"]);
     } else {
         rightDelim = delimiter.customSizedDelim(
             group.value.rightDelim, delimSize, true,
-            options.withStyle(style), group.mode, ["mclose"]);
+            options.havingStyle(style), group.mode, ["mclose"]);
     }
 
     return makeSpan(
-        ["mord", options.style.reset(), style.cls()],
+        ["mord"].concat(newOptions.sizingClasses(options)),
         [leftDelim, makeSpan(["mfrac"], [frac]), rightDelim],
         options);
 };
@@ -770,18 +747,18 @@ groupTypes.spacing = function(group, options) {
 
 groupTypes.llap = function(group, options) {
     const inner = makeSpan(
-        ["inner"], [buildGroup(group.value.body, options.reset())]);
+        ["inner"], [buildGroup(group.value.body, options)]);
     const fix = makeSpan(["fix"], []);
     return makeSpan(
-        ["mord", "llap", options.style.cls()], [inner, fix], options);
+        ["mord", "llap"], [inner, fix], options);
 };
 
 groupTypes.rlap = function(group, options) {
     const inner = makeSpan(
-        ["inner"], [buildGroup(group.value.body, options.reset())]);
+        ["inner"], [buildGroup(group.value.body, options)]);
     const fix = makeSpan(["fix"], []);
     return makeSpan(
-        ["mord", "rlap", options.style.cls()], [inner, fix], options);
+        ["mord", "rlap"], [inner, fix], options);
 };
 
 groupTypes.op = function(group, options) {
@@ -831,7 +808,7 @@ groupTypes.op = function(group, options) {
         // don't actually apply this here, but instead it is used either in
         // the vlist creation or separately when there are no limits.
         baseShift = (base.height - base.depth) / 2 -
-            style.metrics.axisHeight * style.sizeMultiplier;
+            style.metrics.axisHeight * options.sizeMultiplier;
 
         // The slant of the symbol is just its italic correction.
         slant = base.italic;
@@ -857,33 +834,29 @@ groupTypes.op = function(group, options) {
         // in a new span so it is an inline, and works.
         base = makeSpan([], [base]);
 
-        let supmid;
+        let supm;
         let supKern;
-        let submid;
+        let subm;
         let subKern;
         let newOptions;
         // We manually have to handle the superscripts and subscripts. This,
         // aside from the kern calculations, is copied from supsub.
         if (supGroup) {
-            newOptions = options.withStyle(style.sup());
-            const sup = buildGroup(supGroup, newOptions);
-            supmid = makeSpan([style.reset(), style.sup().cls()],
-                [sup], newOptions);
+            newOptions = options.havingStyle(style.sup());
+            supm = buildGroup(supGroup, newOptions, options);
 
             supKern = Math.max(
                 fontMetrics.metrics.bigOpSpacing1,
-                fontMetrics.metrics.bigOpSpacing3 - sup.depth);
+                fontMetrics.metrics.bigOpSpacing3 - supm.depth);
         }
 
         if (subGroup) {
-            newOptions = options.withStyle(style.sub());
-            const sub = buildGroup(subGroup, newOptions);
-            submid = makeSpan([style.reset(), style.sub().cls()],
-                [sub], newOptions);
+            newOptions = options.havingStyle(style.sub());
+            subm = buildGroup(subGroup, newOptions, options);
 
             subKern = Math.max(
                 fontMetrics.metrics.bigOpSpacing2,
-                fontMetrics.metrics.bigOpSpacing4 - sub.height);
+                fontMetrics.metrics.bigOpSpacing4 - subm.height);
         }
 
         // Build the final group as a vlist of the possible subscript, base,
@@ -896,7 +869,7 @@ groupTypes.op = function(group, options) {
 
             finalGroup = buildCommon.makeVList([
                 {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
-                {type: "elem", elem: submid},
+                {type: "elem", elem: subm},
                 {type: "kern", size: subKern},
                 {type: "elem", elem: base},
             ], "top", top, options);
@@ -912,7 +885,7 @@ groupTypes.op = function(group, options) {
             finalGroup = buildCommon.makeVList([
                 {type: "elem", elem: base},
                 {type: "kern", size: supKern},
-                {type: "elem", elem: supmid},
+                {type: "elem", elem: supm},
                 {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
             ], "bottom", bottom, options);
 
@@ -925,17 +898,17 @@ groupTypes.op = function(group, options) {
             return base;
         } else {
             bottom = fontMetrics.metrics.bigOpSpacing5 +
-                submid.height + submid.depth +
+                subm.height + subm.depth +
                 subKern +
                 base.depth + baseShift;
 
             finalGroup = buildCommon.makeVList([
                 {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
-                {type: "elem", elem: submid},
+                {type: "elem", elem: subm},
                 {type: "kern", size: subKern},
                 {type: "elem", elem: base},
                 {type: "kern", size: supKern},
-                {type: "elem", elem: supmid},
+                {type: "elem", elem: supm},
                 {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
             ], "bottom", bottom, options);
 
@@ -1034,29 +1007,33 @@ groupTypes.katex = function(group, options) {
         ["mord", "katex-logo"], [k, a, t, e, x], options);
 };
 
+const makeLineSpan = function(className, options) {
+    const baseOptions = options.havingBaseStyle();
+    const line = makeSpan(
+        [className].concat(baseOptions.sizingClasses(options)),
+        [], options);
+    line.height = fontMetrics.metrics.defaultRuleThickness /
+        options.sizeMultiplier;
+    line.maxFontSize = 1.0;
+    return line;
+};
+
 groupTypes.overline = function(group, options) {
     // Overlines are handled in the TeXbook pg 443, Rule 9.
-    const style = options.style;
 
     // Build the inner group in the cramped style.
     const innerGroup = buildGroup(group.value.body,
-            options.withStyle(style.cramp()));
-
-    const ruleWidth = fontMetrics.metrics.defaultRuleThickness /
-        style.sizeMultiplier;
+            options.havingCrampedStyle());
 
     // Create the line above the body
-    const line = makeSpan(
-        [style.reset(), Style.TEXT.cls(), "overline-line"]);
-    line.height = ruleWidth;
-    line.maxFontSize = 1.0;
+    const line = makeLineSpan("overline-line", options);
 
     // Generate the vlist, with the appropriate kerns
     const vlist = buildCommon.makeVList([
         {type: "elem", elem: innerGroup},
-        {type: "kern", size: 3 * ruleWidth},
+        {type: "kern", size: 3 * line.height},
         {type: "elem", elem: line},
-        {type: "kern", size: ruleWidth},
+        {type: "kern", size: line.height},
     ], "firstBaseline", null, options);
 
     return makeSpan(["mord", "overline"], [vlist], options);
@@ -1064,24 +1041,17 @@ groupTypes.overline = function(group, options) {
 
 groupTypes.underline = function(group, options) {
     // Underlines are handled in the TeXbook pg 443, Rule 10.
-    const style = options.style;
-
     // Build the inner group.
     const innerGroup = buildGroup(group.value.body, options);
 
-    const ruleWidth = fontMetrics.metrics.defaultRuleThickness /
-        style.sizeMultiplier;
-
     // Create the line above the body
-    const line = makeSpan([style.reset(), Style.TEXT.cls(), "underline-line"]);
-    line.height = ruleWidth;
-    line.maxFontSize = 1.0;
+    const line = makeLineSpan("underline-line", options);
 
     // Generate the vlist, with the appropriate kerns
     const vlist = buildCommon.makeVList([
-        {type: "kern", size: ruleWidth},
+        {type: "kern", size: line.height},
         {type: "elem", elem: line},
-        {type: "kern", size: 3 * ruleWidth},
+        {type: "kern", size: 3 * line.height},
         {type: "elem", elem: innerGroup},
     ], "top", innerGroup.height, options);
 
@@ -1090,32 +1060,24 @@ groupTypes.underline = function(group, options) {
 
 groupTypes.sqrt = function(group, options) {
     // Square roots are handled in the TeXbook pg. 443, Rule 11.
-    const style = options.style;
 
     // First, we do the same steps as in overline to build the inner group
     // and line
-    const inner = buildGroup(
-        group.value.body, options.withStyle(style.cramp()));
+    const inner = buildGroup(group.value.body, options.havingCrampedStyle());
 
-    const ruleWidth = fontMetrics.metrics.defaultRuleThickness /
-        style.sizeMultiplier;
-
-    const line = makeSpan(
-        [style.reset(), Style.TEXT.cls(), "sqrt-line"], [],
-        options);
-    line.height = ruleWidth;
-    line.maxFontSize = 1.0;
+    const line = makeLineSpan("sqrt-line", options);
+    const ruleWidth = line.height;
 
     let phi = ruleWidth;
-    if (style.id < Style.TEXT.id) {
-        phi = style.metrics.xHeight;
+    if (options.style.id < Style.TEXT.id) {
+        phi = options.style.metrics.xHeight * options.sizeMultiplier;
     }
 
     // Calculate the clearance between the body and line
     let lineClearance = ruleWidth + phi / 4;
 
-    const innerHeight = (inner.height + inner.depth) * style.sizeMultiplier;
-    const minDelimiterHeight = innerHeight + lineClearance + ruleWidth;
+    const minDelimiterHeight = (inner.height + inner.depth +
+        lineClearance + ruleWidth) * options.sizeMultiplier;
 
     // Create a \surd delimiter of the required minimum size
     const delim = makeSpan(["sqrt-sign"], [
@@ -1161,12 +1123,8 @@ groupTypes.sqrt = function(group, options) {
         // Handle the optional root index
 
         // The index is always in scriptscript style
-        const newOptions = options.withStyle(Style.SCRIPTSCRIPT);
-        const root = buildGroup(group.value.index, newOptions);
-        const rootWrap = makeSpan(
-            [style.reset(), Style.SCRIPTSCRIPT.cls()],
-            [root],
-            newOptions);
+        const newOptions = options.havingStyle(Style.SCRIPTSCRIPT);
+        const rootm = buildGroup(group.value.index, newOptions, options);
 
         // Figure out the height and depth of the inner part
         const innerRootHeight = Math.max(delim.height, body.height);
@@ -1178,7 +1136,7 @@ groupTypes.sqrt = function(group, options) {
 
         // Build a VList with the superscript shifted up correctly
         const rootVList = buildCommon.makeVList(
-            [{type: "elem", elem: rootWrap}],
+            [{type: "elem", elem: rootm}],
             "shift", -toShift, options);
         // Add a class surrounding it so we can add on the appropriate
         // kerning
@@ -1189,35 +1147,37 @@ groupTypes.sqrt = function(group, options) {
     }
 };
 
-groupTypes.sizing = function(group, options) {
-    // Handle sizing operators like \Huge. Real TeX doesn't actually allow
-    // these functions inside of math expressions, so we do some special
-    // handling.
-    const inner = buildExpression(group.value.value,
-            options.withSize(group.value.size), false);
-
-    // Compute the correct maxFontSize.
-    const style = options.style;
-    const fontSize = buildCommon.sizingMultiplier[group.value.size] *
-          style.sizeMultiplier;
+function sizingGroup(value, options, baseOptions) {
+    const inner = buildExpression(value, options, false);
+    const multiplier = options.sizeMultiplier / baseOptions.sizeMultiplier;
 
     // Add size-resetting classes to the inner list and set maxFontSize
     // manually. Handle nested size changes.
     for (let i = 0; i < inner.length; i++) {
         const pos = utils.indexOf(inner[i].classes, "sizing");
         if (pos < 0) {
-            inner[i].classes.push("sizing", "reset-" + options.size,
-                                  group.value.size, style.cls());
-            inner[i].maxFontSize = fontSize;
-        } else if (inner[i].classes[pos + 1] === "reset-" + group.value.size) {
+            Array.prototype.push.apply(inner[i].classes,
+                options.sizingClasses(baseOptions));
+        } else if (inner[i].classes[pos + 1] === "reset-size" + options.size) {
             // This is a nested size change: e.g., inner[i] is the "b" in
             // `\Huge a \small b`. Override the old size (the `reset-` class)
             // but not the new size.
-            inner[i].classes[pos + 1] = "reset-" + options.size;
+            inner[i].classes[pos + 1] = "reset-size" + baseOptions.size;
         }
+
+        inner[i].height *= multiplier;
+        inner[i].depth *= multiplier;
     }
 
     return buildCommon.makeFragment(inner);
+}
+
+groupTypes.sizing = function(group, options) {
+    // Handle sizing operators like \Huge. Real TeX doesn't actually allow
+    // these functions inside of math expressions, so we do some special
+    // handling.
+    const newOptions = options.havingSize(group.value.size);
+    return sizingGroup(group.value.value, newOptions, options);
 };
 
 groupTypes.styling = function(group, options) {
@@ -1232,25 +1192,8 @@ groupTypes.styling = function(group, options) {
     };
 
     const newStyle = styleMap[group.value.style];
-    const newOptions = options.withStyle(newStyle);
-
-    // Build the inner expression in the new style.
-    const inner = buildExpression(
-        group.value.value, newOptions, false);
-
-    // Add style-resetting classes to the inner list. Handle nested changes.
-    for (let i = 0; i < inner.length; i++) {
-        const pos = utils.indexOf(inner[i].classes, newStyle.reset());
-        if (pos < 0) {
-            inner[i].classes.push(options.style.reset(), newStyle.cls());
-        } else {
-            // This is a nested style change, as `\textstyle a\scriptstyle b`.
-            // Only override the old style (the reset class).
-            inner[i].classes[pos] = options.style.reset();
-        }
-    }
-
-    return new buildCommon.makeFragment(inner);
+    const newOptions = options.havingStyle(newStyle);
+    return sizingGroup(group.value.value, newOptions, options);
 };
 
 groupTypes.font = function(group, options) {
@@ -1275,7 +1218,7 @@ groupTypes.delimsizing = function(group, options) {
 
 groupTypes.leftright = function(group, options) {
     // Build the inner expression
-    const inner = buildExpression(group.value.body, options.reset(), true);
+    const inner = buildExpression(group.value.body, options, true);
 
     let innerHeight = 0;
     let innerDepth = 0;
@@ -1291,13 +1234,11 @@ groupTypes.leftright = function(group, options) {
         }
     }
 
-    const style = options.style;
-
     // The size of delimiters is the same, regardless of what style we are
     // in. Thus, to correctly calculate the size of delimiter we need around
     // a group, we scale down the inner size based on the size.
-    innerHeight *= style.sizeMultiplier;
-    innerDepth *= style.sizeMultiplier;
+    innerHeight *= options.sizeMultiplier;
+    innerDepth *= options.sizeMultiplier;
 
     let leftDelim;
     if (group.value.left === ".") {
@@ -1343,8 +1284,7 @@ groupTypes.leftright = function(group, options) {
     // Add it to the end of the expression.
     inner.push(rightDelim);
 
-    return makeSpan(
-        ["minner", style.cls()], inner, options);
+    return makeSpan(["minner"], inner, options);
 };
 
 groupTypes.middle = function(group, options) {
@@ -1376,9 +1316,9 @@ groupTypes.rule = function(group, options) {
 
     // The sizes of rules are absolute, so make it larger if we are in a
     // smaller style.
-    shift /= style.sizeMultiplier;
-    width /= style.sizeMultiplier;
-    height /= style.sizeMultiplier;
+    shift /= options.sizeMultiplier;
+    width /= options.sizeMultiplier;
+    height /= options.sizeMultiplier;
 
     // Style the rule to the right size
     rule.style.borderRightWidth = width + "em";
@@ -1403,7 +1343,7 @@ groupTypes.kern = function(group, options) {
         dimension = calculateSize(group.value.dimension, style);
     }
 
-    dimension /= style.sizeMultiplier;
+    dimension /= options.sizeMultiplier;
 
     rule.style.marginLeft = dimension + "em";
 
@@ -1436,13 +1376,11 @@ groupTypes.accent = function(group, options) {
 
         // Rerender the supsub group with its new base, and store that
         // result.
-        supsubGroup = buildGroup(
-            supsub, options.reset());
+        supsubGroup = buildGroup(supsub, options);
     }
 
     // Build the base group
-    const body = buildGroup(
-        base, options.withStyle(style.cramp()));
+    const body = buildGroup(base, options.havingCrampedStyle());
 
     // Does the accent need to shift for the skew of a character?
     const mustShift = group.value.isShifty && isCharacterBox(base);
@@ -1458,8 +1396,7 @@ groupTypes.accent = function(group, options) {
         // innermost character. To do that, we find the innermost character:
         const baseChar = getBaseElem(base);
         // Then, we render its group to get the symbol inside it
-        const baseGroup = buildGroup(
-            baseChar, options.withStyle(style.cramp()));
+        const baseGroup = buildGroup(baseChar, options.havingCrampedStyle());
         // Finally, we pull the skew off of the symbol.
         skew = baseGroup.skew;
         // Note that we now throw away baseGroup, because the layers we
@@ -1543,28 +1480,23 @@ groupTypes.horizBrace = function(group, options) {
     const hasSupSub = (group.type === "supsub");
     let supSubGroup;
     let newOptions;
-    let supSubReset;
     if (hasSupSub) {
         // Ref: LaTeX source2e: }}}}\limits}
         // i.e. LaTeX treats the brace similar to an op and passes it
         // with \limits, so we need to assign supsub style.
         if (group.value.sup) {
-            newOptions = options.withStyle(style.sup());
-            supSubGroup = buildGroup(group.value.sup, newOptions);
-            supSubReset =  makeSpan([style.reset(), style.sup().cls()],
-                [supSubGroup], newOptions);
+            newOptions = options.havingStyle(style.sup());
+            supSubGroup = buildGroup(group.value.sup, newOptions, options);
         } else {
-            newOptions = options.withStyle(style.sub());
-            supSubGroup = buildGroup(group.value.sub, newOptions);
-            supSubReset =  makeSpan([style.reset(), style.sub().cls()],
-                [supSubGroup], newOptions);
+            newOptions = options.havingStyle(style.sub());
+            supSubGroup = buildGroup(group.value.sub, newOptions, options);
         }
         group = group.value.base;
     }
 
     // Build the base group
     const body = buildGroup(
-       group.value.base, options.withStyle(style.cramp()));
+       group.value.base, options.havingStyle(style.cramp()));
 
     // Create the stretchy element
     const braceBody = stretchy.svgSpan(group, options);
@@ -1603,14 +1535,14 @@ groupTypes.horizBrace = function(group, options) {
             vlist = buildCommon.makeVList([
                 {type: "elem", elem: vSpan},
                 {type: "kern", size: 0.2},
-                {type: "elem", elem: supSubReset},
+                {type: "elem", elem: supSubGroup},
             ], "firstBaseline", null, options);
         } else {
             vlist = buildCommon.makeVList([
-                {type: "elem", elem: supSubReset},
+                {type: "elem", elem: supSubGroup},
                 {type: "kern", size: 0.2},
                 {type: "elem", elem: vSpan},
-            ], "bottom", vSpan.depth + 0.2 + supSubReset.height,
+            ], "bottom", vSpan.depth + 0.2 + supSubGroup.height,
             options);
         }
     }
@@ -1638,10 +1570,10 @@ groupTypes.accentUnder = function(group, options) {
 
 groupTypes.enclose = function(group, options) {
     // \cancel, \bcancel, \xcancel, \sout, \fbox
-    const inner = buildGroup(group.value.body, options.reset());
+    const inner = buildGroup(group.value.body, options);
 
     const label = group.value.label.substr(1);
-    const scale = options.style.sizeMultiplier;
+    const scale = options.sizeMultiplier;
     let img;
     let pad = 0;
     let imgShift = 0;
@@ -1695,19 +1627,14 @@ groupTypes.xArrow = function(group, options) {
     // Build the argument groups in the appropriate style.
     // Ref: amsmath.dtx:   \hbox{$\scriptstyle\mkern#3mu{#6}\mkern#4mu$}%
 
-    let newOptions = options.withStyle(style.sup());
-    const upperGroup = buildGroup(group.value.body, newOptions);
-    const upperGroupWrap = makeSpan([style.reset(), style.sup().cls()],
-        [upperGroup], newOptions);
+    let newOptions = options.havingStyle(style.sup());
+    const upperGroup = buildGroup(group.value.body, newOptions, options);
 
     let lowerGroup;
-    let lowerGroupWrap;
     if (group.value.below) {
         // Build the lower group
-        newOptions = options.withStyle(style.sub());
-        lowerGroup = buildGroup(group.value.below, newOptions);
-        lowerGroupWrap = makeSpan([style.reset(), style.sub().cls()],
-            [lowerGroup], newOptions);
+        newOptions = options.havingStyle(style.sub());
+        lowerGroup = buildGroup(group.value.below, newOptions, options);
     }
 
     const arrowBody = stretchy.svgSpan(group, options);
@@ -1720,16 +1647,16 @@ groupTypes.xArrow = function(group, options) {
     let vlist;
     if (group.value.below) {
         const lowerShift = -style.metrics.axisHeight
-            + lowerGroupWrap.height + arrowBody.height
+            + lowerGroup.height + arrowBody.height
             + 0.111;
         vlist = buildCommon.makeVList([
-            {type: "elem", elem: upperGroupWrap, shift: upperShift},
+            {type: "elem", elem: upperGroup, shift: upperShift},
             {type: "elem", elem: arrowBody,  shift: arrowShift},
-            {type: "elem", elem: lowerGroupWrap, shift: lowerShift},
+            {type: "elem", elem: lowerGroup, shift: lowerShift},
         ], "individualShift", null, options);
     } else {
         vlist = buildCommon.makeVList([
-            {type: "elem", elem: upperGroupWrap, shift: upperShift},
+            {type: "elem", elem: upperGroup, shift: upperShift},
             {type: "elem", elem: arrowBody,  shift: arrowShift},
         ], "individualShift", null, options);
     }
@@ -1763,31 +1690,23 @@ groupTypes.mclass = function(group, options) {
  * function for it. It also handles the interaction of size and style changes
  * between parents and children.
  */
-const buildGroup = function(group, options) {
+const buildGroup = function(group, options, baseOptions) {
     if (!group) {
         return makeSpan();
     }
 
     if (groupTypes[group.type]) {
         // Call the groupTypes function
-        const groupNode = groupTypes[group.type](group, options);
-        let multiplier;
-
-        // If the style changed between the parent and the current group,
-        // account for the size difference
-        if (options.style !== options.parentStyle) {
-            multiplier = options.style.sizeMultiplier /
-                    options.parentStyle.sizeMultiplier;
-
-            groupNode.height *= multiplier;
-            groupNode.depth *= multiplier;
-        }
+        let groupNode = groupTypes[group.type](group, options);
 
         // If the size changed between the parent and the current group, account
         // for that size difference.
-        if (options.size !== options.parentSize) {
-            multiplier = buildCommon.sizingMultiplier[options.size] /
-                    buildCommon.sizingMultiplier[options.parentSize];
+        if (baseOptions && options.size !== baseOptions.size) {
+            groupNode = makeSpan(options.sizingClasses(baseOptions),
+                [groupNode], options);
+
+            const multiplier = options.sizeMultiplier /
+                baseOptions.sizeMultiplier;
 
             groupNode.height *= multiplier;
             groupNode.depth *= multiplier;
@@ -1811,7 +1730,7 @@ const buildHTML = function(tree, options) {
 
     // Build the expression contained in the tree
     const expression = buildExpression(tree, options, true);
-    const body = makeSpan(["base", options.style.cls()], expression, options);
+    const body = makeSpan(["base"], expression, options);
 
     // Add struts, which ensure that the top of the HTML element falls at the
     // height of the expression, and the bottom of the HTML element falls at the

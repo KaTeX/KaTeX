@@ -22,15 +22,12 @@ for (let i = 0; i < 3; i++) {
 
 /**
  * The main style class. Contains a unique id for the style, a size (which is
- * the same for cramped and uncramped version of a style), a cramped flag, and a
- * size multiplier, which gives the size difference between a style and
- * textstyle.
+ * the same for cramped and uncramped version of a style), and a cramped flag.
  */
-function Style(id, size, multiplier, cramped) {
+function Style(id, size, cramped) {
     this.id = id;
     this.size = size;
     this.cramped = cramped;
-    this.sizeMultiplier = multiplier;
     this.metrics = metrics[size > 0 ? size - 1 : 0];
 }
 
@@ -73,17 +70,10 @@ Style.prototype.cramp = function() {
 };
 
 /**
- * HTML class name, like "displaystyle cramped"
+ * Get a text or display version of this style.
  */
-Style.prototype.cls = function() {
-    return sizeNames[this.size] + (this.cramped ? " cramped" : " uncramped");
-};
-
-/**
- * HTML Reset class name, like "reset-textstyle"
- */
-Style.prototype.reset = function() {
-    return resetNames[this.size];
+Style.prototype.text = function() {
+    return styles[text[this.id]];
 };
 
 /**
@@ -103,32 +93,16 @@ const Sc = 5;
 const SS = 6;
 const SSc = 7;
 
-// String names for the different sizes
-const sizeNames = [
-    "displaystyle textstyle",
-    "textstyle",
-    "scriptstyle",
-    "scriptscriptstyle",
-];
-
-// Reset names for the different sizes
-const resetNames = [
-    "reset-textstyle",
-    "reset-textstyle",
-    "reset-scriptstyle",
-    "reset-scriptscriptstyle",
-];
-
 // Instances of the different styles
 const styles = [
-    new Style(D, 0, 1.0, false),
-    new Style(Dc, 0, 1.0, true),
-    new Style(T, 1, 1.0, false),
-    new Style(Tc, 1, 1.0, true),
-    new Style(S, 2, 0.7, false),
-    new Style(Sc, 2, 0.7, true),
-    new Style(SS, 3, 0.5, false),
-    new Style(SSc, 3, 0.5, true),
+    new Style(D, 0, false),
+    new Style(Dc, 0, true),
+    new Style(T, 1, false),
+    new Style(Tc, 1, true),
+    new Style(S, 2, false),
+    new Style(Sc, 2, true),
+    new Style(SS, 3, false),
+    new Style(SSc, 3, true),
 ];
 
 // Lookup tables for switching from one style to another
@@ -137,6 +111,7 @@ const sub = [Sc, Sc, Sc, Sc, SSc, SSc, SSc, SSc];
 const fracNum = [T, Tc, S, Sc, SS, SSc, SS, SSc];
 const fracDen = [Tc, Tc, Sc, Sc, SSc, SSc, SSc, SSc];
 const cramp = [Dc, Dc, Tc, Tc, Sc, Sc, SSc, SSc];
+const text = [D, Dc, T, Tc, T, Tc, T, Tc];
 
 // We only export some of the styles. Also, we don't export the `Style` class so
 // no more styles can be generated.

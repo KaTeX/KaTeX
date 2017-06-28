@@ -390,8 +390,8 @@ Parser.prototype.parseAtom = function() {
 
 // A list of the size-changing functions, for use in parseImplicitGroup
 const sizeFuncs = [
-    "\\tiny", "\\scriptsize", "\\footnotesize", "\\small", "\\normalsize",
-    "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
+    "\\tiny", "\\sixptsize", "\\scriptsize", "\\footnotesize", "\\small",
+    "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
 ];
 
 // A list of the style-changing functions, for use in parseImplicitGroup
@@ -483,7 +483,7 @@ Parser.prototype.parseImplicitGroup = function() {
         const body = this.parseExpression(false);
         return new ParseNode("sizing", {
             // Figure out what size to use based on the list of functions above
-            size: "size" + (utils.indexOf(sizeFuncs, func) + 1),
+            size: utils.indexOf(sizeFuncs, func) + 1,
             value: body,
         }, this.mode);
     } else if (utils.contains(styleFuncs, func)) {
