@@ -54,8 +54,6 @@ function getStatic(url, file) {
 }
 
 browserified("/katex.js", "katex", "katex");
-app.use("/test/jasmine", express.static(path.dirname(
-    require.resolve("jasmine-core/lib/jasmine-core/jasmine.js"))));
 browserified("/test/katex-spec.js", "test/*[Ss]pec.js");
 browserified(
     "/contrib/auto-render/auto-render.js",
