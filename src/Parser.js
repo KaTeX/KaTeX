@@ -789,7 +789,7 @@ Parser.prototype.parseSizeGroup = function(optional) {
     let res;
     if (!optional && this.nextToken.text !== "{") {
         res = this.parseRegexGroup(
-            /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2}$/, "size");
+            /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2} *$/, "size");
     } else {
         res = this.parseStringGroup("size", optional);
     }
