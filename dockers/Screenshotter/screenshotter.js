@@ -65,6 +65,10 @@ const opts = require("nomnom")
         abbr: "x",
         help: "Comma-separated list of test cases to exclude",
     })
+    .option("fast", {
+        flag: true,
+        help: "Run faster by not fully reloading pages",
+    })
     .option("verify", {
         flag: true,
         help: "Check whether screenshot matches current file content",
@@ -226,6 +230,7 @@ function tryConnect() {
 // Build the web driver
 
 let driver;
+let driverReady = false;
 function buildDriver() {
     const builder = new selenium.Builder().forBrowser(opts.browser);
     const ffProfile = new firefox.Profile();
@@ -372,16 +377,32 @@ function takeScreenshot(key) {
     }
 
     const url = katexURL + "test/screenshotter/test.html?" + itm.query;
-    driver.get(url);
-    if (opts.wait) {
-        browserSideWait(1000 * opts.wait);
+    driver.call(loadMath);
+
+    function loadMath() {
+        if (opts.fast && driverReady) {
+            driver.executeAsyncScript(
+                    "var callback = arguments[arguments.length - 1]; " +
+                    "handle_search_string(" +
+                    JSON.stringify("?" + itm.query) + ", callback);")
+                .then(waitThenScreenshot);
+        } else {
+            driver.get(url).then(waitThenScreenshot);
+        }
     }
-    driver.takeScreenshot().then(haveScreenshot).then(oneDone, check);
+
+    function waitThenScreenshot() {
+        driverReady = true;
+        if (opts.wait) {
+            browserSideWait(1000 * opts.wait);
+        }
+        driver.takeScreenshot().then(haveScreenshot).then(oneDone, check);
+    }
 
     function haveScreenshot(img) {
         img = imageDimensions(img);
         if (img.width !== targetW || img.height !== targetH) {
-            throw new Error("Excpected " + targetW + " x " + targetH +
+            throw new Error("Expected " + targetW + " x " + targetH +
                             ", got " + img.width + "x" + img.height);
         }
         if (key === "Lap" && opts.browser === "firefox" &&
@@ -411,9 +432,11 @@ function takeScreenshot(key) {
                         exitStatus = 3;
                     } else {
                         console.log("error " + key);
-                        driver.get(url);
-                        browserSideWait(500 * retry);
-                        return driver.takeScreenshot().then(haveScreenshot);
+                        browserSideWait(300 * retry);
+                        if (retry > 1) {
+                            driverReady = false; // reload fully
+                        }
+                        return driver.call(loadMath);
                     }
                 } else {
                     console.log("* ok  " + key);
