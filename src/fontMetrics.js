@@ -269,7 +269,7 @@ const getFontMetrics = function(size) {
                 metrics[key] = sigmasAndXis[key][sizeIndex];
             }
         }
-        metrics.emPerEx = metrics.xHeight / metrics.quad;
+        metrics.cssEmPerMu = metrics.quad / 18;
     }
     return fontMetricsBySizeIndex[sizeIndex];
 };

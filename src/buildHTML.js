@@ -550,14 +550,40 @@ groupTypes.genfrac = function(group, options) {
         options);
 };
 
+/**
+ * Parse a `sizeValue`, as parsed by functions.js argType "size", into
+ * a CSS em value. `options` gives the current options.
+ */
 const calculateSize = function(sizeValue, options) {
-    let x = sizeValue.number;
-    if (sizeValue.unit === "ex") {
-        x *= options.fontMetrics().emPerEx;
-    } else if (sizeValue.unit === "mu") {
-        x /= 18;
+    let scale;
+    // `mu` units scale with scriptstyle/scriptscriptstyle.
+    // Other units always refer to the *textstyle* font in the current size.
+    if (sizeValue.unit === "mu") {
+        scale = options.fontMetrics().cssEmPerMu;
+    } else {
+        let unitOptions;
+        if (options.style.isTight()) {
+            unitOptions = options.havingStyle(options.style.text());
+        } else {
+            unitOptions = options;
+        }
+        // TODO: In TeX these units are relative to the quad of the current
+        // *text* font, e.g. cmr10. KaTeX instead uses values from the
+        // comparably-sized *Computer Modern symbol* font. At 10pt, these
+        // match. At 7pt and 5pt, they differ: cmr7=1.138894, cmsy7=1.170641;
+        // cmr5=1.361133, cmsy5=1.472241. Consider $\scriptsize a\kern1emb$.
+        // TeX \showlists shows a kern of 1.13889 * fontsize;
+        // KaTeX shows a kern of 1.171 * fontsize.
+        if (sizeValue.unit === "ex") {
+            scale = unitOptions.fontMetrics().xHeight;
+        } else {
+            scale = unitOptions.fontMetrics().quad;
+        }
+        if (unitOptions !== options) {
+            scale *= unitOptions.sizeMultiplier / options.sizeMultiplier;
+        }
     }
-    return x;
+    return sizeValue.number * scale;
 };
 
 groupTypes.array = function(group, options) {
@@ -1315,14 +1341,8 @@ groupTypes.rule = function(group, options) {
         shift = calculateSize(group.value.shift, options);
     }
 
-    let width = calculateSize(group.value.width, options);
-    let height = calculateSize(group.value.height, options);
-
-    // The sizes of rules are absolute, so make it larger if we are in a
-    // smaller style.
-    shift /= options.sizeMultiplier;
-    width /= options.sizeMultiplier;
-    height /= options.sizeMultiplier;
+    const width = calculateSize(group.value.width, options);
+    const height = calculateSize(group.value.height, options);
 
     // Style the rule to the right size
     rule.style.borderRightWidth = width + "em";
@@ -1341,14 +1361,10 @@ groupTypes.kern = function(group, options) {
     // Make an empty span for the rule
     const rule = makeSpan(["mord", "rule"], [], options);
 
-    let dimension = 0;
     if (group.value.dimension) {
-        dimension = calculateSize(group.value.dimension, options);
+        const dimension = calculateSize(group.value.dimension, options);
+        rule.style.marginLeft = dimension + "em";
     }
-
-    dimension /= options.sizeMultiplier;
-
-    rule.style.marginLeft = dimension + "em";
 
     return rule;
 };
