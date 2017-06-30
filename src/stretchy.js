@@ -173,6 +173,10 @@ const encloseSpan = function(inner, isCharBox, label, pad, options) {
 
     if (/cancel/.test(label) && isCharBox) {
         img.maxFontSize = 1.2; // Make line box tall enough for image to fit.
+    } else if (label === "fbox" && inner.maxFontSize > 1.0) {
+        img.maxFontSize = 1.12 * inner.maxFontSize;
+        // Bug: This will shift the whole line downward on the screen.
+        // TODO(ron): Find a better way. Fix makeVList, perhaps.
     } else {
         img.maxFontSize = 1;
     }

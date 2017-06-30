@@ -1604,7 +1604,7 @@ groupTypes.enclose = function(group, options) {
         {type: "elem", elem: img, shift: imgShift},
     ], "individualShift", null, options);
 
-    if (img.height > vlist.maxFontSize) {
+    if (img.height > vlist.maxFontSize && inner.maxFontSize <= 1.0) {
         // Correct for an issue in makeVList. It placed the image top at
         // the top of the line box created by a 1 em maxFontSize.
         vlist.children[1].style.top = -(inner.height + pad - 0.9 / scale)
