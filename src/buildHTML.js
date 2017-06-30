@@ -790,30 +790,21 @@ groupTypes.op = function(group, options) {
     }
 
     let base;
-    let baseShift = 0;
-    let slant = 0;
     if (group.value.symbol) {
         // If this is a symbol, create the symbol.
         const fontName = large ? "Size2-Regular" : "Size1-Regular";
         base = buildCommon.makeSymbol(
             group.value.body, fontName, "math", options,
             ["mop", "op-symbol", large ? "large-op" : "small-op"]);
-
-        // Shift the symbol so its center lies on the axis (rule 13). It
-        // appears that our fonts have the centers of the symbols already
-        // almost on the axis, so these numbers are very small. Note we
-        // don't actually apply this here, but instead it is used either in
-        // the vlist creation or separately when there are no limits.
-        baseShift = (base.height - base.depth) / 2 -
-            options.fontMetrics().axisHeight * options.sizeMultiplier;
-
-        // The slant of the symbol is just its italic correction.
-        slant = base.italic;
     } else if (group.value.value) {
         // If this is a list, compose that list.
         const inner = buildExpression(group.value.value, options, true);
-
-        base = makeSpan(["mop"], inner, options);
+        if (inner.length === 1 && inner[0] instanceof domTree.symbolNode) {
+            base = inner[0];
+            base.classes[0] = "mop"; // replace old mclass
+        } else {
+            base = makeSpan(["mop"], inner, options);
+        }
     } else {
         // Otherwise, this is a text operator. Build the text from the
         // operator's name.
@@ -824,6 +815,22 @@ groupTypes.op = function(group, options) {
             output.push(buildCommon.mathsym(group.value.body[i], group.mode));
         }
         base = makeSpan(["mop"], output, options);
+    }
+
+    // If content of op is a single symbol, shift it vertically.
+    let baseShift = 0;
+    let slant = 0;
+    if (base instanceof domTree.symbolNode) {
+        // Shift the symbol so its center lies on the axis (rule 13). It
+        // appears that our fonts have the centers of the symbols already
+        // almost on the axis, so these numbers are very small. Note we
+        // don't actually apply this here, but instead it is used either in
+        // the vlist creation or separately when there are no limits.
+        baseShift = (base.height - base.depth) / 2 -
+            options.fontMetrics().axisHeight;
+
+        // The slant of the symbol is just its italic correction.
+        slant = base.italic;
     }
 
     if (hasLimits) {
@@ -916,7 +923,8 @@ groupTypes.op = function(group, options) {
 
         return makeSpan(["mop", "op-limits"], [finalGroup], options);
     } else {
-        if (group.value.symbol) {
+        if (baseShift) {
+            base.style.position = "relative";
             base.style.top = baseShift + "em";
         }
 
