@@ -30,7 +30,7 @@ const cjkRegex = require("./unicodeRegexes").cjkRegex;
 //
 // The output of each of these commands is quite lengthy.  The only part we
 // care about is the FONTDIMEN section. Each value is measured in EMs.
-const sigmas = {
+const sigmasAndXis = {
     slant: [0.250, 0.250, 0.250],       // sigma1
     space: [0.000, 0.000, 0.000],       // sigma2
     stretch: [0.000, 0.000, 0.000],     // sigma3
@@ -264,9 +264,9 @@ const getFontMetrics = function(size) {
     }
     if (!fontMetricsBySizeIndex[sizeIndex]) {
         const metrics = fontMetricsBySizeIndex[sizeIndex] = {};
-        for (const key in sigmas) {
-            if (sigmas.hasOwnProperty(key)) {
-                metrics[key] = sigmas[key][sizeIndex];
+        for (const key in sigmasAndXis) {
+            if (sigmasAndXis.hasOwnProperty(key)) {
+                metrics[key] = sigmasAndXis[key][sizeIndex];
             }
         }
         metrics.emPerEx = metrics.xHeight / metrics.quad;

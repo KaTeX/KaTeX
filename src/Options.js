@@ -26,7 +26,8 @@ const sizeStyleMap = [
 ];
 
 const sizeMultipliers = [
-    // fontMetrics.js:getFontMetrics also uses size indexes.
+    // fontMetrics.js:getFontMetrics also uses size indexes, so if
+    // you change size indexes, change that function.
     0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.44, 1.728, 2.074, 2.488,
 ];
 
