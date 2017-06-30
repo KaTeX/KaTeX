@@ -1,7 +1,6 @@
 /* eslint no-constant-condition:0 */
 const parseData = require("./parseData");
 const ParseError = require("./ParseError");
-const Style = require("./Style");
 
 const ParseNode = parseData.ParseNode;
 
@@ -190,7 +189,7 @@ defineEnvironment([
             // For now we use the metrics for TEXT style which is what we were
             // doing before.  Before attempting to get the current style we
             // should look at TeX's behavior especially for \over and matrices.
-            postgap: Style.TEXT.metrics.quad,
+            postgap: 1.0, /* 1em quad */
         }, {
             type: "align",
             align: "l",
