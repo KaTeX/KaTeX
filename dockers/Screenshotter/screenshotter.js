@@ -65,9 +65,9 @@ const opts = require("nomnom")
         abbr: "x",
         help: "Comma-separated list of test cases to exclude",
     })
-    .option("fast", {
+    .option("slow", {
         flag: true,
-        help: "Run faster by not fully reloading pages",
+        help: "Run slower by reloading the page for each test",
     })
     .option("verify", {
         flag: true,
@@ -380,7 +380,7 @@ function takeScreenshot(key) {
     driver.call(loadMath);
 
     function loadMath() {
-        if (opts.fast && driverReady) {
+        if (!opts.slow && driverReady) {
             driver.executeAsyncScript(
                     "var callback = arguments[arguments.length - 1]; " +
                     "handle_search_string(" +
