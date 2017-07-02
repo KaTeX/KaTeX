@@ -47,8 +47,9 @@ function serveBrowserified(file, standaloneName, doBabelify) {
 }
 
 function twoBrowserified(url, file, standaloneName) {
-    app.get(url, serveBrowserified(file, standaloneName, false));
-    app.get("/babel" + url, serveBrowserified(file, standaloneName, true));
+    // we should always transpile all js files
+    // in order to support all ES2015 features
+    app.get(url, serveBrowserified(file, standaloneName, true));
 }
 
 function twoUse(url, handler) {
