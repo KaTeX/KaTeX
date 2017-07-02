@@ -5,34 +5,53 @@
  * `.reset` functions.
  */
 
+import fontMetrics from "./fontMetrics";
+
+const BASESIZE = 6;
+
+const sizeStyleMap = [
+    // Each element contains [textsize, scriptsize, scriptscriptsize].
+    // The size mappings are taken from TeX with \normalsize=10pt.
+    [1, 1, 1],    // size1: [5, 5, 5]              \tiny
+    [2, 1, 1],    // size2: [6, 5, 5]
+    [3, 1, 1],    // size3: [7, 5, 5]              \scriptsize
+    [4, 2, 1],    // size4: [8, 6, 5]              \footnotesize
+    [5, 2, 1],    // size5: [9, 6, 5]              \small
+    [6, 3, 1],    // size6: [10, 7, 5]             \normalsize
+    [7, 4, 2],    // size7: [12, 8, 6]             \large
+    [8, 6, 3],    // size8: [14.4, 10, 7]          \Large
+    [9, 7, 6],    // size9: [17.28, 12, 10]        \LARGE
+    [10, 8, 7],   // size10: [20.74, 14.4, 12]     \huge
+    [11, 10, 9],  // size11: [24.88, 20.74, 17.28] \HUGE
+];
+
+const sizeMultipliers = [
+    // fontMetrics.js:getFontMetrics also uses size indexes, so if
+    // you change size indexes, change that function.
+    0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.44, 1.728, 2.074, 2.488,
+];
+
+const sizeAtStyle = function(size, style) {
+    return style.size < 2 ? size : sizeStyleMap[size - 1][style.size - 1];
+};
+
 /**
- * This is the main options class. It contains the style, size, color, and font
- * of the current parse level. It also contains the style and size of the parent
- * parse level, so size changes can be handled efficiently.
+ * This is the main options class. It contains the current style, size, color,
+ * and font.
  *
- * Each of the `.with*` and `.reset` functions passes its current style and size
- * as the parentStyle and parentSize of the new options class, so parent
- * handling is taken care of automatically.
+ * Options objects should not be modified. To create a new Options with
+ * different properties, call a `.having*` method.
  */
 class Options {
     constructor(data) {
         this.style = data.style;
         this.color = data.color;
-        this.size = data.size;
+        this.size = data.size || BASESIZE;
+        this.textSize = data.textSize || this.size;
         this.phantom = data.phantom;
         this.font = data.font;
-
-        if (data.parentStyle === undefined) {
-            this.parentStyle = data.style;
-        } else {
-            this.parentStyle = data.parentStyle;
-        }
-
-        if (data.parentSize === undefined) {
-            this.parentSize = data.size;
-        } else {
-            this.parentSize = data.parentSize;
-        }
+        this.sizeMultiplier = sizeMultipliers[this.size - 1];
+        this._fontMetrics = null;
     }
 
     /**
@@ -43,9 +62,8 @@ class Options {
         const data = {
             style: this.style,
             size: this.size,
+            textSize: this.textSize,
             color: this.color,
-            parentStyle: this.style,
-            parentSize: this.size,
             phantom: this.phantom,
             font: this.font,
         };
@@ -60,21 +78,61 @@ class Options {
     }
 
     /**
-     * Create a new options object with the given style.
+     * Return an options object with the given style. If `this.style === style`,
+     * returns `this`.
      */
-    withStyle(style) {
-        return this.extend({
-            style: style,
-        });
+    havingStyle(style) {
+        if (this.style === style) {
+            return this;
+        } else {
+            return this.extend({
+                style: style,
+                size: sizeAtStyle(this.textSize, style),
+            });
+        }
     }
 
     /**
-     * Create a new options object with the given size.
+     * Return an options object with a cramped version of the current style. If
+     * the current style is cramped, returns `this`.
      */
-    withSize(size) {
-        return this.extend({
-            size: size,
-        });
+    havingCrampedStyle() {
+        return this.havingStyle(this.style.cramp());
+    }
+
+    /**
+     * Return an options object with the given size and in at least `\textstyle`.
+     * Returns `this` if appropriate.
+     */
+    havingSize(size) {
+        if (this.size === size && this.textSize === size) {
+            return this;
+        } else {
+            return this.extend({
+                style: this.style.text(),
+                size: size,
+                textSize: size,
+            });
+        }
+    }
+
+    /**
+     * Like `this.havingSize(BASESIZE).havingStyle(style)`. If `style` is omitted,
+     * changes to at least `\textstyle`.
+     */
+    havingBaseStyle(style) {
+        style = style || this.style.text();
+        const wantSize = sizeAtStyle(BASESIZE, style);
+        if (this.size === wantSize && this.textSize === BASESIZE
+            && this.style === style) {
+            return this;
+        } else {
+            return this.extend({
+                style: style,
+                size: wantSize,
+                baseSize: BASESIZE,
+            });
+        }
     }
 
     /**
@@ -105,11 +163,37 @@ class Options {
     }
 
     /**
-     * Create a new options object with the same style, size, and color. This is
-     * used so that parent style and size changes are handled correctly.
+     * Return the CSS sizing classes required to switch from enclosing options
+     * `oldOptions` to `this`. Returns an array of classes.
      */
-    reset() {
-        return this.extend({});
+    sizingClasses(oldOptions) {
+        if (oldOptions.size !== this.size) {
+            return ["sizing", "reset-size" + oldOptions.size, "size" + this.size];
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Return the CSS sizing classes required to switch to the base size. Like
+     * `this.havingSize(BASESIZE).sizingClasses(this)`.
+     */
+    baseSizingClasses() {
+        if (this.size !== BASESIZE) {
+            return ["sizing", "reset-size" + this.size, "size" + BASESIZE];
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Return the font metrics for this size.
+     */
+    fontMetrics() {
+        if (!this._fontMetrics) {
+            this._fontMetrics = fontMetrics.getFontMetrics(this.size);
+        }
+        return this._fontMetrics;
     }
 
     /**
@@ -187,5 +271,10 @@ class Options {
         }
     }
 }
+
+/**
+ * The base size index.
+ */
+Options.BASESIZE = BASESIZE;
 
 module.exports = Options;

@@ -43,30 +43,33 @@ const getMetrics = function(symbol, font) {
 };
 
 /**
- * Builds a symbol in the given font size (note size is an integer)
- */
-const mathrmSize = function(value, size, mode, options) {
-    return buildCommon.makeSymbol(value, "Size" + size + "-Regular",
-        mode, options);
-};
-
-/**
  * Puts a delimiter span in a given style, and adds appropriate height, depth,
  * and maxFontSizes.
  */
 const styleWrap = function(delim, toStyle, options, classes) {
-    classes = classes || [];
+    const newOptions = options.havingBaseStyle(toStyle);
+
     const span = makeSpan(
-        classes.concat(["style-wrap", options.style.reset(), toStyle.cls()]),
+        (classes || []).concat(newOptions.sizingClasses(options)),
         [delim], options);
 
-    const multiplier = toStyle.sizeMultiplier / options.style.sizeMultiplier;
-
-    span.height *= multiplier;
-    span.depth *= multiplier;
-    span.maxFontSize = toStyle.sizeMultiplier;
+    span.height *= newOptions.sizeMultiplier / options.sizeMultiplier;
+    span.depth *= newOptions.sizeMultiplier / options.sizeMultiplier;
+    span.maxFontSize = newOptions.sizeMultiplier;
 
     return span;
+};
+
+const centerSpan = function(span, options, style) {
+    const newOptions = options.havingBaseStyle(style);
+    const shift =
+        (1 - options.sizeMultiplier / newOptions.sizeMultiplier) *
+        options.fontMetrics().axisHeight;
+
+    span.classes.push("delimcenter");
+    span.style.top = shift + "em";
+    span.height -= shift;
+    span.depth += shift;
 };
 
 /**
@@ -76,20 +79,19 @@ const styleWrap = function(delim, toStyle, options, classes) {
  */
 const makeSmallDelim = function(delim, style, center, options, mode, classes) {
     const text = buildCommon.makeSymbol(delim, "Main-Regular", mode, options);
-
     const span = styleWrap(text, style, options, classes);
-
     if (center) {
-        const shift =
-            (1 - options.style.sizeMultiplier / style.sizeMultiplier) *
-            options.style.metrics.axisHeight;
-
-        span.style.top = shift + "em";
-        span.height -= shift;
-        span.depth += shift;
+        centerSpan(span, options, style);
     }
-
     return span;
+};
+
+/**
+ * Builds a symbol in the given font size (note size is an integer)
+ */
+const mathrmSize = function(value, size, mode, options) {
+    return buildCommon.makeSymbol(value, "Size" + size + "-Regular",
+        mode, options);
 };
 
 /**
@@ -98,20 +100,12 @@ const makeSmallDelim = function(delim, style, center, options, mode, classes) {
  */
 const makeLargeDelim = function(delim, size, center, options, mode, classes) {
     const inner = mathrmSize(delim, size, mode, options);
-
     const span = styleWrap(
         makeSpan(["delimsizing", "size" + size], [inner], options),
         Style.TEXT, options, classes);
-
     if (center) {
-        const shift = (1 - options.style.sizeMultiplier) *
-            options.style.metrics.axisHeight;
-
-        span.style.top = shift + "em";
-        span.height -= shift;
-        span.depth += shift;
+        centerSpan(span, options, Style.TEXT);
     }
-
     return span;
 };
 
@@ -279,9 +273,9 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
     // that in this context, "center" means that the delimiter should be
     // centered around the axis in the current style, while normally it is
     // centered around the axis in textstyle.
-    let axisHeight = options.style.metrics.axisHeight;
+    let axisHeight = options.fontMetrics().axisHeight;
     if (center) {
-        axisHeight *= options.style.sizeMultiplier;
+        axisHeight *= options.sizeMultiplier;
     }
     // Calculate the depth
     const depth = realHeightTotal / 2 - axisHeight;
@@ -315,10 +309,11 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
     inners.push(makeInner(top, font, mode));
 
     // Finally, build the vlist
-    const inner = buildCommon.makeVList(inners, "bottom", depth, options);
+    const newOptions = options.havingBaseStyle(Style.TEXT);
+    const inner = buildCommon.makeVList(inners, "bottom", depth, newOptions);
 
     return styleWrap(
-        makeSpan(["delimsizing", "mult"], [inner], options),
+        makeSpan(["delimsizing", "mult"], [inner], newOptions),
         Style.TEXT, options, classes);
 };
 
@@ -453,7 +448,8 @@ const traverseSequence = function(delim, height, sequence, options) {
         // account for the style change size.
 
         if (sequence[i].type === "small") {
-            heightDepth *= sequence[i].style.sizeMultiplier;
+            const newOptions = options.havingBaseStyle(sequence[i].style);
+            heightDepth *= newOptions.sizeMultiplier;
         }
 
         // Check if the delimiter at this size works for the given height.
@@ -512,11 +508,11 @@ const makeLeftRightDelim = function(delim, height, depth, options, mode,
                                   classes) {
     // We always center \left/\right delimiters, so the axis is always shifted
     const axisHeight =
-        options.style.metrics.axisHeight * options.style.sizeMultiplier;
+        options.fontMetrics().axisHeight * options.sizeMultiplier;
 
     // Taken from TeX source, tex.web, function make_left_right
     const delimiterFactor = 901;
-    const delimiterExtend = 5.0 / fontMetrics.metrics.ptPerEm;
+    const delimiterExtend = 5.0 / options.fontMetrics().ptPerEm;
 
     const maxDistFromAxis = Math.max(
         height - axisHeight, depth + axisHeight);

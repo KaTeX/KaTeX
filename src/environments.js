@@ -1,7 +1,6 @@
 /* eslint no-constant-condition:0 */
 import { ParseNode } from "./parseData";
 import ParseError from "./ParseError";
-import Style from "./Style";
 
 /**
  * Parse the body of the environment, with rows delimited by \\ and
@@ -187,7 +186,7 @@ defineEnvironment([
             // For now we use the metrics for TEXT style which is what we were
             // doing before.  Before attempting to get the current style we
             // should look at TeX's behavior especially for \over and matrices.
-            postgap: Style.TEXT.metrics.quad,
+            postgap: 1.0, /* 1em quad */
         }, {
             type: "align",
             align: "l",
@@ -213,13 +212,20 @@ defineEnvironment("aligned", {
     let res = {
         type: "array",
         cols: [],
+        addJot: true,
     };
-    res = parseArray(context.parser, res);
+    res = parseArray(context.parser, res, "display");
+    // Count number of columns = maximum number of cells in each row.
+    // At the same time, prepend empty group {} at beginning of every second
+    // cell in each row (starting with second cell) so that operators become
+    // binary.  This behavior is implemented in amsmath's \start@aligned.
     const emptyGroup = new ParseNode("ordgroup", [], context.mode);
     let numCols = 0;
     res.value.body.forEach(function(row) {
         for (let i = 1; i < row.length; i += 2) {
-            row[i].value.unshift(emptyGroup);
+            // Modify ordgroup node within styling node
+            const ordgroup = row[i].value.value[0];
+            ordgroup.value.unshift(emptyGroup);
         }
         if (numCols < row.length) {
             numCols = row.length;
@@ -240,5 +246,22 @@ defineEnvironment("aligned", {
             postgap: 0,
         };
     }
+    return res;
+});
+
+// A gathered environment is like an array environment with one centered
+// column, but where rows are considered lines so get \jot line spacing
+// and contents are set in \displaystyle.
+defineEnvironment("gathered", {
+}, function(context) {
+    let res = {
+        type: "array",
+        cols: [{
+            type: "align",
+            align: "c",
+        }],
+        addJot: true,
+    };
+    res = parseArray(context.parser, res, "display");
     return res;
 });

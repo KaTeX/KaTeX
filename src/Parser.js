@@ -43,13 +43,26 @@ import ParseError from "./ParseError";
  */
 
 /**
- * Main Parser class
+ * An initial function (without its arguments), or an argument to a function.
+ * The `result` argument should be a ParseNode.
  */
+function ParseFuncOrArgument(result, isFunction, token) {
+    this.result = result;
+    // Is this a function (i.e. is it something defined in functions.js)?
+    this.isFunction = isFunction;
+    this.token = token;
+}
+
 class Parser {
     constructor(input, settings) {
         // Create a new macro expander (gullet) and (indirectly via that) also a
         // new lexer (mouth) for this parser (stomach, in the language of TeX)
         this.gullet = new MacroExpander(input, settings.macros);
+        // Use old \color behavior (same as LaTeX's \textcolor) if requested.
+        // We do this after the macros object has been copied by MacroExpander.
+        if (settings.colorIsTextColor) {
+            this.gullet.macros["\\color"] = "\\textcolor";
+        }
         // Store the settings for use in parsing
         this.settings = settings;
         // Count leftright depth (for \middle errors)
@@ -372,8 +385,8 @@ class Parser {
 
     // A list of the size-changing functions, for use in parseImplicitGroup
     static sizeFuncs = [
-        "\\tiny", "\\scriptsize", "\\footnotesize", "\\small", "\\normalsize",
-        "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
+        "\\tiny", "\\sixptsize", "\\scriptsize", "\\footnotesize", "\\small",
+        "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
     ];
 
     // A list of the style-changing functions, for use in parseImplicitGroup
@@ -465,7 +478,7 @@ class Parser {
             const body = this.parseExpression(false);
             return new ParseNode("sizing", {
                 // Figure out what size to use based on the list of functions above
-                size: "size" + (utils.indexOf(Parser.sizeFuncs, func) + 1),
+                size: utils.indexOf(Parser.sizeFuncs, func) + 1,
                 value: body,
             }, this.mode);
         } else if (utils.contains(Parser.styleFuncs, func)) {
@@ -494,6 +507,32 @@ class Parser {
                     body: new ParseNode("ordgroup", body, this.mode),
                 }, this.mode);
             }
+        } else if (func === "\\color") {
+            // If we see a styling function, parse out the implicit body
+            const color = this.parseColorGroup(false);
+            if (!color) {
+                throw new ParseError("\\color not followed by color");
+            }
+            const body = this.parseExpression(true);
+            return new ParseNode("color", {
+                type: "color",
+                color: color.result.value,
+                value: body,
+            }, this.mode);
+        } else if (func === "$") {
+            if (this.mode === "math") {
+                throw new ParseError("$ within math mode");
+            }
+            this.consume();
+            const outerMode = this.mode;
+            this.switchMode("math");
+            const body = this.parseExpression(false, "$");
+            this.expect("$", true);
+            this.switchMode(outerMode);
+            return new ParseNode("styling", {
+                style: "text",
+                value: body,
+            }, "math");
         } else {
             // Defer to parseFunction if it's not a function we handle
             return this.parseFunction(start);
@@ -744,7 +783,7 @@ class Parser {
         let res;
         if (!optional && this.nextToken.text !== "{") {
             res = this.parseRegexGroup(
-                /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2}$/, "size");
+                /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2} *$/, "size");
         } else {
             res = this.parseStringGroup("size", optional);
         }
@@ -864,22 +903,13 @@ class Parser {
             return new ParseFuncOrArgument(
                 new ParseNode("textord", nucleus.text, this.mode, nucleus),
                 false, nucleus);
+        } else if (nucleus.text === "$") {
+            return new ParseFuncOrArgument(
+                nucleus.text,
+                false, nucleus);
         } else {
             return null;
         }
-    }
-}
-
-/**
- * An initial function (without its arguments), or an argument to a function.
- * The `result` argument should be a ParseNode.
- */
-class ParseFuncOrArgument {
-    constructor(result, isFunction, token) {
-        this.result = result;
-        // Is this a function (i.e. is it something defined in functions.js)?
-        this.isFunction = isFunction;
-        this.token = token;
     }
 }
 
