@@ -291,7 +291,7 @@ function findHostIP() {
     }
     if (katexIP !== "*any*" || katexURL) {
         if (!katexURL) {
-            katexURL = "http://" + katexIP + ":" + katexPort + "/babel/";
+            katexURL = "http://" + katexIP + ":" + katexPort + "/";
             console.log("KaTeX URL is " + katexURL);
         }
         process.nextTick(takeScreenshots);
@@ -303,7 +303,7 @@ function findHostIP() {
     app.get("/ss-connect.js", function(req, res, next) {
         if (!katexURL) {
             katexIP = req.query.ip;
-            katexURL = "http://" + katexIP + ":" + katexPort + "/babel/";
+            katexURL = "http://" + katexIP + ":" + katexPort + "/";
             console.log("KaTeX URL is " + katexURL);
             process.nextTick(takeScreenshots);
         }
