@@ -3,7 +3,7 @@
  * default settings.
  */
 
-const utils = require("./utils");
+import utils from "./utils";
 
 /**
  * The main Settings object
@@ -15,14 +15,16 @@ const utils = require("./utils");
  *                 math (true), meaning that the math starts in \displaystyle
  *                 and is placed in a block with vertical margin.
  */
-function Settings(options) {
-    // allow null options
-    options = options || {};
-    this.displayMode = utils.deflt(options.displayMode, false);
-    this.throwOnError = utils.deflt(options.throwOnError, true);
-    this.errorColor = utils.deflt(options.errorColor, "#cc0000");
-    this.macros = options.macros || {};
-    this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
+class Settings {
+    constructor(options) {
+        // allow null options
+        options = options || {};
+        this.displayMode = utils.deflt(options.displayMode, false);
+        this.throwOnError = utils.deflt(options.throwOnError, true);
+        this.errorColor = utils.deflt(options.errorColor, "#cc0000");
+        this.macros = options.macros || {};
+        this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
+    }
 }
 
 module.exports = Settings;

@@ -1,9 +1,6 @@
 /* eslint no-constant-condition:0 */
-const parseData = require("./parseData");
-const ParseError = require("./ParseError");
-const Style = require("./Style");
-
-const ParseNode = parseData.ParseNode;
+import { ParseNode } from "./parseData";
+import ParseError from "./ParseError";
 
 /**
  * Parse the body of the environment, with rows delimited by \\ and
@@ -68,7 +65,6 @@ function parseArray(parser, result, style) {
  *  - positions: the positions associated with these arguments from args.
  * The handler must return a ParseResult.
  */
-
 function defineEnvironment(names, props, handler) {
     if (typeof names === "string") {
         names = [names];
@@ -190,7 +186,7 @@ defineEnvironment([
             // For now we use the metrics for TEXT style which is what we were
             // doing before.  Before attempting to get the current style we
             // should look at TeX's behavior especially for \over and matrices.
-            postgap: Style.TEXT.metrics.quad,
+            postgap: 1.0, /* 1em quad */
         }, {
             type: "align",
             align: "l",

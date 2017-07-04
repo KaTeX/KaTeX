@@ -11,15 +11,8 @@
  * kinds.
  */
 
-const matchAt = require("match-at");
-
-const ParseError = require("./ParseError");
-
-// The main lexer class
-function Lexer(input) {
-    this.input = input;
-    this.pos = 0;
-}
+import matchAt from "match-at";
+import ParseError from "./ParseError";
 
 /**
  * The resulting token returned from `lex`.
@@ -40,26 +33,28 @@ function Lexer(input) {
  * @param {number=} end    the end offset, zero-based exclusive
  * @param {Lexer=}  lexer  the lexer which in turn holds the input string
  */
-function Token(text, start, end, lexer) {
-    this.text = text;
-    this.start = start;
-    this.end = end;
-    this.lexer = lexer;
-}
-
-/**
- * Given a pair of tokens (this and endToken), compute a “Token” encompassing
- * the whole input range enclosed by these two.
- *
- * @param {Token}  endToken  last token of the range, inclusive
- * @param {string} text      the text of the newly constructed token
- */
-Token.prototype.range = function(endToken, text) {
-    if (endToken.lexer !== this.lexer) {
-        return new Token(text); // sorry, no position information available
+class Token {
+    constructor(text, start, end, lexer) {
+        this.text = text;
+        this.start = start;
+        this.end = end;
+        this.lexer = lexer;
     }
-    return new Token(text, this.start, endToken.end, this.lexer);
-};
+
+    /**
+     * Given a pair of tokens (this and endToken), compute a “Token” encompassing
+     * the whole input range enclosed by these two.
+     *
+     * @param {Token}  endToken  last token of the range, inclusive
+     * @param {string} text      the text of the newly constructed token
+     */
+    range(endToken, text) {
+        if (endToken.lexer !== this.lexer) {
+            return new Token(text); // sorry, no position information available
+        }
+        return new Token(text, this.start, endToken.end, this.lexer);
+    }
+}
 
 /* The following tokenRegex
  * - matches typical whitespace (but not NBSP etc.) using its first group
@@ -84,26 +79,36 @@ const tokenRegex = new RegExp(
     ")"
 );
 
-/**
- * This function lexes a single token.
+/*
+ * Main Lexer class
  */
-Lexer.prototype.lex = function() {
-    const input = this.input;
-    const pos = this.pos;
-    if (pos === input.length) {
-        return new Token("EOF", pos, pos, this);
+class Lexer {
+    constructor(input) {
+        this.input = input;
+        this.pos = 0;
     }
-    const match = matchAt(tokenRegex, input, pos);
-    if (match === null) {
-        throw new ParseError(
-            "Unexpected character: '" + input[pos] + "'",
-            new Token(input[pos], pos, pos + 1, this));
+
+    /**
+     * This function lexes a single token.
+     */
+    lex() {
+        const input = this.input;
+        const pos = this.pos;
+        if (pos === input.length) {
+            return new Token("EOF", pos, pos, this);
+        }
+        const match = matchAt(tokenRegex, input, pos);
+        if (match === null) {
+            throw new ParseError(
+                "Unexpected character: '" + input[pos] + "'",
+                new Token(input[pos], pos, pos + 1, this));
+        }
+        const text = match[2] || " ";
+        const start = this.pos;
+        this.pos += match[0].length;
+        const end = this.pos;
+        return new Token(text, start, end, this);
     }
-    const text = match[2] || " ";
-    const start = this.pos;
-    this.pos += match[0].length;
-    const end = this.pos;
-    return new Token(text, start, end, this);
-};
+}
 
 module.exports = Lexer;

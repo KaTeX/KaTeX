@@ -15,7 +15,7 @@ if (require.main === module) {
         ":date[iso] :method :url HTTP/:http-version - :status"));
 }
 
-function serveBrowserified(file, standaloneName, doBabelify) {
+function serveBrowserified(file, standaloneName) {
     return function(req, res, next) {
         let files;
         if (Array.isArray(file)) {
@@ -26,10 +26,9 @@ function serveBrowserified(file, standaloneName, doBabelify) {
             files = [path.join(__dirname, file)];
         }
 
-        const options = {};
-        if (doBabelify) {
-            options.transform = [babelify];
-        }
+        const options = {
+            transform: [babelify],
+        };
         if (standaloneName) {
             options.standalone = standaloneName;
         }
@@ -46,30 +45,24 @@ function serveBrowserified(file, standaloneName, doBabelify) {
     };
 }
 
-function twoBrowserified(url, file, standaloneName) {
-    app.get(url, serveBrowserified(file, standaloneName, false));
-    app.get("/babel" + url, serveBrowserified(file, standaloneName, true));
+function browserified(url, file, standaloneName) {
+    app.get(url, serveBrowserified(file, standaloneName));
 }
 
-function twoUse(url, handler) {
-    app.use(url, handler);
-    app.use("/babel" + url, handler);
+function getStatic(url, file) {
+    app.use(url, express.static(path.join(__dirname, file)));
 }
 
-function twoStatic(url, file) {
-    twoUse(url, express.static(path.join(__dirname, file)));
-}
-
-twoBrowserified("/katex.js", "katex", "katex");
-twoUse("/test/jasmine", express.static(path.dirname(
+browserified("/katex.js", "katex", "katex");
+app.use("/test/jasmine", express.static(path.dirname(
     require.resolve("jasmine-core/lib/jasmine-core/jasmine.js"))));
-twoBrowserified("/test/katex-spec.js", "test/*[Ss]pec.js");
-twoBrowserified(
+browserified("/test/katex-spec.js", "test/*[Ss]pec.js");
+browserified(
     "/contrib/auto-render/auto-render.js",
     "contrib/auto-render/auto-render",
     "renderMathInElement");
 
-twoUse("/katex.css", function(req, res, next) {
+app.use("/katex.css", function(req, res, next) {
     const lessfile = path.join(__dirname, "static", "katex.less");
     fs.readFile(lessfile, {encoding: "utf8"}, function(err, data) {
         if (err) {
@@ -93,10 +86,10 @@ twoUse("/katex.css", function(req, res, next) {
     });
 });
 
-twoStatic("", "static");
-twoStatic("", "build");
-twoStatic("/test", "test");
-twoStatic("/contrib", "contrib");
+getStatic("", "static");
+getStatic("", "build");
+getStatic("/test", "test");
+getStatic("/contrib", "contrib");
 
 app.use(function(err, req, res, next) {
     console.error(err.stack);

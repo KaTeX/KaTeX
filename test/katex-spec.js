@@ -5,14 +5,14 @@
 /* global it: false */
 /* global describe: false */
 
-const buildMathML = require("../src/buildMathML");
-const buildTree = require("../src/buildTree");
-const katex = require("../katex");
-const ParseError = require("../src/ParseError");
-const parseTree = require("../src/parseTree");
-const Options = require("../src/Options");
-const Settings = require("../src/Settings");
-const Style = require("../src/Style");
+import buildMathML from "../src/buildMathML";
+import buildTree from "../src/buildTree";
+import katex from "../katex";
+import ParseError from "../src/ParseError";
+import parseTree from "../src/parseTree";
+import Options from "../src/Options";
+import Settings from "../src/Settings";
+import Style from "../src/Style";
 
 const defaultSettings = new Settings({});
 const defaultOptions = new Options({
@@ -1004,6 +1004,7 @@ describe("A kern parser", function() {
     const emKern = "\\kern{1em}";
     const exKern = "\\kern{1ex}";
     const muKern = "\\kern{1mu}";
+    const abKern = "a\\kern{1em}b";
     const badUnitRule = "\\kern{1px}";
     const noNumberRule = "\\kern{em}";
 
@@ -1011,10 +1012,12 @@ describe("A kern parser", function() {
         const emParse = getParsed(emKern)[0];
         const exParse = getParsed(exKern)[0];
         const muParse = getParsed(muKern)[0];
+        const abParse = getParsed(abKern)[1];
 
         expect(emParse.value.dimension.unit).toEqual("em");
         expect(exParse.value.dimension.unit).toEqual("ex");
         expect(muParse.value.dimension.unit).toEqual("mu");
+        expect(abParse.value.dimension.unit).toEqual("em");
     });
 
     it("should not parse invalid units", function() {
@@ -1037,6 +1040,9 @@ describe("A non-braced kern parser", function() {
     const emKern = "\\kern1em";
     const exKern = "\\kern 1 ex";
     const muKern = "\\kern 1mu";
+    const abKern1 = "a\\mkern1mub";
+    const abKern2 = "a\\kern-1mub";
+    const abKern3 = "a\\kern-1mu b";
     const badUnitRule = "\\kern1px";
     const noNumberRule = "\\kern em";
 
@@ -1044,10 +1050,32 @@ describe("A non-braced kern parser", function() {
         const emParse = getParsed(emKern)[0];
         const exParse = getParsed(exKern)[0];
         const muParse = getParsed(muKern)[0];
+        const abParse1 = getParsed(abKern1)[1];
+        const abParse2 = getParsed(abKern2)[1];
+        const abParse3 = getParsed(abKern3)[1];
 
         expect(emParse.value.dimension.unit).toEqual("em");
         expect(exParse.value.dimension.unit).toEqual("ex");
         expect(muParse.value.dimension.unit).toEqual("mu");
+        expect(abParse1.value.dimension.unit).toEqual("mu");
+        expect(abParse2.value.dimension.unit).toEqual("mu");
+        expect(abParse3.value.dimension.unit).toEqual("mu");
+    });
+
+    it("should parse elements on either side of a kern", function() {
+        const abParse1 = getParsed(abKern1);
+        const abParse2 = getParsed(abKern2);
+        const abParse3 = getParsed(abKern3);
+
+        expect(abParse1.length).toEqual(3);
+        expect(abParse1[0].value).toEqual("a");
+        expect(abParse1[2].value).toEqual("b");
+        expect(abParse2.length).toEqual(3);
+        expect(abParse2[0].value).toEqual("a");
+        expect(abParse2[2].value).toEqual("b");
+        expect(abParse3.length).toEqual(3);
+        expect(abParse3[0].value).toEqual("a");
+        expect(abParse3[2].value).toEqual("b");
     });
 
     it("should not parse invalid units", function() {
@@ -1063,6 +1091,16 @@ describe("A non-braced kern parser", function() {
     it("should parse positive sizes", function() {
         const parse = getParsed("\\kern+1em")[0];
         expect(parse.value.dimension.number).toBeCloseTo(1);
+    });
+
+    it("should handle whitespace", function() {
+        const abKern = "a\\kern\t-\r1  \n mu\nb";
+        const abParse = getParsed(abKern);
+
+        expect(abParse.length).toEqual(3);
+        expect(abParse[0].value).toEqual("a");
+        expect(abParse[1].value.dimension.unit).toEqual("mu");
+        expect(abParse[2].value).toEqual("b");
     });
 });
 
