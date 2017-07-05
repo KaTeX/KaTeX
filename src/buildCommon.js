@@ -4,10 +4,10 @@
  * different kinds of domTree nodes in a consistent manner.
  */
 
-const domTree = require("./domTree");
-const fontMetrics = require("./fontMetrics");
-const symbols = require("./symbols");
-const utils = require("./utils");
+import domTree from "./domTree";
+import fontMetrics from "./fontMetrics";
+import symbols from "./symbols";
+import utils from "./utils";
 
 // The following have to be loaded from Main-Italic font, using class mainit
 const mainitLetters = [

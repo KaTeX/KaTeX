@@ -1,8 +1,6 @@
 /* eslint no-constant-condition:0 */
-const parseData = require("./parseData");
-const ParseError = require("./ParseError");
-
-const ParseNode = parseData.ParseNode;
+import { ParseNode } from "./parseData";
+import ParseError from "./ParseError";
 
 /**
  * Parse the body of the environment, with rows delimited by \\ and
@@ -67,7 +65,6 @@ function parseArray(parser, result, style) {
  *  - positions: the positions associated with these arguments from args.
  * The handler must return a ParseResult.
  */
-
 function defineEnvironment(names, props, handler) {
     if (typeof names === "string") {
         names = [names];

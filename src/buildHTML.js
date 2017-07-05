@@ -6,16 +6,14 @@
  * called, to produce a final HTML tree.
  */
 
-const ParseError = require("./ParseError");
-const Style = require("./Style");
+import ParseError from "./ParseError";
+import Style from "./Style";
 
-const buildCommon = require("./buildCommon");
-const delimiter = require("./delimiter");
-const domTree = require("./domTree");
-const utils = require("./utils");
-const stretchy = require("./stretchy");
-
-const makeSpan = buildCommon.makeSpan;
+import buildCommon, { makeSpan } from "./buildCommon";
+import delimiter from "./delimiter";
+import domTree from "./domTree";
+import utils from "./utils";
+import stretchy from "./stretchy";
 
 const isSpace = function(node) {
     return node instanceof domTree.span && node.classes[0] === "mspace";
@@ -24,7 +22,6 @@ const isSpace = function(node) {
 // Binary atoms (first class `mbin`) change into ordinary atoms (`mord`)
 // depending on their surroundings. See TeXbook pg. 442-446, Rules 5 and 6,
 // and the text before Rule 19.
-
 const isBin = function(node) {
     return node && node.classes[0] === "mbin";
 };

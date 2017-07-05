@@ -4,16 +4,13 @@
  * parser.
  */
 
-const buildCommon = require("./buildCommon");
-const fontMetrics = require("./fontMetrics");
-const mathMLTree = require("./mathMLTree");
-const ParseError = require("./ParseError");
-const symbols = require("./symbols");
-const utils = require("./utils");
-const stretchy = require("./stretchy");
-
-const makeSpan = buildCommon.makeSpan;
-const fontMap = buildCommon.fontMap;
+import buildCommon, { makeSpan, fontMap } from "./buildCommon";
+import fontMetrics from "./fontMetrics";
+import mathMLTree from "./mathMLTree";
+import ParseError from "./ParseError";
+import symbols from "./symbols";
+import utils from "./utils";
+import stretchy from "./stretchy";
 
 /**
  * Takes a symbol and converts it into a MathML text node after performing

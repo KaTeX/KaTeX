@@ -3,7 +3,7 @@
  * TODO(emily): Remove this
  */
 
-const Parser = require("./Parser");
+import Parser from "./Parser";
 
 /**
  * Parses an expression using a Parser, then returns the parsed result.

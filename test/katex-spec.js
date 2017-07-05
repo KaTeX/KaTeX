@@ -5,14 +5,14 @@
 /* global it: false */
 /* global describe: false */
 
-const buildMathML = require("../src/buildMathML");
-const buildTree = require("../src/buildTree");
-const katex = require("../katex");
-const ParseError = require("../src/ParseError");
-const parseTree = require("../src/parseTree");
-const Options = require("../src/Options");
-const Settings = require("../src/Settings");
-const Style = require("../src/Style");
+import buildMathML from "../src/buildMathML";
+import buildTree from "../src/buildTree";
+import katex from "../katex";
+import ParseError from "../src/ParseError";
+import parseTree from "../src/parseTree";
+import Options from "../src/Options";
+import Settings from "../src/Settings";
+import Style from "../src/Style";
 
 const defaultSettings = new Settings({});
 const defaultOptions = new Options({

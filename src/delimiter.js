@@ -20,15 +20,13 @@
  * used in `\left` and `\right`.
  */
 
-const ParseError = require("./ParseError");
-const Style = require("./Style");
+import ParseError from "./ParseError";
+import Style from "./Style";
 
-const buildCommon = require("./buildCommon");
-const fontMetrics = require("./fontMetrics");
-const symbols = require("./symbols");
-const utils = require("./utils");
-
-const makeSpan = buildCommon.makeSpan;
+import buildCommon, { makeSpan } from "./buildCommon";
+import fontMetrics from "./fontMetrics";
+import symbols from "./symbols";
+import utils from "./utils";
 
 /**
  * Get the metrics for a given symbol and font, after transformation (i.e.
