@@ -156,7 +156,7 @@ const shouldHandleSupSub = function(group, options) {
                 base.value.alwaysHandleSupSub);
         } else if (base.type === "accent") {
             return isCharacterBox(base.value.base);
-        } else if (base.type === "horizBrace") {
+        } else if (base.type === "horizBraceOrBracket") {
             const isSup = (group.value.sub ? false : true);
             return (isSup === base.value.isOver);
         } else {
@@ -1473,7 +1473,7 @@ groupTypes.accent = function(group, options) {
     }
 };
 
-groupTypes.horizBrace = function(group, options) {
+groupTypes.horizBraceOrBracket = function(group, options) {
     const style = options.style;
 
     const hasSupSub = (group.type === "supsub");
@@ -1497,25 +1497,24 @@ groupTypes.horizBrace = function(group, options) {
     const body = buildGroup(
        group.value.base, options.havingStyle(style.cramp()));
 
+    // If a custom bracket, convert units.
+    if (group.value.thickness) {
+        group.value.thickness.value = calculateSize(group.value.thickness.value,
+                options.style);
+    }
+    if (group.value.height) {
+        group.value.height = calculateSize(group.value.height.value,
+                options.style);
+    }
+
     // Create the stretchy element
     const braceBody = stretchy.svgSpan(group, options);
 
-    // Generate the vlist, with the appropriate kerns               ┏━━━━━━━━┓
+    // Generate the vlist                                           ┏━━━━━━━━┓
     // This first vlist contains the subject matter and the brace:   equation
-    let vlist;
-    if (group.value.isOver) {
-        vlist = buildCommon.makeVList([
-            {type: "elem", elem: body},
-            {type: "kern", size: 0.1},
-            {type: "elem", elem: braceBody},
-        ], "firstBaseline", null, options);
-    } else {
-        vlist = buildCommon.makeVList([
-            {type: "elem", elem: braceBody},
-            {type: "kern", size: 0.1},
-            {type: "elem", elem: body},
-        ], "bottom", body.depth + 0.1 + braceBody.height, options);
-    }
+    const braceShift = (group.value.isOver ? -body.height - 0.1 : 
+        body.depth + braceBody.height + 0.1);
+    let vlist = buildCommon.makeImageVList(body, braceBody, braceShift, options);
 
     if (hasSupSub) {
         // In order to write the supsub, wrap the first vlist in another vlist:
@@ -1596,20 +1595,7 @@ groupTypes.enclose = function(group, options) {
         img = stretchy.encloseSpan(inner, isCharBox, label, pad, options);
     }
 
-    const vlist = buildCommon.makeVList([
-        {type: "elem", elem: inner, shift: 0},
-        {type: "elem", elem: img, shift: imgShift},
-    ], "individualShift", null, options);
-
-    if (img.height > vlist.maxFontSize) {
-        // Correct for an issue in makeVList. It placed the image top at
-        // the top of the line box created by a 1 em maxFontSize.
-        vlist.children[1].style.top = -(inner.height + pad - 0.9 / scale)
-            + "em";
-        // The 0.9 in the previous line is there because the KaTeX fonts
-        // have an ascent = 0.9 em. We're setting the top of the image
-        // relative to the top of that line box.
-    }
+    const vlist = buildCommon.makeImageVList(inner, img, imgShift, options);
 
     if (/cancel/.test(label)) {
         // cancel does not create horiz space for its line extension.

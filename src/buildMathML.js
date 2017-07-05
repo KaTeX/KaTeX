@@ -198,7 +198,7 @@ groupTypes.supsub = function(group, options) {
     let isOver;
     let isSup;
     if (group.value.base) {
-        if (group.value.base.value.type === "horizBrace") {
+        if (group.value.base.value.type === "horizBraceOrBracket") {
             isSup = (group.value.sup ? true : false);
             if (isSup === group.value.base.value.isOver) {
                 isBrace = true;
@@ -549,7 +549,7 @@ groupTypes.enclose = function(group, options) {
     return node;
 };
 
-groupTypes.horizBrace = function(group, options) {
+groupTypes.horizBraceOrBracket = function(group, options) {
     const accentNode = stretchy.mathMLnode(group.value.label);
     return new mathMLTree.MathNode(
         (group.value.isOver ? "mover" : "munder"),

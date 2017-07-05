@@ -660,17 +660,23 @@ defineFunction([
     };
 });
 
-// Horizontal stretchy braces
+// Horizontal stretchy braces and brackets
 defineFunction([
-    "\\overbrace", "\\underbrace",
+    "\\overbrace", "\\overbracket", "\\underbrace", "\\underbracket",
 ], {
     numArgs: 1,
+    numOptionalArgs: 2,
+    argTypes: ["size", "size", "original"],
 }, function(context, args) {
-    const base = args[0];
+    const thickness = args[0];
+    const height = args[1];
+    const base = args[2];
     return {
-        type: "horizBrace",
+        type: "horizBraceOrBracket",
         label: context.funcName,
         isOver: /^\\over/.test(context.funcName),
+        thickness: thickness,
+        height: height,
         base: base,
     };
 });
