@@ -378,7 +378,7 @@ const makeVList = function(children, positionType, positionData, options) {
     return vlist;
 };
 
-var makeImageVList = function(textNode, img, imgShift, options) {
+const makeImageVList = function(textNode, img, imgShift, options) {
     // This function is an alternate to makeVList, for use when one element
     // is located on the baseline and the other element is an image.
     // Unlike makeVList, this works even if img.height > textNode.maxFontSize.
@@ -387,14 +387,14 @@ var makeImageVList = function(textNode, img, imgShift, options) {
 	// By making fontSizer at least 1 em tall, we avoid complications from
 	// scriptstyle and scriptscriptstyle. Also, 1 em is not so tall that it
 	// could push the whole line downward on the screen.
-    
+
     // Find the top of the line box.
     const boxHeight = 0.9 * maxFontSize / options.sizeMultiplier;
     // That 0.9 is because KaTeX fonts have an ascend height = 0.9
 
     // Now set the image top relative to boxHeight.
     img.style.top = imgShift - img.height + boxHeight + "em";
-    
+
     const fontSizer = makeFontSizer(options, maxFontSize);
     const baselineFix = makeSpan(
         ["baseline-fix"], [fontSizer, new domTree.symbolNode("\u200b")]);

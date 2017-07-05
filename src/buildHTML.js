@@ -1512,7 +1512,7 @@ groupTypes.horizBraceOrBracket = function(group, options) {
 
     // Generate the vlist                                           ┏━━━━━━━━┓
     // This first vlist contains the subject matter and the brace:   equation
-    const braceShift = (group.value.isOver ? -body.height - 0.1 : 
+    const braceShift = (group.value.isOver ? -body.height - 0.1 :
         body.depth + braceBody.height + 0.1);
     let vlist = buildCommon.makeImageVList(body, braceBody, braceShift, options);
 
