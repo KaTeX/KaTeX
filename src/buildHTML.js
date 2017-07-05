@@ -6,17 +6,14 @@
  * called, to produce a final HTML tree.
  */
 
-const ParseError = require("./ParseError");
-const Style = require("./Style");
+import ParseError from "./ParseError";
+import Style from "./Style";
 
-const buildCommon = require("./buildCommon");
-const delimiter = require("./delimiter");
-const domTree = require("./domTree");
-const fontMetrics = require("./fontMetrics");
-const utils = require("./utils");
-const stretchy = require("./stretchy");
-
-const makeSpan = buildCommon.makeSpan;
+import buildCommon, { makeSpan } from "./buildCommon";
+import delimiter from "./delimiter";
+import domTree from "./domTree";
+import utils from "./utils";
+import stretchy from "./stretchy";
 
 const isSpace = function(node) {
     return node instanceof domTree.span && node.classes[0] === "mspace";
@@ -25,7 +22,6 @@ const isSpace = function(node) {
 // Binary atoms (first class `mbin`) change into ordinary atoms (`mord`)
 // depending on their surroundings. See TeXbook pg. 442-446, Rules 5 and 6,
 // and the text before Rule 19.
-
 const isBin = function(node) {
     return node && node.classes[0] === "mbin";
 };
@@ -312,7 +308,7 @@ groupTypes.supsub = function(group, options) {
     let supm;
     let subm;
 
-    const style = options.style;
+    const metrics = options.fontMetrics();
     let newOptions;
 
     // Rule 18a
@@ -320,45 +316,45 @@ groupTypes.supsub = function(group, options) {
     let subShift = 0;
 
     if (group.value.sup) {
-        newOptions = options.havingStyle(style.sup());
+        newOptions = options.havingStyle(options.style.sup());
         supm = buildGroup(group.value.sup, newOptions, options);
         if (!isCharacterBox(group.value.base)) {
-            supShift = base.height - newOptions.style.metrics.supDrop
+            supShift = base.height - newOptions.fontMetrics().supDrop
                 * newOptions.sizeMultiplier / options.sizeMultiplier;
         }
     }
 
     if (group.value.sub) {
-        newOptions = options.havingStyle(style.sub());
+        newOptions = options.havingStyle(options.style.sub());
         subm = buildGroup(group.value.sub, newOptions, options);
         if (!isCharacterBox(group.value.base)) {
-            subShift = base.depth + newOptions.style.metrics.subDrop
+            subShift = base.depth + newOptions.fontMetrics().subDrop
                 * newOptions.sizeMultiplier / options.sizeMultiplier;
         }
     }
 
     // Rule 18c
     let minSupShift;
-    if (style === Style.DISPLAY) {
-        minSupShift = style.metrics.sup1;
-    } else if (style.cramped) {
-        minSupShift = style.metrics.sup3;
+    if (options.style === Style.DISPLAY) {
+        minSupShift = metrics.sup1;
+    } else if (options.style.cramped) {
+        minSupShift = metrics.sup3;
     } else {
-        minSupShift = style.metrics.sup2;
+        minSupShift = metrics.sup2;
     }
 
     // scriptspace is a font-size-independent size, so scale it
     // appropriately
     const multiplier = options.sizeMultiplier;
     const scriptspace =
-        (0.5 / fontMetrics.metrics.ptPerEm) / multiplier + "em";
+        (0.5 / metrics.ptPerEm) / multiplier + "em";
 
     let supsub;
     if (!group.value.sup) {
         // Rule 18b
         subShift = Math.max(
-            subShift, style.metrics.sub1,
-            subm.height - 0.8 * style.metrics.xHeight);
+            subShift, metrics.sub1,
+            subm.height - 0.8 * metrics.xHeight);
 
         supsub = buildCommon.makeVList([
             {type: "elem", elem: subm},
@@ -375,7 +371,7 @@ groupTypes.supsub = function(group, options) {
     } else if (!group.value.sub) {
         // Rule 18c, d
         supShift = Math.max(supShift, minSupShift,
-            supm.depth + 0.25 * style.metrics.xHeight);
+            supm.depth + 0.25 * metrics.xHeight);
 
         supsub = buildCommon.makeVList([
             {type: "elem", elem: supm},
@@ -384,16 +380,16 @@ groupTypes.supsub = function(group, options) {
         supsub.children[0].style.marginRight = scriptspace;
     } else {
         supShift = Math.max(
-            supShift, minSupShift, supm.depth + 0.25 * style.metrics.xHeight);
-        subShift = Math.max(subShift, style.metrics.sub2);
+            supShift, minSupShift, supm.depth + 0.25 * metrics.xHeight);
+        subShift = Math.max(subShift, metrics.sub2);
 
-        const ruleWidth = fontMetrics.metrics.defaultRuleThickness;
+        const ruleWidth = metrics.defaultRuleThickness;
 
         // Rule 18e
         if ((supShift - supm.depth) - (subm.height - subShift) <
                 4 * ruleWidth) {
             subShift = 4 * ruleWidth - (supShift - supm.depth) + subm.height;
-            const psi = 0.8 * style.metrics.xHeight - (supShift - supm.depth);
+            const psi = 0.8 * metrics.xHeight - (supShift - supm.depth);
             if (psi > 0) {
                 supShift += psi;
                 subShift -= psi;
@@ -455,22 +451,22 @@ groupTypes.genfrac = function(group, options) {
     let clearance;
     let denomShift;
     if (style.size === Style.DISPLAY.size) {
-        numShift = style.metrics.num1;
+        numShift = options.fontMetrics().num1;
         if (ruleWidth > 0) {
             clearance = 3 * ruleWidth;
         } else {
-            clearance = 7 * fontMetrics.metrics.defaultRuleThickness;
+            clearance = 7 * options.fontMetrics().defaultRuleThickness;
         }
-        denomShift = style.metrics.denom1;
+        denomShift = options.fontMetrics().denom1;
     } else {
         if (ruleWidth > 0) {
-            numShift = style.metrics.num2;
+            numShift = options.fontMetrics().num2;
             clearance = ruleWidth;
         } else {
-            numShift = style.metrics.num3;
-            clearance = 3 * fontMetrics.metrics.defaultRuleThickness;
+            numShift = options.fontMetrics().num3;
+            clearance = 3 * options.fontMetrics().defaultRuleThickness;
         }
-        denomShift = style.metrics.denom2;
+        denomShift = options.fontMetrics().denom2;
     }
 
     let frac;
@@ -489,7 +485,7 @@ groupTypes.genfrac = function(group, options) {
         ], "individualShift", null, options);
     } else {
         // Rule 15d
-        const axisHeight = style.metrics.axisHeight;
+        const axisHeight = options.fontMetrics().axisHeight;
 
         if ((numShift - numerm.depth) - (axisHeight + 0.5 * ruleWidth) <
                 clearance) {
@@ -523,9 +519,9 @@ groupTypes.genfrac = function(group, options) {
     // Rule 15e
     let delimSize;
     if (style.size === Style.DISPLAY.size) {
-        delimSize = style.metrics.delim1;
+        delimSize = options.fontMetrics().delim1;
     } else {
-        delimSize = style.metrics.delim2;
+        delimSize = options.fontMetrics().delim2;
     }
 
     let leftDelim;
@@ -551,10 +547,10 @@ groupTypes.genfrac = function(group, options) {
         options);
 };
 
-const calculateSize = function(sizeValue, style) {
+const calculateSize = function(sizeValue, options) {
     let x = sizeValue.number;
     if (sizeValue.unit === "ex") {
-        x *= style.metrics.emPerEx;
+        x *= options.fontMetrics().emPerEx;
     } else if (sizeValue.unit === "mu") {
         x /= 18;
     }
@@ -568,10 +564,8 @@ groupTypes.array = function(group, options) {
     let nc = 0;
     let body = new Array(nr);
 
-    const style = options.style;
-
     // Horizontal spacing
-    const pt = 1 / fontMetrics.metrics.ptPerEm;
+    const pt = 1 / options.fontMetrics().ptPerEm;
     const arraycolsep = 5 * pt; // \arraycolsep in article.cls
 
     // Vertical spacing
@@ -610,7 +604,7 @@ groupTypes.array = function(group, options) {
 
         let gap = 0;
         if (group.value.rowGaps[r]) {
-            gap = calculateSize(group.value.rowGaps[r].value, style);
+            gap = calculateSize(group.value.rowGaps[r].value, options);
             if (gap > 0) { // \@argarraycr
                 gap += arstrutDepth;
                 if (depth < gap) {
@@ -634,7 +628,7 @@ groupTypes.array = function(group, options) {
         body[r] = outrow;
     }
 
-    const offset = totalHeight / 2 + style.metrics.axisHeight;
+    const offset = totalHeight / 2 + options.fontMetrics().axisHeight;
     const colDescriptions = group.value.cols || [];
     const cols = [];
     let colSep;
@@ -654,7 +648,7 @@ groupTypes.array = function(group, options) {
             if (!firstSeparator) {
                 colSep = makeSpan(["arraycolsep"], []);
                 colSep.style.width =
-                    fontMetrics.metrics.doubleRuleSep + "em";
+                    options.fontMetrics().doubleRuleSep + "em";
                 cols.push(colSep);
             }
 
@@ -793,30 +787,21 @@ groupTypes.op = function(group, options) {
     }
 
     let base;
-    let baseShift = 0;
-    let slant = 0;
     if (group.value.symbol) {
         // If this is a symbol, create the symbol.
         const fontName = large ? "Size2-Regular" : "Size1-Regular";
         base = buildCommon.makeSymbol(
             group.value.body, fontName, "math", options,
             ["mop", "op-symbol", large ? "large-op" : "small-op"]);
-
-        // Shift the symbol so its center lies on the axis (rule 13). It
-        // appears that our fonts have the centers of the symbols already
-        // almost on the axis, so these numbers are very small. Note we
-        // don't actually apply this here, but instead it is used either in
-        // the vlist creation or separately when there are no limits.
-        baseShift = (base.height - base.depth) / 2 -
-            style.metrics.axisHeight * options.sizeMultiplier;
-
-        // The slant of the symbol is just its italic correction.
-        slant = base.italic;
     } else if (group.value.value) {
         // If this is a list, compose that list.
         const inner = buildExpression(group.value.value, options, true);
-
-        base = makeSpan(["mop"], inner, options);
+        if (inner.length === 1 && inner[0] instanceof domTree.symbolNode) {
+            base = inner[0];
+            base.classes[0] = "mop"; // replace old mclass
+        } else {
+            base = makeSpan(["mop"], inner, options);
+        }
     } else {
         // Otherwise, this is a text operator. Build the text from the
         // operator's name.
@@ -827,6 +812,22 @@ groupTypes.op = function(group, options) {
             output.push(buildCommon.mathsym(group.value.body[i], group.mode));
         }
         base = makeSpan(["mop"], output, options);
+    }
+
+    // If content of op is a single symbol, shift it vertically.
+    let baseShift = 0;
+    let slant = 0;
+    if (base instanceof domTree.symbolNode) {
+        // Shift the symbol so its center lies on the axis (rule 13). It
+        // appears that our fonts have the centers of the symbols already
+        // almost on the axis, so these numbers are very small. Note we
+        // don't actually apply this here, but instead it is used either in
+        // the vlist creation or separately when there are no limits.
+        baseShift = (base.height - base.depth) / 2 -
+            options.fontMetrics().axisHeight;
+
+        // The slant of the symbol is just its italic correction.
+        slant = base.italic;
     }
 
     if (hasLimits) {
@@ -846,8 +847,8 @@ groupTypes.op = function(group, options) {
             supm = buildGroup(supGroup, newOptions, options);
 
             supKern = Math.max(
-                fontMetrics.metrics.bigOpSpacing1,
-                fontMetrics.metrics.bigOpSpacing3 - supm.depth);
+                options.fontMetrics().bigOpSpacing1,
+                options.fontMetrics().bigOpSpacing3 - supm.depth);
         }
 
         if (subGroup) {
@@ -855,8 +856,8 @@ groupTypes.op = function(group, options) {
             subm = buildGroup(subGroup, newOptions, options);
 
             subKern = Math.max(
-                fontMetrics.metrics.bigOpSpacing2,
-                fontMetrics.metrics.bigOpSpacing4 - subm.height);
+                options.fontMetrics().bigOpSpacing2,
+                options.fontMetrics().bigOpSpacing4 - subm.height);
         }
 
         // Build the final group as a vlist of the possible subscript, base,
@@ -868,7 +869,7 @@ groupTypes.op = function(group, options) {
             top = base.height - baseShift;
 
             finalGroup = buildCommon.makeVList([
-                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
+                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
                 {type: "elem", elem: subm},
                 {type: "kern", size: subKern},
                 {type: "elem", elem: base},
@@ -886,7 +887,7 @@ groupTypes.op = function(group, options) {
                 {type: "elem", elem: base},
                 {type: "kern", size: supKern},
                 {type: "elem", elem: supm},
-                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
+                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
             ], "bottom", bottom, options);
 
             // See comment above about slants
@@ -897,19 +898,19 @@ groupTypes.op = function(group, options) {
             // subscript) but be safe.
             return base;
         } else {
-            bottom = fontMetrics.metrics.bigOpSpacing5 +
+            bottom = options.fontMetrics().bigOpSpacing5 +
                 subm.height + subm.depth +
                 subKern +
                 base.depth + baseShift;
 
             finalGroup = buildCommon.makeVList([
-                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
+                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
                 {type: "elem", elem: subm},
                 {type: "kern", size: subKern},
                 {type: "elem", elem: base},
                 {type: "kern", size: supKern},
                 {type: "elem", elem: supm},
-                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
+                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
             ], "bottom", bottom, options);
 
             // See comment above about slants
@@ -919,7 +920,8 @@ groupTypes.op = function(group, options) {
 
         return makeSpan(["mop", "op-limits"], [finalGroup], options);
     } else {
-        if (group.value.symbol) {
+        if (baseShift) {
+            base.style.position = "relative";
             base.style.top = baseShift + "em";
         }
 
@@ -1012,7 +1014,7 @@ const makeLineSpan = function(className, options) {
     const line = makeSpan(
         [className].concat(baseOptions.sizingClasses(options)),
         [], options);
-    line.height = fontMetrics.metrics.defaultRuleThickness /
+    line.height = options.fontMetrics().defaultRuleThickness /
         options.sizeMultiplier;
     line.maxFontSize = 1.0;
     return line;
@@ -1070,7 +1072,7 @@ groupTypes.sqrt = function(group, options) {
 
     let phi = ruleWidth;
     if (options.style.id < Style.TEXT.id) {
-        phi = options.style.metrics.xHeight * options.sizeMultiplier;
+        phi = options.fontMetrics().xHeight * options.sizeMultiplier;
     }
 
     // Calculate the clearance between the body and line
@@ -1303,16 +1305,15 @@ groupTypes.middle = function(group, options) {
 groupTypes.rule = function(group, options) {
     // Make an empty span for the rule
     const rule = makeSpan(["mord", "rule"], [], options);
-    const style = options.style;
 
     // Calculate the shift, width, and height of the rule, and account for units
     let shift = 0;
     if (group.value.shift) {
-        shift = calculateSize(group.value.shift, style);
+        shift = calculateSize(group.value.shift, options);
     }
 
-    let width = calculateSize(group.value.width, style);
-    let height = calculateSize(group.value.height, style);
+    let width = calculateSize(group.value.width, options);
+    let height = calculateSize(group.value.height, options);
 
     // The sizes of rules are absolute, so make it larger if we are in a
     // smaller style.
@@ -1340,11 +1341,10 @@ groupTypes.rule = function(group, options) {
 groupTypes.kern = function(group, options) {
     // Make an empty span for the rule
     const rule = makeSpan(["mord", "rule"], [], options);
-    const style = options.style;
 
     let dimension = 0;
     if (group.value.dimension) {
-        dimension = calculateSize(group.value.dimension, style);
+        dimension = calculateSize(group.value.dimension, options);
     }
 
     dimension /= options.sizeMultiplier;
@@ -1357,7 +1357,6 @@ groupTypes.kern = function(group, options) {
 groupTypes.accent = function(group, options) {
     // Accents are handled in the TeXbook pg. 443, rule 12.
     let base = group.value.base;
-    const style = options.style;
 
     let supsubGroup;
     if (group.type === "supsub") {
@@ -1412,7 +1411,7 @@ groupTypes.accent = function(group, options) {
     // calculate the amount of space between the body and the accent
     const clearance = Math.min(
         body.height,
-        style.metrics.xHeight);
+        options.fontMetrics().xHeight);
 
     // Build the accent
     let accentBody;
@@ -1584,9 +1583,9 @@ groupTypes.enclose = function(group, options) {
 
     if (label === "sout") {
         img = makeSpan(["stretchy", "sout"]);
-        img.height = fontMetrics.metrics.defaultRuleThickness / scale;
+        img.height = options.fontMetrics().defaultRuleThickness / scale;
         img.maxFontSize = 1.0;
-        imgShift = -0.5 * options.style.metrics.xHeight;
+        imgShift = -0.5 * options.fontMetrics().xHeight;
     } else {
         // Add horizontal padding
         inner.classes.push((label === "fbox" ? "boxpad" : "cancel-pad"));
@@ -1643,14 +1642,14 @@ groupTypes.xArrow = function(group, options) {
 
     const arrowBody = stretchy.svgSpan(group, options);
 
-    const arrowShift = -style.metrics.axisHeight + arrowBody.depth;
-    const upperShift = -style.metrics.axisHeight - arrowBody.height -
+    const arrowShift = -options.fontMetrics().axisHeight + arrowBody.depth;
+    const upperShift = -options.fontMetrics().axisHeight - arrowBody.height -
         0.111;    // 2 mu. Ref: amsmath.dtx: #7\if0#2\else\mkern#2mu\fi
 
     // Generate the vlist
     let vlist;
     if (group.value.below) {
-        const lowerShift = -style.metrics.axisHeight
+        const lowerShift = -options.fontMetrics().axisHeight
             + lowerGroup.height + arrowBody.height
             + 0.111;
         vlist = buildCommon.makeVList([

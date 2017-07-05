@@ -128,6 +128,7 @@ MathBf: \mathbf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathCal: \mathcal{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathFrak: \mathfrak{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathIt: \mathit{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathOp: a\mathop+b\mathop:c\mathop{\delta}e\mathop{\textrm{and}}f\mathrel{\mathop{:}}=g\sin h
 MathRm: \mathrm{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathSf: \mathsf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathScr: \mathscr{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}

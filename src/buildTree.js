@@ -1,11 +1,9 @@
-const buildHTML = require("./buildHTML");
-const buildMathML = require("./buildMathML");
-const buildCommon = require("./buildCommon");
-const Options = require("./Options");
-const Settings = require("./Settings");
-const Style = require("./Style");
-
-const makeSpan = buildCommon.makeSpan;
+import buildHTML from "./buildHTML";
+import buildMathML from "./buildMathML";
+import { makeSpan } from "./buildCommon";
+import Options from "./Options";
+import Settings from "./Settings";
+import Style from "./Style";
 
 const buildTree = function(tree, expression, settings) {
     settings = settings || new Settings({});

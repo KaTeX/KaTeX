@@ -20,15 +20,13 @@
  * used in `\left` and `\right`.
  */
 
-const ParseError = require("./ParseError");
-const Style = require("./Style");
+import ParseError from "./ParseError";
+import Style from "./Style";
 
-const buildCommon = require("./buildCommon");
-const fontMetrics = require("./fontMetrics");
-const symbols = require("./symbols");
-const utils = require("./utils");
-
-const makeSpan = buildCommon.makeSpan;
+import buildCommon, { makeSpan } from "./buildCommon";
+import fontMetrics from "./fontMetrics";
+import symbols from "./symbols";
+import utils from "./utils";
 
 /**
  * Get the metrics for a given symbol and font, after transformation (i.e.
@@ -66,7 +64,7 @@ const centerSpan = function(span, options, style) {
     const newOptions = options.havingBaseStyle(style);
     const shift =
         (1 - options.sizeMultiplier / newOptions.sizeMultiplier) *
-        options.style.metrics.axisHeight;
+        options.fontMetrics().axisHeight;
 
     span.classes.push("delimcenter");
     span.style.top = shift + "em";
@@ -275,7 +273,7 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
     // that in this context, "center" means that the delimiter should be
     // centered around the axis in the current style, while normally it is
     // centered around the axis in textstyle.
-    let axisHeight = options.style.metrics.axisHeight;
+    let axisHeight = options.fontMetrics().axisHeight;
     if (center) {
         axisHeight *= options.sizeMultiplier;
     }
@@ -510,11 +508,11 @@ const makeLeftRightDelim = function(delim, height, depth, options, mode,
                                   classes) {
     // We always center \left/\right delimiters, so the axis is always shifted
     const axisHeight =
-        options.style.metrics.axisHeight * options.sizeMultiplier;
+        options.fontMetrics().axisHeight * options.sizeMultiplier;
 
     // Taken from TeX source, tex.web, function make_left_right
     const delimiterFactor = 901;
-    const delimiterExtend = 5.0 / fontMetrics.metrics.ptPerEm;
+    const delimiterExtend = 5.0 / options.fontMetrics().ptPerEm;
 
     const maxDistFromAxis = Math.max(
         height - axisHeight, depth + axisHeight);
