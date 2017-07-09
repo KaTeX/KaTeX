@@ -560,6 +560,7 @@ const calculateSize = function(sizeValue, options) {
     } else {
         let unitOptions;
         if (options.style.isTight()) {
+            // isTight() means current style is script/scriptscript.
             unitOptions = options.havingStyle(options.style.text());
         } else {
             unitOptions = options;
