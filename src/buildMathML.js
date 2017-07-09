@@ -4,21 +4,19 @@
  * parser.
  */
 
-var buildCommon = require("./buildCommon");
-var fontMetrics = require("./fontMetrics");
-var mathMLTree = require("./mathMLTree");
-var ParseError = require("./ParseError");
-var symbols = require("./symbols");
-var utils = require("./utils");
-
-var makeSpan = buildCommon.makeSpan;
-var fontMap = buildCommon.fontMap;
+import buildCommon, { makeSpan, fontMap } from "./buildCommon";
+import fontMetrics from "./fontMetrics";
+import mathMLTree from "./mathMLTree";
+import ParseError from "./ParseError";
+import symbols from "./symbols";
+import utils from "./utils";
+import stretchy from "./stretchy";
 
 /**
  * Takes a symbol and converts it into a MathML text node after performing
  * optional replacement from symbols.js.
  */
-var makeText = function(text, mode) {
+const makeText = function(text, mode) {
     if (symbols[mode][text] && symbols[mode][text].replace) {
         text = symbols[mode][text].replace;
     }
@@ -29,18 +27,18 @@ var makeText = function(text, mode) {
 /**
  * Returns the math variant as a string or null if none is required.
  */
-var getVariant = function(group, options) {
-    var font = options.font;
+const getVariant = function(group, options) {
+    const font = options.font;
     if (!font) {
         return null;
     }
 
-    var mode = group.mode;
+    const mode = group.mode;
     if (font === "mathit") {
         return "italic";
     }
 
-    var value = group.value;
+    let value = group.value;
     if (utils.contains(["\\imath", "\\jmath"], value)) {
         return null;
     }
@@ -49,7 +47,7 @@ var getVariant = function(group, options) {
         value = symbols[mode][value].replace;
     }
 
-    var fontName = fontMap[font].fontName;
+    const fontName = fontMap[font].fontName;
     if (fontMetrics.getCharacterMetrics(value, fontName)) {
         return fontMap[options.font].variant;
     }
@@ -61,35 +59,42 @@ var getVariant = function(group, options) {
  * Functions for handling the different types of groups found in the parse
  * tree. Each function should take a parse group and return a MathML node.
  */
-var groupTypes = {};
+const groupTypes = {};
+
+const defaultVariant = {
+    "mi": "italic",
+    "mn": "normal",
+    "mtext": "normal",
+};
 
 groupTypes.mathord = function(group, options) {
-    var node = new mathMLTree.MathNode(
+    const node = new mathMLTree.MathNode(
         "mi",
         [makeText(group.value, group.mode)]);
 
-    var variant = getVariant(group, options);
-    if (variant) {
+    const variant = getVariant(group, options) || "italic";
+    if (variant !== defaultVariant[node.type]) {
         node.setAttribute("mathvariant", variant);
     }
     return node;
 };
 
 groupTypes.textord = function(group, options) {
-    var text = makeText(group.value, group.mode);
+    const text = makeText(group.value, group.mode);
 
-    var variant = getVariant(group, options) || "normal";
+    const variant = getVariant(group, options) || "normal";
 
-    var node;
-    if (/[0-9]/.test(group.value)) {
+    let node;
+    if (group.mode === 'text') {
+        node = new mathMLTree.MathNode("mtext", [text]);
+    } else if (/[0-9]/.test(group.value)) {
         // TODO(kevinb) merge adjacent <mn> nodes
         // do it as a post processing step
         node = new mathMLTree.MathNode("mn", [text]);
-        if (options.font) {
-            node.setAttribute("mathvariant", variant);
-        }
     } else {
         node = new mathMLTree.MathNode("mi", [text]);
+    }
+    if (variant !== defaultVariant[node.type]) {
         node.setAttribute("mathvariant", variant);
     }
 
@@ -97,42 +102,42 @@ groupTypes.textord = function(group, options) {
 };
 
 groupTypes.bin = function(group) {
-    var node = new mathMLTree.MathNode(
+    const node = new mathMLTree.MathNode(
         "mo", [makeText(group.value, group.mode)]);
 
     return node;
 };
 
 groupTypes.rel = function(group) {
-    var node = new mathMLTree.MathNode(
+    const node = new mathMLTree.MathNode(
         "mo", [makeText(group.value, group.mode)]);
 
     return node;
 };
 
 groupTypes.open = function(group) {
-    var node = new mathMLTree.MathNode(
+    const node = new mathMLTree.MathNode(
         "mo", [makeText(group.value, group.mode)]);
 
     return node;
 };
 
 groupTypes.close = function(group) {
-    var node = new mathMLTree.MathNode(
+    const node = new mathMLTree.MathNode(
         "mo", [makeText(group.value, group.mode)]);
 
     return node;
 };
 
 groupTypes.inner = function(group) {
-    var node = new mathMLTree.MathNode(
+    const node = new mathMLTree.MathNode(
         "mo", [makeText(group.value, group.mode)]);
 
     return node;
 };
 
 groupTypes.punct = function(group) {
-    var node = new mathMLTree.MathNode(
+    const node = new mathMLTree.MathNode(
         "mo", [makeText(group.value, group.mode)]);
 
     node.setAttribute("separator", "true");
@@ -141,25 +146,46 @@ groupTypes.punct = function(group) {
 };
 
 groupTypes.ordgroup = function(group, options) {
-    var inner = buildExpression(group.value, options);
+    const inner = buildExpression(group.value, options);
 
-    var node = new mathMLTree.MathNode("mrow", inner);
+    const node = new mathMLTree.MathNode("mrow", inner);
 
     return node;
 };
 
 groupTypes.text = function(group, options) {
-    var inner = buildExpression(group.value.body, options);
+    const body = group.value.body;
 
-    var node = new mathMLTree.MathNode("mtext", inner);
+    // Convert each element of the body into MathML, and combine consecutive
+    // <mtext> outputs into a single <mtext> tag.  In this way, we don't
+    // nest non-text items (e.g., $nested-math$) within an <mtext>.
+    const inner = [];
+    let currentText = null;
+    for (let i = 0; i < body.length; i++) {
+        const group = buildGroup(body[i], options);
+        if (group.type === 'mtext' && currentText != null) {
+            Array.prototype.push.apply(currentText.children, group.children);
+        } else {
+            inner.push(group);
+            if (group.type === 'mtext') {
+                currentText = group;
+            }
+        }
+    }
 
-    return node;
+    // If there is a single tag in the end (presumably <mtext>),
+    // just return it.  Otherwise, wrap them in an <mrow>.
+    if (inner.length === 1) {
+        return inner[0];
+    } else {
+        return new mathMLTree.MathNode("mrow", inner);
+    }
 };
 
 groupTypes.color = function(group, options) {
-    var inner = buildExpression(group.value.value, options);
+    const inner = buildExpression(group.value.value, options);
 
-    var node = new mathMLTree.MathNode("mstyle", inner);
+    const node = new mathMLTree.MathNode("mstyle", inner);
 
     node.setAttribute("mathcolor", group.value.color);
 
@@ -167,7 +193,21 @@ groupTypes.color = function(group, options) {
 };
 
 groupTypes.supsub = function(group, options) {
-    var children = [buildGroup(group.value.base, options)];
+    // Is the inner group a relevant horizonal brace?
+    let isBrace = false;
+    let isOver;
+    let isSup;
+    if (group.value.base) {
+        if (group.value.base.value.type === "horizBrace") {
+            isSup = (group.value.sup ? true : false);
+            if (isSup === group.value.base.value.isOver) {
+                isBrace = true;
+                isOver = group.value.base.value.isOver;
+            }
+        }
+    }
+
+    const children = [buildGroup(group.value.base, options)];
 
     if (group.value.sub) {
         children.push(buildGroup(group.value.sub, options));
@@ -177,8 +217,10 @@ groupTypes.supsub = function(group, options) {
         children.push(buildGroup(group.value.sup, options));
     }
 
-    var nodeType;
-    if (!group.value.sub) {
+    let nodeType;
+    if (isBrace) {
+        nodeType = (isOver ? "mover" : "munder");
+    } else if (!group.value.sub) {
         nodeType = "msup";
     } else if (!group.value.sup) {
         nodeType = "msub";
@@ -186,13 +228,13 @@ groupTypes.supsub = function(group, options) {
         nodeType = "msubsup";
     }
 
-    var node = new mathMLTree.MathNode(nodeType, children);
+    const node = new mathMLTree.MathNode(nodeType, children);
 
     return node;
 };
 
 groupTypes.genfrac = function(group, options) {
-    var node = new mathMLTree.MathNode(
+    const node = new mathMLTree.MathNode(
         "mfrac",
         [
             buildGroup(group.value.numer, options),
@@ -204,10 +246,10 @@ groupTypes.genfrac = function(group, options) {
     }
 
     if (group.value.leftDelim != null || group.value.rightDelim != null) {
-        var withDelims = [];
+        const withDelims = [];
 
         if (group.value.leftDelim != null) {
-            var leftOp = new mathMLTree.MathNode(
+            const leftOp = new mathMLTree.MathNode(
                 "mo", [new mathMLTree.TextNode(group.value.leftDelim)]);
 
             leftOp.setAttribute("fence", "true");
@@ -218,7 +260,7 @@ groupTypes.genfrac = function(group, options) {
         withDelims.push(node);
 
         if (group.value.rightDelim != null) {
-            var rightOp = new mathMLTree.MathNode(
+            const rightOp = new mathMLTree.MathNode(
                 "mo", [new mathMLTree.TextNode(group.value.rightDelim)]);
 
             rightOp.setAttribute("fence", "true");
@@ -226,7 +268,7 @@ groupTypes.genfrac = function(group, options) {
             withDelims.push(rightOp);
         }
 
-        var outerNode = new mathMLTree.MathNode("mrow", withDelims);
+        const outerNode = new mathMLTree.MathNode("mrow", withDelims);
 
         return outerNode;
     }
@@ -246,7 +288,7 @@ groupTypes.array = function(group, options) {
 };
 
 groupTypes.sqrt = function(group, options) {
-    var node;
+    let node;
     if (group.value.index) {
         node = new mathMLTree.MathNode(
             "mroot", [
@@ -262,10 +304,10 @@ groupTypes.sqrt = function(group, options) {
 };
 
 groupTypes.leftright = function(group, options) {
-    var inner = buildExpression(group.value.body, options);
+    const inner = buildExpression(group.value.body, options);
 
     if (group.value.left !== ".") {
-        var leftNode = new mathMLTree.MathNode(
+        const leftNode = new mathMLTree.MathNode(
             "mo", [makeText(group.value.left, group.mode)]);
 
         leftNode.setAttribute("fence", "true");
@@ -274,7 +316,7 @@ groupTypes.leftright = function(group, options) {
     }
 
     if (group.value.right !== ".") {
-        var rightNode = new mathMLTree.MathNode(
+        const rightNode = new mathMLTree.MathNode(
             "mo", [makeText(group.value.right, group.mode)]);
 
         rightNode.setAttribute("fence", "true");
@@ -282,23 +324,28 @@ groupTypes.leftright = function(group, options) {
         inner.push(rightNode);
     }
 
-    var outerNode = new mathMLTree.MathNode("mrow", inner);
+    const outerNode = new mathMLTree.MathNode("mrow", inner);
 
     return outerNode;
 };
 
 groupTypes.middle = function(group, options) {
-    var middleNode = new mathMLTree.MathNode(
+    const middleNode = new mathMLTree.MathNode(
         "mo", [makeText(group.value.middle, group.mode)]);
     middleNode.setAttribute("fence", "true");
     return middleNode;
 };
 
 groupTypes.accent = function(group, options) {
-    var accentNode = new mathMLTree.MathNode(
-        "mo", [makeText(group.value.accent, group.mode)]);
+    let accentNode;
+    if (group.value.isStretchy) {
+        accentNode = stretchy.mathMLnode(group.value.label);
+    } else {
+        accentNode = new mathMLTree.MathNode(
+            "mo", [makeText(group.value.label, group.mode)]);
+    }
 
-    var node = new mathMLTree.MathNode(
+    const node = new mathMLTree.MathNode(
         "mover",
         [buildGroup(group.value.base, options), accentNode]);
 
@@ -308,7 +355,7 @@ groupTypes.accent = function(group, options) {
 };
 
 groupTypes.spacing = function(group) {
-    var node;
+    let node;
 
     if (group.value === "\\ " || group.value === "\\space" ||
         group.value === " " || group.value === "~") {
@@ -325,7 +372,7 @@ groupTypes.spacing = function(group) {
 };
 
 groupTypes.op = function(group, options) {
-    var node;
+    let node;
 
     // TODO(emily): handle big operators using the `largeop` attribute
 
@@ -350,7 +397,7 @@ groupTypes.op = function(group, options) {
 };
 
 groupTypes.mod = function(group, options) {
-    var inner = [];
+    let inner = [];
 
     if (group.value.modType === "pod" || group.value.modType === "pmod") {
         inner.push(new mathMLTree.MathNode(
@@ -361,7 +408,7 @@ groupTypes.mod = function(group, options) {
             "mo", [makeText("mod", group.mode)]));
     }
     if (group.value.value) {
-        var space = new mathMLTree.MathNode("mspace");
+        const space = new mathMLTree.MathNode("mspace");
         space.setAttribute("width", "0.333333em");
         inner.push(space);
         inner = inner.concat(buildExpression(group.value.value, options));
@@ -375,25 +422,25 @@ groupTypes.mod = function(group, options) {
 };
 
 groupTypes.katex = function(group) {
-    var node = new mathMLTree.MathNode(
+    const node = new mathMLTree.MathNode(
         "mtext", [new mathMLTree.TextNode("KaTeX")]);
 
     return node;
 };
 
 groupTypes.font = function(group, options) {
-    var font = group.value.font;
+    const font = group.value.font;
     return buildGroup(group.value.body, options.withFont(font));
 };
 
 groupTypes.delimsizing = function(group) {
-    var children = [];
+    const children = [];
 
     if (group.value.value !== ".") {
         children.push(makeText(group.value.value, group.mode));
     }
 
-    var node = new mathMLTree.MathNode("mo", children);
+    const node = new mathMLTree.MathNode("mo", children);
 
     if (group.value.mclass === "mopen" ||
         group.value.mclass === "mclose") {
@@ -410,18 +457,18 @@ groupTypes.delimsizing = function(group) {
 };
 
 groupTypes.styling = function(group, options) {
-    var inner = buildExpression(group.value.value, options);
+    const inner = buildExpression(group.value.value, options);
 
-    var node = new mathMLTree.MathNode("mstyle", inner);
+    const node = new mathMLTree.MathNode("mstyle", inner);
 
-    var styleAttributes = {
+    const styleAttributes = {
         "display": ["0", "true"],
         "text": ["0", "false"],
         "script": ["1", "false"],
         "scriptscript": ["2", "false"],
     };
 
-    var attr = styleAttributes[group.value.style];
+    const attr = styleAttributes[group.value.style];
 
     node.setAttribute("scriptlevel", attr[0]);
     node.setAttribute("displaystyle", attr[1]);
@@ -430,27 +477,27 @@ groupTypes.styling = function(group, options) {
 };
 
 groupTypes.sizing = function(group, options) {
-    var inner = buildExpression(group.value.value, options);
+    const newOptions = options.havingSize(group.value.size);
+    const inner = buildExpression(group.value.value, newOptions);
 
-    var node = new mathMLTree.MathNode("mstyle", inner);
+    const node = new mathMLTree.MathNode("mstyle", inner);
 
     // TODO(emily): This doesn't produce the correct size for nested size
     // changes, because we don't keep state of what style we're currently
     // in, so we can't reset the size to normal before changing it.  Now
     // that we're passing an options parameter we should be able to fix
     // this.
-    node.setAttribute(
-        "mathsize", buildCommon.sizingMultiplier[group.value.size] + "em");
+    node.setAttribute("mathsize", newOptions.sizeMultiplier + "em");
 
     return node;
 };
 
 groupTypes.overline = function(group, options) {
-    var operator = new mathMLTree.MathNode(
+    const operator = new mathMLTree.MathNode(
         "mo", [new mathMLTree.TextNode("\u203e")]);
     operator.setAttribute("stretchy", "true");
 
-    var node = new mathMLTree.MathNode(
+    const node = new mathMLTree.MathNode(
         "mover",
         [buildGroup(group.value.body, options), operator]);
     node.setAttribute("accent", "true");
@@ -459,11 +506,11 @@ groupTypes.overline = function(group, options) {
 };
 
 groupTypes.underline = function(group, options) {
-    var operator = new mathMLTree.MathNode(
+    const operator = new mathMLTree.MathNode(
         "mo", [new mathMLTree.TextNode("\u203e")]);
     operator.setAttribute("stretchy", "true");
 
-    var node = new mathMLTree.MathNode(
+    const node = new mathMLTree.MathNode(
         "munder",
         [buildGroup(group.value.body, options), operator]);
     node.setAttribute("accentunder", "true");
@@ -471,23 +518,86 @@ groupTypes.underline = function(group, options) {
     return node;
 };
 
+groupTypes.accentUnder = function(group, options) {
+    const accentNode = stretchy.mathMLnode(group.value.label);
+    const node = new mathMLTree.MathNode(
+        "munder",
+        [buildGroup(group.value.body, options), accentNode]
+    );
+    node.setAttribute("accentunder", "true");
+    return node;
+};
+
+groupTypes.enclose = function(group, options) {
+    const node = new mathMLTree.MathNode(
+        "menclose", [buildGroup(group.value.body, options)]);
+    let notation = "";
+    switch (group.value.label) {
+        case "\\bcancel":
+            notation = "downdiagonalstrike";
+            break;
+        case "\\sout":
+            notation = "horizontalstrike";
+            break;
+        case "\\fbox":
+            notation = "box";
+            break;
+        default:
+            notation = "updiagonalstrike";
+    }
+    node.setAttribute("notation", notation);
+    return node;
+};
+
+groupTypes.horizBrace = function(group, options) {
+    const accentNode = stretchy.mathMLnode(group.value.label);
+    return new mathMLTree.MathNode(
+        (group.value.isOver ? "mover" : "munder"),
+        [buildGroup(group.value.base, options), accentNode]
+    );
+};
+
+groupTypes.xArrow = function(group, options) {
+    const arrowNode = stretchy.mathMLnode(group.value.label);
+    let node;
+    let lowerNode;
+
+    if (group.value.body) {
+        const upperNode = buildGroup(group.value.body, options);
+        if (group.value.below) {
+            lowerNode = buildGroup(group.value.below, options);
+            node = new mathMLTree.MathNode(
+                "munderover", [arrowNode, lowerNode, upperNode]
+            );
+        } else {
+            node = new mathMLTree.MathNode("mover", [arrowNode, upperNode]);
+        }
+    } else if (group.value.below) {
+        lowerNode = buildGroup(group.value.below, options);
+        node = new mathMLTree.MathNode("munder", [arrowNode, lowerNode]);
+    } else {
+        node = new mathMLTree.MathNode("mover", [arrowNode]);
+    }
+    return node;
+};
+
 groupTypes.rule = function(group) {
     // TODO(emily): Figure out if there's an actual way to draw black boxes
     // in MathML.
-    var node = new mathMLTree.MathNode("mrow");
+    const node = new mathMLTree.MathNode("mrow");
 
     return node;
 };
 
 groupTypes.kern = function(group) {
     // TODO(kevin): Figure out if there's a way to add space in MathML
-    var node = new mathMLTree.MathNode("mrow");
+    const node = new mathMLTree.MathNode("mrow");
 
     return node;
 };
 
 groupTypes.llap = function(group, options) {
-    var node = new mathMLTree.MathNode(
+    const node = new mathMLTree.MathNode(
         "mpadded", [buildGroup(group.value.body, options)]);
 
     node.setAttribute("lspace", "-1width");
@@ -497,7 +607,7 @@ groupTypes.llap = function(group, options) {
 };
 
 groupTypes.rlap = function(group, options) {
-    var node = new mathMLTree.MathNode(
+    const node = new mathMLTree.MathNode(
         "mpadded", [buildGroup(group.value.body, options)]);
 
     node.setAttribute("width", "0px");
@@ -506,12 +616,12 @@ groupTypes.rlap = function(group, options) {
 };
 
 groupTypes.phantom = function(group, options) {
-    var inner = buildExpression(group.value.value, options);
+    const inner = buildExpression(group.value.value, options);
     return new mathMLTree.MathNode("mphantom", inner);
 };
 
 groupTypes.mclass = function(group, options) {
-    var inner = buildExpression(group.value.value, options);
+    const inner = buildExpression(group.value.value, options);
     return new mathMLTree.MathNode("mstyle", inner);
 };
 
@@ -520,10 +630,10 @@ groupTypes.mclass = function(group, options) {
  * MathML nodes. A little simpler than the HTML version because we don't do any
  * previous-node handling.
  */
-var buildExpression = function(expression, options) {
-    var groups = [];
-    for (var i = 0; i < expression.length; i++) {
-        var group = expression[i];
+const buildExpression = function(expression, options) {
+    const groups = [];
+    for (let i = 0; i < expression.length; i++) {
+        const group = expression[i];
         groups.push(buildGroup(group, options));
     }
     return groups;
@@ -533,7 +643,7 @@ var buildExpression = function(expression, options) {
  * Takes a group from the parser and calls the appropriate groupTypes function
  * on it to produce a MathML node.
  */
-var buildGroup = function(group, options) {
+const buildGroup = function(group, options) {
     if (!group) {
         return new mathMLTree.MathNode("mrow");
     }
@@ -555,23 +665,23 @@ var buildGroup = function(group, options) {
  * Note that we actually return a domTree element with a `<math>` inside it so
  * we can do appropriate styling.
  */
-var buildMathML = function(tree, texExpression, options) {
-    var expression = buildExpression(tree, options);
+const buildMathML = function(tree, texExpression, options) {
+    const expression = buildExpression(tree, options);
 
     // Wrap up the expression in an mrow so it is presented in the semantics
     // tag correctly.
-    var wrapper = new mathMLTree.MathNode("mrow", expression);
+    const wrapper = new mathMLTree.MathNode("mrow", expression);
 
     // Build a TeX annotation of the source
-    var annotation = new mathMLTree.MathNode(
+    const annotation = new mathMLTree.MathNode(
         "annotation", [new mathMLTree.TextNode(texExpression)]);
 
     annotation.setAttribute("encoding", "application/x-tex");
 
-    var semantics = new mathMLTree.MathNode(
+    const semantics = new mathMLTree.MathNode(
         "semantics", [wrapper, annotation]);
 
-    var math = new mathMLTree.MathNode("math", [semantics]);
+    const math = new mathMLTree.MathNode("math", [semantics]);
 
     // You can't style <math> nodes, so we wrap the node in a span.
     return makeSpan(["katex-mathml"], [math]);

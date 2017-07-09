@@ -7,24 +7,24 @@
  * errors in the expression, or errors in javascript handling.
  */
 
-var ParseError = require("./src/ParseError");
-var Settings = require("./src/Settings");
+import ParseError from "./src/ParseError";
+import Settings from "./src/Settings";
 
-var buildTree = require("./src/buildTree");
-var parseTree = require("./src/parseTree");
-var utils = require("./src/utils");
+import buildTree from "./src/buildTree";
+import parseTree from "./src/parseTree";
+import utils from "./src/utils";
 
 /**
  * Parse and build an expression, and place that expression in the DOM node
  * given.
  */
-var render = function(expression, baseNode, options) {
+let render = function(expression, baseNode, options) {
     utils.clearNode(baseNode);
 
-    var settings = new Settings(options);
+    const settings = new Settings(options);
 
-    var tree = parseTree(expression, settings);
-    var node = buildTree(tree, expression, settings).toNode();
+    const tree = parseTree(expression, settings);
+    const node = buildTree(tree, expression, settings).toNode();
 
     baseNode.appendChild(node);
 };
@@ -46,18 +46,18 @@ if (typeof document !== "undefined") {
 /**
  * Parse and build an expression, and return the markup for that.
  */
-var renderToString = function(expression, options) {
-    var settings = new Settings(options);
+const renderToString = function(expression, options) {
+    const settings = new Settings(options);
 
-    var tree = parseTree(expression, settings);
+    const tree = parseTree(expression, settings);
     return buildTree(tree, expression, settings).toMarkup();
 };
 
 /**
  * Parse an expression and return the parse tree.
  */
-var generateParseTree = function(expression, options) {
-    var settings = new Settings(options);
+const generateParseTree = function(expression, options) {
+    const settings = new Settings(options);
     return parseTree(expression, settings);
 };
 

@@ -4,21 +4,21 @@
 /* global it: false */
 /* global describe: false */
 
-var splitAtDelimiters = require("./splitAtDelimiters");
+const splitAtDelimiters = require("./splitAtDelimiters");
 
 beforeEach(function() {
     jasmine.addMatchers({
         toSplitInto: function() {
             return {
                 compare: function(actual, left, right, result) {
-                    var message = {
+                    const message = {
                         pass: true,
                         message: "'" + actual + "' split correctly",
                     };
 
-                    var startData = [{type: "text", data: actual}];
+                    const startData = [{type: "text", data: actual}];
 
-                    var split =
+                    const split =
                         splitAtDelimiters(startData, left, right, false);
 
                     if (split.length !== result.length) {
@@ -30,12 +30,12 @@ beforeEach(function() {
                         return message;
                     }
 
-                    for (var i = 0; i < split.length; i++) {
-                        var real = split[i];
-                        var correct = result[i];
+                    for (let i = 0; i < split.length; i++) {
+                        const real = split[i];
+                        const correct = result[i];
 
-                        var good = true;
-                        var diff;
+                        let good = true;
+                        let diff;
 
                         if (real.type !== correct.type) {
                             good = false;
@@ -189,7 +189,7 @@ describe("A delimiter splitter", function() {
     });
 
     it("remembers which delimiters are display-mode", function() {
-        var startData = [{type: "text", data: "hello ( world ) boo"}];
+        const startData = [{type: "text", data: "hello ( world ) boo"}];
 
         expect(splitAtDelimiters(startData, "(", ")", true)).toEqual(
             [
@@ -201,7 +201,7 @@ describe("A delimiter splitter", function() {
     });
 
     it("works with more than one start datum", function() {
-        var startData = [
+        const startData = [
             {type: "text", data: "hello ( world ) boo"},
             {type: "math", data: "math", rawData: "(math)", display: true},
             {type: "text", data: "hello ( world ) boo"},
@@ -222,7 +222,7 @@ describe("A delimiter splitter", function() {
     });
 
     it("doesn't do splitting inside of math nodes", function() {
-        var startData = [
+        const startData = [
             {type: "text", data: "hello ( world ) boo"},
             {type: "math", data: "hello ( world ) boo",
                 rawData: "(hello ( world ) boo)", display: true},

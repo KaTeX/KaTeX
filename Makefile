@@ -13,6 +13,12 @@ dist: build
 
 endif
 
+NODE := node # pass NODE=nodejs on Debian without package nodejs-legacy
+NODECHK := $(shell $(NODE) ./check-node-version.js)
+ifneq ($(NODECHK),OK)
+$(error "Node not found or wrong version")
+endif
+
 # Export these variables for use in contrib Makefiles
 export BUILDDIR = $(realpath build)
 export BROWSERIFY = $(realpath ./node_modules/.bin/browserify)
@@ -33,7 +39,7 @@ lint: $(NIS) katex.js server.js cli.js $(wildcard src/*.js) $(wildcard test/*.js
 	./node_modules/.bin/eslint $(filter-out %.stamp,$^)
 
 build/katex.js: katex.js $(wildcard src/*.js) $(NIS)
-	$(BROWSERIFY) $< --standalone katex > $@
+	$(BROWSERIFY) -t [ babelify ] $< --standalone katex > $@
 
 build/katex.min.js: build/katex.js
 	$(UGLIFYJS) < $< > $@
@@ -84,15 +90,15 @@ build/katex.zip: build/katex
 zip: build/katex.tar.gz build/katex.zip
 
 compress: build/katex.min.js build/katex.min.css
-	@$(eval JSSIZE!=gzip -c build/katex.min.js | wc -c)
-	@$(eval CSSSIZE!=gzip -c build/katex.min.css | wc -c)
-	@$(eval TOTAL!=echo ${JSSIZE}+${CSSSIZE} | bc)
-	@printf "Minified, gzipped js:  %6d\n" "${JSSIZE}"
-	@printf "Minified, gzipped css: %6d\n" "${CSSSIZE}"
-	@printf "Total:                 %6d\n" "${TOTAL}"
+	@JSSIZE=`gzip -c build/katex.min.js | wc -c`; \
+	CSSSIZE=`gzip -c build/katex.min.css | wc -c`; \
+	TOTAL=`echo $${JSSIZE}+$${CSSSIZE} | bc`; \
+	printf "Minified, gzipped js:  %6d\n" "$${JSSIZE}"; \
+	printf "Minified, gzipped css: %6d\n" "$${CSSSIZE}"; \
+	printf "Total:                 %6d\n" "$${TOTAL}"
 
 serve: $(NIS)
-	node server.js
+	$(NODE) server.js
 
 test: $(NIS)
 	JASMINE_CONFIG_PATH=test/jasmine.json node_modules/.bin/jasmine

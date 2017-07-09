@@ -26,5 +26,8 @@ for (var key in dict) {
         }
     });
     itm.query = querystring.stringify(query);
+    if (itm.macros) {
+        itm.query += "&" + querystring.stringify(itm.macros);
+    }
 }
 module.exports = dict;

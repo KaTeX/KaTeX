@@ -23,16 +23,26 @@ Arrays: |
         1+1&2+1&3+1\cr1\over2&\scriptstyle 1/2&\frac12\\[1ex]
         \begin{pmatrix}x\\y\end{pmatrix}&0&\begin{vmatrix}a&b\\c&d\end{vmatrix}
     \end{array}\right]
+ArrayMode:
+    tex: |
+        \begin{matrix}
+            \frac{\partial^2 f}{\partial x_1^2} & \frac{\partial^2 f}{\partial x_1\,\partial x_2} & \cdots & \frac{\partial^2 f}{\partial x_1\,\partial x_n} \\
+            \frac{\partial^2 f}{\partial x_2\,\partial x_1} & \frac{\partial^2 f}{\partial x_2^2} & \cdots & \frac{\partial^2 f}{\partial x_2\,\partial x_n} \\
+            \vdots & \vdots & \ddots & \vdots \\
+            \frac{\partial^2 f}{\partial x_n\,\partial x_1} & \frac{\partial^2 f}{\partial x_n\,\partial x_2} & \cdots & \frac{\partial^2 f}{\partial x_n^2}
+        \end{matrix}
+    display: 1
 ArrayType: 1\begin{array}{c}2\\3\end{array}4
 Baseline: a+b-c\cdot d/e
 BasicTest: a
 BinCancellation: |
-    \begin{array}{ccc}
+    \begin{array}{cccc}
         +1 & 1+ & 1+1 & (,) \\
         1++1 & 3\times) & 1+, & \left(,\right)
     \end{array}
 BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}
 BoldSpacing: \mathbf{A}^2+\mathbf{B}_3*\mathscr{C}'
+Boxed: \boxed{F=ma} \quad \boxed{ac}\color{magenta}{\boxed{F}}\boxed{F=mg}
 Cases: |
     f(a,b)=\begin{cases}
         a+1&\text{if }b\text{ is odd} \\
@@ -40,9 +50,10 @@ Cases: |
         a-1&\text{otherwise}
     \end{cases}
 Colors:
-    tex: \blue{a}\color{#0f0}{b}\color{red}{c}
+    tex: \blue{a}\textcolor{#0f0}{b}\textcolor{red}{c}
     nolatex: different syntax and different scope
-ColorSpacing: \color{red}{\displaystyle \int x} + 1
+ColorSpacing: \textcolor{red}{\displaystyle \int x} + 1
+ColorImplicit: bl{ack\color{red}red\textcolor{green}{green}red\color{blue}blue}black
 DashesAndQuotes: \text{``a'' b---c -- d----`e'-{-}-f}--``x''
 DeepFontSizing:
     tex: |
@@ -62,17 +73,39 @@ DisplayStyle: |
     {\displaystyle\sqrt{x}}{\sqrt{x}}
     {\displaystyle \frac12}{\frac12}{\displaystyle x^1_2}{x^1_2}
 Exponents: a^{a^a_a}_{a^a_a}
+ExtensibleArrows: |
+    \begin{array}{l}
+        \xrightarrow[ab]{ABC} + \xRightarrow{ABC} \\
+        \xrightleftharpoons[ab]{ABC} + \xhookrightarrow[ab]{ABC} \\
+        \xtwoheadrightarrow{ABC} + \frac{\xrightarrow[ab]{ABC}}{\xrightarrow[ab]{ABC}} + \left\lvert\xrightarrow[ab]{ABC}\right\rvert
+    \end{array}
 FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}
 Functions: \sin\cos\tan\ln\log
+Gathered: |
+    \begin{gathered}
+      x = \frac{1}{2} \\
+      y = \sum_{i=1}^n i
+    \end{gathered} \approx
+    \begin{array}{c}
+      x = \frac{1}{2} \\
+      y = \sum_{i=1}^n i
+    \end{array}
 GreekLetters: \alpha\beta\gamma\omega
+GroupMacros:
+    macros:
+        \startExp: e^\bgroup
+        \endExp: \egroup
+    tex: \startExp a+b\endExp
+HorizontalBraces: \overbrace{\displaystyle{\oint_S{\vec E\cdot\hat n\,\mathrm d a}}}^\text{emf} = \underbrace{\frac{q_{\text{enc}}}{\varepsilon_0}}_{\text{charge}}
 KaTeX: \KaTeX
 Kern:
     tex: \frac{a\kern{1em}b}{c}a\kern{1em}b\kern{1ex}c\kern{-0.25em}d
     nolatex: LaTeX fails to typeset this, “Missing number, treated as zero.”
 Lap: ab\llap{f}cd\rlap{g}h
+LargeRuleNumerator: \frac{\textcolor{blue}{\rule{1em}{2em}}}{x}
 LeftRight: \left( x^2 \right) \left\{ x^{x^{x^{x^x}}} \right.
 LeftRightListStyling: a+\left(x+y\right)-x
-LeftRightMiddle: \left( x^2 \middle/ \right) \left\{ x^{x^{x^{x^x}}} \middle/ y \right.
+LeftRightMiddle: \left( x^2 \middle/ \right) \left\{ x^{x^{x^{x^x}}} \middle/ y \right.\left(x\middle|y\,\middle|\,z\right)
 LeftRightStyleSizing: |
     +\left\{\rule{0.1em}{1em}\right.
     x^{+\left\{\rule{0.1em}{1em}\right.
@@ -80,14 +113,22 @@ LeftRightStyleSizing: |
 LimitControls: |
     \displaystyle\int\limits_2^3 3x^2\,dx + \sum\nolimits^n_{i=1}i +
     \textstyle\int\limits_x^y z
+LowerAccent: |
+    \begin{matrix}
+        \underleftarrow{AB} \quad \underrightarrow{AB} \quad \underleftrightarrow{AB} \quad \undergroup{AB} \\
+        \underlinesegment{AB} \quad \undertilde{AB}  \quad \color{green}{\underrightarrow{AB}} \\
+        \underrightarrow{F} + \underrightarrow{AB} + \underrightarrow{AB}^2 + \underrightarrow{AB}_2 \\
+        \frac{\underrightarrow{AB}}{\underrightarrow{AB}} + \sqrt{\underrightarrow{AB}} + \left\lvert\underrightarrow{AB}\right\rvert
+    \end{matrix}
 MathAtom: a\mathrel{\mathop{=}\limits^{\blue ?}}b
-MathAtom2: \mathop{\overline\mathrm{lim}}\limits_{x\to\infty}f(x)
+MathAtom2: \mathop{\overline{\mathrm{lim}}}\limits_{x\to\infty}f(x)
 MathDefaultFonts: Ax2k\breve{a}\omega\Omega\imath+\KaTeX
 MathBb: \mathbb{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathBf: \mathbf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathCal: \mathcal{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathFrak: \mathfrak{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathIt: \mathit{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathOp: a\mathop+b\mathop:c\mathop{\delta}e\mathop{\textrm{and}}f\mathrel{\mathop{:}}=g\sin h
 MathRm: \mathrm{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathSf: \mathsf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathScr: \mathscr{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
@@ -109,12 +150,35 @@ NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
     {\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
 NullDelimiterInteraction: a \bigl. + 2 \quad \left. + a \right)
+OldFont: |
+    \begin{matrix}
+      \rm rm & it & \it it & \bf bf & \sf sf & \tt tt \\
+      \text{\rm rm} & \text{rm} & \text{\it it} & \text{\bf bf} & \text{\sf sf} & \text{\tt tt} \\
+      i\rm r\it i & \text{r\it i\rm r}
+    \end{matrix}
 OpLimits: |
     {\sin_2^2 \lim_2^2 \int_2^2 \sum_2^2}
     {\displaystyle \lim_2^2 \int_2^2 \intop_2^2 \sum_2^2}
 OverUnderline: x\underline{x}\underline{\underline{x}}\underline{x_{x_{x_x}}}\underline{x^{x^{x^x}}}\overline{x}\overline{x}\overline{x^{x^{x^x}}} \blue{\overline{\underline{x}}\underline{\overline{x}}}
+OverUnderset: |
+    \begin{array}{l}
+    x\overset?=1\\
+    {\displaystyle\lim_{t\underset{>0}\to0}}\\
+    a+b+c+d\overset{b+c=0}\longrightarrow a+d\\
+    \overset { x = y } { \sqrt { a b } }
+    \end{array}
 Phantom: \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x}
 PrimeSpacing: f'+f_2'+f^{f'}
+PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
+RelativeUnits: |
+    \begin{array}{ll}
+        a\kern1emb^{a\kern1emb^{a\kern1emb}} &
+        {\footnotesize a\kern1emb^{a\kern1emb^{a\kern1emb}}} \\
+        a\mkern18mub^{a\mkern18mub^{a\mkern18mub}} &
+        {\footnotesize a\mkern18mub^{a\mkern18mub^{a\mkern18mub}}} \\
+        \rule{1em}{1em}^{\rule{1em}{1em}}\rule{18mu}{18mu}^{\rule{18mu}{18mu}} &
+        {\footnotesize\rule{1em}{1em}^{\rule{1em}{1em}}\rule{18mu}{18mu}^{\rule{18mu}{18mu}}}
+    \end{array}
 RlapBug: \frac{\rlap{x}}{2}
 Rule: \rule{1em}{0.5em}\rule{1ex}{2ex}\rule{1em}{1ex}\rule{1em}{0.431ex}
 SizingBaseline:
@@ -130,6 +194,21 @@ Sqrt: |
 SqrtRoot: |
     1+\sqrt[3]{2}+\sqrt[1923^234]{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^2}}}}}}}}}}}
 StackRel: a \stackrel{?}{=} b \stackrel{\text{def}}{=} c
+StretchyAccent: |
+    \begin{array}{l}
+        \overrightarrow{AB} \quad \overleftarrow{AB} \quad \Overrightarrow{AB} \quad \overleftrightarrow{AB} \quad \overgroup{AB} \\
+        \overlinesegment{AB} \quad \overleftharpoon{AB} \quad \overrightharpoon{AB} \quad \color{red}{\overrightarrow{AB}} \quad \widehat{\theta} \widetilde{A} \\
+        \widehat{AB} \quad \widehat{ABC} \quad \widetilde{AB} \quad \widetilde{ABC} \\
+        \overrightarrow{F} + \overrightarrow{AB} + \overrightarrow{F}^2 + \overrightarrow{F}_2 + \overrightarrow{F}_1^2 \\
+        \overrightarrow{AB}^2+\frac{\overrightarrow{AB}}{\overrightarrow{AB}} + \sqrt{\overrightarrow{AB}} + \left\lvert\overrightarrow{AB}\right\rvert
+    \end{array}
+StrikeThrough: |
+    \begin{array}{l}
+        \cancel x \quad \cancel{2B} + \bcancel 5 +\bcancel{5ay} \\
+        \sout{5ab} + \sout{5ABC} + \xcancel{\oint_S{\vec E\cdot\hat n\,\mathrm d a}} \\
+        \frac{x+\cancel B}{x+\cancel x} + \frac{x+\cancel y}{x} + \cancel{B}_1^2 + \cancel{B^2} \\
+        \left\lvert\cancel{ac}\right\rvert
+    \end{array}
 StyleSpacing: \scriptstyle ab\;cd
 StyleSwitching: a\cdot b\scriptstyle a\cdot ba\textstyle\cdot ba\scriptstyle\cdot b
 SupSubCharacterBox: a_2f_2{f}_2{aa}_2{af}_2\mathbf{y}_Ay_A
@@ -140,8 +219,9 @@ SupSubLeftAlignReset: |
 SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
 Symbols1: |
     \maltese\degree\pounds\$
-    \text{\maltese\degree}
+    \text{\maltese\degree\pounds\textdollar}
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
+TextWithMath: \text{for $a < b$ and $ c < d $}.
 Unicode: \begin{matrix}\text{ÀàÇçÉéÏïÖöÛû} \\ \text{БГДЖЗЙЛФЦШЫЮЯ} \\ \text{여보세요} \\ \text{私はバナナです} \end{matrix}
 UnsupportedCmds:
     tex: \err\,\frac\fracerr3\,2^\superr_\suberr\,\sqrt\sqrterr

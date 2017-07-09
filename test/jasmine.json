@@ -5,6 +5,7 @@
     "contrib/**/*[sS]pec.js"
   ],
   "helpers": [
-    "helpers/**/*.js"
+    "helpers/**/*.js",
+    "node_modules/babel-core/register.js"
   ]
 }
