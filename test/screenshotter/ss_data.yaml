@@ -170,6 +170,15 @@ OverUnderset: |
 Phantom: \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x}
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
+RelativeUnits: |
+    \begin{array}{ll}
+        a\kern1emb^{a\kern1emb^{a\kern1emb}} &
+        {\footnotesize a\kern1emb^{a\kern1emb^{a\kern1emb}}} \\
+        a\mkern18mub^{a\mkern18mub^{a\mkern18mub}} &
+        {\footnotesize a\mkern18mub^{a\mkern18mub^{a\mkern18mub}}} \\
+        \rule{1em}{1em}^{\rule{1em}{1em}}\rule{18mu}{18mu}^{\rule{18mu}{18mu}} &
+        {\footnotesize\rule{1em}{1em}^{\rule{1em}{1em}}\rule{18mu}{18mu}^{\rule{18mu}{18mu}}}
+    \end{array}
 RlapBug: \frac{\rlap{x}}{2}
 Rule: \rule{1em}{0.5em}\rule{1ex}{2ex}\rule{1em}{1ex}\rule{1em}{0.431ex}
 SizingBaseline:
