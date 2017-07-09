@@ -42,7 +42,12 @@ BinCancellation: |
     \end{array}
 BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}
 BoldSpacing: \mathbf{A}^2+\mathbf{B}_3*\mathscr{C}'
-Boxed: \boxed{F=ma} \quad \boxed{ac}\color{magenta}{\boxed{F}}\boxed{F=mg}
+Boxed: |
+    \begin{array}{l}
+        \boxed{F=ma} \\[1em]
+        \boxed{ac}\color{magenta}{\boxed{F}}\boxed{F=mg} \\[1em]
+        \boxed{\Huge F=mg}
+    \end{array}
 Cases: |
     f(a,b)=\begin{cases}
         a+1&\text{if }b\text{ is odd} \\
