@@ -788,7 +788,7 @@ defineFunction(["\\begin", "\\end"], {
 
 // AMSMath's automatic \dots, based on \mdots@@ macro.  See
 // https://www.ctan.org/tex-archive/macros/latex/required/amsmath
-var dotsByToken = {
+const dotsByToken = {
     ',': '\\dotsc',
     '\\not': '\\dotsb',
     // \keybin@ checks for the following:
@@ -852,7 +852,7 @@ defineFunction(["\\dots"], {
     numArgs: 0,
     allowedInText: true,
 }, function(context) {
-    var thedots;
+    let thedots;
     if (context.parser.mode === 'text') {
         thedots = '\\textellipsis';
     } else {
