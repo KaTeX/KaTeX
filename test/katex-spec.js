@@ -1,6 +1,5 @@
 /* eslint max-len:0 */
 /* global beforeEach: false */
-/* global jasmine: false */
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
@@ -88,115 +87,99 @@ const parseAndSetResult = function(expr, result, settings) {
 };
 
 beforeEach(function() {
-    jasmine.addMatchers({
+    expect.extend({
+        toParse: function(actual, settings) {
+            const usedSettings = settings ? settings : defaultSettings;
 
-        toParse: function() {
-            return {
-                compare: function(actual, settings) {
-                    const usedSettings = settings ? settings : defaultSettings;
-
-                    const result = {
-                        pass: true,
-                        message: "'" + actual + "' succeeded parsing",
-                    };
-                    parseAndSetResult(actual, result, usedSettings);
-                    return result;
-                },
+            const result = {
+                pass: true,
+                message: "'" + actual + "' succeeded parsing",
             };
+            parseAndSetResult(actual, result, usedSettings);
+            return result;
         },
 
-        toNotParse: function() {
-            return {
-                compare: function(actual, settings) {
-                    const usedSettings = settings ? settings : defaultSettings;
+        toNotParse: function(actual, settings) {
+            const usedSettings = settings ? settings : defaultSettings;
 
-                    const result = {
-                        pass: false,
-                        message: "Expected '" + actual + "' to fail " +
-                            "parsing, but it succeeded",
-                    };
-
-                    try {
-                        parseTree(actual, usedSettings);
-                    } catch (e) {
-                        if (e instanceof ParseError) {
-                            result.pass = true;
-                            result.message = "'" + actual + "' correctly " +
-                                "didn't parse with error: " + e.message;
-                        } else {
-                            result.message = "'" + actual + "' failed " +
-                                "parsing with unknown error: " + e.message;
-                        }
-                    }
-
-                    return result;
-                },
+            const result = {
+                pass: false,
+                message: "Expected '" + actual + "' to fail " +
+                    "parsing, but it succeeded",
             };
+
+            try {
+                parseTree(actual, usedSettings);
+            } catch (e) {
+                if (e instanceof ParseError) {
+                    result.pass = true;
+                    result.message = "'" + actual + "' correctly " +
+                        "didn't parse with error: " + e.message;
+                } else {
+                    result.message = "'" + actual + "' failed " +
+                        "parsing with unknown error: " + e.message;
+                }
+            }
+
+            return result;
         },
 
-        toBuild: function() {
-            return {
-                compare: function(actual, settings) {
-                    const usedSettings = settings ? settings : defaultSettings;
+        toBuild: function(actual, settings) {
+            const usedSettings = settings ? settings : defaultSettings;
 
-                    const result = {
-                        pass: true,
-                        message: "'" + actual + "' succeeded in building",
-                    };
-
-                    expect(actual).toParse(usedSettings);
-
-                    try {
-                        _getBuilt(actual, settings);
-                    } catch (e) {
-                        result.pass = false;
-                        if (e instanceof ParseError) {
-                            result.message = "'" + actual + "' failed to " +
-                                "build with error: " + e.message;
-                        } else {
-                            result.message = "'" + actual + "' failed " +
-                                "building with unknown error: " + e.message;
-                        }
-                    }
-
-                    return result;
-                },
+            const result = {
+                pass: true,
+                message: "'" + actual + "' succeeded in building",
             };
+
+            expect(actual).toParse(usedSettings);
+
+            try {
+                _getBuilt(actual, settings);
+            } catch (e) {
+                result.pass = false;
+                if (e instanceof ParseError) {
+                    result.message = "'" + actual + "' failed to " +
+                        "build with error: " + e.message;
+                } else {
+                    result.message = "'" + actual + "' failed " +
+                        "building with unknown error: " + e.message;
+                }
+            }
+
+            return result;
         },
 
-        toParseLike: function(util, baton) {
-            return {
-                compare: function(actual, expected, settings) {
-                    const usedSettings = settings ? settings : defaultSettings;
+        toParseLike: function(actual, expected, settings) {
+            const usedSettings = settings ? settings : defaultSettings;
 
-                    const result = {
-                        pass: true,
-                        message: "Parse trees of '" + actual +
-                            "' and '" + expected + "' are equivalent",
-                    };
-
-                    const actualTree = parseAndSetResult(actual, result,
-                        usedSettings);
-                    if (!actualTree) {
-                        return result;
-                    }
-                    const expectedTree = parseAndSetResult(expected, result,
-                        usedSettings);
-                    if (!expectedTree) {
-                        return result;
-                    }
-                    stripPositions(actualTree);
-                    stripPositions(expectedTree);
-                    if (!util.equals(actualTree, expectedTree, baton)) {
-                        result.pass = false;
-                        result.message = "Parse trees of '" + actual +
-                            "' and '" + expected + "' are not equivalent";
-                    }
-                    return result;
-                },
+            const result = {
+                pass: true,
+                message: "Parse trees of '" + actual +
+                    "' and '" + expected + "' are equivalent",
             };
-        },
 
+            const actualTree = parseAndSetResult(actual, result,
+                usedSettings);
+            if (!actualTree) {
+                return result;
+            }
+            const expectedTree = parseAndSetResult(expected, result,
+                usedSettings);
+            if (!expectedTree) {
+                return result;
+            }
+
+            stripPositions(actualTree);
+            stripPositions(expectedTree);
+
+            if (JSON.stringify(actualTree) !== JSON.stringify(expectedTree)) {
+                result.pass = false;
+                result.message = "Parse trees of '" + actual +
+                    "' and '" + expected + "' are not equivalent";
+            }
+            return result;
+        },
     });
 });
 
