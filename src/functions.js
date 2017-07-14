@@ -1,6 +1,6 @@
 import utils from "./utils";
 import ParseError from "./ParseError";
-import { ParseNode } from "./parseData";
+import ParseNode from "./ParseNode";
 
 /* This file contains a list of functions that we parse, identified by
  * the calls to defineFunction.
