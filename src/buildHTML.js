@@ -1516,7 +1516,7 @@ groupTypes.horizBrace = function(group, options) {
 
     // Build the base group
     const body = buildGroup(
-       group.value.base, options.havingStyle(style.cramp()));
+       group.value.base, options.havingBaseStyle(Style.DISPLAY));
 
     // Create the stretchy element
     const braceBody = stretchy.svgSpan(group, options);
