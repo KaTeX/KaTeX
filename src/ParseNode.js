@@ -15,7 +15,7 @@
  * @param {Token=} lastToken   last token of the input for this node,
  *                             will default to firstToken if unset
  */
-class ParseNode {
+export default class ParseNode {
     constructor(type, value, mode, firstToken, lastToken) {
         this.type = type;
         this.value = value;
@@ -27,8 +27,3 @@ class ParseNode {
         }
     }
 }
-
-module.exports = {
-    ParseNode: ParseNode,
-};
-
