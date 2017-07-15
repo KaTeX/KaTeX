@@ -1,5 +1,5 @@
 /* eslint no-constant-condition:0 */
-import { ParseNode } from "./parseData";
+import ParseNode from "./ParseNode";
 import ParseError from "./ParseError";
 
 /**

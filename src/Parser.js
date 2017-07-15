@@ -5,7 +5,7 @@ import MacroExpander from "./MacroExpander";
 import symbols from "./symbols";
 import utils from "./utils";
 import { cjkRegex } from "./unicodeRegexes";
-import { ParseNode } from "./parseData";
+import ParseNode from "./ParseNode";
 import ParseError from "./ParseError";
 
 /**
