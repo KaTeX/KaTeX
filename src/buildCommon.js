@@ -384,23 +384,32 @@ const makeImageVList = function(textNode, img, imgShift, options) {
     // Unlike makeVList, this works even if img.height > textNode.maxFontSize.
 
     const maxFontSize = Math.max(1, textNode.maxFontSize);
-	// By making fontSizer at least 1 em tall, we avoid complications from
-	// scriptstyle and scriptscriptstyle. Also, 1 em is not so tall that it
-	// could push the whole line downward on the screen.
+    // By making fontSizer at least 1 em tall, we avoid complications from
+    // scriptstyle and scriptscriptstyle. Also, 1 em is not so tall that it
+    // could push the whole line downward on the screen.
 
-    // Find the top of the line box.
+    // Find the top of the text node's line box.
     const boxHeight = 0.9 * maxFontSize / options.sizeMultiplier;
     // That 0.9 is because KaTeX fonts have an ascend height = 0.9
-
-    // Now set the image top relative to boxHeight.
-    img.style.top = imgShift - img.height + boxHeight + "em";
 
     const fontSizer = makeFontSizer(options, maxFontSize);
     const baselineFix = makeSpan(
         ["baseline-fix"], [fontSizer, new domTree.symbolNode("\u200b")]);
 
-    const node = makeSpan(["image-vlist"], [textNode, img, baselineFix],
-        options);
+    // Wrap textNode in a span that has display:block, so it can be centered.
+    textNode = makeSpan([], [textNode, baselineFix], options);
+
+    const imgNode = makeSpan([], [img, baselineFix], options);
+    if (img.height <= boxHeight) {
+        // Shift the imgNode. (Same as makeVList)
+        imgNode.style.top = imgShift + "em";
+    } else {
+        // Set the image top relative to boxHeight.
+        imgNode.style.top = imgShift - img.height + boxHeight + "em";
+    }
+
+    // Wrap it all up in a vlist.
+    const node = makeSpan(["vlist"], [textNode, imgNode, fontSizer], options);
 
     node.height = Math.max(textNode.height, img.height - imgShift);
     node.depth = Math.max(textNode.depth, imgShift);

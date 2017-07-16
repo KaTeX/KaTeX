@@ -1516,16 +1516,16 @@ groupTypes.horizBraceOrBracket = function(group, options) {
 
     // Build the base group
     const body = buildGroup(
-       group.value.base, options.havingStyle(style.cramp()));
+       group.value.base, options.havingBaseStyle(Style.DISPLAY));
 
     // If a custom bracket, convert units.
     if (group.value.thickness) {
         group.value.thickness.value = calculateSize(group.value.thickness.value,
-                options.style);
+                options);
     }
     if (group.value.height) {
         group.value.height = calculateSize(group.value.height.value,
-                options.style);
+                options);
     }
 
     // Create the stretchy element
