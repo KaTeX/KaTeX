@@ -359,6 +359,12 @@ const makeVList = function(children, positionType, positionData, options) {
             childWrap.height -= shift;
             childWrap.depth += shift;
             childWrap.style.top = shift + "em";
+            if (children[i].marginLeft) {
+                childWrap.style.marginLeft = children[i].marginLeft;
+            }
+            if (children[i].marginRight) {
+                childWrap.style.marginRight = children[i].marginRight;
+            }
 
             realChildren.push(childWrap);
         }
