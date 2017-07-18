@@ -52,7 +52,7 @@ const isBinRightCanceller = function(node, isRealGroup) {
  * the spliced-out array. Returns null if `children[i]` does not exist or is not
  * a space.
  */
-const spliceSpaces = function(children, i) {
+export const spliceSpaces = function(children, i) {
     let j = i;
     while (j < children.length && isSpace(children[j])) {
         j++;
@@ -246,7 +246,7 @@ const isCharacterBox = function(group) {
         baseElem.type === "punct";
 };
 
-const makeNullDelimiter = function(options, classes) {
+export const makeNullDelimiter = function(options, classes) {
     const moreClasses = ["nulldelimiter"].concat(options.baseSizingClasses());
     return makeSpan(classes.concat(moreClasses));
 };
@@ -1257,105 +1257,6 @@ groupTypes.styling = function(group, options) {
 groupTypes.font = function(group, options) {
     const font = group.value.font;
     return buildGroup(group.value.body, options.withFont(font));
-};
-
-groupTypes.delimsizing = function(group, options) {
-    const delim = group.value.value;
-
-    if (delim === ".") {
-        // Empty delimiters still count as elements, even though they don't
-        // show anything.
-        return makeSpan([group.value.mclass]);
-    }
-
-    // Use delimiter.sizedDelim to generate the delimiter.
-    return delimiter.sizedDelim(
-            delim, group.value.size, options, group.mode,
-            [group.value.mclass]);
-};
-
-groupTypes.leftright = function(group, options) {
-    // Build the inner expression
-    const inner = buildExpression(group.value.body, options, true);
-
-    let innerHeight = 0;
-    let innerDepth = 0;
-    let hadMiddle = false;
-
-    // Calculate its height and depth
-    for (let i = 0; i < inner.length; i++) {
-        if (inner[i].isMiddle) {
-            hadMiddle = true;
-        } else {
-            innerHeight = Math.max(inner[i].height, innerHeight);
-            innerDepth = Math.max(inner[i].depth, innerDepth);
-        }
-    }
-
-    // The size of delimiters is the same, regardless of what style we are
-    // in. Thus, to correctly calculate the size of delimiter we need around
-    // a group, we scale down the inner size based on the size.
-    innerHeight *= options.sizeMultiplier;
-    innerDepth *= options.sizeMultiplier;
-
-    let leftDelim;
-    if (group.value.left === ".") {
-        // Empty delimiters in \left and \right make null delimiter spaces.
-        leftDelim = makeNullDelimiter(options, ["mopen"]);
-    } else {
-        // Otherwise, use leftRightDelim to generate the correct sized
-        // delimiter.
-        leftDelim = delimiter.leftRightDelim(
-            group.value.left, innerHeight, innerDepth, options,
-            group.mode, ["mopen"]);
-    }
-    // Add it to the beginning of the expression
-    inner.unshift(leftDelim);
-
-    // Handle middle delimiters
-    if (hadMiddle) {
-        for (let i = 1; i < inner.length; i++) {
-            const middleDelim = inner[i];
-            if (middleDelim.isMiddle) {
-                // Apply the options that were active when \middle was called
-                inner[i] = delimiter.leftRightDelim(
-                    middleDelim.isMiddle.value, innerHeight, innerDepth,
-                    middleDelim.isMiddle.options, group.mode, []);
-                // Add back spaces shifted into the delimiter
-                const spaces = spliceSpaces(middleDelim.children, 0);
-                if (spaces) {
-                    buildCommon.prependChildren(inner[i], spaces);
-                }
-            }
-        }
-    }
-
-    let rightDelim;
-    // Same for the right delimiter
-    if (group.value.right === ".") {
-        rightDelim = makeNullDelimiter(options, ["mclose"]);
-    } else {
-        rightDelim = delimiter.leftRightDelim(
-            group.value.right, innerHeight, innerDepth, options,
-            group.mode, ["mclose"]);
-    }
-    // Add it to the end of the expression.
-    inner.push(rightDelim);
-
-    return makeSpan(["minner"], inner, options);
-};
-
-groupTypes.middle = function(group, options) {
-    let middleDelim;
-    if (group.value.value === ".") {
-        middleDelim = makeNullDelimiter(options, []);
-    } else {
-        middleDelim = delimiter.sizedDelim(
-            group.value.value, 1, options,
-            group.mode, []);
-        middleDelim.isMiddle = {value: group.value.value, options: options};
-    }
-    return middleDelim;
 };
 
 groupTypes.rule = function(group, options) {

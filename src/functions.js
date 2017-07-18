@@ -193,41 +193,6 @@ defineFunction(["\\pod", "\\pmod", "\\mod"], {
     };
 });
 
-// Extra data needed for the delimiter handler down below
-const delimiterSizes = {
-    "\\bigl" : {mclass: "mopen",    size: 1},
-    "\\Bigl" : {mclass: "mopen",    size: 2},
-    "\\biggl": {mclass: "mopen",    size: 3},
-    "\\Biggl": {mclass: "mopen",    size: 4},
-    "\\bigr" : {mclass: "mclose",   size: 1},
-    "\\Bigr" : {mclass: "mclose",   size: 2},
-    "\\biggr": {mclass: "mclose",   size: 3},
-    "\\Biggr": {mclass: "mclose",   size: 4},
-    "\\bigm" : {mclass: "mrel",     size: 1},
-    "\\Bigm" : {mclass: "mrel",     size: 2},
-    "\\biggm": {mclass: "mrel",     size: 3},
-    "\\Biggm": {mclass: "mrel",     size: 4},
-    "\\big"  : {mclass: "mord",     size: 1},
-    "\\Big"  : {mclass: "mord",     size: 2},
-    "\\bigg" : {mclass: "mord",     size: 3},
-    "\\Bigg" : {mclass: "mord",     size: 4},
-};
-
-const delimiters = [
-    "(", ")", "[", "\\lbrack", "]", "\\rbrack",
-    "\\{", "\\lbrace", "\\}", "\\rbrace",
-    "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
-    "<", ">", "\\langle", "\\rangle", "\\lt", "\\gt",
-    "\\lvert", "\\rvert", "\\lVert", "\\rVert",
-    "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache",
-    "/", "\\backslash",
-    "|", "\\vert", "\\|", "\\Vert",
-    "\\uparrow", "\\Uparrow",
-    "\\downarrow", "\\Downarrow",
-    "\\updownarrow", "\\Updownarrow",
-    ".",
-];
-
 const fontAliases = {
     "\\Bbb": "\\mathbb",
     "\\bold": "\\mathbf",
@@ -453,63 +418,7 @@ defineFunction("\\smash", {
     };
 });
 
-// Delimiter functions
-const checkDelimiter = function(delim, context) {
-    if (utils.contains(delimiters, delim.value)) {
-        return delim;
-    } else {
-        throw new ParseError(
-            "Invalid delimiter: '" + delim.value + "' after '" +
-            context.funcName + "'", delim);
-    }
-};
-
-defineFunction([
-    "\\bigl", "\\Bigl", "\\biggl", "\\Biggl",
-    "\\bigr", "\\Bigr", "\\biggr", "\\Biggr",
-    "\\bigm", "\\Bigm", "\\biggm", "\\Biggm",
-    "\\big",  "\\Big",  "\\bigg",  "\\Bigg",
-], {
-    numArgs: 1,
-}, function(context, args) {
-    const delim = checkDelimiter(args[0], context);
-
-    return {
-        type: "delimsizing",
-        size: delimiterSizes[context.funcName].size,
-        mclass: delimiterSizes[context.funcName].mclass,
-        value: delim.value,
-    };
-});
-
-defineFunction([
-    "\\left", "\\right",
-], {
-    numArgs: 1,
-}, function(context, args) {
-    const delim = checkDelimiter(args[0], context);
-
-    // \left and \right are caught somewhere in Parser.js, which is
-    // why this data doesn't match what is in buildHTML.
-    return {
-        type: "leftright",
-        value: delim.value,
-    };
-});
-
-defineFunction("\\middle", {
-    numArgs: 1,
-}, function(context, args) {
-    const delim = checkDelimiter(args[0], context);
-    if (!context.parser.leftrightDepth) {
-        throw new ParseError("\\middle without preceding \\left", delim);
-    }
-
-    return {
-        type: "middle",
-        value: delim.value,
-    };
-});
+import "./functions/delimsizing";
 
 // Sizing functions (handled in Parser.js explicitly, hence no handler)
 defineFunction([
