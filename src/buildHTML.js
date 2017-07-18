@@ -71,7 +71,7 @@ const spliceSpaces = function(children, i) {
  * is a real group (no atoms will be added on either side), as opposed to
  * a partial group (e.g. one created by \color).
  */
-const buildExpression = function(expression, options, isRealGroup) {
+export const buildExpression = function(expression, options, isRealGroup) {
     // Parse expressions into `groups`.
     const groups = [];
     for (let i = 0; i < expression.length; i++) {
@@ -255,7 +255,7 @@ const makeNullDelimiter = function(options, classes) {
  * This is a map of group types to the function used to handle that type.
  * Simpler types come at the beginning, while complicated types come afterwards.
  */
-const groupTypes = {};
+export const groupTypes = {};
 
 groupTypes.mathord = function(group, options) {
     return buildCommon.makeOrd(group, options, "mathord");
@@ -1723,46 +1723,6 @@ groupTypes.xArrow = function(group, options) {
     return makeSpan(["mrel", "x-arrow"], [vlist], options);
 };
 
-groupTypes.phantom = function(group, options) {
-    const elements = buildExpression(
-        group.value.value,
-        options.withPhantom(),
-        false
-    );
-
-    // \phantom isn't supposed to affect the elements it contains.
-    // See "color" for more details.
-    return new buildCommon.makeFragment(elements);
-};
-
-groupTypes.hphantom = function(group, options) {
-    let node = makeSpan(
-        [], [buildGroup(group.value.body, options.withPhantom())]);
-    node.height = 0;
-    node.depth = 0;
-    if (node.children) {
-        for (let i = 0; i < node.children.length; i++) {
-            node.children[i].height = 0;
-            node.children[i].depth = 0;
-        }
-    }
-
-    // See smash for comment re: use of makeVList
-    node = buildCommon.makeVList([
-        {type: "elem", elem: node},
-    ], "firstBaseline", null, options);
-
-    return node;
-};
-
-groupTypes.vphantom = function(group, options) {
-    const inner = makeSpan(
-        ["inner"], [buildGroup(group.value.body, options.withPhantom())]);
-    const fix = makeSpan(["fix"], []);
-    return makeSpan(
-        ["mord", "rlap"], [inner, fix], options);
-};
-
 groupTypes.mclass = function(group, options) {
     const elements = buildExpression(group.value.value, options, true);
 
@@ -1774,7 +1734,7 @@ groupTypes.mclass = function(group, options) {
  * function for it. It also handles the interaction of size and style changes
  * between parents and children.
  */
-const buildGroup = function(group, options, baseOptions) {
+export const buildGroup = function(group, options, baseOptions) {
     if (!group) {
         return makeSpan();
     }
@@ -1807,7 +1767,7 @@ const buildGroup = function(group, options, baseOptions) {
  * Take an entire parse tree, and build it into an appropriate set of HTML
  * nodes.
  */
-const buildHTML = function(tree, options) {
+export default function buildHTML(tree, options) {
     // buildExpression is destructive, so we need to make a clone
     // of the incoming tree so that it isn't accidentally changed
     tree = JSON.parse(JSON.stringify(tree));
@@ -1835,6 +1795,4 @@ const buildHTML = function(tree, options) {
     htmlNode.setAttribute("aria-hidden", "true");
 
     return htmlNode;
-};
-
-module.exports = buildHTML;
+}

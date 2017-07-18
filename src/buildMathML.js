@@ -60,7 +60,7 @@ const getVariant = function(group, options) {
  * Functions for handling the different types of groups found in the parse
  * tree. Each function should take a parse group and return a MathML node.
  */
-const groupTypes = {};
+export const groupTypes = {};
 
 const defaultVariant = {
     "mi": "italic",
@@ -650,25 +650,6 @@ groupTypes.smash = function(group, options) {
     return node;
 };
 
-groupTypes.phantom = function(group, options) {
-    const inner = buildExpression(group.value.value, options);
-    return new mathMLTree.MathNode("mphantom", inner);
-};
-
-groupTypes.hphantom = function(group, options) {
-    const inner = buildExpression(group.value.value, options);
-    const node = new mathMLTree.MathNode("mphantom", inner);
-    node.setAttribute("height", "0px");
-    return node;
-};
-
-groupTypes.vphantom = function(group, options) {
-    const inner = buildExpression(group.value.value, options);
-    const node = new mathMLTree.MathNode("mphantom", inner);
-    node.setAttribute("width", "0px");
-    return node;
-};
-
 groupTypes.mclass = function(group, options) {
     const inner = buildExpression(group.value.value, options);
     return new mathMLTree.MathNode("mstyle", inner);
@@ -679,7 +660,7 @@ groupTypes.mclass = function(group, options) {
  * MathML nodes. A little simpler than the HTML version because we don't do any
  * previous-node handling.
  */
-const buildExpression = function(expression, options) {
+export const buildExpression = function(expression, options) {
     const groups = [];
     for (let i = 0; i < expression.length; i++) {
         const group = expression[i];
@@ -695,8 +676,9 @@ const buildExpression = function(expression, options) {
  * Takes a group from the parser and calls the appropriate groupTypes function
  * on it to produce a MathML node.
  */
-// TODO(kevinb): determine if removeUnnecessaryRow should always be true
-const buildGroup = function(group, options, removeUnnecessaryRow = false) {
+export const buildGroup = function(
+    group, options, removeUnnecessaryRow = false,
+) {
     if (!group) {
         return new mathMLTree.MathNode("mrow");
     }
@@ -724,7 +706,7 @@ const buildGroup = function(group, options, removeUnnecessaryRow = false) {
  * Note that we actually return a domTree element with a `<math>` inside it so
  * we can do appropriate styling.
  */
-const buildMathML = function(tree, texExpression, options) {
+export default function buildMathML(tree, texExpression, options) {
     const expression = buildExpression(tree, options);
 
     // Wrap up the expression in an mrow so it is presented in the semantics
@@ -744,6 +726,4 @@ const buildMathML = function(tree, texExpression, options) {
 
     // You can't style <math> nodes, so we wrap the node in a span.
     return makeSpan(["katex-mathml"], [math]);
-};
-
-module.exports = buildMathML;
+}
