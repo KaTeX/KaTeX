@@ -17,7 +17,7 @@ import stretchy from "./stretchy";
  * Takes a symbol and converts it into a MathML text node after performing
  * optional replacement from symbols.js.
  */
-const makeText = function(text, mode) {
+export const makeText = function(text, mode) {
     if (symbols[mode][text] && symbols[mode][text].replace) {
         text = symbols[mode][text].replace;
     }
@@ -315,39 +315,6 @@ groupTypes.sqrt = function(group, options) {
     return node;
 };
 
-groupTypes.leftright = function(group, options) {
-    const inner = buildExpression(group.value.body, options);
-
-    if (group.value.left !== ".") {
-        const leftNode = new mathMLTree.MathNode(
-            "mo", [makeText(group.value.left, group.mode)]);
-
-        leftNode.setAttribute("fence", "true");
-
-        inner.unshift(leftNode);
-    }
-
-    if (group.value.right !== ".") {
-        const rightNode = new mathMLTree.MathNode(
-            "mo", [makeText(group.value.right, group.mode)]);
-
-        rightNode.setAttribute("fence", "true");
-
-        inner.push(rightNode);
-    }
-
-    const outerNode = new mathMLTree.MathNode("mrow", inner);
-
-    return outerNode;
-};
-
-groupTypes.middle = function(group, options) {
-    const middleNode = new mathMLTree.MathNode(
-        "mo", [makeText(group.value.middle, group.mode)]);
-    middleNode.setAttribute("fence", "true");
-    return middleNode;
-};
-
 groupTypes.accent = function(group, options) {
     let accentNode;
     if (group.value.isStretchy) {
@@ -443,29 +410,6 @@ groupTypes.katex = function(group) {
 groupTypes.font = function(group, options) {
     const font = group.value.font;
     return buildGroup(group.value.body, options.withFont(font));
-};
-
-groupTypes.delimsizing = function(group) {
-    const children = [];
-
-    if (group.value.value !== ".") {
-        children.push(makeText(group.value.value, group.mode));
-    }
-
-    const node = new mathMLTree.MathNode("mo", children);
-
-    if (group.value.mclass === "mopen" ||
-        group.value.mclass === "mclose") {
-        // Only some of the delimsizing functions act as fences, and they
-        // return "mopen" or "mclose" mclass.
-        node.setAttribute("fence", "true");
-    } else {
-        // Explicitly disable fencing if it's not a fence, to override the
-        // defaults.
-        node.setAttribute("fence", "false");
-    }
-
-    return node;
 };
 
 groupTypes.styling = function(group, options) {
