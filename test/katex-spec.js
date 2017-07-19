@@ -1967,10 +1967,10 @@ describe("A horizontal brace parser", function() {
         expect("\\underbrace{x}_2^2").toParse();
     });
 
-    it("should produce horizBrace", function() {
+    it("should produce horizBraceOrBracket", function() {
         const parse = getParsed("\\overbrace x")[0];
 
-        expect(parse.type).toEqual("horizBrace");
+        expect(parse.type).toEqual("horizBraceOrBracket");
     });
 
     it("should be grouped more tightly than supsubs", function() {
@@ -1995,6 +1995,28 @@ describe("A horizontal brace builder", function() {
         expect(getBuilt("\\overbrace +")[0].classes).not.toContain("mbin");
         expect(getBuilt("\\overbrace )^2")[0].classes).toContain("mord");
         expect(getBuilt("\\overbrace )^2")[0].classes).not.toContain("mclose");
+    });
+});
+
+describe("A horizontal bracket parser", function() {
+    it("should not fail, given optional arguments", function() {
+        expect("\\overbracket[0.15em][1.2em]{x}").toParse();
+        expect("\\overbracket[0.15em]{x}").toParse();
+        expect("\\overbrace[0.15em][1.2em]{x}").toParse();
+        expect("\\overbrace[0.15em]{x}").toParse();
+        expect("\\overbrace[0.15em]{x}^2").toParse();
+        expect("\\underbrace[0.15em]{x}_2").toParse();
+        expect("\\underbrace[0.15em]{x}_2^2").toParse();
+    });
+});
+
+describe("A horizontal bracket builder", function() {
+    it("should not fail, given optional arguments", function() {
+        expect("\\overbracket[0.15em][1.2em]{x}").toBuild();
+        expect("\\overbracket[0.15em]{x}").toBuild();
+        expect("\\overbrace[0.15em][1.2em]{x}").toBuild();
+        expect("\\overbrace[0.15em]{x}").toBuild();
+        expect("\\overbrace[0.15em]{x}^2").toBuild();
     });
 });
 

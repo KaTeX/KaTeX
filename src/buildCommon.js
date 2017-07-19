@@ -378,6 +378,45 @@ const makeVList = function(children, positionType, positionData, options) {
     return vlist;
 };
 
+const makeImageVList = function(textNode, img, imgShift, options) {
+    // This function is an alternate to makeVList, for use when one element
+    // is located on the baseline and the other element is an image.
+    // Unlike makeVList, this works even if img.height > textNode.maxFontSize.
+
+    const maxFontSize = Math.max(1, textNode.maxFontSize);
+    // By making fontSizer at least 1 em tall, we avoid complications from
+    // scriptstyle and scriptscriptstyle. Also, 1 em is not so tall that it
+    // could push the whole line downward on the screen.
+
+    // Find the top of the text node's line box.
+    const boxHeight = 0.9 * maxFontSize / options.sizeMultiplier;
+    // That 0.9 is because KaTeX fonts have an ascend height = 0.9
+
+    const fontSizer = makeFontSizer(options, maxFontSize);
+    const baselineFix = makeSpan(
+        ["baseline-fix"], [fontSizer, new domTree.symbolNode("\u200b")]);
+
+    // Wrap textNode in a span that has display:block, so it can be centered.
+    textNode = makeSpan([], [textNode, baselineFix], options);
+
+    const imgNode = makeSpan([], [img, baselineFix], options);
+    if (img.height <= boxHeight) {
+        // Shift the imgNode. (Same as makeVList)
+        imgNode.style.top = imgShift + "em";
+    } else {
+        // Set the image top relative to boxHeight.
+        imgNode.style.top = imgShift - img.height + boxHeight + "em";
+    }
+
+    // Wrap it all up in a vlist.
+    const node = makeSpan(["vlist"], [textNode, imgNode, fontSizer], options);
+
+    node.height = Math.max(textNode.height, img.height - imgShift);
+    node.depth = Math.max(textNode.depth, imgShift);
+    node.maxFontSize = maxFontSize;
+    return node;
+};
+
 // A map of spacing functions to their attributes, like size and corresponding
 // CSS class
 const spacingFunctions = {
@@ -470,6 +509,7 @@ module.exports = {
     makeSpan: makeSpan,
     makeFragment: makeFragment,
     makeVList: makeVList,
+    makeImageVList: makeImageVList,
     makeOrd: makeOrd,
     prependChildren: prependChildren,
     spacingFunctions: spacingFunctions,

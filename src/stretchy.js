@@ -20,6 +20,8 @@ const stretchyCodePoint = {
     xrightarrow : "\u2192",
     underbrace : "\u23b5",
     overbrace : "\u23de",
+    overbracket : "\u23b4",
+    underbracket : "\u23df",
     overleftrightarrow : "\u2194",
     underleftrightarrow : "\u2194",
     xleftrightarrow : "\u2194",
@@ -69,6 +71,8 @@ const katexImagesData = {
     xrightarrow : [0.261, 0.261, "rightarrow"],
     overbrace : [0.548, 0, "overbrace"],
     underbrace : [0.548, 0, "underbrace"],
+    overbracket : [0.3, 0, "overbracket"],
+    underbracket : [0.3, 0, "underbracket"],
     overleftrightarrow : [0.522, 0, "leftrightarrow"],
     underleftrightarrow : [0.522, 0, "leftrightarrow"],
     xleftrightarrow : [0.261, 0.261, "leftrightarrow"],
@@ -134,7 +138,19 @@ const svgSpan = function(group, options) {
     }
 
     let node;
-    if (options.color) {
+    if (utils.contains(["overbracket", "underbracket"], label)) {
+        node = buildCommon.makeSpan(["stretchy", label], [], options);
+        // Deal with the optional arguments these two functions.
+        if (group.value.thickness) {
+            const lineWt = group.value.thickness.value + "em";
+            node.style.borderWidth = (group.value.isOver ? lineWt : 0) + " " +
+                lineWt + " " + (group.value.isOver ? 0 : lineWt) + " " + lineWt;
+        }
+        if (group.value.height) {
+            height = group.value.height;
+            node.style.height = height + "em";
+        }
+    } else if (options.color) {
         classArray.push(fileName);         // Set span height and IE image.
         // The next two lines each add a class that CSS will apply
         // only to browsers that support CSS mask.
@@ -164,6 +180,7 @@ const encloseSpan = function(inner, isCharBox, label, pad, options) {
             img.style.borderColor = options.color;
         } else {
             img.classes[2] = label + "-mask";
+            img.classes.push("mask");
             img.style.backgroundColor = options.color;
         }
     }
