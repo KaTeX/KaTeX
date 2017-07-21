@@ -356,28 +356,23 @@ groupTypes.supsub = function(group, options) {
             subShift, metrics.sub1,
             subm.height - 0.8 * metrics.xHeight);
 
-        supsub = buildCommon.makeVList([
-            {type: "elem", elem: subm},
-        ], "shift", subShift, options);
-
-        supsub.children[0].style.marginRight = scriptspace;
-
+        const vlistElem = [{type: "elem", elem: subm, marginRight: scriptspace}];
         // Subscripts shouldn't be shifted by the base's italic correction.
         // Account for that by shifting the subscript back the appropriate
         // amount. Note we only do this when the base is a single symbol.
         if (base instanceof domTree.symbolNode) {
-            supsub.children[0].style.marginLeft = -base.italic + "em";
+            vlistElem[0].marginLeft = -base.italic + "em";
         }
+
+        supsub = buildCommon.makeVList(vlistElem, "shift", subShift, options);
     } else if (!group.value.sub) {
         // Rule 18c, d
         supShift = Math.max(supShift, minSupShift,
             supm.depth + 0.25 * metrics.xHeight);
 
         supsub = buildCommon.makeVList([
-            {type: "elem", elem: supm},
+            {type: "elem", elem: supm, marginRight: scriptspace},
         ], "shift", -supShift, options);
-
-        supsub.children[0].style.marginRight = scriptspace;
     } else {
         supShift = Math.max(
             supShift, minSupShift, supm.depth + 0.25 * metrics.xHeight);
@@ -396,18 +391,16 @@ groupTypes.supsub = function(group, options) {
             }
         }
 
-        supsub = buildCommon.makeVList([
-            {type: "elem", elem: subm, shift: subShift},
-            {type: "elem", elem: supm, shift: -supShift},
-        ], "individualShift", null, options);
-
+        const vlistElem = [
+            {type: "elem", elem: subm, shift: subShift, marginRight: scriptspace},
+            {type: "elem", elem: supm, shift: -supShift, marginRight: scriptspace},
+        ];
         // See comment above about subscripts not being shifted
         if (base instanceof domTree.symbolNode) {
-            supsub.children[0].style.marginLeft = -base.italic + "em";
+            vlistElem[0].marginLeft = -base.italic + "em";
         }
 
-        supsub.children[0].style.marginRight = scriptspace;
-        supsub.children[1].style.marginRight = scriptspace;
+        supsub = buildCommon.makeVList(vlistElem, "individualShift", null, options);
     }
 
     // We ensure to wrap the supsub vlist in a span.msupsub to reset text-align
@@ -895,30 +888,25 @@ groupTypes.op = function(group, options) {
         if (!supGroup) {
             top = base.height - baseShift;
 
-            finalGroup = buildCommon.makeVList([
-                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                {type: "elem", elem: subm},
-                {type: "kern", size: subKern},
-                {type: "elem", elem: base},
-            ], "top", top, options);
-
-            // Here, we shift the limits by the slant of the symbol. Note
+            // Shift the limits by the slant of the symbol. Note
             // that we are supposed to shift the limits by 1/2 of the slant,
             // but since we are centering the limits adding a full slant of
             // margin will shift by 1/2 that.
-            finalGroup.children[0].style.marginLeft = -slant + "em";
+            finalGroup = buildCommon.makeVList([
+                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
+                {type: "elem", elem: subm, marginLeft: -slant + "em"},
+                {type: "kern", size: subKern},
+                {type: "elem", elem: base},
+            ], "top", top, options);
         } else if (!subGroup) {
             bottom = base.depth + baseShift;
 
             finalGroup = buildCommon.makeVList([
                 {type: "elem", elem: base},
                 {type: "kern", size: supKern},
-                {type: "elem", elem: supm},
+                {type: "elem", elem: supm, marginLeft: slant + "em"},
                 {type: "kern", size: options.fontMetrics().bigOpSpacing5},
             ], "bottom", bottom, options);
-
-            // See comment above about slants
-            finalGroup.children[1].style.marginLeft = slant + "em";
         } else if (!supGroup && !subGroup) {
             // This case probably shouldn't occur (this would mean the
             // supsub was sending us a group with no superscript or
@@ -932,17 +920,13 @@ groupTypes.op = function(group, options) {
 
             finalGroup = buildCommon.makeVList([
                 {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                {type: "elem", elem: subm},
+                {type: "elem", elem: subm, marginLeft: -slant + "em"},
                 {type: "kern", size: subKern},
                 {type: "elem", elem: base},
                 {type: "kern", size: supKern},
-                {type: "elem", elem: supm},
+                {type: "elem", elem: supm, marginLeft: slant + "em"},
                 {type: "kern", size: options.fontMetrics().bigOpSpacing5},
             ], "bottom", bottom, options);
-
-            // See comment above about slants
-            finalGroup.children[0].style.marginLeft = -slant + "em";
-            finalGroup.children[2].style.marginLeft = slant + "em";
         }
 
         return makeSpan(["mop", "op-limits"], [finalGroup], options);
