@@ -406,7 +406,12 @@ function takeScreenshot(key) {
         if (opts.wait) {
             browserSideWait(1000 * opts.wait);
         }
-        driver.takeScreenshot().then(haveScreenshot).then(oneDone, check);
+        const promise = driver.takeScreenshot().then(haveScreenshot);
+        if (retry === 0) {
+            // The `oneDone` promise remains outstanding if we retry, so
+            // don't re-add it
+            promise.then(oneDone, check);
+        }
     }
 
     function haveScreenshot(img) {
