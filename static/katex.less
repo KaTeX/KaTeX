@@ -232,8 +232,25 @@
         & + .mop.mtight { margin-left: @thinspace; }
     }
 
+    .vlist-t {
+        display: inline-table;
+        table-layout: fixed;
+    }
+
+    .vlist-r {
+        display: table-row;
+    }
+
+    .vlist-s {
+        display: table-cell;
+        vertical-align: bottom;
+        font-size: 0.05em;
+    }
+
     .vlist {
-        display: inline-block;
+        display: table-cell;
+        vertical-align: bottom;
+        position: relative;
 
         > span {
             display: block;
@@ -243,11 +260,11 @@
             > span {
                 display: inline-block;
             }
-        }
 
-        .baseline-fix {
-            display: inline-table;
-            table-layout: fixed;
+            > .pstrut {
+                overflow: hidden;
+                width: 0;
+            }
         }
     }
 
@@ -503,13 +520,13 @@
     }
 
     .op-limits {
-        > .vlist > span {
+        > .vlist-t {
             text-align: center;
         }
     }
 
     .accent {
-        > .vlist > span {
+        > .vlist-t {
             text-align: center;
         }
 
@@ -536,15 +553,15 @@
             display: inline-block;
         }
 
-        .col-align-c > .vlist {
+        .col-align-c > .vlist-t {
             text-align: center;
         }
 
-        .col-align-l > .vlist {
+        .col-align-l > .vlist-t {
             text-align: left;
         }
 
-        .col-align-r > .vlist {
+        .col-align-r > .vlist-t {
             text-align: right;
         }
     }
@@ -564,16 +581,14 @@
     }
 
     // Lengthen the extensible arrows via padding.
-    .x-arrow > span > span {
-        text-align: center;
-        > span > .mord {
-            padding: 0 0.5em 0 0.5em;
-        }
+    .x-arrow-pad {
+        padding: 0 0.5em;
     }
 
-    .mover > span > span,
-    .munder > span > span {
-        text-align: center;   // above and below a horizontal brace
+    .x-arrow,
+    .mover,
+    .munder {
+        text-align: center;
     }
 
     .boxpad {
