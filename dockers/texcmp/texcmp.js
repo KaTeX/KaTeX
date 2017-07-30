@@ -8,7 +8,7 @@ const path = require("path");
 const Q = require("q"); // To debug, pass Q_DEBUG=1 in the environment
 const pngparse = require("pngparse");
 const fft = require("ndarray-fft");
-const ndarray = require("ndarray-fft/node_modules/ndarray");
+const ndarray = require("ndarray");
 
 const data = require("../../test/screenshotter/ss_data");
 
@@ -68,6 +68,23 @@ function processTestCase(key) {
     }
     if (itm.post) {
         tex = tex + itm.post.replace("<br>", "\\\\");
+    }
+    if (itm.macros) {
+        tex = Object.keys(itm.macros).map(name => {
+            const expansion = itm.macros[name];
+            let numArgs = 0;
+            if (expansion.indexOf("#") !== -1) {
+                const stripped = expansion.replace(/##/g, "");
+                while (stripped.indexOf("#" + (numArgs + 1)) !== -1) {
+                    ++numArgs;
+                }
+            }
+            let args = "";
+            for (let i = 1; i <= numArgs; ++i) {
+                args += "#" + i;
+            }
+            return "\\def" + name + args + "{" + expansion + "}\n";
+        }).join("") + tex;
     }
     tex = template.replace(/\$.*\$/, tex.replace(/\$/g, "$$$$"));
     const texFile = path.join(tmpDir, key + ".tex");
@@ -156,11 +173,11 @@ function processTestCase(key) {
         const uh = Math.max(browser.height + by, latex.height + ly); // u. h.
         return execFile("convert", [
             // First image: latex rendering, converted to grayscale and padded
-            "(", pngFile, "-grayscale", "Rec709Luminance",
+            "(", pngFile, "-colorspace", "Gray",
             "-extent", uw + "x" + uh + "-" + lx + "-" + ly,
             ")",
             // Second image: browser screenshot, to grayscale and padded
-            "(", browserFile, "-grayscale", "Rec709Luminance",
+            "(", browserFile, "-colorspace", "Gray",
             "-extent", uw + "x" + uh + "-" + bx + "-" + by,
             ")",
             // Third image: the per-pixel minimum of the first two images

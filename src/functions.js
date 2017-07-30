@@ -1,7 +1,6 @@
-const utils = require("./utils");
-const ParseError = require("./ParseError");
-const parseData = require("./parseData");
-const ParseNode = parseData.ParseNode;
+import utils from "./utils";
+import ParseError from "./ParseError";
+import ParseNode from "./ParseNode";
 
 /* This file contains a list of functions that we parse, identified by
  * the calls to defineFunction.
@@ -23,9 +22,9 @@ const ParseNode = parseData.ParseNode;
  *               - "color": An html color, like "#abc" or "blue"
  *               - "original": The same type as the environment that the
  *                             function being parsed is in (e.g. used for the
- *                             bodies of functions like \color where the first
- *                             argument is special and the second argument is
- *                             parsed normally)
+ *                             bodies of functions like \textcolor where the
+ *                             first argument is special and the second
+ *                             argument is parsed normally)
  *              Other possible types (probably shouldn't be used)
  *               - "text": Text-like (e.g. \text)
  *               - "math": Normal math
@@ -151,7 +150,7 @@ defineFunction([
 });
 
 // A two-argument custom color
-defineFunction("\\color", {
+defineFunction("\\textcolor", {
     numArgs: 2,
     allowedInText: true,
     greediness: 3,
@@ -165,6 +164,14 @@ defineFunction("\\color", {
         value: ordargument(body),
     };
 });
+
+// \color is handled in Parser.js's parseImplicitGroup
+defineFunction("\\color", {
+    numArgs: 1,
+    allowedInText: true,
+    greediness: 3,
+    argTypes: ["color"],
+}, null);
 
 // An overline
 defineFunction("\\overline", {
@@ -626,16 +633,96 @@ defineFunction([
 defineFunction([
     "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
     "\\check", "\\hat", "\\vec", "\\dot",
-    // We don't support expanding accents yet
-    // "\\widetilde", "\\widehat"
+    "\\widehat", "\\widetilde", "\\overrightarrow", "\\overleftarrow",
+    "\\Overrightarrow", "\\overleftrightarrow", "\\overgroup",
+    "\\overlinesegment", "\\overleftharpoon", "\\overrightharpoon",
+], {
+    numArgs: 1,
+}, function(context, args) {
+    const base = args[0];
+
+    const isStretchy = !utils.contains([
+        "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
+        "\\check", "\\hat", "\\vec", "\\dot",
+    ], context.funcName);
+
+    const isShifty = !isStretchy || utils.contains([
+        "\\widehat", "\\widetilde",
+    ], context.funcName);
+
+    return {
+        type: "accent",
+        label: context.funcName,
+        isStretchy: isStretchy,
+        isShifty: isShifty,
+        value: ordargument(base),
+        base: base,
+    };
+});
+
+// Horizontal stretchy braces
+defineFunction([
+    "\\overbrace", "\\underbrace",
 ], {
     numArgs: 1,
 }, function(context, args) {
     const base = args[0];
     return {
-        type: "accent",
-        accent: context.funcName,
+        type: "horizBrace",
+        label: context.funcName,
+        isOver: /^\\over/.test(context.funcName),
         base: base,
+    };
+});
+
+// Stretchy accents under the body
+defineFunction([
+    "\\underleftarrow", "\\underrightarrow", "\\underleftrightarrow",
+    "\\undergroup", "\\underlinesegment", "\\undertilde",
+], {
+    numArgs: 1,
+}, function(context, args) {
+    const body = args[0];
+    return {
+        type: "accentUnder",
+        label: context.funcName,
+        value: ordargument(body),
+        body: body,
+    };
+});
+
+// Stretchy arrows with an optional argument
+defineFunction([
+    "\\xleftarrow", "\\xrightarrow", "\\xLeftarrow", "\\xRightarrow",
+    "\\xleftrightarrow", "\\xLeftrightarrow", "\\xhookleftarrow",
+    "\\xhookrightarrow", "\\xmapsto", "\\xrightharpoondown",
+    "\\xrightharpoonup", "\\xleftharpoondown", "\\xleftharpoonup",
+    "\\xrightleftharpoons", "\\xleftrightharpoons", "\\xLongequal",
+    "\\xtwoheadrightarrow", "\\xtwoheadleftarrow", "\\xLongequal",
+    "\\xtofrom",
+], {
+    numArgs: 1,
+    numOptionalArgs: 1,
+}, function(context, args) {
+    const below = args[0];
+    const body = args[1];
+    return {
+        type: "xArrow",   // x for extensible
+        label: context.funcName,
+        body: body,
+        below: below,
+    };
+});
+
+// enclose
+defineFunction(["\\cancel", "\\bcancel", "\\xcancel", "\\sout", "\\fbox"], {
+    numArgs: 1,
+}, function(context, args) {
+    const body = args[0];
+    return {
+        type: "enclose",
+        label: context.funcName,
+        body: body,
     };
 });
 
