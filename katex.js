@@ -7,12 +7,12 @@
  * errors in the expression, or errors in javascript handling.
  */
 
-const ParseError = require("./src/ParseError");
-const Settings = require("./src/Settings");
+import ParseError from "./src/ParseError";
+import Settings from "./src/Settings";
 
-const buildTree = require("./src/buildTree");
-const parseTree = require("./src/parseTree");
-const utils = require("./src/utils");
+import buildTree from "./src/buildTree";
+import parseTree from "./src/parseTree";
+import utils from "./src/utils";
 
 /**
  * Parse and build an expression, and place that expression in the DOM node

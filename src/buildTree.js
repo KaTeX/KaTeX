@@ -1,11 +1,9 @@
-const buildHTML = require("./buildHTML");
-const buildMathML = require("./buildMathML");
-const buildCommon = require("./buildCommon");
-const Options = require("./Options");
-const Settings = require("./Settings");
-const Style = require("./Style");
-
-const makeSpan = buildCommon.makeSpan;
+import buildHTML from "./buildHTML";
+import buildMathML from "./buildMathML";
+import { makeSpan } from "./buildCommon";
+import Options from "./Options";
+import Settings from "./Settings";
+import Style from "./Style";
 
 const buildTree = function(tree, expression, settings) {
     settings = settings || new Settings({});
@@ -18,7 +16,6 @@ const buildTree = function(tree, expression, settings) {
     // Setup the default options
     const options = new Options({
         style: startStyle,
-        size: "size5",
     });
 
     // `buildHTML` sometimes messes with the parse tree (like turning bins ->

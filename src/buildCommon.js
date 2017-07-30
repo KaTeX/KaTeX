@@ -4,10 +4,10 @@
  * different kinds of domTree nodes in a consistent manner.
  */
 
-const domTree = require("./domTree");
-const fontMetrics = require("./fontMetrics");
-const symbols = require("./symbols");
-const utils = require("./utils");
+import domTree from "./domTree";
+import fontMetrics from "./fontMetrics";
+import symbols from "./symbols";
+import utils from "./utils";
 
 // The following have to be loaded from Main-Italic font, using class mainit
 const mainitLetters = [
@@ -63,6 +63,7 @@ const makeSymbol = function(value, fontFamily, mode, options, classes) {
     }
 
     if (options) {
+        symbolNode.maxFontSize = options.sizeMultiplier;
         if (options.style.isTight()) {
             symbolNode.classes.push("mtight");
         }
@@ -233,23 +234,6 @@ const makeFragment = function(children) {
 };
 
 /**
- * Makes an element placed in each of the vlist elements to ensure that each
- * element has the same max font size. To do this, we create a zero-width space
- * with the correct font size.
- */
-const makeFontSizer = function(options, fontSize) {
-    const fontSizeInner = makeSpan([], [new domTree.symbolNode("\u200b")]);
-    fontSizeInner.style.fontSize =
-        (fontSize / options.style.sizeMultiplier) + "em";
-
-    const fontSizer = makeSpan(
-        ["fontsize-ensurer", "reset-" + options.size, "size5"],
-        [fontSizeInner]);
-
-    return fontSizer;
-};
-
-/**
  * Makes a vertical list by stacking elements and kerns on top of each other.
  * Allows for many different ways of specifying the positioning method.
  *
@@ -334,17 +318,28 @@ const makeVList = function(children, positionType, positionData, options) {
         depth = 0;
     }
 
-    // Make the fontSizer
-    let maxFontSize = 0;
+    // Create a strut that is taller than any list item. The strut is added to
+    // each item, where it will determine the item's baseline. Since it has
+    // `overflow:hidden`, the strut's top edge will sit on the item's line box's
+    // top edge and the strut's bottom edge will sit on the item's baseline,
+    // with no additional line-height spacing. This allows the item baseline to
+    // be positioned precisely without worrying about font ascent and
+    // line-height.
+    let pstrutSize = 0;
     for (i = 0; i < children.length; i++) {
         if (children[i].type === "elem") {
-            maxFontSize = Math.max(maxFontSize, children[i].elem.maxFontSize);
+            const child = children[i].elem;
+            pstrutSize = Math.max(pstrutSize, child.maxFontSize, child.height);
         }
     }
-    const fontSizer = makeFontSizer(options, maxFontSize);
+    pstrutSize += 2;
+    const pstrut = makeSpan(["pstrut"], []);
+    pstrut.style.height = pstrutSize + "em";
 
     // Create a new list of actual children at the correct offsets
     const realChildren = [];
+    let minPos = depth;
+    let maxPos = depth;
     currPos = depth;
     for (i = 0; i < children.length; i++) {
         if (children[i].type === "kern") {
@@ -352,45 +347,49 @@ const makeVList = function(children, positionType, positionData, options) {
         } else {
             const child = children[i].elem;
 
-            const shift = -child.depth - currPos;
-            currPos += child.height + child.depth;
-
             const childWrap = makeSpan(
-                [], [fontSizer, child, new domTree.symbolNode("\u200b")]);
-            childWrap.height -= shift;
-            childWrap.depth += shift;
-            childWrap.style.top = shift + "em";
+                [], [pstrut, child, new domTree.symbolNode("\u200b")]);
+            childWrap.style.top = (-pstrutSize - currPos - child.depth) + "em";
+            if (children[i].marginLeft) {
+                childWrap.style.marginLeft = children[i].marginLeft;
+            }
+            if (children[i].marginRight) {
+                childWrap.style.marginRight = children[i].marginRight;
+            }
 
             realChildren.push(childWrap);
+            currPos += child.height + child.depth;
         }
+        minPos = Math.min(minPos, currPos);
+        maxPos = Math.max(maxPos, currPos);
     }
 
-    // Add in an element at the end with no offset to fix the calculation of
-    // baselines in some browsers (namely IE, sometimes safari)
-    const baselineFix = makeSpan(
-        ["baseline-fix"], [fontSizer, new domTree.symbolNode("\u200b")]);
-    realChildren.push(baselineFix);
-
+    // The vlist contents go in a table-cell with `vertical-align:bottom`.
+    // This cell's bottom edge will determine the containing table's baseline
+    // without overly expanding the containing line-box.
     const vlist = makeSpan(["vlist"], realChildren);
-    // Fix the final height and depth, in case there were kerns at the ends
-    // since the makeSpan calculation won't take that in to account.
-    vlist.height = Math.max(currPos, vlist.height);
-    vlist.depth = Math.max(-depth, vlist.depth);
-    return vlist;
-};
+    vlist.style.height = maxPos + "em";
 
-// A table of size -> font size for the different sizing functions
-const sizingMultiplier = {
-    size1: 0.5,
-    size2: 0.7,
-    size3: 0.8,
-    size4: 0.9,
-    size5: 1.0,
-    size6: 1.2,
-    size7: 1.44,
-    size8: 1.73,
-    size9: 2.07,
-    size10: 2.49,
+    // A second row is used if necessary to represent the vlist's depth.
+    let rows;
+    if (minPos < 0) {
+        const depthStrut = makeSpan(["vlist"], []);
+        depthStrut.style.height = -minPos + "em";
+
+        // Safari wants the first row to have inline content; otherwise it
+        // puts the bottom of the *second* row on the baseline.
+        const topStrut = makeSpan(["vlist-s"], [new domTree.symbolNode("\u200b")]);
+
+        rows = [makeSpan(["vlist-r"], [vlist, topStrut]),
+            makeSpan(["vlist-r"], [depthStrut])];
+    } else {
+        rows = [makeSpan(["vlist-r"], [vlist])];
+    }
+
+    const vtable = makeSpan(["vlist-t"], rows);
+    vtable.height = maxPos;
+    vtable.depth = -minPos;
+    return vtable;
 };
 
 // A map of spacing functions to their attributes, like size and corresponding
@@ -487,6 +486,5 @@ module.exports = {
     makeVList: makeVList,
     makeOrd: makeOrd,
     prependChildren: prependChildren,
-    sizingMultiplier: sizingMultiplier,
     spacingFunctions: spacingFunctions,
 };
