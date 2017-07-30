@@ -339,7 +339,7 @@ const makeVList = function(children, positionType, positionData, options) {
     // Create a new list of actual children at the correct offsets
     const realChildren = [];
     let minPos = depth;
-    let maxPos = 0;
+    let maxPos = depth;
     currPos = depth;
     for (i = 0; i < children.length; i++) {
         if (children[i].type === "kern") {
@@ -387,7 +387,7 @@ const makeVList = function(children, positionType, positionData, options) {
 
     const vtable = makeSpan(["vlist-t"], rows);
     vtable.height = maxPos;
-    vtable.depth = Math.max(-minPos, 0);
+    vtable.depth = -minPos;
     return vtable;
 };
 
