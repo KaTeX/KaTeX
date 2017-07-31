@@ -59,12 +59,16 @@ const sigmasAndXis = {
     // See the TeXbook, page 441. In AMSTeX, the extension fonts scale; to
     // match cmex7, we'd use cmex7.tfm values for script and scriptscript
     // values.
-    defaultRuleThickness: [0.04, 0.04, 0.04],   // xi8; cmex7: 0.049
+    defaultRuleThickness: [0.04, 0.049, 0.049], // xi8; cmex7: 0.049
     bigOpSpacing1: [0.111, 0.111, 0.111],       // xi9
     bigOpSpacing2: [0.166, 0.166, 0.166],       // xi10
     bigOpSpacing3: [0.2, 0.2, 0.2],             // xi11
-    bigOpSpacing4: [0.6, 0.6, 0.6],             // xi12; cmex7: 0.611
-    bigOpSpacing5: [0.1, 0.1, 0.1],             // xi13; cmex7: 0.143
+    bigOpSpacing4: [0.6, 0.611, 0.611],         // xi12; cmex7: 0.611
+    bigOpSpacing5: [0.1, 0.143, 0.143],         // xi13; cmex7: 0.143
+
+    // The \sqrt rule width is taken from the height of the surd character.
+    // Since we use the same font at all sizes, this thickness doesn't scale.
+    sqrtRuleThickness: [0.04, 0.04, 0.04],
 
     // This value determines how large a pt is, for metrics which are defined
     // in terms of pts.

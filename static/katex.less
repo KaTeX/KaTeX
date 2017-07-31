@@ -289,22 +289,9 @@
         }
 
        .frac-line {
+            display: inline-block;
             width: 100%;
-
-            &:before {
-                border-bottom-style: solid;
-                border-bottom-width: 1px;
-                content: "";
-                display: block;
-            }
-
-            &:after {
-                border-bottom-style: solid;
-                border-bottom-width: 0.04em;
-                content: "";
-                display: block;
-                margin-top: -1px;
-            }
+            border-bottom-style: solid;
         }
     }
 
@@ -406,22 +393,9 @@
 
     .overline .overline-line,
     .underline .underline-line {
+        display: inline-block;
         width: 100%;
-
-        &:before {
-            border-bottom-style: solid;
-            border-bottom-width: 1px;
-            content: "";
-            display: block;
-        }
-
-        &:after {
-            border-bottom-style: solid;
-            border-bottom-width: 0.04em;
-            content: "";
-            display: block;
-            margin-top: -1px;
-        }
+        border-bottom-style: solid;
     }
 
     .sqrt {
@@ -430,22 +404,14 @@
         }
 
         .sqrt-line {
+            display: inline-block;
+            position: relative;
             width: 100%;
-
-            &:before {
-                border-bottom-style: solid;
-                border-bottom-width: 1px;
-                content: "";
-                display: block;
-            }
-
-            &:after {
-                border-bottom-style: solid;
-                border-bottom-width: 0.04em;
-                content: "";
-                display: block;
-                margin-top: -1px;
-            }
+            border-bottom-style: solid;
+            // These rules encourage the line to match the surd.
+            top: -0.5px;
+            @media (min-resolution: 336dpi) { top: -0.25px; }
+            @media (min-resolution: 432dpi) { top: 0; }
         }
 
         > .root {
