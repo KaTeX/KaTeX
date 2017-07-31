@@ -29,7 +29,7 @@ popd || exit 2
 container=
 trap cleanup EXIT
 status=0
-for browserTag in chrome:2.48.2 firefox:2.48.2; do
+for browserTag in firefox:2.48.2 chrome:2.48.2; do
     browser=${browserTag%:*}
     image=selenium/standalone-${browserTag}
     echo "Starting container for ${image}"

@@ -761,20 +761,16 @@ groupTypes.spacing = function(group, options) {
 
 groupTypes.llap = function(group, options) {
     const inner = makeSpan(
-        ["inner"], [
-            buildGroup(group.value.body, options),
-            new domTree.symbolNode("\u200b")]);
-    const fix = makeSpan(["fix"], [new domTree.symbolNode("\u200b")]);
+        ["inner"], [buildGroup(group.value.body, options)]);
+    const fix = makeSpan(["fix"], []);
     return makeSpan(
         ["mord", "llap"], [inner, fix], options);
 };
 
 groupTypes.rlap = function(group, options) {
     const inner = makeSpan(
-        ["inner"], [
-            buildGroup(group.value.body, options),
-            new domTree.symbolNode("\u200b")]);
-    const fix = makeSpan(["fix"], [new domTree.symbolNode("\u200b")]);
+        ["inner"], [buildGroup(group.value.body, options)]);
+    const fix = makeSpan(["fix"], []);
     return makeSpan(
         ["mord", "rlap"], [inner, fix], options);
 };
@@ -1743,10 +1739,7 @@ const buildHTML = function(tree, options) {
     bottomStrut.style.verticalAlign = -body.depth + "em";
 
     // Wrap the struts and body together
-    const htmlNode = makeSpan(["katex-html"], [
-        topStrut, bottomStrut, body,
-        // Quirks mode fix
-        new domTree.symbolNode("\u200b")]);
+    const htmlNode = makeSpan(["katex-html"], [topStrut, bottomStrut, body]);
 
     htmlNode.setAttribute("aria-hidden", "true");
 
