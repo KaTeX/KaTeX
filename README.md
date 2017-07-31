@@ -66,6 +66,20 @@ katex.render("c = \\pm\\sqrt{a^2 + b^2}\\in\\RR", element, {
 
 Math on the page can be automatically rendered using the auto-render extension. See [the Auto-render README](contrib/auto-render/README.md) for more information.
 
+### Font size and lengths
+
+KaTeX uses the CSS <em>em</em> unit to render all lengths, so everything
+scales according to the CSS <code>font-size</code> that you use
+on the output KaTeX element.
+Internally, KaTeX imagines that the base font size (1em) is 10pt (the default
+in LaTeX), and all LaTeX lengths are defined relative to that assumption.
+For example, <code>\arraycolsep</code> defaults to 5pt in LaTeX,
+which translates to 0.5em in CSS (because 1em = 10pt).
+Similarly, if you specify a length using LaTeX absolute units,
+such as <code>\rule{1cm}{1pt}</code>, it gets converted into the
+equivalent number of ems assuming a 10pt font, which will end up getting
+scaled according to your font size.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
