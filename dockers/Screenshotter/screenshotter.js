@@ -404,7 +404,7 @@ function takeScreenshots() {
         res.send(doctypes[req.query.mode] + "\n" + html);
     }
     app.get("/ss-render.html", handler);
-    app.get("/babel/ss-render.html", handler);
+    // app.get("/babel/ss-render.html", handler);
     modes.forEach(function(mode) {
         listOfCases.forEach(function(key) {
             takeScreenshot(key, mode);
