@@ -404,7 +404,6 @@ function takeScreenshots() {
         res.send(doctypes[req.query.mode] + "\n" + html);
     }
     app.get("/ss-render.html", handler);
-    // app.get("/babel/ss-render.html", handler);
     modes.forEach(function(mode) {
         listOfCases.forEach(function(key) {
             takeScreenshot(key, mode);
@@ -444,8 +443,7 @@ function takeScreenshot(key, mode) {
             driver.executeAsyncScript(
                     "var callback = arguments[arguments.length - 1]; " +
                     "handle_search_string(" +
-                    JSON.stringify(
-                        "?mode" + mode + "&" + itm.query) + ", callback);")
+                    JSON.stringify("?" + itm.query) + ", callback);")
                 .then(waitThenScreenshot);
         } else {
             driver.get(url).then(waitThenScreenshot);
