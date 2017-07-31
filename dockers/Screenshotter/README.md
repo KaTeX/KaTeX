@@ -21,7 +21,7 @@ docker containers with the selenium setups running.  Essentially you
 are encouraged to reproduce the steps from `screenshotter.sh`
 manually.  Example run for Firefox:
 
-    container=$(docker run -d -P selenium/standalone-firefox:2.48.2)
+    container=$(docker run -d -P selenium/standalone-firefox:2.46.0)
     node dockers/Screenshotter/screenshotter.js -b firefox -c ${container}
     # possibly repeat the above command as often as you need, then eventually
     docker stop ${container}
