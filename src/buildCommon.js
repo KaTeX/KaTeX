@@ -347,7 +347,8 @@ const makeVList = function(children, positionType, positionData, options) {
         } else {
             const child = children[i].elem;
 
-            const childWrap = makeSpan([], [pstrut, child]);
+            const childWrap = makeSpan(
+                [], [pstrut, child, new domTree.symbolNode("\u200b")]);
             childWrap.style.top = (-pstrutSize - currPos - child.depth) + "em";
             if (children[i].marginLeft) {
                 childWrap.style.marginLeft = children[i].marginLeft;

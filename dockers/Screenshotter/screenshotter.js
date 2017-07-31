@@ -86,6 +86,14 @@ const opts = require("nomnom")
     .option("wait", {
         help: "Wait this many seconds between page load and screenshot",
     })
+    .option("mode", {
+        choices: ["no-quirks", "limited-quirks", "quirks", "all"],
+        list: true,
+        help: "Render mode, determined by doctype, " +
+            "may be given multiple times, " +
+            "values [no-quirks|limited-quirks|quirks|all], " +
+            "defaults to all for --verify or no-quirks otherwise",
+    })
     .parse();
 
 let listOfCases;
@@ -99,6 +107,17 @@ if (opts.exclude) {
     listOfCases = listOfCases.filter(function(key) {
         return exclude.indexOf(key) === -1;
     });
+}
+
+let modes = opts.mode || [];
+if (!modes.length) {
+    modes = [opts.verify ? "all" : "no-quirks"];
+}
+if (modes.indexOf("all") !== -1) {
+    modes = ["no-quirks", "limited-quirks", "quirks"];
+}
+if (modes.length > 1 && !opts.verify) {
+    modes.length = 1;
 }
 
 let seleniumURL = opts.seleniumURL;
@@ -358,16 +377,41 @@ function findHostIP() {
 //////////////////////////////////////////////////////////////////////
 // Take the screenshots
 
-let countdown = listOfCases.length;
+let countdown = listOfCases.length * modes.length;
 
 let exitStatus = 0;
 const listOfFailed = [];
 
+const doctypes = {
+    "no-quirks": "<!DOCTYPE html>",
+    "limited-quirks": '<!DOCTYPE HTML PUBLIC ' +
+        '"-//W3C//DTD HTML 4.01 Transitional//EN" ' +
+        '"http://www.w3.org/TR/html4/loose.dtd">',
+    "quirks": '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Draft//">',
+};
+
+// Use two characters per abbreviation for better alignment of output
+const qabbr = {
+    "no-quirks": "nq",
+    "limited-quirks": "lq",
+    "quirks": " q",
+};
+
 function takeScreenshots() {
-    listOfCases.forEach(takeScreenshot);
+    const html = fs.readFileSync(require.resolve(
+        "../../test/screenshotter/test.html"));
+    function handler(req, res, next) {
+        res.send(doctypes[req.query.mode] + "\n" + html);
+    }
+    app.get("/ss-render.html", handler);
+    modes.forEach(function(mode) {
+        listOfCases.forEach(function(key) {
+            takeScreenshot(key, mode);
+        });
+    });
 }
 
-function takeScreenshot(key) {
+function takeScreenshot(key, mode) {
     const itm = data[key];
     if (!itm) {
         console.error("Test case " + key + " not known!");
@@ -379,14 +423,19 @@ function takeScreenshot(key) {
         return;
     }
 
-    let file = path.join(dstDir, key + "-" + opts.browser + ".png");
+    let basename = key + "-" + opts.browser;
+    if (itm.quirky && itm.quirky.indexOf(mode) !== -1) {
+        // a test case known to differ depending on mode may make use of this
+        basename += "-" + qabbr[mode];
+    }
+    let file = path.join(dstDir, basename + ".png");
     let retry = 0;
     let loadExpected = null;
     if (opts.verify) {
         loadExpected = promisify(fs.readFile, file);
     }
 
-    const url = katexURL + "test/screenshotter/test.html?" + itm.query;
+    const url = katexURL + "ss-render.html?mode=" + mode + "&" + itm.query;
     driver.call(loadMath);
 
     function loadMath() {
@@ -428,8 +477,9 @@ function takeScreenshot(key) {
              * the other has something else.  By using a different
              * output file name for one of these cases, we accept both.
              */
+            basename = basename.replace(key, key + "_alt");
             key += "_alt";
-            file = path.join(dstDir, key + "-" + opts.browser + ".png");
+            file = path.join(dstDir, basename + ".png");
             if (loadExpected) {
                 loadExpected = promisify(fs.readFile, file);
             }
@@ -438,18 +488,19 @@ function takeScreenshot(key) {
             pako: pako,
         });
         const buf = opt.bufferSync(img.buf);
+        const line = qabbr[mode] + " " + key;
         if (loadExpected) {
             return loadExpected.then(function(expected) {
                 if (!buf.equals(expected)) {
                     if (++retry >= opts.attempts) {
-                        console.error("FAIL! " + key);
-                        listOfFailed.push(key);
+                        console.error("FAIL! " + line);
+                        listOfFailed.push(key + "[" + qabbr[mode] + "]");
                         exitStatus = 3;
                         if (opts.diff) {
                             return saveScreenshotDiff(key, buf);
                         }
                     } else {
-                        console.log("error " + key);
+                        console.log("error " + line);
                         browserSideWait(300 * retry);
                         if (retry > 1) {
                             driverReady = false; // reload fully
@@ -457,12 +508,12 @@ function takeScreenshot(key) {
                         return driver.call(loadMath);
                     }
                 } else {
-                    console.log("* ok  " + key);
+                    console.log("* ok  " + line);
                 }
             });
         } else {
             return promisify(fs.writeFile, file, buf).then(function() {
-                console.log(key);
+                console.log(line);
             });
         }
     }
