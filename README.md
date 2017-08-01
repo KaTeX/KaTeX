@@ -66,19 +66,28 @@ katex.render("c = \\pm\\sqrt{a^2 + b^2}\\in\\RR", element, {
 
 Math on the page can be automatically rendered using the auto-render extension. See [the Auto-render README](contrib/auto-render/README.md) for more information.
 
-### Font size and lengths
+#### Font size and lengths
 
 KaTeX uses the CSS <em>em</em> unit to render all lengths, so everything
-scales according to the CSS <code>font-size</code> that you use
-on the output KaTeX element.
-Internally, KaTeX imagines that the base font size (1em) is 10pt (the default
-in LaTeX), and all LaTeX lengths are defined relative to that assumption.
-For example, <code>\arraycolsep</code> defaults to 5pt in LaTeX,
-which translates to 0.5em in CSS (because 1em = 10pt).
+scales uniformly according to the CSS `font-size` that you use
+on the output KaTeX element.  The end result is that any rendered KaTeX should
+be a scaled version of what LaTeX would do with a 10pt base font (e.g.,
+`\documentclass{article}`), where the scale depends on the CSS `font-size`.
+
+In more detail, [the default CSS](static/katex.less) scales
+KaTeX elements to have a font size of 1.21 &times; the container's font size.
+(This tends to look good, but you can change this by overriding the `.katex`
+class formatting.)
+Internally, KaTeX defines this base font size as 1em (in both LaTeX and CSS),
+and defines it to equal 10pt (matching the default in LaTeX).  All LaTeX lengths,
+both relative and absolute, are defined according to these assumptions.
+For example, `\arraycolsep` defaults to 5pt in LaTeX,
+which translates to 0.5em in CSS (because 1em = 10pt),
+which would by default translate to 0.605em in the container element.
 Similarly, if you specify a length using LaTeX absolute units,
-such as <code>\rule{1cm}{1pt}</code>, it gets converted into the
-equivalent number of ems assuming a 10pt font, which will end up getting
-scaled according to your font size.
+such as `\rule{1cm}{1pt}`, it gets converted into the
+equivalent number of <em>em</em>s, which will end up getting scaled according to
+your CSS `font-size` (but not by LaTeX font scaling commands).
 
 ## Contributing
 

@@ -23,7 +23,7 @@ const ptPerUnit = {
     "dd": 1238 / 1157,  // didot
     "cc": 14856 / 1157, // cicero (12 didot)
     "nd": 685 / 642,    // new didot
-    "nc": 1370 / 107,   // new cîcero (12 new didot)
+    "nc": 1370 / 107,   // new cicero (12 new didot)
     "sp": 1 / 65536,    // scaled point (TeX's internal smallest unit)
     // https://tex.stackexchange.com/a/41371
     "px": 803 / 800,    // \pdfpxdimen defaults to 1 bp in pdfTeX and LuaTeX
@@ -57,7 +57,7 @@ const calculateSize = function(sizeValue, options) {
     if (sizeValue.unit in ptPerUnit) {
         // Absolute units
         scale = ptPerUnit[sizeValue.unit]   // Convert unit to pt
-           / options.fontMetrics().ptPerEm  // Convert pt to em
+           / options.fontMetrics().ptPerEm  // Convert pt to CSS em
            / options.sizeMultiplier;        // Unscale to make absolute units
     } else if (sizeValue.unit === "mu") {
         // `mu` units scale with scriptstyle/scriptscriptstyle.
