@@ -1633,12 +1633,18 @@ groupTypes.mclass = function(group, options) {
 
 groupTypes.raisebox = function(group, options) {
     const span = groupTypes.text(group, options);
-    const dy = calculateSize(group.value.dy.value, options.style);
+    const dy = calculateSize(group.value.dy.value, options);
+    return buildCommon.makeVList([{
+      type: "elem",
+      elem: span
+    }], "shift", -dy, options);
+/*
     span.height += dy;
     span.depth -= dy;
     span.style.top = -dy + "em";
     span.style.position = "relative";
     return span;
+*/
 };
 
 /**
