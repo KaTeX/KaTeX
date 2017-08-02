@@ -19,7 +19,6 @@ const splitWithDelimiters = function(text, delimiters) {
  */
 const renderMathInText = function(text, optionsCopy) {
     const data = splitWithDelimiters(text, optionsCopy.delimiters);
-
     const fragment = document.createDocumentFragment();
 
     for (let i = 0; i < data.length; i++) {
@@ -37,7 +36,7 @@ const renderMathInText = function(text, optionsCopy) {
                 if (!(e instanceof katex.ParseError)) {
                     throw e;
                 }
-                console.error(
+                optionsCopy.errorCallback(
                     "KaTeX auto-render: Failed to parse `" + data[i].data +
                     "` with ",
                     e
@@ -85,6 +84,10 @@ const defaultAutoRenderOptions = {
     ignoredTags: [
         "script", "noscript", "style", "textarea", "pre", "code",
     ],
+
+    errorCallback: function(msg, err) {
+        console.error(msg, err);
+    },
 };
 
 const renderMathInElement = function(elem, options) {
@@ -93,7 +96,6 @@ const renderMathInElement = function(elem, options) {
     }
 
     const optionsCopy = Object.assign({}, defaultAutoRenderOptions, options);
-
     renderElem(elem, optionsCopy);
 };
 

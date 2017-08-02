@@ -83,7 +83,10 @@ in addition to two auto-render-specific keys:
 
 - `ignoredTags`: This is a list of DOM node types to ignore when recursing
   through. The default value is
-  `["script", "noscript", "style", "textarea", "pre", "code"]`.
+  `["script", "noscript", "style", "textarea", "pre", "code"]`. 
+  
+- `errorCallback`: A callback method returning a message and an error stack
+  in case of an critical error during rendering. The default uses `console.error`.
 
 Note that the `displayMode` property of the options object is ignored, and is 
 instead taken from the `display` key of the corresponding entry in the 

@@ -1606,16 +1606,6 @@ groupTypes.enclose = function(group, options) {
         {type: "elem", elem: img, shift: imgShift},
     ], "individualShift", null, options);
 
-    if (img.height > vlist.maxFontSize) {
-        // Correct for an issue in makeVList. It placed the image top at
-        // the top of the line box created by a 1 em maxFontSize.
-        vlist.children[1].style.top = -(inner.height + pad - 0.9 / scale)
-            + "em";
-        // The 0.9 in the previous line is there because the KaTeX fonts
-        // have an ascent = 0.9 em. We're setting the top of the image
-        // relative to the top of that line box.
-    }
-
     if (/cancel/.test(label)) {
         // cancel does not create horiz space for its line extension.
         // That is, not when adjacent to a mord.
@@ -1633,12 +1623,14 @@ groupTypes.xArrow = function(group, options) {
 
     let newOptions = options.havingStyle(style.sup());
     const upperGroup = buildGroup(group.value.body, newOptions, options);
+    upperGroup.classes.push("x-arrow-pad");
 
     let lowerGroup;
     if (group.value.below) {
         // Build the lower group
         newOptions = options.havingStyle(style.sub());
         lowerGroup = buildGroup(group.value.below, newOptions, options);
+        lowerGroup.classes.push("x-arrow-pad");
     }
 
     const arrowBody = stretchy.svgSpan(group, options);
@@ -1665,10 +1657,7 @@ groupTypes.xArrow = function(group, options) {
         ], "individualShift", null, options);
     }
 
-    const node = makeSpan(["mrel", "x-arrow"], [vlist], options);
-    node.depth = node.depth;
-    node.height = node.height;
-    return node;
+    return makeSpan(["mrel", "x-arrow"], [vlist], options);
 };
 
 groupTypes.phantom = function(group, options) {
