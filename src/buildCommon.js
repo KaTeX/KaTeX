@@ -386,6 +386,9 @@ const makeVList = function(children, positionType, positionData, options) {
     }
 
     const vtable = makeSpan(["vlist-t"], rows);
+    if (rows.length === 2) {
+        vtable.classes.push("vlist-t2");
+    }
     vtable.height = maxPos;
     vtable.depth = -minPos;
     return vtable;
