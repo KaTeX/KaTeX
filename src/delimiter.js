@@ -235,11 +235,6 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
         bottom = "\u23a9";
         repeat = "\u23aa";
         font = "Size4-Regular";
-    } else if (delim === "\\surd") {
-        top = "\ue001";
-        bottom = "\u23b7";
-        repeat = "\ue000";
-        font = "Size4-Regular";
     }
 
     // Get the metrics of the four sections
@@ -315,6 +310,76 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
     return styleWrap(
         makeSpan(["delimsizing", "mult"], [inner], newOptions),
         Style.TEXT, options, classes);
+};
+
+const sqrtSpan = function(height, delim, options) {
+    // Create a span containing an SVG image of a sqrt symbol.
+    let span;
+    let sizeMultiplier = options.sizeMultiplier;  // default
+    if (delim.type === "small") {
+        // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
+        span = buildCommon.makeSpan(["stretchy", "sqrt-main"], [], options);
+        if (delim.style === Style.SCRIPT) {
+            sizeMultiplier = options.havingStyle(Style.TEXT).sizeMultiplier;
+        } else if (delim.style === Style.SCRIPTSCRIPT) {
+            sizeMultiplier = options.havingStyle(Style.SCRIPT).sizeMultiplier;
+        }
+        span.height = 1 / sizeMultiplier;
+        // In the font, the glyph is 1000 units tall.
+        span.style.height = span.height + "em";
+        span.width = 0.781 / sizeMultiplier;   // surd width, from the font.
+
+    } else if (delim.type === "large") {
+        // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
+        span = buildCommon.makeSpan(["stretchy", "sqrt-size" + delim.size],
+            [], options);
+        // Get sqrt height from font data
+        span.height = [0, 1.2, 1.8, 2.4, 3][delim.size] / sizeMultiplier;
+        span.style.height = span.height + "em";
+        // Set surd width with data from the fonts.
+        span.width = [0, 0.901, 0.902, 0.903, 0.903][delim.size] /
+            sizeMultiplier;
+
+    } else {
+        // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
+        // We'll use a single SVG to accomplish the same thing.
+        span = buildCommon.makeSpan(["stretchy"], [], options);
+        const svgHeight = Math.floor(height * 1000);   // scale = 1:1000
+
+        let color = "black";
+        if (options.color) {
+            color = options.color.replace(/#/, "%23");  // url escape
+        }
+
+        // To make a \sqrt that is customized in both height and width, we
+        // have to use an inline SVG. We set the height right now. Then
+        // CSS and the browser will stretch the image to the correct width.
+        // This SVG path comes from glyph U+23B7, font KaTeX_Size4-Regular.
+        // The code has to be URL-escaped, so it isn't pretty.
+        span.style.backgroundImage = "url('data:image/svg+xml,%3Csvg "
+            + "xmlns=%27http://www.w3.org/2000/svg%27%3E%3Csvg viewBox=%27"
+            + "0 0 400000 " + svgHeight + "%27 preserveAspectRatio=%27"
+            + "xMinYMax slice%27%3E%3Cpath fill=%27" + color
+            + "%27 d=%27M591 0h399409v40H631v" + (svgHeight - 54)
+            + "l-4 4-4 4c-.667.667-2 1.5-4 2.5s-4.167 1.833"
+            + "-6.5 2.5-5.5 1-9.5 1h-12l-28-84c-16.667-52-96.667 -294.333"
+            + "-240-727l-212 -643 -85 170c-4-3.333-8.333-7.667-13 -13"
+            + "l-13-13l77-155 77-156c66 199.333 139 419.667 219 661 l218"
+            + " 661zM591 0H400000v40H631z%27/%3E%3C/svg%3E%3C/svg%3E')";
+
+        span.height = height / sizeMultiplier;
+        span.style.height = span.height + "em";
+        span.width = 0.905 / sizeMultiplier;
+    }
+
+    if (options.color && span.classes.length > 1) {
+        // Apply CSS that will, in non-IE browsers, color the sqrt.
+        span.classes.push("mask");  // Suppress the background-image.
+        span.classes.push(span.classes[1] + "-mask"); // Add mask-image.
+        span.style.backgroundColor = options.color;
+    }
+
+    return span;
 };
 
 // There are three kinds of delimiters, delimiters that stack when they become
@@ -487,16 +552,23 @@ const makeCustomSizedDelim = function(delim, height, center, options, mode,
     // Look through the sequence
     const delimType = traverseSequence(delim, height, sequence, options);
 
-    // Depending on the sequence element we decided on, call the appropriate
-    // function.
-    if (delimType.type === "small") {
-        return makeSmallDelim(delim, delimType.style, center, options, mode,
-                              classes);
-    } else if (delimType.type === "large") {
-        return makeLargeDelim(delim, delimType.size, center, options, mode,
-                              classes);
-    } else if (delimType.type === "stack") {
-        return makeStackedDelim(delim, height, center, options, mode, classes);
+    if (delim === "\\surd") {
+        // Get an SVG image for
+        return sqrtSpan(height, delimType, options);
+    } else {
+        // Get the delimiter from font glyphs.
+        // Depending on the sequence element we decided on, call the
+        // appropriate function.
+        if (delimType.type === "small") {
+            return makeSmallDelim(delim, delimType.style, center, options,
+                                  mode, classes);
+        } else if (delimType.type === "large") {
+            return makeLargeDelim(delim, delimType.size, center, options, mode,
+                                  classes);
+        } else if (delimType.type === "stack") {
+            return makeStackedDelim(delim, height, center, options, mode,
+                                    classes);
+        }
     }
 };
 
