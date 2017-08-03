@@ -1078,8 +1078,8 @@ groupTypes.sqrt = function(group, options) {
     // and line
     const inner = buildGroup(group.value.body, options.havingCrampedStyle());
 
-    const line = makeLineSpan("sqrt-line", options);
-    const ruleWidth = line.height;
+    const ruleWidth = options.fontMetrics().defaultRuleThickness /
+        options.sizeMultiplier;
 
     let phi = ruleWidth;
     if (options.style.id < Style.TEXT.id) {
@@ -1092,13 +1092,15 @@ groupTypes.sqrt = function(group, options) {
     const minDelimiterHeight = (inner.height + inner.depth +
         lineClearance + ruleWidth) * options.sizeMultiplier;
 
-    // Create a \surd delimiter of the required minimum size
-    const delim = makeSpan(["sqrt-sign"], [
-        delimiter.customSizedDelim("\\surd", minDelimiterHeight,
-                                   false, options, group.mode)],
-                         options);
+    // Create a sqrt SVG of the required minimum size
+    const img = delimiter.customSizedDelim("\\surd", minDelimiterHeight,
+                    false, options, group.mode);
+    
+    // Recover surdWidth from where it was mis-placed in img.depth.
+    const surdWidth = img.depth + "em";
+    img.depth = 0;    // Set the correct img.depth.
 
-    const delimDepth = (delim.height + delim.depth) - ruleWidth;
+    const delimDepth = img.height - ruleWidth;
 
     // Adjust the clearance based on the delimiter size
     if (delimDepth > inner.height + inner.depth + lineClearance) {
@@ -1106,12 +1108,8 @@ groupTypes.sqrt = function(group, options) {
             (lineClearance + delimDepth - inner.height - inner.depth) / 2;
     }
 
-    // Shift the delimiter so that its top lines up with the top of the line
-    const delimShift = -(inner.height + lineClearance + ruleWidth) +
-          delim.height;
-    delim.style.top = delimShift + "em";
-    delim.height -= delimShift;
-    delim.depth += delimShift;
+    // Shift the sqrt image
+    const imgShift = img.height - inner.height - lineClearance - ruleWidth;
 
     // We add a special case here, because even when `inner` is empty, we
     // still get a line. So, we use a simple heuristic to decide if we
@@ -1122,16 +1120,16 @@ groupTypes.sqrt = function(group, options) {
     if (inner.height === 0 && inner.depth === 0) {
         body = makeSpan();
     } else {
+        inner.style.paddingLeft = surdWidth;
+        // Overlay the image and the argument.
         body = buildCommon.makeVList([
-            {type: "elem", elem: inner},
-            {type: "kern", size: lineClearance},
-            {type: "elem", elem: line},
-            {type: "kern", size: ruleWidth},
-        ], "firstBaseline", null, options);
+            {type: "elem", elem: inner, shift: 0},
+            {type: "elem", elem: img,  shift: imgShift},
+        ], "individualShift", null, options);
     }
 
     if (!group.value.index) {
-        return makeSpan(["mord", "sqrt"], [delim, body], options);
+        return makeSpan(["mord", "sqrt"], [body], options);
     } else {
         // Handle the optional root index
 
@@ -1139,13 +1137,9 @@ groupTypes.sqrt = function(group, options) {
         const newOptions = options.havingStyle(Style.SCRIPTSCRIPT);
         const rootm = buildGroup(group.value.index, newOptions, options);
 
-        // Figure out the height and depth of the inner part
-        const innerRootHeight = Math.max(delim.height, body.height);
-        const innerRootDepth = Math.max(delim.depth, body.depth);
-
         // The amount the index is shifted by. This is taken from the TeX
         // source, in the definition of `\r@@t`.
-        const toShift = 0.6 * (innerRootHeight - innerRootDepth);
+        const toShift = 0.6 * (body.height - inner.depth);
 
         // Build a VList with the superscript shifted up correctly
         const rootVList = buildCommon.makeVList(
@@ -1156,7 +1150,7 @@ groupTypes.sqrt = function(group, options) {
         const rootVListWrap = makeSpan(["root"], [rootVList]);
 
         return makeSpan(["mord", "sqrt"],
-            [rootVListWrap, delim, body], options);
+            [rootVListWrap, body], options);
     }
 };
 
