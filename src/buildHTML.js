@@ -432,11 +432,12 @@ groupTypes.genfrac = function(group, options) {
     const denomm = buildGroup(group.value.denom, newOptions, options);
 
     let rule;
-    let ruleSpacing;
     let ruleWidth;
+    let ruleSpacing;
     if (group.value.hasBarLine) {
         rule = makeLineSpan("frac-line", options);
-        ruleWidth = ruleSpacing = rule.height;
+        ruleWidth = rule.height;
+        ruleSpacing = rule.height;
     } else {
         rule = null;
         ruleWidth = 0;
