@@ -289,22 +289,9 @@
         }
 
        .frac-line {
+            display: inline-block;
             width: 100%;
-
-            &:before {
-                border-bottom-style: solid;
-                border-bottom-width: 1px;
-                content: "";
-                display: block;
-            }
-
-            &:after {
-                border-bottom-style: solid;
-                border-bottom-width: 0.04em;
-                content: "";
-                display: block;
-                margin-top: -1px;
-            }
+            border-bottom-style: solid;
         }
     }
 
@@ -406,22 +393,9 @@
 
     .overline .overline-line,
     .underline .underline-line {
+        display: inline-block;
         width: 100%;
-
-        &:before {
-            border-bottom-style: solid;
-            border-bottom-width: 1px;
-            content: "";
-            display: block;
-        }
-
-        &:after {
-            border-bottom-style: solid;
-            border-bottom-width: 0.04em;
-            content: "";
-            display: block;
-            margin-top: -1px;
-        }
+        border-bottom-style: solid;
     }
 
     .sqrt {

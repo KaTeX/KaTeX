@@ -53,8 +53,9 @@ const styleWrap = function(delim, toStyle, options, classes) {
         (classes || []).concat(newOptions.sizingClasses(options)),
         [delim], options);
 
-    span.height *= newOptions.sizeMultiplier / options.sizeMultiplier;
-    span.depth *= newOptions.sizeMultiplier / options.sizeMultiplier;
+    span.delimSizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
+    span.height *= span.delimSizeMultiplier;
+    span.depth *= span.delimSizeMultiplier;
     span.maxFontSize = newOptions.sizeMultiplier;
 
     return span;
@@ -378,6 +379,8 @@ const sqrtSpan = function(height, delim, options) {
         span.classes.push(span.classes[1] + "-mask"); // Add mask-image.
         span.style.backgroundColor = options.color;
     }
+	
+	span.sizeMultiplier = sizeMultiplier;
 
     return span;
 };

@@ -432,12 +432,17 @@ groupTypes.genfrac = function(group, options) {
     const denomm = buildGroup(group.value.denom, newOptions, options);
 
     let rule;
+    let ruleWidth;
+    let ruleSpacing;
     if (group.value.hasBarLine) {
         rule = makeLineSpan("frac-line", options);
+        ruleWidth = rule.height;
+        ruleSpacing = rule.height;
     } else {
         rule = null;
+        ruleWidth = 0;
+        ruleSpacing = options.fontMetrics().defaultRuleThickness;
     }
-    const ruleWidth = rule ? rule.height : 0;
 
     // Rule 15b
     let numShift;
@@ -446,18 +451,18 @@ groupTypes.genfrac = function(group, options) {
     if (style.size === Style.DISPLAY.size) {
         numShift = options.fontMetrics().num1;
         if (ruleWidth > 0) {
-            clearance = 3 * ruleWidth;
+            clearance = 3 * ruleSpacing;
         } else {
-            clearance = 7 * options.fontMetrics().defaultRuleThickness;
+            clearance = 7 * ruleSpacing;
         }
         denomShift = options.fontMetrics().denom1;
     } else {
         if (ruleWidth > 0) {
             numShift = options.fontMetrics().num2;
-            clearance = ruleWidth;
+            clearance = ruleSpacing;
         } else {
             numShift = options.fontMetrics().num3;
-            clearance = 3 * options.fontMetrics().defaultRuleThickness;
+            clearance = 3 * ruleSpacing;
         }
         denomShift = options.fontMetrics().denom2;
     }
@@ -1020,13 +1025,10 @@ groupTypes.katex = function(group, options) {
         ["mord", "katex-logo"], [k, a, t, e, x], options);
 };
 
-const makeLineSpan = function(className, options) {
-    const baseOptions = options.havingBaseStyle();
-    const line = makeSpan(
-        [className].concat(baseOptions.sizingClasses(options)),
-        [], options);
-    line.height = options.fontMetrics().defaultRuleThickness /
-        options.sizeMultiplier;
+const makeLineSpan = function(className, options, thickness) {
+    const line = makeSpan([className], [], options);
+    line.height = thickness || options.fontMetrics().defaultRuleThickness;
+    line.style.borderBottomWidth = line.height + "em";
     line.maxFontSize = 1.0;
     return line;
 };
@@ -1078,19 +1080,21 @@ groupTypes.sqrt = function(group, options) {
     // and line
     const inner = buildGroup(group.value.body, options.havingCrampedStyle());
 
-    const ruleWidth = options.fontMetrics().defaultRuleThickness /
-        options.sizeMultiplier;
 
-    let phi = ruleWidth;
+    // Calculate the minimum size for the \surd delimiter
+    const metrics = options.fontMetrics();
+    const theta = metrics.defaultRuleThickness;
+
+    let phi = theta;
     if (options.style.id < Style.TEXT.id) {
-        phi = options.fontMetrics().xHeight * options.sizeMultiplier;
+        phi = options.fontMetrics().xHeight;
     }
 
     // Calculate the clearance between the body and line
-    let lineClearance = ruleWidth + phi / 4;
+    let lineClearance = theta + phi / 4;
 
     const minDelimiterHeight = (inner.height + inner.depth +
-        lineClearance + ruleWidth) * options.sizeMultiplier;
+        lineClearance + theta) * options.sizeMultiplier;
 
     // Create a sqrt SVG of the required minimum size
     const img = delimiter.customSizedDelim("\\surd", minDelimiterHeight,
@@ -1098,6 +1102,13 @@ groupTypes.sqrt = function(group, options) {
 
     const surdWidth = img.width + "em";
     // Actually img width will be set by CSS to match argument width.
+
+    // Calculate the actual line width.
+    // This actually should depend on the chosen font -- e.g. \boldmath
+    // should use the thicker surd symbols from e.g. KaTeX_Main-Bold, and
+    // have thicker rules.
+    const ruleWidth = options.fontMetrics().sqrtRuleThickness *
+        img.sizeMultiplier;
 
     const delimDepth = img.height - ruleWidth;
 
