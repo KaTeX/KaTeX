@@ -379,8 +379,8 @@ const sqrtSpan = function(height, delim, options) {
         span.classes.push(span.classes[1] + "-mask"); // Add mask-image.
         span.style.backgroundColor = options.color;
     }
-	
-	span.sizeMultiplier = sizeMultiplier;
+
+    span.sizeMultiplier = sizeMultiplier;
 
     return span;
 };
