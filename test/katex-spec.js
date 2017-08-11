@@ -931,7 +931,7 @@ describe("An overline parser", function() {
 describe("A rule parser", function() {
     const emRule = "\\rule{1em}{2em}";
     const exRule = "\\rule{1ex}{2em}";
-    const badUnitRule = "\\rule{1px}{2em}";
+    const badUnitRule = "\\rule{1au}{2em}";
     const noNumberRule = "\\rule{1em}{em}";
     const incompleteRule = "\\rule{1em}";
     const hardNumberRule = "\\rule{   01.24ex}{2.450   em   }";
@@ -988,7 +988,7 @@ describe("A kern parser", function() {
     const exKern = "\\kern{1ex}";
     const muKern = "\\kern{1mu}";
     const abKern = "a\\kern{1em}b";
-    const badUnitRule = "\\kern{1px}";
+    const badUnitRule = "\\kern{1au}";
     const noNumberRule = "\\kern{em}";
 
     it("should list the correct units", function() {
@@ -1026,7 +1026,7 @@ describe("A non-braced kern parser", function() {
     const abKern1 = "a\\mkern1mub";
     const abKern2 = "a\\kern-1mub";
     const abKern3 = "a\\kern-1mu b";
-    const badUnitRule = "\\kern1px";
+    const badUnitRule = "\\kern1au";
     const noNumberRule = "\\kern em";
 
     it("should list the correct units", function() {

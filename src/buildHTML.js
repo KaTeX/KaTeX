@@ -12,6 +12,7 @@ import Style from "./Style";
 import buildCommon, { makeSpan } from "./buildCommon";
 import delimiter from "./delimiter";
 import domTree from "./domTree";
+import units from "./units";
 import utils from "./utils";
 import stretchy from "./stretchy";
 
@@ -545,43 +546,6 @@ groupTypes.genfrac = function(group, options) {
         options);
 };
 
-/**
- * Parse a `sizeValue`, as parsed by functions.js argType "size", into
- * a CSS em value. `options` gives the current options.
- */
-const calculateSize = function(sizeValue, options) {
-    let scale;
-    // `mu` units scale with scriptstyle/scriptscriptstyle.
-    // Other units always refer to the *textstyle* font in the current size.
-    if (sizeValue.unit === "mu") {
-        scale = options.fontMetrics().cssEmPerMu;
-    } else {
-        let unitOptions;
-        if (options.style.isTight()) {
-            // isTight() means current style is script/scriptscript.
-            unitOptions = options.havingStyle(options.style.text());
-        } else {
-            unitOptions = options;
-        }
-        // TODO: In TeX these units are relative to the quad of the current
-        // *text* font, e.g. cmr10. KaTeX instead uses values from the
-        // comparably-sized *Computer Modern symbol* font. At 10pt, these
-        // match. At 7pt and 5pt, they differ: cmr7=1.138894, cmsy7=1.170641;
-        // cmr5=1.361133, cmsy5=1.472241. Consider $\scriptsize a\kern1emb$.
-        // TeX \showlists shows a kern of 1.13889 * fontsize;
-        // KaTeX shows a kern of 1.171 * fontsize.
-        if (sizeValue.unit === "ex") {
-            scale = unitOptions.fontMetrics().xHeight;
-        } else {
-            scale = unitOptions.fontMetrics().quad;
-        }
-        if (unitOptions !== options) {
-            scale *= unitOptions.sizeMultiplier / options.sizeMultiplier;
-        }
-    }
-    return sizeValue.number * scale;
-};
-
 groupTypes.array = function(group, options) {
     let r;
     let c;
@@ -629,7 +593,7 @@ groupTypes.array = function(group, options) {
 
         let gap = 0;
         if (group.value.rowGaps[r]) {
-            gap = calculateSize(group.value.rowGaps[r].value, options);
+            gap = units.calculateSize(group.value.rowGaps[r].value, options);
             if (gap > 0) { // \@argarraycr
                 gap += arstrutDepth;
                 if (depth < gap) {
@@ -1330,11 +1294,11 @@ groupTypes.rule = function(group, options) {
     // Calculate the shift, width, and height of the rule, and account for units
     let shift = 0;
     if (group.value.shift) {
-        shift = calculateSize(group.value.shift, options);
+        shift = units.calculateSize(group.value.shift, options);
     }
 
-    const width = calculateSize(group.value.width, options);
-    const height = calculateSize(group.value.height, options);
+    const width = units.calculateSize(group.value.width, options);
+    const height = units.calculateSize(group.value.height, options);
 
     // Style the rule to the right size
     rule.style.borderRightWidth = width + "em";
@@ -1358,7 +1322,7 @@ groupTypes.kern = function(group, options) {
     const rule = makeSpan(["mord", "rule"], [], options);
 
     if (group.value.dimension) {
-        const dimension = calculateSize(group.value.dimension, options);
+        const dimension = units.calculateSize(group.value.dimension, options);
         rule.style.marginLeft = dimension + "em";
     }
 

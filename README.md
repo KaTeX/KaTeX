@@ -66,6 +66,25 @@ katex.render("c = \\pm\\sqrt{a^2 + b^2}\\in\\RR", element, {
 
 Math on the page can be automatically rendered using the auto-render extension. See [the Auto-render README](contrib/auto-render/README.md) for more information.
 
+#### Font size and lengths
+
+By default, KaTeX math is rendered in a 1.21× larger font than the surrounding
+context, which makes super- and subscripts easier to read. You can control
+this using CSS, for example:
+
+```css
+.katex { font-size: 1.1em; }
+```
+
+KaTeX supports all TeX units, including absolute units like `cm` and `in`.
+Absolute units are currently scaled relative to the default TeX font size of
+10pt, so that `\kern1cm` produces the same results as `\kern2.845275em`.
+As a result, relative and absolute units are both uniformly scaled relative
+to LaTeX with a 10pt font; for example, the rectangle `\rule{1cm}{1em}` has
+the same aspect ratio in KaTeX as in LaTeX.  However, because most browsers
+default to a larger font size, this typically means that a 1cm kern in KaTeX
+will appear larger than 1cm in browser units.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
