@@ -401,7 +401,7 @@ const sqrtSpan = function(height, delim, options) {
         span.innerHTML = "<svg width=\'100%\' height=\'" + span.height + "em\'>"
             + "<svg viewBox=\'0 0 400000 " + viewBoxHeight
             +  "\' preserveAspectRatio=\'xMinYMax slice\'><path fill=\'"
-            + "currentColor\' d=\'M591 0h399409v40H631v" + (viewBoxHeight -54)
+            + "currentColor\' d=\'M591 0h399409v40H631v" + (viewBoxHeight - 54)
             + sqrtInnerSVG["tall"] + "</svg>";
     }
 
