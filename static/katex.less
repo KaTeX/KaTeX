@@ -241,12 +241,6 @@
         display: table-row;
     }
 
-    .vlist-s {
-        display: table-cell;
-        vertical-align: bottom;
-        font-size: 0.05em;
-    }
-
     .vlist {
         display: table-cell;
         vertical-align: bottom;
@@ -268,6 +262,23 @@
         }
     }
 
+    .vlist-t2 {
+        margin-right: -2px;
+    }
+
+    .vlist-s {
+        // This cell solves Safari rendering problems. It has text content, so
+        // its baseline is used for the table. A very small font avoids line-box
+        // issues; absolute units prevent user font-size overrides from breaking
+        // rendering. Safari refuses to make the box zero-width, so we give it
+        // a known width and compensate with negative right margin on the
+        // inline-table.
+        display: table-cell;
+        vertical-align: bottom;
+        font-size: 1px;
+        width: 2px;
+    }
+
     .msupsub {
         text-align: left;
     }
@@ -278,22 +289,9 @@
         }
 
        .frac-line {
+            display: inline-block;
             width: 100%;
-
-            &:before {
-                border-bottom-style: solid;
-                border-bottom-width: 1px;
-                content: "";
-                display: block;
-            }
-
-            &:after {
-                border-bottom-style: solid;
-                border-bottom-width: 0.04em;
-                content: "";
-                display: block;
-                margin-top: -1px;
-            }
+            border-bottom-style: solid;
         }
     }
 
@@ -395,22 +393,9 @@
 
     .overline .overline-line,
     .underline .underline-line {
+        display: inline-block;
         width: 100%;
-
-        &:before {
-            border-bottom-style: solid;
-            border-bottom-width: 1px;
-            content: "";
-            display: block;
-        }
-
-        &:after {
-            border-bottom-style: solid;
-            border-bottom-width: 0.04em;
-            content: "";
-            display: block;
-            margin-top: -1px;
-        }
+        border-bottom-style: solid;
     }
 
     .sqrt {
@@ -419,22 +404,10 @@
         }
 
         .sqrt-line {
+            display: inline-block;
+            position: relative;
             width: 100%;
-
-            &:before {
-                border-bottom-style: solid;
-                border-bottom-width: 1px;
-                content: "";
-                display: block;
-            }
-
-            &:after {
-                border-bottom-style: solid;
-                border-bottom-width: 0.04em;
-                content: "";
-                display: block;
-                margin-top: -1px;
-            }
+            border-bottom-style: solid;
         }
 
         > .root {
