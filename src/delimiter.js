@@ -313,13 +313,55 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
         Style.TEXT, options, classes);
 };
 
+const sqrtInnerSVG = {
+    main : `<svg viewBox=\'0 0 400000 1000\' preserveAspectRatio=\'xMinYMin
+slice\'><path fill=\'currentColor\' d=\'M23 622c-2.667 0-7.167-2.667-13.5
+-8S0 604 0 600c0-2 .333-3.333 1-4 1.333-2.667 23.833-20.667 67.5-54s
+65.833-50.333 66.5-51c1.333-1.333 3-2 5-2 4.667 0 8.667 3.333 12 10l173
+378c.667 0 35.333-71 104-213s137.5-285 206.5-429S740 17.333 742 14c5.333
+-9.333 12-14 20-14h399238v40H773.272L548 507 313 993c-2.667 4.667-9 7-19
+7-6 0-10-1-12-3L88 575l-65 47zM762 0h399238v40H773z\'/></svg>`,
+    size1 : `<svg viewBox=\'0 0 400000 1200\' preserveAspectRatio=\'xMinYMin
+slice\'><path fill=\'currentColor\' d=\'M152 601c.667 0 18 39.667 52 119s
+68.167 158.667 102.5 238 51.833 119.333 52.5 120C699 373.333 869.667 17.667
+871 11c4.667-7.333 11-11 19-11h399110v40H901.333L630 607c-38.667 80.667-84
+175-136 283s-89.167 185.333-111.5 232-33.833 70.333-34.5 71c-4.667 4.667-12.333
+ 7-23 7l-12-1-109-253C131.333 778 94.667 694 94 694c-10.667 8-22 16.667-34 26
+ -22 17.333-33.333 26-34 26L0 720l76-59 76-60zM890 0h399110v40H901z\'/></svg>`,
+    size2 : `<svg viewBox=\'0 0 400000 1800\' preserveAspectRatio=\'xMinYMin
+slice\'><path fill=\'currentColor\' d=\'M890 0h399110v40H902.084S818.667 308
+638 880s-277 876.333-289 913c-4.667 4.667-12.667 7-24 7h-12c-1.333-3.333-3.667
+-11.667-7-25-35.333-125.333-106.667-373.333-214-744-10 12-21 25-33 39l-32 39
+c-6-5.333-15-14-27-26l25-30c26.667-32.667 52-63 76-91l52-60 208 722c56-175.333
+ 126.333-397.333 211-666s153.833-488.167 207.5-658.5C833.167 129.167 864 32.667
+ 872 10c4-6.667 10-10 18-10zm0 0h399110v40H902z\'/></svg>`,
+    size3 : `<svg viewBox=\'0 0 400000 2400\' preserveAspectRatio=\'xMinYMin
+slice\'><path fill=\'currentColor\' d=\'M313 2398c-1.333-.667-38.5-172-111.5
+-514S91.667 1370.667 91 1370c0-2-10.667 14.333-32 49-4.667 7.333-9.833 15.667
+-15.5 25s-9.833 16-12.5 20l-5 7c-4-3.333-8.333-7.667-13-13l-13-13 76-122 77-121
+ 209 968c0-2 84.667-361.667 254-1079C785.333 373.667 870.667 13.333 872 10c4
+-6.667 10-10 18-10h399110v40H903.622S816.332 418.667 631 1206c-185.333 787.333
+-279.333 1182.333-282 1185-2 6-10 9-24 9-8 0-12-.667-12-2z
+M890 0h399110v40H903z\'/></svg>`,
+    size4 : `<svg viewBox=\'0 0 400000 3000\' preserveAspectRatio=\'xMinYMin
+slice\'><path fill=\'currentColor\' d=\'M362 2713C701.333 913.667 871.333 13
+872 11c3.333-7.333 9.333-11 18-11h399110v40H906.698S816.168 518 630.5 1506
+C444.833 2494 351 2989 349 2991c-2 6-10 9-24 9-8 0-12-.667-12-2s-5.333-32-16-92
+c-50.667-293.333-119.667-693.333-207-1200 0-1.333-5.333 8.667-16 30l-32 64-16
+33-26-26 76-153 77-151c.667.667 35.667 202 105 604 67.333 400.667 102 602.667
+104 606zM890 0h399110v40H906z\'/></svg>`,
+    tall : `l-4 4-4 4c-.667.667-2 1.5-4 2.5s-4.167 1.833-6.5 2.5-5.5 1-9.5 1h
+-12l-28-84c-16.667-52-96.667 -294.333-240-727l-212 -643 -85 170c-4-3.333-8.333
+-7.667-13 -13l-13-13l77-155 77-156c66 199.333 139 419.667 219 661 l218 661z
+M591 0H400000v40H631z\'/></svg>`,
+};
+
 const sqrtSpan = function(height, delim, options) {
     // Create a span containing an SVG image of a sqrt symbol.
-    let span;
+    const span = buildCommon.makeSpan([], [], options);
     let sizeMultiplier = options.sizeMultiplier;  // default
     if (delim.type === "small") {
         // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
-        span = buildCommon.makeSpan(["stretchy", "sqrt-main"], [], options);
         if (delim.style === Style.SCRIPT) {
             sizeMultiplier = options.havingStyle(Style.TEXT).sizeMultiplier;
         } else if (delim.style === Style.SCRIPTSCRIPT) {
@@ -330,10 +372,11 @@ const sqrtSpan = function(height, delim, options) {
         span.style.height = span.height + "em";
         span.width = 0.781 / sizeMultiplier;   // surd width, from the font.
 
+        span.innerHTML = "<svg width=\'100%\' height=\'" + span.height + "em\'>"
+            + sqrtInnerSVG["main"] + "</svg>";
+
     } else if (delim.type === "large") {
         // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
-        span = buildCommon.makeSpan(["stretchy", "sqrt-size" + delim.size],
-            [], options);
         // Get sqrt height from font data
         span.height = [0, 1.2, 1.8, 2.4, 3][delim.size] / sizeMultiplier;
         span.style.height = span.height + "em";
@@ -341,43 +384,25 @@ const sqrtSpan = function(height, delim, options) {
         span.width = [0, 0.901, 0.902, 0.903, 0.903][delim.size] /
             sizeMultiplier;
 
+        span.innerHTML = "<svg width=\'100%\' height=\'" + span.height + "em\'>"
+            + sqrtInnerSVG["size" + delim.size] + "</svg>";
+
     } else {
         // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
         // We'll use a single SVG to accomplish the same thing.
-        span = buildCommon.makeSpan(["stretchy"], [], options);
-        const svgHeight = Math.floor(height * 1000);   // scale = 1:1000
-
-        let color = "black";
-        if (options.color) {
-            color = options.color.replace(/#/, "%23");  // url escape
-        }
-
-        // To make a \sqrt that is customized in both height and width, we
-        // have to use an inline SVG. We set the height right now. Then
-        // CSS and the browser will stretch the image to the correct width.
-        // This SVG path comes from glyph U+23B7, font KaTeX_Size4-Regular.
-        // The code has to be URL-escaped, so it isn't pretty.
-        span.style.backgroundImage = "url('data:image/svg+xml,%3Csvg "
-            + "xmlns=%27http://www.w3.org/2000/svg%27%3E%3Csvg viewBox=%27"
-            + "0 0 400000 " + svgHeight + "%27 preserveAspectRatio=%27"
-            + "xMinYMax slice%27%3E%3Cpath fill=%27" + color
-            + "%27 d=%27M591 0h399409v40H631v" + (svgHeight - 54)
-            + "l-4 4-4 4c-.667.667-2 1.5-4 2.5s-4.167 1.833"
-            + "-6.5 2.5-5.5 1-9.5 1h-12l-28-84c-16.667-52-96.667 -294.333"
-            + "-240-727l-212 -643 -85 170c-4-3.333-8.333-7.667-13 -13"
-            + "l-13-13l77-155 77-156c66 199.333 139 419.667 219 661 l218"
-            + " 661zM591 0H400000v40H631z%27/%3E%3C/svg%3E%3C/svg%3E')";
-
         span.height = height / sizeMultiplier;
         span.style.height = span.height + "em";
         span.width = 0.905 / sizeMultiplier;
-    }
+        const viewBoxHeight = Math.floor(span.height * 1000);   // scale = 1:1000
 
-    if (options.color && span.classes.length > 1) {
-        // Apply CSS that will, in non-IE browsers, color the sqrt.
-        span.classes.push("mask");  // Suppress the background-image.
-        span.classes.push(span.classes[1] + "-mask"); // Add mask-image.
-        span.style.backgroundColor = options.color;
+        // This \sqrt is customized in both height and width. We set the
+        // height now. Then CSS will stretch the image to the correct width.
+        // This SVG path comes from glyph U+23B7, font KaTeX_Size4-Regular.
+        span.innerHTML = "<svg width=\'100%\' height=\'" + span.height + "em\'>"
+            + "<svg viewBox=\'0 0 400000 " + viewBoxHeight
+            +  "\' preserveAspectRatio=\'xMinYMax slice\'><path fill=\'"
+            + "currentColor\' d=\'M591 0h399409v40H631v" + (viewBoxHeight -54)
+            + sqrtInnerSVG["tall"] + "</svg>";
     }
 
     span.sizeMultiplier = sizeMultiplier;

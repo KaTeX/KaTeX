@@ -405,50 +405,17 @@
             margin-left: 5*@mu;
             margin-right: -10*@mu;
         }
+		
+		> span > span > .vlist {
+			text-align: left;
+		}
     }
-
-    .sqrt-main {
-        height: 1.0em;
-        min-width: 1.0em;
-        background-image: url(images/sqrt-main.svg);
-    }
-    .sqrt-size1 {
-          min-width: 1em;
-          background-image: url(images/sqrt-size1.svg);
-    }
-    .sqrt-size2 {
-          min-width: 1em;
-          background-image: url(images/sqrt-size2.svg);
-    }
-    .sqrt-size3 {
-          min-width: 1em;
-          background-image: url(images/sqrt-size3.svg);
-    }
-    .sqrt-size4 {
-          min-width: 1em;
-          background-image: url(images/sqrt-size4.svg);
-    }
-
-    .sqrt-main-mask {
-          -webkit-mask: url(images/sqrt-main.svg) no-repeat;
-          mask: url(images/sqrt-main.svg) no-repeat;
-    }
-    .sqrt-size1-mask {
-          -webkit-mask: url(images/sqrt-size1.svg) no-repeat;
-          mask: url(images/sqrt-size1.svg) no-repeat;
-    }
-    .sqrt-size2-mask {
-          -webkit-mask: url(images/sqrt-size2.svg) no-repeat;
-          mask: url(images/sqrt-size2.svg) no-repeat;
-    }
-    .sqrt-size3-mask {
-          -webkit-mask: url(images/sqrt-size3.svg) no-repeat;
-          mask: url(images/sqrt-size3.svg) no-repeat;
-    }
-    .sqrt-size4-mask {
-          -webkit-mask: url(images/sqrt-size4.svg) no-repeat;
-          mask: url(images/sqrt-size4.svg) no-repeat;
-    }
+		
+	svg {
+        display: block;
+        position: absolute; // absolute relative to parent
+        width: 100%;
+	}
 
     .sizing, .fontsize-ensurer {
         display: inline-block;
