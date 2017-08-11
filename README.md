@@ -66,7 +66,7 @@ katex.render("c = \\pm\\sqrt{a^2 + b^2}\\in\\RR", element, {
 
 Math on the page can be automatically rendered using the auto-render extension. See [the Auto-render README](contrib/auto-render/README.md) for more information.
 
-### Font size and lengths
+#### Font size and lengths
 
 By default, KaTeX math is rendered in a 1.21× larger font than the surrounding
 context, which makes super- and subscripts easier to read. You can control
