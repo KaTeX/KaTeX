@@ -153,7 +153,6 @@ code {
   color: #404040;
 }
 
-
 /* Table of Contents, sidebar version */
 #sidebar {
   cursor: pointer;
@@ -2471,46 +2470,46 @@ code {
 		</thead>
 		<tbody>
 			<tr>
-				<td>em*</td>
+				<td>em</td>
 				<td>CSS em</td>
 				<td>bp</td>
 				<td>\(\frac 1{72}\) inch × <em>F</em> × <em>G</em></td>
 			</tr>
 			<tr>
-				<td>ex*</td>
+				<td>ex</td>
 				<td>CSS ex</td>
 				<td>pc</td>
-				<td>12 pt<sup>†</sup></td>
+				<td>12 KaTeX pt</td>
 			</tr>
 			<tr>
 				<td>mu</td>
 				<td>\(\frac 1{18}\) CSS em</td>
 				<td>dd</td>
-				<td>\(\frac{1238}{1157}\) pt<sup>†</sup></td>
+				<td>\(\frac{1238}{1157}\) KaTeX pt</td>
 			</tr>
 			<tr>
 				<td>pt</td>
 				<td>\(\frac 1{72.27}\) inch × <em>F</em> × <em>G</em>&nbsp;&nbsp;&nbsp;</td>
 				<td>cc</td>
-				<td>\(\frac{14856}{1157}\) pt<sup>†</sup></td>
+				<td>\(\frac{14856}{1157}\) KaTeX pt</td>
 			</tr>
 			<tr>
 				<td>mm</td>
 				<td>1 mm × <em>F</em> × <em>G</em></td>
 				<td>nd</td>
-				<td>\(\frac{685}{642}\) pt<sup>†</sup></td>
+				<td>\(\frac{685}{642}\) KaTeX pt</td>
 			</tr>
 			<tr>
 				<td>cm</td>
 				<td>1 cm × <em>F</em> × <em>G</em></td>
 				<td>nc</td>
-				<td>\(\frac{1370}{107}\) pt<sup>†</sup></td>
+				<td>\(\frac{1370}{107}\) KaTeX pt</td>
 			</tr>
 			<tr>
 				<td>in</td>
 				<td>1 inch × <em>F</em> × <em>G</em></td>
 				<td>sp</td>
-				<td>\(\frac 1{65536}\) pt<sup>†</sup></td>
+				<td>\(\frac 1{65536}\) KaTeX pt</td>
 			</tr>
 		</tbody>
 	</table>
@@ -2525,17 +2524,40 @@ code {
 			<td><em>G</em> = 1.21 by default, because KaTeX font-size is normally 1.21 × the surrounding font size. This value can be over-ridden by the CSS of an HTML page. For example, on this page, <em>G</em> = 1.0.</td>
 		</tr>
 	</table>
-
-			
 	
+	<br>
+	
+	<p>The effect of style and size:</p>
 	<table>
+		<thead>
 		<tr>
-			<td style="padding-right:0;"><span style="position:relative; top:-8px;">*</span></td>
-			<td>In KaTeX, the <em>em</em> and <em>ex</em> units scale with KaTeX font size (e.g. <code>\small</code> or <code>\large</code>) but not with changes to style such as <code>\scriptstyle</code>.</td>
+			<th>Item</th>
+			<th>textstyle</th>
+			<th>scriptscript</th>
+			<th>huge</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td>em or ex</td>
+			<td>\(\rule{1em}{1em}\)</td>
+			<td>\(\scriptscriptstyle\rule{1em}{1em}\)</td>
+			<td>\(\huge\rule{1em}{1em}\)</td>
+		</tr>
+
+		<tr>
+			<td>mu</td>
+			<td>\(\rule{18mu}{18mu}\)</td>
+			<td>\(\scriptscriptstyle\rule{18mu}{18mu}\)</td>
+			<td>\(\huge\rule{18mu}{18mu}\)</td>
 		</tr>
 		<tr>
-			<td style="padding-right:0;">†</td>   <td>KaTeX pt, not CSS pt</td>
+			<td>others</td>
+			<td>\(\rule{10pt}{10pt}\)</td>
+			<td>\(\scriptscriptstyle\rule{10pt}{10pt}\)</td>
+			<td>\(\huge\rule{10pt}{10pt}\)</td>
 		</tr>
+		</tbody>
 	</table>
 	
 	
