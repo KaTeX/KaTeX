@@ -5,11 +5,13 @@
     <meta name="viewport" content="initial-scale=1">
     <title>Function Support in KaTeX</title>
     <link rel="icon" href="http://khan.github.io/favicon.ico">
+	
+	<link rel="stylesheet" href="https://unpkg.com/katex@0.8.1/dist/katex.min.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/katex@0.8.1/dist/katex.min.js"></script>
 
+	<script src="https://unpkg.com/katex@0.8.1/dist/contrib/auto-render.min.js"></script>
+	
 <style type="text/css">
 * { margin:0; padding:0; }  /* reset */
 
@@ -74,6 +76,7 @@ sub { bottom: -0.25em; }
 .indented   { margin-left: 0.8em; }
 .reduced    { font-size:60%; }
 .footer     { margin-top:   3em;  text-align: center; font-size: 70%; }
+.master     { background-color: whitesmoke; }
 
 table {
   border-collapse: collapse;
@@ -90,7 +93,7 @@ table th {
   font-size: 95%;
   padding: 0.3rem 0.5rem 0.3rem 0.5rem;
   line-height: 1.05;
-  text-align: left;
+  text-align: center;
   border-bottom: 1px solid #ccc;
 }
 
@@ -111,13 +114,23 @@ table.symbol td:nth-child(even) {
   padding-left: 0em;
 }
 
+table.explain th {text-align: left;}
+
+table.grid {margin-left: 0;}
+table.grid th, table.grid td { border: 1px solid #aaa; vertical-align: middle; }
+table.grid td:nth-child(1) {text-align: left; }
+
+table.units td:nth-child(1), th:nth-child(1),
+table.units td:nth-child(3), th:nth-child(3) {text-align: center; }
+
 table#math-tbl  td:nth-child(6) {border-right: solid 1px; }
 table#style-tbl td:nth-child(3) {
   font-family: Calibri, Helvetica, sans-serif;
   font-size: 1.1rem;
   text-align: left;
 }
-table.tall td {height: 2.5em;}
+table#delim td {height: 2.5em;}
+.tall tr {height: 1.75em;}
 .footer table { margin: auto; width: 75%;}
 .footer table td {text-align: center;}
 
@@ -218,51 +231,101 @@ code {
 <h2 id="accents">Accents</h2>
 
     <table class="symbol">
-        <tr>
-            <td>\(a'\)</td>
-            <td>a'</td>
-            <td>\(\bar{y}\)</td>
-            <td>\bar{y}</td>
-            <td>\(\ddot{a}\)</td>
-            <td>\ddot{a}</td>
-            <td>\(\vec{F}\)</td>
-            <td>\vec{F}</td>
-        </tr>
-        <tr>
-            <td>\(a''\)</td>
-            <td>a''</td>
-            <td>\(\breve{a}\)</td>
-            <td>\breve{a}</td>
-            <td>\(\grave{a}\)</td>
-            <td>\grave{a}</td>
-            <td>\(\overline{AB}\)</td>
-            <td>\overline{AB}</td>
-        </tr>
-        <tr>
-            <td>\(a^{\prime}\)</td>
-            <td>a^{\prime}</td>
-            <td>\(\check{a}\)</td>
-            <td>\check{a}</td>
-            <td>\(\hat{\theta}\)</td>
-            <td>\hat{\theta}</td>
-            <td>\(\underline{AB}\)</td>
-            <td>\underline{AB}</td>
-        </tr>
-        <tr>
-            <td>\(\acute{a}\)</td>
-            <td>\acute{a}</td>
-            <td>\(\dot{a}\)</td>
-            <td>\dot{a}</td>
-            <td>\(\tilde{a}\)</td>
-            <td>\tilde{a}</td>
-            <td></td>
-            <td></td>
-        </tr>
-    </table>
+		<tr>
+			<td>\(a'\)</td>
+			<td>a'</td>
+			<td>\(\ddot{a}\)</td>
+			<td>\ddot{a}</td>
+			<td>\(\overleftarrow{AB}\)</td>
+			<td>\overleftarrow{AB}</td>
+			<td>\(\overrightarrow{AB}\)</td>
+			<td>\overrightarrow{AB}</td>
+		</tr>
+		<tr>
+			<td>\(a''\)</td>
+			<td>a''</td>
+			<td>\(\grave{a}\)</td>
+			<td>\grave{a}</td>
+			<td>\(\underleftarrow{AB}\)</td>
+			<td>\underleftarrow{AB}</td>
+			<td>\(\underrightarrow{AB}\)</td>
+			<td>\underrightarrow{AB}</td>
+		</tr>
+		<tr>
+			<td>\(a^{\prime}\)</td>
+			<td style="white-space: nowrap">a^{\prime}</td>
+			<td>\(\hat{\theta}\)</td>
+			<td>\hat{\theta}</td>
+			<td>\(\overleftrightarrow{AB}\)</td>
+			<td style="white-space: nowrap">\overleftrightarrow{AB}</td>
+			<td>\(\overbrace{AB}\)</td>
+			<td>\overbrace{AB}</td>
+		</tr>
+		<tr>
+			<td>\(\acute{a}\)</td>
+			<td>\acute{a}</td>
+			<td>\(\widehat{ac}\)</td>
+			<td>\widehat{ac}</td>
+			<td>\(\underleftrightarrow{AB}\)</td>
+			<td style="white-space: nowrap">\underleftrightarrow{AB}</td>
+			<td>\(\underbrace{AB}\)</td>
+			<td>\underbrace{AB}</td>
+		</tr>
+		<tr>
+			<td>\(\bar{y}\)</td>
+			<td>\bar{y}</td>
+			<td>\(\tilde{a}\)</td>
+			<td>\tilde{a}</td>
+			<td>\(\overgroup{AB}\)</td>
+			<td>\overgroup{AB}</td>
+			<td>\(\overlinesegment{AB}\)</td>
+			<td>\overlinesegment{AB}</td>
+		</tr>
+		<tr>
+			<td>\(\breve{a}\)</td>
+			<td>\breve{a}</td>
+			<td>\(\widetilde{ac}\)</td>
+			<td style="white-space: nowrap">\widetilde{ac}</td>
+			<td>\(\undergroup{AB}\)</td>
+			<td>\undergroup{AB}</td>
+			<td>\(\underlinesegment{AB}\)</td>
+			<td>\underlinesegment{AB}</td>
+		</tr>
+		<tr>
+			<td>\(\check{a}\)</td>
+			<td>\check{a}</td>
+			<td>\(\vec{F}\)</td>
+			<td>\vec{F}</td>
+			<td>\(\overleftharpoon{ac}\)</td>
+			<td>\overleftharpoon{ac}</td>
+			<td>\(\overrightharpoon{ac}\)</td>
+			<td>\overrightharpoon{ac}</td>
+		</tr>
+		<tr>
+			<td>\(\dot{a}\)</td>
+			<td>\dot{a}</td>
+			<td>\(\overline{AB}\)</td>
+			<td>\overline{AB}</td>
+			<td>\(\Overrightarrow{AB}\)</td>
+			<td>\Overrightarrow{AB}</td>
+			<td>\(\undertilde{AB}\)</td>
+			<td>\undertilde{AB}</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td>\(\underline{AB}\)</td>
+			<td>\underline{AB}</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
 
 <h2 id="delimiters">Delimiters</h2>
 
-    <table class="symbol tall">
+    <table class="symbol" id="delim">
         <tr>
             <td>\((\,)\)</td>
             <td>( )</td>
@@ -386,6 +449,13 @@ code {
    c &amp; d
 \end{array}</code></pre>
             </td>
+            <td>\(\begin{aligned} a&=b+c \\ d+e&=f \end{aligned}\)</td>
+            <td>
+                <pre><code>\begin{aligned}
+   a&amp;=b+c \\
+   d+e&=f
+\end{aligned}</code></pre>
+            </td>
         </tr>
         <tr>
             <td>\(\begin{pmatrix} a & b \\ c & d \end{pmatrix}\)</td>
@@ -402,6 +472,13 @@ code {
    c &amp; d
 \end{bmatrix}</code></pre>
             </td>
+            <td>\(\begin{gathered} a=b \\ e=b+c \end{gathered}\)</td>
+			<td>
+                <pre><code>\begin{gathered}
+   a=b \\ 
+   e=b+c
+\end{gathered}</code></pre>
+			</td>
         </tr>
         <tr>
             <td>\(\begin{vmatrix} a & b \\ c & d \end{vmatrix}\)</td>
@@ -418,15 +495,6 @@ code {
    c &amp; d
 \end{Vmatrix}</code></pre>
             </td>
-        </tr>
-        <tr>
-            <td>\(\begin{Bmatrix} a & b \\ c & d \end{Bmatrix}\)</td>
-            <td>
-                <pre><code>\begin{Bmatrix}
-   a &amp; b \\
-   c &amp; d
-\end{Bmatrix}</code></pre>
-            </td>
             <td>\(x = \begin{cases} a &\text{if } b \\ c &\text{if } d \end{cases}\)</td>
             <td>
                 <pre><code>x = \begin{cases}
@@ -436,23 +504,22 @@ code {
             </td>
         </tr>
         <tr>
-            <td></td><td></td>
-            <td>\(\begin{aligned} a&=b+c \\ d+e&=f \end{aligned}\)</td>
+            <td>\(\begin{Bmatrix} a & b \\ c & d \end{Bmatrix}\)</td>
             <td>
-                <pre><code>\begin{aligned}
-   a&amp;=b+c \\
-   d+e&=f
-\end{aligned}</code></pre>
+                <pre><code>\begin{Bmatrix}
+   a &amp; b \\
+   c &amp; d
+\end{Bmatrix}</code></pre>
             </td>
         </tr>
     </table>
 
     <div class="indented">
-        <p>Acceptable line separators include: <code>\\</code>, <code>\cr</code>, and <code>\\[<em>distance</em>]</code>. <em>Distance</em> can be written with units of <code>em</code>, <code>ex</code>, or<code> mu</code>.</p>
+		<p>KaTeX also supports <code>{darray}</code> and <code>{dcases}</code>.</p>
+	
+        <p>Acceptable line separators include: <code>\\</code>, <code>\cr</code>, and <code>\\[<em>distance</em>]</code>. <em>Distance</em> can be written with any of the <a href="#units">KaTeX units</a>.</p>
 
         <p>The <code>{array}</code> environment does not yet support <code>\hline</code>.</p>
-
-        <p><code>{darray}</code> and <code>{dcases}</code> are committed to master but are not part of the latest release.</p>
     </div>
 
 <h2 id="letters">Greek Letters</h2>
@@ -489,81 +556,81 @@ code {
             <td></td>
         </tr>
         <tr>
-            <td>α</td>
+            <td><span class="katex"><span class="mathit">α</span></span></td>
             <td>\alpha</td>
-            <td>β</td>
+            <td><span class="katex"><span class="mathit">β</span></span></td>
             <td>\beta</td>
-            <td>γ</td>
+            <td><span class="katex"><span class="mathit">γ</span></span></td>
             <td>\gamma</td>
-            <td>δ</td>
+            <td><span class="katex"><span class="mathit">δ</span></span></td>
             <td>\delta</td>
         </tr>
         <tr>
-            <td>ϵ</td>
+            <td><span class="katex"><span class="mathit">ϵ</span></span></td>
             <td>\epsilon</td>
-            <td>ζ</td>
+            <td><span class="katex"><span class="mathit">ζ</span></span></td>
             <td>\zeta</td>
-            <td>η</td>
+            <td><span class="katex"><span class="mathit">η</span></span></td>
             <td>\eta</td>
-            <td>θ</td>
+            <td><span class="katex"><span class="mathit">θ</span></span></td>
             <td>\theta</td>
         </tr>
         <tr>
-            <td>ι</td>
+            <td><span class="katex"><span class="mathit">ι</span></span></td>
             <td>\iota</td>
-            <td>κ</td>
+            <td><span class="katex"><span class="mathit">κ</span></span></td>
             <td>\kappa</td>
-            <td>λ</td>
+            <td><span class="katex"><span class="mathit">λ</span></span></td>
             <td>\lambda</td>
-            <td>μ</td>
+            <td><span class="katex"><span class="mathit">μ</span></span></td>
             <td>\mu</td>
         </tr>
         <tr>
-            <td>ν</td>
+            <td><span class="katex"><span class="mathit">ν</span></span></td>
             <td>\nu</td>
-            <td>ξ</td>
+            <td><span class="katex"><span class="mathit">ξ</span></span></td>
             <td>\xi</td>
-            <td>o</td>
+            <td><span class="katex"><span class="mathit">o</span></span></td>
             <td>\omicron</td>
-            <td>π</td>
+            <td><span class="katex"><span class="mathit">π</span></span></td>
             <td>\pi</td>
         </tr>
         <tr>
-            <td>ρ</td>
+            <td><span class="katex"><span class="mathit">ρ</span></span></td>
             <td>\rho</td>
-            <td>σ</td>
+            <td><span class="katex"><span class="mathit">σ</span></span></td>
             <td>\sigma</td>
-            <td>τ</td>
+            <td><span class="katex"><span class="mathit">τ</span></span></td>
             <td>\tau</td>
-            <td>υ</td>
+            <td><span class="katex"><span class="mathit">υ</span></span></td>
             <td>\upsilon</td>
         </tr>
         <tr>
-            <td>ϕ</td>
+            <td><span class="katex"><span class="mathit">ϕ</span></span></td>
             <td>\phi</td>
-            <td>χ</td>
+            <td><span class="katex"><span class="mathit">χ</span></span></td>
             <td>\chi</td>
-            <td>ψ</td>
+            <td><span class="katex"><span class="mathit">ψ</span></span></td>
             <td>\psi</td>
-            <td>ω</td>
+            <td><span class="katex"><span class="mathit">ω</span></span></td>
             <td>\omega</td>
         </tr>
         <tr>
-            <td>ε</td>
+            <td><span class="katex"><span class="mathit">ε</span></span></td>
             <td>\varepsilon</td>
-            <td>ϰ</td>
+            <td><span class="katex"><span class="mathit">ϰ</span></span></td>
             <td>\varkappa</td>
-            <td>ϑ</td>
+            <td><span class="katex"><span class="mathit">ϑ</span></span></td>
             <td>\vartheta</td>
-            <td>ϖ</td>
+            <td><span class="katex"><span class="mathit">ϖ</span></span></td>
             <td>\varpi</td>
         </tr>
         <tr>
-            <td>ϱ</td>
+            <td><span class="katex"><span class="mathit">ϱ</span></span></td>
             <td>\varrho</td>
-            <td>ς</td>
+            <td><span class="katex"><span class="mathit">ς</span></span></td>
             <td>\varsigma</td>
-            <td>φ</td>
+            <td><span class="katex"><span class="mathit">φ</span></span></td>
             <td>\varphi</td>
             <td>ϝ</td>
             <td>\digamma</td>
@@ -614,8 +681,8 @@ code {
             <td>\partial</td>
             <td>∇</td>
             <td>\nabla</td>
-            <td></td>
-            <td></td>
+            <td>\(\Bbbk\)</td>
+            <td>\Bbbk</td>
             <td></td>
             <td></td>
             <td></td>
@@ -625,7 +692,36 @@ code {
 
     <p class="indented"><code>\text{…}</code> will accept characters from <a href="http://www.unicode.org/charts/PDF/U0080.pdf">Latin-1</a>, <a href="http://unicode.org/charts/PDF/U0400.pdf">Cyrillic</a>, or CJK (Hiragana, Katakana, CJK ideograms, and Hangul).</p>
 
-<h2 id="overlap">Overlap</h2>
+<h2 id="annotation">Annotation</h2>
+
+	<table class="symbol">
+		<tr>
+			<td>\(\cancel{5}\)</td>
+			<td>\cancel{5}</td>
+			<td>\(\overbrace{a+b+c}^{\text{note}}\)</td>
+			<td>\overbrace{a+b+c}^{\text{note}}</td>
+		</tr>
+		<tr>
+			<td>\(\bcancel{5}\)</td>
+			<td>\bcancel{5}</td>
+			<td>\(\underbrace{a+b+c}_{\text{note}}\)</td>
+			<td style="white-space: nowrap">\underbrace{a+b+c}_{\text{note}}</td>
+		</tr>
+		<tr>
+			<td>\(\xcancel{ABC}\)</td>
+			<td style="white-space: nowrap">\xcancel{ABC}</td>
+			<td rowspan="2">\(\boxed{\pi = \frac c d}\)</td>
+			<td rowspan="2" style="white-space: nowrap">\boxed{\pi=\frac c d}</td>
+		</tr>
+		<tr>
+			<td>\(\sout{abc}\)</td>
+			<td>\sout{abc}</td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+	
+<h3 id="overlap">Overlap</h2>
 
     <table class="symbol">
         <tr>
@@ -683,7 +779,7 @@ code {
             </tr>
             <tr>
                 <td>\kern{<em>distance</em>}</td>
-                <td>space, width = <em>distance</em> <br>Accepts <code>em</code>, <code>ex</code>, or<code> mu</code> units.</td>
+                <td>space, width = <em>distance</em> <br>Accepts any of the <a href="#units">KaTeX units</a>.</td>
             </tr>
         </tbody>
     </table>
@@ -702,25 +798,22 @@ code {
         <tr>
             <td>\(e^x\)</td>
             <td>e^x</td>
-            <td></td>
+            <td>\(\overset{!}{=}\)</td>
             <td>\overset{!}{=}</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
             <td>\(_u^o\)</td>
-            <td>_u^o</td>
-            <td></td>
-            <td>\underset{!}{=}</td>
+            <td>_u^o&nbsp;</td>
+            <td>\(\underset{!}{=}\)</td>
+            <td>\underset{!}{=}&nbsp;</td>
             <td></td>
             <td></td>
         </tr>
     </table>
 
-    <div class="indented">
-        <p>Also see <a href="#environments">environments</a>.</p>
-        <p><code>\overset</code> and <code>\underset</code> are committed to master but are not yet included in the latest release.</p>
-    </div>
+    <p class="indented">Also see <a href="#environments">environments</a>.</p>
 
 <h2 id="logic">Logic and Set Theory</h2>
 
@@ -763,7 +856,7 @@ code {
             <td>→</td>
             <td>\to</td>
             <td>⟹</td>
-            <td>\implies†</td>
+            <td>\implies</td>
         </tr>
         <tr>
             <td>∉</td>
@@ -773,7 +866,7 @@ code {
             <td>←</td>
             <td>\gets</td>
             <td>⟸</td>
-            <td>\impliedby†</td>
+            <td>\impliedby</td>
         </tr>
         <tr>
             <td>∋</td>
@@ -783,13 +876,12 @@ code {
             <td>↔</td>
             <td>\leftrightarrow</td>
             <td>⟺</td>
-            <td>\iff†</td>
+            <td>\iff</td>
         </tr>
     </table>
 
     <div class="indented">
         <p>See also <a href="#relations">relations</a> and <a href="#binary">binary operators</a>.</p>
-        <p>†<code>\iff</code>, <code>\implies</code>, and <code>\impliedby</code> have a pending pull request but are not yet included in the latest release.</p>
     </div>
 
 
@@ -1073,7 +1165,7 @@ code {
             <td>arcsin</td>
             <td>\arcsin</td>
             <td>cotg</td>
-            <td>\cotg†</td>
+            <td>\cotg</td>
             <td>ln</td>
             <td>\ln</td>
             <td>det</td>
@@ -1083,7 +1175,7 @@ code {
             <td>arccos</td>
             <td>\arccos</td>
             <td>coth</td>
-            <td>\coth†</td>
+            <td>\coth</td>
             <td>log</td>
             <td>\log</td>
             <td>gcd</td>
@@ -1101,9 +1193,9 @@ code {
         </tr>
         <tr>
             <td>arctg</td>
-            <td>\arctg†</td>
+            <td>\arctg</td>
             <td>ctg</td>
-            <td>\ctg†</td>
+            <td>\ctg</td>
             <td>sin</td>
             <td>\sin</td>
             <td>lim</td>
@@ -1111,9 +1203,9 @@ code {
         </tr>
         <tr>
             <td>arcctg</td>
-            <td>\arcctg†</td>
+            <td>\arcctg</td>
             <td>cth</td>
-            <td>\cth†</td>
+            <td>\cth</td>
             <td>sinh</td>
             <td>\sinh</td>
             <td>liminf</td>
@@ -1125,13 +1217,13 @@ code {
             <td>deg</td>
             <td>\deg</td>
             <td>sh</td>
-            <td>\sh†</td>
+            <td>\sh</td>
             <td>limsup</td>
             <td>\limsup</td>
         </tr>
         <tr>
             <td>ch</td>
-            <td>\ch†</td>
+            <td>\ch</td>
             <td>dim</td>
             <td>\dim</td>
             <td>tan</td>
@@ -1155,7 +1247,7 @@ code {
             <td>hom</td>
             <td>\hom</td>
             <td>tg</td>
-            <td>\tg†</td>
+            <td>\tg</td>
             <td>Pr</td>
             <td>\Pr</td>
         </tr>
@@ -1165,7 +1257,7 @@ code {
             <td>ker</td>
             <td>\ker</td>
             <td>th</td>
-            <td>\th†</td>
+            <td>\th</td>
             <td>sup</td>
             <td>\sup</td>
         </tr>
@@ -1183,7 +1275,6 @@ code {
 
     <div class="indented">
         <p>Functions on the right side of this table can take <a href="#limits">\limits</a>.<span style="position:relative; top:-0.6em;">↗</span><br>
-        † committed to master but not in the most recent release.</p>
     </div>
 
 <h3 id="sqrt">Sqrt</h3>
@@ -1202,279 +1293,309 @@ code {
 
 <h2 id="relations">Relations</h2>
 
-    <!-- This table has scripts for \smallfrown & \smallsmile -->
+    <!-- This table has scripts in several cells. -->
     <table class="symbol">
-        <tr>
-            <td>=</td>
-            <td>=</td>
-            <td>≒</td>
-            <td>\fallingdotseq</td>
-            <td>⋘</td>
-            <td>\lll</td>
-            <td>⊒</td>
-            <td>\sqsupseteq</td>
-        </tr>
-        <tr>
-            <td>&lt;</td>
-            <td>&lt;</td>
-            <td>⌢</td>
-            <td>\frown</td>
-            <td>⋘</td>
-            <td>\llless</td>
-            <td>⋐</td>
-            <td>\Subset</td>
-        </tr>
-        <tr>
-            <td>&gt;</td>
-            <td>&gt;</td>
-            <td>≥</td>
-            <td>\ge</td>
-            <td>&lt;</td>
-            <td>\lt</td>
-            <td>⊂</td>
-            <td>\subset</td>
-        </tr>
-        <tr>
-            <td>:</td>
-            <td>:</td>
-            <td>≥</td>
-            <td>\geq</td>
-            <td>∣</td>
-            <td>\mid</td>
-            <td>⊆</td>
-            <td>\subseteq</td>
-        </tr>
-        <tr>
-            <td>≈</td>
-            <td>\approx</td>
-            <td>≧</td>
-            <td>\geqq</td>
-            <td>⊨</td>
-            <td>\models</td>
-            <td>⫅</td>
-            <td>\subseteqq</td>
-        </tr>
-        <tr>
-            <td>≊</td>
-            <td>\approxeq</td>
-            <td>⩾</td>
-            <td>\geqslant</td>
-            <td>⊸</td>
-            <td>\multimap</td>
-            <td>≻</td>
-            <td>\succ</td>
-        </tr>
-        <tr>
-            <td>≍</td>
-            <td>\asymp</td>
-            <td>≫</td>
-            <td>\gg</td>
-            <td>∋</td>
-            <td>\owns</td>
-            <td>⪸</td>
-            <td>\succapprox</td>
-        </tr>
-        <tr>
-            <td>∍</td>
-            <td>\backepsilon</td>
-            <td>⋙</td>
-            <td>\ggg</td>
-            <td>∥</td>
-            <td>\parallel</td>
-            <td>≽</td>
-            <td>\succcurlyeq</td>
-        </tr>
-        <tr>
-            <td>∽</td>
-            <td>\backsim</td>
-            <td>⋙</td>
-            <td>\gggtr</td>
-            <td>⊥</td>
-            <td>\perp</td>
-            <td>⪰</td>
-            <td>\succeq</td>
-        </tr>
-        <tr>
-            <td>⋍</td>
-            <td>\backsimeq</td>
-            <td>&gt;</td>
-            <td>\gt</td>
-            <td>⋔</td>
-            <td>\pitchfork</td>
-            <td>≿</td>
-            <td>\succsim</td>
-        </tr>
-        <tr>
-            <td>≬</td>
-            <td>\between</td>
-            <td>⪆</td>
-            <td>\gtrapprox</td>
-            <td>≺</td>
-            <td>\prec</td>
-            <td>⋑</td>
-            <td>\Supset</td>
-        </tr>
-        <tr>
-            <td>⋈</td>
-            <td>\bowtie</td>
-            <td>⋛</td>
-            <td>\gtreqless</td>
-            <td>⪷</td>
-            <td>\precapprox</td>
-            <td>⊃</td>
-            <td>\supset</td>
-        </tr>
-        <tr>
-            <td>≏</td>
-            <td>\bumpeq</td>
-            <td>⪌</td>
-            <td>\gtreqqless</td>
-            <td>≼</td>
-            <td>\preccurlyeq</td>
-            <td>⊇</td>
-            <td>\supseteq</td>
-        </tr>
-        <tr>
-            <td>≎</td>
-            <td>\Bumpeq</td>
-            <td>≷</td>
-            <td>\gtrless</td>
-            <td>⪯</td>
-            <td>\preceq</td>
-            <td>⫆</td>
-            <td>\supseteqq</td>
-        </tr>
-        <tr>
-            <td>≗</td>
-            <td>\circeq</td>
-            <td>≳</td>
-            <td>\gtrsim</td>
-            <td>≾</td>
-            <td>\precsim</td>
-            <td>≈</td>
-            <td>\thickapprox</td>
-        </tr>
-        <tr>
-            <td>≅</td>
-            <td>\cong</td>
-            <td>∈</td>
-            <td>\in</td>
-            <td>∝</td>
-            <td>\propto</td>
-            <td>∼</td>
-            <td>\thicksim</td>
-        </tr>
-        <tr>
-            <td>⋞</td>
-            <td>\curlyeqprec</td>
-            <td>⋈</td>
-            <td>\Join</td>
-            <td>≓</td>
-            <td>\risingdotseq</td>
-            <td>⊴</td>
-            <td>\trianglelefteq</td>
-        </tr>
-        <tr>
-            <td>⋟</td>
-            <td>\curlyeqsucc</td>
-            <td>≤</td>
-            <td>\le</td>
-            <td>∣</td>
-            <td>\shortmid</td>
-            <td>≜</td>
-            <td>\triangleq</td>
-        </tr>
-        <tr>
-            <td>⊣</td>
-            <td>\dashv</td>
-            <td>≤</td>
-            <td>\leq</td>
-            <td>∥</td>
-            <td>\shortparallel</td>
-            <td>⊵</td>
-            <td>\trianglerighteq</td>
-        </tr>
-        <tr>
-            <td>≐</td>
-            <td>\doteq</td>
-            <td>≦</td>
-            <td>\leqq</td>
-            <td>∼</td>
-            <td>\sim</td>
-            <td>∝</td>
-            <td>\varpropto</td>
-        </tr>
-        <tr>
-            <td>≑</td>
-            <td>\Doteq</td>
-            <td>⩽</td>
-            <td>\leqslant</td>
-            <td>≃</td>
-            <td>\simeq</td>
-            <td>△</td>
-            <td>\vartriangle</td>
-        </tr>
-        <tr>
-            <td>≑</td>
-            <td>\doteqdot</td>
-            <td>⪅</td>
-            <td>\lessapprox</td>
-            <td>\(\smallfrown\)</td>
-            <td>\smallfrown</td>
-            <td>⊲</td>
-            <td>\vartriangleleft</td>
-        </tr>
-        <tr>
-            <td>≖</td>
-            <td>\eqcirc</td>
-            <td>⋚</td>
-            <td>\lesseqgtr</td>
-            <td>\(\smallsmile\)</td>
-            <td>\smallsmile</td>
-            <td>⊳</td>
-            <td>\vartriangleright</td>
-        </tr>
-        <tr>
-            <td>≂</td>
-            <td>\eqsim</td>
-            <td>⪋</td>
-            <td>\lesseqqgtr</td>
-            <td>⌣</td>
-            <td>\smile</td>
-            <td>⊢</td>
-            <td>\vdash</td>
-        </tr>
-        <tr>
-            <td>⪖</td>
-            <td>\eqslantgtr</td>
-            <td>≶</td>
-            <td>\lessgtr</td>
-            <td>⊏</td>
-            <td>\sqsubset</td>
-            <td>⊨</td>
-            <td>\vDash</td>
-        </tr>
-        <tr>
-            <td>⪕</td>
-            <td>\eqslantless</td>
-            <td>≲</td>
-            <td>\lesssim</td>
-            <td>⊑</td>
-            <td>\sqsubseteq</td>
-            <td>⊩</td>
-            <td>\Vdash</td>
-        </tr>
-        <tr>
-            <td>≡</td>
-            <td>\equiv</td>
-            <td>≪</td>
-            <td>\ll</td>
-            <td>⊐</td>
-            <td>\sqsupset</td>
-            <td>⊪</td>
-            <td>\Vvdash</td>
-        </tr>
-    </table>
+		<tr>
+			<td>=</td>
+			<td>=</td>
+			<td>⋟</td>
+			<td>\curlyeqsucc</td>
+			<td>⪆</td>
+			<td>\gtrapprox</td>
+			<td>⊥</td>
+			<td>\perp</td>
+			<td>⪸</td>
+			<td>\succapprox</td>
+		</tr>
+		<tr>
+			<td>&lt;</td>
+			<td>&lt;</td>
+			<td>⊣</td>
+			<td>\dashv</td>
+			<td>⋛</td>
+			<td>\gtreqless</td>
+			<td>⋔</td>
+			<td>\pitchfork</td>
+			<td>≽</td>
+			<td>\succcurlyeq</td>
+		</tr>
+		<tr>
+			<td>&gt;</td>
+			<td>&gt;</td>
+			<td>\(\dblcolon\)</td>
+			<td>\dblcolon</td>
+			<td>⪌</td>
+			<td>\gtreqqless</td>
+			<td>≺</td>
+			<td>\prec</td>
+			<td>⪰</td>
+			<td>\succeq</td>
+		</tr>
+		<tr>
+			<td>:</td>
+			<td>:</td>
+			<td>≐</td>
+			<td>\doteq</td>
+			<td>≷</td>
+			<td>\gtrless</td>
+			<td>⪷</td>
+			<td>\precapprox</td>
+			<td>≿</td>
+			<td>\succsim</td>
+		</tr>
+		<tr>
+			<td>≈</td>
+			<td>\approx</td>
+			<td>≑</td>
+			<td>\Doteq</td>
+			<td>≳</td>
+			<td>\gtrsim</td>
+			<td>≼</td>
+			<td>\preccurlyeq</td>
+			<td>⋑</td>
+			<td>\Supset</td>
+		</tr>
+		<tr>
+			<td>≊</td>
+			<td>\approxeq</td>
+			<td>≑</td>
+			<td>\doteqdot</td>
+			<td>∈</td>
+			<td>\in</td>
+			<td>⪯</td>
+			<td>\preceq</td>
+			<td>⊃</td>
+			<td>\supset</td>
+		</tr>
+		<tr>
+			<td>≍</td>
+			<td>\asymp</td>
+			<td>≖</td>
+			<td>\eqcirc</td>
+			<td>⋈</td>
+			<td>\Join</td>
+			<td>≾</td>
+			<td>\precsim</td>
+			<td>⊇</td>
+			<td>\supseteq</td>
+		</tr>
+		<tr>
+			<td>∍</td>
+			<td>\backepsilon</td>
+			<td>\(\eqcolon\)</td>
+			<td>\eqcolon</td>
+			<td>≤</td>
+			<td>\le</td>
+			<td>∝</td>
+			<td>\propto</td>
+			<td>⫆</td>
+			<td>\supseteqq</td>
+		</tr>
+		<tr>
+			<td>∽</td>
+			<td>\backsim</td>
+			<td>\(\Eqcolon\)</td>
+			<td>\Eqcolon</td>
+			<td>≤</td>
+			<td>\leq</td>
+			<td>≓</td>
+			<td>\risingdotseq</td>
+			<td>≈</td>
+			<td>\thickapprox</td>
+		</tr>
+		<tr>
+			<td>⋍</td>
+			<td>\backsimeq</td>
+			<td>\(\eqqcolon\)</td>
+			<td>\eqqcolon</td>
+			<td>≦</td>
+			<td>\leqq</td>
+			<td>∣</td>
+			<td>\shortmid</td>
+			<td>∼</td>
+			<td>\thicksim</td>
+		</tr>
+		<tr>
+			<td>≬</td>
+			<td>\between</td>
+			<td>\(\Eqqcolon\)</td>
+			<td>\Eqqcolon</td>
+			<td>⩽</td>
+			<td>\leqslant</td>
+			<td>∥</td>
+			<td>\shortparallel</td>
+			<td>⊴</td>
+			<td>\trianglelefteq</td>
+		</tr>
+		<tr>
+			<td>⋈</td>
+			<td>\bowtie</td>
+			<td>≂</td>
+			<td>\eqsim</td>
+			<td>⪅</td>
+			<td>\lessapprox</td>
+			<td>∼</td>
+			<td>\sim</td>
+			<td>≜</td>
+			<td>\triangleq</td>
+		</tr>
+		<tr>
+			<td>≏</td>
+			<td>\bumpeq</td>
+			<td>⪖</td>
+			<td>\eqslantgtr</td>
+			<td>⋚</td>
+			<td>\lesseqgtr</td>
+			<td>≃</td>
+			<td>\simeq</td>
+			<td>⊵</td>
+			<td>\trianglerighteq</td>
+		</tr>
+		<tr>
+			<td>≎</td>
+			<td>\Bumpeq</td>
+			<td>⪕</td>
+			<td>\eqslantless</td>
+			<td>⪋</td>
+			<td>\lesseqqgtr</td>
+			<td>\(\smallfrown\)</td>
+			<td>\smallfrown</td>
+			<td>∝</td>
+			<td>\varpropto</td>
+		</tr>
+		<tr>
+			<td>≗</td>
+			<td>\circeq</td>
+			<td>≡</td>
+			<td>\equiv</td>
+			<td>≶</td>
+			<td>\lessgtr</td>
+			<td>\(\smallsmile\)</td>
+			<td>\smallsmile</td>
+			<td>△</td>
+			<td>\vartriangle</td>
+		</tr>
+		<tr>
+			<td>\(\colonapprox\)</td>
+			<td>\colonapprox</td>
+			<td>≒</td>
+			<td>\fallingdotseq</td>
+			<td>≲</td>
+			<td>\lesssim</td>
+			<td>⌣</td>
+			<td>\smile</td>
+			<td>⊲</td>
+			<td>\vartriangleleft</td>
+		</tr>
+		<tr>
+			<td>\(\Colonapprox\)</td>
+			<td>\Colonapprox</td>
+			<td>⌢</td>
+			<td>\frown</td>
+			<td>≪</td>
+			<td>\ll</td>
+			<td>⊏</td>
+			<td>\sqsubset</td>
+			<td>⊳</td>
+			<td>\vartriangleright</td>
+		</tr>
+		<tr>
+			<td>\(\coloneq\)</td>
+			<td>\coloneq</td>
+			<td>≥</td>
+			<td>\ge</td>
+			<td>⋘</td>
+			<td>\lll</td>
+			<td>⊑</td>
+			<td>\sqsubseteq</td>
+			<td>\(\vcentcolon\)</td>
+			<td>\vcentcolon</td>
+		</tr>
+		<tr>
+			<td>\(\Coloneq\)</td>
+			<td>\Coloneq</td>
+			<td>≥</td>
+			<td>\geq</td>
+			<td>⋘</td>
+			<td>\llless</td>
+			<td>⊐</td>
+			<td>\sqsupset</td>
+			<td>⊢</td>
+			<td>\vdash</td>
+		</tr>
+		<tr>
+			<td>\(\coloneqq\)</td>
+			<td>\coloneqq</td>
+			<td>≧</td>
+			<td>\geqq</td>
+			<td>&lt;</td>
+			<td>\lt</td>
+			<td>⊒</td>
+			<td>\sqsupseteq</td>
+			<td>⊨</td>
+			<td>\vDash</td>
+		</tr>
+		<tr>
+			<td>\(\Coloneqq\)</td>
+			<td>\Coloneqq</td>
+			<td>⩾</td>
+			<td>\geqslant</td>
+			<td>∣</td>
+			<td>\mid</td>
+			<td>⋐</td>
+			<td>\Subset</td>
+			<td>⊩</td>
+			<td>\Vdash</td>
+		</tr>
+		<tr>
+			<td>\(\colonsim\)</td>
+			<td>\colonsim</td>
+			<td>≫</td>
+			<td>\gg</td>
+			<td>⊨</td>
+			<td>\models</td>
+			<td>⊂</td>
+			<td>\subset</td>
+			<td>⊪</td>
+			<td>\Vvdash</td>
+		</tr>
+		<tr>
+			<td>\(\Colonsim\)</td>
+			<td>\Colonsim</td>
+			<td>⋙</td>
+			<td>\ggg</td>
+			<td>⊸</td>
+			<td>\multimap</td>
+			<td>⊆</td>
+			<td>\subseteq</td>
+			<td>\(\)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>≅</td>
+			<td>\cong</td>
+			<td>⋙</td>
+			<td>\gggtr</td>
+			<td>∋</td>
+			<td>\owns</td>
+			<td>⫅</td>
+			<td>\subseteqq</td>
+			<td>\(\)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>⋞</td>
+			<td>\curlyeqprec</td>
+			<td>&gt;</td>
+			<td>\gt</td>
+			<td>∥</td>
+			<td>\parallel</td>
+			<td>≻</td>
+			<td>\succ</td>
+			<td>\(\)</td>
+			<td></td>
+		</tr>
+	</table>
 
 <h2 id="negated-relations">Negated Relations</h2>
 
@@ -1825,6 +1946,69 @@ code {
             <td></td>
         </tr>
     </table>
+	
+<h3 id="extensible-arrows">Extensible Arrows</h3>
+
+	<table class="symbol">
+		<tr>
+			<td>\(\xrightarrow{over}\)</td>
+			<td>\xrightarrow{over}</td>
+			<td>\(\xRightarrow{abc}\)</td>
+			<td>\xRightarrow{abc}</td>
+			<td>\(\xrightharpoonup{abc}\)</td>
+			<td>\xrightharpoonup{abc}</td>
+		</tr>
+		<tr>
+			<td>\(\xrightarrow[under]{over}\)</td>
+			<td style="white-space: nowrap">\xrightarrow[under]{over}</td>
+			<td>\(\xmapsto{abc}\)</td>
+			<td>\xmapsto{abc}</td>
+			<td>\(\xrightharpoondown{abc}\)</td>
+			<td>\xrightharpoondown{abc}</td>
+		</tr>
+		<tr>
+			<td>\(\xleftarrow{abc}\)</td>
+			<td>\xleftarrow{abc}</td>
+			<td>\(\xLeftarrow{abc}\)</td>
+			<td>\xLeftarrow{abc}</td>
+			<td>\(\xleftharpoonup{abc}\)</td>
+			<td>\xleftharpoonup{abc}</td>
+		</tr>
+		<tr>
+			<td>\(\xleftrightarrow{abc}\)</td>
+			<td>\xleftrightarrow{abc}</td>
+			<td>\(\xLeftrightarrow{abc}\)</td>
+			<td>\xLeftrightarrow{abc}</td>
+			<td>\(\xleftharpoondown{abc}\)</td>
+			<td>\xleftharpoondown{abc}</td>
+		</tr>
+		<tr>
+			<td>\(\xhookleftarrow{abc}\)</td>
+			<td>\xhookleftarrow{abc}</td>
+			<td>\(\xhookrightarrow{abc}\)</td>
+			<td style="white-space: nowrap">\xhookrightarrow{abc}</td>
+			<td>\(\xrightleftharpoons{abc}\)</td>
+			<td style="white-space: nowrap">\xrightleftharpoons{abc}</td>
+		</tr>
+		<tr>
+			<td>\(\xtwoheadrightarrow{abc}\)</td>
+			<td>\xtwoheadrightarrow{abc}</td>
+			<td>\(\xLongequal{abc}\)</td>
+			<td>\xLongequal{abc}</td>
+			<td>\(\xleftrightharpoons{abc}\)</td>
+			<td>\xleftrightharpoons{abc}</td>
+		</tr>
+		<tr>
+			<td>\(\xtwoheadleftarrow{abc}\)</td>
+			<td>\xtwoheadleftarrow{abc}</td>
+			<td>\(\xtofrom{abc}\)</td>
+			<td>\xtofrom{abc}</td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+
+	<p>Extensible arrows all can take an optional argument in the same manner as <code>\xrightarrow[under]{over}</code>.</p>
 
 
 <h2 id="class">Class Assignment</h2>
@@ -1846,89 +2030,122 @@ code {
 
 <h3 id="color">Color</h3>
 
-    <table class="symbol">
-        <tr>
-            <td>\(\color{blue}{F=ma}\)</td>
-            <td>\color{blue}{F=ma}</td>
-        </tr>
-        <tr>
-            <td>\(\color{#228B22}{F=ma}\)</td>
-            <td>\color{#228B22}{F=ma}</td>
-        </tr>
-    </table>
+	<p>As of KaTeX 0.8.1, the behavior of <code>\color</code> depends on the setting of <a href="https://github.com/Khan/KaTeX#rendering-options">rendering option</a> <code>colorIsTextColor</code>.</p>
 
+	<table class="grid">
+		<tr>
+			<td>When <code>colorIsTextColor</code> is set to:</td>
+			<td colspan="2"><code>false</code> (default)</td>
+			<td colspan="2"><code>true</code></td>
+		</tr>
+		<tr>
+			<td><code>\color</code> behaves as it does in:</td>
+			<td colspan="2">LaTeX</td>
+			<td colspan="2">MathJax<br><span style="font-size:85%;">(or KaTeX pre 0.8.1)</span></td>
+		</tr>
+		<tr>
+			<td>That is, <code>\color</code>:</td>
+			<td colspan="2">… acts like a switch.</td>
+			<td colspan="2">… expects content to be a function argument.</td>
+		</tr>
+		<tr>
+			<td rowspan="2">Examples:</td>
+			<td>\(\color{blue} F=ma\)</td>
+			<td>\color{blue} F=ma</td>
+			<td>\(\textcolor{blue}{F=ma}\)</td>
+			<td>\color{blue}{F=ma}</td>
+		</tr>
+		<tr>
+			<td>\(\color{#228B22} F=ma \)</td>
+			<td style="white-space: nowrap">\color{#228B22} F=ma</td>
+			<td>\(\textcolor{#228B22}{F=ma}\)</td>
+			<td style="white-space: nowrap">\color{#228B22}{F=ma}</td>
+		</tr>
+	</table>
+	
     <div class="indented">
-        <p><code>\color</code> follows MathJax syntax and expects the affected math to be a parameter of the function, as in <span style="white-space: nowrap;"><code>\color{blue}{math&nbsp;content}</code>.</span></p>
+		<p><code>\textcolor</code> always expects the content to be a function argument.</p>
 
-        <p>For color definition, <code>\color</code> will accept the standard HTML <a href="https://www.w3schools.com/colors/colors_names.asp">predefined color names</a>. It will also accept an RGB argument in CSS hexadecimal style.</p>
+	<table class="symbol">
+		<tr>
+			<td>\(\textcolor{blue}{F=ma}\)</td>
+			<td>\textcolor{blue}{F=ma}</td>
+		</tr>
+		<tr>
+			<td>\(\textcolor{#228B22}{F=ma}\)</td>
+			<td>\textcolor{#228B22}{F=ma}</td>
+		</tr>
+	</table>
+	
+        <p>For color definition, <code>\color</code> and <code>\textcolor</code> will accept the standard HTML <a href="https://www.w3schools.com/colors/colors_names.asp">predefined color names</a>. They will also accept an RGB argument in CSS hexa­decimal style.</p>
+		
+		<p>Internet Explorer and Edge will render stretchy accents, horizontal braces, extensible arrows, and <code>\cancel</code> in black, regardless of <code>\color</code>. You can ask Microsoft for an improve­ment <a href="https://wpdev.uservoice.com/forums/257854-microsoft-edge-developer/suggestions/6261341-css-masking">here</a>.</p>
     </div>
 
 <h3 id="font">Font</h3>
 
-    <table class="symbol">
+    <table class="symbol tall">
         <tr>
-            <td>\(\mathrm{AB}\)</td>
+            <td><span class="katex"><span class="mathrm">AB</span></span></td>
             <td>\mathrm{AB}</td>
-            <td>\(\mathbf{AB}\)</td>
+            <td><span class="katex"><span class="mathbf">AB</span></span></td>
             <td>\mathbf{AB}</td>
-            <td>\(\mathit{AB}\)</td>
+            <td><span class="katex"><span class="mathit">AB</span></span></td>
             <td>\mathit{AB}</td>
-            <td>\(\mathsf{AB}\)</td>
+            <td><span class="katex"><span class="mathsf">AB</span></span></td>
             <td>\mathsf{AB}</td>
-            <td>\(\mathtt{AB}\)</td>
+            <td><span class="katex"><span class="mathtt">AB</span></span></td>
             <td>\mathtt{AB}</td>
         </tr>
         <tr>
-            <td>\(\textrm{AB}\)</td>
+            <td><span class="katex"><span class="mathrm">AB</span></span></td>
             <td>\textrm{AB}</td>
-            <td>\(\textbf{AB}\)</td>
+            <td><span class="katex"><span class="mathbf">AB</span></span></td>
             <td>\textbf{AB}</td>
-            <td>\(\textit{AB}\)</td>
+            <td><span class="katex"><span class="mathit">AB</span></span></td>
             <td>\textit{AB}</td>
-            <td>\(\textsf{AB}\)</td>
+            <td><span class="katex"><span class="mathsf">AB</span></span></td>
             <td>\textsf{AB}</td>
-            <td>\(\texttt{AB}\)</td>
+            <td><span class="katex"><span class="mathtt">AB</span></span></td>
             <td>\texttt{AB}</td>
         </tr>
         <tr>
-            <td></td>
+            <td><span class="katex"><span class="mathrm">AB</span></span></td>
             <td>\rm{AB}</td>
-            <td></td>
+            <td><span class="katex"><span class="mathbf">AB</span></span></td>
             <td>\bf{AB}</td>
-            <td></td>
+            <td><span class="katex"><span class="mathit">AB</span></span></td>
             <td>\it{AB}</td>
-            <td></td>
+            <td><span class="katex"><span class="mathsf">AB</span></span></td>
             <td>\sf{AB}</td>
-            <td></td>
+            <td><span class="katex"><span class="mathtt">AB</span></span></td>
             <td>\tt{AB}</td>
         </tr>
         <tr>
-            <td>\(\textnormal{AB}\)</td>
-            <td>\textnormal{AB}</td>
-            <td>\(\bold{AB}\)</td>
+            <td><span class="katex"><span class="mathrm">AB</span></span></td>
+            <td style="white-space: nowrap">\textnormal{AB}</td>
+            <td><span class="katex"><span class="mathbf">AB</span></span></td>
             <td>\bold{AB}</td>
-            <td>\(\Bbb{AB}\)</td>
+            <td><span class="katex"><span class="mathbb">AB</span></span></td>
             <td>\Bbb{AB}</td>
-            <td>\(\frak{AB}\)</td>
+            <td><span class="katex"><span class="mathfrak">AB</span></span></td>
             <td>\frak{AB}</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td>\(\text{AB}\)</td>
+            <td><span class="katex"><span class="mathrm">AB</span></span></td>
             <td>\text{AB}</td>
-            <td>\(\mathcal{AB}\)</td>
-            <td>\mathcal{AB}</td>
-            <td>\(\mathbb{AB}\)</td>
-            <td>\mathbb{AB}</td>
-            <td>\(\mathfrak{AB}\)</td>
-            <td>\mathfrak{AB}</td>
-            <td>\(\mathscr{AB}\)</td>
-            <td>\mathscr{AB}</td>
+            <td><span class="katex"><span class="mathcal">AB</span></span></td>
+            <td style="white-space: nowrap">\mathcal{AB}</td>
+            <td><span class="katex"><span class="mathbb">AB</span></span></td>
+            <td style="white-space: nowrap">\mathbb{AB}</td>
+            <td><span class="katex"><span class="mathfrak">AB</span></span></td>
+            <td style="white-space: nowrap">\mathfrak{AB}</td>
+            <td><span class="katex"><span class="mathscr">AB</span></span></td>
+            <td style="white-space: nowrap">\mathscr{AB}</td>
         </tr>
     </table>
-
-    <p class="indented"><code>\rm</code>, <code>\bf</code>, <code>\it</code>, <code>\sf</code>, and <code>\tt</code> are committed to master but are not yet part of the latest release.</p>
 
 <h3 id="size">Size</h3>
 
@@ -1970,7 +2187,7 @@ code {
     <table id="style-tbl" class="symbol">
         <tr>
             <td>\(\displaystyle\sum_{i=1}^n\)</td>
-            <td><strong>\displaystyle</strong>\sum_{i=1}^n</td>
+            <td style="white-space: nowrap"><strong>\displaystyle</strong>\sum_{i=1}^n</td>
             <td></td>
         </tr>
         <tr>
@@ -2008,185 +2225,320 @@ code {
 <h2 id="symbols">Symbols and Punctuation</h2>
 
     <table class="symbol">
-        <tr>
-            <td>%</td>
-            <td>\%</td>
-            <td>□</td>
-            <td>\Box</td>
-            <td>⋯</td>
-            <td>\cdots</td>
-            <td>✓</td>
-            <td>\checkmark</td>
-        </tr>
-        <tr>
-            <td>#</td>
-            <td>\#</td>
-            <td>□</td>
-            <td>\square</td>
-            <td>⋱</td>
-            <td>\ddots</td>
-            <td>†</td>
-            <td>\dag</td>
-        </tr>
-        <tr>
-            <td>&amp;</td>
-            <td>\&amp;</td>
-            <td>■</td>
-            <td>\blacksquare</td>
-            <td>…</td>
-            <td>\ldots</td>
-            <td>†</td>
-            <td>\dagger</td>
-        </tr>
-        <tr>
-            <td>_</td>
-            <td>\_</td>
-            <td>△</td>
-            <td>\triangle</td>
-            <td>⋮</td>
-            <td>\vdots</td>
-            <td>‡</td>
-            <td>\ddag</td>
-        </tr>
-        <tr>
-            <td>–</td>
-            <td>--</td>
-            <td>▽</td>
-            <td>\triangledown</td>
-            <td>…</td>
-            <td>\mathellipsis</td>
-            <td>‡</td>
-            <td>\ddagger</td>
-        </tr>
-        <tr>
-            <td>—</td>
-            <td>---</td>
-            <td>◃</td>
-            <td>\triangleleft</td>
-            <td>…</td>
-            <td>\textellipsis</td>
-            <td>$</td>
-            <td>\$</td>
-        </tr>
-        <tr>
-            <td>‘</td>
-            <td>`</td>
-            <td>▹</td>
-            <td>\triangleright</td>
-            <td>⋆</td>
-            <td>\star</td>
-            <td>£</td>
-            <td>\pounds</td>
-        </tr>
-        <tr>
-            <td>‘‘</td>
-            <td>``</td>
-            <td>▽</td>
-            <td>\bigtriangledown</td>
-            <td>★</td>
-            <td>\bigstar</td>
-            <td>¥</td>
-            <td>\yen</td>
-        </tr>
-        <tr>
-            <td>&quot;</td>
-            <td>&quot;</td>
-            <td>△</td>
-            <td>\bigtriangleup</td>
-            <td>♭</td>
-            <td>\flat</td>
-            <td>√</td>
-            <td>\surd</td>
-        </tr>
-        <tr>
-            <td>:</td>
-            <td>\colon</td>
-            <td>▲</td>
-            <td>\blacktriangle</td>
-            <td>♮</td>
-            <td>\natural</td>
-            <td>°</td>
-            <td>\degree</td>
-        </tr>
-        <tr>
-            <td>‵</td>
-            <td>\backprime</td>
-            <td>▼</td>
-            <td>\blacktriangledown</td>
-            <td>♯</td>
-            <td>\sharp</td>
-            <td>╲</td>
-            <td>\diagdown</td>
-        </tr>
-        <tr>
-            <td>′</td>
-            <td>\prime</td>
-            <td>◀</td>
-            <td>\blacktriangleleft</td>
-            <td>®</td>
-            <td>\circledR</td>
-            <td>╱</td>
-            <td>\diagup</td>
-        </tr>
-        <tr>
-            <td>∠</td>
-            <td>\angle</td>
-            <td>▶</td>
-            <td>\blacktriangleright</td>
-            <td>Ⓢ</td>
-            <td>\circledS</td>
-            <td>℧</td>
-            <td>\mho</td>
-        </tr>
-        <tr>
-            <td>∡</td>
-            <td>\measuredangle</td>
-            <td>⋄</td>
-            <td>\diamond</td>
-            <td>♣</td>
-            <td>\clubsuit</td>
-            <td>✠</td>
-            <td>\maltese</td>
-        </tr>
-        <tr>
-            <td>∢</td>
-            <td>\sphericalangle</td>
-            <td>◊</td>
-            <td>\Diamond</td>
-            <td>♢</td>
-            <td>\diamondsuit</td>
-            <td>∇</td>
-            <td>\nabla</td>
-        </tr>
-        <tr>
-            <td>⊤</td>
-            <td>\top</td>
-            <td>◊</td>
-            <td>\lozenge</td>
-            <td>♡</td>
-            <td>\heartsuit</td>
-            <td>∞</td>
-            <td>\infty</td>
-        </tr>
-        <tr>
-            <td>⊥</td>
-            <td>\bot</td>
-            <td>⧫</td>
-            <td>\blacklozenge</td>
-            <td>♠</td>
-            <td>\spadesuit</td>
-            <td></td>
-            <td></td>
-        </tr>
-    </table>
-
+		<tr>
+			<td>%</td>
+			<td>\%</td>
+			<td>□</td>
+			<td>\Box</td>
+			<td>⋯</td>
+			<td>\cdots</td>
+			<td>✓</td>
+			<td>\checkmark</td>
+		</tr>
+		<tr>
+			<td>#</td>
+			<td>\#</td>
+			<td>□</td>
+			<td>\square</td>
+			<td>⋱</td>
+			<td>\ddots</td>
+			<td>†</td>
+			<td>\dag</td>
+		</tr>
+		<tr>
+			<td>&amp;</td>
+			<td>\&amp;</td>
+			<td>■</td>
+			<td>\blacksquare</td>
+			<td>…</td>
+			<td>\ldots</td>
+			<td>†</td>
+			<td>\dagger</td>
+		</tr>
+		<tr>
+			<td>_</td>
+			<td>\_</td>
+			<td>△</td>
+			<td>\triangle</td>
+			<td>⋮</td>
+			<td>\vdots</td>
+			<td>†</td>
+			<td>\textdagger</td>
+		</tr>
+		<tr>
+			<td>_</td>
+			<td>\textunderscore</td>
+			<td>▽</td>
+			<td>\triangledown</td>
+			<td>…</td>
+			<td>\mathellipsis</td>
+			<td>‡</td>
+			<td>\ddag</td>
+		</tr>
+		<tr>
+			<td>–</td>
+			<td>--</td>
+			<td>◃</td>
+			<td>\triangleleft</td>
+			<td>…</td>
+			<td>\textellipsis</td>
+			<td>‡</td>
+			<td>\ddagger</td>
+		</tr>
+		<tr>
+			<td>–</td>
+			<td>\textendash</td>
+			<td>▹</td>
+			<td>\triangleright</td>
+			<td>♭</td>
+			<td>\flat</td>
+			<td>‡</td>
+			<td>\textdaggerdbl</td>
+		</tr>
+		<tr>
+			<td>—</td>
+			<td>---</td>
+			<td>▽</td>
+			<td>\bigtriangledown</td>
+			<td>♮</td>
+			<td>\natural</td>
+			<td>$</td>
+			<td>\$</td>
+		</tr>
+		<tr>
+			<td>—</td>
+			<td>\textemdash</td>
+			<td>△</td>
+			<td>\bigtriangleup</td>
+			<td>♯</td>
+			<td>\sharp</td>
+			<td>$</td>
+			<td>\textdollar</td>
+		</tr>
+		<tr>
+			<td>‘</td>
+			<td>`</td>
+			<td>▲</td>
+			<td>\blacktriangle</td>
+			<td>®</td>
+			<td>\circledR</td>
+			<td>£</td>
+			<td>\pounds</td>
+		</tr>
+		<tr>
+			<td>‘</td>
+			<td>\textquoteleft</td>
+			<td>▼</td>
+			<td>\blacktriangledown</td>
+			<td>Ⓢ</td>
+			<td>\circledS</td>
+			<td>£</td>
+			<td>\textsterling</td>
+		</tr>
+		<tr>
+			<td>’</td>
+			<td>\textquoteright</td>
+			<td>◀</td>
+			<td>\blacktriangleleft</td>
+			<td>♣</td>
+			<td>\clubsuit</td>
+			<td>¥</td>
+			<td>\yen</td>
+		</tr>
+		<tr>
+			<td>“</td>
+			<td>\textquotedblleft</td>
+			<td>▶</td>
+			<td>\blacktriangleright</td>
+			<td>♢</td>
+			<td>\diamondsuit</td>
+			<td>√</td>
+			<td>\surd</td>
+		</tr>
+		<tr>
+			<td>&quot;</td>
+			<td>&quot;</td>
+			<td>⋄</td>
+			<td>\diamond</td>
+			<td>♡</td>
+			<td>\heartsuit</td>
+			<td>°</td>
+			<td>\degree</td>
+		</tr>
+		<tr>
+			<td>”</td>
+			<td>\textquotedblright</td>
+			<td>◊</td>
+			<td>\Diamond</td>
+			<td>♠</td>
+			<td>\spadesuit</td>
+			<td>╲</td>
+			<td>\diagdown</td>
+		</tr>
+		<tr>
+			<td>:</td>
+			<td>\colon</td>
+			<td>◊</td>
+			<td>\lozenge</td>
+			<td>∠</td>
+			<td>\angle</td>
+			<td>╱</td>
+			<td>\diagup</td>
+		</tr>
+		<tr>
+			<td>‵</td>
+			<td>\backprime</td>
+			<td>⧫</td>
+			<td>\blacklozenge</td>
+			<td>∡</td>
+			<td>\measuredangle</td>
+			<td>℧</td>
+			<td>\mho</td>
+		</tr>
+		<tr>
+			<td>′</td>
+			<td>\prime</td>
+			<td>⋆</td>
+			<td>\star</td>
+			<td>∢</td>
+			<td>\sphericalangle</td>
+			<td>✠</td>
+			<td>\maltese</td>
+		</tr>
+		<tr>
+			<td>&lt;</td>
+			<td>\textless</td>
+			<td>★</td>
+			<td>\bigstar</td>
+			<td>⊤</td>
+			<td>\top</td>
+			<td>∇</td>
+			<td>\nabla</td>
+		</tr>
+		<tr>
+			<td>&gt;</td>
+			<td>\textgreater</td>
+			<td>|</td>
+			<td>\textbar</td>
+			<td>⊥</td>
+			<td>\bot</td>
+			<td>∞</td>
+			<td>\infty</td>
+		</tr>
+		<tr>
+			<td>{</td>
+			<td>\textbraceleft</td>
+			<td>∥</td>
+			<td>\textbardbl</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>}</td>
+			<td>\textbraceright</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+	
     <table class="symbol">
         <tr>
             <td>\(\KaTeX\)</td>
             <td>\KaTeX</td>
         </tr>
     </table>
+		
+	
+	<h2 id="units">Units</h2>
 
+	<p>In KaTeX, units are proportioned as they are in TeX.<br>
+	KaTeX units are different than CSS units.</p>
+
+	<table class="grid units">
+		<thead>
+		<tr>
+			<th>KaTeX Unit</th>
+			<th>Value</th>
+			<th>KaTeX Unit</th>
+			<th>Value</th>
+		</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>em*</td>
+				<td>CSS em</td>
+				<td>bp</td>
+				<td>\(\frac 1{72}\) inch × <em>F</em> × <em>G</em></td>
+			</tr>
+			<tr>
+				<td>ex*</td>
+				<td>CSS ex</td>
+				<td>pc</td>
+				<td>12 pt<sup>†</sup></td>
+			</tr>
+			<tr>
+				<td>mu</td>
+				<td>\(\frac 1{18}\) CSS em</td>
+				<td>dd</td>
+				<td>\(\frac{1238}{1157}\) pt<sup>†</sup></td>
+			</tr>
+			<tr>
+				<td>pt</td>
+				<td>\(\frac 1{72.27}\) inch × <em>F</em> × <em>G</em>&nbsp;&nbsp;&nbsp;</td>
+				<td>cc</td>
+				<td>\(\frac{14856}{1157}\) pt<sup>†</sup></td>
+			</tr>
+			<tr>
+				<td>mm</td>
+				<td>1 mm × <em>F</em> × <em>G</em></td>
+				<td>nd</td>
+				<td>\(\frac{685}{642}\) pt<sup>†</sup></td>
+			</tr>
+			<tr>
+				<td>cm</td>
+				<td>1 cm × <em>F</em> × <em>G</em></td>
+				<td>nc</td>
+				<td>\(\frac{1370}{107}\) pt<sup>†</sup></td>
+			</tr>
+			<tr>
+				<td>in</td>
+				<td>1 inch × <em>F</em> × <em>G</em></td>
+				<td>sp</td>
+				<td>\(\frac 1{65536}\) pt<sup>†</sup></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table>
+		<tr>
+			<td style="padding-right:0;">where:</td>
+			<td><em>F</em> = \(\large \frac{\text{font size of surrounding HTML text}}{10\text{ pt}}\)</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><em>G</em> = 1.21 by default, because KaTeX font-size is normally 1.21 × the surrounding font size. This value can be over-ridden by the CSS of an HTML page. For example, on this page, <em>G</em> = 1.0.</td>
+		</tr>
+	</table>
+
+			
+	
+	<table>
+		<tr>
+			<td style="padding-right:0;"><span style="position:relative; top:-8px;">*</span></td>
+			<td>In KaTeX, the <em>em</em> and <em>ex</em> units scale with KaTeX font size (e.g. <code>\small</code> or <code>\large</code>) but not with changes to style such as <code>\scriptstyle</code>.</td>
+		</tr>
+		<tr>
+			<td style="padding-right:0;">†</td>   <td>KaTeX pt, not CSS pt</td>
+		</tr>
+	</table>
+	
+	
     <div class="footer">
     <table>
         <tr>
@@ -2200,7 +2552,7 @@ code {
 </div>   <!-- main -->
 
 <div id="sidebar">
-    <p><a href="https://khan.github.io/KaTeX/">\(\KaTeX\)</a></p>
+    <p><a href="https://khan.github.io/KaTeX/"><span style="font-size: 125%">\(\KaTeX\)</span></a></p>
     <h3><a href="#top">Contents</a></h3>
     <ul id="toc">
         <li><a href="#accents">Accents</a></li>
@@ -2209,6 +2561,7 @@ code {
         <li><a href="#letters">Letters</a></li>
         <li>Layout <span class="reduced">▼</span>
             <ul>
+                <li><a href="#annotation">Annotation</a></li>			
                 <li><a href="#overlap">Overlap</a></li>
                 <li><a href="#spacing">Spacing</a></li>
                 <li><a href="#vertical">Vertical</a></li>
@@ -2228,8 +2581,9 @@ code {
         <li>Relations <span class="reduced">▼</span>
             <ul>
                 <li><a href="#relations">Relations</a></li>
-                <li><a href="#negated-relations">Negated</a></li>
+                <li><a href="#negated-relations">&nbsp;&nbsp;&nbsp;Negated</a></li>
                 <li><a href="#arrows">Arrows</a></li>
+                <li><a href="#extensible-arrows">&nbsp;&nbsp;&nbsp;Extensible</a></li>
             </ul>
         </li>
         <li>Style <span class="reduced">▼</span>
@@ -2242,6 +2596,7 @@ code {
             </ul>
         </li>
         <li><a href="#symbols">Symbols</a></li>
+        <li><a href="#units">Units</a></li>
     </ul>
 
     <h3>Links</h3>
