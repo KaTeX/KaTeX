@@ -1,9 +1,8 @@
 {
-  "name": "KaTeX",
-  "version": "0.6.0",
+  "name": "katex",
   "main": [
-    "dist/katex.min.js",
-    "dist/katex.min.css"
+    "dist/katex.js",
+    "dist/katex.css"
   ],
   "homepage": "http://khan.github.io/KaTeX/",
   "description": "Fast math typesetting for the web.",
@@ -22,6 +21,7 @@
     "/*.txt",
     "/*.js",
     "/*.md",
+    "/*.sh",
     "/package.json",
     "/Makefile",
     "/build",
@@ -32,14 +32,15 @@
     "/metrics",
     "/static"
   ],
-  "_release": "0.6.0",
+  "version": "0.8.1",
+  "_release": "0.8.1",
   "_resolution": {
     "type": "version",
-    "tag": "v0.6.0",
-    "commit": "b94fc6534d5c23f944906a52a592bee4e0090665"
+    "tag": "v0.8.1",
+    "commit": "aefee95a79d476a0164cfe2fcfe18de5d3eda318"
   },
   "_source": "https://github.com/Khan/KaTeX.git",
-  "_target": "^0.6.0",
+  "_target": "^0.8.1",
   "_originalSource": "katex",
   "_direct": true
 }
