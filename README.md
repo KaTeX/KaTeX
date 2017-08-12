@@ -16,8 +16,8 @@ KaTeX supports all major browsers, including Chrome, Safari, Firefox, Opera, Edg
 You can [download KaTeX](https://github.com/khan/katex/releases) and host it on your server or include the `katex.min.js` and `katex.min.css` files on your page directly from a CDN:
 
 ```html
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.8.0/katex.min.css" integrity="sha384-BDqcjN11/6D69oC63ObubLHNvQR2fNjin6+AzxA3xalB0swTj17TxVV1tL1Q5Png" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.8.0/katex.min.js" integrity="sha384-sKYm5us3z9/bRQA+cc3gPzqwI5RVgL8vJQx1lpBudr9IzHOR8fnFUH68dz1GsTQw" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.8.1/katex.min.css" integrity="sha384-BDqcjN11/6D69oC63ObubLHNvQR2fNjin6+AzxA3xalB0swTj17TxVV1tL1Q5Png" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.8.1/katex.min.js" integrity="sha384-sKYm5us3z9/bRQA+cc3gPzqwI5RVgL8vJQx1lpBudr9IzHOR8fnFUH68dz1GsTQw" crossorigin="anonymous"></script>
 ```
 
 #### In-browser rendering
