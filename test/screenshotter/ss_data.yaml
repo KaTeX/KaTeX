@@ -102,6 +102,7 @@ Kern:
     tex: \frac{a\kern{1em}b}{c}a\kern{1em}b\kern{1ex}c\kern{-0.25em}d
     nolatex: LaTeX fails to typeset this, “Missing number, treated as zero.”
 Lap: ab\llap{f}cd\rlap{g}h
+LargeRuleNumerator: \frac{\textcolor{blue}{\rule{1em}{2em}}}{x}
 LeftRight: \left( x^2 \right) \left\{ x^{x^{x^{x^x}}} \right.
 LeftRightListStyling: a+\left(x+y\right)-x
 LeftRightMiddle: \left( x^2 \middle/ \right) \left\{ x^{x^{x^{x^x}}} \middle/ y \right.\left(x\middle|y\,\middle|\,z\right)
@@ -127,6 +128,7 @@ MathBf: \mathbf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathCal: \mathcal{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathFrak: \mathfrak{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathIt: \mathit{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathOp: a\mathop+b\mathop:c\mathop{\delta}e\mathop{\textrm{and}}f\mathrel{\mathop{:}}=g\sin h
 MathRm: \mathrm{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathSf: \mathsf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathScr: \mathscr{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
@@ -173,6 +175,15 @@ OverUnderset: |
 Phantom: \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x}
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
+RelativeUnits: |
+    \begin{array}{ll}
+        a\kern1emb^{a\kern1emb^{a\kern1emb}} &
+        {\footnotesize a\kern1emb^{a\kern1emb^{a\kern1emb}}} \\
+        a\mkern18mub^{a\mkern18mub^{a\mkern18mub}} &
+        {\footnotesize a\mkern18mub^{a\mkern18mub^{a\mkern18mub}}} \\
+        \rule{1em}{1em}^{\rule{1em}{1em}}\rule{18mu}{18mu}^{\rule{18mu}{18mu}} &
+        {\footnotesize\rule{1em}{1em}^{\rule{1em}{1em}}\rule{18mu}{18mu}^{\rule{18mu}{18mu}}}
+    \end{array}
 RlapBug: \frac{\rlap{x}}{2}
 Rule: \rule{1em}{0.5em}\rule{1ex}{2ex}\rule{1em}{1ex}\rule{1em}{0.431ex}
 SizingBaseline:
@@ -217,6 +228,21 @@ Symbols1: |
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
 TextWithMath: \text{for $a < b$ and $ c < d $}.
 Unicode: \begin{matrix}\text{ÀàÇçÉéÏïÖöÛû} \\ \text{БГДЖЗЙЛФЦШЫЮЯ} \\ \text{여보세요} \\ \text{私はバナナです} \end{matrix}
+Units: |
+    \begin{array}{ll}
+      \mathrm H\kern 1em\mathrm H \text{\tiny (1em)}
+      & \mathrm H\kern 1ex\mathrm H \text{\tiny (1ex)} \\
+      \mathrm H{\scriptstyle \kern 1em}\mathrm H \text{\tiny (ss 1em)}
+      & \mathrm H{\scriptstyle \kern 1ex}\mathrm H \text{\tiny (ss 1ex)} \\
+      \mathrm H{\small \kern 1em}\mathrm H \text{\tiny (sm 1em)}
+      & \mathrm H{\small \kern 1ex}\mathrm H \text{\tiny (sm 1ex)} \\
+      \mathrm H\mkern 18mu\mathrm H \text{\tiny (18mu)}
+      & \mathrm H\kern 1cm\mathrm H \text{\tiny (1cm)} \\
+      \mathrm H{\scriptstyle \mkern 18mu}\mathrm H \text{\tiny (ss 18mu)}
+      & \mathrm H{\scriptstyle \kern 1cm}\mathrm H \text{\tiny (ss 1cm)} \\
+      \mathrm H{\small \mkern 18mu}\mathrm H \text{\tiny (sm 18mu)}
+      & \mathrm H{\small \kern 1cm}\mathrm H \text{\tiny (sm 1cm)}
+    \end{array}
 UnsupportedCmds:
     tex: \err\,\frac\fracerr3\,2^\superr_\suberr\,\sqrt\sqrterr
     noThrow: 1

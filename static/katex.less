@@ -238,8 +238,19 @@
         & + .mop.mtight { margin-left: @thinspace; }
     }
 
+    .vlist-t {
+        display: inline-table;
+        table-layout: fixed;
+    }
+
+    .vlist-r {
+        display: table-row;
+    }
+
     .vlist {
-        display: inline-block;
+        display: table-cell;
+        vertical-align: bottom;
+        position: relative;
 
         > span {
             display: block;
@@ -249,12 +260,29 @@
             > span {
                 display: inline-block;
             }
-        }
 
-        .baseline-fix {
-            display: inline-table;
-            table-layout: fixed;
+            > .pstrut {
+                overflow: hidden;
+                width: 0;
+            }
         }
+    }
+
+    .vlist-t2 {
+        margin-right: -2px;
+    }
+
+    .vlist-s {
+        // This cell solves Safari rendering problems. It has text content, so
+        // its baseline is used for the table. A very small font avoids line-box
+        // issues; absolute units prevent user font-size overrides from breaking
+        // rendering. Safari refuses to make the box zero-width, so we give it
+        // a known width and compensate with negative right margin on the
+        // inline-table.
+        display: table-cell;
+        vertical-align: bottom;
+        font-size: 1px;
+        width: 2px;
     }
 
     .msupsub {
@@ -267,22 +295,9 @@
         }
 
        .frac-line {
+            display: inline-block;
             width: 100%;
-
-            &:before {
-                border-bottom-style: solid;
-                border-bottom-width: 1px;
-                content: "";
-                display: block;
-            }
-
-            &:after {
-                border-bottom-style: solid;
-                border-bottom-width: 0.04em;
-                content: "";
-                display: block;
-                margin-top: -1px;
-            }
+            border-bottom-style: solid;
         }
     }
 
@@ -384,22 +399,9 @@
 
     .overline .overline-line,
     .underline .underline-line {
+        display: inline-block;
         width: 100%;
-
-        &:before {
-            border-bottom-style: solid;
-            border-bottom-width: 1px;
-            content: "";
-            display: block;
-        }
-
-        &:after {
-            border-bottom-style: solid;
-            border-bottom-width: 0.04em;
-            content: "";
-            display: block;
-            margin-top: -1px;
-        }
+        border-bottom-style: solid;
     }
 
     .sqrt {
@@ -408,22 +410,10 @@
         }
 
         .sqrt-line {
+            display: inline-block;
+            position: relative;
             width: 100%;
-
-            &:before {
-                border-bottom-style: solid;
-                border-bottom-width: 1px;
-                content: "";
-                display: block;
-            }
-
-            &:after {
-                border-bottom-style: solid;
-                border-bottom-width: 0.04em;
-                content: "";
-                display: block;
-                margin-top: -1px;
-            }
+            border-bottom-style: solid;
         }
 
         > .root {
@@ -509,13 +499,13 @@
     }
 
     .op-limits {
-        > .vlist > span {
+        > .vlist-t {
             text-align: center;
         }
     }
 
     .accent {
-        > .vlist > span {
+        > .vlist-t {
             text-align: center;
         }
 
@@ -542,15 +532,15 @@
             display: inline-block;
         }
 
-        .col-align-c > .vlist {
+        .col-align-c > .vlist-t {
             text-align: center;
         }
 
-        .col-align-l > .vlist {
+        .col-align-l > .vlist-t {
             text-align: left;
         }
 
-        .col-align-r > .vlist {
+        .col-align-r > .vlist-t {
             text-align: right;
         }
     }
@@ -570,16 +560,14 @@
     }
 
     // Lengthen the extensible arrows via padding.
-    .x-arrow > span > span {
-        text-align: center;
-        > span > .mord {
-            padding: 0 0.5em 0 0.5em;
-        }
+    .x-arrow-pad {
+        padding: 0 0.5em;
     }
 
-    .mover > span > span,
-    .munder > span > span {
-        text-align: center;   // above and below a horizontal brace
+    .x-arrow,
+    .mover,
+    .munder {
+        text-align: center;
     }
 
     .boxpad {
@@ -802,10 +790,10 @@
         background:
            linear-gradient(to top left,
                rgba(0,0,0,0) 0%,
-               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                rgba(0,0,0,0) 100%);
     }
 
@@ -813,10 +801,10 @@
         background:
            linear-gradient(to top right,
                rgba(0,0,0,0) 0%,
-               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                rgba(0,0,0,0) 100%);
     }
 
@@ -824,17 +812,17 @@
         background:
            linear-gradient(to top left,
                rgba(0,0,0,0) 0%,
-               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                rgba(0,0,0,0) 100%),
            linear-gradient(to top right,
                rgba(0,0,0,0) 0%,
-               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                rgba(0,0,0,0) 100%);
     }
 
@@ -889,10 +877,10 @@
             background:
                linear-gradient(to top left,
                    rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+                   rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                    rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                    rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+                   rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                    rgba(0,0,0,0) 100%);
         }
 
@@ -901,10 +889,10 @@
             background:
                linear-gradient(to top right,
                    rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+                   rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                    rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                    rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+                   rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                    rgba(0,0,0,0) 100%);
         }
 
@@ -913,17 +901,17 @@
             background:
                linear-gradient(to top left,
                    rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+                   rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                    rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                    rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+                   rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                    rgba(0,0,0,0) 100%),
                linear-gradient(to top right,
                    rgba(0,0,0,0) 0%,
-                   rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+                   rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                    rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                    rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-                   rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+                   rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                    rgba(0,0,0,0) 100%);
         }
     }
@@ -932,18 +920,18 @@
         mask-image:
            linear-gradient(to top left,
                rgba(0,0,0,0) 0%,
-               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                rgba(0,0,0,0) 100%);
         -webkit-mask-image:
            linear-gradient(to top left,
                rgba(0,0,0,0) 0%,
-               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                rgba(0,0,0,0) 100%);
     }
 
@@ -951,18 +939,18 @@
         mask-image:
            linear-gradient(to top right,
                rgba(0,0,0,0) 0%,
-               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                rgba(0,0,0,0) 100%);
         -webkit-mask-image:
            linear-gradient(to top right,
                rgba(0,0,0,0) 0%,
-               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                rgba(0,0,0,0) 100%);
     }
 
@@ -970,32 +958,32 @@
         mask-image:
            linear-gradient(to top left,
                rgba(0,0,0,0) 0%,
-               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                rgba(0,0,0,0) 100%),
            linear-gradient(to top right,
                rgba(0,0,0,0) 0%,
-               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                rgba(0,0,0,0) 100%);
         -webkit-mask-image:
            linear-gradient(to top left,
                rgba(0,0,0,0) 0%,
-               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                rgba(0,0,0,0) 100%),
            linear-gradient(to top right,
                rgba(0,0,0,0) 0%,
-               rgba(0,0,0,0) ~"calc(50% - 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% - 0.04em - 0.5px)",
                rgba(0,0,0,1) ~"calc(50% - 0.04em)",
                rgba(0,0,0,1) ~"calc(50% + 0.04em)",
-               rgba(0,0,0,0) ~"calc(50% + 0.04em)",
+               rgba(0,0,0,0) ~"calc(50% + 0.04em + 0.5px)",
                rgba(0,0,0,0) 100%);
     }
 

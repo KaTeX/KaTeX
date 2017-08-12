@@ -1,18 +1,17 @@
 /* eslint max-len:0 */
 /* global beforeEach: false */
-/* global jasmine: false */
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
 
-const buildMathML = require("../src/buildMathML");
-const buildTree = require("../src/buildTree");
-const katex = require("../katex");
-const ParseError = require("../src/ParseError");
-const parseTree = require("../src/parseTree");
-const Options = require("../src/Options");
-const Settings = require("../src/Settings");
-const Style = require("../src/Style");
+import buildMathML from "../src/buildMathML";
+import buildTree from "../src/buildTree";
+import katex from "../katex";
+import ParseError from "../src/ParseError";
+import parseTree from "../src/parseTree";
+import Options from "../src/Options";
+import Settings from "../src/Settings";
+import Style from "../src/Style";
 
 const defaultSettings = new Settings({});
 const defaultOptions = new Options({
@@ -88,115 +87,99 @@ const parseAndSetResult = function(expr, result, settings) {
 };
 
 beforeEach(function() {
-    jasmine.addMatchers({
+    expect.extend({
+        toParse: function(actual, settings) {
+            const usedSettings = settings ? settings : defaultSettings;
 
-        toParse: function() {
-            return {
-                compare: function(actual, settings) {
-                    const usedSettings = settings ? settings : defaultSettings;
-
-                    const result = {
-                        pass: true,
-                        message: "'" + actual + "' succeeded parsing",
-                    };
-                    parseAndSetResult(actual, result, usedSettings);
-                    return result;
-                },
+            const result = {
+                pass: true,
+                message: "'" + actual + "' succeeded parsing",
             };
+            parseAndSetResult(actual, result, usedSettings);
+            return result;
         },
 
-        toNotParse: function() {
-            return {
-                compare: function(actual, settings) {
-                    const usedSettings = settings ? settings : defaultSettings;
+        toNotParse: function(actual, settings) {
+            const usedSettings = settings ? settings : defaultSettings;
 
-                    const result = {
-                        pass: false,
-                        message: "Expected '" + actual + "' to fail " +
-                            "parsing, but it succeeded",
-                    };
-
-                    try {
-                        parseTree(actual, usedSettings);
-                    } catch (e) {
-                        if (e instanceof ParseError) {
-                            result.pass = true;
-                            result.message = "'" + actual + "' correctly " +
-                                "didn't parse with error: " + e.message;
-                        } else {
-                            result.message = "'" + actual + "' failed " +
-                                "parsing with unknown error: " + e.message;
-                        }
-                    }
-
-                    return result;
-                },
+            const result = {
+                pass: false,
+                message: "Expected '" + actual + "' to fail " +
+                    "parsing, but it succeeded",
             };
+
+            try {
+                parseTree(actual, usedSettings);
+            } catch (e) {
+                if (e instanceof ParseError) {
+                    result.pass = true;
+                    result.message = "'" + actual + "' correctly " +
+                        "didn't parse with error: " + e.message;
+                } else {
+                    result.message = "'" + actual + "' failed " +
+                        "parsing with unknown error: " + e.message;
+                }
+            }
+
+            return result;
         },
 
-        toBuild: function() {
-            return {
-                compare: function(actual, settings) {
-                    const usedSettings = settings ? settings : defaultSettings;
+        toBuild: function(actual, settings) {
+            const usedSettings = settings ? settings : defaultSettings;
 
-                    const result = {
-                        pass: true,
-                        message: "'" + actual + "' succeeded in building",
-                    };
-
-                    expect(actual).toParse(usedSettings);
-
-                    try {
-                        _getBuilt(actual, settings);
-                    } catch (e) {
-                        result.pass = false;
-                        if (e instanceof ParseError) {
-                            result.message = "'" + actual + "' failed to " +
-                                "build with error: " + e.message;
-                        } else {
-                            result.message = "'" + actual + "' failed " +
-                                "building with unknown error: " + e.message;
-                        }
-                    }
-
-                    return result;
-                },
+            const result = {
+                pass: true,
+                message: "'" + actual + "' succeeded in building",
             };
+
+            expect(actual).toParse(usedSettings);
+
+            try {
+                _getBuilt(actual, settings);
+            } catch (e) {
+                result.pass = false;
+                if (e instanceof ParseError) {
+                    result.message = "'" + actual + "' failed to " +
+                        "build with error: " + e.message;
+                } else {
+                    result.message = "'" + actual + "' failed " +
+                        "building with unknown error: " + e.message;
+                }
+            }
+
+            return result;
         },
 
-        toParseLike: function(util, baton) {
-            return {
-                compare: function(actual, expected, settings) {
-                    const usedSettings = settings ? settings : defaultSettings;
+        toParseLike: function(actual, expected, settings) {
+            const usedSettings = settings ? settings : defaultSettings;
 
-                    const result = {
-                        pass: true,
-                        message: "Parse trees of '" + actual +
-                            "' and '" + expected + "' are equivalent",
-                    };
-
-                    const actualTree = parseAndSetResult(actual, result,
-                        usedSettings);
-                    if (!actualTree) {
-                        return result;
-                    }
-                    const expectedTree = parseAndSetResult(expected, result,
-                        usedSettings);
-                    if (!expectedTree) {
-                        return result;
-                    }
-                    stripPositions(actualTree);
-                    stripPositions(expectedTree);
-                    if (!util.equals(actualTree, expectedTree, baton)) {
-                        result.pass = false;
-                        result.message = "Parse trees of '" + actual +
-                            "' and '" + expected + "' are not equivalent";
-                    }
-                    return result;
-                },
+            const result = {
+                pass: true,
+                message: "Parse trees of '" + actual +
+                    "' and '" + expected + "' are equivalent",
             };
-        },
 
+            const actualTree = parseAndSetResult(actual, result,
+                usedSettings);
+            if (!actualTree) {
+                return result;
+            }
+            const expectedTree = parseAndSetResult(expected, result,
+                usedSettings);
+            if (!expectedTree) {
+                return result;
+            }
+
+            stripPositions(actualTree);
+            stripPositions(expectedTree);
+
+            if (JSON.stringify(actualTree) !== JSON.stringify(expectedTree)) {
+                result.pass = false;
+                result.message = "Parse trees of '" + actual +
+                    "' and '" + expected + "' are not equivalent";
+            }
+            return result;
+        },
     });
 });
 
@@ -950,7 +933,7 @@ describe("An overline parser", function() {
 describe("A rule parser", function() {
     const emRule = "\\rule{1em}{2em}";
     const exRule = "\\rule{1ex}{2em}";
-    const badUnitRule = "\\rule{1px}{2em}";
+    const badUnitRule = "\\rule{1au}{2em}";
     const noNumberRule = "\\rule{1em}{em}";
     const incompleteRule = "\\rule{1em}";
     const hardNumberRule = "\\rule{   01.24ex}{2.450   em   }";
@@ -1006,17 +989,20 @@ describe("A kern parser", function() {
     const emKern = "\\kern{1em}";
     const exKern = "\\kern{1ex}";
     const muKern = "\\kern{1mu}";
-    const badUnitRule = "\\kern{1px}";
+    const abKern = "a\\kern{1em}b";
+    const badUnitRule = "\\kern{1au}";
     const noNumberRule = "\\kern{em}";
 
     it("should list the correct units", function() {
         const emParse = getParsed(emKern)[0];
         const exParse = getParsed(exKern)[0];
         const muParse = getParsed(muKern)[0];
+        const abParse = getParsed(abKern)[1];
 
         expect(emParse.value.dimension.unit).toEqual("em");
         expect(exParse.value.dimension.unit).toEqual("ex");
         expect(muParse.value.dimension.unit).toEqual("mu");
+        expect(abParse.value.dimension.unit).toEqual("em");
     });
 
     it("should not parse invalid units", function() {
@@ -1039,17 +1025,42 @@ describe("A non-braced kern parser", function() {
     const emKern = "\\kern1em";
     const exKern = "\\kern 1 ex";
     const muKern = "\\kern 1mu";
-    const badUnitRule = "\\kern1px";
+    const abKern1 = "a\\mkern1mub";
+    const abKern2 = "a\\kern-1mub";
+    const abKern3 = "a\\kern-1mu b";
+    const badUnitRule = "\\kern1au";
     const noNumberRule = "\\kern em";
 
     it("should list the correct units", function() {
         const emParse = getParsed(emKern)[0];
         const exParse = getParsed(exKern)[0];
         const muParse = getParsed(muKern)[0];
+        const abParse1 = getParsed(abKern1)[1];
+        const abParse2 = getParsed(abKern2)[1];
+        const abParse3 = getParsed(abKern3)[1];
 
         expect(emParse.value.dimension.unit).toEqual("em");
         expect(exParse.value.dimension.unit).toEqual("ex");
         expect(muParse.value.dimension.unit).toEqual("mu");
+        expect(abParse1.value.dimension.unit).toEqual("mu");
+        expect(abParse2.value.dimension.unit).toEqual("mu");
+        expect(abParse3.value.dimension.unit).toEqual("mu");
+    });
+
+    it("should parse elements on either side of a kern", function() {
+        const abParse1 = getParsed(abKern1);
+        const abParse2 = getParsed(abKern2);
+        const abParse3 = getParsed(abKern3);
+
+        expect(abParse1.length).toEqual(3);
+        expect(abParse1[0].value).toEqual("a");
+        expect(abParse1[2].value).toEqual("b");
+        expect(abParse2.length).toEqual(3);
+        expect(abParse2[0].value).toEqual("a");
+        expect(abParse2[2].value).toEqual("b");
+        expect(abParse3.length).toEqual(3);
+        expect(abParse3[0].value).toEqual("a");
+        expect(abParse3[2].value).toEqual("b");
     });
 
     it("should not parse invalid units", function() {
@@ -1065,6 +1076,16 @@ describe("A non-braced kern parser", function() {
     it("should parse positive sizes", function() {
         const parse = getParsed("\\kern+1em")[0];
         expect(parse.value.dimension.number).toBeCloseTo(1);
+    });
+
+    it("should handle whitespace", function() {
+        const abKern = "a\\kern\t-\r1  \n mu\nb";
+        const abParse = getParsed(abKern);
+
+        expect(abParse.length).toEqual(3);
+        expect(abParse[0].value).toEqual("a");
+        expect(abParse[1].value.dimension.unit).toEqual("mu");
+        expect(abParse[2].value).toEqual("b");
     });
 });
 

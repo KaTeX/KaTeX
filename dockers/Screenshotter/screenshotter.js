@@ -17,6 +17,8 @@ const data = require("../../test/screenshotter/ss_data");
 
 const dstDir = path.normalize(
     path.join(__dirname, "..", "..", "test", "screenshotter", "images"));
+const diffDir = path.normalize(
+    path.join(__dirname, "..", "..", "test", "screenshotter", "diff"));
 
 //////////////////////////////////////////////////////////////////////
 // Process command line arguments
@@ -65,9 +67,21 @@ const opts = require("nomnom")
         abbr: "x",
         help: "Comma-separated list of test cases to exclude",
     })
+    .option("reload", {
+        flag: true,
+        help: "Reload page for each test",
+    })
     .option("verify", {
         flag: true,
         help: "Check whether screenshot matches current file content",
+    })
+    .option("diff", {
+        flag: true,
+        help: "With `--verify`, produce image diffs when match fails",
+    })
+    .option("attempts", {
+        help: "Retry this many times before reporting failure",
+        "default": 5,
     })
     .option("wait", {
         help: "Wait this many seconds between page load and screenshot",
@@ -226,6 +240,7 @@ function tryConnect() {
 // Build the web driver
 
 let driver;
+let driverReady = false;
 function buildDriver() {
     const builder = new selenium.Builder().forBrowser(opts.browser);
     const ffProfile = new firefox.Profile();
@@ -266,7 +281,7 @@ function setSize(reqW, reqH) {
             findHostIP();
             return;
         }
-        if (++attempts > 5) {
+        if (++attempts > opts.attempts) {
             throw new Error("Failed to set window size correctly.");
         }
         return setSize(targetW + reqW - actualW, targetH + reqH - actualH);
@@ -291,7 +306,7 @@ function findHostIP() {
     }
     if (katexIP !== "*any*" || katexURL) {
         if (!katexURL) {
-            katexURL = "http://" + katexIP + ":" + katexPort + "/babel/";
+            katexURL = "http://" + katexIP + ":" + katexPort + "/";
             console.log("KaTeX URL is " + katexURL);
         }
         process.nextTick(takeScreenshots);
@@ -303,7 +318,7 @@ function findHostIP() {
     app.get("/ss-connect.js", function(req, res, next) {
         if (!katexURL) {
             katexIP = req.query.ip;
-            katexURL = "http://" + katexIP + ":" + katexPort + "/babel/";
+            katexURL = "http://" + katexIP + ":" + katexPort + "/";
             console.log("KaTeX URL is " + katexURL);
             process.nextTick(takeScreenshots);
         }
@@ -372,16 +387,37 @@ function takeScreenshot(key) {
     }
 
     const url = katexURL + "test/screenshotter/test.html?" + itm.query;
-    driver.get(url);
-    if (opts.wait) {
-        browserSideWait(1000 * opts.wait);
+    driver.call(loadMath);
+
+    function loadMath() {
+        if (!opts.reload && driverReady) {
+            driver.executeAsyncScript(
+                    "var callback = arguments[arguments.length - 1]; " +
+                    "handle_search_string(" +
+                    JSON.stringify("?" + itm.query) + ", callback);")
+                .then(waitThenScreenshot);
+        } else {
+            driver.get(url).then(waitThenScreenshot);
+        }
     }
-    driver.takeScreenshot().then(haveScreenshot).then(oneDone, check);
+
+    function waitThenScreenshot() {
+        driverReady = true;
+        if (opts.wait) {
+            browserSideWait(1000 * opts.wait);
+        }
+        const promise = driver.takeScreenshot().then(haveScreenshot);
+        if (retry === 0) {
+            // The `oneDone` promise remains outstanding if we retry, so
+            // don't re-add it
+            promise.then(oneDone, check);
+        }
+    }
 
     function haveScreenshot(img) {
         img = imageDimensions(img);
         if (img.width !== targetW || img.height !== targetH) {
-            throw new Error("Excpected " + targetW + " x " + targetH +
+            throw new Error("Expected " + targetW + " x " + targetH +
                             ", got " + img.width + "x" + img.height);
         }
         if (key === "Lap" && opts.browser === "firefox" &&
@@ -405,15 +441,20 @@ function takeScreenshot(key) {
         if (loadExpected) {
             return loadExpected.then(function(expected) {
                 if (!buf.equals(expected)) {
-                    if (++retry === 5) {
+                    if (++retry >= opts.attempts) {
                         console.error("FAIL! " + key);
                         listOfFailed.push(key);
                         exitStatus = 3;
+                        if (opts.diff) {
+                            return saveScreenshotDiff(key, buf);
+                        }
                     } else {
                         console.log("error " + key);
-                        driver.get(url);
-                        browserSideWait(500 * retry);
-                        return driver.takeScreenshot().then(haveScreenshot);
+                        browserSideWait(300 * retry);
+                        if (retry > 1) {
+                            driverReady = false; // reload fully
+                        }
+                        return driver.call(loadMath);
                     }
                 } else {
                     console.log("* ok  " + key);
@@ -424,6 +465,36 @@ function takeScreenshot(key) {
                 console.log(key);
             });
         }
+    }
+
+    function saveScreenshotDiff(key, buf) {
+        const filenamePrefix = key + "-" + opts.browser;
+        const baseFile = path.join(dstDir, filenamePrefix + ".png");
+        const diffFile = path.join(diffDir, filenamePrefix + "-diff.png");
+        const bufFile = path.join(diffDir, filenamePrefix + "-fail.png");
+
+        return promisify(fs.mkdir, diffDir)
+            .then(null, function() { }) /* Ignore EEXIST error (XXX & others) */
+            .then(function() {
+                return promisify(fs.writeFile, bufFile, buf);
+            })
+            .then(function() {
+                return execFile("convert", [
+                    "-fill", "white",
+                    // First image: saved screenshot in red
+                    "(", baseFile, "-colorize", "100,0,0", ")",
+                    // Second image: new screenshot in green
+                    "(", bufFile, "-colorize", "0,80,0", ")",
+                    // Composite them
+                    "-compose", "darken", "-composite",
+                    "-trim",  // remove everything with the same color as the
+                              // corners
+                    diffFile, // output file name
+                ]);
+            })
+            .then(function() {
+                return promisify(fs.unlink, bufFile);
+            });
     }
 
     function oneDone() {
@@ -461,5 +532,23 @@ function promisify(f) {
         }
     });
     f.apply(null, args);
+    return deferred.promise;
+}
+
+// Execute a given command, and return a promise to its output.
+// Don't denodeify here, since fail branch needs access to stderr.
+function execFile(cmd, args, opts) {
+    const deferred = new selenium.promise.Deferred();
+    childProcess.execFile(cmd, args, opts, function(err, stdout, stderr) {
+        if (err) {
+            console.error("Error executing " + cmd + " " + args.join(" "));
+            console.error(stdout + stderr);
+            err.stdout = stdout;
+            err.stderr = stderr;
+            deferred.reject(err);
+        } else {
+            deferred.fulfill(stdout);
+        }
+    });
     return deferred.promise;
 }

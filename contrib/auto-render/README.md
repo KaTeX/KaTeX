@@ -10,7 +10,7 @@ This extension isn't part of KaTeX proper, so the script should be separately
 included in the page:
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.8.1/contrib/auto-render.min.js" integrity="sha384-RkgGHBDdR8eyBOoWeZ/vpGg1cOvSAJRflCUDACusAAIVwkwPrOUYykglPeqWakZu" crossorigin="anonymous"></script>
 ```
 
 Then, call the exposed `renderMathInElement` function in a script tag
@@ -83,7 +83,10 @@ in addition to two auto-render-specific keys:
 
 - `ignoredTags`: This is a list of DOM node types to ignore when recursing
   through. The default value is
-  `["script", "noscript", "style", "textarea", "pre", "code"]`.
+  `["script", "noscript", "style", "textarea", "pre", "code"]`. 
+  
+- `errorCallback`: A callback method returning a message and an error stack
+  in case of an critical error during rendering. The default uses `console.error`.
 
 Note that the `displayMode` property of the options object is ignored, and is 
 instead taken from the `display` key of the corresponding entry in the 
