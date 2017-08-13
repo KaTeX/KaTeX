@@ -868,11 +868,11 @@ defineFunction(["\\dots"], {
             }
         }
     }
+    const mode = context.parser.mode;
     return {
-        type: "op",
-        limits: false,
-        symbol: true,
-        body: thedots,
+        type: "dots",
+        mode: mode,
+        body: symbols[mode][thedots].replace,
     };
 });
 
