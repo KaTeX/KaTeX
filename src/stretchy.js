@@ -143,7 +143,7 @@ const svgSpan = function(group, options) {
         classArray.push("mask");             // Over-ride image.
         classArray.push(fileName + "-mask"); // Set mask-image.
         node = buildCommon.makeSpan(classArray, [], options);
-        node.style.backgroundColor = options.color;
+        node.style.backgroundColor = options.getColor();
     } else {
         classArray.push(fileName);             // Set image and span height.
         node = buildCommon.makeSpan(classArray, [], options);
@@ -161,10 +161,10 @@ const encloseSpan = function(inner, isCharBox, label, pad, options) {
 
     if (options.color) {
         if (label === "fbox") {
-            img.style.borderColor = options.color;
+            img.style.borderColor = options.getColor();
         } else {
             img.classes[2] = label + "-mask";
-            img.style.backgroundColor = options.color;
+            img.style.backgroundColor = options.getColor();
         }
     }
 
