@@ -1,4 +1,4 @@
-.PHONY: build dist lint setup copy serve clean metrics test zip contrib
+.PHONY: build dist lint setup copy serve clean metrics test coverage zip contrib
 build: lint build/katex.min.js build/katex.min.css contrib zip compress
 
 ifeq ($(KATEX_DIST),skip)
@@ -74,8 +74,14 @@ build/contrib:
 	rm -rf build/contrib/*
 	$(MAKE) -C contrib/auto-render
 
+.PHONY: build/images
+build/images:
+	rm -rf $@
+	mkdir -p build
+	cp -r static/images $@
+
 .PHONY: build/katex
-build/katex: build/katex.js build/katex.min.js build/katex.css build/katex.min.css build/fonts README.md build/contrib
+build/katex: build/katex.js build/katex.min.js build/katex.css build/katex.min.css build/fonts build/images README.md build/contrib
 	mkdir -p build/katex
 	rm -rf build/katex/*
 	cp -r $^ build/katex
@@ -101,7 +107,10 @@ serve: $(NIS)
 	$(NODE) server.js
 
 test: $(NIS)
-	JASMINE_CONFIG_PATH=test/jasmine.json node_modules/.bin/jasmine
+	node_modules/.bin/jest
+
+coverage: $(NIS)
+	node_modules/.bin/jest --coverage
 
 PERL=perl
 PYTHON=$(shell python2 --version >/dev/null 2>&1 && echo python2 || echo python)

@@ -1,5 +1,4 @@
 /* global beforeEach: false */
-/* global jasmine: false */
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
@@ -10,50 +9,47 @@ import Settings from "../src/Settings";
 const defaultSettings = new Settings({});
 
 beforeEach(function() {
-    jasmine.addMatchers({
-        toFailWithParseError: function(util, customEqualityTesters) {
-            const prefix = "KaTeX parse error: ";
-            return {
-                compare: function(actual, expected) {
-                    try {
-                        parseTree(actual, defaultSettings);
-                        return {
-                            pass: false,
-                            message: "'" + actual + "' parsed without error",
-                        };
-                    } catch (e) {
-                        if (expected === undefined) {
-                            return {
-                                pass: true,
-                                message: "'" + actual + "' parsed with error",
-                            };
-                        }
-                        const msg = e.message;
-                        const exp = prefix + expected;
-                        if (msg === exp) {
-                            return {
-                                pass: true,
-                                message: "'" + actual + "'" +
-                                    " parsed with error '" + expected + "'",
-                            };
-                        } else if (msg.slice(0, 19) === prefix) {
-                            return {
-                                pass: false,
-                                message: "'" + actual + "'" +
-                                    " parsed with error '" + msg.slice(19) +
-                                    "' but expected '" + expected + "'",
-                            };
-                        } else {
-                            return {
-                                pass: false,
-                                message: "'" + actual + "'" +
-                                    " caused error '" + msg +
-                                    "' but expected '" + exp + "'",
-                            };
-                        }
-                    }
-                },
-            };
+    const prefix = "KaTeX parse error: ";
+
+    expect.extend({
+        toFailWithParseError: function(actual, expected) {
+            try {
+                parseTree(actual, defaultSettings);
+                return {
+                    pass: false,
+                    message: "'" + actual + "' parsed without error",
+                };
+            } catch (e) {
+                if (expected === undefined) {
+                    return {
+                        pass: true,
+                        message: "'" + actual + "' parsed with error",
+                    };
+                }
+                const msg = e.message;
+                const exp = prefix + expected;
+                if (msg === exp) {
+                    return {
+                        pass: true,
+                        message: "'" + actual + "'" +
+                            " parsed with error '" + expected + "'",
+                    };
+                } else if (msg.slice(0, 19) === prefix) {
+                    return {
+                        pass: false,
+                        message: "'" + actual + "'" +
+                            " parsed with error '" + msg.slice(19) +
+                            "' but expected '" + expected + "'",
+                    };
+                } else {
+                    return {
+                        pass: false,
+                        message: "'" + actual + "'" +
+                            " caused error '" + msg +
+                            "' but expected '" + exp + "'",
+                    };
+                }
+            }
         },
     });
 });

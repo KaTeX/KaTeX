@@ -15,6 +15,10 @@ defineMacro("\\egroup", "}");
 defineMacro("\\begingroup", "{");
 defineMacro("\\endgroup", "}");
 
+// We don't distinguish between math and nonmath kerns.
+// (In TeX, the mu unit works only with \mkern.)
+defineMacro("\\mkern", "\\kern");
+
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
 

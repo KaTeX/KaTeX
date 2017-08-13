@@ -4,6 +4,3 @@
 build/**
 node_modules/**
 dist/**
-
-# Third party code
-test/jasmine/**

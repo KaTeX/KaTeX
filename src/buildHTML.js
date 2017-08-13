@@ -12,6 +12,7 @@ import Style from "./Style";
 import buildCommon, { makeSpan } from "./buildCommon";
 import delimiter from "./delimiter";
 import domTree from "./domTree";
+import units from "./units";
 import utils from "./utils";
 import stretchy from "./stretchy";
 
@@ -356,28 +357,23 @@ groupTypes.supsub = function(group, options) {
             subShift, metrics.sub1,
             subm.height - 0.8 * metrics.xHeight);
 
-        supsub = buildCommon.makeVList([
-            {type: "elem", elem: subm},
-        ], "shift", subShift, options);
-
-        supsub.children[0].style.marginRight = scriptspace;
-
+        const vlistElem = [{type: "elem", elem: subm, marginRight: scriptspace}];
         // Subscripts shouldn't be shifted by the base's italic correction.
         // Account for that by shifting the subscript back the appropriate
         // amount. Note we only do this when the base is a single symbol.
         if (base instanceof domTree.symbolNode) {
-            supsub.children[0].style.marginLeft = -base.italic + "em";
+            vlistElem[0].marginLeft = -base.italic + "em";
         }
+
+        supsub = buildCommon.makeVList(vlistElem, "shift", subShift, options);
     } else if (!group.value.sub) {
         // Rule 18c, d
         supShift = Math.max(supShift, minSupShift,
             supm.depth + 0.25 * metrics.xHeight);
 
         supsub = buildCommon.makeVList([
-            {type: "elem", elem: supm},
+            {type: "elem", elem: supm, marginRight: scriptspace},
         ], "shift", -supShift, options);
-
-        supsub.children[0].style.marginRight = scriptspace;
     } else {
         supShift = Math.max(
             supShift, minSupShift, supm.depth + 0.25 * metrics.xHeight);
@@ -396,18 +392,16 @@ groupTypes.supsub = function(group, options) {
             }
         }
 
-        supsub = buildCommon.makeVList([
-            {type: "elem", elem: subm, shift: subShift},
-            {type: "elem", elem: supm, shift: -supShift},
-        ], "individualShift", null, options);
-
+        const vlistElem = [
+            {type: "elem", elem: subm, shift: subShift, marginRight: scriptspace},
+            {type: "elem", elem: supm, shift: -supShift, marginRight: scriptspace},
+        ];
         // See comment above about subscripts not being shifted
         if (base instanceof domTree.symbolNode) {
-            supsub.children[0].style.marginLeft = -base.italic + "em";
+            vlistElem[0].marginLeft = -base.italic + "em";
         }
 
-        supsub.children[0].style.marginRight = scriptspace;
-        supsub.children[1].style.marginRight = scriptspace;
+        supsub = buildCommon.makeVList(vlistElem, "individualShift", null, options);
     }
 
     // We ensure to wrap the supsub vlist in a span.msupsub to reset text-align
@@ -439,12 +433,17 @@ groupTypes.genfrac = function(group, options) {
     const denomm = buildGroup(group.value.denom, newOptions, options);
 
     let rule;
+    let ruleWidth;
+    let ruleSpacing;
     if (group.value.hasBarLine) {
         rule = makeLineSpan("frac-line", options);
+        ruleWidth = rule.height;
+        ruleSpacing = rule.height;
     } else {
         rule = null;
+        ruleWidth = 0;
+        ruleSpacing = options.fontMetrics().defaultRuleThickness;
     }
-    const ruleWidth = rule ? rule.height : 0;
 
     // Rule 15b
     let numShift;
@@ -453,18 +452,18 @@ groupTypes.genfrac = function(group, options) {
     if (style.size === Style.DISPLAY.size) {
         numShift = options.fontMetrics().num1;
         if (ruleWidth > 0) {
-            clearance = 3 * ruleWidth;
+            clearance = 3 * ruleSpacing;
         } else {
-            clearance = 7 * options.fontMetrics().defaultRuleThickness;
+            clearance = 7 * ruleSpacing;
         }
         denomShift = options.fontMetrics().denom1;
     } else {
         if (ruleWidth > 0) {
             numShift = options.fontMetrics().num2;
-            clearance = ruleWidth;
+            clearance = ruleSpacing;
         } else {
             numShift = options.fontMetrics().num3;
-            clearance = 3 * options.fontMetrics().defaultRuleThickness;
+            clearance = 3 * ruleSpacing;
         }
         denomShift = options.fontMetrics().denom2;
     }
@@ -547,43 +546,6 @@ groupTypes.genfrac = function(group, options) {
         options);
 };
 
-/**
- * Parse a `sizeValue`, as parsed by functions.js argType "size", into
- * a CSS em value. `options` gives the current options.
- */
-const calculateSize = function(sizeValue, options) {
-    let scale;
-    // `mu` units scale with scriptstyle/scriptscriptstyle.
-    // Other units always refer to the *textstyle* font in the current size.
-    if (sizeValue.unit === "mu") {
-        scale = options.fontMetrics().cssEmPerMu;
-    } else {
-        let unitOptions;
-        if (options.style.isTight()) {
-            // isTight() means current style is script/scriptscript.
-            unitOptions = options.havingStyle(options.style.text());
-        } else {
-            unitOptions = options;
-        }
-        // TODO: In TeX these units are relative to the quad of the current
-        // *text* font, e.g. cmr10. KaTeX instead uses values from the
-        // comparably-sized *Computer Modern symbol* font. At 10pt, these
-        // match. At 7pt and 5pt, they differ: cmr7=1.138894, cmsy7=1.170641;
-        // cmr5=1.361133, cmsy5=1.472241. Consider $\scriptsize a\kern1emb$.
-        // TeX \showlists shows a kern of 1.13889 * fontsize;
-        // KaTeX shows a kern of 1.171 * fontsize.
-        if (sizeValue.unit === "ex") {
-            scale = unitOptions.fontMetrics().xHeight;
-        } else {
-            scale = unitOptions.fontMetrics().quad;
-        }
-        if (unitOptions !== options) {
-            scale *= unitOptions.sizeMultiplier / options.sizeMultiplier;
-        }
-    }
-    return sizeValue.number * scale;
-};
-
 groupTypes.array = function(group, options) {
     let r;
     let c;
@@ -631,7 +593,7 @@ groupTypes.array = function(group, options) {
 
         let gap = 0;
         if (group.value.rowGaps[r]) {
-            gap = calculateSize(group.value.rowGaps[r].value, options);
+            gap = units.calculateSize(group.value.rowGaps[r].value, options);
             if (gap > 0) { // \@argarraycr
                 gap += arstrutDepth;
                 if (depth < gap) {
@@ -895,30 +857,25 @@ groupTypes.op = function(group, options) {
         if (!supGroup) {
             top = base.height - baseShift;
 
-            finalGroup = buildCommon.makeVList([
-                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                {type: "elem", elem: subm},
-                {type: "kern", size: subKern},
-                {type: "elem", elem: base},
-            ], "top", top, options);
-
-            // Here, we shift the limits by the slant of the symbol. Note
+            // Shift the limits by the slant of the symbol. Note
             // that we are supposed to shift the limits by 1/2 of the slant,
             // but since we are centering the limits adding a full slant of
             // margin will shift by 1/2 that.
-            finalGroup.children[0].style.marginLeft = -slant + "em";
+            finalGroup = buildCommon.makeVList([
+                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
+                {type: "elem", elem: subm, marginLeft: -slant + "em"},
+                {type: "kern", size: subKern},
+                {type: "elem", elem: base},
+            ], "top", top, options);
         } else if (!subGroup) {
             bottom = base.depth + baseShift;
 
             finalGroup = buildCommon.makeVList([
                 {type: "elem", elem: base},
                 {type: "kern", size: supKern},
-                {type: "elem", elem: supm},
+                {type: "elem", elem: supm, marginLeft: slant + "em"},
                 {type: "kern", size: options.fontMetrics().bigOpSpacing5},
             ], "bottom", bottom, options);
-
-            // See comment above about slants
-            finalGroup.children[1].style.marginLeft = slant + "em";
         } else if (!supGroup && !subGroup) {
             // This case probably shouldn't occur (this would mean the
             // supsub was sending us a group with no superscript or
@@ -932,17 +889,13 @@ groupTypes.op = function(group, options) {
 
             finalGroup = buildCommon.makeVList([
                 {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                {type: "elem", elem: subm},
+                {type: "elem", elem: subm, marginLeft: -slant + "em"},
                 {type: "kern", size: subKern},
                 {type: "elem", elem: base},
                 {type: "kern", size: supKern},
-                {type: "elem", elem: supm},
+                {type: "elem", elem: supm, marginLeft: slant + "em"},
                 {type: "kern", size: options.fontMetrics().bigOpSpacing5},
             ], "bottom", bottom, options);
-
-            // See comment above about slants
-            finalGroup.children[0].style.marginLeft = -slant + "em";
-            finalGroup.children[2].style.marginLeft = slant + "em";
         }
 
         return makeSpan(["mop", "op-limits"], [finalGroup], options);
@@ -1036,13 +989,10 @@ groupTypes.katex = function(group, options) {
         ["mord", "katex-logo"], [k, a, t, e, x], options);
 };
 
-const makeLineSpan = function(className, options) {
-    const baseOptions = options.havingBaseStyle();
-    const line = makeSpan(
-        [className].concat(baseOptions.sizingClasses(options)),
-        [], options);
-    line.height = options.fontMetrics().defaultRuleThickness /
-        options.sizeMultiplier;
+const makeLineSpan = function(className, options, thickness) {
+    const line = makeSpan([className], [], options);
+    line.height = thickness || options.fontMetrics().defaultRuleThickness;
+    line.style.borderBottomWidth = line.height + "em";
     line.maxFontSize = 1.0;
     return line;
 };
@@ -1094,25 +1044,33 @@ groupTypes.sqrt = function(group, options) {
     // and line
     const inner = buildGroup(group.value.body, options.havingCrampedStyle());
 
-    const line = makeLineSpan("sqrt-line", options);
-    const ruleWidth = line.height;
+    // Calculate the minimum size for the \surd delimiter
+    const metrics = options.fontMetrics();
+    const theta = metrics.defaultRuleThickness;
 
-    let phi = ruleWidth;
+    let phi = theta;
     if (options.style.id < Style.TEXT.id) {
-        phi = options.fontMetrics().xHeight * options.sizeMultiplier;
+        phi = options.fontMetrics().xHeight;
     }
 
     // Calculate the clearance between the body and line
-    let lineClearance = ruleWidth + phi / 4;
+    let lineClearance = theta + phi / 4;
 
     const minDelimiterHeight = (inner.height + inner.depth +
-        lineClearance + ruleWidth) * options.sizeMultiplier;
+        lineClearance + theta) * options.sizeMultiplier;
 
     // Create a \surd delimiter of the required minimum size
-    const delim = makeSpan(["sqrt-sign"], [
-        delimiter.customSizedDelim("\\surd", minDelimiterHeight,
-                                   false, options, group.mode)],
-                         options);
+    const delimChar = delimiter.customSizedDelim("\\surd", minDelimiterHeight,
+            false, options, group.mode);
+    const delim = makeSpan(["sqrt-sign"], [delimChar], options);
+
+    // Calculate the actual line width.
+    // This actually should depend on the chosen font -- e.g. \boldmath
+    // should use the thicker surd symbols from e.g. KaTeX_Main-Bold, and
+    // have thicker rules.
+    const ruleWidth = options.fontMetrics().sqrtRuleThickness *
+        delimChar.delimSizeMultiplier;
+    const line = makeLineSpan("sqrt-line", options, ruleWidth);
 
     const delimDepth = (delim.height + delim.depth) - ruleWidth;
 
@@ -1336,11 +1294,11 @@ groupTypes.rule = function(group, options) {
     // Calculate the shift, width, and height of the rule, and account for units
     let shift = 0;
     if (group.value.shift) {
-        shift = calculateSize(group.value.shift, options);
+        shift = units.calculateSize(group.value.shift, options);
     }
 
-    const width = calculateSize(group.value.width, options);
-    const height = calculateSize(group.value.height, options);
+    const width = units.calculateSize(group.value.width, options);
+    const height = units.calculateSize(group.value.height, options);
 
     // Style the rule to the right size
     rule.style.borderRightWidth = width + "em";
@@ -1364,7 +1322,7 @@ groupTypes.kern = function(group, options) {
     const rule = makeSpan(["mord", "rule"], [], options);
 
     if (group.value.dimension) {
-        const dimension = calculateSize(group.value.dimension, options);
+        const dimension = units.calculateSize(group.value.dimension, options);
         rule.style.marginLeft = dimension + "em";
     }
 
@@ -1516,7 +1474,7 @@ groupTypes.horizBrace = function(group, options) {
 
     // Build the base group
     const body = buildGroup(
-       group.value.base, options.havingStyle(style.cramp()));
+       group.value.base, options.havingBaseStyle(Style.DISPLAY));
 
     // Create the stretchy element
     const braceBody = stretchy.svgSpan(group, options);
@@ -1622,16 +1580,6 @@ groupTypes.enclose = function(group, options) {
         {type: "elem", elem: img, shift: imgShift},
     ], "individualShift", null, options);
 
-    if (img.height > vlist.maxFontSize) {
-        // Correct for an issue in makeVList. It placed the image top at
-        // the top of the line box created by a 1 em maxFontSize.
-        vlist.children[1].style.top = -(inner.height + pad - 0.9 / scale)
-            + "em";
-        // The 0.9 in the previous line is there because the KaTeX fonts
-        // have an ascent = 0.9 em. We're setting the top of the image
-        // relative to the top of that line box.
-    }
-
     if (/cancel/.test(label)) {
         // cancel does not create horiz space for its line extension.
         // That is, not when adjacent to a mord.
@@ -1649,12 +1597,14 @@ groupTypes.xArrow = function(group, options) {
 
     let newOptions = options.havingStyle(style.sup());
     const upperGroup = buildGroup(group.value.body, newOptions, options);
+    upperGroup.classes.push("x-arrow-pad");
 
     let lowerGroup;
     if (group.value.below) {
         // Build the lower group
         newOptions = options.havingStyle(style.sub());
         lowerGroup = buildGroup(group.value.below, newOptions, options);
+        lowerGroup.classes.push("x-arrow-pad");
     }
 
     const arrowBody = stretchy.svgSpan(group, options);
@@ -1681,10 +1631,7 @@ groupTypes.xArrow = function(group, options) {
         ], "individualShift", null, options);
     }
 
-    const node = makeSpan(["mrel", "x-arrow"], [vlist], options);
-    node.depth = node.depth;
-    node.height = node.height;
-    return node;
+    return makeSpan(["mrel", "x-arrow"], [vlist], options);
 };
 
 groupTypes.phantom = function(group, options) {
