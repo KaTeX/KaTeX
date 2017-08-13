@@ -179,7 +179,13 @@ class MacroExpander {
             const expanded = this.expandOnce();
             // expandOnce returns Token if and only if it's fully expanded.
             if (expanded instanceof Token) {
-                return this.stack.pop();  // === expanded
+                // \relax stops the expansion, but shouldn't get returned (a
+                // null return value couldn't get implemented as a function).
+                if (expanded.text === "\\relax") {
+                    this.stack.pop();
+                } else {
+                    return this.stack.pop();  // === expanded
+                }
             }
         }
     }

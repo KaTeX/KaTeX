@@ -13,7 +13,6 @@ function defineMacro(name, body) {
 
 //////////////////////////////////////////////////////////////////////
 // basics
-defineMacro("\\relax", "");  // TODO: should stop expansion
 defineMacro("\\bgroup", "{");
 defineMacro("\\egroup", "}");
 defineMacro("\\begingroup", "{");
