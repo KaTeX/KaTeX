@@ -1705,6 +1705,11 @@ groupTypes.mclass = function(group, options) {
     return makeSpan([group.value.mclass], elements, options);
 };
 
+groupTypes.dots = function(group, options) {
+    return buildCommon.makeSymbol(
+        group.value.body, "Main-Regular", "math", options, ["minner"]);
+};
+
 /**
  * buildGroup is the function that takes a group and calls the correct groupType
  * function for it. It also handles the interaction of size and style changes

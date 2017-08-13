@@ -625,6 +625,13 @@ groupTypes.mclass = function(group, options) {
     return new mathMLTree.MathNode("mstyle", inner);
 };
 
+groupTypes.dots = function(group, options) {
+    const node = new mathMLTree.MathNode(
+        "mo", [makeText(group.value, group.mode)]);
+
+    return node;
+};
+
 /**
  * Takes a list of nodes, builds them, and returns a list of the generated
  * MathML nodes. A little simpler than the HTML version because we don't do any
