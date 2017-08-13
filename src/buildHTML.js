@@ -1078,8 +1078,13 @@ groupTypes.sqrt = function(group, options) {
 
     // First, we do the same steps as in overline to build the inner group
     // and line
-    const inner = buildGroup(group.value.body, options.havingCrampedStyle());
+    let inner = buildGroup(group.value.body, options.havingCrampedStyle());
 
+    // Some groups can return document fragments.  Handle those by wrapping
+    // them in a span.
+    if (inner instanceof domTree.documentFragment) {
+        inner = makeSpan([], [inner], options);
+    }
 
     // Calculate the minimum size for the \surd delimiter
     const metrics = options.fontMetrics();
