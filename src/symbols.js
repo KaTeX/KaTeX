@@ -594,10 +594,19 @@ defineSymbol(math, main, op, "\u222e", "\\oint");
 defineSymbol(math, main, op, "\u2a06", "\\bigsqcup");
 defineSymbol(math, main, op, "\u222b", "\\smallint");
 defineSymbol(text, main, inner, "\u2026", "\\textellipsis");
+defineSymbol(math, main, inner, "\u2026", "\\textellipsis");
+defineSymbol(text, main, inner, "\u2026", "\\mathellipsis");
 defineSymbol(math, main, inner, "\u2026", "\\mathellipsis");
 defineSymbol(text, main, inner, "\u2026", "\\ldots");
 defineSymbol(math, main, inner, "\u2026", "\\ldots");
+defineSymbol(math, main, inner, "\u2026", "\\dotsc");
+defineSymbol(math, main, inner, "\u2026", "\\dotso");
+//TODO: \dotso should be \ldots\, when followed by a right delimiter
+// (see functions.js)
 defineSymbol(math, main, inner, "\u22ef", "\\cdots");
+defineSymbol(math, main, inner, "\u22ef", "\\dotsb");
+defineSymbol(math, main, inner, "\u22ef", "\\dotsm");
+defineSymbol(math, main, inner, "\u22ef", "\\dotsi"); //TODO: should be \!\cdots
 defineSymbol(math, main, inner, "\u22f1", "\\ddots");
 defineSymbol(math, main, textord, "\u22ee", "\\vdots");
 defineSymbol(math, main, accent, "\u00b4", "\\acute");

@@ -1,3 +1,4 @@
+import symbols from "./symbols";
 import utils from "./utils";
 import ParseError from "./ParseError";
 import ParseNode from "./ParseNode";
@@ -784,3 +785,98 @@ defineFunction(["\\begin", "\\end"], {
         nameGroup: nameGroup,
     };
 });
+
+// AMSMath's automatic \dots, based on \mdots@@ macro.  See
+// https://www.ctan.org/tex-archive/macros/latex/required/amsmath
+const dotsByToken = {
+    ',': '\\dotsc',
+    '\\not': '\\dotsb',
+    // \keybin@ checks for the following:
+    '+': '\\dotsb',
+    '=': '\\dotsb',
+    '<': '\\dotsb',
+    '>': '\\dotsb',
+    '-': '\\dotsb',
+    '*': '\\dotsb',
+    ':': '\\dotsb',
+    // Symbols whose definition starts with \DOTSB:
+    '\\DOTSB': '\\dotsb',
+    '\\coprod': '\\dotsb',
+    '\\bigvee': '\\dotsb',
+    '\\bigwedge': '\\dotsb',
+    '\\biguplus': '\\dotsb',
+    '\\bigcap': '\\dotsb',
+    '\\bigcup': '\\dotsb',
+    '\\prod': '\\dotsb',
+    '\\sum': '\\dotsb',
+    '\\bigotimes': '\\dotsb',
+    '\\bigoplus': '\\dotsb',
+    '\\bigodot': '\\dotsb',
+    '\\bigsqcup': '\\dotsb',
+    '\\implies': '\\dotsb',
+    '\\impliedby': '\\dotsb',
+    '\\And': '\\dotsb',
+    '\\longrightarrow': '\\dotsb',
+    '\\Longrightarrow': '\\dotsb',
+    '\\longleftarrow': '\\dotsb',
+    '\\Longleftarrow': '\\dotsb',
+    '\\longleftrightarrow': '\\dotsb',
+    '\\Longleftrightarrow': '\\dotsb',
+    '\\mapsto': '\\dotsb',
+    '\\longmapsto': '\\dotsb',
+    '\\hookrightarrow': '\\dotsb',
+    '\\iff': '\\dotsb',
+    '\\doteq': '\\dotsb',
+    // Symbols whose definition starts with \mathbin:
+    '\\mathbin': '\\dotsb',
+    '\\bmod': '\\dotsb',
+    // Symbols whose definition starts with \mathrel:
+    '\\mathrel': '\\dotsb',
+    '\\relbar': '\\dotsb',
+    '\\Relbar': '\\dotsb',
+    '\\xrightarrow': '\\dotsb',
+    '\\xleftarrow': '\\dotsb',
+    // Symbols whose definition starts with \DOTSI:
+    '\\DOTSI': '\\dotsi',
+    '\\int': '\\dotsi',
+    '\\oint': '\\dotsi',
+    '\\iint': '\\dotsi',
+    '\\iiint': '\\dotsi',
+    '\\iiiint': '\\dotsi',
+    '\\idotsint': '\\dotsi',
+    // Symbols whose definition starts with \DOTSX:
+    '\\DOTSX': '\\dotsx',
+};
+
+defineFunction(["\\dots"], {
+    numArgs: 0,
+    allowedInText: true,
+}, function(context) {
+    let thedots;
+    if (context.parser.mode === 'text') {
+        thedots = '\\textellipsis';
+    } else {
+        thedots = '\\dotso';
+        if (context.parser.nextToken.text in dotsByToken) {
+            thedots = dotsByToken[context.parser.nextToken.text];
+        } else if (context.parser.nextToken.text.substr(0, 4) === '\\not') {
+            thedots = '\\dotsb';
+        } else if (context.parser.nextToken.text in symbols.math) {
+            if (utils.contains(['bin', 'rel'],
+                    symbols.math[context.parser.nextToken.text].group)) {
+                thedots = '\\dotsb';
+            }
+        }
+    }
+    const mode = context.parser.mode;
+    return {
+        type: "dots",
+        mode: mode,
+        body: symbols[mode][thedots].replace,
+    };
+});
+
+//TODO: \dotso should expand to \ldots\, when followed by one of the following:
+// ')', ']', '\\rbrack', '\\}', '\\rbrace', '\\rangle', '\\rceil', '\\rfloor',
+// '\\rgroup', '\\rmoustache', '\\right', '\\bigr', '\\biggr', '\\Bigr',
+// '\\Biggr'.
