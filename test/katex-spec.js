@@ -2288,3 +2288,13 @@ describe("A parser taking String objects", function() {
         expect(new String("\\frac 1 2")).toParseLike("\\frac 1 2");
     });
 });
+
+describe("Unicode", function() {
+    it("should parse all lower case Greek letters", function() {
+        expect("αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω").toParse();
+    });
+
+    it("should parse 'ΓΔΘΞΠΣΦΨΩ'", function() {
+        expect("ΓΔΘΞΠΣΦΨΩ").toParse();
+    });
+});
