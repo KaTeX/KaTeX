@@ -91,6 +91,7 @@ Gathered: |
       y = \sum_{i=1}^n i
     \end{array}
 GreekLetters: \alpha\beta\gamma\omega
+GreekUnicode: \frac{αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω}{ΓΔΘΞΠΣΦΨΩ\mathbf{Ω}\mathbf{\Omega}}
 GroupMacros:
     macros:
         \startExp: e^\bgroup
