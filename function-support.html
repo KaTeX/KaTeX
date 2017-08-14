@@ -2217,9 +2217,15 @@ code {
         <tr>
             <td>\(\text{x}\)</td>
             <td><strong>\text</strong>{x}</td>
-            <td><code>\text{…}</code> will accept characters from <a href="http://www.unicode.org/charts/PDF/U0080.pdf">Latin-1</a>, <a href="http://unicode.org/charts/PDF/U0400.pdf">Cyrillic</a>, or CJK (Hiragana, Katakana, CJK ideograms, and Hangul).</td>
+            <td></td>
         </tr>
     </table>
+	
+	<div class="indented">
+		<p><code>\text{…}</code> will accept characters from <a href="http://www.unicode.org/charts/PDF/U0080.pdf">Latin-1</a>, <a href="http://unicode.org/charts/PDF/U0400.pdf">Cyrillic</a>, or CJK (Hiragana, Katakana, CJK ideograms, and Hangul).</p>
+		
+		<p><code>\text{…}</code> will accept nested <code>$…$</code> fragments and render them in math mode.</p>
+	<div>
 
 <h2 id="symbols">Symbols and Punctuation</h2>
 
@@ -2257,7 +2263,7 @@ code {
 		<tr>
 			<td>_</td>
 			<td>\_</td>
-			<td>△</td>
+			<td>\(\triangle\)</td>
 			<td>\triangle</td>
 			<td>⋮</td>
 			<td>\vdots</td>
@@ -2267,7 +2273,7 @@ code {
 		<tr>
 			<td>_</td>
 			<td>\textunderscore</td>
-			<td>▽</td>
+			<td>\(\triangledown\)</td>
 			<td>\triangledown</td>
 			<td>…</td>
 			<td>\mathellipsis</td>
@@ -2277,7 +2283,7 @@ code {
 		<tr>
 			<td>–</td>
 			<td>--</td>
-			<td>◃</td>
+			<td>\(\triangleleft\)</td>
 			<td>\triangleleft</td>
 			<td>…</td>
 			<td>\textellipsis</td>
@@ -2287,7 +2293,7 @@ code {
 		<tr>
 			<td>–</td>
 			<td>\textendash</td>
-			<td>▹</td>
+			<td>\(\triangleright\)</td>
 			<td>\triangleright</td>
 			<td>♭</td>
 			<td>\flat</td>
@@ -2297,7 +2303,7 @@ code {
 		<tr>
 			<td>—</td>
 			<td>---</td>
-			<td>▽</td>
+			<td>\(\bigtriangledown\)</td>
 			<td>\bigtriangledown</td>
 			<td>♮</td>
 			<td>\natural</td>
@@ -2307,7 +2313,7 @@ code {
 		<tr>
 			<td>—</td>
 			<td>\textemdash</td>
-			<td>△</td>
+			<td>\(\bigtriangleup\)</td>
 			<td>\bigtriangleup</td>
 			<td>♯</td>
 			<td>\sharp</td>
@@ -2531,7 +2537,7 @@ code {
 	<table>
 		<thead>
 		<tr>
-			<th>Item</th>
+			<th>Unit</th>
 			<th>textstyle</th>
 			<th>scriptscript</th>
 			<th>huge</th>
