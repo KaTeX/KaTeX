@@ -315,12 +315,12 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
 
 const sqrtInnerSVG = {
     main : `<svg viewBox=\'0 0 400000 1000\' preserveAspectRatio=\'xMinYMin
-slice\'><path fill=\'currentColor\' d=\'M23 622c-2.667 0-7.167-2.667-13.5
--8S0 604 0 600c0-2 .333-3.333 1-4 1.333-2.667 23.833-20.667 67.5-54s
+slice\'><path fill=\'currentColor\' d=\'M95 622c-2.667 0-7.167-2.667-13.5
+-8S72 604 72 600c0-2 .333-3.333 1-4 1.333-2.667 23.833-20.667 67.5-54s
 65.833-50.333 66.5-51c1.333-1.333 3-2 5-2 4.667 0 8.667 3.333 12 10l173
-378c.667 0 35.333-71 104-213s137.5-285 206.5-429S740 17.333 742 14c5.333
--9.333 12-14 20-14h399238v40H773.272L548 507 313 993c-2.667 4.667-9 7-19
-7-6 0-10-1-12-3L88 575l-65 47zM762 0h399238v40H773z\'/></svg>`,
+378c.667 0 35.333-71 104-213s137.5-285 206.5-429S812 17.333 812 14c5.333
+-9.333 12-14 20-14h399166v40H845.272L620 507 385 993c-2.667 4.667-9 7-19
+7-6 0-10-1-12-3L160 575l-65 47zM834 0h399166v40H845z\'/></svg>`,
     size1 : `<svg viewBox=\'0 0 400000 1200\' preserveAspectRatio=\'xMinYMin
 slice\'><path fill=\'currentColor\' d=\'M152 601c.667 0 18 39.667 52 119s
 68.167 158.667 102.5 238 51.833 119.333 52.5 120C699 373.333 869.667 17.667
@@ -360,20 +360,29 @@ const sqrtSpan = function(height, delim, options) {
     // Create a span containing an SVG image of a sqrt symbol.
     const span = buildCommon.makeSpan([], [], options);
     let sizeMultiplier = options.sizeMultiplier;  // default
+
     if (delim.type === "small") {
         // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
-        if (delim.style === Style.SCRIPT) {
-            sizeMultiplier = options.havingStyle(Style.TEXT).sizeMultiplier;
-        } else if (delim.style === Style.SCRIPTSCRIPT) {
-            sizeMultiplier = options.havingStyle(Style.SCRIPT).sizeMultiplier;
-        }
-        span.height = 1 / sizeMultiplier;
-        // In the font, the glyph is 1000 units tall.
-        span.style.height = span.height + "em";
-        span.width = 0.781 / sizeMultiplier;   // surd width, from the font.
 
-        span.innerHTML = "<svg width=\'100%\' height=\'" + span.height + "em\'>"
-            + sqrtInnerSVG["main"] + "</svg>";
+        // First, get the corrrect sizeMultiplier for the surd.
+        const refHeight = height / sizeMultiplier;
+        let newOptions = options.havingBaseStyle(Style.TEXT);
+
+        //In the font, the glyph is 1000 units tall. The font scale is 1:1000.
+        if (1 / newOptions.sizeMultiplier < refHeight) {
+            newOptions = options.havingBaseStyle(Style.SCRIPT);
+            if (1 / newOptions.sizeMultiplier < refHeight) {
+                newOptions = options.havingBaseStyle(Style.SCRIPTSCRIPT);
+            }
+        }
+        sizeMultiplier = newOptions.sizeMultiplier;
+
+        span.height = 1 / sizeMultiplier;
+        span.style.height = span.height + "em";
+        span.width = 0.833 / sizeMultiplier;   // surd width, from the font.
+
+        span.innerHTML = "<svg width=\'100%\' height=\'" + span.height
+            + "em\'>" + sqrtInnerSVG["main"] + "</svg>";
 
     } else if (delim.type === "large") {
         // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
@@ -384,8 +393,8 @@ const sqrtSpan = function(height, delim, options) {
         span.width = [0, 0.901, 0.902, 0.903, 0.903][delim.size] /
             sizeMultiplier;
 
-        span.innerHTML = "<svg width=\'100%\' height=\'" + span.height + "em\'>"
-            + sqrtInnerSVG["size" + delim.size] + "</svg>";
+        span.innerHTML = "<svg width=\'100%\' height=\'" + span.height
+            + "em\'>" + sqrtInnerSVG["size" + delim.size] + "</svg>";
 
     } else {
         // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
@@ -393,13 +402,13 @@ const sqrtSpan = function(height, delim, options) {
         span.height = height / sizeMultiplier;
         span.style.height = span.height + "em";
         span.width = 0.905 / sizeMultiplier;
-        const viewBoxHeight = Math.floor(span.height * 1000);   // scale = 1:1000
+        const viewBoxHeight = Math.floor(span.height * 1000); // scale = 1:1000
 
         // This \sqrt is customized in both height and width. We set the
         // height now. Then CSS will stretch the image to the correct width.
         // This SVG path comes from glyph U+23B7, font KaTeX_Size4-Regular.
-        span.innerHTML = "<svg width=\'100%\' height=\'" + span.height + "em\'>"
-            + "<svg viewBox=\'0 0 400000 " + viewBoxHeight
+        span.innerHTML = "<svg width=\'100%\' height=\'" + span.height
+            + "em\'>" + "<svg viewBox=\'0 0 400000 " + viewBoxHeight
             +  "\' preserveAspectRatio=\'xMinYMax slice\'><path fill=\'"
             + "currentColor\' d=\'M591 0h399409v40H631v" + (viewBoxHeight - 54)
             + sqrtInnerSVG["tall"] + "</svg>";
