@@ -2192,50 +2192,6 @@ describe("An aligned environment", function() {
 
 });
 
-const getMathML = function(expr, settings) {
-    const usedSettings = settings ? settings : defaultSettings;
-
-    expect(expr).toParse(usedSettings);
-
-    const built = buildMathML(parseTree(expr, usedSettings), expr, usedSettings);
-
-    // Strip off the surrounding <span>
-    return built.children[0];
-};
-
-describe("A MathML builder", function() {
-    it("should generate math nodes", function() {
-        const node = getMathML("x^2");
-
-        expect(node.type).toEqual("math");
-    });
-
-    it("should generate appropriate MathML types", function() {
-        const identifier = getMathML("x").children[0].children[0];
-        expect(identifier.children[0].type).toEqual("mi");
-
-        const number = getMathML("1").children[0].children[0];
-        expect(number.children[0].type).toEqual("mn");
-
-        const operator = getMathML("+").children[0].children[0];
-        expect(operator.children[0].type).toEqual("mo");
-
-        const space = getMathML("\\;").children[0].children[0];
-        expect(space.children[0].type).toEqual("mspace");
-
-        const text = getMathML("\\text{a}").children[0].children[0];
-        expect(text.children[0].type).toEqual("mtext");
-
-        const textop = getMathML("\\sin").children[0].children[0];
-        expect(textop.children[0].type).toEqual("mi");
-    });
-
-    it("should generate a <mphantom> node for \\phantom", function() {
-        const phantom = getMathML("\\phantom{x}").children[0].children[0];
-        expect(phantom.children[0].type).toEqual("mphantom");
-    });
-});
-
 describe("A parser that does not throw on unsupported commands", function() {
     // The parser breaks on unsupported commands unless it is explicitly
     // told not to
@@ -2330,5 +2286,15 @@ describe("A parser taking String objects", function() {
         expect(new String("xy")).toParseLike("xy");
         expect(new String("\\div")).toParseLike("\\div");
         expect(new String("\\frac 1 2")).toParseLike("\\frac 1 2");
+    });
+});
+
+describe("Unicode", function() {
+    it("should parse all lower case Greek letters", function() {
+        expect("αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω").toParse();
+    });
+
+    it("should parse 'ΓΔΘΞΠΣΦΨΩ'", function() {
+        expect("ΓΔΘΞΠΣΦΨΩ").toParse();
     });
 });
