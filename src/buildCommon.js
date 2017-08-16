@@ -416,7 +416,6 @@ const makeVerb = function(group, options) {
     } else {
         text = text.replace(/ /g, '\xA0');    // No-Break Space
     }
-    //return makeSymbol(text, "Main-Regular", group.mode, options, ["mathtt"]);
     return text;
 };
 

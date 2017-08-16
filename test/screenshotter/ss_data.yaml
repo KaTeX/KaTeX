@@ -255,8 +255,8 @@ Verb: |
     \begin{array}{ll}
       \verb \verb ,   & \verb|\verb  |, \\
       \verb* \verb* , & \verb*|\verb* |, \\
-      \verb!<x> & </y>! \\
-      \verb*!<x> & </y>!
+      \verb!<x> & </y>! & \scriptstyle\verb|ss verb| \\
+      \verb*!<x> & </y>! & \small\verb|sm verb| \\
     \end{array}
 VerticalSpacing:
     pre: potato<br>blah

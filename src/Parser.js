@@ -925,7 +925,7 @@ class Parser {
                 new ParseNode("verb", {
                     body: arg,
                     star: star,
-                }, this.mode), false, nucleus);
+                }, "text"), false, nucleus);
         } else {
             return null;
         }
