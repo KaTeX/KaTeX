@@ -784,3 +784,15 @@ defineFunction(["\\begin", "\\end"], {
         nameGroup: nameGroup,
     };
 });
+
+// \verb and \verb* are dealt with directly in Parser.js.
+// If we end up here, it's because of a failure to match the two delimiters
+// in the regex in Lexer.js.  LaTeX raises the following error when \verb is
+// terminated by end of line (or file).
+defineFunction(["\\verb"], {
+    numArgs: 0,
+    allowedInText: true
+}, function(context) {
+    throw new ParseError(
+        "\\verb ended by end of line instead of matching delimiter");
+});
