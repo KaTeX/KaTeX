@@ -5,7 +5,7 @@ function init() {
 
     if ("oninput" in input) {
         input.addEventListener("input", reprocess, false);
-    } else {
+    } else if (input.attachEvent) {
         input.attachEvent("onkeyup", reprocess);
     }
 
