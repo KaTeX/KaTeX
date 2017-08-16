@@ -1206,7 +1206,7 @@ groupTypes.verb = function(group, options) {
             text[i], "Typewriter-Regular", group.mode, options, ["mathtt"]));
     }
     buildCommon.tryCombineChars(body);
-    return makeSpan(["mord"], body, options);
+    return makeSpan(["mord", "text"], body, options);
 };
 
 groupTypes.leftright = function(group, options) {

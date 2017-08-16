@@ -412,7 +412,9 @@ const makeVList = function(children, positionType, positionData, options) {
 const makeVerb = function(group, options) {
     let text = group.value.body;
     if (group.value.star) {
-        text = text.replace(/ /g, '\u2423');  // Open box
+        text = text.replace(/ /g, '\u2423');  // Open Box
+    } else {
+        text = text.replace(/ /g, '\xA0');    // No-Break Space
     }
     //return makeSymbol(text, "Main-Regular", group.mode, options, ["mathtt"]);
     return text;
