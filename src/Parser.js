@@ -4,6 +4,7 @@ import environments from "./environments";
 import MacroExpander from "./MacroExpander";
 import symbols from "./symbols";
 import utils from "./utils";
+import units from "./units";
 import { cjkRegex } from "./unicodeRegexes";
 import ParseNode from "./ParseNode";
 import ParseError from "./ParseError";
@@ -798,11 +799,11 @@ class Parser {
             number: +(match[1] + match[2]), // sign + magnitude, cast to number
             unit: match[3],
         };
-        if (data.unit !== "em" && data.unit !== "ex" && data.unit !== "mu") {
+        if (!units.validUnit(data)) {
             throw new ParseError("Invalid unit: '" + data.unit + "'", res);
         }
         return new ParseFuncOrArgument(
-            new ParseNode("color", data, this.mode),
+            new ParseNode("size", data, this.mode),
             false);
     }
 

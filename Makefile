@@ -74,8 +74,14 @@ build/contrib:
 	rm -rf build/contrib/*
 	$(MAKE) -C contrib/auto-render
 
+.PHONY: build/images
+build/images:
+	rm -rf $@
+	mkdir -p build
+	cp -r static/images $@
+
 .PHONY: build/katex
-build/katex: build/katex.js build/katex.min.js build/katex.css build/katex.min.css build/fonts README.md build/contrib
+build/katex: build/katex.js build/katex.min.js build/katex.css build/katex.min.css build/fonts build/images README.md build/contrib
 	mkdir -p build/katex
 	rm -rf build/katex/*
 	cp -r $^ build/katex

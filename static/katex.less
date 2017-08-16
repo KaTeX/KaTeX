@@ -289,22 +289,9 @@
         }
 
        .frac-line {
+            display: inline-block;
             width: 100%;
-
-            &:before {
-                border-bottom-style: solid;
-                border-bottom-width: 1px;
-                content: "";
-                display: block;
-            }
-
-            &:after {
-                border-bottom-style: solid;
-                border-bottom-width: 0.04em;
-                content: "";
-                display: block;
-                margin-top: -1px;
-            }
+            border-bottom-style: solid;
         }
     }
 
@@ -406,22 +393,9 @@
 
     .overline .overline-line,
     .underline .underline-line {
+        display: inline-block;
         width: 100%;
-
-        &:before {
-            border-bottom-style: solid;
-            border-bottom-width: 1px;
-            content: "";
-            display: block;
-        }
-
-        &:after {
-            border-bottom-style: solid;
-            border-bottom-width: 0.04em;
-            content: "";
-            display: block;
-            margin-top: -1px;
-        }
+        border-bottom-style: solid;
     }
 
     .sqrt {
@@ -430,22 +404,10 @@
         }
 
         .sqrt-line {
+            display: inline-block;
+            position: relative;
             width: 100%;
-
-            &:before {
-                border-bottom-style: solid;
-                border-bottom-width: 1px;
-                content: "";
-                display: block;
-            }
-
-            &:after {
-                border-bottom-style: solid;
-                border-bottom-width: 0.04em;
-                content: "";
-                display: block;
-                margin-top: -1px;
-            }
+            border-bottom-style: solid;
         }
 
         > .root {
@@ -891,9 +853,12 @@
         // This section won't be applied by some older browsers, so they will instead
         // render the black background-image defined above.
 
-      .mask {
-        background-image: none;
-      }
+        .mask,
+        .bcancel-mask,
+        .cancel-mask,
+        .xcancel-mask {
+            background-image: none;
+        }
     }
 
     @supports not ((mask-image:none) or (-webkit-mask:none)) {

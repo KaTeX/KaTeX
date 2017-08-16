@@ -12,6 +12,7 @@ import Style from "./Style";
 import buildCommon, { makeSpan } from "./buildCommon";
 import delimiter from "./delimiter";
 import domTree from "./domTree";
+import units from "./units";
 import utils from "./utils";
 import stretchy from "./stretchy";
 
@@ -432,12 +433,17 @@ groupTypes.genfrac = function(group, options) {
     const denomm = buildGroup(group.value.denom, newOptions, options);
 
     let rule;
+    let ruleWidth;
+    let ruleSpacing;
     if (group.value.hasBarLine) {
         rule = makeLineSpan("frac-line", options);
+        ruleWidth = rule.height;
+        ruleSpacing = rule.height;
     } else {
         rule = null;
+        ruleWidth = 0;
+        ruleSpacing = options.fontMetrics().defaultRuleThickness;
     }
-    const ruleWidth = rule ? rule.height : 0;
 
     // Rule 15b
     let numShift;
@@ -446,18 +452,18 @@ groupTypes.genfrac = function(group, options) {
     if (style.size === Style.DISPLAY.size) {
         numShift = options.fontMetrics().num1;
         if (ruleWidth > 0) {
-            clearance = 3 * ruleWidth;
+            clearance = 3 * ruleSpacing;
         } else {
-            clearance = 7 * options.fontMetrics().defaultRuleThickness;
+            clearance = 7 * ruleSpacing;
         }
         denomShift = options.fontMetrics().denom1;
     } else {
         if (ruleWidth > 0) {
             numShift = options.fontMetrics().num2;
-            clearance = ruleWidth;
+            clearance = ruleSpacing;
         } else {
             numShift = options.fontMetrics().num3;
-            clearance = 3 * options.fontMetrics().defaultRuleThickness;
+            clearance = 3 * ruleSpacing;
         }
         denomShift = options.fontMetrics().denom2;
     }
@@ -540,43 +546,6 @@ groupTypes.genfrac = function(group, options) {
         options);
 };
 
-/**
- * Parse a `sizeValue`, as parsed by functions.js argType "size", into
- * a CSS em value. `options` gives the current options.
- */
-const calculateSize = function(sizeValue, options) {
-    let scale;
-    // `mu` units scale with scriptstyle/scriptscriptstyle.
-    // Other units always refer to the *textstyle* font in the current size.
-    if (sizeValue.unit === "mu") {
-        scale = options.fontMetrics().cssEmPerMu;
-    } else {
-        let unitOptions;
-        if (options.style.isTight()) {
-            // isTight() means current style is script/scriptscript.
-            unitOptions = options.havingStyle(options.style.text());
-        } else {
-            unitOptions = options;
-        }
-        // TODO: In TeX these units are relative to the quad of the current
-        // *text* font, e.g. cmr10. KaTeX instead uses values from the
-        // comparably-sized *Computer Modern symbol* font. At 10pt, these
-        // match. At 7pt and 5pt, they differ: cmr7=1.138894, cmsy7=1.170641;
-        // cmr5=1.361133, cmsy5=1.472241. Consider $\scriptsize a\kern1emb$.
-        // TeX \showlists shows a kern of 1.13889 * fontsize;
-        // KaTeX shows a kern of 1.171 * fontsize.
-        if (sizeValue.unit === "ex") {
-            scale = unitOptions.fontMetrics().xHeight;
-        } else {
-            scale = unitOptions.fontMetrics().quad;
-        }
-        if (unitOptions !== options) {
-            scale *= unitOptions.sizeMultiplier / options.sizeMultiplier;
-        }
-    }
-    return sizeValue.number * scale;
-};
-
 groupTypes.array = function(group, options) {
     let r;
     let c;
@@ -624,7 +593,7 @@ groupTypes.array = function(group, options) {
 
         let gap = 0;
         if (group.value.rowGaps[r]) {
-            gap = calculateSize(group.value.rowGaps[r].value, options);
+            gap = units.calculateSize(group.value.rowGaps[r].value, options);
             if (gap > 0) { // \@argarraycr
                 gap += arstrutDepth;
                 if (depth < gap) {
@@ -1020,13 +989,10 @@ groupTypes.katex = function(group, options) {
         ["mord", "katex-logo"], [k, a, t, e, x], options);
 };
 
-const makeLineSpan = function(className, options) {
-    const baseOptions = options.havingBaseStyle();
-    const line = makeSpan(
-        [className].concat(baseOptions.sizingClasses(options)),
-        [], options);
-    line.height = options.fontMetrics().defaultRuleThickness /
-        options.sizeMultiplier;
+const makeLineSpan = function(className, options, thickness) {
+    const line = makeSpan([className], [], options);
+    line.height = thickness || options.fontMetrics().defaultRuleThickness;
+    line.style.borderBottomWidth = line.height + "em";
     line.maxFontSize = 1.0;
     return line;
 };
@@ -1078,25 +1044,33 @@ groupTypes.sqrt = function(group, options) {
     // and line
     const inner = buildGroup(group.value.body, options.havingCrampedStyle());
 
-    const line = makeLineSpan("sqrt-line", options);
-    const ruleWidth = line.height;
+    // Calculate the minimum size for the \surd delimiter
+    const metrics = options.fontMetrics();
+    const theta = metrics.defaultRuleThickness;
 
-    let phi = ruleWidth;
+    let phi = theta;
     if (options.style.id < Style.TEXT.id) {
-        phi = options.fontMetrics().xHeight * options.sizeMultiplier;
+        phi = options.fontMetrics().xHeight;
     }
 
     // Calculate the clearance between the body and line
-    let lineClearance = ruleWidth + phi / 4;
+    let lineClearance = theta + phi / 4;
 
     const minDelimiterHeight = (inner.height + inner.depth +
-        lineClearance + ruleWidth) * options.sizeMultiplier;
+        lineClearance + theta) * options.sizeMultiplier;
 
     // Create a \surd delimiter of the required minimum size
-    const delim = makeSpan(["sqrt-sign"], [
-        delimiter.customSizedDelim("\\surd", minDelimiterHeight,
-                                   false, options, group.mode)],
-                         options);
+    const delimChar = delimiter.customSizedDelim("\\surd", minDelimiterHeight,
+            false, options, group.mode);
+    const delim = makeSpan(["sqrt-sign"], [delimChar], options);
+
+    // Calculate the actual line width.
+    // This actually should depend on the chosen font -- e.g. \boldmath
+    // should use the thicker surd symbols from e.g. KaTeX_Main-Bold, and
+    // have thicker rules.
+    const ruleWidth = options.fontMetrics().sqrtRuleThickness *
+        delimChar.delimSizeMultiplier;
+    const line = makeLineSpan("sqrt-line", options, ruleWidth);
 
     const delimDepth = (delim.height + delim.depth) - ruleWidth;
 
@@ -1320,11 +1294,11 @@ groupTypes.rule = function(group, options) {
     // Calculate the shift, width, and height of the rule, and account for units
     let shift = 0;
     if (group.value.shift) {
-        shift = calculateSize(group.value.shift, options);
+        shift = units.calculateSize(group.value.shift, options);
     }
 
-    const width = calculateSize(group.value.width, options);
-    const height = calculateSize(group.value.height, options);
+    const width = units.calculateSize(group.value.width, options);
+    const height = units.calculateSize(group.value.height, options);
 
     // Style the rule to the right size
     rule.style.borderRightWidth = width + "em";
@@ -1348,7 +1322,7 @@ groupTypes.kern = function(group, options) {
     const rule = makeSpan(["mord", "rule"], [], options);
 
     if (group.value.dimension) {
-        const dimension = calculateSize(group.value.dimension, options);
+        const dimension = units.calculateSize(group.value.dimension, options);
         rule.style.marginLeft = dimension + "em";
     }
 

@@ -52,8 +52,8 @@ Cases: |
 Colors:
     tex: \blue{a}\textcolor{#0f0}{b}\textcolor{red}{c}
     nolatex: different syntax and different scope
-ColorSpacing: \textcolor{red}{\displaystyle \int x} + 1
 ColorImplicit: bl{ack\color{red}red\textcolor{green}{green}red\color{blue}blue}black
+ColorSpacing: \textcolor{red}{\displaystyle \int x} + 1
 DashesAndQuotes: \text{``a'' b---c -- d----`e'-{-}-f}--``x''
 DeepFontSizing:
     tex: |
@@ -91,6 +91,7 @@ Gathered: |
       y = \sum_{i=1}^n i
     \end{array}
 GreekLetters: \alpha\beta\gamma\omega
+GreekUnicode: \frac{αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω}{ΓΔΘΞΠΣΦΨΩ\mathbf{Ω}\mathbf{\Omega}}
 GroupMacros:
     macros:
         \startExp: e^\bgroup
@@ -202,12 +203,19 @@ StretchyAccent: |
         \overrightarrow{F} + \overrightarrow{AB} + \overrightarrow{F}^2 + \overrightarrow{F}_2 + \overrightarrow{F}_1^2 \\
         \overrightarrow{AB}^2+\frac{\overrightarrow{AB}}{\overrightarrow{AB}} + \sqrt{\overrightarrow{AB}} + \left\lvert\overrightarrow{AB}\right\rvert
     \end{array}
+StretchyAccentColor: |
+    \red{\overrightarrow{AB}} \quad \color{blue}{\overleftarrow{AB}} \quad \color{blue}{\green{\Overrightarrow{AB}}}
 StrikeThrough: |
     \begin{array}{l}
         \cancel x \quad \cancel{2B} + \bcancel 5 +\bcancel{5ay} \\
         \sout{5ab} + \sout{5ABC} + \xcancel{\oint_S{\vec E\cdot\hat n\,\mathrm d a}} \\
         \frac{x+\cancel B}{x+\cancel x} + \frac{x+\cancel y}{x} + \cancel{B}_1^2 + \cancel{B^2} \\
         \left\lvert\cancel{ac}\right\rvert
+    \end{array}
+StrikeThroughColor: |
+    \begin{array}{l}
+        \red{\cancel x \quad \cancel{2B} + \bcancel 5 +\bcancel{5ay}} \\
+        \color{green}{\sout{5ab} + \sout{5ABC} + \xcancel{\oint_S{\vec E\cdot\hat n\,\mathrm d a}}}
     \end{array}
 StyleSpacing: \scriptstyle ab\;cd
 StyleSwitching: a\cdot b\scriptstyle a\cdot ba\textstyle\cdot ba\scriptstyle\cdot b
@@ -223,6 +231,21 @@ Symbols1: |
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
 TextWithMath: \text{for $a < b$ and $ c < d $}.
 Unicode: \begin{matrix}\text{ÀàÇçÉéÏïÖöÛû} \\ \text{БГДЖЗЙЛФЦШЫЮЯ} \\ \text{여보세요} \\ \text{私はバナナです} \end{matrix}
+Units: |
+    \begin{array}{ll}
+      \mathrm H\kern 1em\mathrm H \text{\tiny (1em)}
+      & \mathrm H\kern 1ex\mathrm H \text{\tiny (1ex)} \\
+      \mathrm H{\scriptstyle \kern 1em}\mathrm H \text{\tiny (ss 1em)}
+      & \mathrm H{\scriptstyle \kern 1ex}\mathrm H \text{\tiny (ss 1ex)} \\
+      \mathrm H{\small \kern 1em}\mathrm H \text{\tiny (sm 1em)}
+      & \mathrm H{\small \kern 1ex}\mathrm H \text{\tiny (sm 1ex)} \\
+      \mathrm H\mkern 18mu\mathrm H \text{\tiny (18mu)}
+      & \mathrm H\kern 1cm\mathrm H \text{\tiny (1cm)} \\
+      \mathrm H{\scriptstyle \mkern 18mu}\mathrm H \text{\tiny (ss 18mu)}
+      & \mathrm H{\scriptstyle \kern 1cm}\mathrm H \text{\tiny (ss 1cm)} \\
+      \mathrm H{\small \mkern 18mu}\mathrm H \text{\tiny (sm 18mu)}
+      & \mathrm H{\small \kern 1cm}\mathrm H \text{\tiny (sm 1cm)}
+    \end{array}
 UnsupportedCmds:
     tex: \err\,\frac\fracerr3\,2^\superr_\suberr\,\sqrt\sqrterr
     noThrow: 1
