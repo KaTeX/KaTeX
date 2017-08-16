@@ -853,9 +853,12 @@
         // This section won't be applied by some older browsers, so they will instead
         // render the black background-image defined above.
 
-      .mask {
-        background-image: none;
-      }
+        .mask,
+        .bcancel-mask,
+        .cancel-mask,
+        .xcancel-mask {
+            background-image: none;
+        }
     }
 
     @supports not ((mask-image:none) or (-webkit-mask:none)) {
