@@ -908,6 +908,26 @@ class Parser {
             return new ParseFuncOrArgument(
                 nucleus.text,
                 false, nucleus);
+        } else if (nucleus.text.slice(0, 5) === "\\verb" &&
+                   !nucleus.text.charAt(5).match(/[a-zA-Z]/)) {
+            this.consume();
+            let arg = nucleus.text.slice(5);
+            const star = (arg.charAt(0) === "*");
+            if (star) {
+                arg = arg.slice(1);
+            }
+            // LaTeX raises the following error when \verb is terminated by
+            // end of line (or file).  Lexer's tokenRegex constructed to have
+            // unmatching first/last character in this case.
+            if (arg.length < 2 || arg.charAt(0) !== arg.slice(-1)) {
+                throw new ParseError("\\verb ended by end of line");
+            }
+            arg = arg.slice(1, -1);
+            return new ParseFuncOrArgument(
+                new ParseNode("verb", {
+                    body: arg,
+                    star: star,
+                }, this.mode), false, nucleus);
         } else {
             return null;
         }

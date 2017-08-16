@@ -1203,6 +1203,13 @@ groupTypes.delimsizing = function(group, options) {
             [group.value.mclass]);
 };
 
+groupTypes.verb = function(group, options) {
+    const text = buildCommon.makeVerb(group, options);
+    const body = buildCommon.makeSymbol(
+        text, "Main-Regular", group.mode, options, ["mathtt"]);
+    return makeSpan(["mord", "verb"], [body], options);
+};
+
 groupTypes.leftright = function(group, options) {
     // Build the inner expression
     const inner = buildExpression(group.value.body, options, true);

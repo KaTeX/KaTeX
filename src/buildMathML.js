@@ -517,6 +517,13 @@ groupTypes.sizing = function(group, options) {
     return node;
 };
 
+groupTypes.verb = function(group, options) {
+    const text = new mathMLTree.TextNode(buildCommon.makeVerb(group, options));
+    const node = new mathMLTree.MathNode("mtext", [text]);
+    node.setAttribute("mathvariant", fontMap["mathtt"].variant);
+    return node;
+};
+
 groupTypes.overline = function(group, options) {
     const operator = new mathMLTree.MathNode(
         "mo", [new mathMLTree.TextNode("\u203e")]);

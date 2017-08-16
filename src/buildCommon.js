@@ -394,6 +394,16 @@ const makeVList = function(children, positionType, positionData, options) {
     return vtable;
 };
 
+// Converts verb group into body string, dealing with \verb* form
+const makeVerb = function(group, options) {
+    let text = group.value.body;
+    if (group.value.star) {
+        text = text.replace(/ /g, '\u2423');  // Open box
+    }
+    //return makeSymbol(text, "Main-Regular", group.mode, options, ["mathtt"]);
+    return text;
+};
+
 // A map of spacing functions to their attributes, like size and corresponding
 // CSS class
 const spacingFunctions = {
@@ -487,6 +497,7 @@ module.exports = {
     makeFragment: makeFragment,
     makeVList: makeVList,
     makeOrd: makeOrd,
+    makeVerb: makeVerb,
     prependChildren: prependChildren,
     spacingFunctions: spacingFunctions,
 };
