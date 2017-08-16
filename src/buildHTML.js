@@ -271,12 +271,7 @@ groupTypes.ordgroup = function(group, options) {
 groupTypes.text = function(group, options) {
     const newOptions = options.withFont(group.value.style);
     const inner = buildExpression(group.value.body, newOptions, true);
-    for (let i = 0; i < inner.length - 1; i++) {
-        if (inner[i].tryCombine(inner[i + 1])) {
-            inner.splice(i + 1, 1);
-            i--;
-        }
-    }
+    buildCommon.tryCombineChars(inner);
     return makeSpan(["mord", "text"],
         inner, newOptions);
 };
@@ -1205,9 +1200,13 @@ groupTypes.delimsizing = function(group, options) {
 
 groupTypes.verb = function(group, options) {
     const text = buildCommon.makeVerb(group, options);
-    const body = buildCommon.makeSymbol(
-        text, "Main-Regular", group.mode, options, ["mathtt"]);
-    return makeSpan(["mord", "verb"], [body], options);
+    const body = [];
+    for (let i = 0; i < text.length; i++) {
+        body.push(buildCommon.makeSymbol(
+            text[i], "Main-Regular", group.mode, options, ["mathtt"]));
+    }
+    buildCommon.tryCombineChars(body);
+    return makeSpan(["mord"], body, options);
 };
 
 groupTypes.leftright = function(group, options) {

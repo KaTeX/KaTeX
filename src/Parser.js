@@ -924,7 +924,7 @@ class Parser {
             return new ParseFuncOrArgument(
                 new ParseNode("verb", {
                     body: arg,
-                    star: star
+                    star: star,
                 }, this.mode), false, nucleus);
         } else {
             return null;

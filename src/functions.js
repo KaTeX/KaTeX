@@ -791,7 +791,7 @@ defineFunction(["\\begin", "\\end"], {
 // terminated by end of line (or file).
 defineFunction(["\\verb"], {
     numArgs: 0,
-    allowedInText: true
+    allowedInText: true,
 }, function(context) {
     throw new ParseError(
         "\\verb ended by end of line instead of matching delimiter");

@@ -169,6 +169,20 @@ const makeOrd = function(group, options, type) {
 };
 
 /**
+ * Combine as many characters as possible in the given array of characters
+ * via their tryCombine method.
+ */
+const tryCombineChars = function(chars) {
+    for (let i = 0; i < chars.length - 1; i++) {
+        if (chars[i].tryCombine(chars[i + 1])) {
+            chars.splice(i + 1, 1);
+            i--;
+        }
+    }
+    return chars;
+};
+
+/**
  * Calculate the height, depth, and maxFontSize of an element based on its
  * children.
  */
@@ -498,6 +512,7 @@ module.exports = {
     makeVList: makeVList,
     makeOrd: makeOrd,
     makeVerb: makeVerb,
+    tryCombineChars: tryCombineChars,
     prependChildren: prependChildren,
     spacingFunctions: spacingFunctions,
 };
