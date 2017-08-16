@@ -24,11 +24,6 @@ The license terms above apply to the following images:
     rightharpoon.svg          U+21C0             KaTeX Main
     rightharpoondown.svg      U+21C1             KaTeX Main
     rightleftharpoons.svg     U+21CC             KaTeX Main
-    sqrt-main.svg             U+221A             KaTeX Main
-    sqrt-size1.svg            U+221A             KaTeX_Size1-Regular
-    sqrt-size2.svg            U+221A             KaTeX_Size2-Regular
-    sqrt-size3.svg            U+221A             KaTeX_Size3-Regular
-    sqrt-size4.svg            U+221A             KaTeX_Size4-Regular
     tofrom.svg                U+21C4             KaTeX AMS Regular
     twoheadleftarrow.svg      U+219E             KaTeX AMS Regular
     twoheadrightarrow.svg     U+21A0             KaTeX AMS Regular

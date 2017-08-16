@@ -1105,9 +1105,6 @@ groupTypes.sqrt = function(group, options) {
     const img = delimiter.customSizedDelim("\\surd", minDelimiterHeight,
                     false, options, group.mode);
 
-    const surdWidth = img.width + "em";
-    // Actually img width will be set by CSS to match argument width.
-
     // Calculate the actual line width.
     // This actually should depend on the chosen font -- e.g. \boldmath
     // should use the thicker surd symbols from e.g. KaTeX_Main-Bold, and
@@ -1135,7 +1132,7 @@ groupTypes.sqrt = function(group, options) {
     if (inner.height === 0 && inner.depth === 0) {
         body = makeSpan();
     } else {
-        inner.style.paddingLeft = surdWidth;
+        inner.style.paddingLeft = img.surdWidth + "em";
         // Overlay the image and the argument.
         body = buildCommon.makeVList([
             {type: "elem", elem: inner, shift: 0},
