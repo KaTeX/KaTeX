@@ -1042,7 +1042,13 @@ groupTypes.sqrt = function(group, options) {
 
     // First, we do the same steps as in overline to build the inner group
     // and line
-    const inner = buildGroup(group.value.body, options.havingCrampedStyle());
+    let inner = buildGroup(group.value.body, options.havingCrampedStyle());
+
+    // Some groups can return document fragments.  Handle those by wrapping
+    // them in a span.
+    if (inner instanceof domTree.documentFragment) {
+        inner = makeSpan([], [inner], options);
+    }
 
     // Calculate the minimum size for the \surd delimiter
     const metrics = options.fontMetrics();
@@ -1059,20 +1065,18 @@ groupTypes.sqrt = function(group, options) {
     const minDelimiterHeight = (inner.height + inner.depth +
         lineClearance + theta) * options.sizeMultiplier;
 
-    // Create a \surd delimiter of the required minimum size
-    const delimChar = delimiter.customSizedDelim("\\surd", minDelimiterHeight,
-            false, options, group.mode);
-    const delim = makeSpan(["sqrt-sign"], [delimChar], options);
+    // Create a sqrt SVG of the required minimum size
+    const img = delimiter.customSizedDelim("\\surd", minDelimiterHeight,
+                    false, options, group.mode);
 
     // Calculate the actual line width.
     // This actually should depend on the chosen font -- e.g. \boldmath
     // should use the thicker surd symbols from e.g. KaTeX_Main-Bold, and
     // have thicker rules.
     const ruleWidth = options.fontMetrics().sqrtRuleThickness *
-        delimChar.delimSizeMultiplier;
-    const line = makeLineSpan("sqrt-line", options, ruleWidth);
+        img.sizeMultiplier;
 
-    const delimDepth = (delim.height + delim.depth) - ruleWidth;
+    const delimDepth = img.height - ruleWidth;
 
     // Adjust the clearance based on the delimiter size
     if (delimDepth > inner.height + inner.depth + lineClearance) {
@@ -1080,12 +1084,8 @@ groupTypes.sqrt = function(group, options) {
             (lineClearance + delimDepth - inner.height - inner.depth) / 2;
     }
 
-    // Shift the delimiter so that its top lines up with the top of the line
-    const delimShift = -(inner.height + lineClearance + ruleWidth) +
-          delim.height;
-    delim.style.top = delimShift + "em";
-    delim.height -= delimShift;
-    delim.depth += delimShift;
+    // Shift the sqrt image
+    const imgShift = img.height - inner.height - lineClearance - ruleWidth;
 
     // We add a special case here, because even when `inner` is empty, we
     // still get a line. So, we use a simple heuristic to decide if we
@@ -1096,16 +1096,16 @@ groupTypes.sqrt = function(group, options) {
     if (inner.height === 0 && inner.depth === 0) {
         body = makeSpan();
     } else {
+        inner.style.paddingLeft = img.surdWidth + "em";
+        // Overlay the image and the argument.
         body = buildCommon.makeVList([
-            {type: "elem", elem: inner},
-            {type: "kern", size: lineClearance},
-            {type: "elem", elem: line},
-            {type: "kern", size: ruleWidth},
-        ], "firstBaseline", null, options);
+            {type: "elem", elem: inner, shift: 0},
+            {type: "elem", elem: img,  shift: imgShift},
+        ], "individualShift", null, options);
     }
 
     if (!group.value.index) {
-        return makeSpan(["mord", "sqrt"], [delim, body], options);
+        return makeSpan(["mord", "sqrt"], [body], options);
     } else {
         // Handle the optional root index
 
@@ -1113,13 +1113,9 @@ groupTypes.sqrt = function(group, options) {
         const newOptions = options.havingStyle(Style.SCRIPTSCRIPT);
         const rootm = buildGroup(group.value.index, newOptions, options);
 
-        // Figure out the height and depth of the inner part
-        const innerRootHeight = Math.max(delim.height, body.height);
-        const innerRootDepth = Math.max(delim.depth, body.depth);
-
         // The amount the index is shifted by. This is taken from the TeX
         // source, in the definition of `\r@@t`.
-        const toShift = 0.6 * (innerRootHeight - innerRootDepth);
+        const toShift = 0.6 * (body.height - body.depth);
 
         // Build a VList with the superscript shifted up correctly
         const rootVList = buildCommon.makeVList(
@@ -1130,7 +1126,7 @@ groupTypes.sqrt = function(group, options) {
         const rootVListWrap = makeSpan(["root"], [rootVList]);
 
         return makeSpan(["mord", "sqrt"],
-            [rootVListWrap, delim, body], options);
+            [rootVListWrap, body], options);
     }
 };
 
