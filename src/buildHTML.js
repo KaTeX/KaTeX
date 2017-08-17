@@ -1407,7 +1407,7 @@ groupTypes.accent = function(group, options) {
         if (group.value.label === "\\vec") {
             accentClass = "accent-vec";
         } else if (utils.contains(["\\'", "\\`", "\\^", "\\~", "\\=", "\\u",
-                   "\\.", '\\"', "\\r", "\\H", "\\v"], group.value.label) {
+            "\\.", '\\"', "\\r", "\\H", "\\v"], group.value.label)) {
             accentClass = "accent-text";
         }
 
