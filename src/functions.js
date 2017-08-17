@@ -660,6 +660,26 @@ defineFunction([
     };
 });
 
+// Text-mode accents
+defineFunction([
+    "\\'", "\\`", "\\^", "\\~", "\\=", "\\u", "\\.", '\\"',
+    "\\r", "\\H", "\\v",
+], {
+    numArgs: 1,
+    allowedInText: true,
+}, function(context, args) {
+    const base = args[0];
+
+    return {
+        type: "accent",
+        label: context.funcName,
+        isStretchy: false,
+        isShifty: true,
+        value: ordargument(base),
+        base: base,
+    };
+});
+
 // Horizontal stretchy braces
 defineFunction([
     "\\overbrace", "\\underbrace",

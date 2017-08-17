@@ -1392,7 +1392,7 @@ groupTypes.accent = function(group, options) {
     let accentBody;
     if (!group.value.isStretchy) {
         const accent = buildCommon.makeSymbol(
-            group.value.label, "Main-Regular", "math", options);
+            group.value.label, "Main-Regular", group.mode, options);
         // Remove the italic correction of the accent, because it only serves to
         // shift the accent over to a place we don't want.
         accent.italic = 0;
@@ -1401,9 +1401,17 @@ groupTypes.accent = function(group, options) {
         // thus shows up much too far to the left. To account for this, we add a
         // specific class which shifts the accent over to where we want it.
         // TODO(emily): Fix this in a better way, like by changing the font
-        const vecClass = group.value.label === "\\vec" ? "accent-vec" : null;
+        // Similarly, all text accents are combining characters and require
+        // a different adjustment.
+        let accentClass = null;
+        if (group.value.label === "\\vec") {
+            accentClass = "accent-vec";
+        } else if (utils.contains(["\\'", "\\`", "\\^", "\\~", "\\=", "\\u",
+                   "\\.", '\\"', "\\r", "\\H", "\\v"], group.value.label) {
+            accentClass = "accent-text";
+        }
 
-        accentBody = makeSpan(["accent-body", vecClass], [
+        accentBody = makeSpan(["accent-body", accentClass], [
             makeSpan([], [accent])]);
 
         // Shift the accent over by the skew. Note we shift by twice the skew
