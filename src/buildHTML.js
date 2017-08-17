@@ -1411,8 +1411,19 @@ groupTypes.accent = function(group, options) {
             accentClass = "accent-text";
         }
 
-        accentBody = makeSpan(["accent-body", accentClass], [
-            makeSpan([], [accent])]);
+        // Some browsers (Safari in particular) don't like combining
+        // characters without a preceding character.  For each such accent,
+        // we add an artificial nonbreaking space with a negative margin
+        // to compensate for its width.
+        if (utils.contains(["\\vec", "\\'", "\\`", "\\^", "\\~", "\\=", "\\u",
+            "\\.", '\\"', "\\r", "\\H", "\\v"], group.value.label)) {
+            const spaceHack = buildCommon.makeSymbol(
+                " ", "Main-Regular", group.mode, options);  // nonbreaking space
+            accentBody = makeSpan(["combining-hack"], [spaceHack, accent]);
+        } else {
+            accentBody = makeSpan([], [accent]);
+        }
+        accentBody = makeSpan(["accent-body", accentClass], [accentBody]);
 
         // Shift the accent over by the skew. Note we shift by twice the skew
         // because we are centering the accent, so by adding 2*skew to the left,

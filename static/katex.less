@@ -516,8 +516,11 @@
 
         .accent-body.accent-text > span {
             position: relative;
-            // TODO: Where does this number come from?
-            left: 0.262em;
+            left: 0.262em;  // width of space, apparently
+        }
+
+        .accent-body > span.combining-hack {
+            margin-left: -0.262em;  // width of space
         }
     }
 
