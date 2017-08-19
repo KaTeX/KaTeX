@@ -1420,16 +1420,18 @@ groupTypes.accent = function(group, options) {
     } else {
         accentBody = stretchy.svgSpan(group, options);
 
-        if (skew > 0) {
-            // Shorten the accent. That will nudge it to the right.
-            const adjSize = "calc(100% - " + (2 * skew) + "em) 100%";
-            accentBody.style.backgroundSize = adjSize;
-        }
-
         accentBody = buildCommon.makeVList([
             {type: "elem", elem: body},
             {type: "elem", elem: accentBody},
         ], "firstBaseline", null, options);
+
+        const styleSpan = accentBody.children[0].children[0].children[1];
+        styleSpan.classes.push("svg-align");  // text-align: left;
+        if (skew > 0) {
+            // Shorten the accent and nudge it to the right.
+            styleSpan.style.width = `calc(100% - ${2 * skew}em)`;
+            styleSpan.style.marginLeft = (2 * skew) + "em";
+        }
     }
 
     const accentWrap = makeSpan(["mord", "accent"], [accentBody], options);
@@ -1488,12 +1490,14 @@ groupTypes.horizBrace = function(group, options) {
             {type: "kern", size: 0.1},
             {type: "elem", elem: braceBody},
         ], "firstBaseline", null, options);
+        vlist.children[0].children[0].children[1].classes.push("svg-align");
     } else {
         vlist = buildCommon.makeVList([
             {type: "elem", elem: braceBody},
             {type: "kern", size: 0.1},
             {type: "elem", elem: body},
         ], "bottom", body.depth + 0.1 + braceBody.height, options);
+        vlist.children[0].children[0].children[0].classes.push("svg-align");
     }
 
     if (hasSupSub) {
@@ -1543,6 +1547,8 @@ groupTypes.accentUnder = function(group, options) {
         {type: "elem", elem: innerGroup},
     ], "bottom", accentBody.height + kern, options);
 
+    vlist.children[0].children[0].children[0].classes.push("svg-align");
+
     return makeSpan(["mord", "accentunder"], [vlist], options);
 };
 
@@ -1559,7 +1565,6 @@ groupTypes.enclose = function(group, options) {
     if (label === "sout") {
         img = makeSpan(["stretchy", "sout"]);
         img.height = options.fontMetrics().defaultRuleThickness / scale;
-        img.maxFontSize = 1.0;
         imgShift = -0.5 * options.fontMetrics().xHeight;
     } else {
         // Add horizontal padding
@@ -1572,13 +1577,17 @@ groupTypes.enclose = function(group, options) {
         pad = (label === "fbox" ? 0.34 : (isCharBox ? 0.2 : 0));
         imgShift = inner.depth + pad;
 
-        img = stretchy.encloseSpan(inner, isCharBox, label, pad, options);
+        img = stretchy.encloseSpan(inner, label, pad, options);
     }
 
     const vlist = buildCommon.makeVList([
         {type: "elem", elem: inner, shift: 0},
         {type: "elem", elem: img, shift: imgShift},
     ], "individualShift", null, options);
+
+    if (label !== "fbox") {
+        vlist.children[0].children[0].children[1].classes.push("svg-align");
+    }
 
     if (/cancel/.test(label)) {
         // cancel does not create horiz space for its line extension.
@@ -1630,6 +1639,8 @@ groupTypes.xArrow = function(group, options) {
             {type: "elem", elem: arrowBody,  shift: arrowShift},
         ], "individualShift", null, options);
     }
+
+    vlist.children[0].children[0].children[1].classes.push("svg-align");
 
     return makeSpan(["mrel", "x-arrow"], [vlist], options);
 };
