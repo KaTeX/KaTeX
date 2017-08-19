@@ -139,11 +139,11 @@ const katexImagesData = {
 
 const innerSVG = {
     // Since bcancel's SVG is inline and it omits the viewBox attribute,
-    // the browswer will render stroke-width='1.5px' in the screen context.
-    bcancel: `<line x1='0' y1='0' x2='100%' y2='100%' stroke-width='1.5px'
+    // it's stroke-width will not vary with span area.
+    bcancel: `<line x1='0' y1='0' x2='100%' y2='100%' stroke-width='0.046em'
 stroke='currentcolor'/>`,
 
-    cancel: `<line x1='0' y1='100%' x2='100%' y2='0' stroke-width='1.5px'
+    cancel: `<line x1='0' y1='100%' x2='100%' y2='0' stroke-width='0.046em'
 stroke='currentcolor'/>`,
 
     // The doubleleftarrow geometry is from glyph U+21D0 in the font KaTeX Main
@@ -486,9 +486,9 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/>`,
 <path fill='currentcolor' d='M1181 0h2l1171 296c6 0 10 5 10 11l-2 23c-1 6-5 10
 -11 10h-1L1182 67 15 340h-1c-6 0-10-4-11-10l-2-23c-1-6 4-11 10-11z'/>`,
 
-    xcancel: `<line x1='0' y1='0' x2='100%' y2='100%' stroke-width='1.5px'
+    xcancel: `<line x1='0' y1='0' x2='100%' y2='100%' stroke-width='0.046em'
 stroke='currentcolor'/><line x1='0' y1='100%' x2='100%' y2='0'
-stroke-width='1.5px' stroke='currentcolor'/>`,
+stroke-width='0.046em' stroke='currentcolor'/>`,
 };
 
 const svgSpan = function(group, options) {
