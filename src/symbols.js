@@ -671,16 +671,19 @@ for (let i = 0; i < letters.length; i++) {
 // Latin-1 letters
 for (let i = 0x00C0; i <= 0x00D6; i++) {
     const ch = String.fromCharCode(i);
+    defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
 
 for (let i = 0x00D8; i <= 0x00F6; i++) {
     const ch = String.fromCharCode(i);
+    defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
 
 for (let i = 0x00F8; i <= 0x00FF; i++) {
     const ch = String.fromCharCode(i);
+    defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
 
