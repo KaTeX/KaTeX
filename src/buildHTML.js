@@ -1401,13 +1401,11 @@ groupTypes.accent = function(group, options) {
         // thus shows up much too far to the left. To account for this, we add a
         // specific class which shifts the accent over to where we want it.
         // TODO(emily): Fix this in a better way, like by changing the font
-        // Similarly, text accents \" and \H are combining characters and
-        // require a different adjustment.
+        // Similarly, text accent \H is a combining character and
+        // requires a different adjustment.
         let accentClass = null;
         if (group.value.label === "\\vec") {
             accentClass = "accent-vec";
-        } else if (group.value.label === '\\"') {
-            accentClass = "accent-umlaut";
         } else if (group.value.label === '\\H') {
             accentClass = "accent-hungarian";
         }

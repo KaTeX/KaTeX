@@ -625,7 +625,7 @@ defineSymbol(text, main, accent, "\u02d8", "\\u"); // breve
 defineSymbol(text, main, accent, "\u02d9", "\\."); // dot above
 defineSymbol(text, main, accent, "\u02da", "\\r"); // ring above
 defineSymbol(text, main, accent, "\u02c7", "\\v"); // caron
-defineSymbol(text, main, accent, "\u0308", '\\"'); // diaresis
+defineSymbol(text, main, accent, "\u00a8", '\\"'); // diaresis
 defineSymbol(text, main, accent, "\u030B", "\\H"); // double acute
 
 defineSymbol(text, main, textord, "\u2013", "--");
