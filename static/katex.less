@@ -514,13 +514,17 @@
             left: 0.326em;
         }
 
-        .accent-body.accent-text > span {
+        .accent-body.accent-umlaut > span {
             position: relative;
-            left: 0.262em;  // width of space, apparently
+            // Average of -xMin (405) and -xMax (96)
+            left: 0.2505em;
         }
 
-        .accent-body > span.combining-hack {
-            margin-left: -0.262em;  // width of space
+        .accent-body.accent-hungarian > span {
+            position: relative;
+            // Average of -xMin (378) and -xMax (80)
+            //left: 0.229em;
+            left: 0.2505em;
         }
     }
 

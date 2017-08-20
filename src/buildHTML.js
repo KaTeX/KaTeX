@@ -1401,28 +1401,18 @@ groupTypes.accent = function(group, options) {
         // thus shows up much too far to the left. To account for this, we add a
         // specific class which shifts the accent over to where we want it.
         // TODO(emily): Fix this in a better way, like by changing the font
-        // Similarly, all text accents are combining characters and require
-        // a different adjustment.
+        // Similarly, text accents \" and \H are combining characters and
+        // require a different adjustment.
         let accentClass = null;
         if (group.value.label === "\\vec") {
             accentClass = "accent-vec";
-        } else if (utils.contains(["\\'", "\\`", "\\^", "\\~", "\\=", "\\u",
-            "\\.", '\\"', "\\r", "\\H", "\\v"], group.value.label)) {
-            accentClass = "accent-text";
+        } else if (group.value.label === '\\"') {
+            accentClass = "accent-umlaut";
+        } else if (group.value.label === '\\H') {
+            accentClass = "accent-hungarian";
         }
 
-        // Some browsers (Safari in particular) don't like combining
-        // characters without a preceding character.  For each such accent,
-        // we add an artificial nonbreaking space with a negative margin
-        // to compensate for its width.
-        if (utils.contains(["\\vec", "\\'", "\\`", "\\^", "\\~", "\\=", "\\u",
-            "\\.", '\\"', "\\r", "\\H", "\\v"], group.value.label)) {
-            const spaceHack = buildCommon.makeSymbol(
-                " ", "Main-Regular", group.mode, options);  // nonbreaking space
-            accentBody = makeSpan(["combining-hack"], [spaceHack, accent]);
-        } else {
-            accentBody = makeSpan([], [accent]);
-        }
+        accentBody = makeSpan([], [accent]);
         accentBody = makeSpan(["accent-body", accentClass], [accentBody]);
 
         // Shift the accent over by the skew. Note we shift by twice the skew

@@ -616,17 +616,17 @@ defineSymbol(math, main, accent, "\u20d7", "\\vec");
 defineSymbol(math, main, accent, "\u02d9", "\\dot");
 defineSymbol(math, main, mathord, "\u0131", "\\imath");
 defineSymbol(math, main, mathord, "\u0237", "\\jmath");
-defineSymbol(text, main, accent, "\u0300", "\\`"); // grave
-defineSymbol(text, main, accent, "\u0301", "\\'"); // acute
-defineSymbol(text, main, accent, "\u0302", "\\^"); // circumflex
-defineSymbol(text, main, accent, "\u0303", "\\~"); // tilde
-defineSymbol(text, main, accent, "\u0304", "\\="); // macron
-defineSymbol(text, main, accent, "\u0306", "\\u"); // breve
-defineSymbol(text, main, accent, "\u0307", "\\."); // dot above
+defineSymbol(text, main, accent, "\u02ca", "\\'"); // acute
+defineSymbol(text, main, accent, "\u02cb", "\\`"); // grave
+defineSymbol(text, main, accent, "\u02c6", "\\^"); // circumflex
+defineSymbol(text, main, accent, "\u02dc", "\\~"); // tilde
+defineSymbol(text, main, accent, "\u02c9", "\\="); // macron
+defineSymbol(text, main, accent, "\u02d8", "\\u"); // breve
+defineSymbol(text, main, accent, "\u02d9", "\\."); // dot above
+defineSymbol(text, main, accent, "\u02da", "\\r"); // ring above
+defineSymbol(text, main, accent, "\u02c7", "\\v"); // caron
 defineSymbol(text, main, accent, "\u0308", '\\"'); // diaresis
-defineSymbol(text, main, accent, "\u030A", "\\r"); // ring above
 defineSymbol(text, main, accent, "\u030B", "\\H"); // double acute
-defineSymbol(text, main, accent, "\u030C", "\\v"); // caron
 
 defineSymbol(text, main, textord, "\u2013", "--");
 defineSymbol(text, main, textord, "\u2013", "\\textendash");
