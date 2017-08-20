@@ -1,3 +1,4 @@
+// @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
@@ -5,20 +6,20 @@ import mathMLTree from "../mathMLTree";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-defineFunction(
-    "\\phantom",
-    {
+defineFunction({
+    type: "phantom",
+    names: "\\phantom",
+    props: {
         numArgs: 1,
     },
-    (context, args) => {
+    handler: (context, args) => {
         const body = args[0];
         return {
             type: "phantom",
             value: ordargument(body),
         };
     },
-    "phantom",
-    (group, options) => {
+    htmlBuilder: (group, options) => {
         const elements = html.buildExpression(
             group.value.value,
             options.withPhantom(),
@@ -29,18 +30,19 @@ defineFunction(
         // See "color" for more details.
         return new buildCommon.makeFragment(elements);
     },
-    (group, options) => {
+    mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(group.value.value, options);
         return new mathMLTree.MathNode("mphantom", inner);
     },
-);
+});
 
-defineFunction(
-    "\\hphantom",
-    {
+defineFunction({
+    type: "hphantom",
+    names: "\\hphantom",
+    props: {
         numArgs: 1,
     },
-    (context, args) => {
+    handler: (context, args) => {
         const body = args[0];
         return {
             type: "hphantom",
@@ -48,8 +50,7 @@ defineFunction(
             body: body,
         };
     },
-    "hphantom",
-    (group, options) => {
+    htmlBuilder: (group, options) => {
         let node = buildCommon.makeSpan(
             [], [html.buildGroup(group.value.body, options.withPhantom())]);
         node.height = 0;
@@ -68,20 +69,21 @@ defineFunction(
 
         return node;
     },
-    (group, options) => {
+    mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(group.value.value, options);
         const node = new mathMLTree.MathNode("mphantom", inner);
         node.setAttribute("height", "0px");
         return node;
     },
-);
+});
 
-defineFunction(
-    "\\vphantom",
-    {
+defineFunction({
+    type: "vphantom",
+    names: "\\vphantom",
+    props: {
         numArgs: 1,
     },
-    (context, args) => {
+    handler: (context, args) => {
         const body = args[0];
         return {
             type: "vphantom",
@@ -89,8 +91,7 @@ defineFunction(
             body: body,
         };
     },
-    "vphantom",
-    (group, options) => {
+    htmlBuilder: (group, options) => {
         const inner = buildCommon.makeSpan(
             ["inner"],
             [html.buildGroup(group.value.body, options.withPhantom())]);
@@ -98,11 +99,10 @@ defineFunction(
         return buildCommon.makeSpan(
             ["mord", "rlap"], [inner, fix], options);
     },
-    (group, options) => {
+    mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(group.value.value, options);
         const node = new mathMLTree.MathNode("mphantom", inner);
         node.setAttribute("width", "0px");
         return node;
     },
-);
-
+});
