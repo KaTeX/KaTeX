@@ -101,6 +101,9 @@ compress: build/katex.min.js build/katex.min.css
 serve: $(NIS)
 	$(NODE) server.js
 
+flow: $(NIS)
+	node_modules/.bin/flow
+
 test: $(NIS)
 	node_modules/.bin/jest
 
