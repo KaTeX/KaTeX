@@ -1,8 +1,13 @@
 import utils from "./utils";
 import ParseError from "./ParseError";
 import ParseNode from "./ParseNode";
+import {default as _defineFunction, ordargument} from "./defineFunction";
 
-import defineFunction, {ordargument} from "./defineFunction";
+// Define a convenience function that mimcs the old semantics of defineFunction
+// to support existing code so that we can migrate it a little bit at a time.
+const defineFunction = function(names, props, handler) {
+    _defineFunction({names, props, handler});
+};
 
 // A normal square root
 defineFunction("\\sqrt", {

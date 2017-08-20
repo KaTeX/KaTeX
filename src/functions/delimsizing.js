@@ -1,3 +1,4 @@
+// @flow
 import buildCommon, {makeSpan} from "../buildCommon";
 import defineFunction from "../defineFunction";
 import delimiter from "../delimiter";
@@ -54,17 +55,18 @@ const checkDelimiter = function(delim, context) {
     }
 };
 
-defineFunction(
-    [
+defineFunction({
+    type: "delimsizing",
+    names: [
         "\\bigl", "\\Bigl", "\\biggl", "\\Biggl",
         "\\bigr", "\\Bigr", "\\biggr", "\\Biggr",
         "\\bigm", "\\Bigm", "\\biggm", "\\Biggm",
         "\\big",  "\\Big",  "\\bigg",  "\\Bigg",
     ],
-    {
+    props: {
         numArgs: 1,
     },
-    function(context, args) {
+    handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
 
         return {
@@ -74,8 +76,7 @@ defineFunction(
             value: delim.value,
         };
     },
-    "delimsizing",
-    function(group, options) {
+    htmlBuilder: (group, options) => {
         const delim = group.value.value;
 
         if (delim === ".") {
@@ -89,7 +90,7 @@ defineFunction(
                 delim, group.value.size, options, group.mode,
                 [group.value.mclass]);
     },
-    function(group) {
+    mathmlBuilder: (group) => {
         const children = [];
 
         if (group.value.value !== ".") {
@@ -111,14 +112,17 @@ defineFunction(
 
         return node;
     },
-);
+});
 
-defineFunction(
-    [
+defineFunction({
+    type: "leftright",
+    names: [
         "\\left", "\\right",
-    ], {
+    ],
+    props: {
         numArgs: 1,
-    }, function(context, args) {
+    },
+    handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
 
         // \left and \right are caught somewhere in Parser.js, which is
@@ -128,8 +132,7 @@ defineFunction(
             value: delim.value,
         };
     },
-    "leftright",
-    function(group, options) {
+    htmlBuilder: (group, options) => {
         // Build the inner expression
         const inner = html.buildExpression(group.value.body, options, true);
 
@@ -199,7 +202,7 @@ defineFunction(
 
         return makeSpan(["minner"], inner, options);
     },
-    function(group, options) {
+    mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(group.value.body, options);
 
         if (group.value.left !== ".") {
@@ -224,13 +227,15 @@ defineFunction(
 
         return outerNode;
     },
-);
+});
 
-defineFunction(
-    "\\middle",
-    {
+defineFunction({
+    type: "middle",
+    names: "\\middle",
+    props: {
         numArgs: 1,
-    }, function(context, args) {
+    },
+    handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
         if (!context.parser.leftrightDepth) {
             throw new ParseError("\\middle without preceding \\left", delim);
@@ -241,8 +246,7 @@ defineFunction(
             value: delim.value,
         };
     },
-    "middle",
-    function(group, options) {
+    htmlBuilder: (group, options) => {
         let middleDelim;
         if (group.value.value === ".") {
             middleDelim = html.makeNullDelimiter(options, []);
@@ -254,10 +258,10 @@ defineFunction(
         }
         return middleDelim;
     },
-    function(group, options) {
+    mathmlBuilder: (group, options) => {
         const middleNode = new mathMLTree.MathNode(
             "mo", [mml.makeText(group.value.middle, group.mode)]);
         middleNode.setAttribute("fence", "true");
         return middleNode;
     },
-);
+});
