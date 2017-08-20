@@ -56,6 +56,10 @@ type FunctionSpec<T> = {
         // (default false)
         allowedInText?: boolean,
 
+        // Whether or not the function is allowed inside text mode
+        // (default true)
+        allowedInMath?: boolean,
+
         // (optional) The number of optional arguments the function
         // should parse. If the optional arguments aren't found,
         // `null` will be passed to the handler in their place.
@@ -115,7 +119,9 @@ export default function defineFunction({
         argTypes: props.argTypes,
         greediness: (props.greediness === undefined) ? 1 : props.greediness,
         allowedInText: !!props.allowedInText,
-        allowedInMath: props.allowedInMath,
+        allowedInMath: (props.allowedInMath === undefined)
+            ? true
+            : props.allowedInMath,
         numOptionalArgs: props.numOptionalArgs || 0,
         infix: !!props.infix,
         handler: handler,
