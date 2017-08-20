@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+shopt -s extglob
 
 usage() {
     while [[ $# -gt 1 ]]; do
