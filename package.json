@@ -1,8 +1,8 @@
 {
   "name": "katex",
-  "version": "0.8.0-pre",
+  "version": "0.8.3-pre",
   "description": "Fast math typesetting for the web.",
-  "main": "katex.js",
+  "main": "dist/katex.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/Khan/KaTeX.git"
@@ -15,19 +15,29 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "babel-eslint": "^7.2.0",
+    "babel-jest": "^20.0.3",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-register": "^6.24.0",
+    "babelify": "^7.3.0",
     "browserify": "^13.3.0",
     "clean-css": "^3.4.23",
     "eslint": "^3.13.0",
     "express": "^4.14.0",
     "glob": "^7.1.1",
-    "jasmine": "^2.3.2",
-    "jasmine-core": "^2.3.4",
+    "jest": "^20.0.4",
+    "jest-serializer-html": "^4.0.0",
     "js-yaml": "^3.3.1",
     "jspngopt": "^0.2.0",
     "less": "~2.7.1",
+    "morgan": "^1.7.0",
     "nomnom": "^1.8.1",
+    "object-assign": "^4.1.0",
     "pako": "1.0.4",
     "selenium-webdriver": "^2.48.2",
+    "sri-toolbox": "^0.2.0",
     "uglify-js": "~2.7.5"
   },
   "bin": "cli.js",
@@ -37,5 +47,16 @@
   },
   "dependencies": {
     "match-at": "^0.1.0"
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "jest-serializer-html"
+    ],
+    "testMatch": [
+      "**/test/*-spec.js"
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    }
   }
 }

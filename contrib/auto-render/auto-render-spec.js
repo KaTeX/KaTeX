@@ -1,66 +1,61 @@
 /* global beforeEach: false */
-/* global jasmine: false */
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
 
-var splitAtDelimiters = require("./splitAtDelimiters");
+const splitAtDelimiters = require("./splitAtDelimiters");
 
 beforeEach(function() {
-    jasmine.addMatchers({
-        toSplitInto: function() {
-            return {
-                compare: function(actual, left, right, result) {
-                    var message = {
-                        pass: true,
-                        message: "'" + actual + "' split correctly",
-                    };
-
-                    var startData = [{type: "text", data: actual}];
-
-                    var split =
-                        splitAtDelimiters(startData, left, right, false);
-
-                    if (split.length !== result.length) {
-                        message.pass = false;
-                        message.message = "Different number of splits: " +
-                            split.length + " vs. " + result.length + " (" +
-                            JSON.stringify(split) + " vs. " +
-                            JSON.stringify(result) + ")";
-                        return message;
-                    }
-
-                    for (var i = 0; i < split.length; i++) {
-                        var real = split[i];
-                        var correct = result[i];
-
-                        var good = true;
-                        var diff;
-
-                        if (real.type !== correct.type) {
-                            good = false;
-                            diff = "type";
-                        } else if (real.data !== correct.data) {
-                            good = false;
-                            diff = "data";
-                        } else if (real.display !== correct.display) {
-                            good = false;
-                            diff = "display";
-                        }
-
-                        if (!good) {
-                            message.pass = false;
-                            message.message = "Difference at split " +
-                                (i + 1) + ": " + JSON.stringify(real) +
-                                " vs. " + JSON.stringify(correct) +
-                                " (" + diff + " differs)";
-                            break;
-                        }
-                    }
-
-                    return message;
-                },
+    expect.extend({
+        toSplitInto: function(actual, left, right, result) {
+            const message = {
+                pass: true,
+                message: "'" + actual + "' split correctly",
             };
+
+            const startData = [{type: "text", data: actual}];
+
+            const split =
+                splitAtDelimiters(startData, left, right, false);
+
+            if (split.length !== result.length) {
+                message.pass = false;
+                message.message = "Different number of splits: " +
+                    split.length + " vs. " + result.length + " (" +
+                    JSON.stringify(split) + " vs. " +
+                    JSON.stringify(result) + ")";
+                return message;
+            }
+
+            for (let i = 0; i < split.length; i++) {
+                const real = split[i];
+                const correct = result[i];
+
+                let good = true;
+                let diff;
+
+                if (real.type !== correct.type) {
+                    good = false;
+                    diff = "type";
+                } else if (real.data !== correct.data) {
+                    good = false;
+                    diff = "data";
+                } else if (real.display !== correct.display) {
+                    good = false;
+                    diff = "display";
+                }
+
+                if (!good) {
+                    message.pass = false;
+                    message.message = "Difference at split " +
+                        (i + 1) + ": " + JSON.stringify(real) +
+                        " vs. " + JSON.stringify(correct) +
+                        " (" + diff + " differs)";
+                    break;
+                }
+            }
+
+            return message;
         },
     });
 });
@@ -189,7 +184,7 @@ describe("A delimiter splitter", function() {
     });
 
     it("remembers which delimiters are display-mode", function() {
-        var startData = [{type: "text", data: "hello ( world ) boo"}];
+        const startData = [{type: "text", data: "hello ( world ) boo"}];
 
         expect(splitAtDelimiters(startData, "(", ")", true)).toEqual(
             [
@@ -201,7 +196,7 @@ describe("A delimiter splitter", function() {
     });
 
     it("works with more than one start datum", function() {
-        var startData = [
+        const startData = [
             {type: "text", data: "hello ( world ) boo"},
             {type: "math", data: "math", rawData: "(math)", display: true},
             {type: "text", data: "hello ( world ) boo"},
@@ -222,7 +217,7 @@ describe("A delimiter splitter", function() {
     });
 
     it("doesn't do splitting inside of math nodes", function() {
-        var startData = [
+        const startData = [
             {type: "text", data: "hello ( world ) boo"},
             {type: "math", data: "hello ( world ) boo",
                 rawData: "(hello ( world ) boo)", display: true},

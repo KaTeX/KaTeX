@@ -2,8 +2,8 @@
 <html>
   <head>
     <title>Screenshotter test</title>
-    <script src="/katex.js" type="text/javascript"></script>
-    <link href="/katex.css" rel="stylesheet" type="text/css">
+    <script src="../../katex.js" type="text/javascript"></script>
+    <link href="../../katex.css" rel="stylesheet" type="text/css">
     <style type="text/css">
       #math, #pre, #post {
         font-size: 4em;
@@ -32,25 +32,40 @@
     <span id="math"></span>
     <span id="post"></span>
     <script type="text/javascript">
-      var query = {};
-      var re = /(?:^\?|&)([^&=]+)(?:=([^&]+))?/g;
-      var match;
-      while (match = re.exec(window.location.search)) {
-          query[match[1]] = decodeURIComponent(match[2]);
-      }
-      var mathNode = document.getElementById("math");
+      function handle_search_string(search, callback) {
+        var query = {};
+        var re = /(?:^\?|&)([^&=]+)(?:=([^&]+))?/g;
+        var match;
+        while (match = re.exec(search)) {
+            query[match[1]] = decodeURIComponent(match[2]);
+        }
+        var mathNode = document.getElementById("math");
 
-      var settings = {
-          displayMode: !!query["display"],
-          throwOnError: !query["noThrow"]
-      };
-      if (query["errorColor"]) {
-          settings.errorColor = query["errorColor"];
-      }
+        var settings = {
+            displayMode: !!query["display"],
+            throwOnError: !query["noThrow"]
+        };
+        if (query["errorColor"]) {
+            settings.errorColor = query["errorColor"];
+        }
+        var macros = {};
+        var macroRegex = /(?:^\?|&)(?:\\|%5[Cc])([A-Za-z]+)=([^&]*)/g;
+        while ((match = macroRegex.exec(search)) !== null) {
+            settings.macros = macros;
+            macros["\\" + match[1]] = decodeURIComponent(match[2]);
+        }
 
-      katex.render(query["tex"], mathNode, settings);
-      document.getElementById("pre").innerHTML = query["pre"] || "";
-      document.getElementById("post").innerHTML = query["post"] || "";
+        katex.render(query["tex"], mathNode, settings);
+        document.getElementById("pre").innerHTML = query["pre"] || "";
+        document.getElementById("post").innerHTML = query["post"] || "";
+
+        if (callback && document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(callback);
+        } else if (callback) {
+          callback();
+        }
+      }
+      handle_search_string(window.location.search);
     </script>
   </body>
 </html>

@@ -1,7 +1,4 @@
-/* eslint no-unused-vars:0 */
-
-var Style = require("./Style");
-var cjkRegex = require("./unicodeRegexes").cjkRegex;
+import { cjkRegex } from "./unicodeRegexes";
 
 /**
  * This file contains metrics regarding fonts and individual symbols. The sigma
@@ -11,11 +8,12 @@ var cjkRegex = require("./unicodeRegexes").cjkRegex;
  */
 
 // In TeX, there are actually three sets of dimensions, one for each of
-// textstyle, scriptstyle, and scriptscriptstyle.  These are provided in the
-// the arrays below, in that order.
+// textstyle (size index 5 and higher: >=9pt), scriptstyle (size index 3 and 4:
+// 7-8pt), and scriptscriptstyle (size index 1 and 2: 5-6pt).  These are
+// provided in the the arrays below, in that order.
 //
 // The font metrics are stored in fonts cmsy10, cmsy7, and cmsy5 respsectively.
-// This was determined by running the folllowing script:
+// This was determined by running the following script:
 //
 //     latex -interaction=nonstopmode \
 //     '\documentclass{article}\usepackage{amsmath}\begin{document}' \
@@ -32,7 +30,7 @@ var cjkRegex = require("./unicodeRegexes").cjkRegex;
 //
 // The output of each of these commands is quite lengthy.  The only part we
 // care about is the FONTDIMEN section. Each value is measured in EMs.
-var sigmas = {
+const sigmasAndXis = {
     slant: [0.250, 0.250, 0.250],       // sigma1
     space: [0.000, 0.000, 0.000],       // sigma2
     stretch: [0.000, 0.000, 0.000],     // sigma3
@@ -55,56 +53,39 @@ var sigmas = {
     delim1: [2.390, 1.700, 1.980],      // sigma20
     delim2: [1.010, 1.157, 1.420],      // sigma21
     axisHeight: [0.250, 0.250, 0.250],  // sigma22
-};
 
-// These font metrics are extracted from TeX by using
-// \font\a=cmex10
-// \showthe\fontdimenX\a
-// where X is the corresponding variable number. These correspond to the font
-// parameters of the extension fonts (family 3). See the TeXbook, page 441.
-var xi1 = 0;
-var xi2 = 0;
-var xi3 = 0;
-var xi4 = 0;
-var xi5 = 0.431;
-var xi6 = 1;
-var xi7 = 0;
-var xi8 = 0.04;
-var xi9 = 0.111;
-var xi10 = 0.166;
-var xi11 = 0.2;
-var xi12 = 0.6;
-var xi13 = 0.1;
+    // These font metrics are extracted from TeX by using tftopl on cmex10.tfm;
+    // they correspond to the font parameters of the extension fonts (family 3).
+    // See the TeXbook, page 441. In AMSTeX, the extension fonts scale; to
+    // match cmex7, we'd use cmex7.tfm values for script and scriptscript
+    // values.
+    defaultRuleThickness: [0.04, 0.049, 0.049], // xi8; cmex7: 0.049
+    bigOpSpacing1: [0.111, 0.111, 0.111],       // xi9
+    bigOpSpacing2: [0.166, 0.166, 0.166],       // xi10
+    bigOpSpacing3: [0.2, 0.2, 0.2],             // xi11
+    bigOpSpacing4: [0.6, 0.611, 0.611],         // xi12; cmex7: 0.611
+    bigOpSpacing5: [0.1, 0.143, 0.143],         // xi13; cmex7: 0.143
 
-// This value determines how large a pt is, for metrics which are defined in
-// terms of pts.
-// This value is also used in katex.less; if you change it make sure the values
-// match.
-var ptPerEm = 10.0;
+    // The \sqrt rule width is taken from the height of the surd character.
+    // Since we use the same font at all sizes, this thickness doesn't scale.
+    sqrtRuleThickness: [0.04, 0.04, 0.04],
 
-// The space between adjacent `|` columns in an array definition. From
-// `\showthe\doublerulesep` in LaTeX.
-var doubleRuleSep = 2.0 / ptPerEm;
+    // This value determines how large a pt is, for metrics which are defined
+    // in terms of pts.
+    // This value is also used in katex.less; if you change it make sure the
+    // values match.
+    ptPerEm: [10.0, 10.0, 10.0],
 
-/**
- * This is just a mapping from common names to real metrics
- */
-var metrics = {
-    defaultRuleThickness: xi8,
-    bigOpSpacing1: xi9,
-    bigOpSpacing2: xi10,
-    bigOpSpacing3: xi11,
-    bigOpSpacing4: xi12,
-    bigOpSpacing5: xi13,
-    ptPerEm: ptPerEm,
-    doubleRuleSep: doubleRuleSep,
+    // The space between adjacent `|` columns in an array definition. From
+    // `\showthe\doublerulesep` in LaTeX. Equals 2.0 / ptPerEm.
+    doubleRuleSep: [0.2, 0.2, 0.2],
 };
 
 // This map contains a mapping from font name and character code to character
 // metrics, including height, depth, italic correction, and skew (kern from the
 // character to the corresponding \skewchar)
 // This map is generated via `make metrics`. It should not be changed manually.
-var metricMap = require("./fontMetricsData");
+import metricMap from "./fontMetricsData";
 
 // These are very rough approximations.  We default to Times New Roman which
 // should have Latin-1 and Cyrillic characters, but may not depending on the
@@ -113,7 +94,7 @@ var metricMap = require("./fontMetricsData");
 // descenders we prefer approximations with ascenders, primarily to prevent
 // the fraction bar or root line from intersecting the glyph.
 // TODO(kevinb) allow union of multiple glyph metrics for better accuracy.
-var extraCharacterMap = {
+const extraCharacterMap = {
     // Latin-1
     'À': 'A',
     'Á': 'A',
@@ -252,14 +233,14 @@ var extraCharacterMap = {
  * Note: the `width` property may be undefined if fontMetricsData.js wasn't
  * built using `Make extended_metrics`.
  */
-var getCharacterMetrics = function(character, style) {
-    var ch = character.charCodeAt(0);
+const getCharacterMetrics = function(character, style) {
+    let ch = character.charCodeAt(0);
     if (character[0] in extraCharacterMap) {
         ch = extraCharacterMap[character[0]].charCodeAt(0);
     } else if (cjkRegex.test(character[0])) {
         ch = 'M'.charCodeAt(0);
     }
-    var metrics = metricMap[style][ch];
+    const metrics = metricMap[style][ch];
     if (metrics) {
         return {
             depth: metrics[0],
@@ -271,8 +252,33 @@ var getCharacterMetrics = function(character, style) {
     }
 };
 
+const fontMetricsBySizeIndex = {};
+
+/**
+ * Get the font metrics for a given size.
+ */
+const getFontMetrics = function(size) {
+    let sizeIndex;
+    if (size >= 5) {
+        sizeIndex = 0;
+    } else if (size >= 3) {
+        sizeIndex = 1;
+    } else {
+        sizeIndex = 2;
+    }
+    if (!fontMetricsBySizeIndex[sizeIndex]) {
+        const metrics = fontMetricsBySizeIndex[sizeIndex] = {};
+        for (const key in sigmasAndXis) {
+            if (sigmasAndXis.hasOwnProperty(key)) {
+                metrics[key] = sigmasAndXis[key][sizeIndex];
+            }
+        }
+        metrics.cssEmPerMu = metrics.quad / 18;
+    }
+    return fontMetricsBySizeIndex[sizeIndex];
+};
+
 module.exports = {
-    metrics: metrics,
-    sigmas: sigmas,
+    getFontMetrics: getFontMetrics,
     getCharacterMetrics: getCharacterMetrics,
 };

@@ -1,0 +1,133 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`A MathML builder should generate <mphantom> nodes for \\phantom 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mphantom>
+        <mi>
+          x
+        </mi>
+      </mphantom>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\phantom{x}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should generate the right types of nodes 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mi>
+        sin
+      </mi>
+      <mrow>
+        <mi>
+          x
+        </mi>
+      </mrow>
+      <mo>
+        +
+      </mo>
+      <mn>
+        1
+      </mn>
+      <mspace width="0.277778em">
+      </mspace>
+      <mtext>
+        a
+      </mtext>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\sin{x}+1\\;\\text{a}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should make prime operators into <mo> nodes 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <msup>
+        <mi>
+          f
+        </mi>
+        <mo mathvariant="normal">
+          ′
+        </mo>
+      </msup>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      f&#x27;
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should use <msupsub> for regular operators 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mstyle scriptlevel="0"
+              displaystyle="false"
+      >
+        <msubsup>
+          <mo>
+            ∑
+          </mo>
+          <mi>
+            a
+          </mi>
+          <mi>
+            b
+          </mi>
+        </msubsup>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\textstyle\\sum_a^b
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should use <munderover> for large operators 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mstyle scriptlevel="0"
+              displaystyle="true"
+      >
+        <munderover>
+          <mo>
+            ∑
+          </mo>
+          <mi>
+            a
+          </mi>
+          <mi>
+            b
+          </mi>
+        </munderover>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\displaystyle\\sum_a^b
+    </annotation>
+  </semantics>
+</math>
+
+`;

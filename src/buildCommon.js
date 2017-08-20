@@ -4,31 +4,32 @@
  * different kinds of domTree nodes in a consistent manner.
  */
 
-var domTree = require("./domTree");
-var fontMetrics = require("./fontMetrics");
-var symbols = require("./symbols");
-var utils = require("./utils");
-
-var greekCapitals = [
-    "\\Gamma",
-    "\\Delta",
-    "\\Theta",
-    "\\Lambda",
-    "\\Xi",
-    "\\Pi",
-    "\\Sigma",
-    "\\Upsilon",
-    "\\Phi",
-    "\\Psi",
-    "\\Omega",
-];
+import domTree from "./domTree";
+import fontMetrics from "./fontMetrics";
+import symbols from "./symbols";
+import utils from "./utils";
 
 // The following have to be loaded from Main-Italic font, using class mainit
-var mainitLetters = [
-    "\u0131",   // dotless i, \imath
-    "\u0237",   // dotless j, \jmath
-    "\u00a3",   // \pounds
+const mainitLetters = [
+    "\\imath",   // dotless i
+    "\\jmath",   // dotless j
+    "\\pounds",  // pounds symbol
 ];
+
+/**
+ * Looks up the given symbol in fontMetrics, after applying any symbol
+ * replacements defined in symbol.js
+ */
+const lookupSymbol = function(value, fontFamily, mode) {
+    // Replace the value with its replaced value from symbol.js
+    if (symbols[mode][value] && symbols[mode][value].replace) {
+        value = symbols[mode][value].replace;
+    }
+    return {
+        value: value,
+        metrics: fontMetrics.getCharacterMetrics(value, fontFamily),
+    };
+};
 
 /**
  * Makes a symbolNode after translation via the list of symbols in symbols.js.
@@ -39,17 +40,14 @@ var mainitLetters = [
  * TODO: add a separate argument for math class (e.g. `mop`, `mbin`), which
  * should if present come first in `classes`.
  */
-var makeSymbol = function(value, fontFamily, mode, options, classes) {
-    // Replace the value with its replaced value from symbol.js
-    if (symbols[mode][value] && symbols[mode][value].replace) {
-        value = symbols[mode][value].replace;
-    }
+const makeSymbol = function(value, fontFamily, mode, options, classes) {
+    const lookup = lookupSymbol(value, fontFamily, mode);
+    const metrics = lookup.metrics;
+    value = lookup.value;
 
-    var metrics = fontMetrics.getCharacterMetrics(value, fontFamily);
-
-    var symbolNode;
+    let symbolNode;
     if (metrics) {
-        var italic = metrics.italic;
+        let italic = metrics.italic;
         if (mode === "text") {
             italic = 0;
         }
@@ -65,6 +63,7 @@ var makeSymbol = function(value, fontFamily, mode, options, classes) {
     }
 
     if (options) {
+        symbolNode.maxFontSize = options.sizeMultiplier;
         if (options.style.isTight()) {
             symbolNode.classes.push("mtight");
         }
@@ -80,7 +79,7 @@ var makeSymbol = function(value, fontFamily, mode, options, classes) {
  * Makes a symbol in Main-Regular or AMS-Regular.
  * Used for rel, bin, open, close, inner, and punct.
  */
-var mathsym = function(value, mode, options, classes) {
+const mathsym = function(value, mode, options, classes) {
     // Decide what font to render the symbol in by its entry in the symbols
     // table.
     // Have a special case for when the value = \ because the \ is used as a
@@ -98,58 +97,71 @@ var mathsym = function(value, mode, options, classes) {
 /**
  * Makes a symbol in the default font for mathords and textords.
  */
-var mathDefault = function(value, mode, options, classes, type) {
+const mathDefault = function(value, mode, options, classes, type) {
     if (type === "mathord") {
-        return mathit(value, mode, options, classes);
+        const fontLookup = mathit(value, mode, options, classes);
+        return makeSymbol(value, fontLookup.fontName, mode, options,
+            classes.concat([fontLookup.fontClass]));
     } else if (type === "textord") {
-        return makeSymbol(
-            value, "Main-Regular", mode, options, classes.concat(["mathrm"]));
+        const font = symbols[mode][value] && symbols[mode][value].font;
+        if (font === "ams") {
+            return makeSymbol(
+                value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
+        } else { // if (font === "main") {
+            return makeSymbol(
+                value, "Main-Regular", mode, options,
+                classes.concat(["mathrm"]));
+        }
     } else {
         throw new Error("unexpected type: " + type + " in mathDefault");
     }
 };
 
 /**
- * Makes a symbol in the italic math font.
+ * Determines which of the two font names (Main-Italic and Math-Italic) and
+ * corresponding style tags (mainit or mathit) to use for font "mathit",
+ * depending on the symbol.  Use this function instead of fontMap for font
+ * "mathit".
  */
-var mathit = function(value, mode, options, classes) {
+const mathit = function(value, mode, options, classes) {
     if (/[0-9]/.test(value.charAt(0)) ||
             // glyphs for \imath and \jmath do not exist in Math-Italic so we
             // need to use Main-Italic instead
-            utils.contains(mainitLetters, value) ||
-            utils.contains(greekCapitals, value)) {
-        return makeSymbol(
-            value, "Main-Italic", mode, options, classes.concat(["mainit"]));
+            utils.contains(mainitLetters, value)) {
+        return {
+            fontName: "Main-Italic",
+            fontClass: "mainit",
+        };
     } else {
-        return makeSymbol(
-            value, "Math-Italic", mode, options, classes.concat(["mathit"]));
+        return {
+            fontName: "Math-Italic",
+            fontClass: "mathit",
+        };
     }
 };
 
 /**
  * Makes either a mathord or textord in the correct font and color.
  */
-var makeOrd = function(group, options, type) {
-    var mode = group.mode;
-    var value = group.value;
-    if (symbols[mode][value] && symbols[mode][value].replace) {
-        value = symbols[mode][value].replace;
-    }
+const makeOrd = function(group, options, type) {
+    const mode = group.mode;
+    const value = group.value;
 
-    var classes = ["mord"];
+    const classes = ["mord"];
 
-    var font = options.font;
+    const font = options.font;
     if (font) {
+        let fontLookup;
         if (font === "mathit" || utils.contains(mainitLetters, value)) {
-            return mathit(value, mode, options, classes);
+            fontLookup = mathit(value, mode, options, classes);
         } else {
-            var fontName = fontMap[font].fontName;
-            if (fontMetrics.getCharacterMetrics(value, fontName)) {
-                return makeSymbol(
-                    value, fontName, mode, options, classes.concat([font]));
-            } else {
-                return mathDefault(value, mode, options, classes, type);
-            }
+            fontLookup = fontMap[font];
+        }
+        if (lookupSymbol(value, fontLookup.fontName, mode).metrics) {
+            return makeSymbol(value, fontLookup.fontName, mode, options,
+                classes.concat([fontLookup.fontClass || font]));
+        } else {
+            return mathDefault(value, mode, options, classes, type);
         }
     } else {
         return mathDefault(value, mode, options, classes, type);
@@ -160,13 +172,13 @@ var makeOrd = function(group, options, type) {
  * Calculate the height, depth, and maxFontSize of an element based on its
  * children.
  */
-var sizeElementFromChildren = function(elem) {
-    var height = 0;
-    var depth = 0;
-    var maxFontSize = 0;
+const sizeElementFromChildren = function(elem) {
+    let height = 0;
+    let depth = 0;
+    let maxFontSize = 0;
 
     if (elem.children) {
-        for (var i = 0; i < elem.children.length; i++) {
+        for (let i = 0; i < elem.children.length; i++) {
             if (elem.children[i].height > height) {
                 height = elem.children[i].height;
             }
@@ -192,8 +204,8 @@ var sizeElementFromChildren = function(elem) {
  * TODO: add a separate argument for math class (e.g. `mop`, `mbin`), which
  * should if present come first in `classes`.
  */
-var makeSpan = function(classes, children, options) {
-    var span = new domTree.span(classes, children, options);
+const makeSpan = function(classes, children, options) {
+    const span = new domTree.span(classes, children, options);
 
     sizeElementFromChildren(span);
 
@@ -204,7 +216,7 @@ var makeSpan = function(classes, children, options) {
  * Prepends the given children to the given span, updating height, depth, and
  * maxFontSize.
  */
-var prependChildren = function(span, children) {
+const prependChildren = function(span, children) {
     span.children = children.concat(span.children);
 
     sizeElementFromChildren(span);
@@ -213,29 +225,12 @@ var prependChildren = function(span, children) {
 /**
  * Makes a document fragment with the given list of children.
  */
-var makeFragment = function(children) {
-    var fragment = new domTree.documentFragment(children);
+const makeFragment = function(children) {
+    const fragment = new domTree.documentFragment(children);
 
     sizeElementFromChildren(fragment);
 
     return fragment;
-};
-
-/**
- * Makes an element placed in each of the vlist elements to ensure that each
- * element has the same max font size. To do this, we create a zero-width space
- * with the correct font size.
- */
-var makeFontSizer = function(options, fontSize) {
-    var fontSizeInner = makeSpan([], [new domTree.symbolNode("\u200b")]);
-    fontSizeInner.style.fontSize =
-        (fontSize / options.style.sizeMultiplier) + "em";
-
-    var fontSizer = makeSpan(
-        ["fontsize-ensurer", "reset-" + options.size, "size5"],
-        [fontSizeInner]);
-
-    return fontSizer;
 };
 
 /**
@@ -277,12 +272,12 @@ var makeFontSizer = function(options, fontSize) {
  *  - options: An Options object
  *
  */
-var makeVList = function(children, positionType, positionData, options) {
-    var depth;
-    var currPos;
-    var i;
+const makeVList = function(children, positionType, positionData, options) {
+    let depth;
+    let currPos;
+    let i;
     if (positionType === "individualShift") {
-        var oldChildren = children;
+        const oldChildren = children;
         children = [oldChildren[0]];
 
         // Add in kerns to the list of children to get each element to be
@@ -290,9 +285,9 @@ var makeVList = function(children, positionType, positionData, options) {
         depth = -oldChildren[0].shift - oldChildren[0].elem.depth;
         currPos = depth;
         for (i = 1; i < oldChildren.length; i++) {
-            var diff = -oldChildren[i].shift - currPos -
+            const diff = -oldChildren[i].shift - currPos -
                 oldChildren[i].elem.depth;
-            var size = diff -
+            const size = diff -
                 (oldChildren[i - 1].elem.height +
                  oldChildren[i - 1].elem.depth);
 
@@ -304,7 +299,7 @@ var makeVList = function(children, positionType, positionData, options) {
     } else if (positionType === "top") {
         // We always start at the bottom, so calculate the bottom by adding up
         // all the sizes
-        var bottom = positionData;
+        let bottom = positionData;
         for (i = 0; i < children.length; i++) {
             if (children[i].type === "kern") {
                 bottom -= children[i].size;
@@ -323,67 +318,85 @@ var makeVList = function(children, positionType, positionData, options) {
         depth = 0;
     }
 
-    // Make the fontSizer
-    var maxFontSize = 0;
+    // Create a strut that is taller than any list item. The strut is added to
+    // each item, where it will determine the item's baseline. Since it has
+    // `overflow:hidden`, the strut's top edge will sit on the item's line box's
+    // top edge and the strut's bottom edge will sit on the item's baseline,
+    // with no additional line-height spacing. This allows the item baseline to
+    // be positioned precisely without worrying about font ascent and
+    // line-height.
+    let pstrutSize = 0;
     for (i = 0; i < children.length; i++) {
         if (children[i].type === "elem") {
-            maxFontSize = Math.max(maxFontSize, children[i].elem.maxFontSize);
+            const child = children[i].elem;
+            pstrutSize = Math.max(pstrutSize, child.maxFontSize, child.height);
         }
     }
-    var fontSizer = makeFontSizer(options, maxFontSize);
+    pstrutSize += 2;
+    const pstrut = makeSpan(["pstrut"], []);
+    pstrut.style.height = pstrutSize + "em";
 
     // Create a new list of actual children at the correct offsets
-    var realChildren = [];
+    const realChildren = [];
+    let minPos = depth;
+    let maxPos = depth;
     currPos = depth;
     for (i = 0; i < children.length; i++) {
         if (children[i].type === "kern") {
             currPos += children[i].size;
         } else {
-            var child = children[i].elem;
+            const child = children[i].elem;
 
-            var shift = -child.depth - currPos;
-            currPos += child.height + child.depth;
-
-            var childWrap = makeSpan([], [fontSizer, child]);
-            childWrap.height -= shift;
-            childWrap.depth += shift;
-            childWrap.style.top = shift + "em";
+            const childWrap = makeSpan([], [pstrut, child]);
+            childWrap.style.top = (-pstrutSize - currPos - child.depth) + "em";
+            if (children[i].marginLeft) {
+                childWrap.style.marginLeft = children[i].marginLeft;
+            }
+            if (children[i].marginRight) {
+                childWrap.style.marginRight = children[i].marginRight;
+            }
 
             realChildren.push(childWrap);
+            currPos += child.height + child.depth;
         }
+        minPos = Math.min(minPos, currPos);
+        maxPos = Math.max(maxPos, currPos);
     }
 
-    // Add in an element at the end with no offset to fix the calculation of
-    // baselines in some browsers (namely IE, sometimes safari)
-    var baselineFix = makeSpan(
-        ["baseline-fix"], [fontSizer, new domTree.symbolNode("\u200b")]);
-    realChildren.push(baselineFix);
+    // The vlist contents go in a table-cell with `vertical-align:bottom`.
+    // This cell's bottom edge will determine the containing table's baseline
+    // without overly expanding the containing line-box.
+    const vlist = makeSpan(["vlist"], realChildren);
+    vlist.style.height = maxPos + "em";
 
-    var vlist = makeSpan(["vlist"], realChildren);
-    // Fix the final height and depth, in case there were kerns at the ends
-    // since the makeSpan calculation won't take that in to account.
-    vlist.height = Math.max(currPos, vlist.height);
-    vlist.depth = Math.max(-depth, vlist.depth);
-    return vlist;
-};
+    // A second row is used if necessary to represent the vlist's depth.
+    let rows;
+    if (minPos < 0) {
+        const depthStrut = makeSpan(["vlist"], []);
+        depthStrut.style.height = -minPos + "em";
 
-// A table of size -> font size for the different sizing functions
-var sizingMultiplier = {
-    size1: 0.5,
-    size2: 0.7,
-    size3: 0.8,
-    size4: 0.9,
-    size5: 1.0,
-    size6: 1.2,
-    size7: 1.44,
-    size8: 1.73,
-    size9: 2.07,
-    size10: 2.49,
+        // Safari wants the first row to have inline content; otherwise it
+        // puts the bottom of the *second* row on the baseline.
+        const topStrut = makeSpan(["vlist-s"], [new domTree.symbolNode("\u200b")]);
+
+        rows = [makeSpan(["vlist-r"], [vlist, topStrut]),
+            makeSpan(["vlist-r"], [depthStrut])];
+    } else {
+        rows = [makeSpan(["vlist-r"], [vlist])];
+    }
+
+    const vtable = makeSpan(["vlist-t"], rows);
+    if (rows.length === 2) {
+        vtable.classes.push("vlist-t2");
+    }
+    vtable.height = maxPos;
+    vtable.depth = -minPos;
+    return vtable;
 };
 
 // A map of spacing functions to their attributes, like size and corresponding
 // CSS class
-var spacingFunctions = {
+const spacingFunctions = {
     "\\qquad": {
         size: "2em",
         className: "qquad",
@@ -420,7 +433,7 @@ var spacingFunctions = {
  * - fontName: the "style" parameter to fontMetrics.getCharacterMetrics
  */
 // A map between tex font commands an MathML mathvariant attribute values
-var fontMap = {
+const fontMap = {
     // styles
     "mathbf": {
         variant: "bold",
@@ -475,6 +488,5 @@ module.exports = {
     makeVList: makeVList,
     makeOrd: makeOrd,
     prependChildren: prependChildren,
-    sizingMultiplier: sizingMultiplier,
     spacingFunctions: spacingFunctions,
 };

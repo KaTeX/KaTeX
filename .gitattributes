@@ -1,0 +1,9 @@
+# Install ttx from https://github.com/fonttools/fonttools,
+# then add this to your ~/.gitconfig to diff fonts more easily:
+
+#[diff "font"]
+#	binary = true
+#	textconv = ttx -q -i -o -
+
+*.ttf	diff=font
+*.woff	diff=font
