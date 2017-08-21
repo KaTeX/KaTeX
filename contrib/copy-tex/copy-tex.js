@@ -46,11 +46,15 @@ document.addEventListener('copy', function(event) {
     if (!fragment.querySelector('.katex')) {
         return;  // default action OK if no .katex elements
     }
+    // Preserve usual HTML copy/paste behavior.
+    const html = [];
+    for (let i = 0; i < fragment.childNodes.length; i++) {
+        html.push(fragment.childNodes[i].outerHTML);
+    }
+    event.clipboardData.setData('text/html', html.join(''));
+    // Rewrite plain-text version.
     event.clipboardData.setData('text/plain',
         window.katexReplaceWithTex(fragment).textContent);
-    // Preserve usual HTML copy/paste behavior.
-    event.clipboardData.setData('text/html',
-        selection.getRangeAt(0).cloneContents());
     // Prevent normal copy handling.
     event.preventDefault();
 });
