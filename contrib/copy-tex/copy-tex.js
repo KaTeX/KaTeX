@@ -6,7 +6,7 @@ const copyDelimiters = {
 
 // Replace .katex elements with their TeX source (<annotation> element).
 // Modifies fragment in-place.  Useful for writing your own 'copy' handler.
-window.katexReplaceWithTex = function katexReplaceWithTex(fragment) {
+window.katexReplaceWithTex = function(fragment) {
     const katexs = fragment.querySelectorAll('.katex');
     // Replace .katex elements with their annotation (TeX source) descendant,
     // with inline delimiters.
@@ -28,7 +28,7 @@ window.katexReplaceWithTex = function katexReplaceWithTex(fragment) {
                 + copyDelimiters.display[1];
         });
     return fragment;
-}
+};
 
 // Global copy handler to modify behavior on .katex elements.
 document.addEventListener('copy', function(event) {
@@ -41,7 +41,7 @@ document.addEventListener('copy', function(event) {
         return;  // default action OK if no .katex elements
     }
     event.clipboardData.setData('text/plain',
-        katexReplaceWithTex(fragment).textContent);
+        window.katexReplaceWithTex(fragment).textContent);
     // Preserve usual HTML copy/paste behavior.
     event.clipboardData.setData('text/html',
         selection.getRangeAt(0).cloneContents());
