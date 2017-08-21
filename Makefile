@@ -73,6 +73,7 @@ build/contrib:
 	@# there's nothing in there we don't want.
 	rm -rf build/contrib/*
 	$(MAKE) -C contrib/auto-render
+	$(MAKE) -C contrib/copy-tex
 
 .PHONY: build/katex
 build/katex: build/katex.js build/katex.min.js build/katex.css build/katex.min.css build/fonts README.md build/contrib
