@@ -1098,15 +1098,14 @@ groupTypes.sqrt = function(group, options) {
     } else {
         inner.style.paddingLeft = img.surdWidth + "em";
 
-        // makeVList does not accept kern elements in individualShift mode.
-        // So we get the same alignment by adding to img height.
-        img.height += ruleWidth;
-
         // Overlay the image and the argument.
         body = buildCommon.makeVList([
-            {type: "elem", elem: inner, shift: 0},
-            {type: "elem", elem: img, shift: imgShift},
-        ], "individualShift", null, options);
+            {type: "elem", elem: inner},
+            {type: "kern", size: -(inner.height + imgShift)},
+            {type: "elem", elem: img},
+            {type: "kern", size: ruleWidth},
+        ], "firstBaseline", null, options);
+        console.log(ruleWidth);
         body.children[0].children[0].classes.push("svg-align");
     }
 
