@@ -72,6 +72,11 @@ DisplayMode:
 DisplayStyle: |
     {\displaystyle\sqrt{x}}{\sqrt{x}}
     {\displaystyle \frac12}{\frac12}{\displaystyle x^1_2}{x^1_2}
+Dots: |
+    \begin{array}{l}
+      \cdots;\dots+\dots\int\dots,\dots \\
+      \cdots{};\ldots+\ldots\int\ldots,\ldots
+    \end{array}
 Exponents: a^{a^a_a}_{a^a_a}
 ExtensibleArrows: |
     \begin{array}{l}

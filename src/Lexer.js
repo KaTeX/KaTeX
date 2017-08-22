@@ -33,7 +33,7 @@ import ParseError from "./ParseError";
  * @param {number=} end    the end offset, zero-based exclusive
  * @param {Lexer=}  lexer  the lexer which in turn holds the input string
  */
-class Token {
+export class Token {
     constructor(text, start, end, lexer) {
         this.text = text;
         this.start = start;
@@ -75,14 +75,14 @@ const tokenRegex = new RegExp(
     "([ \r\n\t]+)|" +                                 // whitespace
     "([!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
     "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair
-    "|\\\\(?:[a-zA-Z]+|[^\uD800-\uDFFF])" +           // function name
+    "|\\\\(?:[a-zA-Z@]+|[^\uD800-\uDFFF])" +          // function name
     ")"
 );
 
 /*
  * Main Lexer class
  */
-class Lexer {
+export default class Lexer {
     constructor(input) {
         this.input = input;
         this.pos = 0;
@@ -110,5 +110,3 @@ class Lexer {
         return new Token(text, start, end, this);
     }
 }
-
-module.exports = Lexer;

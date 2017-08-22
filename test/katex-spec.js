@@ -781,6 +781,11 @@ describe("A text parser", function() {
     it("should parse math within text group", function() {
         expect(textWithEmbeddedMath).toParse();
     });
+
+    it("should omit spaces after commands", function() {
+        expect("\\text{\\textellipsis !}")
+            .toParseLike("\\text{\\textellipsis!}");
+    });
 });
 
 describe("A color parser", function() {
@@ -2256,10 +2261,59 @@ describe("A macro expander", function() {
         compareParseTree("e^\\foo", "e^1 23", {"\\foo": "123"});
     });
 
+    it("should preserve leading spaces inside macro definition", function() {
+        compareParseTree("\\text{\\foo}", "\\text{ x}", {"\\foo": " x"});
+    });
+
+    it("should preserve leading spaces inside macro argument", function() {
+        compareParseTree("\\text{\\foo{ x}}", "\\text{ x}", {"\\foo": "#1"});
+    });
+
+    it("should ignore expanded spaces in math mode", function() {
+        compareParseTree("\\foo", "x", {"\\foo": " x"});
+    });
+
+    it("should consume spaces after macro", function() {
+        compareParseTree("\\text{\\foo }", "\\text{x}", {"\\foo": "x"});
+    });
+
+    it("should consume spaces between arguments", function() {
+        compareParseTree("\\text{\\foo 1 2}", "\\text{12end}", {"\\foo": "#1#2end"});
+        compareParseTree("\\text{\\foo {1} {2}}", "\\text{12end}", {"\\foo": "#1#2end"});
+    });
+
     it("should allow for multiple expansion", function() {
         compareParseTree("1\\foo2", "1aa2", {
             "\\foo": "\\bar\\bar",
             "\\bar": "a",
+        });
+    });
+
+    it("should allow for macro argument", function() {
+        compareParseTree("\\foo\\bar", "(x)", {
+            "\\foo": "(#1)",
+            "\\bar": "x",
+        });
+    });
+
+    it("should allow for space macro argument (text version)", function() {
+        compareParseTree("\\text{\\foo\\bar}", "\\text{( )}", {
+            "\\foo": "(#1)",
+            "\\bar": " ",
+        });
+    });
+
+    it("should allow for space macro argument (math version)", function() {
+        compareParseTree("\\foo\\bar", "()", {
+            "\\foo": "(#1)",
+            "\\bar": " ",
+        });
+    });
+
+    it("should allow for empty macro argument", function() {
+        compareParseTree("\\foo\\bar", "()", {
+            "\\foo": "(#1)",
+            "\\bar": "",
         });
     });
 
