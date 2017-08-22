@@ -374,22 +374,12 @@ const sqrtSpan = function(height, delim, options) {
 
     if (delim.type === "small") {
         // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
+        const newOptions = options.havingBaseStyle(delim.style);
+        sizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
 
-        // First, get the corrrect sizeMultiplier for the surd.
-        const refHeight = height / sizeMultiplier;
-        let newOptions = options.havingBaseStyle(Style.TEXT);
-
-        if (1 / newOptions.sizeMultiplier < refHeight) {
-            newOptions = options.havingBaseStyle(Style.SCRIPT);
-            if (1 / newOptions.sizeMultiplier < refHeight) {
-                newOptions = options.havingBaseStyle(Style.SCRIPTSCRIPT);
-            }
-        }
-        sizeMultiplier = newOptions.sizeMultiplier;
-
-        span.height = 1 / sizeMultiplier;
+        span.height = 1 * sizeMultiplier;
         span.style.height = span.height + "em";
-        span.surdWidth = 0.833 / sizeMultiplier;   // from the font.
+        span.surdWidth = 0.833 * sizeMultiplier;   // from the font.
         //In the font, the glyph is 1000 units tall. The font scale is 1:1000.
 
         span.innerHTML = `<svg width='100%' height='${span.height}em'>

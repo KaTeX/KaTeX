@@ -1105,7 +1105,6 @@ groupTypes.sqrt = function(group, options) {
             {type: "elem", elem: img},
             {type: "kern", size: ruleWidth},
         ], "firstBaseline", null, options);
-        console.log(ruleWidth);
         body.children[0].children[0].classes.push("svg-align");
     }
 
