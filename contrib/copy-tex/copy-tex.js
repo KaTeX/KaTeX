@@ -7,11 +7,22 @@ const copyDelimiters = {
 // Replace .katex elements with their TeX source (<annotation> element).
 // Modifies fragment in-place.  Useful for writing your own 'copy' handler.
 window.katexReplaceWithTex = function(fragment) {
-    const katexs = fragment.querySelectorAll('.katex');
-    // Replace .katex elements with their annotation (TeX source) descendant,
-    // with inline delimiters.
-    for (let i = 0; i < katexs.length; i++) {
-        const element = katexs[i];
+    // Remove .katex-html blocks that are preceded by .katex-mathml blocks
+    // (which will get replaced below).
+    const katexHtml = fragment.querySelectorAll('.katex-mathml + .katex-html');
+    for (let i = 0; i < katexHtml.length; i++) {
+        const element = katexHtml[i];
+        if (element.remove) {
+            element.remove(null);
+        } else {
+            element.parentNode.removeChild(element);
+        }
+    }
+    // Replace .katex-mathml elements with their annotation (TeX source)
+    // descendant, with inline delimiters.
+    const katexMathml = fragment.querySelectorAll('.katex-mathml');
+    for (let i = 0; i < katexMathml.length; i++) {
+        const element = katexMathml[i];
         const texSource = element.querySelector('annotation');
         if (texSource) {
             if (element.replaceWith) {
@@ -43,8 +54,8 @@ document.addEventListener('copy', function(event) {
         return;  // default action OK if selection is empty
     }
     const fragment = selection.getRangeAt(0).cloneContents();
-    if (!fragment.querySelector('.katex')) {
-        return;  // default action OK if no .katex elements
+    if (!fragment.querySelector('.katex-mathml')) {
+        return;  // default action OK if no .katex-mathml elements
     }
     // Preserve usual HTML copy/paste behavior.
     const html = [];
