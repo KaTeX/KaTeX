@@ -12,9 +12,10 @@ modifying `copyDelimiters` in [the source code](copy-tex.js).
 ### Usage
 
 This extension isn't part of KaTeX proper, so the script should be separately
-included in the page:
+included in the page.  It also requires some custom CSS.
 
 ```html
+<link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.8.3/contrib/copy-tex.css" rel="stylesheet" type="text/css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.8.3/contrib/copy-tex.min.js" integrity="sha384-RkgGHBDdR8eyBOoWeZ/vpGg1cOvSAJRflCUDACusAAIVwkwPrOUYykglPeqWakZu" crossorigin="anonymous"></script>
 ```
 

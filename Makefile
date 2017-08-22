@@ -26,6 +26,7 @@ export UGLIFYJS = $(realpath ./node_modules/.bin/uglifyjs) \
 	--mangle \
 	--beautify \
 	ascii_only=true,beautify=false
+export CLEANCSS = $(realpath ./node_modules/.bin/cleancss)
 
 # The prepublish script in package.json will override the following variable,
 # setting it to the empty string and thereby avoiding an infinite recursion
@@ -48,7 +49,7 @@ build/katex.css: static/katex.less $(wildcard static/*.less) $(NIS)
 	./node_modules/.bin/lessc $< $@
 
 build/katex.min.css: build/katex.css
-	./node_modules/.bin/cleancss -o $@ $<
+	$(CLEANCSS) -o $@ $<
 
 .PHONY: build/fonts
 build/fonts:
