@@ -129,7 +129,7 @@ const buildExpression = function(expression, options, isRealGroup) {
             // \u0338 is a combining glyph so we could reorder the children so
             // that it comes after the other glyph.  This works correctly on
             // most browsers except for Safari.  Instead we absolutely position
-            // the glyph and set it's right side to match that of the other
+            // the glyph and set its right side to match that of the other
             // glyph which is visually equivalent.
             children[0].style.position = "absolute";
             children[0].style.right = "0";
