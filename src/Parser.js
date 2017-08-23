@@ -561,6 +561,11 @@ class Parser {
                     throw new ParseError(
                         "Can't use function '" + func + "' in text mode",
                         baseGroup.token);
+                } else if (this.mode === "math" &&
+                    funcData.allowedInMath === false) {
+                    throw new ParseError(
+                        "Can't use function '" + func + "' in math mode",
+                        baseGroup.token);
                 }
 
                 const args = this.parseArguments(func, funcData);

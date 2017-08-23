@@ -617,6 +617,17 @@ defineSymbol(math, main, accent, "\u20d7", "\\vec");
 defineSymbol(math, main, accent, "\u02d9", "\\dot");
 defineSymbol(math, main, mathord, "\u0131", "\\imath");
 defineSymbol(math, main, mathord, "\u0237", "\\jmath");
+defineSymbol(text, main, accent, "\u02ca", "\\'"); // acute
+defineSymbol(text, main, accent, "\u02cb", "\\`"); // grave
+defineSymbol(text, main, accent, "\u02c6", "\\^"); // circumflex
+defineSymbol(text, main, accent, "\u02dc", "\\~"); // tilde
+defineSymbol(text, main, accent, "\u02c9", "\\="); // macron
+defineSymbol(text, main, accent, "\u02d8", "\\u"); // breve
+defineSymbol(text, main, accent, "\u02d9", "\\."); // dot above
+defineSymbol(text, main, accent, "\u02da", "\\r"); // ring above
+defineSymbol(text, main, accent, "\u02c7", "\\v"); // caron
+defineSymbol(text, main, accent, "\u00a8", '\\"'); // diaresis
+defineSymbol(text, main, accent, "\u030B", "\\H"); // double acute
 
 defineSymbol(text, main, textord, "\u2013", "--");
 defineSymbol(text, main, textord, "\u2013", "\\textendash");
