@@ -661,6 +661,9 @@ const buildExpression = function(expression, options) {
         const group = expression[i];
         groups.push(buildGroup(group, options));
     }
+
+    // TODO(kevinb): combine \\not with mrels and mords
+
     return groups;
 };
 
