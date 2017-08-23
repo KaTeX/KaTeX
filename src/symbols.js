@@ -599,11 +599,11 @@ defineSymbol(math, main, op, "\u2a06", "\\bigsqcup");
 defineSymbol(math, main, op, "\u222b", "\\smallint");
 defineSymbol(text, main, inner, "\u2026", "\\textellipsis");
 defineSymbol(math, main, inner, "\u2026", "\\mathellipsis");
-defineSymbol(text, main, inner, "\u2026", "\\ldots");
-defineSymbol(math, main, inner, "\u2026", "\\ldots");
-defineSymbol(math, main, inner, "\u22ef", "\\cdots");
-defineSymbol(math, main, inner, "\u22f1", "\\ddots");
-defineSymbol(math, main, textord, "\u22ee", "\\vdots");
+defineSymbol(text, main, inner, "\u2026", "\\ldots", true);
+defineSymbol(math, main, inner, "\u2026", "\\ldots", true);
+defineSymbol(math, main, inner, "\u22ef", "\\cdots", true);
+defineSymbol(math, main, inner, "\u22f1", "\\ddots", true);
+defineSymbol(math, main, textord, "\u22ee", "\\vdots", true);
 defineSymbol(math, main, accent, "\u00b4", "\\acute");
 defineSymbol(math, main, accent, "\u0060", "\\grave");
 defineSymbol(math, main, accent, "\u00a8", "\\ddot");
@@ -671,16 +671,19 @@ for (let i = 0; i < letters.length; i++) {
 // Latin-1 letters
 for (let i = 0x00C0; i <= 0x00D6; i++) {
     const ch = String.fromCharCode(i);
+    defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
 
 for (let i = 0x00D8; i <= 0x00F6; i++) {
     const ch = String.fromCharCode(i);
+    defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
 
 for (let i = 0x00F8; i <= 0x00FF; i++) {
     const ch = String.fromCharCode(i);
+    defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
 

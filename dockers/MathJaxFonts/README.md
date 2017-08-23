@@ -1,55 +1,22 @@
 ### How to generate MathJax fonts
 ---------------------------------
 
-It's really simple (now)! Just make a docker image from the included Dockerfile
-using a command like
+The `buildFonts.sh` script should do everything automatically,
+as long as Docker is installed.
 
-    sudo docker build --tag=mathjaxfonts .
+If you want to try out a change
+to [the MathJax-dev repository](https://github.com/Khan/MathJax-dev),
+create a local clone (or download and unpack the ZIP file)
+and specify the path to this directory as an arument to `buildFonts.sh`.
+You can also specify a local or remote tarball,
+e.g. a GitHub download of your own personal feature branch.
 
-from within this directory (note you need to have docker installed and running
-for this to work). This will build a docker image with the mathjaxfonts tag,
-which you can then use to run dockers based on them. Then, run a mathjaxfonts
-docker with
+The script `buildFonts.sh` automatically creates Docker images
+from the supplied `Dockerfile`.
+It uses the hash of the file to tag the image, so a change to the file
+will result in the creation of a new image.
+If you want to see all created images, run `docker images katex/fonts`.
+To remove all generated images, you can run
+`docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' katex/fonts)`.
 
-    sudo docker run --interactive --tty --name mjf mathjaxfonts /bin/bash
-
-We name this docker "mjf" so we can reference it later when we want to copy the
-files off. (If you get an error about the name being in use, perhaps because you
-are trying to create another docker, you can either delete the old docker with
-
-    sudo docker rm mjf
-
-or use a different name.) This will get you into the docker in the root
-directory. From there, cd into the `/MathJax-dev/fonts/OTF/TeX` directory, and
-run
-
-    make ttf eot woff woff2
-
-to build all of the fonts that we need. Finally, leave the docker and copy all
-the files off with the `copy_fonts.sh` script:
-
-    ./copy_fonts.sh mjf
-
-And you're good to go! Don't forget to update the font metrics with `make
-metrics`.
-
-### General Docker Help
------------------------
-
-When you quit the docker, it will stop the docker from running. If you want to
-reattach to the docker, you can start it again with
-
-    sudo docker start mjf
-
-and then attach with
-
-    sudo docker attach mjf
-
-Alternatively, if you want to detach from the docker when you're done instead of
-quitting and stopping it, you can detach with `C-p C-q`, and then re-attach with
-
-    sudo docker attach mjf
-
-To see a list of your current dockers, you can run
-
-    docker ps
+If there is a problem, file a bug report.
