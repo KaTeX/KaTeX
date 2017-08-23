@@ -92,6 +92,7 @@ function defineFunction(names, props, handler) {
         argTypes: props.argTypes,
         greediness: (props.greediness === undefined) ? 1 : props.greediness,
         allowedInText: !!props.allowedInText,
+        allowedInMath: props.allowedInMath,
         numOptionalArgs: props.numOptionalArgs || 0,
         infix: !!props.infix,
         handler: handler,
@@ -655,6 +656,27 @@ defineFunction([
         label: context.funcName,
         isStretchy: isStretchy,
         isShifty: isShifty,
+        value: ordargument(base),
+        base: base,
+    };
+});
+
+// Text-mode accents
+defineFunction([
+    "\\'", "\\`", "\\^", "\\~", "\\=", "\\u", "\\.", '\\"',
+    "\\r", "\\H", "\\v",
+], {
+    numArgs: 1,
+    allowedInText: true,
+    allowedInMath: false,
+}, function(context, args) {
+    const base = args[0];
+
+    return {
+        type: "accent",
+        label: context.funcName,
+        isStretchy: false,
+        isShifty: true,
         value: ordargument(base),
         base: base,
     };
