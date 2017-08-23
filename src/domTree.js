@@ -39,6 +39,7 @@ class span {
         this.maxFontSize = 0;
         this.style = {};
         this.attributes = {};
+        this.innerHTML;           // used for inline SVG code.
         if (options) {
             if (options.style.isTight()) {
                 this.classes.push("mtight");
@@ -85,6 +86,10 @@ class span {
             }
         }
 
+        if (this.innerHTML) {
+            span.innerHTML = this.innerHTML;
+        }
+
         // Append the children, also as HTML nodes
         for (let i = 0; i < this.children.length; i++) {
             span.appendChild(this.children[i].toNode());
@@ -129,6 +134,10 @@ class span {
         }
 
         markup += ">";
+
+        if (this.innerHTML) {
+            markup += this.innerHTML;
+        }
 
         // Add the markup of the children, also as markup
         for (let i = 0; i < this.children.length; i++) {

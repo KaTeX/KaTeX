@@ -10,7 +10,7 @@ NARGS=0
 DRY_RUN=
 INSANE=0
 
-# usage [ERROR-MESSAGES...] EXIT-STATUS
+# usage [ERROR-MESSAGES...] EXIT-CODE
 usage() {
     while [[ $# -gt 1 ]]; do
         echo "$1" >&2
@@ -122,7 +122,7 @@ node update-sri.js "${VERSION}" README.md contrib/*/README.md dist/README.md
 # Make the commit and tag, and push them.
 git add package.json bower.json README.md contrib/*/README.md dist/README.md
 git commit -n -m "v$VERSION"
-git diff --stat --exit-status # check for uncommitted changes
+git diff --stat --exit-code # check for uncommitted changes
 git tag -a "v$VERSION" -m "v$VERSION"
 git push origin "v$VERSION"
 

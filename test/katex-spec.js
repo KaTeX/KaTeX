@@ -240,9 +240,11 @@ describe("A bin parser", function() {
 
 describe("A rel parser", function() {
     const expression = "=<>\\leq\\geq\\neq\\nleq\\ngeq\\cong";
+    const notExpression = "\\not=\\not<\\not>\\not\\leq\\not\\geq\\not\\in";
 
     it("should not fail", function() {
         expect(expression).toParse();
+        expect(notExpression).toParse();
     });
 
     it("should build a list of rels", function() {
@@ -931,7 +933,7 @@ describe("An overline parser", function() {
 describe("A rule parser", function() {
     const emRule = "\\rule{1em}{2em}";
     const exRule = "\\rule{1ex}{2em}";
-    const badUnitRule = "\\rule{1px}{2em}";
+    const badUnitRule = "\\rule{1au}{2em}";
     const noNumberRule = "\\rule{1em}{em}";
     const incompleteRule = "\\rule{1em}";
     const hardNumberRule = "\\rule{   01.24ex}{2.450   em   }";
@@ -988,7 +990,7 @@ describe("A kern parser", function() {
     const exKern = "\\kern{1ex}";
     const muKern = "\\kern{1mu}";
     const abKern = "a\\kern{1em}b";
-    const badUnitRule = "\\kern{1px}";
+    const badUnitRule = "\\kern{1au}";
     const noNumberRule = "\\kern{em}";
 
     it("should list the correct units", function() {
@@ -1026,7 +1028,7 @@ describe("A non-braced kern parser", function() {
     const abKern1 = "a\\mkern1mub";
     const abKern2 = "a\\kern-1mub";
     const abKern3 = "a\\kern-1mu b";
-    const badUnitRule = "\\kern1px";
+    const badUnitRule = "\\kern1au";
     const noNumberRule = "\\kern em";
 
     it("should list the correct units", function() {
@@ -2192,50 +2194,6 @@ describe("An aligned environment", function() {
 
 });
 
-const getMathML = function(expr, settings) {
-    const usedSettings = settings ? settings : defaultSettings;
-
-    expect(expr).toParse(usedSettings);
-
-    const built = buildMathML(parseTree(expr, usedSettings), expr, usedSettings);
-
-    // Strip off the surrounding <span>
-    return built.children[0];
-};
-
-describe("A MathML builder", function() {
-    it("should generate math nodes", function() {
-        const node = getMathML("x^2");
-
-        expect(node.type).toEqual("math");
-    });
-
-    it("should generate appropriate MathML types", function() {
-        const identifier = getMathML("x").children[0].children[0];
-        expect(identifier.children[0].type).toEqual("mi");
-
-        const number = getMathML("1").children[0].children[0];
-        expect(number.children[0].type).toEqual("mn");
-
-        const operator = getMathML("+").children[0].children[0];
-        expect(operator.children[0].type).toEqual("mo");
-
-        const space = getMathML("\\;").children[0].children[0];
-        expect(space.children[0].type).toEqual("mspace");
-
-        const text = getMathML("\\text{a}").children[0].children[0];
-        expect(text.children[0].type).toEqual("mtext");
-
-        const textop = getMathML("\\sin").children[0].children[0];
-        expect(textop.children[0].type).toEqual("mi");
-    });
-
-    it("should generate a <mphantom> node for \\phantom", function() {
-        const phantom = getMathML("\\phantom{x}").children[0].children[0];
-        expect(phantom.children[0].type).toEqual("mphantom");
-    });
-});
-
 describe("A parser that does not throw on unsupported commands", function() {
     // The parser breaks on unsupported commands unless it is explicitly
     // told not to
@@ -2330,5 +2288,15 @@ describe("A parser taking String objects", function() {
         expect(new String("xy")).toParseLike("xy");
         expect(new String("\\div")).toParseLike("\\div");
         expect(new String("\\frac 1 2")).toParseLike("\\frac 1 2");
+    });
+});
+
+describe("Unicode", function() {
+    it("should parse all lower case Greek letters", function() {
+        expect("αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω").toParse();
+    });
+
+    it("should parse 'ΓΔΘΞΠΣΦΨΩ'", function() {
+        expect("ΓΔΘΞΠΣΦΨΩ").toParse();
     });
 });

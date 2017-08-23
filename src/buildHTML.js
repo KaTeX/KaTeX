@@ -12,6 +12,7 @@ import Style from "./Style";
 import buildCommon, { makeSpan } from "./buildCommon";
 import delimiter from "./delimiter";
 import domTree from "./domTree";
+import units from "./units";
 import utils from "./utils";
 import stretchy from "./stretchy";
 
@@ -113,6 +114,40 @@ const buildExpression = function(expression, options, isRealGroup) {
             && (isBinLeftCanceller(groups[i - 1], isRealGroup)
                 || isBinRightCanceller(groups[i + 1], isRealGroup))) {
             groups[i].classes[0] = "mord";
+        }
+    }
+
+    // Process \\not commands within the group.
+    // TODO(kevinb): Handle multiple \\not commands in a row.
+    // TODO(kevinb): Handle \\not{abc} correctly.  The \\not should appear over
+    // the 'a' instead of the 'c'.
+    for (let i = 0; i < groups.length; i++) {
+        if (groups[i].value === "\u0338" && i + 1 < groups.length) {
+            const children = groups.slice(i, i + 2);
+
+            children[0].classes = ["mainrm"];
+            // \u0338 is a combining glyph so we could reorder the children so
+            // that it comes after the other glyph.  This works correctly on
+            // most browsers except for Safari.  Instead we absolutely position
+            // the glyph and set its right side to match that of the other
+            // glyph which is visually equivalent.
+            children[0].style.position = "absolute";
+            children[0].style.right = "0";
+
+            // Copy the classes from the second glyph to the new container.
+            // This is so it behaves the same as though there was no \\not.
+            const classes = groups[i + 1].classes;
+            const container = makeSpan(classes, children);
+
+            // LaTeX adds a space between ords separated by a \\not.
+            if (classes.indexOf("mord") !== -1) {
+                // \glue(\thickmuskip) 2.77771 plus 2.77771
+                container.style.paddingLeft = "0.277771em";
+            }
+
+            // Ensure that the \u0338 is positioned relative to the container.
+            container.style.position = "relative";
+            groups.splice(i, 2, container);
         }
     }
 
@@ -432,12 +467,17 @@ groupTypes.genfrac = function(group, options) {
     const denomm = buildGroup(group.value.denom, newOptions, options);
 
     let rule;
+    let ruleWidth;
+    let ruleSpacing;
     if (group.value.hasBarLine) {
         rule = makeLineSpan("frac-line", options);
+        ruleWidth = rule.height;
+        ruleSpacing = rule.height;
     } else {
         rule = null;
+        ruleWidth = 0;
+        ruleSpacing = options.fontMetrics().defaultRuleThickness;
     }
-    const ruleWidth = rule ? rule.height : 0;
 
     // Rule 15b
     let numShift;
@@ -446,18 +486,18 @@ groupTypes.genfrac = function(group, options) {
     if (style.size === Style.DISPLAY.size) {
         numShift = options.fontMetrics().num1;
         if (ruleWidth > 0) {
-            clearance = 3 * ruleWidth;
+            clearance = 3 * ruleSpacing;
         } else {
-            clearance = 7 * options.fontMetrics().defaultRuleThickness;
+            clearance = 7 * ruleSpacing;
         }
         denomShift = options.fontMetrics().denom1;
     } else {
         if (ruleWidth > 0) {
             numShift = options.fontMetrics().num2;
-            clearance = ruleWidth;
+            clearance = ruleSpacing;
         } else {
             numShift = options.fontMetrics().num3;
-            clearance = 3 * options.fontMetrics().defaultRuleThickness;
+            clearance = 3 * ruleSpacing;
         }
         denomShift = options.fontMetrics().denom2;
     }
@@ -540,43 +580,6 @@ groupTypes.genfrac = function(group, options) {
         options);
 };
 
-/**
- * Parse a `sizeValue`, as parsed by functions.js argType "size", into
- * a CSS em value. `options` gives the current options.
- */
-const calculateSize = function(sizeValue, options) {
-    let scale;
-    // `mu` units scale with scriptstyle/scriptscriptstyle.
-    // Other units always refer to the *textstyle* font in the current size.
-    if (sizeValue.unit === "mu") {
-        scale = options.fontMetrics().cssEmPerMu;
-    } else {
-        let unitOptions;
-        if (options.style.isTight()) {
-            // isTight() means current style is script/scriptscript.
-            unitOptions = options.havingStyle(options.style.text());
-        } else {
-            unitOptions = options;
-        }
-        // TODO: In TeX these units are relative to the quad of the current
-        // *text* font, e.g. cmr10. KaTeX instead uses values from the
-        // comparably-sized *Computer Modern symbol* font. At 10pt, these
-        // match. At 7pt and 5pt, they differ: cmr7=1.138894, cmsy7=1.170641;
-        // cmr5=1.361133, cmsy5=1.472241. Consider $\scriptsize a\kern1emb$.
-        // TeX \showlists shows a kern of 1.13889 * fontsize;
-        // KaTeX shows a kern of 1.171 * fontsize.
-        if (sizeValue.unit === "ex") {
-            scale = unitOptions.fontMetrics().xHeight;
-        } else {
-            scale = unitOptions.fontMetrics().quad;
-        }
-        if (unitOptions !== options) {
-            scale *= unitOptions.sizeMultiplier / options.sizeMultiplier;
-        }
-    }
-    return sizeValue.number * scale;
-};
-
 groupTypes.array = function(group, options) {
     let r;
     let c;
@@ -624,7 +627,7 @@ groupTypes.array = function(group, options) {
 
         let gap = 0;
         if (group.value.rowGaps[r]) {
-            gap = calculateSize(group.value.rowGaps[r].value, options);
+            gap = units.calculateSize(group.value.rowGaps[r].value, options);
             if (gap > 0) { // \@argarraycr
                 gap += arstrutDepth;
                 if (depth < gap) {
@@ -1020,13 +1023,10 @@ groupTypes.katex = function(group, options) {
         ["mord", "katex-logo"], [k, a, t, e, x], options);
 };
 
-const makeLineSpan = function(className, options) {
-    const baseOptions = options.havingBaseStyle();
-    const line = makeSpan(
-        [className].concat(baseOptions.sizingClasses(options)),
-        [], options);
-    line.height = options.fontMetrics().defaultRuleThickness /
-        options.sizeMultiplier;
+const makeLineSpan = function(className, options, thickness) {
+    const line = makeSpan([className], [], options);
+    line.height = thickness || options.fontMetrics().defaultRuleThickness;
+    line.style.borderBottomWidth = line.height + "em";
     line.maxFontSize = 1.0;
     return line;
 };
@@ -1076,29 +1076,41 @@ groupTypes.sqrt = function(group, options) {
 
     // First, we do the same steps as in overline to build the inner group
     // and line
-    const inner = buildGroup(group.value.body, options.havingCrampedStyle());
+    let inner = buildGroup(group.value.body, options.havingCrampedStyle());
 
-    const line = makeLineSpan("sqrt-line", options);
-    const ruleWidth = line.height;
+    // Some groups can return document fragments.  Handle those by wrapping
+    // them in a span.
+    if (inner instanceof domTree.documentFragment) {
+        inner = makeSpan([], [inner], options);
+    }
 
-    let phi = ruleWidth;
+    // Calculate the minimum size for the \surd delimiter
+    const metrics = options.fontMetrics();
+    const theta = metrics.defaultRuleThickness;
+
+    let phi = theta;
     if (options.style.id < Style.TEXT.id) {
-        phi = options.fontMetrics().xHeight * options.sizeMultiplier;
+        phi = options.fontMetrics().xHeight;
     }
 
     // Calculate the clearance between the body and line
-    let lineClearance = ruleWidth + phi / 4;
+    let lineClearance = theta + phi / 4;
 
     const minDelimiterHeight = (inner.height + inner.depth +
-        lineClearance + ruleWidth) * options.sizeMultiplier;
+        lineClearance + theta) * options.sizeMultiplier;
 
-    // Create a \surd delimiter of the required minimum size
-    const delim = makeSpan(["sqrt-sign"], [
-        delimiter.customSizedDelim("\\surd", minDelimiterHeight,
-                                   false, options, group.mode)],
-                         options);
+    // Create a sqrt SVG of the required minimum size
+    const img = delimiter.customSizedDelim("\\surd", minDelimiterHeight,
+                    false, options, group.mode);
 
-    const delimDepth = (delim.height + delim.depth) - ruleWidth;
+    // Calculate the actual line width.
+    // This actually should depend on the chosen font -- e.g. \boldmath
+    // should use the thicker surd symbols from e.g. KaTeX_Main-Bold, and
+    // have thicker rules.
+    const ruleWidth = options.fontMetrics().sqrtRuleThickness *
+        img.sizeMultiplier;
+
+    const delimDepth = img.height - ruleWidth;
 
     // Adjust the clearance based on the delimiter size
     if (delimDepth > inner.height + inner.depth + lineClearance) {
@@ -1106,12 +1118,8 @@ groupTypes.sqrt = function(group, options) {
             (lineClearance + delimDepth - inner.height - inner.depth) / 2;
     }
 
-    // Shift the delimiter so that its top lines up with the top of the line
-    const delimShift = -(inner.height + lineClearance + ruleWidth) +
-          delim.height;
-    delim.style.top = delimShift + "em";
-    delim.height -= delimShift;
-    delim.depth += delimShift;
+    // Shift the sqrt image
+    const imgShift = img.height - inner.height - lineClearance - ruleWidth;
 
     // We add a special case here, because even when `inner` is empty, we
     // still get a line. So, we use a simple heuristic to decide if we
@@ -1122,16 +1130,20 @@ groupTypes.sqrt = function(group, options) {
     if (inner.height === 0 && inner.depth === 0) {
         body = makeSpan();
     } else {
+        inner.style.paddingLeft = img.surdWidth + "em";
+
+        // Overlay the image and the argument.
         body = buildCommon.makeVList([
             {type: "elem", elem: inner},
-            {type: "kern", size: lineClearance},
-            {type: "elem", elem: line},
+            {type: "kern", size: -(inner.height + imgShift)},
+            {type: "elem", elem: img},
             {type: "kern", size: ruleWidth},
         ], "firstBaseline", null, options);
+        body.children[0].children[0].classes.push("svg-align");
     }
 
     if (!group.value.index) {
-        return makeSpan(["mord", "sqrt"], [delim, body], options);
+        return makeSpan(["mord", "sqrt"], [body], options);
     } else {
         // Handle the optional root index
 
@@ -1139,13 +1151,9 @@ groupTypes.sqrt = function(group, options) {
         const newOptions = options.havingStyle(Style.SCRIPTSCRIPT);
         const rootm = buildGroup(group.value.index, newOptions, options);
 
-        // Figure out the height and depth of the inner part
-        const innerRootHeight = Math.max(delim.height, body.height);
-        const innerRootDepth = Math.max(delim.depth, body.depth);
-
         // The amount the index is shifted by. This is taken from the TeX
         // source, in the definition of `\r@@t`.
-        const toShift = 0.6 * (innerRootHeight - innerRootDepth);
+        const toShift = 0.6 * (body.height - body.depth);
 
         // Build a VList with the superscript shifted up correctly
         const rootVList = buildCommon.makeVList(
@@ -1156,7 +1164,7 @@ groupTypes.sqrt = function(group, options) {
         const rootVListWrap = makeSpan(["root"], [rootVList]);
 
         return makeSpan(["mord", "sqrt"],
-            [rootVListWrap, delim, body], options);
+            [rootVListWrap, body], options);
     }
 };
 
@@ -1320,11 +1328,11 @@ groupTypes.rule = function(group, options) {
     // Calculate the shift, width, and height of the rule, and account for units
     let shift = 0;
     if (group.value.shift) {
-        shift = calculateSize(group.value.shift, options);
+        shift = units.calculateSize(group.value.shift, options);
     }
 
-    const width = calculateSize(group.value.width, options);
-    const height = calculateSize(group.value.height, options);
+    const width = units.calculateSize(group.value.width, options);
+    const height = units.calculateSize(group.value.height, options);
 
     // Style the rule to the right size
     rule.style.borderRightWidth = width + "em";
@@ -1348,7 +1356,7 @@ groupTypes.kern = function(group, options) {
     const rule = makeSpan(["mord", "rule"], [], options);
 
     if (group.value.dimension) {
-        const dimension = calculateSize(group.value.dimension, options);
+        const dimension = units.calculateSize(group.value.dimension, options);
         rule.style.marginLeft = dimension + "em";
     }
 
@@ -1418,7 +1426,7 @@ groupTypes.accent = function(group, options) {
     let accentBody;
     if (!group.value.isStretchy) {
         const accent = buildCommon.makeSymbol(
-            group.value.label, "Main-Regular", "math", options);
+            group.value.label, "Main-Regular", group.mode, options);
         // Remove the italic correction of the accent, because it only serves to
         // shift the accent over to a place we don't want.
         accent.italic = 0;
@@ -1427,10 +1435,17 @@ groupTypes.accent = function(group, options) {
         // thus shows up much too far to the left. To account for this, we add a
         // specific class which shifts the accent over to where we want it.
         // TODO(emily): Fix this in a better way, like by changing the font
-        const vecClass = group.value.label === "\\vec" ? "accent-vec" : null;
+        // Similarly, text accent \H is a combining character and
+        // requires a different adjustment.
+        let accentClass = null;
+        if (group.value.label === "\\vec") {
+            accentClass = "accent-vec";
+        } else if (group.value.label === '\\H') {
+            accentClass = "accent-hungarian";
+        }
 
-        accentBody = makeSpan(["accent-body", vecClass], [
-            makeSpan([], [accent])]);
+        accentBody = makeSpan([], [accent]);
+        accentBody = makeSpan(["accent-body", accentClass], [accentBody]);
 
         // Shift the accent over by the skew. Note we shift by twice the skew
         // because we are centering the accent, so by adding 2*skew to the left,
@@ -1446,16 +1461,18 @@ groupTypes.accent = function(group, options) {
     } else {
         accentBody = stretchy.svgSpan(group, options);
 
-        if (skew > 0) {
-            // Shorten the accent. That will nudge it to the right.
-            const adjSize = "calc(100% - " + (2 * skew) + "em) 100%";
-            accentBody.style.backgroundSize = adjSize;
-        }
-
         accentBody = buildCommon.makeVList([
             {type: "elem", elem: body},
             {type: "elem", elem: accentBody},
         ], "firstBaseline", null, options);
+
+        const styleSpan = accentBody.children[0].children[0].children[1];
+        styleSpan.classes.push("svg-align");  // text-align: left;
+        if (skew > 0) {
+            // Shorten the accent and nudge it to the right.
+            styleSpan.style.width = `calc(100% - ${2 * skew}em)`;
+            styleSpan.style.marginLeft = (2 * skew) + "em";
+        }
     }
 
     const accentWrap = makeSpan(["mord", "accent"], [accentBody], options);
@@ -1514,12 +1531,14 @@ groupTypes.horizBrace = function(group, options) {
             {type: "kern", size: 0.1},
             {type: "elem", elem: braceBody},
         ], "firstBaseline", null, options);
+        vlist.children[0].children[0].children[1].classes.push("svg-align");
     } else {
         vlist = buildCommon.makeVList([
             {type: "elem", elem: braceBody},
             {type: "kern", size: 0.1},
             {type: "elem", elem: body},
         ], "bottom", body.depth + 0.1 + braceBody.height, options);
+        vlist.children[0].children[0].children[0].classes.push("svg-align");
     }
 
     if (hasSupSub) {
@@ -1569,6 +1588,8 @@ groupTypes.accentUnder = function(group, options) {
         {type: "elem", elem: innerGroup},
     ], "bottom", accentBody.height + kern, options);
 
+    vlist.children[0].children[0].children[0].classes.push("svg-align");
+
     return makeSpan(["mord", "accentunder"], [vlist], options);
 };
 
@@ -1585,7 +1606,6 @@ groupTypes.enclose = function(group, options) {
     if (label === "sout") {
         img = makeSpan(["stretchy", "sout"]);
         img.height = options.fontMetrics().defaultRuleThickness / scale;
-        img.maxFontSize = 1.0;
         imgShift = -0.5 * options.fontMetrics().xHeight;
     } else {
         // Add horizontal padding
@@ -1598,13 +1618,17 @@ groupTypes.enclose = function(group, options) {
         pad = (label === "fbox" ? 0.34 : (isCharBox ? 0.2 : 0));
         imgShift = inner.depth + pad;
 
-        img = stretchy.encloseSpan(inner, isCharBox, label, pad, options);
+        img = stretchy.encloseSpan(inner, label, pad, options);
     }
 
     const vlist = buildCommon.makeVList([
         {type: "elem", elem: inner, shift: 0},
         {type: "elem", elem: img, shift: imgShift},
     ], "individualShift", null, options);
+
+    if (label !== "fbox") {
+        vlist.children[0].children[0].children[1].classes.push("svg-align");
+    }
 
     if (/cancel/.test(label)) {
         // cancel does not create horiz space for its line extension.
@@ -1656,6 +1680,8 @@ groupTypes.xArrow = function(group, options) {
             {type: "elem", elem: arrowBody,  shift: arrowShift},
         ], "individualShift", null, options);
     }
+
+    vlist.children[0].children[0].children[1].classes.push("svg-align");
 
     return makeSpan(["mrel", "x-arrow"], [vlist], options);
 };

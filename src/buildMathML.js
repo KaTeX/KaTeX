@@ -8,6 +8,7 @@ import buildCommon, { makeSpan, fontMap } from "./buildCommon";
 import fontMetrics from "./fontMetrics";
 import mathMLTree from "./mathMLTree";
 import ParseError from "./ParseError";
+import Style from "./Style";
 import symbols from "./symbols";
 import utils from "./utils";
 import stretchy from "./stretchy";
@@ -91,6 +92,8 @@ groupTypes.textord = function(group, options) {
         // TODO(kevinb) merge adjacent <mn> nodes
         // do it as a post processing step
         node = new mathMLTree.MathNode("mn", [text]);
+    } else if (group.value === "\\prime") {
+        node = new mathMLTree.MathNode("mo", [text]);
     } else {
         node = new mathMLTree.MathNode("mi", [text]);
     }
@@ -207,14 +210,18 @@ groupTypes.supsub = function(group, options) {
         }
     }
 
-    const children = [buildGroup(group.value.base, options)];
+    const removeUnnecessaryRow = true;
+    const children = [
+        buildGroup(group.value.base, options, removeUnnecessaryRow)];
 
     if (group.value.sub) {
-        children.push(buildGroup(group.value.sub, options));
+        children.push(
+            buildGroup(group.value.sub, options, removeUnnecessaryRow));
     }
 
     if (group.value.sup) {
-        children.push(buildGroup(group.value.sup, options));
+        children.push(
+            buildGroup(group.value.sup, options, removeUnnecessaryRow));
     }
 
     let nodeType;
@@ -225,7 +232,12 @@ groupTypes.supsub = function(group, options) {
     } else if (!group.value.sup) {
         nodeType = "msub";
     } else {
-        nodeType = "msubsup";
+        const base = group.value.base;
+        if (base && base.value.limits && options.style === Style.DISPLAY) {
+            nodeType = "munderover";
+        } else {
+            nodeType = "msubsup";
+        }
     }
 
     const node = new mathMLTree.MathNode(nodeType, children);
@@ -457,7 +469,20 @@ groupTypes.delimsizing = function(group) {
 };
 
 groupTypes.styling = function(group, options) {
-    const inner = buildExpression(group.value.value, options);
+    // Figure out what style we're changing to.
+    // TODO(kevinb): dedupe this with buildHTML.js
+    // This will be easier of handling of styling nodes is in the same file.
+    const styleMap = {
+        "display": Style.DISPLAY,
+        "text": Style.TEXT,
+        "script": Style.SCRIPT,
+        "scriptscript": Style.SCRIPTSCRIPT,
+    };
+
+    const newStyle = styleMap[group.value.style];
+    const newOptions = options.havingStyle(newStyle);
+
+    const inner = buildExpression(group.value.value, newOptions);
 
     const node = new mathMLTree.MathNode("mstyle", inner);
 
@@ -636,6 +661,9 @@ const buildExpression = function(expression, options) {
         const group = expression[i];
         groups.push(buildGroup(group, options));
     }
+
+    // TODO(kevinb): combine \\not with mrels and mords
+
     return groups;
 };
 
@@ -643,14 +671,21 @@ const buildExpression = function(expression, options) {
  * Takes a group from the parser and calls the appropriate groupTypes function
  * on it to produce a MathML node.
  */
-const buildGroup = function(group, options) {
+// TODO(kevinb): determine if removeUnnecessaryRow should always be true
+const buildGroup = function(group, options, removeUnnecessaryRow = false) {
     if (!group) {
         return new mathMLTree.MathNode("mrow");
     }
 
     if (groupTypes[group.type]) {
         // Call the groupTypes function
-        return groupTypes[group.type](group, options);
+        const result = groupTypes[group.type](group, options);
+        if (removeUnnecessaryRow) {
+            if (result.type === "mrow" && result.children.length === 1) {
+                return result.children[0];
+            }
+        }
+        return result;
     } else {
         throw new ParseError(
             "Got group of unknown type: '" + group.type + "'");
