@@ -1,5 +1,6 @@
-/* eslint no-console:0 */
 /**
+ * WARNING: New methods on groupTypes should be added to src/functions.
+ *
  * This file does the main work of building a domTree structure from a parse
  * tree. The entry point is the `buildHTML` function, which takes a parse tree.
  * Then, the buildExpression, buildGroup, and various groupTypes functions are

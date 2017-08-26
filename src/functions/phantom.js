@@ -8,7 +8,7 @@ import * as mml from "../buildMathML";
 
 defineFunction({
     type: "phantom",
-    names: "\\phantom",
+    names: ["\\phantom"],
     props: {
         numArgs: 1,
     },
@@ -38,7 +38,7 @@ defineFunction({
 
 defineFunction({
     type: "hphantom",
-    names: "\\hphantom",
+    names: ["\\hphantom"],
     props: {
         numArgs: 1,
     },
@@ -79,7 +79,7 @@ defineFunction({
 
 defineFunction({
     type: "vphantom",
-    names: "\\vphantom",
+    names: ["\\vphantom"],
     props: {
         numArgs: 1,
     },

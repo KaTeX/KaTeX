@@ -12,7 +12,7 @@ type FunctionSpec<T> = {
 
     // The first argument to defineFunction is a single name or a list of names.
     // All functions named in such a list will share a single implementation.
-    names: string | Array<string>,
+    names: Array<string>,
 
     // Properties that control how the functions are parsed.
     props: {
@@ -107,12 +107,6 @@ export default function defineFunction({
     htmlBuilder,
     mathmlBuilder,
 }: FunctionSpec<*>) {
-    if (typeof names === "string") {
-        names = [names];
-    }
-    if (typeof props === "number") {
-        props = { numArgs: props };
-    }
     // Set default values of functions
     const data = {
         numArgs: props.numArgs,
