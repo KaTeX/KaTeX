@@ -231,7 +231,7 @@ defineFunction({
 
 defineFunction({
     type: "middle",
-    names: "\\middle",
+    names: ["\\middle"],
     props: {
         numArgs: 1,
     },

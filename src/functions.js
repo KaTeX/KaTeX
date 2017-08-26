@@ -3,9 +3,17 @@ import ParseError from "./ParseError";
 import ParseNode from "./ParseNode";
 import {default as _defineFunction, ordargument} from "./defineFunction";
 
+// WARNING: New functions should be added to src/functions.
+
 // Define a convenience function that mimcs the old semantics of defineFunction
 // to support existing code so that we can migrate it a little bit at a time.
 const defineFunction = function(names, props, handler) {
+    if (typeof names === "string") {
+        names = [names];
+    }
+    if (typeof props === "number") {
+        props = { numArgs: props };
+    }
     _defineFunction({names, props, handler});
 };
 
