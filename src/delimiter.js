@@ -316,7 +316,7 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
 const sqrtInnerSVG = {
     // The main path geometry is from glyph U221A in the font KaTeX Main
     main: `<svg viewBox='0 0 400000 1000' preserveAspectRatio='xMinYMin
-slice'><path fill='currentColor' d='M95 622c-2.667 0-7.167-2.667-13.5
+slice'><path d='M95 622c-2.667 0-7.167-2.667-13.5
 -8S72 604 72 600c0-2 .333-3.333 1-4 1.333-2.667 23.833-20.667 67.5-54s
 65.833-50.333 66.5-51c1.333-1.333 3-2 5-2 4.667 0 8.667 3.333 12 10l173
 378c.667 0 35.333-71 104-213s137.5-285 206.5-429S812 17.333 812 14c5.333
@@ -325,7 +325,7 @@ slice'><path fill='currentColor' d='M95 622c-2.667 0-7.167-2.667-13.5
 
     // size1 is from glyph U221A in the font KaTeX_Size1-Regular
     1: `<svg viewBox='0 0 400000 1200' preserveAspectRatio='xMinYMin
-slice'><path fill='currentColor' d='M263 601c.667 0 18 39.667 52 119s68.167
+slice'><path d='M263 601c.667 0 18 39.667 52 119s68.167
  158.667 102.5 238 51.833 119.333 52.5 120C810 373.333 980.667 17.667 982 11
 c4.667-7.333 11-11 19-11h398999v40H1012.333L741 607c-38.667 80.667-84 175-136
  283s-89.167 185.333-111.5 232-33.833 70.333-34.5 71c-4.667 4.667-12.333 7-23
@@ -334,7 +334,7 @@ c4.667-7.333 11-11 19-11h398999v40H1012.333L741 607c-38.667 80.667-84 175-136
 
     // size2 is from glyph U221A in the font KaTeX_Size2-Regular
     2: `<svg viewBox='0 0 400000 1800' preserveAspectRatio='xMinYMin
-slice'><path fill='currentColor' d='M1001 0h398999v40H1013.084S929.667 308 749
+slice'><path d='M1001 0h398999v40H1013.084S929.667 308 749
  880s-277 876.333-289 913c-4.667 4.667-12.667 7-24 7h-12c-1.333-3.333-3.667
 -11.667-7-25-35.333-125.333-106.667-373.333-214-744-10 12-21 25-33 39l-32 39
 c-6-5.333-15-14-27-26l25-30c26.667-32.667 52-63 76-91l52-60 208 722c56-175.333
@@ -343,7 +343,7 @@ c-6-5.333-15-14-27-26l25-30c26.667-32.667 52-63 76-91l52-60 208 722c56-175.333
 
     // size3 is from glyph U221A in the font KaTeX_Size3-Regular
     3: `<svg viewBox='0 0 400000 2400' preserveAspectRatio='xMinYMin
-slice'><path fill='currentColor' d='M424 2398c-1.333-.667-38.5-172-111.5-514
+slice'><path d='M424 2398c-1.333-.667-38.5-172-111.5-514
 S202.667 1370.667 202 1370c0-2-10.667 14.333-32 49-4.667 7.333-9.833 15.667
 -15.5 25s-9.833 16-12.5 20l-5 7c-4-3.333-8.333-7.667-13-13l-13-13 76-122 77-121
  209 968c0-2 84.667-361.667 254-1079C896.333 373.667 981.667 13.333 983 10
@@ -353,7 +353,7 @@ M1001 0h398999v40H1014z'/></svg>`,
 
     // size4 is from glyph U221A in the font KaTeX_Size4-Regular
     4: `<svg viewBox='0 0 400000 3000' preserveAspectRatio='xMinYMin
-slice'><path fill='currentColor' d='M473 2713C812.333 913.667 982.333 13 983 11
+slice'><path d='M473 2713C812.333 913.667 982.333 13 983 11
 c3.333-7.333 9.333-11 18-11h399110v40H1017.698S927.168 518 741.5 1506C555.833
  2494 462 2989 460 2991c-2 6-10 9-24 9-8 0-12-.667-12-2s-5.333-32-16-92c-50.667
 -293.333-119.667-693.333-207-1200 0-1.333-5.333 8.667-16 30l-32 64-16 33-26-26
@@ -410,7 +410,7 @@ const sqrtSpan = function(height, delim, options) {
         span.innerHTML = `<svg width='100%' height='${span.height}em'>
             <svg viewBox='0 0 400000 ${viewBoxHeight}'
             preserveAspectRatio='xMinYMax slice'>
-            <path fill='currentColor' d='M702 0H400000v40H742v${vertSegment}
+            <path d='M702 0H400000v40H742v${vertSegment}
             ${sqrtInnerSVG['tall']}</svg>`;
     }
 

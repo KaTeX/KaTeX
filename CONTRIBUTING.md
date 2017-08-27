@@ -12,8 +12,8 @@ supported
 functions](https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX) as
 well as a page that describes how to [examine TeX commands and where to find
 rules](https://github.com/Khan/KaTeX/wiki/Examining-TeX) which can be quite
-useful when adding new commands. There's also a user-contributed [preview page]
-(http://utensil-site.github.io/available-in-katex/)
+useful when adding new commands. There's also a user-contributed
+[preview page](http://utensil-site.github.io/available-in-katex/)
 showing how KaTeX would render a series of symbols/functions (including the ones
 MathJax listed in their documentation and the extra ones supported by KaTeX). You
 can check them to see if we don't support a function you like, or try your
