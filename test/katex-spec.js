@@ -2148,7 +2148,7 @@ describe("A smash parser", function() {
         expect("\\smash[]{x^2}").toParse();
         expect("\\smash[]{x}^2").toParse();
         expect("\\smash[] x").toParse();
-        });
+    });
 
     it("should build a smash node", function() {
         const parse = getParsed("\\smash{x}")[0];
