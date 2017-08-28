@@ -234,7 +234,7 @@ defineFunction("\\KaTeX", {
     };
 });
 
-defineFunction(["\\phantom", "\\hphantom", "\\vphantom",], {
+defineFunction(["\\phantom", "\\hphantom", "\\vphantom"], {
     numArgs: 1,
 }, function(context, args) {
     const body = args[0];
@@ -518,7 +518,7 @@ defineFunction([
 });
 
 // Horizontal overlap functions
-defineFunction(["\\mathllap", "\\mathrlap", "\\mathclap",], {
+defineFunction(["\\mathllap", "\\mathrlap", "\\mathclap"], {
     numArgs: 1,
     allowedInText: true,
 }, function(context, args) {
