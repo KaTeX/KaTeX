@@ -2108,24 +2108,14 @@ describe("A phantom builder", function() {
     });
 
     it("should make the children transparent", function() {
-        let children = getBuilt("\\phantom{x+1}");
-        expect(children[0].style.color).toBe("transparent");
-        expect(children[1].style.color).toBe("transparent");
-        expect(children[2].style.color).toBe("transparent");
-
-        children = getBuilt("\\hphantom{x+1}");
+        const children = getBuilt("\\phantom{x+1}");
         expect(children[0].style.color).toBe("transparent");
         expect(children[1].style.color).toBe("transparent");
         expect(children[2].style.color).toBe("transparent");
     });
 
     it("should make all descendants transparent", function() {
-        let children = getBuilt("\\phantom{x+\\blue{1}}");
-        expect(children[0].style.color).toBe("transparent");
-        expect(children[1].style.color).toBe("transparent");
-        expect(children[2].style.color).toBe("transparent");
-
-        children = getBuilt("\\hphantom{x+\\blue{1}}");
+        const children = getBuilt("\\phantom{x+\\blue{1}}");
         expect(children[0].style.color).toBe("transparent");
         expect(children[1].style.color).toBe("transparent");
         expect(children[2].style.color).toBe("transparent");
@@ -2154,7 +2144,6 @@ describe("A smash parser", function() {
         const parse = getParsed("\\smash{x}")[0];
 
         expect(parse.type).toEqual("smash");
-        expect(parse.value.value).toBeDefined();
     });
 });
 
@@ -2165,10 +2154,10 @@ describe("A smash builder", function() {
         expect("\\smash{x}^2").toBuild();
         expect("\\smash x").toBuild();
 
-        expect("\\hsmash[b]{x}").toBuild();
-        expect("\\hsmash[b]{x^2}").toBuild();
-        expect("\\hsmash[b]{x}^2").toBuild();
-        expect("\\hsmash[b] x").toBuild();
+        expect("\\smash[b]{x}").toBuild();
+        expect("\\smash[b]{x^2}").toBuild();
+        expect("\\smash[b]{x}^2").toBuild();
+        expect("\\smash[b] x").toBuild();
     });
 });
 
