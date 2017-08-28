@@ -621,7 +621,7 @@ groupTypes.kern = function(group) {
     return node;
 };
 
-groupTypes.llap = function(group, options) {
+groupTypes.mathllap = function(group, options) {
     const node = new mathMLTree.MathNode(
         "mpadded", [buildGroup(group.value.body, options)]);
 
@@ -631,7 +631,7 @@ groupTypes.llap = function(group, options) {
     return node;
 };
 
-groupTypes.rlap = function(group, options) {
+groupTypes.mathrlap = function(group, options) {
     const node = new mathMLTree.MathNode(
         "mpadded", [buildGroup(group.value.body, options)]);
 
@@ -640,9 +640,52 @@ groupTypes.rlap = function(group, options) {
     return node;
 };
 
+groupTypes.mathclap = function(group, options) {
+    const node = new mathMLTree.MathNode(
+        "mpadded", [buildGroup(group.value.body, options)]);
+
+    node.setAttribute("width", "0px");
+    // TODO(ron): Find a way to indicate that this is centered.
+
+    return node;
+};
+
+groupTypes.smash = function(group, options) {
+    const node = new mathMLTree.MathNode(
+        "mpadded", [buildGroup(group.value.body, options)]);
+
+    if (group.value.tb.length > 0) {
+        if (/t/.test(group.value.tb)) {
+            node.setAttribute("height", "0px");
+        }
+        if (/b/.test(group.value.tb)) {
+            node.setAttribute("depth", "0px");
+        }
+    } else {
+        node.setAttribute("height", "0px");
+        node.setAttribute("depth", "0px");
+    }
+
+    return node;
+};
+
 groupTypes.phantom = function(group, options) {
     const inner = buildExpression(group.value.value, options);
     return new mathMLTree.MathNode("mphantom", inner);
+};
+
+groupTypes.hphantom = function(group, options) {
+    const inner = buildExpression(group.value.value, options);
+    const node = new mathMLTree.MathNode("mphantom", inner);
+    node.setAttribute("height", "0px");
+    return node;
+};
+
+groupTypes.vphantom = function(group, options) {
+    const inner = buildExpression(group.value.value, options);
+    const node = new mathMLTree.MathNode("mphantom", inner);
+    node.setAttribute("width", "0px");
+    return node;
 };
 
 groupTypes.mclass = function(group, options) {

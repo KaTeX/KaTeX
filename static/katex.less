@@ -350,7 +350,8 @@
     }
 
     .llap,
-    .rlap {
+    .rlap,
+    .clap {
         width: 0;
         position: relative;
 
@@ -367,8 +368,14 @@
         right: 0;
     }
 
-    .rlap > .inner {
+    .rlap > .inner,
+    .clap > .inner {
         left: 0;
+    }
+
+    .clap > .inner  > span {
+        margin-left: -50%;
+        margin-right: 50%;
     }
 
     .katex-logo {

@@ -762,7 +762,7 @@ groupTypes.spacing = function(group, options) {
     }
 };
 
-groupTypes.llap = function(group, options) {
+groupTypes.mathllap = function(group, options) {
     const inner = makeSpan(
         ["inner"], [buildGroup(group.value.body, options)]);
     const fix = makeSpan(["fix"], []);
@@ -770,12 +770,66 @@ groupTypes.llap = function(group, options) {
         ["mord", "llap"], [inner, fix], options);
 };
 
-groupTypes.rlap = function(group, options) {
+groupTypes.mathrlap = function(group, options) {
     const inner = makeSpan(
         ["inner"], [buildGroup(group.value.body, options)]);
     const fix = makeSpan(["fix"], []);
     return makeSpan(
         ["mord", "rlap"], [inner, fix], options);
+};
+
+groupTypes.mathclap = function(group, options) {
+    // ref: https://www.math.lsu.edu/~aperlis/publications/mathclap/
+    let inner = makeSpan([], [buildGroup(group.value.body, options)]);
+    // Wrap the span, since CSS has code that will
+    // center the span at .clap > .inner  > span
+    inner = makeSpan(["inner"], [inner], options);
+    const fix = makeSpan(["fix"], []);
+    return makeSpan(
+        ["mord", "clap"], [inner, fix], options);
+};
+
+groupTypes.smash = function(group, options) {
+    const node = makeSpan(["mord"], [buildGroup(group.value.body, options)]);
+
+    let smashHeight = false;
+    let smashDepth = false;
+
+    if (group.value.tb.length === 0) {
+        smashHeight = true;
+        smashDepth = true;
+    } else {
+        // Optional [tb] argument is engaged.
+        // ref: amsmath: \renewcommand{\smash}[1][tb]{%
+        //               def\mb@t{\ht}\def\mb@b{\dp}\def\mb@tb{\ht\z@\z@\dp}%
+        if (/t/.test(group.value.tb)) {
+            smashHeight = true;
+        }
+        if (/b/.test(group.value.tb)) {
+            smashDepth = true;
+        }
+    }
+
+    if (smashHeight) {
+        node.height = 0;
+        // In order to influence makeVList, we have to reset the children.
+        if (node.children) {
+            for (let i = 0; i < node.children.length; i++) {
+                node.children[i].height = 0;
+            }
+        }
+    }
+
+    if (smashDepth) {
+        node.depth = 0;
+        if (node.children) {
+            for (let i = 0; i < node.children.length; i++) {
+                node.children[i].depth = 0;
+            }
+        }
+    }
+
+    return node;
 };
 
 groupTypes.op = function(group, options) {
@@ -1696,6 +1750,29 @@ groupTypes.phantom = function(group, options) {
     // \phantom isn't supposed to affect the elements it contains.
     // See "color" for more details.
     return new buildCommon.makeFragment(elements);
+};
+
+groupTypes.hphantom = function(group, options) {
+    const node = makeSpan(
+        [], [buildGroup(group.value.body, options.withPhantom())]);
+    node.height = 0;
+    node.depth = 0;
+    if (node.children) {
+        for (let i = 0; i < node.children.length; i++) {
+            node.children[i].height = 0;
+            node.children[i].depth = 0;
+        }
+    }
+
+    return node;
+};
+
+groupTypes.vphantom = function(group, options) {
+    const inner = makeSpan(
+        ["inner"], [buildGroup(group.value.body, options.withPhantom())]);
+    const fix = makeSpan(["fix"], []);
+    return makeSpan(
+        ["mord", "rlap"], [inner, fix], options);
 };
 
 groupTypes.mclass = function(group, options) {
