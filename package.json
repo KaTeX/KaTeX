@@ -3,6 +3,7 @@
   "version": "0.8.4-pre",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
+  "module": "katex.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/Khan/KaTeX.git"
@@ -11,6 +12,7 @@
     "katex.js",
     "cli.js",
     "src/",
+    "contrib/",
     "dist/"
   ],
   "license": "MIT",
