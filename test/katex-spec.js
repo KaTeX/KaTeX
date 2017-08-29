@@ -788,8 +788,11 @@ describe("A text parser", function() {
 describe("A color parser", function() {
     const colorExpression = "\\blue{x}";
     const newColorExpression = "\\redA{x}";
-    const customColorExpression = "\\textcolor{#fA6}{x}";
-    const badCustomColorExpression = "\\textcolor{bad-color}{x}";
+    const customColorExpression1 = "\\textcolor{#fA6}{x}";
+    const customColorExpression2 = "\\textcolor{#fA6fA6}{x}";
+    const badCustomColorExpression1 = "\\textcolor{bad-color}{x}";
+    const badCustomColorExpression2 = "\\textcolor{#fA6f}{x}";
+    const badCustomColorExpression3 = "\\textcolor{#gA6}{x}";
     const oldColorExpression = "\\color{#fA6}xy";
 
     it("should not fail", function() {
@@ -805,17 +808,22 @@ describe("A color parser", function() {
     });
 
     it("should parse a custom color", function() {
-        expect(customColorExpression).toParse();
+        expect(customColorExpression1).toParse();
+        expect(customColorExpression2).toParse();
     });
 
     it("should correctly extract the custom color", function() {
-        const parse = getParsed(customColorExpression)[0];
+        const parse1 = getParsed(customColorExpression1)[0];
+        const parse2 = getParsed(customColorExpression2)[0];
 
-        expect(parse.value.color).toEqual("#fA6");
+        expect(parse1.value.color).toEqual("#fA6");
+        expect(parse2.value.color).toEqual("#fA6fA6");
     });
 
     it("should not parse a bad custom color", function() {
-        expect(badCustomColorExpression).toNotParse();
+        expect(badCustomColorExpression1).toNotParse();
+        expect(badCustomColorExpression2).toNotParse();
+        expect(badCustomColorExpression3).toNotParse();
     });
 
     it("should parse new colors from the branding guide", function() {
