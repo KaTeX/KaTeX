@@ -6,11 +6,9 @@
     <title>Function Support in KaTeX</title>
     <link rel="icon" href="http://khan.github.io/favicon.ico">
 	
-	<link rel="stylesheet" href="https://unpkg.com/katex@0.8.2/dist/katex.min.css">
-
-	<script src="https://unpkg.com/katex@0.8.2/dist/katex.min.js"></script>
-
-	<script src="https://unpkg.com/katex@0.8.2/dist/contrib/auto-render.min.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/katex@0.8.3/dist/katex.min.css">
+	<script src="https://unpkg.com/katex@0.8.3/dist/katex.min.js"></script>
+	<script src="https://unpkg.com/katex@0.8.3/dist/contrib/auto-render.min.js"></script>
 	
 <style type="text/css">
 * { margin:0; padding:0; }  /* reset */
@@ -321,6 +319,43 @@ code {
 			<td></td>
 		</tr>
 	</table>
+	
+	<h4 id="accents-inside-\text…}">Accents inside \text{…}</h4>
+
+	<table>
+		<tr>
+			<td>\(\text{\&apos;{a}}\)</td>
+			<td>\&apos;{a}</td>
+			<td>\(\text{\~{a}}\)</td>
+			<td>\~{a}</td>
+			<td>\(\text{\.{a}}\)</td>
+			<td>\.{a}</td>
+			<td>\(\text{\H{a}}\)</td>
+			<td>\H{a}</td>
+		</tr>
+		<tr>
+			<td>\(\text{\`{a}}\)</td>
+			<td>\`{a}</td>
+			<td>\(\text{\={a}}\)</td>
+			<td>\={a}</td>
+			<td>\(\text{\&quot;{a}}\)</td>
+			<td>\&quot;{a}</td>
+			<td>\(\text{\v{a}}\)</td>
+			<td>\v{a}</td>
+		</tr>
+		<tr>
+			<td>\(\text{\^{a}}\)</td>
+			<td>\^{a}</td>
+			<td>\(\text{\u{a}}\)</td>
+			<td>\u{a}</td>
+			<td>\(\text{\r{a}}\)</td>
+			<td>\r{a}</td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+	
+	<p>See also <a href="#other-letters">letters</a>.</p>
 
 <h2 id="delimiters">Delimiters</h2>
 
@@ -510,6 +545,10 @@ code {
    c &amp; d
 \end{Bmatrix}</code></pre>
             </td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
         </tr>
     </table>
 
@@ -643,7 +682,6 @@ code {
     </table>
 
 <h3 id="other-letters">Other Letters</h3>
-
     <table class="symbol">
         <tr>
             <td>\(\imath\)</td>
@@ -695,7 +733,14 @@ code {
         </tr>
     </table>
 
-    <p class="indented"><code>\text{…}</code> will accept characters from <a href="http://www.unicode.org/charts/PDF/U0080.pdf">Latin-1</a>, <a href="http://unicode.org/charts/PDF/U0400.pdf">Cyrillic</a>, or CJK (Hiragana, Katakana, CJK ideograms, and Hangul).</p>
+	<table>
+		<tr>
+			<td>Direct Input:</td>
+			<td><span style="font-family: Times New Roman;">ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞß<br>àáâãäåæçèéêëìíîïðñòóôöøùúûüýþÿ</span></td>
+		</tr>
+	</table>
+	
+    <p class="indented"><code>\text{…}</code> will accept characters from <a href="http://www.unicode.org/charts/PDF/U0080.pdf">Latin-1</a>, <a href="http://unicode.org/charts/PDF/U0400.pdf">Cyrillic</a>, or CJK (Hiragana, Katakana, CJK ideograms, Hangul, <a href="https://en.wiktionary.org/wiki/Appendix:Unicode/CJK_Symbols_and_Punctuation">punctuation</a>, and <a href="https://en.wiktionary.org/wiki/Appendix:Unicode/Halfwidth_and_Fullwidth_Forms">full width punctuation</a>).</p>
 
 <h2 id="annotation">Annotation</h2>
 
@@ -721,12 +766,10 @@ code {
 		<tr>
 			<td>\(\sout{abc}\)</td>
 			<td>\sout{abc}</td>
-			<td></td>
-			<td></td>
 		</tr>
 	</table>
 	
-<h3 id="overlap">Overlap</h2>
+<h3 id="overlap">Overlap</h3>
 
     <table class="symbol">
         <tr>
@@ -1605,7 +1648,17 @@ code {
 <h2 id="negated-relations">Negated Relations</h2>
 
     <table class="symbol">
-        <tr>
+		<tr>
+            <td>\(\not =\)</td>
+            <td>\not =</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+		<tr>
             <td>⪊</td>
             <td>\gnapprox</td>
             <td></td>
@@ -2083,8 +2136,6 @@ code {
 	</table>
 	
         <p>For color definition, <code>\color</code> and <code>\textcolor</code> will accept the standard HTML <a href="https://www.w3schools.com/colors/colors_names.asp">predefined color names</a>. They will also accept an RGB argument in CSS hexa­decimal style.</p>
-		
-		<p>Internet Explorer and Edge will render stretchy accents, horizontal braces, extensible arrows, and <code>\cancel</code> in black, regardless of <code>\color</code>. You can ask Microsoft for an improve­ment <a href="https://wpdev.uservoice.com/forums/257854-microsoft-edge-developer/suggestions/6261341-css-masking">here</a>.</p>
     </div>
 
 <h3 id="font">Font</h3>
@@ -2231,7 +2282,7 @@ code {
 		<p><code>\text{…}</code> will accept characters from <a href="http://www.unicode.org/charts/PDF/U0080.pdf">Latin-1</a>, <a href="http://unicode.org/charts/PDF/U0400.pdf">Cyrillic</a>, or CJK (Hiragana, Katakana, CJK ideograms, and Hangul).</p>
 		
 		<p><code>\text{…}</code> will accept nested <code>$…$</code> fragments and render them in math mode.</p>
-	<div>
+	</div>
 
 <h2 id="symbols">Symbols and Punctuation</h2>
 
