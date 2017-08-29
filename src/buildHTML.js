@@ -780,7 +780,7 @@ groupTypes.lap = function(group, options) {
 };
 
 groupTypes.smash = function(group, options) {
-    const node = makeSpan(["mord"], [buildGroup(group.value.body, options)]);
+    let node = makeSpan(["mord"], [buildGroup(group.value.body, options)]);
 
     let smashHeight = false;
     let smashDepth = false;
@@ -814,6 +814,14 @@ groupTypes.smash = function(group, options) {
             }
         }
     }
+
+    // makeVList applies "display: table-cell", which prevents the browser from
+    // adding padding-like gaps above a span. So call makeVList now, to take
+    // advantage of that formatting.
+
+    node = buildCommon.makeVList([
+        {type: "elem", elem: node},
+    ], "firstBaseline", null, options);
 
     return node;
 };
@@ -1739,7 +1747,7 @@ groupTypes.phantom = function(group, options) {
 };
 
 groupTypes.hphantom = function(group, options) {
-    const node = makeSpan(
+    let node = makeSpan(
         [], [buildGroup(group.value.body, options.withPhantom())]);
     node.height = 0;
     node.depth = 0;
@@ -1749,6 +1757,11 @@ groupTypes.hphantom = function(group, options) {
             node.children[i].depth = 0;
         }
     }
+
+    // See smash for comment re: use of makeVList
+    node = buildCommon.makeVList([
+        {type: "elem", elem: node},
+    ], "firstBaseline", null, options);
 
     return node;
 };
