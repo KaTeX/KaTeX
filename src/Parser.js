@@ -773,7 +773,7 @@ class Parser {
         if (!res) {
             return null;
         }
-        const match = (/^(#[a-z0-9]+|[a-z]+)$/i).exec(res.text);
+        const match = (/^(#[a-f0-9]{3}|#[a-f0-9]{6}|[a-z]+)$/i).exec(res.text);
         if (!match) {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
