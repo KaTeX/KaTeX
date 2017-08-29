@@ -234,13 +234,14 @@ defineFunction("\\KaTeX", {
     };
 });
 
-defineFunction("\\phantom", {
+defineFunction(["\\phantom", "\\hphantom", "\\vphantom"], {
     numArgs: 1,
 }, function(context, args) {
     const body = args[0];
     return {
-        type: "phantom",
+        type: context.funcName.slice(1),
         value: ordargument(body),
+        body: body,
     };
 });
 
@@ -516,15 +517,42 @@ defineFunction([
     };
 });
 
-// Left and right overlap functions
-defineFunction(["\\llap", "\\rlap"], {
+// Horizontal overlap functions
+defineFunction(["\\mathllap", "\\mathrlap", "\\mathclap"], {
     numArgs: 1,
     allowedInText: true,
 }, function(context, args) {
     const body = args[0];
     return {
-        type: context.funcName.slice(1),
+        type: "lap",
+        className: context.funcName.slice(5),
         body: body,
+    };
+});
+
+// smash, with optional [bt], as in AMS
+defineFunction("\\smash", {
+    numArgs: 1,
+    numOptionalArgs: 1,
+    allowedInText: true,
+}, function(context, args) {
+    const tbArg = args[0];
+    let tb = "";
+    if (tbArg) {
+        let letter = "";
+        for (let i = 0; i < tbArg.value.length; ++i) {
+            letter = tbArg.value[i].value;
+            if (letter === "t" || letter === "b") {
+                tb += letter;
+            }
+        }
+    }
+
+    const body = args[1];
+    return {
+        type: "smash",
+        body: body,
+        tb: tb,
     };
 });
 
