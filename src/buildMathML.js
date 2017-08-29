@@ -621,31 +621,16 @@ groupTypes.kern = function(group) {
     return node;
 };
 
-groupTypes.mathllap = function(group, options) {
+groupTypes.lap = function(group, options) {
+    // mathllap, mathrlap, mathclap
     const node = new mathMLTree.MathNode(
         "mpadded", [buildGroup(group.value.body, options)]);
 
-    node.setAttribute("lspace", "-1width");
+    if (group.value.className !== "rlap")    {
+        const offset = (group.value.className === "llap" ? "-1" : "-0.5");
+        node.setAttribute("lspace", offset + "width");
+    }
     node.setAttribute("width", "0px");
-
-    return node;
-};
-
-groupTypes.mathrlap = function(group, options) {
-    const node = new mathMLTree.MathNode(
-        "mpadded", [buildGroup(group.value.body, options)]);
-
-    node.setAttribute("width", "0px");
-
-    return node;
-};
-
-groupTypes.mathclap = function(group, options) {
-    const node = new mathMLTree.MathNode(
-        "mpadded", [buildGroup(group.value.body, options)]);
-
-    node.setAttribute("width", "0px");
-    // TODO(ron): Find a way to indicate that this is centered.
 
     return node;
 };

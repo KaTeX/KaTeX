@@ -524,7 +524,8 @@ defineFunction(["\\mathllap", "\\mathrlap", "\\mathclap"], {
 }, function(context, args) {
     const body = args[0];
     return {
-        type: context.funcName.slice(1),
+        type: "lap",
+        className: context.funcName.slice(5),
         body: body,
     };
 });

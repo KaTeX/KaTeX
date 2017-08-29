@@ -762,31 +762,21 @@ groupTypes.spacing = function(group, options) {
     }
 };
 
-groupTypes.mathllap = function(group, options) {
-    const inner = makeSpan(
-        ["inner"], [buildGroup(group.value.body, options)]);
+groupTypes.lap = function(group, options) {
+    // mathllap, mathrlap, mathclap
+    let inner;
+    if (group.value.className === "clap") {
+        // ref: https://www.math.lsu.edu/~aperlis/publications/mathclap/
+        inner = makeSpan([], [buildGroup(group.value.body, options)]);
+        // wrap, since CSS will center a .clap > .inner > span
+        inner = makeSpan(["inner"], [inner], options);
+    } else {
+        inner = makeSpan(
+            ["inner"], [buildGroup(group.value.body, options)]);
+    }
     const fix = makeSpan(["fix"], []);
     return makeSpan(
-        ["mord", "llap"], [inner, fix], options);
-};
-
-groupTypes.mathrlap = function(group, options) {
-    const inner = makeSpan(
-        ["inner"], [buildGroup(group.value.body, options)]);
-    const fix = makeSpan(["fix"], []);
-    return makeSpan(
-        ["mord", "rlap"], [inner, fix], options);
-};
-
-groupTypes.mathclap = function(group, options) {
-    // ref: https://www.math.lsu.edu/~aperlis/publications/mathclap/
-    let inner = makeSpan([], [buildGroup(group.value.body, options)]);
-    // Wrap the span, since CSS has code that will
-    // center the span at .clap > .inner  > span
-    inner = makeSpan(["inner"], [inner], options);
-    const fix = makeSpan(["fix"], []);
-    return makeSpan(
-        ["mord", "clap"], [inner, fix], options);
+        ["mord", group.value.className], [inner, fix], options);
 };
 
 groupTypes.smash = function(group, options) {
