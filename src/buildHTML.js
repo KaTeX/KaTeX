@@ -802,12 +802,8 @@ groupTypes.smash = function(group, options) {
         // Optional [tb] argument is engaged.
         // ref: amsmath: \renewcommand{\smash}[1][tb]{%
         //               def\mb@t{\ht}\def\mb@b{\dp}\def\mb@tb{\ht\z@\z@\dp}%
-        if (/t/.test(group.value.tb)) {
-            smashHeight = true;
-        }
-        if (/b/.test(group.value.tb)) {
-            smashDepth = true;
-        }
+        smashHeight = /t/.test(group.value.tb);
+        smashDepth = /b/.test(group.value.tb);
     }
 
     if (smashHeight) {
