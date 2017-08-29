@@ -715,7 +715,7 @@ describe("A text parser", function() {
     const textExpression = "\\text{a b}";
     const noBraceTextExpression = "\\text x";
     const nestedTextExpression =
-        "\\text{a {b} \\blue{c} \\textcolor{#fff}{x} \\llap{x}}";
+        "\\text{a {b} \\blue{c} \\textcolor{#fff}{x} \\mathllap{x}}";
     const spaceTextExpression = "\\text{  a \\ }";
     const leadingSpaceTextExpression = "\\text {moo}";
     const badTextExpression = "\\text{a b%}";
@@ -1232,7 +1232,7 @@ describe("A TeX-compliant parser", function() {
             "\\frac{x}",
             "\\textcolor{#fff}",
             "\\rule{1em}",
-            "\\llap",
+            "\\mathllap",
             "\\bigl",
             "\\text",
         ];
@@ -1253,15 +1253,15 @@ describe("A TeX-compliant parser", function() {
             "\\frac x \\frac y z",
             "\\frac \\sqrt x y",
             "\\frac x \\sqrt y",
-            "\\frac \\llap x y",
-            "\\frac x \\llap y",
+            "\\frac \\mathllap x y",
+            "\\frac x \\mathllap y",
             // This actually doesn't work in real TeX, but it is suprisingly
             // hard to get this to correctly work. So, we take hit of very small
             // amounts of non-compatiblity in order for the rest of the tests to
             // work
-            // "\\llap \\frac x y",
-            "\\llap \\llap x",
-            "\\sqrt \\llap x",
+            // "\\mathllap \\frac x y",
+            "\\mathllap \\mathllap x",
+            "\\sqrt \\mathllap x",
         ];
 
         for (let i = 0; i < badArguments.length; i++) {
@@ -1275,11 +1275,11 @@ describe("A TeX-compliant parser", function() {
             "\\frac x {\\frac y z}",
             "\\frac {\\sqrt x} y",
             "\\frac x {\\sqrt y}",
-            "\\frac {\\llap x} y",
-            "\\frac x {\\llap y}",
-            "\\llap {\\frac x y}",
-            "\\llap {\\llap x}",
-            "\\sqrt {\\llap x}",
+            "\\frac {\\mathllap x} y",
+            "\\frac x {\\mathllap y}",
+            "\\mathllap {\\frac x y}",
+            "\\mathllap {\\mathllap x}",
+            "\\sqrt {\\mathllap x}",
         ];
 
         for (let i = 0; i < goodArguments.length; i++) {
@@ -1290,9 +1290,9 @@ describe("A TeX-compliant parser", function() {
     it("should fail when sup/subscripts require arguments", function() {
         const badSupSubscripts = [
             "x^\\sqrt x",
-            "x^\\llap x",
+            "x^\\mathllap x",
             "x_\\sqrt x",
-            "x_\\llap x",
+            "x_\\mathllap x",
         ];
 
         for (let i = 0; i < badSupSubscripts.length; i++) {
@@ -1303,9 +1303,9 @@ describe("A TeX-compliant parser", function() {
     it("should work when sup/subscripts arguments have braces", function() {
         const goodSupSubscripts = [
             "x^{\\sqrt x}",
-            "x^{\\llap x}",
+            "x^{\\mathllap x}",
             "x_{\\sqrt x}",
-            "x_{\\llap x}",
+            "x_{\\mathllap x}",
         ];
 
         for (let i = 0; i < goodSupSubscripts.length; i++) {
@@ -1341,7 +1341,7 @@ describe("A TeX-compliant parser", function() {
         const badLeftArguments = [
             "\\frac \\left( x \\right) y",
             "\\frac x \\left( y \\right)",
-            "\\llap \\left( x \\right)",
+            "\\mathllap \\left( x \\right)",
             "\\sqrt \\left( x \\right)",
             "x^\\left( x \\right)",
         ];
@@ -1355,7 +1355,7 @@ describe("A TeX-compliant parser", function() {
         const goodLeftArguments = [
             "\\frac {\\left( x \\right)} y",
             "\\frac x {\\left( y \\right)}",
-            "\\llap {\\left( x \\right)}",
+            "\\mathllap {\\left( x \\right)}",
             "\\sqrt {\\left( x \\right)}",
             "x^{\\left( x \\right)}",
         ];
@@ -2088,6 +2088,10 @@ describe("A phantom parser", function() {
         expect("\\phantom{x^2}").toParse();
         expect("\\phantom{x}^2").toParse();
         expect("\\phantom x").toParse();
+        expect("\\hphantom{x}").toParse();
+        expect("\\hphantom{x^2}").toParse();
+        expect("\\hphantom{x}^2").toParse();
+        expect("\\hphantom x").toParse();
     });
 
     it("should build a phantom node", function() {
@@ -2104,6 +2108,11 @@ describe("A phantom builder", function() {
         expect("\\phantom{x^2}").toBuild();
         expect("\\phantom{x}^2").toBuild();
         expect("\\phantom x").toBuild();
+
+        expect("\\hphantom{x}").toBuild();
+        expect("\\hphantom{x^2}").toBuild();
+        expect("\\hphantom{x}^2").toBuild();
+        expect("\\hphantom x").toBuild();
     });
 
     it("should make the children transparent", function() {
@@ -2118,6 +2127,45 @@ describe("A phantom builder", function() {
         expect(children[0].style.color).toBe("transparent");
         expect(children[1].style.color).toBe("transparent");
         expect(children[2].style.color).toBe("transparent");
+    });
+});
+
+describe("A smash parser", function() {
+    it("should not fail", function() {
+        expect("\\smash{x}").toParse();
+        expect("\\smash{x^2}").toParse();
+        expect("\\smash{x}^2").toParse();
+        expect("\\smash x").toParse();
+
+        expect("\\smash[b]{x}").toParse();
+        expect("\\smash[b]{x^2}").toParse();
+        expect("\\smash[b]{x}^2").toParse();
+        expect("\\smash[b] x").toParse();
+
+        expect("\\smash[]{x}").toParse();
+        expect("\\smash[]{x^2}").toParse();
+        expect("\\smash[]{x}^2").toParse();
+        expect("\\smash[] x").toParse();
+    });
+
+    it("should build a smash node", function() {
+        const parse = getParsed("\\smash{x}")[0];
+
+        expect(parse.type).toEqual("smash");
+    });
+});
+
+describe("A smash builder", function() {
+    it("should not fail", function() {
+        expect("\\smash{x}").toBuild();
+        expect("\\smash{x^2}").toBuild();
+        expect("\\smash{x}^2").toBuild();
+        expect("\\smash x").toBuild();
+
+        expect("\\smash[b]{x}").toBuild();
+        expect("\\smash[b]{x^2}").toBuild();
+        expect("\\smash[b]{x}^2").toBuild();
+        expect("\\smash[b] x").toBuild();
     });
 });
 

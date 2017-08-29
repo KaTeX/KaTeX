@@ -413,11 +413,23 @@ const spacingFunctions = {
         size: "0.277778em",
         className: "thickspace",
     },
+    "\\thickspace": {
+        size: "0.277778em",
+        className: "thickspace",
+    },
     "\\:": {
         size: "0.22222em",
         className: "mediumspace",
     },
+    "\\medspace": {
+        size: "0.22222em",
+        className: "mediumspace",
+    },
     "\\,": {
+        size: "0.16667em",
+        className: "thinspace",
+    },
+    "\\thinspace": {
         size: "0.16667em",
         className: "thinspace",
     },

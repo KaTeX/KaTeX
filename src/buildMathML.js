@@ -621,21 +621,35 @@ groupTypes.kern = function(group) {
     return node;
 };
 
-groupTypes.llap = function(group, options) {
+groupTypes.lap = function(group, options) {
+    // mathllap, mathrlap, mathclap
     const node = new mathMLTree.MathNode(
         "mpadded", [buildGroup(group.value.body, options)]);
 
-    node.setAttribute("lspace", "-1width");
+    if (group.value.className !== "rlap")    {
+        const offset = (group.value.className === "llap" ? "-1" : "-0.5");
+        node.setAttribute("lspace", offset + "width");
+    }
     node.setAttribute("width", "0px");
 
     return node;
 };
 
-groupTypes.rlap = function(group, options) {
+groupTypes.smash = function(group, options) {
     const node = new mathMLTree.MathNode(
         "mpadded", [buildGroup(group.value.body, options)]);
 
-    node.setAttribute("width", "0px");
+    if (group.value.tb.length > 0) {
+        if (/t/.test(group.value.tb)) {
+            node.setAttribute("height", "0px");
+        }
+        if (/b/.test(group.value.tb)) {
+            node.setAttribute("depth", "0px");
+        }
+    } else {
+        node.setAttribute("height", "0px");
+        node.setAttribute("depth", "0px");
+    }
 
     return node;
 };
@@ -643,6 +657,20 @@ groupTypes.rlap = function(group, options) {
 groupTypes.phantom = function(group, options) {
     const inner = buildExpression(group.value.value, options);
     return new mathMLTree.MathNode("mphantom", inner);
+};
+
+groupTypes.hphantom = function(group, options) {
+    const inner = buildExpression(group.value.value, options);
+    const node = new mathMLTree.MathNode("mphantom", inner);
+    node.setAttribute("height", "0px");
+    return node;
+};
+
+groupTypes.vphantom = function(group, options) {
+    const inner = buildExpression(group.value.value, options);
+    const node = new mathMLTree.MathNode("mphantom", inner);
+    node.setAttribute("width", "0px");
+    return node;
 };
 
 groupTypes.mclass = function(group, options) {

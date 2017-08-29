@@ -19,6 +19,11 @@ defineMacro("\\endgroup", "}");
 // (In TeX, the mu unit works only with \mkern.)
 defineMacro("\\mkern", "\\kern");
 
+// \llap and \rlap render their contents in text mode
+defineMacro("\\llap", "\\mathllap{\\text{#1}}");
+defineMacro("\\rlap", "\\mathrlap{\\text{#1}}");
+defineMacro("\\clap", "\\mathclap{\\text{#1}}");
+
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
 
@@ -37,6 +42,14 @@ defineMacro("\\boxed", "\\fbox{\\displaystyle{#1}}");
 defineMacro("\\iff", "\\;\\Longleftrightarrow\\;");
 defineMacro("\\implies", "\\;\\Longrightarrow\\;");
 defineMacro("\\impliedby", "\\;\\Longleftarrow\\;");
+
+//////////////////////////////////////////////////////////////////////
+// LaTeX source2e
+
+// \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
+// \def\@hspace#1{\hskip  #1\relax}
+// KaTeX doesn't do line breaks, so \hspace is the same as \kern
+defineMacro("\\hspace", "\\kern{#1}");
 
 //////////////////////////////////////////////////////////////////////
 // mathtools.sty
