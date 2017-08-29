@@ -11,6 +11,7 @@
     "katex.js",
     "cli.js",
     "src/",
+    "contrib/",
     "dist/"
   ],
   "license": "MIT",
