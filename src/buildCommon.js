@@ -40,7 +40,7 @@ const lookupSymbol = function(value, fontFamily, mode) {
  * TODO: add a separate argument for math class (e.g. `mop`, `mbin`), which
  * should if present come first in `classes`.
  */
-const makeSymbol = function(value, fontFamily, mode, options, classes) {
+const makeSymbol = function(value, fontFamily, mode, options, classes, attributes) {
     const lookup = lookupSymbol(value, fontFamily, mode);
     const metrics = lookup.metrics;
     value = lookup.value;
@@ -72,6 +72,8 @@ const makeSymbol = function(value, fontFamily, mode, options, classes) {
         }
     }
 
+    symbolNode.setAttributes(attributes);
+
     return symbolNode;
 };
 
@@ -79,7 +81,7 @@ const makeSymbol = function(value, fontFamily, mode, options, classes) {
  * Makes a symbol in Main-Regular or AMS-Regular.
  * Used for rel, bin, open, close, inner, and punct.
  */
-const mathsym = function(value, mode, options, classes) {
+const mathsym = function(value, mode, options, classes, attributes) {
     // Decide what font to render the symbol in by its entry in the symbols
     // table.
     // Have a special case for when the value = \ because the \ is used as a
@@ -87,30 +89,35 @@ const mathsym = function(value, mode, options, classes) {
     // text ordinal and is therefore not present as a symbol in the symbols
     // table for text
     if (value === "\\" || symbols[mode][value].font === "main") {
-        return makeSymbol(value, "Main-Regular", mode, options, classes);
+        return makeSymbol(value, "Main-Regular", mode, options, classes)
+            .withAttributes(attributes);
     } else {
         return makeSymbol(
-            value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
+            value, "AMS-Regular", mode, options, classes.concat(["amsrm"]))
+            .withAttributes(attributes);
     }
 };
 
 /**
  * Makes a symbol in the default font for mathords and textords.
  */
-const mathDefault = function(value, mode, options, classes, type) {
+const mathDefault = function(value, mode, options, classes, type, attributes) {
     if (type === "mathord") {
         const fontLookup = mathit(value, mode, options, classes);
         return makeSymbol(value, fontLookup.fontName, mode, options,
-            classes.concat([fontLookup.fontClass]));
+            classes.concat([fontLookup.fontClass]),
+            attributes);
     } else if (type === "textord") {
         const font = symbols[mode][value] && symbols[mode][value].font;
         if (font === "ams") {
             return makeSymbol(
-                value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
+                value, "AMS-Regular", mode, options, classes.concat(["amsrm"]),
+                attributes);
         } else { // if (font === "main") {
             return makeSymbol(
                 value, "Main-Regular", mode, options,
-                classes.concat(["mathrm"]));
+                classes.concat(["mathrm"]),
+                attributes);
         }
     } else {
         throw new Error("unexpected type: " + type + " in mathDefault");
@@ -143,7 +150,7 @@ const mathit = function(value, mode, options, classes) {
 /**
  * Makes either a mathord or textord in the correct font and color.
  */
-const makeOrd = function(group, options, type) {
+const makeOrd = function(group, options, type, attributes) {
     const mode = group.mode;
     const value = group.value;
 
@@ -159,12 +166,15 @@ const makeOrd = function(group, options, type) {
         }
         if (lookupSymbol(value, fontLookup.fontName, mode).metrics) {
             return makeSymbol(value, fontLookup.fontName, mode, options,
-                classes.concat([fontLookup.fontClass || font]));
+                classes.concat([fontLookup.fontClass || font]),
+                attributes);
         } else {
-            return mathDefault(value, mode, options, classes, type);
+            return mathDefault(value, mode, options, classes, type,
+                attributes);
         }
     } else {
-        return mathDefault(value, mode, options, classes, type);
+        return mathDefault(value, mode, options, classes, type,
+            attributes);
     }
 };
 
@@ -204,10 +214,12 @@ const sizeElementFromChildren = function(elem) {
  * TODO: add a separate argument for math class (e.g. `mop`, `mbin`), which
  * should if present come first in `classes`.
  */
-const makeSpan = function(classes, children, options) {
+const makeSpan = function(classes, children, options, attributes) {
     const span = new domTree.span(classes, children, options);
 
     sizeElementFromChildren(span);
+
+    span.setAttributes(attributes);
 
     return span;
 };

@@ -25,20 +25,67 @@ const createClass = function(classes) {
     return classes.join(" ");
 };
 
+class baseNode {
+    constructor() {
+        this.attributes = {};
+    }
+
+    attributesToNode(node) {
+        for (const attr in this.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                node.setAttribute(attr, this.attributes[attr]);
+            }
+        }
+    }
+
+    /**
+     * Sets an arbitrary attribute on the node. Warning: use this wisely. Not all
+     * browsers support attributes the same, and having too many custom attributes
+     * is probably bad.
+     */
+    setAttribute(attribute, value) {
+        this.attributes[attribute] = value;
+    }
+
+    /**
+     * @param {object} attributes
+     * @memberof baseNode
+     */
+    setAttributes(attributes) {
+        if (!attributes) {
+            return;
+        }
+
+        Object.keys(attributes).forEach(function(attr) {
+            this.setAttribute(attr, attributes[attr]);
+        });
+    }
+
+    /**
+     * @param {object} attributes
+     * @memberof baseNode
+     */
+    withAttributes(attributes) {
+        this.setAttributes(attributes);
+
+        return this;
+    }
+}
+
 /**
  * This node represents a span node, with a className, a list of children, and
  * an inline style. It also contains information about its height, depth, and
  * maxFontSize.
  */
-class span {
+class span extends baseNode {
     constructor(classes, children, options) {
+        super();
         this.classes = classes || [];
         this.children = children || [];
         this.height = 0;
         this.depth = 0;
         this.maxFontSize = 0;
         this.style = {};
-        this.attributes = {};
         this.innerHTML;           // used for inline SVG code.
         if (options) {
             if (options.style.isTight()) {
@@ -48,15 +95,6 @@ class span {
                 this.style.color = options.getColor();
             }
         }
-    }
-
-    /**
-     * Sets an arbitrary attribute on the span. Warning: use this wisely. Not all
-     * browsers support attributes the same, and having too many custom attributes
-     * is probably bad.
-     */
-    setAttribute(attribute, value) {
-        this.attributes[attribute] = value;
     }
 
     tryCombine(sibling) {
@@ -80,11 +118,7 @@ class span {
         }
 
         // Apply attributes
-        for (const attr in this.attributes) {
-            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                span.setAttribute(attr, this.attributes[attr]);
-            }
-        }
+        this.attributesToNode(span);
 
         if (this.innerHTML) {
             span.innerHTML = this.innerHTML;
@@ -207,8 +241,9 @@ const iCombinations = {
  * to a single text node, or a span with a single text node in it, depending on
  * whether it has CSS classes, styles, or needs italic correction.
  */
-class symbolNode {
+class symbolNode extends baseNode {
     constructor(value, height, depth, italic, skew, classes, style) {
+        super();
         this.value = value || "";
         this.height = height || 0;
         this.depth = depth || 0;
@@ -272,31 +307,26 @@ class symbolNode {
      */
     toNode() {
         const node = document.createTextNode(this.value);
-        let span = null;
+        const span = document.createElement("span");
+        span.appendChild(node);
 
         if (this.italic > 0) {
-            span = document.createElement("span");
             span.style.marginRight = this.italic + "em";
         }
 
         if (this.classes.length > 0) {
-            span = span || document.createElement("span");
             span.className = createClass(this.classes);
         }
 
         for (const style in this.style) {
             if (this.style.hasOwnProperty(style)) {
-                span = span || document.createElement("span");
                 span.style[style] = this.style[style];
             }
         }
 
-        if (span) {
-            span.appendChild(node);
-            return span;
-        } else {
-            return node;
-        }
+        this.attributesToNode(span);
+
+        return span;
     }
 
     /**
