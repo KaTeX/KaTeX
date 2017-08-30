@@ -1576,7 +1576,7 @@ groupTypes.horizBrace = function(group, options) {
 
 groupTypes.accentUnder = function(group, options) {
     // Treat under accents much like underlines.
-    const innerGroup = buildGroup(group.value.body, options);
+    const innerGroup = buildGroup(group.value.base, options);
 
     const accentBody = stretchy.svgSpan(group, options);
     const kern = (/tilde/.test(group.value.label) ? 0.12 : 0);

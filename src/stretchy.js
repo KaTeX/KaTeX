@@ -442,6 +442,14 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/>`,
 <line x1='0' y1='100%' x2='100%' y2='0' stroke-width='0.046em'/>`,
 };
 
+const groupLength = function(arg) {
+    if (arg.type === "ordgroup") {
+        return arg.value.length;
+    } else {
+        return 1;
+    }
+};
+
 const svgSpan = function(group, options) {
     // Create a span with inline SVG for the element.
     const label = group.value.label.substr(1);
@@ -453,7 +461,7 @@ const svgSpan = function(group, options) {
     if (utils.contains(["widehat", "widetilde", "undertilde"], label)) {
         // There are four SVG images available for each function.
         // Choose a taller image when there are more characters.
-        const numChars = group.value.value.length;
+        const numChars = groupLength(group.value.base);
         if (numChars > 5) {
             height = 0.312;
             imageName = (label === "widehat" ? "widehat" : "tilde") + "4";
