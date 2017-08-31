@@ -1253,15 +1253,15 @@ describe("A TeX-compliant parser", function() {
             "\\frac x \\frac y z",
             "\\frac \\sqrt x y",
             "\\frac x \\sqrt y",
-            "\\frac \\llap x y",
-            "\\frac x \\llap y",
+            "\\frac \\mathllap x y",
+            "\\frac x \\mathllap y",
             // This actually doesn't work in real TeX, but it is suprisingly
             // hard to get this to correctly work. So, we take hit of very small
             // amounts of non-compatiblity in order for the rest of the tests to
             // work
             // "\\llap \\frac x y",
-            "\\llap \\llap x",
-            "\\sqrt \\llap x",
+            "\\mathllap \\mathllap x",
+            "\\sqrt \\mathllap x",
         ];
 
         for (let i = 0; i < badArguments.length; i++) {
@@ -1275,11 +1275,11 @@ describe("A TeX-compliant parser", function() {
             "\\frac x {\\frac y z}",
             "\\frac {\\sqrt x} y",
             "\\frac x {\\sqrt y}",
-            "\\frac {\\llap x} y",
-            "\\frac x {\\llap y}",
-            "\\llap {\\frac x y}",
-            "\\llap {\\llap x}",
-            "\\sqrt {\\llap x}",
+            "\\frac {\\mathllap x} y",
+            "\\frac x {\\mathllap y}",
+            "\\mathllap {\\frac x y}",
+            "\\mathllap {\\mathllap x}",
+            "\\sqrt {\\mathllap x}",
         ];
 
         for (let i = 0; i < goodArguments.length; i++) {
@@ -1290,9 +1290,9 @@ describe("A TeX-compliant parser", function() {
     it("should fail when sup/subscripts require arguments", function() {
         const badSupSubscripts = [
             "x^\\sqrt x",
-            "x^\\llap x",
+            "x^\\mathllap x",
             "x_\\sqrt x",
-            "x_\\llap x",
+            "x_\\mathllap x",
         ];
 
         for (let i = 0; i < badSupSubscripts.length; i++) {
@@ -1303,9 +1303,9 @@ describe("A TeX-compliant parser", function() {
     it("should work when sup/subscripts arguments have braces", function() {
         const goodSupSubscripts = [
             "x^{\\sqrt x}",
-            "x^{\\llap x}",
+            "x^{\\mathllap x}",
             "x_{\\sqrt x}",
-            "x_{\\llap x}",
+            "x_{\\mathllap x}",
         ];
 
         for (let i = 0; i < goodSupSubscripts.length; i++) {
@@ -1341,7 +1341,7 @@ describe("A TeX-compliant parser", function() {
         const badLeftArguments = [
             "\\frac \\left( x \\right) y",
             "\\frac x \\left( y \\right)",
-            "\\llap \\left( x \\right)",
+            "\\mathllap \\left( x \\right)",
             "\\sqrt \\left( x \\right)",
             "x^\\left( x \\right)",
         ];
@@ -1355,7 +1355,7 @@ describe("A TeX-compliant parser", function() {
         const goodLeftArguments = [
             "\\frac {\\left( x \\right)} y",
             "\\frac x {\\left( y \\right)}",
-            "\\llap {\\left( x \\right)}",
+            "\\mathllap {\\left( x \\right)}",
             "\\sqrt {\\left( x \\right)}",
             "x^{\\left( x \\right)}",
         ];
