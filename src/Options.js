@@ -51,6 +51,7 @@ class Options {
         this.phantom = data.phantom;
         this.font = data.font;
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
+        this.maxSize = data.maxSize;
         this._fontMetrics = null;
     }
 
@@ -66,6 +67,7 @@ class Options {
             color: this.color,
             phantom: this.phantom,
             font: this.font,
+            maxSize: this.maxSize,
         };
 
         for (const key in extension) {

@@ -90,7 +90,7 @@ const calculateSize = function(sizeValue, options) {
             scale *= unitOptions.sizeMultiplier / options.sizeMultiplier;
         }
     }
-    return sizeValue.number * scale;
+    return Math.min(sizeValue.number * scale, options.maxSize);
 };
 
 module.exports = {
