@@ -2356,3 +2356,25 @@ describe("Unicode", function() {
         expect("ΓΔΘΞΠΣΦΨΩ").toParse();
     });
 });
+
+describe("The maxSize setting", function() {
+    const rule = "\\rule{999em}{999em}";
+
+    it("should clamp size when set", function() {
+        const built = getBuilt(rule, new Settings({maxSize: 5}))[0];
+        expect(built.style.borderRightWidth).toEqual("5em");
+        expect(built.style.borderTopWidth).toEqual("5em");
+    });
+
+    it("should not clamp size when not set", function() {
+        const built = getBuilt(rule)[0];
+        expect(built.style.borderRightWidth).toEqual("999em");
+        expect(built.style.borderTopWidth).toEqual("999em");
+    });
+
+    it("should make zero-width rules if a negative maxSize is passed", function() {
+        const built = getBuilt(rule, new Settings({maxSize: -5}))[0];
+        expect(built.style.borderRightWidth).toEqual("0em");
+        expect(built.style.borderTopWidth).toEqual("0em");
+    });
+});
