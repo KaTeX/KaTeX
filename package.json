@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.8.3-pre",
+  "version": "0.8.4-pre",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "repository": {
@@ -11,6 +11,7 @@
     "katex.js",
     "cli.js",
     "src/",
+    "contrib/",
     "dist/"
   ],
   "license": "MIT",
@@ -36,6 +37,7 @@
     "nomnom": "^1.8.1",
     "object-assign": "^4.1.0",
     "pako": "1.0.4",
+    "pre-commit": "^1.2.2",
     "selenium-webdriver": "^2.48.2",
     "sri-toolbox": "^0.2.0",
     "uglify-js": "~2.7.5"
@@ -43,8 +45,12 @@
   "bin": "cli.js",
   "scripts": {
     "test": "make lint test",
+    "lint": "make lint",
     "prepublish": "make NIS= dist"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "dependencies": {
     "match-at": "^0.1.0"
   },
