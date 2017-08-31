@@ -16,6 +16,7 @@ const buildTree = function(tree, expression, settings) {
     // Setup the default options
     const options = new Options({
         style: startStyle,
+        maxSize: settings.maxSize,
     });
 
     // `buildHTML` sometimes messes with the parse tree (like turning bins ->

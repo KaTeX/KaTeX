@@ -698,7 +698,6 @@ defineFunction([
         label: context.funcName,
         isStretchy: isStretchy,
         isShifty: isShifty,
-        value: ordargument(base),
         base: base,
     };
 });
@@ -719,7 +718,6 @@ defineFunction([
         label: context.funcName,
         isStretchy: false,
         isShifty: true,
-        value: ordargument(base),
         base: base,
     };
 });
@@ -746,12 +744,11 @@ defineFunction([
 ], {
     numArgs: 1,
 }, function(context, args) {
-    const body = args[0];
+    const base = args[0];
     return {
         type: "accentUnder",
         label: context.funcName,
-        value: ordargument(body),
-        body: body,
+        base: base,
     };
 });
 
