@@ -24,7 +24,7 @@ class Settings {
         this.errorColor = utils.deflt(options.errorColor, "#cc0000");
         this.macros = options.macros || {};
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
-        this.maxSize = utils.deflt(options.maxSize, 0);
+        this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
     }
 }
 

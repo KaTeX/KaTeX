@@ -90,12 +90,7 @@ const calculateSize = function(sizeValue, options) {
             scale *= unitOptions.sizeMultiplier / options.sizeMultiplier;
         }
     }
-    const scaledSize = sizeValue.number * scale;
-    if (options.maxSize && scaledSize > options.maxSize) {
-        return options.maxSize;
-    } else {
-        return scaledSize;
-    }
+    return Math.min(sizeValue.number * scale, options.maxSize);
 };
 
 module.exports = {
