@@ -38,6 +38,20 @@ class baseNode {
         }
     }
 
+    attributesToMarkup() {
+        let markup = "";
+
+        for (const attr in this.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                markup += " " + attr + "=\"";
+                markup += utils.escape(this.attributes[attr]);
+                markup += "\"";
+            }
+        }
+
+        return markup;
+    }
+
     /**
      * Sets an arbitrary attribute on the node. Warning: use this wisely. Not all
      * browsers support attributes the same, and having too many custom attributes
@@ -56,9 +70,11 @@ class baseNode {
             return;
         }
 
-        Object.keys(attributes).forEach(function(attr) {
-            this.setAttribute(attr, attributes[attr]);
-        });
+        for (const attr in attributes) {
+            if (Object.prototype.hasOwnProperty.call(attributes, attr)) {
+                this.setAttribute(attr, attributes[attr]);
+            }
+        }
     }
 
     /**
@@ -159,13 +175,7 @@ class span extends baseNode {
         }
 
         // Add the attributes
-        for (const attr in this.attributes) {
-            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                markup += " " + attr + "=\"";
-                markup += utils.escape(this.attributes[attr]);
-                markup += "\"";
-            }
-        }
+        markup += this.attributesToMarkup();
 
         markup += ">";
 
@@ -360,6 +370,13 @@ class symbolNode extends baseNode {
         if (styles) {
             needsSpan = true;
             markup += " style=\"" + utils.escape(styles) + "\"";
+        }
+
+        // Add the attributes
+        const attributes = this.attributesToMarkup();
+        if (attributes) {
+            needsSpan = true;
+            markup += attributes;
         }
 
         const escaped = utils.escape(this.value);

@@ -19,16 +19,22 @@ const defaultOptions = new Options({
     size: 5,
 });
 
-const _getBuilt = function(expr, settings) {
+const _getBuiltTree = function(tree, expr, settings) {
     const usedSettings = settings ? settings : defaultSettings;
-    const parsedTree = parseTree(expr, usedSettings);
-    const rootNode = buildTree(parsedTree, expr, usedSettings);
+    const rootNode = buildTree(tree, expr, usedSettings);
 
     // grab the root node of the HTML rendering
     const builtHTML = rootNode.children[1];
 
     // Remove the outer .katex and .katex-inner layers
     return builtHTML.children[2].children;
+};
+
+const _getBuilt = function(expr, settings) {
+    const usedSettings = settings ? settings : defaultSettings;
+    const parsedTree = parseTree(expr, usedSettings);
+
+    return _getBuiltTree(parsedTree, expect, usedSettings);
 };
 
 /**
@@ -2306,5 +2312,42 @@ describe("Unicode", function() {
 
     it("should parse 'ΓΔΘΞΠΣΦΨΩ'", function() {
         expect("ΓΔΘΞΠΣΦΨΩ").toParse();
+    });
+});
+
+describe("Tree attributes propagation", function() {
+    it("should put tree attributes to DOM nodes", function() {
+        const expr = "\\frac 1 2";
+        const tree = getParsed(expr);
+
+        tree[0].attributes = {
+            "katex-frac-id": "frac",
+        };
+
+        tree[0].value.numer.attributes = {
+            "katex-numer-id": "numer",
+        };
+
+        tree[0].value.denom.attributes = {
+            "katex-denom-id": "denom",
+        };
+
+        const built = _getBuiltTree(tree, expr)[0];
+
+        const node = built.toNode();
+        expect(node.getAttribute("katex-frac-id")).toBe("frac");
+
+        const numerNode = node.children[1].children[0].children[0].children[0]
+            .children[2].children[1].children[0];
+        expect(numerNode.getAttribute("katex-numer-id")).toBe("numer");
+
+        const denomNode = node.children[1].children[0].children[0].children[0]
+            .children[0].children[1].children[0];
+        expect(denomNode.getAttribute("katex-denom-id")).toBe("denom");
+
+        const markup = built.toMarkup();
+        expect(markup.match(/katex-frac-id="frac"/g).length).toBe(1);
+        expect(markup.match(/katex-numer-id="numer"/g).length).toBe(1);
+        expect(markup.match(/katex-denom-id="denom"/g).length).toBe(1);
     });
 });
