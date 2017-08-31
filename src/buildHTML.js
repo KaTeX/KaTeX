@@ -765,7 +765,7 @@ groupTypes.spacing = function(group, options) {
 groupTypes.lap = function(group, options) {
     // mathllap, mathrlap, mathclap
     let inner;
-    if (group.value.className === "clap") {
+    if (group.value.alignment === "clap") {
         // ref: https://www.math.lsu.edu/~aperlis/publications/mathclap/
         inner = makeSpan([], [buildGroup(group.value.body, options)]);
         // wrap, since CSS will center a .clap > .inner > span
@@ -776,27 +776,17 @@ groupTypes.lap = function(group, options) {
     }
     const fix = makeSpan(["fix"], []);
     return makeSpan(
-        ["mord", group.value.className], [inner, fix], options);
+        ["mord", group.value.alignment], [inner, fix], options);
 };
 
 groupTypes.smash = function(group, options) {
-    let node = makeSpan(["mord"], [buildGroup(group.value.body, options)]);
+    const node = makeSpan(["mord"], [buildGroup(group.value.body, options)]);
 
-    let smashHeight = false;
-    let smashDepth = false;
-
-    if (group.value.tb.length === 0) {
-        smashHeight = true;
-        smashDepth = true;
-    } else {
-        // Optional [tb] argument is engaged.
-        // ref: amsmath: \renewcommand{\smash}[1][tb]{%
-        //               def\mb@t{\ht}\def\mb@b{\dp}\def\mb@tb{\ht\z@\z@\dp}%
-        smashHeight = /t/.test(group.value.tb);
-        smashDepth = /b/.test(group.value.tb);
+    if (!group.value.smashHeight && !group.value.smashDepth) {
+        return node;
     }
 
-    if (smashHeight) {
+    if (group.value.smashHeight) {
         node.height = 0;
         // In order to influence makeVList, we have to reset the children.
         if (node.children) {
@@ -806,7 +796,7 @@ groupTypes.smash = function(group, options) {
         }
     }
 
-    if (smashDepth) {
+    if (group.value.smashDepth) {
         node.depth = 0;
         if (node.children) {
             for (let i = 0; i < node.children.length; i++) {
@@ -815,15 +805,14 @@ groupTypes.smash = function(group, options) {
         }
     }
 
-    // makeVList applies "display: table-cell", which prevents the browser from
-    // adding padding-like gaps above a span. So call makeVList now, to take
-    // advantage of that formatting.
+    // At this point, we've reset the TeX-like height and depth values.
+    // But the span still has an HTML line height.
+    // makeVList applies "display: table-cell", which prevents the browser
+    // from acting on that line height. So we'll call makeVList now.
 
-    node = buildCommon.makeVList([
+    return buildCommon.makeVList([
         {type: "elem", elem: node},
     ], "firstBaseline", null, options);
-
-    return node;
 };
 
 groupTypes.op = function(group, options) {

@@ -626,8 +626,8 @@ groupTypes.lap = function(group, options) {
     const node = new mathMLTree.MathNode(
         "mpadded", [buildGroup(group.value.body, options)]);
 
-    if (group.value.className !== "rlap")    {
-        const offset = (group.value.className === "llap" ? "-1" : "-0.5");
+    if (group.value.alignment !== "rlap")    {
+        const offset = (group.value.alignment === "llap" ? "-1" : "-0.5");
         node.setAttribute("lspace", offset + "width");
     }
     node.setAttribute("width", "0px");
@@ -639,15 +639,11 @@ groupTypes.smash = function(group, options) {
     const node = new mathMLTree.MathNode(
         "mpadded", [buildGroup(group.value.body, options)]);
 
-    if (group.value.tb.length > 0) {
-        if (/t/.test(group.value.tb)) {
-            node.setAttribute("height", "0px");
-        }
-        if (/b/.test(group.value.tb)) {
-            node.setAttribute("depth", "0px");
-        }
-    } else {
+    if (group.value.smashHeight) {
         node.setAttribute("height", "0px");
+    }
+
+    if (group.value.smashDepth) {
         node.setAttribute("depth", "0px");
     }
 

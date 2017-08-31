@@ -43,6 +43,11 @@ defineMacro("\\iff", "\\;\\Longleftrightarrow\\;");
 defineMacro("\\implies", "\\;\\Longrightarrow\\;");
 defineMacro("\\impliedby", "\\;\\Longleftarrow\\;");
 
+// http://texdoc.net/texmf-dist/doc/latex/amsmath/amsmath.pdf
+defineMacro("\\thinspace", "\\,");    //   \let\thinspace\,
+defineMacro("\\medspace", "\\:");     //   \let\medspace\:
+defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
+
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
 

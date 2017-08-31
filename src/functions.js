@@ -525,34 +525,48 @@ defineFunction(["\\mathllap", "\\mathrlap", "\\mathclap"], {
     const body = args[0];
     return {
         type: "lap",
-        className: context.funcName.slice(5),
+        alignment: context.funcName.slice(5),
         body: body,
     };
 });
 
-// smash, with optional [bt], as in AMS
+// smash, with optional [tb], as in AMS
 defineFunction("\\smash", {
     numArgs: 1,
     numOptionalArgs: 1,
     allowedInText: true,
 }, function(context, args) {
+    let smashHeight = false;
+    let smashDepth = false;
     const tbArg = args[0];
-    let tb = "";
     if (tbArg) {
+        // Optional [tb] argument is engaged.
+        // ref: amsmath: \renewcommand{\smash}[1][tb]{%
+        //               def\mb@t{\ht}\def\mb@b{\dp}\def\mb@tb{\ht\z@\z@\dp}%
         let letter = "";
         for (let i = 0; i < tbArg.value.length; ++i) {
             letter = tbArg.value[i].value;
-            if (letter === "t" || letter === "b") {
-                tb += letter;
+            if (letter === "t") {
+                smashHeight = true;
+            } else if (letter === "b") {
+                smashDepth = true;
+            } else {
+                smashHeight = false;
+                smashDepth = false;
+                break;
             }
         }
+    } else {
+        smashHeight = true;
+        smashDepth = true;
     }
 
     const body = args[1];
     return {
         type: "smash",
         body: body,
-        tb: tb,
+        smashHeight: smashHeight,
+        smashDepth: smashDepth,
     };
 });
 

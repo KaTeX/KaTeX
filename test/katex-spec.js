@@ -715,7 +715,7 @@ describe("A text parser", function() {
     const textExpression = "\\text{a b}";
     const noBraceTextExpression = "\\text x";
     const nestedTextExpression =
-        "\\text{a {b} \\blue{c} \\textcolor{#fff}{x} \\mathllap{x}}";
+        "\\text{a {b} \\blue{c} \\textcolor{#fff}{x} \\llap{x}}";
     const spaceTextExpression = "\\text{  a \\ }";
     const leadingSpaceTextExpression = "\\text {moo}";
     const badTextExpression = "\\text{a b%}";
@@ -1232,7 +1232,7 @@ describe("A TeX-compliant parser", function() {
             "\\frac{x}",
             "\\textcolor{#fff}",
             "\\rule{1em}",
-            "\\mathllap",
+            "\\llap",
             "\\bigl",
             "\\text",
         ];
@@ -1253,15 +1253,15 @@ describe("A TeX-compliant parser", function() {
             "\\frac x \\frac y z",
             "\\frac \\sqrt x y",
             "\\frac x \\sqrt y",
-            "\\frac \\mathllap x y",
-            "\\frac x \\mathllap y",
+            "\\frac \\llap x y",
+            "\\frac x \\llap y",
             // This actually doesn't work in real TeX, but it is suprisingly
             // hard to get this to correctly work. So, we take hit of very small
             // amounts of non-compatiblity in order for the rest of the tests to
             // work
-            // "\\mathllap \\frac x y",
-            "\\mathllap \\mathllap x",
-            "\\sqrt \\mathllap x",
+            // "\\llap \\frac x y",
+            "\\llap \\llap x",
+            "\\sqrt \\llap x",
         ];
 
         for (let i = 0; i < badArguments.length; i++) {
@@ -1275,11 +1275,11 @@ describe("A TeX-compliant parser", function() {
             "\\frac x {\\frac y z}",
             "\\frac {\\sqrt x} y",
             "\\frac x {\\sqrt y}",
-            "\\frac {\\mathllap x} y",
-            "\\frac x {\\mathllap y}",
-            "\\mathllap {\\frac x y}",
-            "\\mathllap {\\mathllap x}",
-            "\\sqrt {\\mathllap x}",
+            "\\frac {\\llap x} y",
+            "\\frac x {\\llap y}",
+            "\\llap {\\frac x y}",
+            "\\llap {\\llap x}",
+            "\\sqrt {\\llap x}",
         ];
 
         for (let i = 0; i < goodArguments.length; i++) {
@@ -1290,9 +1290,9 @@ describe("A TeX-compliant parser", function() {
     it("should fail when sup/subscripts require arguments", function() {
         const badSupSubscripts = [
             "x^\\sqrt x",
-            "x^\\mathllap x",
+            "x^\\llap x",
             "x_\\sqrt x",
-            "x_\\mathllap x",
+            "x_\\llap x",
         ];
 
         for (let i = 0; i < badSupSubscripts.length; i++) {
@@ -1303,9 +1303,9 @@ describe("A TeX-compliant parser", function() {
     it("should work when sup/subscripts arguments have braces", function() {
         const goodSupSubscripts = [
             "x^{\\sqrt x}",
-            "x^{\\mathllap x}",
+            "x^{\\llap x}",
             "x_{\\sqrt x}",
-            "x_{\\mathllap x}",
+            "x_{\\llap x}",
         ];
 
         for (let i = 0; i < goodSupSubscripts.length; i++) {
@@ -1341,7 +1341,7 @@ describe("A TeX-compliant parser", function() {
         const badLeftArguments = [
             "\\frac \\left( x \\right) y",
             "\\frac x \\left( y \\right)",
-            "\\mathllap \\left( x \\right)",
+            "\\llap \\left( x \\right)",
             "\\sqrt \\left( x \\right)",
             "x^\\left( x \\right)",
         ];
@@ -1355,7 +1355,7 @@ describe("A TeX-compliant parser", function() {
         const goodLeftArguments = [
             "\\frac {\\left( x \\right)} y",
             "\\frac x {\\left( y \\right)}",
-            "\\mathllap {\\left( x \\right)}",
+            "\\llap {\\left( x \\right)}",
             "\\sqrt {\\left( x \\right)}",
             "x^{\\left( x \\right)}",
         ];
