@@ -76,16 +76,6 @@ class baseNode {
             }
         }
     }
-
-    /**
-     * @param {object} attributes
-     * @memberof baseNode
-     */
-    withAttributes(attributes) {
-        this.setAttributes(attributes);
-
-        return this;
-    }
 }
 
 /**

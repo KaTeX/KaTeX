@@ -25,6 +25,7 @@ class Settings {
         this.macros = options.macros || {};
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
+        this.postProcessor = options.postProcessor;
     }
 }
 

@@ -89,12 +89,10 @@ const mathsym = function(value, mode, options, classes, attributes) {
     // text ordinal and is therefore not present as a symbol in the symbols
     // table for text
     if (value === "\\" || symbols[mode][value].font === "main") {
-        return makeSymbol(value, "Main-Regular", mode, options, classes)
-            .withAttributes(attributes);
+        return makeSymbol(value, "Main-Regular", mode, options, classes);
     } else {
         return makeSymbol(
-            value, "AMS-Regular", mode, options, classes.concat(["amsrm"]))
-            .withAttributes(attributes);
+            value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
     }
 };
 

@@ -2354,20 +2354,34 @@ describe("Tree attributes propagation", function() {
             "katex-denom-id": "denom",
         };
 
-        const built = _getBuiltTree(tree, expr)[0];
+        let counter = 1;
+        const putId = function(treeNode) {
+            if (!treeNode.attributes) {
+                treeNode.attributes = {};
+            }
+
+            treeNode.attributes["katex-id"] = counter++;
+        };
+        const built = _getBuiltTree(tree, expr, {postProcessor: putId})[0];
 
         const node = built.toNode();
+        expect(node.getAttribute("katex-id")).toBe("3");
         expect(node.getAttribute("katex-frac-id")).toBe("frac");
 
         const numerNode = node.children[1].children[0].children[0].children[0]
-            .children[2].children[1].children[0];
+            .children[2].children[1];
+        expect(numerNode.getAttribute("katex-id")).toBe("1");
         expect(numerNode.getAttribute("katex-numer-id")).toBe("numer");
 
         const denomNode = node.children[1].children[0].children[0].children[0]
-            .children[0].children[1].children[0];
+            .children[0].children[1];
+        expect(denomNode.getAttribute("katex-id")).toBe("2");
         expect(denomNode.getAttribute("katex-denom-id")).toBe("denom");
 
         const markup = built.toMarkup();
+        expect(markup.match(/katex-id="1"/g).length).toBe(1);
+        expect(markup.match(/katex-id="2"/g).length).toBe(1);
+        expect(markup.match(/katex-id="3"/g).length).toBe(1);
         expect(markup.match(/katex-frac-id="frac"/g).length).toBe(1);
         expect(markup.match(/katex-numer-id="numer"/g).length).toBe(1);
         expect(markup.match(/katex-denom-id="denom"/g).length).toBe(1);

@@ -53,6 +53,10 @@ class Options {
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
         this._fontMetrics = null;
+        /**
+         * @type {Options~postProcessor}
+         */
+        this.postProcessor = data.postProcessor;
     }
 
     /**
@@ -68,6 +72,7 @@ class Options {
             phantom: this.phantom,
             font: this.font,
             maxSize: this.maxSize,
+            postProcessor: this.postProcessor,
         };
 
         for (const key in extension) {
@@ -161,6 +166,12 @@ class Options {
     withFont(font) {
         return this.extend({
             font: font || this.font,
+        });
+    }
+
+    withPostProcessor(postProcessor) {
+        return this.extend({
+            postProcessor: postProcessor,
         });
     }
 
@@ -273,6 +284,14 @@ class Options {
         }
     }
 }
+
+/**
+ * Callback which will be called on every built node of every tree node.
+ * @callback Options~postProcessor
+ * @param {object} treeNode - node of parse tree
+ * @param {object} buildNode - node built from parse tree node
+ * @param {Options} options
+ */
 
 /**
  * The base size index.

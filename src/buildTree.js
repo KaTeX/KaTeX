@@ -17,6 +17,7 @@ const buildTree = function(tree, expression, settings) {
     const options = new Options({
         style: startStyle,
         maxSize: settings.maxSize,
+        postProcessor: settings.postProcessor,
     });
 
     // `buildHTML` sometimes messes with the parse tree (like turning bins ->
