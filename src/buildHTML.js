@@ -762,20 +762,57 @@ groupTypes.spacing = function(group, options) {
     }
 };
 
-groupTypes.llap = function(group, options) {
-    const inner = makeSpan(
-        ["inner"], [buildGroup(group.value.body, options)]);
+groupTypes.lap = function(group, options) {
+    // mathllap, mathrlap, mathclap
+    let inner;
+    if (group.value.alignment === "clap") {
+        // ref: https://www.math.lsu.edu/~aperlis/publications/mathclap/
+        inner = makeSpan([], [buildGroup(group.value.body, options)]);
+        // wrap, since CSS will center a .clap > .inner > span
+        inner = makeSpan(["inner"], [inner], options);
+    } else {
+        inner = makeSpan(
+            ["inner"], [buildGroup(group.value.body, options)]);
+    }
     const fix = makeSpan(["fix"], []);
     return makeSpan(
-        ["mord", "llap"], [inner, fix], options);
+        ["mord", group.value.alignment], [inner, fix], options);
 };
 
-groupTypes.rlap = function(group, options) {
-    const inner = makeSpan(
-        ["inner"], [buildGroup(group.value.body, options)]);
-    const fix = makeSpan(["fix"], []);
-    return makeSpan(
-        ["mord", "rlap"], [inner, fix], options);
+groupTypes.smash = function(group, options) {
+    const node = makeSpan(["mord"], [buildGroup(group.value.body, options)]);
+
+    if (!group.value.smashHeight && !group.value.smashDepth) {
+        return node;
+    }
+
+    if (group.value.smashHeight) {
+        node.height = 0;
+        // In order to influence makeVList, we have to reset the children.
+        if (node.children) {
+            for (let i = 0; i < node.children.length; i++) {
+                node.children[i].height = 0;
+            }
+        }
+    }
+
+    if (group.value.smashDepth) {
+        node.depth = 0;
+        if (node.children) {
+            for (let i = 0; i < node.children.length; i++) {
+                node.children[i].depth = 0;
+            }
+        }
+    }
+
+    // At this point, we've reset the TeX-like height and depth values.
+    // But the span still has an HTML line height.
+    // makeVList applies "display: table-cell", which prevents the browser
+    // from acting on that line height. So we'll call makeVList now.
+
+    return buildCommon.makeVList([
+        {type: "elem", elem: node},
+    ], "firstBaseline", null, options);
 };
 
 groupTypes.op = function(group, options) {
@@ -1696,6 +1733,34 @@ groupTypes.phantom = function(group, options) {
     // \phantom isn't supposed to affect the elements it contains.
     // See "color" for more details.
     return new buildCommon.makeFragment(elements);
+};
+
+groupTypes.hphantom = function(group, options) {
+    let node = makeSpan(
+        [], [buildGroup(group.value.body, options.withPhantom())]);
+    node.height = 0;
+    node.depth = 0;
+    if (node.children) {
+        for (let i = 0; i < node.children.length; i++) {
+            node.children[i].height = 0;
+            node.children[i].depth = 0;
+        }
+    }
+
+    // See smash for comment re: use of makeVList
+    node = buildCommon.makeVList([
+        {type: "elem", elem: node},
+    ], "firstBaseline", null, options);
+
+    return node;
+};
+
+groupTypes.vphantom = function(group, options) {
+    const inner = makeSpan(
+        ["inner"], [buildGroup(group.value.body, options.withPhantom())]);
+    const fix = makeSpan(["fix"], []);
+    return makeSpan(
+        ["mord", "rlap"], [inner, fix], options);
 };
 
 groupTypes.mclass = function(group, options) {
