@@ -20,9 +20,9 @@ defineMacro("\\endgroup", "}");
 defineMacro("\\mkern", "\\kern");
 
 // \llap and \rlap render their contents in text mode
-defineMacro("\\llap", "\\mathllap{\\mathrm{#1}}");
-defineMacro("\\rlap", "\\mathrlap{\\mathrm{#1}}");
-defineMacro("\\clap", "\\mathclap{\\mathrm{#1}}");
+defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
+defineMacro("\\rlap", "\\mathrlap{\\textrm{#1}}");
+defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
