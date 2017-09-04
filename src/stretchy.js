@@ -249,10 +249,10 @@ const encloseSpan = function(inner, label, pad, options) {
         // Since \cancel's SVG is inline and it omits the viewBox attribute,
         // its stroke-width will not vary with span area.
         switch (label) {
-            case "cancel":                 // x1, y1,  x2,   y2, stroke-width
+            case "bcancel":                 // x1, y1,  x2,   y2, stroke-width
                 lines.push(new domTree.lineNode(0, 0, "100%", "100%", 0.046));
                 break;
-            case "bcancel":
+            case "cancel":
                 lines.push(new domTree.lineNode(0, "100%", "100%", 0, 0.046));
                 break;
             default:
