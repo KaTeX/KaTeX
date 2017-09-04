@@ -2,7 +2,6 @@
     "presets": ["es2015", "flow"],
     "plugins": [
         "transform-runtime",
-        "transform-class-properties",
-        ["babel-plugin-transform-builtin-extend", {globals: ["Error"]}],
+        "transform-class-properties"
     ]
 }

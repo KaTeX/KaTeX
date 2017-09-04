@@ -10,7 +10,7 @@ import {Token} from "./Token";
  * If possible, a caller should provide a Token or ParseNode with information
  * about where in the source string the problem occurred.
  */
-class ParseError extends Error {
+class ParseError {
     position: number|void; // Error position based on passed-in Token or ParseNode.
 
     constructor(
@@ -57,9 +57,19 @@ class ParseError extends Error {
 
         }
 
-        super(error);
-        this.position = start;
+        // Some hackery to make ParseError a prototype of Error
+        // See http://stackoverflow.com/a/8460753
+        const self = new Error(error);
+        self.name = "ParseError";
+        // $FlowFixMe
+        self.__proto__ = ParseError.prototype;
+        // $FlowFixMe
+        self.position = start;
+        return self;
     }
 }
+
+// $FlowFixMe More hackery
+ParseError.prototype.__proto__ = Error.prototype;
 
 module.exports = ParseError;

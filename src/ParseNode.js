@@ -13,6 +13,9 @@ export default class ParseNode {
     type: *;
     value: *;
     mode: *;
+    // TODO: We should combine these to ({lexer, start, end}|void) as they
+    // should all exist together or not exist at all. That way, only a single
+    // void check needs to be done to see if we have metadata.
     lexer: LexerInterface|void;
     start: number|void;
     end: number|void;
