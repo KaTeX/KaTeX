@@ -1,3 +1,4 @@
+// @flow
 /**
  * Predefined macros for KaTeX.
  * This can be used to define some commands in terms of others.
