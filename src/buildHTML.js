@@ -1,5 +1,6 @@
-/* eslint no-console:0 */
 /**
+ * WARNING: New methods on groupTypes should be added to src/functions.
+ *
  * This file does the main work of building a domTree structure from a parse
  * tree. The entry point is the `buildHTML` function, which takes a parse tree.
  * Then, the buildExpression, buildGroup, and various groupTypes functions are
@@ -52,7 +53,7 @@ const isBinRightCanceller = function(node, isRealGroup) {
  * the spliced-out array. Returns null if `children[i]` does not exist or is not
  * a space.
  */
-const spliceSpaces = function(children, i) {
+export const spliceSpaces = function(children, i) {
     let j = i;
     while (j < children.length && isSpace(children[j])) {
         j++;
@@ -71,7 +72,7 @@ const spliceSpaces = function(children, i) {
  * is a real group (no atoms will be added on either side), as opposed to
  * a partial group (e.g. one created by \color).
  */
-const buildExpression = function(expression, options, isRealGroup) {
+export const buildExpression = function(expression, options, isRealGroup) {
     // Parse expressions into `groups`.
     const groups = [];
     for (let i = 0; i < expression.length; i++) {
@@ -246,7 +247,7 @@ const isCharacterBox = function(group) {
         baseElem.type === "punct";
 };
 
-const makeNullDelimiter = function(options, classes) {
+export const makeNullDelimiter = function(options, classes) {
     const moreClasses = ["nulldelimiter"].concat(options.baseSizingClasses());
     return makeSpan(classes.concat(moreClasses));
 };
@@ -255,7 +256,7 @@ const makeNullDelimiter = function(options, classes) {
  * This is a map of group types to the function used to handle that type.
  * Simpler types come at the beginning, while complicated types come afterwards.
  */
-const groupTypes = {};
+export const groupTypes = {};
 
 groupTypes.mathord = function(group, options) {
     return buildCommon.makeOrd(group, options, "mathord");
@@ -764,20 +765,57 @@ groupTypes.spacing = function(group, options) {
     }
 };
 
-groupTypes.llap = function(group, options) {
-    const inner = makeSpan(
-        ["inner"], [buildGroup(group.value.body, options)]);
+groupTypes.lap = function(group, options) {
+    // mathllap, mathrlap, mathclap
+    let inner;
+    if (group.value.alignment === "clap") {
+        // ref: https://www.math.lsu.edu/~aperlis/publications/mathclap/
+        inner = makeSpan([], [buildGroup(group.value.body, options)]);
+        // wrap, since CSS will center a .clap > .inner > span
+        inner = makeSpan(["inner"], [inner], options);
+    } else {
+        inner = makeSpan(
+            ["inner"], [buildGroup(group.value.body, options)]);
+    }
     const fix = makeSpan(["fix"], []);
     return makeSpan(
-        ["mord", "llap"], [inner, fix], options);
+        ["mord", group.value.alignment], [inner, fix], options);
 };
 
-groupTypes.rlap = function(group, options) {
-    const inner = makeSpan(
-        ["inner"], [buildGroup(group.value.body, options)]);
-    const fix = makeSpan(["fix"], []);
-    return makeSpan(
-        ["mord", "rlap"], [inner, fix], options);
+groupTypes.smash = function(group, options) {
+    const node = makeSpan(["mord"], [buildGroup(group.value.body, options)]);
+
+    if (!group.value.smashHeight && !group.value.smashDepth) {
+        return node;
+    }
+
+    if (group.value.smashHeight) {
+        node.height = 0;
+        // In order to influence makeVList, we have to reset the children.
+        if (node.children) {
+            for (let i = 0; i < node.children.length; i++) {
+                node.children[i].height = 0;
+            }
+        }
+    }
+
+    if (group.value.smashDepth) {
+        node.depth = 0;
+        if (node.children) {
+            for (let i = 0; i < node.children.length; i++) {
+                node.children[i].depth = 0;
+            }
+        }
+    }
+
+    // At this point, we've reset the TeX-like height and depth values.
+    // But the span still has an HTML line height.
+    // makeVList applies "display: table-cell", which prevents the browser
+    // from acting on that line height. So we'll call makeVList now.
+
+    return buildCommon.makeVList([
+        {type: "elem", elem: node},
+    ], "firstBaseline", null, options);
 };
 
 groupTypes.op = function(group, options) {
@@ -1224,106 +1262,6 @@ groupTypes.font = function(group, options) {
     return buildGroup(group.value.body, options.withFont(font));
 };
 
-groupTypes.delimsizing = function(group, options) {
-    const delim = group.value.value;
-
-    if (delim === ".") {
-        // Empty delimiters still count as elements, even though they don't
-        // show anything.
-        return makeSpan([group.value.mclass], [], {});
-    }
-
-    // Use delimiter.sizedDelim to generate the delimiter.
-    return delimiter.sizedDelim(
-            delim, group.value.size, options, group.mode,
-            [group.value.mclass]);
-};
-
-groupTypes.leftright = function(group, options) {
-    // Build the inner expression
-    const inner = buildExpression(group.value.body, options, true);
-
-    let innerHeight = 0;
-    let innerDepth = 0;
-    let hadMiddle = false;
-
-    // Calculate its height and depth
-    for (let i = 0; i < inner.length; i++) {
-        if (inner[i].isMiddle) {
-            hadMiddle = true;
-        } else {
-            innerHeight = Math.max(inner[i].height, innerHeight);
-            innerDepth = Math.max(inner[i].depth, innerDepth);
-        }
-    }
-
-    // The size of delimiters is the same, regardless of what style we are
-    // in. Thus, to correctly calculate the size of delimiter we need around
-    // a group, we scale down the inner size based on the size.
-    innerHeight *= options.sizeMultiplier;
-    innerDepth *= options.sizeMultiplier;
-
-    let leftDelim;
-    if (group.value.left === ".") {
-        // Empty delimiters in \left and \right make null delimiter spaces.
-        leftDelim = makeNullDelimiter(options, ["mopen"]);
-    } else {
-        // Otherwise, use leftRightDelim to generate the correct sized
-        // delimiter.
-        leftDelim = delimiter.leftRightDelim(
-            group.value.left, innerHeight, innerDepth, options,
-            group.mode, ["mopen"]);
-    }
-    // Add it to the beginning of the expression
-    inner.unshift(leftDelim);
-
-    // Handle middle delimiters
-    if (hadMiddle) {
-        for (let i = 1; i < inner.length; i++) {
-            const middleDelim = inner[i];
-            if (middleDelim.isMiddle) {
-                // Apply the options that were active when \middle was called
-                inner[i] = delimiter.leftRightDelim(
-                    middleDelim.isMiddle.value, innerHeight, innerDepth,
-                    middleDelim.isMiddle.options, group.mode, []);
-                // Add back spaces shifted into the delimiter
-                const spaces = spliceSpaces(middleDelim.children, 0);
-                if (spaces) {
-                    buildCommon.prependChildren(inner[i], spaces);
-                }
-            }
-        }
-    }
-
-    let rightDelim;
-    // Same for the right delimiter
-    if (group.value.right === ".") {
-        rightDelim = makeNullDelimiter(options, ["mclose"]);
-    } else {
-        rightDelim = delimiter.leftRightDelim(
-            group.value.right, innerHeight, innerDepth, options,
-            group.mode, ["mclose"]);
-    }
-    // Add it to the end of the expression.
-    inner.push(rightDelim);
-
-    return makeSpan(["minner"], inner, options);
-};
-
-groupTypes.middle = function(group, options) {
-    let middleDelim;
-    if (group.value.value === ".") {
-        middleDelim = makeNullDelimiter(options, []);
-    } else {
-        middleDelim = delimiter.sizedDelim(
-            group.value.value, 1, options,
-            group.mode, []);
-        middleDelim.isMiddle = {value: group.value.value, options: options};
-    }
-
-    return middleDelim;
-};
-
 groupTypes.rule = function(group, options) {
     // Make an empty span for the rule
     const rule = makeSpan(["mord", "rule"], [], options);
@@ -1689,18 +1627,6 @@ groupTypes.xArrow = function(group, options) {
     return makeSpan(["mrel", "x-arrow"], [vlist], options);
 };
 
-groupTypes.phantom = function(group, options) {
-    const elements = buildExpression(
-        group.value.value,
-        options.withPhantom(),
-        false
-    );
-
-    // \phantom isn't supposed to affect the elements it contains.
-    // See "color" for more details.
-    return new buildCommon.makeSpan(null, elements, null);
-};
-
 groupTypes.mclass = function(group, options) {
     const elements = buildExpression(group.value.value, options, true);
 
@@ -1715,7 +1641,7 @@ groupTypes.mclass = function(group, options) {
  * @param options {Options}
  * @param baseOptions {object=}
  */
-const buildGroup = function(group, options, baseOptions) {
+export const buildGroup = function(group, options, baseOptions) {
     if (!group) {
         return makeSpan();
     }
@@ -1754,7 +1680,7 @@ const buildGroup = function(group, options, baseOptions) {
  * @param tree {object}
  * @param options {Options}
  */
-const buildHTML = function(tree, options) {
+export default function buildHTML(tree, options) {
     // buildExpression is destructive, so we need to make a clone
     // of the incoming tree so that it isn't accidentally changed
     tree = JSON.parse(JSON.stringify(tree));
@@ -1795,6 +1721,4 @@ const buildHTML = function(tree, options) {
     htmlNode.setAttribute("aria-hidden", "true");
 
     return htmlNode;
-};
-
-module.exports = buildHTML;
+}

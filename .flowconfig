@@ -1,0 +1,11 @@
+[ignore]
+<PROJECT_ROOT>/build
+<PROJECT_ROOT>/node_modules/match-at
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]

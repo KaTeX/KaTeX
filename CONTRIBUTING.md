@@ -42,14 +42,18 @@ If you do, check out [extract_ttfs.py](metrics/extract_ttfs.py).
 
 #### Adding new functions
 
-Most functions are handled in the [functions.js](src/functions.js) file. Read
-the comments in there to get started. If the function you want to add has
-similar output to an existing function, see if you can add a new line to that
-file to get it to work.
+New functions should be added in [src/functions](src/functions) using
+`defineFunction` from [defineFunction.js](src/defineFunction.js).  Read the
+comments in this file to get started.  Look at
+[phantom.js](src/functions/phantom.js) and
+[delimsizing.js](src/functions/delimsizing.js) as examples of how to use
+`defineFunction`.  Notice how delimsizing.js groups several related functions
+together in a single call to `defineFunction`.
 
-If your function isn't similar to an existing function, you'll need to add a
-line to `functions.js` as well as adding an output function in
-[buildHTML.js](src/buildHTML.js) and [buildMathML.js](src/buildMathML.js).
+The new method of defining functions combines methods that were previously
+spread out over three different files [functions.js](src/functions.js),
+[buildHTML.js](src/buildHTML.js), [buildMathML.js](src/buildMathML.js) into a
+single file.  The goal is to have all functions use this new system.
 
 ## Testing
 
