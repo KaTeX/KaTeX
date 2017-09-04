@@ -3,7 +3,8 @@
  * until only non-macro tokens remain.
  */
 
-import Lexer, { Token } from "./Lexer";
+import Lexer from "./Lexer";
+import {Token} from "./Token";
 import builtinMacros from "./macros";
 import ParseError from "./ParseError";
 import objectAssign from "object-assign";
