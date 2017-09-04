@@ -103,9 +103,8 @@ class MacroExpander {
             }
             expansion.reverse(); // to fit in with stack using push and pop
             expansion.numArgs = numArgs;
-            // Old approach saved the preprocessed expansion for future use.
-            // But this is incompatible with new function-based macros.
-            //this.macros[name] = expansion;
+            // TODO: Could cache macro expansions if it originally came as a
+            // String (but not those that come in as a Function).
         }
         if (expansion.numArgs) {
             const args = [];
@@ -173,9 +172,10 @@ class MacroExpander {
     }
 
     /**
-     * Expand the next token once (ignoring initial spaces like `get`),
-     * without removing anything from the stack, and return the top token
-     * on the stack.  Similar in behavior to TeX's `\expandafter\futurelet`.
+     * Expand the next token only once (if possible), and return the resulting
+     * top token on the stack (without removing anything from the stack).
+     * Similar in behavior to TeX's `\expandafter\futurelet`.
+     * Equivalent to expandOnce() followed by future().
      */
     expandAfterFuture() {
         this.expandOnce();
