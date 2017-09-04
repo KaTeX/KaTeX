@@ -51,7 +51,7 @@ defineFunction([
     return {
         type: "text",
         body: ordargument(body),
-        style: textFunctionStyles[context.funcName],
+        font: textFunctionStyles[context.funcName],
     };
 });
 
@@ -659,13 +659,9 @@ defineFunction(["\\raisebox"], {
 }, function(context, args) {
     const amount = args[0];
     const body = args[1];
-    const sizing = new ParseNode("sizing", {
-        size: "size5", // \normalsize
-        value: ordargument(body),
-    });
     return {
         type: "raisebox",
         dy: amount,
-        body: ordargument(sizing),
+        body: ordargument(body),
     };
 });

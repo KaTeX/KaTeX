@@ -304,7 +304,7 @@ groupTypes.ordgroup = function(group, options) {
 };
 
 groupTypes.text = function(group, options) {
-    const newOptions = options.withFont(group.value.style);
+    const newOptions = options.withFont(group.value.font);
     const inner = buildExpression(group.value.body, newOptions, true);
     for (let i = 0; i < inner.length - 1; i++) {
         if (inner[i].tryCombine(inner[i + 1])) {
@@ -1632,19 +1632,21 @@ groupTypes.mclass = function(group, options) {
 };
 
 groupTypes.raisebox = function(group, options) {
-    const span = groupTypes.text(group, options);
-    const dy = calculateSize(group.value.dy.value, options);
+    const body = groupTypes.sizing({value: {
+        value: [{
+            type: "text",
+            value: {
+                body: group.value.body,
+                font: "mathrm", // simulate \textrm
+            },
+        }],
+        size: 6,                // simulate \normalsize
+    }}, options);
+    const dy = units.calculateSize(group.value.dy.value, options);
     return buildCommon.makeVList([{
-      type: "elem",
-      elem: span
+        type: "elem",
+        elem: body,
     }], "shift", -dy, options);
-/*
-    span.height += dy;
-    span.depth -= dy;
-    span.style.top = -dy + "em";
-    span.style.position = "relative";
-    return span;
-*/
 };
 
 /**
