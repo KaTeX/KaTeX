@@ -329,7 +329,7 @@ const sqrtSvg = function(sqrtName, height, viewBoxHeight, options) {
     const innerSVG =  new domTree.svgNode([pathNode], "100%",
                 height, null, 400000, viewBoxHeight, "xMinYMin");
 
-    const svg = new domTree.svgNode([innerSVG], "100%", viewBoxHeight);
+    const svg = new domTree.svgNode([innerSVG], "100%", height);
     return buildCommon.makeSpan([], [svg], options);
 };
 
