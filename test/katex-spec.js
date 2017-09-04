@@ -2289,6 +2289,13 @@ describe("A macro expander", function() {
         });
     });
 
+    it("should allow for multiple expansion with argument", function() {
+        compareParseTree("1\\foo2", "12222", {
+            "\\foo": "\\bar{#1}\\bar{#1}",
+            "\\bar": "#1#1",
+        });
+    });
+
     it("should allow for macro argument", function() {
         compareParseTree("\\foo\\bar", "(x)", {
             "\\foo": "(#1)",
