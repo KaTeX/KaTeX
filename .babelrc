@@ -1,5 +1,5 @@
 {
-    "presets": ["es2015"],
+    "presets": ["es2015", "flow"],
     "plugins": [
         "transform-runtime",
         "transform-class-properties"

@@ -1,114 +1,20 @@
 import utils from "./utils";
 import ParseError from "./ParseError";
 import ParseNode from "./ParseNode";
+import {default as _defineFunction, ordargument} from "./defineFunction";
 
-/* This file contains a list of functions that we parse, identified by
- * the calls to defineFunction.
- *
- * The first argument to defineFunction is a single name or a list of names.
- * All functions named in such a list will share a single implementation.
- *
- * Each declared function can have associated properties, which
- * include the following:
- *
- *  - numArgs: The number of arguments the function takes.
- *             If this is the only property, it can be passed as a number
- *             instead of an element of a properties object.
- *  - argTypes: (optional) An array corresponding to each argument of the
- *              function, giving the type of argument that should be parsed. Its
- *              length should be equal to `numArgs + numOptionalArgs`. Valid
- *              types:
- *               - "size": A size-like thing, such as "1em" or "5ex"
- *               - "color": An html color, like "#abc" or "blue"
- *               - "original": The same type as the environment that the
- *                             function being parsed is in (e.g. used for the
- *                             bodies of functions like \textcolor where the
- *                             first argument is special and the second
- *                             argument is parsed normally)
- *              Other possible types (probably shouldn't be used)
- *               - "text": Text-like (e.g. \text)
- *               - "math": Normal math
- *              If undefined, this will be treated as an appropriate length
- *              array of "original" strings
- *  - greediness: (optional) The greediness of the function to use ungrouped
- *                arguments.
- *
- *                E.g. if you have an expression
- *                  \sqrt \frac 1 2
- *                since \frac has greediness=2 vs \sqrt's greediness=1, \frac
- *                will use the two arguments '1' and '2' as its two arguments,
- *                then that whole function will be used as the argument to
- *                \sqrt. On the other hand, the expressions
- *                  \frac \frac 1 2 3
- *                and
- *                  \frac \sqrt 1 2
- *                will fail because \frac and \frac have equal greediness
- *                and \sqrt has a lower greediness than \frac respectively. To
- *                make these parse, we would have to change them to:
- *                  \frac {\frac 1 2} 3
- *                and
- *                  \frac {\sqrt 1} 2
- *
- *                The default value is `1`
- *  - allowedInText: (optional) Whether or not the function is allowed inside
- *                   text mode (default false)
- *  - numOptionalArgs: (optional) The number of optional arguments the function
- *                     should parse. If the optional arguments aren't found,
- *                     `null` will be passed to the handler in their place.
- *                     (default 0)
- *  - infix: (optional) Must be true if the function is an infix operator.
- *
- * The last argument is that implementation, the handler for the function(s).
- * It is called to handle these functions and their arguments.
- * It receives two arguments:
- *  - context contains information and references provided by the parser
- *  - args is an array of arguments obtained from TeX input
- * The context contains the following properties:
- *  - funcName: the text (i.e. name) of the function, including \
- *  - parser: the parser object
- *  - lexer: the lexer object
- *  - positions: the positions in the overall string of the function
- *               and the arguments.
- * The latter three should only be used to produce error messages.
- *
- * The function should return an object with the following keys:
- *  - type: The type of element that this is. This is then used in
- *          buildHTML/buildMathML to determine which function
- *          should be called to build this node into a DOM node
- * Any other data can be added to the object, which will be passed
- * in to the function in buildHTML/buildMathML as `group.value`.
- */
+// WARNING: New functions should be added to src/functions.
 
-function defineFunction(names, props, handler) {
+// Define a convenience function that mimcs the old semantics of defineFunction
+// to support existing code so that we can migrate it a little bit at a time.
+const defineFunction = function(names, props, handler) {
     if (typeof names === "string") {
         names = [names];
     }
     if (typeof props === "number") {
         props = { numArgs: props };
     }
-    // Set default values of functions
-    const data = {
-        numArgs: props.numArgs,
-        argTypes: props.argTypes,
-        greediness: (props.greediness === undefined) ? 1 : props.greediness,
-        allowedInText: !!props.allowedInText,
-        numOptionalArgs: props.numOptionalArgs || 0,
-        infix: !!props.infix,
-        handler: handler,
-    };
-    for (let i = 0; i < names.length; ++i) {
-        module.exports[names[i]] = data;
-    }
-}
-
-// Since the corresponding buildHTML/buildMathML function expects a
-// list of elements, we normalize for different kinds of arguments
-const ordargument = function(arg) {
-    if (arg.type === "ordgroup") {
-        return arg.value;
-    } else {
-        return [arg];
-    }
+    _defineFunction({names, props, handler});
 };
 
 // A normal square root
@@ -233,15 +139,7 @@ defineFunction("\\KaTeX", {
     };
 });
 
-defineFunction("\\phantom", {
-    numArgs: 1,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "phantom",
-        value: ordargument(body),
-    };
-});
+import "./functions/phantom";
 
 // Math class commands except \mathop
 defineFunction([
@@ -307,41 +205,6 @@ defineFunction(["\\pod", "\\pmod", "\\mod"], {
         value: ordargument(body),
     };
 });
-
-// Extra data needed for the delimiter handler down below
-const delimiterSizes = {
-    "\\bigl" : {mclass: "mopen",    size: 1},
-    "\\Bigl" : {mclass: "mopen",    size: 2},
-    "\\biggl": {mclass: "mopen",    size: 3},
-    "\\Biggl": {mclass: "mopen",    size: 4},
-    "\\bigr" : {mclass: "mclose",   size: 1},
-    "\\Bigr" : {mclass: "mclose",   size: 2},
-    "\\biggr": {mclass: "mclose",   size: 3},
-    "\\Biggr": {mclass: "mclose",   size: 4},
-    "\\bigm" : {mclass: "mrel",     size: 1},
-    "\\Bigm" : {mclass: "mrel",     size: 2},
-    "\\biggm": {mclass: "mrel",     size: 3},
-    "\\Biggm": {mclass: "mrel",     size: 4},
-    "\\big"  : {mclass: "mord",     size: 1},
-    "\\Big"  : {mclass: "mord",     size: 2},
-    "\\bigg" : {mclass: "mord",     size: 3},
-    "\\Bigg" : {mclass: "mord",     size: 4},
-};
-
-const delimiters = [
-    "(", ")", "[", "\\lbrack", "]", "\\rbrack",
-    "\\{", "\\lbrace", "\\}", "\\rbrace",
-    "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
-    "<", ">", "\\langle", "\\rangle", "\\lt", "\\gt",
-    "\\lvert", "\\rvert", "\\lVert", "\\rVert",
-    "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache",
-    "/", "\\backslash",
-    "|", "\\vert", "\\|", "\\Vert",
-    "\\uparrow", "\\Uparrow",
-    "\\downarrow", "\\Downarrow",
-    "\\updownarrow", "\\Updownarrow",
-    ".",
-];
 
 const fontAliases = {
     "\\Bbb": "\\mathbb",
@@ -515,75 +378,60 @@ defineFunction([
     };
 });
 
-// Left and right overlap functions
-defineFunction(["\\llap", "\\rlap"], {
+// Horizontal overlap functions
+defineFunction(["\\mathllap", "\\mathrlap", "\\mathclap"], {
     numArgs: 1,
     allowedInText: true,
 }, function(context, args) {
     const body = args[0];
     return {
-        type: context.funcName.slice(1),
+        type: "lap",
+        alignment: context.funcName.slice(5),
         body: body,
     };
 });
 
-// Delimiter functions
-const checkDelimiter = function(delim, context) {
-    if (utils.contains(delimiters, delim.value)) {
-        return delim;
+// smash, with optional [tb], as in AMS
+defineFunction("\\smash", {
+    numArgs: 1,
+    numOptionalArgs: 1,
+    allowedInText: true,
+}, function(context, args) {
+    let smashHeight = false;
+    let smashDepth = false;
+    const tbArg = args[0];
+    if (tbArg) {
+        // Optional [tb] argument is engaged.
+        // ref: amsmath: \renewcommand{\smash}[1][tb]{%
+        //               def\mb@t{\ht}\def\mb@b{\dp}\def\mb@tb{\ht\z@\z@\dp}%
+        let letter = "";
+        for (let i = 0; i < tbArg.value.length; ++i) {
+            letter = tbArg.value[i].value;
+            if (letter === "t") {
+                smashHeight = true;
+            } else if (letter === "b") {
+                smashDepth = true;
+            } else {
+                smashHeight = false;
+                smashDepth = false;
+                break;
+            }
+        }
     } else {
-        throw new ParseError(
-            "Invalid delimiter: '" + delim.value + "' after '" +
-            context.funcName + "'", delim);
-    }
-};
-
-defineFunction([
-    "\\bigl", "\\Bigl", "\\biggl", "\\Biggl",
-    "\\bigr", "\\Bigr", "\\biggr", "\\Biggr",
-    "\\bigm", "\\Bigm", "\\biggm", "\\Biggm",
-    "\\big",  "\\Big",  "\\bigg",  "\\Bigg",
-], {
-    numArgs: 1,
-}, function(context, args) {
-    const delim = checkDelimiter(args[0], context);
-
-    return {
-        type: "delimsizing",
-        size: delimiterSizes[context.funcName].size,
-        mclass: delimiterSizes[context.funcName].mclass,
-        value: delim.value,
-    };
-});
-
-defineFunction([
-    "\\left", "\\right",
-], {
-    numArgs: 1,
-}, function(context, args) {
-    const delim = checkDelimiter(args[0], context);
-
-    // \left and \right are caught somewhere in Parser.js, which is
-    // why this data doesn't match what is in buildHTML.
-    return {
-        type: "leftright",
-        value: delim.value,
-    };
-});
-
-defineFunction("\\middle", {
-    numArgs: 1,
-}, function(context, args) {
-    const delim = checkDelimiter(args[0], context);
-    if (!context.parser.leftrightDepth) {
-        throw new ParseError("\\middle without preceding \\left", delim);
+        smashHeight = true;
+        smashDepth = true;
     }
 
+    const body = args[1];
     return {
-        type: "middle",
-        value: delim.value,
+        type: "smash",
+        body: body,
+        smashHeight: smashHeight,
+        smashDepth: smashDepth,
     };
 });
+
+import "./functions/delimsizing";
 
 // Sizing functions (handled in Parser.js explicitly, hence no handler)
 defineFunction([
@@ -655,7 +503,26 @@ defineFunction([
         label: context.funcName,
         isStretchy: isStretchy,
         isShifty: isShifty,
-        value: ordargument(base),
+        base: base,
+    };
+});
+
+// Text-mode accents
+defineFunction([
+    "\\'", "\\`", "\\^", "\\~", "\\=", "\\u", "\\.", '\\"',
+    "\\r", "\\H", "\\v",
+], {
+    numArgs: 1,
+    allowedInText: true,
+    allowedInMath: false,
+}, function(context, args) {
+    const base = args[0];
+
+    return {
+        type: "accent",
+        label: context.funcName,
+        isStretchy: false,
+        isShifty: true,
         base: base,
     };
 });
@@ -682,12 +549,11 @@ defineFunction([
 ], {
     numArgs: 1,
 }, function(context, args) {
-    const body = args[0];
+    const base = args[0];
     return {
         type: "accentUnder",
         label: context.funcName,
-        value: ordargument(body),
-        body: body,
+        base: base,
     };
 });
 

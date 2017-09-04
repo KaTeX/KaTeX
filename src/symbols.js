@@ -504,6 +504,7 @@ defineSymbol(math, main, rel, "\u2190", "\\gets");
 defineSymbol(math, main, rel, ">", "\\gt");
 defineSymbol(math, main, rel, "\u2208", "\\in");
 defineSymbol(math, main, rel, "\u2209", "\\notin");
+defineSymbol(math, main, rel, "\u0338", "\\not");
 defineSymbol(math, main, rel, "\u2282", "\\subset");
 defineSymbol(math, main, rel, "\u2283", "\\supset");
 defineSymbol(math, main, rel, "\u2286", "\\subseteq");
@@ -599,11 +600,11 @@ defineSymbol(math, main, op, "\u2a06", "\\bigsqcup");
 defineSymbol(math, main, op, "\u222b", "\\smallint");
 defineSymbol(text, main, inner, "\u2026", "\\textellipsis");
 defineSymbol(math, main, inner, "\u2026", "\\mathellipsis");
-defineSymbol(text, main, inner, "\u2026", "\\ldots");
-defineSymbol(math, main, inner, "\u2026", "\\ldots");
-defineSymbol(math, main, inner, "\u22ef", "\\cdots");
-defineSymbol(math, main, inner, "\u22f1", "\\ddots");
-defineSymbol(math, main, textord, "\u22ee", "\\vdots");
+defineSymbol(text, main, inner, "\u2026", "\\ldots", true);
+defineSymbol(math, main, inner, "\u2026", "\\ldots", true);
+defineSymbol(math, main, inner, "\u22ef", "\\cdots", true);
+defineSymbol(math, main, inner, "\u22f1", "\\ddots", true);
+defineSymbol(math, main, textord, "\u22ee", "\\vdots", true);
 defineSymbol(math, main, accent, "\u00b4", "\\acute");
 defineSymbol(math, main, accent, "\u0060", "\\grave");
 defineSymbol(math, main, accent, "\u00a8", "\\ddot");
@@ -616,6 +617,17 @@ defineSymbol(math, main, accent, "\u20d7", "\\vec");
 defineSymbol(math, main, accent, "\u02d9", "\\dot");
 defineSymbol(math, main, mathord, "\u0131", "\\imath");
 defineSymbol(math, main, mathord, "\u0237", "\\jmath");
+defineSymbol(text, main, accent, "\u02ca", "\\'"); // acute
+defineSymbol(text, main, accent, "\u02cb", "\\`"); // grave
+defineSymbol(text, main, accent, "\u02c6", "\\^"); // circumflex
+defineSymbol(text, main, accent, "\u02dc", "\\~"); // tilde
+defineSymbol(text, main, accent, "\u02c9", "\\="); // macron
+defineSymbol(text, main, accent, "\u02d8", "\\u"); // breve
+defineSymbol(text, main, accent, "\u02d9", "\\."); // dot above
+defineSymbol(text, main, accent, "\u02da", "\\r"); // ring above
+defineSymbol(text, main, accent, "\u02c7", "\\v"); // caron
+defineSymbol(text, main, accent, "\u00a8", '\\"'); // diaresis
+defineSymbol(text, main, accent, "\u030B", "\\H"); // double acute
 
 defineSymbol(text, main, textord, "\u2013", "--");
 defineSymbol(text, main, textord, "\u2013", "\\textendash");

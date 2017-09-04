@@ -75,6 +75,7 @@ build/contrib:
 	rm -rf build/contrib/*
 	$(MAKE) -C contrib/auto-render
 	$(MAKE) -C contrib/copy-tex
+	$(MAKE) -C contrib/mathtex-script-type
 
 .PHONY: build/katex
 build/katex: build/katex.js build/katex.min.js build/katex.css build/katex.min.css build/fonts README.md build/contrib
@@ -101,6 +102,9 @@ compress: build/katex.min.js build/katex.min.css
 
 serve: $(NIS)
 	$(NODE) server.js
+
+flow: $(NIS)
+	node_modules/.bin/flow
 
 test: $(NIS)
 	node_modules/.bin/jest
