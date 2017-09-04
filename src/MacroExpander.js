@@ -17,8 +17,8 @@ class MacroExpander {
     }
 
     /**
-     * Return the next unexpanded token without removing anything from the
-     * stack.  Similar in behavior to TeX's `\futurelet`.
+     * Returns the topmost token on the stack, without expanding it.
+     * Similar in behavior to TeX's `\futurelet`.
      */
     future() {
         if (this.stack.length === 0) {
@@ -50,9 +50,20 @@ class MacroExpander {
     }
 
     /**
-     * Expand next token only once, and leave it on the stack.
-     * Returns the token or its expansion.
-     * Used to implement `get` and `expandAfter`.
+     * Expand the next token only once if possible.
+     *
+     * If the token is expanded, the resulting tokens will be pushed onto
+     * the stack in reverse order and will be returned as an array,
+     * also in reverse order.
+     *
+     * If not, the next token will be returned without removing it
+     * from the stack.  This case can be detected by a `Token` return value
+     * instead of an `Array` return value.
+     *
+     * In either case, the next token will be on the top of the stack,
+     * or the stack will be empty.
+     *
+     * Used to implement `expandAfterFuture` and `expandNextToken`.
      *
      * At the moment, macro expansion doesn't handle delimited macros,
      * i.e. things like those defined by \def\foo#1\end{…}.
@@ -61,12 +72,12 @@ class MacroExpander {
     expandOnce() {
         const topToken = this.popToken();
         const name = topToken.text;
-        const macro = (name.charAt(0) === "\\");
-        if (macro) {
+        const isMacro = (name.charAt(0) === "\\");
+        if (isMacro) {
             // Consume all spaces after \macro
             this.consumeSpaces();
         }
-        if (!(macro && this.macros.hasOwnProperty(name))) {
+        if (!(isMacro && this.macros.hasOwnProperty(name))) {
             // Fully expanded
             this.stack.push(topToken);
             return topToken;
