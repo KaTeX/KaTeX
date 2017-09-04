@@ -4,7 +4,8 @@ This extension modifes the copy/paste behavior in any browser supporting the
 [Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardEvent)
 so that, when selecting and copying whole KaTeX-rendered elements, the text
 content of the resulting clipboard renders KaTeX elements as their LaTeX source
-surrounded by specified delimiters.  (The HTML content remains unchanged.)
+surrounded by specified delimiters.  (The HTML content of the resulting
+clipboard remains the selected HTML content, as it normally would.)
 The default delimiters are `$...$` for inline math and `$$...$$` for display
 math, but you can easy switch them to e.g. `\(...\)` and `\[...\]` by
 modifying `copyDelimiters` in [the source code](copy-tex.js).
@@ -12,7 +13,12 @@ modifying `copyDelimiters` in [the source code](copy-tex.js).
 ### Usage
 
 This extension isn't part of KaTeX proper, so the script should be separately
-included in the page.  It also requires some custom CSS.
+included in the page.  It also provides *optional* custom CSS that
+defines KaTeX equations as
+[`user-select: all`](https://developer.mozilla.org/en-US/docs/Web/CSS/user-select)
+so that they get selected all-or-nothing (and thus trigger the good behavior
+provided by this extension).  Without this CSS, partially selected equations
+will just get the usual HTML copy/paste behavior.
 
 ```html
 <link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.8.3/contrib/copy-tex.css" rel="stylesheet" type="text/css">
@@ -24,3 +30,16 @@ See [index.html](index.html) for an example.
 in the root KaTeX directory, and then visit
 http://0.0.0.0:7936/contrib/copy-tex/index.html
 with your web browser.)
+
+### Known Issues
+
+This extension has been tested on Chrome, Firefox, Edge, and Safari.
+
+Microsoft Edge
+[does not seem to support](https://developer.microsoft.com/en-us/microsoft-edge/platform/status/clipboardapi/)
+text and HTML content in a single clipboard.  In this browser, this extension
+will just put the text content into the clipboard.
+
+Safari copies correctly, but the selection rectangle renders strangely
+(too big) when interacting with display math
+(because of the `user-select: all` CSS).
