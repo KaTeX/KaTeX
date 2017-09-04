@@ -7,7 +7,7 @@ import symbols from "./symbols";
 import utils from "./utils";
 
 // This function might one day accept additional argument and do more things.
-function defineMacro(name, body) {
+function defineMacro(name: string, body: string | () => string) {
     module.exports[name] = body;
 }
 
