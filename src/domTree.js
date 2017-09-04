@@ -9,6 +9,7 @@
  */
 import unicodeRegexes from "./unicodeRegexes";
 import utils from "./utils";
+import svgGeometry from "./svgGeometry";
 
 /**
  * Create an HTML className based on a list of classes. In addition to joining
@@ -39,7 +40,6 @@ class span {
         this.maxFontSize = 0;
         this.style = {};
         this.attributes = {};
-        this.innerHTML;           // used for inline SVG code.
         if (options) {
             if (options.style.isTight()) {
                 this.classes.push("mtight");
@@ -86,10 +86,6 @@ class span {
             }
         }
 
-        if (this.innerHTML) {
-            span.innerHTML = this.innerHTML;
-        }
-
         // Append the children, also as HTML nodes
         for (let i = 0; i < this.children.length; i++) {
             span.appendChild(this.children[i].toNode());
@@ -134,10 +130,6 @@ class span {
         }
 
         markup += ">";
-
-        if (this.innerHTML) {
-            markup += this.innerHTML;
-        }
 
         // Add the markup of the children, also as markup
         for (let i = 0; i < this.children.length; i++) {
@@ -344,8 +336,164 @@ class symbolNode {
     }
 }
 
+/**
+ * SVG nodes are used to render stretchy wide elements.
+ */
+class svgNode {
+    constructor(children, width, height, x, viewBoxWidth, viewBoxHeight, align) {
+        this.children = children || [];
+        this.width = width || "";
+        this.height = height || "";
+        this.x = x || "";
+        this.viewBoxWidth = viewBoxWidth || 0;
+        this.viewBoxHeight = viewBoxHeight || 0;
+        this.align = align || "";
+    }
+
+    toNode() {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const node = document.createElementNS(svgNS, "svg");
+
+        if (this.x.length > 0) {
+            node.setAttribute("x", this.x);
+        }
+
+        if (this.width.length > 0) {
+            node.setAttribute("width", this.width);
+        }
+
+        if (this.width.length > 0) {
+            node.setAttribute("height", this.height + "em");
+        }
+
+        if (this.viewBoxWidth > 0) {
+            node.setAttribute("viewBox",
+                `0 0 ${this.viewBoxWidth} ${this.viewBoxHeight}`);
+        }
+
+        if (this.align.length > 0) {
+            const par = (this.align === "none" ? "none" : this.align + " slice");
+            node.setAttribute("preserveAspectRatio", par);
+        }
+
+        if (this.children.length > 0) {
+            for (let i = 0; i < this.children.length; i++) {
+                node.appendChild(this.children[i].toNode());
+            }
+        }
+        return node;
+    }
+
+    toMarkup() {
+        let markup = "<svg";
+
+        if (this.x.length > 0) {
+            markup += ` x='${this.x}'`;
+        }
+
+        if (this.width.length > 0) {
+            markup += ` width="${this.width}\'`;
+        }
+
+        if (this.width.length > 0) {
+            markup += " height=\'" + this.height + "em\'";
+        }
+
+        if (this.viewBoxWidth > 0) {
+            markup +=
+                ` viewBox='0 0 ${this.viewBoxWidth} ${this.viewBoxHeight}'`;
+        }
+
+        if (this.align.length > 0) {
+            const align = (this.align === "none" ? "none" :
+                this.align + " slice");
+            markup += ` preserveAspectRatio='${align}'`
+        }
+
+        markup += ">"
+
+        for (let i = 0; i < this.children.length; i++) {
+            markup += this.children[i].toMarkup();
+        }
+
+        markup += "</svg>";
+
+        return markup;
+
+    }
+}
+
+class pathNode {
+    constructor(pathName, alternate) {
+        this.pathName = pathName || "";
+        this.alternate = alternate || "";  // Used only for tall \sqrt
+    }
+
+    toNode() {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const node = document.createElementNS(svgNS, "path");
+
+        if (this.pathName !== "sqrtTall") {
+            node.setAttribute("d", svgGeometry.path[this.pathName]);
+        } else {
+            node.setAttribute("d", this.alternate);
+        }
+
+        return node;
+    }
+
+    toMarkup() {
+        if (this.pathName !== "sqrtTall") {
+            return `<path d='${svgGeometry.path[this.pathName]}'/>`;
+        } else {
+            return `<path d='${this.alternate}'/>`;
+        }
+    }
+}
+
+class lineNode {
+    constructor(x1, y1, x2, y2, strokeWidth) {
+        this.x1 = x1 || 0;
+        this.y1 = y1 || 0;
+        this.x2 = x2 || 0;
+        this.y2 = y2 || 0;
+        this.strokeWidth = strokeWidth || 0;
+    }
+
+    toNode() {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const node = document.createElementNS(svgNS, "line");
+
+        node.setAttribute("x1", this.x1);
+        node.setAttribute("y1", this.y1);
+        node.setAttribute("x2", this.x2);
+        node.setAttribute("y2", this.y2);
+
+        if (this.strokeWidth > 0) {
+            node.setAttribute("stroke-width", this.strokeWidth + "em");
+        }
+        return node;
+    }
+
+    toMarkup() {
+        let markup = `<line x1='${this.x1}' y1='${this.y1}'`
+        markup += ` x2='${this.x2}' y2='${this.y2}'`;
+
+        if (this.strokeWidth > 0) {
+            markup += ` stroke-width='${this.strokeWidth}em'`;
+        }
+
+        markup += "/>";
+
+        return markup;
+    }
+}
+
 module.exports = {
     span: span,
     documentFragment: documentFragment,
     symbolNode: symbolNode,
+    svgNode: svgNode,
+    pathNode: pathNode,
+    lineNode: lineNode,
 };

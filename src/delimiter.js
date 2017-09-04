@@ -23,6 +23,7 @@
 import ParseError from "./ParseError";
 import Style from "./Style";
 
+import domTree from "./domTree";
 import buildCommon, { makeSpan } from "./buildCommon";
 import fontMetrics from "./fontMetrics";
 import symbols from "./symbols";
@@ -313,107 +314,59 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
         Style.TEXT, options, classes);
 };
 
-const sqrtInnerSVG = {
-    // The main path geometry is from glyph U221A in the font KaTeX Main
-    main: `<svg viewBox='0 0 400000 1000' preserveAspectRatio='xMinYMin
-slice'><path d='M95 622c-2.667 0-7.167-2.667-13.5
--8S72 604 72 600c0-2 .333-3.333 1-4 1.333-2.667 23.833-20.667 67.5-54s
-65.833-50.333 66.5-51c1.333-1.333 3-2 5-2 4.667 0 8.667 3.333 12 10l173
-378c.667 0 35.333-71 104-213s137.5-285 206.5-429S812 17.333 812 14c5.333
--9.333 12-14 20-14h399166v40H845.272L620 507 385 993c-2.667 4.667-9 7-19
-7-6 0-10-1-12-3L160 575l-65 47zM834 0h399166v40H845z'/></svg>`,
+const sqrtSvg = function(sqrtName, height, viewBoxHeight, options) {
+    let alternate;
+    if (sqrtName === "sqrtTall") {
+        // sqrtTall is from glyph U23B7 in the font KaTeX_Size4-Regular
+        const vertSegment = viewBoxHeight - 54;
+        alternate = `M702 0H400000v40H742v${vertSegment}l-4 4-4 4c-.667.667
+-2 1.5-4 2.5s-4.167 1.833-6.5 2.5-5.5 1-9.5 1h-12l-28-84c-16.667-52-96.667
+-294.333-240-727l-212 -643 -85 170c-4-3.333-8.333-7.667-13 -13l-13-13l77-155
+ 77-156c66 199.333 139 419.667 219 661 l218 661zM702 0H400000v40H742z`;
+    }
+    const pathNode = new domTree.pathNode(sqrtName, alternate);
 
-    // size1 is from glyph U221A in the font KaTeX_Size1-Regular
-    1: `<svg viewBox='0 0 400000 1200' preserveAspectRatio='xMinYMin
-slice'><path d='M263 601c.667 0 18 39.667 52 119s68.167
- 158.667 102.5 238 51.833 119.333 52.5 120C810 373.333 980.667 17.667 982 11
-c4.667-7.333 11-11 19-11h398999v40H1012.333L741 607c-38.667 80.667-84 175-136
- 283s-89.167 185.333-111.5 232-33.833 70.333-34.5 71c-4.667 4.667-12.333 7-23
- 7l-12-1-109-253c-72.667-168-109.333-252-110-252-10.667 8-22 16.667-34 26-22
- 17.333-33.333 26-34 26l-26-26 76-59 76-60zM1001 0h398999v40H1012z'/></svg>`,
+    const innerSVG =  new domTree.svgNode([pathNode], "100%",
+                height, null, 400000, viewBoxHeight, "xMinYMin");
 
-    // size2 is from glyph U221A in the font KaTeX_Size2-Regular
-    2: `<svg viewBox='0 0 400000 1800' preserveAspectRatio='xMinYMin
-slice'><path d='M1001 0h398999v40H1013.084S929.667 308 749
- 880s-277 876.333-289 913c-4.667 4.667-12.667 7-24 7h-12c-1.333-3.333-3.667
--11.667-7-25-35.333-125.333-106.667-373.333-214-744-10 12-21 25-33 39l-32 39
-c-6-5.333-15-14-27-26l25-30c26.667-32.667 52-63 76-91l52-60 208 722c56-175.333
- 126.333-397.333 211-666s153.833-488.167 207.5-658.5C944.167 129.167 975 32.667
- 983 10c4-6.667 10-10 18-10zm0 0h398999v40H1013z'/></svg>`,
-
-    // size3 is from glyph U221A in the font KaTeX_Size3-Regular
-    3: `<svg viewBox='0 0 400000 2400' preserveAspectRatio='xMinYMin
-slice'><path d='M424 2398c-1.333-.667-38.5-172-111.5-514
-S202.667 1370.667 202 1370c0-2-10.667 14.333-32 49-4.667 7.333-9.833 15.667
--15.5 25s-9.833 16-12.5 20l-5 7c-4-3.333-8.333-7.667-13-13l-13-13 76-122 77-121
- 209 968c0-2 84.667-361.667 254-1079C896.333 373.667 981.667 13.333 983 10
-c4-6.667 10-10 18-10h398999v40H1014.622S927.332 418.667 742 1206c-185.333
- 787.333-279.333 1182.333-282 1185-2 6-10 9-24 9-8 0-12-.667-12-2z
-M1001 0h398999v40H1014z'/></svg>`,
-
-    // size4 is from glyph U221A in the font KaTeX_Size4-Regular
-    4: `<svg viewBox='0 0 400000 3000' preserveAspectRatio='xMinYMin
-slice'><path d='M473 2713C812.333 913.667 982.333 13 983 11
-c3.333-7.333 9.333-11 18-11h399110v40H1017.698S927.168 518 741.5 1506C555.833
- 2494 462 2989 460 2991c-2 6-10 9-24 9-8 0-12-.667-12-2s-5.333-32-16-92c-50.667
--293.333-119.667-693.333-207-1200 0-1.333-5.333 8.667-16 30l-32 64-16 33-26-26
- 76-153 77-151c.667.667 35.667 202 105 604 67.333 400.667 102 602.667 104 606z
-M1001 0h398999v40H1017z'/></svg>`,
-
-    // tall is from glyph U23B7 in the font KaTeX_Size4-Regular
-    tall: `l-4 4-4 4c-.667.667-2 1.5-4 2.5s-4.167 1.833-6.5 2.5-5.5 1-9.5 1h
--12l-28-84c-16.667-52-96.667 -294.333-240-727l-212 -643 -85 170c-4-3.333-8.333
--7.667-13 -13l-13-13l77-155 77-156c66 199.333 139 419.667 219 661 l218 661z
-M702 0H400000v40H742z'/></svg>`,
+    const svg = new domTree.svgNode([innerSVG], "100%", viewBoxHeight);
+    return buildCommon.makeSpan([], [svg], options);
 };
 
 const sqrtSpan = function(height, delim, options) {
     // Create a span containing an SVG image of a sqrt symbol.
-    const span = buildCommon.makeSpan([], [], options);
+    let span;
     let sizeMultiplier = options.sizeMultiplier;  // default
+    let spanHeight;
+    let viewBoxHeight;
 
     if (delim.type === "small") {
         // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
+        viewBoxHeight = 1000;  // from font
         const newOptions = options.havingBaseStyle(delim.style);
         sizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
-
-        span.height = 1 * sizeMultiplier;
-        span.style.height = span.height + "em";
+        spanHeight = 1 * sizeMultiplier;
+        span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, options);
         span.surdWidth = 0.833 * sizeMultiplier;   // from the font.
-        //In the font, the glyph is 1000 units tall. The font scale is 1:1000.
-
-        span.innerHTML = `<svg width='100%' height='${span.height}em'>
-            ${sqrtInnerSVG['main']}</svg>`;
 
     } else if (delim.type === "large") {
         // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
-        // Get sqrt height from font data
-        span.height = sizeToMaxHeight[delim.size] / sizeMultiplier;
-        span.style.height = span.height + "em";
+        viewBoxHeight = 1000 * sizeToMaxHeight[delim.size];
+        spanHeight = sizeToMaxHeight[delim.size] / sizeMultiplier;
+        span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight, options);
         span.surdWidth = 1.0 / sizeMultiplier; // from the font
-
-        span.innerHTML = `<svg width="100%" height="${span.height}em">
-            ${sqrtInnerSVG[delim.size]}</svg>`;
 
     } else {
         // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
         // We'll use a single SVG to accomplish the same thing.
-        span.height = height / sizeMultiplier;
-        span.style.height = span.height + "em";
+        spanHeight = height / sizeMultiplier;
+        viewBoxHeight = Math.floor(1000 * spanHeight)
+        span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, options);
         span.surdWidth = 1.056 / sizeMultiplier;
-        const viewBoxHeight = Math.floor(span.height * 1000); // scale = 1:1000
-        const vertSegment = viewBoxHeight - 54;
-
-        // This \sqrt is customized in both height and width. We set the
-        // height now. Then CSS will stretch the image to the correct width.
-        // This SVG path comes from glyph U+23B7, font KaTeX_Size4-Regular.
-        span.innerHTML = `<svg width='100%' height='${span.height}em'>
-            <svg viewBox='0 0 400000 ${viewBoxHeight}'
-            preserveAspectRatio='xMinYMax slice'>
-            <path d='M702 0H400000v40H742v${vertSegment}
-            ${sqrtInnerSVG['tall']}</svg>`;
     }
 
+    span.height = spanHeight;
+    span.style.height = spanHeight + "em";
     span.sizeMultiplier = sizeMultiplier;
 
     return span;
@@ -590,7 +543,7 @@ const makeCustomSizedDelim = function(delim, height, center, options, mode,
     const delimType = traverseSequence(delim, height, sequence, options);
 
     if (delim === "\\surd") {
-        // Get an SVG image for
+        // Get an SVG image
         return sqrtSpan(height, delimType, options);
     } else {
         // Get the delimiter from font glyphs.

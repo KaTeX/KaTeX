@@ -1598,15 +1598,17 @@ groupTypes.xArrow = function(group, options) {
 
     const arrowBody = stretchy.svgSpan(group, options);
 
-    const arrowShift = -options.fontMetrics().axisHeight + arrowBody.depth;
-    const upperShift = -options.fontMetrics().axisHeight - arrowBody.height -
-        0.111;    // 2 mu. Ref: amsmath.dtx: #7\if0#2\else\mkern#2mu\fi
+    const arrowShift = -options.fontMetrics().axisHeight +
+        0.5 * arrowBody.height;
+    // 2 mu kern. Ref: amsmath.dtx: #7\if0#2\else\mkern#2mu\fi
+    const upperShift = -options.fontMetrics().axisHeight -
+        0.5 * arrowBody.height - 0.111;
 
     // Generate the vlist
     let vlist;
     if (group.value.below) {
         const lowerShift = -options.fontMetrics().axisHeight
-            + lowerGroup.height + arrowBody.height
+            + lowerGroup.height + 0.5 * arrowBody.height
             + 0.111;
         vlist = buildCommon.makeVList([
             {type: "elem", elem: upperGroup, shift: upperShift},
