@@ -407,10 +407,10 @@ class svgNode {
         if (this.align.length > 0) {
             const align = (this.align === "none" ? "none" :
                 this.align + " slice");
-            markup += ` preserveAspectRatio='${align}'`
+            markup += ` preserveAspectRatio='${align}'`;
         }
 
-        markup += ">"
+        markup += ">";
 
         for (let i = 0; i < this.children.length; i++) {
             markup += this.children[i].toMarkup();
@@ -476,7 +476,7 @@ class lineNode {
     }
 
     toMarkup() {
-        let markup = `<line x1='${this.x1}' y1='${this.y1}'`
+        let markup = `<line x1='${this.x1}' y1='${this.y1}'`;
         markup += ` x2='${this.x2}' y2='${this.y2}'`;
 
         if (this.strokeWidth > 0) {
