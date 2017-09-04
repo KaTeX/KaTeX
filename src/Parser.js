@@ -43,15 +43,23 @@ import ParseError from "./ParseError";
  * standalone object which can be used as an argument to another function.
  */
 
-/**
- * An initial function (without its arguments), or an argument to a function.
- * The `result` argument should be a ParseNode.
- */
-function ParseFuncOrArgument(result, isFunction, token) {
-    this.result = result;
-    // Is this a function (i.e. is it something defined in functions.js)?
-    this.isFunction = isFunction;
-    this.token = token;
+/** A function name or an argument to a function. */
+class ParseFuncOrArgument {
+    /**
+     * @param {ParseNode|string} result It's a string if `isFunction=true` or if
+     *     `result="$"` for switching into math mode; otherwise, it's a ParseNode
+     *     and `isFunction` must be false. If it's a function, the string should
+     *     be a name defined by defineFunction, e.g. "\\frac".
+     * @param {boolean} isFunction True when this is a function. False when it's a
+     *     function argument or "$" to switch into math mode.
+     * @param {Token} token
+     */
+    constructor(result, isFunction, token) {
+        this.result = result;
+        // Is this a function (i.e. is it something defined in functions.js)?
+        this.isFunction = isFunction;
+        this.token = token;
+    }
 }
 
 class Parser {
@@ -106,7 +114,7 @@ class Parser {
     /**
      * Main parsing function, which parses an entire input.
      *
-     * @return {?Array.<ParseNode>}
+     * @return {Array.<ParseNode>}
      */
     parse() {
         // Try to parse the input
@@ -140,7 +148,7 @@ class Parser {
      *                  should end with, or `null` if something else should end the
      *                  expression.
      *
-     * @return {ParseNode}
+     * @return {Array<ParseNode>}
      */
     parseExpression(breakOnInfix, breakOnTokenText) {
         const body = [];
@@ -179,7 +187,8 @@ class Parser {
      * There can only be one infix operator per group.  If there's more than one
      * then the expression is ambiguous.  This can be resolved by adding {}.
      *
-     * @returns {Array}
+     * @param {Array<ParseNode>} body
+     * @return {Array<ParseNode>}
      */
     handleInfixNodes(body) {
         let overIndex = -1;
@@ -561,6 +570,11 @@ class Parser {
                     throw new ParseError(
                         "Can't use function '" + func + "' in text mode",
                         baseGroup.token);
+                } else if (this.mode === "math" &&
+                    funcData.allowedInMath === false) {
+                    throw new ParseError(
+                        "Can't use function '" + func + "' in math mode",
+                        baseGroup.token);
                 }
 
                 const args = this.parseArguments(func, funcData);
@@ -630,7 +644,7 @@ class Parser {
                     if (!this.settings.throwOnError &&
                         this.nextToken.text[0] === "\\") {
                         arg = new ParseFuncOrArgument(
-                            this.handleUnsupportedCmd(this.nextToken.text),
+                            this.handleUnsupportedCmd(),
                             false);
                     } else {
                         throw new ParseError(
@@ -768,7 +782,7 @@ class Parser {
         if (!res) {
             return null;
         }
-        const match = (/^(#[a-z0-9]+|[a-z]+)$/i).exec(res.text);
+        const match = (/^(#[a-f0-9]{3}|#[a-f0-9]{6}|[a-z]+)$/i).exec(res.text);
         if (!match) {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }

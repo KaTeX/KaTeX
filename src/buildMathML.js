@@ -1,4 +1,6 @@
 /**
+ * WARNING: New methods on groupTypes should be added to src/functions.
+ *
  * This file converts a parse tree into a cooresponding MathML tree. The main
  * entry point is the `buildMathML` function, which takes a parse tree from the
  * parser.
@@ -17,7 +19,7 @@ import stretchy from "./stretchy";
  * Takes a symbol and converts it into a MathML text node after performing
  * optional replacement from symbols.js.
  */
-const makeText = function(text, mode) {
+export const makeText = function(text, mode) {
     if (symbols[mode][text] && symbols[mode][text].replace) {
         text = symbols[mode][text].replace;
     }
@@ -60,7 +62,7 @@ const getVariant = function(group, options) {
  * Functions for handling the different types of groups found in the parse
  * tree. Each function should take a parse group and return a MathML node.
  */
-const groupTypes = {};
+export const groupTypes = {};
 
 const defaultVariant = {
     "mi": "italic",
@@ -315,39 +317,6 @@ groupTypes.sqrt = function(group, options) {
     return node;
 };
 
-groupTypes.leftright = function(group, options) {
-    const inner = buildExpression(group.value.body, options);
-
-    if (group.value.left !== ".") {
-        const leftNode = new mathMLTree.MathNode(
-            "mo", [makeText(group.value.left, group.mode)]);
-
-        leftNode.setAttribute("fence", "true");
-
-        inner.unshift(leftNode);
-    }
-
-    if (group.value.right !== ".") {
-        const rightNode = new mathMLTree.MathNode(
-            "mo", [makeText(group.value.right, group.mode)]);
-
-        rightNode.setAttribute("fence", "true");
-
-        inner.push(rightNode);
-    }
-
-    const outerNode = new mathMLTree.MathNode("mrow", inner);
-
-    return outerNode;
-};
-
-groupTypes.middle = function(group, options) {
-    const middleNode = new mathMLTree.MathNode(
-        "mo", [makeText(group.value.middle, group.mode)]);
-    middleNode.setAttribute("fence", "true");
-    return middleNode;
-};
-
 groupTypes.accent = function(group, options) {
     let accentNode;
     if (group.value.isStretchy) {
@@ -443,29 +412,6 @@ groupTypes.katex = function(group) {
 groupTypes.font = function(group, options) {
     const font = group.value.font;
     return buildGroup(group.value.body, options.withFont(font));
-};
-
-groupTypes.delimsizing = function(group) {
-    const children = [];
-
-    if (group.value.value !== ".") {
-        children.push(makeText(group.value.value, group.mode));
-    }
-
-    const node = new mathMLTree.MathNode("mo", children);
-
-    if (group.value.mclass === "mopen" ||
-        group.value.mclass === "mclose") {
-        // Only some of the delimsizing functions act as fences, and they
-        // return "mopen" or "mclose" mclass.
-        node.setAttribute("fence", "true");
-    } else {
-        // Explicitly disable fencing if it's not a fence, to override the
-        // defaults.
-        node.setAttribute("fence", "false");
-    }
-
-    return node;
 };
 
 groupTypes.styling = function(group, options) {
@@ -621,28 +567,33 @@ groupTypes.kern = function(group) {
     return node;
 };
 
-groupTypes.llap = function(group, options) {
+groupTypes.lap = function(group, options) {
+    // mathllap, mathrlap, mathclap
     const node = new mathMLTree.MathNode(
         "mpadded", [buildGroup(group.value.body, options)]);
 
-    node.setAttribute("lspace", "-1width");
+    if (group.value.alignment !== "rlap")    {
+        const offset = (group.value.alignment === "llap" ? "-1" : "-0.5");
+        node.setAttribute("lspace", offset + "width");
+    }
     node.setAttribute("width", "0px");
 
     return node;
 };
 
-groupTypes.rlap = function(group, options) {
+groupTypes.smash = function(group, options) {
     const node = new mathMLTree.MathNode(
         "mpadded", [buildGroup(group.value.body, options)]);
 
-    node.setAttribute("width", "0px");
+    if (group.value.smashHeight) {
+        node.setAttribute("height", "0px");
+    }
+
+    if (group.value.smashDepth) {
+        node.setAttribute("depth", "0px");
+    }
 
     return node;
-};
-
-groupTypes.phantom = function(group, options) {
-    const inner = buildExpression(group.value.value, options);
-    return new mathMLTree.MathNode("mphantom", inner);
 };
 
 groupTypes.mclass = function(group, options) {
@@ -655,12 +606,15 @@ groupTypes.mclass = function(group, options) {
  * MathML nodes. A little simpler than the HTML version because we don't do any
  * previous-node handling.
  */
-const buildExpression = function(expression, options) {
+export const buildExpression = function(expression, options) {
     const groups = [];
     for (let i = 0; i < expression.length; i++) {
         const group = expression[i];
         groups.push(buildGroup(group, options));
     }
+
+    // TODO(kevinb): combine \\not with mrels and mords
+
     return groups;
 };
 
@@ -668,8 +622,9 @@ const buildExpression = function(expression, options) {
  * Takes a group from the parser and calls the appropriate groupTypes function
  * on it to produce a MathML node.
  */
-// TODO(kevinb): determine if removeUnnecessaryRow should always be true
-const buildGroup = function(group, options, removeUnnecessaryRow = false) {
+export const buildGroup = function(
+    group, options, removeUnnecessaryRow = false,
+) {
     if (!group) {
         return new mathMLTree.MathNode("mrow");
     }
@@ -697,7 +652,7 @@ const buildGroup = function(group, options, removeUnnecessaryRow = false) {
  * Note that we actually return a domTree element with a `<math>` inside it so
  * we can do appropriate styling.
  */
-const buildMathML = function(tree, texExpression, options) {
+export default function buildMathML(tree, texExpression, options) {
     const expression = buildExpression(tree, options);
 
     // Wrap up the expression in an mrow so it is presented in the semantics
@@ -717,6 +672,4 @@ const buildMathML = function(tree, texExpression, options) {
 
     // You can't style <math> nodes, so we wrap the node in a span.
     return makeSpan(["katex-mathml"], [math]);
-};
-
-module.exports = buildMathML;
+}

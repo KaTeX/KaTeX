@@ -240,9 +240,11 @@ describe("A bin parser", function() {
 
 describe("A rel parser", function() {
     const expression = "=<>\\leq\\geq\\neq\\nleq\\ngeq\\cong";
+    const notExpression = "\\not=\\not<\\not>\\not\\leq\\not\\geq\\not\\in";
 
     it("should not fail", function() {
         expect(expression).toParse();
+        expect(notExpression).toParse();
     });
 
     it("should build a list of rels", function() {
@@ -791,8 +793,11 @@ describe("A text parser", function() {
 describe("A color parser", function() {
     const colorExpression = "\\blue{x}";
     const newColorExpression = "\\redA{x}";
-    const customColorExpression = "\\textcolor{#fA6}{x}";
-    const badCustomColorExpression = "\\textcolor{bad-color}{x}";
+    const customColorExpression1 = "\\textcolor{#fA6}{x}";
+    const customColorExpression2 = "\\textcolor{#fA6fA6}{x}";
+    const badCustomColorExpression1 = "\\textcolor{bad-color}{x}";
+    const badCustomColorExpression2 = "\\textcolor{#fA6f}{x}";
+    const badCustomColorExpression3 = "\\textcolor{#gA6}{x}";
     const oldColorExpression = "\\color{#fA6}xy";
 
     it("should not fail", function() {
@@ -808,17 +813,22 @@ describe("A color parser", function() {
     });
 
     it("should parse a custom color", function() {
-        expect(customColorExpression).toParse();
+        expect(customColorExpression1).toParse();
+        expect(customColorExpression2).toParse();
     });
 
     it("should correctly extract the custom color", function() {
-        const parse = getParsed(customColorExpression)[0];
+        const parse1 = getParsed(customColorExpression1)[0];
+        const parse2 = getParsed(customColorExpression2)[0];
 
-        expect(parse.value.color).toEqual("#fA6");
+        expect(parse1.value.color).toEqual("#fA6");
+        expect(parse2.value.color).toEqual("#fA6fA6");
     });
 
     it("should not parse a bad custom color", function() {
-        expect(badCustomColorExpression).toNotParse();
+        expect(badCustomColorExpression1).toNotParse();
+        expect(badCustomColorExpression2).toNotParse();
+        expect(badCustomColorExpression3).toNotParse();
     });
 
     it("should parse new colors from the branding guide", function() {
@@ -1248,15 +1258,15 @@ describe("A TeX-compliant parser", function() {
             "\\frac x \\frac y z",
             "\\frac \\sqrt x y",
             "\\frac x \\sqrt y",
-            "\\frac \\llap x y",
-            "\\frac x \\llap y",
+            "\\frac \\mathllap x y",
+            "\\frac x \\mathllap y",
             // This actually doesn't work in real TeX, but it is suprisingly
             // hard to get this to correctly work. So, we take hit of very small
             // amounts of non-compatiblity in order for the rest of the tests to
             // work
             // "\\llap \\frac x y",
-            "\\llap \\llap x",
-            "\\sqrt \\llap x",
+            "\\mathllap \\mathllap x",
+            "\\sqrt \\mathllap x",
         ];
 
         for (let i = 0; i < badArguments.length; i++) {
@@ -1270,11 +1280,11 @@ describe("A TeX-compliant parser", function() {
             "\\frac x {\\frac y z}",
             "\\frac {\\sqrt x} y",
             "\\frac x {\\sqrt y}",
-            "\\frac {\\llap x} y",
-            "\\frac x {\\llap y}",
-            "\\llap {\\frac x y}",
-            "\\llap {\\llap x}",
-            "\\sqrt {\\llap x}",
+            "\\frac {\\mathllap x} y",
+            "\\frac x {\\mathllap y}",
+            "\\mathllap {\\frac x y}",
+            "\\mathllap {\\mathllap x}",
+            "\\sqrt {\\mathllap x}",
         ];
 
         for (let i = 0; i < goodArguments.length; i++) {
@@ -1285,9 +1295,9 @@ describe("A TeX-compliant parser", function() {
     it("should fail when sup/subscripts require arguments", function() {
         const badSupSubscripts = [
             "x^\\sqrt x",
-            "x^\\llap x",
+            "x^\\mathllap x",
             "x_\\sqrt x",
-            "x_\\llap x",
+            "x_\\mathllap x",
         ];
 
         for (let i = 0; i < badSupSubscripts.length; i++) {
@@ -1298,9 +1308,9 @@ describe("A TeX-compliant parser", function() {
     it("should work when sup/subscripts arguments have braces", function() {
         const goodSupSubscripts = [
             "x^{\\sqrt x}",
-            "x^{\\llap x}",
+            "x^{\\mathllap x}",
             "x_{\\sqrt x}",
-            "x_{\\llap x}",
+            "x_{\\mathllap x}",
         ];
 
         for (let i = 0; i < goodSupSubscripts.length; i++) {
@@ -1336,7 +1346,7 @@ describe("A TeX-compliant parser", function() {
         const badLeftArguments = [
             "\\frac \\left( x \\right) y",
             "\\frac x \\left( y \\right)",
-            "\\llap \\left( x \\right)",
+            "\\mathllap \\left( x \\right)",
             "\\sqrt \\left( x \\right)",
             "x^\\left( x \\right)",
         ];
@@ -1350,7 +1360,7 @@ describe("A TeX-compliant parser", function() {
         const goodLeftArguments = [
             "\\frac {\\left( x \\right)} y",
             "\\frac x {\\left( y \\right)}",
-            "\\llap {\\left( x \\right)}",
+            "\\mathllap {\\left( x \\right)}",
             "\\sqrt {\\left( x \\right)}",
             "x^{\\left( x \\right)}",
         ];
@@ -2083,6 +2093,10 @@ describe("A phantom parser", function() {
         expect("\\phantom{x^2}").toParse();
         expect("\\phantom{x}^2").toParse();
         expect("\\phantom x").toParse();
+        expect("\\hphantom{x}").toParse();
+        expect("\\hphantom{x^2}").toParse();
+        expect("\\hphantom{x}^2").toParse();
+        expect("\\hphantom x").toParse();
     });
 
     it("should build a phantom node", function() {
@@ -2099,6 +2113,11 @@ describe("A phantom builder", function() {
         expect("\\phantom{x^2}").toBuild();
         expect("\\phantom{x}^2").toBuild();
         expect("\\phantom x").toBuild();
+
+        expect("\\hphantom{x}").toBuild();
+        expect("\\hphantom{x^2}").toBuild();
+        expect("\\hphantom{x}^2").toBuild();
+        expect("\\hphantom x").toBuild();
     });
 
     it("should make the children transparent", function() {
@@ -2113,6 +2132,45 @@ describe("A phantom builder", function() {
         expect(children[0].style.color).toBe("transparent");
         expect(children[1].style.color).toBe("transparent");
         expect(children[2].style.color).toBe("transparent");
+    });
+});
+
+describe("A smash parser", function() {
+    it("should not fail", function() {
+        expect("\\smash{x}").toParse();
+        expect("\\smash{x^2}").toParse();
+        expect("\\smash{x}^2").toParse();
+        expect("\\smash x").toParse();
+
+        expect("\\smash[b]{x}").toParse();
+        expect("\\smash[b]{x^2}").toParse();
+        expect("\\smash[b]{x}^2").toParse();
+        expect("\\smash[b] x").toParse();
+
+        expect("\\smash[]{x}").toParse();
+        expect("\\smash[]{x^2}").toParse();
+        expect("\\smash[]{x}^2").toParse();
+        expect("\\smash[] x").toParse();
+    });
+
+    it("should build a smash node", function() {
+        const parse = getParsed("\\smash{x}")[0];
+
+        expect(parse.type).toEqual("smash");
+    });
+});
+
+describe("A smash builder", function() {
+    it("should not fail", function() {
+        expect("\\smash{x}").toBuild();
+        expect("\\smash{x^2}").toBuild();
+        expect("\\smash{x}^2").toBuild();
+        expect("\\smash x").toBuild();
+
+        expect("\\smash[b]{x}").toBuild();
+        expect("\\smash[b]{x^2}").toBuild();
+        expect("\\smash[b]{x}^2").toBuild();
+        expect("\\smash[b] x").toBuild();
     });
 });
 
@@ -2357,5 +2415,27 @@ describe("Unicode", function() {
 
     it("should parse 'ΓΔΘΞΠΣΦΨΩ'", function() {
         expect("ΓΔΘΞΠΣΦΨΩ").toParse();
+    });
+});
+
+describe("The maxSize setting", function() {
+    const rule = "\\rule{999em}{999em}";
+
+    it("should clamp size when set", function() {
+        const built = getBuilt(rule, new Settings({maxSize: 5}))[0];
+        expect(built.style.borderRightWidth).toEqual("5em");
+        expect(built.style.borderTopWidth).toEqual("5em");
+    });
+
+    it("should not clamp size when not set", function() {
+        const built = getBuilt(rule)[0];
+        expect(built.style.borderRightWidth).toEqual("999em");
+        expect(built.style.borderTopWidth).toEqual("999em");
+    });
+
+    it("should make zero-width rules if a negative maxSize is passed", function() {
+        const built = getBuilt(rule, new Settings({maxSize: -5}))[0];
+        expect(built.style.borderRightWidth).toEqual("0em");
+        expect(built.style.borderTopWidth).toEqual("0em");
     });
 });

@@ -22,6 +22,11 @@ defineMacro("\\endgroup", "}");
 // (In TeX, the mu unit works only with \mkern.)
 defineMacro("\\mkern", "\\kern");
 
+// \llap and \rlap render their contents in text mode
+defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
+defineMacro("\\rlap", "\\mathrlap{\\textrm{#1}}");
+defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
+
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
 // http://mirrors.concertpass.com/tex-archive/macros/latex/required/amsmath/amsmath.pdf
@@ -189,6 +194,19 @@ defineMacro("\\dotsx", "\\ldots\,");
 defineMacro("\\DOTSI", "\\relax");
 defineMacro("\\DOTSB", "\\relax");
 defineMacro("\\DOTSX", "\\relax");
+
+// http://texdoc.net/texmf-dist/doc/latex/amsmath/amsmath.pdf
+defineMacro("\\thinspace", "\\,");    //   \let\thinspace\,
+defineMacro("\\medspace", "\\:");     //   \let\medspace\:
+defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
+
+//////////////////////////////////////////////////////////////////////
+// LaTeX source2e
+
+// \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
+// \def\@hspace#1{\hskip  #1\relax}
+// KaTeX doesn't do line breaks, so \hspace is the same as \kern
+defineMacro("\\hspace", "\\kern{#1}");
 
 //////////////////////////////////////////////////////////////////////
 // mathtools.sty

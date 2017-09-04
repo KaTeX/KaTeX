@@ -12,6 +12,11 @@
 # on the next line. See http://www.yaml.org/ for syntax details.
 
 Accents: \vec{A}\vec{x}\vec x^2\vec{x}_2^2\vec{A}^2\vec{xA}^2
+AccentsText: |
+    \begin{array}{l}
+    \text{\H{e}}\\
+    \text{\H{X}}\\
+    \end{array}
 Aligned: |
     \begin{aligned}
         a &= 1 & b &= 2 \\
@@ -107,7 +112,7 @@ KaTeX: \KaTeX
 Kern:
     tex: \frac{a\kern{1em}b}{c}a\kern{1em}b\kern{1ex}c\kern{-0.25em}d
     nolatex: LaTeX fails to typeset this, “Missing number, treated as zero.”
-Lap: ab\llap{f}cd\rlap{g}h
+Lap: ab\mathllap{f}cd\mathrlap{g}hij\mathclap{k}lm \; ab\llap{f}cd\rlap{g}hij\clap{k}lm
 LargeRuleNumerator: \frac{\textcolor{blue}{\rule{1em}{2em}}}{x}
 LeftRight: \left( x^2 \right) \left\{ x^{x^{x^{x^x}}} \right.
 LeftRightListStyling: a+\left(x+y\right)-x
@@ -155,6 +160,11 @@ NegativeSpaceBetweenRel: A =\!= B
 NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
     {\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
+Not: |
+    \begin{array}{l}
+        \not=\not>\not\geq\not\in\not<\not\leq\not{abc} \\
+        \not xy + ab \not xy
+    \end{array}
 NullDelimiterInteraction: a \bigl. + 2 \quad \left. + a \right)
 OldFont: |
     \begin{matrix}
@@ -173,7 +183,7 @@ OverUnderset: |
     a+b+c+d\overset{b+c=0}\longrightarrow a+d\\
     \overset { x = y } { \sqrt { a b } }
     \end{array}
-Phantom: \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x}
+Phantom: \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x} \left(\vphantom{\int_t} zzz \right) \left( X \hphantom{\frac{\frac X X}{X}} \right)
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
 RelativeUnits: |
@@ -185,7 +195,7 @@ RelativeUnits: |
         \rule{1em}{1em}^{\rule{1em}{1em}}\rule{18mu}{18mu}^{\rule{18mu}{18mu}} &
         {\footnotesize\rule{1em}{1em}^{\rule{1em}{1em}}\rule{18mu}{18mu}^{\rule{18mu}{18mu}}}
     \end{array}
-RlapBug: \frac{\rlap{x}}{2}
+RlapBug: \frac{\mathrlap{x}}{2}
 Rule: \rule{1em}{0.5em}\rule{1ex}{2ex}\rule{1em}{1ex}\rule{1em}{0.431ex}
 SizingBaseline:
     tex: '{\tiny a+b}a+b{\Huge a+b}'
@@ -193,6 +203,7 @@ SizingBaseline:
     post: M
 Sizing: |
     {\Huge x}{\LARGE y}{\normalsize z}{\scriptsize w}
+Smash: \left( X^{\smash 2} \right) \sqrt{\smash[b]{y}}
 Spacing: ^3+[-1][1-1]1=1(=1)\lvert a\rvert~b
 Sqrt: |
     \sqrt{\sqrt{\sqrt{x}}}_{\sqrt{\sqrt{x}}}^{\sqrt{\sqrt{\sqrt{x}}}
