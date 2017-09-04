@@ -31,6 +31,10 @@ in the root KaTeX directory, and then visit
 http://0.0.0.0:7936/contrib/copy-tex/index.html
 with your web browser.)
 
+If you want to build your own custom copy handler based on this one,
+copy the `copy-tex.js` into your codebase and replace the `require`
+statement with `require('katex/contrib/copy-tex/katex2tex.js')`.
+
 ### Known Issues
 
 This extension has been tested on Chrome, Firefox, Edge, and Safari.
