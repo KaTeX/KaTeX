@@ -1,10 +1,14 @@
+// @flow
 /**
  * Predefined macros for KaTeX.
  * This can be used to define some commands in terms of others.
  */
 
+import symbols from "./symbols";
+import utils from "./utils";
+
 // This function might one day accept additional argument and do more things.
-function defineMacro(name, body) {
+function defineMacro(name: string, body: string | () => string) {
     module.exports[name] = body;
 }
 
@@ -26,6 +30,7 @@ defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
+// http://mirrors.concertpass.com/tex-archive/macros/latex/required/amsmath/amsmath.pdf
 
 // \def\overset#1#2{\binrel@{#2}\binrel@@{\mathop{\kern\z@#2}\limits^{#1}}}
 defineMacro("\\overset", "\\mathop{#2}\\limits^{#1}");
@@ -34,14 +39,162 @@ defineMacro("\\underset", "\\mathop{#2}\\limits_{#1}");
 // \newcommand{\boxed}[1]{\fbox{\m@th$\displaystyle#1$}}
 defineMacro("\\boxed", "\\fbox{\\displaystyle{#1}}");
 
-//TODO: When implementing \dots, should ideally add the \DOTSB indicator
-//      into the macro, to indicate these are binary operators.
 // \def\iff{\DOTSB\;\Longleftrightarrow\;}
 // \def\implies{\DOTSB\;\Longrightarrow\;}
 // \def\impliedby{\DOTSB\;\Longleftarrow\;}
-defineMacro("\\iff", "\\;\\Longleftrightarrow\\;");
-defineMacro("\\implies", "\\;\\Longrightarrow\\;");
-defineMacro("\\impliedby", "\\;\\Longleftarrow\\;");
+defineMacro("\\iff", "\\DOTSB\\;\\Longleftrightarrow\\;");
+defineMacro("\\implies", "\\DOTSB\\;\\Longrightarrow\\;");
+defineMacro("\\impliedby", "\\DOTSB\\;\\Longleftarrow\\;");
+
+// AMSMath's automatic \dots, based on \mdots@@ macro.
+const dotsByToken = {
+    ',': '\\dotsc',
+    '\\not': '\\dotsb',
+    // \keybin@ checks for the following:
+    '+': '\\dotsb',
+    '=': '\\dotsb',
+    '<': '\\dotsb',
+    '>': '\\dotsb',
+    '-': '\\dotsb',
+    '*': '\\dotsb',
+    ':': '\\dotsb',
+    // Symbols whose definition starts with \DOTSB:
+    '\\DOTSB': '\\dotsb',
+    '\\coprod': '\\dotsb',
+    '\\bigvee': '\\dotsb',
+    '\\bigwedge': '\\dotsb',
+    '\\biguplus': '\\dotsb',
+    '\\bigcap': '\\dotsb',
+    '\\bigcup': '\\dotsb',
+    '\\prod': '\\dotsb',
+    '\\sum': '\\dotsb',
+    '\\bigotimes': '\\dotsb',
+    '\\bigoplus': '\\dotsb',
+    '\\bigodot': '\\dotsb',
+    '\\bigsqcup': '\\dotsb',
+    '\\implies': '\\dotsb',
+    '\\impliedby': '\\dotsb',
+    '\\And': '\\dotsb',
+    '\\longrightarrow': '\\dotsb',
+    '\\Longrightarrow': '\\dotsb',
+    '\\longleftarrow': '\\dotsb',
+    '\\Longleftarrow': '\\dotsb',
+    '\\longleftrightarrow': '\\dotsb',
+    '\\Longleftrightarrow': '\\dotsb',
+    '\\mapsto': '\\dotsb',
+    '\\longmapsto': '\\dotsb',
+    '\\hookrightarrow': '\\dotsb',
+    '\\iff': '\\dotsb',
+    '\\doteq': '\\dotsb',
+    // Symbols whose definition starts with \mathbin:
+    '\\mathbin': '\\dotsb',
+    '\\bmod': '\\dotsb',
+    // Symbols whose definition starts with \mathrel:
+    '\\mathrel': '\\dotsb',
+    '\\relbar': '\\dotsb',
+    '\\Relbar': '\\dotsb',
+    '\\xrightarrow': '\\dotsb',
+    '\\xleftarrow': '\\dotsb',
+    // Symbols whose definition starts with \DOTSI:
+    '\\DOTSI': '\\dotsi',
+    '\\int': '\\dotsi',
+    '\\oint': '\\dotsi',
+    '\\iint': '\\dotsi',
+    '\\iiint': '\\dotsi',
+    '\\iiiint': '\\dotsi',
+    '\\idotsint': '\\dotsi',
+    // Symbols whose definition starts with \DOTSX:
+    '\\DOTSX': '\\dotsx',
+};
+
+defineMacro("\\dots", function() {
+    // TODO: If used in text mode, should expand to \textellipsis.
+    // However, in KaTeX, \textellipsis and \ldots behave the same
+    // (in text mode), and it's unlikely we'd see any of the math commands
+    // that affect the behavior of \dots when in text mode.  So fine for now
+    // (until we support \ifmmode ... \else ... \fi).
+    let thedots = '\\dotso';
+    const next = this.expandAfterFuture().text;
+    if (next in dotsByToken) {
+        thedots = dotsByToken[next];
+    } else if (next.substr(0, 4) === '\\not') {
+        thedots = '\\dotsb';
+    } else if (next in symbols.math) {
+        if (utils.contains(['bin', 'rel'], symbols.math[next].group)) {
+            thedots = '\\dotsb';
+        }
+    }
+    return thedots;
+});
+
+const spaceAfterDots = {
+    // \rightdelim@ checks for the following:
+    ')': true,
+    ']': true,
+    '\\rbrack': true,
+    '\\}': true,
+    '\\rbrace': true,
+    '\\rangle': true,
+    '\\rceil': true,
+    '\\rfloor': true,
+    '\\rgroup': true,
+    '\\rmoustache': true,
+    '\\right': true,
+    '\\bigr': true,
+    '\\biggr': true,
+    '\\Bigr': true,
+    '\\Biggr': true,
+    // \extra@ also tests for the following:
+    '$': true,
+    // \extrap@ checks for the following:
+    ';': true,
+    '.': true,
+    ',': true,
+};
+
+defineMacro("\\dotso", function() {
+    const next = this.future().text;
+    if (next in spaceAfterDots) {
+        return "\\ldots\\,";
+    } else {
+        return "\\ldots";
+    }
+});
+
+defineMacro("\\dotsc", function() {
+    const next = this.future().text;
+    // \dotsc uses \extra@ but not \extrap@, instead specially checking for
+    // ';' and '.', but doesn't check for ','.
+    if (next in spaceAfterDots && next !== ',') {
+        return "\\ldots\\,";
+    } else {
+        return "\\ldots";
+    }
+});
+
+defineMacro("\\cdots", function() {
+    const next = this.future().text;
+    if (next in spaceAfterDots) {
+        return "\\@cdots\\,";
+    } else {
+        return "\\@cdots";
+    }
+});
+
+defineMacro("\\dotsb", "\\cdots");
+defineMacro("\\dotsm", "\\cdots");
+defineMacro("\\dotsi", "\\!\\cdots");
+// amsmath doesn't actually define \dotsx, but \dots followed by a macro
+// starting with \DOTSX implies \dotso, and then \extra@ detects this case
+// and forces the added `\,`.
+defineMacro("\\dotsx", "\\ldots\,");
+
+// \let\DOTSI\relax
+// \let\DOTSB\relax
+// \let\DOTSX\relax
+defineMacro("\\DOTSI", "\\relax");
+defineMacro("\\DOTSB", "\\relax");
+defineMacro("\\DOTSX", "\\relax");
 
 // http://texdoc.net/texmf-dist/doc/latex/amsmath/amsmath.pdf
 defineMacro("\\thinspace", "\\,");    //   \let\thinspace\,

@@ -35,12 +35,12 @@ const tokenRegex = new RegExp(
     "([ \r\n\t]+)|" +                                 // whitespace
     "([!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
     "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair
-    "|\\\\(?:[a-zA-Z]+|[^\uD800-\uDFFF])" +           // function name
+    "|\\\\(?:[a-zA-Z@]+|[^\uD800-\uDFFF])" +          // function name
     ")"
 );
 
 /** Main Lexer class */
-class Lexer implements LexerInterface {
+export default class Lexer implements LexerInterface {
     input: string;
     pos: number;
 
@@ -71,5 +71,3 @@ class Lexer implements LexerInterface {
         return new Token(text, start, end, this);
     }
 }
-
-module.exports = Lexer;
