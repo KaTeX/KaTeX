@@ -6,10 +6,20 @@
 
 import symbols from "./symbols";
 import utils from "./utils";
+import {Token} from "./Token";
 
-// This function might one day accept additional argument and do more things.
+/** Macro tokens (in reverse order). */
+export type ParsedExpansion = {expansion: Token[], numArgs: number};
+
+type MacroExpansion = string | (() => string) | ParsedExpansion;
+export type MacroMap = {[string]: MacroExpansion};
+
+const builtinMacros: MacroMap = {};
+export default builtinMacros;
+
+// This function might one day accept an additional argument and do more things.
 function defineMacro(name: string, body: string | () => string) {
-    module.exports[name] = body;
+    builtinMacros[name] = body;
 }
 
 //////////////////////////////////////////////////////////////////////
