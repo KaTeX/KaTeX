@@ -32,7 +32,7 @@ defineFunction("\\sqrt", {
 });
 
 // Non-mathy text, possibly in a font
-const textFunctionStyles = {
+const textFunctionFonts = {
     "\\text": undefined, "\\textrm": "mathrm", "\\textsf": "mathsf",
     "\\texttt": "mathtt", "\\textnormal": "mathrm", "\\textbf": "mathbf",
     "\\textit": "textit",
@@ -51,7 +51,7 @@ defineFunction([
     return {
         type: "text",
         body: ordargument(body),
-        style: textFunctionStyles[context.funcName],
+        font: textFunctionFonts[context.funcName],
     };
 });
 
@@ -648,5 +648,20 @@ defineFunction(["\\begin", "\\end"], {
         type: "environment",
         name: name,
         nameGroup: nameGroup,
+    };
+});
+
+// Box manipulation
+defineFunction(["\\raisebox"], {
+    numArgs: 2,
+    argTypes: ["size", "text"],
+    allowedInText: true,
+}, function(context, args) {
+    const amount = args[0];
+    const body = args[1];
+    return {
+        type: "raisebox",
+        dy: amount,
+        body: ordargument(body),
     };
 });

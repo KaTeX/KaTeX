@@ -2,8 +2,8 @@
 
 build: $(BUILDDIR)/contrib/auto-render.min.js
 
-$(BUILDDIR)/contrib/auto-render.min.js: $(BUILDDIR)/auto-render.js
+$(BUILDDIR)/contrib/auto-render.min.js: $(BUILDDIR)/contrib/auto-render.js
 	$(UGLIFYJS) < $< > $@
 
-$(BUILDDIR)/auto-render.js: auto-render.js
+$(BUILDDIR)/contrib/auto-render.js: auto-render.js
 	$(BROWSERIFY) -t [ babelify ] $< --standalone renderMathInElement > $@
