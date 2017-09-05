@@ -32,7 +32,7 @@ defineFunction("\\sqrt", {
 });
 
 // Non-mathy text, possibly in a font
-const textFunctionStyles = {
+const textFunctionFonts = {
     "\\text": undefined, "\\textrm": "mathrm", "\\textsf": "mathsf",
     "\\texttt": "mathtt", "\\textnormal": "mathrm", "\\textbf": "mathbf",
     "\\textit": "textit",
@@ -51,7 +51,7 @@ defineFunction([
     return {
         type: "text",
         body: ordargument(body),
-        font: textFunctionStyles[context.funcName],
+        font: textFunctionFonts[context.funcName],
     };
 });
 
