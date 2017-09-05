@@ -77,6 +77,11 @@ DisplayMode:
 DisplayStyle: |
     {\displaystyle\sqrt{x}}{\sqrt{x}}
     {\displaystyle \frac12}{\frac12}{\displaystyle x^1_2}{x^1_2}
+Dots: |
+    \begin{array}{l}
+      \cdots;\dots+\dots\int\dots,\dots \\
+      \cdots{};\ldots+\ldots\int\ldots,\ldots
+    \end{array}
 Exponents: a^{a^a_a}_{a^a_a}
 ExtensibleArrows: |
     \begin{array}{l}
@@ -181,6 +186,7 @@ OverUnderset: |
 Phantom: \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x} \left(\vphantom{\int_t} zzz \right) \left( X \hphantom{\frac{\frac X X}{X}} \right)
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
+Raisebox: \frac{a}{a\raisebox{0.5em}{b}} \cdot \frac{a\raisebox{-0.5em}{b}}{a} \cdot \sqrt{a\raisebox{0.5em}{b}} \cdot \sqrt{a\raisebox{-0.5em}{b}} \cdot \sqrt{a\raisebox{0.5em}{b}\raisebox{-0.5em}{b}}
 RelativeUnits: |
     \begin{array}{ll}
         a\kern1emb^{a\kern1emb^{a\kern1emb}} &
