@@ -187,7 +187,7 @@ defineMacro("\\dotsi", "\\!\\cdots");
 // amsmath doesn't actually define \dotsx, but \dots followed by a macro
 // starting with \DOTSX implies \dotso, and then \extra@ detects this case
 // and forces the added `\,`.
-defineMacro("\\dotsx", "\\ldots\,");
+defineMacro("\\dotsx", "\\ldots\\,");
 
 // \let\DOTSI\relax
 // \let\DOTSB\relax
