@@ -10,7 +10,7 @@ import builtinMacros from "./macros";
 import ParseError from "./ParseError";
 import objectAssign from "object-assign";
 
-import type {MacroContextInterface, MacroMap, ParsedExpansion} from "./macros";
+import type {MacroContextInterface, MacroMap, MacroExpansion} from "./macros";
 
 export default class MacroExpander implements MacroContextInterface {
     lexer: Lexer;
@@ -91,8 +91,8 @@ export default class MacroExpander implements MacroContextInterface {
             this.stack.push(topToken);
             return topToken;
         }
-        const {expansion: exp, numArgs} = this._getExpansion(name);
-        let expansion = exp;
+        const {tokens, numArgs} = this._getExpansion(name);
+        let expansion = tokens;
         if (numArgs) {
             const args: Token[][] = [];
             // obtain arguments, either single token or balanced {…} group
@@ -139,9 +139,7 @@ export default class MacroExpander implements MacroContextInterface {
                     if (tok.text === "#") { // ## → #
                         expansion.splice(i + 1, 1); // drop first #
                     } else if (/^[1-9]$/.test(tok.text)) {
-                        // expansion.splice(i, 2, arg[0], arg[1], …)
-                        // to replace placeholder with the indicated argument.
-                        // TODO: use spread once we move to ES2015
+                        // replace the placeholder with the indicated argument
                         expansion.splice(i, 2, ...args[tok.text - 1]);
                     } else {
                         throw new ParseError(
@@ -195,9 +193,10 @@ export default class MacroExpander implements MacroContextInterface {
      * argument count.
      * Caches macro expansions for those that were defined simple TeX strings.
      */
-    _getExpansion(name: string): ParsedExpansion {
-        const lookup = this.macros[name];
-        const expansion = typeof lookup === "function" ? lookup(this) : lookup;
+    _getExpansion(name: string): MacroExpansion {
+        const definition = this.macros[name];
+        const expansion =
+            typeof definition === "function" ? definition(this) : definition;
         if (typeof expansion === "string") {
             let numArgs = 0;
             if (expansion.indexOf("#") !== -1) {
@@ -214,10 +213,10 @@ export default class MacroExpander implements MacroContextInterface {
                 tok = bodyLexer.lex();
             }
             tokens.reverse(); // to fit in with stack using push and pop
-            const expanded = {expansion: tokens, numArgs};
+            const expanded = {tokens, numArgs};
             // Cannot cache a macro defined using a function since it relies on
             // parser context.
-            if (typeof lookup !== "function") {
+            if (typeof definition !== "function") {
                 this.macros[name] = expanded;
             }
             return expanded;

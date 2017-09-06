@@ -28,10 +28,10 @@ export interface MacroContextInterface {
 }
 
 /** Macro tokens (in reverse order). */
-export type ParsedExpansion = {expansion: Token[], numArgs: number};
+export type MacroExpansion = {tokens: Token[], numArgs: number};
 
-type MacroExpansion = string | (MacroContextInterface => string) | ParsedExpansion;
-export type MacroMap = {[string]: MacroExpansion};
+type MacroDefinition = string | (MacroContextInterface => string) | MacroExpansion;
+export type MacroMap = {[string]: MacroDefinition};
 
 const builtinMacros: MacroMap = {};
 export default builtinMacros;
