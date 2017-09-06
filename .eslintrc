@@ -1,5 +1,12 @@
 {
     "parser": "babel-eslint",
+    "plugins": [
+        "flowtype"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:flowtype/recommended"
+    ],
     "rules": {
         "arrow-spacing": 2,
         "brace-style": [2, "1tbs", { "allowSingleLine": true }],
@@ -79,6 +86,5 @@
         "node": true,
         "browser": true
     },
-    "extends": "eslint:recommended",
     "root": true
 }

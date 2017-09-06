@@ -27,6 +27,7 @@
     "browserify": "^13.3.0",
     "clean-css": "^3.4.23",
     "eslint": "^3.13.0",
+    "eslint-plugin-flowtype": "^2.35.1",
     "express": "^4.14.0",
     "flow-bin": "^0.54.0",
     "glob": "^7.1.1",
