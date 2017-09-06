@@ -1,3 +1,4 @@
+// @flow
 module.exports = {
     "AMS-Regular": {
         "65": [0, 0.68889, 0, 0],

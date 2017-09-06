@@ -1,3 +1,4 @@
+// @flow
 import { cjkRegex } from "./unicodeRegexes";
 
 /**
@@ -226,21 +227,32 @@ const extraCharacterMap = {
     'я': 'r',
 };
 
+export type CharacterMetrics = {
+    depth: number;
+    height: number;
+    italic: number;
+    skew: number;
+    width: number;
+};
+
 /**
  * This function is a convenience function for looking up information in the
- * metricMap table. It takes a character as a string, and a style.
+ * metricMap table. It takes a character as a string, and a font.
  *
  * Note: the `width` property may be undefined if fontMetricsData.js wasn't
  * built using `Make extended_metrics`.
  */
-const getCharacterMetrics = function(character, style) {
+const getCharacterMetrics = function(
+    character: string,
+    font: string,
+): ?CharacterMetrics {
     let ch = character.charCodeAt(0);
     if (character[0] in extraCharacterMap) {
         ch = extraCharacterMap[character[0]].charCodeAt(0);
     } else if (cjkRegex.test(character[0])) {
         ch = 'M'.charCodeAt(0);
     }
-    const metrics = metricMap[style][ch];
+    const metrics = metricMap[font][ch];
     if (metrics) {
         return {
             depth: metrics[0],
@@ -252,12 +264,14 @@ const getCharacterMetrics = function(character, style) {
     }
 };
 
-const fontMetricsBySizeIndex = {};
+export type FontMetrics = {[charCode: number]: Array<number>};
+
+const fontMetricsBySizeIndex: {[size: number]: FontMetrics} = {};
 
 /**
  * Get the font metrics for a given size.
  */
-const getFontMetrics = function(size) {
+const getFontMetrics = function(size: number): FontMetrics {
     let sizeIndex;
     if (size >= 5) {
         sizeIndex = 0;

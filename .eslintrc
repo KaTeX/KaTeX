@@ -80,5 +80,8 @@
         "browser": true
     },
     "extends": "eslint:recommended",
-    "root": true
+    "root": true,
+    "globals": {
+        "$Shape": true
+    }
 }
