@@ -10,9 +10,9 @@ import builtinMacros from "./macros";
 import ParseError from "./ParseError";
 import objectAssign from "object-assign";
 
-import type {MacroMap, ParsedExpansion} from "./macros";
+import type {MacroContextInterface, MacroMap, ParsedExpansion} from "./macros";
 
-export default class MacroExpander {
+export default class MacroExpander implements MacroContextInterface {
     lexer: Lexer;
     macros: MacroMap;
     stack: Token[];
@@ -197,7 +197,7 @@ export default class MacroExpander {
      */
     _getExpansion(name: string): ParsedExpansion {
         const lookup = this.macros[name];
-        const expansion = typeof lookup === "function" ? lookup.call(this) : lookup;
+        const expansion = typeof lookup === "function" ? lookup(this) : lookup;
         if (typeof expansion === "string") {
             let numArgs = 0;
             if (expansion.indexOf("#") !== -1) {
