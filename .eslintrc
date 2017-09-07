@@ -87,8 +87,5 @@
         "node": true,
         "browser": true
     },
-    "root": true,
-    "globals": {
-        "$Shape": true
-    }
+    "root": true
 }
