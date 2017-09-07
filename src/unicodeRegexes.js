@@ -1,4 +1,5 @@
-const hangulRegex = /[\uAC00-\uD7AF]/;
+// @flow
+export const hangulRegex = /[\uAC00-\uD7AF]/;
 
 // This regex combines
 // - CJK symbols and punctuation: [\u3000-\u303F]
@@ -8,10 +9,5 @@ const hangulRegex = /[\uAC00-\uD7AF]/;
 // - Hangul syllables: [\uAC00-\uD7AF]
 // - Fullwidth punctuation: [\uFF00-\uFF60]
 // Notably missing are halfwidth Katakana and Romanji glyphs.
-const cjkRegex =
+export const cjkRegex =
     /[\u3000-\u30FF\u4E00-\u9FAF\uAC00-\uD7AF\uFF00-\uFF60]/;
-
-module.exports = {
-    cjkRegex: cjkRegex,
-    hangulRegex: hangulRegex,
-};
