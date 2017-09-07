@@ -392,11 +392,11 @@ class svgNode {
         }
 
         if (this.width.length > 0) {
-            markup += ` width="${this.width}\'`;
+            markup += ` width="${this.width}'`;
         }
 
         if (this.width.length > 0) {
-            markup += " height=\'" + this.height + "em\'";
+            markup += " height='" + this.height + "em'";
         }
 
         if (this.viewBoxWidth > 0) {
