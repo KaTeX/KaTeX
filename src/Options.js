@@ -39,9 +39,9 @@ const sizeAtStyle = function(size: number, style: StyleInterface): number {
 export type OptionsData = {
     style: StyleInterface;
     color?: ?string;
-    size?: ?number;
-    textSize?: ?number;
-    phantom?: ?boolean;
+    size?: number;
+    textSize?: number;
+    phantom?: boolean;
     font?: ?string;
     maxSize: number;
 };

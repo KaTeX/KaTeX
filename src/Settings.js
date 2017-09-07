@@ -7,12 +7,12 @@
 import utils from "./utils";
 
 type SettingsOptions = {
-    displayMode?: ?boolean;
-    throwOnError?: ?boolean;
-    errorColor?: ?string;
-    macros?: ?{[macroName: string]: string};
-    colorIsTextColor?: ?boolean;
-    maxSize?: ?number;
+    displayMode?: boolean;
+    throwOnError?: boolean;
+    errorColor?: string;
+    macros?: {[macroName: string]: string};
+    colorIsTextColor?: boolean;
+    maxSize?: number;
 };
 
 /**
