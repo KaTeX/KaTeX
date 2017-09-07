@@ -7,7 +7,7 @@
  *
  * Similar functions for working with MathML nodes exist in mathMLTree.js.
  */
-import unicodeRegexes from "./unicodeRegexes";
+import {cjkRegex, hangulRegex} from "./unicodeRegexes";
 import utils from "./utils";
 import svgGeometry from "./svgGeometry";
 
@@ -214,11 +214,11 @@ class symbolNode {
         // fonts to use.  This allows us to render these characters with a serif
         // font in situations where the browser would either default to a sans serif
         // or render a placeholder character.
-        if (unicodeRegexes.cjkRegex.test(value)) {
+        if (cjkRegex.test(value)) {
             // I couldn't find any fonts that contained Hangul as well as all of
             // the other characters we wanted to test there for it gets its own
             // CSS class.
-            if (unicodeRegexes.hangulRegex.test(value)) {
+            if (hangulRegex.test(value)) {
                 this.classes.push('hangul_fallback');
             } else {
                 this.classes.push('cjk_fallback');

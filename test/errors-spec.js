@@ -286,7 +286,7 @@ describe("environments.js:", function() {
         });
         it("rejects incorrectly scoped \\end", function() {
             expect("{\\begin{matrix}1}\\end{matrix}").toFailWithParseError(
-                   "Expected & or \\\\\ or \\end at position 17:" +
+                   "Expected & or \\\\ or \\end at position 17:" +
                    " …\\begin{matrix}1}̲\\end{matrix}");
         });
     });
