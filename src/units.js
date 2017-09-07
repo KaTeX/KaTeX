@@ -1,4 +1,4 @@
-/* eslint no-console:0 */
+// @flow
 
 /**
  * This file does conversion between units.  In particular, it provides
@@ -6,6 +6,7 @@
  */
 
 import ParseError from "./ParseError";
+import Options from "./Options";
 
 // This table gives the number of TeX pts in one of each *absolute* TeX unit.
 // Thus, multiplying a length by this number converts the length from units
@@ -36,12 +37,14 @@ const relativeUnit = {
     "mu": true,
 };
 
+export type Measurement = {number: number, unit: string};
+
 /**
  * Determine whether the specified unit (either a string defining the unit
  * or a "size" parse node containing a unit field) is valid.
  */
-const validUnit = function(unit) {
-    if (unit.unit) {
+export const validUnit = function(unit: string | Measurement): boolean {
+    if (typeof unit !== "string") {
         unit = unit.unit;
     }
     return (unit in ptPerUnit || unit in relativeUnit || unit === "ex");
@@ -52,7 +55,8 @@ const validUnit = function(unit) {
  * as parsed by functions.js argType "size") into a CSS em value for the
  * current style/scale.  `options` gives the current options.
  */
-const calculateSize = function(sizeValue, options) {
+export const calculateSize = function(
+        sizeValue: Measurement, options: Options): number {
     let scale;
     if (sizeValue.unit in ptPerUnit) {
         // Absolute units
@@ -91,9 +95,4 @@ const calculateSize = function(sizeValue, options) {
         }
     }
     return Math.min(sizeValue.number * scale, options.maxSize);
-};
-
-module.exports = {
-    validUnit: validUnit,
-    calculateSize: calculateSize,
 };
