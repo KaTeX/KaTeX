@@ -6,14 +6,14 @@
 
 import utils from "./utils";
 
-type SettingsOptions = $Shape<{
-    displayMode: boolean;
-    throwOnError: boolean;
-    errorColor: string;
-    macros: {[macroName: string]: string};
-    colorIsTextColor: boolean;
-    maxSize: number;
-}>;
+type SettingsOptions = {
+    displayMode?: ?boolean;
+    throwOnError?: ?boolean;
+    errorColor?: ?string;
+    macros?: ?{[macroName: string]: string};
+    colorIsTextColor?: ?boolean;
+    maxSize?: ?number;
+};
 
 /**
  * The main Settings object

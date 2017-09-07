@@ -1,5 +1,6 @@
 // @flow
-module.exports = {
+type FontMetricsData = {[charCode: string]: [number, number, number, number]};
+const fontMetricsData: {[font: string]: FontMetricsData} = {
     "AMS-Regular": {
         "65": [0, 0.68889, 0, 0],
         "66": [0, 0.68889, 0, 0],
@@ -1751,3 +1752,5 @@ module.exports = {
         "8242": [0, 0.61111, 0, 0],
     },
 };
+
+module.exports = fontMetricsData;

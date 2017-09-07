@@ -232,7 +232,6 @@ export type CharacterMetrics = {
     height: number;
     italic: number;
     skew: number;
-    width: number;
 };
 
 /**
@@ -252,27 +251,30 @@ const getCharacterMetrics = function(
     } else if (cjkRegex.test(character[0])) {
         ch = 'M'.charCodeAt(0);
     }
-    const metrics = metricMap[font][ch];
+    const metrics = metricMap[font]['' + ch];
     if (metrics) {
         return {
             depth: metrics[0],
             height: metrics[1],
             italic: metrics[2],
             skew: metrics[3],
-            width: metrics[4],
         };
     }
 };
 
-export type FontMetrics = {[charCode: number]: Array<number>};
+type FontSizeIndex = 0 | 1 | 2;
+export type FontMetrics = {
+    cssEmPerMu: number,
+    [string]: [number, number, number],
+};
 
-const fontMetricsBySizeIndex: {[size: number]: FontMetrics} = {};
+const fontMetricsBySizeIndex: {[FontSizeIndex]: FontMetrics} = {};
 
 /**
  * Get the font metrics for a given size.
  */
 const getFontMetrics = function(size: number): FontMetrics {
-    let sizeIndex;
+    let sizeIndex: FontSizeIndex;
     if (size >= 5) {
         sizeIndex = 0;
     } else if (size >= 3) {
@@ -281,13 +283,14 @@ const getFontMetrics = function(size: number): FontMetrics {
         sizeIndex = 2;
     }
     if (!fontMetricsBySizeIndex[sizeIndex]) {
-        const metrics = fontMetricsBySizeIndex[sizeIndex] = {};
+        const metrics = fontMetricsBySizeIndex[sizeIndex] = {
+            cssEmPerMu: sigmasAndXis.quad[sizeIndex] / 18,
+        };
         for (const key in sigmasAndXis) {
             if (sigmasAndXis.hasOwnProperty(key)) {
                 metrics[key] = sigmasAndXis[key][sizeIndex];
             }
         }
-        metrics.cssEmPerMu = metrics.quad / 18;
     }
     return fontMetricsBySizeIndex[sizeIndex];
 };

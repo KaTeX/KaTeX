@@ -36,15 +36,15 @@ const sizeAtStyle = function(size: number, style: StyleInterface): number {
     return style.size < 2 ? size : sizeStyleMap[size - 1][style.size - 1];
 };
 
-export type OptionsData = $Shape<{
+export type OptionsData = {
     style: StyleInterface;
-    color: string;
-    size: number;
-    textSize: number;
-    phantom: boolean;
-    font: string;
+    color?: ?string;
+    size?: ?number;
+    textSize?: ?number;
+    phantom?: ?boolean;
+    font?: ?string;
     maxSize: number;
-}>;
+};
 
 /**
  * This is the main options class. It contains the current style, size, color,
@@ -55,11 +55,11 @@ export type OptionsData = $Shape<{
  */
 class Options {
     style: StyleInterface;
-    color: string;
+    color: ?string;
     size: number;
     textSize: number;
     phantom: boolean;
-    font: string;
+    font: ?string;
     sizeMultiplier: number;
     maxSize: number;
     _fontMetrics: ?FontMetrics;
@@ -74,7 +74,7 @@ class Options {
         this.color = data.color;
         this.size = data.size || Options.BASESIZE;
         this.textSize = data.textSize || this.size;
-        this.phantom = data.phantom;
+        this.phantom = !!data.phantom;
         this.font = data.font;
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
@@ -85,7 +85,7 @@ class Options {
      * Returns a new options object with the same properties as "this".  Properties
      * from "extension" will be copied to the new options object.
      */
-    extend(extension: OptionsData): Options {
+    extend(extension: $Shape<OptionsData>): Options {
         const data = {
             style: this.style,
             size: this.size,
@@ -290,11 +290,16 @@ class Options {
      * Gets the CSS color of the current options object, accounting for the
      * `colorMap`.
      */
-    getColor(): string {
+    getColor(): ?string {
         if (this.phantom) {
             return "transparent";
+        } else if (
+            this.color != null &&
+            Options.colorMap.hasOwnProperty(this.color)
+        ) {
+            return Options.colorMap[this.color];
         } else {
-            return Options.colorMap[this.color] || this.color;
+            return this.color;
         }
     }
 }
