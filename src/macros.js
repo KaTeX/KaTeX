@@ -6,10 +6,39 @@
 
 import symbols from "./symbols";
 import utils from "./utils";
+import {Token} from "./Token";
 
-// This function might one day accept additional argument and do more things.
-function defineMacro(name: string, body: string | () => string) {
-    module.exports[name] = body;
+/**
+ * Provides context to macros defined by functions. Implemented by
+ * MacroExpander.
+ */
+export interface MacroContextInterface {
+    /**
+     * Returns the topmost token on the stack, without expanding it.
+     * Similar in behavior to TeX's `\futurelet`.
+     */
+    future(): Token;
+
+    /**
+     * Expand the next token only once (if possible), and return the resulting
+     * top token on the stack (without removing anything from the stack).
+     * Similar in behavior to TeX's `\expandafter\futurelet`.
+     */
+    expandAfterFuture(): Token;
+}
+
+/** Macro tokens (in reverse order). */
+export type MacroExpansion = {tokens: Token[], numArgs: number};
+
+type MacroDefinition = string | (MacroContextInterface => string) | MacroExpansion;
+export type MacroMap = {[string]: MacroDefinition};
+
+const builtinMacros: MacroMap = {};
+export default builtinMacros;
+
+// This function might one day accept an additional argument and do more things.
+function defineMacro(name: string, body: string | MacroContextInterface => string) {
+    builtinMacros[name] = body;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -107,14 +136,14 @@ const dotsByToken = {
     '\\DOTSX': '\\dotsx',
 };
 
-defineMacro("\\dots", function() {
+defineMacro("\\dots", function(context) {
     // TODO: If used in text mode, should expand to \textellipsis.
     // However, in KaTeX, \textellipsis and \ldots behave the same
     // (in text mode), and it's unlikely we'd see any of the math commands
     // that affect the behavior of \dots when in text mode.  So fine for now
     // (until we support \ifmmode ... \else ... \fi).
     let thedots = '\\dotso';
-    const next = this.expandAfterFuture().text;
+    const next = context.expandAfterFuture().text;
     if (next in dotsByToken) {
         thedots = dotsByToken[next];
     } else if (next.substr(0, 4) === '\\not') {
@@ -152,8 +181,8 @@ const spaceAfterDots = {
     ',': true,
 };
 
-defineMacro("\\dotso", function() {
-    const next = this.future().text;
+defineMacro("\\dotso", function(context) {
+    const next = context.future().text;
     if (next in spaceAfterDots) {
         return "\\ldots\\,";
     } else {
@@ -161,8 +190,8 @@ defineMacro("\\dotso", function() {
     }
 });
 
-defineMacro("\\dotsc", function() {
-    const next = this.future().text;
+defineMacro("\\dotsc", function(context) {
+    const next = context.future().text;
     // \dotsc uses \extra@ but not \extrap@, instead specially checking for
     // ';' and '.', but doesn't check for ','.
     if (next in spaceAfterDots && next !== ',') {
@@ -172,8 +201,8 @@ defineMacro("\\dotsc", function() {
     }
 });
 
-defineMacro("\\cdots", function() {
-    const next = this.future().text;
+defineMacro("\\cdots", function(context) {
+    const next = context.future().text;
     if (next in spaceAfterDots) {
         return "\\@cdots\\,";
     } else {
@@ -187,7 +216,7 @@ defineMacro("\\dotsi", "\\!\\cdots");
 // amsmath doesn't actually define \dotsx, but \dots followed by a macro
 // starting with \DOTSX implies \dotso, and then \extra@ detects this case
 // and forces the added `\,`.
-defineMacro("\\dotsx", "\\ldots\,");
+defineMacro("\\dotsx", "\\ldots\\,");
 
 // \let\DOTSI\relax
 // \let\DOTSB\relax

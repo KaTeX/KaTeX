@@ -2385,8 +2385,8 @@ describe("A macro expander", function() {
 
     it("should expand the \\overset macro as expected", function() {
         expect("\\overset?=").toParseLike("\\mathop{=}\\limits^{?}");
-        expect("\\overset{x=y}{\sqrt{ab}}")
-            .toParseLike("\\mathop{\sqrt{ab}}\\limits^{x=y}");
+        expect("\\overset{x=y}{\\sqrt{ab}}")
+            .toParseLike("\\mathop{\\sqrt{ab}}\\limits^{x=y}");
         expect("\\overset {?} =").toParseLike("\\mathop{=}\\limits^{?}");
     });
 
