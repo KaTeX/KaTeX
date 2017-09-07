@@ -13,7 +13,7 @@ import Style from "./Style";
 import buildCommon, { makeSpan } from "./buildCommon";
 import delimiter from "./delimiter";
 import domTree from "./domTree";
-import units from "./units";
+import { calculateSize } from "./units";
 import utils from "./utils";
 import stretchy from "./stretchy";
 
@@ -628,7 +628,7 @@ groupTypes.array = function(group, options) {
 
         let gap = 0;
         if (group.value.rowGaps[r]) {
-            gap = units.calculateSize(group.value.rowGaps[r].value, options);
+            gap = calculateSize(group.value.rowGaps[r].value, options);
             if (gap > 0) { // \@argarraycr
                 gap += arstrutDepth;
                 if (depth < gap) {
@@ -1267,11 +1267,11 @@ groupTypes.rule = function(group, options) {
     // Calculate the shift, width, and height of the rule, and account for units
     let shift = 0;
     if (group.value.shift) {
-        shift = units.calculateSize(group.value.shift, options);
+        shift = calculateSize(group.value.shift, options);
     }
 
-    const width = units.calculateSize(group.value.width, options);
-    const height = units.calculateSize(group.value.height, options);
+    const width = calculateSize(group.value.width, options);
+    const height = calculateSize(group.value.height, options);
 
     // Style the rule to the right size
     rule.style.borderRightWidth = width + "em";
@@ -1295,7 +1295,7 @@ groupTypes.kern = function(group, options) {
     const rule = makeSpan(["mord", "rule"], [], options);
 
     if (group.value.dimension) {
-        const dimension = units.calculateSize(group.value.dimension, options);
+        const dimension = calculateSize(group.value.dimension, options);
         rule.style.marginLeft = dimension + "em";
     }
 
@@ -1642,7 +1642,7 @@ groupTypes.raisebox = function(group, options) {
         }],
         size: 6,                // simulate \normalsize
     }}, options);
-    const dy = units.calculateSize(group.value.dy.value, options);
+    const dy = calculateSize(group.value.dy.value, options);
     return buildCommon.makeVList([{
         type: "elem",
         elem: body,
