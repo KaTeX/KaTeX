@@ -12,7 +12,7 @@ import Options from "./Options";
 // Thus, multiplying a length by this number converts the length from units
 // into pts.  Dividing the result by ptPerEm gives the number of ems
 // *assuming* a font size of ptPerEm (normal size, normal style).
-const ptPerUnit: {[string]: number} = {
+const ptPerUnit = {
     // https://en.wikibooks.org/wiki/LaTeX/Lengths and
     // https://tex.stackexchange.com/a/8263
     "pt": 1,            // TeX point
@@ -31,7 +31,7 @@ const ptPerUnit: {[string]: number} = {
 };
 
 // Dictionary of relative units, for fast validity testing.
-const relativeUnit: {[string]: boolean} = {
+const relativeUnit = {
     "ex": true,
     "em": true,
     "mu": true,
