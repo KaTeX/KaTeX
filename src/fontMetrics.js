@@ -1,3 +1,4 @@
+// @flow
 import { cjkRegex } from "./unicodeRegexes";
 
 /**
@@ -30,7 +31,7 @@ import { cjkRegex } from "./unicodeRegexes";
 //
 // The output of each of these commands is quite lengthy.  The only part we
 // care about is the FONTDIMEN section. Each value is measured in EMs.
-const sigmasAndXis = {
+const sigmasAndXis: {[string]: [number, number, number]} = {
     slant: [0.250, 0.250, 0.250],       // sigma1
     space: [0.000, 0.000, 0.000],       // sigma2
     stretch: [0.000, 0.000, 0.000],     // sigma3
@@ -94,7 +95,7 @@ import metricMap from "./fontMetricsData";
 // descenders we prefer approximations with ascenders, primarily to prevent
 // the fraction bar or root line from intersecting the glyph.
 // TODO(kevinb) allow union of multiple glyph metrics for better accuracy.
-const extraCharacterMap = {
+const extraCharacterMap: {[string]: string} = {
     // Latin-1
     'À': 'A',
     'Á': 'A',
@@ -226,6 +227,13 @@ const extraCharacterMap = {
     'я': 'r',
 };
 
+type CharacterMetrics = {
+    depth: number,
+    height: number,
+    italic: number,
+    skew: number,
+};
+
 /**
  * This function is a convenience function for looking up information in the
  * metricMap table. It takes a character as a string, and a style.
@@ -233,32 +241,34 @@ const extraCharacterMap = {
  * Note: the `width` property may be undefined if fontMetricsData.js wasn't
  * built using `Make extended_metrics`.
  */
-const getCharacterMetrics = function(character, style) {
+export const getCharacterMetrics = function(
+        character: string, style: string): CharacterMetrics | void {
     let ch = character.charCodeAt(0);
     if (character[0] in extraCharacterMap) {
         ch = extraCharacterMap[character[0]].charCodeAt(0);
     } else if (cjkRegex.test(character[0])) {
         ch = 'M'.charCodeAt(0);
     }
-    const metrics = metricMap[style][ch];
+    const metrics = metricMap[style]['' + ch];
     if (metrics) {
         return {
             depth: metrics[0],
             height: metrics[1],
             italic: metrics[2],
             skew: metrics[3],
-            width: metrics[4],
         };
     }
 };
 
-const fontMetricsBySizeIndex = {};
+type FontSizeIndex = 0 | 1 | 2;
+type FontSizeMetrics = {[string]: number};
+const fontMetricsBySizeIndex: {[FontSizeIndex]: FontSizeMetrics} = {};
 
 /**
  * Get the font metrics for a given size.
  */
-const getFontMetrics = function(size) {
-    let sizeIndex;
+export const getFontMetrics = function(size: number): FontSizeMetrics {
+    let sizeIndex: FontSizeIndex;
     if (size >= 5) {
         sizeIndex = 0;
     } else if (size >= 3) {
@@ -278,7 +288,4 @@ const getFontMetrics = function(size) {
     return fontMetricsBySizeIndex[sizeIndex];
 };
 
-module.exports = {
-    getFontMetrics: getFontMetrics,
-    getCharacterMetrics: getCharacterMetrics,
-};
+export default {getCharacterMetrics, getFontMetrics};
