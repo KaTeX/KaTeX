@@ -847,7 +847,7 @@ class Parser {
             }
             return new ParseFuncOrArgument(
                 new ParseNode("ordgroup", expression, this.mode,
-                            firstToken, lastToken),
+                    firstToken, lastToken),
                 false);
         } else {
             // Otherwise, just return a nucleus, or nothing for an optional group
