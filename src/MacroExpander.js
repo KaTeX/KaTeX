@@ -1,3 +1,4 @@
+// @flow
 /**
  * This file contains the “gullet” where macros are expanded
  * until only non-macro tokens remain.
@@ -9,8 +10,15 @@ import builtinMacros from "./macros";
 import ParseError from "./ParseError";
 import objectAssign from "object-assign";
 
-class MacroExpander {
-    constructor(input, macros) {
+import type {MacroContextInterface, MacroMap, MacroExpansion} from "./macros";
+
+export default class MacroExpander implements MacroContextInterface {
+    lexer: Lexer;
+    macros: MacroMap;
+    stack: Token[];
+    discardedWhiteSpace: Token[];
+
+    constructor(input: string, macros: MacroMap) {
         this.lexer = new Lexer(input);
         this.macros = objectAssign({}, builtinMacros, macros);
         this.stack = []; // contains tokens in REVERSE order
@@ -21,7 +29,7 @@ class MacroExpander {
      * Returns the topmost token on the stack, without expanding it.
      * Similar in behavior to TeX's `\futurelet`.
      */
-    future() {
+    future(): Token {
         if (this.stack.length === 0) {
             this.stack.push(this.lexer.lex());
         }
@@ -31,7 +39,7 @@ class MacroExpander {
     /**
      * Remove and return the next unexpanded token.
      */
-    popToken() {
+    popToken(): Token {
         this.future();  // ensure non-empty stack
         return this.stack.pop();
     }
@@ -70,7 +78,7 @@ class MacroExpander {
      * i.e. things like those defined by \def\foo#1\end{…}.
      * See the TeX book page 202ff. for details on how those should behave.
      */
-    expandOnce() {
+    expandOnce(): Token | Token[] {
         const topToken = this.popToken();
         const name = topToken.text;
         const isMacro = (name.charAt(0) === "\\");
@@ -83,38 +91,16 @@ class MacroExpander {
             this.stack.push(topToken);
             return topToken;
         }
-        let expansion = this.macros[name];
-        if (typeof expansion === "function") {
-            expansion = expansion.call(this);
-        }
-        if (typeof expansion === "string") {
-            let numArgs = 0;
-            if (expansion.indexOf("#") !== -1) {
-                const stripped = expansion.replace(/##/g, "");
-                while (stripped.indexOf("#" + (numArgs + 1)) !== -1) {
-                    ++numArgs;
-                }
-            }
-            const bodyLexer = new Lexer(expansion);
-            expansion = [];
-            let tok = bodyLexer.lex();
-            while (tok.text !== "EOF") {
-                expansion.push(tok);
-                tok = bodyLexer.lex();
-            }
-            expansion.reverse(); // to fit in with stack using push and pop
-            expansion.numArgs = numArgs;
-            // TODO: Could cache macro expansions if it originally came as a
-            // String (but not those that come in as a Function).
-        }
-        if (expansion.numArgs) {
-            const args = [];
+        const {tokens, numArgs} = this._getExpansion(name);
+        let expansion = tokens;
+        if (numArgs) {
+            const args: Token[][] = [];
             // obtain arguments, either single token or balanced {…} group
-            for (let i = 0; i < expansion.numArgs; ++i) {
+            for (let i = 0; i < numArgs; ++i) {
                 this.consumeSpaces();  // ignore spaces before each argument
                 const startOfArg = this.popToken();
                 if (startOfArg.text === "{") {
-                    const arg = [];
+                    const arg: Token[] = [];
                     let depth = 1;
                     while (depth !== 0) {
                         const tok = this.popToken();
@@ -153,12 +139,8 @@ class MacroExpander {
                     if (tok.text === "#") { // ## → #
                         expansion.splice(i + 1, 1); // drop first #
                     } else if (/^[1-9]$/.test(tok.text)) {
-                        // expansion.splice(i, 2, arg[0], arg[1], …)
-                        // to replace placeholder with the indicated argument.
-                        // TODO: use spread once we move to ES2015
-                        expansion.splice.apply(
-                            expansion,
-                            [i, 2].concat(args[tok.text - 1]));
+                        // replace the placeholder with the indicated argument
+                        expansion.splice(i, 2, ...args[tok.text - 1]);
                     } else {
                         throw new ParseError(
                             "Not a valid argument number",
@@ -168,7 +150,7 @@ class MacroExpander {
             }
         }
         // Concatenate expansion onto top of stack.
-        this.stack.push.apply(this.stack, expansion);
+        this.stack.push(...expansion);
         return expansion;
     }
 
@@ -178,7 +160,7 @@ class MacroExpander {
      * Similar in behavior to TeX's `\expandafter\futurelet`.
      * Equivalent to expandOnce() followed by future().
      */
-    expandAfterFuture() {
+    expandAfterFuture(): Token {
         this.expandOnce();
         return this.future();
     }
@@ -186,7 +168,7 @@ class MacroExpander {
     /**
      * Recursively expand first token, then return first non-expandable token.
      */
-    expandNextToken() {
+    expandNextToken(): Token {
         for (;;) {
             const expanded = this.expandOnce();
             // expandOnce returns Token if and only if it's fully expanded.
@@ -200,6 +182,47 @@ class MacroExpander {
                 }
             }
         }
+
+        // Flow unable to figure out that this pathway is impossible.
+        // https://github.com/facebook/flow/issues/4808
+        throw new Error(); // eslint-disable-line no-unreachable
+    }
+
+    /**
+     * Returns the expanded macro as a reversed array of tokens and a macro
+     * argument count.
+     * Caches macro expansions for those that were defined simple TeX strings.
+     */
+    _getExpansion(name: string): MacroExpansion {
+        const definition = this.macros[name];
+        const expansion =
+            typeof definition === "function" ? definition(this) : definition;
+        if (typeof expansion === "string") {
+            let numArgs = 0;
+            if (expansion.indexOf("#") !== -1) {
+                const stripped = expansion.replace(/##/g, "");
+                while (stripped.indexOf("#" + (numArgs + 1)) !== -1) {
+                    ++numArgs;
+                }
+            }
+            const bodyLexer = new Lexer(expansion);
+            const tokens = [];
+            let tok = bodyLexer.lex();
+            while (tok.text !== "EOF") {
+                tokens.push(tok);
+                tok = bodyLexer.lex();
+            }
+            tokens.reverse(); // to fit in with stack using push and pop
+            const expanded = {tokens, numArgs};
+            // Cannot cache a macro defined using a function since it relies on
+            // parser context.
+            if (typeof definition !== "function") {
+                this.macros[name] = expanded;
+            }
+            return expanded;
+        }
+
+        return expansion;
     }
 
     /**
@@ -210,7 +233,7 @@ class MacroExpander {
      * Any skipped whitespace is stored in `this.discardedWhiteSpace`
      * so that `unget` can correctly undo the effects of `get`.
      */
-    get(ignoreSpace) {
+    get(ignoreSpace: boolean): Token {
         this.discardedWhiteSpace = [];
         let token = this.expandNextToken();
         if (ignoreSpace) {
@@ -229,7 +252,7 @@ class MacroExpander {
      * was got in the old mode but should get got again in a new mode
      * with possibly different whitespace handling.
      */
-    unget(token) {
+    unget(token: Token) {
         this.stack.push(token);
         while (this.discardedWhiteSpace.length !== 0) {
             this.stack.push(this.discardedWhiteSpace.pop());
@@ -237,4 +260,3 @@ class MacroExpander {
     }
 }
 
-module.exports = MacroExpander;
