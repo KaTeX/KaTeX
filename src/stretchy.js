@@ -151,20 +151,19 @@ const groupLength = function(arg) {
 const svgSpan = function(group, options) {
     // Create a span with inline SVG for the element.
     const label = group.value.label.substr(1);
+    let attributes = [];
     let height;
     let viewBoxWidth = 400000;  // default
-    let viewBoxHeight;
-    let width;
     let minWidth = 0;
     let path;
     let pathName;
-    let align;
     let svgNode;
 
     if (utils.contains(["widehat", "widetilde", "undertilde"], label)) {
         // There are four SVG images available for each function.
         // Choose a taller image when there are more characters.
         const numChars = groupLength(group.value.base);
+        let viewBoxHeight;
 
         if (numChars > 5) {
             viewBoxHeight = (label === "widehat" ? 420 : 312);
@@ -187,41 +186,56 @@ const svgSpan = function(group, options) {
             }
         }
         path = new domTree.pathNode(pathName);
-        align = "none";
-        svgNode = new domTree.svgNode([path], "100%", height,
-            null, viewBoxWidth, viewBoxHeight, align);
+        attributes.push(["width", "100%"]);
+        attributes.push(["height", height + "em"]);
+        attributes.push(["viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`]);
+        attributes.push(["preserveAspectRatio", "none"]);
+
+        svgNode = new domTree.svgNode([path], attributes);
 
     } else {
-        const imgData = katexImagesData[label];
-        const numSvgChildren = imgData[0].length;
-        const innerSVGs = [];
-        minWidth = imgData[1];
-        viewBoxHeight = imgData[2];
-        height = viewBoxHeight / 1000;
         let x;
+        let width;
+        let align;
+
+        const [paths, gWidth, vbHeight, alignOne] = katexImagesData[label];
+        const numSvgChildren = paths.length;
+        const innerSVGs = [];
+        height = vbHeight / 1000;
+        minWidth = gWidth;
+
         for (let i = 0; i < numSvgChildren; i++) {
-            pathName = imgData[0][i];
-            path = new domTree.pathNode(pathName);
+            path = new domTree.pathNode(paths[i]);
+            attributes = [];
 
             if (numSvgChildren === 1) {
                 width = "100%";
-                align = imgData[3];
+                align = alignOne;
             } else if (numSvgChildren === 2) {
                 // small overlap to prevent a 1 pixel gap.
+                if (i > 0) {
+                    attributes.push(["x", "50%"]);
+                }
                 width = ["50.1%", "50%"][i];
-                x = [null, "50%"][i];
                 align = ["xMinYMin", "xMaxYMin"][i];
             } else {
                 // 3 inner SVGs, as in a brace
+                if (i > 0) {
+                    attributes.push(["x", [null, "25%", "74.9%"][i]]);
+                }
                 width = ["25.5%", "50%", "25.1%"][i];
-                x = [null, "25%", "74.9%"][i];
                 align = ["xMinYMin", "xMidYMin", "xMaxYMin"][i];
             }
 
-            innerSVGs.push(new domTree.svgNode([path], width,
-                height, x, viewBoxWidth, viewBoxHeight, align));
+            attributes.push(["width", width]);
+            attributes.push(["height", height + "em"]);
+            attributes.push(["viewBox", `0 0 ${viewBoxWidth} ${vbHeight}`]);
+            attributes.push(["preserveAspectRatio", align + " slice"]);
+
+            innerSVGs.push(new domTree.svgNode([path], attributes));
         }
-        svgNode = new domTree.svgNode(innerSVGs, "100%", height);
+        attributes = [["width", "100%"], ["height", height + "em"]];
+        svgNode = new domTree.svgNode(innerSVGs, attributes);
     }
 
     const span = buildCommon.makeSpan([], [svgNode], options);
@@ -245,22 +259,36 @@ const encloseSpan = function(inner, label, pad, options) {
             img.style.borderColor = options.getColor();
         }
     } else {
-        const lines = [];
+        // \cancel, \bcancel, or \xcancel
         // Since \cancel's SVG is inline and it omits the viewBox attribute,
         // its stroke-width will not vary with span area.
-        switch (label) {
-            case "bcancel":                 // x1, y1,  x2,   y2, stroke-width
-                lines.push(new domTree.lineNode(0, 0, "100%", "100%", 0.046));
-                break;
-            case "cancel":
-                lines.push(new domTree.lineNode(0, "100%", "100%", 0, 0.046));
-                break;
-            default:
-                // xcancel
-                lines.push(new domTree.lineNode(0, 0, "100%", "100%", 0.046));
-                lines.push(new domTree.lineNode(0, "100%", "100%", 0, 0.046));
+
+        let attributes = [["x1", "0"]];
+        const lines = [];
+
+        if (label !== "cancel") {
+            attributes.push(["y1", "0"]);
+            attributes.push(["x2", "100%"]);
+            attributes.push(["y2", "100%"]);
+            attributes.push(["stroke-width", "0.046em"]);
+            lines.push(new domTree.lineNode(attributes));
         }
-        const svgNode = new domTree.svgNode(lines, "100%", totalHeight);
+
+        if (label === "xcancel") {
+            attributes = [["x1", "0"]];  // start a second line.
+        }
+
+        if (label !== "bcancel") {
+            attributes.push(["y1", "100%"]);
+            attributes.push(["x2", "100%"]);
+            attributes.push(["y2", "0"]);
+            attributes.push(["stroke-width", "0.046em"]);
+            lines.push(new domTree.lineNode(attributes));
+        }
+
+        attributes = [["width", "100%"], ["height", totalHeight + "em"]];
+        const svgNode = new domTree.svgNode(lines, attributes);
+
         img = buildCommon.makeSpan([], [svgNode], options);
     }
 

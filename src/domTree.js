@@ -340,46 +340,23 @@ class symbolNode {
  * SVG nodes are used to render stretchy wide elements.
  */
 class svgNode {
-    constructor(children, width, height, x, viewBoxWidth, viewBoxHeight, align) {
+    constructor(children, attributes) {
         this.children = children || [];
-        this.width = width || "";
-        this.height = height || "";
-        this.x = x || "";
-        this.viewBoxWidth = viewBoxWidth || 0;
-        this.viewBoxHeight = viewBoxHeight || 0;
-        this.align = align || "";
+        this.attributes = attributes || [];
     }
 
     toNode() {
         const svgNS = "http://www.w3.org/2000/svg";
         const node = document.createElementNS(svgNS, "svg");
 
-        if (this.x.length > 0) {
-            node.setAttribute("x", this.x);
+        // Apply attributes
+        for (let i = 0; i < this.attributes.length; i++) {
+            let [name, value] = this.attributes[i];
+            node.setAttribute(name, value);
         }
 
-        if (this.width.length > 0) {
-            node.setAttribute("width", this.width);
-        }
-
-        if (this.width.length > 0) {
-            node.setAttribute("height", this.height + "em");
-        }
-
-        if (this.viewBoxWidth > 0) {
-            node.setAttribute("viewBox",
-                `0 0 ${this.viewBoxWidth} ${this.viewBoxHeight}`);
-        }
-
-        if (this.align.length > 0) {
-            const par = (this.align === "none" ? "none" : this.align + " slice");
-            node.setAttribute("preserveAspectRatio", par);
-        }
-
-        if (this.children.length > 0) {
-            for (let i = 0; i < this.children.length; i++) {
-                node.appendChild(this.children[i].toNode());
-            }
+        for (let i = 0; i < this.children.length; i++) {
+            node.appendChild(this.children[i].toNode());
         }
         return node;
     }
@@ -387,27 +364,10 @@ class svgNode {
     toMarkup() {
         let markup = "<svg";
 
-        if (this.x.length > 0) {
-            markup += ` x='${this.x}'`;
-        }
-
-        if (this.width.length > 0) {
-            markup += ` width="${this.width}'`;
-        }
-
-        if (this.width.length > 0) {
-            markup += " height='" + this.height + "em'";
-        }
-
-        if (this.viewBoxWidth > 0) {
-            markup +=
-                ` viewBox='0 0 ${this.viewBoxWidth} ${this.viewBoxHeight}'`;
-        }
-
-        if (this.align.length > 0) {
-            const align = (this.align === "none" ? "none" :
-                this.align + " slice");
-            markup += ` preserveAspectRatio='${align}'`;
+        // Apply attributes
+        for (let i = 0; i < this.attributes.length; i++) {
+            let [name, value] = this.attributes[i];
+            markup +=  ` ${name}='${value}'`;
         }
 
         markup += ">";
@@ -425,8 +385,8 @@ class svgNode {
 
 class pathNode {
     constructor(pathName, alternate) {
-        this.pathName = pathName || "";
-        this.alternate = alternate || "";  // Used only for tall \sqrt
+        this.pathName = pathName;
+        this.alternate = alternate;  // Used only for tall \sqrt
     }
 
     toNode() {
@@ -452,35 +412,29 @@ class pathNode {
 }
 
 class lineNode {
-    constructor(x1, y1, x2, y2, strokeWidth) {
-        this.x1 = x1 || 0;
-        this.y1 = y1 || 0;
-        this.x2 = x2 || 0;
-        this.y2 = y2 || 0;
-        this.strokeWidth = strokeWidth || 0;
+    constructor(attributes) {
+        this.attributes = attributes || [];
     }
 
     toNode() {
         const svgNS = "http://www.w3.org/2000/svg";
         const node = document.createElementNS(svgNS, "line");
 
-        node.setAttribute("x1", this.x1);
-        node.setAttribute("y1", this.y1);
-        node.setAttribute("x2", this.x2);
-        node.setAttribute("y2", this.y2);
-
-        if (this.strokeWidth > 0) {
-            node.setAttribute("stroke-width", this.strokeWidth + "em");
+        // Apply attributes
+        for (let i = 0; i < this.attributes.length; i++) {
+            let [name, value] = this.attributes[i];
+            node.setAttribute(name, value);
         }
+
         return node;
     }
 
     toMarkup() {
-        let markup = `<line x1='${this.x1}' y1='${this.y1}'`;
-        markup += ` x2='${this.x2}' y2='${this.y2}'`;
+        let markup = "<line"
 
-        if (this.strokeWidth > 0) {
-            markup += ` stroke-width='${this.strokeWidth}em'`;
+        for (let i = 0; i < this.attributes.length; i++) {
+            let [name, value] = this.attributes[i];
+            markup +=  ` ${name}='${value}'`;
         }
 
         markup += "/>";
