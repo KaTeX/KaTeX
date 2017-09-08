@@ -351,7 +351,7 @@ class svgNode {
 
         // Apply attributes
         for (let i = 0; i < this.attributes.length; i++) {
-            let [name, value] = this.attributes[i];
+            const [name, value] = this.attributes[i];
             node.setAttribute(name, value);
         }
 
@@ -366,7 +366,7 @@ class svgNode {
 
         // Apply attributes
         for (let i = 0; i < this.attributes.length; i++) {
-            let [name, value] = this.attributes[i];
+            const [name, value] = this.attributes[i];
             markup +=  ` ${name}='${value}'`;
         }
 
@@ -422,7 +422,7 @@ class lineNode {
 
         // Apply attributes
         for (let i = 0; i < this.attributes.length; i++) {
-            let [name, value] = this.attributes[i];
+            const [name, value] = this.attributes[i];
             node.setAttribute(name, value);
         }
 
@@ -430,10 +430,10 @@ class lineNode {
     }
 
     toMarkup() {
-        let markup = "<line"
+        let markup = "<line";
 
         for (let i = 0; i < this.attributes.length; i++) {
-            let [name, value] = this.attributes[i];
+            const [name, value] = this.attributes[i];
             markup +=  ` ${name}='${value}'`;
         }
 

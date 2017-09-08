@@ -194,7 +194,6 @@ const svgSpan = function(group, options) {
         svgNode = new domTree.svgNode([path], attributes);
 
     } else {
-        let x;
         let width;
         let align;
 
