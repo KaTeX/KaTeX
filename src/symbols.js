@@ -33,8 +33,13 @@ export default symbols;
 
 /** `acceptUnicodeChar = true` is only applicable if `replace` is set. */
 function defineSymbol(
-    mode: Mode, font: Font, group: Group, replace: ?string, name: string,
-    acceptUnicodeChar?: boolean) {
+    mode: Mode,
+    font: Font,
+    group: Group,
+    replace: ?string,
+    name: string,
+    acceptUnicodeChar?: boolean,
+) {
     symbols[mode][name] = {font, group, replace};
 
     if (acceptUnicodeChar && replace) {
