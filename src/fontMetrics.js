@@ -267,7 +267,7 @@ const getCharacterMetrics = function(
 type FontSizeIndex = 0 | 1 | 2;
 export type FontMetrics = {
     cssEmPerMu: number,
-    [string]: [number, number, number],
+    [string]: number,
 };
 
 const fontMetricsBySizeIndex: {[FontSizeIndex]: FontMetrics} = {};
