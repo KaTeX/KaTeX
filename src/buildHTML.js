@@ -1598,6 +1598,8 @@ groupTypes.xArrow = function(group, options) {
 
     const arrowBody = stretchy.svgSpan(group, options);
 
+    // Re shift: Note that stretchy.svgSpan returned arrowBody.depth = 0.
+    // The point we want on the math axis is at 0.5 * arrowBody.height.
     const arrowShift = -options.fontMetrics().axisHeight +
         0.5 * arrowBody.height;
     // 2 mu kern. Ref: amsmath.dtx: #7\if0#2\else\mkern#2mu\fi

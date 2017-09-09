@@ -238,6 +238,8 @@ const svgSpan = function(group, options) {
     }
 
     const span = buildCommon.makeSpan([], [svgNode], options);
+    // Note that we are returning span.depth = 0.
+    // Any adjustments relative to the baseline must be done in buildHTML.
     span.height = height;
     span.style.height = height + "em";
     if (minWidth > 0) {

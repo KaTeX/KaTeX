@@ -318,6 +318,9 @@ const sqrtSvg = function(sqrtName, height, viewBoxHeight, options) {
     let alternate;
     if (sqrtName === "sqrtTall") {
         // sqrtTall is from glyph U23B7 in the font KaTeX_Size4-Regular
+        // One path edge has a variable length. It runs from the viniculumn
+        // to a point near (14 units) the bottom of the surd. The viniculum
+        // is 40 units thick. So the length of the line in question is:
         const vertSegment = viewBoxHeight - 54;
         alternate = `M702 0H400000v40H742v${vertSegment}l-4 4-4 4c-.667.667
 -2 1.5-4 2.5s-4.167 1.833-6.5 2.5-5.5 1-9.5 1h-12l-28-84c-16.667-52-96.667
