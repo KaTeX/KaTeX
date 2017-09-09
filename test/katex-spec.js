@@ -17,6 +17,7 @@ const defaultSettings = new Settings({});
 const defaultOptions = new Options({
     style: Style.TEXT,
     size: 5,
+    maxSize: Infinity,
 });
 
 const _getBuilt = function(expr, settings) {

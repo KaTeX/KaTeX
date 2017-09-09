@@ -3,8 +3,7 @@ import functions from "./functions";
 import {groupTypes as htmlGroupTypes} from "./buildHTML";
 import {groupTypes as mathmlGroupTypes} from "./buildMathML";
 
-// TODO(kevinb) use flow to define a proper type for Options
-type Options = any;
+import type Options from "./Options";
 
 type FunctionSpec<T> = {
     // Unique string to differentiate parse nodes.
