@@ -38,11 +38,11 @@ const sizeAtStyle = function(size: number, style: StyleInterface): number {
 
 export type OptionsData = {
     style: StyleInterface;
-    color?: ?string;
+    color?: string | void;
     size?: number;
     textSize?: number;
     phantom?: boolean;
-    font?: ?string;
+    font?: string | void;
     maxSize: number;
 };
 
@@ -55,14 +55,14 @@ export type OptionsData = {
  */
 class Options {
     style: StyleInterface;
-    color: ?string;
+    color: string | void;
     size: number;
     textSize: number;
     phantom: boolean;
-    font: ?string;
+    font: string | void;
     sizeMultiplier: number;
     maxSize: number;
-    _fontMetrics: ?FontMetrics;
+    _fontMetrics: FontMetrics | void;
 
     /**
      * The base size index.
@@ -78,7 +78,7 @@ class Options {
         this.font = data.font;
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
-        this._fontMetrics = null;
+        this._fontMetrics = undefined;
     }
 
     /**
@@ -290,7 +290,7 @@ class Options {
      * Gets the CSS color of the current options object, accounting for the
      * `colorMap`.
      */
-    getColor(): ?string {
+    getColor(): string | void {
         if (this.phantom) {
             return "transparent";
         } else if (

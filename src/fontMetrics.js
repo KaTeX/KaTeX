@@ -232,6 +232,7 @@ export type CharacterMetrics = {
     height: number;
     italic: number;
     skew: number;
+    width: number;
 };
 
 /**
@@ -258,6 +259,7 @@ const getCharacterMetrics = function(
             height: metrics[1],
             italic: metrics[2],
             skew: metrics[3],
+            width: metrics[4],
         };
     }
 };
