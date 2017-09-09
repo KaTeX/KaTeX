@@ -16,3 +16,6 @@ export type Mode = "math" | "text";
 //                 first argument is special and the second
 //                 argument is parsed normally)
 export type ArgType = "color" | "size" | "original";
+
+// LaTeX display style.
+export type StyleStr = "text" | "display";

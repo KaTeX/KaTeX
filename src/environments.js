@@ -1,6 +1,80 @@
-/* eslint no-constant-condition:0 */
+// @flow
 import ParseNode from "./ParseNode";
 import ParseError from "./ParseError";
+
+import type Parser from "./Parser";
+import type {ArgType, Mode, StyleStr} from "./types";
+
+/**
+ * The context contains the following properties:
+ *  - mode: current parsing mode.
+ *  - envName: the name of the environment, one of the listed names.
+ *  - parser: the parser object.
+ *  - positions: the positions associated with these arguments from args.
+ */
+type EnvContext = {
+  mode: Mode,
+  envName: string,
+  parser: Parser,
+  positions: number[],
+};
+
+/**
+ * List of ParseNodes followed by an array of positions.
+ * Returned by `Parser`'s `parseArguments`.
+ */
+type ParseResult = (ParseNode | number[])[] | ParseNode;
+
+/**
+ * The handler function receives two arguments
+ *  - context: information and references provided by the parser
+ *  - args: an array of arguments passed to \begin{name}
+ */
+type EnvHandler = (context: EnvContext, args: ParseNode[]) => ParseResult;
+
+/**
+ *  - numArgs: (default 0) The number of arguments after the \begin{name} function.
+ *  - argTypes: (optional) Just like for a function
+ *  - allowedInText: (default false) Whether or not the environment is allowed
+ *  i                nside text mode (not enforced yet).
+ *  - numOptionalArgs: (default 0) Just like for a function
+ */
+type EnvProps = {
+    numArgs?: number,
+    argTypes?: ArgType[],
+    allowedInText?: boolean,
+    numOptionalArgs?: number,
+};
+
+type EnvData = {
+    numArgs: number,
+    argTypes?: ArgType[],
+    greediness: number,
+    allowedInText: boolean,
+    numOptionalArgs: number,
+    handler: EnvHandler,
+};
+const environments: {[string]: EnvData} = {};
+export default environments;
+
+// Data stored in the ParseNode associated with the environment.
+type ArrayColSpec = { type: "separator", separator: string } | {
+    type: "align",
+    align: string,
+    pregap?: number,
+    postgap?: number,
+};
+type EnvNodeData = {
+    type: "array",
+    hskipBeforeAndAfter?: boolean,
+    arraystretch?: number,
+    addJot?: boolean,
+    cols?: ArrayColSpec[],
+    // These fields are always set, but not on struct construction
+    // initialization.
+    body?: ParseNode[][], // List of rows in the (2D) array.
+    rowGaps?: number[],
+};
 
 /**
  * Parse the body of the environment, with rows delimited by \\ and
@@ -8,11 +82,15 @@ import ParseError from "./ParseError";
  * with one group per cell.  If given an optional argument style
  * ("text", "display", etc.), then each cell is cast into that style.
  */
-function parseArray(parser, result, style) {
+function parseArray(
+    parser: Parser,
+    result: EnvNodeData,
+    style: StyleStr,
+) {
     let row = [];
     const body = [row];
     const rowGaps = [];
-    while (true) {
+    for (;;) {
         let cell = parser.parseExpression(false, null);
         cell = new ParseNode("ordgroup", cell, parser.mode);
         if (style) {
@@ -42,35 +120,24 @@ function parseArray(parser, result, style) {
     return new ParseNode(result.type, result, parser.mode);
 }
 
+
 /*
  * An environment definition is very similar to a function definition:
  * it is declared with a name or a list of names, a set of properties
  * and a handler containing the actual implementation.
  *
- * The properties include:
- *  - numArgs: The number of arguments after the \begin{name} function.
- *  - argTypes: (optional) Just like for a function
- *  - allowedInText: (optional) Whether or not the environment is allowed inside
- *                   text mode (default false) (not enforced yet)
- *  - numOptionalArgs: (optional) Just like for a function
- * A bare number instead of that object indicates the numArgs value.
- *
- * The handler function will receive two arguments
- *  - context: information and references provided by the parser
- *  - args: an array of arguments passed to \begin{name}
- * The context contains the following properties:
- *  - envName: the name of the environment, one of the listed names.
- *  - parser: the parser object
- *  - lexer: the lexer object
- *  - positions: the positions associated with these arguments from args.
- * The handler must return a ParseResult.
+ * - props can either be an EnvProps struct, or a number indicating the numArgs.
  */
-function defineEnvironment(names, props, handler) {
+function defineEnvironment(
+    names: string | string[],
+    props: EnvProps | number,
+    handler: EnvHandler,
+) {
     if (typeof names === "string") {
         names = [names];
     }
     if (typeof props === "number") {
-        props = { numArgs: props };
+        props = ({ numArgs: props }: EnvProps);
     }
     // Set default values of environments
     const data = {
@@ -82,7 +149,7 @@ function defineEnvironment(names, props, handler) {
         handler: handler,
     };
     for (let i = 0; i < names.length; ++i) {
-        module.exports[names[i]] = data;
+        environments[names[i]] = data;
     }
 }
 
