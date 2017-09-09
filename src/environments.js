@@ -13,10 +13,10 @@ import type {ArgType, Mode, StyleStr} from "./types";
  *  - positions: the positions associated with these arguments from args.
  */
 type EnvContext = {
-  mode: Mode,
-  envName: string,
-  parser: Parser,
-  positions: number[],
+    mode: Mode,
+    envName: string,
+    parser: Parser,
+    positions: number[],
 };
 
 /**
@@ -36,7 +36,7 @@ type EnvHandler = (context: EnvContext, args: ParseNode[]) => ParseResult;
  *  - numArgs: (default 0) The number of arguments after the \begin{name} function.
  *  - argTypes: (optional) Just like for a function
  *  - allowedInText: (default false) Whether or not the environment is allowed
- *  i                nside text mode (not enforced yet).
+ *                   inside text mode (not enforced yet).
  *  - numOptionalArgs: (default 0) Just like for a function
  */
 type EnvProps = {
@@ -58,18 +58,18 @@ const environments: {[string]: EnvData} = {};
 export default environments;
 
 // Data stored in the ParseNode associated with the environment.
-type ArrayColSpec = { type: "separator", separator: string } | {
+type AlignSpec = { type: "separator", separator: string } | {
     type: "align",
     align: string,
     pregap?: number,
     postgap?: number,
 };
-type EnvNodeData = {
+type ArrayEnvNodeData = {
     type: "array",
     hskipBeforeAndAfter?: boolean,
     arraystretch?: number,
     addJot?: boolean,
-    cols?: ArrayColSpec[],
+    cols?: AlignSpec[],
     // These fields are always set, but not on struct construction
     // initialization.
     body?: ParseNode[][], // List of rows in the (2D) array.
@@ -84,7 +84,7 @@ type EnvNodeData = {
  */
 function parseArray(
     parser: Parser,
-    result: EnvNodeData,
+    result: ArrayEnvNodeData,
     style: StyleStr,
 ) {
     let row = [];
@@ -123,22 +123,14 @@ function parseArray(
 
 /*
  * An environment definition is very similar to a function definition:
- * it is declared with a name or a list of names, a set of properties
- * and a handler containing the actual implementation.
- *
- * - props can either be an EnvProps struct, or a number indicating the numArgs.
+ * it is declared with a list of names, a set of properties and a handler
+ * containing the actual implementation.
  */
 function defineEnvironment(
-    names: string | string[],
-    props: EnvProps | number,
+    names: string[],
+    props: EnvProps,
     handler: EnvHandler,
 ) {
-    if (typeof names === "string") {
-        names = [names];
-    }
-    if (typeof props === "number") {
-        props = ({ numArgs: props }: EnvProps);
-    }
     // Set default values of environments
     const data = {
         numArgs: props.numArgs || 0,
@@ -274,7 +266,7 @@ defineEnvironment([
 // except it operates within math mode.
 // Note that we assume \nomallineskiplimit to be zero,
 // so that \strut@ is the same as \strut.
-defineEnvironment("aligned", {
+defineEnvironment(["aligned"], {
 }, function(context) {
     let res = {
         type: "array",
@@ -319,7 +311,7 @@ defineEnvironment("aligned", {
 // A gathered environment is like an array environment with one centered
 // column, but where rows are considered lines so get \jot line spacing
 // and contents are set in \displaystyle.
-defineEnvironment("gathered", {
+defineEnvironment(["gathered"], {
 }, function(context) {
     let res = {
         type: "array",
