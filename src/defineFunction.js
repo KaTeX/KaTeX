@@ -4,6 +4,7 @@ import {groupTypes as htmlGroupTypes} from "./buildHTML";
 import {groupTypes as mathmlGroupTypes} from "./buildMathML";
 
 import type Options from "./Options";
+import type {ArgType} from "./types" ;
 
 type FunctionSpec<T> = {
     // Unique string to differentiate parse nodes.
@@ -20,15 +21,8 @@ type FunctionSpec<T> = {
 
         // An array corresponding to each argument of the function, giving the
         // type of argument that should be parsed. Its length should be equal
-        // to `numArgs + numOptionalArgs`. Valid types:
-        //   - "size": A size-like thing, such as "1em" or "5ex"
-        //   - "color": An html color, like "#abc" or "blue"
-        //   - "original": The same type as the environment that the
-        //                 function being parsed is in (e.g. used for the
-        //                 bodies of functions like \textcolor where the
-        //                 first argument is special and the second
-        //                 argument is parsed normally)
-        argTypes?: "color" | "size" | "original",
+        // to `numArgs + numOptionalArgs`.
+        argTypes?: ArgType[],
 
         // The greediness of the function to use ungrouped arguments.
         //
