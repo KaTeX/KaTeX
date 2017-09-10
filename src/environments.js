@@ -10,27 +10,19 @@ import type {ArgType, Mode, StyleStr} from "./types";
  *  - mode: current parsing mode.
  *  - envName: the name of the environment, one of the listed names.
  *  - parser: the parser object.
- *  - positions: the positions associated with these arguments from args.
  */
 type EnvContext = {
     mode: Mode,
     envName: string,
     parser: Parser,
-    positions: number[],
 };
-
-/**
- * List of ParseNodes followed by an array of positions.
- * Returned by `Parser`'s `parseArguments`.
- */
-type ParseResult = (ParseNode | number[])[] | ParseNode;
 
 /**
  * The handler function receives two arguments
  *  - context: information and references provided by the parser
  *  - args: an array of arguments passed to \begin{name}
  */
-type EnvHandler = (context: EnvContext, args: ParseNode[]) => ParseResult;
+type EnvHandler = (context: EnvContext, args: ParseNode[]) => ParseNode;
 
 /**
  *  - numArgs: (default 0) The number of arguments after the \begin{name} function.
@@ -86,7 +78,7 @@ function parseArray(
     parser: Parser,
     result: ArrayEnvNodeData,
     style: StyleStr,
-) {
+): ParseNode {
     let row = [];
     const body = [row];
     const rowGaps = [];
@@ -147,7 +139,7 @@ function defineEnvironment(
 
 // Decides on a style for cells in an array according to whether the given
 // environment name starts with the letter 'd'.
-function dCellStyle(envName) {
+function dCellStyle(envName): StyleStr {
     if (envName.substr(0, 1) === "d") {
         return "display";
     } else {

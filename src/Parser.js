@@ -226,8 +226,7 @@ class Parser {
                 denomNode = new ParseNode("ordgroup", denomBody, this.mode);
             }
 
-            const value = this.callFunction(
-                funcName, [numerNode, denomNode], null);
+            const value = this.callFunction(funcName, [numerNode, denomNode]);
             return [new ParseNode(value.type, value, this.mode)];
         } else {
             return body;
@@ -468,7 +467,6 @@ class Parser {
                 mode: this.mode,
                 envName: envName,
                 parser: this,
-                positions: args.pop(),
             };
             const result = env.handler(context, args);
             this.expect("\\end", false);
@@ -579,7 +577,7 @@ class Parser {
 
                 const args = this.parseArguments(func, funcData);
                 const token = baseGroup.token;
-                const result = this.callFunction(func, args, args.pop(), token);
+                const result = this.callFunction(func, args, token);
                 return new ParseNode(result.type, result, this.mode);
             } else {
                 return baseGroup.result;
@@ -592,12 +590,11 @@ class Parser {
     /**
      * Call a function handler with a suitable context and arguments.
      */
-    callFunction(name, args, positions, token) {
+    callFunction(name, args, token) {
         const context = {
             funcName: name,
             parser: this,
-            positions: positions,
-            token: token,
+            token,
         };
         return functions[name].handler(context, args);
     }
@@ -607,16 +604,15 @@ class Parser {
      *
      * @param {string} func  "\name" or "\begin{name}"
      * @param {{numArgs:number,numOptionalArgs:number|undefined}} funcData
-     * @return the array of arguments, with the list of positions as last element
+     * @return the array of arguments
      */
     parseArguments(func, funcData) {
         const totalArgs = funcData.numArgs + funcData.numOptionalArgs;
         if (totalArgs === 0) {
-            return [[this.pos]];
+            return [];
         }
 
         const baseGreediness = funcData.greediness;
-        const positions = [this.pos];
         const args = [];
 
         for (let i = 0; i < totalArgs; i++) {
@@ -631,7 +627,6 @@ class Parser {
                 }
                 if (!arg) {
                     args.push(null);
-                    positions.push(this.pos);
                     continue;
                 }
             } else {
@@ -667,10 +662,7 @@ class Parser {
                 argNode = arg.result;
             }
             args.push(argNode);
-            positions.push(this.pos);
         }
-
-        args.push(positions);
 
         return args;
     }
