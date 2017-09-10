@@ -2092,7 +2092,7 @@ describe("An operatorname parser", function() {
     it("should not fail", function() {
         expect("\\operatorname{Gam ma}").toParse();
         expect("\\operatorname{Gam-ma}").toParse();
-        expect("\\operatorname{\Gamma}").toParse();
+        expect("\\operatorname{\\Gamma}").toParse();
         expect("\\operatorname").toParse();
     });
 });
@@ -2101,7 +2101,7 @@ describe("An operatorname builder", function() {
     it("should not fail", function() {
         expect("\\operatorname{Gam ma}").toBuild();
         expect("\\operatorname{Gam-ma}").toBuild();
-        expect("\\operatorname{\Gamma}").toBuild();
+        expect("\\operatorname{\\Gamma}").toBuild();
         expect("\\operatorname{x}_2^2").toBuild();
     });
 
