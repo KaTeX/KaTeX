@@ -174,7 +174,7 @@ OldFont: |
     \end{matrix}
 OperatorName: |
     \begin{matrix}
-        \operatorname g (z) + 5\operatorname{g}z + \operatorname{Gam-ma}(z)
+        \operatorname g (z) + 5\operatorname{g}z + \operatorname{Gam-ma}(z) \\
         \operatorname{Gam ma}(z) + \operatorname{\Gamma}(z) + \operatorname{}x
     \end{matrix}
 OpLimits: |
