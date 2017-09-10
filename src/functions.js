@@ -11,8 +11,7 @@ import {
 
 import type {FunctionPropSpec, FunctionHandler} from "./defineFunction" ;
 
-// WARNING: New functions should be added to src/functions and imported from
-// here.
+// WARNING: New functions should be added to src/functions and imported here.
 
 const functions = _functions;
 export default functions;
