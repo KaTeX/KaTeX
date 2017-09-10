@@ -2092,7 +2092,7 @@ describe("An operatorname parser", function() {
     it("should not fail", function() {
         expect("\\operatorname{Gam ma}").toParse();
         expect("\\operatorname{Gam-ma}").toParse();
-        expect("\\operatorname{\Gamma}).toParse();
+        expect("\\operatorname{\Gamma}").toParse();
         expect("\\operatorname").toParse();
     });
 });
