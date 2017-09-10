@@ -2088,6 +2088,32 @@ describe("A strike-through builder", function() {
     });
 });
 
+describe("An operatorname parser", function() {
+    it("should not fail", function() {
+        expect("\\operatorname{Gam ma}").toParse();
+        expect("\\operatorname{Gam-ma}").toParse();
+        expect("\\operatorname{\Gamma}).toParse();
+        expect("\\operatorname").toParse();
+    });
+});
+
+describe("An operatorname builder", function() {
+    it("should not fail", function() {
+        expect("\\operatorname{Gam ma}").toBuild();
+        expect("\\operatorname{Gam-ma}").toBuild();
+        expect("\\operatorname{\Gamma}").toBuild();
+        expect("\\operatorname{x}_2^2").toBuild();
+    });
+
+    it("should produce mops", function() {
+        expect(getBuilt("\\operatorname")[0].classes).toContain("mop");
+        expect(getBuilt("\\operatorname +")[0].classes).toContain("mop");
+        expect(getBuilt("\\operatorname +")[0].classes).not.toContain("mbin");
+        expect(getBuilt("\\operatorname )^2")[0].classes).toContain("mop");
+        expect(getBuilt("\\operatorname )^2")[0].classes).not.toContain("mclose");
+    });
+});
+
 describe("A phantom parser", function() {
     it("should not fail", function() {
         expect("\\phantom{x}").toParse();

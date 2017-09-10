@@ -239,6 +239,17 @@ defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 defineMacro("\\hspace", "\\kern{#1}");
 
 //////////////////////////////////////////////////////////////////////
+// amsopn
+// http://texdoc.net/texmf-dist/doc/latex/amsmath/amsopn.pdf
+
+// operatorname
+// \mathop{#1\kern\z@\operator@font#3}\newmcodes@
+// \opNameMain does most of the work.
+// \functionapply is appended to satisfy the MathML spec.
+// ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.2
+defineMacro("\\operatorname", "\\opNameMain{#1}\\functionapply");
+
+//////////////////////////////////////////////////////////////////////
 // mathtools.sty
 
 //\providecommand\ordinarycolon{:}
