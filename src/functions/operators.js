@@ -58,7 +58,7 @@ defineFunction({
 
             let word = "";
             for (let i = 0; i < temp.length; i++) {
-                word += temp[i].children[0].text;;
+                word += temp[i].children[0].text;
             }
             word = word.replace(/\u2212/g, "-");
             word = word.replace(/\u2217/g, "*");
@@ -67,7 +67,6 @@ defineFunction({
         const node = new mathMLTree.MathNode("mi", output);
         node.setAttribute("mathvariant", "normal");
         return node;
-        // See defineFunction below.
     },
 });
 
