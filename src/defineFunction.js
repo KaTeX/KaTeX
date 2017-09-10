@@ -71,8 +71,6 @@ type FunctionSpec<T> = {
     //   - funcName: the text (i.e. name) of the function, including \
     //   - parser: the parser object
     //   - lexer: the lexer object
-    //   - positions: the positions in the overall string of the function
-    //               and the arguments.
     // The latter three should only be used to produce error messages.
     //
     // The function should return an object with the following keys:
