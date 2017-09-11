@@ -118,8 +118,9 @@ type FunctionSpec = {|
 |};
 
 /**
- * All registered functions. Do not import this directly. Instead, import this
- * via 'functions.js' since that ensures that all functions are defined.
+ * All registered functions.
+ * `functions.js` just exports this same dictionary again and makes it public.
+ * `Parser.js` requires this dictionary.
  */
 export const _functions: {[string]: FunctionSpec} = {};
 
