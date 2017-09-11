@@ -9,6 +9,9 @@ import utils from "../utils";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
+import type ParseNode from "../ParseNode";
+import type {FunctionContext} from "../defineFunction";
+
 // Extra data needed for the delimiter handler down below
 const delimiterSizes = {
     "\\bigl" : {mclass: "mopen",    size: 1},
@@ -45,7 +48,7 @@ const delimiters = [
 ];
 
 // Delimiter functions
-const checkDelimiter = function(delim, context) {
+function checkDelimiter(delim: ParseNode, context: FunctionContext): ParseNode {
     if (utils.contains(delimiters, delim.value)) {
         return delim;
     } else {
@@ -53,7 +56,7 @@ const checkDelimiter = function(delim, context) {
             "Invalid delimiter: '" + delim.value + "' after '" +
             context.funcName + "'", delim);
     }
-};
+}
 
 defineFunction({
     type: "delimsizing",
