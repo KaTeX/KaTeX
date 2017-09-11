@@ -329,6 +329,8 @@ defineFunction(["\\mathop"], {
     };
 });
 
+import "./functions/operators";
+
 // Fractions
 defineFunction([
     "\\dfrac", "\\frac", "\\tfrac",
