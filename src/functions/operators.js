@@ -2,6 +2,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
+import domTree from "../domTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -9,15 +10,15 @@ import * as mml from "../buildMathML";
 // \operatorname
 // amsopn.dtx: \mathop{#1\kern\z@\operator@font#3}\newmcodes@
 defineFunction({
-    type: "opNameMain",
-    names: ["\\opNameMain"],
+    type: "operatorname",
+    names: ["\\operatorname"],
     props: {
         numArgs: 1,
     },
     handler: (context, args) => {
         const body = args[0];
         return {
-            type: "opNameMain",
+            type: "operatorname",
             value: ordargument(body),
         };
     },
@@ -64,34 +65,12 @@ defineFunction({
             word = word.replace(/\u2217/g, "*");
             output = [new mathMLTree.TextNode(word)];
         }
-        const node = new mathMLTree.MathNode("mi", output);
-        node.setAttribute("mathvariant", "normal");
-        return node;
-    },
-});
+        const identifier = new mathMLTree.MathNode("mi", output);
+        identifier.setAttribute("mathvariant", "normal");
 
-defineFunction({
-    type: "functionapply",
-
-    // The \operatorname macro expands as: \opNameMain{#1}\functionapply
-    // By that means, we append an <mo>&ApplyFunction;</mo> to the MathML.
-    // ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.2
-
-    names: ["\\functionapply"],
-    props: {
-        numArgs: 0,
-    },
-    handler: (context, args) => {
-        return {
-            type: "functionapply",
-        };
-    },
-    htmlBuilder: (group, options) => {
-        // Return a null. This is all about the MathML.
-        return buildCommon.makeFragment(null);
-    },
-    mathmlBuilder: (group, options) => {
-        return new mathMLTree.MathNode("mo",
+        const operator = new mathMLTree.MathNode("mo",
             [mml.makeText("&ApplyFunction;", "text")]);
+
+        return new domTree.documentFragment([identifier, operator]);
     },
 });
