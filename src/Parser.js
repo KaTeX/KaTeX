@@ -455,13 +455,13 @@ class Parser {
             // begin...end is similar to left...right
             const begin = this.parseFunction(start);
             const envName = begin.value.name;
-            if (!environments.hasOwnProperty(envName)) {
+            if (!environments.has(envName)) {
                 throw new ParseError(
                     "No such environment: " + envName, begin.value.nameGroup);
             }
             // Build the environment object. Arguments and other information will
             // be made available to the begin and end methods using properties.
-            const env = environments[envName];
+            const env = environments.get(envName);
             const args = this.parseArguments("\\begin{" + envName + "}", env);
             const context = {
                 mode: this.mode,
