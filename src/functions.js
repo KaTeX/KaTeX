@@ -673,6 +673,7 @@ defineFunction(["\\raisebox"], {
     return {
         type: "raisebox",
         dy: amount,
-        body: ordargument(body),
+        body: body,
+        value: ordargument(body),
     };
 });

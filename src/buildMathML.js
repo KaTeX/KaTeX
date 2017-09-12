@@ -604,9 +604,13 @@ groupTypes.mclass = function(group, options) {
     return new mathMLTree.MathNode("mstyle", inner);
 };
 
-// Transforms (translation/rotation) don't seem to have a representation
-// in MathML, so just treat them like \text{...}
-groupTypes.raisebox = groupTypes.text;
+groupTypes.raisebox = function(group, options) {
+    const node = new mathMLTree.MathNode(
+        "mpadded", [buildGroup(group.value.body, options)]);
+    const dy = group.value.dy.value.number + group.value.dy.value.unit;
+    node.setAttribute("voffset", dy);
+    return node;
+};
 
 /**
  * Takes a list of nodes, builds them, and returns a list of the generated
