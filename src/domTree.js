@@ -26,31 +26,39 @@ const createClass = function(classes) {
     return classes.join(" ");
 };
 
+/**
+ * @param attributes {object}
+ * @param domNode {Node}
+ */
+const attributesToNode = function(attributes, domNode) {
+    for (const attr in attributes) {
+        if (Object.prototype.hasOwnProperty.call(attributes, attr)) {
+            domNode.setAttribute(attr, attributes[attr]);
+        }
+    }
+};
+
+/**
+ * @param attributes {object}
+ * @returns {string}
+ */
+const attributesToMarkup = function(attributes) {
+    let markup = '';
+
+    for (const attr in attributes) {
+        if (Object.prototype.hasOwnProperty.call(attributes, attr)) {
+            markup += " " + attr + "=\"";
+            markup += utils.escape(attributes[attr]);
+            markup += "\"";
+        }
+    }
+
+    return markup;
+};
+
 class baseNode {
     constructor() {
         this.attributes = {};
-    }
-
-    attributesToNode(node) {
-        for (const attr in this.attributes) {
-            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                node.setAttribute(attr, this.attributes[attr]);
-            }
-        }
-    }
-
-    attributesToMarkup() {
-        let markup = "";
-
-        for (const attr in this.attributes) {
-            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                markup += " " + attr + "=\"";
-                markup += utils.escape(this.attributes[attr]);
-                markup += "\"";
-            }
-        }
-
-        return markup;
     }
 
     /**
@@ -125,7 +133,7 @@ class span extends baseNode {
         }
 
         // Apply attributes
-        this.attributesToNode(span);
+        attributesToNode(this.attributes, span);
 
         // Append the children, also as HTML nodes
         for (let i = 0; i < this.children.length; i++) {
@@ -162,7 +170,7 @@ class span extends baseNode {
         }
 
         // Add the attributes
-        markup += this.attributesToMarkup();
+        markup += attributesToMarkup(this.attributes, markup);
 
         markup += ">";
 
@@ -317,7 +325,7 @@ class symbolNode extends baseNode {
             }
         }
 
-        this.attributesToNode(span);
+        attributesToNode(this.attributes, span);
 
         return span;
     }
@@ -356,7 +364,7 @@ class symbolNode extends baseNode {
         }
 
         // Add the attributes
-        const attributes = this.attributesToMarkup();
+        const attributes = attributesToMarkup(this.attributes);
         if (attributes) {
             needsSpan = true;
             markup += attributes;
@@ -482,6 +490,7 @@ class lineNode {
 }
 
 module.exports = {
+    baseNode: baseNode,
     span: span,
     documentFragment: documentFragment,
     symbolNode: symbolNode,

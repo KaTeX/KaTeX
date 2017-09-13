@@ -1713,7 +1713,9 @@ export default function buildHTML(tree, options) {
             providedPostProcessor(group, groupNode, options);
         }
 
-        groupNode.setAttributes(group.attributes);
+        if (groupNode instanceof domTree.baseNode) {
+            groupNode.setAttributes(group.attributes);
+        }
     };
 
     const buildOptions = options.withPostProcessor(defaultPostProcessor);

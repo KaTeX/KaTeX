@@ -2138,7 +2138,7 @@ describe("A phantom builder", function() {
         const children = getBuilt("\\phantom{x+\\blue{1}}");
         expect(children[0].children[0].style.color).toBe("transparent");
         expect(children[0].children[1].style.color).toBe("transparent");
-        expect(children[0].children[2].children[0].style.color).toBe("transparent");
+        expect(children[0].children[2].style.color).toBe("transparent");
     });
 });
 
