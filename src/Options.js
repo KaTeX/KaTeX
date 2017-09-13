@@ -1,3 +1,4 @@
+// @flow
 /**
  * This file contains information about the options that the Parser carries
  * around with it while parsing. Data is held in an `Options` object, and when
@@ -6,8 +7,8 @@
  */
 
 import fontMetrics from "./fontMetrics";
-
-const BASESIZE = 6;
+import type {FontMetrics} from "./fontMetrics";
+import type {StyleInterface} from "./Style";
 
 const sizeStyleMap = [
     // Each element contains [textsize, scriptsize, scriptscriptsize].
@@ -31,8 +32,18 @@ const sizeMultipliers = [
     0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.44, 1.728, 2.074, 2.488,
 ];
 
-const sizeAtStyle = function(size, style) {
+const sizeAtStyle = function(size: number, style: StyleInterface): number {
     return style.size < 2 ? size : sizeStyleMap[size - 1][style.size - 1];
+};
+
+export type OptionsData = {
+    style: StyleInterface;
+    color?: string | void;
+    size?: number;
+    textSize?: number;
+    phantom?: boolean;
+    font?: string | void;
+    maxSize: number;
 };
 
 /**
@@ -43,16 +54,31 @@ const sizeAtStyle = function(size, style) {
  * different properties, call a `.having*` method.
  */
 class Options {
-    constructor(data) {
+    style: StyleInterface;
+    color: string | void;
+    size: number;
+    textSize: number;
+    phantom: boolean;
+    font: string | void;
+    sizeMultiplier: number;
+    maxSize: number;
+    _fontMetrics: FontMetrics | void;
+
+    /**
+     * The base size index.
+     */
+    static BASESIZE = 6;
+
+    constructor(data: OptionsData) {
         this.style = data.style;
         this.color = data.color;
-        this.size = data.size || BASESIZE;
+        this.size = data.size || Options.BASESIZE;
         this.textSize = data.textSize || this.size;
-        this.phantom = data.phantom;
+        this.phantom = !!data.phantom;
         this.font = data.font;
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
-        this._fontMetrics = null;
+        this._fontMetrics = undefined;
         /**
          * @type {Options~postProcessor}
          */
@@ -63,7 +89,7 @@ class Options {
      * Returns a new options object with the same properties as "this".  Properties
      * from "extension" will be copied to the new options object.
      */
-    extend(extension) {
+    extend(extension: $Shape<OptionsData>): Options {
         const data = {
             style: this.style,
             size: this.size,
@@ -88,7 +114,7 @@ class Options {
      * Return an options object with the given style. If `this.style === style`,
      * returns `this`.
      */
-    havingStyle(style) {
+    havingStyle(style: StyleInterface): Options {
         if (this.style === style) {
             return this;
         } else {
@@ -103,7 +129,7 @@ class Options {
      * Return an options object with a cramped version of the current style. If
      * the current style is cramped, returns `this`.
      */
-    havingCrampedStyle() {
+    havingCrampedStyle(): Options {
         return this.havingStyle(this.style.cramp());
     }
 
@@ -111,7 +137,7 @@ class Options {
      * Return an options object with the given size and in at least `\textstyle`.
      * Returns `this` if appropriate.
      */
-    havingSize(size) {
+    havingSize(size: number): Options {
         if (this.size === size && this.textSize === size) {
             return this;
         } else {
@@ -127,17 +153,16 @@ class Options {
      * Like `this.havingSize(BASESIZE).havingStyle(style)`. If `style` is omitted,
      * changes to at least `\textstyle`.
      */
-    havingBaseStyle(style) {
+    havingBaseStyle(style: StyleInterface): Options {
         style = style || this.style.text();
-        const wantSize = sizeAtStyle(BASESIZE, style);
-        if (this.size === wantSize && this.textSize === BASESIZE
+        const wantSize = sizeAtStyle(Options.BASESIZE, style);
+        if (this.size === wantSize && this.textSize === Options.BASESIZE
             && this.style === style) {
             return this;
         } else {
             return this.extend({
                 style: style,
                 size: wantSize,
-                baseSize: BASESIZE,
             });
         }
     }
@@ -145,7 +170,7 @@ class Options {
     /**
      * Create a new options object with the given color.
      */
-    withColor(color) {
+    withColor(color: string): Options {
         return this.extend({
             color: color,
         });
@@ -154,7 +179,7 @@ class Options {
     /**
      * Create a new options object with "phantom" set to true.
      */
-    withPhantom() {
+    withPhantom(): Options {
         return this.extend({
             phantom: true,
         });
@@ -163,7 +188,7 @@ class Options {
     /**
      * Create a new options objects with the give font.
      */
-    withFont(font) {
+    withFont(font: ?string): Options {
         return this.extend({
             font: font || this.font,
         });
@@ -179,7 +204,7 @@ class Options {
      * Return the CSS sizing classes required to switch from enclosing options
      * `oldOptions` to `this`. Returns an array of classes.
      */
-    sizingClasses(oldOptions) {
+    sizingClasses(oldOptions: Options): Array<string> {
         if (oldOptions.size !== this.size) {
             return ["sizing", "reset-size" + oldOptions.size, "size" + this.size];
         } else {
@@ -191,9 +216,9 @@ class Options {
      * Return the CSS sizing classes required to switch to the base size. Like
      * `this.havingSize(BASESIZE).sizingClasses(this)`.
      */
-    baseSizingClasses() {
-        if (this.size !== BASESIZE) {
-            return ["sizing", "reset-size" + this.size, "size" + BASESIZE];
+    baseSizingClasses(): Array<string> {
+        if (this.size !== Options.BASESIZE) {
+            return ["sizing", "reset-size" + this.size, "size" + Options.BASESIZE];
         } else {
             return [];
         }
@@ -202,7 +227,7 @@ class Options {
     /**
      * Return the font metrics for this size.
      */
-    fontMetrics() {
+    fontMetrics(): FontMetrics {
         if (!this._fontMetrics) {
             this._fontMetrics = fontMetrics.getFontMetrics(this.size);
         }
@@ -276,11 +301,16 @@ class Options {
      * Gets the CSS color of the current options object, accounting for the
      * `colorMap`.
      */
-    getColor() {
+    getColor(): string | void {
         if (this.phantom) {
             return "transparent";
+        } else if (
+            this.color != null &&
+            Options.colorMap.hasOwnProperty(this.color)
+        ) {
+            return Options.colorMap[this.color];
         } else {
-            return Options.colorMap[this.color] || this.color;
+            return this.color;
         }
     }
 }
@@ -292,10 +322,5 @@ class Options {
  * @param {object} buildNode - node built from parse tree node
  * @param {Options} options
  */
-
-/**
- * The base size index.
- */
-Options.BASESIZE = BASESIZE;
 
 module.exports = Options;

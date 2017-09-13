@@ -7,8 +7,9 @@
  *
  * Similar functions for working with MathML nodes exist in mathMLTree.js.
  */
-import unicodeRegexes from "./unicodeRegexes";
+import {cjkRegex, hangulRegex} from "./unicodeRegexes";
 import utils from "./utils";
+import svgGeometry from "./svgGeometry";
 
 /**
  * Create an HTML className based on a list of classes. In addition to joining
@@ -92,7 +93,7 @@ class span extends baseNode {
         this.depth = 0;
         this.maxFontSize = 0;
         this.style = {};
-        this.innerHTML;           // used for inline SVG code.
+        this.attributes = {};
         if (options) {
             if (options.style.isTight()) {
                 this.classes.push("mtight");
@@ -125,10 +126,6 @@ class span extends baseNode {
 
         // Apply attributes
         this.attributesToNode(span);
-
-        if (this.innerHTML) {
-            span.innerHTML = this.innerHTML;
-        }
 
         // Append the children, also as HTML nodes
         for (let i = 0; i < this.children.length; i++) {
@@ -168,10 +165,6 @@ class span extends baseNode {
         markup += this.attributesToMarkup();
 
         markup += ">";
-
-        if (this.innerHTML) {
-            markup += this.innerHTML;
-        }
 
         // Add the markup of the children, also as markup
         for (let i = 0; i < this.children.length; i++) {
@@ -257,11 +250,11 @@ class symbolNode extends baseNode {
         // fonts to use.  This allows us to render these characters with a serif
         // font in situations where the browser would either default to a sans serif
         // or render a placeholder character.
-        if (unicodeRegexes.cjkRegex.test(value)) {
+        if (cjkRegex.test(value)) {
             // I couldn't find any fonts that contained Hangul as well as all of
             // the other characters we wanted to test there for it gets its own
             // CSS class.
-            if (unicodeRegexes.hangulRegex.test(value)) {
+            if (hangulRegex.test(value)) {
                 this.classes.push('hangul_fallback');
             } else {
                 this.classes.push('cjk_fallback');
@@ -381,8 +374,118 @@ class symbolNode extends baseNode {
     }
 }
 
+/**
+ * SVG nodes are used to render stretchy wide elements.
+ */
+class svgNode {
+    constructor(children, attributes) {
+        this.children = children || [];
+        this.attributes = attributes || [];
+    }
+
+    toNode() {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const node = document.createElementNS(svgNS, "svg");
+
+        // Apply attributes
+        for (let i = 0; i < this.attributes.length; i++) {
+            const [name, value] = this.attributes[i];
+            node.setAttribute(name, value);
+        }
+
+        for (let i = 0; i < this.children.length; i++) {
+            node.appendChild(this.children[i].toNode());
+        }
+        return node;
+    }
+
+    toMarkup() {
+        let markup = "<svg";
+
+        // Apply attributes
+        for (let i = 0; i < this.attributes.length; i++) {
+            const [name, value] = this.attributes[i];
+            markup +=  ` ${name}='${value}'`;
+        }
+
+        markup += ">";
+
+        for (let i = 0; i < this.children.length; i++) {
+            markup += this.children[i].toMarkup();
+        }
+
+        markup += "</svg>";
+
+        return markup;
+
+    }
+}
+
+class pathNode {
+    constructor(pathName, alternate) {
+        this.pathName = pathName;
+        this.alternate = alternate;  // Used only for tall \sqrt
+    }
+
+    toNode() {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const node = document.createElementNS(svgNS, "path");
+
+        if (this.pathName !== "sqrtTall") {
+            node.setAttribute("d", svgGeometry.path[this.pathName]);
+        } else {
+            node.setAttribute("d", this.alternate);
+        }
+
+        return node;
+    }
+
+    toMarkup() {
+        if (this.pathName !== "sqrtTall") {
+            return `<path d='${svgGeometry.path[this.pathName]}'/>`;
+        } else {
+            return `<path d='${this.alternate}'/>`;
+        }
+    }
+}
+
+class lineNode {
+    constructor(attributes) {
+        this.attributes = attributes || [];
+    }
+
+    toNode() {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const node = document.createElementNS(svgNS, "line");
+
+        // Apply attributes
+        for (let i = 0; i < this.attributes.length; i++) {
+            const [name, value] = this.attributes[i];
+            node.setAttribute(name, value);
+        }
+
+        return node;
+    }
+
+    toMarkup() {
+        let markup = "<line";
+
+        for (let i = 0; i < this.attributes.length; i++) {
+            const [name, value] = this.attributes[i];
+            markup +=  ` ${name}='${value}'`;
+        }
+
+        markup += "/>";
+
+        return markup;
+    }
+}
+
 module.exports = {
     span: span,
     documentFragment: documentFragment,
     symbolNode: symbolNode,
+    svgNode: svgNode,
+    pathNode: pathNode,
+    lineNode: lineNode,
 };

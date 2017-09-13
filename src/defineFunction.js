@@ -1,86 +1,83 @@
 // @flow
-import functions from "./functions";
 import {groupTypes as htmlGroupTypes} from "./buildHTML";
 import {groupTypes as mathmlGroupTypes} from "./buildMathML";
 
-// TODO(kevinb) use flow to define a proper type for Options
-type Options = any;
+import type ParseNode from "./ParseNode" ;
+import type Options from "./Options";
+import type {ArgType} from "./types" ;
+import type {Parser} from "./Parser" ;
+import type {Token} from "./Token" ;
 
-type FunctionSpec<T> = {
+/** Context provided to function handlers for error messages. */
+export type FunctionContext = {|
+    funcName: string,
+    parser: Parser,
+    token?: Token,
+|};
+
+// TODO: Enumerate all allowed output types.
+export type FunctionHandler = (context: FunctionContext, args: ParseNode[]) => *;
+
+export type FunctionPropSpec = {
+    // The number of arguments the function takes.
+    numArgs: number,
+
+    // An array corresponding to each argument of the function, giving the
+    // type of argument that should be parsed. Its length should be equal
+    // to `numArgs + numOptionalArgs`.
+    argTypes?: ArgType[],
+
+    // The greediness of the function to use ungrouped arguments.
+    //
+    // E.g. if you have an expression
+    //   \sqrt \frac 1 2
+    // since \frac has greediness=2 vs \sqrt's greediness=1, \frac
+    // will use the two arguments '1' and '2' as its two arguments,
+    // then that whole function will be used as the argument to
+    // \sqrt. On the other hand, the expressions
+    //   \frac \frac 1 2 3
+    // and
+    //   \frac \sqrt 1 2
+    // will fail because \frac and \frac have equal greediness
+    // and \sqrt has a lower greediness than \frac respectively. To
+    // make these parse, we would have to change them to:
+    //   \frac {\frac 1 2} 3
+    // and
+    //   \frac {\sqrt 1} 2
+    //
+    // The default value is `1`
+    greediness?: number,
+
+    // Whether or not the function is allowed inside text mode
+    // (default false)
+    allowedInText?: boolean,
+
+    // Whether or not the function is allowed inside text mode
+    // (default true)
+    allowedInMath?: boolean,
+
+    // (optional) The number of optional arguments the function
+    // should parse. If the optional arguments aren't found,
+    // `null` will be passed to the handler in their place.
+    // (default 0)
+    numOptionalArgs?: number,
+
+    // Must be true if the function is an infix operator.
+    infix?: boolean,
+};
+
+type FunctionDefSpec = {|
     // Unique string to differentiate parse nodes.
-    type: string,
+    type?: string,
 
     // The first argument to defineFunction is a single name or a list of names.
     // All functions named in such a list will share a single implementation.
     names: Array<string>,
 
     // Properties that control how the functions are parsed.
-    props: {
-        // The number of arguments the function takes.
-        numArgs?: number,
-
-        // An array corresponding to each argument of the function, giving the
-        // type of argument that should be parsed. Its length should be equal
-        // to `numArgs + numOptionalArgs`. Valid types:
-        //   - "size": A size-like thing, such as "1em" or "5ex"
-        //   - "color": An html color, like "#abc" or "blue"
-        //   - "original": The same type as the environment that the
-        //                 function being parsed is in (e.g. used for the
-        //                 bodies of functions like \textcolor where the
-        //                 first argument is special and the second
-        //                 argument is parsed normally)
-        argTypes?: "color" | "size" | "original",
-
-        // The greediness of the function to use ungrouped arguments.
-        //
-        // E.g. if you have an expression
-        //   \sqrt \frac 1 2
-        // since \frac has greediness=2 vs \sqrt's greediness=1, \frac
-        // will use the two arguments '1' and '2' as its two arguments,
-        // then that whole function will be used as the argument to
-        // \sqrt. On the other hand, the expressions
-        //   \frac \frac 1 2 3
-        // and
-        //   \frac \sqrt 1 2
-        // will fail because \frac and \frac have equal greediness
-        // and \sqrt has a lower greediness than \frac respectively. To
-        // make these parse, we would have to change them to:
-        //   \frac {\frac 1 2} 3
-        // and
-        //   \frac {\sqrt 1} 2
-        //
-        // The default value is `1`
-        greediness?: number,
-
-        // Whether or not the function is allowed inside text mode
-        // (default false)
-        allowedInText?: boolean,
-
-        // Whether or not the function is allowed inside text mode
-        // (default true)
-        allowedInMath?: boolean,
-
-        // (optional) The number of optional arguments the function
-        // should parse. If the optional arguments aren't found,
-        // `null` will be passed to the handler in their place.
-        // (default 0)
-        numOptionalArgs?: number,
-
-        // Must be true if the function is an infix operator.
-        infix?: boolean,
-    },
+    props: FunctionPropSpec,
 
     // The handler is called to handle these functions and their arguments.
-    // It receives two arguments:
-    //   - context contains information and references provided by the parser
-    //   - args is an array of arguments obtained from TeX input
-    // The context contains the following properties:
-    //   - funcName: the text (i.e. name) of the function, including \
-    //   - parser: the parser object
-    //   - lexer: the lexer object
-    //   - positions: the positions in the overall string of the function
-    //               and the arguments.
-    // The latter three should only be used to produce error messages.
     //
     // The function should return an object with the following keys:
     //   - type: The type of element that this is. This is then used in
@@ -88,16 +85,44 @@ type FunctionSpec<T> = {
     //          should be called to build this node into a DOM node
     // Any other data can be added to the object, which will be passed
     // in to the function in buildHTML/buildMathML as `group.value`.
-    handler: (context: any, args: any) => T,
+    handler: ?FunctionHandler,
 
     // This function returns an object representing the DOM structure to be
     // created when rendering the defined LaTeX function.
-    htmlBuilder: (group: T, options: Options) => any,
+    // TODO: Port buildHTML to flow and make the group and return types explicit.
+    htmlBuilder?: (group: *, options: Options) => *,
 
     // This function returns an object representing the MathML structure to be
     // created when rendering the defined LaTeX function.
-    mathmlBuilder: (group: T, options: Options) => any,
-}
+    // TODO: Port buildMathML to flow and make the group and return types explicit.
+    mathmlBuilder?: (group: *, options: Options) => *,
+|};
+
+/**
+ * Final function spec for use at parse time.
+ * This is almost identical to `FunctionPropSpec`, except it
+ * 1. includes the function handler, and
+ * 2. requires all arguments except argTypes.
+ * It is generated by `defineFunction()` below.
+ */
+type FunctionSpec = {|
+    numArgs: number,
+    argTypes?: ArgType[],
+    greediness: number,
+    allowedInText: boolean,
+    allowedInMath: boolean,
+    numOptionalArgs: number,
+    infix: boolean,
+    // Must be specified unless it's handled directly in the parser.
+    handler: ?FunctionHandler,
+|};
+
+/**
+ * All registered functions.
+ * `functions.js` just exports this same dictionary again and makes it public.
+ * `Parser.js` requires this dictionary.
+ */
+export const _functions: {[string]: FunctionSpec} = {};
 
 export default function defineFunction({
     type,
@@ -106,7 +131,7 @@ export default function defineFunction({
     handler,
     htmlBuilder,
     mathmlBuilder,
-}: FunctionSpec<*>) {
+}: FunctionDefSpec) {
     // Set default values of functions
     const data = {
         numArgs: props.numArgs,
@@ -121,7 +146,7 @@ export default function defineFunction({
         handler: handler,
     };
     for (let i = 0; i < names.length; ++i) {
-        functions[names[i]] = data;
+        _functions[names[i]] = data;
     }
     if (type) {
         if (htmlBuilder) {
@@ -135,7 +160,7 @@ export default function defineFunction({
 
 // Since the corresponding buildHTML/buildMathML function expects a
 // list of elements, we normalize for different kinds of arguments
-export const ordargument = function(arg: any) {
+export const ordargument = function(arg: ParseNode) {
     if (arg.type === "ordgroup") {
         return arg.value;
     } else {

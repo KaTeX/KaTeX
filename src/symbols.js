@@ -1,3 +1,4 @@
+// @flow
 /**
  * This file holds a list of all no-argument functions and single-character
  * symbols (like 'a' or ';').
@@ -16,20 +17,33 @@
  * accepted in (e.g. "math" or "text").
  */
 
-module.exports = {
-    math: {},
-    text: {},
+import type {Mode} from "./types";
+
+type Font = "main" | "ams";
+type Group =
+    "accent" | "bin" | "close" | "inner" | "mathord" | "op" | "open" | "punct" |
+    "rel" | "spacing" | "textord";
+type CharInfoMap = {[string]: {font: Font, group: Group, replace: ?string}};
+
+const symbols: {[Mode]: CharInfoMap} = {
+    "math": {},
+    "text": {},
 };
+export default symbols;
 
-function defineSymbol(mode, font, group, replace, name, acceptUnicodeChar) {
-    module.exports[mode][name] = {
-        font: font,
-        group: group,
-        replace: replace,
-    };
+/** `acceptUnicodeChar = true` is only applicable if `replace` is set. */
+function defineSymbol(
+    mode: Mode,
+    font: Font,
+    group: Group,
+    replace: ?string,
+    name: string,
+    acceptUnicodeChar?: boolean,
+) {
+    symbols[mode][name] = {font, group, replace};
 
-    if (acceptUnicodeChar) {
-        module.exports[mode][replace] = module.exports[mode][name];
+    if (acceptUnicodeChar && replace) {
+        symbols[mode][replace] = symbols[mode][name];
     }
 }
 
@@ -602,7 +616,7 @@ defineSymbol(text, main, inner, "\u2026", "\\textellipsis");
 defineSymbol(math, main, inner, "\u2026", "\\mathellipsis");
 defineSymbol(text, main, inner, "\u2026", "\\ldots", true);
 defineSymbol(math, main, inner, "\u2026", "\\ldots", true);
-defineSymbol(math, main, inner, "\u22ef", "\\cdots", true);
+defineSymbol(math, main, inner, "\u22ef", "\\@cdots", true);
 defineSymbol(math, main, inner, "\u22f1", "\\ddots", true);
 defineSymbol(math, main, textord, "\u22ee", "\\vdots", true);
 defineSymbol(math, main, accent, "\u00b4", "\\acute");

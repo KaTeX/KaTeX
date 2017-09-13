@@ -21,6 +21,7 @@ const getMathML = function(expr, settings) {
     // Setup the default options
     const options = new Options({
         style: startStyle,
+        maxSize: Infinity,
     });
 
     const built = buildMathML(parseTree(expr, usedSettings), expr, options);

@@ -1,24 +1,33 @@
+// @flow
+/** Include this to ensure that all functions are defined. */
 import utils from "./utils";
 import ParseError from "./ParseError";
 import ParseNode from "./ParseNode";
-import {default as _defineFunction, ordargument} from "./defineFunction";
+import {
+    default as _defineFunction,
+    ordargument,
+    _functions,
+} from "./defineFunction";
 
-// WARNING: New functions should be added to src/functions.
+import type {FunctionPropSpec, FunctionHandler} from "./defineFunction" ;
+
+// WARNING: New functions should be added to src/functions and imported here.
+
+const functions = _functions;
+export default functions;
 
 // Define a convenience function that mimcs the old semantics of defineFunction
 // to support existing code so that we can migrate it a little bit at a time.
-const defineFunction = function(names, props, handler) {
-    if (typeof names === "string") {
-        names = [names];
-    }
-    if (typeof props === "number") {
-        props = { numArgs: props };
-    }
+const defineFunction = function(
+    names: string[],
+    props: FunctionPropSpec,
+    handler: ?FunctionHandler, // null only if handled in parser
+) {
     _defineFunction({names, props, handler});
 };
 
 // A normal square root
-defineFunction("\\sqrt", {
+defineFunction(["\\sqrt"], {
     numArgs: 1,
     numOptionalArgs: 1,
 }, function(context, args) {
@@ -32,7 +41,7 @@ defineFunction("\\sqrt", {
 });
 
 // Non-mathy text, possibly in a font
-const textFunctionStyles = {
+const textFunctionFonts = {
     "\\text": undefined, "\\textrm": "mathrm", "\\textsf": "mathsf",
     "\\texttt": "mathtt", "\\textnormal": "mathrm", "\\textbf": "mathbf",
     "\\textit": "textit",
@@ -51,12 +60,12 @@ defineFunction([
     return {
         type: "text",
         body: ordargument(body),
-        style: textFunctionStyles[context.funcName],
+        font: textFunctionFonts[context.funcName],
     };
 });
 
 // A two-argument custom color
-defineFunction("\\textcolor", {
+defineFunction(["\\textcolor"], {
     numArgs: 2,
     allowedInText: true,
     greediness: 3,
@@ -72,7 +81,7 @@ defineFunction("\\textcolor", {
 });
 
 // \color is handled in Parser.js's parseImplicitGroup
-defineFunction("\\color", {
+defineFunction(["\\color"], {
     numArgs: 1,
     allowedInText: true,
     greediness: 3,
@@ -80,7 +89,7 @@ defineFunction("\\color", {
 }, null);
 
 // An overline
-defineFunction("\\overline", {
+defineFunction(["\\overline"], {
     numArgs: 1,
 }, function(context, args) {
     const body = args[0];
@@ -91,7 +100,7 @@ defineFunction("\\overline", {
 });
 
 // An underline
-defineFunction("\\underline", {
+defineFunction(["\\underline"], {
     numArgs: 1,
 }, function(context, args) {
     const body = args[0];
@@ -102,7 +111,7 @@ defineFunction("\\underline", {
 });
 
 // A box of the width and height
-defineFunction("\\rule", {
+defineFunction(["\\rule"], {
     numArgs: 2,
     numOptionalArgs: 1,
     argTypes: ["size", "size", "size"],
@@ -131,7 +140,7 @@ defineFunction(["\\kern", "\\mkern"], {
 });
 
 // A KaTeX logo
-defineFunction("\\KaTeX", {
+defineFunction(["\\KaTeX"], {
     numArgs: 0,
 }, function(context) {
     return {
@@ -157,7 +166,7 @@ defineFunction([
 });
 
 // Build a relation by placing one symbol on top of another
-defineFunction("\\stackrel", {
+defineFunction(["\\stackrel"], {
     numArgs: 2,
 }, function(context, args) {
     const top = args[0];
@@ -185,7 +194,7 @@ defineFunction("\\stackrel", {
 });
 
 // \mod-type functions
-defineFunction("\\bmod", {
+defineFunction(["\\bmod"], {
     numArgs: 0,
 }, function(context, args) {
     return {
@@ -308,7 +317,7 @@ defineFunction([
 });
 
 // \mathop class command
-defineFunction("\\mathop", {
+defineFunction(["\\mathop"], {
     numArgs: 1,
 }, function(context, args) {
     const body = args[0];
@@ -319,6 +328,8 @@ defineFunction("\\mathop", {
         value: ordargument(body),
     };
 });
+
+import "./functions/operators";
 
 // Fractions
 defineFunction([
@@ -392,7 +403,7 @@ defineFunction(["\\mathllap", "\\mathrlap", "\\mathclap"], {
 });
 
 // smash, with optional [tb], as in AMS
-defineFunction("\\smash", {
+defineFunction(["\\smash"], {
     numArgs: 1,
     numOptionalArgs: 1,
     allowedInText: true,
@@ -437,19 +448,19 @@ import "./functions/delimsizing";
 defineFunction([
     "\\tiny", "\\scriptsize", "\\footnotesize", "\\small",
     "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
-], 0, null);
+], {numArgs: 0}, null);
 
 // Style changing functions (handled in Parser.js explicitly, hence no
 // handler)
 defineFunction([
     "\\displaystyle", "\\textstyle", "\\scriptstyle",
     "\\scriptscriptstyle",
-], 0, null);
+], {numArgs: 0}, null);
 
 // Old font changing functions
 defineFunction([
     "\\rm", "\\sf", "\\tt", "\\bf", "\\it", //"\\sl", "\\sc",
-], 0, null);
+], {numArgs: 0}, null);
 
 defineFunction([
     // styles
@@ -648,5 +659,20 @@ defineFunction(["\\begin", "\\end"], {
         type: "environment",
         name: name,
         nameGroup: nameGroup,
+    };
+});
+
+// Box manipulation
+defineFunction(["\\raisebox"], {
+    numArgs: 2,
+    argTypes: ["size", "text"],
+    allowedInText: true,
+}, function(context, args) {
+    const amount = args[0];
+    const body = args[1];
+    return {
+        type: "raisebox",
+        dy: amount,
+        body: ordargument(body),
     };
 });

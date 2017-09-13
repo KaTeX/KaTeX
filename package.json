@@ -26,9 +26,10 @@
     "babelify": "^7.3.0",
     "browserify": "^13.3.0",
     "clean-css": "^3.4.23",
-    "eslint": "^3.13.0",
+    "eslint": "^4.6.1",
+    "eslint-plugin-flowtype": "^2.35.1",
     "express": "^4.14.0",
-    "flow-bin": "^0.53.1",
+    "flow-bin": "^0.54.0",
     "glob": "^7.1.1",
     "jest": "^20.0.4",
     "jest-serializer-html": "^4.0.0",
@@ -54,7 +55,7 @@
     "lint"
   ],
   "dependencies": {
-    "match-at": "^0.1.0"
+    "match-at": "^0.1.1"
   },
   "jest": {
     "snapshotSerializers": [

@@ -13,7 +13,7 @@ import Style from "./Style";
 import buildCommon, { makeSpan } from "./buildCommon";
 import delimiter from "./delimiter";
 import domTree from "./domTree";
-import units from "./units";
+import { calculateSize } from "./units";
 import utils from "./utils";
 import stretchy from "./stretchy";
 
@@ -304,7 +304,7 @@ groupTypes.ordgroup = function(group, options) {
 };
 
 groupTypes.text = function(group, options) {
-    const newOptions = options.withFont(group.value.style);
+    const newOptions = options.withFont(group.value.font);
     const inner = buildExpression(group.value.body, newOptions, true);
     for (let i = 0; i < inner.length - 1; i++) {
         if (inner[i].tryCombine(inner[i + 1])) {
@@ -629,7 +629,7 @@ groupTypes.array = function(group, options) {
 
         let gap = 0;
         if (group.value.rowGaps[r]) {
-            gap = units.calculateSize(group.value.rowGaps[r].value, options);
+            gap = calculateSize(group.value.rowGaps[r].value, options);
             if (gap > 0) { // \@argarraycr
                 gap += arstrutDepth;
                 if (depth < gap) {
@@ -1269,11 +1269,11 @@ groupTypes.rule = function(group, options) {
     // Calculate the shift, width, and height of the rule, and account for units
     let shift = 0;
     if (group.value.shift) {
-        shift = units.calculateSize(group.value.shift, options);
+        shift = calculateSize(group.value.shift, options);
     }
 
-    const width = units.calculateSize(group.value.width, options);
-    const height = units.calculateSize(group.value.height, options);
+    const width = calculateSize(group.value.width, options);
+    const height = calculateSize(group.value.height, options);
 
     // Style the rule to the right size
     rule.style.borderRightWidth = width + "em";
@@ -1297,7 +1297,7 @@ groupTypes.kern = function(group, options) {
     const rule = makeSpan(["mord", "rule"], [], options);
 
     if (group.value.dimension) {
-        const dimension = units.calculateSize(group.value.dimension, options);
+        const dimension = calculateSize(group.value.dimension, options);
         rule.style.marginLeft = dimension + "em";
     }
 
@@ -1600,15 +1600,19 @@ groupTypes.xArrow = function(group, options) {
 
     const arrowBody = stretchy.svgSpan(group, options);
 
-    const arrowShift = -options.fontMetrics().axisHeight + arrowBody.depth;
-    const upperShift = -options.fontMetrics().axisHeight - arrowBody.height -
-        0.111;    // 2 mu. Ref: amsmath.dtx: #7\if0#2\else\mkern#2mu\fi
+    // Re shift: Note that stretchy.svgSpan returned arrowBody.depth = 0.
+    // The point we want on the math axis is at 0.5 * arrowBody.height.
+    const arrowShift = -options.fontMetrics().axisHeight +
+        0.5 * arrowBody.height;
+    // 2 mu kern. Ref: amsmath.dtx: #7\if0#2\else\mkern#2mu\fi
+    const upperShift = -options.fontMetrics().axisHeight -
+        0.5 * arrowBody.height - 0.111;
 
     // Generate the vlist
     let vlist;
     if (group.value.below) {
         const lowerShift = -options.fontMetrics().axisHeight
-            + lowerGroup.height + arrowBody.height
+            + lowerGroup.height + 0.5 * arrowBody.height
             + 0.111;
         vlist = buildCommon.makeVList([
             {type: "elem", elem: upperGroup, shift: upperShift},
@@ -1631,6 +1635,24 @@ groupTypes.mclass = function(group, options) {
     const elements = buildExpression(group.value.value, options, true);
 
     return makeSpan([group.value.mclass], elements, options);
+};
+
+groupTypes.raisebox = function(group, options) {
+    const body = groupTypes.sizing({value: {
+        value: [{
+            type: "text",
+            value: {
+                body: group.value.body,
+                font: "mathrm", // simulate \textrm
+            },
+        }],
+        size: 6,                // simulate \normalsize
+    }}, options);
+    const dy = calculateSize(group.value.dy.value, options);
+    return buildCommon.makeVList([{
+        type: "elem",
+        elem: body,
+    }], "shift", -dy, options);
 };
 
 /**

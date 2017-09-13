@@ -1,3 +1,4 @@
+// @flow
 /**
  * This file contains information and classes for the various kinds of styles
  * used in TeX. It provides a generic `Style` class, which holds information
@@ -10,8 +11,12 @@
  * The main style class. Contains a unique id for the style, a size (which is
  * the same for cramped and uncramped version of a style), and a cramped flag.
  */
-class Style {
-    constructor(id, size, cramped) {
+class Style implements StyleInterface {
+    id: number;
+    size: number;
+    cramped: boolean;
+
+    constructor(id: number, size: number, cramped: boolean) {
         this.id = id;
         this.size = size;
         this.cramped = cramped;
@@ -20,14 +25,14 @@ class Style {
     /**
      * Get the style of a superscript given a base in the current style.
      */
-    sup() {
+    sup(): Style {
         return styles[sup[this.id]];
     }
 
     /**
      * Get the style of a subscript given a base in the current style.
      */
-    sub() {
+    sub(): Style {
         return styles[sub[this.id]];
     }
 
@@ -35,7 +40,7 @@ class Style {
      * Get the style of a fraction numerator given the fraction in the current
      * style.
      */
-    fracNum() {
+    fracNum(): Style {
         return styles[fracNum[this.id]];
     }
 
@@ -43,7 +48,7 @@ class Style {
      * Get the style of a fraction denominator given the fraction in the current
      * style.
      */
-    fracDen() {
+    fracDen(): Style {
         return styles[fracDen[this.id]];
     }
 
@@ -51,23 +56,39 @@ class Style {
      * Get the cramped version of a style (in particular, cramping a cramped style
      * doesn't change the style).
      */
-    cramp() {
+    cramp(): Style {
         return styles[cramp[this.id]];
     }
 
     /**
      * Get a text or display version of this style.
      */
-    text() {
+    text(): Style {
         return styles[text[this.id]];
     }
 
     /**
-     * Return if this style is tightly spaced (scriptstyle/scriptscriptstyle)
+     * Return true if this style is tightly spaced (scriptstyle/scriptscriptstyle)
      */
-    isTight() {
+    isTight(): boolean {
         return this.size >= 2;
     }
+}
+
+// Export an interface for type checking, but don't expose the implementation.
+// This way, no more styles can be generated.
+export interface StyleInterface {
+    id: number;
+    size: number;
+    cramped: boolean;
+
+    sup(): StyleInterface;
+    sub(): StyleInterface;
+    fracNum(): StyleInterface;
+    fracDen(): StyleInterface;
+    cramp(): StyleInterface;
+    text(): StyleInterface;
+    isTight(): boolean;
 }
 
 // IDs of the different styles
@@ -100,8 +121,7 @@ const fracDen = [Tc, Tc, Sc, Sc, SSc, SSc, SSc, SSc];
 const cramp = [Dc, Dc, Tc, Tc, Sc, Sc, SSc, SSc];
 const text = [D, Dc, T, Tc, T, Tc, T, Tc];
 
-// We only export some of the styles. Also, we don't export the `Style` class so
-// no more styles can be generated.
+// We only export some of the styles.
 module.exports = {
     DISPLAY: styles[D],
     TEXT: styles[T],

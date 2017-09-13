@@ -372,6 +372,9 @@ groupTypes.op = function(group, options) {
         // operators, like \limsup.
         node = new mathMLTree.MathNode(
             "mi", [new mathMLTree.TextNode(group.value.body.slice(1))]);
+
+        // TODO(ron): Append an <mo>&ApplyFunction;</mo> as in \operatorname
+        // ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.2
     }
 
     return node;
@@ -600,6 +603,10 @@ groupTypes.mclass = function(group, options) {
     const inner = buildExpression(group.value.value, options);
     return new mathMLTree.MathNode("mstyle", inner);
 };
+
+// Transforms (translation/rotation) don't seem to have a representation
+// in MathML, so just treat them like \text{...}
+groupTypes.raisebox = groupTypes.text;
 
 /**
  * Takes a list of nodes, builds them, and returns a list of the generated
