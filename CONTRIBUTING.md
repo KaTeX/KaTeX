@@ -57,8 +57,8 @@ single file.  The goal is to have all functions use this new system.
 
 ## Testing
 
-Local testing can be done by running the node server in `server.js`. Run `make
-setup` to install dependencies, and then `make serve` to start the server.
+Local testing can be done by running the node server in `server.js`. Run
+`npm install` to install dependencies, and then `npm start` to start the server.
 
 This will host an interactive editor at
 [http://localhost:7936/](http://localhost:7936/) to play around with and test
@@ -68,7 +68,7 @@ changes.
 
 The JavaScript parser and some of the HTML and MathML tree
 builders are tested with Jest. These tests can be run using node with
-`make test`.  If you need to debug the tests see
+`npm run jest`.  If you need to debug the tests see
 [https://facebook.github.io/jest/docs/troubleshooting.html](https://facebook.github.io/jest/docs/troubleshooting.html)
 
 The interactive editor can also be used for debugging tests in the browser by

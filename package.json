@@ -25,6 +25,7 @@
     "babel-register": "^6.24.0",
     "babelify": "^7.3.0",
     "browserify": "^13.3.0",
+    "check-dependencies": "^1.1.0",
     "clean-css": "^3.4.23",
     "eslint": "^4.6.1",
     "eslint-plugin-flowtype": "^2.35.1",
@@ -47,9 +48,13 @@
   },
   "bin": "cli.js",
   "scripts": {
-    "lint": "make lint",
-    "test": "make lint flow test",
-    "prepublish": "make NIS= dist"
+    "lint": "eslint katex.js server.js cli.js src test contrib dockers",
+    "flow": "flow",
+    "jest": "jest",
+    "coverage": "jest --coverage",
+    "test": "check-dependencies && npm run lint && npm run flow && npm run jest",
+    "start": "check-dependencies && node server.js",
+    "prepublishOnly": "make NIS= dist"
   },
   "pre-commit": [
     "lint"

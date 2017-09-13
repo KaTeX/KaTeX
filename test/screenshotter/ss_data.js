@@ -7,27 +7,29 @@
  * The export of this module is simply a dictionary of test cases.
  */
 
-var fs = require("fs");
-var jsyaml = require("js-yaml");
-var querystring = require("querystring");
+const fs = require("fs");
+const jsyaml = require("js-yaml");
+const querystring = require("querystring");
 
-var queryKeys = ["tex", "pre", "post", "display", "noThrow", "errorColor"];
-var dict = fs.readFileSync(require.resolve("./ss_data.yaml"));
+const queryKeys = ["tex", "pre", "post", "display", "noThrow", "errorColor"];
+let dict = fs.readFileSync(require.resolve("./ss_data.yaml"));
 dict = jsyaml.safeLoad(dict);
-for (var key in dict) {
-    var itm = dict[key];
-    if (typeof itm === "string") {
-        itm = dict[key] = { tex: itm };
-    }
-    var query = {};
-    queryKeys.forEach(function(key) {
-        if (itm.hasOwnProperty(key)) {
-            query[key] = itm[key];
+for (const key in dict) {
+    if (dict.hasOwnProperty(key)) {
+        let itm = dict[key];
+        if (typeof itm === "string") {
+            itm = dict[key] = { tex: itm };
         }
-    });
-    itm.query = querystring.stringify(query);
-    if (itm.macros) {
-        itm.query += "&" + querystring.stringify(itm.macros);
+        const query = {};
+        queryKeys.forEach(function(key) {
+            if (itm.hasOwnProperty(key)) {
+                query[key] = itm[key];
+            }
+        });
+        itm.query = querystring.stringify(query);
+        if (itm.macros) {
+            itm.query += "&" + querystring.stringify(itm.macros);
+        }
     }
 }
 module.exports = dict;
