@@ -313,8 +313,7 @@ groupTypes.text = function(group, options) {
         }
     }
     return makeSpan(["mord", "text"],
-        inner,
-        newOptions);
+        inner, newOptions);
 };
 
 groupTypes.color = function(group, options) {
@@ -328,7 +327,7 @@ groupTypes.color = function(group, options) {
     // To accomplish this, we wrap the results in a fragment, so the inner
     // elements will be able to directly interact with their neighbors. For
     // example, `\color{red}{2 +} 3` has the same spacing as `2 + 3`
-    return new buildCommon.makeSpan(null, elements, null);
+    return new buildCommon.makeFragment(elements);
 };
 
 groupTypes.supsub = function(group, options) {
@@ -760,8 +759,7 @@ groupTypes.spacing = function(group, options) {
         // generate these.
         return makeSpan(
             ["mspace", buildCommon.spacingFunctions[group.value].className],
-            [],
-            options);
+            [], options);
     }
 };
 
@@ -1033,7 +1031,7 @@ groupTypes.mod = function(group, options) {
         inner.push(buildCommon.mathsym(")", group.mode));
     }
 
-    return buildCommon.makeSpan(null, inner);
+    return buildCommon.makeFragment(inner);
 };
 
 groupTypes.katex = function(group, options) {
@@ -1208,7 +1206,7 @@ groupTypes.sqrt = function(group, options) {
     }
 };
 
-function sizingGroup(value, options, baseOptions, attributes) {
+function sizingGroup(value, options, baseOptions) {
     const inner = buildExpression(value, options, false);
     const multiplier = options.sizeMultiplier / baseOptions.sizeMultiplier;
 
@@ -1230,7 +1228,7 @@ function sizingGroup(value, options, baseOptions, attributes) {
         inner[i].depth *= multiplier;
     }
 
-    return buildCommon.makeSpan(null, inner, null, attributes);
+    return buildCommon.makeFragment(inner);
 }
 
 groupTypes.sizing = function(group, options) {
