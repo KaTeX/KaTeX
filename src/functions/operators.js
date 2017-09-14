@@ -55,7 +55,7 @@ defineFunction({
         // The steps taken here are similar to the html version.
         let output = [];
         if (group.value.value.length > 0) {
-            let temp = mml.buildExpression(group.value.value, options);
+            const temp = mml.buildExpression(group.value.value, options);
 
             let word = "";
             for (let i = 0; i < temp.length; i++) {
