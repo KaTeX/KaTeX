@@ -151,6 +151,7 @@ defineSymbol(math, main, bin, "\u2219", "\\bullet");
 defineSymbol(math, main, bin, "\u2021", "\\ddagger");
 defineSymbol(math, main, bin, "\u2240", "\\wr");
 defineSymbol(math, main, bin, "\u2a3f", "\\amalg");
+defineSymbol(math, main, bin, "\u0026", "\\And");  // from amsmath
 
 // Arrow Symbols
 defineSymbol(math, main, rel, "\u27f5", "\\longleftarrow");
