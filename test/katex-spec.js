@@ -2046,6 +2046,78 @@ describe("A boxed builder", function() {
     });
 });
 
+describe("A colorbox parser", function() {
+    it("should not fail, given a text argument", function() {
+        expect("\\colorbox{red}{a b}").toParse();
+        expect("\\colorbox{red}{x}^2").toParse();
+        expect("\\colorbox{red} x").toParse();
+    });
+
+    it("should fail, given a math argument", function() {
+        expect("\\colorbox{red}{\\alpha}").toNotParse();
+        expect("\\colorbox{red}{\\frac{a}{b}}").toNotParse();
+    });
+
+    it("should parse a color", function() {
+        expect("\\colorbox{red}{a b}").toParse();
+        expect("\\colorbox{#197}{a b}").toParse();
+        expect("\\colorbox{#1a9b7c}{a b}").toParse();
+    });
+
+    it("should produce enclose", function() {
+        const parse = getParsed("\\colorbox{red} x")[0];
+        expect(parse.type).toEqual("enclose");
+    });
+});
+
+describe("A colorbox builder", function() {
+    it("should not fail", function() {
+        expect("\\colorbox{red}{a b}").toBuild();
+        expect("\\colorbox{red}{a b}^2").toBuild();
+        expect("\\colorbox{red} x").toBuild();
+    });
+
+    it("should produce mords", function() {
+        expect(getBuilt("\\colorbox{red}{a b}")[0].classes).toContain("mord");
+    });
+});
+
+describe("An fcolorbox parser", function() {
+    it("should not fail, given a text argument", function() {
+        expect("\\fcolorbox{blue}{yellow}{a b}").toParse();
+        expect("\\fcolorbox{blue}{yellow}{x}^2").toParse();
+        expect("\\fcolorbox{blue}{yellow} x").toParse();
+    });
+
+    it("should fail, given a math argument", function() {
+        expect("\\fcolorbox{blue}{yellow}{\\alpha}").toNotParse();
+        expect("\\fcolorbox{blue}{yellow}{\\frac{a}{b}}").toNotParse();
+    });
+
+    it("should parse a color", function() {
+        expect("\\fcolorbox{blue}{yellow}{a b}").toParse();
+        expect("\\fcolorbox{blue}{#197}{a b}").toParse();
+        expect("\\fcolorbox{blue}{#1a9b7c}{a b}").toParse();
+    });
+
+    it("should produce enclose", function() {
+        const parse = getParsed("\\fcolorbox{blue}{yellow} x")[0];
+        expect(parse.type).toEqual("enclose");
+    });
+});
+
+describe("A fcolorbox builder", function() {
+    it("should not fail", function() {
+        expect("\\fcolorbox{blue}{yellow}{a b}").toBuild();
+        expect("\\fcolorbox{blue}{yellow}{a b}^2").toBuild();
+        expect("\\fcolorbox{blue}{yellow} x").toBuild();
+    });
+
+    it("should produce mords", function() {
+        expect(getBuilt("\\colorbox{red}{a b}")[0].classes).toContain("mord");
+    });
+});
+
 describe("A strike-through parser", function() {
     it("should not fail", function() {
         expect("\\cancel{x}").toParse();

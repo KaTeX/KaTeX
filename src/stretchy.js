@@ -254,11 +254,13 @@ const encloseSpan = function(inner, label, pad, options) {
     let img;
     const totalHeight = inner.height + inner.depth + 2 * pad;
 
-    if (label === "fbox") {
+    if (/(fbox)|(color)/.test(label)) {
         img = buildCommon.makeSpan(["stretchy", label], [], options);
-        if (options.color) {
+
+        if (label === "fbox" && options.color) {
             img.style.borderColor = options.getColor();
         }
+
     } else {
         // \cancel, \bcancel, or \xcancel
         // Since \cancel's SVG is inline and it omits the viewBox attribute,

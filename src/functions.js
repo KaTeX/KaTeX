@@ -88,6 +88,42 @@ defineFunction(["\\color"], {
     argTypes: ["color"],
 }, null);
 
+// colorbox
+defineFunction(["\\colorbox"], {
+    numArgs: 2,
+    allowedInText: true,
+    greediness: 3,
+    argTypes: ["color", "text"],
+}, function(context, args) {
+    const color = args[0];
+    const body = args[1];
+    return {
+        type: "enclose",
+        label: context.funcName,
+        bkgrndColor: color,
+        body: body,
+    };
+});
+
+// fcolorbox
+defineFunction(["\\fcolorbox"], {
+    numArgs: 3,
+    allowedInText: true,
+    greediness: 3,
+    argTypes: ["color", "color", "text"],
+}, function(context, args) {
+    const borderColor = args[0];
+    const bkgrndColor = args[1];
+    const body = args[2];
+    return {
+        type: "enclose",
+        label: context.funcName,
+        bkgrndColor: bkgrndColor,
+        borderColor: borderColor,
+        body: body,
+    };
+});
+
 // An overline
 defineFunction(["\\overline"], {
     numArgs: 1,

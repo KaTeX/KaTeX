@@ -59,6 +59,7 @@ Colors:
     nolatex: different syntax and different scope
 ColorImplicit: bl{ack\color{red}red\textcolor{green}{green}red\color{blue}blue}black
 ColorSpacing: \textcolor{red}{\displaystyle \int x} + 1
+Colorbox:  a \colorbox{teal} B \fcolorbox{blue}{red}{C} e+\colorbox{teal}x
 DashesAndQuotes: \text{``a'' b---c -- d----`e'-{-}-f}--``x''
 DeepFontSizing:
     tex: |

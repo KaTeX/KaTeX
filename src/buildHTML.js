@@ -1533,43 +1533,63 @@ groupTypes.accentUnder = function(group, options) {
 };
 
 groupTypes.enclose = function(group, options) {
-    // \cancel, \bcancel, \xcancel, \sout, \fbox
+    // \cancel, \bcancel, \xcancel, \sout, \fbox, \colorbox, \fcolorbox
     const inner = buildGroup(group.value.body, options);
 
     const label = group.value.label.substr(1);
     const scale = options.sizeMultiplier;
     let img;
-    let pad = 0;
     let imgShift = 0;
+    const isColorbox = /color/.test(label);
 
     if (label === "sout") {
         img = makeSpan(["stretchy", "sout"]);
         img.height = options.fontMetrics().defaultRuleThickness / scale;
         imgShift = -0.5 * options.fontMetrics().xHeight;
+
     } else {
         // Add horizontal padding
-        inner.classes.push((label === "fbox" ? "boxpad" : "cancel-pad"));
+        inner.classes.push(/cancel/.test(label) ? "cancel-pad" : "boxpad");
 
         // Add vertical padding
-        const isCharBox = (isCharacterBox(group.value.body));
+        let vertPad = 0;
         // ref: LaTeX source2e: \fboxsep = 3pt;  \fboxrule = .4pt
         // ref: cancel package: \advance\totalheight2\p@ % "+2"
-        pad = (label === "fbox" ? 0.34 : (isCharBox ? 0.2 : 0));
-        imgShift = inner.depth + pad;
+        if (isColorbox || label === "fbox") {
+            vertPad = (label === "colorbox" ? 0.3: 0.34);
+        } else {
+            vertPad = (isCharacterBox(group.value.body) ? 0.2 : 0);
+        }
 
-        img = stretchy.encloseSpan(inner, label, pad, options);
+        img = stretchy.encloseSpan(inner, label, vertPad, options);
+        imgShift = inner.depth + vertPad;
+
+        if (isColorbox) {
+            img.style.backgroundColor = group.value.bkgrndColor.value;
+            if (label === "fcolorbox") {
+                img.style.borderColor = group.value.borderColor.value;
+            }
+        }
     }
 
-    const vlist = buildCommon.makeVList([
-        {type: "elem", elem: inner, shift: 0},
-        {type: "elem", elem: img, shift: imgShift},
-    ], "individualShift", null, options);
-
-    if (label !== "fbox") {
-        vlist.children[0].children[0].children[1].classes.push("svg-align");
+    let vlist;
+    if (isColorbox) {
+        vlist = buildCommon.makeVList([
+            // Put the color background behind inner;
+            {type: "elem", elem: img, shift: imgShift},
+            {type: "elem", elem: inner, shift: 0},
+        ], "individualShift", null, options);
+    } else {
+        vlist = buildCommon.makeVList([
+            // Write the \cancel stroke on top of inner.
+            {type: "elem", elem: inner, shift: 0},
+            {type: "elem", elem: img, shift: imgShift},
+        ], "individualShift", null, options);
     }
 
     if (/cancel/.test(label)) {
+        vlist.children[0].children[0].children[1].classes.push("svg-align");
+
         // cancel does not create horiz space for its line extension.
         // That is, not when adjacent to a mord.
         return makeSpan(["mord", "cancel-lap"], [vlist], options);
