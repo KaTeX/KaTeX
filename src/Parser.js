@@ -165,7 +165,7 @@ export default class Parser {
             if (breakOnInfix && functions[lex.text] && functions[lex.text].infix) {
                 break;
             }
-            const atom = this.parseAtom();
+            const atom = this.parseAtom(breakOnTokenText);
             if (!atom) {
                 if (!this.settings.throwOnError && lex.text[0] === "\\") {
                     const errorNode = this.handleUnsupportedCmd();
@@ -306,12 +306,13 @@ export default class Parser {
     /**
      * Parses a group with optional super/subscripts.
      *
+     * @param {"]" | "}"} breakOnTokenText - character to stop parsing the group on.
      * @return {?ParseNode}
      */
-    parseAtom() {
+    parseAtom(breakOnTokenText) {
         // The body of an atom is an implicit group, so that things like
         // \left(x\right)^2 work correctly.
-        const base = this.parseImplicitGroup();
+        const base = this.parseImplicitGroup(breakOnTokenText);
 
         // In text mode, we don't have superscripts or subscripts
         if (this.mode === "text") {
@@ -423,9 +424,10 @@ export default class Parser {
      *   small text {\Large large text} small text again
      * It is also used for \left and \right to get the correct grouping.
      *
+     * @param {"]" | "}"} breakOnTokenText - character to stop parsing the group on.
      * @return {?ParseNode}
      */
-    parseImplicitGroup() {
+    parseImplicitGroup(breakOnTokenText) {
         const start = this.parseSymbol();
 
         if (start == null) {
@@ -484,7 +486,7 @@ export default class Parser {
         } else if (utils.contains(Parser.sizeFuncs, func)) {
             // If we see a sizing function, parse out the implicit body
             this.consumeSpaces();
-            const body = this.parseExpression(false);
+            const body = this.parseExpression(false, breakOnTokenText);
             return new ParseNode("sizing", {
                 // Figure out what size to use based on the list of functions above
                 size: utils.indexOf(Parser.sizeFuncs, func) + 1,
@@ -834,7 +836,7 @@ export default class Parser {
         if (this.nextToken.text === (optional ? "[" : "{")) {
             // If we get a brace, parse an expression
             this.consume();
-            const expression = this.parseExpression(false, optional ? "]" : null);
+            const expression = this.parseExpression(false, optional ? "]" : "}");
             const lastToken = this.nextToken;
             // Make sure we get a close brace
             this.expect(optional ? "]" : "}");

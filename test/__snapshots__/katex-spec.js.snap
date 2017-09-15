@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`An implicit group parser should work within optional groups: \\sqrt[\\small 3]{x} 1`] = `
+[
+  {
+    "type": "sqrt",
+    "mode": "math",
+    "value": {
+      "type": "sqrt",
+      "body": {
+        "type": "ordgroup",
+        "mode": "math",
+        "value": [
+          {
+            "type": "mathord",
+            "mode": "math",
+            "value": "x"
+          }
+        ]
+      },
+      "index": {
+        "type": "ordgroup",
+        "mode": "math",
+        "value": [
+          {
+            "type": "sizing",
+            "mode": "math",
+            "value": {
+              "size": 5,
+              "value": [
+                {
+                  "type": "textord",
+                  "mode": "math",
+                  "value": "3"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+]
+`;
