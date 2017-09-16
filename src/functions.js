@@ -100,7 +100,7 @@ defineFunction(["\\colorbox"], {
     return {
         type: "enclose",
         label: context.funcName,
-        bkgrndColor: color,
+        backgroundColor: color,
         body: body,
     };
 });
@@ -113,12 +113,12 @@ defineFunction(["\\fcolorbox"], {
     argTypes: ["color", "color", "text"],
 }, function(context, args) {
     const borderColor = args[0];
-    const bkgrndColor = args[1];
+    const backgroundColor = args[1];
     const body = args[2];
     return {
         type: "enclose",
         label: context.funcName,
-        bkgrndColor: bkgrndColor,
+        backgroundColor: backgroundColor,
         borderColor: borderColor,
         body: body,
     };

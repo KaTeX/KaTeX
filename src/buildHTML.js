@@ -1555,17 +1555,17 @@ groupTypes.enclose = function(group, options) {
         let vertPad = 0;
         // ref: LaTeX source2e: \fboxsep = 3pt;  \fboxrule = .4pt
         // ref: cancel package: \advance\totalheight2\p@ % "+2"
-        if (isColorbox || label === "fbox") {
-            vertPad = (label === "colorbox" ? 0.3 : 0.34);
+        if (/box/.test(label)) {
+            vertPad = label === "colorbox" ? 0.3 : 0.34;
         } else {
-            vertPad = (isCharacterBox(group.value.body) ? 0.2 : 0);
+            vertPad = isCharacterBox(group.value.body) ? 0.2 : 0;
         }
 
         img = stretchy.encloseSpan(inner, label, vertPad, options);
         imgShift = inner.depth + vertPad;
 
         if (isColorbox) {
-            img.style.backgroundColor = group.value.bkgrndColor.value;
+            img.style.backgroundColor = group.value.backgroundColor.value;
             if (label === "fcolorbox") {
                 img.style.borderColor = group.value.borderColor.value;
             }

@@ -519,10 +519,12 @@ groupTypes.enclose = function(group, options) {
             node.setAttribute("notation", "box");
             break;
         case "\\colorbox":
-            node.setAttribute("mathbackground", group.value.bkgrndColor.value);
+            node.setAttribute("mathbackground",
+                group.value.backgroundColor.value);
             break;
         case "\\fcolorbox":
-            node.setAttribute("mathbackground", group.value.bkgrndColor.value);
+            node.setAttribute("mathbackground",
+                group.value.backgroundColor.value);
             // TODO(ron): I don't know any way to set the border color.
             node.setAttribute("notation", "box");
             break;
