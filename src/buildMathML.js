@@ -505,21 +505,33 @@ groupTypes.accentUnder = function(group, options) {
 groupTypes.enclose = function(group, options) {
     const node = new mathMLTree.MathNode(
         "menclose", [buildGroup(group.value.body, options)]);
-    let notation = "";
     switch (group.value.label) {
+        case "\\cancel":
+            node.setAttribute("notation", "updiagonalstrike");
+            break;
         case "\\bcancel":
-            notation = "downdiagonalstrike";
+            node.setAttribute("notation", "downdiagonalstrike");
             break;
         case "\\sout":
-            notation = "horizontalstrike";
+            node.setAttribute("notation", "horizontalstrike");
             break;
         case "\\fbox":
-            notation = "box";
+            node.setAttribute("notation", "box");
+            break;
+        case "\\colorbox":
+            node.setAttribute("mathbackground",
+                group.value.backgroundColor.value);
+            break;
+        case "\\fcolorbox":
+            node.setAttribute("mathbackground",
+                group.value.backgroundColor.value);
+            // TODO(ron): I don't know any way to set the border color.
+            node.setAttribute("notation", "box");
             break;
         default:
-            notation = "updiagonalstrike";
+            // xcancel
+            node.setAttribute("notation", "updiagonalstrike downdiagonalstrike");
     }
-    node.setAttribute("notation", notation);
     return node;
 };
 
