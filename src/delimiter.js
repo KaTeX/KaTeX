@@ -329,14 +329,12 @@ const sqrtSvg = function(sqrtName, height, viewBoxHeight, options) {
     }
     const pathNode = new domTree.pathNode(sqrtName, alternate);
 
-    let attributes = [["width", "100%"], ["height", height + "em"]];
+    const attributes = [["width", "400em"], ["height", height + "em"]];
     attributes.push(["viewBox", "0 0 400000 " + viewBoxHeight]);
     attributes.push(["preserveAspectRatio", "xMinYMin slice"]);
-    const innerSVG =  new domTree.svgNode([pathNode], attributes);
+    const svg =  new domTree.svgNode([pathNode], attributes);
 
-    attributes = [["width", "100%"], ["height", height + "em"]];
-    const svg = new domTree.svgNode([innerSVG], attributes);
-    return buildCommon.makeSpan([], [svg], options);
+    return buildCommon.makeSpan(["hide-tail"], [svg], options);
 };
 
 const sqrtSpan = function(height, delim, options) {
