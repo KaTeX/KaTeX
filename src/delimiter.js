@@ -366,7 +366,7 @@ const sqrtSpan = function(height, delim, options) {
         // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
         // We'll use a single SVG to accomplish the same thing.
         spanHeight = height / sizeMultiplier;
-        viewBoxHeight = Math.floor(1000 * spanHeight);
+        viewBoxHeight = Math.floor(1000 * height);
         span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, options);
         span.style.minWidth = "0.631em";
         span.surdWidth = 1.056 / sizeMultiplier;
