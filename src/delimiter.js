@@ -351,6 +351,7 @@ const sqrtSpan = function(height, delim, options) {
         sizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
         spanHeight = 1 * sizeMultiplier;
         span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, options);
+        span.style.minWidth = "0.781em";
         span.surdWidth = 0.833 * sizeMultiplier;   // from the font.
 
     } else if (delim.type === "large") {
@@ -358,6 +359,7 @@ const sqrtSpan = function(height, delim, options) {
         viewBoxHeight = 1000 * sizeToMaxHeight[delim.size];
         spanHeight = sizeToMaxHeight[delim.size] / sizeMultiplier;
         span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight, options);
+        span.style.minWidth = "0.909em";
         span.surdWidth = 1.0 / sizeMultiplier; // from the font
 
     } else {
@@ -366,6 +368,7 @@ const sqrtSpan = function(height, delim, options) {
         spanHeight = height / sizeMultiplier;
         viewBoxHeight = Math.floor(1000 * spanHeight);
         span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, options);
+        span.style.minWidth = "0.631em";
         span.surdWidth = 1.056 / sizeMultiplier;
     }
 
