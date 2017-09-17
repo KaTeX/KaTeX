@@ -96,6 +96,14 @@ function parseArray(
         if (next === "&") {
             parser.consume();
         } else if (next === "\\end") {
+            // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
+            // the last line is empty.
+            const lastRow = body[body.length - 1][0].value;
+            if (body.length > 1
+                && lastRow.value.length === 1
+                && lastRow.value[0].value.length === 0) {
+                body.pop();
+            }
             break;
         } else if (next === "\\\\" || next === "\\cr") {
             const cr = parser.parseFunction();
