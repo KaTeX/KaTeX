@@ -181,8 +181,7 @@ defineFunction([
 
 // Limits, not symbols
 defineFunction([
-    "\\det", "\\gcd", "\\inf", "\\lim", "\\liminf", "\\limsup", "\\max",
-    "\\min", "\\Pr", "\\sup",
+    "\\det", "\\gcd", "\\inf", "\\lim", "\\max", "\\min", "\\Pr", "\\sup",
 ], {
     numArgs: 0,
 }, function(context) {
