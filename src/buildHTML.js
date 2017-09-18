@@ -1115,6 +1115,10 @@ groupTypes.sqrt = function(group, options) {
     // First, we do the same steps as in overline to build the inner group
     // and line
     let inner = buildGroup(group.value.body, options.havingCrampedStyle());
+    if (inner.height === 0) {
+        // Render a small surd.
+        inner.height = options.fontMetrics().xHeight;
+    }
 
     // Some groups can return document fragments.  Handle those by wrapping
     // them in a span.
@@ -1159,26 +1163,16 @@ groupTypes.sqrt = function(group, options) {
     // Shift the sqrt image
     const imgShift = img.height - inner.height - lineClearance - ruleWidth;
 
-    // We add a special case here, because even when `inner` is empty, we
-    // still get a line. So, we use a simple heuristic to decide if we
-    // should omit the body entirely. (note this doesn't work for something
-    // like `\sqrt{\rlap{x}}`, but if someone is doing that they deserve for
-    // it not to work.
-    let body;
-    if (inner.height === 0 && inner.depth === 0) {
-        body = makeSpan();
-    } else {
-        inner.style.paddingLeft = img.surdWidth + "em";
+    inner.style.paddingLeft = img.advanceWidth + "em";
 
-        // Overlay the image and the argument.
-        body = buildCommon.makeVList([
-            {type: "elem", elem: inner},
-            {type: "kern", size: -(inner.height + imgShift)},
-            {type: "elem", elem: img},
-            {type: "kern", size: ruleWidth},
-        ], "firstBaseline", null, options);
-        body.children[0].children[0].classes.push("svg-align");
-    }
+    // Overlay the image and the argument.
+    const body = buildCommon.makeVList([
+        {type: "elem", elem: inner},
+        {type: "kern", size: -(inner.height + imgShift)},
+        {type: "elem", elem: img},
+        {type: "kern", size: ruleWidth},
+    ], "firstBaseline", null, options);
+    body.children[0].children[0].classes.push("svg-align");
 
     if (!group.value.index) {
         return makeSpan(["mord", "sqrt"], [body], options);
