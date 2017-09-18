@@ -329,6 +329,7 @@ const sqrtSvg = function(sqrtName, height, viewBoxHeight, options) {
     }
     const pathNode = new domTree.pathNode(sqrtName, alternate);
 
+    // Note: 1000:1 ratio of viewBox to document em width.
     const attributes = [["width", "400em"], ["height", height + "em"]];
     attributes.push(["viewBox", "0 0 400000 " + viewBoxHeight]);
     attributes.push(["preserveAspectRatio", "xMinYMin slice"]);
@@ -351,16 +352,16 @@ const sqrtSpan = function(height, delim, options) {
         sizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
         spanHeight = 1 * sizeMultiplier;
         span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, options);
-        span.style.minWidth = "0.781em";
-        span.surdWidth = 0.833 * sizeMultiplier;   // from the font.
+        span.style.minWidth = "0.853em";
+        span.advanceWidth = 0.833 * sizeMultiplier;   // from the font.
 
     } else if (delim.type === "large") {
         // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
         viewBoxHeight = 1000 * sizeToMaxHeight[delim.size];
         spanHeight = sizeToMaxHeight[delim.size] / sizeMultiplier;
         span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight, options);
-        span.style.minWidth = "0.909em";
-        span.surdWidth = 1.0 / sizeMultiplier; // from the font
+        span.style.minWidth = "1.02em";
+        span.advanceWidth = 1.0 / sizeMultiplier; // from the font
 
     } else {
         // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
@@ -368,8 +369,8 @@ const sqrtSpan = function(height, delim, options) {
         spanHeight = height / sizeMultiplier;
         viewBoxHeight = Math.floor(1000 * height);
         span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, options);
-        span.style.minWidth = "0.631em";
-        span.surdWidth = 1.056 / sizeMultiplier;
+        span.style.minWidth = "0.742em";
+        span.advanceWidth = 1.056 / sizeMultiplier;
     }
 
     span.height = spanHeight;

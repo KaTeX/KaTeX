@@ -1163,7 +1163,7 @@ groupTypes.sqrt = function(group, options) {
     // Shift the sqrt image
     const imgShift = img.height - inner.height - lineClearance - ruleWidth;
 
-    inner.style.paddingLeft = img.surdWidth + "em";
+    inner.style.paddingLeft = img.advanceWidth + "em";
 
     // Overlay the image and the argument.
     const body = buildCommon.makeVList([
