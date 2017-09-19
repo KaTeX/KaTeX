@@ -1,3 +1,4 @@
+// @flow
 /**
  * The Lexer class handles tokenizing the input in various ways. Since our
  * parser expects us to be able to backtrack, the lexer allows lexing from any
@@ -13,48 +14,7 @@
 
 import matchAt from "match-at";
 import ParseError from "./ParseError";
-
-/**
- * The resulting token returned from `lex`.
- *
- * It consists of the token text plus some position information.
- * The position information is essentially a range in an input string,
- * but instead of referencing the bare input string, we refer to the lexer.
- * That way it is possible to attach extra metadata to the input string,
- * like for example a file name or similar.
- *
- * The position information (all three parameters) is optional,
- * so it is OK to construct synthetic tokens if appropriate.
- * Not providing available position information may lead to
- * degraded error reporting, though.
- *
- * @param {string}  text   the text of this token
- * @param {number=} start  the start offset, zero-based inclusive
- * @param {number=} end    the end offset, zero-based exclusive
- * @param {Lexer=}  lexer  the lexer which in turn holds the input string
- */
-class Token {
-    constructor(text, start, end, lexer) {
-        this.text = text;
-        this.start = start;
-        this.end = end;
-        this.lexer = lexer;
-    }
-
-    /**
-     * Given a pair of tokens (this and endToken), compute a “Token” encompassing
-     * the whole input range enclosed by these two.
-     *
-     * @param {Token}  endToken  last token of the range, inclusive
-     * @param {string} text      the text of the newly constructed token
-     */
-    range(endToken, text) {
-        if (endToken.lexer !== this.lexer) {
-            return new Token(text); // sorry, no position information available
-        }
-        return new Token(text, this.start, endToken.end, this.lexer);
-    }
-}
+import {LexerInterface, Token} from "./Token";
 
 /* The following tokenRegex
  * - matches typical whitespace (but not NBSP etc.) using its first group
@@ -77,15 +37,16 @@ const tokenRegex = new RegExp(
     "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair
     "|\\\\verb\\*([^]).*?\\3" +                       // \verb*
     "|\\\\verb([^*a-zA-Z]).*?\\4" +                   // \verb unstarred
-    "|\\\\(?:[a-zA-Z]+|[^\uD800-\uDFFF])" +           // function name
+    "|\\\\(?:[a-zA-Z@]+|[^\uD800-\uDFFF])" +          // function name
     ")"
 );
 
-/*
- * Main Lexer class
- */
-class Lexer {
-    constructor(input) {
+/** Main Lexer class */
+export default class Lexer implements LexerInterface {
+    input: string;
+    pos: number;
+
+    constructor(input: string) {
         this.input = input;
         this.pos = 0;
     }
@@ -93,7 +54,7 @@ class Lexer {
     /**
      * This function lexes a single token.
      */
-    lex() {
+    lex(): Token {
         const input = this.input;
         const pos = this.pos;
         if (pos === input.length) {
@@ -112,5 +73,3 @@ class Lexer {
         return new Token(text, start, end, this);
     }
 }
-
-module.exports = Lexer;

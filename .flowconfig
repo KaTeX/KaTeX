@@ -1,0 +1,11 @@
+[ignore]
+<PROJECT_ROOT>/build
+
+[include]
+
+[libs]
+flow-typed
+
+[lints]
+
+[options]

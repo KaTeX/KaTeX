@@ -12,8 +12,8 @@ supported
 functions](https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX) as
 well as a page that describes how to [examine TeX commands and where to find
 rules](https://github.com/Khan/KaTeX/wiki/Examining-TeX) which can be quite
-useful when adding new commands. There's also a user-contributed [preview page]
-(http://utensil-site.github.io/available-in-katex/)
+useful when adding new commands. There's also a user-contributed
+[preview page](http://utensil-site.github.io/available-in-katex/)
 showing how KaTeX would render a series of symbols/functions (including the ones
 MathJax listed in their documentation and the extra ones supported by KaTeX). You
 can check them to see if we don't support a function you like, or try your
@@ -42,19 +42,23 @@ If you do, check out [extract_ttfs.py](metrics/extract_ttfs.py).
 
 #### Adding new functions
 
-Most functions are handled in the [functions.js](src/functions.js) file. Read
-the comments in there to get started. If the function you want to add has
-similar output to an existing function, see if you can add a new line to that
-file to get it to work.
+New functions should be added in [src/functions](src/functions) using
+`defineFunction` from [defineFunction.js](src/defineFunction.js).  Read the
+comments in this file to get started.  Look at
+[phantom.js](src/functions/phantom.js) and
+[delimsizing.js](src/functions/delimsizing.js) as examples of how to use
+`defineFunction`.  Notice how delimsizing.js groups several related functions
+together in a single call to `defineFunction`.
 
-If your function isn't similar to an existing function, you'll need to add a
-line to `functions.js` as well as adding an output function in
-[buildHTML.js](src/buildHTML.js) and [buildMathML.js](src/buildMathML.js).
+The new method of defining functions combines methods that were previously
+spread out over three different files [functions.js](src/functions.js),
+[buildHTML.js](src/buildHTML.js), [buildMathML.js](src/buildMathML.js) into a
+single file.  The goal is to have all functions use this new system.
 
 ## Testing
 
-Local testing can be done by running the node server in `server.js`. Run `make
-setup` to install dependencies, and then `make serve` to start the server.
+Local testing can be done by running the node server in `server.js`. Run
+`npm install` to install dependencies, and then `npm start` to start the server.
 
 This will host an interactive editor at
 [http://localhost:7936/](http://localhost:7936/) to play around with and test
@@ -64,7 +68,7 @@ changes.
 
 The JavaScript parser and some of the HTML and MathML tree
 builders are tested with Jest. These tests can be run using node with
-`make test`.  If you need to debug the tests see
+`npm run jest`.  If you need to debug the tests see
 [https://facebook.github.io/jest/docs/troubleshooting.html](https://facebook.github.io/jest/docs/troubleshooting.html)
 
 The interactive editor can also be used for debugging tests in the browser by

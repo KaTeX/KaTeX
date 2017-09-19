@@ -1,9 +1,19 @@
+// @flow
 /**
  * This is a module for storing settings passed into KaTeX. It correctly handles
  * default settings.
  */
 
 import utils from "./utils";
+
+type SettingsOptions = {
+    displayMode?: boolean;
+    throwOnError?: boolean;
+    errorColor?: string;
+    macros?: {[macroName: string]: string};
+    colorIsTextColor?: boolean;
+    maxSize?: number;
+};
 
 /**
  * The main Settings object
@@ -16,7 +26,14 @@ import utils from "./utils";
  *                 and is placed in a block with vertical margin.
  */
 class Settings {
-    constructor(options) {
+    displayMode: boolean;
+    throwOnError: boolean;
+    errorColor: string;
+    macros: {[macroName: string]: string};
+    colorIsTextColor: boolean;
+    maxSize: number;
+
+    constructor(options: SettingsOptions) {
         // allow null options
         options = options || {};
         this.displayMode = utils.deflt(options.displayMode, false);
@@ -24,6 +41,7 @@ class Settings {
         this.errorColor = utils.deflt(options.errorColor, "#cc0000");
         this.macros = options.macros || {};
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
+        this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
     }
 }
 

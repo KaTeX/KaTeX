@@ -4,7 +4,7 @@ import environments from "./environments";
 import MacroExpander from "./MacroExpander";
 import symbols from "./symbols";
 import utils from "./utils";
-import units from "./units";
+import { validUnit } from "./units";
 import { cjkRegex } from "./unicodeRegexes";
 import ParseNode from "./ParseNode";
 import ParseError from "./ParseError";
@@ -43,15 +43,23 @@ import ParseError from "./ParseError";
  * standalone object which can be used as an argument to another function.
  */
 
-/**
- * An initial function (without its arguments), or an argument to a function.
- * The `result` argument should be a ParseNode.
- */
-function ParseFuncOrArgument(result, isFunction, token) {
-    this.result = result;
-    // Is this a function (i.e. is it something defined in functions.js)?
-    this.isFunction = isFunction;
-    this.token = token;
+/** A function name or an argument to a function. */
+class ParseFuncOrArgument {
+    /**
+     * @param {ParseNode|string} result It's a string if `isFunction=true` or if
+     *     `result="$"` for switching into math mode; otherwise, it's a ParseNode
+     *     and `isFunction` must be false. If it's a function, the string should
+     *     be a name defined by defineFunction, e.g. "\\frac".
+     * @param {boolean} isFunction True when this is a function. False when it's a
+     *     function argument or "$" to switch into math mode.
+     * @param {Token} token
+     */
+    constructor(result, isFunction, token) {
+        this.result = result;
+        // Is this a function (i.e. is it something defined in functions.js)?
+        this.isFunction = isFunction;
+        this.token = token;
+    }
 }
 
 class Parser {
@@ -106,7 +114,7 @@ class Parser {
     /**
      * Main parsing function, which parses an entire input.
      *
-     * @return {?Array.<ParseNode>}
+     * @return {Array.<ParseNode>}
      */
     parse() {
         // Try to parse the input
@@ -140,7 +148,7 @@ class Parser {
      *                  should end with, or `null` if something else should end the
      *                  expression.
      *
-     * @return {ParseNode}
+     * @return {Array<ParseNode>}
      */
     parseExpression(breakOnInfix, breakOnTokenText) {
         const body = [];
@@ -179,7 +187,8 @@ class Parser {
      * There can only be one infix operator per group.  If there's more than one
      * then the expression is ambiguous.  This can be resolved by adding {}.
      *
-     * @returns {Array}
+     * @param {Array<ParseNode>} body
+     * @return {Array<ParseNode>}
      */
     handleInfixNodes(body) {
         let overIndex = -1;
@@ -217,8 +226,7 @@ class Parser {
                 denomNode = new ParseNode("ordgroup", denomBody, this.mode);
             }
 
-            const value = this.callFunction(
-                funcName, [numerNode, denomNode], null);
+            const value = this.callFunction(funcName, [numerNode, denomNode]);
             return [new ParseNode(value.type, value, this.mode)];
         } else {
             return body;
@@ -459,7 +467,6 @@ class Parser {
                 mode: this.mode,
                 envName: envName,
                 parser: this,
-                positions: args.pop(),
             };
             const result = env.handler(context, args);
             this.expect("\\end", false);
@@ -561,11 +568,16 @@ class Parser {
                     throw new ParseError(
                         "Can't use function '" + func + "' in text mode",
                         baseGroup.token);
+                } else if (this.mode === "math" &&
+                    funcData.allowedInMath === false) {
+                    throw new ParseError(
+                        "Can't use function '" + func + "' in math mode",
+                        baseGroup.token);
                 }
 
                 const args = this.parseArguments(func, funcData);
                 const token = baseGroup.token;
-                const result = this.callFunction(func, args, args.pop(), token);
+                const result = this.callFunction(func, args, token);
                 return new ParseNode(result.type, result, this.mode);
             } else {
                 return baseGroup.result;
@@ -578,12 +590,11 @@ class Parser {
     /**
      * Call a function handler with a suitable context and arguments.
      */
-    callFunction(name, args, positions, token) {
+    callFunction(name, args, token) {
         const context = {
             funcName: name,
             parser: this,
-            positions: positions,
-            token: token,
+            token,
         };
         return functions[name].handler(context, args);
     }
@@ -593,16 +604,15 @@ class Parser {
      *
      * @param {string} func  "\name" or "\begin{name}"
      * @param {{numArgs:number,numOptionalArgs:number|undefined}} funcData
-     * @return the array of arguments, with the list of positions as last element
+     * @return the array of arguments
      */
     parseArguments(func, funcData) {
         const totalArgs = funcData.numArgs + funcData.numOptionalArgs;
         if (totalArgs === 0) {
-            return [[this.pos]];
+            return [];
         }
 
         const baseGreediness = funcData.greediness;
-        const positions = [this.pos];
         const args = [];
 
         for (let i = 0; i < totalArgs; i++) {
@@ -617,7 +627,6 @@ class Parser {
                 }
                 if (!arg) {
                     args.push(null);
-                    positions.push(this.pos);
                     continue;
                 }
             } else {
@@ -630,7 +639,7 @@ class Parser {
                     if (!this.settings.throwOnError &&
                         this.nextToken.text[0] === "\\") {
                         arg = new ParseFuncOrArgument(
-                            this.handleUnsupportedCmd(this.nextToken.text),
+                            this.handleUnsupportedCmd(),
                             false);
                     } else {
                         throw new ParseError(
@@ -653,10 +662,7 @@ class Parser {
                 argNode = arg.result;
             }
             args.push(argNode);
-            positions.push(this.pos);
         }
-
-        args.push(positions);
 
         return args;
     }
@@ -768,7 +774,7 @@ class Parser {
         if (!res) {
             return null;
         }
-        const match = (/^(#[a-z0-9]+|[a-z]+)$/i).exec(res.text);
+        const match = (/^(#[a-f0-9]{3}|#[a-f0-9]{6}|[a-z]+)$/i).exec(res.text);
         if (!match) {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
@@ -799,7 +805,7 @@ class Parser {
             number: +(match[1] + match[2]), // sign + magnitude, cast to number
             unit: match[3],
         };
-        if (!units.validUnit(data)) {
+        if (!validUnit(data)) {
             throw new ParseError("Invalid unit: '" + data.unit + "'", res);
         }
         return new ParseFuncOrArgument(
@@ -833,7 +839,7 @@ class Parser {
             }
             return new ParseFuncOrArgument(
                 new ParseNode("ordgroup", expression, this.mode,
-                            firstToken, lastToken),
+                    firstToken, lastToken),
                 false);
         } else {
             // Otherwise, just return a nucleus, or nothing for an optional group

@@ -59,6 +59,9 @@ browserified(
     "/contrib/auto-render/auto-render.js",
     "contrib/auto-render/auto-render",
     "renderMathInElement");
+browserified(
+    "/contrib/copy-tex/copy-tex.js",
+    "contrib/copy-tex/copy-tex");
 
 app.use("/katex.css", function(req, res, next) {
     const lessfile = path.join(__dirname, "static", "katex.less");
