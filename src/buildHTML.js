@@ -1255,13 +1255,13 @@ groupTypes.verb = function(group, options) {
     // \verb enters text mode and therefore is sized like \textstyle
     const newOptions = options.havingStyle(options.style.text());
     for (let i = 0; i < text.length; i++) {
-        if (text[i] === ' ') {  // Space appear as nonbreaking space
+        if (text[i] === '\xA0') {  // spaces appear as nonbreaking space
             // The space character isn't in the Typewriter-Regular font,
             // so we implement it as a kern of the same size as a character.
-            // 0.524995 is the width of a texttt character in LaTeX.
+            // 0.525 is the width of a texttt character in LaTeX.
             // It automatically gets scaled by the font size.
             const rule = makeSpan(["mord", "rule"], [], newOptions);
-            rule.style.marginLeft = "0.524995em";
+            rule.style.marginLeft = "0.525em";
             body.push(rule);
         } else {
             body.push(buildCommon.makeSymbol(text[i], "Typewriter-Regular",

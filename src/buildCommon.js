@@ -415,6 +415,7 @@ const makeVerb = function(group, options) {
         text = text.replace(/ /g, '\u2423');  // Open Box
     } else {
         text = text.replace(/ /g, '\xA0');    // No-Break Space
+        // (so that, in particular, spaces don't coalesce)
     }
     return text;
 };
