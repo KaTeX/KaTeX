@@ -290,17 +290,6 @@ groupTypes.genfrac = function(group, options) {
     return node;
 };
 
-groupTypes.array = function(group, options) {
-    return new mathMLTree.MathNode(
-        "mtable", group.value.body.map(function(row) {
-            return new mathMLTree.MathNode(
-                "mtr", row.map(function(cell) {
-                    return new mathMLTree.MathNode(
-                        "mtd", [buildGroup(cell, options)]);
-                }));
-        }));
-};
-
 groupTypes.sqrt = function(group, options) {
     let node;
     if (group.value.index) {
