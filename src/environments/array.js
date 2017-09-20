@@ -46,7 +46,7 @@ function parseArray(
     let row = [];
     const body = [row];
     const rowGaps = [];
-    for (;;) {
+    while (true) {  // eslint-disable-line no-constant-condition
         let cell = parser.parseExpression(false, null);
         cell = new ParseNode("ordgroup", cell, parser.mode);
         if (style) {
@@ -327,7 +327,9 @@ defineEnvironment({
         "vmatrix",
         "Vmatrix",
     ],
-    props: {},
+    props: {
+        numArgs: 0,
+    },
     handler: function(context) {
         const delimiters = {
             "matrix": null,
@@ -366,7 +368,9 @@ defineEnvironment({
         "cases",
         "dcases",
     ],
-    props: {},
+    props: {
+        numArgs: 0,
+    },
     handler: function(context) {
         let res = {
             type: "array",
@@ -406,7 +410,9 @@ defineEnvironment({
 defineEnvironment({
     type: "array",
     names: ["aligned"],
-    props: {},
+    props: {
+        numArgs: 0,
+    },
     handler: function(context) {
         let res = {
             type: "array",
@@ -457,7 +463,9 @@ defineEnvironment({
 defineEnvironment({
     type: "array",
     names: ["gathered"],
-    props: {},
+    props: {
+        numArgs: 0,
+    },
     handler: function(context) {
         let res = {
             type: "array",

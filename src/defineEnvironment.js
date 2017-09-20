@@ -35,10 +35,7 @@ type EnvHandler = (context: EnvContext, args: ParseNode[]) => ParseNode;
  *  - numOptionalArgs: (default 0) Just like for a function
  */
 type EnvProps = {
-    numArgs?: number,
-    argTypes?: ArgType[],
-    allowedInText?: boolean,
-    numOptionalArgs?: number,
+    numArgs: number,
 };
 
 /**
@@ -99,10 +96,9 @@ export default function defineEnvironment({
     // Set default values of environments
     const data = {
         numArgs: props.numArgs || 0,
-        argTypes: props.argTypes,
         greediness: 1,
-        allowedInText: !!props.allowedInText,
-        numOptionalArgs: props.numOptionalArgs || 0,
+        allowedInText: false,
+        numOptionalArgs: 0,
         handler: handler,
     };
     for (let i = 0; i < names.length; ++i) {
