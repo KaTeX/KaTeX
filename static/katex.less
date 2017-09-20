@@ -575,6 +575,13 @@
         }
     }
 
+    // Hide the long tail of a stretchy SVG.
+    .hide-tail {
+        width: 100%;          // necessary only to get IE to work properly
+        position: relative;   // ditto
+        overflow: hidden;     // This line applies to all browsers.
+    }
+
     // Lengthen the extensible arrows via padding.
     .x-arrow-pad {
         padding: 0 0.5em;
