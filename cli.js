@@ -4,65 +4,81 @@
 /* eslint no-console:0 */
 
 const katex = require("./");
-const fs = require('fs');
+const fs = require("fs");
 
-// Skip the first two args, which are just "node" and "cli.js"
-const args = process.argv.slice(2);
-
-if (args.indexOf("--help") !== -1) {
-    console.log(process.argv[0] + " " + process.argv[1] +
-                " [ --help ]" +
-                " [ --display-mode ]" +
-                " [ --throw-on-error ]" +
-                " [ --error-color color ]" +
-                " [ --max-size size ]" +
-                " [ --input inputFile ]" +
-                " [ --output outputFile ]"
-               );
-
-    console.log("\n" +
-                "Options:");
-    console.log("  --help              Display this help message");
-    console.log("  --display-mode      Render in display mode (not inline mode)");
-    console.log("  --no-throw-on-error Render unsupported commands as text");
-    console.log("  --error-color       Color unsupported commands are rendered in");
-    console.log("  --max-size          User-specified sizes are capped to maxSize");
-    console.log("  --input file        Read from given file");
-    console.log("  --output file       Write to given file");
-    process.exit();
-}
-
-function getOptions(args) {
-
-    const options = {
-        displayMode: args.indexOf("--display-mode") !== -1,
-        throwOnError: args.indexOf("--no-throw-on-error") === -1 };
-
-    const indexErrorColor = args.indexOf("--error-color");
-    if (indexErrorColor !== -1) {
-        options['errorColor'] = '#' + args[indexErrorColor + 1];
-    }
-    const indexMaxSize = args.indexOf("--max-size");
-    if (indexMaxSize !== -1) {
-        options['maxSize'] = args[indexMaxSize + 1];
-    }
-
-    return options;
-}
-
-function render(input) {
-    const options = getOptions(args);
-    const output = katex.renderToString(input, options);
-    return output;
-}
+const options = require("nomnom")
+    .option("displayMode", {
+        full: "display-mode",
+        abbr: "d",
+        flag: true,
+        default: false,
+        help: "If true the math will be rendered in display " +
+              "mode, which will put the math in display style " +
+              "(so \\int and \\sum are large, for example), and " +
+              "will center the math on the page on its own line.",
+    })
+    .option("throwOnError", {
+        full: "no-throw-on-error",
+        abbr: "t",
+        flag: true,
+        default: true,
+        transform: function(t) {
+            return !t;
+        },
+        help: "If true, KaTeX will throw a ParseError when it " +
+              "encounters an unsupported command. If false, KaTeX " +
+              "will render the unsupported command as text in the " +
+              "color given by errorColor.",
+    })
+    .option("errorColor", {
+        full: "error-color",
+        abbr: "c",
+        metavar: "color",
+        default: "#cc0000",
+        transform: function(color) {
+            return "#" + color;
+        },
+        help: "A color string given in the format 'rgb' or 'rrggbb'. " +
+              "This option determines the color which unsupported " +
+              "commands are rendered in.",
+    })
+    .option("colorIsTextColor", {
+        full: "color-is-text-color",
+        abbr: "b",
+        flag: true,
+        default: false,
+        help: "Restores the old behavior of (pre-0.8.0) KaTeX.",
+    })
+    .option("maxSize", {
+        full: "max-size",
+        abbr: "s",
+        metavar: "size",
+        default: 0,
+        help: "If non-zero, all user-specified sizes, e.g. in " +
+              "\\rule{500em}{500em}, will be capped to maxSize ems. " +
+              "Otherwise, elements and spaces can be arbitrarily large",
+    })
+    .option("inputFile", {
+        full: "input",
+        abbr: "i",
+        metavar: "path",
+        default: null,
+        help: "Read LaTeX input from the given file.",
+    })
+    .option("outputFile", {
+        full: "output",
+        abbr: "o",
+        metavar: "path",
+        default: null,
+        help: "Write html output to the given file.",
+    })
+    .parse();
 
 function readInput() {
     let input = "";
-    const readFromFile = args.indexOf("--input");
-    if (readFromFile !== -1) {
-        const inputfile = args[args.indexOf("--input") + 1];
 
-        fs.readFile(inputfile, 'utf-8', function(err, data) {
+    if (options.inputFile) {
+        fs.readFile(options.inputFile, "utf-8", function(err, data) {
             if (err) {throw err;}
             input = data.toString();
             writeOutput(input);
@@ -79,13 +95,10 @@ function readInput() {
 }
 
 function writeOutput(input) {
-    const output = render(input) + '\n';
+    const output = katex.renderToString(input, options) + "\n";
 
-    const writeToFile = args.indexOf("--output");
-    if (writeToFile !== -1) {
-        const outputfile = args[args.indexOf("--output") + 1];
-
-        fs.writeFile(outputfile, output, function(err) {
+    if (options.outputFile) {
+        fs.writeFile(options.outputFile, output, function(err) {
             if (err) {
                 return console.log(err);
             }
