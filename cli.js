@@ -58,6 +58,23 @@ const options = require("nomnom")
               "\\rule{500em}{500em}, will be capped to maxSize ems. " +
               "Otherwise, elements and spaces can be arbitrarily large",
     })
+    .option("macros", {
+        full: "macro",
+        abbr: "m",
+        metavar: "macro:expansion",
+        list: true,
+        default: [],
+        help: "A custom macro. Each macro is a property with a name " +
+              "like \\name which maps to a string that " +
+              "describes the expansion of the macro.",
+    })
+    .option("macroFile", {
+        full: "macro-file",
+        abbr: "f",
+        metavar: "path",
+        default: null,
+        help: "Read macro definitions from the given file.",
+    })
     .option("inputFile", {
         full: "input",
         abbr: "i",
@@ -73,6 +90,36 @@ const options = require("nomnom")
         help: "Write html output to the given file.",
     })
     .parse();
+
+
+function readMacros() {
+    if (options.macroFile) {
+        fs.readFile(options.macroFile, "utf-8", function(err, data) {
+            if (err) {throw err;}
+            splitMacros(data.toString().split('\n'));
+        });
+    } else {
+        splitMacros([]);
+    }
+}
+
+function splitMacros(macroStrings) {
+    // Override macros from macro file (if any)
+    // with macros from command line (if any)
+    macroStrings = macroStrings.concat(options.macros);
+
+    const macros = {};
+
+    for (const m of macroStrings) {
+        const i = m.search(":");
+        if (i !== -1) {
+            macros[m.substring(0, i).trim()] = m.substring(i + 1).trim();
+        }
+    }
+
+    options.macros = macros;
+    readInput();
+}
 
 function readInput() {
     let input = "";
@@ -108,4 +155,4 @@ function writeOutput(input) {
     }
 }
 
-readInput();
+readMacros();
