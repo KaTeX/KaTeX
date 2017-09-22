@@ -38,28 +38,39 @@ import ParseError from "./ParseError";
  *
  * The earlier functions return ParseNodes.
  * The later functions (which are called deeper in the parse) sometimes return
- * ParseFuncOrArgument, which contain a ParseNode as well as some data about
+ * ParsedFuncOrArgOrDollar, which contain a ParseNode as well as some data about
  * whether the parsed object is a function which is missing some arguments, or a
  * standalone object which can be used as an argument to another function.
  */
 
-/** A function name or an argument to a function. */
-class ParseFuncOrArgument {
-    /**
-     * @param {ParseNode|string} result It's a string if `isFunction=true` or if
-     *     `result="$"` for switching into math mode; otherwise, it's a ParseNode
-     *     and `isFunction` must be false. If it's a function, the string should
-     *     be a name defined by defineFunction, e.g. "\\frac".
-     * @param {boolean} isFunction True when this is a function. False when it's a
-     *     function argument or "$" to switch into math mode.
-     * @param {Token} token
-     */
-    constructor(result, isFunction, token) {
-        this.result = result;
-        // Is this a function (i.e. is it something defined in functions.js)?
-        this.isFunction = isFunction;
-        this.token = token;
-    }
+/* TODO: Uncomment when porting to flow.
+type ParsedType = "fn" | "arg" | "$"
+type ParsedFunc = {|
+    type: "fn",
+    result: string, // Function name defined via defineFunction (e.g. "\\frac").
+    token?: ?Token,
+|};
+type ParsedArg = {|
+    type: "arg",
+    result: ParseNode,
+    token?: ?Token,
+|};
+type ParsedDollar = {|
+    // Math mode switch
+    type: "$",
+    result: "$",
+    token?: ?Token,
+|};
+type ParsedFuncOrArgOrDollar = ParsedFunc | ParsedArg | ParsedDollar;
+*/
+
+/**
+ * @param {ParseNode} result
+ * @param {?Token=} token
+ * @return {ParsedArg}
+ */
+function newArgument(result, token) {
+    return {type: "arg", result, token};
 }
 
 export default class Parser {
@@ -238,6 +249,8 @@ export default class Parser {
 
     /**
      * Handle a subscript or superscript with nice errors.
+     * @param {string} name For error reporting.
+     * @return {ParsedNode}
      */
     handleSupSubscript(name) {
         const symbolToken = this.nextToken;
@@ -254,7 +267,7 @@ export default class Parser {
                     symbolToken
                 );
             }
-        } else if (group.isFunction) {
+        } else if (group.type === "fn") {
             // ^ and _ have a greediness, so handle interactions with functions'
             // greediness
             const funcGreediness = functions[group.result].greediness;
@@ -266,6 +279,8 @@ export default class Parser {
                         "as " + name, symbolToken);
             }
         } else {
+            // TODO: This INCORRECTLY assumes that group.type === "arg" and not "$"!
+            // See comment in `parseSymbol`.
             return group.result;
         }
     }
@@ -543,7 +558,7 @@ export default class Parser {
                 value: body,
             }, "math");
         } else {
-            // Defer to parseFunction if it's not a function we handle
+            // Defer to parseGivenFunction if it's not a function we handle
             return this.parseGivenFunction(start);
         }
     }
@@ -563,11 +578,11 @@ export default class Parser {
      * Same as parseFunction(), except that the base is provided, guaranteeing a
      * non-nullable result.
      *
-     * @param {ParseFuncOrArgument} baseGroup
+     * @param {ParsedFuncOrArgOrDollar} baseGroup
      * @return {ParseNode}
      */
     parseGivenFunction(baseGroup) {
-        if (baseGroup.isFunction) {
+        if (baseGroup.type === "fn") {
             const func = baseGroup.result;
             const funcData = functions[func];
             if (this.mode === "text" && !funcData.allowedInText) {
@@ -586,6 +601,8 @@ export default class Parser {
             const result = this.callFunction(func, args, optArgs, token);
             return new ParseNode(result.type, result, this.mode);
         } else {
+            // TODO: This assumes that baseGroup.type === "arg" and not "$"! This
+            // might happen to be true in this case due to the places it is called.
             return baseGroup.result;
         }
     }
@@ -643,16 +660,14 @@ export default class Parser {
                 }
                 if (!this.settings.throwOnError &&
                     this.nextToken.text[0] === "\\") {
-                    arg = new ParseFuncOrArgument(
-                        this.handleUnsupportedCmd(),
-                        false);
+                    arg = newArgument(this.handleUnsupportedCmd());
                 } else {
                     throw new ParseError(
                         "Expected group after '" + func + "'", nextToken);
                 }
             }
             let argNode;
-            if (arg.isFunction) {
+            if (arg.type === "fn") {
                 const argGreediness =
                     functions[arg.result].greediness;
                 if (argGreediness > baseGreediness) {
@@ -663,6 +678,8 @@ export default class Parser {
                         "argument to '" + func + "'", nextToken);
                 }
             } else {
+                // TODO: This INCORRECTLY assumes that arg.type === "arg" and not
+                // "$"! See comment in `parseSymbol`.
                 argNode = arg.result;
             }
             (isOptional ? optArgs : args).push(argNode);
@@ -674,7 +691,7 @@ export default class Parser {
     /**
      * Parses a group when the mode is changing.
      *
-     * @return {?ParseFuncOrArgument}
+     * @return {?ParsedFuncOrArgOrDollar}
      */
     parseGroupOfType(innerMode, optional) {
         const outerMode = this.mode;
@@ -782,9 +799,7 @@ export default class Parser {
         if (!match) {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
-        return new ParseFuncOrArgument(
-            new ParseNode("color", match[0], this.mode),
-            false);
+        return newArgument(new ParseNode("color", match[0], this.mode));
     }
 
     /**
@@ -812,9 +827,7 @@ export default class Parser {
         if (!validUnit(data)) {
             throw new ParseError("Invalid unit: '" + data.unit + "'", res);
         }
-        return new ParseFuncOrArgument(
-            new ParseNode("size", data, this.mode),
-            false);
+        return newArgument(new ParseNode("size", data, this.mode));
     }
 
     /**
@@ -826,7 +839,7 @@ export default class Parser {
      * bracket-enclosed group.
      *
      * @param {boolean=} optional  Whether the group is optional or required
-     * @return {?ParseFuncOrArgument}
+     * @return {?ParsedFuncOrArgOrDollar}
      */
     parseGroup(optional) {
         const firstToken = this.nextToken;
@@ -841,10 +854,9 @@ export default class Parser {
             if (this.mode === "text") {
                 this.formLigatures(expression);
             }
-            return new ParseFuncOrArgument(
+            return newArgument(
                 new ParseNode("ordgroup", expression, this.mode,
-                    firstToken, lastToken),
-                false);
+                    firstToken, lastToken));
         } else {
             // Otherwise, just return a nucleus, or nothing for an optional group
             return optional ? null : this.parseSymbol();
@@ -889,7 +901,7 @@ export default class Parser {
      * Parse a single symbol out of the string. Here, we handle both the functions
      * we have defined, as well as the single character symbols
      *
-     * @return {?ParseFuncOrArgument}
+     * @return {?ParsedFuncOrArgOrDollar}
      */
     parseSymbol() {
         const nucleus = this.nextToken;
@@ -898,26 +910,49 @@ export default class Parser {
             this.consume();
             // If there exists a function with this name, we return the function and
             // say that it is a function.
-            return new ParseFuncOrArgument(
-                nucleus.text,
-                true, nucleus);
+            return {type: "fn", result: nucleus.text, token: nucleus};
         } else if (symbols[this.mode][nucleus.text]) {
             this.consume();
             // Otherwise if this is a no-argument function, find the type it
             // corresponds to in the symbols map
-            return new ParseFuncOrArgument(
+            return newArgument(
                 new ParseNode(symbols[this.mode][nucleus.text].group,
                             nucleus.text, this.mode, nucleus),
-                false, nucleus);
+                nucleus);
         } else if (this.mode === "text" && cjkRegex.test(nucleus.text)) {
             this.consume();
-            return new ParseFuncOrArgument(
+            return newArgument(
                 new ParseNode("textord", nucleus.text, this.mode, nucleus),
-                false, nucleus);
+                nucleus);
         } else if (nucleus.text === "$") {
-            return new ParseFuncOrArgument(
-                nucleus.text,
-                false, nucleus);
+            // TODO: Consider fixing this behavior as it is extremely non-obvious.
+            // This doesn't call `this.consume()`; so even though "$" is returned
+            // here, "$" remains as the `this.nextToken` still to be parsed in a new
+            // context. It thus eventually runs into the "$ within math mode" error
+            // thrown by `parseImplicitGroup`. However, the intermediate behavior is
+            // incorrectly typed.
+            //
+            // Methods affected (see comments in these methods):
+            // - `handleSupSubscript()`:
+            //    Parsing "a^$" successfully generates
+            //      ParseNode("supsub", {
+            //        base: ParseNode("a"),
+            //        sup: "$",     // <-- Invalid because it's not a ParseNode!
+            //        sub: undefined,
+            //      })
+            // - `parseArguments()`:
+            //    Parsing "\frac$a" successfully generates a function `ParseNode`
+            //    with arguments `["$", '$"]` (array of strings instead of
+            //    `ParseNode`s)!
+            // - `parseGivenFunction()`:
+            //    Because of where this is called, it might be reasonable to assume
+            //    that it doesn't receive "$" (see comment in function). However,
+            //    the error when parsing "\\left$\\right" could be improved.
+            //    Currently, it is "Invalid delimiter: 'undefined' after '\left'".
+            //
+            // One type-safety fix could be to move the "$ within math mode" error
+            // into a helper and calling it if "$" is encoutered in these methods.
+            return {type: "$", result: "$", token: nucleus};
         } else if (/^\\verb[^a-zA-Z]/.test(nucleus.text)) {
             this.consume();
             let arg = nucleus.text.slice(5);
@@ -932,11 +967,11 @@ export default class Parser {
                     please report what input caused this bug`);
             }
             arg = arg.slice(1, -1);  // remove first and last char
-            return new ParseFuncOrArgument(
+            return newArgument(
                 new ParseNode("verb", {
                     body: arg,
                     star: star,
-                }, "text"), false, nucleus);
+                }, "text"), nucleus);
         } else {
             return null;
         }
