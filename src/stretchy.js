@@ -311,7 +311,7 @@ const encloseSpan = function(inner, label, pad, options) {
     return img;
 };
 
-module.exports = {
+export default {
     encloseSpan: encloseSpan,
     mathMLnode: mathMLnode,
     svgSpan: svgSpan,

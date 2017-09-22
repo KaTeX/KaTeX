@@ -1755,4 +1755,4 @@ const fontMetricsData = {
     },
 };
 
-module.exports = fontMetricsData;
+export default fontMetricsData;

@@ -443,7 +443,7 @@ class lineNode {
     }
 }
 
-module.exports = {
+export default {
     span: span,
     documentFragment: documentFragment,
     symbolNode: symbolNode,

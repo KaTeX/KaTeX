@@ -1,6 +1,6 @@
 import buildHTML from "./buildHTML";
 import buildMathML from "./buildMathML";
-import { makeSpan } from "./buildCommon";
+import buildCommon from "./buildCommon";
 import Options from "./Options";
 import Settings from "./Settings";
 import Style from "./Style";
@@ -24,15 +24,15 @@ const buildTree = function(tree, expression, settings) {
     const mathMLNode = buildMathML(tree, expression, options);
     const htmlNode = buildHTML(tree, options);
 
-    const katexNode = makeSpan(["katex"], [
+    const katexNode = buildCommon.makeSpan(["katex"], [
         mathMLNode, htmlNode,
     ]);
 
     if (settings.displayMode) {
-        return makeSpan(["katex-display"], [katexNode]);
+        return buildCommon.makeSpan(["katex-display"], [katexNode]);
     } else {
         return katexNode;
     }
 };
 
-module.exports = buildTree;
+export default buildTree;

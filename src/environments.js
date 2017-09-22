@@ -10,7 +10,7 @@ const environments = {
     },
 };
 
-export {environments as default};
+export default environments;
 
 // All environment definitions should be imported below
 import "./environments/array.js";

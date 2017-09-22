@@ -6,7 +6,7 @@
  * parser.
  */
 
-import buildCommon, { makeSpan, fontMap } from "./buildCommon";
+import buildCommon from "./buildCommon";
 import fontMetrics from "./fontMetrics";
 import mathMLTree from "./mathMLTree";
 import ParseError from "./ParseError";
@@ -50,9 +50,9 @@ const getVariant = function(group, options) {
         value = symbols[mode][value].replace;
     }
 
-    const fontName = fontMap[font].fontName;
+    const fontName = buildCommon.fontMap[font].fontName;
     if (fontMetrics.getCharacterMetrics(value, fontName)) {
-        return fontMap[options.font].variant;
+        return buildCommon.fontMap[options.font].variant;
     }
 
     return null;
@@ -458,7 +458,7 @@ groupTypes.sizing = function(group, options) {
 groupTypes.verb = function(group, options) {
     const text = new mathMLTree.TextNode(buildCommon.makeVerb(group, options));
     const node = new mathMLTree.MathNode("mtext", [text]);
-    node.setAttribute("mathvariant", fontMap["mathtt"].variant);
+    node.setAttribute("mathvariant", buildCommon.fontMap["mathtt"].variant);
     return node;
 };
 
@@ -690,5 +690,5 @@ export default function buildMathML(tree, texExpression, options) {
     const math = new mathMLTree.MathNode("math", [semantics]);
 
     // You can't style <math> nodes, so we wrap the node in a span.
-    return makeSpan(["katex-mathml"], [math]);
+    return buildCommon.makeSpan(["katex-mathml"], [math]);
 }
