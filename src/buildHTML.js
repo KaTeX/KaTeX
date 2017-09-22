@@ -306,12 +306,7 @@ groupTypes.ordgroup = function(group, options) {
 groupTypes.text = function(group, options) {
     const newOptions = options.withFont(group.value.font);
     const inner = buildExpression(group.value.body, newOptions, true);
-    for (let i = 0; i < inner.length - 1; i++) {
-        if (inner[i].tryCombine(inner[i + 1])) {
-            inner.splice(i + 1, 1);
-            i--;
-        }
-    }
+    buildCommon.tryCombineChars(inner);
     return makeSpan(["mord", "text"],
         inner, newOptions);
 };
@@ -1092,6 +1087,30 @@ groupTypes.styling = function(group, options) {
 groupTypes.font = function(group, options) {
     const font = group.value.font;
     return buildGroup(group.value.body, options.withFont(font));
+};
+
+groupTypes.verb = function(group, options) {
+    const text = buildCommon.makeVerb(group, options);
+    const body = [];
+    // \verb enters text mode and therefore is sized like \textstyle
+    const newOptions = options.havingStyle(options.style.text());
+    for (let i = 0; i < text.length; i++) {
+        if (text[i] === '\xA0') {  // spaces appear as nonbreaking space
+            // The space character isn't in the Typewriter-Regular font,
+            // so we implement it as a kern of the same size as a character.
+            // 0.525 is the width of a texttt character in LaTeX.
+            // It automatically gets scaled by the font size.
+            const rule = makeSpan(["mord", "rule"], [], newOptions);
+            rule.style.marginLeft = "0.525em";
+            body.push(rule);
+        } else {
+            body.push(buildCommon.makeSymbol(text[i], "Typewriter-Regular",
+                group.mode, newOptions, ["mathtt"]));
+        }
+    }
+    buildCommon.tryCombineChars(body);
+    return makeSpan(["mord", "text"].concat(newOptions.sizingClasses(options)),
+        body, newOptions);
 };
 
 groupTypes.rule = function(group, options) {
