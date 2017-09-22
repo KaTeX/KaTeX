@@ -1,7 +1,7 @@
 /* eslint no-console:0 */
 /* global katex */
 
-const splitAtDelimiters = require("./splitAtDelimiters");
+import splitAtDelimiters from "./splitAtDelimiters";
 
 const splitWithDelimiters = function(text, delimiters) {
     let data = [{type: "text", data: text}];
@@ -99,4 +99,4 @@ const renderMathInElement = function(elem, options) {
     renderElem(elem, optionsCopy);
 };
 
-module.exports = renderMathInElement;
+export default renderMathInElement;

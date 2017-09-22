@@ -1,10 +1,14 @@
 const path = require('path');
 
 module.exports = {
-    entry: path.join(__dirname, 'katex.js'),
+    entry: {
+        katex: path.join(__dirname, 'katex.js'),
+        'copy-tex': path.join(__dirname, 'contrib', 'copy-tex', 'copy-tex.js'),
+        'renderMathInElement': path.join(__dirname, 'contrib', 'auto-render', 'auto-render.js'),
+    },
     output: {
         path: path.join(__dirname, 'build'),
-        filename: 'main.js',
+        filename: '[name].js',
         publicPath: 'build/',
     },
     module: {
@@ -16,4 +20,5 @@ module.exports = {
             },
         ],
     },
+    devtool: 'eval-source-map',
 };

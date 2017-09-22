@@ -49,4 +49,4 @@ export const katexReplaceWithTex = function(fragment,
     return fragment;
 };
 
-module.exports = katexReplaceWithTex;
+export default katexReplaceWithTex;

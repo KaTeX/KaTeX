@@ -1,4 +1,4 @@
-const katexReplaceWithTex = require('./katex2tex');
+import katexReplaceWithTex from './katex2tex';
 
 // Global copy handler to modify behavior on .katex elements.
 document.addEventListener('copy', function(event) {
