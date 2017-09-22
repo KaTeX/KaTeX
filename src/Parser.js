@@ -259,7 +259,7 @@ class Parser {
             // greediness
             const funcGreediness = functions[group.result].greediness;
             if (funcGreediness > Parser.SUPSUB_GREEDINESS) {
-                return this.parseFunction(group);
+                return this.parseGivenFunction(group);
             } else {
                 throw new ParseError(
                     "Got function '" + group.result + "' with no arguments " +
@@ -438,7 +438,7 @@ class Parser {
         if (func === "\\left") {
             // If we see a left:
             // Parse the entire left function (including the delimiter)
-            const left = this.parseFunction(start);
+            const left = this.parseGivenFunction(start);
             // Parse out the implicit body
             ++this.leftrightDepth;
             const body = this.parseExpression(false);
@@ -453,15 +453,15 @@ class Parser {
             }, this.mode);
         } else if (func === "\\begin") {
             // begin...end is similar to left...right
-            const begin = this.parseFunction(start);
+            const begin = this.parseGivenFunction(start);
             const envName = begin.value.name;
-            if (!environments.hasOwnProperty(envName)) {
+            if (!environments.has(envName)) {
                 throw new ParseError(
                     "No such environment: " + envName, begin.value.nameGroup);
             }
             // Build the environment object. Arguments and other information will
             // be made available to the begin and end methods using properties.
-            const env = environments[envName];
+            const env = environments.get(envName);
             const args = this.parseArguments("\\begin{" + envName + "}", env);
             const context = {
                 mode: this.mode,
@@ -543,47 +543,49 @@ class Parser {
             }, "math");
         } else {
             // Defer to parseFunction if it's not a function we handle
-            return this.parseFunction(start);
+            return this.parseGivenFunction(start);
         }
     }
 
     /**
      * Parses an entire function, including its base and all of its arguments.
-     * The base might either have been parsed already, in which case
-     * it is provided as an argument, or it's the next group in the input.
+     * It also handles the case where the parsed node is not a function.
      *
-     * @param {ParseFuncOrArgument=} baseGroup optional as described above
      * @return {?ParseNode}
      */
-    parseFunction(baseGroup) {
-        if (!baseGroup) {
-            baseGroup = this.parseGroup();
-        }
+    parseFunction() {
+        const baseGroup = this.parseGroup();
+        return baseGroup ? this.parseGivenFunction(baseGroup) : null;
+    }
 
-        if (baseGroup) {
-            if (baseGroup.isFunction) {
-                const func = baseGroup.result;
-                const funcData = functions[func];
-                if (this.mode === "text" && !funcData.allowedInText) {
-                    throw new ParseError(
-                        "Can't use function '" + func + "' in text mode",
-                        baseGroup.token);
-                } else if (this.mode === "math" &&
-                    funcData.allowedInMath === false) {
-                    throw new ParseError(
-                        "Can't use function '" + func + "' in math mode",
-                        baseGroup.token);
-                }
-
-                const args = this.parseArguments(func, funcData);
-                const token = baseGroup.token;
-                const result = this.callFunction(func, args, token);
-                return new ParseNode(result.type, result, this.mode);
-            } else {
-                return baseGroup.result;
+    /**
+     * Same as parseFunction(), except that the base is provided, guaranteeing a
+     * non-nullable result.
+     *
+     * @param {ParseFuncOrArgument} baseGroup
+     * @return {ParseNode}
+     */
+    parseGivenFunction(baseGroup) {
+        if (baseGroup.isFunction) {
+            const func = baseGroup.result;
+            const funcData = functions[func];
+            if (this.mode === "text" && !funcData.allowedInText) {
+                throw new ParseError(
+                    "Can't use function '" + func + "' in text mode",
+                    baseGroup.token);
+            } else if (this.mode === "math" &&
+                funcData.allowedInMath === false) {
+                throw new ParseError(
+                    "Can't use function '" + func + "' in math mode",
+                    baseGroup.token);
             }
+
+            const args = this.parseArguments(func, funcData);
+            const token = baseGroup.token;
+            const result = this.callFunction(func, args, token);
+            return new ParseNode(result.type, result, this.mode);
         } else {
-            return null;
+            return baseGroup.result;
         }
     }
 
@@ -652,7 +654,7 @@ class Parser {
                 const argGreediness =
                     functions[arg.result].greediness;
                 if (argGreediness > baseGreediness) {
-                    argNode = this.parseFunction(arg);
+                    argNode = this.parseGivenFunction(arg);
                 } else {
                     throw new ParseError(
                         "Got function '" + arg.result + "' as " +
