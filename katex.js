@@ -43,6 +43,7 @@ if (typeof document !== "undefined") {
     }
 }
 
+
 /**
  * Parse and build an expression, and return the markup for that.
  */
@@ -73,6 +74,5 @@ const katex = {
     __parse: generateParseTree,
     ParseError: ParseError,
 };
-window.katex = katex;
 
 export default katex;
