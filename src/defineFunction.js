@@ -16,13 +16,11 @@ export type FunctionContext = {|
 |};
 
 // TODO: Enumerate all allowed output types.
-
-// TODO: The real type of `args` is `(?ParseNode)[]`, but doing that breaks
-//       compilation since some of these arguments are passed to `ordargument`
-//       below which requires a non-nullable argument.
-//       Separate optional (nullable) `args` from mandatory (non-nullable) args
-//       for better type safety and correct the type here.
-export type FunctionHandler = (context: FunctionContext, args: ParseNode[]) => *;
+export type FunctionHandler = (
+    context: FunctionContext,
+    args: ParseNode[],
+    optArgs: (?ParseNode)[],
+) => *;
 
 export type FunctionPropSpec = {
     // The number of arguments the function takes.
@@ -30,7 +28,8 @@ export type FunctionPropSpec = {
 
     // An array corresponding to each argument of the function, giving the
     // type of argument that should be parsed. Its length should be equal
-    // to `numArgs + numOptionalArgs`.
+    // to `numOptionalArgs + numArgs`, and types for optional arguments
+    // should appear before types for mandatory arguments.
     argTypes?: ArgType[],
 
     // The greediness of the function to use ungrouped arguments.
