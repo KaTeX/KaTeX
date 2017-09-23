@@ -57,7 +57,6 @@
     "build-css": "lessc --clean-css static/katex.less static/katex.css",
     "prestart": "npm run build-css && npm run copy",
     "start": "check-dependencies && webpack-dev-server --colors --port 7936",
-    "build": "check-dependencies && webpack",
     "prepublishOnly": "make NIS= dist"
   },
   "pre-commit": [
