@@ -62,7 +62,7 @@ class ParseFuncOrArgument {
     }
 }
 
-class Parser {
+export default class Parser {
     constructor(input, settings) {
         // Create a new macro expander (gullet) and (indirectly via that) also a
         // new lexer (mouth) for this parser (stomach, in the language of TeX)
@@ -620,33 +620,23 @@ class Parser {
         for (let i = 0; i < totalArgs; i++) {
             const nextToken = this.nextToken;
             const argType = funcData.argTypes && funcData.argTypes[i];
-            let arg;
-            if (i < funcData.numOptionalArgs) {
-                if (argType) {
-                    arg = this.parseGroupOfType(argType, true);
-                } else {
-                    arg = this.parseGroup(true);
-                }
-                if (!arg) {
+            const isOptional = i < funcData.numOptionalArgs;
+            let arg = argType ?
+                this.parseGroupOfType(argType, isOptional) :
+                this.parseGroup(isOptional);
+            if (!arg) {
+                if (isOptional) {
                     args.push(null);
                     continue;
                 }
-            } else {
-                if (argType) {
-                    arg = this.parseGroupOfType(argType);
+                if (!this.settings.throwOnError &&
+                    this.nextToken.text[0] === "\\") {
+                    arg = new ParseFuncOrArgument(
+                        this.handleUnsupportedCmd(),
+                        false);
                 } else {
-                    arg = this.parseGroup();
-                }
-                if (!arg) {
-                    if (!this.settings.throwOnError &&
-                        this.nextToken.text[0] === "\\") {
-                        arg = new ParseFuncOrArgument(
-                            this.handleUnsupportedCmd(),
-                            false);
-                    } else {
-                        throw new ParseError(
-                            "Expected group after '" + func + "'", nextToken);
-                    }
+                    throw new ParseError(
+                        "Expected group after '" + func + "'", nextToken);
                 }
             }
             let argNode;
@@ -940,7 +930,3 @@ class Parser {
         }
     }
 }
-
-Parser.prototype.ParseNode = ParseNode;
-
-module.exports = Parser;
