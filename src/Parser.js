@@ -73,6 +73,17 @@ function newArgument(result, token) {
     return {type: "arg", result, token};
 }
 
+/**
+ * @param {ParsedFuncOrArgOrDollar} parsed
+ * @return {ParsedFuncOrArg}
+ */
+function assertFuncOrArg(parsed) {
+    if (parsed.type === "$") {
+        throw new ParseError("Unexpected $", parsed.token);
+    }
+    return parsed;
+}
+
 export default class Parser {
     constructor(input, settings) {
         // Create a new macro expander (gullet) and (indirectly via that) also a
@@ -267,7 +278,10 @@ export default class Parser {
                     symbolToken
                 );
             }
-        } else if (group.type === "fn") {
+        }
+
+        const arg = assertFuncOrArg(group);
+        if (arg.type === "fn") {
             // ^ and _ have a greediness, so handle interactions with functions'
             // greediness
             const funcGreediness = functions[group.result].greediness;
@@ -279,8 +293,6 @@ export default class Parser {
                         "as " + name, symbolToken);
             }
         } else {
-            // TODO: This INCORRECTLY assumes that group.type === "arg" and not "$"!
-            // See comment in `parseSymbol`.
             return group.result;
         }
     }
@@ -582,6 +594,7 @@ export default class Parser {
      * @return {ParseNode}
      */
     parseGivenFunction(baseGroup) {
+        baseGroup = assertFuncOrArg(baseGroup);
         if (baseGroup.type === "fn") {
             const func = baseGroup.result;
             const funcData = functions[func];
@@ -601,8 +614,6 @@ export default class Parser {
             const result = this.callFunction(func, args, optArgs, token);
             return new ParseNode(result.type, result, this.mode);
         } else {
-            // TODO: This assumes that baseGroup.type === "arg" and not "$"! This
-            // might happen to be true in this case due to the places it is called.
             return baseGroup.result;
         }
     }
@@ -667,6 +678,7 @@ export default class Parser {
                 }
             }
             let argNode;
+            arg = assertFuncOrArg(arg);
             if (arg.type === "fn") {
                 const argGreediness =
                     functions[arg.result].greediness;
@@ -678,8 +690,6 @@ export default class Parser {
                         "argument to '" + func + "'", nextToken);
                 }
             } else {
-                // TODO: This INCORRECTLY assumes that arg.type === "arg" and not
-                // "$"! See comment in `parseSymbol`.
                 argNode = arg.result;
             }
             (isOptional ? optArgs : args).push(argNode);
@@ -925,33 +935,6 @@ export default class Parser {
                 new ParseNode("textord", nucleus.text, this.mode, nucleus),
                 nucleus);
         } else if (nucleus.text === "$") {
-            // TODO: Consider fixing this behavior as it is extremely non-obvious.
-            // This doesn't call `this.consume()`; so even though "$" is returned
-            // here, "$" remains as the `this.nextToken` still to be parsed in a new
-            // context. It thus eventually runs into the "$ within math mode" error
-            // thrown by `parseImplicitGroup`. However, the intermediate behavior is
-            // incorrectly typed.
-            //
-            // Methods affected (see comments in these methods):
-            // - `handleSupSubscript()`:
-            //    Parsing "a^$" successfully generates
-            //      ParseNode("supsub", {
-            //        base: ParseNode("a"),
-            //        sup: "$",     // <-- Invalid because it's not a ParseNode!
-            //        sub: undefined,
-            //      })
-            // - `parseArguments()`:
-            //    Parsing "\frac$a" successfully generates a function `ParseNode`
-            //    with arguments `["$", '$"]` (array of strings instead of
-            //    `ParseNode`s)!
-            // - `parseGivenFunction()`:
-            //    Because of where this is called, it might be reasonable to assume
-            //    that it doesn't receive "$" (see comment in function). However,
-            //    the error when parsing "\\left$\\right" could be improved.
-            //    Currently, it is "Invalid delimiter: 'undefined' after '\left'".
-            //
-            // One type-safety fix could be to move the "$ within math mode" error
-            // into a helper and calling it if "$" is encoutered in these methods.
             return {type: "$", result: "$", token: nucleus};
         } else if (/^\\verb[^a-zA-Z]/.test(nucleus.text)) {
             this.consume();
