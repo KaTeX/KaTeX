@@ -5,7 +5,6 @@ module.exports = {
         katex: path.join(__dirname, 'katex.js'),
         'copy-tex': path.join(__dirname, 'contrib', 'copy-tex', 'copy-tex.js'),
         renderMathInElement: path.join(__dirname, 'contrib', 'auto-render', 'auto-render.js'),
-        // 'katex-spec': path.join(__dirname, 'test', 'katex-spec.js'),
     },
     output: {
         path: path.join(__dirname, 'build'),
