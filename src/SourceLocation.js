@@ -31,12 +31,13 @@ export default class SourceLocation {
     ): ?SourceLocation {
         if (!second) {
             return first && first.loc;
-        }
-        if (!first || !first.loc || !second.loc ||
-            first.loc.lexer !== second.loc.lexer) {
+        } else if (!first || !first.loc || !second.loc ||
+                   first.loc.lexer !== second.loc.lexer) {
             return null;
+        } else {
+            return new SourceLocation(
+                    first.loc.lexer, first.loc.start, second.loc.end);
         }
-        return new SourceLocation(first.loc.lexer, first.loc.start, second.loc.end);
     }
 }
 
