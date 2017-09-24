@@ -56,7 +56,7 @@
     "test": "check-dependencies && npm run lint && npm run flow && npm run jest",
     "build-css": "lessc --clean-css static/katex.less static/katex.css",
     "prestart": "npm run build-css && npm run copy",
-    "start": "check-dependencies && webpack-dev-server --colors --port 7936",
+    "start": "check-dependencies && node server.js",
     "prepublishOnly": "make NIS= dist"
   },
   "pre-commit": [
