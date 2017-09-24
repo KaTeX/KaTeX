@@ -48,7 +48,7 @@ type ParsedType = "fn" | "arg" | "$"
 type ParsedFunc = {|
     type: "fn",
     result: string, // Function name defined via defineFunction (e.g. "\\frac").
-    token?: ?Token,
+    token: Token,
 |};
 type ParsedArg = {|
     type: "arg",
@@ -59,7 +59,7 @@ type ParsedDollar = {|
     // Math mode switch
     type: "$",
     result: "$",
-    token?: ?Token,
+    token: Token,
 |};
 type ParsedFuncOrArgOrDollar = ParsedFunc | ParsedArg | ParsedDollar;
 */
@@ -71,6 +71,22 @@ type ParsedFuncOrArgOrDollar = ParsedFunc | ParsedArg | ParsedDollar;
  */
 function newArgument(result, token) {
     return {type: "arg", result, token};
+}
+
+/**
+ * @param {Token} token
+ * @return {ParsedFunc}
+ */
+function newFunction(token) {
+    return {type: "fn", result: token.text, token};
+}
+
+/**
+ * @param {Token} token
+ * @return {ParsedDollar}
+ */
+function newDollar(token) {
+    return {type: "$", result: "$", token};
 }
 
 /**
@@ -920,7 +936,7 @@ export default class Parser {
             this.consume();
             // If there exists a function with this name, we return the function and
             // say that it is a function.
-            return {type: "fn", result: nucleus.text, token: nucleus};
+            return newFunction(nucleus);
         } else if (symbols[this.mode][nucleus.text]) {
             this.consume();
             // Otherwise if this is a no-argument function, find the type it
@@ -935,7 +951,7 @@ export default class Parser {
                 new ParseNode("textord", nucleus.text, this.mode, nucleus),
                 nucleus);
         } else if (nucleus.text === "$") {
-            return {type: "$", result: "$", token: nucleus};
+            return newDollar(nucleus);
         } else if (/^\\verb[^a-zA-Z]/.test(nucleus.text)) {
             this.consume();
             let arg = nucleus.text.slice(5);
