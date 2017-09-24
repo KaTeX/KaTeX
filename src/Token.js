@@ -1,4 +1,5 @@
 // @flow
+import SourceLocation from "./SourceLocation";
 
 /**
  * Interface required to break circular dependency between Token, Lexer, and
@@ -15,27 +16,20 @@ export interface LexerInterface {input: string, pos: number}
  * That way it is possible to attach extra metadata to the input string,
  * like for example a file name or similar.
  *
- * The position information (all three parameters) is optional,
- * so it is OK to construct synthetic tokens if appropriate.
- * Not providing available position information may lead to
- * degraded error reporting, though.
+ * The position information is optional, so it is OK to construct synthetic
+ * tokens if appropriate. Not providing available position information may
+ * lead to degraded error reporting, though.
  */
 export class Token {
     text: *;
-    start: *;
-    end: *;
-    lexer: *;
+    loc: ?SourceLocation;
 
     constructor(
         text: string,           // the text of this token
-        start?: number,         // the start offset, zero-based inclusive
-        end?: number,           // the end offset, zero-based exclusive
-        lexer?: LexerInterface, // the lexer holding the input string
+        loc: ?SourceLocation,
     ) {
         this.text = text;
-        this.start = start;
-        this.end = end;
-        this.lexer = lexer;
+        this.loc = loc;
     }
 
     /**
@@ -46,10 +40,7 @@ export class Token {
         endToken: Token,  // last token of the range, inclusive
         text: string,     // the text of the newly constructed token
     ) {
-        if (endToken.lexer !== this.lexer) {
-            return new Token(text); // sorry, no position information available
-        }
-        return new Token(text, this.start, endToken.end, this.lexer);
+        return new Token(text, SourceLocation.range(this, endToken));
     }
 }
 
