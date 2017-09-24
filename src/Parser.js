@@ -53,7 +53,7 @@ type ParsedFunc = {|
 type ParsedArg = {|
     type: "arg",
     result: ParseNode,
-    token?: ?Token,
+    token: Token,
 |};
 type ParsedDollar = {|
     // Math mode switch
@@ -66,7 +66,7 @@ type ParsedFuncOrArgOrDollar = ParsedFunc | ParsedArg | ParsedDollar;
 
 /**
  * @param {ParseNode} result
- * @param {?Token=} token
+ * @param {Token} token
  * @return {ParsedArg}
  */
 function newArgument(result, token) {
@@ -687,7 +687,7 @@ export default class Parser {
                 }
                 if (!this.settings.throwOnError &&
                     this.nextToken.text[0] === "\\") {
-                    arg = newArgument(this.handleUnsupportedCmd());
+                    arg = newArgument(this.handleUnsupportedCmd(), nextToken);
                 } else {
                     throw new ParseError(
                         "Expected group after '" + func + "'", nextToken);
@@ -758,6 +758,7 @@ export default class Parser {
      *
      * @param {string} modeName  Used to describe the mode in error messages
      * @param {boolean=} optional  Whether the group is optional or required
+     * @return {?Token}
      */
     parseStringGroup(modeName, optional) {
         if (optional && this.nextToken.text !== "[") {
@@ -791,6 +792,7 @@ export default class Parser {
      *
      * @param {RegExp} regex
      * @param {string} modeName  Used to describe the mode in error messages
+     * @return {Token}
      */
     parseRegexGroup(regex, modeName) {
         const outerMode = this.mode;
@@ -825,7 +827,7 @@ export default class Parser {
         if (!match) {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
-        return newArgument(new ParseNode("color", match[0], this.mode));
+        return newArgument(new ParseNode("color", match[0], this.mode), res);
     }
 
     /**
@@ -853,7 +855,7 @@ export default class Parser {
         if (!validUnit(data)) {
             throw new ParseError("Invalid unit: '" + data.unit + "'", res);
         }
-        return newArgument(new ParseNode("size", data, this.mode));
+        return newArgument(new ParseNode("size", data, this.mode), res);
     }
 
     /**
@@ -881,8 +883,9 @@ export default class Parser {
                 this.formLigatures(expression);
             }
             return newArgument(
-                new ParseNode("ordgroup", expression, this.mode,
-                    firstToken, lastToken));
+                new ParseNode(
+                    "ordgroup", expression, this.mode, firstToken, lastToken),
+                    firstToken.range(lastToken, firstToken.text));
         } else {
             // Otherwise, just return a nucleus, or nothing for an optional group
             return optional ? null : this.parseSymbol();
