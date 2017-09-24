@@ -4,10 +4,10 @@
  * and other CSS trickery.
  */
 
-const domTree = require("./domTree");
-const buildCommon = require("./buildCommon");
-const mathMLTree = require("./mathMLTree");
-const utils = require("./utils");
+import domTree from "./domTree";
+import buildCommon from "./buildCommon";
+import mathMLTree from "./mathMLTree";
+import utils from "./utils";
 
 const stretchyCodePoint = {
     widehat: "^",

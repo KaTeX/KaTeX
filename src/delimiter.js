@@ -335,7 +335,7 @@ const sqrtSvg = function(sqrtName, height, viewBoxHeight, options) {
     attributes.push(["preserveAspectRatio", "xMinYMin slice"]);
     const svg =  new domTree.svgNode([pathNode], attributes);
 
-    return buildCommon.buildCommon.makeSpan(["hide-tail"], [svg], options);
+    return buildCommon.makeSpan(["hide-tail"], [svg], options);
 };
 
 const sqrtSpan = function(height, delim, options) {
