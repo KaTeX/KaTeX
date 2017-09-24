@@ -21,7 +21,7 @@ export interface LexerInterface {input: string, pos: number}
  * lead to degraded error reporting, though.
  */
 export class Token {
-    text: *;
+    text: string;
     loc: ?SourceLocation;
 
     constructor(
