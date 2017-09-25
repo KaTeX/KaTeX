@@ -1,5 +1,6 @@
 // @flow
-import {LexerInterface, Token} from "./Token";
+import {Token} from "./Token";
+import SourceLocation from "./SourceLocation";
 import type {Mode} from "./types";
 
 /**
@@ -14,12 +15,7 @@ export default class ParseNode {
     type: *;
     value: *;
     mode: Mode;
-    // TODO: We should combine these to ({lexer, start, end}|void) as they
-    // should all exist together or not exist at all. That way, only a single
-    // void check needs to be done to see if we have metadata.
-    lexer: LexerInterface | void;
-    start: number | void;
-    end: number | void;
+    loc: ?SourceLocation;
 
     constructor(
         type: string,       // type of node, like e.g. "ordgroup"
@@ -33,10 +29,6 @@ export default class ParseNode {
         this.type = type;
         this.value = value;
         this.mode = mode;
-        if (firstToken && (!lastToken || lastToken.lexer === firstToken.lexer)) {
-            this.lexer = firstToken.lexer;
-            this.start = firstToken.start;
-            this.end = (lastToken || firstToken).end;
-        }
+        this.loc = SourceLocation.range(firstToken, lastToken);
     }
 }

@@ -14,6 +14,7 @@
 
 import matchAt from "match-at";
 import ParseError from "./ParseError";
+import SourceLocation from "./SourceLocation";
 import {LexerInterface, Token} from "./Token";
 
 /* The following tokenRegex
@@ -58,18 +59,18 @@ export default class Lexer implements LexerInterface {
         const input = this.input;
         const pos = this.pos;
         if (pos === input.length) {
-            return new Token("EOF", pos, pos, this);
+            return new Token("EOF", new SourceLocation(this, pos, pos));
         }
         const match = matchAt(tokenRegex, input, pos);
         if (match === null) {
             throw new ParseError(
                 "Unexpected character: '" + input[pos] + "'",
-                new Token(input[pos], pos, pos + 1, this));
+                new Token(input[pos], new SourceLocation(this, pos, pos + 1)));
         }
         const text = match[2] || " ";
         const start = this.pos;
         this.pos += match[0].length;
         const end = this.pos;
-        return new Token(text, start, end, this);
+        return new Token(text, new SourceLocation(this, start, end));
     }
 }
