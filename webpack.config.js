@@ -1,7 +1,7 @@
 const path = require('path');
 
 const katexConfig = {
-  entry: ['webpack-dev-server/client?http://localhost:7936/', './katex.js'],
+  entry: ['./katex.js'],
   output: {
     path: path.join(__dirname, 'build'),
     filename: 'katex.js',
@@ -12,7 +12,7 @@ const katexConfig = {
 };
 
 const copyTexConfig = {
-  entry: ['webpack-dev-server/client?http://localhost:7936/', './contrib/copy-tex/copy-tex.js'],
+  entry: ['./contrib/copy-tex/copy-tex.js'],
   output: {
     path: path.join(__dirname, 'build', 'contrib', 'copy-tex'),
     filename: 'copy-tex.js',
@@ -20,7 +20,7 @@ const copyTexConfig = {
 };
 
 const autoRenderConfig = {
-  entry: ['webpack-dev-server/client?http://localhost:7936/', './contrib/auto-render/auto-render.js'],
+  entry: ['./contrib/auto-render/auto-render.js'],
   output: {
     path: path.join(__dirname, 'build', 'contrib', 'auto-render'),
     filename: 'auto-render.js',
