@@ -21,17 +21,16 @@ class ParseError {
         let error = "KaTeX parse error: " + message;
         let start;
 
-        if (token && token.lexer &&
-            token.start != null && token.end != null &&
-            token.start <= token.end) {
+        const loc = token && token.loc;
+        if (loc && loc.start <= loc.end) {
             // If we have the input and a position, make the error a bit fancier
 
             // Get the input
-            const input = token.lexer.input;
+            const input = loc.lexer.input;
 
             // Prepend some information
-            start = token.start;
-            const end = token.end;
+            start = loc.start;
+            const end = loc.end;
             if (start === input.length) {
                 error += " at end of input: ";
             } else {

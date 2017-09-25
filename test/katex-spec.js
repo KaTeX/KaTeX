@@ -61,10 +61,8 @@ const stripPositions = function(expr) {
     if (typeof expr !== "object" || expr === null) {
         return expr;
     }
-    if (expr.lexer && typeof expr.start === "number") {
-        delete expr.lexer;
-        delete expr.start;
-        delete expr.end;
+    if (expr.loc && expr.loc.lexer && typeof expr.loc.start === "number") {
+        delete expr.loc;
     }
     Object.keys(expr).forEach(function(key) {
         stripPositions(expr[key]);
