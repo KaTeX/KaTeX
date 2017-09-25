@@ -54,7 +54,7 @@
     "coverage": "jest --coverage",
     "copy": "cp -a static/. build/ && cp -a contrib build/ && cp -a test build/",
     "test": "check-dependencies && npm run lint && npm run flow && npm run jest",
-    "build-css": "lessc --clean-css static/katex.less static/katex.css",
+    "build-css": "lessc --clean-css static/katex.less build/katex.css",
     "prestart": "npm run build-css && npm run copy",
     "start": "check-dependencies && node server.js",
     "prepublishOnly": "make NIS= dist"

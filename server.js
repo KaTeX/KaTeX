@@ -4,9 +4,7 @@ const webpackConfig = require("./webpack.config.js");
 const PORT = 7936;
 
 
-const compiler = webpack(webpackConfig);
-const server = new WebpackDevServer(compiler, {
-    stats: { colors: true },
-});
+const compiler = webpack(webpackConfig.compilerConfig);
+const server = new WebpackDevServer(compiler, webpackConfig.devServerConfig);
 
 server.listen(PORT);
