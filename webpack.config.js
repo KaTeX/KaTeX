@@ -5,7 +5,6 @@ const katexConfig = {
   output: {
     path: path.join(__dirname, 'build'),
     filename: 'katex.js',
-    publicPath: '/build/',
     library: 'katex',
     libraryTarget: 'umd',
     libraryExport: 'default',
@@ -17,7 +16,6 @@ const copyTexConfig = {
   output: {
     path: path.join(__dirname, 'build', 'contrib', 'copy-tex'),
     filename: 'copy-tex.js',
-    publicPath: '/build/',
   },
 };
 
@@ -26,7 +24,6 @@ const autoRenderConfig = {
   output: {
     path: path.join(__dirname, 'build', 'contrib', 'auto-render'),
     filename: 'auto-render.js',
-    publicPath: '/build/',
     library: 'renderMathInElement',
     libraryTarget: 'umd',
     libraryExport: 'default',
@@ -42,13 +39,6 @@ const commonConfig = {
               exclude: /node_modules\//,
           },
       ],
-  },
-  devServer: {
-      publicPath: '/',
-      contentBase: path.join(__dirname, 'build'),
-      stats: {
-        colors: true,
-      },
   },
   devtool: 'eval-source-map',
 };
