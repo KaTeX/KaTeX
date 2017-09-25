@@ -27,7 +27,14 @@ function serveBrowserified(file, standaloneName) {
         }
 
         const options = {
-            transform: [babelify],
+            transform: [babelify.configure({
+                presets: ["es2015", "flow"],
+                plugins: [
+                    "transform-runtime",
+                    "transform-class-properties",
+                    "add-module-exports",
+                ],
+            })],
         };
         if (standaloneName) {
             options.standalone = standaloneName;
