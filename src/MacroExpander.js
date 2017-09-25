@@ -140,7 +140,7 @@ export default class MacroExpander implements MacroContextInterface {
                         expansion.splice(i + 1, 1); // drop first #
                     } else if (/^[1-9]$/.test(tok.text)) {
                         // replace the placeholder with the indicated argument
-                        expansion.splice(i, 2, ...args[tok.text - 1]);
+                        expansion.splice(i, 2, ...args[+tok.text - 1]);
                     } else {
                         throw new ParseError(
                             "Not a valid argument number",
