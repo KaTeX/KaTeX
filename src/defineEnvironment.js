@@ -21,11 +21,15 @@ type EnvContext = {|
 |};
 
 /**
- * The handler function receives two arguments
  *  - context: information and references provided by the parser
  *  - args: an array of arguments passed to \begin{name}
+ *  - optArgs: an array of optional arguments passed to \begin{name}
  */
-type EnvHandler = (context: EnvContext, args: ParseNode[]) => ParseNode;
+type EnvHandler = (
+    context: EnvContext,
+    args: ParseNode[],
+    optArgs: (?ParseNode)[],
+) => ParseNode;
 
 /**
  *  - numArgs: (default 0) The number of arguments after the \begin{name} function.

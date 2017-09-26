@@ -62,7 +62,7 @@ class ParseFuncOrArgument {
     }
 }
 
-class Parser {
+export default class Parser {
     constructor(input, settings) {
         // Create a new macro expander (gullet) and (indirectly via that) also a
         // new lexer (mouth) for this parser (stomach, in the language of TeX)
@@ -226,7 +226,7 @@ class Parser {
                 denomNode = new ParseNode("ordgroup", denomBody, this.mode);
             }
 
-            const value = this.callFunction(funcName, [numerNode, denomNode]);
+            const value = this.callFunction(funcName, [numerNode, denomNode], []);
             return [new ParseNode(value.type, value, this.mode)];
         } else {
             return body;
@@ -462,13 +462,14 @@ class Parser {
             // Build the environment object. Arguments and other information will
             // be made available to the begin and end methods using properties.
             const env = environments.get(envName);
-            const args = this.parseArguments("\\begin{" + envName + "}", env);
+            const {args, optArgs} =
+                this.parseArguments("\\begin{" + envName + "}", env);
             const context = {
                 mode: this.mode,
                 envName: envName,
                 parser: this,
             };
-            const result = env.handler(context, args);
+            const result = env.handler(context, args, optArgs);
             this.expect("\\end", false);
             const endNameToken = this.nextToken;
             const end = this.parseFunction();
@@ -580,9 +581,9 @@ class Parser {
                     baseGroup.token);
             }
 
-            const args = this.parseArguments(func, funcData);
+            const {args, optArgs} = this.parseArguments(func, funcData);
             const token = baseGroup.token;
-            const result = this.callFunction(func, args, token);
+            const result = this.callFunction(func, args, optArgs, token);
             return new ParseNode(result.type, result, this.mode);
         } else {
             return baseGroup.result;
@@ -591,62 +592,63 @@ class Parser {
 
     /**
      * Call a function handler with a suitable context and arguments.
+     * @param {string} name
+     * @param {Array<ParseNode>} args
+     * @param {Array<?ParseNode>} optArgs
+     * @param {Token=} token
      */
-    callFunction(name, args, token) {
+    callFunction(name, args, optArgs, token) {
         const context = {
             funcName: name,
             parser: this,
             token,
         };
-        return functions[name].handler(context, args);
+        return functions[name].handler(context, args, optArgs);
     }
 
     /**
      * Parses the arguments of a function or environment
      *
      * @param {string} func  "\name" or "\begin{name}"
-     * @param {{numArgs:number,numOptionalArgs:number|undefined}} funcData
-     * @return the array of arguments
+     * @param {{
+     *   numArgs: number,
+     *   numOptionalArgs: (number|undefined),
+     * }} funcData
+     * @return {{
+     *   args: Array<ParseNode>,
+     *   optArgs: Array<?ParseNode>,
+     * }}
      */
     parseArguments(func, funcData) {
         const totalArgs = funcData.numArgs + funcData.numOptionalArgs;
         if (totalArgs === 0) {
-            return [];
+            return {args: [], optArgs: []};
         }
 
         const baseGreediness = funcData.greediness;
         const args = [];
+        const optArgs = [];
 
         for (let i = 0; i < totalArgs; i++) {
             const nextToken = this.nextToken;
             const argType = funcData.argTypes && funcData.argTypes[i];
-            let arg;
-            if (i < funcData.numOptionalArgs) {
-                if (argType) {
-                    arg = this.parseGroupOfType(argType, true);
-                } else {
-                    arg = this.parseGroup(true);
-                }
-                if (!arg) {
-                    args.push(null);
+            const isOptional = i < funcData.numOptionalArgs;
+            let arg = argType ?
+                this.parseGroupOfType(argType, isOptional) :
+                this.parseGroup(isOptional);
+            if (!arg) {
+                if (isOptional) {
+                    optArgs.push(null);
                     continue;
                 }
-            } else {
-                if (argType) {
-                    arg = this.parseGroupOfType(argType);
+                if (!this.settings.throwOnError &&
+                    this.nextToken.text[0] === "\\") {
+                    arg = new ParseFuncOrArgument(
+                        this.handleUnsupportedCmd(),
+                        false);
                 } else {
-                    arg = this.parseGroup();
-                }
-                if (!arg) {
-                    if (!this.settings.throwOnError &&
-                        this.nextToken.text[0] === "\\") {
-                        arg = new ParseFuncOrArgument(
-                            this.handleUnsupportedCmd(),
-                            false);
-                    } else {
-                        throw new ParseError(
-                            "Expected group after '" + func + "'", nextToken);
-                    }
+                    throw new ParseError(
+                        "Expected group after '" + func + "'", nextToken);
                 }
             }
             let argNode;
@@ -663,10 +665,10 @@ class Parser {
             } else {
                 argNode = arg.result;
             }
-            args.push(argNode);
+            (isOptional ? optArgs : args).push(argNode);
         }
 
-        return args;
+        return {args, optArgs};
     }
 
     /**
