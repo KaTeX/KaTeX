@@ -19,6 +19,7 @@ import {LexerInterface, Token} from "./Token";
 
 /* The following tokenRegex
  * - matches typical whitespace (but not NBSP etc.) using its first group
+ * - matches comments (must have trailing newlines)
  * - does not match any control character \x00-\x1f except whitespace
  * - does not match a bare backslash
  * - matches any ASCII character except those just mentioned
@@ -32,15 +33,19 @@ import {LexerInterface, Token} from "./Token";
  * If there is no matching function or symbol definition, the Parser will
  * still reject the input.
  */
+const commentRegexString = "%[^\n]*[\n]";
 const tokenRegex = new RegExp(
     "([ \r\n\t]+)|" +                                 // whitespace
-    "([!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
+    `(${commentRegexString}|` +                       // comments
+    "[!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +   // single codepoint
     "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair
     "|\\\\verb\\*([^]).*?\\3" +                       // \verb*
     "|\\\\verb([^*a-zA-Z]).*?\\4" +                   // \verb unstarred
     "|\\\\(?:[a-zA-Z@]+|[^\uD800-\uDFFF])" +          // function name
     ")"
 );
+
+const commentRegex = new RegExp(commentRegexString);
 
 /** Main Lexer class */
 export default class Lexer implements LexerInterface {
@@ -71,6 +76,11 @@ export default class Lexer implements LexerInterface {
         const start = this.pos;
         this.pos += match[0].length;
         const end = this.pos;
-        return new Token(text, new SourceLocation(this, start, end));
+
+        if (commentRegex.test(text)) {
+            return this.lex();
+        } else {
+            return new Token(text, new SourceLocation(this, start, end));
+        }
     }
 }

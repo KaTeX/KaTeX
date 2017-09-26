@@ -1,6 +1,10 @@
 body {
     margin: 0px;
     padding: 0px;
+    font-size: 24px;
+}
+
+#math {
     font-size: 72px;
 }
 

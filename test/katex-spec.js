@@ -1482,6 +1482,35 @@ describe("A font parser", function() {
     });
 });
 
+describe("A comment parser", function() {
+    it("should parse comments at the end of a line", () => {
+        expect("a^2 + b^2 = c^2 % Pythagoras' Theorem\n").toParse();
+    });
+
+    it("should parse comments at the start of a line", () => {
+        expect("% comment\n").toParse();
+    });
+
+    it("should parse multiple lines of comments in a row", () => {
+        expect("% comment 1\n% comment 2\n").toParse();
+    });
+
+    it("should not parse a comment that isn't followed by a newline", () => {
+        expect("x%y").toNotParse();
+    });
+
+    it("should not produce or consume space", () => {
+        expect("\text{hello% comment 1\nworld}")
+            .toParseLike("\text{helloworld}");
+        expect("\text{hello% comment\n\nworld}")
+            .toParseLike("\text{hello world}");
+    });
+
+    it("should not include comments in the output", () => {
+        expect("5 % comment\n").toParseLike("5");
+    });
+});
+
 describe("An HTML font tree-builder", function() {
     it("should render \\mathbb{R} with the correct font", function() {
         const markup = katex.renderToString("\\mathbb{R}");
