@@ -942,7 +942,3 @@ export default class Parser {
         }
     }
 }
-
-Parser.prototype.ParseNode = ParseNode;
-
-export default Parser;
