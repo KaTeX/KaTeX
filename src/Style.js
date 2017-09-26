@@ -122,7 +122,7 @@ const cramp = [Dc, Dc, Tc, Tc, Sc, Sc, SSc, SSc];
 const text = [D, Dc, T, Tc, T, Tc, T, Tc];
 
 // We only export some of the styles.
-module.exports = {
+export default {
     DISPLAY: styles[D],
     TEXT: styles[T],
     SCRIPT: styles[S],

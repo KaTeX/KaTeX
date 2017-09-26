@@ -10,12 +10,14 @@
 import ParseError from "./ParseError";
 import Style from "./Style";
 
-import buildCommon, { makeSpan } from "./buildCommon";
+import buildCommon from "./buildCommon";
 import delimiter from "./delimiter";
 import domTree from "./domTree";
 import { calculateSize } from "./units";
 import utils from "./utils";
 import stretchy from "./stretchy";
+
+const makeSpan = buildCommon.makeSpan;
 
 const isSpace = function(node) {
     return node instanceof domTree.span && node.classes[0] === "mspace";

@@ -72,4 +72,4 @@ class ParseError {
 // $FlowFixMe More hackery
 ParseError.prototype.__proto__ = Error.prototype;
 
-module.exports = ParseError;
+export default ParseError;

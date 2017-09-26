@@ -928,7 +928,7 @@ export default class Parser {
             // Lexer's tokenRegex is constructed to always have matching
             // first/last characters.
             if (arg.length < 2 || arg.charAt(0) !== arg.slice(-1)) {
-                throw new ParseError(`\\verb assertion failed -- 
+                throw new ParseError(`\\verb assertion failed --
                     please report what input caused this bug`);
             }
             arg = arg.slice(1, -1);  // remove first and last char

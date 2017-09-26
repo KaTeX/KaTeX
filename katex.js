@@ -43,6 +43,7 @@ if (typeof document !== "undefined") {
     }
 }
 
+
 /**
  * Parse and build an expression, and return the markup for that.
  */
@@ -61,7 +62,8 @@ const generateParseTree = function(expression, options) {
     return parseTree(expression, settings);
 };
 
-module.exports = {
+
+const katex = {
     render: render,
     renderToString: renderToString,
     /**
@@ -72,3 +74,5 @@ module.exports = {
     __parse: generateParseTree,
     ParseError: ParseError,
 };
+
+export default katex;

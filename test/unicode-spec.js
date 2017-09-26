@@ -3,9 +3,9 @@
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
-const ParseError = require("../src/ParseError");
-const parseTree = require("../src/parseTree");
-const Settings = require("../src/Settings");
+import ParseError from "../src/ParseError";
+import parseTree from "../src/parseTree";
+import Settings from "../src/Settings";
 
 const defaultSettings = new Settings({});
 

@@ -505,7 +505,7 @@ const fontMap = {
     },
 };
 
-module.exports = {
+export default {
     fontMap: fontMap,
     makeSymbol: makeSymbol,
     mathsym: mathsym,

@@ -1,5 +1,5 @@
 // @flow
-import buildCommon, {makeSpan} from "../buildCommon";
+import buildCommon from "../buildCommon";
 import defineEnvironment from "../defineEnvironment";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
@@ -191,14 +191,14 @@ const htmlBuilder = function(group, options) {
             // If there is more than one separator in a row, add a space
             // between them.
             if (!firstSeparator) {
-                colSep = makeSpan(["arraycolsep"], []);
+                colSep = buildCommon.makeSpan(["arraycolsep"], []);
                 colSep.style.width =
                     options.fontMetrics().doubleRuleSep + "em";
                 cols.push(colSep);
             }
 
             if (colDescr.separator === "|") {
-                const separator = makeSpan(
+                const separator = buildCommon.makeSpan(
                     ["vertical-separator"],
                     []);
                 separator.style.height = totalHeight + "em";
@@ -224,7 +224,7 @@ const htmlBuilder = function(group, options) {
         if (c > 0 || group.value.hskipBeforeAndAfter) {
             sepwidth = utils.deflt(colDescr.pregap, arraycolsep);
             if (sepwidth !== 0) {
-                colSep = makeSpan(["arraycolsep"], []);
+                colSep = buildCommon.makeSpan(["arraycolsep"], []);
                 colSep.style.width = sepwidth + "em";
                 cols.push(colSep);
             }
@@ -244,7 +244,7 @@ const htmlBuilder = function(group, options) {
         }
 
         col = buildCommon.makeVList(col, "individualShift", null, options);
-        col = makeSpan(
+        col = buildCommon.makeSpan(
             ["col-align-" + (colDescr.align || "c")],
             [col]);
         cols.push(col);
@@ -252,14 +252,14 @@ const htmlBuilder = function(group, options) {
         if (c < nc - 1 || group.value.hskipBeforeAndAfter) {
             sepwidth = utils.deflt(colDescr.postgap, arraycolsep);
             if (sepwidth !== 0) {
-                colSep = makeSpan(["arraycolsep"], []);
+                colSep = buildCommon.makeSpan(["arraycolsep"], []);
                 colSep.style.width = sepwidth + "em";
                 cols.push(colSep);
             }
         }
     }
-    body = makeSpan(["mtable"], cols);
-    return makeSpan(["mord"], [body], options);
+    body = buildCommon.makeSpan(["mtable"], cols);
+    return buildCommon.makeSpan(["mord"], [body], options);
 };
 
 const mathmlBuilder = function(group, options) {

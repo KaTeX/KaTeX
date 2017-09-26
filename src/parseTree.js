@@ -17,4 +17,4 @@ const parseTree = function(toParse, settings) {
     return parser.parse();
 };
 
-module.exports = parseTree;
+export default parseTree;

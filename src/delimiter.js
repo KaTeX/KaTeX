@@ -24,7 +24,7 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 
 import domTree from "./domTree";
-import buildCommon, { makeSpan } from "./buildCommon";
+import buildCommon from "./buildCommon";
 import fontMetrics from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
@@ -50,7 +50,7 @@ const getMetrics = function(symbol, font) {
 const styleWrap = function(delim, toStyle, options, classes) {
     const newOptions = options.havingBaseStyle(toStyle);
 
-    const span = makeSpan(
+    const span = buildCommon.makeSpan(
         (classes || []).concat(newOptions.sizingClasses(options)),
         [delim], options);
 
@@ -103,7 +103,7 @@ const mathrmSize = function(value, size, mode, options) {
 const makeLargeDelim = function(delim, size, center, options, mode, classes) {
     const inner = mathrmSize(delim, size, mode, options);
     const span = styleWrap(
-        makeSpan(["delimsizing", "size" + size], [inner], options),
+        buildCommon.makeSpan(["delimsizing", "size" + size], [inner], options),
         Style.TEXT, options, classes);
     if (center) {
         centerSpan(span, options, Style.TEXT);
@@ -124,9 +124,9 @@ const makeInner = function(symbol, font, mode) {
         sizeClass = "delim-size4";
     }
 
-    const inner = makeSpan(
+    const inner = buildCommon.makeSpan(
         ["delimsizinginner", sizeClass],
-        [makeSpan([], [buildCommon.makeSymbol(symbol, font, mode)])]);
+        [buildCommon.makeSpan([], [buildCommon.makeSymbol(symbol, font, mode)])]);
 
     // Since this will be passed into `makeVList` in the end, wrap the element
     // in the appropriate tag that VList uses.
@@ -310,7 +310,7 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
     const inner = buildCommon.makeVList(inners, "bottom", depth, newOptions);
 
     return styleWrap(
-        makeSpan(["delimsizing", "mult"], [inner], newOptions),
+        buildCommon.makeSpan(["delimsizing", "mult"], [inner], newOptions),
         Style.TEXT, options, classes);
 };
 
@@ -606,7 +606,7 @@ const makeLeftRightDelim = function(delim, height, depth, options, mode,
                                 classes);
 };
 
-module.exports = {
+export default {
     sizedDelim: makeSizedDelim,
     customSizedDelim: makeCustomSizedDelim,
     leftRightDelim: makeLeftRightDelim,
