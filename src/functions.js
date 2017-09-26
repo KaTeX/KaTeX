@@ -30,9 +30,9 @@ const defineFunction = function(
 defineFunction(["\\sqrt"], {
     numArgs: 1,
     numOptionalArgs: 1,
-}, function(context, args) {
-    const index = args[0];
-    const body = args[1];
+}, function(context, args, optArgs) {
+    const index = optArgs[0];
+    const body = args[0];
     return {
         type: "sqrt",
         body: body,
@@ -151,10 +151,10 @@ defineFunction(["\\rule"], {
     numArgs: 2,
     numOptionalArgs: 1,
     argTypes: ["size", "size", "size"],
-}, function(context, args) {
-    const shift = args[0];
-    const width = args[1];
-    const height = args[2];
+}, function(context, args, optArgs) {
+    const shift = optArgs[0];
+    const width = args[0];
+    const height = args[1];
     return {
         type: "rule",
         shift: shift && shift.value,
@@ -443,10 +443,10 @@ defineFunction(["\\smash"], {
     numArgs: 1,
     numOptionalArgs: 1,
     allowedInText: true,
-}, function(context, args) {
+}, function(context, args, optArgs) {
     let smashHeight = false;
     let smashDepth = false;
-    const tbArg = args[0];
+    const tbArg = optArgs[0];
     if (tbArg) {
         // Optional [tb] argument is engaged.
         // ref: amsmath: \renewcommand{\smash}[1][tb]{%
@@ -469,7 +469,7 @@ defineFunction(["\\smash"], {
         smashDepth = true;
     }
 
-    const body = args[1];
+    const body = args[0];
     return {
         type: "smash",
         body: body,
@@ -616,9 +616,9 @@ defineFunction([
 ], {
     numArgs: 1,
     numOptionalArgs: 1,
-}, function(context, args) {
-    const below = args[0];
-    const body = args[1];
+}, function(context, args, optArgs) {
+    const below = optArgs[0];
+    const body = args[0];
     return {
         type: "xArrow",   // x for extensible
         label: context.funcName,
@@ -670,8 +670,8 @@ defineFunction(["\\\\", "\\cr"], {
     numArgs: 0,
     numOptionalArgs: 1,
     argTypes: ["size"],
-}, function(context, args) {
-    const size = args[0];
+}, function(context, args, optArgs) {
+    const size = optArgs[0];
     return {
         type: "cr",
         size: size,
