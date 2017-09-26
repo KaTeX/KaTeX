@@ -1,19 +1,7 @@
 {
-    "presets": [
-        ["es2015", { "modules": false }],
-        "flow"
-      ],
+    "presets": [ "es2015", "flow" ],
     "plugins": [
         "transform-runtime",
         "transform-class-properties"
-    ],
-    "env": {
-      "test": {
-        "presets": [ "es2015", "flow" ],
-        "plugins": [
-            "transform-runtime",
-            "transform-class-properties"
-        ],
-      }
-    }
+    ]
 }

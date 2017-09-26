@@ -41,7 +41,7 @@ lint: $(NIS)
 	$(NPM) run lint
 
 build/katex.js: katex.js $(wildcard src/*.js) $(NIS)
-	$(BROWSERIFY) -t [ babelify --presets [ es2015 flow ] --plugins [ transform-runtime transform-class-properties ]] $< --standalone katex > $@
+	$(BROWSERIFY) -t [ babelify ] $< --standalone katex > $@
 
 build/katex.min.js: build/katex.js
 	$(UGLIFYJS) < $< > $@
