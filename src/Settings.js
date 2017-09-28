@@ -13,6 +13,7 @@ type SettingsOptions = {
     macros?: {[macroName: string]: string};
     colorIsTextColor?: boolean;
     maxSize?: number;
+    postProcessor?: Function;
 };
 
 /**
@@ -32,6 +33,7 @@ class Settings {
     macros: {[macroName: string]: string};
     colorIsTextColor: boolean;
     maxSize: number;
+    postProcessor: Function | void;
 
     constructor(options: SettingsOptions) {
         // allow null options

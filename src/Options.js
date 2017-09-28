@@ -44,6 +44,7 @@ export type OptionsData = {
     phantom?: boolean;
     font?: string | void;
     maxSize: number;
+    postProcessor?: Function;
 };
 
 /**
@@ -63,6 +64,7 @@ class Options {
     sizeMultiplier: number;
     maxSize: number;
     _fontMetrics: FontMetrics | void;
+    postProcessor: Function | void;
 
     /**
      * The base size index.
@@ -194,7 +196,7 @@ class Options {
         });
     }
 
-    withPostProcessor(postProcessor) {
+    withPostProcessor(postProcessor: Function): Options {
         return this.extend({
             postProcessor: postProcessor,
         });
@@ -315,6 +317,8 @@ class Options {
     }
 }
 
+export default Options;
+
 /**
  * Callback which will be called on every built node of every tree node.
  * @callback Options~postProcessor
@@ -322,4 +326,3 @@ class Options {
  * @param {object} buildNode - node built from parse tree node
  * @param {Options} options
  */
-export default Options;
