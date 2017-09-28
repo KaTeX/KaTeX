@@ -21,7 +21,7 @@ function init() {
     }
 
     var macros = {};
-    var options = {};
+    var options = {displayMode: true};
     var macroRegex = /(?:^\?|&)(?:\\|%5[Cc])([A-Za-z]+)=([^&]*)/g;
     var macroString = "";
     while ((match = macroRegex.exec(window.location.search)) !== null) {

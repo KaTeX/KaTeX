@@ -334,7 +334,7 @@ groupTypes.supsub = function(group, options) {
     // Here is where we defer to the inner group if it should handle
     // superscripts and subscripts itself.
     if (shouldHandleSupSub(group, options)) {
-        return buildGroup(group.value.base, options);
+        return groupTypes[group.value.base.type](group, options);
     }
 
     const base = buildGroup(group.value.base, options);
@@ -1558,9 +1558,7 @@ export const buildGroup = function(group, options, baseOptions) {
             groupNode.depth *= multiplier;
         }
 
-        if (options.postProcessor) {
-            options.postProcessor(group, groupNode, options);
-        }
+        applyPostProcessor(group, groupNode, options);
 
         return groupNode;
     } else {
@@ -1618,4 +1616,10 @@ export default function buildHTML(tree, options) {
     htmlNode.setAttribute("aria-hidden", "true");
 
     return htmlNode;
+}
+
+function applyPostProcessor(group, node, options) {
+    if (options.postProcessor) {
+        options.postProcessor(group, node, options);
+    }
 }
