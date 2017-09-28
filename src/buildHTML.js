@@ -733,6 +733,9 @@ groupTypes.op = function(group, options) {
         // in a new span so it is an inline, and works.
         base = makeSpan([], [base]);
 
+        // base wasn't called by buildGroup, so call post processor manually
+        applyPostProcessor(group, base, options);
+
         let supm;
         let supKern;
         let subm;

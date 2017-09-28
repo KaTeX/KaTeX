@@ -25,7 +25,9 @@ const _getBuiltTree = function(tree, expr, settings) {
     const rootNode = buildTree(tree, expr, usedSettings);
 
     // grab the root node of the HTML rendering
-    const builtHTML = rootNode.children[1];
+    const builtHTML = settings.displayMode ?
+        rootNode.children[0].children[1] :
+        rootNode.children[1];
 
     // Remove the outer .katex and .katex-inner layers
     return builtHTML.children[2].children;
@@ -2621,32 +2623,57 @@ describe("Tree attributes propagation", function() {
 
                 treeNode.attributes["katex-id"] = counter++;
             };
-            const built = _getBuiltTree(tree, expr, {postProcessor: putId})[0];
+            let built = _getBuiltTree(tree, expr, {
+                postProcessor: putId,
+            })[0];
 
-            const node = built.toNode();
+            let node = built.toNode();
             expect(node.getAttribute("katex-id")).toBe("4");
 
-            const baseNode = node.children[0];
-            expect(baseNode.getAttribute("katex-id")).toBe("1");
-            expect(baseNode.getAttribute("katex-base-id")).toBe("base");
+            // inline and display modes has different DOM - check them both
+            check(
+                node.children[0],
+                node.children[1].children[0].children[0].children[0]
+                    .children[0].children[1],
+                node.children[1].children[0].children[0].children[0]
+                    .children[1].children[1]);
 
-            const subNode = node.children[1].children[0].children[0].children[0]
-                .children[0].children[1];
-            expect(subNode.getAttribute("katex-id")).toBe("3");
-            expect(subNode.getAttribute("katex-sub-id")).toBe("sub");
+            counter = 1;
+            built = _getBuiltTree(tree, expr, {
+                postProcessor: putId,
+                displayMode: true,
+            })[0];
 
-            const supNode = node.children[1].children[0].children[0].children[0]
-                .children[1].children[1];
-            expect(supNode.getAttribute("katex-id")).toBe("2");
-            expect(supNode.getAttribute("katex-sup-id")).toBe("sup");
+            node = built.toNode();
+            expect(node.getAttribute("katex-id")).toBe("4");
 
-            const markup = built.toMarkup();
-            expect(markup.match(/katex-id="1"/g).length).toBe(1);
-            expect(markup.match(/katex-id="2"/g).length).toBe(1);
-            expect(markup.match(/katex-id="3"/g).length).toBe(1);
-            expect(markup.match(/katex-base-id="base"/g).length).toBe(1);
-            expect(markup.match(/katex-sub-id="sub"/g).length).toBe(1);
-            expect(markup.match(/katex-sup-id="sup"/g).length).toBe(1);
+            check(
+                node.children[0].children[0].children[0]
+                    .children[1].children[1],
+                node.children[0].children[0].children[0]
+                    .children[0].children[1],
+                node.children[0].children[0].children[0]
+                    .children[2].children[1]);
+
+            function check(baseNode, subNode, supNode) {
+                expect(baseNode.getAttribute("katex-id")).toBe("1");
+                expect(baseNode.getAttribute("katex-base-id")).toBe("base");
+
+                expect(subNode.getAttribute("katex-id")).toBe("3");
+                expect(subNode.getAttribute("katex-sub-id")).toBe("sub");
+
+                expect(supNode.getAttribute("katex-id")).toBe("2");
+                expect(supNode.getAttribute("katex-sup-id")).toBe("sup");
+
+                const markup = built.toMarkup();
+                expect(markup.match(/katex-id="1"/g).length).toBe(1);
+                expect(markup.match(/katex-id="2"/g).length).toBe(1);
+                expect(markup.match(/katex-id="3"/g).length).toBe(1);
+                expect(markup.match(/katex-id="4"/g).length).toBe(1);
+                expect(markup.match(/katex-base-id="base"/g).length).toBe(1);
+                expect(markup.match(/katex-sub-id="sub"/g).length).toBe(1);
+                expect(markup.match(/katex-sup-id="sup"/g).length).toBe(1);
+            }
         });
     });
 });
