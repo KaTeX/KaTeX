@@ -30,9 +30,9 @@ const defineFunction = function(
 defineFunction(["\\sqrt"], {
     numArgs: 1,
     numOptionalArgs: 1,
-}, function(context, args) {
-    const index = args[0];
-    const body = args[1];
+}, function(context, args, optArgs) {
+    const index = optArgs[0];
+    const body = args[0];
     return {
         type: "sqrt",
         body: body,
@@ -88,6 +88,42 @@ defineFunction(["\\color"], {
     argTypes: ["color"],
 }, null);
 
+// colorbox
+defineFunction(["\\colorbox"], {
+    numArgs: 2,
+    allowedInText: true,
+    greediness: 3,
+    argTypes: ["color", "text"],
+}, function(context, args) {
+    const color = args[0];
+    const body = args[1];
+    return {
+        type: "enclose",
+        label: context.funcName,
+        backgroundColor: color,
+        body: body,
+    };
+});
+
+// fcolorbox
+defineFunction(["\\fcolorbox"], {
+    numArgs: 3,
+    allowedInText: true,
+    greediness: 3,
+    argTypes: ["color", "color", "text"],
+}, function(context, args) {
+    const borderColor = args[0];
+    const backgroundColor = args[1];
+    const body = args[2];
+    return {
+        type: "enclose",
+        label: context.funcName,
+        backgroundColor: backgroundColor,
+        borderColor: borderColor,
+        body: body,
+    };
+});
+
 // An overline
 defineFunction(["\\overline"], {
     numArgs: 1,
@@ -115,10 +151,10 @@ defineFunction(["\\rule"], {
     numArgs: 2,
     numOptionalArgs: 1,
     argTypes: ["size", "size", "size"],
-}, function(context, args) {
-    const shift = args[0];
-    const width = args[1];
-    const height = args[2];
+}, function(context, args, optArgs) {
+    const shift = optArgs[0];
+    const width = args[0];
+    const height = args[1];
     return {
         type: "rule",
         shift: shift && shift.value,
@@ -407,10 +443,10 @@ defineFunction(["\\smash"], {
     numArgs: 1,
     numOptionalArgs: 1,
     allowedInText: true,
-}, function(context, args) {
+}, function(context, args, optArgs) {
     let smashHeight = false;
     let smashDepth = false;
-    const tbArg = args[0];
+    const tbArg = optArgs[0];
     if (tbArg) {
         // Optional [tb] argument is engaged.
         // ref: amsmath: \renewcommand{\smash}[1][tb]{%
@@ -433,7 +469,7 @@ defineFunction(["\\smash"], {
         smashDepth = true;
     }
 
-    const body = args[1];
+    const body = args[0];
     return {
         type: "smash",
         body: body,
@@ -580,9 +616,9 @@ defineFunction([
 ], {
     numArgs: 1,
     numOptionalArgs: 1,
-}, function(context, args) {
-    const below = args[0];
-    const body = args[1];
+}, function(context, args, optArgs) {
+    const below = optArgs[0];
+    const body = args[0];
     return {
         type: "xArrow",   // x for extensible
         label: context.funcName,
@@ -634,8 +670,8 @@ defineFunction(["\\\\", "\\cr"], {
     numArgs: 0,
     numOptionalArgs: 1,
     argTypes: ["size"],
-}, function(context, args) {
-    const size = args[0];
+}, function(context, args, optArgs) {
+    const size = optArgs[0];
     return {
         type: "cr",
         size: size,
@@ -673,6 +709,19 @@ defineFunction(["\\raisebox"], {
     return {
         type: "raisebox",
         dy: amount,
-        body: ordargument(body),
+        body: body,
+        value: ordargument(body),
     };
+});
+
+// \verb and \verb* are dealt with directly in Parser.js.
+// If we end up here, it's because of a failure to match the two delimiters
+// in the regex in Lexer.js.  LaTeX raises the following error when \verb is
+// terminated by end of line (or file).
+defineFunction(["\\verb"], {
+    numArgs: 0,
+    allowedInText: true,
+}, function(context) {
+    throw new ParseError(
+        "\\verb ended by end of line instead of matching delimiter");
 });

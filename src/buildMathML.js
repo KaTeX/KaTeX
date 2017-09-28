@@ -6,7 +6,7 @@
  * parser.
  */
 
-import buildCommon, { makeSpan, fontMap } from "./buildCommon";
+import buildCommon from "./buildCommon";
 import fontMetrics from "./fontMetrics";
 import mathMLTree from "./mathMLTree";
 import ParseError from "./ParseError";
@@ -50,9 +50,9 @@ const getVariant = function(group, options) {
         value = symbols[mode][value].replace;
     }
 
-    const fontName = fontMap[font].fontName;
+    const fontName = buildCommon.fontMap[font].fontName;
     if (fontMetrics.getCharacterMetrics(value, fontName)) {
-        return fontMap[options.font].variant;
+        return buildCommon.fontMap[options.font].variant;
     }
 
     return null;
@@ -290,17 +290,6 @@ groupTypes.genfrac = function(group, options) {
     return node;
 };
 
-groupTypes.array = function(group, options) {
-    return new mathMLTree.MathNode(
-        "mtable", group.value.body.map(function(row) {
-            return new mathMLTree.MathNode(
-                "mtr", row.map(function(cell) {
-                    return new mathMLTree.MathNode(
-                        "mtd", [buildGroup(cell, options)]);
-                }));
-        }));
-};
-
 groupTypes.sqrt = function(group, options) {
     let node;
     if (group.value.index) {
@@ -466,6 +455,13 @@ groupTypes.sizing = function(group, options) {
     return node;
 };
 
+groupTypes.verb = function(group, options) {
+    const text = new mathMLTree.TextNode(buildCommon.makeVerb(group, options));
+    const node = new mathMLTree.MathNode("mtext", [text]);
+    node.setAttribute("mathvariant", buildCommon.fontMap["mathtt"].variant);
+    return node;
+};
+
 groupTypes.overline = function(group, options) {
     const operator = new mathMLTree.MathNode(
         "mo", [new mathMLTree.TextNode("\u203e")]);
@@ -505,21 +501,33 @@ groupTypes.accentUnder = function(group, options) {
 groupTypes.enclose = function(group, options) {
     const node = new mathMLTree.MathNode(
         "menclose", [buildGroup(group.value.body, options)]);
-    let notation = "";
     switch (group.value.label) {
+        case "\\cancel":
+            node.setAttribute("notation", "updiagonalstrike");
+            break;
         case "\\bcancel":
-            notation = "downdiagonalstrike";
+            node.setAttribute("notation", "downdiagonalstrike");
             break;
         case "\\sout":
-            notation = "horizontalstrike";
+            node.setAttribute("notation", "horizontalstrike");
             break;
         case "\\fbox":
-            notation = "box";
+            node.setAttribute("notation", "box");
+            break;
+        case "\\colorbox":
+            node.setAttribute("mathbackground",
+                group.value.backgroundColor.value);
+            break;
+        case "\\fcolorbox":
+            node.setAttribute("mathbackground",
+                group.value.backgroundColor.value);
+            // TODO(ron): I don't know any way to set the border color.
+            node.setAttribute("notation", "box");
             break;
         default:
-            notation = "updiagonalstrike";
+            // xcancel
+            node.setAttribute("notation", "updiagonalstrike downdiagonalstrike");
     }
-    node.setAttribute("notation", notation);
     return node;
 };
 
@@ -604,9 +612,13 @@ groupTypes.mclass = function(group, options) {
     return new mathMLTree.MathNode("mstyle", inner);
 };
 
-// Transforms (translation/rotation) don't seem to have a representation
-// in MathML, so just treat them like \text{...}
-groupTypes.raisebox = groupTypes.text;
+groupTypes.raisebox = function(group, options) {
+    const node = new mathMLTree.MathNode(
+        "mpadded", [buildGroup(group.value.body, options)]);
+    const dy = group.value.dy.value.number + group.value.dy.value.unit;
+    node.setAttribute("voffset", dy);
+    return node;
+};
 
 /**
  * Takes a list of nodes, builds them, and returns a list of the generated
@@ -678,5 +690,5 @@ export default function buildMathML(tree, texExpression, options) {
     const math = new mathMLTree.MathNode("math", [semantics]);
 
     // You can't style <math> nodes, so we wrap the node in a span.
-    return makeSpan(["katex-mathml"], [math]);
+    return buildCommon.makeSpan(["katex-mathml"], [math]);
 }

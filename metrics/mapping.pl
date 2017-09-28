@@ -986,11 +986,12 @@ $map{cmtt10} = {
     0x15 => [0x306,-525,0], # \breve (combining)
     0x16 => [0x304,-525,0], # \bar (combining)
     0x17 => [0x30A,-525,0], # ring above (combining)
+    0x20 => 0x2423,         # graphic representation of space
 
     [0x21,0x7F] => 0x21,
 
-    0x27 => 2018,           # left quote
-    0x60 => 2019,           # right quote
+    0x27 => 0x2018,         # left quote
+    0x60 => 0x2019,         # right quote
     0x5E => [0x302,-525,0], # \hat (combining)
     0x7E => [0x303,-525,0], # \tilde (combining)
     0x7F => [0x308,-525,0], # \ddot (combining)

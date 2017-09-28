@@ -489,7 +489,7 @@ class lineNode {
     }
 }
 
-module.exports = {
+export default {
     baseNode: baseNode,
     span: span,
     documentFragment: documentFragment,

@@ -10,12 +10,14 @@
 import ParseError from "./ParseError";
 import Style from "./Style";
 
-import buildCommon, { makeSpan } from "./buildCommon";
+import buildCommon from "./buildCommon";
 import delimiter from "./delimiter";
 import domTree from "./domTree";
 import { calculateSize } from "./units";
 import utils from "./utils";
 import stretchy from "./stretchy";
+
+const makeSpan = buildCommon.makeSpan;
 
 const isSpace = function(node) {
     return node instanceof domTree.span && node.classes[0] === "mspace";
@@ -306,12 +308,7 @@ groupTypes.ordgroup = function(group, options) {
 groupTypes.text = function(group, options) {
     const newOptions = options.withFont(group.value.font);
     const inner = buildExpression(group.value.body, newOptions, true);
-    for (let i = 0; i < inner.length - 1; i++) {
-        if (inner[i].tryCombine(inner[i + 1])) {
-            inner.splice(i + 1, 1);
-            i--;
-        }
-    }
+    buildCommon.tryCombineChars(inner);
     return makeSpan(["mord", "text"],
         inner, newOptions);
 };
@@ -579,166 +576,6 @@ groupTypes.genfrac = function(group, options) {
         ["mord"].concat(newOptions.sizingClasses(options)),
         [leftDelim, makeSpan(["mfrac"], [frac]), rightDelim],
         options);
-};
-
-groupTypes.array = function(group, options) {
-    let r;
-    let c;
-    const nr = group.value.body.length;
-    let nc = 0;
-    let body = new Array(nr);
-
-    // Horizontal spacing
-    const pt = 1 / options.fontMetrics().ptPerEm;
-    const arraycolsep = 5 * pt; // \arraycolsep in article.cls
-
-    // Vertical spacing
-    const baselineskip = 12 * pt; // see size10.clo
-    // Default \jot from ltmath.dtx
-    // TODO(edemaine): allow overriding \jot via \setlength (#687)
-    const jot = 3 * pt;
-    // Default \arraystretch from lttab.dtx
-    // TODO(gagern): may get redefined once we have user-defined macros
-    const arraystretch = utils.deflt(group.value.arraystretch, 1);
-    const arrayskip = arraystretch * baselineskip;
-    const arstrutHeight = 0.7 * arrayskip; // \strutbox in ltfsstrc.dtx and
-    const arstrutDepth = 0.3 * arrayskip;  // \@arstrutbox in lttab.dtx
-
-    let totalHeight = 0;
-    for (r = 0; r < group.value.body.length; ++r) {
-        const inrow = group.value.body[r];
-        let height = arstrutHeight; // \@array adds an \@arstrut
-        let depth = arstrutDepth;   // to each tow (via the template)
-
-        if (nc < inrow.length) {
-            nc = inrow.length;
-        }
-
-        const outrow = new Array(inrow.length);
-        for (c = 0; c < inrow.length; ++c) {
-            const elt = buildGroup(inrow[c], options);
-            if (depth < elt.depth) {
-                depth = elt.depth;
-            }
-            if (height < elt.height) {
-                height = elt.height;
-            }
-            outrow[c] = elt;
-        }
-
-        let gap = 0;
-        if (group.value.rowGaps[r]) {
-            gap = calculateSize(group.value.rowGaps[r].value, options);
-            if (gap > 0) { // \@argarraycr
-                gap += arstrutDepth;
-                if (depth < gap) {
-                    depth = gap; // \@xargarraycr
-                }
-                gap = 0;
-            }
-        }
-        // In AMS multiline environments such as aligned and gathered, rows
-        // correspond to lines that have additional \jot added to the
-        // \baselineskip via \openup.
-        if (group.value.addJot) {
-            depth += jot;
-        }
-
-        outrow.height = height;
-        outrow.depth = depth;
-        totalHeight += height;
-        outrow.pos = totalHeight;
-        totalHeight += depth + gap; // \@yargarraycr
-        body[r] = outrow;
-    }
-
-    const offset = totalHeight / 2 + options.fontMetrics().axisHeight;
-    const colDescriptions = group.value.cols || [];
-    const cols = [];
-    let colSep;
-    let colDescrNum;
-    for (c = 0, colDescrNum = 0;
-         // Continue while either there are more columns or more column
-         // descriptions, so trailing separators don't get lost.
-         c < nc || colDescrNum < colDescriptions.length;
-         ++c, ++colDescrNum) {
-
-        let colDescr = colDescriptions[colDescrNum] || {};
-
-        let firstSeparator = true;
-        while (colDescr.type === "separator") {
-            // If there is more than one separator in a row, add a space
-            // between them.
-            if (!firstSeparator) {
-                colSep = makeSpan(["arraycolsep"], []);
-                colSep.style.width =
-                    options.fontMetrics().doubleRuleSep + "em";
-                cols.push(colSep);
-            }
-
-            if (colDescr.separator === "|") {
-                const separator = makeSpan(
-                    ["vertical-separator"],
-                    []);
-                separator.style.height = totalHeight + "em";
-                separator.style.verticalAlign =
-                    -(totalHeight - offset) + "em";
-
-                cols.push(separator);
-            } else {
-                throw new ParseError(
-                    "Invalid separator type: " + colDescr.separator);
-            }
-
-            colDescrNum++;
-            colDescr = colDescriptions[colDescrNum] || {};
-            firstSeparator = false;
-        }
-
-        if (c >= nc) {
-            continue;
-        }
-
-        let sepwidth;
-        if (c > 0 || group.value.hskipBeforeAndAfter) {
-            sepwidth = utils.deflt(colDescr.pregap, arraycolsep);
-            if (sepwidth !== 0) {
-                colSep = makeSpan(["arraycolsep"], []);
-                colSep.style.width = sepwidth + "em";
-                cols.push(colSep);
-            }
-        }
-
-        let col = [];
-        for (r = 0; r < nr; ++r) {
-            const row = body[r];
-            const elem = row[c];
-            if (!elem) {
-                continue;
-            }
-            const shift = row.pos - offset;
-            elem.depth = row.depth;
-            elem.height = row.height;
-            col.push({type: "elem", elem: elem, shift: shift});
-        }
-
-        col = buildCommon.makeVList(col, "individualShift", null, options);
-        col = makeSpan(
-            ["col-align-" + (colDescr.align || "c")],
-            [col]);
-        cols.push(col);
-
-        if (c < nc - 1 || group.value.hskipBeforeAndAfter) {
-            sepwidth = utils.deflt(colDescr.postgap, arraycolsep);
-            if (sepwidth !== 0) {
-                colSep = makeSpan(["arraycolsep"], []);
-                colSep.style.width = sepwidth + "em";
-                cols.push(colSep);
-            }
-        }
-    }
-    body = makeSpan(["mtable"], cols);
-    return makeSpan(["mord"], [body], options);
 };
 
 groupTypes.spacing = function(group, options) {
@@ -1115,6 +952,10 @@ groupTypes.sqrt = function(group, options) {
     // First, we do the same steps as in overline to build the inner group
     // and line
     let inner = buildGroup(group.value.body, options.havingCrampedStyle());
+    if (inner.height === 0) {
+        // Render a small surd.
+        inner.height = options.fontMetrics().xHeight;
+    }
 
     // Some groups can return document fragments.  Handle those by wrapping
     // them in a span.
@@ -1159,26 +1000,16 @@ groupTypes.sqrt = function(group, options) {
     // Shift the sqrt image
     const imgShift = img.height - inner.height - lineClearance - ruleWidth;
 
-    // We add a special case here, because even when `inner` is empty, we
-    // still get a line. So, we use a simple heuristic to decide if we
-    // should omit the body entirely. (note this doesn't work for something
-    // like `\sqrt{\rlap{x}}`, but if someone is doing that they deserve for
-    // it not to work.
-    let body;
-    if (inner.height === 0 && inner.depth === 0) {
-        body = makeSpan();
-    } else {
-        inner.style.paddingLeft = img.surdWidth + "em";
+    inner.style.paddingLeft = img.advanceWidth + "em";
 
-        // Overlay the image and the argument.
-        body = buildCommon.makeVList([
-            {type: "elem", elem: inner},
-            {type: "kern", size: -(inner.height + imgShift)},
-            {type: "elem", elem: img},
-            {type: "kern", size: ruleWidth},
-        ], "firstBaseline", null, options);
-        body.children[0].children[0].classes.push("svg-align");
-    }
+    // Overlay the image and the argument.
+    const body = buildCommon.makeVList([
+        {type: "elem", elem: inner},
+        {type: "kern", size: -(inner.height + imgShift)},
+        {type: "elem", elem: img},
+        {type: "kern", size: ruleWidth},
+    ], "firstBaseline", null, options);
+    body.children[0].children[0].classes.push("svg-align");
 
     if (!group.value.index) {
         return makeSpan(["mord", "sqrt"], [body], options);
@@ -1258,6 +1089,30 @@ groupTypes.styling = function(group, options) {
 groupTypes.font = function(group, options) {
     const font = group.value.font;
     return buildGroup(group.value.body, options.withFont(font));
+};
+
+groupTypes.verb = function(group, options) {
+    const text = buildCommon.makeVerb(group, options);
+    const body = [];
+    // \verb enters text mode and therefore is sized like \textstyle
+    const newOptions = options.havingStyle(options.style.text());
+    for (let i = 0; i < text.length; i++) {
+        if (text[i] === '\xA0') {  // spaces appear as nonbreaking space
+            // The space character isn't in the Typewriter-Regular font,
+            // so we implement it as a kern of the same size as a character.
+            // 0.525 is the width of a texttt character in LaTeX.
+            // It automatically gets scaled by the font size.
+            const rule = makeSpan(["mord", "rule"], [], newOptions);
+            rule.style.marginLeft = "0.525em";
+            body.push(rule);
+        } else {
+            body.push(buildCommon.makeSymbol(text[i], "Typewriter-Regular",
+                group.mode, newOptions, ["mathtt"]));
+        }
+    }
+    buildCommon.tryCombineChars(body);
+    return makeSpan(["mord", "text"].concat(newOptions.sizingClasses(options)),
+        body, newOptions);
 };
 
 groupTypes.rule = function(group, options) {
@@ -1533,43 +1388,63 @@ groupTypes.accentUnder = function(group, options) {
 };
 
 groupTypes.enclose = function(group, options) {
-    // \cancel, \bcancel, \xcancel, \sout, \fbox
+    // \cancel, \bcancel, \xcancel, \sout, \fbox, \colorbox, \fcolorbox
     const inner = buildGroup(group.value.body, options);
 
     const label = group.value.label.substr(1);
     const scale = options.sizeMultiplier;
     let img;
-    let pad = 0;
     let imgShift = 0;
+    const isColorbox = /color/.test(label);
 
     if (label === "sout") {
         img = makeSpan(["stretchy", "sout"]);
         img.height = options.fontMetrics().defaultRuleThickness / scale;
         imgShift = -0.5 * options.fontMetrics().xHeight;
+
     } else {
         // Add horizontal padding
-        inner.classes.push((label === "fbox" ? "boxpad" : "cancel-pad"));
+        inner.classes.push(/cancel/.test(label) ? "cancel-pad" : "boxpad");
 
         // Add vertical padding
-        const isCharBox = (isCharacterBox(group.value.body));
+        let vertPad = 0;
         // ref: LaTeX source2e: \fboxsep = 3pt;  \fboxrule = .4pt
         // ref: cancel package: \advance\totalheight2\p@ % "+2"
-        pad = (label === "fbox" ? 0.34 : (isCharBox ? 0.2 : 0));
-        imgShift = inner.depth + pad;
+        if (/box/.test(label)) {
+            vertPad = label === "colorbox" ? 0.3 : 0.34;
+        } else {
+            vertPad = isCharacterBox(group.value.body) ? 0.2 : 0;
+        }
 
-        img = stretchy.encloseSpan(inner, label, pad, options);
+        img = stretchy.encloseSpan(inner, label, vertPad, options);
+        imgShift = inner.depth + vertPad;
+
+        if (isColorbox) {
+            img.style.backgroundColor = group.value.backgroundColor.value;
+            if (label === "fcolorbox") {
+                img.style.borderColor = group.value.borderColor.value;
+            }
+        }
     }
 
-    const vlist = buildCommon.makeVList([
-        {type: "elem", elem: inner, shift: 0},
-        {type: "elem", elem: img, shift: imgShift},
-    ], "individualShift", null, options);
-
-    if (label !== "fbox") {
-        vlist.children[0].children[0].children[1].classes.push("svg-align");
+    let vlist;
+    if (isColorbox) {
+        vlist = buildCommon.makeVList([
+            // Put the color background behind inner;
+            {type: "elem", elem: img, shift: imgShift},
+            {type: "elem", elem: inner, shift: 0},
+        ], "individualShift", null, options);
+    } else {
+        vlist = buildCommon.makeVList([
+            // Write the \cancel stroke on top of inner.
+            {type: "elem", elem: inner, shift: 0},
+            {type: "elem", elem: img, shift: imgShift},
+        ], "individualShift", null, options);
     }
 
     if (/cancel/.test(label)) {
+        vlist.children[0].children[0].children[1].classes.push("svg-align");
+
         // cancel does not create horiz space for its line extension.
         // That is, not when adjacent to a mord.
         return makeSpan(["mord", "cancel-lap"], [vlist], options);
@@ -1640,7 +1515,7 @@ groupTypes.raisebox = function(group, options) {
         value: [{
             type: "text",
             value: {
-                body: group.value.body,
+                body: group.value.value,
                 font: "mathrm", // simulate \textrm
             },
         }],

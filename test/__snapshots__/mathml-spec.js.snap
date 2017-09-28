@@ -74,6 +74,48 @@ exports[`A MathML builder should make prime operators into <mo> nodes 1`] = `
 
 `;
 
+exports[`A MathML builder should use <menclose> for colorbox 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <menclose mathbackground="red">
+        <mrow>
+          <mtext>
+            b
+          </mtext>
+        </mrow>
+      </menclose>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\colorbox{red}{b}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should use <mpadded> for raisebox 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mpadded voffset="0.25em">
+        <mrow>
+          <mtext>
+            b
+          </mtext>
+        </mrow>
+      </mpadded>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\raisebox{0.25em}{b}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder should use <msupsub> for regular operators 1`] = `
 
 <math>

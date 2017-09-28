@@ -100,7 +100,7 @@ class TextNode {
     }
 }
 
-module.exports = {
+export default {
     MathNode: MathNode,
     TextNode: TextNode,
 };

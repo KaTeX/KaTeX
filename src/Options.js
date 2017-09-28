@@ -322,5 +322,4 @@ class Options {
  * @param {object} buildNode - node built from parse tree node
  * @param {Options} options
  */
-
-module.exports = Options;
+export default Options;

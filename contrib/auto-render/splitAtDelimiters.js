@@ -99,4 +99,4 @@ const splitAtDelimiters = function(startData, leftDelim, rightDelim, display) {
     return finalData;
 };
 
-module.exports = splitAtDelimiters;
+export default splitAtDelimiters;

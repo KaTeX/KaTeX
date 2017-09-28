@@ -575,6 +575,13 @@
         }
     }
 
+    // Hide the long tail of a stretchy SVG.
+    .hide-tail {
+        width: 100%;          // necessary only to get IE to work properly
+        position: relative;   // ditto
+        overflow: hidden;     // This line applies to all browsers.
+    }
+
     // Lengthen the extensible arrows via padding.
     .x-arrow-pad {
         padding: 0 0.5em;
@@ -592,6 +599,10 @@
     .fbox {
         box-sizing: border-box;
         border: 0.04em solid black;   // \fboxrule = 0.4pt
+    }
+    .fcolorbox {
+        box-sizing: border-box;
+        border: 0.04em solid;   // \fboxrule = 0.4pt
     }
     .cancel-pad {
         padding: 0 0.2em 0 0.2em;    // ref: cancel package  \advance\dimen@ 2\p@ %  "+2"

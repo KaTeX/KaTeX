@@ -70,18 +70,6 @@
         "valid-jsdoc": 0,
         "require-jsdoc": 0
     },
-    "ecmaFeatures": {
-        "arrowFunctions": true,
-        "blockBindings": true,
-        "classes": true,
-        "destructuring": true,
-        "experimentalObjectRestSpread": true,
-        "forOf": true,
-        "jsx": true,
-        "restParams": true,
-        "spread": true,
-        "templateStrings": true
-    },
     "env": {
         "es6": true,
         "node": true,

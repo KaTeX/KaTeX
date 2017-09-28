@@ -94,7 +94,7 @@ function clearNode(node) {
     setTextContent(node, "");
 }
 
-module.exports = {
+export default {
     contains: contains,
     deflt: deflt,
     escape: escape,

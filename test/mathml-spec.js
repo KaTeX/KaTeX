@@ -50,4 +50,12 @@ describe("A MathML builder", function() {
     it('should use <msupsub> for regular operators', () => {
         expect(getMathML("\\textstyle\\sum_a^b")).toMatchSnapshot();
     });
+
+    it('should use <mpadded> for raisebox', () => {
+        expect(getMathML("\\raisebox{0.25em}{b}")).toMatchSnapshot();
+    });
+
+    it('should use <menclose> for colorbox', () => {
+        expect(getMathML("\\colorbox{red}{b}")).toMatchSnapshot();
+    });
 });

@@ -297,7 +297,7 @@ const getFontMetrics = function(size: number): FontMetrics {
     return fontMetricsBySizeIndex[sizeIndex];
 };
 
-module.exports = {
+export default {
     getFontMetrics: getFontMetrics,
     getCharacterMetrics: getCharacterMetrics,
 };

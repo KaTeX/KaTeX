@@ -24,7 +24,7 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 
 import domTree from "./domTree";
-import buildCommon, { makeSpan } from "./buildCommon";
+import buildCommon from "./buildCommon";
 import fontMetrics from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
@@ -50,7 +50,7 @@ const getMetrics = function(symbol, font) {
 const styleWrap = function(delim, toStyle, options, classes) {
     const newOptions = options.havingBaseStyle(toStyle);
 
-    const span = makeSpan(
+    const span = buildCommon.makeSpan(
         (classes || []).concat(newOptions.sizingClasses(options)),
         [delim], options);
 
@@ -103,7 +103,7 @@ const mathrmSize = function(value, size, mode, options) {
 const makeLargeDelim = function(delim, size, center, options, mode, classes) {
     const inner = mathrmSize(delim, size, mode, options);
     const span = styleWrap(
-        makeSpan(["delimsizing", "size" + size], [inner], options),
+        buildCommon.makeSpan(["delimsizing", "size" + size], [inner], options),
         Style.TEXT, options, classes);
     if (center) {
         centerSpan(span, options, Style.TEXT);
@@ -124,9 +124,9 @@ const makeInner = function(symbol, font, mode) {
         sizeClass = "delim-size4";
     }
 
-    const inner = makeSpan(
+    const inner = buildCommon.makeSpan(
         ["delimsizinginner", sizeClass],
-        [makeSpan([], [buildCommon.makeSymbol(symbol, font, mode)])]);
+        [buildCommon.makeSpan([], [buildCommon.makeSymbol(symbol, font, mode)])]);
 
     // Since this will be passed into `makeVList` in the end, wrap the element
     // in the appropriate tag that VList uses.
@@ -310,7 +310,7 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
     const inner = buildCommon.makeVList(inners, "bottom", depth, newOptions);
 
     return styleWrap(
-        makeSpan(["delimsizing", "mult"], [inner], newOptions),
+        buildCommon.makeSpan(["delimsizing", "mult"], [inner], newOptions),
         Style.TEXT, options, classes);
 };
 
@@ -329,14 +329,13 @@ const sqrtSvg = function(sqrtName, height, viewBoxHeight, options) {
     }
     const pathNode = new domTree.pathNode(sqrtName, alternate);
 
-    let attributes = [["width", "100%"], ["height", height + "em"]];
+    // Note: 1000:1 ratio of viewBox to document em width.
+    const attributes = [["width", "400em"], ["height", height + "em"]];
     attributes.push(["viewBox", "0 0 400000 " + viewBoxHeight]);
     attributes.push(["preserveAspectRatio", "xMinYMin slice"]);
-    const innerSVG =  new domTree.svgNode([pathNode], attributes);
+    const svg =  new domTree.svgNode([pathNode], attributes);
 
-    attributes = [["width", "100%"], ["height", height + "em"]];
-    const svg = new domTree.svgNode([innerSVG], attributes);
-    return buildCommon.makeSpan([], [svg], options);
+    return buildCommon.makeSpan(["hide-tail"], [svg], options);
 };
 
 const sqrtSpan = function(height, delim, options) {
@@ -353,22 +352,25 @@ const sqrtSpan = function(height, delim, options) {
         sizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
         spanHeight = 1 * sizeMultiplier;
         span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, options);
-        span.surdWidth = 0.833 * sizeMultiplier;   // from the font.
+        span.style.minWidth = "0.853em";
+        span.advanceWidth = 0.833 * sizeMultiplier;   // from the font.
 
     } else if (delim.type === "large") {
         // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
         viewBoxHeight = 1000 * sizeToMaxHeight[delim.size];
         spanHeight = sizeToMaxHeight[delim.size] / sizeMultiplier;
         span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight, options);
-        span.surdWidth = 1.0 / sizeMultiplier; // from the font
+        span.style.minWidth = "1.02em";
+        span.advanceWidth = 1.0 / sizeMultiplier; // from the font
 
     } else {
         // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
         // We'll use a single SVG to accomplish the same thing.
         spanHeight = height / sizeMultiplier;
-        viewBoxHeight = Math.floor(1000 * spanHeight);
+        viewBoxHeight = Math.floor(1000 * height);
         span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, options);
-        span.surdWidth = 1.056 / sizeMultiplier;
+        span.style.minWidth = "0.742em";
+        span.advanceWidth = 1.056 / sizeMultiplier;
     }
 
     span.height = spanHeight;
@@ -604,7 +606,7 @@ const makeLeftRightDelim = function(delim, height, depth, options, mode,
                                 classes);
 };
 
-module.exports = {
+export default {
     sizedDelim: makeSizedDelim,
     customSizedDelim: makeCustomSizedDelim,
     leftRightDelim: makeLeftRightDelim,

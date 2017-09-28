@@ -15,8 +15,8 @@ export type Mode = "math" | "text";
 //                 bodies of functions like \textcolor where the
 //                 first argument is special and the second
 //                 argument is parsed normally)
-//   - "text": Node group parsed as in text mode.
-export type ArgType = "color" | "size" | "original" | "text";
+//   - Mode: Node group parsed in given mode.
+export type ArgType = "color" | "size" | "original" | Mode;
 
 // LaTeX display style.
 export type StyleStr = "text" | "display";

@@ -177,6 +177,20 @@ const makeOrd = function(group, options, type, attributes) {
 };
 
 /**
+ * Combine as many characters as possible in the given array of characters
+ * via their tryCombine method.
+ */
+const tryCombineChars = function(chars) {
+    for (let i = 0; i < chars.length - 1; i++) {
+        if (chars[i].tryCombine(chars[i + 1])) {
+            chars.splice(i + 1, 1);
+            i--;
+        }
+    }
+    return chars;
+};
+
+/**
  * Calculate the height, depth, and maxFontSize of an element based on its
  * children.
  */
@@ -404,6 +418,18 @@ const makeVList = function(children, positionType, positionData, options) {
     return vtable;
 };
 
+// Converts verb group into body string, dealing with \verb* form
+const makeVerb = function(group, options) {
+    let text = group.value.body;
+    if (group.value.star) {
+        text = text.replace(/ /g, '\u2423');  // Open Box
+    } else {
+        text = text.replace(/ /g, '\xA0');    // No-Break Space
+        // (so that, in particular, spaces don't coalesce)
+    }
+    return text;
+};
+
 // A map of spacing functions to their attributes, like size and corresponding
 // CSS class
 const spacingFunctions = {
@@ -489,7 +515,7 @@ const fontMap = {
     },
 };
 
-module.exports = {
+export default {
     fontMap: fontMap,
     makeSymbol: makeSymbol,
     mathsym: mathsym,
@@ -497,6 +523,8 @@ module.exports = {
     makeFragment: makeFragment,
     makeVList: makeVList,
     makeOrd: makeOrd,
+    makeVerb: makeVerb,
+    tryCombineChars: tryCombineChars,
     prependChildren: prependChildren,
     spacingFunctions: spacingFunctions,
 };

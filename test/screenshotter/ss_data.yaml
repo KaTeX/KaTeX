@@ -38,6 +38,11 @@ ArrayMode:
         \end{matrix}
     display: 1
 ArrayType: 1\begin{array}{c}2\\3\end{array}4
+ArrayRemoveEmptyLine: |
+    \begin{pmatrix}
+        1 \\
+        2 \\
+    \end{pmatrix}
 Baseline: a+b-c\cdot d/e
 BasicTest: a
 BinCancellation: |
@@ -59,6 +64,7 @@ Colors:
     nolatex: different syntax and different scope
 ColorImplicit: bl{ack\color{red}red\textcolor{green}{green}red\color{blue}blue}black
 ColorSpacing: \textcolor{red}{\displaystyle \int x} + 1
+Colorbox:  a \colorbox{teal} B \fcolorbox{blue}{red}{C} e+\colorbox{teal}x
 DashesAndQuotes: \text{``a'' b---c -- d----`e'-{-}-f}--``x''
 DeepFontSizing:
     tex: |
@@ -273,6 +279,13 @@ UnsupportedCmds:
     noThrow: 1
     errorColor: "#dd4c4c"
     nolatex: deliberately does not compile
+Verb: |
+    \begin{array}{ll}
+      \verb \verb ,   & \verb|\verb  |, \\
+      \verb* \verb* , & \verb*|\verb* |, \\
+      \verb!<x> & </y>! & \scriptstyle\verb|ss verb| \\
+      \verb*!<x> & </y>! & \small\verb|sm verb| \\
+    \end{array}
 VerticalSpacing:
     pre: potato<br>blah
     tex: x^{\Huge y}z

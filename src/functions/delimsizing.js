@@ -1,5 +1,5 @@
 // @flow
-import buildCommon, {makeSpan} from "../buildCommon";
+import buildCommon from "../buildCommon";
 import defineFunction from "../defineFunction";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
@@ -85,7 +85,7 @@ defineFunction({
         if (delim === ".") {
             // Empty delimiters still count as elements, even though they don't
             // show anything.
-            return makeSpan([group.value.mclass]);
+            return buildCommon.makeSpan([group.value.mclass]);
         }
 
         // Use delimiter.sizedDelim to generate the delimiter.
@@ -203,7 +203,7 @@ defineFunction({
         // Add it to the end of the expression.
         inner.push(rightDelim);
 
-        return makeSpan(["minner"], inner, options);
+        return buildCommon.makeSpan(["minner"], inner, options);
     },
     mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(group.value.body, options);

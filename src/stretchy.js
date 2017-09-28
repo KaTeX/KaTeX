@@ -4,10 +4,10 @@
  * and other CSS trickery.
  */
 
-const domTree = require("./domTree");
-const buildCommon = require("./buildCommon");
-const mathMLTree = require("./mathMLTree");
-const utils = require("./utils");
+import domTree from "./domTree";
+import buildCommon from "./buildCommon";
+import mathMLTree from "./mathMLTree";
+import utils from "./utils";
 
 const stretchyCodePoint = {
     widehat: "^",
@@ -158,6 +158,7 @@ const svgSpan = function(group, options) {
     let path;
     let pathName;
     let svgNode;
+    const classNames = [];
 
     if (utils.contains(["widehat", "widetilde", "undertilde"], label)) {
         // There are four SVG images available for each function.
@@ -208,7 +209,7 @@ const svgSpan = function(group, options) {
             attributes = [];
 
             if (numSvgChildren === 1) {
-                width = "100%";
+                width = "400em";
                 align = alignOne;
             } else if (numSvgChildren === 2) {
                 // small overlap to prevent a 1 pixel gap.
@@ -231,13 +232,22 @@ const svgSpan = function(group, options) {
             attributes.push(["viewBox", `0 0 ${viewBoxWidth} ${vbHeight}`]);
             attributes.push(["preserveAspectRatio", align + " slice"]);
 
-            innerSVGs.push(new domTree.svgNode([path], attributes));
+            if (numSvgChildren > 1) {
+                innerSVGs.push(new domTree.svgNode([path], attributes));
+            } else {
+                // The single svgChild is a child of a hide-tail span, not the
+                // child of another svg.
+                svgNode = new domTree.svgNode([path], attributes);
+                classNames.push("hide-tail");
+            }
         }
-        attributes = [["width", "100%"], ["height", height + "em"]];
-        svgNode = new domTree.svgNode(innerSVGs, attributes);
+        if (numSvgChildren > 1) {
+            attributes = [["width", "100%"], ["height", height + "em"]];
+            svgNode = new domTree.svgNode(innerSVGs, attributes);
+        }
     }
 
-    const span = buildCommon.makeSpan([], [svgNode], options);
+    const span = buildCommon.makeSpan(classNames, [svgNode], options);
     // Note that we are returning span.depth = 0.
     // Any adjustments relative to the baseline must be done in buildHTML.
     span.height = height;
@@ -254,11 +264,13 @@ const encloseSpan = function(inner, label, pad, options) {
     let img;
     const totalHeight = inner.height + inner.depth + 2 * pad;
 
-    if (label === "fbox") {
+    if (/(fbox)|(color)/.test(label)) {
         img = buildCommon.makeSpan(["stretchy", label], [], options);
-        if (options.color) {
+
+        if (label === "fbox" && options.color) {
             img.style.borderColor = options.getColor();
         }
+
     } else {
         // \cancel, \bcancel, or \xcancel
         // Since \cancel's SVG is inline and it omits the viewBox attribute,
@@ -299,7 +311,7 @@ const encloseSpan = function(inner, label, pad, options) {
     return img;
 };
 
-module.exports = {
+export default {
     encloseSpan: encloseSpan,
     mathMLnode: mathMLnode,
     svgSpan: svgSpan,
