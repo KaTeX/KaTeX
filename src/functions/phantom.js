@@ -28,7 +28,7 @@ defineFunction({
 
         // \phantom isn't supposed to affect the elements it contains.
         // See "color" for more details.
-        return new buildCommon.makeSpan(null, elements);
+        return new buildCommon.makeFragment(null, elements);
     },
     mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(group.value.value, options);
