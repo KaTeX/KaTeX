@@ -65,8 +65,8 @@ const mathMLnode = function(label) {
 
 //    The SVG typically contains a very long (400 em) arrow.
 
-//    The SVG is in a container span has overflow: hidden, so the span acts like
-//    a window that exposes only part of the  SVG.
+//    The SVG is in a container span that has overflow: hidden, so the span
+//    acts like a window that exposes only part of the  SVG.
 
 //    The SVG always has a longer, thinner aspect ratio than the container span.
 //    After the SVG fills 100% of the height of the container span,
