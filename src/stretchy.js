@@ -197,11 +197,10 @@ const svgSpan = function(group, options) {
     } else {
         let widthClass;
         let align;
-        let spans = [];
+        const spans = [];
 
         const [paths, gWidth, vbHeight, alignOne] = katexImagesData[label];
         const numSvgChildren = paths.length;
-        const innerSVGs = [];
         height = vbHeight / 1000;
         minWidth = gWidth;
 
