@@ -495,7 +495,7 @@ export default class Parser {
         } else if (utils.contains(Parser.styleFuncs, func)) {
             // If we see a styling function, parse out the implicit body
             this.consumeSpaces();
-            const body = this.parseExpression(true);
+            const body = this.parseExpression(true, breakOnTokenText);
             return new ParseNode("styling", {
                 // Figure out what style to use by pulling out the style from
                 // the function name
@@ -506,7 +506,7 @@ export default class Parser {
             const style = Parser.oldFontFuncs[func];
             // If we see an old font function, parse out the implicit body
             this.consumeSpaces();
-            const body = this.parseExpression(true);
+            const body = this.parseExpression(true, breakOnTokenText);
             if (style.slice(0, 4) === 'text') {
                 return new ParseNode("text", {
                     style: style,
@@ -524,7 +524,7 @@ export default class Parser {
             if (!color) {
                 throw new ParseError("\\color not followed by color");
             }
-            const body = this.parseExpression(true);
+            const body = this.parseExpression(true, breakOnTokenText);
             return new ParseNode("color", {
                 type: "color",
                 color: color.result.value,

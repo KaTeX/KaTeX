@@ -543,9 +543,26 @@ describe("An implicit group parser", function() {
         expect(sizing.value.value.length).toBe(1);
     });
 
-    it("should work within optional groups: \\sqrt[\\small 3]{x}", () => {
-        const tree = stripPositions(getParsed("\\sqrt[\\small 3]{x}"));
-        expect(tree).toMatchSnapshot();
+    describe("within optional groups", () => {
+        it("should work with sizing commands: \\sqrt[\\small 3]{x}", () => {
+            const tree = stripPositions(getParsed("\\sqrt[\\small 3]{x}"));
+            expect(tree).toMatchSnapshot();
+        });
+
+        it("should work with \\color: \\sqrt[\\color{red} 3]{x}", () => {
+            const tree = stripPositions(getParsed("\\sqrt[\\color{red} 3]{x}"));
+            expect(tree).toMatchSnapshot();
+        });
+
+        it("should work style commands \\sqrt[\\textstyle 3]{x}", () => {
+            const tree = stripPositions(getParsed("\\sqrt[\\textstyle 3]{x}"));
+            expect(tree).toMatchSnapshot();
+        });
+
+        it("should work wwith old font functions: \\sqrt[\\tt 3]{x}", () => {
+            const tree = stripPositions(getParsed("\\sqrt[\\tt 3]{x}"));
+            expect(tree).toMatchSnapshot();
+        });
     });
 });
 
