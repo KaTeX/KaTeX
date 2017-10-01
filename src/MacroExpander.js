@@ -4,7 +4,7 @@
  * until only non-macro tokens remain.
  */
 
-import Lexer from "./Lexer";
+import Lexer, {controlWordRegex} from "./Lexer";
 import {Token} from "./Token";
 import builtinMacros from "./macros";
 import ParseError from "./ParseError";
@@ -82,8 +82,8 @@ export default class MacroExpander implements MacroContextInterface {
         const topToken = this.popToken();
         const name = topToken.text;
         const isMacro = (name.charAt(0) === "\\");
-        if (isMacro) {
-            // Consume all spaces after \macro
+        if (isMacro && controlWordRegex.test(name)) {
+            // Consume all spaces after \macro (but not \\, \', etc.)
             this.consumeSpaces();
         }
         if (!(isMacro && this.macros.hasOwnProperty(name))) {

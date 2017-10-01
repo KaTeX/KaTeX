@@ -140,9 +140,13 @@ export default class Parser {
      * and fetches the one after that as the new look ahead.
      */
     consume() {
-        this.nextToken = this.gullet.get(this.mode === "math");
+        this.nextToken = this.gullet.get(false);
     }
 
+    /**
+     * Switches between "text" and "math" modes, reconsuming nextToken
+     * in case it would be read differently in the new mode.
+     */
     switchMode(newMode) {
         this.gullet.unget(this.nextToken);
         this.mode = newMode;
@@ -202,6 +206,11 @@ export default class Parser {
             }
             if (breakOnInfix && functions[lex.text] && functions[lex.text].infix) {
                 break;
+            }
+            // Ignore spaces in math mode
+            if (lex.text === ' ' && this.mode === "math") {
+                this.consume();
+                continue;
             }
             const atom = this.parseAtom();
             if (!atom) {
@@ -674,9 +683,18 @@ export default class Parser {
         const optArgs = [];
 
         for (let i = 0; i < totalArgs; i++) {
-            const nextToken = this.nextToken;
             const argType = funcData.argTypes && funcData.argTypes[i];
             const isOptional = i < funcData.numOptionalArgs;
+            // Ignore spaces between arguments.  As the TeXbook says:
+            // "After you have said ‘\def\row#1#2{...}’, you are allowed to
+            //  put spaces between the arguments (e.g., ‘\row x n’), because
+            //  TeX doesn’t use single spaces as undelimited arguments."
+            if (i > 0) {
+                while (this.nextToken.text === ' ' && !isOptional) {
+                    this.consume();
+                }
+            }
+            const nextToken = this.nextToken;
             let arg = argType ?
                 this.parseGroupOfType(argType, isOptional) :
                 this.parseGroup(isOptional);
