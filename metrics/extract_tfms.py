@@ -36,6 +36,7 @@ def main():
         'cmtt10.tfm',
         'rsfs10.tfm',
         'cmss10.tfm',
+        'cmssbx10.tfm',
     ]
 
     # Extracted by running `\font\a=<font>` and then `\showthe\skewchar\a` in
@@ -57,6 +58,7 @@ def main():
         'cmtt10': None,
         'rsfs10': None,
         'cmss10': None,
+        'cmssbx10': None,
     }
 
     font_name_to_tfm = {}
