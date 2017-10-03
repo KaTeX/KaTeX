@@ -197,6 +197,10 @@ export default class Parser {
         // Keep adding atoms to the body until we can't parse any more atoms (either
         // we reached the end, a }, or a \right)
         while (true) {
+            // Ignore spaces in math mode
+            if (this.mode === "math") {
+                this.consumeSpaces();
+            }
             const lex = this.nextToken;
             if (Parser.endOfExpression.indexOf(lex.text) !== -1) {
                 break;
@@ -206,11 +210,6 @@ export default class Parser {
             }
             if (breakOnInfix && functions[lex.text] && functions[lex.text].infix) {
                 break;
-            }
-            // Ignore spaces in math mode
-            if (lex.text === ' ' && this.mode === "math") {
-                this.consume();
-                continue;
             }
             const atom = this.parseAtom();
             if (!atom) {
@@ -292,6 +291,7 @@ export default class Parser {
         const symbolToken = this.nextToken;
         const symbol = symbolToken.text;
         this.consume();
+        this.consumeSpaces(); // ignore spaces before sup/subscript argument
         const group = this.parseGroup();
 
         if (!group) {
@@ -375,6 +375,9 @@ export default class Parser {
         let superscript;
         let subscript;
         while (true) {
+            // Guaranteed in math mode, so eat any spaces first.
+            this.consumeSpaces();
+
             // Lex the first token
             const lex = this.nextToken;
 
@@ -689,10 +692,8 @@ export default class Parser {
             // "After you have said ‘\def\row#1#2{...}’, you are allowed to
             //  put spaces between the arguments (e.g., ‘\row x n’), because
             //  TeX doesn’t use single spaces as undelimited arguments."
-            if (i > 0) {
-                while (this.nextToken.text === ' ' && !isOptional) {
-                    this.consume();
-                }
+            if (i > 0 && !isOptional) {
+                this.consumeSpaces();
             }
             const nextToken = this.nextToken;
             let arg = argType ?
@@ -751,14 +752,9 @@ export default class Parser {
             return this.parseSizeGroup(optional);
         }
 
-        this.switchMode(innerMode);
-        if (innerMode === "text") {
-            // text mode is special because it should ignore the whitespace before
-            // it
-            this.consumeSpaces();
-        }
         // By the time we get here, innerMode is one of "text" or "math".
         // We switch the mode of the parser, recurse, then restore the old mode.
+        this.switchMode(innerMode);
         const res = this.parseGroup(optional);
         this.switchMode(outerMode);
         return res;

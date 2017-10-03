@@ -188,9 +188,11 @@ describe("A parser", function() {
     });
 
     it("should ignore whitespace", function() {
-        const parseA = stripPositions(getParsed("    x    y    "));
-        const parseB = stripPositions(getParsed("xy"));
-        expect(parseA).toEqual(parseB);
+        expect("    x    y    ").toParseLike("xy");
+    });
+
+    it("should ignore whitespace in atom", function() {
+        expect("    x   ^ y    ").toParseLike("x^y");
     });
 });
 
