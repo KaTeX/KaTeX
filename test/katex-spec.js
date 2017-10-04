@@ -3,6 +3,7 @@
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
+import stringify from 'json-stable-stringify';
 
 import buildMathML from "../src/buildMathML";
 import buildTree from "../src/buildTree";
@@ -12,6 +13,27 @@ import parseTree from "../src/parseTree";
 import Options from "../src/Options";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
+
+const typeFirstCompare = (a, b) => {
+    if (a.key === 'type') {
+        return -1;
+    } else if (b.key === 'type') {
+        return 1;
+    } else {
+        return a.key < b.key ? -1 : 1;
+    }
+};
+
+const serializer = {
+    print(val) {
+        return stringify(val, {cmp: typeFirstCompare, space: '  '});
+    },
+    test() {
+        return true;
+    },
+};
+
+expect.addSnapshotSerializer(serializer);
 
 const defaultSettings = new Settings({});
 const defaultOptions = new Options({
@@ -519,6 +541,28 @@ describe("An implicit group parser", function() {
 
         expect(sizing.type).toEqual("sizing");
         expect(sizing.value.value.length).toBe(1);
+    });
+
+    describe("within optional groups", () => {
+        it("should work with sizing commands: \\sqrt[\\small 3]{x}", () => {
+            const tree = stripPositions(getParsed("\\sqrt[\\small 3]{x}"));
+            expect(tree).toMatchSnapshot();
+        });
+
+        it("should work with \\color: \\sqrt[\\color{red} 3]{x}", () => {
+            const tree = stripPositions(getParsed("\\sqrt[\\color{red} 3]{x}"));
+            expect(tree).toMatchSnapshot();
+        });
+
+        it("should work style commands \\sqrt[\\textstyle 3]{x}", () => {
+            const tree = stripPositions(getParsed("\\sqrt[\\textstyle 3]{x}"));
+            expect(tree).toMatchSnapshot();
+        });
+
+        it("should work wwith old font functions: \\sqrt[\\tt 3]{x}", () => {
+            const tree = stripPositions(getParsed("\\sqrt[\\tt 3]{x}"));
+            expect(tree).toMatchSnapshot();
+        });
     });
 });
 
