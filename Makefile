@@ -41,15 +41,19 @@ lint: $(NIS)
 	$(NPM) run lint
 
 build/katex.js: katex.js $(wildcard src/*.js) $(NIS)
+	mkdir -p build
 	$(BROWSERIFY) -t [ babelify ] $< --standalone katex > $@
 
 build/katex.min.js: build/katex.js
+	mkdir -p build
 	$(UGLIFYJS) < $< > $@
 
 build/katex.css: static/katex.less $(wildcard static/*.less) $(NIS)
+	mkdir -p build
 	./node_modules/.bin/lessc $< $@
 
 build/katex.min.css: build/katex.css
+	mkdir -p build
 	$(CLEANCSS) -o $@ $<
 
 .PHONY: build/fonts
