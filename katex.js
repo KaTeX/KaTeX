@@ -7,12 +7,12 @@
  * errors in the expression, or errors in javascript handling.
  */
 
-import ParseError from "./src/ParseError";
-import Settings from "./src/Settings";
+const ParseError = require("./src/ParseError").default;
+const Settings = require("./src/Settings").default;
 
-import buildTree from "./src/buildTree";
-import parseTree from "./src/parseTree";
-import utils from "./src/utils";
+const buildTree = require("./src/buildTree").default;
+const parseTree = require("./src/parseTree").default;
+const utils = require("./src/utils").default;
 
 /**
  * Parse and build an expression, and place that expression in the DOM node
@@ -63,7 +63,7 @@ const generateParseTree = function(expression, options) {
 };
 
 
-const katex = {
+module.exports = {
     render: render,
     renderToString: renderToString,
     /**
@@ -74,5 +74,3 @@ const katex = {
     __parse: generateParseTree,
     ParseError: ParseError,
 };
-
-export default katex;

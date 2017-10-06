@@ -7,7 +7,6 @@ const katexConfig = {
         filename: 'katex.js',
         library: 'katex',
         libraryTarget: 'umd',
-        libraryExport: 'default',
     },
 };
 
@@ -26,7 +25,6 @@ const autoRenderConfig = {
         filename: 'auto-render.js',
         library: 'renderMathInElement',
         libraryTarget: 'umd',
-        libraryExport: 'default',
     },
 };
 
