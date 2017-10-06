@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.8.4-pre",
+  "version": "0.10.0-pre",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "repository": {
@@ -36,6 +36,7 @@
     "jest": "^20.0.4",
     "jest-serializer-html": "^4.0.0",
     "js-yaml": "^3.3.1",
+    "json-stable-stringify": "^1.0.1",
     "jspngopt": "^0.2.0",
     "less": "~2.7.1",
     "less-plugin-clean-css": "^1.5.1",
