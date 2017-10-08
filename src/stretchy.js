@@ -153,8 +153,12 @@ const svgSpan = function(group, options) {
     let attributes = [];
     let height;
     let viewBoxWidth = 400000;  // default
+    let viewBoxHeight = 0;
     let minWidth = 0;
     let path;
+    let paths;
+    let gWidth;
+    let alignOne;
     let pathName;
     let svgNode;
     let span;
@@ -199,16 +203,16 @@ const svgSpan = function(group, options) {
         let align;
         const spans = [];
 
-        const [paths, gWidth, vbHeight, alignOne] = katexImagesData[label];
+        [paths, gWidth, viewBoxHeight, alignOne] = katexImagesData[label];
         const numSvgChildren = paths.length;
-        height = vbHeight / 1000;
+        height = viewBoxHeight / 1000;
         minWidth = gWidth;
 
         for (let i = 0; i < numSvgChildren; i++) {
             path = new domTree.pathNode(paths[i]);
 
             attributes = [["width", "400em"], ["height", height + "em"]];
-            attributes.push(["viewBox", `0 0 ${viewBoxWidth} ${vbHeight}`]);
+            attributes.push(["viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`]);
 
             if (numSvgChildren === 1) {
                 align = alignOne;
