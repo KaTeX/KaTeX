@@ -63,7 +63,7 @@ const generateParseTree = function(expression, options) {
 };
 
 
-const katex = {
+module.exports = {
     render: render,
     renderToString: renderToString,
     /**
@@ -74,5 +74,3 @@ const katex = {
     __parse: generateParseTree,
     ParseError: ParseError,
 };
-
-export default katex;
