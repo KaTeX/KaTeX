@@ -58,27 +58,26 @@ const mathMLnode = function(label) {
 // Licensed under the SIL Open Font License, Version 1.1.
 // See \nhttp://scripts.sil.org/OFL
 
-// Nested SVGs
-//    Many of the KaTeX SVG images contain a nested SVG. This is done to
-//    achieve a stretchy image while avoiding distortion of arrowheads or
-//    brace corners.
+// Very Long SVGs
+//    Many of the KaTeX stretchy wide elements use a long SVG image and an
+//    overflow: hidden tactic to achieve a stretchy image while avoiding
+//    distortion of arrowheads or brace corners.
 
-//    The inner SVG typically contains a very long (400 em) arrow.
+//    The SVG typically contains a very long (400 em) arrow.
 
-//    The outer SVG acts like a window that exposes only part of the inner SVG.
-//    The outer SVG will grow or shrink to match the dimensions set by CSS.
+//    The SVG is in a container span that has overflow: hidden, so the span
+//    acts like a window that exposes only part of the  SVG.
 
-//    The inner SVG always has a longer, thinner aspect ratio than the outer
-//    SVG. After the inner SVG fills 100% of the height of the outer SVG,
+//    The SVG always has a longer, thinner aspect ratio than the container span.
+//    After the SVG fills 100% of the height of the container span,
 //    there is a long arrow shaft left over. That left-over shaft is not shown.
-//    Instead, it is sliced off because the inner SVG is set to
-//    "preserveAspectRatio='... slice'".
+//    Instead, it is sliced off because the span's CSS has overflow: hidden.
 
 //    Thus, the reader sees an arrow that matches the subject matter width
 //    without distortion.
 
 //    Some functions, such as \cancel, need to vary their aspect ratio. These
-//    functions do not get the nested SVG treatment.
+//    functions do not get the overflow SVG treatment.
 
 // Second Brush Stroke
 //    Low resolution monitors struggle to display images in fine detail.
@@ -154,11 +153,13 @@ const svgSpan = function(group, options) {
     let attributes = [];
     let height;
     let viewBoxWidth = 400000;  // default
+    let viewBoxHeight = 0;
     let minWidth = 0;
     let path;
+    let paths;
     let pathName;
     let svgNode;
-    const classNames = [];
+    let span;
 
     if (utils.contains(["widehat", "widetilde", "undertilde"], label)) {
         // There are four SVG images available for each function.
@@ -193,61 +194,48 @@ const svgSpan = function(group, options) {
         attributes.push(["preserveAspectRatio", "none"]);
 
         svgNode = new domTree.svgNode([path], attributes);
+        span = buildCommon.makeSpan([], [svgNode], options);
 
     } else {
-        let width;
+        let widthClass;
         let align;
+        const spans = [];
 
-        const [paths, gWidth, vbHeight, alignOne] = katexImagesData[label];
+        [paths, minWidth, viewBoxHeight, align] = katexImagesData[label];
         const numSvgChildren = paths.length;
-        const innerSVGs = [];
-        height = vbHeight / 1000;
-        minWidth = gWidth;
+        height = viewBoxHeight / 1000;
 
         for (let i = 0; i < numSvgChildren; i++) {
             path = new domTree.pathNode(paths[i]);
-            attributes = [];
 
-            if (numSvgChildren === 1) {
-                width = "400em";
-                align = alignOne;
-            } else if (numSvgChildren === 2) {
-                // small overlap to prevent a 1 pixel gap.
-                if (i > 0) {
-                    attributes.push(["x", "50%"]);
-                }
-                width = ["50.1%", "50%"][i];
+            attributes = [["width", "400em"], ["height", height + "em"]];
+            attributes.push(["viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`]);
+
+            if (numSvgChildren === 2) {
+                widthClass = ["halfarrow-left", "halfarrow-right"][i];
                 align = ["xMinYMin", "xMaxYMin"][i];
-            } else {
-                // 3 inner SVGs, as in a brace
-                if (i > 0) {
-                    attributes.push(["x", [null, "25%", "74.9%"][i]]);
-                }
-                width = ["25.5%", "50%", "25.1%"][i];
+            } else  if (numSvgChildren === 3) {
+                widthClass = ["brace-left", "brace-center", "brace-right"][i];
                 align = ["xMinYMin", "xMidYMin", "xMaxYMin"][i];
             }
 
-            attributes.push(["width", width]);
-            attributes.push(["height", height + "em"]);
-            attributes.push(["viewBox", `0 0 ${viewBoxWidth} ${vbHeight}`]);
             attributes.push(["preserveAspectRatio", align + " slice"]);
+            svgNode = new domTree.svgNode([path], attributes);
 
-            if (numSvgChildren > 1) {
-                innerSVGs.push(new domTree.svgNode([path], attributes));
+            if (numSvgChildren === 1) {
+                span = buildCommon.makeSpan(["hide-tail"], [svgNode], options);
             } else {
-                // The single svgChild is a child of a hide-tail span, not the
-                // child of another svg.
-                svgNode = new domTree.svgNode([path], attributes);
-                classNames.push("hide-tail");
+                span = buildCommon.makeSpan([widthClass], [svgNode], options);
+                span.style.height = height + "em";
+                spans.push(span);
             }
         }
+
         if (numSvgChildren > 1) {
-            attributes = [["width", "100%"], ["height", height + "em"]];
-            svgNode = new domTree.svgNode(innerSVGs, attributes);
+            span = buildCommon.makeSpan(["stretchy"], spans, options);
         }
     }
 
-    const span = buildCommon.makeSpan(classNames, [svgNode], options);
     // Note that we are returning span.depth = 0.
     // Any adjustments relative to the baseline must be done in buildHTML.
     span.height = height;
