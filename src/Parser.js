@@ -695,6 +695,15 @@ export default class Parser {
             if (i > 0 && !isOptional) {
                 this.consumeSpaces();
             }
+            // Also consume leading spaces in math mode, as parseSymbol
+            // won't know what to do with them.  This can only happen with
+            // macros, e.g. \frac\foo\foo where \foo expands to a space symbol.
+            // In LaTeX, the \foo's get treated as (blank) arguments).
+            // In KaTeX, for now, both spaces will get consumed.
+            // TODO(edemaine)
+            if (i === 0 && !isOptional && this.mode === "math") {
+                this.consumeSpaces();
+            }
             const nextToken = this.nextToken;
             let arg = argType ?
                 this.parseGroupOfType(argType, isOptional) :

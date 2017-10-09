@@ -2528,7 +2528,7 @@ describe("A macro expander", function() {
         });
     });
 
-    // The following is not currently possible to get working, given that
+    // TODO: The following is not currently possible to get working, given that
     // functions and macros are dealt with separately.
 /*
     it("should allow for space function arguments", function() {
