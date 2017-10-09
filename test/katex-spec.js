@@ -2360,6 +2360,11 @@ describe("An aligned environment", function() {
             .toParse();
     });
 
+    it("should forbid cells in brackets without space", function() {
+        expect("\\begin{aligned}[a]&[b]\\\\[c]&[d]\\end{aligned}")
+            .toNotParse();
+    });
+
 });
 
 describe("A parser that does not throw on unsupported commands", function() {
@@ -2451,7 +2456,7 @@ describe("A macro expander", function() {
     });
 
     it("should consume spaces after control-word function", function() {
-        compareParseTree("\\text{\\KaTeX x}", "\\text{\\KaTeX\\relax x}");
+        compareParseTree("\\text{\\KaTeX }", "\\text{\\KaTeX}");
     });
 
     it("should preserve spaces after control-symbol macro", function() {
