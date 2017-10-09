@@ -726,3 +726,6 @@ defineFunction(["\\verb"], {
     throw new ParseError(
         "\\verb ended by end of line instead of matching delimiter");
 });
+
+// Hyperlinks
+import "./functions/href";
