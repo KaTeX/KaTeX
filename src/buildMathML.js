@@ -8,6 +8,7 @@
 
 import buildCommon from "./buildCommon";
 import fontMetrics from "./fontMetrics";
+import domTree from "./domTree";
 import mathMLTree from "./mathMLTree";
 import ParseError from "./ParseError";
 import Style from "./Style";
@@ -362,8 +363,12 @@ groupTypes.op = function(group, options) {
         node = new mathMLTree.MathNode(
             "mi", [new mathMLTree.TextNode(group.value.body.slice(1))]);
 
-        // TODO(ron): Append an <mo>&ApplyFunction;</mo> as in \operatorname
-        // ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.2
+        // Append an <mo>&ApplyFunction;</mo>.
+        // ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.4
+        const operator = new mathMLTree.MathNode("mo",
+            [makeText("&ApplyFunction;", "text")]);
+
+        return new domTree.documentFragment([node, operator]);
     }
 
     return node;
