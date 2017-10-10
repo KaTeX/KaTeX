@@ -7,7 +7,6 @@ const katexConfig = {
         filename: 'katex.js',
         library: 'katex',
         libraryTarget: 'umd',
-        libraryExport: 'default',
     },
 };
 
@@ -26,7 +25,6 @@ const autoRenderConfig = {
         filename: 'auto-render.js',
         library: 'renderMathInElement',
         libraryTarget: 'umd',
-        libraryExport: 'default',
     },
 };
 
@@ -55,5 +53,9 @@ module.exports = {
         stats: {
             colors: true,
         },
+        // Allow server to be accessed from anywhere, which is useful for
+        // testing.  This potentially reveals the source code to the world,
+        // but this should not be a concern for testing open-source software.
+        disableHostCheck: true,
     },
 };
