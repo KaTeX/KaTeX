@@ -69,7 +69,7 @@ defineFunction({
         identifier.setAttribute("mathvariant", "normal");
 
         const operator = new mathMLTree.MathNode("mo",
-            [mml.makeText("&ApplyFunction;", "text")]);
+            [mml.makeText("\u2061", "text")]);
 
         return new domTree.documentFragment([identifier, operator]);
     },

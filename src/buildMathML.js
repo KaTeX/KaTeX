@@ -366,7 +366,7 @@ groupTypes.op = function(group, options) {
         // Append an <mo>&ApplyFunction;</mo>.
         // ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.4
         const operator = new mathMLTree.MathNode("mo",
-            [makeText("&ApplyFunction;", "text")]);
+            [makeText("\u2061", "text")]);
 
         return new domTree.documentFragment([node, operator]);
     }

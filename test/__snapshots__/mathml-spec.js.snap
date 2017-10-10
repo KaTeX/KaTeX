@@ -28,7 +28,7 @@ exports[`A MathML builder should generate the right types of nodes 1`] = `
         sin
       </mi>
       <mo>
-        &amp;ApplyFunction;
+        ⁡
       </mo>
       <mrow>
         <mi>
