@@ -140,9 +140,13 @@ export default class Parser {
      * and fetches the one after that as the new look ahead.
      */
     consume() {
-        this.nextToken = this.gullet.get(this.mode === "math");
+        this.nextToken = this.gullet.get(false);
     }
 
+    /**
+     * Switches between "text" and "math" modes, reconsuming nextToken
+     * in case it would be read differently in the new mode.
+     */
     switchMode(newMode) {
         this.gullet.unget(this.nextToken);
         this.mode = newMode;
@@ -193,6 +197,10 @@ export default class Parser {
         // Keep adding atoms to the body until we can't parse any more atoms (either
         // we reached the end, a }, or a \right)
         while (true) {
+            // Ignore spaces in math mode
+            if (this.mode === "math") {
+                this.consumeSpaces();
+            }
             const lex = this.nextToken;
             if (Parser.endOfExpression.indexOf(lex.text) !== -1) {
                 break;
@@ -283,6 +291,7 @@ export default class Parser {
         const symbolToken = this.nextToken;
         const symbol = symbolToken.text;
         this.consume();
+        this.consumeSpaces(); // ignore spaces before sup/subscript argument
         const group = this.parseGroup();
 
         if (!group) {
@@ -367,6 +376,9 @@ export default class Parser {
         let superscript;
         let subscript;
         while (true) {
+            // Guaranteed in math mode, so eat any spaces first.
+            this.consumeSpaces();
+
             // Lex the first token
             const lex = this.nextToken;
 
@@ -676,9 +688,25 @@ export default class Parser {
         const optArgs = [];
 
         for (let i = 0; i < totalArgs; i++) {
-            const nextToken = this.nextToken;
             const argType = funcData.argTypes && funcData.argTypes[i];
             const isOptional = i < funcData.numOptionalArgs;
+            // Ignore spaces between arguments.  As the TeXbook says:
+            // "After you have said ‘\def\row#1#2{...}’, you are allowed to
+            //  put spaces between the arguments (e.g., ‘\row x n’), because
+            //  TeX doesn’t use single spaces as undelimited arguments."
+            if (i > 0 && !isOptional) {
+                this.consumeSpaces();
+            }
+            // Also consume leading spaces in math mode, as parseSymbol
+            // won't know what to do with them.  This can only happen with
+            // macros, e.g. \frac\foo\foo where \foo expands to a space symbol.
+            // In LaTeX, the \foo's get treated as (blank) arguments).
+            // In KaTeX, for now, both spaces will get consumed.
+            // TODO(edemaine)
+            if (i === 0 && !isOptional && this.mode === "math") {
+                this.consumeSpaces();
+            }
+            const nextToken = this.nextToken;
             let arg = argType ?
                 this.parseGroupOfType(argType, isOptional) :
                 this.parseGroup(isOptional);
@@ -735,14 +763,9 @@ export default class Parser {
             return this.parseSizeGroup(optional);
         }
 
-        this.switchMode(innerMode);
-        if (innerMode === "text") {
-            // text mode is special because it should ignore the whitespace before
-            // it
-            this.consumeSpaces();
-        }
         // By the time we get here, innerMode is one of "text" or "math".
         // We switch the mode of the parser, recurse, then restore the old mode.
+        this.switchMode(innerMode);
         const res = this.parseGroup(optional);
         this.switchMode(outerMode);
         return res;

@@ -178,6 +178,7 @@ defineFunction(["\\kern", "\\mkern"], {
 // A KaTeX logo
 defineFunction(["\\KaTeX"], {
     numArgs: 0,
+    allowedInText: true,
 }, function(context) {
     return {
         type: "katex",
