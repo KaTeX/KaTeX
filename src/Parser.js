@@ -140,17 +140,18 @@ export default class Parser {
      * and fetches the one after that as the new look ahead.
      */
     consume() {
-        this.nextToken = this.gullet.get(false);
+        this.nextToken = this.gullet.get();
     }
 
     /**
-     * Switches between "text" and "math" modes, reconsuming nextToken
-     * in case it would be read differently in the new mode.
+     * Switches between "text" and "math" modes.
+     * This used to reconsume nextToken in the new mode because whitespace
+     * handling differed between the two nodes; now it just updates this.mode.
      */
     switchMode(newMode) {
-        this.gullet.unget(this.nextToken);
+        //this.gullet.unget(this.nextToken);
         this.mode = newMode;
-        this.consume();
+        //this.consume();
     }
 
     /**

@@ -16,13 +16,11 @@ export default class MacroExpander implements MacroContextInterface {
     lexer: Lexer;
     macros: MacroMap;
     stack: Token[];
-    discardedWhiteSpace: Token[];
 
     constructor(input: string, macros: MacroMap) {
         this.lexer = new Lexer(input);
         this.macros = objectAssign({}, builtinMacros, macros);
         this.stack = []; // contains tokens in REVERSE order
-        this.discardedWhiteSpace = [];
     }
 
     /**
@@ -227,36 +225,17 @@ export default class MacroExpander implements MacroContextInterface {
 
     /**
      * Recursively expand first token, then return first non-expandable token.
-     * If given a `true` argument, skips over any leading whitespace in
-     * expansion, instead returning the first non-whitespace token
-     * (like TeX's \ignorespaces).
-     * Any skipped whitespace is stored in `this.discardedWhiteSpace`
-     * so that `unget` can correctly undo the effects of `get`.
+     * Equivalent to expandNextToken().
      */
-    get(ignoreSpace: boolean): Token {
-        this.discardedWhiteSpace = [];
-        let token = this.expandNextToken();
-        if (ignoreSpace) {
-            while (token.text === " ") {
-                this.discardedWhiteSpace.push(token);
-                token = this.expandNextToken();
-            }
-        }
-        return token;
+    get(): Token {
+        return this.expandNextToken();
     }
 
     /**
      * Undo the effect of the preceding call to the get method.
-     * A call to this method MUST be immediately preceded and immediately followed
-     * by a call to get.  Only used during mode switching, i.e. after one token
-     * was got in the old mode but should get got again in a new mode
-     * with possibly different whitespace handling.
      */
     unget(token: Token) {
         this.stack.push(token);
-        while (this.discardedWhiteSpace.length !== 0) {
-            this.stack.push(this.discardedWhiteSpace.pop());
-        }
     }
 }
 
