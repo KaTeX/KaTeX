@@ -210,9 +210,11 @@ describe("A parser", function() {
     });
 
     it("should ignore whitespace", function() {
-        const parseA = stripPositions(getParsed("    x    y    "));
-        const parseB = stripPositions(getParsed("xy"));
-        expect(parseA).toEqual(parseB);
+        expect("    x    y    ").toParseLike("xy");
+    });
+
+    it("should ignore whitespace in atom", function() {
+        expect("    x   ^ y    ").toParseLike("x^y");
     });
 });
 
@@ -2397,6 +2399,16 @@ describe("An aligned environment", function() {
             .toParse();
     });
 
+    it("should allow cells in brackets", function() {
+        expect("\\begin{aligned}[a]&[b]\\\\ [c]&[d]\\end{aligned}")
+            .toParse();
+    });
+
+    it("should forbid cells in brackets without space", function() {
+        expect("\\begin{aligned}[a]&[b]\\\\[c]&[d]\\end{aligned}")
+            .toNotParse();
+    });
+
 });
 
 describe("A parser that does not throw on unsupported commands", function() {
@@ -2441,7 +2453,7 @@ describe("A parser that does not throw on unsupported commands", function() {
     });
 });
 
-describe("The symbol table integraty", function() {
+describe("The symbol table integrity", function() {
     it("should treat certain symbols as synonyms", function() {
         expect(getBuilt("<")).toEqual(getBuilt("\\lt"));
         expect(getBuilt(">")).toEqual(getBuilt("\\gt"));
@@ -2475,8 +2487,28 @@ describe("A macro expander", function() {
         compareParseTree("\\foo", "x", {"\\foo": " x"});
     });
 
-    it("should consume spaces after macro", function() {
+    it("should consume spaces after control-word macro", function() {
         compareParseTree("\\text{\\foo }", "\\text{x}", {"\\foo": "x"});
+    });
+
+    it("should consume spaces after macro with \\relax", function() {
+        compareParseTree("\\text{\\foo }", "\\text{}", {"\\foo": "\\relax"});
+    });
+
+    it("should consume spaces after \\relax", function() {
+        compareParseTree("\\text{\\relax }", "\\text{}");
+    });
+
+    it("should consume spaces after control-word function", function() {
+        compareParseTree("\\text{\\KaTeX }", "\\text{\\KaTeX}");
+    });
+
+    it("should preserve spaces after control-symbol macro", function() {
+        compareParseTree("\\text{\\% y}", "\\text{x y}", {"\\%": "x"});
+    });
+
+    it("should preserve spaces after control-symbol function", function() {
+        expect("\\text{\\' }").toParse();
     });
 
     it("should consume spaces between arguments", function() {
@@ -2519,12 +2551,36 @@ describe("A macro expander", function() {
         });
     });
 
+    it("should allow for space second argument (text version)", function() {
+        compareParseTree("\\text{\\foo\\bar\\bar}", "\\text{( , )}", {
+            "\\foo": "(#1,#2)",
+            "\\bar": " ",
+        });
+    });
+
+    it("should allow for space second argument (math version)", function() {
+        compareParseTree("\\foo\\bar\\bar", "(,)", {
+            "\\foo": "(#1,#2)",
+            "\\bar": " ",
+        });
+    });
+
     it("should allow for empty macro argument", function() {
         compareParseTree("\\foo\\bar", "()", {
             "\\foo": "(#1)",
             "\\bar": "",
         });
     });
+
+    // TODO: The following is not currently possible to get working, given that
+    // functions and macros are dealt with separately.
+/*
+    it("should allow for space function arguments", function() {
+        compareParseTree("\\frac\\bar\\bar", "\\frac{}{}", {
+            "\\bar": " ",
+        });
+    });
+*/
 
     it("should expand the \\overset macro as expected", function() {
         expect("\\overset?=").toParseLike("\\mathop{=}\\limits^{?}");
