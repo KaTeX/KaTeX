@@ -145,13 +145,9 @@ export default class Parser {
 
     /**
      * Switches between "text" and "math" modes.
-     * This used to reconsume nextToken in the new mode because whitespace
-     * handling differed between the two nodes; now it just updates this.mode.
      */
     switchMode(newMode) {
-        //this.gullet.unget(this.nextToken);
         this.mode = newMode;
-        //this.consume();
     }
 
     /**
