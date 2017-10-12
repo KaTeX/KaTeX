@@ -481,3 +481,67 @@ defineEnvironment({
     htmlBuilder,
     mathmlBuilder,
 });
+
+// alignat environment is like an align environment, but one must explicitly
+// specify maximum number of columns in each row, and can adjust spacing between
+// each columns.
+defineEnvironment({
+    type: "array",
+    names: ["alignat", "alignat*"],
+    // One for numbered and for unnumbered;
+    // but, KaTeX doesn't supports math numbering yet,
+    // they make no difference for now.
+    props: {
+        numArgs: 1,
+    },
+    handler: function(context, args) {
+        let res = {
+            type: "array",
+            cols: [],
+            addJot: true,
+        };
+        res = parseArray(context.parser, res, "display");
+        // Count number of columns = maximum number of cells in each row.
+        // At the same time, prepend empty group {} at beginning of every second
+        // cell in each row (starting with second cell) so that operators become
+        // binary.  This behavior is implemented in amsmath's \start@aligned.
+        const emptyGroup = new ParseNode("ordgroup", [], context.mode);
+        let arg0 = "";
+        for (let i = 0; i < args[0].value.length; i++) {
+            arg0 += args[0].value[i].value;
+        }
+        const numMaths = Number(arg0);
+        const numCols = numMaths * 2;
+        res.value.body.forEach(function(row) {
+            for (let i = 1; i < row.length; i += 2) {
+                // Modify ordgroup node within styling node
+                const ordgroup = row[i].value.value[0];
+                ordgroup.value.unshift(emptyGroup);
+            }
+            const curMaths = row.length / 2;
+            if (numMaths < curMaths) {
+                throw new ParseError(
+                "Too many math in a row: expected "
+                        + numMaths + ", but got " + curMaths,
+                row);
+            }
+        });
+        for (let i = 0; i < numCols; ++i) {
+            let align = "r";
+            if (i % 2 === 1) {
+                align = "l";
+            }
+            // As opposed to aligned environment, alignat environment
+            // does not insert any \qquad or so in-between.
+            res.value.cols[i] = {
+                type: "align",
+                align: align,
+                pregap: 0,
+                postgap: 0,
+            };
+        }
+        return res;
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
