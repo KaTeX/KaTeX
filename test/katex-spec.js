@@ -2616,7 +2616,7 @@ describe("Unicode", function() {
     it("should parse 'ΓΔΘΞΠΣΦΨΩ'", function() {
         expect("ΓΔΘΞΠΣΦΨΩ").toParse();
     });
-	
+
     it("should parse relations", function() {
         expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≫≬≳≷≺≻≼≽≾≿").toParse();
     });
