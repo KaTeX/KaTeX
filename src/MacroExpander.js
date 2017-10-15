@@ -29,7 +29,7 @@ export default class MacroExpander implements MacroContextInterface {
      */
     future(): Token {
         if (this.stack.length === 0) {
-            this.stack.push(this.lexer.lex());
+            this.pushToken(this.lexer.lex());
         }
         return this.stack[this.stack.length - 1];
     }
@@ -86,7 +86,7 @@ export default class MacroExpander implements MacroContextInterface {
         }
         if (!(isMacro && this.macros.hasOwnProperty(name))) {
             // Fully expanded
-            this.stack.push(topToken);
+            this.pushToken(topToken);
             return topToken;
         }
         const {tokens, numArgs} = this._getExpansion(name);
@@ -224,17 +224,10 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
-     * Recursively expand first token, then return first non-expandable token.
-     * Equivalent to expandNextToken().
+     * Add a given token to the token stack.  In particular, this get be used
+     * to put back a token returned from one of the other methods.
      */
-    get(): Token {
-        return this.expandNextToken();
-    }
-
-    /**
-     * Undo the effect of the preceding call to the get method.
-     */
-    unget(token: Token) {
+    pushToken(token: Token) {
         this.stack.push(token);
     }
 }

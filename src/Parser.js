@@ -140,7 +140,7 @@ export default class Parser {
      * and fetches the one after that as the new look ahead.
      */
     consume() {
-        this.nextToken = this.gullet.get();
+        this.nextToken = this.gullet.expandNextToken();
     }
 
     /**
