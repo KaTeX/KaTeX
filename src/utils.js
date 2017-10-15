@@ -28,12 +28,13 @@ const indexOf = function<T>(list: Array<T>, elem: T): number {
 /**
  * Return whether an element is contained in a list
  */
-const contains = function<T>(list: Array<T>, elem: T) {
+const contains = function<T>(list: Array<T>, elem: T): boolean {
     return indexOf(list, elem) !== -1;
 };
 
 /**
  * Provide a default value if a setting is undefined
+ * NOTE: Couldn't use `T` as the output type due to facebook/flow#5022.
  */
 const deflt = function<T>(setting: T | void, defaultIfUndefined: T): * {
     return setting === undefined ? defaultIfUndefined : setting;
@@ -56,16 +57,11 @@ const ESCAPE_LOOKUP = {
 
 const ESCAPE_REGEX = /[&><"']/g;
 
-// Type-safe only if the input string matches ESCAPE_REGEX.
-function escaper(match: string): string {
-    return ESCAPE_LOOKUP[match];
-}
-
 /**
  * Escapes text to prevent scripting attacks.
  */
 function escape(text: mixed): string {
-    return String(text).replace(ESCAPE_REGEX, escaper);
+    return String(text).replace(ESCAPE_REGEX, match => ESCAPE_LOOKUP[match]);
 }
 
 /**
@@ -94,11 +90,11 @@ function clearNode(node: Node) {
 }
 
 export default {
-    contains: contains,
-    deflt: deflt,
-    escape: escape,
-    hyphenate: hyphenate,
-    indexOf: indexOf,
-    setTextContent: setTextContent,
-    clearNode: clearNode,
+    contains,
+    deflt,
+    escape,
+    hyphenate,
+    indexOf,
+    setTextContent,
+    clearNode,
 };
