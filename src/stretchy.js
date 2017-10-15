@@ -1,3 +1,4 @@
+// @flow
 /**
  * This file provides support to buildMathML.js and buildHTML.js
  * for stretchy wide elements rendered from SVG files
@@ -9,43 +10,47 @@ import buildCommon from "./buildCommon";
 import mathMLTree from "./mathMLTree";
 import utils from "./utils";
 
-const stretchyCodePoint = {
-    widehat: "^",
-    widetilde: "~",
-    undertilde: "~",
-    overleftarrow: "\u2190",
-    underleftarrow: "\u2190",
-    xleftarrow: "\u2190",
-    overrightarrow: "\u2192",
-    underrightarrow: "\u2192",
-    xrightarrow: "\u2192",
-    underbrace: "\u23b5",
-    overbrace: "\u23de",
-    overleftrightarrow: "\u2194",
-    underleftrightarrow: "\u2194",
-    xleftrightarrow: "\u2194",
-    Overrightarrow: "\u21d2",
-    xRightarrow: "\u21d2",
-    overleftharpoon: "\u21bc",
-    xleftharpoonup: "\u21bc",
-    overrightharpoon: "\u21c0",
-    xrightharpoonup: "\u21c0",
-    xLeftarrow: "\u21d0",
-    xLeftrightarrow: "\u21d4",
-    xhookleftarrow: "\u21a9",
-    xhookrightarrow: "\u21aa",
-    xmapsto: "\u21a6",
-    xrightharpoondown: "\u21c1",
-    xleftharpoondown: "\u21bd",
-    xrightleftharpoons: "\u21cc",
-    xleftrightharpoons: "\u21cb",
-    xtwoheadleftarrow: "\u219e",
-    xtwoheadrightarrow: "\u21a0",
-    xLongequal: "=",
-    xtofrom: "\u21c4",
+import type Options from "./Options";
+import type ParseNode from "./ParseNode";
+import type {span} from "./domTree";
+
+const stretchyCodePoint: {[string]: string} = {
+    "widehat": "^",
+    "widetilde": "~",
+    "undertilde": "~",
+    "overleftarrow": "\u2190",
+    "underleftarrow": "\u2190",
+    "xleftarrow": "\u2190",
+    "overrightarrow": "\u2192",
+    "underrightarrow": "\u2192",
+    "xrightarrow": "\u2192",
+    "underbrace": "\u23b5",
+    "overbrace": "\u23de",
+    "overleftrightarrow": "\u2194",
+    "underleftrightarrow": "\u2194",
+    "xleftrightarrow": "\u2194",
+    "Overrightarrow": "\u21d2",
+    "xRightarrow": "\u21d2",
+    "overleftharpoon": "\u21bc",
+    "xleftharpoonup": "\u21bc",
+    "overrightharpoon": "\u21c0",
+    "xrightharpoonup": "\u21c0",
+    "xLeftarrow": "\u21d0",
+    "xLeftrightarrow": "\u21d4",
+    "xhookleftarrow": "\u21a9",
+    "xhookrightarrow": "\u21aa",
+    "xmapsto": "\u21a6",
+    "xrightharpoondown": "\u21c1",
+    "xleftharpoondown": "\u21bd",
+    "xrightleftharpoons": "\u21cc",
+    "xleftrightharpoons": "\u21cb",
+    "xtwoheadleftarrow": "\u219e",
+    "xtwoheadrightarrow": "\u21a0",
+    "xLongequal": "=",
+    "xtofrom": "\u21c4",
 };
 
-const mathMLnode = function(label) {
+const mathMLnode = function(label: string): mathMLTree.MathNode {
     const node = new mathMLTree.MathNode(
         "mo", [new mathMLTree.TextNode(stretchyCodePoint[label.substr(1)])]);
     node.setAttribute("stretchy", "true");
@@ -98,48 +103,50 @@ const mathMLnode = function(label) {
 // That is, inside the font, that arrowhead is 522 units tall, which
 // corresponds to 0.522 em inside the document.
 
-const katexImagesData = {
+const katexImagesData: {
+    [string]: ([string[], number, number] | [string[], number, number, string])
+} = {
                    //   path(s), minWidth, height, align
-    overrightarrow: [["rightarrow"], 0.888, 522, "xMaxYMin"],
-    overleftarrow: [["leftarrow"], 0.888, 522, "xMinYMin"],
-    underrightarrow: [["rightarrow"], 0.888, 522, "xMaxYMin"],
-    underleftarrow: [["leftarrow"], 0.888, 522, "xMinYMin"],
-    xrightarrow: [["rightarrow"], 1.469, 522, "xMaxYMin"],
-    xleftarrow: [["leftarrow"], 1.469, 522, "xMinYMin"],
-    Overrightarrow: [["doublerightarrow"], 0.888, 560, "xMaxYMin"],
-    xRightarrow: [["doublerightarrow"], 1.526, 560, "xMaxYMin"],
-    xLeftarrow: [["doubleleftarrow"], 1.526, 560, "xMinYMin"],
-    overleftharpoon: [["leftharpoon"], 0.888, 522, "xMinYMin"],
-    xleftharpoonup: [["leftharpoon"], 0.888, 522, "xMinYMin"],
-    xleftharpoondown: [["leftharpoondown"], 0.888, 522, "xMinYMin"],
-    overrightharpoon: [["rightharpoon"], 0.888, 522, "xMaxYMin"],
-    xrightharpoonup: [["rightharpoon"], 0.888, 522, "xMaxYMin"],
-    xrightharpoondown: [["rightharpoondown"], 0.888, 522, "xMaxYMin"],
-    xLongequal: [["longequal"], 0.888, 334, "xMinYMin"],
-    xtwoheadleftarrow: [["twoheadleftarrow"], 0.888, 334, "xMinYMin"],
-    xtwoheadrightarrow: [["twoheadrightarrow"], 0.888, 334, "xMaxYMin"],
+    "overrightarrow": [["rightarrow"], 0.888, 522, "xMaxYMin"],
+    "overleftarrow": [["leftarrow"], 0.888, 522, "xMinYMin"],
+    "underrightarrow": [["rightarrow"], 0.888, 522, "xMaxYMin"],
+    "underleftarrow": [["leftarrow"], 0.888, 522, "xMinYMin"],
+    "xrightarrow": [["rightarrow"], 1.469, 522, "xMaxYMin"],
+    "xleftarrow": [["leftarrow"], 1.469, 522, "xMinYMin"],
+    "Overrightarrow": [["doublerightarrow"], 0.888, 560, "xMaxYMin"],
+    "xRightarrow": [["doublerightarrow"], 1.526, 560, "xMaxYMin"],
+    "xLeftarrow": [["doubleleftarrow"], 1.526, 560, "xMinYMin"],
+    "overleftharpoon": [["leftharpoon"], 0.888, 522, "xMinYMin"],
+    "xleftharpoonup": [["leftharpoon"], 0.888, 522, "xMinYMin"],
+    "xleftharpoondown": [["leftharpoondown"], 0.888, 522, "xMinYMin"],
+    "overrightharpoon": [["rightharpoon"], 0.888, 522, "xMaxYMin"],
+    "xrightharpoonup": [["rightharpoon"], 0.888, 522, "xMaxYMin"],
+    "xrightharpoondown": [["rightharpoondown"], 0.888, 522, "xMaxYMin"],
+    "xLongequal": [["longequal"], 0.888, 334, "xMinYMin"],
+    "xtwoheadleftarrow": [["twoheadleftarrow"], 0.888, 334, "xMinYMin"],
+    "xtwoheadrightarrow": [["twoheadrightarrow"], 0.888, 334, "xMaxYMin"],
 
-    overleftrightarrow: [["leftarrow", "rightarrow"], 0.888, 522],
-    overbrace: [["leftbrace", "midbrace", "rightbrace"], 1.6, 548],
-    underbrace: [["leftbraceunder", "midbraceunder", "rightbraceunder"],
+    "overleftrightarrow": [["leftarrow", "rightarrow"], 0.888, 522],
+    "overbrace": [["leftbrace", "midbrace", "rightbrace"], 1.6, 548],
+    "underbrace": [["leftbraceunder", "midbraceunder", "rightbraceunder"],
         1.6, 548],
-    underleftrightarrow: [["leftarrow", "rightarrow"], 0.888, 522],
-    xleftrightarrow: [["leftarrow", "rightarrow"], 1.75, 522],
-    xLeftrightarrow: [["doubleleftarrow", "doublerightarrow"], 1.75, 560],
-    xrightleftharpoons: [["leftharpoondownplus", "rightharpoonplus"], 1.75, 716],
-    xleftrightharpoons: [["leftharpoonplus", "rightharpoondownplus"],
+    "underleftrightarrow": [["leftarrow", "rightarrow"], 0.888, 522],
+    "xleftrightarrow": [["leftarrow", "rightarrow"], 1.75, 522],
+    "xLeftrightarrow": [["doubleleftarrow", "doublerightarrow"], 1.75, 560],
+    "xrightleftharpoons": [["leftharpoondownplus", "rightharpoonplus"], 1.75, 716],
+    "xleftrightharpoons": [["leftharpoonplus", "rightharpoondownplus"],
         1.75, 716],
-    xhookleftarrow: [["leftarrow", "righthook"], 1.08, 522],
-    xhookrightarrow: [["lefthook", "rightarrow"], 1.08, 522],
-    overlinesegment: [["leftlinesegment", "rightlinesegment"], 0.888, 522],
-    underlinesegment: [["leftlinesegment", "rightlinesegment"], 0.888, 522],
-    overgroup: [["leftgroup", "rightgroup"], 0.888, 342],
-    undergroup: [["leftgroupunder", "rightgroupunder"], 0.888, 342],
-    xmapsto: [["leftmapsto", "rightarrow"], 1.5, 522],
-    xtofrom: [["leftToFrom", "rightToFrom"], 1.75, 528],
+    "xhookleftarrow": [["leftarrow", "righthook"], 1.08, 522],
+    "xhookrightarrow": [["lefthook", "rightarrow"], 1.08, 522],
+    "overlinesegment": [["leftlinesegment", "rightlinesegment"], 0.888, 522],
+    "underlinesegment": [["leftlinesegment", "rightlinesegment"], 0.888, 522],
+    "overgroup": [["leftgroup", "rightgroup"], 0.888, 342],
+    "undergroup": [["leftgroupunder", "rightgroupunder"], 0.888, 342],
+    "xmapsto": [["leftmapsto", "rightarrow"], 1.5, 522],
+    "xtofrom": [["leftToFrom", "rightToFrom"], 1.75, 528],
 };
 
-const groupLength = function(arg) {
+const groupLength = function(arg: ParseNode): number {
     if (arg.type === "ordgroup") {
         return arg.value.length;
     } else {
@@ -147,7 +154,7 @@ const groupLength = function(arg) {
     }
 };
 
-const svgSpan = function(group, options) {
+const svgSpan = function(group: ParseNode, options: Options): span {
     // Create a span with inline SVG for the element.
     const label = group.value.label.substr(1);
     let attributes = [];
@@ -227,13 +234,12 @@ const svgSpan = function(group, options) {
             } else {
                 span = buildCommon.makeSpan([widthClass], [svgNode], options);
                 span.style.height = height + "em";
-                spans.push(span);
             }
+            spans.push(span);
         }
 
-        if (numSvgChildren > 1) {
-            span = buildCommon.makeSpan(["stretchy"], spans, options);
-        }
+        span = numSvgChildren === 1 ? spans[0] :
+            buildCommon.makeSpan(["stretchy"], spans, options);
     }
 
     // Note that we are returning span.depth = 0.
@@ -247,7 +253,12 @@ const svgSpan = function(group, options) {
     return span;
 };
 
-const encloseSpan = function(inner, label, pad, options) {
+const encloseSpan = function(
+    inner: span,
+    label: string,
+    pad: number,
+    options: Options,
+): span {
     // Return an image span for \cancel, \bcancel, \xcancel, or \fbox
     let img;
     const totalHeight = inner.height + inner.depth + 2 * pad;
