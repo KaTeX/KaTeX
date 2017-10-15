@@ -230,12 +230,12 @@ const svgSpan = function(group: ParseNode, options: Options): span {
             svgNode = new domTree.svgNode([path], attributes);
 
             if (numSvgChildren === 1) {
-                span = buildCommon.makeSpan(["hide-tail"], [svgNode], options);
+                spans.push(buildCommon.makeSpan(["hide-tail"], [svgNode], options));
             } else {
-                span = buildCommon.makeSpan([widthClass], [svgNode], options);
+                const span = buildCommon.makeSpan([widthClass], [svgNode], options);
                 span.style.height = height + "em";
+                spans.push(span);
             }
-            spans.push(span);
         }
 
         span = numSvgChildren === 1 ? spans[0] :
