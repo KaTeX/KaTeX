@@ -298,10 +298,30 @@
             text-align: center;
         }
 
-       .frac-line {
+        .frac-line {
             display: inline-block;
             width: 100%;
             border-bottom-style: solid;
+        }
+    }
+
+    // Set a min-height for some horizontal lines so their display
+    // will show at least one screen pixel.
+    @media screen {
+        .mfrac .frac-line,
+        .overline .overline-line,
+        .underline .underline-line {
+            min-height: 1px;
+        }
+    }
+
+    // Modify min-height for retina displays. Don't force two screen pixels.
+    @media screen and (-webkit-min-device-pixel-ratio: 2.0),
+        screen and (min-resolution: 192dpi) {
+        .mfrac .frac-line,
+        .overline .overline-line,
+        .underline .underline-line {
+            min-height: 0.5px;
         }
     }
 
@@ -584,6 +604,41 @@
         width: 100%;          // necessary only to get IE to work properly
         position: relative;   // ditto
         overflow: hidden;     // This line applies to all browsers.
+    }
+
+    .halfarrow-left {
+        position: absolute;
+        left: 0;
+        width: 50.1%;
+        overflow: hidden;
+    }
+
+    .halfarrow-right {
+        position: absolute;
+        right: 0;
+        width: 50%;
+        overflow: hidden;
+    }
+
+    .brace-left {
+        position: absolute;
+        left: 0;
+        width: 25.1%;
+        overflow: hidden;
+    }
+
+    .brace-center {
+        position: absolute;
+        left: 25%;
+        width: 50%;
+        overflow: hidden;
+    }
+
+    .brace-right {
+        position: absolute;
+        right: 0;
+        width: 25.1%;
+        overflow: hidden;
     }
 
     // Lengthen the extensible arrows via padding.

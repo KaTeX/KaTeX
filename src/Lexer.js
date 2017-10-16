@@ -34,6 +34,8 @@ import {LexerInterface, Token} from "./Token";
  * still reject the input.
  */
 const commentRegexString = "%[^\n]*[\n]";
+const controlWordRegexString = "\\\\[a-zA-Z@]+";
+const controlSymbolRegexString = "\\\\[^\uD800-\uDFFF]";
 const tokenRegex = new RegExp(
     "([ \r\n\t]+)|" +                                 // whitespace
     `(${commentRegexString}|` +                       // comments
@@ -41,11 +43,16 @@ const tokenRegex = new RegExp(
     "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair
     "|\\\\verb\\*([^]).*?\\3" +                       // \verb*
     "|\\\\verb([^*a-zA-Z]).*?\\4" +                   // \verb unstarred
-    "|\\\\(?:[a-zA-Z@]+|[^\uD800-\uDFFF])" +          // function name
+    `|${controlWordRegexString}` +                    // \macroName
+    `|${controlSymbolRegexString}` +                  // \\, \', etc.
     ")"
 );
 
-const commentRegex = new RegExp(commentRegexString);
+// tokenRegex has no ^ marker, as required by matchAt.
+// These regexs are for matching results from tokenRegex,
+// so they do have ^ markers.
+export const controlWordRegex = new RegExp(`^${controlWordRegexString}`);
+const commentRegex = new RegExp(`^${commentRegexString}`);
 
 /** Main Lexer class */
 export default class Lexer implements LexerInterface {

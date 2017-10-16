@@ -140,13 +140,14 @@ export default class Parser {
      * and fetches the one after that as the new look ahead.
      */
     consume() {
-        this.nextToken = this.gullet.get(this.mode === "math");
+        this.nextToken = this.gullet.expandNextToken();
     }
 
+    /**
+     * Switches between "text" and "math" modes.
+     */
     switchMode(newMode) {
-        this.gullet.unget(this.nextToken);
         this.mode = newMode;
-        this.consume();
     }
 
     /**
@@ -193,6 +194,10 @@ export default class Parser {
         // Keep adding atoms to the body until we can't parse any more atoms (either
         // we reached the end, a }, or a \right)
         while (true) {
+            // Ignore spaces in math mode
+            if (this.mode === "math") {
+                this.consumeSpaces();
+            }
             const lex = this.nextToken;
             if (Parser.endOfExpression.indexOf(lex.text) !== -1) {
                 break;
@@ -203,7 +208,7 @@ export default class Parser {
             if (breakOnInfix && functions[lex.text] && functions[lex.text].infix) {
                 break;
             }
-            const atom = this.parseAtom();
+            const atom = this.parseAtom(breakOnTokenText);
             if (!atom) {
                 if (!this.settings.throwOnError && lex.text[0] === "\\") {
                     const errorNode = this.handleUnsupportedCmd();
@@ -283,6 +288,7 @@ export default class Parser {
         const symbolToken = this.nextToken;
         const symbol = symbolToken.text;
         this.consume();
+        this.consumeSpaces(); // ignore spaces before sup/subscript argument
         const group = this.parseGroup();
 
         if (!group) {
@@ -349,12 +355,13 @@ export default class Parser {
     /**
      * Parses a group with optional super/subscripts.
      *
+     * @param {"]" | "}"} breakOnTokenText - character to stop parsing the group on.
      * @return {?ParseNode}
      */
-    parseAtom() {
+    parseAtom(breakOnTokenText) {
         // The body of an atom is an implicit group, so that things like
         // \left(x\right)^2 work correctly.
-        const base = this.parseImplicitGroup();
+        const base = this.parseImplicitGroup(breakOnTokenText);
 
         // In text mode, we don't have superscripts or subscripts
         if (this.mode === "text") {
@@ -366,6 +373,9 @@ export default class Parser {
         let superscript;
         let subscript;
         while (true) {
+            // Guaranteed in math mode, so eat any spaces first.
+            this.consumeSpaces();
+
             // Lex the first token
             const lex = this.nextToken;
 
@@ -466,9 +476,10 @@ export default class Parser {
      *   small text {\Large large text} small text again
      * It is also used for \left and \right to get the correct grouping.
      *
+     * @param {"]" | "}"} breakOnTokenText - character to stop parsing the group on.
      * @return {?ParseNode}
      */
-    parseImplicitGroup() {
+    parseImplicitGroup(breakOnTokenText) {
         const start = this.parseSymbol();
 
         if (start == null) {
@@ -527,7 +538,7 @@ export default class Parser {
         } else if (utils.contains(Parser.sizeFuncs, func)) {
             // If we see a sizing function, parse out the implicit body
             this.consumeSpaces();
-            const body = this.parseExpression(false);
+            const body = this.parseExpression(false, breakOnTokenText);
             return new ParseNode("sizing", {
                 // Figure out what size to use based on the list of functions above
                 size: utils.indexOf(Parser.sizeFuncs, func) + 1,
@@ -536,7 +547,7 @@ export default class Parser {
         } else if (utils.contains(Parser.styleFuncs, func)) {
             // If we see a styling function, parse out the implicit body
             this.consumeSpaces();
-            const body = this.parseExpression(true);
+            const body = this.parseExpression(true, breakOnTokenText);
             return new ParseNode("styling", {
                 // Figure out what style to use by pulling out the style from
                 // the function name
@@ -547,7 +558,7 @@ export default class Parser {
             const style = Parser.oldFontFuncs[func];
             // If we see an old font function, parse out the implicit body
             this.consumeSpaces();
-            const body = this.parseExpression(true);
+            const body = this.parseExpression(true, breakOnTokenText);
             if (style.slice(0, 4) === 'text') {
                 return new ParseNode("text", {
                     style: style,
@@ -565,7 +576,7 @@ export default class Parser {
             if (!color) {
                 throw new ParseError("\\color not followed by color");
             }
-            const body = this.parseExpression(true);
+            const body = this.parseExpression(true, breakOnTokenText);
             return new ParseNode("color", {
                 type: "color",
                 color: color.result.value,
@@ -674,9 +685,25 @@ export default class Parser {
         const optArgs = [];
 
         for (let i = 0; i < totalArgs; i++) {
-            const nextToken = this.nextToken;
             const argType = funcData.argTypes && funcData.argTypes[i];
             const isOptional = i < funcData.numOptionalArgs;
+            // Ignore spaces between arguments.  As the TeXbook says:
+            // "After you have said ‘\def\row#1#2{...}’, you are allowed to
+            //  put spaces between the arguments (e.g., ‘\row x n’), because
+            //  TeX doesn’t use single spaces as undelimited arguments."
+            if (i > 0 && !isOptional) {
+                this.consumeSpaces();
+            }
+            // Also consume leading spaces in math mode, as parseSymbol
+            // won't know what to do with them.  This can only happen with
+            // macros, e.g. \frac\foo\foo where \foo expands to a space symbol.
+            // In LaTeX, the \foo's get treated as (blank) arguments).
+            // In KaTeX, for now, both spaces will get consumed.
+            // TODO(edemaine)
+            if (i === 0 && !isOptional && this.mode === "math") {
+                this.consumeSpaces();
+            }
+            const nextToken = this.nextToken;
             let arg = argType ?
                 this.parseGroupOfType(argType, isOptional) :
                 this.parseGroup(isOptional);
@@ -733,14 +760,9 @@ export default class Parser {
             return this.parseSizeGroup(optional);
         }
 
-        this.switchMode(innerMode);
-        if (innerMode === "text") {
-            // text mode is special because it should ignore the whitespace before
-            // it
-            this.consumeSpaces();
-        }
         // By the time we get here, innerMode is one of "text" or "math".
         // We switch the mode of the parser, recurse, then restore the old mode.
+        this.switchMode(innerMode);
         const res = this.parseGroup(optional);
         this.switchMode(outerMode);
         return res;
@@ -875,7 +897,7 @@ export default class Parser {
         if (this.nextToken.text === (optional ? "[" : "{")) {
             // If we get a brace, parse an expression
             this.consume();
-            const expression = this.parseExpression(false, optional ? "]" : null);
+            const expression = this.parseExpression(false, optional ? "]" : "}");
             const lastToken = this.nextToken;
             // Make sure we get a close brace
             this.expect(optional ? "]" : "}");
