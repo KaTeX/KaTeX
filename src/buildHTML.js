@@ -397,15 +397,21 @@ groupTypes.supsub = function(group, options) {
             vlistElem[0].marginLeft = -base.italic + "em";
         }
 
-        supsub = buildCommon.makeVList(vlistElem, "shift", subShift, options);
+        supsub = buildCommon.makeVList({
+            positionType: "shift",
+            positionData: subShift,
+            children: vlistElem,
+        }, options);
     } else if (!group.value.sub) {
         // Rule 18c, d
         supShift = Math.max(supShift, minSupShift,
             supm.depth + 0.25 * metrics.xHeight);
 
-        supsub = buildCommon.makeVList([
-            {type: "elem", elem: supm, marginRight: scriptspace},
-        ], "shift", -supShift, options);
+        supsub = buildCommon.makeVList({
+            positionType: "shift",
+            positionData: -supShift,
+            children: [{type: "elem", elem: supm, marginRight: scriptspace}],
+        }, options);
     } else {
         supShift = Math.max(
             supShift, minSupShift, supm.depth + 0.25 * metrics.xHeight);
@@ -433,7 +439,10 @@ groupTypes.supsub = function(group, options) {
             vlistElem[0].marginLeft = -base.italic + "em";
         }
 
-        supsub = buildCommon.makeVList(vlistElem, "individualShift", null, options);
+        supsub = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: vlistElem,
+        }, options);
     }
 
     // We ensure to wrap the supsub vlist in a span.msupsub to reset text-align
@@ -510,10 +519,13 @@ groupTypes.genfrac = function(group, options) {
             denomShift += 0.5 * (clearance - candidateClearance);
         }
 
-        frac = buildCommon.makeVList([
-            {type: "elem", elem: denomm, shift: denomShift},
-            {type: "elem", elem: numerm, shift: -numShift},
-        ], "individualShift", null, options);
+        frac = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: [
+                {type: "elem", elem: denomm, shift: denomShift},
+                {type: "elem", elem: numerm, shift: -numShift},
+            ],
+        }, options);
     } else {
         // Rule 15d
         const axisHeight = options.fontMetrics().axisHeight;
@@ -534,11 +546,14 @@ groupTypes.genfrac = function(group, options) {
 
         const midShift = -(axisHeight - 0.5 * ruleWidth);
 
-        frac = buildCommon.makeVList([
-            {type: "elem", elem: denomm, shift: denomShift},
-            {type: "elem", elem: rule,   shift: midShift},
-            {type: "elem", elem: numerm, shift: -numShift},
-        ], "individualShift", null, options);
+        frac = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: [
+                {type: "elem", elem: denomm, shift: denomShift},
+                {type: "elem", elem: rule,   shift: midShift},
+                {type: "elem", elem: numerm, shift: -numShift},
+            ],
+        }, options);
     }
 
     // Since we manually change the style sometimes (with \dfrac or \tfrac),
@@ -648,9 +663,10 @@ groupTypes.smash = function(group, options) {
     // makeVList applies "display: table-cell", which prevents the browser
     // from acting on that line height. So we'll call makeVList now.
 
-    return buildCommon.makeVList([
-        {type: "elem", elem: node},
-    ], "firstBaseline", null, options);
+    return buildCommon.makeVList({
+        positionType: "firstBaseline",
+        children: [{type: "elem", elem: node}],
+    }, options);
 };
 
 groupTypes.op = function(group, options) {
@@ -770,21 +786,29 @@ groupTypes.op = function(group, options) {
             // that we are supposed to shift the limits by 1/2 of the slant,
             // but since we are centering the limits adding a full slant of
             // margin will shift by 1/2 that.
-            finalGroup = buildCommon.makeVList([
-                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                {type: "elem", elem: subm, marginLeft: -slant + "em"},
-                {type: "kern", size: subKern},
-                {type: "elem", elem: base},
-            ], "top", top, options);
+            finalGroup = buildCommon.makeVList({
+                positionType: "top",
+                positionData: top,
+                children: [
+                    {type: "kern", size: options.fontMetrics().bigOpSpacing5},
+                    {type: "elem", elem: subm, marginLeft: -slant + "em"},
+                    {type: "kern", size: subKern},
+                    {type: "elem", elem: base},
+                ],
+            }, options);
         } else if (!subGroup) {
             bottom = base.depth + baseShift;
 
-            finalGroup = buildCommon.makeVList([
-                {type: "elem", elem: base},
-                {type: "kern", size: supKern},
-                {type: "elem", elem: supm, marginLeft: slant + "em"},
-                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-            ], "bottom", bottom, options);
+            finalGroup = buildCommon.makeVList({
+                positionType: "bottom",
+                positionData: bottom,
+                children: [
+                    {type: "elem", elem: base},
+                    {type: "kern", size: supKern},
+                    {type: "elem", elem: supm, marginLeft: slant + "em"},
+                    {type: "kern", size: options.fontMetrics().bigOpSpacing5},
+                ],
+            }, options);
         } else if (!supGroup && !subGroup) {
             // This case probably shouldn't occur (this would mean the
             // supsub was sending us a group with no superscript or
@@ -796,15 +820,19 @@ groupTypes.op = function(group, options) {
                 subKern +
                 base.depth + baseShift;
 
-            finalGroup = buildCommon.makeVList([
-                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                {type: "elem", elem: subm, marginLeft: -slant + "em"},
-                {type: "kern", size: subKern},
-                {type: "elem", elem: base},
-                {type: "kern", size: supKern},
-                {type: "elem", elem: supm, marginLeft: slant + "em"},
-                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-            ], "bottom", bottom, options);
+            finalGroup = buildCommon.makeVList({
+                positionType: "bottom",
+                positionData: bottom,
+                children: [
+                    {type: "kern", size: options.fontMetrics().bigOpSpacing5},
+                    {type: "elem", elem: subm, marginLeft: -slant + "em"},
+                    {type: "kern", size: subKern},
+                    {type: "elem", elem: base},
+                    {type: "kern", size: supKern},
+                    {type: "elem", elem: supm, marginLeft: slant + "em"},
+                    {type: "kern", size: options.fontMetrics().bigOpSpacing5},
+                ],
+            }, options);
         }
 
         return makeSpan(["mop", "op-limits"], [finalGroup], options);
@@ -917,12 +945,15 @@ groupTypes.overline = function(group, options) {
     const line = makeLineSpan("overline-line", options);
 
     // Generate the vlist, with the appropriate kerns
-    const vlist = buildCommon.makeVList([
-        {type: "elem", elem: innerGroup},
-        {type: "kern", size: 3 * line.height},
-        {type: "elem", elem: line},
-        {type: "kern", size: line.height},
-    ], "firstBaseline", null, options);
+    const vlist = buildCommon.makeVList({
+        positionType: "firstBaseline",
+        children: [
+            {type: "elem", elem: innerGroup},
+            {type: "kern", size: 3 * line.height},
+            {type: "elem", elem: line},
+            {type: "kern", size: line.height},
+        ],
+    }, options);
 
     return makeSpan(["mord", "overline"], [vlist], options);
 };
@@ -936,12 +967,16 @@ groupTypes.underline = function(group, options) {
     const line = makeLineSpan("underline-line", options);
 
     // Generate the vlist, with the appropriate kerns
-    const vlist = buildCommon.makeVList([
-        {type: "kern", size: line.height},
-        {type: "elem", elem: line},
-        {type: "kern", size: 3 * line.height},
-        {type: "elem", elem: innerGroup},
-    ], "top", innerGroup.height, options);
+    const vlist = buildCommon.makeVList({
+        positionType: "top",
+        positionData: innerGroup.height,
+        children: [
+            {type: "kern", size: line.height},
+            {type: "elem", elem: line},
+            {type: "kern", size: 3 * line.height},
+            {type: "elem", elem: innerGroup},
+        ],
+    }, options);
 
     return makeSpan(["mord", "underline"], [vlist], options);
 };
@@ -1003,12 +1038,15 @@ groupTypes.sqrt = function(group, options) {
     inner.style.paddingLeft = img.advanceWidth + "em";
 
     // Overlay the image and the argument.
-    const body = buildCommon.makeVList([
-        {type: "elem", elem: inner},
-        {type: "kern", size: -(inner.height + imgShift)},
-        {type: "elem", elem: img},
-        {type: "kern", size: ruleWidth},
-    ], "firstBaseline", null, options);
+    const body = buildCommon.makeVList({
+        positionType: "firstBaseline",
+        children: [
+            {type: "elem", elem: inner},
+            {type: "kern", size: -(inner.height + imgShift)},
+            {type: "elem", elem: img},
+            {type: "kern", size: ruleWidth},
+        ],
+    }, options);
     body.children[0].children[0].classes.push("svg-align");
 
     if (!group.value.index) {
@@ -1025,9 +1063,11 @@ groupTypes.sqrt = function(group, options) {
         const toShift = 0.6 * (body.height - body.depth);
 
         // Build a VList with the superscript shifted up correctly
-        const rootVList = buildCommon.makeVList(
-            [{type: "elem", elem: rootm}],
-            "shift", -toShift, options);
+        const rootVList = buildCommon.makeVList({
+            positionType: "shift",
+            positionData: -toShift,
+            children: [{type: "elem", elem: rootm}],
+        }, options);
         // Add a class surrounding it so we can add on the appropriate
         // kerning
         const rootVListWrap = makeSpan(["root"], [rootVList]);
@@ -1246,19 +1286,25 @@ groupTypes.accent = function(group, options) {
         // we shift it to the right by 1*skew.
         accentBody.style.marginLeft = 2 * skew + "em";
 
-        accentBody = buildCommon.makeVList([
-            {type: "elem", elem: body},
-            {type: "kern", size: -clearance},
-            {type: "elem", elem: accentBody},
-        ], "firstBaseline", null, options);
+        accentBody = buildCommon.makeVList({
+            positionType: "firstBaseline",
+            children: [
+                {type: "elem", elem: body},
+                {type: "kern", size: -clearance},
+                {type: "elem", elem: accentBody},
+            ],
+        }, options);
 
     } else {
         accentBody = stretchy.svgSpan(group, options);
 
-        accentBody = buildCommon.makeVList([
-            {type: "elem", elem: body},
-            {type: "elem", elem: accentBody},
-        ], "firstBaseline", null, options);
+        accentBody = buildCommon.makeVList({
+            positionType: "firstBaseline",
+            children: [
+                {type: "elem", elem: body},
+                {type: "elem", elem: accentBody},
+            ],
+        }, options);
 
         const styleSpan = accentBody.children[0].children[0].children[1];
         styleSpan.classes.push("svg-align");  // text-align: left;
@@ -1320,18 +1366,25 @@ groupTypes.horizBrace = function(group, options) {
     // This first vlist contains the subject matter and the brace:   equation
     let vlist;
     if (group.value.isOver) {
-        vlist = buildCommon.makeVList([
-            {type: "elem", elem: body},
-            {type: "kern", size: 0.1},
-            {type: "elem", elem: braceBody},
-        ], "firstBaseline", null, options);
+        vlist = buildCommon.makeVList({
+            positionType: "firstBaseline",
+            children: [
+                {type: "elem", elem: body},
+                {type: "kern", size: 0.1},
+                {type: "elem", elem: braceBody},
+            ],
+        }, options);
         vlist.children[0].children[0].children[1].classes.push("svg-align");
     } else {
-        vlist = buildCommon.makeVList([
-            {type: "elem", elem: braceBody},
-            {type: "kern", size: 0.1},
-            {type: "elem", elem: body},
-        ], "bottom", body.depth + 0.1 + braceBody.height, options);
+        vlist = buildCommon.makeVList({
+            positionType: "bottom",
+            positionData: body.depth + 0.1 + braceBody.height,
+            children: [
+                {type: "elem", elem: braceBody},
+                {type: "kern", size: 0.1},
+                {type: "elem", elem: body},
+            ],
+        }, options);
         vlist.children[0].children[0].children[0].classes.push("svg-align");
     }
 
@@ -1349,18 +1402,24 @@ groupTypes.horizBrace = function(group, options) {
             [vlist], options);
 
         if (group.value.isOver) {
-            vlist = buildCommon.makeVList([
-                {type: "elem", elem: vSpan},
-                {type: "kern", size: 0.2},
-                {type: "elem", elem: supSubGroup},
-            ], "firstBaseline", null, options);
+            vlist = buildCommon.makeVList({
+                positionType: "firstBaseline",
+                children: [
+                    {type: "elem", elem: vSpan},
+                    {type: "kern", size: 0.2},
+                    {type: "elem", elem: supSubGroup},
+                ],
+            }, options);
         } else {
-            vlist = buildCommon.makeVList([
-                {type: "elem", elem: supSubGroup},
-                {type: "kern", size: 0.2},
-                {type: "elem", elem: vSpan},
-            ], "bottom", vSpan.depth + 0.2 + supSubGroup.height,
-            options);
+            vlist = buildCommon.makeVList({
+                positionType: "bottom",
+                positionData: vSpan.depth + 0.2 + supSubGroup.height,
+                children: [
+                    {type: "elem", elem: supSubGroup},
+                    {type: "kern", size: 0.2},
+                    {type: "elem", elem: vSpan},
+                ],
+            }, options);
         }
     }
 
@@ -1376,11 +1435,15 @@ groupTypes.accentUnder = function(group, options) {
     const kern = (/tilde/.test(group.value.label) ? 0.12 : 0);
 
     // Generate the vlist, with the appropriate kerns
-    const vlist = buildCommon.makeVList([
-        {type: "elem", elem: accentBody},
-        {type: "kern", size: kern},
-        {type: "elem", elem: innerGroup},
-    ], "bottom", accentBody.height + kern, options);
+    const vlist = buildCommon.makeVList({
+        positionType: "bottom",
+        positionData: accentBody.height + kern,
+        children: [
+            {type: "elem", elem: accentBody},
+            {type: "kern", size: kern},
+            {type: "elem", elem: innerGroup},
+        ],
+    }, options);
 
     vlist.children[0].children[0].children[0].classes.push("svg-align");
 
@@ -1429,17 +1492,23 @@ groupTypes.enclose = function(group, options) {
 
     let vlist;
     if (isColorbox) {
-        vlist = buildCommon.makeVList([
-            // Put the color background behind inner;
-            {type: "elem", elem: img, shift: imgShift},
-            {type: "elem", elem: inner, shift: 0},
-        ], "individualShift", null, options);
+        vlist = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: [
+                // Put the color background behind inner;
+                {type: "elem", elem: img, shift: imgShift},
+                {type: "elem", elem: inner, shift: 0},
+            ],
+        }, options);
     } else {
-        vlist = buildCommon.makeVList([
-            // Write the \cancel stroke on top of inner.
-            {type: "elem", elem: inner, shift: 0},
-            {type: "elem", elem: img, shift: imgShift},
-        ], "individualShift", null, options);
+        vlist = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: [
+                // Write the \cancel stroke on top of inner.
+                {type: "elem", elem: inner, shift: 0},
+                {type: "elem", elem: img, shift: imgShift},
+            ],
+        }, options);
     }
 
     if (/cancel/.test(label)) {
@@ -1487,16 +1556,22 @@ groupTypes.xArrow = function(group, options) {
         const lowerShift = -options.fontMetrics().axisHeight
             + lowerGroup.height + 0.5 * arrowBody.height
             + 0.111;
-        vlist = buildCommon.makeVList([
-            {type: "elem", elem: upperGroup, shift: upperShift},
-            {type: "elem", elem: arrowBody,  shift: arrowShift},
-            {type: "elem", elem: lowerGroup, shift: lowerShift},
-        ], "individualShift", null, options);
+        vlist = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: [
+                {type: "elem", elem: upperGroup, shift: upperShift},
+                {type: "elem", elem: arrowBody,  shift: arrowShift},
+                {type: "elem", elem: lowerGroup, shift: lowerShift},
+            ],
+        }, options);
     } else {
-        vlist = buildCommon.makeVList([
-            {type: "elem", elem: upperGroup, shift: upperShift},
-            {type: "elem", elem: arrowBody,  shift: arrowShift},
-        ], "individualShift", null, options);
+        vlist = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: [
+                {type: "elem", elem: upperGroup, shift: upperShift},
+                {type: "elem", elem: arrowBody,  shift: arrowShift},
+            ],
+        }, options);
     }
 
     vlist.children[0].children[0].children[1].classes.push("svg-align");
@@ -1522,10 +1597,11 @@ groupTypes.raisebox = function(group, options) {
         size: 6,                // simulate \normalsize
     }}, options);
     const dy = calculateSize(group.value.dy.value, options);
-    return buildCommon.makeVList([{
-        type: "elem",
-        elem: body,
-    }], "shift", -dy, options);
+    return buildCommon.makeVList({
+        positionType: "shift",
+        positionData: -dy,
+        children: [{type: "elem", elem: body}],
+    }, options);
 };
 
 /**

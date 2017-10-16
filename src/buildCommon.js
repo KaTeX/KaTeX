@@ -286,7 +286,7 @@ const makeFragment = function(children) {
  *  - options: An Options object
  *
  */
-const makeVList = function(children, positionType, positionData, options) {
+const makeVList = function({positionType, positionData, children}, options) {
     let depth;
     let currPos;
     let i;
