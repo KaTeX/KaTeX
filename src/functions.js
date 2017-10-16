@@ -43,7 +43,7 @@ defineFunction(["\\sqrt"], {
 // Non-mathy text, possibly in a font
 const textFunctionFonts = {
     "\\text": undefined, "\\textrm": "mathrm", "\\textsf": "mathsf",
-    "\\texttt": "mathtt", "\\textnormal": "mathrm", "\\textbf": "mathbf",
+    "\\texttt": "mathtt", "\\textnormal": "mathrm", "\\textbf": "textbf",
     "\\textit": "textit",
 };
 
