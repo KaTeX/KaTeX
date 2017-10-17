@@ -412,7 +412,7 @@ defineSymbol(math, ams, rel, "\u21b7", "\\curvearrowright", true);
 defineSymbol(math, ams, rel, "\u21bb", "\\circlearrowright", true);
 defineSymbol(math, ams, rel, "\u21b1", "\\Rsh", true);
 defineSymbol(math, ams, rel, "\u21ca", "\\downdownarrows", true);
-defineSymbol(math, ams, rel, "\u21be", "\\upharpoonright", true, true);
+defineSymbol(math, ams, rel, "\u21be", "\\upharpoonright", true);
 defineSymbol(math, ams, rel, "\u21c2", "\\downharpoonright", true);
 defineSymbol(math, ams, rel, "\u21dd", "\\rightsquigarrow", true);
 defineSymbol(math, ams, rel, "\u21dd", "\\leadsto");
