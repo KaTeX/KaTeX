@@ -307,7 +307,11 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
 
     // Finally, build the vlist
     const newOptions = options.havingBaseStyle(Style.TEXT);
-    const inner = buildCommon.makeVList(inners, "bottom", depth, newOptions);
+    const inner = buildCommon.makeVList({
+        positionType: "bottom",
+        positionData: depth,
+        children: inners,
+    }, newOptions);
 
     return styleWrap(
         buildCommon.makeSpan(["delimsizing", "mult"], [inner], newOptions),
