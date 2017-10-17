@@ -31,7 +31,7 @@ export const makeText = function(text, mode) {
  * Returns the math variant as a string or null if none is required.
  */
 const getVariant = function(group, options) {
-    const font = options.font;
+    const font = options.fonts[options.fonts.length - 1];
     if (!font) {
         return null;
     }
@@ -52,7 +52,7 @@ const getVariant = function(group, options) {
 
     const fontName = buildCommon.fontMap[font].fontName;
     if (fontMetrics.getCharacterMetrics(value, fontName)) {
-        return buildCommon.fontMap[options.font].variant;
+        return buildCommon.fontMap[font].variant;
     }
 
     return null;
