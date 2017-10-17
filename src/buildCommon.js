@@ -174,31 +174,37 @@ const lookupTextFont = function(value, mode, options, classes, type) {
     let italicTxt = '';
     let boldTxt = '';
     let fontName = '';
-    let fonts = options.fonts;
+    let font = '';
+    const fontClasses = [];
+    const fonts = options.fonts;
     fonts.forEach((fontOrStyle) => {
         if (fontOrStyle === 'textit') {
             italicTxt = 'Italic';
+            fontClasses.push('textit');
         } else if (fontOrStyle === 'textbf') {
             boldTxt = 'Bold';
+            fontClasses.push('textbf');
         } else if (fontMap[fontOrStyle]) {
             fontName = fontMap[fontOrStyle].fontName;
+            font = fontOrStyle;
         }
     });
     // If no font was provided, use the default.
-    if (!fontName) {
+    if (!font) {
         const defaultData = lookupDefaultFont(value, mode, options, classes, type);
         fontName = defaultData.fontName;
-        fonts = fonts.concat(defaultData.fontClasses);
+        font = defaultData.fontClasses[0];
     }
+    fontClasses.push(font);
     // If it's bold or italic, strip the "regular part", and add the appropriate
-    // Bold/Italic string.
+    // Bold/Italic string. An example of this could be SansSerif-Bold.
     if (italicTxt || boldTxt) {
         const baseFont = fontName.split("-")[0];
         fontName = `${baseFont}-${boldTxt}${italicTxt}`;
     }
     return {
         fontName,
-        fontClasses: fonts,
+        fontClasses,
     };
 };
 
