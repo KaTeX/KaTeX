@@ -445,7 +445,7 @@ defineEnvironment({
             if (i % 2 === 1) {
                 align = "l";
             } else if (i > 0) {
-                pregap = 2; // one \qquad between columns
+                pregap = 1; // one \quad between columns
             }
             res.value.cols[i] = {
                 type: "align",
