@@ -183,10 +183,10 @@ class Options {
     /**
      * Create a new options objects with the give font.
      */
-    withFont(font: string): Options {
-        const fonts = this.fonts.concat([font]);
+    withFont(font: ?string): Options {
+        const fonts = font ? this.fonts.concat([font]) : this.fonts;
         return this.extend({
-            fonts: fonts || this.fonts,
+            fonts: fonts,
         });
     }
 

@@ -187,6 +187,11 @@ const lookupTextFont = function(value, mode, options, classes, type) {
         } else if (fontMap[fontOrStyle]) {
             fontName = fontMap[fontOrStyle].fontName;
             font = fontOrStyle;
+        } else if (fontOrStyle === "mathit"
+                  || utils.contains(mainitLetters, value)) {
+            const fontData = mathit(value, mode, options, classes);
+            fontName = fontData.fontName;
+            font = fontOrStyle;
         }
     });
     // If no font was provided, use the default.
