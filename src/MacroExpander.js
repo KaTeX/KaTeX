@@ -16,13 +16,11 @@ export default class MacroExpander implements MacroContextInterface {
     lexer: Lexer;
     macros: MacroMap;
     stack: Token[];
-    discardedWhiteSpace: Token[];
 
     constructor(input: string, macros: MacroMap) {
         this.lexer = new Lexer(input);
         this.macros = objectAssign({}, builtinMacros, macros);
         this.stack = []; // contains tokens in REVERSE order
-        this.discardedWhiteSpace = [];
     }
 
     /**
@@ -31,7 +29,7 @@ export default class MacroExpander implements MacroContextInterface {
      */
     future(): Token {
         if (this.stack.length === 0) {
-            this.stack.push(this.lexer.lex());
+            this.pushToken(this.lexer.lex());
         }
         return this.stack[this.stack.length - 1];
     }
@@ -88,7 +86,7 @@ export default class MacroExpander implements MacroContextInterface {
         }
         if (!(isMacro && this.macros.hasOwnProperty(name))) {
             // Fully expanded
-            this.stack.push(topToken);
+            this.pushToken(topToken);
             return topToken;
         }
         const {tokens, numArgs} = this._getExpansion(name);
@@ -226,37 +224,11 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
-     * Recursively expand first token, then return first non-expandable token.
-     * If given a `true` argument, skips over any leading whitespace in
-     * expansion, instead returning the first non-whitespace token
-     * (like TeX's \ignorespaces).
-     * Any skipped whitespace is stored in `this.discardedWhiteSpace`
-     * so that `unget` can correctly undo the effects of `get`.
+     * Add a given token to the token stack.  In particular, this get be used
+     * to put back a token returned from one of the other methods.
      */
-    get(ignoreSpace: boolean): Token {
-        this.discardedWhiteSpace = [];
-        let token = this.expandNextToken();
-        if (ignoreSpace) {
-            while (token.text === " ") {
-                this.discardedWhiteSpace.push(token);
-                token = this.expandNextToken();
-            }
-        }
-        return token;
-    }
-
-    /**
-     * Undo the effect of the preceding call to the get method.
-     * A call to this method MUST be immediately preceded and immediately followed
-     * by a call to get.  Only used during mode switching, i.e. after one token
-     * was got in the old mode but should get got again in a new mode
-     * with possibly different whitespace handling.
-     */
-    unget(token: Token) {
+    pushToken(token: Token) {
         this.stack.push(token);
-        while (this.discardedWhiteSpace.length !== 0) {
-            this.stack.push(this.discardedWhiteSpace.pop());
-        }
     }
 }
 

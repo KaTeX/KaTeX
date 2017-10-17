@@ -243,7 +243,10 @@ const htmlBuilder = function(group, options) {
             col.push({type: "elem", elem: elem, shift: shift});
         }
 
-        col = buildCommon.makeVList(col, "individualShift", null, options);
+        col = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: col,
+        }, options);
         col = buildCommon.makeSpan(
             ["col-align-" + (colDescr.align || "c")],
             [col]);

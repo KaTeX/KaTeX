@@ -1,9 +1,10 @@
+// @flow
 /**
  * This file provides support to domTree.js
  * It's a storehouse of path geometry for SVG images.
  */
 
-const path = {
+const path: {[string]: string} = {
     // sqrtMain path geometry is from glyph U221A in the font KaTeX Main
     sqrtMain: `M95 622c-2.667 0-7.167-2.667-13.5
 -8S72 604 72 600c0-2 .333-3.333 1-4 1.333-2.667 23.833-20.667 67.5-54s
@@ -261,6 +262,4 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z`,
 -11 10h-1L1182 67 15 340h-1c-6 0-10-4-11-10l-2-23c-1-6 4-11 10-11z`,
 };
 
-export default {
-    path: path,
-};
+export default {path};

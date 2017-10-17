@@ -1,3 +1,4 @@
+// @flow
 /**
  * This file contains a list of utility functions which are useful in other
  * files.
@@ -8,7 +9,7 @@
  * possible.
  */
 const nativeIndexOf = Array.prototype.indexOf;
-const indexOf = function(list, elem) {
+const indexOf = function<T>(list: Array<T>, elem: T): number {
     if (list == null) {
         return -1;
     }
@@ -27,21 +28,22 @@ const indexOf = function(list, elem) {
 /**
  * Return whether an element is contained in a list
  */
-const contains = function(list, elem) {
+const contains = function<T>(list: Array<T>, elem: T): boolean {
     return indexOf(list, elem) !== -1;
 };
 
 /**
  * Provide a default value if a setting is undefined
+ * NOTE: Couldn't use `T` as the output type due to facebook/flow#5022.
  */
-const deflt = function(setting, defaultIfUndefined) {
+const deflt = function<T>(setting: T | void, defaultIfUndefined: T): * {
     return setting === undefined ? defaultIfUndefined : setting;
 };
 
 // hyphenate and escape adapted from Facebook's React under Apache 2 license
 
 const uppercase = /([A-Z])/g;
-const hyphenate = function(str) {
+const hyphenate = function(str: string): string {
     return str.replace(uppercase, "-$1").toLowerCase();
 };
 
@@ -55,18 +57,11 @@ const ESCAPE_LOOKUP = {
 
 const ESCAPE_REGEX = /[&><"']/g;
 
-function escaper(match) {
-    return ESCAPE_LOOKUP[match];
-}
-
 /**
  * Escapes text to prevent scripting attacks.
- *
- * @param {*} text Text value to escape.
- * @return {string} An escaped string.
  */
-function escape(text) {
-    return ("" + text).replace(ESCAPE_REGEX, escaper);
+function escape(text: mixed): string {
+    return String(text).replace(ESCAPE_REGEX, match => ESCAPE_LOOKUP[match]);
 }
 
 /**
@@ -77,11 +72,11 @@ let setTextContent;
 if (typeof document !== "undefined") {
     const testNode = document.createElement("span");
     if ("textContent" in testNode) {
-        setTextContent = function(node, text) {
+        setTextContent = function(node: Node, text: string) {
             node.textContent = text;
         };
     } else {
-        setTextContent = function(node, text) {
+        setTextContent = function(node: Node, text: string) {
             node.innerText = text;
         };
     }
@@ -90,16 +85,16 @@ if (typeof document !== "undefined") {
 /**
  * A function to clear a node.
  */
-function clearNode(node) {
+function clearNode(node: Node) {
     setTextContent(node, "");
 }
 
 export default {
-    contains: contains,
-    deflt: deflt,
-    escape: escape,
-    hyphenate: hyphenate,
-    indexOf: indexOf,
-    setTextContent: setTextContent,
-    clearNode: clearNode,
+    contains,
+    deflt,
+    escape,
+    hyphenate,
+    indexOf,
+    setTextContent,
+    clearNode,
 };

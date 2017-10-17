@@ -10,7 +10,7 @@ This extension isn't part of KaTeX proper, so the script should be separately
 included in the page:
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-alpha/contrib/auto-render.min.js" integrity="sha384-/Z291BvW2yONYvD+H3Zrvm+Pry3vypiYfoh24Bdxz24L97RYba1z7Q0L9/HSNAWp" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-alpha1/contrib/auto-render.min.js" integrity="sha384-cXpztMJlr2xFXyDSIfRWYSMVCXZ9HeGXvzyKTYrn03rsMAlOtIQVzjty5ULbaP8L" crossorigin="anonymous"></script>
 ```
 
 Then, call the exposed `renderMathInElement` function in a script tag
