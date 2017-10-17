@@ -2626,6 +2626,14 @@ describe("Unicode", function() {
     it("should parse 'ΓΔΘΞΠΣΦΨΩ'", function() {
         expect("ΓΔΘΞΠΣΦΨΩ").toParse();
     });
+
+    it("should parse relations", function() {
+        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≫≬≳≷≺≻≼≽≾≿").toParse();
+    });
+
+    it("should parse more relations", function() {
+        expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋙⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆").toParse();
+    });
 });
 
 describe("The maxSize setting", function() {

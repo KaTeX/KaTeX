@@ -316,46 +316,47 @@ const makeFragment = function(children) {
     return fragment;
 };
 
+
+// TODO(#939): Uncomment and use VListParam as the type of makeVList's first param.
+/*
+type VListElem =
+    {type: "elem", elem: DomChildNode, marginLeft?: string, marginRight?: string};
+type VListKern = {type: "kern", size: number};
+
+// A list of child or kern nodes to be stacked on top of each other (i.e. the
+// first element will be at the bottom, and the last at the top).
+type VListChild = VListElem | VListKern;
+
+type VListParam = {|
+    // Each child contains how much it should be shifted downward.
+    positionType: "individualShift",
+    children: (VListElem & {shift: number})[],
+|} | {|
+    // "top": The positionData specifies the topmost point of the vlist (note this
+    //        is expected to be a height, so positive values move up).
+    // "bottom": The positionData specifies the bottommost point of the vlist (note
+    //           this is expected to be a depth, so positive values move down).
+    // "shift": The vlist will be positioned such that its baseline is positionData
+    //          away from the baseline of the first child. Positive values move
+    //          downwards.
+    positionType: "top" | "bottom" | "shift",
+    positionData: number,
+    children: VListChild[],
+|} | {|
+    // The vlist is positioned so that its baseline is aligned with the baseline
+    // of the first child. This is equivalent to "shift" with positionData=0.
+    positionType: "firstBaseline",
+    children: VListChild[],
+|};
+*/
+
 /**
  * Makes a vertical list by stacking elements and kerns on top of each other.
  * Allows for many different ways of specifying the positioning method.
  *
- * Arguments:
- *  - children: A list of child or kern nodes to be stacked on top of each other
- *              (i.e. the first element will be at the bottom, and the last at
- *              the top). Element nodes are specified as
- *                {type: "elem", elem: node}
- *              while kern nodes are specified as
- *                {type: "kern", size: size}
- *  - positionType: The method by which the vlist should be positioned. Valid
- *                  values are:
- *                   - "individualShift": The children list only contains elem
- *                                        nodes, and each node contains an extra
- *                                        "shift" value of how much it should be
- *                                        shifted (note that shifting is always
- *                                        moving downwards). positionData is
- *                                        ignored.
- *                   - "top": The positionData specifies the topmost point of
- *                            the vlist (note this is expected to be a height,
- *                            so positive values move up)
- *                   - "bottom": The positionData specifies the bottommost point
- *                               of the vlist (note this is expected to be a
- *                               depth, so positive values move down
- *                   - "shift": The vlist will be positioned such that its
- *                              baseline is positionData away from the baseline
- *                              of the first child. Positive values move
- *                              downwards.
- *                   - "firstBaseline": The vlist will be positioned such that
- *                                      its baseline is aligned with the
- *                                      baseline of the first child.
- *                                      positionData is ignored. (this is
- *                                      equivalent to "shift" with
- *                                      positionData=0)
- *  - positionData: Data used in different ways depending on positionType
- *  - options: An Options object
- *
+ * See parameter documentation on the type documentation above.
  */
-const makeVList = function(children, positionType, positionData, options) {
+const makeVList = function({positionType, positionData, children}, options) {
     let depth;
     let currPos;
     let i;
