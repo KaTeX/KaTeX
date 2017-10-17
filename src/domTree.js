@@ -223,10 +223,7 @@ class anchor {
         let markup = "<a";
 
         // Add the href
-        markup += " anchor=\"";
-        markup += utils.escape(this.href);
-        markup += "\"";
-
+        markup += `href="${markup += utils.escape(this.href)}"`;
         // Add the class
         if (this.classes.length) {
             markup += " class=\"";
@@ -249,7 +246,8 @@ class anchor {
 
         // Add the attributes
         for (const attr in this.attributes) {
-            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+            if (attr !== "href" &&
+                Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
                 markup += " " + attr + "=\"";
                 markup += utils.escape(this.attributes[attr]);
                 markup += "\"";
@@ -259,8 +257,8 @@ class anchor {
         markup += ">";
 
         // Add the markup of the children, also as markup
-        for (let i = 0; i < this.children.length; i++) {
-            markup += this.children[i].toMarkup();
+        for (const child of this.children) {
+            markup += child.toMarkup();
         }
 
         markup += "</a>";

@@ -11,15 +11,11 @@ defineFunction({
     names: ["\\href"],
     props: {
         numArgs: 2,
-        argTypes: ["original", "original"],
+        argTypes: ["url", "original"],
     },
     handler: (context, args) => {
         const body = args[1];
-        const hrs  = args[0].value;
-        let href = "";
-        for (let i = 0; i < hrs.length; i++) {
-            href += hrs[i].value;
-        }
+        const href  = args[0].value;
         return {
             type: "href",
             href: href,
@@ -44,32 +40,32 @@ defineFunction({
          *    with the same classes of both ends of elements.
          */
 
-        let cls = []; // null if the type of both ends differs.
-        let fst; // mathtype of the first child
-        let lst; // mathtype of the last child
-        // Invariants: both fst and lst must be non-null if cls is null.
+        let classes = []; // null if the type of both ends differs.
+        let first; // mathtype of the first child
+        let last; // mathtype of the last child
+        // Invariants: both first and last must be non-null if classes is null.
         if (elements.length === 1) { // Case 1
-            cls = elements[0].classes;
+            classes = elements[0].classes;
         } else if (elements.length >= 2) {
-            fst = html.getTypeOfDomTree(elements[0]);
-            lst = html.getTypeOfDomTree(elements[elements.length - 1]);
-            if (fst === lst) { // Case 2 : type of both ends coincides
-                cls = [fst];
+            first = html.getTypeOfDomTree(elements[0]) || 'mord';
+            last = html.getTypeOfDomTree(elements[elements.length - 1]) || 'mord';
+            if (first === last) { // Case 2 : type of both ends coincides
+                classes = [first];
             } else { // Case 3: both ends have different types.
-                cls = null;
+                classes = null;
             }
         } else { // No elements at all, just ignore.
-            cls = [];
+            classes = [];
         }
-        if (!cls) {
+        if (!classes) {
             const anc = buildCommon.makeAnchor(href, [], elements, options);
-            const elts = [new buildCommon.makeSpan([fst], [], options),
+            return new buildCommon.makeFragment([
+                new buildCommon.makeSpan([first], [], options),
                 anc,
-                new buildCommon.makeSpan([lst], [], options),
-            ];
-            return new buildCommon.makeFragment(elts);
+                new buildCommon.makeSpan([last], [], options),
+            ]);
         } else {
-            return new buildCommon.makeAnchor(href, cls, elements, options);
+            return new buildCommon.makeAnchor(href, classes, elements, options);
         }
     },
     mathmlBuilder: (group, options) => {

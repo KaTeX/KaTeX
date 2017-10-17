@@ -759,6 +759,9 @@ export default class Parser {
         if (innerMode === "size") {
             return this.parseSizeGroup(optional);
         }
+        if (innerMode === "url") {
+            return this.parseUrlGroup(optional);
+        }
 
         // By the time we get here, innerMode is one of "text" or "math".
         // We switch the mode of the parser, recurse, then restore the old mode.
@@ -850,6 +853,23 @@ export default class Parser {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
         return newArgument(new ParseNode("color", match[0], this.mode), res);
+    }
+
+    /**
+     * Parses a url string.
+     */
+    parseUrlGroup(optional) {
+        const res = this.parseStringGroup("url", optional);
+        if (!res) {
+            return null;
+        }
+        const raw = res.text;
+        // hyperref package allows backslashes alone in href, but doesn't generate
+        // valid links in such cases; we interpret this as "undefiend" behaviour,
+        // and keep them as-is. In some environment, they're replaced by slashes
+        // in url by browser.
+        const url = raw.replace(/\\([#$%&~_^{}])/g, '$1');
+        return newArgument(new ParseNode("url", url, this.mode), res);
     }
 
     /**
