@@ -210,6 +210,11 @@ const svgSpan = function(group: ParseNode, options: Options): span {
 
         [paths, minWidth, viewBoxHeight, align] = katexImagesData[label];
         const numSvgChildren = paths.length;
+        if (1 > numSvgChildren || numSvgChildren > 3) {
+            throw new Error(
+                `Correct katexImagesData or update code below to support
+                ${numSvgChildren} children.`);
+        }
         height = viewBoxHeight / 1000;
 
         for (let i = 0; i < numSvgChildren; i++) {
