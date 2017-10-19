@@ -151,14 +151,16 @@ const lookupFontData = function(value, mode, options, classes, type) {
 const lookupMathFont = function(value, mode, options, classes, type) {
     let mathFontData = {};
     const fonts = options.fonts;
-    if (!fonts.length) {
+    const font = fonts[fonts.length - 1];
+    const fontLookup = fontMap[font];
+    if (!fonts.length || (fontLookup &&
+                         !lookupSymbol(value, fontLookup.fontName, mode).metrics)) {
         mathFontData = lookupDefaultFont(value, mode, options, classes, type);
     } else {
-        const font = fonts[fonts.length - 1];
         if (font === "mathit" || utils.contains(mainitLetters, value)) {
             mathFontData = mathit(value, mode, options, classes);
         } else {
-            mathFontData.fontName = fontMap[font].fontName;
+            mathFontData.fontName = fontLookup.fontName;
             mathFontData.fontClasses = [font];
         }
     }
