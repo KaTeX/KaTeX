@@ -62,10 +62,10 @@ function parseArray(
         } else if (next === "\\end") {
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
             // the last line is empty.
-            const lastRow = body[body.length - 1][0].value;
+            const lastRow = body[body.length - 1];
             if (body.length > 1
-                && lastRow.value.length === 1
-                && lastRow.value[0].value.length === 0) {
+                && lastRow.length === 1
+                && lastRow[0].value.length === 0) {
                 body.pop();
             }
             break;

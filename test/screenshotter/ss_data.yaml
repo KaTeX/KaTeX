@@ -22,6 +22,12 @@ Aligned: |
         a &= 1 & b &= 2 \\
         3a &= 3 & 17b &= 34
     \end{aligned}
+AlignedWithEmptyCell: |
+    \begin{aligned}
+        &E_1 & (1) \\
+        &E_2 & (2) \\
+        &E_3 & (3)
+    \end{aligned}
 Arrays: |
     \left(\begin{array}{|rl|c||}
         1&2&3\\
