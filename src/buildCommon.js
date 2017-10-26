@@ -14,12 +14,7 @@ import type Options from "./Options";
 import type ParseNode from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {Mode} from "./types";
-import type {
-    DomContainerNode,
-    DomChildNode,
-    CombinableDomNode,
-} from "./domTree";
-
+import type {DomChildNode, CombinableDomNode} from "./domTree";
 
 // The following have to be loaded from Main-Italic font, using class mainit
 const mainitLetters = [
@@ -34,6 +29,7 @@ const mainitLetters = [
  */
 const lookupSymbol = function(
     value: string,
+    // TODO(#963): Use a union type for this.
     fontFamily: string,
     mode: Mode,
 ): {value: string, metrics: ?CharacterMetrics} {
@@ -55,6 +51,7 @@ const lookupSymbol = function(
  * TODO: make argument order closer to makeSpan
  * TODO: add a separate argument for math class (e.g. `mop`, `mbin`), which
  * should if present come first in `classes`.
+ * TODO(#953): Make `options` mandatory and always pass it in.
  */
 const makeSymbol = function(
     value: string,
@@ -101,12 +98,14 @@ const makeSymbol = function(
 /**
  * Makes a symbol in Main-Regular or AMS-Regular.
  * Used for rel, bin, open, close, inner, and punct.
+ *
+ * TODO(#953): Make `options` mandatory and always pass it in.
  */
 const mathsym = function(
     value: string,
     mode: Mode,
-    options: Options,
-    classes: string[],
+    options?: Options,
+    classes?: string[] = [],
 ): domTree.symbolNode {
     // Decide what font to render the symbol in by its entry in the symbols
     // table.
@@ -231,25 +230,22 @@ const tryCombineChars = function(
  * Calculate the height, depth, and maxFontSize of an element based on its
  * children.
  */
-const sizeElementFromChildren = function(elem: DomContainerNode) {
+const sizeElementFromChildren = function(
+    elem: domTree.span | domTree.documentFragment,
+) {
     let height = 0;
     let depth = 0;
     let maxFontSize = 0;
 
-    if (elem.children) {
-        for (let i = 0; i < elem.children.length; i++) {
-            if (elem.children[i].height != null &&
-                elem.children[i].height > height) {
-                height = elem.children[i].height;
-            }
-            if (elem.children[i].depth != null &&
-                elem.children[i].depth > depth) {
-                depth = elem.children[i].depth;
-            }
-            if (elem.children[i].maxFontSize != null &&
-                elem.children[i].maxFontSize > maxFontSize) {
-                maxFontSize = elem.children[i].maxFontSize;
-            }
+    for (const child of elem.children) {
+        if (child.height > height) {
+            height = child.height;
+        }
+        if (child.depth > depth) {
+            depth = child.depth;
+        }
+        if (child.maxFontSize > maxFontSize) {
+            maxFontSize = child.maxFontSize;
         }
     }
 
@@ -261,8 +257,8 @@ const sizeElementFromChildren = function(elem: DomContainerNode) {
 /**
  * Makes a span with the given list of classes, list of children, and options.
  *
- * TODO: Ensure that `options` is always provided (currently some call sites
- * don't pass it) and make the type below mandatory.
+ * TODO(#953): Ensure that `options` is always provided (currently some call
+ * sites don't pass it) and make the type below mandatory.
  * TODO: add a separate argument for math class (e.g. `mop`, `mbin`), which
  * should if present come first in `classes`.
  */
@@ -317,9 +313,17 @@ const makeFragment = function(
 };
 
 
+// These are exact object types to catch typos in the names of the optional fields.
 type VListElem = {|
     type: "elem",
     elem: DomChildNode,
+    marginLeft?: string,
+    marginRight?: string,
+|};
+type VListElemAndShift = {|
+    type: "elem",
+    elem: DomChildNode,
+    shift: number,
     marginLeft?: string,
     marginRight?: string,
 |};
@@ -332,43 +336,44 @@ type VListChild = VListElem | VListKern;
 type VListParam = {|
     // Each child contains how much it should be shifted downward.
     positionType: "individualShift",
-    children: (VListElem & {shift: number})[],
+    children: VListElemAndShift[],
 |} | {|
     // "top": The positionData specifies the topmost point of the vlist (note this
     //        is expected to be a height, so positive values move up).
     // "bottom": The positionData specifies the bottommost point of the vlist (note
     //           this is expected to be a depth, so positive values move down).
     // "shift": The vlist will be positioned such that its baseline is positionData
-    //          away from the baseline of the first child. Positive values move
-    //          downwards.
+    //          away from the baseline of the first child which MUST be an
+    //          "elem". Positive values move downwards.
     positionType: "top" | "bottom" | "shift",
     positionData: number,
     children: VListChild[],
 |} | {|
     // The vlist is positioned so that its baseline is aligned with the baseline
-    // of the first child. This is equivalent to "shift" with positionData=0.
+    // of the first child which MUST be an "elem". This is equivalent to "shift"
+    // with positionData=0.
     positionType: "firstBaseline",
     children: VListChild[],
 |};
 
-/**
- * Makes a vertical list by stacking elements and kerns on top of each other.
- * Allows for many different ways of specifying the positioning method.
- *
- * See VListParam documentation above.
- */
-const makeVList = function(params: VListParam, options: Options): domTree.span {
-    let depth;
-    let currPos;
+
+// Computes the updated `children` list and the overall depth.
+//
+// This helper function for makeVList makes it easier to enforce type safety by
+// allowing early exits (returns) in the logic.
+const getVListChildrenAndDepth = function(params: VListParam): {
+    children: (VListChild | VListElemAndShift)[] | VListChild[],
+    depth: number,
+} {
     if (params.positionType === "individualShift") {
         const oldChildren = params.children;
-        params.children = [oldChildren[0]];
+        const children: (VListChild | VListElemAndShift)[] = [oldChildren[0]];
 
         // Add in kerns to the list of params.children to get each element to be
         // shifted to the correct specified shift
-        depth = -oldChildren[0].shift - oldChildren[0].elem.depth;
-        currPos = depth;
-        for (i = 1; i < oldChildren.length; i++) {
+        const depth = -oldChildren[0].shift - oldChildren[0].elem.depth;
+        let currPos = depth;
+        for (let i = 1; i < oldChildren.length; i++) {
             const diff = -oldChildren[i].shift - currPos -
                 oldChildren[i].elem.depth;
             const size = diff -
@@ -377,28 +382,50 @@ const makeVList = function(params: VListParam, options: Options): domTree.span {
 
             currPos = currPos + diff;
 
-            params.children.push({type: "kern", size: size});
-            params.children.push(oldChildren[i]);
+            children.push({type: "kern", size});
+            children.push(oldChildren[i]);
         }
-    } else if (params.positionType === "top") {
+
+        return {children, depth};
+    }
+
+    let depth;
+    if (params.positionType === "top") {
         // We always start at the bottom, so calculate the bottom by adding up
         // all the sizes
         let bottom = params.positionData;
         for (const child of params.children) {
-            bottom -= child.type === "kern" ?
-                child.size :
-                child.elem.height + child.elem.depth;
+            bottom -= child.type === "kern"
+                ? child.size
+                : child.elem.height + child.elem.depth;
         }
         depth = bottom;
     } else if (params.positionType === "bottom") {
         depth = -params.positionData;
-    } else if (params.positionType === "shift") {
-        depth = -params.children[0].elem.depth - params.positionData;
-    } else if (params.positionType === "firstBaseline") {
-        depth = -params.children[0].elem.depth;
     } else {
-        depth = 0;
+        const firstChild = params.children[0];
+        if (firstChild.type !== "elem") {
+            throw new Error('First child must have type "elem".');
+        }
+        if (params.positionType === "shift") {
+            depth = -firstChild.elem.depth - params.positionData;
+        } else if (params.positionType === "firstBaseline") {
+            depth = -firstChild.elem.depth;
+        } else {
+            throw new Error(`Invalid positionType ${params.positionType}.`);
+        }
     }
+    return {children: params.children, depth};
+};
+
+/**
+ * Makes a vertical list by stacking elements and kerns on top of each other.
+ * Allows for many different ways of specifying the positioning method.
+ *
+ * See VListParam documentation above.
+ */
+const makeVList = function(params: VListParam, options: Options): domTree.span {
+    const {children, depth} = getVListChildrenAndDepth(params);
 
     // Create a strut that is taller than any list item. The strut is added to
     // each item, where it will determine the item's baseline. Since it has
@@ -408,7 +435,7 @@ const makeVList = function(params: VListParam, options: Options): domTree.span {
     // be positioned precisely without worrying about font ascent and
     // line-height.
     let pstrutSize = 0;
-    for (const child of params.children) {
+    for (const child of children) {
         if (child.type === "elem") {
             const elem = child.elem;
             pstrutSize = Math.max(pstrutSize, elem.maxFontSize, elem.height);
@@ -422,7 +449,7 @@ const makeVList = function(params: VListParam, options: Options): domTree.span {
     const realChildren = [];
     let minPos = depth;
     let maxPos = depth;
-    currPos = depth;
+    let currPos = depth;
     for (const child of children) {
         if (child.type === "kern") {
             currPos += child.size;
