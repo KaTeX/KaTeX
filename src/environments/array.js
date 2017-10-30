@@ -276,6 +276,76 @@ const mathmlBuilder = function(group, options) {
         }));
 };
 
+// Convinient function for aligned and alignedat environments.
+const alignedHandler = function(context, args) {
+    let res = {
+        type: "array",
+        cols: [],
+        addJot: true,
+    };
+    res = parseArray(context.parser, res, "display");
+
+    // Determining number of columns.
+    // 1. If the first argument is given, we use it as a number of columns,
+    //    and makes sure that each row doesn't exceed that number.
+    // 2. Otherwise, just count number of columns = maximum number
+    //    of cells in each row ("aligned" mode -- isAligned will be true).
+    // 
+    // At the same time, prepend empty group {} at beginning of every second
+    // cell in each row (starting with second cell) so that operators become
+    // binary.  This behavior is implemented in amsmath's \start@aligned.
+    let numMaths;
+    let numCols = 0;
+    const emptyGroup = new ParseNode("ordgroup", [], context.mode);
+    if (args[0] && args[0].value) {
+        let arg0 = "";
+        for (let i = 0; i < args[0].value.length; i++) {
+            arg0 += args[0].value[i].value;
+        }
+        numMaths = Number(arg0);
+        numCols = numMaths * 2;
+    }
+    const isAligned = !numCols;
+    res.value.body.forEach(function(row) {
+        for (let i = 1; i < row.length; i += 2) {
+            // Modify ordgroup node within styling node
+            const ordgroup = row[i].value.value[0];
+            ordgroup.value.unshift(emptyGroup);
+        }
+        if (!isAligned) { // Case 1 
+            const curMaths = row.length / 2;
+            if (numMaths < curMaths) {
+                throw new ParseError(
+                "Too many math in a row: expected "
+                        + numMaths + ", but got " + curMaths,
+                row);
+            }
+        } else if (numCols < row.length) { // Case 2
+            numCols = row.length;
+        }
+    });
+
+    // Adjusting alignment.
+    // In aligned mode, we add one \qquad between columns;
+    // otherwise we add nothing.
+    for (let i = 0; i < numCols; ++i) {
+        let align = "r";
+        let pregap = 0;
+        if (i % 2 === 1) {
+            align = "l";
+        } else if (i > 0 && isAligned) { // "aligned" mode.
+            pregap = 1; // add one \quad
+        }
+        res.value.cols[i] = {
+            type: "align",
+            align: align,
+            pregap: pregap,
+            postgap: 0,
+        };
+    }
+    return res;
+};
+
 // Arrays are part of LaTeX, defined in lttab.dtx so its documentation
 // is part of the source2e.pdf file of LaTeX2e source documentation.
 // {darray} is an {array} environment where cells are set in \displaystyle,
@@ -416,46 +486,7 @@ defineEnvironment({
     props: {
         numArgs: 0,
     },
-    handler: function(context) {
-        let res = {
-            type: "array",
-            cols: [],
-            addJot: true,
-        };
-        res = parseArray(context.parser, res, "display");
-        // Count number of columns = maximum number of cells in each row.
-        // At the same time, prepend empty group {} at beginning of every second
-        // cell in each row (starting with second cell) so that operators become
-        // binary.  This behavior is implemented in amsmath's \start@aligned.
-        const emptyGroup = new ParseNode("ordgroup", [], context.mode);
-        let numCols = 0;
-        res.value.body.forEach(function(row) {
-            for (let i = 1; i < row.length; i += 2) {
-                // Modify ordgroup node within styling node
-                const ordgroup = row[i].value.value[0];
-                ordgroup.value.unshift(emptyGroup);
-            }
-            if (numCols < row.length) {
-                numCols = row.length;
-            }
-        });
-        for (let i = 0; i < numCols; ++i) {
-            let align = "r";
-            let pregap = 0;
-            if (i % 2 === 1) {
-                align = "l";
-            } else if (i > 0) {
-                pregap = 1; // one \quad between columns
-            }
-            res.value.cols[i] = {
-                type: "align",
-                align: align,
-                pregap: pregap,
-                postgap: 0,
-            };
-        }
-        return res;
-    },
+    handler: alignedHandler,
     htmlBuilder,
     mathmlBuilder,
 });
@@ -481,6 +512,23 @@ defineEnvironment({
         res = parseArray(context.parser, res, "display");
         return res;
     },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+// alignat environment is like an align environment, but one must explicitly
+// specify maximum number of columns in each row, and can adjust spacing between
+// each columns.
+defineEnvironment({
+    type: "array",
+    names: ["alignedat"],
+    // One for numbered and for unnumbered;
+    // but, KaTeX doesn't supports math numbering yet,
+    // they make no difference for now.
+    props: {
+        numArgs: 1,
+    },
+    handler: alignedHandler,
     htmlBuilder,
     mathmlBuilder,
 });
