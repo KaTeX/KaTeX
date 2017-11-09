@@ -65,7 +65,7 @@ function parseArray(
             const lastRow = body[body.length - 1];
             if (body.length > 1
                 && lastRow.length === 1
-                && lastRow[0].value.length === 0) {
+                && lastRow[0].value.value[0].value.length === 0) {
                 body.pop();
             }
             break;
