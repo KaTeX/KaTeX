@@ -1253,7 +1253,7 @@ describe("A begin/end parser", function() {
     });
 
     it("should eat a final newline", function() {
-        const m3 = getParsed("\\begin{matrix}a&b\\\\ c&d \\end{matrix}")[0];
+        const m3 = getParsed("\\begin{matrix}a&b\\\\ c&d \\\\ \\end{matrix}")[0];
         expect(m3.value.body.length).toBe(2);
     });
 });
