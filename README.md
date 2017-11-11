@@ -86,6 +86,12 @@ the same aspect ratio in KaTeX as in LaTeX.  However, because most browsers
 default to a larger font size, this typically means that a 1cm kern in KaTeX
 will appear larger than 1cm in browser units.
 
+## Libraries
+
+### Angular2+
+- [ng-katex](https://github.com/garciparedes/ng-katex) Angular module to write beautiful math expressions with TeX syntax boosted by KaTeX library
+
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
