@@ -226,9 +226,7 @@ class anchor {
         markup += `href="${markup += utils.escape(this.href)}"`;
         // Add the class
         if (this.classes.length) {
-            markup += " class=\"";
-            markup += utils.escape(createClass(this.classes));
-            markup += "\"";
+            markup += ` class="${utils.escape(createClass(this.classes))}"`;
         }
 
         let styles = "";
@@ -248,9 +246,7 @@ class anchor {
         for (const attr in this.attributes) {
             if (attr !== "href" &&
                 Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                markup += " " + attr + "=\"";
-                markup += utils.escape(this.attributes[attr]);
-                markup += "\"";
+                markup += ` ${attr}="${utils.escape(this.attributes[attr])}"`;
             }
         }
 
