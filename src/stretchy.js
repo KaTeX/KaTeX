@@ -12,7 +12,6 @@ import utils from "./utils";
 
 import type Options from "./Options";
 import type ParseNode from "./ParseNode";
-import type {span} from "./domTree";
 
 const stretchyCodePoint: {[string]: string} = {
     widehat: "^",
@@ -154,98 +153,109 @@ const groupLength = function(arg: ParseNode): number {
     }
 };
 
-const svgSpan = function(group: ParseNode, options: Options): span {
+const svgSpan = function(group: ParseNode, options: Options): domTree.span {
     // Create a span with inline SVG for the element.
-    const label = group.value.label.substr(1);
-    let attributes = [];
-    let height;
-    let viewBoxWidth = 400000;  // default
-    let viewBoxHeight = 0;
-    let minWidth = 0;
-    let path;
-    let paths;
-    let pathName;
-    let svgNode;
-    let span;
+    function buildSvgSpan_(): {
+        span: domTree.span,
+        minWidth: number,
+        height: number,
+    } {
+        let viewBoxWidth = 400000;  // default
+        const label = group.value.label.substr(1);
+        if (utils.contains(["widehat", "widetilde", "utilde"], label)) {
+            // There are four SVG images available for each function.
+            // Choose a taller image when there are more characters.
+            const numChars = groupLength(group.value.base);
+            let viewBoxHeight;
+            let pathName;
+            let height;
 
-    if (utils.contains(["widehat", "widetilde", "utilde"], label)) {
-        // There are four SVG images available for each function.
-        // Choose a taller image when there are more characters.
-        const numChars = groupLength(group.value.base);
-        let viewBoxHeight;
-
-        if (numChars > 5) {
-            viewBoxHeight = (label === "widehat" ? 420 : 312);
-            viewBoxWidth = (label === "widehat" ? 2364 : 2340);
-            // Next get the span height, in 1000 ems
-            height = (label === "widehat" ? 0.42 : 0.34);
-            pathName = (label === "widehat" ? "widehat" : "tilde") + "4";
+            if (numChars > 5) {
+                viewBoxHeight = (label === "widehat" ? 420 : 312);
+                viewBoxWidth = (label === "widehat" ? 2364 : 2340);
+                // Next get the span height, in 1000 ems
+                height = (label === "widehat" ? 0.42 : 0.34);
+                pathName = (label === "widehat" ? "widehat" : "tilde") + "4";
+            } else {
+                const imgIndex = [1, 1, 2, 2, 3, 3][numChars];
+                if (label === "widehat") {
+                    viewBoxWidth = [0, 1062, 2364, 2364, 2364][imgIndex];
+                    viewBoxHeight = [0, 239, 300, 360, 420][imgIndex];
+                    height = [0, 0.24, 0.3, 0.3, 0.36, 0.42][imgIndex];
+                    pathName = "widehat" + imgIndex;
+                } else {
+                    viewBoxWidth = [0, 600, 1033, 2339, 2340][imgIndex];
+                    viewBoxHeight = [0, 260, 286, 306, 312][imgIndex];
+                    height = [0, 0.26, 0.286, 0.3, 0.306, 0.34][imgIndex];
+                    pathName = "tilde" + imgIndex;
+                }
+            }
+            const path = new domTree.pathNode(pathName);
+            const attributes = [
+                ["width", "100%"],
+                ["height", height + "em"],
+                ["viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`],
+                ["preserveAspectRatio", "none"],
+            ];
+            const svgNode = new domTree.svgNode([path], attributes);
+            return {
+                span: buildCommon.makeSpan([], [svgNode], options),
+                minWidth: 0,
+                height,
+            };
         } else {
-            const imgIndex = [1, 1, 2, 2, 3, 3][numChars];
-            if (label === "widehat") {
-                viewBoxWidth = [0, 1062, 2364, 2364, 2364][imgIndex];
-                viewBoxHeight = [0, 239, 300, 360, 420][imgIndex];
-                height = [0, 0.24, 0.3, 0.3, 0.36, 0.42][imgIndex];
-                pathName = "widehat" + imgIndex;
-            } else {
-                viewBoxWidth = [0, 600, 1033, 2339, 2340][imgIndex];
-                viewBoxHeight = [0, 260, 286, 306, 312][imgIndex];
-                height = [0, 0.26, 0.286, 0.3, 0.306, 0.34][imgIndex];
-                pathName = "tilde" + imgIndex;
-            }
-        }
-        path = new domTree.pathNode(pathName);
-        attributes.push(["width", "100%"]);
-        attributes.push(["height", height + "em"]);
-        attributes.push(["viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`]);
-        attributes.push(["preserveAspectRatio", "none"]);
+            const spans = [];
 
-        svgNode = new domTree.svgNode([path], attributes);
-        span = buildCommon.makeSpan([], [svgNode], options);
+            const [paths, minWidth, viewBoxHeight, align1] = katexImagesData[label];
+            const height = viewBoxHeight / 1000;
 
-    } else {
-        let widthClass;
-        let align;
-        const spans = [];
-
-        [paths, minWidth, viewBoxHeight, align] = katexImagesData[label];
-        const numSvgChildren = paths.length;
-        if (1 > numSvgChildren || numSvgChildren > 3) {
-            throw new Error(
-                `Correct katexImagesData or update code below to support
-                ${numSvgChildren} children.`);
-        }
-        height = viewBoxHeight / 1000;
-
-        for (let i = 0; i < numSvgChildren; i++) {
-            path = new domTree.pathNode(paths[i]);
-
-            attributes = [["width", "400em"], ["height", height + "em"]];
-            attributes.push(["viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`]);
-
-            if (numSvgChildren === 2) {
-                widthClass = ["halfarrow-left", "halfarrow-right"][i];
-                align = ["xMinYMin", "xMaxYMin"][i];
-            } else  if (numSvgChildren === 3) {
-                widthClass = ["brace-left", "brace-center", "brace-right"][i];
-                align = ["xMinYMin", "xMidYMin", "xMaxYMin"][i];
-            }
-
-            attributes.push(["preserveAspectRatio", align + " slice"]);
-            svgNode = new domTree.svgNode([path], attributes);
-
+            const numSvgChildren = paths.length;
+            let widthClasses;
+            let aligns;
             if (numSvgChildren === 1) {
-                spans.push(buildCommon.makeSpan(["hide-tail"], [svgNode], options));
+                widthClasses = ["hide-tail"];
+                aligns = [align1];
+            } else if (numSvgChildren === 2) {
+                widthClasses = ["halfarrow-left", "halfarrow-right"];
+                aligns = ["xMinYMin", "xMaxYMin"];
+            } else if (numSvgChildren === 3) {
+                widthClasses = ["brace-left", "brace-center", "brace-right"];
+                aligns = ["xMinYMin", "xMidYMin", "xMaxYMin"];
             } else {
-                const span = buildCommon.makeSpan([widthClass], [svgNode], options);
-                span.style.height = height + "em";
-                spans.push(span);
+                throw new Error(
+                    `Correct katexImagesData or update code here to support
+                    ${numSvgChildren} children.`);
             }
-        }
 
-        span = numSvgChildren === 1 ? spans[0] :
-            buildCommon.makeSpan(["stretchy"], spans, options);
-    }
+            for (let i = 0; i < numSvgChildren; i++) {
+                const path = new domTree.pathNode(paths[i]);
+
+                const attributes = [
+                    ["width", "400em"],
+                    ["height", height + "em"],
+                    ["viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`],
+                    ["preserveAspectRatio", aligns[i] + " slice"],
+                ];
+                const svgNode = new domTree.svgNode([path], attributes);
+
+                const span =
+                    buildCommon.makeSpan([widthClasses[i]], [svgNode], options);
+                if (numSvgChildren === 1) {
+                    return {span, minWidth, height};
+                } else {
+                    span.style.height = height + "em";
+                    spans.push(span);
+                }
+            }
+
+            return {
+                span: buildCommon.makeSpan(["stretchy"], spans, options),
+                minWidth,
+                height,
+            };
+        }
+    } // buildSvgSpan_()
+    const {span, minWidth, height} = buildSvgSpan_();
 
     // Note that we are returning span.depth = 0.
     // Any adjustments relative to the baseline must be done in buildHTML.
@@ -259,11 +269,11 @@ const svgSpan = function(group: ParseNode, options: Options): span {
 };
 
 const encloseSpan = function(
-    inner: span,
+    inner: domTree.span,
     label: string,
     pad: number,
     options: Options,
-): span {
+): domTree.span {
     // Return an image span for \cancel, \bcancel, \xcancel, or \fbox
     let img;
     const totalHeight = inner.height + inner.depth + 2 * pad;
@@ -271,8 +281,11 @@ const encloseSpan = function(
     if (/(fbox)|(color)/.test(label)) {
         img = buildCommon.makeSpan(["stretchy", label], [], options);
 
-        if (label === "fbox" && options.color) {
-            img.style.borderColor = options.getColor();
+        if (label === "fbox") {
+            const color = options.color && options.getColor();
+            if (color) {
+                img.style.borderColor = color;
+            }
         }
 
     } else {

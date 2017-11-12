@@ -578,9 +578,9 @@ class svgNode implements VirtualDomNode {
 
 class pathNode implements VirtualDomNode {
     pathName: string;
-    alternate: string;
+    alternate: ?string;
 
-    constructor(pathName: string, alternate: string) {
+    constructor(pathName: string, alternate?: string) {
         this.pathName = pathName;
         this.alternate = alternate;  // Used only for tall \sqrt
     }
@@ -589,20 +589,20 @@ class pathNode implements VirtualDomNode {
         const svgNS = "http://www.w3.org/2000/svg";
         const node = document.createElementNS(svgNS, "path");
 
-        if (this.pathName !== "sqrtTall") {
-            node.setAttribute("d", svgGeometry.path[this.pathName]);
-        } else {
+        if (this.alternate) {
             node.setAttribute("d", this.alternate);
+        } else {
+            node.setAttribute("d", svgGeometry.path[this.pathName]);
         }
 
         return node;
     }
 
     toMarkup(): string {
-        if (this.pathName !== "sqrtTall") {
-            return `<path d='${svgGeometry.path[this.pathName]}'/>`;
-        } else {
+        if (this.alternate) {
             return `<path d='${this.alternate}'/>`;
+        } else {
+            return `<path d='${svgGeometry.path[this.pathName]}'/>`;
         }
     }
 }
