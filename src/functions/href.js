@@ -42,9 +42,9 @@ defineFunction({
          *    and the second one the same as the last.
          */
 
-        let classes = []; // null if the type of both ends differs.
+        let classes = []; // Default behaviour for Case 3.
         let first; // mathtype of the first child
-        let last; // mathtype of the last child
+        let last;  // mathtype of the last child
         // Invariants: both first and last must be non-null if classes is null.
         if (elements.length === 1) { // Case 1
             classes = elements[0].classes;
@@ -54,21 +54,15 @@ defineFunction({
             if (first === last) { // Case 2 : type of both ends coincides
                 classes = [first];
             } else { // Case 3: both ends have different types.
-                classes = null;
+                const anc = buildCommon.makeAnchor(href, [], elements, options);
+                return new buildCommon.makeFragment([
+                    new buildCommon.makeSpan([first], [], options),
+                    anc,
+                    new buildCommon.makeSpan([last], [], options),
+                ]);
             }
-        } else { // No elements at all, just ignore.
-            classes = [];
         }
-        if (!classes) {
-            const anc = buildCommon.makeAnchor(href, [], elements, options);
-            return new buildCommon.makeFragment([
-                new buildCommon.makeSpan([first], [], options),
-                anc,
-                new buildCommon.makeSpan([last], [], options),
-            ]);
-        } else {
-            return new buildCommon.makeAnchor(href, classes, elements, options);
-        }
+        return new buildCommon.makeAnchor(href, classes, elements, options);
     },
     mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(group.value.body, options);
