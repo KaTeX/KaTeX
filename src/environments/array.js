@@ -316,9 +316,9 @@ const alignedHandler = function(context, args) {
             const curMaths = row.length / 2;
             if (numMaths < curMaths) {
                 throw new ParseError(
-                "Too many math in a row: expected "
-                        + numMaths + ", but got " + curMaths,
-                row);
+                    "Too many math in a row: " +
+                    `expected ${numMaths}, but got ${curMaths}`,
+                    row);
             }
         } else if (numCols < row.length) { // Case 2
             numCols = row.length;
