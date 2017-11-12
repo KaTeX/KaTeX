@@ -866,8 +866,8 @@ export default class Parser {
         const raw = res.text;
         // hyperref package allows backslashes alone in href, but doesn't generate
         // valid links in such cases; we interpret this as "undefiend" behaviour,
-        // and keep them as-is. In some environment, they're replaced by slashes
-        // in url by browser.
+        // and keep them as-is. Some browser will replace backslashes with
+        // forward slashes.
         const url = raw.replace(/\\([#$%&~_^{}])/g, '$1');
         return newArgument(new ParseNode("url", url, this.mode), res);
     }
