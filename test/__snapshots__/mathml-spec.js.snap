@@ -74,6 +74,62 @@ exports[`A MathML builder should make prime operators into <mo> nodes 1`] = `
 
 `;
 
+exports[`A MathML builder should set href attribute for href appropriately 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mrow href="http://example.org">
+        <mi>
+          α
+        </mi>
+      </mrow>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\href{http://example.org}{\\alpha}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should set href attribute for href appropriately 2`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mi>
+        p
+      </mi>
+      <mo>
+        ⊩
+      </mo>
+      <mi>
+        β
+      </mi>
+      <mrow href="http://example.org">
+        <mo>
+          +
+        </mo>
+        <mi>
+          α
+        </mi>
+      </mrow>
+      <mo>
+        ×
+      </mo>
+      <mi>
+        γ
+      </mi>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      p \\Vdash \\beta \\href{http://example.org}{+ \\alpha} \\times \\gamma
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder should use <menclose> for colorbox 1`] = `
 
 <math>
