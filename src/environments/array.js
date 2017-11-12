@@ -62,10 +62,10 @@ function parseArray(
         } else if (next === "\\end") {
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
             // the last line is empty.
-            const lastRow = body[body.length - 1][0].value;
+            const lastRow = body[body.length - 1];
             if (body.length > 1
-                && lastRow.value.length === 1
-                && lastRow.value[0].value.length === 0) {
+                && lastRow.length === 1
+                && lastRow[0].value.value[0].value.length === 0) {
                 body.pop();
             }
             break;
@@ -290,7 +290,7 @@ const alignedHandler = function(context, args) {
     //    and makes sure that each row doesn't exceed that number.
     // 2. Otherwise, just count number of columns = maximum number
     //    of cells in each row ("aligned" mode -- isAligned will be true).
-    // 
+    //
     // At the same time, prepend empty group {} at beginning of every second
     // cell in each row (starting with second cell) so that operators become
     // binary.  This behavior is implemented in amsmath's \start@aligned.
@@ -312,13 +312,13 @@ const alignedHandler = function(context, args) {
             const ordgroup = row[i].value.value[0];
             ordgroup.value.unshift(emptyGroup);
         }
-        if (!isAligned) { // Case 1 
+        if (!isAligned) { // Case 1
             const curMaths = row.length / 2;
             if (numMaths < curMaths) {
                 throw new ParseError(
-                "Too many math in a row: expected "
-                        + numMaths + ", but got " + curMaths,
-                row);
+                    "Too many math in a row: " +
+                    `expected ${numMaths}, but got ${curMaths}`,
+                    row);
             }
         } else if (numCols < row.length) { // Case 2
             numCols = row.length;
