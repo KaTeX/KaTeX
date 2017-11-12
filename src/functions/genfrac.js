@@ -166,6 +166,7 @@ defineFunction({
                 positionType: "individualShift",
                 children: [
                     {type: "elem", elem: denomm, shift: denomShift},
+                    // $FlowFixMe `rule` cannot be `null` here.
                     {type: "elem", elem: rule,   shift: midShift},
                     {type: "elem", elem: numerm, shift: -numShift},
                 ],
