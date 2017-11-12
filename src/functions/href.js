@@ -37,7 +37,9 @@ defineFunction({
          * 2. if it has more than two elements, and the classes
          *    of its first and last elements coincide, then use it;
          * 3. otherwise, we will inject an empty <span>s at both ends,
-         *    with the same classes of both ends of elements.
+         *    with the same classes of both ends of elements, with the
+         *    first span having the same class as the first element of body,
+         *    and the second one the same as the last.
          */
 
         let classes = []; // null if the type of both ends differs.
