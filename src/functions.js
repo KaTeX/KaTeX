@@ -297,15 +297,24 @@ defineFunction([
 
 // No limits, symbols
 defineFunction([
-    "\\int", "\\iint", "\\iiint", "\\oint",
+    "\\int", "\\iint", "\\iiint", "\\oint", "∫", "\u222c", "\u222d", "\u222e",
 ], {
     numArgs: 0,
 }, function(context) {
+    let fName = context.funcName;
+    if (fName.length === 1) {
+        fName = {
+            "∫": "\\int",
+            "\u222c": "\\iint",
+            "\u222d": "\\iiint",
+            "\u222e": "\\oint",
+        }[fName];
+    }
     return {
         type: "op",
         limits: false,
         symbol: true,
-        body: context.funcName,
+        body: fName,
     };
 });
 

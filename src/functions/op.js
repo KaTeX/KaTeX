@@ -221,17 +221,36 @@ defineFunction({
     names: [
         "\\coprod", "\\bigvee", "\\bigwedge", "\\biguplus", "\\bigcap",
         "\\bigcup", "\\intop", "\\prod", "\\sum", "\\bigotimes",
-        "\\bigoplus", "\\bigodot", "\\bigsqcup", "\\smallint",
+        "\\bigoplus", "\\bigodot", "\\bigsqcup", "\\smallint", "\u220F",
+        "\u2210", "\u2211", "\u22c0", "\u22c1", "\u22c2", "\u22c3", "\u2a00",
+        "\u2a01", "\u2a02", "\u2a04", "\u2a06",
     ],
     props: {
         numArgs: 0,
     },
     handler: (context, args) => {
+        let fName = context.funcName;
+        if (fName.length === 1) {
+            fName = {
+                "\u220F": "\\prod",
+                "\u2210": "\\coprod",
+                "\u2211": "\\sum",
+                "\u22c0": "\\bigwedge",
+                "\u22c1": "\\bigvee",
+                "\u22c2": "\\bigcap",
+                "\u22c3": "\\bigcap",
+                "\u2a00": "\\bigodot",
+                "\u2a01": "\\bigoplus",
+                "\u2a02": "\\bigotimes",
+                "\u2a04": "\\biguplus",
+                "\u2a06": "\\bigsqcup",
+            }[fName];
+        }
         return {
             type: "op",
             limits: true,
             symbol: true,
-            body: context.funcName,
+            body: fName,
         };
     },
     htmlBuilder,
