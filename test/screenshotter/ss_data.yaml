@@ -214,6 +214,9 @@ RelativeUnits: |
     \end{array}
 RlapBug: \frac{\mathrlap{x}}{2}
 Rule: \rule{1em}{0.5em}\rule{1ex}{2ex}\rule{1em}{1ex}\rule{1em}{0.431ex}
+SansSerifRegular: \textsf{This is a test, 123.}
+SansSerifBold: \textsf{\textbf{This is a test, 123.}}
+SansSerifItalic: \textsf{\textit{This is a test, 123.}}
 SizingBaseline:
     tex: '{\tiny a+b}a+b{\Huge a+b}'
     pre: x

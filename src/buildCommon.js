@@ -95,29 +95,6 @@ const mathsym = function(value, mode, options, classes) {
 };
 
 /**
- * Makes a symbol in the default font for mathords and textords.
- */
-const mathDefault = function(value, mode, options, classes, type) {
-    if (type === "mathord") {
-        const fontLookup = mathit(value, mode, options, classes);
-        return makeSymbol(value, fontLookup.fontName, mode, options,
-            classes.concat([fontLookup.fontClass]));
-    } else if (type === "textord") {
-        const font = symbols[mode][value] && symbols[mode][value].font;
-        if (font === "ams") {
-            return makeSymbol(
-                value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
-        } else { // if (font === "main") {
-            return makeSymbol(
-                value, "Main-Regular", mode, options,
-                classes.concat(["mathrm"]));
-        }
-    } else {
-        throw new Error("unexpected type: " + type + " in mathDefault");
-    }
-};
-
-/**
  * Determines which of the two font names (Main-Italic and Math-Italic) and
  * corresponding style tags (mainit or mathit) to use for font "mathit",
  * depending on the symbol.  Use this function instead of fontMap for font
@@ -130,12 +107,12 @@ const mathit = function(value, mode, options, classes) {
             utils.contains(mainitLetters, value)) {
         return {
             fontName: "Main-Italic",
-            fontClass: "mainit",
+            fontClasses: ["mainit"],
         };
     } else {
         return {
             fontName: "Math-Italic",
-            fontClass: "mathit",
+            fontClasses: ["mathit"],
         };
     }
 };
@@ -148,24 +125,118 @@ const makeOrd = function(group, options, type) {
     const value = group.value;
 
     const classes = ["mord"];
+    const fontData = lookupFontData(value, mode, options, classes, type);
+    return makeSymbol(value, fontData.fontName, mode, options,
+        classes.concat(fontData.fontClasses));
+};
 
-    const font = options.font;
-    if (font) {
-        let fontLookup;
+/**
+ * Looks up the appropriate font for the given arguments.
+ */
+const lookupFontData = function(value, mode, options, classes, type) {
+    let fontLookup;
+    if (mode === "text") {
+        fontLookup = lookupTextFont(value, mode, options, classes, type);
+    } else {
+        fontLookup = lookupMathFont(value, mode, options, classes, type);
+    }
+    return fontLookup;
+};
+
+/**
+ * Looks up a font for math mode. Math fonts cannot stack, and any font
+ * applied will override the previous font. An example would be
+ * /mathbf{/mathsf{hi}} which will render a non-bold sans-serif font.
+ */
+const lookupMathFont = function(value, mode, options, classes, type) {
+    let mathFontData = {};
+    const fonts = options.fonts;
+    const font = fonts[fonts.length - 1];
+    const fontLookup = fontMap[font];
+    if (!fonts.length || (fontLookup &&
+                         !lookupSymbol(value, fontLookup.fontName, mode).metrics)) {
+        mathFontData = lookupDefaultFont(value, mode, options, classes, type);
+    } else {
         if (font === "mathit" || utils.contains(mainitLetters, value)) {
-            fontLookup = mathit(value, mode, options, classes);
+            mathFontData = mathit(value, mode, options, classes);
         } else {
-            fontLookup = fontMap[font];
+            mathFontData.fontName = fontLookup.fontName;
+            mathFontData.fontClasses = [font];
         }
-        if (lookupSymbol(value, fontLookup.fontName, mode).metrics) {
-            return makeSymbol(value, fontLookup.fontName, mode, options,
-                classes.concat([fontLookup.fontClass || font]));
-        } else {
-            return mathDefault(value, mode, options, classes, type);
+    }
+    return mathFontData;
+};
+
+/**
+ * Looks up a font for text mode. Since text fonts can stack, this behaves
+ * differently than math mode. An example of this would be: /textsf{/textbf{hi}}
+ * which will render a bold sans-serif font
+ */
+const lookupTextFont = function(value, mode, options, classes, type) {
+    let italicTxt = '';
+    let boldTxt = '';
+    let fontName = '';
+    let font = '';
+    const fontClasses = [];
+    const fonts = options.fonts;
+    fonts.forEach((fontOrStyle) => {
+        if (fontOrStyle === 'textit') {
+            italicTxt = 'Italic';
+            fontClasses.push('textit');
+        } else if (fontOrStyle === 'textbf') {
+            boldTxt = 'Bold';
+            fontClasses.push('textbf');
+        } else if (fontMap[fontOrStyle]) {
+            fontName = fontMap[fontOrStyle].fontName;
+            font = fontOrStyle;
+        } else if (fontOrStyle === "mathit"
+                  || utils.contains(mainitLetters, value)) {
+            const fontData = mathit(value, mode, options, classes);
+            fontName = fontData.fontName;
+            font = fontOrStyle;
+        }
+    });
+    // If no font was provided, use the default.
+    if (!font) {
+        const defaultData = lookupDefaultFont(value, mode, options, classes, type);
+        fontName = defaultData.fontName;
+        font = defaultData.fontClasses[0];
+    }
+    fontClasses.push(font);
+    // If it's bold or italic, strip the "regular part", and add the appropriate
+    // Bold/Italic string. An example of this could be SansSerif-Bold.
+    if (italicTxt || boldTxt) {
+        const baseFont = fontName.split("-")[0];
+        fontName = `${baseFont}-${boldTxt}${italicTxt}`;
+    }
+    return {
+        fontName,
+        fontClasses,
+    };
+};
+
+/**
+ * Makes a symbol in the default font for mathords and textords.
+ */
+const lookupDefaultFont = function(value, mode, options, classes, type) {
+    const defaultFontData = {};
+    if (type === "mathord") {
+        const fontLookup = mathit(value, mode, options, classes);
+        defaultFontData.fontName = fontLookup.fontName;
+        defaultFontData.fontClasses = fontLookup.fontClasses;
+    } else if (type === "textord") {
+        const font = symbols[mode][value] && symbols[mode][value].font;
+        if (font === "ams") {
+            defaultFontData.fontName = "AMS-Regular";
+            defaultFontData.fontClasses = ["amsrm"];
+        } else { // if (font === "main") {
+            defaultFontData.fontName = "Main-Regular";
+            defaultFontData.fontClasses = ["mathrm"];
         }
     } else {
-        return mathDefault(value, mode, options, classes, type);
+        throw new Error("unexpected type: " + type + " in mathDefault");
     }
+    return defaultFontData;
 };
 
 /**
@@ -470,10 +541,9 @@ const fontMap = {
         variant: "normal",
         fontName: "Main-Regular",
     },
-    "textit": {
-        variant: "italic",
-        fontName: "Main-Italic",
-    },
+
+    // "textit" and "textbf" are missing because they only apply styling to the
+    // font and are not fonts by themselves.
 
     // "mathit" is missing because it requires the use of two fonts: Main-Italic
     // and Math-Italic.  This is handled by a special case in makeOrd which ends

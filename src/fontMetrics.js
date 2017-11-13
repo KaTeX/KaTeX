@@ -246,20 +246,26 @@ const getCharacterMetrics = function(
     character: string,
     font: string,
 ): ?CharacterMetrics {
+    const fontMetrics = metricMap[font];
+    if (!fontMetrics) {
+        // If this throws an error, and the font is supported, you can add the font.
+        // See the top of the mapping.pl file under metrics for instructions how.
+        throw new Error(`Font metrics not found for: ${font}`);
+    }
     let ch = character.charCodeAt(0);
     if (character[0] in extraCharacterMap) {
         ch = extraCharacterMap[character[0]].charCodeAt(0);
     } else if (cjkRegex.test(character[0])) {
         ch = 'M'.charCodeAt(0);
     }
-    const metrics = metricMap[font]['' + ch];
-    if (metrics) {
+    const characterMetrics = metricMap[font]['' + ch];
+    if (characterMetrics) {
         return {
-            depth: metrics[0],
-            height: metrics[1],
-            italic: metrics[2],
-            skew: metrics[3],
-            width: metrics[4],
+            depth: characterMetrics[0],
+            height: characterMetrics[1],
+            italic: characterMetrics[2],
+            skew: characterMetrics[3],
+            width: characterMetrics[4],
         };
     }
 };
