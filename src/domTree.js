@@ -28,8 +28,6 @@ const createClass = function(classes: string[]): string {
     return classes.join(" ");
 };
 
-type Attribute = [string, string]; // (name, value) pair
-
 // To ensure that all nodes have compatible signatures for these methods.
 interface VirtualDomNode {
     toNode(): Node;
@@ -524,15 +522,15 @@ class symbolNode implements CombinableDomNode {
  */
 class svgNode implements VirtualDomNode {
     children: SvgChildNode[];
-    attributes: Attribute[];
+    attributes: {[string]: string};
     // Required for all `DomChildNode`s. Are always 0 for svgNode.
     height: number;
     depth: number;
     maxFontSize: number;
 
-    constructor(children?: SvgChildNode[], attributes?: Attribute[]) {
+    constructor(children?: SvgChildNode[], attributes?: {[string]: string}) {
         this.children = children || [];
-        this.attributes = attributes || [];
+        this.attributes = attributes || {};
         this.height = 0;
         this.depth = 0;
         this.maxFontSize = 0;
@@ -543,9 +541,10 @@ class svgNode implements VirtualDomNode {
         const node = document.createElementNS(svgNS, "svg");
 
         // Apply attributes
-        for (let i = 0; i < this.attributes.length; i++) {
-            const [name, value] = this.attributes[i];
-            node.setAttribute(name, value);
+        for (const attr in this.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                node.setAttribute(attr, this.attributes[attr]);
+            }
         }
 
         for (let i = 0; i < this.children.length; i++) {
@@ -558,9 +557,10 @@ class svgNode implements VirtualDomNode {
         let markup = "<svg";
 
         // Apply attributes
-        for (let i = 0; i < this.attributes.length; i++) {
-            const [name, value] = this.attributes[i];
-            markup +=  ` ${name}='${value}'`;
+        for (const attr in this.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                markup += ` ${attr}='${this.attributes[attr]}'`;
+            }
         }
 
         markup += ">";
@@ -608,10 +608,10 @@ class pathNode implements VirtualDomNode {
 }
 
 class lineNode implements VirtualDomNode {
-    attributes: Attribute[];
+    attributes: {[string]: string};
 
-    constructor(attributes?: Attribute[]) {
-        this.attributes = attributes || [];
+    constructor(attributes?: {[string]: string}) {
+        this.attributes = attributes || {};
     }
 
     toNode(): Node {
@@ -619,9 +619,10 @@ class lineNode implements VirtualDomNode {
         const node = document.createElementNS(svgNS, "line");
 
         // Apply attributes
-        for (let i = 0; i < this.attributes.length; i++) {
-            const [name, value] = this.attributes[i];
-            node.setAttribute(name, value);
+        for (const attr in this.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                node.setAttribute(attr, this.attributes[attr]);
+            }
         }
 
         return node;
@@ -630,9 +631,10 @@ class lineNode implements VirtualDomNode {
     toMarkup(): string {
         let markup = "<line";
 
-        for (let i = 0; i < this.attributes.length; i++) {
-            const [name, value] = this.attributes[i];
-            markup +=  ` ${name}='${value}'`;
+        for (const attr in this.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                markup += ` ${attr}='${this.attributes[attr]}'`;
+            }
         }
 
         markup += "/>";

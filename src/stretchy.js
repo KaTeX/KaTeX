@@ -191,13 +191,12 @@ const svgSpan = function(group: ParseNode, options: Options): domTree.span {
                 }
             }
             const path = new domTree.pathNode(pathName);
-            const attributes = [
-                ["width", "100%"],
-                ["height", height + "em"],
-                ["viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`],
-                ["preserveAspectRatio", "none"],
-            ];
-            const svgNode = new domTree.svgNode([path], attributes);
+            const svgNode = new domTree.svgNode([path], {
+                "width": "100%",
+                "height": height + "em",
+                "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+                "preserveAspectRatio": "none",
+            });
             return {
                 span: buildCommon.makeSpan([], [svgNode], options),
                 minWidth: 0,
@@ -230,13 +229,12 @@ const svgSpan = function(group: ParseNode, options: Options): domTree.span {
             for (let i = 0; i < numSvgChildren; i++) {
                 const path = new domTree.pathNode(paths[i]);
 
-                const attributes = [
-                    ["width", "400em"],
-                    ["height", height + "em"],
-                    ["viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`],
-                    ["preserveAspectRatio", aligns[i] + " slice"],
-                ];
-                const svgNode = new domTree.svgNode([path], attributes);
+                const svgNode = new domTree.svgNode([path], {
+                    "width": "400em",
+                    "height": height + "em",
+                    "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+                    "preserveAspectRatio": aligns[i] + " slice",
+                });
 
                 const span =
                     buildCommon.makeSpan([widthClasses[i]], [svgNode], options);
@@ -293,31 +291,33 @@ const encloseSpan = function(
         // Since \cancel's SVG is inline and it omits the viewBox attribute,
         // its stroke-width will not vary with span area.
 
-        let attributes = [["x1", "0"]];
+        let attributes: {[string]: string} = {"x1": "0"};
         const lines = [];
 
         if (label !== "cancel") {
-            attributes.push(["y1", "0"]);
-            attributes.push(["x2", "100%"]);
-            attributes.push(["y2", "100%"]);
-            attributes.push(["stroke-width", "0.046em"]);
+            attributes["y1"] = "0";
+            attributes["x2"] = "100%";
+            attributes["y2"] = "100%";
+            attributes["stroke-width"] = "0.046em";
             lines.push(new domTree.lineNode(attributes));
         }
 
         if (label === "xcancel") {
-            attributes = [["x1", "0"]];  // start a second line.
+            attributes = {"x1": "0"};  // start a second line.
         }
 
         if (label !== "bcancel") {
-            attributes.push(["y1", "100%"]);
-            attributes.push(["x2", "100%"]);
-            attributes.push(["y2", "0"]);
-            attributes.push(["stroke-width", "0.046em"]);
+            attributes["y1"] = "100%";
+            attributes["x2"] = "100%";
+            attributes["y2"] = "0";
+            attributes["stroke-width"] = "0.046em";
             lines.push(new domTree.lineNode(attributes));
         }
 
-        attributes = [["width", "100%"], ["height", totalHeight + "em"]];
-        const svgNode = new domTree.svgNode(lines, attributes);
+        const svgNode = new domTree.svgNode(lines, {
+            "width": "100%",
+            "height": totalHeight + "em",
+        });
 
         img = buildCommon.makeSpan([], [svgNode], options);
     }
