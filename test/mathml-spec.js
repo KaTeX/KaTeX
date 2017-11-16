@@ -58,4 +58,22 @@ describe("A MathML builder", function() {
     it('should use <menclose> for colorbox', () => {
         expect(getMathML("\\colorbox{red}{b}")).toMatchSnapshot();
     });
+
+    it('should set href attribute for href appropriately', () => {
+        expect(getMathML("\\href{http://example.org}{\\alpha}")).toMatchSnapshot();
+        expect(getMathML("p \\Vdash \\beta \\href{http://example.org}{+ \\alpha} \\times \\gamma"))
+            .toMatchSnapshot();
+    });
+
+    it('should render mathchoice as if there was nothing', () => {
+        const cmd = "\\sum_{k = 0}^{\\infty} x^k";
+        expect(getMathML(`\\displaystyle\\mathchoice{${cmd}}{T}{S}{SS}`))
+            .toMatchSnapshot();
+        expect(getMathML(`\\mathchoice{D}{${cmd}}{S}{SS}`))
+            .toMatchSnapshot();
+        expect(getMathML(`x_{\\mathchoice{D}{T}{${cmd}}{SS}}`))
+            .toMatchSnapshot();
+        expect(getMathML(`x_{y_{\\mathchoice{D}{T}{S}{${cmd}}}}`))
+            .toMatchSnapshot();
+    });
 });

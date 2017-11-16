@@ -158,7 +158,7 @@ export const buildExpression = function(expression, options, isRealGroup) {
 };
 
 // Return math atom class (mclass) of a domTree.
-const getTypeOfDomTree = function(node) {
+export const getTypeOfDomTree = function(node) {
     if (node instanceof domTree.documentFragment) {
         if (node.children.length) {
             return getTypeOfDomTree(
