@@ -217,25 +217,6 @@ exports[`A MathML builder should render mathchoice as if there was nothing 4`] =
 
 `;
 
-exports[`A MathML builder should set href attribute for href appropriately 1`] = `
-
-<math>
-  <semantics>
-    <mrow>
-      <mrow href="http://example.org">
-        <mi>
-          α
-        </mi>
-      </mrow>
-    </mrow>
-    <annotation encoding="application/x-tex">
-      \\href{http://example.org}{\\alpha}
-    </annotation>
-  </semantics>
-</math>
-
-`;
-
 exports[`A MathML builder should use <menclose> for colorbox 1`] = `
 
 <math>
