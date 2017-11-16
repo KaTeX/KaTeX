@@ -2656,3 +2656,31 @@ describe("The maxSize setting", function() {
         expect(built.style.borderTopWidth).toEqual("0em");
     });
 });
+
+describe("The \\mathchoice function", function() {
+    const cmd = "\\sum_{k = 0}^{\\infty} x^k";
+
+    it("should render as if there is nothing other in display math", function() {
+        const plain = getBuilt("\\displaystyle" + cmd)[0];
+        const built = getBuilt(`\\displaystyle\\mathchoice{${cmd}}{T}{S}{SS}`)[0];
+        expect(built).toEqual(plain);
+    });
+
+    it("should render as if there is nothing other in text", function() {
+        const plain = getBuilt(cmd)[0];
+        const built = getBuilt(`\\mathchoice{D}{${cmd}}{S}{SS}`)[0];
+        expect(built).toEqual(plain);
+    });
+
+    it("should render as if there is nothing other in scriptstyle", function() {
+        const plain = getBuilt(`x_{${cmd}}`)[0];
+        const built = getBuilt(`x_{\\mathchoice{D}{T}{${cmd}}{SS}}`)[0];
+        expect(built).toEqual(plain);
+    });
+
+    it("should render  as if there is nothing other in scriptscriptstyle", function() {
+        const plain = getBuilt(`x_{y_{${cmd}}}`)[0];
+        const built = getBuilt(`x_{y_{\\mathchoice{D}{T}{S}{${cmd}}}}`)[0];
+        expect(built).toEqual(plain);
+    });
+});
