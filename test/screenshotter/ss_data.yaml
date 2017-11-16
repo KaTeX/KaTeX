@@ -144,6 +144,10 @@ LowerAccent: |
     \end{matrix}
 MathAtom: a\mathrel{\mathop{=}\limits^{\blue ?}}b
 MathAtom2: \mathop{\overline{\mathrm{lim}}}\limits_{x\to\infty}f(x)
+MathChoice: |
+  {\displaystyle\mathchoice{D}{T}{S}{SS}} {\textstyle\mathchoice{D}{T}{S}{SS}} {\scriptstyle \mathchoice{D}{T}{S}{SS}} {\scriptscriptstyle\mathchoice{D}{T}{S}{SS}}
+MathChoice2: |
+  \displaystyle X_{\mathchoice{D}{T}{S}{SS}_{\mathchoice{D}{T}{S}{SS}}}
 MathDefaultFonts: Ax2k\breve{a}\omega\Omega\imath+\KaTeX
 MathBb: \mathbb{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathBf: \mathbf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}

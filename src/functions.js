@@ -569,3 +569,6 @@ defineFunction(["\\verb"], {
 
 // Hyperlinks
 import "./functions/href";
+
+// MathChoice
+import "./functions/mathchoice";
