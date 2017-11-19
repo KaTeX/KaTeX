@@ -266,6 +266,12 @@ defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
 
+// \def\TeX{T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX\@}
+// TODO: Doesn't normally work in math mode because \@ fails.  KaTeX doesn't
+// support \@ yet, so that's omitted, and we add \text so that the result
+// doesn't look funny in math mode.
+defineMacro("\\TeX", "\\text{T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX}");
+
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
 // \def\@hspace#1{\hskip  #1\relax}
 // KaTeX doesn't do line breaks, so \hspace and \hspace* are the same as \kern
