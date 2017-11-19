@@ -272,6 +272,21 @@ defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 // doesn't look funny in math mode.
 defineMacro("\\TeX", "\\text{T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX}");
 
+// \DeclareRobustCommand{\LaTeX}{L\kern-.36em%
+//         {\sbox\z@ T%
+//          \vbox to\ht\z@{\hbox{\check@mathfonts
+//                               \fontsize\sf@size\z@
+//                               \math@fontsfalse\selectfont
+//                               A}%
+//                         \vss}%
+//         }%
+//         \kern-.15em%
+//         \TeX}
+// This code roughly aligns the top of the A with the T.  Here we approximate
+// this vertical alignment with a \raisebox{.5ex}, which seems close.
+defineMacro("\\LaTeX", "\\text{L\\kern-.36em\\raisebox{.5ex}{\\scriptsize A}" +
+                       "\\kern-.15em\\TeX}");
+
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
 // \def\@hspace#1{\hskip  #1\relax}
 // KaTeX doesn't do line breaks, so \hspace and \hspace* are the same as \kern
