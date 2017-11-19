@@ -283,8 +283,12 @@ defineMacro("\\TeX", "\\text{T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX}"
 //         \kern-.15em%
 //         \TeX}
 // This code roughly aligns the top of the A with the T.  Here we approximate
-// this vertical alignment with a \raisebox{.5ex}, which seems close.
-defineMacro("\\LaTeX", "\\text{L\\kern-.36em\\raisebox{.5ex}{\\scriptsize A}" +
+// this vertical alignment with a \raisebox{.45ex}, which seems close.
+defineMacro("\\LaTeX", "\\text{L\\kern-.36em\\raisebox{.45ex}{\\scriptsize A}" +
+                       "\\kern-.15em\\TeX}");
+
+// New KaTeX logo based on tweaking LaTeX logo
+defineMacro("\\katex", "\\text{K\\kern-.25em\\raisebox{.45ex}{\\scriptsize A}" +
                        "\\kern-.15em\\TeX}");
 
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
