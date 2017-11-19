@@ -52,9 +52,13 @@ defineFunction({
 
         return rule;
     },
-    mathmlBuilder: (group) => {
-        // TODO(kevin): Figure out if there's a way to add space in MathML
-        const node = new mathMLTree.MathNode("mrow");
+    mathmlBuilder: (group, options) => {
+        const node = new mathMLTree.MathNode("mspace");
+
+        if (group.value.dimension) {
+            const dimension = calculateSize(group.value.dimension, options);
+            node.setAttribute("width", dimension + "em");
+        }
 
         return node;
     },
