@@ -43,6 +43,21 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
+     * Add a given token to the token stack.  In particular, this get be used
+     * to put back a token returned from one of the other methods.
+     */
+    pushToken(token: Token) {
+        this.stack.push(token);
+    }
+
+    /**
+     * Append an array of tokens to the token stack.
+     */
+    pushTokens(tokens: [Token]) {
+        this.stack.push(...tokens);
+    }
+
+    /**
      * Consume all following space tokens, without expansion.
      */
     consumeSpaces() {
@@ -54,6 +69,45 @@ export default class MacroExpander implements MacroContextInterface {
                 break;
             }
         }
+    }
+
+    /**
+     * Consume the specified number of arguments from the token stream,
+     * and return the resulting array of arguments.
+     */
+    consumeArgs(numArgs: number) {
+        const args: Token[][] = [];
+        // obtain arguments, either single token or balanced {…} group
+        for (let i = 0; i < numArgs; ++i) {
+            this.consumeSpaces();  // ignore spaces before each argument
+            const startOfArg = this.popToken();
+            if (startOfArg.text === "{") {
+                const arg: Token[] = [];
+                let depth = 1;
+                while (depth !== 0) {
+                    const tok = this.popToken();
+                    arg.push(tok);
+                    if (tok.text === "{") {
+                        ++depth;
+                    } else if (tok.text === "}") {
+                        --depth;
+                    } else if (tok.text === "EOF") {
+                        throw new ParseError(
+                            "End of input in macro argument",
+                            startOfArg);
+                    }
+                }
+                arg.pop(); // remove last }
+                arg.reverse(); // like above, to fit in with stack order
+                args[i] = arg;
+            } else if (startOfArg.text === "EOF") {
+                throw new ParseError(
+                    "End of input expecting macro argument");
+            } else {
+                args[i] = [startOfArg];
+            }
+        }
+        return args;
     }
 
     /**
@@ -92,37 +146,7 @@ export default class MacroExpander implements MacroContextInterface {
         const {tokens, numArgs} = this._getExpansion(name);
         let expansion = tokens;
         if (numArgs) {
-            const args: Token[][] = [];
-            // obtain arguments, either single token or balanced {…} group
-            for (let i = 0; i < numArgs; ++i) {
-                this.consumeSpaces();  // ignore spaces before each argument
-                const startOfArg = this.popToken();
-                if (startOfArg.text === "{") {
-                    const arg: Token[] = [];
-                    let depth = 1;
-                    while (depth !== 0) {
-                        const tok = this.popToken();
-                        arg.push(tok);
-                        if (tok.text === "{") {
-                            ++depth;
-                        } else if (tok.text === "}") {
-                            --depth;
-                        } else if (tok.text === "EOF") {
-                            throw new ParseError(
-                                "End of input in macro argument",
-                                startOfArg);
-                        }
-                    }
-                    arg.pop(); // remove last }
-                    arg.reverse(); // like above, to fit in with stack order
-                    args[i] = arg;
-                } else if (startOfArg.text === "EOF") {
-                    throw new ParseError(
-                        "End of input expecting macro argument", topToken);
-                } else {
-                    args[i] = [startOfArg];
-                }
-            }
+            const args = this.consumeArgs(numArgs);
             // paste arguments in place of the placeholders
             expansion = expansion.slice(); // make a shallow copy
             for (let i = expansion.length - 1; i >= 0; --i) {
@@ -148,7 +172,7 @@ export default class MacroExpander implements MacroContextInterface {
             }
         }
         // Concatenate expansion onto top of stack.
-        this.stack.push(...expansion);
+        this.pushTokens(expansion);
         return expansion;
     }
 
@@ -221,14 +245,6 @@ export default class MacroExpander implements MacroContextInterface {
         }
 
         return expansion;
-    }
-
-    /**
-     * Add a given token to the token stack.  In particular, this get be used
-     * to put back a token returned from one of the other methods.
-     */
-    pushToken(token: Token) {
-        this.stack.push(token);
     }
 }
 

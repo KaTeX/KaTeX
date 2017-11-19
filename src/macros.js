@@ -42,6 +42,27 @@ function defineMacro(name: string, body: string | MacroContextInterface => strin
 }
 
 //////////////////////////////////////////////////////////////////////
+// macro tools
+
+defineMacro("\\@firstoftwo", function(context) {
+    const args = context.consumeArgs(2);
+    return {tokens: args[0]};
+});
+
+defineMacro("\\@ifnextchar", function(context) {
+    const args = context.consumeArgs(3);  // symbol, if, else
+    const nextToken = context.future();
+    if (args[0].length === 1 && args[0][0].text === nextToken.text) {
+        return {tokens: args[1]};
+    } else {
+        return {tokens: args[2]};
+    }
+});
+
+// \def\@ifstar#1{\@ifnextchar *{\@firstoftwo{#1}}}
+defineMacro("\\@ifstar", "\\@ifnextchar *{\\@firstoftwo{#1}}");
+
+//////////////////////////////////////////////////////////////////////
 // basics
 defineMacro("\\bgroup", "{");
 defineMacro("\\egroup", "}");
@@ -235,8 +256,8 @@ defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
 // \def\@hspace#1{\hskip  #1\relax}
-// KaTeX doesn't do line breaks, so \hspace is the same as \kern
-defineMacro("\\hspace", "\\kern{#1}");
+// KaTeX doesn't do line breaks, so \hspace and \hspace* are the same as \kern
+defineMacro("\\hspace", "\\@ifstar\\kern\\kern");
 
 //////////////////////////////////////////////////////////////////////
 // mathtools.sty
