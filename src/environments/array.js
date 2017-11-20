@@ -205,6 +205,12 @@ const htmlBuilder = function(group, options) {
                 separator.style.verticalAlign =
                     -(totalHeight - offset) + "em";
 
+                if (options.color) {
+                    // Overwrite the black box-shadow from katex.less
+                    separator.style.boxShadow = "inset 1000px 0 " +
+                        options.getColor();
+                }
+
                 cols.push(separator);
             } else {
                 throw new ParseError(

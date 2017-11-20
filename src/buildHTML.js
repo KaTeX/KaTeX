@@ -477,7 +477,14 @@ groupTypes.spacing = function(group, options) {
 export const makeLineSpan = function(className, options, thickness) {
     const line = makeSpan([className], [], options);
     line.height = thickness || options.fontMetrics().defaultRuleThickness;
-    line.style.borderBottomWidth = line.height + "em";
+
+    // Fill the entire span instead of just a border. That way, the min-height
+    // value in katex.less will ensure that at least one screen pixel displays.
+    line.style.height = line.height + "em";
+    if (options.color) {
+        // Overwrite the black box-shadow from katex.less
+        line.style.boxShadow = "inset 0 1000px " + options.getColor();
+    }
     line.maxFontSize = 1.0;
     return line;
 };
