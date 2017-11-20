@@ -6,6 +6,7 @@ import ParseError from "../ParseError";
 import ParseNode from "../ParseNode";
 import {calculateSize} from "../units";
 import utils from "../utils";
+import stretchy from "../stretchy";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -198,18 +199,11 @@ const htmlBuilder = function(group, options) {
             }
 
             if (colDescr.separator === "|") {
-                const separator = buildCommon.makeSpan(
-                    ["vertical-separator"],
-                    []);
+                const separator = stretchy.ruleSpan("vertical-separator",
+                    options);
                 separator.style.height = totalHeight + "em";
                 separator.style.verticalAlign =
                     -(totalHeight - offset) + "em";
-
-                if (options.color) {
-                    // Overwrite the black box-shadow from katex.less
-                    separator.style.boxShadow = "inset 1000px 0 " +
-                        options.getColor();
-                }
 
                 cols.push(separator);
             } else {
