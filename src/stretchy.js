@@ -322,7 +322,7 @@ const ruleSpan = function(className: string, options: Options): span {
         ["width", "400em"],
         ["height", "400em"],
         ["viewBox", "0 0 400000 400000"],
-        ["preserveAspectRatio", "xMinYMin slice"]
+        ["preserveAspectRatio", "xMinYMin slice"],
     ];
     const svg =  new domTree.svgNode([pathNode], attributes);
     return buildCommon.makeSpan([className, "hide-tail"], [svg], options);
