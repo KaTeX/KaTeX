@@ -53,7 +53,7 @@ export default class MacroExpander implements MacroContextInterface {
     /**
      * Append an array of tokens to the token stack.
      */
-    pushTokens(tokens: [Token]) {
+    pushTokens(tokens: Token[]) {
         this.stack.push(...tokens);
     }
 
@@ -75,7 +75,7 @@ export default class MacroExpander implements MacroContextInterface {
      * Consume the specified number of arguments from the token stream,
      * and return the resulting array of arguments.
      */
-    consumeArgs(numArgs: number) {
+    consumeArgs(numArgs: number): Token[][] {
         const args: Token[][] = [];
         // obtain arguments, either single token or balanced {…} group
         for (let i = 0; i < numArgs; ++i) {

@@ -25,19 +25,26 @@ export interface MacroContextInterface {
      * Similar in behavior to TeX's `\expandafter\futurelet`.
      */
     expandAfterFuture(): Token;
+
+    /**
+     * Consume the specified number of arguments from the token stream,
+     * and return the resulting array of arguments.
+     */
+    consumeArgs(numArgs: number): Token[][];
 }
 
 /** Macro tokens (in reverse order). */
 export type MacroExpansion = {tokens: Token[], numArgs: number};
 
-type MacroDefinition = string | (MacroContextInterface => string) | MacroExpansion;
+type MacroDefinition = string | MacroExpansion |
+    (MacroContextInterface => (string | MacroExpansion));
 export type MacroMap = {[string]: MacroDefinition};
 
 const builtinMacros: MacroMap = {};
 export default builtinMacros;
 
 // This function might one day accept an additional argument and do more things.
-function defineMacro(name: string, body: string | MacroContextInterface => string) {
+function defineMacro(name: string, body: MacroDefinition) {
     builtinMacros[name] = body;
 }
 
@@ -46,16 +53,16 @@ function defineMacro(name: string, body: string | MacroContextInterface => strin
 
 defineMacro("\\@firstoftwo", function(context) {
     const args = context.consumeArgs(2);
-    return {tokens: args[0]};
+    return {tokens: args[0], numArgs: 0};
 });
 
 defineMacro("\\@ifnextchar", function(context) {
     const args = context.consumeArgs(3);  // symbol, if, else
     const nextToken = context.future();
     if (args[0].length === 1 && args[0][0].text === nextToken.text) {
-        return {tokens: args[1]};
+        return {tokens: args[1], numArgs: 0};
     } else {
-        return {tokens: args[2]};
+        return {tokens: args[2], numArgs: 0};
     }
 });
 
