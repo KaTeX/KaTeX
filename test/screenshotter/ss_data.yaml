@@ -22,6 +22,11 @@ Aligned: |
         a &= 1 & b &= 2 \\
         3a &= 3 & 17b &= 34
     \end{aligned}
+Alignedat: |
+    \begin{alignedat}{3}
+        a &= 1 & b &= 2 &\quad c &= 3\\
+        3a &= 3 & 17b &= 34 &\quad 400c &= 1200
+    \end{alignedat}
 Arrays: |
     \left(\begin{array}{|rl|c||}
         1&2&3\\
@@ -139,6 +144,8 @@ LowerAccent: |
     \end{matrix}
 MathAtom: a\mathrel{\mathop{=}\limits^{\blue ?}}b
 MathAtom2: \mathop{\overline{\mathrm{lim}}}\limits_{x\to\infty}f(x)
+MathChoice: |
+  {\displaystyle\mathchoice{D}{T}{S}{SS}} {\textstyle\mathchoice{D}{T}{S}{SS}} {\scriptstyle \mathchoice{D}{T}{S}{SS}} {\scriptscriptstyle\mathchoice{D}{T}{S}{SS}} \displaystyle X_{\mathchoice{D}{T}{S}{SS}_{\mathchoice{D}{T}{S}{SS}}}
 MathDefaultFonts: Ax2k\breve{a}\omega\Omega\imath+\KaTeX
 MathBb: \mathbb{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathBf: \mathbf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}

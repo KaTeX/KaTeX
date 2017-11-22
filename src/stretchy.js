@@ -1,3 +1,4 @@
+// @flow
 /**
  * This file provides support to buildMathML.js and buildHTML.js
  * for stretchy wide elements rendered from SVG files
@@ -9,7 +10,11 @@ import buildCommon from "./buildCommon";
 import mathMLTree from "./mathMLTree";
 import utils from "./utils";
 
-const stretchyCodePoint = {
+import type Options from "./Options";
+import type ParseNode from "./ParseNode";
+import type {span} from "./domTree";
+
+const stretchyCodePoint: {[string]: string} = {
     widehat: "^",
     widetilde: "~",
     utilde: "~",
@@ -45,7 +50,7 @@ const stretchyCodePoint = {
     xtofrom: "\u21c4",
 };
 
-const mathMLnode = function(label) {
+const mathMLnode = function(label: string): mathMLTree.MathNode {
     const node = new mathMLTree.MathNode(
         "mo", [new mathMLTree.TextNode(stretchyCodePoint[label.substr(1)])]);
     node.setAttribute("stretchy", "true");
@@ -98,7 +103,9 @@ const mathMLnode = function(label) {
 // That is, inside the font, that arrowhead is 522 units tall, which
 // corresponds to 0.522 em inside the document.
 
-const katexImagesData = {
+const katexImagesData: {
+    [string]: ([string[], number, number] | [string[], number, number, string])
+} = {
                    //   path(s), minWidth, height, align
     overrightarrow: [["rightarrow"], 0.888, 522, "xMaxYMin"],
     overleftarrow: [["leftarrow"], 0.888, 522, "xMinYMin"],
@@ -139,7 +146,7 @@ const katexImagesData = {
     xtofrom: [["leftToFrom", "rightToFrom"], 1.75, 528],
 };
 
-const groupLength = function(arg) {
+const groupLength = function(arg: ParseNode): number {
     if (arg.type === "ordgroup") {
         return arg.value.length;
     } else {
@@ -147,7 +154,7 @@ const groupLength = function(arg) {
     }
 };
 
-const svgSpan = function(group, options) {
+const svgSpan = function(group: ParseNode, options: Options): span {
     // Create a span with inline SVG for the element.
     const label = group.value.label.substr(1);
     let attributes = [];
@@ -203,6 +210,11 @@ const svgSpan = function(group, options) {
 
         [paths, minWidth, viewBoxHeight, align] = katexImagesData[label];
         const numSvgChildren = paths.length;
+        if (1 > numSvgChildren || numSvgChildren > 3) {
+            throw new Error(
+                `Correct katexImagesData or update code below to support
+                ${numSvgChildren} children.`);
+        }
         height = viewBoxHeight / 1000;
 
         for (let i = 0; i < numSvgChildren; i++) {
@@ -223,17 +235,16 @@ const svgSpan = function(group, options) {
             svgNode = new domTree.svgNode([path], attributes);
 
             if (numSvgChildren === 1) {
-                span = buildCommon.makeSpan(["hide-tail"], [svgNode], options);
+                spans.push(buildCommon.makeSpan(["hide-tail"], [svgNode], options));
             } else {
-                span = buildCommon.makeSpan([widthClass], [svgNode], options);
+                const span = buildCommon.makeSpan([widthClass], [svgNode], options);
                 span.style.height = height + "em";
                 spans.push(span);
             }
         }
 
-        if (numSvgChildren > 1) {
-            span = buildCommon.makeSpan(["stretchy"], spans, options);
-        }
+        span = numSvgChildren === 1 ? spans[0] :
+            buildCommon.makeSpan(["stretchy"], spans, options);
     }
 
     // Note that we are returning span.depth = 0.
@@ -247,7 +258,12 @@ const svgSpan = function(group, options) {
     return span;
 };
 
-const encloseSpan = function(inner, label, pad, options) {
+const encloseSpan = function(
+    inner: span,
+    label: string,
+    pad: number,
+    options: Options,
+): span {
     // Return an image span for \cancel, \bcancel, \xcancel, or \fbox
     let img;
     const totalHeight = inner.height + inner.depth + 2 * pad;

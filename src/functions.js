@@ -175,15 +175,7 @@ defineFunction(["\\kern", "\\mkern"], {
     };
 });
 
-// A KaTeX logo
-defineFunction(["\\KaTeX"], {
-    numArgs: 0,
-    allowedInText: true,
-}, function(context) {
-    return {
-        type: "katex",
-    };
-});
+import "./functions/katex";
 
 import "./functions/phantom";
 
@@ -230,27 +222,7 @@ defineFunction(["\\stackrel"], {
     };
 });
 
-// \mod-type functions
-defineFunction(["\\bmod"], {
-    numArgs: 0,
-}, function(context, args) {
-    return {
-        type: "mod",
-        modType: "bmod",
-        value: null,
-    };
-});
-
-defineFunction(["\\pod", "\\pmod", "\\mod"], {
-    numArgs: 1,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "mod",
-        modType: context.funcName.substr(1),
-        value: ordargument(body),
-    };
-});
+import "./functions/mod";
 
 const fontAliases = {
     "\\Bbb": "\\mathbb",
@@ -337,147 +309,15 @@ defineFunction([
     };
 });
 
-// Limits, symbols
-defineFunction([
-    "\\coprod", "\\bigvee", "\\bigwedge", "\\biguplus", "\\bigcap",
-    "\\bigcup", "\\intop", "\\prod", "\\sum", "\\bigotimes",
-    "\\bigoplus", "\\bigodot", "\\bigsqcup", "\\smallint",
-], {
-    numArgs: 0,
-}, function(context) {
-    return {
-        type: "op",
-        limits: true,
-        symbol: true,
-        body: context.funcName,
-    };
-});
+import "./functions/op";
 
-// \mathop class command
-defineFunction(["\\mathop"], {
-    numArgs: 1,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "op",
-        limits: false,
-        symbol: false,
-        value: ordargument(body),
-    };
-});
+import "./functions/operatorname";
 
-import "./functions/operators";
+import "./functions/genfrac";
 
-// Fractions
-defineFunction([
-    "\\dfrac", "\\frac", "\\tfrac",
-    "\\dbinom", "\\binom", "\\tbinom",
-    "\\\\atopfrac", // can’t be entered directly
-], {
-    numArgs: 2,
-    greediness: 2,
-}, function(context, args) {
-    const numer = args[0];
-    const denom = args[1];
-    let hasBarLine;
-    let leftDelim = null;
-    let rightDelim = null;
-    let size = "auto";
+import "./functions/lap";
 
-    switch (context.funcName) {
-        case "\\dfrac":
-        case "\\frac":
-        case "\\tfrac":
-            hasBarLine = true;
-            break;
-        case "\\\\atopfrac":
-            hasBarLine = false;
-            break;
-        case "\\dbinom":
-        case "\\binom":
-        case "\\tbinom":
-            hasBarLine = false;
-            leftDelim = "(";
-            rightDelim = ")";
-            break;
-        default:
-            throw new Error("Unrecognized genfrac command");
-    }
-
-    switch (context.funcName) {
-        case "\\dfrac":
-        case "\\dbinom":
-            size = "display";
-            break;
-        case "\\tfrac":
-        case "\\tbinom":
-            size = "text";
-            break;
-    }
-
-    return {
-        type: "genfrac",
-        numer: numer,
-        denom: denom,
-        hasBarLine: hasBarLine,
-        leftDelim: leftDelim,
-        rightDelim: rightDelim,
-        size: size,
-    };
-});
-
-// Horizontal overlap functions
-defineFunction(["\\mathllap", "\\mathrlap", "\\mathclap"], {
-    numArgs: 1,
-    allowedInText: true,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "lap",
-        alignment: context.funcName.slice(5),
-        body: body,
-    };
-});
-
-// smash, with optional [tb], as in AMS
-defineFunction(["\\smash"], {
-    numArgs: 1,
-    numOptionalArgs: 1,
-    allowedInText: true,
-}, function(context, args, optArgs) {
-    let smashHeight = false;
-    let smashDepth = false;
-    const tbArg = optArgs[0];
-    if (tbArg) {
-        // Optional [tb] argument is engaged.
-        // ref: amsmath: \renewcommand{\smash}[1][tb]{%
-        //               def\mb@t{\ht}\def\mb@b{\dp}\def\mb@tb{\ht\z@\z@\dp}%
-        let letter = "";
-        for (let i = 0; i < tbArg.value.length; ++i) {
-            letter = tbArg.value[i].value;
-            if (letter === "t") {
-                smashHeight = true;
-            } else if (letter === "b") {
-                smashDepth = true;
-            } else {
-                smashHeight = false;
-                smashDepth = false;
-                break;
-            }
-        }
-    } else {
-        smashHeight = true;
-        smashDepth = true;
-    }
-
-    const body = args[0];
-    return {
-        type: "smash",
-        body: body,
-        smashHeight: smashHeight,
-        smashDepth: smashDepth,
-    };
-});
+import "./functions/smash";
 
 import "./functions/delimsizing";
 
@@ -726,3 +566,6 @@ defineFunction(["\\verb"], {
     throw new ParseError(
         "\\verb ended by end of line instead of matching delimiter");
 });
+
+// MathChoice
+import "./functions/mathchoice";
