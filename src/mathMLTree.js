@@ -1,3 +1,4 @@
+// @flow
 /**
  * These objects store data about MathML nodes. This is the MathML equivalent
  * of the types in domTree.js. Since MathML handles its own rendering, and
@@ -11,12 +12,29 @@
 import utils from "./utils";
 
 /**
+ * MathML node types used in KaTeX. For a complete list of MathML nodes, see
+ * https://developer.mozilla.org/en-US/docs/Web/MathML/Element.
+ */
+export type MathNodeType =
+    "math" | "annotation" | "semantics" |
+    "mtext" | "mn" | "mo" | "mi" | "mspace" |
+    "mover" | "munder" | "munderover" | "msup" | "msub" |
+    "mfrac" | "mroot" | "msqrt" |
+    "mtable" | "mtr" | "mtd" |
+    "mrow" | "menclose" |
+    "mstyle" | "mpadded" | "mphantom";
+
+/**
  * This node represents a general purpose MathML node of any type. The
  * constructor requires the type of node to create (for example, `"mo"` or
  * `"mspace"`, corresponding to `<mo>` and `<mspace>` tags).
  */
 class MathNode {
-    constructor(type, children) {
+    type: MathNodeType;
+    attributes: {[string]: string};
+    children: (MathNode | TextNode)[];
+
+    constructor(type: MathNodeType, children?: (MathNode | TextNode)[]) {
         this.type = type;
         this.attributes = {};
         this.children = children || [];
@@ -26,14 +44,14 @@ class MathNode {
      * Sets an attribute on a MathML node. MathML depends on attributes to convey a
      * semantic content, so this is used heavily.
      */
-    setAttribute(name, value) {
+    setAttribute(name: string, value: string) {
         this.attributes[name] = value;
     }
 
     /**
      * Converts the math node into a MathML-namespaced DOM element.
      */
-    toNode() {
+    toNode(): Node {
         const node = document.createElementNS(
             "http://www.w3.org/1998/Math/MathML", this.type);
 
@@ -43,8 +61,8 @@ class MathNode {
             }
         }
 
-        for (let i = 0; i < this.children.length; i++) {
-            node.appendChild(this.children[i].toNode());
+        for (const child of this.children) {
+            node.appendChild(child.toNode());
         }
 
         return node;
@@ -53,7 +71,7 @@ class MathNode {
     /**
      * Converts the math node into an HTML markup string.
      */
-    toMarkup() {
+    toMarkup(): string {
         let markup = "<" + this.type;
 
         // Add the attributes
@@ -81,26 +99,28 @@ class MathNode {
  * This node represents a piece of text.
  */
 class TextNode {
-    constructor(text) {
+    text: string;
+
+    constructor(text: string) {
         this.text = text;
     }
 
     /**
      * Converts the text node into a DOM text node.
      */
-    toNode() {
+    toNode(): Node {
         return document.createTextNode(this.text);
     }
 
     /**
      * Converts the text node into HTML markup (which is just the text itself).
      */
-    toMarkup() {
+    toMarkup(): string {
         return utils.escape(this.text);
     }
 }
 
 export default {
-    MathNode: MathNode,
-    TextNode: TextNode,
+    MathNode,
+    TextNode,
 };
