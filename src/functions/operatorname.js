@@ -68,8 +68,10 @@ defineFunction({
         const identifier = new mathMLTree.MathNode("mi", output);
         identifier.setAttribute("mathvariant", "normal");
 
+        // \u2061 is the same as &ApplyFunction;
+        // ref: https://www.w3schools.com/charsets/ref_html_entities_a.asp
         const operator = new mathMLTree.MathNode("mo",
-            [mml.makeText("&ApplyFunction;", "text")]);
+            [mml.makeText("\u2061", "text")]);
 
         return new domTree.documentFragment([identifier, operator]);
     },
