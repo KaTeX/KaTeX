@@ -2415,7 +2415,7 @@ describe("An aligned environment", function() {
     });
 
     it("should not eat the last row when its first cell is empty", function() {
-        const ae = getParsed("\\begin{aligned}&E_1 & (1)\\\\&E_2 & (2)\\\\E_3 & (3)\\end{aligned}")[0];
+        const ae = getParsed("\\begin{aligned}&E_1 & (1)\\\\&E_2 & (2)\\\\&E_3 & (3)\\end{aligned}")[0];
         expect(ae.value.body.length).toBe(3);
     });
 });
@@ -2636,6 +2636,10 @@ describe("Unicode", function() {
 
     it("should parse more relations", function() {
         expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋙⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆").toParse();
+    });
+
+    it("should parse binary operators", function() {
+        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞").toParse();
     });
 });
 
