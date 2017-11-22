@@ -188,6 +188,7 @@ defineSymbol(math, ams, rel, "\ue00c", "\\lvertneqq");
 defineSymbol(math, ams, rel, "\u22e6", "\\lnsim", true);
 defineSymbol(math, ams, rel, "\u2a89", "\\lnapprox", true);
 defineSymbol(math, ams, rel, "\u2280", "\\nprec", true);
+// unicode-math maps \u22e0 to \npreccurlyeq. We'll use the AMS synonym.
 defineSymbol(math, ams, rel, "\u22e0", "\\npreceq", true);
 defineSymbol(math, ams, rel, "\u22e8", "\\precnsim", true);
 defineSymbol(math, ams, rel, "\u2ab9", "\\precnapprox", true);
@@ -211,9 +212,11 @@ defineSymbol(math, ams, rel, "\ue00d", "\\gvertneqq");
 defineSymbol(math, ams, rel, "\u22e7", "\\gnsim", true);
 defineSymbol(math, ams, rel, "\u2a8a", "\\gnapprox", true);
 defineSymbol(math, ams, rel, "\u2281", "\\nsucc", true);
+// unicode-math maps \u22e1 to \nsucccurlyeq. We'll use the AMS synonym.
 defineSymbol(math, ams, rel, "\u22e1", "\\nsucceq", true);
 defineSymbol(math, ams, rel, "\u22e9", "\\succnsim", true);
 defineSymbol(math, ams, rel, "\u2aba", "\\succnapprox", true);
+// unicode-math maps \u2246 to \simneqq. We'll use the AMS synonym.
 defineSymbol(math, ams, rel, "\u2246", "\\ncong", true);
 defineSymbol(math, ams, rel, "\ue007", "\\nshortparallel");
 defineSymbol(math, ams, rel, "\u2226", "\\nparallel", true);
