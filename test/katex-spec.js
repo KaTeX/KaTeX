@@ -2626,6 +2626,10 @@ describe("Unicode", function() {
         expect("ΓΔΘΞΠΣΦΨΩ").toParse();
     });
 
+    it("should parse negated relations", function() {
+        expect("∉∤∦≁≆≠≨≩≮≯≰≱⊀⊁⊈⊉⊊⊋⊬⊭⊮⊯⋠⋡⋦⋧⋨⋩⋬⋭⪇⪈⪉⪊⪵⪶⪹⪺⫋⫌").toParse();
+    });
+
     it("should parse relations", function() {
         expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≫≬≳≷≺≻≼≽≾≿").toParse();
     });
