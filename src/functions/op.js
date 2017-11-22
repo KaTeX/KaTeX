@@ -216,6 +216,21 @@ const mathmlBuilder = (group, options) => {
     return node;
 };
 
+const singleCharBigOps: {[string]: string} = {
+    "\u220F": "\\prod",
+    "\u2210": "\\coprod",
+    "\u2211": "\\sum",
+    "\u22c0": "\\bigwedge",
+    "\u22c1": "\\bigvee",
+    "\u22c2": "\\bigcap",
+    "\u22c3": "\\bigcap",
+    "\u2a00": "\\bigodot",
+    "\u2a01": "\\bigoplus",
+    "\u2a02": "\\bigotimes",
+    "\u2a04": "\\biguplus",
+    "\u2a06": "\\bigsqcup",
+};
+
 defineFunction({
     type: "op",
     names: [
@@ -231,20 +246,7 @@ defineFunction({
     handler: (context, args) => {
         let fName = context.funcName;
         if (fName.length === 1) {
-            fName = {
-                "\u220F": "\\prod",
-                "\u2210": "\\coprod",
-                "\u2211": "\\sum",
-                "\u22c0": "\\bigwedge",
-                "\u22c1": "\\bigvee",
-                "\u22c2": "\\bigcap",
-                "\u22c3": "\\bigcap",
-                "\u2a00": "\\bigodot",
-                "\u2a01": "\\bigoplus",
-                "\u2a02": "\\bigotimes",
-                "\u2a04": "\\biguplus",
-                "\u2a06": "\\bigsqcup",
-            }[fName];
+            fName = singleCharBigOps[fName];
         }
         return {
             type: "op",

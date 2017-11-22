@@ -258,6 +258,13 @@ defineFunction([
     };
 });
 
+const singleCharIntegrals: {[string]: string} = {
+    "∫": "\\int",
+    "\u222c": "\\iint",
+    "\u222d": "\\iiint",
+    "\u222e": "\\oint",
+};
+
 // There are 2 flags for operators; whether they produce limits in
 // displaystyle, and whether they are symbols and should grow in
 // displaystyle. These four groups cover the four possible choices.
@@ -303,12 +310,7 @@ defineFunction([
 }, function(context) {
     let fName = context.funcName;
     if (fName.length === 1) {
-        fName = {
-            "∫": "\\int",
-            "\u222c": "\\iint",
-            "\u222d": "\\iiint",
-            "\u222e": "\\oint",
-        }[fName];
+        fName = singleCharIntegrals[fName];
     }
     return {
         type: "op",
