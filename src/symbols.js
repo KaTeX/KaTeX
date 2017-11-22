@@ -154,29 +154,29 @@ defineSymbol(math, main, bin, "\u2a3f", "\\amalg");
 defineSymbol(math, main, bin, "\u0026", "\\And");  // from amsmath
 
 // Arrow Symbols
-defineSymbol(math, main, rel, "\u27f5", "\\longleftarrow");
-defineSymbol(math, main, rel, "\u21d0", "\\Leftarrow");
-defineSymbol(math, main, rel, "\u27f8", "\\Longleftarrow");
-defineSymbol(math, main, rel, "\u27f6", "\\longrightarrow");
-defineSymbol(math, main, rel, "\u21d2", "\\Rightarrow");
-defineSymbol(math, main, rel, "\u27f9", "\\Longrightarrow");
-defineSymbol(math, main, rel, "\u2194", "\\leftrightarrow");
-defineSymbol(math, main, rel, "\u27f7", "\\longleftrightarrow");
-defineSymbol(math, main, rel, "\u21d4", "\\Leftrightarrow");
-defineSymbol(math, main, rel, "\u27fa", "\\Longleftrightarrow");
-defineSymbol(math, main, rel, "\u21a6", "\\mapsto");
-defineSymbol(math, main, rel, "\u27fc", "\\longmapsto");
-defineSymbol(math, main, rel, "\u2197", "\\nearrow");
-defineSymbol(math, main, rel, "\u21a9", "\\hookleftarrow");
-defineSymbol(math, main, rel, "\u21aa", "\\hookrightarrow");
-defineSymbol(math, main, rel, "\u2198", "\\searrow");
-defineSymbol(math, main, rel, "\u21bc", "\\leftharpoonup");
-defineSymbol(math, main, rel, "\u21c0", "\\rightharpoonup");
-defineSymbol(math, main, rel, "\u2199", "\\swarrow");
-defineSymbol(math, main, rel, "\u21bd", "\\leftharpoondown");
-defineSymbol(math, main, rel, "\u21c1", "\\rightharpoondown");
-defineSymbol(math, main, rel, "\u2196", "\\nwarrow");
-defineSymbol(math, main, rel, "\u21cc", "\\rightleftharpoons");
+defineSymbol(math, main, rel, "\u27f5", "\\longleftarrow", true);
+defineSymbol(math, main, rel, "\u21d0", "\\Leftarrow", true);
+defineSymbol(math, main, rel, "\u27f8", "\\Longleftarrow", true);
+defineSymbol(math, main, rel, "\u27f6", "\\longrightarrow", true);
+defineSymbol(math, main, rel, "\u21d2", "\\Rightarrow", true);
+defineSymbol(math, main, rel, "\u27f9", "\\Longrightarrow", true);
+defineSymbol(math, main, rel, "\u2194", "\\leftrightarrow", true);
+defineSymbol(math, main, rel, "\u27f7", "\\longleftrightarrow", true);
+defineSymbol(math, main, rel, "\u21d4", "\\Leftrightarrow", true);
+defineSymbol(math, main, rel, "\u27fa", "\\Longleftrightarrow", true);
+defineSymbol(math, main, rel, "\u21a6", "\\mapsto", true);
+defineSymbol(math, main, rel, "\u27fc", "\\longmapsto", true);
+defineSymbol(math, main, rel, "\u2197", "\\nearrow", true);
+defineSymbol(math, main, rel, "\u21a9", "\\hookleftarrow", true);
+defineSymbol(math, main, rel, "\u21aa", "\\hookrightarrow", true);
+defineSymbol(math, main, rel, "\u2198", "\\searrow", true);
+defineSymbol(math, main, rel, "\u21bc", "\\leftharpoonup", true);
+defineSymbol(math, main, rel, "\u21c0", "\\rightharpoonup", true);
+defineSymbol(math, main, rel, "\u2199", "\\swarrow", true);
+defineSymbol(math, main, rel, "\u21bd", "\\leftharpoondown", true);
+defineSymbol(math, main, rel, "\u21c1", "\\rightharpoondown", true);
+defineSymbol(math, main, rel, "\u2196", "\\nwarrow", true);
+defineSymbol(math, main, rel, "\u21cc", "\\rightleftharpoons", true);
 
 // AMS Negated Binary Relations
 defineSymbol(math, ams, rel, "\u226e", "\\nless", true);
@@ -236,12 +236,12 @@ defineSymbol(math, ams, bin, "\u22b4", "\\unlhd");
 defineSymbol(math, ams, bin, "\u22b5", "\\unrhd");
 
 // AMS Negated Arrows
-defineSymbol(math, ams, rel, "\u219a", "\\nleftarrow");
-defineSymbol(math, ams, rel, "\u219b", "\\nrightarrow");
-defineSymbol(math, ams, rel, "\u21cd", "\\nLeftarrow");
-defineSymbol(math, ams, rel, "\u21cf", "\\nRightarrow");
-defineSymbol(math, ams, rel, "\u21ae", "\\nleftrightarrow");
-defineSymbol(math, ams, rel, "\u21ce", "\\nLeftrightarrow");
+defineSymbol(math, ams, rel, "\u219a", "\\nleftarrow", true);
+defineSymbol(math, ams, rel, "\u219b", "\\nrightarrow", true);
+defineSymbol(math, ams, rel, "\u21cd", "\\nLeftarrow", true);
+defineSymbol(math, ams, rel, "\u21cf", "\\nRightarrow", true);
+defineSymbol(math, ams, rel, "\u21ae", "\\nleftrightarrow", true);
+defineSymbol(math, ams, rel, "\u21ce", "\\nLeftrightarrow", true);
 
 // AMS Misc
 defineSymbol(math, ams, rel, "\u25b3", "\\vartriangle");
@@ -389,37 +389,42 @@ defineSymbol(math, ams, bin, "\u22d3", "\\doublecup");
 defineSymbol(math, ams, bin, "\u22a0", "\\boxtimes", true);
 
 // AMS Arrows
-defineSymbol(math, ams, rel, "\u21e2", "\\dashrightarrow");
-defineSymbol(math, ams, rel, "\u21e0", "\\dashleftarrow");
-defineSymbol(math, ams, rel, "\u21c7", "\\leftleftarrows");
-defineSymbol(math, ams, rel, "\u21c6", "\\leftrightarrows");
-defineSymbol(math, ams, rel, "\u21da", "\\Lleftarrow");
-defineSymbol(math, ams, rel, "\u219e", "\\twoheadleftarrow");
-defineSymbol(math, ams, rel, "\u21a2", "\\leftarrowtail");
-defineSymbol(math, ams, rel, "\u21ab", "\\looparrowleft");
-defineSymbol(math, ams, rel, "\u21cb", "\\leftrightharpoons");
-defineSymbol(math, ams, rel, "\u21b6", "\\curvearrowleft");
-defineSymbol(math, ams, rel, "\u21ba", "\\circlearrowleft");
-defineSymbol(math, ams, rel, "\u21b0", "\\Lsh");
-defineSymbol(math, ams, rel, "\u21c8", "\\upuparrows");
-defineSymbol(math, ams, rel, "\u21bf", "\\upharpoonleft");
-defineSymbol(math, ams, rel, "\u21c3", "\\downharpoonleft");
+// Note: unicode-math maps \u21e2 to their own function \rightdasharrow.
+// We'll map it to AMS function \dashrightarrow. It produces the same atom.
+defineSymbol(math, ams, rel, "\u21e2", "\\dashrightarrow", true);
+// unicode-math maps \u21e0 to \leftdasharrow. We'll use the AMS synonym.
+defineSymbol(math, ams, rel, "\u21e0", "\\dashleftarrow", true);
+defineSymbol(math, ams, rel, "\u21c7", "\\leftleftarrows", true);
+defineSymbol(math, ams, rel, "\u21c6", "\\leftrightarrows", true);
+defineSymbol(math, ams, rel, "\u21da", "\\Lleftarrow", true);
+defineSymbol(math, ams, rel, "\u219e", "\\twoheadleftarrow", true);
+defineSymbol(math, ams, rel, "\u21a2", "\\leftarrowtail", true);
+defineSymbol(math, ams, rel, "\u21ab", "\\looparrowleft", true);
+defineSymbol(math, ams, rel, "\u21cb", "\\leftrightharpoons", true);
+defineSymbol(math, ams, rel, "\u21b6", "\\curvearrowleft", true);
+// unicode-math maps \u21ba to \acwopencirclearrow. We'll use the AMS synonym.
+defineSymbol(math, ams, rel, "\u21ba", "\\circlearrowleft", true);
+defineSymbol(math, ams, rel, "\u21b0", "\\Lsh", true);
+defineSymbol(math, ams, rel, "\u21c8", "\\upuparrows", true);
+defineSymbol(math, ams, rel, "\u21bf", "\\upharpoonleft", true);
+defineSymbol(math, ams, rel, "\u21c3", "\\downharpoonleft", true);
 defineSymbol(math, ams, rel, "\u22b8", "\\multimap", true);
-defineSymbol(math, ams, rel, "\u21ad", "\\leftrightsquigarrow");
-defineSymbol(math, ams, rel, "\u21c9", "\\rightrightarrows");
-defineSymbol(math, ams, rel, "\u21c4", "\\rightleftarrows");
-defineSymbol(math, ams, rel, "\u21a0", "\\twoheadrightarrow");
-defineSymbol(math, ams, rel, "\u21a3", "\\rightarrowtail");
-defineSymbol(math, ams, rel, "\u21ac", "\\looparrowright");
-defineSymbol(math, ams, rel, "\u21b7", "\\curvearrowright");
-defineSymbol(math, ams, rel, "\u21bb", "\\circlearrowright");
-defineSymbol(math, ams, rel, "\u21b1", "\\Rsh");
-defineSymbol(math, ams, rel, "\u21ca", "\\downdownarrows");
-defineSymbol(math, ams, rel, "\u21be", "\\upharpoonright");
-defineSymbol(math, ams, rel, "\u21c2", "\\downharpoonright");
-defineSymbol(math, ams, rel, "\u21dd", "\\rightsquigarrow");
+defineSymbol(math, ams, rel, "\u21ad", "\\leftrightsquigarrow", true);
+defineSymbol(math, ams, rel, "\u21c9", "\\rightrightarrows", true);
+defineSymbol(math, ams, rel, "\u21c4", "\\rightleftarrows", true);
+defineSymbol(math, ams, rel, "\u21a0", "\\twoheadrightarrow", true);
+defineSymbol(math, ams, rel, "\u21a3", "\\rightarrowtail", true);
+defineSymbol(math, ams, rel, "\u21ac", "\\looparrowright", true);
+defineSymbol(math, ams, rel, "\u21b7", "\\curvearrowright", true);
+// unicode-math maps \u21bb to \cwopencirclearrow. We'll use the AMS synonym.
+defineSymbol(math, ams, rel, "\u21bb", "\\circlearrowright", true);
+defineSymbol(math, ams, rel, "\u21b1", "\\Rsh", true);
+defineSymbol(math, ams, rel, "\u21ca", "\\downdownarrows", true);
+defineSymbol(math, ams, rel, "\u21be", "\\upharpoonright", true);
+defineSymbol(math, ams, rel, "\u21c2", "\\downharpoonright", true);
+defineSymbol(math, ams, rel, "\u21dd", "\\rightsquigarrow", true);
 defineSymbol(math, ams, rel, "\u21dd", "\\leadsto");
-defineSymbol(math, ams, rel, "\u21db", "\\Rrightarrow");
+defineSymbol(math, ams, rel, "\u21db", "\\Rrightarrow", true);
 defineSymbol(math, ams, rel, "\u21be", "\\restriction");
 
 defineSymbol(math, main, textord, "\u2018", "`");
@@ -530,13 +535,13 @@ defineSymbol(math, main, rel, "\u2287", "\\supseteq", true);
 defineSymbol(math, ams, rel, "\u2288", "\\nsubseteq", true);
 defineSymbol(math, ams, rel, "\u2289", "\\nsupseteq", true);
 defineSymbol(math, main, rel, "\u22a8", "\\models");
-defineSymbol(math, main, rel, "\u2190", "\\leftarrow");
+defineSymbol(math, main, rel, "\u2190", "\\leftarrow", true);
 defineSymbol(math, main, rel, "\u2264", "\\le");
 defineSymbol(math, main, rel, "\u2264", "\\leq", true);
 defineSymbol(math, main, rel, "<", "\\lt");
 defineSymbol(math, main, rel, "\u2260", "\\ne", true);
 defineSymbol(math, main, rel, "\u2260", "\\neq");
-defineSymbol(math, main, rel, "\u2192", "\\rightarrow");
+defineSymbol(math, main, rel, "\u2192", "\\rightarrow", true);
 defineSymbol(math, main, rel, "\u2192", "\\to");
 defineSymbol(math, ams, rel, "\u2271", "\\ngeq", true);
 defineSymbol(math, ams, rel, "\u2270", "\\nleq", true);
@@ -592,12 +597,12 @@ defineSymbol(text, main, textord, "|", "\\textbar"); // in T1 fontenc
 defineSymbol(math, main, textord, "\u2225", "\\|");
 defineSymbol(math, main, textord, "\u2225", "\\Vert");
 defineSymbol(text, main, textord, "\u2225", "\\textbardbl");
-defineSymbol(math, main, rel, "\u2191", "\\uparrow");
-defineSymbol(math, main, rel, "\u21d1", "\\Uparrow");
-defineSymbol(math, main, rel, "\u2193", "\\downarrow");
-defineSymbol(math, main, rel, "\u21d3", "\\Downarrow");
-defineSymbol(math, main, rel, "\u2195", "\\updownarrow");
-defineSymbol(math, main, rel, "\u21d5", "\\Updownarrow");
+defineSymbol(math, main, rel, "\u2191", "\\uparrow", true);
+defineSymbol(math, main, rel, "\u21d1", "\\Uparrow", true);
+defineSymbol(math, main, rel, "\u2193", "\\downarrow", true);
+defineSymbol(math, main, rel, "\u21d3", "\\Downarrow", true);
+defineSymbol(math, main, rel, "\u2195", "\\updownarrow", true);
+defineSymbol(math, main, rel, "\u21d5", "\\Updownarrow", true);
 defineSymbol(math, main, op, "\u2210", "\\coprod");
 defineSymbol(math, main, op, "\u22c1", "\\bigvee");
 defineSymbol(math, main, op, "\u22c0", "\\bigwedge");
