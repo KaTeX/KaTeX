@@ -74,6 +74,149 @@ exports[`A MathML builder should make prime operators into <mo> nodes 1`] = `
 
 `;
 
+exports[`A MathML builder should render mathchoice as if there was nothing 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mstyle scriptlevel="0"
+              displaystyle="true"
+      >
+        <mrow>
+          <munderover>
+            <mo>
+              ∑
+            </mo>
+            <mrow>
+              <mi>
+                k
+              </mi>
+              <mo>
+                =
+              </mo>
+              <mn>
+                0
+              </mn>
+            </mrow>
+            <mi mathvariant="normal">
+              ∞
+            </mi>
+          </munderover>
+          <msup>
+            <mi>
+              x
+            </mi>
+            <mi>
+              k
+            </mi>
+          </msup>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\displaystyle\\mathchoice{\\sum_{k = 0}^{\\infty} x^k}{T}{S}{SS}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should render mathchoice as if there was nothing 2`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mrow>
+        <msubsup>
+          <mo>
+            ∑
+          </mo>
+          <mrow>
+            <mi>
+              k
+            </mi>
+            <mo>
+              =
+            </mo>
+            <mn>
+              0
+            </mn>
+          </mrow>
+          <mi mathvariant="normal">
+            ∞
+          </mi>
+        </msubsup>
+        <msup>
+          <mi>
+            x
+          </mi>
+          <mi>
+            k
+          </mi>
+        </msup>
+      </mrow>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\mathchoice{D}{\\sum_{k = 0}^{\\infty} x^k}{S}{SS}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should render mathchoice as if there was nothing 3`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <msub>
+        <mi>
+          x
+        </mi>
+        <mrow>
+          <mi>
+            T
+          </mi>
+        </mrow>
+      </msub>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      x_{\\mathchoice{D}{T}{\\sum_{k = 0}^{\\infty} x^k}{SS}}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should render mathchoice as if there was nothing 4`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <msub>
+        <mi>
+          x
+        </mi>
+        <msub>
+          <mi>
+            y
+          </mi>
+          <mrow>
+            <mi>
+              T
+            </mi>
+          </mrow>
+        </msub>
+      </msub>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      x_{y_{\\mathchoice{D}{T}{S}{\\sum_{k = 0}^{\\infty} x^k}}}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder should use <menclose> for colorbox 1`] = `
 
 <math>
