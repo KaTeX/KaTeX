@@ -6,6 +6,21 @@ import Style from "../Style";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
+const chooseMathStyle = (group, options) => {
+    const style = options.style;
+    if (style.size === Style.DISPLAY.size) {
+        return group.value.display;
+    } else if  (style.size === Style.TEXT.size) {
+        return group.value.text;
+    } else if  (style.size === Style.SCRIPT.size) {
+        return group.value.script;
+    } else if  (style.size === Style.SCRIPTSCRIPT.size) {
+        return group.value.scriptscript;
+    }
+    return group.value.text;
+
+};
+
 defineFunction({
     type: "mathchoice",
     names: ["\\mathchoice"],
@@ -22,17 +37,7 @@ defineFunction({
         };
     },
     htmlBuilder: (group, options) => {
-        const style = options.style;
-        let body = group.value.text;
-        if (style.size === Style.DISPLAY.size) {
-            body = group.value.display;
-        } else if  (style.size === Style.TEXT.size) {
-            body = group.value.text;
-        } else if  (style.size === Style.SCRIPT.size) {
-            body = group.value.script;
-        } else if  (style.size === Style.SCRIPTSCRIPT.size) {
-            body = group.value.scriptscript;
-        }
+        const body = chooseMathStyle(group, options);
         const elements = html.buildExpression(
             body,
             options,
@@ -41,17 +46,7 @@ defineFunction({
         return new buildCommon.makeFragment(elements);
     },
     mathmlBuilder: (group, options) => {
-        const style = options.style;
-        let body = group.value.text;
-        if (style === Style.DISPLAY) {
-            body = group.value.display;
-        } else if  (style === Style.TEXT) {
-            body = group.value.text;
-        } else if  (style === Style.SCRIPT) {
-            body = group.value.script;
-        } else if  (style === Style.SCRIPTSCRIPT) {
-            body = group.value.scriptscript;
-        }
+        const body = chooseMathStyle(group, options);
         const elements = mml.buildExpression(
             body,
             options,
