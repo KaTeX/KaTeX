@@ -577,3 +577,6 @@ defineFunction(["\\verb"], {
     throw new ParseError(
         "\\verb ended by end of line instead of matching delimiter");
 });
+
+// MathChoice
+import "./functions/mathchoice";
