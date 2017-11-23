@@ -265,12 +265,14 @@ defineSymbol(math, ams, textord, "\u29eb", "\\blacklozenge");
 defineSymbol(math, ams, textord, "\u2605", "\\bigstar");
 defineSymbol(math, ams, textord, "\u2222", "\\sphericalangle", true);
 defineSymbol(math, ams, textord, "\u2201", "\\complement", true);
+// unicode-math maps U+F0 to \matheth. We map to AMS function \eth
 defineSymbol(math, ams, textord, "\u00f0", "\\eth", true);
 defineSymbol(math, ams, textord, "\u2571", "\\diagup");
 defineSymbol(math, ams, textord, "\u2572", "\\diagdown");
 defineSymbol(math, ams, textord, "\u25a1", "\\square");
 defineSymbol(math, ams, textord, "\u25a1", "\\Box");
 defineSymbol(math, ams, textord, "\u25ca", "\\Diamond");
+// unicode-math maps U+A5 to \mathyen. We map to AMS function \yen
 defineSymbol(math, ams, textord, "\u00a5", "\\yen", true);
 defineSymbol(math, ams, textord, "\u2713", "\\checkmark", true);
 defineSymbol(text, ams, textord, "\u2713", "\\checkmark");
@@ -668,8 +670,8 @@ defineSymbol(math, main, textord, "\u00b0", "\\degree");
 defineSymbol(text, main, textord, "\u00b0", "\\degree");
 // TODO: In LaTeX, \pounds can generate a different character in text and math
 // mode, but among our fonts, only Main-Italic defines this character "163".
-defineSymbol(math, main, mathord, "\u00a3", "\\pounds", true);
-defineSymbol(math, main, mathord, "\u00a3", "\\mathsterling");
+defineSymbol(math, main, mathord, "\u00a3", "\\pounds");
+defineSymbol(math, main, mathord, "\u00a3", "\\mathsterling", true);
 defineSymbol(text, main, mathord, "\u00a3", "\\pounds");
 defineSymbol(text, main, mathord, "\u00a3", "\\textsterling");
 defineSymbol(math, ams, textord, "\u2720", "\\maltese");

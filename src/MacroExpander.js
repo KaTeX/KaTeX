@@ -79,10 +79,7 @@ export default class MacroExpander implements MacroContextInterface {
     expandOnce(): Token | Token[] {
         const topToken = this.popToken();
         const name = topToken.text;
-        const isMacro = (name.charAt(0) === "\\" ||
-            // Unicode double struck letters C H N P Q R Z.
-            /^[\u2102-\u2124]$/.test(name)
-        );
+        const isMacro = (name.charAt(0) === "\\");
         if (isMacro && controlWordRegex.test(name)) {
             // Consume all spaces after \macro (but not \\, \', etc.)
             this.consumeSpaces();
