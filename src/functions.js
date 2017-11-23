@@ -259,7 +259,7 @@ defineFunction([
 });
 
 const singleCharIntegrals: {[string]: string} = {
-    "∫": "\\int",
+    "\u222b": "\\int",
     "\u222c": "\\iint",
     "\u222d": "\\iiint",
     "\u222e": "\\oint",
@@ -304,7 +304,8 @@ defineFunction([
 
 // No limits, symbols
 defineFunction([
-    "\\int", "\\iint", "\\iiint", "\\oint", "∫", "\u222c", "\u222d", "\u222e",
+    "\\int", "\\iint", "\\iiint", "\\oint", "u222b", "\u222c",
+    "\u222d", "\u222e",
 ], {
     numArgs: 0,
 }, function(context) {
