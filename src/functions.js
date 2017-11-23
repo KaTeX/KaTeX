@@ -304,7 +304,7 @@ defineFunction([
 
 // No limits, symbols
 defineFunction([
-    "\\int", "\\iint", "\\iiint", "\\oint", "u222b", "\u222c",
+    "\\int", "\\iint", "\\iiint", "\\oint", "\u222b", "\u222c",
     "\u222d", "\u222e",
 ], {
     numArgs: 0,
