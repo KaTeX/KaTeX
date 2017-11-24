@@ -2633,6 +2633,12 @@ describe("A macro expander", function() {
         expect("X \\implies Y").toBuild();
         expect("X \\impliedby Y").toBuild();
     });
+
+    it("should allow aliasing characters", function() {
+        compareParseTree("x’=c", "x'=c", {
+            "’": "'",
+        });
+    });
 });
 
 describe("A parser taking String objects", function() {
