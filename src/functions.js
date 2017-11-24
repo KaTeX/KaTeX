@@ -445,7 +445,7 @@ defineFunction([
 // Stretchy accents under the body
 defineFunction([
     "\\underleftarrow", "\\underrightarrow", "\\underleftrightarrow",
-    "\\undergroup", "\\underlinesegment", "\\undertilde",
+    "\\undergroup", "\\underlinesegment", "\\utilde",
 ], {
     numArgs: 1,
 }, function(context, args) {
