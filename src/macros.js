@@ -335,3 +335,9 @@ defineMacro("\\simcoloncolon", "\\sim\\mathrel{\\mkern-1.2mu}\\dblcolon");
 defineMacro("\\approxcolon", "\\approx\\mathrel{\\mkern-1.2mu}\\vcentcolon");
 defineMacro("\\approxcoloncolon",
             "\\approx\\mathrel{\\mkern-1.2mu}\\dblcolon");
+
+// Present in newtxmath, pxfonts and txfonts
+// TODO: The unicode character U+220C ∌ should be added to the font, and this
+//       macro turned into a propper defineSymbol in symbols.js. That way, the
+//       MathML result will be much cleaner.
+defineMacro("\\notni", "\\not\\ni");
