@@ -34,7 +34,7 @@ const commonConfig = {
             {
                 test: /\.js$/,
                 use: 'babel-loader',
-                exclude: /node_modules\//,
+                exclude: /\bnode_modules\b/,
             },
         ],
     },
