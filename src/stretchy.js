@@ -328,22 +328,21 @@ const encloseSpan = function(
     return img;
 };
 
-const ruleSpan = function(className: string, options: Options): span {
+const ruleSpan = function(className: string, options: Options): domTree.span {
     // Get a big square image. The parent span will hide the overflow.
     const pathNode = new domTree.pathNode('bigRule');
-    const attributes = [
-        ["width", "400em"],
-        ["height", "400em"],
-        ["viewBox", "0 0 400000 400000"],
-        ["preserveAspectRatio", "xMinYMin slice"],
-    ];
-    const svg =  new domTree.svgNode([pathNode], attributes);
+    const svg =  new domTree.svgNode([pathNode], {
+        "width": "400em",
+        "height": "400em",
+        "viewBox": "0 0 400000 400000",
+        "preserveAspectRatio": "xMinYMin slice",
+    });
     return buildCommon.makeSpan([className, "hide-tail"], [svg], options);
 };
 
 export default {
-    encloseSpan: encloseSpan,
-    mathMLnode: mathMLnode,
-    ruleSpan: ruleSpan,
-    svgSpan: svgSpan,
+    encloseSpan,
+    mathMLnode,
+    ruleSpan,
+    svgSpan,
 };
