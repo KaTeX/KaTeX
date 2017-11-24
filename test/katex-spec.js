@@ -2420,6 +2420,36 @@ describe("An aligned environment", function() {
     });
 });
 
+describe("An href command", function() {
+    it("should parse its input", function() {
+        expect("\\href{http://example.com/}{example here}").toParse();
+    });
+
+    it("should allow letters [#$%&~_^] without escaping", function() {
+        const url = "http://example.org/~bar/#top?foo=$foo&bar=ba^r_boo%20baz";
+        const hash = getParsed(`\\href{${url}}{\\alpha}`)[0];
+        expect(hash.value.href).toBe(url);
+    });
+
+    it("should allow balanced braces in url", function() {
+        const url = "http://example.org/{too}";
+        const hash = getParsed(`\\href{${url}}{\\alpha}`)[0];
+        expect(hash.value.href).toBe(url);
+    });
+
+    it("should not allow unbalanced brace(s) in url", function() {
+        expect("\\href{http://example.com/{a}{bar}").toNotParse();
+        expect("\\href{http://example.com/}a}{bar}").toNotParse();
+    });
+
+    it("should allow escape for letters [#$%&~_^{}]", function() {
+        const url = "http://example.org/~bar/#top?foo=$}foo{&bar=bar^r_boo%20baz";
+        const input = url.replace(/([#$%&~_^{}])/g, '\\$1');
+        const ae = getParsed(`\\href{${input}}{\\alpha}`)[0];
+        expect(ae.value.href).toBe(url);
+    });
+});
+
 describe("A parser that does not throw on unsupported commands", function() {
     // The parser breaks on unsupported commands unless it is explicitly
     // told not to
@@ -2632,12 +2662,32 @@ describe("Unicode", function() {
         expect("ΓΔΘΞΠΣΦΨΩ").toParse();
     });
 
+    it("should parse negated relations", function() {
+        expect("∉∤∦≁≆≠≨≩≮≯≰≱⊀⊁⊈⊉⊊⊋⊬⊭⊮⊯⋠⋡⋦⋧⋨⋩⋬⋭⪇⪈⪉⪊⪵⪶⪹⪺⫋⫌").toParse();
+    });
+
     it("should parse relations", function() {
         expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≫≬≳≷≺≻≼≽≾≿").toParse();
     });
 
+    it("should parse big operators", function() {
+        expect("∏∐∑∫∬∭∮⋀⋁⋂⋃⨀⨁⨂⨄⨆").toParse();
+    });
+
     it("should parse more relations", function() {
         expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋙⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆").toParse();
+    });
+
+    it("should parse arrows", function() {
+        expect("←↑→↓↔↕↖↗↘↙↚↛↞↠↢↣↦↩↪↫↬↭↮↰↱↶↷↼↽↾↾↿⇀⇁⇂⇃⇄⇆⇇⇈⇉").toParse();
+    });
+
+    it("should parse more arrows", function() {
+        expect("⇊⇋⇌⇍⇎⇏⇐⇑⇒⇓⇔⇕⇚⇛⇝⟵⟶⟷⟸⟹⟺⟼").toParse();
+    });
+
+    it("should parse binary operators", function() {
+        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞").toParse();
     });
 });
 
@@ -2660,5 +2710,33 @@ describe("The maxSize setting", function() {
         const built = getBuilt(rule, new Settings({maxSize: -5}))[0];
         expect(built.style.borderRightWidth).toEqual("0em");
         expect(built.style.borderTopWidth).toEqual("0em");
+    });
+});
+
+describe("The \\mathchoice function", function() {
+    const cmd = "\\sum_{k = 0}^{\\infty} x^k";
+
+    it("should render as if there is nothing other in display math", function() {
+        const plain = getBuilt("\\displaystyle" + cmd)[0];
+        const built = getBuilt(`\\displaystyle\\mathchoice{${cmd}}{T}{S}{SS}`)[0];
+        expect(built).toEqual(plain);
+    });
+
+    it("should render as if there is nothing other in text", function() {
+        const plain = getBuilt(cmd)[0];
+        const built = getBuilt(`\\mathchoice{D}{${cmd}}{S}{SS}`)[0];
+        expect(built).toEqual(plain);
+    });
+
+    it("should render as if there is nothing other in scriptstyle", function() {
+        const plain = getBuilt(`x_{${cmd}}`)[0];
+        const built = getBuilt(`x_{\\mathchoice{D}{T}{${cmd}}{SS}}`)[0];
+        expect(built).toEqual(plain);
+    });
+
+    it("should render  as if there is nothing other in scriptscriptstyle", function() {
+        const plain = getBuilt(`x_{y_{${cmd}}}`)[0];
+        const built = getBuilt(`x_{y_{\\mathchoice{D}{T}{S}{${cmd}}}}`)[0];
+        expect(built).toEqual(plain);
     });
 });

@@ -17,7 +17,7 @@ import type {span} from "./domTree";
 const stretchyCodePoint: {[string]: string} = {
     widehat: "^",
     widetilde: "~",
-    undertilde: "~",
+    utilde: "~",
     overleftarrow: "\u2190",
     underleftarrow: "\u2190",
     xleftarrow: "\u2190",
@@ -168,7 +168,7 @@ const svgSpan = function(group: ParseNode, options: Options): span {
     let svgNode;
     let span;
 
-    if (utils.contains(["widehat", "widetilde", "undertilde"], label)) {
+    if (utils.contains(["widehat", "widetilde", "utilde"], label)) {
         // There are four SVG images available for each function.
         // Choose a taller image when there are more characters.
         const numChars = groupLength(group.value.base);
@@ -315,8 +315,22 @@ const encloseSpan = function(
     return img;
 };
 
+const ruleSpan = function(className: string, options: Options): span {
+    // Get a big square image. The parent span will hide the overflow.
+    const pathNode = new domTree.pathNode('bigRule');
+    const attributes = [
+        ["width", "400em"],
+        ["height", "400em"],
+        ["viewBox", "0 0 400000 400000"],
+        ["preserveAspectRatio", "xMinYMin slice"],
+    ];
+    const svg =  new domTree.svgNode([pathNode], attributes);
+    return buildCommon.makeSpan([className, "hide-tail"], [svg], options);
+};
+
 export default {
     encloseSpan: encloseSpan,
     mathMLnode: mathMLnode,
+    ruleSpan: ruleSpan,
     svgSpan: svgSpan,
 };
