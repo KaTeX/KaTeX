@@ -143,6 +143,127 @@ class span {
 }
 
 /**
+ * This node represents an anchor (<a>) element with a hyperlink, a list of classes,
+ * a list of children, and an inline style. It also contains information about its
+ * height, depth, and maxFontSize.
+ */
+class anchor {
+    constructor(href, classes, children, options) {
+        this.href = href || "";
+        this.classes = classes || [];
+        this.children = children || [];
+        this.height = 0;
+        this.depth = 0;
+        this.maxFontSize = 0;
+        this.style = {};
+        this.attributes = {};
+        if (options) {
+            if (options.style.isTight()) {
+                this.classes.push("mtight");
+            }
+            if (options.getColor()) {
+                this.style.color = options.getColor();
+            }
+        }
+    }
+
+    /**
+     * Sets an arbitrary attribute on the anchor. Warning: use this wisely. Not all
+     * browsers support attributes the same, and having too many custom attributes
+     * is probably bad.
+     */
+    setAttribute(attribute, value) {
+        this.attributes[attribute] = value;
+    }
+
+    tryCombine(sibling) {
+        return false;
+    }
+
+    /**
+     * Convert the anchor into an HTML node
+     */
+    toNode() {
+        const a = document.createElement("a");
+
+        // Apply the href
+        a.setAttribute('href', this.href);
+
+        // Apply the class
+        if (this.classes.length) {
+            a.className = createClass(this.classes);
+        }
+
+        // Apply inline styles
+        for (const style in this.style) {
+            if (Object.prototype.hasOwnProperty.call(this.style, style)) {
+                a.style[style] = this.style[style];
+            }
+        }
+
+        // Apply attributes
+        for (const attr in this.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                a.setAttribute(attr, this.attributes[attr]);
+            }
+        }
+
+        // Append the children, also as HTML nodes
+        for (let i = 0; i < this.children.length; i++) {
+            a.appendChild(this.children[i].toNode());
+        }
+
+        return a;
+    }
+
+    /**
+     * Convert the a into an HTML markup string
+     */
+    toMarkup() {
+        let markup = "<a";
+
+        // Add the href
+        markup += `href="${markup += utils.escape(this.href)}"`;
+        // Add the class
+        if (this.classes.length) {
+            markup += ` class="${utils.escape(createClass(this.classes))}"`;
+        }
+
+        let styles = "";
+
+        // Add the styles, after hyphenation
+        for (const style in this.style) {
+            if (this.style.hasOwnProperty(style)) {
+                styles += utils.hyphenate(style) + ":" + this.style[style] + ";";
+            }
+        }
+
+        if (styles) {
+            markup += " style=\"" + utils.escape(styles) + "\"";
+        }
+
+        // Add the attributes
+        for (const attr in this.attributes) {
+            if (attr !== "href" &&
+                Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                markup += ` ${attr}="${utils.escape(this.attributes[attr])}"`;
+            }
+        }
+
+        markup += ">";
+
+        // Add the markup of the children, also as markup
+        for (const child of this.children) {
+            markup += child.toMarkup();
+        }
+
+        markup += "</a>";
+
+        return markup;
+    }
+}
+
+/**
  * This node represents a document fragment, which contains elements, but when
  * placed into the DOM doesn't have any representation itself. Thus, it only
  * contains children and doesn't have any HTML properties. It also keeps track
@@ -445,6 +566,7 @@ class lineNode {
 
 export default {
     span: span,
+    anchor: anchor,
     documentFragment: documentFragment,
     symbolNode: symbolNode,
     svgNode: svgNode,

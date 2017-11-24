@@ -84,7 +84,7 @@ export default class MacroExpander implements MacroContextInterface {
             // Consume all spaces after \macro (but not \\, \', etc.)
             this.consumeSpaces();
         }
-        if (!(isMacro && this.macros.hasOwnProperty(name))) {
+        if (!this.macros.hasOwnProperty(name)) {
             // Fully expanded
             this.pushToken(topToken);
             return topToken;
