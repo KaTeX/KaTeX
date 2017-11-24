@@ -1,3 +1,5 @@
+/* eslint no-console:0 */
+
 const WebpackDevServer = require("webpack-dev-server");
 const webpack = require("webpack");
 const webpackConfig = require("./webpack.config.js");
@@ -10,3 +12,4 @@ const compiler = webpack(webpackConfig.compilerConfig);
 const server = new WebpackDevServer(compiler, webpackConfig.devServerConfig);
 
 server.listen(PORT);
+console.log(`Serving on http://localhost:${PORT}/ ...`);
