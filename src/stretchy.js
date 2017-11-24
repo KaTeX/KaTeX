@@ -17,7 +17,7 @@ import type {span} from "./domTree";
 const stretchyCodePoint: {[string]: string} = {
     widehat: "^",
     widetilde: "~",
-    undertilde: "~",
+    utilde: "~",
     overleftarrow: "\u2190",
     underleftarrow: "\u2190",
     xleftarrow: "\u2190",
@@ -168,7 +168,7 @@ const svgSpan = function(group: ParseNode, options: Options): span {
     let svgNode;
     let span;
 
-    if (utils.contains(["widehat", "widetilde", "undertilde"], label)) {
+    if (utils.contains(["widehat", "widetilde", "utilde"], label)) {
         // There are four SVG images available for each function.
         // Choose a taller image when there are more characters.
         const numChars = groupLength(group.value.base);

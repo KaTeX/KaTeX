@@ -258,6 +258,13 @@ defineFunction([
     };
 });
 
+const singleCharIntegrals: {[string]: string} = {
+    "\u222b": "\\int",
+    "\u222c": "\\iint",
+    "\u222d": "\\iiint",
+    "\u222e": "\\oint",
+};
+
 // There are 2 flags for operators; whether they produce limits in
 // displaystyle, and whether they are symbols and should grow in
 // displaystyle. These four groups cover the four possible choices.
@@ -297,15 +304,20 @@ defineFunction([
 
 // No limits, symbols
 defineFunction([
-    "\\int", "\\iint", "\\iiint", "\\oint",
+    "\\int", "\\iint", "\\iiint", "\\oint", "\u222b", "\u222c",
+    "\u222d", "\u222e",
 ], {
     numArgs: 0,
 }, function(context) {
+    let fName = context.funcName;
+    if (fName.length === 1) {
+        fName = singleCharIntegrals[fName];
+    }
     return {
         type: "op",
         limits: false,
         symbol: true,
-        body: context.funcName,
+        body: fName,
     };
 });
 
@@ -433,7 +445,7 @@ defineFunction([
 // Stretchy accents under the body
 defineFunction([
     "\\underleftarrow", "\\underrightarrow", "\\underleftrightarrow",
-    "\\undergroup", "\\underlinesegment", "\\undertilde",
+    "\\undergroup", "\\underlinesegment", "\\utilde",
 ], {
     numArgs: 1,
 }, function(context, args) {
@@ -566,3 +578,9 @@ defineFunction(["\\verb"], {
     throw new ParseError(
         "\\verb ended by end of line instead of matching delimiter");
 });
+
+// Hyperlinks
+import "./functions/href";
+
+// MathChoice
+import "./functions/mathchoice";
