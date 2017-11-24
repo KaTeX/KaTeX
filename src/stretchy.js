@@ -276,7 +276,7 @@ const encloseSpan = function(
     let img;
     const totalHeight = inner.height + inner.depth + 2 * pad;
 
-    if (/(fbox)|(color)/.test(label)) {
+    if (/fbox|color/.test(label)) {
         img = buildCommon.makeSpan(["stretchy", label], [], options);
 
         if (label === "fbox") {
@@ -291,27 +291,25 @@ const encloseSpan = function(
         // Since \cancel's SVG is inline and it omits the viewBox attribute,
         // its stroke-width will not vary with span area.
 
-        let attributes: {[string]: string} = {"x1": "0"};
         const lines = [];
-
-        if (label !== "cancel") {
-            attributes["y1"] = "0";
-            attributes["x2"] = "100%";
-            attributes["y2"] = "100%";
-            attributes["stroke-width"] = "0.046em";
-            lines.push(new domTree.lineNode(attributes));
+        if (/^[bx]cancel$/.test(label)) {
+            lines.push(new domTree.lineNode({
+                "x1": "0",
+                "y1": "0",
+                "x2": "100%",
+                "y2": "100%",
+                "stroke-width": "0.046em",
+            }));
         }
 
-        if (label === "xcancel") {
-            attributes = {"x1": "0"};  // start a second line.
-        }
-
-        if (label !== "bcancel") {
-            attributes["y1"] = "100%";
-            attributes["x2"] = "100%";
-            attributes["y2"] = "0";
-            attributes["stroke-width"] = "0.046em";
-            lines.push(new domTree.lineNode(attributes));
+        if (/^x?cancel$/.test(label)) {
+            lines.push(new domTree.lineNode({
+                "x1": "0",
+                "y1": "100%",
+                "x2": "100%",
+                "y2": "0",
+                "stroke-width": "0.046em",
+            }));
         }
 
         const svgNode = new domTree.svgNode(lines, {
