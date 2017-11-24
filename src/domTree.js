@@ -45,7 +45,7 @@ export interface CombinableDomNode extends VirtualDomNode {
  * `DomChildNode` is not defined as an interface since `documentFragment` also
  * has these fields but should not be considered a `DomChildNode`.
  */
-export type DomChildNode = span | svgNode | symbolNode;
+export type DomChildNode = span | anchor | svgNode | symbolNode;
 
 export type SvgChildNode = pathNode | lineNode;
 
@@ -184,23 +184,36 @@ class span implements CombinableDomNode {
  * a list of children, and an inline style. It also contains information about its
  * height, depth, and maxFontSize.
  */
-class anchor {
-    constructor(href, classes, children, options) {
-        this.href = href || "";
-        this.classes = classes || [];
-        this.children = children || [];
+class anchor implements CombinableDomNode {
+    href: string;
+    classes: string[];
+    children: DomChildNode[];
+    height: number;
+    depth: number;
+    maxFontSize: number;
+    style: {[string]: string};
+    attributes: {[string]: string};
+
+    constructor(
+        href: string,
+        classes: string[],
+        children: DomChildNode[],
+        options: Options,
+    ) {
+        this.href = href;
+        this.classes = classes;
+        this.children = children;
         this.height = 0;
         this.depth = 0;
         this.maxFontSize = 0;
         this.style = {};
         this.attributes = {};
-        if (options) {
-            if (options.style.isTight()) {
-                this.classes.push("mtight");
-            }
-            if (options.getColor()) {
-                this.style.color = options.getColor();
-            }
+        if (options.style.isTight()) {
+            this.classes.push("mtight");
+        }
+        const color = options.getColor();
+        if (color) {
+            this.style.color = color;
         }
     }
 
@@ -209,18 +222,18 @@ class anchor {
      * browsers support attributes the same, and having too many custom attributes
      * is probably bad.
      */
-    setAttribute(attribute, value) {
+    setAttribute(attribute: string, value: string) {
         this.attributes[attribute] = value;
     }
 
-    tryCombine(sibling) {
+    tryCombine(sibling: CombinableDomNode): boolean {
         return false;
     }
 
     /**
      * Convert the anchor into an HTML node
      */
-    toNode() {
+    toNode(): HTMLAnchorElement {
         const a = document.createElement("a");
 
         // Apply the href
@@ -234,6 +247,7 @@ class anchor {
         // Apply inline styles
         for (const style in this.style) {
             if (Object.prototype.hasOwnProperty.call(this.style, style)) {
+                // $FlowFixMe Flow doesn't seem to understand a.style's type.
                 a.style[style] = this.style[style];
             }
         }
@@ -256,7 +270,7 @@ class anchor {
     /**
      * Convert the a into an HTML markup string
      */
-    toMarkup() {
+    toMarkup(): string {
         let markup = "<a";
 
         // Add the href

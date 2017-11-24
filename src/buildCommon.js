@@ -231,7 +231,7 @@ const tryCombineChars = function(
  * children.
  */
 const sizeElementFromChildren = function(
-    elem: domTree.span | domTree.documentFragment,
+    elem: domTree.span | domTree.anchor | domTree.documentFragment,
 ) {
     let height = 0;
     let depth = 0;
@@ -278,7 +278,12 @@ const makeSpan = function(
  * Makes an anchor with the given href, list of classes, list of children,
  * and options.
  */
-const makeAnchor = function(href, classes, children, options) {
+const makeAnchor = function(
+    href: string,
+    classes: string[],
+    children: DomChildNode[],
+    options: Options,
+) {
     const anchor = new domTree.anchor(href, classes, children, options);
 
     sizeElementFromChildren(anchor);
