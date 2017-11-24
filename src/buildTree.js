@@ -1,3 +1,4 @@
+// @flow
 import buildHTML from "./buildHTML";
 import buildMathML from "./buildMathML";
 import buildCommon from "./buildCommon";
@@ -5,7 +6,14 @@ import Options from "./Options";
 import Settings from "./Settings";
 import Style from "./Style";
 
-const buildTree = function(tree, expression, settings) {
+import type ParseNode from "./ParseNode";
+import type domTree from "./domTree";
+
+const buildTree = function(
+    tree: ParseNode[],
+    expression: string,
+    settings: Settings,
+): domTree.span {
     settings = settings || new Settings({});
 
     let startStyle = Style.TEXT;
