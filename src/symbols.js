@@ -527,7 +527,6 @@ defineSymbol(math, main, rel, "\u2190", "\\gets");
 defineSymbol(math, main, rel, ">", "\\gt");
 defineSymbol(math, main, rel, "\u2208", "\\in", true);
 defineSymbol(math, main, rel, "\u2209", "\\notin", true);
-defineSymbol(math, main, rel, "\u220c", "\\notni", true);
 defineSymbol(math, main, rel, "\u0338", "\\not");
 defineSymbol(math, main, rel, "\u2282", "\\subset", true);
 defineSymbol(math, main, rel, "\u2283", "\\supset", true);
