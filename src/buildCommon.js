@@ -227,6 +227,18 @@ const makeSpan = function(classes, children, options) {
 };
 
 /**
+ * Makes an anchor with the given href, list of classes, list of children,
+ * and options.
+ */
+const makeAnchor = function(href, classes, children, options) {
+    const anchor = new domTree.anchor(href, classes, children, options);
+
+    sizeElementFromChildren(anchor);
+
+    return anchor;
+};
+
+/**
  * Prepends the given children to the given span, updating height, depth, and
  * maxFontSize.
  */
@@ -511,6 +523,7 @@ export default {
     makeSymbol: makeSymbol,
     mathsym: mathsym,
     makeSpan: makeSpan,
+    makeAnchor: makeAnchor,
     makeFragment: makeFragment,
     makeVList: makeVList,
     makeOrd: makeOrd,
