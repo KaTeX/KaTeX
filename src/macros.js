@@ -25,21 +25,49 @@ export interface MacroContextInterface {
      * Similar in behavior to TeX's `\expandafter\futurelet`.
      */
     expandAfterFuture(): Token;
+
+    /**
+     * Consume the specified number of arguments from the token stream,
+     * and return the resulting array of arguments.
+     */
+    consumeArgs(numArgs: number): Token[][];
 }
 
 /** Macro tokens (in reverse order). */
 export type MacroExpansion = {tokens: Token[], numArgs: number};
 
-type MacroDefinition = string | (MacroContextInterface => string) | MacroExpansion;
+type MacroDefinition = string | MacroExpansion |
+    (MacroContextInterface => (string | MacroExpansion));
 export type MacroMap = {[string]: MacroDefinition};
 
 const builtinMacros: MacroMap = {};
 export default builtinMacros;
 
 // This function might one day accept an additional argument and do more things.
-function defineMacro(name: string, body: string | MacroContextInterface => string) {
+function defineMacro(name: string, body: MacroDefinition) {
     builtinMacros[name] = body;
 }
+
+//////////////////////////////////////////////////////////////////////
+// macro tools
+
+defineMacro("\\@firstoftwo", function(context) {
+    const args = context.consumeArgs(2);
+    return {tokens: args[0], numArgs: 0};
+});
+
+defineMacro("\\@ifnextchar", function(context) {
+    const args = context.consumeArgs(3);  // symbol, if, else
+    const nextToken = context.future();
+    if (args[0].length === 1 && args[0][0].text === nextToken.text) {
+        return {tokens: args[1], numArgs: 0};
+    } else {
+        return {tokens: args[2], numArgs: 0};
+    }
+});
+
+// \def\@ifstar#1{\@ifnextchar *{\@firstoftwo{#1}}}
+defineMacro("\\@ifstar", "\\@ifnextchar *{\\@firstoftwo{#1}}");
 
 //////////////////////////////////////////////////////////////////////
 // basics
@@ -47,6 +75,15 @@ defineMacro("\\bgroup", "{");
 defineMacro("\\egroup", "}");
 defineMacro("\\begingroup", "{");
 defineMacro("\\endgroup", "}");
+
+// Unicode double-struck letters
+defineMacro("\u2102", "\\mathbb{C}");
+defineMacro("\u210D", "\\mathbb{H}");
+defineMacro("\u2115", "\\mathbb{N}");
+defineMacro("\u2119", "\\mathbb{P}");
+defineMacro("\u211A", "\\mathbb{Q}");
+defineMacro("\u211D", "\\mathbb{R}");
+defineMacro("\u2124", "\\mathbb{Z}");
 
 // We don't distinguish between math and nonmath kerns.
 // (In TeX, the mu unit works only with \mkern.)
@@ -235,8 +272,8 @@ defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
 // \def\@hspace#1{\hskip  #1\relax}
-// KaTeX doesn't do line breaks, so \hspace is the same as \kern
-defineMacro("\\hspace", "\\kern{#1}");
+// KaTeX doesn't do line breaks, so \hspace and \hspace* are the same as \kern
+defineMacro("\\hspace", "\\@ifstar\\kern\\kern");
 
 //////////////////////////////////////////////////////////////////////
 // mathtools.sty

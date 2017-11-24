@@ -2420,6 +2420,36 @@ describe("An aligned environment", function() {
     });
 });
 
+describe("An href command", function() {
+    it("should parse its input", function() {
+        expect("\\href{http://example.com/}{example here}").toParse();
+    });
+
+    it("should allow letters [#$%&~_^] without escaping", function() {
+        const url = "http://example.org/~bar/#top?foo=$foo&bar=ba^r_boo%20baz";
+        const hash = getParsed(`\\href{${url}}{\\alpha}`)[0];
+        expect(hash.value.href).toBe(url);
+    });
+
+    it("should allow balanced braces in url", function() {
+        const url = "http://example.org/{too}";
+        const hash = getParsed(`\\href{${url}}{\\alpha}`)[0];
+        expect(hash.value.href).toBe(url);
+    });
+
+    it("should not allow unbalanced brace(s) in url", function() {
+        expect("\\href{http://example.com/{a}{bar}").toNotParse();
+        expect("\\href{http://example.com/}a}{bar}").toNotParse();
+    });
+
+    it("should allow escape for letters [#$%&~_^{}]", function() {
+        const url = "http://example.org/~bar/#top?foo=$}foo{&bar=bar^r_boo%20baz";
+        const input = url.replace(/([#$%&~_^{}])/g, '\\$1');
+        const ae = getParsed(`\\href{${input}}{\\alpha}`)[0];
+        expect(ae.value.href).toBe(url);
+    });
+});
+
 describe("A parser that does not throw on unsupported commands", function() {
     // The parser breaks on unsupported commands unless it is explicitly
     // told not to
@@ -2603,6 +2633,39 @@ describe("A macro expander", function() {
         expect("X \\implies Y").toBuild();
         expect("X \\impliedby Y").toBuild();
     });
+
+    it("should allow aliasing characters", function() {
+        compareParseTree("x’=c", "x'=c", {
+            "’": "'",
+        });
+    });
+
+    it("\\@firstoftwo should consume both, and avoid errors", function() {
+        expect("\\@firstoftwo{yes}{no}").toParseLike("yes");
+        expect("\\@firstoftwo{yes}{1'_2^3}").toParseLike("yes");
+    });
+
+    it("\\@ifstar should consume star but nothing else", function() {
+        expect("\\@ifstar{yes}{no}*!").toParseLike("yes!");
+        expect("\\@ifstar{yes}{no}?!").toParseLike("no?!");
+    });
+
+    it("\\@ifnextchar should not consume anything", function() {
+        expect("\\@ifnextchar!{yes}{no}!!").toParseLike("yes!!");
+        expect("\\@ifnextchar!{yes}{no}?!").toParseLike("no?!");
+    });
+
+    it("\\@firstoftwwo should consume star but nothing else", function() {
+        expect("\\@ifstar{yes}{no}*!").toParseLike("yes!");
+        expect("\\@ifstar{yes}{no}?!").toParseLike("no?!");
+    });
+
+    // This may change in the future, if we support the extra features of
+    // \hspace.
+    it("should treat \\hspace, \\hspace*, \\hskip like \\kern", function() {
+        expect("\\hspace{1em}").toParseLike("\\kern1em");
+        expect("\\hspace*{1em}").toParseLike("\\kern1em");
+    });
 });
 
 describe("A parser taking String objects", function() {
@@ -2640,6 +2703,10 @@ describe("Unicode", function() {
 
     it("should parse more relations", function() {
         expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋙⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆").toParse();
+    });
+
+    it("should parse symbols", function() {
+        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓").toParse();
     });
 
     it("should parse arrows", function() {

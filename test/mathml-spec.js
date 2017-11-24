@@ -59,6 +59,11 @@ describe("A MathML builder", function() {
         expect(getMathML("\\colorbox{red}{b}")).toMatchSnapshot();
     });
 
+    it('should set href attribute for href appropriately', () => {
+        expect(getMathML("\\href{http://example.org}{\\alpha}")).toMatchSnapshot();
+        expect(getMathML("p \\Vdash \\beta \\href{http://example.org}{+ \\alpha} \\times \\gamma"));
+    });
+
     it('should render mathchoice as if there was nothing', () => {
         const cmd = "\\sum_{k = 0}^{\\infty} x^k";
         expect(getMathML(`\\displaystyle\\mathchoice{${cmd}}{T}{S}{SS}`))

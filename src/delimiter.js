@@ -333,11 +333,13 @@ const sqrtSvg = function(sqrtName, height, viewBoxHeight, options) {
     }
     const pathNode = new domTree.pathNode(sqrtName, alternate);
 
-    // Note: 1000:1 ratio of viewBox to document em width.
-    const attributes = [["width", "400em"], ["height", height + "em"]];
-    attributes.push(["viewBox", "0 0 400000 " + viewBoxHeight]);
-    attributes.push(["preserveAspectRatio", "xMinYMin slice"]);
-    const svg =  new domTree.svgNode([pathNode], attributes);
+    const svg =  new domTree.svgNode([pathNode], {
+        // Note: 1000:1 ratio of viewBox to document em width.
+        "width": "400em",
+        "height": height + "em",
+        "viewBox": "0 0 400000 " + viewBoxHeight,
+        "preserveAspectRatio": "xMinYMin slice",
+    });
 
     return buildCommon.makeSpan(["hide-tail"], [svg], options);
 };
