@@ -66,12 +66,12 @@ describe("unicode", function() {
         });
     });
 
-    it("should parse Latin-1 inside \\text{}", function() {
-        expect('\\text{ÀàÇçÉéÏïÖöÛû}').toParse();
+    it("should parse all lower case Greek letters", function() {
+        expect("αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω").toParse();
     });
 
-    it("should parse Latin-1 outside \\text{}", function() {
-        expect('ÀàÇçÉéÏïÖöÛû').toParse();
+    it("should parse math upper case Greek letters", function() {
+        expect("ΓΔΘΛΞΠΣΥΦΨΩ").toParse();
     });
 
     it("should parse Cyrillic inside \\text{}", function() {
@@ -87,8 +87,8 @@ describe("unicode", function() {
         expect('\\text{여보세요}').toParse();
     });
 
-    it("should not parse CJK outside \\text{}", function() {
-        expect('私はバナナです。').toNotParse();
-        expect('여보세요').toNotParse();
+    it("should parse CJK outside \\text{}", function() {
+        expect('私はバナナです。').toParse();
+        expect('여보세요').toParse();
     });
 });

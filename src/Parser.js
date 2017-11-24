@@ -8,6 +8,21 @@ import { validUnit } from "./units";
 import { cjkRegex } from "./unicodeRegexes";
 import ParseNode from "./ParseNode";
 import ParseError from "./ParseError";
+import { combiningDiacriticalMarksEndRegex } from "./Lexer.js";
+
+const accents = {
+    '\u0301': {text: "\\'", math: '\\acute'},
+    '\u0300': {text: '\\`', math: '\\grave'},
+    '\u0308': {text: '\\"', math: '\\ddot'},
+    '\u0303': {text: '\\~', math: '\\tilde'},
+    '\u0304': {text: '\\=', math: '\\bar'},
+    '\u0306': {text: '\\u', math: '\\breve'},
+    '\u030c': {text: '\\v', math: '\\check'},
+    '\u0302': {text: '\\^', math: '\\hat'},
+    '\u0307': {text: '\\.', math: '\\dot'},
+    '\u030a': {text: '\\r'},
+    '\u030b': {text: '\\H'},
+};
 
 /**
  * This file contains the parser used to parse out a TeX expression from the
@@ -1042,30 +1057,16 @@ export default class Parser {
      */
     parseSymbol() {
         const nucleus = this.nextToken;
+        let text = nucleus.text;
 
-        if (functions[nucleus.text]) {
+        if (functions[text]) {
             this.consume();
             // If there exists a function with this name, we return the function and
             // say that it is a function.
             return newFunction(nucleus);
-        } else if (symbols[this.mode][nucleus.text]) {
+        } else if (/^\\verb[^a-zA-Z]/.test(text)) {
             this.consume();
-            // Otherwise if this is a no-argument function, find the type it
-            // corresponds to in the symbols map
-            return newArgument(
-                new ParseNode(symbols[this.mode][nucleus.text].group,
-                            nucleus.text, this.mode, nucleus),
-                nucleus);
-        } else if (this.mode === "text" && cjkRegex.test(nucleus.text)) {
-            this.consume();
-            return newArgument(
-                new ParseNode("textord", nucleus.text, this.mode, nucleus),
-                nucleus);
-        } else if (nucleus.text === "$") {
-            return newDollar(nucleus);
-        } else if (/^\\verb[^a-zA-Z]/.test(nucleus.text)) {
-            this.consume();
-            let arg = nucleus.text.slice(5);
+            let arg = text.slice(5);
             const star = (arg.charAt(0) === "*");
             if (star) {
                 arg = arg.slice(1);
@@ -1082,8 +1083,61 @@ export default class Parser {
                     body: arg,
                     star: star,
                 }, "text"), nucleus);
-        } else {
-            return null;
+        } else if (text === "$") {
+            return newDollar(nucleus);
         }
+        // At this point, we should have a symbol, possibly with accents.
+        // If it's in the symbol table or CJK, we're done.
+        if (symbols[this.mode][text]) {
+            this.consume();
+            return newArgument(new ParseNode(symbols[this.mode][text].group,
+                text, this.mode, nucleus), nucleus);
+        } else if (cjkRegex.test(text)) {
+            this.consume();
+            return newArgument(
+                new ParseNode("textord", text, this.mode, nucleus));
+        }
+        // Decompose symbol into base and combining characters
+        // if the combined symbol is not recognized.
+        text = text.normalize('NFD');
+        // Strip off combining characters
+        const match = combiningDiacriticalMarksEndRegex.exec(text);
+        if (match) {
+            text = text.substring(0, match.index);
+        }
+        // Recognize base symbol
+        let symbol = null;
+        if (symbols[this.mode][text]) {
+            symbol = new ParseNode(symbols[this.mode][text].group,
+                            text, this.mode, nucleus);
+        } else if (cjkRegex.test(text)) {
+            symbol = new ParseNode("textord", text, this.mode, nucleus);
+        } else {
+            return null;  // EOF, ^, _, {, }, etc.
+        }
+        this.consume();
+        // Transform combining characters into accents
+        if (match) {
+            for (let i = 0; i < match[0].length; i++) {
+                const accent = match[0][i];
+                if (!accents[accent]) {
+                    throw new ParseError(`Unknown accent ' ${accent}'`, nucleus);
+                }
+                const command = accents[accent][this.mode];
+                if (!command) {
+                    throw new ParseError(
+                        `Accent ${accent} unsupported in ${this.mode} mode`,
+                        nucleus);
+                }
+                symbol = new ParseNode("accent", {
+                    type: "accent",
+                    label: command,
+                    isStretchy: false,
+                    isShifty: true,
+                    base: symbol,
+                }, this.mode, nucleus);
+            }
+        }
+        return newArgument(symbol, nucleus);
     }
 }
