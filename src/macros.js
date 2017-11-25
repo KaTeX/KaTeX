@@ -4,6 +4,7 @@
  * This can be used to define some commands in terms of others.
  */
 
+import fontMetricsData from "./fontMetricsData";
 import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
@@ -282,14 +283,20 @@ defineMacro("\\TeX", "\\text{T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX}"
 //         }%
 //         \kern-.15em%
 //         \TeX}
-// This code roughly aligns the top of the A with the T.  Here we approximate
-// this vertical alignment with a \raisebox{.45ex}, which seems close.
-defineMacro("\\LaTeX", "\\text{L\\kern-.36em\\raisebox{.45ex}{\\scriptsize A}" +
-                       "\\kern-.15em\\TeX}");
+// This code aligns the top of the A with the T (from the perspective of TeX's
+// boxes, though visually the A appears to extend above slightly).
+// We compute the corresponding \raisebox when A is rendered at \scriptsize,
+// which is size3, which has a scale factor of 0.7 (see Options.js).
+const latexRaiseA = fontMetricsData['Main-Regular']["T".charCodeAt(0)][1] -
+    0.7 * fontMetricsData['Main-Regular']["A".charCodeAt(0)][1] + "em";
+defineMacro("\\LaTeX",
+    `\\text{L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    "\\kern-.15em\\TeX}");
 
 // New KaTeX logo based on tweaking LaTeX logo
-defineMacro("\\katex", "\\text{K\\kern-.17em\\raisebox{.45ex}{\\scriptsize A}" +
-                       "\\kern-.15em\\TeX}");
+defineMacro("\\katex",
+    `\\text{K\\kern-.17em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    "\\kern-.15em\\TeX}");
 
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
 // \def\@hspace#1{\hskip  #1\relax}
