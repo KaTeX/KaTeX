@@ -288,7 +288,7 @@ defineMacro("\\LaTeX", "\\text{L\\kern-.36em\\raisebox{.45ex}{\\scriptsize A}" +
                        "\\kern-.15em\\TeX}");
 
 // New KaTeX logo based on tweaking LaTeX logo
-defineMacro("\\katex", "\\text{K\\kern-.16em\\raisebox{.45ex}{\\scriptsize A}" +
+defineMacro("\\katex", "\\text{K\\kern-.17em\\raisebox{.45ex}{\\scriptsize A}" +
                        "\\kern-.15em\\TeX}");
 
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
