@@ -355,9 +355,13 @@ defineSymbol(math, ams, rel, "\u226c", "\\between", true);
 defineSymbol(math, ams, rel, "\u22d4", "\\pitchfork", true);
 defineSymbol(math, ams, rel, "\u221d", "\\varpropto");
 defineSymbol(math, ams, rel, "\u25c0", "\\blacktriangleleft");
+// unicode-math says that \therefore is a mathord atom.
+// We kept the amssymb atom type, which is rel.
 defineSymbol(math, ams, rel, "\u2234", "\\therefore", true);
 defineSymbol(math, ams, rel, "\u220d", "\\backepsilon");
 defineSymbol(math, ams, rel, "\u25b6", "\\blacktriangleright");
+// unicode-math says that \because is a mathord atom.
+// We kept the amssymb atom type, which is rel.
 defineSymbol(math, ams, rel, "\u2235", "\\because", true);
 defineSymbol(math, ams, rel, "\u22d8", "\\llless");
 defineSymbol(math, ams, rel, "\u22d9", "\\gggtr");
