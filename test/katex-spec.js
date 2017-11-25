@@ -1046,7 +1046,7 @@ describe("A rule parser", function() {
 describe("A kern parser", function() {
     const emKern = "\\kern{1em}";
     const exKern = "\\kern{1ex}";
-    const muKern = "\\kern{1mu}";
+    const muKern = "\\mkern{1mu}";
     const abKern = "a\\kern{1em}b";
     const badUnitRule = "\\kern{1au}";
     const noNumberRule = "\\kern{em}";
@@ -1082,10 +1082,10 @@ describe("A kern parser", function() {
 describe("A non-braced kern parser", function() {
     const emKern = "\\kern1em";
     const exKern = "\\kern 1 ex";
-    const muKern = "\\kern 1mu";
+    const muKern = "\\mkern 1mu";
     const abKern1 = "a\\mkern1mub";
-    const abKern2 = "a\\kern-1mub";
-    const abKern3 = "a\\kern-1mu b";
+    const abKern2 = "a\\mkern-1mub";
+    const abKern3 = "a\\mkern-1mu b";
     const badUnitRule = "\\kern1au";
     const noNumberRule = "\\kern em";
 
@@ -1137,7 +1137,7 @@ describe("A non-braced kern parser", function() {
     });
 
     it("should handle whitespace", function() {
-        const abKern = "a\\kern\t-\r1  \n mu\nb";
+        const abKern = "a\\mkern\t-\r1  \n mu\nb";
         const abParse = getParsed(abKern);
 
         expect(abParse.length).toEqual(3);

@@ -163,17 +163,7 @@ defineFunction(["\\rule"], {
     };
 });
 
-// TODO: In TeX, \mkern only accepts mu-units, and \kern does not accept
-// mu-units. In current KaTeX we relax this; both commands accept any unit.
-defineFunction(["\\kern", "\\mkern"], {
-    numArgs: 1,
-    argTypes: ["size"],
-}, function(context, args) {
-    return {
-        type: "kern",
-        dimension: args[0].value,
-    };
-});
+import "./functions/hskip";
 
 import "./functions/katex";
 

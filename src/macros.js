@@ -85,10 +85,6 @@ defineMacro("\u211A", "\\mathbb{Q}");
 defineMacro("\u211D", "\\mathbb{R}");
 defineMacro("\u2124", "\\mathbb{Z}");
 
-// We don't distinguish between math and nonmath kerns.
-// (In TeX, the mu unit works only with \mkern.)
-defineMacro("\\mkern", "\\kern");
-
 // \llap and \rlap render their contents in text mode
 defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
 defineMacro("\\rlap", "\\mathrlap{\\textrm{#1}}");
