@@ -1,4 +1,5 @@
 //@flow
+/* eslint no-console:0 */
 // Horizontal spacing commands
 
 import defineFunction from "../defineFunction";
@@ -22,8 +23,8 @@ defineFunction({
         const muUnit = (args[0].value.unit === 'mu');
         if (mathFunction) {
             if (!muUnit) {
-                throw new ParseError(
-                    `${context.funcName} supports only mu units, ` +
+                typeof console !== "undefined" && console.warn(
+                    `In LaTeX, ${context.funcName} supports only mu units, ` +
                     `not ${args[0].value.unit} units`);
             }
             if (context.parser.mode !== "math") {
@@ -32,8 +33,8 @@ defineFunction({
             }
         } else {  // !mathFunction
             if (muUnit) {
-                throw new ParseError(
-                    `${context.funcName} does not support mu units`);
+                typeof console !== "undefined" && console.warn(
+                    `In LaTeX, ${context.funcName} does not support mu units`);
             }
         }
         return {
