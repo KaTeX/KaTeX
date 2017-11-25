@@ -2633,6 +2633,39 @@ describe("A macro expander", function() {
         expect("X \\implies Y").toBuild();
         expect("X \\impliedby Y").toBuild();
     });
+
+    it("should allow aliasing characters", function() {
+        compareParseTree("x’=c", "x'=c", {
+            "’": "'",
+        });
+    });
+
+    it("\\@firstoftwo should consume both, and avoid errors", function() {
+        expect("\\@firstoftwo{yes}{no}").toParseLike("yes");
+        expect("\\@firstoftwo{yes}{1'_2^3}").toParseLike("yes");
+    });
+
+    it("\\@ifstar should consume star but nothing else", function() {
+        expect("\\@ifstar{yes}{no}*!").toParseLike("yes!");
+        expect("\\@ifstar{yes}{no}?!").toParseLike("no?!");
+    });
+
+    it("\\@ifnextchar should not consume anything", function() {
+        expect("\\@ifnextchar!{yes}{no}!!").toParseLike("yes!!");
+        expect("\\@ifnextchar!{yes}{no}?!").toParseLike("no?!");
+    });
+
+    it("\\@firstoftwwo should consume star but nothing else", function() {
+        expect("\\@ifstar{yes}{no}*!").toParseLike("yes!");
+        expect("\\@ifstar{yes}{no}?!").toParseLike("no?!");
+    });
+
+    // This may change in the future, if we support the extra features of
+    // \hspace.
+    it("should treat \\hspace, \\hspace*, \\hskip like \\kern", function() {
+        expect("\\hspace{1em}").toParseLike("\\kern1em");
+        expect("\\hspace*{1em}").toParseLike("\\kern1em");
+    });
 });
 
 describe("A parser taking String objects", function() {
@@ -2670,6 +2703,10 @@ describe("Unicode", function() {
 
     it("should parse more relations", function() {
         expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋙⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆").toParse();
+    });
+
+    it("should parse symbols", function() {
+        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓").toParse();
     });
 
     it("should parse arrows", function() {
