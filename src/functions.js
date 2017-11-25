@@ -163,7 +163,7 @@ defineFunction(["\\rule"], {
     };
 });
 
-import "./functions/hskip";
+import "./functions/kern";
 
 import "./functions/katex";
 
