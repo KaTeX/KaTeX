@@ -82,7 +82,7 @@ defineSymbol(math, main, rel, "\u22a5", "\\perp");
 defineSymbol(math, main, rel, "\u2aaf", "\\preceq", true);
 defineSymbol(math, main, rel, "\u2ab0", "\\succeq", true);
 defineSymbol(math, main, rel, "\u2243", "\\simeq", true);
-defineSymbol(math, main, rel, "\u2223", "\\mid");
+defineSymbol(math, main, rel, "\u2223", "\\mid", true);
 defineSymbol(math, main, rel, "\u226a", "\\ll");
 defineSymbol(math, main, rel, "\u226b", "\\gg", true);
 defineSymbol(math, main, rel, "\u224d", "\\asymp", true);
