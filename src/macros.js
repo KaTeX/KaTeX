@@ -271,7 +271,7 @@ defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 // TODO: Doesn't normally work in math mode because \@ fails.  KaTeX doesn't
 // support \@ yet, so that's omitted, and we add \text so that the result
 // doesn't look funny in math mode.
-defineMacro("\\TeX", "\\text{T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX}");
+defineMacro("\\TeX", "\\textrm{T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX}");
 
 // \DeclareRobustCommand{\LaTeX}{L\kern-.36em%
 //         {\sbox\z@ T%
@@ -290,12 +290,12 @@ defineMacro("\\TeX", "\\text{T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX}"
 const latexRaiseA = fontMetricsData['Main-Regular']["T".charCodeAt(0)][1] -
     0.7 * fontMetricsData['Main-Regular']["A".charCodeAt(0)][1] + "em";
 defineMacro("\\LaTeX",
-    `\\text{L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    `\\textrm{L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
     "\\kern-.15em\\TeX}");
 
 // New KaTeX logo based on tweaking LaTeX logo
 defineMacro("\\KaTeX",
-    `\\text{K\\kern-.17em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    `\\textrm{K\\kern-.17em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
     "\\kern-.15em\\TeX}");
 
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
