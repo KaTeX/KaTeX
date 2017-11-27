@@ -12,13 +12,16 @@ const htmlModBuilder = (group, options) => {
     const inner = [];
 
     if (group.value.modType === "bmod") {
-        // “\nonscript\mskip-\medmuskip\mkern5mu”
+        // “\nonscript\mskip-\medmuskip\mkern5mu”, where \medmuskip is
+        // 4mu plus 2mu minus 1mu, translates to 1mu space in
+        // display/textstyle and 5mu space in script/scriptscriptstyle.
         if (!options.style.isTight()) {
             inner.push(buildCommon.makeSpan(
-                ["mspace", "negativemediumspace"], [], options));
+                ["mspace", "muspace"], [], options));
+        } else {
+            inner.push(buildCommon.makeSpan(
+                ["mspace", "thickspace"], [], options));
         }
-        inner.push(
-            buildCommon.makeSpan(["mspace", "thickspace"], [], options));
     } else if (options.style.size === Style.DISPLAY.size) {
         inner.push(buildCommon.makeSpan(["mspace", "quad"], [], options));
     } else if (group.value.modType === "mod") {
@@ -40,12 +43,13 @@ const htmlModBuilder = (group, options) => {
             buildCommon.mathsym("d", group.mode)];
         if (group.value.modType === "bmod") {
             inner.push(buildCommon.makeSpan(["mbin"], modInner, options));
-            // “\mkern5mu\nonscript\mskip-\medmuskip”
-            inner.push(
-                buildCommon.makeSpan(["mspace", "thickspace"], [], options));
+            // “\mkern5mu\nonscript\mskip-\medmuskip” as above
             if (!options.style.isTight()) {
                 inner.push(buildCommon.makeSpan(
-                    ["mspace", "negativemediumspace"], [], options));
+                    ["mspace", "muspace"], [], options));
+            } else {
+                inner.push(buildCommon.makeSpan(
+                    ["mspace", "thickspace"], [], options));
             }
         } else {
             Array.prototype.push.apply(inner, modInner);

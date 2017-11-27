@@ -82,7 +82,7 @@ defineSymbol(math, main, rel, "\u22a5", "\\perp");
 defineSymbol(math, main, rel, "\u2aaf", "\\preceq", true);
 defineSymbol(math, main, rel, "\u2ab0", "\\succeq", true);
 defineSymbol(math, main, rel, "\u2243", "\\simeq", true);
-defineSymbol(math, main, rel, "\u2223", "\\mid");
+defineSymbol(math, main, rel, "\u2223", "\\mid", true);
 defineSymbol(math, main, rel, "\u226a", "\\ll");
 defineSymbol(math, main, rel, "\u226b", "\\gg", true);
 defineSymbol(math, main, rel, "\u224d", "\\asymp", true);
@@ -355,10 +355,14 @@ defineSymbol(math, ams, rel, "\u226c", "\\between", true);
 defineSymbol(math, ams, rel, "\u22d4", "\\pitchfork", true);
 defineSymbol(math, ams, rel, "\u221d", "\\varpropto");
 defineSymbol(math, ams, rel, "\u25c0", "\\blacktriangleleft");
-defineSymbol(math, ams, rel, "\u2234", "\\therefore");
+// unicode-math says that \therefore is a mathord atom.
+// We kept the amssymb atom type, which is rel.
+defineSymbol(math, ams, rel, "\u2234", "\\therefore", true);
 defineSymbol(math, ams, rel, "\u220d", "\\backepsilon");
 defineSymbol(math, ams, rel, "\u25b6", "\\blacktriangleright");
-defineSymbol(math, ams, rel, "\u2235", "\\because");
+// unicode-math says that \because is a mathord atom.
+// We kept the amssymb atom type, which is rel.
+defineSymbol(math, ams, rel, "\u2235", "\\because", true);
 defineSymbol(math, ams, rel, "\u22d8", "\\llless");
 defineSymbol(math, ams, rel, "\u22d9", "\\gggtr");
 defineSymbol(math, ams, bin, "\u22b2", "\\lhd");
