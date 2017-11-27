@@ -165,8 +165,6 @@ defineFunction(["\\rule"], {
 
 import "./functions/kern";
 
-import "./functions/katex";
-
 import "./functions/phantom";
 
 // Math class commands except \mathop

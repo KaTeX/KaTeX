@@ -294,7 +294,7 @@ defineMacro("\\LaTeX",
     "\\kern-.15em\\TeX}");
 
 // New KaTeX logo based on tweaking LaTeX logo
-defineMacro("\\katex",
+defineMacro("\\KaTeX",
     `\\text{K\\kern-.17em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
     "\\kern-.15em\\TeX}");
 
