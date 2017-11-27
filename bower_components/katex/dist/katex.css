@@ -142,6 +142,7 @@
   overflow: hidden;
 }
 .katex .base {
+  position: relative;
   display: inline-block;
 }
 .katex .strut {
@@ -185,6 +186,10 @@
 .katex .mainit {
   font-family: KaTeX_Main;
   font-style: italic;
+}
+.katex .mainrm {
+  font-family: KaTeX_Main;
+  font-style: normal;
 }
 .katex .mord + .mop {
   margin-left: 0.16667em;
@@ -369,7 +374,20 @@
 .katex .mfrac .frac-line {
   display: inline-block;
   width: 100%;
-  border-bottom-style: solid;
+}
+@media screen {
+  .katex .mfrac .frac-line,
+  .katex .overline .overline-line,
+  .katex .underline .underline-line {
+    min-height: 1px;
+  }
+}
+@media screen and (-webkit-min-device-pixel-ratio: 2), screen and (min-resolution: 192dpi) {
+  .katex .mfrac .frac-line,
+  .katex .overline .overline-line,
+  .katex .underline .underline-line {
+    min-height: 0.5px;
+  }
 }
 .katex .mspace {
   display: inline-block;
@@ -408,23 +426,31 @@
   width: 2em;
 }
 .katex .llap,
-.katex .rlap {
+.katex .rlap,
+.katex .clap {
   width: 0;
   position: relative;
 }
 .katex .llap > .inner,
-.katex .rlap > .inner {
+.katex .rlap > .inner,
+.katex .clap > .inner {
   position: absolute;
 }
 .katex .llap > .fix,
-.katex .rlap > .fix {
+.katex .rlap > .fix,
+.katex .clap > .fix {
   display: inline-block;
 }
 .katex .llap > .inner {
   right: 0;
 }
-.katex .rlap > .inner {
+.katex .rlap > .inner,
+.katex .clap > .inner {
   left: 0;
+}
+.katex .clap > .inner > span {
+  margin-left: -50%;
+  margin-right: 50%;
 }
 .katex .katex-logo .a {
   font-size: 0.75em;
@@ -452,16 +478,6 @@
 .katex .underline .underline-line {
   display: inline-block;
   width: 100%;
-  border-bottom-style: solid;
-}
-.katex .sqrt > .sqrt-sign {
-  position: relative;
-}
-.katex .sqrt .sqrt-line {
-  display: inline-block;
-  position: relative;
-  width: 100%;
-  border-bottom-style: solid;
 }
 .katex .sqrt > .root {
   margin-left: 0.27777778em;
@@ -1002,10 +1018,24 @@
   position: relative;
   left: 0.326em;
 }
+.katex .accent .accent-body.accent-hungarian > span {
+  position: relative;
+  left: 0.250em;
+}
 .katex .mtable .vertical-separator {
   display: inline-block;
   margin: 0 -0.025em;
-  border-right: 0.05em solid black;
+  width: 0.05em;
+}
+@media screen {
+  .katex .mtable .vertical-separator {
+    min-width: 1px;
+  }
+}
+@media screen and (-webkit-min-device-pixel-ratio: 2), screen and (min-resolution: 192dpi) {
+  .katex .mtable .vertical-separator {
+    min-width: 0.5px;
+  }
 }
 .katex .mtable .arraycolsep {
   display: inline-block;
@@ -1019,16 +1049,62 @@
 .katex .mtable .col-align-r > .vlist-t {
   text-align: right;
 }
+.katex .svg-align {
+  text-align: left;
+}
+.katex svg {
+  display: block;
+  position: absolute;
+  width: 100%;
+}
+.katex svg path {
+  fill: currentColor;
+}
+.katex svg line {
+  stroke: currentColor;
+}
 .katex .stretchy {
   width: 100%;
   display: block;
-  background-repeat: no-repeat;
-  background-position: right center;
-  background-size: 100% 100%;
 }
 .katex .stretchy:before,
 .katex .stretchy:after {
   content: "";
+}
+.katex .hide-tail {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.katex .halfarrow-left {
+  position: absolute;
+  left: 0;
+  width: 50.1%;
+  overflow: hidden;
+}
+.katex .halfarrow-right {
+  position: absolute;
+  right: 0;
+  width: 50%;
+  overflow: hidden;
+}
+.katex .brace-left {
+  position: absolute;
+  left: 0;
+  width: 25.1%;
+  overflow: hidden;
+}
+.katex .brace-center {
+  position: absolute;
+  left: 25%;
+  width: 50%;
+  overflow: hidden;
+}
+.katex .brace-right {
+  position: absolute;
+  right: 0;
+  width: 25.1%;
+  overflow: hidden;
 }
 .katex .x-arrow-pad {
   padding: 0 0.5em;
@@ -1045,6 +1121,10 @@
   box-sizing: border-box;
   border: 0.04em solid black;
 }
+.katex .fcolorbox {
+  box-sizing: border-box;
+  border: 0.04em solid;
+}
 .katex .cancel-pad {
   padding: 0 0.2em 0 0.2em;
 }
@@ -1060,429 +1140,4 @@
 .katex .sout {
   border-bottom-style: solid;
   border-bottom-width: 0.08em;
-}
-.katex .widehat1 {
-  height: 0.24em;
-  background-image: url(images/widehat1.svg);
-}
-.katex .widehat2 {
-  height: 0.30em;
-  background-image: url(images/widehat2.svg);
-}
-.katex .widehat3 {
-  height: 0.36em;
-  background-image: url(images/widehat3.svg);
-}
-.katex .widehat4 {
-  height: 0.42em;
-  background-image: url(images/widehat4.svg);
-}
-.katex .tilde1 {
-  height: 0.26em;
-  background-image: url(images/tilde1.svg);
-}
-.katex .tilde2 {
-  height: 0.29em;
-  background-image: url(images/tilde2.svg);
-}
-.katex .tilde3 {
-  height: 0.306em;
-  background-image: url(images/tilde3.svg);
-}
-.katex .tilde4 {
-  height: 0.312em;
-  background-image: url(images/tilde4.svg);
-}
-.katex .rightarrow {
-  height: 0.522em;
-  min-width: 0.5em;
-  background-image: url(images/rightarrow.svg);
-}
-.katex .xrightarrow {
-  height: 0.522em;
-  min-width: 0.783em;
-  background-image: url(images/rightarrow.svg);
-}
-.katex .leftarrow {
-  height: 0.522em;
-  min-width: 0.5em;
-  background-image: url(images/leftarrow.svg);
-}
-.katex .xleftarrow {
-  height: 0.522em;
-  min-width: 0.783em;
-  background-image: url(images/leftarrow.svg);
-}
-.katex .overbrace {
-  height: 0.548em;
-  min-width: 1.6em;
-  background-image: url(images/overbrace.svg);
-}
-.katex .underbrace {
-  height: 0.548em;
-  min-width: 1.6em;
-  background-image: url(images/underbrace.svg);
-}
-.katex .leftrightarrow {
-  height: 0.522em;
-  min-width: 0.5em;
-  background-image: url(images/leftrightarrow.svg);
-}
-.katex .xleftrightarrow {
-  height: 0.522em;
-  min-width: 0.783em;
-  background-image: url(images/leftrightarrow.svg);
-}
-.katex .doublerightarrow {
-  height: 0.56em;
-  min-width: 0.783em;
-  background-image: url(images/doublerightarrow.svg);
-}
-.katex .doubleleftarrow {
-  height: 0.56em;
-  min-width: 0.783em;
-  background-image: url(images/doubleleftarrow.svg);
-}
-.katex .doubleleftrightarrow {
-  height: 0.56em;
-  min-width: 0.955em;
-  background-image: url(images/doubleleftrightarrow.svg);
-}
-.katex .leftharpoon {
-  height: 0.522em;
-  min-width: 0.5em;
-  background-image: url(images/leftharpoon.svg);
-}
-.katex .leftharpoon {
-  height: 0.522em;
-  min-width: 0.783em;
-  background-image: url(images/leftharpoon.svg);
-}
-.katex .rightharpoon {
-  height: 0.522em;
-  min-width: 0.5em;
-  background-image: url(images/rightharpoon.svg);
-}
-.katex .xrightharpoon {
-  height: 0.522em;
-  min-width: 0.783em;
-  background-image: url(images/rightharpoon.svg);
-}
-.katex .hookleftarrow {
-  height: 0.522em;
-  min-width: 0.87em;
-  background-image: url(images/hookleftarrow.svg);
-}
-.katex .hookrightarrow {
-  min-width: 0.87em;
-  height: 0.522em;
-  background-image: url(images/hookrightarrow.svg);
-}
-.katex .mapsto {
-  height: 0.522em;
-  min-width: 0.783em;
-  background-image: url(images/mapsto.svg);
-}
-.katex .leftharpoondown {
-  height: 0.522em;
-  min-width: 0.5em;
-  background-image: url(images/leftharpoondown.svg);
-}
-.katex .leftharpoondown {
-  height: 0.522em;
-  min-width: 0.783em;
-  background-image: url(images/leftharpoondown.svg);
-}
-.katex .rightharpoondown {
-  height: 0.522em;
-  min-width: 0.5em;
-  background-image: url(images/rightharpoondown.svg);
-}
-.katex .xrightharpoondown {
-  height: 0.522em;
-  min-width: 0.783em;
-  background-image: url(images/rightharpoondown.svg);
-}
-.katex .rightleftharpoons {
-  height: 0.716em;
-  min-width: 0.783em;
-  background-image: url(images/rightleftharpoons.svg);
-}
-.katex .leftrightharpoons {
-  height: 0.716em;
-  min-width: 0.783em;
-  background-image: url(images/leftrightharpoons.svg);
-}
-.katex .overgroup {
-  height: 0.342em;
-  min-width: 0.87em;
-  background-image: url(images/overgroup.svg);
-}
-.katex .undergroup {
-  height: 0.342em;
-  min-width: 0.87em;
-  background-image: url(images/undergroup.svg);
-}
-.katex .twoheadleftarrow {
-  height: 0.334em;
-  min-width: 0.86em;
-  background-image: url(images/twoheadleftarrow.svg);
-}
-.katex .twoheadrightarrow {
-  height: 0.334em;
-  min-width: 0.86em;
-  background-image: url(images/twoheadrightarrow.svg);
-}
-.katex .linesegment {
-  height: 0.414em;
-  min-width: 0.5em;
-  background-image: url(images/linesegment.svg);
-}
-.katex .longequal {
-  height: 0.334em;
-  min-width: 0.5em;
-  background-image: url(images/longequal.svg);
-}
-.katex .tofrom {
-  height: 0.528em;
-  min-width: 0.86em;
-  background-image: url(images/tofrom.svg);
-}
-.katex .cancel {
-  background: linear-gradient(to top left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%);
-}
-.katex .bcancel {
-  background: linear-gradient(to top right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%);
-}
-.katex .xcancel {
-  background: linear-gradient(to top left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%), linear-gradient(to top right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%);
-}
-@media screen and (min-width: 0\0) {
-  .katex .mask {
-    background-color: transparent !important;
-  }
-  .katex .bcancel,
-  .katex .bcancel-mask {
-    background-color: transparent !important;
-    background-image: url(images/bcancel.svg);
-  }
-  .katex .cancel,
-  .katex .cancel-mask {
-    background-color: transparent !important;
-    background-image: url(images/cancel.svg);
-  }
-  .katex .xcancel,
-  .katex .xcancel-mask {
-    background-color: transparent !important;
-    background-image: url(images/xcancel.svg);
-  }
-}
-@supports ((mask-image:none) or (-webkit-mask:none)) {
-  .katex .mask {
-    background-image: none;
-  }
-}
-@supports not ((mask-image:none) or (-webkit-mask:none)) {
-  .katex .mask {
-    background-color: transparent !important;
-  }
-  .katex .cancel-mask {
-    background-color: transparent !important;
-    background: linear-gradient(to top left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%);
-  }
-  .katex .bcancel-mask {
-    background-color: transparent !important;
-    background: linear-gradient(to top right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%);
-  }
-  .katex .xcancel-mask {
-    background-color: transparent !important;
-    background: linear-gradient(to top left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%), linear-gradient(to top right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%);
-  }
-}
-.katex .cancel-mask {
-  mask-image: linear-gradient(to top left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%);
-  -webkit-mask-image: linear-gradient(to top left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%);
-}
-.katex .bcancel-mask {
-  mask-image: linear-gradient(to top right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%);
-  -webkit-mask-image: linear-gradient(to top right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%);
-}
-.katex .xcancel-mask {
-  mask-image: linear-gradient(to top left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%), linear-gradient(to top right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%);
-  -webkit-mask-image: linear-gradient(to top left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%), linear-gradient(to top right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.04em - 0.5px), #000000 calc(50% - 0.04em), #000000 calc(50% + 0.04em), rgba(0, 0, 0, 0) calc(50% + 0.04em + 0.5px), rgba(0, 0, 0, 0) 100%);
-}
-@supports (-ms-touch-action: none) {
-  .katex .bcancel,
-  .katex .bcancel-mask {
-    background-color: transparent !important;
-    background-image: url(images/bcancel.svg);
-  }
-  .katex .cancel,
-  .katex .cancel-mask {
-    background-color: transparent !important;
-    background-image: url(images/cancel.svg);
-  }
-  .katex .xcancel,
-  .katex .xcancel-mask {
-    background-color: transparent !important;
-    background-image: url(images/xcancel.svg);
-  }
-}
-.katex .widehat1-mask {
-  -webkit-mask: url(images/widehat1.svg);
-  mask: url(images/widehat1.svg) no-repeat;
-}
-.katex .widehat2-mask {
-  -webkit-mask: url(images/widehat2.svg);
-  mask: url(images/widehat2.svg) no-repeat;
-}
-.katex .widehat3-mask {
-  -webkit-mask: url(images/widehat3.svg);
-  mask: url(images/widehat3.svg) no-repeat;
-}
-.katex .widehat4-mask {
-  -webkit-mask: url(images/widehat4.svg);
-  mask: url(images/widehat4.svg) no-repeat;
-}
-.katex .tilde1-mask {
-  -webkit-mask: url(images/tilde1.svg);
-  mask: url(images/tilde1.svg) no-repeat;
-}
-.katex .tilde2-mask {
-  -webkit-mask: url(images/tilde2.svg);
-  mask: url(images/tilde2.svg) no-repeat;
-}
-.katex .tilde3-mask {
-  -webkit-mask: url(images/tilde3.svg);
-  mask: url(images/tilde3.svg) no-repeat;
-}
-.katex .tilde4-mask {
-  -webkit-mask: url(images/tilde4.svg);
-  mask: url(images/tilde4.svg) no-repeat;
-}
-.katex .rightarrow-mask {
-  mask: url(images/rightarrow.svg);
-  -webkit-mask: url(images/rightarrow.svg);
-}
-.katex .xrightarrow-mask {
-  mask: url(images/rightarrow.svg);
-  -webkit-mask: url(images/rightarrow.svg);
-}
-.katex .leftarrow-mask {
-  mask: url(images/leftarrow.svg);
-  -webkit-mask: url(images/leftarrow.svg);
-}
-.katex .xleftarrow-mask {
-  mask: url(images/leftarrow.svg);
-  -webkit-mask: url(images/leftarrow.svg);
-}
-.katex .overbrace-mask {
-  min-width: 1.6em;
-  mask: url(images/overbrace.svg);
-  -webkit-mask: url(images/overbrace.svg);
-}
-.katex .underbrace-mask {
-  min-width: 1.6em;
-  mask: url(images/underbrace.svg);
-  -webkit-mask: url(images/underbrace.svg);
-}
-.katex .leftrightarrow-mask {
-  mask: url(images/leftrightarrow.svg);
-  -webkit-mask: url(images/leftrightarrow.svg);
-}
-.katex .xleftrightarrow-mask {
-  mask: url(images/leftrightarrow.svg);
-  -webkit-mask: url(images/leftrightarrow.svg);
-}
-.katex .doublerightarrow-mask {
-  mask: url(images/doublerightarrow.svg);
-  -webkit-mask: url(images/doublerightarrow.svg);
-}
-.katex .doubleleftarrow-mask {
-  mask: url(images/doubleleftarrow.svg);
-  -webkit-mask: url(images/doubleleftarrow.svg);
-}
-.katex .doubleleftrightarrow-mask {
-  mask: url(images/doubleleftrightarrow.svg);
-  -webkit-mask: url(images/doubleleftrightarrow.svg);
-}
-.katex .leftharpoon-mask {
-  mask: url(images/leftharpoon.svg);
-  -webkit-mask: url(images/leftharpoon.svg);
-}
-.katex .xleftharpoon-mask {
-  mask: url(images/leftharpoon.svg);
-  -webkit-mask: url(images/leftharpoon.svg);
-}
-.katex .rightharpoon-mask {
-  mask: url(images/rightharpoon.svg);
-  -webkit-mask: url(images/rightharpoon.svg);
-}
-.katex .xrightharpoon-mask {
-  mask: url(images/rightharpoon.svg);
-  -webkit-mask: url(images/rightharpoon.svg);
-}
-.katex .hookleftarrow-mask {
-  mask: url(images/hookleftarrow.svg);
-  -webkit-mask: url(images/hookleftarrow.svg);
-}
-.katex .hookrightarrow-mask {
-  mask: url(images/hookrightarrow.svg);
-  -webkit-mask: url(images/hookrightarrow.svg);
-}
-.katex .mapsto-mask {
-  mask: url(images/mapsto.svg);
-  -webkit-mask: url(images/mapsto.svg);
-}
-.katex .leftharpoondown-mask {
-  mask: url(images/leftharpoondown.svg);
-  -webkit-mask: url(images/leftharpoondown.svg);
-}
-.katex .xleftharpoondown-mask {
-  mask: url(images/leftharpoondown.svg);
-  -webkit-mask: url(images/leftharpoondown.svg);
-}
-.katex .rightharpoondown-mask {
-  mask: url(images/rightharpoondown.svg);
-  -webkit-mask: url(images/rightharpoondown.svg);
-}
-.katex .xrightharpoondown-mask {
-  mask: url(images/rightharpoondown.svg);
-  -webkit-mask: url(images/rightharpoondown.svg);
-}
-.katex .rightleftharpoons-mask {
-  mask: url(images/rightleftharpoons.svg);
-  -webkit-mask: url(images/rightleftharpoons.svg);
-}
-.katex .leftrightharpoons-mask {
-  mask: url(images/leftrightharpoons.svg);
-  -webkit-mask: url(images/leftrightharpoons.svg);
-}
-.katex .overgroup-mask {
-  mask: url(images/overgroup.svg);
-  -webkit-mask: url(images/overgroup.svg);
-}
-.katex .undergroup-mask {
-  mask: url(images/undergroup.svg);
-  -webkit-mask: url(images/undergroup.svg);
-}
-.katex .twoheadleftarrow-mask {
-  mask: url(images/twoheadleftarrow.svg);
-  -webkit-mask: url(images/twoheadleftarrow.svg);
-}
-.katex .twoheadrightarrow-mask {
-  mask: url(images/twoheadrightarrow.svg);
-  -webkit-mask: url(images/twoheadrightarrow.svg);
-}
-.katex .linesegment-mask {
-  mask: url(images/linesegment.svg);
-  -webkit-mask: url(images/linesegment.svg);
-}
-.katex .longequal-mask {
-  mask: url(images/longequal.svg);
-  -webkit-mask: url(images/longequal.svg);
-}
-.katex .tofrom-mask {
-  mask: url(images/tofrom.svg);
-  -webkit-mask: url(images/tofrom.svg);
 }
