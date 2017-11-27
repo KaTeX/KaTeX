@@ -735,18 +735,6 @@ groupTypes.rule = function(group, options) {
     return rule;
 };
 
-groupTypes.kern = function(group, options) {
-    // Make an empty span for the rule
-    const rule = makeSpan(["mord", "rule"], [], options);
-
-    if (group.value.dimension) {
-        const dimension = calculateSize(group.value.dimension, options);
-        rule.style.marginLeft = dimension + "em";
-    }
-
-    return rule;
-};
-
 groupTypes.accent = function(group, options) {
     // Accents are handled in the TeXbook pg. 443, rule 12.
     let base = group.value.base;

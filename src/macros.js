@@ -4,6 +4,7 @@
  * This can be used to define some commands in terms of others.
  */
 
+import fontMetricsData from "./fontMetricsData";
 import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
@@ -84,10 +85,6 @@ defineMacro("\u2119", "\\mathbb{P}");
 defineMacro("\u211A", "\\mathbb{Q}");
 defineMacro("\u211D", "\\mathbb{R}");
 defineMacro("\u2124", "\\mathbb{Z}");
-
-// We don't distinguish between math and nonmath kerns.
-// (In TeX, the mu unit works only with \mkern.)
-defineMacro("\\mkern", "\\kern");
 
 // \llap and \rlap render their contents in text mode
 defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
@@ -269,6 +266,37 @@ defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
+
+// \def\TeX{T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX\@}
+// TODO: Doesn't normally work in math mode because \@ fails.  KaTeX doesn't
+// support \@ yet, so that's omitted, and we add \text so that the result
+// doesn't look funny in math mode.
+defineMacro("\\TeX", "\\textrm{T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX}");
+
+// \DeclareRobustCommand{\LaTeX}{L\kern-.36em%
+//         {\sbox\z@ T%
+//          \vbox to\ht\z@{\hbox{\check@mathfonts
+//                               \fontsize\sf@size\z@
+//                               \math@fontsfalse\selectfont
+//                               A}%
+//                         \vss}%
+//         }%
+//         \kern-.15em%
+//         \TeX}
+// This code aligns the top of the A with the T (from the perspective of TeX's
+// boxes, though visually the A appears to extend above slightly).
+// We compute the corresponding \raisebox when A is rendered at \scriptsize,
+// which is size3, which has a scale factor of 0.7 (see Options.js).
+const latexRaiseA = fontMetricsData['Main-Regular']["T".charCodeAt(0)][1] -
+    0.7 * fontMetricsData['Main-Regular']["A".charCodeAt(0)][1] + "em";
+defineMacro("\\LaTeX",
+    `\\textrm{L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    "\\kern-.15em\\TeX}");
+
+// New KaTeX logo based on tweaking LaTeX logo
+defineMacro("\\KaTeX",
+    `\\textrm{K\\kern-.17em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    "\\kern-.15em\\TeX}");
 
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
 // \def\@hspace#1{\hskip  #1\relax}

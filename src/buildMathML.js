@@ -468,13 +468,6 @@ groupTypes.rule = function(group) {
     return node;
 };
 
-groupTypes.kern = function(group) {
-    // TODO(kevin): Figure out if there's a way to add space in MathML
-    const node = new mathMLTree.MathNode("mrow");
-
-    return node;
-};
-
 groupTypes.mclass = function(group, options) {
     const inner = buildExpression(group.value.value, options);
     return new mathMLTree.MathNode("mstyle", inner);

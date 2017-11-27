@@ -119,12 +119,15 @@ GroupMacros:
         \endExp: \egroup
     tex: \startExp a+b\endExp
 HorizontalBraces: \overbrace{\displaystyle{\oint_S{\vec E\cdot\hat n\,\mathrm d a}}}^\text{emf} = \underbrace{\frac{q_{\text{enc}}}{\varepsilon_0}}_{\text{charge}}
-KaTeX: \KaTeX
+KaTeX:
+    tex: \KaTeX
+    nolatex: \KaTeX not supported by LaTeX
 Kern:
     tex: \frac{a\kern{1em}b}{c}a\kern{1em}b\kern{1ex}c\kern{-0.25em}d
     nolatex: LaTeX fails to typeset this, “Missing number, treated as zero.”
 Lap: ab\mathllap{f}cd\mathrlap{g}hij\mathclap{k}lm \; ab\llap{f}cd\rlap{g}hij\clap{k}lm
 LargeRuleNumerator: \frac{\textcolor{blue}{\rule{1em}{2em}}}{x}
+LaTeX: \text{\LaTeX}, \text{\TeX}
 LeftRight: \left( x^2 \right) \left\{ x^{x^{x^{x^x}}} \right.
 LeftRightListStyling: a+\left(x+y\right)-x
 LeftRightMiddle: \left( x^2 \middle/ \right) \left\{ x^{x^{x^{x^x}}} \middle/ y \right.\left(x\middle|y\,\middle|\,z\right)
