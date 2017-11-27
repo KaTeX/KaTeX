@@ -118,6 +118,7 @@
     @ptperem: 10.0;
     @nulldelimiterspace: 1.2em / @ptperem;
 
+    @muspace: 0.055556em;       // 1mu
     @thinspace: 0.16667em;      // 3mu
     @mediumspace: 0.22222em;    // 4mu
     @thickspace: 0.27778em;     // 5mu
@@ -325,6 +326,10 @@
 
         &.negativethinspace {
             margin-left: -@thinspace;
+        }
+
+        &.muspace {
+            width: @muspace;
         }
 
         &.thinspace {
