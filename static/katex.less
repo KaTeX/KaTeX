@@ -298,7 +298,6 @@
         .frac-line {
             display: inline-block;
             width: 100%;
-            border-bottom-style: solid;
         }
     }
 
@@ -433,7 +432,6 @@
     .underline .underline-line {
         display: inline-block;
         width: 100%;
-        border-bottom-style: solid;
     }
 
     .sqrt {
@@ -551,7 +549,18 @@
         .vertical-separator {
             display: inline-block;
             margin: 0 -0.025em;
-            border-right: 0.05em solid black;
+            width: 0.05em;
+
+            // Set a min-width so it will display at least one screen pixel.
+            @media screen {
+                min-width: 1px;
+            }
+
+            // Modify min-width for retina displays. Don't force two screen pixels.
+            @media screen and (-webkit-min-device-pixel-ratio: 2.0),
+                screen and (min-resolution: 192dpi) {
+                min-width: 0.5px;
+            }
         }
 
         .arraycolsep {

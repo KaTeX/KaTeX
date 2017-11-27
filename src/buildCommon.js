@@ -1,3 +1,4 @@
+// @flow
 /* eslint no-console:0 */
 /**
  * This module contains general functions that can be used for building
@@ -8,6 +9,12 @@ import domTree from "./domTree";
 import fontMetrics from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
+
+import type Options from "./Options";
+import type ParseNode from "./ParseNode";
+import type {CharacterMetrics} from "./fontMetrics";
+import type {Mode} from "./types";
+import type {DomChildNode, CombinableDomNode} from "./domTree";
 
 // The following have to be loaded from Main-Italic font, using class mainit
 const mainitLetters = [
@@ -20,7 +27,12 @@ const mainitLetters = [
  * Looks up the given symbol in fontMetrics, after applying any symbol
  * replacements defined in symbol.js
  */
-const lookupSymbol = function(value, fontFamily, mode) {
+const lookupSymbol = function(
+    value: string,
+    // TODO(#963): Use a union type for this.
+    fontFamily: string,
+    mode: Mode,
+): {value: string, metrics: ?CharacterMetrics} {
     // Replace the value with its replaced value from symbol.js
     if (symbols[mode][value] && symbols[mode][value].replace) {
         value = symbols[mode][value].replace;
@@ -39,8 +51,15 @@ const lookupSymbol = function(value, fontFamily, mode) {
  * TODO: make argument order closer to makeSpan
  * TODO: add a separate argument for math class (e.g. `mop`, `mbin`), which
  * should if present come first in `classes`.
+ * TODO(#953): Make `options` mandatory and always pass it in.
  */
-const makeSymbol = function(value, fontFamily, mode, options, classes) {
+const makeSymbol = function(
+    value: string,
+    fontFamily: string,
+    mode: Mode,
+    options?: Options,
+    classes?: string[],
+): domTree.symbolNode {
     const lookup = lookupSymbol(value, fontFamily, mode);
     const metrics = lookup.metrics;
     value = lookup.value;
@@ -67,8 +86,9 @@ const makeSymbol = function(value, fontFamily, mode, options, classes) {
         if (options.style.isTight()) {
             symbolNode.classes.push("mtight");
         }
-        if (options.getColor()) {
-            symbolNode.style.color = options.getColor();
+        const color = options.getColor();
+        if (color) {
+            symbolNode.style.color = color;
         }
     }
 
@@ -78,8 +98,15 @@ const makeSymbol = function(value, fontFamily, mode, options, classes) {
 /**
  * Makes a symbol in Main-Regular or AMS-Regular.
  * Used for rel, bin, open, close, inner, and punct.
+ *
+ * TODO(#953): Make `options` mandatory and always pass it in.
  */
-const mathsym = function(value, mode, options, classes) {
+const mathsym = function(
+    value: string,
+    mode: Mode,
+    options?: Options,
+    classes?: string[] = [],
+): domTree.symbolNode {
     // Decide what font to render the symbol in by its entry in the symbols
     // table.
     // Have a special case for when the value = \ because the \ is used as a
@@ -97,7 +124,13 @@ const mathsym = function(value, mode, options, classes) {
 /**
  * Makes a symbol in the default font for mathords and textords.
  */
-const mathDefault = function(value, mode, options, classes, type) {
+const mathDefault = function(
+    value: string,
+    mode: Mode,
+    options: Options,
+    classes: string[],
+    type: string, // TODO(#892): Use ParseNode type here.
+): domTree.symbolNode {
     if (type === "mathord") {
         const fontLookup = mathit(value, mode, options, classes);
         return makeSymbol(value, fontLookup.fontName, mode, options,
@@ -123,7 +156,12 @@ const mathDefault = function(value, mode, options, classes, type) {
  * depending on the symbol.  Use this function instead of fontMap for font
  * "mathit".
  */
-const mathit = function(value, mode, options, classes) {
+const mathit = function(
+    value: string,
+    mode: Mode,
+    options: Options,
+    classes: string[],
+): {| fontName: string, fontClass: string |} {
     if (/[0-9]/.test(value.charAt(0)) ||
             // glyphs for \imath and \jmath do not exist in Math-Italic so we
             // need to use Main-Italic instead
@@ -143,7 +181,11 @@ const mathit = function(value, mode, options, classes) {
 /**
  * Makes either a mathord or textord in the correct font and color.
  */
-const makeOrd = function(group, options, type) {
+const makeOrd = function(
+    group: ParseNode,
+    options: Options,
+    type: string, // TODO(#892): Use ParseNode type here.
+): domTree.symbolNode {
     const mode = group.mode;
     const value = group.value;
 
@@ -172,7 +214,9 @@ const makeOrd = function(group, options, type) {
  * Combine as many characters as possible in the given array of characters
  * via their tryCombine method.
  */
-const tryCombineChars = function(chars) {
+const tryCombineChars = function(
+    chars: CombinableDomNode[],
+): CombinableDomNode[] {
     for (let i = 0; i < chars.length - 1; i++) {
         if (chars[i].tryCombine(chars[i + 1])) {
             chars.splice(i + 1, 1);
@@ -186,22 +230,22 @@ const tryCombineChars = function(chars) {
  * Calculate the height, depth, and maxFontSize of an element based on its
  * children.
  */
-const sizeElementFromChildren = function(elem) {
+const sizeElementFromChildren = function(
+    elem: domTree.span | domTree.anchor | domTree.documentFragment,
+) {
     let height = 0;
     let depth = 0;
     let maxFontSize = 0;
 
-    if (elem.children) {
-        for (let i = 0; i < elem.children.length; i++) {
-            if (elem.children[i].height > height) {
-                height = elem.children[i].height;
-            }
-            if (elem.children[i].depth > depth) {
-                depth = elem.children[i].depth;
-            }
-            if (elem.children[i].maxFontSize > maxFontSize) {
-                maxFontSize = elem.children[i].maxFontSize;
-            }
+    for (const child of elem.children) {
+        if (child.height > height) {
+            height = child.height;
+        }
+        if (child.depth > depth) {
+            depth = child.depth;
+        }
+        if (child.maxFontSize > maxFontSize) {
+            maxFontSize = child.maxFontSize;
         }
     }
 
@@ -213,12 +257,16 @@ const sizeElementFromChildren = function(elem) {
 /**
  * Makes a span with the given list of classes, list of children, and options.
  *
- * TODO: Ensure that `options` is always provided (currently some call sites
- * don't pass it).
+ * TODO(#953): Ensure that `options` is always provided (currently some call
+ * sites don't pass it) and make the type below mandatory.
  * TODO: add a separate argument for math class (e.g. `mop`, `mbin`), which
  * should if present come first in `classes`.
  */
-const makeSpan = function(classes, children, options) {
+const makeSpan = function(
+    classes?: string[],
+    children?: DomChildNode[],
+    options?: Options,
+): domTree.span {
     const span = new domTree.span(classes, children, options);
 
     sizeElementFromChildren(span);
@@ -227,10 +275,30 @@ const makeSpan = function(classes, children, options) {
 };
 
 /**
+ * Makes an anchor with the given href, list of classes, list of children,
+ * and options.
+ */
+const makeAnchor = function(
+    href: string,
+    classes: string[],
+    children: DomChildNode[],
+    options: Options,
+) {
+    const anchor = new domTree.anchor(href, classes, children, options);
+
+    sizeElementFromChildren(anchor);
+
+    return anchor;
+};
+
+/**
  * Prepends the given children to the given span, updating height, depth, and
  * maxFontSize.
  */
-const prependChildren = function(span, children) {
+const prependChildren = function(
+    span: domTree.span,
+    children: DomChildNode[],
+) {
     span.children = children.concat(span.children);
 
     sizeElementFromChildren(span);
@@ -239,7 +307,9 @@ const prependChildren = function(span, children) {
 /**
  * Makes a document fragment with the given list of children.
  */
-const makeFragment = function(children) {
+const makeFragment = function(
+    children: DomChildNode[],
+): domTree.documentFragment {
     const fragment = new domTree.documentFragment(children);
 
     sizeElementFromChildren(fragment);
@@ -248,11 +318,21 @@ const makeFragment = function(children) {
 };
 
 
-// TODO(#939): Uncomment and use VListParam as the type of makeVList's first param.
-/*
-type VListElem =
-    {type: "elem", elem: DomChildNode, marginLeft?: string, marginRight?: string};
-type VListKern = {type: "kern", size: number};
+// These are exact object types to catch typos in the names of the optional fields.
+type VListElem = {|
+    type: "elem",
+    elem: DomChildNode,
+    marginLeft?: string,
+    marginRight?: string,
+|};
+type VListElemAndShift = {|
+    type: "elem",
+    elem: DomChildNode,
+    shift: number,
+    marginLeft?: string,
+    marginRight?: string,
+|};
+type VListKern = {| type: "kern", size: number |};
 
 // A list of child or kern nodes to be stacked on top of each other (i.e. the
 // first element will be at the bottom, and the last at the top).
@@ -261,45 +341,44 @@ type VListChild = VListElem | VListKern;
 type VListParam = {|
     // Each child contains how much it should be shifted downward.
     positionType: "individualShift",
-    children: (VListElem & {shift: number})[],
+    children: VListElemAndShift[],
 |} | {|
     // "top": The positionData specifies the topmost point of the vlist (note this
     //        is expected to be a height, so positive values move up).
     // "bottom": The positionData specifies the bottommost point of the vlist (note
     //           this is expected to be a depth, so positive values move down).
     // "shift": The vlist will be positioned such that its baseline is positionData
-    //          away from the baseline of the first child. Positive values move
-    //          downwards.
+    //          away from the baseline of the first child which MUST be an
+    //          "elem". Positive values move downwards.
     positionType: "top" | "bottom" | "shift",
     positionData: number,
     children: VListChild[],
 |} | {|
     // The vlist is positioned so that its baseline is aligned with the baseline
-    // of the first child. This is equivalent to "shift" with positionData=0.
+    // of the first child which MUST be an "elem". This is equivalent to "shift"
+    // with positionData=0.
     positionType: "firstBaseline",
     children: VListChild[],
 |};
-*/
 
-/**
- * Makes a vertical list by stacking elements and kerns on top of each other.
- * Allows for many different ways of specifying the positioning method.
- *
- * See parameter documentation on the type documentation above.
- */
-const makeVList = function({positionType, positionData, children}, options) {
-    let depth;
-    let currPos;
-    let i;
-    if (positionType === "individualShift") {
-        const oldChildren = children;
-        children = [oldChildren[0]];
 
-        // Add in kerns to the list of children to get each element to be
+// Computes the updated `children` list and the overall depth.
+//
+// This helper function for makeVList makes it easier to enforce type safety by
+// allowing early exits (returns) in the logic.
+const getVListChildrenAndDepth = function(params: VListParam): {
+    children: (VListChild | VListElemAndShift)[] | VListChild[],
+    depth: number,
+} {
+    if (params.positionType === "individualShift") {
+        const oldChildren = params.children;
+        const children: (VListChild | VListElemAndShift)[] = [oldChildren[0]];
+
+        // Add in kerns to the list of params.children to get each element to be
         // shifted to the correct specified shift
-        depth = -oldChildren[0].shift - oldChildren[0].elem.depth;
-        currPos = depth;
-        for (i = 1; i < oldChildren.length; i++) {
+        const depth = -oldChildren[0].shift - oldChildren[0].elem.depth;
+        let currPos = depth;
+        for (let i = 1; i < oldChildren.length; i++) {
             const diff = -oldChildren[i].shift - currPos -
                 oldChildren[i].elem.depth;
             const size = diff -
@@ -308,30 +387,50 @@ const makeVList = function({positionType, positionData, children}, options) {
 
             currPos = currPos + diff;
 
-            children.push({type: "kern", size: size});
+            children.push({type: "kern", size});
             children.push(oldChildren[i]);
         }
-    } else if (positionType === "top") {
+
+        return {children, depth};
+    }
+
+    let depth;
+    if (params.positionType === "top") {
         // We always start at the bottom, so calculate the bottom by adding up
         // all the sizes
-        let bottom = positionData;
-        for (i = 0; i < children.length; i++) {
-            if (children[i].type === "kern") {
-                bottom -= children[i].size;
-            } else {
-                bottom -= children[i].elem.height + children[i].elem.depth;
-            }
+        let bottom = params.positionData;
+        for (const child of params.children) {
+            bottom -= child.type === "kern"
+                ? child.size
+                : child.elem.height + child.elem.depth;
         }
         depth = bottom;
-    } else if (positionType === "bottom") {
-        depth = -positionData;
-    } else if (positionType === "shift") {
-        depth = -children[0].elem.depth - positionData;
-    } else if (positionType === "firstBaseline") {
-        depth = -children[0].elem.depth;
+    } else if (params.positionType === "bottom") {
+        depth = -params.positionData;
     } else {
-        depth = 0;
+        const firstChild = params.children[0];
+        if (firstChild.type !== "elem") {
+            throw new Error('First child must have type "elem".');
+        }
+        if (params.positionType === "shift") {
+            depth = -firstChild.elem.depth - params.positionData;
+        } else if (params.positionType === "firstBaseline") {
+            depth = -firstChild.elem.depth;
+        } else {
+            throw new Error(`Invalid positionType ${params.positionType}.`);
+        }
     }
+    return {children: params.children, depth};
+};
+
+/**
+ * Makes a vertical list by stacking elements and kerns on top of each other.
+ * Allows for many different ways of specifying the positioning method.
+ *
+ * See VListParam documentation above.
+ */
+const makeVList = function(params: VListParam, options: Options): domTree.span {
+    const {children, depth} = getVListChildrenAndDepth(params);
 
     // Create a strut that is taller than any list item. The strut is added to
     // each item, where it will determine the item's baseline. Since it has
@@ -341,10 +440,10 @@ const makeVList = function({positionType, positionData, children}, options) {
     // be positioned precisely without worrying about font ascent and
     // line-height.
     let pstrutSize = 0;
-    for (i = 0; i < children.length; i++) {
-        if (children[i].type === "elem") {
-            const child = children[i].elem;
-            pstrutSize = Math.max(pstrutSize, child.maxFontSize, child.height);
+    for (const child of children) {
+        if (child.type === "elem") {
+            const elem = child.elem;
+            pstrutSize = Math.max(pstrutSize, elem.maxFontSize, elem.height);
         }
     }
     pstrutSize += 2;
@@ -355,24 +454,24 @@ const makeVList = function({positionType, positionData, children}, options) {
     const realChildren = [];
     let minPos = depth;
     let maxPos = depth;
-    currPos = depth;
-    for (i = 0; i < children.length; i++) {
-        if (children[i].type === "kern") {
-            currPos += children[i].size;
+    let currPos = depth;
+    for (const child of children) {
+        if (child.type === "kern") {
+            currPos += child.size;
         } else {
-            const child = children[i].elem;
+            const elem = child.elem;
 
-            const childWrap = makeSpan([], [pstrut, child]);
-            childWrap.style.top = (-pstrutSize - currPos - child.depth) + "em";
-            if (children[i].marginLeft) {
-                childWrap.style.marginLeft = children[i].marginLeft;
+            const childWrap = makeSpan([], [pstrut, elem]);
+            childWrap.style.top = (-pstrutSize - currPos - elem.depth) + "em";
+            if (child.marginLeft) {
+                childWrap.style.marginLeft = child.marginLeft;
             }
-            if (children[i].marginRight) {
-                childWrap.style.marginRight = children[i].marginRight;
+            if (child.marginRight) {
+                childWrap.style.marginRight = child.marginRight;
             }
 
             realChildren.push(childWrap);
-            currPos += child.height + child.depth;
+            currPos += elem.height + elem.depth;
         }
         minPos = Math.min(minPos, currPos);
         maxPos = Math.max(maxPos, currPos);
@@ -410,7 +509,9 @@ const makeVList = function({positionType, positionData, children}, options) {
 };
 
 // Converts verb group into body string, dealing with \verb* form
-const makeVerb = function(group, options) {
+const makeVerb = function(group: ParseNode, options: Options): string {
+    // TODO(#892): Make ParseNode type-safe and confirm `group.type` to guarantee
+    // that `group.value.body` is of type string.
     let text = group.value.body;
     if (group.value.star) {
         text = text.replace(/ /g, '\u2423');  // Open Box
@@ -423,7 +524,7 @@ const makeVerb = function(group, options) {
 
 // A map of spacing functions to their attributes, like size and corresponding
 // CSS class
-const spacingFunctions = {
+const spacingFunctions: {[string]: {| size: string, className: string |}} = {
     "\\qquad": {
         size: "2em",
         className: "qquad",
@@ -460,7 +561,7 @@ const spacingFunctions = {
  * - fontName: the "style" parameter to fontMetrics.getCharacterMetrics
  */
 // A map between tex font commands an MathML mathvariant attribute values
-const fontMap = {
+const fontMap: {[string]: {| variant: string, fontName: string |}} = {
     // styles
     "mathbf": {
         variant: "bold",
@@ -507,15 +608,16 @@ const fontMap = {
 };
 
 export default {
-    fontMap: fontMap,
-    makeSymbol: makeSymbol,
-    mathsym: mathsym,
-    makeSpan: makeSpan,
-    makeFragment: makeFragment,
-    makeVList: makeVList,
-    makeOrd: makeOrd,
-    makeVerb: makeVerb,
-    tryCombineChars: tryCombineChars,
-    prependChildren: prependChildren,
-    spacingFunctions: spacingFunctions,
+    fontMap,
+    makeSymbol,
+    mathsym,
+    makeSpan,
+    makeAnchor,
+    makeFragment,
+    makeVList,
+    makeOrd,
+    makeVerb,
+    tryCombineChars,
+    prependChildren,
+    spacingFunctions,
 };

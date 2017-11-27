@@ -158,7 +158,7 @@ export const buildExpression = function(expression, options, isRealGroup) {
 };
 
 // Return math atom class (mclass) of a domTree.
-const getTypeOfDomTree = function(node) {
+export const getTypeOfDomTree = function(node) {
     if (node instanceof domTree.documentFragment) {
         if (node.children.length) {
             return getTypeOfDomTree(
@@ -475,9 +475,11 @@ groupTypes.spacing = function(group, options) {
 };
 
 export const makeLineSpan = function(className, options, thickness) {
-    const line = makeSpan([className], [], options);
+    // Fill the entire span instead of just a border. That way, the min-height
+    // value in katex.less will ensure that at least one screen pixel displays.
+    const line = stretchy.ruleSpan(className, options);
     line.height = thickness || options.fontMetrics().defaultRuleThickness;
-    line.style.borderBottomWidth = line.height + "em";
+    line.style.height = line.height + "em";
     line.maxFontSize = 1.0;
     return line;
 };

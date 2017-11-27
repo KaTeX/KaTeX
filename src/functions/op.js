@@ -90,38 +90,58 @@ const htmlBuilder = (group, options) => {
         // in a new span so it is an inline, and works.
         base = buildCommon.makeSpan([], [base]);
 
-        let supm;
-        let supKern;
-        let subm = {height: 0, depth: 0};  // Make flow happy
-        let subKern;
-        let newOptions;
+        let sub;
+        let sup;
         // We manually have to handle the superscripts and subscripts. This,
         // aside from the kern calculations, is copied from supsub.
         if (supGroup) {
-            newOptions = options.havingStyle(style.sup());
-            supm = html.buildGroup(supGroup, newOptions, options);
+            const elem = html.buildGroup(
+                supGroup, options.havingStyle(style.sup()), options);
 
-            supKern = Math.max(
-                options.fontMetrics().bigOpSpacing1,
-                options.fontMetrics().bigOpSpacing3 - supm.depth);
+            sup = {
+                elem,
+                kern: Math.max(
+                    options.fontMetrics().bigOpSpacing1,
+                    options.fontMetrics().bigOpSpacing3 - elem.depth),
+            };
         }
 
         if (subGroup) {
-            newOptions = options.havingStyle(style.sub());
-            subm = html.buildGroup(subGroup, newOptions, options);
+            const elem = html.buildGroup(
+                subGroup, options.havingStyle(style.sub()), options);
 
-            subKern = Math.max(
-                options.fontMetrics().bigOpSpacing2,
-                options.fontMetrics().bigOpSpacing4 - subm.height);
+            sub = {
+                elem,
+                kern: Math.max(
+                    options.fontMetrics().bigOpSpacing2,
+                    options.fontMetrics().bigOpSpacing4 - elem.height),
+            };
         }
 
         // Build the final group as a vlist of the possible subscript, base,
         // and possible superscript.
         let finalGroup;
-        let top;
-        let bottom;
-        if (!supGroup) {
-            top = base.height - baseShift;
+        if (sup && sub) {
+            const bottom = options.fontMetrics().bigOpSpacing5 +
+                sub.elem.height + sub.elem.depth +
+                sub.kern +
+                base.depth + baseShift;
+
+            finalGroup = buildCommon.makeVList({
+                positionType: "bottom",
+                positionData: bottom,
+                children: [
+                    {type: "kern", size: options.fontMetrics().bigOpSpacing5},
+                    {type: "elem", elem: sub.elem, marginLeft: -slant + "em"},
+                    {type: "kern", size: sub.kern},
+                    {type: "elem", elem: base},
+                    {type: "kern", size: sup.kern},
+                    {type: "elem", elem: sup.elem, marginLeft: slant + "em"},
+                    {type: "kern", size: options.fontMetrics().bigOpSpacing5},
+                ],
+            }, options);
+        } else if (sub) {
+            const top = base.height - baseShift;
 
             // Shift the limits by the slant of the symbol. Note
             // that we are supposed to shift the limits by 1/2 of the slant,
@@ -132,48 +152,29 @@ const htmlBuilder = (group, options) => {
                 positionData: top,
                 children: [
                     {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                    {type: "elem", elem: subm, marginLeft: -slant + "em"},
-                    {type: "kern", size: subKern},
+                    {type: "elem", elem: sub.elem, marginLeft: -slant + "em"},
+                    {type: "kern", size: sub.kern},
                     {type: "elem", elem: base},
                 ],
             }, options);
-        } else if (!subGroup) {
-            bottom = base.depth + baseShift;
+        } else if (sup) {
+            const bottom = base.depth + baseShift;
 
             finalGroup = buildCommon.makeVList({
                 positionType: "bottom",
                 positionData: bottom,
                 children: [
                     {type: "elem", elem: base},
-                    {type: "kern", size: supKern},
-                    {type: "elem", elem: supm, marginLeft: slant + "em"},
+                    {type: "kern", size: sup.kern},
+                    {type: "elem", elem: sup.elem, marginLeft: slant + "em"},
                     {type: "kern", size: options.fontMetrics().bigOpSpacing5},
                 ],
             }, options);
-        } else if (!supGroup && !subGroup) {
+        } else {
             // This case probably shouldn't occur (this would mean the
             // supsub was sending us a group with no superscript or
             // subscript) but be safe.
             return base;
-        } else {
-            bottom = options.fontMetrics().bigOpSpacing5 +
-                subm.height + subm.depth +
-                subKern +
-                base.depth + baseShift;
-
-            finalGroup = buildCommon.makeVList({
-                positionType: "bottom",
-                positionData: bottom,
-                children: [
-                    {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                    {type: "elem", elem: subm, marginLeft: -slant + "em"},
-                    {type: "kern", size: subKern},
-                    {type: "elem", elem: base},
-                    {type: "kern", size: supKern},
-                    {type: "elem", elem: supm, marginLeft: slant + "em"},
-                    {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                ],
-            }, options);
         }
 
         return buildCommon.makeSpan(

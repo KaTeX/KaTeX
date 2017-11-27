@@ -82,7 +82,7 @@ defineSymbol(math, main, rel, "\u22a5", "\\perp");
 defineSymbol(math, main, rel, "\u2aaf", "\\preceq", true);
 defineSymbol(math, main, rel, "\u2ab0", "\\succeq", true);
 defineSymbol(math, main, rel, "\u2243", "\\simeq", true);
-defineSymbol(math, main, rel, "\u2223", "\\mid");
+defineSymbol(math, main, rel, "\u2223", "\\mid", true);
 defineSymbol(math, main, rel, "\u226a", "\\ll");
 defineSymbol(math, main, rel, "\u226b", "\\gg", true);
 defineSymbol(math, main, rel, "\u224d", "\\asymp", true);
@@ -108,22 +108,22 @@ defineSymbol(math, main, textord, "\u0023", "\\#");
 defineSymbol(text, main, textord, "\u0023", "\\#");
 defineSymbol(math, main, textord, "\u0026", "\\&");
 defineSymbol(text, main, textord, "\u0026", "\\&");
-defineSymbol(math, main, textord, "\u2135", "\\aleph");
-defineSymbol(math, main, textord, "\u2200", "\\forall");
+defineSymbol(math, main, textord, "\u2135", "\\aleph", true);
+defineSymbol(math, main, textord, "\u2200", "\\forall", true);
 defineSymbol(math, main, textord, "\u210f", "\\hbar");
-defineSymbol(math, main, textord, "\u2203", "\\exists");
-defineSymbol(math, main, textord, "\u2207", "\\nabla");
-defineSymbol(math, main, textord, "\u266d", "\\flat");
-defineSymbol(math, main, textord, "\u2113", "\\ell");
-defineSymbol(math, main, textord, "\u266e", "\\natural");
-defineSymbol(math, main, textord, "\u2663", "\\clubsuit");
-defineSymbol(math, main, textord, "\u2118", "\\wp");
-defineSymbol(math, main, textord, "\u266f", "\\sharp");
-defineSymbol(math, main, textord, "\u2662", "\\diamondsuit");
-defineSymbol(math, main, textord, "\u211c", "\\Re");
-defineSymbol(math, main, textord, "\u2661", "\\heartsuit");
-defineSymbol(math, main, textord, "\u2111", "\\Im");
-defineSymbol(math, main, textord, "\u2660", "\\spadesuit");
+defineSymbol(math, main, textord, "\u2203", "\\exists", true);
+defineSymbol(math, main, textord, "\u2207", "\\nabla", true);
+defineSymbol(math, main, textord, "\u266d", "\\flat", true);
+defineSymbol(math, main, textord, "\u2113", "\\ell", true);
+defineSymbol(math, main, textord, "\u266e", "\\natural", true);
+defineSymbol(math, main, textord, "\u2663", "\\clubsuit", true);
+defineSymbol(math, main, textord, "\u2118", "\\wp", true);
+defineSymbol(math, main, textord, "\u266f", "\\sharp", true);
+defineSymbol(math, main, textord, "\u2662", "\\diamondsuit", true);
+defineSymbol(math, main, textord, "\u211c", "\\Re", true);
+defineSymbol(math, main, textord, "\u2661", "\\heartsuit", true);
+defineSymbol(math, main, textord, "\u2111", "\\Im", true);
+defineSymbol(math, main, textord, "\u2660", "\\spadesuit", true);
 
 // Math and Text
 defineSymbol(math, main, textord, "\u2020", "\\dag");
@@ -251,11 +251,11 @@ defineSymbol(math, ams, textord, "\u25ca", "\\lozenge");
 defineSymbol(math, ams, textord, "\u24c8", "\\circledS");
 defineSymbol(math, ams, textord, "\u00ae", "\\circledR");
 defineSymbol(text, ams, textord, "\u00ae", "\\circledR");
-defineSymbol(math, ams, textord, "\u2221", "\\measuredangle");
+defineSymbol(math, ams, textord, "\u2221", "\\measuredangle", true);
 defineSymbol(math, ams, textord, "\u2204", "\\nexists");
 defineSymbol(math, ams, textord, "\u2127", "\\mho");
-defineSymbol(math, ams, textord, "\u2132", "\\Finv");
-defineSymbol(math, ams, textord, "\u2141", "\\Game");
+defineSymbol(math, ams, textord, "\u2132", "\\Finv", true);
+defineSymbol(math, ams, textord, "\u2141", "\\Game", true);
 defineSymbol(math, ams, textord, "\u006b", "\\Bbbk");
 defineSymbol(math, ams, textord, "\u2035", "\\backprime");
 defineSymbol(math, ams, textord, "\u25b2", "\\blacktriangle");
@@ -263,22 +263,24 @@ defineSymbol(math, ams, textord, "\u25bc", "\\blacktriangledown");
 defineSymbol(math, ams, textord, "\u25a0", "\\blacksquare");
 defineSymbol(math, ams, textord, "\u29eb", "\\blacklozenge");
 defineSymbol(math, ams, textord, "\u2605", "\\bigstar");
-defineSymbol(math, ams, textord, "\u2222", "\\sphericalangle");
-defineSymbol(math, ams, textord, "\u2201", "\\complement");
-defineSymbol(math, ams, textord, "\u00f0", "\\eth");
+defineSymbol(math, ams, textord, "\u2222", "\\sphericalangle", true);
+defineSymbol(math, ams, textord, "\u2201", "\\complement", true);
+// unicode-math maps U+F0 to \matheth. We map to AMS function \eth
+defineSymbol(math, ams, textord, "\u00f0", "\\eth", true);
 defineSymbol(math, ams, textord, "\u2571", "\\diagup");
 defineSymbol(math, ams, textord, "\u2572", "\\diagdown");
 defineSymbol(math, ams, textord, "\u25a1", "\\square");
 defineSymbol(math, ams, textord, "\u25a1", "\\Box");
 defineSymbol(math, ams, textord, "\u25ca", "\\Diamond");
-defineSymbol(math, ams, textord, "\u00a5", "\\yen");
-defineSymbol(math, ams, textord, "\u2713", "\\checkmark");
+// unicode-math maps U+A5 to \mathyen. We map to AMS function \yen
+defineSymbol(math, ams, textord, "\u00a5", "\\yen", true);
+defineSymbol(math, ams, textord, "\u2713", "\\checkmark", true);
 defineSymbol(text, ams, textord, "\u2713", "\\checkmark");
 
 // AMS Hebrew
-defineSymbol(math, ams, textord, "\u2136", "\\beth");
-defineSymbol(math, ams, textord, "\u2138", "\\daleth");
-defineSymbol(math, ams, textord, "\u2137", "\\gimel");
+defineSymbol(math, ams, textord, "\u2136", "\\beth", true);
+defineSymbol(math, ams, textord, "\u2138", "\\daleth", true);
+defineSymbol(math, ams, textord, "\u2137", "\\gimel", true);
 
 // AMS Greek
 defineSymbol(math, ams, textord, "\u03dd", "\\digamma");
@@ -353,10 +355,14 @@ defineSymbol(math, ams, rel, "\u226c", "\\between", true);
 defineSymbol(math, ams, rel, "\u22d4", "\\pitchfork", true);
 defineSymbol(math, ams, rel, "\u221d", "\\varpropto");
 defineSymbol(math, ams, rel, "\u25c0", "\\blacktriangleleft");
-defineSymbol(math, ams, rel, "\u2234", "\\therefore");
+// unicode-math says that \therefore is a mathord atom.
+// We kept the amssymb atom type, which is rel.
+defineSymbol(math, ams, rel, "\u2234", "\\therefore", true);
 defineSymbol(math, ams, rel, "\u220d", "\\backepsilon");
 defineSymbol(math, ams, rel, "\u25b6", "\\blacktriangleright");
-defineSymbol(math, ams, rel, "\u2235", "\\because");
+// unicode-math says that \because is a mathord atom.
+// We kept the amssymb atom type, which is rel.
+defineSymbol(math, ams, rel, "\u2235", "\\because", true);
 defineSymbol(math, ams, rel, "\u22d8", "\\llless");
 defineSymbol(math, ams, rel, "\u22d9", "\\gggtr");
 defineSymbol(math, ams, bin, "\u22b2", "\\lhd");
@@ -436,8 +442,8 @@ defineSymbol(text, main, textord, "%", "\\%");
 defineSymbol(math, main, textord, "_", "\\_");
 defineSymbol(text, main, textord, "_", "\\_");
 defineSymbol(text, main, textord, "_", "\\textunderscore");
-defineSymbol(math, main, textord, "\u2220", "\\angle");
-defineSymbol(math, main, textord, "\u221e", "\\infty");
+defineSymbol(math, main, textord, "\u2220", "\\angle", true);
+defineSymbol(math, main, textord, "\u221e", "\\infty", true);
 defineSymbol(math, main, textord, "\u2032", "\\prime");
 defineSymbol(math, main, textord, "\u25b3", "\\triangle");
 defineSymbol(math, main, textord, "\u0393", "\\Gamma", true);
@@ -563,7 +569,7 @@ defineSymbol(math, ams, bin, "\u22bb", "\\veebar", true);
 defineSymbol(math, main, bin, "\u2299", "\\odot", true);
 defineSymbol(math, main, bin, "\u2295", "\\oplus", true);
 defineSymbol(math, main, bin, "\u2297", "\\otimes", true);
-defineSymbol(math, main, textord, "\u2202", "\\partial");
+defineSymbol(math, main, textord, "\u2202", "\\partial", true);
 defineSymbol(math, main, bin, "\u2298", "\\oslash", true);
 defineSymbol(math, ams, bin, "\u229a", "\\circledcirc", true);
 defineSymbol(math, ams, bin, "\u22a1", "\\boxdot", true);
@@ -669,7 +675,7 @@ defineSymbol(text, main, textord, "\u00b0", "\\degree");
 // TODO: In LaTeX, \pounds can generate a different character in text and math
 // mode, but among our fonts, only Main-Italic defines this character "163".
 defineSymbol(math, main, mathord, "\u00a3", "\\pounds");
-defineSymbol(math, main, mathord, "\u00a3", "\\mathsterling");
+defineSymbol(math, main, mathord, "\u00a3", "\\mathsterling", true);
 defineSymbol(text, main, mathord, "\u00a3", "\\pounds");
 defineSymbol(text, main, mathord, "\u00a3", "\\textsterling");
 defineSymbol(math, ams, textord, "\u2720", "\\maltese");

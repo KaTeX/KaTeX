@@ -759,6 +759,9 @@ export default class Parser {
         if (innerMode === "size") {
             return this.parseSizeGroup(optional);
         }
+        if (innerMode === "url") {
+            return this.parseUrlGroup(optional);
+        }
 
         // By the time we get here, innerMode is one of "text" or "math".
         // We switch the mode of the parser, recurse, then restore the old mode.
@@ -800,6 +803,52 @@ export default class Parser {
             }
             lastToken = this.nextToken;
             str += lastToken.text;
+            this.consume();
+        }
+        this.mode = outerMode;
+        this.expect(optional ? "]" : "}");
+        return firstToken.range(lastToken, str);
+    }
+
+    /**
+     * Parses a group, essentially returning the string formed by the
+     * brace-enclosed tokens plus some position information, possibly
+     * with nested braces.
+     *
+     * @param {string} modeName  Used to describe the mode in error messages
+     * @param {boolean=} optional  Whether the group is optional or required
+     * @return {?Token}
+     */
+    parseStringGroupWithBalancedBraces(modeName, optional) {
+        if (optional && this.nextToken.text !== "[") {
+            return null;
+        }
+        const outerMode = this.mode;
+        this.mode = "text";
+        this.expect(optional ? "[" : "{");
+        let str = "";
+        let nest = 0;
+        const firstToken = this.nextToken;
+        let lastToken = firstToken;
+        while (nest > 0 || this.nextToken.text !== (optional ? "]" : "}")) {
+            if (this.nextToken.text === "EOF") {
+                throw new ParseError(
+                    "Unexpected end of input in " + modeName,
+                    firstToken.range(this.nextToken, str));
+            }
+            lastToken = this.nextToken;
+            str += lastToken.text;
+            if (lastToken.text === "{") {
+                nest += 1;
+            } else if (lastToken.text === "}") {
+                if (nest <= 0) {
+                    throw new ParseError(
+                        "Unbalanced brace of input in " + modeName,
+                        firstToken.range(this.nextToken, str));
+                } else {
+                    nest -= 1;
+                }
+            }
             this.consume();
         }
         this.mode = outerMode;
@@ -850,6 +899,23 @@ export default class Parser {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
         return newArgument(new ParseNode("color", match[0], this.mode), res);
+    }
+
+    /**
+     * Parses a url string.
+     */
+    parseUrlGroup(optional) {
+        const res = this.parseStringGroupWithBalancedBraces("url", optional);
+        if (!res) {
+            return null;
+        }
+        const raw = res.text;
+        // hyperref package allows backslashes alone in href, but doesn't generate
+        // valid links in such cases; we interpret this as "undefiend" behaviour,
+        // and keep them as-is. Some browser will replace backslashes with
+        // forward slashes.
+        const url = raw.replace(/\\([#$%&~_^{}])/g, '$1');
+        return newArgument(new ParseNode("url", url, this.mode), res);
     }
 
     /**
