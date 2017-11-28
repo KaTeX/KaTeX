@@ -9,6 +9,7 @@ import domTree from "./domTree";
 import fontMetrics from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
+import stretchy from "./stretchy";
 
 import type Options from "./Options";
 import type ParseNode from "./ParseNode";
@@ -272,6 +273,19 @@ const makeSpan = function(
     sizeElementFromChildren(span);
 
     return span;
+};
+
+const makeLineSpan = function(
+    className: string,
+    options: Options,
+) {
+    // Fill the entire span instead of just a border. That way, the min-height
+    // value in katex.less will ensure that at least one screen pixel displays.
+    const line = stretchy.ruleSpan(className, options);
+    line.height = options.fontMetrics().defaultRuleThickness;
+    line.style.height = line.height + "em";
+    line.maxFontSize = 1.0;
+    return line;
 };
 
 /**
@@ -612,6 +626,7 @@ export default {
     makeSymbol,
     mathsym,
     makeSpan,
+    makeLineSpan,
     makeAnchor,
     makeFragment,
     makeVList,

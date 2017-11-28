@@ -88,44 +88,11 @@ defineFunction(["\\fcolorbox"], {
     };
 });
 
-// An overline
-defineFunction(["\\overline"], {
-    numArgs: 1,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "overline",
-        body: body,
-    };
-});
+import "./functions/overline";
 
-// An underline
-defineFunction(["\\underline"], {
-    numArgs: 1,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "underline",
-        body: body,
-    };
-});
+import "./functions/underline";
 
-// A box of the width and height
-defineFunction(["\\rule"], {
-    numArgs: 2,
-    numOptionalArgs: 1,
-    argTypes: ["size", "size", "size"],
-}, function(context, args, optArgs) {
-    const shift = optArgs[0];
-    const width = args[0];
-    const height = args[1];
-    return {
-        type: "rule",
-        shift: shift && shift.value,
-        width: width.value,
-        height: height.value,
-    };
-});
+import "./functions/rule";
 
 import "./functions/kern";
 
