@@ -45,7 +45,7 @@ const stretchyCodePoint: {[string]: string} = {
     xleftrightharpoons: "\u21cb",
     xtwoheadleftarrow: "\u219e",
     xtwoheadrightarrow: "\u21a0",
-    xLongequal: "=",
+    xlongequal: "=",
     xtofrom: "\u21c4",
 };
 
@@ -121,7 +121,7 @@ const katexImagesData: {
     overrightharpoon: [["rightharpoon"], 0.888, 522, "xMaxYMin"],
     xrightharpoonup: [["rightharpoon"], 0.888, 522, "xMaxYMin"],
     xrightharpoondown: [["rightharpoondown"], 0.888, 522, "xMaxYMin"],
-    xLongequal: [["longequal"], 0.888, 334, "xMinYMin"],
+    xlongequal: [["longequal"], 0.888, 334, "xMinYMin"],
     xtwoheadleftarrow: [["twoheadleftarrow"], 0.888, 334, "xMinYMin"],
     xtwoheadrightarrow: [["twoheadrightarrow"], 0.888, 334, "xMaxYMin"],
 
