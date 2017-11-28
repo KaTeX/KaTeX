@@ -40,45 +40,9 @@ defineFunction(["\\sqrt"], {
     };
 });
 
-// Non-mathy text, possibly in a font
-const textFunctionFonts = {
-    "\\text": undefined, "\\textrm": "mathrm", "\\textsf": "mathsf",
-    "\\texttt": "mathtt", "\\textnormal": "mathrm", "\\textbf": "mathbf",
-    "\\textit": "textit",
-};
+import "./functions/color";
 
-defineFunction([
-    "\\text", "\\textrm", "\\textsf", "\\texttt", "\\textnormal",
-    "\\textbf", "\\textit",
-], {
-    numArgs: 1,
-    argTypes: ["text"],
-    greediness: 2,
-    allowedInText: true,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "text",
-        body: ordargument(body),
-        font: textFunctionFonts[context.funcName],
-    };
-});
-
-// A two-argument custom color
-defineFunction(["\\textcolor"], {
-    numArgs: 2,
-    allowedInText: true,
-    greediness: 3,
-    argTypes: ["color", "original"],
-}, function(context, args) {
-    const color = args[0];
-    const body = args[1];
-    return {
-        type: "color",
-        color: color.value,
-        value: ordargument(body),
-    };
-});
+import "./functions/text";
 
 // \color is handled in Parser.js's parseImplicitGroup
 defineFunction(["\\color"], {
@@ -217,34 +181,6 @@ const fontAliases = {
     "\\bold": "\\mathbf",
     "\\frak": "\\mathfrak",
 };
-
-// Single-argument color functions
-defineFunction([
-    "\\blue", "\\orange", "\\pink", "\\red",
-    "\\green", "\\gray", "\\purple",
-    "\\blueA", "\\blueB", "\\blueC", "\\blueD", "\\blueE",
-    "\\tealA", "\\tealB", "\\tealC", "\\tealD", "\\tealE",
-    "\\greenA", "\\greenB", "\\greenC", "\\greenD", "\\greenE",
-    "\\goldA", "\\goldB", "\\goldC", "\\goldD", "\\goldE",
-    "\\redA", "\\redB", "\\redC", "\\redD", "\\redE",
-    "\\maroonA", "\\maroonB", "\\maroonC", "\\maroonD", "\\maroonE",
-    "\\purpleA", "\\purpleB", "\\purpleC", "\\purpleD", "\\purpleE",
-    "\\mintA", "\\mintB", "\\mintC",
-    "\\grayA", "\\grayB", "\\grayC", "\\grayD", "\\grayE",
-    "\\grayF", "\\grayG", "\\grayH", "\\grayI",
-    "\\kaBlue", "\\kaGreen",
-], {
-    numArgs: 1,
-    allowedInText: true,
-    greediness: 3,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "color",
-        color: "katex-" + context.funcName.slice(1),
-        value: ordargument(body),
-    };
-});
 
 const singleCharIntegrals: {[string]: string} = {
     "\u222b": "\\int",

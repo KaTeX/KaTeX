@@ -158,45 +158,6 @@ groupTypes.ordgroup = function(group, options) {
     return node;
 };
 
-groupTypes.text = function(group, options) {
-    const body = group.value.body;
-
-    // Convert each element of the body into MathML, and combine consecutive
-    // <mtext> outputs into a single <mtext> tag.  In this way, we don't
-    // nest non-text items (e.g., $nested-math$) within an <mtext>.
-    const inner = [];
-    let currentText = null;
-    for (let i = 0; i < body.length; i++) {
-        const group = buildGroup(body[i], options);
-        if (group.type === 'mtext' && currentText != null) {
-            Array.prototype.push.apply(currentText.children, group.children);
-        } else {
-            inner.push(group);
-            if (group.type === 'mtext') {
-                currentText = group;
-            }
-        }
-    }
-
-    // If there is a single tag in the end (presumably <mtext>),
-    // just return it.  Otherwise, wrap them in an <mrow>.
-    if (inner.length === 1) {
-        return inner[0];
-    } else {
-        return new mathMLTree.MathNode("mrow", inner);
-    }
-};
-
-groupTypes.color = function(group, options) {
-    const inner = buildExpression(group.value.value, options);
-
-    const node = new mathMLTree.MathNode("mstyle", inner);
-
-    node.setAttribute("mathcolor", group.value.color);
-
-    return node;
-};
-
 groupTypes.supsub = function(group, options) {
     // Is the inner group a relevant horizonal brace?
     let isBrace = false;
