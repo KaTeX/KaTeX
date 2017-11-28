@@ -93,7 +93,7 @@ defineFunction({
         let ruleWidth;
         let ruleSpacing;
         if (group.value.hasBarLine) {
-            rule = html.makeLineSpan("frac-line", options);
+            rule = buildCommon.makeLineSpan("frac-line", options);
             ruleWidth = rule.height;
             ruleSpacing = rule.height;
         } else {
