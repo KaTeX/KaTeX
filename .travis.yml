@@ -1,6 +1,9 @@
 language: node_js
 node_js:
   - stable
+cache:
+  directories:
+    - node_modules
 sudo: required
 services:
   - docker
