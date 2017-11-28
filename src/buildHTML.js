@@ -305,28 +305,6 @@ groupTypes.ordgroup = function(group, options) {
     );
 };
 
-groupTypes.text = function(group, options) {
-    const newOptions = options.withFont(group.value.font);
-    const inner = buildExpression(group.value.body, newOptions, true);
-    buildCommon.tryCombineChars(inner);
-    return makeSpan(["mord", "text"],
-        inner, newOptions);
-};
-
-groupTypes.color = function(group, options) {
-    const elements = buildExpression(
-        group.value.value,
-        options.withColor(group.value.color),
-        false
-    );
-
-    // \color isn't supposed to affect the type of the elements it contains.
-    // To accomplish this, we wrap the results in a fragment, so the inner
-    // elements will be able to directly interact with their neighbors. For
-    // example, `\color{red}{2 +} 3` has the same spacing as `2 + 3`
-    return new buildCommon.makeFragment(elements);
-};
-
 groupTypes.supsub = function(group, options) {
     // Superscript and subscripts are handled in the TeXbook on page
     // 445-446, rules 18(a-f).
