@@ -451,9 +451,8 @@ defineFunction([
     "\\xleftrightarrow", "\\xLeftrightarrow", "\\xhookleftarrow",
     "\\xhookrightarrow", "\\xmapsto", "\\xrightharpoondown",
     "\\xrightharpoonup", "\\xleftharpoondown", "\\xleftharpoonup",
-    "\\xrightleftharpoons", "\\xleftrightharpoons", "\\xLongequal",
-    "\\xtwoheadrightarrow", "\\xtwoheadleftarrow", "\\xLongequal",
-    "\\xtofrom",
+    "\\xrightleftharpoons", "\\xleftrightharpoons", "\\xlongequal",
+    "\\xtwoheadrightarrow", "\\xtwoheadleftarrow", "\\xtofrom",
 ], {
     numArgs: 1,
     numOptionalArgs: 1,
