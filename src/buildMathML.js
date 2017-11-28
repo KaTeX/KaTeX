@@ -359,32 +359,6 @@ groupTypes.verb = function(group, options) {
     return node;
 };
 
-groupTypes.overline = function(group, options) {
-    const operator = new mathMLTree.MathNode(
-        "mo", [new mathMLTree.TextNode("\u203e")]);
-    operator.setAttribute("stretchy", "true");
-
-    const node = new mathMLTree.MathNode(
-        "mover",
-        [buildGroup(group.value.body, options), operator]);
-    node.setAttribute("accent", "true");
-
-    return node;
-};
-
-groupTypes.underline = function(group, options) {
-    const operator = new mathMLTree.MathNode(
-        "mo", [new mathMLTree.TextNode("\u203e")]);
-    operator.setAttribute("stretchy", "true");
-
-    const node = new mathMLTree.MathNode(
-        "munder",
-        [buildGroup(group.value.body, options), operator]);
-    node.setAttribute("accentunder", "true");
-
-    return node;
-};
-
 groupTypes.accentUnder = function(group, options) {
     const accentNode = stretchy.mathMLnode(group.value.label);
     const node = new mathMLTree.MathNode(
@@ -457,14 +431,6 @@ groupTypes.xArrow = function(group, options) {
     } else {
         node = new mathMLTree.MathNode("mover", [arrowNode]);
     }
-    return node;
-};
-
-groupTypes.rule = function(group) {
-    // TODO(emily): Figure out if there's an actual way to draw black boxes
-    // in MathML.
-    const node = new mathMLTree.MathNode("mrow");
-
     return node;
 };
 
