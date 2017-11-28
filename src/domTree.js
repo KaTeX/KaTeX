@@ -59,6 +59,7 @@ class span implements CombinableDomNode {
     children: DomChildNode[];
     height: number;
     depth: number;
+    width: ?number;
     maxFontSize: number;
     style: {[string]: string};
     attributes: {[string]: string};

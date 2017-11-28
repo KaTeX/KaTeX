@@ -305,28 +305,6 @@ groupTypes.ordgroup = function(group, options) {
     );
 };
 
-groupTypes.text = function(group, options) {
-    const newOptions = options.withFont(group.value.font);
-    const inner = buildExpression(group.value.body, newOptions, true);
-    buildCommon.tryCombineChars(inner);
-    return makeSpan(["mord", "text"],
-        inner, newOptions);
-};
-
-groupTypes.color = function(group, options) {
-    const elements = buildExpression(
-        group.value.value,
-        options.withColor(group.value.color),
-        false
-    );
-
-    // \color isn't supposed to affect the type of the elements it contains.
-    // To accomplish this, we wrap the results in a fragment, so the inner
-    // elements will be able to directly interact with their neighbors. For
-    // example, `\color{red}{2 +} 3` has the same spacing as `2 + 3`
-    return new buildCommon.makeFragment(elements);
-};
-
 groupTypes.supsub = function(group, options) {
     // Superscript and subscripts are handled in the TeXbook on page
     // 445-446, rules 18(a-f).
@@ -472,63 +450,6 @@ groupTypes.spacing = function(group, options) {
             ["mspace", buildCommon.spacingFunctions[group.value].className],
             [], options);
     }
-};
-
-export const makeLineSpan = function(className, options, thickness) {
-    // Fill the entire span instead of just a border. That way, the min-height
-    // value in katex.less will ensure that at least one screen pixel displays.
-    const line = stretchy.ruleSpan(className, options);
-    line.height = thickness || options.fontMetrics().defaultRuleThickness;
-    line.style.height = line.height + "em";
-    line.maxFontSize = 1.0;
-    return line;
-};
-
-groupTypes.overline = function(group, options) {
-    // Overlines are handled in the TeXbook pg 443, Rule 9.
-
-    // Build the inner group in the cramped style.
-    const innerGroup = buildGroup(group.value.body,
-            options.havingCrampedStyle());
-
-    // Create the line above the body
-    const line = makeLineSpan("overline-line", options);
-
-    // Generate the vlist, with the appropriate kerns
-    const vlist = buildCommon.makeVList({
-        positionType: "firstBaseline",
-        children: [
-            {type: "elem", elem: innerGroup},
-            {type: "kern", size: 3 * line.height},
-            {type: "elem", elem: line},
-            {type: "kern", size: line.height},
-        ],
-    }, options);
-
-    return makeSpan(["mord", "overline"], [vlist], options);
-};
-
-groupTypes.underline = function(group, options) {
-    // Underlines are handled in the TeXbook pg 443, Rule 10.
-    // Build the inner group.
-    const innerGroup = buildGroup(group.value.body, options);
-
-    // Create the line above the body
-    const line = makeLineSpan("underline-line", options);
-
-    // Generate the vlist, with the appropriate kerns
-    const vlist = buildCommon.makeVList({
-        positionType: "top",
-        positionData: innerGroup.height,
-        children: [
-            {type: "kern", size: line.height},
-            {type: "elem", elem: line},
-            {type: "kern", size: 3 * line.height},
-            {type: "elem", elem: innerGroup},
-        ],
-    }, options);
-
-    return makeSpan(["mord", "underline"], [vlist], options);
 };
 
 groupTypes.sqrt = function(group, options) {
@@ -703,36 +624,6 @@ groupTypes.verb = function(group, options) {
     buildCommon.tryCombineChars(body);
     return makeSpan(["mord", "text"].concat(newOptions.sizingClasses(options)),
         body, newOptions);
-};
-
-groupTypes.rule = function(group, options) {
-    // Make an empty span for the rule
-    const rule = makeSpan(["mord", "rule"], [], options);
-
-    // Calculate the shift, width, and height of the rule, and account for units
-    let shift = 0;
-    if (group.value.shift) {
-        shift = calculateSize(group.value.shift, options);
-    }
-
-    const width = calculateSize(group.value.width, options);
-    const height = calculateSize(group.value.height, options);
-
-    // Style the rule to the right size
-    rule.style.borderRightWidth = width + "em";
-    rule.style.borderTopWidth = height + "em";
-    rule.style.bottom = shift + "em";
-
-    // Record the height and width
-    rule.width = width;
-    rule.height = height + shift;
-    rule.depth = -shift;
-    // Font size is the number large enough that the browser will
-    // reserve at least `absHeight` space above the baseline.
-    // The 1.125 factor was empirically determined
-    rule.maxFontSize = height * 1.125 * options.sizeMultiplier;
-
-    return rule;
 };
 
 groupTypes.accent = function(group, options) {
