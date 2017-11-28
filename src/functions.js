@@ -40,45 +40,9 @@ defineFunction(["\\sqrt"], {
     };
 });
 
-// Non-mathy text, possibly in a font
-const textFunctionFonts = {
-    "\\text": undefined, "\\textrm": "mathrm", "\\textsf": "mathsf",
-    "\\texttt": "mathtt", "\\textnormal": "mathrm", "\\textbf": "mathbf",
-    "\\textit": "textit",
-};
+import "./functions/color";
 
-defineFunction([
-    "\\text", "\\textrm", "\\textsf", "\\texttt", "\\textnormal",
-    "\\textbf", "\\textit",
-], {
-    numArgs: 1,
-    argTypes: ["text"],
-    greediness: 2,
-    allowedInText: true,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "text",
-        body: ordargument(body),
-        font: textFunctionFonts[context.funcName],
-    };
-});
-
-// A two-argument custom color
-defineFunction(["\\textcolor"], {
-    numArgs: 2,
-    allowedInText: true,
-    greediness: 3,
-    argTypes: ["color", "original"],
-}, function(context, args) {
-    const color = args[0];
-    const body = args[1];
-    return {
-        type: "color",
-        color: color.value,
-        value: ordargument(body),
-    };
-});
+import "./functions/text";
 
 // \color is handled in Parser.js's parseImplicitGroup
 defineFunction(["\\color"], {
@@ -124,44 +88,11 @@ defineFunction(["\\fcolorbox"], {
     };
 });
 
-// An overline
-defineFunction(["\\overline"], {
-    numArgs: 1,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "overline",
-        body: body,
-    };
-});
+import "./functions/overline";
 
-// An underline
-defineFunction(["\\underline"], {
-    numArgs: 1,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "underline",
-        body: body,
-    };
-});
+import "./functions/underline";
 
-// A box of the width and height
-defineFunction(["\\rule"], {
-    numArgs: 2,
-    numOptionalArgs: 1,
-    argTypes: ["size", "size", "size"],
-}, function(context, args, optArgs) {
-    const shift = optArgs[0];
-    const width = args[0];
-    const height = args[1];
-    return {
-        type: "rule",
-        shift: shift && shift.value,
-        width: width.value,
-        height: height.value,
-    };
-});
+import "./functions/rule";
 
 import "./functions/kern";
 
@@ -217,34 +148,6 @@ const fontAliases = {
     "\\bold": "\\mathbf",
     "\\frak": "\\mathfrak",
 };
-
-// Single-argument color functions
-defineFunction([
-    "\\blue", "\\orange", "\\pink", "\\red",
-    "\\green", "\\gray", "\\purple",
-    "\\blueA", "\\blueB", "\\blueC", "\\blueD", "\\blueE",
-    "\\tealA", "\\tealB", "\\tealC", "\\tealD", "\\tealE",
-    "\\greenA", "\\greenB", "\\greenC", "\\greenD", "\\greenE",
-    "\\goldA", "\\goldB", "\\goldC", "\\goldD", "\\goldE",
-    "\\redA", "\\redB", "\\redC", "\\redD", "\\redE",
-    "\\maroonA", "\\maroonB", "\\maroonC", "\\maroonD", "\\maroonE",
-    "\\purpleA", "\\purpleB", "\\purpleC", "\\purpleD", "\\purpleE",
-    "\\mintA", "\\mintB", "\\mintC",
-    "\\grayA", "\\grayB", "\\grayC", "\\grayD", "\\grayE",
-    "\\grayF", "\\grayG", "\\grayH", "\\grayI",
-    "\\kaBlue", "\\kaGreen",
-], {
-    numArgs: 1,
-    allowedInText: true,
-    greediness: 3,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "color",
-        color: "katex-" + context.funcName.slice(1),
-        value: ordargument(body),
-    };
-});
 
 const singleCharIntegrals: {[string]: string} = {
     "\u222b": "\\int",
@@ -451,9 +354,8 @@ defineFunction([
     "\\xleftrightarrow", "\\xLeftrightarrow", "\\xhookleftarrow",
     "\\xhookrightarrow", "\\xmapsto", "\\xrightharpoondown",
     "\\xrightharpoonup", "\\xleftharpoondown", "\\xleftharpoonup",
-    "\\xrightleftharpoons", "\\xleftrightharpoons", "\\xLongequal",
-    "\\xtwoheadrightarrow", "\\xtwoheadleftarrow", "\\xLongequal",
-    "\\xtofrom",
+    "\\xrightleftharpoons", "\\xleftrightharpoons", "\\xlongequal",
+    "\\xtwoheadrightarrow", "\\xtwoheadleftarrow", "\\xtofrom",
 ], {
     numArgs: 1,
     numOptionalArgs: 1,
