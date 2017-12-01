@@ -326,13 +326,37 @@ const encloseSpan = function(
     return img;
 };
 
-const ruleSpan = function(className: string, options: Options): domTree.span {
-    // Get a big square image. The parent span will hide the overflow.
-    const pathNode = new domTree.pathNode('bigRule');
+const ruleSpan = function(className: string, lineThickness: number,
+    options: Options): domTree.span {
+    // In text style, a rule is 0.04em thick. Our instance may be thicker.
+    // Also, the scale factor from em to viewBox is 1000, if in textstyle.
+
+    // Get a span with an SVG path that fills the middle third of the span.
+    let pathName;
+    let svgHeight;
+    let svgWidth;
+    let viewBoxHeight;
+    let viewBoxWidth;
+
+    if (className === "vertical-separator") {
+        pathName = "vertRule";
+        svgWidth = Math.round(3 * lineThickness * 1000) / 1000;
+        svgHeight = Math.round(400 * lineThickness / 0.04);
+        viewBoxWidth = 120;
+        viewBoxHeight = 400000;
+    } else {
+        pathName = "horizRule";
+        svgHeight = Math.round(3 * lineThickness * 1000) / 1000;
+        svgWidth = Math.round(400 * lineThickness / 0.04);
+        viewBoxHeight = 120;
+        viewBoxWidth = 400000;
+    }
+    const pathNode = new domTree.pathNode(pathName);
+
     const svg =  new domTree.svgNode([pathNode], {
-        "width": "400em",
-        "height": "400em",
-        "viewBox": "0 0 400000 400000",
+        "width": svgWidth + "em",
+        "height": svgHeight + "em",
+        "viewBox": "0 0 " + viewBoxWidth + " " + viewBoxHeight,
         "preserveAspectRatio": "xMinYMin slice",
     });
     return buildCommon.makeSpan([className, "hide-tail"], [svg], options);

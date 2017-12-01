@@ -5,9 +5,15 @@
  */
 
 const path: {[string]: string} = {
-    // bigRule provides a big square image for frac-lines, etc.
-    // The actual rendered rule is smaller, controlled by overflow:hidden.
-    bigRule: 'M0 0 h400000 v400000 h-400000z M0 0 h400000 v400000 h-400000z',
+    // horizRule provides a long thin horizontal path. It is written to
+    // fill the middle third of an SVG image used for a frac-line or an
+    // underline. The entire image is 120 units tall. The path is 40 units.
+    // In textstyle, that corresponds to a 0.04em thick line.
+    horizRule: 'M0 40 h400000 v40 H0 z M0 40 h400000 v40 H0 z',
+
+    // vertRule acts in a similar way for 'vertical-separator' in arrays.
+    // The std vertRule is 0.05em wide. So the viewBox is 150 units wide.
+    vertRule: 'M50 0 h50 V400000 h-50 z M50 0 h50 V400000 h-50 z',
 
     // sqrtMain path geometry is from glyph U221A in the font KaTeX Main
     sqrtMain: `M95 622c-2.667 0-7.167-2.667-13.5

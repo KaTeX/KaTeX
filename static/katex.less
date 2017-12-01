@@ -301,26 +301,6 @@
         }
     }
 
-    // Set a min-height for some horizontal lines so their display
-    // will show at least one screen pixel.
-    @media screen {
-        .mfrac .frac-line,
-        .overline .overline-line,
-        .underline .underline-line {
-            min-height: 1px;
-        }
-    }
-
-    // Modify min-height for retina displays. Don't force two screen pixels.
-    @media screen and (-webkit-min-device-pixel-ratio: 2.0),
-        screen and (min-resolution: 192dpi) {
-        .mfrac .frac-line,
-        .overline .overline-line,
-        .underline .underline-line {
-            min-height: 0.5px;
-        }
-    }
-
     .mspace {
         display: inline-block;
 
@@ -548,20 +528,8 @@
     .mtable {
         .vertical-separator {
             display: inline-block;
-            margin: 0 -0.025em;
-            width: 0.05em;
-
-            // Set a min-width so it will display at least one screen pixel.
-            @media screen {
-                min-width: 1px;
-            }
-
-            // Modify min-width for retina displays. Don't force two screen pixels.
-            @media screen and (-webkit-min-device-pixel-ratio: 2.0),
-                screen and (min-resolution: 192dpi) {
-                min-width: 0.5px;
-            }
-        }
+            margin: 0 -0.075em;
+            width: 0.15em;
 
         .arraycolsep {
             display: inline-block;

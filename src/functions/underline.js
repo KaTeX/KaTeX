@@ -24,7 +24,7 @@ defineFunction({
         // Build the inner group.
         const innerGroup = html.buildGroup(group.value.body, options);
 
-        // Create the line above the body
+        // Create the line to go below the body
         const line = buildCommon.makeLineSpan("underline-line", options);
 
         // Generate the vlist, with the appropriate kerns
@@ -32,7 +32,9 @@ defineFunction({
             positionType: "top",
             positionData: innerGroup.height,
             children: [
-                {type: "kern", size: line.height},
+                // The SVG image is 3x as tall as the line.
+                // The bottom third of the image is blank and acts like a kern.
+                // So we omit the kern that would otherwise go at the bottom.
                 {type: "elem", elem: line},
                 {type: "kern", size: 3 * line.height},
                 {type: "elem", elem: innerGroup},

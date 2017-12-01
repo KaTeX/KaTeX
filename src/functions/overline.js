@@ -34,7 +34,7 @@ defineFunction({
             positionType: "firstBaseline",
             children: [
                 {type: "elem", elem: innerGroup},
-                {type: "kern", size: 3 * line.height},
+                {type: "kern", size: line.height},
                 {type: "elem", elem: line},
                 {type: "kern", size: line.height},
             ],
