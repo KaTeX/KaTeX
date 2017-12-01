@@ -61,7 +61,7 @@ build/fonts:
 	rm -rf $@
 	mkdir $@
 	for font in $(shell grep "font" static/katex.less | grep -o "KaTeX_\w\+" | cut -d" " -f 2 | sort | uniq); do \
-		cp static/fonts/$$font* $@; \
+		cp submodules/katex-fonts/fonts/$$font* $@; \
 	done
 
 test/screenshotter/unicode-fonts:

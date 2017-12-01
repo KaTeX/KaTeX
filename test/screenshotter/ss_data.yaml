@@ -22,6 +22,11 @@ Aligned: |
         a &= 1 & b &= 2 \\
         3a &= 3 & 17b &= 34
     \end{aligned}
+Alignedat: |
+    \begin{alignedat}{3}
+        a &= 1 & b &= 2 &\quad c &= 3\\
+        3a &= 3 & 17b &= 34 &\quad 400c &= 1200
+    \end{alignedat}
 Arrays: |
     \left(\begin{array}{|rl|c||}
         1&2&3\\
@@ -114,12 +119,15 @@ GroupMacros:
         \endExp: \egroup
     tex: \startExp a+b\endExp
 HorizontalBraces: \overbrace{\displaystyle{\oint_S{\vec E\cdot\hat n\,\mathrm d a}}}^\text{emf} = \underbrace{\frac{q_{\text{enc}}}{\varepsilon_0}}_{\text{charge}}
-KaTeX: \KaTeX
+KaTeX:
+    tex: \KaTeX
+    nolatex: \KaTeX not supported by LaTeX
 Kern:
     tex: \frac{a\kern{1em}b}{c}a\kern{1em}b\kern{1ex}c\kern{-0.25em}d
     nolatex: LaTeX fails to typeset this, “Missing number, treated as zero.”
 Lap: ab\mathllap{f}cd\mathrlap{g}hij\mathclap{k}lm \; ab\llap{f}cd\rlap{g}hij\clap{k}lm
 LargeRuleNumerator: \frac{\textcolor{blue}{\rule{1em}{2em}}}{x}
+LaTeX: \text{\LaTeX}, \text{\TeX}
 LeftRight: \left( x^2 \right) \left\{ x^{x^{x^{x^x}}} \right.
 LeftRightListStyling: a+\left(x+y\right)-x
 LeftRightMiddle: \left( x^2 \middle/ \right) \left\{ x^{x^{x^{x^x}}} \middle/ y \right.\left(x\middle|y\,\middle|\,z\right)
@@ -133,12 +141,14 @@ LimitControls: |
 LowerAccent: |
     \begin{matrix}
         \underleftarrow{AB} \quad \underrightarrow{AB} \quad \underleftrightarrow{AB} \quad \undergroup{AB} \\
-        \underlinesegment{AB} \quad \undertilde{AB}  \quad \color{green}{\underrightarrow{AB}} \\
+        \underlinesegment{AB} \quad \utilde{AB}  \quad \color{green}{\underrightarrow{AB}} \\
         \underrightarrow{F} + \underrightarrow{AB} + \underrightarrow{AB}^2 + \underrightarrow{AB}_2 \\
         \frac{\underrightarrow{AB}}{\underrightarrow{AB}} + \sqrt{\underrightarrow{AB}} + \left\lvert\underrightarrow{AB}\right\rvert
     \end{matrix}
 MathAtom: a\mathrel{\mathop{=}\limits^{\blue ?}}b
 MathAtom2: \mathop{\overline{\mathrm{lim}}}\limits_{x\to\infty}f(x)
+MathChoice: |
+  {\displaystyle\mathchoice{D}{T}{S}{SS}} {\textstyle\mathchoice{D}{T}{S}{SS}} {\scriptstyle \mathchoice{D}{T}{S}{SS}} {\scriptscriptstyle\mathchoice{D}{T}{S}{SS}} \displaystyle X_{\mathchoice{D}{T}{S}{SS}_{\mathchoice{D}{T}{S}{SS}}}
 MathDefaultFonts: Ax2k\breve{a}\omega\Omega\imath+\KaTeX
 MathBb: \mathbb{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathBf: \mathbf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}

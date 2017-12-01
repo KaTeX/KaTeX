@@ -1,3 +1,4 @@
+// @flow
 /**
  * These objects store the data about the DOM nodes we create, as well as some
  * extra data. They can then be transformed into real DOM nodes with the
@@ -10,12 +11,13 @@
 import {cjkRegex, hangulRegex} from "./unicodeRegexes";
 import utils from "./utils";
 import svgGeometry from "./svgGeometry";
+import type Options from "./Options";
 
 /**
  * Create an HTML className based on a list of classes. In addition to joining
  * with spaces, we also remove null or empty classes.
  */
-const createClass = function(classes) {
+const createClass = function(classes: string[]): string {
     classes = classes.slice();
     for (let i = classes.length - 1; i >= 0; i--) {
         if (!classes[i]) {
@@ -26,13 +28,47 @@ const createClass = function(classes) {
     return classes.join(" ");
 };
 
+// To ensure that all nodes have compatible signatures for these methods.
+interface VirtualDomNode {
+    toNode(): Node;
+    toMarkup(): string;
+}
+
+export interface CombinableDomNode extends VirtualDomNode {
+    tryCombine(sibling: CombinableDomNode): boolean;
+}
+
+/**
+ * All `DomChildNode`s MUST have `height`, `depth`, and `maxFontSize` numeric
+ * fields.
+ *
+ * `DomChildNode` is not defined as an interface since `documentFragment` also
+ * has these fields but should not be considered a `DomChildNode`.
+ */
+export type DomChildNode = span | anchor | svgNode | symbolNode;
+
+export type SvgChildNode = pathNode | lineNode;
+
 /**
  * This node represents a span node, with a className, a list of children, and
  * an inline style. It also contains information about its height, depth, and
  * maxFontSize.
  */
-class span {
-    constructor(classes, children, options) {
+class span implements CombinableDomNode {
+    classes: string[];
+    children: DomChildNode[];
+    height: number;
+    depth: number;
+    width: ?number;
+    maxFontSize: number;
+    style: {[string]: string};
+    attributes: {[string]: string};
+
+    constructor(
+        classes?: string[],
+        children?: DomChildNode[],
+        options?: Options,
+    ) {
         this.classes = classes || [];
         this.children = children || [];
         this.height = 0;
@@ -44,8 +80,9 @@ class span {
             if (options.style.isTight()) {
                 this.classes.push("mtight");
             }
-            if (options.getColor()) {
-                this.style.color = options.getColor();
+            const color = options.getColor();
+            if (color) {
+                this.style.color = color;
             }
         }
     }
@@ -55,18 +92,18 @@ class span {
      * browsers support attributes the same, and having too many custom attributes
      * is probably bad.
      */
-    setAttribute(attribute, value) {
+    setAttribute(attribute: string, value: string) {
         this.attributes[attribute] = value;
     }
 
-    tryCombine(sibling) {
+    tryCombine(sibling: CombinableDomNode): boolean {
         return false;
     }
 
     /**
      * Convert the span into an HTML node
      */
-    toNode() {
+    toNode(): HTMLSpanElement {
         const span = document.createElement("span");
 
         // Apply the class
@@ -75,6 +112,7 @@ class span {
         // Apply inline styles
         for (const style in this.style) {
             if (Object.prototype.hasOwnProperty.call(this.style, style)) {
+                // $FlowFixMe Flow doesn't seem to understand span.style's type.
                 span.style[style] = this.style[style];
             }
         }
@@ -97,7 +135,7 @@ class span {
     /**
      * Convert the span into an HTML markup string
      */
-    toMarkup() {
+    toMarkup(): string {
         let markup = "<span";
 
         // Add the class
@@ -143,13 +181,153 @@ class span {
 }
 
 /**
+ * This node represents an anchor (<a>) element with a hyperlink, a list of classes,
+ * a list of children, and an inline style. It also contains information about its
+ * height, depth, and maxFontSize.
+ */
+class anchor implements CombinableDomNode {
+    href: string;
+    classes: string[];
+    children: DomChildNode[];
+    height: number;
+    depth: number;
+    maxFontSize: number;
+    style: {[string]: string};
+    attributes: {[string]: string};
+
+    constructor(
+        href: string,
+        classes: string[],
+        children: DomChildNode[],
+        options: Options,
+    ) {
+        this.href = href;
+        this.classes = classes;
+        this.children = children;
+        this.height = 0;
+        this.depth = 0;
+        this.maxFontSize = 0;
+        this.style = {};
+        this.attributes = {};
+        if (options.style.isTight()) {
+            this.classes.push("mtight");
+        }
+        const color = options.getColor();
+        if (color) {
+            this.style.color = color;
+        }
+    }
+
+    /**
+     * Sets an arbitrary attribute on the anchor. Warning: use this wisely. Not all
+     * browsers support attributes the same, and having too many custom attributes
+     * is probably bad.
+     */
+    setAttribute(attribute: string, value: string) {
+        this.attributes[attribute] = value;
+    }
+
+    tryCombine(sibling: CombinableDomNode): boolean {
+        return false;
+    }
+
+    /**
+     * Convert the anchor into an HTML node
+     */
+    toNode(): HTMLAnchorElement {
+        const a = document.createElement("a");
+
+        // Apply the href
+        a.setAttribute('href', this.href);
+
+        // Apply the class
+        if (this.classes.length) {
+            a.className = createClass(this.classes);
+        }
+
+        // Apply inline styles
+        for (const style in this.style) {
+            if (Object.prototype.hasOwnProperty.call(this.style, style)) {
+                // $FlowFixMe Flow doesn't seem to understand a.style's type.
+                a.style[style] = this.style[style];
+            }
+        }
+
+        // Apply attributes
+        for (const attr in this.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                a.setAttribute(attr, this.attributes[attr]);
+            }
+        }
+
+        // Append the children, also as HTML nodes
+        for (let i = 0; i < this.children.length; i++) {
+            a.appendChild(this.children[i].toNode());
+        }
+
+        return a;
+    }
+
+    /**
+     * Convert the a into an HTML markup string
+     */
+    toMarkup(): string {
+        let markup = "<a";
+
+        // Add the href
+        markup += `href="${markup += utils.escape(this.href)}"`;
+        // Add the class
+        if (this.classes.length) {
+            markup += ` class="${utils.escape(createClass(this.classes))}"`;
+        }
+
+        let styles = "";
+
+        // Add the styles, after hyphenation
+        for (const style in this.style) {
+            if (this.style.hasOwnProperty(style)) {
+                styles += utils.hyphenate(style) + ":" + this.style[style] + ";";
+            }
+        }
+
+        if (styles) {
+            markup += " style=\"" + utils.escape(styles) + "\"";
+        }
+
+        // Add the attributes
+        for (const attr in this.attributes) {
+            if (attr !== "href" &&
+                Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                markup += ` ${attr}="${utils.escape(this.attributes[attr])}"`;
+            }
+        }
+
+        markup += ">";
+
+        // Add the markup of the children, also as markup
+        for (const child of this.children) {
+            markup += child.toMarkup();
+        }
+
+        markup += "</a>";
+
+        return markup;
+    }
+}
+
+/**
  * This node represents a document fragment, which contains elements, but when
  * placed into the DOM doesn't have any representation itself. Thus, it only
  * contains children and doesn't have any HTML properties. It also keeps track
  * of a height, depth, and maxFontSize.
  */
-class documentFragment {
-    constructor(children) {
+class documentFragment implements VirtualDomNode {
+    children: DomChildNode[];
+    height: number;
+    depth: number;
+    maxFontSize: number;
+
+    constructor(children?: DomChildNode[]) {
         this.children = children || [];
         this.height = 0;
         this.depth = 0;
@@ -159,7 +337,7 @@ class documentFragment {
     /**
      * Convert the fragment into a node
      */
-    toNode() {
+    toNode(): Node {
         // Create a fragment
         const frag = document.createDocumentFragment();
 
@@ -174,7 +352,7 @@ class documentFragment {
     /**
      * Convert the fragment into HTML markup
      */
-    toMarkup() {
+    toMarkup(): string {
         let markup = "";
 
         // Simply concatenate the markup for the children together
@@ -199,9 +377,26 @@ const iCombinations = {
  * to a single text node, or a span with a single text node in it, depending on
  * whether it has CSS classes, styles, or needs italic correction.
  */
-class symbolNode {
-    constructor(value, height, depth, italic, skew, classes, style) {
-        this.value = value || "";
+class symbolNode implements CombinableDomNode {
+    value: string;
+    height: number;
+    depth: number;
+    italic: number;
+    skew: number;
+    maxFontSize: number;
+    classes: string[];
+    style: {[string]: string};
+
+    constructor(
+        value: string,
+        height?: number,
+        depth?: number,
+        italic?: number,
+        skew?: number,
+        classes?: string[],
+        style?: {[string]: string},
+    ) {
+        this.value = value;
         this.height = height || 0;
         this.depth = depth || 0;
         this.italic = italic || 0;
@@ -214,11 +409,11 @@ class symbolNode {
         // fonts to use.  This allows us to render these characters with a serif
         // font in situations where the browser would either default to a sans serif
         // or render a placeholder character.
-        if (cjkRegex.test(value)) {
+        if (cjkRegex.test(this.value)) {
             // I couldn't find any fonts that contained Hangul as well as all of
             // the other characters we wanted to test there for it gets its own
             // CSS class.
-            if (hangulRegex.test(value)) {
+            if (hangulRegex.test(this.value)) {
                 this.classes.push('hangul_fallback');
             } else {
                 this.classes.push('cjk_fallback');
@@ -230,7 +425,7 @@ class symbolNode {
         }
     }
 
-    tryCombine(sibling) {
+    tryCombine(sibling: CombinableDomNode): boolean {
         if (!sibling
             || !(sibling instanceof symbolNode)
             || this.italic > 0
@@ -262,7 +457,7 @@ class symbolNode {
      * Creates a text node or span from a symbol node. Note that a span is only
      * created if it is needed.
      */
-    toNode() {
+    toNode(): Node {
         const node = document.createTextNode(this.value);
         let span = null;
 
@@ -279,6 +474,7 @@ class symbolNode {
         for (const style in this.style) {
             if (this.style.hasOwnProperty(style)) {
                 span = span || document.createElement("span");
+                // $FlowFixMe Flow doesn't seem to understand span.style's type.
                 span.style[style] = this.style[style];
             }
         }
@@ -294,7 +490,7 @@ class symbolNode {
     /**
      * Creates markup for a symbol node.
      */
-    toMarkup() {
+    toMarkup(): string {
         // TODO(alpert): More duplication than I'd like from
         // span.prototype.toMarkup and symbolNode.prototype.toNode...
         let needsSpan = false;
@@ -339,20 +535,31 @@ class symbolNode {
 /**
  * SVG nodes are used to render stretchy wide elements.
  */
-class svgNode {
-    constructor(children, attributes) {
+class svgNode implements VirtualDomNode {
+    children: SvgChildNode[];
+    attributes: {[string]: string};
+    // Required for all `DomChildNode`s. Are always 0 for svgNode.
+    height: number;
+    depth: number;
+    maxFontSize: number;
+
+    constructor(children?: SvgChildNode[], attributes?: {[string]: string}) {
         this.children = children || [];
-        this.attributes = attributes || [];
+        this.attributes = attributes || {};
+        this.height = 0;
+        this.depth = 0;
+        this.maxFontSize = 0;
     }
 
-    toNode() {
+    toNode(): Node {
         const svgNS = "http://www.w3.org/2000/svg";
         const node = document.createElementNS(svgNS, "svg");
 
         // Apply attributes
-        for (let i = 0; i < this.attributes.length; i++) {
-            const [name, value] = this.attributes[i];
-            node.setAttribute(name, value);
+        for (const attr in this.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                node.setAttribute(attr, this.attributes[attr]);
+            }
         }
 
         for (let i = 0; i < this.children.length; i++) {
@@ -361,13 +568,14 @@ class svgNode {
         return node;
     }
 
-    toMarkup() {
+    toMarkup(): string {
         let markup = "<svg";
 
         // Apply attributes
-        for (let i = 0; i < this.attributes.length; i++) {
-            const [name, value] = this.attributes[i];
-            markup +=  ` ${name}='${value}'`;
+        for (const attr in this.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                markup += ` ${attr}='${this.attributes[attr]}'`;
+            }
         }
 
         markup += ">";
@@ -383,58 +591,65 @@ class svgNode {
     }
 }
 
-class pathNode {
-    constructor(pathName, alternate) {
+class pathNode implements VirtualDomNode {
+    pathName: string;
+    alternate: ?string;
+
+    constructor(pathName: string, alternate?: string) {
         this.pathName = pathName;
         this.alternate = alternate;  // Used only for tall \sqrt
     }
 
-    toNode() {
+    toNode(): Node {
         const svgNS = "http://www.w3.org/2000/svg";
         const node = document.createElementNS(svgNS, "path");
 
-        if (this.pathName !== "sqrtTall") {
-            node.setAttribute("d", svgGeometry.path[this.pathName]);
-        } else {
+        if (this.alternate) {
             node.setAttribute("d", this.alternate);
+        } else {
+            node.setAttribute("d", svgGeometry.path[this.pathName]);
         }
 
         return node;
     }
 
-    toMarkup() {
-        if (this.pathName !== "sqrtTall") {
-            return `<path d='${svgGeometry.path[this.pathName]}'/>`;
-        } else {
+    toMarkup(): string {
+        if (this.alternate) {
             return `<path d='${this.alternate}'/>`;
+        } else {
+            return `<path d='${svgGeometry.path[this.pathName]}'/>`;
         }
     }
 }
 
-class lineNode {
-    constructor(attributes) {
-        this.attributes = attributes || [];
+class lineNode implements VirtualDomNode {
+    attributes: {[string]: string};
+
+    constructor(attributes?: {[string]: string}) {
+        this.attributes = attributes || {};
     }
 
-    toNode() {
+    toNode(): Node {
         const svgNS = "http://www.w3.org/2000/svg";
         const node = document.createElementNS(svgNS, "line");
 
         // Apply attributes
-        for (let i = 0; i < this.attributes.length; i++) {
-            const [name, value] = this.attributes[i];
-            node.setAttribute(name, value);
+        for (const attr in this.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                node.setAttribute(attr, this.attributes[attr]);
+            }
         }
 
         return node;
     }
 
-    toMarkup() {
+    toMarkup(): string {
         let markup = "<line";
 
-        for (let i = 0; i < this.attributes.length; i++) {
-            const [name, value] = this.attributes[i];
-            markup +=  ` ${name}='${value}'`;
+        for (const attr in this.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                markup += ` ${attr}='${this.attributes[attr]}'`;
+            }
         }
 
         markup += "/>";
@@ -444,10 +659,11 @@ class lineNode {
 }
 
 export default {
-    span: span,
-    documentFragment: documentFragment,
-    symbolNode: symbolNode,
-    svgNode: svgNode,
-    pathNode: pathNode,
-    lineNode: lineNode,
+    span,
+    anchor,
+    documentFragment,
+    symbolNode,
+    svgNode,
+    pathNode,
+    lineNode,
 };

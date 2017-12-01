@@ -4,6 +4,7 @@
  * This can be used to define some commands in terms of others.
  */
 
+import fontMetricsData from "./fontMetricsData";
 import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
@@ -25,21 +26,49 @@ export interface MacroContextInterface {
      * Similar in behavior to TeX's `\expandafter\futurelet`.
      */
     expandAfterFuture(): Token;
+
+    /**
+     * Consume the specified number of arguments from the token stream,
+     * and return the resulting array of arguments.
+     */
+    consumeArgs(numArgs: number): Token[][];
 }
 
 /** Macro tokens (in reverse order). */
 export type MacroExpansion = {tokens: Token[], numArgs: number};
 
-type MacroDefinition = string | (MacroContextInterface => string) | MacroExpansion;
+type MacroDefinition = string | MacroExpansion |
+    (MacroContextInterface => (string | MacroExpansion));
 export type MacroMap = {[string]: MacroDefinition};
 
 const builtinMacros: MacroMap = {};
 export default builtinMacros;
 
 // This function might one day accept an additional argument and do more things.
-function defineMacro(name: string, body: string | MacroContextInterface => string) {
+function defineMacro(name: string, body: MacroDefinition) {
     builtinMacros[name] = body;
 }
+
+//////////////////////////////////////////////////////////////////////
+// macro tools
+
+defineMacro("\\@firstoftwo", function(context) {
+    const args = context.consumeArgs(2);
+    return {tokens: args[0], numArgs: 0};
+});
+
+defineMacro("\\@ifnextchar", function(context) {
+    const args = context.consumeArgs(3);  // symbol, if, else
+    const nextToken = context.future();
+    if (args[0].length === 1 && args[0][0].text === nextToken.text) {
+        return {tokens: args[1], numArgs: 0};
+    } else {
+        return {tokens: args[2], numArgs: 0};
+    }
+});
+
+// \def\@ifstar#1{\@ifnextchar *{\@firstoftwo{#1}}}
+defineMacro("\\@ifstar", "\\@ifnextchar *{\\@firstoftwo{#1}}");
 
 //////////////////////////////////////////////////////////////////////
 // basics
@@ -48,9 +77,14 @@ defineMacro("\\egroup", "}");
 defineMacro("\\begingroup", "{");
 defineMacro("\\endgroup", "}");
 
-// We don't distinguish between math and nonmath kerns.
-// (In TeX, the mu unit works only with \mkern.)
-defineMacro("\\mkern", "\\kern");
+// Unicode double-struck letters
+defineMacro("\u2102", "\\mathbb{C}");
+defineMacro("\u210D", "\\mathbb{H}");
+defineMacro("\u2115", "\\mathbb{N}");
+defineMacro("\u2119", "\\mathbb{P}");
+defineMacro("\u211A", "\\mathbb{Q}");
+defineMacro("\u211D", "\\mathbb{R}");
+defineMacro("\u2124", "\\mathbb{Z}");
 
 // \llap and \rlap render their contents in text mode
 defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
@@ -233,10 +267,41 @@ defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
 
+// \def\TeX{T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX\@}
+// TODO: Doesn't normally work in math mode because \@ fails.  KaTeX doesn't
+// support \@ yet, so that's omitted, and we add \text so that the result
+// doesn't look funny in math mode.
+defineMacro("\\TeX", "\\textrm{T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX}");
+
+// \DeclareRobustCommand{\LaTeX}{L\kern-.36em%
+//         {\sbox\z@ T%
+//          \vbox to\ht\z@{\hbox{\check@mathfonts
+//                               \fontsize\sf@size\z@
+//                               \math@fontsfalse\selectfont
+//                               A}%
+//                         \vss}%
+//         }%
+//         \kern-.15em%
+//         \TeX}
+// This code aligns the top of the A with the T (from the perspective of TeX's
+// boxes, though visually the A appears to extend above slightly).
+// We compute the corresponding \raisebox when A is rendered at \scriptsize,
+// which is size3, which has a scale factor of 0.7 (see Options.js).
+const latexRaiseA = fontMetricsData['Main-Regular']["T".charCodeAt(0)][1] -
+    0.7 * fontMetricsData['Main-Regular']["A".charCodeAt(0)][1] + "em";
+defineMacro("\\LaTeX",
+    `\\textrm{L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    "\\kern-.15em\\TeX}");
+
+// New KaTeX logo based on tweaking LaTeX logo
+defineMacro("\\KaTeX",
+    `\\textrm{K\\kern-.17em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    "\\kern-.15em\\TeX}");
+
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
 // \def\@hspace#1{\hskip  #1\relax}
-// KaTeX doesn't do line breaks, so \hspace is the same as \kern
-defineMacro("\\hspace", "\\kern{#1}");
+// KaTeX doesn't do line breaks, so \hspace and \hspace* are the same as \kern
+defineMacro("\\hspace", "\\@ifstar\\kern\\kern");
 
 //////////////////////////////////////////////////////////////////////
 // mathtools.sty
@@ -298,3 +363,9 @@ defineMacro("\\simcoloncolon", "\\sim\\mathrel{\\mkern-1.2mu}\\dblcolon");
 defineMacro("\\approxcolon", "\\approx\\mathrel{\\mkern-1.2mu}\\vcentcolon");
 defineMacro("\\approxcoloncolon",
             "\\approx\\mathrel{\\mkern-1.2mu}\\dblcolon");
+
+// Present in newtxmath, pxfonts and txfonts
+// TODO: The unicode character U+220C ∌ should be added to the font, and this
+//       macro turned into a propper defineSymbol in symbols.js. That way, the
+//       MathML result will be much cleaner.
+defineMacro("\\notni", "\\not\\ni");

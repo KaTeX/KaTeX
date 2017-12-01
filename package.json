@@ -47,13 +47,15 @@
     "pre-commit": "^1.2.2",
     "selenium-webdriver": "^2.48.2",
     "sri-toolbox": "^0.2.0",
+    "stylelint": "^8.2.0",
+    "stylelint-config-standard": "^17.0.0",
     "uglify-js": "~2.7.5",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.8.2"
   },
   "bin": "cli.js",
   "scripts": {
-    "lint": "eslint katex.js server.js cli.js src test contrib dockers",
+    "lint": "eslint katex.js server.js cli.js webpack.config.js webpackDevServer.js src test contrib dockers && stylelint static/fonts.less static/katex.less",
     "flow": "flow",
     "jest": "jest",
     "coverage": "jest --coverage",

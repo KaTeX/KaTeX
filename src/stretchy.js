@@ -1,3 +1,4 @@
+// @flow
 /**
  * This file provides support to buildMathML.js and buildHTML.js
  * for stretchy wide elements rendered from SVG files
@@ -9,10 +10,13 @@ import buildCommon from "./buildCommon";
 import mathMLTree from "./mathMLTree";
 import utils from "./utils";
 
-const stretchyCodePoint = {
+import type Options from "./Options";
+import type ParseNode from "./ParseNode";
+
+const stretchyCodePoint: {[string]: string} = {
     widehat: "^",
     widetilde: "~",
-    undertilde: "~",
+    utilde: "~",
     overleftarrow: "\u2190",
     underleftarrow: "\u2190",
     xleftarrow: "\u2190",
@@ -41,11 +45,11 @@ const stretchyCodePoint = {
     xleftrightharpoons: "\u21cb",
     xtwoheadleftarrow: "\u219e",
     xtwoheadrightarrow: "\u21a0",
-    xLongequal: "=",
+    xlongequal: "=",
     xtofrom: "\u21c4",
 };
 
-const mathMLnode = function(label) {
+const mathMLnode = function(label: string): mathMLTree.MathNode {
     const node = new mathMLTree.MathNode(
         "mo", [new mathMLTree.TextNode(stretchyCodePoint[label.substr(1)])]);
     node.setAttribute("stretchy", "true");
@@ -98,7 +102,9 @@ const mathMLnode = function(label) {
 // That is, inside the font, that arrowhead is 522 units tall, which
 // corresponds to 0.522 em inside the document.
 
-const katexImagesData = {
+const katexImagesData: {
+    [string]: ([string[], number, number] | [string[], number, number, string])
+} = {
                    //   path(s), minWidth, height, align
     overrightarrow: [["rightarrow"], 0.888, 522, "xMaxYMin"],
     overleftarrow: [["leftarrow"], 0.888, 522, "xMinYMin"],
@@ -115,7 +121,7 @@ const katexImagesData = {
     overrightharpoon: [["rightharpoon"], 0.888, 522, "xMaxYMin"],
     xrightharpoonup: [["rightharpoon"], 0.888, 522, "xMaxYMin"],
     xrightharpoondown: [["rightharpoondown"], 0.888, 522, "xMaxYMin"],
-    xLongequal: [["longequal"], 0.888, 334, "xMinYMin"],
+    xlongequal: [["longequal"], 0.888, 334, "xMinYMin"],
     xtwoheadleftarrow: [["twoheadleftarrow"], 0.888, 334, "xMinYMin"],
     xtwoheadrightarrow: [["twoheadrightarrow"], 0.888, 334, "xMaxYMin"],
 
@@ -139,7 +145,7 @@ const katexImagesData = {
     xtofrom: [["leftToFrom", "rightToFrom"], 1.75, 528],
 };
 
-const groupLength = function(arg) {
+const groupLength = function(arg: ParseNode): number {
     if (arg.type === "ordgroup") {
         return arg.value.length;
     } else {
@@ -147,94 +153,107 @@ const groupLength = function(arg) {
     }
 };
 
-const svgSpan = function(group, options) {
+const svgSpan = function(group: ParseNode, options: Options): domTree.span {
     // Create a span with inline SVG for the element.
-    const label = group.value.label.substr(1);
-    let attributes = [];
-    let height;
-    let viewBoxWidth = 400000;  // default
-    let viewBoxHeight = 0;
-    let minWidth = 0;
-    let path;
-    let paths;
-    let pathName;
-    let svgNode;
-    let span;
+    function buildSvgSpan_(): {
+        span: domTree.span,
+        minWidth: number,
+        height: number,
+    } {
+        let viewBoxWidth = 400000;  // default
+        const label = group.value.label.substr(1);
+        if (utils.contains(["widehat", "widetilde", "utilde"], label)) {
+            // There are four SVG images available for each function.
+            // Choose a taller image when there are more characters.
+            const numChars = groupLength(group.value.base);
+            let viewBoxHeight;
+            let pathName;
+            let height;
 
-    if (utils.contains(["widehat", "widetilde", "undertilde"], label)) {
-        // There are four SVG images available for each function.
-        // Choose a taller image when there are more characters.
-        const numChars = groupLength(group.value.base);
-        let viewBoxHeight;
-
-        if (numChars > 5) {
-            viewBoxHeight = (label === "widehat" ? 420 : 312);
-            viewBoxWidth = (label === "widehat" ? 2364 : 2340);
-            // Next get the span height, in 1000 ems
-            height = (label === "widehat" ? 0.42 : 0.34);
-            pathName = (label === "widehat" ? "widehat" : "tilde") + "4";
+            if (numChars > 5) {
+                viewBoxHeight = (label === "widehat" ? 420 : 312);
+                viewBoxWidth = (label === "widehat" ? 2364 : 2340);
+                // Next get the span height, in 1000 ems
+                height = (label === "widehat" ? 0.42 : 0.34);
+                pathName = (label === "widehat" ? "widehat" : "tilde") + "4";
+            } else {
+                const imgIndex = [1, 1, 2, 2, 3, 3][numChars];
+                if (label === "widehat") {
+                    viewBoxWidth = [0, 1062, 2364, 2364, 2364][imgIndex];
+                    viewBoxHeight = [0, 239, 300, 360, 420][imgIndex];
+                    height = [0, 0.24, 0.3, 0.3, 0.36, 0.42][imgIndex];
+                    pathName = "widehat" + imgIndex;
+                } else {
+                    viewBoxWidth = [0, 600, 1033, 2339, 2340][imgIndex];
+                    viewBoxHeight = [0, 260, 286, 306, 312][imgIndex];
+                    height = [0, 0.26, 0.286, 0.3, 0.306, 0.34][imgIndex];
+                    pathName = "tilde" + imgIndex;
+                }
+            }
+            const path = new domTree.pathNode(pathName);
+            const svgNode = new domTree.svgNode([path], {
+                "width": "100%",
+                "height": height + "em",
+                "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+                "preserveAspectRatio": "none",
+            });
+            return {
+                span: buildCommon.makeSpan([], [svgNode], options),
+                minWidth: 0,
+                height,
+            };
         } else {
-            const imgIndex = [1, 1, 2, 2, 3, 3][numChars];
-            if (label === "widehat") {
-                viewBoxWidth = [0, 1062, 2364, 2364, 2364][imgIndex];
-                viewBoxHeight = [0, 239, 300, 360, 420][imgIndex];
-                height = [0, 0.24, 0.3, 0.3, 0.36, 0.42][imgIndex];
-                pathName = "widehat" + imgIndex;
-            } else {
-                viewBoxWidth = [0, 600, 1033, 2339, 2340][imgIndex];
-                viewBoxHeight = [0, 260, 286, 306, 312][imgIndex];
-                height = [0, 0.26, 0.286, 0.3, 0.306, 0.34][imgIndex];
-                pathName = "tilde" + imgIndex;
-            }
-        }
-        path = new domTree.pathNode(pathName);
-        attributes.push(["width", "100%"]);
-        attributes.push(["height", height + "em"]);
-        attributes.push(["viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`]);
-        attributes.push(["preserveAspectRatio", "none"]);
+            const spans = [];
 
-        svgNode = new domTree.svgNode([path], attributes);
-        span = buildCommon.makeSpan([], [svgNode], options);
+            const [paths, minWidth, viewBoxHeight, align1] = katexImagesData[label];
+            const height = viewBoxHeight / 1000;
 
-    } else {
-        let widthClass;
-        let align;
-        const spans = [];
-
-        [paths, minWidth, viewBoxHeight, align] = katexImagesData[label];
-        const numSvgChildren = paths.length;
-        height = viewBoxHeight / 1000;
-
-        for (let i = 0; i < numSvgChildren; i++) {
-            path = new domTree.pathNode(paths[i]);
-
-            attributes = [["width", "400em"], ["height", height + "em"]];
-            attributes.push(["viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`]);
-
-            if (numSvgChildren === 2) {
-                widthClass = ["halfarrow-left", "halfarrow-right"][i];
-                align = ["xMinYMin", "xMaxYMin"][i];
-            } else  if (numSvgChildren === 3) {
-                widthClass = ["brace-left", "brace-center", "brace-right"][i];
-                align = ["xMinYMin", "xMidYMin", "xMaxYMin"][i];
-            }
-
-            attributes.push(["preserveAspectRatio", align + " slice"]);
-            svgNode = new domTree.svgNode([path], attributes);
-
+            const numSvgChildren = paths.length;
+            let widthClasses;
+            let aligns;
             if (numSvgChildren === 1) {
-                span = buildCommon.makeSpan(["hide-tail"], [svgNode], options);
+                widthClasses = ["hide-tail"];
+                aligns = [align1];
+            } else if (numSvgChildren === 2) {
+                widthClasses = ["halfarrow-left", "halfarrow-right"];
+                aligns = ["xMinYMin", "xMaxYMin"];
+            } else if (numSvgChildren === 3) {
+                widthClasses = ["brace-left", "brace-center", "brace-right"];
+                aligns = ["xMinYMin", "xMidYMin", "xMaxYMin"];
             } else {
-                span = buildCommon.makeSpan([widthClass], [svgNode], options);
-                span.style.height = height + "em";
-                spans.push(span);
+                throw new Error(
+                    `Correct katexImagesData or update code here to support
+                    ${numSvgChildren} children.`);
             }
-        }
 
-        if (numSvgChildren > 1) {
-            span = buildCommon.makeSpan(["stretchy"], spans, options);
+            for (let i = 0; i < numSvgChildren; i++) {
+                const path = new domTree.pathNode(paths[i]);
+
+                const svgNode = new domTree.svgNode([path], {
+                    "width": "400em",
+                    "height": height + "em",
+                    "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+                    "preserveAspectRatio": aligns[i] + " slice",
+                });
+
+                const span =
+                    buildCommon.makeSpan([widthClasses[i]], [svgNode], options);
+                if (numSvgChildren === 1) {
+                    return {span, minWidth, height};
+                } else {
+                    span.style.height = height + "em";
+                    spans.push(span);
+                }
+            }
+
+            return {
+                span: buildCommon.makeSpan(["stretchy"], spans, options),
+                minWidth,
+                height,
+            };
         }
-    }
+    } // buildSvgSpan_()
+    const {span, minWidth, height} = buildSvgSpan_();
 
     // Note that we are returning span.depth = 0.
     // Any adjustments relative to the baseline must be done in buildHTML.
@@ -247,16 +266,24 @@ const svgSpan = function(group, options) {
     return span;
 };
 
-const encloseSpan = function(inner, label, pad, options) {
+const encloseSpan = function(
+    inner: domTree.span,
+    label: string,
+    pad: number,
+    options: Options,
+): domTree.span {
     // Return an image span for \cancel, \bcancel, \xcancel, or \fbox
     let img;
     const totalHeight = inner.height + inner.depth + 2 * pad;
 
-    if (/(fbox)|(color)/.test(label)) {
+    if (/fbox|color/.test(label)) {
         img = buildCommon.makeSpan(["stretchy", label], [], options);
 
-        if (label === "fbox" && options.color) {
-            img.style.borderColor = options.getColor();
+        if (label === "fbox") {
+            const color = options.color && options.getColor();
+            if (color) {
+                img.style.borderColor = color;
+            }
         }
 
     } else {
@@ -264,31 +291,31 @@ const encloseSpan = function(inner, label, pad, options) {
         // Since \cancel's SVG is inline and it omits the viewBox attribute,
         // its stroke-width will not vary with span area.
 
-        let attributes = [["x1", "0"]];
         const lines = [];
-
-        if (label !== "cancel") {
-            attributes.push(["y1", "0"]);
-            attributes.push(["x2", "100%"]);
-            attributes.push(["y2", "100%"]);
-            attributes.push(["stroke-width", "0.046em"]);
-            lines.push(new domTree.lineNode(attributes));
+        if (/^[bx]cancel$/.test(label)) {
+            lines.push(new domTree.lineNode({
+                "x1": "0",
+                "y1": "0",
+                "x2": "100%",
+                "y2": "100%",
+                "stroke-width": "0.046em",
+            }));
         }
 
-        if (label === "xcancel") {
-            attributes = [["x1", "0"]];  // start a second line.
+        if (/^x?cancel$/.test(label)) {
+            lines.push(new domTree.lineNode({
+                "x1": "0",
+                "y1": "100%",
+                "x2": "100%",
+                "y2": "0",
+                "stroke-width": "0.046em",
+            }));
         }
 
-        if (label !== "bcancel") {
-            attributes.push(["y1", "100%"]);
-            attributes.push(["x2", "100%"]);
-            attributes.push(["y2", "0"]);
-            attributes.push(["stroke-width", "0.046em"]);
-            lines.push(new domTree.lineNode(attributes));
-        }
-
-        attributes = [["width", "100%"], ["height", totalHeight + "em"]];
-        const svgNode = new domTree.svgNode(lines, attributes);
+        const svgNode = new domTree.svgNode(lines, {
+            "width": "100%",
+            "height": totalHeight + "em",
+        });
 
         img = buildCommon.makeSpan([], [svgNode], options);
     }
@@ -299,8 +326,21 @@ const encloseSpan = function(inner, label, pad, options) {
     return img;
 };
 
+const ruleSpan = function(className: string, options: Options): domTree.span {
+    // Get a big square image. The parent span will hide the overflow.
+    const pathNode = new domTree.pathNode('bigRule');
+    const svg =  new domTree.svgNode([pathNode], {
+        "width": "400em",
+        "height": "400em",
+        "viewBox": "0 0 400000 400000",
+        "preserveAspectRatio": "xMinYMin slice",
+    });
+    return buildCommon.makeSpan([className, "hide-tail"], [svg], options);
+};
+
 export default {
-    encloseSpan: encloseSpan,
-    mathMLnode: mathMLnode,
-    svgSpan: svgSpan,
+    encloseSpan,
+    mathMLnode,
+    ruleSpan,
+    svgSpan,
 };

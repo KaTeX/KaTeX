@@ -1,3 +1,4 @@
+// @flow
 /* eslint no-console:0 */
 /**
  * This is the main entry point for KaTeX. Here, we expose functions for
@@ -14,11 +15,18 @@ import buildTree from "./src/buildTree";
 import parseTree from "./src/parseTree";
 import utils from "./src/utils";
 
+import type {SettingsOptions} from "./src/Settings";
+import type ParseNode from "./src/ParseNode";
+
 /**
  * Parse and build an expression, and place that expression in the DOM node
  * given.
  */
-let render = function(expression, baseNode, options) {
+let render = function(
+    expression: string,
+    baseNode: Node,
+    options: SettingsOptions,
+) {
     utils.clearNode(baseNode);
 
     const settings = new Settings(options);
@@ -47,7 +55,10 @@ if (typeof document !== "undefined") {
 /**
  * Parse and build an expression, and return the markup for that.
  */
-const renderToString = function(expression, options) {
+const renderToString = function(
+    expression: string,
+    options: SettingsOptions,
+): string {
     const settings = new Settings(options);
 
     const tree = parseTree(expression, settings);
@@ -57,20 +68,23 @@ const renderToString = function(expression, options) {
 /**
  * Parse an expression and return the parse tree.
  */
-const generateParseTree = function(expression, options) {
+const generateParseTree = function(
+    expression: string,
+    options: SettingsOptions,
+): ParseNode[] {
     const settings = new Settings(options);
     return parseTree(expression, settings);
 };
 
 
 module.exports = {
-    render: render,
-    renderToString: renderToString,
+    render,
+    renderToString,
     /**
      * NOTE: This method is not currently recommended for public use.
      * The internal tree representation is unstable and is very likely
      * to change. Use at your own risk.
      */
     __parse: generateParseTree,
-    ParseError: ParseError,
+    ParseError,
 };

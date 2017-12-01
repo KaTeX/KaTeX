@@ -40,45 +40,9 @@ defineFunction(["\\sqrt"], {
     };
 });
 
-// Non-mathy text, possibly in a font
-const textFunctionFonts = {
-    "\\text": undefined, "\\textrm": "mathrm", "\\textsf": "mathsf",
-    "\\texttt": "mathtt", "\\textnormal": "mathrm", "\\textbf": "mathbf",
-    "\\textit": "textit",
-};
+import "./functions/color";
 
-defineFunction([
-    "\\text", "\\textrm", "\\textsf", "\\texttt", "\\textnormal",
-    "\\textbf", "\\textit",
-], {
-    numArgs: 1,
-    argTypes: ["text"],
-    greediness: 2,
-    allowedInText: true,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "text",
-        body: ordargument(body),
-        font: textFunctionFonts[context.funcName],
-    };
-});
-
-// A two-argument custom color
-defineFunction(["\\textcolor"], {
-    numArgs: 2,
-    allowedInText: true,
-    greediness: 3,
-    argTypes: ["color", "original"],
-}, function(context, args) {
-    const color = args[0];
-    const body = args[1];
-    return {
-        type: "color",
-        color: color.value,
-        value: ordargument(body),
-    };
-});
+import "./functions/text";
 
 // \color is handled in Parser.js's parseImplicitGroup
 defineFunction(["\\color"], {
@@ -124,65 +88,13 @@ defineFunction(["\\fcolorbox"], {
     };
 });
 
-// An overline
-defineFunction(["\\overline"], {
-    numArgs: 1,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "overline",
-        body: body,
-    };
-});
+import "./functions/overline";
 
-// An underline
-defineFunction(["\\underline"], {
-    numArgs: 1,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "underline",
-        body: body,
-    };
-});
+import "./functions/underline";
 
-// A box of the width and height
-defineFunction(["\\rule"], {
-    numArgs: 2,
-    numOptionalArgs: 1,
-    argTypes: ["size", "size", "size"],
-}, function(context, args, optArgs) {
-    const shift = optArgs[0];
-    const width = args[0];
-    const height = args[1];
-    return {
-        type: "rule",
-        shift: shift && shift.value,
-        width: width.value,
-        height: height.value,
-    };
-});
+import "./functions/rule";
 
-// TODO: In TeX, \mkern only accepts mu-units, and \kern does not accept
-// mu-units. In current KaTeX we relax this; both commands accept any unit.
-defineFunction(["\\kern", "\\mkern"], {
-    numArgs: 1,
-    argTypes: ["size"],
-}, function(context, args) {
-    return {
-        type: "kern",
-        dimension: args[0].value,
-    };
-});
-
-// A KaTeX logo
-defineFunction(["\\KaTeX"], {
-    numArgs: 0,
-}, function(context) {
-    return {
-        type: "katex",
-    };
-});
+import "./functions/kern";
 
 import "./functions/phantom";
 
@@ -229,27 +141,7 @@ defineFunction(["\\stackrel"], {
     };
 });
 
-// \mod-type functions
-defineFunction(["\\bmod"], {
-    numArgs: 0,
-}, function(context, args) {
-    return {
-        type: "mod",
-        modType: "bmod",
-        value: null,
-    };
-});
-
-defineFunction(["\\pod", "\\pmod", "\\mod"], {
-    numArgs: 1,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "mod",
-        modType: context.funcName.substr(1),
-        value: ordargument(body),
-    };
-});
+import "./functions/mod";
 
 const fontAliases = {
     "\\Bbb": "\\mathbb",
@@ -257,33 +149,12 @@ const fontAliases = {
     "\\frak": "\\mathfrak",
 };
 
-// Single-argument color functions
-defineFunction([
-    "\\blue", "\\orange", "\\pink", "\\red",
-    "\\green", "\\gray", "\\purple",
-    "\\blueA", "\\blueB", "\\blueC", "\\blueD", "\\blueE",
-    "\\tealA", "\\tealB", "\\tealC", "\\tealD", "\\tealE",
-    "\\greenA", "\\greenB", "\\greenC", "\\greenD", "\\greenE",
-    "\\goldA", "\\goldB", "\\goldC", "\\goldD", "\\goldE",
-    "\\redA", "\\redB", "\\redC", "\\redD", "\\redE",
-    "\\maroonA", "\\maroonB", "\\maroonC", "\\maroonD", "\\maroonE",
-    "\\purpleA", "\\purpleB", "\\purpleC", "\\purpleD", "\\purpleE",
-    "\\mintA", "\\mintB", "\\mintC",
-    "\\grayA", "\\grayB", "\\grayC", "\\grayD", "\\grayE",
-    "\\grayF", "\\grayG", "\\grayH", "\\grayI",
-    "\\kaBlue", "\\kaGreen",
-], {
-    numArgs: 1,
-    allowedInText: true,
-    greediness: 3,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "color",
-        color: "katex-" + context.funcName.slice(1),
-        value: ordargument(body),
-    };
-});
+const singleCharIntegrals: {[string]: string} = {
+    "\u222b": "\\int",
+    "\u222c": "\\iint",
+    "\u222d": "\\iiint",
+    "\u222e": "\\oint",
+};
 
 // There are 2 flags for operators; whether they produce limits in
 // displaystyle, and whether they are symbols and should grow in
@@ -324,159 +195,32 @@ defineFunction([
 
 // No limits, symbols
 defineFunction([
-    "\\int", "\\iint", "\\iiint", "\\oint",
+    "\\int", "\\iint", "\\iiint", "\\oint", "\u222b", "\u222c",
+    "\u222d", "\u222e",
 ], {
     numArgs: 0,
 }, function(context) {
+    let fName = context.funcName;
+    if (fName.length === 1) {
+        fName = singleCharIntegrals[fName];
+    }
     return {
         type: "op",
         limits: false,
         symbol: true,
-        body: context.funcName,
+        body: fName,
     };
 });
 
-// Limits, symbols
-defineFunction([
-    "\\coprod", "\\bigvee", "\\bigwedge", "\\biguplus", "\\bigcap",
-    "\\bigcup", "\\intop", "\\prod", "\\sum", "\\bigotimes",
-    "\\bigoplus", "\\bigodot", "\\bigsqcup", "\\smallint",
-], {
-    numArgs: 0,
-}, function(context) {
-    return {
-        type: "op",
-        limits: true,
-        symbol: true,
-        body: context.funcName,
-    };
-});
+import "./functions/op";
 
-// \mathop class command
-defineFunction(["\\mathop"], {
-    numArgs: 1,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "op",
-        limits: false,
-        symbol: false,
-        value: ordargument(body),
-    };
-});
+import "./functions/operatorname";
 
-import "./functions/operators";
+import "./functions/genfrac";
 
-// Fractions
-defineFunction([
-    "\\dfrac", "\\frac", "\\tfrac",
-    "\\dbinom", "\\binom", "\\tbinom",
-    "\\\\atopfrac", // can’t be entered directly
-], {
-    numArgs: 2,
-    greediness: 2,
-}, function(context, args) {
-    const numer = args[0];
-    const denom = args[1];
-    let hasBarLine;
-    let leftDelim = null;
-    let rightDelim = null;
-    let size = "auto";
+import "./functions/lap";
 
-    switch (context.funcName) {
-        case "\\dfrac":
-        case "\\frac":
-        case "\\tfrac":
-            hasBarLine = true;
-            break;
-        case "\\\\atopfrac":
-            hasBarLine = false;
-            break;
-        case "\\dbinom":
-        case "\\binom":
-        case "\\tbinom":
-            hasBarLine = false;
-            leftDelim = "(";
-            rightDelim = ")";
-            break;
-        default:
-            throw new Error("Unrecognized genfrac command");
-    }
-
-    switch (context.funcName) {
-        case "\\dfrac":
-        case "\\dbinom":
-            size = "display";
-            break;
-        case "\\tfrac":
-        case "\\tbinom":
-            size = "text";
-            break;
-    }
-
-    return {
-        type: "genfrac",
-        numer: numer,
-        denom: denom,
-        hasBarLine: hasBarLine,
-        leftDelim: leftDelim,
-        rightDelim: rightDelim,
-        size: size,
-    };
-});
-
-// Horizontal overlap functions
-defineFunction(["\\mathllap", "\\mathrlap", "\\mathclap"], {
-    numArgs: 1,
-    allowedInText: true,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "lap",
-        alignment: context.funcName.slice(5),
-        body: body,
-    };
-});
-
-// smash, with optional [tb], as in AMS
-defineFunction(["\\smash"], {
-    numArgs: 1,
-    numOptionalArgs: 1,
-    allowedInText: true,
-}, function(context, args, optArgs) {
-    let smashHeight = false;
-    let smashDepth = false;
-    const tbArg = optArgs[0];
-    if (tbArg) {
-        // Optional [tb] argument is engaged.
-        // ref: amsmath: \renewcommand{\smash}[1][tb]{%
-        //               def\mb@t{\ht}\def\mb@b{\dp}\def\mb@tb{\ht\z@\z@\dp}%
-        let letter = "";
-        for (let i = 0; i < tbArg.value.length; ++i) {
-            letter = tbArg.value[i].value;
-            if (letter === "t") {
-                smashHeight = true;
-            } else if (letter === "b") {
-                smashDepth = true;
-            } else {
-                smashHeight = false;
-                smashDepth = false;
-                break;
-            }
-        }
-    } else {
-        smashHeight = true;
-        smashDepth = true;
-    }
-
-    const body = args[0];
-    return {
-        type: "smash",
-        body: body,
-        smashHeight: smashHeight,
-        smashDepth: smashDepth,
-    };
-});
+import "./functions/smash";
 
 import "./functions/delimsizing";
 
@@ -592,7 +336,7 @@ defineFunction([
 // Stretchy accents under the body
 defineFunction([
     "\\underleftarrow", "\\underrightarrow", "\\underleftrightarrow",
-    "\\undergroup", "\\underlinesegment", "\\undertilde",
+    "\\undergroup", "\\underlinesegment", "\\utilde",
 ], {
     numArgs: 1,
 }, function(context, args) {
@@ -610,9 +354,8 @@ defineFunction([
     "\\xleftrightarrow", "\\xLeftrightarrow", "\\xhookleftarrow",
     "\\xhookrightarrow", "\\xmapsto", "\\xrightharpoondown",
     "\\xrightharpoonup", "\\xleftharpoondown", "\\xleftharpoonup",
-    "\\xrightleftharpoons", "\\xleftrightharpoons", "\\xLongequal",
-    "\\xtwoheadrightarrow", "\\xtwoheadleftarrow", "\\xLongequal",
-    "\\xtofrom",
+    "\\xrightleftharpoons", "\\xleftrightharpoons", "\\xlongequal",
+    "\\xtwoheadrightarrow", "\\xtwoheadleftarrow", "\\xtofrom",
 ], {
     numArgs: 1,
     numOptionalArgs: 1,
@@ -725,3 +468,9 @@ defineFunction(["\\verb"], {
     throw new ParseError(
         "\\verb ended by end of line instead of matching delimiter");
 });
+
+// Hyperlinks
+import "./functions/href";
+
+// MathChoice
+import "./functions/mathchoice";

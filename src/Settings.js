@@ -6,7 +6,7 @@
 
 import utils from "./utils";
 
-type SettingsOptions = {
+export type SettingsOptions = {
     displayMode?: boolean;
     throwOnError?: boolean;
     errorColor?: string;

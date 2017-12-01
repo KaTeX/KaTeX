@@ -140,13 +140,14 @@ export default class Parser {
      * and fetches the one after that as the new look ahead.
      */
     consume() {
-        this.nextToken = this.gullet.get(this.mode === "math");
+        this.nextToken = this.gullet.expandNextToken();
     }
 
+    /**
+     * Switches between "text" and "math" modes.
+     */
     switchMode(newMode) {
-        this.gullet.unget(this.nextToken);
         this.mode = newMode;
-        this.consume();
     }
 
     /**
@@ -193,6 +194,10 @@ export default class Parser {
         // Keep adding atoms to the body until we can't parse any more atoms (either
         // we reached the end, a }, or a \right)
         while (true) {
+            // Ignore spaces in math mode
+            if (this.mode === "math") {
+                this.consumeSpaces();
+            }
             const lex = this.nextToken;
             if (Parser.endOfExpression.indexOf(lex.text) !== -1) {
                 break;
@@ -283,6 +288,7 @@ export default class Parser {
         const symbolToken = this.nextToken;
         const symbol = symbolToken.text;
         this.consume();
+        this.consumeSpaces(); // ignore spaces before sup/subscript argument
         const group = this.parseGroup();
 
         if (!group) {
@@ -367,6 +373,9 @@ export default class Parser {
         let superscript;
         let subscript;
         while (true) {
+            // Guaranteed in math mode, so eat any spaces first.
+            this.consumeSpaces();
+
             // Lex the first token
             const lex = this.nextToken;
 
@@ -676,9 +685,25 @@ export default class Parser {
         const optArgs = [];
 
         for (let i = 0; i < totalArgs; i++) {
-            const nextToken = this.nextToken;
             const argType = funcData.argTypes && funcData.argTypes[i];
             const isOptional = i < funcData.numOptionalArgs;
+            // Ignore spaces between arguments.  As the TeXbook says:
+            // "After you have said ‘\def\row#1#2{...}’, you are allowed to
+            //  put spaces between the arguments (e.g., ‘\row x n’), because
+            //  TeX doesn’t use single spaces as undelimited arguments."
+            if (i > 0 && !isOptional) {
+                this.consumeSpaces();
+            }
+            // Also consume leading spaces in math mode, as parseSymbol
+            // won't know what to do with them.  This can only happen with
+            // macros, e.g. \frac\foo\foo where \foo expands to a space symbol.
+            // In LaTeX, the \foo's get treated as (blank) arguments).
+            // In KaTeX, for now, both spaces will get consumed.
+            // TODO(edemaine)
+            if (i === 0 && !isOptional && this.mode === "math") {
+                this.consumeSpaces();
+            }
+            const nextToken = this.nextToken;
             let arg = argType ?
                 this.parseGroupOfType(argType, isOptional) :
                 this.parseGroup(isOptional);
@@ -734,15 +759,13 @@ export default class Parser {
         if (innerMode === "size") {
             return this.parseSizeGroup(optional);
         }
-
-        this.switchMode(innerMode);
-        if (innerMode === "text") {
-            // text mode is special because it should ignore the whitespace before
-            // it
-            this.consumeSpaces();
+        if (innerMode === "url") {
+            return this.parseUrlGroup(optional);
         }
+
         // By the time we get here, innerMode is one of "text" or "math".
         // We switch the mode of the parser, recurse, then restore the old mode.
+        this.switchMode(innerMode);
         const res = this.parseGroup(optional);
         this.switchMode(outerMode);
         return res;
@@ -780,6 +803,52 @@ export default class Parser {
             }
             lastToken = this.nextToken;
             str += lastToken.text;
+            this.consume();
+        }
+        this.mode = outerMode;
+        this.expect(optional ? "]" : "}");
+        return firstToken.range(lastToken, str);
+    }
+
+    /**
+     * Parses a group, essentially returning the string formed by the
+     * brace-enclosed tokens plus some position information, possibly
+     * with nested braces.
+     *
+     * @param {string} modeName  Used to describe the mode in error messages
+     * @param {boolean=} optional  Whether the group is optional or required
+     * @return {?Token}
+     */
+    parseStringGroupWithBalancedBraces(modeName, optional) {
+        if (optional && this.nextToken.text !== "[") {
+            return null;
+        }
+        const outerMode = this.mode;
+        this.mode = "text";
+        this.expect(optional ? "[" : "{");
+        let str = "";
+        let nest = 0;
+        const firstToken = this.nextToken;
+        let lastToken = firstToken;
+        while (nest > 0 || this.nextToken.text !== (optional ? "]" : "}")) {
+            if (this.nextToken.text === "EOF") {
+                throw new ParseError(
+                    "Unexpected end of input in " + modeName,
+                    firstToken.range(this.nextToken, str));
+            }
+            lastToken = this.nextToken;
+            str += lastToken.text;
+            if (lastToken.text === "{") {
+                nest += 1;
+            } else if (lastToken.text === "}") {
+                if (nest <= 0) {
+                    throw new ParseError(
+                        "Unbalanced brace of input in " + modeName,
+                        firstToken.range(this.nextToken, str));
+                } else {
+                    nest -= 1;
+                }
+            }
             this.consume();
         }
         this.mode = outerMode;
@@ -830,6 +899,23 @@ export default class Parser {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
         return newArgument(new ParseNode("color", match[0], this.mode), res);
+    }
+
+    /**
+     * Parses a url string.
+     */
+    parseUrlGroup(optional) {
+        const res = this.parseStringGroupWithBalancedBraces("url", optional);
+        if (!res) {
+            return null;
+        }
+        const raw = res.text;
+        // hyperref package allows backslashes alone in href, but doesn't generate
+        // valid links in such cases; we interpret this as "undefiend" behaviour,
+        // and keep them as-is. Some browser will replace backslashes with
+        // forward slashes.
+        const url = raw.replace(/\\([#$%&~_^{}])/g, '$1');
+        return newArgument(new ParseNode("url", url, this.mode), res);
     }
 
     /**

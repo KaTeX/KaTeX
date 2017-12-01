@@ -158,7 +158,7 @@ export const buildExpression = function(expression, options, isRealGroup) {
 };
 
 // Return math atom class (mclass) of a domTree.
-const getTypeOfDomTree = function(node) {
+export const getTypeOfDomTree = function(node) {
     if (node instanceof domTree.documentFragment) {
         if (node.children.length) {
             return getTypeOfDomTree(
@@ -305,28 +305,6 @@ groupTypes.ordgroup = function(group, options) {
     );
 };
 
-groupTypes.text = function(group, options) {
-    const newOptions = options.withFont(group.value.font);
-    const inner = buildExpression(group.value.body, newOptions, true);
-    buildCommon.tryCombineChars(inner);
-    return makeSpan(["mord", "text"],
-        inner, newOptions);
-};
-
-groupTypes.color = function(group, options) {
-    const elements = buildExpression(
-        group.value.value,
-        options.withColor(group.value.color),
-        false
-    );
-
-    // \color isn't supposed to affect the type of the elements it contains.
-    // To accomplish this, we wrap the results in a fragment, so the inner
-    // elements will be able to directly interact with their neighbors. For
-    // example, `\color{red}{2 +} 3` has the same spacing as `2 + 3`
-    return new buildCommon.makeFragment(elements);
-};
-
 groupTypes.supsub = function(group, options) {
     // Superscript and subscripts are handled in the TeXbook on page
     // 445-446, rules 18(a-f).
@@ -397,15 +375,21 @@ groupTypes.supsub = function(group, options) {
             vlistElem[0].marginLeft = -base.italic + "em";
         }
 
-        supsub = buildCommon.makeVList(vlistElem, "shift", subShift, options);
+        supsub = buildCommon.makeVList({
+            positionType: "shift",
+            positionData: subShift,
+            children: vlistElem,
+        }, options);
     } else if (!group.value.sub) {
         // Rule 18c, d
         supShift = Math.max(supShift, minSupShift,
             supm.depth + 0.25 * metrics.xHeight);
 
-        supsub = buildCommon.makeVList([
-            {type: "elem", elem: supm, marginRight: scriptspace},
-        ], "shift", -supShift, options);
+        supsub = buildCommon.makeVList({
+            positionType: "shift",
+            positionData: -supShift,
+            children: [{type: "elem", elem: supm, marginRight: scriptspace}],
+        }, options);
     } else {
         supShift = Math.max(
             supShift, minSupShift, supm.depth + 0.25 * metrics.xHeight);
@@ -433,148 +417,16 @@ groupTypes.supsub = function(group, options) {
             vlistElem[0].marginLeft = -base.italic + "em";
         }
 
-        supsub = buildCommon.makeVList(vlistElem, "individualShift", null, options);
+        supsub = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: vlistElem,
+        }, options);
     }
 
     // We ensure to wrap the supsub vlist in a span.msupsub to reset text-align
     const mclass = getTypeOfDomTree(base) || "mord";
     return makeSpan([mclass],
         [base, makeSpan(["msupsub"], [supsub])],
-        options);
-};
-
-groupTypes.genfrac = function(group, options) {
-    // Fractions are handled in the TeXbook on pages 444-445, rules 15(a-e).
-    // Figure out what style this fraction should be in based on the
-    // function used
-    let style = options.style;
-    if (group.value.size === "display") {
-        style = Style.DISPLAY;
-    } else if (group.value.size === "text") {
-        style = Style.TEXT;
-    }
-
-    const nstyle = style.fracNum();
-    const dstyle = style.fracDen();
-    let newOptions;
-
-    newOptions = options.havingStyle(nstyle);
-    const numerm = buildGroup(group.value.numer, newOptions, options);
-
-    newOptions = options.havingStyle(dstyle);
-    const denomm = buildGroup(group.value.denom, newOptions, options);
-
-    let rule;
-    let ruleWidth;
-    let ruleSpacing;
-    if (group.value.hasBarLine) {
-        rule = makeLineSpan("frac-line", options);
-        ruleWidth = rule.height;
-        ruleSpacing = rule.height;
-    } else {
-        rule = null;
-        ruleWidth = 0;
-        ruleSpacing = options.fontMetrics().defaultRuleThickness;
-    }
-
-    // Rule 15b
-    let numShift;
-    let clearance;
-    let denomShift;
-    if (style.size === Style.DISPLAY.size) {
-        numShift = options.fontMetrics().num1;
-        if (ruleWidth > 0) {
-            clearance = 3 * ruleSpacing;
-        } else {
-            clearance = 7 * ruleSpacing;
-        }
-        denomShift = options.fontMetrics().denom1;
-    } else {
-        if (ruleWidth > 0) {
-            numShift = options.fontMetrics().num2;
-            clearance = ruleSpacing;
-        } else {
-            numShift = options.fontMetrics().num3;
-            clearance = 3 * ruleSpacing;
-        }
-        denomShift = options.fontMetrics().denom2;
-    }
-
-    let frac;
-    if (ruleWidth === 0) {
-        // Rule 15c
-        const candidateClearance =
-            (numShift - numerm.depth) - (denomm.height - denomShift);
-        if (candidateClearance < clearance) {
-            numShift += 0.5 * (clearance - candidateClearance);
-            denomShift += 0.5 * (clearance - candidateClearance);
-        }
-
-        frac = buildCommon.makeVList([
-            {type: "elem", elem: denomm, shift: denomShift},
-            {type: "elem", elem: numerm, shift: -numShift},
-        ], "individualShift", null, options);
-    } else {
-        // Rule 15d
-        const axisHeight = options.fontMetrics().axisHeight;
-
-        if ((numShift - numerm.depth) - (axisHeight + 0.5 * ruleWidth) <
-                clearance) {
-            numShift +=
-                clearance - ((numShift - numerm.depth) -
-                             (axisHeight + 0.5 * ruleWidth));
-        }
-
-        if ((axisHeight - 0.5 * ruleWidth) - (denomm.height - denomShift) <
-                clearance) {
-            denomShift +=
-                clearance - ((axisHeight - 0.5 * ruleWidth) -
-                             (denomm.height - denomShift));
-        }
-
-        const midShift = -(axisHeight - 0.5 * ruleWidth);
-
-        frac = buildCommon.makeVList([
-            {type: "elem", elem: denomm, shift: denomShift},
-            {type: "elem", elem: rule,   shift: midShift},
-            {type: "elem", elem: numerm, shift: -numShift},
-        ], "individualShift", null, options);
-    }
-
-    // Since we manually change the style sometimes (with \dfrac or \tfrac),
-    // account for the possible size change here.
-    newOptions = options.havingStyle(style);
-    frac.height *= newOptions.sizeMultiplier / options.sizeMultiplier;
-    frac.depth *= newOptions.sizeMultiplier / options.sizeMultiplier;
-
-    // Rule 15e
-    let delimSize;
-    if (style.size === Style.DISPLAY.size) {
-        delimSize = options.fontMetrics().delim1;
-    } else {
-        delimSize = options.fontMetrics().delim2;
-    }
-
-    let leftDelim;
-    let rightDelim;
-    if (group.value.leftDelim == null) {
-        leftDelim = makeNullDelimiter(options, ["mopen"]);
-    } else {
-        leftDelim = delimiter.customSizedDelim(
-            group.value.leftDelim, delimSize, true,
-            options.havingStyle(style), group.mode, ["mopen"]);
-    }
-    if (group.value.rightDelim == null) {
-        rightDelim = makeNullDelimiter(options, ["mclose"]);
-    } else {
-        rightDelim = delimiter.customSizedDelim(
-            group.value.rightDelim, delimSize, true,
-            options.havingStyle(style), group.mode, ["mclose"]);
-    }
-
-    return makeSpan(
-        ["mord"].concat(newOptions.sizingClasses(options)),
-        [leftDelim, makeSpan(["mfrac"], [frac]), rightDelim],
         options);
 };
 
@@ -598,352 +450,6 @@ groupTypes.spacing = function(group, options) {
             ["mspace", buildCommon.spacingFunctions[group.value].className],
             [], options);
     }
-};
-
-groupTypes.lap = function(group, options) {
-    // mathllap, mathrlap, mathclap
-    let inner;
-    if (group.value.alignment === "clap") {
-        // ref: https://www.math.lsu.edu/~aperlis/publications/mathclap/
-        inner = makeSpan([], [buildGroup(group.value.body, options)]);
-        // wrap, since CSS will center a .clap > .inner > span
-        inner = makeSpan(["inner"], [inner], options);
-    } else {
-        inner = makeSpan(
-            ["inner"], [buildGroup(group.value.body, options)]);
-    }
-    const fix = makeSpan(["fix"], []);
-    return makeSpan(
-        ["mord", group.value.alignment], [inner, fix], options);
-};
-
-groupTypes.smash = function(group, options) {
-    const node = makeSpan(["mord"], [buildGroup(group.value.body, options)]);
-
-    if (!group.value.smashHeight && !group.value.smashDepth) {
-        return node;
-    }
-
-    if (group.value.smashHeight) {
-        node.height = 0;
-        // In order to influence makeVList, we have to reset the children.
-        if (node.children) {
-            for (let i = 0; i < node.children.length; i++) {
-                node.children[i].height = 0;
-            }
-        }
-    }
-
-    if (group.value.smashDepth) {
-        node.depth = 0;
-        if (node.children) {
-            for (let i = 0; i < node.children.length; i++) {
-                node.children[i].depth = 0;
-            }
-        }
-    }
-
-    // At this point, we've reset the TeX-like height and depth values.
-    // But the span still has an HTML line height.
-    // makeVList applies "display: table-cell", which prevents the browser
-    // from acting on that line height. So we'll call makeVList now.
-
-    return buildCommon.makeVList([
-        {type: "elem", elem: node},
-    ], "firstBaseline", null, options);
-};
-
-groupTypes.op = function(group, options) {
-    // Operators are handled in the TeXbook pg. 443-444, rule 13(a).
-    let supGroup;
-    let subGroup;
-    let hasLimits = false;
-    if (group.type === "supsub") {
-        // If we have limits, supsub will pass us its group to handle. Pull
-        // out the superscript and subscript and set the group to the op in
-        // its base.
-        supGroup = group.value.sup;
-        subGroup = group.value.sub;
-        group = group.value.base;
-        hasLimits = true;
-    }
-
-    const style = options.style;
-
-    // Most operators have a large successor symbol, but these don't.
-    const noSuccessor = [
-        "\\smallint",
-    ];
-
-    let large = false;
-    if (style.size === Style.DISPLAY.size &&
-        group.value.symbol &&
-        !utils.contains(noSuccessor, group.value.body)) {
-
-        // Most symbol operators get larger in displaystyle (rule 13)
-        large = true;
-    }
-
-    let base;
-    if (group.value.symbol) {
-        // If this is a symbol, create the symbol.
-        const fontName = large ? "Size2-Regular" : "Size1-Regular";
-        base = buildCommon.makeSymbol(
-            group.value.body, fontName, "math", options,
-            ["mop", "op-symbol", large ? "large-op" : "small-op"]);
-    } else if (group.value.value) {
-        // If this is a list, compose that list.
-        const inner = buildExpression(group.value.value, options, true);
-        if (inner.length === 1 && inner[0] instanceof domTree.symbolNode) {
-            base = inner[0];
-            base.classes[0] = "mop"; // replace old mclass
-        } else {
-            base = makeSpan(["mop"], inner, options);
-        }
-    } else {
-        // Otherwise, this is a text operator. Build the text from the
-        // operator's name.
-        // TODO(emily): Add a space in the middle of some of these
-        // operators, like \limsup
-        const output = [];
-        for (let i = 1; i < group.value.body.length; i++) {
-            output.push(buildCommon.mathsym(group.value.body[i], group.mode));
-        }
-        base = makeSpan(["mop"], output, options);
-    }
-
-    // If content of op is a single symbol, shift it vertically.
-    let baseShift = 0;
-    let slant = 0;
-    if (base instanceof domTree.symbolNode) {
-        // Shift the symbol so its center lies on the axis (rule 13). It
-        // appears that our fonts have the centers of the symbols already
-        // almost on the axis, so these numbers are very small. Note we
-        // don't actually apply this here, but instead it is used either in
-        // the vlist creation or separately when there are no limits.
-        baseShift = (base.height - base.depth) / 2 -
-            options.fontMetrics().axisHeight;
-
-        // The slant of the symbol is just its italic correction.
-        slant = base.italic;
-    }
-
-    if (hasLimits) {
-        // IE 8 clips \int if it is in a display: inline-block. We wrap it
-        // in a new span so it is an inline, and works.
-        base = makeSpan([], [base]);
-
-        let supm;
-        let supKern;
-        let subm;
-        let subKern;
-        let newOptions;
-        // We manually have to handle the superscripts and subscripts. This,
-        // aside from the kern calculations, is copied from supsub.
-        if (supGroup) {
-            newOptions = options.havingStyle(style.sup());
-            supm = buildGroup(supGroup, newOptions, options);
-
-            supKern = Math.max(
-                options.fontMetrics().bigOpSpacing1,
-                options.fontMetrics().bigOpSpacing3 - supm.depth);
-        }
-
-        if (subGroup) {
-            newOptions = options.havingStyle(style.sub());
-            subm = buildGroup(subGroup, newOptions, options);
-
-            subKern = Math.max(
-                options.fontMetrics().bigOpSpacing2,
-                options.fontMetrics().bigOpSpacing4 - subm.height);
-        }
-
-        // Build the final group as a vlist of the possible subscript, base,
-        // and possible superscript.
-        let finalGroup;
-        let top;
-        let bottom;
-        if (!supGroup) {
-            top = base.height - baseShift;
-
-            // Shift the limits by the slant of the symbol. Note
-            // that we are supposed to shift the limits by 1/2 of the slant,
-            // but since we are centering the limits adding a full slant of
-            // margin will shift by 1/2 that.
-            finalGroup = buildCommon.makeVList([
-                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                {type: "elem", elem: subm, marginLeft: -slant + "em"},
-                {type: "kern", size: subKern},
-                {type: "elem", elem: base},
-            ], "top", top, options);
-        } else if (!subGroup) {
-            bottom = base.depth + baseShift;
-
-            finalGroup = buildCommon.makeVList([
-                {type: "elem", elem: base},
-                {type: "kern", size: supKern},
-                {type: "elem", elem: supm, marginLeft: slant + "em"},
-                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-            ], "bottom", bottom, options);
-        } else if (!supGroup && !subGroup) {
-            // This case probably shouldn't occur (this would mean the
-            // supsub was sending us a group with no superscript or
-            // subscript) but be safe.
-            return base;
-        } else {
-            bottom = options.fontMetrics().bigOpSpacing5 +
-                subm.height + subm.depth +
-                subKern +
-                base.depth + baseShift;
-
-            finalGroup = buildCommon.makeVList([
-                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                {type: "elem", elem: subm, marginLeft: -slant + "em"},
-                {type: "kern", size: subKern},
-                {type: "elem", elem: base},
-                {type: "kern", size: supKern},
-                {type: "elem", elem: supm, marginLeft: slant + "em"},
-                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-            ], "bottom", bottom, options);
-        }
-
-        return makeSpan(["mop", "op-limits"], [finalGroup], options);
-    } else {
-        if (baseShift) {
-            base.style.position = "relative";
-            base.style.top = baseShift + "em";
-        }
-
-        return base;
-    }
-};
-
-groupTypes.mod = function(group, options) {
-    const inner = [];
-
-    if (group.value.modType === "bmod") {
-        // “\nonscript\mskip-\medmuskip\mkern5mu”
-        if (!options.style.isTight()) {
-            inner.push(makeSpan(
-                ["mspace", "negativemediumspace"], [], options));
-        }
-        inner.push(makeSpan(["mspace", "thickspace"], [], options));
-    } else if (options.style.size === Style.DISPLAY.size) {
-        inner.push(makeSpan(["mspace", "quad"], [], options));
-    } else if (group.value.modType === "mod") {
-        inner.push(makeSpan(["mspace", "twelvemuspace"], [], options));
-    } else {
-        inner.push(makeSpan(["mspace", "eightmuspace"], [], options));
-    }
-
-    if (group.value.modType === "pod" || group.value.modType === "pmod") {
-        inner.push(buildCommon.mathsym("(", group.mode));
-    }
-
-    if (group.value.modType !== "pod") {
-        const modInner = [
-            buildCommon.mathsym("m", group.mode),
-            buildCommon.mathsym("o", group.mode),
-            buildCommon.mathsym("d", group.mode)];
-        if (group.value.modType === "bmod") {
-            inner.push(makeSpan(["mbin"], modInner, options));
-            // “\mkern5mu\nonscript\mskip-\medmuskip”
-            inner.push(makeSpan(["mspace", "thickspace"], [], options));
-            if (!options.style.isTight()) {
-                inner.push(makeSpan(
-                    ["mspace", "negativemediumspace"], [], options));
-            }
-        } else {
-            Array.prototype.push.apply(inner, modInner);
-            inner.push(makeSpan(["mspace", "sixmuspace"], [], options));
-        }
-    }
-
-    if (group.value.value) {
-        Array.prototype.push.apply(inner,
-            buildExpression(group.value.value, options, false));
-    }
-
-    if (group.value.modType === "pod" || group.value.modType === "pmod") {
-        inner.push(buildCommon.mathsym(")", group.mode));
-    }
-
-    return buildCommon.makeFragment(inner);
-};
-
-groupTypes.katex = function(group, options) {
-    // The KaTeX logo. The offsets for the K and a were chosen to look
-    // good, but the offsets for the T, E, and X were taken from the
-    // definition of \TeX in TeX (see TeXbook pg. 356)
-    const k = makeSpan(
-        ["k"], [buildCommon.mathsym("K", group.mode)], options);
-    const a = makeSpan(
-        ["a"], [buildCommon.mathsym("A", group.mode)], options);
-
-    a.height = (a.height + 0.2) * 0.75;
-    a.depth = (a.height - 0.2) * 0.75;
-
-    const t = makeSpan(
-        ["t"], [buildCommon.mathsym("T", group.mode)], options);
-    const e = makeSpan(
-        ["e"], [buildCommon.mathsym("E", group.mode)], options);
-
-    e.height = (e.height - 0.2155);
-    e.depth = (e.depth + 0.2155);
-
-    const x = makeSpan(
-        ["x"], [buildCommon.mathsym("X", group.mode)], options);
-
-    return makeSpan(
-        ["mord", "katex-logo"], [k, a, t, e, x], options);
-};
-
-const makeLineSpan = function(className, options, thickness) {
-    const line = makeSpan([className], [], options);
-    line.height = thickness || options.fontMetrics().defaultRuleThickness;
-    line.style.borderBottomWidth = line.height + "em";
-    line.maxFontSize = 1.0;
-    return line;
-};
-
-groupTypes.overline = function(group, options) {
-    // Overlines are handled in the TeXbook pg 443, Rule 9.
-
-    // Build the inner group in the cramped style.
-    const innerGroup = buildGroup(group.value.body,
-            options.havingCrampedStyle());
-
-    // Create the line above the body
-    const line = makeLineSpan("overline-line", options);
-
-    // Generate the vlist, with the appropriate kerns
-    const vlist = buildCommon.makeVList([
-        {type: "elem", elem: innerGroup},
-        {type: "kern", size: 3 * line.height},
-        {type: "elem", elem: line},
-        {type: "kern", size: line.height},
-    ], "firstBaseline", null, options);
-
-    return makeSpan(["mord", "overline"], [vlist], options);
-};
-
-groupTypes.underline = function(group, options) {
-    // Underlines are handled in the TeXbook pg 443, Rule 10.
-    // Build the inner group.
-    const innerGroup = buildGroup(group.value.body, options);
-
-    // Create the line above the body
-    const line = makeLineSpan("underline-line", options);
-
-    // Generate the vlist, with the appropriate kerns
-    const vlist = buildCommon.makeVList([
-        {type: "kern", size: line.height},
-        {type: "elem", elem: line},
-        {type: "kern", size: 3 * line.height},
-        {type: "elem", elem: innerGroup},
-    ], "top", innerGroup.height, options);
-
-    return makeSpan(["mord", "underline"], [vlist], options);
 };
 
 groupTypes.sqrt = function(group, options) {
@@ -1003,12 +509,15 @@ groupTypes.sqrt = function(group, options) {
     inner.style.paddingLeft = img.advanceWidth + "em";
 
     // Overlay the image and the argument.
-    const body = buildCommon.makeVList([
-        {type: "elem", elem: inner},
-        {type: "kern", size: -(inner.height + imgShift)},
-        {type: "elem", elem: img},
-        {type: "kern", size: ruleWidth},
-    ], "firstBaseline", null, options);
+    const body = buildCommon.makeVList({
+        positionType: "firstBaseline",
+        children: [
+            {type: "elem", elem: inner},
+            {type: "kern", size: -(inner.height + imgShift)},
+            {type: "elem", elem: img},
+            {type: "kern", size: ruleWidth},
+        ],
+    }, options);
     body.children[0].children[0].classes.push("svg-align");
 
     if (!group.value.index) {
@@ -1025,9 +534,11 @@ groupTypes.sqrt = function(group, options) {
         const toShift = 0.6 * (body.height - body.depth);
 
         // Build a VList with the superscript shifted up correctly
-        const rootVList = buildCommon.makeVList(
-            [{type: "elem", elem: rootm}],
-            "shift", -toShift, options);
+        const rootVList = buildCommon.makeVList({
+            positionType: "shift",
+            positionData: -toShift,
+            children: [{type: "elem", elem: rootm}],
+        }, options);
         // Add a class surrounding it so we can add on the appropriate
         // kerning
         const rootVListWrap = makeSpan(["root"], [rootVList]);
@@ -1113,48 +624,6 @@ groupTypes.verb = function(group, options) {
     buildCommon.tryCombineChars(body);
     return makeSpan(["mord", "text"].concat(newOptions.sizingClasses(options)),
         body, newOptions);
-};
-
-groupTypes.rule = function(group, options) {
-    // Make an empty span for the rule
-    const rule = makeSpan(["mord", "rule"], [], options);
-
-    // Calculate the shift, width, and height of the rule, and account for units
-    let shift = 0;
-    if (group.value.shift) {
-        shift = calculateSize(group.value.shift, options);
-    }
-
-    const width = calculateSize(group.value.width, options);
-    const height = calculateSize(group.value.height, options);
-
-    // Style the rule to the right size
-    rule.style.borderRightWidth = width + "em";
-    rule.style.borderTopWidth = height + "em";
-    rule.style.bottom = shift + "em";
-
-    // Record the height and width
-    rule.width = width;
-    rule.height = height + shift;
-    rule.depth = -shift;
-    // Font size is the number large enough that the browser will
-    // reserve at least `absHeight` space above the baseline.
-    // The 1.125 factor was empirically determined
-    rule.maxFontSize = height * 1.125 * options.sizeMultiplier;
-
-    return rule;
-};
-
-groupTypes.kern = function(group, options) {
-    // Make an empty span for the rule
-    const rule = makeSpan(["mord", "rule"], [], options);
-
-    if (group.value.dimension) {
-        const dimension = calculateSize(group.value.dimension, options);
-        rule.style.marginLeft = dimension + "em";
-    }
-
-    return rule;
 };
 
 groupTypes.accent = function(group, options) {
@@ -1246,19 +715,25 @@ groupTypes.accent = function(group, options) {
         // we shift it to the right by 1*skew.
         accentBody.style.marginLeft = 2 * skew + "em";
 
-        accentBody = buildCommon.makeVList([
-            {type: "elem", elem: body},
-            {type: "kern", size: -clearance},
-            {type: "elem", elem: accentBody},
-        ], "firstBaseline", null, options);
+        accentBody = buildCommon.makeVList({
+            positionType: "firstBaseline",
+            children: [
+                {type: "elem", elem: body},
+                {type: "kern", size: -clearance},
+                {type: "elem", elem: accentBody},
+            ],
+        }, options);
 
     } else {
         accentBody = stretchy.svgSpan(group, options);
 
-        accentBody = buildCommon.makeVList([
-            {type: "elem", elem: body},
-            {type: "elem", elem: accentBody},
-        ], "firstBaseline", null, options);
+        accentBody = buildCommon.makeVList({
+            positionType: "firstBaseline",
+            children: [
+                {type: "elem", elem: body},
+                {type: "elem", elem: accentBody},
+            ],
+        }, options);
 
         const styleSpan = accentBody.children[0].children[0].children[1];
         styleSpan.classes.push("svg-align");  // text-align: left;
@@ -1320,18 +795,25 @@ groupTypes.horizBrace = function(group, options) {
     // This first vlist contains the subject matter and the brace:   equation
     let vlist;
     if (group.value.isOver) {
-        vlist = buildCommon.makeVList([
-            {type: "elem", elem: body},
-            {type: "kern", size: 0.1},
-            {type: "elem", elem: braceBody},
-        ], "firstBaseline", null, options);
+        vlist = buildCommon.makeVList({
+            positionType: "firstBaseline",
+            children: [
+                {type: "elem", elem: body},
+                {type: "kern", size: 0.1},
+                {type: "elem", elem: braceBody},
+            ],
+        }, options);
         vlist.children[0].children[0].children[1].classes.push("svg-align");
     } else {
-        vlist = buildCommon.makeVList([
-            {type: "elem", elem: braceBody},
-            {type: "kern", size: 0.1},
-            {type: "elem", elem: body},
-        ], "bottom", body.depth + 0.1 + braceBody.height, options);
+        vlist = buildCommon.makeVList({
+            positionType: "bottom",
+            positionData: body.depth + 0.1 + braceBody.height,
+            children: [
+                {type: "elem", elem: braceBody},
+                {type: "kern", size: 0.1},
+                {type: "elem", elem: body},
+            ],
+        }, options);
         vlist.children[0].children[0].children[0].classes.push("svg-align");
     }
 
@@ -1349,18 +831,24 @@ groupTypes.horizBrace = function(group, options) {
             [vlist], options);
 
         if (group.value.isOver) {
-            vlist = buildCommon.makeVList([
-                {type: "elem", elem: vSpan},
-                {type: "kern", size: 0.2},
-                {type: "elem", elem: supSubGroup},
-            ], "firstBaseline", null, options);
+            vlist = buildCommon.makeVList({
+                positionType: "firstBaseline",
+                children: [
+                    {type: "elem", elem: vSpan},
+                    {type: "kern", size: 0.2},
+                    {type: "elem", elem: supSubGroup},
+                ],
+            }, options);
         } else {
-            vlist = buildCommon.makeVList([
-                {type: "elem", elem: supSubGroup},
-                {type: "kern", size: 0.2},
-                {type: "elem", elem: vSpan},
-            ], "bottom", vSpan.depth + 0.2 + supSubGroup.height,
-            options);
+            vlist = buildCommon.makeVList({
+                positionType: "bottom",
+                positionData: vSpan.depth + 0.2 + supSubGroup.height,
+                children: [
+                    {type: "elem", elem: supSubGroup},
+                    {type: "kern", size: 0.2},
+                    {type: "elem", elem: vSpan},
+                ],
+            }, options);
         }
     }
 
@@ -1376,11 +864,15 @@ groupTypes.accentUnder = function(group, options) {
     const kern = (/tilde/.test(group.value.label) ? 0.12 : 0);
 
     // Generate the vlist, with the appropriate kerns
-    const vlist = buildCommon.makeVList([
-        {type: "elem", elem: accentBody},
-        {type: "kern", size: kern},
-        {type: "elem", elem: innerGroup},
-    ], "bottom", accentBody.height + kern, options);
+    const vlist = buildCommon.makeVList({
+        positionType: "bottom",
+        positionData: accentBody.height + kern,
+        children: [
+            {type: "elem", elem: accentBody},
+            {type: "kern", size: kern},
+            {type: "elem", elem: innerGroup},
+        ],
+    }, options);
 
     vlist.children[0].children[0].children[0].classes.push("svg-align");
 
@@ -1429,17 +921,23 @@ groupTypes.enclose = function(group, options) {
 
     let vlist;
     if (isColorbox) {
-        vlist = buildCommon.makeVList([
-            // Put the color background behind inner;
-            {type: "elem", elem: img, shift: imgShift},
-            {type: "elem", elem: inner, shift: 0},
-        ], "individualShift", null, options);
+        vlist = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: [
+                // Put the color background behind inner;
+                {type: "elem", elem: img, shift: imgShift},
+                {type: "elem", elem: inner, shift: 0},
+            ],
+        }, options);
     } else {
-        vlist = buildCommon.makeVList([
-            // Write the \cancel stroke on top of inner.
-            {type: "elem", elem: inner, shift: 0},
-            {type: "elem", elem: img, shift: imgShift},
-        ], "individualShift", null, options);
+        vlist = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: [
+                // Write the \cancel stroke on top of inner.
+                {type: "elem", elem: inner, shift: 0},
+                {type: "elem", elem: img, shift: imgShift},
+            ],
+        }, options);
     }
 
     if (/cancel/.test(label)) {
@@ -1487,16 +985,22 @@ groupTypes.xArrow = function(group, options) {
         const lowerShift = -options.fontMetrics().axisHeight
             + lowerGroup.height + 0.5 * arrowBody.height
             + 0.111;
-        vlist = buildCommon.makeVList([
-            {type: "elem", elem: upperGroup, shift: upperShift},
-            {type: "elem", elem: arrowBody,  shift: arrowShift},
-            {type: "elem", elem: lowerGroup, shift: lowerShift},
-        ], "individualShift", null, options);
+        vlist = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: [
+                {type: "elem", elem: upperGroup, shift: upperShift},
+                {type: "elem", elem: arrowBody,  shift: arrowShift},
+                {type: "elem", elem: lowerGroup, shift: lowerShift},
+            ],
+        }, options);
     } else {
-        vlist = buildCommon.makeVList([
-            {type: "elem", elem: upperGroup, shift: upperShift},
-            {type: "elem", elem: arrowBody,  shift: arrowShift},
-        ], "individualShift", null, options);
+        vlist = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: [
+                {type: "elem", elem: upperGroup, shift: upperShift},
+                {type: "elem", elem: arrowBody,  shift: arrowShift},
+            ],
+        }, options);
     }
 
     vlist.children[0].children[0].children[1].classes.push("svg-align");
@@ -1522,10 +1026,11 @@ groupTypes.raisebox = function(group, options) {
         size: 6,                // simulate \normalsize
     }}, options);
     const dy = calculateSize(group.value.dy.value, options);
-    return buildCommon.makeVList([{
-        type: "elem",
-        elem: body,
-    }], "shift", -dy, options);
+    return buildCommon.makeVList({
+        positionType: "shift",
+        positionData: -dy,
+        children: [{type: "elem", elem: body}],
+    }, options);
 };
 
 /**

@@ -118,6 +118,7 @@
     @ptperem: 10.0;
     @nulldelimiterspace: 1.2em / @ptperem;
 
+    @muspace: 0.055556em;       // 1mu
     @thinspace: 0.16667em;      // 3mu
     @mediumspace: 0.22222em;    // 4mu
     @thickspace: 0.27778em;     // 5mu
@@ -294,10 +295,29 @@
             text-align: center;
         }
 
-       .frac-line {
+        .frac-line {
             display: inline-block;
             width: 100%;
-            border-bottom-style: solid;
+        }
+    }
+
+    // Set a min-height for some horizontal lines so their display
+    // will show at least one screen pixel.
+    @media screen {
+        .mfrac .frac-line,
+        .overline .overline-line,
+        .underline .underline-line {
+            min-height: 1px;
+        }
+    }
+
+    // Modify min-height for retina displays. Don't force two screen pixels.
+    @media screen and (-webkit-min-device-pixel-ratio: 2.0),
+        screen and (min-resolution: 192dpi) {
+        .mfrac .frac-line,
+        .overline .overline-line,
+        .underline .underline-line {
+            min-height: 0.5px;
         }
     }
 
@@ -306,6 +326,10 @@
 
         &.negativethinspace {
             margin-left: -@thinspace;
+        }
+
+        &.muspace {
+            width: @muspace;
         }
 
         &.thinspace {
@@ -408,7 +432,6 @@
     .underline .underline-line {
         display: inline-block;
         width: 100%;
-        border-bottom-style: solid;
     }
 
     .sqrt {
@@ -526,7 +549,18 @@
         .vertical-separator {
             display: inline-block;
             margin: 0 -0.025em;
-            border-right: 0.05em solid black;
+            width: 0.05em;
+
+            // Set a min-width so it will display at least one screen pixel.
+            @media screen {
+                min-width: 1px;
+            }
+
+            // Modify min-width for retina displays. Don't force two screen pixels.
+            @media screen and (-webkit-min-device-pixel-ratio: 2.0),
+                screen and (min-resolution: 192dpi) {
+                min-width: 0.5px;
+            }
         }
 
         .arraycolsep {
