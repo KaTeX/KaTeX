@@ -340,13 +340,13 @@ const ruleSpan = function(className: string, lineThickness: number,
 
     if (className === "vertical-separator") {
         pathName = "vertRule";
-        svgWidth = Math.round(3 * lineThickness * 1000) / 1000;
+        svgWidth = 3 * lineThickness;
         svgHeight = Math.round(400 * lineThickness / 0.04);
         viewBoxWidth = 120;
         viewBoxHeight = 400000;
     } else {
         pathName = "horizRule";
-        svgHeight = Math.round(3 * lineThickness * 1000) / 1000;
+        svgHeight = 3 * lineThickness;
         svgWidth = Math.round(400 * lineThickness / 0.04);
         viewBoxHeight = 120;
         viewBoxWidth = 400000;
