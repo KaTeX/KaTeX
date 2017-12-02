@@ -6,7 +6,6 @@ import ParseError from "../ParseError";
 import ParseNode from "../ParseNode";
 import {calculateSize} from "../units";
 import utils from "../utils";
-import stretchy from "../stretchy";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -199,8 +198,8 @@ const htmlBuilder = function(group, options) {
             }
 
             if (colDescr.separator === "|") {
-                const separator = stretchy.ruleSpan("vertical-separator",
-                    options);
+                const separator = buildCommon.makeSpan(["vertical-separator"],
+                    []);
                 separator.style.height = totalHeight + "em";
                 separator.style.verticalAlign =
                     -(totalHeight - offset) + "em";
