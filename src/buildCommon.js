@@ -281,7 +281,7 @@ const makeLineSpan = function(
 ) {
     // Fill the entire span instead of just a border. That way, the min-height
     // value in katex.less will ensure that at least one screen pixel displays.
-    const line = stretchy.ruleSpan(className, options);
+    const line = makeSpan([className], [], options);
     line.height = options.fontMetrics().defaultRuleThickness;
     line.style.height = line.height + "em";
     line.maxFontSize = 1.0;

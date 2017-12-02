@@ -199,8 +199,8 @@ const htmlBuilder = function(group, options) {
             }
 
             if (colDescr.separator === "|") {
-                const separator = stretchy.ruleSpan("vertical-separator",
-                    options);
+                const separator = buildCommon.makeSpan(["vertical-separator"],
+                    []);
                 separator.style.height = totalHeight + "em";
                 separator.style.verticalAlign =
                     -(totalHeight - offset) + "em";
