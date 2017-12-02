@@ -377,7 +377,7 @@ const makeFragment = function(
 
 
 // These are exact object types to catch typos in the names of the optional fields.
-type VListElem = {|
+export type VListElem = {|
     type: "elem",
     elem: DomChildNode,
     marginLeft?: string,

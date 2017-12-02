@@ -275,7 +275,13 @@ defineFunction({
             middleDelim = delimiter.sizedDelim(
                 group.value.value, 1, options,
                 group.mode, []);
-            middleDelim.isMiddle = {value: group.value.value, options: options};
+
+            // Property `isMiddle` not defined on `span`. It is only used in
+            // this file above. Fixing this requires refactoring the htmlBuilder
+            // return type to support passing additional data (harder) or adding
+            // `isMiddle` to `span` just for this case (easier).
+            // $FlowFixMe
+            middleDelim.isMiddle = {value: group.value.value, options};
         }
         return middleDelim;
     },
