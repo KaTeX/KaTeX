@@ -36,7 +36,7 @@ defineFunction({
                 // The bottom third of the image is blank and acts like a kern.
                 // So we omit the kern that would otherwise go at the bottom.
                 {type: "elem", elem: line},
-                {type: "kern", size: 3 * line.height},
+                {type: "kern", size: 4 * line.height},
                 {type: "elem", elem: innerGroup},
             ],
         }, options);

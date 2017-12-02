@@ -168,7 +168,7 @@ defineFunction({
                     {type: "elem", elem: denomm, shift: denomShift},
                     // $FlowFixMe `rule` cannot be `null` here.
                     {type: "elem", elem: rule,   shift: midShift + ruleWidth},
-                    {type: "elem", elem: numerm, shift: -numShift - ruleWidth},
+                    {type: "elem", elem: numerm, shift: -numShift},
                 ],
             }, options);
         }

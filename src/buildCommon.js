@@ -279,8 +279,9 @@ const makeLineSpan = function(
     className: string,
     options: Options,
 ) {
-    // Fill the entire span instead of just a border. That way, the min-height
-    // value in katex.less will ensure that at least one screen pixel displays.
+    // Return a span with an SVG image of a horizontal line. The SVG path
+    // fills the middle third of the span. We want an extra tall span
+    // because Chrome will sometimes not display a span that is 0.04em tall.
     const lineHeight = options.fontMetrics().defaultRuleThickness;
     const line = stretchy.ruleSpan(className, lineHeight, options);
     line.height = lineHeight;
