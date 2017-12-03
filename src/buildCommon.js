@@ -285,7 +285,7 @@ const makeLineSpan = function(
     const lineHeight = options.fontMetrics().defaultRuleThickness;
     const line = stretchy.ruleSpan(className, lineHeight, options);
     line.height = lineHeight;
-    line.style.height = 3 * line.height + "em";
+    line.style.height = 5 * line.height + "em";
     line.maxFontSize = 1.0;
     return line;
 };

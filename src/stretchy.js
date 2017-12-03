@@ -328,7 +328,7 @@ const encloseSpan = function(
 
 const ruleSpan = function(className: string, lineThickness: number,
     options: Options): domTree.span {
-    // In text style, a rule is 0.04em thick. Our instance may be thicker.
+    // In text style, a horiz rule is 0.04em thick. Our instance may be thicker.
     // Also, the scale factor from em to viewBox is 1000, if in textstyle.
 
     // Get a span with an SVG path that fills the middle third of the span.
@@ -340,15 +340,15 @@ const ruleSpan = function(className: string, lineThickness: number,
 
     if (className === "vertical-separator") {
         pathName = "vertRule";
-        svgWidth = 3 * lineThickness;
-        svgHeight = Math.round(400 * lineThickness / 0.04);
-        viewBoxWidth = 120;
+        svgWidth = 5 * lineThickness;
+        svgHeight = Math.round(400 * lineThickness / 0.05); // 0.05em
+        viewBoxWidth = 250;
         viewBoxHeight = 400000;
     } else {
         pathName = "horizRule";
-        svgHeight = 3 * lineThickness;
+        svgHeight = 5 * lineThickness;
         svgWidth = Math.round(400 * lineThickness / 0.04);
-        viewBoxHeight = 120;
+        viewBoxHeight = 200;
         viewBoxWidth = 400000;
     }
     const pathNode = new domTree.pathNode(pathName);
