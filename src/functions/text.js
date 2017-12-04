@@ -9,8 +9,11 @@ import * as mml from "../buildMathML";
 // Non-mathy text, possibly in a font
 const textFunctionFonts = {
     "\\text": undefined, "\\textrm": "mathrm", "\\textsf": "mathsf",
-    "\\texttt": "mathtt", "\\textnormal": "mathrm", "\\textbf": "mathbf",
-    "\\textit": "textit",
+    "\\texttt": "mathtt", "\\textnormal": "mathrm",
+};
+
+const textFontStyles = {
+    "\\textbf": "textbf", "\\textit": "textit",
 };
 
 defineFunction({
@@ -30,11 +33,15 @@ defineFunction({
         return {
             type: "text",
             body: ordargument(body),
-            font: textFunctionFonts[context.funcName],
+            font: context.funcName,
         };
     },
     htmlBuilder(group, options) {
-        const newOptions = options.withFont(group.value.font);
+        const fontOrStyle = group.value.font;
+        // Checks if the argument is a font family or a font style.
+        const newOptions = textFunctionFonts[fontOrStyle] ?
+                           options.withFont(textFunctionFonts[fontOrStyle]) :
+                           options.withFontStyle(textFontStyles[fontOrStyle]);
         const inner = html.buildExpression(group.value.body, newOptions, true);
         buildCommon.tryCombineChars(inner);
         return buildCommon.makeSpan(["mord", "text"],

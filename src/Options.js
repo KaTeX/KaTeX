@@ -43,6 +43,7 @@ export type OptionsData = {
     textSize?: number;
     phantom?: boolean;
     font?: string | void;
+    fontStyles?: Array<string>;
     maxSize: number;
 };
 
@@ -60,6 +61,7 @@ class Options {
     textSize: number;
     phantom: boolean;
     font: string | void;
+    fontStyles: Array<string>;
     sizeMultiplier: number;
     maxSize: number;
     _fontMetrics: FontMetrics | void;
@@ -76,6 +78,7 @@ class Options {
         this.textSize = data.textSize || this.size;
         this.phantom = !!data.phantom;
         this.font = data.font;
+        this.fontStyles = data.fontStyles || [];
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
         this._fontMetrics = undefined;
@@ -93,6 +96,7 @@ class Options {
             color: this.color,
             phantom: this.phantom,
             font: this.font,
+            fontStyles: this.fontStyles,
             maxSize: this.maxSize,
         };
 
@@ -186,6 +190,16 @@ class Options {
     withFont(font: ?string): Options {
         return this.extend({
             font: font || this.font,
+        });
+    }
+
+    /**
+     * Creates a new options object with the given font style.
+     */
+    withFontStyle(fontStyle: string): Options {
+        const fontStyles = this.fontStyles.concat([fontStyle]);
+        return this.extend({
+            fontStyles,
         });
     }
 

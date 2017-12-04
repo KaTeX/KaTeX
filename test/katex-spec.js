@@ -1590,29 +1590,36 @@ describe("An HTML font tree-builder", function() {
 
     it("should render \\textit{R} with the correct font", function() {
         const markup = katex.renderToString("\\textit{R}");
-        expect(markup).toContain("<span class=\"mord textit\">R</span>");
+        expect(markup).toContain("<span class=\"mord textit mathrm\">R</span>");
     });
 
     it("should render \\text{\\textit{R}} with the correct font", function() {
         const markup = katex.renderToString("\\text{\\textit{R}}");
-        expect(markup).toContain("<span class=\"mord textit\">R</span>");
+        expect(markup).toContain("<span class=\"mord textit mathrm\">R</span>");
     });
 
     it("should render \\text{R\\textit{S}T} with the correct fonts", function() {
         const markup = katex.renderToString("\\text{R\\textit{S}T}");
         expect(markup).toContain("<span class=\"mord mathrm\">R</span>");
-        expect(markup).toContain("<span class=\"mord textit\">S</span>");
+        expect(markup).toContain("<span class=\"mord textit mathrm\">S</span>");
         expect(markup).toContain("<span class=\"mord mathrm\">T</span>");
     });
 
     it("should render \\textbf{R} with the correct font", function() {
         const markup = katex.renderToString("\\textbf{R}");
-        expect(markup).toContain("<span class=\"mord mathbf\">R</span>");
+        expect(markup).toContain("<span class=\"mord textbf mathrm\">R</span>");
     });
 
     it("should render \\textsf{R} with the correct font", function() {
         const markup = katex.renderToString("\\textsf{R}");
         expect(markup).toContain("<span class=\"mord mathsf\">R</span>");
+    });
+
+    it("should render \\textsf{\\textit{R}G\\textbf{B}} with the correct font", function() {
+        const markup = katex.renderToString("\\textsf{\\textit{R}G\\textbf{B}}");
+        expect(markup).toContain("<span class=\"mord textit mathsf\">R</span>");
+        expect(markup).toContain("<span class=\"mord mathsf\">G</span>");
+        expect(markup).toContain("<span class=\"mord textbf mathsf\">B</span>");
     });
 
     it("should render \\texttt{R} with the correct font", function() {
