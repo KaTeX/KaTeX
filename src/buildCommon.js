@@ -139,12 +139,12 @@ const mathDefault = function(
     } else if (type === "textord") {
         const font = symbols[mode][value] && symbols[mode][value].font;
         if (font === "ams") {
-            const fontName = retrieveFontName("amsrm", options.fontStyles);
+            const fontName = retrieveTextFontName("amsrm", options.fontStyles);
             return makeSymbol(
                 value, fontName, mode, options,
                 classes.concat(options.fontStyles, "amsrm"));
         } else { // if (font === "main") {
-            const fontName = retrieveFontName("mathrm", options.fontStyles);
+            const fontName = retrieveTextFontName("mathrm", options.fontStyles);
             return makeSymbol(
                 value, fontName, mode, options,
                 classes.concat(options.fontStyles, "mathrm"));
@@ -198,16 +198,23 @@ const makeOrd = function(
     const font = options.font;
     if (font) {
         let fontName;
+        let fontClasses;
         if (font === "mathit" || utils.contains(mainitLetters, value)) {
-            fontName = mathit(value, mode, options, classes).fontName;
+            const fontData = mathit(value, mode, options, classes);
+            fontName = fontData.fontName;
+            fontClasses = [fontData.fontClass];
+        } else if (font === "mathbf") {
+            fontName = "Main-Bold";
+            fontClasses = [font];
         } else {
             fontName = mode === "math" ?
                        fontName = fontMap[font].fontName :
-                       retrieveFontName(font, options.fontStyles);
+                       retrieveTextFontName(font, options.fontStyles);
+            fontClasses = options.fontStyles.concat(font);
         }
         if (lookupSymbol(value, fontName, mode).metrics) {
             return makeSymbol(value, fontName, mode, options,
-                classes.concat(options.fontStyles, font));
+                classes.concat(fontClasses));
         } else {
             return mathDefault(value, mode, options, classes, type);
         }
@@ -542,7 +549,10 @@ const makeVerb = function(group: ParseNode, options: Options): string {
 };
 
 // Takes an Options object, and returns the appropriate fontLookup
-const retrieveFontName = function(font: string, fontStyles: Array<string>): string {
+const retrieveTextFontName = function(
+    font: string,
+    fontStyles: Array<string>
+): string {
     const baseFontName = retrieveBaseFontName(font);
     const fontStylesName =  retrieveFontStylesName(fontStyles);
     return `${baseFontName}-${fontStylesName}`;
