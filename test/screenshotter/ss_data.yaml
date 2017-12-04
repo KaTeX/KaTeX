@@ -267,7 +267,7 @@ Symbols1: |
     \maltese\degree\pounds\$
     \text{\maltese\degree\pounds\textdollar}
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
-TextStacked: \textsf{\textbf{H}ell\textit{o}}
+TextStacked: \textsf{\textbf{abcd123} abcd123 \textit{abcd123}}
 TextWithMath: \text{for $a < b$ and $ c < d $}.
 Unicode: \begin{matrix}\text{ÀàÇçÉéÏïÖöÛû} \\ \text{БГДЖЗЙЛФЦШЫЮЯ} \\ \text{여보세요} \\ \text{私はバナナです} \end{matrix}
 Units: |
