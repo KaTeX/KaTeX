@@ -64,7 +64,7 @@
     "clean-install": "npm run clean && npm i",
     "test": "check-dependencies && npm run lint && npm run flow && npm run jest",
     "build-css": "lessc --clean-css static/katex.less build/katex.css",
-    "prestart": "rm -rf build/ && npm run build-css && npm run copy",
+    "prestart": "npm run build-css && npm run copy",
     "start": "check-dependencies && node webpackDevServer.js",
     "prepublishOnly": "make NIS= dist"
   },
