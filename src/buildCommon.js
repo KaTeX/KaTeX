@@ -581,6 +581,10 @@ const fontMap: {[string]: {| variant: string, fontName: string |}} = {
         variant: "bold",
         fontName: "Main-Bold",
     },
+    "boldsymbol": {
+        variant: "bold-italic",
+        fontName: "Math-BoldItalic",
+    },
     "mathrm": {
         variant: "normal",
         fontName: "Main-Regular",

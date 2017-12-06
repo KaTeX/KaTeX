@@ -244,7 +244,7 @@ defineFunction([
 
 defineFunction([
     // styles
-    "\\mathrm", "\\mathit", "\\mathbf",
+    "\\mathrm", "\\mathit", "\\mathbf", "\\boldsymbol",
 
     // families
     "\\mathbb", "\\mathcal", "\\mathfrak", "\\mathscr", "\\mathsf",
