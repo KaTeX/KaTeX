@@ -57,6 +57,7 @@ BinCancellation: |
     \end{array}
 BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}
 BoldSpacing: \mathbf{A}^2+\mathbf{B}_3*\mathscr{C}'
+BoldSymbol: \boldsymbol{\omega}+\boldsymbol{\Omega}+\boldsymbol{A}+\boldsymbol{x}
 Boxed: \boxed{F=ma} \quad \boxed{ac}\color{magenta}{\boxed{F}}\boxed{F=mg}
 Cases: |
     f(a,b)=\begin{cases}

@@ -1713,6 +1713,19 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mo>+</mo>");
     });
 
+    it("should render \\boldsymbol{" + contents + "} with the correct mathvariants", function() {
+        const tex = "\\boldsymbol{" + contents + "}";
+        const tree = getParsed(tex);
+        const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"bold-italic\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"bold-italic\">x</mi>");
+        expect(markup).toContain("<mn>2</mn>");
+        expect(markup).toContain("<mi mathvariant=\"bold-italic\">\u03c9</mi>");  // \omega
+        expect(markup).toContain("<mi mathvariant=\"bold-italic\">\u03A9</mi>");  // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");                              // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
     it("should render \\mathbf{" + contents + "} with the correct mathvariants", function() {
         const tex = "\\mathbf{" + contents + "}";
         const tree = getParsed(tex);
