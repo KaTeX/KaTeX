@@ -342,7 +342,7 @@ const ruleSpan = function(className: string, lineThickness: number,
                 "y1": "0",
                 "x2": "5",
                 "y2": "10",
-                "stroke-width": "2"
+                "stroke-width": "2",
             }));
         }
 
@@ -350,7 +350,7 @@ const ruleSpan = function(className: string, lineThickness: number,
             "width": "0.25em",
             "height": "100%",
             "viewBox": "0 0 10 10",
-            "preserveAspectRatio": "none"
+            "preserveAspectRatio": "none",
         });
 
     } else {
@@ -360,7 +360,7 @@ const ruleSpan = function(className: string, lineThickness: number,
                 "y1": "5",
                 "x2": "10",
                 "y2": "5",
-                "stroke-width": "2"
+                "stroke-width": "2",
             }));
         }
 
@@ -368,7 +368,7 @@ const ruleSpan = function(className: string, lineThickness: number,
             "width": "100%",
             "height": 5 * lineThickness + "em",
             "viewBox": "0 0 10 10",
-            "preserveAspectRatio": "none"
+            "preserveAspectRatio": "none",
         });
     }
 
