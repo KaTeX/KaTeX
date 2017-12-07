@@ -328,38 +328,51 @@ const encloseSpan = function(
 
 const ruleSpan = function(className: string, lineThickness: number,
     options: Options): domTree.span {
-    // In text style, a horiz rule is 0.04em thick. Our instance may be thicker.
-    // Also, the scale factor from em to viewBox is 1000, if in textstyle.
 
-    // Get a span with an SVG path that fills the middle third of the span.
-    let pathName;
-    let svgHeight;
-    let svgWidth;
-    let viewBoxHeight;
-    let viewBoxWidth;
+    // Get a span with an SVG line that fills the middle fifth of the span.
+    // We're using an extra wide span so Chrome won't round it down to zero.
 
+    const lines = [];
+    let svgNode;
     if (className === "vertical-separator") {
-        pathName = "vertRule";
-        svgWidth = 5 * lineThickness;
-        svgHeight = Math.round(400 * lineThickness / 0.05); // 0.05em
-        viewBoxWidth = 250;
-        viewBoxHeight = 400000;
-    } else {
-        pathName = "horizRule";
-        svgHeight = 5 * lineThickness;
-        svgWidth = Math.round(400 * lineThickness / 0.04);
-        viewBoxHeight = 200;
-        viewBoxWidth = 400000;
-    }
-    const pathNode = new domTree.pathNode(pathName);
+        // Apply 2 brush strokes for sharper edges on low-res screens.
+        for (let i = 0; i < 2; i++) {
+            lines.push(new domTree.lineNode({
+                "x1": "5",
+                "y1": "0",
+                "x2": "5",
+                "y2": "10",
+                "stroke-width": "2"
+            }));
+        }
 
-    const svg =  new domTree.svgNode([pathNode], {
-        "width": svgWidth + "em",
-        "height": svgHeight + "em",
-        "viewBox": "0 0 " + viewBoxWidth + " " + viewBoxHeight,
-        "preserveAspectRatio": "xMinYMin slice",
-    });
-    return buildCommon.makeSpan([className, "hide-tail"], [svg], options);
+        svgNode = new domTree.svgNode(lines, {
+            "width": "0.25em",
+            "height": "100%",
+            "viewBox": "0 0 10 10",
+            "preserveAspectRatio": "none"
+        });
+
+    } else {
+        for (let i = 0; i < 2; i++) {
+            lines.push(new domTree.lineNode({
+                "x1": "0",
+                "y1": "5",
+                "x2": "10",
+                "y2": "5",
+                "stroke-width": "2"
+            }));
+        }
+
+        svgNode = new domTree.svgNode(lines, {
+            "width": "100%",
+            "height": 5 * lineThickness + "em",
+            "viewBox": "0 0 10 10",
+            "preserveAspectRatio": "none"
+        });
+    }
+
+    return buildCommon.makeSpan([className], [svgNode], options);
 };
 
 export default {
