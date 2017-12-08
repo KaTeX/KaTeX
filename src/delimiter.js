@@ -344,7 +344,13 @@ const sqrtSvg = function(sqrtName, height, viewBoxHeight, options) {
     return buildCommon.makeSpan(["hide-tail"], [svg], options);
 };
 
-const sqrtSpan = function(height, delim, options) {
+/**
+ * Make a sqrt image of the given height,
+ */
+const makeSqrtImage = function(height, options) {
+    const delim =
+        traverseSequence("\\surd", height, stackLargeDelimiterSequence, options);
+
     // Create a span containing an SVG image of a sqrt symbol.
     let span;
     let sizeMultiplier = options.sizeMultiplier;  // default
@@ -381,9 +387,15 @@ const sqrtSpan = function(height, delim, options) {
 
     span.height = spanHeight;
     span.style.height = spanHeight + "em";
-    span.sizeMultiplier = sizeMultiplier;
 
-    return span;
+    return {
+        span,
+        // Calculate the actual line width.
+        // This actually should depend on the chosen font -- e.g. \boldmath
+        // should use the thicker surd symbols from e.g. KaTeX_Main-Bold, and
+        // have thicker rules.
+        ruleWidth: options.fontMetrics().sqrtRuleThickness * sizeMultiplier,
+    };
 };
 
 // There are three kinds of delimiters, delimiters that stack when they become
@@ -556,23 +568,18 @@ const makeCustomSizedDelim = function(delim, height, center, options, mode,
     // Look through the sequence
     const delimType = traverseSequence(delim, height, sequence, options);
 
-    if (delim === "\\surd") {
-        // Get an SVG image
-        return sqrtSpan(height, delimType, options);
-    } else {
-        // Get the delimiter from font glyphs.
-        // Depending on the sequence element we decided on, call the
-        // appropriate function.
-        if (delimType.type === "small") {
-            return makeSmallDelim(delim, delimType.style, center, options,
-                                  mode, classes);
-        } else if (delimType.type === "large") {
-            return makeLargeDelim(delim, delimType.size, center, options, mode,
-                                  classes);
-        } else if (delimType.type === "stack") {
-            return makeStackedDelim(delim, height, center, options, mode,
-                                    classes);
-        }
+    // Get the delimiter from font glyphs.
+    // Depending on the sequence element we decided on, call the
+    // appropriate function.
+    if (delimType.type === "small") {
+        return makeSmallDelim(delim, delimType.style, center, options,
+                              mode, classes);
+    } else if (delimType.type === "large") {
+        return makeLargeDelim(delim, delimType.size, center, options, mode,
+                              classes);
+    } else /* if (delimType.type === "stack") */ {
+        return makeStackedDelim(delim, height, center, options, mode,
+                                classes);
     }
 };
 
@@ -613,6 +620,7 @@ const makeLeftRightDelim = function(delim, height, depth, options, mode,
 };
 
 export default {
+    sqrtImage: makeSqrtImage,
     sizedDelim: makeSizedDelim,
     customSizedDelim: makeCustomSizedDelim,
     leftRightDelim: makeLeftRightDelim,
