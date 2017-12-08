@@ -147,6 +147,7 @@ const fontAliases = {
     "\\Bbb": "\\mathbb",
     "\\bold": "\\mathbf",
     "\\frak": "\\mathfrak",
+    "\\bm": "\\boldsymbol",
 };
 
 const singleCharIntegrals: {[string]: string} = {
@@ -251,7 +252,7 @@ defineFunction([
     "\\mathtt",
 
     // aliases
-    "\\Bbb", "\\bold", "\\frak",
+    "\\Bbb", "\\bold", "\\frak", "\\bm",
 ], {
     numArgs: 1,
     greediness: 2,
