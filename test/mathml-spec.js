@@ -77,7 +77,7 @@ describe("A MathML builder", function() {
     });
 
     it("should render boldsymbol with the correct mathvariants", () => {
-        expect(getMathML(`\\boldsymbol{Ax2k\\omega\\Omega\\imath+}`))
+        expect(getMathML(`\\boldsymbol{Axk\\omega\\Omega}`))
             .toMatchSnapshot();
     });
 });
