@@ -24,6 +24,13 @@ const mainitLetters = [
     "\\pounds",  // pounds symbol
 ];
 
+const boldsymbolLetters = [
+    "\\imath",   // dotless i
+    "\\jmath",   // dotless j
+    "+",  // plus symbol
+    "-",  // minus symbol
+];
+
 /**
  * Looks up the given symbol in fontMetrics, after applying any symbol
  * replacements defined in symbol.js
@@ -180,6 +187,34 @@ const mathit = function(
 };
 
 /**
+ * Determines which of the two font names (Main-Bold and Math-BoldItalic) and
+ * corresponding style tags (mathbf or boldsymbol) to use for font "boldsymbol",
+ * depending on the symbol.  Use this function instead of fontMap for font
+ * "boldsymbol".
+ */
+const boldsymbol = function(
+    value: string,
+    mode: Mode,
+    options: Options,
+    classes: string[],
+): {| fontName: string, fontClass: string |} {
+    if (/[0-9]/.test(value.charAt(0)) ||
+            // glyphs for \imath and \jmath do not exist in Math-BoldItalic so
+            // we need to use Main-BoldItalic instead
+            utils.contains(boldsymbolLetters, value)) {
+        return {
+            fontName: "Main-Bold",
+            fontClass: "mathbf",
+        };
+    } else {
+        return {
+            fontName: "Math-BoldItalic",
+            fontClass: "boldsymbol",
+        };
+    }
+};
+
+/**
  * Makes either a mathord or textord in the correct font and color.
  */
 const makeOrd = function(
@@ -195,7 +230,9 @@ const makeOrd = function(
     const font = options.font;
     if (font) {
         let fontLookup;
-        if (font === "mathit" || utils.contains(mainitLetters, value)) {
+        if (font === "boldsymbol") {
+            fontLookup = boldsymbol(value, mode, options, classes);
+        } else if (font === "mathit" || utils.contains(mainitLetters, value)) {
             fontLookup = mathit(value, mode, options, classes);
         } else {
             fontLookup = fontMap[font];
@@ -581,10 +618,6 @@ const fontMap: {[string]: {| variant: string, fontName: string |}} = {
         variant: "bold",
         fontName: "Main-Bold",
     },
-    "boldsymbol": {
-        variant: "bold-italic",
-        fontName: "Math-BoldItalic",
-    },
     "mathrm": {
         variant: "normal",
         fontName: "Main-Regular",
@@ -594,9 +627,10 @@ const fontMap: {[string]: {| variant: string, fontName: string |}} = {
         fontName: "Main-Italic",
     },
 
-    // "mathit" is missing because it requires the use of two fonts: Main-Italic
-    // and Math-Italic.  This is handled by a special case in makeOrd which ends
-    // up calling mathit.
+    // "mathit" and "boldsymbol" are missing because they require the use of two
+    // fonts: Main-Italic and Math-Italic for "mathit", and Main-BoldItalic and
+    // Math-BoldItalic for "boldsymbol".  This is handled by a special case in
+    // makeOrd which ends up calling mathit and boldsymbol.
 
     // families
     "mathbb": {

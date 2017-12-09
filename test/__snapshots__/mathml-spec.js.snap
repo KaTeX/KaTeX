@@ -89,6 +89,9 @@ exports[`A MathML builder should render boldsymbol with the correct mathvariants
         <mi mathvariant="bold-italic">
           x
         </mi>
+        <mn mathvariant="bold-italic">
+          2
+        </mn>
         <mi mathvariant="bold-italic">
           k
         </mi>
@@ -98,10 +101,16 @@ exports[`A MathML builder should render boldsymbol with the correct mathvariants
         <mi mathvariant="bold-italic">
           Ω
         </mi>
+        <mi mathvariant="bold-italic">
+          ı
+        </mi>
+        <mo>
+          +
+        </mo>
       </mrow>
     </mrow>
     <annotation encoding="application/x-tex">
-      \\boldsymbol{Axk\\omega\\Omega}
+      \\boldsymbol{Ax2k\\omega\\Omega\\imath+}
     </annotation>
   </semantics>
 </math>

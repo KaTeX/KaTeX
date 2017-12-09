@@ -39,6 +39,8 @@ const getVariant = function(group, options) {
     const mode = group.mode;
     if (font === "mathit") {
         return "italic";
+    } else if (font === "boldsymbol") {
+        return "bold-italic";
     }
 
     let value = group.value;
