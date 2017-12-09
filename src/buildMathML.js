@@ -108,9 +108,14 @@ groupTypes.textord = function(group, options) {
     return node;
 };
 
-groupTypes.bin = function(group) {
+groupTypes.bin = function(group, options) {
     const node = new mathMLTree.MathNode(
         "mo", [makeText(group.value, group.mode)]);
+
+    const variant = getVariant(group, options);
+    if (variant === "bold-italic") {
+        node.setAttribute("mathvariant", variant);
+    }
 
     return node;
 };

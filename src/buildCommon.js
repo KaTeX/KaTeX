@@ -120,8 +120,13 @@ const mathsym = function(
     // Have a special case for when the value = \ because the \ is used as a
     // textord in unsupported command errors but cannot be parsed as a regular
     // text ordinal and is therefore not present as a symbol in the symbols
-    // table for text
-    if (value === "\\" || symbols[mode][value].font === "main") {
+    // table for text, as well as a special case for boldsymbol because it
+    // can be used for bold + and -
+    if (utils.contains(boldsymbolLetters, value) &&
+            (options && options.font && options.font === "boldsymbol")) {
+        return makeSymbol(value, "Main-Bold", mode, options,
+            classes.concat(["mathbf"]));
+    } else if (value === "\\" || symbols[mode][value].font === "main") {
         return makeSymbol(value, "Main-Regular", mode, options, classes);
     } else {
         return makeSymbol(

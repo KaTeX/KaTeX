@@ -104,7 +104,7 @@ exports[`A MathML builder should render boldsymbol with the correct mathvariants
         <mi mathvariant="bold-italic">
           ı
         </mi>
-        <mo>
+        <mo mathvariant="bold-italic">
           +
         </mo>
       </mrow>
