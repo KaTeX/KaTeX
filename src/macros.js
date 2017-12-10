@@ -87,6 +87,8 @@ defineMacro("\u211D", "\\mathbb{R}");
 defineMacro("\u2124", "\\mathbb{Z}");
 
 // Unicode middle dot
+// The KaTeX fonts do not contain U+00B7. Instead, \cdotp displays
+// the dot at U+22C5 and gives it punct spacing.
 defineMacro("\u00b7", "\\cdotp");
 
 // \llap and \rlap render their contents in text mode
