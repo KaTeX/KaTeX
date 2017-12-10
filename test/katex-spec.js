@@ -2706,7 +2706,7 @@ describe("Unicode", function() {
     });
 
     it("should parse symbols", function() {
-        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓").toParse();
+        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓·").toParse();
     });
 
     it("should parse arrows", function() {
@@ -2718,7 +2718,7 @@ describe("Unicode", function() {
     });
 
     it("should parse binary operators", function() {
-        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞").toParse();
+        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞⋅").toParse();
     });
 });
 

@@ -86,6 +86,9 @@ defineMacro("\u211A", "\\mathbb{Q}");
 defineMacro("\u211D", "\\mathbb{R}");
 defineMacro("\u2124", "\\mathbb{Z}");
 
+// Unicode middle dot
+defineMacro("\u00b7", "\\cdotp");
+
 // \llap and \rlap render their contents in text mode
 defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
 defineMacro("\\rlap", "\\mathrlap{\\textrm{#1}}");
