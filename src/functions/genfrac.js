@@ -167,6 +167,9 @@ defineFunction({
                 children: [
                     {type: "elem", elem: denomm, shift: denomShift},
                     // $FlowFixMe `rule` cannot be `null` here.
+                    // The next line would ordinarily contain "shift: midShift".
+                    // But we put the rule into a a span that is 5 rules tall,
+                    // to overcome a Chrome rendering issue.
                     {type: "elem", elem: rule,   shift: midShift + 2 * ruleWidth},
                     {type: "elem", elem: numerm, shift: -numShift},
                 ],

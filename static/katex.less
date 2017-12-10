@@ -528,9 +528,9 @@
     .mtable {
         .vertical-separator {
             display: inline-block;
-            margin: 0 -0.125em;
-            width: 0.25em;
-        }
+            margin: 0 -0.125em;     // The ink in the rule is actually 0.05em wide.
+            width: 0.25em;          // We put it in a 0.25em wide span to overcome
+        }				            // a Chrome rendering issue.
 
         .arraycolsep {
             display: inline-block;

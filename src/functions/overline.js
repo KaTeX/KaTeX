@@ -34,6 +34,9 @@ defineFunction({
             positionType: "firstBaseline",
             children: [
                 {type: "elem", elem: innerGroup},
+                // The kern on the next line would ordinarily be 3 * line.height
+                // But we put the line into a span that is 5 lines tall, to
+                // overcome a Chrome rendering issue.
                 {type: "kern", size: line.height},
                 {type: "elem", elem: line},
             ],
