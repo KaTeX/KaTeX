@@ -91,6 +91,11 @@ module.exports = {
      * to change. Use at your own risk.
      */
     __parse: generateParseTree,
+    /**
+     * NOTE: This method is not currently recommended for public use.
+     * The internal tree representation is unstable and is very likely
+     * to change. Use at your own risk.
+     */
     __getBuildTree: generateBuildTree,
     ParseError,
 };
