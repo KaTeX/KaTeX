@@ -496,7 +496,7 @@ defineSymbol(math, main, mathord, "\u03c6", "\\varphi", true);
 defineSymbol(math, main, bin, "\u2217", "*");
 defineSymbol(math, main, bin, "+", "+");
 defineSymbol(math, main, bin, "\u2212", "-");
-defineSymbol(math, main, bin, "\u22c5", "\\cdot");
+defineSymbol(math, main, bin, "\u22c5", "\\cdot", true);
 defineSymbol(math, main, bin, "\u2218", "\\circ");
 defineSymbol(math, main, bin, "\u00f7", "\\div", true);
 defineSymbol(math, main, bin, "\u00b1", "\\pm", true);
