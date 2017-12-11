@@ -28,12 +28,7 @@ let render = function(
     options: SettingsOptions,
 ) {
     utils.clearNode(baseNode);
-
-    const settings = new Settings(options);
-
-    const tree = parseTree(expression, settings);
-    const node = buildTree(tree, expression, settings).toNode();
-
+    const node = generateBuildTree(expression, options).toNode();
     baseNode.appendChild(node);
 };
 
@@ -51,7 +46,6 @@ if (typeof document !== "undefined") {
     }
 }
 
-
 /**
  * Parse and build an expression, and return the markup for that.
  */
@@ -59,10 +53,8 @@ const renderToString = function(
     expression: string,
     options: SettingsOptions,
 ): string {
-    const settings = new Settings(options);
-
-    const tree = parseTree(expression, settings);
-    return buildTree(tree, expression, settings).toMarkup();
+    const markup = generateBuildTree(expression, options).toMarkup();
+    return markup;
 };
 
 /**
@@ -77,6 +69,19 @@ const generateParseTree = function(
 };
 
 
+/**
+ * Generates and returns the katex build tree. This is used for advanced
+ * use cases (like rendering to custom output).
+ */
+const generateBuildTree = function(
+    expression: string,
+    options: SettingsOptions,
+) {
+    const settings = new Settings(options);
+    const tree = parseTree(expression, settings);
+    return buildTree(tree, expression, settings);
+};
+
 module.exports = {
     render,
     renderToString,
@@ -86,5 +91,6 @@ module.exports = {
      * to change. Use at your own risk.
      */
     __parse: generateParseTree,
+    __getBuildTree: generateBuildTree,
     ParseError,
 };
