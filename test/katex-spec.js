@@ -1618,6 +1618,16 @@ describe("An HTML font tree-builder", function() {
         expect(markup).toMatchSnapshot();
     });
 
+    it("should render \\textsf{\\textbf{$\\mathrm{A}$}} with the correct font", function() {
+        const markup = katex.renderToString("\\textsf{\\textbf{$\\mathrm{A}$}}");
+        expect(markup).toMatchSnapshot();
+    });
+
+    it("should render \\textsf{\\textbf{$\\mathrm{\\textsf{A}}$}} with the correct font", function() {
+        const markup = katex.renderToString("\\textsf{\\textbf{$\\mathrm{\\textsf{A}}$}}");
+        expect(markup).toMatchSnapshot();
+    });
+
     it("should render \\texttt{R} with the correct font", function() {
         const markup = katex.renderToString("\\texttt{R}");
         expect(markup).toContain("<span class=\"mord texttt\">R</span>");
