@@ -246,6 +246,9 @@ const getCharacterMetrics = function(
     character: string,
     font: string,
 ): ?CharacterMetrics {
+    if (!metricMap[font]) {
+        throw new Error(`Font metrics not found for font: ${font}.`);
+    }
     let ch = character.charCodeAt(0);
     if (character[0] in extraCharacterMap) {
         ch = extraCharacterMap[character[0]].charCodeAt(0);

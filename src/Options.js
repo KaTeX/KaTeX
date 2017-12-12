@@ -42,8 +42,9 @@ export type OptionsData = {
     size?: number;
     textSize?: number;
     phantom?: boolean;
-    font?: string | void;
-    fontStyles?: Array<string>;
+    fontFamily?: string | void;
+    fontWeight?: string;
+    fontShape?: string;
     maxSize: number;
 };
 
@@ -60,8 +61,9 @@ class Options {
     size: number;
     textSize: number;
     phantom: boolean;
-    font: string | void;
-    fontStyles: Array<string>;
+    fontFamily: string | void;
+    fontWeight: string;
+    fontShape: string;
     sizeMultiplier: number;
     maxSize: number;
     _fontMetrics: FontMetrics | void;
@@ -77,8 +79,9 @@ class Options {
         this.size = data.size || Options.BASESIZE;
         this.textSize = data.textSize || this.size;
         this.phantom = !!data.phantom;
-        this.font = data.font;
-        this.fontStyles = data.fontStyles || [];
+        this.fontFamily = data.fontFamily;
+        this.fontWeight = data.fontWeight || '';
+        this.fontShape = data.fontShape || '';
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
         this._fontMetrics = undefined;
@@ -95,8 +98,9 @@ class Options {
             textSize: this.textSize,
             color: this.color,
             phantom: this.phantom,
-            font: this.font,
-            fontStyles: this.fontStyles,
+            fontFamily: this.fontFamily,
+            fontWeight: this.fontWeight,
+            fontShape: this.fontShape,
             maxSize: this.maxSize,
         };
 
@@ -187,19 +191,27 @@ class Options {
     /**
      * Create a new options objects with the give font.
      */
-    withFont(font: ?string): Options {
+    withFontFamily(fontFamily: ?string): Options {
         return this.extend({
-            font: font || this.font,
+            fontFamily: fontFamily || this.fontFamily,
         });
     }
 
     /**
-     * Creates a new options object with the given font style.
+     * Creates a new options object with the given font weight
      */
-    withFontStyle(fontStyle: string): Options {
-        const fontStyles = this.fontStyles.concat([fontStyle]);
+    withFontWeight(fontWeight: string): Options {
         return this.extend({
-            fontStyles,
+            fontWeight,
+        });
+    }
+
+    /**
+     * Creates a new options object with the given font weight
+     */
+    withFontShape(fontShape: string): Options {
+        return this.extend({
+            fontShape,
         });
     }
 

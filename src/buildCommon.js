@@ -139,15 +139,17 @@ const mathDefault = function(
     } else if (type === "textord") {
         const font = symbols[mode][value] && symbols[mode][value].font;
         if (font === "ams") {
-            const fontName = retrieveTextFontName("amsrm", options.fontStyles);
+            const fontName = retrieveTextFontName("amsrm", options.fontWeight,
+                  options.fontShape);
             return makeSymbol(
                 value, fontName, mode, options,
-                classes.concat(options.fontStyles, "amsrm"));
+                classes.concat("amsrm", options.fontWeight, options.fontShape));
         } else { // if (font === "main") {
-            const fontName = retrieveTextFontName("mathrm", options.fontStyles);
+            const fontName = retrieveTextFontName("textrm", options.fontWeight,
+                  options.fontShape);
             return makeSymbol(
                 value, fontName, mode, options,
-                classes.concat(options.fontStyles, "mathrm"));
+                classes.concat("textrm", options.fontWeight, options.fontShape));
         }
     } else {
         throw new Error("unexpected type: " + type + " in mathDefault");
@@ -195,22 +197,22 @@ const makeOrd = function(
 
     const classes = ["mord"];
 
-    const font = options.font;
-    if (font) {
+    const fontFamily = options.fontFamily;
+    if (fontFamily) {
         let fontName;
         let fontClasses;
-        if (font === "mathit" || utils.contains(mainitLetters, value)) {
+        if (fontFamily === "mathit" || utils.contains(mainitLetters, value)) {
             const fontData = mathit(value, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
-        } else if (font === "mathbf") {
-            fontName = "Main-Bold";
-            fontClasses = [font];
+        } else if (fontFamily.includes("math") || mode === "math") {
+            // To support old font functions (i.e. \rm \sf etc.) or math mode.
+            fontName = fontMap[fontFamily].fontName;
+            fontClasses = [fontFamily];
         } else {
-            fontName = mode === "math" ?
-                       fontName = fontMap[font].fontName :
-                       retrieveTextFontName(font, options.fontStyles);
-            fontClasses = options.fontStyles.concat(font);
+            fontName = retrieveTextFontName(fontFamily, options.fontWeight,
+                                            options.fontShape);
+            fontClasses = [fontFamily, options.fontWeight, options.fontShape];
         }
         if (lookupSymbol(value, fontName, mode).metrics) {
             return makeSymbol(value, fontName, mode, options,
@@ -550,11 +552,12 @@ const makeVerb = function(group: ParseNode, options: Options): string {
 
 // Takes an Options object, and returns the appropriate fontLookup
 const retrieveTextFontName = function(
-    font: string,
-    fontStyles: Array<string>
+    fontFamily: string,
+    fontWeight: string,
+    fontShape: string,
 ): string {
-    const baseFontName = retrieveBaseFontName(font);
-    const fontStylesName =  retrieveFontStylesName(fontStyles);
+    const baseFontName = retrieveBaseFontName(fontFamily);
+    const fontStylesName = retrieveFontStylesName(fontWeight, fontShape);
     return `${baseFontName}-${fontStylesName}`;
 };
 
@@ -564,25 +567,13 @@ const retrieveBaseFontName = function(font: string): string {
         case "amsrm":
             baseFontName = "AMS";
             break;
-        case "mathrm":
+        case "textrm":
             baseFontName = "Main";
             break;
-        case "mathbb":
-            baseFontName = "AMS";
-            break;
-        case "mathcal":
-            baseFontName = "Caligraphic";
-            break;
-        case "mathfrak":
-            baseFontName = "Fraktur";
-            break;
-        case "mathscr":
-            baseFontName = "Script";
-            break;
-        case "mathsf":
+        case "textsf":
             baseFontName = "SansSerif";
             break;
-        case "mathtt":
+        case "texttt":
             baseFontName = "Typewriter";
             break;
         default:
@@ -591,15 +582,18 @@ const retrieveBaseFontName = function(font: string): string {
     return baseFontName;
 };
 
-const retrieveFontStylesName = function(fontStyles: Array<string>): string {
+const retrieveFontStylesName = function(
+  fontWeight?: string,
+  fontShape?: string,
+): string {
     let fontStylesName = '';
-    if (fontStyles.indexOf("textbf") > -1 || fontStyles.indexOf("textit") > -1) {
-        fontStyles.indexOf("textbf") > -1 && (fontStylesName += "Bold");
-        fontStyles.indexOf("textit") > -1 && (fontStylesName += "Italic");
-    } else {
-        fontStylesName += "Regular";
+    if (fontWeight === "textbf") {
+        fontStylesName += "Bold";
     }
-    return fontStylesName;
+    if (fontShape === "textit") {
+        fontStylesName += "Italic";
+    }
+    return fontStylesName || "Regular";
 };
 
 // A map of spacing functions to their attributes, like size and corresponding

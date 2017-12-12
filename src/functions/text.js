@@ -7,20 +7,28 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 // Non-mathy text, possibly in a font
-const textFunctionFonts = {
-    "\\text": undefined, "\\textrm": "mathrm", "\\textsf": "mathsf",
-    "\\texttt": "mathtt", "\\textnormal": "mathrm",
+const textFontFamilies = {
+    "\\text": undefined, "\\textrm": "textrm", "\\textsf": "textsf",
+    "\\texttt": "texttt", "\\textnormal": "textrm",
 };
 
-const textFontStyles = {
-    "\\textbf": "textbf", "\\textit": "textit",
+const textFontWeights = {
+    "\\textbf": "textbf",
+};
+
+const textFontShapes = {
+    "\\textit": "textit",
 };
 
 defineFunction({
     type: "text",
     names: [
+        // Font families
         "\\text", "\\textrm", "\\textsf", "\\texttt", "\\textnormal",
-        "\\textbf", "\\textit",
+        // Font weights
+        "\\textbf",
+        // Font Shapes
+        "\\textit",
     ],
     props: {
         numArgs: 1,
@@ -37,11 +45,16 @@ defineFunction({
         };
     },
     htmlBuilder(group, options) {
-        const fontOrStyle = group.value.font;
+        const font = group.value.font;
         // Checks if the argument is a font family or a font style.
-        const newOptions = textFunctionFonts[fontOrStyle] ?
-                           options.withFont(textFunctionFonts[fontOrStyle]) :
-                           options.withFontStyle(textFontStyles[fontOrStyle]);
+        let newOptions;
+        if (textFontFamilies[font]) {
+            newOptions = options.withFontFamily(textFontFamilies[font]);
+        } else if (textFontWeights[font]) {
+            newOptions = options.withFontWeight(textFontWeights[font]);
+        } else {
+            newOptions = options.withFontShape(textFontShapes[font]);
+        }
         const inner = html.buildExpression(group.value.body, newOptions, true);
         buildCommon.tryCombineChars(inner);
         return buildCommon.makeSpan(["mord", "text"],

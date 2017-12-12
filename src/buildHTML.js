@@ -599,7 +599,7 @@ groupTypes.styling = function(group, options) {
 
 groupTypes.font = function(group, options) {
     const font = group.value.font;
-    return buildGroup(group.value.body, options.withFont(font));
+    return buildGroup(group.value.body, options.withFontFamily(font));
 };
 
 groupTypes.verb = function(group, options) {

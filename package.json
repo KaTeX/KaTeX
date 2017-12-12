@@ -45,6 +45,7 @@
     "object-assign": "^4.1.0",
     "pako": "1.0.4",
     "pre-commit": "^1.2.2",
+    "rimraf": "^2.6.2",
     "selenium-webdriver": "^2.48.2",
     "sri-toolbox": "^0.2.0",
     "stylelint": "^8.2.0",
@@ -64,7 +65,7 @@
     "clean-install": "npm run clean && npm i",
     "test": "check-dependencies && npm run lint && npm run flow && npm run jest",
     "build-css": "lessc --clean-css static/katex.less build/katex.css",
-    "prestart": "npm run build-css && npm run copy",
+    "prestart": "rimraf build && npm run build-css && npm run copy",
     "start": "check-dependencies && node webpackDevServer.js",
     "prepublishOnly": "make NIS= dist"
   },
