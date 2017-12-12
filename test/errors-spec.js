@@ -375,3 +375,10 @@ describe("Lexer:", function() {
     });
 
 });
+
+describe("Unicode accents", function() {
+    it("should return error for invalid combining characters", function() {
+        expect("A\u0328").toFailWithParseError(
+            "Unknown accent ' ̨' at position 1: Ą̲̲");
+    });
+});
