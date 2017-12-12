@@ -1,5 +1,62 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`A MathML builder accents turn into <mover accent="true"> in MathML 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mover accent="true">
+        <mi>
+          u
+        </mi>
+        <mo>
+          ¨
+        </mo>
+      </mover>
+      <mi>
+        b
+      </mi>
+      <mi>
+        e
+      </mi>
+      <mi>
+        r
+      </mi>
+      <mi>
+        f
+      </mi>
+      <mi>
+        i
+      </mi>
+      <mi>
+        a
+      </mi>
+      <mi>
+        n
+      </mi>
+      <mi>
+        c
+      </mi>
+      <mover accent="true">
+        <mi>
+          e
+        </mi>
+        <mo>
+          ´
+        </mo>
+      </mover>
+      <mi>
+        e
+      </mi>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      über fiancée
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder should generate <mphantom> nodes for \\phantom 1`] = `
 
 <math>

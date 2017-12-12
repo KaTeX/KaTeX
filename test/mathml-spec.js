@@ -92,5 +92,8 @@ describe("A MathML builder", function() {
     it("should render boldsymbol with the correct mathvariants", () => {
         expect(getMathML(`\\boldsymbol{Ax2k\\omega\\Omega\\imath+}`))
             .toMatchSnapshot();
+
+    it('accents turn into <mover accent="true"> in MathML', function() {
+        expect(getMathML("über fiancée")).toMatchSnapshot();
     });
 });
