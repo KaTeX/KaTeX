@@ -149,7 +149,7 @@ const mathDefault = function(
                   options.fontShape);
             return makeSymbol(
                 value, fontName, mode, options,
-                classes.concat("textrm", options.fontWeight, options.fontShape));
+                classes.concat(options.fontWeight, options.fontShape));
         }
     } else {
         throw new Error("unexpected type: " + type + " in mathDefault");

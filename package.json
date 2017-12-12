@@ -59,6 +59,7 @@
     "lint": "eslint katex.js server.js cli.js webpack.config.js webpackDevServer.js src test contrib dockers && stylelint static/fonts.less static/katex.less",
     "flow": "flow",
     "jest": "jest",
+    "jest-update": "jest --updateSnapshot",
     "coverage": "jest --coverage",
     "copy": "cp -a static/. build/ && cp -a contrib build/",
     "clean": "rm -rf build/* node_modules/",
