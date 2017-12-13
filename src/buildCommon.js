@@ -202,8 +202,8 @@ const boldsymbol = function(
             fontClass: "boldsymbol",
         };
     } else {
-        // glyphs for \imath and \jmath do not exist in Math-BoldItalic so
-        // we need to use Main-Bold instead
+        // Some glyphs do not exist in Math-BoldItalic so we need to use 
+        // Main-Bold instead.
         return {
             fontName: "Main-Bold",
             fontClass: "mathbf",
