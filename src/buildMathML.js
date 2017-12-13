@@ -39,6 +39,8 @@ const getVariant = function(group, options) {
     const mode = group.mode;
     if (font === "mathit") {
         return "italic";
+    } else if (font === "boldsymbol") {
+        return "bold-italic";
     }
 
     let value = group.value;
@@ -106,9 +108,14 @@ groupTypes.textord = function(group, options) {
     return node;
 };
 
-groupTypes.bin = function(group) {
+groupTypes.bin = function(group, options) {
     const node = new mathMLTree.MathNode(
         "mo", [makeText(group.value, group.mode)]);
+
+    const variant = getVariant(group, options);
+    if (variant === "bold-italic") {
+        node.setAttribute("mathvariant", variant);
+    }
 
     return node;
 };

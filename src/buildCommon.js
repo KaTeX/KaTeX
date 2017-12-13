@@ -113,8 +113,13 @@ const mathsym = function(
     // Have a special case for when the value = \ because the \ is used as a
     // textord in unsupported command errors but cannot be parsed as a regular
     // text ordinal and is therefore not present as a symbol in the symbols
-    // table for text
-    if (value === "\\" || symbols[mode][value].font === "main") {
+    // table for text, as well as a special case for boldsymbol because it
+    // can be used for bold + and -
+    if ((options && options.fontFamily && options.fontFamily === "boldsymbol") &&
+            lookupSymbol(value, "Main-Bold", mode).metrics) {
+        return makeSymbol(value, "Main-Bold", mode, options,
+            classes.concat(["mathbf"]));
+    } else if (value === "\\" || symbols[mode][value].font === "main") {
         return makeSymbol(value, "Main-Regular", mode, options, classes);
     } else {
         return makeSymbol(
@@ -185,6 +190,33 @@ const mathit = function(
 };
 
 /**
+ * Determines which of the two font names (Main-Bold and Math-BoldItalic) and
+ * corresponding style tags (mathbf or boldsymbol) to use for font "boldsymbol",
+ * depending on the symbol.  Use this function instead of fontMap for font
+ * "boldsymbol".
+ */
+const boldsymbol = function(
+    value: string,
+    mode: Mode,
+    options: Options,
+    classes: string[],
+): {| fontName: string, fontClass: string |} {
+    if (lookupSymbol(value, "Math-BoldItalic", mode).metrics) {
+        return {
+            fontName: "Math-BoldItalic",
+            fontClass: "boldsymbol",
+        };
+    } else {
+        // Some glyphs do not exist in Math-BoldItalic so we need to use
+        // Main-Bold instead.
+        return {
+            fontName: "Main-Bold",
+            fontClass: "mathbf",
+        };
+    }
+};
+
+/**
  * Makes either a mathord or textord in the correct font and color.
  */
 const makeOrd = function(
@@ -201,7 +233,12 @@ const makeOrd = function(
     if (fontFamily) {
         let fontName;
         let fontClasses;
-        if (fontFamily === "mathit" || utils.contains(mainitLetters, value)) {
+        if (fontFamily === "boldsymbol") {
+            const fontData = boldsymbol(value, mode, options, classes);
+            fontName = fontData.fontName;
+            fontClasses = [fontData.fontClass];
+        } else if (fontFamily === "mathit" ||
+                   utils.contains(mainitLetters, value)) {
             const fontData = mathit(value, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
@@ -650,9 +687,10 @@ const fontMap: {[string]: {| variant: string, fontName: string |}} = {
         fontName: "Main-Italic",
     },
 
-    // "mathit" is missing because it requires the use of two fonts: Main-Italic
-    // and Math-Italic.  This is handled by a special case in makeOrd which ends
-    // up calling mathit.
+    // "mathit" and "boldsymbol" are missing because they require the use of two
+    // fonts: Main-Italic and Math-Italic for "mathit", and Math-BoldItalic and
+    // Main-Bold for "boldsymbol".  This is handled by a special case in makeOrd
+    // which ends up calling mathit and boldsymbol.
 
     // families
     "mathbb": {
