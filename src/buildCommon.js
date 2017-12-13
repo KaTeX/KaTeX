@@ -202,7 +202,7 @@ const boldsymbol = function(
             fontClass: "boldsymbol",
         };
     } else {
-        // Some glyphs do not exist in Math-BoldItalic so we need to use 
+        // Some glyphs do not exist in Math-BoldItalic so we need to use
         // Main-Bold instead.
         return {
             fontName: "Main-Bold",
