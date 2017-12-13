@@ -24,13 +24,6 @@ const mainitLetters = [
     "\\pounds",  // pounds symbol
 ];
 
-const boldsymbolLetters = [
-    "\\imath",   // dotless i
-    "\\jmath",   // dotless j
-    "+",  // plus symbol
-    "-",  // minus symbol
-];
-
 /**
  * Looks up the given symbol in fontMetrics, after applying any symbol
  * replacements defined in symbol.js
@@ -122,8 +115,8 @@ const mathsym = function(
     // text ordinal and is therefore not present as a symbol in the symbols
     // table for text, as well as a special case for boldsymbol because it
     // can be used for bold + and -
-    if (utils.contains(boldsymbolLetters, value) &&
-            (options && options.font && options.font === "boldsymbol")) {
+    if ((options && options.font && options.font === "boldsymbol") &&
+            lookupSymbol(value, "Main-Bold", mode).metrics) {
         return makeSymbol(value, "Main-Bold", mode, options,
             classes.concat(["mathbf"]));
     } else if (value === "\\" || symbols[mode][value].font === "main") {
@@ -203,18 +196,17 @@ const boldsymbol = function(
     options: Options,
     classes: string[],
 ): {| fontName: string, fontClass: string |} {
-    if (/[0-9]/.test(value.charAt(0)) ||
-            // glyphs for \imath and \jmath do not exist in Math-BoldItalic so
-            // we need to use Main-BoldItalic instead
-            utils.contains(boldsymbolLetters, value)) {
-        return {
-            fontName: "Main-Bold",
-            fontClass: "mathbf",
-        };
-    } else {
+    if (lookupSymbol(value, "Math-BoldItalic", mode).metrics) {
         return {
             fontName: "Math-BoldItalic",
             fontClass: "boldsymbol",
+        };
+    } else {
+        // glyphs for \imath and \jmath do not exist in Math-BoldItalic so
+        // we need to use Main-Bold instead
+        return {
+            fontName: "Main-Bold",
+            fontClass: "mathbf",
         };
     }
 };
