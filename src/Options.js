@@ -42,6 +42,8 @@ export type OptionsData = {
     size?: number;
     textSize?: number;
     phantom?: boolean;
+    // TODO(#1009): Keep consistent with fontFamily/fontWeight. Ensure this has a
+    // string value.
     fontFamily?: string | void;
     fontWeight?: string;
     fontShape?: string;
