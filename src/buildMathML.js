@@ -31,7 +31,7 @@ export const makeText = function(text, mode) {
  * Returns the math variant as a string or null if none is required.
  */
 const getVariant = function(group, options) {
-    const font = options.font;
+    const font = options.fontFamily;
     if (!font) {
         return null;
     }
@@ -54,7 +54,7 @@ const getVariant = function(group, options) {
 
     const fontName = buildCommon.fontMap[font].fontName;
     if (fontMetrics.getCharacterMetrics(value, fontName)) {
-        return buildCommon.fontMap[options.font].variant;
+        return buildCommon.fontMap[font].variant;
     }
 
     return null;
@@ -268,7 +268,7 @@ groupTypes.spacing = function(group) {
 
 groupTypes.font = function(group, options) {
     const font = group.value.font;
-    return buildGroup(group.value.body, options.withFont(font));
+    return buildGroup(group.value.body, options.withFontFamily(font));
 };
 
 groupTypes.styling = function(group, options) {
