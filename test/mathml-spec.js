@@ -75,4 +75,9 @@ describe("A MathML builder", function() {
         expect(getMathML(`x_{y_{\\mathchoice{D}{T}{S}{${cmd}}}}`))
             .toMatchSnapshot();
     });
+
+    it("should render boldsymbol with the correct mathvariants", () => {
+        expect(getMathML(`\\boldsymbol{Ax2k\\omega\\Omega\\imath+}`))
+            .toMatchSnapshot();
+    });
 });
