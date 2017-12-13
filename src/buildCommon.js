@@ -625,9 +625,9 @@ const fontMap: {[string]: {| variant: string, fontName: string |}} = {
     },
 
     // "mathit" and "boldsymbol" are missing because they require the use of two
-    // fonts: Main-Italic and Math-Italic for "mathit", and Main-BoldItalic and
-    // Math-BoldItalic for "boldsymbol".  This is handled by a special case in
-    // makeOrd which ends up calling mathit and boldsymbol.
+    // fonts: Main-Italic and Math-Italic for "mathit", and Math-BoldItalic and
+    // Main-Bold for "boldsymbol".  This is handled by a special case in makeOrd
+    // which ends up calling mathit and boldsymbol.
 
     // families
     "mathbb": {
