@@ -1585,47 +1585,51 @@ describe("An HTML font tree-builder", function() {
 
     it("should render \\text{R} with the correct font", function() {
         const markup = katex.renderToString("\\text{R}");
-        expect(markup).toMatchSnapshot();
+        expect(markup).toContain("<span class=\"mord\">R</span>");
     });
 
     it("should render \\textit{R} with the correct font", function() {
         const markup = katex.renderToString("\\textit{R}");
-        expect(markup).toMatchSnapshot();
+        expect(markup).toContain("<span class=\"mord textit\">R</span>");
     });
 
     it("should render \\text{\\textit{R}} with the correct font", function() {
         const markup = katex.renderToString("\\text{\\textit{R}}");
-        expect(markup).toMatchSnapshot();
+        expect(markup).toContain("<span class=\"mord textit\">R</span>");
     });
 
     it("should render \\text{R\\textit{S}T} with the correct fonts", function() {
         const markup = katex.renderToString("\\text{R\\textit{S}T}");
-        expect(markup).toMatchSnapshot();
+        expect(markup).toContain("<span class=\"mord\">R</span>");
+        expect(markup).toContain("<span class=\"mord textit\">S</span>");
+        expect(markup).toContain("<span class=\"mord\">T</span>");
     });
 
     it("should render \\textbf{R} with the correct font", function() {
         const markup = katex.renderToString("\\textbf{R}");
-        expect(markup).toMatchSnapshot();
+        expect(markup).toContain("<span class=\"mord textbf\">R</span>");
     });
 
     it("should render \\textsf{R} with the correct font", function() {
         const markup = katex.renderToString("\\textsf{R}");
-        expect(markup).toMatchSnapshot();
+        expect(markup).toContain("<span class=\"mord textsf\">R</span>");
     });
 
     it("should render \\textsf{\\textit{R}G\\textbf{B}} with the correct font", function() {
         const markup = katex.renderToString("\\textsf{\\textit{R}G\\textbf{B}}");
-        expect(markup).toMatchSnapshot();
+        expect(markup).toContain("<span class=\"mord textsf textit\">R</span>");
+        expect(markup).toContain("<span class=\"mord textsf\">G</span>");
+        expect(markup).toContain("<span class=\"mord textsf textbf\">B</span>");
     });
 
     it("should render \\textsf{\\textbf{$\\mathrm{A}$}} with the correct font", function() {
         const markup = katex.renderToString("\\textsf{\\textbf{$\\mathrm{A}$}}");
-        expect(markup).toMatchSnapshot();
+        expect(markup).toContain("<span class=\"mord mathrm\">A</span>");
     });
 
     it("should render \\textsf{\\textbf{$\\mathrm{\\textsf{A}}$}} with the correct font", function() {
         const markup = katex.renderToString("\\textsf{\\textbf{$\\mathrm{\\textsf{A}}$}}");
-        expect(markup).toMatchSnapshot();
+        expect(markup).toContain("<span class=\"mord textsf textbf\">A</span>");
     });
 
     it("should render \\texttt{R} with the correct font", function() {
