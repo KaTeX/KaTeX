@@ -698,33 +698,42 @@ defineSymbol(text, main, spacing, "\u00a0", "~");
 // There are lots of symbols which are the same, so we add them in afterwards.
 
 // All of these are textords in math mode
-"0123456789/@.\"".split('').forEach(function(ch) {
+const mathTextSymbols = "0123456789/@.\"";
+for (let i = 0; i < mathTextSymbols.length; i++) {
+    const ch = mathTextSymbols.charAt(i);
     defineSymbol(math, main, textord, ch, ch);
-});
+}
 
 // All of these are textords in text mode
-"0123456789!@*()-=+[]<>|\";:?/.,".split('').forEach(function(ch) {
+const textSymbols = "0123456789!@*()-=+[]<>|\";:?/.,";
+for (let i = 0; i < textSymbols.length; i++) {
+    const ch = textSymbols.charAt(i);
     defineSymbol(text, main, textord, ch, ch);
-});
+}
 
 // All of these are textords in text mode, and mathords in math mode
-"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').forEach(
-    function(ch) {
-        defineSymbol(math, main, mathord, ch, ch);
-        defineSymbol(text, main, textord, ch, ch);
-    });
+const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+for (let i = 0; i < letters.length; i++) {
+    const ch = letters.charAt(i);
+    defineSymbol(math, main, mathord, ch, ch);
+    defineSymbol(text, main, textord, ch, ch);
+}
 
 // We add these Latin-1 letters as symbols for backwards-compatibility,
 // but they are not actually in the font, nor are they supported by the
 // Unicode accent mechanism, so they fall back to Times font and look ugly.
 // TODO(edemaine): Fix this.
-"ÆÇÐØÞßæçðøþ".split('').forEach(function(ch) {
+const extraLatin = "ÆÇÐØÞßæçðøþ";
+for (let i = 0; i < extraLatin.length; i++) {
+    const ch = extraLatin.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
-});
-"Åå".split('').forEach(function(ch) {
+}
+const extraLatinMath = "Åå";
+for (let i = 0; i < extraLatinMath.length; i++) {
+    const ch = extraLatinMath.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);
-});
+}
 
 // Cyrillic
 for (let i = 0x0410; i <= 0x044F; i++) {
