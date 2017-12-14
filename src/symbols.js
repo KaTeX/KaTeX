@@ -698,17 +698,17 @@ defineSymbol(text, main, spacing, "\u00a0", "~");
 // There are lots of symbols which are the same, so we add them in afterwards.
 
 // All of these are textords in math mode
-"0123456789/@.\"".split().forEach(function(ch) {
+"0123456789/@.\"".split('').forEach(function(ch) {
     defineSymbol(math, main, textord, ch, ch);
 });
 
 // All of these are textords in text mode
-"0123456789!@*()-=+[]<>|\";:?/.,".split().forEach(function(ch) {
+"0123456789!@*()-=+[]<>|\";:?/.,".split('').forEach(function(ch) {
     defineSymbol(text, main, textord, ch, ch);
 });
 
 // All of these are textords in text mode, and mathords in math mode
-"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split().forEach(
+"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').forEach(
     function(ch) {
         defineSymbol(math, main, mathord, ch, ch);
         defineSymbol(text, main, textord, ch, ch);
@@ -718,11 +718,11 @@ defineSymbol(text, main, spacing, "\u00a0", "~");
 // but they are not actually in the font, nor are they supported by the
 // Unicode accent mechanism, so they fall back to Times font and look ugly.
 // TODO(edemaine): Fix this.
-"ÆÇÐØÞßæçðøþ".split().forEach(function(ch) {
+"ÆÇÐØÞßæçðøþ".split('').forEach(function(ch) {
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 });
-"Åå".split().forEach(function(ch) {
+"Åå".split('').forEach(function(ch) {
     defineSymbol(math, main, mathord, ch, ch);
 });
 
