@@ -66,6 +66,16 @@ describe("unicode", function() {
         });
     });
 
+    it("should parse Latin-1 inside \\text{}", function() {
+        expect('\\text{ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ' +
+            'ÆÇÐØÞßæçðøþ}').toParse();
+    });
+
+    it("should parse Latin-1 inside \\text{}", function() {
+        expect('\\text{ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ' +
+            'ÆÇÐØÞßæçðøþ}').toParse();
+    });
+
     it("should parse all lower case Greek letters", function() {
         expect("αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω").toParse();
     });
