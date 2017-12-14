@@ -1104,6 +1104,23 @@ export default class Parser {
         const match = combiningDiacriticalMarksEndRegex.exec(text);
         if (match) {
             text = text.substring(0, match.index);
+            if (text === 'i') {
+                if (this.mode === 'math') {
+                    text = '\\imath';
+                }
+                // TODO: Once we have \j symbol in text mode
+                // } else { // text mode
+                //     text = '\\i';
+                // }
+            } else if (text === 'j') {
+                if (this.mode === 'math') {
+                    text = '\\jmath';
+                }
+                // TODO: Once we have \j symbol in text mode
+                // } else { // text mode
+                //     text = '\\j';
+                // }
+            }
         }
         // Recognize base symbol
         let symbol = null;

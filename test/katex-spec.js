@@ -2771,7 +2771,7 @@ describe("Unicode accents", function() {
             "\\acute Y" +
             "\\grave a\\acute a\\hat a\\tilde a\\ddot a" +
             "\\grave e\\acute e\\hat e\\ddot e" +
-            "\\grave i\\acute i\\hat i\\ddot i" +
+            "\\grave \\imath\\acute \\imath\\hat \\imath\\ddot \\imath" +
             "\\tilde n" +
             "\\grave o\\acute o\\hat o\\tilde o\\ddot o" +
             "\\grave u\\acute u\\hat u\\ddot u" +
