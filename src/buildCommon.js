@@ -19,9 +19,9 @@ import type {DomChildNode, CombinableDomNode} from "./domTree";
 
 // The following have to be loaded from Main-Italic font, using class mainit
 const mainitLetters = [
-    "\\imath",   // dotless i
-    "\\jmath",   // dotless j
-    "\\pounds",  // pounds symbol
+    "\\imath", "ı",       // dotless i
+    "\\jmath", "ȷ",       // dotless j
+    "\\pounds", "\\mathsterling", "\\textsterling", "£",   // pounds symbol
 ];
 
 /**

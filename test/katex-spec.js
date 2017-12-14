@@ -2802,6 +2802,16 @@ describe("Unicode accents", function() {
         expect("A\u0301C\u0301").toParseLike("Á\\acute C");
         expect("\\text{A\u0301C\u0301}").toParseLike("\\text{Á\\'C}");
     });
+
+    it("should parse multi-accented characters", function() {
+        expect("ấā́ắ\\text{ấā́ắ}").toParse();
+        // Doesn't parse quite the same as
+        // "\\text{\\'{\\^a}\\'{\\=a}\\'{\\u a}}" because of the ordgroups.
+    });
+
+    it("should parse accented i's and j's", function() {
+        expect("íȷ́").toParseLike("\\acute\\imath\\acuteȷ");
+    });
 });
 
 describe("Unicode", function() {
