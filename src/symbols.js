@@ -698,32 +698,33 @@ defineSymbol(text, main, spacing, "\u00a0", "~");
 // There are lots of symbols which are the same, so we add them in afterwards.
 
 // All of these are textords in math mode
-for (const ch of "0123456789/@.\"") {
+"0123456789/@.\"".split().forEach(function(ch) {
     defineSymbol(math, main, textord, ch, ch);
-}
+});
 
 // All of these are textords in text mode
-for (const ch of "0123456789!@*()-=+[]<>|\";:?/.,") {
+"0123456789!@*()-=+[]<>|\";:?/.,".split().forEach(function(ch) {
     defineSymbol(text, main, textord, ch, ch);
-}
+});
 
 // All of these are textords in text mode, and mathords in math mode
-for (const ch of "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") {
-    defineSymbol(math, main, mathord, ch, ch);
-    defineSymbol(text, main, textord, ch, ch);
-}
+"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split().forEach(
+    function(ch) {
+        defineSymbol(math, main, mathord, ch, ch);
+        defineSymbol(text, main, textord, ch, ch);
+    });
 
 // We add these Latin-1 letters as symbols for backwards-compatibility,
 // but they are not actually in the font, nor are they supported by the
 // Unicode accent mechanism, so they fall back to Times font and look ugly.
 // TODO(edemaine): Fix this.
-for (const ch of "ÆÇÐØÞßæçðøþ") {
+"ÆÇÐØÞßæçðøþ".split().forEach(function(ch) {
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
-}
-for (const ch of "Åå") {
+});
+"Åå".split().forEach(function(ch) {
     defineSymbol(math, main, mathord, ch, ch);
-}
+});
 
 // Cyrillic
 for (let i = 0x0410; i <= 0x044F; i++) {
