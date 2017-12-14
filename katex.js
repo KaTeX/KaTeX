@@ -11,7 +11,7 @@
 import ParseError from "./src/ParseError";
 import Settings from "./src/Settings";
 
-import buildTree from "./src/buildTree";
+import { buildTree, buildHTMLTree } from "./src/buildTree";
 import parseTree from "./src/parseTree";
 import utils from "./src/utils";
 
@@ -82,9 +82,23 @@ const generateBuildTree = function(
     return buildTree(tree, expression, settings);
 };
 
+/**
+ * Generates and returns the katex build tree, with just HTML (no MathML).
+ * This is used for advanced use cases (like rendering to custom output).
+ */
+const generateBuildHTMLTree = function(
+    expression: string,
+    options: SettingsOptions,
+) {
+    const settings = new Settings(options);
+    const tree = parseTree(expression, settings);
+    return buildHTMLTree(tree, expression, settings);
+};
+
 module.exports = {
     render,
     renderToString,
+    ParseError,
     /**
      * NOTE: This method is not currently recommended for public use.
      * The internal tree representation is unstable and is very likely
@@ -97,5 +111,10 @@ module.exports = {
      * to change. Use at your own risk.
      */
     __getBuildTree: generateBuildTree,
-    ParseError,
+    /**
+     * NOTE: This method is not currently recommended for public use.
+     * The internal tree representation is unstable and is very likely
+     * to change. Use at your own risk.
+     */
+    __getBuildHTMLTree: generateBuildHTMLTree,
 };
