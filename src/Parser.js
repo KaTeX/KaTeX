@@ -1,4 +1,5 @@
 /* eslint no-constant-condition:0 */
+/* eslint no-console:0 */
 import functions from "./functions";
 import environments from "./environments";
 import MacroExpander from "./MacroExpander";
@@ -113,6 +114,18 @@ function assertFuncOrArg(parsed) {
         throw new ParseError("Unexpected $", parsed.token);
     }
     return parsed;
+}
+
+let normalizeWarned = false;
+function normalizeWarning() {
+    if (!(''.normalize)) {
+        if (!normalizeWarned) {
+            typeof console !== "undefined" && console.warn("String normalize() "
+                + "method unavailable; turning off Unicode accent support");
+            normalizeWarned = true;
+        }
+        return true;
+    }
 }
 
 export default class Parser {
@@ -1096,6 +1109,10 @@ export default class Parser {
             this.consume();
             return newArgument(
                 new ParseNode("textord", text, this.mode, nucleus));
+        }
+        // If normalize method is unavailable, we fail on accented characters.
+        if (normalizeWarning()) {
+            return null;
         }
         // Decompose symbol into base and combining characters
         // if the combined symbol is not recognized.
