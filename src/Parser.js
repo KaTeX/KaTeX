@@ -102,9 +102,11 @@ function assertFuncOrArg(parsed) {
 
 export default class Parser {
     constructor(input, settings) {
+        // Start in math mode
+        this.mode = "math";
         // Create a new macro expander (gullet) and (indirectly via that) also a
         // new lexer (mouth) for this parser (stomach, in the language of TeX)
-        this.gullet = new MacroExpander(input, settings.macros);
+        this.gullet = new MacroExpander(input, settings.macros, this.mode);
         // Use old \color behavior (same as LaTeX's \textcolor) if requested.
         // We do this after the macros object has been copied by MacroExpander.
         if (settings.colorIsTextColor) {
@@ -148,6 +150,7 @@ export default class Parser {
      */
     switchMode(newMode) {
         this.mode = newMode;
+        this.gullet.switchMode(newMode);
     }
 
     /**
@@ -157,7 +160,6 @@ export default class Parser {
      */
     parse() {
         // Try to parse the input
-        this.mode = "math";
         this.consume();
         const parse = this.parseInput();
         return parse;
@@ -586,12 +588,16 @@ export default class Parser {
             if (this.mode === "math") {
                 throw new ParseError("$ within math mode");
             }
-            this.consume();
             const outerMode = this.mode;
             this.switchMode("math");
+            // Expand next symbol now that we're in math mode.
+            this.consume();
             const body = this.parseExpression(false, "$");
-            this.expect("$", true);
+            // We can't expand the next symbol after the $ until after
+            // switching modes back.  So don't consume within expect.
+            this.expect("$", false);
             this.switchMode(outerMode);
+            this.consume();
             return new ParseNode("styling", {
                 style: "text",
                 value: body,
@@ -746,29 +752,25 @@ export default class Parser {
      *
      * @return {?ParsedFuncOrArgOrDollar}
      */
-    parseGroupOfType(innerMode, optional) {
-        const outerMode = this.mode;
+    parseGroupOfType(type, optional) {
         // Handle `original` argTypes
-        if (innerMode === "original") {
-            innerMode = outerMode;
+        if (type === "original") {
+            type = this.mode;
         }
 
-        if (innerMode === "color") {
+        if (type === "color") {
             return this.parseColorGroup(optional);
         }
-        if (innerMode === "size") {
+        if (type === "size") {
             return this.parseSizeGroup(optional);
         }
-        if (innerMode === "url") {
+        if (type === "url") {
             return this.parseUrlGroup(optional);
         }
 
-        // By the time we get here, innerMode is one of "text" or "math".
-        // We switch the mode of the parser, recurse, then restore the old mode.
-        this.switchMode(innerMode);
-        const res = this.parseGroup(optional);
-        this.switchMode(outerMode);
-        return res;
+        // By the time we get here, type is one of "text" or "math".
+        // Specify this as mode to parseGroup.
+        return this.parseGroup(optional, type);
     }
 
     consumeSpaces() {
@@ -947,24 +949,35 @@ export default class Parser {
     }
 
     /**
-     * If the argument is false or absent, this parses an ordinary group,
+     * If `optional` is false or absent, this parses an ordinary group,
      * which is either a single nucleus (like "x") or an expression
      * in braces (like "{x+y}").
-     * If the argument is true, it parses either a bracket-delimited expression
+     * If `optional` is true, it parses either a bracket-delimited expression
      * (like "[x+y]") or returns null to indicate the absence of a
      * bracket-enclosed group.
+     * If `mode` is present, switches to that mode while parsing the group,
+     * and switches back after.
      *
      * @param {boolean=} optional  Whether the group is optional or required
      * @return {?ParsedFuncOrArgOrDollar}
      */
-    parseGroup(optional) {
+    parseGroup(optional, mode) {
+        const outerMode = this.mode;
         const firstToken = this.nextToken;
         // Try to parse an open brace
         if (this.nextToken.text === (optional ? "[" : "{")) {
+            // Switch to specified mode before we expand symbol after brace
+            if (mode) {
+                this.switchMode(mode);
+            }
             // If we get a brace, parse an expression
             this.consume();
             const expression = this.parseExpression(false, optional ? "]" : "}");
             const lastToken = this.nextToken;
+            // Switch mode back before consuming symbol after close brace
+            if (mode) {
+                this.switchMode(outerMode);
+            }
             // Make sure we get a close brace
             this.expect(optional ? "]" : "}");
             if (this.mode === "text") {
@@ -976,6 +989,7 @@ export default class Parser {
                     firstToken.range(lastToken, firstToken.text));
         } else {
             // Otherwise, just return a nucleus, or nothing for an optional group
+            // TODO: Not yet switching modes for single-symbol group.
             return optional ? null : this.parseSymbol();
         }
     }
