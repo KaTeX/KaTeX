@@ -485,15 +485,7 @@ groupTypes.sqrt = function(group, options) {
         lineClearance + theta) * options.sizeMultiplier;
 
     // Create a sqrt SVG of the required minimum size
-    const img = delimiter.customSizedDelim("\\surd", minDelimiterHeight,
-                    false, options, group.mode);
-
-    // Calculate the actual line width.
-    // This actually should depend on the chosen font -- e.g. \boldmath
-    // should use the thicker surd symbols from e.g. KaTeX_Main-Bold, and
-    // have thicker rules.
-    const ruleWidth = options.fontMetrics().sqrtRuleThickness *
-        img.sizeMultiplier;
+    const {span: img, ruleWidth} = delimiter.sqrtImage(minDelimiterHeight, options);
 
     const delimDepth = img.height - ruleWidth;
 
@@ -599,7 +591,7 @@ groupTypes.styling = function(group, options) {
 
 groupTypes.font = function(group, options) {
     const font = group.value.font;
-    return buildGroup(group.value.body, options.withFont(font));
+    return buildGroup(group.value.body, options.withFontFamily(font));
 };
 
 groupTypes.verb = function(group, options) {

@@ -1585,7 +1585,7 @@ describe("An HTML font tree-builder", function() {
 
     it("should render \\text{R} with the correct font", function() {
         const markup = katex.renderToString("\\text{R}");
-        expect(markup).toContain("<span class=\"mord mathrm\">R</span>");
+        expect(markup).toContain("<span class=\"mord\">R</span>");
     });
 
     it("should render \\textit{R} with the correct font", function() {
@@ -1600,24 +1600,41 @@ describe("An HTML font tree-builder", function() {
 
     it("should render \\text{R\\textit{S}T} with the correct fonts", function() {
         const markup = katex.renderToString("\\text{R\\textit{S}T}");
-        expect(markup).toContain("<span class=\"mord mathrm\">R</span>");
+        expect(markup).toContain("<span class=\"mord\">R</span>");
         expect(markup).toContain("<span class=\"mord textit\">S</span>");
-        expect(markup).toContain("<span class=\"mord mathrm\">T</span>");
+        expect(markup).toContain("<span class=\"mord\">T</span>");
     });
 
     it("should render \\textbf{R} with the correct font", function() {
         const markup = katex.renderToString("\\textbf{R}");
-        expect(markup).toContain("<span class=\"mord mathbf\">R</span>");
+        expect(markup).toContain("<span class=\"mord textbf\">R</span>");
     });
 
     it("should render \\textsf{R} with the correct font", function() {
         const markup = katex.renderToString("\\textsf{R}");
-        expect(markup).toContain("<span class=\"mord mathsf\">R</span>");
+        expect(markup).toContain("<span class=\"mord textsf\">R</span>");
+    });
+
+    it("should render \\textsf{\\textit{R}G\\textbf{B}} with the correct font", function() {
+        const markup = katex.renderToString("\\textsf{\\textit{R}G\\textbf{B}}");
+        expect(markup).toContain("<span class=\"mord textsf textit\">R</span>");
+        expect(markup).toContain("<span class=\"mord textsf\">G</span>");
+        expect(markup).toContain("<span class=\"mord textsf textbf\">B</span>");
+    });
+
+    it("should render \\textsf{\\textbf{$\\mathrm{A}$}} with the correct font", function() {
+        const markup = katex.renderToString("\\textsf{\\textbf{$\\mathrm{A}$}}");
+        expect(markup).toContain("<span class=\"mord mathrm\">A</span>");
+    });
+
+    it("should render \\textsf{\\textbf{$\\mathrm{\\textsf{A}}$}} with the correct font", function() {
+        const markup = katex.renderToString("\\textsf{\\textbf{$\\mathrm{\\textsf{A}}$}}");
+        expect(markup).toContain("<span class=\"mord textsf textbf\">A</span>");
     });
 
     it("should render \\texttt{R} with the correct font", function() {
         const markup = katex.renderToString("\\texttt{R}");
-        expect(markup).toContain("<span class=\"mord mathtt\">R</span>");
+        expect(markup).toContain("<span class=\"mord texttt\">R</span>");
     });
 
     it("should render a combination of font and color changes", function() {
@@ -2706,7 +2723,7 @@ describe("Unicode", function() {
     });
 
     it("should parse symbols", function() {
-        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓").toParse();
+        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓\u00b7").toParse();
     });
 
     it("should parse arrows", function() {
@@ -2718,7 +2735,7 @@ describe("Unicode", function() {
     });
 
     it("should parse binary operators", function() {
-        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞").toParse();
+        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toParse();
     });
 });
 
