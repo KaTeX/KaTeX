@@ -719,6 +719,30 @@ const fontMap: {[string]: {| variant: string, fontName: string |}} = {
     },
 };
 
+const svgData: {
+    [string]: ([string, number, number])
+} = {
+     //   path, width, height
+    vec: ["vec", 0.471, 0.714],  // values from the font glyph
+};
+
+const staticSvg = function(value: string, options: Options): domTree.span {
+    // Create a span with inline SVG for the element.
+    const [pathName, width, height] = svgData[value];
+    const path = new domTree.pathNode(pathName);
+    const svgNode = new domTree.svgNode([path], {
+        "width": width + "em",
+        "height": height + "em",
+        "viewBox": "0 0 " + 1000 * width + " " + 1000 * height,
+        "preserveAspectRatio": "xMinYMin",
+    });
+    const span = makeSpan(["overlay"], [svgNode], options);
+    span.height = height;
+    span.style.height = height + "em";
+    span.style.width = width + "em";
+    return span;
+};
+
 export default {
     fontMap,
     makeSymbol,
@@ -730,6 +754,7 @@ export default {
     makeVList,
     makeOrd,
     makeVerb,
+    staticSvg,
     tryCombineChars,
     prependChildren,
     spacingFunctions,

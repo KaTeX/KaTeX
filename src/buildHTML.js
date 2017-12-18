@@ -680,22 +680,28 @@ groupTypes.accent = function(group, options) {
     // Build the accent
     let accentBody;
     if (!group.value.isStretchy) {
-        const accent = buildCommon.makeSymbol(
-            group.value.label, "Main-Regular", group.mode, options);
+        let accent;
+        if (group.value.label === "\\vec") {
+            // Before version 0.9, \vec used the combining font glyph U+20D7.
+            // But browsers, especially Safari, are not consistent in how they
+            // render combining characters when not preceded by a character.
+            // So now we use an SVG.
+            // If Safari reforms, we should consider reverting to the glyph.
+            accent = buildCommon.staticSvg("vec", options);
+        } else {
+            accent = buildCommon.makeSymbol(
+                group.value.label, "Main-Regular", group.mode, options);
+        }
         // Remove the italic correction of the accent, because it only serves to
         // shift the accent over to a place we don't want.
         accent.italic = 0;
 
-        // The \vec character that the fonts use is a combining character, and
+        // The \H character that the fonts use is a combining character, and
         // thus shows up much too far to the left. To account for this, we add a
         // specific class which shifts the accent over to where we want it.
         // TODO(emily): Fix this in a better way, like by changing the font
-        // Similarly, text accent \H is a combining character and
-        // requires a different adjustment.
         let accentClass = null;
-        if (group.value.label === "\\vec") {
-            accentClass = "accent-vec";
-        } else if (group.value.label === '\\H') {
+        if (group.value.label === '\\H') {
             accentClass = "accent-hungarian";
         }
 
