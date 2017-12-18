@@ -748,3 +748,5 @@ defineSymbol(text, main, textord, "\u2018", "‘");
 defineSymbol(text, main, textord, "\u2019", "’");
 defineSymbol(text, main, textord, "\u201c", "“");
 defineSymbol(text, main, textord, "\u201d", "”");
+
+import "./unicodeSymbols.js";

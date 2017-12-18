@@ -116,18 +116,6 @@ function assertFuncOrArg(parsed) {
     return parsed;
 }
 
-let normalizeWarned = false;
-function normalizeWarning() {
-    if (!(''.normalize)) {
-        if (!normalizeWarned) {
-            typeof console !== "undefined" && console.warn("String normalize() "
-                + "method unavailable; turning off Unicode accent support");
-            normalizeWarned = true;
-        }
-        return true;
-    }
-}
-
 export default class Parser {
     constructor(input, settings) {
         // Start in math mode
@@ -1100,24 +1088,10 @@ export default class Parser {
             return newDollar(nucleus);
         }
         // At this point, we should have a symbol, possibly with accents.
-        // If it's in the symbol table or CJK, we're done.
-        if (symbols[this.mode][text]) {
-            this.consume();
-            return newArgument(new ParseNode(symbols[this.mode][text].group,
-                text, this.mode, nucleus), nucleus);
-        } else if (cjkRegex.test(text)) {
-            this.consume();
-            return newArgument(
-                new ParseNode("textord", text, this.mode, nucleus));
-        }
-        // If normalize method is unavailable, we fail on accented characters.
-        if (normalizeWarning()) {
-            return null;
-        }
-        // Decompose symbol into base and combining characters
-        // if the combined symbol is not recognized.
-        text = text.normalize('NFD');
-        // Strip off combining characters
+        // Macros in unicodeSymbols will have already split any accented
+        // characters into the base character followed by combining
+        // characters.  Or the input may have started in this form.
+        // Strip off any combining characters.
         const match = combiningDiacriticalMarksEndRegex.exec(text);
         if (match) {
             text = text.substring(0, match.index);
