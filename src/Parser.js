@@ -7,6 +7,7 @@ import symbols from "./symbols";
 import utils from "./utils";
 import { validUnit } from "./units";
 import { cjkRegex } from "./unicodeRegexes";
+import unicodeSymbols from "./unicodeSymbols";
 import ParseNode from "./ParseNode";
 import ParseError from "./ParseError";
 import { combiningDiacriticalMarksEndRegex } from "./Lexer.js";
@@ -1088,10 +1089,11 @@ export default class Parser {
             return newDollar(nucleus);
         }
         // At this point, we should have a symbol, possibly with accents.
-        // Macros in unicodeSymbols will have already split any accented
-        // characters into the base character followed by combining
-        // characters.  Or the input may have started in this form.
-        // Strip off any combining characters.
+        // First expand any accented base symbol according to unicodeSymbols.
+        if (unicodeSymbols.hasOwnProperty(text[0])) {
+            text = unicodeSymbols[text[0]] + text.substr(1);
+        }
+        // Strip off any combining characters
         const match = combiningDiacriticalMarksEndRegex.exec(text);
         if (match) {
             text = text.substring(0, match.index);
