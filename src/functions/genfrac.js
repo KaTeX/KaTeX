@@ -126,7 +126,7 @@ defineFunction({
         }
 
         let frac;
-        if (ruleWidth === 0) {
+        if (!rule) {
             // Rule 15c
             const candidateClearance =
                 (numShift - numerm.depth) - (denomm.height - denomShift);
@@ -166,8 +166,12 @@ defineFunction({
                 positionType: "individualShift",
                 children: [
                     {type: "elem", elem: denomm, shift: denomShift},
-                    // $FlowFixMe `rule` cannot be `null` here.
-                    {type: "elem", elem: rule,   shift: midShift},
+                    // The next line would ordinarily contain "shift: midShift".
+                    // But we put the rule into a a span that is 5 rules tall,
+                    // to overcome a Chrome rendering issue. Put another way,
+                    // we've replaced a kern of width = 2 * ruleWidth with a
+                    // bottom gap in the SVG = 2 * ruleWidth.
+                    {type: "elem", elem: rule,   shift: midShift + 2 * ruleWidth},
                     {type: "elem", elem: numerm, shift: -numShift},
                 ],
             }, options);
