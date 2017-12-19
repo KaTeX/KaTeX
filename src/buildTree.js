@@ -9,19 +9,24 @@ import Style from "./Style";
 import type ParseNode from "./ParseNode";
 import type domTree from "./domTree";
 
-const optionsFromSettings = function(settings: Settings) {
-    return new Options({
-        style: (settings.displayMode ? Style.DISPLAY : Style.TEXT),
-        maxSize: settings.maxSize,
-    });
-};
-
-export const buildTree = function(
+const buildTree = function(
     tree: ParseNode[],
     expression: string,
     settings: Settings,
 ): domTree.span {
-    const options = optionsFromSettings(settings);
+    settings = settings || new Settings({});
+
+    let startStyle = Style.TEXT;
+    if (settings.displayMode) {
+        startStyle = Style.DISPLAY;
+    }
+
+    // Setup the default options
+    const options = new Options({
+        style: startStyle,
+        maxSize: settings.maxSize,
+    });
+
     // `buildHTML` sometimes messes with the parse tree (like turning bins ->
     // ords), so we build the MathML version first.
     const mathMLNode = buildMathML(tree, expression, options);
@@ -31,21 +36,6 @@ export const buildTree = function(
         mathMLNode, htmlNode,
     ]);
 
-    if (settings.displayMode) {
-        return buildCommon.makeSpan(["katex-display"], [katexNode]);
-    } else {
-        return katexNode;
-    }
-};
-
-export const buildHTMLTree = function(
-    tree: ParseNode[],
-    expression: string,
-    settings: Settings,
-): domTree.span {
-    const options = optionsFromSettings(settings);
-    const htmlNode = buildHTML(tree, options);
-    const katexNode = buildCommon.makeSpan(["katex"], [htmlNode]);
     if (settings.displayMode) {
         return buildCommon.makeSpan(["katex-display"], [katexNode]);
     } else {
