@@ -7,24 +7,10 @@ import symbols from "./symbols";
 import utils from "./utils";
 import { validUnit } from "./units";
 import { cjkRegex } from "./unicodeRegexes";
-import unicodeSymbols from "./unicodeSymbols";
+import { accents, unicodeSymbols } from "./unicodeSymbols";
 import ParseNode from "./ParseNode";
 import ParseError from "./ParseError";
 import { combiningDiacriticalMarksEndRegex } from "./Lexer.js";
-
-const accents = {
-    '\u0301': {text: "\\'", math: '\\acute'},
-    '\u0300': {text: '\\`', math: '\\grave'},
-    '\u0308': {text: '\\"', math: '\\ddot'},
-    '\u0303': {text: '\\~', math: '\\tilde'},
-    '\u0304': {text: '\\=', math: '\\bar'},
-    '\u0306': {text: '\\u', math: '\\breve'},
-    '\u030c': {text: '\\v', math: '\\check'},
-    '\u0302': {text: '\\^', math: '\\hat'},
-    '\u0307': {text: '\\.', math: '\\dot'},
-    '\u030a': {text: '\\r'},
-    '\u030b': {text: '\\H'},
-};
 
 /**
  * This file contains the parser used to parse out a TeX expression from the
