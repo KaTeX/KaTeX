@@ -7,6 +7,7 @@
 import Lexer, {controlWordRegex} from "./Lexer";
 import {Token} from "./Token";
 import builtinMacros from "./macros";
+import type {Mode} from "./types";
 import ParseError from "./ParseError";
 import objectAssign from "object-assign";
 
@@ -28,7 +29,7 @@ export default class MacroExpander implements MacroContextInterface {
     /**
      * Switches between "text" and "math" modes.
      */
-    switchMode(newMode) {
+    switchMode(newMode: Mode) {
         this.mode = newMode;
     }
 
