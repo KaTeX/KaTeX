@@ -4,10 +4,16 @@
 // whose purpose is to generate unicodeSymbols.js in this directory.
 // In this way, only this tool, and not the distribution/browser,
 // needs String's normalize function.
+//
+// This tool should be run (via `node unicodeMake.js` or `make unicode`)
+// whenever KaTeX adds support for new accents, and whenever
+// the Unicode spec adds new symbols that should be supported.
 
 const fs = require('fs');
 
 // Read supported accents from Parser.js
+// Because this tool is run by Node, which does not support `import`,
+// we need to hackily read the code in `Parser.js`.
 const Parser = fs.readFileSync('./Parser.js', {encoding: 'utf8'});
 const match = /accents = [^;]*;/.exec(Parser);
 eval(match[0]);
