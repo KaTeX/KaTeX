@@ -7,7 +7,8 @@ import symbols from "./symbols";
 import utils from "./utils";
 import { validUnit } from "./units";
 import { cjkRegex } from "./unicodeRegexes";
-import { accents, unicodeSymbols } from "./unicodeSymbols";
+import unicodeAccents from "./unicodeAccents";
+import unicodeSymbols from "./unicodeSymbols";
 import ParseNode from "./ParseNode";
 import ParseError from "./ParseError";
 import { combiningDiacriticalMarksEndRegex } from "./Lexer.js";
@@ -1116,10 +1117,10 @@ export default class Parser {
         if (match) {
             for (let i = 0; i < match[0].length; i++) {
                 const accent = match[0][i];
-                if (!accents[accent]) {
+                if (!unicodeAccents[accent]) {
                     throw new ParseError(`Unknown accent ' ${accent}'`, nucleus);
                 }
-                const command = accents[accent][this.mode];
+                const command = unicodeAccents[accent][this.mode];
                 if (!command) {
                     throw new ParseError(
                         `Accent ${accent} unsupported in ${this.mode} mode`,
