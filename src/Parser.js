@@ -980,7 +980,7 @@ export default class Parser {
             }
             // Make sure we get a close brace
             this.expect(optional ? "]" : "}");
-            if (this.mode === "text") {
+            if (mode === "text") {
                 this.formLigatures(expression);
             }
             return newArgument(
