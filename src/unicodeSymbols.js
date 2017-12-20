@@ -12,7 +12,7 @@ export const accents = {
     '\u0307': {text: '\\.', math: '\\dot'},
     '\u030a': {text: '\\r'},
     '\u030b': {text: '\\H'},
-}
+};
 
 export const unicodeSymbols = {
     "\u00e1": "\u0061\u0301",  // á = \'{a}

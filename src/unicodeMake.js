@@ -27,7 +27,7 @@ accentsCode = `accents = {
     '\\u030b': {text: '\\\\H'},
 }`;
 eval(accentsCode);
-console.log(`export const ${accentsCode}`);
+console.log(`export const ${accentsCode};`);
 console.log();
 
 const encode = function(string) {
