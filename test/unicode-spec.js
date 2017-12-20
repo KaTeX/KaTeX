@@ -97,8 +97,8 @@ describe("unicode", function() {
         expect('\\text{여보세요}').toParse();
     });
 
-    it("should parse CJK outside \\text{}", function() {
-        expect('私はバナナです。').toParse();
-        expect('여보세요').toParse();
+    it("should not parse CJK outside \\text{}", function() {
+        expect('私はバナナです。').toNotParse();
+        expect('여보세요').toNotParse();
     });
 });

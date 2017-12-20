@@ -1106,7 +1106,7 @@ export default class Parser {
         if (symbols[this.mode][text]) {
             symbol = new ParseNode(symbols[this.mode][text].group,
                             text, this.mode, nucleus);
-        } else if (cjkRegex.test(text)) {
+        } else if (this.mode === "text" && cjkRegex.test(text)) {
             symbol = new ParseNode("textord", text, this.mode, nucleus);
         } else {
             return null;  // EOF, ^, _, {, }, etc.
