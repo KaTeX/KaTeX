@@ -2843,4 +2843,10 @@ describe("Symbols", function() {
     it("should parse \\text{\\i\\j}", () => {
         expect("\\text{\\i\\j}").toParse();
     });
+
+    it("should render ligature commands like their unicode characters", () => {
+        const commands = getBuilt("\\text{\\ae\\AE\\oe\\OE\\o\\O\\ss}");
+        const unicode = getBuilt("\\text{æÆœŒøØß}");
+        expect(commands).toEqual(unicode);
+    });
 });

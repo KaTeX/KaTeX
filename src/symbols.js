@@ -648,6 +648,14 @@ defineSymbol(math, main, mathord, "\u0131", "\\imath");
 defineSymbol(math, main, mathord, "\u0237", "\\jmath");
 defineSymbol(text, main, textord, "\u0131", "\\i");
 defineSymbol(text, main, textord, "\u0237", "\\j");
+defineSymbol(text, main, textord, "\u00df", "\\ss", true);
+defineSymbol(text, main, textord, "\u00e6", "\\ae", true);
+defineSymbol(text, main, textord, "\u00e6", "\\ae", true);
+defineSymbol(text, main, textord, "\u0153", "\\oe", true);
+defineSymbol(text, main, textord, "\u00f8", "\\o", true);
+defineSymbol(text, main, textord, "\u00c6", "\\AE", true);
+defineSymbol(text, main, textord, "\u0152", "\\OE", true);
+defineSymbol(text, main, textord, "\u00d8", "\\O", true);
 defineSymbol(text, main, accent, "\u02ca", "\\'"); // acute
 defineSymbol(text, main, accent, "\u02cb", "\\`"); // grave
 defineSymbol(text, main, accent, "\u02c6", "\\^"); // circumflex
