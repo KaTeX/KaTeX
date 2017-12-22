@@ -2771,7 +2771,7 @@ describe("Unicode accents", function() {
             "\\acute Y" +
             "\\grave a\\acute a\\hat a\\tilde a\\ddot a" +
             "\\grave e\\acute e\\hat e\\ddot e" +
-            "\\grave \\imath\\acute \\imath\\hat \\imath\\ddot \\imath" +
+            "\\grave ı\\acute ı\\hat ı\\ddot ı" +
             "\\tilde n" +
             "\\grave o\\acute o\\hat o\\tilde o\\ddot o" +
             "\\grave u\\acute u\\hat u\\ddot u" +
@@ -2791,7 +2791,7 @@ describe("Unicode accents", function() {
             "\\'Y" +
             "\\`a\\'a\\^a\\~a\\\"a\\r a" +
             "\\`e\\'e\\^e\\\"e" +
-            "\\`i\\'i\\^i\\\"i" +
+            "\\`ı\\'ı\\^ı\\\"ı" +
             "\\~n" +
             "\\`o\\'o\\^o\\~o\\\"o" +
             "\\`u\\'u\\^u\\\"u" +
@@ -2810,7 +2810,7 @@ describe("Unicode accents", function() {
     });
 
     it("should parse accented i's and j's", function() {
-        expect("íȷ́").toParseLike("\\acute\\imath\\acuteȷ");
+        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ");
     });
 });
 

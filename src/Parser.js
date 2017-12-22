@@ -1085,21 +1085,9 @@ export default class Parser {
         if (match) {
             text = text.substring(0, match.index);
             if (text === 'i') {
-                if (this.mode === 'math') {
-                    text = '\\imath';
-                }
-                // TODO: Once we have \j symbol in text mode
-                // } else { // text mode
-                //     text = '\\i';
-                // }
+                text = '\u0131';  // dotless i, in math and text mode
             } else if (text === 'j') {
-                if (this.mode === 'math') {
-                    text = '\\jmath';
-                }
-                // TODO: Once we have \j symbol in text mode
-                // } else { // text mode
-                //     text = '\\j';
-                // }
+                text = '\u0237';  // dotless j, in math and text mode
             }
         }
         // Recognize base symbol
