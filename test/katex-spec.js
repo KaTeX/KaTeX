@@ -2838,3 +2838,9 @@ describe("The \\mathchoice function", function() {
         expect(built).toEqual(plain);
     });
 });
+
+describe("Symbols", function() {
+    it("should parse \\text{\\i\\j}", () => {
+        expect("\\text{\\i\\j}").toParse();
+    });
+});
