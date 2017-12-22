@@ -2759,7 +2759,7 @@ describe("A parser taking String objects", function() {
 
 describe("Unicode accents", function() {
     it("should parse Latin-1 letters in math mode", function() {
-        // TODO(edemaine): Unsupported Latin-1 letters in math: ÅåÆÇÐØÞßæçðøþ
+        // TODO(edemaine): Unsupported Latin-1 letters in math: ÅåÇÐÞçðþ
         expect("ÀÁÂÃÄÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäèéêëìíîïñòóôõöùúûüýÿ")
         .toParseLike(
             "\\grave A\\acute A\\hat A\\tilde A\\ddot A" +
@@ -2779,7 +2779,7 @@ describe("Unicode accents", function() {
     });
 
     it("should parse Latin-1 letters in text mode", function() {
-        // TODO(edemaine): Unsupported Latin-1 letters in text: ÆÇÐØÞßæçðøþ
+        // TODO(edemaine): Unsupported Latin-1 letters in text: ÇÐÞçðþ
         expect("\\text{ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ}")
         .toParseLike(
             "\\text{\\`A\\'A\\^A\\~A\\\"A\\r A" +
