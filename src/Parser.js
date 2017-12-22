@@ -989,8 +989,14 @@ export default class Parser {
                     firstToken.range(lastToken, firstToken.text));
         } else {
             // Otherwise, just return a nucleus, or nothing for an optional group
-            // TODO: Not yet switching modes for single-symbol group.
-            return optional ? null : this.parseSymbol();
+            if (mode) {
+                this.switchMode(mode);
+            }
+            const result = optional ? null : this.parseSymbol();
+            if (mode) {
+                this.switchMode(outerMode);
+            }
+            return result;
         }
     }
 
