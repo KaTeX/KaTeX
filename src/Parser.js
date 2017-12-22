@@ -1077,7 +1077,8 @@ export default class Parser {
         }
         // At this point, we should have a symbol, possibly with accents.
         // First expand any accented base symbol according to unicodeSymbols.
-        if (unicodeSymbols.hasOwnProperty(text[0])) {
+        if (unicodeSymbols.hasOwnProperty(text[0]) &&
+            !symbols[this.mode][text[0]]) {
             text = unicodeSymbols[text[0]] + text.substr(1);
         }
         // Strip off any combining characters

@@ -71,9 +71,9 @@ describe("unicode", function() {
             'ÆÇÐØÞßæçðøþ}').toParse();
     });
 
-    it("should parse Latin-1 inside \\text{}", function() {
-        expect('\\text{ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ' +
-            'ÆÇÐØÞßæçðøþ}').toParse();
+    it("should parse Latin-1 outside \\text{}", function() {
+        expect('ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ' +
+            'ÆÇÐØÞßæçðøþ').toParse();
     });
 
     it("should parse all lower case Greek letters", function() {
