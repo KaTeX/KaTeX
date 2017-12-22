@@ -7,6 +7,7 @@
 import Lexer, {controlWordRegex} from "./Lexer";
 import {Token} from "./Token";
 import builtinMacros from "./macros";
+import type {Mode} from "./types";
 import ParseError from "./ParseError";
 import objectAssign from "object-assign";
 
@@ -16,11 +17,20 @@ export default class MacroExpander implements MacroContextInterface {
     lexer: Lexer;
     macros: MacroMap;
     stack: Token[];
+    mode: Mode;
 
-    constructor(input: string, macros: MacroMap) {
+    constructor(input: string, macros: MacroMap, mode: Mode) {
         this.lexer = new Lexer(input);
         this.macros = objectAssign({}, builtinMacros, macros);
+        this.mode = mode;
         this.stack = []; // contains tokens in REVERSE order
+    }
+
+    /**
+     * Switches between "text" and "math" modes.
+     */
+    switchMode(newMode: Mode) {
+        this.mode = newMode;
     }
 
     /**
