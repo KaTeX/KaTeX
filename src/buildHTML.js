@@ -713,7 +713,7 @@ groupTypes.accent = function(group, options) {
         // a manual shift of the width of one space.
         // TODO(emily): Fix this in a better way, like by changing the font
         if (group.value.label === '\\H') {
-            left += 0.5;  // width of space
+            left += 0.5;  // twice width of space, or width of accent
         }
 
         accentBody.style.left = left + "em";
