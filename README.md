@@ -86,6 +86,20 @@ the same aspect ratio in KaTeX as in LaTeX.  However, because most browsers
 default to a larger font size, this typically means that a 1cm kern in KaTeX
 will appear larger than 1cm in browser units.
 
+### Common Issues
+- Many Markdown preprocessors, such as the one that Jekyll and GitHub Pages use,
+  have a "smart quotes" feature.  This changes `'` to `’` which is an issue for
+  math containing primes, e.g. `f'`.  This can be worked around by defining a
+  single character macro which changes them back, e.g. `{"’", "'"}`.
+- KaTeX follows LaTeX's rendering of aligned and *matrix environments.  When
+  displaying fractions one above another in these vertical layouts there may
+  not be enough space between rows for people who are used to MathJax's rendering.
+  The distance between rows can be adjust by using `\\[0.1em]` instead of the
+  standard line separator.
+- KaTeX does not support the `align` environment because LaTeX doesn't support
+  `align` in math mode.  You can define a macro that maps `align` to `aligned`
+  to work aroudn this.
+
 ## Libraries
 
 ### Angular2+
