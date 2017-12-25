@@ -688,6 +688,7 @@ groupTypes.accent = function(group, options) {
             // So now we use an SVG.
             // If Safari reforms, we should consider reverting to the glyph.
             accent = buildCommon.staticSvg("vec", options);
+            accent.width = parseFloat(accent.style.width);
         } else {
             accent = buildCommon.makeSymbol(
                 group.value.label, "Main-Regular", group.mode, options);
@@ -696,22 +697,26 @@ groupTypes.accent = function(group, options) {
         // shift the accent over to a place we don't want.
         accent.italic = 0;
 
+        accentBody = makeSpan(["accent-body"], [accent]);
+
+        // CSS defines `.katex .accent .accent-body { width: 0 }`
+        // so that the accent doesn't contribute to the bounding box.
+        // We need to shift the character by its width (effectively half
+        // its width) to compensate.
+        let left = -accent.width / 2;
+
+        // Shift the accent over by the skew.
+        left += skew;
+
         // The \H character that the fonts use is a combining character, and
-        // thus shows up much too far to the left. To account for this, we add a
-        // specific class which shifts the accent over to where we want it.
+        // thus shows up much too far to the left. To account for this, we add
+        // a manual shift of the width of one space.
         // TODO(emily): Fix this in a better way, like by changing the font
-        let accentClass = null;
         if (group.value.label === '\\H') {
-            accentClass = "accent-hungarian";
+            left += 0.5;  // twice width of space, or width of accent
         }
 
-        accentBody = makeSpan([], [accent]);
-        accentBody = makeSpan(["accent-body", accentClass], [accentBody]);
-
-        // Shift the accent over by the skew. Note we shift by twice the skew
-        // because we are centering the accent, so by adding 2*skew to the left,
-        // we shift it to the right by 1*skew.
-        accentBody.style.marginLeft = 2 * skew + "em";
+        accentBody.style.left = left + "em";
 
         accentBody = buildCommon.makeVList({
             positionType: "firstBaseline",

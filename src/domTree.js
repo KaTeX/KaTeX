@@ -383,6 +383,7 @@ class symbolNode implements CombinableDomNode {
     depth: number;
     italic: number;
     skew: number;
+    width: number;
     maxFontSize: number;
     classes: string[];
     style: {[string]: string};
@@ -393,6 +394,7 @@ class symbolNode implements CombinableDomNode {
         depth?: number,
         italic?: number,
         skew?: number,
+        width?: number,
         classes?: string[],
         style?: {[string]: string},
     ) {
@@ -401,6 +403,7 @@ class symbolNode implements CombinableDomNode {
         this.depth = depth || 0;
         this.italic = italic || 0;
         this.skew = skew || 0;
+        this.width = width || 0;
         this.classes = classes || [];
         this.style = style || {};
         this.maxFontSize = 0;

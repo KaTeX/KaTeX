@@ -73,13 +73,13 @@ const makeSymbol = function(
         }
         symbolNode = new domTree.symbolNode(
             value, metrics.height, metrics.depth, italic, metrics.skew,
-            classes);
+            metrics.width, classes);
     } else {
         // TODO(emily): Figure out a good way to only print this in development
         typeof console !== "undefined" && console.warn(
             "No character metrics for '" + value + "' in style '" +
                 fontFamily + "'");
-        symbolNode = new domTree.symbolNode(value, 0, 0, 0, 0, classes);
+        symbolNode = new domTree.symbolNode(value, 0, 0, 0, 0, 0, classes);
     }
 
     if (options) {
@@ -733,6 +733,8 @@ const staticSvg = function(value: string, options: Options): domTree.span {
     const svgNode = new domTree.svgNode([path], {
         "width": width + "em",
         "height": height + "em",
+        // Override CSS rule `.katex svg { width: 100% }`
+        "style": "width:" + width + "em",
         "viewBox": "0 0 " + 1000 * width + " " + 1000 * height,
         "preserveAspectRatio": "xMinYMin",
     });
