@@ -35,9 +35,7 @@ defineFunction({
 
             // All we want from temp are the letters. With them, we'll
             // create a text operator similar to \tan or \cos.
-            for (let i = 0; i < temp.length; i++) {
-                const child = temp[i];
-
+            for (const child of temp) {
                 if (child instanceof domTree.symbolNode) {
                     letter = child.value;
 
@@ -55,8 +53,7 @@ defineFunction({
                 }
             }
         }
-        const span = buildCommon.makeSpan(["mop"], output, options);
-        return span;
+        return buildCommon.makeSpan(["mop"], output, options);
     },
 
     mathmlBuilder: (group, options) => {
