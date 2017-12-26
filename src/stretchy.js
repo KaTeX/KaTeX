@@ -326,16 +326,53 @@ const encloseSpan = function(
     return img;
 };
 
-const ruleSpan = function(className: string, options: Options): domTree.span {
-    // Get a big square image. The parent span will hide the overflow.
-    const pathNode = new domTree.pathNode('bigRule');
-    const svg =  new domTree.svgNode([pathNode], {
-        "width": "400em",
-        "height": "400em",
-        "viewBox": "0 0 400000 400000",
-        "preserveAspectRatio": "xMinYMin slice",
-    });
-    return buildCommon.makeSpan([className, "hide-tail"], [svg], options);
+const ruleSpan = function(className: string, lineThickness: number,
+    options: Options): domTree.span {
+
+    // Get a span with an SVG line that fills the middle fifth of the span.
+    // We're using an extra wide span so Chrome won't round it down to zero.
+
+    const lines = [];
+    let svgNode;
+    if (className === "vertical-separator") {
+        // Apply 2 brush strokes for sharper edges on low-res screens.
+        for (let i = 0; i < 2; i++) {
+            lines.push(new domTree.lineNode({
+                "x1": "5",
+                "y1": "0",
+                "x2": "5",
+                "y2": "10",
+                "stroke-width": "2",
+            }));
+        }
+
+        svgNode = new domTree.svgNode(lines, {
+            "width": "0.25em",
+            "height": "100%",
+            "viewBox": "0 0 10 10",
+            "preserveAspectRatio": "none",
+        });
+
+    } else {
+        for (let i = 0; i < 2; i++) {
+            lines.push(new domTree.lineNode({
+                "x1": "0",
+                "y1": "5",
+                "x2": "10",
+                "y2": "5",
+                "stroke-width": "2",
+            }));
+        }
+
+        svgNode = new domTree.svgNode(lines, {
+            "width": "100%",
+            "height": 5 * lineThickness + "em",
+            "viewBox": "0 0 10 10",
+            "preserveAspectRatio": "none",
+        });
+    }
+
+    return buildCommon.makeSpan([className], [svgNode], options);
 };
 
 export default {
