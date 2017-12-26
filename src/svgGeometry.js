@@ -5,10 +5,6 @@
  */
 
 const path: {[string]: string} = {
-    // bigRule provides a big square image for frac-lines, etc.
-    // The actual rendered rule is smaller, controlled by overflow:hidden.
-    bigRule: 'M0 0 h400000 v400000 h-400000z M0 0 h400000 v400000 h-400000z',
-
     // sqrtMain path geometry is from glyph U221A in the font KaTeX Main
     sqrtMain: `M95 622c-2.667 0-7.167-2.667-13.5
 -8S72 604 72 600c0-2 .333-3.333 1-4 1.333-2.667 23.833-20.667 67.5-54s

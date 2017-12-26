@@ -56,26 +56,26 @@
     .strut {
         display: inline-block;
     }
-    
+
     // Text font weights
     .textbf {
         font-weight: bold;
     }
-    
+
     // Text font shapes.
     .textit {
         font-style: italic;
     }
-    
+
     // Text font families.
     .textrm {
         font-family: KaTeX_Main;
     }
-    
+
     .textsf {
         font-family: KaTeX_SansSerif;
     }
-    
+
     .texttt {
         font-family: KaTeX_Typewriter;
     }
@@ -85,7 +85,7 @@
         font-family: KaTeX_Math;
         font-style: italic;
     }
-    
+
     .mathrm {
         font-style: normal;
     }
@@ -327,26 +327,6 @@
         }
     }
 
-    // Set a min-height for some horizontal lines so their display
-    // will show at least one screen pixel.
-    @media screen {
-        .mfrac .frac-line,
-        .overline .overline-line,
-        .underline .underline-line {
-            min-height: 1px;
-        }
-    }
-
-    // Modify min-height for retina displays. Don't force two screen pixels.
-    @media screen and (-webkit-min-device-pixel-ratio: 2.0),
-        screen and (min-resolution: 192dpi) {
-        .mfrac .frac-line,
-        .overline .overline-line,
-        .underline .underline-line {
-            min-height: 0.5px;
-        }
-    }
-
     .mspace {
         display: inline-block;
 
@@ -567,20 +547,9 @@
     .mtable {
         .vertical-separator {
             display: inline-block;
-            margin: 0 -0.025em;
-            width: 0.05em;
-
-            // Set a min-width so it will display at least one screen pixel.
-            @media screen {
-                min-width: 1px;
-            }
-
-            // Modify min-width for retina displays. Don't force two screen pixels.
-            @media screen and (-webkit-min-device-pixel-ratio: 2.0),
-                screen and (min-resolution: 192dpi) {
-                min-width: 0.5px;
-            }
-        }
+            margin: 0 -0.125em;     // The ink in the rule is actually 0.05em wide.
+            width: 0.25em;          // We put it in a 0.25em wide span to overcome
+        }                           // a Chrome rendering issue.
 
         .arraycolsep {
             display: inline-block;
@@ -615,6 +584,10 @@
         line {
             stroke: currentColor;
         }
+    }
+
+    .vertical-separator svg {
+        width: 0.25em;
     }
 
     // Define CSS for image whose width will match its span width.
