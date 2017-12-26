@@ -2672,10 +2672,60 @@ describe("A macro expander", function() {
         expect("\\@ifnextchar!{yes}{no}?!").toParseLike("no?!");
     });
 
-    it("\\@firstoftwwo should consume star but nothing else", function() {
+    it("\\@ifstar should consume star but nothing else", function() {
         expect("\\@ifstar{yes}{no}*!").toParseLike("yes!");
         expect("\\@ifstar{yes}{no}?!").toParseLike("no?!");
     });
+
+    it("\\TextOrMath should work immediately", function() {
+        expect("\\TextOrMath{text}{math}").toParseLike("math");
+    });
+
+    it("\\TextOrMath should work after other math", function() {
+        expect("x+\\TextOrMath{text}{math}").toParseLike("x+math");
+    });
+
+    it("\\TextOrMath should work immediately after \\text", function() {
+        expect("\\text{\\TextOrMath{text}{math}}").toParseLike("\\text{text}");
+    });
+
+    it("\\TextOrMath should work later after \\text", function() {
+        expect("\\text{hello \\TextOrMath{text}{math}}")
+            .toParseLike("\\text{hello text}");
+    });
+
+    it("\\TextOrMath should work immediately after \\text ends", function() {
+        expect("\\text{\\TextOrMath{text}{math}}\\TextOrMath{text}{math}")
+            .toParseLike("\\text{text}math");
+    });
+
+    it("\\TextOrMath should work immediately after $", function() {
+        expect("\\text{$\\TextOrMath{text}{math}$}")
+            .toParseLike("\\text{$math$}");
+    });
+
+    it("\\TextOrMath should work later after $", function() {
+        expect("\\text{$x+\\TextOrMath{text}{math}$}")
+            .toParseLike("\\text{$x+math$}");
+    });
+
+    it("\\TextOrMath should work immediately after $ ends", function() {
+        expect("\\text{$\\TextOrMath{text}{math}$\\TextOrMath{text}{math}}")
+            .toParseLike("\\text{$math$text}");
+    });
+
+    it("\\TextOrMath should work in a macro", function() {
+        compareParseTree("\\mode\\text{\\mode$\\mode$\\mode}\\mode",
+            "math\\text{text$math$text}math",
+            {"\\mode": "\\TextOrMath{text}{math}"});
+    });
+
+    // TODO(edemaine): This doesn't work yet.  Parses like `\text math`,
+    // which doesn't even treat all four letters as an argument.
+    //it("\\TextOrMath should work in a macro passed to \\text", function() {
+    //    compareParseTree("\\text\\mode", "\\text{text}",
+    //        {"\\mode": "\\TextOrMath{text}{math}"});
+    //});
 
     // This may change in the future, if we support the extra features of
     // \hspace.
@@ -2786,5 +2836,17 @@ describe("The \\mathchoice function", function() {
         const plain = getBuilt(`x_{y_{${cmd}}}`)[0];
         const built = getBuilt(`x_{y_{\\mathchoice{D}{T}{S}{${cmd}}}}`)[0];
         expect(built).toEqual(plain);
+    });
+});
+
+describe("Symbols", function() {
+    it("should parse \\text{\\i\\j}", () => {
+        expect("\\text{\\i\\j}").toParse();
+    });
+
+    it("should render ligature commands like their unicode characters", () => {
+        const commands = getBuilt("\\text{\\ae\\AE\\oe\\OE\\o\\O\\ss}");
+        const unicode = getBuilt("\\text{æÆœŒøØß}");
+        expect(commands).toEqual(unicode);
     });
 });
