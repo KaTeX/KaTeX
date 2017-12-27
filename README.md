@@ -91,7 +91,7 @@ will appear larger than 1cm in browser units.
   have a "smart quotes" feature.  This changes `'` to `’` which is an issue for
   math containing primes, e.g. `f'`.  This can be worked around by defining a
   single character macro which changes them back, e.g. `{"’", "'"}`.
-- KaTeX follows LaTeX's rendering of aligned and `*matrix` environments unlike
+- KaTeX follows LaTeX's rendering of `aligned` and `matrix` environments unlike
   MathJax.  When displaying fractions one above another in these vertical
   layouts there may not be enough space between rows for people who are used to
   MathJax's rendering.  The distance between rows can be adjusted by using
