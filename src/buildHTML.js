@@ -11,7 +11,6 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 
 import buildCommon from "./buildCommon";
-import delimiter from "./delimiter";
 import domTree from "./domTree";
 import { calculateSize } from "./units";
 import utils from "./utils";
@@ -193,7 +192,7 @@ const shouldHandleSupSub = function(group, options) {
                 (options.style.size === Style.DISPLAY.size ||
                 base.value.alwaysHandleSupSub);
         } else if (base.type === "accent") {
-            return isCharacterBox(base.value.base);
+            return utils.isCharacterBox(base.value.base);
         } else if (base.type === "horizBrace") {
             const isSup = (group.value.sub ? false : true);
             return (isSup === base.value.isOver);
@@ -201,52 +200,6 @@ const shouldHandleSupSub = function(group, options) {
             return null;
         }
     }
-};
-
-/**
- * Sometimes we want to pull out the innermost element of a group. In most
- * cases, this will just be the group itself, but when ordgroups and colors have
- * a single element, we want to pull that out.
- */
-const getBaseElem = function(group) {
-    if (!group) {
-        return false;
-    } else if (group.type === "ordgroup") {
-        if (group.value.length === 1) {
-            return getBaseElem(group.value[0]);
-        } else {
-            return group;
-        }
-    } else if (group.type === "color") {
-        if (group.value.value.length === 1) {
-            return getBaseElem(group.value.value[0]);
-        } else {
-            return group;
-        }
-    } else if (group.type === "font") {
-        return getBaseElem(group.value.body);
-    } else {
-        return group;
-    }
-};
-
-/**
- * TeXbook algorithms often reference "character boxes", which are simply groups
- * with a single character in them. To decide if something is a character box,
- * we find its innermost group, and see if it is a single character.
- */
-const isCharacterBox = function(group) {
-    const baseElem = getBaseElem(group);
-
-    // These are all they types of groups which hold single characters
-    return baseElem.type === "mathord" ||
-        baseElem.type === "textord" ||
-        baseElem.type === "bin" ||
-        baseElem.type === "rel" ||
-        baseElem.type === "inner" ||
-        baseElem.type === "open" ||
-        baseElem.type === "close" ||
-        baseElem.type === "punct";
 };
 
 export const makeNullDelimiter = function(options, classes) {
@@ -329,7 +282,7 @@ groupTypes.supsub = function(group, options) {
     if (group.value.sup) {
         newOptions = options.havingStyle(options.style.sup());
         supm = buildGroup(group.value.sup, newOptions, options);
-        if (!isCharacterBox(group.value.base)) {
+        if (!utils.isCharacterBox(group.value.base)) {
             supShift = base.height - newOptions.fontMetrics().supDrop
                 * newOptions.sizeMultiplier / options.sizeMultiplier;
         }
@@ -338,7 +291,7 @@ groupTypes.supsub = function(group, options) {
     if (group.value.sub) {
         newOptions = options.havingStyle(options.style.sub());
         subm = buildGroup(group.value.sub, newOptions, options);
-        if (!isCharacterBox(group.value.base)) {
+        if (!utils.isCharacterBox(group.value.base)) {
             subShift = base.depth + newOptions.fontMetrics().subDrop
                 * newOptions.sizeMultiplier / options.sizeMultiplier;
         }
@@ -452,94 +405,6 @@ groupTypes.spacing = function(group, options) {
     }
 };
 
-groupTypes.sqrt = function(group, options) {
-    // Square roots are handled in the TeXbook pg. 443, Rule 11.
-
-    // First, we do the same steps as in overline to build the inner group
-    // and line
-    let inner = buildGroup(group.value.body, options.havingCrampedStyle());
-    if (inner.height === 0) {
-        // Render a small surd.
-        inner.height = options.fontMetrics().xHeight;
-    }
-
-    // Some groups can return document fragments.  Handle those by wrapping
-    // them in a span.
-    if (inner instanceof domTree.documentFragment) {
-        inner = makeSpan([], [inner], options);
-    }
-
-    // Calculate the minimum size for the \surd delimiter
-    const metrics = options.fontMetrics();
-    const theta = metrics.defaultRuleThickness;
-
-    let phi = theta;
-    if (options.style.id < Style.TEXT.id) {
-        phi = options.fontMetrics().xHeight;
-    }
-
-    // Calculate the clearance between the body and line
-    let lineClearance = theta + phi / 4;
-
-    const minDelimiterHeight = (inner.height + inner.depth +
-        lineClearance + theta) * options.sizeMultiplier;
-
-    // Create a sqrt SVG of the required minimum size
-    const {span: img, ruleWidth} = delimiter.sqrtImage(minDelimiterHeight, options);
-
-    const delimDepth = img.height - ruleWidth;
-
-    // Adjust the clearance based on the delimiter size
-    if (delimDepth > inner.height + inner.depth + lineClearance) {
-        lineClearance =
-            (lineClearance + delimDepth - inner.height - inner.depth) / 2;
-    }
-
-    // Shift the sqrt image
-    const imgShift = img.height - inner.height - lineClearance - ruleWidth;
-
-    inner.style.paddingLeft = img.advanceWidth + "em";
-
-    // Overlay the image and the argument.
-    const body = buildCommon.makeVList({
-        positionType: "firstBaseline",
-        children: [
-            {type: "elem", elem: inner},
-            {type: "kern", size: -(inner.height + imgShift)},
-            {type: "elem", elem: img},
-            {type: "kern", size: ruleWidth},
-        ],
-    }, options);
-    body.children[0].children[0].classes.push("svg-align");
-
-    if (!group.value.index) {
-        return makeSpan(["mord", "sqrt"], [body], options);
-    } else {
-        // Handle the optional root index
-
-        // The index is always in scriptscript style
-        const newOptions = options.havingStyle(Style.SCRIPTSCRIPT);
-        const rootm = buildGroup(group.value.index, newOptions, options);
-
-        // The amount the index is shifted by. This is taken from the TeX
-        // source, in the definition of `\r@@t`.
-        const toShift = 0.6 * (body.height - body.depth);
-
-        // Build a VList with the superscript shifted up correctly
-        const rootVList = buildCommon.makeVList({
-            positionType: "shift",
-            positionData: -toShift,
-            children: [{type: "elem", elem: rootm}],
-        }, options);
-        // Add a class surrounding it so we can add on the appropriate
-        // kerning
-        const rootVListWrap = makeSpan(["root"], [rootVList]);
-
-        return makeSpan(["mord", "sqrt"],
-            [rootVListWrap, body], options);
-    }
-};
-
 function sizingGroup(value, options, baseOptions) {
     const inner = buildExpression(value, options, false);
     const multiplier = options.sizeMultiplier / baseOptions.sizeMultiplier;
@@ -594,30 +459,6 @@ groupTypes.font = function(group, options) {
     return buildGroup(group.value.body, options.withFontFamily(font));
 };
 
-groupTypes.verb = function(group, options) {
-    const text = buildCommon.makeVerb(group, options);
-    const body = [];
-    // \verb enters text mode and therefore is sized like \textstyle
-    const newOptions = options.havingStyle(options.style.text());
-    for (let i = 0; i < text.length; i++) {
-        if (text[i] === '\xA0') {  // spaces appear as nonbreaking space
-            // The space character isn't in the Typewriter-Regular font,
-            // so we implement it as a kern of the same size as a character.
-            // 0.525 is the width of a texttt character in LaTeX.
-            // It automatically gets scaled by the font size.
-            const rule = makeSpan(["mord", "rule"], [], newOptions);
-            rule.style.marginLeft = "0.525em";
-            body.push(rule);
-        } else {
-            body.push(buildCommon.makeSymbol(text[i], "Typewriter-Regular",
-                group.mode, newOptions, ["mathtt"]));
-        }
-    }
-    buildCommon.tryCombineChars(body);
-    return makeSpan(["mord", "text"].concat(newOptions.sizingClasses(options)),
-        body, newOptions);
-};
-
 groupTypes.accent = function(group, options) {
     // Accents are handled in the TeXbook pg. 443, rule 12.
     let base = group.value.base;
@@ -650,7 +491,7 @@ groupTypes.accent = function(group, options) {
     const body = buildGroup(base, options.havingCrampedStyle());
 
     // Does the accent need to shift for the skew of a character?
-    const mustShift = group.value.isShifty && isCharacterBox(base);
+    const mustShift = group.value.isShifty && utils.isCharacterBox(base);
 
     // Calculate the skew of the accent. This is based on the line "If the
     // nucleus is not a single character, let s = 0; otherwise set s to the
@@ -661,7 +502,7 @@ groupTypes.accent = function(group, options) {
     if (mustShift) {
         // If the base is a character box, then we want the skew of the
         // innermost character. To do that, we find the innermost character:
-        const baseChar = getBaseElem(base);
+        const baseChar = utils.getBaseElem(base);
         // Then, we render its group to get the symbol inside it
         const baseGroup = buildGroup(baseChar, options.havingCrampedStyle());
         // Finally, we pull the skew off of the symbol.
@@ -880,78 +721,6 @@ groupTypes.accentUnder = function(group, options) {
     vlist.children[0].children[0].children[0].classes.push("svg-align");
 
     return makeSpan(["mord", "accentunder"], [vlist], options);
-};
-
-groupTypes.enclose = function(group, options) {
-    // \cancel, \bcancel, \xcancel, \sout, \fbox, \colorbox, \fcolorbox
-    const inner = buildGroup(group.value.body, options);
-
-    const label = group.value.label.substr(1);
-    const scale = options.sizeMultiplier;
-    let img;
-    let imgShift = 0;
-    const isColorbox = /color/.test(label);
-
-    if (label === "sout") {
-        img = makeSpan(["stretchy", "sout"]);
-        img.height = options.fontMetrics().defaultRuleThickness / scale;
-        imgShift = -0.5 * options.fontMetrics().xHeight;
-
-    } else {
-        // Add horizontal padding
-        inner.classes.push(/cancel/.test(label) ? "cancel-pad" : "boxpad");
-
-        // Add vertical padding
-        let vertPad = 0;
-        // ref: LaTeX source2e: \fboxsep = 3pt;  \fboxrule = .4pt
-        // ref: cancel package: \advance\totalheight2\p@ % "+2"
-        if (/box/.test(label)) {
-            vertPad = label === "colorbox" ? 0.3 : 0.34;
-        } else {
-            vertPad = isCharacterBox(group.value.body) ? 0.2 : 0;
-        }
-
-        img = stretchy.encloseSpan(inner, label, vertPad, options);
-        imgShift = inner.depth + vertPad;
-
-        if (isColorbox) {
-            img.style.backgroundColor = group.value.backgroundColor.value;
-            if (label === "fcolorbox") {
-                img.style.borderColor = group.value.borderColor.value;
-            }
-        }
-    }
-
-    let vlist;
-    if (isColorbox) {
-        vlist = buildCommon.makeVList({
-            positionType: "individualShift",
-            children: [
-                // Put the color background behind inner;
-                {type: "elem", elem: img, shift: imgShift},
-                {type: "elem", elem: inner, shift: 0},
-            ],
-        }, options);
-    } else {
-        vlist = buildCommon.makeVList({
-            positionType: "individualShift",
-            children: [
-                // Write the \cancel stroke on top of inner.
-                {type: "elem", elem: inner, shift: 0},
-                {type: "elem", elem: img, shift: imgShift},
-            ],
-        }, options);
-    }
-
-    if (/cancel/.test(label)) {
-        vlist.children[0].children[0].children[1].classes.push("svg-align");
-
-        // cancel does not create horiz space for its line extension.
-        // That is, not when adjacent to a mord.
-        return makeSpan(["mord", "cancel-lap"], [vlist], options);
-    } else {
-        return makeSpan(["mord"], [vlist], options);
-    }
 };
 
 groupTypes.xArrow = function(group, options) {

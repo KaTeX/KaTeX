@@ -89,6 +89,85 @@ function clearNode(node: Node) {
     setTextContent(node, "");
 }
 
+type BaseElem = {|
+    type: "mathord",
+|} | {|
+    type: "textord",
+|} | {|
+    type: "bin",
+|} | {|
+    type: "rel",
+|} | {|
+    type: "inner",
+|} | {|
+    type: "open",
+|} | {|
+    type: "close",
+|} | {|
+    type: "punct",
+|};
+
+type Group = {|
+    type: "ordgroup",
+    value: Group[],
+|} | {|
+    type: "color",
+    value: {|
+        value: Group[],
+    |},
+|} | {|
+    type: "font",
+    value: {|
+        body: Group,
+    |},
+|} | BaseElem;
+
+/**
+ * Sometimes we want to pull out the innermost element of a group. In most
+ * cases, this will just be the group itself, but when ordgroups and colors have
+ * a single element, we want to pull that out.
+ */
+const getBaseElem = function(group: Group) {
+    if (!group) {
+        return false;
+    } else if (group.type === "ordgroup") {
+        if (group.value.length === 1) {
+            return getBaseElem(group.value[0]);
+        } else {
+            return group;
+        }
+    } else if (group.type === "color") {
+        if (group.value.value.length === 1) {
+            return getBaseElem(group.value.value[0]);
+        } else {
+            return group;
+        }
+    } else if (group.type === "font") {
+        return getBaseElem(group.value.body);
+    } else {
+        return group;
+    }
+};
+
+/**
+ * TeXbook algorithms often reference "character boxes", which are simply groups
+ * with a single character in them. To decide if something is a character box,
+ * we find its innermost group, and see if it is a single character.
+ */
+const isCharacterBox = function(group: Group) {
+    const baseElem = getBaseElem(group);
+
+    // These are all they types of groups which hold single characters
+    return baseElem.type === "mathord" ||
+        baseElem.type === "textord" ||
+        baseElem.type === "bin" ||
+        baseElem.type === "rel" ||
+        baseElem.type === "inner" ||
+        baseElem.type === "open" ||
+        baseElem.type === "close" ||
+        baseElem.type === "punct";
+};
+
 export default {
     contains,
     deflt,
@@ -97,4 +176,6 @@ export default {
     indexOf,
     setTextContent,
     clearNode,
+    getBaseElem,
+    isCharacterBox,
 };

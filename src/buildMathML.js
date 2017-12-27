@@ -225,22 +225,6 @@ groupTypes.supsub = function(group, options) {
     return node;
 };
 
-groupTypes.sqrt = function(group, options) {
-    let node;
-    if (group.value.index) {
-        node = new mathMLTree.MathNode(
-            "mroot", [
-                buildGroup(group.value.body, options),
-                buildGroup(group.value.index, options),
-            ]);
-    } else {
-        node = new mathMLTree.MathNode(
-            "msqrt", [buildGroup(group.value.body, options)]);
-    }
-
-    return node;
-};
-
 groupTypes.accent = function(group, options) {
     let accentNode;
     if (group.value.isStretchy) {
@@ -330,13 +314,6 @@ groupTypes.sizing = function(group, options) {
     return node;
 };
 
-groupTypes.verb = function(group, options) {
-    const text = new mathMLTree.TextNode(buildCommon.makeVerb(group, options));
-    const node = new mathMLTree.MathNode("mtext", [text]);
-    node.setAttribute("mathvariant", buildCommon.fontMap["mathtt"].variant);
-    return node;
-};
-
 groupTypes.accentUnder = function(group, options) {
     const accentNode = stretchy.mathMLnode(group.value.label);
     const node = new mathMLTree.MathNode(
@@ -344,39 +321,6 @@ groupTypes.accentUnder = function(group, options) {
         [buildGroup(group.value.body, options), accentNode]
     );
     node.setAttribute("accentunder", "true");
-    return node;
-};
-
-groupTypes.enclose = function(group, options) {
-    const node = new mathMLTree.MathNode(
-        "menclose", [buildGroup(group.value.body, options)]);
-    switch (group.value.label) {
-        case "\\cancel":
-            node.setAttribute("notation", "updiagonalstrike");
-            break;
-        case "\\bcancel":
-            node.setAttribute("notation", "downdiagonalstrike");
-            break;
-        case "\\sout":
-            node.setAttribute("notation", "horizontalstrike");
-            break;
-        case "\\fbox":
-            node.setAttribute("notation", "box");
-            break;
-        case "\\colorbox":
-            node.setAttribute("mathbackground",
-                group.value.backgroundColor.value);
-            break;
-        case "\\fcolorbox":
-            node.setAttribute("mathbackground",
-                group.value.backgroundColor.value);
-            // TODO(ron): I don't know any way to set the border color.
-            node.setAttribute("notation", "box");
-            break;
-        default:
-            // xcancel
-            node.setAttribute("notation", "updiagonalstrike downdiagonalstrike");
-    }
     return node;
 };
 
