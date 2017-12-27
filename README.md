@@ -94,7 +94,7 @@ will appear larger than 1cm in browser units.
 - KaTeX follows LaTeX's rendering of aligned and `*matrix` environments unlike
   MathJax.  When displaying fractions one above another in these vertical
   layouts there may not be enough space between rows for people who are used to
-  MathJax's rendering.  The distance between rows can be adjust by using
+  MathJax's rendering.  The distance between rows can be adjusted by using
   `\\[0.1em]` instead of the standard line separator distance.
 - KaTeX does not support the `align` environment because LaTeX doesn't support
   `align` in math mode.  The `aligned` environment offers the same functionality
