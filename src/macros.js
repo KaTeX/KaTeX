@@ -399,3 +399,5 @@ defineMacro("\\approxcoloncolon",
 //       macro turned into a propper defineSymbol in symbols.js. That way, the
 //       MathML result will be much cleaner.
 defineMacro("\\notni", "\\not\\ni");
+defineMacro("\\limsup", "\\DOTSB\\mathop{\\operatorname{lim\\,sup}}\\limits");
+defineMacro("\\liminf", "\\DOTSB\\mathop{\\operatorname{lim\\,inf}}\\limits");

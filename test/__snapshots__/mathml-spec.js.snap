@@ -77,6 +77,76 @@ exports[`A MathML builder should make prime operators into <mo> nodes 1`] = `
 
 `;
 
+exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correctly in \\textstyle 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <msub>
+        <mo>
+          <mi mathvariant="normal">
+            lim sup
+          </mi>
+          <mo>
+            ⁡
+          </mo>
+        </mo>
+        <mrow>
+          <mi>
+            x
+          </mi>
+          <mo>
+            →
+          </mo>
+          <mi mathvariant="normal">
+            ∞
+          </mi>
+        </mrow>
+      </msub>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\limsup_{x \\rightarrow \\infty}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} in displaymode correctly 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <munder>
+        <mo>
+          <mi mathvariant="normal">
+            lim sup
+          </mi>
+          <mo>
+            ⁡
+          </mo>
+        </mo>
+        <mrow>
+          <mi>
+            x
+          </mi>
+          <mo>
+            →
+          </mo>
+          <mi mathvariant="normal">
+            ∞
+          </mi>
+        </mrow>
+      </munder>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\limsup_{x \\rightarrow \\infty}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder should render boldsymbol with the correct mathvariants 1`] = `
 
 <math>
