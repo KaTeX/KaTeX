@@ -2733,6 +2733,16 @@ describe("A macro expander", function() {
         expect("\\hspace{1em}").toParseLike("\\kern1em");
         expect("\\hspace*{1em}").toParseLike("\\kern1em");
     });
+
+    it("should expand \\limsup as expected", () => {
+        expect("\\limsup")
+            .toParseLike("\\mathop{\\operatorname{lim\\,sup}}\\limits");
+    });
+
+    it("should expand \\liminf as expected", () => {
+        expect("\\liminf")
+            .toParseLike("\\mathop{\\operatorname{lim\\,inf}}\\limits");
+    });
 });
 
 describe("A parser taking String objects", function() {

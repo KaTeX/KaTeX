@@ -51,6 +51,19 @@ describe("A MathML builder", function() {
         expect(getMathML("\\textstyle\\sum_a^b")).toMatchSnapshot();
     });
 
+    it("should output \\limsup_{x \\rightarrow \\infty} correctly in " +
+            "\\textstyle", () => {
+        const mathml = getMathML("\\limsup_{x \\rightarrow \\infty}");
+        expect(mathml).toMatchSnapshot();
+    });
+
+    it("should output \\limsup_{x \\rightarrow \\infty} in " +
+            "displaymode correctly", () => {
+        const settings = new Settings({displayMode: true});
+        const mathml = getMathML("\\limsup_{x \\rightarrow \\infty}", settings);
+        expect(mathml).toMatchSnapshot();
+    });
+
     it('should use <mpadded> for raisebox', () => {
         expect(getMathML("\\raisebox{0.25em}{b}")).toMatchSnapshot();
     });

@@ -198,9 +198,19 @@ groupTypes.supsub = function(group, options) {
     if (isBrace) {
         nodeType = (isOver ? "mover" : "munder");
     } else if (!group.value.sub) {
-        nodeType = "msup";
+        const base = group.value.base;
+        if (base && base.value.limits && options.style === Style.DISPLAY) {
+            nodeType = "mover";
+        } else {
+            nodeType = "msup";
+        }
     } else if (!group.value.sup) {
-        nodeType = "msub";
+        const base = group.value.base;
+        if (base && base.value.limits && options.style === Style.DISPLAY) {
+            nodeType = "munder";
+        } else {
+            nodeType = "msub";
+        }
     } else {
         const base = group.value.base;
         if (base && base.value.limits && options.style === Style.DISPLAY) {

@@ -30,22 +30,27 @@ defineFunction({
             let mode = "";
 
             // Consolidate Greek letter function names into symbol characters.
-            const temp = html.buildExpression(group.value.value, options, true);
+            const temp = html.buildExpression(
+                group.value.value, options.withFontFamily("mathrm"), true);
 
             // All we want from temp are the letters. With them, we'll
             // create a text operator similar to \tan or \cos.
-            for (let i = 0; i < temp.length; i++) {
-                letter = temp[i].value;
+            for (const child of temp) {
+                if (child instanceof domTree.symbolNode) {
+                    letter = child.value;
 
-                // In the amsopn package, \newmcodes@ changes four
-                // characters, *-/:’, from math operators back into text.
-                // Given what is in temp, we have to address two of them.
-                letter = letter.replace(/\u2212/, "-");   // minus => hyphen
-                letter = letter.replace(/\u2217/, "*");
+                    // In the amsopn package, \newmcodes@ changes four
+                    // characters, *-/:’, from math operators back into text.
+                    // Given what is in temp, we have to address two of them.
+                    letter = letter.replace(/\u2212/, "-");   // minus => hyphen
+                    letter = letter.replace(/\u2217/, "*");
 
-                // Use math mode for Greek letters
-                mode = (/[\u0391-\u03D7]/.test(letter) ? "math" : "text");
-                output.push(buildCommon.mathsym(letter, mode));
+                    // Use math mode for Greek letters
+                    mode = (/[\u0391-\u03D7]/.test(letter) ? "math" : "text");
+                    output.push(buildCommon.mathsym(letter, mode));
+                } else {
+                    output.push(child);
+                }
             }
         }
         return buildCommon.makeSpan(["mop"], output, options);
@@ -55,12 +60,11 @@ defineFunction({
         // The steps taken here are similar to the html version.
         let output = [];
         if (group.value.value.length > 0) {
-            const temp = mml.buildExpression(group.value.value, options);
+            const temp = mml.buildExpression(
+                group.value.value, options.withFontFamily("mathrm"));
 
-            let word = "";
-            for (let i = 0; i < temp.length; i++) {
-                word += temp[i].children[0].text;
-            }
+            let word = temp.map(node => node.toText()).join("");
+
             word = word.replace(/\u2212/g, "-");
             word = word.replace(/\u2217/g, "*");
             output = [new mathMLTree.TextNode(word)];
