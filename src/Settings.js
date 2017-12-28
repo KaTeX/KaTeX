@@ -6,11 +6,13 @@
 
 import utils from "./utils";
 
+import type { MacroMap } from "./macros";
+
 export type SettingsOptions = {
     displayMode?: boolean;
     throwOnError?: boolean;
     errorColor?: string;
-    macros?: {[macroName: string]: string};
+    macros?: MacroMap;
     colorIsTextColor?: boolean;
     maxSize?: number;
 };
@@ -29,7 +31,7 @@ class Settings {
     displayMode: boolean;
     throwOnError: boolean;
     errorColor: string;
-    macros: {[macroName: string]: string};
+    macros: MacroMap;
     colorIsTextColor: boolean;
     maxSize: number;
 
