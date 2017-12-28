@@ -29,7 +29,8 @@ const encode = function(string) {
 
 console.log("export default {");
 
-const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+    "αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψωΓΔΘΛΞΠΣΥΦΨΩ";
 for (const letter of letters) {
     for (const accent of Object.getOwnPropertyNames(accents)) {
         const combined = letter + accent;
