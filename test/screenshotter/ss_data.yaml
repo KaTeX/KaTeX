@@ -172,6 +172,12 @@ ModScript: |
         \scriptstyle a\bmod 2 & \scriptstyle b \pod 3 \\
         \scriptstyle c\pmod{4} & \scriptstyle d \mod{56}
     \end{array}
+ModSpacing: |
+    \begin{array}{l}
+        (a \cdot b) \bmod 257 \\
+        (a \cdot b) \mkern1mu\mathbin{\mathrm{mod}}\mkern1mu 257 \\
+        (a \cdot b) \mathbin{\mathrm{mod}} 257
+    \end{array}
 NegativeSpaceBetweenRel: A =\!= B
 NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
