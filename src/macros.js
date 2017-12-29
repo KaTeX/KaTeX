@@ -45,7 +45,7 @@ const builtinMacros: MacroMap = {};
 export default builtinMacros;
 
 // This function might one day accept an additional argument and do more things.
-function defineMacro(name: string, body: MacroDefinition) {
+export function defineMacro(name: string, body: MacroDefinition) {
     builtinMacros[name] = body;
 }
 

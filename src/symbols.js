@@ -644,10 +644,10 @@ defineSymbol(math, main, accent, "\u02c7", "\\check");
 defineSymbol(math, main, accent, "\u005e", "\\hat");
 defineSymbol(math, main, accent, "\u20d7", "\\vec");
 defineSymbol(math, main, accent, "\u02d9", "\\dot");
-defineSymbol(math, main, mathord, "\u0131", "\\imath");
-defineSymbol(math, main, mathord, "\u0237", "\\jmath");
-defineSymbol(text, main, textord, "\u0131", "\\i");
-defineSymbol(text, main, textord, "\u0237", "\\j");
+defineSymbol(math, main, mathord, "\u0131", "\\imath", true);
+defineSymbol(math, main, mathord, "\u0237", "\\jmath", true);
+defineSymbol(text, main, textord, "\u0131", "\\i", true);
+defineSymbol(text, main, textord, "\u0237", "\\j", true);
 defineSymbol(text, main, textord, "\u00df", "\\ss", true);
 defineSymbol(text, main, textord, "\u00e6", "\\ae", true);
 defineSymbol(text, main, textord, "\u00e6", "\\ae", true);
@@ -687,7 +687,7 @@ defineSymbol(text, main, textord, "\u00b0", "\\degree");
 defineSymbol(math, main, mathord, "\u00a3", "\\pounds");
 defineSymbol(math, main, mathord, "\u00a3", "\\mathsterling", true);
 defineSymbol(text, main, mathord, "\u00a3", "\\pounds");
-defineSymbol(text, main, mathord, "\u00a3", "\\textsterling");
+defineSymbol(text, main, mathord, "\u00a3", "\\textsterling", true);
 defineSymbol(math, ams, textord, "\u2720", "\\maltese");
 defineSymbol(text, ams, textord, "\u2720", "\\maltese");
 
@@ -719,23 +719,20 @@ for (let i = 0; i < letters.length; i++) {
     defineSymbol(text, main, textord, ch, ch);
 }
 
-// Latin-1 letters
-for (let i = 0x00C0; i <= 0x00D6; i++) {
-    const ch = String.fromCharCode(i);
+// We add these Latin-1 letters as symbols for backwards-compatibility,
+// but they are not actually in the font, nor are they supported by the
+// Unicode accent mechanism, so they fall back to Times font and look ugly.
+// TODO(edemaine): Fix this.
+const extraLatin = "ÇÐÞçðþ";
+for (let i = 0; i < extraLatin.length; i++) {
+    const ch = extraLatin.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
-
-for (let i = 0x00D8; i <= 0x00F6; i++) {
-    const ch = String.fromCharCode(i);
+const extraLatinMath = "Åå";
+for (let i = 0; i < extraLatinMath.length; i++) {
+    const ch = extraLatinMath.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);
-    defineSymbol(text, main, textord, ch, ch);
-}
-
-for (let i = 0x00F8; i <= 0x00FF; i++) {
-    const ch = String.fromCharCode(i);
-    defineSymbol(math, main, mathord, ch, ch);
-    defineSymbol(text, main, textord, ch, ch);
 }
 
 // Cyrillic

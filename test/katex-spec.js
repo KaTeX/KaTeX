@@ -2757,15 +2757,64 @@ describe("A parser taking String objects", function() {
     });
 });
 
+describe("Unicode accents", function() {
+    it("should parse Latin-1 letters in math mode", function() {
+        // TODO(edemaine): Unsupported Latin-1 letters in math: ÅåÇÐÞçðþ
+        expect("ÀÁÂÃÄÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäèéêëìíîïñòóôõöùúûüýÿ")
+        .toParseLike(
+            "\\grave A\\acute A\\hat A\\tilde A\\ddot A" +
+            "\\grave E\\acute E\\hat E\\ddot E" +
+            "\\grave I\\acute I\\hat I\\ddot I" +
+            "\\tilde N" +
+            "\\grave O\\acute O\\hat O\\tilde O\\ddot O" +
+            "\\grave U\\acute U\\hat U\\ddot U" +
+            "\\acute Y" +
+            "\\grave a\\acute a\\hat a\\tilde a\\ddot a" +
+            "\\grave e\\acute e\\hat e\\ddot e" +
+            "\\grave ı\\acute ı\\hat ı\\ddot ı" +
+            "\\tilde n" +
+            "\\grave o\\acute o\\hat o\\tilde o\\ddot o" +
+            "\\grave u\\acute u\\hat u\\ddot u" +
+            "\\acute y\\ddot y");
+    });
+
+    it("should parse Latin-1 letters in text mode", function() {
+        // TODO(edemaine): Unsupported Latin-1 letters in text: ÇÐÞçðþ
+        expect("\\text{ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ}")
+        .toParseLike(
+            "\\text{\\`A\\'A\\^A\\~A\\\"A\\r A" +
+            "\\`E\\'E\\^E\\\"E" +
+            "\\`I\\'I\\^I\\\"I" +
+            "\\~N" +
+            "\\`O\\'O\\^O\\~O\\\"O" +
+            "\\`U\\'U\\^U\\\"U" +
+            "\\'Y" +
+            "\\`a\\'a\\^a\\~a\\\"a\\r a" +
+            "\\`e\\'e\\^e\\\"e" +
+            "\\`ı\\'ı\\^ı\\\"ı" +
+            "\\~n" +
+            "\\`o\\'o\\^o\\~o\\\"o" +
+            "\\`u\\'u\\^u\\\"u" +
+            "\\'y\\\"y}");
+    });
+
+    it("should parse combining characters", function() {
+        expect("A\u0301C\u0301").toParseLike("Á\\acute C");
+        expect("\\text{A\u0301C\u0301}").toParseLike("\\text{Á\\'C}");
+    });
+
+    it("should parse multi-accented characters", function() {
+        expect("ấā́ắ\\text{ấā́ắ}").toParse();
+        // Doesn't parse quite the same as
+        // "\\text{\\'{\\^a}\\'{\\=a}\\'{\\u a}}" because of the ordgroups.
+    });
+
+    it("should parse accented i's and j's", function() {
+        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ");
+    });
+});
+
 describe("Unicode", function() {
-    it("should parse all lower case Greek letters", function() {
-        expect("αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω").toParse();
-    });
-
-    it("should parse 'ΓΔΘΞΠΣΦΨΩ'", function() {
-        expect("ΓΔΘΞΠΣΦΨΩ").toParse();
-    });
-
     it("should parse negated relations", function() {
         expect("∉∤∦≁≆≠≨≩≮≯≰≱⊀⊁⊈⊉⊊⊋⊬⊭⊮⊯⋠⋡⋦⋧⋨⋩⋬⋭⪇⪈⪉⪊⪵⪶⪹⪺⫋⫌").toParse();
     });

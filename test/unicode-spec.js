@@ -67,11 +67,21 @@ describe("unicode", function() {
     });
 
     it("should parse Latin-1 inside \\text{}", function() {
-        expect('\\text{ÀàÇçÉéÏïÖöÛû}').toParse();
+        expect('\\text{ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ' +
+            'ÆÇÐØÞßæçðøþ}').toParse();
     });
 
     it("should parse Latin-1 outside \\text{}", function() {
-        expect('ÀàÇçÉéÏïÖöÛû').toParse();
+        expect('ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ' +
+            'ÇÐÞçðþ').toParse();
+    });
+
+    it("should parse all lower case Greek letters", function() {
+        expect("αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω").toParse();
+    });
+
+    it("should parse math upper case Greek letters", function() {
+        expect("ΓΔΘΛΞΠΣΥΦΨΩ").toParse();
     });
 
     it("should parse Cyrillic inside \\text{}", function() {

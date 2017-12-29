@@ -123,6 +123,10 @@ PYTHON=$(shell python2 --version >/dev/null 2>&1 && echo python2 || echo python)
 metrics:
 	cd metrics && $(PERL) ./mapping.pl | $(PYTHON) ./extract_tfms.py | $(PYTHON) ./extract_ttfs.py | $(PYTHON) ./format_json.py --width > ../src/fontMetricsData.js
 
+unicode:
+	cd src && $(NODE) unicodeMake.js >unicodeSymbols.js
+src/unicodeSymbols.js: unicode
+
 clean:
 	rm -rf build/* $(NIS)
 
