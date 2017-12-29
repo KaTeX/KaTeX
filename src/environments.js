@@ -1,14 +1,7 @@
 // @flow
 import {_environments} from "./defineEnvironment";
 
-const environments = {
-    has(envName: string) {
-        return _environments.hasOwnProperty(envName);
-    },
-    get(envName: string) {
-        return _environments[envName];
-    },
-};
+const environments = _environments;
 
 export default environments;
 

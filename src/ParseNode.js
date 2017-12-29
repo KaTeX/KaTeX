@@ -1,5 +1,4 @@
 // @flow
-import {Token} from "./Token";
 import SourceLocation from "./SourceLocation";
 import type {Mode} from "./types";
 
@@ -21,14 +20,14 @@ export default class ParseNode {
         type: string,       // type of node, like e.g. "ordgroup"
         value: mixed,       // type-specific representation of the node
         mode: Mode,         // parse mode in action for this node, "math" or "text"
-        firstToken?: Token, // first token of the input for this node,
-                            // will omit position information if unset
-        lastToken?: Token,  // last token of the input for this node,
-                            // will default to firstToken if unset
+        first?: {loc: ?SourceLocation}, // first token or node of the input for
+                            // this node, will omit position information if unset
+        last?: {loc: ?SourceLocation},  // last token or node of the input for this
+                            // node, will default to firstToken if unset
     ) {
         this.type = type;
         this.value = value;
         this.mode = mode;
-        this.loc = SourceLocation.range(firstToken, lastToken);
+        this.loc = SourceLocation.range(first, last);
     }
 }
