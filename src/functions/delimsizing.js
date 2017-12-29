@@ -4,12 +4,12 @@ import defineFunction from "../defineFunction";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
+import ParseNode from "../ParseNode";
 import utils from "../utils";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type ParseNode from "../ParseNode";
 import type {FunctionContext} from "../defineFunction";
 
 // Extra data needed for the delimiter handler down below
@@ -128,12 +128,30 @@ defineFunction({
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
 
-        // \left and \right are caught somewhere in Parser.js, which is
-        // why this data doesn't match what is in buildHTML.
-        return {
-            type: "leftright",
-            value: delim.value,
-        };
+        if (context.funcName === "\\left") {
+            const parser = context.parser;
+            // Parse out the implicit body
+            ++parser.leftrightDepth;
+            const body = parser.parseExpression(false);
+            --parser.leftrightDepth;
+            // Check the next token
+            parser.expect("\\right", false);
+            const right = parser.parseFunction();
+            if (!right) {
+                throw new ParseError('failed to parse function after \\right');
+            }
+            return {
+                type: "leftright",
+                body: body,
+                left: delim.value,
+                right: right.value.value,
+            };
+        } else {
+            return {
+                type: "leftright",
+                value: delim.value,
+            };
+        }
     },
     htmlBuilder: (group, options) => {
         // Build the inner expression
