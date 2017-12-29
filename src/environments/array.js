@@ -48,7 +48,7 @@ function parseArray(
     const body = [row];
     const rowGaps = [];
     while (true) {  // eslint-disable-line no-constant-condition
-        let cell = parser.parseExpression(false, null);
+        let cell = parser.parseExpression(false, undefined);
         cell = new ParseNode("ordgroup", cell, parser.mode);
         if (style) {
             cell = new ParseNode("styling", {
@@ -72,6 +72,9 @@ function parseArray(
             break;
         } else if (next === "\\\\" || next === "\\cr") {
             const cr = parser.parseFunction();
+            if (!cr) {
+                throw new ParseError(`Failed to parse function after ${next}`);
+            }
             rowGaps.push(cr.value.size);
             row = [];
             body.push(row);
