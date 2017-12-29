@@ -127,7 +127,7 @@ type Group = {|
  * cases, this will just be the group itself, but when ordgroups and colors have
  * a single element, we want to pull that out.
  */
-const getBaseElem = function(group: Group) {
+const getBaseElem = function(group: Group): Group | boolean {
     if (!group) {
         return false;
     } else if (group.type === "ordgroup") {
@@ -154,7 +154,7 @@ const getBaseElem = function(group: Group) {
  * with a single character in them. To decide if something is a character box,
  * we find its innermost group, and see if it is a single character.
  */
-const isCharacterBox = function(group: Group) {
+const isCharacterBox = function(group: Group): boolean {
     const baseElem = getBaseElem(group);
 
     // These are all they types of groups which hold single characters
