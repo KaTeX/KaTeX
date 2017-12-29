@@ -1,6 +1,5 @@
 // @flow
 /** Include this to ensure that all functions are defined. */
-import utils from "./utils";
 import ParseError from "./ParseError";
 import ParseNode from "./ParseNode";
 import {
@@ -222,55 +221,7 @@ defineFunction([
     };
 });
 
-// Accents
-defineFunction([
-    "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
-    "\\check", "\\hat", "\\vec", "\\dot",
-    "\\widehat", "\\widetilde", "\\overrightarrow", "\\overleftarrow",
-    "\\Overrightarrow", "\\overleftrightarrow", "\\overgroup",
-    "\\overlinesegment", "\\overleftharpoon", "\\overrightharpoon",
-], {
-    numArgs: 1,
-}, function(context, args) {
-    const base = args[0];
-
-    const isStretchy = !utils.contains([
-        "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
-        "\\check", "\\hat", "\\vec", "\\dot",
-    ], context.funcName);
-
-    const isShifty = !isStretchy || utils.contains([
-        "\\widehat", "\\widetilde",
-    ], context.funcName);
-
-    return {
-        type: "accent",
-        label: context.funcName,
-        isStretchy: isStretchy,
-        isShifty: isShifty,
-        base: base,
-    };
-});
-
-// Text-mode accents
-defineFunction([
-    "\\'", "\\`", "\\^", "\\~", "\\=", "\\u", "\\.", '\\"',
-    "\\r", "\\H", "\\v",
-], {
-    numArgs: 1,
-    allowedInText: true,
-    allowedInMath: false,
-}, function(context, args) {
-    const base = args[0];
-
-    return {
-        type: "accent",
-        label: context.funcName,
-        isStretchy: false,
-        isShifty: true,
-        base: base,
-    };
-});
+import "./functions/accent";
 
 // Horizontal stretchy braces
 defineFunction([
@@ -288,19 +239,7 @@ defineFunction([
 });
 
 // Stretchy accents under the body
-defineFunction([
-    "\\underleftarrow", "\\underrightarrow", "\\underleftrightarrow",
-    "\\undergroup", "\\underlinesegment", "\\utilde",
-], {
-    numArgs: 1,
-}, function(context, args) {
-    const base = args[0];
-    return {
-        type: "accentUnder",
-        label: context.funcName,
-        base: base,
-    };
-});
+import "./functions/accentunder";
 
 // Stretchy arrows with an optional argument
 defineFunction([

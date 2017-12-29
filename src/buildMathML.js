@@ -225,24 +225,6 @@ groupTypes.supsub = function(group, options) {
     return node;
 };
 
-groupTypes.accent = function(group, options) {
-    let accentNode;
-    if (group.value.isStretchy) {
-        accentNode = stretchy.mathMLnode(group.value.label);
-    } else {
-        accentNode = new mathMLTree.MathNode(
-            "mo", [makeText(group.value.label, group.mode)]);
-    }
-
-    const node = new mathMLTree.MathNode(
-        "mover",
-        [buildGroup(group.value.base, options), accentNode]);
-
-    node.setAttribute("accent", "true");
-
-    return node;
-};
-
 groupTypes.spacing = function(group) {
     let node;
 
@@ -311,16 +293,6 @@ groupTypes.sizing = function(group, options) {
     // this.
     node.setAttribute("mathsize", newOptions.sizeMultiplier + "em");
 
-    return node;
-};
-
-groupTypes.accentUnder = function(group, options) {
-    const accentNode = stretchy.mathMLnode(group.value.label);
-    const node = new mathMLTree.MathNode(
-        "munder",
-        [buildGroup(group.value.body, options), accentNode]
-    );
-    node.setAttribute("accentunder", "true");
     return node;
 };
 
