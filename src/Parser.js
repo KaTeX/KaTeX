@@ -54,7 +54,6 @@ import type { EnvSpec } from "./defineEnvironment";
  * standalone object which can be used as an argument to another function.
  */
 
-// type ParsedType = "fn" | "arg" | "$"
 type ParsedFunc = {|
     type: "fn",
     result: string, // Function name defined via defineFunction (e.g. "\\frac").
@@ -74,35 +73,18 @@ type ParsedDollar = {|
 type ParsedFuncOrArgOrDollar = ParsedFunc | ParsedArg | ParsedDollar;
 type ParsedFuncOrArg = ParsedFunc | ParsedArg;
 
-/**
- * @param {ParseNode} result
- * @param {Token} token
- * @return {ParsedArg}
- */
 function newArgument(result: ParseNode, token: Token): ParsedArg {
     return {type: "arg", result, token};
 }
 
-/**
- * @param {Token} token
- * @return {ParsedFunc}
- */
-function newFunction(token: Token) {
+function newFunction(token: Token): ParsedFunc {
     return {type: "fn", result: token.text, token};
 }
 
-/**
- * @param {Token} token
- * @return {ParsedDollar}
- */
-function newDollar(token: Token) {
+function newDollar(token: Token): ParsedDollar {
     return {type: "$", result: "$", token};
 }
 
-/**
- * @param {ParsedFuncOrArgOrDollar} parsed
- * @return {ParsedFuncOrArg}
- */
 function assertFuncOrArg(parsed: ParsedFuncOrArgOrDollar): ParsedFuncOrArg {
     if (parsed.type === "$") {
         throw new ParseError("Unexpected $", parsed.token);
@@ -137,18 +119,15 @@ export default class Parser {
     /**
      * Checks a result to make sure it has the right type, and throws an
      * appropriate error otherwise.
-     *
-     * @param {boolean=} consume whether to consume the expected token,
-     *                           defaults to true
      */
-    expect(text: string, consume?: boolean) {
+    expect(text: string, consume?: boolean = true) {
         if (this.nextToken.text !== text) {
             throw new ParseError(
                 "Expected '" + text + "', got '" + this.nextToken.text + "'",
                 this.nextToken
             );
         }
-        if (consume !== false) {
+        if (consume) {
             this.consume();
         }
     }
@@ -171,10 +150,8 @@ export default class Parser {
 
     /**
      * Main parsing function, which parses an entire input.
-     *
-     * @return {Array.<ParseNode>}
      */
-    parse() {
+    parse(): ParseNode[] {
         // Try to parse the input
         this.consume();
         const parse = this.parseInput();
@@ -184,7 +161,7 @@ export default class Parser {
     /**
      * Parses an entire input tree.
      */
-    parseInput() {
+    parseInput(): ParseNode[] {
         // Parse an expression
         const expression = this.parseExpression(false);
         // If we succeeded, make sure there's an EOF at the end
@@ -197,17 +174,18 @@ export default class Parser {
     /**
      * Parses an "expression", which is a list of atoms.
      *
-     * @param {boolean} breakOnInfix  Should the parsing stop when we hit infix
-     *                  nodes? This happens when functions have higher precendence
-     *                  than infix nodes in implicit parses.
+     * `breakOnInfix`: Should the parsing stop when we hit infix nodes? This
+     *                 happens when functions have higher precendence han infix
+     *                 nodes in implicit parses.
      *
-     * @param {?string} breakOnTokenText  The text of the token that the expression
-     *                  should end with, or `null` if something else should end the
-     *                  expression.
-     *
-     * @return {Array<ParseNode>}
+     * `breakOnTokenText`: The text of the token that the expression should end
+     *                     with, or `null` if something else should end the
+     *                     expression.
      */
-    parseExpression(breakOnInfix: boolean, breakOnTokenText?: "]" | "}" | "$") {
+    parseExpression(
+        breakOnInfix: boolean,
+        breakOnTokenText?: "]" | "}" | "$",
+    ): ParseNode[] {
         const body = [];
         // Keep adding atoms to the body until we can't parse any more atoms (either
         // we reached the end, a }, or a \right)
@@ -247,11 +225,8 @@ export default class Parser {
      *
      * There can only be one infix operator per group.  If there's more than one
      * then the expression is ambiguous.  This can be resolved by adding {}.
-     *
-     * @param {Array<ParseNode>} body
-     * @return {Array<ParseNode>}
      */
-    handleInfixNodes(body: ParseNode[]) {
+    handleInfixNodes(body: ParseNode[]): ParseNode[] {
         let overIndex = -1;
         let funcName;
 
@@ -299,10 +274,10 @@ export default class Parser {
 
     /**
      * Handle a subscript or superscript with nice errors.
-     * @param {string} name For error reporting.
-     * @return {ParsedNode}
      */
-    handleSupSubscript(name: string) {
+    handleSupSubscript(
+        name: string,   // For error reporting.
+    ): ParseNode {
         const symbolToken = this.nextToken;
         const symbol = symbolToken.text;
         this.consume();
@@ -333,7 +308,7 @@ export default class Parser {
                         "as " + name, symbolToken);
             }
         } else {
-            return group.result;
+            return arg.result;
         }
     }
 
@@ -341,7 +316,7 @@ export default class Parser {
      * Converts the textual input of an unsupported command into a text node
      * contained within a color node whose color is determined by errorColor
      */
-    handleUnsupportedCmd() {
+    handleUnsupportedCmd(): ParseNode {
         const text = this.nextToken.text;
         const textordArray = [];
 
@@ -372,11 +347,8 @@ export default class Parser {
 
     /**
      * Parses a group with optional super/subscripts.
-     *
-     * @param {"]" | "}"} breakOnTokenText - character to stop parsing the group on.
-     * @return {?ParseNode}
      */
-    parseAtom(breakOnTokenText?: "]" | "}" | "$") {
+    parseAtom(breakOnTokenText?: "]" | "}" | "$"): ?ParseNode {
         // The body of an atom is an implicit group, so that things like
         // \left(x\right)^2 work correctly.
         const base = this.parseImplicitGroup(breakOnTokenText);
@@ -493,9 +465,6 @@ export default class Parser {
      * implicit grouping after it until the end of the group. E.g.
      *   small text {\Large large text} small text again
      * It is also used for \left and \right to get the correct grouping.
-     *
-     * @param {"]" | "}"} breakOnTokenText - character to stop parsing the group on.
-     * @return {?ParseNode}
      */
     parseImplicitGroup(breakOnTokenText?: "]" | "}" | "$"): ?ParseNode {
         const start = this.parseSymbol();
@@ -634,8 +603,6 @@ export default class Parser {
     /**
      * Parses an entire function, including its base and all of its arguments.
      * It also handles the case where the parsed node is not a function.
-     *
-     * @return {?ParseNode}
      */
     parseFunction(): ?ParseNode {
         const baseGroup = this.parseGroup();
@@ -645,9 +612,6 @@ export default class Parser {
     /**
      * Same as parseFunction(), except that the base is provided, guaranteeing a
      * non-nullable result.
-     *
-     * @param {ParsedFuncOrArgOrDollar} baseGroup
-     * @return {ParseNode}
      */
     parseGivenFunction(baseGroup: ParsedFuncOrArgOrDollar): ParseNode {
         baseGroup = assertFuncOrArg(baseGroup);
@@ -682,7 +646,7 @@ export default class Parser {
         args: ParseNode[],
         optArgs: (?ParseNode)[],
         token?: Token,
-    ) {
+    ): * {
         const context: FunctionContext = {
             funcName: name,
             parser: this,
@@ -698,18 +662,11 @@ export default class Parser {
 
     /**
      * Parses the arguments of a function or environment
-     *
-     * @param {string} func  "\name" or "\begin{name}"
-     * @param {{
-     *   numArgs: number,
-     *   numOptionalArgs: (number|undefined),
-     * }} funcData
-     * @return {{
-     *   args: Array<ParseNode>,
-     *   optArgs: Array<?ParseNode>,
-     * }}
      */
-    parseArguments(func: string, funcData: FunctionSpec | EnvSpec): {
+    parseArguments(
+        func: string,   // Should look like "\name" or "\begin{name}".
+        funcData: FunctionSpec | EnvSpec,
+    ): {
         args: ParseNode[],
         optArgs: (?ParseNode)[],
     } {
@@ -782,7 +739,10 @@ export default class Parser {
     /**
      * Parses a group when the mode is changing.
      */
-    parseGroupOfType(type: ArgType, optional: boolean): ?ParsedFuncOrArgOrDollar {
+    parseGroupOfType(
+        type: ArgType,  // Used to describe the mode in error messages.
+        optional: boolean,
+    ): ?ParsedFuncOrArgOrDollar {
         // Handle `original` argTypes
         if (type === "original") {
             type = this.mode;
@@ -812,12 +772,11 @@ export default class Parser {
     /**
      * Parses a group, essentially returning the string formed by the
      * brace-enclosed tokens plus some position information.
-     *
-     * @param {string} modeName  Used to describe the mode in error messages
-     * @param {boolean=} optional  Whether the group is optional or required
-     * @return {?Token}
      */
-    parseStringGroup(modeName: ArgType, optional: boolean): ?Token {
+    parseStringGroup(
+        modeName: ArgType,  // Used to describe the mode in error messages.
+        optional: boolean,
+    ): ?Token {
         if (optional && this.nextToken.text !== "[") {
             return null;
         }
@@ -846,13 +805,9 @@ export default class Parser {
      * Parses a group, essentially returning the string formed by the
      * brace-enclosed tokens plus some position information, possibly
      * with nested braces.
-     *
-     * @param {string} modeName  Used to describe the mode in error messages
-     * @param {boolean=} optional  Whether the group is optional or required
-     * @return {?Token}
      */
     parseStringGroupWithBalancedBraces(
-        modeName: ArgType,
+        modeName: ArgType,  // Used to describe the mode in error messages.
         optional: boolean,
     ): ?Token {
         if (optional && this.nextToken.text !== "[") {
@@ -895,12 +850,11 @@ export default class Parser {
      * Parses a regex-delimited group: the largest sequence of tokens
      * whose concatenated strings match `regex`. Returns the string
      * formed by the tokens plus some position information.
-     *
-     * @param {RegExp} regex
-     * @param {string} modeName  Used to describe the mode in error messages
-     * @return {Token}
      */
-    parseRegexGroup(regex: RegExp, modeName: string): Token {
+    parseRegexGroup(
+        regex: RegExp,
+        modeName: string,   // Used to describe the mode in error messages.
+    ): Token {
         const outerMode = this.mode;
         this.mode = "text";
         const firstToken = this.nextToken;
@@ -924,7 +878,7 @@ export default class Parser {
     /**
      * Parses a color description.
      */
-    parseColorGroup(optional: boolean) {
+    parseColorGroup(optional: boolean): ?ParsedArg {
         const res = this.parseStringGroup("color", optional);
         if (!res) {
             return null;
@@ -939,7 +893,7 @@ export default class Parser {
     /**
      * Parses a url string.
      */
-    parseUrlGroup(optional: boolean) {
+    parseUrlGroup(optional: boolean): ?ParsedArg {
         const res = this.parseStringGroupWithBalancedBraces("url", optional);
         if (!res) {
             return null;
@@ -956,7 +910,7 @@ export default class Parser {
     /**
      * Parses a size specification, consisting of magnitude and unit.
      */
-    parseSizeGroup(optional: boolean) {
+    parseSizeGroup(optional: boolean): ?ParsedArg {
         let res;
         if (!optional && this.nextToken.text !== "{") {
             res = this.parseRegexGroup(
@@ -990,9 +944,6 @@ export default class Parser {
      * bracket-enclosed group.
      * If `mode` is present, switches to that mode while parsing the group,
      * and switches back after.
-     *
-     * @param {boolean=} optional  Whether the group is optional or required
-     * @return {?ParsedFuncOrArgOrDollar}
      */
     parseGroup(optional?: boolean, mode?: Mode): ?ParsedFuncOrArgOrDollar {
         const outerMode = this.mode;
@@ -1039,9 +990,7 @@ export default class Parser {
      * The result will simply replace multiple textord nodes with a single
      * character in each value by a single textord node having multiple
      * characters in its value.  The representation is still ASCII source.
-     *
-     * @param {Array.<ParseNode>} group  the nodes of this group,
-     *                                   list will be moified in place
+     * The group will be modified in place.
      */
     formLigatures(group: ParseNode[]) {
         let n = group.length - 1;
@@ -1051,19 +1000,16 @@ export default class Parser {
             if (v === "-" && group[i + 1].value === "-") {
                 if (i + 1 < n && group[i + 2].value === "-") {
                     group.splice(i, 3, new ParseNode(
-                        // $FlowFixMe: update ParseNode to accept a location
                         "textord", "---", "text", a, group[i + 2]));
                     n -= 2;
                 } else {
                     group.splice(i, 2, new ParseNode(
-                        // $FlowFixMe: update ParseNode to accept a location
                         "textord", "--", "text", a, group[i + 1]));
                     n -= 1;
                 }
             }
             if ((v === "'" || v === "`") && group[i + 1].value === v) {
                 group.splice(i, 2, new ParseNode(
-                    // $FlowFixMe: update ParseNode to accept a location
                     "textord", v + v, "text", a, group[i + 1]));
                 n -= 1;
             }
@@ -1073,8 +1019,6 @@ export default class Parser {
     /**
      * Parse a single symbol out of the string. Here, we handle both the functions
      * we have defined, as well as the single character symbols
-     *
-     * @return {?ParsedFuncOrArgOrDollar}
      */
     parseSymbol(): ?ParsedFuncOrArgOrDollar {
         const nucleus = this.nextToken;
