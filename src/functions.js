@@ -26,19 +26,7 @@ const defineFunction = function(
     _defineFunction({names, props, handler});
 };
 
-// A normal square root
-defineFunction(["\\sqrt"], {
-    numArgs: 1,
-    numOptionalArgs: 1,
-}, function(context, args, optArgs) {
-    const index = optArgs[0];
-    const body = args[0];
-    return {
-        type: "sqrt",
-        body: body,
-        index: index,
-    };
-});
+import "./functions/sqrt";
 
 import "./functions/color";
 
@@ -52,41 +40,7 @@ defineFunction(["\\color"], {
     argTypes: ["color"],
 }, null);
 
-// colorbox
-defineFunction(["\\colorbox"], {
-    numArgs: 2,
-    allowedInText: true,
-    greediness: 3,
-    argTypes: ["color", "text"],
-}, function(context, args) {
-    const color = args[0];
-    const body = args[1];
-    return {
-        type: "enclose",
-        label: context.funcName,
-        backgroundColor: color,
-        body: body,
-    };
-});
-
-// fcolorbox
-defineFunction(["\\fcolorbox"], {
-    numArgs: 3,
-    allowedInText: true,
-    greediness: 3,
-    argTypes: ["color", "color", "text"],
-}, function(context, args) {
-    const borderColor = args[0];
-    const backgroundColor = args[1];
-    const body = args[2];
-    return {
-        type: "enclose",
-        label: context.funcName,
-        backgroundColor: backgroundColor,
-        borderColor: borderColor,
-        body: body,
-    };
-});
+import "./functions/enclose";
 
 import "./functions/overline";
 
@@ -370,18 +324,6 @@ defineFunction([
     };
 });
 
-// enclose
-defineFunction(["\\cancel", "\\bcancel", "\\xcancel", "\\sout", "\\fbox"], {
-    numArgs: 1,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "enclose",
-        label: context.funcName,
-        body: body,
-    };
-});
-
 // Infix generalized fractions
 defineFunction(["\\over", "\\choose", "\\atop"], {
     numArgs: 0,
@@ -457,17 +399,7 @@ defineFunction(["\\raisebox"], {
     };
 });
 
-// \verb and \verb* are dealt with directly in Parser.js.
-// If we end up here, it's because of a failure to match the two delimiters
-// in the regex in Lexer.js.  LaTeX raises the following error when \verb is
-// terminated by end of line (or file).
-defineFunction(["\\verb"], {
-    numArgs: 0,
-    allowedInText: true,
-}, function(context) {
-    throw new ParseError(
-        "\\verb ended by end of line instead of matching delimiter");
-});
+import "./functions/verb";
 
 // Hyperlinks
 import "./functions/href";
