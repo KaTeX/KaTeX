@@ -39,11 +39,11 @@ defineFunction({
             }
         }
         buildCommon.tryCombineChars(body);
-        // tryCombinChars expects CombinableDomNode[] while makeSpan expects
-        // DomChildNode[].
-        // $FlowFixMe: CombinableDomNode[] is not compatible with DomChildNode[]
         return buildCommon.makeSpan(
             ["mord", "text"].concat(newOptions.sizingClasses(options)),
+            // tryCombinChars expects CombinableDomNode[] while makeSpan expects
+            // DomChildNode[].
+            // $FlowFixMe: CombinableDomNode[] is not compatible with DomChildNode[]
             body, newOptions);
     },
     mathmlBuilder(group, options) {
