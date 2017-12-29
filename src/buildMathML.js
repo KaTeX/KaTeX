@@ -31,7 +31,7 @@ export const makeText = function(text, mode) {
  * Returns the math variant as a string or null if none is required.
  */
 const getVariant = function(group, options) {
-    const font = options.font;
+    const font = options.fontFamily;
     if (!font) {
         return null;
     }
@@ -39,6 +39,8 @@ const getVariant = function(group, options) {
     const mode = group.mode;
     if (font === "mathit") {
         return "italic";
+    } else if (font === "boldsymbol") {
+        return "bold-italic";
     }
 
     let value = group.value;
@@ -52,7 +54,7 @@ const getVariant = function(group, options) {
 
     const fontName = buildCommon.fontMap[font].fontName;
     if (fontMetrics.getCharacterMetrics(value, fontName)) {
-        return buildCommon.fontMap[options.font].variant;
+        return buildCommon.fontMap[font].variant;
     }
 
     return null;
@@ -106,9 +108,14 @@ groupTypes.textord = function(group, options) {
     return node;
 };
 
-groupTypes.bin = function(group) {
+groupTypes.bin = function(group, options) {
     const node = new mathMLTree.MathNode(
         "mo", [makeText(group.value, group.mode)]);
+
+    const variant = getVariant(group, options);
+    if (variant === "bold-italic") {
+        node.setAttribute("mathvariant", variant);
+    }
 
     return node;
 };
@@ -191,9 +198,19 @@ groupTypes.supsub = function(group, options) {
     if (isBrace) {
         nodeType = (isOver ? "mover" : "munder");
     } else if (!group.value.sub) {
-        nodeType = "msup";
+        const base = group.value.base;
+        if (base && base.value.limits && options.style === Style.DISPLAY) {
+            nodeType = "mover";
+        } else {
+            nodeType = "msup";
+        }
     } else if (!group.value.sup) {
-        nodeType = "msub";
+        const base = group.value.base;
+        if (base && base.value.limits && options.style === Style.DISPLAY) {
+            nodeType = "munder";
+        } else {
+            nodeType = "msub";
+        }
     } else {
         const base = group.value.base;
         if (base && base.value.limits && options.style === Style.DISPLAY) {
@@ -261,7 +278,7 @@ groupTypes.spacing = function(group) {
 
 groupTypes.font = function(group, options) {
     const font = group.value.font;
-    return buildGroup(group.value.body, options.withFont(font));
+    return buildGroup(group.value.body, options.withFontFamily(font));
 };
 
 groupTypes.styling = function(group, options) {

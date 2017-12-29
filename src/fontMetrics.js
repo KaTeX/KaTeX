@@ -103,7 +103,6 @@ const extraCharacterMap = {
     'Ã': 'A',
     'Ä': 'A',
     'Å': 'A',
-    'Æ': 'A',
     'Ç': 'C',
     'È': 'E',
     'É': 'E',
@@ -120,21 +119,18 @@ const extraCharacterMap = {
     'Ô': 'O',
     'Õ': 'O',
     'Ö': 'O',
-    'Ø': 'O',
     'Ù': 'U',
     'Ú': 'U',
     'Û': 'U',
     'Ü': 'U',
     'Ý': 'Y',
     'Þ': 'o',
-    'ß': 'B',
     'à': 'a',
     'á': 'a',
     'â': 'a',
     'ã': 'a',
     'ä': 'a',
     'å': 'a',
-    'æ': 'a',
     'ç': 'c',
     'è': 'e',
     'é': 'e',
@@ -151,7 +147,6 @@ const extraCharacterMap = {
     'ô': 'o',
     'õ': 'o',
     'ö': 'o',
-    'ø': 'o',
     'ù': 'u',
     'ú': 'u',
     'û': 'u',
@@ -246,6 +241,9 @@ const getCharacterMetrics = function(
     character: string,
     font: string,
 ): ?CharacterMetrics {
+    if (!metricMap[font]) {
+        throw new Error(`Font metrics not found for font: ${font}.`);
+    }
     let ch = character.charCodeAt(0);
     if (character[0] in extraCharacterMap) {
         ch = extraCharacterMap[character[0]].charCodeAt(0);

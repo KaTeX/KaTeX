@@ -93,6 +93,22 @@ class MathNode {
 
         return markup;
     }
+
+    /**
+     * Converts the math node into a string, similar to innerText.
+     */
+    toText(): string {
+        if (this.type === "mspace") {
+            if (this.attributes.width === "0.16667em") {
+                return "\u2006";
+            } else {
+                // TODO: Use other space characters for different widths.
+                // https://github.com/Khan/KaTeX/issues/1036
+                return " ";
+            }
+        }
+        return this.children.map(child => child.toText()).join("");
+    }
 }
 
 /**
@@ -117,6 +133,13 @@ class TextNode {
      */
     toMarkup(): string {
         return utils.escape(this.text);
+    }
+
+    /**
+     * Converts the text node into a string (which is just the text iteself).
+     */
+    toText(): string {
+        return this.text;
     }
 }
 

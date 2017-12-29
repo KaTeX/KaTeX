@@ -1585,7 +1585,7 @@ describe("An HTML font tree-builder", function() {
 
     it("should render \\text{R} with the correct font", function() {
         const markup = katex.renderToString("\\text{R}");
-        expect(markup).toContain("<span class=\"mord mathrm\">R</span>");
+        expect(markup).toContain("<span class=\"mord\">R</span>");
     });
 
     it("should render \\textit{R} with the correct font", function() {
@@ -1600,24 +1600,41 @@ describe("An HTML font tree-builder", function() {
 
     it("should render \\text{R\\textit{S}T} with the correct fonts", function() {
         const markup = katex.renderToString("\\text{R\\textit{S}T}");
-        expect(markup).toContain("<span class=\"mord mathrm\">R</span>");
+        expect(markup).toContain("<span class=\"mord\">R</span>");
         expect(markup).toContain("<span class=\"mord textit\">S</span>");
-        expect(markup).toContain("<span class=\"mord mathrm\">T</span>");
+        expect(markup).toContain("<span class=\"mord\">T</span>");
     });
 
     it("should render \\textbf{R} with the correct font", function() {
         const markup = katex.renderToString("\\textbf{R}");
-        expect(markup).toContain("<span class=\"mord mathbf\">R</span>");
+        expect(markup).toContain("<span class=\"mord textbf\">R</span>");
     });
 
     it("should render \\textsf{R} with the correct font", function() {
         const markup = katex.renderToString("\\textsf{R}");
-        expect(markup).toContain("<span class=\"mord mathsf\">R</span>");
+        expect(markup).toContain("<span class=\"mord textsf\">R</span>");
+    });
+
+    it("should render \\textsf{\\textit{R}G\\textbf{B}} with the correct font", function() {
+        const markup = katex.renderToString("\\textsf{\\textit{R}G\\textbf{B}}");
+        expect(markup).toContain("<span class=\"mord textsf textit\">R</span>");
+        expect(markup).toContain("<span class=\"mord textsf\">G</span>");
+        expect(markup).toContain("<span class=\"mord textsf textbf\">B</span>");
+    });
+
+    it("should render \\textsf{\\textbf{$\\mathrm{A}$}} with the correct font", function() {
+        const markup = katex.renderToString("\\textsf{\\textbf{$\\mathrm{A}$}}");
+        expect(markup).toContain("<span class=\"mord mathrm\">A</span>");
+    });
+
+    it("should render \\textsf{\\textbf{$\\mathrm{\\textsf{A}}$}} with the correct font", function() {
+        const markup = katex.renderToString("\\textsf{\\textbf{$\\mathrm{\\textsf{A}}$}}");
+        expect(markup).toContain("<span class=\"mord textsf textbf\">A</span>");
     });
 
     it("should render \\texttt{R} with the correct font", function() {
         const markup = katex.renderToString("\\texttt{R}");
-        expect(markup).toContain("<span class=\"mord mathtt\">R</span>");
+        expect(markup).toContain("<span class=\"mord texttt\">R</span>");
     });
 
     it("should render a combination of font and color changes", function() {
@@ -2655,16 +2672,76 @@ describe("A macro expander", function() {
         expect("\\@ifnextchar!{yes}{no}?!").toParseLike("no?!");
     });
 
-    it("\\@firstoftwwo should consume star but nothing else", function() {
+    it("\\@ifstar should consume star but nothing else", function() {
         expect("\\@ifstar{yes}{no}*!").toParseLike("yes!");
         expect("\\@ifstar{yes}{no}?!").toParseLike("no?!");
     });
+
+    it("\\TextOrMath should work immediately", function() {
+        expect("\\TextOrMath{text}{math}").toParseLike("math");
+    });
+
+    it("\\TextOrMath should work after other math", function() {
+        expect("x+\\TextOrMath{text}{math}").toParseLike("x+math");
+    });
+
+    it("\\TextOrMath should work immediately after \\text", function() {
+        expect("\\text{\\TextOrMath{text}{math}}").toParseLike("\\text{text}");
+    });
+
+    it("\\TextOrMath should work later after \\text", function() {
+        expect("\\text{hello \\TextOrMath{text}{math}}")
+            .toParseLike("\\text{hello text}");
+    });
+
+    it("\\TextOrMath should work immediately after \\text ends", function() {
+        expect("\\text{\\TextOrMath{text}{math}}\\TextOrMath{text}{math}")
+            .toParseLike("\\text{text}math");
+    });
+
+    it("\\TextOrMath should work immediately after $", function() {
+        expect("\\text{$\\TextOrMath{text}{math}$}")
+            .toParseLike("\\text{$math$}");
+    });
+
+    it("\\TextOrMath should work later after $", function() {
+        expect("\\text{$x+\\TextOrMath{text}{math}$}")
+            .toParseLike("\\text{$x+math$}");
+    });
+
+    it("\\TextOrMath should work immediately after $ ends", function() {
+        expect("\\text{$\\TextOrMath{text}{math}$\\TextOrMath{text}{math}}")
+            .toParseLike("\\text{$math$text}");
+    });
+
+    it("\\TextOrMath should work in a macro", function() {
+        compareParseTree("\\mode\\text{\\mode$\\mode$\\mode}\\mode",
+            "math\\text{text$math$text}math",
+            {"\\mode": "\\TextOrMath{text}{math}"});
+    });
+
+    // TODO(edemaine): This doesn't work yet.  Parses like `\text math`,
+    // which doesn't even treat all four letters as an argument.
+    //it("\\TextOrMath should work in a macro passed to \\text", function() {
+    //    compareParseTree("\\text\\mode", "\\text{text}",
+    //        {"\\mode": "\\TextOrMath{text}{math}"});
+    //});
 
     // This may change in the future, if we support the extra features of
     // \hspace.
     it("should treat \\hspace, \\hspace*, \\hskip like \\kern", function() {
         expect("\\hspace{1em}").toParseLike("\\kern1em");
         expect("\\hspace*{1em}").toParseLike("\\kern1em");
+    });
+
+    it("should expand \\limsup as expected", () => {
+        expect("\\limsup")
+            .toParseLike("\\mathop{\\operatorname{lim\\,sup}}\\limits");
+    });
+
+    it("should expand \\liminf as expected", () => {
+        expect("\\liminf")
+            .toParseLike("\\mathop{\\operatorname{lim\\,inf}}\\limits");
     });
 });
 
@@ -2769,5 +2846,17 @@ describe("The \\mathchoice function", function() {
         const plain = getBuilt(`x_{y_{${cmd}}}`)[0];
         const built = getBuilt(`x_{y_{\\mathchoice{D}{T}{S}{${cmd}}}}`)[0];
         expect(built).toEqual(plain);
+    });
+});
+
+describe("Symbols", function() {
+    it("should parse \\text{\\i\\j}", () => {
+        expect("\\text{\\i\\j}").toParse();
+    });
+
+    it("should render ligature commands like their unicode characters", () => {
+        const commands = getBuilt("\\text{\\ae\\AE\\oe\\OE\\o\\O\\ss}");
+        const unicode = getBuilt("\\text{æÆœŒøØß}");
+        expect(commands).toEqual(unicode);
     });
 });

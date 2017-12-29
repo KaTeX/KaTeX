@@ -147,6 +147,7 @@ const fontAliases = {
     "\\Bbb": "\\mathbb",
     "\\bold": "\\mathbf",
     "\\frak": "\\mathfrak",
+    "\\bm": "\\boldsymbol",
 };
 
 const singleCharIntegrals: {[string]: string} = {
@@ -180,8 +181,7 @@ defineFunction([
 
 // Limits, not symbols
 defineFunction([
-    "\\det", "\\gcd", "\\inf", "\\lim", "\\liminf", "\\limsup", "\\max",
-    "\\min", "\\Pr", "\\sup",
+    "\\det", "\\gcd", "\\inf", "\\lim", "\\max", "\\min", "\\Pr", "\\sup",
 ], {
     numArgs: 0,
 }, function(context) {
@@ -244,14 +244,14 @@ defineFunction([
 
 defineFunction([
     // styles
-    "\\mathrm", "\\mathit", "\\mathbf",
+    "\\mathrm", "\\mathit", "\\mathbf", "\\boldsymbol",
 
     // families
     "\\mathbb", "\\mathcal", "\\mathfrak", "\\mathscr", "\\mathsf",
     "\\mathtt",
 
     // aliases
-    "\\Bbb", "\\bold", "\\frak",
+    "\\Bbb", "\\bold", "\\frak", "\\bm",
 ], {
     numArgs: 1,
     greediness: 2,

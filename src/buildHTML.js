@@ -591,7 +591,7 @@ groupTypes.styling = function(group, options) {
 
 groupTypes.font = function(group, options) {
     const font = group.value.font;
-    return buildGroup(group.value.body, options.withFont(font));
+    return buildGroup(group.value.body, options.withFontFamily(font));
 };
 
 groupTypes.verb = function(group, options) {
@@ -680,32 +680,43 @@ groupTypes.accent = function(group, options) {
     // Build the accent
     let accentBody;
     if (!group.value.isStretchy) {
-        const accent = buildCommon.makeSymbol(
-            group.value.label, "Main-Regular", group.mode, options);
+        let accent;
+        if (group.value.label === "\\vec") {
+            // Before version 0.9, \vec used the combining font glyph U+20D7.
+            // But browsers, especially Safari, are not consistent in how they
+            // render combining characters when not preceded by a character.
+            // So now we use an SVG.
+            // If Safari reforms, we should consider reverting to the glyph.
+            accent = buildCommon.staticSvg("vec", options);
+            accent.width = parseFloat(accent.style.width);
+        } else {
+            accent = buildCommon.makeSymbol(
+                group.value.label, "Main-Regular", group.mode, options);
+        }
         // Remove the italic correction of the accent, because it only serves to
         // shift the accent over to a place we don't want.
         accent.italic = 0;
 
-        // The \vec character that the fonts use is a combining character, and
-        // thus shows up much too far to the left. To account for this, we add a
-        // specific class which shifts the accent over to where we want it.
+        accentBody = makeSpan(["accent-body"], [accent]);
+
+        // CSS defines `.katex .accent .accent-body { width: 0 }`
+        // so that the accent doesn't contribute to the bounding box.
+        // We need to shift the character by its width (effectively half
+        // its width) to compensate.
+        let left = -accent.width / 2;
+
+        // Shift the accent over by the skew.
+        left += skew;
+
+        // The \H character that the fonts use is a combining character, and
+        // thus shows up much too far to the left. To account for this, we add
+        // a manual shift of the width of one space.
         // TODO(emily): Fix this in a better way, like by changing the font
-        // Similarly, text accent \H is a combining character and
-        // requires a different adjustment.
-        let accentClass = null;
-        if (group.value.label === "\\vec") {
-            accentClass = "accent-vec";
-        } else if (group.value.label === '\\H') {
-            accentClass = "accent-hungarian";
+        if (group.value.label === '\\H') {
+            left += 0.5;  // twice width of space, or width of accent
         }
 
-        accentBody = makeSpan([], [accent]);
-        accentBody = makeSpan(["accent-body", accentClass], [accentBody]);
-
-        // Shift the accent over by the skew. Note we shift by twice the skew
-        // because we are centering the accent, so by adding 2*skew to the left,
-        // we shift it to the right by 1*skew.
-        accentBody.style.marginLeft = 2 * skew + "em";
+        accentBody.style.left = left + "em";
 
         accentBody = buildCommon.makeVList({
             positionType: "firstBaseline",

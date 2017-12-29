@@ -64,6 +64,13 @@ $map{cmr10} = {
     0x7E => [0x303,-500,0], # \tilde (combining)
     0x7F => 0xA8,           # \ddot
     0x7F => [0x308,-500,0], # \ddot (combining)
+    0x19 => 0xDF,           # sharp S
+    0x1A => 0xE6,           # ae ligature
+    0x1B => 0x153,          # oe ligature
+    0x1C => 0xF8,           # o with slash
+    0x1D => 0xC6,           # AE ligature
+    0x1E => 0x152,          # OE ligature
+    0x1F => 0xD8,           # O with slash
   ],
 };
 
@@ -1001,6 +1008,94 @@ $map{cmtt10} = {
 $map{rsfs10} = {
   "Script-Regular" => [
     [0x41,0x5A] => 0x41,    # A-Z
+  ],
+};
+
+$map{cmssbx10} = {
+  "SansSerif-Bold" => [
+    [0,1] => 0x393,         # \Gamma, \Delta
+    2 => 0x398,             # \Theta
+    3 => 0x39B,             # \Lambda
+    4 => 0x39E,             # \Xi
+    5 => 0x3A0,             # \Pi
+    6 => 0x3A3,             # \Sigma
+    [7,8] => 0x3A5,         # \Upsilon, \Phi
+    [9,0xA] => 0x3A8,       # \Psi, \Omega
+
+    0x10 => 0x131,          # \imath (roman)
+    0x11 => 0x237,          # \jmath (roman)
+    0x12 => [0x300,-550,0], # \grave (combining)
+    0x13 => [0x301,-550,0], # \acute (combining)
+    0x14 => [0x30C,-550,0], # \check (combining)
+    0x15 => [0x306,-550,0], # \breve (combining)
+    0x16 => [0x304,-550,0], # \bar (combining)
+    0x17 => [0x30A,-608,0], # ring above (combining)
+
+    [0x21,0x2F] => 0x21,    # !, ", #, $, %, &, ', (, ), *, +, comma, -, ., /
+    0x22 => 0x201D,         # "
+    0x27 => 0x2019,         # '
+    [0x30,0x39] => 0x30,    # 0-9
+    [0x3A,0x3B] => 0x3A,    # :, ;
+    0x3D => 0x3D,           # =
+    [0x3F,0x40] => 0x3F,    # ?, @
+    [0x41,0x5A] => 0x41,    # A-Z
+    0x5B => 0x5B,           # [
+    0x5C => 0x201C,         # ``
+    [0x5D,0x5E] => 0x5D,    # ], ^
+    0x5E => [0x302,-550,0], # \hat (combining)
+    0x5F => [0x307,-428,0], # \dot (combining)
+    0x60 => 0x2018,         # `
+    [0x61,0x7A] => 0x61,    # a-z
+    [0x7B,0x7C] => 0x2013,  # \endash, \emdash
+    0x7B => [0x5F,0,-350],  # underline
+    0x7D => [0x30B,-550,0], # double acute (combining)
+    0x7E => [0x7E,0,-350],  # ~
+    0x7E => [0x303,-550,0], # \tilde (combining)
+    0x7F => [0x308,-550,0], # \ddot (combining)
+  ],
+};
+
+$map{cmssi10} = {
+  "SansSerif-Italic" => [
+    [0,1] => 0x393,         # \Gamma, \Delta
+    2 => 0x398,             # \Theta
+    3 => 0x39B,             # \Lambda
+    4 => 0x39E,             # \Xi
+    5 => 0x3A0,             # \Pi
+    6 => 0x3A3,             # \Sigma
+    [7,8] => 0x3A5,         # \Upsilon, \Phi
+    [9,0xA] => 0x3A8,       # \Psi, \Omega
+
+    0x10 => 0x131,          # \imath (roman)
+    0x11 => 0x237,          # \jmath (roman)
+    0x12 => [0x300,-500,0], # \grave (combining)
+    0x13 => [0x301,-500,0], # \acute (combining)
+    0x14 => [0x30C,-500,0], # \check (combining)
+    0x15 => [0x306,-500,0], # \breve (combining)
+    0x16 => [0x304,-500,0], # \bar (combining)
+    0x17 => [0x30A,-613,0], # ring above (combining)
+
+    [0x21,0x2F] => 0x21,    # !, ", #, $, %, &, ', (, ), *, +, comma, -, ., /
+    0x22 => 0x201D,         # "
+    0x27 => 0x2019,         # '
+    [0x30,0x39] => 0x30,    # 0-9
+    [0x3A,0x3B] => 0x3A,    # :, ;
+    0x3D => 0x3D,           # =
+    [0x3F,0x40] => 0x3F,    # ?, @
+    [0x41,0x5A] => 0x41,    # A-Z
+    0x5B => 0x5B,           # [
+    0x5C => 0x201C,         # ``
+    [0x5D,0x5E] => 0x5D,    # ], ^
+    0x5E => [0x302,-500,0], # \hat (combining)
+    0x5F => [0x307,-389,0], # \dot (combining)
+    0x60 => 0x2018,         # `
+    [0x61,0x7A] => 0x61,    # a-z
+    [0x7B,0x7C] => 0x2013,  # \endash, \emdash
+    0x7B => [0x5F,0,-350],  # underline
+    0x7D => [0x30B,-500,0], # double acute (combining)
+    0x7E => [0x7E,0,-350],  # ~
+    0x7E => [0x303,-500,0], # \tilde (combining)
+    0x7F => [0x308,-500,0], # \ddot (combining)
   ],
 };
 

@@ -14,8 +14,8 @@
 Accents: \vec{A}\vec{x}\vec x^2\vec{x}_2^2\vec{A}^2\vec{xA}^2
 AccentsText: |
     \begin{array}{l}
-    \text{\H{e}}\\
-    \text{\H{X}}\\
+    \text{\H{e}} & \text{\'\i} \\
+    \text{\H{X}} & \text{\"\i} \\
     \end{array}
 Aligned: |
     \begin{aligned}
@@ -57,6 +57,7 @@ BinCancellation: |
     \end{array}
 BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}
 BoldSpacing: \mathbf{A}^2+\mathbf{B}_3*\mathscr{C}'
+BoldSymbol: \sum_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\omega}+ \int_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\Omega}+\boldsymbol{Ax2k\omega\Omega\imath+}
 Boxed: \boxed{F=ma} \quad \boxed{ac}\color{magenta}{\boxed{F}}\boxed{F=mg}
 Cases: |
     f(a,b)=\begin{cases}
@@ -200,8 +201,11 @@ OperatorName: |
         \operatorname{Gam ma}(z) + \operatorname{\Gamma}(z) + \operatorname{}x
     \end{matrix}
 OpLimits: |
-    {\sin_2^2 \lim_2^2 \int_2^2 \sum_2^2}
-    {\displaystyle \lim_2^2 \int_2^2 \intop_2^2 \sum_2^2}
+    \begin{matrix}
+        {\sin_2^2 \lim_2^2 \int_2^2 \sum_2^2}
+        {\displaystyle \lim_2^2 \int_2^2 \intop_2^2 \sum_2^2} \\
+        \limsup_{x \rightarrow \infty} x \stackrel{?}= \liminf_{x \rightarrow \infty} x
+    \end{matrix}
 OverUnderline: x\underline{x}\underline{\underline{x}}\underline{x_{x_{x_x}}}\underline{x^{x^{x^x}}}\overline{x}\overline{x}\overline{x^{x^{x^x}}} \blue{\overline{\underline{x}}\underline{\overline{x}}}
 OverUnderset: |
     \begin{array}{l}
@@ -273,6 +277,13 @@ Symbols1: |
     \maltese\degree\pounds\$
     \text{\maltese\degree\pounds\textdollar}
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
+TextStacked: 
+  \begin{matrix}
+      \textsf{abc123 \textbf{abc123} \textit{abc123}}\\
+      \text{abc123 \textbf{abc123} \textit{abc123}}\\
+      \textrm{abc123 \textbf{abc123} \textit{abc123}}\\
+      \textsf{\textrm{\textbf{abc123}} \textbf{abc123} \textit{abc123}}\\
+  \end{matrix}
 TextWithMath: \text{for $a < b$ and $ c < d $}.
 Unicode: \begin{matrix}\text{ÀàÇçÉéÏïÖöÛû} \\ \text{БГДЖЗЙЛФЦШЫЮЯ} \\ \text{여보세요} \\ \text{私はバナナです} \end{matrix}
 Units: |

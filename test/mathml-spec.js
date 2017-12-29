@@ -51,6 +51,19 @@ describe("A MathML builder", function() {
         expect(getMathML("\\textstyle\\sum_a^b")).toMatchSnapshot();
     });
 
+    it("should output \\limsup_{x \\rightarrow \\infty} correctly in " +
+            "\\textstyle", () => {
+        const mathml = getMathML("\\limsup_{x \\rightarrow \\infty}");
+        expect(mathml).toMatchSnapshot();
+    });
+
+    it("should output \\limsup_{x \\rightarrow \\infty} in " +
+            "displaymode correctly", () => {
+        const settings = new Settings({displayMode: true});
+        const mathml = getMathML("\\limsup_{x \\rightarrow \\infty}", settings);
+        expect(mathml).toMatchSnapshot();
+    });
+
     it('should use <mpadded> for raisebox', () => {
         expect(getMathML("\\raisebox{0.25em}{b}")).toMatchSnapshot();
     });
@@ -73,6 +86,11 @@ describe("A MathML builder", function() {
         expect(getMathML(`x_{\\mathchoice{D}{T}{${cmd}}{SS}}`))
             .toMatchSnapshot();
         expect(getMathML(`x_{y_{\\mathchoice{D}{T}{S}{${cmd}}}}`))
+            .toMatchSnapshot();
+    });
+
+    it("should render boldsymbol with the correct mathvariants", () => {
+        expect(getMathML(`\\boldsymbol{Ax2k\\omega\\Omega\\imath+}`))
             .toMatchSnapshot();
     });
 });

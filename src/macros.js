@@ -52,11 +52,23 @@ function defineMacro(name: string, body: MacroDefinition) {
 //////////////////////////////////////////////////////////////////////
 // macro tools
 
+// LaTeX's \@firstoftwo{#1}{#2} expands to #1, skipping #2
+// TeX source: \long\def\@firstoftwo#1#2{#1}
 defineMacro("\\@firstoftwo", function(context) {
     const args = context.consumeArgs(2);
     return {tokens: args[0], numArgs: 0};
 });
 
+// LaTeX's \@secondoftwo{#1}{#2} expands to #2, skipping #1
+// TeX source: \long\def\@secondoftwo#1#2{#2}
+defineMacro("\\@secondoftwo", function(context) {
+    const args = context.consumeArgs(2);
+    return {tokens: args[1], numArgs: 0};
+});
+
+// LaTeX's \@ifnextchar{#1}{#2}{#3} looks ahead to the next (unexpanded)
+// symbol.  If it matches #1, then the macro expands to #2; otherwise, #3.
+// Note, however, that it does not consume the next symbol in either case.
 defineMacro("\\@ifnextchar", function(context) {
     const args = context.consumeArgs(3);  // symbol, if, else
     const nextToken = context.future();
@@ -67,8 +79,21 @@ defineMacro("\\@ifnextchar", function(context) {
     }
 });
 
-// \def\@ifstar#1{\@ifnextchar *{\@firstoftwo{#1}}}
+// LaTeX's \@ifstar{#1}{#2} looks ahead to the next (unexpanded) symbol.
+// If it is `*`, then it consumes the symbol, and the macro expands to #1;
+// otherwise, the macro expands to #2 (without consuming the symbol).
+// TeX source: \def\@ifstar#1{\@ifnextchar *{\@firstoftwo{#1}}}
 defineMacro("\\@ifstar", "\\@ifnextchar *{\\@firstoftwo{#1}}");
+
+// LaTeX's \TextOrMath{#1}{#2} expands to #1 in text mode, #2 in math mode
+defineMacro("\\TextOrMath", function(context) {
+    const args = context.consumeArgs(2);
+    if (context.mode === 'text') {
+        return {tokens: args[0], numArgs: 0};
+    } else {
+        return {tokens: args[1], numArgs: 0};
+    }
+});
 
 //////////////////////////////////////////////////////////////////////
 // basics
@@ -374,3 +399,5 @@ defineMacro("\\approxcoloncolon",
 //       macro turned into a propper defineSymbol in symbols.js. That way, the
 //       MathML result will be much cleaner.
 defineMacro("\\notni", "\\not\\ni");
+defineMacro("\\limsup", "\\DOTSB\\mathop{\\operatorname{lim\\,sup}}\\limits");
+defineMacro("\\liminf", "\\DOTSB\\mathop{\\operatorname{lim\\,inf}}\\limits");

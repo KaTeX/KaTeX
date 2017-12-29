@@ -57,22 +57,48 @@
         display: inline-block;
     }
 
-    .mathrm {
-        font-style: normal;
+    // Text font weights
+    .textbf {
+        font-weight: bold;
     }
 
+    // Text font shapes.
     .textit {
         font-style: italic;
     }
 
+    // Text font families.
+    .textrm {
+        font-family: KaTeX_Main;
+    }
+
+    .textsf {
+        font-family: KaTeX_SansSerif;
+    }
+
+    .texttt {
+        font-family: KaTeX_Typewriter;
+    }
+
+    // Math fonts.
     .mathit {
         font-family: KaTeX_Math;
         font-style: italic;
     }
 
+    .mathrm {
+        font-style: normal;
+    }
+
     .mathbf {
         font-family: KaTeX_Main;
         font-weight: bold;
+    }
+
+    .boldsymbol {
+        font-family: KaTeX_Math;
+        font-weight: bold;
+        font-style: italic;
     }
 
     .amsrm {
@@ -301,26 +327,6 @@
         }
     }
 
-    // Set a min-height for some horizontal lines so their display
-    // will show at least one screen pixel.
-    @media screen {
-        .mfrac .frac-line,
-        .overline .overline-line,
-        .underline .underline-line {
-            min-height: 1px;
-        }
-    }
-
-    // Modify min-height for retina displays. Don't force two screen pixels.
-    @media screen and (-webkit-min-device-pixel-ratio: 2.0),
-        screen and (min-resolution: 192dpi) {
-        .mfrac .frac-line,
-        .overline .overline-line,
-        .underline .underline-line {
-            min-height: 0.5px;
-        }
-    }
-
     .mspace {
         display: inline-block;
 
@@ -400,26 +406,6 @@
     .clap > .inner  > span {
         margin-left: -50%;
         margin-right: 50%;
-    }
-
-    .katex-logo {
-        .a {
-            font-size: 0.75em;
-            margin-left: -0.32em;
-            position: relative;
-            top: -0.2em;
-        }
-        .t {
-            margin-left: -0.23em;
-        }
-        .e {
-            margin-left: -0.1667em;
-            position: relative;
-            top: 0.2155em;
-        }
-        .x {
-            margin-left: -0.125em;
-        }
     }
 
     .rule {
@@ -528,40 +514,22 @@
             text-align: center;
         }
 
-        .accent-body > span {
+        .accent-body {
             width: 0;
+            position: relative; // so that 'left' can shift the accent
         }
+    }
 
-        .accent-body.accent-vec > span {
-            position: relative;
-            // This value is half of the value that the MathJax's makeFF shifts
-            // it left. We center it by shifting it half way right again.
-            left: 0.326em;
-        }
-
-        .accent-body.accent-hungarian > span {
-            position: relative;
-            left: 0.250em; // width of space
-        }
+    .overlay {
+        display: block;
     }
 
     .mtable {
         .vertical-separator {
             display: inline-block;
-            margin: 0 -0.025em;
-            width: 0.05em;
-
-            // Set a min-width so it will display at least one screen pixel.
-            @media screen {
-                min-width: 1px;
-            }
-
-            // Modify min-width for retina displays. Don't force two screen pixels.
-            @media screen and (-webkit-min-device-pixel-ratio: 2.0),
-                screen and (min-resolution: 192dpi) {
-                min-width: 0.5px;
-            }
-        }
+            margin: 0 -0.125em;     // The ink in the rule is actually 0.05em wide.
+            width: 0.25em;          // We put it in a 0.25em wide span to overcome
+        }                           // a Chrome rendering issue.
 
         .arraycolsep {
             display: inline-block;
@@ -596,6 +564,10 @@
         line {
             stroke: currentColor;
         }
+    }
+
+    .vertical-separator svg {
+        width: 0.25em;
     }
 
     // Define CSS for image whose width will match its span width.
