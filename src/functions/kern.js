@@ -48,7 +48,7 @@ defineFunction({
 
         if (group.value.dimension) {
             const dimension = calculateSize(group.value.dimension, options);
-            rule.style.marginLeft = dimension + "em";
+            rule.style.marginRight = dimension + "em";
         }
 
         return rule;
