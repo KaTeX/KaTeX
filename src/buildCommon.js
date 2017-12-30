@@ -318,8 +318,9 @@ const makeSpan = function(
     classes?: string[],
     children?: DomChildNode[],
     options?: Options,
+    style?: {[name: string]: string},
 ): domTree.span {
-    const span = new domTree.span(classes, children, options);
+    const span = new domTree.span(classes, children, options, style);
 
     sizeElementFromChildren(span);
 
@@ -392,6 +393,7 @@ type VListElem = {|
     marginLeft?: string,
     marginRight?: string,
     wrapperClasses?: string[],
+    wrapperStyle?: {[name: string]: string},
 |};
 type VListElemAndShift = {|
     type: "elem",
@@ -400,6 +402,7 @@ type VListElemAndShift = {|
     marginLeft?: string,
     marginRight?: string,
     wrapperClasses?: string[],
+    wrapperStyle?: {[name: string]: string},
 |};
 type VListKern = {| type: "kern", size: number |};
 
@@ -530,8 +533,9 @@ const makeVList = function(params: VListParam, options: Options): domTree.span {
         } else {
             const elem = child.elem;
             const classes = child.wrapperClasses || [];
+            const style = child.wrapperStyle || {};
 
-            const childWrap = makeSpan(classes, [pstrut, elem]);
+            const childWrap = makeSpan(classes, [pstrut, elem], undefined, style);
             childWrap.style.top = (-pstrutSize - currPos - elem.depth) + "em";
             if (child.marginLeft) {
                 childWrap.style.marginLeft = child.marginLeft;

@@ -1,7 +1,6 @@
 // @flow
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import domTree from "../domTree";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
@@ -127,19 +126,19 @@ const htmlBuilder = (group, options) => {
             positionType: "firstBaseline",
             children: [
                 {type: "elem", elem: body},
-                {type: "elem", elem: accentBody},
+                {
+                    type: "elem",
+                    elem: accentBody,
+                    wrapperClasses: ["svg-align"],
+                    wrapperStyle: skew > 0
+                        ? {
+                            width: `calc(100% - ${2 * skew}em)`,
+                            marginLeft: `${(2 * skew)}em`,
+                        }
+                        : undefined,
+                },
             ],
         }, options);
-
-        // TODO: pass "svg-align" to stretchy.svgSpan
-        const styleSpan: domTree.span =
-            (accentBody: any).children[0].children[0].children[1];
-        styleSpan.classes.push("svg-align");  // text-align: left;
-        if (skew > 0) {
-            // Shorten the accent and nudge it to the right.
-            styleSpan.style.width = `calc(100% - ${2 * skew}em)`;
-            styleSpan.style.marginLeft = (2 * skew) + "em";
-        }
     }
 
     const accentWrap =

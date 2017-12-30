@@ -37,14 +37,11 @@ defineFunction({
             positionType: "bottom",
             positionData: accentBody.height + kern,
             children: [
-                {type: "elem", elem: accentBody},
+                {type: "elem", elem: accentBody, wrapperClasses: ["svg-align"]},
                 {type: "kern", size: kern},
                 {type: "elem", elem: innerGroup},
             ],
         }, options);
-
-        // TODO: pass "svg-align" to stretchy.svgSpan
-        (vlist: any).children[0].children[0].children[0].classes.push("svg-align");
 
         return buildCommon.makeSpan(["mord", "accentunder"], [vlist], options);
     },

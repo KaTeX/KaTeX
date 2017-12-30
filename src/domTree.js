@@ -68,13 +68,14 @@ class span implements CombinableDomNode {
         classes?: string[],
         children?: DomChildNode[],
         options?: Options,
+        style?: {[string]: string},
     ) {
         this.classes = classes || [];
         this.children = children || [];
         this.height = 0;
         this.depth = 0;
         this.maxFontSize = 0;
-        this.style = {};
+        this.style = style || {};
         this.attributes = {};
         if (options) {
             if (options.style.isTight()) {
