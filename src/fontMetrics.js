@@ -89,7 +89,7 @@ const sigmasAndXis = {
 import metricMap from "./fontMetricsData";
 
 // These are very rough approximations.  We default to Times New Roman which
-// should have Latin-1 and Cyrillic characters, but may not depending on the
+// should have Latin-1 and Cyrillic characters, but may not depend on the
 // operating system.  The metrics do not account for extra height from the
 // accents.  In the case of Cyrillic characters which have both ascenders and
 // descenders we prefer approximations with ascenders, primarily to prevent
@@ -171,6 +171,9 @@ const extraCharacterMap = {
     'э': 'e',
     'ю': 'm',
     'я': 'r',
+    '¶': 'P',
+    '§': 'S',
+    '©': 'C',
 };
 
 export type CharacterMetrics = {
