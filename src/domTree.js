@@ -8,7 +8,7 @@
  *
  * Similar functions for working with MathML nodes exist in mathMLTree.js.
  */
-import {cjkRegex, hangulRegex} from "./unicodeRegexes";
+import { scriptFromCodepoint } from "./unicodeScripts";
 import utils from "./utils";
 import svgGeometry from "./svgGeometry";
 import type Options from "./Options";
@@ -408,19 +408,16 @@ class symbolNode implements CombinableDomNode {
         this.style = style || {};
         this.maxFontSize = 0;
 
-        // Mark CJK characters with specific classes so that we can specify which
-        // fonts to use.  This allows us to render these characters with a serif
-        // font in situations where the browser would either default to a sans serif
-        // or render a placeholder character.
-        if (cjkRegex.test(this.value)) {
-            // I couldn't find any fonts that contained Hangul as well as all of
-            // the other characters we wanted to test there for it gets its own
-            // CSS class.
-            if (hangulRegex.test(this.value)) {
-                this.classes.push('hangul_fallback');
-            } else {
-                this.classes.push('cjk_fallback');
-            }
+        // Mark text from non-Latin scripts with specific classes so that we
+        // can specify which fonts to use.  This allows us to render these
+        // characters with a serif font in situations where the browser would
+        // either default to a sans serif or render a placeholder character.
+        // We use CSS class names like cjk_fallback, hangul_fallback and
+        // brahmic_fallback. See ./unicodeScripts.js for the set of possible
+        // script names
+        const script = scriptFromCodepoint(this.value.charCodeAt(0));
+        if (script) {
+            this.classes.push(script + "_fallback");
         }
 
         if (/[îïíì]/.test(this.value)) {    // add ī when we add Extended Latin
