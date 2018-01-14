@@ -1,5 +1,5 @@
 // @flow
-import { cjkRegex } from "./unicodeRegexes";
+import { supportedCodepoint } from "./unicodeScripts";
 
 /**
  * This file contains metrics regarding fonts and individual symbols. The sigma
@@ -198,10 +198,21 @@ const getCharacterMetrics = function(
     let ch = character.charCodeAt(0);
     if (character[0] in extraCharacterMap) {
         ch = extraCharacterMap[character[0]].charCodeAt(0);
-    } else if (cjkRegex.test(character[0])) {
-        ch = 'M'.charCodeAt(0);
     }
-    const metrics = metricMap[font]['' + ch];
+    let metrics = metricMap[font][ch];
+
+    if (!metrics) {
+        // We don't typically have font metrics for Asian scripts.
+        // So if the character is in a script we support but we
+        // dont have metrics for it, just use the metrics for
+        // the Latin capital letter M. This is close enough because
+        // we (currently) only care about the height of the glpyh
+        // not its width.
+        if (supportedCodepoint(ch)) {
+            metrics = metricMap[font][77]; // 77 is the charcode for 'M'
+        }
+    }
+
     if (metrics) {
         return {
             depth: metrics[0],
