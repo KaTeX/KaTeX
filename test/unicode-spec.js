@@ -6,6 +6,7 @@
 import ParseError from "../src/ParseError";
 import parseTree from "../src/parseTree";
 import Settings from "../src/Settings";
+import {scriptFromCodepoint, supportedCodepoint} from "../src/unicodeScripts";
 
 const defaultSettings = new Settings({});
 
@@ -100,5 +101,47 @@ describe("unicode", function() {
     it("should not parse CJK outside \\text{}", function() {
         expect('私はバナナです。').toNotParse();
         expect('여보세요').toNotParse();
+    });
+
+    it("should parse Devangari inside \\text{}", function() {
+        expect('\\text{नमस्ते}').toParse();
+    });
+
+    it("should not parse Devangari outside \\text{}", function() {
+        expect('नमस्ते').toNotParse();
+    });
+});
+
+describe("unicodeScripts", () => {
+    const cjkRE = /[\u3000-\u30FF\u4E00-\u9FAF\uFF00-\uFF60]/;
+    const hangulRE = /[\uAC00-\uD7AF]/;
+    const brahmicRE = /[\u0900-\u109F]/;
+    const allRE =
+        /[\u3000-\u30FF\u4E00-\u9FAF\uFF00-\uFF60\uAC00-\uD7AF\u0900-\u109F]/;
+
+    it("supportedCodepoint() should return the correct values", () => {
+        for (let codepoint = 0; codepoint <= 0xffff; codepoint++) {
+            expect(supportedCodepoint(codepoint)).toBe(
+                allRE.test(String.fromCharCode(codepoint))
+            );
+        }
+    });
+
+    it("scriptFromCodepoint() should return correct values", () => {
+        for (let codepoint = 0; codepoint <= 0xffff; codepoint++) {
+            const character = String.fromCharCode(codepoint);
+            const script = scriptFromCodepoint(codepoint);
+
+            if (cjkRE.test(character)) {
+                expect(script).toEqual('cjk');
+            } else if (hangulRE.test(character)) {
+                expect(script).toEqual('hangul');
+            } else if (brahmicRE.test(character)) {
+                expect(script).toEqual('brahmic');
+            } else {
+                expect(script).toBe(null);
+                expect(supportedCodepoint(codepoint)).toBe(false);
+            }
+        }
     });
 });

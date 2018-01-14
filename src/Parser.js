@@ -7,7 +7,7 @@ import MacroExpander from "./MacroExpander";
 import symbols from "./symbols";
 import utils from "./utils";
 import { validUnit } from "./units";
-import { cjkRegex } from "./unicodeRegexes";
+import { supportedCodepoint } from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
 import ParseNode from "./ParseNode";
@@ -1072,7 +1072,8 @@ export default class Parser {
         if (symbols[this.mode][text]) {
             symbol = new ParseNode(symbols[this.mode][text].group,
                             text, this.mode, nucleus);
-        } else if (this.mode === "text" && cjkRegex.test(text)) {
+        } else if (this.mode === "text" &&
+                   supportedCodepoint(text.charCodeAt(0))) {
             symbol = new ParseNode("textord", text, this.mode, nucleus);
         } else {
             return null;  // EOF, ^, _, {, }, etc.
