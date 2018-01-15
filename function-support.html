@@ -6,9 +6,9 @@
     <title>Function Support in KaTeX</title>
     <link rel="icon" href="http://khan.github.io/favicon.ico">
 
-	<link rel="stylesheet" href="https://unpkg.com/katex@0.9.0-alpha2/dist/katex.min.css">
-	<script src="https://unpkg.com/katex@0.9.0-alpha2/dist/katex.min.js"></script>
-	<script src="https://unpkg.com/katex@0.9.0-alpha2/dist/contrib/auto-render.min.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/katex@0.9.0-beta/dist/katex.min.css">
+	<script src="https://unpkg.com/katex@0.9.0-beta/dist/katex.min.js"></script>
+	<script src="https://unpkg.com/katex@0.9.0-beta/dist/contrib/auto-render.min.js"></script>
 
 <style type="text/css">
 * { margin:0; padding:0; }  /* reset */
@@ -178,8 +178,22 @@ code {
   color: inherit;
 }
 
-#toc li ul         { display: none; }      /* default is closed */
-#toc li.li-open ul { display: block; }     /* opened by a click */
+#toc input[type=checkbox] {
+	/* hide native checkbox */
+	position: absolute;
+	opacity: 0;
+}
+
+#toc ul {
+	display: none;     /* by default hide all sub menus */
+}
+#toc label::after {
+   content: ' ▼';
+   font-size: 60%;
+}
+#toc input[type=checkbox]:checked + label + ul {
+	display: block;   /* show children when item is checked */
+}
 
 
 /* Table of Contents, mobile version */
@@ -325,7 +339,7 @@ code {
 		</tr>
 	</table>
 	
-	<h4>Accents inside \text{…}</h4>
+	<h4>Accent functions inside \text{…}</h4>
 
 	<table class="symbol">
 		<tr>
@@ -765,7 +779,56 @@ code {
 		</tr>
 	</table>
 	
-    <p class="indented"><code>\text{…}</code> will accept characters from <a href="http://www.unicode.org/charts/PDF/U0080.pdf">Latin-1</a>, <a href="http://unicode.org/charts/PDF/U0400.pdf">Cyrillic</a>, or CJK (Hiragana, Katakana, CJK ideograms, Hangul, <a href="https://en.wiktionary.org/wiki/Appendix:Unicode/CJK_Symbols_and_Punctuation">punctuation</a>, and <a href="https://en.wiktionary.org/wiki/Appendix:Unicode/Halfwidth_and_Fullwidth_Forms">full width punctuation</a>).</p>
+<h3 id="letters-in-text">Letters inside \text{}</h3>
+		<p><code>\text{…}</code> will accept the functions: <code>\ae</code>, <code>\AE</code>, <code>\oe</code>, <code>\OE</code>, <code>\o</code>, <code>\O</code>, <code>\ss</code>, <code>\i</code>, <code>\j</code>.</p>
+
+	<p><code>\text{…}</code> will also accept Unicode characters from:</p>
+
+	<table class="grid">
+		<thead>
+		<tr>
+			<th>Script</th>   <th>Unicode Range</th>   <th>Script</th>   <th>Unicode Range</th>
+		</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Latin-1</td><td>0080 – 00FF</td>    <td>Sinhala</td><td>0D80 – 0DFF</td>
+			</tr>
+			<tr>
+				<td>Cyrillic</td><td>0400 – 04FF</td>   <td>Thai</td><td>0E00 – 0E7F</td>
+			</tr>
+			<tr>
+				<td>Devanagari</td><td>0900 – 097F</td>   <td>Lao</td><td>0E80 – 0EFF</td>
+			</tr>
+			<tr>
+				<td>Bengali</td><td>0980 – 09FF</td>   <td>Tibetan</td><td>0F00 – 0FFF</td>
+			</tr>
+			<tr>
+				<td>Gurmukhi</td><td>0A00 – 0A7F</td>
+				<td>CJK symbols and punctuation</td><td>3000 – 303F</td>
+			</tr>
+			<tr>
+				<td>Gujarati</td><td>0A80 – 0AFF</td>   <td>Hiragana</td><td>3040 – 309F</td>
+			</tr>
+			<tr>
+				<td>Oriya</td><td>0B00 – 0B7F</td>   <td>Katakana</td><td>30A0 – 30FF</td>
+			</tr>
+			<tr>
+				<td>Tamil</td><td>0B80 – 0BFF</td>   <td>CJK ideograms</td><td>4E00 – 9FAF</td>
+			</tr>
+			<tr>
+				<td>Telugu</td><td>0C00 – 0C7F</td>   <td>Hangul</td><td>AC00 – D7AF</td>
+			</tr>
+			<tr>
+				<td>Kannada</td><td>0C80 – 0CFF</td>   <td>Full width punctuation</td><td>FF00 – FF60</td>
+			</tr>
+			<tr>
+				<td>Malayalam</td><td style="white-space: nowrap">0D00 – 0D7F</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<br>
 
 <h2 id="annotation">Annotation</h2>
 
@@ -821,7 +884,7 @@ code {
 		</tr>
     </table>
 	
-	<p class="indented">KaTeX also supports <code>\llap</code>, <code>\rlap</code>, and <code>\clap</code>, which display letters in <code>textrm</code>.</p>
+	<p class="indented">KaTeX also supports <code>\llap</code>, <code>\rlap</code>, and <code>\clap</code>, but they will take only text, not math, as arguments.</p>
 
 <h3 id="spacing">Spacing</h3>
 
@@ -844,50 +907,50 @@ code {
             <tr>
                 <td>\,</td>
 				<td>³∕₁₈ em space</td>
-				<td>\hspace{<em>distance</em>}</td>
+                <td>\mkern{<em>distance</em>}</td>
                 <td>space, width = <em>distance</em></td>
             </tr>
 			<tr>
 				<td>\thinspace</td>
 				<td>³∕₁₈ em space</td>
-				<td>\hspace*{<em>distance</em>}</td>
+                <td>\skip{<em>distance</em>}</td>
                 <td>space, width = <em>distance</em></td>
 			</tr>
             <tr>
                 <td>\:</td>
 				<td>⁴∕₁₈ em space</td>
-                <td>\phantom{<em>content</em>}</td>
-                <td style="white-space: nowrap">space the width and height of <em>content</em></td>
+                <td>\mskip{<em>distance</em>}</td>
+                <td>space, width = <em>distance</em></td>
             </tr>
 			<tr>
 				<td>\medspace</td>
 				<td>⁴∕₁₈ em space</td>
-                <td>\hphantom{<em>content</em>}</td>
-                <td>space the width of <em>content</em></td>
+				<td>\hspace{<em>distance</em>}</td>
+                <td>space, width = <em>distance</em></td>
 			</tr>
             <tr>
                 <td>\;</td>
 				<td>⁵∕₁₈ em space</td>
-                <td>\vphantom{<em>content</em>}</td>
-                <td>a strut the height of <em>content</em></td>
+				<td>\hspace*{<em>distance</em>}</td>
+                <td>space, width = <em>distance</em></td>
             </tr>
 			<tr>
 				<td>\thickspace</td>
 				<td>⁵∕₁₈ em space</td>
-				<td></td>
-				<td></td>
+                <td>\phantom{<em>content</em>}</td>
+                <td style="white-space: nowrap">space the width and height of <em>content</em></td>
 			</tr>
             <tr>
                 <td>\enspace</td>
 				<td>½ em space</td>
-				<td></td>
-				<td></td>
+                <td>\hphantom{<em>content</em>}</td>
+                <td>space the width of <em>content</em></td>
             </tr>
             <tr>
                 <td>\quad</td>
 				<td>1 em space</td>
-				<td></td>
-				<td></td>
+                <td>\vphantom{<em>content</em>}</td>
+                <td>a strut the height of <em>content</em></td>
             </tr>
             <tr>
                 <td>\qquad</td>
@@ -915,9 +978,12 @@ code {
             </tr>
         </tbody>
     </table>
-	<div class="indented">
-		<p>Notes: {<em>distance</em>} may use any of the <a href="#units">KaTeX units</a>.</p>
-	</div>
+	<table>
+		<tr>
+			<td>Notes:</td><td>{<em>distance</em>} will accept any of the <a href="#units">KaTeX units</a>.<br>
+			<code>\mkern</code> and <code>\mskip</code> will not work in text mode and both will write a console warning for any unit except <em>mu</em>.</td>
+		</tr>
+	</table>
 	<br>
 
 <h3 id="vertical">Vertical Layout</h3>
@@ -1028,7 +1094,7 @@ code {
 	<table>
 		<tr>
 			<td>Direct Input:</td>
-			<td style="font-family: KaTeX_Main, KaTeX_AMS;">∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← ↔</td>
+			<td><span style="font-family: KaTeX_Main, KaTeX_AMS;">∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← ↔</span> ℂ ℍ ℕ ℙ ℚ ℝ ℤ</td>
 		</tr>
 	</table>
 
@@ -1280,21 +1346,11 @@ code {
             <td>≀</td>
             <td>\wr</td>
         </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
     </table>
 	<table>
 		<tr>
 			<td>Direct Input:</td>
-			<td style="font-family: KaTeX_Main, KaTeX_AMS;">+ - / * ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ ⊖ ⊗ ⊘ ⊙ ⊚ ⊛ ⊝ ⊞ ⊟ ⊠ ⊡ ⊺ ⊻ ⊼ ⋇ ⋉ ⋊ ⋋ ⋌ ⋎ ⋏ ⋒ ⋓ ⩞</td>
+			<td style="font-family: KaTeX_Main, KaTeX_AMS;">+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ ⊖ ⊗ ⊘ ⊙ ⊚ ⊛ ⊝ ⊞ ⊟ ⊠ ⊡ ⊺ ⊻ ⊼ ⋇ ⋉ ⋊ ⋋ ⋌ ⋎ ⋏ ⋒ ⋓ ⩞</td>
 		</tr>
 	</table>
 	
@@ -1397,7 +1453,7 @@ code {
             <td>\cth</td>
             <td>sinh</td>
             <td>\sinh</td>
-            <td>liminf</td>
+            <td>lim&#x2006;inf</td>
             <td>\liminf</td>
         </tr>
         <tr>
@@ -1407,7 +1463,7 @@ code {
             <td>\deg</td>
             <td>sh</td>
             <td>\sh</td>
-            <td>limsup</td>
+            <td>lim&#x2006;sup</td>
             <td>\limsup</td>
         </tr>
         <tr>
@@ -2215,8 +2271,8 @@ code {
 		<tr>
 			<td>\(\xtwoheadrightarrow{abc}\)</td>
 			<td>\xtwoheadrightarrow{abc}</td>
-			<td>\(\xLongequal{abc}\)</td>
-			<td>\xLongequal{abc}</td>
+			<td>\(\xlongequal{abc}\)</td>
+			<td>\xlongequal{abc}</td>
 			<td>\(\xleftrightharpoons{abc}\)</td>
 			<td>\xleftrightharpoons{abc}</td>
 		</tr>
@@ -2356,24 +2412,38 @@ code {
             <td>\bold{AB}</td>
             <td><span class="katex"><span class="mathbb">AB</span></span></td>
             <td>\Bbb{AB}</td>
+            <td><span class="katex"><span class="mathcal">AB</span></span></td>
+            <td style="white-space: nowrap">\mathcal{AB}</td>
             <td><span class="katex"><span class="mathfrak">AB</span></span></td>
             <td>\frak{AB}</td>
-            <td><span class="katex"><span class="mathtt">AB</span></span></td>
-            <td>\verb AB</td>
         </tr>
         <tr>
             <td><span class="katex"><span class="mathrm">AB</span></span></td>
             <td>\text{AB}</td>
-            <td><span class="katex"><span class="mathcal">AB</span></span></td>
-            <td style="white-space: nowrap">\mathcal{AB}</td>
+            <td><span class="katex"><span class="boldsymbol">AB</span></span></td>
+            <td style="white-space: nowrap">\boldsymbol{AB}</td>
             <td><span class="katex"><span class="mathbb">AB</span></span></td>
             <td style="white-space: nowrap">\mathbb{AB}</td>
+			<td><span class="katex"><span class="mathscr">AB</span></span></td>
+			<td style="white-space: nowrap">\mathscr{AB}</td>
             <td><span class="katex"><span class="mathfrak">AB</span></span></td>
             <td style="white-space: nowrap">\mathfrak{AB}</td>
-            <td><span class="katex"><span class="mathscr">AB</span></span></td>
-            <td style="white-space: nowrap">\mathscr{AB}</td>
         </tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td><span class="katex"><span class="boldsymbol">AB</span></span></td>
+			<td style="white-space: nowrap">\bm{AB}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+		</tr>
     </table>
+	
+	<p class="indented">One can stack font family, font weight, and font shape by using the <code>\textXX</code> versions of the font functions. So <code>\textsf{\textbf{H}}</code> will produce \(\textsf{\textbf{H}}\).  The other versions so not stack, e.g., <code>\mathsf{\mathbf{H}}</code> will produce \(\mathsf{\mathbf{H}}\).</p>
 
 <h3 id="size">Size</h3>
 
@@ -2444,16 +2514,21 @@ code {
             <td></td>
         </tr>
         <tr>
+            <td>\(\verb! x^2 !\)</td>
+            <td><strong>\verb!</strong>x^2<strong>!</strong></td>
+            <td></td>
+        </tr>
+        <tr>
             <td>\(\text{x}\)</td>
             <td><strong>\text</strong>{x}</td>
             <td></td>
         </tr>
     </table>
 	
-	<div class="indented">
-		<p><code>\text{…}</code> will accept characters from <a href="http://www.unicode.org/charts/PDF/U0080.pdf">Latin-1</a>, <a href="http://unicode.org/charts/PDF/U0400.pdf">Cyrillic</a>, or CJK (Hiragana, Katakana, CJK ideograms, and Hangul).</p>
-		
+	<div class="indented">		
 		<p><code>\text{…}</code> will accept nested <code>$…$</code> fragments and render them in math mode.</p>
+		
+		<p><code>\text{…}</code> will render an extended range of characters. See <a href="#letters-in-text">Letters inside \text</a>.</p>
 	</div>
 
 <h2 id="symbols">Symbols and Punctuation</h2>
@@ -2684,13 +2759,17 @@ code {
         <tr>
             <td>\(\KaTeX\)</td>
             <td>\KaTeX</td>
+            <td>\(\LaTeX\)</td>
+            <td>\LaTeX</td>
+            <td>\(\TeX\)</td>
+            <td>\TeX</td>
         </tr>
     </table>
 
 	<table>
 		<tr>
 			<td>Direct Input:</td>
-			<td style="font-family: KaTeX_Main, KaTeX_AMS;">£ ¥ ∇ ∞ ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓</td>
+			<td style="font-family: KaTeX_Main, KaTeX_AMS;">£ ¥ ∇ ∞ · ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓</td>
 		</tr>
 	</table>	
 		
@@ -2805,7 +2884,7 @@ code {
     <div class="footer">
     <table>
         <tr>
-            <td>Copyright © 2017 Khan Academy</td>
+            <td>Copyright © 2017, 2018 Khan Academy</td>
             <td>Released under the <a href="https://opensource.org/licenses/MIT/">MIT License</a></td>
         </tr>
     </table>
@@ -2821,9 +2900,15 @@ code {
         <li><a href="#accents">Accents</a></li>
         <li><a href="#delimiters">Delimiters</a></li>
         <li><a href="#environments">Environments</a></li>
-        <li><a href="#html">HTML</a></li>
-        <li><a href="#letters">Letters</a></li>
-        <li>Layout <span class="reduced">▼</span>
+        <li><a href="#html">HTML</a></li>		
+		<li><input id="letters-cb" type="checkbox"/><label for="letters-cb">Letters</label>
+            <ul>
+                <li><a href="#letters">Greek Letters</a></li>			
+                <li><a href="#other-letters">Other Letters</a></li>
+                <li><a href="#letters-in-text">Letters in \text</a></li>
+            </ul>
+        </li>
+        <li><input id="layout-cb" type="checkbox"/><label for="layout-cb">Layout</label>
             <ul>
                 <li><a href="#annotation">Annotation</a></li>			
                 <li><a href="#overlap">Overlap</a></li>
@@ -2833,7 +2918,7 @@ code {
         </li>
         <li><a href="#logic">Logic/Set</a></li>
 		<li><a href="#macros">Macros</a></li>
-        <li>Operators <span class="reduced">▼</span>
+		<li><input id="operators-cb" type="checkbox"/><label for="operators-cb">Operators</label>
             <ul>
                 <li><a href="#big">Big</a></li>
                 <li><a href="#binary">Binary</a></li>
@@ -2843,7 +2928,7 @@ code {
                 <li><a href="#sqrt">Sqrt</a></li>
             </ul>
         </li>
-        <li>Relations <span class="reduced">▼</span>
+		<li><input id="relations-cb" type="checkbox"/><label for="relations-cb">Relations</label>
             <ul>
                 <li><a href="#relations">Relations</a></li>
                 <li><a href="#negated-relations">&nbsp;&nbsp;&nbsp;Negated</a></li>
@@ -2851,7 +2936,7 @@ code {
                 <li><a href="#extensible-arrows">&nbsp;&nbsp;&nbsp;Extensible</a></li>
             </ul>
         </li>
-        <li>Style <span class="reduced">▼</span>
+		<li><input id="style-cb" type="checkbox"/><label for="style-cb">Style</label>
             <ul>
                 <li><a href="#class">Class</a></li>
                 <li><a href="#color">Color</a></li>
@@ -2896,37 +2981,13 @@ code {
 </div>
 
 <script>
-    setTreeToggleEvents(document.getElementById("toc"));  <!-- Table of Contents -->
-    renderMathInElement(document.body);                   <!-- KaTeX -->
+    renderMathInElement(document.body);    <!-- KaTeX -->
     document.getElementById("mobile-nav").addEventListener('click', toggleMobileMenu, false);
-
-    function setTreeToggleEvents(toc) {
-        toc.addEventListener('click', stopBubble, false);
-        for (var i=0; i<toc.childNodes.length; i++) {
-            var li=toc.childNodes[i];
-            if (li.nodeName=="LI" && li.childNodes.length>1) {
-                li.addEventListener('click', function () {
-                    this.className = (this.className == 'li-open' ? 'li-closed' : 'li-open' );
-                } , false);
-
-                for (var j=0; j<li.childNodes.length; j++) {
-                    var ul = li.childNodes[j];
-                    if (ul.nodeName=="UL") {
-                        ul.addEventListener('click', stopBubble, false);
-                    }
-                }
-            }
-        }
-    }
 
     function toggleMobileMenu() {
         var m = document.getElementById("mobile-menu");
         m.className = (m.className == 'menu-on' ? 'menu-off' : 'menu-on' );
         return true;
-    }
-
-    function stopBubble(event) {
-         event.stopPropagation();
     }
 </script>
 
