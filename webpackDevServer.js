@@ -9,6 +9,7 @@ module.exports = {
         filename: 'katex.js',
         library: 'katex',
         libraryTarget: 'umd',
+        publicPath: '/',
     },
     module: {
         rules: [
