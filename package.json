@@ -55,7 +55,7 @@
   },
   "bin": "cli.js",
   "scripts": {
-    "lint": "eslint katex.js katex.webpack.js cli.js webpack.config.js webpackDevServer.js src test contrib dockers && stylelint static/fonts.less static/katex.less",
+    "lint": "eslint katex.js katex.webpack.js cli.js webpack.common.js webpack.config.js webpackDevServer.js src test contrib dockers && stylelint static/fonts.less static/katex.less",
     "flow": "flow",
     "jest": "jest",
     "jest-update": "jest --updateSnapshot",
