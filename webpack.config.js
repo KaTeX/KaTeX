@@ -1,61 +1,119 @@
+// @flow
 const path = require('path');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpack = require('webpack');
 
-const katexConfig = {
-    entry: ['./katex.js'],
-    output: {
-        path: path.join(__dirname, 'build'),
-        filename: 'katex.js',
+/*::
+type Target = {|
+    name: string, // the name of output JS/CSS
+    entry: string, // the path to the entry point
+    library?: string // the name of the exported module
+|};
+*/
+
+/**
+ * List of targets to build
+ */
+const targets /*: Array<Target> */ = [
+    {
+        name: 'katex',
+        entry: './katex.webpack.js',
         library: 'katex',
-        libraryTarget: 'umd',
     },
-};
-
-const copyTexConfig = {
-    entry: ['./contrib/copy-tex/copy-tex.js'],
-    output: {
-        path: path.join(__dirname, 'build', 'contrib', 'copy-tex'),
-        filename: 'copy-tex.js',
-    },
-};
-
-const autoRenderConfig = {
-    entry: ['./contrib/auto-render/auto-render.js'],
-    output: {
-        path: path.join(__dirname, 'build', 'contrib', 'auto-render'),
-        filename: 'auto-render.js',
+    {
+        name: 'auto-render',
+        entry: './contrib/auto-render/auto-render.js',
         library: 'renderMathInElement',
-        libraryTarget: 'umd',
     },
-};
-
-const commonConfig = {
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                use: 'babel-loader',
-                exclude: /\bnode_modules\b/,
-            },
-        ],
+    {
+        name: 'copy-tex',
+        entry: './contrib/copy-tex/copy-tex.js',
     },
-    devtool: 'eval-source-map',
-};
+    {
+        name: 'mathtex-script-type',
+        entry: './contrib/mathtex-script-type/mathtex-script-type.js',
+    },
+];
 
-module.exports = {
-    compilerConfig: [
-        Object.assign({}, katexConfig, commonConfig),
-        Object.assign({}, copyTexConfig, commonConfig),
-        Object.assign({}, autoRenderConfig, commonConfig),
-    ],
-    devServerConfig: {
-        publicPath: '/',
-        contentBase: path.join(__dirname, 'build'),
-        stats: {
-            colors: true,
+/**
+ * Create a webpack config for given target
+ */
+function createConfig(target /*: Target */, minimize /*: boolean */) /*: Object */ {
+    const cssLoader = {
+        loader: 'css-loader',
+        options: {
+            minimize, // cssnano
         },
-        // Allow server to be accessed from anywhere, which is useful for
-        // testing.  This potentially reveals the source code to the world,
-        // but this should not be a concern for testing open-source software.
-        disableHostCheck: true,
-    },
-};
+    };
+    const config = {
+        entry: {
+            [target.name]: target.entry,
+        },
+        output: {
+            filename: minimize ? '[name].min.js' : '[name].js',
+            path: path.resolve(__dirname, target.library === 'katex'
+              ? 'build' : 'build/contrib'),
+            library: target.library,
+            libraryTarget: 'umd',
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.js$/,
+                    exclude: /node_modules/,
+                    use: 'babel-loader',
+                },
+                {
+                    test: /\.css$/,
+                    use: ExtractTextPlugin.extract({
+                        fallback: 'style-loader',
+                        use: [cssLoader],
+                    }),
+                },
+                {
+                    test: /\.less$/,
+                    use: ExtractTextPlugin.extract({
+                        fallback: 'style-loader',
+                        use: [cssLoader, {
+                            loader: 'less-loader',
+                        }],
+                    }),
+                },
+                {
+                    test: /\.(ttf|woff|woff2)$/,
+                    use: [{
+                        loader: 'file-loader',
+                        options: {
+                            name: 'fonts/[name].[ext]',
+                        },
+                    }],
+                },
+            ],
+        },
+        plugins: [
+            new webpack.EnvironmentPlugin({
+                NODE_ENV: 'production',
+            }),
+            new ExtractTextPlugin(minimize ? '[name].min.css' : '[name].css'),
+        ],
+    };
+
+    if (minimize) {
+        config.plugins.push(new UglifyJsPlugin({
+            uglifyOptions: {
+                output: {
+                    ascii_only: true,
+                },
+            },
+        }));
+    }
+
+    return config;
+}
+
+module.exports = targets.reduce((configs /*: Array<Object> */,
+        target /*: Target */) /*: Array<Object> */ => {
+    configs.push(createConfig(target, false), createConfig(target, true));
+    return configs;
+}, []);

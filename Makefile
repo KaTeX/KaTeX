@@ -1,5 +1,5 @@
-.PHONY: build dist lint setup copy serve clean metrics test coverage zip contrib flow
-build: test build/katex.min.js build/katex.min.css contrib zip compress
+.PHONY: build dist lint setup webpack serve clean metrics test coverage zip flow
+build: test build/katex zip compress
 
 ifeq ($(KATEX_DIST),skip)
 
@@ -20,15 +20,6 @@ ifneq ($(NODECHK),OK)
 $(error "Node not found or wrong version")
 endif
 
-# Export these variables for use in contrib Makefiles
-export BUILDDIR = $(realpath build)
-export BROWSERIFY = $(realpath ./node_modules/.bin/browserify)
-export UGLIFYJS = $(realpath ./node_modules/.bin/uglifyjs) \
-	--mangle \
-	--beautify \
-	ascii_only=true,beautify=false
-export CLEANCSS = $(realpath ./node_modules/.bin/cleancss)
-
 # The prepublish script in package.json will override the following variable,
 # setting it to the empty string and thereby avoiding an infinite recursion
 NIS = .npm-install.stamp
@@ -40,47 +31,24 @@ $(NIS) setup: package.json
 lint: $(NIS)
 	$(NPM) run lint
 
-build/katex.js: katex.js $(wildcard src/*.js) $(NIS)
+webpack: katex.js $(wildcard src/*.js) $(wildcard static/*.less) $(NIS)
 	mkdir -p build
-	$(BROWSERIFY) -t [ babelify ] $< --standalone katex > $@
+	mkdir -p build/contrib
+	mkdir -p build/fonts
+	@# Since everything in build/contrib and build/fonts is put in the built files,
+	@# make sure there's nothing in there we don't want.
+	rm -rf build/contrib/*
+	rm -rf build/fonts/*
+	$(NPM) run build
 
-build/katex.min.js: build/katex.js
-	mkdir -p build
-	$(UGLIFYJS) < $< > $@
-
-build/katex.css: static/katex.less $(wildcard static/*.less) $(NIS)
-	mkdir -p build
-	./node_modules/.bin/lessc $< $@
-
-build/katex.min.css: build/katex.css
-	mkdir -p build
-	$(CLEANCSS) -o $@ $<
-
-.PHONY: build/fonts
-build/fonts:
-	rm -rf $@
-	mkdir $@
-	for font in $(shell grep "font" static/katex.less | grep -o "KaTeX_\w\+" | cut -d" " -f 2 | sort | uniq); do \
-		cp submodules/katex-fonts/fonts/$$font* $@; \
-	done
+.PHONY: build/fonts build/contrib
+build/katex.js build/katex.min.js build/katex.css build/katex.min.css build/katex.css build/fonts build/contrib: webpack
 
 test/screenshotter/unicode-fonts:
 	git clone https://github.com/Khan/KaTeX-test-fonts test/screenshotter/unicode-fonts
 	cd test/screenshotter/unicode-fonts && \
 	git checkout 99fa66a2da643218754c8236b9f9151cac71ba7c && \
 	cd ../../../
-
-contrib: build/contrib
-
-.PHONY: build/contrib
-build/contrib:
-	mkdir -p build/contrib
-	@# Since everything in build/contrib is put in the built files, make sure
-	@# there's nothing in there we don't want.
-	rm -rf build/contrib/*
-	$(MAKE) -C contrib/auto-render
-	$(MAKE) -C contrib/copy-tex
-	$(MAKE) -C contrib/mathtex-script-type
 
 .PHONY: build/katex
 build/katex: build/katex.js build/katex.min.js build/katex.css build/katex.min.css build/fonts README.md build/contrib
