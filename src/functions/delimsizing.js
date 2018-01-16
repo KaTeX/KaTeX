@@ -182,11 +182,6 @@ defineFunction({
                     inner[i] = delimiter.leftRightDelim(
                         middleDelim.isMiddle.value, innerHeight, innerDepth,
                         middleDelim.isMiddle.options, group.mode, []);
-                    // Add back spaces shifted into the delimiter
-                    const spaces = html.spliceSpaces(middleDelim.children, 0);
-                    if (spaces) {
-                        buildCommon.prependChildren(inner[i], spaces);
-                    }
                 }
             }
         }

@@ -66,6 +66,91 @@ export const spliceSpaces = function(children, i) {
     }
 };
 
+const thinspace = {
+    number: 3,
+    unit: "mu",
+};
+const mediumspace = {
+    number: 4,
+    unit: "mu",
+};
+const thickspace = {
+    number: 5,
+    unit: "mu",
+};
+
+const spacings = {
+    mord: {
+        mop: thinspace,
+        mbin: mediumspace,
+        mrel: thickspace,
+        minner: thinspace,
+    },
+    mop: {
+        mord: thinspace,
+        mop: thinspace,
+        mrel: thickspace,
+        minner: thinspace,
+    },
+    mbin: {
+        mord: mediumspace,
+        mop: mediumspace,
+        mopen: mediumspace,
+        minner: mediumspace,
+    },
+    mrel: {
+        mord: thickspace,
+        mop: thickspace,
+        mopen: thickspace,
+        minner: thickspace,
+    },
+    mopen: {},
+    mclose: {
+        mop: thinspace,
+        mbin: mediumspace,
+        mrel: thickspace,
+        minner: thinspace,
+    },
+    mpunct: {
+        mord: thinspace,
+        mop: thinspace,
+        mbin: mediumspace,
+        mrel: thickspace,
+        mopen: thinspace,
+        mpunct: thinspace,
+        minner: thinspace,
+    },
+    minner: {
+        mord: thinspace,
+        mop: thinspace,
+        mbin: mediumspace,
+        mrel: thickspace,
+        mopen: thinspace,
+        mpunct: thinspace,
+        minner: thinspace,
+    },
+};
+
+const tightSpacings = {
+    mord: {
+        mop: thinspace,
+    },
+    mop: {
+        mord: thinspace,
+        mop: thinspace,
+    },
+    mbin: {},
+    mrel: {},
+    mopen: {},
+    mclose: {
+        mop: thinspace,
+    },
+    mpunct: {},
+    minner: {
+        mop: thinspace,
+    },
+};
+
 /**
  * Take a list of nodes, build them in order, and return a list of the built
  * nodes. documentFragments are flattened into their contents, so the
@@ -75,47 +160,60 @@ export const spliceSpaces = function(children, i) {
  */
 export const buildExpression = function(expression, options, isRealGroup) {
     // Parse expressions into `groups`.
-    const groups = [];
+    const rawGroups = [];
     for (let i = 0; i < expression.length; i++) {
         const group = expression[i];
         const output = buildGroup(group, options);
         if (output instanceof domTree.documentFragment) {
-            Array.prototype.push.apply(groups, output.children);
+            rawGroups.push(...output.children);
         } else {
-            groups.push(output);
+            rawGroups.push(output);
         }
     }
-    // At this point `groups` consists entirely of `symbolNode`s and `span`s.
+    // At this point `rawGroups` consists entirely of `symbolNode`s and `span`s.
 
     // Explicit spaces (e.g., \;, \,) should be ignored with respect to atom
-    // spacing (e.g., "add thick space between mord and mrel"). Since CSS
-    // adjacency rules implement atom spacing, spaces should be invisible to
-    // CSS. So we splice them out of `groups` and into the atoms themselves.
-    for (let i = 0; i < groups.length; i++) {
-        const spaces = spliceSpaces(groups, i);
-        if (spaces) {
-            // Splicing of spaces may have removed all remaining groups.
-            if (i < groups.length) {
-                // If there is a following group, move space within it.
-                if (groups[i] instanceof domTree.symbolNode) {
-                    groups[i] = makeSpan([].concat(groups[i].classes),
-                        [groups[i]]);
-                }
-                buildCommon.prependChildren(groups[i], spaces);
-            } else {
-                // Otherwise, put any spaces back at the end of the groups.
-                Array.prototype.push.apply(groups, spaces);
-                break;
-            }
+    // spacing (e.g., "add thick space between mord and mrel").
+    const nonSpaces =
+        rawGroups.filter(group => group && group.classes[0] !== "mspace");
+
+    // Binary operators change to ordinary symbols in some contexts.
+    for (let i = 0; i < nonSpaces.length - 1; i++) {
+        if (isBin(nonSpaces[i])
+            && (isBinLeftCanceller(nonSpaces[i - 1], isRealGroup)
+                || isBinRightCanceller(nonSpaces[i + 1], isRealGroup))) {
+            nonSpaces[i].classes[0] = "mord";
         }
     }
 
-    // Binary operators change to ordinary symbols in some contexts.
-    for (let i = 0; i < groups.length; i++) {
-        if (isBin(groups[i])
-            && (isBinLeftCanceller(groups[i - 1], isRealGroup)
-                || isBinRightCanceller(groups[i + 1], isRealGroup))) {
-            groups[i].classes[0] = "mord";
+    const groups = [];
+    let j = 0;
+    for (let i = 0; i < rawGroups.length; i++) {
+        groups.push(rawGroups[i]);
+        if (rawGroups[i].classes[0] !== "mspace" && j < nonSpaces.length - 1) {
+            const left = getTypeOfDomTree(nonSpaces[j]);
+            const right = getTypeOfDomTree(nonSpaces[j + 1]);
+
+            // We use buildExpression inside of sizingGroup, but it returns a
+            // document fragement of elements.  sizingGroup sets `isRealGroup`
+            // to false to avoid processing spans multiple times.
+            if (left && right && isRealGroup) {
+                const space = isTight(nonSpaces[j])
+                    ? tightSpacings[left][right]
+                    : spacings[left][right];
+
+                if (space) {
+                    // This is the same way kern.js builds glue
+                    // TODO(kevinb): extract a helper function for making glue
+                    const glue =
+                        buildCommon.makeSpan(["mord", "rule"], [], options);
+                    const dimension =
+                        calculateSize(spacings[left][right], options);
+                    glue.style.marginRight = `${dimension}em`;
+                    groups.push(glue);
+                }
+            }
+            j++;
         }
     }
 
@@ -123,6 +221,7 @@ export const buildExpression = function(expression, options, isRealGroup) {
     // TODO(kevinb): Handle multiple \\not commands in a row.
     // TODO(kevinb): Handle \\not{abc} correctly.  The \\not should appear over
     // the 'a' instead of the 'c'.
+    // TODO(kevinb): make sure that `isRealGroup` is true before processing
     for (let i = 0; i < groups.length; i++) {
         if (groups[i].value === "\u0338" && i + 1 < groups.length) {
             const children = groups.slice(i, i + 2);
@@ -164,6 +263,8 @@ export const getTypeOfDomTree = function(node) {
                 node.children[node.children.length - 1]);
         }
     } else {
+        // This makes a lot of assumptions as to where the type of atom
+        // appears.  We shoul do a better job of enforcing this.
         if (utils.contains([
             "mord", "mop", "mbin", "mrel", "mopen", "mclose",
             "mpunct", "minner",
@@ -172,6 +273,17 @@ export const getTypeOfDomTree = function(node) {
         }
     }
     return null;
+};
+
+export const isTight = function(node) {
+    if (node instanceof domTree.documentFragment) {
+        if (node.children.length) {
+            return isTight(node.children[node.children.length - 1]);
+        }
+    } else {
+        return utils.contains(node.classes, "mtight");
+    }
+    return false;
 };
 
 /**

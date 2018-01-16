@@ -359,19 +359,6 @@ const makeAnchor = function(
 };
 
 /**
- * Prepends the given children to the given span, updating height, depth, and
- * maxFontSize.
- */
-const prependChildren = function(
-    span: domTree.span,
-    children: DomChildNode[],
-) {
-    span.children = children.concat(span.children);
-
-    sizeElementFromChildren(span);
-};
-
-/**
  * Makes a document fragment with the given list of children.
  */
 const makeFragment = function(
@@ -763,6 +750,5 @@ export default {
     makeVerb,
     staticSvg,
     tryCombineChars,
-    prependChildren,
     spacingFunctions,
 };
