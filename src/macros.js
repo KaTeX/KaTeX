@@ -104,7 +104,6 @@ defineMacro("\\begingroup", "{");
 defineMacro("\\endgroup", "}");
 
 // Symbols from latex.ltx:
-// \let\bgroup={ \let\egroup=}
 // \def\lq{`}
 // \def\rq{'}
 // \def\lbrack{[}
