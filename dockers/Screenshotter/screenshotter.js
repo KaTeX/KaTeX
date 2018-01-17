@@ -13,7 +13,7 @@ const firefox = require("selenium-webdriver/firefox");
 
 const webpack = require('webpack');
 const webpackDevServer = require("webpack-dev-server");
-const webpackConfig = require("../../webpackDevServer");
+const webpackConfig = require("../../webpack.dev");
 const data = require("../../test/screenshotter/ss_data");
 
 const dstDir = path.normalize(

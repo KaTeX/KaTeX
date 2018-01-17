@@ -58,7 +58,7 @@ single file.  The goal is to have all functions use this new system.
 ## Testing
 
 Local testing can be done by running the webpack-dev-server using configuration
-`webpackDevServer.js`. Run `npm install` to install dependencies, and then `npm start`
+`webpack.dev.js`. Run `npm install` to install dependencies, and then `npm start`
 to start the server.
 
 This will host an interactive editor at
