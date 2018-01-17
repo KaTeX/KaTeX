@@ -32,13 +32,7 @@ lint: $(NIS)
 	$(NPM) run lint
 
 webpack: katex.js $(wildcard src/*.js) $(wildcard static/*.less) $(NIS)
-	mkdir -p build
-	mkdir -p build/contrib
-	mkdir -p build/fonts
-	@# Since everything in build/contrib and build/fonts is put in the built files,
-	@# make sure there's nothing in there we don't want.
-	rm -rf build/contrib/*
-	rm -rf build/fonts/*
+	rm -rf build/*
 	$(NPM) run build
 
 .PHONY: build/fonts build/contrib
