@@ -13,7 +13,7 @@ katexConfig.devServer = {
     port: PORT,
 };
 
-module.exports = targets.reduce((configs, target) => {
-    configs.push(createConfig(target, true, false));
-    return configs;
-}, [katexConfig]);
+module.exports = [
+    katexConfig, //                               dev   minify
+    ...targets.map(target => createConfig(target, true, false)),
+];

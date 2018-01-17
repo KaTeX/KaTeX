@@ -1,8 +1,7 @@
 // @flow
 const { targets, createConfig } = require('./webpack.common');
 
-module.exports = targets.reduce((configs, target) => {
-    configs.push(createConfig(target, false, false));
-    configs.push(createConfig(target, false, true));
-    return configs;
-}, []);
+module.exports = [ //                              dev   minify
+    ...targets.map(target => createConfig(target, false, false)),
+    ...targets.map(target => createConfig(target, false, true)),
+];
