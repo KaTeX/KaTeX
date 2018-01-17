@@ -8,4 +8,4 @@
 import './static/katex.less';
 import katex from './katex.js';
 
-module.exports = katex;
+export default katex;

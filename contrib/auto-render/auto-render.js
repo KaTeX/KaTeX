@@ -99,4 +99,4 @@ const renderMathInElement = function(elem, options) {
     renderElem(elem, optionsCopy);
 };
 
-module.exports = renderMathInElement;
+export default renderMathInElement;
