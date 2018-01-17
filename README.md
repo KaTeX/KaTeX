@@ -106,6 +106,9 @@ will appear larger than 1cm in browser units.
 ### Angular2+
 - [ng-katex](https://github.com/garciparedes/ng-katex) Angular module to write beautiful math expressions with TeX syntax boosted by KaTeX library
 
+### Ruby
+
+- [katex-ruby](https://github.com/glebm/katex-ruby) Provides server-side rendering and integration with popular Ruby web frameworks (Rails, Hanami, and anything that uses Sprockets).
 
 ## Contributing
 
