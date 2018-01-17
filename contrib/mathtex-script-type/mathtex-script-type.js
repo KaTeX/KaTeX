@@ -1,4 +1,4 @@
-/* global katex */
+import katex from "katex";
 
 {
     let scripts = document.body.getElementsByTagName("script");

@@ -1,6 +1,6 @@
 /* eslint no-console:0 */
-/* global katex */
 
+import katex from "katex";
 import splitAtDelimiters from "./splitAtDelimiters";
 
 const splitWithDelimiters = function(text, delimiters) {

@@ -92,6 +92,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                 },
             ],
         },
+        externals: 'katex',
         plugins: [
             new webpack.EnvironmentPlugin({
                 NODE_ENV: dev ? 'development' : 'production',
