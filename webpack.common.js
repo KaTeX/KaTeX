@@ -55,7 +55,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             filename: minimize ? '[name].min.js' : '[name].js',
             library: target.library,
             libraryTarget: 'umd',
-            path: dev ? __dirname : path.resolve(__dirname, 'build'),
+            path: path.resolve(__dirname, 'build'),
             publicPath: dev ? '/' : '',
         },
         module: {
