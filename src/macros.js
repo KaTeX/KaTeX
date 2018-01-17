@@ -117,6 +117,16 @@ defineMacro("\\rbrack", "]");
 defineMacro("\\aa", "\\r a");
 defineMacro("\\AA", "\\r A");
 
+// LaTeX implements \copyright using \textcircled, which uses an accent form
+// of the \bigcirc (9711) symbol.  We manually do horizontal and vertical
+// offsets to get the alignment correct.  Use mu to scale units even when
+// using scriptstyle etc.  TODO: c is wrong size in subscripts.
+const copyrightXOffset = fontMetricsData["Main-Regular"]["9711"][1] / 2 * 18;
+const copyrightYOffset = (fontMetricsData["Main-Regular"]["9711"][0] -
+                          fontMetricsData["Main-Regular"]["99"][0]) / 2 * 18;
+defineMacro("\\copyright", "{\\bigcirc" +
+    `\\llap{\\raisebox{${copyrightYOffset}mu}c\\kern${copyrightXOffset}mu}}`);
+
 // Unicode double-struck letters
 defineMacro("\u2102", "\\mathbb{C}");
 defineMacro("\u210D", "\\mathbb{H}");
