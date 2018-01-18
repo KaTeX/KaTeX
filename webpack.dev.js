@@ -14,6 +14,9 @@ katexConfig.devServer = {
     // but this should not be a concern for testing open-source software.
     disableHostCheck: true,
     port: PORT,
+    stats: {
+        colors: true,
+    },
 };
 
 module.exports = [
