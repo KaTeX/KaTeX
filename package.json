@@ -63,8 +63,8 @@
     "clean-install": "npm run clean && npm i",
     "test": "check-dependencies && npm run lint && npm run flow && npm run jest",
     "start": "webpack-dev-server --open --config webpack.dev.js",
-    "build": "webpack",
-    "watch": "webpack --watch",
+    "build": "rimraf build/* && webpack",
+    "watch": "rimraf build/* && webpack --watch",
     "prepublishOnly": "make NIS= dist"
   },
   "pre-commit": [

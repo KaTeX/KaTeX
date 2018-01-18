@@ -32,7 +32,6 @@ lint: $(NIS)
 	$(NPM) run lint
 
 webpack: katex.js $(wildcard src/*.js) $(wildcard static/*.less) $(NIS)
-	rm -rf build/*
 	$(NPM) run build
 
 .PHONY: build/fonts build/contrib
