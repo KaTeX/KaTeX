@@ -47,7 +47,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             minimize, // cssnano
         },
     };
-    const config = {
+    return {
         context: __dirname,
         entry: {
             [target.name]: target.entry,
@@ -99,25 +99,20 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             new webpack.EnvironmentPlugin({
                 NODE_ENV: dev ? 'development' : 'production',
             }),
+            minimize && new UglifyJsPlugin({
+                uglifyOptions: {
+                    output: {
+                        ascii_only: true,
+                    },
+                },
+            }),
             new ExtractTextPlugin({
                 filename: minimize ? '[name].min.css' : '[name].css',
                 disable: dev,
             }),
-        ],
+        ].filter(Boolean),
         devtool: dev && 'inline-source-map',
     };
-
-    if (minimize) {
-        config.plugins.push(new UglifyJsPlugin({
-            uglifyOptions: {
-                output: {
-                    ascii_only: true,
-                },
-            },
-        }));
-    }
-
-    return config;
 }
 
 module.exports = {
