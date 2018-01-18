@@ -59,7 +59,7 @@ type ParsedFunc = {|
     result: string, // Function name defined via defineFunction (e.g. "\\frac").
     token: Token,
 |};
-type ParsedArg = {|
+export type ParsedArg = {|
     type: "arg",
     result: ParseNode,
     token: Token,
@@ -73,7 +73,7 @@ type ParsedDollar = {|
 type ParsedFuncOrArgOrDollar = ParsedFunc | ParsedArg | ParsedDollar;
 type ParsedFuncOrArg = ParsedFunc | ParsedArg;
 
-function newArgument(result: ParseNode, token: Token): ParsedArg {
+export function newArgument(result: ParseNode, token: Token): ParsedArg {
     return {type: "arg", result, token};
 }
 
@@ -90,6 +90,12 @@ function assertFuncOrArg(parsed: ParsedFuncOrArgOrDollar): ParsedFuncOrArg {
         throw new ParseError("Unexpected $", parsed.token);
     }
     return parsed;
+}
+
+type GroupParser = (optional: boolean) => ?ParsedFuncOrArgOrDollar;
+const GROUP_PARSER_EXTENSIONS: { [type: string]: GroupParser } = {};
+export function defineGroupParser(type: string, parser: GroupParser) {
+    GROUP_PARSER_EXTENSIONS[type] = parser;
 }
 
 export default class Parser {
@@ -756,6 +762,12 @@ export default class Parser {
         }
         if (type === "url") {
             return this.parseUrlGroup(optional);
+        }
+
+        if (GROUP_PARSER_EXTENSIONS.hasOwnProperty(type)) {
+            return GROUP_PARSER_EXTENSIONS[type].call(this, optional);
+        } else if (type !== "text" && type !== "math") {
+            throw new ParseError("Unrecognized group type " + type);
         }
 
         // By the time we get here, type is one of "text" or "math".

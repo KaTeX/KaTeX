@@ -7,7 +7,7 @@ const webpack = require('webpack');
 /*::
 type Target = {|
     name: string, // the name of output JS/CSS
-    entry: string, // the path to the entry point
+    entry: string | Object, // the path to the entry point
     library?: string // the name of the exported module
 |};
 */
@@ -18,8 +18,11 @@ type Target = {|
 const targets /*: Array<Target> */ = [
     {
         name: 'katex',
-        entry: './katex.webpack.js',
-        library: 'katex',
+        entry: {
+            'contrib/html': './contrib/html/html.js',
+            'katex': './katex.webpack.js',
+        },
+        library: '[name]',
     },
     {
         name: 'contrib/auto-render',
@@ -49,9 +52,9 @@ function createConfig(target /*: Target */, dev /*: boolean */,
     };
     return {
         context: __dirname,
-        entry: {
+        entry: typeof target.entry === 'string' ? {
             [target.name]: target.entry,
-        },
+        } : target.entry,
         output: {
             filename: minimize ? '[name].min.js' : '[name].js',
             library: target.library,
@@ -98,6 +101,10 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         plugins: [
             new webpack.EnvironmentPlugin({
                 NODE_ENV: dev ? 'development' : 'production',
+            }),
+            target.name === 'katex' && new webpack.optimize.CommonsChunkPlugin({
+                name: 'katex',
+                minChunks: Infinity,
             }),
             minimize && new UglifyJsPlugin({
                 uglifyOptions: {
