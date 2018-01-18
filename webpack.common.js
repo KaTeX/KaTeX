@@ -48,6 +48,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         },
     };
     const config = {
+        context: __dirname,
         entry: {
             [target.name]: target.entry,
         },
