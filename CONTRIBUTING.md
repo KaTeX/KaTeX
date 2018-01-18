@@ -65,6 +65,11 @@ This will host an interactive editor at
 [http://localhost:7936/](http://localhost:7936/) to play around with and test
 changes.
 
+webpack-dev-server 2.8.0 introduced a change which included ES6 keywords `const`
+and `let` within the scripts being served to the browser, and therefore doesn't
+support IE 9 and 10. If you want to test in IE 9 and 10, install version 2.7.1
+by running `npm install webpack-dev-server@2.7.1`.
+
 #### Jest tests
 
 The JavaScript parser and some of the HTML and MathML tree
