@@ -3,7 +3,7 @@
 /* global it: false */
 /* global describe: false */
 
-const splitAtDelimiters = require("./splitAtDelimiters");
+import splitAtDelimiters from "../splitAtDelimiters";
 
 beforeEach(function() {
     expect.extend({

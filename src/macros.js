@@ -96,11 +96,26 @@ defineMacro("\\TextOrMath", function(context) {
 });
 
 //////////////////////////////////////////////////////////////////////
-// basics
+// Grouping
+// \let\bgroup={ \let\egroup=}
 defineMacro("\\bgroup", "{");
 defineMacro("\\egroup", "}");
 defineMacro("\\begingroup", "{");
 defineMacro("\\endgroup", "}");
+
+// Symbols from latex.ltx:
+// \def\lq{`}
+// \def\rq{'}
+// \def\lbrack{[}
+// \def\rbrack{]}
+// \def \aa {\r a}
+// \def \AA {\r A}
+defineMacro("\\lq", "`");
+defineMacro("\\rq", "'");
+defineMacro("\\lbrack", "[");
+defineMacro("\\rbrack", "]");
+defineMacro("\\aa", "\\r a");
+defineMacro("\\AA", "\\r A");
 
 // Unicode double-struck letters
 defineMacro("\u2102", "\\mathbb{C}");
