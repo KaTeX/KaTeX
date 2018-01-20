@@ -191,6 +191,7 @@ export type CharacterMetrics = {
 const getCharacterMetrics = function(
     character: string,
     font: string,
+    mode: string,
 ): ?CharacterMetrics {
     if (!metricMap[font]) {
         throw new Error(`Font metrics not found for font: ${font}.`);
@@ -201,10 +202,12 @@ const getCharacterMetrics = function(
     }
     let metrics = metricMap[font][ch];
 
-    if (!metrics) {
+    if (!metrics && mode === 'text') {
         // We don't typically have font metrics for Asian scripts.
+        // But since we support them in text mode, we need to return
+        // some sort of metrics.
         // So if the character is in a script we support but we
-        // dont have metrics for it, just use the metrics for
+        // don't have metrics for it, just use the metrics for
         // the Latin capital letter M. This is close enough because
         // we (currently) only care about the height of the glpyh
         // not its width.

@@ -40,7 +40,7 @@ const lookupSymbol = function(
     }
     return {
         value: value,
-        metrics: fontMetrics.getCharacterMetrics(value, fontFamily),
+        metrics: fontMetrics.getCharacterMetrics(value, fontFamily, mode),
     };
 };
 
