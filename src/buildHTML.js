@@ -208,8 +208,9 @@ export const buildExpression = function(expression, options, isRealGroup) {
                     // TODO(kevinb): extract a helper function for making glue
                     const glue =
                         buildCommon.makeSpan(["mord", "rule"], [], options);
-                    const dimension =
-                        calculateSize(spacings[left][right], options);
+                    const dimension = calculateSize(
+                        spacings[left][right],
+                        options.havingBaseStyle());
                     glue.style.marginRight = `${dimension}em`;
                     groups.push(glue);
                 }
