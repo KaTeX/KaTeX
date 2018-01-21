@@ -5,6 +5,7 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
+import { calculateSize } from "../units";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -184,6 +185,16 @@ defineFunction({
                         middleDelim.isMiddle.options, group.mode, []);
                 }
             }
+        }
+
+        const lastChildType = html.getTypeOfDomTree(inner[inner.length - 1]);
+        if (lastChildType && html.spacings[lastChildType]["mclose"]) {
+            const glue =
+                buildCommon.makeSpan(["mord", "rule"], [], options);
+            const dimension =
+                calculateSize(html.spacings[lastChildType]["mclose"], options);
+            glue.style.marginRight = `${dimension}em`;
+            inner.push(glue);
         }
 
         let rightDelim;

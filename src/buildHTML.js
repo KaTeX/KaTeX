@@ -79,7 +79,7 @@ const thickspace = {
     unit: "mu",
 };
 
-const spacings = {
+export const spacings = {
     mord: {
         mop: thinspace,
         mbin: mediumspace,
@@ -114,9 +114,9 @@ const spacings = {
     mpunct: {
         mord: thinspace,
         mop: thinspace,
-        mbin: mediumspace,
         mrel: thickspace,
         mopen: thinspace,
+        mclose: thinspace,
         mpunct: thinspace,
         minner: thinspace,
     },
@@ -178,11 +178,12 @@ export const buildExpression = function(expression, options, isRealGroup) {
         rawGroups.filter(group => group && group.classes[0] !== "mspace");
 
     // Binary operators change to ordinary symbols in some contexts.
-    for (let i = 0; i < nonSpaces.length - 1; i++) {
-        if (isBin(nonSpaces[i])
-            && (isBinLeftCanceller(nonSpaces[i - 1], isRealGroup)
-                || isBinRightCanceller(nonSpaces[i + 1], isRealGroup))) {
-            nonSpaces[i].classes[0] = "mord";
+    for (let i = 0; i < nonSpaces.length; i++) {
+        if (isBin(nonSpaces[i])) {
+            if (isBinLeftCanceller(nonSpaces[i - 1], isRealGroup)
+                    || isBinRightCanceller(nonSpaces[i + 1], isRealGroup)) {
+                nonSpaces[i].classes[0] = "mord";
+            }
         }
     }
 
