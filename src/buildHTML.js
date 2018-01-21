@@ -199,7 +199,7 @@ export const buildExpression = function(expression, options, isRealGroup) {
             // document fragement of elements.  sizingGroup sets `isRealGroup`
             // to false to avoid processing spans multiple times.
             if (left && right && isRealGroup) {
-                const space = isTight(nonSpaces[j])
+                const space = isTight(nonSpaces[j + 1])
                     ? tightSpacings[left][right]
                     : spacings[left][right];
 
