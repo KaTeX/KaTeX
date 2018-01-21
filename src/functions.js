@@ -310,6 +310,8 @@ defineFunction([
     "\\xrightharpoonup", "\\xleftharpoondown", "\\xleftharpoonup",
     "\\xrightleftharpoons", "\\xleftrightharpoons", "\\xlongequal",
     "\\xtwoheadrightarrow", "\\xtwoheadleftarrow", "\\xtofrom",
+    "\\xrightleftarrows", "\\xrightequilibrium",
+    "\\xleftequilibrium",
 ], {
     numArgs: 1,
     numOptionalArgs: 1,
