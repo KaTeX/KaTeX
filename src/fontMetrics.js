@@ -1,6 +1,8 @@
 // @flow
 import { supportedCodepoint } from "./unicodeScripts";
 
+import type { Mode } from "./types";
+
 /**
  * This file contains metrics regarding fonts and individual symbols. The sigma
  * and xi variables, as well as the metricMap map contain data extracted from
@@ -191,7 +193,7 @@ export type CharacterMetrics = {
 const getCharacterMetrics = function(
     character: string,
     font: string,
-    mode: string,
+    mode: Mode,
 ): ?CharacterMetrics {
     if (!metricMap[font]) {
         throw new Error(`Font metrics not found for font: ${font}.`);
