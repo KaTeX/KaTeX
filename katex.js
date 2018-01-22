@@ -95,7 +95,7 @@ const renderToHTMLTree = function(
     return buildHTMLTree(tree, expression, settings);
 };
 
-module.exports = {
+export default {
     /**
      * Renders the given LaTeX into an HTML+MathML combination, and adds
      * it as a child to the specified DOM node.
