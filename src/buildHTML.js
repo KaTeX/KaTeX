@@ -151,6 +151,13 @@ const tightSpacings = {
     },
 };
 
+const styleMap = {
+    "display": Style.DISPLAY,
+    "text": Style.TEXT,
+    "script": Style.SCRIPT,
+    "scriptscript": Style.SCRIPTSCRIPT,
+};
+
 /**
  * Take a list of nodes, build them in order, and return a list of the built
  * nodes. documentFragments are flattened into their contents, so the
@@ -204,21 +211,21 @@ export const buildExpression = function(expression, options, isRealGroup) {
                     : spacings[left][right];
 
                 if (space) {
-                    // This is the same way kern.js builds glue
-                    // TODO(kevinb): extract a helper function for making glue
-                    const glue =
-                        buildCommon.makeSpan(["mord", "rule"], [], options);
+                    let glueOptions = options;
 
-                    // TODO(kevinb): do the same thing for styling groups
-                    const dimension = expression.length === 1 &&
-                            expression[0].type === "sizing"
-                        ? calculateSize(
-                            spacings[left][right],
-                            options.havingSize(expression[0].value.size))
-                        : calculateSize(
-                            spacings[left][right], options);
+                    if (expression.length === 1) {
+                        if (expression[0].type === "sizing") {
+                            glueOptions = options.havingSize(
+                                expression[0].value.size);
+                        } else if (expression[0].type === "styling") {
+                            glueOptions = options.havingStyle(
+                                styleMap[expression[0].value.style]);
+                        }
+                    }
 
-                    glue.style.marginRight = `${dimension}em`;
+                    const glue = buildCommon.makeGlue(
+                        spacings[left][right], glueOptions);
+
                     groups.push(glue);
                 }
             }
@@ -537,15 +544,6 @@ groupTypes.sizing = function(group, options) {
 
 groupTypes.styling = function(group, options) {
     // Style changes are handled in the TeXbook on pg. 442, Rule 3.
-
-    // Figure out what style we're changing to.
-    const styleMap = {
-        "display": Style.DISPLAY,
-        "text": Style.TEXT,
-        "script": Style.SCRIPT,
-        "scriptscript": Style.SCRIPTSCRIPT,
-    };
-
     const newStyle = styleMap[group.value.style];
     const newOptions = options.havingStyle(newStyle);
     return sizingGroup(group.value.value, newOptions, options);

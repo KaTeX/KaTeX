@@ -10,12 +10,14 @@ import fontMetrics from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
 import stretchy from "./stretchy";
+import {calculateSize} from "./units";
 
 import type Options from "./Options";
 import type ParseNode from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {Mode} from "./types";
 import type {DomChildNode, CombinableDomNode} from "./domTree";
+import type {Measurement} from "./units";
 
 // The following have to be loaded from Main-Italic font, using class mainit
 const mainitLetters = [
@@ -579,6 +581,14 @@ const makeVerb = function(group: ParseNode, options: Options): string {
     return text;
 };
 
+const makeGlue = (measurement: Measurement, options: Options): domTree.span => {
+    // Make an empty span for the rule
+    const rule = makeSpan(["mord", "rule"], [], options);
+    const size = calculateSize(measurement, options);
+    rule.style.marginRight = `${size}em`;
+    return rule;
+};
+
 // Takes an Options object, and returns the appropriate fontLookup
 const retrieveTextFontName = function(
     fontFamily: string,
@@ -748,6 +758,7 @@ export default {
     makeVList,
     makeOrd,
     makeVerb,
+    makeGlue,
     staticSvg,
     tryCombineChars,
     spacingFunctions,
