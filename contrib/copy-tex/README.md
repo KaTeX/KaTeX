@@ -21,14 +21,14 @@ provided by this extension).  Without this CSS, partially selected equations
 will just get the usual HTML copy/paste behavior.
 
 ```html
-<link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-alpha2/contrib/copy-tex.css" rel="stylesheet" type="text/css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-alpha2/contrib/copy-tex.min.js" integrity="sha384-aSHW4V0LQ8/J0NPECS3O3IatT0GBp374k6fwk+ATnZCD0vVn03lTljdlntffaZyV" crossorigin="anonymous"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta/contrib/copy-tex.css" rel="stylesheet" type="text/css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta/contrib/copy-tex.min.js" integrity="sha384-aSHW4V0LQ8/J0NPECS3O3IatT0GBp374k6fwk+ATnZCD0vVn03lTljdlntffaZyV" crossorigin="anonymous"></script>
 ```
 
 See [index.html](index.html) for an example.
-(To run this example from a clone of the repository, run `make serve`
+(To run this example from a clone of the repository, run `npm start`
 in the root KaTeX directory, and then visit
-http://0.0.0.0:7936/contrib/copy-tex/index.html
+http://localhost:7936/contrib/copy-tex/index.html
 with your web browser.)
 
 If you want to build your own custom copy handler based on this one,

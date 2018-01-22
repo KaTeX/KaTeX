@@ -1,3 +1,4 @@
+import './copy-tex.css';
 import katexReplaceWithTex from './katex2tex';
 
 // Global copy handler to modify behavior on .katex elements.
