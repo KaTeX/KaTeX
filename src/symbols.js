@@ -735,12 +735,6 @@ for (let i = 0; i < extraLatinMath.length; i++) {
     defineSymbol(math, main, mathord, ch, ch);
 }
 
-// Cyrillic
-for (let i = 0x0410; i <= 0x044F; i++) {
-    const ch = String.fromCharCode(i);
-    defineSymbol(text, main, textord, ch, ch);
-}
-
 // Unicode versions of existing characters
 defineSymbol(text, main, textord, "\u2013", "–");
 defineSymbol(text, main, textord, "\u2014", "—");
