@@ -464,7 +464,6 @@ export default class Parser {
      * \textrm, where instead of keeping a style we just pretend that there is an
      * implicit grouping after it until the end of the group. E.g.
      *   small text {\Large large text} small text again
-     * It is also used for \left and \right to get the correct grouping.
      */
     parseImplicitGroup(breakOnTokenText?: "]" | "}" | "$"): ?ParseNode {
         const start = this.parseSymbol();

@@ -4,12 +4,12 @@ import defineFunction from "../defineFunction";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
-import ParseNode from "../ParseNode";
 import utils from "../utils";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
+import type ParseNode from "../ParseNode";
 import type {FunctionContext} from "../defineFunction";
 
 // Extra data needed for the delimiter handler down below
@@ -132,6 +132,7 @@ defineFunction({
             const parser = context.parser;
             // Parse out the implicit body
             ++parser.leftrightDepth;
+            // parseExpression stops before '\\right'
             const body = parser.parseExpression(false);
             --parser.leftrightDepth;
             // Check the next token
@@ -147,6 +148,9 @@ defineFunction({
                 right: right.value.value,
             };
         } else {
+            // This is a little weird. We return this object which gets turned
+            // into a ParseNode which gets returned by
+            // `const right = parser.parseFunction();` up above.
             return {
                 type: "leftright",
                 value: delim.value,
