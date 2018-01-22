@@ -29,9 +29,9 @@ before the close body tag:
 ```
 
 See [index.html](index.html) for an example.
-(To run this example from a clone of the repository, run `make serve`
+(To run this example from a clone of the repository, run `npm start`
 in the root KaTeX directory, and then visit
-http://0.0.0.0:7936/contrib/auto-render/index.html
+http://localhost:7936/contrib/auto-render/index.html
 with your web browser.)
 
 If you prefer to have all your setup inside the html `<head>`,
