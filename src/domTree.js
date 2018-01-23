@@ -77,7 +77,7 @@ class span implements CombinableDomNode {
         this.height = 0;
         this.depth = 0;
         this.maxFontSize = 0;
-        this.style = {...style} || {};
+        this.style = Object.assign({}, style);
         this.attributes = {};
         if (options) {
             if (options.style.isTight()) {
@@ -408,7 +408,7 @@ class symbolNode implements CombinableDomNode {
         this.skew = skew || 0;
         this.width = width || 0;
         this.classes = classes || [];
-        this.style = {...style} || {};
+        this.style = Object.assign({}, style);
         this.maxFontSize = 0;
 
         // Mark CJK characters with specific classes so that we can specify which
