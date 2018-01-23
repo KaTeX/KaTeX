@@ -16,7 +16,7 @@ import type Options from "./Options";
 import type ParseNode from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {Mode} from "./types";
-import type {DomChildNode, CombinableDomNode} from "./domTree";
+import type {DomChildNode, CombinableDomNode, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
 
 // The following have to be loaded from Main-Italic font, using class mainit
@@ -42,7 +42,7 @@ const lookupSymbol = function(
     }
     return {
         value: value,
-        metrics: fontMetrics.getCharacterMetrics(value, fontFamily),
+        metrics: fontMetrics.getCharacterMetrics(value, fontFamily, mode),
     };
 };
 
@@ -320,8 +320,9 @@ const makeSpan = function(
     classes?: string[],
     children?: DomChildNode[],
     options?: Options,
+    style?: CssStyle,
 ): domTree.span {
-    const span = new domTree.span(classes, children, options);
+    const span = new domTree.span(classes, children, options, style);
 
     sizeElementFromChildren(span);
 
@@ -381,6 +382,7 @@ type VListElem = {|
     marginLeft?: string,
     marginRight?: string,
     wrapperClasses?: string[],
+    wrapperStyle?: CssStyle,
 |};
 type VListElemAndShift = {|
     type: "elem",
@@ -389,6 +391,7 @@ type VListElemAndShift = {|
     marginLeft?: string,
     marginRight?: string,
     wrapperClasses?: string[],
+    wrapperStyle?: CssStyle,
 |};
 type VListKern = {| type: "kern", size: number |};
 
@@ -519,8 +522,9 @@ const makeVList = function(params: VListParam, options: Options): domTree.span {
         } else {
             const elem = child.elem;
             const classes = child.wrapperClasses || [];
+            const style = child.wrapperStyle || {};
 
-            const childWrap = makeSpan(classes, [pstrut, elem]);
+            const childWrap = makeSpan(classes, [pstrut, elem], undefined, style);
             childWrap.style.top = (-pstrutSize - currPos - elem.depth) + "em";
             if (child.marginLeft) {
                 childWrap.style.marginLeft = child.marginLeft;
@@ -760,6 +764,7 @@ export default {
     makeVerb,
     makeGlue,
     staticSvg,
+    svgData,
     tryCombineChars,
     spacingFunctions,
 };

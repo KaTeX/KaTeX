@@ -33,13 +33,13 @@ import utils from "./utils";
  * Get the metrics for a given symbol and font, after transformation (i.e.
  * after following replacement from symbols.js)
  */
-const getMetrics = function(symbol, font) {
+const getMetrics = function(symbol, font, mode) {
     if (symbols.math[symbol] && symbols.math[symbol].replace) {
         return fontMetrics.getCharacterMetrics(
-            symbols.math[symbol].replace, font);
+            symbols.math[symbol].replace, font, mode);
     } else {
         return fontMetrics.getCharacterMetrics(
-            symbol, font);
+            symbol, font, mode);
     }
 };
 
@@ -240,16 +240,16 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
     }
 
     // Get the metrics of the four sections
-    const topMetrics = getMetrics(top, font);
+    const topMetrics = getMetrics(top, font, mode);
     const topHeightTotal = topMetrics.height + topMetrics.depth;
-    const repeatMetrics = getMetrics(repeat, font);
+    const repeatMetrics = getMetrics(repeat, font, mode);
     const repeatHeightTotal = repeatMetrics.height + repeatMetrics.depth;
-    const bottomMetrics = getMetrics(bottom, font);
+    const bottomMetrics = getMetrics(bottom, font, mode);
     const bottomHeightTotal = bottomMetrics.height + bottomMetrics.depth;
     let middleHeightTotal = 0;
     let middleFactor = 1;
     if (middle !== null) {
-        const middleMetrics = getMetrics(middle, font);
+        const middleMetrics = getMetrics(middle, font, mode);
         middleHeightTotal = middleMetrics.height + middleMetrics.depth;
         middleFactor = 2; // repeat symmetrically above and below middle
     }
@@ -522,7 +522,7 @@ const traverseSequence = function(delim, height, sequence, options) {
             break;
         }
 
-        const metrics = getMetrics(delim, delimTypeToFont(sequence[i]));
+        const metrics = getMetrics(delim, delimTypeToFont(sequence[i]), "math");
         let heightDepth = metrics.height + metrics.depth;
 
         // Small delimiters are scaled down versions of the same font, so we

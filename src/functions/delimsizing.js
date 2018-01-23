@@ -129,12 +129,34 @@ defineFunction({
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
 
-        // \left and \right are caught somewhere in Parser.js, which is
-        // why this data doesn't match what is in buildHTML.
-        return {
-            type: "leftright",
-            value: delim.value,
-        };
+        if (context.funcName === "\\left") {
+            const parser = context.parser;
+            // Parse out the implicit body
+            ++parser.leftrightDepth;
+            // parseExpression stops before '\\right'
+            const body = parser.parseExpression(false);
+            --parser.leftrightDepth;
+            // Check the next token
+            parser.expect("\\right", false);
+            const right = parser.parseFunction();
+            if (!right) {
+                throw new ParseError('failed to parse function after \\right');
+            }
+            return {
+                type: "leftright",
+                body: body,
+                left: delim.value,
+                right: right.value.value,
+            };
+        } else {
+            // This is a little weird. We return this object which gets turned
+            // into a ParseNode which gets returned by
+            // `const right = parser.parseFunction();` up above.
+            return {
+                type: "leftright",
+                value: delim.value,
+            };
+        }
     },
     htmlBuilder: (group, options) => {
         // Build the inner expression

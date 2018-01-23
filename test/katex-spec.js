@@ -2799,6 +2799,12 @@ describe("Unicode accents", function() {
             "\\'y\\\"y}");
     });
 
+    it("should support \\aa in text mode", function() {
+        expect("\\text{\\aa\\AA}").toParseLike("\\text{\\r a\\r A}");
+        expect("\\aa").toNotParse();
+        expect("\\Aa").toNotParse();
+    });
+
     it("should parse combining characters", function() {
         expect("A\u0301C\u0301").toParseLike("Á\\acute C");
         expect("\\text{A\u0301C\u0301}").toParseLike("\\text{Á\\'C}");

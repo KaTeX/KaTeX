@@ -26,9 +26,9 @@ will just get the usual HTML copy/paste behavior.
 ```
 
 See [index.html](index.html) for an example.
-(To run this example from a clone of the repository, run `make serve`
+(To run this example from a clone of the repository, run `npm start`
 in the root KaTeX directory, and then visit
-http://0.0.0.0:7936/contrib/copy-tex/index.html
+http://localhost:7936/contrib/copy-tex/index.html
 with your web browser.)
 
 If you want to build your own custom copy handler based on this one,
