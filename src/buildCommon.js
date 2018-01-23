@@ -306,6 +306,8 @@ const sizeElementFromChildren = function(
     elem.maxFontSize = maxFontSize;
 };
 
+type CssStyle = {[name: string]: string};
+
 /**
  * Makes a span with the given list of classes, list of children, and options.
  *
@@ -318,7 +320,7 @@ const makeSpan = function(
     classes?: string[],
     children?: DomChildNode[],
     options?: Options,
-    style?: {[name: string]: string},
+    style?: CssStyle,
 ): domTree.span {
     const span = new domTree.span(classes, children, options, style);
 
@@ -393,7 +395,7 @@ type VListElem = {|
     marginLeft?: string,
     marginRight?: string,
     wrapperClasses?: string[],
-    wrapperStyle?: {[name: string]: string},
+    wrapperStyle?: CssStyle,
 |};
 type VListElemAndShift = {|
     type: "elem",
@@ -402,7 +404,7 @@ type VListElemAndShift = {|
     marginLeft?: string,
     marginRight?: string,
     wrapperClasses?: string[],
-    wrapperStyle?: {[name: string]: string},
+    wrapperStyle?: CssStyle,
 |};
 type VListKern = {| type: "kern", size: number |};
 
