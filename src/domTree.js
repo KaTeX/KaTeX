@@ -49,6 +49,8 @@ export type DomChildNode = span | anchor | svgNode | symbolNode;
 
 export type SvgChildNode = pathNode | lineNode;
 
+export type CssStyle = {[name: string]: string};
+
 /**
  * This node represents a span node, with a className, a list of children, and
  * an inline style. It also contains information about its height, depth, and
@@ -61,20 +63,21 @@ class span implements CombinableDomNode {
     depth: number;
     width: ?number;
     maxFontSize: number;
-    style: {[string]: string};
+    style: CssStyle;
     attributes: {[string]: string};
 
     constructor(
         classes?: string[],
         children?: DomChildNode[],
         options?: Options,
+        style?: CssStyle,
     ) {
         this.classes = classes || [];
         this.children = children || [];
         this.height = 0;
         this.depth = 0;
         this.maxFontSize = 0;
-        this.style = {};
+        this.style = Object.assign({}, style);
         this.attributes = {};
         if (options) {
             if (options.style.isTight()) {
@@ -192,7 +195,7 @@ class anchor implements CombinableDomNode {
     height: number;
     depth: number;
     maxFontSize: number;
-    style: {[string]: string};
+    style: CssStyle;
     attributes: {[string]: string};
 
     constructor(
@@ -386,7 +389,7 @@ class symbolNode implements CombinableDomNode {
     width: number;
     maxFontSize: number;
     classes: string[];
-    style: {[string]: string};
+    style: CssStyle;
 
     constructor(
         value: string,
@@ -396,7 +399,7 @@ class symbolNode implements CombinableDomNode {
         skew?: number,
         width?: number,
         classes?: string[],
-        style?: {[string]: string},
+        style?: CssStyle,
     ) {
         this.value = value;
         this.height = height || 0;
@@ -405,7 +408,7 @@ class symbolNode implements CombinableDomNode {
         this.skew = skew || 0;
         this.width = width || 0;
         this.classes = classes || [];
-        this.style = style || {};
+        this.style = Object.assign({}, style);
         this.maxFontSize = 0;
 
         // Mark text from non-Latin scripts with specific classes so that we
