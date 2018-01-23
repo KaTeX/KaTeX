@@ -3,7 +3,6 @@
 
 const childProcess = require("child_process");
 const fs = require("fs");
-const http = require("http");
 const jspngopt = require("jspngopt");
 const net = require("net");
 const os = require("os");
@@ -12,7 +11,9 @@ const path = require("path");
 const selenium = require("selenium-webdriver");
 const firefox = require("selenium-webdriver/firefox");
 
-const app = require("../../server");
+const webpack = require('webpack');
+const webpackDevServer = require("webpack-dev-server");
+const webpackConfig = require("../../webpack.dev");
 const data = require("../../test/screenshotter/ss_data");
 
 const dstDir = path.normalize(
@@ -194,9 +195,11 @@ function startServer() {
         return;
     }
     const port = Math.floor(Math.random() * (maxPort - minPort)) + minPort;
-    const server = http.createServer(app).listen(port);
+    const compiler = webpack(webpackConfig);
+    const wds = new webpackDevServer(compiler, webpackConfig[0].devServer);
+    const server = wds.listen(port);
     server.once("listening", function() {
-        devServer = server;
+        devServer = wds;
         katexPort = port;
         attempts = 0;
         process.nextTick(tryConnect);
@@ -315,7 +318,7 @@ function findHostIP() {
 
     // Now we need to find an IP the container can connect to.
     // First, install a server component to get notified of successful connects
-    app.get("/ss-connect.js", function(req, res, next) {
+    devServer.app.get("/ss-connect.js", function(req, res, next) {
         if (!katexURL) {
             katexIP = req.query.ip;
             katexURL = "http://" + katexIP + ":" + katexPort + "/";
