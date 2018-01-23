@@ -15,7 +15,7 @@ import type Options from "./Options";
 import type ParseNode from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {Mode} from "./types";
-import type {DomChildNode, CombinableDomNode} from "./domTree";
+import type {DomChildNode, CombinableDomNode, CssStyle} from "./domTree";
 
 // The following have to be loaded from Main-Italic font, using class mainit
 const mainitLetters = [
@@ -305,8 +305,6 @@ const sizeElementFromChildren = function(
     elem.depth = depth;
     elem.maxFontSize = maxFontSize;
 };
-
-type CssStyle = {[name: string]: string};
 
 /**
  * Makes a span with the given list of classes, list of children, and options.
