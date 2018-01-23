@@ -464,7 +464,6 @@ export default class Parser {
      * \textrm, where instead of keeping a style we just pretend that there is an
      * implicit grouping after it until the end of the group. E.g.
      *   small text {\Large large text} small text again
-     * It is also used for \left and \right to get the correct grouping.
      */
     parseImplicitGroup(breakOnTokenText?: "]" | "}" | "$"): ?ParseNode {
         const start = this.parseSymbol();
@@ -497,25 +496,6 @@ export default class Parser {
                 style: "text",
                 value: body,
             }, "math");
-        } else if (func === "\\left") {
-            // If we see a left:
-            // Parse the entire left function (including the delimiter)
-            const left = this.parseGivenFunction(start);
-            // Parse out the implicit body
-            ++this.leftrightDepth;
-            const body = this.parseExpression(false);
-            --this.leftrightDepth;
-            // Check the next token
-            this.expect("\\right", false);
-            const right = this.parseFunction();
-            if (!right) {
-                throw new ParseError('failed to parse function after \\right');
-            }
-            return new ParseNode("leftright", {
-                body: body,
-                left: left.value.value,
-                right: right.value.value,
-            }, this.mode);
         } else if (func === "\\begin") {
             // begin...end is similar to left...right
             const begin = this.parseGivenFunction(start);
