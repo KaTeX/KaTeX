@@ -53,7 +53,7 @@ const getVariant = function(group, options) {
     }
 
     const fontName = buildCommon.fontMap[font].fontName;
-    if (fontMetrics.getCharacterMetrics(value, fontName)) {
+    if (fontMetrics.getCharacterMetrics(value, fontName, mode)) {
         return buildCommon.fontMap[font].variant;
     }
 
