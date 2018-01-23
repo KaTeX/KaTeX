@@ -79,7 +79,7 @@ const htmlBuilder = (group, options) => {
             // So now we use an SVG.
             // If Safari reforms, we should consider reverting to the glyph.
             accent = buildCommon.staticSvg("vec", options);
-            width = parseFloat(accent.style.width);
+            width = buildCommon.svgData.vec[1];
         } else {
             accent = buildCommon.makeSymbol(
                 group.value.label, "Main-Regular", group.mode, options);
@@ -180,6 +180,11 @@ const mathmlBuilder = (group, options) => {
     return node;
 };
 
+const NON_STRETCHY_ACCENT_REGEX = new RegExp([
+    "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
+    "\\check", "\\hat", "\\vec", "\\dot",
+].map(accent => `\\${accent}`).join("|"));
+
 // Accents
 defineFunction({
     type: "accent",
@@ -196,14 +201,10 @@ defineFunction({
     handler: (context, args) => {
         const base = args[0];
 
-        const isStretchy = !utils.contains([
-            "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
-            "\\check", "\\hat", "\\vec", "\\dot",
-        ], context.funcName);
-
-        const isShifty = !isStretchy || utils.contains([
-            "\\widehat", "\\widetilde",
-        ], context.funcName);
+        const isStretchy = !NON_STRETCHY_ACCENT_REGEX.test(context.funcName);
+        const isShifty = !isStretchy ||
+            context.funcName === "\\widehat" ||
+            context.funcName === "\\widetidle";
 
         return {
             type: "accent",

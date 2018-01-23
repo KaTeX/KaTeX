@@ -30,7 +30,7 @@ defineFunction({
         const innerGroup = html.buildGroup(group.value.base, options);
 
         const accentBody = stretchy.svgSpan(group, options);
-        const kern = (/tilde/.test(group.value.label) ? 0.12 : 0);
+        const kern = group.value.label === "\\utilde" ? 0.12 : 0;
 
         // Generate the vlist, with the appropriate kerns
         const vlist = buildCommon.makeVList({

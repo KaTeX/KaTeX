@@ -766,6 +766,7 @@ export default {
     makeOrd,
     makeVerb,
     staticSvg,
+    svgData,
     tryCombineChars,
     prependChildren,
     spacingFunctions,

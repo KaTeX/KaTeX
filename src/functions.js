@@ -25,6 +25,8 @@ const defineFunction = function(
     _defineFunction({names, props, handler});
 };
 
+// TODO(kevinb): have functions return an object and call defineFunction with
+// that object in this file instead of relying on side-effects.
 import "./functions/sqrt";
 
 import "./functions/color";
