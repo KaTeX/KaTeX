@@ -13,7 +13,6 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 import symbols from "./symbols";
 import utils from "./utils";
-import stretchy from "./stretchy";
 
 /**
  * Takes a symbol and converts it into a MathML text node after performing
@@ -293,38 +292,6 @@ groupTypes.sizing = function(group, options) {
     // this.
     node.setAttribute("mathsize", newOptions.sizeMultiplier + "em");
 
-    return node;
-};
-
-groupTypes.horizBrace = function(group, options) {
-    const accentNode = stretchy.mathMLnode(group.value.label);
-    return new mathMLTree.MathNode(
-        (group.value.isOver ? "mover" : "munder"),
-        [buildGroup(group.value.base, options), accentNode]
-    );
-};
-
-groupTypes.xArrow = function(group, options) {
-    const arrowNode = stretchy.mathMLnode(group.value.label);
-    let node;
-    let lowerNode;
-
-    if (group.value.body) {
-        const upperNode = buildGroup(group.value.body, options);
-        if (group.value.below) {
-            lowerNode = buildGroup(group.value.below, options);
-            node = new mathMLTree.MathNode(
-                "munderover", [arrowNode, lowerNode, upperNode]
-            );
-        } else {
-            node = new mathMLTree.MathNode("mover", [arrowNode, upperNode]);
-        }
-    } else if (group.value.below) {
-        lowerNode = buildGroup(group.value.below, options);
-        node = new mathMLTree.MathNode("munder", [arrowNode, lowerNode]);
-    } else {
-        node = new mathMLTree.MathNode("mover", [arrowNode]);
-    }
     return node;
 };
 

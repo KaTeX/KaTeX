@@ -226,44 +226,13 @@ defineFunction([
 import "./functions/accent";
 
 // Horizontal stretchy braces
-defineFunction([
-    "\\overbrace", "\\underbrace",
-], {
-    numArgs: 1,
-}, function(context, args) {
-    const base = args[0];
-    return {
-        type: "horizBrace",
-        label: context.funcName,
-        isOver: /^\\over/.test(context.funcName),
-        base: base,
-    };
-});
+import "./functions/horizBrace";
 
 // Stretchy accents under the body
 import "./functions/accentunder";
 
 // Stretchy arrows with an optional argument
-defineFunction([
-    "\\xleftarrow", "\\xrightarrow", "\\xLeftarrow", "\\xRightarrow",
-    "\\xleftrightarrow", "\\xLeftrightarrow", "\\xhookleftarrow",
-    "\\xhookrightarrow", "\\xmapsto", "\\xrightharpoondown",
-    "\\xrightharpoonup", "\\xleftharpoondown", "\\xleftharpoonup",
-    "\\xrightleftharpoons", "\\xleftrightharpoons", "\\xlongequal",
-    "\\xtwoheadrightarrow", "\\xtwoheadleftarrow", "\\xtofrom",
-], {
-    numArgs: 1,
-    numOptionalArgs: 1,
-}, function(context, args, optArgs) {
-    const below = optArgs[0];
-    const body = args[0];
-    return {
-        type: "xArrow",   // x for extensible
-        label: context.funcName,
-        body: body,
-        below: below,
-    };
-});
+import "./functions/xArrow";
 
 // Infix generalized fractions
 defineFunction(["\\over", "\\choose", "\\atop"], {
