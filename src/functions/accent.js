@@ -204,7 +204,7 @@ defineFunction({
         const isStretchy = !NON_STRETCHY_ACCENT_REGEX.test(context.funcName);
         const isShifty = !isStretchy ||
             context.funcName === "\\widehat" ||
-            context.funcName === "\\widetidle";
+            context.funcName === "\\widetilde";
 
         return {
             type: "accent",
