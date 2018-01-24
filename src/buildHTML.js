@@ -15,6 +15,7 @@ import domTree from "./domTree";
 import { calculateSize } from "./units";
 import utils from "./utils";
 import stretchy from "./stretchy";
+import {spacings, tightSpacings} from "./spacingData";
 
 const makeSpan = buildCommon.makeSpan;
 
@@ -66,91 +67,6 @@ export const spliceSpaces = function(children, i) {
     }
 };
 
-const thinspace = {
-    number: 3,
-    unit: "mu",
-};
-const mediumspace = {
-    number: 4,
-    unit: "mu",
-};
-const thickspace = {
-    number: 5,
-    unit: "mu",
-};
-
-export const spacings = {
-    mord: {
-        mop: thinspace,
-        mbin: mediumspace,
-        mrel: thickspace,
-        minner: thinspace,
-    },
-    mop: {
-        mord: thinspace,
-        mop: thinspace,
-        mrel: thickspace,
-        minner: thinspace,
-    },
-    mbin: {
-        mord: mediumspace,
-        mop: mediumspace,
-        mopen: mediumspace,
-        minner: mediumspace,
-    },
-    mrel: {
-        mord: thickspace,
-        mop: thickspace,
-        mopen: thickspace,
-        minner: thickspace,
-    },
-    mopen: {},
-    mclose: {
-        mop: thinspace,
-        mbin: mediumspace,
-        mrel: thickspace,
-        minner: thinspace,
-    },
-    mpunct: {
-        mord: thinspace,
-        mop: thinspace,
-        mrel: thickspace,
-        mopen: thinspace,
-        mclose: thinspace,
-        mpunct: thinspace,
-        minner: thinspace,
-    },
-    minner: {
-        mord: thinspace,
-        mop: thinspace,
-        mbin: mediumspace,
-        mrel: thickspace,
-        mopen: thinspace,
-        mpunct: thinspace,
-        minner: thinspace,
-    },
-};
-
-const tightSpacings = {
-    mord: {
-        mop: thinspace,
-    },
-    mop: {
-        mord: thinspace,
-        mop: thinspace,
-    },
-    mbin: {},
-    mrel: {},
-    mopen: {},
-    mclose: {
-        mop: thinspace,
-    },
-    mpunct: {},
-    minner: {
-        mop: thinspace,
-    },
-};
-
 const styleMap = {
     "display": Style.DISPLAY,
     "text": Style.TEXT,
@@ -179,11 +95,12 @@ export const buildExpression = function(expression, options, isRealGroup) {
     }
     // At this point `rawGroups` consists entirely of `symbolNode`s and `span`s.
 
-    // Explicit spaces (e.g., \;, \,) should be ignored with respect to atom
-    // spacing (e.g., "add thick space between mord and mrel").
+    // Ignore explicit spaces (e.g., \;, \,) when determine what implicit
+    // spacing should go between atoms of different classes.
     const nonSpaces =
         rawGroups.filter(group => group && group.classes[0] !== "mspace");
 
+    // Before determining what spaces to insert, perform bin cancellation.
     // Binary operators change to ordinary symbols in some contexts.
     for (let i = 0; i < nonSpaces.length; i++) {
         if (isBin(nonSpaces[i])) {
@@ -198,15 +115,24 @@ export const buildExpression = function(expression, options, isRealGroup) {
     let j = 0;
     for (let i = 0; i < rawGroups.length; i++) {
         groups.push(rawGroups[i]);
+
+        // For any group that is not a space, get the next non-space.  Then
+        // lookup what implicit space should be placed between those atoms and
+        // add it to groups.
         if (rawGroups[i].classes[0] !== "mspace" && j < nonSpaces.length - 1) {
-            const left = getTypeOfDomTree(nonSpaces[j]);
-            const right = getTypeOfDomTree(nonSpaces[j + 1]);
+            // Get the type of the current non-space node.  If it's a document
+            // fragment, get the type of the rightmost node in the fragment.
+            const left = getTypeOfDomTree(nonSpaces[j], "right");
+
+            // Get the type of the next non-space node.  If it's a document
+            // fragment, get the type of the leftmost node in the fragment.
+            const right = getTypeOfDomTree(nonSpaces[j + 1], "left");
 
             // We use buildExpression inside of sizingGroup, but it returns a
             // document fragement of elements.  sizingGroup sets `isRealGroup`
             // to false to avoid processing spans multiple times.
             if (left && right && isRealGroup) {
-                const space = isTight(nonSpaces[j + 1])
+                const space = isLeftTight(nonSpaces[j + 1])
                     ? tightSpacings[left][right]
                     : spacings[left][right];
 
@@ -248,15 +174,20 @@ export const buildExpression = function(expression, options, isRealGroup) {
 };
 
 // Return math atom class (mclass) of a domTree.
-export const getTypeOfDomTree = function(node) {
+export const getTypeOfDomTree = function(node, side = "right") {
     if (node instanceof domTree.documentFragment) {
         if (node.children.length) {
-            return getTypeOfDomTree(
-                node.children[node.children.length - 1]);
+            if (side === "right") {
+                return getTypeOfDomTree(
+                    node.children[node.children.length - 1]);
+            } else if (side === "left") {
+                return getTypeOfDomTree(
+                    node.children[0]);
+            }
         }
     } else {
         // This makes a lot of assumptions as to where the type of atom
-        // appears.  We shoul do a better job of enforcing this.
+        // appears.  We should do a better job of enforcing this.
         if (utils.contains([
             "mord", "mop", "mbin", "mrel", "mopen", "mclose",
             "mpunct", "minner",
@@ -267,10 +198,14 @@ export const getTypeOfDomTree = function(node) {
     return null;
 };
 
-export const isTight = function(node) {
+// If `node` is an atom return whether it's been assigned the mtight class.
+// If `node` is a document fragment, return the value of isLeftTight() for the
+// leftmost node in the fragment.
+// 'mtight' indicates that the node is script or scriptscript style.
+export const isLeftTight = function(node) {
     if (node instanceof domTree.documentFragment) {
         if (node.children.length) {
-            return isTight(node.children[node.children.length - 1]);
+            return isLeftTight(node.children[0]);
         }
     } else {
         return utils.contains(node.classes, "mtight");

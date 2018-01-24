@@ -6,6 +6,7 @@ import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
 import { calculateSize } from "../units";
+import { spacings, tightSpacings } from "../spacingData";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -210,7 +211,9 @@ defineFunction({
         }
 
         const lastChildType = html.getTypeOfDomTree(inner[inner.length - 1]);
-        if (lastChildType && html.spacings[lastChildType]["mclose"]) {
+        const activeSpacings = options.style.isTight() ? tightSpacings : spacings;
+
+        if (lastChildType && activeSpacings[lastChildType]["mclose"]) {
             const glue =
                 buildCommon.makeSpan(["mord", "rule"], [], options);
             const dimension =

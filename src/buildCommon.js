@@ -585,6 +585,9 @@ const makeVerb = function(group: ParseNode, options: Options): string {
     return text;
 };
 
+// Glue is a concept from TeX which is a flexible space between elements in
+// either a vertical or horizontal list.  In KaTeX, at least for now, it's
+// static space between elements in a horizontal layout.
 const makeGlue = (measurement: Measurement, options: Options): domTree.span => {
     // Make an empty span for the rule
     const rule = makeSpan(["mord", "rule"], [], options);
@@ -626,8 +629,8 @@ const retrieveBaseFontName = function(font: string): string {
 };
 
 const retrieveFontStylesName = function(
-  fontWeight?: string,
-  fontShape?: string,
+    fontWeight?: string,
+    fontShape?: string,
 ): string {
     let fontStylesName = '';
     if (fontWeight === "textbf") {
