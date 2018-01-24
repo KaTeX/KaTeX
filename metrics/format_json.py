@@ -10,7 +10,7 @@ if len(sys.argv) > 1:
         props.append('width')
 
 data = json.load(sys.stdin)
-sep = "module.exports = {\n    "
+sep = "export default {\n    "
 for font in sorted(data):
     sys.stdout.write(sep + json.dumps(font))
     sep = ": {\n        "
