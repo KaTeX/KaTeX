@@ -23,11 +23,11 @@ type Script = {
  */
 const scriptData: Array<Script> = [
     {
-        // Latin characters beyond the Latin-1 characters we have metrics for.
-        // Needed for Czech, Hungarian and Turkish text, for example.
+        // Latin characters beyond ASCII including the extension blocks
+        // needed for Czech, Hungarian and Turkish text, for example.
         name: 'latin',
         blocks: [
-            [0x0100, 0x024f],  // Latin Extended-A and Latin Extended-B
+            [0x0080, 0x024f],  // Latin-1, Latin Extended-A and Extended-B
             [0x0300, 0x036f],  // Combining Diacritical marks
         ],
     },
