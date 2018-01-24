@@ -217,7 +217,7 @@ defineFunction({
             const glue =
                 buildCommon.makeSpan(["mord", "rule"], [], options);
             const dimension =
-                calculateSize(html.spacings[lastChildType]["mclose"], options);
+                calculateSize(activeSpacings[lastChildType]["mclose"], options);
             glue.style.marginRight = `${dimension}em`;
             inner.push(glue);
         }
