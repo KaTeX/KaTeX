@@ -441,13 +441,30 @@
         position: absolute; // absolute relative to parent
         width: 100%;
 
+        // We want to inherit colors from our environment
+        fill: currentColor;
+        stroke: currentColor;
+
+        // But path elements should not have an outline by default
+        // that would make them bigger than we expect.
         path {
-            fill: currentColor;
+            stroke: none;
         }
 
-        line {
-            stroke: currentColor;
-        }
+        // And we don't want to inherit any other style properties
+        // that could affect SVG rendering without affecting font
+        // rendering. So we reset these properties to their default
+        // values for every <svg> element.
+        // See https://www.w3.org/TR/SVG/painting.html
+        fill-rule: nonzero;
+        fill-opacity: 1;
+        stroke-width: 1;
+        stroke-linecap: butt;
+        stroke-linejoin: miter;
+        stroke-miterlimit: 4;
+        stroke-dasharray: none;
+        stroke-dashoffset: 0;
+        stroke-opacity: 1;
     }
 
     .vertical-separator svg {
