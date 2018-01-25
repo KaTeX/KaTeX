@@ -54,6 +54,7 @@
             macros["\\" + match[1]] = decodeURIComponent(match[2]);
         }
 
+        mathNode.setAttribute("style", query["styles"] || "");
         katex.render(query["tex"], mathNode, settings);
         document.getElementById("pre").innerHTML = query["pre"] || "";
         document.getElementById("post").innerHTML = query["post"] || "";

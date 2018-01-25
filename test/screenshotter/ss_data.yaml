@@ -5,6 +5,8 @@
 # - pre: some HTML to insert before the KaTeX content
 # - post: some HTML to insert after the KaTeX content
 # - display: set this to 1 in order to use display style
+# - styles: an optional value for the HTML style="" attribute
+#     of the <span> element that contains the KaTeX output
 #
 # Note that YAML will treat a value starting in { as a flow mapping.
 # To avoid that, either enclose the value in '…' or use a block scalar style,
@@ -273,6 +275,14 @@ SupSubHorizSpacing: |
 SupSubLeftAlignReset: |
     \omega^8_{888} \quad \frac{1}{\hat{\omega}^{8}_{888}} \quad \displaystyle\sum_{\omega^{8}_{888}}
 SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
+SvgReset:
+    # This math uses a lot of SVG glyphs
+    tex: '\underbrace{\sqrt{\vec{x}} + \sqrt{\vec{\color{#f00}y}}}'
+    # Some of these styles should affect both svg and text. We want
+    # those to be inherited. But some of the styles only affect svg
+    # and the point of this test is to verify that the svg-only
+    # styles (like fill-opacity) are not inherited
+    styles: 'display:block; width:500px;border:solid yellow 5px;padding:50px;background:#ccc;color:green;font-size:92px;transform:translate(100px,250px)rotate(-45deg);fill-opacity:0;stroke-width:40;stroke:blue;'
 Symbols1: |
     \maltese\degree\pounds\$
     \text{\maltese\degree\pounds\textdollar}
