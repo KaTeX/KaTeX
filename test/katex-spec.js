@@ -1841,7 +1841,8 @@ describe("A bin builder", function() {
     it("should create mbins normally", function() {
         const built = getBuilt("x + y");
 
-        expect(built[1].classes).toContain("mbin");
+        // we add glue elements around the '+'
+        expect(built[2].classes).toContain("mbin");
     });
 
     it("should create ords when at the beginning of lists", function() {
@@ -1852,17 +1853,17 @@ describe("A bin builder", function() {
     });
 
     it("should create ords after some other objects", function() {
-        expect(getBuilt("x + + 2")[2].classes).toContain("mord");
-        expect(getBuilt("( + 2")[1].classes).toContain("mord");
-        expect(getBuilt("= + 2")[1].classes).toContain("mord");
-        expect(getBuilt("\\sin + 2")[1].classes).toContain("mord");
-        expect(getBuilt(", + 2")[1].classes).toContain("mord");
+        expect(getBuilt("x + + 2")[4].classes).toContain("mord");
+        expect(getBuilt("( + 2")[2].classes).toContain("mord");
+        expect(getBuilt("= + 2")[2].classes).toContain("mord");
+        expect(getBuilt("\\sin + 2")[2].classes).toContain("mord");
+        expect(getBuilt(", + 2")[2].classes).toContain("mord");
     });
 
     it("should correctly interact with color objects", function() {
-        expect(getBuilt("\\blue{x}+y")[1].classes).toContain("mbin");
-        expect(getBuilt("\\blue{x+}+y")[1].classes).toContain("mbin");
-        expect(getBuilt("\\blue{x+}+y")[2].classes).toContain("mord");
+        expect(getBuilt("\\blue{x}+y")[2].classes).toContain("mbin");
+        expect(getBuilt("\\blue{x+}+y")[2].classes).toContain("mbin");
+        expect(getBuilt("\\blue{x+}+y")[4].classes).toContain("mord");
     });
 });
 
@@ -2291,15 +2292,15 @@ describe("A phantom builder", function() {
     it("should make the children transparent", function() {
         const children = getBuilt("\\phantom{x+1}");
         expect(children[0].style.color).toBe("transparent");
-        expect(children[1].style.color).toBe("transparent");
         expect(children[2].style.color).toBe("transparent");
+        expect(children[4].style.color).toBe("transparent");
     });
 
     it("should make all descendants transparent", function() {
         const children = getBuilt("\\phantom{x+\\blue{1}}");
         expect(children[0].style.color).toBe("transparent");
-        expect(children[1].style.color).toBe("transparent");
         expect(children[2].style.color).toBe("transparent");
+        expect(children[4].style.color).toBe("transparent");
     });
 });
 
