@@ -10,12 +10,14 @@ import fontMetrics from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
 import stretchy from "./stretchy";
+import {calculateSize} from "./units";
 
 import type Options from "./Options";
 import type ParseNode from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {Mode} from "./types";
 import type {DomChildNode, CombinableDomNode, CssStyle} from "./domTree";
+import type {Measurement} from "./units";
 
 // The following have to be loaded from Main-Italic font, using class mainit
 const mainitLetters = [
@@ -360,19 +362,6 @@ const makeAnchor = function(
 };
 
 /**
- * Prepends the given children to the given span, updating height, depth, and
- * maxFontSize.
- */
-const prependChildren = function(
-    span: domTree.span,
-    children: DomChildNode[],
-) {
-    span.children = children.concat(span.children);
-
-    sizeElementFromChildren(span);
-};
-
-/**
  * Makes a document fragment with the given list of children.
  */
 const makeFragment = function(
@@ -596,6 +585,17 @@ const makeVerb = function(group: ParseNode, options: Options): string {
     return text;
 };
 
+// Glue is a concept from TeX which is a flexible space between elements in
+// either a vertical or horizontal list.  In KaTeX, at least for now, it's
+// static space between elements in a horizontal layout.
+const makeGlue = (measurement: Measurement, options: Options): domTree.span => {
+    // Make an empty span for the rule
+    const rule = makeSpan(["mord", "rule"], [], options);
+    const size = calculateSize(measurement, options);
+    rule.style.marginRight = `${size}em`;
+    return rule;
+};
+
 // Takes an Options object, and returns the appropriate fontLookup
 const retrieveTextFontName = function(
     fontFamily: string,
@@ -629,8 +629,8 @@ const retrieveBaseFontName = function(font: string): string {
 };
 
 const retrieveFontStylesName = function(
-  fontWeight?: string,
-  fontShape?: string,
+    fontWeight?: string,
+    fontShape?: string,
 ): string {
     let fontStylesName = '';
     if (fontWeight === "textbf") {
@@ -765,9 +765,9 @@ export default {
     makeVList,
     makeOrd,
     makeVerb,
+    makeGlue,
     staticSvg,
     svgData,
     tryCombineChars,
-    prependChildren,
     spacingFunctions,
 };

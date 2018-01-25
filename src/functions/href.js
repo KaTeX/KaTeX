@@ -54,6 +54,8 @@ defineFunction({
             if (first === last) { // Case 2 : type of both ends coincides
                 classes = [first];
             } else { // Case 3: both ends have different types.
+                // TODO(kevinb): figure out a better way to communicate this
+                // information to buildHTML.js#buildExpression.
                 const anc = buildCommon.makeAnchor(href, [], elements, options);
                 return new buildCommon.makeFragment([
                     new buildCommon.makeSpan([first], [], options),
