@@ -557,13 +557,23 @@
         position: absolute; // absolute relative to parent
         width: 100%;
 
-        path {
-            fill: currentColor;
-        }
+        // We want to inherit colors from our environment
+        fill: currentColor;
+        stroke: currentColor;
 
-        line {
-            stroke: currentColor;
-        }
+        // But we don't want to inherit anything other style
+        // properties that would affect SVG without affecting font
+        // glyphs so we reset these properties to their default values
+        // See https://www.w3.org/TR/SVG/painting.html
+        fill-rule: nonzero;
+        fill-opacity: 1;
+        stroke-width: 1;
+        stroke-linecap: butt;
+        stroke-linejoin: miter;
+        stroke-miterlimit: 4;
+        stroke-dasharray: none;
+        stroke-dashoffset: 0;
+        stroke-opacity: 1;
     }
 
     .vertical-separator svg {
