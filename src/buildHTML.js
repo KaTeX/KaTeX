@@ -95,7 +95,7 @@ export const buildExpression = function(expression, options, isRealGroup) {
     }
     // At this point `rawGroups` consists entirely of `symbolNode`s and `span`s.
 
-    // Ignore explicit spaces (e.g., \;, \,) when determine what implicit
+    // Ignore explicit spaces (e.g., \;, \,) when determining what implicit
     // spacing should go between atoms of different classes.
     const nonSpaces =
         rawGroups.filter(group => group && group.classes[0] !== "mspace");
@@ -129,7 +129,7 @@ export const buildExpression = function(expression, options, isRealGroup) {
             const right = getTypeOfDomTree(nonSpaces[j + 1], "left");
 
             // We use buildExpression inside of sizingGroup, but it returns a
-            // document fragement of elements.  sizingGroup sets `isRealGroup`
+            // document fragment of elements.  sizingGroup sets `isRealGroup`
             // to false to avoid processing spans multiple times.
             if (left && right && isRealGroup) {
                 const space = isLeftTight(nonSpaces[j + 1])
@@ -165,8 +165,9 @@ export const buildExpression = function(expression, options, isRealGroup) {
             groups[i].style.position = "absolute";
             // TODO(kevinb) fix this for Safari by switching to a non-combining
             // character for \not.
-            // 0.194440 is the width for the \not character
-            groups[i].style.paddingLeft = `${1.0 - 0.194440}em`;
+            // This value was determined empirically.
+            // TODO(kevinb) figure out the real math for this value.
+            groups[i].style.paddingLeft = "0.8em";
         }
     }
 
@@ -175,7 +176,8 @@ export const buildExpression = function(expression, options, isRealGroup) {
 
 // Return math atom class (mclass) of a domTree.
 export const getTypeOfDomTree = function(node, side = "right") {
-    if (node instanceof domTree.documentFragment) {
+    if (node instanceof domTree.documentFragment ||
+            node instanceof domTree.anchor) {
         if (node.children.length) {
             if (side === "right") {
                 return getTypeOfDomTree(
