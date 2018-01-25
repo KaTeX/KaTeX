@@ -561,9 +561,16 @@
         fill: currentColor;
         stroke: currentColor;
 
-        // But we don't want to inherit anything other style
-        // properties that would affect SVG without affecting font
-        // glyphs so we reset these properties to their default values
+        // But path elements should not have an outline by default
+        // that would make them bigger than we expect.
+        path {
+            stroke: none;
+        }
+
+        // And we don't want to inherit any other style properties
+        // that could affect SVG rendering without affecting font
+        // rendering. So we reset these properties to their default
+        // values for every <svg> element.
         // See https://www.w3.org/TR/SVG/painting.html
         fill-rule: nonzero;
         fill-opacity: 1;
