@@ -656,8 +656,8 @@ defineSymbol(text, main, textord, "\u00f8", "\\o", true);
 defineSymbol(text, main, textord, "\u00c6", "\\AE", true);
 defineSymbol(text, main, textord, "\u0152", "\\OE", true);
 defineSymbol(text, main, textord, "\u00d8", "\\O", true);
-defineSymbol(text, main, accent, "\u02cb", "\\'"); // acute
-defineSymbol(text, main, accent, "\u02ca", "\\`"); // grave
+defineSymbol(text, main, accent, "\u02ca", "\\'"); // acute
+defineSymbol(text, main, accent, "\u02cb", "\\`"); // grave
 defineSymbol(text, main, accent, "\u02c6", "\\^"); // circumflex
 defineSymbol(text, main, accent, "\u02dc", "\\~"); // tilde
 defineSymbol(text, main, accent, "\u02c9", "\\="); // macron
