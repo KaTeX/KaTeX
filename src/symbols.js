@@ -656,8 +656,8 @@ defineSymbol(text, main, textord, "\u00f8", "\\o", true);
 defineSymbol(text, main, textord, "\u00c6", "\\AE", true);
 defineSymbol(text, main, textord, "\u0152", "\\OE", true);
 defineSymbol(text, main, textord, "\u00d8", "\\O", true);
-defineSymbol(text, main, accent, "\u02ca", "\\'"); // acute
-defineSymbol(text, main, accent, "\u02cb", "\\`"); // grave
+defineSymbol(text, main, accent, "\u00b4", "\\'"); // acute
+defineSymbol(text, main, accent, "\u0060", "\\`"); // grave
 defineSymbol(text, main, accent, "\u02c6", "\\^"); // circumflex
 defineSymbol(text, main, accent, "\u02dc", "\\~"); // tilde
 defineSymbol(text, main, accent, "\u02c9", "\\="); // macron
@@ -666,7 +666,7 @@ defineSymbol(text, main, accent, "\u02d9", "\\."); // dot above
 defineSymbol(text, main, accent, "\u02da", "\\r"); // ring above
 defineSymbol(text, main, accent, "\u02c7", "\\v"); // caron
 defineSymbol(text, main, accent, "\u00a8", '\\"'); // diaresis
-defineSymbol(text, main, accent, "\u030B", "\\H"); // double acute
+defineSymbol(text, main, accent, "\u02dd", "\\H"); // double acute
 
 defineSymbol(text, main, textord, "\u2013", "--");
 defineSymbol(text, main, textord, "\u2013", "\\textendash");
