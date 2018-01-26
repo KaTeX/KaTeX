@@ -22,12 +22,12 @@ $map{cmr10} = {
 
     0x10 => 0x131,          # \imath (roman)
     0x11 => 0x237,          # \jmath (roman)
-    0x12 => 0x60,           # \grave
-    0x13 => 0xB4,           # \acute
+    0x12 => 0x2CB,          # \grave
+    0x13 => 0x2CA,          # \acute
     0x14 => 0x2C7,          # \check
     0x15 => 0x2D8,          # \breve
-    0x16 => 0xAF,           # \bar
-    0x17 => 0xB0,           # \degree
+    0x16 => 0x2C9,          # \bar
+    0x17 => [0xB0,-125,0],  # \degree
     0x17 => 0x02DA,         # \r, ring above
 
     [0x21,0x2F] => 0x21,    # !, ", #, $, %, &, ', (, ), *, +, comma, -, ., /
@@ -428,12 +428,12 @@ $map{cmti10} = {
     [7,8] => 0x3A5,         # \Upsilon, \Phi
     [9,0xA] => 0x3A8,       # \Psi, \Omega
 
-    0x12 => 0x60,           # \grave
-    0x13 => 0xB4,           # \acute
+    0x12 => 0x2CB,          # \grave
+    0x13 => 0x2CA,          # \acute
     0x14 => 0x2C7,          # \check
     0x15 => 0x2D8,          # \breve
-    0x16 => 0xAF,           # \bar
-    0x17 => 0xB0,           # \degree
+    0x16 => 0x2C9,          # \bar
+    0x17 => [0xB0,-160,0],  # \degree
     0x17 => 0x02DA,         # \r, ring above
 
     [0x21,0x23] => 0x21,    # !, ", #,
@@ -482,12 +482,12 @@ $map{cmbx10} = {
 
     0x10 => 0x131,          # \imath (roman bold)
     0x11 => 0x237,          # \jmath (roman bold)
-    0x12 => 0x60,           # \grave
-    0x13 => 0xB4,           # \acute
+    0x12 => 0x2CB,          # \grave
+    0x13 => 0x2CA,          # \acute
     0x14 => 0x2C7,          # \check
     0x15 => 0x2D8,          # \breve
-    0x16 => 0xAF,           # \bar
-    0x17 => 0xB0,           # \degree
+    0x16 => 0x2C9,          # \bar
+    0x17 => [0xB0,-147,0],  # \degree
     0x17 => 0x02DA,         # \r, ring above
 
     [0x21,0x2F] => 0x21,    # !, ", #, $, %, &, ', (, ), *, +, comma, -, ., /
@@ -976,11 +976,11 @@ $map{cmtt10} = {
 
     0x10 => 0x131,          # \imath (roman)
     0x11 => 0x237,          # \jmath (roman)
-    0x12 => 0x60,           # \grave
-    0x13 => 0xB4,           # \acute
+    0x12 => 0x2CB,          # \grave
+    0x13 => 0x2CA,          # \acute
     0x14 => 0x2C7,          # \check
     0x15 => 0x2D8,          # \breve
-    0x16 => 0xAF,           # \bar
+    0x16 => 0x2C9,          # \bar
     0x17 => 0xB0,           # \degree
     0x17 => 0x02DA,         # \r, ring above
     0x20 => 0x2423,         # graphic representation of space
@@ -1014,12 +1014,12 @@ $map{cmssbx10} = {
 
     0x10 => 0x131,          # \imath (roman)
     0x11 => 0x237,          # \jmath (roman)
-    0x12 => [0x300,-550,0], # \grave (combining)
-    0x13 => [0x301,-550,0], # \acute (combining)
-    0x14 => [0x30C,-550,0], # \check (combining)
-    0x15 => [0x306,-550,0], # \breve (combining)
-    0x16 => [0x304,-550,0], # \bar (combining)
-    0x17 => [0x30A,-608,0], # ring above (combining)
+    0x13 => 0xB4,           # \acute
+    0x14 => 0x2C7,          # \check
+    0x15 => 0x2D8,          # \breve
+    0x16 => 0x2C9,          # \bar
+    0x17 => [0xB0,-58,0],   # \degree
+    0x17 => 0x02DA,         # \r, ring above
 
     [0x21,0x2F] => 0x21,    # !, ", #, $, %, &, ', (, ), *, +, comma, -, ., /
     0x22 => 0x201D,         # "
@@ -1032,16 +1032,16 @@ $map{cmssbx10} = {
     0x5B => 0x5B,           # [
     0x5C => 0x201C,         # ``
     [0x5D,0x5E] => 0x5D,    # ], ^
-    0x5E => [0x302,-550,0], # \hat (combining)
-    0x5F => [0x307,-428,0], # \dot (combining)
+    0x5E => 0x2C6,          # \hat
+    0x5F => 0x2D9,          # \dot
     0x60 => 0x2018,         # `
     [0x61,0x7A] => 0x61,    # a-z
     [0x7B,0x7C] => 0x2013,  # \endash, \emdash
     0x7B => [0x5F,0,-350],  # underline
-    0x7D => [0x30B,-550,0], # double acute (combining)
+    0x7D => 0x2DD,          # double acute
     0x7E => [0x7E,0,-350],  # ~
-    0x7E => [0x303,-550,0], # \tilde (combining)
-    0x7F => [0x308,-550,0], # \ddot (combining)
+    0x7E => 0x2DC,          # \tilde
+    0x7F => 0xA8,           # \ddot
   ],
 };
 
@@ -1058,12 +1058,12 @@ $map{cmss10} = {
 
     0x10 => 0x131,          # \imath (roman)
     0x11 => 0x237,          # \jmath (roman)
-    0x12 => 0x60,           # \grave
-    0x13 => 0xB4,           # \acute
+    0x12 => 0x2CB,          # \grave
+    0x13 => 0x2CA,          # \acute
     0x14 => 0x2C7,          # \check
     0x15 => 0x2D8,          # \breve
-    0x16 => 0xAF,           # \bar
-    0x17 => 0xB0,           # \degree
+    0x16 => 0x2C9,          # \bar
+    0x17 => [0xB0,-142,0],  # \degree
     0x17 => 0x02DA,         # \r, ring above
 
     [0x21,0x2F] => 0x21,    # !, ", #, $, %, &, ', (, ), *, +, comma, -, ., /
@@ -1103,12 +1103,12 @@ $map{cmssi10} = {
 
     0x10 => 0x131,          # \imath (roman)
     0x11 => 0x237,          # \jmath (roman)
-    0x12 => 0x60,           # \grave
-    0x13 => 0xB4,           # \acute
+    0x12 => 0x2CB,          # \grave
+    0x13 => 0x2CA,          # \acute
     0x14 => 0x2C7,          # \check
     0x15 => 0x2D8,          # \breve
-    0x16 => 0xAF,           # \bar
-    0x17 => 0xB0,           # \degree
+    0x16 => 0x2C9,          # \bar
+    0x17 => [0xB0,-113,0],  # \degree
     0x17 => 0x02DA,         # \r, ring above
 
     [0x21,0x2F] => 0x21,    # !, ", #, $, %, &, ', (, ), *, +, comma, -, ., /
@@ -1148,10 +1148,10 @@ $map{cmss10} = {
 
     0x10 => 0x131,          # \imath (roman)
     0x11 => 0x237,          # \jmath (roman)
-    0x13 => 0xB4,           # \acute
+    0x13 => 0x2CA,          # \acute
     0x14 => 0x2C7,          # \check
     0x15 => 0x2D8,          # \breve
-    0x16 => 0xAF,           # \bar
+    0x16 => 0x2C9,          # \bar
     0x17 => 0xB0,           # \degree
     0x17 => 0x02DA,         # \r, ring above
 

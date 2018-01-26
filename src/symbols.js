@@ -634,11 +634,11 @@ defineSymbol(math, main, inner, "\u2026", "\\ldots", true);
 defineSymbol(math, main, inner, "\u22ef", "\\@cdots", true);
 defineSymbol(math, main, inner, "\u22f1", "\\ddots", true);
 defineSymbol(math, main, textord, "\u22ee", "\\vdots", true);
-defineSymbol(math, main, accent, "\u00b4", "\\acute");
-defineSymbol(math, main, accent, "\u0060", "\\grave");
+defineSymbol(math, main, accent, "\u02ca", "\\acute");
+defineSymbol(math, main, accent, "\u02cb", "\\grave");
 defineSymbol(math, main, accent, "\u00a8", "\\ddot");
 defineSymbol(math, main, accent, "\u007e", "\\tilde");
-defineSymbol(math, main, accent, "\u00af", "\\bar");
+defineSymbol(math, main, accent, "\u02c9", "\\bar");
 defineSymbol(math, main, accent, "\u02d8", "\\breve");
 defineSymbol(math, main, accent, "\u02c7", "\\check");
 defineSymbol(math, main, accent, "\u005e", "\\hat");
@@ -656,8 +656,8 @@ defineSymbol(text, main, textord, "\u00f8", "\\o", true);
 defineSymbol(text, main, textord, "\u00c6", "\\AE", true);
 defineSymbol(text, main, textord, "\u0152", "\\OE", true);
 defineSymbol(text, main, textord, "\u00d8", "\\O", true);
-defineSymbol(text, main, accent, "\u00b4", "\\'"); // acute
-defineSymbol(text, main, accent, "\u0060", "\\`"); // grave
+defineSymbol(text, main, accent, "\u02cb", "\\'"); // acute
+defineSymbol(text, main, accent, "\u02ca", "\\`"); // grave
 defineSymbol(text, main, accent, "\u02c6", "\\^"); // circumflex
 defineSymbol(text, main, accent, "\u02dc", "\\~"); // tilde
 defineSymbol(text, main, accent, "\u02c9", "\\="); // macron
