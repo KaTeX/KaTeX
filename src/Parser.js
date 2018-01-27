@@ -1033,8 +1033,11 @@ export default class Parser {
         }
         // At this point, we should have a symbol, possibly with accents.
         // First expand any accented base symbol according to unicodeSymbols.
+        // But note that we only do this in math mode and for codepoints
+        // that we do not support in text mode
         if (unicodeSymbols.hasOwnProperty(text[0]) &&
-            !symbols[this.mode][text[0]]) {
+            !symbols[this.mode][text[0]] &&
+            (this.mode === 'math' || !supportedCodepoint(text.charCodeAt(0)))) {
             text = unicodeSymbols[text[0]] + text.substr(1);
         }
         // Strip off any combining characters
