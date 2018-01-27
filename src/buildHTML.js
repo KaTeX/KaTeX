@@ -151,8 +151,7 @@ export const buildExpression = function(expression, options, isRealGroup) {
                         }
                     }
 
-                    const glue = buildCommon.makeGlue(
-                        spacings[left][right], glueOptions);
+                    const glue = buildCommon.makeGlue(space, glueOptions);
 
                     groups.push(glue);
                 }
