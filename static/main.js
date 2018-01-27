@@ -1,3 +1,4 @@
+/* eslint no-console:0 */
 import katex from '../katex.webpack.js';
 
 function init() {
