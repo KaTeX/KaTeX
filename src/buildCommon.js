@@ -244,7 +244,7 @@ const makeOrd = function(
             const fontData = mathit(value, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
-        } else if (fontFamily.includes("math") || mode === "math") {
+        } else if (fontFamily.indexOf("math") !== -1 || mode === "math") {
             // To support old font functions (i.e. \rm \sf etc.) or math mode.
             fontName = fontMap[fontFamily].fontName;
             fontClasses = [fontFamily];
