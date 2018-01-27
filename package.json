@@ -62,7 +62,7 @@
     "clean": "rm -rf build/* node_modules/",
     "clean-install": "npm run clean && npm i",
     "test": "check-dependencies && npm run lint && npm run flow && npm run jest",
-    "start": "check-dependencies && webpack-dev-server --open --config webpack.dev.js",
+    "start": "check-dependencies && webpack-dev-server --open --hot --config webpack.dev.js",
     "build": "check-dependencies && rimraf build/* && webpack",
     "watch": "npm run build -- --watch",
     "prepublishOnly": "make NIS= dist"

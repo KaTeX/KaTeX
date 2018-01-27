@@ -1,3 +1,5 @@
+import katex from '../katex.webpack.js';
+
 function init() {
     const input = document.getElementById("input");
     let math = document.getElementById("math");
@@ -65,6 +67,14 @@ function init() {
             }
         }
     }
+
+    if (module.hot) {
+        module.hot.accept('../katex.webpack.js', reprocess);
+    }
 }
 
-init();
+if (/^\/(?:index.html)?$/.test(location.pathname)) {
+    init();
+}
+
+export default katex;
