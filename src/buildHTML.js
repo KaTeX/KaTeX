@@ -26,17 +26,13 @@ const isSpace = function(node) {
 // Binary atoms (first class `mbin`) change into ordinary atoms (`mord`)
 // depending on their surroundings. See TeXbook pg. 442-446, Rules 5 and 6,
 // and the text before Rule 19.
-const isBin = function(node) {
-    return node && node.classes[0] === "mbin";
-};
-
 const isBinLeftCanceller = function(node, isRealGroup) {
     // TODO: This code assumes that a node's math class is the first element
     // of its `classes` array. A later cleanup should ensure this, for
     // instance by changing the signature of `makeSpan`.
     if (node) {
         return utils.contains(["mbin", "mopen", "mrel", "mop", "mpunct"],
-                              node.classes[0]);
+                              getTypeOfDomTree(node, "right"));
     } else {
         return isRealGroup;
     }
@@ -44,7 +40,8 @@ const isBinLeftCanceller = function(node, isRealGroup) {
 
 const isBinRightCanceller = function(node, isRealGroup) {
     if (node) {
-        return utils.contains(["mrel", "mclose", "mpunct"], node.classes[0]);
+        return utils.contains(["mrel", "mclose", "mpunct"],
+                              getTypeOfDomTree(node, "left"));
     } else {
         return isRealGroup;
     }
@@ -103,11 +100,16 @@ export const buildExpression = function(expression, options, isRealGroup) {
     // Before determining what spaces to insert, perform bin cancellation.
     // Binary operators change to ordinary symbols in some contexts.
     for (let i = 0; i < nonSpaces.length; i++) {
-        if (isBin(nonSpaces[i])) {
-            if (isBinLeftCanceller(nonSpaces[i - 1], isRealGroup)
-                    || isBinRightCanceller(nonSpaces[i + 1], isRealGroup)) {
-                nonSpaces[i].classes[0] = "mord";
-            }
+        const left = getOutermostNode(nonSpaces[i], "left");
+        if (left.classes[0] === "mbin" &&
+                isBinLeftCanceller(nonSpaces[i - 1], isRealGroup)) {
+            left.classes[0] = "mord";
+        }
+
+        const right = getOutermostNode(nonSpaces[i], "right");
+        if (right.classes[0] === "mbin" &&
+                isBinRightCanceller(nonSpaces[i + 1], isRealGroup)) {
+            right.classes[0] = "mord";
         }
     }
 
@@ -174,28 +176,37 @@ export const buildExpression = function(expression, options, isRealGroup) {
     return groups;
 };
 
-// Return math atom class (mclass) of a domTree.
-export const getTypeOfDomTree = function(node, side = "right") {
+// Return the outermost node of a domTree.
+const getOutermostNode = function(node, side = "right") {
     if (node instanceof domTree.documentFragment ||
             node instanceof domTree.anchor) {
         if (node.children.length) {
             if (side === "right") {
-                return getTypeOfDomTree(
+                return getOutermostNode(
                     node.children[node.children.length - 1]);
             } else if (side === "left") {
-                return getTypeOfDomTree(
+                return getOutermostNode(
                     node.children[0]);
             }
         }
-    } else {
-        // This makes a lot of assumptions as to where the type of atom
-        // appears.  We should do a better job of enforcing this.
-        if (utils.contains([
-            "mord", "mop", "mbin", "mrel", "mopen", "mclose",
-            "mpunct", "minner",
-        ], node.classes[0])) {
-            return node.classes[0];
-        }
+    }
+    return node;
+};
+
+// Return math atom class (mclass) of a domTree.
+export const getTypeOfDomTree = function(node, side = "right") {
+    if (!node) {
+        return null;
+    }
+
+    node = getOutermostNode(node, side);
+    // This makes a lot of assumptions as to where the type of atom
+    // appears.  We should do a better job of enforcing this.
+    if (utils.contains([
+        "mord", "mop", "mbin", "mrel", "mopen", "mclose",
+        "mpunct", "minner",
+    ], node.classes[0])) {
+        return node.classes[0];
     }
     return null;
 };
@@ -205,14 +216,8 @@ export const getTypeOfDomTree = function(node, side = "right") {
 // leftmost node in the fragment.
 // 'mtight' indicates that the node is script or scriptscript style.
 export const isLeftTight = function(node) {
-    if (node instanceof domTree.documentFragment) {
-        if (node.children.length) {
-            return isLeftTight(node.children[0]);
-        }
-    } else {
-        return utils.contains(node.classes, "mtight");
-    }
-    return false;
+    node = getOutermostNode(node, "left");
+    return utils.contains(node.classes, "mtight");
 };
 
 /**
