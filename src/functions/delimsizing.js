@@ -159,7 +159,7 @@ defineFunction({
     },
     htmlBuilder: (group, options) => {
         // Build the inner expression
-        const inner = html.buildExpression(group.value.body, options,
+        const inner = html.buildExpression(group.value.body, options, true,
             [null, "mclose"]);
 
         let innerHeight = 0;
