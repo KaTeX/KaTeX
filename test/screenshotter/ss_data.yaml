@@ -16,8 +16,11 @@
 Accents: \vec{A}\vec{x}\vec x^2\vec{x}_2^2\vec{A}^2\vec{xA}^2
 AccentsText: |
     \begin{array}{l}
-    \text{\H{e}} & \text{\'\i} \\
-    \text{\H{X}} & \text{\"\i} \\
+    \text{\'\i} & \text{\.\i} & \text{\`\i} & \text{\"\i} & \text{\H\i} & \text{\r\i} \\
+    \text{\'\j} & \text{\.\j} & \text{\`\j} & \text{\"\j} & \text{\H\j} & \text{\r\j} \\
+    \text{\'a} & \text{\.a} & \text{\`a} & \text{\"a} & \text{\H{a}} & \text{\r{a}} \\
+    \text{\'A} & \text{\.A} & \text{\`A} & \text{\"A} & \text{\H{A}} & \text{\r{A}} \\
+    \text{\.I İ} & \text{\H e e̋} & \text{\i ı}
     \end{array}
 Aligned: |
     \begin{aligned}
@@ -287,7 +290,7 @@ Symbols1: |
     \maltese\degree\pounds\$
     \text{\maltese\degree\pounds\textdollar}
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
-TextStacked: 
+TextStacked:
   \begin{matrix}
       \textsf{abc123 \textbf{abc123} \textit{abc123}}\\
       \text{abc123 \textbf{abc123} \textit{abc123}}\\

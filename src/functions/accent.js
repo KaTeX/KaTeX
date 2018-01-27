@@ -100,14 +100,6 @@ const htmlBuilder = (group, options) => {
         // Shift the accent over by the skew.
         left += skew;
 
-        // The \H character that the fonts use is a combining character, and
-        // thus shows up much too far to the left. To account for this, we add
-        // a manual shift of the width of one space.
-        // TODO(emily): Fix this in a better way, like by changing the font
-        if (group.value.label === '\\H') {
-            left += 0.5;  // twice width of space, or width of accent
-        }
-
         accentBody.style.left = left + "em";
 
         accentBody = buildCommon.makeVList({

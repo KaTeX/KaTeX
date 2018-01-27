@@ -42,7 +42,7 @@ exports[`A MathML builder accents turn into <mover accent="true"> in MathML 1`] 
           e
         </mi>
         <mo>
-          ´
+          ˊ
         </mo>
       </mover>
       <mi>
