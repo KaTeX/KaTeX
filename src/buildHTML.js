@@ -79,13 +79,10 @@ export const buildExpression = function(expression, options, isRealGroup,
         rawGroups.filter(group => group && group.classes[0] !== "mspace");
 
     // add dummy spans for determining spacings between surrounding atoms
-    if (surrounding.length > 0) {
-        nonSpaces.unshift(new makeSpan([surrounding[0]], [], options));
-        nonSpaces.push(new makeSpan([surrounding[1]], [], options));
-    } else {
-        nonSpaces.unshift(null);
-        nonSpaces.push(null);
-    }
+    nonSpaces.unshift(surrounding[0] &&
+        new makeSpan([surrounding[0]], [], options));
+    nonSpaces.push(surrounding[1] &&
+        new makeSpan([surrounding[1]], [], options));
 
     // Before determining what spaces to insert, perform bin cancellation.
     // Binary operators change to ordinary symbols in some contexts.
