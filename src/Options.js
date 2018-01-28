@@ -197,9 +197,7 @@ class Options {
      */
     withMathMode(): Options {
         return this.extend({
-            fontFamily: '',
-            fontShape: '',
-            fontWeight: '',
+            fontFamily: 'mathit',
         });
     }
 

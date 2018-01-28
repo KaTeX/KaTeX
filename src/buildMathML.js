@@ -259,7 +259,9 @@ groupTypes.styling = function(group, options) {
     };
 
     const newStyle = styleMap[group.value.style];
-    const newOptions = options.havingStyle(newStyle);
+    const newOptions = group.value.mathStart ?
+                       options.havingStyle(newStyle).withMathMode() :
+                       options.havingStyle(newStyle);
 
     const inner = buildExpression(group.value.value, newOptions);
 
