@@ -1,5 +1,9 @@
 /* eslint no-console:0 */
+/**
+ * This is the webpack entry point for the test page.
+ */
 import katex from '../katex.webpack.js';
+import './main.css';
 
 function init() {
     const input = document.getElementById("input");
@@ -74,8 +78,6 @@ function init() {
     }
 }
 
-if (/^\/(?:index.html)?$/.test(location.pathname)) {
-    init();
-}
+init();
 
 export default katex;
