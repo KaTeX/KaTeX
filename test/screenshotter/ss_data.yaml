@@ -241,7 +241,12 @@ SizingBaseline:
 Sizing: |
     {\Huge x}{\LARGE y}{\normalsize z}{\scriptsize w}\sqrt[\small 3]{x+1}
 Smash: \left( X^{\smash 2} \right) \sqrt{\smash[b]{y}}
-Spacing: ^3+[-1][1-1]1=1(=1)\lvert a\rvert~b
+Spacing: |
+    \begin{matrix}
+        ^3+[-1][1-1]1=1(=1)\lvert a\rvert~b \\
+        \scriptstyle{^3+[-1][1-1]1=1(=1)\lvert a\rvert~b} \\
+        \scriptscriptstyle{^3+[-1][1-1]1=1(=1)\lvert a\rvert~b} \\
+    \end{matrix}
 Sqrt: |
     \sqrt{\sqrt{\sqrt{x}}}_{\sqrt{\sqrt{x}}}^{\sqrt{\sqrt{\sqrt{x}}}
     ^{\sqrt{\sqrt{\sqrt{x}}}}}
