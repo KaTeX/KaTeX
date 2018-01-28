@@ -19,10 +19,6 @@ import {spacings, tightSpacings} from "./spacingData";
 
 const makeSpan = buildCommon.makeSpan;
 
-const isSpace = function(node) {
-    return node instanceof domTree.span && node.classes[0] === "mspace";
-};
-
 // Binary atoms (first class `mbin`) change into ordinary atoms (`mord`)
 // depending on their surroundings. See TeXbook pg. 442-446, Rules 5 and 6,
 // and the text before Rule 19.
@@ -47,23 +43,6 @@ const isBinRightCanceller = function(node, isRealGroup) {
         return utils.contains(["mrel", "mclose", "mpunct"], node.classes[0]);
     } else {
         return isRealGroup;
-    }
-};
-
-/**
- * Splice out any spaces from `children` starting at position `i`, and return
- * the spliced-out array. Returns null if `children[i]` does not exist or is not
- * a space.
- */
-export const spliceSpaces = function(children, i) {
-    let j = i;
-    while (j < children.length && isSpace(children[j])) {
-        j++;
-    }
-    if (j === i) {
-        return null;
-    } else {
-        return children.splice(i, j - i);
     }
 };
 
@@ -149,10 +128,7 @@ export const buildExpression = function(expression, options, isRealGroup) {
                         }
                     }
 
-                    const glue = buildCommon.makeGlue(
-                        spacings[left][right], glueOptions);
-
-                    groups.push(glue);
+                    groups.push(buildCommon.makeGlue(space, glueOptions));
                 }
             }
             j++;
