@@ -24,6 +24,7 @@ def main():
     fonts = [
         'cmbsy10.tfm',
         'cmbx10.tfm',
+        'cmbxti10.tfm',
         'cmex10.tfm',
         'cmmi10.tfm',
         'cmmib10.tfm',
@@ -47,6 +48,7 @@ def main():
     font_skewchar = {
         'cmbsy10': None,
         'cmbx10': None,
+        'cmbxti10': None,
         'cmex10': None,
         'cmmi10': 127,
         'cmmib10': None,

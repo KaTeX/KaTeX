@@ -521,6 +521,60 @@ $map{cmbx10} = {
   ],
 };
 
+$map{cmbxti10} = {
+  "Main-BoldItalic" => [
+    [0,1] => 0x393,         # \Gamma, \Delta
+    2 => 0x398,             # \Theta
+    3 => 0x39B,             # \Lambda
+    4 => 0x39E,             # \Xi
+    5 => 0x3A0,             # \Pi
+    6 => 0x3A3,             # \Sigma
+    [7,8] => 0x3A5,         # \Upsilon, \Phi
+    [9,0xA] => 0x3A8,       # \Psi, \Omega
+
+    0x10 => 0x131,          # \imath (roman)
+    0x11 => 0x237,          # \jmath (roman)
+    0x12 => 0x2CB,          # \grave
+    0x13 => 0x2CA,          # \acute
+    0x14 => 0x2C7,          # \check
+    0x15 => 0x2D8,          # \breve
+    0x16 => 0x2C9,          # \bar
+    0x17 => [0xB0,-160,0],  # \degree
+    0x17 => 0x02DA,         # \r, ring above
+
+    [0x21,0x23] => 0x21,    # !, ", #,
+    0x22 => 0x201D,         # "
+    0x24 => 0xA3,           # pound sign
+    [0x25,0x2F] => 0x25,    # %, &, ', (, ), *, +, comma, -, ., /
+    0x27 => 0x2019,         # '
+    [0x30,0x39] => 0x30,    # 0-9
+    [0x3A,0x3B] => 0x3A,    # :, ;
+    0x3D => 0x3D,           # =
+    [0x3F,0x40] => 0x3F,    # ?, @
+    [0x41,0x5A] => 0x41,    # A-Z
+    0x5B => 0x5B,           # [
+    0x5C => 0x201C,         # ``
+    [0x5D,0x5E] => 0x5D,    # ], ^
+    0x5E => 0x2C6,          # \hat
+    0x5F => 0x2D9,          # \dot
+    0x60 => 0x2018,         # `
+    [0x61,0x7A] => 0x61,    # a-z
+    [0x7B,0x7C] => 0x2013,  # \endash, \emdash
+    0x7B => [0x5F,0,-310],  # underline
+    0x7D => 0x2DD,          # double acute
+    0x7E => [0x7E,0,-350],  # ~
+    0x7E => 0x2DC,          # \tilde
+    0x7F => 0xA8,           # \ddot
+    0x19 => 0xDF,           # sharp S
+    0x1A => 0xE6,           # ae ligature
+    0x1B => 0x153,          # oe ligature
+    0x1C => 0xF8,           # o with slash
+    0x1D => 0xC6,           # AE ligature
+    0x1E => 0x152,          # OE ligature
+    0x1F => 0xD8,           # O with slash
+  ],
+};
+
 $map{cmmib10} = {
   "Math-BoldItalic" => [
     [0,1] => 0x393,         # \Gamma, \Delta
