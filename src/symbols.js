@@ -124,6 +124,8 @@ defineSymbol(math, main, textord, "\u211c", "\\Re", true);
 defineSymbol(math, main, textord, "\u2661", "\\heartsuit", true);
 defineSymbol(math, main, textord, "\u2111", "\\Im", true);
 defineSymbol(math, main, textord, "\u2660", "\\spadesuit", true);
+defineSymbol(text, main, textord, "\u00a7", "\\S", true);
+defineSymbol(text, main, textord, "\u00b6", "\\P", true);
 
 // Math and Text
 defineSymbol(math, main, textord, "\u2020", "\\dag");
