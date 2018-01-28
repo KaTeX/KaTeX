@@ -458,7 +458,9 @@ groupTypes.sizing = function(group, options) {
 groupTypes.styling = function(group, options) {
     // Style changes are handled in the TeXbook on pg. 442, Rule 3.
     const newStyle = styleMap[group.value.style];
-    const newOptions = options.havingStyle(newStyle);
+    const newOptions = group.value.mathStart ?
+                       options.havingStyle(newStyle).withMathMode() :
+                       options.havingStyle(newStyle);
     return sizingGroup(group.value.value, newOptions, options);
 };
 

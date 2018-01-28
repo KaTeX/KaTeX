@@ -193,6 +193,17 @@ class Options {
     }
 
     /**
+     * Create a new options object when switching from text to math mode.
+     */
+    withMathMode(): Options {
+        return this.extend({
+            fontFamily: '',
+            fontShape: '',
+            fontWeight: '',
+        });
+    }
+
+    /**
      * Create a new options objects with the give font.
      */
     withFontFamily(fontFamily: ?string): Options {
