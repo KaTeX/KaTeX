@@ -466,7 +466,10 @@ groupTypes.styling = function(group, options) {
 
 groupTypes.font = function(group, options) {
     const font = group.value.font;
-    return buildGroup(group.value.body, options.withFontFamily(font));
+    const newOptions = group.value.oldTextFont ?
+                       options.withFont(font).withOldTextFont() :
+                       options.withFont(font);
+    return buildGroup(group.value.body, newOptions);
 };
 
 groupTypes.horizBrace = function(group, options) {

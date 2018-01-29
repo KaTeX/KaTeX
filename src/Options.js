@@ -42,9 +42,9 @@ export type OptionsData = {
     size?: number;
     textSize?: number;
     phantom?: boolean;
-    // TODO(#1009): Keep consistent with fontFamily/fontWeight. Ensure this has a
-    // string value.
-    fontFamily?: string | void;
+    font?: string;
+    oldTextFont?: boolean;
+    fontFamily?: string;
     fontWeight?: string;
     fontShape?: string;
     sizeMultiplier?: number;
@@ -64,7 +64,9 @@ class Options {
     size: number;
     textSize: number;
     phantom: boolean;
-    fontFamily: string | void;
+    font: string;
+    oldTextFont: boolean;
+    fontFamily: string;
     fontWeight: string;
     fontShape: string;
     sizeMultiplier: number;
@@ -82,7 +84,9 @@ class Options {
         this.size = data.size || Options.BASESIZE;
         this.textSize = data.textSize || this.size;
         this.phantom = !!data.phantom;
-        this.fontFamily = data.fontFamily;
+        this.font = data.font || "";
+        this.oldTextFont = data.oldTextFont || false;
+        this.fontFamily = data.fontFamily || "";
         this.fontWeight = data.fontWeight || '';
         this.fontShape = data.fontShape || '';
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
@@ -101,6 +105,8 @@ class Options {
             textSize: this.textSize,
             color: this.color,
             phantom: this.phantom,
+            font: this.font,
+            oldTextFont: this.oldTextFont,
             fontFamily: this.fontFamily,
             fontWeight: this.fontWeight,
             fontShape: this.fontShape,
@@ -197,16 +203,32 @@ class Options {
      */
     withMathMode(): Options {
         return this.extend({
-            fontFamily: 'mathit',
+            font: 'mathit',
+        });
+    }
+
+    /**
+     * Creates a new options object with the given math font.
+     * @type {[type]}
+     */
+    withFont(font: string): Options {
+        return this.extend({
+            font,
+        });
+    }
+
+    withOldTextFont(): Options {
+        return this.extend({
+            oldTextFont: true,
         });
     }
 
     /**
      * Create a new options objects with the give font.
      */
-    withFontFamily(fontFamily: ?string): Options {
+    withFontFamily(fontFamily: string): Options {
         return this.extend({
-            fontFamily: fontFamily || this.fontFamily,
+            fontFamily,
         });
     }
 

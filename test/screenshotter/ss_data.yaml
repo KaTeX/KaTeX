@@ -305,7 +305,8 @@ TextStacked:
 TextWithMath: 
   \begin{matrix}
       \text{for $a < b$ and $ c < d $}. \\
-      \textsf{for $a < b$ and $ c < d $}.
+      \textsf{for $a < b$ and $ c < d $}. \\
+      \textsf{for $a < b \textbf{ and } c < d $}
   \end{matrix}
 Unicode: \begin{matrix}\text{ÀàÇçÉéÏïÖöÛû} \\ \text{БГДЖЗЙЛФЦШЫЮЯ} \\ \text{여보세요} \\ \text{私はバナナです} \end{matrix}
 Units: |

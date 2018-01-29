@@ -167,7 +167,8 @@ exports[`An implicit group parser within optional groups should work wwith old f
                   }
                 ]
               },
-              "font": "mathtt"
+              "font": "mathtt",
+              "oldTextFont": true
             }
           }
         ]

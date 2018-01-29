@@ -560,6 +560,7 @@ export default class Parser {
             } else {
                 return new ParseNode("font", {
                     font: style,
+                    oldTextFont: true,
                     body: new ParseNode("ordgroup", body, this.mode),
                 }, this.mode);
             }

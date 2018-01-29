@@ -39,7 +39,7 @@ defineFunction({
 
             // Consolidate Greek letter function names into symbol characters.
             const temp = html.buildExpression(
-                group.value.value, options.withFontFamily("mathrm"), true);
+                group.value.value, options.withFont("mathrm"), true);
 
             // All we want from temp are the letters. With them, we'll
             // create a text operator similar to \tan or \cos.
@@ -69,7 +69,7 @@ defineFunction({
         let output = [];
         if (group.value.value.length > 0) {
             const temp = mml.buildExpression(
-                group.value.value, options.withFontFamily("mathrm"));
+                group.value.value, options.withFont("mathrm"));
 
             let word = temp.map(node => node.toText()).join("");
 
