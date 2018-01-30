@@ -140,6 +140,20 @@ defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 // amsmath.sty
 // http://mirrors.concertpass.com/tex-archive/macros/latex/required/amsmath/amsmath.pdf
 
+// Italic Greek capital letters.  AMS defines these with \DeclareMathSymbol,
+// but they are equivalent to \mathit{\Letter}.
+defineMacro("\\varGamma", "\\mathit{\\Gamma}");
+defineMacro("\\varDelta", "\\mathit{\\Delta}");
+defineMacro("\\varTheta", "\\mathit{\\Theta}");
+defineMacro("\\varLambda", "\\mathit{\\Lambda}");
+defineMacro("\\varXi", "\\mathit{\\Xi}");
+defineMacro("\\varPi", "\\mathit{\\Pi}");
+defineMacro("\\varSigma", "\\mathit{\\Sigma}");
+defineMacro("\\varUpsilon", "\\mathit{\\Upsilon}");
+defineMacro("\\varPhi", "\\mathit{\\Phi}");
+defineMacro("\\varPsi", "\\mathit{\\Psi}");
+defineMacro("\\varOmega", "\\mathit{\\Omega}");
+
 // \def\overset#1#2{\binrel@{#2}\binrel@@{\mathop{\kern\z@#2}\limits^{#1}}}
 defineMacro("\\overset", "\\mathop{#2}\\limits^{#1}");
 defineMacro("\\underset", "\\mathop{#2}\\limits_{#1}");
