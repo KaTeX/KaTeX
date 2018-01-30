@@ -13,6 +13,7 @@ export type FunctionContext = {|
     funcName: string,
     parser: Parser,
     token?: Token,
+    breakOnTokenText?: "]" | "}" | "$",
 |};
 
 // TODO: Enumerate all allowed output types.
