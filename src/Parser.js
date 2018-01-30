@@ -15,7 +15,7 @@ import { combiningDiacriticalMarksEndRegex } from "./Lexer.js";
 import Settings from "./Settings";
 import { Token } from "./Token";
 
-import type { Mode, ArgType } from "./types";
+import type { Mode, ArgType, BreakToken } from "./types";
 import type { FunctionContext, FunctionSpec } from "./defineFunction" ;
 import type { EnvSpec } from "./defineEnvironment";
 
@@ -183,7 +183,7 @@ export default class Parser {
      */
     parseExpression(
         breakOnInfix: boolean,
-        breakOnTokenText?: "]" | "}" | "$",
+        breakOnTokenText?: BreakToken,
     ): ParseNode[] {
         const body = [];
         // Keep adding atoms to the body until we can't parse any more atoms (either
@@ -347,7 +347,7 @@ export default class Parser {
     /**
      * Parses a group with optional super/subscripts.
      */
-    parseAtom(breakOnTokenText?: "]" | "}" | "$"): ?ParseNode {
+    parseAtom(breakOnTokenText?: BreakToken): ?ParseNode {
         // The body of an atom is an implicit group, so that things like
         // \left(x\right)^2 work correctly.
         const base = this.parseImplicitGroup(breakOnTokenText);
@@ -453,7 +453,7 @@ export default class Parser {
      * implicit grouping after it until the end of the group. E.g.
      *   small text {\Large large text} small text again
      */
-    parseImplicitGroup(breakOnTokenText?: "]" | "}" | "$"): ?ParseNode {
+    parseImplicitGroup(breakOnTokenText?: BreakToken): ?ParseNode {
         const start = this.parseSymbol();
 
         if (start == null) {
@@ -564,7 +564,7 @@ export default class Parser {
      */
     parseGivenFunction(
         baseGroup: ParsedFuncOrArgOrDollar,
-        breakOnTokenText?: "]" | "}" | "$",
+        breakOnTokenText?: BreakToken,
     ): ParseNode {
         baseGroup = assertFuncOrArg(baseGroup);
         if (baseGroup.type === "fn") {
@@ -599,7 +599,7 @@ export default class Parser {
         args: ParseNode[],
         optArgs: (?ParseNode)[],
         token?: Token,
-        breakOnTokenText?: "]" | "}" | "$",
+        breakOnTokenText?: BreakToken,
     ): * {
         const context: FunctionContext = {
             funcName: name,

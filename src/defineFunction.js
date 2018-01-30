@@ -5,7 +5,7 @@ import {groupTypes as mathmlGroupTypes} from "./buildMathML";
 import type Parser from "./Parser" ;
 import type ParseNode from "./ParseNode" ;
 import type Options from "./Options";
-import type {ArgType} from "./types" ;
+import type {ArgType, BreakToken} from "./types" ;
 import type {Token} from "./Token" ;
 
 /** Context provided to function handlers for error messages. */
@@ -13,7 +13,7 @@ export type FunctionContext = {|
     funcName: string,
     parser: Parser,
     token?: Token,
-    breakOnTokenText?: "]" | "}" | "$",
+    breakOnTokenText?: BreakToken,
 |};
 
 // TODO: Enumerate all allowed output types.
