@@ -1,4 +1,4 @@
-@import "fonts.less";
+@import "../submodules/katex-fonts/fonts.less";
 
 // The mu unit is defined as 1/18 em
 @mu: 1.0/18.0em;
@@ -148,122 +148,6 @@
     @thinspace: 0.16667em;      // 3mu
     @mediumspace: 0.22222em;    // 4mu
     @thickspace: 0.27778em;     // 5mu
-
-    // These spacings apply in textstyle and displaystyle.
-    .mord {
-        & + .mord {}
-        & + .mop { margin-left: @thinspace; }
-        & + .mbin { margin-left: @mediumspace; }
-        & + .mrel { margin-left: @thickspace; }
-        & + .mopen {}
-        & + .mclose {}
-        & + .mpunct {}
-        & + .minner { margin-left: @thinspace; }
-    }
-
-    .mop {
-        & + .mord { margin-left: @thinspace; }
-        & + .mop { margin-left: @thinspace; }
-        & + .mbin {}
-        & + .mrel { margin-left: @thickspace; }
-        & + .mopen {}
-        & + .mclose {}
-        & + .mpunct {}
-        & + .minner { margin-left: @thinspace; }
-    }
-
-    .mbin {
-        & + .mord { margin-left: @mediumspace; }
-        & + .mop { margin-left: @mediumspace; }
-        & + .mbin {}
-        & + .mrel {}
-        & + .mopen { margin-left: @mediumspace; }
-        & + .mclose {}
-        & + .mpunct {}
-        & + .minner { margin-left: @mediumspace; }
-    }
-
-    .mrel {
-        & + .mord { margin-left: @thickspace; }
-        & + .mop { margin-left: @thickspace; }
-        & + .mbin {}
-        & + .mrel {}
-        & + .mopen { margin-left: @thickspace; }
-        & + .mclose {}
-        & + .mpunct {}
-        & + .minner { margin-left: @thickspace; }
-    }
-
-    .mopen {
-        & + .mord {}
-        & + .mop {}
-        & + .mbin {}
-        & + .mrel {}
-        & + .mopen {}
-        & + .mclose {}
-        & + .mpunct {}
-        & + .minner {}
-    }
-
-    .mclose {
-        & + .mord {}
-        & + .mop { margin-left: @thinspace; }
-        & + .mbin { margin-left: @mediumspace; }
-        & + .mrel { margin-left: @thickspace; }
-        & + .mopen {}
-        & + .mclose {}
-        & + .mpunct {}
-        & + .minner { margin-left: @thinspace; }
-    }
-
-    .mpunct {
-        & + .mord { margin-left: @thinspace; }
-        & + .mop { margin-left: @thinspace; }
-        & + .mbin {}
-        & + .mrel { margin-left: @thinspace; }
-        & + .mopen { margin-left: @thinspace; }
-        & + .mclose { margin-left: @thinspace; }
-        & + .mpunct { margin-left: @thinspace; }
-        & + .minner { margin-left: @thinspace; }
-    }
-
-    .minner {
-        & + .mord { margin-left: @thinspace; }
-        & + .mop { margin-left: @thinspace; }
-        & + .mbin { margin-left: @mediumspace; }
-        & + .mrel { margin-left: @thickspace; }
-        & + .mopen { margin-left: @thinspace; }
-        & + .mclose {}
-        & + .mpunct { margin-left: @thinspace; }
-        & + .minner { margin-left: @thinspace; }
-    }
-
-    // These tighter spacings apply in scriptstyle and scriptscriptstyle.
-    .mord.mtight { margin-left: 0; }
-    .mop.mtight { margin-left: 0; }
-    .mbin.mtight { margin-left: 0; }
-    .mrel.mtight { margin-left: 0; }
-    .mopen.mtight { margin-left: 0; }
-    .mclose.mtight { margin-left: 0; }
-    .mpunct.mtight { margin-left: 0; }
-    .minner.mtight { margin-left: 0; }
-
-    .mord {
-        & + .mop.mtight { margin-left: @thinspace; }
-    }
-
-    .mop {
-        & + .mord.mtight { margin-left: @thinspace; }
-        & + .mop.mtight { margin-left: @thinspace; }
-    }
-
-    .mclose {
-        & + .mop.mtight { margin-left: @thinspace; }
-    }
-
-    .minner {
-        & + .mop.mtight { margin-left: @thinspace; }
-    }
 
     .vlist-t {
         display: inline-table;
@@ -557,13 +441,30 @@
         position: absolute; // absolute relative to parent
         width: 100%;
 
+        // We want to inherit colors from our environment
+        fill: currentColor;
+        stroke: currentColor;
+
+        // But path elements should not have an outline by default
+        // that would make them bigger than we expect.
         path {
-            fill: currentColor;
+            stroke: none;
         }
 
-        line {
-            stroke: currentColor;
-        }
+        // And we don't want to inherit any other style properties
+        // that could affect SVG rendering without affecting font
+        // rendering. So we reset these properties to their default
+        // values for every <svg> element.
+        // See https://www.w3.org/TR/SVG/painting.html
+        fill-rule: nonzero;
+        fill-opacity: 1;
+        stroke-width: 1;
+        stroke-linecap: butt;
+        stroke-linejoin: miter;
+        stroke-miterlimit: 4;
+        stroke-dasharray: none;
+        stroke-dashoffset: 0;
+        stroke-opacity: 1;
     }
 
     .vertical-separator svg {

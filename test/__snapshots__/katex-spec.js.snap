@@ -26,6 +26,7 @@ exports[`An implicit group parser within optional groups should work style comma
             "type": "styling",
             "mode": "math",
             "value": {
+              "type": "styling",
               "style": "text",
               "value": [
                 {
@@ -113,6 +114,7 @@ exports[`An implicit group parser within optional groups should work with sizing
             "type": "sizing",
             "mode": "math",
             "value": {
+              "type": "sizing",
               "size": 5,
               "value": [
                 {

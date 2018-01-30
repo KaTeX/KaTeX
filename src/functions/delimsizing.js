@@ -5,6 +5,8 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
+import { calculateSize } from "../units";
+import { spacings, tightSpacings } from "../spacingData";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -204,13 +206,20 @@ defineFunction({
                     inner[i] = delimiter.leftRightDelim(
                         middleDelim.isMiddle.value, innerHeight, innerDepth,
                         middleDelim.isMiddle.options, group.mode, []);
-                    // Add back spaces shifted into the delimiter
-                    const spaces = html.spliceSpaces(middleDelim.children, 0);
-                    if (spaces) {
-                        buildCommon.prependChildren(inner[i], spaces);
-                    }
                 }
             }
+        }
+
+        const lastChildType = html.getTypeOfDomTree(inner[inner.length - 1]);
+        const activeSpacings = options.style.isTight() ? tightSpacings : spacings;
+
+        if (lastChildType && activeSpacings[lastChildType]["mclose"]) {
+            const glue =
+                buildCommon.makeSpan(["mord", "rule"], [], options);
+            const dimension =
+                calculateSize(activeSpacings[lastChildType]["mclose"], options);
+            glue.style.marginRight = `${dimension}em`;
+            inner.push(glue);
         }
 
         let rightDelim;

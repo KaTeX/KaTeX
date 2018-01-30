@@ -179,18 +179,9 @@ import "./functions/smash";
 
 import "./functions/delimsizing";
 
-// Sizing functions (handled in Parser.js explicitly, hence no handler)
-defineFunction([
-    "\\tiny", "\\scriptsize", "\\footnotesize", "\\small",
-    "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
-], {numArgs: 0}, null);
+import "./functions/sizing";
 
-// Style changing functions (handled in Parser.js explicitly, hence no
-// handler)
-defineFunction([
-    "\\displaystyle", "\\textstyle", "\\scriptstyle",
-    "\\scriptscriptstyle",
-], {numArgs: 0}, null);
+import "./functions/styling";
 
 // Old font changing functions
 defineFunction([

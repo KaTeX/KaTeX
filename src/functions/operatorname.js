@@ -29,6 +29,14 @@ defineFunction({
             let letter = "";
             let mode = "";
 
+            for (const child of group.value.value) {
+                // In the amsopn package, \newmcodes@ changes four
+                // characters, *-/:’, from math operators back into text.
+                if ("*-/:".indexOf(child.value) !== -1) {
+                    child.type = "textord";
+                }
+            }
+
             // Consolidate Greek letter function names into symbol characters.
             const temp = html.buildExpression(
                 group.value.value, options.withFontFamily("mathrm"), true);

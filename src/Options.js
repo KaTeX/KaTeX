@@ -47,6 +47,7 @@ export type OptionsData = {
     fontFamily?: string | void;
     fontWeight?: string;
     fontShape?: string;
+    sizeMultiplier?: number;
     maxSize: number;
 };
 
@@ -150,6 +151,7 @@ class Options {
                 style: this.style.text(),
                 size: size,
                 textSize: size,
+                sizeMultiplier: sizeMultipliers[size - 1],
             });
         }
     }

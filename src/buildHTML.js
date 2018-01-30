@@ -15,12 +15,9 @@ import domTree from "./domTree";
 import { calculateSize } from "./units";
 import utils from "./utils";
 import stretchy from "./stretchy";
+import {spacings, tightSpacings} from "./spacingData";
 
 const makeSpan = buildCommon.makeSpan;
-
-const isSpace = function(node) {
-    return node instanceof domTree.span && node.classes[0] === "mspace";
-};
 
 // Binary atoms (first class `mbin`) change into ordinary atoms (`mord`)
 // depending on their surroundings. See TeXbook pg. 442-446, Rules 5 and 6,
@@ -49,21 +46,11 @@ const isBinRightCanceller = function(node, isRealGroup) {
     }
 };
 
-/**
- * Splice out any spaces from `children` starting at position `i`, and return
- * the spliced-out array. Returns null if `children[i]` does not exist or is not
- * a space.
- */
-export const spliceSpaces = function(children, i) {
-    let j = i;
-    while (j < children.length && isSpace(children[j])) {
-        j++;
-    }
-    if (j === i) {
-        return null;
-    } else {
-        return children.splice(i, j - i);
-    }
+const styleMap = {
+    "display": Style.DISPLAY,
+    "text": Style.TEXT,
+    "script": Style.SCRIPT,
+    "scriptscript": Style.SCRIPTSCRIPT,
 };
 
 /**
@@ -75,81 +62,88 @@ export const spliceSpaces = function(children, i) {
  */
 export const buildExpression = function(expression, options, isRealGroup) {
     // Parse expressions into `groups`.
-    const groups = [];
+    const rawGroups = [];
     for (let i = 0; i < expression.length; i++) {
         const group = expression[i];
         const output = buildGroup(group, options);
         if (output instanceof domTree.documentFragment) {
-            Array.prototype.push.apply(groups, output.children);
+            rawGroups.push(...output.children);
         } else {
-            groups.push(output);
+            rawGroups.push(output);
         }
     }
-    // At this point `groups` consists entirely of `symbolNode`s and `span`s.
+    // At this point `rawGroups` consists entirely of `symbolNode`s and `span`s.
 
-    // Explicit spaces (e.g., \;, \,) should be ignored with respect to atom
-    // spacing (e.g., "add thick space between mord and mrel"). Since CSS
-    // adjacency rules implement atom spacing, spaces should be invisible to
-    // CSS. So we splice them out of `groups` and into the atoms themselves.
-    for (let i = 0; i < groups.length; i++) {
-        const spaces = spliceSpaces(groups, i);
-        if (spaces) {
-            // Splicing of spaces may have removed all remaining groups.
-            if (i < groups.length) {
-                // If there is a following group, move space within it.
-                if (groups[i] instanceof domTree.symbolNode) {
-                    groups[i] = makeSpan([].concat(groups[i].classes),
-                        [groups[i]]);
-                }
-                buildCommon.prependChildren(groups[i], spaces);
-            } else {
-                // Otherwise, put any spaces back at the end of the groups.
-                Array.prototype.push.apply(groups, spaces);
-                break;
+    // Ignore explicit spaces (e.g., \;, \,) when determining what implicit
+    // spacing should go between atoms of different classes.
+    const nonSpaces =
+        rawGroups.filter(group => group && group.classes[0] !== "mspace");
+
+    // Before determining what spaces to insert, perform bin cancellation.
+    // Binary operators change to ordinary symbols in some contexts.
+    for (let i = 0; i < nonSpaces.length; i++) {
+        if (isBin(nonSpaces[i])) {
+            if (isBinLeftCanceller(nonSpaces[i - 1], isRealGroup)
+                    || isBinRightCanceller(nonSpaces[i + 1], isRealGroup)) {
+                nonSpaces[i].classes[0] = "mord";
             }
         }
     }
 
-    // Binary operators change to ordinary symbols in some contexts.
-    for (let i = 0; i < groups.length; i++) {
-        if (isBin(groups[i])
-            && (isBinLeftCanceller(groups[i - 1], isRealGroup)
-                || isBinRightCanceller(groups[i + 1], isRealGroup))) {
-            groups[i].classes[0] = "mord";
+    const groups = [];
+    let j = 0;
+    for (let i = 0; i < rawGroups.length; i++) {
+        groups.push(rawGroups[i]);
+
+        // For any group that is not a space, get the next non-space.  Then
+        // lookup what implicit space should be placed between those atoms and
+        // add it to groups.
+        if (rawGroups[i].classes[0] !== "mspace" && j < nonSpaces.length - 1) {
+            // Get the type of the current non-space node.  If it's a document
+            // fragment, get the type of the rightmost node in the fragment.
+            const left = getTypeOfDomTree(nonSpaces[j], "right");
+
+            // Get the type of the next non-space node.  If it's a document
+            // fragment, get the type of the leftmost node in the fragment.
+            const right = getTypeOfDomTree(nonSpaces[j + 1], "left");
+
+            // We use buildExpression inside of sizingGroup, but it returns a
+            // document fragment of elements.  sizingGroup sets `isRealGroup`
+            // to false to avoid processing spans multiple times.
+            if (left && right && isRealGroup) {
+                const space = isLeftTight(nonSpaces[j + 1])
+                    ? tightSpacings[left][right]
+                    : spacings[left][right];
+
+                if (space) {
+                    let glueOptions = options;
+
+                    if (expression.length === 1) {
+                        if (expression[0].type === "sizing") {
+                            glueOptions = options.havingSize(
+                                expression[0].value.size);
+                        } else if (expression[0].type === "styling") {
+                            glueOptions = options.havingStyle(
+                                styleMap[expression[0].value.style]);
+                        }
+                    }
+
+                    groups.push(buildCommon.makeGlue(space, glueOptions));
+                }
+            }
+            j++;
         }
     }
 
     // Process \\not commands within the group.
-    // TODO(kevinb): Handle multiple \\not commands in a row.
-    // TODO(kevinb): Handle \\not{abc} correctly.  The \\not should appear over
-    // the 'a' instead of the 'c'.
     for (let i = 0; i < groups.length; i++) {
-        if (groups[i].value === "\u0338" && i + 1 < groups.length) {
-            const children = groups.slice(i, i + 2);
-
-            children[0].classes = ["mainrm"];
-            // \u0338 is a combining glyph so we could reorder the children so
-            // that it comes after the other glyph.  This works correctly on
-            // most browsers except for Safari.  Instead we absolutely position
-            // the glyph and set its right side to match that of the other
-            // glyph which is visually equivalent.
-            children[0].style.position = "absolute";
-            children[0].style.right = "0";
-
-            // Copy the classes from the second glyph to the new container.
-            // This is so it behaves the same as though there was no \\not.
-            const classes = groups[i + 1].classes;
-            const container = makeSpan(classes, children);
-
-            // LaTeX adds a space between ords separated by a \\not.
-            if (classes.indexOf("mord") !== -1) {
-                // \glue(\thickmuskip) 2.77771 plus 2.77771
-                container.style.paddingLeft = "0.277771em";
-            }
-
-            // Ensure that the \u0338 is positioned relative to the container.
-            container.style.position = "relative";
-            groups.splice(i, 2, container);
+        if (groups[i].value === "\u0338") {
+            groups[i].style.position = "absolute";
+            // TODO(kevinb) fix this for Safari by switching to a non-combining
+            // character for \not.
+            // This value was determined empirically.
+            // TODO(kevinb) figure out the real math for this value.
+            groups[i].style.paddingLeft = "0.8em";
         }
     }
 
@@ -157,13 +151,21 @@ export const buildExpression = function(expression, options, isRealGroup) {
 };
 
 // Return math atom class (mclass) of a domTree.
-export const getTypeOfDomTree = function(node) {
-    if (node instanceof domTree.documentFragment) {
+export const getTypeOfDomTree = function(node, side = "right") {
+    if (node instanceof domTree.documentFragment ||
+            node instanceof domTree.anchor) {
         if (node.children.length) {
-            return getTypeOfDomTree(
-                node.children[node.children.length - 1]);
+            if (side === "right") {
+                return getTypeOfDomTree(
+                    node.children[node.children.length - 1]);
+            } else if (side === "left") {
+                return getTypeOfDomTree(
+                    node.children[0]);
+            }
         }
     } else {
+        // This makes a lot of assumptions as to where the type of atom
+        // appears.  We should do a better job of enforcing this.
         if (utils.contains([
             "mord", "mop", "mbin", "mrel", "mopen", "mclose",
             "mpunct", "minner",
@@ -172,6 +174,21 @@ export const getTypeOfDomTree = function(node) {
         }
     }
     return null;
+};
+
+// If `node` is an atom return whether it's been assigned the mtight class.
+// If `node` is a document fragment, return the value of isLeftTight() for the
+// leftmost node in the fragment.
+// 'mtight' indicates that the node is script or scriptscript style.
+export const isLeftTight = function(node) {
+    if (node instanceof domTree.documentFragment) {
+        if (node.children.length) {
+            return isLeftTight(node.children[0]);
+        }
+    } else {
+        return utils.contains(node.classes, "mtight");
+    }
+    return false;
 };
 
 /**
@@ -403,55 +420,6 @@ groupTypes.spacing = function(group, options) {
             ["mspace", buildCommon.spacingFunctions[group.value].className],
             [], options);
     }
-};
-
-function sizingGroup(value, options, baseOptions) {
-    const inner = buildExpression(value, options, false);
-    const multiplier = options.sizeMultiplier / baseOptions.sizeMultiplier;
-
-    // Add size-resetting classes to the inner list and set maxFontSize
-    // manually. Handle nested size changes.
-    for (let i = 0; i < inner.length; i++) {
-        const pos = utils.indexOf(inner[i].classes, "sizing");
-        if (pos < 0) {
-            Array.prototype.push.apply(inner[i].classes,
-                options.sizingClasses(baseOptions));
-        } else if (inner[i].classes[pos + 1] === "reset-size" + options.size) {
-            // This is a nested size change: e.g., inner[i] is the "b" in
-            // `\Huge a \small b`. Override the old size (the `reset-` class)
-            // but not the new size.
-            inner[i].classes[pos + 1] = "reset-size" + baseOptions.size;
-        }
-
-        inner[i].height *= multiplier;
-        inner[i].depth *= multiplier;
-    }
-
-    return buildCommon.makeFragment(inner);
-}
-
-groupTypes.sizing = function(group, options) {
-    // Handle sizing operators like \Huge. Real TeX doesn't actually allow
-    // these functions inside of math expressions, so we do some special
-    // handling.
-    const newOptions = options.havingSize(group.value.size);
-    return sizingGroup(group.value.value, newOptions, options);
-};
-
-groupTypes.styling = function(group, options) {
-    // Style changes are handled in the TeXbook on pg. 442, Rule 3.
-
-    // Figure out what style we're changing to.
-    const styleMap = {
-        "display": Style.DISPLAY,
-        "text": Style.TEXT,
-        "script": Style.SCRIPT,
-        "scriptscript": Style.SCRIPTSCRIPT,
-    };
-
-    const newStyle = styleMap[group.value.style];
-    const newOptions = options.havingStyle(newStyle);
-    return sizingGroup(group.value.value, newOptions, options);
 };
 
 groupTypes.font = function(group, options) {
