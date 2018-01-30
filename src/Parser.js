@@ -1007,9 +1007,12 @@ export default class Parser {
             return newDollar(nucleus);
         }
         // At this point, we should have a symbol, possibly with accents.
-        // First expand any accented base symbol according to unicodeSymbols.
+        // First expand any accented base symbol according to unicodeSymbols,
+        // unless we're in math mode and unicodeTextInMathMode is false
+        // (XeTeX-compatible mode).
         if (unicodeSymbols.hasOwnProperty(text[0]) &&
-            !symbols[this.mode][text[0]]) {
+            !symbols[this.mode][text[0]] &&
+            (this.settings.unicodeTextInMathMode || this.mode === "text")) {
             text = unicodeSymbols[text[0]] + text.substr(1);
         }
         // Strip off any combining characters
@@ -1027,8 +1030,8 @@ export default class Parser {
         if (symbols[this.mode][text]) {
             symbol = new ParseNode(symbols[this.mode][text].group,
                             text, this.mode, nucleus);
-        } else if (this.mode === "text" &&
-                   supportedCodepoint(text.charCodeAt(0))) {
+        } else if (supportedCodepoint(text.charCodeAt(0)) &&
+            (this.mode === "text" || this.settings.unicodeTextInMathMode)) {
             symbol = new ParseNode("textord", text, this.mode, nucleus);
         } else {
             return null;  // EOF, ^, _, {, }, etc.

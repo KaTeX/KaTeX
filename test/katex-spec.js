@@ -2776,7 +2776,8 @@ describe("Unicode accents", function() {
             "\\tilde n" +
             "\\grave o\\acute o\\hat o\\tilde o\\ddot o" +
             "\\grave u\\acute u\\hat u\\ddot u" +
-            "\\acute y\\ddot y");
+            "\\acute y\\ddot y",
+            {unicodeTextInMathMode: true});
     });
 
     it("should parse Latin-1 letters in text mode", function() {
@@ -2806,18 +2807,21 @@ describe("Unicode accents", function() {
     });
 
     it("should parse combining characters", function() {
-        expect("A\u0301C\u0301").toParseLike("Á\\acute C");
+        expect("A\u0301C\u0301").toParseLike("Á\\acute C",
+            {unicodeTextInMathMode: true});
         expect("\\text{A\u0301C\u0301}").toParseLike("\\text{Á\\'C}");
     });
 
     it("should parse multi-accented characters", function() {
-        expect("ấā́ắ\\text{ấā́ắ}").toParse();
+        expect("ấā́ắ\\text{ấā́ắ}").toParse({unicodeTextInMathMode: true});
         // Doesn't parse quite the same as
         // "\\text{\\'{\\^a}\\'{\\=a}\\'{\\u a}}" because of the ordgroups.
     });
 
     it("should parse accented i's and j's", function() {
-        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ");
+        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ",
+            {unicodeTextInMathMode: true});
+        expect("ấā́ắ\\text{ấā́ắ}").toParse({unicodeTextInMathMode: true});
     });
 });
 
@@ -2914,5 +2918,28 @@ describe("Symbols", function() {
         const commands = getBuilt("\\text{\\ae\\AE\\oe\\OE\\o\\O\\ss}");
         const unicode = getBuilt("\\text{æÆœŒøØß}");
         expect(commands).toEqual(unicode);
+    });
+});
+
+describe("unicodeTextInMathMode setting", function() {
+    it("should allow unicode text when true", () => {
+        expect("é").toParse({unicodeTextInMathMode: true});
+        expect("試").toParse({unicodeTextInMathMode: true});
+    });
+
+    it("should forbid unicode text when false", () => {
+        expect("é").toNotParse({unicodeTextInMathMode: false});
+        expect("試").toNotParse({unicodeTextInMathMode: false});
+    });
+
+    it("should forbid unicode text when default", () => {
+        expect("é").toNotParse();
+        expect("試").toNotParse();
+    });
+
+    it("should always allow unicode text in text mode", () => {
+        expect("\\text{é試}").toParse({unicodeTextInMathMode: false});
+        expect("\\text{é試}").toParse({unicodeTextInMathMode: true});
+        expect("\\text{é試}").toParse();
     });
 });
