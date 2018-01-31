@@ -64,7 +64,7 @@
     "clean-install": "npm run clean && npm i",
     "test": "check-dependencies && npm run lint && npm run flow && npm run jest",
     "verify-screenshots": "check-dependencies && dockers/Screenshotter/screenshotter.sh --verify",
-    "start": "check-dependencies && webpack-dev-server --open --config webpack.dev.js",
+    "start": "check-dependencies && webpack-dev-server --config webpack.dev.js",
     "build": "check-dependencies && rimraf build/* && webpack",
     "watch": "npm run build -- --watch",
     "perf-test": "check-dependencies && NODE_ENV=test node test/perf-test.js",
