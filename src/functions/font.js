@@ -72,6 +72,7 @@ defineFunction({
     names: Object.keys(oldFontFuncsMap),
     props: {
         numArgs: 0,
+        allowedInText: true,
     },
     handler: (context, args) => {
         const {parser, funcName, breakOnTokenText} = context;
