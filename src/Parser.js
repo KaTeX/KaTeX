@@ -434,17 +434,6 @@ export default class Parser {
         }
     }
 
-    // Old font functions
-    static oldFontFuncs = {
-        "\\rm": "mathrm",
-        "\\sf": "mathsf",
-        "\\tt": "mathtt",
-        "\\bf": "mathbf",
-        "\\it": "mathit",
-        //"\\sl": "textsl",
-        //"\\sc": "textsc",
-    };
-
     /**
      * Parses an implicit group, which is a group that starts at the end of a
      * specified, and ends right before a higher explicit group ends, or at EOL. It
