@@ -242,11 +242,6 @@ groupTypes.spacing = function(group) {
     return node;
 };
 
-groupTypes.font = function(group, options) {
-    const font = group.value.font;
-    return buildGroup(group.value.body, options.withFontFamily(font));
-};
-
 groupTypes.horizBrace = function(group, options) {
     const accentNode = stretchy.mathMLnode(group.value.label);
     return new mathMLTree.MathNode(

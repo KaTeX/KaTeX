@@ -158,6 +158,7 @@ exports[`An implicit group parser within optional groups should work wwith old f
             "type": "font",
             "mode": "math",
             "value": {
+              "type": "font",
               "body": {
                 "type": "ordgroup",
                 "mode": "math",
