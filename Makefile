@@ -31,7 +31,7 @@ $(NIS) setup: package.json
 lint: $(NIS)
 	$(NPM) run lint
 
-webpack: katex.js $(wildcard src/*.js) $(wildcard static/*.less) submodules/katex-fonts/fonts.less $(NIS)
+webpack: katex.js $(wildcard src/*.js) src/katex.less submodules/katex-fonts/fonts.less $(NIS)
 	$(NPM) run build
 
 .PHONY: build/fonts build/contrib
