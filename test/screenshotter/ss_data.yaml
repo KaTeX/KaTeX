@@ -5,6 +5,8 @@
 # - pre: some HTML to insert before the KaTeX content
 # - post: some HTML to insert after the KaTeX content
 # - display: set this to 1 in order to use display style
+# - styles: an optional value for the HTML style="" attribute
+#     of the <span> element that contains the KaTeX output
 #
 # Note that YAML will treat a value starting in { as a flow mapping.
 # To avoid that, either enclose the value in '…' or use a block scalar style,
@@ -14,8 +16,11 @@
 Accents: \vec{A}\vec{x}\vec x^2\vec{x}_2^2\vec{A}^2\vec{xA}^2
 AccentsText: |
     \begin{array}{l}
-    \text{\H{e}} & \text{\'\i} \\
-    \text{\H{X}} & \text{\"\i} \\
+    \text{\'\i} & \text{\.\i} & \text{\`\i} & \text{\"\i} & \text{\H\i} & \text{\r\i} \\
+    \text{\'\j} & \text{\.\j} & \text{\`\j} & \text{\"\j} & \text{\H\j} & \text{\r\j} \\
+    \text{\'a} & \text{\.a} & \text{\`a} & \text{\"a} & \text{\H{a}} & \text{\r{a}} \\
+    \text{\'A} & \text{\.A} & \text{\`A} & \text{\"A} & \text{\H{A}} & \text{\r{A}} \\
+    \text{\.I İ} & \text{\H e e̋} & \text{\i ı}
     \end{array}
 Aligned: |
     \begin{aligned}
@@ -236,7 +241,12 @@ SizingBaseline:
 Sizing: |
     {\Huge x}{\LARGE y}{\normalsize z}{\scriptsize w}\sqrt[\small 3]{x+1}
 Smash: \left( X^{\smash 2} \right) \sqrt{\smash[b]{y}}
-Spacing: ^3+[-1][1-1]1=1(=1)\lvert a\rvert~b
+Spacing: |
+    \begin{matrix}
+        ^3+[-1][1-1]1=1(=1)\lvert a\rvert~b \\
+        \scriptstyle{^3+[-1][1-1]1=1(=1)\lvert a\rvert~b} \\
+        \scriptscriptstyle{^3+[-1][1-1]1=1(=1)\lvert a\rvert~b} \\
+    \end{matrix}
 Sqrt: |
     \sqrt{\sqrt{\sqrt{x}}}_{\sqrt{\sqrt{x}}}^{\sqrt{\sqrt{\sqrt{x}}}
     ^{\sqrt{\sqrt{\sqrt{x}}}}}
@@ -273,16 +283,25 @@ SupSubHorizSpacing: |
 SupSubLeftAlignReset: |
     \omega^8_{888} \quad \frac{1}{\hat{\omega}^{8}_{888}} \quad \displaystyle\sum_{\omega^{8}_{888}}
 SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
+SvgReset:
+    # This math uses a lot of SVG glyphs
+    tex: '\underbrace{\sqrt{\vec{x}} + \sqrt{\vec{\color{#f00}y}}}'
+    # Some of these styles should affect both svg and text. We want
+    # those to be inherited. But some of the styles only affect svg
+    # and the point of this test is to verify that the svg-only
+    # styles (like fill-opacity) are not inherited
+    styles: 'display:block; width:500px;border:solid yellow 5px;padding:50px;background:#ccc;color:green;font-size:92px;transform:translate(100px,250px)rotate(-45deg);fill-opacity:0;stroke-width:40;stroke:blue;'
 Symbols1: |
     \maltese\degree\pounds\$
     \text{\maltese\degree\pounds\textdollar}
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
-TextStacked: 
+TextStacked:
   \begin{matrix}
       \textsf{abc123 \textbf{abc123} \textit{abc123}}\\
       \text{abc123 \textbf{abc123} \textit{abc123}}\\
       \textrm{abc123 \textbf{abc123} \textit{abc123}}\\
       \textsf{\textrm{\textbf{abc123}} \textbf{abc123} \textit{abc123}}\\
+      \textit{abc123 \textbf{abc123} \textsf{abc123}}\\
   \end{matrix}
 TextWithMath: \text{for $a < b$ and $ c < d $}.
 Unicode: \begin{matrix}\text{ÀàÇçÉéÏïÖöÛû} \\ \text{БГДЖЗЙЛФЦШЫЮЯ} \\ \text{여보세요} \\ \text{私はバナナです} \end{matrix}

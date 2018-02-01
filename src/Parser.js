@@ -5,7 +5,6 @@ import functions from "./functions";
 import environments from "./environments";
 import MacroExpander from "./MacroExpander";
 import symbols from "./symbols";
-import utils from "./utils";
 import { validUnit } from "./units";
 import { supportedCodepoint } from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
@@ -16,7 +15,7 @@ import { combiningDiacriticalMarksEndRegex } from "./Lexer.js";
 import Settings from "./Settings";
 import { Token } from "./Token";
 
-import type { Mode, ArgType } from "./types";
+import type { Mode, ArgType, BreakToken } from "./types";
 import type { FunctionContext, FunctionSpec } from "./defineFunction" ;
 import type { EnvSpec } from "./defineEnvironment";
 
@@ -190,7 +189,7 @@ export default class Parser {
      */
     parseExpression(
         breakOnInfix: boolean,
-        breakOnTokenText?: "]" | "}" | "$",
+        breakOnTokenText?: BreakToken,
     ): ParseNode[] {
         const body = [];
         // Keep adding atoms to the body until we can't parse any more atoms (either
@@ -354,7 +353,7 @@ export default class Parser {
     /**
      * Parses a group with optional super/subscripts.
      */
-    parseAtom(breakOnTokenText?: "]" | "}" | "$"): ?ParseNode {
+    parseAtom(breakOnTokenText?: BreakToken): ?ParseNode {
         // The body of an atom is an implicit group, so that things like
         // \left(x\right)^2 work correctly.
         const base = this.parseImplicitGroup(breakOnTokenText);
@@ -441,28 +440,6 @@ export default class Parser {
         }
     }
 
-    // A list of the size-changing functions, for use in parseImplicitGroup
-    static sizeFuncs = [
-        "\\tiny", "\\sixptsize", "\\scriptsize", "\\footnotesize", "\\small",
-        "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
-    ];
-
-    // A list of the style-changing functions, for use in parseImplicitGroup
-    static styleFuncs = [
-        "\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle",
-    ];
-
-    // Old font functions
-    static oldFontFuncs = {
-        "\\rm": "mathrm",
-        "\\sf": "mathsf",
-        "\\tt": "mathtt",
-        "\\bf": "mathbf",
-        "\\it": "mathit",
-        //"\\sl": "textsl",
-        //"\\sc": "textsc",
-    };
-
     /**
      * Parses an implicit group, which is a group that starts at the end of a
      * specified, and ends right before a higher explicit group ends, or at EOL. It
@@ -470,9 +447,8 @@ export default class Parser {
      * \textrm, where instead of keeping a style we just pretend that there is an
      * implicit grouping after it until the end of the group. E.g.
      *   small text {\Large large text} small text again
-     * It is also used for \left and \right to get the correct grouping.
      */
-    parseImplicitGroup(breakOnTokenText?: "]" | "}" | "$"): ?ParseNode {
+    parseImplicitGroup(breakOnTokenText?: BreakToken): ?ParseNode {
         const start = this.parseSymbol();
 
         if (start == null) {
@@ -503,25 +479,6 @@ export default class Parser {
                 style: "text",
                 value: body,
             }, "math");
-        } else if (func === "\\left") {
-            // If we see a left:
-            // Parse the entire left function (including the delimiter)
-            const left = this.parseGivenFunction(start);
-            // Parse out the implicit body
-            ++this.leftrightDepth;
-            const body = this.parseExpression(false);
-            --this.leftrightDepth;
-            // Check the next token
-            this.expect("\\right", false);
-            const right = this.parseFunction();
-            if (!right) {
-                throw new ParseError('failed to parse function after \\right');
-            }
-            return new ParseNode("leftright", {
-                body: body,
-                left: left.value.value,
-                right: right.value.value,
-            }, this.mode);
         } else if (func === "\\begin") {
             // begin...end is similar to left...right
             const begin = this.parseGivenFunction(start);
@@ -553,56 +510,9 @@ export default class Parser {
                     endNameToken);
             }
             return result;
-        } else if (utils.contains(Parser.sizeFuncs, func)) {
-            // If we see a sizing function, parse out the implicit body
-            this.consumeSpaces();
-            const body = this.parseExpression(false, breakOnTokenText);
-            return new ParseNode("sizing", {
-                // Figure out what size to use based on the list of functions above
-                size: utils.indexOf(Parser.sizeFuncs, func) + 1,
-                value: body,
-            }, this.mode);
-        } else if (utils.contains(Parser.styleFuncs, func)) {
-            // If we see a styling function, parse out the implicit body
-            this.consumeSpaces();
-            const body = this.parseExpression(true, breakOnTokenText);
-            return new ParseNode("styling", {
-                // Figure out what style to use by pulling out the style from
-                // the function name
-                style: func.slice(1, func.length - 5),
-                value: body,
-            }, this.mode);
-        } else if (func in Parser.oldFontFuncs) {
-            const style = Parser.oldFontFuncs[func];
-            // If we see an old font function, parse out the implicit body
-            this.consumeSpaces();
-            const body = this.parseExpression(true, breakOnTokenText);
-            if (style.slice(0, 4) === 'text') {
-                return new ParseNode("text", {
-                    style: style,
-                    body: new ParseNode("ordgroup", body, this.mode),
-                }, this.mode);
-            } else {
-                return new ParseNode("font", {
-                    font: style,
-                    body: new ParseNode("ordgroup", body, this.mode),
-                }, this.mode);
-            }
-        } else if (func === "\\color") {
-            // If we see a styling function, parse out the implicit body
-            const color = this.parseColorGroup(false);
-            if (!color) {
-                throw new ParseError("\\color not followed by color");
-            }
-            const body = this.parseExpression(true, breakOnTokenText);
-            return new ParseNode("color", {
-                type: "color",
-                color: color.result.value,
-                value: body,
-            }, this.mode);
         } else {
             // Defer to parseGivenFunction if it's not a function we handle
-            return this.parseGivenFunction(start);
+            return this.parseGivenFunction(start, breakOnTokenText);
         }
     }
 
@@ -619,7 +529,10 @@ export default class Parser {
      * Same as parseFunction(), except that the base is provided, guaranteeing a
      * non-nullable result.
      */
-    parseGivenFunction(baseGroup: ParsedFuncOrArgOrDollar): ParseNode {
+    parseGivenFunction(
+        baseGroup: ParsedFuncOrArgOrDollar,
+        breakOnTokenText?: BreakToken,
+    ): ParseNode {
         baseGroup = assertFuncOrArg(baseGroup);
         if (baseGroup.type === "fn") {
             const func = baseGroup.result;
@@ -637,7 +550,8 @@ export default class Parser {
 
             const {args, optArgs} = this.parseArguments(func, funcData);
             const token = baseGroup.token;
-            const result = this.callFunction(func, args, optArgs, token);
+            const result =
+                this.callFunction(func, args, optArgs, token, breakOnTokenText);
             return new ParseNode(result.type, result, this.mode);
         } else {
             return baseGroup.result;
@@ -652,11 +566,13 @@ export default class Parser {
         args: ParseNode[],
         optArgs: (?ParseNode)[],
         token?: Token,
+        breakOnTokenText?: BreakToken,
     ): * {
         const context: FunctionContext = {
             funcName: name,
             parser: this,
             token,
+            breakOnTokenText,
         };
         const func = functions[name];
         if (func && func.handler) {

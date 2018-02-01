@@ -15,12 +15,9 @@ import domTree from "./domTree";
 import { calculateSize } from "./units";
 import utils from "./utils";
 import stretchy from "./stretchy";
+import {spacings, tightSpacings} from "./spacingData";
 
 const makeSpan = buildCommon.makeSpan;
-
-const isSpace = function(node) {
-    return node instanceof domTree.span && node.classes[0] === "mspace";
-};
 
 // Binary atoms (first class `mbin`) change into ordinary atoms (`mord`)
 // depending on their surroundings. See TeXbook pg. 442-446, Rules 5 and 6,
@@ -49,21 +46,11 @@ const isBinRightCanceller = function(node, isRealGroup) {
     }
 };
 
-/**
- * Splice out any spaces from `children` starting at position `i`, and return
- * the spliced-out array. Returns null if `children[i]` does not exist or is not
- * a space.
- */
-export const spliceSpaces = function(children, i) {
-    let j = i;
-    while (j < children.length && isSpace(children[j])) {
-        j++;
-    }
-    if (j === i) {
-        return null;
-    } else {
-        return children.splice(i, j - i);
-    }
+const styleMap = {
+    "display": Style.DISPLAY,
+    "text": Style.TEXT,
+    "script": Style.SCRIPT,
+    "scriptscript": Style.SCRIPTSCRIPT,
 };
 
 /**
@@ -75,81 +62,88 @@ export const spliceSpaces = function(children, i) {
  */
 export const buildExpression = function(expression, options, isRealGroup) {
     // Parse expressions into `groups`.
-    const groups = [];
+    const rawGroups = [];
     for (let i = 0; i < expression.length; i++) {
         const group = expression[i];
         const output = buildGroup(group, options);
         if (output instanceof domTree.documentFragment) {
-            Array.prototype.push.apply(groups, output.children);
+            rawGroups.push(...output.children);
         } else {
-            groups.push(output);
+            rawGroups.push(output);
         }
     }
-    // At this point `groups` consists entirely of `symbolNode`s and `span`s.
+    // At this point `rawGroups` consists entirely of `symbolNode`s and `span`s.
 
-    // Explicit spaces (e.g., \;, \,) should be ignored with respect to atom
-    // spacing (e.g., "add thick space between mord and mrel"). Since CSS
-    // adjacency rules implement atom spacing, spaces should be invisible to
-    // CSS. So we splice them out of `groups` and into the atoms themselves.
-    for (let i = 0; i < groups.length; i++) {
-        const spaces = spliceSpaces(groups, i);
-        if (spaces) {
-            // Splicing of spaces may have removed all remaining groups.
-            if (i < groups.length) {
-                // If there is a following group, move space within it.
-                if (groups[i] instanceof domTree.symbolNode) {
-                    groups[i] = makeSpan([].concat(groups[i].classes),
-                        [groups[i]]);
-                }
-                buildCommon.prependChildren(groups[i], spaces);
-            } else {
-                // Otherwise, put any spaces back at the end of the groups.
-                Array.prototype.push.apply(groups, spaces);
-                break;
+    // Ignore explicit spaces (e.g., \;, \,) when determining what implicit
+    // spacing should go between atoms of different classes.
+    const nonSpaces =
+        rawGroups.filter(group => group && group.classes[0] !== "mspace");
+
+    // Before determining what spaces to insert, perform bin cancellation.
+    // Binary operators change to ordinary symbols in some contexts.
+    for (let i = 0; i < nonSpaces.length; i++) {
+        if (isBin(nonSpaces[i])) {
+            if (isBinLeftCanceller(nonSpaces[i - 1], isRealGroup)
+                    || isBinRightCanceller(nonSpaces[i + 1], isRealGroup)) {
+                nonSpaces[i].classes[0] = "mord";
             }
         }
     }
 
-    // Binary operators change to ordinary symbols in some contexts.
-    for (let i = 0; i < groups.length; i++) {
-        if (isBin(groups[i])
-            && (isBinLeftCanceller(groups[i - 1], isRealGroup)
-                || isBinRightCanceller(groups[i + 1], isRealGroup))) {
-            groups[i].classes[0] = "mord";
+    const groups = [];
+    let j = 0;
+    for (let i = 0; i < rawGroups.length; i++) {
+        groups.push(rawGroups[i]);
+
+        // For any group that is not a space, get the next non-space.  Then
+        // lookup what implicit space should be placed between those atoms and
+        // add it to groups.
+        if (rawGroups[i].classes[0] !== "mspace" && j < nonSpaces.length - 1) {
+            // Get the type of the current non-space node.  If it's a document
+            // fragment, get the type of the rightmost node in the fragment.
+            const left = getTypeOfDomTree(nonSpaces[j], "right");
+
+            // Get the type of the next non-space node.  If it's a document
+            // fragment, get the type of the leftmost node in the fragment.
+            const right = getTypeOfDomTree(nonSpaces[j + 1], "left");
+
+            // We use buildExpression inside of sizingGroup, but it returns a
+            // document fragment of elements.  sizingGroup sets `isRealGroup`
+            // to false to avoid processing spans multiple times.
+            if (left && right && isRealGroup) {
+                const space = isLeftTight(nonSpaces[j + 1])
+                    ? tightSpacings[left][right]
+                    : spacings[left][right];
+
+                if (space) {
+                    let glueOptions = options;
+
+                    if (expression.length === 1) {
+                        if (expression[0].type === "sizing") {
+                            glueOptions = options.havingSize(
+                                expression[0].value.size);
+                        } else if (expression[0].type === "styling") {
+                            glueOptions = options.havingStyle(
+                                styleMap[expression[0].value.style]);
+                        }
+                    }
+
+                    groups.push(buildCommon.makeGlue(space, glueOptions));
+                }
+            }
+            j++;
         }
     }
 
     // Process \\not commands within the group.
-    // TODO(kevinb): Handle multiple \\not commands in a row.
-    // TODO(kevinb): Handle \\not{abc} correctly.  The \\not should appear over
-    // the 'a' instead of the 'c'.
     for (let i = 0; i < groups.length; i++) {
-        if (groups[i].value === "\u0338" && i + 1 < groups.length) {
-            const children = groups.slice(i, i + 2);
-
-            children[0].classes = ["mainrm"];
-            // \u0338 is a combining glyph so we could reorder the children so
-            // that it comes after the other glyph.  This works correctly on
-            // most browsers except for Safari.  Instead we absolutely position
-            // the glyph and set its right side to match that of the other
-            // glyph which is visually equivalent.
-            children[0].style.position = "absolute";
-            children[0].style.right = "0";
-
-            // Copy the classes from the second glyph to the new container.
-            // This is so it behaves the same as though there was no \\not.
-            const classes = groups[i + 1].classes;
-            const container = makeSpan(classes, children);
-
-            // LaTeX adds a space between ords separated by a \\not.
-            if (classes.indexOf("mord") !== -1) {
-                // \glue(\thickmuskip) 2.77771 plus 2.77771
-                container.style.paddingLeft = "0.277771em";
-            }
-
-            // Ensure that the \u0338 is positioned relative to the container.
-            container.style.position = "relative";
-            groups.splice(i, 2, container);
+        if (groups[i].value === "\u0338") {
+            groups[i].style.position = "absolute";
+            // TODO(kevinb) fix this for Safari by switching to a non-combining
+            // character for \not.
+            // This value was determined empirically.
+            // TODO(kevinb) figure out the real math for this value.
+            groups[i].style.paddingLeft = "0.8em";
         }
     }
 
@@ -157,13 +151,21 @@ export const buildExpression = function(expression, options, isRealGroup) {
 };
 
 // Return math atom class (mclass) of a domTree.
-export const getTypeOfDomTree = function(node) {
-    if (node instanceof domTree.documentFragment) {
+export const getTypeOfDomTree = function(node, side = "right") {
+    if (node instanceof domTree.documentFragment ||
+            node instanceof domTree.anchor) {
         if (node.children.length) {
-            return getTypeOfDomTree(
-                node.children[node.children.length - 1]);
+            if (side === "right") {
+                return getTypeOfDomTree(
+                    node.children[node.children.length - 1]);
+            } else if (side === "left") {
+                return getTypeOfDomTree(
+                    node.children[0]);
+            }
         }
     } else {
+        // This makes a lot of assumptions as to where the type of atom
+        // appears.  We should do a better job of enforcing this.
         if (utils.contains([
             "mord", "mop", "mbin", "mrel", "mopen", "mclose",
             "mpunct", "minner",
@@ -172,6 +174,21 @@ export const getTypeOfDomTree = function(node) {
         }
     }
     return null;
+};
+
+// If `node` is an atom return whether it's been assigned the mtight class.
+// If `node` is a document fragment, return the value of isLeftTight() for the
+// leftmost node in the fragment.
+// 'mtight' indicates that the node is script or scriptscript style.
+export const isLeftTight = function(node) {
+    if (node instanceof domTree.documentFragment) {
+        if (node.children.length) {
+            return isLeftTight(node.children[0]);
+        }
+    } else {
+        return utils.contains(node.classes, "mtight");
+    }
+    return false;
 };
 
 /**
@@ -405,209 +422,6 @@ groupTypes.spacing = function(group, options) {
     }
 };
 
-function sizingGroup(value, options, baseOptions) {
-    const inner = buildExpression(value, options, false);
-    const multiplier = options.sizeMultiplier / baseOptions.sizeMultiplier;
-
-    // Add size-resetting classes to the inner list and set maxFontSize
-    // manually. Handle nested size changes.
-    for (let i = 0; i < inner.length; i++) {
-        const pos = utils.indexOf(inner[i].classes, "sizing");
-        if (pos < 0) {
-            Array.prototype.push.apply(inner[i].classes,
-                options.sizingClasses(baseOptions));
-        } else if (inner[i].classes[pos + 1] === "reset-size" + options.size) {
-            // This is a nested size change: e.g., inner[i] is the "b" in
-            // `\Huge a \small b`. Override the old size (the `reset-` class)
-            // but not the new size.
-            inner[i].classes[pos + 1] = "reset-size" + baseOptions.size;
-        }
-
-        inner[i].height *= multiplier;
-        inner[i].depth *= multiplier;
-    }
-
-    return buildCommon.makeFragment(inner);
-}
-
-groupTypes.sizing = function(group, options) {
-    // Handle sizing operators like \Huge. Real TeX doesn't actually allow
-    // these functions inside of math expressions, so we do some special
-    // handling.
-    const newOptions = options.havingSize(group.value.size);
-    return sizingGroup(group.value.value, newOptions, options);
-};
-
-groupTypes.styling = function(group, options) {
-    // Style changes are handled in the TeXbook on pg. 442, Rule 3.
-
-    // Figure out what style we're changing to.
-    const styleMap = {
-        "display": Style.DISPLAY,
-        "text": Style.TEXT,
-        "script": Style.SCRIPT,
-        "scriptscript": Style.SCRIPTSCRIPT,
-    };
-
-    const newStyle = styleMap[group.value.style];
-    const newOptions = options.havingStyle(newStyle);
-    return sizingGroup(group.value.value, newOptions, options);
-};
-
-groupTypes.font = function(group, options) {
-    const font = group.value.font;
-    return buildGroup(group.value.body, options.withFontFamily(font));
-};
-
-groupTypes.accent = function(group, options) {
-    // Accents are handled in the TeXbook pg. 443, rule 12.
-    let base = group.value.base;
-
-    let supsubGroup;
-    if (group.type === "supsub") {
-        // If our base is a character box, and we have superscripts and
-        // subscripts, the supsub will defer to us. In particular, we want
-        // to attach the superscripts and subscripts to the inner body (so
-        // that the position of the superscripts and subscripts won't be
-        // affected by the height of the accent). We accomplish this by
-        // sticking the base of the accent into the base of the supsub, and
-        // rendering that, while keeping track of where the accent is.
-
-        // The supsub group is the group that was passed in
-        const supsub = group;
-        // The real accent group is the base of the supsub group
-        group = supsub.value.base;
-        // The character box is the base of the accent group
-        base = group.value.base;
-        // Stick the character box into the base of the supsub group
-        supsub.value.base = base;
-
-        // Rerender the supsub group with its new base, and store that
-        // result.
-        supsubGroup = buildGroup(supsub, options);
-    }
-
-    // Build the base group
-    const body = buildGroup(base, options.havingCrampedStyle());
-
-    // Does the accent need to shift for the skew of a character?
-    const mustShift = group.value.isShifty && utils.isCharacterBox(base);
-
-    // Calculate the skew of the accent. This is based on the line "If the
-    // nucleus is not a single character, let s = 0; otherwise set s to the
-    // kern amount for the nucleus followed by the \skewchar of its font."
-    // Note that our skew metrics are just the kern between each character
-    // and the skewchar.
-    let skew = 0;
-    if (mustShift) {
-        // If the base is a character box, then we want the skew of the
-        // innermost character. To do that, we find the innermost character:
-        const baseChar = utils.getBaseElem(base);
-        // Then, we render its group to get the symbol inside it
-        const baseGroup = buildGroup(baseChar, options.havingCrampedStyle());
-        // Finally, we pull the skew off of the symbol.
-        skew = baseGroup.skew;
-        // Note that we now throw away baseGroup, because the layers we
-        // removed with getBaseElem might contain things like \color which
-        // we can't get rid of.
-        // TODO(emily): Find a better way to get the skew
-    }
-
-    // calculate the amount of space between the body and the accent
-    const clearance = Math.min(
-        body.height,
-        options.fontMetrics().xHeight);
-
-    // Build the accent
-    let accentBody;
-    if (!group.value.isStretchy) {
-        let accent;
-        if (group.value.label === "\\vec") {
-            // Before version 0.9, \vec used the combining font glyph U+20D7.
-            // But browsers, especially Safari, are not consistent in how they
-            // render combining characters when not preceded by a character.
-            // So now we use an SVG.
-            // If Safari reforms, we should consider reverting to the glyph.
-            accent = buildCommon.staticSvg("vec", options);
-            accent.width = parseFloat(accent.style.width);
-        } else {
-            accent = buildCommon.makeSymbol(
-                group.value.label, "Main-Regular", group.mode, options);
-        }
-        // Remove the italic correction of the accent, because it only serves to
-        // shift the accent over to a place we don't want.
-        accent.italic = 0;
-
-        accentBody = makeSpan(["accent-body"], [accent]);
-
-        // CSS defines `.katex .accent .accent-body { width: 0 }`
-        // so that the accent doesn't contribute to the bounding box.
-        // We need to shift the character by its width (effectively half
-        // its width) to compensate.
-        let left = -accent.width / 2;
-
-        // Shift the accent over by the skew.
-        left += skew;
-
-        // The \H character that the fonts use is a combining character, and
-        // thus shows up much too far to the left. To account for this, we add
-        // a manual shift of the width of one space.
-        // TODO(emily): Fix this in a better way, like by changing the font
-        if (group.value.label === '\\H') {
-            left += 0.5;  // twice width of space, or width of accent
-        }
-
-        accentBody.style.left = left + "em";
-
-        accentBody = buildCommon.makeVList({
-            positionType: "firstBaseline",
-            children: [
-                {type: "elem", elem: body},
-                {type: "kern", size: -clearance},
-                {type: "elem", elem: accentBody},
-            ],
-        }, options);
-
-    } else {
-        accentBody = stretchy.svgSpan(group, options);
-
-        accentBody = buildCommon.makeVList({
-            positionType: "firstBaseline",
-            children: [
-                {type: "elem", elem: body},
-                {type: "elem", elem: accentBody},
-            ],
-        }, options);
-
-        const styleSpan = accentBody.children[0].children[0].children[1];
-        styleSpan.classes.push("svg-align");  // text-align: left;
-        if (skew > 0) {
-            // Shorten the accent and nudge it to the right.
-            styleSpan.style.width = `calc(100% - ${2 * skew}em)`;
-            styleSpan.style.marginLeft = (2 * skew) + "em";
-        }
-    }
-
-    const accentWrap = makeSpan(["mord", "accent"], [accentBody], options);
-
-    if (supsubGroup) {
-        // Here, we replace the "base" child of the supsub with our newly
-        // generated accent.
-        supsubGroup.children[0] = accentWrap;
-
-        // Since we don't rerun the height calculation after replacing the
-        // accent, we manually recalculate height.
-        supsubGroup.height = Math.max(accentWrap.height, supsubGroup.height);
-
-        // Accents should always be ords, even when their innards are not.
-        supsubGroup.classes[0] = "mord";
-
-        return supsubGroup;
-    } else {
-        return accentWrap;
-    }
-};
-
 groupTypes.horizBrace = function(group, options) {
     const style = options.style;
 
@@ -698,29 +512,6 @@ groupTypes.horizBrace = function(group, options) {
 
     return makeSpan(["mord", (group.value.isOver ? "mover" : "munder")],
         [vlist], options);
-};
-
-groupTypes.accentUnder = function(group, options) {
-    // Treat under accents much like underlines.
-    const innerGroup = buildGroup(group.value.base, options);
-
-    const accentBody = stretchy.svgSpan(group, options);
-    const kern = (/tilde/.test(group.value.label) ? 0.12 : 0);
-
-    // Generate the vlist, with the appropriate kerns
-    const vlist = buildCommon.makeVList({
-        positionType: "bottom",
-        positionData: accentBody.height + kern,
-        children: [
-            {type: "elem", elem: accentBody},
-            {type: "kern", size: kern},
-            {type: "elem", elem: innerGroup},
-        ],
-    }, options);
-
-    vlist.children[0].children[0].children[0].classes.push("svg-align");
-
-    return makeSpan(["mord", "accentunder"], [vlist], options);
 };
 
 groupTypes.xArrow = function(group, options) {

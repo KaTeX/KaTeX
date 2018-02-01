@@ -1,6 +1,5 @@
 // @flow
 /** Include this to ensure that all functions are defined. */
-import utils from "./utils";
 import ParseError from "./ParseError";
 import ParseNode from "./ParseNode";
 import {
@@ -26,19 +25,13 @@ const defineFunction = function(
     _defineFunction({names, props, handler});
 };
 
+// TODO(kevinb): have functions return an object and call defineFunction with
+// that object in this file instead of relying on side-effects.
 import "./functions/sqrt";
 
 import "./functions/color";
 
 import "./functions/text";
-
-// \color is handled in Parser.js's parseImplicitGroup
-defineFunction(["\\color"], {
-    numArgs: 1,
-    allowedInText: true,
-    greediness: 3,
-    argTypes: ["color"],
-}, null);
 
 import "./functions/enclose";
 
@@ -96,13 +89,6 @@ defineFunction(["\\stackrel"], {
 });
 
 import "./functions/mod";
-
-const fontAliases = {
-    "\\Bbb": "\\mathbb",
-    "\\bold": "\\mathbf",
-    "\\frak": "\\mathfrak",
-    "\\bm": "\\boldsymbol",
-};
 
 const singleCharIntegrals: {[string]: string} = {
     "\u222b": "\\int",
@@ -178,99 +164,13 @@ import "./functions/smash";
 
 import "./functions/delimsizing";
 
-// Sizing functions (handled in Parser.js explicitly, hence no handler)
-defineFunction([
-    "\\tiny", "\\scriptsize", "\\footnotesize", "\\small",
-    "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
-], {numArgs: 0}, null);
+import "./functions/sizing";
 
-// Style changing functions (handled in Parser.js explicitly, hence no
-// handler)
-defineFunction([
-    "\\displaystyle", "\\textstyle", "\\scriptstyle",
-    "\\scriptscriptstyle",
-], {numArgs: 0}, null);
+import "./functions/styling";
 
-// Old font changing functions
-defineFunction([
-    "\\rm", "\\sf", "\\tt", "\\bf", "\\it", //"\\sl", "\\sc",
-], {numArgs: 0}, null);
+import "./functions/font";
 
-defineFunction([
-    // styles
-    "\\mathrm", "\\mathit", "\\mathbf", "\\boldsymbol",
-
-    // families
-    "\\mathbb", "\\mathcal", "\\mathfrak", "\\mathscr", "\\mathsf",
-    "\\mathtt",
-
-    // aliases
-    "\\Bbb", "\\bold", "\\frak", "\\bm",
-], {
-    numArgs: 1,
-    greediness: 2,
-}, function(context, args) {
-    const body = args[0];
-    let func = context.funcName;
-    if (func in fontAliases) {
-        func = fontAliases[func];
-    }
-    return {
-        type: "font",
-        font: func.slice(1),
-        body: body,
-    };
-});
-
-// Accents
-defineFunction([
-    "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
-    "\\check", "\\hat", "\\vec", "\\dot",
-    "\\widehat", "\\widetilde", "\\overrightarrow", "\\overleftarrow",
-    "\\Overrightarrow", "\\overleftrightarrow", "\\overgroup",
-    "\\overlinesegment", "\\overleftharpoon", "\\overrightharpoon",
-], {
-    numArgs: 1,
-}, function(context, args) {
-    const base = args[0];
-
-    const isStretchy = !utils.contains([
-        "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
-        "\\check", "\\hat", "\\vec", "\\dot",
-    ], context.funcName);
-
-    const isShifty = !isStretchy || utils.contains([
-        "\\widehat", "\\widetilde",
-    ], context.funcName);
-
-    return {
-        type: "accent",
-        label: context.funcName,
-        isStretchy: isStretchy,
-        isShifty: isShifty,
-        base: base,
-    };
-});
-
-// Text-mode accents
-defineFunction([
-    "\\'", "\\`", "\\^", "\\~", "\\=", "\\u", "\\.", '\\"',
-    "\\r", "\\H", "\\v",
-], {
-    numArgs: 1,
-    allowedInText: true,
-    allowedInMath: false,
-}, function(context, args) {
-    const base = args[0];
-
-    return {
-        type: "accent",
-        label: context.funcName,
-        isStretchy: false,
-        isShifty: true,
-        base: base,
-    };
-});
+import "./functions/accent";
 
 // Horizontal stretchy braces
 defineFunction([
@@ -288,19 +188,7 @@ defineFunction([
 });
 
 // Stretchy accents under the body
-defineFunction([
-    "\\underleftarrow", "\\underrightarrow", "\\underleftrightarrow",
-    "\\undergroup", "\\underlinesegment", "\\utilde",
-], {
-    numArgs: 1,
-}, function(context, args) {
-    const base = args[0];
-    return {
-        type: "accentUnder",
-        label: context.funcName,
-        base: base,
-    };
-});
+import "./functions/accentunder";
 
 // Stretchy arrows with an optional argument
 defineFunction([

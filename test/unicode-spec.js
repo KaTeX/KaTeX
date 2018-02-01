@@ -16,10 +16,10 @@ const parseAndSetResult = function(expr, result, settings) {
     } catch (e) {
         result.pass = false;
         if (e instanceof ParseError) {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with error: " + e.message;
         } else {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with unknown error: " + e.message;
         }
     }
@@ -34,7 +34,7 @@ describe("unicode", function() {
 
                 const result = {
                     pass: true,
-                    message: "'" + actual + "' succeeded parsing",
+                    message: () => "'" + actual + "' succeeded parsing",
                 };
                 parseAndSetResult(actual, result, usedSettings);
                 return result;
@@ -45,7 +45,7 @@ describe("unicode", function() {
 
                 const result = {
                     pass: false,
-                    message: "Expected '" + actual + "' to fail " +
+                    message: () => "Expected '" + actual + "' to fail " +
                         "parsing, but it succeeded",
                 };
 
@@ -54,10 +54,10 @@ describe("unicode", function() {
                 } catch (e) {
                     if (e instanceof ParseError) {
                         result.pass = true;
-                        result.message = "'" + actual + "' correctly " +
+                        result.message = () => "'" + actual + "' correctly " +
                             "didn't parse with error: " + e.message;
                     } else {
-                        result.message = "'" + actual + "' failed " +
+                        result.message = () => "'" + actual + "' failed " +
                             "parsing with unknown error: " + e.message;
                     }
                 }
@@ -110,38 +110,63 @@ describe("unicode", function() {
     it("should not parse Devangari outside \\text{}", function() {
         expect('नमस्ते').toNotParse();
     });
+
+    it("should parse Georgian inside \\text{}", function() {
+        expect('\\text{გამარჯობა}').toParse();
+    });
+
+    it("should not parse Georgian outside \\text{}", function() {
+        expect('გამარჯობა').toNotParse();
+    });
+
+    it("should parse extended Latin characters inside \\text{}", function() {
+        expect('\\text{ěščřžůřťďňőİı}').toParse();
+    });
+
+    it("should not parse extended Latin outside \\text{}", function() {
+        expect('ěščřžůřťďňőİı').toNotParse();
+    });
+
 });
 
 describe("unicodeScripts", () => {
-    const cjkRE = /[\u3000-\u30FF\u4E00-\u9FAF\uFF00-\uFF60]/;
-    const hangulRE = /[\uAC00-\uD7AF]/;
-    const brahmicRE = /[\u0900-\u109F]/;
-    const allRE =
-        /[\u3000-\u30FF\u4E00-\u9FAF\uFF00-\uFF60\uAC00-\uD7AF\u0900-\u109F]/;
+    const scriptRegExps = {
+        latin: /[\u0100-\u024f\u0300-\u036f]/,
+        cyrillic: /[\u0400-\u04ff]/,
+        brahmic: /[\u0900-\u109F]/,
+        georgian: /[\u10a0-\u10ff]/,
+        cjk: /[\u3000-\u30FF\u4E00-\u9FAF\uFF00-\uFF60]/,
+        hangul: /[\uAC00-\uD7AF]/,
+    };
+
+    const scriptNames = Object.keys(scriptRegExps);
+
+    const allRegExp = new RegExp(
+        Object.values(scriptRegExps).map(re => re.source).join('|')
+    );
 
     it("supportedCodepoint() should return the correct values", () => {
         for (let codepoint = 0; codepoint <= 0xffff; codepoint++) {
             expect(supportedCodepoint(codepoint)).toBe(
-                allRE.test(String.fromCharCode(codepoint))
+                allRegExp.test(String.fromCharCode(codepoint))
             );
         }
     });
 
     it("scriptFromCodepoint() should return correct values", () => {
-        for (let codepoint = 0; codepoint <= 0xffff; codepoint++) {
+        outer: for (let codepoint = 0; codepoint <= 0xffff; codepoint++) {
             const character = String.fromCharCode(codepoint);
             const script = scriptFromCodepoint(codepoint);
 
-            if (cjkRE.test(character)) {
-                expect(script).toEqual('cjk');
-            } else if (hangulRE.test(character)) {
-                expect(script).toEqual('hangul');
-            } else if (brahmicRE.test(character)) {
-                expect(script).toEqual('brahmic');
-            } else {
-                expect(script).toBe(null);
-                expect(supportedCodepoint(codepoint)).toBe(false);
+            for (const scriptName of scriptNames) {
+                if (scriptRegExps[scriptName].test(character)) {
+                    expect(script).toEqual(scriptName);
+                    continue outer;
+                }
             }
+
+            expect(script).toBe(null);
+            expect(supportedCodepoint(codepoint)).toBe(false);
         }
     });
 });

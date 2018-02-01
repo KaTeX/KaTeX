@@ -196,10 +196,10 @@ function startServer() {
     }
     const port = Math.floor(Math.random() * (maxPort - minPort)) + minPort;
     const compiler = webpack(webpackConfig);
-    const server = new webpackDevServer(compiler,
-        webpackConfig[0].devServer).listen(port);
+    const wds = new webpackDevServer(compiler, webpackConfig[0].devServer);
+    const server = wds.listen(port);
     server.once("listening", function() {
-        devServer = server;
+        devServer = wds;
         katexPort = port;
         attempts = 0;
         process.nextTick(tryConnect);

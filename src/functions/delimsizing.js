@@ -5,6 +5,8 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
+import { calculateSize } from "../units";
+import { spacings, tightSpacings } from "../spacingData";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -36,7 +38,7 @@ const delimiters = [
     "(", ")", "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
-    "<", ">", "\\langle", "\\rangle", "\\lt", "\\gt",
+    "<", ">", "\\langle", "\u27e8", "\\rangle", "\u27e9", "\\lt", "\\gt",
     "\\lvert", "\\rvert", "\\lVert", "\\rVert",
     "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache",
     "/", "\\backslash",
@@ -128,12 +130,34 @@ defineFunction({
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
 
-        // \left and \right are caught somewhere in Parser.js, which is
-        // why this data doesn't match what is in buildHTML.
-        return {
-            type: "leftright",
-            value: delim.value,
-        };
+        if (context.funcName === "\\left") {
+            const parser = context.parser;
+            // Parse out the implicit body
+            ++parser.leftrightDepth;
+            // parseExpression stops before '\\right'
+            const body = parser.parseExpression(false);
+            --parser.leftrightDepth;
+            // Check the next token
+            parser.expect("\\right", false);
+            const right = parser.parseFunction();
+            if (!right) {
+                throw new ParseError('failed to parse function after \\right');
+            }
+            return {
+                type: "leftright",
+                body: body,
+                left: delim.value,
+                right: right.value.value,
+            };
+        } else {
+            // This is a little weird. We return this object which gets turned
+            // into a ParseNode which gets returned by
+            // `const right = parser.parseFunction();` up above.
+            return {
+                type: "leftright",
+                value: delim.value,
+            };
+        }
     },
     htmlBuilder: (group, options) => {
         // Build the inner expression
@@ -182,13 +206,20 @@ defineFunction({
                     inner[i] = delimiter.leftRightDelim(
                         middleDelim.isMiddle.value, innerHeight, innerDepth,
                         middleDelim.isMiddle.options, group.mode, []);
-                    // Add back spaces shifted into the delimiter
-                    const spaces = html.spliceSpaces(middleDelim.children, 0);
-                    if (spaces) {
-                        buildCommon.prependChildren(inner[i], spaces);
-                    }
                 }
             }
+        }
+
+        const lastChildType = html.getTypeOfDomTree(inner[inner.length - 1]);
+        const activeSpacings = options.style.isTight() ? tightSpacings : spacings;
+
+        if (lastChildType && activeSpacings[lastChildType]["mclose"]) {
+            const glue =
+                buildCommon.makeSpan(["mord", "rule"], [], options);
+            const dimension =
+                calculateSize(activeSpacings[lastChildType]["mclose"], options);
+            glue.style.marginRight = `${dimension}em`;
+            inner.push(glue);
         }
 
         let rightDelim;

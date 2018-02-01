@@ -43,23 +43,13 @@ defineFunction({
         };
     },
     htmlBuilder: (group, options) => {
-        // Make an empty span for the rule
-        const rule = buildCommon.makeSpan(["mord", "rule"], [], options);
-
-        if (group.value.dimension) {
-            const dimension = calculateSize(group.value.dimension, options);
-            rule.style.marginRight = dimension + "em";
-        }
-
-        return rule;
+        return buildCommon.makeGlue(group.value.dimension, options);
     },
     mathmlBuilder: (group, options) => {
         const node = new mathMLTree.MathNode("mspace");
 
-        if (group.value.dimension) {
-            const dimension = calculateSize(group.value.dimension, options);
-            node.setAttribute("width", dimension + "em");
-        }
+        const dimension = calculateSize(group.value.dimension, options);
+        node.setAttribute("width", dimension + "em");
 
         return node;
     },

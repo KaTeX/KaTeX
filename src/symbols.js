@@ -124,6 +124,8 @@ defineSymbol(math, main, textord, "\u211c", "\\Re", true);
 defineSymbol(math, main, textord, "\u2661", "\\heartsuit", true);
 defineSymbol(math, main, textord, "\u2111", "\\Im", true);
 defineSymbol(math, main, textord, "\u2660", "\\spadesuit", true);
+defineSymbol(text, main, textord, "\u00a7", "\\S", true);
+defineSymbol(text, main, textord, "\u00b6", "\\P", true);
 
 // Math and Text
 defineSymbol(math, main, textord, "\u2020", "\\dag");
@@ -511,14 +513,14 @@ defineSymbol(math, main, bin, "\u2228", "\\vee", true);
 defineSymbol(math, main, textord, "\u221a", "\\surd");
 defineSymbol(math, main, open, "(", "(");
 defineSymbol(math, main, open, "[", "[");
-defineSymbol(math, main, open, "\u27e8", "\\langle");
+defineSymbol(math, main, open, "\u27e8", "\\langle", true);
 defineSymbol(math, main, open, "\u2223", "\\lvert");
 defineSymbol(math, main, open, "\u2225", "\\lVert");
 defineSymbol(math, main, close, ")", ")");
 defineSymbol(math, main, close, "]", "]");
 defineSymbol(math, main, close, "?", "?");
 defineSymbol(math, main, close, "!", "!");
-defineSymbol(math, main, close, "\u27e9", "\\rangle");
+defineSymbol(math, main, close, "\u27e9", "\\rangle", true);
 defineSymbol(math, main, close, "\u2223", "\\rvert");
 defineSymbol(math, main, close, "\u2225", "\\rVert");
 defineSymbol(math, main, rel, "=", "=");
@@ -634,16 +636,17 @@ defineSymbol(math, main, inner, "\u2026", "\\ldots", true);
 defineSymbol(math, main, inner, "\u22ef", "\\@cdots", true);
 defineSymbol(math, main, inner, "\u22f1", "\\ddots", true);
 defineSymbol(math, main, textord, "\u22ee", "\\vdots", true);
-defineSymbol(math, main, accent, "\u00b4", "\\acute");
-defineSymbol(math, main, accent, "\u0060", "\\grave");
+defineSymbol(math, main, accent, "\u02ca", "\\acute");
+defineSymbol(math, main, accent, "\u02cb", "\\grave");
 defineSymbol(math, main, accent, "\u00a8", "\\ddot");
 defineSymbol(math, main, accent, "\u007e", "\\tilde");
-defineSymbol(math, main, accent, "\u00af", "\\bar");
+defineSymbol(math, main, accent, "\u02c9", "\\bar");
 defineSymbol(math, main, accent, "\u02d8", "\\breve");
 defineSymbol(math, main, accent, "\u02c7", "\\check");
 defineSymbol(math, main, accent, "\u005e", "\\hat");
 defineSymbol(math, main, accent, "\u20d7", "\\vec");
 defineSymbol(math, main, accent, "\u02d9", "\\dot");
+defineSymbol(math, main, accent, "\u02da", "\\mathring");
 defineSymbol(math, main, mathord, "\u0131", "\\imath", true);
 defineSymbol(math, main, mathord, "\u0237", "\\jmath", true);
 defineSymbol(text, main, textord, "\u0131", "\\i", true);
@@ -666,7 +669,7 @@ defineSymbol(text, main, accent, "\u02d9", "\\."); // dot above
 defineSymbol(text, main, accent, "\u02da", "\\r"); // ring above
 defineSymbol(text, main, accent, "\u02c7", "\\v"); // caron
 defineSymbol(text, main, accent, "\u00a8", '\\"'); // diaresis
-defineSymbol(text, main, accent, "\u030B", "\\H"); // double acute
+defineSymbol(text, main, accent, "\u02dd", "\\H"); // double acute
 
 defineSymbol(text, main, textord, "\u2013", "--");
 defineSymbol(text, main, textord, "\u2013", "\\textendash");
@@ -733,12 +736,6 @@ const extraLatinMath = "Åå";
 for (let i = 0; i < extraLatinMath.length; i++) {
     const ch = extraLatinMath.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);
-}
-
-// Cyrillic
-for (let i = 0x0410; i <= 0x044F; i++) {
-    const ch = String.fromCharCode(i);
-    defineSymbol(text, main, textord, ch, ch);
 }
 
 // Unicode versions of existing characters
