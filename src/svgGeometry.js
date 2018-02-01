@@ -5,6 +5,16 @@
  */
 
 const path: {[string]: string} = {
+    // stdHorizRule is used for frac-lines, underlines, and overlines.
+    // It is 0.04em thick if the line comes from normalsize/textstyle.
+    // It is in a viewBox that is 5x as tall as the line, so that the
+    // full line will be rendered even if the browser rounds down
+    // the enclosing span size.
+    stdHorizRule: "M0 120 V80 H400000 v40 H0 z M0 120 V80 H400000 v40 H0 z",
+
+    // vertSeparator is used in arrays. It is 0.05em wide in a 0.25em viewBox.
+    vertSeparator: "M100 0 h50 V400000 h-50 z M100 0 h50 V400000 h-50 z",
+
     // sqrtMain path geometry is from glyph U221A in the font KaTeX Main
     sqrtMain: `M95 622c-2.667 0-7.167-2.667-13.5
 -8S72 604 72 600c0-2 .333-3.333 1-4 1.333-2.667 23.833-20.667 67.5-54s
