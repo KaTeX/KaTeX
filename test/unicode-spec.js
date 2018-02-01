@@ -74,7 +74,7 @@ describe("unicode", function() {
 
     it("should parse Latin-1 outside \\text{}", function() {
         expect('ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ' +
-            'ÇÐÞçðþ').toParse();
+            'ÐÞðþ').toParse();
     });
 
     it("should parse all lower case Greek letters", function() {
