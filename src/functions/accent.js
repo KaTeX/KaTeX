@@ -63,9 +63,11 @@ const htmlBuilder = (group, options) => {
     }
 
     // calculate the amount of space between the body and the accent
-    const clearance = Math.min(
-        body.height,
-        options.fontMetrics().xHeight);
+    let clearance = group.value.label === "\\c"
+        ? body.height + body.depth
+        : Math.min(
+            body.height,
+            options.fontMetrics().xHeight);
 
     // Build the accent
     let accentBody;
@@ -87,6 +89,9 @@ const htmlBuilder = (group, options) => {
             // shift the accent over to a place we don't want.
             accent.italic = 0;
             width = accent.width;
+            if (group.value.label === "\\c") {
+                clearance += accent.depth;
+            }
         }
 
         accentBody = buildCommon.makeSpan(["accent-body"], [accent]);
@@ -215,7 +220,7 @@ defineFunction({
     type: "accent",
     names: [
         "\\'", "\\`", "\\^", "\\~", "\\=", "\\u", "\\.", '\\"',
-        "\\r", "\\H", "\\v",
+        "\\r", "\\H", "\\v", "\\c",
     ],
     props: {
         numArgs: 1,
