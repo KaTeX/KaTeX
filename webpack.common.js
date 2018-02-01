@@ -99,6 +99,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             new webpack.EnvironmentPlugin({
                 NODE_ENV: dev ? 'development' : 'production',
             }),
+            dev && new webpack.NamedModulesPlugin(),
             minimize && new UglifyJsPlugin({
                 uglifyOptions: {
                     output: {
