@@ -242,60 +242,6 @@ groupTypes.spacing = function(group) {
     return node;
 };
 
-groupTypes.font = function(group, options) {
-    const font = group.value.font;
-    return buildGroup(group.value.body, options.withFontFamily(font));
-};
-
-groupTypes.styling = function(group, options) {
-    // Figure out what style we're changing to.
-    // TODO(kevinb): dedupe this with buildHTML.js
-    // This will be easier of handling of styling nodes is in the same file.
-    const styleMap = {
-        "display": Style.DISPLAY,
-        "text": Style.TEXT,
-        "script": Style.SCRIPT,
-        "scriptscript": Style.SCRIPTSCRIPT,
-    };
-
-    const newStyle = styleMap[group.value.style];
-    const newOptions = options.havingStyle(newStyle);
-
-    const inner = buildExpression(group.value.value, newOptions);
-
-    const node = new mathMLTree.MathNode("mstyle", inner);
-
-    const styleAttributes = {
-        "display": ["0", "true"],
-        "text": ["0", "false"],
-        "script": ["1", "false"],
-        "scriptscript": ["2", "false"],
-    };
-
-    const attr = styleAttributes[group.value.style];
-
-    node.setAttribute("scriptlevel", attr[0]);
-    node.setAttribute("displaystyle", attr[1]);
-
-    return node;
-};
-
-groupTypes.sizing = function(group, options) {
-    const newOptions = options.havingSize(group.value.size);
-    const inner = buildExpression(group.value.value, newOptions);
-
-    const node = new mathMLTree.MathNode("mstyle", inner);
-
-    // TODO(emily): This doesn't produce the correct size for nested size
-    // changes, because we don't keep state of what style we're currently
-    // in, so we can't reset the size to normal before changing it.  Now
-    // that we're passing an options parameter we should be able to fix
-    // this.
-    node.setAttribute("mathsize", newOptions.sizeMultiplier + "em");
-
-    return node;
-};
-
 groupTypes.horizBrace = function(group, options) {
     const accentNode = stretchy.mathMLnode(group.value.label);
     return new mathMLTree.MathNode(

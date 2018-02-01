@@ -17,6 +17,7 @@ katexConfig.devServer = {
     // testing.  This potentially reveals the source code to the world,
     // but this should not be a concern for testing open-source software.
     disableHostCheck: true,
+    host: '0.0.0.0',
     port: PORT,
     stats: {
         colors: true,
