@@ -174,7 +174,7 @@ const mathmlBuilder = (group, options) => {
 
 const NON_STRETCHY_ACCENT_REGEX = new RegExp([
     "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
-    "\\check", "\\hat", "\\vec", "\\dot",
+    "\\check", "\\hat", "\\vec", "\\dot", "\\mathring",
 ].map(accent => `\\${accent}`).join("|"));
 
 // Accents
@@ -182,7 +182,7 @@ defineFunction({
     type: "accent",
     names: [
         "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
-        "\\check", "\\hat", "\\vec", "\\dot",
+        "\\check", "\\hat", "\\vec", "\\dot", "\\mathring",
         "\\widehat", "\\widetilde", "\\overrightarrow", "\\overleftarrow",
         "\\Overrightarrow", "\\overleftrightarrow", "\\overgroup",
         "\\overlinesegment", "\\overleftharpoon", "\\overrightharpoon",
