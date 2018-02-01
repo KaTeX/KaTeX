@@ -129,7 +129,7 @@ beforeEach(function() {
 
             const result = {
                 pass: true,
-                message: "'" + actual + "' succeeded parsing",
+                message: () => "'" + actual + "' succeeded parsing",
             };
             parseAndSetResult(actual, result, usedSettings);
             return result;
@@ -140,7 +140,7 @@ beforeEach(function() {
 
             const result = {
                 pass: false,
-                message: "Expected '" + actual + "' to fail " +
+                message: () => "Expected '" + actual + "' to fail " +
                     "parsing, but it succeeded",
             };
 
@@ -165,7 +165,7 @@ beforeEach(function() {
 
             const result = {
                 pass: true,
-                message: "'" + actual + "' succeeded in building",
+                message: () => "'" + actual + "' succeeded in building",
             };
 
             expect(actual).toParse(usedSettings);
@@ -191,7 +191,7 @@ beforeEach(function() {
 
             const result = {
                 pass: true,
-                message: "Parse trees of '" + actual +
+                message: () => "Parse trees of '" + actual +
                     "' and '" + expected + "' are equivalent",
             };
 
@@ -222,7 +222,7 @@ beforeEach(function() {
 
             const result = {
                 pass: true,
-                message: "Build trees of '" + actual +
+                message: () => "Build trees of '" + actual +
                     "' and '" + expected + "' are equivalent",
             };
 
