@@ -39,7 +39,7 @@ const delimiters = [
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
     "<", ">", "\\langle", "\u27e8", "\\rangle", "\u27e9", "\\lt", "\\gt",
-    "\\lvert", "\\rvert", "\u2223", "\\lVert", "\\rVert", "\u2225",
+    "\\lvert", "\\rvert", "\\lVert", "\\rVert",
     "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache",
     "/", "\\backslash",
     "|", "\\vert", "\\|", "\\Vert",

@@ -107,6 +107,21 @@ const parseAndSetResult = function(expr, result, settings) {
     }
 };
 
+const buildAndSetResult = function(expr, result, settings) {
+    try {
+        return _getBuilt(expr, settings || defaultSettings);
+    } catch (e) {
+        result.pass = false;
+        if (e instanceof ParseError) {
+            result.message = "'" + expr + "' failed " +
+                "parsing with error: " + e.message;
+        } else {
+            result.message = "'" + expr + "' failed " +
+                "parsing with unknown error: " + e.message;
+        }
+    }
+};
+
 beforeEach(function() {
     expect.extend({
         toParse: function(actual, settings) {
@@ -196,7 +211,38 @@ beforeEach(function() {
 
             if (JSON.stringify(actualTree) !== JSON.stringify(expectedTree)) {
                 result.pass = false;
-                result.message = "Parse trees of '" + actual +
+                result.message = () => "Parse trees of '" + actual +
+                    "' and '" + expected + "' are not equivalent";
+            }
+            return result;
+        },
+
+        toBuildLike: function(actual, expected, settings) {
+            const usedSettings = settings ? settings : defaultSettings;
+
+            const result = {
+                pass: true,
+                message: "Build trees of '" + actual +
+                    "' and '" + expected + "' are equivalent",
+            };
+
+            const actualTree = buildAndSetResult(actual, result,
+                usedSettings);
+            if (!actualTree) {
+                return result;
+            }
+            const expectedTree = buildAndSetResult(expected, result,
+                usedSettings);
+            if (!expectedTree) {
+                return result;
+            }
+
+            stripPositions(actualTree);
+            stripPositions(expectedTree);
+
+            if (JSON.stringify(actualTree) !== JSON.stringify(expectedTree)) {
+                result.pass = false;
+                result.message = () => "Parse trees of '" + actual +
                     "' and '" + expected + "' are not equivalent";
             }
             return result;
@@ -1210,6 +1256,19 @@ describe("A left/right parser", function() {
         const unmatchedMiddle = "(\\middle|\\dfrac{x}{y})";
         expect(unmatchedMiddle).toNotParse();
     });
+});
+
+describe("left/right builder", () => {
+    const cases = [
+        ['\\left\\langle \\right\\rangle', '\\left< \\right>'],
+        ['\\left\\langle \\right\\rangle', '\\left\u27e8 \\right\u27e9'],
+    ];
+
+    for (const [actual, expected] of cases) {
+        it(`should build "${actual}" like "${expected}"`, () => {
+            expect(actual).toBuildLike(expected);
+        });
+    }
 });
 
 describe("A begin/end parser", function() {
