@@ -422,11 +422,6 @@ groupTypes.spacing = function(group, options) {
     }
 };
 
-groupTypes.font = function(group, options) {
-    const font = group.value.font;
-    return buildGroup(group.value.body, options.withFontFamily(font));
-};
-
 groupTypes.horizBrace = function(group, options) {
     const style = options.style;
 
