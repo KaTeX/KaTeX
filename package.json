@@ -66,7 +66,7 @@
     "test": "npm run prestart && npm run lint && npm run flow && npm run jest",
     "screenshots": "npm run prestart && dockers/Screenshotter/screenshotter.sh",
     "verify-screenshots": "npm run screenshots -- --verify",
-    "prestart": "check-dependencies && cd src && node unicodeMake.js >unicodeSymbols.js",
+    "prestart": "node check-node-version.js && check-dependencies && cd src && node unicodeMake.js >unicodeSymbols.js",
     "start": "webpack-dev-server --hot --config webpack.dev.js",
     "build": "npm run prestart && rimraf build/* && webpack",
     "dist": "npm test && npm run build && npm run dist:copy && npm run dist:zip && npm run dist:dist",
