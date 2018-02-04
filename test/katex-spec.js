@@ -1034,6 +1034,35 @@ describe("An overline parser", function() {
     });
 });
 
+describe("An lap parser", function() {
+    it("should not fail on a text argument", function() {
+        expect("\\rlap{\\,/}{=}").toParse();
+        expect("\\mathrlap{\\,/}{=}").toParse();
+        expect("{=}\\llap{/\\,}").toParse();
+        expect("{=}\\mathllap{/\\,}").toParse();
+        expect("\\sum_{\\clap{ABCDEFG}}").toParse();
+        expect("\\sum_{\\mathclap{ABCDEFG}}").toParse();
+    });
+
+    it("should not fail if math version is used", function() {
+        expect("\\mathrlap{\\frac{a}{b}}{=}").toParse();
+        expect("{=}\\mathllap{\\frac{a}{b}}").toParse();
+        expect("\\sum_{\\mathclap{\\frac{a}{b}}}").toParse();
+    });
+
+    it("should fail on math if AMS version is used", function() {
+        expect("\\rlap{\\frac{a}{b}}{=}").toNotParse();
+        expect("{=}\\llap{\\frac{a}{b}}").toNotParse();
+        expect("\\sum_{\\clap{\\frac{a}{b}}}").toNotParse();
+    });
+
+    it("should produce a lap", function() {
+        const parse = getParsed("\\mathrlap{\\,/}")[0];
+
+        expect(parse.type).toEqual("lap");
+    });
+});
+
 describe("A rule parser", function() {
     const emRule = "\\rule{1em}{2em}";
     const exRule = "\\rule{1ex}{2em}";
@@ -2967,6 +2996,10 @@ describe("The \\mathchoice function", function() {
 describe("Symbols", function() {
     it("should parse \\text{\\i\\j}", () => {
         expect("\\text{\\i\\j}").toParse();
+    });
+
+    it("should parse spacing functions in math or text mode", () => {
+        expect("A\\;B\\,C \\text{A\\;B\\,C}").toParse();
     });
 
     it("should render ligature commands like their unicode characters", () => {
