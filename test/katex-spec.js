@@ -1036,10 +1036,10 @@ describe("An overline parser", function() {
 
 describe("An lap parser", function() {
     it("should not fail on a text argument", function() {
-        expect("\\rlap{\,/}{=}").toParse();
-        expect("\\mathrlap{\,/}{=}").toParse();
-        expect("{=}\\llap{/\,}").toParse();
-        expect("{=}\\mathllap{/\,}").toParse();
+        expect("\\rlap{\\,/}{=}").toParse();
+        expect("\\mathrlap{\\,/}{=}").toParse();
+        expect("{=}\\llap{/\\,}").toParse();
+        expect("{=}\\mathllap{/\\,}").toParse();
         expect("\\sum_{\\clap{ABCDEFG}}").toParse();
         expect("\\sum_{\mathclap{ABCDEFG}}").toParse();
     });
@@ -1057,7 +1057,7 @@ describe("An lap parser", function() {
     });
 
     it("should produce a lap", function() {
-        const parse = getParsed("\\mathrlap{\,/}")[0];
+        const parse = getParsed("\\mathrlap{\\,/}")[0];
 
         expect(parse.type).toEqual("lap");
     });
