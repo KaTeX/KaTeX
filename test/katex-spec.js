@@ -1041,7 +1041,7 @@ describe("An lap parser", function() {
         expect("{=}\\llap{/\\,}").toParse();
         expect("{=}\\mathllap{/\\,}").toParse();
         expect("\\sum_{\\clap{ABCDEFG}}").toParse();
-        expect("\\sum_{\mathclap{ABCDEFG}}").toParse();
+        expect("\\sum_{\\mathclap{ABCDEFG}}").toParse();
     });
 
     it("should not fail if math version is used", function() {
