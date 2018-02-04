@@ -47,6 +47,9 @@ const stretchyCodePoint: {[string]: string} = {
     xtwoheadrightarrow: "\u21a0",
     xlongequal: "=",
     xtofrom: "\u21c4",
+    xrightleftarrows: "\u21c4",
+    xrightequilibrium: "\u21cc",  // Not a perfect match.
+    xleftequilibrium: "\u21cb",   // None better available.
 };
 
 const mathMLnode = function(label: string): mathMLTree.MathNode {
@@ -143,6 +146,16 @@ const katexImagesData: {
     undergroup: [["leftgroupunder", "rightgroupunder"], 0.888, 342],
     xmapsto: [["leftmapsto", "rightarrow"], 1.5, 522],
     xtofrom: [["leftToFrom", "rightToFrom"], 1.75, 528],
+
+    // The next three arrows are from the mhchem package.
+    // In mhchem.sty, min-length is 2.0em. But these arrows might appear in the
+    // document as \xrightarrow or \xrightleftharpoons. Those have
+    // min-length = 1.75em, so we set min-length on these next three to match.
+    xrightleftarrows: [["baraboveleftarrow", "rightarrowabovebar"], 1.75, 667],
+    xrightequilibrium: [["baraboveshortleftharpoon",
+        "rightharpoonaboveshortbar"], 1.75, 716],
+    xleftequilibrium: [["shortbaraboveleftharpoon",
+        "shortrightharpoonabovebar"], 1.75, 716],
 };
 
 const groupLength = function(arg: ParseNode): number {
