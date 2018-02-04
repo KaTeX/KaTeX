@@ -104,7 +104,6 @@ const extraCharacterMap = {
     'Ð': 'D',
     'Þ': 'o',
     'å': 'a',
-    'ç': 'c',
     'ð': 'd',
     'þ': 'o',
 

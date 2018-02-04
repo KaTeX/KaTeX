@@ -62,8 +62,10 @@ const htmlBuilder = (group, options) => {
         // TODO(emily): Find a better way to get the skew
     }
 
+    const accentBelow = group.value.label === "\\c";
+
     // calculate the amount of space between the body and the accent
-    let clearance = group.value.label === "\\c"
+    let clearance = accentBelow
         ? body.height + body.depth
         : Math.min(
             body.height,
@@ -89,7 +91,7 @@ const htmlBuilder = (group, options) => {
             // shift the accent over to a place we don't want.
             accent.italic = 0;
             width = accent.width;
-            if (group.value.label === "\\c") {
+            if (accentBelow) {
                 clearance += accent.depth;
             }
         }
