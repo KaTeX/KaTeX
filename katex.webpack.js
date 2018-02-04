@@ -5,7 +5,7 @@
  * [1] https://gist.github.com/lambdahands/d19e0da96285b749f0ef
  * [2] https://facebook.github.io/jest/docs/en/webpack.html
  */
-import './static/katex.less';
+import './src/katex.less';
 import katex from './katex.js';
 
 export default katex;

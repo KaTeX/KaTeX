@@ -2,6 +2,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
+import ParseError from "../ParseError";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -81,6 +82,36 @@ defineFunction({
             type: "color",
             color: "katex-" + context.funcName.slice(1),
             value: ordargument(body),
+        };
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+defineFunction({
+    type: "color",
+    names: ["\\color"],
+    props: {
+        numArgs: 1,
+        allowedInText: true,
+        greediness: 3,
+        argTypes: ["color"],
+    },
+    handler(context, args) {
+        const {parser, breakOnTokenText} = context;
+
+        const color = args[0];
+        if (!color) {
+            throw new ParseError("\\color not followed by color");
+        }
+
+        // If we see a styling function, parse out the implicit body
+        const body = parser.parseExpression(true, breakOnTokenText);
+
+        return {
+            type: "color",
+            color: color.value,
+            value: body,
         };
     },
     htmlBuilder,

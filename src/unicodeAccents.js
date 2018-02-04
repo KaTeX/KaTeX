@@ -13,6 +13,6 @@ module.exports = {
     '\u030c': {text: '\\v', math: '\\check'},
     '\u0302': {text: '\\^', math: '\\hat'},
     '\u0307': {text: '\\.', math: '\\dot'},
-    '\u030a': {text: '\\r'},
+    '\u030a': {text: '\\r', math: '\\mathring'},
     '\u030b': {text: '\\H'},
 };

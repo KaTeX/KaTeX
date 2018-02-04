@@ -33,14 +33,6 @@ import "./functions/color";
 
 import "./functions/text";
 
-// \color is handled in Parser.js's parseImplicitGroup
-defineFunction(["\\color"], {
-    numArgs: 1,
-    allowedInText: true,
-    greediness: 3,
-    argTypes: ["color"],
-}, null);
-
 import "./functions/enclose";
 
 import "./functions/overline";
@@ -97,13 +89,6 @@ defineFunction(["\\stackrel"], {
 });
 
 import "./functions/mod";
-
-const fontAliases = {
-    "\\Bbb": "\\mathbb",
-    "\\bold": "\\mathbf",
-    "\\frak": "\\mathfrak",
-    "\\bm": "\\boldsymbol",
-};
 
 const singleCharIntegrals: {[string]: string} = {
     "\u222b": "\\int",
@@ -183,36 +168,7 @@ import "./functions/sizing";
 
 import "./functions/styling";
 
-// Old font changing functions
-defineFunction([
-    "\\rm", "\\sf", "\\tt", "\\bf", "\\it", //"\\sl", "\\sc",
-], {numArgs: 0}, null);
-
-defineFunction([
-    // styles
-    "\\mathrm", "\\mathit", "\\mathbf", "\\boldsymbol",
-
-    // families
-    "\\mathbb", "\\mathcal", "\\mathfrak", "\\mathscr", "\\mathsf",
-    "\\mathtt",
-
-    // aliases
-    "\\Bbb", "\\bold", "\\frak", "\\bm",
-], {
-    numArgs: 1,
-    greediness: 2,
-}, function(context, args) {
-    const body = args[0];
-    let func = context.funcName;
-    if (func in fontAliases) {
-        func = fontAliases[func];
-    }
-    return {
-        type: "font",
-        font: func.slice(1),
-        body: body,
-    };
-});
+import "./functions/font";
 
 import "./functions/accent";
 

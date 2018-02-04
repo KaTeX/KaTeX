@@ -431,9 +431,9 @@ const sizeToMaxHeight = [0, 1.2, 1.8, 2.4, 3.0];
  */
 const makeSizedDelim = function(delim, size, options, mode, classes) {
     // < and > turn into \langle and \rangle in delimiters
-    if (delim === "<" || delim === "\\lt") {
+    if (delim === "<" || delim === "\\lt" || delim === "\u27e8") {
         delim = "\\langle";
-    } else if (delim === ">" || delim === "\\gt") {
+    } else if (delim === ">" || delim === "\\gt" || delim === "\u27e9") {
         delim = "\\rangle";
     }
 
@@ -549,9 +549,9 @@ const traverseSequence = function(delim, height, sequence, options) {
  */
 const makeCustomSizedDelim = function(delim, height, center, options, mode,
                                     classes) {
-    if (delim === "<" || delim === "\\lt") {
+    if (delim === "<" || delim === "\\lt" || delim === "\u27e8") {
         delim = "\\langle";
-    } else if (delim === ">" || delim === "\\gt") {
+    } else if (delim === ">" || delim === "\\gt" || delim === "\u27e9") {
         delim = "\\rangle";
     }
 
