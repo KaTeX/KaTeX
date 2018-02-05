@@ -627,7 +627,7 @@ export default class Parser {
                     this.nextToken.text[0] === "\\") {
                     arg = newArgument(this.handleUnsupportedCmd(), nextToken);
                 } else if (this.nextToken.text === "EOF") {
-                    args.push(null);
+                    args.push("");
                     continue;
                 } else {
                     throw new ParseError(
