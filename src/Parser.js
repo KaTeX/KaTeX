@@ -628,7 +628,7 @@ export default class Parser {
                     arg = newArgument(this.handleUnsupportedCmd(), nextToken);
                 } else if (this.nextToken.text === "EOF") {
                     args.push(new ParseNode("text", {body: [], type: "text",
-                        }, this.mode));
+                    }, this.mode));
                     continue;
                 } else {
                     throw new ParseError(
