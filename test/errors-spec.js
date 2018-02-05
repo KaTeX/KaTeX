@@ -148,10 +148,6 @@ describe("Parser:", function() {
     });
 
     describe("#parseArguments", function() {
-        it("complains about missing argument at end of input", function() {
-            expect("2\\sqrt").toFailWithParseError(
-                   "Expected group after '\\sqrt' at end of input: 2\\sqrt");
-        });
         it("complains about missing argument at end of group", function() {
             expect("1^{2\\sqrt}").toFailWithParseError(
                    "Expected group after '\\sqrt'" +
@@ -166,10 +162,6 @@ describe("Parser:", function() {
     });
 
     describe("#parseArguments", function() {
-        it("complains about missing argument at end of input", function() {
-            expect("2\\sqrt").toFailWithParseError(
-                   "Expected group after '\\sqrt' at end of input: 2\\sqrt");
-        });
         it("complains about missing argument at end of group", function() {
             expect("1^{2\\sqrt}").toFailWithParseError(
                    "Expected group after '\\sqrt'" +

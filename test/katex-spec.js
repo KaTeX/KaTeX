@@ -620,7 +620,7 @@ describe("A function parser", function() {
     });
 
     it("should parse 1 argument functions", function() {
-        expect("\\blue x").toParse();
+        expect("\\sqrt x").toParse();
     });
 
     it("should parse 2 argument functions", function() {
@@ -628,13 +628,21 @@ describe("A function parser", function() {
     });
 
     it("should not parse 1 argument functions with no arguments", function() {
-        expect("\\blue").toNotParse();
+        expect("{\\sqrt}").toNotParse();
+    });
+
+    it("should parse 1 argument functions at end of input", function() {
+        expect("\\sqrt").toParse();
     });
 
     it("should not parse 2 argument functions with 0 or 1 arguments", function() {
-        expect("\\frac").toNotParse();
+        expect("{\\frac}").toNotParse();
 
-        expect("\\frac 1").toNotParse();
+        expect("{\\frac 1}").toNotParse();
+    });
+
+    it("should parse trailing 2 argument functions with 1 arg", function() {
+        expect("\\frac 1").toParse();
     });
 
     it("should not parse a function with text right after it", function() {
@@ -1348,14 +1356,17 @@ describe("A begin/end parser", function() {
 
 describe("A sqrt parser", function() {
     const sqrt = "\\sqrt{x}";
-    const missingGroup = "\\sqrt";
 
     it("should parse square roots", function() {
         expect(sqrt).toParse();
     });
 
     it("should error when there is no group", function() {
-        expect(missingGroup).toNotParse();
+        expect("{\\sqrt}").toNotParse();
+    });
+
+    it("should parse when there is no group at EOL", function() {
+        expect("\\sqrt").toParse();
     });
 
     it("should produce sqrts", function() {
@@ -1372,12 +1383,11 @@ describe("A TeX-compliant parser", function() {
 
     it("should fail if there are not enough arguments", function() {
         const missingGroups = [
-            "\\frac{x}",
-            "\\textcolor{#fff}",
-            "\\rule{1em}",
-            "\\llap",
-            "\\bigl",
-            "\\text",
+            "{\\frac{x}}",
+            "{\\textcolor{#fff}}",
+            "{\\rule{1em}}",
+            "{\\bigl}",
+            "{\\text}",
         ];
 
         for (let i = 0; i < missingGroups.length; i++) {
@@ -2123,6 +2133,11 @@ describe("An extensible arrow parser", function() {
         expect("\\xrightarrow{x}^2").toParse();
         expect("\\xrightarrow x").toParse();
         expect("\\xrightarrow[under]{over}").toParse();
+        expect("\\xrightarrow").toParse();  // no args is ok at EOF
+    });
+
+    it("should fail when given no arguments", function() {
+        expect("{\\xrightarrow}").toNotParse();
     });
 
     it("should produce xArrow", function() {
@@ -2145,6 +2160,7 @@ describe("An extensible arrow builder", function() {
         expect("\\xrightarrow{x}_2").toBuild();
         expect("\\xrightarrow{x}_2^2").toBuild();
         expect("\\xrightarrow[under]{over}").toBuild();
+        expect("\\xrightarrow").toBuild();
     });
 
     it("should produce mrell", function() {
