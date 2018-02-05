@@ -626,6 +626,10 @@ export default class Parser {
                 if (!this.settings.throwOnError &&
                     this.nextToken.text[0] === "\\") {
                     arg = newArgument(this.handleUnsupportedCmd(), nextToken);
+                } else if (this.nextToken.text === "EOF") {
+                    args.push(new ParseNode("text", {body: [], type: "text",
+                    }, this.mode));
+                    continue;
                 } else {
                     throw new ParseError(
                         "Expected group after '" + func + "'", nextToken);
