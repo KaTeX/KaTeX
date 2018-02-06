@@ -60,21 +60,21 @@
     "test:lint": "eslint katex.js katex.webpack.js cli.js webpack.common.js webpack.config.js webpack.dev.js src static test contrib dockers && stylelint src/katex.less",
     "test:flow": "flow",
     "test:jest": "jest",
-    "jest-update": "jest --updateSnapshot",
-    "coverage": "jest --coverage",
+    "test:jest:update": "jest --updateSnapshot",
+    "test:jest:coverage": "jest --coverage",
+    "test:screenshots": "npm run test:screenshots:update -- --verify",
+    "test:screenshots:update": "npm run prestart && dockers/Screenshotter/screenshotter.sh",
+    "test:perf": "npm run prestart && NODE_ENV=test node test/perf-test.js",
     "clean": "rm -rf build/* node_modules/",
     "clean-install": "npm run clean && npm i",
-    "screenshots": "npm run prestart && dockers/Screenshotter/screenshotter.sh",
-    "verify-screenshots": "npm run screenshots -- --verify",
     "prestart": "node check-node-version.js && check-dependencies && cd src && node unicodeMake.js >unicodeSymbols.js",
     "start": "webpack-dev-server --hot --config webpack.dev.js",
     "build": "npm run prestart && rimraf build/* && webpack",
+    "watch": "npm run build -- --watch",
     "dist": "npm test && npm run build && npm run dist:copy && npm run dist:zip && npm run dist:dist",
     "dist:copy": "cd build && mkdirp katex && cp -r katex.js katex.min.js katex.css katex.min.css contrib fonts ../README.md katex",
     "dist:zip": "cd build && tar czf katex.tar.gz katex/ && zip -rq katex.zip katex/",
-    "dist:dist": "rimraf dist/ && cp -r build/katex/ dist/",
-    "watch": "npm run build -- --watch",
-    "perf-test": "npm run prestart && NODE_ENV=test node test/perf-test.js"
+    "dist:dist": "rimraf dist/ && cp -r build/katex/ dist/"
   },
   "pre-commit": [
     "test:lint"
