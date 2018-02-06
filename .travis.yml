@@ -15,5 +15,5 @@ install:
   - npm install -g codecov
 script:
   - npm test
-  - npm run coverage && codecov
-  - dockers/Screenshotter/screenshotter.sh --verify
+  - npm run test:jest:coverage && codecov
+  - npm run test:screenshots
