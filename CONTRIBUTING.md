@@ -74,7 +74,7 @@ by running `npm install webpack-dev-server@2.7.1`.
 
 The JavaScript parser and some of the HTML and MathML tree
 builders are tested with Jest. These tests can be run using node with
-`npm run jest`.  If you need to debug the tests see
+`npm run test:jest`.  If you need to debug the tests see
 [https://facebook.github.io/jest/docs/troubleshooting.html](https://facebook.github.io/jest/docs/troubleshooting.html)
 
 The interactive editor can also be used for debugging tests in the browser by

@@ -56,14 +56,14 @@
   },
   "bin": "cli.js",
   "scripts": {
-    "lint": "eslint katex.js katex.webpack.js cli.js webpack.common.js webpack.config.js webpack.dev.js src static test contrib dockers && stylelint src/katex.less",
-    "flow": "flow",
-    "jest": "jest",
+    "test": "npm run prestart && npm run test:lint && npm run test:flow && npm run test:jest",
+    "test:lint": "eslint katex.js katex.webpack.js cli.js webpack.common.js webpack.config.js webpack.dev.js src static test contrib dockers && stylelint src/katex.less",
+    "test:flow": "flow",
+    "test:jest": "jest",
     "jest-update": "jest --updateSnapshot",
     "coverage": "jest --coverage",
     "clean": "rm -rf build/* node_modules/",
     "clean-install": "npm run clean && npm i",
-    "test": "npm run prestart && npm run lint && npm run flow && npm run jest",
     "screenshots": "npm run prestart && dockers/Screenshotter/screenshotter.sh",
     "verify-screenshots": "npm run screenshots -- --verify",
     "prestart": "node check-node-version.js && check-dependencies && cd src && node unicodeMake.js >unicodeSymbols.js",
@@ -77,7 +77,7 @@
     "perf-test": "npm run prestart && NODE_ENV=test node test/perf-test.js"
   },
   "pre-commit": [
-    "lint"
+    "test:lint"
   ],
   "dependencies": {
     "match-at": "^0.1.1"
