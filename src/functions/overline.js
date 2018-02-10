@@ -27,7 +27,7 @@ defineFunction({
             options.havingCrampedStyle());
 
         // Create the line above the body
-        const line = buildCommon.makeLineSpan("overline-line", options);
+        const line = buildCommon.makeLineSpan("overline-line", null, options);
 
         // Generate the vlist, with the appropriate kerns
         const vlist = buildCommon.makeVList({

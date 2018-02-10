@@ -11,6 +11,7 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 
 import buildCommon from "./buildCommon";
+import delimiter from "./delimiter";
 import domTree from "./domTree";
 import { calculateSize } from "./units";
 import utils from "./utils";
