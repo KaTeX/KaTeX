@@ -654,6 +654,8 @@ describe("A frac parser", function() {
     const expression = "\\frac{x}{y}";
     const dfracExpression = "\\dfrac{x}{y}";
     const tfracExpression = "\\tfrac{x}{y}";
+    const genfrac1 = "\\genfrac ( ] {0.06em}{0}{a}{b+c}";
+    const genfrac2 = "\\genfrac{}{}{}{}{a}{b+c}";
 
     it("should not fail", function() {
         expect(expression).toParse();
@@ -667,13 +669,14 @@ describe("A frac parser", function() {
         expect(parse.value.denom).toBeDefined();
     });
 
-    it("should also parse dfrac and tfrac", function() {
+    it("should also parse dfrac, tfrac, and genfrac", function() {
         expect(dfracExpression).toParse();
-
         expect(tfracExpression).toParse();
+        expect(genfrac1).toParse();
+        expect(genfrac2).toParse();
     });
 
-    it("should parse dfrac and tfrac as fracs", function() {
+    it("should parse dfrac, tfrac, and genfrac as fracs", function() {
         const dfracParse = getParsed(dfracExpression)[0];
 
         expect(dfracParse.type).toEqual("genfrac");
@@ -685,6 +688,24 @@ describe("A frac parser", function() {
         expect(tfracParse.type).toEqual("genfrac");
         expect(tfracParse.value.numer).toBeDefined();
         expect(tfracParse.value.denom).toBeDefined();
+
+        const genfracParse = getParsed(genfrac1)[0];
+
+        expect(genfracParse.type).toEqual("genfrac");
+        expect(genfracParse.value.numer).toBeDefined();
+        expect(genfracParse.value.denom).toBeDefined();
+        expect(genfracParse.value.leftDelim).toBeDefined();
+        expect(genfracParse.value.rightDelim).toBeDefined();
+    });
+
+    it("should fail, given math as a line thickness to genfrac", function() {
+        const badGenFrac = "\\genfrac ( ] {b+c}{0}{a}{b+c}";
+        expect(badGenFrac).toNotParse();
+    });
+
+    it("should fail if genfrac is given less than 6 arguments", function() {
+        const badGenFrac = "\\genfrac ( ] {0.06em}{0}{a}";
+        expect(badGenFrac).toNotParse();
     });
 
     it("should parse atop", function() {
@@ -697,19 +718,25 @@ describe("A frac parser", function() {
     });
 });
 
-describe("An over parser", function() {
+describe("An over/brace/brack parser", function() {
     const simpleOver = "1 \\over x";
     const complexOver = "1+2i \\over 3+4i";
+    const braceFrac = "a+b \\brace c+d";
+    const brackFrac = "a+b \\brack c+d";
 
     it("should not fail", function() {
         expect(simpleOver).toParse();
         expect(complexOver).toParse();
+        expect(braceFrac).toParse();
+        expect(brackFrac).toParse();
     });
 
     it("should produce a frac", function() {
         let parse;
 
         parse = getParsed(simpleOver)[0];
+        const parseBraceFrac = getParsed(braceFrac)[0];
+        const parseBrackFrac = getParsed(brackFrac)[0];
 
         expect(parse.type).toEqual("genfrac");
         expect(parse.value.numer).toBeDefined();
@@ -720,6 +747,18 @@ describe("An over parser", function() {
         expect(parse.type).toEqual("genfrac");
         expect(parse.value.numer).toBeDefined();
         expect(parse.value.denom).toBeDefined();
+
+        expect(parseBraceFrac.type).toEqual("genfrac");
+        expect(parseBraceFrac.value.numer).toBeDefined();
+        expect(parseBraceFrac.value.denom).toBeDefined();
+        expect(parseBraceFrac.value.leftDelim).toBeDefined();
+        expect(parseBraceFrac.value.rightDelim).toBeDefined();
+
+        expect(parseBrackFrac.type).toEqual("genfrac");
+        expect(parseBrackFrac.value.numer).toBeDefined();
+        expect(parseBrackFrac.value.denom).toBeDefined();
+        expect(parseBrackFrac.value.leftDelim).toBeDefined();
+        expect(parseBrackFrac.value.rightDelim).toBeDefined();
     });
 
     it("should create a numerator from the atoms before \\over", function() {
@@ -784,6 +823,18 @@ describe("An over parser", function() {
 
         const badOverChoose = "1 \\over 2 \\choose 3";
         expect(badOverChoose).toNotParse();
+    });
+});
+
+describe("A infix parser with delims", function() {
+    const atop_d = "a \atopwithdelims ( ] {b+c}";
+    const over_d = "a \overwithdelims ( ] {b+c}";
+    const above_d = "a \abovewithdelims ( ] {0.06em}{b+c}";
+
+    it("should not fail", function() {
+        expect(atop_d).toParse();
+        expect(over_d).toParse();
+        expect(above_d).toParse();
     });
 });
 

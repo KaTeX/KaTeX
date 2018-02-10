@@ -9,6 +9,7 @@ import {
 } from "./defineFunction";
 
 import type {FunctionPropSpec, FunctionHandler} from "./defineFunction" ;
+import type {Measurement} from "./units" ;
 
 // WARNING: New functions should be added to src/functions and imported here.
 
@@ -152,11 +153,292 @@ defineFunction([
     };
 });
 
+// Parse a line thickness ParseNode from a fraction.
+// An empty thickness argument is a valid input to \genfrac.
+// That's why we can't just specify a "size" argument for \genfrac.
+const barLineFromNode = function(
+    lineThickness: ParseNode
+): [boolean, Measurement | null] {
+    let hasBarLine;
+    let barSize = null;
+    if (lineThickness.value.length === 0) {
+        hasBarLine = true;   // omitted dimension => std bar thickness
+    } else {
+        // Parse the custom line thickness
+        let str = "";
+        for (let i = 0; i < lineThickness.value.length; i++ ){
+          str += lineThickness.value[i].value;
+        }
+
+        const match = (/([-+]?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(str);
+        if (!match) {
+            throw new ParseError("Invalid size: '" + str + "'");
+        }
+
+        const num = +str.replace(/[^\+\-\d\.]/g, '');  // cast to a number
+        if (num === 0) {
+            hasBarLine = false;
+        } else {
+            hasBarLine = true;
+            barSize = {
+                number: num,
+                unit: str.replace(/[+\-\d\. ]/g, ''),
+            };
+        }
+    }
+
+    return [hasBarLine, barSize];
+};
+
+const delimFromNode = function(delimNode: ParseNode): string | null {
+    let delim = null;
+    if (delimNode.value.length > 0) {
+        delim = delimNode.value;
+        delim = delim === "." ? null : delim;
+    }
+    return delim;
+};
+
+// TeXbook generalized fractions
+defineFunction([
+    "\\dfrac", "\\frac", "\\tfrac",
+    "\\dbinom", "\\binom", "\\tbinom",
+    "\\\\atopfrac", // can’t be entered directly
+    "\\\\bracefrac", "\\\\brackfrac",   // ditto
+], {
+    numArgs: 2,
+    greediness: 2,
+}, function(context, args) {
+    const numer = args[0];
+    const denom = args[1];
+    let hasBarLine;
+    let leftDelim = null;
+    let rightDelim = null;
+    let size = "auto";
+
+    switch (context.funcName) {
+        case "\\dfrac":
+        case "\\frac":
+        case "\\tfrac":
+            hasBarLine = true;
+            break;
+        case "\\\\atopfrac":
+            hasBarLine = false;
+            break;
+        case "\\dbinom":
+        case "\\binom":
+        case "\\tbinom":
+            hasBarLine = false;
+            leftDelim = "(";
+            rightDelim = ")";
+            break;
+        case "\\\\bracefrac":
+            hasBarLine = false;
+            leftDelim = "\\{";
+            rightDelim = "\\}";
+            break;
+        case "\\\\brackfrac":
+            hasBarLine = false;
+            leftDelim = "[";
+            rightDelim = "]";
+            break;
+        default:
+            throw new Error("Unrecognized genfrac command");
+    }
+
+    switch (context.funcName) {
+        case "\\dfrac":
+        case "\\dbinom":
+            size = "display";
+            break;
+        case "\\tfrac":
+        case "\\tbinom":
+            size = "text";
+            break;
+    }
+
+    return {
+        type: "genfrac",
+        numer: numer,
+        denom: denom,
+        hasBarLine: hasBarLine,
+        barSize: null,
+        leftDelim: leftDelim,
+        rightDelim: rightDelim,
+        size: size,
+    };
+});
+
+const stylArray = ["display", "text", "script", "scriptscript"];
+
+// AMS \genfrac function
+defineFunction(["\\genfrac"], {
+    numArgs: 6,
+    greediness: 6,
+    argTypes: ["math", "math", "text", "text", "math", "math"],
+}, function(context, args) {
+    const [leftNode, rightNode, lineThickness, styl, numer, denom] = args;
+
+    const leftDelim = delimFromNode(leftNode);
+    const rightDelim = delimFromNode(rightNode);
+
+    const [hasBarLine, barSize] = barLineFromNode(lineThickness);
+
+    let size = "auto";
+    if (styl.value.length > 0) {
+        size = stylArray[styl.value[0].value];
+    }
+
+    return {
+        type: "genfrac",
+        numer: numer,
+        denom: denom,
+        hasBarLine: hasBarLine,
+        barSize: barSize,
+        leftDelim: leftDelim,
+        rightDelim: rightDelim,
+        size: size,
+    };
+});
+
+// Infix generalized fractions
+defineFunction(["\\over", "\\choose", "\\atop", "\\brace", "\\brack"], {
+    numArgs: 0,
+    infix: true,
+}, function(context) {
+    let replaceWith;
+    switch (context.funcName) {
+        case "\\over":
+            replaceWith = "\\frac";
+            break;
+        case "\\choose":
+            replaceWith = "\\binom";
+            break;
+        case "\\atop":
+            replaceWith = "\\\\atopfrac";
+            break;
+        case "\\brace":
+            replaceWith = "\\\\bracefrac";
+            break;
+        case "\\brack":
+            replaceWith = "\\\\brackfrac";
+            break;
+        default:
+            throw new Error("Unrecognized infix genfrac command");
+    }
+    return {
+        type: "infix",
+        replaceWith: replaceWith,
+        token: context.token,
+    };
+});
+
+// More infix fractions
+defineFunction(["\\above"], {
+    numArgs: 1,
+    infix: true,
+}, function(context, args) {
+    const sizeNode = args[0];
+    return {
+        type: "infix",
+        replaceWith: "\\\\abovefrac",
+        token: context.token,
+        sizeNode: sizeNode,
+    };
+});
+
+defineFunction(["\\\\abovefrac"], {
+    numArgs: 3,
+}, function(context, args) {
+    const [numer, denom, sizeNode] = args;
+    const [hasBarLine, barSize] = barLineFromNode(sizeNode);
+
+    return {
+        type: "genfrac",
+        numer: numer,
+        denom: denom,
+        hasBarLine: hasBarLine,
+        barSize: barSize,
+        leftDelim: null,
+        rightDelim: null,
+        size: "auto",
+    };
+});
+
+defineFunction(["\\atopwithdelims", "\\overwithdelims"], {
+    numArgs: 2,
+    infix: true,
+}, function(context, args) {
+    const replaceWith = "\\" + context.funcName + "frac";
+    const [leftDelim, rightDelim] = args;
+    return {
+        type: "infix",
+        replaceWith: replaceWith,
+        leftDelim: leftDelim,
+        rightDelim: rightDelim,
+        token: context.token,
+    };
+});
+
+defineFunction(["\\\\atopwithdelimsfrac", "\\\\overwithdelimsfrac"], {
+    numArgs: 4,
+}, function(context, args) {
+    const [numer, denom, leftDelimNode, rightDelimNode] = args;
+    const leftDelim = delimFromNode(leftDelimNode);
+    const rightDelim = delimFromNode(rightDelimNode);
+    const hasBarLine = context.funcName === "\\\\overwithdelimsfrac";
+
+    return {
+        type: "genfrac",
+        numer: numer,
+        denom: denom,
+        hasBarLine: hasBarLine,
+        barSize: null,
+        leftDelim: leftDelim,
+        rightDelim: rightDelim,
+        size: "auto",
+    };
+});
+
+defineFunction(["\\abovewithdelims"], {
+    numArgs: 3,
+    infix: true,
+}, function(context, args) {
+    const [leftDelim, rightDelim, sizeNode] = args;
+    const [hasBarLine, barSize] = barLineFromNode(sizeNode);
+    return {
+        type: "infix",
+        replaceWith: "\\\\abovewithdelimsfrac",
+        leftDelim: leftDelim,
+        rightDelim: rightDelim,
+        sizeNode: sizeNode,
+        token: context.token,
+    };
+});
+
+defineFunction(["\\\\abovewithdelimsfrac"], {
+    numArgs: 5,
+}, function(context, args) {
+    const [numer, denom, leftDelimNode, rightDelimNode, sizeNode] = args;
+    const leftDelim = delimFromNode(leftDelimNode);
+    const rightDelim = delimFromNode(rightDelimNode);
+    const [hasBarLine, barSize] = barLineFromNode(sizeNode);
+
+    return {
+        type: "genfrac",
+        numer: numer,
+        denom: denom,
+        hasBarLine: hasBarLine,
+        barSize: barSize,
+        leftDelim: leftDelim,
+        rightDelim: rightDelim,
+        size: "auto",
+    };
+});
+
 import "./functions/op";
 
 import "./functions/operatorname";
-
-import "./functions/genfrac";
 
 import "./functions/lap";
 
@@ -213,32 +495,6 @@ defineFunction([
         label: context.funcName,
         body: body,
         below: below,
-    };
-});
-
-// Infix generalized fractions
-defineFunction(["\\over", "\\choose", "\\atop"], {
-    numArgs: 0,
-    infix: true,
-}, function(context) {
-    let replaceWith;
-    switch (context.funcName) {
-        case "\\over":
-            replaceWith = "\\frac";
-            break;
-        case "\\choose":
-            replaceWith = "\\binom";
-            break;
-        case "\\atop":
-            replaceWith = "\\\\atopfrac";
-            break;
-        default:
-            throw new Error("Unrecognized infix genfrac command");
-    }
-    return {
-        type: "infix",
-        replaceWith: replaceWith,
-        token: context.token,
     };
 });
 

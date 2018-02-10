@@ -331,12 +331,18 @@ const makeSpan = function(
 
 const makeLineSpan = function(
     className: string,
+	customThickness: number | null,
     options: Options,
 ) {
     // Return a span with an SVG image of a horizontal line. The SVG path
     // fills the middle fifth of the span. We want an extra tall span
     // because Chrome will sometimes not display a span that is 0.04em tall.
-    const lineHeight = options.fontMetrics().defaultRuleThickness;
+	let lineHeight = 0;
+	if (customThickness) {
+		lineHeight = customThickness;
+	} else {
+		lineHeight = options.fontMetrics().defaultRuleThickness;
+	}
     const line = stretchy.ruleSpan(className, lineHeight, options);
     line.height = lineHeight;
     line.style.height = 5 * line.height + "em";
