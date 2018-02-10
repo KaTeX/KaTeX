@@ -13,7 +13,6 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 import symbols from "./symbols";
 import utils from "./utils";
-import { calculateSize } from "./units";
 import stretchy from "./stretchy";
 
 /**
@@ -225,53 +224,6 @@ groupTypes.supsub = function(group, options) {
 
     return node;
 };
-
-groupTypes.genfrac = function(group, options) {
-    const node = new mathMLTree.MathNode(
-        "mfrac",
-        [
-            buildGroup(group.value.numer, options),
-            buildGroup(group.value.denom, options),
-        ]);
-
-    if (!group.value.hasBarLine) {
-        node.setAttribute("linethickness", "0px");
-    } else if (group.barSize) {
-        const ruleWidth = calculateSize(group.value.barSize, options);
-        node.setAttribute("linethickness", ruleWidth + "em");
-    }
-
-    if (group.value.leftDelim != null || group.value.rightDelim != null) {
-        const withDelims = [];
-
-        if (group.value.leftDelim != null) {
-            const leftOp = new mathMLTree.MathNode(
-                "mo", [new mathMLTree.TextNode(group.value.leftDelim)]);
-
-            leftOp.setAttribute("fence", "true");
-
-            withDelims.push(leftOp);
-        }
-
-        withDelims.push(node);
-
-        if (group.value.rightDelim != null) {
-            const rightOp = new mathMLTree.MathNode(
-                "mo", [new mathMLTree.TextNode(group.value.rightDelim)]);
-
-            rightOp.setAttribute("fence", "true");
-
-            withDelims.push(rightOp);
-        }
-
-        const outerNode = new mathMLTree.MathNode("mrow", withDelims);
-
-        return outerNode;
-    }
-
-    return node;
-};
-
 
 groupTypes.spacing = function(group) {
     let node;
