@@ -39,6 +39,7 @@
     "jspngopt": "^0.2.0",
     "less": "~2.7.1",
     "less-loader": "^4.0.5",
+    "mkdirp": "^0.5.1",
     "nomnom": "^1.8.1",
     "object-assign": "^4.1.0",
     "pako": "1.0.4",
@@ -55,23 +56,28 @@
   },
   "bin": "cli.js",
   "scripts": {
-    "lint": "eslint katex.js katex.webpack.js cli.js webpack.common.js webpack.config.js webpack.dev.js src static test contrib dockers && stylelint src/katex.less",
-    "flow": "flow",
-    "jest": "jest",
+    "test": "npm run prestart && npm run test:lint && npm run test:flow && npm run test:jest",
+    "test:lint": "eslint katex.js katex.webpack.js cli.js webpack.common.js webpack.config.js webpack.dev.js src static test contrib dockers && stylelint src/katex.less",
+    "test:flow": "flow",
+    "test:jest": "jest",
     "jest-update": "jest --updateSnapshot",
     "coverage": "jest --coverage",
     "clean": "rm -rf build/* node_modules/",
     "clean-install": "npm run clean && npm i",
-    "test": "check-dependencies && npm run lint && npm run flow && npm run jest",
-    "verify-screenshots": "check-dependencies && dockers/Screenshotter/screenshotter.sh --verify",
-    "start": "check-dependencies && webpack-dev-server --hot --config webpack.dev.js",
-    "build": "check-dependencies && rimraf build/* && webpack",
+    "screenshots": "npm run prestart && dockers/Screenshotter/screenshotter.sh",
+    "verify-screenshots": "npm run screenshots -- --verify",
+    "prestart": "node check-node-version.js && check-dependencies && cd src && node unicodeMake.js >unicodeSymbols.js",
+    "start": "webpack-dev-server --hot --config webpack.dev.js",
+    "build": "npm run prestart && rimraf build/* && webpack",
+    "dist": "npm test && npm run build && npm run dist:copy && npm run dist:zip && npm run dist:dist",
+    "dist:copy": "cd build && mkdirp katex && cp -r katex.js katex.min.js katex.css katex.min.css contrib fonts ../README.md katex",
+    "dist:zip": "cd build && tar czf katex.tar.gz katex/ && zip -rq katex.zip katex/",
+    "dist:dist": "rimraf dist/ && cp -r build/katex/ dist/",
     "watch": "npm run build -- --watch",
-    "perf-test": "check-dependencies && NODE_ENV=test node test/perf-test.js",
-    "prepublishOnly": "make NIS= dist"
+    "perf-test": "npm run prestart && NODE_ENV=test node test/perf-test.js"
   },
   "pre-commit": [
-    "lint"
+    "test:lint"
   ],
   "dependencies": {
     "match-at": "^0.1.1"
