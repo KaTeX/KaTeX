@@ -166,8 +166,8 @@ const barLineFromNode = function(
     } else {
         // Parse the custom line thickness
         let str = "";
-        for (let i = 0; i < lineThickness.value.length; i++ ){
-          str += lineThickness.value[i].value;
+        for (let i = 0; i < lineThickness.value.length; i++ ) {
+            str += lineThickness.value[i].value;
         }
 
         const match = (/([-+]?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(str);
@@ -175,14 +175,14 @@ const barLineFromNode = function(
             throw new ParseError("Invalid size: '" + str + "'");
         }
 
-        const num = +str.replace(/[^\+\-\d\.]/g, '');  // cast to a number
+        const num = +str.replace(/[^+\-\d.]/g, '');  // cast to a number
         if (num === 0) {
             hasBarLine = false;
         } else {
             hasBarLine = true;
             barSize = {
                 number: num,
-                unit: str.replace(/[+\-\d\. ]/g, ''),
+                unit: str.replace(/[+\-\d. ]/g, ''),
             };
         }
     }
@@ -405,7 +405,6 @@ defineFunction(["\\abovewithdelims"], {
     infix: true,
 }, function(context, args) {
     const [leftDelim, rightDelim, sizeNode] = args;
-    const [hasBarLine, barSize] = barLineFromNode(sizeNode);
     return {
         type: "infix",
         replaceWith: "\\\\abovewithdelimsfrac",

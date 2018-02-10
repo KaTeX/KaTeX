@@ -13,6 +13,7 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 import symbols from "./symbols";
 import utils from "./utils";
+import { calculateSize } from "./units";
 import stretchy from "./stretchy";
 
 /**

@@ -827,14 +827,14 @@ describe("An over/brace/brack parser", function() {
 });
 
 describe("A infix parser with delims", function() {
-    const atop_d = "a \atopwithdelims ( ] {b+c}";
-    const over_d = "a \overwithdelims ( ] {b+c}";
-    const above_d = "a \abovewithdelims ( ] {0.06em}{b+c}";
+    const atopDelim = "a \\atopwithdelims ( ] {b+c}";
+    const overDelim = "a \\overwithdelims ( ] {b+c}";
+    const aboveDelim = "a \\abovewithdelims ( ] {0.06em}{b+c}";
 
     it("should not fail", function() {
-        expect(atop_d).toParse();
-        expect(over_d).toParse();
-        expect(above_d).toParse();
+        expect(atopDelim).toParse();
+        expect(overDelim).toParse();
+        expect(aboveDelim).toParse();
     });
 });
 
