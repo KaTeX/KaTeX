@@ -397,6 +397,11 @@ defineMacro("\\colonsim", "\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim");
 // \providecommand*\Colonsim{\dblcolon\mathrel{\mkern-1.2mu}\sim}
 defineMacro("\\Colonsim", "\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim");
 
+// Some Unicode characters are implemented with macros to mathtools functions.
+defineMacro("\u2254", "\\coloneqq");  // :=
+defineMacro("\u2255", "\\eqqcolon");  // =:
+defineMacro("\u2A74", "\\Coloneqq");  // ::=
+
 //////////////////////////////////////////////////////////////////////
 // colonequals.sty
 
