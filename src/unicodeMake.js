@@ -4,10 +4,6 @@
 // whose purpose is to generate unicodeSymbols.js in this directory.
 // In this way, only this tool, and not the distribution/browser,
 // needs String's normalize function.
-//
-// This tool should be run (via `node unicodeMake.js` or `make unicode`)
-// whenever KaTeX adds support for new accents, and whenever
-// the Unicode spec adds new symbols that should be supported.
 
 const accents = require('./unicodeAccents');
 

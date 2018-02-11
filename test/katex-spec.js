@@ -2915,7 +2915,7 @@ describe("Unicode", function() {
     });
 
     it("should parse relations", function() {
-        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≫≬≳≷≺≻≼≽≾≿∴∵∣").toParse();
+        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴").toParse();
     });
 
     it("should parse big operators", function() {
@@ -2999,7 +2999,7 @@ describe("Symbols", function() {
     });
 
     it("should parse spacing functions in math or text mode", () => {
-        expect("A\\;B\\,C \\text{A\\;B\\,C}").toParse();
+        expect("A\\;B\\,C\\nobreakspace \\text{A\\;B\\,C\\nobreakspace}").toParse();
     });
 
     it("should render ligature commands like their unicode characters", () => {
