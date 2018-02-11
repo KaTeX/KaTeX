@@ -442,51 +442,6 @@ groupTypes.spacing = function(group, options) {
     }
 };
 
-function sizingGroup(value, options, baseOptions) {
-    const inner = buildExpression(value, options, false);
-    const multiplier = options.sizeMultiplier / baseOptions.sizeMultiplier;
-
-    // Add size-resetting classes to the inner list and set maxFontSize
-    // manually. Handle nested size changes.
-    for (let i = 0; i < inner.length; i++) {
-        const pos = utils.indexOf(inner[i].classes, "sizing");
-        if (pos < 0) {
-            Array.prototype.push.apply(inner[i].classes,
-                options.sizingClasses(baseOptions));
-        } else if (inner[i].classes[pos + 1] === "reset-size" + options.size) {
-            // This is a nested size change: e.g., inner[i] is the "b" in
-            // `\Huge a \small b`. Override the old size (the `reset-` class)
-            // but not the new size.
-            inner[i].classes[pos + 1] = "reset-size" + baseOptions.size;
-        }
-
-        inner[i].height *= multiplier;
-        inner[i].depth *= multiplier;
-    }
-
-    return buildCommon.makeFragment(inner);
-}
-
-groupTypes.sizing = function(group, options) {
-    // Handle sizing operators like \Huge. Real TeX doesn't actually allow
-    // these functions inside of math expressions, so we do some special
-    // handling.
-    const newOptions = options.havingSize(group.value.size);
-    return sizingGroup(group.value.value, newOptions, options);
-};
-
-groupTypes.styling = function(group, options) {
-    // Style changes are handled in the TeXbook on pg. 442, Rule 3.
-    const newStyle = styleMap[group.value.style];
-    const newOptions = options.havingStyle(newStyle);
-    return sizingGroup(group.value.value, newOptions, options);
-};
-
-groupTypes.font = function(group, options) {
-    const font = group.value.font;
-    return buildGroup(group.value.body, options.withFontFamily(font));
-};
-
 groupTypes.horizBrace = function(group, options) {
     const style = options.style;
 
@@ -604,8 +559,11 @@ groupTypes.xArrow = function(group, options) {
     const arrowShift = -options.fontMetrics().axisHeight +
         0.5 * arrowBody.height;
     // 2 mu kern. Ref: amsmath.dtx: #7\if0#2\else\mkern#2mu\fi
-    const upperShift = -options.fontMetrics().axisHeight -
+    let upperShift = -options.fontMetrics().axisHeight -
         0.5 * arrowBody.height - 0.111;
+    if (group.value.label === "\\xleftequilibrium") {
+        upperShift -= upperGroup.depth;
+    }
 
     // Generate the vlist
     let vlist;

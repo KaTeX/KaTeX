@@ -22,3 +22,5 @@ export type ArgType = "color" | "size" | "url" | "original" | Mode;
 
 // LaTeX display style.
 export type StyleStr = "text" | "display";
+
+export type BreakToken = "]" | "}" | "$";

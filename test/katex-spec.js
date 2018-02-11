@@ -107,6 +107,21 @@ const parseAndSetResult = function(expr, result, settings) {
     }
 };
 
+const buildAndSetResult = function(expr, result, settings) {
+    try {
+        return _getBuilt(expr, settings || defaultSettings);
+    } catch (e) {
+        result.pass = false;
+        if (e instanceof ParseError) {
+            result.message = "'" + expr + "' failed " +
+                "parsing with error: " + e.message;
+        } else {
+            result.message = "'" + expr + "' failed " +
+                "parsing with unknown error: " + e.message;
+        }
+    }
+};
+
 beforeEach(function() {
     expect.extend({
         toParse: function(actual, settings) {
@@ -114,7 +129,7 @@ beforeEach(function() {
 
             const result = {
                 pass: true,
-                message: "'" + actual + "' succeeded parsing",
+                message: () => "'" + actual + "' succeeded parsing",
             };
             parseAndSetResult(actual, result, usedSettings);
             return result;
@@ -125,7 +140,7 @@ beforeEach(function() {
 
             const result = {
                 pass: false,
-                message: "Expected '" + actual + "' to fail " +
+                message: () => "Expected '" + actual + "' to fail " +
                     "parsing, but it succeeded",
             };
 
@@ -150,7 +165,7 @@ beforeEach(function() {
 
             const result = {
                 pass: true,
-                message: "'" + actual + "' succeeded in building",
+                message: () => "'" + actual + "' succeeded in building",
             };
 
             expect(actual).toParse(usedSettings);
@@ -176,7 +191,7 @@ beforeEach(function() {
 
             const result = {
                 pass: true,
-                message: "Parse trees of '" + actual +
+                message: () => "Parse trees of '" + actual +
                     "' and '" + expected + "' are equivalent",
             };
 
@@ -196,7 +211,38 @@ beforeEach(function() {
 
             if (JSON.stringify(actualTree) !== JSON.stringify(expectedTree)) {
                 result.pass = false;
-                result.message = "Parse trees of '" + actual +
+                result.message = () => "Parse trees of '" + actual +
+                    "' and '" + expected + "' are not equivalent";
+            }
+            return result;
+        },
+
+        toBuildLike: function(actual, expected, settings) {
+            const usedSettings = settings ? settings : defaultSettings;
+
+            const result = {
+                pass: true,
+                message: () => "Build trees of '" + actual +
+                    "' and '" + expected + "' are equivalent",
+            };
+
+            const actualTree = buildAndSetResult(actual, result,
+                usedSettings);
+            if (!actualTree) {
+                return result;
+            }
+            const expectedTree = buildAndSetResult(expected, result,
+                usedSettings);
+            if (!expectedTree) {
+                return result;
+            }
+
+            stripPositions(actualTree);
+            stripPositions(expectedTree);
+
+            if (JSON.stringify(actualTree) !== JSON.stringify(expectedTree)) {
+                result.pass = false;
+                result.message = () => "Parse trees of '" + actual +
                     "' and '" + expected + "' are not equivalent";
             }
             return result;
@@ -988,6 +1034,35 @@ describe("An overline parser", function() {
     });
 });
 
+describe("An lap parser", function() {
+    it("should not fail on a text argument", function() {
+        expect("\\rlap{\\,/}{=}").toParse();
+        expect("\\mathrlap{\\,/}{=}").toParse();
+        expect("{=}\\llap{/\\,}").toParse();
+        expect("{=}\\mathllap{/\\,}").toParse();
+        expect("\\sum_{\\clap{ABCDEFG}}").toParse();
+        expect("\\sum_{\\mathclap{ABCDEFG}}").toParse();
+    });
+
+    it("should not fail if math version is used", function() {
+        expect("\\mathrlap{\\frac{a}{b}}{=}").toParse();
+        expect("{=}\\mathllap{\\frac{a}{b}}").toParse();
+        expect("\\sum_{\\mathclap{\\frac{a}{b}}}").toParse();
+    });
+
+    it("should fail on math if AMS version is used", function() {
+        expect("\\rlap{\\frac{a}{b}}{=}").toNotParse();
+        expect("{=}\\llap{\\frac{a}{b}}").toNotParse();
+        expect("\\sum_{\\clap{\\frac{a}{b}}}").toNotParse();
+    });
+
+    it("should produce a lap", function() {
+        const parse = getParsed("\\mathrlap{\\,/}")[0];
+
+        expect(parse.type).toEqual("lap");
+    });
+});
+
 describe("A rule parser", function() {
     const emRule = "\\rule{1em}{2em}";
     const exRule = "\\rule{1ex}{2em}";
@@ -1210,6 +1285,19 @@ describe("A left/right parser", function() {
         const unmatchedMiddle = "(\\middle|\\dfrac{x}{y})";
         expect(unmatchedMiddle).toNotParse();
     });
+});
+
+describe("left/right builder", () => {
+    const cases = [
+        ['\\left\\langle \\right\\rangle', '\\left< \\right>'],
+        ['\\left\\langle \\right\\rangle', '\\left\u27e8 \\right\u27e9'],
+    ];
+
+    for (const [actual, expected] of cases) {
+        it(`should build "${actual}" like "${expected}"`, () => {
+            expect(actual).toBuildLike(expected);
+        });
+    }
 });
 
 describe("A begin/end parser", function() {
@@ -2827,7 +2915,7 @@ describe("Unicode", function() {
     });
 
     it("should parse relations", function() {
-        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≫≬≳≷≺≻≼≽≾≿∴∵∣").toParse();
+        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴").toParse();
     });
 
     it("should parse big operators", function() {
@@ -2908,6 +2996,10 @@ describe("The \\mathchoice function", function() {
 describe("Symbols", function() {
     it("should parse \\text{\\i\\j}", () => {
         expect("\\text{\\i\\j}").toParse();
+    });
+
+    it("should parse spacing functions in math or text mode", () => {
+        expect("A\\;B\\,C\\nobreakspace \\text{A\\;B\\,C\\nobreakspace}").toParse();
     });
 
     it("should render ligature commands like their unicode characters", () => {

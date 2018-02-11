@@ -16,10 +16,10 @@ const parseAndSetResult = function(expr, result, settings) {
     } catch (e) {
         result.pass = false;
         if (e instanceof ParseError) {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with error: " + e.message;
         } else {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with unknown error: " + e.message;
         }
     }
@@ -34,7 +34,7 @@ describe("unicode", function() {
 
                 const result = {
                     pass: true,
-                    message: "'" + actual + "' succeeded parsing",
+                    message: () => "'" + actual + "' succeeded parsing",
                 };
                 parseAndSetResult(actual, result, usedSettings);
                 return result;
@@ -45,7 +45,7 @@ describe("unicode", function() {
 
                 const result = {
                     pass: false,
-                    message: "Expected '" + actual + "' to fail " +
+                    message: () => "Expected '" + actual + "' to fail " +
                         "parsing, but it succeeded",
                 };
 
@@ -54,10 +54,10 @@ describe("unicode", function() {
                 } catch (e) {
                     if (e instanceof ParseError) {
                         result.pass = true;
-                        result.message = "'" + actual + "' correctly " +
+                        result.message = () => "'" + actual + "' correctly " +
                             "didn't parse with error: " + e.message;
                     } else {
-                        result.message = "'" + actual + "' failed " +
+                        result.message = () => "'" + actual + "' failed " +
                             "parsing with unknown error: " + e.message;
                     }
                 }
