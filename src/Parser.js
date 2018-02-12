@@ -4,7 +4,7 @@
 import functions from "./functions";
 import environments from "./environments";
 import MacroExpander from "./MacroExpander";
-import symbols from "./symbols";
+import symbols, { extraLatin } from "./symbols";
 import { validUnit } from "./units";
 import { supportedCodepoint } from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
@@ -989,6 +989,11 @@ export default class Parser {
         // Recognize base symbol
         let symbol = null;
         if (symbols[this.mode][text]) {
+            if (this.mode === 'math' && extraLatin.indexOf(text) >= 0 &&
+                !this.settings.unicodeTextInMathMode) {
+                throw new ParseError(`Unicode text character ${text} used in ` +
+                    `math mode without unicodeTextInMathMode setting`, nucleus);
+            }
             symbol = new ParseNode(symbols[this.mode][text].group,
                             text, this.mode, nucleus);
         } else if (supportedCodepoint(text.charCodeAt(0)) &&
