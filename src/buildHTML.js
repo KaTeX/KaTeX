@@ -422,11 +422,6 @@ groupTypes.spacing = function(group, options) {
     }
 };
 
-groupTypes.font = function(group, options) {
-    const font = group.value.font;
-    return buildGroup(group.value.body, options.withFontFamily(font));
-};
-
 groupTypes.horizBrace = function(group, options) {
     const style = options.style;
 
@@ -544,8 +539,11 @@ groupTypes.xArrow = function(group, options) {
     const arrowShift = -options.fontMetrics().axisHeight +
         0.5 * arrowBody.height;
     // 2 mu kern. Ref: amsmath.dtx: #7\if0#2\else\mkern#2mu\fi
-    const upperShift = -options.fontMetrics().axisHeight -
+    let upperShift = -options.fontMetrics().axisHeight -
         0.5 * arrowBody.height - 0.111;
+    if (group.value.label === "\\xleftequilibrium") {
+        upperShift -= upperGroup.depth;
+    }
 
     // Generate the vlist
     let vlist;

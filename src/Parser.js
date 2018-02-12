@@ -434,17 +434,6 @@ export default class Parser {
         }
     }
 
-    // Old font functions
-    static oldFontFuncs = {
-        "\\rm": "mathrm",
-        "\\sf": "mathsf",
-        "\\tt": "mathtt",
-        "\\bf": "mathbf",
-        "\\it": "mathit",
-        //"\\sl": "textsl",
-        //"\\sc": "textsc",
-    };
-
     /**
      * Parses an implicit group, which is a group that starts at the end of a
      * specified, and ends right before a higher explicit group ends, or at EOL. It
@@ -515,34 +504,6 @@ export default class Parser {
                     endNameToken);
             }
             return result;
-        } else if (func in Parser.oldFontFuncs) {
-            const style = Parser.oldFontFuncs[func];
-            // If we see an old font function, parse out the implicit body
-            this.consumeSpaces();
-            const body = this.parseExpression(true, breakOnTokenText);
-            if (style.slice(0, 4) === 'text') {
-                return new ParseNode("text", {
-                    style: style,
-                    body: new ParseNode("ordgroup", body, this.mode),
-                }, this.mode);
-            } else {
-                return new ParseNode("font", {
-                    font: style,
-                    body: new ParseNode("ordgroup", body, this.mode),
-                }, this.mode);
-            }
-        } else if (func === "\\color") {
-            // If we see a styling function, parse out the implicit body
-            const color = this.parseColorGroup(false);
-            if (!color) {
-                throw new ParseError("\\color not followed by color");
-            }
-            const body = this.parseExpression(true, breakOnTokenText);
-            return new ParseNode("color", {
-                type: "color",
-                color: color.result.value,
-                value: body,
-            }, this.mode);
         } else {
             // Defer to parseGivenFunction if it's not a function we handle
             return this.parseGivenFunction(start, breakOnTokenText);

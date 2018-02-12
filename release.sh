@@ -104,7 +104,7 @@ git checkout --detach
 
 # Build generated files and add them to the repository (for bower)
 git clean -fdx build dist
-make setup dist
+npm run dist
 sed -i.bak -E '/^\/dist\/$/d' .gitignore
 rm -f .gitignore.bak
 git add .gitignore dist/
