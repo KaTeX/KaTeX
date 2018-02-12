@@ -233,10 +233,7 @@ groupTypes.spacing = function(group) {
         node = new mathMLTree.MathNode(
             "mtext", [new mathMLTree.TextNode("\u00a0")]);
     } else {
-        node = new mathMLTree.MathNode("mspace");
-
-        node.setAttribute(
-            "width", buildCommon.spacingFunctions[group.value].size);
+        throw new ParseError(`Unknown type of space "${group.value}"`);
     }
 
     return node;

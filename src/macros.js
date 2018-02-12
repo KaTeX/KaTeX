@@ -318,10 +318,44 @@ defineMacro("\\DOTSI", "\\relax");
 defineMacro("\\DOTSB", "\\relax");
 defineMacro("\\DOTSX", "\\relax");
 
-// http://texdoc.net/texmf-dist/doc/latex/amsmath/amsmath.pdf
-defineMacro("\\thinspace", "\\,");    //   \let\thinspace\,
-defineMacro("\\medspace", "\\:");     //   \let\medspace\:
-defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
+// Spacing, based on amsmath.sty's override of LaTeX defaults
+// \DeclareRobustCommand{\tmspace}[3]{%
+//   \ifmmode\mskip#1#2\else\kern#1#3\fi\relax}
+defineMacro("\\tmspace", "\\TextOrMath{\\kern#1#3}{\\mskip#1#2}\\relax");
+// \renewcommand{\,}{\tmspace+\thinmuskip{.1667em}}
+// TODO: math mode should use \thinmuskip
+defineMacro("\\,", "\\tmspace+{3mu}{.1667em}");
+// \let\thinspace\,
+defineMacro("\\thinspace", "\\,");
+// \renewcommand{\:}{\tmspace+\medmuskip{.2222em}}
+// TODO: math mode should use \medmuskip = 4mu plus 2mu minus 4mu
+defineMacro("\\:", "\\tmspace+{4mu}{.2222em}");
+// \let\medspace\:
+defineMacro("\\medspace", "\\:");
+// \renewcommand{\;}{\tmspace+\thickmuskip{.2777em}}
+// TODO: math mode should use \thickmuskip = 5mu plus 5mu
+defineMacro("\\;", "\\tmspace+{5mu}{.2777em}");
+// \let\thickspace\;
+defineMacro("\\thickspace", "\\;");
+// \renewcommand{\!}{\tmspace-\thinmuskip{.1667em}}
+// TODO: math mode should use \thinmuskip
+defineMacro("\\!", "\\tmspace-{3mu}{.1667em}");
+// \let\negthinspace\!
+defineMacro("\\negthinspace", "\\!");
+// \newcommand{\negmedspace}{\tmspace-\medmuskip{.2222em}}
+// TODO: math mode should use \medmuskip
+defineMacro("\\negmedspace", "\\tmspace-{4mu}{.2222em}");
+// \newcommand{\negthickspace}{\tmspace-\thickmuskip{.2777em}}
+// TODO: math mode should use \thickmuskip
+defineMacro("\\negthickspace", "\\tmspace-{5mu}{.277em}");
+// \def\enspace{\kern.5em }
+defineMacro("\\enspace", "\\kern.5em ");
+// \def\enskip{\hskip.5em\relax}
+defineMacro("\\enskip", "\\hskip.5em\\relax");
+// \def\quad{\hskip1em\relax}
+defineMacro("\\quad", "\\hskip1em\\relax");
+// \def\qquad{\hskip2em\relax}
+defineMacro("\\qquad", "\\hskip2em\\relax");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e

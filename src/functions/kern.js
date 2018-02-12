@@ -46,11 +46,7 @@ defineFunction({
         return buildCommon.makeGlue(group.value.dimension, options);
     },
     mathmlBuilder: (group, options) => {
-        const node = new mathMLTree.MathNode("mspace");
-
         const dimension = calculateSize(group.value.dimension, options);
-        node.setAttribute("width", dimension + "em");
-
-        return node;
+        return new mathMLTree.SpaceNode(dimension);
     },
 });

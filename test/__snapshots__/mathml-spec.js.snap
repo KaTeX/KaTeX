@@ -98,8 +98,7 @@ exports[`A MathML builder should generate the right types of nodes 1`] = `
       <mn>
         1
       </mn>
-      <mspace width="0.277778em">
-      </mspace>
+      &ThickSpace;
       <mtext>
         a
       </mtext>
@@ -142,7 +141,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
       <msub>
         <mo>
           <mi mathvariant="normal">
-            lim sup
+            lim&amp;ThinSpace;sup
           </mi>
           <mo>
             ⁡
@@ -177,7 +176,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} in dis
       <munder>
         <mo>
           <mi mathvariant="normal">
-            lim sup
+            lim&amp;ThinSpace;sup
           </mi>
           <mo>
             ⁡
@@ -500,6 +499,21 @@ exports[`A MathML builder should use <munderover> for large operators 1`] = `
     </mrow>
     <annotation encoding="application/x-tex">
       \\displaystyle\\sum_a^b
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder special spaces render specially 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      &ThinSpace;&ThinSpace;&MediumSpace;&MediumSpace;&ThickSpace;&ThickSpace;&NegativeThinSpace;&NegativeThinSpace;&NegativeMediumSpace;&NegativeThickSpace;&VeryThinSpace;&ThinSpace;&MediumSpace;&ThickSpace;&NegativeVeryThinSpace;&NegativeThinSpace;&NegativeMediumSpace;&NegativeThickSpace;
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\,\\thinspace\\:\\medspace\\;\\thickspace\\!\\negthinspace\\negmedspace\\negthickspace\\mkern1mu\\mkern3mu\\mkern4mu\\mkern5mu\\mkern-1mu\\mkern-3mu\\mkern-4mu\\mkern-5mu
     </annotation>
   </semantics>
 </math>

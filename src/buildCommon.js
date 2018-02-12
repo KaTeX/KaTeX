@@ -642,39 +642,6 @@ const retrieveFontStylesName = function(
     return fontStylesName || "Regular";
 };
 
-// A map of spacing functions to their attributes, like size and corresponding
-// CSS class
-const spacingFunctions: {[string]: {| size: string, className: string |}} = {
-    "\\qquad": {
-        size: "2em",
-        className: "qquad",
-    },
-    "\\quad": {
-        size: "1em",
-        className: "quad",
-    },
-    "\\enspace": {
-        size: "0.5em",
-        className: "enspace",
-    },
-    "\\;": {
-        size: "0.277778em",
-        className: "thickspace",
-    },
-    "\\:": {
-        size: "0.22222em",
-        className: "mediumspace",
-    },
-    "\\,": {
-        size: "0.16667em",
-        className: "thinspace",
-    },
-    "\\!": {
-        size: "-0.16667em",
-        className: "negativethinspace",
-    },
-};
-
 /**
  * Maps TeX font commands to objects containing:
  * - variant: string used for "mathvariant" attribute in buildMathML.js
@@ -769,5 +736,4 @@ export default {
     staticSvg,
     svgData,
     tryCombineChars,
-    spacingFunctions,
 };

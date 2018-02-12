@@ -414,11 +414,7 @@ groupTypes.spacing = function(group, options) {
                 options);
         }
     } else {
-        // Other kinds of spaces are of arbitrary width. We use CSS to
-        // generate these.
-        return makeSpan(
-            ["mspace", buildCommon.spacingFunctions[group.value].className],
-            [], options);
+        throw new ParseError(`Unknown type of space "${group.value}"`);
     }
 };
 
