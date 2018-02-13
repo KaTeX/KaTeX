@@ -59,7 +59,7 @@ const styleMap = {
  * consisting type of nodes that will be added to the left and right.
  */
 export const buildExpression = function(expression, options, isRealGroup,
-        surrounding = []) {
+        surrounding = [null, null]) {
     // Parse expressions into `groups`.
     const rawGroups = [];
     for (let i = 0; i < expression.length; i++) {
@@ -74,15 +74,13 @@ export const buildExpression = function(expression, options, isRealGroup,
     // At this point `rawGroups` consists entirely of `symbolNode`s and `span`s.
 
     // Ignore explicit spaces (e.g., \;, \,) when determining what implicit
-    // spacing should go between atoms of different classes.
-    const nonSpaces =
-        rawGroups.filter(group => group && group.classes[0] !== "mspace");
-
-    // add dummy spans for determining spacings between surrounding atoms
-    nonSpaces.unshift(surrounding[0] &&
-        new makeSpan([surrounding[0]], [], options));
-    nonSpaces.push(surrounding[1] &&
-        new makeSpan([surrounding[1]], [], options));
+    // spacing should go between atoms of different classes, and add dummy
+    // spans for determining spacings between surrounding atoms
+    const nonSpaces = [
+        surrounding[0] && makeSpan([surrounding[0]], [], options),
+        ...rawGroups.filter(group => group && group.classes[0] !== "mspace"),
+        surrounding[1] && makeSpan([surrounding[1]], [], options),
+    ];
 
     // Before determining what spaces to insert, perform bin cancellation.
     // Binary operators change to ordinary symbols in some contexts.
