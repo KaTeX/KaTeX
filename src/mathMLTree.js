@@ -193,7 +193,7 @@ class SpaceNode {
         if (this.character) {
             return this.character;
         } else {
-            return `<mspace width="${this.width}"em/>`;
+            return `<mspace width="${this.width}em"/>`;
         }
     }
 

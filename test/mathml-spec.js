@@ -98,6 +98,9 @@ describe("A MathML builder", function() {
         expect(getMathML("über fiancée")).toMatchSnapshot();
     });
 
+    it('normal spaces render normally', function() {
+        expect(getMathML("\\kern1em\\kern1ex")).toMatchSnapshot();
+    });
     it('special spaces render specially', function() {
         expect(getMathML(
             "\\,\\thinspace\\:\\medspace\\;\\thickspace" +

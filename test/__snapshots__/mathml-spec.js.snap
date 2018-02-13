@@ -57,6 +57,24 @@ exports[`A MathML builder accents turn into <mover accent="true"> in MathML 1`] 
 
 `;
 
+exports[`A MathML builder normal spaces render normally 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mspace width="1em">
+      </mspace>
+      <mspace width="0.431em">
+      </mspace>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\kern1em\\kern1ex
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder should generate <mphantom> nodes for \\phantom 1`] = `
 
 <math>
