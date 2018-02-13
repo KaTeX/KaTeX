@@ -4,7 +4,7 @@
  * This can be used to define some commands in terms of others.
  */
 
-import fontMetricsData from "./fontMetricsData";
+import fontMetricsData from "../submodules/katex-fonts/fontMetricsData";
 import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
@@ -396,6 +396,11 @@ defineMacro("\\Colonapprox", "\\dblcolon\\mathrel{\\mkern-1.2mu}\\approx");
 defineMacro("\\colonsim", "\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim");
 // \providecommand*\Colonsim{\dblcolon\mathrel{\mkern-1.2mu}\sim}
 defineMacro("\\Colonsim", "\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim");
+
+// Some Unicode characters are implemented with macros to mathtools functions.
+defineMacro("\u2254", "\\coloneqq");  // :=
+defineMacro("\u2255", "\\eqqcolon");  // =:
+defineMacro("\u2A74", "\\Coloneqq");  // ::=
 
 //////////////////////////////////////////////////////////////////////
 // colonequals.sty
