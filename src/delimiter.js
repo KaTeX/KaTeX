@@ -320,8 +320,8 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
 
 // All surds have 0.08em padding above the viniculum inside the SVG.
 // That keeps browser span height rounding error from pinching the line.
-const vbPad = 80;  // padding above the surd, measured inside the viewBox.
-const emPad = 0.08 // padding, in ems, measured in the document.
+const vbPad = 80;   // padding above the surd, measured inside the viewBox.
+const emPad = 0.08; // padding, in ems, measured in the document.
 
 const sqrtSvg = function(sqrtName, height, viewBoxHeight, options) {
     let alternate;
