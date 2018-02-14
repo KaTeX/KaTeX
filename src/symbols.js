@@ -267,7 +267,7 @@ defineSymbol(math, ams, textord, "\u29eb", "\\blacklozenge");
 defineSymbol(math, ams, textord, "\u2605", "\\bigstar");
 defineSymbol(math, ams, textord, "\u2222", "\\sphericalangle", true);
 defineSymbol(math, ams, textord, "\u2201", "\\complement", true);
-// unicode-math maps U+F0 to \matheth. We map to AMS function \eth
+// unicode-math maps U+F0 (ð) to \matheth. We map to AMS function \eth
 defineSymbol(math, ams, textord, "\u00f0", "\\eth", true);
 defineSymbol(math, ams, textord, "\u2571", "\\diagup");
 defineSymbol(math, ams, textord, "\u2572", "\\diagdown");
@@ -739,17 +739,13 @@ for (let i = 0; i < letters.length; i++) {
 // but they are not actually in the font, nor are they supported by the
 // Unicode accent mechanism, so they fall back to Times font and look ugly.
 // TODO(edemaine): Fix this.
-const extraLatin = "ÇÐÞçðþ";
+const extraLatin = "ÇÐÞçþ";
 for (let i = 0; i < extraLatin.length; i++) {
     const ch = extraLatin.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
-const extraLatinMath = "Åå";
-for (let i = 0; i < extraLatinMath.length; i++) {
-    const ch = extraLatinMath.charAt(i);
-    defineSymbol(math, main, mathord, ch, ch);
-}
+defineSymbol(text, main, textord, "ð", "ð");
 
 // Unicode versions of existing characters
 defineSymbol(text, main, textord, "\u2013", "–");
