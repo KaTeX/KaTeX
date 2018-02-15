@@ -11,6 +11,7 @@ defineFunction({
     names: ["\\underline"],
     props: {
         numArgs: 1,
+        allowedInText: true,
     },
     handler(context, args) {
         const body = args[0];
