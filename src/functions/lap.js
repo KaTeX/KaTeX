@@ -36,8 +36,25 @@ defineFunction({
                 ["inner"], [html.buildGroup(group.value.body, options)]);
         }
         const fix = buildCommon.makeSpan(["fix"], []);
-        return buildCommon.makeSpan(
+        let node = buildCommon.makeSpan(
             ["mord", group.value.alignment], [inner, fix], options);
+
+        // At this point, we have correctly set horizontal alignment.
+        // Next, use struts to set the height of the HTML bounding box.
+        // Otherwise, a tall argument may be misplaced.
+        const topStrut = buildCommon.makeSpan(["strut"]);
+        const bottomStrut = buildCommon.makeSpan(["strut", "bottom"]);
+        topStrut.style.height = node.height + "em";
+        bottomStrut.style.height = (node.height + node.depth) + "em";
+        bottomStrut.style.verticalAlign = -node.depth + "em";
+        node = buildCommon.makeSpan([], [topStrut, bottomStrut, node]);
+
+        // One last step to prevent vertical misplacement when next to
+        // something tall.
+        return buildCommon.makeVList({
+            positionType: "firstBaseline",
+            children: [{type: "elem", elem: node}],
+        }, options);
     },
     mathmlBuilder: (group, options) => {
         // mathllap, mathrlap, mathclap
