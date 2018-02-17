@@ -12,7 +12,6 @@ import Style from "./Style";
 
 import buildCommon from "./buildCommon";
 import domTree from "./domTree";
-import { calculateSize } from "./units";
 import utils from "./utils";
 import stretchy from "./stretchy";
 import {spacings, tightSpacings} from "./spacingData";
