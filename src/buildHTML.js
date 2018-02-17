@@ -598,25 +598,6 @@ groupTypes.mclass = function(group, options) {
     return makeSpan([group.value.mclass], elements, options);
 };
 
-groupTypes.raisebox = function(group, options) {
-    const body = groupTypes.sizing({value: {
-        value: [{
-            type: "text",
-            value: {
-                body: group.value.value,
-                font: "mathrm", // simulate \textrm
-            },
-        }],
-        size: 6,                // simulate \normalsize
-    }}, options);
-    const dy = calculateSize(group.value.dy.value, options);
-    return buildCommon.makeVList({
-        positionType: "shift",
-        positionData: -dy,
-        children: [{type: "elem", elem: body}],
-    }, options);
-};
-
 /**
  * buildGroup is the function that takes a group and calls the correct groupType
  * function for it. It also handles the interaction of size and style changes

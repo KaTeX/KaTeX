@@ -279,14 +279,6 @@ groupTypes.mclass = function(group, options) {
     return new mathMLTree.MathNode("mstyle", inner);
 };
 
-groupTypes.raisebox = function(group, options) {
-    const node = new mathMLTree.MathNode(
-        "mpadded", [buildGroup(group.value.body, options)]);
-    const dy = group.value.dy.value.number + group.value.dy.value.unit;
-    node.setAttribute("voffset", dy);
-    return node;
-};
-
 /**
  * Takes a list of nodes, builds them, and returns a list of the generated
  * MathML nodes. A little simpler than the HTML version because we don't do any
