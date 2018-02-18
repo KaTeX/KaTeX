@@ -3008,3 +3008,26 @@ describe("Symbols", function() {
         expect(commands).toEqual(unicode);
     });
 });
+
+describe("Internal __* interface", function() {
+    const latex = "\\sum_{k = 0}^{\\infty} x^k";
+    const rendered = katex.renderToString(latex);
+
+    it("__parse renders same as renderToString", () => {
+        const parsed = katex.__parse(latex);
+        expect(buildTree(parsed, latex, new Settings()).toMarkup())
+            .toEqual(rendered);
+    });
+
+    it("__renderToDomTree renders same as renderToString", () => {
+        const tree = katex.__renderToDomTree(latex);
+        expect(tree.toMarkup()).toEqual(rendered);
+    });
+
+    it("__renderToHTMLTree renders same as renderToString sans MathML", () => {
+        const tree = katex.__renderToHTMLTree(latex);
+        const renderedSansMathML = rendered.replace(
+            /<span class="katex-mathml">.*?<\/span>/, '');
+        expect(tree.toMarkup()).toEqual(renderedSansMathML);
+    });
+});
