@@ -100,7 +100,6 @@ import metricMap from "../submodules/katex-fonts/fontMetricsData";
 const extraCharacterMap = {
     // Latin-1
     'Å': 'A',
-    'Ç': 'C',
     'Ð': 'D',
     'Þ': 'o',
     'å': 'a',
