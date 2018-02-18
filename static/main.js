@@ -21,7 +21,7 @@ function init() {
     const macros = {};
     // TODO: Add toggle for displayMode.
     // https://github.com/Khan/KaTeX/issues/1035
-    const options = {displayMode: true};
+    const options = {displayMode: true, throwOnError: false};
     const macroRegex = /(?:^\?|&)(?:\\|%5[Cc])([A-Za-z]+)=([^&]*)/g;
     let macroString = "";
     while ((match = macroRegex.exec(window.location.search)) !== null) {
