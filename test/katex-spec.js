@@ -6,7 +6,6 @@
 import stringify from 'json-stable-stringify';
 
 import buildMathML from "../src/buildMathML";
-import buildTree from "../src/buildTree";
 import katex from "../katex";
 import ParseError from "../src/ParseError";
 import parseTree from "../src/parseTree";
