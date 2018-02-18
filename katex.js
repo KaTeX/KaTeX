@@ -76,7 +76,7 @@ const generateParseTree = function(
  * error message.  Otherwise, simply throws the error.
  */
 const renderError = function(
-    error: Error,
+    error,
     expression: string,
     options: Settings,
 ) {
