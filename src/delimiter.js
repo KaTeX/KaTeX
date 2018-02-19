@@ -318,6 +318,11 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
         Style.TEXT, options, classes);
 };
 
+// All surds have 0.08em padding above the viniculum inside the SVG.
+// That keeps browser span height rounding error from pinching the line.
+const vbPad = 80;   // padding above the surd, measured inside the viewBox.
+const emPad = 0.08; // padding, in ems, measured in the document.
+
 const sqrtSvg = function(sqrtName, height, viewBoxHeight, options) {
     let alternate;
     if (sqrtName === "sqrtTall") {
@@ -325,11 +330,11 @@ const sqrtSvg = function(sqrtName, height, viewBoxHeight, options) {
         // One path edge has a variable length. It runs from the viniculumn
         // to a point near (14 units) the bottom of the surd. The viniculum
         // is 40 units thick. So the length of the line in question is:
-        const vertSegment = viewBoxHeight - 54;
-        alternate = `M702 0H400000v40H742v${vertSegment}l-4 4-4 4c-.667.667
+        const vertSegment = viewBoxHeight - 54 - vbPad;
+        alternate = `M702 ${vbPad}H400000v40H742v${vertSegment}l-4 4-4 4c-.667.7
 -2 1.5-4 2.5s-4.167 1.833-6.5 2.5-5.5 1-9.5 1h-12l-28-84c-16.667-52-96.667
 -294.333-240-727l-212 -643 -85 170c-4-3.333-8.333-7.667-13 -13l-13-13l77-155
- 77-156c66 199.333 139 419.667 219 661 l218 661zM702 0H400000v40H742z`;
+ 77-156c66 199.333 139 419.667 219 661 l218 661zM702 ${vbPad}H400000v40H742z`;
     }
     const pathNode = new domTree.pathNode(sqrtName, alternate);
 
@@ -354,23 +359,32 @@ const makeSqrtImage = function(height, options) {
     // Create a span containing an SVG image of a sqrt symbol.
     let span;
     let sizeMultiplier = options.sizeMultiplier;  // default
-    let spanHeight;
-    let viewBoxHeight;
+    let spanHeight = 0;
+    let texHeight = 0;
+    let viewBoxHeight = 0;
+
+    // We create viewBoxes with 80 units of "padding" above each surd.
+    // Then browser rounding error on the parent span height will not
+    // encroach on the ink of the viniculum. But that padding is not
+    // included in the TeX-like `height` used for calculation of
+    // vertical alignment. So texHeight = span.height < span.style.height.
 
     if (delim.type === "small") {
         // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
-        viewBoxHeight = 1000;  // from font
+        viewBoxHeight = 1000 + vbPad;  // 1000 unit glyph height.
         const newOptions = options.havingBaseStyle(delim.style);
         sizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
-        spanHeight = 1 * sizeMultiplier;
+        spanHeight = (1.0 + emPad) * sizeMultiplier;
+        texHeight = 1.00 * sizeMultiplier;
         span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, options);
         span.style.minWidth = "0.853em";
         span.advanceWidth = 0.833 * sizeMultiplier;   // from the font.
 
     } else if (delim.type === "large") {
         // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
-        viewBoxHeight = 1000 * sizeToMaxHeight[delim.size];
-        spanHeight = sizeToMaxHeight[delim.size] / sizeMultiplier;
+        viewBoxHeight = (1000 + vbPad) * sizeToMaxHeight[delim.size];
+        texHeight = sizeToMaxHeight[delim.size] / sizeMultiplier;
+        spanHeight = (sizeToMaxHeight[delim.size] + emPad) / sizeMultiplier;
         span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight, options);
         span.style.minWidth = "1.02em";
         span.advanceWidth = 1.0 / sizeMultiplier; // from the font
@@ -378,14 +392,15 @@ const makeSqrtImage = function(height, options) {
     } else {
         // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
         // We'll use a single SVG to accomplish the same thing.
-        spanHeight = height / sizeMultiplier;
-        viewBoxHeight = Math.floor(1000 * height);
+        spanHeight = height / sizeMultiplier + emPad;
+        texHeight = height / sizeMultiplier;
+        viewBoxHeight = Math.floor(1000 * height) + vbPad;
         span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, options);
         span.style.minWidth = "0.742em";
         span.advanceWidth = 1.056 / sizeMultiplier;
     }
 
-    span.height = spanHeight;
+    span.height = texHeight;
     span.style.height = spanHeight + "em";
 
     return {
