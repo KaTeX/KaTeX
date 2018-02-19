@@ -5,8 +5,6 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
-import { calculateSize } from "../units";
-import { spacings, tightSpacings } from "../spacingData";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -38,7 +36,7 @@ const delimiters = [
     "(", ")", "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
-    "<", ">", "\\langle", "\\rangle", "\\lt", "\\gt",
+    "<", ">", "\\langle", "\u27e8", "\\rangle", "\u27e9", "\\lt", "\\gt",
     "\\lvert", "\\rvert", "\\lVert", "\\rVert",
     "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache",
     "/", "\\backslash",
@@ -161,7 +159,8 @@ defineFunction({
     },
     htmlBuilder: (group, options) => {
         // Build the inner expression
-        const inner = html.buildExpression(group.value.body, options, true);
+        const inner = html.buildExpression(group.value.body, options, true,
+            [null, "mclose"]);
 
         let innerHeight = 0;
         let innerDepth = 0;
@@ -208,18 +207,6 @@ defineFunction({
                         middleDelim.isMiddle.options, group.mode, []);
                 }
             }
-        }
-
-        const lastChildType = html.getTypeOfDomTree(inner[inner.length - 1]);
-        const activeSpacings = options.style.isTight() ? tightSpacings : spacings;
-
-        if (lastChildType && activeSpacings[lastChildType]["mclose"]) {
-            const glue =
-                buildCommon.makeSpan(["mord", "rule"], [], options);
-            const dimension =
-                calculateSize(activeSpacings[lastChildType]["mclose"], options);
-            glue.style.marginRight = `${dimension}em`;
-            inner.push(glue);
         }
 
         let rightDelim;

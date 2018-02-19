@@ -232,7 +232,7 @@ const makeOrd = function(
     const classes = ["mord"];
 
     // Math mode or Old font (i.e. \rm)
-    const isFont = mode === "math" || options.oldTextFont;
+    const isFont = mode === "math" || (mode === "text" && options.font);
     const fontOrFamily = isFont ? options.font : options.fontFamily;
     if (fontOrFamily) {
         let fontName;

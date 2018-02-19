@@ -43,7 +43,6 @@ export type OptionsData = {
     textSize?: number;
     phantom?: boolean;
     font?: string;
-    oldTextFont?: boolean;
     fontFamily?: string;
     fontWeight?: string;
     fontShape?: string;
@@ -65,7 +64,6 @@ class Options {
     textSize: number;
     phantom: boolean;
     font: string;
-    oldTextFont: boolean;
     fontFamily: string;
     fontWeight: string;
     fontShape: string;
@@ -85,7 +83,6 @@ class Options {
         this.textSize = data.textSize || this.size;
         this.phantom = !!data.phantom;
         this.font = data.font || "";
-        this.oldTextFont = data.oldTextFont || false;
         this.fontFamily = data.fontFamily || "";
         this.fontWeight = data.fontWeight || '';
         this.fontShape = data.fontShape || '';
@@ -106,7 +103,6 @@ class Options {
             color: this.color,
             phantom: this.phantom,
             font: this.font,
-            oldTextFont: this.oldTextFont,
             fontFamily: this.fontFamily,
             fontWeight: this.fontWeight,
             fontShape: this.fontShape,
@@ -214,22 +210,22 @@ class Options {
     withFont(font: string): Options {
         return this.extend({
             font,
-        });
-    }
-
-    withOldTextFont(): Options {
-        return this.extend({
-            oldTextFont: true,
+            fontFamily: "",
         });
     }
 
     /**
-     * Create a new options objects with the give font.
+     * Create a new options objects with the given fontFamily.
      */
-    withFontFamily(fontFamily: string): Options {
-        return this.extend({
-            fontFamily,
-        });
+    withTextFontFamily(family: string, isOldCommand: boolean) {
+        if (isOldCommand) {
+            return this.withFont(family);
+        } else {
+            return this.extend({
+                fontFamily: family || this.fontFamily,
+                font: "",
+            });
+        }
     }
 
     /**

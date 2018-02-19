@@ -22,17 +22,13 @@ const makeSpan = buildCommon.makeSpan;
 // Binary atoms (first class `mbin`) change into ordinary atoms (`mord`)
 // depending on their surroundings. See TeXbook pg. 442-446, Rules 5 and 6,
 // and the text before Rule 19.
-const isBin = function(node) {
-    return node && node.classes[0] === "mbin";
-};
-
 const isBinLeftCanceller = function(node, isRealGroup) {
     // TODO: This code assumes that a node's math class is the first element
     // of its `classes` array. A later cleanup should ensure this, for
     // instance by changing the signature of `makeSpan`.
     if (node) {
         return utils.contains(["mbin", "mopen", "mrel", "mop", "mpunct"],
-                              node.classes[0]);
+                              getTypeOfDomTree(node, "right"));
     } else {
         return isRealGroup;
     }
@@ -40,7 +36,8 @@ const isBinLeftCanceller = function(node, isRealGroup) {
 
 const isBinRightCanceller = function(node, isRealGroup) {
     if (node) {
-        return utils.contains(["mrel", "mclose", "mpunct"], node.classes[0]);
+        return utils.contains(["mrel", "mclose", "mpunct"],
+                              getTypeOfDomTree(node, "left"));
     } else {
         return isRealGroup;
     }
@@ -58,9 +55,11 @@ const styleMap = {
  * nodes. documentFragments are flattened into their contents, so the
  * returned list contains no fragments. `isRealGroup` is true if `expression`
  * is a real group (no atoms will be added on either side), as opposed to
- * a partial group (e.g. one created by \color).
+ * a partial group (e.g. one created by \color). `surrounding` is an array
+ * consisting type of nodes that will be added to the left and right.
  */
-export const buildExpression = function(expression, options, isRealGroup) {
+export const buildExpression = function(expression, options, isRealGroup,
+        surrounding = [null, null]) {
     // Parse expressions into `groups`.
     const rawGroups = [];
     for (let i = 0; i < expression.length; i++) {
@@ -75,18 +74,27 @@ export const buildExpression = function(expression, options, isRealGroup) {
     // At this point `rawGroups` consists entirely of `symbolNode`s and `span`s.
 
     // Ignore explicit spaces (e.g., \;, \,) when determining what implicit
-    // spacing should go between atoms of different classes.
-    const nonSpaces =
-        rawGroups.filter(group => group && group.classes[0] !== "mspace");
+    // spacing should go between atoms of different classes, and add dummy
+    // spans for determining spacings between surrounding atoms
+    const nonSpaces = [
+        surrounding[0] && makeSpan([surrounding[0]], [], options),
+        ...rawGroups.filter(group => group && group.classes[0] !== "mspace"),
+        surrounding[1] && makeSpan([surrounding[1]], [], options),
+    ];
 
     // Before determining what spaces to insert, perform bin cancellation.
     // Binary operators change to ordinary symbols in some contexts.
-    for (let i = 0; i < nonSpaces.length; i++) {
-        if (isBin(nonSpaces[i])) {
-            if (isBinLeftCanceller(nonSpaces[i - 1], isRealGroup)
-                    || isBinRightCanceller(nonSpaces[i + 1], isRealGroup)) {
-                nonSpaces[i].classes[0] = "mord";
-            }
+    for (let i = 1; i < nonSpaces.length - 1; i++) {
+        const left = getOutermostNode(nonSpaces[i], "left");
+        if (left.classes[0] === "mbin" &&
+                isBinLeftCanceller(nonSpaces[i - 1], isRealGroup)) {
+            left.classes[0] = "mord";
+        }
+
+        const right = getOutermostNode(nonSpaces[i], "right");
+        if (right.classes[0] === "mbin" &&
+                isBinRightCanceller(nonSpaces[i + 1], isRealGroup)) {
+            right.classes[0] = "mord";
         }
     }
 
@@ -99,6 +107,13 @@ export const buildExpression = function(expression, options, isRealGroup) {
         // lookup what implicit space should be placed between those atoms and
         // add it to groups.
         if (rawGroups[i].classes[0] !== "mspace" && j < nonSpaces.length - 1) {
+            // if current non-space node is left dummy span, add a glue before
+            // first real non-space node
+            if (j === 0) {
+                groups.pop();
+                i--;
+            }
+
             // Get the type of the current non-space node.  If it's a document
             // fragment, get the type of the rightmost node in the fragment.
             const left = getTypeOfDomTree(nonSpaces[j], "right");
@@ -150,28 +165,37 @@ export const buildExpression = function(expression, options, isRealGroup) {
     return groups;
 };
 
-// Return math atom class (mclass) of a domTree.
-export const getTypeOfDomTree = function(node, side = "right") {
+// Return the outermost node of a domTree.
+const getOutermostNode = function(node, side = "right") {
     if (node instanceof domTree.documentFragment ||
             node instanceof domTree.anchor) {
         if (node.children.length) {
             if (side === "right") {
-                return getTypeOfDomTree(
+                return getOutermostNode(
                     node.children[node.children.length - 1]);
             } else if (side === "left") {
-                return getTypeOfDomTree(
+                return getOutermostNode(
                     node.children[0]);
             }
         }
-    } else {
-        // This makes a lot of assumptions as to where the type of atom
-        // appears.  We should do a better job of enforcing this.
-        if (utils.contains([
-            "mord", "mop", "mbin", "mrel", "mopen", "mclose",
-            "mpunct", "minner",
-        ], node.classes[0])) {
-            return node.classes[0];
-        }
+    }
+    return node;
+};
+
+// Return math atom class (mclass) of a domTree.
+export const getTypeOfDomTree = function(node, side = "right") {
+    if (!node) {
+        return null;
+    }
+
+    node = getOutermostNode(node, side);
+    // This makes a lot of assumptions as to where the type of atom
+    // appears.  We should do a better job of enforcing this.
+    if (utils.contains([
+        "mord", "mop", "mbin", "mrel", "mopen", "mclose",
+        "mpunct", "minner",
+    ], node.classes[0])) {
+        return node.classes[0];
     }
     return null;
 };
@@ -181,14 +205,8 @@ export const getTypeOfDomTree = function(node, side = "right") {
 // leftmost node in the fragment.
 // 'mtight' indicates that the node is script or scriptscript style.
 export const isLeftTight = function(node) {
-    if (node instanceof domTree.documentFragment) {
-        if (node.children.length) {
-            return isLeftTight(node.children[0]);
-        }
-    } else {
-        return utils.contains(node.classes, "mtight");
-    }
-    return false;
+    node = getOutermostNode(node, "left");
+    return utils.contains(node.classes, "mtight");
 };
 
 /**
@@ -422,56 +440,6 @@ groupTypes.spacing = function(group, options) {
     }
 };
 
-function sizingGroup(value, options, baseOptions) {
-    const inner = buildExpression(value, options, false);
-    const multiplier = options.sizeMultiplier / baseOptions.sizeMultiplier;
-
-    // Add size-resetting classes to the inner list and set maxFontSize
-    // manually. Handle nested size changes.
-    for (let i = 0; i < inner.length; i++) {
-        const pos = utils.indexOf(inner[i].classes, "sizing");
-        if (pos < 0) {
-            Array.prototype.push.apply(inner[i].classes,
-                options.sizingClasses(baseOptions));
-        } else if (inner[i].classes[pos + 1] === "reset-size" + options.size) {
-            // This is a nested size change: e.g., inner[i] is the "b" in
-            // `\Huge a \small b`. Override the old size (the `reset-` class)
-            // but not the new size.
-            inner[i].classes[pos + 1] = "reset-size" + baseOptions.size;
-        }
-
-        inner[i].height *= multiplier;
-        inner[i].depth *= multiplier;
-    }
-
-    return buildCommon.makeFragment(inner);
-}
-
-groupTypes.sizing = function(group, options) {
-    // Handle sizing operators like \Huge. Real TeX doesn't actually allow
-    // these functions inside of math expressions, so we do some special
-    // handling.
-    const newOptions = options.havingSize(group.value.size);
-    return sizingGroup(group.value.value, newOptions, options);
-};
-
-groupTypes.styling = function(group, options) {
-    // Style changes are handled in the TeXbook on pg. 442, Rule 3.
-    const newStyle = styleMap[group.value.style];
-    const newOptions = group.value.mathStart ?
-                       options.havingStyle(newStyle).withMathMode() :
-                       options.havingStyle(newStyle);
-    return sizingGroup(group.value.value, newOptions, options);
-};
-
-groupTypes.font = function(group, options) {
-    const font = group.value.font;
-    const newOptions = group.value.oldTextFont ?
-                       options.withFont(font).withOldTextFont() :
-                       options.withFont(font);
-    return buildGroup(group.value.body, newOptions);
-};
-
 groupTypes.horizBrace = function(group, options) {
     const style = options.style;
 
@@ -589,8 +557,11 @@ groupTypes.xArrow = function(group, options) {
     const arrowShift = -options.fontMetrics().axisHeight +
         0.5 * arrowBody.height;
     // 2 mu kern. Ref: amsmath.dtx: #7\if0#2\else\mkern#2mu\fi
-    const upperShift = -options.fontMetrics().axisHeight -
+    let upperShift = -options.fontMetrics().axisHeight -
         0.5 * arrowBody.height - 0.111;
+    if (group.value.label === "\\xleftequilibrium") {
+        upperShift -= upperGroup.depth;
+    }
 
     // Generate the vlist
     let vlist;

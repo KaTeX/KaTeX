@@ -267,7 +267,7 @@ defineSymbol(math, ams, textord, "\u29eb", "\\blacklozenge");
 defineSymbol(math, ams, textord, "\u2605", "\\bigstar");
 defineSymbol(math, ams, textord, "\u2222", "\\sphericalangle", true);
 defineSymbol(math, ams, textord, "\u2201", "\\complement", true);
-// unicode-math maps U+F0 to \matheth. We map to AMS function \eth
+// unicode-math maps U+F0 (ð) to \matheth. We map to AMS function \eth
 defineSymbol(math, ams, textord, "\u00f0", "\\eth", true);
 defineSymbol(math, ams, textord, "\u2571", "\\diagup");
 defineSymbol(math, ams, textord, "\u2572", "\\diagdown");
@@ -513,14 +513,14 @@ defineSymbol(math, main, bin, "\u2228", "\\vee", true);
 defineSymbol(math, main, textord, "\u221a", "\\surd");
 defineSymbol(math, main, open, "(", "(");
 defineSymbol(math, main, open, "[", "[");
-defineSymbol(math, main, open, "\u27e8", "\\langle");
+defineSymbol(math, main, open, "\u27e8", "\\langle", true);
 defineSymbol(math, main, open, "\u2223", "\\lvert");
 defineSymbol(math, main, open, "\u2225", "\\lVert");
 defineSymbol(math, main, close, ")", ")");
 defineSymbol(math, main, close, "]", "]");
 defineSymbol(math, main, close, "?", "?");
 defineSymbol(math, main, close, "!", "!");
-defineSymbol(math, main, close, "\u27e9", "\\rangle");
+defineSymbol(math, main, close, "\u27e9", "\\rangle", true);
 defineSymbol(math, main, close, "\u2223", "\\rvert");
 defineSymbol(math, main, close, "\u2225", "\\rVert");
 defineSymbol(math, main, rel, "=", "=");
@@ -563,6 +563,19 @@ defineSymbol(math, main, spacing, null, "\\enspace");
 defineSymbol(math, main, spacing, null, "\\qquad");
 defineSymbol(math, main, spacing, null, "\\quad");
 defineSymbol(math, main, spacing, "\u00a0", "\\space");
+// Ref: LaTeX Source 2e: \DeclareRobustCommand{\nobreakspace}{%
+defineSymbol(math, main, spacing, "\u00a0", "\\nobreakspace");
+defineSymbol(text, main, spacing, null, "\\!");
+defineSymbol(text, main, spacing, "\u00a0", "\\ ");
+defineSymbol(text, main, spacing, "\u00a0", "~");
+defineSymbol(text, main, spacing, null, "\\,");
+defineSymbol(text, main, spacing, null, "\\:");
+defineSymbol(text, main, spacing, null, "\\;");
+defineSymbol(text, main, spacing, null, "\\enspace");
+defineSymbol(text, main, spacing, null, "\\qquad");
+defineSymbol(text, main, spacing, null, "\\quad");
+defineSymbol(text, main, spacing, "\u00a0", "\\space");
+defineSymbol(text, main, spacing, "\u00a0", "\\nobreakspace");
 defineSymbol(math, main, punct, ",", ",");
 defineSymbol(math, main, punct, ";", ";");
 defineSymbol(math, main, punct, ":", "\\colon");
@@ -646,6 +659,7 @@ defineSymbol(math, main, accent, "\u02c7", "\\check");
 defineSymbol(math, main, accent, "\u005e", "\\hat");
 defineSymbol(math, main, accent, "\u20d7", "\\vec");
 defineSymbol(math, main, accent, "\u02d9", "\\dot");
+defineSymbol(math, main, accent, "\u02da", "\\mathring");
 defineSymbol(math, main, mathord, "\u0131", "\\imath", true);
 defineSymbol(math, main, mathord, "\u0237", "\\jmath", true);
 defineSymbol(text, main, textord, "\u0131", "\\i", true);
@@ -725,17 +739,13 @@ for (let i = 0; i < letters.length; i++) {
 // but they are not actually in the font, nor are they supported by the
 // Unicode accent mechanism, so they fall back to Times font and look ugly.
 // TODO(edemaine): Fix this.
-const extraLatin = "ÇÐÞçðþ";
+const extraLatin = "ÇÐÞçþ";
 for (let i = 0; i < extraLatin.length; i++) {
     const ch = extraLatin.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
-const extraLatinMath = "Åå";
-for (let i = 0; i < extraLatinMath.length; i++) {
-    const ch = extraLatinMath.charAt(i);
-    defineSymbol(math, main, mathord, ch, ch);
-}
+defineSymbol(text, main, textord, "ð", "ð");
 
 // Unicode versions of existing characters
 defineSymbol(text, main, textord, "\u2013", "–");
