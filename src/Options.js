@@ -231,7 +231,7 @@ class Options {
     /**
      * Creates a new options object with the given font weight
      */
-    withFontWeight(fontWeight: string): Options {
+    withTextFontWeight(fontWeight: string): Options {
         return this.extend({
             fontWeight,
         });
@@ -240,7 +240,7 @@ class Options {
     /**
      * Creates a new options object with the given font weight
      */
-    withFontShape(fontShape: string): Options {
+    withTextFontShape(fontShape: string): Options {
         return this.extend({
             fontShape,
         });

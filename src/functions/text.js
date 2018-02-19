@@ -51,9 +51,9 @@ defineFunction({
         if (textFontFamilies[font]) {
             newOptions = options.withTextFontFamily(textFontFamilies[font], false);
         } else if (textFontWeights[font]) {
-            newOptions = options.withFontWeight(textFontWeights[font]);
+            newOptions = options.withTextFontWeight(textFontWeights[font]);
         } else {
-            newOptions = options.withFontShape(textFontShapes[font]);
+            newOptions = options.withTextFontShape(textFontShapes[font]);
         }
         const inner = html.buildExpression(group.value.body, newOptions, true);
         buildCommon.tryCombineChars(inner);

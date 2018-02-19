@@ -471,7 +471,6 @@ export default class Parser {
             this.consume();
             return new ParseNode("styling", {
                 style: "text",
-                mathStart: true,
                 value: body,
             }, "math");
         } else if (func === "\\begin") {
