@@ -170,7 +170,7 @@ defineFunction({
                     // But we put the rule into a a span that is 5 rules tall,
                     // to overcome a Chrome rendering issue. Put another way,
                     // we've replaced a kern of width = 2 * ruleWidth with a
-                    // bottom gap in the SVG = 2 * ruleWidth.
+                    // bottom padding inside the SVG = 2 * ruleWidth.
                     {type: "elem", elem: rule,   shift: midShift + 2 * ruleWidth},
                     {type: "elem", elem: numerm, shift: -numShift},
                 ],
