@@ -342,50 +342,43 @@ const encloseSpan = function(
 const ruleSpan = function(className: string, lineThickness: number,
     options: Options): domTree.span {
 
-    // Get a span with an SVG line that fills the middle fifth of the span.
+    // Get a span with an SVG path that fills the middle fifth of the span.
     // We're using an extra wide span so Chrome won't round it down to zero.
 
-    const lines = [];
+    let path;
     let svgNode;
-    if (className === "vertical-separator") {
-        // Apply 2 brush strokes for sharper edges on low-res screens.
-        for (let i = 0; i < 2; i++) {
-            lines.push(new domTree.lineNode({
-                "x1": "5",
-                "y1": "0",
-                "x2": "5",
-                "y2": "10",
-                "stroke-width": "2",
-            }));
-        }
+    let parentClass = "stretchy";  // default
 
-        svgNode = new domTree.svgNode(lines, {
-            "width": "0.25em",
-            "height": "100%",
-            "viewBox": "0 0 10 10",
-            "preserveAspectRatio": "none",
+    if (className === "vertical-separator") {
+        path = new domTree.pathNode("vertSeparator");
+        svgNode = new domTree.svgNode([path], {
+            "width": "0.25em",    // contains a path that is 0.05 ems wide.
+            "height": "400em",
+            "viewBox": "0 0 250 400000",
+            "preserveAspectRatio": "xMinYMin slice",
         });
+        parentClass = "vertical-separator";
 
     } else {
-        for (let i = 0; i < 2; i++) {
-            lines.push(new domTree.lineNode({
-                "x1": "0",
-                "y1": "5",
-                "x2": "10",
-                "y2": "5",
-                "stroke-width": "2",
-            }));
-        }
+        // The next two lines are the only place in KaTeX where SVG paths are
+        // put into a viewBox that is not always exactly a 1000:1 scale to the
+        // document em size. Instead, the path is a horizontal line set to
+        // take up the middle fifth of the viewBox and span. If the context is
+        // normalsize/textstyle then the line will be 0.04em and the usual
+        // 1000:1 ratio holds. But if the context is scriptstyle, then
+        // lineThickness > 0.04em and we have a ratio somewhat different than
+        // 1000:1.
 
-        svgNode = new domTree.svgNode(lines, {
-            "width": "100%",
+        path = new domTree.pathNode("stdHorizRule");
+        svgNode = new domTree.svgNode([path], {
+            "width": "400em",
             "height": 5 * lineThickness + "em",
-            "viewBox": "0 0 10 10",
-            "preserveAspectRatio": "none",
+            "viewBox": "0 0 400000 200",
+            "preserveAspectRatio": "xMinYMin slice",
         });
     }
 
-    return buildCommon.makeSpan([className], [svgNode], options);
+    return buildCommon.makeSpan([parentClass], [svgNode], options);
 };
 
 export default {
