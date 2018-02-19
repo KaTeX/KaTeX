@@ -63,6 +63,9 @@ class Options {
     size: number;
     textSize: number;
     phantom: boolean;
+    // A font family applies to a group of fonts (i.e. SansSerif), while a font
+    // represents a specific font (i.e. SansSerif Bold).
+    // See: https://tex.stackexchange.com/questions/22350/difference-between-textrm-and-mathrm
     font: string;
     fontFamily: string;
     fontWeight: string;
