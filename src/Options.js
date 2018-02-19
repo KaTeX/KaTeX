@@ -195,37 +195,23 @@ class Options {
     }
 
     /**
-     * Create a new options object when switching from text to math mode.
-     */
-    withMathMode(): Options {
-        return this.extend({
-            font: 'mathit',
-        });
-    }
-
-    /**
-     * Creates a new options object with the given math font.
+     * Creates a new options object with the given math font or old text font.
      * @type {[type]}
      */
     withFont(font: string): Options {
         return this.extend({
             font,
-            fontFamily: "",
         });
     }
 
     /**
      * Create a new options objects with the given fontFamily.
      */
-    withTextFontFamily(family: string, isOldCommand: boolean) {
-        if (isOldCommand) {
-            return this.withFont(family);
-        } else {
-            return this.extend({
-                fontFamily: family || this.fontFamily,
-                font: "",
-            });
-        }
+    withTextFontFamily(fontFamily: string) {
+        return this.extend({
+            fontFamily,
+            font: "",
+        });
     }
 
     /**

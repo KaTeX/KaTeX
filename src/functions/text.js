@@ -49,7 +49,7 @@ defineFunction({
         // Checks if the argument is a font family or a font style.
         let newOptions;
         if (textFontFamilies[font]) {
-            newOptions = options.withTextFontFamily(textFontFamilies[font], false);
+            newOptions = options.withTextFontFamily(textFontFamilies[font]);
         } else if (textFontWeights[font]) {
             newOptions = options.withTextFontWeight(textFontWeights[font]);
         } else {

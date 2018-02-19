@@ -10,13 +10,13 @@ import * as mml from "../buildMathML";
 
 const htmlBuilder = (group, options) => {
     const font = group.value.font;
-    const newOptions = options.withTextFontFamily(font, true);
+    const newOptions = options.withFont(font);
     return html.buildGroup(group.value.body, newOptions);
 };
 
 const mathmlBuilder = (group, options) => {
     const font = group.value.font;
-    const newOptions = options.withTextFontFamily(font, true);
+    const newOptions = options.withFont(font);
     return mml.buildGroup(group.value.body, newOptions);
 };
 
