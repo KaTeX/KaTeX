@@ -41,7 +41,7 @@ defineFunction({
     htmlBuilder: (group, options) => {
         // Style changes are handled in the TeXbook on pg. 442, Rule 3.
         const newStyle = styleMap[group.value.style];
-        const newOptions = options.havingStyle(newStyle);
+        const newOptions = options.havingStyle(newStyle).withFont('');
         return sizingGroup(group.value.value, newOptions, options);
     },
     mathmlBuilder: (group, options) => {

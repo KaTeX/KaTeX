@@ -31,7 +31,7 @@ export const makeText = function(text, mode) {
  * Returns the math variant as a string or null if none is required.
  */
 const getVariant = function(group, options) {
-    const font = options.fontFamily;
+    const font = options.font;
     if (!font) {
         return null;
     }

@@ -607,7 +607,7 @@ describe("An implicit group parser", function() {
             expect(tree).toMatchSnapshot();
         });
 
-        it("should work wwith old font functions: \\sqrt[\\tt 3]{x}", () => {
+        it("should work with old font functions: \\sqrt[\\tt 3]{x}", () => {
             const tree = stripPositions(getParsed("\\sqrt[\\tt 3]{x}"));
             expect(tree).toMatchSnapshot();
         });
