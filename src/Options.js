@@ -220,6 +220,7 @@ class Options {
     withTextFontWeight(fontWeight: string): Options {
         return this.extend({
             fontWeight,
+            font: "",
         });
     }
 
@@ -229,6 +230,7 @@ class Options {
     withTextFontShape(fontShape: string): Options {
         return this.extend({
             fontShape,
+            font: "",
         });
     }
 
