@@ -124,7 +124,7 @@ describe("unicode", function() {
 
     it("should parse Latin-1 outside \\text{}", function() {
         expect('ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ' +
-            'ÆÇÐØÞßæçðøþ).toParse({unicodeTextInMathMode: true});
+            'ÆÇÐØÞßæçðøþ').toParse({unicodeTextInMathMode: true});
     });
 
     it("should parse all lower case Greek letters", function() {
