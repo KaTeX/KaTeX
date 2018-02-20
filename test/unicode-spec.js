@@ -114,6 +114,7 @@ describe("unicode", function() {
     it("should build Latin-1 inside \\text{}", function() {
         expect('\\text{ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ' +
             'ÆÇÐØÞßæçðøþ}').toBuild();
+    });
 
     it("should not parse Latin-1 outside \\text{} without setting", function() {
         const chars = 'ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿÇÐÞçþ';
