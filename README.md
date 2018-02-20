@@ -71,6 +71,7 @@ You can provide an object of options as the last argument to `katex.render` and 
 - `errorColor`: `string`. A color string given in the format `"#XXX"` or `"#XXXXXX"`. This option determines the color which unsupported commands are rendered in. (default: `#cc0000`)
 - `macros`: `object`. A collection of custom macros. Each macro is a property with a name like `\name` (written `"\\name"` in JavaScript) which maps to a string that describes the expansion of the macro. Single-character keys can also be included in which case the character will be redefined as the given macro (similar to TeX active characters).
 - `colorIsTextColor`: `boolean`. If `true`, `\color` will work like LaTeX's `\textcolor`, and take two arguments (e.g., `\color{blue}{hello}`), which restores the old behavior of KaTeX (pre-0.8.0). If `false` (the default), `\color` will work like LaTeX's `\color`, and take one argument (e.g., `\color{blue}hello`).  In both cases, `\textcolor` works as in LaTeX (e.g., `\textcolor{blue}{hello}`).
+- `unicodeTextInMathMode`: `boolean`. If `true`, supported unicode text characters like `é` and `試` will also work in math mode. (They always work in text mode.) The default is `false`, which matches XeTeX behavior; `true` emulates MathJax behavior.
 - `maxSize`: `number`. If non-zero, all user-specified sizes, e.g. in `\rule{500em}{500em}`, will be capped to `maxSize` ems. Otherwise, users can make elements and spaces arbitrarily large (the default behavior).
 
 For example:
@@ -121,6 +122,12 @@ will appear larger than 1cm in browser units.
   `align` in math mode.  The `aligned` environment offers the same functionality
   but in math mode, so use that instead or define a macro that maps `align` to
   `aligned`.
+- MathJax defines `\color` to be like `\textcolor` by default; set KaTeX's
+  `colorIsTextColor` option to `true` for this behavior.  KaTeX's default
+  behavior matches MathJax with its `color.js` extension enabled.
+- MathJax supports Unicode text characters in math mode, unlike LaTeX.
+  To support this behavior in KaTeX, set the `unicodeTextInMathMode` option
+  to `true`.
 
 ## Libraries
 

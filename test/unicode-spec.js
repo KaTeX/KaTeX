@@ -72,9 +72,16 @@ describe("unicode", function() {
             'ÆÇÐØÞßæçðøþ}').toParse();
     });
 
+    it("should not parse Latin-1 outside \\text{} without setting", function() {
+        const chars = 'ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿÇÐÞçþ';
+        for (const ch of chars) {
+            expect(ch).toNotParse();
+        }
+    });
+
     it("should parse Latin-1 outside \\text{}", function() {
         expect('ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ' +
-            'ÇÐÞçðþ').toParse();
+            'ÇÐÞçðþ').toParse({unicodeTextInMathMode: true});
     });
 
     it("should parse all lower case Greek letters", function() {
