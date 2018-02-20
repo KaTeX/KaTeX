@@ -607,7 +607,7 @@ describe("An implicit group parser", function() {
             expect(tree).toMatchSnapshot();
         });
 
-        it("should work wwith old font functions: \\sqrt[\\tt 3]{x}", () => {
+        it("should work with old font functions: \\sqrt[\\tt 3]{x}", () => {
             const tree = stripPositions(getParsed("\\sqrt[\\tt 3]{x}"));
             expect(tree).toMatchSnapshot();
         });
@@ -3033,5 +3033,28 @@ describe("unicodeTextInMathMode setting", function() {
         expect("\\text{é試}").toParse({unicodeTextInMathMode: false});
         expect("\\text{é試}").toParse({unicodeTextInMathMode: true});
         expect("\\text{é試}").toParse();
+    });
+});
+
+describe("Internal __* interface", function() {
+    const latex = "\\sum_{k = 0}^{\\infty} x^k";
+    const rendered = katex.renderToString(latex);
+
+    it("__parse renders same as renderToString", () => {
+        const parsed = katex.__parse(latex);
+        expect(buildTree(parsed, latex, new Settings()).toMarkup())
+            .toEqual(rendered);
+    });
+
+    it("__renderToDomTree renders same as renderToString", () => {
+        const tree = katex.__renderToDomTree(latex);
+        expect(tree.toMarkup()).toEqual(rendered);
+    });
+
+    it("__renderToHTMLTree renders same as renderToString sans MathML", () => {
+        const tree = katex.__renderToHTMLTree(latex);
+        const renderedSansMathML = rendered.replace(
+            /<span class="katex-mathml">.*?<\/span>/, '');
+        expect(tree.toMarkup()).toEqual(renderedSansMathML);
     });
 });
