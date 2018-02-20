@@ -740,7 +740,8 @@ for (let i = 0; i < letters.length; i++) {
 // but they are not actually in the font, nor are they supported by the
 // Unicode accent mechanism, so they fall back to Times font and look ugly.
 // TODO(edemaine): Fix this.
-const extraLatin = "ÐÞþ";
+export const extraLatin = "ÐÞþ";
+
 for (let i = 0; i < extraLatin.length; i++) {
     const ch = extraLatin.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);
