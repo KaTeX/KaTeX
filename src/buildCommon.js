@@ -551,12 +551,12 @@ const makeVList = function(params: VListParam, options: Options): domTree.span {
     let rows;
     if (minPos < 0) {
         // We will define depth in an empty span with display: table-cell.
-		// It should render with the height that we define. But Chrome, in
-		// contenteditable mode only, treats that span as if it contains some
-		// text content. And that min-height over-rides our desired height.
-		// So we put another empty span inside the depth strut span.
-		const emptySpan = makeSpan([], []);
-		const depthStrut = makeSpan(["vlist"], [emptySpan]);
+        // It should render with the height that we define. But Chrome, in
+        // contenteditable mode only, treats that span as if it contains some
+        // text content. And that min-height over-rides our desired height.
+        // So we put another empty span inside the depth strut span.
+        const emptySpan = makeSpan([], []);
+        const depthStrut = makeSpan(["vlist"], [emptySpan]);
         depthStrut.style.height = -minPos + "em";
 
         // Safari wants the first row to have inline content; otherwise it
