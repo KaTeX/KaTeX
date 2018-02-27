@@ -1,11 +1,89 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.renderMathInElement = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-'use strict';
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-var _katex2tex = require('./katex2tex');
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__copy_tex_css__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__copy_tex_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__copy_tex_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__katex2tex__ = __webpack_require__(2);
 
-var _katex2tex2 = _interopRequireDefault(_katex2tex);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Global copy handler to modify behavior on .katex elements.
 document.addEventListener('copy', function (event) {
@@ -24,19 +102,26 @@ document.addEventListener('copy', function (event) {
     }
     event.clipboardData.setData('text/html', html.join(''));
     // Rewrite plain-text version.
-    event.clipboardData.setData('text/plain', (0, _katex2tex2.default)(fragment).textContent);
+    event.clipboardData.setData('text/plain', Object(__WEBPACK_IMPORTED_MODULE_1__katex2tex__["a" /* default */])(fragment).textContent);
     // Prevent normal copy handling.
     event.preventDefault();
 });
 
-},{"./katex2tex":2}],2:[function(require,module,exports){
-'use strict';
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export defaultCopyDelimiters */
+/* unused harmony export katexReplaceWithTex */
 // Set these to how you want inline and display math to be delimited.
-var defaultCopyDelimiters = exports.defaultCopyDelimiters = {
+var defaultCopyDelimiters = {
     inline: ['$', '$'], // alternative: ['\(', '\)']
     display: ['$$', '$$'] // alternative: ['\[', '\]']
 };
@@ -44,7 +129,7 @@ var defaultCopyDelimiters = exports.defaultCopyDelimiters = {
 // Replace .katex elements with their TeX source (<annotation> element).
 // Modifies fragment in-place.  Useful for writing your own 'copy' handler,
 // as in copy-tex.js.
-var katexReplaceWithTex = exports.katexReplaceWithTex = function katexReplaceWithTex(fragment) {
+var katexReplaceWithTex = function katexReplaceWithTex(fragment) {
     var copyDelimiters = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : defaultCopyDelimiters;
 
     // Remove .katex-html blocks that are preceded by .katex-mathml blocks
@@ -82,7 +167,8 @@ var katexReplaceWithTex = exports.katexReplaceWithTex = function katexReplaceWit
     return fragment;
 };
 
-exports.default = katexReplaceWithTex;
+/* harmony default export */ __webpack_exports__["a"] = (katexReplaceWithTex);
 
-},{}]},{},[1])(1)
+/***/ })
+/******/ ])["default"];
 });
