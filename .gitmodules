@@ -1,3 +1,6 @@
 [submodule "submodules/katex-fonts"]
 	path = submodules/katex-fonts
 	url = https://github.com/KaTeX/katex-fonts
+[submodule "submodules/unicode-fonts"]
+	path = submodules/unicode-fonts
+	url = https://github.com/Khan/KaTeX-test-fonts.git
