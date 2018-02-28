@@ -1,0 +1,60 @@
+defaults: &defaults
+  steps:
+    - checkout
+    - run:
+        name: Checkout submodule
+        command: |
+            git submodule sync
+            git submodule update --init --recursive
+    - run:
+        name: Checkout unicode fonts
+        command: |
+            git clone https://github.com/Khan/KaTeX-test-fonts test/screenshotter/unicode-fonts
+
+    - restore_cache:
+        keys:
+          - npm-deps-{{ checksum "package.json" }}
+          - npm-deps-
+    - run:
+        name: Install npm dependencies
+        command: npm install
+    - save_cache:
+        key: npm-deps-{{ checksum "package.json" }}
+        paths:
+          - node_modules
+
+    - run:
+        name: Verify screenshots and generate diff
+        command: node dockers/Screenshotter/screenshotter.js --seleniumIP localhost -b $CIRCLE_JOB --verify --diff
+    - run:
+        name: Generate new screenshots
+        command: |
+            rm -rf test/screenshotter/images/*
+            node dockers/Screenshotter/screenshotter.js --seleniumIP localhost -b $CIRCLE_JOB
+
+    - store_artifacts:
+        path: test/screenshotter/images
+        destination: image
+    - store_artifacts:
+        path: test/screenshotter/diff
+        destination: diff
+
+version: 2
+jobs:
+  firefox:
+    docker:
+      - image: circleci/node:6
+      - image: selenium/standalone-firefox:2.48.2
+    <<: *defaults
+  chrome:
+    docker:
+      - image: circleci/node:6
+      - image: selenium/standalone-chrome:2.48.2
+    <<: *defaults
+
+workflows:
+  version: 2
+  screenshotter:
+    jobs:
+      - firefox
+      - chrome
