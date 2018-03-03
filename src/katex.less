@@ -51,6 +51,9 @@
     .base {
         position: relative;
         display: inline-block;
+
+        // Fix width of containers of negative spaces, working around Chrome bug.
+        width: min-content;
     }
 
     .strut {
@@ -212,8 +215,6 @@
     }
 
     .mspace {
-        display: inline-block;
-
         &.negativethinspace {
             margin-left: -@thinspace;
         }
