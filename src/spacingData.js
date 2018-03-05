@@ -2,18 +2,17 @@
 /**
  * Describes spaces between different classes of atoms.
  */
+import type {Measurement} from "./units";
 
-export type Space = {| number: number, unit: "mu" |};
-
-const thinspace: Space = {
+const thinspace: Measurement = {
     number: 3,
     unit: "mu",
 };
-const mediumspace: Space = {
+const mediumspace: Measurement = {
     number: 4,
     unit: "mu",
 };
-const thickspace: Space = {
+const thickspace: Measurement = {
     number: 5,
     unit: "mu",
 };
@@ -24,18 +23,18 @@ const thickspace: Space = {
 // However, since *all* fields are optional, $Shape<> works as suggested in 5688
 // above.
 export type Spacings = $Shape<{
-    mord: Space,
-    mop: Space,
-    mbin: Space,
-    mrel: Space,
-    mopen: Space,
-    mclose: Space,
-    mpunct: Space,
-    minner: Space,
-}>;
+    mord: Measurement,
+    mop: Measurement,
+    mbin: Measurement,
+    mrel: Measurement,
+    mopen: Measurement,
+    mclose: Measurement,
+    mpunct: Measurement,
+    minner: Measurement,
+}> & {};
 
 // Spacing relationships for display and text styles
-export const spacings: {[string]: Spacings} = {
+export const spacings: {[$Keys<Spacings>]: Spacings} = {
     mord: {
         mop: thinspace,
         mbin: mediumspace,
@@ -88,7 +87,7 @@ export const spacings: {[string]: Spacings} = {
 };
 
 // Spacing relationships for script and scriptscript styles
-export const tightSpacings: {[string]: Spacings} = {
+export const tightSpacings: {[$Keys<Spacings>]: Spacings} = {
     mord: {
         mop: thinspace,
     },
