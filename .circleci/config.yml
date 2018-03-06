@@ -6,10 +6,6 @@ defaults: &defaults
         command: |
             git submodule sync
             git submodule update --init --recursive
-    - run:
-        name: Checkout unicode fonts
-        command: |
-            git clone https://github.com/Khan/KaTeX-test-fonts test/screenshotter/unicode-fonts
 
     - restore_cache:
         keys:
