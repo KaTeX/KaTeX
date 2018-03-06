@@ -58,7 +58,7 @@ defineFunction({
             lineClearance + theta) * options.sizeMultiplier;
 
         // Create a sqrt SVG of the required minimum size
-        const {span: img, ruleWidth} =
+        const {span: img, ruleWidth, advanceWidth} =
             delimiter.sqrtImage(minDelimiterHeight, options);
 
         const delimDepth = img.height - ruleWidth;
@@ -72,7 +72,7 @@ defineFunction({
         // Shift the sqrt image
         const imgShift = img.height - inner.height - lineClearance - ruleWidth;
 
-        inner.style.paddingLeft = img.advanceWidth + "em";
+        inner.style.paddingLeft = advanceWidth + "em";
 
         // Overlay the image and the argument.
         const body = buildCommon.makeVList({
