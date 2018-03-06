@@ -14,6 +14,7 @@ export type SettingsOptions = {
     errorColor?: string;
     macros?: MacroMap;
     colorIsTextColor?: boolean;
+    unicodeTextInMathMode?: boolean;
     maxSize?: number;
 };
 
@@ -33,6 +34,7 @@ class Settings {
     errorColor: string;
     macros: MacroMap;
     colorIsTextColor: boolean;
+    unicodeTextInMathMode: boolean;
     maxSize: number;
 
     constructor(options: SettingsOptions) {
@@ -43,6 +45,8 @@ class Settings {
         this.errorColor = utils.deflt(options.errorColor, "#cc0000");
         this.macros = options.macros || {};
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
+        this.unicodeTextInMathMode =
+            utils.deflt(options.unicodeTextInMathMode, false);
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
     }
 }
