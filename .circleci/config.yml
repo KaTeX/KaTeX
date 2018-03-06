@@ -24,6 +24,7 @@ defaults: &defaults
         command: node dockers/Screenshotter/screenshotter.js --seleniumIP localhost -b $CIRCLE_JOB --verify --diff
     - run:
         name: Generate new screenshots
+        when: always
         command: |
             rm -rf test/screenshotter/images/*
             node dockers/Screenshotter/screenshotter.js --seleniumIP localhost -b $CIRCLE_JOB
