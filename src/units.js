@@ -37,7 +37,7 @@ const relativeUnit = {
     "mu": true,
 };
 
-export type Measurement = {number: number, unit: string};
+export type Measurement = {| number: number, unit: string |};
 
 /**
  * Determine whether the specified unit (either a string defining the unit

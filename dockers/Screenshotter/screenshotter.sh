@@ -14,18 +14,6 @@ cleanup() {
     container=
 }
 
-SS_DIR=$(dirname "$0")
-TOP_DIR=${SS_DIR}/../..
-FONTS_DIR=${TOP_DIR}/test/screenshotter/unicode-fonts
-if [[ ! -d "${FONTS_DIR}" ]]; then
-    echo "Cloning test fonts repository"
-    git clone https://github.com/Khan/KaTeX-test-fonts "${FONTS_DIR}" \
-        || exit 2
-fi
-pushd "${FONTS_DIR}" || exit 2
-git checkout --detach 99fa66a2da643218754c8236b9f9151cac71ba7c || exit 2
-popd || exit 2
-
 container=
 trap cleanup EXIT
 status=0
