@@ -5,8 +5,6 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
-import { calculateSize } from "../units";
-import { spacings, tightSpacings } from "../spacingData";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -161,7 +159,8 @@ defineFunction({
     },
     htmlBuilder: (group, options) => {
         // Build the inner expression
-        const inner = html.buildExpression(group.value.body, options, true);
+        const inner = html.buildExpression(group.value.body, options, true,
+            [null, "mclose"]);
 
         let innerHeight = 0;
         let innerDepth = 0;
@@ -208,18 +207,6 @@ defineFunction({
                         middleDelim.isMiddle.options, group.mode, []);
                 }
             }
-        }
-
-        const lastChildType = html.getTypeOfDomTree(inner[inner.length - 1]);
-        const activeSpacings = options.style.isTight() ? tightSpacings : spacings;
-
-        if (lastChildType && activeSpacings[lastChildType]["mclose"]) {
-            const glue =
-                buildCommon.makeSpan(["mord", "rule"], [], options);
-            const dimension =
-                calculateSize(activeSpacings[lastChildType]["mclose"], options);
-            glue.style.marginRight = `${dimension}em`;
-            inner.push(glue);
         }
 
         let rightDelim;
@@ -288,7 +275,14 @@ defineFunction({
             middleDelim = delimiter.sizedDelim(
                 group.value.value, 1, options,
                 group.mode, []);
-            middleDelim.isMiddle = {value: group.value.value, options: options};
+
+            // Property `isMiddle` not defined on `span`. It is only used in
+            // this file above. Fixing this correctly requires refactoring the
+            // htmlBuilder return type to support passing additional data.
+            // An easier, but unideal option would be to add `isMiddle` to
+            // `span` just for this case.
+            // $FlowFixMe
+            middleDelim.isMiddle = {value: group.value.value, options};
         }
         return middleDelim;
     },

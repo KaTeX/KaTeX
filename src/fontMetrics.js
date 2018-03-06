@@ -88,7 +88,7 @@ const sigmasAndXis = {
 // metrics, including height, depth, italic correction, and skew (kern from the
 // character to the corresponding \skewchar)
 // This map is generated via `make metrics`. It should not be changed manually.
-import metricMap from "./fontMetricsData";
+import metricMap from "../submodules/katex-fonts/fontMetricsData";
 
 // These are very rough approximations.  We default to Times New Roman which
 // should have Latin-1 and Cyrillic characters, but may not depending on the

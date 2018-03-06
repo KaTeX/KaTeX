@@ -88,51 +88,7 @@ exports[`An implicit group parser within optional groups should work with \\colo
 ]
 `;
 
-exports[`An implicit group parser within optional groups should work with sizing commands: \\sqrt[\\small 3]{x} 1`] = `
-[
-  {
-    "type": "sqrt",
-    "mode": "math",
-    "value": {
-      "type": "sqrt",
-      "body": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "mathord",
-            "mode": "math",
-            "value": "x"
-          }
-        ]
-      },
-      "index": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "sizing",
-            "mode": "math",
-            "value": {
-              "type": "sizing",
-              "size": 5,
-              "value": [
-                {
-                  "type": "textord",
-                  "mode": "math",
-                  "value": "3"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    }
-  }
-]
-`;
-
-exports[`An implicit group parser within optional groups should work wwith old font functions: \\sqrt[\\tt 3]{x} 1`] = `
+exports[`An implicit group parser within optional groups should work with old font functions: \\sqrt[\\tt 3]{x} 1`] = `
 [
   {
     "type": "sqrt",
@@ -171,6 +127,50 @@ exports[`An implicit group parser within optional groups should work wwith old f
                 ]
               },
               "font": "mathtt"
+            }
+          }
+        ]
+      }
+    }
+  }
+]
+`;
+
+exports[`An implicit group parser within optional groups should work with sizing commands: \\sqrt[\\small 3]{x} 1`] = `
+[
+  {
+    "type": "sqrt",
+    "mode": "math",
+    "value": {
+      "type": "sqrt",
+      "body": {
+        "type": "ordgroup",
+        "mode": "math",
+        "value": [
+          {
+            "type": "mathord",
+            "mode": "math",
+            "value": "x"
+          }
+        ]
+      },
+      "index": {
+        "type": "ordgroup",
+        "mode": "math",
+        "value": [
+          {
+            "type": "sizing",
+            "mode": "math",
+            "value": {
+              "type": "sizing",
+              "size": 5,
+              "value": [
+                {
+                  "type": "textord",
+                  "mode": "math",
+                  "value": "3"
+                }
+              ]
             }
           }
         ]

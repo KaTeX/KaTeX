@@ -4,7 +4,7 @@
 import functions from "./functions";
 import environments from "./environments";
 import MacroExpander from "./MacroExpander";
-import symbols from "./symbols";
+import symbols, { extraLatin } from "./symbols";
 import { validUnit } from "./units";
 import { supportedCodepoint } from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
@@ -996,9 +996,12 @@ export default class Parser {
             return newDollar(nucleus);
         }
         // At this point, we should have a symbol, possibly with accents.
-        // First expand any accented base symbol according to unicodeSymbols.
+        // First expand any accented base symbol according to unicodeSymbols,
+        // unless we're in math mode and unicodeTextInMathMode is false
+        // (XeTeX-compatible mode).
         if (unicodeSymbols.hasOwnProperty(text[0]) &&
-            !symbols[this.mode][text[0]]) {
+            !symbols[this.mode][text[0]] &&
+            (this.settings.unicodeTextInMathMode || this.mode === "text")) {
             text = unicodeSymbols[text[0]] + text.substr(1);
         }
         // Strip off any combining characters
@@ -1014,10 +1017,15 @@ export default class Parser {
         // Recognize base symbol
         let symbol = null;
         if (symbols[this.mode][text]) {
+            if (this.mode === 'math' && extraLatin.indexOf(text) >= 0 &&
+                !this.settings.unicodeTextInMathMode) {
+                throw new ParseError(`Unicode text character ${text} used in ` +
+                    `math mode without unicodeTextInMathMode setting`, nucleus);
+            }
             symbol = new ParseNode(symbols[this.mode][text].group,
                             text, this.mode, nucleus);
-        } else if (this.mode === "text" &&
-                   supportedCodepoint(text.charCodeAt(0))) {
+        } else if (supportedCodepoint(text.charCodeAt(0)) &&
+            (this.mode === "text" || this.settings.unicodeTextInMathMode)) {
             symbol = new ParseNode("textord", text, this.mode, nucleus);
         } else {
             return null;  // EOF, ^, _, {, }, etc.

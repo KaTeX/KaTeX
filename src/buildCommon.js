@@ -33,7 +33,7 @@ const mainitLetters = [
 const lookupSymbol = function(
     value: string,
     // TODO(#963): Use a union type for this.
-    fontFamily: string,
+    fontName: string,
     mode: Mode,
 ): {value: string, metrics: ?CharacterMetrics} {
     // Replace the value with its replaced value from symbol.js
@@ -42,7 +42,7 @@ const lookupSymbol = function(
     }
     return {
         value: value,
-        metrics: fontMetrics.getCharacterMetrics(value, fontFamily, mode),
+        metrics: fontMetrics.getCharacterMetrics(value, fontName, mode),
     };
 };
 
@@ -58,12 +58,12 @@ const lookupSymbol = function(
  */
 const makeSymbol = function(
     value: string,
-    fontFamily: string,
+    fontName: string,
     mode: Mode,
     options?: Options,
     classes?: string[],
 ): domTree.symbolNode {
-    const lookup = lookupSymbol(value, fontFamily, mode);
+    const lookup = lookupSymbol(value, fontName, mode);
     const metrics = lookup.metrics;
     value = lookup.value;
 
@@ -80,7 +80,7 @@ const makeSymbol = function(
         // TODO(emily): Figure out a good way to only print this in development
         typeof console !== "undefined" && console.warn(
             "No character metrics for '" + value + "' in style '" +
-                fontFamily + "'");
+                fontName + "'");
         symbolNode = new domTree.symbolNode(value, 0, 0, 0, 0, 0, classes);
     }
 
@@ -117,7 +117,7 @@ const mathsym = function(
     // text ordinal and is therefore not present as a symbol in the symbols
     // table for text, as well as a special case for boldsymbol because it
     // can be used for bold + and -
-    if ((options && options.fontFamily && options.fontFamily === "boldsymbol") &&
+    if ((options && options.font && options.font === "boldsymbol") &&
             lookupSymbol(value, "Main-Bold", mode).metrics) {
         return makeSymbol(value, "Main-Bold", mode, options,
             classes.concat(["mathbf"]));
@@ -231,27 +231,28 @@ const makeOrd = function(
 
     const classes = ["mord"];
 
-    const fontFamily = options.fontFamily;
-    if (fontFamily) {
+    // Math mode or Old font (i.e. \rm)
+    const isFont = mode === "math" || (mode === "text" && options.font);
+    const fontOrFamily = isFont ? options.font : options.fontFamily;
+    if (fontOrFamily) {
         let fontName;
         let fontClasses;
-        if (fontFamily === "boldsymbol") {
+        if (fontOrFamily === "boldsymbol") {
             const fontData = boldsymbol(value, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
-        } else if (fontFamily === "mathit" ||
+        } else if (fontOrFamily === "mathit" ||
                    utils.contains(mainitLetters, value)) {
             const fontData = mathit(value, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
-        } else if (fontFamily.indexOf("math") !== -1 || mode === "math") {
-            // To support old font functions (i.e. \rm \sf etc.) or math mode.
-            fontName = fontMap[fontFamily].fontName;
-            fontClasses = [fontFamily];
+        } else if (isFont) {
+            fontName = fontMap[fontOrFamily].fontName;
+            fontClasses = [fontOrFamily];
         } else {
-            fontName = retrieveTextFontName(fontFamily, options.fontWeight,
+            fontName = retrieveTextFontName(fontOrFamily, options.fontWeight,
                                             options.fontShape);
-            fontClasses = [fontFamily, options.fontWeight, options.fontShape];
+            fontClasses = [fontOrFamily, options.fontWeight, options.fontShape];
         }
         if (lookupSymbol(value, fontName, mode).metrics) {
             return makeSymbol(value, fontName, mode, options,
@@ -382,7 +383,7 @@ const makeFragment = function(
 
 
 // These are exact object types to catch typos in the names of the optional fields.
-type VListElem = {|
+export type VListElem = {|
     type: "elem",
     elem: DomChildNode,
     marginLeft?: string,
@@ -555,7 +556,13 @@ const makeVList = function(params: VListParam, options: Options): domTree.span {
     // A second row is used if necessary to represent the vlist's depth.
     let rows;
     if (minPos < 0) {
-        const depthStrut = makeSpan(["vlist"], []);
+        // We will define depth in an empty span with display: table-cell.
+        // It should render with the height that we define. But Chrome, in
+        // contenteditable mode only, treats that span as if it contains some
+        // text content. And that min-height over-rides our desired height.
+        // So we put another empty span inside the depth strut span.
+        const emptySpan = makeSpan([], []);
+        const depthStrut = makeSpan(["vlist"], [emptySpan]);
         depthStrut.style.height = -minPos + "em";
 
         // Safari wants the first row to have inline content; otherwise it

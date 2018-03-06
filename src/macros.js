@@ -4,7 +4,7 @@
  * This can be used to define some commands in terms of others.
  */
 
-import fontMetricsData from "./fontMetricsData";
+import fontMetricsData from "../submodules/katex-fonts/fontMetricsData";
 import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";

@@ -154,7 +154,8 @@ LowerAccent: |
         \underleftarrow{AB} \quad \underrightarrow{AB} \quad \underleftrightarrow{AB} \quad \undergroup{AB} \\
         \underlinesegment{AB} \quad \utilde{AB}  \quad \color{green}{\underrightarrow{AB}} \\
         \underrightarrow{F} + \underrightarrow{AB} + \underrightarrow{AB}^2 + \underrightarrow{AB}_2 \\
-        \frac{\underrightarrow{AB}}{\underrightarrow{AB}} + \sqrt{\underrightarrow{AB}} + \left\lvert\underrightarrow{AB}\right\rvert
+        \frac{\underrightarrow{AB}}{\underrightarrow{AB}} + \sqrt{\underrightarrow{AB}} + \left\lvert\underrightarrow{AB}\right\rvert \\
+        \text{\underline{text}}
     \end{matrix}
 MathAtom: a\mathrel{\mathop{=}\limits^{\blue ?}}b
 MathAtom2: \mathop{\overline{\mathrm{lim}}}\limits_{x\to\infty}f(x)
@@ -313,7 +314,13 @@ TextStacked:
       \textsf{\textrm{\textbf{abc123}} \textbf{abc123} \textit{abc123}}\\
       \textit{abc123 \textbf{abc123} \textsf{abc123}}\\
   \end{matrix}
-TextWithMath: \text{for $a < b$ and $ c < d $}.
+TextWithMath: 
+  \begin{matrix}
+      \text{for $a < b$ and $ c < d $}. \\
+      \textsf{for $a < b$ and $ c < d $}. \\
+      \textsf{for $a < b \textbf{ and } c < d $} \\
+      \text{\sf for $a < b$ and $c < d$.}
+  \end{matrix}
 Unicode: \begin{matrix}\text{ÀàÇçÉéÏïÖöÛû} \\ \text{БГДЖЗЙЛФЦШЫЮЯ} \\ \text{여보세요} \\ \text{私はバナナです} \end{matrix}
 Units: |
     \begin{array}{ll}
