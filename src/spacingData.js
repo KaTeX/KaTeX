@@ -1,22 +1,40 @@
+// @flow
 /**
  * Describes spaces between different classes of atoms.
  */
+import type {Measurement} from "./units";
 
-const thinspace = {
+const thinspace: Measurement = {
     number: 3,
     unit: "mu",
 };
-const mediumspace = {
+const mediumspace: Measurement = {
     number: 4,
     unit: "mu",
 };
-const thickspace = {
+const thickspace: Measurement = {
     number: 5,
     unit: "mu",
 };
 
+// Making the type below exact with all optional fields doesn't work due to
+// - https://github.com/facebook/flow/issues/4582
+// - https://github.com/facebook/flow/issues/5688
+// However, since *all* fields are optional, $Shape<> works as suggested in 5688
+// above.
+export type Spacings = $Shape<{
+    mord: Measurement,
+    mop: Measurement,
+    mbin: Measurement,
+    mrel: Measurement,
+    mopen: Measurement,
+    mclose: Measurement,
+    mpunct: Measurement,
+    minner: Measurement,
+}> & {};
+
 // Spacing relationships for display and text styles
-export const spacings = {
+export const spacings: {[$Keys<Spacings>]: Spacings} = {
     mord: {
         mop: thinspace,
         mbin: mediumspace,
@@ -69,7 +87,7 @@ export const spacings = {
 };
 
 // Spacing relationships for script and scriptscript styles
-export const tightSpacings = {
+export const tightSpacings: {[$Keys<Spacings>]: Spacings} = {
     mord: {
         mop: thinspace,
     },
