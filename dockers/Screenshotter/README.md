@@ -48,6 +48,11 @@ fashion are well suited for visual inspection, but for exact binary
 comparisons it would be neccessary to carefully set up the environment
 to match the one used by the Docker approach.
 
+You can also verify and generate screenshots online using a CI(continuous
+integration) service. Fork the project, enable [CircleCI](https://circleci.com/) on your repository,
+and push your changes. Diffs and generated screenshots are available at
+build artifacts.
+
 ## Choosing the list of test cases
 
 Both `screenshotter.js` and `screenshotter.sh` will accept
