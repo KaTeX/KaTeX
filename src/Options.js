@@ -48,7 +48,7 @@ export type OptionsData = {
     fontShape?: string;
     sizeMultiplier?: number;
     maxSize: number;
-    attributes: { [string]: string };
+    attributes?: { [string]: string };
     groupPostprocessor?: (group: *, options: Options) => void;
 };
 
@@ -76,7 +76,7 @@ class Options {
     maxSize: number;
     _fontMetrics: FontMetrics | void;
     attributes: { [string]: string };
-    groupPostprocessor: (group: *, options: Options) => void | void;
+    groupPostprocessor: ((group: *, options: Options) => void) | void;
 
     /**
      * The base size index.
@@ -96,7 +96,7 @@ class Options {
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
         this._fontMetrics = undefined;
-        this.attributes = {};
+        this.attributes = data.attributes || {};
         this.groupPostprocessor = data.groupPostprocessor;
     }
 
@@ -117,6 +117,9 @@ class Options {
             fontShape: this.fontShape,
             maxSize: this.maxSize,
             groupPostprocessor: this.groupPostprocessor,
+            // attributes belong to particular group built with this options,
+            // thus they must not be copied
+            //attributes: this.attributes,
         };
 
         for (const key in extension) {

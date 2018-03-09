@@ -38,7 +38,7 @@ class Settings {
     colorIsTextColor: boolean;
     unicodeTextInMathMode: boolean;
     maxSize: number;
-    groupPostprocessor: (group: *, options: Options) => void | void;
+    groupPostprocessor: ((group: *, options: Options) => void) | void;
 
     constructor(options: SettingsOptions) {
         // allow null options
