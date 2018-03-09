@@ -875,6 +875,11 @@ describe("A text parser", function() {
         expect(textWithEmbeddedMath).toParse();
     });
 
+    it("should parse spacing functions", function() {
+        expect("a b\\, \\; \\! \\: ~ \\thinspace \\medspace \\quad \\ ").toParse();
+        expect("\\enspace \\thickspace \\qquad \\space \\nobreakspace").toParse();
+    });
+
     it("should omit spaces after commands", function() {
         expect("\\text{\\textellipsis !}")
             .toParseLike("\\text{\\textellipsis!}");
