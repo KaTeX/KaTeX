@@ -87,6 +87,7 @@ class span implements CombinableDomNode {
             if (color) {
                 this.style.color = color;
             }
+            this.attributes = options.attributes;
         }
     }
 

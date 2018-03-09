@@ -13,7 +13,7 @@ const optionsFromSettings = function(settings: Settings) {
     return new Options({
         style: (settings.displayMode ? Style.DISPLAY : Style.TEXT),
         maxSize: settings.maxSize,
-        postProcessor: settings.postProcessor,
+        groupPostprocessor: settings.groupPostprocessor,
     });
 };
 

@@ -7,6 +7,7 @@
 import utils from "./utils";
 
 import type { MacroMap } from "./macros";
+import Options from "./Options";
 
 export type SettingsOptions = {
     displayMode?: boolean;
@@ -16,7 +17,7 @@ export type SettingsOptions = {
     colorIsTextColor?: boolean;
     unicodeTextInMathMode?: boolean;
     maxSize?: number;
-    postProcessor?: Function;
+    groupPostprocessor?: (group: *, options: Options) => void;
 };
 
 /**
@@ -37,7 +38,7 @@ class Settings {
     colorIsTextColor: boolean;
     unicodeTextInMathMode: boolean;
     maxSize: number;
-    postProcessor: Function | void;
+    groupPostprocessor: (group: *, options: Options) => void | void;
 
     constructor(options: SettingsOptions) {
         // allow null options
@@ -50,7 +51,7 @@ class Settings {
         this.unicodeTextInMathMode =
             utils.deflt(options.unicodeTextInMathMode, false);
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
-        this.postProcessor = options.postProcessor;
+        this.groupPostprocessor = options.groupPostprocessor;
     }
 }
 

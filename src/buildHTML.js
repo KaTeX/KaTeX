@@ -644,6 +644,14 @@ export const buildGroup = function(group, options, baseOptions) {
             groupNode.depth *= multiplier;
         }
 
+        if (options.groupPostprocessor) {
+            if (group.type === "supsub" && shouldHandleSupSub(group, options)) {
+                options.groupPostprocessor(group.value.base, options, groupNode);
+            } else {
+                options.groupPostprocessor(group, options, groupNode);
+            }
+        }
+
         return groupNode;
     } else {
         throw new ParseError(

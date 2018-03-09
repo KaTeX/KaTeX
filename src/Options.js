@@ -48,7 +48,8 @@ export type OptionsData = {
     fontShape?: string;
     sizeMultiplier?: number;
     maxSize: number;
-    postProcessor?: Function;
+    attributes: { [string]: string };
+    groupPostprocessor?: (group: *, options: Options) => void;
 };
 
 /**
@@ -74,7 +75,8 @@ class Options {
     sizeMultiplier: number;
     maxSize: number;
     _fontMetrics: FontMetrics | void;
-    postProcessor: Function | void;
+    attributes: { [string]: string };
+    groupPostprocessor: (group: *, options: Options) => void | void;
 
     /**
      * The base size index.
@@ -94,10 +96,8 @@ class Options {
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
         this._fontMetrics = undefined;
-        /**
-         * @type {Options~postProcessor}
-         */
-        this.postProcessor = data.postProcessor;
+        this.attributes = {};
+        this.groupPostprocessor = data.groupPostprocessor;
     }
 
     /**
@@ -116,7 +116,7 @@ class Options {
             fontWeight: this.fontWeight,
             fontShape: this.fontShape,
             maxSize: this.maxSize,
-            postProcessor: this.postProcessor,
+            groupPostprocessor: this.groupPostprocessor,
         };
 
         for (const key in extension) {
@@ -244,12 +244,6 @@ class Options {
         });
     }
 
-    withPostProcessor(postProcessor: Function): Options {
-        return this.extend({
-            postProcessor: postProcessor,
-        });
-    }
-
     /**
      * Return the CSS sizing classes required to switch from enclosing options
      * `oldOptions` to `this`. Returns an array of classes.
@@ -366,11 +360,3 @@ class Options {
 }
 
 export default Options;
-
-/**
- * Callback which will be called on every built node of every tree node.
- * @callback Options~postProcessor
- * @param {object} treeNode - node of parse tree
- * @param {object} buildNode - node built from parse tree node
- * @param {Options} options
- */

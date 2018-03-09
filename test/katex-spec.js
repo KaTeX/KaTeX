@@ -107,10 +107,10 @@ const parseAndSetResult = function(expr, result, settings) {
         result.pass = false;
         if (e instanceof ParseError) {
             result.message = "'" + expr + "' failed " +
-                "parsing with error: " + e.message;
+                             "parsing with error: " + e.message;
         } else {
             result.message = "'" + expr + "' failed " +
-                "parsing with unknown error: " + e.message;
+                             "parsing with unknown error: " + e.message;
         }
     }
 };
@@ -122,10 +122,10 @@ const buildAndSetResult = function(expr, result, settings) {
         result.pass = false;
         if (e instanceof ParseError) {
             result.message = "'" + expr + "' failed " +
-                "parsing with error: " + e.message;
+                             "parsing with error: " + e.message;
         } else {
             result.message = "'" + expr + "' failed " +
-                "parsing with unknown error: " + e.message;
+                             "parsing with unknown error: " + e.message;
         }
     }
 };
@@ -149,7 +149,7 @@ beforeEach(function() {
             const result = {
                 pass: false,
                 message: () => "Expected '" + actual + "' to fail " +
-                    "parsing, but it succeeded",
+                               "parsing, but it succeeded",
             };
 
             try {
@@ -158,10 +158,10 @@ beforeEach(function() {
                 if (e instanceof ParseError) {
                     result.pass = true;
                     result.message = "'" + actual + "' correctly " +
-                        "didn't parse with error: " + e.message;
+                                     "didn't parse with error: " + e.message;
                 } else {
                     result.message = "'" + actual + "' failed " +
-                        "parsing with unknown error: " + e.message;
+                                     "parsing with unknown error: " + e.message;
                 }
             }
 
@@ -184,10 +184,10 @@ beforeEach(function() {
                 result.pass = false;
                 if (e instanceof ParseError) {
                     result.message = "'" + actual + "' failed to " +
-                        "build with error: " + e.message;
+                                     "build with error: " + e.message;
                 } else {
                     result.message = "'" + actual + "' failed " +
-                        "building with unknown error: " + e.message;
+                                     "building with unknown error: " + e.message;
                 }
             }
 
@@ -200,7 +200,7 @@ beforeEach(function() {
             const result = {
                 pass: true,
                 message: () => "Parse trees of '" + actual +
-                    "' and '" + expected + "' are equivalent",
+                               "' and '" + expected + "' are equivalent",
             };
 
             const actualTree = parseAndSetResult(actual, result,
@@ -220,7 +220,7 @@ beforeEach(function() {
             if (JSON.stringify(actualTree) !== JSON.stringify(expectedTree)) {
                 result.pass = false;
                 result.message = () => "Parse trees of '" + actual +
-                    "' and '" + expected + "' are not equivalent";
+                                       "' and '" + expected + "' are not equivalent";
             }
             return result;
         },
@@ -231,7 +231,7 @@ beforeEach(function() {
             const result = {
                 pass: true,
                 message: () => "Build trees of '" + actual +
-                    "' and '" + expected + "' are equivalent",
+                               "' and '" + expected + "' are equivalent",
             };
 
             const actualTree = buildAndSetResult(actual, result,
@@ -251,7 +251,7 @@ beforeEach(function() {
             if (JSON.stringify(actualTree) !== JSON.stringify(expectedTree)) {
                 result.pass = false;
                 result.message = () => "Parse trees of '" + actual +
-                    "' and '" + expected + "' are not equivalent";
+                                       "' and '" + expected + "' are not equivalent";
             }
             return result;
         },
@@ -534,7 +534,7 @@ describe("A parser with limit controls", function() {
     });
 
     it("should have the rightmost limit control determine the limits property " +
-        "of the preceding op node", function() {
+       "of the preceding op node", function() {
 
         let parsedInput = getParsed("\\int\\nolimits\\limits_2^2");
         expect(parsedInput[0].value.base.value.limits).toBe(true);
@@ -1902,8 +1902,8 @@ describe("A MathML font tree-builder", function() {
         let tree = getParsed(tex);
         let markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         let node = "<mstyle mathcolor=\"blue\">" +
-            "<mi mathvariant=\"double-struck\">R</mi>" +
-            "</mstyle>";
+                   "<mi mathvariant=\"double-struck\">R</mi>" +
+                   "</mstyle>";
         expect(markup).toContain(node);
 
         // reverse the order of the commands
@@ -1911,8 +1911,8 @@ describe("A MathML font tree-builder", function() {
         tree = getParsed(tex);
         markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         node = "<mstyle mathcolor=\"blue\">" +
-            "<mi mathvariant=\"double-struck\">R</mi>" +
-            "</mstyle>";
+               "<mi mathvariant=\"double-struck\">R</mi>" +
+               "</mstyle>";
         expect(markup).toContain(node);
     });
 
@@ -2482,7 +2482,7 @@ describe("An array environment", function() {
         const parse = getParsed("\\begin{array}r1\\\\20\\end{array}");
         expect(parse[0].type).toBe("array");
         expect(parse[0].value.cols).toEqual([
-            { type: "align", align: "r" },
+            {type: "align", align: "r"},
         ]);
     });
 
@@ -2490,12 +2490,12 @@ describe("An array environment", function() {
         const parse = getParsed("\\begin{array}{|l||c|}\\end{array}");
         expect(parse[0].type).toBe("array");
         expect(parse[0].value.cols).toEqual([
-            { type: "separator", separator: "|" },
-            { type: "align", align: "l" },
-            { type: "separator", separator: "|" },
-            { type: "separator", separator: "|" },
-            { type: "align", align: "c" },
-            { type: "separator", separator: "|" },
+            {type: "separator", separator: "|"},
+            {type: "align", align: "l"},
+            {type: "separator", separator: "|"},
+            {type: "separator", separator: "|"},
+            {type: "align", align: "c"},
+            {type: "separator", separator: "|"},
         ]);
     });
 
@@ -2727,13 +2727,13 @@ describe("A macro expander", function() {
 
     // TODO: The following is not currently possible to get working, given that
     // functions and macros are dealt with separately.
-/*
-    it("should allow for space function arguments", function() {
-        compareParseTree("\\frac\\bar\\bar", "\\frac{}{}", {
-            "\\bar": " ",
+    /*
+        it("should allow for space function arguments", function() {
+            compareParseTree("\\frac\\bar\\bar", "\\frac{}{}", {
+                "\\bar": " ",
+            });
         });
-    });
-*/
+    */
 
     it("should expand the \\overset macro as expected", function() {
         expect("\\overset?=").toParseLike("\\mathop{=}\\limits^{?}");
@@ -2858,42 +2858,42 @@ describe("Unicode accents", function() {
     it("should parse Latin-1 letters in math mode", function() {
         // TODO(edemaine): Unsupported Latin-1 letters in math: ÅåÇÐÞçðþ
         expect("ÀÁÂÃÄÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäèéêëìíîïñòóôõöùúûüýÿ")
-        .toParseLike(
-            "\\grave A\\acute A\\hat A\\tilde A\\ddot A" +
-            "\\grave E\\acute E\\hat E\\ddot E" +
-            "\\grave I\\acute I\\hat I\\ddot I" +
-            "\\tilde N" +
-            "\\grave O\\acute O\\hat O\\tilde O\\ddot O" +
-            "\\grave U\\acute U\\hat U\\ddot U" +
-            "\\acute Y" +
-            "\\grave a\\acute a\\hat a\\tilde a\\ddot a" +
-            "\\grave e\\acute e\\hat e\\ddot e" +
-            "\\grave ı\\acute ı\\hat ı\\ddot ı" +
-            "\\tilde n" +
-            "\\grave o\\acute o\\hat o\\tilde o\\ddot o" +
-            "\\grave u\\acute u\\hat u\\ddot u" +
-            "\\acute y\\ddot y",
-            {unicodeTextInMathMode: true});
+            .toParseLike(
+                "\\grave A\\acute A\\hat A\\tilde A\\ddot A" +
+                "\\grave E\\acute E\\hat E\\ddot E" +
+                "\\grave I\\acute I\\hat I\\ddot I" +
+                "\\tilde N" +
+                "\\grave O\\acute O\\hat O\\tilde O\\ddot O" +
+                "\\grave U\\acute U\\hat U\\ddot U" +
+                "\\acute Y" +
+                "\\grave a\\acute a\\hat a\\tilde a\\ddot a" +
+                "\\grave e\\acute e\\hat e\\ddot e" +
+                "\\grave ı\\acute ı\\hat ı\\ddot ı" +
+                "\\tilde n" +
+                "\\grave o\\acute o\\hat o\\tilde o\\ddot o" +
+                "\\grave u\\acute u\\hat u\\ddot u" +
+                "\\acute y\\ddot y",
+                {unicodeTextInMathMode: true});
     });
 
     it("should parse Latin-1 letters in text mode", function() {
         // TODO(edemaine): Unsupported Latin-1 letters in text: ÇÐÞçðþ
         expect("\\text{ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ}")
-        .toParseLike(
-            "\\text{\\`A\\'A\\^A\\~A\\\"A\\r A" +
-            "\\`E\\'E\\^E\\\"E" +
-            "\\`I\\'I\\^I\\\"I" +
-            "\\~N" +
-            "\\`O\\'O\\^O\\~O\\\"O" +
-            "\\`U\\'U\\^U\\\"U" +
-            "\\'Y" +
-            "\\`a\\'a\\^a\\~a\\\"a\\r a" +
-            "\\`e\\'e\\^e\\\"e" +
-            "\\`ı\\'ı\\^ı\\\"ı" +
-            "\\~n" +
-            "\\`o\\'o\\^o\\~o\\\"o" +
-            "\\`u\\'u\\^u\\\"u" +
-            "\\'y\\\"y}");
+            .toParseLike(
+                "\\text{\\`A\\'A\\^A\\~A\\\"A\\r A" +
+                "\\`E\\'E\\^E\\\"E" +
+                "\\`I\\'I\\^I\\\"I" +
+                "\\~N" +
+                "\\`O\\'O\\^O\\~O\\\"O" +
+                "\\`U\\'U\\^U\\\"U" +
+                "\\'Y" +
+                "\\`a\\'a\\^a\\~a\\\"a\\r a" +
+                "\\`e\\'e\\^e\\\"e" +
+                "\\`ı\\'ı\\^ı\\\"ı" +
+                "\\~n" +
+                "\\`o\\'o\\^o\\~o\\\"o" +
+                "\\`u\\'u\\^u\\\"u" +
+                "\\'y\\\"y}");
     });
 
     it("should support \\aa in text mode", function() {
@@ -3067,8 +3067,18 @@ describe("Internal __* interface", function() {
     });
 });
 
-describe("Tree attributes propagation", function() {
-    describe("should put tree attributes to DOM nodes", function() {
+describe("Group nodes post-processing", function() {
+    it("should put attributes to DOM node", function() {
+        const preprocessor = (group, options, groupNode) => {
+            groupNode.attributes["katex-id"] = 1;
+        };
+        const built = _getBuilt("\\sin", {groupPostprocessor: preprocessor})[0];
+
+        const node = built.toNode();
+        expect(node.getAttribute("katex-id")).toBe("1");
+    });
+
+    describe("should propagate tree attributes to DOM nodes", function() {
         it("for fraction", function() {
             const expr = "\\frac 1 2";
             const tree = getParsed(expr);
@@ -3085,34 +3095,23 @@ describe("Tree attributes propagation", function() {
                 "katex-denom-id": "denom",
             };
 
-            let counter = 1;
-            const putId = function(treeNode) {
-                if (!treeNode.attributes) {
-                    treeNode.attributes = {};
-                }
-
-                treeNode.attributes["katex-id"] = counter++;
+            const preprocessor = (group, options, groupNode) => {
+                groupNode.attributes = group.attributes;
             };
-            const built = _getBuiltTree(tree, expr, {postProcessor: putId})[0];
+            const built = _getBuiltTree(tree, expr, {groupPostprocessor: preprocessor})[0];
 
             const node = built.toNode();
-            expect(node.getAttribute("katex-id")).toBe("3");
             expect(node.getAttribute("katex-frac-id")).toBe("frac");
 
             const numerNode = node.children[1].children[0].children[0].children[0]
                 .children[2].children[1];
-            expect(numerNode.getAttribute("katex-id")).toBe("1");
             expect(numerNode.getAttribute("katex-numer-id")).toBe("numer");
 
             const denomNode = node.children[1].children[0].children[0].children[0]
                 .children[0].children[1];
-            expect(denomNode.getAttribute("katex-id")).toBe("2");
             expect(denomNode.getAttribute("katex-denom-id")).toBe("denom");
 
             const markup = built.toMarkup();
-            expect(markup.match(/katex-id="1"/g).length).toBe(1);
-            expect(markup.match(/katex-id="2"/g).length).toBe(1);
-            expect(markup.match(/katex-id="3"/g).length).toBe(1);
             expect(markup.match(/katex-frac-id="frac"/g).length).toBe(1);
             expect(markup.match(/katex-numer-id="numer"/g).length).toBe(1);
             expect(markup.match(/katex-denom-id="denom"/g).length).toBe(1);
@@ -3134,65 +3133,28 @@ describe("Tree attributes propagation", function() {
                 "katex-sub-id": "sub",
             };
 
-            let counter = 1;
-            const putId = function(treeNode) {
-                if (!treeNode.attributes) {
-                    treeNode.attributes = {};
-                }
-
-                treeNode.attributes["katex-id"] = counter++;
+            const preprocessor = (group, options, groupNode) => {
+                groupNode.attributes = group.attributes;
             };
-            let built = _getBuiltTree(tree, expr, {
-                postProcessor: putId,
+            const built = _getBuiltTree(tree, expr, {
+                groupPostprocessor: preprocessor,
+                displayMode: false,
             })[0];
 
-            let node = built.toNode();
-            expect(node.getAttribute("katex-id")).toBe("4");
+            const node = built.toNode();
+            const baseNode = node.children[0];
+            const subNode = node.children[1].children[0].children[0].children[0].children[0].children[1];
+            const supNode = node.children[1].children[0].children[0].children[0].children[1].children[1];
 
-            // inline and display modes has different DOM - check them both
-            check(
-                node.children[0],
-                node.children[1].children[0].children[0].children[0]
-                    .children[0].children[1],
-                node.children[1].children[0].children[0].children[0]
-                    .children[1].children[1]);
+            expect(baseNode.getAttribute("katex-base-id")).toBe("base");
+            expect(subNode.getAttribute("katex-sub-id")).toBe("sub");
+            expect(supNode.getAttribute("katex-sup-id")).toBe("sup");
 
-            counter = 1;
-            built = _getBuiltTree(tree, expr, {
-                postProcessor: putId,
-                displayMode: true,
-            })[0];
+            const markup = built.toMarkup();
 
-            node = built.toNode();
-            expect(node.getAttribute("katex-id")).toBe("4");
-
-            check(
-                node.children[0].children[0].children[0]
-                    .children[1].children[1],
-                node.children[0].children[0].children[0]
-                    .children[0].children[1],
-                node.children[0].children[0].children[0]
-                    .children[2].children[1]);
-
-            function check(baseNode, subNode, supNode) {
-                expect(baseNode.getAttribute("katex-id")).toBe("1");
-                expect(baseNode.getAttribute("katex-base-id")).toBe("base");
-
-                expect(subNode.getAttribute("katex-id")).toBe("3");
-                expect(subNode.getAttribute("katex-sub-id")).toBe("sub");
-
-                expect(supNode.getAttribute("katex-id")).toBe("2");
-                expect(supNode.getAttribute("katex-sup-id")).toBe("sup");
-
-                const markup = built.toMarkup();
-                expect(markup.match(/katex-id="1"/g).length).toBe(1);
-                expect(markup.match(/katex-id="2"/g).length).toBe(1);
-                expect(markup.match(/katex-id="3"/g).length).toBe(1);
-                expect(markup.match(/katex-id="4"/g).length).toBe(1);
-                expect(markup.match(/katex-base-id="base"/g).length).toBe(1);
-                expect(markup.match(/katex-sub-id="sub"/g).length).toBe(1);
-                expect(markup.match(/katex-sup-id="sup"/g).length).toBe(1);
-            }
+            expect(markup.match(/katex-base-id="base"/g).length).toBe(1);
+            expect(markup.match(/katex-sub-id="sub"/g).length).toBe(1);
+            expect(markup.match(/katex-sup-id="sup"/g).length).toBe(1);
         });
     });
 });
