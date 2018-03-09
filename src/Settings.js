@@ -7,7 +7,7 @@
 import utils from "./utils";
 
 import type { MacroMap } from "./macros";
-import Options from "./Options";
+import type {GroupPostprocessor} from "./Options";
 
 export type SettingsOptions = {
     displayMode?: boolean;
@@ -17,7 +17,7 @@ export type SettingsOptions = {
     colorIsTextColor?: boolean;
     unicodeTextInMathMode?: boolean;
     maxSize?: number;
-    groupPostprocessor?: (group: *, options: Options) => void;
+    groupPostprocessor?: GroupPostprocessor;
 };
 
 /**
@@ -38,7 +38,7 @@ class Settings {
     colorIsTextColor: boolean;
     unicodeTextInMathMode: boolean;
     maxSize: number;
-    groupPostprocessor: ((group: *, options: Options) => void) | void;
+    groupPostprocessor: GroupPostprocessor | void;
 
     constructor(options: SettingsOptions) {
         // allow null options

@@ -9,6 +9,7 @@
 import fontMetrics from "./fontMetrics";
 import type {FontMetrics} from "./fontMetrics";
 import type {StyleInterface} from "./Style";
+import {CombinableDomNode} from "./domTree";
 
 const sizeStyleMap = [
     // Each element contains [textsize, scriptsize, scriptscriptsize].
@@ -36,6 +37,10 @@ const sizeAtStyle = function(size: number, style: StyleInterface): number {
     return style.size < 2 ? size : sizeStyleMap[size - 1][style.size - 1];
 };
 
+export type GroupPostprocessor = (group: *,
+                                  options: Options,
+                                  groupNode: CombinableDomNode) => void;
+
 export type OptionsData = {
     style: StyleInterface;
     color?: string | void;
@@ -49,7 +54,7 @@ export type OptionsData = {
     sizeMultiplier?: number;
     maxSize: number;
     attributes?: { [string]: string };
-    groupPostprocessor?: (group: *, options: Options) => void;
+    groupPostprocessor?: GroupPostprocessor;
 };
 
 /**
@@ -76,7 +81,7 @@ class Options {
     maxSize: number;
     _fontMetrics: FontMetrics | void;
     attributes: { [string]: string };
-    groupPostprocessor: ((group: *, options: Options) => void) | void;
+    groupPostprocessor: GroupPostprocessor | void;
 
     /**
      * The base size index.
