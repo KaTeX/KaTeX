@@ -646,6 +646,9 @@ export const buildGroup = function(group, options, baseOptions) {
 
         if (options.groupPostprocessor) {
             if (group.type === "supsub" && shouldHandleSupSub(group, options)) {
+                // for supsub which was handled by it's base, call post-processor
+                // on base group instead because base is not being built by
+                // buildGroup method and post-processing will not be called
                 options.groupPostprocessor(group.value.base, options, groupNode);
             } else {
                 options.groupPostprocessor(group, options, groupNode);
