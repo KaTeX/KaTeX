@@ -391,6 +391,7 @@ class symbolNode implements CombinableDomNode {
     maxFontSize: number;
     classes: string[];
     style: CssStyle;
+    attributes: { [string]: string };
 
     constructor(
         value: string,
@@ -427,6 +428,7 @@ class symbolNode implements CombinableDomNode {
         if (/[îïíì]/.test(this.value)) {    // add ī when we add Extended Latin
             this.value = iCombinations[this.value];
         }
+        this.attributes = {};
     }
 
     tryCombine(sibling: CombinableDomNode): boolean {
@@ -483,6 +485,13 @@ class symbolNode implements CombinableDomNode {
             }
         }
 
+        for (const attr in this.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                span = span || document.createElement("span");
+                span.setAttribute(attr, this.attributes[attr]);
+            }
+        }
+
         if (span) {
             span.appendChild(node);
             return span;
@@ -522,6 +531,16 @@ class symbolNode implements CombinableDomNode {
         if (styles) {
             needsSpan = true;
             markup += " style=\"" + utils.escape(styles) + "\"";
+        }
+
+        for (const attr in this.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                needsSpan = true;
+
+                markup += " " + attr + "=\"";
+                markup += utils.escape(this.attributes[attr]);
+                markup += "\"";
+            }
         }
 
         const escaped = utils.escape(this.value);

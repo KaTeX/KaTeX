@@ -93,6 +93,7 @@ const makeSymbol = function(
         if (color) {
             symbolNode.style.color = color;
         }
+        symbolNode.attributes = options.attributes;
     }
 
     return symbolNode;

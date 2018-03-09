@@ -3068,14 +3068,19 @@ describe("Internal __* interface", function() {
 });
 
 describe("Group nodes post-processing", function() {
-    it("should put attributes to DOM node", function() {
-        const preprocessor = (group, options, groupNode) => {
+    describe("should put arbitrary attributes to DOM node", function() {
+        const processor = (group, options, groupNode) => {
             groupNode.attributes["katex-id"] = 1;
         };
-        const built = _getBuilt("\\sin", {groupPostprocessor: preprocessor})[0];
 
-        const node = built.toNode();
-        expect(node.getAttribute("katex-id")).toBe("1");
+        ["\\sin", "\\to"].forEach(expr => {
+            it("for " + expr, function() {
+                const built = _getBuilt(expr, {groupPostprocessor: processor})[0];
+
+                const node = built.toNode();
+                expect(node.getAttribute("katex-id")).toBe("1");
+            });
+        });
     });
 
     describe("should propagate tree attributes to DOM nodes", function() {
