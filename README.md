@@ -29,7 +29,7 @@ Call `katex.render` with a TeX expression and a DOM element to render into:
 katex.render("c = \\pm\\sqrt{a^2 + b^2}", element);
 ```
 
-Note: If you don't want to double backslack to escape, you can use `String.raw`
+Note: If you don't want to double backslash to escape, you can use `String.raw`
 ```js
 katex.render(String.raw`c = \pm\sqrt{a^2 + b^2}`, element);
 ```
