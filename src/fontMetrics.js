@@ -1,5 +1,7 @@
 // @flow
-import { cjkRegex } from "./unicodeRegexes";
+import { supportedCodepoint } from "./unicodeScripts";
+
+import type { Mode } from "./types";
 
 /**
  * This file contains metrics regarding fonts and individual symbols. The sigma
@@ -86,7 +88,7 @@ const sigmasAndXis = {
 // metrics, including height, depth, italic correction, and skew (kern from the
 // character to the corresponding \skewchar)
 // This map is generated via `make metrics`. It should not be changed manually.
-import metricMap from "./fontMetricsData";
+import metricMap from "../submodules/katex-fonts/fontMetricsData";
 
 // These are very rough approximations.  We default to Times New Roman which
 // should have Latin-1 and Cyrillic characters, but may not depending on the
@@ -97,68 +99,14 @@ import metricMap from "./fontMetricsData";
 // TODO(kevinb) allow union of multiple glyph metrics for better accuracy.
 const extraCharacterMap = {
     // Latin-1
-    'À': 'A',
-    'Á': 'A',
-    'Â': 'A',
-    'Ã': 'A',
-    'Ä': 'A',
     'Å': 'A',
-    'Æ': 'A',
     'Ç': 'C',
-    'È': 'E',
-    'É': 'E',
-    'Ê': 'E',
-    'Ë': 'E',
-    'Ì': 'I',
-    'Í': 'I',
-    'Î': 'I',
-    'Ï': 'I',
     'Ð': 'D',
-    'Ñ': 'N',
-    'Ò': 'O',
-    'Ó': 'O',
-    'Ô': 'O',
-    'Õ': 'O',
-    'Ö': 'O',
-    'Ø': 'O',
-    'Ù': 'U',
-    'Ú': 'U',
-    'Û': 'U',
-    'Ü': 'U',
-    'Ý': 'Y',
     'Þ': 'o',
-    'ß': 'B',
-    'à': 'a',
-    'á': 'a',
-    'â': 'a',
-    'ã': 'a',
-    'ä': 'a',
     'å': 'a',
-    'æ': 'a',
     'ç': 'c',
-    'è': 'e',
-    'é': 'e',
-    'ê': 'e',
-    'ë': 'e',
-    'ì': 'i',
-    'í': 'i',
-    'î': 'i',
-    'ï': 'i',
     'ð': 'd',
-    'ñ': 'n',
-    'ò': 'o',
-    'ó': 'o',
-    'ô': 'o',
-    'õ': 'o',
-    'ö': 'o',
-    'ø': 'o',
-    'ù': 'u',
-    'ú': 'u',
-    'û': 'u',
-    'ü': 'u',
-    'ý': 'y',
     'þ': 'o',
-    'ÿ': 'y',
 
     // Cyrillic
     'А': 'A',
@@ -245,14 +193,31 @@ export type CharacterMetrics = {
 const getCharacterMetrics = function(
     character: string,
     font: string,
+    mode: Mode,
 ): ?CharacterMetrics {
+    if (!metricMap[font]) {
+        throw new Error(`Font metrics not found for font: ${font}.`);
+    }
     let ch = character.charCodeAt(0);
     if (character[0] in extraCharacterMap) {
         ch = extraCharacterMap[character[0]].charCodeAt(0);
-    } else if (cjkRegex.test(character[0])) {
-        ch = 'M'.charCodeAt(0);
     }
-    const metrics = metricMap[font]['' + ch];
+    let metrics = metricMap[font][ch];
+
+    if (!metrics && mode === 'text') {
+        // We don't typically have font metrics for Asian scripts.
+        // But since we support them in text mode, we need to return
+        // some sort of metrics.
+        // So if the character is in a script we support but we
+        // don't have metrics for it, just use the metrics for
+        // the Latin capital letter M. This is close enough because
+        // we (currently) only care about the height of the glpyh
+        // not its width.
+        if (supportedCodepoint(ch)) {
+            metrics = metricMap[font][77]; // 77 is the charcode for 'M'
+        }
+    }
+
     if (metrics) {
         return {
             depth: metrics[0],

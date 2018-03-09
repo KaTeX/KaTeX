@@ -34,18 +34,30 @@ import {LexerInterface, Token} from "./Token";
  * still reject the input.
  */
 const commentRegexString = "%[^\n]*[\n]";
+const controlWordRegexString = "\\\\[a-zA-Z@]+";
+const controlSymbolRegexString = "\\\\[^\uD800-\uDFFF]";
+const combiningDiacriticalMarkString = "[\u0300-\u036f]";
+export const combiningDiacriticalMarksEndRegex =
+    new RegExp(`${combiningDiacriticalMarkString}+$`);
 const tokenRegex = new RegExp(
     "([ \r\n\t]+)|" +                                 // whitespace
-    `(${commentRegexString}|` +                       // comments
-    "[!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +   // single codepoint
+    `(${commentRegexString}` +                        // comments
+    "|[!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
+    `${combiningDiacriticalMarkString}*` +            // ...plus accents
     "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair
+    `${combiningDiacriticalMarkString}*` +            // ...plus accents
     "|\\\\verb\\*([^]).*?\\3" +                       // \verb*
     "|\\\\verb([^*a-zA-Z]).*?\\4" +                   // \verb unstarred
-    "|\\\\(?:[a-zA-Z@]+|[^\uD800-\uDFFF])" +          // function name
+    `|${controlWordRegexString}` +                    // \macroName
+    `|${controlSymbolRegexString}` +                  // \\, \', etc.
     ")"
 );
 
-const commentRegex = new RegExp(commentRegexString);
+// tokenRegex has no ^ marker, as required by matchAt.
+// These regexs are for matching results from tokenRegex,
+// so they do have ^ markers.
+export const controlWordRegex = new RegExp(`^${controlWordRegexString}`);
+const commentRegex = new RegExp(`^${commentRegexString}`);
 
 /** Main Lexer class */
 export default class Lexer implements LexerInterface {
@@ -53,6 +65,7 @@ export default class Lexer implements LexerInterface {
     pos: number;
 
     constructor(input: string) {
+        // Separate accents from characters
         this.input = input;
         this.pos = 0;
     }
@@ -69,7 +82,7 @@ export default class Lexer implements LexerInterface {
         const match = matchAt(tokenRegex, input, pos);
         if (match === null) {
             throw new ParseError(
-                "Unexpected character: '" + input[pos] + "'",
+                `Unexpected character: '${input[pos]}'`,
                 new Token(input[pos], new SourceLocation(this, pos, pos + 1)));
         }
         const text = match[2] || " ";

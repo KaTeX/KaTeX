@@ -4,6 +4,7 @@
  * This can be used to define some commands in terms of others.
  */
 
+import fontMetricsData from "../submodules/katex-fonts/fontMetricsData";
 import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
@@ -25,32 +26,110 @@ export interface MacroContextInterface {
      * Similar in behavior to TeX's `\expandafter\futurelet`.
      */
     expandAfterFuture(): Token;
+
+    /**
+     * Consume the specified number of arguments from the token stream,
+     * and return the resulting array of arguments.
+     */
+    consumeArgs(numArgs: number): Token[][];
 }
 
 /** Macro tokens (in reverse order). */
 export type MacroExpansion = {tokens: Token[], numArgs: number};
 
-type MacroDefinition = string | (MacroContextInterface => string) | MacroExpansion;
+type MacroDefinition = string | MacroExpansion |
+    (MacroContextInterface => (string | MacroExpansion));
 export type MacroMap = {[string]: MacroDefinition};
 
 const builtinMacros: MacroMap = {};
 export default builtinMacros;
 
 // This function might one day accept an additional argument and do more things.
-function defineMacro(name: string, body: string | MacroContextInterface => string) {
+export function defineMacro(name: string, body: MacroDefinition) {
     builtinMacros[name] = body;
 }
 
 //////////////////////////////////////////////////////////////////////
-// basics
+// macro tools
+
+// LaTeX's \@firstoftwo{#1}{#2} expands to #1, skipping #2
+// TeX source: \long\def\@firstoftwo#1#2{#1}
+defineMacro("\\@firstoftwo", function(context) {
+    const args = context.consumeArgs(2);
+    return {tokens: args[0], numArgs: 0};
+});
+
+// LaTeX's \@secondoftwo{#1}{#2} expands to #2, skipping #1
+// TeX source: \long\def\@secondoftwo#1#2{#2}
+defineMacro("\\@secondoftwo", function(context) {
+    const args = context.consumeArgs(2);
+    return {tokens: args[1], numArgs: 0};
+});
+
+// LaTeX's \@ifnextchar{#1}{#2}{#3} looks ahead to the next (unexpanded)
+// symbol.  If it matches #1, then the macro expands to #2; otherwise, #3.
+// Note, however, that it does not consume the next symbol in either case.
+defineMacro("\\@ifnextchar", function(context) {
+    const args = context.consumeArgs(3);  // symbol, if, else
+    const nextToken = context.future();
+    if (args[0].length === 1 && args[0][0].text === nextToken.text) {
+        return {tokens: args[1], numArgs: 0};
+    } else {
+        return {tokens: args[2], numArgs: 0};
+    }
+});
+
+// LaTeX's \@ifstar{#1}{#2} looks ahead to the next (unexpanded) symbol.
+// If it is `*`, then it consumes the symbol, and the macro expands to #1;
+// otherwise, the macro expands to #2 (without consuming the symbol).
+// TeX source: \def\@ifstar#1{\@ifnextchar *{\@firstoftwo{#1}}}
+defineMacro("\\@ifstar", "\\@ifnextchar *{\\@firstoftwo{#1}}");
+
+// LaTeX's \TextOrMath{#1}{#2} expands to #1 in text mode, #2 in math mode
+defineMacro("\\TextOrMath", function(context) {
+    const args = context.consumeArgs(2);
+    if (context.mode === 'text') {
+        return {tokens: args[0], numArgs: 0};
+    } else {
+        return {tokens: args[1], numArgs: 0};
+    }
+});
+
+//////////////////////////////////////////////////////////////////////
+// Grouping
+// \let\bgroup={ \let\egroup=}
 defineMacro("\\bgroup", "{");
 defineMacro("\\egroup", "}");
 defineMacro("\\begingroup", "{");
 defineMacro("\\endgroup", "}");
 
-// We don't distinguish between math and nonmath kerns.
-// (In TeX, the mu unit works only with \mkern.)
-defineMacro("\\mkern", "\\kern");
+// Symbols from latex.ltx:
+// \def\lq{`}
+// \def\rq{'}
+// \def\lbrack{[}
+// \def\rbrack{]}
+// \def \aa {\r a}
+// \def \AA {\r A}
+defineMacro("\\lq", "`");
+defineMacro("\\rq", "'");
+defineMacro("\\lbrack", "[");
+defineMacro("\\rbrack", "]");
+defineMacro("\\aa", "\\r a");
+defineMacro("\\AA", "\\r A");
+
+// Unicode double-struck letters
+defineMacro("\u2102", "\\mathbb{C}");
+defineMacro("\u210D", "\\mathbb{H}");
+defineMacro("\u2115", "\\mathbb{N}");
+defineMacro("\u2119", "\\mathbb{P}");
+defineMacro("\u211A", "\\mathbb{Q}");
+defineMacro("\u211D", "\\mathbb{R}");
+defineMacro("\u2124", "\\mathbb{Z}");
+
+// Unicode middle dot
+// The KaTeX fonts do not contain U+00B7. Instead, \cdotp displays
+// the dot at U+22C5 and gives it punct spacing.
+defineMacro("\u00b7", "\\cdotp");
 
 // \llap and \rlap render their contents in text mode
 defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
@@ -60,6 +139,20 @@ defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
 // http://mirrors.concertpass.com/tex-archive/macros/latex/required/amsmath/amsmath.pdf
+
+// Italic Greek capital letters.  AMS defines these with \DeclareMathSymbol,
+// but they are equivalent to \mathit{\Letter}.
+defineMacro("\\varGamma", "\\mathit{\\Gamma}");
+defineMacro("\\varDelta", "\\mathit{\\Delta}");
+defineMacro("\\varTheta", "\\mathit{\\Theta}");
+defineMacro("\\varLambda", "\\mathit{\\Lambda}");
+defineMacro("\\varXi", "\\mathit{\\Xi}");
+defineMacro("\\varPi", "\\mathit{\\Pi}");
+defineMacro("\\varSigma", "\\mathit{\\Sigma}");
+defineMacro("\\varUpsilon", "\\mathit{\\Upsilon}");
+defineMacro("\\varPhi", "\\mathit{\\Phi}");
+defineMacro("\\varPsi", "\\mathit{\\Psi}");
+defineMacro("\\varOmega", "\\mathit{\\Omega}");
 
 // \def\overset#1#2{\binrel@{#2}\binrel@@{\mathop{\kern\z@#2}\limits^{#1}}}
 defineMacro("\\overset", "\\mathop{#2}\\limits^{#1}");
@@ -233,10 +326,41 @@ defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
 
+// \def\TeX{T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX\@}
+// TODO: Doesn't normally work in math mode because \@ fails.  KaTeX doesn't
+// support \@ yet, so that's omitted, and we add \text so that the result
+// doesn't look funny in math mode.
+defineMacro("\\TeX", "\\textrm{T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX}");
+
+// \DeclareRobustCommand{\LaTeX}{L\kern-.36em%
+//         {\sbox\z@ T%
+//          \vbox to\ht\z@{\hbox{\check@mathfonts
+//                               \fontsize\sf@size\z@
+//                               \math@fontsfalse\selectfont
+//                               A}%
+//                         \vss}%
+//         }%
+//         \kern-.15em%
+//         \TeX}
+// This code aligns the top of the A with the T (from the perspective of TeX's
+// boxes, though visually the A appears to extend above slightly).
+// We compute the corresponding \raisebox when A is rendered at \scriptsize,
+// which is size3, which has a scale factor of 0.7 (see Options.js).
+const latexRaiseA = fontMetricsData['Main-Regular']["T".charCodeAt(0)][1] -
+    0.7 * fontMetricsData['Main-Regular']["A".charCodeAt(0)][1] + "em";
+defineMacro("\\LaTeX",
+    `\\textrm{L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    "\\kern-.15em\\TeX}");
+
+// New KaTeX logo based on tweaking LaTeX logo
+defineMacro("\\KaTeX",
+    `\\textrm{K\\kern-.17em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    "\\kern-.15em\\TeX}");
+
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
 // \def\@hspace#1{\hskip  #1\relax}
-// KaTeX doesn't do line breaks, so \hspace is the same as \kern
-defineMacro("\\hspace", "\\kern{#1}");
+// KaTeX doesn't do line breaks, so \hspace and \hspace* are the same as \kern
+defineMacro("\\hspace", "\\@ifstar\\kern\\kern");
 
 //////////////////////////////////////////////////////////////////////
 // mathtools.sty
@@ -273,6 +397,11 @@ defineMacro("\\colonsim", "\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim");
 // \providecommand*\Colonsim{\dblcolon\mathrel{\mkern-1.2mu}\sim}
 defineMacro("\\Colonsim", "\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim");
 
+// Some Unicode characters are implemented with macros to mathtools functions.
+defineMacro("\u2254", "\\coloneqq");  // :=
+defineMacro("\u2255", "\\eqqcolon");  // =:
+defineMacro("\u2A74", "\\Coloneqq");  // ::=
+
 //////////////////////////////////////////////////////////////////////
 // colonequals.sty
 
@@ -298,3 +427,11 @@ defineMacro("\\simcoloncolon", "\\sim\\mathrel{\\mkern-1.2mu}\\dblcolon");
 defineMacro("\\approxcolon", "\\approx\\mathrel{\\mkern-1.2mu}\\vcentcolon");
 defineMacro("\\approxcoloncolon",
             "\\approx\\mathrel{\\mkern-1.2mu}\\dblcolon");
+
+// Present in newtxmath, pxfonts and txfonts
+// TODO: The unicode character U+220C ∌ should be added to the font, and this
+//       macro turned into a propper defineSymbol in symbols.js. That way, the
+//       MathML result will be much cleaner.
+defineMacro("\\notni", "\\not\\ni");
+defineMacro("\\limsup", "\\DOTSB\\mathop{\\operatorname{lim\\,sup}}\\limits");
+defineMacro("\\liminf", "\\DOTSB\\mathop{\\operatorname{lim\\,inf}}\\limits");

@@ -1,3 +1,4 @@
+// @flow
 /**
  * This file provides support to buildMathML.js and buildHTML.js
  * for stretchy wide elements rendered from SVG files
@@ -9,10 +10,13 @@ import buildCommon from "./buildCommon";
 import mathMLTree from "./mathMLTree";
 import utils from "./utils";
 
-const stretchyCodePoint = {
+import type Options from "./Options";
+import type ParseNode from "./ParseNode";
+
+const stretchyCodePoint: {[string]: string} = {
     widehat: "^",
     widetilde: "~",
-    undertilde: "~",
+    utilde: "~",
     overleftarrow: "\u2190",
     underleftarrow: "\u2190",
     xleftarrow: "\u2190",
@@ -41,11 +45,14 @@ const stretchyCodePoint = {
     xleftrightharpoons: "\u21cb",
     xtwoheadleftarrow: "\u219e",
     xtwoheadrightarrow: "\u21a0",
-    xLongequal: "=",
+    xlongequal: "=",
     xtofrom: "\u21c4",
+    xrightleftarrows: "\u21c4",
+    xrightequilibrium: "\u21cc",  // Not a perfect match.
+    xleftequilibrium: "\u21cb",   // None better available.
 };
 
-const mathMLnode = function(label) {
+const mathMLnode = function(label: string): mathMLTree.MathNode {
     const node = new mathMLTree.MathNode(
         "mo", [new mathMLTree.TextNode(stretchyCodePoint[label.substr(1)])]);
     node.setAttribute("stretchy", "true");
@@ -58,27 +65,26 @@ const mathMLnode = function(label) {
 // Licensed under the SIL Open Font License, Version 1.1.
 // See \nhttp://scripts.sil.org/OFL
 
-// Nested SVGs
-//    Many of the KaTeX SVG images contain a nested SVG. This is done to
-//    achieve a stretchy image while avoiding distortion of arrowheads or
-//    brace corners.
+// Very Long SVGs
+//    Many of the KaTeX stretchy wide elements use a long SVG image and an
+//    overflow: hidden tactic to achieve a stretchy image while avoiding
+//    distortion of arrowheads or brace corners.
 
-//    The inner SVG typically contains a very long (400 em) arrow.
+//    The SVG typically contains a very long (400 em) arrow.
 
-//    The outer SVG acts like a window that exposes only part of the inner SVG.
-//    The outer SVG will grow or shrink to match the dimensions set by CSS.
+//    The SVG is in a container span that has overflow: hidden, so the span
+//    acts like a window that exposes only part of the  SVG.
 
-//    The inner SVG always has a longer, thinner aspect ratio than the outer
-//    SVG. After the inner SVG fills 100% of the height of the outer SVG,
+//    The SVG always has a longer, thinner aspect ratio than the container span.
+//    After the SVG fills 100% of the height of the container span,
 //    there is a long arrow shaft left over. That left-over shaft is not shown.
-//    Instead, it is sliced off because the inner SVG is set to
-//    "preserveAspectRatio='... slice'".
+//    Instead, it is sliced off because the span's CSS has overflow: hidden.
 
 //    Thus, the reader sees an arrow that matches the subject matter width
 //    without distortion.
 
 //    Some functions, such as \cancel, need to vary their aspect ratio. These
-//    functions do not get the nested SVG treatment.
+//    functions do not get the overflow SVG treatment.
 
 // Second Brush Stroke
 //    Low resolution monitors struggle to display images in fine detail.
@@ -99,7 +105,9 @@ const mathMLnode = function(label) {
 // That is, inside the font, that arrowhead is 522 units tall, which
 // corresponds to 0.522 em inside the document.
 
-const katexImagesData = {
+const katexImagesData: {
+    [string]: ([string[], number, number] | [string[], number, number, string])
+} = {
                    //   path(s), minWidth, height, align
     overrightarrow: [["rightarrow"], 0.888, 522, "xMaxYMin"],
     overleftarrow: [["leftarrow"], 0.888, 522, "xMinYMin"],
@@ -116,7 +124,7 @@ const katexImagesData = {
     overrightharpoon: [["rightharpoon"], 0.888, 522, "xMaxYMin"],
     xrightharpoonup: [["rightharpoon"], 0.888, 522, "xMaxYMin"],
     xrightharpoondown: [["rightharpoondown"], 0.888, 522, "xMaxYMin"],
-    xLongequal: [["longequal"], 0.888, 334, "xMinYMin"],
+    xlongequal: [["longequal"], 0.888, 334, "xMinYMin"],
     xtwoheadleftarrow: [["twoheadleftarrow"], 0.888, 334, "xMinYMin"],
     xtwoheadrightarrow: [["twoheadrightarrow"], 0.888, 334, "xMaxYMin"],
 
@@ -138,9 +146,19 @@ const katexImagesData = {
     undergroup: [["leftgroupunder", "rightgroupunder"], 0.888, 342],
     xmapsto: [["leftmapsto", "rightarrow"], 1.5, 522],
     xtofrom: [["leftToFrom", "rightToFrom"], 1.75, 528],
+
+    // The next three arrows are from the mhchem package.
+    // In mhchem.sty, min-length is 2.0em. But these arrows might appear in the
+    // document as \xrightarrow or \xrightleftharpoons. Those have
+    // min-length = 1.75em, so we set min-length on these next three to match.
+    xrightleftarrows: [["baraboveleftarrow", "rightarrowabovebar"], 1.75, 667],
+    xrightequilibrium: [["baraboveshortleftharpoon",
+        "rightharpoonaboveshortbar"], 1.75, 716],
+    xleftequilibrium: [["shortbaraboveleftharpoon",
+        "shortrightharpoonabovebar"], 1.75, 716],
 };
 
-const groupLength = function(arg) {
+const groupLength = function(arg: ParseNode): number {
     if (arg.type === "ordgroup") {
         return arg.value.length;
     } else {
@@ -148,106 +166,108 @@ const groupLength = function(arg) {
     }
 };
 
-const svgSpan = function(group, options) {
+const svgSpan = function(group: ParseNode, options: Options): domTree.span {
     // Create a span with inline SVG for the element.
-    const label = group.value.label.substr(1);
-    let attributes = [];
-    let height;
-    let viewBoxWidth = 400000;  // default
-    let minWidth = 0;
-    let path;
-    let pathName;
-    let svgNode;
-    const classNames = [];
+    function buildSvgSpan_(): {
+        span: domTree.span,
+        minWidth: number,
+        height: number,
+    } {
+        let viewBoxWidth = 400000;  // default
+        const label = group.value.label.substr(1);
+        if (utils.contains(["widehat", "widetilde", "utilde"], label)) {
+            // There are four SVG images available for each function.
+            // Choose a taller image when there are more characters.
+            const numChars = groupLength(group.value.base);
+            let viewBoxHeight;
+            let pathName;
+            let height;
 
-    if (utils.contains(["widehat", "widetilde", "undertilde"], label)) {
-        // There are four SVG images available for each function.
-        // Choose a taller image when there are more characters.
-        const numChars = groupLength(group.value.base);
-        let viewBoxHeight;
-
-        if (numChars > 5) {
-            viewBoxHeight = (label === "widehat" ? 420 : 312);
-            viewBoxWidth = (label === "widehat" ? 2364 : 2340);
-            // Next get the span height, in 1000 ems
-            height = (label === "widehat" ? 0.42 : 0.34);
-            pathName = (label === "widehat" ? "widehat" : "tilde") + "4";
+            if (numChars > 5) {
+                viewBoxHeight = (label === "widehat" ? 420 : 312);
+                viewBoxWidth = (label === "widehat" ? 2364 : 2340);
+                // Next get the span height, in 1000 ems
+                height = (label === "widehat" ? 0.42 : 0.34);
+                pathName = (label === "widehat" ? "widehat" : "tilde") + "4";
+            } else {
+                const imgIndex = [1, 1, 2, 2, 3, 3][numChars];
+                if (label === "widehat") {
+                    viewBoxWidth = [0, 1062, 2364, 2364, 2364][imgIndex];
+                    viewBoxHeight = [0, 239, 300, 360, 420][imgIndex];
+                    height = [0, 0.24, 0.3, 0.3, 0.36, 0.42][imgIndex];
+                    pathName = "widehat" + imgIndex;
+                } else {
+                    viewBoxWidth = [0, 600, 1033, 2339, 2340][imgIndex];
+                    viewBoxHeight = [0, 260, 286, 306, 312][imgIndex];
+                    height = [0, 0.26, 0.286, 0.3, 0.306, 0.34][imgIndex];
+                    pathName = "tilde" + imgIndex;
+                }
+            }
+            const path = new domTree.pathNode(pathName);
+            const svgNode = new domTree.svgNode([path], {
+                "width": "100%",
+                "height": height + "em",
+                "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+                "preserveAspectRatio": "none",
+            });
+            return {
+                span: buildCommon.makeSpan([], [svgNode], options),
+                minWidth: 0,
+                height,
+            };
         } else {
-            const imgIndex = [1, 1, 2, 2, 3, 3][numChars];
-            if (label === "widehat") {
-                viewBoxWidth = [0, 1062, 2364, 2364, 2364][imgIndex];
-                viewBoxHeight = [0, 239, 300, 360, 420][imgIndex];
-                height = [0, 0.24, 0.3, 0.3, 0.36, 0.42][imgIndex];
-                pathName = "widehat" + imgIndex;
-            } else {
-                viewBoxWidth = [0, 600, 1033, 2339, 2340][imgIndex];
-                viewBoxHeight = [0, 260, 286, 306, 312][imgIndex];
-                height = [0, 0.26, 0.286, 0.3, 0.306, 0.34][imgIndex];
-                pathName = "tilde" + imgIndex;
-            }
-        }
-        path = new domTree.pathNode(pathName);
-        attributes.push(["width", "100%"]);
-        attributes.push(["height", height + "em"]);
-        attributes.push(["viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`]);
-        attributes.push(["preserveAspectRatio", "none"]);
+            const spans = [];
 
-        svgNode = new domTree.svgNode([path], attributes);
+            const [paths, minWidth, viewBoxHeight, align1] = katexImagesData[label];
+            const height = viewBoxHeight / 1000;
 
-    } else {
-        let width;
-        let align;
-
-        const [paths, gWidth, vbHeight, alignOne] = katexImagesData[label];
-        const numSvgChildren = paths.length;
-        const innerSVGs = [];
-        height = vbHeight / 1000;
-        minWidth = gWidth;
-
-        for (let i = 0; i < numSvgChildren; i++) {
-            path = new domTree.pathNode(paths[i]);
-            attributes = [];
-
+            const numSvgChildren = paths.length;
+            let widthClasses;
+            let aligns;
             if (numSvgChildren === 1) {
-                width = "400em";
-                align = alignOne;
+                widthClasses = ["hide-tail"];
+                aligns = [align1];
             } else if (numSvgChildren === 2) {
-                // small overlap to prevent a 1 pixel gap.
-                if (i > 0) {
-                    attributes.push(["x", "50%"]);
-                }
-                width = ["50.1%", "50%"][i];
-                align = ["xMinYMin", "xMaxYMin"][i];
+                widthClasses = ["halfarrow-left", "halfarrow-right"];
+                aligns = ["xMinYMin", "xMaxYMin"];
+            } else if (numSvgChildren === 3) {
+                widthClasses = ["brace-left", "brace-center", "brace-right"];
+                aligns = ["xMinYMin", "xMidYMin", "xMaxYMin"];
             } else {
-                // 3 inner SVGs, as in a brace
-                if (i > 0) {
-                    attributes.push(["x", [null, "25%", "74.9%"][i]]);
-                }
-                width = ["25.5%", "50%", "25.1%"][i];
-                align = ["xMinYMin", "xMidYMin", "xMaxYMin"][i];
+                throw new Error(
+                    `Correct katexImagesData or update code here to support
+                    ${numSvgChildren} children.`);
             }
 
-            attributes.push(["width", width]);
-            attributes.push(["height", height + "em"]);
-            attributes.push(["viewBox", `0 0 ${viewBoxWidth} ${vbHeight}`]);
-            attributes.push(["preserveAspectRatio", align + " slice"]);
+            for (let i = 0; i < numSvgChildren; i++) {
+                const path = new domTree.pathNode(paths[i]);
 
-            if (numSvgChildren > 1) {
-                innerSVGs.push(new domTree.svgNode([path], attributes));
-            } else {
-                // The single svgChild is a child of a hide-tail span, not the
-                // child of another svg.
-                svgNode = new domTree.svgNode([path], attributes);
-                classNames.push("hide-tail");
+                const svgNode = new domTree.svgNode([path], {
+                    "width": "400em",
+                    "height": height + "em",
+                    "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+                    "preserveAspectRatio": aligns[i] + " slice",
+                });
+
+                const span =
+                    buildCommon.makeSpan([widthClasses[i]], [svgNode], options);
+                if (numSvgChildren === 1) {
+                    return {span, minWidth, height};
+                } else {
+                    span.style.height = height + "em";
+                    spans.push(span);
+                }
             }
-        }
-        if (numSvgChildren > 1) {
-            attributes = [["width", "100%"], ["height", height + "em"]];
-            svgNode = new domTree.svgNode(innerSVGs, attributes);
-        }
-    }
 
-    const span = buildCommon.makeSpan(classNames, [svgNode], options);
+            return {
+                span: buildCommon.makeSpan(["stretchy"], spans, options),
+                minWidth,
+                height,
+            };
+        }
+    } // buildSvgSpan_()
+    const {span, minWidth, height} = buildSvgSpan_();
+
     // Note that we are returning span.depth = 0.
     // Any adjustments relative to the baseline must be done in buildHTML.
     span.height = height;
@@ -259,16 +279,24 @@ const svgSpan = function(group, options) {
     return span;
 };
 
-const encloseSpan = function(inner, label, pad, options) {
+const encloseSpan = function(
+    inner: domTree.span,
+    label: string,
+    pad: number,
+    options: Options,
+): domTree.span {
     // Return an image span for \cancel, \bcancel, \xcancel, or \fbox
     let img;
     const totalHeight = inner.height + inner.depth + 2 * pad;
 
-    if (/(fbox)|(color)/.test(label)) {
+    if (/fbox|color/.test(label)) {
         img = buildCommon.makeSpan(["stretchy", label], [], options);
 
-        if (label === "fbox" && options.color) {
-            img.style.borderColor = options.getColor();
+        if (label === "fbox") {
+            const color = options.color && options.getColor();
+            if (color) {
+                img.style.borderColor = color;
+            }
         }
 
     } else {
@@ -276,31 +304,31 @@ const encloseSpan = function(inner, label, pad, options) {
         // Since \cancel's SVG is inline and it omits the viewBox attribute,
         // its stroke-width will not vary with span area.
 
-        let attributes = [["x1", "0"]];
         const lines = [];
-
-        if (label !== "cancel") {
-            attributes.push(["y1", "0"]);
-            attributes.push(["x2", "100%"]);
-            attributes.push(["y2", "100%"]);
-            attributes.push(["stroke-width", "0.046em"]);
-            lines.push(new domTree.lineNode(attributes));
+        if (/^[bx]cancel$/.test(label)) {
+            lines.push(new domTree.lineNode({
+                "x1": "0",
+                "y1": "0",
+                "x2": "100%",
+                "y2": "100%",
+                "stroke-width": "0.046em",
+            }));
         }
 
-        if (label === "xcancel") {
-            attributes = [["x1", "0"]];  // start a second line.
+        if (/^x?cancel$/.test(label)) {
+            lines.push(new domTree.lineNode({
+                "x1": "0",
+                "y1": "100%",
+                "x2": "100%",
+                "y2": "0",
+                "stroke-width": "0.046em",
+            }));
         }
 
-        if (label !== "bcancel") {
-            attributes.push(["y1", "100%"]);
-            attributes.push(["x2", "100%"]);
-            attributes.push(["y2", "0"]);
-            attributes.push(["stroke-width", "0.046em"]);
-            lines.push(new domTree.lineNode(attributes));
-        }
-
-        attributes = [["width", "100%"], ["height", totalHeight + "em"]];
-        const svgNode = new domTree.svgNode(lines, attributes);
+        const svgNode = new domTree.svgNode(lines, {
+            "width": "100%",
+            "height": totalHeight + "em",
+        });
 
         img = buildCommon.makeSpan([], [svgNode], options);
     }
@@ -311,8 +339,51 @@ const encloseSpan = function(inner, label, pad, options) {
     return img;
 };
 
+const ruleSpan = function(className: string, lineThickness: number,
+    options: Options): domTree.span {
+
+    // Get a span with an SVG path that fills the middle fifth of the span.
+    // We're using an extra wide span so Chrome won't round it down to zero.
+
+    let path;
+    let svgNode;
+    let parentClass = "stretchy";  // default
+
+    if (className === "vertical-separator") {
+        path = new domTree.pathNode("vertSeparator");
+        svgNode = new domTree.svgNode([path], {
+            "width": "0.25em",    // contains a path that is 0.05 ems wide.
+            "height": "400em",
+            "viewBox": "0 0 250 400000",
+            "preserveAspectRatio": "xMinYMin slice",
+        });
+        parentClass = "vertical-separator";
+
+    } else {
+        // The next two lines are the only place in KaTeX where SVG paths are
+        // put into a viewBox that is not always exactly a 1000:1 scale to the
+        // document em size. Instead, the path is a horizontal line set to
+        // take up the middle fifth of the viewBox and span. If the context is
+        // normalsize/textstyle then the line will be 0.04em and the usual
+        // 1000:1 ratio holds. But if the context is scriptstyle, then
+        // lineThickness > 0.04em and we have a ratio somewhat different than
+        // 1000:1.
+
+        path = new domTree.pathNode("stdHorizRule");
+        svgNode = new domTree.svgNode([path], {
+            "width": "400em",
+            "height": 5 * lineThickness + "em",
+            "viewBox": "0 0 400000 200",
+            "preserveAspectRatio": "xMinYMin slice",
+        });
+    }
+
+    return buildCommon.makeSpan([parentClass], [svgNode], options);
+};
+
 export default {
-    encloseSpan: encloseSpan,
-    mathMLnode: mathMLnode,
-    svgSpan: svgSpan,
+    encloseSpan,
+    mathMLnode,
+    ruleSpan,
+    svgSpan,
 };

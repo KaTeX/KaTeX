@@ -37,7 +37,7 @@ your symbol in TeX surrounded by other different kinds of symbols, and seeing
 whether your spacing matches the spacing that TeX produces.
 
 Once your symbol works, check the JavaScript console to make sure you don't get
-a message like "Can't find character metrics for _" when you render your symbol.
+a message like "Can't find character metrics for \_" when you render your symbol.
 If you do, check out [extract_ttfs.py](metrics/extract_ttfs.py).
 
 #### Adding new functions
@@ -57,18 +57,24 @@ single file.  The goal is to have all functions use this new system.
 
 ## Testing
 
-Local testing can be done by running the node server in `server.js`. Run
-`npm install` to install dependencies, and then `npm start` to start the server.
+Local testing can be done by running the webpack-dev-server using configuration
+`webpack.dev.js`. Run `npm install` to install dependencies, and then `npm start`
+to start the server.
 
 This will host an interactive editor at
 [http://localhost:7936/](http://localhost:7936/) to play around with and test
 changes.
 
+webpack-dev-server 2.8.0 introduced a change which included ES6 keywords `const`
+and `let` within the scripts being served to the browser, and therefore doesn't
+support IE 9 and 10. If you want to test in IE 9 and 10, install version 2.7.1
+by running `npm install webpack-dev-server@2.7.1`.
+
 #### Jest tests
 
 The JavaScript parser and some of the HTML and MathML tree
 builders are tested with Jest. These tests can be run using node with
-`npm run jest`.  If you need to debug the tests see
+`npm run test:jest`.  If you need to debug the tests see
 [https://facebook.github.io/jest/docs/troubleshooting.html](https://facebook.github.io/jest/docs/troubleshooting.html)
 
 The interactive editor can also be used for debugging tests in the browser by
@@ -80,6 +86,12 @@ symbols. However, [Travis](https://travis-ci.org/Khan/KaTeX/) will run these
 tests when you submit a pull request, in case you forget.
 
 If you make any changes to Parser.js, add Jest tests to ensure they work.
+
+Some tests verify the structure of the output tree using [snapshot testing](https://facebook.github.io/jest/docs/en/snapshot-testing.html).
+Those snapshots can be updated by running `npm run test:jest:update`.
+
+Also, test code coverage can be collected by `npm run test:jest:coverage`.
+You can view the report in `coverage/lcov-report/index.html`.
 
 #### Screenshot tests
 
@@ -111,6 +123,11 @@ is hard to test new changes in many browsers. If you can, please test your
 changes in as many browsers as possible. In particular, if you make CSS changes,
 try to test in IE 9, using [modern.ie](http://modern.ie) VMs.
 
+## Building
+
+KaTeX is built using webpack with configuration `webpack.config.js`. Run
+`npm run build` to build the project.
+
 ## Style guide
 
 Code
@@ -124,12 +141,43 @@ Code
 
 In general, try to make your code blend in with the surrounding code.
 
+The code can be linted by running `npm run test:lint`, which lints JavaScript
+files using ESLint and stylesheets using stylelint. They must pass to commit
+the changes.
+
+Some files have flowtype annotations and can be checked for type errors using
+Flow by running `npm run test:flow`. See [Flow](https://flow.org/) for more details.
+
 ## Pull Requests
 
  - link back to the original issue(s) whenever possible
  - new commands should be added to the [wiki](https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX)
  - commits should be squashed before merging
  - large pull requests should be broken into separate pull requests (or multiple logically cohesive commits), if possible
+
+## Working with submodules
+
+The fonts for KaTeX live in a submodule which appears in submodules/katex-fonts.
+Most of the time you won't have to worry about this unless you're making
+changes to fonts or switching between branches where submodules/katex0fonts
+point to different commits.
+
+If you're not familiar with submodule, it's probably easiest to get started by
+adding the following aliases to your .gitconfig:
+```
+[alias]
+  # Versions of commands that handle submodules properly.
+  co = "!f() { git checkout \"$@\" && git submodule update --init --recursive; }; f"
+  p = "!f() { git pull \"$@\" && git submodule update --init --recursive; }; f"
+  m = "!f() { git merge \"$@\" && git submodule update --init --recursive; }; f"
+  gsu = "!f() { git submodule sync --recursive && git submodule update --init --recursive; }; f"
+```
+`git co`, `git p`, and `git m` work just like `git checkout`, `git pull`, and
+`git merge` respectively but automatically update submodules.  For more info
+about how to use git submodules see https://chrisjean.com/git-submodules-adding-using-removing-and-updating/.
+
+When submitting pull requests, that update katex-fonts, you'll need to submit
+two pull requests: one for [KaTeX/katex-fonts](https:/github.com/KaTeX/katex-fonts) and one for [Khan/KaTeX](https://github.com/Khan/KaTeX).
 
 ## CLA
 

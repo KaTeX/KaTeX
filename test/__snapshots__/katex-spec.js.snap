@@ -1,0 +1,181 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`An implicit group parser within optional groups should work style commands \\sqrt[\\textstyle 3]{x} 1`] = `
+[
+  {
+    "type": "sqrt",
+    "mode": "math",
+    "value": {
+      "type": "sqrt",
+      "body": {
+        "type": "ordgroup",
+        "mode": "math",
+        "value": [
+          {
+            "type": "mathord",
+            "mode": "math",
+            "value": "x"
+          }
+        ]
+      },
+      "index": {
+        "type": "ordgroup",
+        "mode": "math",
+        "value": [
+          {
+            "type": "styling",
+            "mode": "math",
+            "value": {
+              "type": "styling",
+              "style": "text",
+              "value": [
+                {
+                  "type": "textord",
+                  "mode": "math",
+                  "value": "3"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+]
+`;
+
+exports[`An implicit group parser within optional groups should work with \\color: \\sqrt[\\color{red} 3]{x} 1`] = `
+[
+  {
+    "type": "sqrt",
+    "mode": "math",
+    "value": {
+      "type": "sqrt",
+      "body": {
+        "type": "ordgroup",
+        "mode": "math",
+        "value": [
+          {
+            "type": "mathord",
+            "mode": "math",
+            "value": "x"
+          }
+        ]
+      },
+      "index": {
+        "type": "ordgroup",
+        "mode": "math",
+        "value": [
+          {
+            "type": "color",
+            "mode": "math",
+            "value": {
+              "type": "color",
+              "color": "red",
+              "value": [
+                {
+                  "type": "textord",
+                  "mode": "math",
+                  "value": "3"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+]
+`;
+
+exports[`An implicit group parser within optional groups should work with old font functions: \\sqrt[\\tt 3]{x} 1`] = `
+[
+  {
+    "type": "sqrt",
+    "mode": "math",
+    "value": {
+      "type": "sqrt",
+      "body": {
+        "type": "ordgroup",
+        "mode": "math",
+        "value": [
+          {
+            "type": "mathord",
+            "mode": "math",
+            "value": "x"
+          }
+        ]
+      },
+      "index": {
+        "type": "ordgroup",
+        "mode": "math",
+        "value": [
+          {
+            "type": "font",
+            "mode": "math",
+            "value": {
+              "type": "font",
+              "body": {
+                "type": "ordgroup",
+                "mode": "math",
+                "value": [
+                  {
+                    "type": "textord",
+                    "mode": "math",
+                    "value": "3"
+                  }
+                ]
+              },
+              "font": "mathtt"
+            }
+          }
+        ]
+      }
+    }
+  }
+]
+`;
+
+exports[`An implicit group parser within optional groups should work with sizing commands: \\sqrt[\\small 3]{x} 1`] = `
+[
+  {
+    "type": "sqrt",
+    "mode": "math",
+    "value": {
+      "type": "sqrt",
+      "body": {
+        "type": "ordgroup",
+        "mode": "math",
+        "value": [
+          {
+            "type": "mathord",
+            "mode": "math",
+            "value": "x"
+          }
+        ]
+      },
+      "index": {
+        "type": "ordgroup",
+        "mode": "math",
+        "value": [
+          {
+            "type": "sizing",
+            "mode": "math",
+            "value": {
+              "type": "sizing",
+              "size": 5,
+              "value": [
+                {
+                  "type": "textord",
+                  "mode": "math",
+                  "value": "3"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+]
+`;

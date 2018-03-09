@@ -17,13 +17,13 @@ beforeEach(function() {
                 parseTree(actual, defaultSettings);
                 return {
                     pass: false,
-                    message: "'" + actual + "' parsed without error",
+                    message: () => "'" + actual + "' parsed without error",
                 };
             } catch (e) {
                 if (expected === undefined) {
                     return {
                         pass: true,
-                        message: "'" + actual + "' parsed with error",
+                        message: () => "'" + actual + "' parsed with error",
                     };
                 }
                 const msg = e.message;
@@ -31,20 +31,20 @@ beforeEach(function() {
                 if (msg === exp) {
                     return {
                         pass: true,
-                        message: "'" + actual + "'" +
+                        message: () => "'" + actual + "'" +
                             " parsed with error '" + expected + "'",
                     };
                 } else if (msg.slice(0, 19) === prefix) {
                     return {
                         pass: false,
-                        message: "'" + actual + "'" +
+                        message: () => "'" + actual + "'" +
                             " parsed with error '" + msg.slice(19) +
                             "' but expected '" + expected + "'",
                     };
                 } else {
                     return {
                         pass: false,
-                        message: "'" + actual + "'" +
+                        message: () => "'" + actual + "'" +
                             " caused error '" + msg +
                             "' but expected '" + exp + "'",
                     };
@@ -374,4 +374,11 @@ describe("Lexer:", function() {
         });
     });
 
+});
+
+describe("Unicode accents", function() {
+    it("should return error for invalid combining characters", function() {
+        expect("A\u0328").toFailWithParseError(
+            "Unknown accent ' ̨' at position 1: Ą̲̲");
+    });
 });

@@ -1,6 +1,6 @@
 /* eslint no-console:0 */
-/* global katex */
 
+import katex from "katex";
 import splitAtDelimiters from "./splitAtDelimiters";
 
 const splitWithDelimiters = function(text, delimiters) {
@@ -98,6 +98,5 @@ const renderMathInElement = function(elem, options) {
     const optionsCopy = Object.assign({}, defaultAutoRenderOptions, options);
     renderElem(elem, optionsCopy);
 };
-
 
 export default renderMathInElement;

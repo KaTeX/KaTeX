@@ -51,11 +51,51 @@ describe("A MathML builder", function() {
         expect(getMathML("\\textstyle\\sum_a^b")).toMatchSnapshot();
     });
 
+    it("should output \\limsup_{x \\rightarrow \\infty} correctly in " +
+            "\\textstyle", () => {
+        const mathml = getMathML("\\limsup_{x \\rightarrow \\infty}");
+        expect(mathml).toMatchSnapshot();
+    });
+
+    it("should output \\limsup_{x \\rightarrow \\infty} in " +
+            "displaymode correctly", () => {
+        const settings = new Settings({displayMode: true});
+        const mathml = getMathML("\\limsup_{x \\rightarrow \\infty}", settings);
+        expect(mathml).toMatchSnapshot();
+    });
+
     it('should use <mpadded> for raisebox', () => {
         expect(getMathML("\\raisebox{0.25em}{b}")).toMatchSnapshot();
     });
 
     it('should use <menclose> for colorbox', () => {
         expect(getMathML("\\colorbox{red}{b}")).toMatchSnapshot();
+    });
+
+    it('should set href attribute for href appropriately', () => {
+        expect(getMathML("\\href{http://example.org}{\\alpha}")).toMatchSnapshot();
+        expect(getMathML("p \\Vdash \\beta \\href{http://example.org}{+ \\alpha} \\times \\gamma"));
+    });
+
+    it('should render mathchoice as if there was nothing', () => {
+        const cmd = "\\sum_{k = 0}^{\\infty} x^k";
+        expect(getMathML(`\\displaystyle\\mathchoice{${cmd}}{T}{S}{SS}`))
+            .toMatchSnapshot();
+        expect(getMathML(`\\mathchoice{D}{${cmd}}{S}{SS}`))
+            .toMatchSnapshot();
+        expect(getMathML(`x_{\\mathchoice{D}{T}{${cmd}}{SS}}`))
+            .toMatchSnapshot();
+        expect(getMathML(`x_{y_{\\mathchoice{D}{T}{S}{${cmd}}}}`))
+            .toMatchSnapshot();
+    });
+
+    it("should render boldsymbol with the correct mathvariants", () => {
+        expect(getMathML(`\\boldsymbol{Ax2k\\omega\\Omega\\imath+}`))
+            .toMatchSnapshot();
+    });
+
+    it('accents turn into <mover accent="true"> in MathML', function() {
+        expect(getMathML("über fiancée", {unicodeTextInMathMode: true}))
+            .toMatchSnapshot();
     });
 });

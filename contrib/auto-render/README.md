@@ -6,11 +6,14 @@ renders the math in place.
 
 ### Usage
 
-This extension isn't part of KaTeX proper, so the script should be separately
-included in the page:
+This extension isn't part of KaTeX proper, so the script needs to be included
+(via a `<script>` tag) in the page along with KaTeX itself.  For example,
+using a CDN:
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.8.3/contrib/auto-render.min.js" integrity="sha384-RkgGHBDdR8eyBOoWeZ/vpGg1cOvSAJRflCUDACusAAIVwkwPrOUYykglPeqWakZu" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/contrib/auto-render.min.js" integrity="sha384-IiI65aU9ZYub2MY9zhtKd1H2ps7xxf+eb2YFG9lX6uRqpXCvBTOidPRCXCrQ++Uc" crossorigin="anonymous"></script>
 ```
 
 Then, call the exposed `renderMathInElement` function in a script tag
@@ -26,9 +29,9 @@ before the close body tag:
 ```
 
 See [index.html](index.html) for an example.
-(To run this example from a clone of the repository, run `make serve`
+(To run this example from a clone of the repository, run `npm start`
 in the root KaTeX directory, and then visit
-http://0.0.0.0:7936/contrib/auto-render/index.html
+http://localhost:7936/contrib/auto-render/index.html
 with your web browser.)
 
 If you prefer to have all your setup inside the html `<head>`,

@@ -1,15 +1,14 @@
 # How to generate screenshotter images
 
-## Automatic generation of screen shots
+## Automatic generation of screenshots
 
 Now you too can generate screenshots from your own computer, and (hopefully)
 have them look mostly the same as the current ones! Make sure you have docker
 installed and running.
 If all you want is (re)create
-all the snapshots for all the browsers, then you can do so by running the
-`screenshotter.sh` script:
+all the snapshots for all the browsers, then you can do so by:
 
-    dockers/Screenshotter/screenshotter.sh
+    npm run test:screenshots:update
 
 It will fetch all required selenium docker images, and use them to
 take screenshots.
@@ -49,6 +48,11 @@ fashion are well suited for visual inspection, but for exact binary
 comparisons it would be neccessary to carefully set up the environment
 to match the one used by the Docker approach.
 
+You can also verify and generate screenshots online using a CI(continuous
+integration) service. Fork the project, enable [CircleCI](https://circleci.com/) on your repository,
+and push your changes. Diffs and generated screenshots are available at
+build artifacts.
+
 ## Choosing the list of test cases
 
 Both `screenshotter.js` and `screenshotter.sh` will accept
@@ -61,3 +65,12 @@ Examples:
 
     node dockers/Screenshotter/screenshotter.js -i Sqrt,SqrtRoot
     dockers/Screenshotter/screenshotter.sh --exclude=GreekLetters
+
+# How to run screenshotter tests
+
+You can verify screenshots by running:
+
+    npm run test:screenshots
+
+or passing `--verify` option to `screenshotter.js` or `screenshotter.sh`.
+See above for more details.

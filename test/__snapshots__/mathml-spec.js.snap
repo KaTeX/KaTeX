@@ -1,5 +1,62 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`A MathML builder accents turn into <mover accent="true"> in MathML 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mover accent="true">
+        <mi>
+          u
+        </mi>
+        <mo>
+          ¨
+        </mo>
+      </mover>
+      <mi>
+        b
+      </mi>
+      <mi>
+        e
+      </mi>
+      <mi>
+        r
+      </mi>
+      <mi>
+        f
+      </mi>
+      <mi>
+        i
+      </mi>
+      <mi>
+        a
+      </mi>
+      <mi>
+        n
+      </mi>
+      <mi>
+        c
+      </mi>
+      <mover accent="true">
+        <mi>
+          e
+        </mi>
+        <mo>
+          ˊ
+        </mo>
+      </mover>
+      <mi>
+        e
+      </mi>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      über fiancée
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder should generate <mphantom> nodes for \\phantom 1`] = `
 
 <math>
@@ -27,6 +84,9 @@ exports[`A MathML builder should generate the right types of nodes 1`] = `
       <mi>
         sin
       </mi>
+      <mo>
+        ⁡
+      </mo>
       <mrow>
         <mi>
           x
@@ -68,6 +128,278 @@ exports[`A MathML builder should make prime operators into <mo> nodes 1`] = `
     </mrow>
     <annotation encoding="application/x-tex">
       f&#x27;
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correctly in \\textstyle 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <msub>
+        <mo>
+          <mi mathvariant="normal">
+            lim sup
+          </mi>
+          <mo>
+            ⁡
+          </mo>
+        </mo>
+        <mrow>
+          <mi>
+            x
+          </mi>
+          <mo>
+            →
+          </mo>
+          <mi mathvariant="normal">
+            ∞
+          </mi>
+        </mrow>
+      </msub>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\limsup_{x \\rightarrow \\infty}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} in displaymode correctly 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <munder>
+        <mo>
+          <mi mathvariant="normal">
+            lim sup
+          </mi>
+          <mo>
+            ⁡
+          </mo>
+        </mo>
+        <mrow>
+          <mi>
+            x
+          </mi>
+          <mo>
+            →
+          </mo>
+          <mi mathvariant="normal">
+            ∞
+          </mi>
+        </mrow>
+      </munder>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\limsup_{x \\rightarrow \\infty}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should render boldsymbol with the correct mathvariants 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mrow>
+        <mi mathvariant="bold-italic">
+          A
+        </mi>
+        <mi mathvariant="bold-italic">
+          x
+        </mi>
+        <mn mathvariant="bold-italic">
+          2
+        </mn>
+        <mi mathvariant="bold-italic">
+          k
+        </mi>
+        <mi mathvariant="bold-italic">
+          ω
+        </mi>
+        <mi mathvariant="bold-italic">
+          Ω
+        </mi>
+        <mi mathvariant="bold-italic">
+          ı
+        </mi>
+        <mo mathvariant="bold-italic">
+          +
+        </mo>
+      </mrow>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\boldsymbol{Ax2k\\omega\\Omega\\imath+}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should render mathchoice as if there was nothing 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mstyle scriptlevel="0"
+              displaystyle="true"
+      >
+        <mrow>
+          <munderover>
+            <mo>
+              ∑
+            </mo>
+            <mrow>
+              <mi>
+                k
+              </mi>
+              <mo>
+                =
+              </mo>
+              <mn>
+                0
+              </mn>
+            </mrow>
+            <mi mathvariant="normal">
+              ∞
+            </mi>
+          </munderover>
+          <msup>
+            <mi>
+              x
+            </mi>
+            <mi>
+              k
+            </mi>
+          </msup>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\displaystyle\\mathchoice{\\sum_{k = 0}^{\\infty} x^k}{T}{S}{SS}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should render mathchoice as if there was nothing 2`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mrow>
+        <msubsup>
+          <mo>
+            ∑
+          </mo>
+          <mrow>
+            <mi>
+              k
+            </mi>
+            <mo>
+              =
+            </mo>
+            <mn>
+              0
+            </mn>
+          </mrow>
+          <mi mathvariant="normal">
+            ∞
+          </mi>
+        </msubsup>
+        <msup>
+          <mi>
+            x
+          </mi>
+          <mi>
+            k
+          </mi>
+        </msup>
+      </mrow>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\mathchoice{D}{\\sum_{k = 0}^{\\infty} x^k}{S}{SS}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should render mathchoice as if there was nothing 3`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <msub>
+        <mi>
+          x
+        </mi>
+        <mrow>
+          <mi>
+            T
+          </mi>
+        </mrow>
+      </msub>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      x_{\\mathchoice{D}{T}{\\sum_{k = 0}^{\\infty} x^k}{SS}}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should render mathchoice as if there was nothing 4`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <msub>
+        <mi>
+          x
+        </mi>
+        <msub>
+          <mi>
+            y
+          </mi>
+          <mrow>
+            <mi>
+              T
+            </mi>
+          </mrow>
+        </msub>
+      </msub>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      x_{y_{\\mathchoice{D}{T}{S}{\\sum_{k = 0}^{\\infty} x^k}}}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should set href attribute for href appropriately 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mrow href="http://example.org">
+        <mi>
+          α
+        </mi>
+      </mrow>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\href{http://example.org}{\\alpha}
     </annotation>
   </semantics>
 </math>

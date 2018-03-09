@@ -63,9 +63,10 @@ defineFunction({
         }
 
         // See smash for comment re: use of makeVList
-        node = buildCommon.makeVList([
-            {type: "elem", elem: node},
-        ], "firstBaseline", null, options);
+        node = buildCommon.makeVList({
+            positionType: "firstBaseline",
+            children: [{type: "elem", elem: node}],
+        }, options);
 
         return node;
     },

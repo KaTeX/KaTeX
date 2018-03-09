@@ -4,9 +4,10 @@
  * until only non-macro tokens remain.
  */
 
-import Lexer from "./Lexer";
+import Lexer, {controlWordRegex} from "./Lexer";
 import {Token} from "./Token";
 import builtinMacros from "./macros";
+import type {Mode} from "./types";
 import ParseError from "./ParseError";
 import objectAssign from "object-assign";
 
@@ -16,13 +17,20 @@ export default class MacroExpander implements MacroContextInterface {
     lexer: Lexer;
     macros: MacroMap;
     stack: Token[];
-    discardedWhiteSpace: Token[];
+    mode: Mode;
 
-    constructor(input: string, macros: MacroMap) {
+    constructor(input: string, macros: MacroMap, mode: Mode) {
         this.lexer = new Lexer(input);
         this.macros = objectAssign({}, builtinMacros, macros);
+        this.mode = mode;
         this.stack = []; // contains tokens in REVERSE order
-        this.discardedWhiteSpace = [];
+    }
+
+    /**
+     * Switches between "text" and "math" modes.
+     */
+    switchMode(newMode: Mode) {
+        this.mode = newMode;
     }
 
     /**
@@ -31,7 +39,7 @@ export default class MacroExpander implements MacroContextInterface {
      */
     future(): Token {
         if (this.stack.length === 0) {
-            this.stack.push(this.lexer.lex());
+            this.pushToken(this.lexer.lex());
         }
         return this.stack[this.stack.length - 1];
     }
@@ -42,6 +50,21 @@ export default class MacroExpander implements MacroContextInterface {
     popToken(): Token {
         this.future();  // ensure non-empty stack
         return this.stack.pop();
+    }
+
+    /**
+     * Add a given token to the token stack.  In particular, this get be used
+     * to put back a token returned from one of the other methods.
+     */
+    pushToken(token: Token) {
+        this.stack.push(token);
+    }
+
+    /**
+     * Append an array of tokens to the token stack.
+     */
+    pushTokens(tokens: Token[]) {
+        this.stack.push(...tokens);
     }
 
     /**
@@ -56,6 +79,45 @@ export default class MacroExpander implements MacroContextInterface {
                 break;
             }
         }
+    }
+
+    /**
+     * Consume the specified number of arguments from the token stream,
+     * and return the resulting array of arguments.
+     */
+    consumeArgs(numArgs: number): Token[][] {
+        const args: Token[][] = [];
+        // obtain arguments, either single token or balanced {…} group
+        for (let i = 0; i < numArgs; ++i) {
+            this.consumeSpaces();  // ignore spaces before each argument
+            const startOfArg = this.popToken();
+            if (startOfArg.text === "{") {
+                const arg: Token[] = [];
+                let depth = 1;
+                while (depth !== 0) {
+                    const tok = this.popToken();
+                    arg.push(tok);
+                    if (tok.text === "{") {
+                        ++depth;
+                    } else if (tok.text === "}") {
+                        --depth;
+                    } else if (tok.text === "EOF") {
+                        throw new ParseError(
+                            "End of input in macro argument",
+                            startOfArg);
+                    }
+                }
+                arg.pop(); // remove last }
+                arg.reverse(); // like above, to fit in with stack order
+                args[i] = arg;
+            } else if (startOfArg.text === "EOF") {
+                throw new ParseError(
+                    "End of input expecting macro argument");
+            } else {
+                args[i] = [startOfArg];
+            }
+        }
+        return args;
     }
 
     /**
@@ -82,49 +144,19 @@ export default class MacroExpander implements MacroContextInterface {
         const topToken = this.popToken();
         const name = topToken.text;
         const isMacro = (name.charAt(0) === "\\");
-        if (isMacro) {
-            // Consume all spaces after \macro
+        if (isMacro && controlWordRegex.test(name)) {
+            // Consume all spaces after \macro (but not \\, \', etc.)
             this.consumeSpaces();
         }
-        if (!(isMacro && this.macros.hasOwnProperty(name))) {
+        if (!this.macros.hasOwnProperty(name)) {
             // Fully expanded
-            this.stack.push(topToken);
+            this.pushToken(topToken);
             return topToken;
         }
         const {tokens, numArgs} = this._getExpansion(name);
         let expansion = tokens;
         if (numArgs) {
-            const args: Token[][] = [];
-            // obtain arguments, either single token or balanced {…} group
-            for (let i = 0; i < numArgs; ++i) {
-                this.consumeSpaces();  // ignore spaces before each argument
-                const startOfArg = this.popToken();
-                if (startOfArg.text === "{") {
-                    const arg: Token[] = [];
-                    let depth = 1;
-                    while (depth !== 0) {
-                        const tok = this.popToken();
-                        arg.push(tok);
-                        if (tok.text === "{") {
-                            ++depth;
-                        } else if (tok.text === "}") {
-                            --depth;
-                        } else if (tok.text === "EOF") {
-                            throw new ParseError(
-                                "End of input in macro argument",
-                                startOfArg);
-                        }
-                    }
-                    arg.pop(); // remove last }
-                    arg.reverse(); // like above, to fit in with stack order
-                    args[i] = arg;
-                } else if (startOfArg.text === "EOF") {
-                    throw new ParseError(
-                        "End of input expecting macro argument", topToken);
-                } else {
-                    args[i] = [startOfArg];
-                }
-            }
+            const args = this.consumeArgs(numArgs);
             // paste arguments in place of the placeholders
             expansion = expansion.slice(); // make a shallow copy
             for (let i = expansion.length - 1; i >= 0; --i) {
@@ -150,7 +182,7 @@ export default class MacroExpander implements MacroContextInterface {
             }
         }
         // Concatenate expansion onto top of stack.
-        this.stack.push(...expansion);
+        this.pushTokens(expansion);
         return expansion;
     }
 
@@ -223,40 +255,6 @@ export default class MacroExpander implements MacroContextInterface {
         }
 
         return expansion;
-    }
-
-    /**
-     * Recursively expand first token, then return first non-expandable token.
-     * If given a `true` argument, skips over any leading whitespace in
-     * expansion, instead returning the first non-whitespace token
-     * (like TeX's \ignorespaces).
-     * Any skipped whitespace is stored in `this.discardedWhiteSpace`
-     * so that `unget` can correctly undo the effects of `get`.
-     */
-    get(ignoreSpace: boolean): Token {
-        this.discardedWhiteSpace = [];
-        let token = this.expandNextToken();
-        if (ignoreSpace) {
-            while (token.text === " ") {
-                this.discardedWhiteSpace.push(token);
-                token = this.expandNextToken();
-            }
-        }
-        return token;
-    }
-
-    /**
-     * Undo the effect of the preceding call to the get method.
-     * A call to this method MUST be immediately preceded and immediately followed
-     * by a call to get.  Only used during mode switching, i.e. after one token
-     * was got in the old mode but should get got again in a new mode
-     * with possibly different whitespace handling.
-     */
-    unget(token: Token) {
-        this.stack.push(token);
-        while (this.discardedWhiteSpace.length !== 0) {
-            this.stack.push(this.discardedWhiteSpace.pop());
-        }
     }
 }
 

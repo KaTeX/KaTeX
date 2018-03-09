@@ -42,7 +42,11 @@ export type OptionsData = {
     size?: number;
     textSize?: number;
     phantom?: boolean;
-    font?: string | void;
+    font?: string;
+    fontFamily?: string;
+    fontWeight?: string;
+    fontShape?: string;
+    sizeMultiplier?: number;
     maxSize: number;
     postProcessor?: Function;
 };
@@ -60,7 +64,13 @@ class Options {
     size: number;
     textSize: number;
     phantom: boolean;
-    font: string | void;
+    // A font family applies to a group of fonts (i.e. SansSerif), while a font
+    // represents a specific font (i.e. SansSerif Bold).
+    // See: https://tex.stackexchange.com/questions/22350/difference-between-textrm-and-mathrm
+    font: string;
+    fontFamily: string;
+    fontWeight: string;
+    fontShape: string;
     sizeMultiplier: number;
     maxSize: number;
     _fontMetrics: FontMetrics | void;
@@ -77,7 +87,10 @@ class Options {
         this.size = data.size || Options.BASESIZE;
         this.textSize = data.textSize || this.size;
         this.phantom = !!data.phantom;
-        this.font = data.font;
+        this.font = data.font || "";
+        this.fontFamily = data.fontFamily || "";
+        this.fontWeight = data.fontWeight || '';
+        this.fontShape = data.fontShape || '';
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
         this._fontMetrics = undefined;
@@ -99,6 +112,9 @@ class Options {
             color: this.color,
             phantom: this.phantom,
             font: this.font,
+            fontFamily: this.fontFamily,
+            fontWeight: this.fontWeight,
+            fontShape: this.fontShape,
             maxSize: this.maxSize,
             postProcessor: this.postProcessor,
         };
@@ -147,6 +163,7 @@ class Options {
                 style: this.style.text(),
                 size: size,
                 textSize: size,
+                sizeMultiplier: sizeMultipliers[size - 1],
             });
         }
     }
@@ -188,11 +205,42 @@ class Options {
     }
 
     /**
-     * Create a new options objects with the give font.
+     * Creates a new options object with the given math font or old text font.
+     * @type {[type]}
      */
-    withFont(font: ?string): Options {
+    withFont(font: string): Options {
         return this.extend({
-            font: font || this.font,
+            font,
+        });
+    }
+
+    /**
+     * Create a new options objects with the given fontFamily.
+     */
+    withTextFontFamily(fontFamily: string) {
+        return this.extend({
+            fontFamily,
+            font: "",
+        });
+    }
+
+    /**
+     * Creates a new options object with the given font weight
+     */
+    withTextFontWeight(fontWeight: string): Options {
+        return this.extend({
+            fontWeight,
+            font: "",
+        });
+    }
+
+    /**
+     * Creates a new options object with the given font weight
+     */
+    withTextFontShape(fontShape: string): Options {
+        return this.extend({
+            fontShape,
+            font: "",
         });
     }
 

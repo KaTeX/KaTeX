@@ -1,3 +1,4 @@
+// @flow
 /**
  * This file deals with creating delimiters of various sizes. The TeXbook
  * discusses these routines on page 441-442, in the "Another subroutine sets box
@@ -29,40 +30,61 @@ import fontMetrics from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
 
+import type Options from "./Options";
+import type {CharacterMetrics} from "./fontMetrics";
+import type {DomChildNode} from "./domTree";
+import type {Mode} from "./types";
+import type {StyleInterface} from "./Style";
+import type {VListElem} from "./buildCommon";
+
 /**
  * Get the metrics for a given symbol and font, after transformation (i.e.
  * after following replacement from symbols.js)
  */
-const getMetrics = function(symbol, font) {
-    if (symbols.math[symbol] && symbols.math[symbol].replace) {
-        return fontMetrics.getCharacterMetrics(
-            symbols.math[symbol].replace, font);
-    } else {
-        return fontMetrics.getCharacterMetrics(
-            symbol, font);
+const getMetrics = function(
+    symbol: string,
+    font: string,
+    mode: Mode,
+): CharacterMetrics {
+    const replace = symbols.math[symbol] && symbols.math[symbol].replace;
+    const metrics =
+        fontMetrics.getCharacterMetrics(replace || symbol, font, mode);
+    if (!metrics) {
+        throw new Error(`Unsupported symbol ${symbol} and font size ${font}.`);
     }
+    return metrics;
 };
 
 /**
  * Puts a delimiter span in a given style, and adds appropriate height, depth,
  * and maxFontSizes.
  */
-const styleWrap = function(delim, toStyle, options, classes) {
+const styleWrap = function(
+    delim: DomChildNode,
+    toStyle: StyleInterface,
+    options: Options,
+    classes: string[],
+): domTree.span {
     const newOptions = options.havingBaseStyle(toStyle);
 
     const span = buildCommon.makeSpan(
-        (classes || []).concat(newOptions.sizingClasses(options)),
+        classes.concat(newOptions.sizingClasses(options)),
         [delim], options);
 
-    span.delimSizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
-    span.height *= span.delimSizeMultiplier;
-    span.depth *= span.delimSizeMultiplier;
+    const delimSizeMultiplier =
+        newOptions.sizeMultiplier / options.sizeMultiplier;
+    span.height *= delimSizeMultiplier;
+    span.depth *= delimSizeMultiplier;
     span.maxFontSize = newOptions.sizeMultiplier;
 
     return span;
 };
 
-const centerSpan = function(span, options, style) {
+const centerSpan = function(
+    span: domTree.span,
+    options: Options,
+    style: StyleInterface,
+) {
     const newOptions = options.havingBaseStyle(style);
     const shift =
         (1 - options.sizeMultiplier / newOptions.sizeMultiplier) *
@@ -79,7 +101,14 @@ const centerSpan = function(span, options, style) {
  * font, but is restyled to either be in textstyle, scriptstyle, or
  * scriptscriptstyle.
  */
-const makeSmallDelim = function(delim, style, center, options, mode, classes) {
+const makeSmallDelim = function(
+    delim: string,
+    style: StyleInterface,
+    center: boolean,
+    options: Options,
+    mode: Mode,
+    classes: string[],
+): domTree.span {
     const text = buildCommon.makeSymbol(delim, "Main-Regular", mode, options);
     const span = styleWrap(text, style, options, classes);
     if (center) {
@@ -91,7 +120,12 @@ const makeSmallDelim = function(delim, style, center, options, mode, classes) {
 /**
  * Builds a symbol in the given font size (note size is an integer)
  */
-const mathrmSize = function(value, size, mode, options) {
+const mathrmSize = function(
+    value: string,
+    size: number,
+    mode: Mode,
+    options: Options,
+): domTree.symbolNode {
     return buildCommon.makeSymbol(value, "Size" + size + "-Regular",
         mode, options);
 };
@@ -100,7 +134,13 @@ const mathrmSize = function(value, size, mode, options) {
  * Makes a large delimiter. This is a delimiter that comes in the Size1, Size2,
  * Size3, or Size4 fonts. It is always rendered in textstyle.
  */
-const makeLargeDelim = function(delim, size, center, options, mode, classes) {
+const makeLargeDelim = function(delim,
+    size: number,
+    center: boolean,
+    options: Options,
+    mode: Mode,
+    classes: string[],
+): domTree.span {
     const inner = mathrmSize(delim, size, mode, options);
     const span = styleWrap(
         buildCommon.makeSpan(["delimsizing", "size" + size], [inner], options),
@@ -115,12 +155,16 @@ const makeLargeDelim = function(delim, size, center, options, mode, classes) {
  * Make an inner span with the given offset and in the given font. This is used
  * in `makeStackedDelim` to make the stacking pieces for the delimiter.
  */
-const makeInner = function(symbol, font, mode) {
+const makeInner = function(
+    symbol: string,
+    font: "Size1-Regular" | "Size4-Regular",
+    mode: Mode,
+): VListElem {
     let sizeClass;
     // Apply the correct CSS class to choose the right font.
     if (font === "Size1-Regular") {
         sizeClass = "delim-size1";
-    } else if (font === "Size4-Regular") {
+    } else /* if (font === "Size4-Regular") */ {
         sizeClass = "delim-size4";
     }
 
@@ -137,8 +181,14 @@ const makeInner = function(symbol, font, mode) {
  * Make a stacked delimiter out of a given delimiter, with the total height at
  * least `heightTotal`. This routine is mentioned on page 442 of the TeXbook.
  */
-const makeStackedDelim = function(delim, heightTotal, center, options, mode,
-                                classes) {
+const makeStackedDelim = function(
+    delim: string,
+    heightTotal: number,
+    center: boolean,
+    options: Options,
+    mode: Mode,
+    classes: string[],
+): domTree.span {
     // There are four parts, the top, an optional middle, a repeated part, and a
     // bottom.
     let top;
@@ -240,16 +290,16 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
     }
 
     // Get the metrics of the four sections
-    const topMetrics = getMetrics(top, font);
+    const topMetrics = getMetrics(top, font, mode);
     const topHeightTotal = topMetrics.height + topMetrics.depth;
-    const repeatMetrics = getMetrics(repeat, font);
+    const repeatMetrics = getMetrics(repeat, font, mode);
     const repeatHeightTotal = repeatMetrics.height + repeatMetrics.depth;
-    const bottomMetrics = getMetrics(bottom, font);
+    const bottomMetrics = getMetrics(bottom, font, mode);
     const bottomHeightTotal = bottomMetrics.height + bottomMetrics.depth;
     let middleHeightTotal = 0;
     let middleFactor = 1;
     if (middle !== null) {
-        const middleMetrics = getMetrics(middle, font);
+        const middleMetrics = getMetrics(middle, font, mode);
         middleHeightTotal = middleMetrics.height + middleMetrics.depth;
         middleFactor = 2; // repeat symmetrically above and below middle
     }
@@ -307,77 +357,124 @@ const makeStackedDelim = function(delim, heightTotal, center, options, mode,
 
     // Finally, build the vlist
     const newOptions = options.havingBaseStyle(Style.TEXT);
-    const inner = buildCommon.makeVList(inners, "bottom", depth, newOptions);
+    const inner = buildCommon.makeVList({
+        positionType: "bottom",
+        positionData: depth,
+        children: inners,
+    }, newOptions);
 
     return styleWrap(
         buildCommon.makeSpan(["delimsizing", "mult"], [inner], newOptions),
         Style.TEXT, options, classes);
 };
 
-const sqrtSvg = function(sqrtName, height, viewBoxHeight, options) {
+// All surds have 0.08em padding above the viniculum inside the SVG.
+// That keeps browser span height rounding error from pinching the line.
+const vbPad = 80;   // padding above the surd, measured inside the viewBox.
+const emPad = 0.08; // padding, in ems, measured in the document.
+
+const sqrtSvg = function(
+    sqrtName: string,
+    height: number,
+    viewBoxHeight: number,
+    options: Options,
+): domTree.span {
     let alternate;
     if (sqrtName === "sqrtTall") {
         // sqrtTall is from glyph U23B7 in the font KaTeX_Size4-Regular
         // One path edge has a variable length. It runs from the viniculumn
         // to a point near (14 units) the bottom of the surd. The viniculum
         // is 40 units thick. So the length of the line in question is:
-        const vertSegment = viewBoxHeight - 54;
-        alternate = `M702 0H400000v40H742v${vertSegment}l-4 4-4 4c-.667.667
+        const vertSegment = viewBoxHeight - 54 - vbPad;
+        alternate = `M702 ${vbPad}H400000v40H742v${vertSegment}l-4 4-4 4c-.667.7
 -2 1.5-4 2.5s-4.167 1.833-6.5 2.5-5.5 1-9.5 1h-12l-28-84c-16.667-52-96.667
 -294.333-240-727l-212 -643 -85 170c-4-3.333-8.333-7.667-13 -13l-13-13l77-155
- 77-156c66 199.333 139 419.667 219 661 l218 661zM702 0H400000v40H742z`;
+ 77-156c66 199.333 139 419.667 219 661 l218 661zM702 ${vbPad}H400000v40H742z`;
     }
     const pathNode = new domTree.pathNode(sqrtName, alternate);
 
-    // Note: 1000:1 ratio of viewBox to document em width.
-    const attributes = [["width", "400em"], ["height", height + "em"]];
-    attributes.push(["viewBox", "0 0 400000 " + viewBoxHeight]);
-    attributes.push(["preserveAspectRatio", "xMinYMin slice"]);
-    const svg =  new domTree.svgNode([pathNode], attributes);
+    const svg =  new domTree.svgNode([pathNode], {
+        // Note: 1000:1 ratio of viewBox to document em width.
+        "width": "400em",
+        "height": height + "em",
+        "viewBox": "0 0 400000 " + viewBoxHeight,
+        "preserveAspectRatio": "xMinYMin slice",
+    });
 
     return buildCommon.makeSpan(["hide-tail"], [svg], options);
 };
 
-const sqrtSpan = function(height, delim, options) {
+/**
+ * Make a sqrt image of the given height,
+ */
+const makeSqrtImage = function(
+    height: number,
+    options: Options,
+): {
+    span: domTree.span,
+    ruleWidth: number,
+    advanceWidth: number,
+} {
+    const delim =
+        traverseSequence("\\surd", height, stackLargeDelimiterSequence, options);
+
     // Create a span containing an SVG image of a sqrt symbol.
     let span;
     let sizeMultiplier = options.sizeMultiplier;  // default
-    let spanHeight;
-    let viewBoxHeight;
+    let spanHeight = 0;
+    let texHeight = 0;
+    let viewBoxHeight = 0;
+    let advanceWidth;
+
+    // We create viewBoxes with 80 units of "padding" above each surd.
+    // Then browser rounding error on the parent span height will not
+    // encroach on the ink of the viniculum. But that padding is not
+    // included in the TeX-like `height` used for calculation of
+    // vertical alignment. So texHeight = span.height < span.style.height.
 
     if (delim.type === "small") {
         // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
-        viewBoxHeight = 1000;  // from font
+        viewBoxHeight = 1000 + vbPad;  // 1000 unit glyph height.
         const newOptions = options.havingBaseStyle(delim.style);
         sizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
-        spanHeight = 1 * sizeMultiplier;
+        spanHeight = (1.0 + emPad) * sizeMultiplier;
+        texHeight = 1.00 * sizeMultiplier;
         span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, options);
         span.style.minWidth = "0.853em";
-        span.advanceWidth = 0.833 * sizeMultiplier;   // from the font.
+        advanceWidth = 0.833 * sizeMultiplier;  // from the font.
 
     } else if (delim.type === "large") {
         // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
-        viewBoxHeight = 1000 * sizeToMaxHeight[delim.size];
-        spanHeight = sizeToMaxHeight[delim.size] / sizeMultiplier;
+        viewBoxHeight = (1000 + vbPad) * sizeToMaxHeight[delim.size];
+        texHeight = sizeToMaxHeight[delim.size] / sizeMultiplier;
+        spanHeight = (sizeToMaxHeight[delim.size] + emPad) / sizeMultiplier;
         span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight, options);
         span.style.minWidth = "1.02em";
-        span.advanceWidth = 1.0 / sizeMultiplier; // from the font
+        advanceWidth = 1.0 / sizeMultiplier;  // from the font.
 
     } else {
         // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
         // We'll use a single SVG to accomplish the same thing.
-        spanHeight = height / sizeMultiplier;
-        viewBoxHeight = Math.floor(1000 * height);
+        spanHeight = height / sizeMultiplier + emPad;
+        texHeight = height / sizeMultiplier;
+        viewBoxHeight = Math.floor(1000 * height) + vbPad;
         span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, options);
         span.style.minWidth = "0.742em";
-        span.advanceWidth = 1.056 / sizeMultiplier;
+        advanceWidth = 1.056 / sizeMultiplier;
     }
 
-    span.height = spanHeight;
+    span.height = texHeight;
     span.style.height = spanHeight + "em";
-    span.sizeMultiplier = sizeMultiplier;
 
-    return span;
+    return {
+        span,
+        advanceWidth,
+        // Calculate the actual line width.
+        // This actually should depend on the chosen font -- e.g. \boldmath
+        // should use the thicker surd symbols from e.g. KaTeX_Main-Bold, and
+        // have thicker rules.
+        ruleWidth: options.fontMetrics().sqrtRuleThickness * sizeMultiplier,
+    };
 };
 
 // There are three kinds of delimiters, delimiters that stack when they become
@@ -411,11 +508,17 @@ const sizeToMaxHeight = [0, 1.2, 1.8, 2.4, 3.0];
 /**
  * Used to create a delimiter of a specific size, where `size` is 1, 2, 3, or 4.
  */
-const makeSizedDelim = function(delim, size, options, mode, classes) {
+const makeSizedDelim = function(
+    delim: string,
+    size: number,
+    options: Options,
+    mode: Mode,
+    classes: string[],
+): domTree.span {
     // < and > turn into \langle and \rangle in delimiters
-    if (delim === "<" || delim === "\\lt") {
+    if (delim === "<" || delim === "\\lt" || delim === "\u27e8") {
         delim = "\\langle";
-    } else if (delim === ">" || delim === "\\gt") {
+    } else if (delim === ">" || delim === "\\gt" || delim === "\u27e9") {
         delim = "\\rangle";
     }
 
@@ -442,6 +545,11 @@ const makeSizedDelim = function(delim, size, options, mode, classes) {
  * are possible for the delimiters that TeX defines, it is easier to just encode
  * them explicitly here.
  */
+
+type Delimiter =
+    {type: "small", style: StyleInterface} |
+    {type: "large", size: 1 | 2 | 3 | 4} |
+    {type: "stack"};
 
 // Delimiters that never stack try small delimiters and large delimiters only
 const stackNeverDelimiterSequence = [
@@ -477,14 +585,17 @@ const stackLargeDelimiterSequence = [
 
 /**
  * Get the font used in a delimiter based on what kind of delimiter it is.
+ * TODO(#963) Use more specific font family return type once that is introduced.
  */
-const delimTypeToFont = function(type) {
+const delimTypeToFont = function(type: Delimiter): string {
     if (type.type === "small") {
         return "Main-Regular";
     } else if (type.type === "large") {
         return "Size" + type.size + "-Regular";
     } else if (type.type === "stack") {
         return "Size4-Regular";
+    } else {
+        throw new Error(`Add support for delim type '${type.type}' here.`);
     }
 };
 
@@ -492,7 +603,12 @@ const delimTypeToFont = function(type) {
  * Traverse a sequence of types of delimiters to decide what kind of delimiter
  * should be used to create a delimiter of the given height+depth.
  */
-const traverseSequence = function(delim, height, sequence, options) {
+const traverseSequence = function(
+    delim: string,
+    height: number,
+    sequence: Delimiter[],
+    options: Options,
+): Delimiter {
     // Here, we choose the index we should start at in the sequences. In smaller
     // sizes (which correspond to larger numbers in style.size) we start earlier
     // in the sequence. Thus, scriptscript starts at index 3-3=0, script starts
@@ -504,7 +620,7 @@ const traverseSequence = function(delim, height, sequence, options) {
             break;
         }
 
-        const metrics = getMetrics(delim, delimTypeToFont(sequence[i]));
+        const metrics = getMetrics(delim, delimTypeToFont(sequence[i]), "math");
         let heightDepth = metrics.height + metrics.depth;
 
         // Small delimiters are scaled down versions of the same font, so we
@@ -529,11 +645,17 @@ const traverseSequence = function(delim, height, sequence, options) {
  * Make a delimiter of a given height+depth, with optional centering. Here, we
  * traverse the sequences, and create a delimiter that the sequence tells us to.
  */
-const makeCustomSizedDelim = function(delim, height, center, options, mode,
-                                    classes) {
-    if (delim === "<" || delim === "\\lt") {
+const makeCustomSizedDelim = function(
+    delim: string,
+    height: number,
+    center: boolean,
+    options: Options,
+    mode: Mode,
+    classes: string[],
+): domTree.span {
+    if (delim === "<" || delim === "\\lt" || delim === "\u27e8") {
         delim = "\\langle";
-    } else if (delim === ">" || delim === "\\gt") {
+    } else if (delim === ">" || delim === "\\gt" || delim === "\u27e9") {
         delim = "\\rangle";
     }
 
@@ -550,23 +672,18 @@ const makeCustomSizedDelim = function(delim, height, center, options, mode,
     // Look through the sequence
     const delimType = traverseSequence(delim, height, sequence, options);
 
-    if (delim === "\\surd") {
-        // Get an SVG image
-        return sqrtSpan(height, delimType, options);
-    } else {
-        // Get the delimiter from font glyphs.
-        // Depending on the sequence element we decided on, call the
-        // appropriate function.
-        if (delimType.type === "small") {
-            return makeSmallDelim(delim, delimType.style, center, options,
-                                  mode, classes);
-        } else if (delimType.type === "large") {
-            return makeLargeDelim(delim, delimType.size, center, options, mode,
-                                  classes);
-        } else if (delimType.type === "stack") {
-            return makeStackedDelim(delim, height, center, options, mode,
-                                    classes);
-        }
+    // Get the delimiter from font glyphs.
+    // Depending on the sequence element we decided on, call the
+    // appropriate function.
+    if (delimType.type === "small") {
+        return makeSmallDelim(delim, delimType.style, center, options,
+                              mode, classes);
+    } else if (delimType.type === "large") {
+        return makeLargeDelim(delim, delimType.size, center, options, mode,
+                              classes);
+    } else /* if (delimType.type === "stack") */ {
+        return makeStackedDelim(delim, height, center, options, mode,
+                                classes);
     }
 };
 
@@ -574,8 +691,14 @@ const makeCustomSizedDelim = function(delim, height, center, options, mode,
  * Make a delimiter for use with `\left` and `\right`, given a height and depth
  * of an expression that the delimiters surround.
  */
-const makeLeftRightDelim = function(delim, height, depth, options, mode,
-                                  classes) {
+const makeLeftRightDelim = function(
+    delim: string,
+    height: number,
+    depth: number,
+    options: Options,
+    mode: Mode,
+    classes: string[],
+): domTree.span {
     // We always center \left/\right delimiters, so the axis is always shifted
     const axisHeight =
         options.fontMetrics().axisHeight * options.sizeMultiplier;
@@ -602,11 +725,11 @@ const makeLeftRightDelim = function(delim, height, depth, options, mode,
 
     // Finally, we defer to `makeCustomSizedDelim` with our calculated total
     // height
-    return makeCustomSizedDelim(delim, totalHeight, true, options, mode,
-                                classes);
+    return makeCustomSizedDelim(delim, totalHeight, true, options, mode, classes);
 };
 
 export default {
+    sqrtImage: makeSqrtImage,
     sizedDelim: makeSizedDelim,
     customSizedDelim: makeCustomSizedDelim,
     leftRightDelim: makeLeftRightDelim,
