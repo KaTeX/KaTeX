@@ -229,7 +229,8 @@ groupTypes.spacing = function(group) {
     let node;
 
     if (group.value === "\\ " || group.value === "\\space" ||
-        group.value === " " || group.value === "~") {
+        group.value === " " || group.value === "~" ||
+        group.value === "\\nobreakspace") {
         node = new mathMLTree.MathNode(
             "mtext", [new mathMLTree.TextNode("\u00a0")]);
     } else {
