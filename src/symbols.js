@@ -696,8 +696,11 @@ defineSymbol(text, main, textord, "\u201c", "``");
 defineSymbol(text, main, textord, "\u201c", "\\textquotedblleft");
 defineSymbol(text, main, textord, "\u201d", "''");
 defineSymbol(text, main, textord, "\u201d", "\\textquotedblright");
-defineSymbol(math, main, textord, "\u00b0", "\\degree");
+//  \degree from gensymb package
+defineSymbol(math, main, textord, "\u00b0", "\\degree", true);
 defineSymbol(text, main, textord, "\u00b0", "\\degree");
+// \textdegree from inputenc package
+defineSymbol(text, main, textord, "\u00b0", "\\textdegree", true);
 // TODO: In LaTeX, \pounds can generate a different character in text and math
 // mode, but among our fonts, only Main-Italic defines this character "163".
 defineSymbol(math, main, mathord, "\u00a3", "\\pounds");
