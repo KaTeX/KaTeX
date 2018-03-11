@@ -62,8 +62,8 @@ export const buildExpression = function(expression, options, isRealGroup,
         surrounding = [null, null]) {
     // Parse expressions into `groups`.
     const rawGroups = [];
-    for (const group of expression) {
-        const output = buildGroup(group, options);
+    for (let i = 0; i < expression.length; i++) {
+        const output = buildGroup(expression[i], options);
         if (output instanceof domTree.documentFragment) {
             rawGroups.push(...output.children);
         } else {
@@ -150,14 +150,14 @@ export const buildExpression = function(expression, options, isRealGroup,
     }
 
     // Process \\not commands within the group.
-    for (const group of groups) {
-        if (group.value === "\u0338") {
-            group.style.position = "absolute";
+    for (let i = 0; i < groups.length; i++) {
+        if (groups[i].value === "\u0338") {
+            groups[i].style.position = "absolute";
             // TODO(kevinb) fix this for Safari by switching to a non-combining
             // character for \not.
             // This value was determined empirically.
             // TODO(kevinb) figure out the real math for this value.
-            group.style.paddingLeft = "0.8em";
+            groups[i].style.paddingLeft = "0.8em";
         }
     }
 
@@ -269,7 +269,7 @@ export const groupTypes = {
     ordgroup: (group, options) => makeSpan(
         ["mord"], buildExpression(group.value, options, true), options),
 
-    supsub: (group, options) => {
+    supsub(group, options) {
         // Superscript and subscripts are handled in the TeXbook on page
         // 445-446, rules 18(a-f).
 
