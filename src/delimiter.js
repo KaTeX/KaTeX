@@ -482,7 +482,8 @@ const makeSqrtImage = function(
 const stackLargeDelimiters = [
     "(", ")", "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
-    "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
+    "\\lfloor", "\\rfloor", "\u230a", "\u230b",
+    "\\lceil", "\\rceil", "\u2308", "\u2309",
     "\\surd",
 ];
 
@@ -492,7 +493,8 @@ const stackAlwaysDelimiters = [
     "\\Uparrow", "\\Downarrow", "\\Updownarrow",
     "|", "\\|", "\\vert", "\\Vert",
     "\\lvert", "\\rvert", "\\lVert", "\\rVert",
-    "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache",
+    "\\lgroup", "\\rgroup", "\u27ee", "\u27ef",
+    "\\lmoustache", "\\rmoustache", "\u23b0", "\u23b1",
 ];
 
 // and delimiters that never stack
