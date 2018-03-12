@@ -9,7 +9,7 @@ services:
   - docker
 before_install:
   - |
-      git diff --name-only ${TRAVIS_COMMIT_RANGE/.../..} | grep -qvE '(\.md)|(\.txt)|^(LICENSE)'
+      git diff --name-only ${TRAVIS_COMMIT_RANGE/.../..} | grep -qvE '(\.md)|(\.txt)'
       if [[ ${PIPESTATUS[0]} == 0 && ${PIPESTATUS[1]} == 1 && $TRAVIS_PULL_REQUEST != "false" ]]; then
         echo "Only documentations were updated in PR, skipping the CI."
         exit
