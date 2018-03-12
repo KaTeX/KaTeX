@@ -1639,6 +1639,18 @@ describe("A raise parser", function() {
         expect("\\raisebox{-5pt}{text}").toParse();
     });
 
+    it("should build, giben text in \\raisebox or \\raise", function() {
+        expect("\\raise5pt{text}").toBuild();
+        expect("\\raise-5pt{text}").toBuild();
+        expect("\\raise5pt \\hbox{text}").toBuild();
+        expect("\\lower5pt{text}").toBuild();
+        expect("\\lower-5pt{text}").toBuild();
+        expect("\\raise{5pt}{text}").toBuild();
+        expect("\\raise{-5pt}{text}").toBuild();
+        expect("\\raisebox{5pt}{text}").toBuild();
+        expect("\\raisebox{-5pt}{text}").toBuild();
+    });
+
     it("should parse math in \\raise or \\lower", function() {
         expect("\\raise5pt{\\frac a b}").toParse();
         expect("\\raise-5pt{\\frac a b}").toParse();
@@ -1646,6 +1658,15 @@ describe("A raise parser", function() {
         expect("\\lower-5pt{\\frac a b}").toParse();
         expect("\\raise{5pt}{\\frac a b}").toParse();
         expect("\\raise{-5pt}{\\frac a b}").toParse();
+    });
+
+    it("should build math in \\raise or \\lower", function() {
+        expect("\\raise5pt{\\frac a b}").toBuild();
+        expect("\\raise-5pt{\\frac a b}").toBuild();
+        expect("\\lower5pt{\\frac a b}").toBuild();
+        expect("\\lower-5pt{\\frac a b}").toBuild();
+        expect("\\raise{5pt}{\\frac a b}").toBuild();
+        expect("\\raise{-5pt}{\\frac a b}").toBuild();
     });
 
     it("should fail to parse math in \\raisebox", function() {
@@ -1656,6 +1677,11 @@ describe("A raise parser", function() {
     it("should parse math in an hbox when math mode is set", function() {
         expect("\\raise5pt \\hbox{$\\frac a b$}").toParse();
         expect("\\lower5pt \\hbox{$\\frac a b$}").toParse();
+    });
+
+    it("should build math in an hbox when math mode is set", function() {
+        expect("\\raise5pt \\hbox{$\\frac a b$}").toBuild();
+        expect("\\lower5pt \\hbox{$\\frac a b$}").toBuild();
     });
 
     it("should produce raise", function() {
