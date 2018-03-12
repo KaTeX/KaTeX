@@ -688,6 +688,16 @@ const spacingFunctions: {[string]: {| size: string, className: string |}} = {
     },
 };
 
+// A lookup table to determine whether a spacing function/symbol should be
+// treated like a regular space character.
+const regularSpace: {[string]: boolean} = {
+    " ": true,
+    "\\ ": true,
+    "~": true,
+    "\\space": true,
+    "\\nobreakspace": true,
+};
+
 /**
  * Maps TeX font commands to objects containing:
  * - variant: string used for "mathvariant" attribute in buildMathML.js
@@ -783,4 +793,5 @@ export default {
     svgData,
     tryCombineChars,
     spacingFunctions,
+    regularSpace,
 };
