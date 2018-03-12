@@ -875,6 +875,11 @@ describe("A text parser", function() {
         expect(textWithEmbeddedMath).toParse();
     });
 
+    it("should parse spacing functions", function() {
+        expect("a b\\, \\; \\! \\: ~ \\thinspace \\medspace \\quad \\ ").toBuild();
+        expect("\\enspace \\thickspace \\qquad \\space \\nobreakspace").toBuild();
+    });
+
     it("should omit spaces after commands", function() {
         expect("\\text{\\textellipsis !}")
             .toParseLike("\\text{\\textellipsis!}");
@@ -2931,7 +2936,7 @@ describe("Unicode", function() {
     });
 
     it("should parse symbols", function() {
-        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓\u00b7").toParse();
+        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°\u00b7").toParse();
     });
 
     it("should parse arrows", function() {
@@ -2999,11 +3004,11 @@ describe("The \\mathchoice function", function() {
 
 describe("Symbols", function() {
     it("should parse \\text{\\i\\j}", () => {
-        expect("\\text{\\i\\j}").toParse();
+        expect("\\text{\\i\\j}").toBuild();
     });
 
     it("should parse spacing functions in math or text mode", () => {
-        expect("A\\;B\\,C\\nobreakspace \\text{A\\;B\\,C\\nobreakspace}").toParse();
+        expect("A\\;B\\,C\\nobreakspace \\text{A\\;B\\,C\\nobreakspace}").toBuild();
     });
 
     it("should render ligature commands like their unicode characters", () => {
