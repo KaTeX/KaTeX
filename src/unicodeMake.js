@@ -28,14 +28,19 @@ console.log("export default {");
 
 const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" +
     "αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψωΓΔΘΛΞΠΣΥΦΨΩ";
+const keys = new Set();
 for (const letter of letters) {
     for (const accent of Object.getOwnPropertyNames(accents)) {
         const combined = letter + accent;
         const normalized = combined.normalize('NFC');
         if (normalized.length === 1) {
-            console.log(
-                `    ${encode(normalized)}: ${encode(combined)},`
-                + `  // ${normalized} = ${accents[accent].text}{${letter}}`);
+            const key = encode(normalized);
+            if (!keys.has(key)) {
+                keys.add(key);
+                console.log(
+                    `    ${encode(normalized)}: ${encode(combined)},`
+                    + `  // ${normalized} = ${accents[accent].text}{${letter}}`);
+            }
         }
         for (const accent2 of Object.getOwnPropertyNames(accents)) {
             if (accent === accent2) {
@@ -44,10 +49,14 @@ for (const letter of letters) {
             const combined2 = combined + accent2;
             const normalized2 = combined2.normalize('NFC');
             if (normalized2.length === 1) {
-                console.log(
-                    `    ${encode(normalized2)}: ${encode(combined2)},`
-                    + `  // ${normalized2} = ${accents[accent].text}`
-                    + `${accents[accent2].text}{${letter}}`);
+                const key = encode(normalized2);
+                if (!keys.has(key)) {
+                    keys.add(key);
+                    console.log(
+                        `    ${encode(normalized2)}: ${encode(combined2)},`
+                        + `  // ${normalized2} = ${accents[accent].text}`
+                        + `${accents[accent2].text}{${letter}}`);
+                }
             }
         }
     }

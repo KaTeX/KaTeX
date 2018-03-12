@@ -5,6 +5,7 @@
 /* global describe: false */
 import ParseError from "../src/ParseError";
 import parseTree from "../src/parseTree";
+import buildTree from "../src/buildTree";
 import Settings from "../src/Settings";
 import {scriptFromCodepoint, supportedCodepoint} from "../src/unicodeScripts";
 
@@ -23,6 +24,18 @@ const parseAndSetResult = function(expr, result, settings) {
                 "parsing with unknown error: " + e.message;
         }
     }
+};
+
+const _getBuilt = function(expr, settings) {
+    const usedSettings = settings ? settings : defaultSettings;
+    const parsedTree = parseTree(expr, usedSettings);
+    const rootNode = buildTree(parsedTree, expr, usedSettings);
+
+    // grab the root node of the HTML rendering
+    const builtHTML = rootNode.children[1];
+
+    // Remove the outer .katex and .katex-inner layers
+    return builtHTML.children[2].children;
 };
 
 describe("unicode", function() {
@@ -64,12 +77,43 @@ describe("unicode", function() {
 
                 return result;
             },
+
+            toBuild: function(actual, settings) {
+                const usedSettings = settings ? settings : defaultSettings;
+
+                const result = {
+                    pass: true,
+                    message: () => "'" + actual + "' succeeded in building",
+                };
+
+                expect(actual).toParse(usedSettings);
+
+                try {
+                    _getBuilt(actual, settings);
+                } catch (e) {
+                    result.pass = false;
+                    if (e instanceof ParseError) {
+                        result.message = "'" + actual + "' failed to " +
+                            "build with error: " + e.message;
+                    } else {
+                        result.message = "'" + actual + "' failed " +
+                            "building with unknown error: " + e.message;
+                    }
+                }
+
+                return result;
+            },
         });
     });
 
     it("should parse Latin-1 inside \\text{}", function() {
         expect('\\text{ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ' +
             'ÆÇÐØÞßæçðøþ}').toParse();
+    });
+
+    it("should build Latin-1 inside \\text{}", function() {
+        expect('\\text{ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ' +
+            'ÆÇÐØÞßæçðøþ}').toBuild();
     });
 
     it("should not parse Latin-1 outside \\text{} without setting", function() {
@@ -81,7 +125,7 @@ describe("unicode", function() {
 
     it("should parse Latin-1 outside \\text{}", function() {
         expect('ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ' +
-            'ÇÐÞçðþ').toParse({unicodeTextInMathMode: true});
+            'ÐÞðþ').toParse({unicodeTextInMathMode: true});
     });
 
     it("should parse all lower case Greek letters", function() {
