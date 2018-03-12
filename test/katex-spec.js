@@ -2612,6 +2612,16 @@ describe("The symbol table integrity", function() {
     });
 });
 
+describe("Symbols", function() {
+    it("should support AMS symbols in both text and math mode", function() {
+        // These text+math symbols are from Section 6 of
+        // http://mirrors.ctan.org/fonts/amsfonts/doc/amsfonts.pdf
+        const symbols = "\\yen\\checkmark\\circledR\\maltese";
+        expect(symbols).toBuild();
+        expect(`\\text{${symbols}}`).toBuild();
+    });
+});
+
 describe("A macro expander", function() {
 
     const compareParseTree = function(actual, expected, macros) {
