@@ -44,6 +44,7 @@
     "object-assign": "^4.1.0",
     "pako": "1.0.4",
     "pre-commit": "^1.2.2",
+    "query-string": "^5.1.0",
     "rimraf": "^2.6.2",
     "selenium-webdriver": "^2.48.2",
     "sri-toolbox": "^0.2.0",
