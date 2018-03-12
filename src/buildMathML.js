@@ -228,8 +228,7 @@ groupTypes.supsub = function(group, options) {
 groupTypes.spacing = function(group) {
     let node;
 
-    if (group.value === "\\ " || group.value === "\\space" ||
-        group.value === " " || group.value === "~") {
+    if (buildCommon.regularSpace.hasOwnProperty(group.value)) {
         node = new mathMLTree.MathNode(
             "mtext", [new mathMLTree.TextNode("\u00a0")]);
     } else {
