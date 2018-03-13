@@ -8,6 +8,6 @@
 import './src/katex.less';
 import katex from './katex.js';
 
-console.log('test2');
+console.log('test3');
 
 export default katex;
