@@ -509,6 +509,7 @@ export default class Parser {
                 this.switchMode(funcData.modeSwitch);
             }
             this.consume();  // Consume the command token
+            this.switchMode(oldMode);
             const {args, optArgs} = this.parseArguments(func, funcData);
             const token = baseGroup.token;
             const result = this.callFunction(
