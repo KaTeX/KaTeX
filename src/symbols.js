@@ -276,6 +276,7 @@ defineSymbol(math, ams, textord, "\u25a1", "\\Box");
 defineSymbol(math, ams, textord, "\u25ca", "\\Diamond");
 // unicode-math maps U+A5 to \mathyen. We map to AMS function \yen
 defineSymbol(math, ams, textord, "\u00a5", "\\yen", true);
+defineSymbol(text, ams, textord, "\u00a5", "\\yen", true);
 defineSymbol(math, ams, textord, "\u2713", "\\checkmark", true);
 defineSymbol(text, ams, textord, "\u2713", "\\checkmark");
 
