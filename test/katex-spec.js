@@ -875,6 +875,13 @@ describe("A text parser", function() {
         expect("\\text{graph: \\(y = mx + b\\)}").toParse();
     });
 
+    it("should parse math within text within math within text", function() {
+        expect("\\text{hello $x + \\text{world $y$} + z$}").toParse();
+        expect("\\text{hello \\(x + \\text{world $y$} + z\\)}").toParse();
+        expect("\\text{hello $x + \\text{world \\(y\\)} + z$}").toParse();
+        expect("\\text{hello \\(x + \\text{world \\(y\\)} + z\\)}").toParse();
+    });
+
     it("should forbid \\( within math mode", function() {
         expect("\\(").toNotParse();
         expect("\\text{$\\(x\\)$}").toNotParse();
@@ -893,6 +900,11 @@ describe("A text parser", function() {
     it("should detect unbalanced $", function() {
         expect("$").toNotParse();
         expect("\\text{$}").toNotParse();
+    });
+
+    it("should not mix $ and \\(..\\)", function() {
+        expect("$x\\)").toNotParse();
+        expect("\\(x$").toNotParse();
     });
 
     it("should parse spacing functions", function() {
