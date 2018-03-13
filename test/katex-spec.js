@@ -2952,12 +2952,12 @@ describe("Unicode", function() {
     });
 
     it("should parse delimeters", function() {
-        expect("\\left\u230A\\frac{a}{b}\\right\u230B").toParse();
-        expect("\\left\u2308\\frac{a}{b}\\right\u2308").toParse();
-        expect("\\left\u27ee\\frac{a}{b}\\right\u27ef").toParse();
-        expect("\\left\u27e8\\frac{a}{b}\\right\u27e9").toParse();
-        expect("\\left\u23b0\\frac{a}{b}\\right\u23b1").toParse();
-        expect("┌x┐ └x┘").toParse();
+        expect("\\left\u230A\\frac{a}{b}\\right\u230B").toBuild();
+        expect("\\left\u2308\\frac{a}{b}\\right\u2308").toBuild();
+        expect("\\left\u27ee\\frac{a}{b}\\right\u27ef").toBuild();
+        expect("\\left\u27e8\\frac{a}{b}\\right\u27e9").toBuild();
+        expect("\\left\u23b0\\frac{a}{b}\\right\u23b1").toBuild();
+        expect("┌x┐ └x┘").toBuild();
     });
 });
 
