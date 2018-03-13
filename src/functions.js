@@ -33,6 +33,8 @@ import "./functions/color";
 
 import "./functions/text";
 
+import "./functions/math";
+
 import "./functions/enclose";
 
 import "./functions/overline";
@@ -298,35 +300,3 @@ import "./functions/href";
 
 // MathChoice
 import "./functions/mathchoice";
-
-// Switching from text mode back to math mode
-defineFunction(["\\(", "$"], {
-    numArgs: 0,
-    allowedInText: true,
-    allowedInMath: false,
-    modeSwitch: "math",
-}, function(context, args) {
-    const {funcName, parser, oldMode} = context;
-    const close = (funcName === "\\(" ? "\\)" : "$");
-    const body = parser.parseExpression(false, close);
-    // We can't expand the next symbol after the closing $ until after
-    // switching modes back.  So don't consume within expect.
-    parser.expect(close, false);
-    if (oldMode) { // should always be defined for a modeSwitch function
-        parser.switchMode(oldMode);
-    }
-    parser.consume();
-    return {
-        type: "styling",
-        style: "text",
-        value: body,
-    };
-});
-
-defineFunction(["\\)", "\\]"], {
-    numArgs: 0,
-    allowedInText: true,
-    allowedInMath: false,
-}, function(context, args) {
-    throw new ParseError(`Mismatched ${context.funcName}`);
-});
