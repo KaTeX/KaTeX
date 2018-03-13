@@ -136,7 +136,9 @@ export default class Parser {
      * and fetches the one after that as the new look ahead.
      */
     consume() {
+        console.log('before consume', this.nextToken);
         this.nextToken = this.gullet.expandNextToken();
+        console.log('after consume', this.nextToken);
     }
 
     /**
@@ -455,18 +457,22 @@ export default class Parser {
 
         const func = start.result;
 
-        if (func === "$") {
+        if (func === "$" || func === "\\(") {
+            console.log(func);
             if (this.mode === "math") {
-                throw new ParseError("$ within math mode");
+                throw new ParseError(`${func} within math mode`);
             }
             const outerMode = this.mode;
             this.switchMode("math");
             // Expand next symbol now that we're in math mode.
             this.consume();
-            const body = this.parseExpression(false, "$");
-            // We can't expand the next symbol after the $ until after
+            const close = (func === "\\(" ? "\\)" : func);
+            console.log('parsing until', close);
+            const body = this.parseExpression(false, close);
+            console.log(body);
+            // We can't expand the next symbol after the closing $ until after
             // switching modes back.  So don't consume within expect.
-            this.expect("$", false);
+            this.expect(close, false);
             this.switchMode(outerMode);
             this.consume();
             return new ParseNode("styling", {
@@ -940,7 +946,9 @@ export default class Parser {
         const nucleus = this.nextToken;
         let text = nucleus.text;
 
-        if (functions[text]) {
+        if (text === "$" || text === "\(") {
+            return newDollar(nucleus);
+        } else if (functions[text]) {
             this.consume();
             // If there exists a function with this name, we return the function and
             // say that it is a function.
@@ -964,8 +972,6 @@ export default class Parser {
                     body: arg,
                     star: star,
                 }, "text"), nucleus);
-        } else if (text === "$") {
-            return newDollar(nucleus);
         }
         // At this point, we should have a symbol, possibly with accents.
         // First expand any accented base symbol according to unicodeSymbols,

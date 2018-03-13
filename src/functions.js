@@ -298,3 +298,10 @@ import "./functions/href";
 
 // MathChoice
 import "./functions/mathchoice";
+
+// \( and \) are handled in Parser.js, so if we get here, it's an error.
+defineFunction(["\\(", "\\)"], {
+    allowedInText: true,
+}, function(context, args) {
+    throw new ParseError(`Mismatched ${context.funcName}`);
+});
