@@ -8,7 +8,7 @@ defineFunction({
         numArgs: 0,
         allowedInText: true,
         allowedInMath: false,
-        modeSwitch: "math",
+        consumeMode: "math",
     },
     handler(context, args) {
         const {funcName, parser} = context;

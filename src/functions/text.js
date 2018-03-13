@@ -35,18 +35,14 @@ defineFunction({
         argTypes: ["text"],
         greediness: 2,
         allowedInText: true,
-        modeSwitch: "text",
+        consumeMode: "text",
     },
     handler(context, args) {
-        const {funcName, parser, oldMode} = context;
         const body = args[0];
-        if (oldMode) { // should always be defined for a modeSwitch function
-            parser.switchMode(oldMode);
-        }
         return {
             type: "text",
             body: ordargument(body),
-            font: funcName,
+            font: context.funcName,
         };
     },
     htmlBuilder(group, options) {

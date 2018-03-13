@@ -505,15 +505,15 @@ export default class Parser {
             }
 
             const oldMode = this.mode;
-            if (funcData.modeSwitch) {
-                this.switchMode(funcData.modeSwitch);
+            if (funcData.consumeMode) {
+                this.switchMode(funcData.consumeMode);
             }
             this.consume();  // Consume the command token
             this.switchMode(oldMode);
             const {args, optArgs} = this.parseArguments(func, funcData);
             const token = baseGroup.token;
             const result = this.callFunction(
-                func, args, optArgs, token, breakOnTokenText, oldMode);
+                func, args, optArgs, token, breakOnTokenText);
             return new ParseNode(result.type, result, this.mode);
         } else {
             return baseGroup.result;
@@ -529,14 +529,12 @@ export default class Parser {
         optArgs: (?ParseNode)[],
         token?: Token,
         breakOnTokenText?: BreakToken,
-        oldMode?: Mode,
     ): * {
         const context: FunctionContext = {
             funcName: name,
             parser: this,
             token,
             breakOnTokenText,
-            oldMode,
         };
         const func = functions[name];
         if (func && func.handler) {
