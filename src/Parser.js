@@ -504,12 +504,17 @@ export default class Parser {
                     baseGroup.token);
             }
 
-            const oldMode = this.mode;
+            // Consume the command token after possibly switching to the
+            // mode specified by the function (for instant mode switching),
+            // and then immediately switch back.
             if (funcData.consumeMode) {
+                const oldMode = this.mode;
                 this.switchMode(funcData.consumeMode);
+                this.consume();
+                this.switchMode(oldMode);
+            } else {
+                this.consume();
             }
-            this.consume();  // Consume the command token
-            this.switchMode(oldMode);
             const {args, optArgs} = this.parseArguments(func, funcData);
             const token = baseGroup.token;
             const result = this.callFunction(
@@ -910,8 +915,8 @@ export default class Parser {
         if (functions[text]) {
             // If there exists a function with this name, we return the
             // function and say that it is a function.
-            // The token will be consumed later when parsing the arguments,
-            // after possibly switching modes.
+            // The token will be consumed later in parseGivenFunction
+            // (after possibly switching modes).
             return newFunction(nucleus);
         } else if (/^\\verb[^a-zA-Z]/.test(text)) {
             this.consume();

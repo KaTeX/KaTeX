@@ -29,6 +29,7 @@ defineFunction({
     },
 });
 
+// Check for extra closing math delimiters
 defineFunction({
     names: ["\\)", "\\]"],
     props: {

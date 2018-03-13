@@ -2861,8 +2861,8 @@ describe("A macro expander", function() {
             {"\\mode": "\\TextOrMath{t}{m}"});
     });
 
-    // TODO(edemaine): This doesn't work yet.  Parses like `\text math`,
-    // which doesn't even treat all four letters as an argument.
+    // TODO(edemaine): This doesn't work yet.  Parses like `\text text`,
+    // which doesn't treat all four letters as an argument.
     //it("\\TextOrMath should work in a macro passed to \\text", function() {
     //    compareParseTree("\\text\\mode", "\\text{text}",
     //        {"\\mode": "\\TextOrMath{text}{math}"});
