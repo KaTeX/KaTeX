@@ -16,7 +16,7 @@ import Settings from "./Settings";
 import { Token } from "./Token";
 
 import type { Mode, ArgType, BreakToken } from "./types";
-import type { FunctionContext, FunctionSpec } from "./defineFunction" ;
+import type { FunctionContext, FunctionSpec } from "./defineFunction";
 import type { EnvSpec } from "./defineEnvironment";
 
 /**
@@ -48,7 +48,7 @@ import type { EnvSpec } from "./defineEnvironment";
  *
  * The earlier functions return ParseNodes.
  * The later functions (which are called deeper in the parse) sometimes return
- * ParsedFuncOrArgOrDollar, which contain a ParseNode as well as some data about
+ * ParsedFuncOrArg, which contain a ParseNode as well as some data about
  * whether the parsed object is a function which is missing some arguments, or a
  * standalone object which can be used as an argument to another function.
  */
@@ -63,13 +63,6 @@ type ParsedArg = {|
     result: ParseNode,
     token: Token,
 |};
-type ParsedDollar = {|
-    // Math mode switch
-    type: "$",
-    result: "$",
-    token: Token,
-|};
-type ParsedFuncOrArgOrDollar = ParsedFunc | ParsedArg | ParsedDollar;
 type ParsedFuncOrArg = ParsedFunc | ParsedArg;
 
 function newArgument(result: ParseNode, token: Token): ParsedArg {
@@ -78,17 +71,6 @@ function newArgument(result: ParseNode, token: Token): ParsedArg {
 
 function newFunction(token: Token): ParsedFunc {
     return {type: "fn", result: token.text, token};
-}
-
-function newDollar(token: Token): ParsedDollar {
-    return {type: "$", result: "$", token};
-}
-
-function assertFuncOrArg(parsed: ParsedFuncOrArgOrDollar): ParsedFuncOrArg {
-    if (parsed.type === "$") {
-        throw new ParseError("Unexpected $", parsed.token);
-    }
-    return parsed;
 }
 
 export default class Parser {
@@ -136,9 +118,7 @@ export default class Parser {
      * and fetches the one after that as the new look ahead.
      */
     consume() {
-        console.log('before consume', this.nextToken);
         this.nextToken = this.gullet.expandNextToken();
-        console.log('after consume', this.nextToken);
     }
 
     /**
@@ -296,20 +276,19 @@ export default class Parser {
             }
         }
 
-        const arg = assertFuncOrArg(group);
-        if (arg.type === "fn") {
+        if (group.type === "fn") {
             // ^ and _ have a greediness, so handle interactions with functions'
             // greediness
-            const funcGreediness = functions[arg.result].greediness;
+            const funcGreediness = functions[group.result].greediness;
             if (funcGreediness > Parser.SUPSUB_GREEDINESS) {
                 return this.parseGivenFunction(group);
             } else {
                 throw new ParseError(
-                    "Got function '" + arg.result + "' with no arguments " +
+                    "Got function '" + group.result + "' with no arguments " +
                         "as " + name, symbolToken);
             }
         } else {
-            return arg.result;
+            return group.result;
         }
     }
 
@@ -457,29 +436,7 @@ export default class Parser {
 
         const func = start.result;
 
-        if (func === "$" || func === "\\(") {
-            console.log(func);
-            if (this.mode === "math") {
-                throw new ParseError(`${func} within math mode`);
-            }
-            const outerMode = this.mode;
-            this.switchMode("math");
-            // Expand next symbol now that we're in math mode.
-            this.consume();
-            const close = (func === "\\(" ? "\\)" : func);
-            console.log('parsing until', close);
-            const body = this.parseExpression(false, close);
-            console.log(body);
-            // We can't expand the next symbol after the closing $ until after
-            // switching modes back.  So don't consume within expect.
-            this.expect(close, false);
-            this.switchMode(outerMode);
-            this.consume();
-            return new ParseNode("styling", {
-                style: "text",
-                value: body,
-            }, "math");
-        } else if (func === "\\begin") {
+        if (func === "\\begin") {
             // begin...end is similar to left...right
             const begin = this.parseGivenFunction(start);
             const envName = begin.value.name;
@@ -530,10 +487,9 @@ export default class Parser {
      * non-nullable result.
      */
     parseGivenFunction(
-        baseGroup: ParsedFuncOrArgOrDollar,
+        baseGroup: ParsedFuncOrArg,
         breakOnTokenText?: BreakToken,
     ): ParseNode {
-        baseGroup = assertFuncOrArg(baseGroup);
         if (baseGroup.type === "fn") {
             const func = baseGroup.result;
             const funcData = functions[func];
@@ -548,10 +504,15 @@ export default class Parser {
                     baseGroup.token);
             }
 
+            const oldMode = this.mode;
+            if (funcData.modeSwitch) {
+                this.switchMode(funcData.modeSwitch);
+            }
+            this.consume();  // Consume the command token
             const {args, optArgs} = this.parseArguments(func, funcData);
             const token = baseGroup.token;
-            const result =
-                this.callFunction(func, args, optArgs, token, breakOnTokenText);
+            const result = this.callFunction(
+                func, args, optArgs, token, breakOnTokenText, oldMode);
             return new ParseNode(result.type, result, this.mode);
         } else {
             return baseGroup.result;
@@ -567,12 +528,14 @@ export default class Parser {
         optArgs: (?ParseNode)[],
         token?: Token,
         breakOnTokenText?: BreakToken,
+        oldMode?: Mode,
     ): * {
         const context: FunctionContext = {
             funcName: name,
             parser: this,
             token,
             breakOnTokenText,
+            oldMode,
         };
         const func = functions[name];
         if (func && func.handler) {
@@ -638,7 +601,6 @@ export default class Parser {
                 }
             }
             let argNode: ParseNode;
-            arg = assertFuncOrArg(arg);
             if (arg.type === "fn") {
                 const argGreediness =
                     functions[arg.result].greediness;
@@ -664,7 +626,7 @@ export default class Parser {
     parseGroupOfType(
         type: ArgType,  // Used to describe the mode in error messages.
         optional: boolean,
-    ): ?ParsedFuncOrArgOrDollar {
+    ): ?ParsedFuncOrArg {
         // Handle `original` argTypes
         if (type === "original") {
             type = this.mode;
@@ -867,7 +829,7 @@ export default class Parser {
      * If `mode` is present, switches to that mode while parsing the group,
      * and switches back after.
      */
-    parseGroup(optional?: boolean, mode?: Mode): ?ParsedFuncOrArgOrDollar {
+    parseGroup(optional?: boolean, mode?: Mode): ?ParsedFuncOrArg {
         const outerMode = this.mode;
         const firstToken = this.nextToken;
         // Try to parse an open brace
@@ -942,16 +904,15 @@ export default class Parser {
      * Parse a single symbol out of the string. Here, we handle both the functions
      * we have defined, as well as the single character symbols
      */
-    parseSymbol(): ?ParsedFuncOrArgOrDollar {
+    parseSymbol(): ?ParsedFuncOrArg {
         const nucleus = this.nextToken;
         let text = nucleus.text;
 
-        if (text === "$" || text === "\(") {
-            return newDollar(nucleus);
-        } else if (functions[text]) {
-            this.consume();
-            // If there exists a function with this name, we return the function and
-            // say that it is a function.
+        if (functions[text]) {
+            // If there exists a function with this name, we return the
+            // function and say that it is a function.
+            // The token will be consumed later when parsing the arguments,
+            // after possibly switching modes.
             return newFunction(nucleus);
         } else if (/^\\verb[^a-zA-Z]/.test(text)) {
             this.consume();

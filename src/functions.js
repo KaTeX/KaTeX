@@ -8,7 +8,7 @@ import {
     _functions,
 } from "./defineFunction";
 
-import type {FunctionPropSpec, FunctionHandler} from "./defineFunction" ;
+import type {FunctionPropSpec, FunctionHandler} from "./defineFunction";
 
 // WARNING: New functions should be added to src/functions and imported here.
 
@@ -299,9 +299,34 @@ import "./functions/href";
 // MathChoice
 import "./functions/mathchoice";
 
-// \( and \) are handled in Parser.js, so if we get here, it's an error.
-defineFunction(["\\(", "\\)"], {
+// Switching from text mode back to math mode
+defineFunction(["\\(", "$"], {
+    numArgs: 0,
     allowedInText: true,
+    allowedInMath: false,
+    modeSwitch: "math",
+}, function(context, args) {
+    const {funcName, parser, oldMode} = context;
+    const close = (funcName === "\\(" ? "\\)" : "$");
+    const body = parser.parseExpression(false, close);
+    // We can't expand the next symbol after the closing $ until after
+    // switching modes back.  So don't consume within expect.
+    parser.expect(close, false);
+    if (oldMode) { // should always be defined for a modeSwitch function
+        parser.switchMode(oldMode);
+    }
+    parser.consume();
+    return {
+        type: "styling",
+        style: "text",
+        value: body,
+    };
+});
+
+defineFunction(["\\)", "\\]"], {
+    numArgs: 0,
+    allowedInText: true,
+    allowedInMath: false,
 }, function(context, args) {
     throw new ParseError(`Mismatched ${context.funcName}`);
 });

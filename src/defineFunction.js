@@ -2,11 +2,11 @@
 import {groupTypes as htmlGroupTypes} from "./buildHTML";
 import {groupTypes as mathmlGroupTypes} from "./buildMathML";
 
-import type Parser from "./Parser" ;
-import type ParseNode from "./ParseNode" ;
+import type Parser from "./Parser";
+import type ParseNode from "./ParseNode";
 import type Options from "./Options";
-import type {ArgType, BreakToken} from "./types" ;
-import type {Token} from "./Token" ;
+import type {ArgType, BreakToken, Mode} from "./types";
+import type {Token} from "./Token";
 
 /** Context provided to function handlers for error messages. */
 export type FunctionContext = {|
@@ -14,6 +14,7 @@ export type FunctionContext = {|
     parser: Parser,
     token?: Token,
     breakOnTokenText?: BreakToken,
+    oldMode: ?Mode,
 |};
 
 // TODO: Enumerate all allowed output types.
@@ -70,6 +71,14 @@ export type FunctionPropSpec = {
 
     // Must be true if the function is an infix operator.
     infix?: boolean,
+
+    // Switch to the specified mode before consuming the command token,
+    // including before parsing the arguments.  This is useful for commands
+    // that switch between math and text mode.  `null` does not switch,
+    // while `"text"` or `"math"` will switch to the specified mode.
+    // It's the function handler's responsibility to switch back to the
+    // old mode, which is given by the oldMode field in the context object.
+    modeSwitch?: ?Mode,
 };
 
 type FunctionDefSpec = {|
@@ -119,6 +128,7 @@ export type FunctionSpec = {|
     allowedInMath: boolean,
     numOptionalArgs: number,
     infix: boolean,
+    modeSwitch: ?Mode,
     // Must be specified unless it's handled directly in the parser.
     handler: ?FunctionHandler,
 |};
@@ -149,6 +159,7 @@ export default function defineFunction({
             : props.allowedInMath,
         numOptionalArgs: props.numOptionalArgs || 0,
         infix: !!props.infix,
+        modeSwitch: props.modeSwitch,
         handler: handler,
     };
     for (let i = 0; i < names.length; ++i) {
