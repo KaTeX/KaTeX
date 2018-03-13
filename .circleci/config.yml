@@ -6,11 +6,10 @@ defaults: &defaults
         command: |
             git submodule sync
             git submodule update --init --recursive
+    - run:
+        name: Environment variables
+        command: env
 
-    - restore_cache:
-        keys:
-          - npm-deps-{{ checksum "package.json" }}
-          - npm-deps-
     - run:
         name: Install npm dependencies
         command: npm install

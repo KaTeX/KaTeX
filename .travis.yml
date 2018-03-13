@@ -7,6 +7,13 @@ cache:
 sudo: required
 services:
   - docker
+before_install:
+  - |
+      git diff --name-only ${TRAVIS_COMMIT_RANGE/.../..} | grep -qvE '(\.md)|(\.txt)'
+      if [[ ${PIPESTATUS[0]} == 0 && ${PIPESTATUS[1]} == 1 && $TRAVIS_PULL_REQUEST != "false" ]]; then
+        echo "Only documentations were updated in PR, skipping the CI."
+        exit
+      fi
 before_script:
   - docker pull selenium/standalone-firefox:2.48.2
   - docker pull selenium/standalone-chrome:2.48.2
