@@ -903,8 +903,8 @@ describe("A text parser", function() {
     });
 
     it("should not mix $ and \\(..\\)", function() {
-        expect("$x\\)").toNotParse();
-        expect("\\(x$").toNotParse();
+        expect("\\text{$x\\)}").toNotParse();
+        expect("\\text{\\(x$}").toNotParse();
     });
 
     it("should parse spacing functions", function() {
