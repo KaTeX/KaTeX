@@ -996,8 +996,11 @@ export default class Parser {
             }
             symbol = new ParseNode(symbols[this.mode][text].group,
                             text, this.mode, nucleus);
-        } else if (supportedCodepoint(text.charCodeAt(0)) &&
-            (this.mode === "text" || this.settings.unicodeTextInMathMode)) {
+        } else if ((this.settings.allowAllSymbols &&
+                    text.charCodeAt(0) >= 0x80) ||
+                   (supportedCodepoint(text.charCodeAt(0)) &&
+                    (this.mode === "text" ||
+                     this.settings.unicodeTextInMathMode))) {
             symbol = new ParseNode("textord", text, this.mode, nucleus);
         } else {
             return null;  // EOF, ^, _, {, }, etc.

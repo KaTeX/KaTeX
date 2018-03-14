@@ -15,6 +15,7 @@ export type SettingsOptions = {
     macros?: MacroMap;
     colorIsTextColor?: boolean;
     unicodeTextInMathMode?: boolean;
+    allowAllSymbols?: boolean;
     maxSize?: number;
 };
 
@@ -35,6 +36,7 @@ class Settings {
     macros: MacroMap;
     colorIsTextColor: boolean;
     unicodeTextInMathMode: boolean;
+    allowAllSymbols: boolean;
     maxSize: number;
 
     constructor(options: SettingsOptions) {
@@ -47,6 +49,7 @@ class Settings {
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
         this.unicodeTextInMathMode =
             utils.deflt(options.unicodeTextInMathMode, false);
+        this.allowAllSymbols = utils.deflt(options.allowAllSymbols, false);
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
     }
 }

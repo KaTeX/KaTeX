@@ -134,6 +134,16 @@ describe("unicode", function() {
         expect('ěščřžůřťďňőİı').toNotParse();
     });
 
+    it("should not allow emoji", function() {
+        expect('✌').toNotParse();
+        expect('\\text{✌}').toNotParse();
+    });
+
+    it("should allow emoji with allowAllSymbols", function() {
+        const settings = {allowAllSymbols: true};
+        expect('✌').toParse(settings);
+        expect('\\text{✌}').toParse(settings);
+    });
 });
 
 describe("unicodeScripts", () => {
