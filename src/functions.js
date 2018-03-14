@@ -8,7 +8,7 @@ import {
     _functions,
 } from "./defineFunction";
 
-import type {FunctionPropSpec, FunctionHandler} from "./defineFunction" ;
+import type {FunctionPropSpec, FunctionHandler} from "./defineFunction";
 
 // WARNING: New functions should be added to src/functions and imported here.
 
@@ -32,6 +32,8 @@ import "./functions/sqrt";
 import "./functions/color";
 
 import "./functions/text";
+
+import "./functions/math";
 
 import "./functions/enclose";
 

@@ -812,7 +812,6 @@ describe("A text parser", function() {
     const badTextExpression = "\\text{a b%}";
     const badFunctionExpression = "\\text{\\sqrt{x}}";
     const mathTokenAfterText = "\\text{sin}^2";
-    const textWithEmbeddedMath = "\\text{graph: $y = mx + b$}";
 
     it("should not fail", function() {
         expect(textExpression).toParse();
@@ -872,7 +871,40 @@ describe("A text parser", function() {
     });
 
     it("should parse math within text group", function() {
-        expect(textWithEmbeddedMath).toParse();
+        expect("\\text{graph: $y = mx + b$}").toParse();
+        expect("\\text{graph: \\(y = mx + b\\)}").toParse();
+    });
+
+    it("should parse math within text within math within text", function() {
+        expect("\\text{hello $x + \\text{world $y$} + z$}").toParse();
+        expect("\\text{hello \\(x + \\text{world $y$} + z\\)}").toParse();
+        expect("\\text{hello $x + \\text{world \\(y\\)} + z$}").toParse();
+        expect("\\text{hello \\(x + \\text{world \\(y\\)} + z\\)}").toParse();
+    });
+
+    it("should forbid \\( within math mode", function() {
+        expect("\\(").toNotParse();
+        expect("\\text{$\\(x\\)$}").toNotParse();
+    });
+
+    it("should forbid $ within math mode", function() {
+        expect("$x$").toNotParse();
+        expect("\\text{\\($x$\\)}").toNotParse();
+    });
+
+    it("should detect unbalanced \\)", function() {
+        expect("\\)").toNotParse();
+        expect("\\text{\\)}").toNotParse();
+    });
+
+    it("should detect unbalanced $", function() {
+        expect("$").toNotParse();
+        expect("\\text{$}").toNotParse();
+    });
+
+    it("should not mix $ and \\(..\\)", function() {
+        expect("\\text{$x\\)}").toNotParse();
+        expect("\\text{\\(x$}").toNotParse();
     });
 
     it("should parse spacing functions", function() {
@@ -2824,8 +2856,13 @@ describe("A macro expander", function() {
             {"\\mode": "\\TextOrMath{text}{math}"});
     });
 
-    // TODO(edemaine): This doesn't work yet.  Parses like `\text math`,
-    // which doesn't even treat all four letters as an argument.
+    it("\\TextOrMath should work in a macro passed to \\text", function() {
+        compareParseTree("\\text\\mode", "\\text t",
+            {"\\mode": "\\TextOrMath{t}{m}"});
+    });
+
+    // TODO(edemaine): This doesn't work yet.  Parses like `\text text`,
+    // which doesn't treat all four letters as an argument.
     //it("\\TextOrMath should work in a macro passed to \\text", function() {
     //    compareParseTree("\\text\\mode", "\\text{text}",
     //        {"\\mode": "\\TextOrMath{text}{math}"});
