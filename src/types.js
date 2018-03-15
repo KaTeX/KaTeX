@@ -23,4 +23,5 @@ export type ArgType = "color" | "size" | "url" | "original" | Mode;
 // LaTeX display style.
 export type StyleStr = "text" | "display";
 
-export type BreakToken = "]" | "}" | "$";
+// Allowable token text for "break" arguments in parser
+export type BreakToken = "]" | "}" | "$" | "\\)";
