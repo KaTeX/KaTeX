@@ -136,10 +136,10 @@ defineSymbol(text, main, textord, "\u2021", "\\ddag");
 defineSymbol(text, main, textord, "\u2020", "\\textdaggerdbl");
 
 // Large Delimiters
-defineSymbol(math, main, close, "\u23b1", "\\rmoustache");
-defineSymbol(math, main, open, "\u23b0", "\\lmoustache");
-defineSymbol(math, main, close, "\u27ef", "\\rgroup");
-defineSymbol(math, main, open, "\u27ee", "\\lgroup");
+defineSymbol(math, main, close, "\u23b1", "\\rmoustache", true);
+defineSymbol(math, main, open, "\u23b0", "\\lmoustache", true);
+defineSymbol(math, main, close, "\u27ef", "\\rgroup", true);
+defineSymbol(math, main, open, "\u27ee", "\\lgroup", true);
 
 // Binary Operators
 defineSymbol(math, main, bin, "\u2213", "\\mp", true);
@@ -276,6 +276,7 @@ defineSymbol(math, ams, textord, "\u25a1", "\\Box");
 defineSymbol(math, ams, textord, "\u25ca", "\\Diamond");
 // unicode-math maps U+A5 to \mathyen. We map to AMS function \yen
 defineSymbol(math, ams, textord, "\u00a5", "\\yen", true);
+defineSymbol(text, ams, textord, "\u00a5", "\\yen", true);
 defineSymbol(math, ams, textord, "\u2713", "\\checkmark", true);
 defineSymbol(text, ams, textord, "\u2713", "\\checkmark");
 
@@ -289,10 +290,10 @@ defineSymbol(math, ams, textord, "\u03dd", "\\digamma");
 defineSymbol(math, ams, textord, "\u03f0", "\\varkappa");
 
 // AMS Delimiters
-defineSymbol(math, ams, open, "\u250c", "\\ulcorner");
-defineSymbol(math, ams, close, "\u2510", "\\urcorner");
-defineSymbol(math, ams, open, "\u2514", "\\llcorner");
-defineSymbol(math, ams, close, "\u2518", "\\lrcorner");
+defineSymbol(math, ams, open, "\u250c", "\\ulcorner", true);
+defineSymbol(math, ams, close, "\u2510", "\\urcorner", true);
+defineSymbol(math, ams, open, "\u2514", "\\llcorner", true);
+defineSymbol(math, ams, close, "\u2518", "\\lrcorner", true);
 
 // AMS Binary Relations
 defineSymbol(math, ams, rel, "\u2266", "\\leqq", true);
@@ -607,10 +608,10 @@ defineSymbol(math, main, open, "[", "\\lbrack");
 defineSymbol(math, main, close, "]", "\\rbrack");
 defineSymbol(text, main, textord, "<", "\\textless"); // in T1 fontenc
 defineSymbol(text, main, textord, ">", "\\textgreater"); // in T1 fontenc
-defineSymbol(math, main, open, "\u230a", "\\lfloor");
-defineSymbol(math, main, close, "\u230b", "\\rfloor");
-defineSymbol(math, main, open, "\u2308", "\\lceil");
-defineSymbol(math, main, close, "\u2309", "\\rceil");
+defineSymbol(math, main, open, "\u230a", "\\lfloor", true);
+defineSymbol(math, main, close, "\u230b", "\\rfloor", true);
+defineSymbol(math, main, open, "\u2308", "\\lceil", true);
+defineSymbol(math, main, close, "\u2309", "\\rceil", true);
 defineSymbol(math, main, textord, "\\", "\\backslash");
 defineSymbol(math, main, textord, "\u2223", "|");
 defineSymbol(math, main, textord, "\u2223", "\\vert");
