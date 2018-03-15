@@ -47,7 +47,8 @@ const options = require("nomnom")
         abbr: "b",
         flag: true,
         default: false,
-        help: "Makes \\color behave like LaTeX's 2-argument \\textcolor, instead of LaTeX's one-argument \\color mode change.",
+        help: "Makes \\color behave like LaTeX's 2-argument \\textcolor, " +
+              "instead of LaTeX's one-argument \\color mode change.",
     })
     .option("unicodeTextInMathMode", {
         full: "unicode-text-in-math-mode",
