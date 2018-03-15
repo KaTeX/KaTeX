@@ -25,6 +25,9 @@
     // Prevent a rendering bug that misplaces \vec in Chrome.
     text-rendering: auto;
 
+    // Fix width of containers of negative spaces, working around Chrome bug.
+    width: min-content;
+
     // Prevent background resetting on elements in Windows's high-contrast
     // mode, while still allowing background/foreground setting on root .katex
     * { -ms-high-contrast-adjust: none !important; }

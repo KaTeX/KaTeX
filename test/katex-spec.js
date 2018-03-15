@@ -609,7 +609,7 @@ describe("An implicit group parser", function() {
             expect(tree).toMatchSnapshot();
         });
 
-        it("should work wwith old font functions: \\sqrt[\\tt 3]{x}", () => {
+        it("should work with old font functions: \\sqrt[\\tt 3]{x}", () => {
             const tree = stripPositions(getParsed("\\sqrt[\\tt 3]{x}"));
             expect(tree).toMatchSnapshot();
         });
@@ -814,7 +814,6 @@ describe("A text parser", function() {
     const badTextExpression = "\\text{a b%}";
     const badFunctionExpression = "\\text{\\sqrt{x}}";
     const mathTokenAfterText = "\\text{sin}^2";
-    const textWithEmbeddedMath = "\\text{graph: $y = mx + b$}";
 
     it("should not fail", function() {
         expect(textExpression).toParse();
@@ -874,7 +873,45 @@ describe("A text parser", function() {
     });
 
     it("should parse math within text group", function() {
-        expect(textWithEmbeddedMath).toParse();
+        expect("\\text{graph: $y = mx + b$}").toParse();
+        expect("\\text{graph: \\(y = mx + b\\)}").toParse();
+    });
+
+    it("should parse math within text within math within text", function() {
+        expect("\\text{hello $x + \\text{world $y$} + z$}").toParse();
+        expect("\\text{hello \\(x + \\text{world $y$} + z\\)}").toParse();
+        expect("\\text{hello $x + \\text{world \\(y\\)} + z$}").toParse();
+        expect("\\text{hello \\(x + \\text{world \\(y\\)} + z\\)}").toParse();
+    });
+
+    it("should forbid \\( within math mode", function() {
+        expect("\\(").toNotParse();
+        expect("\\text{$\\(x\\)$}").toNotParse();
+    });
+
+    it("should forbid $ within math mode", function() {
+        expect("$x$").toNotParse();
+        expect("\\text{\\($x$\\)}").toNotParse();
+    });
+
+    it("should detect unbalanced \\)", function() {
+        expect("\\)").toNotParse();
+        expect("\\text{\\)}").toNotParse();
+    });
+
+    it("should detect unbalanced $", function() {
+        expect("$").toNotParse();
+        expect("\\text{$}").toNotParse();
+    });
+
+    it("should not mix $ and \\(..\\)", function() {
+        expect("\\text{$x\\)}").toNotParse();
+        expect("\\text{\\(x$}").toNotParse();
+    });
+
+    it("should parse spacing functions", function() {
+        expect("a b\\, \\; \\! \\: ~ \\thinspace \\medspace \\quad \\ ").toBuild();
+        expect("\\enspace \\thickspace \\qquad \\space \\nobreakspace").toBuild();
     });
 
     it("should omit spaces after commands", function() {
@@ -2621,6 +2658,16 @@ describe("The symbol table integrity", function() {
     });
 });
 
+describe("Symbols", function() {
+    it("should support AMS symbols in both text and math mode", function() {
+        // These text+math symbols are from Section 6 of
+        // http://mirrors.ctan.org/fonts/amsfonts/doc/amsfonts.pdf
+        const symbols = "\\yen\\checkmark\\circledR\\maltese";
+        expect(symbols).toBuild();
+        expect(`\\text{${symbols}}`).toBuild();
+    });
+});
+
 describe("A macro expander", function() {
 
     const compareParseTree = function(actual, expected, macros) {
@@ -2823,8 +2870,13 @@ describe("A macro expander", function() {
             {"\\mode": "\\TextOrMath{text}{math}"});
     });
 
-    // TODO(edemaine): This doesn't work yet.  Parses like `\text math`,
-    // which doesn't even treat all four letters as an argument.
+    it("\\TextOrMath should work in a macro passed to \\text", function() {
+        compareParseTree("\\text\\mode", "\\text t",
+            {"\\mode": "\\TextOrMath{t}{m}"});
+    });
+
+    // TODO(edemaine): This doesn't work yet.  Parses like `\text text`,
+    // which doesn't treat all four letters as an argument.
     //it("\\TextOrMath should work in a macro passed to \\text", function() {
     //    compareParseTree("\\text\\mode", "\\text{text}",
     //        {"\\mode": "\\TextOrMath{text}{math}"});
@@ -2878,7 +2930,8 @@ describe("Unicode accents", function() {
             "\\tilde n" +
             "\\grave o\\acute o\\hat o\\tilde o\\ddot o" +
             "\\grave u\\acute u\\hat u\\ddot u" +
-            "\\acute y\\ddot y");
+            "\\acute y\\ddot y",
+            {unicodeTextInMathMode: true});
     });
 
     it("should parse Latin-1 letters in text mode", function() {
@@ -2908,18 +2961,21 @@ describe("Unicode accents", function() {
     });
 
     it("should parse combining characters", function() {
-        expect("A\u0301C\u0301").toParseLike("Á\\acute C");
+        expect("A\u0301C\u0301").toParseLike("Á\\acute C",
+            {unicodeTextInMathMode: true});
         expect("\\text{A\u0301C\u0301}").toParseLike("\\text{Á\\'C}");
     });
 
     it("should parse multi-accented characters", function() {
-        expect("ấā́ắ\\text{ấā́ắ}").toParse();
+        expect("ấā́ắ\\text{ấā́ắ}").toParse({unicodeTextInMathMode: true});
         // Doesn't parse quite the same as
         // "\\text{\\'{\\^a}\\'{\\=a}\\'{\\u a}}" because of the ordgroups.
     });
 
     it("should parse accented i's and j's", function() {
-        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ");
+        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ",
+            {unicodeTextInMathMode: true});
+        expect("ấā́ắ\\text{ấā́ắ}").toParse({unicodeTextInMathMode: true});
     });
 });
 
@@ -2941,7 +2997,7 @@ describe("Unicode", function() {
     });
 
     it("should parse symbols", function() {
-        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓\u00b7").toParse();
+        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°\u00b7").toParse();
     });
 
     it("should parse arrows", function() {
@@ -2954,6 +3010,15 @@ describe("Unicode", function() {
 
     it("should parse binary operators", function() {
         expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toParse();
+    });
+
+    it("should parse delimeters", function() {
+        expect("\\left\u230A\\frac{a}{b}\\right\u230B").toBuild();
+        expect("\\left\u2308\\frac{a}{b}\\right\u2308").toBuild();
+        expect("\\left\u27ee\\frac{a}{b}\\right\u27ef").toBuild();
+        expect("\\left\u27e8\\frac{a}{b}\\right\u27e9").toBuild();
+        expect("\\left\u23b0\\frac{a}{b}\\right\u23b1").toBuild();
+        expect("┌x┐ └x┘").toBuild();
     });
 });
 
@@ -3009,16 +3074,62 @@ describe("The \\mathchoice function", function() {
 
 describe("Symbols", function() {
     it("should parse \\text{\\i\\j}", () => {
-        expect("\\text{\\i\\j}").toParse();
+        expect("\\text{\\i\\j}").toBuild();
     });
 
     it("should parse spacing functions in math or text mode", () => {
-        expect("A\\;B\\,C\\nobreakspace \\text{A\\;B\\,C\\nobreakspace}").toParse();
+        expect("A\\;B\\,C\\nobreakspace \\text{A\\;B\\,C\\nobreakspace}").toBuild();
     });
 
     it("should render ligature commands like their unicode characters", () => {
         const commands = getBuilt("\\text{\\ae\\AE\\oe\\OE\\o\\O\\ss}");
         const unicode = getBuilt("\\text{æÆœŒøØß}");
         expect(commands).toEqual(unicode);
+    });
+});
+
+describe("unicodeTextInMathMode setting", function() {
+    it("should allow unicode text when true", () => {
+        expect("é").toParse({unicodeTextInMathMode: true});
+        expect("試").toParse({unicodeTextInMathMode: true});
+    });
+
+    it("should forbid unicode text when false", () => {
+        expect("é").toNotParse({unicodeTextInMathMode: false});
+        expect("試").toNotParse({unicodeTextInMathMode: false});
+    });
+
+    it("should forbid unicode text when default", () => {
+        expect("é").toNotParse();
+        expect("試").toNotParse();
+    });
+
+    it("should always allow unicode text in text mode", () => {
+        expect("\\text{é試}").toParse({unicodeTextInMathMode: false});
+        expect("\\text{é試}").toParse({unicodeTextInMathMode: true});
+        expect("\\text{é試}").toParse();
+    });
+});
+
+describe("Internal __* interface", function() {
+    const latex = "\\sum_{k = 0}^{\\infty} x^k";
+    const rendered = katex.renderToString(latex);
+
+    it("__parse renders same as renderToString", () => {
+        const parsed = katex.__parse(latex);
+        expect(buildTree(parsed, latex, new Settings()).toMarkup())
+            .toEqual(rendered);
+    });
+
+    it("__renderToDomTree renders same as renderToString", () => {
+        const tree = katex.__renderToDomTree(latex);
+        expect(tree.toMarkup()).toEqual(rendered);
+    });
+
+    it("__renderToHTMLTree renders same as renderToString sans MathML", () => {
+        const tree = katex.__renderToHTMLTree(latex);
+        const renderedSansMathML = rendered.replace(
+            /<span class="katex-mathml">.*?<\/span>/, '');
+        expect(tree.toMarkup()).toEqual(renderedSansMathML);
     });
 });

@@ -35,6 +35,7 @@ defineFunction({
         argTypes: ["text"],
         greediness: 2,
         allowedInText: true,
+        consumeMode: "text",
     },
     handler(context, args) {
         const body = args[0];
@@ -49,11 +50,11 @@ defineFunction({
         // Checks if the argument is a font family or a font style.
         let newOptions;
         if (textFontFamilies[font]) {
-            newOptions = options.withFontFamily(textFontFamilies[font]);
+            newOptions = options.withTextFontFamily(textFontFamilies[font]);
         } else if (textFontWeights[font]) {
-            newOptions = options.withFontWeight(textFontWeights[font]);
+            newOptions = options.withTextFontWeight(textFontWeights[font]);
         } else {
-            newOptions = options.withFontShape(textFontShapes[font]);
+            newOptions = options.withTextFontShape(textFontShapes[font]);
         }
         const inner = html.buildExpression(group.value.body, newOptions, true);
         buildCommon.tryCombineChars(inner);

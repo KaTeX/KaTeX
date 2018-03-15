@@ -95,6 +95,7 @@ describe("A MathML builder", function() {
     });
 
     it('accents turn into <mover accent="true"> in MathML', function() {
-        expect(getMathML("über fiancée")).toMatchSnapshot();
+        expect(getMathML("über fiancée", {unicodeTextInMathMode: true}))
+            .toMatchSnapshot();
     });
 });

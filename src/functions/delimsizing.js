@@ -35,10 +35,12 @@ const delimiterSizes = {
 const delimiters = [
     "(", ")", "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
-    "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
+    "\\lfloor", "\\rfloor", "\u230a", "\u230b",
+    "\\lceil", "\\rceil", "\u2308", "\u2309",
     "<", ">", "\\langle", "\u27e8", "\\rangle", "\u27e9", "\\lt", "\\gt",
     "\\lvert", "\\rvert", "\\lVert", "\\rVert",
-    "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache",
+    "\\lgroup", "\\rgroup", "\u27ee", "\u27ef",
+    "\\lmoustache", "\\rmoustache", "\u23b0", "\u23b1",
     "/", "\\backslash",
     "|", "\\vert", "\\|", "\\Vert",
     "\\uparrow", "\\Uparrow",
@@ -275,7 +277,14 @@ defineFunction({
             middleDelim = delimiter.sizedDelim(
                 group.value.value, 1, options,
                 group.mode, []);
-            middleDelim.isMiddle = {value: group.value.value, options: options};
+
+            // Property `isMiddle` not defined on `span`. It is only used in
+            // this file above. Fixing this correctly requires refactoring the
+            // htmlBuilder return type to support passing additional data.
+            // An easier, but unideal option would be to add `isMiddle` to
+            // `span` just for this case.
+            // $FlowFixMe
+            middleDelim.isMiddle = {value: group.value.value, options};
         }
         return middleDelim;
     },

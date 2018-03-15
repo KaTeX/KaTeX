@@ -4,6 +4,7 @@
  */
 import katex from '../katex.webpack.js';
 import './main.css';
+import queryString from 'query-string';
 
 function init() {
     const input = document.getElementById("input");
@@ -13,52 +14,56 @@ function init() {
     input.addEventListener("input", reprocess, false);
     permalink.addEventListener("click", setSearch);
 
-    let match = (/(?:^\?|&)text=([^&]*)/).exec(window.location.search);
-    if (match) {
-        input.value = decodeURIComponent(match[1]);
+    const options = {displayMode: true, throwOnError: false, macros: {}};
+    const query = queryString.parse(window.location.search);
+
+    if (query.text) {
+        input.value = query.text;
     }
 
-    const macros = {};
-    // TODO: Add toggle for displayMode.
-    // https://github.com/Khan/KaTeX/issues/1035
-    const options = {displayMode: true, throwOnError: false};
-    const macroRegex = /(?:^\?|&)(?:\\|%5[Cc])([A-Za-z]+)=([^&]*)/g;
-    let macroString = "";
-    while ((match = macroRegex.exec(window.location.search)) !== null) {
-        options.macros = macros;
-        macros["\\" + match[1]] = decodeURIComponent(match[2]);
-        macroString += "&" + match[0].substr(1);
+    // Use `display=0` or `displayMode=0` (or `=f`/`=false`/`=n`/`=no`)
+    // to turn off displayMode (which is on by default).
+    const displayQuery = (query.displayMode || query.display);
+    if (displayQuery && displayQuery.match(/^(0|f|n)/)) {
+        options.displayMode = false;
     }
 
-    // The `before` search parameter puts normal text before the math.
-    // The `after` search parameter puts normal text after the math.
+    // The `before` or `pre` search parameter puts normal text before the math.
+    // The `after` or `post` search parameter puts normal text after the math.
     // Example use: testing baseline alignment.
-    if (/(?:^\?|&)(?:before|after)=/.test(window.location.search)) {
+    if (query.before || query.after || query.pre || query.post) {
         const mathContainer = math;
         mathContainer.id = "math-container";
 
-        if ((match = /(?:^\?|&)before=([^&]*)/.exec(window.location.search))) {
-            const before = document.createTextNode(decodeURIComponent(match[1]));
+        if (query.before || query.pre) {
+            const before = document.createTextNode(query.before || query.pre);
             mathContainer.appendChild(before);
-            macroString += "&" + match[0].substr(1);
         }
 
         math = document.createElement("span");
         math.id = "math";
         mathContainer.appendChild(math);
 
-        if ((match = /(?:^\?|&)after=([^&]*)/.exec(window.location.search))) {
-            const after = document.createTextNode(decodeURIComponent(match[1]));
+        if (query.after || query.post) {
+            const after = document.createTextNode(query.after || query.post);
             mathContainer.appendChild(after);
-            macroString += "&" + match[0].substr(1);
         }
     }
+
+    // Macros can be specified via `\command=expansion` or single-character
+    // `c=expansion`.
+    Object.getOwnPropertyNames(query).forEach((key) => {
+        if (key.match(/^\\|^[^]$/)) {
+            options.macros[key] = query[key];
+        }
+    });
 
     reprocess();
 
     function setSearch() {
-        window.location.search =
-            "?text=" + encodeURIComponent(input.value) + macroString;
+        const query = queryString.parse(window.location.search);
+        query.text = input.value;
+        window.location.search = queryString.stringify(query);
     }
 
     function reprocess() {
