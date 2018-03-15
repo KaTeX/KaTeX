@@ -13,7 +13,7 @@
 # writing | (or >) as the first symbol of the value and then continuing
 # on the next line. See http://www.yaml.org/ for syntax details.
 
-Accents: \vec{A}\vec{x}\vec x^2\vec{x}_2^2\vec{A}^2\vec{xA}^2
+Accents: \vec{B}\vec{x}\vec x^2\vec{x}_2^2\vec{A}^2\vec{xA}^2
 AccentsText: |
     \begin{array}{l}
     \text{\'\i} & \text{\.\i} & \text{\`\i} & \text{\"\i} & \text{\H\i} & \text{\r\i} \\
@@ -312,7 +312,7 @@ TextStacked:
       \textsf{\textrm{\textbf{abc123}} \textbf{abc123} \textit{abc123}}\\
       \textit{abc123 \textbf{abc123} \textsf{abc123}}\\
   \end{matrix}
-TextWithMath: 
+TextWithMath:
   \begin{matrix}
       \text{for $a < b$ and $ c < d $}. \\
       \textsf{for $a < b$ and $ c < d $}. \\
