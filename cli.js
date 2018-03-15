@@ -47,7 +47,7 @@ const options = require("nomnom")
         abbr: "b",
         flag: true,
         default: false,
-        help: "Restores the old (pre-0.8.0) behavior of \\color.",
+        help: "Makes \\color behave like LaTeX's 2-argument \\textcolor, instead of LaTeX's one-argument \\color mode change.",
     })
     .option("unicodeTextInMathMode", {
         full: "unicode-text-in-math-mode",
