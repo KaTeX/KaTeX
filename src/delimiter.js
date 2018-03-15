@@ -229,19 +229,19 @@ const makeStackedDelim = function(
         repeat = "\u23a5";
         bottom = "\u23a6";
         font = "Size4-Regular";
-    } else if (delim === "\\lfloor") {
+    } else if (delim === "\\lfloor" || delim === "\u230a") {
         repeat = top = "\u23a2";
         bottom = "\u23a3";
         font = "Size4-Regular";
-    } else if (delim === "\\lceil") {
+    } else if (delim === "\\lceil" || delim === "\u2308") {
         top = "\u23a1";
         repeat = bottom = "\u23a2";
         font = "Size4-Regular";
-    } else if (delim === "\\rfloor") {
+    } else if (delim === "\\rfloor" || delim === "\u230b") {
         repeat = top = "\u23a5";
         bottom = "\u23a6";
         font = "Size4-Regular";
-    } else if (delim === "\\rceil") {
+    } else if (delim === "\\rceil" || delim === "\u2309") {
         top = "\u23a4";
         repeat = bottom = "\u23a5";
         font = "Size4-Regular";
@@ -267,22 +267,22 @@ const makeStackedDelim = function(
         bottom = "\u23ad";
         repeat = "\u23aa";
         font = "Size4-Regular";
-    } else if (delim === "\\lgroup") {
+    } else if (delim === "\\lgroup" || delim === "\u27ee") {
         top = "\u23a7";
         bottom = "\u23a9";
         repeat = "\u23aa";
         font = "Size4-Regular";
-    } else if (delim === "\\rgroup") {
+    } else if (delim === "\\rgroup" || delim === "\u27ef") {
         top = "\u23ab";
         bottom = "\u23ad";
         repeat = "\u23aa";
         font = "Size4-Regular";
-    } else if (delim === "\\lmoustache") {
+    } else if (delim === "\\lmoustache" || delim === "\u23b0") {
         top = "\u23a7";
         bottom = "\u23ad";
         repeat = "\u23aa";
         font = "Size4-Regular";
-    } else if (delim === "\\rmoustache") {
+    } else if (delim === "\\rmoustache" || delim === "\u23b1") {
         top = "\u23ab";
         bottom = "\u23a9";
         repeat = "\u23aa";
@@ -482,7 +482,8 @@ const makeSqrtImage = function(
 const stackLargeDelimiters = [
     "(", ")", "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
-    "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
+    "\\lfloor", "\\rfloor", "\u230a", "\u230b",
+    "\\lceil", "\\rceil", "\u2308", "\u2309",
     "\\surd",
 ];
 
@@ -492,7 +493,8 @@ const stackAlwaysDelimiters = [
     "\\Uparrow", "\\Downarrow", "\\Updownarrow",
     "|", "\\|", "\\vert", "\\Vert",
     "\\lvert", "\\rvert", "\\lVert", "\\rVert",
-    "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache",
+    "\\lgroup", "\\rgroup", "\u27ee", "\u27ef",
+    "\\lmoustache", "\\rmoustache", "\u23b0", "\u23b1",
 ];
 
 // and delimiters that never stack

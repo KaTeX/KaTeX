@@ -35,6 +35,7 @@ defineFunction({
         argTypes: ["text"],
         greediness: 2,
         allowedInText: true,
+        consumeMode: "text",
     },
     handler(context, args) {
         const body = args[0];
