@@ -1,6 +1,7 @@
 build
 node_modules
 npm-debug.log
+debug.log
 last.png
 diff.png
 /.npm-install.stamp
