@@ -3,6 +3,7 @@
 
 const childProcess = require("child_process");
 const fs = require("fs");
+const mkdirp = require("mkdirp");
 const jspngopt = require("jspngopt");
 const net = require("net");
 const os = require("os");
@@ -20,6 +21,8 @@ const dstDir = path.normalize(
     path.join(__dirname, "..", "..", "test", "screenshotter", "images"));
 const diffDir = path.normalize(
     path.join(__dirname, "..", "..", "test", "screenshotter", "diff"));
+const regenDir = path.normalize(
+    path.join(__dirname, "..", "..", "test", "screenshotter", "new"));
 
 //////////////////////////////////////////////////////////////////////
 // Process command line arguments
@@ -79,6 +82,10 @@ const opts = require("nomnom")
     .option("diff", {
         flag: true,
         help: "With `--verify`, produce image diffs when match fails",
+    })
+    .option("regenerate", {
+        flag: true,
+        help: "With `--verify`, generate new screenshots when match fails",
     })
     .option("attempts", {
         help: "Retry this many times before reporting failure",
@@ -448,8 +455,8 @@ function takeScreenshot(key) {
                         console.error("FAIL! " + key);
                         listOfFailed.push(key);
                         exitStatus = 3;
-                        if (opts.diff) {
-                            return saveScreenshotDiff(key, buf);
+                        if (opts.diff || opts.regenerate) {
+                            return saveFailedScreenshot(key, buf);
                         }
                     } else {
                         console.log("error " + key);
@@ -470,16 +477,20 @@ function takeScreenshot(key) {
         }
     }
 
-    function saveScreenshotDiff(key, buf) {
+    function saveFailedScreenshot(key, buf) {
         const filenamePrefix = key + "-" + opts.browser;
+        const outputDir = opts.regenerate ? regenDir : diffDir;
         const baseFile = path.join(dstDir, filenamePrefix + ".png");
         const diffFile = path.join(diffDir, filenamePrefix + "-diff.png");
-        const bufFile = path.join(diffDir, filenamePrefix + "-fail.png");
+        const bufFile = path.join(outputDir, filenamePrefix + ".png");
 
-        return promisify(fs.mkdir, diffDir)
-            .then(null, function() { }) /* Ignore EEXIST error (XXX & others) */
+        let promise = promisify(mkdirp, outputDir)
             .then(function() {
                 return promisify(fs.writeFile, bufFile, buf);
+            });
+        if (opts.diff) {
+            promise = promise.then(function() {
+                return promisify(mkdirp, diffDir);
             })
             .then(function() {
                 return execFile("convert", [
@@ -494,10 +505,14 @@ function takeScreenshot(key) {
                               // corners
                     diffFile, // output file name
                 ]);
-            })
-            .then(function() {
+            });
+        }
+        if (!opts.regenerate) {
+            promise = promise.then(function() {
                 return promisify(fs.unlink, bufFile);
             });
+        }
+        return promise;
     }
 
     function oneDone() {
