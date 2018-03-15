@@ -47,7 +47,14 @@ const options = require("nomnom")
         abbr: "b",
         flag: true,
         default: false,
-        help: "Restores the old behavior of (pre-0.8.0) KaTeX.",
+        help: "Restores the old (pre-0.8.0) behavior of \\color.",
+    })
+    .option("unicodeTextInMathMode", {
+        full: "unicode-text-in-math-mode",
+        abbr: "u",
+        flag: true,
+        default: false,
+        help: "Add support for unicode text characters in math mode.",
     })
     .option("maxSize", {
         full: "max-size",
