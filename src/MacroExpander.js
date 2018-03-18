@@ -10,6 +10,7 @@ import builtinMacros from "./macros";
 import type {Mode} from "./types";
 import ParseError from "./ParseError";
 import objectAssign from "object-assign";
+import {expandWideChar} from "./wide-character";
 
 import type {MacroContextInterface, MacroMap, MacroExpansion} from "./macros";
 
@@ -143,12 +144,12 @@ export default class MacroExpander implements MacroContextInterface {
     expandOnce(): Token | Token[] {
         const topToken = this.popToken();
         const name = topToken.text;
-        const isMacro = (name.charAt(0) === "\\");
+        const isMacro = (name.charAt(0) === "\\" || name.charAt(0) === "\uD835");
         if (isMacro && controlWordRegex.test(name)) {
             // Consume all spaces after \macro (but not \\, \', etc.)
             this.consumeSpaces();
         }
-        if (!this.macros.hasOwnProperty(name)) {
+        if (!(this.macros.hasOwnProperty(name) || name.charAt(0) === "\uD835")) {
             // Fully expanded
             this.pushToken(topToken);
             return topToken;
@@ -226,9 +227,17 @@ export default class MacroExpander implements MacroContextInterface {
      * Caches macro expansions for those that were defined simple TeX strings.
      */
     _getExpansion(name: string): MacroExpansion {
-        const definition = this.macros[name];
-        const expansion =
-            typeof definition === "function" ? definition(this) : definition;
+        let expansion;
+        let definition;
+        if (name.charAt(0) === "\uD835") {
+            // Surrogate pair. We support Unicode range 1D400–1D7FF,
+            // Mathematical Alphanumeric Symbols.
+            expansion = expandWideChar(name, this.mode);
+        } else {
+            definition = this.macros[name];
+            expansion =
+                typeof definition === "function" ? definition(this) : definition;
+        }
         if (typeof expansion === "string") {
             let numArgs = 0;
             if (expansion.indexOf("#") !== -1) {
@@ -257,4 +266,3 @@ export default class MacroExpander implements MacroContextInterface {
         return expansion;
     }
 }
-

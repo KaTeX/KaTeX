@@ -5,6 +5,8 @@
  * support. To add new scripts or families, just add a new entry to the
  * scriptData array below. Adding scripts to the scriptData array allows
  * characters from that script to appear in \text{} environments.
+ *
+ * See wide-characters.js for surrogate pairs.
  */
 
 /**

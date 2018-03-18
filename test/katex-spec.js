@@ -2998,13 +2998,20 @@ describe("Unicode", function() {
         expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toParse();
     });
 
-    it("should parse delimeters", function() {
+    it("should build delimeters", function() {
         expect("\\left\u230A\\frac{a}{b}\\right\u230B").toBuild();
         expect("\\left\u2308\\frac{a}{b}\\right\u2308").toBuild();
         expect("\\left\u27ee\\frac{a}{b}\\right\u27ef").toBuild();
         expect("\\left\u27e8\\frac{a}{b}\\right\u27e9").toBuild();
         expect("\\left\u23b0\\frac{a}{b}\\right\u23b1").toBuild();
         expect("┌x┐ └x┘").toBuild();
+    });
+
+    it("should build math alpha-numerics", function() {
+        expect("𝐀 𝐙 𝐚 𝐳 𝐴 𝑍 𝑎 𝑧 𝑨 𝒁 𝒂 𝒛 𝒜 𝒵 𝒶 𝓏 𝓐 𝓩 𝓪 𝔃").toBuild();
+        expect("𝔄 𝖅 𝖆 𝔷 𝔸𝕐 𝕒 𝕫 𝕬 𝖅 𝖆 𝖟 𝖠 𝖹 𝖺 𝗓 𝗔 𝗭 𝗮 𝘇 𝘈 𝘡 𝘢 𝘻").toBuild();
+        expect("𝘼 𝙕 𝙖 𝙯 𝙰 𝚉 𝚊 𝚣 𝚤 𝚥 𝟎 𝟗 𝟘 𝟡 𝟢 𝟫 𝟬 𝟵 𝟶 𝟿").toBuild();
+        expect("𝚪 𝛀 𝛂 𝛡 𝛤 𝛺 𝛼 𝜔 𝜞 𝜴 𝜶 𝝕 𝝘 𝝮 𝝰 𝞈 𝞒 𝞨 𝞪 𝟂").toBuild();
     });
 });
 
