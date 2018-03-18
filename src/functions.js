@@ -295,6 +295,9 @@ defineFunction(["\\raisebox"], {
 
 import "./functions/verb";
 
+// Private function for handling wide characters.
+import "./functions/sysfont";
+
 // Hyperlinks
 import "./functions/href";
 

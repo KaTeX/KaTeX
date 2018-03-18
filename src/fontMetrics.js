@@ -204,17 +204,22 @@ const getCharacterMetrics = function(
     }
     let metrics = metricMap[font][ch];
 
-    if (!metrics && mode === 'text') {
-        // We don't typically have font metrics for Asian scripts.
-        // But since we support them in text mode, we need to return
-        // some sort of metrics.
-        // So if the character is in a script we support but we
-        // don't have metrics for it, just use the metrics for
-        // the Latin capital letter M. This is close enough because
-        // we (currently) only care about the height of the glpyh
-        // not its width.
-        if (supportedCodepoint(ch)) {
-            metrics = metricMap[font][77]; // 77 is the charcode for 'M'
+    if (!metrics) {
+        if (mode === 'text') {
+            // We don't typically have font metrics for Asian scripts.
+            // But since we support them in text mode, we need to return
+            // some sort of metrics.
+            // So if the character is in a script we support but we
+            // don't have metrics for it, just use the metrics for
+            // the Latin capital letter M. This is close enough because
+            // we (currently) only care about the height of the glpyh
+            // not its width.
+            if (supportedCodepoint(ch)) {
+                metrics = metricMap[font][77]; // 77 is the charcode for 'M'
+            }
+        } else if (!metrics && ch[0] === "\uD835") {
+            // Use the same trick here as we use for Asian scripts above.
+            metrics = metricMap[font][77];
         }
     }
 
