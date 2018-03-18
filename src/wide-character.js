@@ -23,7 +23,7 @@ import ParseError from "./ParseError";
  *            the corresponding plain text letter.
  */
 
-const wideCharData: Array<Array<number, string, string, number>> = [
+const wideCharData: Array<[number, string, string, number]> = [
     [0x1D419, "\\mathbf{", "\\textbf{", 0x1D3BF],       // A-Z bold upright
     [0x1D433, "\\mathbf{", "\\textbf{", 0x1D3B9],       // a-z bold upright
     [0x1D44D, "", "\\textit{", 0x1D3F3],                // A-Z italic
@@ -113,8 +113,8 @@ export const expandWideChar = function(wideChar: string, mode: Mode): string {
         return "\\sysfont{" + L + "}";
     }
 
-    let i;
-    let iRow;
+    let i = 0;
+    let iRow = 0;
 
     // Determine the relevant row of the wideCharData array.
     if (codePoint < 0x1D6A4) {

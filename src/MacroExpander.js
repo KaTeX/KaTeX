@@ -228,12 +228,13 @@ export default class MacroExpander implements MacroContextInterface {
      */
     _getExpansion(name: string): MacroExpansion {
         let expansion;
+        let definition;
         if (name.charAt(0) === "\uD835") {
             // Surrogate pair. We support Unicode range 1D400–1D7FF,
             // Mathematical Alphanumeric Symbols.
             expansion = expandWideChar(name, this.mode);
         } else {
-            const definition = this.macros[name];
+            definition = this.macros[name];
             expansion =
                 typeof definition === "function" ? definition(this) : definition;
         }

@@ -217,7 +217,7 @@ const getCharacterMetrics = function(
             if (supportedCodepoint(ch)) {
                 metrics = metricMap[font][77]; // 77 is the charcode for 'M'
             }
-        } else if (!metrics && ch[0] === "\uD835") {
+        } else if (!metrics && ch === 0xD835) {
             // Use the same trick here as we use for Asian scripts above.
             metrics = metricMap[font][77];
         }
