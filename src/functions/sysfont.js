@@ -1,7 +1,6 @@
 // @flow
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 // This little file is here to clean up the mess left when wide-character.js
@@ -15,7 +14,7 @@ const htmlBuilder = (group, options) => {
 };
 
 const mathmlBuilder = (group, options) => {
-    return mml.makeText(group.value.value, group.mode)
+    return mml.makeText(group.value.value, group.mode);
 };
 
 defineFunction({
