@@ -67,8 +67,8 @@ export const wideCharacterFont = function(wideChar: string, mode: Mode): string 
     const L = wideChar.charCodeAt(1);    // low surrogate
     const codePoint = ((H - 0xD800) * 0x400) + (L - 0xDC00) + 0x10000;
 
-    let i = 0;                        // row index, to be calculated below
-    let j = mode === "math" ? 0 : 1;  // column index
+    let i = 0;                          // row index, to be calculated below
+    const j = mode === "math" ? 0 : 1;  // column index
 
     if (0x1D400 <= codePoint && codePoint < 0x1D6A4) {
         // wideLatinLetterData contains exactly 26 chars on each row.
