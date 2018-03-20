@@ -1,4 +1,4 @@
-defaults: &defaults
+ss_steps: &ss_steps
   steps:
     - checkout
     - run:
@@ -14,10 +14,6 @@ defaults: &defaults
     - run:
         name: Install npm dependencies
         command: npm install
-    - save_cache:
-        key: npm-deps-{{ checksum "package.json" }}
-        paths:
-          - node_modules
 
     - run:
         name: Verify screenshots and generate diff
@@ -38,20 +34,58 @@ defaults: &defaults
 
 version: 2
 jobs:
+  test:
+    docker:
+      - image: circleci/node:6
+    steps:
+      - checkout
+      - run:
+          name: Checkout submodule
+          command: |
+              git submodule sync
+              git submodule update --init --recursive
+
+      - restore_cache:
+          keys:
+            - npm-deps-{{ checksum "package.json" }}
+            - npm-deps-
+      - run:
+          name: Install npm dependencies
+          command: npm install
+      - save_cache:
+          key: npm-deps-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+
+      - run:
+          name: Run tests
+          command: npm test
+      - run:
+          name: Build KaTeX
+          command: npm build
+
+      - store_artifacts:
+          path: build/katex.js
+      - store_artifacts:
+          path: build/katex.css
+      - store_artifacts:
+          path: build/fonts
+
   firefox:
     docker:
       - image: circleci/node:6
       - image: selenium/standalone-firefox:2.48.2
-    <<: *defaults
+    <<: *ss_steps
   chrome:
     docker:
       - image: circleci/node:6
       - image: selenium/standalone-chrome:2.48.2
-    <<: *defaults
+    <<: *ss_steps
 
 workflows:
   version: 2
   screenshotter:
     jobs:
+      - test
       - firefox
       - chrome
