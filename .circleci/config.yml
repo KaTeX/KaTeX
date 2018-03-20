@@ -9,8 +9,8 @@ ss_steps: &ss_steps
 
     - restore_cache:
         keys:
-          - npm-deps-v1-{{ checksum "package.json" }}
-          - npm-deps-v1-
+          - npm-deps-v0-{{ checksum "package.json" }}
+          - npm-deps-v0-
     - run:
         name: Install npm dependencies
         command: npm install
@@ -47,13 +47,13 @@ jobs:
 
       - restore_cache:
           keys:
-            - npm-deps-v1-{{ checksum "package.json" }}
-            - npm-deps-v1-
+            - npm-deps-v0-{{ checksum "package.json" }}
+            - npm-deps-v0-
       - run:
           name: Install npm dependencies
           command: npm install
       - save_cache:
-          key: npm-deps-v1-{{ checksum "package.json" }}
+          key: npm-deps-v0-{{ checksum "package.json" }}
           paths:
             - node_modules
 
