@@ -10,6 +10,7 @@ import fontMetrics from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
 import stretchy from "./stretchy";
+import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
 
 import type Options from "./Options";
@@ -182,6 +183,11 @@ const mathit = function(
         return {
             fontName: "Main-Italic",
             fontClass: "mainit",
+        };
+    } else if (value.charCodeAt(0) === 0xD835) {
+        return {
+            fontName: "Math-Italic",
+            fontClass: wideCharacterFont(value, mode),
         };
     } else {
         return {
