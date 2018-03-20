@@ -5,12 +5,12 @@
     <meta name="viewport" content="initial-scale=1">
     <title>Function Support in KaTeX</title>
     <link rel="icon" href="http://khan.github.io/favicon.ico">
+	
+	<link rel="stylesheet" href="https://unpkg.com/katex@0.9.0/dist/katex.min.css">
+	<script src="https://unpkg.com/katex@0.9.0/dist/katex.min.js"></script>
+	<script src="https://unpkg.com/katex@0.9.0/dist/contrib/auto-render.min.js"></script>
 
-	<link rel="stylesheet" href="https://unpkg.com/katex@0.9.0-beta/dist/katex.min.css">
-	<script src="https://unpkg.com/katex@0.9.0-beta/dist/katex.min.js"></script>
-	<script src="https://unpkg.com/katex@0.9.0-beta/dist/contrib/auto-render.min.js"></script>
-
-<style type="text/css">
+<style>
 * { margin:0; padding:0; }  /* reset */
 
 body { font-family: Calibri, Arial, Helvetica, sans-serif; }
@@ -28,7 +28,7 @@ body { font-family: Calibri, Arial, Helvetica, sans-serif; }
   position: fixed;
   top: 0;
   margin: 0px 2.5px 0px 2.5px;
-  overflow:fixed;
+  overflow:hidden;
 }
 
 @media all {
@@ -243,6 +243,8 @@ code {
 <h1 id="top">Function Support in <span style="font-size:130%;">\(\KaTeX\)</span></h1>
 
     <p>This is a list of TeX functions supported by KaTeX. It is sorted into logical groups.</p>
+	
+	<p>For a list of things that are not (yet) in KaTeX, there is a <a href="https://github.com/Khan/KaTeX/wiki/Things-that-KaTeX-does-not-%28yet%29-support">wiki page</a>.</p>
 
 <h2 id="accents">Accents</h2>
 
@@ -250,8 +252,8 @@ code {
 		<tr>
 			<td>\(a'\)</td>
 			<td>a'</td>
-			<td>\(\ddot{a}\)</td>
-			<td>\ddot{a}</td>
+			<td>\(\grave{a}\)</td>
+			<td>\grave{a}</td>
 			<td>\(\overleftarrow{AB}\)</td>
 			<td>\overleftarrow{AB}</td>
 			<td>\(\overrightarrow{AB}\)</td>
@@ -260,8 +262,8 @@ code {
 		<tr>
 			<td>\(a''\)</td>
 			<td>a''</td>
-			<td>\(\grave{a}\)</td>
-			<td>\grave{a}</td>
+			<td>\(\hat{\theta}\)</td>
+			<td>\hat{\theta}</td>
 			<td>\(\underleftarrow{AB}\)</td>
 			<td>\underleftarrow{AB}</td>
 			<td>\(\underrightarrow{AB}\)</td>
@@ -270,8 +272,8 @@ code {
 		<tr>
 			<td>\(a^{\prime}\)</td>
 			<td style="white-space: nowrap">a^{\prime}</td>
-			<td>\(\hat{\theta}\)</td>
-			<td>\hat{\theta}</td>
+			<td>\(\widehat{ac}\)</td>
+			<td>\widehat{ac}</td>
 			<td>\(\overleftrightarrow{AB}\)</td>
 			<td style="white-space: nowrap">\overleftrightarrow{AB}</td>
 			<td>\(\overbrace{AB}\)</td>
@@ -280,8 +282,8 @@ code {
 		<tr>
 			<td>\(\acute{a}\)</td>
 			<td>\acute{a}</td>
-			<td>\(\widehat{ac}\)</td>
-			<td>\widehat{ac}</td>
+			<td>\(\mathring{g}\)</td>
+			<td>\mathring{g}</td>
 			<td>\(\underleftrightarrow{AB}\)</td>
 			<td style="white-space: nowrap">\underleftrightarrow{AB}</td>
 			<td>\(\underbrace{AB}\)</td>
@@ -328,8 +330,8 @@ code {
 			<td>\utilde{AB}</td>
 		</tr>
 		<tr>
-			<td></td>
-			<td></td>
+			<td>\(\ddot{a}\)</td>
+			<td>\ddot{a}</td>
 			<td>\(\underline{AB}\)</td>
 			<td>\underline{AB}</td>
 			<td></td>
@@ -404,18 +406,18 @@ code {
             <td>\{&nbsp;\}</td>
             <td>\(\lbrace\:\rbrace\)</td>
             <td>\lbrace<br>\rbrace</td>
-            <td>\(\ulcorner \urcorner\)</td>
-            <td>\ulcorner<br>\urcorner</td>
+            <td>\(\lmoustache\:\rmoustache\)</td>
+            <td>\lmoustache<br>\rmoustache</td>
             <td>\(\updownarrow\)</td>
             <td>\updownarrow</td>
         </tr>
         <tr>
+            <td>\(&#x27e8;\:&#x27e9;\)</td>
+            <td>&#x27e8; &#x27e9;</td>
             <td>\(\langle\:\rangle\)</td>
             <td>\langle<br>\rangle</td>
             <td>\(\lt\:\gt\)</td>
             <td>\lt<br>\gt</td>
-            <td>\(\llcorner \lrcorner\)</td>
-            <td>\llcorner<br>\lrcorner</td>
             <td>\(\Uparrow\)</td>
             <td>\Uparrow</td>
         </tr>
@@ -424,8 +426,8 @@ code {
             <td>|</td>
             <td>\(\vert\)</td>
             <td>\vert</td>
-            <td>\(\backslash\)</td>
-            <td>\backslash</td>
+            <td>\(\ulcorner \urcorner\)</td>
+            <td>\ulcorner<br>\urcorner</td>
             <td>\(\Downarrow\)</td>
             <td>\Downarrow</td>
         </tr>
@@ -434,8 +436,8 @@ code {
             <td>\|</td>
             <td>\(\Vert\)</td>
             <td>\Vert</td>
-            <td>\(\lmoustache\:\rmoustache\)</td>
-            <td>\lmoustache<br>\rmoustache</td>
+            <td>\(\llcorner \lrcorner\)</td>
+            <td>\llcorner<br>\lrcorner</td>
             <td>\(\Updownarrow\)</td>
             <td>\Updownarrow</td>
         </tr>
@@ -449,6 +451,16 @@ code {
             <td></td>
             <td>\right.</td>
         </tr>
+		<tr>
+            <td>\(\backslash\)</td>
+            <td>\backslash</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
     </table>
 
 <h3 id="delimiter-sizing">Delimiter Sizing</h3>
@@ -579,7 +591,7 @@ code {
     <div class="indented">
 		<p>KaTeX also supports <code>{darray}</code> and <code>{dcases}</code>.</p>
 	
-        <p>Acceptable line separators include: <code>\\</code>, <code>\cr</code>, and <code>\\[<em>distance</em>]</code>. <em>Distance</em> can be written with any of the <a href="#units">KaTeX units</a>.</p>
+        <p>Acceptable line separators include: <code>\\</code>, <code>\cr</code>, and <code>\cr[<em>distance</em>]</code>. <em>Distance</em> can be written with any of the <a href="#units">KaTeX units</a>.</p>
 
         <p>The <code>{array}</code> environment does not yet support <code>\hline</code>.</p>
     </div>
@@ -631,6 +643,36 @@ code {
             <td>\Psi</td>
             <td>Ω</td>
             <td>\Omega</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><span style="font-family: KaTeX_Math; font-style: italic">Γ</span></td>
+            <td>\varGamma</td>
+            <td><span style="font-family: KaTeX_Math; font-style: italic">Δ</span></td>
+            <td>\varDelta</td>
+            <td><span style="font-family: KaTeX_Math; font-style: italic">Θ</span></td>
+            <td>\varTheta</td>
+            <td><span style="font-family: KaTeX_Math; font-style: italic">Λ</span></td>
+            <td>\varLambda</td>
+        </tr>
+        <tr>
+            <td><span style="font-family: KaTeX_Math; font-style: italic">Ξ</span></td>
+            <td>\varXi</td>
+            <td><span style="font-family: KaTeX_Math; font-style: italic">Π</span></td>
+            <td>\varPi</td>
+            <td><span style="font-family: KaTeX_Math; font-style: italic">Σ</span></td>
+            <td>\varSigma</td>
+            <td><span style="font-family: KaTeX_Math; font-style: italic">Υ</span></td>
+            <td>\varUpsilon</td>
+        </tr>
+        <tr>
+            <td><span style="font-family: KaTeX_Math; font-style: italic">Φ</span></td>
+            <td>\varPhi</td>
+            <td><span style="font-family: KaTeX_Math; font-style: italic">Ψ</span></td>
+            <td>\varPsi</td>
+            <td><span style="font-family: KaTeX_Math; font-style: italic">Ω</span></td>
+            <td>\varOmega</td>
             <td></td>
             <td></td>
         </tr>
@@ -775,59 +817,101 @@ code {
 			<td style="font-family: KaTeX_Main, KaTeX_AMS;">∂ ð ∇ ℑ ℓ ℘ ℜ Ⅎ ℵ ℶ ℷ ℸ ⅁</td>
 		</tr>
 		<tr>
-			<td colspan="2"><span style="font-family: Times New Roman;">ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝÞ<br>àáâãäåçèéêëìíîïðñòóôöùúûüýþÿ</span></td>
+			<td colspan="2"><span style="font-family: Times New Roman;">ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝÞß<br>àáâãäåçèéêëìíîïðñòóôöùúûüýþÿ</span></td>
 		</tr>
 	</table>
 	
 <h3 id="letters-in-text">Letters inside \text{}</h3>
-		<p><code>\text{…}</code> will accept the functions: <code>\ae</code>, <code>\AE</code>, <code>\oe</code>, <code>\OE</code>, <code>\o</code>, <code>\O</code>, <code>\ss</code>, <code>\i</code>, <code>\j</code>.</p>
+		<p><code>\text{…}</code> will accept functions: <code>\aa</code> <code>\AA</code> <code>\ae</code> <code>\AE</code> <code>\oe</code> <code>\OE</code> <code>\o</code> <code>\O</code> <code>\ss</code> <code>\i</code> <code>\j</code><br>
+		… and return them as: \(\text{\aa\: \AA\: \ae\: \AE\: \oe\: \OE\: \o\: \O\: \ss\: \i\: \j}\)</p>
 
 	<p><code>\text{…}</code> will also accept Unicode characters from:</p>
 
 	<table class="grid">
 		<thead>
 		<tr>
-			<th>Script</th>   <th>Unicode Range</th>   <th>Script</th>   <th>Unicode Range</th>
+			<th>Script</th>
+			<th>Unicode Range</th>
+			<th>Script</th>
+			<th>Unicode Range</th>
 		</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td>Latin-1</td><td>0080 – 00FF</td>    <td>Sinhala</td><td>0D80 – 0DFF</td>
+				<td>Latin-1</td>
+				<td>0080 – 00FF</td>
+				<td>Malayalam</td>
+				<td>0D00 – 0D7F</td>
 			</tr>
 			<tr>
-				<td>Cyrillic</td><td>0400 – 04FF</td>   <td>Thai</td><td>0E00 – 0E7F</td>
+				<td>Latin<br>Extended&nbsp;A</td>
+				<td>0100 – 017F</td>
+				<td>Sinhala</td>
+				<td>0D80 – 0DFF</td>
 			</tr>
 			<tr>
-				<td>Devanagari</td><td>0900 – 097F</td>   <td>Lao</td><td>0E80 – 0EFF</td>
+				<td>Latin<br>Extended&nbsp;B</td>
+				<td>0180 – 024F</td>
+				<td>Thai</td>
+				<td>0E00 – 0E7F</td>
 			</tr>
 			<tr>
-				<td>Bengali</td><td>0980 – 09FF</td>   <td>Tibetan</td><td>0F00 – 0FFF</td>
+				<td>Cyrillic</td>
+				<td>0400 – 04FF</td>
+				<td>Lao</td>
+				<td>0E80 – 0EFF</td>
 			</tr>
 			<tr>
-				<td>Gurmukhi</td><td>0A00 – 0A7F</td>
-				<td>CJK symbols and punctuation</td><td>3000 – 303F</td>
+				<td>Devanagari</td>
+				<td>0900 – 097F</td>
+				<td>Tibetan</td>
+				<td>0F00 – 0FFF</td>
 			</tr>
 			<tr>
-				<td>Gujarati</td><td>0A80 – 0AFF</td>   <td>Hiragana</td><td>3040 – 309F</td>
+				<td>Bengali</td>
+				<td>0980 – 09FF</td>
+				<td>Georgian</td>
+				<td>10A0 – 10FF</td>
 			</tr>
 			<tr>
-				<td>Oriya</td><td>0B00 – 0B7F</td>   <td>Katakana</td><td>30A0 – 30FF</td>
+				<td>Gurmukhi</td>
+				<td>0A00 – 0A7F</td>
+				<td>CJK symbols and punctuation</td>
+				<td>3000 – 303F</td>
 			</tr>
 			<tr>
-				<td>Tamil</td><td>0B80 – 0BFF</td>   <td>CJK ideograms</td><td>4E00 – 9FAF</td>
+				<td>Gujarati</td>
+				<td>0A80 – 0AFF</td>
+				<td>Hiragana</td>
+				<td>3040 – 309F</td>
 			</tr>
 			<tr>
-				<td>Telugu</td><td>0C00 – 0C7F</td>   <td>Hangul</td><td>AC00 – D7AF</td>
+				<td>Oriya</td>
+				<td>0B00 – 0B7F</td>
+				<td>Katakana</td>
+				<td>30A0 – 30FF</td>
 			</tr>
 			<tr>
-				<td>Kannada</td><td>0C80 – 0CFF</td>   <td>Full width punctuation</td><td>FF00 – FF60</td>
+				<td>Tamil</td>
+				<td>0B80 – 0BFF</td>
+				<td>CJK ideograms</td>
+				<td>4E00 – 9FAF</td>
 			</tr>
 			<tr>
-				<td>Malayalam</td><td style="white-space: nowrap">0D00 – 0D7F</td>
+				<td>Telugu</td>
+				<td>0C00 – 0C7F</td>
+				<td>Hangul</td>
+				<td>AC00 – D7AF</td>
+			</tr>
+			<tr>
+				<td>Kannada</td>
+				<td>0C80 – 0CFF</td>
+				<td>Full width punctuation</td>
+				<td>FF00 – FF60</td>
 			</tr>
 		</tbody>
 	</table>
-
+	
 	<br>
 
 <h2 id="annotation">Annotation</h2>
@@ -971,6 +1055,12 @@ code {
 				<td></td>
             </tr>
             <tr>
+                <td>\nobreakspace</td>
+				<td>non-breaking space</td>
+				<td></td>
+				<td></td>
+            </tr>
+            <tr>
                 <td>\<em>space</em></td>
                 <td>non-breaking space</td>
 				<td></td>
@@ -979,9 +1069,10 @@ code {
         </tbody>
     </table>
 	<table>
-		<tr>
-			<td>Notes:</td><td>{<em>distance</em>} will accept any of the <a href="#units">KaTeX units</a>.<br>
-			<code>\mkern</code> and <code>\mskip</code> will not work in text mode and both will write a console warning for any unit except <em>mu</em>.</td>
+		<tr style="vertical-align: top;">
+			<td><p>Notes:</p></td><td><p>{<em>distance</em>} will accept any of the <a href="#units">KaTeX units</a>.</p>
+			<p><code>\kern</code>, <code>\mkern</code>, and <code>\hspace</code> accept unbraced distances, as in: <code>\kern1em</code>.</p>
+			<p><code>\mkern</code> and <code>\mskip</code> will not work in text mode and both will write a console warning for any unit except <em>mu</em>.</p></td>
 		</tr>
 	</table>
 	<br>
@@ -1848,7 +1939,8 @@ code {
 	<table>
 		<tr>
 			<td>Direct Input:</td>
-			<td style="font-family: KaTeX_Main, KaTeX_AMS;">= &lt; &gt; : ∈ ∋ ∝ ∼ ∽ ≂ ≃ ≅ ≈ ≊ ≍ ≎ ≏ ≐ ≑ ≒ ≓ ≖ ≗ ≜ ≡ ≤ ≥ ≦ ≧ ≫ ≬ ≳ ≷ ≺ ≻ ≼ ≽ ≾ ≿ ⊂ ⊃ ⊆ ⊇ ⊏ ⊐ ⊑ ⊒ ⊢ ⊣ ⊩ ⊪ ⊸ ⋈ ⋍ ⋐ ⋑ ⋔ ⋙ ⋛ ⋞ ⋟ ⌢ ⌣ ⩾ ⪆ ⪌ ⪕ ⪖ ⪯ ⪰ ⪷ ⪸ ⫅ ⫆</td>
+			<td><span style="font-family: KaTeX_Main, KaTeX_AMS;">= &lt; &gt; : ∈ ∋ ∝ ∼ ∽ ≂ ≃ ≅ ≈ ≊ ≍ ≎ ≏ ≐ ≑ ≒ ≓ ≖ ≗ ≜ ≡ ≤ ≥ ≦ ≧ ≫ ≬ ≳ ≷ ≺ ≻ ≼ ≽ ≾ ≿ ⊂ ⊃ ⊆ ⊇ ⊏ ⊐ ⊑ ⊒ ⊢ ⊣ ⊩ ⊪ ⊸ ⋈ ⋍ ⋐ ⋑ ⋔ ⋙ ⋛ ⋞ ⋟ ⌢ ⌣ ⩾ ⪆ ⪌ ⪕ ⪖ ⪯ ⪰ ⪷ ⪸ ⫅ ⫆
+			</span>≔ ≕ ⩴</td>
 		</tr>
 	</table>
 
@@ -2443,7 +2535,7 @@ code {
 		</tr>
     </table>
 	
-	<p class="indented">One can stack font family, font weight, and font shape by using the <code>\textXX</code> versions of the font functions. So <code>\textsf{\textbf{H}}</code> will produce \(\textsf{\textbf{H}}\).  The other versions so not stack, e.g., <code>\mathsf{\mathbf{H}}</code> will produce \(\mathsf{\mathbf{H}}\).</p>
+	<p class="indented">One can stack font family, font weight, and font shape by using the <code>\textXX</code> versions of the font functions. So <code>\textsf{\textbf{H}}</code> will produce \(\textsf{\textbf{H}}\).  The other versions do not stack, e.g., <code>\mathsf{\mathbf{H}}</code> will produce \(\mathsf{\mathbf{H}}\).</p>
 
 <h3 id="size">Size</h3>
 
@@ -2655,8 +2747,8 @@ code {
 			<td>\yen</td>
 		</tr>
 		<tr>
-			<td>’</td>
-			<td>\textquoteright</td>
+			<td>\(\text{\lq}\)</td>
+			<td>\text{\lq}</td>
 			<td>▶</td>
 			<td>\blacktriangleright</td>
 			<td>♣</td>
@@ -2665,8 +2757,8 @@ code {
 			<td>\surd</td>
 		</tr>
 		<tr>
-			<td>“</td>
-			<td>\textquotedblleft</td>
+			<td>’</td>
+			<td>\textquoteright</td>
 			<td>⋄</td>
 			<td>\diamond</td>
 			<td>♢</td>
@@ -2675,8 +2767,8 @@ code {
 			<td>\degree</td>
 		</tr>
 		<tr>
-			<td>&quot;</td>
-			<td>&quot;</td>
+			<td>\(\text{\rq}\)</td>
+			<td>\text{\rq}</td>
 			<td>◊</td>
 			<td>\Diamond</td>
 			<td>♡</td>
@@ -2685,8 +2777,8 @@ code {
 			<td>\diagdown</td>
 		</tr>
 		<tr>
-			<td>”</td>
-			<td>\textquotedblright</td>
+			<td>“</td>
+			<td>\textquotedblleft</td>
 			<td>◊</td>
 			<td>\lozenge</td>
 			<td>♠</td>
@@ -2695,8 +2787,8 @@ code {
 			<td>\diagup</td>
 		</tr>
 		<tr>
-			<td>:</td>
-			<td>\colon</td>
+			<td>&quot;</td>
+			<td>&quot;</td>
 			<td>⧫</td>
 			<td>\blacklozenge</td>
 			<td>∠</td>
@@ -2705,8 +2797,8 @@ code {
 			<td>\mho</td>
 		</tr>
 		<tr>
-			<td>‵</td>
-			<td>\backprime</td>
+			<td>”</td>
+			<td>\textquotedblright</td>
 			<td>⋆</td>
 			<td>\star</td>
 			<td>∡</td>
@@ -2715,40 +2807,50 @@ code {
 			<td>\maltese</td>
 		</tr>
 		<tr>
-			<td>′</td>
-			<td>\prime</td>
+			<td>:</td>
+			<td>\colon</td>
 			<td>★</td>
 			<td>\bigstar</td>
 			<td>∢</td>
 			<td>\sphericalangle</td>
+			<td>\(\text{\P}\)</td>
+			<td>\text{\P}</td>
+		</tr>
+		<tr>
+			<td>‵</td>
+			<td>\backprime</td>
+			<td>|</td>
+			<td>\textbar</td>
+			<td>⊤</td>
+			<td>\top</td>
+			<td>\(\text{\S}\)</td>
+			<td>\text{\S}</td>
+		</tr>
+		<tr>
+			<td>′</td>
+			<td>\prime</td>
+			<td>∥</td>
+			<td>\textbardbl</td>
+			<td>⊥</td>
+			<td>\bot</td>
 			<td>∇</td>
 			<td>\nabla</td>
 		</tr>
 		<tr>
 			<td>&lt;</td>
 			<td>\textless</td>
-			<td>|</td>
-			<td>\textbar</td>
-			<td>⊤</td>
-			<td>\top</td>
+			<td>{</td>
+			<td>\textbraceleft</td>
+			<td>}</td>
+			<td>\textbraceright</td>
 			<td>∞</td>
 			<td>\infty</td>
 		</tr>
 		<tr>
 			<td>&gt;</td>
 			<td>\textgreater</td>
-			<td>∥</td>
-			<td>\textbardbl</td>
-			<td>⊥</td>
-			<td>\bot</td>
 			<td></td>
 			<td></td>
-		</tr>
-		<tr>
-			<td>{</td>
-			<td>\textbraceleft</td>
-			<td>}</td>
-			<td>\textbraceright</td>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -2951,7 +3053,7 @@ code {
 
     <h3>Links</h3>
     <ul>
-        <li><a href="https://khan.github.io/KaTeX/">Home</a></li>
+        <li><a href="https://khan.github.io/KaTeX/">Demo</a></li>
         <li><a href="https://github.com/Khan/KaTeX">Repository</a></li>
         <li><a href="https://github.com/Khan/KaTeX#user-content-usage">Installation</a></li>
         <li><a href="https://github.com/Khan/KaTeX/releases">Download</a></li>
