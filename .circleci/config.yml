@@ -1,11 +1,7 @@
 ss_steps: &ss_steps
   steps:
-    - checkout
-    - run:
-        name: Checkout submodule
-        command: |
-            git submodule sync
-            git submodule update --init --recursive
+    - attach_workspace:
+        at: .
 
     - restore_cache:
         keys:
@@ -71,6 +67,21 @@ jobs:
       - store_artifacts:
           path: build/fonts
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dockers/Screenshotter
+            - src
+            - submodules
+            - test/screenshotter
+            - .babelrc
+            - katex.js
+            - katex.webpack.js
+            - package.json
+            - package-lock.json
+            - webpack.common.js
+            - webpack.dev.js
+
   firefox:
     docker:
       - image: circleci/node:6
@@ -87,5 +98,9 @@ workflows:
   screenshotter:
     jobs:
       - test
-      - firefox
-      - chrome
+      - firefox:
+          requires:
+            - test
+      - chrome:
+          requires:
+            - test

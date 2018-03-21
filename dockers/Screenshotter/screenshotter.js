@@ -13,7 +13,7 @@ const firefox = require("selenium-webdriver/firefox");
 
 const webpack = require('webpack');
 const webpackDevServer = require("webpack-dev-server");
-const webpackConfig = require("../../webpack.dev");
+const webpackConfig = require("../../webpack.dev")[0];
 const data = require("../../test/screenshotter/ss_data");
 
 const dstDir = path.normalize(
@@ -196,7 +196,7 @@ function startServer() {
     }
     const port = Math.floor(Math.random() * (maxPort - minPort)) + minPort;
     const compiler = webpack(webpackConfig);
-    const wds = new webpackDevServer(compiler, webpackConfig[0].devServer);
+    const wds = new webpackDevServer(compiler, webpackConfig.devServer);
     const server = wds.listen(port);
     server.once("listening", function() {
         devServer = wds;
