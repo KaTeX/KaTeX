@@ -62,8 +62,10 @@ const wideNumeralData: Array<[string, string, string]> = [
     ["mathtt", "texttt", "Typewriter-Regular"],       // 0-9 monospace
 ];
 
-export const wideCharacterFont = function(wideChar: string, mode: Mode):
-    [string, string] {
+export const wideCharacterFont = function(
+    wideChar: string,
+    mode: Mode,
+): [string, string] {
 
     // IE doesn't support codePointAt(). So work with the surrogate pair.
     const H = wideChar.charCodeAt(0);    // high surrogate
