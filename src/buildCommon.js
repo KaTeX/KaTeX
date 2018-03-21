@@ -185,9 +185,10 @@ const mathit = function(
             fontClass: "mainit",
         };
     } else if (value.charCodeAt(0) === 0xD835) {
+        const [wideFontName, wideFontClass] = wideCharacterFont(value, mode);
         return {
-            fontName: "Math-Italic",
-            fontClass: wideCharacterFont(value, mode),
+            fontName: wideFontName,
+            fontClass: wideFontClass,
         };
     } else {
         return {

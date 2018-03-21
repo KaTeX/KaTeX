@@ -716,27 +716,24 @@ defineSymbol(text, main, spacing, "\u00a0", " ");
 defineSymbol(text, main, spacing, "\u00a0", "~");
 
 // There are lots of symbols which are the same, so we add them in afterwards.
-let i = 0;
-let ch = "";
-
 // All of these are textords in math mode
 const mathTextSymbols = "0123456789/@.\"";
-for (i = 0; i < mathTextSymbols.length; i++) {
-    ch = mathTextSymbols.charAt(i);
+for (let i = 0; i < mathTextSymbols.length; i++) {
+    const ch = mathTextSymbols.charAt(i);
     defineSymbol(math, main, textord, ch, ch);
 }
 
 // All of these are textords in text mode
 const textSymbols = "0123456789!@*()-=+[]<>|\";:?/.,";
-for (i = 0; i < textSymbols.length; i++) {
-    ch = textSymbols.charAt(i);
+for (let i = 0; i < textSymbols.length; i++) {
+    const ch = textSymbols.charAt(i);
     defineSymbol(text, main, textord, ch, ch);
 }
 
 // All of these are textords in text mode, and mathords in math mode
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-for (i = 0; i < letters.length; i++) {
-    ch = letters.charAt(i);
+for (let i = 0; i < letters.length; i++) {
+    const ch = letters.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
@@ -747,8 +744,8 @@ for (i = 0; i < letters.length; i++) {
 // Some editors do not deal well with surrogate pairs. So don't write the
 // string into this file. Instead, create the string from the surrogate pair.
 let wideChar = "";
-for (i = 0; i < letters.length; i++) {
-    ch = letters.charAt(i);
+for (let i = 0; i < letters.length; i++) {
+    const ch = letters.charAt(i);
 
     // The hex numbers in the next line are a surrogate pair.
     // 0xD835 is the high surrogate for all letters in the range we support.
@@ -773,7 +770,7 @@ for (i = 0; i < letters.length; i++) {
         defineSymbol(math, main, mathord, ch, wideChar);
     }
 
-    // TO DO: Add bold script when it is supported by a KaTeX font.
+    // TODO: Add bold script when it is supported by a KaTeX font.
 
     wideChar = String.fromCharCode(0xD835, 0xDDA0 + i);   // A-Z a-z sans-serif
     defineSymbol(math, main, mathord, ch, wideChar);
@@ -784,8 +781,8 @@ for (i = 0; i < letters.length; i++) {
 // Unicode accent mechanism, so they fall back to Times font and look ugly.
 // TODO(edemaine): Fix this.
 export const extraLatin = "ÇÐÞçþ";
-for (i = 0; i < extraLatin.length; i++) {
-    ch = extraLatin.charAt(i);
+for (let i = 0; i < extraLatin.length; i++) {
+    const ch = extraLatin.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
