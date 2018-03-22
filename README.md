@@ -139,6 +139,7 @@ will appear larger than 1cm in browser units.
 - [katex-ruby](https://github.com/glebm/katex-ruby) Provides server-side rendering and integration with popular Ruby web frameworks (Rails, Hanami, and anything that uses Sprockets).
 
 ### React
+- [react-latex](https://github.com/zzish/react-latex) React component to render latex strings, based on Katex
 - [react-katex](https://github.com/talyssonoc/react-katex) React components that use KaTeX to typeset math expressions
 
 
