@@ -39,13 +39,17 @@ export interface CombinableDomNode extends VirtualDomNode {
 }
 
 /**
- * All `DomChildNode`s MUST have `height`, `depth`, and `maxFontSize` numeric
+ * All `HtmlDomNode`s MUST have `height`, `depth`, and `maxFontSize` numeric
  * fields.
  *
- * `DomChildNode` is not defined as an interface since `documentFragment` also
- * has these fields but should not be considered a `DomChildNode`.
+ * `HtmlDomNode` is not defined as an interface since `documentFragment` also
+ * has these fields but should not be considered a `HtmlDomNode`.
  */
-export type DomChildNode = span | anchor | svgNode | symbolNode;
+export type HtmlDomNode = DomSpan | SvgSpan | anchor | symbolNode;
+// Span wrapping other DOM nodes.
+export type DomSpan = span<HtmlDomNode>;
+// Span wrapping an SVG node.
+export type SvgSpan = span<svgNode>;
 
 export type SvgChildNode = pathNode | lineNode;
 
@@ -55,10 +59,14 @@ export type CssStyle = {[name: string]: string};
  * This node represents a span node, with a className, a list of children, and
  * an inline style. It also contains information about its height, depth, and
  * maxFontSize.
+ *
+ * Represents two types with different uses: SvgSpan to wrap an SVG and DomSpan
+ * otherwise. This typesafety is important when HTML builders access a span's
+ * children.
  */
-class span implements CombinableDomNode {
+class span<ChildType: VirtualDomNode> implements CombinableDomNode {
     classes: string[];
-    children: DomChildNode[];
+    children: ChildType[];
     height: number;
     depth: number;
     width: ?number;
@@ -68,7 +76,7 @@ class span implements CombinableDomNode {
 
     constructor(
         classes?: string[],
-        children?: DomChildNode[],
+        children?: ChildType[],
         options?: Options,
         style?: CssStyle,
     ) {
@@ -191,7 +199,7 @@ class span implements CombinableDomNode {
 class anchor implements CombinableDomNode {
     href: string;
     classes: string[];
-    children: DomChildNode[];
+    children: HtmlDomNode[];
     height: number;
     depth: number;
     maxFontSize: number;
@@ -201,7 +209,7 @@ class anchor implements CombinableDomNode {
     constructor(
         href: string,
         classes: string[],
-        children: DomChildNode[],
+        children: HtmlDomNode[],
         options: Options,
     ) {
         this.href = href;
@@ -325,12 +333,12 @@ class anchor implements CombinableDomNode {
  * of a height, depth, and maxFontSize.
  */
 class documentFragment implements VirtualDomNode {
-    children: DomChildNode[];
+    children: HtmlDomNode[];
     height: number;
     depth: number;
     maxFontSize: number;
 
-    constructor(children?: DomChildNode[]) {
+    constructor(children?: HtmlDomNode[]) {
         this.children = children || [];
         this.height = 0;
         this.depth = 0;
@@ -541,17 +549,10 @@ class symbolNode implements CombinableDomNode {
 class svgNode implements VirtualDomNode {
     children: SvgChildNode[];
     attributes: {[string]: string};
-    // Required for all `DomChildNode`s. Are always 0 for svgNode.
-    height: number;
-    depth: number;
-    maxFontSize: number;
 
     constructor(children?: SvgChildNode[], attributes?: {[string]: string}) {
         this.children = children || [];
         this.attributes = attributes || {};
-        this.height = 0;
-        this.depth = 0;
-        this.maxFontSize = 0;
     }
 
     toNode(): Node {
