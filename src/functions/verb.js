@@ -41,9 +41,6 @@ defineFunction({
         buildCommon.tryCombineChars(body);
         return buildCommon.makeSpan(
             ["mord", "text"].concat(newOptions.sizingClasses(options)),
-            // tryCombineChars expects CombinableDomNode[] while makeSpan expects
-            // HtmlDomNode[].
-            // $FlowFixMe: CombinableDomNode[] is not compatible with HtmlDomNode[]
             body, newOptions);
     },
     mathmlBuilder(group, options) {

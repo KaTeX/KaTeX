@@ -16,9 +16,7 @@ import type Options from "./Options";
 import type ParseNode from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {Mode} from "./types";
-import type {
-    HtmlDomNode, CombinableDomNode, DomSpan, SvgSpan, CssStyle,
-} from "./domTree";
+import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
 
 // The following have to be loaded from Main-Italic font, using class mainit
@@ -271,9 +269,7 @@ const makeOrd = function(
  * Combine as many characters as possible in the given array of characters
  * via their tryCombine method.
  */
-const tryCombineChars = function(
-    chars: CombinableDomNode[],
-): CombinableDomNode[] {
+const tryCombineChars = function(chars: HtmlDomNode[]): HtmlDomNode[] {
     for (let i = 0; i < chars.length - 1; i++) {
         if (chars[i].tryCombine(chars[i + 1])) {
             chars.splice(i + 1, 1);
