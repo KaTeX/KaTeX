@@ -37,9 +37,10 @@ defineFunction({
         }
         const fix = buildCommon.makeSpan(["fix"], []);
         let node = buildCommon.makeSpan(
-            ["mord", group.value.alignment], [inner, fix], options);
+            [group.value.alignment], [inner, fix], options);
 
-        // At this point, we have correctly set horizontal alignment.
+        // At this point, we have correctly set horizontal alignment of the
+        // two items involved in the lap.
         // Next, use struts to set the height of the HTML bounding box.
         // Otherwise, a tall argument may be misplaced.
         const topStrut = buildCommon.makeSpan(["strut"]);
@@ -49,12 +50,14 @@ defineFunction({
         bottomStrut.style.verticalAlign = -node.depth + "em";
         node = buildCommon.makeSpan([], [topStrut, bottomStrut, node]);
 
-        // One last step to prevent vertical misplacement when next to
-        // something tall.
-        return buildCommon.makeVList({
+        // Next, prevent vertical misplacement when next to something tall.
+        node = buildCommon.makeVList({
             positionType: "firstBaseline",
             children: [{type: "elem", elem: node}],
         }, options);
+
+        // Get the horizontal spacing correct relative to adjacent items.
+        return buildCommon.makeSpan(["mord"], [node], options);
     },
     mathmlBuilder: (group, options) => {
         // mathllap, mathrlap, mathclap
