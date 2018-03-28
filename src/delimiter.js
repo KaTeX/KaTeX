@@ -32,7 +32,7 @@ import utils from "./utils";
 
 import type Options from "./Options";
 import type {CharacterMetrics} from "./fontMetrics";
-import type {DomChildNode} from "./domTree";
+import type {HtmlDomNode, DomSpan, SvgSpan} from "./domTree";
 import type {Mode} from "./types";
 import type {StyleInterface} from "./Style";
 import type {VListElem} from "./buildCommon";
@@ -60,11 +60,11 @@ const getMetrics = function(
  * and maxFontSizes.
  */
 const styleWrap = function(
-    delim: DomChildNode,
+    delim: HtmlDomNode,
     toStyle: StyleInterface,
     options: Options,
     classes: string[],
-): domTree.span {
+): DomSpan {
     const newOptions = options.havingBaseStyle(toStyle);
 
     const span = buildCommon.makeSpan(
@@ -81,7 +81,7 @@ const styleWrap = function(
 };
 
 const centerSpan = function(
-    span: domTree.span,
+    span: DomSpan,
     options: Options,
     style: StyleInterface,
 ) {
@@ -108,7 +108,7 @@ const makeSmallDelim = function(
     options: Options,
     mode: Mode,
     classes: string[],
-): domTree.span {
+): DomSpan {
     const text = buildCommon.makeSymbol(delim, "Main-Regular", mode, options);
     const span = styleWrap(text, style, options, classes);
     if (center) {
@@ -140,7 +140,7 @@ const makeLargeDelim = function(delim,
     options: Options,
     mode: Mode,
     classes: string[],
-): domTree.span {
+): DomSpan {
     const inner = mathrmSize(delim, size, mode, options);
     const span = styleWrap(
         buildCommon.makeSpan(["delimsizing", "size" + size], [inner], options),
@@ -188,7 +188,7 @@ const makeStackedDelim = function(
     options: Options,
     mode: Mode,
     classes: string[],
-): domTree.span {
+): DomSpan {
     // There are four parts, the top, an optional middle, a repeated part, and a
     // bottom.
     let top;
@@ -378,7 +378,7 @@ const sqrtSvg = function(
     height: number,
     viewBoxHeight: number,
     options: Options,
-): domTree.span {
+): SvgSpan {
     let alternate;
     if (sqrtName === "sqrtTall") {
         // sqrtTall is from glyph U23B7 in the font KaTeX_Size4-Regular
@@ -401,7 +401,7 @@ const sqrtSvg = function(
         "preserveAspectRatio": "xMinYMin slice",
     });
 
-    return buildCommon.makeSpan(["hide-tail"], [svg], options);
+    return buildCommon.makeSvgSpan(["hide-tail"], [svg], options);
 };
 
 /**
@@ -411,7 +411,7 @@ const makeSqrtImage = function(
     height: number,
     options: Options,
 ): {
-    span: domTree.span,
+    span: SvgSpan,
     ruleWidth: number,
     advanceWidth: number,
 } {
@@ -516,7 +516,7 @@ const makeSizedDelim = function(
     options: Options,
     mode: Mode,
     classes: string[],
-): domTree.span {
+): DomSpan {
     // < and > turn into \langle and \rangle in delimiters
     if (delim === "<" || delim === "\\lt" || delim === "\u27e8") {
         delim = "\\langle";
@@ -654,7 +654,7 @@ const makeCustomSizedDelim = function(
     options: Options,
     mode: Mode,
     classes: string[],
-): domTree.span {
+): DomSpan {
     if (delim === "<" || delim === "\\lt" || delim === "\u27e8") {
         delim = "\\langle";
     } else if (delim === ">" || delim === "\\gt" || delim === "\u27e9") {
@@ -700,7 +700,7 @@ const makeLeftRightDelim = function(
     options: Options,
     mode: Mode,
     classes: string[],
-): domTree.span {
+): DomSpan {
     // We always center \left/\right delimiters, so the axis is always shifted
     const axisHeight =
         options.fontMetrics().axisHeight * options.sizeMultiplier;
