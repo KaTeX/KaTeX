@@ -3022,7 +3022,7 @@ describe("Unicode", function() {
         wideCharText += String.fromCharCode(0xD835, 0xDD04);   // Fraktur A
         wideCharText += String.fromCharCode(0xD835, 0xDD38);   // double-struck
         wideCharText += String.fromCharCode(0xD835, 0xDC9C);   // script A
-        wideCharText += "}"
+        wideCharText += "}";
         expect(wideCharText).toBuild();
     });
 });
