@@ -3014,8 +3014,16 @@ describe("Unicode", function() {
         wideCharStr += String.fromCharCode(0xD835, 0xDD04);   // Fraktur A
         wideCharStr += String.fromCharCode(0xD835, 0xDD38);   // double-struck
         wideCharStr += String.fromCharCode(0xD835, 0xDC9C);   // script A
-        wideCharStr += String.fromCharCode(0xD835, 0xDDA0);   // sans-serif A
         expect(wideCharStr).toBuild();
+
+        let wideCharText = "\text{";
+        wideCharText += String.fromCharCode(0xD835, 0xDC00);   // bold A
+        wideCharText += String.fromCharCode(0xD835, 0xDC68);   // bold italic A
+        wideCharText += String.fromCharCode(0xD835, 0xDD04);   // Fraktur A
+        wideCharText += String.fromCharCode(0xD835, 0xDD38);   // double-struck
+        wideCharText += String.fromCharCode(0xD835, 0xDC9C);   // script A
+        wideCharText += "}"
+        expect(wideCharText).toBuild();
     });
 });
 

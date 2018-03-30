@@ -152,6 +152,11 @@ const mathDefault = function(
             return makeSymbol(
                 value, fontName, mode, options,
                 classes.concat("amsrm", options.fontWeight, options.fontShape));
+        } else if (value.charCodeAt(0) === 0xD835) {
+            const [wideFontName, wideFontClass] = wideCharacterFont(value, mode);
+            return makeSymbol(
+                value, wideFontName, mode, options, [wideFontClass]
+            );
         } else { // if (font === "main") {
             const fontName = retrieveTextFontName("textrm", options.fontWeight,
                   options.fontShape);

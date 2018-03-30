@@ -752,28 +752,30 @@ for (let i = 0; i < letters.length; i++) {
     // 0xDC00 is the low surrogate for bold A.
     wideChar = String.fromCharCode(0xD835, 0xDC00 + i);  // A-Z a-z bold
     defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
 
     // We omit italic. Math mode A-Za-z are italic by default.
 
     wideChar = String.fromCharCode(0xD835, 0xDC68 + i);  // A-Z a-z bold italic
     defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
 
     wideChar = String.fromCharCode(0xD835, 0xDD04 + i);  // A-Z a-z Fractur
     defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
 
     if (i < 26) {
         // KaTeX fonts have only capital letters for blackboard bold and script.
         wideChar = String.fromCharCode(0xD835, 0xDD38 + i); // A-Z double struck
         defineSymbol(math, main, mathord, ch, wideChar);
+        defineSymbol(text, main, textord, ch, wideChar);
 
         wideChar = String.fromCharCode(0xD835, 0xDC9C + i); // A-Z script
         defineSymbol(math, main, mathord, ch, wideChar);
+        defineSymbol(text, main, textord, ch, wideChar);
     }
 
     // TODO: Add bold script when it is supported by a KaTeX font.
-
-    wideChar = String.fromCharCode(0xD835, 0xDDA0 + i);   // A-Z a-z sans-serif
-    defineSymbol(math, main, mathord, ch, wideChar);
 }
 
 // We add these Latin-1 letters as symbols for backwards-compatibility,
