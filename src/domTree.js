@@ -290,7 +290,7 @@ class anchor implements HtmlDomInterface {
         let markup = "<a";
 
         // Add the href
-        markup += `href="${markup += utils.escape(this.href)}"`;
+        markup += ` href="${utils.escape(this.href)}"`;
         // Add the class
         if (this.classes.length) {
             markup += ` class="${utils.escape(createClass(this.classes))}"`;
