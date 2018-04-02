@@ -3,6 +3,20 @@
 // The mu unit is defined as 1/18 em
 @mu: 1.0/18.0em;
 
+@media screen {
+    .katex {
+        .mtable .vertical-separator {
+            min-width: 1px;
+        }
+
+        .mfrac .frac-line,
+        .overline .overline-line,
+        .underline .underline-line {
+            min-height: 1px;
+        }
+    }
+}
+
 .katex-display {
     display: block;
     margin: 1em 0;
@@ -211,6 +225,7 @@
         .frac-line {
             display: inline-block;
             width: 100%;
+            border-bottom-style: solid;
         }
     }
 
@@ -305,6 +320,7 @@
     .underline .underline-line {
         display: inline-block;
         width: 100%;
+        border-bottom-style: solid;
     }
 
     .sqrt {
@@ -414,10 +430,8 @@
     .mtable {
         .vertical-separator {
             display: inline-block;
-            margin: 0 -0.125em;     // The ink in the rule is actually 0.05em wide.
-            width: 0.25em;          // We put it in a 0.25em wide span to overcome
-            overflow: hidden;       // a Chrome rendering issue.
-            position: relative;
+            margin: 0 -0.025em;
+            border-right: 0.05em solid;
         }
 
         .arraycolsep {
