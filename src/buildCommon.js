@@ -9,7 +9,6 @@ import domTree from "./domTree";
 import fontMetrics from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
-import stretchy from "./stretchy";
 import {calculateSize} from "./units";
 
 import type Options from "./Options";

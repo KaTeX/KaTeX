@@ -6,7 +6,6 @@ import ParseError from "../ParseError";
 import ParseNode from "../ParseNode";
 import {calculateSize} from "../units";
 import utils from "../utils";
-import stretchy from "../stretchy";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
