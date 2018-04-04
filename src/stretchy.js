@@ -12,6 +12,7 @@ import utils from "./utils";
 
 import type Options from "./Options";
 import type ParseNode from "./ParseNode";
+import type {DomSpan, SvgSpan} from "./domTree";
 
 const stretchyCodePoint: {[string]: string} = {
     widehat: "^",
@@ -166,10 +167,10 @@ const groupLength = function(arg: ParseNode): number {
     }
 };
 
-const svgSpan = function(group: ParseNode, options: Options): domTree.span {
+const svgSpan = function(group: ParseNode, options: Options): DomSpan | SvgSpan {
     // Create a span with inline SVG for the element.
     function buildSvgSpan_(): {
-        span: domTree.span,
+        span: DomSpan | SvgSpan,
         minWidth: number,
         height: number,
     } {
@@ -211,7 +212,7 @@ const svgSpan = function(group: ParseNode, options: Options): domTree.span {
                 "preserveAspectRatio": "none",
             });
             return {
-                span: buildCommon.makeSpan([], [svgNode], options),
+                span: buildCommon.makeSvgSpan([], [svgNode], options),
                 minWidth: 0,
                 height,
             };
@@ -249,8 +250,8 @@ const svgSpan = function(group: ParseNode, options: Options): domTree.span {
                     "preserveAspectRatio": aligns[i] + " slice",
                 });
 
-                const span =
-                    buildCommon.makeSpan([widthClasses[i]], [svgNode], options);
+                const span = buildCommon.makeSvgSpan(
+                    [widthClasses[i]], [svgNode], options);
                 if (numSvgChildren === 1) {
                     return {span, minWidth, height};
                 } else {
@@ -280,11 +281,11 @@ const svgSpan = function(group: ParseNode, options: Options): domTree.span {
 };
 
 const encloseSpan = function(
-    inner: domTree.span,
+    inner: DomSpan,
     label: string,
     pad: number,
     options: Options,
-): domTree.span {
+): DomSpan | SvgSpan {
     // Return an image span for \cancel, \bcancel, \xcancel, or \fbox
     let img;
     const totalHeight = inner.height + inner.depth + 2 * pad;
@@ -330,7 +331,7 @@ const encloseSpan = function(
             "height": totalHeight + "em",
         });
 
-        img = buildCommon.makeSpan([], [svgNode], options);
+        img = buildCommon.makeSvgSpan([], [svgNode], options);
     }
 
     img.height = totalHeight;
@@ -339,8 +340,11 @@ const encloseSpan = function(
     return img;
 };
 
-const ruleSpan = function(className: string, lineThickness: number,
-    options: Options): domTree.span {
+const ruleSpan = function(
+    className: string,
+    lineThickness: number,
+    options: Options,
+): SvgSpan {
 
     // Get a span with an SVG path that fills the middle fifth of the span.
     // We're using an extra wide span so Chrome won't round it down to zero.
@@ -378,7 +382,7 @@ const ruleSpan = function(className: string, lineThickness: number,
         });
     }
 
-    return buildCommon.makeSpan([parentClass], [svgNode], options);
+    return buildCommon.makeSvgSpan([parentClass], [svgNode], options);
 };
 
 export default {
