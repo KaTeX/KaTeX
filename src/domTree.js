@@ -34,7 +34,7 @@ interface VirtualNodeInterface {
     toMarkup(): string;
 }
 
-interface HtmlDomInterface extends VirtualNodeInterface {
+export interface HtmlDomNode extends VirtualNodeInterface {
     classes: string[];
     height: number;
     depth: number;
@@ -43,13 +43,6 @@ interface HtmlDomInterface extends VirtualNodeInterface {
     tryCombine(sibling: HtmlDomNode): boolean;
 }
 
-/**
- * All `HtmlDomNode`s must implement HtmlDomInterface.
- *
- * `HtmlDomNode` is not defined as an interface since `documentFragment` also
- * has these fields but should not be considered a `HtmlDomNode`.
- */
-export type HtmlDomNode = DomSpan | SvgSpan | anchor | symbolNode;
 // Span wrapping other DOM nodes.
 export type DomSpan = span<HtmlDomNode>;
 // Span wrapping an SVG node.
@@ -68,7 +61,7 @@ export type CssStyle = {[name: string]: string};
  * otherwise. This typesafety is important when HTML builders access a span's
  * children.
  */
-class span<ChildType: VirtualNodeInterface> implements HtmlDomInterface {
+class span<ChildType: VirtualNodeInterface> implements HtmlDomNode {
     classes: string[];
     children: ChildType[];
     height: number;
@@ -200,7 +193,7 @@ class span<ChildType: VirtualNodeInterface> implements HtmlDomInterface {
  * a list of children, and an inline style. It also contains information about its
  * height, depth, and maxFontSize.
  */
-class anchor implements HtmlDomInterface {
+class anchor implements HtmlDomNode {
     href: string;
     classes: string[];
     children: HtmlDomNode[];
@@ -336,17 +329,23 @@ class anchor implements HtmlDomInterface {
  * contains children and doesn't have any HTML properties. It also keeps track
  * of a height, depth, and maxFontSize.
  */
-class documentFragment implements VirtualNodeInterface {
+class documentFragment implements HtmlDomNode {
     children: HtmlDomNode[];
+    classes: string[];         // Never used; needed for satisfying interface.
     height: number;
     depth: number;
     maxFontSize: number;
 
     constructor(children?: HtmlDomNode[]) {
         this.children = children || [];
+        this.classes = [];
         this.height = 0;
         this.depth = 0;
         this.maxFontSize = 0;
+    }
+
+    tryCombine(sibling: HtmlDomNode): boolean {
+        return false;
     }
 
     /**
@@ -392,7 +391,7 @@ const iCombinations = {
  * to a single text node, or a span with a single text node in it, depending on
  * whether it has CSS classes, styles, or needs italic correction.
  */
-class symbolNode implements HtmlDomInterface {
+class symbolNode implements HtmlDomNode {
     value: string;
     height: number;
     depth: number;
