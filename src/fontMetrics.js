@@ -88,7 +88,7 @@ const sigmasAndXis = {
 // metrics, including height, depth, italic correction, and skew (kern from the
 // character to the corresponding \skewchar)
 // This map is generated via `make metrics`. It should not be changed manually.
-import metricMap from "../submodules/katex-fonts/fontMetricsData";
+import defaultMetricMap from "../submodules/katex-fonts/fontMetricsData";
 
 // These are very rough approximations.  We default to Times New Roman which
 // should have Latin-1 and Cyrillic characters, but may not depending on the
@@ -183,6 +183,20 @@ export type CharacterMetrics = {
     width: number;
 };
 
+export type MetricMap = {
+    [string]: { [string]: number[] }
+}
+let metricMap = {};
+
+/**
+ * This function extends metricMap object with a new metric information
+ */
+export function addFontMetrics(newMetrics: MetricMap) {
+    metricMap = Object.assign(metricMap, newMetrics);
+}
+// add the default font metrics
+addFontMetrics(defaultMetricMap);
+
 /**
  * This function is a convenience function for looking up information in the
  * metricMap table. It takes a character as a string, and a font.
@@ -190,7 +204,7 @@ export type CharacterMetrics = {
  * Note: the `width` property may be undefined if fontMetricsData.js wasn't
  * built using `Make extended_metrics`.
  */
-const getCharacterMetrics = function(
+export function getCharacterMetrics(
     character: string,
     font: string,
     mode: Mode,
@@ -227,7 +241,7 @@ const getCharacterMetrics = function(
             width: metrics[4],
         };
     }
-};
+}
 
 type FontSizeIndex = 0 | 1 | 2;
 export type FontMetrics = {
@@ -240,7 +254,7 @@ const fontMetricsBySizeIndex: {[FontSizeIndex]: FontMetrics} = {};
 /**
  * Get the font metrics for a given size.
  */
-const getFontMetrics = function(size: number): FontMetrics {
+export function getFontMetrics(size: number): FontMetrics {
     let sizeIndex: FontSizeIndex;
     if (size >= 5) {
         sizeIndex = 0;
@@ -260,9 +274,4 @@ const getFontMetrics = function(size: number): FontMetrics {
         }
     }
     return fontMetricsBySizeIndex[sizeIndex];
-};
-
-export default {
-    getFontMetrics: getFontMetrics,
-    getCharacterMetrics: getCharacterMetrics,
-};
+}

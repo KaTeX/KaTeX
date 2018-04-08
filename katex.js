@@ -18,6 +18,8 @@ import utils from "./src/utils";
 import type {SettingsOptions} from "./src/Settings";
 import type ParseNode from "./src/ParseNode";
 
+import { addFontMetrics } from './src/fontMetrics';
+
 /**
  * Parse and build an expression, and place that expression in the DOM node
  * given.
@@ -67,7 +69,6 @@ const generateParseTree = function(
     const settings = new Settings(options);
     return parseTree(expression, settings);
 };
-
 
 /**
  * Generates and returns the katex build tree. This is used for advanced
@@ -137,4 +138,9 @@ export default {
      * to change. Use at your own risk.
      */
     __renderToHTMLTree: renderToHTMLTree,
+    /**
+     * extends internal font metrics object with a new object
+     * each key in the new object represents a font name
+    */
+    __addFontMetrics: addFontMetrics,
 };

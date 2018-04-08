@@ -26,7 +26,7 @@ import Style from "./Style";
 
 import domTree from "./domTree";
 import buildCommon from "./buildCommon";
-import fontMetrics from "./fontMetrics";
+import { getCharacterMetrics } from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
 
@@ -48,7 +48,7 @@ const getMetrics = function(
 ): CharacterMetrics {
     const replace = symbols.math[symbol] && symbols.math[symbol].replace;
     const metrics =
-        fontMetrics.getCharacterMetrics(replace || symbol, font, mode);
+        getCharacterMetrics(replace || symbol, font, mode);
     if (!metrics) {
         throw new Error(`Unsupported symbol ${symbol} and font size ${font}.`);
     }

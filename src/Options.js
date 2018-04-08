@@ -6,7 +6,7 @@
  * `.reset` functions.
  */
 
-import fontMetrics from "./fontMetrics";
+import { getFontMetrics } from "./fontMetrics";
 import type {FontMetrics} from "./fontMetrics";
 import type {StyleInterface} from "./Style";
 
@@ -266,7 +266,7 @@ class Options {
      */
     fontMetrics(): FontMetrics {
         if (!this._fontMetrics) {
-            this._fontMetrics = fontMetrics.getFontMetrics(this.size);
+            this._fontMetrics = getFontMetrics(this.size);
         }
         return this._fontMetrics;
     }

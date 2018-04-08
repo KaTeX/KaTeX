@@ -6,7 +6,7 @@
  */
 
 import domTree from "./domTree";
-import fontMetrics from "./fontMetrics";
+import { getCharacterMetrics } from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
 import stretchy from "./stretchy";
@@ -42,7 +42,7 @@ const lookupSymbol = function(
     }
     return {
         value: value,
-        metrics: fontMetrics.getCharacterMetrics(value, fontName, mode),
+        metrics: getCharacterMetrics(value, fontName, mode),
     };
 };
 
@@ -151,12 +151,19 @@ const mathDefault = function(
             return makeSymbol(
                 value, fontName, mode, options,
                 classes.concat("amsrm", options.fontWeight, options.fontShape));
-        } else { // if (font === "main") {
+        } else if (font === "main" || !font) {
             const fontName = retrieveTextFontName("textrm", options.fontWeight,
                   options.fontShape);
             return makeSymbol(
                 value, fontName, mode, options,
                 classes.concat(options.fontWeight, options.fontShape));
+        } else { // fonts added by plugins
+            const fontName = retrieveTextFontName(font, options.fontWeight,
+                  options.fontShape);
+            // We add font name as a css class
+            return makeSymbol(
+                value, fontName, mode, options,
+                classes.concat(fontName, options.fontWeight, options.fontShape));
         }
     } else {
         throw new Error("unexpected type: " + type + " in mathDefault");
@@ -235,6 +242,8 @@ const makeOrd = function(
     const isFont = mode === "math" || (mode === "text" && options.font);
     const fontOrFamily = isFont ? options.font : options.fontFamily;
     if (fontOrFamily) {
+        // a non default font is in use for this group
+        // i.e, user have used \it, etc to change font shape and/or weight
         let fontName;
         let fontClasses;
         if (fontOrFamily === "boldsymbol") {
@@ -600,7 +609,7 @@ const makeVerb = function(group: ParseNode, options: Options): string {
 };
 
 // Glue is a concept from TeX which is a flexible space between elements in
-// either a vertical or horizontal list.  In KaTeX, at least for now, it's
+// either a vertical or horizontal list. In KaTeX, at least for now, it's
 // static space between elements in a horizontal layout.
 const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
     // Make an empty span for the rule
@@ -610,7 +619,7 @@ const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
     return rule;
 };
 
-// Takes an Options object, and returns the appropriate fontLookup
+// Takes font options, and returns the appropriate fontLookup name
 const retrieveTextFontName = function(
     fontFamily: string,
     fontWeight: string,
@@ -636,8 +645,8 @@ const retrieveBaseFontName = function(font: string): string {
         case "texttt":
             baseFontName = "Typewriter";
             break;
-        default:
-            throw new Error(`Invalid font provided: ${font}`);
+        default: // probably a font added by a plugin
+            baseFontName = font;
     }
     return baseFontName;
 };

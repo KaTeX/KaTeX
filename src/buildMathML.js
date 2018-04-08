@@ -7,7 +7,7 @@
  */
 
 import buildCommon from "./buildCommon";
-import fontMetrics from "./fontMetrics";
+import { getCharacterMetrics } from "./fontMetrics";
 import mathMLTree from "./mathMLTree";
 import ParseError from "./ParseError";
 import Style from "./Style";
@@ -53,7 +53,7 @@ const getVariant = function(group, options) {
     }
 
     const fontName = buildCommon.fontMap[font].fontName;
-    if (fontMetrics.getCharacterMetrics(value, fontName, mode)) {
+    if (getCharacterMetrics(value, fontName, mode)) {
         return buildCommon.fontMap[font].variant;
     }
 
