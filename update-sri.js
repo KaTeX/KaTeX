@@ -19,6 +19,15 @@ function write(file, data) {
 Promise.all(process.argv.slice(3).map(file =>
     read(file, "utf8")
     .then(body => {
+        // Replace size badge url
+        // 1 - url prefix: https://img.badgesize.io/Khan/KaTeX/
+        // 2 - url suffix: /dist/katex.min.js?compression=gzip 
+        const badgeRe = /(https:\/\/img\.badgesize\.io\/Khan\/KaTeX\/)(.+)(\/dist\/katex\.min\.js\?compression=gzip)/g;
+        body = body.replace(badgeRe, (m, pre, post) => {
+            return pre + version + post;
+        });
+
+        // Replace CDN urls
         // 1 - url prefix: "http…/KaTeX/
         // 2 - opening quote: "
         // 3 - preserved suffix: /katex.min.js" integrity="…"
@@ -28,7 +37,7 @@ Promise.all(process.argv.slice(3).map(file =>
         // 7 - integrity hash algorithm: sha384
         const re = /((["'])https?:\/\/cdn\.jsdelivr\.net\/npm\/katex@)[^\/"']+(\/([^"']+)\2(?:\s+integrity=(["'])(([^-]+)-[^"']+)\5)?)/g;
         const hashes = {};
-        body = body.replace(re, (m, pre, oq1, post, file, oq2, old, algo) => {
+        body = body.replace(cdnRe, (m, pre, oq1, post, file, oq2, old, algo) => {
             if (old) {
                 hashes[old] = { file, algo };
             }
