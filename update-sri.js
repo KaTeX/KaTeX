@@ -35,7 +35,7 @@ Promise.all(process.argv.slice(3).map(file =>
         // 5 - integrity opening quote: "
         // 6 - old hash: sha384-…
         // 7 - integrity hash algorithm: sha384
-        const cdnRe = /((["'])https?:\/\/cdnjs.cloudflare.com\/ajax\/libs\/KaTeX\/)[^\/"']+(\/([^"']+)\2(?:\s+integrity=(["'])(([^-]+)-[^"']+)\5)?)/g;
+        const cdnRe = /((["'])https?:\/\/cdn\.jsdelivr\.net\/npm\/katex@)[^\/"']+(\/([^"']+)\2(?:\s+integrity=(["'])(([^-]+)-[^"']+)\5)?)/g;
         const hashes = {};
         body = body.replace(cdnRe, (m, pre, oq1, post, file, oq2, old, algo) => {
             if (old) {
@@ -44,7 +44,7 @@ Promise.all(process.argv.slice(3).map(file =>
             return pre + version + post;
         });
         return Promise.all(Object.keys(hashes).map(hash =>
-            read(path.join("dist", hashes[hash].file), null)
+            read(hashes[hash].file, null)
             .then(data => {
                 body = body.replace(hash, sriToolbox.generate({
                     algorithms: [hashes[hash].algo],
