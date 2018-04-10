@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/Khan/KaTeX.svg?branch=master)](https://travis-ci.org/Khan/KaTeX)
 [![codecov](https://codecov.io/gh/Khan/KaTeX/branch/master/graph/badge.svg)](https://codecov.io/gh/Khan/KaTeX)
 [![Join the chat at https://gitter.im/Khan/KaTeX](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Khan/KaTeX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-![](https://img.badgesize.io/Khan/KaTeX/v0.9.0/dist/katex.min.js?compression=gzip)
+![](https://img.shields.io/github/size/Khan/KaTeX/dist/katex.min.js%3Fref%3Dv0.9.0.svg)
 
 KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the web.
 
