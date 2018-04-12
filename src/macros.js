@@ -126,6 +126,21 @@ defineMacro("\u211A", "\\mathbb{Q}");
 defineMacro("\u211D", "\\mathbb{R}");
 defineMacro("\u2124", "\\mathbb{Z}");
 
+defineMacro("\u210E", "\\mathit{h}");   // Planck constant
+
+// Characters omitted from Unicode range 1D400–1D7FF
+defineMacro("\u212C", "\\mathscr{B}");  // script
+defineMacro("\u2130", "\\mathscr{E}");
+defineMacro("\u2131", "\\mathscr{F}");
+defineMacro("\u210B", "\\mathscr{H}");
+defineMacro("\u2110", "\\mathscr{I}");
+defineMacro("\u2112", "\\mathscr{L}");
+defineMacro("\u2133", "\\mathscr{M}");
+defineMacro("\u211B", "\\mathscr{R}");
+defineMacro("\u212D", "\\mathfrak{C}");  // Fraktur
+defineMacro("\u210C", "\\mathfrak{H}");
+defineMacro("\u2128", "\\mathfrak{Z}");
+
 // Unicode middle dot
 // The KaTeX fonts do not contain U+00B7. Instead, \cdotp displays
 // the dot at U+22C5 and gives it punct spacing.
