@@ -2656,6 +2656,11 @@ describe("An href command", function() {
         const ae = getParsed(`\\href{${input}}{\\alpha}`)[0];
         expect(ae.value.href).toBe(url);
     });
+
+    it("should be marked up correctly", function() {
+        const markup = katex.renderToString("\\href{http://example.com/}{example here}");
+        expect(markup).toContain("<a href=\"http://example.com/\">");
+    });
 });
 
 describe("A parser that does not throw on unsupported commands", function() {
