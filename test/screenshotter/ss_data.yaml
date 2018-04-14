@@ -304,6 +304,11 @@ Symbols1: |
     \maltese\degree\pounds\$
     \text{\maltese\degree\pounds\textdollar}
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
+TextSpace:
+  \begin{matrix}
+    \texttt{A test  1~~2\ \ 3} \\
+    \verb|A test 1~~2  3|
+  \end{matrix}
 TextStacked:
   \begin{matrix}
       \textsf{abc123 \textbf{abc123} \textit{abc123}}\\
