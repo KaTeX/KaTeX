@@ -16,7 +16,7 @@ import type Options from "./Options";
 import type ParseNode from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {Mode} from "./types";
-import type {DomChildNode, CombinableDomNode, CssStyle} from "./domTree";
+import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
 
 // The following have to be loaded from Main-Italic font, using class mainit
@@ -269,9 +269,7 @@ const makeOrd = function(
  * Combine as many characters as possible in the given array of characters
  * via their tryCombine method.
  */
-const tryCombineChars = function(
-    chars: CombinableDomNode[],
-): CombinableDomNode[] {
+const tryCombineChars = function(chars: HtmlDomNode[]): HtmlDomNode[] {
     for (let i = 0; i < chars.length - 1; i++) {
         if (chars[i].tryCombine(chars[i + 1])) {
             chars.splice(i + 1, 1);
@@ -286,7 +284,7 @@ const tryCombineChars = function(
  * children.
  */
 const sizeElementFromChildren = function(
-    elem: domTree.span | domTree.anchor | domTree.documentFragment,
+    elem: DomSpan | domTree.anchor | domTree.documentFragment,
 ) {
     let height = 0;
     let depth = 0;
@@ -319,16 +317,25 @@ const sizeElementFromChildren = function(
  */
 const makeSpan = function(
     classes?: string[],
-    children?: DomChildNode[],
+    children?: HtmlDomNode[],
     options?: Options,
     style?: CssStyle,
-): domTree.span {
+): DomSpan {
     const span = new domTree.span(classes, children, options, style);
 
     sizeElementFromChildren(span);
 
     return span;
 };
+
+// SVG one is simpler -- doesn't require height, depth, max-font setting.
+// This is also a separate method for typesafety.
+const makeSvgSpan = (
+    classes?: string[],
+    children?: domTree.svgNode[],
+    options?: Options,
+    style?: CssStyle,
+): SvgSpan => new domTree.span(classes, children, options, style);
 
 const makeLineSpan = function(
     className: string,
@@ -352,7 +359,7 @@ const makeLineSpan = function(
 const makeAnchor = function(
     href: string,
     classes: string[],
-    children: DomChildNode[],
+    children: HtmlDomNode[],
     options: Options,
 ) {
     const anchor = new domTree.anchor(href, classes, children, options);
@@ -366,7 +373,7 @@ const makeAnchor = function(
  * Makes a document fragment with the given list of children.
  */
 const makeFragment = function(
-    children: DomChildNode[],
+    children: HtmlDomNode[],
 ): domTree.documentFragment {
     const fragment = new domTree.documentFragment(children);
 
@@ -379,7 +386,7 @@ const makeFragment = function(
 // These are exact object types to catch typos in the names of the optional fields.
 export type VListElem = {|
     type: "elem",
-    elem: DomChildNode,
+    elem: HtmlDomNode,
     marginLeft?: string,
     marginRight?: string,
     wrapperClasses?: string[],
@@ -387,7 +394,7 @@ export type VListElem = {|
 |};
 type VListElemAndShift = {|
     type: "elem",
-    elem: DomChildNode,
+    elem: HtmlDomNode,
     shift: number,
     marginLeft?: string,
     marginRight?: string,
@@ -491,7 +498,7 @@ const getVListChildrenAndDepth = function(params: VListParam): {
  *
  * See VListParam documentation above.
  */
-const makeVList = function(params: VListParam, options: Options): domTree.span {
+const makeVList = function(params: VListParam, options: Options): DomSpan {
     const {children, depth} = getVListChildrenAndDepth(params);
 
     // Create a strut that is taller than any list item. The strut is added to
@@ -595,7 +602,7 @@ const makeVerb = function(group: ParseNode, options: Options): string {
 // Glue is a concept from TeX which is a flexible space between elements in
 // either a vertical or horizontal list.  In KaTeX, at least for now, it's
 // static space between elements in a horizontal layout.
-const makeGlue = (measurement: Measurement, options: Options): domTree.span => {
+const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
     // Make an empty span for the rule
     const rule = makeSpan(["mord", "rule"], [], options);
     const size = calculateSize(measurement, options);
@@ -752,7 +759,7 @@ const svgData: {
     vec: ["vec", 0.471, 0.714],  // values from the font glyph
 };
 
-const staticSvg = function(value: string, options: Options): domTree.span {
+const staticSvg = function(value: string, options: Options): SvgSpan {
     // Create a span with inline SVG for the element.
     const [pathName, width, height] = svgData[value];
     const path = new domTree.pathNode(pathName);
@@ -764,7 +771,7 @@ const staticSvg = function(value: string, options: Options): domTree.span {
         "viewBox": "0 0 " + 1000 * width + " " + 1000 * height,
         "preserveAspectRatio": "xMinYMin",
     });
-    const span = makeSpan(["overlay"], [svgNode], options);
+    const span = makeSvgSpan(["overlay"], [svgNode], options);
     span.height = height;
     span.style.height = height + "em";
     span.style.width = width + "em";
@@ -776,6 +783,7 @@ export default {
     makeSymbol,
     mathsym,
     makeSpan,
+    makeSvgSpan,
     makeLineSpan,
     makeAnchor,
     makeFragment,
