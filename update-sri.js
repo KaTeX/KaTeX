@@ -20,9 +20,9 @@ Promise.all(process.argv.slice(3).map(file =>
     read(file, "utf8")
     .then(body => {
         // Replace size badge url
-        // 1 - url prefix: https://img.shields.io/github/size/Khan/KaTeX/dist/katex.min.js%3Fref%3Dv
-        // 2 - url suffix: .svg 
-        const badgeRe = /(https:\/\/img\.shields\.io\/github\/size\/Khan\/KaTeX\/dist\/katex.min.js%3Fref%3Dv)(?:.+)(\.svg)/g;
+        // 1 - url prefix: https://img.badgesize.io/Khan/KaTeX/
+        // 2 - url suffix: /dist/katex.min.js?compression=gzip 
+        const badgeRe = /(https:\/\/img\.badgesize\.io\/Khan\/KaTeX\/)(?:.+)(\/dist\/katex\.min\.js\?compression=gzip)/g;
         body = body.replace(badgeRe, (m, pre, post) => {
             return pre + version + post;
         });
