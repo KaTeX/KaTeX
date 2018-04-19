@@ -35,7 +35,7 @@ Promise.all(process.argv.slice(3).map(file =>
         // 5 - integrity opening quote: "
         // 6 - old hash: sha384-…
         // 7 - integrity hash algorithm: sha384
-        const re = /((["'])https?:\/\/cdn\.jsdelivr\.net\/npm\/katex@)[^\/"']+(\/([^"']+)\2(?:\s+integrity=(["'])(([^-]+)-[^"']+)\5)?)/g;
+        const cdnRe = /((["'])https?:\/\/cdn\.jsdelivr\.net\/npm\/katex@)[^\/"']+(\/([^"']+)\2(?:\s+integrity=(["'])(([^-]+)-[^"']+)\5)?)/g;
         const hashes = {};
         body = body.replace(cdnRe, (m, pre, oq1, post, file, oq2, old, algo) => {
             if (old) {
