@@ -130,7 +130,7 @@ will appear larger than 1cm in browser units.
   to `true`.
 
 [comment]: <> (Start of MathJax Section)
-|MathJax Symbols| [x] KaTeX Support|
+|MathJax Symbols| KaTeX Support|
 |---|---|
 | **A** | |
 | \AA |  |

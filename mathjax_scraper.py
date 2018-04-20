@@ -55,7 +55,7 @@ old_text = readme_text[
 
 # construct md table
 table = ''
-main_header = '''\n|MathJax Symbols| [x] KaTeX Support|\n|---|---|\n'''
+main_header = '''\n|MathJax Symbols| KaTeX Support|\n|---|---|\n'''
 table += main_header
 
 for key in list(string.ascii_lowercase) + [basic_label]:
