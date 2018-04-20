@@ -55,7 +55,7 @@ old_text = readme_text[
 
 # construct md table
 table = ''
-main_header = '''\n|MathJax Symbols| KaTeX Support|\n|---|---|\n'''
+main_header = '''\n\n|MathJax Symbols| KaTeX Support|\n|---|---|\n'''
 table += main_header
 
 for key in list(string.ascii_lowercase) + [basic_label]:
@@ -67,7 +67,7 @@ for key in list(string.ascii_lowercase) + [basic_label]:
     table += section
 
 # double pipes for end of table
-table = table[:-1] + '|\n'
+table = table[:-1] + '|\n\n'
 
 # inject table in README.md
 readme_updated = readme_text.replace(old_text, table)
