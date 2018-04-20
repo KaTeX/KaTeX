@@ -129,7 +129,7 @@ will appear larger than 1cm in browser units.
   To support this behavior in KaTeX, set the `unicodeTextInMathMode` option
   to `true`.
 
-[comment]: <> (Start of MathJax Section)
+[//]: # (start of mathjax section)
 
 |MathJax Symbols| KaTeX Support|
 |---|---|
@@ -1029,7 +1029,7 @@ will appear larger than 1cm in browser units.
 | \| |  |
 | \} |  ||
 
-[comment]: <> (End of MathJax Section)
+[//]: # (end of mathjax section)
 
 
 ## Libraries

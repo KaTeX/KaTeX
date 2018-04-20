@@ -42,9 +42,8 @@ with open(PATH, 'r') as f:
     readme_text = f.read()
 
 # delete existant table
-mathjax_section_start = '[comment]: <> (Start of MathJax Section)'
-mathjax_section_end = '[comment]: <> (End of MathJax Section)'
-
+mathjax_section_start = '[//]: # (start of mathjax section)'
+mathjax_section_end = '[//]: # (end of mathjax section)'
 readme_text.find(mathjax_section_start)
 readme_text.find(mathjax_section_end)
 
