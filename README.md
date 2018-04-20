@@ -129,6 +129,10 @@ will appear larger than 1cm in browser units.
   To support this behavior in KaTeX, set the `unicodeTextInMathMode` option
   to `true`.
 
+## Differences from MathJax
+
+### Functions
+
 [//]: # (start of mathjax section)
 
 |MathJax Symbols| KaTeX Support|
