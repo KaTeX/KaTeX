@@ -292,7 +292,12 @@ SupSubHorizSpacing: |
 SupSubLeftAlignReset: |
     \omega^8_{888} \quad \frac{1}{\hat{\omega}^{8}_{888}} \quad \displaystyle\sum_{\omega^{8}_{888}}
 SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
-SurrogatePairs: 𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜 \text{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜} \mathrm{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜}
+SurrogatePairs: |
+    \begin{array}{l}
+        𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜 \\
+        \text{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜} \\
+        \mathrm{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜}
+    \end{array}
 SvgReset:
     # This math uses a lot of SVG glyphs
     tex: '\underbrace{\sqrt{\vec{x}} + \sqrt{\vec{\color{#f00}y}}}'
