@@ -741,7 +741,7 @@ for (let i = 0; i < letters.length; i++) {
 // The next loop loads wide (surrogate pair) characters.
 // We support some letters in the Unicode range U+1D400 to U+1D7FF,
 // Mathematical Alphanumeric Symbols.
-// Some editors do not deal well with surrogate pairs. So don't write the
+// Some editors do not deal well with wide characters. So don't write the
 // string into this file. Instead, create the string from the surrogate pair.
 let wideChar = "";
 for (let i = 0; i < letters.length; i++) {
@@ -754,7 +754,9 @@ for (let i = 0; i < letters.length; i++) {
     defineSymbol(math, main, mathord, ch, wideChar);
     defineSymbol(text, main, textord, ch, wideChar);
 
-    // We omit italic. Math mode A-Za-z are italic by default.
+    wideChar = String.fromCharCode(0xD835, 0xDC34 + i);  // A-Z a-z italic
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
 
     wideChar = String.fromCharCode(0xD835, 0xDC68 + i);  // A-Z a-z bold italic
     defineSymbol(math, main, mathord, ch, wideChar);
@@ -764,8 +766,25 @@ for (let i = 0; i < letters.length; i++) {
     defineSymbol(math, main, mathord, ch, wideChar);
     defineSymbol(text, main, textord, ch, wideChar);
 
+    wideChar = String.fromCharCode(0xD835, 0xDDA0 + i);  // A-Z a-z sans-serif
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDDD4 + i);  // A-Z a-z sans bold
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDE08 + i);  // A-Z a-z sans italic
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDE70 + i);  // A-Z a-z monospace
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
     if (i < 26) {
         // KaTeX fonts have only capital letters for blackboard bold and script.
+        // See exception for k below.
         wideChar = String.fromCharCode(0xD835, 0xDD38 + i); // A-Z double struck
         defineSymbol(math, main, mathord, ch, wideChar);
         defineSymbol(text, main, textord, ch, wideChar);
@@ -776,6 +795,31 @@ for (let i = 0; i < letters.length; i++) {
     }
 
     // TODO: Add bold script when it is supported by a KaTeX font.
+}
+// "k" is the only double struck lower case letter in the KaTeX fonts.
+wideChar = String.fromCharCode(0xD835, 0xDD5C);   // k double struck
+defineSymbol(math, main, mathord, "k", wideChar);
+defineSymbol(text, main, textord, "k", wideChar);
+
+// Next, some wide character numerals
+for (let i = 0; i < 10; i++) {
+    const ch = letters.charAt(i);
+
+    wideChar = String.fromCharCode(0xD835, 0xDFCE + i);  // 0-9 bold
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDFE2 + i);  // 0-9 sans serif
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDFEC + i);  // 0-9 bold sans
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDFF6 + i);  // 0-9 monospace
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
 }
 
 // We add these Latin-1 letters as symbols for backwards-compatibility,

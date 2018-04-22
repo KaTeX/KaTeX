@@ -24,32 +24,42 @@ import ParseError from "./ParseError";
 const wideLatinLetterData: Array<[string, string, string]> = [
     ["mathbf", "textbf", "Main-Bold"],                // A-Z bold upright
     ["mathbf", "textbf", "Main-Bold"],                // a-z bold upright
-    ["mathit", "textit", "Main-Italic"],              // A-Z italic
-    ["mathit", "textit", "Main-Italic"],              // a-z italic
+
+    ["mathit", "textit", "Math-Italic"],              // A-Z italic
+    ["mathit", "textit", "Math-Italic"],              // a-z italic
+
     ["boldsymbol", "boldsymbol", "Main-BoldItalic"],  // A-Z bold italic
     ["boldsymbol", "boldsymbol", "Main-BoldItalic"],  // a-z bold italic
 
     // Map fancy A-Z letters to script, not calligraphic.
     // This aligns with unicode-math and math fonts (except Cambria Math).
-    ["mathscr", "textscr", "Script-Regular"],         // A-Z script
-
+    ["mathscr", "textscr", "Script-Regular"],       // A-Z script
     ["", "", ""],                                   // a-z script.  No font
+
     ["", "", ""],                                   // A-Z bold script. No font
     ["", "", ""],                                   // a-z bold script. No font
+
     ["mathfrak", "textfrak", "Fraktur-Regular"],    // A-Z Fraktur
     ["mathfrak", "textfrak", "Fraktur-Regular"],    // a-z Fraktur
+
     ["mathbb", "textbb", "AMS-Regular"],            // A-Z double-struck
-    ["", "", ""],                           // a-z double-struck. No font.
+    ["mathbb", "textbb", "AMS-Regular"],            // k double-struck
+
     ["", "", ""],                           // A-Z bold Fraktur No font metrics
     ["", "", ""],                           // a-z bold Fraktur.   No font.
+
     ["mathsf", "textsf", "SansSerif-Regular"],      // A-Z sans-serif
     ["mathsf", "textsf", "SansSerif-Regular"],      // a-z sans-serif
+
     ["mathboldsf", "textboldsf", "SansSerif-Bold"], // A-Z bold sans-serif
     ["mathboldsf", "textboldsf", "SansSerif-Bold"], // a-z bold sans-serif
+
     ["mathitsf", "textitsf", "SansSerif-Italic"],   // A-Z italic sans-serif
     ["mathitsf", "textitsf", "SansSerif-Italic"],   // a-z italic sans-serif
+
     ["", "", ""],                              // A-Z bold italic sans. No font
     ["", "", ""],                              // a-z bold italic sans. No font
+
     ["mathtt", "texttt", "Typewriter-Regular"],     // A-Z monospace
     ["mathtt", "texttt", "Typewriter-Regular"],     // a-z monospace
 ];
