@@ -28,15 +28,14 @@ const htmlBuilder = (group, options) => {
     const style = options.style;
 
     // Most operators have a large successor symbol, but these don't.
-    const noSuccessor = [
-        "\\smallint",
-    ];
+    const noSuccessor = ["\\smallint"];
 
     let large = false;
-    if (style.size === Style.DISPLAY.size &&
+    if (
+        style.size === Style.DISPLAY.size &&
         group.value.symbol &&
-        !utils.contains(noSuccessor, group.value.body)) {
-
+        !utils.contains(noSuccessor, group.value.body)
+    ) {
         // Most symbol operators get larger in displaystyle (rule 13)
         large = true;
     }
@@ -45,9 +44,11 @@ const htmlBuilder = (group, options) => {
     if (group.value.symbol) {
         // If this is a symbol, create the symbol.
         const fontName = large ? "Size2-Regular" : "Size1-Regular";
-        base = buildCommon.makeSymbol(
-            group.value.body, fontName, "math", options,
-            ["mop", "op-symbol", large ? "large-op" : "small-op"]);
+        base = buildCommon.makeSymbol(group.value.body, fontName, "math", options, [
+            "mop",
+            "op-symbol",
+            large ? "large-op" : "small-op",
+        ]);
     } else if (group.value.value) {
         // If this is a list, compose that list.
         const inner = html.buildExpression(group.value.value, options, true);
@@ -78,8 +79,8 @@ const htmlBuilder = (group, options) => {
         // almost on the axis, so these numbers are very small. Note we
         // don't actually apply this here, but instead it is used either in
         // the vlist creation or separately when there are no limits.
-        baseShift = (base.height - base.depth) / 2 -
-            options.fontMetrics().axisHeight;
+        baseShift =
+            (base.height - base.depth) / 2 - options.fontMetrics().axisHeight;
 
         // The slant of the symbol is just its italic correction.
         slant = base.italic;
@@ -96,25 +97,33 @@ const htmlBuilder = (group, options) => {
         // aside from the kern calculations, is copied from supsub.
         if (supGroup) {
             const elem = html.buildGroup(
-                supGroup, options.havingStyle(style.sup()), options);
+                supGroup,
+                options.havingStyle(style.sup()),
+                options,
+            );
 
             sup = {
                 elem,
                 kern: Math.max(
                     options.fontMetrics().bigOpSpacing1,
-                    options.fontMetrics().bigOpSpacing3 - elem.depth),
+                    options.fontMetrics().bigOpSpacing3 - elem.depth,
+                ),
             };
         }
 
         if (subGroup) {
             const elem = html.buildGroup(
-                subGroup, options.havingStyle(style.sub()), options);
+                subGroup,
+                options.havingStyle(style.sub()),
+                options,
+            );
 
             sub = {
                 elem,
                 kern: Math.max(
                     options.fontMetrics().bigOpSpacing2,
-                    options.fontMetrics().bigOpSpacing4 - elem.height),
+                    options.fontMetrics().bigOpSpacing4 - elem.height,
+                ),
             };
         }
 
@@ -122,24 +131,44 @@ const htmlBuilder = (group, options) => {
         // and possible superscript.
         let finalGroup;
         if (sup && sub) {
-            const bottom = options.fontMetrics().bigOpSpacing5 +
-                sub.elem.height + sub.elem.depth +
+            const bottom =
+                options.fontMetrics().bigOpSpacing5 +
+                sub.elem.height +
+                sub.elem.depth +
                 sub.kern +
-                base.depth + baseShift;
+                base.depth +
+                baseShift;
 
-            finalGroup = buildCommon.makeVList({
-                positionType: "bottom",
-                positionData: bottom,
-                children: [
-                    {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                    {type: "elem", elem: sub.elem, marginLeft: -slant + "em"},
-                    {type: "kern", size: sub.kern},
-                    {type: "elem", elem: base},
-                    {type: "kern", size: sup.kern},
-                    {type: "elem", elem: sup.elem, marginLeft: slant + "em"},
-                    {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                ],
-            }, options);
+            finalGroup = buildCommon.makeVList(
+                {
+                    positionType: "bottom",
+                    positionData: bottom,
+                    children: [
+                        {
+                            type: "kern",
+                            size: options.fontMetrics().bigOpSpacing5,
+                        },
+                        {
+                            type: "elem",
+                            elem: sub.elem,
+                            marginLeft: -slant + "em",
+                        },
+                        {type: "kern", size: sub.kern},
+                        {type: "elem", elem: base},
+                        {type: "kern", size: sup.kern},
+                        {
+                            type: "elem",
+                            elem: sup.elem,
+                            marginLeft: slant + "em",
+                        },
+                        {
+                            type: "kern",
+                            size: options.fontMetrics().bigOpSpacing5,
+                        },
+                    ],
+                },
+                options,
+            );
         } else if (sub) {
             const top = base.height - baseShift;
 
@@ -147,29 +176,49 @@ const htmlBuilder = (group, options) => {
             // that we are supposed to shift the limits by 1/2 of the slant,
             // but since we are centering the limits adding a full slant of
             // margin will shift by 1/2 that.
-            finalGroup = buildCommon.makeVList({
-                positionType: "top",
-                positionData: top,
-                children: [
-                    {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                    {type: "elem", elem: sub.elem, marginLeft: -slant + "em"},
-                    {type: "kern", size: sub.kern},
-                    {type: "elem", elem: base},
-                ],
-            }, options);
+            finalGroup = buildCommon.makeVList(
+                {
+                    positionType: "top",
+                    positionData: top,
+                    children: [
+                        {
+                            type: "kern",
+                            size: options.fontMetrics().bigOpSpacing5,
+                        },
+                        {
+                            type: "elem",
+                            elem: sub.elem,
+                            marginLeft: -slant + "em",
+                        },
+                        {type: "kern", size: sub.kern},
+                        {type: "elem", elem: base},
+                    ],
+                },
+                options,
+            );
         } else if (sup) {
             const bottom = base.depth + baseShift;
 
-            finalGroup = buildCommon.makeVList({
-                positionType: "bottom",
-                positionData: bottom,
-                children: [
-                    {type: "elem", elem: base},
-                    {type: "kern", size: sup.kern},
-                    {type: "elem", elem: sup.elem, marginLeft: slant + "em"},
-                    {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                ],
-            }, options);
+            finalGroup = buildCommon.makeVList(
+                {
+                    positionType: "bottom",
+                    positionData: bottom,
+                    children: [
+                        {type: "elem", elem: base},
+                        {type: "kern", size: sup.kern},
+                        {
+                            type: "elem",
+                            elem: sup.elem,
+                            marginLeft: slant + "em",
+                        },
+                        {
+                            type: "kern",
+                            size: options.fontMetrics().bigOpSpacing5,
+                        },
+                    ],
+                },
+                options,
+            );
         } else {
             // This case probably shouldn't occur (this would mean the
             // supsub was sending us a group with no superscript or
@@ -177,8 +226,7 @@ const htmlBuilder = (group, options) => {
             return base;
         }
 
-        return buildCommon.makeSpan(
-            ["mop", "op-limits"], [finalGroup], options);
+        return buildCommon.makeSpan(["mop", "op-limits"], [finalGroup], options);
     } else {
         if (baseShift) {
             base.style.position = "relative";
@@ -196,24 +244,29 @@ const mathmlBuilder = (group, options) => {
 
     if (group.value.symbol) {
         // This is a symbol. Just add the symbol.
-        node = new mathMLTree.MathNode(
-            "mo", [mml.makeText(group.value.body, group.mode)]);
+        node = new mathMLTree.MathNode("mo", [
+            mml.makeText(group.value.body, group.mode),
+        ]);
     } else if (group.value.value) {
         // This is an operator with children. Add them.
         node = new mathMLTree.MathNode(
-            "mo", mml.buildExpression(group.value.value, options));
+            "mo",
+            mml.buildExpression(group.value.value, options),
+        );
     } else {
         // This is a text operator. Add all of the characters from the
         // operator's name.
         // TODO(emily): Add a space in the middle of some of these
         // operators, like \limsup.
-        node = new mathMLTree.MathNode(
-            "mi", [new mathMLTree.TextNode(group.value.body.slice(1))]);
+        node = new mathMLTree.MathNode("mi", [
+            new mathMLTree.TextNode(group.value.body.slice(1)),
+        ]);
 
         // Append an <mo>&ApplyFunction;</mo>.
         // ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.4
-        const operator = new mathMLTree.MathNode("mo",
-            [mml.makeText("\u2061", "text")]);
+        const operator = new mathMLTree.MathNode("mo", [
+            mml.makeText("\u2061", "text"),
+        ]);
 
         return new domTree.documentFragment([node, operator]);
     }
@@ -239,11 +292,32 @@ const singleCharBigOps: {[string]: string} = {
 defineFunction({
     type: "op",
     names: [
-        "\\coprod", "\\bigvee", "\\bigwedge", "\\biguplus", "\\bigcap",
-        "\\bigcup", "\\intop", "\\prod", "\\sum", "\\bigotimes",
-        "\\bigoplus", "\\bigodot", "\\bigsqcup", "\\smallint", "\u220F",
-        "\u2210", "\u2211", "\u22c0", "\u22c1", "\u22c2", "\u22c3", "\u2a00",
-        "\u2a01", "\u2a02", "\u2a04", "\u2a06",
+        "\\coprod",
+        "\\bigvee",
+        "\\bigwedge",
+        "\\biguplus",
+        "\\bigcap",
+        "\\bigcup",
+        "\\intop",
+        "\\prod",
+        "\\sum",
+        "\\bigotimes",
+        "\\bigoplus",
+        "\\bigodot",
+        "\\bigsqcup",
+        "\\smallint",
+        "\u220F",
+        "\u2210",
+        "\u2211",
+        "\u22c0",
+        "\u22c1",
+        "\u22c2",
+        "\u22c3",
+        "\u2a00",
+        "\u2a01",
+        "\u2a02",
+        "\u2a04",
+        "\u2a06",
     ],
     props: {
         numArgs: 0,

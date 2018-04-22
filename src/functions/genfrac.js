@@ -11,8 +11,12 @@ import * as mml from "../buildMathML";
 defineFunction({
     type: "genfrac",
     names: [
-        "\\dfrac", "\\frac", "\\tfrac",
-        "\\dbinom", "\\binom", "\\tbinom",
+        "\\dfrac",
+        "\\frac",
+        "\\tfrac",
+        "\\dbinom",
+        "\\binom",
+        "\\tbinom",
         "\\\\atopfrac", // can’t be entered directly
     ],
     props: {
@@ -129,52 +133,66 @@ defineFunction({
         if (!rule) {
             // Rule 15c
             const candidateClearance =
-                (numShift - numerm.depth) - (denomm.height - denomShift);
+                numShift - numerm.depth - (denomm.height - denomShift);
             if (candidateClearance < clearance) {
                 numShift += 0.5 * (clearance - candidateClearance);
                 denomShift += 0.5 * (clearance - candidateClearance);
             }
 
-            frac = buildCommon.makeVList({
-                positionType: "individualShift",
-                children: [
-                    {type: "elem", elem: denomm, shift: denomShift},
-                    {type: "elem", elem: numerm, shift: -numShift},
-                ],
-            }, options);
+            frac = buildCommon.makeVList(
+                {
+                    positionType: "individualShift",
+                    children: [
+                        {type: "elem", elem: denomm, shift: denomShift},
+                        {type: "elem", elem: numerm, shift: -numShift},
+                    ],
+                },
+                options,
+            );
         } else {
             // Rule 15d
             const axisHeight = options.fontMetrics().axisHeight;
 
-            if ((numShift - numerm.depth) - (axisHeight + 0.5 * ruleWidth) <
-                    clearance) {
+            if (
+                numShift - numerm.depth - (axisHeight + 0.5 * ruleWidth) <
+                clearance
+            ) {
                 numShift +=
-                    clearance - ((numShift - numerm.depth) -
-                                (axisHeight + 0.5 * ruleWidth));
+                    clearance -
+                    (numShift - numerm.depth - (axisHeight + 0.5 * ruleWidth));
             }
 
-            if ((axisHeight - 0.5 * ruleWidth) - (denomm.height - denomShift) <
-                    clearance) {
+            if (
+                axisHeight - 0.5 * ruleWidth - (denomm.height - denomShift) <
+                clearance
+            ) {
                 denomShift +=
-                    clearance - ((axisHeight - 0.5 * ruleWidth) -
-                                (denomm.height - denomShift));
+                    clearance -
+                    (axisHeight - 0.5 * ruleWidth - (denomm.height - denomShift));
             }
 
             const midShift = -(axisHeight - 0.5 * ruleWidth);
 
-            frac = buildCommon.makeVList({
-                positionType: "individualShift",
-                children: [
-                    {type: "elem", elem: denomm, shift: denomShift},
-                    // The next line would ordinarily contain "shift: midShift".
-                    // But we put the rule into a a span that is 5 rules tall,
-                    // to overcome a Chrome rendering issue. Put another way,
-                    // we've replaced a kern of width = 2 * ruleWidth with a
-                    // bottom padding inside the SVG = 2 * ruleWidth.
-                    {type: "elem", elem: rule,   shift: midShift + 2 * ruleWidth},
-                    {type: "elem", elem: numerm, shift: -numShift},
-                ],
-            }, options);
+            frac = buildCommon.makeVList(
+                {
+                    positionType: "individualShift",
+                    children: [
+                        {type: "elem", elem: denomm, shift: denomShift},
+                        // The next line would ordinarily contain "shift: midShift".
+                        // But we put the rule into a a span that is 5 rules tall,
+                        // to overcome a Chrome rendering issue. Put another way,
+                        // we've replaced a kern of width = 2 * ruleWidth with a
+                        // bottom padding inside the SVG = 2 * ruleWidth.
+                        {
+                            type: "elem",
+                            elem: rule,
+                            shift: midShift + 2 * ruleWidth,
+                        },
+                        {type: "elem", elem: numerm, shift: -numShift},
+                    ],
+                },
+                options,
+            );
         }
 
         // Since we manually change the style sometimes (with \dfrac or \tfrac),
@@ -197,29 +215,38 @@ defineFunction({
             leftDelim = html.makeNullDelimiter(options, ["mopen"]);
         } else {
             leftDelim = delimiter.customSizedDelim(
-                group.value.leftDelim, delimSize, true,
-                options.havingStyle(style), group.mode, ["mopen"]);
+                group.value.leftDelim,
+                delimSize,
+                true,
+                options.havingStyle(style),
+                group.mode,
+                ["mopen"],
+            );
         }
         if (group.value.rightDelim == null) {
             rightDelim = html.makeNullDelimiter(options, ["mclose"]);
         } else {
             rightDelim = delimiter.customSizedDelim(
-                group.value.rightDelim, delimSize, true,
-                options.havingStyle(style), group.mode, ["mclose"]);
+                group.value.rightDelim,
+                delimSize,
+                true,
+                options.havingStyle(style),
+                group.mode,
+                ["mclose"],
+            );
         }
 
         return buildCommon.makeSpan(
             ["mord"].concat(newOptions.sizingClasses(options)),
             [leftDelim, buildCommon.makeSpan(["mfrac"], [frac]), rightDelim],
-            options);
+            options,
+        );
     },
     mathmlBuilder: (group, options) => {
-        const node = new mathMLTree.MathNode(
-            "mfrac",
-            [
-                mml.buildGroup(group.value.numer, options),
-                mml.buildGroup(group.value.denom, options),
-            ]);
+        const node = new mathMLTree.MathNode("mfrac", [
+            mml.buildGroup(group.value.numer, options),
+            mml.buildGroup(group.value.denom, options),
+        ]);
 
         if (!group.value.hasBarLine) {
             node.setAttribute("linethickness", "0px");
@@ -229,8 +256,9 @@ defineFunction({
             const withDelims = [];
 
             if (group.value.leftDelim != null) {
-                const leftOp = new mathMLTree.MathNode(
-                    "mo", [new mathMLTree.TextNode(group.value.leftDelim)]);
+                const leftOp = new mathMLTree.MathNode("mo", [
+                    new mathMLTree.TextNode(group.value.leftDelim),
+                ]);
 
                 leftOp.setAttribute("fence", "true");
 
@@ -240,8 +268,9 @@ defineFunction({
             withDelims.push(node);
 
             if (group.value.rightDelim != null) {
-                const rightOp = new mathMLTree.MathNode(
-                    "mo", [new mathMLTree.TextNode(group.value.rightDelim)]);
+                const rightOp = new mathMLTree.MathNode("mo", [
+                    new mathMLTree.TextNode(group.value.rightDelim),
+                ]);
 
                 rightOp.setAttribute("fence", "true");
 

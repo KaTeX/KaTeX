@@ -21,9 +21,14 @@ import type {Measurement} from "./units";
 
 // The following have to be loaded from Main-Italic font, using class mainit
 const mainitLetters = [
-    "\\imath", "ı",       // dotless i
-    "\\jmath", "ȷ",       // dotless j
-    "\\pounds", "\\mathsterling", "\\textsterling", "£",   // pounds symbol
+    "\\imath",
+    "ı", // dotless i
+    "\\jmath",
+    "ȷ", // dotless j
+    "\\pounds",
+    "\\mathsterling",
+    "\\textsterling",
+    "£", // pounds symbol
 ];
 
 /**
@@ -74,13 +79,24 @@ const makeSymbol = function(
             italic = 0;
         }
         symbolNode = new domTree.symbolNode(
-            value, metrics.height, metrics.depth, italic, metrics.skew,
-            metrics.width, classes);
+            value,
+            metrics.height,
+            metrics.depth,
+            italic,
+            metrics.skew,
+            metrics.width,
+            classes,
+        );
     } else {
         // TODO(emily): Figure out a good way to only print this in development
-        typeof console !== "undefined" && console.warn(
-            "No character metrics for '" + value + "' in style '" +
-                fontName + "'");
+        typeof console !== "undefined" &&
+            console.warn(
+                "No character metrics for '" +
+                    value +
+                    "' in style '" +
+                    fontName +
+                    "'",
+            );
         symbolNode = new domTree.symbolNode(value, 0, 0, 0, 0, 0, classes);
     }
 
@@ -117,15 +133,29 @@ const mathsym = function(
     // text ordinal and is therefore not present as a symbol in the symbols
     // table for text, as well as a special case for boldsymbol because it
     // can be used for bold + and -
-    if ((options && options.font && options.font === "boldsymbol") &&
-            lookupSymbol(value, "Main-Bold", mode).metrics) {
-        return makeSymbol(value, "Main-Bold", mode, options,
-            classes.concat(["mathbf"]));
+    if (
+        options &&
+        options.font &&
+        options.font === "boldsymbol" &&
+        lookupSymbol(value, "Main-Bold", mode).metrics
+    ) {
+        return makeSymbol(
+            value,
+            "Main-Bold",
+            mode,
+            options,
+            classes.concat(["mathbf"]),
+        );
     } else if (value === "\\" || symbols[mode][value].font === "main") {
         return makeSymbol(value, "Main-Regular", mode, options, classes);
     } else {
         return makeSymbol(
-            value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
+            value,
+            "AMS-Regular",
+            mode,
+            options,
+            classes.concat(["amsrm"]),
+        );
     }
 };
 
@@ -141,22 +171,42 @@ const mathDefault = function(
 ): domTree.symbolNode {
     if (type === "mathord") {
         const fontLookup = mathit(value, mode, options, classes);
-        return makeSymbol(value, fontLookup.fontName, mode, options,
-            classes.concat([fontLookup.fontClass]));
+        return makeSymbol(
+            value,
+            fontLookup.fontName,
+            mode,
+            options,
+            classes.concat([fontLookup.fontClass]),
+        );
     } else if (type === "textord") {
         const font = symbols[mode][value] && symbols[mode][value].font;
         if (font === "ams") {
-            const fontName = retrieveTextFontName("amsrm", options.fontWeight,
-                  options.fontShape);
+            const fontName = retrieveTextFontName(
+                "amsrm",
+                options.fontWeight,
+                options.fontShape,
+            );
             return makeSymbol(
-                value, fontName, mode, options,
-                classes.concat("amsrm", options.fontWeight, options.fontShape));
-        } else { // if (font === "main") {
-            const fontName = retrieveTextFontName("textrm", options.fontWeight,
-                  options.fontShape);
+                value,
+                fontName,
+                mode,
+                options,
+                classes.concat("amsrm", options.fontWeight, options.fontShape),
+            );
+        } else {
+            // if (font === "main") {
+            const fontName = retrieveTextFontName(
+                "textrm",
+                options.fontWeight,
+                options.fontShape,
+            );
             return makeSymbol(
-                value, fontName, mode, options,
-                classes.concat(options.fontWeight, options.fontShape));
+                value,
+                fontName,
+                mode,
+                options,
+                classes.concat(options.fontWeight, options.fontShape),
+            );
         }
     } else {
         throw new Error("unexpected type: " + type + " in mathDefault");
@@ -174,11 +224,13 @@ const mathit = function(
     mode: Mode,
     options: Options,
     classes: string[],
-): {| fontName: string, fontClass: string |} {
-    if (/[0-9]/.test(value.charAt(0)) ||
-            // glyphs for \imath and \jmath do not exist in Math-Italic so we
-            // need to use Main-Italic instead
-            utils.contains(mainitLetters, value)) {
+): {|fontName: string, fontClass: string|} {
+    if (
+        /[0-9]/.test(value.charAt(0)) ||
+        // glyphs for \imath and \jmath do not exist in Math-Italic so we
+        // need to use Main-Italic instead
+        utils.contains(mainitLetters, value)
+    ) {
         return {
             fontName: "Main-Italic",
             fontClass: "mainit",
@@ -202,7 +254,7 @@ const boldsymbol = function(
     mode: Mode,
     options: Options,
     classes: string[],
-): {| fontName: string, fontClass: string |} {
+): {|fontName: string, fontClass: string|} {
     if (lookupSymbol(value, "Math-BoldItalic", mode).metrics) {
         return {
             fontName: "Math-BoldItalic",
@@ -241,8 +293,10 @@ const makeOrd = function(
             const fontData = boldsymbol(value, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
-        } else if (fontOrFamily === "mathit" ||
-                   utils.contains(mainitLetters, value)) {
+        } else if (
+            fontOrFamily === "mathit" ||
+            utils.contains(mainitLetters, value)
+        ) {
             const fontData = mathit(value, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
@@ -250,13 +304,21 @@ const makeOrd = function(
             fontName = fontMap[fontOrFamily].fontName;
             fontClasses = [fontOrFamily];
         } else {
-            fontName = retrieveTextFontName(fontOrFamily, options.fontWeight,
-                                            options.fontShape);
+            fontName = retrieveTextFontName(
+                fontOrFamily,
+                options.fontWeight,
+                options.fontShape,
+            );
             fontClasses = [fontOrFamily, options.fontWeight, options.fontShape];
         }
         if (lookupSymbol(value, fontName, mode).metrics) {
-            return makeSymbol(value, fontName, mode, options,
-                classes.concat(fontClasses));
+            return makeSymbol(
+                value,
+                fontName,
+                mode,
+                options,
+                classes.concat(fontClasses),
+            );
         } else {
             return mathDefault(value, mode, options, classes, type);
         }
@@ -337,10 +399,7 @@ const makeSvgSpan = (
     style?: CssStyle,
 ): SvgSpan => new domTree.span(classes, children, options, style);
 
-const makeLineSpan = function(
-    className: string,
-    options: Options,
-) {
+const makeLineSpan = function(className: string, options: Options) {
     // Return a span with an SVG image of a horizontal line. The SVG path
     // fills the middle fifth of the span. We want an extra tall span
     // because Chrome will sometimes not display a span that is 0.04em tall.
@@ -372,16 +431,13 @@ const makeAnchor = function(
 /**
  * Makes a document fragment with the given list of children.
  */
-const makeFragment = function(
-    children: HtmlDomNode[],
-): domTree.documentFragment {
+const makeFragment = function(children: HtmlDomNode[]): domTree.documentFragment {
     const fragment = new domTree.documentFragment(children);
 
     sizeElementFromChildren(fragment);
 
     return fragment;
 };
-
 
 // These are exact object types to catch typos in the names of the optional fields.
 export type VListElem = {|
@@ -401,41 +457,45 @@ type VListElemAndShift = {|
     wrapperClasses?: string[],
     wrapperStyle?: CssStyle,
 |};
-type VListKern = {| type: "kern", size: number |};
+type VListKern = {|type: "kern", size: number|};
 
 // A list of child or kern nodes to be stacked on top of each other (i.e. the
 // first element will be at the bottom, and the last at the top).
 type VListChild = VListElem | VListKern;
 
-type VListParam = {|
-    // Each child contains how much it should be shifted downward.
-    positionType: "individualShift",
-    children: VListElemAndShift[],
-|} | {|
-    // "top": The positionData specifies the topmost point of the vlist (note this
-    //        is expected to be a height, so positive values move up).
-    // "bottom": The positionData specifies the bottommost point of the vlist (note
-    //           this is expected to be a depth, so positive values move down).
-    // "shift": The vlist will be positioned such that its baseline is positionData
-    //          away from the baseline of the first child which MUST be an
-    //          "elem". Positive values move downwards.
-    positionType: "top" | "bottom" | "shift",
-    positionData: number,
-    children: VListChild[],
-|} | {|
-    // The vlist is positioned so that its baseline is aligned with the baseline
-    // of the first child which MUST be an "elem". This is equivalent to "shift"
-    // with positionData=0.
-    positionType: "firstBaseline",
-    children: VListChild[],
-|};
-
+type VListParam =
+    | {|
+          // Each child contains how much it should be shifted downward.
+          positionType: "individualShift",
+          children: VListElemAndShift[],
+      |}
+    | {|
+          // "top": The positionData specifies the topmost point of the vlist (note
+          //        this is expected to be a height, so positive values move up).
+          //        "bottom": The positionData specifies the bottommost point of the
+          //        vlist (note this is expected to be a depth, so positive values
+          //        move down). "shift": The vlist will be positioned such that its
+          //        baseline is positionData away from the baseline of the first
+          //        child which MUST be an "elem". Positive values move downwards.
+          positionType: "top" | "bottom" | "shift",
+          positionData: number,
+          children: VListChild[],
+      |}
+    | {|
+          // The vlist is positioned so that its baseline is aligned with the
+          // baseline of the first child which MUST be an "elem". This is equivalent
+          // to "shift" with positionData=0.
+          positionType: "firstBaseline",
+          children: VListChild[],
+      |};
 
 // Computes the updated `children` list and the overall depth.
 //
 // This helper function for makeVList makes it easier to enforce type safety by
 // allowing early exits (returns) in the logic.
-const getVListChildrenAndDepth = function(params: VListParam): {
+const getVListChildrenAndDepth = function(
+    params: VListParam,
+): {
     children: (VListChild | VListElemAndShift)[] | VListChild[],
     depth: number,
 } {
@@ -448,11 +508,11 @@ const getVListChildrenAndDepth = function(params: VListParam): {
         const depth = -oldChildren[0].shift - oldChildren[0].elem.depth;
         let currPos = depth;
         for (let i = 1; i < oldChildren.length; i++) {
-            const diff = -oldChildren[i].shift - currPos -
-                oldChildren[i].elem.depth;
-            const size = diff -
-                (oldChildren[i - 1].elem.height +
-                 oldChildren[i - 1].elem.depth);
+            const diff =
+                -oldChildren[i].shift - currPos - oldChildren[i].elem.depth;
+            const size =
+                diff -
+                (oldChildren[i - 1].elem.height + oldChildren[i - 1].elem.depth);
 
             currPos = currPos + diff;
 
@@ -469,9 +529,10 @@ const getVListChildrenAndDepth = function(params: VListParam): {
         // all the sizes
         let bottom = params.positionData;
         for (const child of params.children) {
-            bottom -= child.type === "kern"
-                ? child.size
-                : child.elem.height + child.elem.depth;
+            bottom -=
+                child.type === "kern"
+                    ? child.size
+                    : child.elem.height + child.elem.depth;
         }
         depth = bottom;
     } else if (params.positionType === "bottom") {
@@ -533,7 +594,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
             const style = child.wrapperStyle || {};
 
             const childWrap = makeSpan(classes, [pstrut, elem], undefined, style);
-            childWrap.style.top = (-pstrutSize - currPos - elem.depth) + "em";
+            childWrap.style.top = -pstrutSize - currPos - elem.depth + "em";
             if (child.marginLeft) {
                 childWrap.style.marginLeft = child.marginLeft;
             }
@@ -570,8 +631,10 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
         // puts the bottom of the *second* row on the baseline.
         const topStrut = makeSpan(["vlist-s"], [new domTree.symbolNode("\u200b")]);
 
-        rows = [makeSpan(["vlist-r"], [vlist, topStrut]),
-            makeSpan(["vlist-r"], [depthStrut])];
+        rows = [
+            makeSpan(["vlist-r"], [vlist, topStrut]),
+            makeSpan(["vlist-r"], [depthStrut]),
+        ];
     } else {
         rows = [makeSpan(["vlist-r"], [vlist])];
     }
@@ -591,9 +654,9 @@ const makeVerb = function(group: ParseNode, options: Options): string {
     // that `group.value.body` is of type string.
     let text = group.value.body;
     if (group.value.star) {
-        text = text.replace(/ /g, '\u2423');  // Open Box
+        text = text.replace(/ /g, "\u2423"); // Open Box
     } else {
-        text = text.replace(/ /g, '\xA0');    // No-Break Space
+        text = text.replace(/ /g, "\xA0"); // No-Break Space
         // (so that, in particular, spaces don't coalesce)
     }
     return text;
@@ -646,7 +709,7 @@ const retrieveFontStylesName = function(
     fontWeight?: string,
     fontShape?: string,
 ): string {
-    let fontStylesName = '';
+    let fontStylesName = "";
     if (fontWeight === "textbf") {
         fontStylesName += "Bold";
     }
@@ -658,7 +721,7 @@ const retrieveFontStylesName = function(
 
 // A map of spacing functions to their attributes, like size and corresponding
 // CSS class
-const spacingFunctions: {[string]: {| size: string, className: string |}} = {
+const spacingFunctions: {[string]: {|size: string, className: string|}} = {
     "\\qquad": {
         size: "2em",
         className: "qquad",
@@ -705,17 +768,17 @@ const regularSpace: {[string]: boolean} = {
  * - fontName: the "style" parameter to fontMetrics.getCharacterMetrics
  */
 // A map between tex font commands an MathML mathvariant attribute values
-const fontMap: {[string]: {| variant: string, fontName: string |}} = {
+const fontMap: {[string]: {|variant: string, fontName: string|}} = {
     // styles
-    "mathbf": {
+    mathbf: {
         variant: "bold",
         fontName: "Main-Bold",
     },
-    "mathrm": {
+    mathrm: {
         variant: "normal",
         fontName: "Main-Regular",
     },
-    "textit": {
+    textit: {
         variant: "italic",
         fontName: "Main-Italic",
     },
@@ -726,37 +789,37 @@ const fontMap: {[string]: {| variant: string, fontName: string |}} = {
     // which ends up calling mathit and boldsymbol.
 
     // families
-    "mathbb": {
+    mathbb: {
         variant: "double-struck",
         fontName: "AMS-Regular",
     },
-    "mathcal": {
+    mathcal: {
         variant: "script",
         fontName: "Caligraphic-Regular",
     },
-    "mathfrak": {
+    mathfrak: {
         variant: "fraktur",
         fontName: "Fraktur-Regular",
     },
-    "mathscr": {
+    mathscr: {
         variant: "script",
         fontName: "Script-Regular",
     },
-    "mathsf": {
+    mathsf: {
         variant: "sans-serif",
         fontName: "SansSerif-Regular",
     },
-    "mathtt": {
+    mathtt: {
         variant: "monospace",
         fontName: "Typewriter-Regular",
     },
 };
 
 const svgData: {
-    [string]: ([string, number, number])
+    [string]: [string, number, number],
 } = {
-     //   path, width, height
-    vec: ["vec", 0.471, 0.714],  // values from the font glyph
+    //   path, width, height
+    vec: ["vec", 0.471, 0.714], // values from the font glyph
 };
 
 const staticSvg = function(value: string, options: Options): SvgSpan {
@@ -764,12 +827,12 @@ const staticSvg = function(value: string, options: Options): SvgSpan {
     const [pathName, width, height] = svgData[value];
     const path = new domTree.pathNode(pathName);
     const svgNode = new domTree.svgNode([path], {
-        "width": width + "em",
-        "height": height + "em",
+        width: width + "em",
+        height: height + "em",
         // Override CSS rule `.katex svg { width: 100% }`
-        "style": "width:" + width + "em",
-        "viewBox": "0 0 " + 1000 * width + " " + 1000 * height,
-        "preserveAspectRatio": "xMinYMin",
+        style: "width:" + width + "em",
+        viewBox: "0 0 " + 1000 * width + " " + 1000 * height,
+        preserveAspectRatio: "xMinYMin",
     });
     const span = makeSvgSpan(["overlay"], [svgNode], options);
     span.height = height;

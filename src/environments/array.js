@@ -15,12 +15,14 @@ import type Parser from "../Parser";
 import type {StyleStr} from "../types";
 
 // Data stored in the ParseNode associated with the environment.
-type AlignSpec = { type: "separator", separator: string } | {
-    type: "align",
-    align: string,
-    pregap?: number,
-    postgap?: number,
-};
+type AlignSpec =
+    | {type: "separator", separator: string}
+    | {
+          type: "align",
+          align: string,
+          pregap?: number,
+          postgap?: number,
+      };
 type ArrayEnvNodeData = {
     type: "array",
     hskipBeforeAndAfter?: boolean,
@@ -47,14 +49,19 @@ function parseArray(
     let row = [];
     const body = [row];
     const rowGaps = [];
-    while (true) {  // eslint-disable-line no-constant-condition
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
         let cell = parser.parseExpression(false, undefined);
         cell = new ParseNode("ordgroup", cell, parser.mode);
         if (style) {
-            cell = new ParseNode("styling", {
-                style: style,
-                value: [cell],
-            }, parser.mode);
+            cell = new ParseNode(
+                "styling",
+                {
+                    style: style,
+                    value: [cell],
+                },
+                parser.mode,
+            );
         }
         row.push(cell);
         const next = parser.nextToken.text;
@@ -64,9 +71,11 @@ function parseArray(
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
             // the last line is empty.
             const lastRow = body[body.length - 1];
-            if (body.length > 1
-                && lastRow.length === 1
-                && lastRow[0].value.value[0].value.length === 0) {
+            if (
+                body.length > 1 &&
+                lastRow.length === 1 &&
+                lastRow[0].value.value[0].value.length === 0
+            ) {
                 body.pop();
             }
             break;
@@ -79,15 +88,13 @@ function parseArray(
             row = [];
             body.push(row);
         } else {
-            throw new ParseError("Expected & or \\\\ or \\end",
-                                 parser.nextToken);
+            throw new ParseError("Expected & or \\\\ or \\end", parser.nextToken);
         }
     }
     result.body = body;
     result.rowGaps = rowGaps;
     return new ParseNode(result.type, result, parser.mode);
 }
-
 
 // Decides on a style for cells in an array according to whether the given
 // environment name starts with the letter 'd'.
@@ -127,13 +134,13 @@ const htmlBuilder = function(group, options) {
     const arraystretch = utils.deflt(group.value.arraystretch, 1);
     const arrayskip = arraystretch * baselineskip;
     const arstrutHeight = 0.7 * arrayskip; // \strutbox in ltfsstrc.dtx and
-    const arstrutDepth = 0.3 * arrayskip;  // \@arstrutbox in lttab.dtx
+    const arstrutDepth = 0.3 * arrayskip; // \@arstrutbox in lttab.dtx
 
     let totalHeight = 0;
     for (r = 0; r < group.value.body.length; ++r) {
         const inrow = group.value.body[r];
         let height = arstrutHeight; // \@array adds an \@arstrut
-        let depth = arstrutDepth;   // to each tow (via the template)
+        let depth = arstrutDepth; // to each tow (via the template)
 
         if (nc < inrow.length) {
             nc = inrow.length;
@@ -154,7 +161,8 @@ const htmlBuilder = function(group, options) {
         let gap = 0;
         if (group.value.rowGaps[r]) {
             gap = calculateSize(group.value.rowGaps[r].value, options);
-            if (gap > 0) { // \@argarraycr
+            if (gap > 0) {
+                // \@argarraycr
                 gap += arstrutDepth;
                 if (depth < gap) {
                     depth = gap; // \@xargarraycr
@@ -182,12 +190,13 @@ const htmlBuilder = function(group, options) {
     const cols = [];
     let colSep;
     let colDescrNum;
-    for (c = 0, colDescrNum = 0;
-         // Continue while either there are more columns or more column
-         // descriptions, so trailing separators don't get lost.
-         c < nc || colDescrNum < colDescriptions.length;
-         ++c, ++colDescrNum) {
-
+    for (
+        c = 0, colDescrNum = 0;
+        // Continue while either there are more columns or more column
+        // descriptions, so trailing separators don't get lost.
+        c < nc || colDescrNum < colDescriptions.length;
+        ++c, ++colDescrNum
+    ) {
         let colDescr = colDescriptions[colDescrNum] || {};
 
         let firstSeparator = true;
@@ -196,22 +205,24 @@ const htmlBuilder = function(group, options) {
             // between them.
             if (!firstSeparator) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
-                colSep.style.width =
-                    options.fontMetrics().doubleRuleSep + "em";
+                colSep.style.width = options.fontMetrics().doubleRuleSep + "em";
                 cols.push(colSep);
             }
 
             if (colDescr.separator === "|") {
-                const separator = stretchy.ruleSpan("vertical-separator", 0.05,
-                    options);
+                const separator = stretchy.ruleSpan(
+                    "vertical-separator",
+                    0.05,
+                    options,
+                );
                 separator.style.height = totalHeight + "em";
-                separator.style.verticalAlign =
-                    -(totalHeight - offset) + "em";
+                separator.style.verticalAlign = -(totalHeight - offset) + "em";
 
                 cols.push(separator);
             } else {
                 throw new ParseError(
-                    "Invalid separator type: " + colDescr.separator);
+                    "Invalid separator type: " + colDescr.separator,
+                );
             }
 
             colDescrNum++;
@@ -246,13 +257,14 @@ const htmlBuilder = function(group, options) {
             col.push({type: "elem", elem: elem, shift: shift});
         }
 
-        col = buildCommon.makeVList({
-            positionType: "individualShift",
-            children: col,
-        }, options);
-        col = buildCommon.makeSpan(
-            ["col-align-" + (colDescr.align || "c")],
-            [col]);
+        col = buildCommon.makeVList(
+            {
+                positionType: "individualShift",
+                children: col,
+            },
+            options,
+        );
+        col = buildCommon.makeSpan(["col-align-" + (colDescr.align || "c")], [col]);
         cols.push(col);
 
         if (c < nc - 1 || group.value.hskipBeforeAndAfter) {
@@ -270,13 +282,18 @@ const htmlBuilder = function(group, options) {
 
 const mathmlBuilder = function(group, options) {
     return new mathMLTree.MathNode(
-        "mtable", group.value.body.map(function(row) {
+        "mtable",
+        group.value.body.map(function(row) {
             return new mathMLTree.MathNode(
-                "mtr", row.map(function(cell) {
-                    return new mathMLTree.MathNode(
-                        "mtd", [mml.buildGroup(cell, options)]);
-                }));
-        }));
+                "mtr",
+                row.map(function(cell) {
+                    return new mathMLTree.MathNode("mtd", [
+                        mml.buildGroup(cell, options),
+                    ]);
+                }),
+            );
+        }),
+    );
 };
 
 // Convinient function for aligned and alignedat environments.
@@ -315,15 +332,18 @@ const alignedHandler = function(context, args) {
             const ordgroup = row[i].value.value[0];
             ordgroup.value.unshift(emptyGroup);
         }
-        if (!isAligned) { // Case 1
+        if (!isAligned) {
+            // Case 1
             const curMaths = row.length / 2;
             if (numMaths < curMaths) {
                 throw new ParseError(
                     "Too many math in a row: " +
-                    `expected ${numMaths}, but got ${curMaths}`,
-                    row);
+                        `expected ${numMaths}, but got ${curMaths}`,
+                    row,
+                );
             }
-        } else if (numCols < row.length) { // Case 2
+        } else if (numCols < row.length) {
+            // Case 2
             numCols = row.length;
         }
     });
@@ -336,7 +356,8 @@ const alignedHandler = function(context, args) {
         let pregap = 0;
         if (i % 2 === 1) {
             align = "l";
-        } else if (i > 0 && isAligned) { // "aligned" mode.
+        } else if (i > 0 && isAligned) {
+            // "aligned" mode.
             pregap = 1; // add one \quad
         }
         res.value.cols[i] = {
@@ -375,9 +396,7 @@ defineEnvironment({
                     separator: "|",
                 };
             }
-            throw new ParseError(
-                "Unknown column alignment: " + node.value,
-                node);
+            throw new ParseError("Unknown column alignment: " + node.value, node);
         });
         let res = {
             type: "array",
@@ -395,25 +414,18 @@ defineEnvironment({
 // of LaTeX, which is discussed above.
 defineEnvironment({
     type: "array",
-    names: [
-        "matrix",
-        "pmatrix",
-        "bmatrix",
-        "Bmatrix",
-        "vmatrix",
-        "Vmatrix",
-    ],
+    names: ["matrix", "pmatrix", "bmatrix", "Bmatrix", "vmatrix", "Vmatrix"],
     props: {
         numArgs: 0,
     },
     handler: function(context) {
         const delimiters = {
-            "matrix": null,
-            "pmatrix": ["(", ")"],
-            "bmatrix": ["[", "]"],
-            "Bmatrix": ["\\{", "\\}"],
-            "vmatrix": ["|", "|"],
-            "Vmatrix": ["\\Vert", "\\Vert"],
+            matrix: null,
+            pmatrix: ["(", ")"],
+            bmatrix: ["[", "]"],
+            Bmatrix: ["\\{", "\\}"],
+            vmatrix: ["|", "|"],
+            Vmatrix: ["\\Vert", "\\Vert"],
         }[context.envName];
         let res = {
             type: "array",
@@ -421,11 +433,15 @@ defineEnvironment({
         };
         res = parseArray(context.parser, res, dCellStyle(context.envName));
         if (delimiters) {
-            res = new ParseNode("leftright", {
-                body: [res],
-                left: delimiters[0],
-                right: delimiters[1],
-            }, context.mode);
+            res = new ParseNode(
+                "leftright",
+                {
+                    body: [res],
+                    left: delimiters[0],
+                    right: delimiters[1],
+                },
+                context.mode,
+            );
         }
         return res;
     },
@@ -440,10 +456,7 @@ defineEnvironment({
 // as defined in mathtools.sty.
 defineEnvironment({
     type: "array",
-    names: [
-        "cases",
-        "dcases",
-    ],
+    names: ["cases", "dcases"],
     props: {
         numArgs: 0,
     },
@@ -451,28 +464,35 @@ defineEnvironment({
         let res = {
             type: "array",
             arraystretch: 1.2,
-            cols: [{
-                type: "align",
-                align: "l",
-                pregap: 0,
-                // TODO(kevinb) get the current style.
-                // For now we use the metrics for TEXT style which is what we were
-                // doing before.  Before attempting to get the current style we
-                // should look at TeX's behavior especially for \over and matrices.
-                postgap: 1.0, /* 1em quad */
-            }, {
-                type: "align",
-                align: "l",
-                pregap: 0,
-                postgap: 0,
-            }],
+            cols: [
+                {
+                    type: "align",
+                    align: "l",
+                    pregap: 0,
+                    // TODO(kevinb) get the current style. For now we use the
+                    // metrics for TEXT style which is what we were doing before.
+                    // Before attempting to get the current style we should look at
+                    // TeX's behavior especially for \over and matrices.
+                    postgap: 1.0 /* 1em quad */,
+                },
+                {
+                    type: "align",
+                    align: "l",
+                    pregap: 0,
+                    postgap: 0,
+                },
+            ],
         };
         res = parseArray(context.parser, res, dCellStyle(context.envName));
-        res = new ParseNode("leftright", {
-            body: [res],
-            left: "\\{",
-            right: ".",
-        }, context.mode);
+        res = new ParseNode(
+            "leftright",
+            {
+                body: [res],
+                left: "\\{",
+                right: ".",
+            },
+            context.mode,
+        );
         return res;
     },
     htmlBuilder,
@@ -506,10 +526,12 @@ defineEnvironment({
     handler: function(context) {
         let res = {
             type: "array",
-            cols: [{
-                type: "align",
-                align: "c",
-            }],
+            cols: [
+                {
+                    type: "align",
+                    align: "c",
+                },
+            ],
             addJot: true,
         };
         res = parseArray(context.parser, res, "display");

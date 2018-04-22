@@ -16,20 +16,16 @@ const htmlModBuilder = (group, options) => {
         // 4mu plus 2mu minus 1mu, translates to 1mu space in
         // display/textstyle and 5mu space in script/scriptscriptstyle.
         if (!options.style.isTight()) {
-            inner.push(buildCommon.makeSpan(
-                ["mspace", "muspace"], [], options));
+            inner.push(buildCommon.makeSpan(["mspace", "muspace"], [], options));
         } else {
-            inner.push(buildCommon.makeSpan(
-                ["mspace", "thickspace"], [], options));
+            inner.push(buildCommon.makeSpan(["mspace", "thickspace"], [], options));
         }
     } else if (options.style.size === Style.DISPLAY.size) {
         inner.push(buildCommon.makeSpan(["mspace", "quad"], [], options));
     } else if (group.value.modType === "mod") {
-        inner.push(
-            buildCommon.makeSpan(["mspace", "twelvemuspace"], [], options));
+        inner.push(buildCommon.makeSpan(["mspace", "twelvemuspace"], [], options));
     } else {
-        inner.push(
-            buildCommon.makeSpan(["mspace", "eightmuspace"], [], options));
+        inner.push(buildCommon.makeSpan(["mspace", "eightmuspace"], [], options));
     }
 
     if (group.value.modType === "pod" || group.value.modType === "pmod") {
@@ -40,27 +36,31 @@ const htmlModBuilder = (group, options) => {
         const modInner = [
             buildCommon.mathsym("m", group.mode),
             buildCommon.mathsym("o", group.mode),
-            buildCommon.mathsym("d", group.mode)];
+            buildCommon.mathsym("d", group.mode),
+        ];
         if (group.value.modType === "bmod") {
             inner.push(buildCommon.makeSpan(["mbin"], modInner, options));
             // “\mkern5mu\nonscript\mskip-\medmuskip” as above
             if (!options.style.isTight()) {
-                inner.push(buildCommon.makeSpan(
-                    ["mspace", "muspace"], [], options));
+                inner.push(
+                    buildCommon.makeSpan(["mspace", "muspace"], [], options),
+                );
             } else {
-                inner.push(buildCommon.makeSpan(
-                    ["mspace", "thickspace"], [], options));
+                inner.push(
+                    buildCommon.makeSpan(["mspace", "thickspace"], [], options),
+                );
             }
         } else {
             Array.prototype.push.apply(inner, modInner);
-            inner.push(
-                buildCommon.makeSpan(["mspace", "sixmuspace"], [], options));
+            inner.push(buildCommon.makeSpan(["mspace", "sixmuspace"], [], options));
         }
     }
 
     if (group.value.value) {
-        Array.prototype.push.apply(inner,
-            html.buildExpression(group.value.value, options, false));
+        Array.prototype.push.apply(
+            inner,
+            html.buildExpression(group.value.value, options, false),
+        );
     }
 
     if (group.value.modType === "pod" || group.value.modType === "pmod") {
@@ -74,12 +74,12 @@ const mmlModBuilder = (group, options) => {
     let inner = [];
 
     if (group.value.modType === "pod" || group.value.modType === "pmod") {
-        inner.push(new mathMLTree.MathNode(
-            "mo", [mml.makeText("(", group.mode)]));
+        inner.push(new mathMLTree.MathNode("mo", [mml.makeText("(", group.mode)]));
     }
     if (group.value.modType !== "pod") {
-        inner.push(new mathMLTree.MathNode(
-            "mo", [mml.makeText("mod", group.mode)]));
+        inner.push(
+            new mathMLTree.MathNode("mo", [mml.makeText("mod", group.mode)]),
+        );
     }
     if (group.value.value) {
         const space = new mathMLTree.MathNode("mspace");
@@ -88,8 +88,7 @@ const mmlModBuilder = (group, options) => {
         inner = inner.concat(mml.buildExpression(group.value.value, options));
     }
     if (group.value.modType === "pod" || group.value.modType === "pmod") {
-        inner.push(new mathMLTree.MathNode(
-            "mo", [mml.makeText(")", group.mode)]));
+        inner.push(new mathMLTree.MathNode("mo", [mml.makeText(")", group.mode)]));
     }
 
     return new mathMLTree.MathNode("mo", inner);

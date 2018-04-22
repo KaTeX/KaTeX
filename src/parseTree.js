@@ -13,8 +13,8 @@ import type Settings from "./Settings";
  * Parses an expression using a Parser, then returns the parsed result.
  */
 const parseTree = function(toParse: string, settings: Settings): ParseNode[] {
-    if (!(typeof toParse === 'string' || toParse instanceof String)) {
-        throw new TypeError('KaTeX can only parse string typed expression');
+    if (!(typeof toParse === "string" || toParse instanceof String)) {
+        throw new TypeError("KaTeX can only parse string typed expression");
     }
     const parser = new Parser(toParse, settings);
 

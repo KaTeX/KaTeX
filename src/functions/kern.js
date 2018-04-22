@@ -5,7 +5,7 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import { calculateSize } from "../units";
+import {calculateSize} from "../units";
 import ParseError from "../ParseError";
 
 // TODO: \hskip and \mskip should support plus and minus in lengths
@@ -19,22 +19,28 @@ defineFunction({
         allowedInText: true,
     },
     handler: (context, args) => {
-        const mathFunction = (context.funcName[1] === 'm');  // \mkern, \mskip
-        const muUnit = (args[0].value.unit === 'mu');
+        const mathFunction = context.funcName[1] === "m"; // \mkern, \mskip
+        const muUnit = args[0].value.unit === "mu";
         if (mathFunction) {
             if (!muUnit) {
-                typeof console !== "undefined" && console.warn(
-                    `In LaTeX, ${context.funcName} supports only mu units, ` +
-                    `not ${args[0].value.unit} units`);
+                typeof console !== "undefined" &&
+                    console.warn(
+                        `In LaTeX, ${context.funcName} supports only mu units, ` +
+                            `not ${args[0].value.unit} units`,
+                    );
             }
             if (context.parser.mode !== "math") {
                 throw new ParseError(
-                    `Can't use function '${context.funcName}' in text mode`);
+                    `Can't use function '${context.funcName}' in text mode`,
+                );
             }
-        } else {  // !mathFunction
+        } else {
+            // !mathFunction
             if (muUnit) {
-                typeof console !== "undefined" && console.warn(
-                    `In LaTeX, ${context.funcName} does not support mu units`);
+                typeof console !== "undefined" &&
+                    console.warn(
+                        `In LaTeX, ${context.funcName} does not support mu units`,
+                    );
             }
         }
         return {

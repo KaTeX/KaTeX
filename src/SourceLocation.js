@@ -7,8 +7,8 @@ import type {LexerInterface} from "./Token";
  */
 export default class SourceLocation {
     lexer: LexerInterface; // Lexer holding the input string.
-    start: number;         // Start offset, zero-based inclusive.
-    end: number;           // End offset, zero-based exclusive.
+    start: number; // Start offset, zero-based inclusive.
+    end: number; // End offset, zero-based exclusive.
 
     constructor(lexer: LexerInterface, start: number, end: number) {
         this.lexer = lexer;
@@ -31,13 +31,19 @@ export default class SourceLocation {
     ): ?SourceLocation {
         if (!second) {
             return first && first.loc;
-        } else if (!first || !first.loc || !second.loc ||
-                   first.loc.lexer !== second.loc.lexer) {
+        } else if (
+            !first ||
+            !first.loc ||
+            !second.loc ||
+            first.loc.lexer !== second.loc.lexer
+        ) {
             return null;
         } else {
             return new SourceLocation(
-                    first.loc.lexer, first.loc.start, second.loc.end);
+                first.loc.lexer,
+                first.loc.start,
+                second.loc.end,
+            );
         }
     }
 }
-

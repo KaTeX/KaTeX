@@ -63,9 +63,7 @@ const htmlBuilder = (group, options) => {
     }
 
     // calculate the amount of space between the body and the accent
-    const clearance = Math.min(
-        body.height,
-        options.fontMetrics().xHeight);
+    const clearance = Math.min(body.height, options.fontMetrics().xHeight);
 
     // Build the accent
     let accentBody;
@@ -82,9 +80,13 @@ const htmlBuilder = (group, options) => {
             width = buildCommon.svgData.vec[1];
         } else {
             accent = buildCommon.makeSymbol(
-                group.value.label, "Main-Regular", group.mode, options);
-            // Remove the italic correction of the accent, because it only serves to
-            // shift the accent over to a place we don't want.
+                group.value.label,
+                "Main-Regular",
+                group.mode,
+                options,
+            );
+            // Remove the italic correction of the accent, because it only
+            // serves to shift the accent over to a place we don't want.
             accent.italic = 0;
             width = accent.width;
         }
@@ -102,39 +104,48 @@ const htmlBuilder = (group, options) => {
 
         accentBody.style.left = left + "em";
 
-        accentBody = buildCommon.makeVList({
-            positionType: "firstBaseline",
-            children: [
-                {type: "elem", elem: body},
-                {type: "kern", size: -clearance},
-                {type: "elem", elem: accentBody},
-            ],
-        }, options);
-
+        accentBody = buildCommon.makeVList(
+            {
+                positionType: "firstBaseline",
+                children: [
+                    {type: "elem", elem: body},
+                    {type: "kern", size: -clearance},
+                    {type: "elem", elem: accentBody},
+                ],
+            },
+            options,
+        );
     } else {
         accentBody = stretchy.svgSpan(group, options);
 
-        accentBody = buildCommon.makeVList({
-            positionType: "firstBaseline",
-            children: [
-                {type: "elem", elem: body},
-                {
-                    type: "elem",
-                    elem: accentBody,
-                    wrapperClasses: ["svg-align"],
-                    wrapperStyle: skew > 0
-                        ? {
-                            width: `calc(100% - ${2 * skew}em)`,
-                            marginLeft: `${(2 * skew)}em`,
-                        }
-                        : undefined,
-                },
-            ],
-        }, options);
+        accentBody = buildCommon.makeVList(
+            {
+                positionType: "firstBaseline",
+                children: [
+                    {type: "elem", elem: body},
+                    {
+                        type: "elem",
+                        elem: accentBody,
+                        wrapperClasses: ["svg-align"],
+                        wrapperStyle:
+                            skew > 0
+                                ? {
+                                      width: `calc(100% - ${2 * skew}em)`,
+                                      marginLeft: `${2 * skew}em`,
+                                  }
+                                : undefined,
+                    },
+                ],
+            },
+            options,
+        );
     }
 
-    const accentWrap =
-        buildCommon.makeSpan(["mord", "accent"], [accentBody], options);
+    const accentWrap = buildCommon.makeSpan(
+        ["mord", "accent"],
+        [accentBody],
+        options,
+    );
 
     if (supsubGroup) {
         // Here, we replace the "base" child of the supsub with our newly
@@ -159,33 +170,64 @@ const mathmlBuilder = (group, options) => {
     if (group.value.isStretchy) {
         accentNode = stretchy.mathMLnode(group.value.label);
     } else {
-        accentNode = new mathMLTree.MathNode(
-            "mo", [mml.makeText(group.value.label, group.mode)]);
+        accentNode = new mathMLTree.MathNode("mo", [
+            mml.makeText(group.value.label, group.mode),
+        ]);
     }
 
-    const node = new mathMLTree.MathNode(
-        "mover",
-        [mml.buildGroup(group.value.base, options), accentNode]);
+    const node = new mathMLTree.MathNode("mover", [
+        mml.buildGroup(group.value.base, options),
+        accentNode,
+    ]);
 
     node.setAttribute("accent", "true");
 
     return node;
 };
 
-const NON_STRETCHY_ACCENT_REGEX = new RegExp([
-    "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
-    "\\check", "\\hat", "\\vec", "\\dot", "\\mathring",
-].map(accent => `\\${accent}`).join("|"));
+const NON_STRETCHY_ACCENT_REGEX = new RegExp(
+    [
+        "\\acute",
+        "\\grave",
+        "\\ddot",
+        "\\tilde",
+        "\\bar",
+        "\\breve",
+        "\\check",
+        "\\hat",
+        "\\vec",
+        "\\dot",
+        "\\mathring",
+    ]
+        .map((accent) => `\\${accent}`)
+        .join("|"),
+);
 
 // Accents
 defineFunction({
     type: "accent",
     names: [
-        "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
-        "\\check", "\\hat", "\\vec", "\\dot", "\\mathring",
-        "\\widehat", "\\widetilde", "\\overrightarrow", "\\overleftarrow",
-        "\\Overrightarrow", "\\overleftrightarrow", "\\overgroup",
-        "\\overlinesegment", "\\overleftharpoon", "\\overrightharpoon",
+        "\\acute",
+        "\\grave",
+        "\\ddot",
+        "\\tilde",
+        "\\bar",
+        "\\breve",
+        "\\check",
+        "\\hat",
+        "\\vec",
+        "\\dot",
+        "\\mathring",
+        "\\widehat",
+        "\\widetilde",
+        "\\overrightarrow",
+        "\\overleftarrow",
+        "\\Overrightarrow",
+        "\\overleftrightarrow",
+        "\\overgroup",
+        "\\overlinesegment",
+        "\\overleftharpoon",
+        "\\overrightharpoon",
     ],
     props: {
         numArgs: 1,
@@ -194,7 +236,8 @@ defineFunction({
         const base = args[0];
 
         const isStretchy = !NON_STRETCHY_ACCENT_REGEX.test(context.funcName);
-        const isShifty = !isStretchy ||
+        const isShifty =
+            !isStretchy ||
             context.funcName === "\\widehat" ||
             context.funcName === "\\widetilde";
 
@@ -214,8 +257,17 @@ defineFunction({
 defineFunction({
     type: "accent",
     names: [
-        "\\'", "\\`", "\\^", "\\~", "\\=", "\\u", "\\.", '\\"',
-        "\\r", "\\H", "\\v",
+        "\\'",
+        "\\`",
+        "\\^",
+        "\\~",
+        "\\=",
+        "\\u",
+        "\\.",
+        '\\"',
+        "\\r",
+        "\\H",
+        "\\v",
     ],
     props: {
         numArgs: 1,

@@ -10,7 +10,7 @@
 // not pinch the ink of the line.  Think of it as padding for the line.
 // As usual, the viewBox-to-em scale is 1000.
 
-const hLinePad = 80;  // padding above and below a std 0.04em horiz rule.
+const hLinePad = 80; // padding above and below a std 0.04em horiz rule.
 const vLinePad = 100; // padding on either side of a std vert 0.05em rule.
 
 const path: {[string]: string} = {
@@ -336,6 +336,5 @@ c4.7,-4.7,7,-9.3,7,-14c0,-9.3,-3.7,-15.3,-11,-18c-92.7,-56.7,-159,-133.7,-199,
 c-2,2.7,-1,9.7,3,21c15.3,42,36.7,81.8,64,119.5c27.3,37.7,58,69.2,92,94.5z
 M500 241 v40 H399408 v-40z M500 435 v40 H400000 v-40z`,
 };
-
 
 export default {path};

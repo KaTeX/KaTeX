@@ -23,7 +23,7 @@ defineFunction({
         const elements = html.buildExpression(
             group.value.value,
             options.withPhantom(),
-            false
+            false,
         );
 
         // \phantom isn't supposed to affect the elements it contains.
@@ -52,7 +52,9 @@ defineFunction({
     },
     htmlBuilder: (group, options) => {
         let node = buildCommon.makeSpan(
-            [], [html.buildGroup(group.value.body, options.withPhantom())]);
+            [],
+            [html.buildGroup(group.value.body, options.withPhantom())],
+        );
         node.height = 0;
         node.depth = 0;
         if (node.children) {
@@ -63,10 +65,13 @@ defineFunction({
         }
 
         // See smash for comment re: use of makeVList
-        node = buildCommon.makeVList({
-            positionType: "firstBaseline",
-            children: [{type: "elem", elem: node}],
-        }, options);
+        node = buildCommon.makeVList(
+            {
+                positionType: "firstBaseline",
+                children: [{type: "elem", elem: node}],
+            },
+            options,
+        );
 
         return node;
     },
@@ -95,10 +100,10 @@ defineFunction({
     htmlBuilder: (group, options) => {
         const inner = buildCommon.makeSpan(
             ["inner"],
-            [html.buildGroup(group.value.body, options.withPhantom())]);
+            [html.buildGroup(group.value.body, options.withPhantom())],
+        );
         const fix = buildCommon.makeSpan(["fix"], []);
-        return buildCommon.makeSpan(
-            ["mord", "rlap"], [inner, fix], options);
+        return buildCommon.makeSpan(["mord", "rlap"], [inner, fix], options);
     },
     mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(group.value.value, options);

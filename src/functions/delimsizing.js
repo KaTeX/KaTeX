@@ -14,38 +14,75 @@ import type {FunctionContext} from "../defineFunction";
 
 // Extra data needed for the delimiter handler down below
 const delimiterSizes = {
-    "\\bigl" : {mclass: "mopen",    size: 1},
-    "\\Bigl" : {mclass: "mopen",    size: 2},
-    "\\biggl": {mclass: "mopen",    size: 3},
-    "\\Biggl": {mclass: "mopen",    size: 4},
-    "\\bigr" : {mclass: "mclose",   size: 1},
-    "\\Bigr" : {mclass: "mclose",   size: 2},
-    "\\biggr": {mclass: "mclose",   size: 3},
-    "\\Biggr": {mclass: "mclose",   size: 4},
-    "\\bigm" : {mclass: "mrel",     size: 1},
-    "\\Bigm" : {mclass: "mrel",     size: 2},
-    "\\biggm": {mclass: "mrel",     size: 3},
-    "\\Biggm": {mclass: "mrel",     size: 4},
-    "\\big"  : {mclass: "mord",     size: 1},
-    "\\Big"  : {mclass: "mord",     size: 2},
-    "\\bigg" : {mclass: "mord",     size: 3},
-    "\\Bigg" : {mclass: "mord",     size: 4},
+    "\\bigl": {mclass: "mopen", size: 1},
+    "\\Bigl": {mclass: "mopen", size: 2},
+    "\\biggl": {mclass: "mopen", size: 3},
+    "\\Biggl": {mclass: "mopen", size: 4},
+    "\\bigr": {mclass: "mclose", size: 1},
+    "\\Bigr": {mclass: "mclose", size: 2},
+    "\\biggr": {mclass: "mclose", size: 3},
+    "\\Biggr": {mclass: "mclose", size: 4},
+    "\\bigm": {mclass: "mrel", size: 1},
+    "\\Bigm": {mclass: "mrel", size: 2},
+    "\\biggm": {mclass: "mrel", size: 3},
+    "\\Biggm": {mclass: "mrel", size: 4},
+    "\\big": {mclass: "mord", size: 1},
+    "\\Big": {mclass: "mord", size: 2},
+    "\\bigg": {mclass: "mord", size: 3},
+    "\\Bigg": {mclass: "mord", size: 4},
 };
 
 const delimiters = [
-    "(", ")", "[", "\\lbrack", "]", "\\rbrack",
-    "\\{", "\\lbrace", "\\}", "\\rbrace",
-    "\\lfloor", "\\rfloor", "\u230a", "\u230b",
-    "\\lceil", "\\rceil", "\u2308", "\u2309",
-    "<", ">", "\\langle", "\u27e8", "\\rangle", "\u27e9", "\\lt", "\\gt",
-    "\\lvert", "\\rvert", "\\lVert", "\\rVert",
-    "\\lgroup", "\\rgroup", "\u27ee", "\u27ef",
-    "\\lmoustache", "\\rmoustache", "\u23b0", "\u23b1",
-    "/", "\\backslash",
-    "|", "\\vert", "\\|", "\\Vert",
-    "\\uparrow", "\\Uparrow",
-    "\\downarrow", "\\Downarrow",
-    "\\updownarrow", "\\Updownarrow",
+    "(",
+    ")",
+    "[",
+    "\\lbrack",
+    "]",
+    "\\rbrack",
+    "\\{",
+    "\\lbrace",
+    "\\}",
+    "\\rbrace",
+    "\\lfloor",
+    "\\rfloor",
+    "\u230a",
+    "\u230b",
+    "\\lceil",
+    "\\rceil",
+    "\u2308",
+    "\u2309",
+    "<",
+    ">",
+    "\\langle",
+    "\u27e8",
+    "\\rangle",
+    "\u27e9",
+    "\\lt",
+    "\\gt",
+    "\\lvert",
+    "\\rvert",
+    "\\lVert",
+    "\\rVert",
+    "\\lgroup",
+    "\\rgroup",
+    "\u27ee",
+    "\u27ef",
+    "\\lmoustache",
+    "\\rmoustache",
+    "\u23b0",
+    "\u23b1",
+    "/",
+    "\\backslash",
+    "|",
+    "\\vert",
+    "\\|",
+    "\\Vert",
+    "\\uparrow",
+    "\\Uparrow",
+    "\\downarrow",
+    "\\Downarrow",
+    "\\updownarrow",
+    "\\Updownarrow",
     ".",
 ];
 
@@ -55,18 +92,35 @@ function checkDelimiter(delim: ParseNode, context: FunctionContext): ParseNode {
         return delim;
     } else {
         throw new ParseError(
-            "Invalid delimiter: '" + delim.value + "' after '" +
-            context.funcName + "'", delim);
+            "Invalid delimiter: '" +
+                delim.value +
+                "' after '" +
+                context.funcName +
+                "'",
+            delim,
+        );
     }
 }
 
 defineFunction({
     type: "delimsizing",
     names: [
-        "\\bigl", "\\Bigl", "\\biggl", "\\Biggl",
-        "\\bigr", "\\Bigr", "\\biggr", "\\Biggr",
-        "\\bigm", "\\Bigm", "\\biggm", "\\Biggm",
-        "\\big",  "\\Big",  "\\bigg",  "\\Bigg",
+        "\\bigl",
+        "\\Bigl",
+        "\\biggl",
+        "\\Biggl",
+        "\\bigr",
+        "\\Bigr",
+        "\\biggr",
+        "\\Biggr",
+        "\\bigm",
+        "\\Bigm",
+        "\\biggm",
+        "\\Biggm",
+        "\\big",
+        "\\Big",
+        "\\bigg",
+        "\\Bigg",
     ],
     props: {
         numArgs: 1,
@@ -91,9 +145,9 @@ defineFunction({
         }
 
         // Use delimiter.sizedDelim to generate the delimiter.
-        return delimiter.sizedDelim(
-                delim, group.value.size, options, group.mode,
-                [group.value.mclass]);
+        return delimiter.sizedDelim(delim, group.value.size, options, group.mode, [
+            group.value.mclass,
+        ]);
     },
     mathmlBuilder: (group) => {
         const children = [];
@@ -104,8 +158,7 @@ defineFunction({
 
         const node = new mathMLTree.MathNode("mo", children);
 
-        if (group.value.mclass === "mopen" ||
-            group.value.mclass === "mclose") {
+        if (group.value.mclass === "mopen" || group.value.mclass === "mclose") {
             // Only some of the delimsizing functions act as fences, and they
             // return "mopen" or "mclose" mclass.
             node.setAttribute("fence", "true");
@@ -121,9 +174,7 @@ defineFunction({
 
 defineFunction({
     type: "leftright",
-    names: [
-        "\\left", "\\right",
-    ],
+    names: ["\\left", "\\right"],
     props: {
         numArgs: 1,
     },
@@ -141,7 +192,7 @@ defineFunction({
             parser.expect("\\right", false);
             const right = parser.parseFunction();
             if (!right) {
-                throw new ParseError('failed to parse function after \\right');
+                throw new ParseError("failed to parse function after \\right");
             }
             return {
                 type: "leftright",
@@ -161,8 +212,10 @@ defineFunction({
     },
     htmlBuilder: (group, options) => {
         // Build the inner expression
-        const inner = html.buildExpression(group.value.body, options, true,
-            [null, "mclose"]);
+        const inner = html.buildExpression(group.value.body, options, true, [
+            null,
+            "mclose",
+        ]);
 
         let innerHeight = 0;
         let innerDepth = 0;
@@ -192,8 +245,13 @@ defineFunction({
             // Otherwise, use leftRightDelim to generate the correct sized
             // delimiter.
             leftDelim = delimiter.leftRightDelim(
-                group.value.left, innerHeight, innerDepth, options,
-                group.mode, ["mopen"]);
+                group.value.left,
+                innerHeight,
+                innerDepth,
+                options,
+                group.mode,
+                ["mopen"],
+            );
         }
         // Add it to the beginning of the expression
         inner.unshift(leftDelim);
@@ -205,8 +263,13 @@ defineFunction({
                 if (middleDelim.isMiddle) {
                     // Apply the options that were active when \middle was called
                     inner[i] = delimiter.leftRightDelim(
-                        middleDelim.isMiddle.value, innerHeight, innerDepth,
-                        middleDelim.isMiddle.options, group.mode, []);
+                        middleDelim.isMiddle.value,
+                        innerHeight,
+                        innerDepth,
+                        middleDelim.isMiddle.options,
+                        group.mode,
+                        [],
+                    );
                 }
             }
         }
@@ -217,8 +280,13 @@ defineFunction({
             rightDelim = html.makeNullDelimiter(options, ["mclose"]);
         } else {
             rightDelim = delimiter.leftRightDelim(
-                group.value.right, innerHeight, innerDepth, options,
-                group.mode, ["mclose"]);
+                group.value.right,
+                innerHeight,
+                innerDepth,
+                options,
+                group.mode,
+                ["mclose"],
+            );
         }
         // Add it to the end of the expression.
         inner.push(rightDelim);
@@ -229,8 +297,9 @@ defineFunction({
         const inner = mml.buildExpression(group.value.body, options);
 
         if (group.value.left !== ".") {
-            const leftNode = new mathMLTree.MathNode(
-                "mo", [mml.makeText(group.value.left, group.mode)]);
+            const leftNode = new mathMLTree.MathNode("mo", [
+                mml.makeText(group.value.left, group.mode),
+            ]);
 
             leftNode.setAttribute("fence", "true");
 
@@ -238,8 +307,9 @@ defineFunction({
         }
 
         if (group.value.right !== ".") {
-            const rightNode = new mathMLTree.MathNode(
-                "mo", [mml.makeText(group.value.right, group.mode)]);
+            const rightNode = new mathMLTree.MathNode("mo", [
+                mml.makeText(group.value.right, group.mode),
+            ]);
 
             rightNode.setAttribute("fence", "true");
 
@@ -275,8 +345,12 @@ defineFunction({
             middleDelim = html.makeNullDelimiter(options, []);
         } else {
             middleDelim = delimiter.sizedDelim(
-                group.value.value, 1, options,
-                group.mode, []);
+                group.value.value,
+                1,
+                options,
+                group.mode,
+                [],
+            );
 
             // Property `isMiddle` not defined on `span`. It is only used in
             // this file above. Fixing this correctly requires refactoring the
@@ -289,8 +363,9 @@ defineFunction({
         return middleDelim;
     },
     mathmlBuilder: (group, options) => {
-        const middleNode = new mathMLTree.MathNode(
-            "mo", [mml.makeText(group.value.middle, group.mode)]);
+        const middleNode = new mathMLTree.MathNode("mo", [
+            mml.makeText(group.value.middle, group.mode),
+        ]);
         middleNode.setAttribute("fence", "true");
         return middleNode;
     },

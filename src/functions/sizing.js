@@ -18,8 +18,10 @@ export function sizingGroup(value: *, options: Options, baseOptions: Options) {
     for (let i = 0; i < inner.length; i++) {
         const pos = utils.indexOf(inner[i].classes, "sizing");
         if (pos < 0) {
-            Array.prototype.push.apply(inner[i].classes,
-                options.sizingClasses(baseOptions));
+            Array.prototype.push.apply(
+                inner[i].classes,
+                options.sizingClasses(baseOptions),
+            );
         } else if (inner[i].classes[pos + 1] === "reset-size" + options.size) {
             // This is a nested size change: e.g., inner[i] is the "b" in
             // `\Huge a \small b`. Override the old size (the `reset-` class)
@@ -35,8 +37,17 @@ export function sizingGroup(value: *, options: Options, baseOptions: Options) {
 }
 
 const sizeFuncs = [
-    "\\tiny", "\\sixptsize", "\\scriptsize", "\\footnotesize", "\\small",
-    "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
+    "\\tiny",
+    "\\sixptsize",
+    "\\scriptsize",
+    "\\footnotesize",
+    "\\small",
+    "\\normalsize",
+    "\\large",
+    "\\Large",
+    "\\LARGE",
+    "\\huge",
+    "\\Huge",
 ];
 
 defineFunction({

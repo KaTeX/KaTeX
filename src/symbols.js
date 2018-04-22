@@ -21,13 +21,22 @@ import type {Mode} from "./types";
 
 type Font = "main" | "ams";
 type Group =
-    "accent" | "bin" | "close" | "inner" | "mathord" | "op" | "open" | "punct" |
-    "rel" | "spacing" | "textord";
+    | "accent"
+    | "bin"
+    | "close"
+    | "inner"
+    | "mathord"
+    | "op"
+    | "open"
+    | "punct"
+    | "rel"
+    | "spacing"
+    | "textord";
 type CharInfoMap = {[string]: {font: Font, group: Group, replace: ?string}};
 
 const symbols: {[Mode]: CharInfoMap} = {
-    "math": {},
-    "text": {},
+    math: {},
+    text: {},
 };
 export default symbols;
 
@@ -153,7 +162,7 @@ defineSymbol(math, main, bin, "\u2219", "\\bullet");
 defineSymbol(math, main, bin, "\u2021", "\\ddagger");
 defineSymbol(math, main, bin, "\u2240", "\\wr", true);
 defineSymbol(math, main, bin, "\u2a3f", "\\amalg");
-defineSymbol(math, main, bin, "\u0026", "\\And");  // from amsmath
+defineSymbol(math, main, bin, "\u0026", "\\And"); // from amsmath
 
 // Arrow Symbols
 defineSymbol(math, main, rel, "\u27f5", "\\longleftarrow", true);
@@ -718,14 +727,14 @@ defineSymbol(text, main, spacing, "\u00a0", "~");
 // There are lots of symbols which are the same, so we add them in afterwards.
 
 // All of these are textords in math mode
-const mathTextSymbols = "0123456789/@.\"";
+const mathTextSymbols = '0123456789/@."';
 for (let i = 0; i < mathTextSymbols.length; i++) {
     const ch = mathTextSymbols.charAt(i);
     defineSymbol(math, main, textord, ch, ch);
 }
 
 // All of these are textords in text mode
-const textSymbols = "0123456789!@*()-=+[]<>|\";:?/.,";
+const textSymbols = '0123456789!@*()-=+[]<>|";:?/.,';
 for (let i = 0; i < textSymbols.length; i++) {
     const ch = textSymbols.charAt(i);
     defineSymbol(text, main, textord, ch, ch);

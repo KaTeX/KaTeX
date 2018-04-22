@@ -67,15 +67,13 @@ const getVariant = function(group, options) {
 export const groupTypes = {};
 
 const defaultVariant = {
-    "mi": "italic",
-    "mn": "normal",
-    "mtext": "normal",
+    mi: "italic",
+    mn: "normal",
+    mtext: "normal",
 };
 
 groupTypes.mathord = function(group, options) {
-    const node = new mathMLTree.MathNode(
-        "mi",
-        [makeText(group.value, group.mode)]);
+    const node = new mathMLTree.MathNode("mi", [makeText(group.value, group.mode)]);
 
     const variant = getVariant(group, options) || "italic";
     if (variant !== defaultVariant[node.type]) {
@@ -90,7 +88,7 @@ groupTypes.textord = function(group, options) {
     const variant = getVariant(group, options) || "normal";
 
     let node;
-    if (group.mode === 'text') {
+    if (group.mode === "text") {
         node = new mathMLTree.MathNode("mtext", [text]);
     } else if (/[0-9]/.test(group.value)) {
         // TODO(kevinb) merge adjacent <mn> nodes
@@ -109,8 +107,7 @@ groupTypes.textord = function(group, options) {
 };
 
 groupTypes.bin = function(group, options) {
-    const node = new mathMLTree.MathNode(
-        "mo", [makeText(group.value, group.mode)]);
+    const node = new mathMLTree.MathNode("mo", [makeText(group.value, group.mode)]);
 
     const variant = getVariant(group, options);
     if (variant === "bold-italic") {
@@ -121,36 +118,31 @@ groupTypes.bin = function(group, options) {
 };
 
 groupTypes.rel = function(group) {
-    const node = new mathMLTree.MathNode(
-        "mo", [makeText(group.value, group.mode)]);
+    const node = new mathMLTree.MathNode("mo", [makeText(group.value, group.mode)]);
 
     return node;
 };
 
 groupTypes.open = function(group) {
-    const node = new mathMLTree.MathNode(
-        "mo", [makeText(group.value, group.mode)]);
+    const node = new mathMLTree.MathNode("mo", [makeText(group.value, group.mode)]);
 
     return node;
 };
 
 groupTypes.close = function(group) {
-    const node = new mathMLTree.MathNode(
-        "mo", [makeText(group.value, group.mode)]);
+    const node = new mathMLTree.MathNode("mo", [makeText(group.value, group.mode)]);
 
     return node;
 };
 
 groupTypes.inner = function(group) {
-    const node = new mathMLTree.MathNode(
-        "mo", [makeText(group.value, group.mode)]);
+    const node = new mathMLTree.MathNode("mo", [makeText(group.value, group.mode)]);
 
     return node;
 };
 
 groupTypes.punct = function(group) {
-    const node = new mathMLTree.MathNode(
-        "mo", [makeText(group.value, group.mode)]);
+    const node = new mathMLTree.MathNode("mo", [makeText(group.value, group.mode)]);
 
     node.setAttribute("separator", "true");
 
@@ -172,7 +164,7 @@ groupTypes.supsub = function(group, options) {
     let isSup;
     if (group.value.base) {
         if (group.value.base.value.type === "horizBrace") {
-            isSup = (group.value.sup ? true : false);
+            isSup = group.value.sup ? true : false;
             if (isSup === group.value.base.value.isOver) {
                 isBrace = true;
                 isOver = group.value.base.value.isOver;
@@ -181,22 +173,19 @@ groupTypes.supsub = function(group, options) {
     }
 
     const removeUnnecessaryRow = true;
-    const children = [
-        buildGroup(group.value.base, options, removeUnnecessaryRow)];
+    const children = [buildGroup(group.value.base, options, removeUnnecessaryRow)];
 
     if (group.value.sub) {
-        children.push(
-            buildGroup(group.value.sub, options, removeUnnecessaryRow));
+        children.push(buildGroup(group.value.sub, options, removeUnnecessaryRow));
     }
 
     if (group.value.sup) {
-        children.push(
-            buildGroup(group.value.sup, options, removeUnnecessaryRow));
+        children.push(buildGroup(group.value.sup, options, removeUnnecessaryRow));
     }
 
     let nodeType;
     if (isBrace) {
-        nodeType = (isOver ? "mover" : "munder");
+        nodeType = isOver ? "mover" : "munder";
     } else if (!group.value.sub) {
         const base = group.value.base;
         if (base && base.value.limits && options.style === Style.DISPLAY) {
@@ -229,13 +218,13 @@ groupTypes.spacing = function(group) {
     let node;
 
     if (buildCommon.regularSpace.hasOwnProperty(group.value)) {
-        node = new mathMLTree.MathNode(
-            "mtext", [new mathMLTree.TextNode("\u00a0")]);
+        node = new mathMLTree.MathNode("mtext", [
+            new mathMLTree.TextNode("\u00a0"),
+        ]);
     } else {
         node = new mathMLTree.MathNode("mspace");
 
-        node.setAttribute(
-            "width", buildCommon.spacingFunctions[group.value].size);
+        node.setAttribute("width", buildCommon.spacingFunctions[group.value].size);
     }
 
     return node;
@@ -243,10 +232,10 @@ groupTypes.spacing = function(group) {
 
 groupTypes.horizBrace = function(group, options) {
     const accentNode = stretchy.mathMLnode(group.value.label);
-    return new mathMLTree.MathNode(
-        (group.value.isOver ? "mover" : "munder"),
-        [buildGroup(group.value.base, options), accentNode]
-    );
+    return new mathMLTree.MathNode(group.value.isOver ? "mover" : "munder", [
+        buildGroup(group.value.base, options),
+        accentNode,
+    ]);
 };
 
 groupTypes.xArrow = function(group, options) {
@@ -258,9 +247,11 @@ groupTypes.xArrow = function(group, options) {
         const upperNode = buildGroup(group.value.body, options);
         if (group.value.below) {
             lowerNode = buildGroup(group.value.below, options);
-            node = new mathMLTree.MathNode(
-                "munderover", [arrowNode, lowerNode, upperNode]
-            );
+            node = new mathMLTree.MathNode("munderover", [
+                arrowNode,
+                lowerNode,
+                upperNode,
+            ]);
         } else {
             node = new mathMLTree.MathNode("mover", [arrowNode, upperNode]);
         }
@@ -279,8 +270,9 @@ groupTypes.mclass = function(group, options) {
 };
 
 groupTypes.raisebox = function(group, options) {
-    const node = new mathMLTree.MathNode(
-        "mpadded", [buildGroup(group.value.body, options)]);
+    const node = new mathMLTree.MathNode("mpadded", [
+        buildGroup(group.value.body, options),
+    ]);
     const dy = group.value.dy.value.number + group.value.dy.value.unit;
     node.setAttribute("voffset", dy);
     return node;
@@ -307,9 +299,7 @@ export const buildExpression = function(expression, options) {
  * Takes a group from the parser and calls the appropriate groupTypes function
  * on it to produce a MathML node.
  */
-export const buildGroup = function(
-    group, options, removeUnnecessaryRow = false,
-) {
+export const buildGroup = function(group, options, removeUnnecessaryRow = false) {
     if (!group) {
         return new mathMLTree.MathNode("mrow");
     }
@@ -324,8 +314,7 @@ export const buildGroup = function(
         }
         return result;
     } else {
-        throw new ParseError(
-            "Got group of unknown type: '" + group.type + "'");
+        throw new ParseError("Got group of unknown type: '" + group.type + "'");
     }
 };
 
@@ -345,13 +334,13 @@ export default function buildMathML(tree, texExpression, options) {
     const wrapper = new mathMLTree.MathNode("mrow", expression);
 
     // Build a TeX annotation of the source
-    const annotation = new mathMLTree.MathNode(
-        "annotation", [new mathMLTree.TextNode(texExpression)]);
+    const annotation = new mathMLTree.MathNode("annotation", [
+        new mathMLTree.TextNode(texExpression),
+    ]);
 
     annotation.setAttribute("encoding", "application/x-tex");
 
-    const semantics = new mathMLTree.MathNode(
-        "semantics", [wrapper, annotation]);
+    const semantics = new mathMLTree.MathNode("semantics", [wrapper, annotation]);
 
     const math = new mathMLTree.MathNode("math", [semantics]);
 

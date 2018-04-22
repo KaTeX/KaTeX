@@ -28,24 +28,32 @@ defineFunction({
         if (group.value.alignment === "clap") {
             // ref: https://www.math.lsu.edu/~aperlis/publications/mathclap/
             inner = buildCommon.makeSpan(
-                [], [html.buildGroup(group.value.body, options)]);
+                [],
+                [html.buildGroup(group.value.body, options)],
+            );
             // wrap, since CSS will center a .clap > .inner > span
             inner = buildCommon.makeSpan(["inner"], [inner], options);
         } else {
             inner = buildCommon.makeSpan(
-                ["inner"], [html.buildGroup(group.value.body, options)]);
+                ["inner"],
+                [html.buildGroup(group.value.body, options)],
+            );
         }
         const fix = buildCommon.makeSpan(["fix"], []);
         return buildCommon.makeSpan(
-            ["mord", group.value.alignment], [inner, fix], options);
+            ["mord", group.value.alignment],
+            [inner, fix],
+            options,
+        );
     },
     mathmlBuilder: (group, options) => {
         // mathllap, mathrlap, mathclap
-        const node = new mathMLTree.MathNode(
-            "mpadded", [mml.buildGroup(group.value.body, options)]);
+        const node = new mathMLTree.MathNode("mpadded", [
+            mml.buildGroup(group.value.body, options),
+        ]);
 
-        if (group.value.alignment !== "rlap")    {
-            const offset = (group.value.alignment === "llap" ? "-1" : "-0.5");
+        if (group.value.alignment !== "rlap") {
+            const offset = group.value.alignment === "llap" ? "-1" : "-0.5";
             node.setAttribute("lspace", offset + "width");
         }
         node.setAttribute("width", "0px");

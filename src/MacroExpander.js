@@ -48,7 +48,7 @@ export default class MacroExpander implements MacroContextInterface {
      * Remove and return the next unexpanded token.
      */
     popToken(): Token {
-        this.future();  // ensure non-empty stack
+        this.future(); // ensure non-empty stack
         return this.stack.pop();
     }
 
@@ -89,7 +89,7 @@ export default class MacroExpander implements MacroContextInterface {
         const args: Token[][] = [];
         // obtain arguments, either single token or balanced {…} group
         for (let i = 0; i < numArgs; ++i) {
-            this.consumeSpaces();  // ignore spaces before each argument
+            this.consumeSpaces(); // ignore spaces before each argument
             const startOfArg = this.popToken();
             if (startOfArg.text === "{") {
                 const arg: Token[] = [];
@@ -104,15 +104,15 @@ export default class MacroExpander implements MacroContextInterface {
                     } else if (tok.text === "EOF") {
                         throw new ParseError(
                             "End of input in macro argument",
-                            startOfArg);
+                            startOfArg,
+                        );
                     }
                 }
                 arg.pop(); // remove last }
                 arg.reverse(); // like above, to fit in with stack order
                 args[i] = arg;
             } else if (startOfArg.text === "EOF") {
-                throw new ParseError(
-                    "End of input expecting macro argument");
+                throw new ParseError("End of input expecting macro argument");
             } else {
                 args[i] = [startOfArg];
             }
@@ -143,7 +143,7 @@ export default class MacroExpander implements MacroContextInterface {
     expandOnce(): Token | Token[] {
         const topToken = this.popToken();
         const name = topToken.text;
-        const isMacro = (name.charAt(0) === "\\");
+        const isMacro = name.charAt(0) === "\\";
         if (isMacro && controlWordRegex.test(name)) {
             // Consume all spaces after \macro (but not \\, \', etc.)
             this.consumeSpaces();
@@ -165,18 +165,18 @@ export default class MacroExpander implements MacroContextInterface {
                     if (i === 0) {
                         throw new ParseError(
                             "Incomplete placeholder at end of macro body",
-                            tok);
+                            tok,
+                        );
                     }
                     tok = expansion[--i]; // next token on stack
-                    if (tok.text === "#") { // ## → #
+                    if (tok.text === "#") {
+                        // ## → #
                         expansion.splice(i + 1, 1); // drop first #
                     } else if (/^[1-9]$/.test(tok.text)) {
                         // replace the placeholder with the indicated argument
                         expansion.splice(i, 2, ...args[+tok.text - 1]);
                     } else {
-                        throw new ParseError(
-                            "Not a valid argument number",
-                            tok);
+                        throw new ParseError("Not a valid argument number", tok);
                     }
                 }
             }
@@ -210,7 +210,7 @@ export default class MacroExpander implements MacroContextInterface {
                 if (expanded.text === "\\relax") {
                     this.stack.pop();
                 } else {
-                    return this.stack.pop();  // === expanded
+                    return this.stack.pop(); // === expanded
                 }
             }
         }
@@ -257,4 +257,3 @@ export default class MacroExpander implements MacroContextInterface {
         return expansion;
     }
 }
-
