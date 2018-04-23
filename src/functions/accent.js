@@ -5,6 +5,7 @@ import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
 import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
+import {assertDomContainer, assertSymbolDomNode} from "../domTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -19,7 +20,8 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
     let base: AnyParseNode;
     let group: ParseNode<"accent">;
 
-    const supSub = checkNodeType(grp, "supsub");
+    // $FlowFixMe: Maybe due to https://github.com/facebook/flow/issues/6379
+    const supSub: ?ParseNode<"supsub"> = checkNodeType(grp, "supsub");
     let supSubGroup;
     if (supSub) {
         // If our base is a character box, and we have superscripts and
@@ -39,7 +41,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
 
         // Rerender the supsub group with its new base, and store that
         // result.
-        supSubGroup = html.buildGroup(supSub, options);
+        supSubGroup = assertDomContainer(html.buildGroup(supSub, options));
     } else {
         group = assertNodeType(grp, "accent");
         base = group.value.base;
@@ -64,7 +66,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
         // Then, we render its group to get the symbol inside it
         const baseGroup = html.buildGroup(baseChar, options.havingCrampedStyle());
         // Finally, we pull the skew off of the symbol.
-        skew = baseGroup.skew;
+        skew = assertSymbolDomNode(baseGroup).skew;
         // Note that we now throw away baseGroup, because the layers we
         // removed with getBaseElem might contain things like \color which
         // we can't get rid of.
