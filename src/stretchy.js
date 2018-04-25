@@ -107,7 +107,7 @@ const mathMLnode = function(label: string): mathMLTree.MathNode {
 // corresponds to 0.522 em inside the document.
 
 const katexImagesData: {
-    [string]: ([string[], number, number] | [string[], number, number, string])
+    [string]: ([string[], number, number] | [[string], number, number, string])
 } = {
                    //   path(s), minWidth, height, align
     overrightarrow: [["rightarrow"], 0.888, 522, "xMaxYMin"],
@@ -159,7 +159,7 @@ const katexImagesData: {
         "shortrightharpoonabovebar"], 1.75, 716],
 };
 
-const groupLength = function(arg: ParseNode): number {
+const groupLength = function(arg: ParseNode<*>): number {
     if (arg.type === "ordgroup") {
         return arg.value.length;
     } else {
@@ -167,7 +167,10 @@ const groupLength = function(arg: ParseNode): number {
     }
 };
 
-const svgSpan = function(group: ParseNode, options: Options): DomSpan | SvgSpan {
+const svgSpan = function(
+    group: ParseNode<"accent">,
+    options: Options,
+): DomSpan | SvgSpan {
     // Create a span with inline SVG for the element.
     function buildSvgSpan_(): {
         span: DomSpan | SvgSpan,
@@ -175,11 +178,16 @@ const svgSpan = function(group: ParseNode, options: Options): DomSpan | SvgSpan 
         height: number,
     } {
         let viewBoxWidth = 400000;  // default
-        const label = group.value.label.substr(1);
+        // The "accent" ParseNode value could be a string since it's one of the
+        // groups enumerated in symbols.js. But the logic here assumes that it's
+        // a struct.
+        // $FlowFixMe
+        const nodeValue: AccentStructType = group.value;
+        const label = nodeValue.label.substr(1);
         if (utils.contains(["widehat", "widetilde", "utilde"], label)) {
             // There are four SVG images available for each function.
             // Choose a taller image when there are more characters.
-            const numChars = groupLength(group.value.base);
+            const numChars = groupLength(nodeValue.base);
             let viewBoxHeight;
             let pathName;
             let height;
@@ -219,13 +227,16 @@ const svgSpan = function(group: ParseNode, options: Options): DomSpan | SvgSpan 
         } else {
             const spans = [];
 
-            const [paths, minWidth, viewBoxHeight, align1] = katexImagesData[label];
+            const data = katexImagesData[label];
+            const [paths, minWidth, viewBoxHeight] = data;
             const height = viewBoxHeight / 1000;
 
             const numSvgChildren = paths.length;
             let widthClasses;
             let aligns;
             if (numSvgChildren === 1) {
+                // $FlowFixMe: All these cases must be of the 4-tuple type.
+                const align1: string = data[3];
                 widthClasses = ["hide-tail"];
                 aligns = [align1];
             } else if (numSvgChildren === 2) {

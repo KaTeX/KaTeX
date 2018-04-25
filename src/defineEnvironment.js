@@ -27,9 +27,9 @@ type EnvContext = {|
  */
 type EnvHandler = (
     context: EnvContext,
-    args: ParseNode[],
-    optArgs: (?ParseNode)[],
-) => ParseNode;
+    args: ParseNode<*>[],
+    optArgs: (?ParseNode<*>)[],
+) => ParseNode<*>;
 
 /**
  *  - numArgs: (default 0) The number of arguments after the \begin{name} function.

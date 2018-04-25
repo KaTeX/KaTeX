@@ -15,8 +15,8 @@ class ParseError {
         // Error position based on passed-in Token or ParseNode.
 
     constructor(
-        message: string,           // The error message
-        token?: Token | ParseNode, // An object providing position information
+        message: string,              // The error message
+        token?: Token | ParseNode<*>, // An object providing position information
     ) {
         let error = "KaTeX parse error: " + message;
         let start;

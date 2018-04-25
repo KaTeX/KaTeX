@@ -16,11 +16,10 @@ export type FunctionContext = {|
     breakOnTokenText?: BreakToken,
 |};
 
-// TODO: Enumerate all allowed output types.
 export type FunctionHandler = (
     context: FunctionContext,
-    args: ParseNode[],
-    optArgs: (?ParseNode)[],
+    args: ParseNode<*>[],
+    optArgs: (?ParseNode<*>)[],
 ) => *;
 
 export type FunctionPropSpec = {
@@ -176,7 +175,7 @@ export default function defineFunction({
 
 // Since the corresponding buildHTML/buildMathML function expects a
 // list of elements, we normalize for different kinds of arguments
-export const ordargument = function(arg: ParseNode): ParseNode[] {
+export const ordargument = function(arg: ParseNode<*>): ParseNode<*>[] {
     if (arg.type === "ordgroup") {
         return arg.value;
     } else {
