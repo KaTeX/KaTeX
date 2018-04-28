@@ -4,6 +4,7 @@ import {groupTypes as mathmlGroupTypes} from "./buildMathML";
 
 import type Parser from "./Parser";
 import type ParseNode from "./ParseNode";
+import type {NodeType} from "./ParseNode";
 import type Options from "./Options";
 import type {ArgType, BreakToken, Mode} from "./types";
 import type {Token} from "./Token";
@@ -79,9 +80,10 @@ export type FunctionPropSpec = {
     consumeMode?: ?Mode,
 };
 
-type FunctionDefSpec = {|
+type FunctionDefSpec<NODETYPE: NodeType> = {|
     // Unique string to differentiate parse nodes.
-    type?: string,
+    // Also determines the type of the value returned by `handler`.
+    type: NODETYPE,
 
     // The first argument to defineFunction is a single name or a list of names.
     // All functions named in such a list will share a single implementation.
@@ -138,14 +140,15 @@ export type FunctionSpec = {|
  */
 export const _functions: {[string]: FunctionSpec} = {};
 
-export default function defineFunction({
+export default function defineFunction<NODETYPE: NodeType>({
     type,
+    nodeType,
     names,
     props,
     handler,
     htmlBuilder,
     mathmlBuilder,
-}: FunctionDefSpec) {
+}: FunctionDefSpec<NODETYPE>) {
     // Set default values of functions
     const data = {
         numArgs: props.numArgs,
