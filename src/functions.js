@@ -24,7 +24,7 @@ const defineFunction = function<NODETYPE: NodeType>(
     type: NODETYPE,
     names: string[],
     props: FunctionPropSpec,
-    handler: ?FunctionHandler, // null only if handled in parser
+    handler: ?FunctionHandler<NODETYPE>, // null only if handled in parser
 ) {
     _defineFunction({type, names, props, handler});
 };
