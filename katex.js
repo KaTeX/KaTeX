@@ -18,6 +18,8 @@ import utils from "./src/utils";
 import type {SettingsOptions} from "./src/Settings";
 import type ParseNode from "./src/ParseNode";
 
+import { defineSymbol } from './src/symbols';
+
 /**
  * Parse and build an expression, and place that expression in the DOM node
  * given.
@@ -67,7 +69,6 @@ const generateParseTree = function(
     const settings = new Settings(options);
     return parseTree(expression, settings);
 };
-
 
 /**
  * Generates and returns the katex build tree. This is used for advanced
@@ -137,4 +138,8 @@ export default {
      * to change. Use at your own risk.
      */
     __renderToHTMLTree: renderToHTMLTree,
+    /**
+     * adds a new symbol to internal symbols table
+    */
+    __defineSymbol: defineSymbol,
 };
