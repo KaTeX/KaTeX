@@ -154,12 +154,12 @@ defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 // Unicode stacked relations
 defineMacro("\u2258",
     "\\mathrel{=\\kern{-1em}\\raisebox{0.4em}{$\\scriptsize\\frown$}}");
-defineMacro("\u2259", "\\stackrel{\\tiny{\\wedge}}{=}");
-defineMacro("\u225A", "\\stackrel{\\tiny{\\vee}}{=}");
-defineMacro("\u225B", "\\stackrel{\\scriptsize{\\star}}{=}");
-defineMacro("\u225D", "\\stackrel{\\tiny{\\mathrm{def}}}{=}");
-defineMacro("\u225E", "\\stackrel{\\tiny{\\mathrm{m}}}{=}");
-defineMacro("\u225F", "\\stackrel{\\tiny{?}}{=}");
+defineMacro("\u2259", "\\stackrel{\\tiny\\wedge}{=}");
+defineMacro("\u225A", "\\stackrel{\\tiny\\vee}{=}");
+defineMacro("\u225B", "\\stackrel{\\scriptsize\\star}{=}");
+defineMacro("\u225D", "\\stackrel{\\tiny\\mathrm{def}}{=}");
+defineMacro("\u225E", "\\stackrel{\\tiny\\mathrm{m}}{=}");
+defineMacro("\u225F", "\\stackrel{\\tiny?}{=}");
 
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
