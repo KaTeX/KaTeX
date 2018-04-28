@@ -19,7 +19,7 @@
 
 import type {Mode} from "./types";
 
-type Font = "main" | "ams";
+type Font = "main" | "ams"
 type Group =
     "accent" | "bin" | "close" | "inner" | "mathord" | "op" | "open" | "punct" |
     "rel" | "spacing" | "textord";
@@ -32,7 +32,7 @@ const symbols: {[Mode]: CharInfoMap} = {
 export default symbols;
 
 /** `acceptUnicodeChar = true` is only applicable if `replace` is set. */
-function defineSymbol(
+export function defineSymbol(
     mode: Mode,
     font: Font,
     group: Group,
