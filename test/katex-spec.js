@@ -407,6 +407,7 @@ describe("A subscript and superscript parser", function() {
 
     it("should not fail when there is no nucleus", function() {
         expect("^3").toParse();
+        expect("^3+").toParse();
         expect("_2").toParse();
         expect("^3_2").toParse();
         expect("_2^3").toParse();

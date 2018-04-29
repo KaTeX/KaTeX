@@ -404,7 +404,7 @@ export default class Parser {
 
         // Base must be set if superscript or subscript are set per logic above,
         // but need to check here for type check to pass.
-        if ((superscript || subscript) && base) {
+        if (superscript || subscript) {
             // If we got either a superscript or subscript, create a supsub
             return new ParseNode("supsub", {
                 base: base,

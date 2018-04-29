@@ -38,13 +38,13 @@ export default class ParseNode<TYPE: NodeType> {
 export type NodeType = $Keys<ParseNodeTypes>;
 export type NodeValue<TYPE: NodeType> = $ElementType<ParseNodeTypes, TYPE>;
 
-export type AccentStructType = {
+export type AccentStructType = {|
     type: "accent",
     label: string,
     isStretchy: boolean,
     isShifty: boolean,
     base: ParseNode<*>,
-};
+|};
 
 // Map from `type` field value to corresponding `value` type.
 type ParseNodeTypes = {
@@ -82,7 +82,7 @@ type ParseNodeTypes = {
         value: ParseNode<*>[],
     |},
     "supsub": {|
-        base: ParseNode<*>,
+        base: ?ParseNode<*>,
         sup?: ?ParseNode<*>,
         sub?: ?ParseNode<*>,
     |},
