@@ -1,6 +1,5 @@
 # Change Log
-All notable changes to this project will be documented in this file.
-This project adheres to [Semantic Versioning](http://semver.org/).
+All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
 
 ## [v0.9.0] - 2018-02-18
@@ -16,7 +15,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Enable spacing functions in text mode [#1139](https://github.com/Khan/KaTeX/pull/1139)
 
-### Fixes
+### Fixed
 - Improved JS spacing [#1103](https://github.com/Khan/KaTeX/pull/1103)
 - Fixed handling of Unicode characters ð, Å, å [#1157](https://github.com/Khan/KaTeX/pull/1157)
 - Padding over `\sqrt` and Paths for frac-line [#1143](https://github.com/Khan/KaTeX/pull/1143)
@@ -35,13 +34,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Do not inherit SVG style properties from the environment. [#1089](https://github.com/Khan/KaTeX/pull/1089)
 - Update fonts and metrics so that accents are positioned correctly [#1094](https://github.com/Khan/KaTeX/pull/1094)
-- Non-portable use of String method `.includes`. Fixes [#1093](https://github.com/Khan/KaTeX/issues/1093)
+- Non-portable use of String method `.includes`. Fixed [#1093](https://github.com/Khan/KaTeX/issues/1093)
 - Use correct spacing with tight styles. See [#1106](https://github.com/Khan/KaTeX/pull/1106) for more details.
 
 
 ## [v0.9.0-beta] - 2018-01-14
 ### Added
-- `\kern` fixes and support `\hskip`, `\TeX`, `\LaTeX`, `\KaTeX`. See [#974](https://github.com/Khan/KaTeX/pull/974)
+- `\kern` fixed and support `\hskip`, `\TeX`, `\LaTeX`, `\KaTeX`. See [#974](https://github.com/Khan/KaTeX/pull/974)
 - Supported Unicode middle dot and Unicode accents.
 - Added basic support for Indic scripts in addition to CJK. [#1060](https://github.com/Khan/KaTeX/pull/1060)
 - Added support for bold italic symbols. [#1011](https://github.com/Khan/KaTeX/pull/1011)
@@ -90,17 +89,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [v0.9.0-alpha1] - 2017-10-15
-### Fixes
-- Fixed space handling. [#912](https://github.com/Khan/KaTeX/pull/912)
-- Prevents disappearing fraction lines. [#931](https://github.com/Khan/KaTeX/pull/931)
-
-### Updated
-- Edit link to Function Support page. [#922](https://github.com/Khan/KaTeX/pull/922)
-
 ### Changed
+- Edited link to Function Support page. [#922](https://github.com/Khan/KaTeX/pull/922)
 - Re `@flow`:
   - Exported svgGeometry to @flow. [#936](https://github.com/Khan/KaTeX/pull/936)
   - Ported utils to @flow. [#935](https://github.com/Khan/KaTeX/pull/935)
+
+### Fixed
+- Fixed space handling. [#912](https://github.com/Khan/KaTeX/pull/912)
+- Prevents disappearing fraction lines. [#931](https://github.com/Khan/KaTeX/pull/931)
 
 
 ## [v0.9.0-alpha] - 2017-10-05
@@ -109,9 +106,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Added a maxSize option to limit user-specified sizes. [#803](https://github.com/Khan/KaTeX/pull/803)
 - Added `\smash`, laps, spaces, and phantoms. [#833](https://github.com/Khan/KaTeX/pull/833)
 - Support for `\raisebox`, `\operatorname`, `\And`, `\colorbox`, `\fcolorbox` and `\verb`.
-- Added support for comments. Fixes [#20](https://github.com/Khan/KaTeX/issues/20)
+- Added support for comments. Fixed [#20](https://github.com/Khan/KaTeX/issues/20)
 - To `@flow`:
   - fontMetrics, fontMetricsData, Token, Lexer, MacroExpander, Options, ParseError, ParseNode, Settings, Style.
+
+### Removed
+- Removed the positions array computed by Parser's parseArguments(). [#864](https://github.com/Khan/KaTeX/pull/864)
 
 ### Changed
 - Advanced macro support and magic `\dots`. [#794](https://github.com/Khan/KaTeX/pull/794)
@@ -126,13 +126,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Require [text]color HTML colors to be well-formed. See [#827](https://github.com/Khan/KaTeX/pull/827)
 - `\llap` and `\rlap` now render contents in math mode. Use `\mathllap` (new) and `\mathrlap` (new) if you need the previous behavior.
 
-### Removed
-- Removed the positions array computed by Parser's parseArguments(). [#864](https://github.com/Khan/KaTeX/pull/864)
-
 ### Fixed
 - Fixed exponential behavior in accent production. [#834](https://github.com/Khan/KaTeX/pull/834)
 - Use mpadded for `\raisebox` MathML. [#876](https://github.com/Khan/KaTeX/pull/876)
-- Array/Matrix environments do not trim newlines. Fixes [#337](https://github.com/Khan/KaTeX/issues/337). PR is [#479](https://github.com/Khan/KaTeX/pull/479).
+- Array/Matrix environments do not trim newlines. Fixed [#337](https://github.com/Khan/KaTeX/issues/337). PR is [#479](https://github.com/Khan/KaTeX/pull/479).
 - For `@flow`:
   - Corrected @flow types. Refactor some Parser code for stricter typing. [#896](https://github.com/Khan/KaTeX/pull/896)
   - Fixed match-at flow errors. [#847](https://github.com/Khan/KaTeX/pull/847)
@@ -158,7 +155,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Accepts all existing Greek letters using unicode characters in math mode. See [#410](https://github.com/Khan/KaTeX/pull/410)
 
 ### Fixed
-- Fixes MathML output for ' and large operators with limits. [#788](https://github.com/Khan/KaTeX/pull/788)
+- Fixed MathML output for ' and large operators with limits. [#788](https://github.com/Khan/KaTeX/pull/788)
 - Updated package.json to point 'main' at dist/katex.js. [#791](https://github.com/Khan/KaTeX/pull/791)
 - Fixed color support for stretchy, strikethrough, and fbox. [#792](https://github.com/Khan/KaTeX/pull/792)
 - Detect attachEvent() support correctly. See [#771](https://github.com/Khan/KaTeX/issues/771) and [#772](https://github.com/Khan/KaTeX/pull/772) for the issue and PR fix respectively.
@@ -170,9 +167,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Note that if you're including copies of KaTeX in your web application, you should now include the dist/images directory in addition to the usual the dist/fonts directory.
 
 ## [v0.8.0] - 2017-08-11
-### Breaking Changes
-- Implicit `\color`, explicitly grouped `\textcolor`. See [#619](https://github.com/Khan/KaTeX/pull/619)
-
 ### Added
 - Added some international operators. See [#509](https://github.com/Khan/KaTeX/issues/509)
 - Old font command support: `\rm`, `\sf`, `\tt`, `\bf`, `\it`. [#675](https://github.com/Khan/KaTeX/pull/675)
@@ -201,6 +195,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Shrinkwrap vlists in table-like CSS. [#768](https://github.com/Khan/KaTeX/pull/768)
 - Improve rule coding, including for `\sqrt`. [#776](https://github.com/Khan/KaTeX/pull/776)
 
+### Breaking Changes
+- Implicit `\color`, explicitly grouped `\textcolor`. See [#619](https://github.com/Khan/KaTeX/pull/619)
 
 ### Fixed
 - Fixed high contrast mode better. [#733](https://github.com/Khan/KaTeX/pull/733)
@@ -246,12 +242,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Added  `\gt`, `\lt` and `\underline` support.
 - Introduced the aligned environment.
 
+### Removed
+- Removed 3px border around rules.
+
 ### Changed
 - Bundle CSS and fonts in npm package.
 
 ### Fixed
 - Fixed sub- and super-scripts not being centered inside of math display.
-- Removed 3px border around rules.
 - Set the greediness of font functions to 2 so that `e^\mathbf{x}` will parse.
 
 
@@ -300,16 +298,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [v0.3.0] - 2015-04-01
-### Breaking Changes
-- The greediness of the `\color` function has changed to maintain compatibility with MathJax, so expressions like `\color{red}\text{a}` will no longer work and instead need to be rewritten as `\color{red}{\text{a}}`.
-
 ### Added
 - Added an auto-render extension for automatically rendering math on a page.
 - Added support for `\phantom`.
 - Added `\#`, `\&`.
 
-### Changed
+### Removed
 - Removed `!important` from MathML hiding rules, so they can be overridden.
+
+### Breaking Changes
+- The greediness of the `\color` function has changed to maintain compatibility with MathJax, so expressions like `\color{red}\text{a}` will no longer work and instead need to be rewritten as `\color{red}{\text{a}}`.
 
 ### Fixed
 - Fixed spacing for `\odot`, `\oplus`, `\otimes`, `\oslash`, `\bigtriangleup`, `\bigtriangledown`, `\dagger`, `\diamond`, `\star`, `\triangleleft`, `\triangleright`.
@@ -320,11 +318,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Added accessibility through the use of MathML.
 - Added the ability to render math in display mode, centered on a single line in display style.
-- Added support for new symbols: `\aleph`, `\amalg`, `\approxeq`, `\ast`, `\asymp`, `\backepsilon`, `\backprime`, `\backsim`, `\backsimeq`, `\Bbbk`, `\because`, `\beth`, `\between`, `\bigcirc`, `\bigstar`, `\blacklozenge`, `\blacksquare`, `\blacktriangle`, `\blacktriangledown`, `\blacktriangleleft`, `\blacktriangleright`, `\bowtie`, `\Box`, `\boxminus`, `\boxplus`, `\boxtimes`, `\bullet`, `\bumpeq`, `\Bumpeq`, `\Cap`, `\cdotp`, `\centerdot`, `\circeq`, `\circlearrowleft`, `\circlearrowright`, `\circledast`, `\circleddash`, `\circledS`, `\clubsuit`, `\complement`, `\Cup`, `\curlyeqprec`, `\curlyeqsucc`, `\curlyvee`, `\curlywedge`, `\curvearrowleft`, `\curvearrowright`, `\dag`, `\daleth`, `\dashleftarrow`, `\dashrightarrow`, `\dashv`, `\ddag`, `\ddagger`, `\diagdown`, `\diagup`, `\Diamond`, `\diamondsuit`, `\digamma`, `\divideontimes`, `\doteq`, `\Doteq`, `\doteqdot`, `\dotplus`, `\doublebarwedge`, `\doublecap`, `\doublecup`, `\downdownarrows`, `\downharpoonleft`, `\downharpoonright`, `\ell`, `\eqcirc`, `\eqsim`, `\eqslantgtr`, `\eqslantless`, `\equiv`, `\eth, `\exists, `\fallingdotseq`, `\Finv`, `\flat`, `\forall`, `\frown`, `\Game`, `\geqq`, `\geqslant`, `\gg`, `\ggg`, `\gggtr`, `\gimel`, `\gnapprox`, `\gneq`, `\gneqq`, `\gnsim`, `\gtrapprox`, `\gtrdot`, `\gtreqless`, `\gtreqqless`, `\gtrless`, `\gtrsim`, `\gvertneqq`, `\hbar`, `\heartsuit`, `\hookleftarrow`, `\hookrightarrow`, `\hslash`, `\Im`, `\intercal`, `\Join`, `\ldotp`, `\leadsto`, `\Leftarrow`, `\leftarrowtail`, `\leftharpoondown`, `\leftharpoonup`, `\leftleftarrows`, `\leftrightarrow`, `\Leftrightarrow`, `\leftrightarrows`, `\leftrightharpoons`, `\leftrightsquigarrow`, `\leftthreetimes`, `\leqq, `\leqslant`, `\lessapprox`, `\lessdot`, `\lesseqgtr`, `\lesseqqgtr`, `\lessgtr`, `\lesssim`, `\lgroup`, `\lhd`, `\ll`, `\llcorner`, `\Lleftarrow`, `\lll`, `\llless`, `\lmoustache`, `\lnapprox`, `\lneq`, `\lneqq`, `\lnsim`, `\longleftarrow`, `\Longleftarrow`, `\longleftrightarrow`, `\Longleftrightarrow`, `\longmapsto`, `\longrightarrow`, `\Longrightarrow`, `\looparrowleft`, `\looparrowright`, `\lozenge`, `\lrcorner`, `\Lsh`, `\ltimes`, `\lvertneqq`, `\mapsto`, `\measuredangle`, `\mho`, `\mid`, `\mp`, `\multimap`, `\nabla`, `\natural`, `\ncong`, `\nearrow`, `\nexists`, `\ngeqq`, `\ngeqslant`, `\ngtr`, `\ni`, `\nleftarrow`, `\nLeftarrow`, `\nleftrightarrow`, `\nLeftrightarrow`, `\nleqq`, `\nleqslant`, `\nless`, `\nmid`, `\nparallel`, `\nprec`, `\npreceq`, `\nrightarrow`, `\nRightarrow`, `\nshortmid`, `\nshortparallel`, `\nsim`, `\nsubseteqq`, `\nsucc`, `\nsucceq`, `\nsupseteqq`, `\ntriangleleft`, `\ntrianglelefteq`, `\ntriangleright`, `\ntrianglerighteq`, `\nvdash`, `\nvDash`, `\nVdash`, `\nVDash`, `\nwarrow`, `\ominus`, `\owns`, `\parallel`, `\perp`, `\pitchfork`, `\prec`, `\precapprox`, `\preccurlyeq`, `\preceq`, `\precnapprox`, `\precneqq`, `\precnsim`, `\precsim`, `\propto`, `\Re`, `\restriction`, `\rgroup`, `\rhd`, `\Rightarrow`, `\rightarrowtail`, `\rightharpoondown`, `\rightharpoonup`, `\rightleftarrows`, `\rightleftharpoons`, `\rightrightarrows`, `\rightsquigarrow`, `\rightthreetimes`, `\risingdotseq`, `\rmoustache`, `\Rrightarrow`, `\Rsh`, `\rtimes`, `\searrow`, `\sharp`, `\shortmid`, `\shortparallel`, `\sim`, `\simeq`, `\smallfrown`, `\smallsetminus`, `\smallsmile`, `\smile`, `\spadesuit`, `\sphericalangle`, `\sqcap`, `\sqcup`, `\sqsubset`, `\sqsubseteq`, `\sqsupset`, `\sqsupseteq`, `\square`, `\Subset`, `\subseteqq`, `\subsetneq`, `\subsetneqq`, `\succ`, `\succapprox`, `\succcurlyeq`, `\succeq`, `\succnapprox`, `\succneqq`, `\succnsim`, `\succsim`, `\Supset`, `\supseteqq`, `\supsetneq`, `\supsetneqq`, `\swarrow`, `\therefore`, `\thickapprox`, `\thicksim`, `\triangledown`, `\trianglelefteq`, `\triangleq`, `\trianglerighteq`, `\twoheadleftarrow`, `\twoheadrightarrow`, `\ulcorner`, `\unlhd`, `\unrhd`, `\upharpoonleft`, `\upharpoonright`, `\uplus`, `\upuparrows`, `\urcorner`, `\varkappa`, `\varpropto`, `\varsubsetneq`, `\varsubsetneqq`, `\varsupsetneq` `\varsupsetneqq`, `\vartriangle`, `\vartriangleleft`, `\vartriangleright`, `\vdash`, `\vDash`, `\Vdash`, `\Vvdash`, `\wp`, `\wr`, `\yen`.
+- Added support for new symbols: `\aleph`, `\amalg`, `\approxeq`, `\ast`, `\asymp`, `\backepsilon`, `\backprime`, `\backsim`, `\backsimeq`, `\Bbbk`, `\because`, `\beth`, `\between`, `\bigcirc`, `\bigstar`, `\blacklozenge`, `\blacksquare`, `\blacktriangle`, `\blacktriangledown`, `\blacktriangleleft`, `\blacktriangleright`, `\bowtie`, `\Box`, `\boxminus`, `\boxplus`, `\boxtimes`, `\bullet`, `\bumpeq`, `\Bumpeq`, `\Cap`, `\cdotp`, `\centerdot`, `\circeq`, `\circlearrowleft`, `\circlearrowright`, `\circledast`, `\circleddash`, `\circledS`, `\clubsuit`, `\complement`, `\Cup`, `\curlyeqprec`, `\curlyeqsucc`, `\curlyvee`, `\curlywedge`, `\curvearrowleft`, `\curvearrowright`, `\dag`, `\daleth`, `\dashleftarrow`, `\dashrightarrow`, `\dashv`, `\ddag`, `\ddagger`, `\diagdown`, `\diagup`, `\Diamond`, `\diamondsuit`, `\digamma`, `\divideontimes`, `\doteq`, `\Doteq`, `\doteqdot`, `\dotplus`, `\doublebarwedge`, `\doublecap`, `\doublecup`, `\downdownarrows`, `\downharpoonleft`, `\downharpoonright`, `\ell`, `\eqcirc`, `\eqsim`, `\eqslantgtr`, `\eqslantless`, `\equiv`, `\eth, `\exists, `\fallingdotseq`, `\Finv`, `\flat`, `\forall`, `\frown`, `\Game`, `\geqq`, `\geqslant`, `\gg`, `\ggg`, `\gggtr`, `\gimel`, `\gnapprox`, `\gneq`, `\gneqq`, `\gnsim`, `\gtrapprox`, `\gtrdot`, `\gtreqless`, `\gtreqqless`, `\gtrless`, `\gtrsim`, `\gvertneqq`, `\hbar`, `\heartsuit`, `\hookleftarrow`, `\hookrightarrow`, `\hslash`, `\Im`, `\intercal`, `\Join`, `\ldotp`, `\leadsto`, `\Leftarrow`, `\leftarrowtail`, `\leftharpoondown`, `\leftharpoonup`, `\leftleftarrows`, `\leftrightarrow`, `\Leftrightarrow`, `\leftrightarrows`, `\leftrightharpoons`, `\leftrightsquigarrow`, `\leftthreetimes`, `\leqq`, `\leqslant`, `\lessapprox`, `\lessdot`, `\lesseqgtr`, `\lesseqqgtr`, `\lessgtr`, `\lesssim`, `\lgroup`, `\lhd`, `\ll`, `\llcorner`, `\Lleftarrow`, `\lll`, `\llless`, `\lmoustache`, `\lnapprox`, `\lneq`, `\lneqq`, `\lnsim`, `\longleftarrow`, `\Longleftarrow`, `\longleftrightarrow`, `\Longleftrightarrow`, `\longmapsto`, `\longrightarrow`, `\Longrightarrow`, `\looparrowleft`, `\looparrowright`, `\lozenge`, `\lrcorner`, `\Lsh`, `\ltimes`, `\lvertneqq`, `\mapsto`, `\measuredangle`, `\mho`, `\mid`, `\mp`, `\multimap`, `\nabla`, `\natural`, `\ncong`, `\nearrow`, `\nexists`, `\ngeqq`, `\ngeqslant`, `\ngtr`, `\ni`, `\nleftarrow`, `\nLeftarrow`, `\nleftrightarrow`, `\nLeftrightarrow`, `\nleqq`, `\nleqslant`, `\nless`, `\nmid`, `\nparallel`, `\nprec`, `\npreceq`, `\nrightarrow`, `\nRightarrow`, `\nshortmid`, `\nshortparallel`, `\nsim`, `\nsubseteqq`, `\nsucc`, `\nsucceq`, `\nsupseteqq`, `\ntriangleleft`, `\ntrianglelefteq`, `\ntriangleright`, `\ntrianglerighteq`, `\nvdash`, `\nvDash`, `\nVdash`, `\nVDash`, `\nwarrow`, `\ominus`, `\owns`, `\parallel`, `\perp`, `\pitchfork`, `\prec`, `\precapprox`, `\preccurlyeq`, `\preceq`, `\precnapprox`, `\precneqq`, `\precnsim`, `\precsim`, `\propto`, `\Re`, `\restriction`, `\rgroup`, `\rhd`, `\Rightarrow`, `\rightarrowtail`, `\rightharpoondown`, `\rightharpoonup`, `\rightleftarrows`, `\rightleftharpoons`, `\rightrightarrows`, `\rightsquigarrow`, `\rightthreetimes`, `\risingdotseq`, `\rmoustache`, `\Rrightarrow`, `\Rsh`, `\rtimes`, `\searrow`, `\sharp`, `\shortmid`, `\shortparallel`, `\sim`, `\simeq`, `\smallfrown`, `\smallsetminus`, `\smallsmile`, `\smile`, `\spadesuit`, `\sphericalangle`, `\sqcap`, `\sqcup`, `\sqsubset`, `\sqsubseteq`, `\sqsupset`, `\sqsupseteq`, `\square`, `\Subset`, `\subseteqq`, `\subsetneq`, `\subsetneqq`, `\succ`, `\succapprox`, `\succcurlyeq`, `\succeq`, `\succnapprox`, `\succneqq`, `\succnsim`, `\succsim`, `\Supset`, `\supseteqq`, `\supsetneq`, `\supsetneqq`, `\swarrow`, `\therefore`, `\thickapprox`, `\thicksim`, `\triangledown`, `\trianglelefteq`, `\triangleq`, `\trianglerighteq`, `\twoheadleftarrow`, `\twoheadrightarrow`, `\ulcorner`, `\unlhd`, `\unrhd`, `\upharpoonleft`, `\upharpoonright`, `\uplus`, `\upuparrows`, `\urcorner`, `\varkappa`, `\varpropto`, `\varsubsetneq`, `\varsubsetneqq`, `\varsupsetneq` `\varsupsetneqq`, `\vartriangle`, `\vartriangleleft`, `\vartriangleright`, `\vdash`, `\vDash`, `\Vdash`, `\Vvdash`, `\wp`, `\wr`, `\yen`.
 
-
-### Changed
+### Removed
 - Removed unused greek fonts.
+
 
 ## [v0.1.1] - 2014-10-15
 ### Added
