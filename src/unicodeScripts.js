@@ -13,8 +13,8 @@
  * end points (inclusive) of a block of Unicode codepoints.
  */
 type Script = {
-    name: string;
-    blocks: Array<Array<number>>;
+    name: string,
+    blocks: Array<Array<number>>,
 };
 
 /**
@@ -25,17 +25,17 @@ const scriptData: Array<Script> = [
     {
         // Latin characters beyond the Latin-1 characters we have metrics for.
         // Needed for Czech, Hungarian and Turkish text, for example.
-        name: 'latin',
+        name: "latin",
         blocks: [
-            [0x0100, 0x024f],  // Latin Extended-A and Latin Extended-B
-            [0x0300, 0x036f],  // Combining Diacritical marks
+            [0x0100, 0x024f], // Latin Extended-A and Latin Extended-B
+            [0x0300, 0x036f], // Combining Diacritical marks
         ],
     },
     {
         // The Cyrillic script used by Russian and related languages.
         // A Cyrillic subset used to be supported as explicitly defined
         // symbols in symbols.js
-        name: 'cyrillic',
+        name: "cyrillic",
         blocks: [[0x0400, 0x04ff]],
     },
     {
@@ -54,28 +54,28 @@ const scriptData: Array<Script> = [
         // Lao (0E80–0EFF)
         // Tibetan (0F00–0FFF)
         // Myanmar (1000–109F)
-        name: 'brahmic',
-        blocks: [[0x0900, 0x109F]],
+        name: "brahmic",
+        blocks: [[0x0900, 0x109f]],
     },
     {
-        name: 'georgian',
-        blocks: [[0x10A0, 0x10ff]],
+        name: "georgian",
+        blocks: [[0x10a0, 0x10ff]],
     },
     {
         // Chinese and Japanese.
         // The "k" in cjk is for Korean, but we've separated Korean out
         name: "cjk",
         blocks: [
-            [0x3000, 0x30FF], // CJK symbols and punctuation, Hiragana, Katakana
-            [0x4E00, 0x9FAF], // CJK ideograms
-            [0xFF00, 0xFF60], // Fullwidth punctuation
+            [0x3000, 0x30ff], // CJK symbols and punctuation, Hiragana, Katakana
+            [0x4e00, 0x9faf], // CJK ideograms
+            [0xff00, 0xff60], // Fullwidth punctuation
             // TODO: add halfwidth Katakana and Romanji glyphs
         ],
     },
     {
         // Korean
-        name: 'hangul',
-        blocks: [[0xAC00, 0xD7AF]],
+        name: "hangul",
+        blocks: [[0xac00, 0xd7af]],
     },
 ];
 
@@ -99,7 +99,7 @@ export function scriptFromCodepoint(codepoint: number): ?string {
  * This is an optimization to make supportedCodepoint() fast.
  */
 const allBlocks: Array<number> = [];
-scriptData.forEach(s => s.blocks.forEach(b => allBlocks.push(...b)));
+scriptData.forEach((s) => s.blocks.forEach((b) => allBlocks.push(...b)));
 
 /**
  * Given a codepoint, return true if it falls within one of the

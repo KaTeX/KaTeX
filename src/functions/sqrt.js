@@ -54,12 +54,15 @@ defineFunction({
         // Calculate the clearance between the body and line
         let lineClearance = theta + phi / 4;
 
-        const minDelimiterHeight = (inner.height + inner.depth +
-            lineClearance + theta) * options.sizeMultiplier;
+        const minDelimiterHeight =
+            (inner.height + inner.depth + lineClearance + theta) *
+            options.sizeMultiplier;
 
         // Create a sqrt SVG of the required minimum size
-        const {span: img, ruleWidth, advanceWidth} =
-            delimiter.sqrtImage(minDelimiterHeight, options);
+        const {span: img, ruleWidth, advanceWidth} = delimiter.sqrtImage(
+            minDelimiterHeight,
+            options,
+        );
 
         const delimDepth = img.height - ruleWidth;
 
@@ -75,15 +78,18 @@ defineFunction({
         inner.style.paddingLeft = advanceWidth + "em";
 
         // Overlay the image and the argument.
-        const body = buildCommon.makeVList({
-            positionType: "firstBaseline",
-            children: [
-                {type: "elem", elem: inner, wrapperClasses: ["svg-align"]},
-                {type: "kern", size: -(inner.height + imgShift)},
-                {type: "elem", elem: img},
-                {type: "kern", size: ruleWidth},
-            ],
-        }, options);
+        const body = buildCommon.makeVList(
+            {
+                positionType: "firstBaseline",
+                children: [
+                    {type: "elem", elem: inner, wrapperClasses: ["svg-align"]},
+                    {type: "kern", size: -(inner.height + imgShift)},
+                    {type: "elem", elem: img},
+                    {type: "kern", size: ruleWidth},
+                ],
+            },
+            options,
+        );
 
         if (!group.value.index) {
             return buildCommon.makeSpan(["mord", "sqrt"], [body], options);
@@ -99,30 +105,36 @@ defineFunction({
             const toShift = 0.6 * (body.height - body.depth);
 
             // Build a VList with the superscript shifted up correctly
-            const rootVList = buildCommon.makeVList({
-                positionType: "shift",
-                positionData: -toShift,
-                children: [{type: "elem", elem: rootm}],
-            }, options);
+            const rootVList = buildCommon.makeVList(
+                {
+                    positionType: "shift",
+                    positionData: -toShift,
+                    children: [{type: "elem", elem: rootm}],
+                },
+                options,
+            );
             // Add a class surrounding it so we can add on the appropriate
             // kerning
             const rootVListWrap = buildCommon.makeSpan(["root"], [rootVList]);
 
-            return buildCommon.makeSpan(["mord", "sqrt"],
-                [rootVListWrap, body], options);
+            return buildCommon.makeSpan(
+                ["mord", "sqrt"],
+                [rootVListWrap, body],
+                options,
+            );
         }
     },
     mathmlBuilder(group, options) {
         let node;
         if (group.value.index) {
-            node = new mathMLTree.MathNode(
-                "mroot", [
-                    mml.buildGroup(group.value.body, options),
-                    mml.buildGroup(group.value.index, options),
-                ]);
+            node = new mathMLTree.MathNode("mroot", [
+                mml.buildGroup(group.value.body, options),
+                mml.buildGroup(group.value.index, options),
+            ]);
         } else {
-            node = new mathMLTree.MathNode(
-                "msqrt", [mml.buildGroup(group.value.body, options)]);
+            node = new mathMLTree.MathNode("msqrt", [
+                mml.buildGroup(group.value.body, options),
+            ]);
         }
 
         return node;

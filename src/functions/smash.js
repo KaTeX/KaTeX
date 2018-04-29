@@ -51,7 +51,9 @@ defineFunction({
     },
     htmlBuilder: (group, options) => {
         const node = buildCommon.makeSpan(
-            ["mord"], [html.buildGroup(group.value.body, options)]);
+            ["mord"],
+            [html.buildGroup(group.value.body, options)],
+        );
 
         if (!group.value.smashHeight && !group.value.smashDepth) {
             return node;
@@ -81,14 +83,18 @@ defineFunction({
         // makeVList applies "display: table-cell", which prevents the browser
         // from acting on that line height. So we'll call makeVList now.
 
-        return buildCommon.makeVList({
-            positionType: "firstBaseline",
-            children: [{type: "elem", elem: node}],
-        }, options);
+        return buildCommon.makeVList(
+            {
+                positionType: "firstBaseline",
+                children: [{type: "elem", elem: node}],
+            },
+            options,
+        );
     },
     mathmlBuilder: (group, options) => {
-        const node = new mathMLTree.MathNode(
-            "mpadded", [mml.buildGroup(group.value.body, options)]);
+        const node = new mathMLTree.MathNode("mpadded", [
+            mml.buildGroup(group.value.body, options),
+        ]);
 
         if (group.value.smashHeight) {
             node.setAttribute("height", "0px");

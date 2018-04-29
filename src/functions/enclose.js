@@ -8,7 +8,6 @@ import stretchy from "../stretchy";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-
 const htmlBuilder = (group, options) => {
     // \cancel, \bcancel, \xcancel, \sout, \fbox, \colorbox, \fcolorbox
     const inner = html.buildGroup(group.value.body, options);
@@ -23,7 +22,6 @@ const htmlBuilder = (group, options) => {
         img = buildCommon.makeSpan(["stretchy", "sout"]);
         img.height = options.fontMetrics().defaultRuleThickness / scale;
         imgShift = -0.5 * options.fontMetrics().xHeight;
-
     } else {
         // Add horizontal padding
         inner.classes.push(/cancel/.test(label) ? "cancel-pad" : "boxpad");
@@ -51,32 +49,38 @@ const htmlBuilder = (group, options) => {
 
     let vlist;
     if (isColorbox) {
-        vlist = buildCommon.makeVList({
-            positionType: "individualShift",
-            children: [
-                // Put the color background behind inner;
-                {type: "elem", elem: img, shift: imgShift},
-                {type: "elem", elem: inner, shift: 0},
-            ],
-        }, options);
+        vlist = buildCommon.makeVList(
+            {
+                positionType: "individualShift",
+                children: [
+                    // Put the color background behind inner;
+                    {type: "elem", elem: img, shift: imgShift},
+                    {type: "elem", elem: inner, shift: 0},
+                ],
+            },
+            options,
+        );
     } else {
-        vlist = buildCommon.makeVList({
-            positionType: "individualShift",
-            children: [
-                // Write the \cancel stroke on top of inner.
-                {
-                    type: "elem",
-                    elem: inner,
-                    shift: 0,
-                },
-                {
-                    type: "elem",
-                    elem: img,
-                    shift: imgShift,
-                    wrapperClasses: /cancel/.test(label) ? ["svg-align"] : [],
-                },
-            ],
-        }, options);
+        vlist = buildCommon.makeVList(
+            {
+                positionType: "individualShift",
+                children: [
+                    // Write the \cancel stroke on top of inner.
+                    {
+                        type: "elem",
+                        elem: inner,
+                        shift: 0,
+                    },
+                    {
+                        type: "elem",
+                        elem: img,
+                        shift: imgShift,
+                        wrapperClasses: /cancel/.test(label) ? ["svg-align"] : [],
+                    },
+                ],
+            },
+            options,
+        );
     }
 
     if (/cancel/.test(label)) {
@@ -89,8 +93,9 @@ const htmlBuilder = (group, options) => {
 };
 
 const mathmlBuilder = (group, options) => {
-    const node = new mathMLTree.MathNode(
-        "menclose", [mml.buildGroup(group.value.body, options)]);
+    const node = new mathMLTree.MathNode("menclose", [
+        mml.buildGroup(group.value.body, options),
+    ]);
     switch (group.value.label) {
         case "\\cancel":
             node.setAttribute("notation", "updiagonalstrike");
@@ -105,12 +110,10 @@ const mathmlBuilder = (group, options) => {
             node.setAttribute("notation", "box");
             break;
         case "\\colorbox":
-            node.setAttribute("mathbackground",
-                group.value.backgroundColor.value);
+            node.setAttribute("mathbackground", group.value.backgroundColor.value);
             break;
         case "\\fcolorbox":
-            node.setAttribute("mathbackground",
-                group.value.backgroundColor.value);
+            node.setAttribute("mathbackground", group.value.backgroundColor.value);
             // TODO(ron): I don't know any way to set the border color.
             node.setAttribute("notation", "box");
             break;

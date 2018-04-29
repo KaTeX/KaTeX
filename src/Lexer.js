@@ -37,20 +37,21 @@ const commentRegexString = "%[^\n]*[\n]";
 const controlWordRegexString = "\\\\[a-zA-Z@]+";
 const controlSymbolRegexString = "\\\\[^\uD800-\uDFFF]";
 const combiningDiacriticalMarkString = "[\u0300-\u036f]";
-export const combiningDiacriticalMarksEndRegex =
-    new RegExp(`${combiningDiacriticalMarkString}+$`);
+export const combiningDiacriticalMarksEndRegex = new RegExp(
+    `${combiningDiacriticalMarkString}+$`,
+);
 const tokenRegex = new RegExp(
-    "([ \r\n\t]+)|" +                                 // whitespace
-    `(${commentRegexString}` +                        // comments
-    "|[!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
-    `${combiningDiacriticalMarkString}*` +            // ...plus accents
-    "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair
-    `${combiningDiacriticalMarkString}*` +            // ...plus accents
-    "|\\\\verb\\*([^]).*?\\3" +                       // \verb*
-    "|\\\\verb([^*a-zA-Z]).*?\\4" +                   // \verb unstarred
-    `|${controlWordRegexString}` +                    // \macroName
-    `|${controlSymbolRegexString}` +                  // \\, \', etc.
-    ")"
+    "([ \r\n\t]+)|" + // whitespace
+    `(${commentRegexString}` + // comments
+    "|[!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" + // single codepoint
+    `${combiningDiacriticalMarkString}*` + // ...plus accents
+    "|[\uD800-\uDBFF][\uDC00-\uDFFF]" + // surrogate pair
+    `${combiningDiacriticalMarkString}*` + // ...plus accents
+    "|\\\\verb\\*([^]).*?\\3" + // \verb*
+    "|\\\\verb([^*a-zA-Z]).*?\\4" + // \verb unstarred
+    `|${controlWordRegexString}` + // \macroName
+    `|${controlSymbolRegexString}` + // \\, \', etc.
+        ")",
 );
 
 // tokenRegex has no ^ marker, as required by matchAt.
@@ -83,7 +84,8 @@ export default class Lexer implements LexerInterface {
         if (match === null) {
             throw new ParseError(
                 `Unexpected character: '${input[pos]}'`,
-                new Token(input[pos], new SourceLocation(this, pos, pos + 1)));
+                new Token(input[pos], new SourceLocation(this, pos, pos + 1)),
+            );
         }
         const text = match[2] || " ";
         const start = this.pos;

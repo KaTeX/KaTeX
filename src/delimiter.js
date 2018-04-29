@@ -47,8 +47,7 @@ const getMetrics = function(
     mode: Mode,
 ): CharacterMetrics {
     const replace = symbols.math[symbol] && symbols.math[symbol].replace;
-    const metrics =
-        fontMetrics.getCharacterMetrics(replace || symbol, font, mode);
+    const metrics = fontMetrics.getCharacterMetrics(replace || symbol, font, mode);
     if (!metrics) {
         throw new Error(`Unsupported symbol ${symbol} and font size ${font}.`);
     }
@@ -69,10 +68,11 @@ const styleWrap = function(
 
     const span = buildCommon.makeSpan(
         classes.concat(newOptions.sizingClasses(options)),
-        [delim], options);
+        [delim],
+        options,
+    );
 
-    const delimSizeMultiplier =
-        newOptions.sizeMultiplier / options.sizeMultiplier;
+    const delimSizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
     span.height *= delimSizeMultiplier;
     span.depth *= delimSizeMultiplier;
     span.maxFontSize = newOptions.sizeMultiplier;
@@ -126,15 +126,15 @@ const mathrmSize = function(
     mode: Mode,
     options: Options,
 ): domTree.symbolNode {
-    return buildCommon.makeSymbol(value, "Size" + size + "-Regular",
-        mode, options);
+    return buildCommon.makeSymbol(value, "Size" + size + "-Regular", mode, options);
 };
 
 /**
  * Makes a large delimiter. This is a delimiter that comes in the Size1, Size2,
  * Size3, or Size4 fonts. It is always rendered in textstyle.
  */
-const makeLargeDelim = function(delim,
+const makeLargeDelim = function(
+    delim,
     size: number,
     center: boolean,
     options: Options,
@@ -144,7 +144,10 @@ const makeLargeDelim = function(delim,
     const inner = mathrmSize(delim, size, mode, options);
     const span = styleWrap(
         buildCommon.makeSpan(["delimsizing", "size" + size], [inner], options),
-        Style.TEXT, options, classes);
+        Style.TEXT,
+        options,
+        classes,
+    );
     if (center) {
         centerSpan(span, options, Style.TEXT);
     }
@@ -164,13 +167,14 @@ const makeInner = function(
     // Apply the correct CSS class to choose the right font.
     if (font === "Size1-Regular") {
         sizeClass = "delim-size1";
-    } else /* if (font === "Size4-Regular") */ {
+    } /* if (font === "Size4-Regular") */ else {
         sizeClass = "delim-size4";
     }
 
     const inner = buildCommon.makeSpan(
         ["delimsizinginner", sizeClass],
-        [buildCommon.makeSpan([], [buildCommon.makeSymbol(symbol, font, mode)])]);
+        [buildCommon.makeSpan([], [buildCommon.makeSymbol(symbol, font, mode)])],
+    );
 
     // Since this will be passed into `makeVList` in the end, wrap the element
     // in the appropriate tag that VList uses.
@@ -310,7 +314,8 @@ const makeStackedDelim = function(
 
     // Compute the number of copies of the repeat symbol we will need
     const repeatCount = Math.ceil(
-        (heightTotal - minHeight) / (middleFactor * repeatHeightTotal));
+        (heightTotal - minHeight) / (middleFactor * repeatHeightTotal),
+    );
 
     // Compute the total height of the delimiter including all the symbols
     const realHeightTotal =
@@ -357,20 +362,26 @@ const makeStackedDelim = function(
 
     // Finally, build the vlist
     const newOptions = options.havingBaseStyle(Style.TEXT);
-    const inner = buildCommon.makeVList({
-        positionType: "bottom",
-        positionData: depth,
-        children: inners,
-    }, newOptions);
+    const inner = buildCommon.makeVList(
+        {
+            positionType: "bottom",
+            positionData: depth,
+            children: inners,
+        },
+        newOptions,
+    );
 
     return styleWrap(
         buildCommon.makeSpan(["delimsizing", "mult"], [inner], newOptions),
-        Style.TEXT, options, classes);
+        Style.TEXT,
+        options,
+        classes,
+    );
 };
 
 // All surds have 0.08em padding above the viniculum inside the SVG.
 // That keeps browser span height rounding error from pinching the line.
-const vbPad = 80;   // padding above the surd, measured inside the viewBox.
+const vbPad = 80; // padding above the surd, measured inside the viewBox.
 const emPad = 0.08; // padding, in ems, measured in the document.
 
 const sqrtSvg = function(
@@ -393,12 +404,12 @@ const sqrtSvg = function(
     }
     const pathNode = new domTree.pathNode(sqrtName, alternate);
 
-    const svg =  new domTree.svgNode([pathNode], {
+    const svg = new domTree.svgNode([pathNode], {
         // Note: 1000:1 ratio of viewBox to document em width.
-        "width": "400em",
-        "height": height + "em",
-        "viewBox": "0 0 400000 " + viewBoxHeight,
-        "preserveAspectRatio": "xMinYMin slice",
+        width: "400em",
+        height: height + "em",
+        viewBox: "0 0 400000 " + viewBoxHeight,
+        preserveAspectRatio: "xMinYMin slice",
     });
 
     return buildCommon.makeSvgSpan(["hide-tail"], [svg], options);
@@ -415,12 +426,16 @@ const makeSqrtImage = function(
     ruleWidth: number,
     advanceWidth: number,
 } {
-    const delim =
-        traverseSequence("\\surd", height, stackLargeDelimiterSequence, options);
+    const delim = traverseSequence(
+        "\\surd",
+        height,
+        stackLargeDelimiterSequence,
+        options,
+    );
 
     // Create a span containing an SVG image of a sqrt symbol.
     let span;
-    let sizeMultiplier = options.sizeMultiplier;  // default
+    let sizeMultiplier = options.sizeMultiplier; // default
     let spanHeight = 0;
     let texHeight = 0;
     let viewBoxHeight = 0;
@@ -434,15 +449,14 @@ const makeSqrtImage = function(
 
     if (delim.type === "small") {
         // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
-        viewBoxHeight = 1000 + vbPad;  // 1000 unit glyph height.
+        viewBoxHeight = 1000 + vbPad; // 1000 unit glyph height.
         const newOptions = options.havingBaseStyle(delim.style);
         sizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
         spanHeight = (1.0 + emPad) * sizeMultiplier;
-        texHeight = 1.00 * sizeMultiplier;
+        texHeight = 1.0 * sizeMultiplier;
         span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, options);
         span.style.minWidth = "0.853em";
-        advanceWidth = 0.833 * sizeMultiplier;  // from the font.
-
+        advanceWidth = 0.833 * sizeMultiplier; // from the font.
     } else if (delim.type === "large") {
         // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
         viewBoxHeight = (1000 + vbPad) * sizeToMaxHeight[delim.size];
@@ -450,8 +464,7 @@ const makeSqrtImage = function(
         spanHeight = (sizeToMaxHeight[delim.size] + emPad) / sizeMultiplier;
         span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight, options);
         span.style.minWidth = "1.02em";
-        advanceWidth = 1.0 / sizeMultiplier;  // from the font.
-
+        advanceWidth = 1.0 / sizeMultiplier; // from the font.
     } else {
         // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
         // We'll use a single SVG to accomplish the same thing.
@@ -480,26 +493,63 @@ const makeSqrtImage = function(
 // There are three kinds of delimiters, delimiters that stack when they become
 // too large
 const stackLargeDelimiters = [
-    "(", ")", "[", "\\lbrack", "]", "\\rbrack",
-    "\\{", "\\lbrace", "\\}", "\\rbrace",
-    "\\lfloor", "\\rfloor", "\u230a", "\u230b",
-    "\\lceil", "\\rceil", "\u2308", "\u2309",
+    "(",
+    ")",
+    "[",
+    "\\lbrack",
+    "]",
+    "\\rbrack",
+    "\\{",
+    "\\lbrace",
+    "\\}",
+    "\\rbrace",
+    "\\lfloor",
+    "\\rfloor",
+    "\u230a",
+    "\u230b",
+    "\\lceil",
+    "\\rceil",
+    "\u2308",
+    "\u2309",
     "\\surd",
 ];
 
 // delimiters that always stack
 const stackAlwaysDelimiters = [
-    "\\uparrow", "\\downarrow", "\\updownarrow",
-    "\\Uparrow", "\\Downarrow", "\\Updownarrow",
-    "|", "\\|", "\\vert", "\\Vert",
-    "\\lvert", "\\rvert", "\\lVert", "\\rVert",
-    "\\lgroup", "\\rgroup", "\u27ee", "\u27ef",
-    "\\lmoustache", "\\rmoustache", "\u23b0", "\u23b1",
+    "\\uparrow",
+    "\\downarrow",
+    "\\updownarrow",
+    "\\Uparrow",
+    "\\Downarrow",
+    "\\Updownarrow",
+    "|",
+    "\\|",
+    "\\vert",
+    "\\Vert",
+    "\\lvert",
+    "\\rvert",
+    "\\lVert",
+    "\\rVert",
+    "\\lgroup",
+    "\\rgroup",
+    "\u27ee",
+    "\u27ef",
+    "\\lmoustache",
+    "\\rmoustache",
+    "\u23b0",
+    "\u23b1",
 ];
 
 // and delimiters that never stack
 const stackNeverDelimiters = [
-    "<", ">", "\\langle", "\\rangle", "/", "\\backslash", "\\lt", "\\gt",
+    "<",
+    ">",
+    "\\langle",
+    "\\rangle",
+    "/",
+    "\\backslash",
+    "\\lt",
+    "\\gt",
 ];
 
 // Metrics of the different sizes. Found by looking at TeX's output of
@@ -525,12 +575,20 @@ const makeSizedDelim = function(
     }
 
     // Sized delimiters are never centered.
-    if (utils.contains(stackLargeDelimiters, delim) ||
-        utils.contains(stackNeverDelimiters, delim)) {
+    if (
+        utils.contains(stackLargeDelimiters, delim) ||
+        utils.contains(stackNeverDelimiters, delim)
+    ) {
         return makeLargeDelim(delim, size, false, options, mode, classes);
     } else if (utils.contains(stackAlwaysDelimiters, delim)) {
         return makeStackedDelim(
-            delim, sizeToMaxHeight[size], false, options, mode, classes);
+            delim,
+            sizeToMaxHeight[size],
+            false,
+            options,
+            mode,
+            classes,
+        );
     } else {
         throw new ParseError("Illegal delimiter: '" + delim + "'");
     }
@@ -549,9 +607,9 @@ const makeSizedDelim = function(
  */
 
 type Delimiter =
-    {type: "small", style: StyleInterface} |
-    {type: "large", size: 1 | 2 | 3 | 4} |
-    {type: "stack"};
+    | {type: "small", style: StyleInterface}
+    | {type: "large", size: 1 | 2 | 3 | 4}
+    | {type: "stack"};
 
 // Delimiters that never stack try small delimiters and large delimiters only
 const stackNeverDelimiterSequence = [
@@ -678,14 +736,25 @@ const makeCustomSizedDelim = function(
     // Depending on the sequence element we decided on, call the
     // appropriate function.
     if (delimType.type === "small") {
-        return makeSmallDelim(delim, delimType.style, center, options,
-                              mode, classes);
+        return makeSmallDelim(
+            delim,
+            delimType.style,
+            center,
+            options,
+            mode,
+            classes,
+        );
     } else if (delimType.type === "large") {
-        return makeLargeDelim(delim, delimType.size, center, options, mode,
-                              classes);
-    } else /* if (delimType.type === "stack") */ {
-        return makeStackedDelim(delim, height, center, options, mode,
-                                classes);
+        return makeLargeDelim(
+            delim,
+            delimType.size,
+            center,
+            options,
+            mode,
+            classes,
+        );
+    } /* if (delimType.type === "stack") */ else {
+        return makeStackedDelim(delim, height, center, options, mode, classes);
     }
 };
 
@@ -702,15 +771,13 @@ const makeLeftRightDelim = function(
     classes: string[],
 ): DomSpan {
     // We always center \left/\right delimiters, so the axis is always shifted
-    const axisHeight =
-        options.fontMetrics().axisHeight * options.sizeMultiplier;
+    const axisHeight = options.fontMetrics().axisHeight * options.sizeMultiplier;
 
     // Taken from TeX source, tex.web, function make_left_right
     const delimiterFactor = 901;
     const delimiterExtend = 5.0 / options.fontMetrics().ptPerEm;
 
-    const maxDistFromAxis = Math.max(
-        height - axisHeight, depth + axisHeight);
+    const maxDistFromAxis = Math.max(height - axisHeight, depth + axisHeight);
 
     const totalHeight = Math.max(
         // In real TeX, calculations are done using integral values which are
@@ -723,7 +790,8 @@ const makeLeftRightDelim = function(
         //    x^{x^{\left(\rule{0.1em}{0.68em}\right)}}
         // in TeX and KaTeX)
         maxDistFromAxis / 500 * delimiterFactor,
-        2 * maxDistFromAxis - delimiterExtend);
+        2 * maxDistFromAxis - delimiterExtend,
+    );
 
     // Finally, we defer to `makeCustomSizedDelim` with our calculated total
     // height

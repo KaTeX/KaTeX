@@ -151,11 +151,10 @@ export default function defineFunction({
     const data = {
         numArgs: props.numArgs,
         argTypes: props.argTypes,
-        greediness: (props.greediness === undefined) ? 1 : props.greediness,
+        greediness: props.greediness === undefined ? 1 : props.greediness,
         allowedInText: !!props.allowedInText,
-        allowedInMath: (props.allowedInMath === undefined)
-            ? true
-            : props.allowedInMath,
+        allowedInMath:
+            props.allowedInMath === undefined ? true : props.allowedInMath,
         numOptionalArgs: props.numOptionalArgs || 0,
         infix: !!props.infix,
         consumeMode: props.consumeMode,

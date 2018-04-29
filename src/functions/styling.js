@@ -7,16 +7,18 @@ import {sizingGroup} from "./sizing";
 import * as mml from "../buildMathML";
 
 const styleMap = {
-    "display": Style.DISPLAY,
-    "text": Style.TEXT,
-    "script": Style.SCRIPT,
-    "scriptscript": Style.SCRIPTSCRIPT,
+    display: Style.DISPLAY,
+    text: Style.TEXT,
+    script: Style.SCRIPT,
+    scriptscript: Style.SCRIPTSCRIPT,
 };
 
 defineFunction({
     type: "styling",
     names: [
-        "\\displaystyle", "\\textstyle", "\\scriptstyle",
+        "\\displaystyle",
+        "\\textstyle",
+        "\\scriptstyle",
         "\\scriptscriptstyle",
     ],
     props: {
@@ -41,7 +43,7 @@ defineFunction({
     htmlBuilder: (group, options) => {
         // Style changes are handled in the TeXbook on pg. 442, Rule 3.
         const newStyle = styleMap[group.value.style];
-        const newOptions = options.havingStyle(newStyle).withFont('');
+        const newOptions = options.havingStyle(newStyle).withFont("");
         return sizingGroup(group.value.value, newOptions, options);
     },
     mathmlBuilder: (group, options) => {
@@ -49,10 +51,10 @@ defineFunction({
         // TODO(kevinb): dedupe this with buildHTML.js
         // This will be easier of handling of styling nodes is in the same file.
         const styleMap = {
-            "display": Style.DISPLAY,
-            "text": Style.TEXT,
-            "script": Style.SCRIPT,
-            "scriptscript": Style.SCRIPTSCRIPT,
+            display: Style.DISPLAY,
+            text: Style.TEXT,
+            script: Style.SCRIPT,
+            scriptscript: Style.SCRIPTSCRIPT,
         };
 
         const newStyle = styleMap[group.value.style];
@@ -63,10 +65,10 @@ defineFunction({
         const node = new mathMLTree.MathNode("mstyle", inner);
 
         const styleAttributes = {
-            "display": ["0", "true"],
-            "text": ["0", "false"],
-            "script": ["1", "false"],
-            "scriptscript": ["2", "false"],
+            display: ["0", "true"],
+            text: ["0", "false"],
+            script: ["1", "false"],
+            scriptscript: ["2", "false"],
         };
 
         const attr = styleAttributes[group.value.style];

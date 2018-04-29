@@ -43,6 +43,8 @@
     "object-assign": "^4.1.0",
     "pako": "1.0.4",
     "pre-commit": "^1.2.2",
+    "prettier": "^1.12.1",
+    "pretty-quick": "^1.4.1",
     "query-string": "^5.1.0",
     "rimraf": "^2.6.2",
     "selenium-webdriver": "^2.48.2",
@@ -77,10 +79,12 @@
     "dist": "npm test && npm run build && npm run dist:copy && npm run dist:zip && npm run dist:dist",
     "dist:copy": "cd build && mkdirp katex && cp -r katex.js katex.min.js katex.css katex.min.css contrib fonts ../README.md katex",
     "dist:zip": "cd build && tar czf katex.tar.gz katex/ && zip -rq katex.zip katex/",
-    "dist:dist": "rimraf dist/ && cp -r build/katex/ dist/"
+    "dist:dist": "rimraf dist/ && cp -r build/katex/ dist/",
+    "prettier": "pretty-quick --staged"
   },
   "pre-commit": [
-    "test:lint"
+    "test:lint",
+    "prettier"
   ],
   "dependencies": {
     "match-at": "^0.1.1",

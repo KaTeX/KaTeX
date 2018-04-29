@@ -8,8 +8,11 @@ import * as mml from "../buildMathML";
 
 // Non-mathy text, possibly in a font
 const textFontFamilies = {
-    "\\text": undefined, "\\textrm": "textrm", "\\textsf": "textsf",
-    "\\texttt": "texttt", "\\textnormal": "textrm",
+    "\\text": undefined,
+    "\\textrm": "textrm",
+    "\\textsf": "textsf",
+    "\\texttt": "texttt",
+    "\\textnormal": "textrm",
 };
 
 const textFontWeights = {
@@ -24,7 +27,11 @@ defineFunction({
     type: "text",
     names: [
         // Font families
-        "\\text", "\\textrm", "\\textsf", "\\texttt", "\\textnormal",
+        "\\text",
+        "\\textrm",
+        "\\textsf",
+        "\\texttt",
+        "\\textnormal",
         // Font weights
         "\\textbf",
         // Font Shapes
@@ -58,8 +65,7 @@ defineFunction({
         }
         const inner = html.buildExpression(group.value.body, newOptions, true);
         buildCommon.tryCombineChars(inner);
-        return buildCommon.makeSpan(["mord", "text"],
-            inner, newOptions);
+        return buildCommon.makeSpan(["mord", "text"], inner, newOptions);
     },
     mathmlBuilder(group, options) {
         const body = group.value.body;
@@ -71,11 +77,11 @@ defineFunction({
         let currentText = null;
         for (let i = 0; i < body.length; i++) {
             const group = mml.buildGroup(body[i], options);
-            if (group.type === 'mtext' && currentText != null) {
+            if (group.type === "mtext" && currentText != null) {
                 Array.prototype.push.apply(currentText.children, group.children);
             } else {
                 inner.push(group);
-                if (group.type === 'mtext') {
+                if (group.type === "mtext") {
                     currentText = group;
                 }
             }

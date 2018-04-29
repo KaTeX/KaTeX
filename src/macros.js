@@ -37,8 +37,10 @@ export interface MacroContextInterface {
 /** Macro tokens (in reverse order). */
 export type MacroExpansion = {tokens: Token[], numArgs: number};
 
-type MacroDefinition = string | MacroExpansion |
-    (MacroContextInterface => (string | MacroExpansion));
+type MacroDefinition =
+    | string
+    | MacroExpansion
+    | ((MacroContextInterface) => string | MacroExpansion);
 export type MacroMap = {[string]: MacroDefinition};
 
 const builtinMacros: MacroMap = {};
@@ -70,7 +72,7 @@ defineMacro("\\@secondoftwo", function(context) {
 // symbol.  If it matches #1, then the macro expands to #2; otherwise, #3.
 // Note, however, that it does not consume the next symbol in either case.
 defineMacro("\\@ifnextchar", function(context) {
-    const args = context.consumeArgs(3);  // symbol, if, else
+    const args = context.consumeArgs(3); // symbol, if, else
     const nextToken = context.future();
     if (args[0].length === 1 && args[0][0].text === nextToken.text) {
         return {tokens: args[1], numArgs: 0};
@@ -88,7 +90,7 @@ defineMacro("\\@ifstar", "\\@ifnextchar *{\\@firstoftwo{#1}}");
 // LaTeX's \TextOrMath{#1}{#2} expands to #1 in text mode, #2 in math mode
 defineMacro("\\TextOrMath", function(context) {
     const args = context.consumeArgs(2);
-    if (context.mode === 'text') {
+    if (context.mode === "text") {
         return {tokens: args[0], numArgs: 0};
     } else {
         return {tokens: args[1], numArgs: 0};
@@ -126,10 +128,10 @@ defineMacro("\u211A", "\\mathbb{Q}");
 defineMacro("\u211D", "\\mathbb{R}");
 defineMacro("\u2124", "\\mathbb{Z}");
 
-defineMacro("\u210E", "\\mathit{h}");   // Planck constant
+defineMacro("\u210E", "\\mathit{h}"); // Planck constant
 
 // Characters omitted from Unicode range 1D400–1D7FF
-defineMacro("\u212C", "\\mathscr{B}");  // script
+defineMacro("\u212C", "\\mathscr{B}"); // script
 defineMacro("\u2130", "\\mathscr{E}");
 defineMacro("\u2131", "\\mathscr{F}");
 defineMacro("\u210B", "\\mathscr{H}");
@@ -137,7 +139,7 @@ defineMacro("\u2110", "\\mathscr{I}");
 defineMacro("\u2112", "\\mathscr{L}");
 defineMacro("\u2133", "\\mathscr{M}");
 defineMacro("\u211B", "\\mathscr{R}");
-defineMacro("\u212D", "\\mathfrak{C}");  // Fraktur
+defineMacro("\u212D", "\\mathfrak{C}"); // Fraktur
 defineMacro("\u210C", "\\mathfrak{H}");
 defineMacro("\u2128", "\\mathfrak{Z}");
 
@@ -185,63 +187,63 @@ defineMacro("\\impliedby", "\\DOTSB\\;\\Longleftarrow\\;");
 
 // AMSMath's automatic \dots, based on \mdots@@ macro.
 const dotsByToken = {
-    ',': '\\dotsc',
-    '\\not': '\\dotsb',
+    ",": "\\dotsc",
+    "\\not": "\\dotsb",
     // \keybin@ checks for the following:
-    '+': '\\dotsb',
-    '=': '\\dotsb',
-    '<': '\\dotsb',
-    '>': '\\dotsb',
-    '-': '\\dotsb',
-    '*': '\\dotsb',
-    ':': '\\dotsb',
+    "+": "\\dotsb",
+    "=": "\\dotsb",
+    "<": "\\dotsb",
+    ">": "\\dotsb",
+    "-": "\\dotsb",
+    "*": "\\dotsb",
+    ":": "\\dotsb",
     // Symbols whose definition starts with \DOTSB:
-    '\\DOTSB': '\\dotsb',
-    '\\coprod': '\\dotsb',
-    '\\bigvee': '\\dotsb',
-    '\\bigwedge': '\\dotsb',
-    '\\biguplus': '\\dotsb',
-    '\\bigcap': '\\dotsb',
-    '\\bigcup': '\\dotsb',
-    '\\prod': '\\dotsb',
-    '\\sum': '\\dotsb',
-    '\\bigotimes': '\\dotsb',
-    '\\bigoplus': '\\dotsb',
-    '\\bigodot': '\\dotsb',
-    '\\bigsqcup': '\\dotsb',
-    '\\implies': '\\dotsb',
-    '\\impliedby': '\\dotsb',
-    '\\And': '\\dotsb',
-    '\\longrightarrow': '\\dotsb',
-    '\\Longrightarrow': '\\dotsb',
-    '\\longleftarrow': '\\dotsb',
-    '\\Longleftarrow': '\\dotsb',
-    '\\longleftrightarrow': '\\dotsb',
-    '\\Longleftrightarrow': '\\dotsb',
-    '\\mapsto': '\\dotsb',
-    '\\longmapsto': '\\dotsb',
-    '\\hookrightarrow': '\\dotsb',
-    '\\iff': '\\dotsb',
-    '\\doteq': '\\dotsb',
+    "\\DOTSB": "\\dotsb",
+    "\\coprod": "\\dotsb",
+    "\\bigvee": "\\dotsb",
+    "\\bigwedge": "\\dotsb",
+    "\\biguplus": "\\dotsb",
+    "\\bigcap": "\\dotsb",
+    "\\bigcup": "\\dotsb",
+    "\\prod": "\\dotsb",
+    "\\sum": "\\dotsb",
+    "\\bigotimes": "\\dotsb",
+    "\\bigoplus": "\\dotsb",
+    "\\bigodot": "\\dotsb",
+    "\\bigsqcup": "\\dotsb",
+    "\\implies": "\\dotsb",
+    "\\impliedby": "\\dotsb",
+    "\\And": "\\dotsb",
+    "\\longrightarrow": "\\dotsb",
+    "\\Longrightarrow": "\\dotsb",
+    "\\longleftarrow": "\\dotsb",
+    "\\Longleftarrow": "\\dotsb",
+    "\\longleftrightarrow": "\\dotsb",
+    "\\Longleftrightarrow": "\\dotsb",
+    "\\mapsto": "\\dotsb",
+    "\\longmapsto": "\\dotsb",
+    "\\hookrightarrow": "\\dotsb",
+    "\\iff": "\\dotsb",
+    "\\doteq": "\\dotsb",
     // Symbols whose definition starts with \mathbin:
-    '\\mathbin': '\\dotsb',
-    '\\bmod': '\\dotsb',
+    "\\mathbin": "\\dotsb",
+    "\\bmod": "\\dotsb",
     // Symbols whose definition starts with \mathrel:
-    '\\mathrel': '\\dotsb',
-    '\\relbar': '\\dotsb',
-    '\\Relbar': '\\dotsb',
-    '\\xrightarrow': '\\dotsb',
-    '\\xleftarrow': '\\dotsb',
+    "\\mathrel": "\\dotsb",
+    "\\relbar": "\\dotsb",
+    "\\Relbar": "\\dotsb",
+    "\\xrightarrow": "\\dotsb",
+    "\\xleftarrow": "\\dotsb",
     // Symbols whose definition starts with \DOTSI:
-    '\\DOTSI': '\\dotsi',
-    '\\int': '\\dotsi',
-    '\\oint': '\\dotsi',
-    '\\iint': '\\dotsi',
-    '\\iiint': '\\dotsi',
-    '\\iiiint': '\\dotsi',
-    '\\idotsint': '\\dotsi',
+    "\\DOTSI": "\\dotsi",
+    "\\int": "\\dotsi",
+    "\\oint": "\\dotsi",
+    "\\iint": "\\dotsi",
+    "\\iiint": "\\dotsi",
+    "\\iiiint": "\\dotsi",
+    "\\idotsint": "\\dotsi",
     // Symbols whose definition starts with \DOTSX:
-    '\\DOTSX': '\\dotsx',
+    "\\DOTSX": "\\dotsx",
 };
 
 defineMacro("\\dots", function(context) {
@@ -250,15 +252,15 @@ defineMacro("\\dots", function(context) {
     // (in text mode), and it's unlikely we'd see any of the math commands
     // that affect the behavior of \dots when in text mode.  So fine for now
     // (until we support \ifmmode ... \else ... \fi).
-    let thedots = '\\dotso';
+    let thedots = "\\dotso";
     const next = context.expandAfterFuture().text;
     if (next in dotsByToken) {
         thedots = dotsByToken[next];
-    } else if (next.substr(0, 4) === '\\not') {
-        thedots = '\\dotsb';
+    } else if (next.substr(0, 4) === "\\not") {
+        thedots = "\\dotsb";
     } else if (next in symbols.math) {
-        if (utils.contains(['bin', 'rel'], symbols.math[next].group)) {
-            thedots = '\\dotsb';
+        if (utils.contains(["bin", "rel"], symbols.math[next].group)) {
+            thedots = "\\dotsb";
         }
     }
     return thedots;
@@ -266,27 +268,27 @@ defineMacro("\\dots", function(context) {
 
 const spaceAfterDots = {
     // \rightdelim@ checks for the following:
-    ')': true,
-    ']': true,
-    '\\rbrack': true,
-    '\\}': true,
-    '\\rbrace': true,
-    '\\rangle': true,
-    '\\rceil': true,
-    '\\rfloor': true,
-    '\\rgroup': true,
-    '\\rmoustache': true,
-    '\\right': true,
-    '\\bigr': true,
-    '\\biggr': true,
-    '\\Bigr': true,
-    '\\Biggr': true,
+    ")": true,
+    "]": true,
+    "\\rbrack": true,
+    "\\}": true,
+    "\\rbrace": true,
+    "\\rangle": true,
+    "\\rceil": true,
+    "\\rfloor": true,
+    "\\rgroup": true,
+    "\\rmoustache": true,
+    "\\right": true,
+    "\\bigr": true,
+    "\\biggr": true,
+    "\\Bigr": true,
+    "\\Biggr": true,
     // \extra@ also tests for the following:
-    '$': true,
+    $: true,
     // \extrap@ checks for the following:
-    ';': true,
-    '.': true,
-    ',': true,
+    ";": true,
+    ".": true,
+    ",": true,
 };
 
 defineMacro("\\dotso", function(context) {
@@ -302,7 +304,7 @@ defineMacro("\\dotsc", function(context) {
     const next = context.future().text;
     // \dotsc uses \extra@ but not \extrap@, instead specially checking for
     // ';' and '.', but doesn't check for ','.
-    if (next in spaceAfterDots && next !== ',') {
+    if (next in spaceAfterDots && next !== ",") {
         return "\\ldots\\,";
     } else {
         return "\\ldots";
@@ -334,9 +336,9 @@ defineMacro("\\DOTSB", "\\relax");
 defineMacro("\\DOTSX", "\\relax");
 
 // http://texdoc.net/texmf-dist/doc/latex/amsmath/amsmath.pdf
-defineMacro("\\thinspace", "\\,");    //   \let\thinspace\,
-defineMacro("\\medspace", "\\:");     //   \let\medspace\:
-defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
+defineMacro("\\thinspace", "\\,"); //   \let\thinspace\,
+defineMacro("\\medspace", "\\:"); //   \let\medspace\:
+defineMacro("\\thickspace", "\\;"); //   \let\thickspace\;
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
@@ -361,16 +363,22 @@ defineMacro("\\TeX", "\\textrm{T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX
 // boxes, though visually the A appears to extend above slightly).
 // We compute the corresponding \raisebox when A is rendered at \scriptsize,
 // which is size3, which has a scale factor of 0.7 (see Options.js).
-const latexRaiseA = fontMetricsData['Main-Regular']["T".charCodeAt(0)][1] -
-    0.7 * fontMetricsData['Main-Regular']["A".charCodeAt(0)][1] + "em";
-defineMacro("\\LaTeX",
+const latexRaiseA =
+    fontMetricsData["Main-Regular"]["T".charCodeAt(0)][1] -
+    0.7 * fontMetricsData["Main-Regular"]["A".charCodeAt(0)][1] +
+    "em";
+defineMacro(
+    "\\LaTeX",
     `\\textrm{L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
-    "\\kern-.15em\\TeX}");
+        "\\kern-.15em\\TeX}",
+);
 
 // New KaTeX logo based on tweaking LaTeX logo
-defineMacro("\\KaTeX",
+defineMacro(
+    "\\KaTeX",
     `\\textrm{K\\kern-.17em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
-    "\\kern-.15em\\TeX}");
+        "\\kern-.15em\\TeX}",
+);
 
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
 // \def\@hspace#1{\hskip  #1\relax}
@@ -413,9 +421,9 @@ defineMacro("\\colonsim", "\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim");
 defineMacro("\\Colonsim", "\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim");
 
 // Some Unicode characters are implemented with macros to mathtools functions.
-defineMacro("\u2254", "\\coloneqq");  // :=
-defineMacro("\u2255", "\\eqqcolon");  // =:
-defineMacro("\u2A74", "\\Coloneqq");  // ::=
+defineMacro("\u2254", "\\coloneqq"); // :=
+defineMacro("\u2255", "\\eqqcolon"); // =:
+defineMacro("\u2A74", "\\Coloneqq"); // ::=
 
 //////////////////////////////////////////////////////////////////////
 // colonequals.sty
@@ -440,8 +448,7 @@ defineMacro("\\coloncolonsim", "\\Colonsim");
 defineMacro("\\simcolon", "\\sim\\mathrel{\\mkern-1.2mu}\\vcentcolon");
 defineMacro("\\simcoloncolon", "\\sim\\mathrel{\\mkern-1.2mu}\\dblcolon");
 defineMacro("\\approxcolon", "\\approx\\mathrel{\\mkern-1.2mu}\\vcentcolon");
-defineMacro("\\approxcoloncolon",
-            "\\approx\\mathrel{\\mkern-1.2mu}\\dblcolon");
+defineMacro("\\approxcoloncolon", "\\approx\\mathrel{\\mkern-1.2mu}\\dblcolon");
 
 // Present in newtxmath, pxfonts and txfonts
 // TODO: The unicode character U+220C ∌ should be added to the font, and this

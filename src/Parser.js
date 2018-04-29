@@ -4,20 +4,20 @@
 import functions from "./functions";
 import environments from "./environments";
 import MacroExpander from "./MacroExpander";
-import symbols, { extraLatin } from "./symbols";
-import { validUnit } from "./units";
-import { supportedCodepoint } from "./unicodeScripts";
+import symbols, {extraLatin} from "./symbols";
+import {validUnit} from "./units";
+import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
 import ParseNode from "./ParseNode";
 import ParseError from "./ParseError";
-import { combiningDiacriticalMarksEndRegex } from "./Lexer.js";
+import {combiningDiacriticalMarksEndRegex} from "./Lexer.js";
 import Settings from "./Settings";
-import { Token } from "./Token";
+import {Token} from "./Token";
 
-import type { Mode, ArgType, BreakToken } from "./types";
-import type { FunctionContext, FunctionSpec } from "./defineFunction";
-import type { EnvSpec } from "./defineEnvironment";
+import type {Mode, ArgType, BreakToken} from "./types";
+import type {FunctionContext, FunctionSpec} from "./defineFunction";
+import type {EnvSpec} from "./defineEnvironment";
 
 /**
  * This file contains the parser used to parse out a TeX expression from the
@@ -105,7 +105,7 @@ export default class Parser {
         if (this.nextToken.text !== text) {
             throw new ParseError(
                 "Expected '" + text + "', got '" + this.nextToken.text + "'",
-                this.nextToken
+                this.nextToken,
             );
         }
         if (consume) {
@@ -217,7 +217,8 @@ export default class Parser {
                 if (overIndex !== -1) {
                     throw new ParseError(
                         "only one infix operator per group",
-                        node.value.token);
+                        node.value.token,
+                    );
                 }
                 overIndex = i;
                 funcName = node.value.replaceWith;
@@ -257,7 +258,7 @@ export default class Parser {
      * Handle a subscript or superscript with nice errors.
      */
     handleSupSubscript(
-        name: string,   // For error reporting.
+        name: string, // For error reporting.
     ): ParseNode {
         const symbolToken = this.nextToken;
         const symbol = symbolToken.text;
@@ -271,7 +272,7 @@ export default class Parser {
             } else {
                 throw new ParseError(
                     "Expected group after '" + symbol + "'",
-                    symbolToken
+                    symbolToken,
                 );
             }
         }
@@ -284,8 +285,13 @@ export default class Parser {
                 return this.parseGivenFunction(group);
             } else {
                 throw new ParseError(
-                    "Got function '" + group.result + "' with no arguments " +
-                        "as " + name, symbolToken);
+                    "Got function '" +
+                        group.result +
+                        "' with no arguments " +
+                        "as " +
+                        name,
+                    symbolToken,
+                );
             }
         } else {
             return group.result;
@@ -310,7 +316,8 @@ export default class Parser {
                 body: textordArray,
                 type: "text",
             },
-            this.mode);
+            this.mode,
+        );
 
         const colorNode = new ParseNode(
             "color",
@@ -319,7 +326,8 @@ export default class Parser {
                 value: [textNode],
                 type: "color",
             },
-            this.mode);
+            this.mode,
+        );
 
         this.consume();
         return colorNode;
@@ -354,7 +362,8 @@ export default class Parser {
                 if (!base || base.type !== "op") {
                     throw new ParseError(
                         "Limit controls must follow a math operator",
-                        lex);
+                        lex,
+                    );
                 } else {
                     const limits = lex.text === "\\limits";
                     base.value.limits = limits;
@@ -404,11 +413,15 @@ export default class Parser {
 
         if (superscript || subscript) {
             // If we got either a superscript or subscript, create a supsub
-            return new ParseNode("supsub", {
-                base: base,
-                sup: superscript,
-                sub: subscript,
-            }, this.mode);
+            return new ParseNode(
+                "supsub",
+                {
+                    base: base,
+                    sup: superscript,
+                    sub: subscript,
+                },
+                this.mode,
+            );
         } else {
             // Otherwise return the original body
             return base;
@@ -442,13 +455,17 @@ export default class Parser {
             const envName = begin.value.name;
             if (!environments.hasOwnProperty(envName)) {
                 throw new ParseError(
-                    "No such environment: " + envName, begin.value.nameGroup);
+                    "No such environment: " + envName,
+                    begin.value.nameGroup,
+                );
             }
             // Build the environment object. Arguments and other information will
             // be made available to the begin and end methods using properties.
             const env = environments[envName];
-            const {args, optArgs} =
-                this.parseArguments("\\begin{" + envName + "}", env);
+            const {args, optArgs} = this.parseArguments(
+                "\\begin{" + envName + "}",
+                env,
+            );
             const context = {
                 mode: this.mode,
                 envName: envName,
@@ -462,9 +479,14 @@ export default class Parser {
                 throw new ParseError("failed to parse function after \\end");
             } else if (end.value.name !== envName) {
                 throw new ParseError(
-                    "Mismatch: \\begin{" + envName + "} matched " +
-                    "by \\end{" + end.value.name + "}",
-                    endNameToken);
+                    "Mismatch: \\begin{" +
+                        envName +
+                        "} matched " +
+                        "by \\end{" +
+                        end.value.name +
+                        "}",
+                    endNameToken,
+                );
             }
             return result;
         } else {
@@ -496,12 +518,13 @@ export default class Parser {
             if (this.mode === "text" && !funcData.allowedInText) {
                 throw new ParseError(
                     "Can't use function '" + func + "' in text mode",
-                    baseGroup.token);
-            } else if (this.mode === "math" &&
-                funcData.allowedInMath === false) {
+                    baseGroup.token,
+                );
+            } else if (this.mode === "math" && funcData.allowedInMath === false) {
                 throw new ParseError(
                     "Can't use function '" + func + "' in math mode",
-                    baseGroup.token);
+                    baseGroup.token,
+                );
             }
 
             // Consume the command token after possibly switching to the
@@ -518,7 +541,12 @@ export default class Parser {
             const {args, optArgs} = this.parseArguments(func, funcData);
             const token = baseGroup.token;
             const result = this.callFunction(
-                func, args, optArgs, token, breakOnTokenText);
+                func,
+                args,
+                optArgs,
+                token,
+                breakOnTokenText,
+            );
             return new ParseNode(result.type, result, this.mode);
         } else {
             return baseGroup.result;
@@ -553,7 +581,7 @@ export default class Parser {
      * Parses the arguments of a function or environment
      */
     parseArguments(
-        func: string,   // Should look like "\name" or "\begin{name}".
+        func: string, // Should look like "\name" or "\begin{name}".
         funcData: FunctionSpec | EnvSpec,
     ): {
         args: ParseNode[],
@@ -588,32 +616,41 @@ export default class Parser {
                 this.consumeSpaces();
             }
             const nextToken = this.nextToken;
-            let arg = argType ?
-                this.parseGroupOfType(argType, isOptional) :
-                this.parseGroup(isOptional);
+            let arg = argType
+                ? this.parseGroupOfType(argType, isOptional)
+                : this.parseGroup(isOptional);
             if (!arg) {
                 if (isOptional) {
                     optArgs.push(null);
                     continue;
                 }
-                if (!this.settings.throwOnError &&
-                    this.nextToken.text[0] === "\\") {
+                if (
+                    !this.settings.throwOnError &&
+                    this.nextToken.text[0] === "\\"
+                ) {
                     arg = newArgument(this.handleUnsupportedCmd(), nextToken);
                 } else {
                     throw new ParseError(
-                        "Expected group after '" + func + "'", nextToken);
+                        "Expected group after '" + func + "'",
+                        nextToken,
+                    );
                 }
             }
             let argNode: ParseNode;
             if (arg.type === "fn") {
-                const argGreediness =
-                    functions[arg.result].greediness;
+                const argGreediness = functions[arg.result].greediness;
                 if (argGreediness > baseGreediness) {
                     argNode = this.parseGivenFunction(arg);
                 } else {
                     throw new ParseError(
-                        "Got function '" + arg.result + "' as " +
-                        "argument to '" + func + "'", nextToken);
+                        "Got function '" +
+                            arg.result +
+                            "' as " +
+                            "argument to '" +
+                            func +
+                            "'",
+                        nextToken,
+                    );
                 }
             } else {
                 argNode = arg.result;
@@ -628,7 +665,7 @@ export default class Parser {
      * Parses a group when the mode is changing.
      */
     parseGroupOfType(
-        type: ArgType,  // Used to describe the mode in error messages.
+        type: ArgType, // Used to describe the mode in error messages.
         optional: boolean,
     ): ?ParsedFuncOrArg {
         // Handle `original` argTypes
@@ -662,7 +699,7 @@ export default class Parser {
      * brace-enclosed tokens plus some position information.
      */
     parseStringGroup(
-        modeName: ArgType,  // Used to describe the mode in error messages.
+        modeName: ArgType, // Used to describe the mode in error messages.
         optional: boolean,
     ): ?Token {
         if (optional && this.nextToken.text !== "[") {
@@ -678,7 +715,8 @@ export default class Parser {
             if (this.nextToken.text === "EOF") {
                 throw new ParseError(
                     "Unexpected end of input in " + modeName,
-                    firstToken.range(this.nextToken, str));
+                    firstToken.range(this.nextToken, str),
+                );
             }
             lastToken = this.nextToken;
             str += lastToken.text;
@@ -695,7 +733,7 @@ export default class Parser {
      * with nested braces.
      */
     parseStringGroupWithBalancedBraces(
-        modeName: ArgType,  // Used to describe the mode in error messages.
+        modeName: ArgType, // Used to describe the mode in error messages.
         optional: boolean,
     ): ?Token {
         if (optional && this.nextToken.text !== "[") {
@@ -712,7 +750,8 @@ export default class Parser {
             if (this.nextToken.text === "EOF") {
                 throw new ParseError(
                     "Unexpected end of input in " + modeName,
-                    firstToken.range(this.nextToken, str));
+                    firstToken.range(this.nextToken, str),
+                );
             }
             lastToken = this.nextToken;
             str += lastToken.text;
@@ -722,7 +761,8 @@ export default class Parser {
                 if (nest <= 0) {
                     throw new ParseError(
                         "Unbalanced brace of input in " + modeName,
-                        firstToken.range(this.nextToken, str));
+                        firstToken.range(this.nextToken, str),
+                    );
                 } else {
                     nest -= 1;
                 }
@@ -741,15 +781,17 @@ export default class Parser {
      */
     parseRegexGroup(
         regex: RegExp,
-        modeName: string,   // Used to describe the mode in error messages.
+        modeName: string, // Used to describe the mode in error messages.
     ): Token {
         const outerMode = this.mode;
         this.mode = "text";
         const firstToken = this.nextToken;
         let lastToken = firstToken;
         let str = "";
-        while (this.nextToken.text !== "EOF"
-            && regex.test(str + this.nextToken.text)) {
+        while (
+            this.nextToken.text !== "EOF" &&
+            regex.test(str + this.nextToken.text)
+        ) {
             lastToken = this.nextToken;
             str += lastToken.text;
             this.consume();
@@ -757,7 +799,8 @@ export default class Parser {
         if (str === "") {
             throw new ParseError(
                 "Invalid " + modeName + ": '" + firstToken.text + "'",
-                firstToken);
+                firstToken,
+            );
         }
         this.mode = outerMode;
         return firstToken.range(lastToken, str);
@@ -771,7 +814,7 @@ export default class Parser {
         if (!res) {
             return null;
         }
-        const match = (/^(#[a-f0-9]{3}|#[a-f0-9]{6}|[a-z]+)$/i).exec(res.text);
+        const match = /^(#[a-f0-9]{3}|#[a-f0-9]{6}|[a-z]+)$/i.exec(res.text);
         if (!match) {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
@@ -791,7 +834,7 @@ export default class Parser {
         // valid links in such cases; we interpret this as "undefiend" behaviour,
         // and keep them as-is. Some browser will replace backslashes with
         // forward slashes.
-        const url = raw.replace(/\\([#$%&~_^{}])/g, '$1');
+        const url = raw.replace(/\\([#$%&~_^{}])/g, "$1");
         return newArgument(new ParseNode("url", url, this.mode), res);
     }
 
@@ -802,14 +845,16 @@ export default class Parser {
         let res;
         if (!optional && this.nextToken.text !== "{") {
             res = this.parseRegexGroup(
-                /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2} *$/, "size");
+                /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2} *$/,
+                "size",
+            );
         } else {
             res = this.parseStringGroup("size", optional);
         }
         if (!res) {
             return null;
         }
-        const match = (/([-+]?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(res.text);
+        const match = /([-+]?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/.exec(res.text);
         if (!match) {
             throw new ParseError("Invalid size: '" + res.text + "'", res);
         }
@@ -857,8 +902,14 @@ export default class Parser {
             }
             return newArgument(
                 new ParseNode(
-                    "ordgroup", expression, this.mode, firstToken, lastToken),
-                    firstToken.range(lastToken, firstToken.text));
+                    "ordgroup",
+                    expression,
+                    this.mode,
+                    firstToken,
+                    lastToken,
+                ),
+                firstToken.range(lastToken, firstToken.text),
+            );
         } else {
             // Otherwise, just return a nucleus, or nothing for an optional group
             if (mode) {
@@ -887,18 +938,27 @@ export default class Parser {
             const v = a.value;
             if (v === "-" && group[i + 1].value === "-") {
                 if (i + 1 < n && group[i + 2].value === "-") {
-                    group.splice(i, 3, new ParseNode(
-                        "textord", "---", "text", a, group[i + 2]));
+                    group.splice(
+                        i,
+                        3,
+                        new ParseNode("textord", "---", "text", a, group[i + 2]),
+                    );
                     n -= 2;
                 } else {
-                    group.splice(i, 2, new ParseNode(
-                        "textord", "--", "text", a, group[i + 1]));
+                    group.splice(
+                        i,
+                        2,
+                        new ParseNode("textord", "--", "text", a, group[i + 1]),
+                    );
                     n -= 1;
                 }
             }
             if ((v === "'" || v === "`") && group[i + 1].value === v) {
-                group.splice(i, 2, new ParseNode(
-                    "textord", v + v, "text", a, group[i + 1]));
+                group.splice(
+                    i,
+                    2,
+                    new ParseNode("textord", v + v, "text", a, group[i + 1]),
+                );
                 n -= 1;
             }
         }
@@ -921,7 +981,7 @@ export default class Parser {
         } else if (/^\\verb[^a-zA-Z]/.test(text)) {
             this.consume();
             let arg = text.slice(5);
-            const star = (arg.charAt(0) === "*");
+            const star = arg.charAt(0) === "*";
             if (star) {
                 arg = arg.slice(1);
             }
@@ -931,47 +991,67 @@ export default class Parser {
                 throw new ParseError(`\\verb assertion failed --
                     please report what input caused this bug`);
             }
-            arg = arg.slice(1, -1);  // remove first and last char
+            arg = arg.slice(1, -1); // remove first and last char
             return newArgument(
-                new ParseNode("verb", {
-                    body: arg,
-                    star: star,
-                }, "text"), nucleus);
+                new ParseNode(
+                    "verb",
+                    {
+                        body: arg,
+                        star: star,
+                    },
+                    "text",
+                ),
+                nucleus,
+            );
         }
         // At this point, we should have a symbol, possibly with accents.
         // First expand any accented base symbol according to unicodeSymbols,
         // unless we're in math mode and unicodeTextInMathMode is false
         // (XeTeX-compatible mode).
-        if (unicodeSymbols.hasOwnProperty(text[0]) &&
+        if (
+            unicodeSymbols.hasOwnProperty(text[0]) &&
             !symbols[this.mode][text[0]] &&
-            (this.settings.unicodeTextInMathMode || this.mode === "text")) {
+            (this.settings.unicodeTextInMathMode || this.mode === "text")
+        ) {
             text = unicodeSymbols[text[0]] + text.substr(1);
         }
         // Strip off any combining characters
         const match = combiningDiacriticalMarksEndRegex.exec(text);
         if (match) {
             text = text.substring(0, match.index);
-            if (text === 'i') {
-                text = '\u0131';  // dotless i, in math and text mode
-            } else if (text === 'j') {
-                text = '\u0237';  // dotless j, in math and text mode
+            if (text === "i") {
+                text = "\u0131"; // dotless i, in math and text mode
+            } else if (text === "j") {
+                text = "\u0237"; // dotless j, in math and text mode
             }
         }
         // Recognize base symbol
         let symbol = null;
         if (symbols[this.mode][text]) {
-            if (this.mode === 'math' && extraLatin.indexOf(text) >= 0 &&
-                !this.settings.unicodeTextInMathMode) {
-                throw new ParseError(`Unicode text character ${text} used in ` +
-                    `math mode without unicodeTextInMathMode setting`, nucleus);
+            if (
+                this.mode === "math" &&
+                extraLatin.indexOf(text) >= 0 &&
+                !this.settings.unicodeTextInMathMode
+            ) {
+                throw new ParseError(
+                    `Unicode text character ${text} used in ` +
+                        `math mode without unicodeTextInMathMode setting`,
+                    nucleus,
+                );
             }
-            symbol = new ParseNode(symbols[this.mode][text].group,
-                            text, this.mode, nucleus);
-        } else if (supportedCodepoint(text.charCodeAt(0)) &&
-            (this.mode === "text" || this.settings.unicodeTextInMathMode)) {
+            symbol = new ParseNode(
+                symbols[this.mode][text].group,
+                text,
+                this.mode,
+                nucleus,
+            );
+        } else if (
+            supportedCodepoint(text.charCodeAt(0)) &&
+            (this.mode === "text" || this.settings.unicodeTextInMathMode)
+        ) {
             symbol = new ParseNode("textord", text, this.mode, nucleus);
         } else {
-            return null;  // EOF, ^, _, {, }, etc.
+            return null; // EOF, ^, _, {, }, etc.
         }
         this.consume();
         // Transform combining characters into accents
@@ -985,15 +1065,21 @@ export default class Parser {
                 if (!command) {
                     throw new ParseError(
                         `Accent ${accent} unsupported in ${this.mode} mode`,
-                        nucleus);
+                        nucleus,
+                    );
                 }
-                symbol = new ParseNode("accent", {
-                    type: "accent",
-                    label: command,
-                    isStretchy: false,
-                    isShifty: true,
-                    base: symbol,
-                }, this.mode, nucleus);
+                symbol = new ParseNode(
+                    "accent",
+                    {
+                        type: "accent",
+                        label: command,
+                        isStretchy: false,
+                        isShifty: true,
+                        base: symbol,
+                    },
+                    this.mode,
+                    nucleus,
+                );
             }
         }
         return newArgument(symbol, nucleus);

@@ -15,7 +15,7 @@ defineFunction({
     },
     handler: (context, args) => {
         const body = args[1];
-        const href  = args[0].value;
+        const href = args[0].value;
         return {
             type: "href",
             href: href,
@@ -23,11 +23,7 @@ defineFunction({
         };
     },
     htmlBuilder: (group, options) => {
-        const elements = html.buildExpression(
-            group.value.body,
-            options,
-            false
-        );
+        const elements = html.buildExpression(group.value.body, options, false);
 
         const href = group.value.href;
 

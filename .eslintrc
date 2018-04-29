@@ -20,7 +20,6 @@
         "eqeqeq": [2, "allow-null"],
         "guard-for-in": 2,
         "indent": "off",
-        "indent-legacy": [2, 4, {"SwitchCase": 1}],
         "keyword-spacing": 2,
         "linebreak-style": [2, "unix"],
         "max-len": [2, 84, 4, { "ignoreUrls": true, "ignorePattern": "\\brequire\\([\"']|eslint-disable" }],

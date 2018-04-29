@@ -11,7 +11,7 @@ import type {DomSpan} from "./domTree";
 
 const optionsFromSettings = function(settings: Settings) {
     return new Options({
-        style: (settings.displayMode ? Style.DISPLAY : Style.TEXT),
+        style: settings.displayMode ? Style.DISPLAY : Style.TEXT,
         maxSize: settings.maxSize,
     });
 };
@@ -27,9 +27,7 @@ export const buildTree = function(
     const mathMLNode = buildMathML(tree, expression, options);
     const htmlNode = buildHTML(tree, options);
 
-    const katexNode = buildCommon.makeSpan(["katex"], [
-        mathMLNode, htmlNode,
-    ]);
+    const katexNode = buildCommon.makeSpan(["katex"], [mathMLNode, htmlNode]);
 
     if (settings.displayMode) {
         return buildCommon.makeSpan(["katex-display"], [katexNode]);

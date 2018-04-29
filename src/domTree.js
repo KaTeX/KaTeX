@@ -8,7 +8,7 @@
  *
  * Similar functions for working with MathML nodes exist in mathMLTree.js.
  */
-import { scriptFromCodepoint } from "./unicodeScripts";
+import {scriptFromCodepoint} from "./unicodeScripts";
 import utils from "./utils";
 import svgGeometry from "./svgGeometry";
 import type Options from "./Options";
@@ -148,9 +148,9 @@ class span<ChildType: VirtualNodeInterface> implements HtmlDomNode {
 
         // Add the class
         if (this.classes.length) {
-            markup += " class=\"";
+            markup += ' class="';
             markup += utils.escape(createClass(this.classes));
-            markup += "\"";
+            markup += '"';
         }
 
         let styles = "";
@@ -163,15 +163,15 @@ class span<ChildType: VirtualNodeInterface> implements HtmlDomNode {
         }
 
         if (styles) {
-            markup += " style=\"" + utils.escape(styles) + "\"";
+            markup += ' style="' + utils.escape(styles) + '"';
         }
 
         // Add the attributes
         for (const attr in this.attributes) {
             if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                markup += " " + attr + "=\"";
+                markup += " " + attr + '="';
                 markup += utils.escape(this.attributes[attr]);
-                markup += "\"";
+                markup += '"';
             }
         }
 
@@ -246,7 +246,7 @@ class anchor implements HtmlDomNode {
         const a = document.createElement("a");
 
         // Apply the href
-        a.setAttribute('href', this.href);
+        a.setAttribute("href", this.href);
 
         // Apply the class
         if (this.classes.length) {
@@ -299,13 +299,15 @@ class anchor implements HtmlDomNode {
         }
 
         if (styles) {
-            markup += " style=\"" + utils.escape(styles) + "\"";
+            markup += ' style="' + utils.escape(styles) + '"';
         }
 
         // Add the attributes
         for (const attr in this.attributes) {
-            if (attr !== "href" &&
-                Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+            if (
+                attr !== "href" &&
+                Object.prototype.hasOwnProperty.call(this.attributes, attr)
+            ) {
                 markup += ` ${attr}="${utils.escape(this.attributes[attr])}"`;
             }
         }
@@ -331,7 +333,7 @@ class anchor implements HtmlDomNode {
  */
 class documentFragment implements HtmlDomNode {
     children: HtmlDomNode[];
-    classes: string[];         // Never used; needed for satisfying interface.
+    classes: string[]; // Never used; needed for satisfying interface.
     height: number;
     depth: number;
     maxFontSize: number;
@@ -379,11 +381,11 @@ class documentFragment implements HtmlDomNode {
 }
 
 const iCombinations = {
-    'î': '\u0131\u0302',
-    'ï': '\u0131\u0308',
-    'í': '\u0131\u0301',
+    î: "\u0131\u0302",
+    ï: "\u0131\u0308",
+    í: "\u0131\u0301",
     // 'ī': '\u0131\u0304', // enable when we add Extended Latin
-    'ì': '\u0131\u0300',
+    ì: "\u0131\u0300",
 };
 
 /**
@@ -434,29 +436,36 @@ class symbolNode implements HtmlDomNode {
             this.classes.push(script + "_fallback");
         }
 
-        if (/[îïíì]/.test(this.value)) {    // add ī when we add Extended Latin
+        if (/[îïíì]/.test(this.value)) {
+            // add ī when we add Extended Latin
             this.value = iCombinations[this.value];
         }
     }
 
     tryCombine(sibling: HtmlDomNode): boolean {
-        if (!sibling
-            || !(sibling instanceof symbolNode)
-            || this.italic > 0
-            || createClass(this.classes) !== createClass(sibling.classes)
-            || this.skew !== sibling.skew
-            || this.maxFontSize !== sibling.maxFontSize) {
+        if (
+            !sibling ||
+            !(sibling instanceof symbolNode) ||
+            this.italic > 0 ||
+            createClass(this.classes) !== createClass(sibling.classes) ||
+            this.skew !== sibling.skew ||
+            this.maxFontSize !== sibling.maxFontSize
+        ) {
             return false;
         }
         for (const style in this.style) {
-            if (this.style.hasOwnProperty(style)
-                && this.style[style] !== sibling.style[style]) {
+            if (
+                this.style.hasOwnProperty(style) &&
+                this.style[style] !== sibling.style[style]
+            ) {
                 return false;
             }
         }
         for (const style in sibling.style) {
-            if (sibling.style.hasOwnProperty(style)
-                && this.style[style] !== sibling.style[style]) {
+            if (
+                sibling.style.hasOwnProperty(style) &&
+                this.style[style] !== sibling.style[style]
+            ) {
                 return false;
             }
         }
@@ -513,9 +522,9 @@ class symbolNode implements HtmlDomNode {
 
         if (this.classes.length) {
             needsSpan = true;
-            markup += " class=\"";
+            markup += ' class="';
             markup += utils.escape(createClass(this.classes));
-            markup += "\"";
+            markup += '"';
         }
 
         let styles = "";
@@ -531,7 +540,7 @@ class symbolNode implements HtmlDomNode {
 
         if (styles) {
             needsSpan = true;
-            markup += " style=\"" + utils.escape(styles) + "\"";
+            markup += ' style="' + utils.escape(styles) + '"';
         }
 
         const escaped = utils.escape(this.value);
@@ -594,7 +603,6 @@ class svgNode implements VirtualNodeInterface {
         markup += "</svg>";
 
         return markup;
-
     }
 }
 
@@ -604,7 +612,7 @@ class pathNode implements VirtualNodeInterface {
 
     constructor(pathName: string, alternate?: string) {
         this.pathName = pathName;
-        this.alternate = alternate;  // Used only for tall \sqrt
+        this.alternate = alternate; // Used only for tall \sqrt
     }
 
     toNode(): Node {

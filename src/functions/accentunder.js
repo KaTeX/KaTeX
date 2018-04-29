@@ -11,8 +11,12 @@ import * as mml from "../buildMathML";
 defineFunction({
     type: "accentUnder",
     names: [
-        "\\underleftarrow", "\\underrightarrow", "\\underleftrightarrow",
-        "\\undergroup", "\\underlinesegment", "\\utilde",
+        "\\underleftarrow",
+        "\\underrightarrow",
+        "\\underleftrightarrow",
+        "\\undergroup",
+        "\\underlinesegment",
+        "\\utilde",
     ],
     props: {
         numArgs: 1,
@@ -33,24 +37,31 @@ defineFunction({
         const kern = group.value.label === "\\utilde" ? 0.12 : 0;
 
         // Generate the vlist, with the appropriate kerns
-        const vlist = buildCommon.makeVList({
-            positionType: "bottom",
-            positionData: accentBody.height + kern,
-            children: [
-                {type: "elem", elem: accentBody, wrapperClasses: ["svg-align"]},
-                {type: "kern", size: kern},
-                {type: "elem", elem: innerGroup},
-            ],
-        }, options);
+        const vlist = buildCommon.makeVList(
+            {
+                positionType: "bottom",
+                positionData: accentBody.height + kern,
+                children: [
+                    {
+                        type: "elem",
+                        elem: accentBody,
+                        wrapperClasses: ["svg-align"],
+                    },
+                    {type: "kern", size: kern},
+                    {type: "elem", elem: innerGroup},
+                ],
+            },
+            options,
+        );
 
         return buildCommon.makeSpan(["mord", "accentunder"], [vlist], options);
     },
     mathmlBuilder: (group, options) => {
         const accentNode = stretchy.mathMLnode(group.value.label);
-        const node = new mathMLTree.MathNode(
-            "munder",
-            [mml.buildGroup(group.value.body, options), accentNode]
-        );
+        const node = new mathMLTree.MathNode("munder", [
+            mml.buildGroup(group.value.body, options),
+            accentNode,
+        ]);
         node.setAttribute("accentunder", "true");
         return node;
     },

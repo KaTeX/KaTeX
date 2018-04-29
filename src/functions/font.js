@@ -7,7 +7,6 @@ import ParseNode from "../ParseNode";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-
 const htmlBuilder = (group, options) => {
     const font = group.value.font;
     const newOptions = options.withFont(font);
@@ -31,14 +30,24 @@ defineFunction({
     type: "font",
     names: [
         // styles
-        "\\mathrm", "\\mathit", "\\mathbf", "\\boldsymbol",
+        "\\mathrm",
+        "\\mathit",
+        "\\mathbf",
+        "\\boldsymbol",
 
         // families
-        "\\mathbb", "\\mathcal", "\\mathfrak", "\\mathscr", "\\mathsf",
+        "\\mathbb",
+        "\\mathcal",
+        "\\mathfrak",
+        "\\mathscr",
+        "\\mathsf",
         "\\mathtt",
 
         // aliases
-        "\\Bbb", "\\bold", "\\frak", "\\bm",
+        "\\Bbb",
+        "\\bold",
+        "\\frak",
+        "\\bm",
     ],
     props: {
         numArgs: 1,

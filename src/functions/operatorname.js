@@ -39,7 +39,10 @@ defineFunction({
 
             // Consolidate Greek letter function names into symbol characters.
             const temp = html.buildExpression(
-                group.value.value, options.withFont("mathrm"), true);
+                group.value.value,
+                options.withFont("mathrm"),
+                true,
+            );
 
             // All we want from temp are the letters. With them, we'll
             // create a text operator similar to \tan or \cos.
@@ -50,11 +53,11 @@ defineFunction({
                     // In the amsopn package, \newmcodes@ changes four
                     // characters, *-/:’, from math operators back into text.
                     // Given what is in temp, we have to address two of them.
-                    letter = letter.replace(/\u2212/, "-");   // minus => hyphen
+                    letter = letter.replace(/\u2212/, "-"); // minus => hyphen
                     letter = letter.replace(/\u2217/, "*");
 
                     // Use math mode for Greek letters
-                    mode = (/[\u0391-\u03D7]/.test(letter) ? "math" : "text");
+                    mode = /[\u0391-\u03D7]/.test(letter) ? "math" : "text";
                     output.push(buildCommon.mathsym(letter, mode));
                 } else {
                     output.push(child);
@@ -69,9 +72,11 @@ defineFunction({
         let output = [];
         if (group.value.value.length > 0) {
             const temp = mml.buildExpression(
-                group.value.value, options.withFont("mathrm"));
+                group.value.value,
+                options.withFont("mathrm"),
+            );
 
-            let word = temp.map(node => node.toText()).join("");
+            let word = temp.map((node) => node.toText()).join("");
 
             word = word.replace(/\u2212/g, "-");
             word = word.replace(/\u2217/g, "*");
@@ -82,8 +87,9 @@ defineFunction({
 
         // \u2061 is the same as &ApplyFunction;
         // ref: https://www.w3schools.com/charsets/ref_html_entities_a.asp
-        const operator = new mathMLTree.MathNode("mo",
-            [mml.makeText("\u2061", "text")]);
+        const operator = new mathMLTree.MathNode("mo", [
+            mml.makeText("\u2061", "text"),
+        ]);
 
         return new domTree.documentFragment([identifier, operator]);
     },

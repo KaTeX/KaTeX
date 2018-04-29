@@ -51,7 +51,7 @@ const ESCAPE_LOOKUP = {
     "&": "&amp;",
     ">": "&gt;",
     "<": "&lt;",
-    "\"": "&quot;",
+    '"': "&quot;",
     "'": "&#x27;",
 };
 
@@ -61,7 +61,7 @@ const ESCAPE_REGEX = /[&><"']/g;
  * Escapes text to prevent scripting attacks.
  */
 function escape(text: mixed): string {
-    return String(text).replace(ESCAPE_REGEX, match => ESCAPE_LOOKUP[match]);
+    return String(text).replace(ESCAPE_REGEX, (match) => ESCAPE_LOOKUP[match]);
 }
 
 /**
@@ -89,38 +89,50 @@ function clearNode(node: Node) {
     setTextContent(node, "");
 }
 
-type BaseElem = {|
-    type: "mathord",
-|} | {|
-    type: "textord",
-|} | {|
-    type: "bin",
-|} | {|
-    type: "rel",
-|} | {|
-    type: "inner",
-|} | {|
-    type: "open",
-|} | {|
-    type: "close",
-|} | {|
-    type: "punct",
-|};
+type BaseElem =
+    | {|
+          type: "mathord",
+      |}
+    | {|
+          type: "textord",
+      |}
+    | {|
+          type: "bin",
+      |}
+    | {|
+          type: "rel",
+      |}
+    | {|
+          type: "inner",
+      |}
+    | {|
+          type: "open",
+      |}
+    | {|
+          type: "close",
+      |}
+    | {|
+          type: "punct",
+      |};
 
-type Group = {|
-    type: "ordgroup",
-    value: Group[],
-|} | {|
-    type: "color",
-    value: {|
-        value: Group[],
-    |},
-|} | {|
-    type: "font",
-    value: {|
-        body: Group,
-    |},
-|} | BaseElem;
+type Group =
+    | {|
+          type: "ordgroup",
+          value: Group[],
+      |}
+    | {|
+          type: "color",
+          value: {|
+              value: Group[],
+          |},
+      |}
+    | {|
+          type: "font",
+          value: {|
+              body: Group,
+          |},
+      |}
+    | BaseElem;
 
 /**
  * Sometimes we want to pull out the innermost element of a group. In most
@@ -158,14 +170,16 @@ const isCharacterBox = function(group: Group): boolean {
     const baseElem = getBaseElem(group);
 
     // These are all they types of groups which hold single characters
-    return baseElem.type === "mathord" ||
+    return (
+        baseElem.type === "mathord" ||
         baseElem.type === "textord" ||
         baseElem.type === "bin" ||
         baseElem.type === "rel" ||
         baseElem.type === "inner" ||
         baseElem.type === "open" ||
         baseElem.type === "close" ||
-        baseElem.type === "punct";
+        baseElem.type === "punct"
+    );
 };
 
 export default {

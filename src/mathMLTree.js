@@ -16,13 +16,30 @@ import utils from "./utils";
  * https://developer.mozilla.org/en-US/docs/Web/MathML/Element.
  */
 export type MathNodeType =
-    "math" | "annotation" | "semantics" |
-    "mtext" | "mn" | "mo" | "mi" | "mspace" |
-    "mover" | "munder" | "munderover" | "msup" | "msub" |
-    "mfrac" | "mroot" | "msqrt" |
-    "mtable" | "mtr" | "mtd" |
-    "mrow" | "menclose" |
-    "mstyle" | "mpadded" | "mphantom";
+    | "math"
+    | "annotation"
+    | "semantics"
+    | "mtext"
+    | "mn"
+    | "mo"
+    | "mi"
+    | "mspace"
+    | "mover"
+    | "munder"
+    | "munderover"
+    | "msup"
+    | "msub"
+    | "mfrac"
+    | "mroot"
+    | "msqrt"
+    | "mtable"
+    | "mtr"
+    | "mtd"
+    | "mrow"
+    | "menclose"
+    | "mstyle"
+    | "mpadded"
+    | "mphantom";
 
 /**
  * This node represents a general purpose MathML node of any type. The
@@ -53,7 +70,9 @@ class MathNode {
      */
     toNode(): Node {
         const node = document.createElementNS(
-            "http://www.w3.org/1998/Math/MathML", this.type);
+            "http://www.w3.org/1998/Math/MathML",
+            this.type,
+        );
 
         for (const attr in this.attributes) {
             if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
@@ -77,9 +96,9 @@ class MathNode {
         // Add the attributes
         for (const attr in this.attributes) {
             if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                markup += " " + attr + "=\"";
+                markup += " " + attr + '="';
                 markup += utils.escape(this.attributes[attr]);
-                markup += "\"";
+                markup += '"';
             }
         }
 
@@ -107,7 +126,7 @@ class MathNode {
                 return " ";
             }
         }
-        return this.children.map(child => child.toText()).join("");
+        return this.children.map((child) => child.toText()).join("");
     }
 }
 
