@@ -213,3 +213,135 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Correct handling of unbraced kerns followed by spaces. [#751](https://github.com/Khan/KaTeX/pull/751)
 - Corrected computation of TeX sizes. [#755](https://github.com/Khan/KaTeX/pull/755)
 - Solved Safari rendering issues with font-size overrides. [#780](https://github.com/Khan/KaTeX/pull/780)
+
+
+## [v0.7.1] - 2017-01-21
+### Fixed
+- Restored creation of dist directory during release process.
+
+
+## [v0.7.0] - 2017-01-08
+### Added
+- Added `\atop`, `\bmod`, `\degree`, `\kern`, `\ldots`, `\maltese`, `\mathbin`, `\mathclose`, `\mathellipsis`, `\mathop`, `\mathopen`, `\mathord`, `\mathpunct`, `\mathrel`, `\middle`, `\mod`, `\pod`, `\pounds`, `\pmod`, `\stackre`, `\textbf`, `\textellipsis`, `\textit`, `\textnormal`, `\textrm`, `\textsf`, `\texttt`, `--`, `---`, `'''`, `'`, `` ``​ and `""`.
+- Added `\#`, `\&`, `\$`, `\%`, `\_`, `\{`, and `\}` in text mode.
+
+### Changed
+- Allow specifying macros (without arguments) in the settings object.
+- Combine adjacent spans in text mode.
+
+### Fixed
+- Do not apply italic correction in text mode.
+- Fixed the MathML fence attribute on delimiters.
+- Fixed converting bins to ords.
+- Made `\llap` and `\rlap` produce ords.
+- Fixed spacing around `\color`, `\mathbf`, and in other places.
+- Added per-style font metrics.
+- Complain when trying to render a non-string.
+- Fixed subscript positioning with changed-font bases.
+- Fixed superscript/subscript centering in fractions.
+
+
+## [v0.6.0] - 2016-04-15
+### Added
+- Added  `\gt`, `\lt` and `\underline` support.
+- Introduced the aligned environment.
+
+### Changed
+- Bundle CSS and fonts in npm package.
+
+### Fixed
+- Fixed sub- and super-scripts not being centered inside of math display.
+- Removed 3px border around rules.
+- Set the greediness of font functions to 2 so that `e^\mathbf{x}` will parse.
+
+
+## [v0.5.1] - 2015-09-01
+### Added
+- Added the font changing functions `\mathrm`, `\mathit`, `\mathbf`, `\mathbb`, `\mathcal`, `\mathfrak`, `\mathscr`, `\mathsf`, `\mathtt`, `\Bbb`, `\bold`, and `\frak`.
+- Added the `\limits` and `\nolimits` functions.
+- Added a throwOnError option to allow generating red error text when rendering invalid commands instead of throwing errors, and a corresponding errorColor option to decide the color of invalid commands.
+- Added support for `|` column delimiters in the array environment.
+- Added `\lVert` and `\rVert` symbols.
+
+### Changed
+- Allow `\lvert`, `\rvert`, `\lVert`, `\rVert`, `\lgroup`, `\rgroup`, `\lmoustache`, and `\rmoustache` in delimiters.
+
+### Fixed
+- Fix the spacing of the `\ulcorner`, `\urcorner`, `\llcorner`, `\lrcorner`, `\barwedge`, `\veebar`, `\circledcirc`, `\boxdot`, `\uparrow`, `\Uparrow`, `\downarrow`, `\Downarrow`, `\updownarrow`, `\Updownarrow`, and `\ldots` symbols.
+
+
+## [v0.5.0] - 2015-07-16
+### Added
+- Added the cases and Bmatrix environments.
+- Added `\checkmark` and `\circledR` symbols.
+
+### Changed
+- Ran `ttfautohint` on our fonts to produce better results at small font sizes.
+- Improved the spacing inside fractions.
+- Correctly set environments to the ord type.
+
+
+## [v0.4.3] - 2015-06-20
+### Fixed
+- Fixed bower.json to include a "main" entry
+
+
+## [v0.4.0] - 2015-06-18
+### Added
+- Added support for some `\begin`/`\end` environments, including support for `array`, `matrix`, `pmatrix`, `bmatrix`, `vmatrix`, and `Vmatrix`.
+- Added support for optional `\sqrt` arguments, e.g. `\sqrt[3]{x}`.
+- Bower package is now available: run `bower install katex` to download the built files.
+
+
+### Changed
+- Added a display mode flag to the cli.
+- Exposed an unstable `__parse` method for retrieving the parse tree.
+- Prevent elements from inheriting `text-indent`.
+
+
+## [v0.3.0] - 2015-04-01
+### Breaking Changes
+- The greediness of the `\color` function has changed to maintain compatibility with MathJax, so expressions like `\color{red}\text{a}` will no longer work and instead need to be rewritten as `\color{red}{\text{a}}`.
+
+### Added
+- Added an auto-render extension for automatically rendering math on a page.
+- Added support for `\phantom`.
+- Added `\#`, `\&`.
+
+### Changed
+- Removed `!important` from MathML hiding rules, so they can be overridden.
+
+### Fixed
+- Fixed spacing for `\odot`, `\oplus`, `\otimes`, `\oslash`, `\bigtriangleup`, `\bigtriangledown`, `\dagger`, `\diamond`, `\star`, `\triangleleft`, `\triangleright`.
+- Fixed MathML handling of text operators.
+
+
+## [v0.2.0] - 2015-03-02
+### Added
+- Added accessibility through the use of MathML.
+- Added the ability to render math in display mode, centered on a single line in display style.
+- Added support for new symbols: `\aleph`, `\amalg`, `\approxeq`, `\ast`, `\asymp`, `\backepsilon`, `\backprime`, `\backsim`, `\backsimeq`, `\Bbbk`, `\because`, `\beth`, `\between`, `\bigcirc`, `\bigstar`, `\blacklozenge`, `\blacksquare`, `\blacktriangle`, `\blacktriangledown`, `\blacktriangleleft`, `\blacktriangleright`, `\bowtie`, `\Box`, `\boxminus`, `\boxplus`, `\boxtimes`, `\bullet`, `\bumpeq`, `\Bumpeq`, `\Cap`, `\cdotp`, `\centerdot`, `\circeq`, `\circlearrowleft`, `\circlearrowright`, `\circledast`, `\circleddash`, `\circledS`, `\clubsuit`, `\complement`, `\Cup`, `\curlyeqprec`, `\curlyeqsucc`, `\curlyvee`, `\curlywedge`, `\curvearrowleft`, `\curvearrowright`, `\dag`, `\daleth`, `\dashleftarrow`, `\dashrightarrow`, `\dashv`, `\ddag`, `\ddagger`, `\diagdown`, `\diagup`, `\Diamond`, `\diamondsuit`, `\digamma`, `\divideontimes`, `\doteq`, `\Doteq`, `\doteqdot`, `\dotplus`, `\doublebarwedge`, `\doublecap`, `\doublecup`, `\downdownarrows`, `\downharpoonleft`, `\downharpoonright`, `\ell`, `\eqcirc`, `\eqsim`, `\eqslantgtr`, `\eqslantless`, `\equiv`, `\eth, `\exists, `\fallingdotseq`, `\Finv`, `\flat`, `\forall`, `\frown`, `\Game`, `\geqq`, `\geqslant`, `\gg`, `\ggg`, `\gggtr`, `\gimel`, `\gnapprox`, `\gneq`, `\gneqq`, `\gnsim`, `\gtrapprox`, `\gtrdot`, `\gtreqless`, `\gtreqqless`, `\gtrless`, `\gtrsim`, `\gvertneqq`, `\hbar`, `\heartsuit`, `\hookleftarrow`, `\hookrightarrow`, `\hslash`, `\Im`, `\intercal`, `\Join`, `\ldotp`, `\leadsto`, `\Leftarrow`, `\leftarrowtail`, `\leftharpoondown`, `\leftharpoonup`, `\leftleftarrows`, `\leftrightarrow`, `\Leftrightarrow`, `\leftrightarrows`, `\leftrightharpoons`, `\leftrightsquigarrow`, `\leftthreetimes`, `\leqq, `\leqslant`, `\lessapprox`, `\lessdot`, `\lesseqgtr`, `\lesseqqgtr`, `\lessgtr`, `\lesssim`, `\lgroup`, `\lhd`, `\ll`, `\llcorner`, `\Lleftarrow`, `\lll`, `\llless`, `\lmoustache`, `\lnapprox`, `\lneq`, `\lneqq`, `\lnsim`, `\longleftarrow`, `\Longleftarrow`, `\longleftrightarrow`, `\Longleftrightarrow`, `\longmapsto`, `\longrightarrow`, `\Longrightarrow`, `\looparrowleft`, `\looparrowright`, `\lozenge`, `\lrcorner`, `\Lsh`, `\ltimes`, `\lvertneqq`, `\mapsto`, `\measuredangle`, `\mho`, `\mid`, `\mp`, `\multimap`, `\nabla`, `\natural`, `\ncong`, `\nearrow`, `\nexists`, `\ngeqq`, `\ngeqslant`, `\ngtr`, `\ni`, `\nleftarrow`, `\nLeftarrow`, `\nleftrightarrow`, `\nLeftrightarrow`, `\nleqq`, `\nleqslant`, `\nless`, `\nmid`, `\nparallel`, `\nprec`, `\npreceq`, `\nrightarrow`, `\nRightarrow`, `\nshortmid`, `\nshortparallel`, `\nsim`, `\nsubseteqq`, `\nsucc`, `\nsucceq`, `\nsupseteqq`, `\ntriangleleft`, `\ntrianglelefteq`, `\ntriangleright`, `\ntrianglerighteq`, `\nvdash`, `\nvDash`, `\nVdash`, `\nVDash`, `\nwarrow`, `\ominus`, `\owns`, `\parallel`, `\perp`, `\pitchfork`, `\prec`, `\precapprox`, `\preccurlyeq`, `\preceq`, `\precnapprox`, `\precneqq`, `\precnsim`, `\precsim`, `\propto`, `\Re`, `\restriction`, `\rgroup`, `\rhd`, `\Rightarrow`, `\rightarrowtail`, `\rightharpoondown`, `\rightharpoonup`, `\rightleftarrows`, `\rightleftharpoons`, `\rightrightarrows`, `\rightsquigarrow`, `\rightthreetimes`, `\risingdotseq`, `\rmoustache`, `\Rrightarrow`, `\Rsh`, `\rtimes`, `\searrow`, `\sharp`, `\shortmid`, `\shortparallel`, `\sim`, `\simeq`, `\smallfrown`, `\smallsetminus`, `\smallsmile`, `\smile`, `\spadesuit`, `\sphericalangle`, `\sqcap`, `\sqcup`, `\sqsubset`, `\sqsubseteq`, `\sqsupset`, `\sqsupseteq`, `\square`, `\Subset`, `\subseteqq`, `\subsetneq`, `\subsetneqq`, `\succ`, `\succapprox`, `\succcurlyeq`, `\succeq`, `\succnapprox`, `\succneqq`, `\succnsim`, `\succsim`, `\Supset`, `\supseteqq`, `\supsetneq`, `\supsetneqq`, `\swarrow`, `\therefore`, `\thickapprox`, `\thicksim`, `\triangledown`, `\trianglelefteq`, `\triangleq`, `\trianglerighteq`, `\twoheadleftarrow`, `\twoheadrightarrow`, `\ulcorner`, `\unlhd`, `\unrhd`, `\upharpoonleft`, `\upharpoonright`, `\uplus`, `\upuparrows`, `\urcorner`, `\varkappa`, `\varpropto`, `\varsubsetneq`, `\varsubsetneqq`, `\varsupsetneq` `\varsupsetneqq`, `\vartriangle`, `\vartriangleleft`, `\vartriangleright`, `\vdash`, `\vDash`, `\Vdash`, `\Vvdash`, `\wp`, `\wr`, `\yen`.
+
+
+### Changed
+- Removed unused greek fonts.
+
+## [v0.1.1] - 2014-10-15
+### Added
+- Added support for `\binom`
+- Added support for `\over` and `\choose`
+- Added `\partial`, `\subset`, `\supset`, `\subseteq`, `\supseteq`, `\cap`, `\cup`, `\setminus`, `\neg`, `\lnot`, `\top`, `\bot`, `\emptyset`, `\varnothing`, `\land`, `\lor`, `\wedge`, `\vee`, `\notin`, `\nsubseteq`, `\nsupseteq`, `\models`.
+- Added simple `katex` command-line binary to convert TeX to HTML on the server.
+- Added WOFF2 fonts for faster downloads in Chrome and Opera.
+
+### Changed
+- Correctly throws on `\sqrt[3]{x}` to indicate lack of support.
+- Warn when in quirks mode (i.e., missing a `<!DOCTYPE html>` declaration).
+- Built files now only use ASCII characters to avoid character encoding problems.
+
+### Fixed
+- Fixed spacing for `\iint` and `\iiint`.
+
+
+## [v0.1.0] - 2014-09-15
+Initial Public Release
