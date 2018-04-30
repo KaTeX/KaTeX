@@ -10,6 +10,7 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type ParseNode from "../ParseNode";
+import type {LeftRightDelimType} from "../ParseNode";
 import type {FunctionContext} from "../defineFunction";
 
 // Extra data needed for the delimiter handler down below
@@ -122,6 +123,15 @@ defineFunction({
     },
 });
 
+
+function leftRightGroupValue(group: ParseNode<"leftright">): LeftRightDelimType {
+    if (!group.value.body) {
+        throw new Error("Bug: The leftright ParseNode wasn't fully parsed.");
+    }
+    return group.value;
+}
+
+
 defineFunction({
     type: "leftright",
     names: [
@@ -163,8 +173,9 @@ defineFunction({
         }
     },
     htmlBuilder: (group, options) => {
+        const groupValue = leftRightGroupValue(group);
         // Build the inner expression
-        const inner = html.buildExpression(group.value.body, options, true,
+        const inner = html.buildExpression(groupValue.body, options, true,
             [null, "mclose"]);
 
         let innerHeight = 0;
@@ -188,14 +199,14 @@ defineFunction({
         innerDepth *= options.sizeMultiplier;
 
         let leftDelim;
-        if (group.value.left === ".") {
+        if (groupValue.left === ".") {
             // Empty delimiters in \left and \right make null delimiter spaces.
             leftDelim = html.makeNullDelimiter(options, ["mopen"]);
         } else {
             // Otherwise, use leftRightDelim to generate the correct sized
             // delimiter.
             leftDelim = delimiter.leftRightDelim(
-                group.value.left, innerHeight, innerDepth, options,
+                groupValue.left, innerHeight, innerDepth, options,
                 group.mode, ["mopen"]);
         }
         // Add it to the beginning of the expression
@@ -216,11 +227,11 @@ defineFunction({
 
         let rightDelim;
         // Same for the right delimiter
-        if (group.value.right === ".") {
+        if (groupValue.right === ".") {
             rightDelim = html.makeNullDelimiter(options, ["mclose"]);
         } else {
             rightDelim = delimiter.leftRightDelim(
-                group.value.right, innerHeight, innerDepth, options,
+                groupValue.right, innerHeight, innerDepth, options,
                 group.mode, ["mclose"]);
         }
         // Add it to the end of the expression.
@@ -229,20 +240,21 @@ defineFunction({
         return buildCommon.makeSpan(["minner"], inner, options);
     },
     mathmlBuilder: (group, options) => {
-        const inner = mml.buildExpression(group.value.body, options);
+        const groupValue = leftRightGroupValue(group);
+        const inner = mml.buildExpression(groupValue.body, options);
 
-        if (group.value.left !== ".") {
+        if (groupValue.left !== ".") {
             const leftNode = new mathMLTree.MathNode(
-                "mo", [mml.makeText(group.value.left, group.mode)]);
+                "mo", [mml.makeText(groupValue.left, group.mode)]);
 
             leftNode.setAttribute("fence", "true");
 
             inner.unshift(leftNode);
         }
 
-        if (group.value.right !== ".") {
+        if (groupValue.right !== ".") {
             const rightNode = new mathMLTree.MathNode(
-                "mo", [mml.makeText(group.value.right, group.mode)]);
+                "mo", [mml.makeText(groupValue.right, group.mode)]);
 
             rightNode.setAttribute("fence", "true");
 
@@ -293,7 +305,7 @@ defineFunction({
     },
     mathmlBuilder: (group, options) => {
         const middleNode = new mathMLTree.MathNode(
-            "mo", [mml.makeText(group.value.middle, group.mode)]);
+            "mo", [mml.makeText(group.value.value, group.mode)]);
         middleNode.setAttribute("fence", "true");
         return middleNode;
     },
