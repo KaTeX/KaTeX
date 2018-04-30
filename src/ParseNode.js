@@ -49,7 +49,7 @@ export type AccentStructType = {|
 // Map from `type` field value to corresponding `value` type.
 type ParseNodeTypes = {
     "array": ArrayEnvNodeData,
-    "accent": string | AccentStructType,
+    "accent": AccentStructType,
     "color": {|
         type: "color",
         color: string,
@@ -63,7 +63,7 @@ type ParseNodeTypes = {
         left: string,
         right: string,
     |},
-    "op": string | {|
+    "op": {|
         type: "op",
         limits: boolean,
         symbol: boolean,
@@ -98,11 +98,14 @@ type ParseNodeTypes = {
         star: boolean,
     |},
     // From symbol groups, constructed in Parser.js via `symbols` lookup.
-    // ("accent" and "op" handled above to capture additional variants.)
+    // (Some of these have "-token" suffix to distinguish them from existing
+    // `ParseNode` types.)
+    "accent-token": string,
     "bin": string,
     "close": string,
     "inner": string,
     "mathord": string,
+    "op-token": string,
     "open": string,
     "punct": string,
     "rel": string,
