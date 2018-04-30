@@ -939,12 +939,15 @@ export default class Parser {
                 }, "text"), nucleus);
         }
         // At this point, we should have a symbol, possibly with accents.
-        // First expand any accented base symbol according to unicodeSymbols,
-        // unless we're in math mode and unicodeTextInMathMode is false
-        // (XeTeX-compatible mode).
+        // First expand any accented base symbol according to unicodeSymbols.
         if (unicodeSymbols.hasOwnProperty(text[0]) &&
-            !symbols[this.mode][text[0]] &&
-            (this.settings.unicodeTextInMathMode || this.mode === "text")) {
+            !symbols[this.mode][text[0]]) {
+            // This behavior is not strict (XeTeX-compatible) in math mode.
+            if (this.settings.strict && this.mode === "math") {
+                this.settings.nonstrict("unicodeTextInMathMode",
+                    `Accented Unicode text character "${text[0]}" used in ` +
+                    `math mode`, nucleus);
+            }
             text = unicodeSymbols[text[0]] + text.substr(1);
         }
         // Strip off any combining characters
@@ -960,15 +963,20 @@ export default class Parser {
         // Recognize base symbol
         let symbol = null;
         if (symbols[this.mode][text]) {
-            if (this.mode === 'math' && extraLatin.indexOf(text) >= 0 &&
-                !this.settings.unicodeTextInMathMode) {
-                throw new ParseError(`Unicode text character ${text} used in ` +
-                    `math mode without unicodeTextInMathMode setting`, nucleus);
+            if (this.settings.strict && this.mode === 'math' &&
+                extraLatin.indexOf(text) >= 0) {
+                this.settings.nonstrict("unicodeTextInMathMode",
+                    `Latin-1/Unicode text character "${text[0]}" used in ` +
+                    `math mode`, nucleus);
             }
             symbol = new ParseNode(symbols[this.mode][text].group,
                             text, this.mode, nucleus);
-        } else if (supportedCodepoint(text.charCodeAt(0)) &&
-            (this.mode === "text" || this.settings.unicodeTextInMathMode)) {
+        } else if (supportedCodepoint(text.charCodeAt(0))) {
+            if (this.settings.strict && this.mode === 'math') {
+                this.settings.nonstrict("unicodeTextInMathMode",
+                    `Unicode text character "${text[0]}" used in math mode`,
+                    nucleus);
+            }
             symbol = new ParseNode("textord", text, this.mode, nucleus);
         } else {
             return null;  // EOF, ^, _, {, }, etc.
