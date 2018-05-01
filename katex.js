@@ -19,6 +19,7 @@ import type {SettingsOptions} from "./src/Settings";
 import type ParseNode from "./src/ParseNode";
 
 import { addFontMetrics } from './src/fontMetrics';
+import { defineSymbol } from './src/symbols';
 
 /**
  * Parse and build an expression, and place that expression in the DOM node
@@ -143,4 +144,8 @@ export default {
      * each key in the new object represents a font name
     */
     __addFontMetrics: addFontMetrics,
+    /*
+     * adds a new symbol to internal symbols table
+    */
+    __defineSymbol: defineSymbol,
 };
