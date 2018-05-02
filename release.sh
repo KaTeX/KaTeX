@@ -79,7 +79,7 @@ if ! command npm owner ls katex | grep -q "^$(command npm whoami) <"; then
     : $((++INSANE))
 fi
 if [[ $BRANCH != @(v*|master) ]]; then
-    echo "'$BRANCH' does not like a release branch to me" >&2
+    echo "'$BRANCH' does not look like a release branch to me" >&2
     : $((++INSANE))
 fi
 
