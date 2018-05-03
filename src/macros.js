@@ -127,19 +127,19 @@ defineMacro("\u211D", "\\mathbb{R}");
 defineMacro("\u2124", "\\mathbb{Z}");
 
 // Unicode Greek capital letters
-defineMacro("\u0391", "\\rm{A}");
-defineMacro("\u0392", "\\rm{B}");
-defineMacro("\u0395", "\\rm{E}");
-defineMacro("\u0396", "\\rm{Z}");
-defineMacro("\u0397", "\\rm{H}");
-defineMacro("\u0399", "\\rm{I}");
-defineMacro("\u039A", "\\rm{K}");
-defineMacro("\u039C", "\\rm{M}");
-defineMacro("\u039D", "\\rm{N}");
-defineMacro("\u039F", "\\rm{O}");
-defineMacro("\u03A1", "\\rm{P}");
-defineMacro("\u03A4", "\\rm{T}");
-defineMacro("\u03A7", "\\rm{X}");
+defineMacro("\u0391", "{\\rm{A}}");
+defineMacro("\u0392", "{\\rm{B}}");
+defineMacro("\u0395", "{\\rm{E}}");
+defineMacro("\u0396", "{\\rm{Z}}");
+defineMacro("\u0397", "{\\rm{H}}");
+defineMacro("\u0399", "{\\rm{I}}");
+defineMacro("\u039A", "{\\rm{K}}");
+defineMacro("\u039C", "{\\rm{M}}");
+defineMacro("\u039D", "{\\rm{N}}");
+defineMacro("\u039F", "{\\rm{O}}");
+defineMacro("\u03A1", "{\\rm{P}}");
+defineMacro("\u03A4", "{\\rm{T}}");
+defineMacro("\u03A7", "{\\rm{X}}");
 
 defineMacro("\u210E", "\\mathit{h}");   // Planck constant
 
