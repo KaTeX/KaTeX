@@ -20,6 +20,8 @@ import type ParseNode from "./src/ParseNode";
 
 import { defineSymbol } from './src/symbols';
 
+import { version } from "./package.json";
+
 /**
  * Parse and build an expression, and place that expression in the DOM node
  * given.
@@ -97,6 +99,10 @@ const renderToHTMLTree = function(
 };
 
 export default {
+    /**
+     * Current KaTeX version
+     */
+    version,
     /**
      * Renders the given LaTeX into an HTML+MathML combination, and adds
      * it as a child to the specified DOM node.
