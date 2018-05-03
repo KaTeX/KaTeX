@@ -2976,7 +2976,7 @@ describe("Unicode", function() {
     });
 
     it("should parse relations", function() {
-        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴").toParse();
+        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙").toParse();
     });
 
     it("should parse big operators", function() {
@@ -2984,11 +2984,16 @@ describe("Unicode", function() {
     });
 
     it("should parse more relations", function() {
-        expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋙⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆").toParse();
+        expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆").toParse();
     });
 
     it("should parse symbols", function() {
         expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°\u00b7").toParse();
+    });
+
+    it("should build Greek capital letters", function() {
+        expect("\u0391\u0392\u0395\u0396\u0397\u0399\u039A\u039C\u039D" +
+                "\u039F\u03A1\u03A4\u03A7").toBuild();
     });
 
     it("should parse arrows", function() {

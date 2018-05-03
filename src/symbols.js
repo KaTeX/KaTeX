@@ -19,7 +19,7 @@
 
 import type {Mode} from "./types";
 
-type Font = "main" | "ams";
+type Font = "main" | "ams"
 type Group =
     "accent" | "bin" | "close" | "inner" | "mathord" | "op" | "open" | "punct" |
     "rel" | "spacing" | "textord";
@@ -32,7 +32,7 @@ const symbols: {[Mode]: CharInfoMap} = {
 export default symbols;
 
 /** `acceptUnicodeChar = true` is only applicable if `replace` is set. */
-function defineSymbol(
+export function defineSymbol(
     mode: Mode,
     font: Font,
     group: Group,
@@ -83,7 +83,7 @@ defineSymbol(math, main, rel, "\u2aaf", "\\preceq", true);
 defineSymbol(math, main, rel, "\u2ab0", "\\succeq", true);
 defineSymbol(math, main, rel, "\u2243", "\\simeq", true);
 defineSymbol(math, main, rel, "\u2223", "\\mid", true);
-defineSymbol(math, main, rel, "\u226a", "\\ll");
+defineSymbol(math, main, rel, "\u226a", "\\ll", true);
 defineSymbol(math, main, rel, "\u226b", "\\gg", true);
 defineSymbol(math, main, rel, "\u224d", "\\asymp", true);
 defineSymbol(math, main, rel, "\u2225", "\\parallel");
@@ -303,7 +303,7 @@ defineSymbol(math, ams, rel, "\u2272", "\\lesssim");
 defineSymbol(math, ams, rel, "\u2a85", "\\lessapprox");
 defineSymbol(math, ams, rel, "\u224a", "\\approxeq", true);
 defineSymbol(math, ams, bin, "\u22d6", "\\lessdot");
-defineSymbol(math, ams, rel, "\u22d8", "\\lll");
+defineSymbol(math, ams, rel, "\u22d8", "\\lll", true);
 defineSymbol(math, ams, rel, "\u2276", "\\lessgtr");
 defineSymbol(math, ams, rel, "\u22da", "\\lesseqgtr");
 defineSymbol(math, ams, rel, "\u2a8b", "\\lesseqqgtr");
