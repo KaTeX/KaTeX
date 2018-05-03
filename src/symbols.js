@@ -19,7 +19,7 @@
 
 import type {Mode} from "./types";
 
-type Font = "main" | "ams";
+type Font = "main" | "ams"
 type Group =
     "accent" | "bin" | "close" | "inner" | "mathord" | "op" | "open" | "punct" |
     "rel" | "spacing" | "textord";
@@ -32,7 +32,7 @@ const symbols: {[Mode]: CharInfoMap} = {
 export default symbols;
 
 /** `acceptUnicodeChar = true` is only applicable if `replace` is set. */
-function defineSymbol(
+export function defineSymbol(
     mode: Mode,
     font: Font,
     group: Group,
@@ -460,6 +460,19 @@ defineSymbol(math, main, textord, "\u03a5", "\\Upsilon", true);
 defineSymbol(math, main, textord, "\u03a6", "\\Phi", true);
 defineSymbol(math, main, textord, "\u03a8", "\\Psi", true);
 defineSymbol(math, main, textord, "\u03a9", "\\Omega", true);
+defineSymbol(math, main, textord, "A", "\u0391");
+defineSymbol(math, main, textord, "B", "\u0392");
+defineSymbol(math, main, textord, "E", "\u0395");
+defineSymbol(math, main, textord, "Z", "\u0396");
+defineSymbol(math, main, textord, "H", "\u0397");
+defineSymbol(math, main, textord, "I", "\u0399");
+defineSymbol(math, main, textord, "K", "\u039A");
+defineSymbol(math, main, textord, "M", "\u039C");
+defineSymbol(math, main, textord, "N", "\u039D");
+defineSymbol(math, main, textord, "O", "\u039F");
+defineSymbol(math, main, textord, "P", "\u03A1");
+defineSymbol(math, main, textord, "T", "\u03A4");
+defineSymbol(math, main, textord, "X", "\u03A7");
 defineSymbol(math, main, textord, "\u00ac", "\\neg");
 defineSymbol(math, main, textord, "\u00ac", "\\lnot");
 defineSymbol(math, main, textord, "\u22a4", "\\top");
