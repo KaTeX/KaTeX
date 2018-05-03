@@ -98,6 +98,8 @@ defineSymbol(math, main, rel, "\u221d", "\\propto", true);
 defineSymbol(math, main, rel, "\u22a2", "\\vdash", true);
 defineSymbol(math, main, rel, "\u22a3", "\\dashv", true);
 defineSymbol(math, main, rel, "\u220b", "\\owns");
+defineSymbol(math, main, rel, "\u225d", "\\overset{\\mathrm{def}}{=}");
+
 
 // Punctuation
 defineSymbol(math, main, punct, "\u002e", "\\ldotp");
