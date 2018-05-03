@@ -126,21 +126,6 @@ defineMacro("\u211A", "\\mathbb{Q}");
 defineMacro("\u211D", "\\mathbb{R}");
 defineMacro("\u2124", "\\mathbb{Z}");
 
-// Unicode Greek capital letters
-defineMacro("\u0391", "A");
-defineMacro("\u0392", "B");
-defineMacro("\u0395", "E");
-defineMacro("\u0396", "Z");
-defineMacro("\u0397", "H");
-defineMacro("\u0399", "I");
-defineMacro("\u039A", "K");
-defineMacro("\u039C", "M");
-defineMacro("\u039D", "N");
-defineMacro("\u039F", "O");
-defineMacro("\u03A1", "P");
-defineMacro("\u03A4", "T");
-defineMacro("\u03A7", "X");
-
 defineMacro("\u210E", "\\mathit{h}");   // Planck constant
 
 // Characters omitted from Unicode range 1D400–1D7FF
