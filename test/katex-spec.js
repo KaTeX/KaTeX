@@ -50,8 +50,13 @@ const _getBuilt = function(expr, settings) {
     // grab the root node of the HTML rendering
     const builtHTML = rootNode.children[1];
 
-    // Remove the outer .katex and .katex-inner layers
-    return builtHTML.children[2].children;
+    // combine the non-strut children of all base spans
+    const children = [];
+    for (let i = 0; i < builtHTML.children.length; i++) {
+        children.push(...builtHTML.children[i].children.filter(
+            (node) => node.classes.indexOf("strut") < 0));
+    }
+    return children;
 };
 
 /**
@@ -149,10 +154,10 @@ beforeEach(function() {
             } catch (e) {
                 if (e instanceof ParseError) {
                     result.pass = true;
-                    result.message = "'" + actual + "' correctly " +
+                    result.message = () => "'" + actual + "' correctly " +
                         "didn't parse with error: " + e.message;
                 } else {
-                    result.message = "'" + actual + "' failed " +
+                    result.message = () => "'" + actual + "' failed " +
                         "parsing with unknown error: " + e.message;
                 }
             }
@@ -175,10 +180,10 @@ beforeEach(function() {
             } catch (e) {
                 result.pass = false;
                 if (e instanceof ParseError) {
-                    result.message = "'" + actual + "' failed to " +
+                    result.message = () => "'" + actual + "' failed to " +
                         "build with error: " + e.message;
                 } else {
-                    result.message = "'" + actual + "' failed " +
+                    result.message = () => "'" + actual + "' failed " +
                         "building with unknown error: " + e.message;
                 }
             }

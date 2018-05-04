@@ -639,7 +639,7 @@ export default function buildHTML(tree, options) {
     // Build the expression contained in the tree
     const expression = buildExpression(tree, options, true);
 
-    const htmlNode = makeSpan(["katex-html"]);
+    const htmlNode = makeSpan(["katex-html"], []);
     htmlNode.setAttribute("aria-hidden", "true");
 
     // Create one base node for each chunk between potential line breaks.
