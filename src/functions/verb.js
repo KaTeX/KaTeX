@@ -25,7 +25,11 @@ defineFunction({
         // \verb enters text mode and therefore is sized like \textstyle
         const newOptions = options.havingStyle(options.style.text());
         for (let i = 0; i < text.length; i++) {
-            body.push(buildCommon.makeSymbol(text[i], "Typewriter-Regular",
+            let c = text[i];
+            if (c === '~') {
+                c = '\\textasciitilde';
+            }
+            body.push(buildCommon.makeSymbol(c, "Typewriter-Regular",
                 group.mode, newOptions, ["mord", "texttt"]));
         }
         buildCommon.tryCombineChars(body);
