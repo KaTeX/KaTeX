@@ -3085,6 +3085,10 @@ describe("strict setting", function() {
         expect("試").toParse(new Settings({strict: false}));
         expect("é").toParse(new Settings({strict: "ignore"}));
         expect("試").toParse(new Settings({strict: "ignore"}));
+        expect("é").toParse(new Settings({strict: () => false}));
+        expect("試").toParse(new Settings({strict: () => false}));
+        expect("é").toParse(new Settings({strict: () => "ignore"}));
+        expect("試").toParse(new Settings({strict: () => "ignore"}));
     });
 
     it("should forbid unicode text when strict", () => {
@@ -3092,6 +3096,10 @@ describe("strict setting", function() {
         expect("試").toNotParse(new Settings({strict: true}));
         expect("é").toNotParse(new Settings({strict: "error"}));
         expect("試").toNotParse(new Settings({strict: "error"}));
+        expect("é").toNotParse(new Settings({strict: () => true}));
+        expect("試").toNotParse(new Settings({strict: () => true}));
+        expect("é").toNotParse(new Settings({strict: () => "error"}));
+        expect("試").toNotParse(new Settings({strict: () => "error"}));
     });
 
     it("should allow unicode text when default", () => {
