@@ -675,8 +675,11 @@ export default function buildHTML(tree, options) {
 
     for (let i = 0; i < expression.length; i++) {
         parts.push(expression[i]);
-        if (utils.contains(expression[i].classes, "mbin") ||
-            utils.contains(expression[i].classes, "mrel")) {
+        if ((utils.contains(expression[i].classes, "mbin") ||
+             utils.contains(expression[i].classes, "mrel") ||
+             utils.contains(expression[i].classes, "allowbreak")) &&
+            !(i < expression.length - 1 &&
+              utils.contains(expression[i + 1].classes, "nobreak"))) {
             newBody();
         }
     }

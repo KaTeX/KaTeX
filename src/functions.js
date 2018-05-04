@@ -300,3 +300,6 @@ import "./functions/href";
 
 // MathChoice
 import "./functions/mathchoice";
+
+// \nobreak and \allowbreak
+import "./functions/break";
