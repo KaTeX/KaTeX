@@ -638,25 +638,51 @@ export default function buildHTML(tree, options) {
 
     // Build the expression contained in the tree
     const expression = buildExpression(tree, options, true);
-    const body = makeSpan(["base"], expression, options);
 
-    // Add struts, which ensure that the top of the HTML element falls at the
-    // height of the expression, and the bottom of the HTML element falls at the
-    // depth of the expression.
-    const topStrut = makeSpan(["strut"]);
-    const bottomStrut = makeSpan(["strut", "bottom"]);
-
-    topStrut.style.height = body.height + "em";
-    bottomStrut.style.height = (body.height + body.depth) + "em";
-    // We'd like to use `vertical-align: top` but in IE 9 this lowers the
-    // baseline of the box to the bottom of this strut (instead staying in the
-    // normal place) so we use an absolute value for vertical-align instead
-    bottomStrut.style.verticalAlign = -body.depth + "em";
-
-    // Wrap the struts and body together
-    const htmlNode = makeSpan(["katex-html"], [topStrut, bottomStrut, body]);
-
+    const htmlNode = makeSpan(["katex-html"]);
     htmlNode.setAttribute("aria-hidden", "true");
+
+    // Create one base node for each chunk between potential line breaks.
+    // The TeXBook [p.173] says "A formula will be broken only after a
+    // relation symbol like $=$ or $<$ or $\rightarrow$, or after a binary
+    // operation symbol like $+$ or $-$ or $\times$, where the relation or
+    // binary operation is on the ``outer level'' of the formula (i.e., not
+    // enclosed in {...} and not part of an \over construction)."
+
+    let parts = [];
+
+    function newBody() {
+        // Compute height and depth of this chunk.
+        const body = makeSpan(["base"], parts, options);
+
+        // Add struts, which ensure that the top of the HTML element falls at
+        // the height of the expression, and the bottom of the HTML element
+        // falls at the depth of the expression.
+        const topStrut = makeSpan(["strut"]);
+        const bottomStrut = makeSpan(["strut", "bottom"]);
+
+        topStrut.style.height = body.height + "em";
+        bottomStrut.style.height = (body.height + body.depth) + "em";
+        // We'd like to use `vertical-align: top` but in IE 9 this lowers the
+        // baseline of the box to the bottom of this strut (instead staying in the
+        // normal place) so we use an absolute value for vertical-align instead
+        bottomStrut.style.verticalAlign = -body.depth + "em";
+
+        body.children.unshift(topStrut, bottomStrut);
+        htmlNode.children.push(body);
+        parts = [];
+    }
+
+    for (let i = 0; i < expression.length; i++) {
+        parts.push(expression[i]);
+        if (utils.contains(expression[i].classes, "mbin") ||
+            utils.contains(expression[i].classes, "mrel")) {
+            newBody();
+        }
+    }
+    if (parts.length > 0) {
+        newBody();
+    }
 
     return htmlNode;
 }
