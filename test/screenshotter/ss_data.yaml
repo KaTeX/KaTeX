@@ -352,6 +352,7 @@ Verb: |
       \verb* \verb* , & \verb*|\verb* |, \\
       \verb!<x> & </y>! & \scriptstyle\verb|ss verb| \\
       \verb*!<x> & </y>! & \small\verb|sm verb| \\
+      \verb|``---''~|
     \end{array}
 VerticalSpacing:
     pre: potato<br>blah
