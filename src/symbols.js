@@ -590,6 +590,8 @@ defineSymbol(text, main, spacing, null, "\\qquad");
 defineSymbol(text, main, spacing, null, "\\quad");
 defineSymbol(text, main, spacing, "\u00a0", "\\space");
 defineSymbol(text, main, spacing, "\u00a0", "\\nobreakspace");
+defineSymbol(math, main, spacing, null, "\\nobreak");
+defineSymbol(math, main, spacing, null, "\\allowbreak");
 defineSymbol(math, main, punct, ",", ",");
 defineSymbol(math, main, punct, ";", ";");
 defineSymbol(math, main, punct, ":", "\\colon");

@@ -687,16 +687,28 @@ const spacingFunctions: {[string]: {| size: string, className: string |}} = {
         size: "-0.16667em",
         className: "negativethinspace",
     },
+    "\\nobreak": {
+        size: "0em",
+        className: "nobreak",
+    },
+    "\\allowbreak": {
+        size: "0em",
+        className: "allowbreak",
+    },
 };
 
 // A lookup table to determine whether a spacing function/symbol should be
 // treated like a regular space character.
 const regularSpace: {[string]: boolean} = {
-    " ": true,
-    "\\ ": true,
-    "~": true,
-    "\\space": true,
-    "\\nobreakspace": true,
+    " ": {},
+    "\\ ": {},
+    "~": {
+        className: "nobreak",
+    },
+    "\\space": {},
+    "\\nobreakspace": {
+        className: "nobreak",
+    },
 };
 
 /**
