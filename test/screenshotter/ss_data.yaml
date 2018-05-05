@@ -218,7 +218,7 @@ OpLimits: |
 OverUnderline: x\underline{x}\underline{\underline{x}}\underline{x_{x_{x_x}}}\underline{x^{x^{x^x}}}\overline{x}\overline{x}\overline{x^{x^{x^x}}} \blue{\overline{\underline{x}}\underline{\overline{x}}}
 OverUnderset: |
     \begin{array}{l}
-    x\overset?=1 \quad \underset{*}{x}^2 \\
+    x\overset?=1 \quad \underset{*}{x}^2 \quad \overset{a}{b}b\underset{a}{b}b \\
     {\displaystyle\lim_{t\underset{>0}\to0}}\\
     a+b+c+d\overset{b+c=0}\longrightarrow a+d\\
     \overset { x = y } { \sqrt { a b } }

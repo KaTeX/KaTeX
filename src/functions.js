@@ -66,26 +66,31 @@ defineFunction([
 defineFunction(["\\stackrel", "\\overset", "\\underset"], {
     numArgs: 2,
 }, function(context, args) {
-    const mathAxisArg = args[1];
+    const baseArg = args[1];
     const shiftedArg = args[0];
 
-    const xAxisOp = new ParseNode("op", {
+    let mclass = "mrel";
+    if (context.funcName !== "\\stackrel") {
+        mclass = "m" + baseArg.value[0].type.replace("math", "");
+    }
+
+    const baseOp = new ParseNode("op", {
         type: "op",
         limits: true,
         alwaysHandleSupSub: true,
         symbol: false,
-        value: ordargument(mathAxisArg),
-    }, mathAxisArg.mode);
+        value: ordargument(baseArg),
+    }, baseArg.mode);
 
     const supsub = new ParseNode("supsub", {
-        base: xAxisOp,
+        base: baseOp,
         sup: context.funcName === "\\underset" ? null : shiftedArg,
         sub: context.funcName === "\\underset" ? shiftedArg : null,
     }, shiftedArg.mode);
 
     return {
         type: "mclass",
-        mclass: "mrel",
+        mclass: mclass,
         value: [supsub],
     };
 });
