@@ -677,10 +677,20 @@ export default function buildHTML(tree, options) {
         parts.push(expression[i]);
         if ((utils.contains(expression[i].classes, "mbin") ||
              utils.contains(expression[i].classes, "mrel") ||
-             utils.contains(expression[i].classes, "allowbreak")) &&
-            !(i < expression.length - 1 &&
-              utils.contains(expression[i + 1].classes, "nobreak"))) {
-            newBody();
+             utils.contains(expression[i].classes, "allowbreak"))) {
+            // Put any post-operator glue on same line as operator.
+            while (i < expression.length - 1 &&
+                   (utils.contains(expression[i + 1].classes, "rule") &&
+                    expression[i + 1].style.marginRight)) {
+                i++;
+                parts.push(expression[i]);
+            }
+            // Don't break at all if \nobreak immediately following
+            // (after glue).
+            if (!(i < expression.length - 1 &&
+                  utils.contains(expression[i + 1].classes, "nobreak"))) {
+                newBody();
+            }
         }
     }
     if (parts.length > 0) {
