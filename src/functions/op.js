@@ -72,7 +72,7 @@ const htmlBuilder = (group, options) => {
     // If content of op is a single symbol, shift it vertically.
     let baseShift = 0;
     let slant = 0;
-    if (group.value.symbol) {
+    if (group.value.symbol && base instanceof domTree.symbolNode) {
         // Shift the symbol so its center lies on the axis (rule 13). It
         // appears that our fonts have the centers of the symbols already
         // almost on the axis, so these numbers are very small. Note we
