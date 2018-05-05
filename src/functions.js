@@ -71,6 +71,9 @@ defineFunction(["\\stackrel", "\\overset", "\\underset"], {
 
     let mclass = "mrel";
     if (context.funcName !== "\\stackrel") {
+        // LaTeX applies \binrel spacing to \overset and \underset.
+        // \binrel spacing varies with (bin|rel|ord) of the atom in the argument.
+        // We'll do the same.
         mclass = "m" + baseArg.value[0].type.replace("math", "");
     }
 
