@@ -1,6 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
+import { groupTypes } from "../buildHTML";
 import mathMLTree from "../mathMLTree";
 
 // \nobreak and \allowbreak turn into special types of span with class
@@ -19,15 +20,28 @@ defineFunction({
     handler(context, args, optArgs) {
         return {
             type: "nobreak",
+            value: context.funcName,
         };
     },
     htmlBuilder(group, options) {
-        return buildCommon.makeSpan(["mspace", "nobreak"], [], options);
+        let span;
+        if (group.value.value !== "\\nobreak") {
+            span = groupTypes.spacing({
+                mode: group.mode,
+                value: group.value.value,
+            }, options);
+            span.classes.push("nobreak");
+        } else {
+            span = buildCommon.makeSpan(["mspace", "nobreak"], [], options);
+        }
+        return span;
     },
     mathmlBuilder(group, options) {
-        const node = new mathMLTree.MathNode("mspace");
-        node.setAttribute("width", 0);
-        return node;
+        let text = "";
+        if (group.value.value !== "\\nobreak") {
+            text = "\u00a0";
+        }
+        return new mathMLTree.TextNode(text);
     },
 });
 
@@ -47,8 +61,6 @@ defineFunction({
         return buildCommon.makeSpan(["mspace", "allowbreak"], [], options);
     },
     mathmlBuilder(group, options) {
-        const node = new mathMLTree.MathNode("mspace");
-        node.setAttribute("width", 0);
-        return node;
+        return new mathMLTree.TextNode(text);
     },
 });
