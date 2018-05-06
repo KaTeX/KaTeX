@@ -18,6 +18,10 @@ import utils from "./src/utils";
 import type {SettingsOptions} from "./src/Settings";
 import type ParseNode from "./src/ParseNode";
 
+import { defineSymbol } from './src/symbols';
+
+import { version } from "./package.json";
+
 /**
  * Parse and build an expression, and place that expression in the DOM node
  * given.
@@ -68,7 +72,6 @@ const generateParseTree = function(
     return parseTree(expression, settings);
 };
 
-
 /**
  * Generates and returns the katex build tree. This is used for advanced
  * use cases (like rendering to custom output).
@@ -96,6 +99,10 @@ const renderToHTMLTree = function(
 };
 
 export default {
+    /**
+     * Current KaTeX version
+     */
+    version,
     /**
      * Renders the given LaTeX into an HTML+MathML combination, and adds
      * it as a child to the specified DOM node.
@@ -137,4 +144,8 @@ export default {
      * to change. Use at your own risk.
      */
     __renderToHTMLTree: renderToHTMLTree,
+    /**
+     * adds a new symbol to internal symbols table
+    */
+    __defineSymbol: defineSymbol,
 };
