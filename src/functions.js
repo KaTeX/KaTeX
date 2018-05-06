@@ -74,7 +74,11 @@ defineFunction(["\\stackrel", "\\overset", "\\underset"], {
         // LaTeX applies \binrel spacing to \overset and \underset.
         // \binrel spacing varies with (bin|rel|ord) of the atom in the argument.
         // We'll do the same.
-        mclass = "m" + baseArg.value[0].type.replace("math", "");
+        if (baseArg.type === "ordgroup") {
+            mclass = "m" + baseArg.value[0].type.replace("math", "");
+        } else {
+            mclass = "m" + baseArg.type.replace("math", "");
+        }
     }
 
     const baseOp = new ParseNode("op", {
@@ -82,6 +86,7 @@ defineFunction(["\\stackrel", "\\overset", "\\underset"], {
         limits: true,
         alwaysHandleSupSub: true,
         symbol: false,
+        suppressBaseShift: context.funcName !== "\\stackrel",
         value: ordargument(baseArg),
     }, baseArg.mode);
 
