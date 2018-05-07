@@ -6,13 +6,13 @@ checkout_submodule: &checkout_submodule
         git submodule update --init --recursive
 
 npm_cache_key: &npm_cache_key
-  npm-deps-v0-{{ checksum "package.json" }}
+  npm-deps-v1-{{ checksum "package.json" }}
 
 restore_npm_cache: &restore_npm_cache
   restore_cache:
     keys:
       - *npm_cache_key
-      - npm-deps-v0-
+      - npm-deps-v1-
 
 npm_install: &npm_install
   run:
