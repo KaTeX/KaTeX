@@ -683,8 +683,7 @@ export default function buildHTML(tree, options) {
              utils.contains(expression[i].classes, "allowbreak"))) {
             // Put any post-operator glue on same line as operator.
             while (i < expression.length - 1 &&
-                   (utils.contains(expression[i + 1].classes, "rule") &&
-                    expression[i + 1].style.marginRight)) {
+                   utils.contains(expression[i + 1].classes, "mspace")) {
                 i++;
                 parts.push(expression[i]);
             }
