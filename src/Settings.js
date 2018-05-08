@@ -22,7 +22,7 @@ export type SettingsOptions = {
     errorColor?: string;
     macros?: MacroMap;
     colorIsTextColor?: boolean;
-    strict?: boolean | string | StrictFunction;
+    strict?: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize?: number;
 };
 
@@ -42,7 +42,7 @@ class Settings {
     errorColor: string;
     macros: MacroMap;
     colorIsTextColor: boolean;
-    strict: boolean | string | StrictFunction;
+    strict: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize: number;
 
     constructor(options: SettingsOptions) {
@@ -78,7 +78,7 @@ class Settings {
             typeof console !== "undefined" && console.warn(
                 "LaTeX-incompatible input and strict mode is set to 'warn': " +
                 `${errorMsg} [${errorCode}]`);
-        } else {
+        } else {  // won't happen in type-safe code
             typeof console !== "undefined" && console.warn(
                 "LaTeX-incompatible input and strict mode is set to " +
                 `unrecognized '${strict}': ${errorMsg} [${errorCode}]`);
