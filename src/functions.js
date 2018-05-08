@@ -69,7 +69,7 @@ defineFunction(["\\stackrel", "\\overset", "\\underset"], {
     const baseArg = args[1];
     const shiftedArg = args[0];
 
-    let mclass = "mord";  // default. May change below
+    let mclass = "mrel";  // default. May change below.
     if (context.funcName !== "\\stackrel") {
         // LaTeX applies \binrel spacing to \overset and \underset.
         // \binrel spacing varies with (bin|rel|ord) of the atom in the argument.
