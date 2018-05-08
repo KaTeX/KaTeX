@@ -697,6 +697,7 @@ defineSymbol(text, main, accent, "\u02da", "\\r"); // ring above
 defineSymbol(text, main, accent, "\u02c7", "\\v"); // caron
 defineSymbol(text, main, accent, "\u00a8", '\\"'); // diaresis
 defineSymbol(text, main, accent, "\u02dd", "\\H"); // double acute
+defineSymbol(text, main, accent, "\u25ef", "\\textcircled"); // \bigcirc glyph
 
 defineSymbol(text, main, textord, "\u2013", "--");
 defineSymbol(text, main, textord, "\u2013", "\\textendash");

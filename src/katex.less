@@ -401,8 +401,13 @@
             text-align: center;
         }
 
-        .accent-body {
+        // Accents that are not of the accent-full class have zero width
+        // (do not contribute to the width of the final symbol).
+        .accent-body:not(.accent-full) {
             width: 0;
+        }
+
+        .accent-body {
             position: relative; // so that 'left' can shift the accent
         }
     }
