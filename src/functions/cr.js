@@ -47,7 +47,6 @@ defineFunction({
     mathmlBuilder: (group, options) => {
         const node = new mathMLTree.MathNode("mspace");
         node.setAttribute("linebreak", "newline");
-        console.log(group.value);
         if (group.value.size) {
             node.setAttribute("height",
                 calculateSize(group.value.size.value, options) + "em");

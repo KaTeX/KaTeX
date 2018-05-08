@@ -150,7 +150,7 @@ export default class Parser {
         return expression;
     }
 
-    static endOfExpression = ["}", "\\end", "\\right", "&"];
+    static endOfExpression = ["}", "\\end", "\\right", "&", "\\cr"];
 
     /**
      * Parses an "expression", which is a list of atoms.
@@ -179,10 +179,7 @@ export default class Parser {
             if (Parser.endOfExpression.indexOf(lex.text) !== -1) {
                 break;
             }
-            if (breakOnTokenText && (
-                (breakOnTokenText instanceof RegExp &&
-                 lex.text.match(breakOnTokenText)) ||
-                 lex.text === breakOnTokenText)) {
+            if (breakOnTokenText && lex.text === breakOnTokenText) {
                 break;
             }
             if (breakOnInfix && functions[lex.text] && functions[lex.text].infix) {
