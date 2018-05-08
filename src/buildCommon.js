@@ -10,6 +10,7 @@ import fontMetrics from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
 import stretchy from "./stretchy";
+import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
 
 import type Options from "./Options";
@@ -234,7 +235,11 @@ const makeOrd = function(
     // Math mode or Old font (i.e. \rm)
     const isFont = mode === "math" || (mode === "text" && options.font);
     const fontOrFamily = isFont ? options.font : options.fontFamily;
-    if (fontOrFamily) {
+    if (value.charCodeAt(0) === 0xD835) {
+        // surrogate pairs get special treatment
+        const [wideFontName, wideFontClass] = wideCharacterFont(value, mode);
+        return makeSymbol(value, wideFontName, mode, options, [wideFontClass]);
+    } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
         if (fontOrFamily === "boldsymbol") {

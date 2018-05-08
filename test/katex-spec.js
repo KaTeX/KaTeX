@@ -3003,13 +3003,48 @@ describe("Unicode", function() {
         expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toParse();
     });
 
-    it("should parse delimeters", function() {
+    it("should build delimiters", function() {
         expect("\\left\u230A\\frac{a}{b}\\right\u230B").toBuild();
         expect("\\left\u2308\\frac{a}{b}\\right\u2308").toBuild();
         expect("\\left\u27ee\\frac{a}{b}\\right\u27ef").toBuild();
         expect("\\left\u27e8\\frac{a}{b}\\right\u27e9").toBuild();
         expect("\\left\u23b0\\frac{a}{b}\\right\u23b1").toBuild();
         expect("┌x┐ └x┘").toBuild();
+    });
+
+    it("should build some surrogate pairs", function() {
+        let wideCharStr = "";
+        wideCharStr += String.fromCharCode(0xD835, 0xDC00);   // bold A
+        wideCharStr += String.fromCharCode(0xD835, 0xDC68);   // bold italic A
+        wideCharStr += String.fromCharCode(0xD835, 0xDD04);   // Fraktur A
+        wideCharStr += String.fromCharCode(0xD835, 0xDD38);   // double-struck
+        wideCharStr += String.fromCharCode(0xD835, 0xDC9C);   // script A
+        wideCharStr += String.fromCharCode(0xD835, 0xDDA0);   // sans serif A
+        wideCharStr += String.fromCharCode(0xD835, 0xDDD4);   // bold sans A
+        wideCharStr += String.fromCharCode(0xD835, 0xDE08);   // italic sans A
+        wideCharStr += String.fromCharCode(0xD835, 0xDE70);   // monospace A
+        wideCharStr += String.fromCharCode(0xD835, 0xDFCE);   // bold zero
+        wideCharStr += String.fromCharCode(0xD835, 0xDFE2);   // sans serif zero
+        wideCharStr += String.fromCharCode(0xD835, 0xDFEC);   // bold sans zero
+        wideCharStr += String.fromCharCode(0xD835, 0xDFF6);   // monospace zero
+        expect(wideCharStr).toBuild();
+
+        let wideCharText = "\text{";
+        wideCharText += String.fromCharCode(0xD835, 0xDC00);   // bold A
+        wideCharText += String.fromCharCode(0xD835, 0xDC68);   // bold italic A
+        wideCharText += String.fromCharCode(0xD835, 0xDD04);   // Fraktur A
+        wideCharText += String.fromCharCode(0xD835, 0xDD38);   // double-struck
+        wideCharText += String.fromCharCode(0xD835, 0xDC9C);   // script A
+        wideCharText += String.fromCharCode(0xD835, 0xDDA0);   // sans serif A
+        wideCharText += String.fromCharCode(0xD835, 0xDDD4);   // bold sans A
+        wideCharText += String.fromCharCode(0xD835, 0xDE08);   // italic sans A
+        wideCharText += String.fromCharCode(0xD835, 0xDE70);   // monospace A
+        wideCharText += String.fromCharCode(0xD835, 0xDFCE);   // bold zero
+        wideCharText += String.fromCharCode(0xD835, 0xDFE2);   // sans serif zero
+        wideCharText += String.fromCharCode(0xD835, 0xDFEC);   // bold sans zero
+        wideCharText += String.fromCharCode(0xD835, 0xDFF6);   // monospace zero
+        wideCharText += "}";
+        expect(wideCharText).toBuild();
     });
 });
 
