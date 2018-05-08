@@ -82,7 +82,7 @@ defineFunction(["\\stackrel", "\\overset", "\\underset"], {
             arg = arg.value[0];
         }
         if (/bin|rel|mathord/.test(arg.type)) {
-             mclass = "m" + arg.type.replace("math", "");
+            mclass = "m" + arg.type.replace("math", "");
         }
     }
 
