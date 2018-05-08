@@ -704,7 +704,7 @@ const spacingFunctions: {[string]: {| size: string, className: string |}} = {
 
 // A lookup table to determine whether a spacing function/symbol should be
 // treated like a regular space character.
-const regularSpace: {[string]: boolean} = {
+const regularSpace: {[string]: { className?: string }} = {
     " ": {},
     "\\ ": {},
     "~": {
