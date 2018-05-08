@@ -178,16 +178,11 @@ const svgSpan = function(
         height: number,
     } {
         let viewBoxWidth = 400000;  // default
-        // The "accent" ParseNode value could be a string since it's one of the
-        // groups enumerated in symbols.js. But the logic here assumes that it's
-        // a struct.
-        // $FlowFixMe
-        const nodeValue: AccentStructType = group.value;
-        const label = nodeValue.label.substr(1);
+        const label = group.value.label.substr(1);
         if (utils.contains(["widehat", "widetilde", "utilde"], label)) {
             // There are four SVG images available for each function.
             // Choose a taller image when there are more characters.
-            const numChars = groupLength(nodeValue.base);
+            const numChars = groupLength(group.value.base);
             let viewBoxHeight;
             let pathName;
             let height;
