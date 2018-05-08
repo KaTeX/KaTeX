@@ -21,7 +21,9 @@ import stretchy from "./stretchy";
  */
 export const makeText = function(text, mode) {
     if (symbols[mode][text] && symbols[mode][text].replace) {
-        text = symbols[mode][text].replace;
+        if (text.charCodeAt(0) !== 0xD835) {
+            text = symbols[mode][text].replace;
+        }
     }
 
     return new mathMLTree.TextNode(text);
