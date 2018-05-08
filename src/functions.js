@@ -83,6 +83,9 @@ defineFunction(["\\stackrel", "\\overset", "\\underset"], {
         if (/^(bin|rel)$/.test(atomType)) {
             mclass = "m" + atomType;
         } else {
+            // This may capture some instances in which the baseArg is more than
+            // just a single symbol. Say a \overset inside an \overset.
+            // TODO: A more comprehensive way to determine the baseArg type.
             mclass = "mord";
         }
     }
