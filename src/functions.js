@@ -74,15 +74,16 @@ defineFunction(["\\stackrel", "\\overset", "\\underset"], {
         // LaTeX applies \binrel spacing to \overset and \underset.
         // \binrel spacing varies with (bin|rel|ord) of the atom in the argument.
         // We'll do the same.
-        let arg = baseArg;
-        while (arg.type === "ordgroup") {
-            if (arg.value.length === 0) {
-                break;
-            }
-            arg = arg.value[0];
+        let atomType = "";
+        if (baseArg.type === "ordgroup") {
+            atomType = baseArg.value[0].type;
+        } else {
+            atomType = baseArg.type;
         }
-        if (/bin|rel|mathord/.test(arg.type)) {
-            mclass = "m" + arg.type.replace("math", "");
+        if (/^(bin|rel)$/.test(atomType)) {
+            mclass = "m" + atomType;
+        } else {
+            mclass = "mord";
         }
     }
 
