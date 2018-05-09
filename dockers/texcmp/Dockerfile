@@ -17,7 +17,6 @@ RUN sed -i 's/^\(deb.*updates\)/#\1/' /etc/apt/sources.list \
         npm \
         texlive-generic-recommended \
         texlive-fonts-recommended \
-        texlive-font-utils \
         texlive-latex-base \
         texlive-latex-extra \
  && apt-get clean \
