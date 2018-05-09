@@ -703,7 +703,10 @@ const spacingFunctions: {[string]: {| size: string, className: string |}} = {
 };
 
 // A lookup table to determine whether a spacing function/symbol should be
-// treated like a regular space character.
+// treated like a regular space character.  If a symbol or command is a key
+// in this table, then it should be a regular space character.  Furthermore,
+// the associated value may have a `className` specifying an extra CSS class
+// to add to the created `span`.
 const regularSpace: {[string]: { className?: string }} = {
     " ": {},
     "\\ ": {},
