@@ -122,7 +122,7 @@
         font-family: KaTeX_AMS;
     }
 
-    .mathbb {
+    .mathbb, .textbb {
         font-family: KaTeX_AMS;
     }
 
@@ -130,7 +130,7 @@
         font-family: KaTeX_Caligraphic;
     }
 
-    .mathfrak {
+    .mathfrak, .textfrak {
         font-family: KaTeX_Fraktur;
     }
 
@@ -138,11 +138,11 @@
         font-family: KaTeX_Typewriter;
     }
 
-    .mathscr {
+    .mathscr, .textscr {
         font-family: KaTeX_Script;
     }
 
-    .mathsf {
+    .mathsf, .textsf {
         font-family: KaTeX_SansSerif;
     }
 
@@ -417,8 +417,13 @@
             text-align: center;
         }
 
-        .accent-body {
+        // Accents that are not of the accent-full class have zero width
+        // (do not contribute to the width of the final symbol).
+        .accent-body:not(.accent-full) {
             width: 0;
+        }
+
+        .accent-body {
             position: relative; // so that 'left' can shift the accent
         }
     }
