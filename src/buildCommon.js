@@ -621,14 +621,8 @@ const retrieveTextFontName = function(
     fontWeight: string,
     fontShape: string,
 ): string {
-    const baseFontName = retrieveBaseFontName(fontFamily);
-    const fontStylesName = retrieveFontStylesName(fontWeight, fontShape);
-    return `${baseFontName}-${fontStylesName}`;
-};
-
-const retrieveBaseFontName = function(font: string): string {
     let baseFontName = "";
-    switch (font) {
+    switch (fontFamily) {
         case "amsrm":
             baseFontName = "AMS";
             break;
@@ -642,23 +636,21 @@ const retrieveBaseFontName = function(font: string): string {
             baseFontName = "Typewriter";
             break;
         default:
-            throw new Error(`Invalid font provided: ${font}`);
+            throw new Error(`Invalid font provided: ${fontFamily}`);
     }
-    return baseFontName;
-};
 
-const retrieveFontStylesName = function(
-    fontWeight?: string,
-    fontShape?: string,
-): string {
-    let fontStylesName = '';
-    if (fontWeight === "textbf") {
-        fontStylesName += "Bold";
+    let fontStylesName;
+    if (fontWeight === "textbf" && fontShape === "textit") {
+        fontStylesName = "BoldItalic";
+    } else if (fontWeight === "textbf") {
+        fontStylesName = "Bold";
+    } else if (fontWeight === "textit") {
+        fontStylesName = "Italic";
+    } else {
+        fontStylesName = "Regular";
     }
-    if (fontShape === "textit") {
-        fontStylesName += "Italic";
-    }
-    return fontStylesName || "Regular";
+
+    return `${baseFontName}-${fontStylesName}`;
 };
 
 // A map of spacing functions to their attributes, like size and corresponding
