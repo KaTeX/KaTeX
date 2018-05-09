@@ -62,26 +62,26 @@ defineFunction([
     };
 });
 
-// Build a relation by placing one symbol on top of another
-defineFunction(["\\stackrel"], {
+// Build a relation or stacked op by placing one symbol on top of another
+defineFunction(["\\stackrel", "\\overset", "\\underset"], {
     numArgs: 2,
 }, function(context, args) {
-    const top = args[0];
-    const bottom = args[1];
+    const mathAxisArg = args[1];
+    const shiftedArg = args[0];
 
-    const bottomop = new ParseNode("op", {
+    const xAxisOp = new ParseNode("op", {
         type: "op",
         limits: true,
         alwaysHandleSupSub: true,
         symbol: false,
-        value: ordargument(bottom),
-    }, bottom.mode);
+        value: ordargument(mathAxisArg),
+    }, mathAxisArg.mode);
 
     const supsub = new ParseNode("supsub", {
-        base: bottomop,
-        sup: top,
-        sub: null,
-    }, top.mode);
+        base: xAxisOp,
+        sup: context.funcName === "\\underset" ? null : shiftedArg,
+        sub: context.funcName === "\\underset" ? shiftedArg : null,
+    }, shiftedArg.mode);
 
     return {
         type: "mclass",

@@ -7,7 +7,7 @@ import Settings from "./Settings";
 import Style from "./Style";
 
 import type ParseNode from "./ParseNode";
-import type domTree from "./domTree";
+import type {DomSpan} from "./domTree";
 
 const optionsFromSettings = function(settings: Settings) {
     return new Options({
@@ -20,7 +20,7 @@ export const buildTree = function(
     tree: ParseNode[],
     expression: string,
     settings: Settings,
-): domTree.span {
+): DomSpan {
     const options = optionsFromSettings(settings);
     // `buildHTML` sometimes messes with the parse tree (like turning bins ->
     // ords), so we build the MathML version first.
@@ -42,7 +42,7 @@ export const buildHTMLTree = function(
     tree: ParseNode[],
     expression: string,
     settings: Settings,
-): domTree.span {
+): DomSpan {
     const options = optionsFromSettings(settings);
     const htmlNode = buildHTML(tree, options);
     const katexNode = buildCommon.makeSpan(["katex"], [htmlNode]);
