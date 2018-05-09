@@ -26,7 +26,7 @@ defineFunction({
         const innerGroup = html.buildGroup(group.value.body, options);
 
         // Create the line to go below the body
-        const line = buildCommon.makeLineSpan("underline-line", options);
+        const line = buildCommon.makeLineSpan("underline-line", null, options);
 
         // Generate the vlist, with the appropriate kerns
         const vlist = buildCommon.makeVList({

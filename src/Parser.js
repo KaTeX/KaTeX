@@ -243,7 +243,35 @@ export default class Parser {
                 denomNode = new ParseNode("ordgroup", denomBody, this.mode);
             }
 
-            const value = this.callFunction(funcName, [numerNode, denomNode], []);
+            let value;
+            let lineThickness;
+            let leftDelim;
+            let rightDelim;
+            switch (funcName) {
+                case "\\\\abovefrac":
+                    lineThickness = body[overIndex].value.sizeNode;
+                    value = this.callFunction(funcName, [numerNode, denomNode,
+                        lineThickness], []);
+                    break;
+                case "\\\\atopwithdelimsfrac":
+                case "\\\\overwithdelimsfrac":
+                    leftDelim = body[overIndex].value.leftDelim;
+                    rightDelim = body[overIndex].value.rightDelim;
+                    value = this.callFunction(funcName, [numerNode, denomNode,
+                        leftDelim, rightDelim], []);
+                    break;
+                case "\\\\abovewithdelimsfrac":
+                    leftDelim = body[overIndex].value.leftDelim;
+                    rightDelim = body[overIndex].value.rightDelim;
+                    lineThickness = body[overIndex].value.sizeNode;
+                    value = this.callFunction(funcName, [numerNode, denomNode,
+                        leftDelim, rightDelim, lineThickness], []);
+                    break;
+                default:
+                    value = this.callFunction(funcName,
+                        [numerNode, denomNode], []);
+            }
+
             return [new ParseNode(value.type, value, this.mode)];
         } else {
             return body;
