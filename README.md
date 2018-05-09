@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/Khan/KaTeX.svg?branch=master)](https://travis-ci.org/Khan/KaTeX)
 [![codecov](https://codecov.io/gh/Khan/KaTeX/branch/master/graph/badge.svg)](https://codecov.io/gh/Khan/KaTeX)
 [![Join the chat at https://gitter.im/Khan/KaTeX](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Khan/KaTeX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+![](https://img.badgesize.io/Khan/KaTeX/v0.9.0/dist/katex.min.js?compression=gzip)
 
 KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the web.
 
@@ -53,22 +54,25 @@ all of KaTeX.
 
 #### Handling errors
 
-If KaTeX encounters an error (invalid or unsupported LaTeX), then it will
-throw an exception of type `katex.ParseError`.  The message in this error
-includes some of the LaTeX source code, so needs to be escaped if you want
-to render it to HTML.  In particular, you should convert `&`, `<`, `>`
-characters to `&amp;`, `&lt;`, `&gt;` (e.g., using `_.escape`)
+If KaTeX encounters an error (invalid or unsupported LaTeX) and `throwOnError`
+hasn't been set to `false`, then it will throw an exception of type
+`katex.ParseError`.  The message in this error includes some of the LaTeX
+source code, so needs to be escaped if you want to render it to HTML.
+In particular, you should convert `&`, `<`, `>` characters to
+`&amp;`, `&lt;`, `&gt;` (e.g., using `_.escape`)
 before including either LaTeX source code or exception messages in your
 HTML/DOM.  (Failure to escape in this way makes a `<script>` injection
 attack possible if your LaTeX source is untrusted.)
+Alternatively, you can set `throwOnError` to `true` to use built-in behavior
+of rendering the LaTeX source code with hover text stating the error.
 
 #### Rendering options
 
 You can provide an object of options as the last argument to `katex.render` and `katex.renderToString`. Available options are:
 
 - `displayMode`: `boolean`. If `true` the math will be rendered in display mode, which will put the math in display style (so `\int` and `\sum` are large, for example), and will center the math on the page on its own line. If `false` the math will be rendered in inline mode. (default: `false`)
-- `throwOnError`: `boolean`. If `true`, KaTeX will throw a `ParseError` when it encounters an unsupported command. If `false`, KaTeX will render the unsupported command as text in the color given by `errorColor`. (default: `true`)
-- `errorColor`: `string`. A color string given in the format `"#XXX"` or `"#XXXXXX"`. This option determines the color which unsupported commands are rendered in. (default: `#cc0000`)
+- `throwOnError`: `boolean`. If `true` (the default), KaTeX will throw a `ParseError` when it encounters an unsupported command or invalid LaTeX. If `false`, KaTeX will render unsupported commands as text, and render invalid LaTeX as its source code with hover text giving the error, in the color given by `errorColor`.
+- `errorColor`: `string`. A color string given in the format `"#XXX"` or `"#XXXXXX"`. This option determines the color that unsupported commands and invalid LaTeX are rendered in when `throwOnError` is set to `false`. (default: `#cc0000`)
 - `macros`: `object`. A collection of custom macros. Each macro is a property with a name like `\name` (written `"\\name"` in JavaScript) which maps to a string that describes the expansion of the macro. Single-character keys can also be included in which case the character will be redefined as the given macro (similar to TeX active characters).
 - `colorIsTextColor`: `boolean`. If `true`, `\color` will work like LaTeX's `\textcolor`, and take two arguments (e.g., `\color{blue}{hello}`), which restores the old behavior of KaTeX (pre-0.8.0). If `false` (the default), `\color` will work like LaTeX's `\color`, and take one argument (e.g., `\color{blue}hello`).  In both cases, `\textcolor` works as in LaTeX (e.g., `\textcolor{blue}{hello}`).
 - `unicodeTextInMathMode`: `boolean`. If `true`, supported unicode text characters like `é` and `試` will also work in math mode. (They always work in text mode.) The default is `false`, which matches XeTeX behavior; `true` emulates MathJax behavior.
