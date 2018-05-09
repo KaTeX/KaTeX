@@ -12,7 +12,6 @@ import Style from "./Style";
 
 import buildCommon from "./buildCommon";
 import domTree from "./domTree";
-import { calculateSize } from "./units";
 import utils from "./utils";
 import stretchy from "./stretchy";
 import {spacings, tightSpacings} from "./spacingData";
@@ -571,25 +570,6 @@ export const groupTypes = {
         const elements = buildExpression(group.value.value, options, true);
 
         return makeSpan([group.value.mclass], elements, options);
-    },
-
-    raisebox(group, options) {
-        const body = groupTypes.sizing({value: {
-            value: [{
-                type: "text",
-                value: {
-                    body: group.value.value,
-                    font: "mathrm", // simulate \textrm
-                },
-            }],
-            size: 6,                // simulate \normalsize
-        }}, options);
-        const dy = calculateSize(group.value.dy.value, options);
-        return buildCommon.makeVList({
-            positionType: "shift",
-            positionData: -dy,
-            children: [{type: "elem", elem: body}],
-        }, options);
     },
 };
 

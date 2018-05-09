@@ -226,6 +226,11 @@ OverUnderset: |
 Phantom: \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x} \left(\vphantom{\int_t} zzz \right) \left( X \hphantom{\frac{\frac X X}{X}} \right)
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
+Raise: |
+    \begin{array}{l}
+        \frac{a}{a\raise0.5em{b}} \cdot \frac{a\raise-0.5em{b}}{a} \cdot \sqrt{a\raise0.5em{b}} \cdot \sqrt{a\raise-0.5em{b}} \cdot \sqrt{a\raise0.5em{b}\raise-0.5em{b}} \\[2em]
+        \frac{a}{a\raise0.5em\hbox{b}} \cdot \frac{a\raise-0.5em\hbox{b}}{a} \cdot \sqrt{a\raise0.5em\hbox{b}} \cdot \sqrt{a\raise-0.5em\hbox{b}} \cdot \sqrt{a\raise0.5em\hbox{b}\raise-0.5em\hbox{b}}
+    \end{array}
 Raisebox: \frac{a}{a\raisebox{0.5em}{b}} \cdot \frac{a\raisebox{-0.5em}{b}}{a} \cdot \sqrt{a\raisebox{0.5em}{b}} \cdot \sqrt{a\raisebox{-0.5em}{b}} \cdot \sqrt{a\raisebox{0.5em}{b}\raisebox{-0.5em}{b}}
 ReactionArrows: |
     \begin{matrix}

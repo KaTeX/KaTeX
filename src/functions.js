@@ -45,6 +45,8 @@ import "./functions/rule";
 
 import "./functions/kern";
 
+import "./functions/raise";
+
 import "./functions/phantom";
 
 // Math class commands except \mathop
@@ -274,22 +276,6 @@ defineFunction(["\\begin", "\\end"], {
         type: "environment",
         name: name,
         nameGroup: nameGroup,
-    };
-});
-
-// Box manipulation
-defineFunction(["\\raisebox"], {
-    numArgs: 2,
-    argTypes: ["size", "text"],
-    allowedInText: true,
-}, function(context, args) {
-    const amount = args[0];
-    const body = args[1];
-    return {
-        type: "raisebox",
-        dy: amount,
-        body: body,
-        value: ordargument(body),
     };
 });
 
