@@ -63,7 +63,7 @@ const htmlBuilder = (group, options) => {
     }
 
     // calculate the amount of space between the body and the accent
-    const clearance = Math.min(
+    let clearance = Math.min(
         body.height,
         options.fontMetrics().xHeight);
 
@@ -91,16 +91,33 @@ const htmlBuilder = (group, options) => {
 
         accentBody = buildCommon.makeSpan(["accent-body"], [accent]);
 
-        // CSS defines `.katex .accent .accent-body { width: 0 }`
+        // "Full" accents expand the width of the resulting symbol to be
+        // at least the width of the accent, and overlap directly onto the
+        // character without any vertical offset.
+        const accentFull = (group.value.label === "\\textcircled");
+        if (accentFull) {
+            accentBody.classes.push('accent-full');
+            clearance = body.height;
+        }
+
+        // Shift the accent over by the skew.
+        let left = skew;
+
+        // CSS defines `.katex .accent .accent-body:not(.accent-full) { width: 0 }`
         // so that the accent doesn't contribute to the bounding box.
         // We need to shift the character by its width (effectively half
         // its width) to compensate.
-        let left = -width / 2;
-
-        // Shift the accent over by the skew.
-        left += skew;
+        if (!accentFull) {
+            left -= width / 2;
+        }
 
         accentBody.style.left = left + "em";
+
+        // \textcircled uses the \bigcirc glyph, so it needs some
+        // vertical adjustment to match LaTeX.
+        if (group.value.label === "\\textcircled") {
+            accentBody.style.top = ".2em";
+        }
 
         accentBody = buildCommon.makeVList({
             positionType: "firstBaseline",
@@ -215,7 +232,7 @@ defineFunction({
     type: "accent",
     names: [
         "\\'", "\\`", "\\^", "\\~", "\\=", "\\u", "\\.", '\\"',
-        "\\r", "\\H", "\\v",
+        "\\r", "\\H", "\\v", "\\textcircled",
     ],
     props: {
         numArgs: 1,
