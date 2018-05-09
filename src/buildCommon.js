@@ -10,6 +10,7 @@ import fontMetrics from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
 import stretchy from "./stretchy";
+import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
 
 import type Options from "./Options";
@@ -234,7 +235,11 @@ const makeOrd = function(
     // Math mode or Old font (i.e. \rm)
     const isFont = mode === "math" || (mode === "text" && options.font);
     const fontOrFamily = isFont ? options.font : options.fontFamily;
-    if (fontOrFamily) {
+    if (value.charCodeAt(0) === 0xD835) {
+        // surrogate pairs get special treatment
+        const [wideFontName, wideFontClass] = wideCharacterFont(value, mode);
+        return makeSymbol(value, wideFontName, mode, options, [wideFontClass]);
+    } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
         if (fontOrFamily === "boldsymbol") {
@@ -603,8 +608,8 @@ const makeVerb = function(group: ParseNode, options: Options): string {
 // either a vertical or horizontal list.  In KaTeX, at least for now, it's
 // static space between elements in a horizontal layout.
 const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
-    // Make an empty span for the rule
-    const rule = makeSpan(["mord", "rule"], [], options);
+    // Make an empty span for the space
+    const rule = makeSpan(["mspace"], [], options);
     const size = calculateSize(measurement, options);
     rule.style.marginRight = `${size}em`;
     return rule;
@@ -616,14 +621,8 @@ const retrieveTextFontName = function(
     fontWeight: string,
     fontShape: string,
 ): string {
-    const baseFontName = retrieveBaseFontName(fontFamily);
-    const fontStylesName = retrieveFontStylesName(fontWeight, fontShape);
-    return `${baseFontName}-${fontStylesName}`;
-};
-
-const retrieveBaseFontName = function(font: string): string {
     let baseFontName = "";
-    switch (font) {
+    switch (fontFamily) {
         case "amsrm":
             baseFontName = "AMS";
             break;
@@ -637,23 +636,21 @@ const retrieveBaseFontName = function(font: string): string {
             baseFontName = "Typewriter";
             break;
         default:
-            throw new Error(`Invalid font provided: ${font}`);
+            throw new Error(`Invalid font provided: ${fontFamily}`);
     }
-    return baseFontName;
-};
 
-const retrieveFontStylesName = function(
-    fontWeight?: string,
-    fontShape?: string,
-): string {
-    let fontStylesName = '';
-    if (fontWeight === "textbf") {
-        fontStylesName += "Bold";
+    let fontStylesName;
+    if (fontWeight === "textbf" && fontShape === "textit") {
+        fontStylesName = "BoldItalic";
+    } else if (fontWeight === "textbf") {
+        fontStylesName = "Bold";
+    } else if (fontWeight === "textit") {
+        fontStylesName = "Italic";
+    } else {
+        fontStylesName = "Regular";
     }
-    if (fontShape === "textit") {
-        fontStylesName += "Italic";
-    }
-    return fontStylesName || "Regular";
+
+    return `${baseFontName}-${fontStylesName}`;
 };
 
 // A map of spacing functions to their attributes, like size and corresponding

@@ -2779,11 +2779,9 @@ describe("A macro expander", function() {
     });
 */
 
-    it("should expand the \\overset macro as expected", function() {
-        expect("\\overset?=").toParseLike("\\mathop{=}\\limits^{?}");
-        expect("\\overset{x=y}{\\sqrt{ab}}")
-            .toParseLike("\\mathop{\\sqrt{ab}}\\limits^{x=y}");
-        expect("\\overset {?} =").toParseLike("\\mathop{=}\\limits^{?}");
+    it("should build \\overset and \\underset", function() {
+        expect("\\overset{f}{\\rightarrow} Y").toBuild();
+        expect("\\underset{f}{\\rightarrow} Y").toBuild();
     });
 
     it("should build \\iff, \\implies, \\impliedby", function() {
@@ -2976,7 +2974,7 @@ describe("Unicode", function() {
     });
 
     it("should parse relations", function() {
-        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴").toParse();
+        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙").toParse();
     });
 
     it("should parse big operators", function() {
@@ -2984,11 +2982,16 @@ describe("Unicode", function() {
     });
 
     it("should parse more relations", function() {
-        expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋙⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆").toParse();
+        expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆≘≙≚≛≝≞≟").toBuild();
     });
 
     it("should parse symbols", function() {
         expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°\u00b7").toParse();
+    });
+
+    it("should build Greek capital letters", function() {
+        expect("\u0391\u0392\u0395\u0396\u0397\u0399\u039A\u039C\u039D" +
+                "\u039F\u03A1\u03A4\u03A7").toBuild();
     });
 
     it("should parse arrows", function() {
@@ -3003,13 +3006,48 @@ describe("Unicode", function() {
         expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toParse();
     });
 
-    it("should parse delimeters", function() {
+    it("should build delimiters", function() {
         expect("\\left\u230A\\frac{a}{b}\\right\u230B").toBuild();
         expect("\\left\u2308\\frac{a}{b}\\right\u2308").toBuild();
         expect("\\left\u27ee\\frac{a}{b}\\right\u27ef").toBuild();
         expect("\\left\u27e8\\frac{a}{b}\\right\u27e9").toBuild();
         expect("\\left\u23b0\\frac{a}{b}\\right\u23b1").toBuild();
         expect("┌x┐ └x┘").toBuild();
+    });
+
+    it("should build some surrogate pairs", function() {
+        let wideCharStr = "";
+        wideCharStr += String.fromCharCode(0xD835, 0xDC00);   // bold A
+        wideCharStr += String.fromCharCode(0xD835, 0xDC68);   // bold italic A
+        wideCharStr += String.fromCharCode(0xD835, 0xDD04);   // Fraktur A
+        wideCharStr += String.fromCharCode(0xD835, 0xDD38);   // double-struck
+        wideCharStr += String.fromCharCode(0xD835, 0xDC9C);   // script A
+        wideCharStr += String.fromCharCode(0xD835, 0xDDA0);   // sans serif A
+        wideCharStr += String.fromCharCode(0xD835, 0xDDD4);   // bold sans A
+        wideCharStr += String.fromCharCode(0xD835, 0xDE08);   // italic sans A
+        wideCharStr += String.fromCharCode(0xD835, 0xDE70);   // monospace A
+        wideCharStr += String.fromCharCode(0xD835, 0xDFCE);   // bold zero
+        wideCharStr += String.fromCharCode(0xD835, 0xDFE2);   // sans serif zero
+        wideCharStr += String.fromCharCode(0xD835, 0xDFEC);   // bold sans zero
+        wideCharStr += String.fromCharCode(0xD835, 0xDFF6);   // monospace zero
+        expect(wideCharStr).toBuild();
+
+        let wideCharText = "\text{";
+        wideCharText += String.fromCharCode(0xD835, 0xDC00);   // bold A
+        wideCharText += String.fromCharCode(0xD835, 0xDC68);   // bold italic A
+        wideCharText += String.fromCharCode(0xD835, 0xDD04);   // Fraktur A
+        wideCharText += String.fromCharCode(0xD835, 0xDD38);   // double-struck
+        wideCharText += String.fromCharCode(0xD835, 0xDC9C);   // script A
+        wideCharText += String.fromCharCode(0xD835, 0xDDA0);   // sans serif A
+        wideCharText += String.fromCharCode(0xD835, 0xDDD4);   // bold sans A
+        wideCharText += String.fromCharCode(0xD835, 0xDE08);   // italic sans A
+        wideCharText += String.fromCharCode(0xD835, 0xDE70);   // monospace A
+        wideCharText += String.fromCharCode(0xD835, 0xDFCE);   // bold zero
+        wideCharText += String.fromCharCode(0xD835, 0xDFE2);   // sans serif zero
+        wideCharText += String.fromCharCode(0xD835, 0xDFEC);   // bold sans zero
+        wideCharText += String.fromCharCode(0xD835, 0xDFF6);   // monospace zero
+        wideCharText += "}";
+        expect(wideCharText).toBuild();
     });
 });
 

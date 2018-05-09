@@ -79,7 +79,7 @@ if ! command npm owner ls katex | grep -q "^$(command npm whoami) <"; then
     : $((++INSANE))
 fi
 if [[ $BRANCH != @(v*|master) ]]; then
-    echo "'$BRANCH' does not like a release branch to me" >&2
+    echo "'$BRANCH' does not look like a release branch to me" >&2
     : $((++INSANE))
 fi
 
@@ -102,18 +102,18 @@ git checkout "$BRANCH"
 git pull
 git checkout --detach
 
+# Edit package.json and bower.json to the right version (see
+# http://stackoverflow.com/a/22084103 for why we need the .bak file to make
+# this mac & linux compatible)
+sed -i.bak -E 's|"version": "[^"]+",|"version": "'$VERSION'",|' package.json
+rm -f package.json.bak
+
 # Build generated files and add them to the repository (for bower)
 git clean -fdx build dist
 npm run dist
 sed -i.bak -E '/^\/dist\/$/d' .gitignore
 rm -f .gitignore.bak
 git add .gitignore dist/
-
-# Edit package.json and bower.json to the right version (see
-# http://stackoverflow.com/a/22084103 for why we need the .bak file to make
-# this mac & linux compatible)
-sed -i.bak -E 's|"version": "[^"]+",|"version": "'$VERSION'",|' package.json
-rm -f package.json.bak
 
 # Update the version number in CDN URLs included in the README files,
 # and regenerate the Subresource Integrity hash for these files.
