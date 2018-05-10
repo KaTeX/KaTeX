@@ -688,15 +688,17 @@ export default function buildHTML(tree, options) {
             expression[i].hasClass("mrel") ||
             expression[i].hasClass("allowbreak")) {
             // Put any post-operator glue on same line as operator.
+            // Watch for \nobreak along the way.
+            let nobreak = false;
             while (i < expression.length - 1 &&
                    expression[i + 1].hasClass("mspace")) {
                 i++;
                 parts.push(expression[i]);
+                if (expression[i].hasClass("nobreak")) {
+                    nobreak = true;
+                }
             }
-            // Don't break at all if \nobreak immediately following
-            // (after glue).
-            const nobreak = i < expression.length - 1 &&
-                            expression[i + 1].hasClass("nobreak");
+            // Don't allow break if \nobreak among the post-operator glue.
             if (!nobreak) {
                 htmlNode.children.push(buildHTMLUnbreakable(parts, options));
                 parts = [];
