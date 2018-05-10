@@ -9,7 +9,6 @@ import domTree from "./domTree";
 import fontMetrics from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
-import stretchy from "./stretchy";
 import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
 
@@ -346,14 +345,11 @@ const makeSvgSpan = (
 const makeLineSpan = function(
     className: string,
     options: Options,
+    thickness?: number,
 ) {
-    // Return a span with an SVG image of a horizontal line. The SVG path
-    // fills the middle fifth of the span. We want an extra tall span
-    // because Chrome will sometimes not display a span that is 0.04em tall.
-    const lineHeight = options.fontMetrics().defaultRuleThickness;
-    const line = stretchy.ruleSpan(className, lineHeight, options);
-    line.height = lineHeight;
-    line.style.height = 5 * line.height + "em";
+    const line = makeSpan([className], [], options);
+    line.height = thickness || options.fontMetrics().defaultRuleThickness;
+    line.style.borderBottomWidth = line.height + "em";
     line.maxFontSize = 1.0;
     return line;
 };
