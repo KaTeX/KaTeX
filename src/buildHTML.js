@@ -631,6 +631,34 @@ export const buildGroup = function(group, options, baseOptions) {
 };
 
 /**
+ * Combine an array of HTML DOM nodes (e.g., the output of `buildExpression`)
+ * into an unbreakable HTML node of class .base, with proper struts to
+ * guarantee correct vertical extent.  `buildHTML` calls this repeatedly to
+ * make up the entire expression as a sequence of unbreakable units.
+ */
+function buildHTMLUnbreakable(children, options) {
+    // Compute height and depth of this chunk.
+    const body = makeSpan(["base"], children, options);
+
+    // Add struts, which ensure that the top of the HTML element falls at
+    // the height of the expression, and the bottom of the HTML element
+    // falls at the depth of the expression.
+    const topStrut = makeSpan(["strut"]);
+    const bottomStrut = makeSpan(["strut", "bottom"]);
+
+    topStrut.style.height = body.height + "em";
+    bottomStrut.style.height = (body.height + body.depth) + "em";
+    // We'd like to use `vertical-align: top` but in IE 9 this lowers the
+    // baseline of the box to the bottom of this strut (instead staying in the
+    // normal place) so we use an absolute value for vertical-align instead
+    bottomStrut.style.verticalAlign = -body.depth + "em";
+
+    body.children.unshift(topStrut, bottomStrut);
+
+    return body;
+}
+
+/**
  * Take an entire parse tree, and build it into an appropriate set of HTML
  * nodes.
  */
@@ -653,29 +681,6 @@ export default function buildHTML(tree, options) {
     // enclosed in {...} and not part of an \over construction)."
 
     let parts = [];
-
-    function newBody() {
-        // Compute height and depth of this chunk.
-        const body = makeSpan(["base"], parts, options);
-
-        // Add struts, which ensure that the top of the HTML element falls at
-        // the height of the expression, and the bottom of the HTML element
-        // falls at the depth of the expression.
-        const topStrut = makeSpan(["strut"]);
-        const bottomStrut = makeSpan(["strut", "bottom"]);
-
-        topStrut.style.height = body.height + "em";
-        bottomStrut.style.height = (body.height + body.depth) + "em";
-        // We'd like to use `vertical-align: top` but in IE 9 this lowers the
-        // baseline of the box to the bottom of this strut (instead staying in the
-        // normal place) so we use an absolute value for vertical-align instead
-        bottomStrut.style.verticalAlign = -body.depth + "em";
-
-        body.children.unshift(topStrut, bottomStrut);
-        htmlNode.children.push(body);
-        parts = [];
-    }
-
     for (let i = 0; i < expression.length; i++) {
         parts.push(expression[i]);
         if (expression[i].hasClass("mbin") ||
@@ -692,12 +697,13 @@ export default function buildHTML(tree, options) {
             const nobreak = i < expression.length - 1 &&
                             expression[i + 1].hasClass("nobreak");
             if (!nobreak) {
-                newBody();
+                htmlNode.children.push(buildHTMLUnbreakable(parts, options));
+                parts = [];
             }
         }
     }
     if (parts.length > 0) {
-        newBody();
+        htmlNode.children.push(buildHTMLUnbreakable(parts, options));
     }
 
     return htmlNode;
