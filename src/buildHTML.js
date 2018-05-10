@@ -205,7 +205,7 @@ export const getTypeOfDomTree = function(node, side = "right") {
 // 'mtight' indicates that the node is script or scriptscript style.
 export const isLeftTight = function(node) {
     node = getOutermostNode(node, "left");
-    return utils.contains(node.classes, "mtight");
+    return node.hasClass("mtight");
 };
 
 /**
@@ -678,19 +678,19 @@ export default function buildHTML(tree, options) {
 
     for (let i = 0; i < expression.length; i++) {
         parts.push(expression[i]);
-        if ((utils.contains(expression[i].classes, "mbin") ||
-             utils.contains(expression[i].classes, "mrel") ||
-             utils.contains(expression[i].classes, "allowbreak"))) {
+        if (expression[i].hasClass("mbin") ||
+            expression[i].hasClass("mrel") ||
+            expression[i].hasClass("allowbreak")) {
             // Put any post-operator glue on same line as operator.
             while (i < expression.length - 1 &&
-                   utils.contains(expression[i + 1].classes, "mspace")) {
+                   expression[i + 1].hasClass("mspace")) {
                 i++;
                 parts.push(expression[i]);
             }
             // Don't break at all if \nobreak immediately following
             // (after glue).
             if (!(i < expression.length - 1 &&
-                  utils.contains(expression[i + 1].classes, "nobreak"))) {
+                  expression[i + 1].hasClass("nobreak"))) {
                 newBody();
             }
         }
