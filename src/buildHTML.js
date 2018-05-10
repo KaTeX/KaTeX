@@ -496,7 +496,8 @@ export const groupTypes = {
             } else {
                 vlist = buildCommon.makeVList({
                     positionType: "bottom",
-                    positionData: vSpan.depth + 0.2 + supSubGroup.height,
+                    positionData: vSpan.depth + 0.2 + supSubGroup.height +
+                        supSubGroup.depth,
                     children: [
                         {type: "elem", elem: supSubGroup},
                         {type: "kern", size: 0.2},
