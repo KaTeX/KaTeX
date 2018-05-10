@@ -40,6 +40,7 @@ export interface HtmlDomNode extends VirtualNodeInterface {
     depth: number;
     maxFontSize: number;
 
+    hasClass(className: string): boolean;
     tryCombine(sibling: HtmlDomNode): boolean;
 }
 
@@ -102,6 +103,10 @@ class span<ChildType: VirtualNodeInterface> implements HtmlDomNode {
      */
     setAttribute(attribute: string, value: string) {
         this.attributes[attribute] = value;
+    }
+
+    hasClass(className: string): boolean {
+        return utils.contains(this.classes, className);
     }
 
     tryCombine(sibling: HtmlDomNode): boolean {
@@ -235,6 +240,10 @@ class anchor implements HtmlDomNode {
         this.attributes[attribute] = value;
     }
 
+    hasClass(className: string): boolean {
+        return utils.contains(this.classes, className);
+    }
+
     tryCombine(sibling: HtmlDomNode): boolean {
         return false;
     }
@@ -344,6 +353,10 @@ class documentFragment implements HtmlDomNode {
         this.maxFontSize = 0;
     }
 
+    hasClass(className: string): boolean {
+        return utils.contains(this.classes, className);
+    }
+
     tryCombine(sibling: HtmlDomNode): boolean {
         return false;
     }
@@ -437,6 +450,10 @@ class symbolNode implements HtmlDomNode {
         if (/[îïíì]/.test(this.value)) {    // add ī when we add Extended Latin
             this.value = iCombinations[this.value];
         }
+    }
+
+    hasClass(className: string): boolean {
+        return utils.contains(this.classes, className);
     }
 
     tryCombine(sibling: HtmlDomNode): boolean {

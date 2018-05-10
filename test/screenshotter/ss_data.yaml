@@ -144,6 +144,20 @@ LeftRightStyleSizing: |
 LimitControls: |
     \displaystyle\int\limits_2^3 3x^2\,dx + \sum\nolimits^n_{i=1}i +
     \textstyle\int\limits_x^y z
+LineBreak: |
+    \frac{x^2}{y^2} + z^2 =
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} +\nobreak z^2 =
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} + ~ z^2 =
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} + \hspace{1em} z^2 =
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} + z^2 = \hspace*{1em}
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} + z^2 =
+    hi \allowbreak there =
+    hi \allowbreak there
 LowerAccent: |
     \begin{matrix}
         \underleftarrow{AB} \quad \underrightarrow{AB} \quad \underleftrightarrow{AB} \quad \undergroup{AB} \\
