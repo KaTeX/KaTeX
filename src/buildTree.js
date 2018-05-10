@@ -17,7 +17,7 @@ const optionsFromSettings = function(settings: Settings) {
 };
 
 export const buildTree = function(
-    tree: ParseNode[],
+    tree: ParseNode<*>[],
     expression: string,
     settings: Settings,
 ): DomSpan {
@@ -39,7 +39,7 @@ export const buildTree = function(
 };
 
 export const buildHTMLTree = function(
-    tree: ParseNode[],
+    tree: ParseNode<*>[],
     expression: string,
     settings: Settings,
 ): DomSpan {
