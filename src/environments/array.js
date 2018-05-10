@@ -20,7 +20,7 @@ type AlignSpec = { type: "separator", separator: string } | {
     pregap?: number,
     postgap?: number,
 };
-type ArrayEnvNodeData = {
+export type ArrayEnvNodeData = {
     type: "array",
     hskipBeforeAndAfter?: boolean,
     arraystretch?: number,
@@ -28,7 +28,7 @@ type ArrayEnvNodeData = {
     cols?: AlignSpec[],
     // These fields are always set, but not on struct construction
     // initialization.
-    body?: ParseNode[][], // List of rows in the (2D) array.
+    body?: ParseNode<*>[][], // List of rows in the (2D) array.
     rowGaps?: number[],
 };
 
@@ -42,7 +42,7 @@ function parseArray(
     parser: Parser,
     result: ArrayEnvNodeData,
     style: StyleStr,
-): ParseNode {
+): ParseNode<*> {
     let row = [];
     const body = [row];
     const rowGaps = [];
@@ -51,6 +51,7 @@ function parseArray(
         cell = new ParseNode("ordgroup", cell, parser.mode);
         if (style) {
             cell = new ParseNode("styling", {
+                type: "styling",
                 style: style,
                 value: [cell],
             }, parser.mode);
@@ -84,7 +85,7 @@ function parseArray(
     }
     result.body = body;
     result.rowGaps = rowGaps;
-    return new ParseNode(result.type, result, parser.mode);
+    return new ParseNode("array", result, parser.mode);
 }
 
 

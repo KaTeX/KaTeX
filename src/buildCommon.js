@@ -14,6 +14,7 @@ import {calculateSize} from "./units";
 
 import type Options from "./Options";
 import type ParseNode from "./ParseNode";
+import type {NodeType} from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {Mode} from "./types";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
@@ -137,7 +138,7 @@ const mathDefault = function(
     mode: Mode,
     options: Options,
     classes: string[],
-    type: string, // TODO(#892): Use ParseNode type here.
+    type: NodeType,
 ): domTree.symbolNode {
     if (type === "mathord") {
         const fontLookup = mathit(value, mode, options, classes);
@@ -222,9 +223,9 @@ const boldsymbol = function(
  * Makes either a mathord or textord in the correct font and color.
  */
 const makeOrd = function(
-    group: ParseNode,
+    group: ParseNode<*>,
     options: Options,
-    type: string, // TODO(#892): Use ParseNode type here.
+    type: NodeType,
 ): domTree.symbolNode {
     const mode = group.mode;
     const value = group.value;
@@ -587,9 +588,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
 };
 
 // Converts verb group into body string, dealing with \verb* form
-const makeVerb = function(group: ParseNode, options: Options): string {
-    // TODO(#892): Make ParseNode type-safe and confirm `group.type` to guarantee
-    // that `group.value.body` is of type string.
+const makeVerb = function(group: ParseNode<"verb">, options: Options): string {
     let text = group.value.body;
     if (group.value.star) {
         text = text.replace(/ /g, '\u2423');  // Open Box

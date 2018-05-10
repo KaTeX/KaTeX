@@ -107,7 +107,7 @@ const mathMLnode = function(label: string): mathMLTree.MathNode {
 // corresponds to 0.522 em inside the document.
 
 const katexImagesData: {
-    [string]: ([string[], number, number] | [string[], number, number, string])
+    [string]: ([string[], number, number] | [[string], number, number, string])
 } = {
                    //   path(s), minWidth, height, align
     overrightarrow: [["rightarrow"], 0.888, 522, "xMaxYMin"],
@@ -159,7 +159,7 @@ const katexImagesData: {
         "shortrightharpoonabovebar"], 1.75, 716],
 };
 
-const groupLength = function(arg: ParseNode): number {
+const groupLength = function(arg: ParseNode<*>): number {
     if (arg.type === "ordgroup") {
         return arg.value.length;
     } else {
@@ -167,7 +167,10 @@ const groupLength = function(arg: ParseNode): number {
     }
 };
 
-const svgSpan = function(group: ParseNode, options: Options): DomSpan | SvgSpan {
+const svgSpan = function(
+    group: ParseNode<"accent">,
+    options: Options,
+): DomSpan | SvgSpan {
     // Create a span with inline SVG for the element.
     function buildSvgSpan_(): {
         span: DomSpan | SvgSpan,
@@ -219,13 +222,16 @@ const svgSpan = function(group: ParseNode, options: Options): DomSpan | SvgSpan 
         } else {
             const spans = [];
 
-            const [paths, minWidth, viewBoxHeight, align1] = katexImagesData[label];
+            const data = katexImagesData[label];
+            const [paths, minWidth, viewBoxHeight] = data;
             const height = viewBoxHeight / 1000;
 
             const numSvgChildren = paths.length;
             let widthClasses;
             let aligns;
             if (numSvgChildren === 1) {
+                // $FlowFixMe: All these cases must be of the 4-tuple type.
+                const align1: string = data[3];
                 widthClasses = ["hide-tail"];
                 aligns = [align1];
             } else if (numSvgChildren === 2) {
