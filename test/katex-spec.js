@@ -2894,9 +2894,9 @@ describe("A macro expander", function() {
 
     // This may change in the future, if we support the extra features of
     // \hspace.
-    it("should treat \\hspace, \\hspace*, \\hskip like \\kern", function() {
+    it("should treat \\hspace, \\hskip like \\kern", function() {
         expect("\\hspace{1em}").toParseLike("\\kern1em");
-        expect("\\hspace*{1em}").toParseLike("\\kern1em");
+        expect("\\hskip{1em}").toParseLike("\\kern1em");
     });
 
     it("should expand \\limsup as expected", () => {
