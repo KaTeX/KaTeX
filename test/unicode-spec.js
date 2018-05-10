@@ -8,7 +8,9 @@ import parseTree from "../src/parseTree";
 import Settings from "../src/Settings";
 import {scriptFromCodepoint, supportedCodepoint} from "../src/unicodeScripts";
 
-const defaultSettings = new Settings({});
+const defaultSettings = new Settings({
+    strict: false, // deal with warnings only when desired
+});
 const strictSettings = new Settings({strict: true});
 
 const parseAndSetResult = function(expr, result, settings) {

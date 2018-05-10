@@ -35,7 +35,9 @@ const serializer = {
 
 expect.addSnapshotSerializer(serializer);
 
-const defaultSettings = new Settings({});
+const defaultSettings = new Settings({
+    strict: false, // deal with warnings only when desired
+});
 const defaultOptions = new Options({
     style: Style.TEXT,
     size: 5,
@@ -98,10 +100,10 @@ const parseAndSetResult = function(expr, result, settings) {
     } catch (e) {
         result.pass = false;
         if (e instanceof ParseError) {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with error: " + e.message;
         } else {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with unknown error: " + e.message;
         }
     }
@@ -113,10 +115,10 @@ const buildAndSetResult = function(expr, result, settings) {
     } catch (e) {
         result.pass = false;
         if (e instanceof ParseError) {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with error: " + e.message;
         } else {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with unknown error: " + e.message;
         }
     }
@@ -149,10 +151,10 @@ beforeEach(function() {
             } catch (e) {
                 if (e instanceof ParseError) {
                     result.pass = true;
-                    result.message = "'" + actual + "' correctly " +
+                    result.message = () => "'" + actual + "' correctly " +
                         "didn't parse with error: " + e.message;
                 } else {
-                    result.message = "'" + actual + "' failed " +
+                    result.message = () => "'" + actual + "' failed " +
                         "parsing with unknown error: " + e.message;
                 }
             }
@@ -175,10 +177,10 @@ beforeEach(function() {
             } catch (e) {
                 result.pass = false;
                 if (e instanceof ParseError) {
-                    result.message = "'" + actual + "' failed to " +
+                    result.message = () => "'" + actual + "' failed to " +
                         "build with error: " + e.message;
                 } else {
-                    result.message = "'" + actual + "' failed " +
+                    result.message = () => "'" + actual + "' failed " +
                         "building with unknown error: " + e.message;
                 }
             }
@@ -3137,9 +3139,9 @@ describe("strict setting", function() {
         expect("試").toNotParse(new Settings({strict: () => "error"}));
     });
 
-    it("should allow unicode text when default", () => {
-        expect("é").toParse();
-        expect("試").toParse();
+    it("should warn about unicode text when default", () => {
+        expect("é").toWarn(new Settings());
+        expect("試").toWarn(new Settings());
     });
 
     it("should always allow unicode text in text mode", () => {
