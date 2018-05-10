@@ -68,6 +68,7 @@ type ParseNodeTypes = {
         limits: boolean,
         symbol: boolean,
         alwaysHandleSupSub?: boolean,
+        suppressBaseShift?: boolean,
         body?: string,
         value?: ParseNode<*>[],
     |},
