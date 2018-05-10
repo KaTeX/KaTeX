@@ -689,8 +689,9 @@ export default function buildHTML(tree, options) {
             }
             // Don't break at all if \nobreak immediately following
             // (after glue).
-            if (!(i < expression.length - 1 &&
-                  expression[i + 1].hasClass("nobreak"))) {
+            const nobreak = i < expression.length - 1 &&
+                            expression[i + 1].hasClass("nobreak");
+            if (!nobreak) {
                 newBody();
             }
         }
