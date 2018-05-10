@@ -69,7 +69,7 @@ const renderToString = function(
 const generateParseTree = function(
     expression: string,
     options: SettingsOptions,
-): ParseNode[] {
+): ParseNode<*>[] {
     const settings = new Settings(options);
     return parseTree(expression, settings);
 };
