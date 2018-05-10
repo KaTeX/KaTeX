@@ -50,7 +50,10 @@ const delimiters = [
 ];
 
 // Delimiter functions
-function checkDelimiter(delim: ParseNode, context: FunctionContext): ParseNode {
+function checkDelimiter(
+    delim: ParseNode<*>,
+    context: FunctionContext,
+): ParseNode<*> {
     if (utils.contains(delimiters, delim.value)) {
         return delim;
     } else {

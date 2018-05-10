@@ -9,6 +9,7 @@ import {
 } from "./defineFunction";
 
 import type {FunctionPropSpec, FunctionHandler} from "./defineFunction";
+import type {NodeType} from "./ParseNode";
 
 // WARNING: New functions should be added to src/functions and imported here.
 
@@ -17,12 +18,15 @@ export default functions;
 
 // Define a convenience function that mimcs the old semantics of defineFunction
 // to support existing code so that we can migrate it a little bit at a time.
-const defineFunction = function(
+const defineFunction = function<NODETYPE: NodeType>(
+    // Type of node data output by the function handler. This is required to aid
+    // type inference of the actual function output.
+    type: NODETYPE,
     names: string[],
     props: FunctionPropSpec,
-    handler: ?FunctionHandler, // null only if handled in parser
+    handler: ?FunctionHandler<NODETYPE>, // null only if handled in parser
 ) {
-    _defineFunction({names, props, handler});
+    _defineFunction({type, names, props, handler});
 };
 
 // TODO(kevinb): have functions return an object and call defineFunction with
@@ -48,7 +52,7 @@ import "./functions/kern";
 import "./functions/phantom";
 
 // Math class commands except \mathop
-defineFunction([
+defineFunction("mclass", [
     "\\mathord", "\\mathbin", "\\mathrel", "\\mathopen",
     "\\mathclose", "\\mathpunct", "\\mathinner",
 ], {
@@ -63,29 +67,51 @@ defineFunction([
 });
 
 // Build a relation or stacked op by placing one symbol on top of another
-defineFunction(["\\stackrel", "\\overset", "\\underset"], {
+defineFunction("mclass", ["\\stackrel", "\\overset", "\\underset"], {
     numArgs: 2,
 }, function(context, args) {
-    const mathAxisArg = args[1];
+    const baseArg = args[1];
     const shiftedArg = args[0];
 
-    const xAxisOp = new ParseNode("op", {
+    let mclass = "mrel";  // default. May change below.
+    if (context.funcName !== "\\stackrel") {
+        // LaTeX applies \binrel spacing to \overset and \underset.
+        // \binrel spacing varies with (bin|rel|ord) of the atom in the argument.
+        // We'll do the same.
+        let atomType = "";
+        if (baseArg.type === "ordgroup") {
+            atomType = baseArg.value[0].type;
+        } else {
+            atomType = baseArg.type;
+        }
+        if (/^(bin|rel)$/.test(atomType)) {
+            mclass = "m" + atomType;
+        } else {
+            // This may capture some instances in which the baseArg is more than
+            // just a single symbol. Say a \overset inside an \overset.
+            // TODO: A more comprehensive way to determine the baseArg type.
+            mclass = "mord";
+        }
+    }
+
+    const baseOp = new ParseNode("op", {
         type: "op",
         limits: true,
         alwaysHandleSupSub: true,
         symbol: false,
-        value: ordargument(mathAxisArg),
-    }, mathAxisArg.mode);
+        suppressBaseShift: context.funcName !== "\\stackrel",
+        value: ordargument(baseArg),
+    }, baseArg.mode);
 
     const supsub = new ParseNode("supsub", {
-        base: xAxisOp,
+        base: baseOp,
         sup: context.funcName === "\\underset" ? null : shiftedArg,
         sub: context.funcName === "\\underset" ? shiftedArg : null,
     }, shiftedArg.mode);
 
     return {
         type: "mclass",
-        mclass: "mrel",
+        mclass: mclass,
         value: [supsub],
     };
 });
@@ -104,7 +130,7 @@ const singleCharIntegrals: {[string]: string} = {
 // displaystyle. These four groups cover the four possible choices.
 
 // No limits, not symbols
-defineFunction([
+defineFunction("op", [
     "\\arcsin", "\\arccos", "\\arctan", "\\arctg", "\\arcctg",
     "\\arg", "\\ch", "\\cos", "\\cosec", "\\cosh", "\\cot", "\\cotg",
     "\\coth", "\\csc", "\\ctg", "\\cth", "\\deg", "\\dim", "\\exp",
@@ -122,7 +148,7 @@ defineFunction([
 });
 
 // Limits, not symbols
-defineFunction([
+defineFunction("op", [
     "\\det", "\\gcd", "\\inf", "\\lim", "\\max", "\\min", "\\Pr", "\\sup",
 ], {
     numArgs: 0,
@@ -136,7 +162,7 @@ defineFunction([
 });
 
 // No limits, symbols
-defineFunction([
+defineFunction("op", [
     "\\int", "\\iint", "\\iiint", "\\oint", "\u222b", "\u222c",
     "\u222d", "\u222e",
 ], {
@@ -175,7 +201,7 @@ import "./functions/font";
 import "./functions/accent";
 
 // Horizontal stretchy braces
-defineFunction([
+defineFunction("horizBrace", [
     "\\overbrace", "\\underbrace",
 ], {
     numArgs: 1,
@@ -193,7 +219,7 @@ defineFunction([
 import "./functions/accentunder";
 
 // Stretchy arrows with an optional argument
-defineFunction([
+defineFunction("xArrow", [
     "\\xleftarrow", "\\xrightarrow", "\\xLeftarrow", "\\xRightarrow",
     "\\xleftrightarrow", "\\xLeftrightarrow", "\\xhookleftarrow",
     "\\xhookrightarrow", "\\xmapsto", "\\xrightharpoondown",
@@ -219,7 +245,7 @@ defineFunction([
 });
 
 // Infix generalized fractions
-defineFunction(["\\over", "\\choose", "\\atop"], {
+defineFunction("infix", ["\\over", "\\choose", "\\atop"], {
     numArgs: 0,
     infix: true,
 }, function(context) {
@@ -245,7 +271,7 @@ defineFunction(["\\over", "\\choose", "\\atop"], {
 });
 
 // Row breaks for aligned data
-defineFunction(["\\\\", "\\cr"], {
+defineFunction("cr", ["\\\\", "\\cr"], {
     numArgs: 0,
     numOptionalArgs: 1,
     argTypes: ["size"],
@@ -258,7 +284,7 @@ defineFunction(["\\\\", "\\cr"], {
 });
 
 // Environment delimiters
-defineFunction(["\\begin", "\\end"], {
+defineFunction("environment", ["\\begin", "\\end"], {
     numArgs: 1,
     argTypes: ["text"],
 }, function(context, args) {
@@ -278,7 +304,7 @@ defineFunction(["\\begin", "\\end"], {
 });
 
 // Box manipulation
-defineFunction(["\\raisebox"], {
+defineFunction("raisebox", ["\\raisebox"], {
     numArgs: 2,
     argTypes: ["size", "text"],
     allowedInText: true,

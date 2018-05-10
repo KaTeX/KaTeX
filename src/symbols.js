@@ -20,9 +20,13 @@
 import type {Mode} from "./types";
 
 type Font = "main" | "ams"
+// Some of these have a "-token" suffix since these are also used as `ParseNode`
+// types for raw text tokens, and we want to avoid conflicts with higher-level
+// `ParseNode` types. These `ParseNode`s are constructed within `Parser` by
+// looking up the `symbols` map.
 type Group =
-    "accent" | "bin" | "close" | "inner" | "mathord" | "op" | "open" | "punct" |
-    "rel" | "spacing" | "textord";
+    "accent-token" | "bin" | "close" | "inner" | "mathord" |
+    "op-token" | "open" | "punct" | "rel" | "spacing" | "textord";
 type CharInfoMap = {[string]: {font: Font, group: Group, replace: ?string}};
 
 const symbols: {[Mode]: CharInfoMap} = {
@@ -59,12 +63,12 @@ const main = "main";
 const ams = "ams";
 
 // groups:
-const accent = "accent";
+const accent = "accent-token";
 const bin = "bin";
 const close = "close";
 const inner = "inner";
 const mathord = "mathord";
-const op = "op";
+const op = "op-token";
 const open = "open";
 const punct = "punct";
 const rel = "rel";
@@ -634,6 +638,7 @@ defineSymbol(text, main, textord, "|", "\\textbar"); // in T1 fontenc
 defineSymbol(math, main, textord, "\u2225", "\\|");
 defineSymbol(math, main, textord, "\u2225", "\\Vert");
 defineSymbol(text, main, textord, "\u2225", "\\textbardbl");
+defineSymbol(text, main, textord, "~", "\\textasciitilde");
 defineSymbol(math, main, rel, "\u2191", "\\uparrow", true);
 defineSymbol(math, main, rel, "\u21d1", "\\Uparrow", true);
 defineSymbol(math, main, rel, "\u2193", "\\downarrow", true);
