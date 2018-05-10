@@ -15,6 +15,7 @@ import {calculateSize} from "./units";
 
 import type Options from "./Options";
 import type ParseNode from "./ParseNode";
+import type {NodeType} from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {Mode} from "./types";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
@@ -138,7 +139,7 @@ const mathDefault = function(
     mode: Mode,
     options: Options,
     classes: string[],
-    type: string, // TODO(#892): Use ParseNode type here.
+    type: NodeType,
 ): domTree.symbolNode {
     if (type === "mathord") {
         const fontLookup = mathit(value, mode, options, classes);
@@ -223,9 +224,9 @@ const boldsymbol = function(
  * Makes either a mathord or textord in the correct font and color.
  */
 const makeOrd = function(
-    group: ParseNode,
+    group: ParseNode<*>,
     options: Options,
-    type: string, // TODO(#892): Use ParseNode type here.
+    type: NodeType,
 ): domTree.symbolNode {
     const mode = group.mode;
     const value = group.value;
@@ -591,9 +592,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
 };
 
 // Converts verb group into body string, dealing with \verb* form
-const makeVerb = function(group: ParseNode, options: Options): string {
-    // TODO(#892): Make ParseNode type-safe and confirm `group.type` to guarantee
-    // that `group.value.body` is of type string.
+const makeVerb = function(group: ParseNode<"verb">, options: Options): string {
     let text = group.value.body;
     if (group.value.star) {
         text = text.replace(/ /g, '\u2423');  // Open Box
@@ -608,8 +607,8 @@ const makeVerb = function(group: ParseNode, options: Options): string {
 // either a vertical or horizontal list.  In KaTeX, at least for now, it's
 // static space between elements in a horizontal layout.
 const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
-    // Make an empty span for the rule
-    const rule = makeSpan(["mord", "rule"], [], options);
+    // Make an empty span for the space
+    const rule = makeSpan(["mspace"], [], options);
     const size = calculateSize(measurement, options);
     rule.style.marginRight = `${size}em`;
     return rule;
@@ -621,14 +620,8 @@ const retrieveTextFontName = function(
     fontWeight: string,
     fontShape: string,
 ): string {
-    const baseFontName = retrieveBaseFontName(fontFamily);
-    const fontStylesName = retrieveFontStylesName(fontWeight, fontShape);
-    return `${baseFontName}-${fontStylesName}`;
-};
-
-const retrieveBaseFontName = function(font: string): string {
     let baseFontName = "";
-    switch (font) {
+    switch (fontFamily) {
         case "amsrm":
             baseFontName = "AMS";
             break;
@@ -642,23 +635,21 @@ const retrieveBaseFontName = function(font: string): string {
             baseFontName = "Typewriter";
             break;
         default:
-            throw new Error(`Invalid font provided: ${font}`);
+            throw new Error(`Invalid font provided: ${fontFamily}`);
     }
-    return baseFontName;
-};
 
-const retrieveFontStylesName = function(
-    fontWeight?: string,
-    fontShape?: string,
-): string {
-    let fontStylesName = '';
-    if (fontWeight === "textbf") {
-        fontStylesName += "Bold";
+    let fontStylesName;
+    if (fontWeight === "textbf" && fontShape === "textit") {
+        fontStylesName = "BoldItalic";
+    } else if (fontWeight === "textbf") {
+        fontStylesName = "Bold";
+    } else if (fontWeight === "textit") {
+        fontStylesName = "Italic";
+    } else {
+        fontStylesName = "Regular";
     }
-    if (fontShape === "textit") {
-        fontStylesName += "Italic";
-    }
-    return fontStylesName || "Regular";
+
+    return `${baseFontName}-${fontStylesName}`;
 };
 
 // A map of spacing functions to their attributes, like size and corresponding

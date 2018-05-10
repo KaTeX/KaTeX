@@ -44,8 +44,11 @@ const defaultOptions = new Options({
 
 const _getBuilt = function(expr, settings) {
     const usedSettings = settings ? settings : defaultSettings;
-    const parsedTree = parseTree(expr, usedSettings);
-    const rootNode = buildTree(parsedTree, expr, usedSettings);
+    const rootNode = katex.__renderToDomTree(expr, usedSettings);
+
+    if (rootNode.classes.indexOf('katex-error') >= 0) {
+        return rootNode;
+    }
 
     // grab the root node of the HTML rendering
     const builtHTML = rootNode.children[1];
@@ -98,10 +101,10 @@ const parseAndSetResult = function(expr, result, settings) {
     } catch (e) {
         result.pass = false;
         if (e instanceof ParseError) {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with error: " + e.message;
         } else {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with unknown error: " + e.message;
         }
     }
@@ -113,10 +116,10 @@ const buildAndSetResult = function(expr, result, settings) {
     } catch (e) {
         result.pass = false;
         if (e instanceof ParseError) {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with error: " + e.message;
         } else {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with unknown error: " + e.message;
         }
     }
@@ -149,10 +152,10 @@ beforeEach(function() {
             } catch (e) {
                 if (e instanceof ParseError) {
                     result.pass = true;
-                    result.message = "'" + actual + "' correctly " +
+                    result.message = () => "'" + actual + "' correctly " +
                         "didn't parse with error: " + e.message;
                 } else {
-                    result.message = "'" + actual + "' failed " +
+                    result.message = () => "'" + actual + "' failed " +
                         "parsing with unknown error: " + e.message;
                 }
             }
@@ -175,10 +178,10 @@ beforeEach(function() {
             } catch (e) {
                 result.pass = false;
                 if (e instanceof ParseError) {
-                    result.message = "'" + actual + "' failed to " +
+                    result.message = () => "'" + actual + "' failed to " +
                         "build with error: " + e.message;
                 } else {
-                    result.message = "'" + actual + "' failed " +
+                    result.message = () => "'" + actual + "' failed " +
                         "building with unknown error: " + e.message;
                 }
             }
@@ -404,6 +407,7 @@ describe("A subscript and superscript parser", function() {
 
     it("should not fail when there is no nucleus", function() {
         expect("^3").toParse();
+        expect("^3+").toParse();
         expect("_2").toParse();
         expect("^3_2").toParse();
         expect("_2^3").toParse();
@@ -2637,6 +2641,18 @@ describe("A parser that does not throw on unsupported commands", function() {
         const parsedInput = getParsed("\\error", noThrowSettings);
         expect(parsedInput[0].type).toBe("color");
         expect(parsedInput[0].value.color).toBe(errorColor);
+    });
+
+    it("should build katex-error span for other type of KaTeX error", function() {
+        // Use _getBuilt instead of getBuilt to avoid calling expect...toParse
+        // and thus throwing parse error
+        const built = _getBuilt("2^2^2", noThrowSettings);
+        expect(built).toMatchSnapshot();
+    });
+
+    it("should properly escape LaTeX in errors", function() {
+        const html = katex.renderToString("2^&\"<>", noThrowSettings);
+        expect(html).toMatchSnapshot();
     });
 });
 
