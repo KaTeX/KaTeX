@@ -13,7 +13,7 @@ import {Token} from "./Token";
 import type { MacroMap } from "./macros";
 
 export type StrictFunction =
-    (errorCode: string, errorMsg: string, token?: Token | ParseNode) =>
+    (errorCode: string, errorMsg: string, token?: Token | ParseNode<*>) =>
     ?(boolean | string);
 
 export type SettingsOptions = {
