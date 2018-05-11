@@ -132,6 +132,13 @@ will appear larger than 1cm in browser units.
 - MathJax supports Unicode text characters in math mode, unlike LaTeX.
   To support this behavior in KaTeX, set the `unicodeTextInMathMode` option
   to `true`.
+- KaTeX breaks lines with `\\` and `\newline` in inline math, but ignores them
+  in display math (matching LaTeX's behavior, but not MathJax's behavior).
+  To allow `\\` and `\newline` to break lines in display mode,
+  add the following CSS rule:
+  ```css
+  .katex-display > .katex > .katex-html > .newline { display: block !important; }
+  ```
 
 ## Libraries
 
