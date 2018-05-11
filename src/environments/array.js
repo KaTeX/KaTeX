@@ -143,7 +143,7 @@ const htmlBuilder = function(group, options) {
     let c;
     const nr = group.value.body.length;
     let nc = 0;
-    let body = new Array(nr);
+    const body = new Array(nr);
 
     // Horizontal spacing
     const pt = 1 / options.fontMetrics().ptPerEm;
@@ -311,7 +311,7 @@ const htmlBuilder = function(group, options) {
         const line = buildCommon.makeLineSpan("hline", options, 0.05);
         const vListChildren = [{type: "elem", elem: matrix, shift: 0}];
         if (group.value.topHLine) {
-            vListChildren.push({type: "elem", elem: line, shift: - offset});
+            vListChildren.push({type: "elem", elem: line, shift: -offset});
         }
         for (r = 0; r < nr; ++r) {
             const hlinePos = body[r].hlinePos;
