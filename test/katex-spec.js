@@ -3122,6 +3122,14 @@ describe("The \\mathchoice function", function() {
     });
 });
 
+describe("Newlines via \\\\ and \\newline", function() {
+    it("should build \\\\ and \\newline the same", () => {
+        expect("hello \\\\ world").toBuildLike("hello \\newline world");
+        expect("hello \\\\[1ex] world").toBuildLike(
+            "hello \\newline[1ex] world");
+    });
+});
+
 describe("Symbols", function() {
     it("should parse \\text{\\i\\j}", () => {
         expect("\\text{\\i\\j}").toBuild();
