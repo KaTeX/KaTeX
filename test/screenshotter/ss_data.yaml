@@ -124,7 +124,7 @@ GroupMacros:
         \startExp: e^\bgroup
         \endExp: \egroup
     tex: \startExp a+b\endExp
-Hline: \begin{array}{c|c} \hline \hline  d & g \\ \hline \hline g & d \\ \hline \hline \end{array} \quad  \begin{array}{c|c} g & b \\ \hline c & d \end{array}  \quad \begin{pmatrix} g & b \\ \hline c & d \\ \hline\end{pmatrix}  \quad \begin{bmatrix}\hline  g & b \\ \hline c & d \end{bmatrix}
+Hline: \begin{array}{c|c} \hline \hline  d & g \\ \hline \hline g & d \\ \hline \hline \end{array} \quad \begin{pmatrix} g & b \\ \hline c & d \\ \hline\end{pmatrix}  \quad \begin{bmatrix}\hline  g & b \\ \hline c & d \end{bmatrix}
 HorizontalBraces: \overbrace{\displaystyle{\oint_S{\vec E\cdot\hat n\,\mathrm d a}}}^\text{emf} = \underbrace{\frac{q_{\text{enc}}}{\varepsilon_0}}_{\text{charge}}
 KaTeX:
     tex: \KaTeX
