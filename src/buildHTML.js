@@ -703,6 +703,15 @@ export default function buildHTML(tree, options) {
                 htmlNode.children.push(buildHTMLUnbreakable(parts, options));
                 parts = [];
             }
+        } else if (expression[i].hasClass("newline")) {
+            // Write the line except the newline
+            parts.pop();
+            if (parts.length > 0) {
+                htmlNode.children.push(buildHTMLUnbreakable(parts, options));
+                parts = [];
+            }
+            // Put the newline at the top level
+            htmlNode.children.push(expression[i]);
         }
     }
     if (parts.length > 0) {

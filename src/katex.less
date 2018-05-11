@@ -29,6 +29,11 @@
 
         > .katex-html {
             display: inline-block;
+
+            /* \newline doesn't do anything in display mode */
+            > .newline {
+                display: none;
+            }
         }
     }
 }
@@ -279,6 +284,11 @@
         &.qquad {
             width: 2em;
         }
+    }
+
+    /* \newline is an empty block in inline mode */
+    .newline {
+        display: block;
     }
 
     .llap,

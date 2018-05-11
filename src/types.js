@@ -24,4 +24,4 @@ export type ArgType = "color" | "size" | "url" | "original" | Mode;
 export type StyleStr = "text" | "display" | "script" | "scriptscript";
 
 // Allowable token text for "break" arguments in parser
-export type BreakToken = "]" | "}" | "$" | "\\)";
+export type BreakToken = "]" | "}" | "$" | "\\)" | RegExp;
