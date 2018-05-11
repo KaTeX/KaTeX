@@ -36,7 +36,7 @@ Arrays: |
     \left(\begin{array}{|rl|c||}
         1&2&3\\
         1+1&2+1&3+1\cr1\over2&\scriptstyle 1/2&\frac12\\[1ex]
-        \begin{pmatrix}x\\y\end{pmatrix}&0&\begin{vmatrix}a&b\\c&d\end{vmatrix}
+        \begin{pmatrix}x\\y\end{pmatrix}&0&\begin{vmatrix}\hline a&b\\ \hline c&d\end{vmatrix}
     \end{array}\right]
 ArrayMode:
     tex: |

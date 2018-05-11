@@ -25,11 +25,14 @@ export type ArrayEnvNodeData = {
     hskipBeforeAndAfter?: boolean,
     arraystretch?: number,
     addJot?: boolean,
+    addHLines?: boolean,
+    topHLine?: boolean,
     cols?: AlignSpec[],
     // These fields are always set, but not on struct construction
     // initialization.
     body?: ParseNode<*>[][], // List of rows in the (2D) array.
     rowGaps?: number[],
+    hlines?: boolean[],
 };
 
 /**
@@ -46,6 +49,20 @@ function parseArray(
     let row = [];
     const body = [row];
     const rowGaps = [];
+    const hlines = [];
+
+    // Test for \hline at the top of the array.
+    let possibleHLine = parser.nextToken.text;
+    while (/\s/.test(possibleHLine)) {
+        parser.consume();
+        possibleHLine = parser.nextToken.text;
+    }
+    if (possibleHLine === "\\hline") {
+        result.addHLines = true;
+        result.topHLine = true;
+        parser.consume();
+    }
+
     while (true) {  // eslint-disable-line no-constant-condition
         let cell = parser.parseExpression(false, undefined);
         cell = new ParseNode("ordgroup", cell, parser.mode);
@@ -76,6 +93,19 @@ function parseArray(
                 throw new ParseError(`Failed to parse function after ${next}`);
             }
             rowGaps.push(cr.value.size);
+
+            possibleHLine = parser.nextToken.text;
+            while (/\s/.test(possibleHLine)) {
+                parser.consume();
+                possibleHLine = parser.nextToken.text;
+            }
+            if (possibleHLine === "\\hline") {
+                hlines.push(true);
+                parser.consume();
+            } else {
+                hlines.push(false);
+            }
+
             row = [];
             body.push(row);
         } else {
@@ -85,6 +115,7 @@ function parseArray(
     }
     result.body = body;
     result.rowGaps = rowGaps;
+    result.hlines = hlines;
     return new ParseNode("array", result, parser.mode);
 }
 
@@ -104,6 +135,7 @@ type Outrow = {
     height: number,
     depth: number,
     pos: number,
+    hlinePos: number,
 };
 
 const htmlBuilder = function(group, options) {
@@ -174,6 +206,13 @@ const htmlBuilder = function(group, options) {
         totalHeight += height;
         outrow.pos = totalHeight;
         totalHeight += depth + gap; // \@yargarraycr
+
+        outrow.hlinePos = 0;
+        if (group.value.hlines[r]) {
+            outrow.hlinePos = totalHeight - gap / 2;
+            group.value.addHLines = true;
+        }
+
         body[r] = outrow;
     }
 
@@ -265,8 +304,29 @@ const htmlBuilder = function(group, options) {
             }
         }
     }
-    body = buildCommon.makeSpan(["mtable"], cols);
-    return buildCommon.makeSpan(["mord"], [body], options);
+    let matrix = buildCommon.makeSpan(["mtable"], cols);
+
+    if (group.value.addHLines) {
+        // Add \hline(s)
+        const line = buildCommon.makeLineSpan("hline", options, 0.05);
+        const vListChildren = [{type: "elem", elem: matrix, shift: 0}];
+        if (group.value.topHLine) {
+            vListChildren.push({type: "elem", elem: line, shift: - offset});
+        }
+        for (r = 0; r < nr; ++r) {
+            const hlinePos = body[r].hlinePos;
+            if (hlinePos > 0) {
+                const lineShift = hlinePos - offset;
+                vListChildren.push({type: "elem", elem: line, shift: lineShift});
+            }
+        }
+        matrix = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: vListChildren,
+        }, options);
+    }
+
+    return buildCommon.makeSpan(["mord"], [matrix], options);
 };
 
 const mathmlBuilder = function(group, options) {
