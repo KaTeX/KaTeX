@@ -208,10 +208,10 @@ NestedFractions: |
     {\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
 NewLine: |
     \frac{a^2+b^2}{c^2} \newline
-    \begin{array}{cc}
+    \begin{pmatrix}
         a & b \\
         c & d \cr
-    \end{array} \\
+    \end{pmatrix} \\
     a+b+c+{d+\\e}+f+g
 Not: |
     \begin{array}{l}
