@@ -208,6 +208,7 @@ NestedFractions: |
     {\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
 NewLine: |
     \frac{a^2+b^2}{c^2} \newline
+    \frac{a^2+b^2}{c^2} \\[1ex]
     \begin{pmatrix}
         a & b \\
         c & d \cr
