@@ -206,6 +206,13 @@ NegativeSpace:
 NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
     {\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
+NewLine: |
+    \frac{a^2+b^2}{c^2} \\
+    \begin{array}{cc}
+        a & b \\
+        c & d \\
+    \end{array} \\
+    a+b+c+{d+\\e}+f+g
 Not: |
     \begin{array}{l}
         \not=\not>\not\geq\not\in\not<\not\leq\not{abc} \\
