@@ -668,8 +668,7 @@ export default function buildHTML(tree, options) {
     // Build the expression contained in the tree
     const expression = buildExpression(tree, options, true);
 
-    const htmlNode = makeSpan(["katex-html"], []);
-    htmlNode.setAttribute("aria-hidden", "true");
+    const children = [];
 
     // Create one base node for each chunk between potential line breaks.
     // The TeXBook [p.173] says "A formula will be broken only after a
@@ -697,14 +696,25 @@ export default function buildHTML(tree, options) {
             }
             // Don't allow break if \nobreak among the post-operator glue.
             if (!nobreak) {
-                htmlNode.children.push(buildHTMLUnbreakable(parts, options));
+                children.push(buildHTMLUnbreakable(parts, options));
                 parts = [];
             }
         }
     }
     if (parts.length > 0) {
-        htmlNode.children.push(buildHTMLUnbreakable(parts, options));
+        children.push(buildHTMLUnbreakable(parts, options));
     }
+
+    const htmlNode = makeSpan(["katex-html"], children);
+    htmlNode.setAttribute("aria-hidden", "true");
+
+    const strut = makeSpan(["strut"]);
+    strut.style.height = (htmlNode.height + htmlNode.depth) + "em";
+    strut.style.verticalAlign = (-htmlNode.depth) + "em";
+    htmlNode.children.push(makeSpan(["tag"], [
+        strut,
+        buildCommon.mathsym("*", "math"),
+    ]));
 
     return htmlNode;
 }
