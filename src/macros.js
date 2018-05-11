@@ -390,8 +390,11 @@ defineMacro("\\KaTeX",
 
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
 // \def\@hspace#1{\hskip  #1\relax}
-// KaTeX doesn't do line breaks, so \hspace and \hspace* are the same as \kern
-defineMacro("\\hspace", "\\@ifstar\\kern\\kern");
+// \def\@hspacer#1{\vrule \@width\z@\nobreak
+//                 \hskip #1\hskip \z@skip}
+defineMacro("\\hspace", "\\@ifstar\\@hspacer\\@hspace");
+defineMacro("\\@hspace", "\\hskip #1\\relax");
+defineMacro("\\@hspacer", "\\rule{0pt}{0pt}\\hskip #1\\relax");
 
 //////////////////////////////////////////////////////////////////////
 // mathtools.sty
