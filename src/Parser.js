@@ -60,12 +60,12 @@ type ParsedFunc = {|
 |};
 type ParsedArg = {|
     type: "arg",
-    result: ParseNode,
+    result: ParseNode<*>,
     token: Token,
 |};
 type ParsedFuncOrArg = ParsedFunc | ParsedArg;
 
-function newArgument(result: ParseNode, token: Token): ParsedArg {
+function newArgument(result: ParseNode<*>, token: Token): ParsedArg {
     return {type: "arg", result, token};
 }
 
@@ -132,7 +132,7 @@ export default class Parser {
     /**
      * Main parsing function, which parses an entire input.
      */
-    parse(): ParseNode[] {
+    parse(): ParseNode<*>[] {
         // Try to parse the input
         this.consume();
         const parse = this.parseInput();
@@ -142,7 +142,7 @@ export default class Parser {
     /**
      * Parses an entire input tree.
      */
-    parseInput(): ParseNode[] {
+    parseInput(): ParseNode<*>[] {
         // Parse an expression
         const expression = this.parseExpression(false);
         // If we succeeded, make sure there's an EOF at the end
@@ -166,7 +166,7 @@ export default class Parser {
     parseExpression(
         breakOnInfix: boolean,
         breakOnTokenText?: BreakToken,
-    ): ParseNode[] {
+    ): ParseNode<*>[] {
         const body = [];
         // Keep adding atoms to the body until we can't parse any more atoms (either
         // we reached the end, a }, or a \right)
@@ -207,7 +207,7 @@ export default class Parser {
      * There can only be one infix operator per group.  If there's more than one
      * then the expression is ambiguous.  This can be resolved by adding {}.
      */
-    handleInfixNodes(body: ParseNode[]): ParseNode[] {
+    handleInfixNodes(body: ParseNode<*>[]): ParseNode<*>[] {
         let overIndex = -1;
         let funcName;
 
@@ -258,7 +258,7 @@ export default class Parser {
      */
     handleSupSubscript(
         name: string,   // For error reporting.
-    ): ParseNode {
+    ): ParseNode<*> {
         const symbolToken = this.nextToken;
         const symbol = symbolToken.text;
         this.consume();
@@ -296,7 +296,7 @@ export default class Parser {
      * Converts the textual input of an unsupported command into a text node
      * contained within a color node whose color is determined by errorColor
      */
-    handleUnsupportedCmd(): ParseNode {
+    handleUnsupportedCmd(): ParseNode<*> {
         const text = this.nextToken.text;
         const textordArray = [];
 
@@ -328,7 +328,7 @@ export default class Parser {
     /**
      * Parses a group with optional super/subscripts.
      */
-    parseAtom(breakOnTokenText?: BreakToken): ?ParseNode {
+    parseAtom(breakOnTokenText?: BreakToken): ?ParseNode<*> {
         // The body of an atom is an implicit group, so that things like
         // \left(x\right)^2 work correctly.
         const base = this.parseImplicitGroup(breakOnTokenText);
@@ -402,6 +402,8 @@ export default class Parser {
             }
         }
 
+        // Base must be set if superscript or subscript are set per logic above,
+        // but need to check here for type check to pass.
         if (superscript || subscript) {
             // If we got either a superscript or subscript, create a supsub
             return new ParseNode("supsub", {
@@ -423,7 +425,7 @@ export default class Parser {
      * implicit grouping after it until the end of the group. E.g.
      *   small text {\Large large text} small text again
      */
-    parseImplicitGroup(breakOnTokenText?: BreakToken): ?ParseNode {
+    parseImplicitGroup(breakOnTokenText?: BreakToken): ?ParseNode<*> {
         const start = this.parseSymbol();
 
         if (start == null) {
@@ -477,7 +479,7 @@ export default class Parser {
      * Parses an entire function, including its base and all of its arguments.
      * It also handles the case where the parsed node is not a function.
      */
-    parseFunction(): ?ParseNode {
+    parseFunction(): ?ParseNode<*> {
         const baseGroup = this.parseGroup();
         return baseGroup ? this.parseGivenFunction(baseGroup) : null;
     }
@@ -489,7 +491,7 @@ export default class Parser {
     parseGivenFunction(
         baseGroup: ParsedFuncOrArg,
         breakOnTokenText?: BreakToken,
-    ): ParseNode {
+    ): ParseNode<*> {
         if (baseGroup.type === "fn") {
             const func = baseGroup.result;
             const funcData = functions[func];
@@ -530,8 +532,8 @@ export default class Parser {
      */
     callFunction(
         name: string,
-        args: ParseNode[],
-        optArgs: (?ParseNode)[],
+        args: ParseNode<*>[],
+        optArgs: (?ParseNode<*>)[],
         token?: Token,
         breakOnTokenText?: BreakToken,
     ): * {
@@ -554,10 +556,10 @@ export default class Parser {
      */
     parseArguments(
         func: string,   // Should look like "\name" or "\begin{name}".
-        funcData: FunctionSpec | EnvSpec,
+        funcData: FunctionSpec<*> | EnvSpec,
     ): {
-        args: ParseNode[],
-        optArgs: (?ParseNode)[],
+        args: ParseNode<*>[],
+        optArgs: (?ParseNode<*>)[],
     } {
         const totalArgs = funcData.numArgs + funcData.numOptionalArgs;
         if (totalArgs === 0) {
@@ -604,7 +606,7 @@ export default class Parser {
                         "Expected group after '" + func + "'", nextToken);
                 }
             }
-            let argNode: ParseNode;
+            let argNode: ParseNode<*>;
             if (arg.type === "fn") {
                 const argGreediness =
                     functions[arg.result].greediness;
@@ -880,7 +882,7 @@ export default class Parser {
      * characters in its value.  The representation is still ASCII source.
      * The group will be modified in place.
      */
-    formLigatures(group: ParseNode[]) {
+    formLigatures(group: ParseNode<*>[]) {
         let n = group.length - 1;
         for (let i = 0; i < n; ++i) {
             const a = group[i];
@@ -985,7 +987,7 @@ export default class Parser {
         // Transform combining characters into accents
         if (match) {
             for (let i = 0; i < match[0].length; i++) {
-                const accent = match[0][i];
+                const accent: string = match[0][i];
                 if (!unicodeAccents[accent]) {
                     throw new ParseError(`Unknown accent ' ${accent}'`, nucleus);
                 }

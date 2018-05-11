@@ -46,14 +46,22 @@ const defaultOptions = new Options({
 
 const _getBuilt = function(expr, settings) {
     const usedSettings = settings ? settings : defaultSettings;
-    const parsedTree = parseTree(expr, usedSettings);
-    const rootNode = buildTree(parsedTree, expr, usedSettings);
+    const rootNode = katex.__renderToDomTree(expr, usedSettings);
+
+    if (rootNode.classes.indexOf('katex-error') >= 0) {
+        return rootNode;
+    }
 
     // grab the root node of the HTML rendering
     const builtHTML = rootNode.children[1];
 
-    // Remove the outer .katex and .katex-inner layers
-    return builtHTML.children[2].children;
+    // combine the non-strut children of all base spans
+    const children = [];
+    for (let i = 0; i < builtHTML.children.length; i++) {
+        children.push(...builtHTML.children[i].children.filter(
+            (node) => node.classes.indexOf("strut") < 0));
+    }
+    return children;
 };
 
 /**
@@ -406,6 +414,7 @@ describe("A subscript and superscript parser", function() {
 
     it("should not fail when there is no nucleus", function() {
         expect("^3").toParse();
+        expect("^3+").toParse();
         expect("_2").toParse();
         expect("^3_2").toParse();
         expect("_2^3").toParse();
@@ -2640,6 +2649,18 @@ describe("A parser that does not throw on unsupported commands", function() {
         expect(parsedInput[0].type).toBe("color");
         expect(parsedInput[0].value.color).toBe(errorColor);
     });
+
+    it("should build katex-error span for other type of KaTeX error", function() {
+        // Use _getBuilt instead of getBuilt to avoid calling expect...toParse
+        // and thus throwing parse error
+        const built = _getBuilt("2^2^2", noThrowSettings);
+        expect(built).toMatchSnapshot();
+    });
+
+    it("should properly escape LaTeX in errors", function() {
+        const html = katex.renderToString("2^&\"<>", noThrowSettings);
+        expect(html).toMatchSnapshot();
+    });
 });
 
 describe("The symbol table integrity", function() {
@@ -2875,9 +2896,9 @@ describe("A macro expander", function() {
 
     // This may change in the future, if we support the extra features of
     // \hspace.
-    it("should treat \\hspace, \\hspace*, \\hskip like \\kern", function() {
+    it("should treat \\hspace, \\hskip like \\kern", function() {
         expect("\\hspace{1em}").toParseLike("\\kern1em");
-        expect("\\hspace*{1em}").toParseLike("\\kern1em");
+        expect("\\hskip{1em}").toParseLike("\\kern1em");
     });
 
     it("should expand \\limsup as expected", () => {
