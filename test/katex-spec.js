@@ -3128,6 +3128,10 @@ describe("Newlines via \\\\ and \\newline", function() {
         expect("hello \\\\[1ex] world").toBuildLike(
             "hello \\newline[1ex] world");
     });
+
+    it("should not allow \\cr at top level", () => {
+        expect("hello \\cr world").toNotParse();
+    });
 });
 
 describe("Symbols", function() {
