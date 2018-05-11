@@ -207,10 +207,10 @@ NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
     {\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
 NewLine: |
-    \frac{a^2+b^2}{c^2} \\
+    \frac{a^2+b^2}{c^2} \newline
     \begin{array}{cc}
         a & b \\
-        c & d \\
+        c & d \cr
     \end{array} \\
     a+b+c+{d+\\e}+f+g
 Not: |
