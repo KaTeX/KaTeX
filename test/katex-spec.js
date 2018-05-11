@@ -53,8 +53,13 @@ const _getBuilt = function(expr, settings) {
     // grab the root node of the HTML rendering
     const builtHTML = rootNode.children[1];
 
-    // Remove the outer .katex and .katex-inner layers
-    return builtHTML.children[2].children;
+    // combine the non-strut children of all base spans
+    const children = [];
+    for (let i = 0; i < builtHTML.children.length; i++) {
+        children.push(...builtHTML.children[i].children.filter(
+            (node) => node.classes.indexOf("strut") < 0));
+    }
+    return children;
 };
 
 /**
@@ -2889,9 +2894,9 @@ describe("A macro expander", function() {
 
     // This may change in the future, if we support the extra features of
     // \hspace.
-    it("should treat \\hspace, \\hspace*, \\hskip like \\kern", function() {
+    it("should treat \\hspace, \\hskip like \\kern", function() {
         expect("\\hspace{1em}").toParseLike("\\kern1em");
-        expect("\\hspace*{1em}").toParseLike("\\kern1em");
+        expect("\\hskip{1em}").toParseLike("\\kern1em");
     });
 
     it("should expand \\limsup as expected", () => {
