@@ -25,15 +25,26 @@ export type ArrayEnvNodeData = {
     hskipBeforeAndAfter?: boolean,
     arraystretch?: number,
     addJot?: boolean,
-    addHLines?: boolean,
-    topHLine?: boolean,
     cols?: AlignSpec[],
     // These fields are always set, but not on struct construction
     // initialization.
     body?: ParseNode<*>[][], // List of rows in the (2D) array.
     rowGaps?: number[],
-    hlines?: boolean[],
+    numHLinesBeforeRow?: number[],
 };
+
+function nextTokenIsHLine(parser: Parser): boolean {
+    let next = parser.nextToken.text;
+    while (/^\s$/.test(next)) {
+        parser.consume();
+        next = parser.nextToken.text;
+    }
+    if (next === "\\hline") {
+        parser.consume();
+        return true;
+    }
+    return false;
+}
 
 /**
  * Parse the body of the environment, with rows delimited by \\ and
@@ -49,18 +60,16 @@ function parseArray(
     let row = [];
     const body = [row];
     const rowGaps = [];
-    const hlines = [];
+    const numHLinesBeforeRow = [];
 
     // Test for \hline at the top of the array.
-    let possibleHLine = parser.nextToken.text;
-    while (/\s/.test(possibleHLine)) {
-        parser.consume();
-        possibleHLine = parser.nextToken.text;
-    }
-    if (possibleHLine === "\\hline") {
-        result.addHLines = true;
-        result.topHLine = true;
-        parser.consume();
+    if (nextTokenIsHLine(parser)) {
+        numHLinesBeforeRow.push(1);
+        if (nextTokenIsHLine(parser)) {
+            numHLinesBeforeRow[0] = 2;
+        }
+    } else {
+        numHLinesBeforeRow.push(0);
     }
 
     while (true) {  // eslint-disable-line no-constant-condition
@@ -94,16 +103,14 @@ function parseArray(
             }
             rowGaps.push(cr.value.size);
 
-            possibleHLine = parser.nextToken.text;
-            while (/\s/.test(possibleHLine)) {
-                parser.consume();
-                possibleHLine = parser.nextToken.text;
-            }
-            if (possibleHLine === "\\hline") {
-                hlines.push(true);
-                parser.consume();
+            if (nextTokenIsHLine(parser)) {
+                numHLinesBeforeRow.push(1);
+                if (nextTokenIsHLine(parser)) {
+                    // double \hline
+                    numHLinesBeforeRow[numHLinesBeforeRow.length - 1] = 2;
+                }
             } else {
-                hlines.push(false);
+                numHLinesBeforeRow.push(0);
             }
 
             row = [];
@@ -115,7 +122,7 @@ function parseArray(
     }
     result.body = body;
     result.rowGaps = rowGaps;
-    result.hlines = hlines;
+    result.numHLinesBeforeRow = numHLinesBeforeRow;
     return new ParseNode("array", result, parser.mode);
 }
 
@@ -135,15 +142,16 @@ type Outrow = {
     height: number,
     depth: number,
     pos: number,
-    hlinePos: number,
 };
 
 const htmlBuilder = function(group, options) {
     let r;
     let c;
     const nr = group.value.body.length;
+    const numHLinesBeforeRow = group.value.numHLinesBeforeRow;
     let nc = 0;
-    const body = new Array(nr);
+    let body = new Array(nr);
+    const hlinePos = [];
 
     // Horizontal spacing
     const pt = 1 / options.fontMetrics().ptPerEm;
@@ -162,6 +170,16 @@ const htmlBuilder = function(group, options) {
     const arstrutDepth = 0.3 * arrayskip;  // \@arstrutbox in lttab.dtx
 
     let totalHeight = 0;
+
+    // Set a position for \hline(s) at the top of the array, if any.
+    if (numHLinesBeforeRow[0] === 1) {
+        hlinePos.push(0);
+    } else if (numHLinesBeforeRow[0] === 2) {
+        hlinePos.push(0);
+        hlinePos.push(0.25);
+        totalHeight += 0.25;
+    }
+
     for (r = 0; r < group.value.body.length; ++r) {
         const inrow = group.value.body[r];
         let height = arstrutHeight; // \@array adds an \@arstrut
@@ -194,6 +212,10 @@ const htmlBuilder = function(group, options) {
                 gap = 0;
             }
         }
+        if (numHLinesBeforeRow[r + 1] === 2) {
+            // Add a gap between a double \hline
+            gap += 0.25;
+        }
         // In AMS multiline environments such as aligned and gathered, rows
         // correspond to lines that have additional \jot added to the
         // \baselineskip via \openup.
@@ -206,14 +228,15 @@ const htmlBuilder = function(group, options) {
         totalHeight += height;
         outrow.pos = totalHeight;
         totalHeight += depth + gap; // \@yargarraycr
-
-        outrow.hlinePos = 0;
-        if (group.value.hlines[r]) {
-            outrow.hlinePos = totalHeight - gap / 2;
-            group.value.addHLines = true;
-        }
-
         body[r] = outrow;
+
+        // Set a position for \hline(s), if any.
+        if (numHLinesBeforeRow[r + 1] === 1) {
+            hlinePos.push(totalHeight - gap / 2);
+        } else if (numHLinesBeforeRow[r + 1] === 2) {
+            hlinePos.push(totalHeight - gap / 2 - 0.125);
+            hlinePos.push(totalHeight - gap / 2 + 0.125);
+        }
     }
 
     const offset = totalHeight / 2 + options.fontMetrics().axisHeight;
@@ -304,29 +327,23 @@ const htmlBuilder = function(group, options) {
             }
         }
     }
-    let matrix = buildCommon.makeSpan(["mtable"], cols);
+    body = buildCommon.makeSpan(["mtable"], cols);
 
-    if (group.value.addHLines) {
-        // Add \hline(s)
+    // Add \hline(s), if any.
+    if (hlinePos.length > 0) {
         const line = buildCommon.makeLineSpan("hline", options, 0.05);
-        const vListChildren = [{type: "elem", elem: matrix, shift: 0}];
-        if (group.value.topHLine) {
-            vListChildren.push({type: "elem", elem: line, shift: -offset});
+        const vListChildren = [{type: "elem", elem: body, shift: 0}];
+        while (hlinePos.length > 0) {
+            const lineShift = hlinePos.pop() - offset;
+            vListChildren.push({type: "elem", elem: line, shift: lineShift});
         }
-        for (r = 0; r < nr; ++r) {
-            const hlinePos = body[r].hlinePos;
-            if (hlinePos > 0) {
-                const lineShift = hlinePos - offset;
-                vListChildren.push({type: "elem", elem: line, shift: lineShift});
-            }
-        }
-        matrix = buildCommon.makeVList({
+        body = buildCommon.makeVList({
             positionType: "individualShift",
             children: vListChildren,
         }, options);
     }
 
-    return buildCommon.makeSpan(["mord"], [matrix], options);
+    return buildCommon.makeSpan(["mord"], [body], options);
 };
 
 const mathmlBuilder = function(group, options) {

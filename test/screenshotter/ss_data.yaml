@@ -36,7 +36,7 @@ Arrays: |
     \left(\begin{array}{|rl|c||}
         1&2&3\\
         1+1&2+1&3+1\cr1\over2&\scriptstyle 1/2&\frac12\\[1ex]
-        \begin{pmatrix}x\\y\end{pmatrix}&0&\begin{vmatrix}\hline a&b\\ \hline c&d\end{vmatrix}
+        \begin{pmatrix}x\\y\end{pmatrix}&0&\begin{vmatrix}a&b\\c&d\end{vmatrix}
     \end{array}\right]
 ArrayMode:
     tex: |
@@ -124,6 +124,7 @@ GroupMacros:
         \startExp: e^\bgroup
         \endExp: \egroup
     tex: \startExp a+b\endExp
+Hline: \begin{array}{c|c} \hline \hline  d & g \\ \hline \hline g & d \\ \hline \hline \end{array} \quad  \begin{array}{c|c} g & b \\ \hline c & d \end{array}  \quad \begin{pmatrix} g & b \\ \hline c & d \\ \hline\end{pmatrix}  \quad \begin{bmatrix}\hline  g & b \\ \hline c & d \end{bmatrix}
 HorizontalBraces: \overbrace{\displaystyle{\oint_S{\vec E\cdot\hat n\,\mathrm d a}}}^\text{emf} = \underbrace{\frac{q_{\text{enc}}}{\varepsilon_0}}_{\text{charge}}
 KaTeX:
     tex: \KaTeX
