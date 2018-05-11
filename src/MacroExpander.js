@@ -6,23 +6,24 @@
 
 import Lexer from "./Lexer";
 import {Token} from "./Token";
-import builtinMacros from "./macros";
 import type {Mode} from "./types";
 import ParseError from "./ParseError";
+import Environment, {builtinEnvironment} from "./Environment";
 
 import type {MacroContextInterface, MacroMap, MacroExpansion} from "./macros";
 import type Settings from "./Settings";
 
 export default class MacroExpander implements MacroContextInterface {
-    lexer: Lexer;
-    macros: MacroMap;
     maxExpand: number;
+    lexer: Lexer;
+    environment: Environment;
+    cache: MacroMap;
     stack: Token[];
     mode: Mode;
 
     constructor(input: string, settings: Settings, mode: Mode) {
         this.feed(input);
-        this.macros = Object.assign({}, builtinMacros, settings.macros);
+        this.environment = new Environment(builtinEnvironment, settings.macros);
         this.maxExpand = settings.maxExpand;
         this.mode = mode;
         this.stack = []; // contains tokens in REVERSE order
@@ -153,7 +154,7 @@ export default class MacroExpander implements MacroContextInterface {
     expandOnce(): Token | Token[] {
         const topToken = this.popToken();
         const name = topToken.text;
-        if (!this.macros.hasOwnProperty(name)) {
+        if (!this.environment.getMacro(name)) {
             // Fully expanded
             this.pushToken(topToken);
             return topToken;
@@ -238,7 +239,7 @@ export default class MacroExpander implements MacroContextInterface {
      * Caches macro expansions for those that were defined simple TeX strings.
      */
     _getExpansion(name: string): MacroExpansion {
-        const definition = this.macros[name];
+        const definition = this.cache[name] || this.environment.getMacro(name);
         const expansion =
             typeof definition === "function" ? definition(this) : definition;
         if (typeof expansion === "string") {
@@ -261,7 +262,7 @@ export default class MacroExpander implements MacroContextInterface {
             // Cannot cache a macro defined using a function since it relies on
             // parser context.
             if (typeof definition !== "function") {
-                this.macros[name] = expanded;
+                this.cache[name] = expanded;
             }
             return expanded;
         }
