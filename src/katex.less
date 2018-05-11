@@ -64,6 +64,13 @@
         overflow: hidden;
     }
 
+    .katex-html {
+        /* \newline is an empty block at top level of inline mode */
+        > .newline {
+            display: block;
+        }
+    }
+
     .base {
         position: relative;
         display: inline-block;
@@ -284,11 +291,6 @@
         &.qquad {
             width: 2em;
         }
-    }
-
-    /* \newline is an empty block in inline mode */
-    .newline {
-        display: block;
     }
 
     .llap,
