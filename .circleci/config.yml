@@ -93,6 +93,7 @@ jobs:
       - image: selenium/standalone-chrome:2.48.2
     <<: *ss_steps
 
+
 workflows:
   version: 2
   screenshotter:
