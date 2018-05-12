@@ -40,7 +40,6 @@
     "less": "~2.7.1",
     "less-loader": "^4.0.5",
     "mkdirp": "^0.5.1",
-    "object-assign": "^4.1.0",
     "pako": "1.0.4",
     "pre-commit": "^1.2.2",
     "query-string": "^5.1.0",

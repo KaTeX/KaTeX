@@ -9,7 +9,6 @@ import {Token} from "./Token";
 import builtinMacros from "./macros";
 import type {Mode} from "./types";
 import ParseError from "./ParseError";
-import objectAssign from "object-assign";
 
 import type {MacroContextInterface, MacroMap, MacroExpansion} from "./macros";
 
@@ -21,7 +20,7 @@ export default class MacroExpander implements MacroContextInterface {
 
     constructor(input: string, macros: MacroMap, mode: Mode) {
         this.lexer = new Lexer(input);
-        this.macros = objectAssign({}, builtinMacros, macros);
+        this.macros = Object.assign({}, builtinMacros, macros);
         this.mode = mode;
         this.stack = []; // contains tokens in REVERSE order
     }
