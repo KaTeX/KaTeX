@@ -2934,6 +2934,7 @@ describe("A macro expander", function() {
         expect("\\tag{hi}x+y").toParse(displayMode);
         expect("\\tag{hi}x+y").toParseLike("x+y");
         expect("\\tag{hi}x+y").toParseLike("x+y\\tag{hi}", displayMode);
+        expect("\\tag{hi}x+y").toParseLike("\\tag*{(hi)}x+y", displayMode);
     });
 });
 
