@@ -8,12 +8,18 @@ import fontMetricsData from "../submodules/katex-fonts/fontMetricsData";
 import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
+import ParseError from "./ParseError";
 
 /**
  * Provides context to macros defined by functions. Implemented by
  * MacroExpander.
  */
 export interface MacroContextInterface {
+    /**
+     * Object mapping macros to their expansions.
+     */
+    macros: MacroMap;
+
     /**
      * Returns the topmost token on the stack, without expanding it.
      * Similar in behavior to TeX's `\futurelet`.
@@ -93,6 +99,42 @@ defineMacro("\\TextOrMath", function(context) {
     } else {
         return {tokens: args[1], numArgs: 0};
     }
+});
+
+// Basic support for global macro definitions:
+//     \gdef\macro{expansion}
+//     \gdef\macro#1{expansion}
+//     \gdef\macro#1#2{expansion}
+//     \gdef\macro#1#2#3#4#5#6#7#8#9{expansion}
+defineMacro("\\gdef", function(context) {
+    let arg = context.consumeArgs(1)[0];
+    if (arg.length !== 1) {
+        throw new ParseError("\\gdef's first argument must be a macro name");
+    }
+    const name = arg[0].text;
+    // Count argument specifiers, and check they are in the order #1 #2 ...
+    let numArgs = 0;
+    arg = context.consumeArgs(1)[0];
+    while (arg.length === 1 && arg[0].text === "#") {
+        arg = context.consumeArgs(1)[0];
+        if (arg.length !== 1) {
+            throw new ParseError(`Invalid argument number "${arg}"`);
+        }
+        if (!(/^[1-9]$/.test(arg[0].text))) {
+            throw new ParseError(`Invalid argument number "${arg[0].text}"`);
+        }
+        numArgs++;
+        if (parseInt(arg[0].text) !== numArgs) {
+            throw new ParseError(`Argument number "${arg[0].text}" out of order`);
+        }
+        arg = context.consumeArgs(1)[0];
+    }
+    // Final arg is the expansion of the macro
+    context.macros[name] = {
+        tokens: arg,
+        numArgs,
+    };
+    return '';
 });
 
 //////////////////////////////////////////////////////////////////////
