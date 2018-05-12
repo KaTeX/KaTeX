@@ -371,7 +371,28 @@ export default function buildMathML(tree, texExpression, options) {
 
     // Wrap up the expression in an mrow so it is presented in the semantics
     // tag correctly.
-    const wrapper = new mathMLTree.MathNode("mrow", expression);
+    let wrapper = new mathMLTree.MathNode("mrow", expression);
+
+    // \tag output is guaranteed to be the last node.  If detected,
+    // wrap in mlabeledtr to denote equation numbering.
+    if (expression.length > 0) {
+        const lastChild = expression[expression.length - 1];
+        if (lastChild.attributes["class"] === "tag") {
+            expression.pop();
+            delete lastChild.attributes["class"];
+            wrapper = new mathMLTree.MathNode("mtable", [
+                new mathMLTree.MathNode("mlabeledtr", [
+                    new mathMLTree.MathNode("mtd", [
+                        lastChild,
+                    ]),
+                    new mathMLTree.MathNode("mtd", [
+                        wrapper,
+                    ]),
+                ]),
+            ]);
+            wrapper.setAttribute("side", "right");
+        }
+    }
 
     // Build a TeX annotation of the source
     const annotation = new mathMLTree.MathNode(

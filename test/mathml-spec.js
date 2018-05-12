@@ -94,8 +94,13 @@ describe("A MathML builder", function() {
             .toMatchSnapshot();
     });
 
-    it('accents turn into <mover accent="true"> in MathML', function() {
+    it('accents turn into <mover accent="true"> in MathML', () => {
         expect(getMathML("über fiancée", {unicodeTextInMathMode: true}))
+            .toMatchSnapshot();
+    });
+
+    it('tags use <mlabeledtr>', () => {
+        expect(getMathML("\\tag{hi} x+y^2", {displayMode: true}))
             .toMatchSnapshot();
     });
 });

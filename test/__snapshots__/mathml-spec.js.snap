@@ -505,3 +505,42 @@ exports[`A MathML builder should use <munderover> for large operators 1`] = `
 </math>
 
 `;
+
+exports[`A MathML builder tags use <mlabeledtr> 1`] = `
+
+<math>
+  <semantics>
+    <mtable side="right">
+      <mlabeledtr>
+        <mtd>
+          <mtext>
+            (hi)
+          </mtext>
+        </mtd>
+        <mtd>
+          <mrow>
+            <mi>
+              x
+            </mi>
+            <mo>
+              +
+            </mo>
+            <msup>
+              <mi>
+                y
+              </mi>
+              <mn>
+                2
+              </mn>
+            </msup>
+          </mrow>
+        </mtd>
+      </mlabeledtr>
+    </mtable>
+    <annotation encoding="application/x-tex">
+      \\tag{hi} x+y^2
+    </annotation>
+  </semantics>
+</math>
+
+`;
