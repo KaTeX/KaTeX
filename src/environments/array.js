@@ -33,13 +33,15 @@ export type ArrayEnvNodeData = {
     numHLinesBeforeRow?: number[],
 };
 
-function nextTokenIsHLine(parser: Parser): boolean {
+function getNumHLines(parser: Parser): number {
+    let n = 0;
     parser.consumeSpaces();
-    if (parser.nextToken.text === "\\hline") {
+    while (parser.nextToken.text === "\\hline") {
         parser.consume();
-        return true;
+        n++;
+        parser.consumeSpaces();
     }
-    return false;
+    return n;
 }
 
 /**
@@ -56,12 +58,10 @@ function parseArray(
     let row = [];
     const body = [row];
     const rowGaps = [];
-    const numHLinesBeforeRow = [0];
+    const numHLinesBeforeRow = [];
 
     // Test for \hline at the top of the array.
-    while (nextTokenIsHLine(parser)) {
-        numHLinesBeforeRow[0] += 1;
-    }
+    numHLinesBeforeRow.push(getNumHLines(parser));
 
     while (true) {  // eslint-disable-line no-constant-condition
         let cell = parser.parseExpression(false, undefined);
@@ -94,11 +94,8 @@ function parseArray(
             }
             rowGaps.push(cr.value.size);
 
-            // check for \hline following the row separator
-            numHLinesBeforeRow.push(0);
-            while (nextTokenIsHLine(parser)) {
-                numHLinesBeforeRow[numHLinesBeforeRow.length - 1] += 1;
-            }
+            // check for \hline(s) following the row separator
+            numHLinesBeforeRow.push(getNumHLines(parser));
 
             row = [];
             body.push(row);
@@ -159,11 +156,10 @@ const htmlBuilder = function(group, options) {
     let totalHeight = 0;
 
     // Set a position for \hline(s) at the top of the array, if any.
-    if (numHLinesBeforeRow[0] > 0) {
-        hlinePos.push(0);
-    }
-    for (let i = 2; i <= numHLinesBeforeRow[0]; i++) {
-        totalHeight += 0.25;
+    for (let i = 1; i <= numHLinesBeforeRow[0]; i++) {
+        if (i >  1) {              // The first \hline doesn't add to height.
+            totalHeight += 0.25;
+        }
         hlinePos.push(totalHeight);
     }
 
@@ -214,11 +210,10 @@ const htmlBuilder = function(group, options) {
         body[r] = outrow;
 
         // Set a position for \hline(s), if any.
-        if (numHLinesBeforeRow[r + 1] > 0) {
-            hlinePos.push(totalHeight);  // the first \hline doesn't add height
-        }
-        for (let i = 2; i <= numHLinesBeforeRow[r + 1]; i++) {
-            totalHeight += 0.25;
+        for (let i = 1; i <= numHLinesBeforeRow[r + 1]; i++) {
+            if (i >  1) {               // the first \hline doesn't add height
+                totalHeight += 0.25;
+            }
             hlinePos.push(totalHeight);
         }
     }
