@@ -118,7 +118,7 @@ defineMacro("\\gdef", function(context) {
     while (arg.length === 1 && arg[0].text === "#") {
         arg = context.consumeArgs(1)[0];
         if (arg.length !== 1) {
-            throw new ParseError(`Invalid argument number "${arg}"`);
+            throw new ParseError(`Invalid argument number length "${arg.length}"`);
         }
         if (!(/^[1-9]$/.test(arg[0].text))) {
             throw new ParseError(`Invalid argument number "${arg[0].text}"`);
