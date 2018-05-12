@@ -2926,6 +2926,15 @@ describe("A macro expander", function() {
         expect("\\liminf")
             .toParseLike("\\mathop{\\operatorname{lim\\,inf}}\\limits");
     });
+
+    it("\\tag support", () => {
+        const displayMode = new Settings({displayMode: true});
+        expect("\\tag{1}\\tag{2}x+y").toNotParse();
+        expect("\\tag{1}\\tag{2}x+y").toNotParse(displayMode);
+        expect("\\tag{hi}x+y").toParse(displayMode);
+        expect("\\tag{hi}x+y").toParseLike("x+y");
+        expect("\\tag{hi}x+y").toParseLike("x+y\\tag{hi}", displayMode);
+    });
 });
 
 describe("A parser taking String objects", function() {
