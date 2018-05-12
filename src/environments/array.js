@@ -34,12 +34,8 @@ export type ArrayEnvNodeData = {
 };
 
 function nextTokenIsHLine(parser: Parser): boolean {
-    let next = parser.nextToken.text;
-    while (/^\s$/.test(next)) {
-        parser.consume();
-        next = parser.nextToken.text;
-    }
-    if (next === "\\hline") {
+    parser.consumeSpaces();
+    if (parser.nextToken.text === "\\hline") {
         parser.consume();
         return true;
     }
@@ -60,16 +56,11 @@ function parseArray(
     let row = [];
     const body = [row];
     const rowGaps = [];
-    const numHLinesBeforeRow = [];
+    const numHLinesBeforeRow = [0];
 
     // Test for \hline at the top of the array.
-    if (nextTokenIsHLine(parser)) {
-        numHLinesBeforeRow.push(1);
-        if (nextTokenIsHLine(parser)) {
-            numHLinesBeforeRow[0] = 2;
-        }
-    } else {
-        numHLinesBeforeRow.push(0);
+    while (nextTokenIsHLine(parser)) {
+        numHLinesBeforeRow[0] += 1;
     }
 
     while (true) {  // eslint-disable-line no-constant-condition
@@ -103,14 +94,10 @@ function parseArray(
             }
             rowGaps.push(cr.value.size);
 
-            if (nextTokenIsHLine(parser)) {
-                numHLinesBeforeRow.push(1);
-                if (nextTokenIsHLine(parser)) {
-                    // double \hline
-                    numHLinesBeforeRow[numHLinesBeforeRow.length - 1] = 2;
-                }
-            } else {
-                numHLinesBeforeRow.push(0);
+            // check for \hline following the row separator
+            numHLinesBeforeRow.push(0);
+            while (nextTokenIsHLine(parser)) {
+                numHLinesBeforeRow[numHLinesBeforeRow.length - 1] += 1;
             }
 
             row = [];
@@ -172,12 +159,12 @@ const htmlBuilder = function(group, options) {
     let totalHeight = 0;
 
     // Set a position for \hline(s) at the top of the array, if any.
-    if (numHLinesBeforeRow[0] === 1) {
+    if (numHLinesBeforeRow[0] > 0) {
         hlinePos.push(0);
-    } else if (numHLinesBeforeRow[0] === 2) {
-        hlinePos.push(0);
-        hlinePos.push(0.25);
+    }
+    for (let i = 2; i <= numHLinesBeforeRow[0]; i++) {
         totalHeight += 0.25;
+        hlinePos.push(totalHeight);
     }
 
     for (r = 0; r < group.value.body.length; ++r) {
@@ -212,10 +199,6 @@ const htmlBuilder = function(group, options) {
                 gap = 0;
             }
         }
-        if (numHLinesBeforeRow[r + 1] === 2) {
-            // Add a gap between a double \hline
-            gap += 0.25;
-        }
         // In AMS multiline environments such as aligned and gathered, rows
         // correspond to lines that have additional \jot added to the
         // \baselineskip via \openup.
@@ -231,11 +214,12 @@ const htmlBuilder = function(group, options) {
         body[r] = outrow;
 
         // Set a position for \hline(s), if any.
-        if (numHLinesBeforeRow[r + 1] === 1) {
-            hlinePos.push(totalHeight - gap / 2);
-        } else if (numHLinesBeforeRow[r + 1] === 2) {
-            hlinePos.push(totalHeight - gap / 2 - 0.125);
-            hlinePos.push(totalHeight - gap / 2 + 0.125);
+        if (numHLinesBeforeRow[r + 1] > 0) {
+            hlinePos.push(totalHeight);  // the first \hline doesn't add height
+        }
+        for (let i = 2; i <= numHLinesBeforeRow[r + 1]; i++) {
+            totalHeight += 0.25;
+            hlinePos.push(totalHeight);
         }
     }
 
