@@ -16,6 +16,10 @@ const parseTree = function(toParse: string, settings: Settings): ParseNode<*>[] 
     if (!(typeof toParse === 'string' || toParse instanceof String)) {
         throw new TypeError('KaTeX can only parse string typed expression');
     }
+    // Render any tag at end of displayMode formula
+    if (settings.displayMode) {
+        toParse = "\\gdef\\df@tag{}" + toParse + "\\df@tag";
+    }
     const parser = new Parser(toParse, settings);
 
     return parser.parse();

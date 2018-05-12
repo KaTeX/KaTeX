@@ -708,13 +708,24 @@ export default function buildHTML(tree, options) {
     const htmlNode = makeSpan(["katex-html"], children);
     htmlNode.setAttribute("aria-hidden", "true");
 
-    const strut = makeSpan(["strut"]);
-    strut.style.height = (htmlNode.height + htmlNode.depth) + "em";
-    strut.style.verticalAlign = (-htmlNode.depth) + "em";
-    htmlNode.children.push(makeSpan(["tag"], [
-        strut,
-        buildCommon.mathsym("*", "math"),
-    ]));
+    // \tag output is guaranteed to be the last node of the last unbreakable.
+    // Bring it out to the top level.
+    if (children && children.length > 0) {
+        const lastChild = children[children.length - 1];
+        if (lastChild && lastChild.children.length > 0) {
+            const lastNode = lastChild.children[lastChild.children.length - 1];
+            if (lastNode.hasClass("tag")) {
+                lastChild.children.pop();
+                const strut = makeSpan(["strut"]);
+                strut.style.height = (htmlNode.height + htmlNode.depth) + "em";
+                strut.style.verticalAlign = (-htmlNode.depth) + "em";
+                htmlNode.children.push(makeSpan(["tag"], [
+                    strut,
+                    lastNode,
+                ]));
+            }
+        }
+    }
 
     return htmlNode;
 }

@@ -37,6 +37,8 @@ import "./functions/color";
 
 import "./functions/text";
 
+import "./functions/tag";
+
 import "./functions/math";
 
 import "./functions/enclose";

@@ -396,6 +396,17 @@ defineMacro("\\thinspace", "\\,");    //   \let\thinspace\,
 defineMacro("\\medspace", "\\:");     //   \let\medspace\:
 defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 
+// \tag@in@display form of \tag
+defineMacro("\\tag", "\\@ifstar\\tag@literal\\tag@paren");
+defineMacro("\\tag@paren", "\\tag@literal{(#1)}");
+defineMacro("\\tag@literal", (context) => {
+    if (context.macros["\\df@tag"] && context.macros["\\df@tag"].tokens &&
+        context.macros["\\df@tag"].tokens.length > 0) {
+        throw new ParseError("Multiple \\tag");
+    }
+    return "\\gdef\\df@tag{\\tag@{#1}}";
+});
+
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
 
