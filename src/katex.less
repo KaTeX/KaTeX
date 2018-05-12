@@ -3,6 +3,21 @@
 // The mu unit is defined as 1/18 em
 @mu: 1.0/18.0em;
 
+@media screen {
+    .katex {
+        .mtable .vertical-separator {
+            min-width: 1px;
+        }
+
+        .mfrac .frac-line,
+        .overline .overline-line,
+        .underline .underline-line,
+        .hline {
+            min-height: 1px;
+        }
+    }
+}
+
 .katex-display {
     display: block;
     margin: 1em 0;
@@ -11,13 +26,17 @@
     > .katex {
         display: inline-block;
         text-align: initial;
+        white-space: nowrap;
+
+        > .katex-html {
+            display: inline-block;
+        }
     }
 }
 
 .katex {
     font: normal 1.21em KaTeX_Main, Times New Roman, serif;
     line-height: 1.2;
-    white-space: nowrap;
 
     // Protect elements inside .katex from inheriting text-indent.
     text-indent: 0;
@@ -25,19 +44,9 @@
     // Prevent a rendering bug that misplaces \vec in Chrome.
     text-rendering: auto;
 
-    // Fix width of containers of negative spaces, working around Chrome bug.
-    width: min-content;
-
     // Prevent background resetting on elements in Windows's high-contrast
     // mode, while still allowing background/foreground setting on root .katex
     * { -ms-high-contrast-adjust: none !important; }
-
-    .katex-html {
-        // Making .katex inline-block allows line breaks before and after,
-        // which is undesireable ("to $x$,"). Instead, adjust the .katex-html
-        // style and put nowrap on the inline .katex element.
-        display: inline-block;
-    }
 
     .katex-mathml {
         // Accessibility hack to only show to screen readers
@@ -54,6 +63,10 @@
     .base {
         position: relative;
         display: inline-block;
+        white-space: nowrap;
+
+        // Fix width of containers of negative spaces, working around Chrome bug.
+        width: min-content;
     }
 
     .strut {
@@ -108,7 +121,7 @@
         font-family: KaTeX_AMS;
     }
 
-    .mathbb {
+    .mathbb, .textbb {
         font-family: KaTeX_AMS;
     }
 
@@ -116,7 +129,7 @@
         font-family: KaTeX_Caligraphic;
     }
 
-    .mathfrak {
+    .mathfrak, .textfrak {
         font-family: KaTeX_Fraktur;
     }
 
@@ -124,11 +137,11 @@
         font-family: KaTeX_Typewriter;
     }
 
-    .mathscr {
+    .mathscr, .textscr {
         font-family: KaTeX_Script;
     }
 
-    .mathsf {
+    .mathsf, .textsf {
         font-family: KaTeX_SansSerif;
     }
 
@@ -192,11 +205,13 @@
         // issues; absolute units prevent user font-size overrides from breaking
         // rendering. Safari refuses to make the box zero-width, so we give it
         // a known width and compensate with negative right margin on the
-        // inline-table.
+        // inline-table. To prevent the "width: min-content" Chrome workaround
+        // from shrinking this box, we also set min-width.
         display: table-cell;
         vertical-align: bottom;
         font-size: 1px;
         width: 2px;
+        min-width: 2px;
     }
 
     .msupsub {
@@ -211,6 +226,7 @@
         .frac-line {
             display: inline-block;
             width: 100%;
+            border-bottom-style: solid;
         }
     }
 
@@ -302,9 +318,11 @@
     }
 
     .overline .overline-line,
-    .underline .underline-line {
+    .underline .underline-line,
+    .hline {
         display: inline-block;
         width: 100%;
+        border-bottom-style: solid;
     }
 
     .sqrt {
@@ -401,8 +419,13 @@
             text-align: center;
         }
 
-        .accent-body {
+        // Accents that are not of the accent-full class have zero width
+        // (do not contribute to the width of the final symbol).
+        .accent-body:not(.accent-full) {
             width: 0;
+        }
+
+        .accent-body {
             position: relative; // so that 'left' can shift the accent
         }
     }
@@ -414,10 +437,8 @@
     .mtable {
         .vertical-separator {
             display: inline-block;
-            margin: 0 -0.125em;     // The ink in the rule is actually 0.05em wide.
-            width: 0.25em;          // We put it in a 0.25em wide span to overcome
-            overflow: hidden;       // a Chrome rendering issue.
-            position: relative;
+            margin: 0 -0.025em;
+            border-right: 0.05em solid;
         }
 
         .arraycolsep {
@@ -445,6 +466,7 @@
         display: block;
         position: absolute; // absolute relative to parent
         width: 100%;
+        height: inherit;
 
         // We want to inherit colors from our environment
         fill: currentColor;
@@ -470,10 +492,6 @@
         stroke-dasharray: none;
         stroke-dashoffset: 0;
         stroke-opacity: 1;
-    }
-
-    .vertical-separator svg {
-        width: 0.25em;
     }
 
     // Define CSS for image whose width will match its span width.

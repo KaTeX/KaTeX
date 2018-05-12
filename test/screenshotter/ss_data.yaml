@@ -124,6 +124,7 @@ GroupMacros:
         \startExp: e^\bgroup
         \endExp: \egroup
     tex: \startExp a+b\endExp
+Hline: \begin{array}{c|c}\hline \hline \hline  a & b \\ \hline \hline \hline c & d \end{array}  \quad \frac{\begin{pmatrix} a & b \\ \hline c & d \\ \hline \hline \hline\end{pmatrix}} 2  \quad \begin{bmatrix}\hline  a & b \\ \hline c & d \\ \hline e & f \end{bmatrix}
 HorizontalBraces: \overbrace{\displaystyle{\oint_S{\vec E\cdot\hat n\,\mathrm d a}}}^\text{emf} = \underbrace{\frac{q_{\text{enc}}}{\varepsilon_0}}_{\text{charge}}
 KaTeX:
     tex: \KaTeX
@@ -144,6 +145,20 @@ LeftRightStyleSizing: |
 LimitControls: |
     \displaystyle\int\limits_2^3 3x^2\,dx + \sum\nolimits^n_{i=1}i +
     \textstyle\int\limits_x^y z
+LineBreak: |
+    \frac{x^2}{y^2} + z^2 =
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} +\nobreak z^2 =
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} + ~ z^2 =
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} + \hspace{1em} z^2 =
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} + z^2 = \hspace*{1em}
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} + z^2 =
+    hi \allowbreak there =
+    hi \allowbreak there
 LowerAccent: |
     \begin{matrix}
         \underleftarrow{AB} \quad \underrightarrow{AB} \quad \underleftrightarrow{AB} \quad \undergroup{AB} \\
@@ -218,7 +233,7 @@ OpLimits: |
 OverUnderline: x\underline{x}\underline{\underline{x}}\underline{x_{x_{x_x}}}\underline{x^{x^{x^x}}}\overline{x}\overline{x}\overline{x^{x^{x^x}}} \blue{\overline{\underline{x}}\underline{\overline{x}}}
 OverUnderset: |
     \begin{array}{l}
-    x\overset?=1\\
+    x\overset?=1 \quad \underset{*}{x}^2 \quad \overset{a}{b}b\underset{a}{b}b \\
     {\displaystyle\lim_{t\underset{>0}\to0}}\\
     a+b+c+d\overset{b+c=0}\longrightarrow a+d\\
     \overset { x = y } { \sqrt { a b } }
@@ -292,6 +307,12 @@ SupSubHorizSpacing: |
 SupSubLeftAlignReset: |
     \omega^8_{888} \quad \frac{1}{\hat{\omega}^{8}_{888}} \quad \displaystyle\sum_{\omega^{8}_{888}}
 SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
+SurrogatePairs: |
+    \begin{array}{l}
+        𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜 \\
+        \text{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜} \\
+        \mathrm{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜}
+    \end{array}
 SvgReset:
     # This math uses a lot of SVG glyphs
     tex: '\underbrace{\sqrt{\vec{x}} + \sqrt{\vec{\color{#f00}y}}}'
@@ -304,6 +325,12 @@ Symbols1: |
     \maltese\degree\pounds\$
     \text{\maltese\degree\pounds\textdollar}
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
+TextSpace:
+  \begin{array}{l}
+    \texttt{12345678901234} \\
+    \texttt{A test  1~~2\ \ 3} \\
+    \verb|A test 1  2  3|
+  \end{array}
 TextStacked:
   \begin{matrix}
       \textsf{abc123 \textbf{abc123} \textit{abc123}}\\
@@ -346,6 +373,7 @@ Verb: |
       \verb* \verb* , & \verb*|\verb* |, \\
       \verb!<x> & </y>! & \scriptstyle\verb|ss verb| \\
       \verb*!<x> & </y>! & \small\verb|sm verb| \\
+      \verb|``---''~|
     \end{array}
 VerticalSpacing:
     pre: potato<br>blah
