@@ -21,7 +21,8 @@ defineFunction({
         return {
             type: "cr",
             // \\ and \cr both end the row in a tabular environment
-            newRow: context.funcName !== "\\newline",
+            // This flag isn't currently needed by environments/array.js
+            //newRow: context.funcName !== "\\newline",
             // \\ and \newline both end the line in an inline math environment
             newLine: context.funcName !== "\\cr",
             size: optArgs[0],
