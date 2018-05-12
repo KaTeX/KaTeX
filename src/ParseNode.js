@@ -260,6 +260,10 @@ type ParseNodeTypes = {
         body: ParseNode<*>,
         index: ?ParseNode<*>,
     |},
+    "tag": {|
+        type: "tag",
+        body: ParseNode<*>[],
+    |},
     "underline": {|
         type: "underline",
         body: ParseNode<*>,
