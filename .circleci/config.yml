@@ -50,6 +50,14 @@ jobs:
     docker:
       - image: circleci/node:6
     steps:
+      - run:
+          name: Check whether the build is running on the main repository
+          command: |
+              if [[ $CIRCLE_PULL_REQUEST && $CIRCLE_PROJECT_USERNAME != "Khan" ]]; then
+                echo "Please disable CircleCI on your forked repository!"
+                exit 1
+              fi
+
       - checkout
       - *checkout_submodule
 
