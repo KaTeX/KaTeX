@@ -63,7 +63,7 @@ In particular, you should convert `&`, `<`, `>` characters to
 before including either LaTeX source code or exception messages in your
 HTML/DOM.  (Failure to escape in this way makes a `<script>` injection
 attack possible if your LaTeX source is untrusted.)
-Alternatively, you can set `throwOnError` to `true` to use built-in behavior
+Alternatively, you can set `throwOnError` to `false` to use built-in behavior
 of rendering the LaTeX source code with hover text stating the error.
 
 #### Rendering options
