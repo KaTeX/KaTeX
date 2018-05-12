@@ -6,7 +6,6 @@ import ParseError from "../ParseError";
 import ParseNode from "../ParseNode";
 import {calculateSize} from "../units";
 import utils from "../utils";
-import stretchy from "../stretchy";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -21,7 +20,7 @@ type AlignSpec = { type: "separator", separator: string } | {
     pregap?: number,
     postgap?: number,
 };
-type ArrayEnvNodeData = {
+export type ArrayEnvNodeData = {
     type: "array",
     hskipBeforeAndAfter?: boolean,
     arraystretch?: number,
@@ -29,7 +28,7 @@ type ArrayEnvNodeData = {
     cols?: AlignSpec[],
     // These fields are always set, but not on struct construction
     // initialization.
-    body?: ParseNode[][], // List of rows in the (2D) array.
+    body?: ParseNode<*>[][], // List of rows in the (2D) array.
     rowGaps?: number[],
 };
 
@@ -43,7 +42,7 @@ function parseArray(
     parser: Parser,
     result: ArrayEnvNodeData,
     style: StyleStr,
-): ParseNode {
+): ParseNode<*> {
     let row = [];
     const body = [row];
     const rowGaps = [];
@@ -52,6 +51,7 @@ function parseArray(
         cell = new ParseNode("ordgroup", cell, parser.mode);
         if (style) {
             cell = new ParseNode("styling", {
+                type: "styling",
                 style: style,
                 value: [cell],
             }, parser.mode);
@@ -85,7 +85,7 @@ function parseArray(
     }
     result.body = body;
     result.rowGaps = rowGaps;
-    return new ParseNode(result.type, result, parser.mode);
+    return new ParseNode("array", result, parser.mode);
 }
 
 
@@ -202,8 +202,9 @@ const htmlBuilder = function(group, options) {
             }
 
             if (colDescr.separator === "|") {
-                const separator = stretchy.ruleSpan("vertical-separator", 0.05,
-                    options);
+                const separator = buildCommon.makeSpan(
+                    ["vertical-separator"], [], options
+                );
                 separator.style.height = totalHeight + "em";
                 separator.style.verticalAlign =
                     -(totalHeight - offset) + "em";

@@ -1,4 +1,4 @@
-FROM ubuntu:17.04
+FROM ubuntu:17.10
 
 MAINTAINER Martin von Gagern <gagern@ma.tum.de>
 
@@ -11,13 +11,14 @@ RUN sed -i 's/^\(deb.*updates\)/#\1/' /etc/apt/sources.list \
  && DEBIAN_FRONTEND=noninteractive \
     apt-get install -qy --no-install-recommends \
         ca-certificates \
-        etoolbox \
         ghostscript \
         imagemagick \
         nodejs \
         npm \
+        texlive-generic-recommended \
         texlive-fonts-recommended \
         texlive-latex-base \
+        texlive-latex-extra \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* \
  && chmod +x /usr/bin/dumb-init

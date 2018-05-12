@@ -72,8 +72,9 @@ const htmlBuilder = (group, options) => {
     // If content of op is a single symbol, shift it vertically.
     let baseShift = 0;
     let slant = 0;
-    if (base instanceof domTree.symbolNode) {
-        // Shift the symbol so its center lies on the axis (rule 13). It
+    if (base instanceof domTree.symbolNode && !group.value.suppressBaseShift) {
+        // We suppress the shift of the base of \overset and \underset. Otherwise,
+        // shift the symbol so its center lies on the axis (rule 13). It
         // appears that our fonts have the centers of the symbols already
         // almost on the axis, so these numbers are very small. Note we
         // don't actually apply this here, but instead it is used either in
