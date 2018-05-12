@@ -5,8 +5,8 @@ ss_steps: &ss_steps
 
     - restore_cache:
         keys:
-          - npm-deps-v1-{{ checksum "package.json" }}
-          - npm-deps-v1-
+          - npm-deps-v2-{{ checksum "package.json" }}
+          - npm-deps-v2-
     - run:
         name: Install npm dependencies
         command: npm install
