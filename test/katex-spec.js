@@ -2892,6 +2892,24 @@ describe("A macro expander", function() {
     //        {"\\mode": "\\TextOrMath{text}{math}"});
     //});
 
+    it("\\gdef defines macros", function() {
+        compareParseTree("\\gdef\\foo{x^2}\\foo+\\foo", "x^2+x^2");
+        compareParseTree("\\gdef{\\foo}{x^2}\\foo+\\foo", "x^2+x^2");
+        compareParseTree("\\gdef\\foo{hi}\\foo+\\text{\\foo}", "hi+\\text{hi}");
+        compareParseTree("\\gdef\\foo#1{hi #1}\\text{\\foo{Alice}, \\foo{Bob}}",
+            "\\text{hi Alice, hi Bob}");
+        compareParseTree("\\gdef\\foo#1#2{(#1,#2)}\\foo 1 2+\\foo 3 4",
+            "(1,2)+(3,4)");
+        expect("\\gdef\\foo#2{}").toNotParse();
+        expect("\\gdef\\foo#1#3{}").toNotParse();
+        expect("\\gdef\\foo#1#2#3#4#5#6#7#8#9{}").toParse();
+        expect("\\gdef\\foo#1#2#3#4#5#6#7#8#9#10{}").toNotParse();
+        expect("\\gdef\\foo#{}").toNotParse();
+        expect("\\gdef\\foo\\bar").toParse();
+        expect("\\gdef{\\foo\\bar}{}").toNotParse();
+        expect("\\gdef{}{}").toNotParse();
+    });
+
     // This may change in the future, if we support the extra features of
     // \hspace.
     it("should treat \\hspace, \\hskip like \\kern", function() {
