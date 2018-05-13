@@ -64,7 +64,7 @@ function parseArray(
     numHLinesBeforeRow.push(getNumHLines(parser));
 
     while (true) {  // eslint-disable-line no-constant-condition
-        let cell = parser.parseExpression(false, undefined);
+        let cell = parser.parseExpression(false, "\\\\");
         cell = new ParseNode("ordgroup", cell, parser.mode);
         if (style) {
             cell = new ParseNode("styling", {
@@ -100,7 +100,7 @@ function parseArray(
             row = [];
             body.push(row);
         } else {
-            throw new ParseError("Expected & or \\\\ or \\end",
+            throw new ParseError("Expected & or \\\\ or \\cr or \\end",
                                  parser.nextToken);
         }
     }
