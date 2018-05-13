@@ -84,6 +84,44 @@ class Settings {
                 `unrecognized '${strict}': ${errorMsg} [${errorCode}]`);
         }
     }
+
+    /**
+     * Check whether to apply strict (LaTeX-adhering) behavior for unusual
+     * input (like `\\`).  Unlike `nonstrict`, will not throw an error;
+     * instead, "error" translates to a return value of `true`, while "ignore"
+     * translates to a return value of `false`.  May still print a warning:
+     * "warn" prints a warning and returns `false`.
+     */
+    strictBehavior(errorCode: string, errorMsg: string,
+                   token?: Token | ParseNode<*>) {
+        let strict = this.strict;
+        if (typeof strict === "function") {
+            // Allow return value of strict function to be boolean or string
+            // (or null/undefined, meaning no further processing).
+            // But catch any exceptions thrown by function, treating them
+            // like "error".
+            try {
+                strict = strict(errorCode, errorMsg, token);
+            } catch (error) {
+                strict = "error";
+            }
+        }
+        if (!strict || strict === "ignore") {
+            return false;
+        } else if (strict === true || strict === "error") {
+            return true;
+        } else if (strict === "warn") {
+            typeof console !== "undefined" && console.warn(
+                "LaTeX-incompatible input and strict mode is set to 'warn': " +
+                `${errorMsg} [${errorCode}]`);
+            return false;
+        } else {  // won't happen in type-safe code
+            typeof console !== "undefined" && console.warn(
+                "LaTeX-incompatible input and strict mode is set to " +
+                `unrecognized '${strict}': ${errorMsg} [${errorCode}]`);
+            return false;
+        }
+    }
 }
 
 export default Settings;

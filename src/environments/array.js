@@ -55,6 +55,10 @@ function parseArray(
     result: ArrayEnvNodeData,
     style: StyleStr,
 ): ParseNode<*> {
+    // Parse body of array with \\ temporarily mapped to \cr
+    const oldNewline = parser.gullet.macros["\\\\"];
+    parser.gullet.macros["\\\\"] = "\\cr";
+
     let row = [];
     const body = [row];
     const rowGaps = [];
@@ -64,7 +68,7 @@ function parseArray(
     numHLinesBeforeRow.push(getNumHLines(parser));
 
     while (true) {  // eslint-disable-line no-constant-condition
-        let cell = parser.parseExpression(false, "\\\\");
+        let cell = parser.parseExpression(false, "\\cr");
         cell = new ParseNode("ordgroup", cell, parser.mode);
         if (style) {
             cell = new ParseNode("styling", {
@@ -87,7 +91,7 @@ function parseArray(
                 body.pop();
             }
             break;
-        } else if (next === "\\\\" || next === "\\cr") {
+        } else if (next === "\\cr") {
             const cr = parser.parseFunction();
             if (!cr) {
                 throw new ParseError(`Failed to parse function after ${next}`);
@@ -107,6 +111,7 @@ function parseArray(
     result.body = body;
     result.rowGaps = rowGaps;
     result.numHLinesBeforeRow = numHLinesBeforeRow;
+    parser.gullet.macros["\\\\"] = oldNewline;
     return new ParseNode("array", result, parser.mode);
 }
 
