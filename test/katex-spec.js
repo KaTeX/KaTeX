@@ -2744,6 +2744,10 @@ describe("A macro expander", function() {
         compareParseTree("\\text{\\foo }", "\\text{}", {"\\foo": "\\relax"});
     });
 
+    it("should not consume spaces after control-word expansion", function() {
+        compareParseTree("\\text{\\\\ }", "\\text{ }", {"\\\\": "\\relax"});
+    });
+
     it("should consume spaces after \\relax", function() {
         compareParseTree("\\text{\\relax }", "\\text{}");
     });
