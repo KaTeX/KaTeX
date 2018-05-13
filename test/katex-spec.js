@@ -35,7 +35,9 @@ const serializer = {
 
 expect.addSnapshotSerializer(serializer);
 
-const defaultSettings = new Settings({});
+const defaultSettings = new Settings({
+    strict: false, // deal with warnings only when desired
+});
 const defaultOptions = new Options({
     style: Style.TEXT,
     size: 5,
@@ -2928,24 +2930,23 @@ describe("A parser taking String objects", function() {
 
 describe("Unicode accents", function() {
     it("should parse Latin-1 letters in math mode", function() {
-        // TODO(edemaine): Unsupported Latin-1 letters in math: ÅåÇÐÞçðþ
-        expect("ÀÁÂÃÄÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäèéêëìíîïñòóôõöùúûüýÿ")
+        // TODO(edemaine): Unsupported Latin-1 letters in math: ÇÐÞçðþ
+        expect("ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ")
         .toParseLike(
-            "\\grave A\\acute A\\hat A\\tilde A\\ddot A" +
+            "\\grave A\\acute A\\hat A\\tilde A\\ddot A\\mathring A" +
             "\\grave E\\acute E\\hat E\\ddot E" +
             "\\grave I\\acute I\\hat I\\ddot I" +
             "\\tilde N" +
             "\\grave O\\acute O\\hat O\\tilde O\\ddot O" +
             "\\grave U\\acute U\\hat U\\ddot U" +
             "\\acute Y" +
-            "\\grave a\\acute a\\hat a\\tilde a\\ddot a" +
+            "\\grave a\\acute a\\hat a\\tilde a\\ddot a\\mathring a" +
             "\\grave e\\acute e\\hat e\\ddot e" +
             "\\grave ı\\acute ı\\hat ı\\ddot ı" +
             "\\tilde n" +
             "\\grave o\\acute o\\hat o\\tilde o\\ddot o" +
             "\\grave u\\acute u\\hat u\\ddot u" +
-            "\\acute y\\ddot y",
-            {unicodeTextInMathMode: true});
+            "\\acute y\\ddot y");
     });
 
     it("should parse Latin-1 letters in text mode", function() {
@@ -2970,26 +2971,24 @@ describe("Unicode accents", function() {
 
     it("should support \\aa in text mode", function() {
         expect("\\text{\\aa\\AA}").toParseLike("\\text{\\r a\\r A}");
-        expect("\\aa").toNotParse();
-        expect("\\Aa").toNotParse();
+        expect("\\aa").toNotParse(new Settings({strict: true}));
+        expect("\\Aa").toNotParse(new Settings({strict: true}));
     });
 
     it("should parse combining characters", function() {
-        expect("A\u0301C\u0301").toParseLike("Á\\acute C",
-            {unicodeTextInMathMode: true});
+        expect("A\u0301C\u0301").toParseLike("Á\\acute C");
         expect("\\text{A\u0301C\u0301}").toParseLike("\\text{Á\\'C}");
     });
 
     it("should parse multi-accented characters", function() {
-        expect("ấā́ắ\\text{ấā́ắ}").toParse({unicodeTextInMathMode: true});
+        expect("ấā́ắ\\text{ấā́ắ}").toParse();
         // Doesn't parse quite the same as
         // "\\text{\\'{\\^a}\\'{\\=a}\\'{\\u a}}" because of the ordgroups.
     });
 
     it("should parse accented i's and j's", function() {
-        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ",
-            {unicodeTextInMathMode: true});
-        expect("ấā́ắ\\text{ấā́ắ}").toParse({unicodeTextInMathMode: true});
+        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ");
+        expect("ấā́ắ\\text{ấā́ắ}").toParse();
     });
 });
 
@@ -3154,25 +3153,37 @@ describe("Symbols", function() {
     });
 });
 
-describe("unicodeTextInMathMode setting", function() {
-    it("should allow unicode text when true", () => {
-        expect("é").toParse({unicodeTextInMathMode: true});
-        expect("試").toParse({unicodeTextInMathMode: true});
+describe("strict setting", function() {
+    it("should allow unicode text when not strict", () => {
+        expect("é").toParse(new Settings({strict: false}));
+        expect("試").toParse(new Settings({strict: false}));
+        expect("é").toParse(new Settings({strict: "ignore"}));
+        expect("試").toParse(new Settings({strict: "ignore"}));
+        expect("é").toParse(new Settings({strict: () => false}));
+        expect("試").toParse(new Settings({strict: () => false}));
+        expect("é").toParse(new Settings({strict: () => "ignore"}));
+        expect("試").toParse(new Settings({strict: () => "ignore"}));
     });
 
-    it("should forbid unicode text when false", () => {
-        expect("é").toNotParse({unicodeTextInMathMode: false});
-        expect("試").toNotParse({unicodeTextInMathMode: false});
+    it("should forbid unicode text when strict", () => {
+        expect("é").toNotParse(new Settings({strict: true}));
+        expect("試").toNotParse(new Settings({strict: true}));
+        expect("é").toNotParse(new Settings({strict: "error"}));
+        expect("試").toNotParse(new Settings({strict: "error"}));
+        expect("é").toNotParse(new Settings({strict: () => true}));
+        expect("試").toNotParse(new Settings({strict: () => true}));
+        expect("é").toNotParse(new Settings({strict: () => "error"}));
+        expect("試").toNotParse(new Settings({strict: () => "error"}));
     });
 
-    it("should forbid unicode text when default", () => {
-        expect("é").toNotParse();
-        expect("試").toNotParse();
+    it("should warn about unicode text when default", () => {
+        expect("é").toWarn(new Settings());
+        expect("試").toWarn(new Settings());
     });
 
     it("should always allow unicode text in text mode", () => {
-        expect("\\text{é試}").toParse({unicodeTextInMathMode: false});
-        expect("\\text{é試}").toParse({unicodeTextInMathMode: true});
+        expect("\\text{é試}").toParse(new Settings({strict: false}));
+        expect("\\text{é試}").toParse(new Settings({strict: true}));
         expect("\\text{é試}").toParse();
     });
 });
