@@ -126,21 +126,6 @@ defineMacro("\u211A", "\\mathbb{Q}");
 defineMacro("\u211D", "\\mathbb{R}");
 defineMacro("\u2124", "\\mathbb{Z}");
 
-defineMacro("\u210E", "\\mathit{h}");   // Planck constant
-
-// Characters omitted from Unicode range 1D400–1D7FF
-defineMacro("\u212C", "\\mathscr{B}");  // script
-defineMacro("\u2130", "\\mathscr{E}");
-defineMacro("\u2131", "\\mathscr{F}");
-defineMacro("\u210B", "\\mathscr{H}");
-defineMacro("\u2110", "\\mathscr{I}");
-defineMacro("\u2112", "\\mathscr{L}");
-defineMacro("\u2133", "\\mathscr{M}");
-defineMacro("\u211B", "\\mathscr{R}");
-defineMacro("\u212D", "\\mathfrak{C}");  // Fraktur
-defineMacro("\u210C", "\\mathfrak{H}");
-defineMacro("\u2128", "\\mathfrak{Z}");
-
 // Unicode middle dot
 // The KaTeX fonts do not contain U+00B7. Instead, \cdotp displays
 // the dot at U+22C5 and gives it punct spacing.
@@ -150,16 +135,6 @@ defineMacro("\u00b7", "\\cdotp");
 defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
 defineMacro("\\rlap", "\\mathrlap{\\textrm{#1}}");
 defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
-
-// Unicode stacked relations
-defineMacro("\u2258",
-    "\\mathrel{=\\kern{-1em}\\raisebox{0.4em}{$\\scriptsize\\frown$}}");
-defineMacro("\u2259", "\\stackrel{\\tiny\\wedge}{=}");
-defineMacro("\u225A", "\\stackrel{\\tiny\\vee}{=}");
-defineMacro("\u225B", "\\stackrel{\\scriptsize\\star}{=}");
-defineMacro("\u225D", "\\stackrel{\\tiny\\mathrm{def}}{=}");
-defineMacro("\u225E", "\\stackrel{\\tiny\\mathrm{m}}{=}");
-defineMacro("\u225F", "\\stackrel{\\tiny?}{=}");
 
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
@@ -178,6 +153,10 @@ defineMacro("\\varUpsilon", "\\mathit{\\Upsilon}");
 defineMacro("\\varPhi", "\\mathit{\\Phi}");
 defineMacro("\\varPsi", "\\mathit{\\Psi}");
 defineMacro("\\varOmega", "\\mathit{\\Omega}");
+
+// \def\overset#1#2{\binrel@{#2}\binrel@@{\mathop{\kern\z@#2}\limits^{#1}}}
+defineMacro("\\overset", "\\mathop{#2}\\limits^{#1}");
+defineMacro("\\underset", "\\mathop{#2}\\limits_{#1}");
 
 // \newcommand{\boxed}[1]{\fbox{\m@th$\displaystyle#1$}}
 defineMacro("\\boxed", "\\fbox{\\displaystyle{#1}}");

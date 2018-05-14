@@ -29,24 +29,23 @@ const createClass = function(classes: string[]): string {
 };
 
 // To ensure that all nodes have compatible signatures for these methods.
-interface VirtualNodeInterface {
+interface VirtualDomNode {
     toNode(): Node;
     toMarkup(): string;
 }
 
-export interface HtmlDomNode extends VirtualNodeInterface {
-    classes: string[];
-    height: number;
-    depth: number;
-    maxFontSize: number;
-
-    tryCombine(sibling: HtmlDomNode): boolean;
+export interface CombinableDomNode extends VirtualDomNode {
+    tryCombine(sibling: CombinableDomNode): boolean;
 }
 
-// Span wrapping other DOM nodes.
-export type DomSpan = span<HtmlDomNode>;
-// Span wrapping an SVG node.
-export type SvgSpan = span<svgNode>;
+/**
+ * All `DomChildNode`s MUST have `height`, `depth`, and `maxFontSize` numeric
+ * fields.
+ *
+ * `DomChildNode` is not defined as an interface since `documentFragment` also
+ * has these fields but should not be considered a `DomChildNode`.
+ */
+export type DomChildNode = span | anchor | svgNode | symbolNode;
 
 export type SvgChildNode = pathNode | lineNode;
 
@@ -56,14 +55,10 @@ export type CssStyle = {[name: string]: string};
  * This node represents a span node, with a className, a list of children, and
  * an inline style. It also contains information about its height, depth, and
  * maxFontSize.
- *
- * Represents two types with different uses: SvgSpan to wrap an SVG and DomSpan
- * otherwise. This typesafety is important when HTML builders access a span's
- * children.
  */
-class span<ChildType: VirtualNodeInterface> implements HtmlDomNode {
+class span implements CombinableDomNode {
     classes: string[];
-    children: ChildType[];
+    children: DomChildNode[];
     height: number;
     depth: number;
     width: ?number;
@@ -73,7 +68,7 @@ class span<ChildType: VirtualNodeInterface> implements HtmlDomNode {
 
     constructor(
         classes?: string[],
-        children?: ChildType[],
+        children?: DomChildNode[],
         options?: Options,
         style?: CssStyle,
     ) {
@@ -104,7 +99,7 @@ class span<ChildType: VirtualNodeInterface> implements HtmlDomNode {
         this.attributes[attribute] = value;
     }
 
-    tryCombine(sibling: HtmlDomNode): boolean {
+    tryCombine(sibling: CombinableDomNode): boolean {
         return false;
     }
 
@@ -193,10 +188,10 @@ class span<ChildType: VirtualNodeInterface> implements HtmlDomNode {
  * a list of children, and an inline style. It also contains information about its
  * height, depth, and maxFontSize.
  */
-class anchor implements HtmlDomNode {
+class anchor implements CombinableDomNode {
     href: string;
     classes: string[];
-    children: HtmlDomNode[];
+    children: DomChildNode[];
     height: number;
     depth: number;
     maxFontSize: number;
@@ -206,7 +201,7 @@ class anchor implements HtmlDomNode {
     constructor(
         href: string,
         classes: string[],
-        children: HtmlDomNode[],
+        children: DomChildNode[],
         options: Options,
     ) {
         this.href = href;
@@ -235,7 +230,7 @@ class anchor implements HtmlDomNode {
         this.attributes[attribute] = value;
     }
 
-    tryCombine(sibling: HtmlDomNode): boolean {
+    tryCombine(sibling: CombinableDomNode): boolean {
         return false;
     }
 
@@ -283,7 +278,7 @@ class anchor implements HtmlDomNode {
         let markup = "<a";
 
         // Add the href
-        markup += ` href="${utils.escape(this.href)}"`;
+        markup += `href="${markup += utils.escape(this.href)}"`;
         // Add the class
         if (this.classes.length) {
             markup += ` class="${utils.escape(createClass(this.classes))}"`;
@@ -329,23 +324,17 @@ class anchor implements HtmlDomNode {
  * contains children and doesn't have any HTML properties. It also keeps track
  * of a height, depth, and maxFontSize.
  */
-class documentFragment implements HtmlDomNode {
-    children: HtmlDomNode[];
-    classes: string[];         // Never used; needed for satisfying interface.
+class documentFragment implements VirtualDomNode {
+    children: DomChildNode[];
     height: number;
     depth: number;
     maxFontSize: number;
 
-    constructor(children?: HtmlDomNode[]) {
+    constructor(children?: DomChildNode[]) {
         this.children = children || [];
-        this.classes = [];
         this.height = 0;
         this.depth = 0;
         this.maxFontSize = 0;
-    }
-
-    tryCombine(sibling: HtmlDomNode): boolean {
-        return false;
     }
 
     /**
@@ -391,7 +380,7 @@ const iCombinations = {
  * to a single text node, or a span with a single text node in it, depending on
  * whether it has CSS classes, styles, or needs italic correction.
  */
-class symbolNode implements HtmlDomNode {
+class symbolNode implements CombinableDomNode {
     value: string;
     height: number;
     depth: number;
@@ -439,7 +428,7 @@ class symbolNode implements HtmlDomNode {
         }
     }
 
-    tryCombine(sibling: HtmlDomNode): boolean {
+    tryCombine(sibling: CombinableDomNode): boolean {
         if (!sibling
             || !(sibling instanceof symbolNode)
             || this.italic > 0
@@ -549,13 +538,20 @@ class symbolNode implements HtmlDomNode {
 /**
  * SVG nodes are used to render stretchy wide elements.
  */
-class svgNode implements VirtualNodeInterface {
+class svgNode implements VirtualDomNode {
     children: SvgChildNode[];
     attributes: {[string]: string};
+    // Required for all `DomChildNode`s. Are always 0 for svgNode.
+    height: number;
+    depth: number;
+    maxFontSize: number;
 
     constructor(children?: SvgChildNode[], attributes?: {[string]: string}) {
         this.children = children || [];
         this.attributes = attributes || {};
+        this.height = 0;
+        this.depth = 0;
+        this.maxFontSize = 0;
     }
 
     toNode(): Node {
@@ -598,7 +594,7 @@ class svgNode implements VirtualNodeInterface {
     }
 }
 
-class pathNode implements VirtualNodeInterface {
+class pathNode implements VirtualDomNode {
     pathName: string;
     alternate: ?string;
 
@@ -629,7 +625,7 @@ class pathNode implements VirtualNodeInterface {
     }
 }
 
-class lineNode implements VirtualNodeInterface {
+class lineNode implements VirtualDomNode {
     attributes: {[string]: string};
 
     constructor(attributes?: {[string]: string}) {

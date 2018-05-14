@@ -2591,11 +2591,6 @@ describe("An href command", function() {
         const ae = getParsed(`\\href{${input}}{\\alpha}`)[0];
         expect(ae.value.href).toBe(url);
     });
-
-    it("should be marked up correctly", function() {
-        const markup = katex.renderToString("\\href{http://example.com/}{example here}");
-        expect(markup).toContain("<a href=\"http://example.com/\">");
-    });
 });
 
 describe("A parser that does not throw on unsupported commands", function() {
@@ -2779,9 +2774,11 @@ describe("A macro expander", function() {
     });
 */
 
-    it("should build \\overset and \\underset", function() {
-        expect("\\overset{f}{\\rightarrow} Y").toBuild();
-        expect("\\underset{f}{\\rightarrow} Y").toBuild();
+    it("should expand the \\overset macro as expected", function() {
+        expect("\\overset?=").toParseLike("\\mathop{=}\\limits^{?}");
+        expect("\\overset{x=y}{\\sqrt{ab}}")
+            .toParseLike("\\mathop{\\sqrt{ab}}\\limits^{x=y}");
+        expect("\\overset {?} =").toParseLike("\\mathop{=}\\limits^{?}");
     });
 
     it("should build \\iff, \\implies, \\impliedby", function() {
@@ -2974,7 +2971,7 @@ describe("Unicode", function() {
     });
 
     it("should parse relations", function() {
-        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙").toParse();
+        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴").toParse();
     });
 
     it("should parse big operators", function() {
@@ -2982,16 +2979,11 @@ describe("Unicode", function() {
     });
 
     it("should parse more relations", function() {
-        expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆≘≙≚≛≝≞≟").toBuild();
+        expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋙⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆").toParse();
     });
 
     it("should parse symbols", function() {
         expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°\u00b7").toParse();
-    });
-
-    it("should build Greek capital letters", function() {
-        expect("\u0391\u0392\u0395\u0396\u0397\u0399\u039A\u039C\u039D" +
-                "\u039F\u03A1\u03A4\u03A7").toBuild();
     });
 
     it("should parse arrows", function() {
