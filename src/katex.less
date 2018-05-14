@@ -11,7 +11,8 @@
 
         .mfrac .frac-line,
         .overline .overline-line,
-        .underline .underline-line {
+        .underline .underline-line,
+        .hline {
             min-height: 1px;
         }
     }
@@ -33,6 +34,11 @@
             > .tag {
                 position: absolute;
                 right: 0px;
+            }
+
+            /* \newline doesn't do anything in display mode */
+            > .newline {
+                display: none;
             }
         }
     }
@@ -62,6 +68,13 @@
         height: 1px;
         width: 1px;
         overflow: hidden;
+    }
+
+    .katex-html {
+        /* \newline is an empty block at top level of inline mode */
+        > .newline {
+            display: block;
+        }
     }
 
     .base {
@@ -322,7 +335,8 @@
     }
 
     .overline .overline-line,
-    .underline .underline-line {
+    .underline .underline-line,
+    .hline {
         display: inline-block;
         width: 100%;
         border-bottom-style: solid;

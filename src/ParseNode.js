@@ -121,6 +121,8 @@ type ParseNodeTypes = {
     |},
     "cr": {|
         type: "cr",
+        //newRow: boolean,
+        newLine: boolean,
         size: ?ParseNode<*>,
     |},
     "delimsizing": {|

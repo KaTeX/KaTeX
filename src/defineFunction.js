@@ -132,7 +132,7 @@ export type FunctionSpec<NODETYPE: NodeType> = {|
 
     // FLOW TYPE NOTES: Doing either one of the following two
     //
-    // - removing the NOTETYPE type parameter in FunctionSpec above;
+    // - removing the NODETYPE type parameter in FunctionSpec above;
     // - using ?FunctionHandler<NODETYPE> below;
     //
     // results in a confusing flow typing error:

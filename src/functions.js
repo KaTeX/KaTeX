@@ -272,18 +272,8 @@ defineFunction("infix", ["\\over", "\\choose", "\\atop"], {
     };
 });
 
-// Row breaks for aligned data
-defineFunction("cr", ["\\\\", "\\cr"], {
-    numArgs: 0,
-    numOptionalArgs: 1,
-    argTypes: ["size"],
-}, function(context, args, optArgs) {
-    const size = optArgs[0];
-    return {
-        type: "cr",
-        size: size,
-    };
-});
+// Row and line breaks
+import "./functions/cr";
 
 // Environment delimiters
 defineFunction("environment", ["\\begin", "\\end"], {
