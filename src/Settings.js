@@ -61,7 +61,8 @@ class Settings {
      * Report nonstrict (non-LaTeX-compatible) input.
      * Can safely not be called if `this.strict` is false in JavaScript.
      */
-    nonstrict(errorCode: string, errorMsg: string, token?: Token | ParseNode<*>) {
+    reportNonstrict(errorCode: string, errorMsg: string,
+                    token?: Token | ParseNode<*>) {
         let strict = this.strict;
         if (typeof strict === "function") {
             // Allow return value of strict function to be boolean or string
@@ -92,8 +93,8 @@ class Settings {
      * translates to a return value of `false`.  May still print a warning:
      * "warn" prints a warning and returns `false`.
      */
-    strictBehavior(errorCode: string, errorMsg: string,
-                   token?: Token | ParseNode<*>) {
+    useStrictBehavior(errorCode: string, errorMsg: string,
+                      token?: Token | ParseNode<*>) {
         let strict = this.strict;
         if (typeof strict === "function") {
             // Allow return value of strict function to be boolean or string

@@ -27,8 +27,9 @@ defineFunction({
         let newLine = false;
         if (!newRow) {
             if (context.parser.settings.displayMode &&
-                context.parser.settings.strictBehavior("newLineInDisplayMode",
-                    "In LaTeX, \\\\ or \\newline does nothing in display mode")) {
+                context.parser.settings.useStrictBehavior(
+                    "newLineInDisplayMode", "In LaTeX, \\\\ or \\newline " +
+                    "does nothing in display mode")) {
                 newLine = false;
             } else {
                 newLine = true;
