@@ -57,7 +57,7 @@ export type EnvSpec<NODETYPE: NodeType> = {|
     greediness: number,
     allowedInText: boolean,
     numOptionalArgs: number,
-    // FLOW TYPE NOTES: Same issue as the notes aon the handler of FunctionSpec
+    // FLOW TYPE NOTES: Same issue as the notes on the handler of FunctionSpec
     // in defineFunction.
     handler: EnvHandler<*>,
 |};

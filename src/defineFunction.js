@@ -104,12 +104,12 @@ type FunctionDefSpec<NODETYPE: NodeType> = {|
 
     // This function returns an object representing the DOM structure to be
     // created when rendering the defined LaTeX function.
-    // TODO: Change make return type explicit.
+    // TODO: Make return type explicit.
     htmlBuilder?: (group: ParseNode<NODETYPE>, options: Options) => *,
 
     // This function returns an object representing the MathML structure to be
     // created when rendering the defined LaTeX function.
-    // TODO: Change make return type explicit.
+    // TODO: Make return type explicit.
     mathmlBuilder?: (group: ParseNode<NODETYPE>, options: Options) => *,
 |};
 
