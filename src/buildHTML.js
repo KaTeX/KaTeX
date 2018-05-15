@@ -641,20 +641,17 @@ function buildHTMLUnbreakable(children, options) {
     // Compute height and depth of this chunk.
     const body = makeSpan(["base"], children, options);
 
-    // Add struts, which ensure that the top of the HTML element falls at
+    // Add strut, which ensures that the top of the HTML element falls at
     // the height of the expression, and the bottom of the HTML element
     // falls at the depth of the expression.
-    const topStrut = makeSpan(["strut"]);
-    const bottomStrut = makeSpan(["strut", "bottom"]);
-
-    topStrut.style.height = body.height + "em";
-    bottomStrut.style.height = (body.height + body.depth) + "em";
-    // We'd like to use `vertical-align: top` but in IE 9 this lowers the
-    // baseline of the box to the bottom of this strut (instead staying in the
-    // normal place) so we use an absolute value for vertical-align instead
-    bottomStrut.style.verticalAlign = -body.depth + "em";
-
-    body.children.unshift(topStrut, bottomStrut);
+    // We used to have separate top and bottom struts, where the bottom strut
+    // would like to use `vertical-align: top`, but in IE 9 this lowers the
+    // baseline of the box to the bottom of this strut (instead of staying in
+    // the normal place) so we use an absolute value for vertical-align instead.
+    const strut = makeSpan(["strut"]);
+    strut.style.height = (body.height + body.depth) + "em";
+    strut.style.verticalAlign = -body.depth + "em";
+    body.children.unshift(strut);
 
     return body;
 }
@@ -703,6 +700,15 @@ export default function buildHTML(tree, options) {
                 htmlNode.children.push(buildHTMLUnbreakable(parts, options));
                 parts = [];
             }
+        } else if (expression[i].hasClass("newline")) {
+            // Write the line except the newline
+            parts.pop();
+            if (parts.length > 0) {
+                htmlNode.children.push(buildHTMLUnbreakable(parts, options));
+                parts = [];
+            }
+            // Put the newline at the top level
+            htmlNode.children.push(expression[i]);
         }
     }
     if (parts.length > 0) {
