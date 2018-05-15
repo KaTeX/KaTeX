@@ -41,14 +41,12 @@ defineFunction({
 
         // At this point, we have correctly set horizontal alignment of the
         // two items involved in the lap.
-        // Next, use struts to set the height of the HTML bounding box.
+        // Next, use a strut to set the height of the HTML bounding box.
         // Otherwise, a tall argument may be misplaced.
-        const topStrut = buildCommon.makeSpan(["strut"]);
-        const bottomStrut = buildCommon.makeSpan(["strut", "bottom"]);
-        topStrut.style.height = node.height + "em";
-        bottomStrut.style.height = (node.height + node.depth) + "em";
-        bottomStrut.style.verticalAlign = -node.depth + "em";
-        node = buildCommon.makeSpan([], [topStrut, bottomStrut, node]);
+        const strut = buildCommon.makeSpan(["strut"]);
+        strut.style.height = (node.height + node.depth) + "em";
+        strut.style.verticalAlign = -node.depth + "em";
+        node.children.unshift(strut);
 
         // Next, prevent vertical misplacement when next to something tall.
         node = buildCommon.makeVList({
