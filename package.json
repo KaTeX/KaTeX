@@ -87,6 +87,7 @@
     "nomnom": "^1.8.1"
   },
   "jest": {
+    "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
     "snapshotSerializers": [
       "jest-serializer-html"
     ],
