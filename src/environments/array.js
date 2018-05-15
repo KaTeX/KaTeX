@@ -6,7 +6,6 @@ import ParseError from "../ParseError";
 import ParseNode from "../ParseNode";
 import {calculateSize} from "../units";
 import utils from "../utils";
-import stretchy from "../stretchy";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -31,7 +30,19 @@ export type ArrayEnvNodeData = {
     // initialization.
     body?: ParseNode<*>[][], // List of rows in the (2D) array.
     rowGaps?: number[],
+    numHLinesBeforeRow?: number[],
 };
+
+function getNumHLines(parser: Parser): number {
+    let n = 0;
+    parser.consumeSpaces();
+    while (parser.nextToken.text === "\\hline") {
+        parser.consume();
+        n++;
+        parser.consumeSpaces();
+    }
+    return n;
+}
 
 /**
  * Parse the body of the environment, with rows delimited by \\ and
@@ -47,8 +58,13 @@ function parseArray(
     let row = [];
     const body = [row];
     const rowGaps = [];
+    const numHLinesBeforeRow = [];
+
+    // Test for \hline at the top of the array.
+    numHLinesBeforeRow.push(getNumHLines(parser));
+
     while (true) {  // eslint-disable-line no-constant-condition
-        let cell = parser.parseExpression(false, undefined);
+        let cell = parser.parseExpression(false, "\\\\");
         cell = new ParseNode("ordgroup", cell, parser.mode);
         if (style) {
             cell = new ParseNode("styling", {
@@ -77,15 +93,20 @@ function parseArray(
                 throw new ParseError(`Failed to parse function after ${next}`);
             }
             rowGaps.push(cr.value.size);
+
+            // check for \hline(s) following the row separator
+            numHLinesBeforeRow.push(getNumHLines(parser));
+
             row = [];
             body.push(row);
         } else {
-            throw new ParseError("Expected & or \\\\ or \\end",
+            throw new ParseError("Expected & or \\\\ or \\cr or \\end",
                                  parser.nextToken);
         }
     }
     result.body = body;
     result.rowGaps = rowGaps;
+    result.numHLinesBeforeRow = numHLinesBeforeRow;
     return new ParseNode("array", result, parser.mode);
 }
 
@@ -111,8 +132,10 @@ const htmlBuilder = function(group, options) {
     let r;
     let c;
     const nr = group.value.body.length;
+    const numHLinesBeforeRow = group.value.numHLinesBeforeRow;
     let nc = 0;
     let body = new Array(nr);
+    const hlinePos = [];
 
     // Horizontal spacing
     const pt = 1 / options.fontMetrics().ptPerEm;
@@ -131,6 +154,15 @@ const htmlBuilder = function(group, options) {
     const arstrutDepth = 0.3 * arrayskip;  // \@arstrutbox in lttab.dtx
 
     let totalHeight = 0;
+
+    // Set a position for \hline(s) at the top of the array, if any.
+    for (let i = 1; i <= numHLinesBeforeRow[0]; i++) {
+        if (i >  1) {              // The first \hline doesn't add to height.
+            totalHeight += 0.25;
+        }
+        hlinePos.push(totalHeight);
+    }
+
     for (r = 0; r < group.value.body.length; ++r) {
         const inrow = group.value.body[r];
         let height = arstrutHeight; // \@array adds an \@arstrut
@@ -176,6 +208,14 @@ const htmlBuilder = function(group, options) {
         outrow.pos = totalHeight;
         totalHeight += depth + gap; // \@yargarraycr
         body[r] = outrow;
+
+        // Set a position for \hline(s), if any.
+        for (let i = 1; i <= numHLinesBeforeRow[r + 1]; i++) {
+            if (i >  1) {               // the first \hline doesn't add height
+                totalHeight += 0.25;
+            }
+            hlinePos.push(totalHeight);
+        }
     }
 
     const offset = totalHeight / 2 + options.fontMetrics().axisHeight;
@@ -203,8 +243,9 @@ const htmlBuilder = function(group, options) {
             }
 
             if (colDescr.separator === "|") {
-                const separator = stretchy.ruleSpan("vertical-separator", 0.05,
-                    options);
+                const separator = buildCommon.makeSpan(
+                    ["vertical-separator"], [], options
+                );
                 separator.style.height = totalHeight + "em";
                 separator.style.verticalAlign =
                     -(totalHeight - offset) + "em";
@@ -266,6 +307,21 @@ const htmlBuilder = function(group, options) {
         }
     }
     body = buildCommon.makeSpan(["mtable"], cols);
+
+    // Add \hline(s), if any.
+    if (hlinePos.length > 0) {
+        const line = buildCommon.makeLineSpan("hline", options, 0.05);
+        const vListChildren = [{type: "elem", elem: body, shift: 0}];
+        while (hlinePos.length > 0) {
+            const lineShift = hlinePos.pop() - offset;
+            vListChildren.push({type: "elem", elem: line, shift: lineShift});
+        }
+        body = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: vListChildren,
+        }, options);
+    }
+
     return buildCommon.makeSpan(["mord"], [body], options);
 };
 

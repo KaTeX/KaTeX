@@ -4,23 +4,11 @@
  * It's a storehouse of path geometry for SVG images.
  */
 
-// We do frac-lines, underlines, and overlines with an SVG path and we put that
-// path is into a viewBox that is 5 times as thick as the line. That way,
-// any browser rounding error on the size of the surrounding span will
-// not pinch the ink of the line.  Think of it as padding for the line.
-// As usual, the viewBox-to-em scale is 1000.
+// In all paths below, the viewBox-to-em scale is 1000:1.
 
-const hLinePad = 80;  // padding above and below a std 0.04em horiz rule.
-const vLinePad = 100; // padding on either side of a std vert 0.05em rule.
+const hLinePad = 80;  // padding above a sqrt viniculum.
 
 const path: {[string]: string} = {
-    // stdHorizRule is used for frac-lines, underlines, and overlines.
-    // It is 0.04em thick if the line comes from normalsize/textstyle.
-    stdHorizRule: `M0 ${hLinePad}H400000 v40H0z M0 ${hLinePad}H400000 v40H0z`,
-
-    // vertSeparator is used in arrays. It is 0.05em wide in a 0.25em viewBox.
-    vertSeparator: `M${vLinePad} 0h50V400000h-50zM${vLinePad} 0h50V400000h-50z`,
-
     // sqrtMain path geometry is from glyph U221A in the font KaTeX Main
     // All surds have 80 units padding above the viniculumn.
     sqrtMain: `M95,${622 + hLinePad}c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,
