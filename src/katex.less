@@ -11,7 +11,8 @@
 
         .mfrac .frac-line,
         .overline .overline-line,
-        .underline .underline-line {
+        .underline .underline-line,
+        .hline {
             min-height: 1px;
         }
     }
@@ -25,13 +26,22 @@
     > .katex {
         display: inline-block;
         text-align: initial;
+        white-space: nowrap;
+
+        > .katex-html {
+            display: inline-block;
+
+            /* \newline doesn't do anything in display mode */
+            > .newline {
+                display: none;
+            }
+        }
     }
 }
 
 .katex {
     font: normal 1.21em KaTeX_Main, Times New Roman, serif;
     line-height: 1.2;
-    white-space: nowrap;
 
     // Protect elements inside .katex from inheriting text-indent.
     text-indent: 0;
@@ -39,19 +49,9 @@
     // Prevent a rendering bug that misplaces \vec in Chrome.
     text-rendering: auto;
 
-    // Fix width of containers of negative spaces, working around Chrome bug.
-    width: min-content;
-
     // Prevent background resetting on elements in Windows's high-contrast
     // mode, while still allowing background/foreground setting on root .katex
     * { -ms-high-contrast-adjust: none !important; }
-
-    .katex-html {
-        // Making .katex inline-block allows line breaks before and after,
-        // which is undesireable ("to $x$,"). Instead, adjust the .katex-html
-        // style and put nowrap on the inline .katex element.
-        display: inline-block;
-    }
 
     .katex-mathml {
         // Accessibility hack to only show to screen readers
@@ -65,9 +65,20 @@
         overflow: hidden;
     }
 
+    .katex-html {
+        /* \newline is an empty block at top level of inline mode */
+        > .newline {
+            display: block;
+        }
+    }
+
     .base {
         position: relative;
         display: inline-block;
+        white-space: nowrap;
+
+        // Fix width of containers of negative spaces, working around Chrome bug.
+        width: min-content;
     }
 
     .strut {
@@ -206,11 +217,13 @@
         // issues; absolute units prevent user font-size overrides from breaking
         // rendering. Safari refuses to make the box zero-width, so we give it
         // a known width and compensate with negative right margin on the
-        // inline-table.
+        // inline-table. To prevent the "width: min-content" Chrome workaround
+        // from shrinking this box, we also set min-width.
         display: table-cell;
         vertical-align: bottom;
         font-size: 1px;
         width: 2px;
+        min-width: 2px;
     }
 
     .msupsub {
@@ -317,7 +330,8 @@
     }
 
     .overline .overline-line,
-    .underline .underline-line {
+    .underline .underline-line,
+    .hline {
         display: inline-block;
         width: 100%;
         border-bottom-style: solid;
