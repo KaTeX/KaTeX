@@ -181,12 +181,37 @@ beforeEach(function() {
             expect(actual).toParse(usedSettings);
 
             try {
-                _getBuilt(actual, settings);
+                _getBuilt(actual, usedSettings);
             } catch (e) {
                 result.pass = false;
                 if (e instanceof ParseError) {
                     result.message = () => "'" + actual + "' failed to " +
                         "build with error: " + e.message;
+                } else {
+                    result.message = () => "'" + actual + "' failed " +
+                        "building with unknown error: " + e.message;
+                }
+            }
+
+            return result;
+        },
+
+        toNotBuild: function(actual, settings) {
+            const usedSettings = settings ? settings : defaultSettings;
+
+            const result = {
+                pass: false,
+                message: () => "Expected '" + actual + "' to fail " +
+                    "building, but it succeeded",
+            };
+
+            try {
+                _getBuilt(actual, usedSettings);
+            } catch (e) {
+                if (e instanceof ParseError) {
+                    result.pass = true;
+                    result.message = () => "'" + actual + "' correctly " +
+                        "didn't build with error: " + e.message;
                 } else {
                     result.message = () => "'" + actual + "' failed " +
                         "building with unknown error: " + e.message;
@@ -2719,6 +2744,10 @@ describe("A macro expander", function() {
         compareParseTree("\\text{\\foo }", "\\text{}", {"\\foo": "\\relax"});
     });
 
+    it("should not consume spaces after control-word expansion", function() {
+        compareParseTree("\\text{\\\\ }", "\\text{ }", {"\\\\": "\\relax"});
+    });
+
     it("should consume spaces after \\relax", function() {
         compareParseTree("\\text{\\relax }", "\\text{}");
     });
@@ -3133,7 +3162,7 @@ describe("Newlines via \\\\ and \\newline", function() {
     });
 
     it("should not allow \\cr at top level", () => {
-        expect("hello \\cr world").toNotParse();
+        expect("hello \\cr world").toNotBuild();
     });
 });
 
@@ -3185,6 +3214,11 @@ describe("strict setting", function() {
         expect("\\text{é試}").toParse(new Settings({strict: false}));
         expect("\\text{é試}").toParse(new Settings({strict: true}));
         expect("\\text{é試}").toParse();
+    });
+
+    it("should warn about top-level \\newline in display mode", () => {
+        expect("x\\\\y").toWarn(new Settings({displayMode: true}));
+        expect("x\\\\y").toParse(new Settings({displayMode: false}));
     });
 });
 

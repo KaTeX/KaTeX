@@ -22,17 +22,17 @@ defineFunction({
             const muUnit = (args[0].value.unit === 'mu');
             if (mathFunction) {
                 if (!muUnit) {
-                    context.parser.settings.nonstrict("mathVsTextUnits",
+                    context.parser.settings.reportNonstrict("mathVsTextUnits",
                         `LaTeX's ${context.funcName} supports only mu units, ` +
                         `not ${args[0].value.unit} units`);
                 }
                 if (context.parser.mode !== "math") {
-                    context.parser.settings.nonstrict("mathVsTextUnits",
+                    context.parser.settings.reportNonstrict("mathVsTextUnits",
                         `LaTeX's ${context.funcName} works only in math mode`);
                 }
             } else {  // !mathFunction
                 if (muUnit) {
-                    context.parser.settings.nonstrict("mathVsTextUnits",
+                    context.parser.settings.reportNonstrict("mathVsTextUnits",
                         `LaTeX's ${context.funcName} doesn't support mu units`);
                 }
             }

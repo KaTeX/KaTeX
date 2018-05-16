@@ -60,12 +60,12 @@ describe("Parser:", function() {
         it("rejects repeated infix operators", function() {
             expect("1\\over 2\\over 3").toFailWithParseError(
                    "only one infix operator per group at position 9: " +
-                   "1\\over 2\\̲o̲v̲e̲r̲ 3");
+                   "1\\over 2\\̲o̲v̲e̲r̲ ̲3");
         });
         it("rejects conflicting infix operators", function() {
             expect("1\\over 2\\choose 3").toFailWithParseError(
                    "only one infix operator per group at position 9: " +
-                   "1\\over 2\\̲c̲h̲o̲o̲s̲e̲ 3");
+                   "1\\over 2\\̲c̲h̲o̲o̲s̲e̲ ̲3");
         });
     });
 

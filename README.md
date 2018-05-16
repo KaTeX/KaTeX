@@ -79,6 +79,11 @@ You can provide an object of options as the last argument to `katex.render` and 
 - `strict`: `boolean` or `string` or `function` (default: `"warn"`). If `false` or `"ignore`", allow features that make writing LaTeX convenient but are not actually supported by (Xe)LaTeX (similar to MathJax). If `true` or `"error"` (LaTeX faithfulness mode), throw an error for any such transgressions. If `"warn"` (the default), warn about such behavior via `console.warn`. Provide a custom function `handler(errorCode, errorMsg, token)` to customize behavior depending on the type of transgression (summarized by the string code `errorCode` and detailed in `errorMsg`); this function can also return `"ignore"`, `"error"`, or `"warn"` to use a built-in behavior.  A list of such features and their `errorCode`s:
   - `"unicodeTextInMathMode"`: Use of Unicode text characters in math mode.
   - `"mathVsTextUnits"`: Mismatch of math vs. text commands and units/mode.
+  A second category of `errorCode`s never throw errors, but their strictness
+  affects the behavior of KaTeX:
+  - `"newLineInDisplayMode"`: Use of `\\` or `\newline` in display mode
+    (outside an array/tabular environment).  In strict mode, no line break
+    results, as in LaTeX.
 
 For example:
 
@@ -131,13 +136,6 @@ will appear larger than 1cm in browser units.
 - MathJax defines `\color` to be like `\textcolor` by default; set KaTeX's
   `colorIsTextColor` option to `true` for this behavior.  KaTeX's default
   behavior matches MathJax with its `color.js` extension enabled.
-- KaTeX breaks lines with `\\` and `\newline` in inline math, but ignores them
-  in display math (matching LaTeX's behavior, but not MathJax's behavior).
-  To allow `\\` and `\newline` to break lines in display mode,
-  add the following CSS rule:
-  ```css
-  .katex-display > .katex > .katex-html > .newline { display: block !important; }
-  ```
 
 ## Libraries
 
