@@ -43,12 +43,8 @@ class Settings {
     errorColor: string;
     macros: MacroMap;
     colorIsTextColor: boolean;
-<<<<<<< HEAD
-    unicodeTextInMathMode: boolean;
     allowAllSymbols: boolean;
-=======
     strict: boolean | "ignore" | "warn" | "error" | StrictFunction;
->>>>>>> upstream/master
     maxSize: number;
 
     constructor(options: SettingsOptions) {
@@ -59,13 +55,8 @@ class Settings {
         this.errorColor = utils.deflt(options.errorColor, "#cc0000");
         this.macros = options.macros || {};
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
-<<<<<<< HEAD
-        this.unicodeTextInMathMode =
-            utils.deflt(options.unicodeTextInMathMode, false);
         this.allowAllSymbols = utils.deflt(options.allowAllSymbols, false);
-=======
         this.strict = utils.deflt(options.strict, "warn");
->>>>>>> upstream/master
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
     }
 
