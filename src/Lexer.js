@@ -33,14 +33,19 @@ import {LexerInterface, Token} from "./Token";
  * If there is no matching function or symbol definition, the Parser will
  * still reject the input.
  */
+const spaceRegexString = "[ \r\n\t]";
 const commentRegexString = "%[^\n]*[\n]";
 const controlWordRegexString = "\\\\[a-zA-Z@]+";
 const controlSymbolRegexString = "\\\\[^\uD800-\uDFFF]";
+const controlWordWhitespaceRegexString =
+    `${controlWordRegexString}${spaceRegexString}*`;
+const controlWordWhitespaceRegex = new RegExp(
+    `^(${controlWordRegexString})${spaceRegexString}*$`);
 const combiningDiacriticalMarkString = "[\u0300-\u036f]";
 export const combiningDiacriticalMarksEndRegex =
     new RegExp(`${combiningDiacriticalMarkString}+$`);
 const tokenRegex = new RegExp(
-    "([ \r\n\t]+)|" +                                 // whitespace
+    `(${spaceRegexString}+)|` +                       // whitespace
     `(${commentRegexString}` +                        // comments
     "|[!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
     `${combiningDiacriticalMarkString}*` +            // ...plus accents
@@ -48,7 +53,7 @@ const tokenRegex = new RegExp(
     `${combiningDiacriticalMarkString}*` +            // ...plus accents
     "|\\\\verb\\*([^]).*?\\3" +                       // \verb*
     "|\\\\verb([^*a-zA-Z]).*?\\4" +                   // \verb unstarred
-    `|${controlWordRegexString}` +                    // \macroName
+    `|${controlWordWhitespaceRegexString}` +          // \macroName + spaces
     `|${controlSymbolRegexString}` +                  // \\, \', etc.
     ")"
 );
@@ -85,10 +90,16 @@ export default class Lexer implements LexerInterface {
                 `Unexpected character: '${input[pos]}'`,
                 new Token(input[pos], new SourceLocation(this, pos, pos + 1)));
         }
-        const text = match[2] || " ";
+        let text = match[2] || " ";
         const start = this.pos;
         this.pos += match[0].length;
         const end = this.pos;
+
+        // Trim any trailing whitespace from control word match
+        const controlMatch = text.match(controlWordWhitespaceRegex);
+        if (controlMatch) {
+            text = controlMatch[1];
+        }
 
         if (commentRegex.test(text)) {
             return this.lex();

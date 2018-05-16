@@ -150,7 +150,7 @@ export default class Parser {
         return expression;
     }
 
-    static endOfExpression = ["}", "\\end", "\\right", "&", "\\cr"];
+    static endOfExpression = ["}", "\\end", "\\right", "&"];
 
     /**
      * Parses an "expression", which is a list of atoms.
@@ -946,7 +946,7 @@ export default class Parser {
             !symbols[this.mode][text[0]]) {
             // This behavior is not strict (XeTeX-compatible) in math mode.
             if (this.settings.strict && this.mode === "math") {
-                this.settings.nonstrict("unicodeTextInMathMode",
+                this.settings.reportNonstrict("unicodeTextInMathMode",
                     `Accented Unicode text character "${text[0]}" used in ` +
                     `math mode`, nucleus);
             }
@@ -967,7 +967,7 @@ export default class Parser {
         if (symbols[this.mode][text]) {
             if (this.settings.strict && this.mode === 'math' &&
                 extraLatin.indexOf(text) >= 0) {
-                this.settings.nonstrict("unicodeTextInMathMode",
+                this.settings.reportNonstrict("unicodeTextInMathMode",
                     `Latin-1/Unicode text character "${text[0]}" used in ` +
                     `math mode`, nucleus);
             }
@@ -975,7 +975,7 @@ export default class Parser {
                             text, this.mode, nucleus);
         } else if (supportedCodepoint(text.charCodeAt(0))) {
             if (this.settings.strict && this.mode === 'math') {
-                this.settings.nonstrict("unicodeTextInMathMode",
+                this.settings.reportNonstrict("unicodeTextInMathMode",
                     `Unicode text character "${text[0]}" used in math mode`,
                     nucleus);
             }

@@ -121,7 +121,7 @@ type ParseNodeTypes = {
     |},
     "cr": {|
         type: "cr",
-        //newRow: boolean,
+        newRow: boolean,
         newLine: boolean,
         size: ?ParseNode<*>,
     |},
