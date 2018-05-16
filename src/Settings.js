@@ -92,6 +92,7 @@ class Settings {
      * instead, "error" translates to a return value of `true`, while "ignore"
      * translates to a return value of `false`.  May still print a warning:
      * "warn" prints a warning and returns `false`.
+     * This is for the second category of `errorCode`s listed in the README.
      */
     useStrictBehavior(errorCode: string, errorMsg: string,
                       token?: Token | ParseNode<*>) {

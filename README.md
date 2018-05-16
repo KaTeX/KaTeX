@@ -79,9 +79,11 @@ You can provide an object of options as the last argument to `katex.render` and 
 - `strict`: `boolean` or `string` or `function` (default: `"warn"`). If `false` or `"ignore`", allow features that make writing LaTeX convenient but are not actually supported by (Xe)LaTeX (similar to MathJax). If `true` or `"error"` (LaTeX faithfulness mode), throw an error for any such transgressions. If `"warn"` (the default), warn about such behavior via `console.warn`. Provide a custom function `handler(errorCode, errorMsg, token)` to customize behavior depending on the type of transgression (summarized by the string code `errorCode` and detailed in `errorMsg`); this function can also return `"ignore"`, `"error"`, or `"warn"` to use a built-in behavior.  A list of such features and their `errorCode`s:
   - `"unicodeTextInMathMode"`: Use of Unicode text characters in math mode.
   - `"mathVsTextUnits"`: Mismatch of math vs. text commands and units/mode.
-  - `"newLineInDisplayMode"`: Use of `\\` or `\newline` in display mode.
-    This never throws an error, but in strict mode, no line break results,
-    as in LaTeX.
+  A second category of `errorCode`s never throw errors, but their strictness
+  affects the behavior of KaTeX:
+  - `"newLineInDisplayMode"`: Use of `\\` or `\newline` in display mode
+    (outside an array/tabular environment).  In strict mode, no line break
+    results, as in LaTeX.
 
 For example:
 
