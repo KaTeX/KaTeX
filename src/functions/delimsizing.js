@@ -35,10 +35,12 @@ const delimiterSizes = {
 const delimiters = [
     "(", ")", "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
-    "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
+    "\\lfloor", "\\rfloor", "\u230a", "\u230b",
+    "\\lceil", "\\rceil", "\u2308", "\u2309",
     "<", ">", "\\langle", "\u27e8", "\\rangle", "\u27e9", "\\lt", "\\gt",
     "\\lvert", "\\rvert", "\\lVert", "\\rVert",
-    "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache",
+    "\\lgroup", "\\rgroup", "\u27ee", "\u27ef",
+    "\\lmoustache", "\\rmoustache", "\u23b0", "\u23b1",
     "/", "\\backslash",
     "|", "\\vert", "\\|", "\\Vert",
     "\\uparrow", "\\Uparrow",
@@ -48,7 +50,10 @@ const delimiters = [
 ];
 
 // Delimiter functions
-function checkDelimiter(delim: ParseNode, context: FunctionContext): ParseNode {
+function checkDelimiter(
+    delim: ParseNode<*>,
+    context: FunctionContext,
+): ParseNode<*> {
     if (utils.contains(delimiters, delim.value)) {
         return delim;
     } else {

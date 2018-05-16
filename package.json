@@ -40,10 +40,10 @@
     "less": "~2.7.1",
     "less-loader": "^4.0.5",
     "mkdirp": "^0.5.1",
-    "nomnom": "^1.8.1",
     "object-assign": "^4.1.0",
     "pako": "1.0.4",
     "pre-commit": "^1.2.2",
+    "query-string": "^5.1.0",
     "rimraf": "^2.6.2",
     "selenium-webdriver": "^2.48.2",
     "sri-toolbox": "^0.2.0",
@@ -52,6 +52,7 @@
     "stylelint-config-standard": "^18.0.0",
     "uglifyjs-webpack-plugin": "^1.1.6",
     "webpack": "^3.6.0",
+    "webpack-bundle-analyzer": "^2.11.1",
     "webpack-dev-server": "^2.7.1"
   },
   "bin": "cli.js",
@@ -60,6 +61,7 @@
     "test:lint": "eslint katex.js katex.webpack.js cli.js webpack.common.js webpack.config.js webpack.dev.js src static test contrib dockers && stylelint src/katex.less",
     "test:flow": "flow",
     "test:jest": "jest",
+    "test:jest:watch": "jest --watch",
     "test:jest:update": "jest --updateSnapshot",
     "test:jest:coverage": "jest --coverage",
     "test:screenshots": "npm run test:screenshots:update -- --verify",
@@ -69,6 +71,7 @@
     "clean-install": "npm run clean && npm i",
     "prestart": "node check-node-version.js && check-dependencies && cd src && node unicodeMake.js >unicodeSymbols.js",
     "start": "webpack-dev-server --hot --config webpack.dev.js",
+    "analyze": "webpack --config webpack.analyze.js",
     "build": "npm run prestart && rimraf build/* && webpack",
     "watch": "npm run build -- --watch",
     "dist": "npm test && npm run build && npm run dist:copy && npm run dist:zip && npm run dist:dist",
@@ -80,9 +83,11 @@
     "test:lint"
   ],
   "dependencies": {
-    "match-at": "^0.1.1"
+    "match-at": "^0.1.1",
+    "nomnom": "^1.8.1"
   },
   "jest": {
+    "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
     "snapshotSerializers": [
       "jest-serializer-html"
     ],

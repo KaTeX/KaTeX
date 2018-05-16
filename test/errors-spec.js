@@ -60,12 +60,12 @@ describe("Parser:", function() {
         it("rejects repeated infix operators", function() {
             expect("1\\over 2\\over 3").toFailWithParseError(
                    "only one infix operator per group at position 9: " +
-                   "1\\over 2\\̲o̲v̲e̲r̲ 3");
+                   "1\\over 2\\̲o̲v̲e̲r̲ ̲3");
         });
         it("rejects conflicting infix operators", function() {
             expect("1\\over 2\\choose 3").toFailWithParseError(
                    "only one infix operator per group at position 9: " +
-                   "1\\over 2\\̲c̲h̲o̲o̲s̲e̲ 3");
+                   "1\\over 2\\̲c̲h̲o̲o̲s̲e̲ ̲3");
         });
     });
 
@@ -208,10 +208,6 @@ describe("Parser.expect calls:", function() {
                    "Expected 'EOF', got '\\end' at position 2:" +
                    " x\\̲e̲n̲d̲{matrix}");
         });
-        it("complains about top-level \\\\", function() {
-            expect("1\\\\2").toFailWithParseError(
-                   "Expected 'EOF', got '\\\\' at position 2: 1\\̲\\̲2");
-        });
         it("complains about top-level &", function() {
             expect("1&2").toFailWithParseError(
                    "Expected 'EOF', got '&' at position 2: 1&̲2");
@@ -292,12 +288,12 @@ describe("environments.js:", function() {
     describe("parseArray", function() {
         it("rejects missing \\end", function() {
             expect("\\begin{matrix}1").toFailWithParseError(
-                   "Expected & or \\\\ or \\end at end of input:" +
+                   "Expected & or \\\\ or \\cr or \\end at end of input:" +
                    " \\begin{matrix}1");
         });
         it("rejects incorrectly scoped \\end", function() {
             expect("{\\begin{matrix}1}\\end{matrix}").toFailWithParseError(
-                   "Expected & or \\\\ or \\end at position 17:" +
+                   "Expected & or \\\\ or \\cr or \\end at position 17:" +
                    " …\\begin{matrix}1}̲\\end{matrix}");
         });
     });

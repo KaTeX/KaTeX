@@ -21,7 +21,9 @@ import stretchy from "./stretchy";
  */
 export const makeText = function(text, mode) {
     if (symbols[mode][text] && symbols[mode][text].replace) {
-        text = symbols[mode][text].replace;
+        if (text.charCodeAt(0) !== 0xD835) {
+            text = symbols[mode][text].replace;
+        }
     }
 
     return new mathMLTree.TextNode(text);
@@ -228,8 +230,7 @@ groupTypes.supsub = function(group, options) {
 groupTypes.spacing = function(group) {
     let node;
 
-    if (group.value === "\\ " || group.value === "\\space" ||
-        group.value === " " || group.value === "~") {
+    if (buildCommon.regularSpace.hasOwnProperty(group.value)) {
         node = new mathMLTree.MathNode(
             "mtext", [new mathMLTree.TextNode("\u00a0")]);
     } else {

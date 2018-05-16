@@ -35,7 +35,9 @@ const serializer = {
 
 expect.addSnapshotSerializer(serializer);
 
-const defaultSettings = new Settings({});
+const defaultSettings = new Settings({
+    strict: false, // deal with warnings only when desired
+});
 const defaultOptions = new Options({
     style: Style.TEXT,
     size: 5,
@@ -44,14 +46,22 @@ const defaultOptions = new Options({
 
 const _getBuilt = function(expr, settings) {
     const usedSettings = settings ? settings : defaultSettings;
-    const parsedTree = parseTree(expr, usedSettings);
-    const rootNode = buildTree(parsedTree, expr, usedSettings);
+    const rootNode = katex.__renderToDomTree(expr, usedSettings);
+
+    if (rootNode.classes.indexOf('katex-error') >= 0) {
+        return rootNode;
+    }
 
     // grab the root node of the HTML rendering
     const builtHTML = rootNode.children[1];
 
-    // Remove the outer .katex and .katex-inner layers
-    return builtHTML.children[2].children;
+    // combine the non-strut children of all base spans
+    const children = [];
+    for (let i = 0; i < builtHTML.children.length; i++) {
+        children.push(...builtHTML.children[i].children.filter(
+            (node) => node.classes.indexOf("strut") < 0));
+    }
+    return children;
 };
 
 /**
@@ -98,10 +108,10 @@ const parseAndSetResult = function(expr, result, settings) {
     } catch (e) {
         result.pass = false;
         if (e instanceof ParseError) {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with error: " + e.message;
         } else {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with unknown error: " + e.message;
         }
     }
@@ -113,10 +123,10 @@ const buildAndSetResult = function(expr, result, settings) {
     } catch (e) {
         result.pass = false;
         if (e instanceof ParseError) {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with error: " + e.message;
         } else {
-            result.message = "'" + expr + "' failed " +
+            result.message = () => "'" + expr + "' failed " +
                 "parsing with unknown error: " + e.message;
         }
     }
@@ -149,10 +159,10 @@ beforeEach(function() {
             } catch (e) {
                 if (e instanceof ParseError) {
                     result.pass = true;
-                    result.message = "'" + actual + "' correctly " +
+                    result.message = () => "'" + actual + "' correctly " +
                         "didn't parse with error: " + e.message;
                 } else {
-                    result.message = "'" + actual + "' failed " +
+                    result.message = () => "'" + actual + "' failed " +
                         "parsing with unknown error: " + e.message;
                 }
             }
@@ -171,14 +181,39 @@ beforeEach(function() {
             expect(actual).toParse(usedSettings);
 
             try {
-                _getBuilt(actual, settings);
+                _getBuilt(actual, usedSettings);
             } catch (e) {
                 result.pass = false;
                 if (e instanceof ParseError) {
-                    result.message = "'" + actual + "' failed to " +
+                    result.message = () => "'" + actual + "' failed to " +
                         "build with error: " + e.message;
                 } else {
-                    result.message = "'" + actual + "' failed " +
+                    result.message = () => "'" + actual + "' failed " +
+                        "building with unknown error: " + e.message;
+                }
+            }
+
+            return result;
+        },
+
+        toNotBuild: function(actual, settings) {
+            const usedSettings = settings ? settings : defaultSettings;
+
+            const result = {
+                pass: false,
+                message: () => "Expected '" + actual + "' to fail " +
+                    "building, but it succeeded",
+            };
+
+            try {
+                _getBuilt(actual, usedSettings);
+            } catch (e) {
+                if (e instanceof ParseError) {
+                    result.pass = true;
+                    result.message = () => "'" + actual + "' correctly " +
+                        "didn't build with error: " + e.message;
+                } else {
+                    result.message = () => "'" + actual + "' failed " +
                         "building with unknown error: " + e.message;
                 }
             }
@@ -404,6 +439,7 @@ describe("A subscript and superscript parser", function() {
 
     it("should not fail when there is no nucleus", function() {
         expect("^3").toParse();
+        expect("^3+").toParse();
         expect("_2").toParse();
         expect("^3_2").toParse();
         expect("_2^3").toParse();
@@ -812,7 +848,6 @@ describe("A text parser", function() {
     const badTextExpression = "\\text{a b%}";
     const badFunctionExpression = "\\text{\\sqrt{x}}";
     const mathTokenAfterText = "\\text{sin}^2";
-    const textWithEmbeddedMath = "\\text{graph: $y = mx + b$}";
 
     it("should not fail", function() {
         expect(textExpression).toParse();
@@ -872,7 +907,45 @@ describe("A text parser", function() {
     });
 
     it("should parse math within text group", function() {
-        expect(textWithEmbeddedMath).toParse();
+        expect("\\text{graph: $y = mx + b$}").toParse();
+        expect("\\text{graph: \\(y = mx + b\\)}").toParse();
+    });
+
+    it("should parse math within text within math within text", function() {
+        expect("\\text{hello $x + \\text{world $y$} + z$}").toParse();
+        expect("\\text{hello \\(x + \\text{world $y$} + z\\)}").toParse();
+        expect("\\text{hello $x + \\text{world \\(y\\)} + z$}").toParse();
+        expect("\\text{hello \\(x + \\text{world \\(y\\)} + z\\)}").toParse();
+    });
+
+    it("should forbid \\( within math mode", function() {
+        expect("\\(").toNotParse();
+        expect("\\text{$\\(x\\)$}").toNotParse();
+    });
+
+    it("should forbid $ within math mode", function() {
+        expect("$x$").toNotParse();
+        expect("\\text{\\($x$\\)}").toNotParse();
+    });
+
+    it("should detect unbalanced \\)", function() {
+        expect("\\)").toNotParse();
+        expect("\\text{\\)}").toNotParse();
+    });
+
+    it("should detect unbalanced $", function() {
+        expect("$").toNotParse();
+        expect("\\text{$}").toNotParse();
+    });
+
+    it("should not mix $ and \\(..\\)", function() {
+        expect("\\text{$x\\)}").toNotParse();
+        expect("\\text{\\(x$}").toNotParse();
+    });
+
+    it("should parse spacing functions", function() {
+        expect("a b\\, \\; \\! \\: ~ \\thinspace \\medspace \\quad \\ ").toBuild();
+        expect("\\enspace \\thickspace \\qquad \\space \\nobreakspace").toBuild();
     });
 
     it("should omit spaces after commands", function() {
@@ -1308,6 +1381,10 @@ describe("A begin/end parser", function() {
 
     it("should parse an environment with argument", function() {
         expect("\\begin{array}{cc}a&b\\\\c&d\\end{array}").toParse();
+    });
+
+    it("should parse an environment with hlines", function() {
+        expect("\\begin{matrix}\\hline a&b\\\\ \\hline c&d\\end{matrix}").toParse();
     });
 
     it("should error when name is mismatched", function() {
@@ -2554,6 +2631,11 @@ describe("An href command", function() {
         const ae = getParsed(`\\href{${input}}{\\alpha}`)[0];
         expect(ae.value.href).toBe(url);
     });
+
+    it("should be marked up correctly", function() {
+        const markup = katex.renderToString("\\href{http://example.com/}{example here}");
+        expect(markup).toContain("<a href=\"http://example.com/\">");
+    });
 });
 
 describe("A parser that does not throw on unsupported commands", function() {
@@ -2596,6 +2678,18 @@ describe("A parser that does not throw on unsupported commands", function() {
         expect(parsedInput[0].type).toBe("color");
         expect(parsedInput[0].value.color).toBe(errorColor);
     });
+
+    it("should build katex-error span for other type of KaTeX error", function() {
+        // Use _getBuilt instead of getBuilt to avoid calling expect...toParse
+        // and thus throwing parse error
+        const built = _getBuilt("2^2^2", noThrowSettings);
+        expect(built).toMatchSnapshot();
+    });
+
+    it("should properly escape LaTeX in errors", function() {
+        const html = katex.renderToString("2^&\"<>", noThrowSettings);
+        expect(html).toMatchSnapshot();
+    });
 });
 
 describe("The symbol table integrity", function() {
@@ -2604,6 +2698,16 @@ describe("The symbol table integrity", function() {
         expect(getBuilt(">")).toEqual(getBuilt("\\gt"));
         expect(getBuilt("\\left<\\frac{1}{x}\\right>"))
             .toEqual(getBuilt("\\left\\lt\\frac{1}{x}\\right\\gt"));
+    });
+});
+
+describe("Symbols", function() {
+    it("should support AMS symbols in both text and math mode", function() {
+        // These text+math symbols are from Section 6 of
+        // http://mirrors.ctan.org/fonts/amsfonts/doc/amsfonts.pdf
+        const symbols = "\\yen\\checkmark\\circledR\\maltese";
+        expect(symbols).toBuild();
+        expect(`\\text{${symbols}}`).toBuild();
     });
 });
 
@@ -2638,6 +2742,10 @@ describe("A macro expander", function() {
 
     it("should consume spaces after macro with \\relax", function() {
         compareParseTree("\\text{\\foo }", "\\text{}", {"\\foo": "\\relax"});
+    });
+
+    it("should not consume spaces after control-word expansion", function() {
+        compareParseTree("\\text{\\\\ }", "\\text{ }", {"\\\\": "\\relax"});
     });
 
     it("should consume spaces after \\relax", function() {
@@ -2727,11 +2835,9 @@ describe("A macro expander", function() {
     });
 */
 
-    it("should expand the \\overset macro as expected", function() {
-        expect("\\overset?=").toParseLike("\\mathop{=}\\limits^{?}");
-        expect("\\overset{x=y}{\\sqrt{ab}}")
-            .toParseLike("\\mathop{\\sqrt{ab}}\\limits^{x=y}");
-        expect("\\overset {?} =").toParseLike("\\mathop{=}\\limits^{?}");
+    it("should build \\overset and \\underset", function() {
+        expect("\\overset{f}{\\rightarrow} Y").toBuild();
+        expect("\\underset{f}{\\rightarrow} Y").toBuild();
     });
 
     it("should build \\iff, \\implies, \\impliedby", function() {
@@ -2809,8 +2915,13 @@ describe("A macro expander", function() {
             {"\\mode": "\\TextOrMath{text}{math}"});
     });
 
-    // TODO(edemaine): This doesn't work yet.  Parses like `\text math`,
-    // which doesn't even treat all four letters as an argument.
+    it("\\TextOrMath should work in a macro passed to \\text", function() {
+        compareParseTree("\\text\\mode", "\\text t",
+            {"\\mode": "\\TextOrMath{t}{m}"});
+    });
+
+    // TODO(edemaine): This doesn't work yet.  Parses like `\text text`,
+    // which doesn't treat all four letters as an argument.
     //it("\\TextOrMath should work in a macro passed to \\text", function() {
     //    compareParseTree("\\text\\mode", "\\text{text}",
     //        {"\\mode": "\\TextOrMath{text}{math}"});
@@ -2818,9 +2929,9 @@ describe("A macro expander", function() {
 
     // This may change in the future, if we support the extra features of
     // \hspace.
-    it("should treat \\hspace, \\hspace*, \\hskip like \\kern", function() {
+    it("should treat \\hspace, \\hskip like \\kern", function() {
         expect("\\hspace{1em}").toParseLike("\\kern1em");
-        expect("\\hspace*{1em}").toParseLike("\\kern1em");
+        expect("\\hskip{1em}").toParseLike("\\kern1em");
     });
 
     it("should expand \\limsup as expected", () => {
@@ -2848,24 +2959,23 @@ describe("A parser taking String objects", function() {
 
 describe("Unicode accents", function() {
     it("should parse Latin-1 letters in math mode", function() {
-        // TODO(edemaine): Unsupported Latin-1 letters in math: ÅåÇÐÞçðþ
-        expect("ÀÁÂÃÄÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäèéêëìíîïñòóôõöùúûüýÿ")
+        // TODO(edemaine): Unsupported Latin-1 letters in math: ÇÐÞçðþ
+        expect("ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ")
         .toParseLike(
-            "\\grave A\\acute A\\hat A\\tilde A\\ddot A" +
+            "\\grave A\\acute A\\hat A\\tilde A\\ddot A\\mathring A" +
             "\\grave E\\acute E\\hat E\\ddot E" +
             "\\grave I\\acute I\\hat I\\ddot I" +
             "\\tilde N" +
             "\\grave O\\acute O\\hat O\\tilde O\\ddot O" +
             "\\grave U\\acute U\\hat U\\ddot U" +
             "\\acute Y" +
-            "\\grave a\\acute a\\hat a\\tilde a\\ddot a" +
+            "\\grave a\\acute a\\hat a\\tilde a\\ddot a\\mathring a" +
             "\\grave e\\acute e\\hat e\\ddot e" +
             "\\grave ı\\acute ı\\hat ı\\ddot ı" +
             "\\tilde n" +
             "\\grave o\\acute o\\hat o\\tilde o\\ddot o" +
             "\\grave u\\acute u\\hat u\\ddot u" +
-            "\\acute y\\ddot y",
-            {unicodeTextInMathMode: true});
+            "\\acute y\\ddot y");
     });
 
     it("should parse Latin-1 letters in text mode", function() {
@@ -2890,26 +3000,24 @@ describe("Unicode accents", function() {
 
     it("should support \\aa in text mode", function() {
         expect("\\text{\\aa\\AA}").toParseLike("\\text{\\r a\\r A}");
-        expect("\\aa").toNotParse();
-        expect("\\Aa").toNotParse();
+        expect("\\aa").toNotParse(new Settings({strict: true}));
+        expect("\\Aa").toNotParse(new Settings({strict: true}));
     });
 
     it("should parse combining characters", function() {
-        expect("A\u0301C\u0301").toParseLike("Á\\acute C",
-            {unicodeTextInMathMode: true});
+        expect("A\u0301C\u0301").toParseLike("Á\\acute C");
         expect("\\text{A\u0301C\u0301}").toParseLike("\\text{Á\\'C}");
     });
 
     it("should parse multi-accented characters", function() {
-        expect("ấā́ắ\\text{ấā́ắ}").toParse({unicodeTextInMathMode: true});
+        expect("ấā́ắ\\text{ấā́ắ}").toParse();
         // Doesn't parse quite the same as
         // "\\text{\\'{\\^a}\\'{\\=a}\\'{\\u a}}" because of the ordgroups.
     });
 
     it("should parse accented i's and j's", function() {
-        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ",
-            {unicodeTextInMathMode: true});
-        expect("ấā́ắ\\text{ấā́ắ}").toParse({unicodeTextInMathMode: true});
+        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ");
+        expect("ấā́ắ\\text{ấā́ắ}").toParse();
     });
 });
 
@@ -2919,7 +3027,7 @@ describe("Unicode", function() {
     });
 
     it("should parse relations", function() {
-        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴").toParse();
+        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙").toParse();
     });
 
     it("should parse big operators", function() {
@@ -2927,11 +3035,16 @@ describe("Unicode", function() {
     });
 
     it("should parse more relations", function() {
-        expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋙⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆").toParse();
+        expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆≘≙≚≛≝≞≟").toBuild();
     });
 
     it("should parse symbols", function() {
-        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓\u00b7").toParse();
+        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°\u00b7").toParse();
+    });
+
+    it("should build Greek capital letters", function() {
+        expect("\u0391\u0392\u0395\u0396\u0397\u0399\u039A\u039C\u039D" +
+                "\u039F\u03A1\u03A4\u03A7").toBuild();
     });
 
     it("should parse arrows", function() {
@@ -2944,6 +3057,50 @@ describe("Unicode", function() {
 
     it("should parse binary operators", function() {
         expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toParse();
+    });
+
+    it("should build delimiters", function() {
+        expect("\\left\u230A\\frac{a}{b}\\right\u230B").toBuild();
+        expect("\\left\u2308\\frac{a}{b}\\right\u2308").toBuild();
+        expect("\\left\u27ee\\frac{a}{b}\\right\u27ef").toBuild();
+        expect("\\left\u27e8\\frac{a}{b}\\right\u27e9").toBuild();
+        expect("\\left\u23b0\\frac{a}{b}\\right\u23b1").toBuild();
+        expect("┌x┐ └x┘").toBuild();
+    });
+
+    it("should build some surrogate pairs", function() {
+        let wideCharStr = "";
+        wideCharStr += String.fromCharCode(0xD835, 0xDC00);   // bold A
+        wideCharStr += String.fromCharCode(0xD835, 0xDC68);   // bold italic A
+        wideCharStr += String.fromCharCode(0xD835, 0xDD04);   // Fraktur A
+        wideCharStr += String.fromCharCode(0xD835, 0xDD38);   // double-struck
+        wideCharStr += String.fromCharCode(0xD835, 0xDC9C);   // script A
+        wideCharStr += String.fromCharCode(0xD835, 0xDDA0);   // sans serif A
+        wideCharStr += String.fromCharCode(0xD835, 0xDDD4);   // bold sans A
+        wideCharStr += String.fromCharCode(0xD835, 0xDE08);   // italic sans A
+        wideCharStr += String.fromCharCode(0xD835, 0xDE70);   // monospace A
+        wideCharStr += String.fromCharCode(0xD835, 0xDFCE);   // bold zero
+        wideCharStr += String.fromCharCode(0xD835, 0xDFE2);   // sans serif zero
+        wideCharStr += String.fromCharCode(0xD835, 0xDFEC);   // bold sans zero
+        wideCharStr += String.fromCharCode(0xD835, 0xDFF6);   // monospace zero
+        expect(wideCharStr).toBuild();
+
+        let wideCharText = "\text{";
+        wideCharText += String.fromCharCode(0xD835, 0xDC00);   // bold A
+        wideCharText += String.fromCharCode(0xD835, 0xDC68);   // bold italic A
+        wideCharText += String.fromCharCode(0xD835, 0xDD04);   // Fraktur A
+        wideCharText += String.fromCharCode(0xD835, 0xDD38);   // double-struck
+        wideCharText += String.fromCharCode(0xD835, 0xDC9C);   // script A
+        wideCharText += String.fromCharCode(0xD835, 0xDDA0);   // sans serif A
+        wideCharText += String.fromCharCode(0xD835, 0xDDD4);   // bold sans A
+        wideCharText += String.fromCharCode(0xD835, 0xDE08);   // italic sans A
+        wideCharText += String.fromCharCode(0xD835, 0xDE70);   // monospace A
+        wideCharText += String.fromCharCode(0xD835, 0xDFCE);   // bold zero
+        wideCharText += String.fromCharCode(0xD835, 0xDFE2);   // sans serif zero
+        wideCharText += String.fromCharCode(0xD835, 0xDFEC);   // bold sans zero
+        wideCharText += String.fromCharCode(0xD835, 0xDFF6);   // monospace zero
+        wideCharText += "}";
+        expect(wideCharText).toBuild();
     });
 });
 
@@ -2997,13 +3154,25 @@ describe("The \\mathchoice function", function() {
     });
 });
 
+describe("Newlines via \\\\ and \\newline", function() {
+    it("should build \\\\ and \\newline the same", () => {
+        expect("hello \\\\ world").toBuildLike("hello \\newline world");
+        expect("hello \\\\[1ex] world").toBuildLike(
+            "hello \\newline[1ex] world");
+    });
+
+    it("should not allow \\cr at top level", () => {
+        expect("hello \\cr world").toNotBuild();
+    });
+});
+
 describe("Symbols", function() {
     it("should parse \\text{\\i\\j}", () => {
-        expect("\\text{\\i\\j}").toParse();
+        expect("\\text{\\i\\j}").toBuild();
     });
 
     it("should parse spacing functions in math or text mode", () => {
-        expect("A\\;B\\,C\\nobreakspace \\text{A\\;B\\,C\\nobreakspace}").toParse();
+        expect("A\\;B\\,C\\nobreakspace \\text{A\\;B\\,C\\nobreakspace}").toBuild();
     });
 
     it("should render ligature commands like their unicode characters", () => {
@@ -3013,26 +3182,43 @@ describe("Symbols", function() {
     });
 });
 
-describe("unicodeTextInMathMode setting", function() {
-    it("should allow unicode text when true", () => {
-        expect("é").toParse({unicodeTextInMathMode: true});
-        expect("試").toParse({unicodeTextInMathMode: true});
+describe("strict setting", function() {
+    it("should allow unicode text when not strict", () => {
+        expect("é").toParse(new Settings({strict: false}));
+        expect("試").toParse(new Settings({strict: false}));
+        expect("é").toParse(new Settings({strict: "ignore"}));
+        expect("試").toParse(new Settings({strict: "ignore"}));
+        expect("é").toParse(new Settings({strict: () => false}));
+        expect("試").toParse(new Settings({strict: () => false}));
+        expect("é").toParse(new Settings({strict: () => "ignore"}));
+        expect("試").toParse(new Settings({strict: () => "ignore"}));
     });
 
-    it("should forbid unicode text when false", () => {
-        expect("é").toNotParse({unicodeTextInMathMode: false});
-        expect("試").toNotParse({unicodeTextInMathMode: false});
+    it("should forbid unicode text when strict", () => {
+        expect("é").toNotParse(new Settings({strict: true}));
+        expect("試").toNotParse(new Settings({strict: true}));
+        expect("é").toNotParse(new Settings({strict: "error"}));
+        expect("試").toNotParse(new Settings({strict: "error"}));
+        expect("é").toNotParse(new Settings({strict: () => true}));
+        expect("試").toNotParse(new Settings({strict: () => true}));
+        expect("é").toNotParse(new Settings({strict: () => "error"}));
+        expect("試").toNotParse(new Settings({strict: () => "error"}));
     });
 
-    it("should forbid unicode text when default", () => {
-        expect("é").toNotParse();
-        expect("試").toNotParse();
+    it("should warn about unicode text when default", () => {
+        expect("é").toWarn(new Settings());
+        expect("試").toWarn(new Settings());
     });
 
     it("should always allow unicode text in text mode", () => {
-        expect("\\text{é試}").toParse({unicodeTextInMathMode: false});
-        expect("\\text{é試}").toParse({unicodeTextInMathMode: true});
+        expect("\\text{é試}").toParse(new Settings({strict: false}));
+        expect("\\text{é試}").toParse(new Settings({strict: true}));
         expect("\\text{é試}").toParse();
+    });
+
+    it("should warn about top-level \\newline in display mode", () => {
+        expect("x\\\\y").toWarn(new Settings({displayMode: true}));
+        expect("x\\\\y").toParse(new Settings({displayMode: false}));
     });
 });
 

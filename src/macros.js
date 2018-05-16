@@ -117,6 +117,16 @@ defineMacro("\\rbrack", "]");
 defineMacro("\\aa", "\\r a");
 defineMacro("\\AA", "\\r A");
 
+// \DeclareTextCommandDefault{\textcopyright}{\textcircled{c}}
+// \DeclareTextCommandDefault{\textregistered}{\textcircled{%
+//      \check@mathfonts\fontsize\sf@size\z@\math@fontsfalse\selectfont R}}
+// \DeclareRobustCommand{\copyright}{%
+//    \ifmmode{\nfss@text{\textcopyright}}\else\textcopyright\fi}
+defineMacro("\\textcopyright", "\\textcircled{c}");
+defineMacro("\\copyright",
+    "\\TextOrMath{\\textcopyright}{\\text{\\textcopyright}}");
+defineMacro("\\textregistered", "\\textcircled{\\scriptsize R}");
+
 // Unicode double-struck letters
 defineMacro("\u2102", "\\mathbb{C}");
 defineMacro("\u210D", "\\mathbb{H}");
@@ -125,6 +135,21 @@ defineMacro("\u2119", "\\mathbb{P}");
 defineMacro("\u211A", "\\mathbb{Q}");
 defineMacro("\u211D", "\\mathbb{R}");
 defineMacro("\u2124", "\\mathbb{Z}");
+
+defineMacro("\u210E", "\\mathit{h}");   // Planck constant
+
+// Characters omitted from Unicode range 1D400–1D7FF
+defineMacro("\u212C", "\\mathscr{B}");  // script
+defineMacro("\u2130", "\\mathscr{E}");
+defineMacro("\u2131", "\\mathscr{F}");
+defineMacro("\u210B", "\\mathscr{H}");
+defineMacro("\u2110", "\\mathscr{I}");
+defineMacro("\u2112", "\\mathscr{L}");
+defineMacro("\u2133", "\\mathscr{M}");
+defineMacro("\u211B", "\\mathscr{R}");
+defineMacro("\u212D", "\\mathfrak{C}");  // Fraktur
+defineMacro("\u210C", "\\mathfrak{H}");
+defineMacro("\u2128", "\\mathfrak{Z}");
 
 // Unicode middle dot
 // The KaTeX fonts do not contain U+00B7. Instead, \cdotp displays
@@ -135,6 +160,16 @@ defineMacro("\u00b7", "\\cdotp");
 defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
 defineMacro("\\rlap", "\\mathrlap{\\textrm{#1}}");
 defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
+
+// Unicode stacked relations
+defineMacro("\u2258",
+    "\\mathrel{=\\kern{-1em}\\raisebox{0.4em}{$\\scriptsize\\frown$}}");
+defineMacro("\u2259", "\\stackrel{\\tiny\\wedge}{=}");
+defineMacro("\u225A", "\\stackrel{\\tiny\\vee}{=}");
+defineMacro("\u225B", "\\stackrel{\\scriptsize\\star}{=}");
+defineMacro("\u225D", "\\stackrel{\\tiny\\mathrm{def}}{=}");
+defineMacro("\u225E", "\\stackrel{\\tiny\\mathrm{m}}{=}");
+defineMacro("\u225F", "\\stackrel{\\tiny?}{=}");
 
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
@@ -153,10 +188,6 @@ defineMacro("\\varUpsilon", "\\mathit{\\Upsilon}");
 defineMacro("\\varPhi", "\\mathit{\\Phi}");
 defineMacro("\\varPsi", "\\mathit{\\Psi}");
 defineMacro("\\varOmega", "\\mathit{\\Omega}");
-
-// \def\overset#1#2{\binrel@{#2}\binrel@@{\mathop{\kern\z@#2}\limits^{#1}}}
-defineMacro("\\overset", "\\mathop{#2}\\limits^{#1}");
-defineMacro("\\underset", "\\mathop{#2}\\limits_{#1}");
 
 // \newcommand{\boxed}[1]{\fbox{\m@th$\displaystyle#1$}}
 defineMacro("\\boxed", "\\fbox{\\displaystyle{#1}}");
@@ -326,6 +357,9 @@ defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
 
+// \\ defaults to \newline, but changes to \cr within array environment
+defineMacro("\\\\", "\\newline");
+
 // \def\TeX{T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX\@}
 // TODO: Doesn't normally work in math mode because \@ fails.  KaTeX doesn't
 // support \@ yet, so that's omitted, and we add \text so that the result
@@ -359,8 +393,11 @@ defineMacro("\\KaTeX",
 
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
 // \def\@hspace#1{\hskip  #1\relax}
-// KaTeX doesn't do line breaks, so \hspace and \hspace* are the same as \kern
-defineMacro("\\hspace", "\\@ifstar\\kern\\kern");
+// \def\@hspacer#1{\vrule \@width\z@\nobreak
+//                 \hskip #1\hskip \z@skip}
+defineMacro("\\hspace", "\\@ifstar\\@hspacer\\@hspace");
+defineMacro("\\@hspace", "\\hskip #1\\relax");
+defineMacro("\\@hspacer", "\\rule{0pt}{0pt}\\hskip #1\\relax");
 
 //////////////////////////////////////////////////////////////////////
 // mathtools.sty
