@@ -138,8 +138,10 @@ describe("unicode", function() {
     });
 
     it("should not allow emoji", function() {
-        expect('✌').toNotParse();
-        expect('\\text{✌}').toNotParse();
+        expect('✌').toNotParse(strictSettings);
+        expect('\\text{✌}').toNotParse(strictSettings);
+        expect('✌').toWarn();
+        expect('\\text{✌}').toWarn();
     });
 
     it("should allow emoji with allowAllSymbols", function() {

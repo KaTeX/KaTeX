@@ -973,15 +973,16 @@ export default class Parser {
             }
             symbol = new ParseNode(symbols[this.mode][text].group,
                             text, this.mode, nucleus);
-        } else if ((this.settings.allowAllSymbols &&
-                    text.charCodeAt(0) >= 0x80) ||
-                   (supportedCodepoint(text.charCodeAt(0)) &&
-                    (this.mode === "text" ||
-                     this.settings.unicodeTextInMathMode))) {
-            if (this.settings.strict && this.mode === 'math') {
-                this.settings.reportNonstrict("unicodeTextInMathMode",
-                    `Unicode text character "${text[0]}" used in math mode`,
-                    nucleus);
+        } else if (text.charCodeAt(0) >= 0x80) { // no symbol for e.g. ^
+            if (this.settings.strict) {
+                if (!supportedCodepoint(text.charCodeAt(0))) {
+                    this.settings.reportNonstrict("unknownSymbol",
+                        `Unrecognized Unicode character "${text[0]}"`, nucleus);
+                } else if (this.mode === "math") {
+                    this.settings.reportNonstrict("unicodeTextInMathMode",
+                        `Unicode text character "${text[0]}" used in math mode`,
+                        nucleus);
+                }
             }
             symbol = new ParseNode("textord", text, this.mode, nucleus);
         } else {

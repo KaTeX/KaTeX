@@ -22,7 +22,6 @@ export type SettingsOptions = {
     errorColor?: string;
     macros?: MacroMap;
     colorIsTextColor?: boolean;
-    allowAllSymbols?: boolean;
     strict?: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize?: number;
 };
@@ -43,7 +42,6 @@ class Settings {
     errorColor: string;
     macros: MacroMap;
     colorIsTextColor: boolean;
-    allowAllSymbols: boolean;
     strict: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize: number;
 
@@ -55,7 +53,6 @@ class Settings {
         this.errorColor = utils.deflt(options.errorColor, "#cc0000");
         this.macros = options.macros || {};
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
-        this.allowAllSymbols = utils.deflt(options.allowAllSymbols, false);
         this.strict = utils.deflt(options.strict, "warn");
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
     }
