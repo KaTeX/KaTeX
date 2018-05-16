@@ -30,11 +30,15 @@ defineFunction({
         parser.consumeSpaces();
         const body = parser.parseExpression(true, breakOnTokenText);
 
+        // TODO: Refactor to avoid duplicating styleMap in multiple places (e.g.
+        // here and in buildHTML and de-dupe the enumeration of all the styles).
+        // $FlowFixMe: The names above exactly match the styles.
+        const style: StyleStr = funcName.slice(1, funcName.length - 5);
         return {
             type: "styling",
             // Figure out what style to use by pulling out the style from
             // the function name
-            style: funcName.slice(1, funcName.length - 5),
+            style,
             value: body,
         };
     },

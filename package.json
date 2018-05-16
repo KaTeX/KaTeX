@@ -40,7 +40,6 @@
     "less": "~2.7.1",
     "less-loader": "^4.0.5",
     "mkdirp": "^0.5.1",
-    "nomnom": "^1.8.1",
     "object-assign": "^4.1.0",
     "pako": "1.0.4",
     "pre-commit": "^1.2.2",
@@ -62,6 +61,7 @@
     "test:lint": "eslint katex.js katex.webpack.js cli.js webpack.common.js webpack.config.js webpack.dev.js src static test contrib dockers && stylelint src/katex.less",
     "test:flow": "flow",
     "test:jest": "jest",
+    "test:jest:watch": "jest --watch",
     "test:jest:update": "jest --updateSnapshot",
     "test:jest:coverage": "jest --coverage",
     "test:screenshots": "npm run test:screenshots:update -- --verify",
@@ -83,9 +83,11 @@
     "test:lint"
   ],
   "dependencies": {
-    "match-at": "^0.1.1"
+    "match-at": "^0.1.1",
+    "nomnom": "^1.8.1"
   },
   "jest": {
+    "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
     "snapshotSerializers": [
       "jest-serializer-html"
     ],
