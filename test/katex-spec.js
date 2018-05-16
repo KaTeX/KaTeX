@@ -3,7 +3,6 @@
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
-import stringify from 'json-stable-stringify';
 
 import buildMathML from "../src/buildMathML";
 import buildTree from "../src/buildTree";
@@ -13,27 +12,6 @@ import parseTree from "../src/parseTree";
 import Options from "../src/Options";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
-
-const typeFirstCompare = (a, b) => {
-    if (a.key === 'type') {
-        return -1;
-    } else if (b.key === 'type') {
-        return 1;
-    } else {
-        return a.key < b.key ? -1 : 1;
-    }
-};
-
-const serializer = {
-    print(val) {
-        return stringify(val, {cmp: typeFirstCompare, space: '  '});
-    },
-    test() {
-        return true;
-    },
-};
-
-expect.addSnapshotSerializer(serializer);
 
 const defaultSettings = new Settings({
     strict: false, // deal with warnings only when desired

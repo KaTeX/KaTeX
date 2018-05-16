@@ -4,6 +4,32 @@
 import katex from "../katex";
 import Settings from "../src/Settings";
 import Warning from "./Warning";
+import stringify from 'json-stable-stringify';
+
+// Serializer support
+
+const typeFirstCompare = (a, b) => {
+    if (a.key === 'type') {
+        return -1;
+    } else if (b.key === 'type') {
+        return 1;
+    } else {
+        return a.key < b.key ? -1 : 1;
+    }
+};
+
+const serializer = {
+    print(val) {
+        return stringify(val, {cmp: typeFirstCompare, space: '  '});
+    },
+    test() {
+        return true;
+    },
+};
+
+expect.addSnapshotSerializer(serializer);
+
+// Turn warnings into errors
 
 global.console.warn = jest.fn((warning) => {
     throw new Warning(warning);
@@ -12,6 +38,8 @@ global.console.warn = jest.fn((warning) => {
 const defaultSettings = new Settings({
     strict: false, // enable dealing with warnings only when needed
 });
+
+// Expect extensions
 
 expect.extend({
     toWarn: function(actual, settings) {
