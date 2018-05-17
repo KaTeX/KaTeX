@@ -84,6 +84,9 @@ You can provide an object of options as the last argument to `katex.render` and 
 - `colorIsTextColor`: `boolean`. If `true`, `\color` will work like LaTeX's `\textcolor`, and take two arguments (e.g., `\color{blue}{hello}`), which restores the old behavior of KaTeX (pre-0.8.0). If `false` (the default), `\color` will work like LaTeX's `\color`, and take one argument (e.g., `\color{blue}hello`).  In both cases, `\textcolor` works as in LaTeX (e.g., `\textcolor{blue}{hello}`).
 - `maxSize`: `number`. If non-zero, all user-specified sizes, e.g. in `\rule{500em}{500em}`, will be capped to `maxSize` ems. Otherwise, users can make elements and spaces arbitrarily large (the default behavior).
 - `strict`: `boolean` or `string` or `function` (default: `"warn"`). If `false` or `"ignore`", allow features that make writing LaTeX convenient but are not actually supported by (Xe)LaTeX (similar to MathJax). If `true` or `"error"` (LaTeX faithfulness mode), throw an error for any such transgressions. If `"warn"` (the default), warn about such behavior via `console.warn`. Provide a custom function `handler(errorCode, errorMsg, token)` to customize behavior depending on the type of transgression (summarized by the string code `errorCode` and detailed in `errorMsg`); this function can also return `"ignore"`, `"error"`, or `"warn"` to use a built-in behavior.  A list of such features and their `errorCode`s:
+  - `"unknownSymbol"`: Use of unknown Unicode symbol, which will likely also
+    lead to warnings about missing character metrics, and layouts may be
+    incorrect (especially in terms of vertical heights).
   - `"unicodeTextInMathMode"`: Use of Unicode text characters in math mode.
   - `"mathVsTextUnits"`: Mismatch of math vs. text commands and units/mode.
   A second category of `errorCode`s never throw errors, but their strictness
