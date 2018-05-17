@@ -172,17 +172,18 @@ const htmlBuilder = (group, options) => {
 };
 
 const mathmlBuilder = (group, options) => {
+    const groupValue = group.value;
     let accentNode;
-    if (group.value.isStretchy) {
-        accentNode = stretchy.mathMLnode(group.value.label);
+    if (groupValue.isStretchy) {
+        accentNode = stretchy.mathMLnode(groupValue.label);
     } else {
         accentNode = new mathMLTree.MathNode(
-            "mo", [mml.makeText(group.value.label, group.mode)]);
+            "mo", [mml.makeText(groupValue.label, group.mode)]);
     }
 
     const node = new mathMLTree.MathNode(
         "mover",
-        [mml.buildGroup(group.value.base, options), accentNode]);
+        [mml.buildGroup(groupValue.base, options), accentNode]);
 
     node.setAttribute("accent", "true");
 
