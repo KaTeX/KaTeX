@@ -9,8 +9,8 @@ export const defaultSettings = new Settings({
 export const strictSettings = new Settings({strict: true});
 
 export const _getBuilt = function(expr, settings) {
-    const usedSettings = settings ? settings : defaultSettings;
-    const rootNode = katex.__renderToDomTree(expr, usedSettings);
+    settings = settings || defaultSettings;
+    const rootNode = katex.__renderToDomTree(expr, settings);
 
     if (rootNode.classes.indexOf('katex-error') >= 0) {
         return rootNode;
@@ -35,8 +35,8 @@ export const _getBuilt = function(expr, settings) {
  * @returns {Object}
  */
 export const getBuilt = function(expr, settings) {
-    const usedSettings = settings ? settings : defaultSettings;
-    expect(expr).toBuild(usedSettings);
+    settings = settings || defaultSettings;
+    expect(expr).toBuild(settings);
     return _getBuilt(expr, settings);
 };
 
@@ -47,10 +47,9 @@ export const getBuilt = function(expr, settings) {
  * @returns {Object}
  */
 export const getParsed = function(expr, settings) {
-    const usedSettings = settings ? settings : defaultSettings;
-
-    expect(expr).toParse(usedSettings);
-    return parseTree(expr, usedSettings);
+    settings = settings || defaultSettings;
+    expect(expr).toParse(settings);
+    return parseTree(expr, settings);
 };
 
 export const stripPositions = function(expr) {
@@ -88,10 +87,10 @@ export const buildAndSetResult = function(expr, result, settings) {
         result.pass = false;
         if (e instanceof ParseError) {
             result.message = () => "'" + expr + "' failed " +
-                "parsing with error: " + e.message;
+                "building with error: " + e.message;
         } else {
             result.message = () => "'" + expr + "' failed " +
-                "parsing with unknown error: " + e.message;
+                "building with unknown error: " + e.message;
         }
     }
 };

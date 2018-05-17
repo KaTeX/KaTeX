@@ -46,18 +46,17 @@ global.console.warn = jest.fn((warning) => {
 
 expect.extend({
     toParse: function(actual, settings) {
-        const usedSettings = settings ? settings : defaultSettings;
-
+        settings = settings || defaultSettings;
         const result = {
             pass: true,
             message: () => "'" + actual + "' succeeded parsing",
         };
-        parseAndSetResult(actual, result, usedSettings);
+        parseAndSetResult(actual, result, settings);
         return result;
     },
 
     toNotParse: function(actual, settings) {
-        const usedSettings = settings ? settings : defaultSettings;
+        settings = settings || defaultSettings;
 
         const result = {
             pass: false,
@@ -66,7 +65,7 @@ expect.extend({
         };
 
         try {
-            parseTree(actual, usedSettings);
+            parseTree(actual, settings);
         } catch (e) {
             if (e instanceof ParseError) {
                 result.pass = true;
@@ -123,17 +122,17 @@ expect.extend({
     },
 
     toBuild: function(actual, settings) {
-        const usedSettings = settings ? settings : defaultSettings;
+        settings = settings || defaultSettings;
 
         const result = {
             pass: true,
             message: () => "'" + actual + "' succeeded in building",
         };
 
-        expect(actual).toParse(usedSettings);
+        expect(actual).toParse(settings);
 
         try {
-            _getBuilt(actual, usedSettings);
+            _getBuilt(actual, settings);
         } catch (e) {
             result.pass = false;
             if (e instanceof ParseError) {
@@ -149,7 +148,7 @@ expect.extend({
     },
 
     toNotBuild: function(actual, settings) {
-        const usedSettings = settings ? settings : defaultSettings;
+        settings = settings || defaultSettings;
 
         const result = {
             pass: false,
@@ -158,7 +157,7 @@ expect.extend({
         };
 
         try {
-            _getBuilt(actual, usedSettings);
+            _getBuilt(actual, settings);
         } catch (e) {
             if (e instanceof ParseError) {
                 result.pass = true;
@@ -174,7 +173,7 @@ expect.extend({
     },
 
     toParseLike: function(actual, expected, settings) {
-        const usedSettings = settings ? settings : defaultSettings;
+        settings = settings || defaultSettings;
 
         const result = {
             pass: true,
@@ -182,13 +181,11 @@ expect.extend({
                 "' and '" + expected + "' are equivalent",
         };
 
-        const actualTree = parseAndSetResult(actual, result,
-            usedSettings);
+        const actualTree = parseAndSetResult(actual, result, settings);
         if (!actualTree) {
             return result;
         }
-        const expectedTree = parseAndSetResult(expected, result,
-            usedSettings);
+        const expectedTree = parseAndSetResult(expected, result, settings);
         if (!expectedTree) {
             return result;
         }
@@ -205,7 +202,7 @@ expect.extend({
     },
 
     toBuildLike: function(actual, expected, settings) {
-        const usedSettings = settings ? settings : defaultSettings;
+        settings = settings || defaultSettings;
 
         const result = {
             pass: true,
@@ -213,13 +210,11 @@ expect.extend({
                 "' and '" + expected + "' are equivalent",
         };
 
-        const actualTree = buildAndSetResult(actual, result,
-            usedSettings);
+        const actualTree = buildAndSetResult(actual, result, settings);
         if (!actualTree) {
             return result;
         }
-        const expectedTree = buildAndSetResult(expected, result,
-            usedSettings);
+        const expectedTree = buildAndSetResult(expected, result, settings);
         if (!expectedTree) {
             return result;
         }
@@ -236,7 +231,7 @@ expect.extend({
     },
 
     toWarn: function(actual, settings) {
-        const usedSettings = settings ? settings : defaultSettings;
+        settings = settings || defaultSettings;
 
         const result = {
             pass: false,
@@ -245,7 +240,7 @@ expect.extend({
         };
 
         try {
-            katex.__renderToDomTree(actual, usedSettings);
+            katex.__renderToDomTree(actual, settings);
         } catch (e) {
             if (e instanceof Warning) {
                 result.pass = true;
