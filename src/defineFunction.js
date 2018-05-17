@@ -1,6 +1,7 @@
 // @flow
 import {groupTypes as htmlGroupTypes} from "./buildHTML";
 import {groupTypes as mathmlGroupTypes} from "./buildMathML";
+import {checkNodeType} from "./ParseNode";
 
 import type Parser from "./Parser";
 import type ParseNode from "./ParseNode";
@@ -103,13 +104,13 @@ type FunctionDefSpec<NODETYPE: NodeType> = {|
 
     // This function returns an object representing the DOM structure to be
     // created when rendering the defined LaTeX function.
-    // TODO: Change `group` to ParseNode<NODETYPE> and make return type explicit.
-    htmlBuilder?: (group: *, options: Options) => *,
+    // TODO: Make return type explicit.
+    htmlBuilder?: (group: ParseNode<NODETYPE>, options: Options) => *,
 
     // This function returns an object representing the MathML structure to be
     // created when rendering the defined LaTeX function.
-    // TODO: Change `group` to ParseNode<NODETYPE> and make return type explicit.
-    mathmlBuilder?: (group: *, options: Options) => *,
+    // TODO: Make return type explicit.
+    mathmlBuilder?: (group: ParseNode<NODETYPE>, options: Options) => *,
 |};
 
 /**
@@ -195,9 +196,6 @@ export default function defineFunction<NODETYPE: NodeType>({
 // Since the corresponding buildHTML/buildMathML function expects a
 // list of elements, we normalize for different kinds of arguments
 export const ordargument = function(arg: ParseNode<*>): ParseNode<*>[] {
-    if (arg.type === "ordgroup") {
-        return arg.value;
-    } else {
-        return [arg];
-    }
+    const node = checkNodeType(arg, "ordgroup");
+    return node ? node.value : [arg];
 };
