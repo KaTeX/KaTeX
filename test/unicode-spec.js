@@ -137,6 +137,27 @@ describe("unicode", function() {
         expect('ěščřžůřťďňőİı').toNotParse(strictSettings);
     });
 
+    it("should not allow emoji in strict mode", function() {
+        expect('✌').toNotParse(strictSettings);
+        expect('\\text{✌}').toNotParse(strictSettings);
+        const settings = new Settings({
+            strict: (errorCode) =>
+                (errorCode === "unknownSymbol" ? "error" : "ignore"),
+        });
+        expect('✌').toNotParse(settings);
+        expect('\\text{✌}').toNotParse(settings);
+    });
+
+    it("should allow emoji outside strict mode", function() {
+        expect('✌').toWarn();
+        expect('\\text{✌}').toWarn();
+        const settings = new Settings({
+            strict: (errorCode) =>
+                (errorCode === "unknownSymbol" ? "ignore" : "error"),
+        });
+        expect('✌').toParse(settings);
+        expect('\\text{✌}').toParse(settings);
+    });
 });
 
 describe("unicodeScripts", () => {
