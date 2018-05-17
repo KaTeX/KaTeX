@@ -1,13 +1,9 @@
 /* eslint max-len:0 */
-/* global beforeEach: false */
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
-import ParseError from "../src/ParseError";
-import parseTree from "../src/parseTree";
-import Settings from "../src/Settings";
 import {scriptFromCodepoint, supportedCodepoint} from "../src/unicodeScripts";
-import {defaultSettings, strictSettings, parseAndSetResult} from "./helpers";
+import {strictSettings} from "./helpers";
 
 describe("unicode", function() {
     it("should parse Latin-1 inside \\text{}", function() {

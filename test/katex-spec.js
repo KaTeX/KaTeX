@@ -12,7 +12,7 @@ import Settings from "../src/Settings";
 import Style from "../src/Style";
 import {
     defaultSettings,
-    _getBuilt, getBuilt, getParsed, stripPositions
+    _getBuilt, getBuilt, getParsed, stripPositions,
 } from "./helpers";
 
 const defaultOptions = new Options({

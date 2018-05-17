@@ -1,3 +1,5 @@
+/* global expect: false */
+
 import katex from "../katex";
 import ParseError from "../src/ParseError";
 import parseTree from "../src/parseTree";
@@ -62,7 +64,8 @@ export const stripPositions = function(expr) {
     return expr;
 };
 
-export const parseAndSetResult = function(expr, result, settings = defaultSettings) {
+export const parseAndSetResult = function(expr, result,
+                                          settings = defaultSettings) {
     try {
         return parseTree(expr, settings);
     } catch (e) {
@@ -77,7 +80,8 @@ export const parseAndSetResult = function(expr, result, settings = defaultSettin
     }
 };
 
-export const buildAndSetResult = function(expr, result, settings = defaultSettings) {
+export const buildAndSetResult = function(expr, result,
+                                          settings = defaultSettings) {
     try {
         return _getBuilt(expr, settings);
     } catch (e) {

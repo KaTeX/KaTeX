@@ -1,12 +1,6 @@
-/* global beforeEach: false */
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
-
-import parseTree from "../src/parseTree";
-import Settings from "../src/Settings";
-
-const defaultSettings = new Settings({});
 
 describe("Parser:", function() {
 

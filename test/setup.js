@@ -4,12 +4,11 @@
 import katex from "../katex";
 import ParseError from "../src/ParseError";
 import parseTree from "../src/parseTree";
-import Settings from "../src/Settings";
 import Warning from "./Warning";
 import stringify from 'json-stable-stringify';
 import {
     defaultSettings,
-    _getBuilt, buildAndSetResult, parseAndSetResult, stripPositions
+    _getBuilt, buildAndSetResult, parseAndSetResult, stripPositions,
 } from "./helpers";
 
 // Serializer support
