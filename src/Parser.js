@@ -556,7 +556,7 @@ export default class Parser {
      */
     parseArguments(
         func: string,   // Should look like "\name" or "\begin{name}".
-        funcData: FunctionSpec<*> | EnvSpec,
+        funcData: FunctionSpec<*> | EnvSpec<*>,
     ): {
         args: ParseNode<*>[],
         optArgs: (?ParseNode<*>)[],
@@ -777,7 +777,7 @@ export default class Parser {
         if (!match) {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
-        return newArgument(new ParseNode("color", match[0], this.mode), res);
+        return newArgument(new ParseNode("color-token", match[0], this.mode), res);
     }
 
     /**

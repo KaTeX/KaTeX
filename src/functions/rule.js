@@ -2,6 +2,7 @@
 import buildCommon from "../buildCommon";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
+import {assertNodeType} from "../ParseNode";
 import {calculateSize} from "../units";
 
 defineFunction({
@@ -14,8 +15,8 @@ defineFunction({
     },
     handler(context, args, optArgs) {
         const shift = optArgs[0];
-        const width = args[0];
-        const height = args[1];
+        const width = assertNodeType(args[0], "size");
+        const height = assertNodeType(args[1], "size");
         return {
             type: "rule",
             shift: shift && shift.value,
