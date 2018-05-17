@@ -122,22 +122,7 @@ expect.extend({
             pass: true,
             message: () => "'" + actual + "' succeeded in building",
         };
-
-        expect(actual).toParse(settings);
-
-        try {
-            _getBuilt(actual, settings);
-        } catch (e) {
-            result.pass = false;
-            if (e instanceof ParseError) {
-                result.message = () => "'" + actual + "' failed to " +
-                    "build with error: " + e.message;
-            } else {
-                result.message = () => "'" + actual + "' failed " +
-                    "building with unknown error: " + e.message;
-            }
-        }
-
+        buildAndSetResult(actual, result, settings);
         return result;
     },
 
