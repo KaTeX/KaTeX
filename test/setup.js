@@ -45,8 +45,7 @@ global.console.warn = jest.fn((warning) => {
 // Expect extensions
 
 expect.extend({
-    toParse: function(actual, settings) {
-        settings = settings || defaultSettings;
+    toParse: function(actual, settings = defaultSettings) {
         const result = {
             pass: true,
             message: () => "'" + actual + "' succeeded parsing",
@@ -55,9 +54,7 @@ expect.extend({
         return result;
     },
 
-    toNotParse: function(actual, settings) {
-        settings = settings || defaultSettings;
-
+    toNotParse: function(actual, settings = defaultSettings) {
         const result = {
             pass: false,
             message: () => "Expected '" + actual + "' to fail " +
@@ -121,9 +118,7 @@ expect.extend({
         }
     },
 
-    toBuild: function(actual, settings) {
-        settings = settings || defaultSettings;
-
+    toBuild: function(actual, settings = defaultSettings) {
         const result = {
             pass: true,
             message: () => "'" + actual + "' succeeded in building",
@@ -147,9 +142,7 @@ expect.extend({
         return result;
     },
 
-    toNotBuild: function(actual, settings) {
-        settings = settings || defaultSettings;
-
+    toNotBuild: function(actual, settings = defaultSettings) {
         const result = {
             pass: false,
             message: () => "Expected '" + actual + "' to fail " +
@@ -172,9 +165,7 @@ expect.extend({
         return result;
     },
 
-    toParseLike: function(actual, expected, settings) {
-        settings = settings || defaultSettings;
-
+    toParseLike: function(actual, expected, settings = defaultSettings) {
         const result = {
             pass: true,
             message: () => "Parse trees of '" + actual +
@@ -201,9 +192,7 @@ expect.extend({
         return result;
     },
 
-    toBuildLike: function(actual, expected, settings) {
-        settings = settings || defaultSettings;
-
+    toBuildLike: function(actual, expected, settings = defaultSettings) {
         const result = {
             pass: true,
             message: () => "Build trees of '" + actual +
@@ -230,9 +219,7 @@ expect.extend({
         return result;
     },
 
-    toWarn: function(actual, settings) {
-        settings = settings || defaultSettings;
-
+    toWarn: function(actual, settings = defaultSettings) {
         const result = {
             pass: false,
             message: () =>

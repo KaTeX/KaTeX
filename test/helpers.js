@@ -8,8 +8,7 @@ export const defaultSettings = new Settings({
 });
 export const strictSettings = new Settings({strict: true});
 
-export const _getBuilt = function(expr, settings) {
-    settings = settings || defaultSettings;
+export const _getBuilt = function(expr, settings = defaultSettings) {
     const rootNode = katex.__renderToDomTree(expr, settings);
 
     if (rootNode.classes.indexOf('katex-error') >= 0) {
@@ -34,8 +33,7 @@ export const _getBuilt = function(expr, settings) {
  * @param settings
  * @returns {Object}
  */
-export const getBuilt = function(expr, settings) {
-    settings = settings || defaultSettings;
+export const getBuilt = function(expr, settings = defaultSettings) {
     expect(expr).toBuild(settings);
     return _getBuilt(expr, settings);
 };
@@ -46,8 +44,7 @@ export const getBuilt = function(expr, settings) {
  * @param settings
  * @returns {Object}
  */
-export const getParsed = function(expr, settings) {
-    settings = settings || defaultSettings;
+export const getParsed = function(expr, settings = defaultSettings) {
     expect(expr).toParse(settings);
     return parseTree(expr, settings);
 };
@@ -65,9 +62,9 @@ export const stripPositions = function(expr) {
     return expr;
 };
 
-export const parseAndSetResult = function(expr, result, settings) {
+export const parseAndSetResult = function(expr, result, settings = defaultSettings) {
     try {
-        return parseTree(expr, settings || defaultSettings);
+        return parseTree(expr, settings);
     } catch (e) {
         result.pass = false;
         if (e instanceof ParseError) {
@@ -80,9 +77,9 @@ export const parseAndSetResult = function(expr, result, settings) {
     }
 };
 
-export const buildAndSetResult = function(expr, result, settings) {
+export const buildAndSetResult = function(expr, result, settings = defaultSettings) {
     try {
-        return _getBuilt(expr, settings || defaultSettings);
+        return _getBuilt(expr, settings);
     } catch (e) {
         result.pass = false;
         if (e instanceof ParseError) {
