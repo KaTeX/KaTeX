@@ -71,11 +71,11 @@ export const parseAndSetResult = function(expr, result,
     } catch (e) {
         result.pass = false;
         if (e instanceof ParseError) {
-            result.message = () => "'" + expr + "' failed " +
-                "parsing with error: " + e.message;
+            result.message = () =>
+                `'${expr}' failed parsing with error: ${e.message}`;
         } else {
-            result.message = () => "'" + expr + "' failed " +
-                "parsing with unknown error: " + e.message;
+            result.message = () =>
+                `'${expr}' failed parsing with unknown error: ${e.message}`;
         }
     }
 };
@@ -87,11 +87,11 @@ export const buildAndSetResult = function(expr, result,
     } catch (e) {
         result.pass = false;
         if (e instanceof ParseError) {
-            result.message = () => "'" + expr + "' failed " +
-                "building with error: " + e.message;
+            result.message = () =>
+                `'${expr}' failed building with error: ${e.message}`;
         } else {
-            result.message = () => "'" + expr + "' failed " +
-                "building with unknown error: " + e.message;
+            result.message = () =>
+                `'${expr}' failed building with unknown error: ${e.message}`;
         }
     }
 };

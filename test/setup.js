@@ -47,7 +47,7 @@ expect.extend({
     toParse: function(actual, settings = defaultSettings) {
         const result = {
             pass: true,
-            message: () => "'" + actual + "' succeeded parsing",
+            message: () => `'${actual}' succeeded parsing`,
         };
         parseAndSetResult(actual, result, settings);
         return result;
@@ -56,8 +56,8 @@ expect.extend({
     toNotParse: function(actual, settings = defaultSettings) {
         const result = {
             pass: false,
-            message: () => "Expected '" + actual + "' to fail " +
-                "parsing, but it succeeded",
+            message: () =>
+                `Expected '${actual}' to fail parsing, but it succeeded`,
         };
 
         try {
@@ -65,11 +65,11 @@ expect.extend({
         } catch (e) {
             if (e instanceof ParseError) {
                 result.pass = true;
-                result.message = () => "'" + actual + "' correctly " +
-                    "didn't parse with error: " + e.message;
+                result.message = () => `'${actual}' correctly didn't parse ` +
+                    `with error: ${e.message}`;
             } else {
-                result.message = () => "'" + actual + "' failed " +
-                    "parsing with unknown error: " + e.message;
+                result.message = () => `'${actual}' failed parsing ` +
+                    `with unknown error: ${e.message}`;
             }
         }
 
@@ -82,13 +82,13 @@ expect.extend({
             parseTree(actual, defaultSettings);
             return {
                 pass: false,
-                message: () => "'" + actual + "' parsed without error",
+                message: () => `'${actual}' parsed without error`,
             };
         } catch (e) {
             if (expected === undefined) {
                 return {
                     pass: true,
-                    message: () => "'" + actual + "' parsed with error",
+                    message: () => `'${actual}' parsed with error`,
                 };
             }
             const msg = e.message;
@@ -96,22 +96,20 @@ expect.extend({
             if (msg === exp) {
                 return {
                     pass: true,
-                    message: () => "'" + actual + "'" +
-                        " parsed with error '" + expected + "'",
+                    message: () =>
+                        `'${actual}' parsed with expected error '${expected}'`,
                 };
             } else if (msg.slice(0, 19) === prefix) {
                 return {
                     pass: false,
-                    message: () => "'" + actual + "'" +
-                        " parsed with error '" + msg.slice(19) +
-                        "' but expected '" + expected + "'",
+                    message: () => `'${actual}' parsed with error ` +
+                        `'${msg.slice(19)}' but expected '${expected}'`,
                 };
             } else {
                 return {
                     pass: false,
-                    message: () => "'" + actual + "'" +
-                        " caused error '" + msg +
-                        "' but expected '" + exp + "'",
+                    message: () => `'${actual}' caused error '${msg}' ` +
+                        `but expected '${exp}'`,
                 };
             }
         }
@@ -120,7 +118,7 @@ expect.extend({
     toBuild: function(actual, settings = defaultSettings) {
         const result = {
             pass: true,
-            message: () => "'" + actual + "' succeeded in building",
+            message: () => `'${actual}' succeeded in building`,
         };
         buildAndSetResult(actual, result, settings);
         return result;
@@ -129,8 +127,8 @@ expect.extend({
     toNotBuild: function(actual, settings = defaultSettings) {
         const result = {
             pass: false,
-            message: () => "Expected '" + actual + "' to fail " +
-                "building, but it succeeded",
+            message: () =>
+                `Expected '${actual}' to fail building, but it succeeded`,
         };
 
         try {
@@ -138,11 +136,11 @@ expect.extend({
         } catch (e) {
             if (e instanceof ParseError) {
                 result.pass = true;
-                result.message = () => "'" + actual + "' correctly " +
-                    "didn't build with error: " + e.message;
+                result.message = () => `'${actual}' correctly ` +
+                    `didn't build with error: ${e.message}`;
             } else {
-                result.message = () => "'" + actual + "' failed " +
-                    "building with unknown error: " + e.message;
+                result.message = () => `'${actual}' failed ` +
+                    `building with unknown error: ${e.message}`;
             }
         }
 
@@ -152,8 +150,8 @@ expect.extend({
     toParseLike: function(actual, expected, settings = defaultSettings) {
         const result = {
             pass: true,
-            message: () => "Parse trees of '" + actual +
-                "' and '" + expected + "' are equivalent",
+            message: () =>
+                `Parse trees of '${actual}' and '${expected}' are equivalent`,
         };
 
         const actualTree = parseAndSetResult(actual, result, settings);
@@ -170,8 +168,8 @@ expect.extend({
 
         if (JSON.stringify(actualTree) !== JSON.stringify(expectedTree)) {
             result.pass = false;
-            result.message = () => "Parse trees of '" + actual +
-                "' and '" + expected + "' are not equivalent";
+            result.message = () => `Parse trees of '${actual}' and ` +
+                `'${expected}' are not equivalent`;
         }
         return result;
     },
@@ -179,8 +177,8 @@ expect.extend({
     toBuildLike: function(actual, expected, settings = defaultSettings) {
         const result = {
             pass: true,
-            message: () => "Build trees of '" + actual +
-                "' and '" + expected + "' are equivalent",
+            message: () =>
+                `Build trees of '${actual}' and '${expected}' are equivalent`,
         };
 
         const actualTree = buildAndSetResult(actual, result, settings);
@@ -197,8 +195,8 @@ expect.extend({
 
         if (JSON.stringify(actualTree) !== JSON.stringify(expectedTree)) {
             result.pass = false;
-            result.message = () => "Parse trees of '" + actual +
-                "' and '" + expected + "' are not equivalent";
+            result.message = () => `Build trees of '${actual}' and ` +
+                `'${expected}' are not equivalent`;
         }
         return result;
     },
