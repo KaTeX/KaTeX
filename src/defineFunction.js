@@ -108,6 +108,8 @@ type FunctionDefSpec<NODETYPE: NodeType> = {|
     // created when rendering the defined LaTeX function.
     htmlBuilder?: (group: ParseNode<NODETYPE>, options: Options) => HtmlDomNode,
 
+    // TODO: Currently functions/op.js returns documentFragment. Refactor it
+    // and update the return type of this function.
     // This function returns an object representing the MathML structure to be
     // created when rendering the defined LaTeX function.
     mathmlBuilder?: (
