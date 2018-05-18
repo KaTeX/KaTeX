@@ -61,6 +61,7 @@
     "test:lint": "eslint katex.js katex.webpack.js cli.js webpack.common.js webpack.config.js webpack.dev.js src static test contrib dockers && stylelint src/katex.less",
     "test:flow": "flow",
     "test:jest": "jest",
+    "test:jest:watch": "jest --watch",
     "test:jest:update": "jest --updateSnapshot",
     "test:jest:coverage": "jest --coverage",
     "test:screenshots": "npm run test:screenshots:update -- --verify",
@@ -86,6 +87,7 @@
     "nomnom": "^1.8.1"
   },
   "jest": {
+    "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
     "snapshotSerializers": [
       "jest-serializer-html"
     ],

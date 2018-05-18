@@ -12,6 +12,7 @@ import utils from "./utils";
 
 import type Options from "./Options";
 import type ParseNode from "./ParseNode";
+import type {DomSpan, SvgSpan} from "./domTree";
 
 const stretchyCodePoint: {[string]: string} = {
     widehat: "^",
@@ -106,7 +107,7 @@ const mathMLnode = function(label: string): mathMLTree.MathNode {
 // corresponds to 0.522 em inside the document.
 
 const katexImagesData: {
-    [string]: ([string[], number, number] | [string[], number, number, string])
+    [string]: ([string[], number, number] | [[string], number, number, string])
 } = {
                    //   path(s), minWidth, height, align
     overrightarrow: [["rightarrow"], 0.888, 522, "xMaxYMin"],
@@ -158,7 +159,7 @@ const katexImagesData: {
         "shortrightharpoonabovebar"], 1.75, 716],
 };
 
-const groupLength = function(arg: ParseNode): number {
+const groupLength = function(arg: ParseNode<*>): number {
     if (arg.type === "ordgroup") {
         return arg.value.length;
     } else {
@@ -166,10 +167,13 @@ const groupLength = function(arg: ParseNode): number {
     }
 };
 
-const svgSpan = function(group: ParseNode, options: Options): domTree.span {
+const svgSpan = function(
+    group: ParseNode<"accent"> | ParseNode<"accentUnder">,
+    options: Options,
+): DomSpan | SvgSpan {
     // Create a span with inline SVG for the element.
     function buildSvgSpan_(): {
-        span: domTree.span,
+        span: DomSpan | SvgSpan,
         minWidth: number,
         height: number,
     } {
@@ -211,20 +215,23 @@ const svgSpan = function(group: ParseNode, options: Options): domTree.span {
                 "preserveAspectRatio": "none",
             });
             return {
-                span: buildCommon.makeSpan([], [svgNode], options),
+                span: buildCommon.makeSvgSpan([], [svgNode], options),
                 minWidth: 0,
                 height,
             };
         } else {
             const spans = [];
 
-            const [paths, minWidth, viewBoxHeight, align1] = katexImagesData[label];
+            const data = katexImagesData[label];
+            const [paths, minWidth, viewBoxHeight] = data;
             const height = viewBoxHeight / 1000;
 
             const numSvgChildren = paths.length;
             let widthClasses;
             let aligns;
             if (numSvgChildren === 1) {
+                // $FlowFixMe: All these cases must be of the 4-tuple type.
+                const align1: string = data[3];
                 widthClasses = ["hide-tail"];
                 aligns = [align1];
             } else if (numSvgChildren === 2) {
@@ -249,8 +256,8 @@ const svgSpan = function(group: ParseNode, options: Options): domTree.span {
                     "preserveAspectRatio": aligns[i] + " slice",
                 });
 
-                const span =
-                    buildCommon.makeSpan([widthClasses[i]], [svgNode], options);
+                const span = buildCommon.makeSvgSpan(
+                    [widthClasses[i]], [svgNode], options);
                 if (numSvgChildren === 1) {
                     return {span, minWidth, height};
                 } else {
@@ -280,11 +287,11 @@ const svgSpan = function(group: ParseNode, options: Options): domTree.span {
 };
 
 const encloseSpan = function(
-    inner: domTree.span,
+    inner: DomSpan,
     label: string,
     pad: number,
     options: Options,
-): domTree.span {
+): DomSpan | SvgSpan {
     // Return an image span for \cancel, \bcancel, \xcancel, or \fbox
     let img;
     const totalHeight = inner.height + inner.depth + 2 * pad;
@@ -330,7 +337,7 @@ const encloseSpan = function(
             "height": totalHeight + "em",
         });
 
-        img = buildCommon.makeSpan([], [svgNode], options);
+        img = buildCommon.makeSvgSpan([], [svgNode], options);
     }
 
     img.height = totalHeight;
@@ -339,51 +346,8 @@ const encloseSpan = function(
     return img;
 };
 
-const ruleSpan = function(className: string, lineThickness: number,
-    options: Options): domTree.span {
-
-    // Get a span with an SVG path that fills the middle fifth of the span.
-    // We're using an extra wide span so Chrome won't round it down to zero.
-
-    let path;
-    let svgNode;
-    let parentClass = "stretchy";  // default
-
-    if (className === "vertical-separator") {
-        path = new domTree.pathNode("vertSeparator");
-        svgNode = new domTree.svgNode([path], {
-            "width": "0.25em",    // contains a path that is 0.05 ems wide.
-            "height": "400em",
-            "viewBox": "0 0 250 400000",
-            "preserveAspectRatio": "xMinYMin slice",
-        });
-        parentClass = "vertical-separator";
-
-    } else {
-        // The next two lines are the only place in KaTeX where SVG paths are
-        // put into a viewBox that is not always exactly a 1000:1 scale to the
-        // document em size. Instead, the path is a horizontal line set to
-        // take up the middle fifth of the viewBox and span. If the context is
-        // normalsize/textstyle then the line will be 0.04em and the usual
-        // 1000:1 ratio holds. But if the context is scriptstyle, then
-        // lineThickness > 0.04em and we have a ratio somewhat different than
-        // 1000:1.
-
-        path = new domTree.pathNode("stdHorizRule");
-        svgNode = new domTree.svgNode([path], {
-            "width": "400em",
-            "height": 5 * lineThickness + "em",
-            "viewBox": "0 0 400000 200",
-            "preserveAspectRatio": "xMinYMin slice",
-        });
-    }
-
-    return buildCommon.makeSpan([parentClass], [svgNode], options);
-};
-
 export default {
     encloseSpan,
     mathMLnode,
-    ruleSpan,
     svgSpan,
 };
