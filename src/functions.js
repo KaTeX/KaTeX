@@ -118,68 +118,6 @@ defineFunction("mclass", ["\\stackrel", "\\overset", "\\underset"], {
 
 import "./functions/mod";
 
-const singleCharIntegrals: {[string]: string} = {
-    "\u222b": "\\int",
-    "\u222c": "\\iint",
-    "\u222d": "\\iiint",
-    "\u222e": "\\oint",
-};
-
-// There are 2 flags for operators; whether they produce limits in
-// displaystyle, and whether they are symbols and should grow in
-// displaystyle. These four groups cover the four possible choices.
-
-// No limits, not symbols
-defineFunction("op", [
-    "\\arcsin", "\\arccos", "\\arctan", "\\arctg", "\\arcctg",
-    "\\arg", "\\ch", "\\cos", "\\cosec", "\\cosh", "\\cot", "\\cotg",
-    "\\coth", "\\csc", "\\ctg", "\\cth", "\\deg", "\\dim", "\\exp",
-    "\\hom", "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin",
-    "\\sinh", "\\sh", "\\tan", "\\tanh", "\\tg", "\\th",
-], {
-    numArgs: 0,
-}, function(context) {
-    return {
-        type: "op",
-        limits: false,
-        symbol: false,
-        body: context.funcName,
-    };
-});
-
-// Limits, not symbols
-defineFunction("op", [
-    "\\det", "\\gcd", "\\inf", "\\lim", "\\max", "\\min", "\\Pr", "\\sup",
-], {
-    numArgs: 0,
-}, function(context) {
-    return {
-        type: "op",
-        limits: true,
-        symbol: false,
-        body: context.funcName,
-    };
-});
-
-// No limits, symbols
-defineFunction("op", [
-    "\\int", "\\iint", "\\iiint", "\\oint", "\u222b", "\u222c",
-    "\u222d", "\u222e",
-], {
-    numArgs: 0,
-}, function(context) {
-    let fName = context.funcName;
-    if (fName.length === 1) {
-        fName = singleCharIntegrals[fName];
-    }
-    return {
-        type: "op",
-        limits: false,
-        symbol: true,
-        body: fName,
-    };
-});
-
 import "./functions/op";
 
 import "./functions/operatorname";
