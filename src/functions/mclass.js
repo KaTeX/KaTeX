@@ -11,7 +11,6 @@ const makeSpan = buildCommon.makeSpan;
 
 function htmlBuilder(group, options) {
     const elements = html.buildExpression(group.value.value, options, true);
-
     return makeSpan([group.value.mclass], elements, options);
 }
 
