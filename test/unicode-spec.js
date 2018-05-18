@@ -2,6 +2,7 @@
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
+import Settings from "../src/Settings";
 import {scriptFromCodepoint, supportedCodepoint} from "../src/unicodeScripts";
 import {strictSettings} from "./helpers";
 
