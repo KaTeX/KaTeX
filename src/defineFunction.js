@@ -2,13 +2,15 @@
 import {groupTypes as htmlGroupTypes} from "./buildHTML";
 import {groupTypes as mathmlGroupTypes} from "./buildMathML";
 import {checkNodeType} from "./ParseNode";
+import domTree from "./domTree";
 
 import type Parser from "./Parser";
-import type ParseNode from "./ParseNode";
-import type {NodeType, NodeValue} from "./ParseNode";
+import type ParseNode, {NodeType, NodeValue} from "./ParseNode";
 import type Options from "./Options";
 import type {ArgType, BreakToken, Mode} from "./types";
+import type {HtmlDomNode} from "./domTree";
 import type {Token} from "./Token";
+import type {MathNode, TextNode} from "./mathMLTree";
 
 /** Context provided to function handlers for error messages. */
 export type FunctionContext = {|
@@ -104,13 +106,14 @@ type FunctionDefSpec<NODETYPE: NodeType> = {|
 
     // This function returns an object representing the DOM structure to be
     // created when rendering the defined LaTeX function.
-    // TODO: Make return type explicit.
-    htmlBuilder?: (group: ParseNode<NODETYPE>, options: Options) => *,
+    htmlBuilder?: (group: ParseNode<NODETYPE>, options: Options) => HtmlDomNode,
 
     // This function returns an object representing the MathML structure to be
     // created when rendering the defined LaTeX function.
-    // TODO: Make return type explicit.
-    mathmlBuilder?: (group: ParseNode<NODETYPE>, options: Options) => *,
+    mathmlBuilder?: (
+        group: ParseNode<NODETYPE>,
+        options: Options,
+    ) => MathNode | TextNode | domTree.documentFragment,
 |};
 
 /**

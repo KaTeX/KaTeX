@@ -7,7 +7,9 @@ import ParseNode from "./ParseNode";
 
 import type Parser from "./Parser";
 import type {ArgType, Mode} from "./types";
+import type {HtmlDomNode} from "./domTree";
 import type {NodeType} from "./ParseNode";
+import type {MathNode} from "./mathMLTree";
 
 /**
  * The context contains the following properties:
@@ -84,13 +86,11 @@ type EnvDefSpec<NODETYPE: NodeType> = {|
 
     // This function returns an object representing the DOM structure to be
     // created when rendering the defined LaTeX function.
-    // TODO: Port buildHTML to flow and make the return type explicit.
-    htmlBuilder: (group: ParseNode<NODETYPE>, options: Options) => *,
+    htmlBuilder: (group: ParseNode<NODETYPE>, options: Options) => HtmlDomNode,
 
     // This function returns an object representing the MathML structure to be
     // created when rendering the defined LaTeX function.
-    // TODO: Port buildMathML to flow and make the return type explicit.
-    mathmlBuilder: (group: ParseNode<NODETYPE>, options: Options) => *,
+    mathmlBuilder: (group: ParseNode<NODETYPE>, options: Options) => MathNode,
 |};
 
 export default function defineEnvironment<NODETYPE: NodeType>({
