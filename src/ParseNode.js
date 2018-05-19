@@ -87,6 +87,10 @@ type ParseNodeTypes = {
         sup?: ?ParseNode<*>,
         sub?: ?ParseNode<*>,
     |},
+    "tag": {|
+        body: ParseNode<*>[],
+        tag: ParseNode<*>[],
+    |},
     "text": {|
         type: "text",
         body: ParseNode<*>[],
@@ -261,10 +265,6 @@ type ParseNodeTypes = {
         type: "sqrt",
         body: ParseNode<*>,
         index: ?ParseNode<*>,
-    |},
-    "tag": {|
-        type: "tag",
-        body: ParseNode<*>[],
     |},
     "underline": {|
         type: "underline",

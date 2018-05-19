@@ -46,13 +46,18 @@ const defaultOptions = new Options({
 
 const _getBuilt = function(expr, settings) {
     const usedSettings = settings ? settings : defaultSettings;
-    const rootNode = katex.__renderToDomTree(expr, usedSettings);
+    let rootNode = katex.__renderToDomTree(expr, usedSettings);
 
     if (rootNode.classes.indexOf('katex-error') >= 0) {
         return rootNode;
     }
 
+    if (rootNode.classes.indexOf('katex-display') >= 0) {
+        rootNode = rootNode.children[0];
+    }
+
     // grab the root node of the HTML rendering
+    // rootNode.children[0] is the MathML rendering
     const builtHTML = rootNode.children[1];
 
     // combine the non-strut children of all base spans
@@ -189,7 +194,7 @@ beforeEach(function() {
                         "build with error: " + e.message;
                 } else {
                     result.message = () => "'" + actual + "' failed " +
-                        "building with unknown error: " + e.message;
+                        "building with unknown error: " + e.message + e.stack;
                 }
             }
 
@@ -2932,15 +2937,29 @@ describe("A macro expander", function() {
         expect("\\liminf")
             .toParseLike("\\mathop{\\operatorname{lim\\,inf}}\\limits");
     });
+});
 
-    it("\\tag support", () => {
-        const displayMode = new Settings({displayMode: true});
-        expect("\\tag{1}\\tag{2}x+y").toNotParse();
+describe("\\tag support", function() {
+    const displayMode = new Settings({displayMode: true});
+
+    it("should fail outside display mode", () => {
+        expect("\\tag{hi}x+y").toNotParse();
+    });
+
+    it("should fail with multiple tags", () => {
         expect("\\tag{1}\\tag{2}x+y").toNotParse(displayMode);
-        expect("\\tag{hi}x+y").toParse(displayMode);
-        expect("\\tag{hi}x+y").toParseLike("x+y");
+    });
+
+    it("should build", () => {
+        expect("\\tag{hi}x+y").toBuild(displayMode);
+    });
+
+    it("should ignore location of \\tag", () => {
         expect("\\tag{hi}x+y").toParseLike("x+y\\tag{hi}", displayMode);
-        expect("\\tag{hi}x+y").toParseLike("\\tag*{(hi)}x+y", displayMode);
+    });
+
+    it("should handle \\tag* like \\tag", () => {
+        expect("\\tag{hi}x+y").toParseLike("\\tag*{({hi})}x+y", displayMode);
     });
 });
 

@@ -43,6 +43,8 @@ export const makeTextRow = function(body, options) {
             inner.push(group);
             if (group.type === 'mtext') {
                 currentText = group;
+            } else {
+                currentText = null;
             }
         }
     }
@@ -315,6 +317,21 @@ groupTypes.raisebox = function(group, options) {
     return node;
 };
 
+groupTypes.tag = function(group, options) {
+    const table = new mathMLTree.MathNode("mtable", [
+        new mathMLTree.MathNode("mlabeledtr", [
+            new mathMLTree.MathNode("mtd",
+                buildExpression(group.value.tag, options)),
+            new mathMLTree.MathNode("mtd", [
+                new mathMLTree.MathNode("mrow",
+                    buildExpression(group.value.body, options)),
+            ]),
+        ]),
+    ]);
+    table.setAttribute("side", "right");
+    return table;
+};
+
 /**
  * Takes a list of nodes, builds them, and returns a list of the generated
  * MathML nodes. A little simpler than the HTML version because we don't do any
@@ -371,27 +388,12 @@ export default function buildMathML(tree, texExpression, options) {
 
     // Wrap up the expression in an mrow so it is presented in the semantics
     // tag correctly.
-    let wrapper = new mathMLTree.MathNode("mrow", expression);
-
-    // \tag output is guaranteed to be the last node.  If detected,
-    // wrap in mlabeledtr to denote equation numbering.
-    if (expression.length > 0) {
-        const lastChild = expression[expression.length - 1];
-        if (lastChild.attributes["class"] === "tag") {
-            expression.pop();
-            delete lastChild.attributes["class"];
-            wrapper = new mathMLTree.MathNode("mtable", [
-                new mathMLTree.MathNode("mlabeledtr", [
-                    new mathMLTree.MathNode("mtd", [
-                        lastChild,
-                    ]),
-                    new mathMLTree.MathNode("mtd", [
-                        wrapper,
-                    ]),
-                ]),
-            ]);
-            wrapper.setAttribute("side", "right");
-        }
+    let wrapper;
+    if (expression.length === 1 &&
+        utils.contains(["mrow", "mtable"], expression[0].type)) {
+        wrapper = expression[0];
+    } else {
+        wrapper = new mathMLTree.MathNode("mrow", expression);
     }
 
     // Build a TeX annotation of the source

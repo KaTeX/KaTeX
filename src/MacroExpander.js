@@ -19,10 +19,18 @@ export default class MacroExpander implements MacroContextInterface {
     mode: Mode;
 
     constructor(input: string, macros: MacroMap, mode: Mode) {
-        this.lexer = new Lexer(input);
+        this.feed(input);
         this.macros = Object.assign({}, builtinMacros, macros);
         this.mode = mode;
         this.stack = []; // contains tokens in REVERSE order
+    }
+
+    /**
+     * Feed a new input string to the same MacroExpander
+     * (with existing macros etc.).
+     */
+    feed(input: string) {
+        this.lexer = new Lexer(input);
     }
 
     /**

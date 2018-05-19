@@ -5,8 +5,9 @@
  */
 
 import Parser from "./Parser";
+import ParseError from "./ParseError";
+import ParseNode from "./ParseNode";
 
-import type ParseNode from "./ParseNode";
 import type Settings from "./Settings";
 
 /**
@@ -16,13 +17,23 @@ const parseTree = function(toParse: string, settings: Settings): ParseNode<*>[] 
     if (!(typeof toParse === 'string' || toParse instanceof String)) {
         throw new TypeError('KaTeX can only parse string typed expression');
     }
-    // Render any tag at end of displayMode formula
-    if (settings.displayMode) {
-        toParse = "\\gdef\\df@tag{}" + toParse + "\\df@tag";
-    }
     const parser = new Parser(toParse, settings);
+    let tree = parser.parse();
 
-    return parser.parse();
+    // If the input used \tag, it will set the \df@tag macro to the tag.
+    // In this case, we separately parse the tag and wrap the tree.
+    if (parser.gullet.macros["\\df@tag"]) {
+        if (!settings.displayMode) {
+            throw new ParseError("\\tag works only in display equations");
+        }
+        parser.gullet.feed("\\df@tag");
+        tree = [new ParseNode("tag", {
+            body: tree,
+            tag: parser.parse(),
+        }, "text")];
+    }
+
+    return tree;
 };
 
 export default parseTree;

@@ -398,14 +398,12 @@ defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 
 // \tag@in@display form of \tag
 defineMacro("\\tag", "\\@ifstar\\tag@literal\\tag@paren");
-defineMacro("\\tag@paren", "\\tag@literal{(#1)}");
+defineMacro("\\tag@paren", "\\tag@literal{({#1})}");
 defineMacro("\\tag@literal", (context) => {
-    if (context.macros["\\df@tag"] &&
-        Array.isArray(context.macros["\\df@tag"].tokens) &&
-        context.macros["\\df@tag"].tokens.length > 0) {
+    if (context.macros["\\df@tag"]) {
         throw new ParseError("Multiple \\tag");
     }
-    return "\\gdef\\df@tag{\\tag@{#1}}";
+    return "\\gdef\\df@tag{\\text{#1}}";
 });
 
 //////////////////////////////////////////////////////////////////////

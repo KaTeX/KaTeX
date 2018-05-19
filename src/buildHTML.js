@@ -665,6 +665,13 @@ export default function buildHTML(tree, options) {
     // of the incoming tree so that it isn't accidentally changed
     tree = JSON.parse(JSON.stringify(tree));
 
+    // Strip off outer tag wrapper for processing below.
+    let tag = null;
+    if (tree.length === 1 && tree[0].type === "tag") {
+        tag = tree[0].value.tag;
+        tree = tree[0].value.body;
+    }
+
     // Build the expression contained in the tree
     const expression = buildExpression(tree, options, true);
 
@@ -703,37 +710,36 @@ export default function buildHTML(tree, options) {
             // Write the line except the newline
             parts.pop();
             if (parts.length > 0) {
-                htmlNode.children.push(buildHTMLUnbreakable(parts, options));
+                children.push(buildHTMLUnbreakable(parts, options));
                 parts = [];
             }
             // Put the newline at the top level
-            htmlNode.children.push(expression[i]);
+            children.push(expression[i]);
         }
     }
     if (parts.length > 0) {
         children.push(buildHTMLUnbreakable(parts, options));
     }
 
+    // Now, if there was a tag, build it too and append it as a final child.
+    let tagChild;
+    if (tag) {
+        tagChild = buildHTMLUnbreakable(
+            buildExpression(tag, options, true)
+        );
+        tagChild.classes = ["tag"];
+        children.push(tagChild);
+    }
+
     const htmlNode = makeSpan(["katex-html"], children);
     htmlNode.setAttribute("aria-hidden", "true");
 
-    // \tag output is guaranteed to be the last node of the last unbreakable.
-    // Bring it out to the top level.
-    if (children && children.length > 0) {
-        const lastChild = children[children.length - 1];
-        if (lastChild && lastChild.children.length > 0) {
-            const lastNode = lastChild.children[lastChild.children.length - 1];
-            if (lastNode.hasClass("tag")) {
-                lastChild.children.pop();
-                const strut = makeSpan(["strut"]);
-                strut.style.height = (htmlNode.height + htmlNode.depth) + "em";
-                strut.style.verticalAlign = (-htmlNode.depth) + "em";
-                htmlNode.children.push(makeSpan(["tag"], [
-                    strut,
-                    lastNode,
-                ]));
-            }
-        }
+    // Adjust the strut of the tag to be the maximum height of all children
+    // (the height of the enclosing htmlNode) for proper vertical alignment.
+    if (tag) {
+        const strut = tagChild.children[0];
+        strut.style.height = (htmlNode.height + htmlNode.depth) + "em";
+        strut.style.verticalAlign = (-htmlNode.depth) + "em";
     }
 
     return htmlNode;
