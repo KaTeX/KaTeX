@@ -209,32 +209,30 @@ exports[`A MathML builder should render boldsymbol with the correct mathvariants
 <math>
   <semantics>
     <mrow>
-      <mrow>
-        <mi mathvariant="bold-italic">
-          A
-        </mi>
-        <mi mathvariant="bold-italic">
-          x
-        </mi>
-        <mn mathvariant="bold-italic">
-          2
-        </mn>
-        <mi mathvariant="bold-italic">
-          k
-        </mi>
-        <mi mathvariant="bold-italic">
-          ω
-        </mi>
-        <mi mathvariant="bold-italic">
-          Ω
-        </mi>
-        <mi mathvariant="bold-italic">
-          ı
-        </mi>
-        <mo mathvariant="bold-italic">
-          +
-        </mo>
-      </mrow>
+      <mi mathvariant="bold-italic">
+        A
+      </mi>
+      <mi mathvariant="bold-italic">
+        x
+      </mi>
+      <mn mathvariant="bold-italic">
+        2
+      </mn>
+      <mi mathvariant="bold-italic">
+        k
+      </mi>
+      <mi mathvariant="bold-italic">
+        ω
+      </mi>
+      <mi mathvariant="bold-italic">
+        Ω
+      </mi>
+      <mi mathvariant="bold-italic">
+        ı
+      </mi>
+      <mo mathvariant="bold-italic">
+        +
+      </mo>
     </mrow>
     <annotation encoding="application/x-tex">
       \\boldsymbol{Ax2k\\omega\\Omega\\imath+}
@@ -296,35 +294,33 @@ exports[`A MathML builder should render mathchoice as if there was nothing 2`] =
 <math>
   <semantics>
     <mrow>
-      <mrow>
-        <msubsup>
-          <mo>
-            ∑
-          </mo>
-          <mrow>
-            <mi>
-              k
-            </mi>
-            <mo>
-              =
-            </mo>
-            <mn>
-              0
-            </mn>
-          </mrow>
-          <mi mathvariant="normal">
-            ∞
-          </mi>
-        </msubsup>
-        <msup>
-          <mi>
-            x
-          </mi>
+      <msubsup>
+        <mo>
+          ∑
+        </mo>
+        <mrow>
           <mi>
             k
           </mi>
-        </msup>
-      </mrow>
+          <mo>
+            =
+          </mo>
+          <mn>
+            0
+          </mn>
+        </mrow>
+        <mi mathvariant="normal">
+          ∞
+        </mi>
+      </msubsup>
+      <msup>
+        <mi>
+          x
+        </mi>
+        <mi>
+          k
+        </mi>
+      </msup>
     </mrow>
     <annotation encoding="application/x-tex">
       \\mathchoice{D}{\\sum_{k = 0}^{\\infty} x^k}{S}{SS}
@@ -391,12 +387,10 @@ exports[`A MathML builder should set href attribute for href appropriately 1`] =
 
 <math>
   <semantics>
-    <mrow>
-      <mrow href="http://example.org">
-        <mi>
-          α
-        </mi>
-      </mrow>
+    <mrow href="http://example.org">
+      <mi>
+        α
+      </mi>
     </mrow>
     <annotation encoding="application/x-tex">
       \\href{http://example.org}{\\alpha}
@@ -500,6 +494,58 @@ exports[`A MathML builder should use <munderover> for large operators 1`] = `
     </mrow>
     <annotation encoding="application/x-tex">
       \\displaystyle\\sum_a^b
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder tags use <mlabeledtr> 1`] = `
+
+<math>
+  <semantics>
+    <mtable side="right">
+      <mlabeledtr>
+        <mtd>
+          <mrow>
+            <mtext>
+              (
+            </mtext>
+            <mrow>
+              <mtext>
+                h
+              </mtext>
+              <mtext>
+                i
+              </mtext>
+            </mrow>
+            <mtext>
+              )
+            </mtext>
+          </mrow>
+        </mtd>
+        <mtd>
+          <mrow>
+            <mi>
+              x
+            </mi>
+            <mo>
+              +
+            </mo>
+            <msup>
+              <mi>
+                y
+              </mi>
+              <mn>
+                2
+              </mn>
+            </msup>
+          </mrow>
+        </mtd>
+      </mlabeledtr>
+    </mtable>
+    <annotation encoding="application/x-tex">
+      \\tag{hi} x+y^2
     </annotation>
   </semantics>
 </math>

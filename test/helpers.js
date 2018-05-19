@@ -11,13 +11,18 @@ export const defaultSettings = new Settings({
 export const strictSettings = new Settings({strict: true});
 
 export const _getBuilt = function(expr, settings = defaultSettings) {
-    const rootNode = katex.__renderToDomTree(expr, settings);
+    let rootNode = katex.__renderToDomTree(expr, settings);
 
     if (rootNode.classes.indexOf('katex-error') >= 0) {
         return rootNode;
     }
 
+    if (rootNode.classes.indexOf('katex-display') >= 0) {
+        rootNode = rootNode.children[0];
+    }
+
     // grab the root node of the HTML rendering
+    // rootNode.children[0] is the MathML rendering
     const builtHTML = rootNode.children[1];
 
     // combine the non-strut children of all base spans

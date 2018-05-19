@@ -29,6 +29,35 @@ export const makeText = function(text, mode) {
     return new mathMLTree.TextNode(text);
 };
 
+export const makeTextRow = function(body, options) {
+    // Convert each element of the body into MathML, and combine consecutive
+    // <mtext> outputs into a single <mtext> tag.  In this way, we don't
+    // nest non-text items (e.g., $nested-math$) within an <mtext>.
+    const inner = [];
+    let currentText = null;
+    for (let i = 0; i < body.length; i++) {
+        const group = buildGroup(body[i], options);
+        if (group.type === 'mtext' && currentText !== null) {
+            Array.prototype.push.apply(currentText.children, group.children);
+        } else {
+            inner.push(group);
+            if (group.type === 'mtext') {
+                currentText = group;
+            } else {
+                currentText = null;
+            }
+        }
+    }
+
+    // If there is a single tag in the end (presumably <mtext>),
+    // just return it.  Otherwise, wrap them in an <mrow>.
+    if (inner.length === 1) {
+        return inner[0];
+    } else {
+        return new mathMLTree.MathNode("mrow", inner);
+    }
+};
+
 /**
  * Returns the math variant as a string or null if none is required.
  */
@@ -283,6 +312,21 @@ groupTypes.raisebox = function(group, options) {
     return node;
 };
 
+groupTypes.tag = function(group, options) {
+    const table = new mathMLTree.MathNode("mtable", [
+        new mathMLTree.MathNode("mlabeledtr", [
+            new mathMLTree.MathNode("mtd",
+                buildExpression(group.value.tag, options)),
+            new mathMLTree.MathNode("mtd", [
+                new mathMLTree.MathNode("mrow",
+                    buildExpression(group.value.body, options)),
+            ]),
+        ]),
+    ]);
+    table.setAttribute("side", "right");
+    return table;
+};
+
 /**
  * Takes a list of nodes, builds them, and returns a list of the generated
  * MathML nodes. A little simpler than the HTML version because we don't do any
@@ -339,7 +383,13 @@ export default function buildMathML(tree, texExpression, options) {
 
     // Wrap up the expression in an mrow so it is presented in the semantics
     // tag correctly.
-    const wrapper = new mathMLTree.MathNode("mrow", expression);
+    let wrapper;
+    if (expression.length === 1 &&
+        utils.contains(["mrow", "mtable"], expression[0].type)) {
+        wrapper = expression[0];
+    } else {
+        wrapper = new mathMLTree.MathNode("mrow", expression);
+    }
 
     // Build a TeX annotation of the source
     const annotation = new mathMLTree.MathNode(

@@ -103,6 +103,10 @@ type ParseNodeTypes = {
         sup?: ?ParseNode<*>,
         sub?: ?ParseNode<*>,
     |},
+    "tag": {|
+        body: ParseNode<*>[],
+        tag: ParseNode<*>[],
+    |},
     "text": {|
         type: "text",
         body: ParseNode<*>[],

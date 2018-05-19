@@ -659,11 +659,17 @@ export default function buildHTML(tree, options) {
     // of the incoming tree so that it isn't accidentally changed
     tree = JSON.parse(JSON.stringify(tree));
 
+    // Strip off outer tag wrapper for processing below.
+    let tag = null;
+    if (tree.length === 1 && tree[0].type === "tag") {
+        tag = tree[0].value.tag;
+        tree = tree[0].value.body;
+    }
+
     // Build the expression contained in the tree
     const expression = buildExpression(tree, options, true);
 
-    const htmlNode = makeSpan(["katex-html"], []);
-    htmlNode.setAttribute("aria-hidden", "true");
+    const children = [];
 
     // Create one base node for each chunk between potential line breaks.
     // The TeXBook [p.173] says "A formula will be broken only after a
@@ -691,22 +697,43 @@ export default function buildHTML(tree, options) {
             }
             // Don't allow break if \nobreak among the post-operator glue.
             if (!nobreak) {
-                htmlNode.children.push(buildHTMLUnbreakable(parts, options));
+                children.push(buildHTMLUnbreakable(parts, options));
                 parts = [];
             }
         } else if (expression[i].hasClass("newline")) {
             // Write the line except the newline
             parts.pop();
             if (parts.length > 0) {
-                htmlNode.children.push(buildHTMLUnbreakable(parts, options));
+                children.push(buildHTMLUnbreakable(parts, options));
                 parts = [];
             }
             // Put the newline at the top level
-            htmlNode.children.push(expression[i]);
+            children.push(expression[i]);
         }
     }
     if (parts.length > 0) {
-        htmlNode.children.push(buildHTMLUnbreakable(parts, options));
+        children.push(buildHTMLUnbreakable(parts, options));
+    }
+
+    // Now, if there was a tag, build it too and append it as a final child.
+    let tagChild;
+    if (tag) {
+        tagChild = buildHTMLUnbreakable(
+            buildExpression(tag, options, true)
+        );
+        tagChild.classes = ["tag"];
+        children.push(tagChild);
+    }
+
+    const htmlNode = makeSpan(["katex-html"], children);
+    htmlNode.setAttribute("aria-hidden", "true");
+
+    // Adjust the strut of the tag to be the maximum height of all children
+    // (the height of the enclosing htmlNode) for proper vertical alignment.
+    if (tag) {
+        const strut = tagChild.children[0];
+        strut.style.height = (htmlNode.height + htmlNode.depth) + "em";
+        strut.style.verticalAlign = (-htmlNode.depth) + "em";
     }
 
     return htmlNode;

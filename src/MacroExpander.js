@@ -9,21 +9,31 @@ import {Token} from "./Token";
 import builtinMacros from "./macros";
 import type {Mode} from "./types";
 import ParseError from "./ParseError";
-import objectAssign from "object-assign";
 
 import type {MacroContextInterface, MacroMap, MacroExpansion} from "./macros";
+import type Settings from "./Settings";
 
 export default class MacroExpander implements MacroContextInterface {
     lexer: Lexer;
     macros: MacroMap;
+    maxExpand: number;
     stack: Token[];
     mode: Mode;
 
-    constructor(input: string, macros: MacroMap, mode: Mode) {
-        this.lexer = new Lexer(input);
-        this.macros = objectAssign({}, builtinMacros, macros);
+    constructor(input: string, settings: Settings, mode: Mode) {
+        this.feed(input);
+        this.macros = Object.assign({}, builtinMacros, settings.macros);
+        this.maxExpand = settings.maxExpand;
         this.mode = mode;
         this.stack = []; // contains tokens in REVERSE order
+    }
+
+    /**
+     * Feed a new input string to the same MacroExpander
+     * (with existing macros etc.).
+     */
+    feed(input: string) {
+        this.lexer = new Lexer(input);
     }
 
     /**
@@ -149,6 +159,13 @@ export default class MacroExpander implements MacroContextInterface {
             return topToken;
         }
         const {tokens, numArgs} = this._getExpansion(name);
+        if (this.maxExpand !== Infinity) {
+            this.maxExpand--;
+            if (this.maxExpand < 0) {
+                throw new ParseError("Too many expansions: infinite loop or " +
+                    "need to increase maxExpand setting");
+            }
+        }
         let expansion = tokens;
         if (numArgs) {
             const args = this.consumeArgs(numArgs);
