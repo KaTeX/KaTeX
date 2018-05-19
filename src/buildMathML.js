@@ -280,30 +280,6 @@ groupTypes.horizBrace = function(group, options) {
     );
 };
 
-groupTypes.xArrow = function(group, options) {
-    const arrowNode = stretchy.mathMLnode(group.value.label);
-    let node;
-    let lowerNode;
-
-    if (group.value.body) {
-        const upperNode = buildGroup(group.value.body, options);
-        if (group.value.below) {
-            lowerNode = buildGroup(group.value.below, options);
-            node = new mathMLTree.MathNode(
-                "munderover", [arrowNode, lowerNode, upperNode]
-            );
-        } else {
-            node = new mathMLTree.MathNode("mover", [arrowNode, upperNode]);
-        }
-    } else if (group.value.below) {
-        lowerNode = buildGroup(group.value.below, options);
-        node = new mathMLTree.MathNode("munder", [arrowNode, lowerNode]);
-    } else {
-        node = new mathMLTree.MathNode("mover", [arrowNode]);
-    }
-    return node;
-};
-
 groupTypes.tag = function(group, options) {
     const table = new mathMLTree.MathNode("mtable", [
         new mathMLTree.MathNode("mlabeledtr", [

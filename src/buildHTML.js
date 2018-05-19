@@ -509,66 +509,6 @@ export const groupTypes = {
         return makeSpan(["mord", (group.value.isOver ? "mover" : "munder")],
             [vlist], options);
     },
-
-    xArrow(group, options) {
-        const style = options.style;
-
-        // Build the argument groups in the appropriate style.
-        // Ref: amsmath.dtx:   \hbox{$\scriptstyle\mkern#3mu{#6}\mkern#4mu$}%
-
-        let newOptions = options.havingStyle(style.sup());
-        const upperGroup = buildGroup(group.value.body, newOptions, options);
-        upperGroup.classes.push("x-arrow-pad");
-
-        let lowerGroup;
-        if (group.value.below) {
-            // Build the lower group
-            newOptions = options.havingStyle(style.sub());
-            lowerGroup = buildGroup(group.value.below, newOptions, options);
-            lowerGroup.classes.push("x-arrow-pad");
-        }
-
-        const arrowBody = stretchy.svgSpan(group, options);
-
-        // Re shift: Note that stretchy.svgSpan returned arrowBody.depth = 0.
-        // The point we want on the math axis is at 0.5 * arrowBody.height.
-        const arrowShift = -options.fontMetrics().axisHeight +
-            0.5 * arrowBody.height;
-        // 2 mu kern. Ref: amsmath.dtx: #7\if0#2\else\mkern#2mu\fi
-        let upperShift = -options.fontMetrics().axisHeight
-            - 0.5 * arrowBody.height - 0.111; // 0.111 em = 2 mu
-        if (upperGroup.depth > 0.25 || group.value.label === "\\xleftequilibrium") {
-            upperShift -= upperGroup.depth;  // shift up if depth encroaches
-        }
-
-        // Generate the vlist
-        let vlist;
-        if (group.value.below) {
-            const lowerShift = -options.fontMetrics().axisHeight
-                + lowerGroup.height + 0.5 * arrowBody.height
-                + 0.111;
-            vlist = buildCommon.makeVList({
-                positionType: "individualShift",
-                children: [
-                    {type: "elem", elem: upperGroup, shift: upperShift},
-                    {type: "elem", elem: arrowBody,  shift: arrowShift},
-                    {type: "elem", elem: lowerGroup, shift: lowerShift},
-                ],
-            }, options);
-        } else {
-            vlist = buildCommon.makeVList({
-                positionType: "individualShift",
-                children: [
-                    {type: "elem", elem: upperGroup, shift: upperShift},
-                    {type: "elem", elem: arrowBody,  shift: arrowShift},
-                ],
-            }, options);
-        }
-
-        vlist.children[0].children[0].children[1].classes.push("svg-align");
-
-        return makeSpan(["mrel", "x-arrow"], [vlist], options);
-    },
 };
 
 /**
