@@ -8,6 +8,8 @@ import stretchy from "../stretchy";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
+import type ParseNode from "../ParseNode";
+
 defineFunction({
     type: "accentUnder",
     names: [
@@ -25,7 +27,7 @@ defineFunction({
             base: base,
         };
     },
-    htmlBuilder: (group, options) => {
+    htmlBuilder: (group: ParseNode<"accentUnder">, options) => {
         // Treat under accents much like underlines.
         const innerGroup = html.buildGroup(group.value.base, options);
 
@@ -49,7 +51,7 @@ defineFunction({
         const accentNode = stretchy.mathMLnode(group.value.label);
         const node = new mathMLTree.MathNode(
             "munder",
-            [mml.buildGroup(group.value.body, options), accentNode]
+            [mml.buildGroup(group.value.base, options), accentNode]
         );
         node.setAttribute("accentunder", "true");
         return node;

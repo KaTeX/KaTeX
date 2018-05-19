@@ -1,58 +1,6 @@
-/* global beforeEach: false */
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
-
-import parseTree from "../src/parseTree";
-import Settings from "../src/Settings";
-
-const defaultSettings = new Settings({});
-
-beforeEach(function() {
-    const prefix = "KaTeX parse error: ";
-
-    expect.extend({
-        toFailWithParseError: function(actual, expected) {
-            try {
-                parseTree(actual, defaultSettings);
-                return {
-                    pass: false,
-                    message: () => "'" + actual + "' parsed without error",
-                };
-            } catch (e) {
-                if (expected === undefined) {
-                    return {
-                        pass: true,
-                        message: () => "'" + actual + "' parsed with error",
-                    };
-                }
-                const msg = e.message;
-                const exp = prefix + expected;
-                if (msg === exp) {
-                    return {
-                        pass: true,
-                        message: () => "'" + actual + "'" +
-                            " parsed with error '" + expected + "'",
-                    };
-                } else if (msg.slice(0, 19) === prefix) {
-                    return {
-                        pass: false,
-                        message: () => "'" + actual + "'" +
-                            " parsed with error '" + msg.slice(19) +
-                            "' but expected '" + expected + "'",
-                    };
-                } else {
-                    return {
-                        pass: false,
-                        message: () => "'" + actual + "'" +
-                            " caused error '" + msg +
-                            "' but expected '" + exp + "'",
-                    };
-                }
-            }
-        },
-    });
-});
 
 describe("Parser:", function() {
 
@@ -60,12 +8,12 @@ describe("Parser:", function() {
         it("rejects repeated infix operators", function() {
             expect("1\\over 2\\over 3").toFailWithParseError(
                    "only one infix operator per group at position 9: " +
-                   "1\\over 2\\̲o̲v̲e̲r̲ 3");
+                   "1\\over 2\\̲o̲v̲e̲r̲ ̲3");
         });
         it("rejects conflicting infix operators", function() {
             expect("1\\over 2\\choose 3").toFailWithParseError(
                    "only one infix operator per group at position 9: " +
-                   "1\\over 2\\̲c̲h̲o̲o̲s̲e̲ 3");
+                   "1\\over 2\\̲c̲h̲o̲o̲s̲e̲ ̲3");
         });
     });
 

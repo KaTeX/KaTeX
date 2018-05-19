@@ -48,7 +48,9 @@ defineFunction({
         const font = group.value.font;
         // Checks if the argument is a font family or a font style.
         let newOptions;
-        if (textFontFamilies[font]) {
+        if (!font) {
+            newOptions = options;
+        } else if (textFontFamilies[font]) {
             newOptions = options.withTextFontFamily(textFontFamilies[font]);
         } else if (textFontWeights[font]) {
             newOptions = options.withTextFontWeight(textFontWeights[font]);
@@ -57,8 +59,7 @@ defineFunction({
         }
         const inner = html.buildExpression(group.value.body, newOptions, true);
         buildCommon.tryCombineChars(inner);
-        return buildCommon.makeSpan(["mord", "text"],
-            inner, newOptions);
+        return buildCommon.makeSpan(["mord", "text"], inner, newOptions);
     },
     mathmlBuilder(group, options) {
         return mml.makeTextRow(group.value.body, options);

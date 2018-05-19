@@ -1,7 +1,6 @@
 // @flow
 /** Include this to ensure that all functions are defined. */
 import ParseError from "./ParseError";
-import ParseNode from "./ParseNode";
 import {
     default as _defineFunction,
     ordargument,
@@ -51,134 +50,9 @@ import "./functions/kern";
 
 import "./functions/phantom";
 
-// Math class commands except \mathop
-defineFunction("mclass", [
-    "\\mathord", "\\mathbin", "\\mathrel", "\\mathopen",
-    "\\mathclose", "\\mathpunct", "\\mathinner",
-], {
-    numArgs: 1,
-}, function(context, args) {
-    const body = args[0];
-    return {
-        type: "mclass",
-        mclass: "m" + context.funcName.substr(5),
-        value: ordargument(body),
-    };
-});
-
-// Build a relation or stacked op by placing one symbol on top of another
-defineFunction("mclass", ["\\stackrel", "\\overset", "\\underset"], {
-    numArgs: 2,
-}, function(context, args) {
-    const baseArg = args[1];
-    const shiftedArg = args[0];
-
-    let mclass = "mrel";  // default. May change below.
-    if (context.funcName !== "\\stackrel") {
-        // LaTeX applies \binrel spacing to \overset and \underset.
-        // \binrel spacing varies with (bin|rel|ord) of the atom in the argument.
-        // We'll do the same.
-        let atomType = "";
-        if (baseArg.type === "ordgroup") {
-            atomType = baseArg.value[0].type;
-        } else {
-            atomType = baseArg.type;
-        }
-        if (/^(bin|rel)$/.test(atomType)) {
-            mclass = "m" + atomType;
-        } else {
-            // This may capture some instances in which the baseArg is more than
-            // just a single symbol. Say a \overset inside an \overset.
-            // TODO: A more comprehensive way to determine the baseArg type.
-            mclass = "mord";
-        }
-    }
-
-    const baseOp = new ParseNode("op", {
-        type: "op",
-        limits: true,
-        alwaysHandleSupSub: true,
-        symbol: false,
-        suppressBaseShift: context.funcName !== "\\stackrel",
-        value: ordargument(baseArg),
-    }, baseArg.mode);
-
-    const supsub = new ParseNode("supsub", {
-        base: baseOp,
-        sup: context.funcName === "\\underset" ? null : shiftedArg,
-        sub: context.funcName === "\\underset" ? shiftedArg : null,
-    }, shiftedArg.mode);
-
-    return {
-        type: "mclass",
-        mclass: mclass,
-        value: [supsub],
-    };
-});
+import "./functions/mclass";
 
 import "./functions/mod";
-
-const singleCharIntegrals: {[string]: string} = {
-    "\u222b": "\\int",
-    "\u222c": "\\iint",
-    "\u222d": "\\iiint",
-    "\u222e": "\\oint",
-};
-
-// There are 2 flags for operators; whether they produce limits in
-// displaystyle, and whether they are symbols and should grow in
-// displaystyle. These four groups cover the four possible choices.
-
-// No limits, not symbols
-defineFunction("op", [
-    "\\arcsin", "\\arccos", "\\arctan", "\\arctg", "\\arcctg",
-    "\\arg", "\\ch", "\\cos", "\\cosec", "\\cosh", "\\cot", "\\cotg",
-    "\\coth", "\\csc", "\\ctg", "\\cth", "\\deg", "\\dim", "\\exp",
-    "\\hom", "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin",
-    "\\sinh", "\\sh", "\\tan", "\\tanh", "\\tg", "\\th",
-], {
-    numArgs: 0,
-}, function(context) {
-    return {
-        type: "op",
-        limits: false,
-        symbol: false,
-        body: context.funcName,
-    };
-});
-
-// Limits, not symbols
-defineFunction("op", [
-    "\\det", "\\gcd", "\\inf", "\\lim", "\\max", "\\min", "\\Pr", "\\sup",
-], {
-    numArgs: 0,
-}, function(context) {
-    return {
-        type: "op",
-        limits: true,
-        symbol: false,
-        body: context.funcName,
-    };
-});
-
-// No limits, symbols
-defineFunction("op", [
-    "\\int", "\\iint", "\\iiint", "\\oint", "\u222b", "\u222c",
-    "\u222d", "\u222e",
-], {
-    numArgs: 0,
-}, function(context) {
-    let fName = context.funcName;
-    if (fName.length === 1) {
-        fName = singleCharIntegrals[fName];
-    }
-    return {
-        type: "op",
-        limits: false,
-        symbol: true,
-        body: fName,
-    };
-});
 
 import "./functions/op";
 

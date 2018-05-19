@@ -571,12 +571,6 @@ export const groupTypes = {
         return makeSpan(["mrel", "x-arrow"], [vlist], options);
     },
 
-    mclass(group, options) {
-        const elements = buildExpression(group.value.value, options, true);
-
-        return makeSpan([group.value.mclass], elements, options);
-    },
-
     raisebox(group, options) {
         const body = groupTypes.sizing({value: {
             value: [{

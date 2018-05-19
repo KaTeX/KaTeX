@@ -409,6 +409,9 @@ defineMacro("\\tag@literal", (context) => {
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
 
+// \\ defaults to \newline, but changes to \cr within array environment
+defineMacro("\\\\", "\\newline");
+
 // \def\TeX{T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX\@}
 // TODO: Doesn't normally work in math mode because \@ fails.  KaTeX doesn't
 // support \@ yet, so that's omitted, and we add \text so that the result

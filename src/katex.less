@@ -35,11 +35,6 @@
                 position: absolute;
                 right: 0px;
             }
-
-            /* \newline doesn't do anything in display mode */
-            > .newline {
-                display: none;
-            }
         }
     }
 }
@@ -71,7 +66,7 @@
     }
 
     .katex-html {
-        /* \newline is an empty block at top level of inline mode */
+        /* \newline is an empty block at top level, between .base elements */
         > .newline {
             display: block;
         }

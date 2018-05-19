@@ -150,7 +150,7 @@ export default class Parser {
         return expression;
     }
 
-    static endOfExpression = ["}", "\\end", "\\right", "&", "\\cr"];
+    static endOfExpression = ["}", "\\end", "\\right", "&"];
 
     /**
      * Parses an "expression", which is a list of atoms.
@@ -556,7 +556,7 @@ export default class Parser {
      */
     parseArguments(
         func: string,   // Should look like "\name" or "\begin{name}".
-        funcData: FunctionSpec<*> | EnvSpec,
+        funcData: FunctionSpec<*> | EnvSpec<*>,
     ): {
         args: ParseNode<*>[],
         optArgs: (?ParseNode<*>)[],
@@ -777,7 +777,7 @@ export default class Parser {
         if (!match) {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
-        return newArgument(new ParseNode("color", match[0], this.mode), res);
+        return newArgument(new ParseNode("color-token", match[0], this.mode), res);
     }
 
     /**
@@ -946,7 +946,7 @@ export default class Parser {
             !symbols[this.mode][text[0]]) {
             // This behavior is not strict (XeTeX-compatible) in math mode.
             if (this.settings.strict && this.mode === "math") {
-                this.settings.nonstrict("unicodeTextInMathMode",
+                this.settings.reportNonstrict("unicodeTextInMathMode",
                     `Accented Unicode text character "${text[0]}" used in ` +
                     `math mode`, nucleus);
             }
@@ -967,17 +967,22 @@ export default class Parser {
         if (symbols[this.mode][text]) {
             if (this.settings.strict && this.mode === 'math' &&
                 extraLatin.indexOf(text) >= 0) {
-                this.settings.nonstrict("unicodeTextInMathMode",
+                this.settings.reportNonstrict("unicodeTextInMathMode",
                     `Latin-1/Unicode text character "${text[0]}" used in ` +
                     `math mode`, nucleus);
             }
             symbol = new ParseNode(symbols[this.mode][text].group,
                             text, this.mode, nucleus);
-        } else if (supportedCodepoint(text.charCodeAt(0))) {
-            if (this.settings.strict && this.mode === 'math') {
-                this.settings.nonstrict("unicodeTextInMathMode",
-                    `Unicode text character "${text[0]}" used in math mode`,
-                    nucleus);
+        } else if (text.charCodeAt(0) >= 0x80) { // no symbol for e.g. ^
+            if (this.settings.strict) {
+                if (!supportedCodepoint(text.charCodeAt(0))) {
+                    this.settings.reportNonstrict("unknownSymbol",
+                        `Unrecognized Unicode character "${text[0]}"`, nucleus);
+                } else if (this.mode === "math") {
+                    this.settings.reportNonstrict("unicodeTextInMathMode",
+                        `Unicode text character "${text[0]}" used in math mode`,
+                        nucleus);
+                }
             }
             symbol = new ParseNode("textord", text, this.mode, nucleus);
         } else {

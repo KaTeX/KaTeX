@@ -304,11 +304,6 @@ groupTypes.xArrow = function(group, options) {
     return node;
 };
 
-groupTypes.mclass = function(group, options) {
-    const inner = buildExpression(group.value.value, options);
-    return new mathMLTree.MathNode("mstyle", inner);
-};
-
 groupTypes.raisebox = function(group, options) {
     const node = new mathMLTree.MathNode(
         "mpadded", [buildGroup(group.value.body, options)]);
