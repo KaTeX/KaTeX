@@ -216,6 +216,10 @@ const mathmlBuilder = (group, options) => {
         const operator = new mathMLTree.MathNode("mo",
             [mml.makeText("\u2061", "text")]);
 
+        // TODO: Refactor to not return an HTML DOM object from MathML builder
+        // or refactor documentFragment to be standalone and explicitly reusable
+        // for both HTML and MathML DOM operations. In either case, update the
+        // return type of `mathBuilder` in `defineFunction` to accommodate.
         return new domTree.documentFragment([node, operator]);
     }
 
