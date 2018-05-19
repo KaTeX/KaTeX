@@ -1,6 +1,5 @@
 // @flow
 /** Include this to ensure that all functions are defined. */
-import ParseError from "./ParseError";
 import {
     default as _defineFunction,
     ordargument,
@@ -148,24 +147,7 @@ defineFunction("infix", ["\\over", "\\choose", "\\atop"], {
 import "./functions/cr";
 
 // Environment delimiters
-defineFunction("environment", ["\\begin", "\\end"], {
-    numArgs: 1,
-    argTypes: ["text"],
-}, function(context, args) {
-    const nameGroup = args[0];
-    if (nameGroup.type !== "ordgroup") {
-        throw new ParseError("Invalid environment name", nameGroup);
-    }
-    let name = "";
-    for (let i = 0; i < nameGroup.value.length; ++i) {
-        name += nameGroup.value[i].value;
-    }
-    return {
-        type: "environment",
-        name: name,
-        nameGroup: nameGroup,
-    };
-});
+import "./functions/environment";
 
 // Box manipulation
 defineFunction("raisebox", ["\\raisebox"], {
