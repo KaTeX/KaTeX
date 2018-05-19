@@ -2904,6 +2904,20 @@ describe("The maxSize setting", function() {
     });
 });
 
+describe("The maxExpand setting", () => {
+    it("should prevent expansion", () => {
+        expect("\\gdef\\foo{1}\\foo").toParse();
+        expect("\\gdef\\foo{1}\\foo").toParse(new Settings({maxExpand: 2}));
+        expect("\\gdef\\foo{1}\\foo").toNotParse(new Settings({maxExpand: 1}));
+        expect("\\gdef\\foo{1}\\foo").toNotParse(new Settings({maxExpand: 0}));
+    });
+
+    it("should prevent infinite loops", () => {
+        expect("\\gdef\\foo{\\foo}\\foo").toNotParse(
+            new Settings({maxExpand: 10}));
+    });
+});
+
 describe("The \\mathchoice function", function() {
     const cmd = "\\sum_{k = 0}^{\\infty} x^k";
 

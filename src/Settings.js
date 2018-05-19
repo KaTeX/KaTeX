@@ -24,6 +24,7 @@ export type SettingsOptions = {
     colorIsTextColor?: boolean;
     strict?: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize?: number;
+    maxExpand?: number;
 };
 
 /**
@@ -44,6 +45,7 @@ class Settings {
     colorIsTextColor: boolean;
     strict: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize: number;
+    maxExpand: number;
 
     constructor(options: SettingsOptions) {
         // allow null options
@@ -55,6 +57,7 @@ class Settings {
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
         this.strict = utils.deflt(options.strict, "warn");
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
+        this.maxExpand = Math.max(0, utils.deflt(options.maxExpand, Infinity));
     }
 
     /**
