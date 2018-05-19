@@ -1,3 +1,4 @@
+// @flow
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
@@ -5,6 +6,8 @@ import stretchy from "../stretchy";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
+
+import type ParseNode from "../ParseNode.js";
 
 // Stretchy arrows with an optional argument
 defineFunction({
@@ -32,7 +35,9 @@ defineFunction({
             below: optArgs[0],
         };
     },
-    htmlBuilder(group, options) {
+    // Flow is unable to correctly infer the type of `group`, even though it's
+    // unamibiguously determined from the passed-in `type` above.
+    htmlBuilder(group: ParseNode<"xArrow">, options) {
         const style = options.style;
 
         // Build the argument groups in the appropriate style.
@@ -65,7 +70,7 @@ defineFunction({
 
         // Generate the vlist
         let vlist;
-        if (group.value.below) {
+        if (lowerGroup) {
             const lowerShift = -options.fontMetrics().axisHeight
                 + lowerGroup.height + 0.5 * arrowBody.height
                 + 0.111;
@@ -87,6 +92,7 @@ defineFunction({
             }, options);
         }
 
+        // $FlowFixMe: Replace this with passing "svg-align" into makeVList.
         vlist.children[0].children[0].children[1].classes.push("svg-align");
 
         return buildCommon.makeSpan(["mrel", "x-arrow"], [vlist], options);
