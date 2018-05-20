@@ -12,7 +12,6 @@ import Style from "./Style";
 
 import buildCommon from "./buildCommon";
 import domTree from "./domTree";
-import { calculateSize } from "./units";
 import utils from "./utils";
 import stretchy from "./stretchy";
 import {spacings, tightSpacings} from "./spacingData";
@@ -569,25 +568,6 @@ export const groupTypes = {
         vlist.children[0].children[0].children[1].classes.push("svg-align");
 
         return makeSpan(["mrel", "x-arrow"], [vlist], options);
-    },
-
-    raisebox(group, options) {
-        const body = groupTypes.sizing({value: {
-            value: [{
-                type: "text",
-                value: {
-                    body: group.value.value,
-                    font: "mathrm", // simulate \textrm
-                },
-            }],
-            size: 6,                // simulate \normalsize
-        }}, options);
-        const dy = calculateSize(group.value.dy.value, options);
-        return buildCommon.makeVList({
-            positionType: "shift",
-            positionData: -dy,
-            children: [{type: "elem", elem: body}],
-        }, options);
     },
 };
 

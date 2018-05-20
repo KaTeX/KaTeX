@@ -304,14 +304,6 @@ groupTypes.xArrow = function(group, options) {
     return node;
 };
 
-groupTypes.raisebox = function(group, options) {
-    const node = new mathMLTree.MathNode(
-        "mpadded", [buildGroup(group.value.body, options)]);
-    const dy = group.value.dy.value.number + group.value.dy.value.unit;
-    node.setAttribute("voffset", dy);
-    return node;
-};
-
 groupTypes.tag = function(group, options) {
     const table = new mathMLTree.MathNode("mtable", [
         new mathMLTree.MathNode("mlabeledtr", [

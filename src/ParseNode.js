@@ -247,7 +247,7 @@ type ParseNodeTypes = {
     |},
     "raisebox": {|
         type: "raisebox",
-        dy: ParseNode<*>,
+        dy: ParseNode<"size">,
         body: ParseNode<*>,
         value: ParseNode<*>[],
     |},
