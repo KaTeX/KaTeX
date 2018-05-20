@@ -90,31 +90,8 @@ defineFunction("horizBrace", [
 // Stretchy accents under the body
 import "./functions/accentunder";
 
-// Stretchy arrows with an optional argument
-defineFunction("xArrow", [
-    "\\xleftarrow", "\\xrightarrow", "\\xLeftarrow", "\\xRightarrow",
-    "\\xleftrightarrow", "\\xLeftrightarrow", "\\xhookleftarrow",
-    "\\xhookrightarrow", "\\xmapsto", "\\xrightharpoondown",
-    "\\xrightharpoonup", "\\xleftharpoondown", "\\xleftharpoonup",
-    "\\xrightleftharpoons", "\\xleftrightharpoons", "\\xlongequal",
-    "\\xtwoheadrightarrow", "\\xtwoheadleftarrow", "\\xtofrom",
-    // The next 3 functions are here to support the mhchem extension.
-    // Direct use of these functions is discouraged and may break someday.
-    "\\xrightleftarrows", "\\xrightequilibrium",
-    "\\xleftequilibrium",
-], {
-    numArgs: 1,
-    numOptionalArgs: 1,
-}, function(context, args, optArgs) {
-    const below = optArgs[0];
-    const body = args[0];
-    return {
-        type: "xArrow",   // x for extensible
-        label: context.funcName,
-        body: body,
-        below: below,
-    };
-});
+// Stretch arrows
+import "./functions/arrow";
 
 // Row and line breaks
 import "./functions/cr";
