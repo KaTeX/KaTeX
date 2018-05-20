@@ -180,7 +180,9 @@ const svgSpan = function(
         let viewBoxWidth = 400000;  // default
         const label = group.value.label.substr(1);
         if (utils.contains(["widehat", "widetilde", "utilde"], label)) {
-            // $FlowFixMe: implied by the labels above.
+            // Each type in the `if` statement corresponds to one of the ParseNode
+            // types below. This narrowing is required to access `grp.value.base`.
+            // $FlowFixMe
             const grp: ParseNode<"accent"> | ParseNode<"accentUnder"> = group;
             // There are four SVG images available for each function.
             // Choose a taller image when there are more characters.
