@@ -117,32 +117,6 @@ defineFunction("xArrow", [
     };
 });
 
-// Infix generalized fractions
-defineFunction("infix", ["\\over", "\\choose", "\\atop"], {
-    numArgs: 0,
-    infix: true,
-}, function(context) {
-    let replaceWith;
-    switch (context.funcName) {
-        case "\\over":
-            replaceWith = "\\frac";
-            break;
-        case "\\choose":
-            replaceWith = "\\binom";
-            break;
-        case "\\atop":
-            replaceWith = "\\\\atopfrac";
-            break;
-        default:
-            throw new Error("Unrecognized infix genfrac command");
-    }
-    return {
-        type: "infix",
-        replaceWith: replaceWith,
-        token: context.token,
-    };
-});
-
 // Row and line breaks
 import "./functions/cr";
 
