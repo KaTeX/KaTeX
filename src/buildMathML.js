@@ -13,7 +13,6 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 import symbols from "./symbols";
 import utils from "./utils";
-import stretchy from "./stretchy";
 
 /**
  * Takes a symbol and converts it into a MathML text node after performing
@@ -270,14 +269,6 @@ groupTypes.spacing = function(group) {
     }
 
     return node;
-};
-
-groupTypes.horizBrace = function(group, options) {
-    const accentNode = stretchy.mathMLnode(group.value.label);
-    return new mathMLTree.MathNode(
-        (group.value.isOver ? "mover" : "munder"),
-        [buildGroup(group.value.base, options), accentNode]
-    );
 };
 
 groupTypes.tag = function(group, options) {
