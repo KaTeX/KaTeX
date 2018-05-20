@@ -168,7 +168,8 @@ const groupLength = function(arg: ParseNode<*>): number {
 };
 
 const svgSpan = function(
-    group: ParseNode<"accent"> | ParseNode<"accentUnder"> | ParseNode<"xArrow">,
+    group: ParseNode<"accent"> | ParseNode<"accentUnder"> | ParseNode<"xArrow">
+         | ParseNode<"horizBrace">,
     options: Options,
 ): DomSpan | SvgSpan {
     // Create a span with inline SVG for the element.
