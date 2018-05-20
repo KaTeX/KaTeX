@@ -1,30 +1,41 @@
+// @flow
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import stretchy from "../stretchy";
 import Style from "../Style";
+import {assertNodeType, checkNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-function htmlBuilder(group, options) {
+import type ParseNode from "../ParseNode";
+
+// NOTE: Unlike most `htmlBuilder`s, this one handles not only "horizBrace", but
+// also "supsub" since an over/underbrace can affect super/subscripting.
+function htmlBuilder(grp: ParseNode<*>, options) {
     const style = options.style;
 
-    const hasSupSub = (group.type === "supsub");
+    // Pull out the `ParseNode<"horizBrace">` if `grp` is a "supsub" node.
     let supSubGroup;
-    let newOptions;
-    if (hasSupSub) {
+    let group: ParseNode<"horizBrace">;
+    const supSub = checkNodeType(grp, "supsub");
+    if (supSub) {
         // Ref: LaTeX source2e: }}}}\limits}
         // i.e. LaTeX treats the brace similar to an op and passes it
         // with \limits, so we need to assign supsub style.
-        if (group.value.sup) {
-            newOptions = options.havingStyle(style.sup());
-            supSubGroup = html.buildGroup(group.value.sup, newOptions, options);
-        } else {
-            newOptions = options.havingStyle(style.sub());
-            supSubGroup = html.buildGroup(group.value.sub, newOptions, options);
-        }
-        group = group.value.base;
+        supSubGroup = supSub.value.sup ?
+            html.buildGroup(
+                supSub.value.sup, options.havingStyle(style.sup()), options) :
+            html.buildGroup(
+                supSub.value.sub, options.havingStyle(style.sub()), options);
+        // The supsub `base` must be non-null in this context. Otherwise,
+        // this `htmlBuilder` handler wouldn't have been invoked.
+        // $FlowFixMe
+        const base: ParseNode<*> = supSub.value.base;
+        group = assertNodeType(base, "horizBrace");
+    } else {
+        group = assertNodeType(grp, "horizBrace");
     }
 
     // Build the base group
@@ -46,6 +57,7 @@ function htmlBuilder(group, options) {
                 {type: "elem", elem: braceBody},
             ],
         }, options);
+        // $FlowFixMe: Replace this with passing "svg-align" into makeVList.
         vlist.children[0].children[0].children[1].classes.push("svg-align");
     } else {
         vlist = buildCommon.makeVList({
@@ -57,10 +69,11 @@ function htmlBuilder(group, options) {
                 {type: "elem", elem: body},
             ],
         }, options);
+        // $FlowFixMe: Replace this with passing "svg-align" into makeVList.
         vlist.children[0].children[0].children[0].classes.push("svg-align");
     }
 
-    if (hasSupSub) {
+    if (supSubGroup) {
         // To write the supsub, wrap the first vlist in another vlist:
         // They can't all go in the same vlist, because the note might be
         // wider than the equation. We want the equation to control the
@@ -109,12 +122,11 @@ defineFunction({
         numArgs: 1,
     },
     handler(context, args) {
-        const base = args[0];
         return {
             type: "horizBrace",
             label: context.funcName,
             isOver: /^\\over/.test(context.funcName),
-            base: base,
+            base: args[0],
         };
     },
     htmlBuilder,
