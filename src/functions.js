@@ -2,7 +2,6 @@
 /** Include this to ensure that all functions are defined. */
 import {
     default as _defineFunction,
-    ordargument,
     _functions,
 } from "./defineFunction";
 
@@ -124,20 +123,7 @@ import "./functions/cr";
 import "./functions/environment";
 
 // Box manipulation
-defineFunction("raisebox", ["\\raisebox"], {
-    numArgs: 2,
-    argTypes: ["size", "text"],
-    allowedInText: true,
-}, function(context, args) {
-    const amount = args[0];
-    const body = args[1];
-    return {
-        type: "raisebox",
-        dy: amount,
-        body: body,
-        value: ordargument(body),
-    };
-});
+import "./functions/raisebox";
 
 import "./functions/verb";
 
