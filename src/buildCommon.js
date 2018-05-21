@@ -222,10 +222,10 @@ const boldsymbol = function(
 /**
  * Makes either a mathord or textord in the correct font and color.
  */
-const makeOrd = function<NODETYPE: "spacing" | "textord" | "mathord">(
+const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     group: ParseNode<NODETYPE>,
     options: Options,
-    type: NODETYPE | "textord",
+    type: "mathord" | "textord",
 ): domTree.symbolNode {
     const mode = group.mode;
     const value = group.value;
