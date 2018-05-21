@@ -208,11 +208,11 @@ export default function defineFunction<NODETYPE: NodeType>({
  */
 export function defineFunctionBuilders<NODETYPE: NodeType>({
     type, htmlBuilder, mathmlBuilder,
-}: {
+}: {|
     type: NODETYPE,
     htmlBuilder: HtmlBuilder<NODETYPE>,
     mathmlBuilder: MathMLBuilder<NODETYPE>,
-}) {
+|}) {
     defineFunction({
         type,
         names: [],
