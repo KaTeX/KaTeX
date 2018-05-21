@@ -9,14 +9,15 @@ import domTree from "./domTree";
 import fontMetrics from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
-import stretchy from "./stretchy";
+import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
 
 import type Options from "./Options";
 import type ParseNode from "./ParseNode";
+import type {NodeType} from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {Mode} from "./types";
-import type {DomChildNode, CombinableDomNode, CssStyle} from "./domTree";
+import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
 
 // The following have to be loaded from Main-Italic font, using class mainit
@@ -33,7 +34,7 @@ const mainitLetters = [
 const lookupSymbol = function(
     value: string,
     // TODO(#963): Use a union type for this.
-    fontFamily: string,
+    fontName: string,
     mode: Mode,
 ): {value: string, metrics: ?CharacterMetrics} {
     // Replace the value with its replaced value from symbol.js
@@ -42,7 +43,7 @@ const lookupSymbol = function(
     }
     return {
         value: value,
-        metrics: fontMetrics.getCharacterMetrics(value, fontFamily, mode),
+        metrics: fontMetrics.getCharacterMetrics(value, fontName, mode),
     };
 };
 
@@ -58,12 +59,12 @@ const lookupSymbol = function(
  */
 const makeSymbol = function(
     value: string,
-    fontFamily: string,
+    fontName: string,
     mode: Mode,
     options?: Options,
     classes?: string[],
 ): domTree.symbolNode {
-    const lookup = lookupSymbol(value, fontFamily, mode);
+    const lookup = lookupSymbol(value, fontName, mode);
     const metrics = lookup.metrics;
     value = lookup.value;
 
@@ -80,7 +81,7 @@ const makeSymbol = function(
         // TODO(emily): Figure out a good way to only print this in development
         typeof console !== "undefined" && console.warn(
             "No character metrics for '" + value + "' in style '" +
-                fontFamily + "'");
+                fontName + "'");
         symbolNode = new domTree.symbolNode(value, 0, 0, 0, 0, 0, classes);
     }
 
@@ -117,7 +118,7 @@ const mathsym = function(
     // text ordinal and is therefore not present as a symbol in the symbols
     // table for text, as well as a special case for boldsymbol because it
     // can be used for bold + and -
-    if ((options && options.fontFamily && options.fontFamily === "boldsymbol") &&
+    if ((options && options.font && options.font === "boldsymbol") &&
             lookupSymbol(value, "Main-Bold", mode).metrics) {
         return makeSymbol(value, "Main-Bold", mode, options,
             classes.concat(["mathbf"]));
@@ -137,7 +138,7 @@ const mathDefault = function(
     mode: Mode,
     options: Options,
     classes: string[],
-    type: string, // TODO(#892): Use ParseNode type here.
+    type: NodeType,
 ): domTree.symbolNode {
     if (type === "mathord") {
         const fontLookup = mathit(value, mode, options, classes);
@@ -221,37 +222,42 @@ const boldsymbol = function(
 /**
  * Makes either a mathord or textord in the correct font and color.
  */
-const makeOrd = function(
-    group: ParseNode,
+const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
+    group: ParseNode<NODETYPE>,
     options: Options,
-    type: string, // TODO(#892): Use ParseNode type here.
+    type: "mathord" | "textord",
 ): domTree.symbolNode {
     const mode = group.mode;
     const value = group.value;
 
     const classes = ["mord"];
 
-    const fontFamily = options.fontFamily;
-    if (fontFamily) {
+    // Math mode or Old font (i.e. \rm)
+    const isFont = mode === "math" || (mode === "text" && options.font);
+    const fontOrFamily = isFont ? options.font : options.fontFamily;
+    if (value.charCodeAt(0) === 0xD835) {
+        // surrogate pairs get special treatment
+        const [wideFontName, wideFontClass] = wideCharacterFont(value, mode);
+        return makeSymbol(value, wideFontName, mode, options, [wideFontClass]);
+    } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
-        if (fontFamily === "boldsymbol") {
+        if (fontOrFamily === "boldsymbol") {
             const fontData = boldsymbol(value, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
-        } else if (fontFamily === "mathit" ||
+        } else if (fontOrFamily === "mathit" ||
                    utils.contains(mainitLetters, value)) {
             const fontData = mathit(value, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
-        } else if (fontFamily.indexOf("math") !== -1 || mode === "math") {
-            // To support old font functions (i.e. \rm \sf etc.) or math mode.
-            fontName = fontMap[fontFamily].fontName;
-            fontClasses = [fontFamily];
+        } else if (isFont) {
+            fontName = fontMap[fontOrFamily].fontName;
+            fontClasses = [fontOrFamily];
         } else {
-            fontName = retrieveTextFontName(fontFamily, options.fontWeight,
+            fontName = retrieveTextFontName(fontOrFamily, options.fontWeight,
                                             options.fontShape);
-            fontClasses = [fontFamily, options.fontWeight, options.fontShape];
+            fontClasses = [fontOrFamily, options.fontWeight, options.fontShape];
         }
         if (lookupSymbol(value, fontName, mode).metrics) {
             return makeSymbol(value, fontName, mode, options,
@@ -268,9 +274,7 @@ const makeOrd = function(
  * Combine as many characters as possible in the given array of characters
  * via their tryCombine method.
  */
-const tryCombineChars = function(
-    chars: CombinableDomNode[],
-): CombinableDomNode[] {
+const tryCombineChars = function(chars: HtmlDomNode[]): HtmlDomNode[] {
     for (let i = 0; i < chars.length - 1; i++) {
         if (chars[i].tryCombine(chars[i + 1])) {
             chars.splice(i + 1, 1);
@@ -285,7 +289,7 @@ const tryCombineChars = function(
  * children.
  */
 const sizeElementFromChildren = function(
-    elem: domTree.span | domTree.anchor | domTree.documentFragment,
+    elem: DomSpan | domTree.anchor | domTree.documentFragment,
 ) {
     let height = 0;
     let depth = 0;
@@ -318,10 +322,10 @@ const sizeElementFromChildren = function(
  */
 const makeSpan = function(
     classes?: string[],
-    children?: DomChildNode[],
+    children?: HtmlDomNode[],
     options?: Options,
     style?: CssStyle,
-): domTree.span {
+): DomSpan {
     const span = new domTree.span(classes, children, options, style);
 
     sizeElementFromChildren(span);
@@ -329,17 +333,23 @@ const makeSpan = function(
     return span;
 };
 
+// SVG one is simpler -- doesn't require height, depth, max-font setting.
+// This is also a separate method for typesafety.
+const makeSvgSpan = (
+    classes?: string[],
+    children?: domTree.svgNode[],
+    options?: Options,
+    style?: CssStyle,
+): SvgSpan => new domTree.span(classes, children, options, style);
+
 const makeLineSpan = function(
     className: string,
     options: Options,
+    thickness?: number,
 ) {
-    // Return a span with an SVG image of a horizontal line. The SVG path
-    // fills the middle fifth of the span. We want an extra tall span
-    // because Chrome will sometimes not display a span that is 0.04em tall.
-    const lineHeight = options.fontMetrics().defaultRuleThickness;
-    const line = stretchy.ruleSpan(className, lineHeight, options);
-    line.height = lineHeight;
-    line.style.height = 5 * line.height + "em";
+    const line = makeSpan([className], [], options);
+    line.height = thickness || options.fontMetrics().defaultRuleThickness;
+    line.style.borderBottomWidth = line.height + "em";
     line.maxFontSize = 1.0;
     return line;
 };
@@ -351,7 +361,7 @@ const makeLineSpan = function(
 const makeAnchor = function(
     href: string,
     classes: string[],
-    children: DomChildNode[],
+    children: HtmlDomNode[],
     options: Options,
 ) {
     const anchor = new domTree.anchor(href, classes, children, options);
@@ -365,7 +375,7 @@ const makeAnchor = function(
  * Makes a document fragment with the given list of children.
  */
 const makeFragment = function(
-    children: DomChildNode[],
+    children: HtmlDomNode[],
 ): domTree.documentFragment {
     const fragment = new domTree.documentFragment(children);
 
@@ -376,9 +386,9 @@ const makeFragment = function(
 
 
 // These are exact object types to catch typos in the names of the optional fields.
-type VListElem = {|
+export type VListElem = {|
     type: "elem",
-    elem: DomChildNode,
+    elem: HtmlDomNode,
     marginLeft?: string,
     marginRight?: string,
     wrapperClasses?: string[],
@@ -386,7 +396,7 @@ type VListElem = {|
 |};
 type VListElemAndShift = {|
     type: "elem",
-    elem: DomChildNode,
+    elem: HtmlDomNode,
     shift: number,
     marginLeft?: string,
     marginRight?: string,
@@ -490,7 +500,7 @@ const getVListChildrenAndDepth = function(params: VListParam): {
  *
  * See VListParam documentation above.
  */
-const makeVList = function(params: VListParam, options: Options): domTree.span {
+const makeVList = function(params: VListParam, options: Options): DomSpan {
     const {children, depth} = getVListChildrenAndDepth(params);
 
     // Create a strut that is taller than any list item. The strut is added to
@@ -549,7 +559,13 @@ const makeVList = function(params: VListParam, options: Options): domTree.span {
     // A second row is used if necessary to represent the vlist's depth.
     let rows;
     if (minPos < 0) {
-        const depthStrut = makeSpan(["vlist"], []);
+        // We will define depth in an empty span with display: table-cell.
+        // It should render with the height that we define. But Chrome, in
+        // contenteditable mode only, treats that span as if it contains some
+        // text content. And that min-height over-rides our desired height.
+        // So we put another empty span inside the depth strut span.
+        const emptySpan = makeSpan([], []);
+        const depthStrut = makeSpan(["vlist"], [emptySpan]);
         depthStrut.style.height = -minPos + "em";
 
         // Safari wants the first row to have inline content; otherwise it
@@ -572,9 +588,7 @@ const makeVList = function(params: VListParam, options: Options): domTree.span {
 };
 
 // Converts verb group into body string, dealing with \verb* form
-const makeVerb = function(group: ParseNode, options: Options): string {
-    // TODO(#892): Make ParseNode type-safe and confirm `group.type` to guarantee
-    // that `group.value.body` is of type string.
+const makeVerb = function(group: ParseNode<"verb">, options: Options): string {
     let text = group.value.body;
     if (group.value.star) {
         text = text.replace(/ /g, '\u2423');  // Open Box
@@ -588,9 +602,9 @@ const makeVerb = function(group: ParseNode, options: Options): string {
 // Glue is a concept from TeX which is a flexible space between elements in
 // either a vertical or horizontal list.  In KaTeX, at least for now, it's
 // static space between elements in a horizontal layout.
-const makeGlue = (measurement: Measurement, options: Options): domTree.span => {
-    // Make an empty span for the rule
-    const rule = makeSpan(["mord", "rule"], [], options);
+const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
+    // Make an empty span for the space
+    const rule = makeSpan(["mspace"], [], options);
     const size = calculateSize(measurement, options);
     rule.style.marginRight = `${size}em`;
     return rule;
@@ -602,14 +616,8 @@ const retrieveTextFontName = function(
     fontWeight: string,
     fontShape: string,
 ): string {
-    const baseFontName = retrieveBaseFontName(fontFamily);
-    const fontStylesName = retrieveFontStylesName(fontWeight, fontShape);
-    return `${baseFontName}-${fontStylesName}`;
-};
-
-const retrieveBaseFontName = function(font: string): string {
     let baseFontName = "";
-    switch (font) {
+    switch (fontFamily) {
         case "amsrm":
             baseFontName = "AMS";
             break;
@@ -623,23 +631,44 @@ const retrieveBaseFontName = function(font: string): string {
             baseFontName = "Typewriter";
             break;
         default:
-            throw new Error(`Invalid font provided: ${font}`);
+            throw new Error(`Invalid font provided: ${fontFamily}`);
     }
-    return baseFontName;
+
+    let fontStylesName;
+    if (fontWeight === "textbf" && fontShape === "textit") {
+        fontStylesName = "BoldItalic";
+    } else if (fontWeight === "textbf") {
+        fontStylesName = "Bold";
+    } else if (fontWeight === "textit") {
+        fontStylesName = "Italic";
+    } else {
+        fontStylesName = "Regular";
+    }
+
+    return `${baseFontName}-${fontStylesName}`;
 };
 
-const retrieveFontStylesName = function(
-    fontWeight?: string,
-    fontShape?: string,
-): string {
-    let fontStylesName = '';
-    if (fontWeight === "textbf") {
-        fontStylesName += "Bold";
-    }
-    if (fontShape === "textit") {
-        fontStylesName += "Italic";
-    }
-    return fontStylesName || "Regular";
+// A map of CSS-based spacing functions to their CSS class.
+const cssSpace: {[string]: string} = {
+    "\\nobreak": "nobreak",
+    "\\allowbreak": "allowbreak",
+};
+
+// A lookup table to determine whether a spacing function/symbol should be
+// treated like a regular space character.  If a symbol or command is a key
+// in this table, then it should be a regular space character.  Furthermore,
+// the associated value may have a `className` specifying an extra CSS class
+// to add to the created `span`.
+const regularSpace: {[string]: { className?: string }} = {
+    " ": {},
+    "\\ ": {},
+    "~": {
+        className: "nobreak",
+    },
+    "\\space": {},
+    "\\nobreakspace": {
+        className: "nobreak",
+    },
 };
 
 /**
@@ -702,7 +731,7 @@ const svgData: {
     vec: ["vec", 0.471, 0.714],  // values from the font glyph
 };
 
-const staticSvg = function(value: string, options: Options): domTree.span {
+const staticSvg = function(value: string, options: Options): SvgSpan {
     // Create a span with inline SVG for the element.
     const [pathName, width, height] = svgData[value];
     const path = new domTree.pathNode(pathName);
@@ -714,7 +743,7 @@ const staticSvg = function(value: string, options: Options): domTree.span {
         "viewBox": "0 0 " + 1000 * width + " " + 1000 * height,
         "preserveAspectRatio": "xMinYMin",
     });
-    const span = makeSpan(["overlay"], [svgNode], options);
+    const span = makeSvgSpan(["overlay"], [svgNode], options);
     span.height = height;
     span.style.height = height + "em";
     span.style.width = width + "em";
@@ -726,6 +755,7 @@ export default {
     makeSymbol,
     mathsym,
     makeSpan,
+    makeSvgSpan,
     makeLineSpan,
     makeAnchor,
     makeFragment,
@@ -736,4 +766,6 @@ export default {
     staticSvg,
     svgData,
     tryCombineChars,
+    cssSpace,
+    regularSpace,
 };

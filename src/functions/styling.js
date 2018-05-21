@@ -30,18 +30,22 @@ defineFunction({
         parser.consumeSpaces();
         const body = parser.parseExpression(true, breakOnTokenText);
 
+        // TODO: Refactor to avoid duplicating styleMap in multiple places (e.g.
+        // here and in buildHTML and de-dupe the enumeration of all the styles).
+        // $FlowFixMe: The names above exactly match the styles.
+        const style: StyleStr = funcName.slice(1, funcName.length - 5);
         return {
             type: "styling",
             // Figure out what style to use by pulling out the style from
             // the function name
-            style: funcName.slice(1, funcName.length - 5),
+            style,
             value: body,
         };
     },
     htmlBuilder: (group, options) => {
         // Style changes are handled in the TeXbook on pg. 442, Rule 3.
         const newStyle = styleMap[group.value.style];
-        const newOptions = options.havingStyle(newStyle);
+        const newOptions = options.havingStyle(newStyle).withFont('');
         return sizingGroup(group.value.value, newOptions, options);
     },
     mathmlBuilder: (group, options) => {

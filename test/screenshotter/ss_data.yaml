@@ -124,6 +124,7 @@ GroupMacros:
         \startExp: e^\bgroup
         \endExp: \egroup
     tex: \startExp a+b\endExp
+Hline: \begin{array}{c|c}\hline \hline \hline  a & b \\ \hline \hline \hline c & d \end{array}  \quad \frac{\begin{pmatrix} a & b \\ \hline c & d \\ \hline \hline \hline\end{pmatrix}} 2  \quad \begin{bmatrix}\hline  a & b \\ \hline c & d \\ \hline e & f \end{bmatrix}
 HorizontalBraces: \overbrace{\displaystyle{\oint_S{\vec E\cdot\hat n\,\mathrm d a}}}^\text{emf} = \underbrace{\frac{q_{\text{enc}}}{\varepsilon_0}}_{\text{charge}}
 KaTeX:
     tex: \KaTeX
@@ -144,12 +145,27 @@ LeftRightStyleSizing: |
 LimitControls: |
     \displaystyle\int\limits_2^3 3x^2\,dx + \sum\nolimits^n_{i=1}i +
     \textstyle\int\limits_x^y z
+LineBreak: |
+    \frac{x^2}{y^2} + z^2 =
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} +\nobreak z^2 =
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} + ~ z^2 =
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} + \hspace{1em} z^2 =
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} + z^2 = \hspace*{1em}
+    z^2 + \frac{x^2}{y^2} =
+    \frac{x^2}{y^2} + z^2 =
+    hi \allowbreak there =
+    hi \allowbreak there
 LowerAccent: |
     \begin{matrix}
         \underleftarrow{AB} \quad \underrightarrow{AB} \quad \underleftrightarrow{AB} \quad \undergroup{AB} \\
         \underlinesegment{AB} \quad \utilde{AB}  \quad \color{green}{\underrightarrow{AB}} \\
         \underrightarrow{F} + \underrightarrow{AB} + \underrightarrow{AB}^2 + \underrightarrow{AB}_2 \\
-        \frac{\underrightarrow{AB}}{\underrightarrow{AB}} + \sqrt{\underrightarrow{AB}} + \left\lvert\underrightarrow{AB}\right\rvert
+        \frac{\underrightarrow{AB}}{\underrightarrow{AB}} + \sqrt{\underrightarrow{AB}} + \left\lvert\underrightarrow{AB}\right\rvert \\
+        \text{\underline{text}}
     \end{matrix}
 MathAtom: a\mathrel{\mathop{=}\limits^{\blue ?}}b
 MathAtom2: \mathop{\overline{\mathrm{lim}}}\limits_{x\to\infty}f(x)
@@ -185,9 +201,20 @@ ModSpacing: |
         (a \cdot b) \mathbin{\mathrm{mod}} 257
     \end{array}
 NegativeSpaceBetweenRel: A =\!= B
+NegativeSpace:
+    tex: \fbox{\$1,\!000,\!000}\KaTeX
+    post: .
 NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
     {\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
+NewLine: |
+    \frac{a^2+b^2}{c^2} \newline
+    \frac{a^2+b^2}{c^2} \\[1ex]
+    \begin{pmatrix}
+        a & b \\
+        c & d \cr
+    \end{pmatrix} \\
+    a+b+c+{d+\\e}+f+g
 Not: |
     \begin{array}{l}
         \not=\not>\not\geq\not\in\not<\not\leq\not{abc} \\
@@ -214,7 +241,7 @@ OpLimits: |
 OverUnderline: x\underline{x}\underline{\underline{x}}\underline{x_{x_{x_x}}}\underline{x^{x^{x^x}}}\overline{x}\overline{x}\overline{x^{x^{x^x}}} \blue{\overline{\underline{x}}\underline{\overline{x}}}
 OverUnderset: |
     \begin{array}{l}
-    x\overset?=1\\
+    x\overset?=1 \quad \underset{*}{x}^2 \quad \overset{a}{b}b\underset{a}{b}b \\
     {\displaystyle\lim_{t\underset{>0}\to0}}\\
     a+b+c+d\overset{b+c=0}\longrightarrow a+d\\
     \overset { x = y } { \sqrt { a b } }
@@ -288,6 +315,12 @@ SupSubHorizSpacing: |
 SupSubLeftAlignReset: |
     \omega^8_{888} \quad \frac{1}{\hat{\omega}^{8}_{888}} \quad \displaystyle\sum_{\omega^{8}_{888}}
 SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
+SurrogatePairs: |
+    \begin{array}{l}
+        𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜 \\
+        \text{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜} \\
+        \mathrm{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜}
+    \end{array}
 SvgReset:
     # This math uses a lot of SVG glyphs
     tex: '\underbrace{\sqrt{\vec{x}} + \sqrt{\vec{\color{#f00}y}}}'
@@ -299,7 +332,16 @@ SvgReset:
 Symbols1: |
     \maltese\degree\pounds\$
     \text{\maltese\degree\pounds\textdollar}
+Tag:
+    tex: \tag{$+$hi} \frac{x^2}{y}+x^{2^y}
+    display: 1
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
+TextSpace:
+  \begin{array}{l}
+    \texttt{12345678901234} \\
+    \texttt{A test  1~~2\ \ 3} \\
+    \verb|A test 1  2  3|
+  \end{array}
 TextStacked:
   \begin{matrix}
       \textsf{abc123 \textbf{abc123} \textit{abc123}}\\
@@ -308,7 +350,13 @@ TextStacked:
       \textsf{\textrm{\textbf{abc123}} \textbf{abc123} \textit{abc123}}\\
       \textit{abc123 \textbf{abc123} \textsf{abc123}}\\
   \end{matrix}
-TextWithMath: \text{for $a < b$ and $ c < d $}.
+TextWithMath: 
+  \begin{matrix}
+      \text{for $a < b$ and $ c < d $}. \\
+      \textsf{for $a < b$ and $ c < d $}. \\
+      \textsf{for $a < b \textbf{ and } c < d $} \\
+      \text{\sf for $a < b$ and $c < d$.}
+  \end{matrix}
 Unicode: \begin{matrix}\text{ÀàÇçÉéÏïÖöÛû} \\ \text{БГДЖЗЙЛФЦШЫЮЯ} \\ \text{여보세요} \\ \text{私はバナナです} \end{matrix}
 Units: |
     \begin{array}{ll}
@@ -336,6 +384,7 @@ Verb: |
       \verb* \verb* , & \verb*|\verb* |, \\
       \verb!<x> & </y>! & \scriptstyle\verb|ss verb| \\
       \verb*!<x> & </y>! & \small\verb|sm verb| \\
+      \verb|``---''~|
     \end{array}
 VerticalSpacing:
     pre: potato<br>blah

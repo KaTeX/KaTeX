@@ -72,8 +72,9 @@ const htmlBuilder = (group, options) => {
     // If content of op is a single symbol, shift it vertically.
     let baseShift = 0;
     let slant = 0;
-    if (base instanceof domTree.symbolNode) {
-        // Shift the symbol so its center lies on the axis (rule 13). It
+    if (base instanceof domTree.symbolNode && !group.value.suppressBaseShift) {
+        // We suppress the shift of the base of \overset and \underset. Otherwise,
+        // shift the symbol so its center lies on the axis (rule 13). It
         // appears that our fonts have the centers of the symbols already
         // almost on the axis, so these numbers are very small. Note we
         // don't actually apply this here, but instead it is used either in
@@ -215,6 +216,10 @@ const mathmlBuilder = (group, options) => {
         const operator = new mathMLTree.MathNode("mo",
             [mml.makeText("\u2061", "text")]);
 
+        // TODO: Refactor to not return an HTML DOM object from MathML builder
+        // or refactor documentFragment to be standalone and explicitly reusable
+        // for both HTML and MathML DOM operations. In either case, update the
+        // return type of `mathBuilder` in `defineFunction` to accommodate.
         return new domTree.documentFragment([node, operator]);
     }
 
@@ -279,6 +284,108 @@ defineFunction({
             limits: false,
             symbol: false,
             value: ordargument(body),
+        };
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+// There are 2 flags for operators; whether they produce limits in
+// displaystyle, and whether they are symbols and should grow in
+// displaystyle. These four groups cover the four possible choices.
+
+const singleCharIntegrals: {[string]: string} = {
+    "\u222b": "\\int",
+    "\u222c": "\\iint",
+    "\u222d": "\\iiint",
+    "\u222e": "\\oint",
+};
+
+defineFunction({
+    type: "op",
+    names: ["\\mathop"],
+    props: {
+        numArgs: 1,
+    },
+    handler: (context, args) => {
+        const body = args[0];
+        return {
+            type: "op",
+            limits: false,
+            symbol: false,
+            value: ordargument(body),
+        };
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+// No limits, not symbols
+defineFunction({
+    type: "op",
+    names: [
+        "\\arcsin", "\\arccos", "\\arctan", "\\arctg", "\\arcctg",
+        "\\arg", "\\ch", "\\cos", "\\cosec", "\\cosh", "\\cot", "\\cotg",
+        "\\coth", "\\csc", "\\ctg", "\\cth", "\\deg", "\\dim", "\\exp",
+        "\\hom", "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin",
+        "\\sinh", "\\sh", "\\tan", "\\tanh", "\\tg", "\\th",
+    ],
+    props: {
+        numArgs: 0,
+    },
+    handler(context) {
+        return {
+            type: "op",
+            limits: false,
+            symbol: false,
+            body: context.funcName,
+        };
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+// Limits, not symbols
+defineFunction({
+    type: "op",
+    names: [
+        "\\det", "\\gcd", "\\inf", "\\lim", "\\max", "\\min", "\\Pr", "\\sup",
+    ],
+    props: {
+        numArgs: 0,
+    },
+    handler(context) {
+        return {
+            type: "op",
+            limits: true,
+            symbol: false,
+            body: context.funcName,
+        };
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+// No limits, symbols
+defineFunction({
+    type: "op",
+    names: [
+        "\\int", "\\iint", "\\iiint", "\\oint", "\u222b", "\u222c",
+        "\u222d", "\u222e",
+    ],
+    props: {
+        numArgs: 0,
+    },
+    handler(context) {
+        let fName = context.funcName;
+        if (fName.length === 1) {
+            fName = singleCharIntegrals[fName];
+        }
+        return {
+            type: "op",
+            limits: false,
+            symbol: true,
+            body: fName,
         };
     },
     htmlBuilder,

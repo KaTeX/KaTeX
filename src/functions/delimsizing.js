@@ -5,13 +5,12 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
-import { calculateSize } from "../units";
-import { spacings, tightSpacings } from "../spacingData";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type ParseNode from "../ParseNode";
+import type {LeftRightDelimType} from "../ParseNode";
 import type {FunctionContext} from "../defineFunction";
 
 // Extra data needed for the delimiter handler down below
@@ -37,10 +36,12 @@ const delimiterSizes = {
 const delimiters = [
     "(", ")", "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
-    "\\lfloor", "\\rfloor", "\\lceil", "\\rceil",
+    "\\lfloor", "\\rfloor", "\u230a", "\u230b",
+    "\\lceil", "\\rceil", "\u2308", "\u2309",
     "<", ">", "\\langle", "\u27e8", "\\rangle", "\u27e9", "\\lt", "\\gt",
     "\\lvert", "\\rvert", "\\lVert", "\\rVert",
-    "\\lgroup", "\\rgroup", "\\lmoustache", "\\rmoustache",
+    "\\lgroup", "\\rgroup", "\u27ee", "\u27ef",
+    "\\lmoustache", "\\rmoustache", "\u23b0", "\u23b1",
     "/", "\\backslash",
     "|", "\\vert", "\\|", "\\Vert",
     "\\uparrow", "\\Uparrow",
@@ -50,7 +51,10 @@ const delimiters = [
 ];
 
 // Delimiter functions
-function checkDelimiter(delim: ParseNode, context: FunctionContext): ParseNode {
+function checkDelimiter(
+    delim: ParseNode<*>,
+    context: FunctionContext,
+): ParseNode<*> {
     if (utils.contains(delimiters, delim.value)) {
         return delim;
     } else {
@@ -119,6 +123,15 @@ defineFunction({
     },
 });
 
+
+function leftRightGroupValue(group: ParseNode<"leftright">): LeftRightDelimType {
+    if (!group.value.body) {
+        throw new Error("Bug: The leftright ParseNode wasn't fully parsed.");
+    }
+    return group.value;
+}
+
+
 defineFunction({
     type: "leftright",
     names: [
@@ -160,8 +173,10 @@ defineFunction({
         }
     },
     htmlBuilder: (group, options) => {
+        const groupValue = leftRightGroupValue(group);
         // Build the inner expression
-        const inner = html.buildExpression(group.value.body, options, true);
+        const inner = html.buildExpression(groupValue.body, options, true,
+            [null, "mclose"]);
 
         let innerHeight = 0;
         let innerDepth = 0;
@@ -184,14 +199,14 @@ defineFunction({
         innerDepth *= options.sizeMultiplier;
 
         let leftDelim;
-        if (group.value.left === ".") {
+        if (groupValue.left === ".") {
             // Empty delimiters in \left and \right make null delimiter spaces.
             leftDelim = html.makeNullDelimiter(options, ["mopen"]);
         } else {
             // Otherwise, use leftRightDelim to generate the correct sized
             // delimiter.
             leftDelim = delimiter.leftRightDelim(
-                group.value.left, innerHeight, innerDepth, options,
+                groupValue.left, innerHeight, innerDepth, options,
                 group.mode, ["mopen"]);
         }
         // Add it to the beginning of the expression
@@ -210,25 +225,13 @@ defineFunction({
             }
         }
 
-        const lastChildType = html.getTypeOfDomTree(inner[inner.length - 1]);
-        const activeSpacings = options.style.isTight() ? tightSpacings : spacings;
-
-        if (lastChildType && activeSpacings[lastChildType]["mclose"]) {
-            const glue =
-                buildCommon.makeSpan(["mord", "rule"], [], options);
-            const dimension =
-                calculateSize(activeSpacings[lastChildType]["mclose"], options);
-            glue.style.marginRight = `${dimension}em`;
-            inner.push(glue);
-        }
-
         let rightDelim;
         // Same for the right delimiter
-        if (group.value.right === ".") {
+        if (groupValue.right === ".") {
             rightDelim = html.makeNullDelimiter(options, ["mclose"]);
         } else {
             rightDelim = delimiter.leftRightDelim(
-                group.value.right, innerHeight, innerDepth, options,
+                groupValue.right, innerHeight, innerDepth, options,
                 group.mode, ["mclose"]);
         }
         // Add it to the end of the expression.
@@ -237,20 +240,21 @@ defineFunction({
         return buildCommon.makeSpan(["minner"], inner, options);
     },
     mathmlBuilder: (group, options) => {
-        const inner = mml.buildExpression(group.value.body, options);
+        const groupValue = leftRightGroupValue(group);
+        const inner = mml.buildExpression(groupValue.body, options);
 
-        if (group.value.left !== ".") {
+        if (groupValue.left !== ".") {
             const leftNode = new mathMLTree.MathNode(
-                "mo", [mml.makeText(group.value.left, group.mode)]);
+                "mo", [mml.makeText(groupValue.left, group.mode)]);
 
             leftNode.setAttribute("fence", "true");
 
             inner.unshift(leftNode);
         }
 
-        if (group.value.right !== ".") {
+        if (groupValue.right !== ".") {
             const rightNode = new mathMLTree.MathNode(
-                "mo", [mml.makeText(group.value.right, group.mode)]);
+                "mo", [mml.makeText(groupValue.right, group.mode)]);
 
             rightNode.setAttribute("fence", "true");
 
@@ -288,13 +292,20 @@ defineFunction({
             middleDelim = delimiter.sizedDelim(
                 group.value.value, 1, options,
                 group.mode, []);
-            middleDelim.isMiddle = {value: group.value.value, options: options};
+
+            // Property `isMiddle` not defined on `span`. It is only used in
+            // this file above. Fixing this correctly requires refactoring the
+            // htmlBuilder return type to support passing additional data.
+            // An easier, but unideal option would be to add `isMiddle` to
+            // `span` just for this case.
+            // $FlowFixMe
+            middleDelim.isMiddle = {value: group.value.value, options};
         }
         return middleDelim;
     },
     mathmlBuilder: (group, options) => {
         const middleNode = new mathMLTree.MathNode(
-            "mo", [mml.makeText(group.value.middle, group.mode)]);
+            "mo", [mml.makeText(group.value.value, group.mode)]);
         middleNode.setAttribute("fence", "true");
         return middleNode;
     },

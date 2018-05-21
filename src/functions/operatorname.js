@@ -1,4 +1,5 @@
 // @flow
+import ParseNode from "../ParseNode";
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
@@ -29,17 +30,21 @@ defineFunction({
             let letter = "";
             let mode = "";
 
-            for (const child of group.value.value) {
+            const groupValue = group.value.value.map(child => {
+                const childValue = child.value;
                 // In the amsopn package, \newmcodes@ changes four
                 // characters, *-/:’, from math operators back into text.
-                if ("*-/:".indexOf(child.value) !== -1) {
-                    child.type = "textord";
+                if (typeof childValue === "string" &&
+                    "*-/:".indexOf(childValue) !== -1) {
+                    return new ParseNode("textord", childValue, child.mode);
+                } else {
+                    return child;
                 }
-            }
+            });
 
             // Consolidate Greek letter function names into symbol characters.
             const temp = html.buildExpression(
-                group.value.value, options.withFontFamily("mathrm"), true);
+                groupValue, options.withFont("mathrm"), true);
 
             // All we want from temp are the letters. With them, we'll
             // create a text operator similar to \tan or \cos.
@@ -69,7 +74,7 @@ defineFunction({
         let output = [];
         if (group.value.value.length > 0) {
             const temp = mml.buildExpression(
-                group.value.value, options.withFontFamily("mathrm"));
+                group.value.value, options.withFont("mathrm"));
 
             let word = temp.map(node => node.toText()).join("");
 

@@ -8,12 +8,18 @@ import fontMetricsData from "../submodules/katex-fonts/fontMetricsData";
 import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
+import ParseError from "./ParseError";
 
 /**
  * Provides context to macros defined by functions. Implemented by
  * MacroExpander.
  */
 export interface MacroContextInterface {
+    /**
+     * Object mapping macros to their expansions.
+     */
+    macros: MacroMap;
+
     /**
      * Returns the topmost token on the stack, without expanding it.
      * Similar in behavior to TeX's `\futurelet`.
@@ -95,6 +101,42 @@ defineMacro("\\TextOrMath", function(context) {
     }
 });
 
+// Basic support for global macro definitions:
+//     \gdef\macro{expansion}
+//     \gdef\macro#1{expansion}
+//     \gdef\macro#1#2{expansion}
+//     \gdef\macro#1#2#3#4#5#6#7#8#9{expansion}
+defineMacro("\\gdef", function(context) {
+    let arg = context.consumeArgs(1)[0];
+    if (arg.length !== 1) {
+        throw new ParseError("\\gdef's first argument must be a macro name");
+    }
+    const name = arg[0].text;
+    // Count argument specifiers, and check they are in the order #1 #2 ...
+    let numArgs = 0;
+    arg = context.consumeArgs(1)[0];
+    while (arg.length === 1 && arg[0].text === "#") {
+        arg = context.consumeArgs(1)[0];
+        if (arg.length !== 1) {
+            throw new ParseError(`Invalid argument number length "${arg.length}"`);
+        }
+        if (!(/^[1-9]$/.test(arg[0].text))) {
+            throw new ParseError(`Invalid argument number "${arg[0].text}"`);
+        }
+        numArgs++;
+        if (parseInt(arg[0].text) !== numArgs) {
+            throw new ParseError(`Argument number "${arg[0].text}" out of order`);
+        }
+        arg = context.consumeArgs(1)[0];
+    }
+    // Final arg is the expansion of the macro
+    context.macros[name] = {
+        tokens: arg,
+        numArgs,
+    };
+    return '';
+});
+
 //////////////////////////////////////////////////////////////////////
 // Grouping
 // \let\bgroup={ \let\egroup=}
@@ -117,6 +159,16 @@ defineMacro("\\rbrack", "]");
 defineMacro("\\aa", "\\r a");
 defineMacro("\\AA", "\\r A");
 
+// \DeclareTextCommandDefault{\textcopyright}{\textcircled{c}}
+// \DeclareTextCommandDefault{\textregistered}{\textcircled{%
+//      \check@mathfonts\fontsize\sf@size\z@\math@fontsfalse\selectfont R}}
+// \DeclareRobustCommand{\copyright}{%
+//    \ifmmode{\nfss@text{\textcopyright}}\else\textcopyright\fi}
+defineMacro("\\textcopyright", "\\textcircled{c}");
+defineMacro("\\copyright",
+    "\\TextOrMath{\\textcopyright}{\\text{\\textcopyright}}");
+defineMacro("\\textregistered", "\\textcircled{\\scriptsize R}");
+
 // Unicode double-struck letters
 defineMacro("\u2102", "\\mathbb{C}");
 defineMacro("\u210D", "\\mathbb{H}");
@@ -125,6 +177,21 @@ defineMacro("\u2119", "\\mathbb{P}");
 defineMacro("\u211A", "\\mathbb{Q}");
 defineMacro("\u211D", "\\mathbb{R}");
 defineMacro("\u2124", "\\mathbb{Z}");
+
+defineMacro("\u210E", "\\mathit{h}");   // Planck constant
+
+// Characters omitted from Unicode range 1D400–1D7FF
+defineMacro("\u212C", "\\mathscr{B}");  // script
+defineMacro("\u2130", "\\mathscr{E}");
+defineMacro("\u2131", "\\mathscr{F}");
+defineMacro("\u210B", "\\mathscr{H}");
+defineMacro("\u2110", "\\mathscr{I}");
+defineMacro("\u2112", "\\mathscr{L}");
+defineMacro("\u2133", "\\mathscr{M}");
+defineMacro("\u211B", "\\mathscr{R}");
+defineMacro("\u212D", "\\mathfrak{C}");  // Fraktur
+defineMacro("\u210C", "\\mathfrak{H}");
+defineMacro("\u2128", "\\mathfrak{Z}");
 
 // Unicode middle dot
 // The KaTeX fonts do not contain U+00B7. Instead, \cdotp displays
@@ -135,6 +202,16 @@ defineMacro("\u00b7", "\\cdotp");
 defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
 defineMacro("\\rlap", "\\mathrlap{\\textrm{#1}}");
 defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
+
+// Unicode stacked relations
+defineMacro("\u2258",
+    "\\mathrel{=\\kern{-1em}\\raisebox{0.4em}{$\\scriptsize\\frown$}}");
+defineMacro("\u2259", "\\stackrel{\\tiny\\wedge}{=}");
+defineMacro("\u225A", "\\stackrel{\\tiny\\vee}{=}");
+defineMacro("\u225B", "\\stackrel{\\scriptsize\\star}{=}");
+defineMacro("\u225D", "\\stackrel{\\tiny\\mathrm{def}}{=}");
+defineMacro("\u225E", "\\stackrel{\\tiny\\mathrm{m}}{=}");
+defineMacro("\u225F", "\\stackrel{\\tiny?}{=}");
 
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
@@ -153,10 +230,6 @@ defineMacro("\\varUpsilon", "\\mathit{\\Upsilon}");
 defineMacro("\\varPhi", "\\mathit{\\Phi}");
 defineMacro("\\varPsi", "\\mathit{\\Psi}");
 defineMacro("\\varOmega", "\\mathit{\\Omega}");
-
-// \def\overset#1#2{\binrel@{#2}\binrel@@{\mathop{\kern\z@#2}\limits^{#1}}}
-defineMacro("\\overset", "\\mathop{#2}\\limits^{#1}");
-defineMacro("\\underset", "\\mathop{#2}\\limits_{#1}");
 
 // \newcommand{\boxed}[1]{\fbox{\m@th$\displaystyle#1$}}
 defineMacro("\\boxed", "\\fbox{\\displaystyle{#1}}");
@@ -357,8 +430,21 @@ defineMacro("\\quad", "\\hskip1em\\relax");
 // \def\qquad{\hskip2em\relax}
 defineMacro("\\qquad", "\\hskip2em\\relax");
 
+// \tag@in@display form of \tag
+defineMacro("\\tag", "\\@ifstar\\tag@literal\\tag@paren");
+defineMacro("\\tag@paren", "\\tag@literal{({#1})}");
+defineMacro("\\tag@literal", (context) => {
+    if (context.macros["\\df@tag"]) {
+        throw new ParseError("Multiple \\tag");
+    }
+    return "\\gdef\\df@tag{\\text{#1}}";
+});
+
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
+
+// \\ defaults to \newline, but changes to \cr within array environment
+defineMacro("\\\\", "\\newline");
 
 // \def\TeX{T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX\@}
 // TODO: Doesn't normally work in math mode because \@ fails.  KaTeX doesn't
@@ -393,8 +479,11 @@ defineMacro("\\KaTeX",
 
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
 // \def\@hspace#1{\hskip  #1\relax}
-// KaTeX doesn't do line breaks, so \hspace and \hspace* are the same as \kern
-defineMacro("\\hspace", "\\@ifstar\\kern\\kern");
+// \def\@hspacer#1{\vrule \@width\z@\nobreak
+//                 \hskip #1\hskip \z@skip}
+defineMacro("\\hspace", "\\@ifstar\\@hspacer\\@hspace");
+defineMacro("\\@hspace", "\\hskip #1\\relax");
+defineMacro("\\@hspacer", "\\rule{0pt}{0pt}\\hskip #1\\relax");
 
 //////////////////////////////////////////////////////////////////////
 // mathtools.sty

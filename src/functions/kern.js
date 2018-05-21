@@ -1,12 +1,10 @@
 //@flow
-/* eslint no-console:0 */
 // Horizontal spacing commands
 
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import { calculateSize } from "../units";
-import ParseError from "../ParseError";
 
 // TODO: \hskip and \mskip should support plus and minus in lengths
 
@@ -19,22 +17,24 @@ defineFunction({
         allowedInText: true,
     },
     handler: (context, args) => {
-        const mathFunction = (context.funcName[1] === 'm');  // \mkern, \mskip
-        const muUnit = (args[0].value.unit === 'mu');
-        if (mathFunction) {
-            if (!muUnit) {
-                typeof console !== "undefined" && console.warn(
-                    `In LaTeX, ${context.funcName} supports only mu units, ` +
-                    `not ${args[0].value.unit} units`);
-            }
-            if (context.parser.mode !== "math") {
-                throw new ParseError(
-                    `Can't use function '${context.funcName}' in text mode`);
-            }
-        } else {  // !mathFunction
-            if (muUnit) {
-                typeof console !== "undefined" && console.warn(
-                    `In LaTeX, ${context.funcName} does not support mu units`);
+        if (context.parser.settings.strict) {
+            const mathFunction = (context.funcName[1] === 'm');  // \mkern, \mskip
+            const muUnit = (args[0].value.unit === 'mu');
+            if (mathFunction) {
+                if (!muUnit) {
+                    context.parser.settings.reportNonstrict("mathVsTextUnits",
+                        `LaTeX's ${context.funcName} supports only mu units, ` +
+                        `not ${args[0].value.unit} units`);
+                }
+                if (context.parser.mode !== "math") {
+                    context.parser.settings.reportNonstrict("mathVsTextUnits",
+                        `LaTeX's ${context.funcName} works only in math mode`);
+                }
+            } else {  // !mathFunction
+                if (muUnit) {
+                    context.parser.settings.reportNonstrict("mathVsTextUnits",
+                        `LaTeX's ${context.funcName} doesn't support mu units`);
+                }
             }
         }
         return {

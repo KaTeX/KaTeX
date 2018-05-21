@@ -24,12 +24,14 @@ export type MathNodeType =
     "mrow" | "menclose" |
     "mstyle" | "mpadded" | "mphantom";
 
+export type MathNodeClass = MathNode | TextNode | SpaceNode;
+
 /**
  * This node represents a general purpose MathML node of any type. The
  * constructor requires the type of node to create (for example, `"mo"` or
  * `"mspace"`, corresponding to `<mo>` and `<mspace>` tags).
  */
-class MathNode {
+export class MathNode {
     type: MathNodeType;
     attributes: {[string]: string};
     children: (MathNode | TextNode)[];
@@ -105,7 +107,7 @@ class MathNode {
 /**
  * This node represents a piece of text.
  */
-class TextNode {
+export class TextNode {
     text: string;
 
     constructor(text: string) {

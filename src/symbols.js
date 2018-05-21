@@ -19,10 +19,14 @@
 
 import type {Mode} from "./types";
 
-type Font = "main" | "ams";
-type Group =
-    "accent" | "bin" | "close" | "inner" | "mathord" | "op" | "open" | "punct" |
-    "rel" | "spacing" | "textord";
+type Font = "main" | "ams"
+// Some of these have a "-token" suffix since these are also used as `ParseNode`
+// types for raw text tokens, and we want to avoid conflicts with higher-level
+// `ParseNode` types. These `ParseNode`s are constructed within `Parser` by
+// looking up the `symbols` map.
+export type Group =
+    "accent-token" | "bin" | "close" | "inner" | "mathord" |
+    "op-token" | "open" | "punct" | "rel" | "spacing" | "textord";
 type CharInfoMap = {[string]: {font: Font, group: Group, replace: ?string}};
 
 const symbols: {[Mode]: CharInfoMap} = {
@@ -32,7 +36,7 @@ const symbols: {[Mode]: CharInfoMap} = {
 export default symbols;
 
 /** `acceptUnicodeChar = true` is only applicable if `replace` is set. */
-function defineSymbol(
+export function defineSymbol(
     mode: Mode,
     font: Font,
     group: Group,
@@ -59,12 +63,12 @@ const main = "main";
 const ams = "ams";
 
 // groups:
-const accent = "accent";
+const accent = "accent-token";
 const bin = "bin";
 const close = "close";
 const inner = "inner";
 const mathord = "mathord";
-const op = "op";
+const op = "op-token";
 const open = "open";
 const punct = "punct";
 const rel = "rel";
@@ -83,7 +87,7 @@ defineSymbol(math, main, rel, "\u2aaf", "\\preceq", true);
 defineSymbol(math, main, rel, "\u2ab0", "\\succeq", true);
 defineSymbol(math, main, rel, "\u2243", "\\simeq", true);
 defineSymbol(math, main, rel, "\u2223", "\\mid", true);
-defineSymbol(math, main, rel, "\u226a", "\\ll");
+defineSymbol(math, main, rel, "\u226a", "\\ll", true);
 defineSymbol(math, main, rel, "\u226b", "\\gg", true);
 defineSymbol(math, main, rel, "\u224d", "\\asymp", true);
 defineSymbol(math, main, rel, "\u2225", "\\parallel");
@@ -110,7 +114,7 @@ defineSymbol(math, main, textord, "\u0026", "\\&");
 defineSymbol(text, main, textord, "\u0026", "\\&");
 defineSymbol(math, main, textord, "\u2135", "\\aleph", true);
 defineSymbol(math, main, textord, "\u2200", "\\forall", true);
-defineSymbol(math, main, textord, "\u210f", "\\hbar");
+defineSymbol(math, main, textord, "\u210f", "\\hbar", true);
 defineSymbol(math, main, textord, "\u2203", "\\exists", true);
 defineSymbol(math, main, textord, "\u2207", "\\nabla", true);
 defineSymbol(math, main, textord, "\u266d", "\\flat", true);
@@ -136,10 +140,10 @@ defineSymbol(text, main, textord, "\u2021", "\\ddag");
 defineSymbol(text, main, textord, "\u2020", "\\textdaggerdbl");
 
 // Large Delimiters
-defineSymbol(math, main, close, "\u23b1", "\\rmoustache");
-defineSymbol(math, main, open, "\u23b0", "\\lmoustache");
-defineSymbol(math, main, close, "\u27ef", "\\rgroup");
-defineSymbol(math, main, open, "\u27ee", "\\lgroup");
+defineSymbol(math, main, close, "\u23b1", "\\rmoustache", true);
+defineSymbol(math, main, open, "\u23b0", "\\lmoustache", true);
+defineSymbol(math, main, close, "\u27ef", "\\rgroup", true);
+defineSymbol(math, main, open, "\u27ee", "\\lgroup", true);
 
 // Binary Operators
 defineSymbol(math, main, bin, "\u2213", "\\mp", true);
@@ -267,7 +271,7 @@ defineSymbol(math, ams, textord, "\u29eb", "\\blacklozenge");
 defineSymbol(math, ams, textord, "\u2605", "\\bigstar");
 defineSymbol(math, ams, textord, "\u2222", "\\sphericalangle", true);
 defineSymbol(math, ams, textord, "\u2201", "\\complement", true);
-// unicode-math maps U+F0 to \matheth. We map to AMS function \eth
+// unicode-math maps U+F0 (ð) to \matheth. We map to AMS function \eth
 defineSymbol(math, ams, textord, "\u00f0", "\\eth", true);
 defineSymbol(math, ams, textord, "\u2571", "\\diagup");
 defineSymbol(math, ams, textord, "\u2572", "\\diagdown");
@@ -276,6 +280,7 @@ defineSymbol(math, ams, textord, "\u25a1", "\\Box");
 defineSymbol(math, ams, textord, "\u25ca", "\\Diamond");
 // unicode-math maps U+A5 to \mathyen. We map to AMS function \yen
 defineSymbol(math, ams, textord, "\u00a5", "\\yen", true);
+defineSymbol(text, ams, textord, "\u00a5", "\\yen", true);
 defineSymbol(math, ams, textord, "\u2713", "\\checkmark", true);
 defineSymbol(text, ams, textord, "\u2713", "\\checkmark");
 
@@ -289,10 +294,10 @@ defineSymbol(math, ams, textord, "\u03dd", "\\digamma");
 defineSymbol(math, ams, textord, "\u03f0", "\\varkappa");
 
 // AMS Delimiters
-defineSymbol(math, ams, open, "\u250c", "\\ulcorner");
-defineSymbol(math, ams, close, "\u2510", "\\urcorner");
-defineSymbol(math, ams, open, "\u2514", "\\llcorner");
-defineSymbol(math, ams, close, "\u2518", "\\lrcorner");
+defineSymbol(math, ams, open, "\u250c", "\\ulcorner", true);
+defineSymbol(math, ams, close, "\u2510", "\\urcorner", true);
+defineSymbol(math, ams, open, "\u2514", "\\llcorner", true);
+defineSymbol(math, ams, close, "\u2518", "\\lrcorner", true);
 
 // AMS Binary Relations
 defineSymbol(math, ams, rel, "\u2266", "\\leqq", true);
@@ -302,7 +307,7 @@ defineSymbol(math, ams, rel, "\u2272", "\\lesssim");
 defineSymbol(math, ams, rel, "\u2a85", "\\lessapprox");
 defineSymbol(math, ams, rel, "\u224a", "\\approxeq", true);
 defineSymbol(math, ams, bin, "\u22d6", "\\lessdot");
-defineSymbol(math, ams, rel, "\u22d8", "\\lll");
+defineSymbol(math, ams, rel, "\u22d8", "\\lll", true);
 defineSymbol(math, ams, rel, "\u2276", "\\lessgtr");
 defineSymbol(math, ams, rel, "\u22da", "\\lesseqgtr");
 defineSymbol(math, ams, rel, "\u2a8b", "\\lesseqqgtr");
@@ -459,6 +464,19 @@ defineSymbol(math, main, textord, "\u03a5", "\\Upsilon", true);
 defineSymbol(math, main, textord, "\u03a6", "\\Phi", true);
 defineSymbol(math, main, textord, "\u03a8", "\\Psi", true);
 defineSymbol(math, main, textord, "\u03a9", "\\Omega", true);
+defineSymbol(math, main, textord, "A", "\u0391");
+defineSymbol(math, main, textord, "B", "\u0392");
+defineSymbol(math, main, textord, "E", "\u0395");
+defineSymbol(math, main, textord, "Z", "\u0396");
+defineSymbol(math, main, textord, "H", "\u0397");
+defineSymbol(math, main, textord, "I", "\u0399");
+defineSymbol(math, main, textord, "K", "\u039A");
+defineSymbol(math, main, textord, "M", "\u039C");
+defineSymbol(math, main, textord, "N", "\u039D");
+defineSymbol(math, main, textord, "O", "\u039F");
+defineSymbol(math, main, textord, "P", "\u03A1");
+defineSymbol(math, main, textord, "T", "\u03A4");
+defineSymbol(math, main, textord, "X", "\u03A7");
 defineSymbol(math, main, textord, "\u00ac", "\\neg");
 defineSymbol(math, main, textord, "\u00ac", "\\lnot");
 defineSymbol(math, main, textord, "\u22a4", "\\top");
@@ -562,6 +580,8 @@ defineSymbol(text, main, spacing, "\u00a0", "\\ ");
 defineSymbol(text, main, spacing, "\u00a0", "~");
 defineSymbol(text, main, spacing, "\u00a0", "\\space");
 defineSymbol(text, main, spacing, "\u00a0", "\\nobreakspace");
+defineSymbol(math, main, spacing, null, "\\nobreak");
+defineSymbol(math, main, spacing, null, "\\allowbreak");
 defineSymbol(math, main, punct, ",", ",");
 defineSymbol(math, main, punct, ";", ";");
 defineSymbol(math, main, punct, ":", "\\colon");
@@ -593,10 +613,10 @@ defineSymbol(math, main, open, "[", "\\lbrack");
 defineSymbol(math, main, close, "]", "\\rbrack");
 defineSymbol(text, main, textord, "<", "\\textless"); // in T1 fontenc
 defineSymbol(text, main, textord, ">", "\\textgreater"); // in T1 fontenc
-defineSymbol(math, main, open, "\u230a", "\\lfloor");
-defineSymbol(math, main, close, "\u230b", "\\rfloor");
-defineSymbol(math, main, open, "\u2308", "\\lceil");
-defineSymbol(math, main, close, "\u2309", "\\rceil");
+defineSymbol(math, main, open, "\u230a", "\\lfloor", true);
+defineSymbol(math, main, close, "\u230b", "\\rfloor", true);
+defineSymbol(math, main, open, "\u2308", "\\lceil", true);
+defineSymbol(math, main, close, "\u2309", "\\rceil", true);
 defineSymbol(math, main, textord, "\\", "\\backslash");
 defineSymbol(math, main, textord, "\u2223", "|");
 defineSymbol(math, main, textord, "\u2223", "\\vert");
@@ -604,6 +624,7 @@ defineSymbol(text, main, textord, "|", "\\textbar"); // in T1 fontenc
 defineSymbol(math, main, textord, "\u2225", "\\|");
 defineSymbol(math, main, textord, "\u2225", "\\Vert");
 defineSymbol(text, main, textord, "\u2225", "\\textbardbl");
+defineSymbol(text, main, textord, "~", "\\textasciitilde");
 defineSymbol(math, main, rel, "\u2191", "\\uparrow", true);
 defineSymbol(math, main, rel, "\u21d1", "\\Uparrow", true);
 defineSymbol(math, main, rel, "\u2193", "\\downarrow", true);
@@ -669,6 +690,7 @@ defineSymbol(text, main, accent, "\u02da", "\\r"); // ring above
 defineSymbol(text, main, accent, "\u02c7", "\\v"); // caron
 defineSymbol(text, main, accent, "\u00a8", '\\"'); // diaresis
 defineSymbol(text, main, accent, "\u02dd", "\\H"); // double acute
+defineSymbol(text, main, accent, "\u25ef", "\\textcircled"); // \bigcirc glyph
 
 defineSymbol(text, main, textord, "\u2013", "--");
 defineSymbol(text, main, textord, "\u2013", "\\textendash");
@@ -682,8 +704,11 @@ defineSymbol(text, main, textord, "\u201c", "``");
 defineSymbol(text, main, textord, "\u201c", "\\textquotedblleft");
 defineSymbol(text, main, textord, "\u201d", "''");
 defineSymbol(text, main, textord, "\u201d", "\\textquotedblright");
-defineSymbol(math, main, textord, "\u00b0", "\\degree");
+//  \degree from gensymb package
+defineSymbol(math, main, textord, "\u00b0", "\\degree", true);
 defineSymbol(text, main, textord, "\u00b0", "\\degree");
+// \textdegree from inputenc package
+defineSymbol(text, main, textord, "\u00b0", "\\textdegree", true);
 // TODO: In LaTeX, \pounds can generate a different character in text and math
 // mode, but among our fonts, only Main-Italic defines this character "163".
 defineSymbol(math, main, mathord, "\u00a3", "\\pounds");
@@ -698,7 +723,6 @@ defineSymbol(text, main, spacing, "\u00a0", " ");
 defineSymbol(text, main, spacing, "\u00a0", "~");
 
 // There are lots of symbols which are the same, so we add them in afterwards.
-
 // All of these are textords in math mode
 const mathTextSymbols = "0123456789/@.\"";
 for (let i = 0; i < mathTextSymbols.length; i++) {
@@ -714,28 +738,108 @@ for (let i = 0; i < textSymbols.length; i++) {
 }
 
 // All of these are textords in text mode, and mathords in math mode
-const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 for (let i = 0; i < letters.length; i++) {
     const ch = letters.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
 
+// The next loop loads wide (surrogate pair) characters.
+// We support some letters in the Unicode range U+1D400 to U+1D7FF,
+// Mathematical Alphanumeric Symbols.
+// Some editors do not deal well with wide characters. So don't write the
+// string into this file. Instead, create the string from the surrogate pair.
+let wideChar = "";
+for (let i = 0; i < letters.length; i++) {
+    const ch = letters.charAt(i);
+
+    // The hex numbers in the next line are a surrogate pair.
+    // 0xD835 is the high surrogate for all letters in the range we support.
+    // 0xDC00 is the low surrogate for bold A.
+    wideChar = String.fromCharCode(0xD835, 0xDC00 + i);  // A-Z a-z bold
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDC34 + i);  // A-Z a-z italic
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDC68 + i);  // A-Z a-z bold italic
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDD04 + i);  // A-Z a-z Fractur
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDDA0 + i);  // A-Z a-z sans-serif
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDDD4 + i);  // A-Z a-z sans bold
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDE08 + i);  // A-Z a-z sans italic
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDE70 + i);  // A-Z a-z monospace
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    if (i < 26) {
+        // KaTeX fonts have only capital letters for blackboard bold and script.
+        // See exception for k below.
+        wideChar = String.fromCharCode(0xD835, 0xDD38 + i); // A-Z double struck
+        defineSymbol(math, main, mathord, ch, wideChar);
+        defineSymbol(text, main, textord, ch, wideChar);
+
+        wideChar = String.fromCharCode(0xD835, 0xDC9C + i); // A-Z script
+        defineSymbol(math, main, mathord, ch, wideChar);
+        defineSymbol(text, main, textord, ch, wideChar);
+    }
+
+    // TODO: Add bold script when it is supported by a KaTeX font.
+}
+// "k" is the only double struck lower case letter in the KaTeX fonts.
+wideChar = String.fromCharCode(0xD835, 0xDD5C);   // k double struck
+defineSymbol(math, main, mathord, "k", wideChar);
+defineSymbol(text, main, textord, "k", wideChar);
+
+// Next, some wide character numerals
+for (let i = 0; i < 10; i++) {
+    const ch = letters.charAt(i);
+
+    wideChar = String.fromCharCode(0xD835, 0xDFCE + i);  // 0-9 bold
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDFE2 + i);  // 0-9 sans serif
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDFEC + i);  // 0-9 bold sans
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDFF6 + i);  // 0-9 monospace
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+}
+
 // We add these Latin-1 letters as symbols for backwards-compatibility,
 // but they are not actually in the font, nor are they supported by the
 // Unicode accent mechanism, so they fall back to Times font and look ugly.
 // TODO(edemaine): Fix this.
-const extraLatin = "ÇÐÞçðþ";
+export const extraLatin = "ÇÐÞçþ";
 for (let i = 0; i < extraLatin.length; i++) {
     const ch = extraLatin.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
-const extraLatinMath = "Åå";
-for (let i = 0; i < extraLatinMath.length; i++) {
-    const ch = extraLatinMath.charAt(i);
-    defineSymbol(math, main, mathord, ch, ch);
-}
+defineSymbol(text, main, textord, "ð", "ð");
 
 // Unicode versions of existing characters
 defineSymbol(text, main, textord, "\u2013", "–");
