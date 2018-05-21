@@ -242,28 +242,6 @@ export const makeNullDelimiter = function(options, classes) {
  * Simpler types come at the beginning, while complicated types come afterwards.
  */
 export const groupTypes = {
-    mathord: (group, options) => buildCommon.makeOrd(group, options, "mathord"),
-
-    textord: (group, options) => buildCommon.makeOrd(group, options, "textord"),
-
-    bin: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mbin"]),
-
-    rel: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mrel"]),
-
-    open: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mopen"]),
-
-    close: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mclose"]),
-
-    inner: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["minner"]),
-
-    punct: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mpunct"]),
-
     ordgroup: (group, options) => makeSpan(
         ["mord"], buildExpression(group.value, options, true), options),
 
