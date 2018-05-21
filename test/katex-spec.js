@@ -12,7 +12,7 @@ import Settings from "../src/Settings";
 import Style from "../src/Style";
 import {
     defaultSettings,
-    _getBuilt, getBuilt, getParsed, stripPositions,
+    getBuilt, getParsed, stripPositions,
 } from "./helpers";
 
 const defaultOptions = new Options({
@@ -218,24 +218,21 @@ describe("A subscript and superscript parser", function() {
     });
 
     it("should produce the same thing regardless of order", function() {
-        const parseA = stripPositions(getParsed("x^2_3"));
-        const parseB = stripPositions(getParsed("x_3^2"));
-
-        expect(parseA).toEqual(parseB);
+        expect("x^2_3").toParseLike("x_3^2");
     });
 
     it("should not parse double subscripts or superscripts", function() {
-        expect("x^x^x").toNotParse();
+        expect("x^x^x").not.toParse();
 
-        expect("x_x_x").toNotParse();
+        expect("x_x_x").not.toParse();
 
-        expect("x_x^x_x").toNotParse();
+        expect("x_x^x_x").not.toParse();
 
-        expect("x_x^x^x").toNotParse();
+        expect("x_x^x^x").not.toParse();
 
-        expect("x^x_x_x").toNotParse();
+        expect("x^x_x_x").not.toParse();
 
-        expect("x^x_x^x").toNotParse();
+        expect("x^x_x^x").not.toParse();
     });
 
     it("should work correctly with {}s", function() {
@@ -275,9 +272,9 @@ describe("A subscript and superscript tree-builder", function() {
 
 describe("A parser with limit controls", function() {
     it("should fail when the limit control is not preceded by an op node", function() {
-        expect("3\\nolimits_2^2").toNotParse();
-        expect("\\sqrt\\limits_2^2").toNotParse();
-        expect("45 +\\nolimits 45").toNotParse();
+        expect("3\\nolimits_2^2").not.toParse();
+        expect("\\sqrt\\limits_2^2").not.toParse();
+        expect("45 +\\nolimits 45").not.toParse();
     });
 
     it("should parse when the limit control directly follows an op node", function() {
@@ -400,17 +397,17 @@ describe("A function parser", function() {
     });
 
     it("should not parse 1 argument functions with no arguments", function() {
-        expect("\\blue").toNotParse();
+        expect("\\blue").not.toParse();
     });
 
     it("should not parse 2 argument functions with 0 or 1 arguments", function() {
-        expect("\\frac").toNotParse();
+        expect("\\frac").not.toParse();
 
-        expect("\\frac 1").toNotParse();
+        expect("\\frac 1").not.toParse();
     });
 
     it("should not parse a function with text right after it", function() {
-        expect("\\redx").toNotParse();
+        expect("\\redx").not.toParse();
     });
 
     it("should parse a function with a number right after it", function() {
@@ -552,10 +549,10 @@ describe("An over parser", function() {
 
     it("should fail with multiple overs in the same group", function() {
         const badMultipleOvers = "1 \\over 2 + 3 \\over 4";
-        expect(badMultipleOvers).toNotParse();
+        expect(badMultipleOvers).not.toParse();
 
         const badOverChoose = "1 \\over 2 \\choose 3";
-        expect(badOverChoose).toNotParse();
+        expect(badOverChoose).not.toParse();
     });
 });
 
@@ -604,11 +601,11 @@ describe("A text parser", function() {
     });
 
     it("should not parse bad text", function() {
-        expect(badTextExpression).toNotParse();
+        expect(badTextExpression).not.toParse();
     });
 
     it("should not parse bad functions inside text", function() {
-        expect(badFunctionExpression).toNotParse();
+        expect(badFunctionExpression).not.toParse();
     });
 
     it("should parse text with no braces around it", function() {
@@ -655,28 +652,28 @@ describe("A text parser", function() {
     });
 
     it("should forbid \\( within math mode", function() {
-        expect("\\(").toNotParse();
-        expect("\\text{$\\(x\\)$}").toNotParse();
+        expect("\\(").not.toParse();
+        expect("\\text{$\\(x\\)$}").not.toParse();
     });
 
     it("should forbid $ within math mode", function() {
-        expect("$x$").toNotParse();
-        expect("\\text{\\($x$\\)}").toNotParse();
+        expect("$x$").not.toParse();
+        expect("\\text{\\($x$\\)}").not.toParse();
     });
 
     it("should detect unbalanced \\)", function() {
-        expect("\\)").toNotParse();
-        expect("\\text{\\)}").toNotParse();
+        expect("\\)").not.toParse();
+        expect("\\text{\\)}").not.toParse();
     });
 
     it("should detect unbalanced $", function() {
-        expect("$").toNotParse();
-        expect("\\text{$}").toNotParse();
+        expect("$").not.toParse();
+        expect("\\text{$}").not.toParse();
     });
 
     it("should not mix $ and \\(..\\)", function() {
-        expect("\\text{$x\\)}").toNotParse();
-        expect("\\text{\\(x$}").toNotParse();
+        expect("\\text{$x\\)}").not.toParse();
+        expect("\\text{\\(x$}").not.toParse();
     });
 
     it("should parse spacing functions", function() {
@@ -726,9 +723,9 @@ describe("A color parser", function() {
     });
 
     it("should not parse a bad custom color", function() {
-        expect(badCustomColorExpression1).toNotParse();
-        expect(badCustomColorExpression2).toNotParse();
-        expect(badCustomColorExpression3).toNotParse();
+        expect(badCustomColorExpression1).not.toParse();
+        expect(badCustomColorExpression2).not.toParse();
+        expect(badCustomColorExpression3).not.toParse();
     });
 
     it("should parse new colors from the branding guide", function() {
@@ -738,8 +735,8 @@ describe("A color parser", function() {
     it("should have correct greediness", function() {
         expect("\\textcolor{red}a").toParse();
         expect("\\textcolor{red}{\\text{a}}").toParse();
-        expect("\\textcolor{red}\\text{a}").toNotParse();
-        expect("\\textcolor{red}\\frac12").toNotParse();
+        expect("\\textcolor{red}\\text{a}").not.toParse();
+        expect("\\textcolor{red}\\frac12").not.toParse();
     });
 
     it("should use one-argument \\color by default", function() {
@@ -803,7 +800,7 @@ describe("A delimiter sizing parser", function() {
     });
 
     it("should not parse not-delimiters", function() {
-        expect(notDelim).toNotParse();
+        expect(notDelim).not.toParse();
     });
 
     it("should produce a delimsizing", function() {
@@ -860,9 +857,9 @@ describe("An lap parser", function() {
     });
 
     it("should fail on math if AMS version is used", function() {
-        expect("\\rlap{\\frac{a}{b}}{=}").toNotParse();
-        expect("{=}\\llap{\\frac{a}{b}}").toNotParse();
-        expect("\\sum_{\\clap{\\frac{a}{b}}}").toNotParse();
+        expect("\\rlap{\\frac{a}{b}}{=}").not.toParse();
+        expect("{=}\\llap{\\frac{a}{b}}").not.toParse();
+        expect("\\sum_{\\clap{\\frac{a}{b}}}").not.toParse();
     });
 
     it("should produce a lap", function() {
@@ -886,13 +883,13 @@ describe("A rule parser", function() {
     });
 
     it("should not parse invalid units", function() {
-        expect(badUnitRule).toNotParse();
+        expect(badUnitRule).not.toParse();
 
-        expect(noNumberRule).toNotParse();
+        expect(noNumberRule).not.toParse();
     });
 
     it("should not parse incomplete rules", function() {
-        expect(incompleteRule).toNotParse();
+        expect(incompleteRule).not.toParse();
     });
 
     it("should produce a rule", function() {
@@ -948,8 +945,8 @@ describe("A kern parser", function() {
     });
 
     it("should not parse invalid units", function() {
-        expect(badUnitRule).toNotParse();
-        expect(noNumberRule).toNotParse();
+        expect(badUnitRule).not.toParse();
+        expect(noNumberRule).not.toParse();
     });
 
     it("should parse negative sizes", function() {
@@ -1006,8 +1003,8 @@ describe("A non-braced kern parser", function() {
     });
 
     it("should not parse invalid units", function() {
-        expect(badUnitRule).toNotParse();
-        expect(noNumberRule).toNotParse();
+        expect(badUnitRule).not.toParse();
+        expect(noNumberRule).not.toParse();
     });
 
     it("should parse negative sizes", function() {
@@ -1051,19 +1048,19 @@ describe("A left/right parser", function() {
         const unmatchedLeft = "\\left( \\dfrac{x}{y}";
         const unmatchedRight = "\\dfrac{x}{y} \\right)";
 
-        expect(unmatchedLeft).toNotParse();
+        expect(unmatchedLeft).not.toParse();
 
-        expect(unmatchedRight).toNotParse();
+        expect(unmatchedRight).not.toParse();
     });
 
     it("should error when braces are mismatched", function() {
         const unmatched = "{ \\left( \\dfrac{x}{y} } \\right)";
-        expect(unmatched).toNotParse();
+        expect(unmatched).not.toParse();
     });
 
     it("should error when non-delimiters are provided", function() {
         const nonDelimiter = "\\left$ \\dfrac{x}{y} \\right)";
-        expect(nonDelimiter).toNotParse();
+        expect(nonDelimiter).not.toParse();
     });
 
     it("should parse the empty '.' delimiter", function() {
@@ -1092,7 +1089,7 @@ describe("A left/right parser", function() {
 
     it("should error when \\middle is not in \\left...\\right", function() {
         const unmatchedMiddle = "(\\middle|\\dfrac{x}{y})";
-        expect(unmatchedMiddle).toNotParse();
+        expect(unmatchedMiddle).not.toParse();
     });
 });
 
@@ -1124,19 +1121,19 @@ describe("A begin/end parser", function() {
     });
 
     it("should error when name is mismatched", function() {
-        expect("\\begin{matrix}a&b\\\\c&d\\end{pmatrix}").toNotParse();
+        expect("\\begin{matrix}a&b\\\\c&d\\end{pmatrix}").not.toParse();
     });
 
     it("should error when commands are mismatched", function() {
-        expect("\\begin{matrix}a&b\\\\c&d\\right{pmatrix}").toNotParse();
+        expect("\\begin{matrix}a&b\\\\c&d\\right{pmatrix}").not.toParse();
     });
 
     it("should error when end is missing", function() {
-        expect("\\begin{matrix}a&b\\\\c&d").toNotParse();
+        expect("\\begin{matrix}a&b\\\\c&d").not.toParse();
     });
 
     it("should error when braces are mismatched", function() {
-        expect("{\\begin{matrix}a&b\\\\c&d}\\end{matrix}").toNotParse();
+        expect("{\\begin{matrix}a&b\\\\c&d}\\end{matrix}").not.toParse();
     });
 
     it("should cooperate with infix notation", function() {
@@ -1168,7 +1165,7 @@ describe("A sqrt parser", function() {
     });
 
     it("should error when there is no group", function() {
-        expect(missingGroup).toNotParse();
+        expect(missingGroup).not.toParse();
     });
 
     it("should produce sqrts", function() {
@@ -1194,13 +1191,13 @@ describe("A TeX-compliant parser", function() {
         ];
 
         for (let i = 0; i < missingGroups.length; i++) {
-            expect(missingGroups[i]).toNotParse();
+            expect(missingGroups[i]).not.toParse();
         }
     });
 
     it("should fail when there are missing sup/subscripts", function() {
-        expect("x^").toNotParse();
-        expect("x_").toNotParse();
+        expect("x^").not.toParse();
+        expect("x_").not.toParse();
     });
 
     it("should fail when arguments require arguments", function() {
@@ -1221,7 +1218,7 @@ describe("A TeX-compliant parser", function() {
         ];
 
         for (let i = 0; i < badArguments.length; i++) {
-            expect(badArguments[i]).toNotParse();
+            expect(badArguments[i]).not.toParse();
         }
     });
 
@@ -1252,7 +1249,7 @@ describe("A TeX-compliant parser", function() {
         ];
 
         for (let i = 0; i < badSupSubscripts.length; i++) {
-            expect(badSupSubscripts[i]).toNotParse();
+            expect(badSupSubscripts[i]).not.toParse();
         }
     });
 
@@ -1276,9 +1273,9 @@ describe("A TeX-compliant parser", function() {
     });
 
     it("should fail when sup/subscripts are interspersed with arguments", function() {
-        expect("\\sqrt^23").toNotParse();
-        expect("\\frac^234").toNotParse();
-        expect("\\frac2^34").toNotParse();
+        expect("\\sqrt^23").not.toParse();
+        expect("\\frac^234").not.toParse();
+        expect("\\frac2^34").not.toParse();
     });
 
     it("should succeed when sup/subscripts come after whole functions", function() {
@@ -1303,7 +1300,7 @@ describe("A TeX-compliant parser", function() {
         ];
 
         for (let i = 0; i < badLeftArguments.length; i++) {
-            expect(badLeftArguments[i]).toNotParse();
+            expect(badLeftArguments[i]).not.toParse();
         }
     });
 
@@ -1415,7 +1412,7 @@ describe("A font parser", function() {
     });
 
     it("should not parse a series of font commands", function() {
-        expect("\\mathbb \\mathrm R").toNotParse();
+        expect("\\mathbb \\mathrm R").not.toParse();
     });
 
     it("should nest fonts correctly", function() {
@@ -1448,7 +1445,7 @@ describe("A comment parser", function() {
     });
 
     it("should not parse a comment that isn't followed by a newline", () => {
-        expect("x%y").toNotParse();
+        expect("x%y").not.toParse();
     });
 
     it("should not produce or consume space", () => {
@@ -2051,8 +2048,8 @@ describe("A colorbox parser", function() {
     });
 
     it("should fail, given a math argument", function() {
-        expect("\\colorbox{red}{\\alpha}").toNotParse();
-        expect("\\colorbox{red}{\\frac{a}{b}}").toNotParse();
+        expect("\\colorbox{red}{\\alpha}").not.toParse();
+        expect("\\colorbox{red}{\\frac{a}{b}}").not.toParse();
     });
 
     it("should parse a color", function() {
@@ -2087,8 +2084,8 @@ describe("An fcolorbox parser", function() {
     });
 
     it("should fail, given a math argument", function() {
-        expect("\\fcolorbox{blue}{yellow}{\\alpha}").toNotParse();
-        expect("\\fcolorbox{blue}{yellow}{\\frac{a}{b}}").toNotParse();
+        expect("\\fcolorbox{blue}{yellow}{\\alpha}").not.toParse();
+        expect("\\fcolorbox{blue}{yellow}{\\frac{a}{b}}").not.toParse();
     });
 
     it("should parse a color", function() {
@@ -2273,11 +2270,11 @@ describe("An optional argument parser", function() {
     });
 
     it("should fail when the optional argument is malformed", function() {
-        expect("\\rule[1]{2em}{3em}").toNotParse();
+        expect("\\rule[1]{2em}{3em}").not.toParse();
     });
 
     it("should not work if the optional argument isn't closed", function() {
-        expect("\\sqrt[").toNotParse();
+        expect("\\sqrt[").not.toParse();
     });
 });
 
@@ -2330,7 +2327,7 @@ describe("An aligned environment", function() {
 
     it("should forbid cells in brackets without space", function() {
         expect("\\begin{aligned}[a]&[b]\\\\[c]&[d]\\end{aligned}")
-            .toNotParse();
+            .not.toParse();
     });
 
     it("should not eat the last row when its first cell is empty", function() {
@@ -2357,8 +2354,8 @@ describe("An href command", function() {
     });
 
     it("should not allow unbalanced brace(s) in url", function() {
-        expect("\\href{http://example.com/{a}{bar}").toNotParse();
-        expect("\\href{http://example.com/}a}{bar}").toNotParse();
+        expect("\\href{http://example.com/{a}{bar}").not.toParse();
+        expect("\\href{http://example.com/}a}{bar}").not.toParse();
     });
 
     it("should allow escape for letters [#$%&~_^{}]", function() {
@@ -2416,9 +2413,7 @@ describe("A parser that does not throw on unsupported commands", function() {
     });
 
     it("should build katex-error span for other type of KaTeX error", function() {
-        // Use _getBuilt instead of getBuilt to avoid calling expect...toParse
-        // and thus throwing parse error
-        const built = _getBuilt("2^2^2", noThrowSettings);
+        const built = getBuilt("2^2^2", noThrowSettings);
         expect(built).toMatchSnapshot();
     });
 
@@ -2671,14 +2666,14 @@ describe("A macro expander", function() {
             "\\text{hi Alice, hi Bob}");
         compareParseTree("\\gdef\\foo#1#2{(#1,#2)}\\foo 1 2+\\foo 3 4",
             "(1,2)+(3,4)");
-        expect("\\gdef\\foo#2{}").toNotParse();
-        expect("\\gdef\\foo#1#3{}").toNotParse();
+        expect("\\gdef\\foo#2{}").not.toParse();
+        expect("\\gdef\\foo#1#3{}").not.toParse();
         expect("\\gdef\\foo#1#2#3#4#5#6#7#8#9{}").toParse();
-        expect("\\gdef\\foo#1#2#3#4#5#6#7#8#9#10{}").toNotParse();
-        expect("\\gdef\\foo#{}").toNotParse();
+        expect("\\gdef\\foo#1#2#3#4#5#6#7#8#9#10{}").not.toParse();
+        expect("\\gdef\\foo#{}").not.toParse();
         expect("\\gdef\\foo\\bar").toParse();
-        expect("\\gdef{\\foo\\bar}{}").toNotParse();
-        expect("\\gdef{}{}").toNotParse();
+        expect("\\gdef{\\foo\\bar}{}").not.toParse();
+        expect("\\gdef{}{}").not.toParse();
     });
 
     // This may change in the future, if we support the extra features of
@@ -2703,11 +2698,11 @@ describe("\\tag support", function() {
     const displayMode = new Settings({displayMode: true});
 
     it("should fail outside display mode", () => {
-        expect("\\tag{hi}x+y").toNotParse();
+        expect("\\tag{hi}x+y").not.toParse();
     });
 
     it("should fail with multiple tags", () => {
-        expect("\\tag{1}\\tag{2}x+y").toNotParse(displayMode);
+        expect("\\tag{1}\\tag{2}x+y").not.toParse(displayMode);
     });
 
     it("should build", () => {
@@ -2778,8 +2773,8 @@ describe("Unicode accents", function() {
 
     it("should support \\aa in text mode", function() {
         expect("\\text{\\aa\\AA}").toParseLike("\\text{\\r a\\r A}");
-        expect("\\aa").toNotParse(new Settings({strict: true}));
-        expect("\\Aa").toNotParse(new Settings({strict: true}));
+        expect("\\aa").not.toParse(new Settings({strict: true}));
+        expect("\\Aa").not.toParse(new Settings({strict: true}));
     });
 
     it("should parse combining characters", function() {
@@ -2908,12 +2903,12 @@ describe("The maxExpand setting", () => {
     it("should prevent expansion", () => {
         expect("\\gdef\\foo{1}\\foo").toParse();
         expect("\\gdef\\foo{1}\\foo").toParse(new Settings({maxExpand: 2}));
-        expect("\\gdef\\foo{1}\\foo").toNotParse(new Settings({maxExpand: 1}));
-        expect("\\gdef\\foo{1}\\foo").toNotParse(new Settings({maxExpand: 0}));
+        expect("\\gdef\\foo{1}\\foo").not.toParse(new Settings({maxExpand: 1}));
+        expect("\\gdef\\foo{1}\\foo").not.toParse(new Settings({maxExpand: 0}));
     });
 
     it("should prevent infinite loops", () => {
-        expect("\\gdef\\foo{\\foo}\\foo").toNotParse(
+        expect("\\gdef\\foo{\\foo}\\foo").not.toParse(
             new Settings({maxExpand: 10}));
     });
 });
@@ -2954,7 +2949,7 @@ describe("Newlines via \\\\ and \\newline", function() {
     });
 
     it("should not allow \\cr at top level", () => {
-        expect("hello \\cr world").toNotBuild();
+        expect("hello \\cr world").not.toBuild();
     });
 });
 
@@ -2987,14 +2982,14 @@ describe("strict setting", function() {
     });
 
     it("should forbid unicode text when strict", () => {
-        expect("é").toNotParse(new Settings({strict: true}));
-        expect("試").toNotParse(new Settings({strict: true}));
-        expect("é").toNotParse(new Settings({strict: "error"}));
-        expect("試").toNotParse(new Settings({strict: "error"}));
-        expect("é").toNotParse(new Settings({strict: () => true}));
-        expect("試").toNotParse(new Settings({strict: () => true}));
-        expect("é").toNotParse(new Settings({strict: () => "error"}));
-        expect("試").toNotParse(new Settings({strict: () => "error"}));
+        expect("é").not.toParse(new Settings({strict: true}));
+        expect("試").not.toParse(new Settings({strict: true}));
+        expect("é").not.toParse(new Settings({strict: "error"}));
+        expect("試").not.toParse(new Settings({strict: "error"}));
+        expect("é").not.toParse(new Settings({strict: () => true}));
+        expect("試").not.toParse(new Settings({strict: () => true}));
+        expect("é").not.toParse(new Settings({strict: () => "error"}));
+        expect("試").not.toParse(new Settings({strict: () => "error"}));
     });
 
     it("should warn about unicode text when default", () => {

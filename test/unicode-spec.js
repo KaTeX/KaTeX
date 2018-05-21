@@ -15,7 +15,7 @@ describe("unicode", function() {
     it("should not parse Latin-1 outside \\text{} with strict", function() {
         const chars = 'ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿÇÐÞçþ';
         for (const ch of chars) {
-            expect(ch).toNotParse(strictSettings);
+            expect(ch).not.toParse(strictSettings);
         }
     });
 
@@ -37,7 +37,7 @@ describe("unicode", function() {
     });
 
     it("should not parse Cyrillic outside \\text{} with strict", function() {
-        expect('БГДЖЗЙЛФЦШЫЮЯ').toNotParse(strictSettings);
+        expect('БГДЖЗЙЛФЦШЫЮЯ').not.toParse(strictSettings);
     });
 
     it("should parse CJK inside \\text{}", function() {
@@ -46,8 +46,8 @@ describe("unicode", function() {
     });
 
     it("should not parse CJK outside \\text{} with strict", function() {
-        expect('私はバナナです。').toNotParse(strictSettings);
-        expect('여보세요').toNotParse(strictSettings);
+        expect('私はバナナです。').not.toParse(strictSettings);
+        expect('여보세요').not.toParse(strictSettings);
     });
 
     it("should parse Devangari inside \\text{}", function() {
@@ -55,7 +55,7 @@ describe("unicode", function() {
     });
 
     it("should not parse Devangari outside \\text{} with strict", function() {
-        expect('नमस्ते').toNotParse(strictSettings);
+        expect('नमस्ते').not.toParse(strictSettings);
     });
 
     it("should parse Georgian inside \\text{}", function() {
@@ -63,7 +63,7 @@ describe("unicode", function() {
     });
 
     it("should not parse Georgian outside \\text{} with strict", function() {
-        expect('გამარჯობა').toNotParse(strictSettings);
+        expect('გამარჯობა').not.toParse(strictSettings);
     });
 
     it("should parse extended Latin characters inside \\text{}", function() {
@@ -71,18 +71,18 @@ describe("unicode", function() {
     });
 
     it("should not parse extended Latin outside \\text{} with strict", function() {
-        expect('ěščřžůřťďňőİı').toNotParse(strictSettings);
+        expect('ěščřžůřťďňőİı').not.toParse(strictSettings);
     });
 
     it("should not allow emoji in strict mode", function() {
-        expect('✌').toNotParse(strictSettings);
-        expect('\\text{✌}').toNotParse(strictSettings);
+        expect('✌').not.toParse(strictSettings);
+        expect('\\text{✌}').not.toParse(strictSettings);
         const settings = new Settings({
             strict: (errorCode) =>
                 (errorCode === "unknownSymbol" ? "error" : "ignore"),
         });
-        expect('✌').toNotParse(settings);
-        expect('\\text{✌}').toNotParse(settings);
+        expect('✌').not.toParse(settings);
+        expect('\\text{✌}').not.toParse(settings);
     });
 
     it("should allow emoji outside strict mode", function() {
