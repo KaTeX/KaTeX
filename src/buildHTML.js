@@ -13,7 +13,6 @@ import Style from "./Style";
 import buildCommon from "./buildCommon";
 import domTree from "./domTree";
 import utils from "./utils";
-import stretchy from "./stretchy";
 import {spacings, tightSpacings} from "./spacingData";
 
 const makeSpan = buildCommon.makeSpan;
@@ -243,28 +242,6 @@ export const makeNullDelimiter = function(options, classes) {
  * Simpler types come at the beginning, while complicated types come afterwards.
  */
 export const groupTypes = {
-    mathord: (group, options) => buildCommon.makeOrd(group, options, "mathord"),
-
-    textord: (group, options) => buildCommon.makeOrd(group, options, "textord"),
-
-    bin: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mbin"]),
-
-    rel: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mrel"]),
-
-    open: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mopen"]),
-
-    close: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mclose"]),
-
-    inner: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["minner"]),
-
-    punct: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mpunct"]),
-
     ordgroup: (group, options) => makeSpan(
         ["mord"], buildExpression(group.value, options, true), options),
 
@@ -414,100 +391,6 @@ export const groupTypes = {
                 ["mspace", buildCommon.spacingFunctions[group.value].className],
                 [], options);
         }
-    },
-
-    horizBrace(group, options) {
-        const style = options.style;
-
-        const hasSupSub = (group.type === "supsub");
-        let supSubGroup;
-        let newOptions;
-        if (hasSupSub) {
-            // Ref: LaTeX source2e: }}}}\limits}
-            // i.e. LaTeX treats the brace similar to an op and passes it
-            // with \limits, so we need to assign supsub style.
-            if (group.value.sup) {
-                newOptions = options.havingStyle(style.sup());
-                supSubGroup = buildGroup(group.value.sup, newOptions, options);
-            } else {
-                newOptions = options.havingStyle(style.sub());
-                supSubGroup = buildGroup(group.value.sub, newOptions, options);
-            }
-            group = group.value.base;
-        }
-
-        // Build the base group
-        const body = buildGroup(
-            group.value.base, options.havingBaseStyle(Style.DISPLAY));
-
-        // Create the stretchy element
-        const braceBody = stretchy.svgSpan(group, options);
-
-        // Generate the vlist, with the appropriate kerns        ┏━━━━━━━━┓
-        // This first vlist contains the content and the brace:   equation
-        let vlist;
-        if (group.value.isOver) {
-            vlist = buildCommon.makeVList({
-                positionType: "firstBaseline",
-                children: [
-                    {type: "elem", elem: body},
-                    {type: "kern", size: 0.1},
-                    {type: "elem", elem: braceBody},
-                ],
-            }, options);
-            vlist.children[0].children[0].children[1].classes.push("svg-align");
-        } else {
-            vlist = buildCommon.makeVList({
-                positionType: "bottom",
-                positionData: body.depth + 0.1 + braceBody.height,
-                children: [
-                    {type: "elem", elem: braceBody},
-                    {type: "kern", size: 0.1},
-                    {type: "elem", elem: body},
-                ],
-            }, options);
-            vlist.children[0].children[0].children[0].classes.push("svg-align");
-        }
-
-        if (hasSupSub) {
-            // To write the supsub, wrap the first vlist in another vlist:
-            // They can't all go in the same vlist, because the note might be
-            // wider than the equation. We want the equation to control the
-            // brace width.
-
-            //      note          long note           long note
-            //   ┏━━━━━━━━┓   or    ┏━━━┓     not    ┏━━━━━━━━━┓
-            //    equation           eqn                 eqn
-
-            const vSpan = makeSpan(
-                ["mord", (group.value.isOver ? "mover" : "munder")],
-                [vlist], options);
-
-            if (group.value.isOver) {
-                vlist = buildCommon.makeVList({
-                    positionType: "firstBaseline",
-                    children: [
-                        {type: "elem", elem: vSpan},
-                        {type: "kern", size: 0.2},
-                        {type: "elem", elem: supSubGroup},
-                    ],
-                }, options);
-            } else {
-                vlist = buildCommon.makeVList({
-                    positionType: "bottom",
-                    positionData: vSpan.depth + 0.2 + supSubGroup.height +
-                        supSubGroup.depth,
-                    children: [
-                        {type: "elem", elem: supSubGroup},
-                        {type: "kern", size: 0.2},
-                        {type: "elem", elem: vSpan},
-                    ],
-                }, options);
-            }
-        }
-
-        return makeSpan(["mord", (group.value.isOver ? "mover" : "munder")],
-            [vlist], options);
     },
 };
 
