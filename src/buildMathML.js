@@ -60,7 +60,7 @@ export const makeTextRow = function(body, options) {
 /**
  * Returns the math variant as a string or null if none is required.
  */
-const getVariant = function(group, options) {
+export const getVariant = function(group, options) {
     const font = options.font;
     if (!font) {
         return null;
@@ -95,97 +95,6 @@ const getVariant = function(group, options) {
  * tree. Each function should take a parse group and return a MathML node.
  */
 export const groupTypes = {};
-
-const defaultVariant = {
-    "mi": "italic",
-    "mn": "normal",
-    "mtext": "normal",
-};
-
-groupTypes.mathord = function(group, options) {
-    const node = new mathMLTree.MathNode(
-        "mi",
-        [makeText(group.value, group.mode)]);
-
-    const variant = getVariant(group, options) || "italic";
-    if (variant !== defaultVariant[node.type]) {
-        node.setAttribute("mathvariant", variant);
-    }
-    return node;
-};
-
-groupTypes.textord = function(group, options) {
-    const text = makeText(group.value, group.mode);
-
-    const variant = getVariant(group, options) || "normal";
-
-    let node;
-    if (group.mode === 'text') {
-        node = new mathMLTree.MathNode("mtext", [text]);
-    } else if (/[0-9]/.test(group.value)) {
-        // TODO(kevinb) merge adjacent <mn> nodes
-        // do it as a post processing step
-        node = new mathMLTree.MathNode("mn", [text]);
-    } else if (group.value === "\\prime") {
-        node = new mathMLTree.MathNode("mo", [text]);
-    } else {
-        node = new mathMLTree.MathNode("mi", [text]);
-    }
-    if (variant !== defaultVariant[node.type]) {
-        node.setAttribute("mathvariant", variant);
-    }
-
-    return node;
-};
-
-groupTypes.bin = function(group, options) {
-    const node = new mathMLTree.MathNode(
-        "mo", [makeText(group.value, group.mode)]);
-
-    const variant = getVariant(group, options);
-    if (variant === "bold-italic") {
-        node.setAttribute("mathvariant", variant);
-    }
-
-    return node;
-};
-
-groupTypes.rel = function(group) {
-    const node = new mathMLTree.MathNode(
-        "mo", [makeText(group.value, group.mode)]);
-
-    return node;
-};
-
-groupTypes.open = function(group) {
-    const node = new mathMLTree.MathNode(
-        "mo", [makeText(group.value, group.mode)]);
-
-    return node;
-};
-
-groupTypes.close = function(group) {
-    const node = new mathMLTree.MathNode(
-        "mo", [makeText(group.value, group.mode)]);
-
-    return node;
-};
-
-groupTypes.inner = function(group) {
-    const node = new mathMLTree.MathNode(
-        "mo", [makeText(group.value, group.mode)]);
-
-    return node;
-};
-
-groupTypes.punct = function(group) {
-    const node = new mathMLTree.MathNode(
-        "mo", [makeText(group.value, group.mode)]);
-
-    node.setAttribute("separator", "true");
-
-    return node;
-};
 
 groupTypes.ordgroup = function(group, options) {
     const inner = buildExpression(group.value, options);
