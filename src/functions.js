@@ -37,6 +37,7 @@ import "./functions/sqrt";
 import "./functions/styling";
 import "./functions/symbolsOp";
 import "./functions/symbolsOrd";
+import "./functions/symbolsSpacing";
 import "./functions/text";
 import "./functions/underline";
 import "./functions/verb";

@@ -164,22 +164,6 @@ groupTypes.supsub = function(group, options) {
     return node;
 };
 
-groupTypes.spacing = function(group) {
-    let node;
-
-    if (buildCommon.regularSpace.hasOwnProperty(group.value)) {
-        node = new mathMLTree.MathNode(
-            "mtext", [new mathMLTree.TextNode("\u00a0")]);
-    } else {
-        node = new mathMLTree.MathNode("mspace");
-
-        node.setAttribute(
-            "width", buildCommon.spacingFunctions[group.value].size);
-    }
-
-    return node;
-};
-
 groupTypes.tag = function(group, options) {
     const table = new mathMLTree.MathNode("mtable", [
         new mathMLTree.MathNode("mlabeledtr", [
