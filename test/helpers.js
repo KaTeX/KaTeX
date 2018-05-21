@@ -23,11 +23,11 @@ const printActualErrorMessage = error => {
         return (
             `Instead, it threw:\n` +
             RECEIVED_COLOR(
-                '  ' + message +
+                `  ${message}` +
                 formatStackTrace(
                     // remove KaTeX internal stack entries
                     stack.split('\n')
-                        .filter(stack => stack.indexOf('new ParseError') === -1)
+                        .filter(line => line.indexOf('new ParseError') === -1)
                         .join('\n'),
                     {
                         rootDir: process.cwd(),
@@ -138,7 +138,7 @@ export const expectKaTeX = (expr, settings = defaultSettings, mode,
         error = e;
         if (e instanceof ParseError) {
             pass = expected !== undefined &&
-                e.message !== "KaTeX parse error: " + expected;
+                e.message !== `KaTeX parse error: ${expected}`;
         } else {
             pass = !!expectFail; // always fail if error is not ParserError
         }
