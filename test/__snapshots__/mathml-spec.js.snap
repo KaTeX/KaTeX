@@ -110,6 +110,35 @@ exports[`A MathML builder should generate the right types of nodes 1`] = `
 
 `;
 
+exports[`A MathML builder should generate the right types of nodes 2`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mi>
+        sin
+      </mi>
+      <mo>
+        ⁡
+      </mo>
+      <mi>
+        α
+      </mi>
+      <mo>
+        =
+      </mo>
+      <mn>
+        0.34
+      </mn>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\sin{\\alpha}=0.34
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder should make prime operators into <mo> nodes 1`] = `
 
 <math>

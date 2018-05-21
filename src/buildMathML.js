@@ -162,18 +162,24 @@ groupTypes.tag = function(group, options) {
  */
 export const buildExpression = function(expression, options) {
     const groups = [];
-    let currentText = null;
+    let lastGroup;
     for (let i = 0; i < expression.length; i++) {
         const group = buildGroup(expression[i], options);
-        if (group.type === 'mtext' && currentText !== null) {
-            currentText.children.push(...group.children);
+        // Concatenate adjacent <mtext>s
+        if (group.type === 'mtext' && lastGroup && lastGroup.type === 'mtext') {
+            lastGroup.children.push(...group.children);
+        // Concatenate adjacent <mn>s
+        } else if (group.type === 'mn' &&
+                   lastGroup && lastGroup.type === 'mn') {
+            lastGroup.children.push(...group.children);
+        // Concatenate <mn>...</mn> followed by <mi>.</mi>
+        } else if (group.type === 'mi' && group.children.length === 1 &&
+                   group.children[0].text === '.' &&
+                   lastGroup && lastGroup.type === 'mn') {
+            lastGroup.children.push(...group.children);
         } else {
             groups.push(group);
-            if (group.type === 'mtext') {
-                currentText = group;
-            } else {
-                currentText = null;
-            }
+            lastGroup = group;
         }
     }
 
