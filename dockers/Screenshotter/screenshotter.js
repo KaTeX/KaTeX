@@ -21,7 +21,7 @@ const dstDir = path.normalize(
     path.join(__dirname, "..", "..", "test", "screenshotter", "images"));
 const diffDir = path.normalize(
     path.join(__dirname, "..", "..", "test", "screenshotter", "diff"));
-const regenDir = path.normalize(
+const newDir = path.normalize(
     path.join(__dirname, "..", "..", "test", "screenshotter", "new"));
 
 //////////////////////////////////////////////////////////////////////
@@ -83,7 +83,7 @@ const opts = require("nomnom")
         flag: true,
         help: "With `--verify`, produce image diffs when match fails",
     })
-    .option("regenerate", {
+    .option("new", {
         flag: true,
         help: "With `--verify`, generate new screenshots when match fails",
     })
@@ -455,7 +455,7 @@ function takeScreenshot(key) {
                         console.error("FAIL! " + key);
                         listOfFailed.push(key);
                         exitStatus = 3;
-                        if (opts.diff || opts.regenerate) {
+                        if (opts.diff || opts.new) {
                             return saveFailedScreenshot(key, buf);
                         }
                     } else {
@@ -479,7 +479,7 @@ function takeScreenshot(key) {
 
     function saveFailedScreenshot(key, buf) {
         const filenamePrefix = key + "-" + opts.browser;
-        const outputDir = opts.regenerate ? regenDir : diffDir;
+        const outputDir = opts.new ? newDir : diffDir;
         const baseFile = path.join(dstDir, filenamePrefix + ".png");
         const diffFile = path.join(diffDir, filenamePrefix + "-diff.png");
         const bufFile = path.join(outputDir, filenamePrefix + ".png");
@@ -507,7 +507,7 @@ function takeScreenshot(key) {
                 ]);
             });
         }
-        if (!opts.regenerate) {
+        if (!opts.new) {
             promise = promise.then(function() {
                 return promisify(fs.unlink, bufFile);
             });
@@ -519,6 +519,12 @@ function takeScreenshot(key) {
         if (--countdown === 0) {
             if (listOfFailed.length) {
                 console.error("Failed: " + listOfFailed.join(" "));
+            }
+            if (opts.diff) {
+                console.log("Diffs have been generated in: " + diffDir);
+            }
+            if (opts.new) {
+                console.log("New screenshots have been generated in: " + newDir);
             }
             // devServer.close(cb) will take too long.
             process.exit(exitStatus);
