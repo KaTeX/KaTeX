@@ -40,29 +40,6 @@ export const makeRow = function(body) {
     }
 };
 
-export const makeTextRow = function(body, options) {
-    // Convert each element of the body into MathML, and combine consecutive
-    // <mtext> outputs into a single <mtext> tag.  In this way, we don't
-    // nest non-text items (e.g., $nested-math$) within an <mtext>.
-    const inner = [];
-    let currentText = null;
-    for (let i = 0; i < body.length; i++) {
-        const group = buildGroup(body[i], options);
-        if (group.type === 'mtext' && currentText !== null) {
-            Array.prototype.push.apply(currentText.children, group.children);
-        } else {
-            inner.push(group);
-            if (group.type === 'mtext') {
-                currentText = group;
-            } else {
-                currentText = null;
-            }
-        }
-    }
-
-    return makeRow(inner);
-};
-
 /**
  * Returns the math variant as a string or null if none is required.
  */
@@ -121,7 +98,6 @@ groupTypes.supsub = function(group, options) {
         }
     }
 
-    const removeUnnecessaryRow = true;
     const children = [
         buildGroup(group.value.base, options)];
 
@@ -181,14 +157,24 @@ groupTypes.tag = function(group, options) {
 
 /**
  * Takes a list of nodes, builds them, and returns a list of the generated
- * MathML nodes. A little simpler than the HTML version because we don't do any
- * previous-node handling.
+ * MathML nodes.  Also combine consecutive <mtext> outputs into a single
+ * <mtext> tag.
  */
 export const buildExpression = function(expression, options) {
     const groups = [];
+    let currentText = null;
     for (let i = 0; i < expression.length; i++) {
-        const group = expression[i];
-        groups.push(buildGroup(group, options));
+        const group = buildGroup(expression[i], options);
+        if (group.type === 'mtext' && currentText !== null) {
+            currentText.children.push(...group.children);
+        } else {
+            groups.push(group);
+            if (group.type === 'mtext') {
+                currentText = group;
+            } else {
+                currentText = null;
+            }
+        }
     }
 
     // TODO(kevinb): combine \\not with mrels and mords

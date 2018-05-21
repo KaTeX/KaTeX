@@ -497,22 +497,9 @@ exports[`A MathML builder tags use <mlabeledtr> 1`] = `
     <mtable side="right">
       <mlabeledtr>
         <mtd>
-          <mrow>
-            <mtext>
-              (
-            </mtext>
-            <mrow>
-              <mtext>
-                h
-              </mtext>
-              <mtext>
-                i
-              </mtext>
-            </mrow>
-            <mtext>
-              )
-            </mtext>
-          </mrow>
+          <mtext>
+            (hi)
+          </mtext>
         </mtd>
         <mtd>
           <mrow>
