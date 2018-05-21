@@ -4,6 +4,7 @@ import defineEnvironment from "../defineEnvironment";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import ParseNode from "../ParseNode";
+import {assertNodeType} from "../ParseNode";
 import {calculateSize} from "../units";
 import utils from "../utils";
 
@@ -20,18 +21,29 @@ type AlignSpec = { type: "separator", separator: string } | {
     pregap?: number,
     postgap?: number,
 };
-export type ArrayEnvNodeData = {
+
+export type ArrayEnvNodeData = {|
     type: "array",
     hskipBeforeAndAfter?: boolean,
     arraystretch?: number,
     addJot?: boolean,
     cols?: AlignSpec[],
-    // These fields are always set, but not on struct construction
-    // initialization.
-    body?: ParseNode<*>[][], // List of rows in the (2D) array.
-    rowGaps?: number[],
+    body: ParseNode<*>[][], // List of rows in the (2D) array.
+    rowGaps: (?ParseNode<*>)[],
+    numHLinesBeforeRow: number[],
+|};
+// Same as above but with some fields not yet filled.
+type ArrayEnvNodeDataIncomplete = {|
+    type: "array",
+    hskipBeforeAndAfter?: boolean,
+    arraystretch?: number,
+    addJot?: boolean,
+    cols?: AlignSpec[],
+    // Before these fields are filled.
+    body?: ParseNode<*>[][],
+    rowGaps?: (?ParseNode<*>)[],
     numHLinesBeforeRow?: number[],
-};
+|};
 
 function getNumHLines(parser: Parser): number {
     let n = 0;
@@ -52,9 +64,13 @@ function getNumHLines(parser: Parser): number {
  */
 function parseArray(
     parser: Parser,
-    result: ArrayEnvNodeData,
+    result: ArrayEnvNodeDataIncomplete,
     style: StyleStr,
-): ParseNode<*> {
+): ParseNode<"array"> {
+    // Parse body of array with \\ temporarily mapped to \cr
+    const oldNewline = parser.gullet.macros["\\\\"];
+    parser.gullet.macros["\\\\"] = "\\cr";
+
     let row = [];
     const body = [row];
     const rowGaps = [];
@@ -64,7 +80,7 @@ function parseArray(
     numHLinesBeforeRow.push(getNumHLines(parser));
 
     while (true) {  // eslint-disable-line no-constant-condition
-        let cell = parser.parseExpression(false, "\\\\");
+        let cell = parser.parseExpression(false, "\\cr");
         cell = new ParseNode("ordgroup", cell, parser.mode);
         if (style) {
             cell = new ParseNode("styling", {
@@ -87,12 +103,12 @@ function parseArray(
                 body.pop();
             }
             break;
-        } else if (next === "\\\\" || next === "\\cr") {
+        } else if (next === "\\cr") {
             const cr = parser.parseFunction();
             if (!cr) {
                 throw new ParseError(`Failed to parse function after ${next}`);
             }
-            rowGaps.push(cr.value.size);
+            rowGaps.push(assertNodeType(cr, "cr").value.size);
 
             // check for \hline(s) following the row separator
             numHLinesBeforeRow.push(getNumHLines(parser));
@@ -107,7 +123,10 @@ function parseArray(
     result.body = body;
     result.rowGaps = rowGaps;
     result.numHLinesBeforeRow = numHLinesBeforeRow;
-    return new ParseNode("array", result, parser.mode);
+    // $FlowFixMe: The required fields were added immediately above.
+    const res: ArrayEnvNodeData = result;
+    parser.gullet.macros["\\\\"] = oldNewline;
+    return new ParseNode("array", res, parser.mode);
 }
 
 
@@ -129,6 +148,7 @@ type Outrow = {
 };
 
 const htmlBuilder = function(group, options) {
+    const groupValue = assertNodeType(group, "array").value;
     let r;
     let c;
     const nr = group.value.body.length;
@@ -148,7 +168,7 @@ const htmlBuilder = function(group, options) {
     const jot = 3 * pt;
     // Default \arraystretch from lttab.dtx
     // TODO(gagern): may get redefined once we have user-defined macros
-    const arraystretch = utils.deflt(group.value.arraystretch, 1);
+    const arraystretch = utils.deflt(groupValue.arraystretch, 1);
     const arrayskip = arraystretch * baselineskip;
     const arstrutHeight = 0.7 * arrayskip; // \strutbox in ltfsstrc.dtx and
     const arstrutDepth = 0.3 * arrayskip;  // \@arstrutbox in lttab.dtx
@@ -163,8 +183,8 @@ const htmlBuilder = function(group, options) {
         hlinePos.push(totalHeight);
     }
 
-    for (r = 0; r < group.value.body.length; ++r) {
-        const inrow = group.value.body[r];
+    for (r = 0; r < groupValue.body.length; ++r) {
+        const inrow = groupValue.body[r];
         let height = arstrutHeight; // \@array adds an \@arstrut
         let depth = arstrutDepth;   // to each tow (via the template)
 
@@ -184,9 +204,10 @@ const htmlBuilder = function(group, options) {
             outrow[c] = elt;
         }
 
+        const rowGap = groupValue.rowGaps[r];
         let gap = 0;
-        if (group.value.rowGaps[r]) {
-            gap = calculateSize(group.value.rowGaps[r].value, options);
+        if (rowGap) {
+            gap = calculateSize(rowGap.value, options);
             if (gap > 0) { // \@argarraycr
                 gap += arstrutDepth;
                 if (depth < gap) {
@@ -198,7 +219,7 @@ const htmlBuilder = function(group, options) {
         // In AMS multiline environments such as aligned and gathered, rows
         // correspond to lines that have additional \jot added to the
         // \baselineskip via \openup.
-        if (group.value.addJot) {
+        if (groupValue.addJot) {
             depth += jot;
         }
 
@@ -219,7 +240,7 @@ const htmlBuilder = function(group, options) {
     }
 
     const offset = totalHeight / 2 + options.fontMetrics().axisHeight;
-    const colDescriptions = group.value.cols || [];
+    const colDescriptions = groupValue.cols || [];
     const cols = [];
     let colSep;
     let colDescrNum;
@@ -266,7 +287,7 @@ const htmlBuilder = function(group, options) {
         }
 
         let sepwidth;
-        if (c > 0 || group.value.hskipBeforeAndAfter) {
+        if (c > 0 || groupValue.hskipBeforeAndAfter) {
             sepwidth = utils.deflt(colDescr.pregap, arraycolsep);
             if (sepwidth !== 0) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
@@ -297,7 +318,7 @@ const htmlBuilder = function(group, options) {
             [col]);
         cols.push(col);
 
-        if (c < nc - 1 || group.value.hskipBeforeAndAfter) {
+        if (c < nc - 1 || groupValue.hskipBeforeAndAfter) {
             sepwidth = utils.deflt(colDescr.postgap, arraycolsep);
             if (sepwidth !== 0) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
@@ -326,8 +347,9 @@ const htmlBuilder = function(group, options) {
 };
 
 const mathmlBuilder = function(group, options) {
+    const groupValue = assertNodeType(group, "array").value;
     return new mathMLTree.MathNode(
-        "mtable", group.value.body.map(function(row) {
+        "mtable", groupValue.body.map(function(row) {
             return new mathMLTree.MathNode(
                 "mtr", row.map(function(cell) {
                     return new mathMLTree.MathNode(
@@ -338,9 +360,10 @@ const mathmlBuilder = function(group, options) {
 
 // Convinient function for aligned and alignedat environments.
 const alignedHandler = function(context, args) {
+    const cols = [];
     let res = {
         type: "array",
-        cols: [],
+        cols,
         addJot: true,
     };
     res = parseArray(context.parser, res, "display");
@@ -378,7 +401,7 @@ const alignedHandler = function(context, args) {
                 throw new ParseError(
                     "Too many math in a row: " +
                     `expected ${numMaths}, but got ${curMaths}`,
-                    row);
+                    row[0]);
             }
         } else if (numCols < row.length) { // Case 2
             numCols = row.length;
@@ -396,7 +419,7 @@ const alignedHandler = function(context, args) {
         } else if (i > 0 && isAligned) { // "aligned" mode.
             pregap = 1; // add one \quad
         }
-        res.value.cols[i] = {
+        cols[i] = {
             type: "align",
             align: align,
             pregap: pregap,

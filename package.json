@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.10.0-pre",
+  "version": "0.11.0-pre",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "repository": {
@@ -40,7 +40,6 @@
     "less": "~2.7.1",
     "less-loader": "^4.0.5",
     "mkdirp": "^0.5.1",
-    "object-assign": "^4.1.0",
     "pako": "1.0.4",
     "pre-commit": "^1.2.2",
     "query-string": "^5.1.0",
@@ -87,6 +86,10 @@
     "nomnom": "^1.8.1"
   },
   "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "contrib/**/*.js"
+    ],
     "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
     "snapshotSerializers": [
       "jest-serializer-html"

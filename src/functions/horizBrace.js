@@ -1,0 +1,142 @@
+// @flow
+import defineFunction from "../defineFunction";
+import buildCommon from "../buildCommon";
+import mathMLTree from "../mathMLTree";
+import stretchy from "../stretchy";
+import Style from "../Style";
+import {assertNodeType, checkNodeType} from "../ParseNode";
+
+import * as html from "../buildHTML";
+import * as mml from "../buildMathML";
+
+import type ParseNode from "../ParseNode";
+
+// NOTE: Unlike most `htmlBuilder`s, this one handles not only "horizBrace", but
+// also "supsub" since an over/underbrace can affect super/subscripting.
+function htmlBuilder(grp: ParseNode<*>, options) {
+    const style = options.style;
+
+    // Pull out the `ParseNode<"horizBrace">` if `grp` is a "supsub" node.
+    let supSubGroup;
+    let group: ParseNode<"horizBrace">;
+    const supSub = checkNodeType(grp, "supsub");
+    if (supSub) {
+        // Ref: LaTeX source2e: }}}}\limits}
+        // i.e. LaTeX treats the brace similar to an op and passes it
+        // with \limits, so we need to assign supsub style.
+        supSubGroup = supSub.value.sup ?
+            html.buildGroup(
+                supSub.value.sup, options.havingStyle(style.sup()), options) :
+            html.buildGroup(
+                supSub.value.sub, options.havingStyle(style.sub()), options);
+        // The supsub `base` must be non-null in this context. Otherwise,
+        // this `htmlBuilder` handler wouldn't have been invoked.
+        // $FlowFixMe
+        const base: ParseNode<*> = supSub.value.base;
+        group = assertNodeType(base, "horizBrace");
+    } else {
+        group = assertNodeType(grp, "horizBrace");
+    }
+
+    // Build the base group
+    const body = html.buildGroup(
+        group.value.base, options.havingBaseStyle(Style.DISPLAY));
+
+    // Create the stretchy element
+    const braceBody = stretchy.svgSpan(group, options);
+
+    // Generate the vlist, with the appropriate kerns        ┏━━━━━━━━┓
+    // This first vlist contains the content and the brace:   equation
+    let vlist;
+    if (group.value.isOver) {
+        vlist = buildCommon.makeVList({
+            positionType: "firstBaseline",
+            children: [
+                {type: "elem", elem: body},
+                {type: "kern", size: 0.1},
+                {type: "elem", elem: braceBody},
+            ],
+        }, options);
+        // $FlowFixMe: Replace this with passing "svg-align" into makeVList.
+        vlist.children[0].children[0].children[1].classes.push("svg-align");
+    } else {
+        vlist = buildCommon.makeVList({
+            positionType: "bottom",
+            positionData: body.depth + 0.1 + braceBody.height,
+            children: [
+                {type: "elem", elem: braceBody},
+                {type: "kern", size: 0.1},
+                {type: "elem", elem: body},
+            ],
+        }, options);
+        // $FlowFixMe: Replace this with passing "svg-align" into makeVList.
+        vlist.children[0].children[0].children[0].classes.push("svg-align");
+    }
+
+    if (supSubGroup) {
+        // To write the supsub, wrap the first vlist in another vlist:
+        // They can't all go in the same vlist, because the note might be
+        // wider than the equation. We want the equation to control the
+        // brace width.
+
+        //      note          long note           long note
+        //   ┏━━━━━━━━┓   or    ┏━━━┓     not    ┏━━━━━━━━━┓
+        //    equation           eqn                 eqn
+
+        const vSpan = buildCommon.makeSpan(
+            ["mord", (group.value.isOver ? "mover" : "munder")],
+            [vlist], options);
+
+        if (group.value.isOver) {
+            vlist = buildCommon.makeVList({
+                positionType: "firstBaseline",
+                children: [
+                    {type: "elem", elem: vSpan},
+                    {type: "kern", size: 0.2},
+                    {type: "elem", elem: supSubGroup},
+                ],
+            }, options);
+        } else {
+            vlist = buildCommon.makeVList({
+                positionType: "bottom",
+                positionData: vSpan.depth + 0.2 + supSubGroup.height +
+                    supSubGroup.depth,
+                children: [
+                    {type: "elem", elem: supSubGroup},
+                    {type: "kern", size: 0.2},
+                    {type: "elem", elem: vSpan},
+                ],
+            }, options);
+        }
+    }
+
+    return buildCommon.makeSpan(
+        ["mord", (group.value.isOver ? "mover" : "munder")], [vlist], options);
+}
+
+// Horizontal stretchy braces
+defineFunction({
+    type: "horizBrace",
+    names: ["\\overbrace", "\\underbrace"],
+    props: {
+        numArgs: 1,
+    },
+    handler(context, args) {
+        return {
+            type: "horizBrace",
+            label: context.funcName,
+            isOver: /^\\over/.test(context.funcName),
+            base: args[0],
+        };
+    },
+    htmlBuilder,
+    mathmlBuilder(group, options) {
+        const accentNode = stretchy.mathMLnode(group.value.label);
+        return new mathMLTree.MathNode(
+            (group.value.isOver ? "mover" : "munder"),
+            [mml.buildGroup(group.value.base, options), accentNode]
+        );
+    },
+});
+
+

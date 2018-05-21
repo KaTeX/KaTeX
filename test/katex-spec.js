@@ -1,263 +1,24 @@
 /* eslint max-len:0 */
-/* global beforeEach: false */
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
-import stringify from 'json-stable-stringify';
 
 import buildMathML from "../src/buildMathML";
 import buildTree from "../src/buildTree";
 import katex from "../katex";
-import ParseError from "../src/ParseError";
 import parseTree from "../src/parseTree";
 import Options from "../src/Options";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
+import {
+    defaultSettings,
+    _getBuilt, getBuilt, getParsed, stripPositions,
+} from "./helpers";
 
-const typeFirstCompare = (a, b) => {
-    if (a.key === 'type') {
-        return -1;
-    } else if (b.key === 'type') {
-        return 1;
-    } else {
-        return a.key < b.key ? -1 : 1;
-    }
-};
-
-const serializer = {
-    print(val) {
-        return stringify(val, {cmp: typeFirstCompare, space: '  '});
-    },
-    test() {
-        return true;
-    },
-};
-
-expect.addSnapshotSerializer(serializer);
-
-const defaultSettings = new Settings({
-    strict: false, // deal with warnings only when desired
-});
 const defaultOptions = new Options({
     style: Style.TEXT,
     size: 5,
     maxSize: Infinity,
-});
-
-const _getBuilt = function(expr, settings) {
-    const usedSettings = settings ? settings : defaultSettings;
-    const rootNode = katex.__renderToDomTree(expr, usedSettings);
-
-    if (rootNode.classes.indexOf('katex-error') >= 0) {
-        return rootNode;
-    }
-
-    // grab the root node of the HTML rendering
-    const builtHTML = rootNode.children[1];
-
-    // combine the non-strut children of all base spans
-    const children = [];
-    for (let i = 0; i < builtHTML.children.length; i++) {
-        children.push(...builtHTML.children[i].children.filter(
-            (node) => node.classes.indexOf("strut") < 0));
-    }
-    return children;
-};
-
-/**
- * Return the root node of the rendered HTML.
- * @param expr
- * @param settings
- * @returns {Object}
- */
-const getBuilt = function(expr, settings) {
-    const usedSettings = settings ? settings : defaultSettings;
-    expect(expr).toBuild(usedSettings);
-    return _getBuilt(expr, settings);
-};
-
-/**
- * Return the root node of the parse tree.
- * @param expr
- * @param settings
- * @returns {Object}
- */
-const getParsed = function(expr, settings) {
-    const usedSettings = settings ? settings : defaultSettings;
-
-    expect(expr).toParse(usedSettings);
-    return parseTree(expr, usedSettings);
-};
-
-const stripPositions = function(expr) {
-    if (typeof expr !== "object" || expr === null) {
-        return expr;
-    }
-    if (expr.loc && expr.loc.lexer && typeof expr.loc.start === "number") {
-        delete expr.loc;
-    }
-    Object.keys(expr).forEach(function(key) {
-        stripPositions(expr[key]);
-    });
-    return expr;
-};
-
-const parseAndSetResult = function(expr, result, settings) {
-    try {
-        return parseTree(expr, settings || defaultSettings);
-    } catch (e) {
-        result.pass = false;
-        if (e instanceof ParseError) {
-            result.message = () => "'" + expr + "' failed " +
-                "parsing with error: " + e.message;
-        } else {
-            result.message = () => "'" + expr + "' failed " +
-                "parsing with unknown error: " + e.message;
-        }
-    }
-};
-
-const buildAndSetResult = function(expr, result, settings) {
-    try {
-        return _getBuilt(expr, settings || defaultSettings);
-    } catch (e) {
-        result.pass = false;
-        if (e instanceof ParseError) {
-            result.message = () => "'" + expr + "' failed " +
-                "parsing with error: " + e.message;
-        } else {
-            result.message = () => "'" + expr + "' failed " +
-                "parsing with unknown error: " + e.message;
-        }
-    }
-};
-
-beforeEach(function() {
-    expect.extend({
-        toParse: function(actual, settings) {
-            const usedSettings = settings ? settings : defaultSettings;
-
-            const result = {
-                pass: true,
-                message: () => "'" + actual + "' succeeded parsing",
-            };
-            parseAndSetResult(actual, result, usedSettings);
-            return result;
-        },
-
-        toNotParse: function(actual, settings) {
-            const usedSettings = settings ? settings : defaultSettings;
-
-            const result = {
-                pass: false,
-                message: () => "Expected '" + actual + "' to fail " +
-                    "parsing, but it succeeded",
-            };
-
-            try {
-                parseTree(actual, usedSettings);
-            } catch (e) {
-                if (e instanceof ParseError) {
-                    result.pass = true;
-                    result.message = () => "'" + actual + "' correctly " +
-                        "didn't parse with error: " + e.message;
-                } else {
-                    result.message = () => "'" + actual + "' failed " +
-                        "parsing with unknown error: " + e.message;
-                }
-            }
-
-            return result;
-        },
-
-        toBuild: function(actual, settings) {
-            const usedSettings = settings ? settings : defaultSettings;
-
-            const result = {
-                pass: true,
-                message: () => "'" + actual + "' succeeded in building",
-            };
-
-            expect(actual).toParse(usedSettings);
-
-            try {
-                _getBuilt(actual, settings);
-            } catch (e) {
-                result.pass = false;
-                if (e instanceof ParseError) {
-                    result.message = () => "'" + actual + "' failed to " +
-                        "build with error: " + e.message;
-                } else {
-                    result.message = () => "'" + actual + "' failed " +
-                        "building with unknown error: " + e.message;
-                }
-            }
-
-            return result;
-        },
-
-        toParseLike: function(actual, expected, settings) {
-            const usedSettings = settings ? settings : defaultSettings;
-
-            const result = {
-                pass: true,
-                message: () => "Parse trees of '" + actual +
-                    "' and '" + expected + "' are equivalent",
-            };
-
-            const actualTree = parseAndSetResult(actual, result,
-                usedSettings);
-            if (!actualTree) {
-                return result;
-            }
-            const expectedTree = parseAndSetResult(expected, result,
-                usedSettings);
-            if (!expectedTree) {
-                return result;
-            }
-
-            stripPositions(actualTree);
-            stripPositions(expectedTree);
-
-            if (JSON.stringify(actualTree) !== JSON.stringify(expectedTree)) {
-                result.pass = false;
-                result.message = () => "Parse trees of '" + actual +
-                    "' and '" + expected + "' are not equivalent";
-            }
-            return result;
-        },
-
-        toBuildLike: function(actual, expected, settings) {
-            const usedSettings = settings ? settings : defaultSettings;
-
-            const result = {
-                pass: true,
-                message: () => "Build trees of '" + actual +
-                    "' and '" + expected + "' are equivalent",
-            };
-
-            const actualTree = buildAndSetResult(actual, result,
-                usedSettings);
-            if (!actualTree) {
-                return result;
-            }
-            const expectedTree = buildAndSetResult(expected, result,
-                usedSettings);
-            if (!expectedTree) {
-                return result;
-            }
-
-            stripPositions(actualTree);
-            stripPositions(expectedTree);
-
-            if (JSON.stringify(actualTree) !== JSON.stringify(expectedTree)) {
-                result.pass = false;
-                result.message = () => "Parse trees of '" + actual +
-                    "' and '" + expected + "' are not equivalent";
-            }
-            return result;
-        },
-    });
 });
 
 describe("A parser", function() {
@@ -2719,6 +2480,10 @@ describe("A macro expander", function() {
         compareParseTree("\\text{\\foo }", "\\text{}", {"\\foo": "\\relax"});
     });
 
+    it("should not consume spaces after control-word expansion", function() {
+        compareParseTree("\\text{\\\\ }", "\\text{ }", {"\\\\": "\\relax"});
+    });
+
     it("should consume spaces after \\relax", function() {
         compareParseTree("\\text{\\relax }", "\\text{}");
     });
@@ -2898,6 +2663,24 @@ describe("A macro expander", function() {
     //        {"\\mode": "\\TextOrMath{text}{math}"});
     //});
 
+    it("\\gdef defines macros", function() {
+        compareParseTree("\\gdef\\foo{x^2}\\foo+\\foo", "x^2+x^2");
+        compareParseTree("\\gdef{\\foo}{x^2}\\foo+\\foo", "x^2+x^2");
+        compareParseTree("\\gdef\\foo{hi}\\foo+\\text{\\foo}", "hi+\\text{hi}");
+        compareParseTree("\\gdef\\foo#1{hi #1}\\text{\\foo{Alice}, \\foo{Bob}}",
+            "\\text{hi Alice, hi Bob}");
+        compareParseTree("\\gdef\\foo#1#2{(#1,#2)}\\foo 1 2+\\foo 3 4",
+            "(1,2)+(3,4)");
+        expect("\\gdef\\foo#2{}").toNotParse();
+        expect("\\gdef\\foo#1#3{}").toNotParse();
+        expect("\\gdef\\foo#1#2#3#4#5#6#7#8#9{}").toParse();
+        expect("\\gdef\\foo#1#2#3#4#5#6#7#8#9#10{}").toNotParse();
+        expect("\\gdef\\foo#{}").toNotParse();
+        expect("\\gdef\\foo\\bar").toParse();
+        expect("\\gdef{\\foo\\bar}{}").toNotParse();
+        expect("\\gdef{}{}").toNotParse();
+    });
+
     // This may change in the future, if we support the extra features of
     // \hspace.
     it("should treat \\hspace, \\hskip like \\kern", function() {
@@ -2913,6 +2696,30 @@ describe("A macro expander", function() {
     it("should expand \\liminf as expected", () => {
         expect("\\liminf")
             .toParseLike("\\mathop{\\operatorname{lim\\,inf}}\\limits");
+    });
+});
+
+describe("\\tag support", function() {
+    const displayMode = new Settings({displayMode: true});
+
+    it("should fail outside display mode", () => {
+        expect("\\tag{hi}x+y").toNotParse();
+    });
+
+    it("should fail with multiple tags", () => {
+        expect("\\tag{1}\\tag{2}x+y").toNotParse(displayMode);
+    });
+
+    it("should build", () => {
+        expect("\\tag{hi}x+y").toBuild(displayMode);
+    });
+
+    it("should ignore location of \\tag", () => {
+        expect("\\tag{hi}x+y").toParseLike("x+y\\tag{hi}", displayMode);
+    });
+
+    it("should handle \\tag* like \\tag", () => {
+        expect("\\tag{hi}x+y").toParseLike("\\tag*{({hi})}x+y", displayMode);
     });
 });
 
@@ -3097,6 +2904,20 @@ describe("The maxSize setting", function() {
     });
 });
 
+describe("The maxExpand setting", () => {
+    it("should prevent expansion", () => {
+        expect("\\gdef\\foo{1}\\foo").toParse();
+        expect("\\gdef\\foo{1}\\foo").toParse(new Settings({maxExpand: 2}));
+        expect("\\gdef\\foo{1}\\foo").toNotParse(new Settings({maxExpand: 1}));
+        expect("\\gdef\\foo{1}\\foo").toNotParse(new Settings({maxExpand: 0}));
+    });
+
+    it("should prevent infinite loops", () => {
+        expect("\\gdef\\foo{\\foo}\\foo").toNotParse(
+            new Settings({maxExpand: 10}));
+    });
+});
+
 describe("The \\mathchoice function", function() {
     const cmd = "\\sum_{k = 0}^{\\infty} x^k";
 
@@ -3133,7 +2954,7 @@ describe("Newlines via \\\\ and \\newline", function() {
     });
 
     it("should not allow \\cr at top level", () => {
-        expect("hello \\cr world").toNotParse();
+        expect("hello \\cr world").toNotBuild();
     });
 });
 
@@ -3185,6 +3006,11 @@ describe("strict setting", function() {
         expect("\\text{é試}").toParse(new Settings({strict: false}));
         expect("\\text{é試}").toParse(new Settings({strict: true}));
         expect("\\text{é試}").toParse();
+    });
+
+    it("should warn about top-level \\newline in display mode", () => {
+        expect("x\\\\y").toWarn(new Settings({displayMode: true}));
+        expect("x\\\\y").toParse(new Settings({displayMode: false}));
     });
 });
 

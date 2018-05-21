@@ -12,9 +12,7 @@ import Style from "./Style";
 
 import buildCommon from "./buildCommon";
 import domTree from "./domTree";
-import { calculateSize } from "./units";
 import utils from "./utils";
-import stretchy from "./stretchy";
 import {spacings, tightSpacings} from "./spacingData";
 
 const makeSpan = buildCommon.makeSpan;
@@ -244,28 +242,6 @@ export const makeNullDelimiter = function(options, classes) {
  * Simpler types come at the beginning, while complicated types come afterwards.
  */
 export const groupTypes = {
-    mathord: (group, options) => buildCommon.makeOrd(group, options, "mathord"),
-
-    textord: (group, options) => buildCommon.makeOrd(group, options, "textord"),
-
-    bin: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mbin"]),
-
-    rel: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mrel"]),
-
-    open: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mopen"]),
-
-    close: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mclose"]),
-
-    inner: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["minner"]),
-
-    punct: (group, options) =>
-        buildCommon.mathsym(group.value, group.mode, options, ["mpunct"]),
-
     ordgroup: (group, options) => makeSpan(
         ["mord"], buildExpression(group.value, options, true), options),
 
@@ -416,185 +392,6 @@ export const groupTypes = {
                 [], options);
         }
     },
-
-    horizBrace(group, options) {
-        const style = options.style;
-
-        const hasSupSub = (group.type === "supsub");
-        let supSubGroup;
-        let newOptions;
-        if (hasSupSub) {
-            // Ref: LaTeX source2e: }}}}\limits}
-            // i.e. LaTeX treats the brace similar to an op and passes it
-            // with \limits, so we need to assign supsub style.
-            if (group.value.sup) {
-                newOptions = options.havingStyle(style.sup());
-                supSubGroup = buildGroup(group.value.sup, newOptions, options);
-            } else {
-                newOptions = options.havingStyle(style.sub());
-                supSubGroup = buildGroup(group.value.sub, newOptions, options);
-            }
-            group = group.value.base;
-        }
-
-        // Build the base group
-        const body = buildGroup(
-            group.value.base, options.havingBaseStyle(Style.DISPLAY));
-
-        // Create the stretchy element
-        const braceBody = stretchy.svgSpan(group, options);
-
-        // Generate the vlist, with the appropriate kerns        ┏━━━━━━━━┓
-        // This first vlist contains the content and the brace:   equation
-        let vlist;
-        if (group.value.isOver) {
-            vlist = buildCommon.makeVList({
-                positionType: "firstBaseline",
-                children: [
-                    {type: "elem", elem: body},
-                    {type: "kern", size: 0.1},
-                    {type: "elem", elem: braceBody},
-                ],
-            }, options);
-            vlist.children[0].children[0].children[1].classes.push("svg-align");
-        } else {
-            vlist = buildCommon.makeVList({
-                positionType: "bottom",
-                positionData: body.depth + 0.1 + braceBody.height,
-                children: [
-                    {type: "elem", elem: braceBody},
-                    {type: "kern", size: 0.1},
-                    {type: "elem", elem: body},
-                ],
-            }, options);
-            vlist.children[0].children[0].children[0].classes.push("svg-align");
-        }
-
-        if (hasSupSub) {
-            // To write the supsub, wrap the first vlist in another vlist:
-            // They can't all go in the same vlist, because the note might be
-            // wider than the equation. We want the equation to control the
-            // brace width.
-
-            //      note          long note           long note
-            //   ┏━━━━━━━━┓   or    ┏━━━┓     not    ┏━━━━━━━━━┓
-            //    equation           eqn                 eqn
-
-            const vSpan = makeSpan(
-                ["mord", (group.value.isOver ? "mover" : "munder")],
-                [vlist], options);
-
-            if (group.value.isOver) {
-                vlist = buildCommon.makeVList({
-                    positionType: "firstBaseline",
-                    children: [
-                        {type: "elem", elem: vSpan},
-                        {type: "kern", size: 0.2},
-                        {type: "elem", elem: supSubGroup},
-                    ],
-                }, options);
-            } else {
-                vlist = buildCommon.makeVList({
-                    positionType: "bottom",
-                    positionData: vSpan.depth + 0.2 + supSubGroup.height +
-                        supSubGroup.depth,
-                    children: [
-                        {type: "elem", elem: supSubGroup},
-                        {type: "kern", size: 0.2},
-                        {type: "elem", elem: vSpan},
-                    ],
-                }, options);
-            }
-        }
-
-        return makeSpan(["mord", (group.value.isOver ? "mover" : "munder")],
-            [vlist], options);
-    },
-
-    xArrow(group, options) {
-        const style = options.style;
-
-        // Build the argument groups in the appropriate style.
-        // Ref: amsmath.dtx:   \hbox{$\scriptstyle\mkern#3mu{#6}\mkern#4mu$}%
-
-        let newOptions = options.havingStyle(style.sup());
-        const upperGroup = buildGroup(group.value.body, newOptions, options);
-        upperGroup.classes.push("x-arrow-pad");
-
-        let lowerGroup;
-        if (group.value.below) {
-            // Build the lower group
-            newOptions = options.havingStyle(style.sub());
-            lowerGroup = buildGroup(group.value.below, newOptions, options);
-            lowerGroup.classes.push("x-arrow-pad");
-        }
-
-        const arrowBody = stretchy.svgSpan(group, options);
-
-        // Re shift: Note that stretchy.svgSpan returned arrowBody.depth = 0.
-        // The point we want on the math axis is at 0.5 * arrowBody.height.
-        const arrowShift = -options.fontMetrics().axisHeight +
-            0.5 * arrowBody.height;
-        // 2 mu kern. Ref: amsmath.dtx: #7\if0#2\else\mkern#2mu\fi
-        let upperShift = -options.fontMetrics().axisHeight
-            - 0.5 * arrowBody.height - 0.111; // 0.111 em = 2 mu
-        if (upperGroup.depth > 0.25 || group.value.label === "\\xleftequilibrium") {
-            upperShift -= upperGroup.depth;  // shift up if depth encroaches
-        }
-
-        // Generate the vlist
-        let vlist;
-        if (group.value.below) {
-            const lowerShift = -options.fontMetrics().axisHeight
-                + lowerGroup.height + 0.5 * arrowBody.height
-                + 0.111;
-            vlist = buildCommon.makeVList({
-                positionType: "individualShift",
-                children: [
-                    {type: "elem", elem: upperGroup, shift: upperShift},
-                    {type: "elem", elem: arrowBody,  shift: arrowShift},
-                    {type: "elem", elem: lowerGroup, shift: lowerShift},
-                ],
-            }, options);
-        } else {
-            vlist = buildCommon.makeVList({
-                positionType: "individualShift",
-                children: [
-                    {type: "elem", elem: upperGroup, shift: upperShift},
-                    {type: "elem", elem: arrowBody,  shift: arrowShift},
-                ],
-            }, options);
-        }
-
-        vlist.children[0].children[0].children[1].classes.push("svg-align");
-
-        return makeSpan(["mrel", "x-arrow"], [vlist], options);
-    },
-
-    mclass(group, options) {
-        const elements = buildExpression(group.value.value, options, true);
-
-        return makeSpan([group.value.mclass], elements, options);
-    },
-
-    raisebox(group, options) {
-        const body = groupTypes.sizing({value: {
-            value: [{
-                type: "text",
-                value: {
-                    body: group.value.value,
-                    font: "mathrm", // simulate \textrm
-                },
-            }],
-            size: 6,                // simulate \normalsize
-        }}, options);
-        const dy = calculateSize(group.value.dy.value, options);
-        return buildCommon.makeVList({
-            positionType: "shift",
-            positionData: -dy,
-            children: [{type: "elem", elem: body}],
-        }, options);
-    },
 };
 
 /**
@@ -665,11 +462,17 @@ export default function buildHTML(tree, options) {
     // of the incoming tree so that it isn't accidentally changed
     tree = JSON.parse(JSON.stringify(tree));
 
+    // Strip off outer tag wrapper for processing below.
+    let tag = null;
+    if (tree.length === 1 && tree[0].type === "tag") {
+        tag = tree[0].value.tag;
+        tree = tree[0].value.body;
+    }
+
     // Build the expression contained in the tree
     const expression = buildExpression(tree, options, true);
 
-    const htmlNode = makeSpan(["katex-html"], []);
-    htmlNode.setAttribute("aria-hidden", "true");
+    const children = [];
 
     // Create one base node for each chunk between potential line breaks.
     // The TeXBook [p.173] says "A formula will be broken only after a
@@ -697,22 +500,43 @@ export default function buildHTML(tree, options) {
             }
             // Don't allow break if \nobreak among the post-operator glue.
             if (!nobreak) {
-                htmlNode.children.push(buildHTMLUnbreakable(parts, options));
+                children.push(buildHTMLUnbreakable(parts, options));
                 parts = [];
             }
         } else if (expression[i].hasClass("newline")) {
             // Write the line except the newline
             parts.pop();
             if (parts.length > 0) {
-                htmlNode.children.push(buildHTMLUnbreakable(parts, options));
+                children.push(buildHTMLUnbreakable(parts, options));
                 parts = [];
             }
             // Put the newline at the top level
-            htmlNode.children.push(expression[i]);
+            children.push(expression[i]);
         }
     }
     if (parts.length > 0) {
-        htmlNode.children.push(buildHTMLUnbreakable(parts, options));
+        children.push(buildHTMLUnbreakable(parts, options));
+    }
+
+    // Now, if there was a tag, build it too and append it as a final child.
+    let tagChild;
+    if (tag) {
+        tagChild = buildHTMLUnbreakable(
+            buildExpression(tag, options, true)
+        );
+        tagChild.classes = ["tag"];
+        children.push(tagChild);
+    }
+
+    const htmlNode = makeSpan(["katex-html"], children);
+    htmlNode.setAttribute("aria-hidden", "true");
+
+    // Adjust the strut of the tag to be the maximum height of all children
+    // (the height of the enclosing htmlNode) for proper vertical alignment.
+    if (tag) {
+        const strut = tagChild.children[0];
+        strut.style.height = (htmlNode.height + htmlNode.depth) + "em";
+        strut.style.verticalAlign = (-htmlNode.depth) + "em";
     }
 
     return htmlNode;

@@ -24,7 +24,7 @@ type Font = "main" | "ams"
 // types for raw text tokens, and we want to avoid conflicts with higher-level
 // `ParseNode` types. These `ParseNode`s are constructed within `Parser` by
 // looking up the `symbols` map.
-type Group =
+export type Group =
     "accent-token" | "bin" | "close" | "inner" | "mathord" |
     "op-token" | "open" | "punct" | "rel" | "spacing" | "textord";
 type CharInfoMap = {[string]: {font: Font, group: Group, replace: ?string}};

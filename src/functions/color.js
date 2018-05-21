@@ -3,6 +3,7 @@ import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
+import {assertNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -41,7 +42,7 @@ defineFunction({
         argTypes: ["color", "original"],
     },
     handler(context, args) {
-        const color = args[0];
+        const color = assertNodeType(args[0], "color-token");
         const body = args[1];
         return {
             type: "color",

@@ -168,7 +168,8 @@ const groupLength = function(arg: ParseNode<*>): number {
 };
 
 const svgSpan = function(
-    group: ParseNode<"accent">,
+    group: ParseNode<"accent"> | ParseNode<"accentUnder"> | ParseNode<"xArrow">
+         | ParseNode<"horizBrace">,
     options: Options,
 ): DomSpan | SvgSpan {
     // Create a span with inline SVG for the element.
@@ -180,9 +181,13 @@ const svgSpan = function(
         let viewBoxWidth = 400000;  // default
         const label = group.value.label.substr(1);
         if (utils.contains(["widehat", "widetilde", "utilde"], label)) {
+            // Each type in the `if` statement corresponds to one of the ParseNode
+            // types below. This narrowing is required to access `grp.value.base`.
+            // $FlowFixMe
+            const grp: ParseNode<"accent"> | ParseNode<"accentUnder"> = group;
             // There are four SVG images available for each function.
             // Choose a taller image when there are more characters.
-            const numChars = groupLength(group.value.base);
+            const numChars = groupLength(grp.value.base);
             let viewBoxHeight;
             let pathName;
             let height;
