@@ -13,7 +13,7 @@ import type {Group} from "../symbols";
 
 // NOTE: `NODETYPE` is constrained by `Group` instead of `NodeType`. This
 // guarantees that `group.value` is a string as required by buildCommon.mathsym.
-function defineOpFun<NODETYPE: Group>(
+function defineOpFunction<NODETYPE: Group>(
     type: NODETYPE,
     mathmlNodePostProcessor?: (
         mathMLTree.MathNode,
@@ -38,15 +38,15 @@ function defineOpFun<NODETYPE: Group>(
     });
 }
 
-defineOpFun("bin", (mathNode, group, options) => {
+defineOpFunction("bin", (mathNode, group, options) => {
     const variant = mml.getVariant(group, options);
     if (variant === "bold-italic") {
         mathNode.setAttribute("mathvariant", variant);
     }
 });
-defineOpFun("rel");
-defineOpFun("open");
-defineOpFun("close");
-defineOpFun("inner");
-defineOpFun("punct", mathNode => mathNode.setAttribute("separator", "true"));
+defineOpFunction("rel");
+defineOpFunction("open");
+defineOpFunction("close");
+defineOpFunction("inner");
+defineOpFunction("punct", mathNode => mathNode.setAttribute("separator", "true"));
 
