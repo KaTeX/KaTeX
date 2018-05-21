@@ -193,7 +193,7 @@ class SpaceNode {
      */
     toMarkup(): string {
         if (this.character) {
-            return this.character;
+            return `<mtext>${this.character}</mtext>`;
         } else {
             return `<mspace width="${this.width}em"/>`;
         }

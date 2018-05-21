@@ -116,7 +116,9 @@ exports[`A MathML builder should generate the right types of nodes 1`] = `
       <mn>
         1
       </mn>
-      &ThickSpace;
+      <mtext>
+        &ThickSpace;
+      </mtext>
       <mtext>
         a
       </mtext>
@@ -522,7 +524,60 @@ exports[`A MathML builder special spaces render specially 1`] = `
 <math>
   <semantics>
     <mrow>
-      &ThinSpace;&ThinSpace;&MediumSpace;&MediumSpace;&ThickSpace;&ThickSpace;&NegativeThinSpace;&NegativeThinSpace;&NegativeMediumSpace;&NegativeThickSpace;&VeryThinSpace;&ThinSpace;&MediumSpace;&ThickSpace;&NegativeVeryThinSpace;&NegativeThinSpace;&NegativeMediumSpace;&NegativeThickSpace;
+      <mtext>
+        &ThinSpace;
+      </mtext>
+      <mtext>
+        &ThinSpace;
+      </mtext>
+      <mtext>
+        &MediumSpace;
+      </mtext>
+      <mtext>
+        &MediumSpace;
+      </mtext>
+      <mtext>
+        &ThickSpace;
+      </mtext>
+      <mtext>
+        &ThickSpace;
+      </mtext>
+      <mtext>
+        &NegativeThinSpace;
+      </mtext>
+      <mtext>
+        &NegativeThinSpace;
+      </mtext>
+      <mtext>
+        &NegativeMediumSpace;
+      </mtext>
+      <mtext>
+        &NegativeThickSpace;
+      </mtext>
+      <mtext>
+        &VeryThinSpace;
+      </mtext>
+      <mtext>
+        &ThinSpace;
+      </mtext>
+      <mtext>
+        &MediumSpace;
+      </mtext>
+      <mtext>
+        &ThickSpace;
+      </mtext>
+      <mtext>
+        &NegativeVeryThinSpace;
+      </mtext>
+      <mtext>
+        &NegativeThinSpace;
+      </mtext>
+      <mtext>
+        &NegativeMediumSpace;
+      </mtext>
+      <mtext>
+        &NegativeThickSpace;
+      </mtext>
     </mrow>
     <annotation encoding="application/x-tex">
       \\,\\thinspace\\:\\medspace\\;\\thickspace\\!\\negthinspace\\negmedspace\\negthickspace\\mkern1mu\\mkern3mu\\mkern4mu\\mkern5mu\\mkern-1mu\\mkern-3mu\\mkern-4mu\\mkern-5mu
