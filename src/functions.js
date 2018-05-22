@@ -39,6 +39,7 @@ import "./functions/styling";
 import "./functions/symbolsOp";
 import "./functions/symbolsOrd";
 import "./functions/symbolsSpacing";
+import "./functions/tag";
 import "./functions/text";
 import "./functions/underline";
 import "./functions/verb";

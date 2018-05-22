@@ -136,21 +136,6 @@ groupTypes.supsub = function(group, options) {
     return node;
 };
 
-groupTypes.tag = function(group, options) {
-    const table = new mathMLTree.MathNode("mtable", [
-        new mathMLTree.MathNode("mlabeledtr", [
-            new mathMLTree.MathNode("mtd", [
-                buildExpressionRow(group.value.tag, options),
-            ]),
-            new mathMLTree.MathNode("mtd", [
-                buildExpressionRow(group.value.body, options),
-            ]),
-        ]),
-    ]);
-    table.setAttribute("side", "right");
-    return table;
-};
-
 /**
  * Takes a list of nodes, builds them, and returns a list of the generated
  * MathML nodes.  Also combine consecutive <mtext> outputs into a single
