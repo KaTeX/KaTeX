@@ -79,10 +79,6 @@ export const getVariant = function(group, options) {
  */
 export const groupTypes = {};
 
-groupTypes.ordgroup = function(group, options) {
-    return buildExpressionRow(group.value, options);
-};
-
 groupTypes.supsub = function(group, options) {
     // Is the inner group a relevant horizonal brace?
     let isBrace = false;

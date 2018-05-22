@@ -242,9 +242,6 @@ export const makeNullDelimiter = function(options, classes) {
  * Simpler types come at the beginning, while complicated types come afterwards.
  */
 export const groupTypes = {
-    ordgroup: (group, options) => makeSpan(
-        ["mord"], buildExpression(group.value, options, true), options),
-
     supsub(group, options) {
         // Superscript and subscripts are handled in the TeXbook on page
         // 445-446, rules 18(a-f).

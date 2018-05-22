@@ -27,6 +27,7 @@ import "./functions/mclass";
 import "./functions/mod";
 import "./functions/op";
 import "./functions/operatorname";
+import "./functions/ordgroup";
 import "./functions/overline";
 import "./functions/phantom";
 import "./functions/raisebox";
