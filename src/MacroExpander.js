@@ -25,6 +25,7 @@ export default class MacroExpander implements MacroContextInterface {
         this.feed(input);
         // Make new global namespace
         this.namespace = new Namespace(undefined, settings.macros);
+        this.cache = {};
         this.maxExpand = settings.maxExpand;
         this.mode = mode;
         this.stack = []; // contains tokens in REVERSE order
@@ -43,6 +44,24 @@ export default class MacroExpander implements MacroContextInterface {
      */
     switchMode(newMode: Mode) {
         this.mode = newMode;
+    }
+
+    /**
+     * Start a new child namespace, as in when starting a group.
+     */
+    pushNamespace() {
+        this.namespace = new Namespace(this.namespace);
+    }
+
+    /**
+     * Return to parent namespace, as in when ending a group.
+     */
+    popNamespace() {
+        if (this.namespace === this.namespace.global) {
+            throw new ParseError("Unbalanced namespace destruction: attempt " +
+                "to pop global namespace; please report this as a bug");
+        }
+        this.namespace = this.namespace.parent;
     }
 
     /**

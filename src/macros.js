@@ -106,7 +106,7 @@ defineMacro("\\TextOrMath", function(context) {
 //     \gdef\macro#1{expansion}
 //     \gdef\macro#1#2{expansion}
 //     \gdef\macro#1#2#3#4#5#6#7#8#9{expansion}
-defineMacro("\\gdef", function(context) {
+const def = function(context, global: Boolean) {
     let arg = context.consumeArgs(1)[0];
     if (arg.length !== 1) {
         throw new ParseError("\\gdef's first argument must be a macro name");
@@ -130,12 +130,18 @@ defineMacro("\\gdef", function(context) {
         arg = context.consumeArgs(1)[0];
     }
     // Final arg is the expansion of the macro
-    context.macros[name] = {
+    let namespace = context.namespace;
+    if (global) {
+        namespace = namespace.global;
+    }
+    namespace.macros[name] = {
         tokens: arg,
         numArgs,
     };
     return '';
-});
+};
+defineMacro("\\gdef", (context) => def(context, true));
+defineMacro("\\def", (context) => def(context, false));
 
 //////////////////////////////////////////////////////////////////////
 // Grouping
