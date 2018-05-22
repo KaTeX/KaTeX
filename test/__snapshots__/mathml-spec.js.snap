@@ -57,6 +57,35 @@ exports[`A MathML builder accents turn into <mover accent="true"> in MathML 1`] 
 
 `;
 
+exports[`A MathML builder should concatenate digits into single <mn> 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mi>
+        sin
+      </mi>
+      <mo>
+        ⁡
+      </mo>
+      <mi>
+        α
+      </mi>
+      <mo>
+        =
+      </mo>
+      <mn>
+        0.34
+      </mn>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\sin{\\alpha}=0.34
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder should generate <mphantom> nodes for \\phantom 1`] = `
 
 <math>
@@ -104,35 +133,6 @@ exports[`A MathML builder should generate the right types of nodes 1`] = `
     </mrow>
     <annotation encoding="application/x-tex">
       \\sin{x}+1\\;\\text{a}
-    </annotation>
-  </semantics>
-</math>
-
-`;
-
-exports[`A MathML builder should generate the right types of nodes 2`] = `
-
-<math>
-  <semantics>
-    <mrow>
-      <mi>
-        sin
-      </mi>
-      <mo>
-        ⁡
-      </mo>
-      <mi>
-        α
-      </mi>
-      <mo>
-        =
-      </mo>
-      <mn>
-        0.34
-      </mn>
-    </mrow>
-    <annotation encoding="application/x-tex">
-      \\sin{\\alpha}=0.34
     </annotation>
   </semantics>
 </math>
