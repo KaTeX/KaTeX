@@ -22,7 +22,7 @@ const parseTree = function(toParse: string, settings: Settings): ParseNode<*>[] 
 
     // If the input used \tag, it will set the \df@tag macro to the tag.
     // In this case, we separately parse the tag and wrap the tree.
-    if (parser.gullet.macros["\\df@tag"]) {
+    if (parser.gullet.namespace.getMacro("\\df@tag")) {
         if (!settings.displayMode) {
             throw new ParseError("\\tag works only in display equations");
         }

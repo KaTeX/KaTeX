@@ -89,7 +89,7 @@ export default class Parser {
         // Use old \color behavior (same as LaTeX's \textcolor) if requested.
         // We do this after the macros object has been copied by MacroExpander.
         if (settings.colorIsTextColor) {
-            this.gullet.environment.macros["\\color"] = "\\textcolor";
+            this.gullet.namespace.macros["\\color"] = "\\textcolor";
         }
         // Store the settings for use in parsing
         this.settings = settings;

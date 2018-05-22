@@ -400,7 +400,7 @@ defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 defineMacro("\\tag", "\\@ifstar\\tag@literal\\tag@paren");
 defineMacro("\\tag@paren", "\\tag@literal{({#1})}");
 defineMacro("\\tag@literal", (context) => {
-    if (context.macros["\\df@tag"]) {
+    if (context.namespace.getMacro("\\df@tag")) {
         throw new ParseError("Multiple \\tag");
     }
     return "\\gdef\\df@tag{\\text{#1}}";

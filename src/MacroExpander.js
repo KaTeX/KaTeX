@@ -8,7 +8,7 @@ import Lexer from "./Lexer";
 import {Token} from "./Token";
 import type {Mode} from "./types";
 import ParseError from "./ParseError";
-import Environment, {builtinEnvironment} from "./Environment";
+import Namespace from "./Namespace";
 
 import type {MacroContextInterface, MacroMap, MacroExpansion} from "./macros";
 import type Settings from "./Settings";
@@ -16,14 +16,15 @@ import type Settings from "./Settings";
 export default class MacroExpander implements MacroContextInterface {
     maxExpand: number;
     lexer: Lexer;
-    environment: Environment;
+    namespace: Namespace;
     cache: MacroMap;
     stack: Token[];
     mode: Mode;
 
     constructor(input: string, settings: Settings, mode: Mode) {
         this.feed(input);
-        this.environment = new Environment(builtinEnvironment, settings.macros);
+        // Make new global namespace
+        this.namespace = new Namespace(undefined, settings.macros);
         this.maxExpand = settings.maxExpand;
         this.mode = mode;
         this.stack = []; // contains tokens in REVERSE order
@@ -154,7 +155,7 @@ export default class MacroExpander implements MacroContextInterface {
     expandOnce(): Token | Token[] {
         const topToken = this.popToken();
         const name = topToken.text;
-        if (!this.environment.getMacro(name)) {
+        if (!this.namespace.getMacro(name)) {
             // Fully expanded
             this.pushToken(topToken);
             return topToken;
@@ -239,7 +240,7 @@ export default class MacroExpander implements MacroContextInterface {
      * Caches macro expansions for those that were defined simple TeX strings.
      */
     _getExpansion(name: string): MacroExpansion {
-        const definition = this.cache[name] || this.environment.getMacro(name);
+        const definition = this.cache[name] || this.namespace.getMacro(name);
         const expansion =
             typeof definition === "function" ? definition(this) : definition;
         if (typeof expansion === "string") {
