@@ -79,6 +79,7 @@ function init() {
     }
 
     function reprocess() {
+        // Ignore changes to global macros caused by the expression
         options.macros = Object.assign({}, macros);
         try {
             katex.render(input.value, math, options);

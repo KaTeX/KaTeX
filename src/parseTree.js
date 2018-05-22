@@ -18,6 +18,8 @@ const parseTree = function(toParse: string, settings: Settings): ParseNode<*>[] 
         throw new TypeError('KaTeX can only parse string typed expression');
     }
     const parser = new Parser(toParse, settings);
+    // Blank out any \df@tag to avoid spurious "Duplicate \tag" errors
+    delete parser.gullet.namespace.macros["\\df@tag"];
     let tree = parser.parse();
 
     // If the input used \tag, it will set the \df@tag macro to the tag.
