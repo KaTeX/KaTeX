@@ -10,7 +10,6 @@ import buildCommon from "./buildCommon";
 import fontMetrics from "./fontMetrics";
 import mathMLTree from "./mathMLTree";
 import ParseError from "./ParseError";
-import Style from "./Style";
 import symbols from "./symbols";
 import utils from "./utils";
 
@@ -78,63 +77,6 @@ export const getVariant = function(group, options) {
  * tree. Each function should take a parse group and return a MathML node.
  */
 export const groupTypes = {};
-
-groupTypes.supsub = function(group, options) {
-    // Is the inner group a relevant horizonal brace?
-    let isBrace = false;
-    let isOver;
-    let isSup;
-    if (group.value.base) {
-        if (group.value.base.value.type === "horizBrace") {
-            isSup = (group.value.sup ? true : false);
-            if (isSup === group.value.base.value.isOver) {
-                isBrace = true;
-                isOver = group.value.base.value.isOver;
-            }
-        }
-    }
-
-    const children = [
-        buildGroup(group.value.base, options)];
-
-    if (group.value.sub) {
-        children.push(buildGroup(group.value.sub, options));
-    }
-
-    if (group.value.sup) {
-        children.push(buildGroup(group.value.sup, options));
-    }
-
-    let nodeType;
-    if (isBrace) {
-        nodeType = (isOver ? "mover" : "munder");
-    } else if (!group.value.sub) {
-        const base = group.value.base;
-        if (base && base.value.limits && options.style === Style.DISPLAY) {
-            nodeType = "mover";
-        } else {
-            nodeType = "msup";
-        }
-    } else if (!group.value.sup) {
-        const base = group.value.base;
-        if (base && base.value.limits && options.style === Style.DISPLAY) {
-            nodeType = "munder";
-        } else {
-            nodeType = "msub";
-        }
-    } else {
-        const base = group.value.base;
-        if (base && base.value.limits && options.style === Style.DISPLAY) {
-            nodeType = "munderover";
-        } else {
-            nodeType = "msubsup";
-        }
-    }
-
-    const node = new mathMLTree.MathNode(nodeType, children);
-
-    return node;
-};
 
 /**
  * Takes a list of nodes, builds them, and returns a list of the generated
