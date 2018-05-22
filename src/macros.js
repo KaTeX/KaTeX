@@ -106,7 +106,7 @@ defineMacro("\\TextOrMath", function(context) {
 //     \gdef\macro#1{expansion}
 //     \gdef\macro#1#2{expansion}
 //     \gdef\macro#1#2#3#4#5#6#7#8#9{expansion}
-const def = function(context, global: Boolean) {
+const def = (context, global: Boolean) => {
     let arg = context.consumeArgs(1)[0];
     if (arg.length !== 1) {
         throw new ParseError("\\gdef's first argument must be a macro name");
@@ -142,6 +142,19 @@ const def = function(context, global: Boolean) {
 };
 defineMacro("\\gdef", (context) => def(context, true));
 defineMacro("\\def", (context) => def(context, false));
+defineMacro("\\global", (context) => {
+    let next = context.consumeArgs(1)[0];
+    if (next.length !== 1) {
+        throw new ParseError("Invalid command after \\global");
+    }
+    const command = next[0].text;
+    if (command === "\\def") {
+        // \global\def is equivalent to \gdef
+        return def(context, true);
+    } else {
+        throw new ParseError(`Invalid command '${command}' after \\global`);
+    }
+});
 
 //////////////////////////////////////////////////////////////////////
 // Grouping
