@@ -35,6 +35,10 @@ describe("A MathML builder", function() {
         expect(getMathML("\\sin{x}+1\\;\\text{a}")).toMatchSnapshot();
     });
 
+    it('should concatenate digits into single <mn>', () => {
+        expect(getMathML("\\sin{\\alpha}=0.34")).toMatchSnapshot();
+    });
+
     it('should make prime operators into <mo> nodes', () => {
         expect(getMathML("f'")).toMatchSnapshot();
     });

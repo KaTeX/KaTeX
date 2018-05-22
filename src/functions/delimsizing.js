@@ -261,9 +261,7 @@ defineFunction({
             inner.push(rightNode);
         }
 
-        const outerNode = new mathMLTree.MathNode("mrow", inner);
-
-        return outerNode;
+        return mml.makeRow(inner);
     },
 });
 
