@@ -210,7 +210,7 @@ export function defineFunctionBuilders<NODETYPE: NodeType>({
     type, htmlBuilder, mathmlBuilder,
 }: {|
     type: NODETYPE,
-    htmlBuilder: HtmlBuilder<NODETYPE>,
+    htmlBuilder?: HtmlBuilder<NODETYPE>,
     mathmlBuilder: MathMLBuilder<NODETYPE>,
 |}) {
     defineFunction({

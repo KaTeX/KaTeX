@@ -79,10 +79,6 @@ export const getVariant = function(group, options) {
  */
 export const groupTypes = {};
 
-groupTypes.ordgroup = function(group, options) {
-    return buildExpressionRow(group.value, options);
-};
-
 groupTypes.supsub = function(group, options) {
     // Is the inner group a relevant horizonal brace?
     let isBrace = false;
@@ -138,21 +134,6 @@ groupTypes.supsub = function(group, options) {
     const node = new mathMLTree.MathNode(nodeType, children);
 
     return node;
-};
-
-groupTypes.tag = function(group, options) {
-    const table = new mathMLTree.MathNode("mtable", [
-        new mathMLTree.MathNode("mlabeledtr", [
-            new mathMLTree.MathNode("mtd", [
-                buildExpressionRow(group.value.tag, options),
-            ]),
-            new mathMLTree.MathNode("mtd", [
-                buildExpressionRow(group.value.body, options),
-            ]),
-        ]),
-    ]);
-    table.setAttribute("side", "right");
-    return table;
 };
 
 /**
