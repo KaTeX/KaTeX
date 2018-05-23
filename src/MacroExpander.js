@@ -55,11 +55,11 @@ export default class MacroExpander implements MacroContextInterface {
      * Return to parent namespace, as in when ending a group.
      */
     popNamespace() {
-        if (this.namespace === this.namespace.global) {
+        this.namespace = this.namespace.parent;
+        if (!this.namespace) {
             throw new ParseError("Unbalanced namespace destruction: attempt " +
                 "to pop global namespace; please report this as a bug");
         }
-        this.namespace = this.namespace.parent;
     }
 
     /**
