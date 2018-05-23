@@ -15,17 +15,10 @@ import type Options from "./Options";
 
 /**
  * Create an HTML className based on a list of classes. In addition to joining
- * with spaces, we also remove null or empty classes.
+ * with spaces, we also remove empty classes.
  */
 const createClass = function(classes: string[]): string {
-    classes = classes.slice();
-    for (let i = classes.length - 1; i >= 0; i--) {
-        if (!classes[i]) {
-            classes.splice(i, 1);
-        }
-    }
-
-    return classes.join(" ");
+    return classes.filter(cls => cls).join(" ");
 };
 
 // To ensure that all nodes have compatible signatures for these methods.

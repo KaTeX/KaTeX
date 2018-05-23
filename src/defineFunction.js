@@ -26,6 +26,12 @@ export type FunctionHandler<NODETYPE: NodeType> = (
     optArgs: (?ParseNode<*>)[],
 ) => NodeValue<NODETYPE>;
 
+export type HtmlBuilder<NODETYPE> = (ParseNode<NODETYPE>, Options) => HtmlDomNode;
+export type MathMLBuilder<NODETYPE> = (
+    group: ParseNode<NODETYPE>,
+    options: Options,
+) => MathNode | TextNode | domTree.documentFragment;
+
 export type FunctionPropSpec = {
     // The number of arguments the function takes.
     numArgs: number,
@@ -106,16 +112,13 @@ type FunctionDefSpec<NODETYPE: NodeType> = {|
 
     // This function returns an object representing the DOM structure to be
     // created when rendering the defined LaTeX function.
-    htmlBuilder?: (group: ParseNode<NODETYPE>, options: Options) => HtmlDomNode,
+    htmlBuilder?: HtmlBuilder<NODETYPE>,
 
     // TODO: Currently functions/op.js returns documentFragment. Refactor it
     // and update the return type of this function.
     // This function returns an object representing the MathML structure to be
     // created when rendering the defined LaTeX function.
-    mathmlBuilder?: (
-        group: ParseNode<NODETYPE>,
-        options: Options,
-    ) => MathNode | TextNode | domTree.documentFragment,
+    mathmlBuilder?: MathMLBuilder<NODETYPE>,
 |};
 
 /**
@@ -196,6 +199,28 @@ export default function defineFunction<NODETYPE: NodeType>({
             mathmlGroupTypes[type] = mathmlBuilder;
         }
     }
+}
+
+/**
+ * Use this to register only the HTML and MathML builders for a function (e.g.
+ * if the function's ParseNode is generated in Parser.js rather than via a
+ * stand-alone handler provided to `defineFunction`).
+ */
+export function defineFunctionBuilders<NODETYPE: NodeType>({
+    type, htmlBuilder, mathmlBuilder,
+}: {|
+    type: NODETYPE,
+    htmlBuilder?: HtmlBuilder<NODETYPE>,
+    mathmlBuilder: MathMLBuilder<NODETYPE>,
+|}) {
+    defineFunction({
+        type,
+        names: [],
+        props: {numArgs: 0},
+        handler() { throw new Error('Should never be called.'); },
+        htmlBuilder,
+        mathmlBuilder,
+    });
 }
 
 // Since the corresponding buildHTML/buildMathML function expects a

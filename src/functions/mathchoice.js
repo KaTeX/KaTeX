@@ -1,7 +1,6 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
 import Style from "../Style";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -47,11 +46,6 @@ defineFunction({
     },
     mathmlBuilder: (group, options) => {
         const body = chooseMathStyle(group, options);
-        const elements = mml.buildExpression(
-            body,
-            options,
-            false
-        );
-        return new mathMLTree.MathNode("mrow", elements);
+        return mml.buildExpressionRow(body, options);
     },
 });
