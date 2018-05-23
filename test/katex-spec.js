@@ -2689,6 +2689,8 @@ describe("A macro expander", function() {
     it("\\gdef overrides at all levels", () => {
         expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\gdef\\x{3}\\x}\\x}\\x")
             .toParseLike("1{2{3}3}3");
+        expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\global\\def\\x{3}\\x}\\x}\\x")
+            .toParseLike("1{2{3}3}3");
     });
 
     it("Macro arguments do not generate groups", () => {
