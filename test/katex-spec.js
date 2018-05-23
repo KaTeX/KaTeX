@@ -2681,6 +2681,16 @@ describe("A macro expander", function() {
         expect("\\gdef{}{}").toNotParse();
     });
 
+    it("\\def works locally", () => {
+        expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\def\\x{3}\\x}\\x}\\x")
+            .toParseLike("1{2{3}2}1");
+    });
+
+    it("\\gdef overrides at all levels", () => {
+        expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\gdef\\x{3}\\x}\\x}\\x")
+            .toParseLike("1{2{3}3}3");
+    });
+
     // This may change in the future, if we support the extra features of
     // \hspace.
     it("should treat \\hspace, \\hskip like \\kern", function() {
@@ -2955,6 +2965,12 @@ describe("Newlines via \\\\ and \\newline", function() {
 
     it("should not allow \\cr at top level", () => {
         expect("hello \\cr world").toNotBuild();
+    });
+
+    it("array redefines and resets \\\\", () => {
+        expect("a\\\\b\\begin{matrix}x&y\\\\z&w\\end{matrix}\\\\c")
+            .toParseLike("a\\newline b\\begin{matrix}x&y\\cr z&w\\end{matrix}" +
+                         "\\newline c");
     });
 });
 
