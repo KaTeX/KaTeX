@@ -139,7 +139,7 @@ const def = (context, global: Boolean) => {
 defineMacro("\\gdef", (context) => def(context, true));
 defineMacro("\\def", (context) => def(context, false));
 defineMacro("\\global", (context) => {
-    let next = context.consumeArgs(1)[0];
+    const next = context.consumeArgs(1)[0];
     if (next.length !== 1) {
         throw new ParseError("Invalid command after \\global");
     }
