@@ -2693,6 +2693,14 @@ describe("A macro expander", function() {
             .toParseLike("1{2{3}3}3");
     });
 
+    it("\\global needs to followed by \\def", () => {
+        expect("\\global\\def\\foo{}\\foo").toParseLike("");
+        // This doesn't work yet:
+        //expect("\\def\\DEF{\\def}\\global\\DEF\\foo{}\\foo").toParseLike("");
+        expect("\\global\\foo").toNotParse();
+        expect("\\global\\bar x").toNotParse();
+    });
+
     it("Macro arguments do not generate groups", () => {
         expect("\\def\\x{1}\\x\\def\\foo#1{#1}\\foo{\\x\\def\\x{2}\\x}\\x")
             .toParseLike("1122");
