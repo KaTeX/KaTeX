@@ -21,6 +21,7 @@ import type {SettingsOptions} from "./src/Settings";
 import type ParseNode from "./src/ParseNode";
 
 import { defineSymbol } from './src/symbols';
+import { defineMacro } from './src/macros';
 
 import { version } from "./package.json";
 
@@ -176,6 +177,10 @@ export default {
     __renderToHTMLTree: renderToHTMLTree,
     /**
      * adds a new symbol to internal symbols table
-    */
+     */
     __defineSymbol: defineSymbol,
+    /**
+     * adds a new macro to builtin macro list
+     */
+    __defineMacro: defineMacro,
 };
