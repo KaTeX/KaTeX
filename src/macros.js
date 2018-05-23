@@ -130,14 +130,10 @@ const def = (context, global: Boolean) => {
         arg = context.consumeArgs(1)[0];
     }
     // Final arg is the expansion of the macro
-    let namespace = context.namespace;
-    if (global) {
-        namespace = namespace.global;
-    }
-    namespace.macros[name] = {
+    context.namespace.setMacro(name, {
         tokens: arg,
         numArgs,
-    };
+    }, global);
     return '';
 };
 defineMacro("\\gdef", (context) => def(context, true));

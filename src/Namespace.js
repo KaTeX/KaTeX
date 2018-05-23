@@ -35,6 +35,19 @@ export default class Namespace {
             return null;
         }
     }
+
+    setMacro(name: string, expansion: MacroExpansion, global: Boolean = false) {
+        let namespace = this;
+        // Global set is equivalent to setting in all namespaces up the stack.
+        if (global) {
+            while (namespace !== this.global) {
+                namespace.macros[name] = expansion;
+                namespace = namespace.parent;
+            }
+            // this.global namespace will be set by the next line
+        }
+        namespace.macros[name] = expansion;
+    }
 }
 
 export const builtinNamespace = new Namespace(undefined, builtinMacros);
