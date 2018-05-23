@@ -2691,6 +2691,16 @@ describe("A macro expander", function() {
             .toParseLike("1{2{3}3}3");
     });
 
+    it("Macro arguments do not generate groups", () => {
+        expect("\\def\\x{1}\\x\\def\\foo#1{#1}\\foo{\\x\\def\\x{2}\\x}\\x")
+            .toParseLike("1122");
+    });
+
+    it("\\textbf arguments do generate groups", () => {
+        expect("\\def\\x{1}\\x\\textbf{\\x\\def\\x{2}\\x}\\x")
+            .toParseLike("1\\textbf{12}1");
+    });
+
     // This may change in the future, if we support the extra features of
     // \hspace.
     it("should treat \\hspace, \\hskip like \\kern", function() {
