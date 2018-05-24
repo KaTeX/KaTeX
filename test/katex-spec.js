@@ -45,8 +45,6 @@ describe("An ord parser", function() {
     it("should build a list of ords", function() {
         const parse = getParsed(expression);
 
-        expect(parse).toBeTruthy();
-
         for (let i = 0; i < parse.length; i++) {
             const group = parse[i];
             expect(group.type).toMatch("ord");
@@ -69,7 +67,6 @@ describe("A bin parser", function() {
 
     it("should build a list of bins", function() {
         const parse = getParsed(expression);
-        expect(parse).toBeTruthy();
 
         for (let i = 0; i < parse.length; i++) {
             const group = parse[i];
@@ -89,7 +86,6 @@ describe("A rel parser", function() {
 
     it("should build a list of rels", function() {
         const parse = getParsed(expression);
-        expect(parse).toBeTruthy();
 
         for (let i = 0; i < parse.length; i++) {
             const group = parse[i];
@@ -107,7 +103,6 @@ describe("A punct parser", function() {
 
     it("should build a list of puncts", function() {
         const parse = getParsed(expression);
-        expect(parse).toBeTruthy();
 
         for (let i = 0; i < parse.length; i++) {
             const group = parse[i];
@@ -125,7 +120,6 @@ describe("An open parser", function() {
 
     it("should build a list of opens", function() {
         const parse = getParsed(expression);
-        expect(parse).toBeTruthy();
 
         for (let i = 0; i < parse.length; i++) {
             const group = parse[i];
@@ -143,7 +137,6 @@ describe("A close parser", function() {
 
     it("should build a list of closes", function() {
         const parse = getParsed(expression);
-        expect(parse).toBeTruthy();
 
         for (let i = 0; i < parse.length; i++) {
             const group = parse[i];
