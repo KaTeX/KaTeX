@@ -6,6 +6,7 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import { calculateSize } from "../units";
 import ParseError from "../ParseError";
+import {assertNodeType} from "../ParseNode";
 
 // \\ is a macro mapping to either \cr or \newline.  Because they have the
 // same signature, we implement them as one megafunction, with newRow
@@ -23,6 +24,7 @@ defineFunction({
     },
 
     handler: (context, args, optArgs) => {
+        const size = optArgs[0];
         const newRow = (context.funcName === "\\cr");
         let newLine = false;
         if (!newRow) {
@@ -39,7 +41,7 @@ defineFunction({
             type: "cr",
             newLine,
             newRow,
-            size: optArgs[0],
+            size: size && assertNodeType(size, "size"),
         };
     },
 

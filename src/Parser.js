@@ -85,7 +85,7 @@ export default class Parser {
         this.mode = "math";
         // Create a new macro expander (gullet) and (indirectly via that) also a
         // new lexer (mouth) for this parser (stomach, in the language of TeX)
-        this.gullet = new MacroExpander(input, settings.macros, this.mode);
+        this.gullet = new MacroExpander(input, settings, this.mode);
         // Use old \color behavior (same as LaTeX's \textcolor) if requested.
         // We do this after the macros object has been copied by MacroExpander.
         if (settings.colorIsTextColor) {
@@ -556,7 +556,7 @@ export default class Parser {
      */
     parseArguments(
         func: string,   // Should look like "\name" or "\begin{name}".
-        funcData: FunctionSpec<*> | EnvSpec,
+        funcData: FunctionSpec<*> | EnvSpec<*>,
     ): {
         args: ParseNode<*>[],
         optArgs: (?ParseNode<*>)[],
@@ -777,7 +777,7 @@ export default class Parser {
         if (!match) {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
-        return newArgument(new ParseNode("color", match[0], this.mode), res);
+        return newArgument(new ParseNode("color-token", match[0], this.mode), res);
     }
 
     /**
@@ -973,11 +973,16 @@ export default class Parser {
             }
             symbol = new ParseNode(symbols[this.mode][text].group,
                             text, this.mode, nucleus);
-        } else if (supportedCodepoint(text.charCodeAt(0))) {
-            if (this.settings.strict && this.mode === 'math') {
-                this.settings.reportNonstrict("unicodeTextInMathMode",
-                    `Unicode text character "${text[0]}" used in math mode`,
-                    nucleus);
+        } else if (text.charCodeAt(0) >= 0x80) { // no symbol for e.g. ^
+            if (this.settings.strict) {
+                if (!supportedCodepoint(text.charCodeAt(0))) {
+                    this.settings.reportNonstrict("unknownSymbol",
+                        `Unrecognized Unicode character "${text[0]}"`, nucleus);
+                } else if (this.mode === "math") {
+                    this.settings.reportNonstrict("unicodeTextInMathMode",
+                        `Unicode text character "${text[0]}" used in math mode`,
+                        nucleus);
+                }
             }
             symbol = new ParseNode("textord", text, this.mode, nucleus);
         } else {

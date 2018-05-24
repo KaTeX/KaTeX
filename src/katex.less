@@ -24,12 +24,17 @@
     text-align: center;
 
     > .katex {
-        display: inline-block;
-        text-align: initial;
+        display: block;
+        text-align: center;
         white-space: nowrap;
 
         > .katex-html {
-            display: inline-block;
+            display: block;
+
+            > .tag {
+                position: absolute;
+                right: 0px;
+            }
         }
     }
 }

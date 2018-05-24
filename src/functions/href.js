@@ -1,7 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {assertNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -15,7 +15,7 @@ defineFunction({
     },
     handler: (context, args) => {
         const body = args[1];
-        const href  = args[0].value;
+        const href = assertNodeType(args[0], "url").value;
         return {
             type: "href",
             href: href,
@@ -34,8 +34,7 @@ defineFunction({
         return new buildCommon.makeAnchor(href, [], elements, options);
     },
     mathmlBuilder: (group, options) => {
-        const inner = mml.buildExpression(group.value.body, options);
-        const math = new mathMLTree.MathNode("mrow", inner);
+        const math = mml.buildExpressionRow(group.value.body, options);
         math.setAttribute("href", group.value.href);
         return math;
     },
