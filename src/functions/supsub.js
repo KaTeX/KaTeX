@@ -1,3 +1,4 @@
+// @flow
 import {defineFunctionBuilders} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import domTree from "../domTree";
@@ -7,6 +8,14 @@ import Style from "../Style";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
+import * as accent from "./accent";
+import * as horizBrace from "./horizBrace";
+import * as op from "./op";
+
+import type Options from "../Options";
+import type ParseNode from "../ParseNode";
+import type {HtmlBuilder} from "../defineFunction";
+import type {MathNodeType} from "../mathMLTree";
 
 /**
  * Sometimes, groups perform special rules when they have superscripts or
@@ -15,23 +24,27 @@ import * as mml from "../buildMathML";
  * its inner element should handle the superscripts and subscripts instead of
  * handling them itself.
  */
-const shouldHandleSupSub = function(group, options) {
+const htmlBuilderDelegate = function(
+    group: ParseNode<"supsub">,
+    options: Options,
+): ?HtmlBuilder<*> {
     const base = group.value.base;
     if (!base) {
-        return false;
+        return null;
     } else if (base.type === "op") {
         // Operators handle supsubs differently when they have limits
         // (e.g. `\displaystyle\sum_2^3`)
-        return base.value.limits &&
+        const delegate = base.value.limits &&
             (options.style.size === Style.DISPLAY.size ||
             base.value.alwaysHandleSupSub);
+        return delegate ? op.htmlBuilder : null;
     } else if (base.type === "accent") {
-        return utils.isCharacterBox(base.value.base);
+        return utils.isCharacterBox(base.value.base) ? accent.htmlBuilder : null;
     } else if (base.type === "horizBrace") {
         const isSup = !group.value.sub;
-        return (isSup === base.value.isOver);
+        return isSup === base.value.isOver ? horizBrace.htmlBuilder : null;
     } else {
-        return false;
+        return null;
     }
 };
 
@@ -45,34 +58,36 @@ defineFunctionBuilders({
 
         // Here is where we defer to the inner group if it should handle
         // superscripts and subscripts itself.
-        if (shouldHandleSupSub(group, options)) {
-            return html.groupTypes[group.value.base.type](group, options);
+        const builderDelegate = htmlBuilderDelegate(group, options);
+        if (builderDelegate) {
+            return builderDelegate(group, options);
         }
 
-        const base = html.buildGroup(group.value.base, options);
+        const {base: valueBase, sup: valueSup, sub: valueSub} = group.value;
+        const base = html.buildGroup(valueBase, options);
         let supm;
         let subm;
 
         const metrics = options.fontMetrics();
-        let newOptions;
 
         // Rule 18a
         let supShift = 0;
         let subShift = 0;
 
-        if (group.value.sup) {
-            newOptions = options.havingStyle(options.style.sup());
-            supm = html.buildGroup(group.value.sup, newOptions, options);
-            if (!utils.isCharacterBox(group.value.base)) {
+        const isCharacterBox = valueBase && !utils.isCharacterBox(valueBase);
+        if (valueSup) {
+            const newOptions = options.havingStyle(options.style.sup());
+            supm = html.buildGroup(valueSup, newOptions, options);
+            if (!isCharacterBox) {
                 supShift = base.height - newOptions.fontMetrics().supDrop
                     * newOptions.sizeMultiplier / options.sizeMultiplier;
             }
         }
 
-        if (group.value.sub) {
-            newOptions = options.havingStyle(options.style.sub());
-            subm = html.buildGroup(group.value.sub, newOptions, options);
-            if (!utils.isCharacterBox(group.value.base)) {
+        if (valueSub) {
+            const newOptions = options.havingStyle(options.style.sub());
+            subm = html.buildGroup(valueSub, newOptions, options);
+            if (!isCharacterBox) {
                 subShift = base.depth + newOptions.fontMetrics().subDrop
                     * newOptions.sizeMultiplier / options.sizeMultiplier;
             }
@@ -94,36 +109,7 @@ defineFunctionBuilders({
         const marginRight = (0.5 / metrics.ptPerEm) / multiplier + "em";
 
         let supsub;
-        if (!group.value.sup) {
-            // Rule 18b
-            subShift = Math.max(
-                subShift, metrics.sub1,
-                subm.height - 0.8 * metrics.xHeight);
-
-            const vlistElem = [{type: "elem", elem: subm, marginRight}];
-            // Subscripts shouldn't be shifted by the base's italic correction.
-            // Account for that by shifting the subscript back the appropriate
-            // amount. Note we only do this when the base is a single symbol.
-            if (base instanceof domTree.symbolNode) {
-                vlistElem[0].marginLeft = -base.italic + "em";
-            }
-
-            supsub = buildCommon.makeVList({
-                positionType: "shift",
-                positionData: subShift,
-                children: vlistElem,
-            }, options);
-        } else if (!group.value.sub) {
-            // Rule 18c, d
-            supShift = Math.max(supShift, minSupShift,
-                supm.depth + 0.25 * metrics.xHeight);
-
-            supsub = buildCommon.makeVList({
-                positionType: "shift",
-                positionData: -supShift,
-                children: [{type: "elem", elem: supm, marginRight}],
-            }, options);
-        } else {
+        if (supm && subm) {
             supShift = Math.max(
                 supShift, minSupShift, supm.depth + 0.25 * metrics.xHeight);
             subShift = Math.max(subShift, metrics.sub2);
@@ -141,19 +127,50 @@ defineFunctionBuilders({
                 }
             }
 
+            // Subscripts shouldn't be shifted by the base's italic correction.
+            // Account for that by shifting the subscript back the appropriate
+            // amount. Note we only do this when the base is a single symbol.
+            const marginLeft =
+                base instanceof domTree.symbolNode ? -base.italic + "em" : null;
             const vlistElem = [
-                {type: "elem", elem: subm, shift: subShift, marginRight},
+                {type: "elem", elem: subm, shift: subShift, marginRight,
+                    marginLeft},
                 {type: "elem", elem: supm, shift: -supShift, marginRight},
             ];
-            // See comment above about subscripts not being shifted.
-            if (base instanceof domTree.symbolNode) {
-                vlistElem[0].marginLeft = -base.italic + "em";
-            }
 
             supsub = buildCommon.makeVList({
                 positionType: "individualShift",
                 children: vlistElem,
             }, options);
+        } else if (subm) {
+            // Rule 18b
+            subShift = Math.max(
+                subShift, metrics.sub1,
+                subm.height - 0.8 * metrics.xHeight);
+
+            // See comment above about subscripts not being shifted.
+            const marginLeft =
+                base instanceof domTree.symbolNode ? -base.italic + "em" : null;
+            const vlistElem =
+                [{type: "elem", elem: subm, marginLeft, marginRight}];
+
+            supsub = buildCommon.makeVList({
+                positionType: "shift",
+                positionData: subShift,
+                children: vlistElem,
+            }, options);
+        } else if (supm) {
+            // Rule 18c, d
+            supShift = Math.max(supShift, minSupShift,
+                supm.depth + 0.25 * metrics.xHeight);
+
+            supsub = buildCommon.makeVList({
+                positionType: "shift",
+                positionData: -supShift,
+                children: [{type: "elem", elem: supm, marginRight}],
+            }, options);
+        } else {
+            throw new Error("supsub must have either sup or sub.");
         }
 
         // Wrap the supsub vlist in a span.msupsub to reset text-align.
@@ -188,7 +205,7 @@ defineFunctionBuilders({
             children.push(mml.buildGroup(group.value.sup, options));
         }
 
-        let nodeType;
+        let nodeType: MathNodeType;
         if (isBrace) {
             nodeType = (isOver ? "mover" : "munder");
         } else if (!group.value.sub) {

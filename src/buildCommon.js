@@ -389,7 +389,7 @@ const makeFragment = function(
 export type VListElem = {|
     type: "elem",
     elem: HtmlDomNode,
-    marginLeft?: string,
+    marginLeft?: ?string,
     marginRight?: string,
     wrapperClasses?: string[],
     wrapperStyle?: CssStyle,
@@ -398,7 +398,7 @@ type VListElemAndShift = {|
     type: "elem",
     elem: HtmlDomNode,
     shift: number,
-    marginLeft?: string,
+    marginLeft?: ?string,
     marginRight?: string,
     wrapperClasses?: string[],
     wrapperStyle?: CssStyle,
