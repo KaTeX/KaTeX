@@ -32,7 +32,16 @@ exports[`A parser that does not throw on unsupported commands should build katex
 }
 `;
 
-exports[`A parser that does not throw on unsupported commands should properly escape LaTeX in errors 1`] = `"<span class=\\"katex-error\\" title=\\"ParseError: KaTeX parse error: Expected group after &#x27;^&#x27; at position 2: 2^̲&amp;&quot;&lt;&gt;\\" style=\\"color:#933\\">2^&amp;&quot;&lt;&gt;</span>"`;
+exports[`A parser that does not throw on unsupported commands should properly escape LaTeX in errors 1`] = `
+
+<span class="katex-error"
+      title="ParseError: KaTeX parse error: Expected group after &#x27;^&#x27; at position 2: 2^̲&amp;&quot;&lt;&gt;"
+      style="color:#933"
+>
+  2^&amp;&quot;&lt;&gt;
+</span>
+
+`;
 
 exports[`An implicit group parser within optional groups should work style commands \\sqrt[\\textstyle 3]{x} 1`] = `
 [

@@ -24,16 +24,16 @@
     text-align: center;
 
     > .katex {
-        display: inline-block;
-        text-align: initial;
+        display: block;
+        text-align: center;
         white-space: nowrap;
 
         > .katex-html {
-            display: inline-block;
+            display: block;
 
-            /* \newline doesn't do anything in display mode */
-            > .newline {
-                display: none;
+            > .tag {
+                position: absolute;
+                right: 0px;
             }
         }
     }
@@ -66,7 +66,7 @@
     }
 
     .katex-html {
-        /* \newline is an empty block at top level of inline mode */
+        /* \newline is an empty block at top level, between .base elements */
         > .newline {
             display: block;
         }

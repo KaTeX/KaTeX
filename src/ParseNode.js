@@ -39,22 +39,29 @@ export type NodeType = $Keys<ParseNodeTypes>;
 export type NodeValue<TYPE: NodeType> = $ElementType<ParseNodeTypes, TYPE>;
 
 export type AccentStructType = {|
-    type: "accent",
+    type: "accent" | "accentUnder",
     label: string,
-    isStretchy: boolean,
-    isShifty: boolean,
+    isStretchy?: boolean,
+    isShifty?: boolean,
     base: ParseNode<*>,
+|};
+
+export type LeftRightDelimType = {|
+    type?: "leftright",
+    body: ParseNode<*>[],
+    left: string,
+    right: string,
 |};
 
 // Map from `type` field value to corresponding `value` type.
 type ParseNodeTypes = {
     "array": ArrayEnvNodeData,
-    "accent": AccentStructType,
     "color": {|
         type: "color",
         color: string,
         value: ParseNode<*>[],
     |},
+    "color-token": string,
     "leftright": {|
         body: [{|
             type: "array",
@@ -63,20 +70,29 @@ type ParseNodeTypes = {
         left: string,
         right: string,
     |},
+    // To avoid requiring run-time type assertions, this more carefully captures
+    // the requirements on the fields per the op.js htmlBuilder logic:
+    // - `body` and `value` are NEVER set simultanouesly.
+    // - When `symbol` is true, `body` is set.
     "op": {|
         type: "op",
         limits: boolean,
-        symbol: boolean,
         alwaysHandleSupSub?: boolean,
         suppressBaseShift?: boolean,
-        body?: string,
-        value?: ParseNode<*>[],
+        symbol: boolean,
+        body: string,
+        value?: void,
+    |} | {|
+        type: "op",
+        limits: boolean,
+        alwaysHandleSupSub?: boolean,
+        suppressBaseShift?: boolean,
+        symbol: false,  // If 'symbol' is true, `body` *must* be set.
+        body?: void,
+        value: ParseNode<*>[],
     |},
     "ordgroup": ParseNode<*>[],
-    "size": {|
-        number: number,
-        unit: string,
-    |},
+    "size": Measurement,
     "styling": {|
         type: "styling",
         style: StyleStr,
@@ -87,12 +103,15 @@ type ParseNodeTypes = {
         sup?: ?ParseNode<*>,
         sub?: ?ParseNode<*>,
     |},
+    "tag": {|
+        body: ParseNode<*>[],
+        tag: ParseNode<*>[],
+    |},
     "text": {|
         type: "text",
         body: ParseNode<*>[],
         font?: string,
     |},
-    "textord": string,
     "url": string,
     "verb": {|
         body: string,
@@ -112,18 +131,15 @@ type ParseNodeTypes = {
     "rel": string,
     "spacing": string,
     "textord": string,
-    // From functions.js and functions/*.js. See also "accent", "color", "op",
-    // "styling", and "text" above.
-    "accentUnder": {|
-        type: "accentUnder",
-        label: string,
-        base: ParseNode<*>,
-    |},
+    // From functions.js and functions/*.js. See also "color", "op", "styling",
+    // and "text" above.
+    "accent": AccentStructType,
+    "accentUnder": AccentStructType,
     "cr": {|
         type: "cr",
-        //newRow: boolean,
+        newRow: boolean,
         newLine: boolean,
-        size: ?ParseNode<*>,
+        size: ?ParseNode<"size">,
     |},
     "delimsizing": {|
         type: "delimsizing",
@@ -134,8 +150,8 @@ type ParseNodeTypes = {
     "enclose": {|
         type: "enclose",
         label: string,
-        backgroundColor?: ParseNode<*>,
-        borderColor?: ParseNode<*>,
+        backgroundColor?: ParseNode<"color-token">,
+        borderColor?: ParseNode<"color-token">,
         body: ParseNode<*>,
     |},
     "environment": {|
@@ -182,12 +198,7 @@ type ParseNodeTypes = {
         alignment: string,
         body: ParseNode<*>,
     |},
-    "leftright": {|
-        type?: "leftright",
-        body?: ParseNode<*>[],
-        left: string,
-        right: string,
-    |} | {|
+    "leftright": LeftRightDelimType | {|
         type: "leftright",
         value: string,
     |},
@@ -236,15 +247,15 @@ type ParseNodeTypes = {
     |},
     "raisebox": {|
         type: "raisebox",
-        dy: ParseNode<*>,
+        dy: ParseNode<"size">,
         body: ParseNode<*>,
         value: ParseNode<*>[],
     |},
     "rule": {|
         type: "rule",
         shift: ?Measurement,
-        width: ParseNode<*>,
-        height: ParseNode<*>,
+        width: Measurement,
+        height: Measurement,
     |},
     "sizing": {|
         type: "sizing",
@@ -273,3 +284,32 @@ type ParseNodeTypes = {
         below: ?ParseNode<*>,
     |},
 };
+
+/**
+ * Asserts that the node is of the given type and returns it with stricter
+ * typing. Throws if the node's type does not match.
+ */
+export function assertNodeType<NODETYPE: NodeType>(
+    node: ParseNode<*>,
+    type: NODETYPE,
+): ParseNode<NODETYPE> {
+    const typedNode = checkNodeType(node, type);
+    if (!typedNode) {
+        throw new Error(
+            `Expected node of type ${type}, but got node of type ${node.type}`);
+    }
+    return typedNode;
+}
+
+/**
+ * Returns the node more strictly typed iff it is of the given type. Otherwise,
+ * returns null.
+ */
+export function checkNodeType<NODETYPE: NodeType>(
+    node: ParseNode<*>,
+    type: NODETYPE,
+): ?ParseNode<NODETYPE> {
+    return node.type === type ?
+        (node: ParseNode<NODETYPE>) :
+        null;
+}

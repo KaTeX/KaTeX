@@ -338,6 +338,9 @@ SvgReset:
 Symbols1: |
     \maltese\degree\pounds\$
     \text{\maltese\degree\pounds\textdollar}
+Tag:
+    tex: \tag{$+$hi} \frac{x^2}{y}+x^{2^y}
+    display: 1
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
 TextSpace:
   \begin{array}{l}

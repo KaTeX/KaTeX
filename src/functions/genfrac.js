@@ -243,11 +243,42 @@ defineFunction({
                 withDelims.push(rightOp);
             }
 
-            const outerNode = new mathMLTree.MathNode("mrow", withDelims);
-
-            return outerNode;
+            return mml.makeRow(withDelims);
         }
 
         return node;
     },
 });
+
+// Infix generalized fractions -- these are not rendered directly, but replaced
+// immediately by one of the variants above.
+defineFunction({
+    type: "infix",
+    names: ["\\over", "\\choose", "\\atop"],
+    props: {
+        numArgs: 0,
+        infix: true,
+    },
+    handler(context) {
+        let replaceWith;
+        switch (context.funcName) {
+            case "\\over":
+                replaceWith = "\\frac";
+                break;
+            case "\\choose":
+                replaceWith = "\\binom";
+                break;
+            case "\\atop":
+                replaceWith = "\\\\atopfrac";
+                break;
+            default:
+                throw new Error("Unrecognized infix genfrac command");
+        }
+        return {
+            type: "infix",
+            replaceWith: replaceWith,
+            token: context.token,
+        };
+    },
+});
+

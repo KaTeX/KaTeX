@@ -20,7 +20,7 @@ export type MathNodeType =
     "mtext" | "mn" | "mo" | "mi" | "mspace" |
     "mover" | "munder" | "munderover" | "msup" | "msub" |
     "mfrac" | "mroot" | "msqrt" |
-    "mtable" | "mtr" | "mtd" |
+    "mtable" | "mtr" | "mtd" | "mlabeledtr" |
     "mrow" | "menclose" |
     "mstyle" | "mpadded" | "mphantom";
 
@@ -29,7 +29,7 @@ export type MathNodeType =
  * constructor requires the type of node to create (for example, `"mo"` or
  * `"mspace"`, corresponding to `<mo>` and `<mspace>` tags).
  */
-class MathNode {
+export class MathNode {
     type: MathNodeType;
     attributes: {[string]: string};
     children: (MathNode | TextNode)[];
@@ -114,7 +114,7 @@ class MathNode {
 /**
  * This node represents a piece of text.
  */
-class TextNode {
+export class TextNode {
     text: string;
 
     constructor(text: string) {
