@@ -243,9 +243,7 @@ defineFunction({
                 withDelims.push(rightOp);
             }
 
-            const outerNode = new mathMLTree.MathNode("mrow", withDelims);
-
-            return outerNode;
+            return mml.makeRow(withDelims);
         }
 
         return node;

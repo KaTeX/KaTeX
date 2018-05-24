@@ -75,6 +75,35 @@ exports[`A MathML builder normal spaces render normally 1`] = `
 
 `;
 
+exports[`A MathML builder should concatenate digits into single <mn> 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mi>
+        sin
+      </mi>
+      <mo>
+        ⁡
+      </mo>
+      <mi>
+        α
+      </mi>
+      <mo>
+        =
+      </mo>
+      <mn>
+        0.34
+      </mn>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\sin{\\alpha}=0.34
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder should generate <mphantom> nodes for \\phantom 1`] = `
 
 <math>
@@ -105,11 +134,9 @@ exports[`A MathML builder should generate the right types of nodes 1`] = `
       <mo>
         ⁡
       </mo>
-      <mrow>
-        <mi>
-          x
-        </mi>
-      </mrow>
+      <mi>
+        x
+      </mi>
       <mo>
         +
       </mo>
@@ -358,11 +385,9 @@ exports[`A MathML builder should render mathchoice as if there was nothing 3`] =
         <mi>
           x
         </mi>
-        <mrow>
-          <mi>
-            T
-          </mi>
-        </mrow>
+        <mi>
+          T
+        </mi>
       </msub>
     </mrow>
     <annotation encoding="application/x-tex">
@@ -386,11 +411,9 @@ exports[`A MathML builder should render mathchoice as if there was nothing 4`] =
           <mi>
             y
           </mi>
-          <mrow>
-            <mi>
-              T
-            </mi>
-          </mrow>
+          <mi>
+            T
+          </mi>
         </msub>
       </msub>
     </mrow>
@@ -406,8 +429,8 @@ exports[`A MathML builder should set href attribute for href appropriately 1`] =
 
 <math>
   <semantics>
-    <mrow href="http://example.org">
-      <mi>
+    <mrow>
+      <mi href="http://example.org">
         α
       </mi>
     </mrow>
@@ -425,11 +448,9 @@ exports[`A MathML builder should use <menclose> for colorbox 1`] = `
   <semantics>
     <mrow>
       <menclose mathbackground="red">
-        <mrow>
-          <mtext>
-            b
-          </mtext>
-        </mrow>
+        <mtext>
+          b
+        </mtext>
       </menclose>
     </mrow>
     <annotation encoding="application/x-tex">
@@ -446,11 +467,9 @@ exports[`A MathML builder should use <mpadded> for raisebox 1`] = `
   <semantics>
     <mrow>
       <mpadded voffset="0.25em">
-        <mrow>
-          <mtext>
-            b
-          </mtext>
-        </mrow>
+        <mtext>
+          b
+        </mtext>
       </mpadded>
     </mrow>
     <annotation encoding="application/x-tex">
@@ -594,22 +613,9 @@ exports[`A MathML builder tags use <mlabeledtr> 1`] = `
     <mtable side="right">
       <mlabeledtr>
         <mtd>
-          <mrow>
-            <mtext>
-              (
-            </mtext>
-            <mrow>
-              <mtext>
-                h
-              </mtext>
-              <mtext>
-                i
-              </mtext>
-            </mrow>
-            <mtext>
-              )
-            </mtext>
-          </mrow>
+          <mtext>
+            (hi)
+          </mtext>
         </mtd>
         <mtd>
           <mrow>
