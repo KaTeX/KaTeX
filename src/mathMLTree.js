@@ -97,7 +97,7 @@ export class MathNode {
     }
 
     /**
-     * Converts the math node into a string, similar to innerText.
+     * Converts the math node into a string, similar to innerText, but escaped.
      */
     toText(): string {
         return this.children.map(child => child.toText()).join("");
@@ -109,30 +109,34 @@ export class MathNode {
  */
 export class TextNode {
     text: string;
+    needsEscape: Boolean;
 
-    constructor(text: string) {
+    constructor(text: string, needsEscape: Boolean = true) {
         this.text = text;
+        this.needsEscape = needsEscape;
     }
 
     /**
      * Converts the text node into a DOM text node.
      */
     toNode(): Node {
-        return document.createTextNode(this.text);
+        return document.createTextNode(this.toText());
     }
 
     /**
-     * Converts the text node into HTML markup (which is just the text itself).
+     * Converts the text node into escaped HTML markup
+     * (representing the text itself).
      */
     toMarkup(): string {
-        return utils.escape(this.text);
+        return this.toText();
     }
 
     /**
-     * Converts the text node into a string (which is just the text iteself).
+     * Converts the text node into an escaped string
+     * (representing the text iteself).
      */
     toText(): string {
-        return this.text;
+        return this.needsEscape ? utils.escape(this.text) : this.text;
     }
 }
 

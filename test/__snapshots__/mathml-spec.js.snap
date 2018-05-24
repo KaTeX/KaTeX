@@ -188,7 +188,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
       <msub>
         <mo>
           <mi mathvariant="normal">
-            lim&amp;ThinSpace;sup
+            lim&ThinSpace;sup
           </mi>
           <mo>
             ⁡
@@ -223,7 +223,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} in dis
       <munder>
         <mo>
           <mi mathvariant="normal">
-            lim&amp;ThinSpace;sup
+            lim&ThinSpace;sup
           </mi>
           <mo>
             ⁡

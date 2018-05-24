@@ -77,10 +77,10 @@ defineFunction({
                 group.value.value, options.withFont("mathrm"));
 
             let word = temp.map(node => node.toText()).join("");
-
             word = word.replace(/\u2212/g, "-");
             word = word.replace(/\u2217/g, "*");
-            output = [new mathMLTree.TextNode(word)];
+            // word has already been escaped by `node.toText()`
+            output = [new mathMLTree.TextNode(word, false)];
         }
         const identifier = new mathMLTree.MathNode("mi", output);
         identifier.setAttribute("mathvariant", "normal");
