@@ -6,23 +6,33 @@ import domTree from "../domTree";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import Style from "../Style";
+import {assertNodeType, checkNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-const htmlBuilder = (group, options) => {
+import type ParseNode from "../ParseNode";
+import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
+
+// NOTE: Unlike most `htmlBuilder`s, this one handles not only "op", but also
+// "supsub" since some of them (like \int) can affect super/subscripting.
+export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     // Operators are handled in the TeXbook pg. 443-444, rule 13(a).
     let supGroup;
     let subGroup;
     let hasLimits = false;
-    if (group.type === "supsub") {
+    let group: ParseNode<"op">;
+    const supSub = checkNodeType(grp, "supsub");
+    if (supSub) {
         // If we have limits, supsub will pass us its group to handle. Pull
         // out the superscript and subscript and set the group to the op in
         // its base.
-        supGroup = group.value.sup;
-        subGroup = group.value.sub;
-        group = group.value.base;
+        supGroup = supSub.value.sup;
+        subGroup = supSub.value.sub;
+        group = assertNodeType(supSub.value.base, "op");
         hasLimits = true;
+    } else {
+        group = assertNodeType(grp, "op");
     }
 
     const style = options.style;
@@ -190,7 +200,7 @@ const htmlBuilder = (group, options) => {
     }
 };
 
-const mathmlBuilder = (group, options) => {
+const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
     let node;
 
     // TODO(emily): handle big operators using the `largeop` attribute

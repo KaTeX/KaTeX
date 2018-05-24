@@ -32,6 +32,12 @@ export type MathMLBuilder<NODETYPE> = (
     options: Options,
 ) => MathNode | TextNode | domTree.documentFragment;
 
+// More general version of `HtmlBuilder` for nodes (e.g. \sum, accent types)
+// whose presence impacts super/subscripting. In this case, ParseNode<"supsub">
+// delegates its HTML building to the HtmlBuilder corresponding to these nodes.
+export type HtmlBuilderSupSub<NODETYPE> =
+    (ParseNode<"supsub"> | ParseNode<NODETYPE>, Options) => HtmlDomNode;
+
 export type FunctionPropSpec = {
     // The number of arguments the function takes.
     numArgs: number,
