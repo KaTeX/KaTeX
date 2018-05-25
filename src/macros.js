@@ -445,7 +445,10 @@ defineMacro("\\tag@literal", (context) => {
 // \newcommand{\mod}[1]{\allowbreak\if@display\mkern18mu
 //   \else\mkern12mu\fi{\operator@font mod}\,\,#1}
 // TODO: math mode should use \medmuskip = 4mu plus 2mu minus 4mu
-defineMacro("\\bmod", "\\mskip1mu\\mathbin{\\rm mod}\\mkern1mu");
+defineMacro("\\bmod",
+    "\\mathchoice{\\mskip1mu}{\\mskip1mu}{\\mskip5mu}{\\mskip5mu}" +
+    "\\mathbin{\\rm mod}" +
+    "\\mathchoice{\\mskip1mu}{\\mskip1mu}{\\mskip5mu}{\\mskip5mu}");
 defineMacro("\\pod", "\\allowbreak" +
     "\\mathchoice{\\mkern18mu}{\\mkern8mu}{\\mkern8mu}{\\mkern8mu}(#1)");
 defineMacro("\\pmod", "\\pod{{\\rm mod}\\mkern6mu#1}");
