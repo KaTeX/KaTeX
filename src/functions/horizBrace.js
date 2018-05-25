@@ -137,5 +137,3 @@ defineFunction({
     htmlBuilder,
     mathmlBuilder,
 });
-
-
