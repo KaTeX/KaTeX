@@ -132,7 +132,7 @@ KaTeX:
 Kern:
     tex: \frac{a\kern{1em}b}{c}a\kern{1em}b\kern{1ex}c\kern{-0.25em}d
     nolatex: LaTeX fails to typeset this, “Missing number, treated as zero.”
-# The following test, Lap, is commented out pending a sucessful screenshotter test.
+# The following test, Lap, is commented out pending a successful screenshotter test.
 # Lap: |
 #     \begin{array}{l}
 #         ab\mathllap{f}cd\mathrlap{g}hij\mathclap{k}lm \; ab\llap{f}cd\rlap{g}hij\clap{k}lm \\
