@@ -440,6 +440,23 @@ defineMacro("\\tag@literal", (context) => {
     return "\\gdef\\df@tag{\\text{#1}}";
 });
 
+// \renewcommand{\bmod}{\nonscript\mskip-\medmuskip\mkern5mu\mathbin
+//   {\operator@font mod}\penalty900
+//   \mkern5mu\nonscript\mskip-\medmuskip}
+// \newcommand{\pod}[1]{\allowbreak
+//   \if@display\mkern18mu\else\mkern8mu\fi(#1)}
+// \renewcommand{\pmod}[1]{\pod{{\operator@font mod}\mkern6mu#1}}
+// \newcommand{\mod}[1]{\allowbreak\if@display\mkern18mu
+//   \else\mkern12mu\fi{\operator@font mod}\,\,#1}
+// TODO: math mode should use \medmuskip = 4mu plus 2mu minus 4mu
+defineMacro("\\bmod", "\\mskip1mu\\mathbin{\\rm mod}\\mkern1mu");
+defineMacro("\\pod", "\\allowbreak" +
+    "\\mathchoice{\\mkern18mu}{\\mkern8mu}{\\mkern8mu}{\\mkern8mu}(#1)");
+defineMacro("\\pmod", "\\pod{{\\rm mod}\\mkern6mu#1}");
+defineMacro("\\mod", "\\allowbreak" +
+    "\\mathchoice{\\mkern18mu}{\\mkern12mu}{\\mkern12mu}{\\mkern12mu}" +
+    "{\\rm mod}\\,\\,#1");
+
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
 
