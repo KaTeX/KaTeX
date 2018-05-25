@@ -109,9 +109,9 @@ export class MathNode {
  */
 export class TextNode {
     text: string;
-    needsEscape: Boolean;
+    needsEscape: boolean;
 
-    constructor(text: string, needsEscape: Boolean = true) {
+    constructor(text: string, needsEscape: boolean = true) {
         this.text = text;
         this.needsEscape = needsEscape;
     }
