@@ -267,8 +267,6 @@ const dotsByToken = {
     '\\bigoplus': '\\dotsb',
     '\\bigodot': '\\dotsb',
     '\\bigsqcup': '\\dotsb',
-    '\\implies': '\\dotsb',
-    '\\impliedby': '\\dotsb',
     '\\And': '\\dotsb',
     '\\longrightarrow': '\\dotsb',
     '\\Longrightarrow': '\\dotsb',
@@ -279,11 +277,9 @@ const dotsByToken = {
     '\\mapsto': '\\dotsb',
     '\\longmapsto': '\\dotsb',
     '\\hookrightarrow': '\\dotsb',
-    '\\iff': '\\dotsb',
     '\\doteq': '\\dotsb',
     // Symbols whose definition starts with \mathbin:
     '\\mathbin': '\\dotsb',
-    '\\bmod': '\\dotsb',
     // Symbols whose definition starts with \mathrel:
     '\\mathrel': '\\dotsb',
     '\\relbar': '\\dotsb',
