@@ -172,13 +172,13 @@ export const _functions: {[string]: FunctionSpec<*>} = {};
  * All HTML builders. Should be only used in the `define*` and the `build*ML`
  * functions.
  */
-export const _htmlGroupTypes: {[string]: HtmlBuilder<*>} = {};
+export const _htmlGroupBuilders: {[string]: HtmlBuilder<*>} = {};
 
 /**
  * All MathML builders. Should be only used in the `define*` and the `build*ML`
  * functions.
  */
-export const _mathmlGroupTypes: {[string]: MathMLBuilder<*>} = {};
+export const _mathmlGroupBuilders: {[string]: MathMLBuilder<*>} = {};
 
 export default function defineFunction<NODETYPE: NodeType>({
     type,
@@ -209,10 +209,10 @@ export default function defineFunction<NODETYPE: NodeType>({
     }
     if (type) {
         if (htmlBuilder) {
-            _htmlGroupTypes[type] = htmlBuilder;
+            _htmlGroupBuilders[type] = htmlBuilder;
         }
         if (mathmlBuilder) {
-            _mathmlGroupTypes[type] = mathmlBuilder;
+            _mathmlGroupBuilders[type] = mathmlBuilder;
         }
     }
 }

@@ -1,5 +1,5 @@
 // @flow
-import {_htmlGroupTypes, _mathmlGroupTypes} from "./defineFunction";
+import {_htmlGroupBuilders, _mathmlGroupBuilders} from "./defineFunction";
 
 import Options from "./Options";
 import ParseNode from "./ParseNode";
@@ -113,9 +113,9 @@ export default function defineEnvironment<NODETYPE: NodeType>({
         _environments[names[i]] = data;
     }
     if (htmlBuilder) {
-        _htmlGroupTypes[type] = htmlBuilder;
+        _htmlGroupBuilders[type] = htmlBuilder;
     }
     if (mathmlBuilder) {
-        _mathmlGroupTypes[type] = mathmlBuilder;
+        _mathmlGroupBuilders[type] = mathmlBuilder;
     }
 }

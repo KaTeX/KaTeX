@@ -10,7 +10,7 @@ import mathMLTree from "./mathMLTree";
 import ParseError from "./ParseError";
 import symbols from "./symbols";
 import utils from "./utils";
-import {_mathmlGroupTypes as groupTypes} from "./defineFunction";
+import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
 
 /**
  * Takes a symbol and converts it into a MathML text node after performing
@@ -113,7 +113,7 @@ export const buildExpressionRow = function(expression, options) {
 };
 
 /**
- * Takes a group from the parser and calls the appropriate groupTypes function
+ * Takes a group from the parser and calls the appropriate groupBuilders function
  * on it to produce a MathML node.
  */
 export const buildGroup = function(group, options) {
@@ -121,9 +121,9 @@ export const buildGroup = function(group, options) {
         return new mathMLTree.MathNode("mrow");
     }
 
-    if (groupTypes[group.type]) {
-        // Call the groupTypes function
-        const result = groupTypes[group.type](group, options);
+    if (groupBuilders[group.type]) {
+        // Call the groupBuilders function
+        const result = groupBuilders[group.type](group, options);
         return result;
     } else {
         throw new ParseError(
