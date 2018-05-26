@@ -74,7 +74,7 @@ defineFunctionBuilders({
         let supShift = 0;
         let subShift = 0;
 
-        const isCharacterBox = valueBase && !utils.isCharacterBox(valueBase);
+        const isCharacterBox = valueBase && utils.isCharacterBox(valueBase);
         if (valueSup) {
             const newOptions = options.havingStyle(options.style.sup());
             supm = html.buildGroup(valueSup, newOptions, options);
