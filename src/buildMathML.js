@@ -1,6 +1,4 @@
 /**
- * WARNING: New methods on groupTypes should be added to src/functions.
- *
  * This file converts a parse tree into a cooresponding MathML tree. The main
  * entry point is the `buildMathML` function, which takes a parse tree from the
  * parser.
