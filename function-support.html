@@ -8,7 +8,7 @@
 	
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.css" integrity="sha384-BTL0nVi8DnMrNdMQZG1Ww6yasK9ZGnUxL1ZWukXQ7fygA1py52yPp9W4wrR00VML" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.js" integrity="sha384-y6SGsNt7yZECc4Pf86XmQhC4hG2wxL6Upkt9N1efhFxfh6wlxBH0mJiTE8XYclC1" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/contrib/auto-render.min.js" integrity="sha384-IiI65aU9ZYub2MY9zhtKd1H2ps7xxf+eb2YFG9lX6uRqpXCvBTOidPRCXCrQ++Uc" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/katex@0.9.0/dist/contrib/auto-render.min.js"></script>
 
 <style>
 * { margin:0; padding:0; }  /* reset */
@@ -782,57 +782,77 @@ code {
         <tr>
             <td>\(\imath\)</td>
             <td>\imath</td>
-            <td>\(\jmath\)</td>
-            <td>\jmath</td>
-            <td>ℵ</td>
-            <td>\aleph</td>
-            <td>ℶ</td>
-            <td>\beth</td>
-            <td>ℷ</td>
-            <td>\gimel</td>
-        </tr>
-        <tr>
-            <td>ℸ</td>
-            <td>\daleth</td>
             <td>ð</td>
             <td>\eth</td>
-            <td>Ⅎ</td>
-            <td>\Finv</td>
-            <td>⅁</td>
-            <td>\Game</td>
-            <td>ℓ</td>
-            <td>\ell</td>
-        </tr>
-        <tr>
-            <td>ℏ</td>
-            <td>\hbar</td>
-            <td>ℏ</td>
-            <td>\hslash</td>
             <td>ℑ</td>
             <td>\Im</td>
+            <td>\(\text{\aa}\)</td>
+            <td>\text{\aa}</td>
+            <td>\(\text{\o}\)</td>
+            <td>\text{\o}</td>
+		</tr>
+            <td>\(\jmath\)</td>
+            <td>\jmath</td>
+            <td>Ⅎ</td>
+            <td>\Finv</td>
             <td>ℜ</td>
             <td>\Re</td>
+            <td>\(\text{\AA}\)</td>
+            <td>\text{\AA}</td>
+            <td>\(\text{\O}\)</td>
+            <td>\text{\O}</td>
+		<tr>
+            <td>ℵ</td>
+            <td>\aleph</td>
+            <td>⅁</td>
+            <td>\Game</td>
             <td>℘</td>
             <td>\wp</td>
-        </tr>
-        <tr>
+            <td>\(\text{\ae}\)</td>
+            <td>\text{\ae}</td>
+            <td>\(\text{\ss}\)</td>
+            <td>\text{\ss}</td>
+		</tr>
+            <td>ℶ</td>
+            <td>\beth</td>
+            <td>ℓ</td>
+            <td>\ell</td>
             <td>∂</td>
             <td>\partial</td>
+            <td>\(\text{\AE}\)</td>
+            <td>\text{\AE}</td>
+            <td>\(\text{\i}\)</td>
+            <td>\text{\i}</td>
+		<tr>
+            <td>ℷ</td>
+            <td>\gimel</td>
+            <td>ℏ</td>
+            <td>\hbar</td>
             <td>∇</td>
             <td>\nabla</td>
+            <td>\(\text{\oe}\)</td>
+            <td>\text{\oe}</td>
+            <td>\(\text{\j}\)</td>
+            <td>\text{\j}</td>
+		</tr>
+		<tr>
+            <td>ℸ</td>
+            <td>\daleth</td>
+            <td>ℏ</td>
+            <td>\hslash</td>
             <td>\(\Bbbk\)</td>
             <td>\Bbbk</td>
+            <td>\(\text{\OE}\)</td>
+            <td>\text{\OE}</td>
+            <td></td> 
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </table>
-
+		</tr>
+	</table>
+	
 	<table>
 		<tr>
 			<td rowspan="2">Direct Input:</td>
-			<td style="font-family: KaTeX_Main, KaTeX_AMS;">∂ ð ∇ ℑ Ⅎ ℵ ℶ ℷ ℸ ⅁</td>
+			<td style="font-family: KaTeX_Main, KaTeX_AMS;">∂ ð ∇ ℑ Ⅎ ℵ ℶ ℷ ℸ ⅁ ℏ</td>
 		</tr>
 		<tr>
 			<td><span style="font-family: Times New Roman;">ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝÞß<br>àáâãäåçèéêëìíîïðñòóôöùúûüýþÿ</span></td>
@@ -883,18 +903,14 @@ code {
 		</tbody>
 	</table>
 
-	<h4 id="letters-in-text">Letters inside \text{}</h4>
-		<p><code>\text{…}</code> will accept functions: <code>\aa</code> <code>\AA</code> <code>\ae</code> <code>\AE</code> <code>\oe</code> <code>\OE</code> <code>\o</code> <code>\O</code> <code>\ss</code> <code>\i</code> <code>\j</code><br>
-		… and return them as: \(\text{\aa\: \AA\: \ae\: \AE\: \oe\: \OE\: \o\: \O\: \ss\: \i\: \j}\)</p>
 
 	<h3 id="unicode">Unicode</h3>
 		<p>The letters listed above will render in any KaTeX rendering mode.</p>
 		
-		<p>If the KaTeX rendering mode is set to <code>strict: false</code> or <code>strict:"warn"</code> (default), then KaTeX will accept all Unicode letters.</p>
+		<p>If the KaTeX rendering mode is set to <code>strict: false</code> or <code>strict:"warn"</code> (default), then KaTeX will accept all Unicode letters. The letters not listed above will be rendered from system fonts, not KaTeX-supplied fonts, so their typograhpy may clash. They may also cause small vertical alignment issues. KaTeX has detailed metrics for glyphs in Latin, Greek, and Cyrillic, but other glyphs are treated as if they are each as tall as the letter <q>M</q>.</p>
 		
-		<p>If a letter is not listed above, it may cause small vertical alignment issues. KaTeX has detailed metrics for glyphs in Latin, Greek, and Cyrillic, but other glyphs are treated as if they are each as tall as the letter <q>M</q>.</p>
-		
-		<p>For Arabic and Persian composite characters, a user-supplied <a href="https://github.com/HosseinAgha/persian-katex-plugin">plug-in</a> is under development.</p>
+<!--		<p>For Arabic and Persian composite characters, a user-supplied <a href="https://github.com/HosseinAgha/persian-katex-plugin">plug-in</a> is under development.</p>
+-->
 
 	<br>
 
@@ -936,11 +952,11 @@ code {
 		<p>\[\tag{hi} x+y^{2x} \]</p>
 		<p><code>\tag*{hi} x+y^{2x}</code></p>
 		<p>\[\tag*{hi} x+y^{2x} \]</p>
-		<p><code>\tag</code> is not yet supported inside the <code>{gather}</code> environment.</p>
+		<p><code>\tag</code> is not yet supported inside <a href="#environments">environments</a>.</p>
 	</div>	
 	
 <h3 id="line-breaks">Line Breaks</h3>
-	<p>KaTeX 0.10.0+ will insert automatic line breaks in inline math. These can be suppressed by placing math inside a pair of braces, as in <code>{F=ma}</code>.</p>
+	<p>KaTeX 0.10.0+ will insert automatic line breaks in inline math after relations or binary operators such as <q>=</q> or <q>+</q>. These can be suppressed by placing math inside a pair of braces, as in <code>{F=ma}</code>.</p>
 	
 	<p>Hard line breaks are <code>\\</code> and <code>\newline</code>.</p>
 	
@@ -1049,7 +1065,7 @@ code {
             </tr>
             <tr>
                 <td>\space</td>
-				<td>non-breaking space</td>
+				<td>space</td>
 				<td></td>
 				<td></td>
             </tr>
@@ -1060,8 +1076,8 @@ code {
 				<td></td>
             </tr>
             <tr>
-                <td>\<em>space</em></td>
-                <td>non-breaking space</td>
+                <td>\<em>&lt;space&gt;</em></td>
+                <td>space</td>
 				<td></td>
 				<td></td>
             </tr>
@@ -1195,12 +1211,12 @@ code {
 
 <h2 id="macros">Macros</h2>
 	<div class="indented">
-	<p>Macros can be defined either via  a KaTeX <a href="https://github.com/Khan/KaTeX#rendering-options">rendering options</a> or by <code>\gdef</code>. Available functions include:</p>
+	<p>Macros can be defined either via  a KaTeX <a href="https://github.com/Khan/KaTeX#rendering-options">rendering option</a> or by <code>\gdef</code>. Available functions include:</p>
 		<div class="indented">
 		<p><code>\mathchoice \TextOrMath \@ifstar \@ifnextchar \@firstoftwo \@secondoftwo \relax</code></p>
-		<p><code>@</code> is a valid character for commands, as if <code>\makeatletter</code> were in effect.</p>
 		</div>
 	</div>
+	<p><code>@</code> is a valid character for commands, as if <code>\makeatletter</code> were in effect.</p>
 
 <h2 id="big">Big Operators</h2>
 
@@ -2487,15 +2503,15 @@ code {
         </tr>
         <tr>
             <td><span class="katex"><span class="mathrm">AB</span></span></td>
-            <td>\rm{AB}</td>
+            <td>\rm AB</td>
             <td><span class="katex"><span class="mathbf">AB</span></span></td>
-            <td>\bf{AB}</td>
+            <td>\bf AB</td>
             <td><span class="katex"><span class="mathit">AB</span></span></td>
-            <td>\it{AB}</td>
+            <td>\it AB</td>
             <td><span class="katex"><span class="mathsf">AB</span></span></td>
-            <td>\sf{AB}</td>
+            <td>\sf AB</td>
             <td><span class="katex"><span class="mathtt">AB</span></span></td>
-            <td>\tt{AB}</td>
+            <td>\tt AB</td>
         </tr>
         <tr>
             <td><span class="katex"><span class="mathrm">AB</span></span></td>
@@ -2618,7 +2634,7 @@ code {
     </table>
 	
 	<div class="indented">		
-		<p><code>\text{…}</code> will accept nested <code>$…$</code> fragments and render them in math mode.</p>
+		<p><code>\text{…}</code> will accept nested <code>$…$</code> fragments or nested <code>\(…\)</code> fragments and render them in math mode.</p>
 		
 		<p><code>\text{…}</code> will render an extended range of characters. See <a href="#letters-in-text">Letters inside \text</a>.</p>
 	</div>
@@ -2688,7 +2704,7 @@ code {
 		</tr>
 		<tr>
 			<td>–</td>
-			<td>--</td>
+			<td>\text{--}</td>
 			<td>\(\triangleright\)</td>
 			<td>\triangleright</td>
 			<td>…</td>
@@ -2708,7 +2724,7 @@ code {
 		</tr>
 		<tr>
 			<td>—</td>
-			<td>---</td>
+			<td>\text{---}</td>
 			<td>\(\bigtriangleup\)</td>
 			<td>\bigtriangleup</td>
 			<td>♮</td>
