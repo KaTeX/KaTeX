@@ -2,11 +2,11 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import {assertNodeType} from "../ParseNode";
+import ParseNode, {assertNodeType} from "../ParseNode";
 import {calculateSize} from "../units";
 
-import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
+import * as sizing from "./sizing";
 
 // Box manipulation
 defineFunction({
@@ -28,16 +28,17 @@ defineFunction({
         };
     },
     htmlBuilder(group, options) {
-        const body = html.groupTypes.sizing({value: {
-            value: [{
-                type: "text",
-                value: {
-                    body: group.value.value,
-                    font: "mathrm", // simulate \textrm
-                },
-            }],
+        const text = new ParseNode("text", {
+            type: "text",
+            body: group.value.value,
+            font: "mathrm", // simulate \textrm
+        }, group.mode);
+        const sizedText = new ParseNode("sizing", {
+            type: "sizing",
+            value: [text],
             size: 6,                // simulate \normalsize
-        }}, options);
+        }, group.mode);
+        const body = sizing.htmlBuilder(sizedText, options);
         const dy = calculateSize(group.value.dy.value, options);
         return buildCommon.makeVList({
             positionType: "shift",

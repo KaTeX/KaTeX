@@ -8,6 +8,7 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Options from "../Options";
+import type {HtmlBuilder} from "../defineFunction";
 
 export function sizingGroup(value: *, options: Options, baseOptions: Options) {
     const inner = html.buildExpression(value, options, false);
@@ -39,6 +40,14 @@ const sizeFuncs = [
     "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
 ];
 
+export const htmlBuilder: HtmlBuilder<"sizing"> = (group, options) => {
+    // Handle sizing operators like \Huge. Real TeX doesn't actually allow
+    // these functions inside of math expressions, so we do some special
+    // handling.
+    const newOptions = options.havingSize(group.value.size);
+    return sizingGroup(group.value.value, newOptions, options);
+};
+
 defineFunction({
     type: "sizing",
     names: sizeFuncs,
@@ -59,13 +68,7 @@ defineFunction({
             value: body,
         };
     },
-    htmlBuilder: (group, options) => {
-        // Handle sizing operators like \Huge. Real TeX doesn't actually allow
-        // these functions inside of math expressions, so we do some special
-        // handling.
-        const newOptions = options.havingSize(group.value.size);
-        return sizingGroup(group.value.value, newOptions, options);
-    },
+    htmlBuilder,
     mathmlBuilder: (group, options) => {
         const newOptions = options.havingSize(group.value.size);
         const inner = mml.buildExpression(group.value.value, newOptions);
