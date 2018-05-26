@@ -2684,6 +2684,8 @@ describe("A macro expander", function() {
     it("\\def works locally", () => {
         expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\def\\x{3}\\x}\\x}\\x")
             .toParseLike("1{2{3}2}1");
+        expect("\\def\\x{1}\\x\\def\\x{2}\\x{\\def\\x{3}\\x\\def\\x{4}\\x}\\x")
+            .toParseLike("12{34}2");
     });
 
     it("\\gdef overrides at all levels", () => {
@@ -2691,6 +2693,8 @@ describe("A macro expander", function() {
             .toParseLike("1{2{3}3}3");
         expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\global\\def\\x{3}\\x}\\x}\\x")
             .toParseLike("1{2{3}3}3");
+        expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\gdef\\x{3}\\x\\def\\x{4}\\x}" +
+            "\\x\\def\\x{5}\\x}\\x").toParseLike("1{2{34}35}3");
     });
 
     it("\\global needs to followed by \\def", () => {

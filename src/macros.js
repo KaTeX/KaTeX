@@ -9,6 +9,7 @@ import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
 import ParseError from "./ParseError";
+import type Namespace from "./Namespace";
 
 /**
  * Provides context to macros defined by functions. Implemented by
@@ -18,7 +19,7 @@ export interface MacroContextInterface {
     /**
      * Object mapping macros to their expansions.
      */
-    macros: MacroMap;
+    macros: Namespace<MacroDefinition>;
 
     /**
      * Returns the topmost token on the stack, without expanding it.
@@ -43,7 +44,7 @@ export interface MacroContextInterface {
 /** Macro tokens (in reverse order). */
 export type MacroExpansion = {tokens: Token[], numArgs: number};
 
-type MacroDefinition = string | MacroExpansion |
+export type MacroDefinition = string | MacroExpansion |
     (MacroContextInterface => (string | MacroExpansion));
 export type MacroMap = {[string]: MacroDefinition};
 
@@ -106,7 +107,7 @@ defineMacro("\\TextOrMath", function(context) {
 //     \gdef\macro#1{expansion}
 //     \gdef\macro#1#2{expansion}
 //     \gdef\macro#1#2#3#4#5#6#7#8#9{expansion}
-const def = (context, global: Boolean) => {
+const def = (context, global: boolean) => {
     let arg = context.consumeArgs(1)[0];
     if (arg.length !== 1) {
         throw new ParseError("\\gdef's first argument must be a macro name");
@@ -130,7 +131,7 @@ const def = (context, global: Boolean) => {
         arg = context.consumeArgs(1)[0];
     }
     // Final arg is the expansion of the macro
-    context.namespace.setMacro(name, {
+    context.macros.set(name, {
         tokens: arg,
         numArgs,
     }, global);
@@ -415,7 +416,7 @@ defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 defineMacro("\\tag", "\\@ifstar\\tag@literal\\tag@paren");
 defineMacro("\\tag@paren", "\\tag@literal{({#1})}");
 defineMacro("\\tag@literal", (context) => {
-    if (context.namespace.getMacro("\\df@tag")) {
+    if (context.macros.get("\\df@tag")) {
         throw new ParseError("Multiple \\tag");
     }
     return "\\gdef\\df@tag{\\text{#1}}";

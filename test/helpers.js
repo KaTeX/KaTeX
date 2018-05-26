@@ -11,6 +11,9 @@ export const defaultSettings = new Settings({
 export const strictSettings = new Settings({strict: true});
 
 export const _getBuilt = function(expr, settings = defaultSettings) {
+    if (settings === defaultSettings) {
+        settings.macros = {};
+    }
     let rootNode = katex.__renderToDomTree(expr, settings);
 
     if (rootNode.classes.indexOf('katex-error') >= 0) {

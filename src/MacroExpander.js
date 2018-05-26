@@ -9,21 +9,23 @@ import {Token} from "./Token";
 import type {Mode} from "./types";
 import ParseError from "./ParseError";
 import Namespace from "./Namespace";
+import builtinMacros from "./macros";
 
-import type {MacroContextInterface, MacroExpansion} from "./macros";
+import type {MacroContextInterface, MacroDefinition, MacroExpansion}
+    from "./macros";
 import type Settings from "./Settings";
 
 export default class MacroExpander implements MacroContextInterface {
     maxExpand: number;
     lexer: Lexer;
-    namespace: Namespace;
+    macros: Namespace<MacroDefinition>;
     stack: Token[];
     mode: Mode;
 
     constructor(input: string, settings: Settings, mode: Mode) {
         this.feed(input);
         // Make new global namespace
-        this.namespace = new Namespace(undefined, settings.macros);
+        this.macros = new Namespace(builtinMacros, settings.macros);
         this.maxExpand = settings.maxExpand;
         this.mode = mode;
         this.stack = []; // contains tokens in REVERSE order
@@ -48,18 +50,14 @@ export default class MacroExpander implements MacroContextInterface {
      * Start a new child namespace, as in when starting a group.
      */
     pushNamespace() {
-        this.namespace = new Namespace(this.namespace);
+        this.macros.beginGroup();
     }
 
     /**
      * Return to parent namespace, as in when ending a group.
      */
     popNamespace() {
-        this.namespace = this.namespace.parent;
-        if (!this.namespace) {
-            throw new ParseError("Unbalanced namespace destruction: attempt " +
-                "to pop global namespace; please report this as a bug");
-        }
+        this.macros.endGroup();
     }
 
     /**
@@ -173,7 +171,7 @@ export default class MacroExpander implements MacroContextInterface {
         const topToken = this.popToken();
         const name = topToken.text;
         const expansion = this._getExpansion(name);
-        if (expansion === null) {
+        if (expansion == null) { // mainly checking for undefined here
             // Fully expanded
             this.pushToken(topToken);
             return topToken;
@@ -256,9 +254,9 @@ export default class MacroExpander implements MacroContextInterface {
      * argument count.  Or returns `null` if no such macro.
      */
     _getExpansion(name: string): ?MacroExpansion {
-        const definition = this.namespace.getMacro(name);
-        if (definition === null) {
-            return null;
+        const definition = this.macros.get(name);
+        if (definition == null) { // mainly checking for undefined here
+            return definition;
         }
         const expansion =
             typeof definition === "function" ? definition(this) : definition;

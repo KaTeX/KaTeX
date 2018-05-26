@@ -69,7 +69,7 @@ function parseArray(
 ): ParseNode<"array"> {
     // Parse body of array with \\ temporarily mapped to \cr
     parser.gullet.pushNamespace();
-    parser.gullet.namespace.setMacro("\\\\", "\\cr");
+    parser.gullet.macros.set("\\\\", "\\cr");
 
     let row = [];
     const body = [row];
