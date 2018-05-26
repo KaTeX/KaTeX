@@ -1,6 +1,4 @@
 // @flow
-import {groupTypes as htmlGroupTypes} from "./buildHTML";
-import {groupTypes as mathmlGroupTypes} from "./buildMathML";
 import {checkNodeType} from "./ParseNode";
 import domTree from "./domTree";
 
@@ -170,6 +168,18 @@ export type FunctionSpec<NODETYPE: NodeType> = {|
  */
 export const _functions: {[string]: FunctionSpec<*>} = {};
 
+/**
+ * All HTML builders. Should be only used in the `define*` and the `build*ML`
+ * functions.
+ */
+export const _htmlGroupTypes: {[string]: HtmlBuilder<*>} = {};
+
+/**
+ * All MathML builders. Should be only used in the `define*` and the `build*ML`
+ * functions.
+ */
+export const _mathmlGroupTypes: {[string]: MathMLBuilder<*>} = {};
+
 export default function defineFunction<NODETYPE: NodeType>({
     type,
     nodeType,
@@ -199,10 +209,10 @@ export default function defineFunction<NODETYPE: NodeType>({
     }
     if (type) {
         if (htmlBuilder) {
-            htmlGroupTypes[type] = htmlBuilder;
+            _htmlGroupTypes[type] = htmlBuilder;
         }
         if (mathmlBuilder) {
-            mathmlGroupTypes[type] = mathmlBuilder;
+            _mathmlGroupTypes[type] = mathmlBuilder;
         }
     }
 }

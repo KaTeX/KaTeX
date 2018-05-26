@@ -1,6 +1,5 @@
 // @flow
-import {groupTypes as htmlGroupTypes} from "./buildHTML";
-import {groupTypes as mathmlGroupTypes} from "./buildMathML";
+import {_htmlGroupTypes, _mathmlGroupTypes} from "./defineFunction";
 
 import Options from "./Options";
 import ParseNode from "./ParseNode";
@@ -114,9 +113,9 @@ export default function defineEnvironment<NODETYPE: NodeType>({
         _environments[names[i]] = data;
     }
     if (htmlBuilder) {
-        htmlGroupTypes[type] = htmlBuilder;
+        _htmlGroupTypes[type] = htmlBuilder;
     }
     if (mathmlBuilder) {
-        mathmlGroupTypes[type] = mathmlBuilder;
+        _mathmlGroupTypes[type] = mathmlBuilder;
     }
 }

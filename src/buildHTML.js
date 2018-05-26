@@ -12,6 +12,7 @@ import buildCommon from "./buildCommon";
 import domTree from "./domTree";
 import utils from "./utils";
 import {spacings, tightSpacings} from "./spacingData";
+import {_htmlGroupTypes as groupTypes} from "./defineFunction";
 
 const makeSpan = buildCommon.makeSpan;
 
@@ -208,9 +209,6 @@ export const makeNullDelimiter = function(options, classes) {
     const moreClasses = ["nulldelimiter"].concat(options.baseSizingClasses());
     return makeSpan(classes.concat(moreClasses));
 };
-
-/** This is a map of group types to the function used to handle that type. */
-export const groupTypes = {};
 
 /**
  * buildGroup is the function that takes a group and calls the correct groupType

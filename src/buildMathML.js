@@ -10,6 +10,7 @@ import mathMLTree from "./mathMLTree";
 import ParseError from "./ParseError";
 import symbols from "./symbols";
 import utils from "./utils";
+import {_mathmlGroupTypes as groupTypes} from "./defineFunction";
 
 /**
  * Takes a symbol and converts it into a MathML text node after performing
@@ -69,12 +70,6 @@ export const getVariant = function(group, options) {
 
     return null;
 };
-
-/**
- * Functions for handling the different types of groups found in the parse
- * tree. Each function should take a parse group and return a MathML node.
- */
-export const groupTypes = {};
 
 /**
  * Takes a list of nodes, builds them, and returns a list of the generated
