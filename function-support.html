@@ -8,7 +8,7 @@
 	
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.css" integrity="sha384-BTL0nVi8DnMrNdMQZG1Ww6yasK9ZGnUxL1ZWukXQ7fygA1py52yPp9W4wrR00VML" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.js" integrity="sha384-y6SGsNt7yZECc4Pf86XmQhC4hG2wxL6Upkt9N1efhFxfh6wlxBH0mJiTE8XYclC1" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/katex@0.9.0/dist/contrib/auto-render.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/contrib/auto-render.min.js" integrity="sha384-IiI65aU9ZYub2MY9zhtKd1H2ps7xxf+eb2YFG9lX6uRqpXCvBTOidPRCXCrQ++Uc" crossorigin="anonymous"></script>
 
 <style>
 * { margin:0; padding:0; }  /* reset */
@@ -911,9 +911,9 @@ code {
 	<h3 id="unicode">Unicode</h3>
 		<p>The letters listed above will render in any KaTeX rendering mode.</p>
 		
-		<p>If the KaTeX rendering mode is set to <code>strict: false</code> or <code>strict:"warn"</code> (default), then KaTeX will accept all Unicode letters. The letters not listed above will be rendered from system fonts, not KaTeX-supplied fonts, so their typograhpy may clash. They may also cause small vertical alignment issues. KaTeX has detailed metrics for glyphs in Latin, Greek, and Cyrillic, but other glyphs are treated as if they are each as tall as the letter <q>M</q>.</p>
+		<p>If the KaTeX rendering mode is set to <code>strict: false</code> or <code>strict:"warn"</code> (default), then KaTeX will accept all Unicode letters. The letters not listed above will be rendered from system fonts, not KaTeX-supplied fonts, so their typography may clash. They may also cause small vertical alignment issues. KaTeX has detailed metrics for glyphs in Latin, Greek, and Cyrillic, but other glyphs are treated as if they are each as tall as the letter <q>M</q>.</p>
 		
-<!--		<p>For Arabic and Persian composite characters, a user-supplied <a href="https://github.com/HosseinAgha/persian-katex-plugin">plug-in</a> is under development.</p>
+<!--		<p>For Persian composite characters, a user-supplied <a href="https://github.com/HosseinAgha/persian-katex-plugin">plug-in</a> is under development.</p>
 -->
 
 	<br>
@@ -1219,8 +1219,10 @@ code {
 		<div class="indented">
 		<p><code>\mathchoice \TextOrMath \@ifstar \@ifnextchar \@firstoftwo \@secondoftwo \relax</code></p>
 		</div>
+		
+	<p><code>@</code> is a valid character for commands, as if <code>\makeatletter</code> were in effect.</p>	
 	</div>
-	<p><code>@</code> is a valid character for commands, as if <code>\makeatletter</code> were in effect.</p>
+	
 
 <h2 id="big">Big Operators</h2>
 
