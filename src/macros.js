@@ -10,11 +10,15 @@ import utils from "./utils";
 import {Token} from "./Token";
 import ParseError from "./ParseError";
 
+import type {Mode} from "./types";
+
 /**
  * Provides context to macros defined by functions. Implemented by
  * MacroExpander.
  */
 export interface MacroContextInterface {
+    mode: Mode;
+
     /**
      * Object mapping macros to their expansions.
      */
