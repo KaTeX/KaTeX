@@ -205,6 +205,10 @@ export default function defineFunction<NODETYPE: NodeType>({
         handler: handler,
     };
     for (let i = 0; i < names.length; ++i) {
+        // TODO: The value type of _functions should be a type union of all
+        // possible `FunctionSpec<>` possibilities instead of `FunctionSpec<*>`,
+        // which is an existential type.
+        // $FlowFixMe
         _functions[names[i]] = data;
     }
     if (type) {
