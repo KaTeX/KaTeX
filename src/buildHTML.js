@@ -1,8 +1,8 @@
 /**
  * This file does the main work of building a domTree structure from a parse
  * tree. The entry point is the `buildHTML` function, which takes a parse tree.
- * Then, the buildExpression, buildGroup, and various groupTypes functions are
- * called, to produce a final HTML tree.
+ * Then, the buildExpression, buildGroup, and various groupBuilders functions
+ * are called, to produce a final HTML tree.
  */
 
 import ParseError from "./ParseError";
@@ -12,6 +12,7 @@ import buildCommon from "./buildCommon";
 import domTree from "./domTree";
 import utils from "./utils";
 import {spacings, tightSpacings} from "./spacingData";
+import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";
 
 const makeSpan = buildCommon.makeSpan;
 
@@ -209,9 +210,6 @@ export const makeNullDelimiter = function(options, classes) {
     return makeSpan(classes.concat(moreClasses));
 };
 
-/** This is a map of group types to the function used to handle that type. */
-export const groupTypes = {};
-
 /**
  * buildGroup is the function that takes a group and calls the correct groupType
  * function for it. It also handles the interaction of size and style changes
@@ -222,9 +220,9 @@ export const buildGroup = function(group, options, baseOptions) {
         return makeSpan();
     }
 
-    if (groupTypes[group.type]) {
-        // Call the groupTypes function
-        let groupNode = groupTypes[group.type](group, options);
+    if (groupBuilders[group.type]) {
+        // Call the groupBuilders function
+        let groupNode = groupBuilders[group.type](group, options);
 
         // If the size changed between the parent and the current group, account
         // for that size difference.
