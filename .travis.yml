@@ -7,15 +7,19 @@ cache:
 sudo: required
 services:
   - docker
-before_script:
-  - docker pull selenium/standalone-firefox:2.48.2
-  - docker pull selenium/standalone-chrome:2.48.2
-  - docker images --no-trunc
+before_install:
+  - npm install -g greenkeeper-lockfile@1
 install:
   - npm install
   - npm ls || true
   - npm install -g codecov
+before_script:
+  - greenkeeper-lockfile-update
+  - docker pull selenium/standalone-firefox:2.48.2
+  - docker pull selenium/standalone-chrome:2.48.2
+  - docker images --no-trunc
 script:
   - npm test
   - npm run test:jest:coverage && codecov
   - npm run test:screenshots
+after_script: greenkeeper-lockfile-upload
