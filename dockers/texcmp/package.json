@@ -4,8 +4,8 @@
   "license": "MIT",
   "dependencies": {
     "ndarray": "1.0.18",
-    "ndarray-fft": "1.0.3",
+    "ndarray-fft": "1.0.0",
     "pngparse": "2.0.1",
-    "q": "1.5.1"
+    "q": "1.4.1"
   }
 }
