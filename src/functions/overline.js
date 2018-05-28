@@ -34,13 +34,9 @@ defineFunction({
             positionType: "firstBaseline",
             children: [
                 {type: "elem", elem: innerGroup},
-                // The kern on the next line would ordinarily be 3 * line.height
-                // But we put the line into a span that is 5 lines tall, to
-                // overcome a Chrome rendering issue. The SVG has a space in
-                // the bottom that is 2 lines high. That and the 1-line-high
-                // kern sum up to the same distance as the old 3 line kern.
-                {type: "kern", size: line.height},
+                {type: "kern", size: 3 * line.height},
                 {type: "elem", elem: line},
+                {type: "kern", size: line.height},
             ],
         }, options);
 

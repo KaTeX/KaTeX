@@ -4,6 +4,8 @@
  * files.
  */
 
+import type ParseNode from "./ParseNode";
+
 /**
  * Provide an `indexOf` function which works in IE8, but defers to native if
  * possible.
@@ -89,48 +91,13 @@ function clearNode(node: Node) {
     setTextContent(node, "");
 }
 
-type BaseElem = {|
-    type: "mathord",
-|} | {|
-    type: "textord",
-|} | {|
-    type: "bin",
-|} | {|
-    type: "rel",
-|} | {|
-    type: "inner",
-|} | {|
-    type: "open",
-|} | {|
-    type: "close",
-|} | {|
-    type: "punct",
-|};
-
-type Group = {|
-    type: "ordgroup",
-    value: Group[],
-|} | {|
-    type: "color",
-    value: {|
-        value: Group[],
-    |},
-|} | {|
-    type: "font",
-    value: {|
-        body: Group,
-    |},
-|} | BaseElem;
-
 /**
  * Sometimes we want to pull out the innermost element of a group. In most
  * cases, this will just be the group itself, but when ordgroups and colors have
  * a single element, we want to pull that out.
  */
-const getBaseElem = function(group: Group): Group | boolean {
-    if (!group) {
-        return false;
-    } else if (group.type === "ordgroup") {
+const getBaseElem = function(group: ParseNode<*>): ParseNode<*> {
+    if (group.type === "ordgroup") {
         if (group.value.length === 1) {
             return getBaseElem(group.value[0]);
         } else {
@@ -154,7 +121,7 @@ const getBaseElem = function(group: Group): Group | boolean {
  * with a single character in them. To decide if something is a character box,
  * we find its innermost group, and see if it is a single character.
  */
-const isCharacterBox = function(group: Group): boolean {
+const isCharacterBox = function(group: ParseNode<*>): boolean {
     const baseElem = getBaseElem(group);
 
     // These are all they types of groups which hold single characters

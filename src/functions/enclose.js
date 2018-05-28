@@ -4,6 +4,7 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
+import {assertNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -17,7 +18,6 @@ const htmlBuilder = (group, options) => {
     const scale = options.sizeMultiplier;
     let img;
     let imgShift = 0;
-    const isColorbox = /color/.test(label);
 
     if (label === "sout") {
         img = buildCommon.makeSpan(["stretchy", "sout"]);
@@ -41,16 +41,16 @@ const htmlBuilder = (group, options) => {
         img = stretchy.encloseSpan(inner, label, vertPad, options);
         imgShift = inner.depth + vertPad;
 
-        if (isColorbox) {
+        if (group.value.backgroundColor) {
             img.style.backgroundColor = group.value.backgroundColor.value;
-            if (label === "fcolorbox") {
+            if (group.value.borderColor) {
                 img.style.borderColor = group.value.borderColor.value;
             }
         }
     }
 
     let vlist;
-    if (isColorbox) {
+    if (group.value.backgroundColor) {
         vlist = buildCommon.makeVList({
             positionType: "individualShift",
             children: [
@@ -104,19 +104,16 @@ const mathmlBuilder = (group, options) => {
         case "\\fbox":
             node.setAttribute("notation", "box");
             break;
-        case "\\colorbox":
-            node.setAttribute("mathbackground",
-                group.value.backgroundColor.value);
-            break;
         case "\\fcolorbox":
-            node.setAttribute("mathbackground",
-                group.value.backgroundColor.value);
             // TODO(ron): I don't know any way to set the border color.
             node.setAttribute("notation", "box");
             break;
-        default:
-            // xcancel
+        case "\\xcancel":
             node.setAttribute("notation", "updiagonalstrike downdiagonalstrike");
+            break;
+    }
+    if (group.value.backgroundColor) {
+        node.setAttribute("mathbackground", group.value.backgroundColor.value);
     }
     return node;
 };
@@ -131,7 +128,7 @@ defineFunction({
         argTypes: ["color", "text"],
     },
     handler(context, args, optArgs) {
-        const color = args[0];
+        const color = assertNodeType(args[0], "color-token");
         const body = args[1];
         return {
             type: "enclose",
@@ -154,8 +151,8 @@ defineFunction({
         argTypes: ["color", "color", "text"],
     },
     handler(context, args, optArgs) {
-        const borderColor = args[0];
-        const backgroundColor = args[1];
+        const borderColor = assertNodeType(args[0], "color-token");
+        const backgroundColor = assertNodeType(args[1], "color-token");
         const body = args[2];
         return {
             type: "enclose",

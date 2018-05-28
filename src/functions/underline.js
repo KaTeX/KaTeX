@@ -33,11 +33,9 @@ defineFunction({
             positionType: "top",
             positionData: innerGroup.height,
             children: [
-                // The SVG image is 5x as tall as the line.
-                // The bottom 2/5 of the image is blank and acts like a kern.
-                // So we omit the kern that would otherwise go at the bottom.
+                {type: "kern", size: line.height},
                 {type: "elem", elem: line},
-                {type: "kern", size: 5 * line.height},
+                {type: "kern", size: 3 * line.height},
                 {type: "elem", elem: innerGroup},
             ],
         }, options);

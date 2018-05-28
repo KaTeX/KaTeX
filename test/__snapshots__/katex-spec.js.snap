@@ -1,5 +1,48 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`A parser that does not throw on unsupported commands should build katex-error span for other type of KaTeX error 1`] = `
+{
+  "attributes": {
+    "style": "color:#933",
+    "title": "ParseError: KaTeX parse error: Double superscript at position 4: 2^2^̲2"
+  },
+  "children": [
+    {
+      "classes": [
+      ],
+      "depth": 0,
+      "height": 0,
+      "italic": 0,
+      "maxFontSize": 0,
+      "skew": 0,
+      "style": {
+      },
+      "value": "2^2^2",
+      "width": 0
+    }
+  ],
+  "classes": [
+    "katex-error"
+  ],
+  "depth": 0,
+  "height": 0,
+  "maxFontSize": 0,
+  "style": {
+  }
+}
+`;
+
+exports[`A parser that does not throw on unsupported commands should properly escape LaTeX in errors 1`] = `
+
+<span class="katex-error"
+      title="ParseError: KaTeX parse error: Expected group after &#x27;^&#x27; at position 2: 2^̲&amp;&quot;&lt;&gt;"
+      style="color:#933"
+>
+  2^&amp;&quot;&lt;&gt;
+</span>
+
+`;
+
 exports[`An implicit group parser within optional groups should work style commands \\sqrt[\\textstyle 3]{x} 1`] = `
 [
   {

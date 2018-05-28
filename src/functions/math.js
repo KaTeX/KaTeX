@@ -4,6 +4,7 @@ import ParseError from "../ParseError";
 
 // Switching from text mode back to math mode
 defineFunction({
+    type: "styling",
     names: ["\\(", "$"],
     props: {
         numArgs: 0,
@@ -32,6 +33,7 @@ defineFunction({
 
 // Check for extra closing math delimiters
 defineFunction({
+    type: "text", // Doesn't matter what this is.
     names: ["\\)", "\\]"],
     props: {
         numArgs: 0,

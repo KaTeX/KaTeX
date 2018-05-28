@@ -4,16 +4,24 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
+import {assertNodeType, checkNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-const htmlBuilder = (group, options) => {
-    // Accents are handled in the TeXbook pg. 443, rule 12.
-    let base = group.value.base;
+import type ParseNode from "../ParseNode";
+import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
 
-    let supsubGroup;
-    if (group.type === "supsub") {
+// NOTE: Unlike most `htmlBuilder`s, this one handles not only "accent", but
+// also "supsub" since an accent can affect super/subscripting.
+export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
+    // Accents are handled in the TeXbook pg. 443, rule 12.
+    let base: ParseNode<*>;
+    let group: ParseNode<"accent">;
+
+    const supSub = checkNodeType(grp, "supsub");
+    let supSubGroup;
+    if (supSub) {
         // If our base is a character box, and we have superscripts and
         // subscripts, the supsub will defer to us. In particular, we want
         // to attach the superscripts and subscripts to the inner body (so
@@ -22,18 +30,19 @@ const htmlBuilder = (group, options) => {
         // sticking the base of the accent into the base of the supsub, and
         // rendering that, while keeping track of where the accent is.
 
-        // The supsub group is the group that was passed in
-        const supsub = group;
         // The real accent group is the base of the supsub group
-        group = supsub.value.base;
+        group = assertNodeType(supSub.value.base, "accent");
         // The character box is the base of the accent group
         base = group.value.base;
         // Stick the character box into the base of the supsub group
-        supsub.value.base = base;
+        supSub.value.base = base;
 
         // Rerender the supsub group with its new base, and store that
         // result.
-        supsubGroup = html.buildGroup(supsub, options);
+        supSubGroup = html.buildGroup(supSub, options);
+    } else {
+        group = assertNodeType(grp, "accent");
+        base = group.value.base;
     }
 
     // Build the base group
@@ -63,7 +72,7 @@ const htmlBuilder = (group, options) => {
     }
 
     // calculate the amount of space between the body and the accent
-    const clearance = Math.min(
+    let clearance = Math.min(
         body.height,
         options.fontMetrics().xHeight);
 
@@ -91,16 +100,33 @@ const htmlBuilder = (group, options) => {
 
         accentBody = buildCommon.makeSpan(["accent-body"], [accent]);
 
-        // CSS defines `.katex .accent .accent-body { width: 0 }`
+        // "Full" accents expand the width of the resulting symbol to be
+        // at least the width of the accent, and overlap directly onto the
+        // character without any vertical offset.
+        const accentFull = (group.value.label === "\\textcircled");
+        if (accentFull) {
+            accentBody.classes.push('accent-full');
+            clearance = body.height;
+        }
+
+        // Shift the accent over by the skew.
+        let left = skew;
+
+        // CSS defines `.katex .accent .accent-body:not(.accent-full) { width: 0 }`
         // so that the accent doesn't contribute to the bounding box.
         // We need to shift the character by its width (effectively half
         // its width) to compensate.
-        let left = -width / 2;
-
-        // Shift the accent over by the skew.
-        left += skew;
+        if (!accentFull) {
+            left -= width / 2;
+        }
 
         accentBody.style.left = left + "em";
+
+        // \textcircled uses the \bigcirc glyph, so it needs some
+        // vertical adjustment to match LaTeX.
+        if (group.value.label === "\\textcircled") {
+            accentBody.style.top = ".2em";
+        }
 
         accentBody = buildCommon.makeVList({
             positionType: "firstBaseline",
@@ -136,36 +162,37 @@ const htmlBuilder = (group, options) => {
     const accentWrap =
         buildCommon.makeSpan(["mord", "accent"], [accentBody], options);
 
-    if (supsubGroup) {
+    if (supSubGroup) {
         // Here, we replace the "base" child of the supsub with our newly
         // generated accent.
-        supsubGroup.children[0] = accentWrap;
+        supSubGroup.children[0] = accentWrap;
 
         // Since we don't rerun the height calculation after replacing the
         // accent, we manually recalculate height.
-        supsubGroup.height = Math.max(accentWrap.height, supsubGroup.height);
+        supSubGroup.height = Math.max(accentWrap.height, supSubGroup.height);
 
         // Accents should always be ords, even when their innards are not.
-        supsubGroup.classes[0] = "mord";
+        supSubGroup.classes[0] = "mord";
 
-        return supsubGroup;
+        return supSubGroup;
     } else {
         return accentWrap;
     }
 };
 
-const mathmlBuilder = (group, options) => {
+const mathmlBuilder: MathMLBuilder<"accent"> = (group, options) => {
+    const groupValue = group.value;
     let accentNode;
-    if (group.value.isStretchy) {
-        accentNode = stretchy.mathMLnode(group.value.label);
+    if (groupValue.isStretchy) {
+        accentNode = stretchy.mathMLnode(groupValue.label);
     } else {
         accentNode = new mathMLTree.MathNode(
-            "mo", [mml.makeText(group.value.label, group.mode)]);
+            "mo", [mml.makeText(groupValue.label, group.mode)]);
     }
 
     const node = new mathMLTree.MathNode(
         "mover",
-        [mml.buildGroup(group.value.base, options), accentNode]);
+        [mml.buildGroup(groupValue.base, options), accentNode]);
 
     node.setAttribute("accent", "true");
 
@@ -215,7 +242,7 @@ defineFunction({
     type: "accent",
     names: [
         "\\'", "\\`", "\\^", "\\~", "\\=", "\\u", "\\.", '\\"',
-        "\\r", "\\H", "\\v",
+        "\\r", "\\H", "\\v", "\\textcircled",
     ],
     props: {
         numArgs: 1,

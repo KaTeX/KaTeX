@@ -21,7 +21,7 @@ export type Mode = "math" | "text";
 export type ArgType = "color" | "size" | "url" | "original" | Mode;
 
 // LaTeX display style.
-export type StyleStr = "text" | "display";
+export type StyleStr = "text" | "display" | "script" | "scriptscript";
 
 // Allowable token text for "break" arguments in parser
-export type BreakToken = "]" | "}" | "$" | "\\)";
+export type BreakToken = "]" | "}" | "$" | "\\)" | "\\cr";
