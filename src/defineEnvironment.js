@@ -1,6 +1,5 @@
 // @flow
-import {groupTypes as htmlGroupTypes} from "./buildHTML";
-import {groupTypes as mathmlGroupTypes} from "./buildMathML";
+import {_htmlGroupBuilders, _mathmlGroupBuilders} from "./defineFunction";
 
 import Options from "./Options";
 import ParseNode from "./ParseNode";
@@ -111,12 +110,16 @@ export default function defineEnvironment<NODETYPE: NodeType>({
         handler,
     };
     for (let i = 0; i < names.length; ++i) {
+        // TODO: The value type of _environments should be a type union of all
+        // possible `EnvSpec<>` possibilities instead of `EnvSpec<*>`, which is
+        // an existential type.
+        // $FlowFixMe
         _environments[names[i]] = data;
     }
     if (htmlBuilder) {
-        htmlGroupTypes[type] = htmlBuilder;
+        _htmlGroupBuilders[type] = htmlBuilder;
     }
     if (mathmlBuilder) {
-        mathmlGroupTypes[type] = mathmlBuilder;
+        _mathmlGroupBuilders[type] = mathmlBuilder;
     }
 }

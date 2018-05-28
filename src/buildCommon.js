@@ -238,7 +238,8 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     if (value.charCodeAt(0) === 0xD835) {
         // surrogate pairs get special treatment
         const [wideFontName, wideFontClass] = wideCharacterFont(value, mode);
-        return makeSymbol(value, wideFontName, mode, options, [wideFontClass]);
+        return makeSymbol(value, wideFontName, mode, options,
+            classes.concat(wideFontClass));
     } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
@@ -389,7 +390,7 @@ const makeFragment = function(
 export type VListElem = {|
     type: "elem",
     elem: HtmlDomNode,
-    marginLeft?: string,
+    marginLeft?: ?string,
     marginRight?: string,
     wrapperClasses?: string[],
     wrapperStyle?: CssStyle,
@@ -398,7 +399,7 @@ type VListElemAndShift = {|
     type: "elem",
     elem: HtmlDomNode,
     shift: number,
-    marginLeft?: string,
+    marginLeft?: ?string,
     marginRight?: string,
     wrapperClasses?: string[],
     wrapperStyle?: CssStyle,

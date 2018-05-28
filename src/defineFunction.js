@@ -1,6 +1,4 @@
 // @flow
-import {groupTypes as htmlGroupTypes} from "./buildHTML";
-import {groupTypes as mathmlGroupTypes} from "./buildMathML";
 import {checkNodeType} from "./ParseNode";
 import domTree from "./domTree";
 
@@ -31,6 +29,12 @@ export type MathMLBuilder<NODETYPE> = (
     group: ParseNode<NODETYPE>,
     options: Options,
 ) => MathNode | TextNode | domTree.documentFragment;
+
+// More general version of `HtmlBuilder` for nodes (e.g. \sum, accent types)
+// whose presence impacts super/subscripting. In this case, ParseNode<"supsub">
+// delegates its HTML building to the HtmlBuilder corresponding to these nodes.
+export type HtmlBuilderSupSub<NODETYPE> =
+    (ParseNode<"supsub"> | ParseNode<NODETYPE>, Options) => HtmlDomNode;
 
 export type FunctionPropSpec = {
     // The number of arguments the function takes.
@@ -164,6 +168,18 @@ export type FunctionSpec<NODETYPE: NodeType> = {|
  */
 export const _functions: {[string]: FunctionSpec<*>} = {};
 
+/**
+ * All HTML builders. Should be only used in the `define*` and the `build*ML`
+ * functions.
+ */
+export const _htmlGroupBuilders: {[string]: HtmlBuilder<*>} = {};
+
+/**
+ * All MathML builders. Should be only used in the `define*` and the `build*ML`
+ * functions.
+ */
+export const _mathmlGroupBuilders: {[string]: MathMLBuilder<*>} = {};
+
 export default function defineFunction<NODETYPE: NodeType>({
     type,
     nodeType,
@@ -189,14 +205,18 @@ export default function defineFunction<NODETYPE: NodeType>({
         handler: handler,
     };
     for (let i = 0; i < names.length; ++i) {
+        // TODO: The value type of _functions should be a type union of all
+        // possible `FunctionSpec<>` possibilities instead of `FunctionSpec<*>`,
+        // which is an existential type.
+        // $FlowFixMe
         _functions[names[i]] = data;
     }
     if (type) {
         if (htmlBuilder) {
-            htmlGroupTypes[type] = htmlBuilder;
+            _htmlGroupBuilders[type] = htmlBuilder;
         }
         if (mathmlBuilder) {
-            mathmlGroupTypes[type] = mathmlBuilder;
+            _mathmlGroupBuilders[type] = mathmlBuilder;
         }
     }
 }
