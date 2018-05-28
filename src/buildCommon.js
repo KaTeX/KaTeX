@@ -239,7 +239,7 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
         // surrogate pairs get special treatment
         const [wideFontName, wideFontClass] = wideCharacterFont(value, mode);
         return makeSymbol(value, wideFontName, mode, options,
-			["mord", wideFontClass]);
+            classes.concat(wideFontClass));
     } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
