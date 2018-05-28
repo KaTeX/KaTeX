@@ -149,6 +149,7 @@ export const buildExpression = function(expression, options, isRealGroup,
     // Process \\not commands within the group.
     for (let i = 0; i < groups.length; i++) {
         if (groups[i].value === "\u0338") {
+            // Results in a solidus being overlaid over the following group/atom.
             groups[i].style.position = "absolute";
         }
     }
