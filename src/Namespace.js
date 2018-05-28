@@ -1,5 +1,13 @@
 // @flow
 
+/**
+ * A `Namespace` refers to a space of nameable things like macros or lengths,
+ * which can be `set` either globally or local to a nested group, using an
+ * undo stack similar to how TeX implements this functionality.
+ * Performance-wise, `get` and local `set` take constant time, while global
+ * `set` takes time proportional to the depth of group nesting.
+ */
+
 import ParseError from "./ParseError";
 
 export type Mapping<Value> = {[string]: Value};
@@ -10,20 +18,28 @@ export default class Namespace<Value> {
     undefStack: Mapping<Value>[];
 
     /**
-     * Both arguments are optional.  The first argument is an object of built-in
-     * mappings which never change.  The second argument is an object of initial
-     * mappings, which will constantly change according to any `set`s done.
+     * Both arguments are optional.  The first argument is an object of
+     * built-in mappings which never change.  The second argument is an object
+     * of initial (global-level) mappings, which will constantly change
+     * according to any global/top-level `set`s done.
      */
-    constructor(builtins: Mapping<Value> = {}, topGroup: Mapping<Value> = {}) {
-        this.current = topGroup;
+    constructor(builtins: Mapping<Value> = {},
+                globalMacros: Mapping<Value> = {}) {
+        this.current = globalMacros;
         this.builtins = builtins;
         this.undefStack = [];
     }
 
+    /**
+     * Start a new nested group, affecting future local `set`s.
+     */
     beginGroup() {
         this.undefStack.push({});
     }
 
+    /**
+     * End current nested group, restoring values before the group began.
+     */
     endGroup() {
         if (this.undefStack.length === 0) {
             throw new ParseError("Unbalanced namespace destruction: attempt " +
@@ -39,6 +55,9 @@ export default class Namespace<Value> {
         }
     }
 
+    /**
+     * Get the current value of a name.
+     */
     get(name: string): ?Value {
         if (this.current.hasOwnProperty(name)) {
             return this.current[name];
@@ -47,6 +66,12 @@ export default class Namespace<Value> {
         }
     }
 
+    /**
+     * Set the current value of a name, and optionally set it globally too.
+     * Local set() sets the current value and (when appropriate) adds an undo
+     * operation to the undo stack.  Global set() may change the undo
+     * operation at every level, so takes time linear in their number.
+     */
     set(name: string, value: Value, global: boolean = false) {
         if (global) {
             // Global set is equivalent to setting in all groups.  Simulate this
