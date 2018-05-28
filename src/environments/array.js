@@ -207,7 +207,7 @@ const htmlBuilder = function(group, options) {
         const rowGap = groupValue.rowGaps[r];
         let gap = 0;
         if (rowGap) {
-            gap = calculateSize(rowGap.value, options);
+            gap = calculateSize(rowGap.value.value, options);
             if (gap > 0) { // \@argarraycr
                 gap += arstrutDepth;
                 if (depth < gap) {

@@ -46,7 +46,7 @@ export type LeftRightDelimType = {|
 |};
 
 // Map from `type` field value to corresponding `value` type.
-type ParseNodeTypes = {
+export type ParseNodeTypes = {
     "array": ArrayEnvNodeData,
     "color": {|
         type: "color",
@@ -76,7 +76,10 @@ type ParseNodeTypes = {
         value: ParseNode<*>[],
     |},
     "ordgroup": ParseNode<*>[],
-    "size": Measurement,
+    "size": {|
+        type: "size",
+        value: Measurement,
+    |},
     "styling": {|
         type: "styling",
         style: StyleStr,
@@ -98,7 +101,10 @@ type ParseNodeTypes = {
         body: ParseNode<*>[],
         font?: string,
     |},
-    "url": string,
+    "url": {|
+        type: "url",
+        value: string,
+    |},
     "verb": {|
         type: "verb",
         body: string,
