@@ -1,6 +1,7 @@
 // @flow
-import ParseNode from "./ParseNode";
 import {Token} from "./Token";
+
+import type {AnyParseNode} from "./ParseNode";
 
 /**
  * This is the ParseError class, which is the main error thrown by KaTeX
@@ -15,8 +16,8 @@ class ParseError {
         // Error position based on passed-in Token or ParseNode.
 
     constructor(
-        message: string,              // The error message
-        token?: Token | ParseNode<*>, // An object providing position information
+        message: string,               // The error message
+        token?: ?Token | AnyParseNode, // An object providing position information
     ) {
         let error = "KaTeX parse error: " + message;
         let start;
