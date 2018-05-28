@@ -62,6 +62,6 @@ defineFunction({
         return buildCommon.makeSpan(["mord", "text"], inner, newOptions);
     },
     mathmlBuilder(group, options) {
-        return mml.makeTextRow(group.value.body, options);
+        return mml.buildExpressionRow(group.value.body, options);
     },
 });

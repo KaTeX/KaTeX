@@ -75,7 +75,9 @@ defineFunction({
         let style = options.style;
         if (group.value.size === "display") {
             style = Style.DISPLAY;
-        } else if (group.value.size === "text") {
+        } else if (group.value.size === "text" &&
+            style.size === Style.DISPLAY.size) {
+            // We're in a \tfrac but incoming style is displaystyle, so:
             style = Style.TEXT;
         }
 
@@ -243,9 +245,7 @@ defineFunction({
                 withDelims.push(rightOp);
             }
 
-            const outerNode = new mathMLTree.MathNode("mrow", withDelims);
-
-            return outerNode;
+            return mml.makeRow(withDelims);
         }
 
         return node;

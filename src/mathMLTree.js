@@ -18,9 +18,9 @@ import utils from "./utils";
 export type MathNodeType =
     "math" | "annotation" | "semantics" |
     "mtext" | "mn" | "mo" | "mi" | "mspace" |
-    "mover" | "munder" | "munderover" | "msup" | "msub" |
+    "mover" | "munder" | "munderover" | "msup" | "msub" | "msubsup" |
     "mfrac" | "mroot" | "msqrt" |
-    "mtable" | "mtr" | "mtd" |
+    "mtable" | "mtr" | "mtd" | "mlabeledtr" |
     "mrow" | "menclose" |
     "mstyle" | "mpadded" | "mphantom";
 

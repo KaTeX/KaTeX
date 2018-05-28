@@ -290,13 +290,15 @@ type ParseNodeTypes = {
  * typing. Throws if the node's type does not match.
  */
 export function assertNodeType<NODETYPE: NodeType>(
-    node: ParseNode<*>,
+    // The union allows either ParseNode<*> or the union of two specific nodes.
+    node: ?ParseNode<*> | ParseNode<*>,
     type: NODETYPE,
 ): ParseNode<NODETYPE> {
     const typedNode = checkNodeType(node, type);
     if (!typedNode) {
         throw new Error(
-            `Expected node of type ${type}, but got node of type ${node.type}`);
+            `Expected node of type ${type}, but got ` +
+            (node ? `node of type ${node.type}` : String(node)));
     }
     return typedNode;
 }
@@ -306,10 +308,11 @@ export function assertNodeType<NODETYPE: NodeType>(
  * returns null.
  */
 export function checkNodeType<NODETYPE: NodeType>(
-    node: ParseNode<*>,
+    // The union allows either ParseNode<*> or the union of two specific nodes.
+    node: ?ParseNode<*> | ParseNode<*>,
     type: NODETYPE,
 ): ?ParseNode<NODETYPE> {
-    return node.type === type ?
+    return node && node.type === type ?
         (node: ParseNode<NODETYPE>) :
         null;
 }
