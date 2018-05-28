@@ -757,6 +757,15 @@ describe("A color parser", function() {
             colorIsTextColor: true,
         });
     });
+
+    it("should not define \\color in global context", function() {
+        const macros = {};
+        expect(oldColorExpression).toParseLike("\\textcolor{#fA6}{x}y", {
+            colorIsTextColor: true,
+            macros: macros,
+        });
+        expect(macros).toEqual({});
+    });
 });
 
 describe("A tie parser", function() {
@@ -2733,6 +2742,18 @@ describe("A macro expander", function() {
         expect("\\def\\x{1}\\def\\y{1}\\x\\y" +
             "\\sqrt[\\def\\x{2}\\x]{\\def\\y{2}\\y}\\x\\y")
             .toParseLike("11\\sqrt[2]{2}11");
+    });
+
+    it("\\gdef changes settings.macros", () => {
+        const macros = {};
+        expect("\\gdef\\foo{1}").toParse(new Settings({macros}));
+        expect(macros["\\foo"]).toBeTruthy();
+    });
+
+    it("\\def doesn't change settings.macros", () => {
+        const macros = {};
+        expect("\\def\\foo{1}").toParse(new Settings({macros}));
+        expect(macros["\\foo"]).toBeFalsy();
     });
 
     // This may change in the future, if we support the extra features of
