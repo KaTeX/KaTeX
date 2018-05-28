@@ -2824,7 +2824,7 @@ describe("Unicode", function() {
     });
 
     it("should parse more relations", function() {
-        expect("9").toBuild();
+        expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆≘≙≚≛≝≞≟").toBuild();
     });
 
     it("should parse symbols", function() {
