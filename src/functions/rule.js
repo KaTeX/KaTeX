@@ -20,8 +20,8 @@ defineFunction({
         return {
             type: "rule",
             shift: shift && shift.value,
-            width: width.value,
-            height: height.value,
+            width: width.value.value,
+            height: height.value.value,
         };
     },
     htmlBuilder(group, options) {

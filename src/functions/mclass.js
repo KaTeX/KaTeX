@@ -83,6 +83,7 @@ defineFunction({
         }, baseArg.mode);
 
         const supsub = new ParseNode("supsub", {
+            type: "supsub",
             base: baseOp,
             sup: context.funcName === "\\underset" ? null : shiftedArg,
             sub: context.funcName === "\\underset" ? shiftedArg : null,

@@ -28,6 +28,7 @@ const parseTree = function(toParse: string, settings: Settings): ParseNode<*>[] 
         }
         parser.gullet.feed("\\df@tag");
         tree = [new ParseNode("tag", {
+            type: "tag",
             body: tree,
             tag: parser.parse(),
         }, "text")];
