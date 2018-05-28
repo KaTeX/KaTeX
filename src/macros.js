@@ -233,6 +233,11 @@ defineMacro("\u225D", "\\stackrel{\\tiny\\mathrm{def}}{=}");
 defineMacro("\u225E", "\\stackrel{\\tiny\\mathrm{m}}{=}");
 defineMacro("\u225F", "\\stackrel{\\tiny?}{=}");
 
+// Misc Unicode
+defineMacro("\u27C2", "\\perp");
+defineMacro("\u27C2", "\\mathclose{!\\mkern-0.8mu!}");
+defineMacro("\u27C2", "\\notni");
+
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
 // http://mirrors.concertpass.com/tex-archive/macros/latex/required/amsmath/amsmath.pdf
