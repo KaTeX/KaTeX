@@ -502,6 +502,7 @@ defineEnvironment({
         res = parseArray(context.parser, res, dCellStyle(context.envName));
         if (delimiters) {
             res = new ParseNode("leftright", {
+                type: "leftright",
                 body: [res],
                 left: delimiters[0],
                 right: delimiters[1],
@@ -549,6 +550,7 @@ defineEnvironment({
         };
         res = parseArray(context.parser, res, dCellStyle(context.envName));
         res = new ParseNode("leftright", {
+            type: "leftright",
             body: [res],
             left: "\\{",
             right: ".",

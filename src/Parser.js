@@ -407,6 +407,7 @@ export default class Parser {
         if (superscript || subscript) {
             // If we got either a superscript or subscript, create a supsub
             return new ParseNode("supsub", {
+                type: "supsub",
                 base: base,
                 sup: superscript,
                 sub: subscript,
@@ -936,6 +937,7 @@ export default class Parser {
             arg = arg.slice(1, -1);  // remove first and last char
             return newArgument(
                 new ParseNode("verb", {
+                    type: "verb",
                     body: arg,
                     star: star,
                 }, "text"), nucleus);
