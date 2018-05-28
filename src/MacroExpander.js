@@ -47,16 +47,16 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
-     * Start a new child namespace, as in when starting a group.
+     * Start a new group nesting within all namespaces.
      */
-    pushNamespace() {
+    beginGroup() {
         this.macros.beginGroup();
     }
 
     /**
-     * Return to parent namespace, as in when ending a group.
+     * End current group nesting within all namespaces.
      */
-    popNamespace() {
+    endGroup() {
         this.macros.endGroup();
     }
 

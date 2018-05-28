@@ -68,7 +68,7 @@ function parseArray(
     style: StyleStr,
 ): ParseNode<"array"> {
     // Parse body of array with \\ temporarily mapped to \cr
-    parser.gullet.pushNamespace();
+    parser.gullet.beginGroup();
     parser.gullet.macros.set("\\\\", "\\cr");
 
     let row = [];
@@ -125,7 +125,7 @@ function parseArray(
     result.numHLinesBeforeRow = numHLinesBeforeRow;
     // $FlowFixMe: The required fields were added immediately above.
     const res: ArrayEnvNodeData = result;
-    parser.gullet.popNamespace();
+    parser.gullet.endGroup();
     return new ParseNode("array", res, parser.mode);
 }
 

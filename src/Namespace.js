@@ -50,7 +50,7 @@ export default class Namespace<Value> {
     set(name: string, value: Value, global: boolean = false) {
         if (global) {
             // Global set is equivalent to setting in all groups.  Simulate this
-            // by destroying any undoes currently scheduled for this name,
+            // by destroying any undos currently scheduled for this name,
             // and adding an undo with the *new* value (in case it later gets
             // locally reset within this environment).
             for (let i = 0; i < this.undefStack.length; i++) {
