@@ -2,7 +2,6 @@
   "groups": {
     "default": {
       "packages": [
-        "dockers/texcmp/package.json",
         "package.json"
       ]
     }
