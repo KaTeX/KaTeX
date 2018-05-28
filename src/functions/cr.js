@@ -4,7 +4,7 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import { calculateSize } from "../units";
+import {calculateSize} from "../units";
 import ParseError from "../ParseError";
 import {assertNodeType} from "../ParseNode";
 

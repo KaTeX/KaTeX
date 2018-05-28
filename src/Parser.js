@@ -4,20 +4,20 @@
 import functions from "./functions";
 import environments from "./environments";
 import MacroExpander from "./MacroExpander";
-import symbols, { extraLatin } from "./symbols";
-import { validUnit } from "./units";
-import { supportedCodepoint } from "./unicodeScripts";
+import symbols, {extraLatin} from "./symbols";
+import {validUnit} from "./units";
+import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
 import ParseNode from "./ParseNode";
 import ParseError from "./ParseError";
-import { combiningDiacriticalMarksEndRegex } from "./Lexer.js";
+import {combiningDiacriticalMarksEndRegex} from "./Lexer.js";
 import Settings from "./Settings";
-import { Token } from "./Token";
+import {Token} from "./Token";
 
-import type { Mode, ArgType, BreakToken } from "./types";
-import type { FunctionContext, FunctionSpec } from "./defineFunction";
-import type { EnvSpec } from "./defineEnvironment";
+import type {Mode, ArgType, BreakToken} from "./types";
+import type {FunctionContext, FunctionSpec} from "./defineFunction";
+import type {EnvSpec} from "./defineEnvironment";
 
 /**
  * This file contains the parser used to parse out a TeX expression from the
