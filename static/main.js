@@ -14,7 +14,8 @@ function init() {
     input.addEventListener("input", reprocess, false);
     permalink.addEventListener("click", setSearch);
 
-    const options = {displayMode: true, throwOnError: false, macros: {}};
+    const options = {displayMode: true, throwOnError: false};
+    const macros = {};
     const query = queryString.parse(window.location.search);
 
     if (query.text) {
@@ -65,7 +66,7 @@ function init() {
     // `c=expansion`.
     Object.getOwnPropertyNames(query).forEach((key) => {
         if (key.match(/^\\|^[^]$/)) {
-            options.macros[key] = query[key];
+            macros[key] = query[key];
         }
     });
 
@@ -78,6 +79,8 @@ function init() {
     }
 
     function reprocess() {
+        // Ignore changes to global macros caused by the expression
+        options.macros = Object.assign({}, macros);
         try {
             katex.render(input.value, math, options);
         } catch (e) {

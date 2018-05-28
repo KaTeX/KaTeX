@@ -9,6 +9,7 @@ import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
 import ParseError from "./ParseError";
+import type Namespace from "./Namespace";
 
 import type {Mode} from "./types";
 
@@ -22,7 +23,7 @@ export interface MacroContextInterface {
     /**
      * Object mapping macros to their expansions.
      */
-    macros: MacroMap;
+    macros: Namespace<MacroDefinition>;
 
     /**
      * Returns the topmost token on the stack, without expanding it.
@@ -47,7 +48,7 @@ export interface MacroContextInterface {
 /** Macro tokens (in reverse order). */
 export type MacroExpansion = {tokens: Token[], numArgs: number};
 
-type MacroDefinition = string | MacroExpansion |
+export type MacroDefinition = string | MacroExpansion |
     (MacroContextInterface => (string | MacroExpansion));
 export type MacroMap = {[string]: MacroDefinition};
 
@@ -110,7 +111,7 @@ defineMacro("\\TextOrMath", function(context) {
 //     \gdef\macro#1{expansion}
 //     \gdef\macro#1#2{expansion}
 //     \gdef\macro#1#2#3#4#5#6#7#8#9{expansion}
-defineMacro("\\gdef", function(context) {
+const def = (context, global: boolean) => {
     let arg = context.consumeArgs(1)[0];
     if (arg.length !== 1) {
         throw new ParseError("\\gdef's first argument must be a macro name");
@@ -134,11 +135,26 @@ defineMacro("\\gdef", function(context) {
         arg = context.consumeArgs(1)[0];
     }
     // Final arg is the expansion of the macro
-    context.macros[name] = {
+    context.macros.set(name, {
         tokens: arg,
         numArgs,
-    };
+    }, global);
     return '';
+};
+defineMacro("\\gdef", (context) => def(context, true));
+defineMacro("\\def", (context) => def(context, false));
+defineMacro("\\global", (context) => {
+    const next = context.consumeArgs(1)[0];
+    if (next.length !== 1) {
+        throw new ParseError("Invalid command after \\global");
+    }
+    const command = next[0].text;
+    if (command === "\\def") {
+        // \global\def is equivalent to \gdef
+        return def(context, true);
+    } else {
+        throw new ParseError(`Invalid command '${command}' after \\global`);
+    }
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -404,7 +420,7 @@ defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
 defineMacro("\\tag", "\\@ifstar\\tag@literal\\tag@paren");
 defineMacro("\\tag@paren", "\\tag@literal{({#1})}");
 defineMacro("\\tag@literal", (context) => {
-    if (context.macros["\\df@tag"]) {
+    if (context.macros.get("\\df@tag")) {
         throw new ParseError("Multiple \\tag");
     }
     return "\\gdef\\df@tag{\\text{#1}}";
