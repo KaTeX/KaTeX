@@ -4,7 +4,8 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import { calculateSize } from "../units";
+import {calculateSize} from "../units";
+import {assertNodeType} from "../ParseNode";
 
 // TODO: \hskip and \mskip should support plus and minus in lengths
 
@@ -17,14 +18,15 @@ defineFunction({
         allowedInText: true,
     },
     handler: (context, args) => {
+        const size = assertNodeType(args[0], "size");
         if (context.parser.settings.strict) {
             const mathFunction = (context.funcName[1] === 'm');  // \mkern, \mskip
-            const muUnit = (args[0].value.unit === 'mu');
+            const muUnit = (size.value.value.unit === 'mu');
             if (mathFunction) {
                 if (!muUnit) {
                     context.parser.settings.reportNonstrict("mathVsTextUnits",
                         `LaTeX's ${context.funcName} supports only mu units, ` +
-                        `not ${args[0].value.unit} units`);
+                        `not ${size.value.value.unit} units`);
                 }
                 if (context.parser.mode !== "math") {
                     context.parser.settings.reportNonstrict("mathVsTextUnits",
@@ -39,7 +41,7 @@ defineFunction({
         }
         return {
             type: "kern",
-            dimension: args[0].value,
+            dimension: size.value.value,
         };
     },
     htmlBuilder: (group, options) => {

@@ -39,7 +39,7 @@ defineFunction({
             size: 6,                // simulate \normalsize
         }, group.mode);
         const body = sizing.htmlBuilder(sizedText, options);
-        const dy = calculateSize(group.value.dy.value, options);
+        const dy = calculateSize(group.value.dy.value.value, options);
         return buildCommon.makeVList({
             positionType: "shift",
             positionData: -dy,
@@ -49,7 +49,8 @@ defineFunction({
     mathmlBuilder(group, options) {
         const node = new mathMLTree.MathNode(
             "mpadded", [mml.buildGroup(group.value.body, options)]);
-        const dy = group.value.dy.value.number + group.value.dy.value.unit;
+        const dy =
+            group.value.dy.value.value.number + group.value.dy.value.value.unit;
         node.setAttribute("voffset", dy);
         return node;
     },

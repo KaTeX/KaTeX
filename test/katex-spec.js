@@ -1812,6 +1812,7 @@ describe("A parse tree generator", function() {
             {
                 "type": "supsub",
                 "value": {
+                    "type": "supsub",
                     "base": {
                         "type": "mathord",
                         "value": "\\sigma",

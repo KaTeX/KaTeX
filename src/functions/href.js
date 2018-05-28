@@ -15,7 +15,7 @@ defineFunction({
     },
     handler: (context, args) => {
         const body = args[1];
-        const href = assertNodeType(args[0], "url").value;
+        const href = assertNodeType(args[0], "url").value.value;
         return {
             type: "href",
             href: href,

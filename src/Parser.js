@@ -408,6 +408,7 @@ export default class Parser {
         if (superscript || subscript) {
             // If we got either a superscript or subscript, create a supsub
             return new ParseNode("supsub", {
+                type: "supsub",
                 base: base,
                 sup: superscript,
                 sub: subscript,
@@ -795,7 +796,10 @@ export default class Parser {
         // and keep them as-is. Some browser will replace backslashes with
         // forward slashes.
         const url = raw.replace(/\\([#$%&~_^{}])/g, '$1');
-        return newArgument(new ParseNode("url", url, this.mode), res);
+        return newArgument(new ParseNode("url", {
+            type: "url",
+            value: url,
+        }, this.mode), res);
     }
 
     /**
@@ -823,7 +827,10 @@ export default class Parser {
         if (!validUnit(data)) {
             throw new ParseError("Invalid unit: '" + data.unit + "'", res);
         }
-        return newArgument(new ParseNode("size", data, this.mode), res);
+        return newArgument(new ParseNode("size", {
+            type: "size",
+            value: data,
+        }, this.mode), res);
     }
 
     /**
@@ -941,6 +948,7 @@ export default class Parser {
             arg = arg.slice(1, -1);  // remove first and last char
             return newArgument(
                 new ParseNode("verb", {
+                    type: "verb",
                     body: arg,
                     star: star,
                 }, "text"), nucleus);
