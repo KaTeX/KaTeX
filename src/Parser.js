@@ -845,9 +845,7 @@ export default class Parser {
                 this.switchMode(mode);
             }
             // Start a new namespace
-            if (!optional) {
-                this.gullet.pushNamespace();
-            }
+            this.gullet.pushNamespace();
             // If we get a brace, parse an expression
             this.consume();
             const expression = this.parseExpression(false, optional ? "]" : "}");
@@ -857,9 +855,7 @@ export default class Parser {
                 this.switchMode(outerMode);
             }
             // End new namespace before consuming symbol after close brace
-            if (!optional) {
-                this.gullet.popNamespace();
-            }
+            this.gullet.popNamespace();
             // Make sure we get a close brace
             this.expect(optional ? "]" : "}");
             if (mode === "text") {

@@ -2729,6 +2729,12 @@ describe("A macro expander", function() {
             .toParseLike("1\\textbf{12}1");
     });
 
+    it("\\sqrt optional arguments generate groups", () => {
+        expect("\\def\\x{1}\\def\\y{1}\\x\\y" +
+            "\\sqrt[\\def\\x{2}\\x]{\\def\\y{2}\\y}\\x\\y")
+            .toParseLike("11\\sqrt[2]{2}11");
+    });
+
     // This may change in the future, if we support the extra features of
     // \hspace.
     it("should treat \\hspace, \\hskip like \\kern", function() {
