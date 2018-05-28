@@ -1551,6 +1551,11 @@ describe("An HTML font tree-builder", function() {
     it("should render wide characters with mord and with the correct font", function() {
         const markup = katex.renderToString(String.fromCharCode(0xD835, 0xDC00));
         expect(markup).toContain("<span class=\"mord mathbf\">A</span>");
+
+        const phrase1 = getBuilt(String.fromCharCode(0xD835, 0xDC00) +
+            " = " + String.fromCharCode(0xD835, 0xDC1A))[0];
+        const phrase2 = getBuilt("\\mathbf A = \\mathbf a")[0];
+        expect(phrase1).toEqual(phrase2);
     });
 
     it("should throw TypeError when the expression is of the wrong type", function() {
