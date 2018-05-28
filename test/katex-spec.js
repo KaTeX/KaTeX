@@ -2307,7 +2307,7 @@ describe("An array environment", function() {
         const parse = getParsed("\\begin{array}r1\\\\20\\end{array}");
         expect(parse[0].type).toBe("array");
         expect(parse[0].value.cols).toEqual([
-            { type: "align", align: "r" },
+            {type: "align", align: "r"},
         ]);
     });
 
@@ -2315,12 +2315,12 @@ describe("An array environment", function() {
         const parse = getParsed("\\begin{array}{|l||c|}\\end{array}");
         expect(parse[0].type).toBe("array");
         expect(parse[0].value.cols).toEqual([
-            { type: "separator", separator: "|" },
-            { type: "align", align: "l" },
-            { type: "separator", separator: "|" },
-            { type: "separator", separator: "|" },
-            { type: "align", align: "c" },
-            { type: "separator", separator: "|" },
+            {type: "separator", separator: "|"},
+            {type: "align", align: "l"},
+            {type: "separator", separator: "|"},
+            {type: "separator", separator: "|"},
+            {type: "align", align: "c"},
+            {type: "separator", separator: "|"},
         ]);
     });
 

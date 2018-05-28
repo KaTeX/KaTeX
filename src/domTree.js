@@ -8,7 +8,7 @@
  *
  * Similar functions for working with MathML nodes exist in mathMLTree.js.
  */
-import { scriptFromCodepoint } from "./unicodeScripts";
+import {scriptFromCodepoint} from "./unicodeScripts";
 import utils from "./utils";
 import svgGeometry from "./svgGeometry";
 import type Options from "./Options";

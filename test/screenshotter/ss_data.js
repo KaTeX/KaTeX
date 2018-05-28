@@ -21,7 +21,7 @@ for (const key in dict) {
     if (dict.hasOwnProperty(key)) {
         let itm = dict[key];
         if (typeof itm === "string") {
-            itm = dict[key] = { tex: itm };
+            itm = dict[key] = {tex: itm};
         }
         const query = {};
         queryKeys.forEach(function(key) {
