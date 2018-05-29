@@ -226,7 +226,7 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     group: ParseNode<NODETYPE>,
     options: Options,
     type: "mathord" | "textord",
-): domTree.symbolNode {
+): domTree.symbolNode | domTree.documentFragment {
     const mode = group.mode;
     const value = group.value;
 
