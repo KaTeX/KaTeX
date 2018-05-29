@@ -44,6 +44,31 @@ export const makeRow = function(body) {
  * Returns the math variant as a string or null if none is required.
  */
 export const getVariant = function(group, options) {
+    // Handle \text... font specifiers as best we can.
+    // MathML has a limited list of allowable mathvariant specifiers; see
+    // https://www.w3.org/TR/MathML3/chapter3.html#presm.commatt
+    if (options.fontFamily === "texttt") {
+        return "monospace";
+    } else if (options.fontFamily === "textsf") {
+        if (options.fontShape === "textit" &&
+            options.fontWeight === "textbf") {
+            return "sans-serif-bold-italic";
+        } else if (options.fontShape === "textit") {
+            return "sans-serif-italic";
+        } else if (options.fontWeight === "textbf") {
+            return "bold-sans-serif";
+        } else {
+            return "sans-serif";
+        }
+    } else if (options.fontShape === "textit" &&
+               options.fontWeight === "textbf") {
+        return "bold-italic";
+    } else if (options.fontShape === "textit") {
+        return "italic";
+    } else if (options.fontWeight === "textbf") {
+        return "bold";
+    }
+
     const font = options.font;
     if (!font) {
         return null;
@@ -84,7 +109,10 @@ export const buildExpression = function(expression, options) {
     for (let i = 0; i < expression.length; i++) {
         const group = buildGroup(expression[i], options);
         // Concatenate adjacent <mtext>s
-        if (group.type === 'mtext' && lastGroup && lastGroup.type === 'mtext') {
+        if (group.type === 'mtext' && lastGroup && lastGroup.type === 'mtext'
+            && group.getAttribute('mathvariant') ===
+               lastGroup.getAttribute('mathvariant')) {
+            console.log(group);
             lastGroup.children.push(...group.children);
         // Concatenate adjacent <mn>s
         } else if (group.type === 'mn' &&

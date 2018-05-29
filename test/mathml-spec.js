@@ -124,4 +124,12 @@ describe("A MathML builder", function() {
                          "\\texttt{```Hi----'''}" +
                          "\\text{\\tt ```Hi----'''}")).toMatchSnapshot();
     });
+
+    it('\\text fonts become mathvariant', () => {
+        expect(getMathML("\\text{" +
+            "roman\\textit{italic\\textbf{bold italic}}\\textbf{bold}" +
+            "\\textsf{ss\\textit{italic\\textbf{bold italic}}\\textbf{bold}}" +
+            "\\texttt{tt\\textit{italic\\textbf{bold italic}}\\textbf{bold}}}"))
+            .toMatchSnapshot();
+    });
 });
