@@ -1166,6 +1166,12 @@ describe("A begin/end parser", function() {
         const m3 = getParsed("\\begin{matrix}a&b\\\\ c&d \\\\ \\end{matrix}")[0];
         expect(m3.value.body.length).toBe(2);
     });
+
+    it("should grab \\arraystretch", function() {
+        const parse = getParsed("\\def\\arraystretch{1.5}" +
+            "\\begin{matrix}a&b\\\\c&d\\end{matrix}");
+        expect(parse).toMatchSnapshot();
+    });
 });
 
 describe("A sqrt parser", function() {
