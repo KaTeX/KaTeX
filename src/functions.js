@@ -35,6 +35,7 @@ import "./functions/sizing";
 import "./functions/smash";
 import "./functions/sqrt";
 import "./functions/styling";
+import "./functions/supsub";
 import "./functions/symbolsOp";
 import "./functions/symbolsOrd";
 import "./functions/symbolsSpacing";

@@ -9,16 +9,21 @@ import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
 import ParseError from "./ParseError";
+import type Namespace from "./Namespace";
+
+import type {Mode} from "./types";
 
 /**
  * Provides context to macros defined by functions. Implemented by
  * MacroExpander.
  */
 export interface MacroContextInterface {
+    mode: Mode;
+
     /**
      * Object mapping macros to their expansions.
      */
-    macros: MacroMap;
+    macros: Namespace<MacroDefinition>;
 
     /**
      * Returns the topmost token on the stack, without expanding it.
@@ -43,7 +48,7 @@ export interface MacroContextInterface {
 /** Macro tokens (in reverse order). */
 export type MacroExpansion = {tokens: Token[], numArgs: number};
 
-type MacroDefinition = string | MacroExpansion |
+export type MacroDefinition = string | MacroExpansion |
     (MacroContextInterface => (string | MacroExpansion));
 export type MacroMap = {[string]: MacroDefinition};
 
@@ -106,7 +111,7 @@ defineMacro("\\TextOrMath", function(context) {
 //     \gdef\macro#1{expansion}
 //     \gdef\macro#1#2{expansion}
 //     \gdef\macro#1#2#3#4#5#6#7#8#9{expansion}
-defineMacro("\\gdef", function(context) {
+const def = (context, global: boolean) => {
     let arg = context.consumeArgs(1)[0];
     if (arg.length !== 1) {
         throw new ParseError("\\gdef's first argument must be a macro name");
@@ -130,11 +135,26 @@ defineMacro("\\gdef", function(context) {
         arg = context.consumeArgs(1)[0];
     }
     // Final arg is the expansion of the macro
-    context.macros[name] = {
+    context.macros.set(name, {
         tokens: arg,
         numArgs,
-    };
+    }, global);
     return '';
+};
+defineMacro("\\gdef", (context) => def(context, true));
+defineMacro("\\def", (context) => def(context, false));
+defineMacro("\\global", (context) => {
+    const next = context.consumeArgs(1)[0];
+    if (next.length !== 1) {
+        throw new ParseError("Invalid command after \\global");
+    }
+    const command = next[0].text;
+    if (command === "\\def") {
+        // \global\def is equivalent to \gdef
+        return def(context, true);
+    } else {
+        throw new ParseError(`Invalid command '${command}' after \\global`);
+    }
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -212,6 +232,11 @@ defineMacro("\u225B", "\\stackrel{\\scriptsize\\star}{=}");
 defineMacro("\u225D", "\\stackrel{\\tiny\\mathrm{def}}{=}");
 defineMacro("\u225E", "\\stackrel{\\tiny\\mathrm{m}}{=}");
 defineMacro("\u225F", "\\stackrel{\\tiny?}{=}");
+
+// Misc Unicode
+defineMacro("\u27C2", "\\perp");
+defineMacro("\u203C", "\\mathclose{!\\mkern-0.8mu!}");
+defineMacro("\u220C", "\\notni");
 
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
@@ -430,7 +455,7 @@ defineMacro("\\qquad", "\\hskip2em\\relax");
 defineMacro("\\tag", "\\@ifstar\\tag@literal\\tag@paren");
 defineMacro("\\tag@paren", "\\tag@literal{({#1})}");
 defineMacro("\\tag@literal", (context) => {
-    if (context.macros["\\df@tag"]) {
+    if (context.macros.get("\\df@tag")) {
         throw new ParseError("Multiple \\tag");
     }
     return "\\gdef\\df@tag{\\text{#1}}";
@@ -510,31 +535,38 @@ defineMacro("\\ordinarycolon", ":");
 //TODO(edemaine): Not yet centered. Fix via \raisebox or #726
 defineMacro("\\vcentcolon", "\\mathrel{\\mathop\\ordinarycolon}");
 // \providecommand*\dblcolon{\vcentcolon\mathrel{\mkern-.9mu}\vcentcolon}
-defineMacro("\\dblcolon", "\\vcentcolon\\mathrel{\\mkern-.9mu}\\vcentcolon");
+defineMacro("\\dblcolon",
+    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-.9mu}\\vcentcolon}");
 // \providecommand*\coloneqq{\vcentcolon\mathrel{\mkern-1.2mu}=}
-defineMacro("\\coloneqq", "\\vcentcolon\\mathrel{\\mkern-1.2mu}=");
+defineMacro("\\coloneqq", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}=}");
 // \providecommand*\Coloneqq{\dblcolon\mathrel{\mkern-1.2mu}=}
-defineMacro("\\Coloneqq", "\\dblcolon\\mathrel{\\mkern-1.2mu}=");
+defineMacro("\\Coloneqq", "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}=}");
 // \providecommand*\coloneq{\vcentcolon\mathrel{\mkern-1.2mu}\mathrel{-}}
-defineMacro("\\coloneq", "\\vcentcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}");
+defineMacro("\\coloneq",
+    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}}");
 // \providecommand*\Coloneq{\dblcolon\mathrel{\mkern-1.2mu}\mathrel{-}}
-defineMacro("\\Coloneq", "\\dblcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}");
+defineMacro("\\Coloneq",
+    "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}}");
 // \providecommand*\eqqcolon{=\mathrel{\mkern-1.2mu}\vcentcolon}
-defineMacro("\\eqqcolon", "=\\mathrel{\\mkern-1.2mu}\\vcentcolon");
+defineMacro("\\eqqcolon", "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
 // \providecommand*\Eqqcolon{=\mathrel{\mkern-1.2mu}\dblcolon}
-defineMacro("\\Eqqcolon", "=\\mathrel{\\mkern-1.2mu}\\dblcolon");
+defineMacro("\\Eqqcolon", "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\dblcolon}");
 // \providecommand*\eqcolon{\mathrel{-}\mathrel{\mkern-1.2mu}\vcentcolon}
-defineMacro("\\eqcolon", "\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\vcentcolon");
+defineMacro("\\eqcolon",
+    "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
 // \providecommand*\Eqcolon{\mathrel{-}\mathrel{\mkern-1.2mu}\dblcolon}
-defineMacro("\\Eqcolon", "\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\dblcolon");
+defineMacro("\\Eqcolon",
+    "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\dblcolon}");
 // \providecommand*\colonapprox{\vcentcolon\mathrel{\mkern-1.2mu}\approx}
-defineMacro("\\colonapprox", "\\vcentcolon\\mathrel{\\mkern-1.2mu}\\approx");
+defineMacro("\\colonapprox",
+    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\approx}");
 // \providecommand*\Colonapprox{\dblcolon\mathrel{\mkern-1.2mu}\approx}
-defineMacro("\\Colonapprox", "\\dblcolon\\mathrel{\\mkern-1.2mu}\\approx");
+defineMacro("\\Colonapprox",
+    "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\approx}");
 // \providecommand*\colonsim{\vcentcolon\mathrel{\mkern-1.2mu}\sim}
-defineMacro("\\colonsim", "\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim");
+defineMacro("\\colonsim", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim}");
 // \providecommand*\Colonsim{\dblcolon\mathrel{\mkern-1.2mu}\sim}
-defineMacro("\\Colonsim", "\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim");
+defineMacro("\\Colonsim", "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim}");
 
 // Some Unicode characters are implemented with macros to mathtools functions.
 defineMacro("\u2254", "\\coloneqq");  // :=
@@ -561,11 +593,14 @@ defineMacro("\\coloncolonapprox", "\\Colonapprox");
 defineMacro("\\coloncolonsim", "\\Colonsim");
 
 // Additional macros, implemented by analogy with mathtools definitions:
-defineMacro("\\simcolon", "\\sim\\mathrel{\\mkern-1.2mu}\\vcentcolon");
-defineMacro("\\simcoloncolon", "\\sim\\mathrel{\\mkern-1.2mu}\\dblcolon");
-defineMacro("\\approxcolon", "\\approx\\mathrel{\\mkern-1.2mu}\\vcentcolon");
+defineMacro("\\simcolon",
+    "\\mathrel{\\sim\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
+defineMacro("\\simcoloncolon",
+    "\\mathrel{\\sim\\mathrel{\\mkern-1.2mu}\\dblcolon}");
+defineMacro("\\approxcolon",
+    "\\mathrel{\\approx\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
 defineMacro("\\approxcoloncolon",
-            "\\approx\\mathrel{\\mkern-1.2mu}\\dblcolon");
+            "\\mathrel{\\approx\\mathrel{\\mkern-1.2mu}\\dblcolon}");
 
 // Present in newtxmath, pxfonts and txfonts
 // TODO: The unicode character U+220C ∌ should be added to the font, and this

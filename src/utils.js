@@ -96,10 +96,8 @@ function clearNode(node: Node) {
  * cases, this will just be the group itself, but when ordgroups and colors have
  * a single element, we want to pull that out.
  */
-const getBaseElem = function(group: ParseNode<*>): ParseNode<*> | false {
-    if (!group) {
-        return false;
-    } else if (group.type === "ordgroup") {
+const getBaseElem = function(group: ParseNode<*>): ParseNode<*> {
+    if (group.type === "ordgroup") {
         if (group.value.length === 1) {
             return getBaseElem(group.value[0]);
         } else {

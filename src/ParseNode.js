@@ -38,23 +38,15 @@ export default class ParseNode<TYPE: NodeType> {
 export type NodeType = $Keys<ParseNodeTypes>;
 export type NodeValue<TYPE: NodeType> = $ElementType<ParseNodeTypes, TYPE>;
 
-export type AccentStructType = {|
-    type: "accent" | "accentUnder",
-    label: string,
-    isStretchy?: boolean,
-    isShifty?: boolean,
-    base: ParseNode<*>,
-|};
-
 export type LeftRightDelimType = {|
-    type?: "leftright",
+    type: "leftright",
     body: ParseNode<*>[],
     left: string,
     right: string,
 |};
 
 // Map from `type` field value to corresponding `value` type.
-type ParseNodeTypes = {
+export type ParseNodeTypes = {
     "array": ArrayEnvNodeData,
     "color": {|
         type: "color",
@@ -62,14 +54,6 @@ type ParseNodeTypes = {
         value: ParseNode<*>[],
     |},
     "color-token": string,
-    "leftright": {|
-        body: [{|
-            type: "array",
-            hskipBeforeAndAfter: boolean,
-        |} | ParseNode<*>],
-        left: string,
-        right: string,
-    |},
     // To avoid requiring run-time type assertions, this more carefully captures
     // the requirements on the fields per the op.js htmlBuilder logic:
     // - `body` and `value` are NEVER set simultanouesly.
@@ -92,18 +76,23 @@ type ParseNodeTypes = {
         value: ParseNode<*>[],
     |},
     "ordgroup": ParseNode<*>[],
-    "size": Measurement,
+    "size": {|
+        type: "size",
+        value: Measurement,
+    |},
     "styling": {|
         type: "styling",
         style: StyleStr,
         value: ParseNode<*>[],
     |},
     "supsub": {|
+        type: "supsub",
         base: ?ParseNode<*>,
         sup?: ?ParseNode<*>,
         sub?: ?ParseNode<*>,
     |},
     "tag": {|
+        type: "tag",
         body: ParseNode<*>[],
         tag: ParseNode<*>[],
     |},
@@ -112,8 +101,12 @@ type ParseNodeTypes = {
         body: ParseNode<*>[],
         font?: string,
     |},
-    "url": string,
+    "url": {|
+        type: "url",
+        value: string,
+    |},
     "verb": {|
+        type: "verb",
         body: string,
         star: boolean,
     |},
@@ -133,8 +126,20 @@ type ParseNodeTypes = {
     "textord": string,
     // From functions.js and functions/*.js. See also "color", "op", "styling",
     // and "text" above.
-    "accent": AccentStructType,
-    "accentUnder": AccentStructType,
+    "accent": {|
+        type: "accent",
+        label: string,
+        isStretchy?: boolean,
+        isShifty?: boolean,
+        base: ParseNode<*>,
+    |},
+    "accentUnder": {|
+        type: "accentUnder",
+        label: string,
+        isStretchy?: boolean,
+        isShifty?: boolean,
+        base: ParseNode<*>,
+    |},
     "cr": {|
         type: "cr",
         newRow: boolean,
