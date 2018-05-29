@@ -176,6 +176,7 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
     }
     const name = arg[0].text;
 
+    // A command is "defined" in KaTeX if it's either a macro or a function.
     const exists = context.macros.get(name) || functions.hasOwnProperty(name);
     if (exists && !existsOK) {
         throw new ParseError(`Command ${name} already defined in \\newcommand`);
