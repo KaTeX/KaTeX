@@ -75,6 +75,7 @@ function parseArray(
     if (!result.arraystretch) {
         const arraystretch = parser.gullet.expandMacroAsText("\\arraystretch");
         if (arraystretch == null) {
+            // Default \arraystretch from lttab.dtx
             result.arraystretch = 1;
         } else {
             result.arraystretch = parseFloat(arraystretch);
@@ -179,10 +180,7 @@ const htmlBuilder = function(group, options) {
     // Default \jot from ltmath.dtx
     // TODO(edemaine): allow overriding \jot via \setlength (#687)
     const jot = 3 * pt;
-    // Default \arraystretch from lttab.dtx
-    // TODO(gagern): may get redefined once we have user-defined macros
-    const arraystretch = utils.deflt(groupValue.arraystretch, 1);
-    const arrayskip = arraystretch * baselineskip;
+    const arrayskip = groupValue.arraystretch * baselineskip;
     const arstrutHeight = 0.7 * arrayskip; // \strutbox in ltfsstrc.dtx and
     const arstrutDepth = 0.3 * arrayskip;  // \@arstrutbox in lttab.dtx
 
