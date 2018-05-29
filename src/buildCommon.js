@@ -7,7 +7,7 @@
 
 import domTree from "./domTree";
 import fontMetrics from "./fontMetrics";
-import symbols from "./symbols";
+import symbols, {ligatures} from "./symbols";
 import utils from "./utils";
 import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
@@ -260,9 +260,19 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
                                             options.fontShape);
             fontClasses = [fontOrFamily, options.fontWeight, options.fontShape];
         }
+
         if (lookupSymbol(value, fontName, mode).metrics) {
             return makeSymbol(value, fontName, mode, options,
                 classes.concat(fontClasses));
+        } else if (ligatures.hasOwnProperty(value) &&
+                   fontName.substr(0, 10) === "Typewriter") {
+            // Deconstruct ligatures in monospace fonts (\texttt, \tt).
+            const parts = [];
+            for (let i = 0; i < value.length; i++) {
+                parts.push(makeSymbol(value[i], fontName, mode, options,
+                                      classes.concat(fontClasses)));
+            }
+            return makeFragment(parts);
         } else {
             return mathDefault(value, mode, options, classes, type);
         }

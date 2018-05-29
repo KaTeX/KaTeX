@@ -692,6 +692,14 @@ defineSymbol(text, main, accent, "\u00a8", '\\"'); // diaresis
 defineSymbol(text, main, accent, "\u02dd", "\\H"); // double acute
 defineSymbol(text, main, accent, "\u25ef", "\\textcircled"); // \bigcirc glyph
 
+// These ligatures are detected and created in Parser.js's `formLigatures`.
+export const ligatures = {
+    "--": true,
+    "---": true,
+    "``": true,
+    "''": true,
+};
+
 defineSymbol(text, main, textord, "\u2013", "--");
 defineSymbol(text, main, textord, "\u2013", "\\textendash");
 defineSymbol(text, main, textord, "\u2014", "---");
