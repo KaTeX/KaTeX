@@ -235,8 +235,8 @@ defineMacro("\u225F", "\\stackrel{\\tiny?}{=}");
 
 // Misc Unicode
 defineMacro("\u27C2", "\\perp");
-defineMacro("\u27C2", "\\mathclose{!\\mkern-0.8mu!}");
-defineMacro("\u27C2", "\\notni");
+defineMacro("\u203C", "\\mathclose{!\\mkern-0.8mu!}");
+defineMacro("\u220C", "\\notni");
 
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
