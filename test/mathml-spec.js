@@ -107,4 +107,15 @@ describe("A MathML builder", function() {
         expect(getMathML("\\tag{hi} x+y^2", {displayMode: true}))
             .toMatchSnapshot();
     });
+
+    it('normal spaces render normally', function() {
+        expect(getMathML("\\kern1em\\kern1ex")).toMatchSnapshot();
+    });
+    it('special spaces render specially', function() {
+        expect(getMathML(
+            "\\,\\thinspace\\:\\medspace\\;\\thickspace" +
+            "\\!\\negthinspace\\negmedspace\\negthickspace" +
+            "\\mkern1mu\\mkern3mu\\mkern4mu\\mkern5mu" +
+            "\\mkern-1mu\\mkern-3mu\\mkern-4mu\\mkern-5mu")).toMatchSnapshot();
+    });
 });

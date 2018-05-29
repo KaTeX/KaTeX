@@ -8,7 +8,7 @@ import type Options from "./Options";
 import type {ArgType, BreakToken, Mode} from "./types";
 import type {HtmlDomNode} from "./domTree";
 import type {Token} from "./Token";
-import type {MathNode, TextNode} from "./mathMLTree";
+import type {MathNodeClass} from "./mathMLTree";
 
 /** Context provided to function handlers for error messages. */
 export type FunctionContext = {|
@@ -28,7 +28,7 @@ export type HtmlBuilder<NODETYPE> = (ParseNode<NODETYPE>, Options) => HtmlDomNod
 export type MathMLBuilder<NODETYPE> = (
     group: ParseNode<NODETYPE>,
     options: Options,
-) => MathNode | TextNode | domTree.documentFragment;
+) => MathNodeClass | domTree.documentFragment;
 
 // More general version of `HtmlBuilder` for nodes (e.g. \sum, accent types)
 // whose presence impacts super/subscripting. In this case, ParseNode<"supsub">

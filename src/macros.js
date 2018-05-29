@@ -292,8 +292,6 @@ const dotsByToken = {
     '\\bigoplus': '\\dotsb',
     '\\bigodot': '\\dotsb',
     '\\bigsqcup': '\\dotsb',
-    '\\implies': '\\dotsb',
-    '\\impliedby': '\\dotsb',
     '\\And': '\\dotsb',
     '\\longrightarrow': '\\dotsb',
     '\\Longrightarrow': '\\dotsb',
@@ -304,11 +302,9 @@ const dotsByToken = {
     '\\mapsto': '\\dotsb',
     '\\longmapsto': '\\dotsb',
     '\\hookrightarrow': '\\dotsb',
-    '\\iff': '\\dotsb',
     '\\doteq': '\\dotsb',
     // Symbols whose definition starts with \mathbin:
     '\\mathbin': '\\dotsb',
-    '\\bmod': '\\dotsb',
     // Symbols whose definition starts with \mathrel:
     '\\mathrel': '\\dotsb',
     '\\relbar': '\\dotsb',
@@ -416,10 +412,44 @@ defineMacro("\\DOTSI", "\\relax");
 defineMacro("\\DOTSB", "\\relax");
 defineMacro("\\DOTSX", "\\relax");
 
-// http://texdoc.net/texmf-dist/doc/latex/amsmath/amsmath.pdf
-defineMacro("\\thinspace", "\\,");    //   \let\thinspace\,
-defineMacro("\\medspace", "\\:");     //   \let\medspace\:
-defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
+// Spacing, based on amsmath.sty's override of LaTeX defaults
+// \DeclareRobustCommand{\tmspace}[3]{%
+//   \ifmmode\mskip#1#2\else\kern#1#3\fi\relax}
+defineMacro("\\tmspace", "\\TextOrMath{\\kern#1#3}{\\mskip#1#2}\\relax");
+// \renewcommand{\,}{\tmspace+\thinmuskip{.1667em}}
+// TODO: math mode should use \thinmuskip
+defineMacro("\\,", "\\tmspace+{3mu}{.1667em}");
+// \let\thinspace\,
+defineMacro("\\thinspace", "\\,");
+// \renewcommand{\:}{\tmspace+\medmuskip{.2222em}}
+// TODO: math mode should use \medmuskip = 4mu plus 2mu minus 4mu
+defineMacro("\\:", "\\tmspace+{4mu}{.2222em}");
+// \let\medspace\:
+defineMacro("\\medspace", "\\:");
+// \renewcommand{\;}{\tmspace+\thickmuskip{.2777em}}
+// TODO: math mode should use \thickmuskip = 5mu plus 5mu
+defineMacro("\\;", "\\tmspace+{5mu}{.2777em}");
+// \let\thickspace\;
+defineMacro("\\thickspace", "\\;");
+// \renewcommand{\!}{\tmspace-\thinmuskip{.1667em}}
+// TODO: math mode should use \thinmuskip
+defineMacro("\\!", "\\tmspace-{3mu}{.1667em}");
+// \let\negthinspace\!
+defineMacro("\\negthinspace", "\\!");
+// \newcommand{\negmedspace}{\tmspace-\medmuskip{.2222em}}
+// TODO: math mode should use \medmuskip
+defineMacro("\\negmedspace", "\\tmspace-{4mu}{.2222em}");
+// \newcommand{\negthickspace}{\tmspace-\thickmuskip{.2777em}}
+// TODO: math mode should use \thickmuskip
+defineMacro("\\negthickspace", "\\tmspace-{5mu}{.277em}");
+// \def\enspace{\kern.5em }
+defineMacro("\\enspace", "\\kern.5em ");
+// \def\enskip{\hskip.5em\relax}
+defineMacro("\\enskip", "\\hskip.5em\\relax");
+// \def\quad{\hskip1em\relax}
+defineMacro("\\quad", "\\hskip1em\\relax");
+// \def\qquad{\hskip2em\relax}
+defineMacro("\\qquad", "\\hskip2em\\relax");
 
 // \tag@in@display form of \tag
 defineMacro("\\tag", "\\@ifstar\\tag@literal\\tag@paren");
@@ -430,6 +460,26 @@ defineMacro("\\tag@literal", (context) => {
     }
     return "\\gdef\\df@tag{\\text{#1}}";
 });
+
+// \renewcommand{\bmod}{\nonscript\mskip-\medmuskip\mkern5mu\mathbin
+//   {\operator@font mod}\penalty900
+//   \mkern5mu\nonscript\mskip-\medmuskip}
+// \newcommand{\pod}[1]{\allowbreak
+//   \if@display\mkern18mu\else\mkern8mu\fi(#1)}
+// \renewcommand{\pmod}[1]{\pod{{\operator@font mod}\mkern6mu#1}}
+// \newcommand{\mod}[1]{\allowbreak\if@display\mkern18mu
+//   \else\mkern12mu\fi{\operator@font mod}\,\,#1}
+// TODO: math mode should use \medmuskip = 4mu plus 2mu minus 4mu
+defineMacro("\\bmod",
+    "\\mathchoice{\\mskip1mu}{\\mskip1mu}{\\mskip5mu}{\\mskip5mu}" +
+    "\\mathbin{\\rm mod}" +
+    "\\mathchoice{\\mskip1mu}{\\mskip1mu}{\\mskip5mu}{\\mskip5mu}");
+defineMacro("\\pod", "\\allowbreak" +
+    "\\mathchoice{\\mkern18mu}{\\mkern8mu}{\\mkern8mu}{\\mkern8mu}(#1)");
+defineMacro("\\pmod", "\\pod{{\\rm mod}\\mkern6mu#1}");
+defineMacro("\\mod", "\\allowbreak" +
+    "\\mathchoice{\\mkern18mu}{\\mkern12mu}{\\mkern12mu}{\\mkern12mu}" +
+    "{\\rm mod}\\,\\,#1");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
