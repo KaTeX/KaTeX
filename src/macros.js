@@ -39,6 +39,18 @@ export interface MacroContextInterface {
     expandAfterFuture(): Token;
 
     /**
+     * Fully expand the given macro name and return the resulting list of
+     * tokens, or return `undefined` if no such macro is defined.
+     */
+    expandMacro(name: string): Token[] | void;
+
+    /**
+     * Fully expand the given macro name and return the result as a string,
+     * or return `undefined` if no such macro is defined.
+     */
+    expandMacroAsText(name: string): string | void;
+
+    /**
      * Consume the specified number of arguments from the token stream,
      * and return the resulting array of arguments.
      */

@@ -25,7 +25,7 @@ type AlignSpec = { type: "separator", separator: string } | {
 export type ArrayEnvNodeData = {|
     type: "array",
     hskipBeforeAndAfter?: boolean,
-    arraystretch?: number,
+    arraystretch: number,
     addJot?: boolean,
     cols?: AlignSpec[],
     body: ParseNode<*>[][], // List of rows in the (2D) array.
@@ -70,6 +70,19 @@ function parseArray(
     // Parse body of array with \\ temporarily mapped to \cr
     parser.gullet.beginGroup();
     parser.gullet.macros.set("\\\\", "\\cr");
+
+    // Get current arraystretch if it's not set by the environment
+    if (!result.arraystretch) {
+        const arraystretch = parser.gullet.expandMacroAsText("\\arraystretch");
+        if (arraystretch == null) {
+            result.arraystretch = 1;
+        } else {
+            result.arraystretch = parseFloat(arraystretch);
+            if (!result.arraystretch || result.arraystretch < 0) {
+                throw new ParseError(`Invalid \\arraystretch: ${arraystretch}`);
+            }
+        }
+    }
 
     let row = [];
     const body = [row];
@@ -358,7 +371,7 @@ const mathmlBuilder = function(group, options) {
         }));
 };
 
-// Convinient function for aligned and alignedat environments.
+// Convenience function for aligned and alignedat environments.
 const alignedHandler = function(context, args) {
     const cols = [];
     let res = {
