@@ -757,6 +757,15 @@ describe("A color parser", function() {
             colorIsTextColor: true,
         });
     });
+
+    it("should not define \\color in global context", function() {
+        const macros = {};
+        expect(oldColorExpression).toParseLike("\\textcolor{#fA6}{x}y", {
+            colorIsTextColor: true,
+            macros: macros,
+        });
+        expect(macros).toEqual({});
+    });
 });
 
 describe("A tie parser", function() {
@@ -2298,7 +2307,7 @@ describe("An array environment", function() {
         const parse = getParsed("\\begin{array}r1\\\\20\\end{array}");
         expect(parse[0].type).toBe("array");
         expect(parse[0].value.cols).toEqual([
-            { type: "align", align: "r" },
+            {type: "align", align: "r"},
         ]);
     });
 
@@ -2306,12 +2315,12 @@ describe("An array environment", function() {
         const parse = getParsed("\\begin{array}{|l||c|}\\end{array}");
         expect(parse[0].type).toBe("array");
         expect(parse[0].value.cols).toEqual([
-            { type: "separator", separator: "|" },
-            { type: "align", align: "l" },
-            { type: "separator", separator: "|" },
-            { type: "separator", separator: "|" },
-            { type: "align", align: "c" },
-            { type: "separator", separator: "|" },
+            {type: "separator", separator: "|"},
+            {type: "align", align: "l"},
+            {type: "separator", separator: "|"},
+            {type: "separator", separator: "|"},
+            {type: "align", align: "c"},
+            {type: "separator", separator: "|"},
         ]);
     });
 
@@ -2690,6 +2699,62 @@ describe("A macro expander", function() {
         expect("\\gdef\\foo\\bar").toParse();
         expect("\\gdef{\\foo\\bar}{}").toNotParse();
         expect("\\gdef{}{}").toNotParse();
+        // TODO: These shouldn't work, but `1` and `{1}` are currently treated
+        // the same, as are `\foo` and `{\foo}`.
+        //expect("\\gdef\\foo1").toNotParse();
+        //expect("\\gdef{\\foo}{}").toNotParse();
+    });
+
+    it("\\def works locally", () => {
+        expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\def\\x{3}\\x}\\x}\\x")
+            .toParseLike("1{2{3}2}1");
+        expect("\\def\\x{1}\\x\\def\\x{2}\\x{\\def\\x{3}\\x\\def\\x{4}\\x}\\x")
+            .toParseLike("12{34}2");
+    });
+
+    it("\\gdef overrides at all levels", () => {
+        expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\gdef\\x{3}\\x}\\x}\\x")
+            .toParseLike("1{2{3}3}3");
+        expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\global\\def\\x{3}\\x}\\x}\\x")
+            .toParseLike("1{2{3}3}3");
+        expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\gdef\\x{3}\\x\\def\\x{4}\\x}" +
+            "\\x\\def\\x{5}\\x}\\x").toParseLike("1{2{34}35}3");
+    });
+
+    it("\\global needs to followed by \\def", () => {
+        expect("\\global\\def\\foo{}\\foo").toParseLike("");
+        // TODO: This doesn't work yet; \global needs to expand argument.
+        //expect("\\def\\DEF{\\def}\\global\\DEF\\foo{}\\foo").toParseLike("");
+        expect("\\global\\foo").toNotParse();
+        expect("\\global\\bar x").toNotParse();
+    });
+
+    it("Macro arguments do not generate groups", () => {
+        expect("\\def\\x{1}\\x\\def\\foo#1{#1}\\foo{\\x\\def\\x{2}\\x}\\x")
+            .toParseLike("1122");
+    });
+
+    it("\\textbf arguments do generate groups", () => {
+        expect("\\def\\x{1}\\x\\textbf{\\x\\def\\x{2}\\x}\\x")
+            .toParseLike("1\\textbf{12}1");
+    });
+
+    it("\\sqrt optional arguments generate groups", () => {
+        expect("\\def\\x{1}\\def\\y{1}\\x\\y" +
+            "\\sqrt[\\def\\x{2}\\x]{\\def\\y{2}\\y}\\x\\y")
+            .toParseLike("11\\sqrt[2]{2}11");
+    });
+
+    it("\\gdef changes settings.macros", () => {
+        const macros = {};
+        expect("\\gdef\\foo{1}").toParse(new Settings({macros}));
+        expect(macros["\\foo"]).toBeTruthy();
+    });
+
+    it("\\def doesn't change settings.macros", () => {
+        const macros = {};
+        expect("\\def\\foo{1}").toParse(new Settings({macros}));
+        expect(macros["\\foo"]).toBeFalsy();
     });
 
     // This may change in the future, if we support the extra features of
@@ -2816,7 +2881,7 @@ describe("Unicode", function() {
     });
 
     it("should parse relations", function() {
-        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙").toParse();
+        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙⟂⊨∌").toParse();
     });
 
     it("should parse big operators", function() {
@@ -2828,7 +2893,7 @@ describe("Unicode", function() {
     });
 
     it("should parse symbols", function() {
-        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°\u00b7").toParse();
+        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼\u00b7").toParse();
     });
 
     it("should build Greek capital letters", function() {
@@ -2966,6 +3031,12 @@ describe("Newlines via \\\\ and \\newline", function() {
 
     it("should not allow \\cr at top level", () => {
         expect("hello \\cr world").toNotBuild();
+    });
+
+    it("array redefines and resets \\\\", () => {
+        expect("a\\\\b\\begin{matrix}x&y\\\\z&w\\end{matrix}\\\\c")
+            .toParseLike("a\\newline b\\begin{matrix}x&y\\cr z&w\\end{matrix}" +
+                         "\\newline c");
     });
 });
 

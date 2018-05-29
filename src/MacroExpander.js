@@ -6,23 +6,26 @@
 
 import Lexer from "./Lexer";
 import {Token} from "./Token";
-import builtinMacros from "./macros";
 import type {Mode} from "./types";
 import ParseError from "./ParseError";
+import Namespace from "./Namespace";
+import builtinMacros from "./macros";
 
-import type {MacroContextInterface, MacroMap, MacroExpansion} from "./macros";
+import type {MacroContextInterface, MacroDefinition, MacroExpansion}
+    from "./macros";
 import type Settings from "./Settings";
 
 export default class MacroExpander implements MacroContextInterface {
-    lexer: Lexer;
-    macros: MacroMap;
     maxExpand: number;
+    lexer: Lexer;
+    macros: Namespace<MacroDefinition>;
     stack: Token[];
     mode: Mode;
 
     constructor(input: string, settings: Settings, mode: Mode) {
         this.feed(input);
-        this.macros = Object.assign({}, builtinMacros, settings.macros);
+        // Make new global namespace
+        this.macros = new Namespace(builtinMacros, settings.macros);
         this.maxExpand = settings.maxExpand;
         this.mode = mode;
         this.stack = []; // contains tokens in REVERSE order
@@ -41,6 +44,20 @@ export default class MacroExpander implements MacroContextInterface {
      */
     switchMode(newMode: Mode) {
         this.mode = newMode;
+    }
+
+    /**
+     * Start a new group nesting within all namespaces.
+     */
+    beginGroup() {
+        this.macros.beginGroup();
+    }
+
+    /**
+     * End current group nesting within all namespaces.
+     */
+    endGroup() {
+        this.macros.endGroup();
     }
 
     /**
@@ -153,12 +170,12 @@ export default class MacroExpander implements MacroContextInterface {
     expandOnce(): Token | Token[] {
         const topToken = this.popToken();
         const name = topToken.text;
-        if (!this.macros.hasOwnProperty(name)) {
+        const expansion = this._getExpansion(name);
+        if (expansion == null) { // mainly checking for undefined here
             // Fully expanded
             this.pushToken(topToken);
             return topToken;
         }
-        const {tokens, numArgs} = this._getExpansion(name);
         if (this.maxExpand !== Infinity) {
             this.maxExpand--;
             if (this.maxExpand < 0) {
@@ -166,25 +183,25 @@ export default class MacroExpander implements MacroContextInterface {
                     "need to increase maxExpand setting");
             }
         }
-        let expansion = tokens;
-        if (numArgs) {
-            const args = this.consumeArgs(numArgs);
+        let tokens = expansion.tokens;
+        if (expansion.numArgs) {
+            const args = this.consumeArgs(expansion.numArgs);
             // paste arguments in place of the placeholders
-            expansion = expansion.slice(); // make a shallow copy
-            for (let i = expansion.length - 1; i >= 0; --i) {
-                let tok = expansion[i];
+            tokens = tokens.slice(); // make a shallow copy
+            for (let i = tokens.length - 1; i >= 0; --i) {
+                let tok = tokens[i];
                 if (tok.text === "#") {
                     if (i === 0) {
                         throw new ParseError(
                             "Incomplete placeholder at end of macro body",
                             tok);
                     }
-                    tok = expansion[--i]; // next token on stack
+                    tok = tokens[--i]; // next token on stack
                     if (tok.text === "#") { // ## → #
-                        expansion.splice(i + 1, 1); // drop first #
+                        tokens.splice(i + 1, 1); // drop first #
                     } else if (/^[1-9]$/.test(tok.text)) {
                         // replace the placeholder with the indicated argument
-                        expansion.splice(i, 2, ...args[+tok.text - 1]);
+                        tokens.splice(i, 2, ...args[+tok.text - 1]);
                     } else {
                         throw new ParseError(
                             "Not a valid argument number",
@@ -194,8 +211,8 @@ export default class MacroExpander implements MacroContextInterface {
             }
         }
         // Concatenate expansion onto top of stack.
-        this.pushTokens(expansion);
-        return expansion;
+        this.pushTokens(tokens);
+        return tokens;
     }
 
     /**
@@ -234,11 +251,13 @@ export default class MacroExpander implements MacroContextInterface {
 
     /**
      * Returns the expanded macro as a reversed array of tokens and a macro
-     * argument count.
-     * Caches macro expansions for those that were defined simple TeX strings.
+     * argument count.  Or returns `null` if no such macro.
      */
-    _getExpansion(name: string): MacroExpansion {
-        const definition = this.macros[name];
+    _getExpansion(name: string): ?MacroExpansion {
+        const definition = this.macros.get(name);
+        if (definition == null) { // mainly checking for undefined here
+            return definition;
+        }
         const expansion =
             typeof definition === "function" ? definition(this) : definition;
         if (typeof expansion === "string") {
@@ -258,11 +277,6 @@ export default class MacroExpander implements MacroContextInterface {
             }
             tokens.reverse(); // to fit in with stack using push and pop
             const expanded = {tokens, numArgs};
-            // Cannot cache a macro defined using a function since it relies on
-            // parser context.
-            if (typeof definition !== "function") {
-                this.macros[name] = expanded;
-            }
             return expanded;
         }
 

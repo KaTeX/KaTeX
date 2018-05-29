@@ -132,7 +132,7 @@ function cmd() {
     const args = Array.prototype.slice.call(arguments);
     const cmd = args.shift();
     return childProcess.execFileSync(
-        cmd, args, { encoding: "utf-8" }).replace(/\n$/, "");
+        cmd, args, {encoding: "utf-8"}).replace(/\n$/, "");
 }
 
 function guessDockerIPs() {

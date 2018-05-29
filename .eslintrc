@@ -46,6 +46,7 @@
         "no-useless-call": 2,
         "no-var": 2,
         "no-with": 2,
+        "object-curly-spacing": [2, "never"],
         "one-var": [2, "never"],
         "prefer-const": 2,
         "prefer-spread": 0, // re-enable once we use es6
@@ -64,7 +65,6 @@
         // ---------------------------------------
         // TODO(csilvers): enable these if/when community agrees on it.
         "prefer-arrow-callback": 0,
-        "object-curly-spacing": [0, "always"],
         // Might be nice to turn this on one day, but since we don't
         // use jsdoc anywhere it seems silly to require it yet.
         "valid-jsdoc": 0,
