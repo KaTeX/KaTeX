@@ -118,4 +118,10 @@ describe("A MathML builder", function() {
             "\\mkern1mu\\mkern3mu\\mkern4mu\\mkern5mu" +
             "\\mkern-1mu\\mkern-3mu\\mkern-4mu\\mkern-5mu")).toMatchSnapshot();
     });
+
+    it('ligatures render properly', () => {
+        expect(getMathML("\\text{```Hi----'''}--" +
+                         "\\texttt{```Hi----'''}" +
+                         "\\text{\\tt ```Hi----'''}")).toMatchSnapshot();
+    });
 });

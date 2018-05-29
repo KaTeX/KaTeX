@@ -57,6 +57,32 @@ exports[`A MathML builder accents turn into <mover accent="true"> in MathML 1`] 
 
 `;
 
+exports[`A MathML builder ligatures render properly 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mtext>
+        “‘Hi—-”’
+      </mtext>
+      <mo>
+        −
+      </mo>
+      <mo>
+        −
+      </mo>
+      <mtext>
+        \`\`‘Hi----&#x27;&#x27;’\`\`‘Hi----&#x27;&#x27;’
+      </mtext>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\text{\`\`\`Hi----&#x27;&#x27;&#x27;}--\\texttt{\`\`\`Hi----&#x27;&#x27;&#x27;}\\text{\\tt \`\`\`Hi----&#x27;&#x27;&#x27;}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder normal spaces render normally 1`] = `
 
 <math>

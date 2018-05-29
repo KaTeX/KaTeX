@@ -8,7 +8,7 @@ import buildCommon from "./buildCommon";
 import fontMetrics from "./fontMetrics";
 import mathMLTree from "./mathMLTree";
 import ParseError from "./ParseError";
-import symbols from "./symbols";
+import symbols, {ligatures} from "./symbols";
 import utils from "./utils";
 import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
 
@@ -16,11 +16,13 @@ import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
  * Takes a symbol and converts it into a MathML text node after performing
  * optional replacement from symbols.js.
  */
-export const makeText = function(text, mode) {
-    if (symbols[mode][text] && symbols[mode][text].replace) {
-        if (text.charCodeAt(0) !== 0xD835) {
-            text = symbols[mode][text].replace;
-        }
+export const makeText = function(text, mode, options) {
+    if (symbols[mode][text] && symbols[mode][text].replace &&
+        text.charCodeAt(0) !== 0xD835 &&
+        !(ligatures.hasOwnProperty(text) && options &&
+          ((options.fontFamily && options.fontFamily.substr(4, 2) === "tt") ||
+           (options.font && options.font.substr(4, 2) === "tt")))) {
+        text = symbols[mode][text].replace;
     }
 
     return new mathMLTree.TextNode(text);
