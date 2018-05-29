@@ -4,7 +4,7 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import { calculateSize } from "../units";
+import {calculateSize} from "../units";
 import ParseError from "../ParseError";
 import {assertNodeType} from "../ParseNode";
 
@@ -58,7 +58,7 @@ defineFunction({
             span.classes.push("newline");
             if (group.value.size) {
                 span.style.marginTop =
-                    calculateSize(group.value.size.value, options) + "em";
+                    calculateSize(group.value.size.value.value, options) + "em";
             }
         }
         return span;
@@ -70,7 +70,7 @@ defineFunction({
             node.setAttribute("linebreak", "newline");
             if (group.value.size) {
                 node.setAttribute("height",
-                    calculateSize(group.value.size.value, options) + "em");
+                    calculateSize(group.value.size.value.value, options) + "em");
             }
         }
         return node;

@@ -9,6 +9,7 @@ import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
 import ParseError from "./ParseError";
+import type Namespace from "./Namespace";
 
 import type {Mode} from "./types";
 
@@ -22,7 +23,7 @@ export interface MacroContextInterface {
     /**
      * Object mapping macros to their expansions.
      */
-    macros: MacroMap;
+    macros: Namespace<MacroDefinition>;
 
     /**
      * Returns the topmost token on the stack, without expanding it.
@@ -47,7 +48,7 @@ export interface MacroContextInterface {
 /** Macro tokens (in reverse order). */
 export type MacroExpansion = {tokens: Token[], numArgs: number};
 
-type MacroDefinition = string | MacroExpansion |
+export type MacroDefinition = string | MacroExpansion |
     (MacroContextInterface => (string | MacroExpansion));
 export type MacroMap = {[string]: MacroDefinition};
 
@@ -110,7 +111,7 @@ defineMacro("\\TextOrMath", function(context) {
 //     \gdef\macro#1{expansion}
 //     \gdef\macro#1#2{expansion}
 //     \gdef\macro#1#2#3#4#5#6#7#8#9{expansion}
-defineMacro("\\gdef", function(context) {
+const def = (context, global: boolean) => {
     let arg = context.consumeArgs(1)[0];
     if (arg.length !== 1) {
         throw new ParseError("\\gdef's first argument must be a macro name");
@@ -134,11 +135,26 @@ defineMacro("\\gdef", function(context) {
         arg = context.consumeArgs(1)[0];
     }
     // Final arg is the expansion of the macro
-    context.macros[name] = {
+    context.macros.set(name, {
         tokens: arg,
         numArgs,
-    };
+    }, global);
     return '';
+};
+defineMacro("\\gdef", (context) => def(context, true));
+defineMacro("\\def", (context) => def(context, false));
+defineMacro("\\global", (context) => {
+    const next = context.consumeArgs(1)[0];
+    if (next.length !== 1) {
+        throw new ParseError("Invalid command after \\global");
+    }
+    const command = next[0].text;
+    if (command === "\\def") {
+        // \global\def is equivalent to \gdef
+        return def(context, true);
+    } else {
+        throw new ParseError(`Invalid command '${command}' after \\global`);
+    }
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -217,6 +233,11 @@ defineMacro("\u225D", "\\stackrel{\\tiny\\mathrm{def}}{=}");
 defineMacro("\u225E", "\\stackrel{\\tiny\\mathrm{m}}{=}");
 defineMacro("\u225F", "\\stackrel{\\tiny?}{=}");
 
+// Misc Unicode
+defineMacro("\u27C2", "\\perp");
+defineMacro("\u203C", "\\mathclose{!\\mkern-0.8mu!}");
+defineMacro("\u220C", "\\notni");
+
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
 // http://mirrors.concertpass.com/tex-archive/macros/latex/required/amsmath/amsmath.pdf
@@ -271,8 +292,6 @@ const dotsByToken = {
     '\\bigoplus': '\\dotsb',
     '\\bigodot': '\\dotsb',
     '\\bigsqcup': '\\dotsb',
-    '\\implies': '\\dotsb',
-    '\\impliedby': '\\dotsb',
     '\\And': '\\dotsb',
     '\\longrightarrow': '\\dotsb',
     '\\Longrightarrow': '\\dotsb',
@@ -283,11 +302,9 @@ const dotsByToken = {
     '\\mapsto': '\\dotsb',
     '\\longmapsto': '\\dotsb',
     '\\hookrightarrow': '\\dotsb',
-    '\\iff': '\\dotsb',
     '\\doteq': '\\dotsb',
     // Symbols whose definition starts with \mathbin:
     '\\mathbin': '\\dotsb',
-    '\\bmod': '\\dotsb',
     // Symbols whose definition starts with \mathrel:
     '\\mathrel': '\\dotsb',
     '\\relbar': '\\dotsb',
@@ -395,20 +412,74 @@ defineMacro("\\DOTSI", "\\relax");
 defineMacro("\\DOTSB", "\\relax");
 defineMacro("\\DOTSX", "\\relax");
 
-// http://texdoc.net/texmf-dist/doc/latex/amsmath/amsmath.pdf
-defineMacro("\\thinspace", "\\,");    //   \let\thinspace\,
-defineMacro("\\medspace", "\\:");     //   \let\medspace\:
-defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
+// Spacing, based on amsmath.sty's override of LaTeX defaults
+// \DeclareRobustCommand{\tmspace}[3]{%
+//   \ifmmode\mskip#1#2\else\kern#1#3\fi\relax}
+defineMacro("\\tmspace", "\\TextOrMath{\\kern#1#3}{\\mskip#1#2}\\relax");
+// \renewcommand{\,}{\tmspace+\thinmuskip{.1667em}}
+// TODO: math mode should use \thinmuskip
+defineMacro("\\,", "\\tmspace+{3mu}{.1667em}");
+// \let\thinspace\,
+defineMacro("\\thinspace", "\\,");
+// \renewcommand{\:}{\tmspace+\medmuskip{.2222em}}
+// TODO: math mode should use \medmuskip = 4mu plus 2mu minus 4mu
+defineMacro("\\:", "\\tmspace+{4mu}{.2222em}");
+// \let\medspace\:
+defineMacro("\\medspace", "\\:");
+// \renewcommand{\;}{\tmspace+\thickmuskip{.2777em}}
+// TODO: math mode should use \thickmuskip = 5mu plus 5mu
+defineMacro("\\;", "\\tmspace+{5mu}{.2777em}");
+// \let\thickspace\;
+defineMacro("\\thickspace", "\\;");
+// \renewcommand{\!}{\tmspace-\thinmuskip{.1667em}}
+// TODO: math mode should use \thinmuskip
+defineMacro("\\!", "\\tmspace-{3mu}{.1667em}");
+// \let\negthinspace\!
+defineMacro("\\negthinspace", "\\!");
+// \newcommand{\negmedspace}{\tmspace-\medmuskip{.2222em}}
+// TODO: math mode should use \medmuskip
+defineMacro("\\negmedspace", "\\tmspace-{4mu}{.2222em}");
+// \newcommand{\negthickspace}{\tmspace-\thickmuskip{.2777em}}
+// TODO: math mode should use \thickmuskip
+defineMacro("\\negthickspace", "\\tmspace-{5mu}{.277em}");
+// \def\enspace{\kern.5em }
+defineMacro("\\enspace", "\\kern.5em ");
+// \def\enskip{\hskip.5em\relax}
+defineMacro("\\enskip", "\\hskip.5em\\relax");
+// \def\quad{\hskip1em\relax}
+defineMacro("\\quad", "\\hskip1em\\relax");
+// \def\qquad{\hskip2em\relax}
+defineMacro("\\qquad", "\\hskip2em\\relax");
 
 // \tag@in@display form of \tag
 defineMacro("\\tag", "\\@ifstar\\tag@literal\\tag@paren");
 defineMacro("\\tag@paren", "\\tag@literal{({#1})}");
 defineMacro("\\tag@literal", (context) => {
-    if (context.macros["\\df@tag"]) {
+    if (context.macros.get("\\df@tag")) {
         throw new ParseError("Multiple \\tag");
     }
     return "\\gdef\\df@tag{\\text{#1}}";
 });
+
+// \renewcommand{\bmod}{\nonscript\mskip-\medmuskip\mkern5mu\mathbin
+//   {\operator@font mod}\penalty900
+//   \mkern5mu\nonscript\mskip-\medmuskip}
+// \newcommand{\pod}[1]{\allowbreak
+//   \if@display\mkern18mu\else\mkern8mu\fi(#1)}
+// \renewcommand{\pmod}[1]{\pod{{\operator@font mod}\mkern6mu#1}}
+// \newcommand{\mod}[1]{\allowbreak\if@display\mkern18mu
+//   \else\mkern12mu\fi{\operator@font mod}\,\,#1}
+// TODO: math mode should use \medmuskip = 4mu plus 2mu minus 4mu
+defineMacro("\\bmod",
+    "\\mathchoice{\\mskip1mu}{\\mskip1mu}{\\mskip5mu}{\\mskip5mu}" +
+    "\\mathbin{\\rm mod}" +
+    "\\mathchoice{\\mskip1mu}{\\mskip1mu}{\\mskip5mu}{\\mskip5mu}");
+defineMacro("\\pod", "\\allowbreak" +
+    "\\mathchoice{\\mkern18mu}{\\mkern8mu}{\\mkern8mu}{\\mkern8mu}(#1)");
+defineMacro("\\pmod", "\\pod{{\\rm mod}\\mkern6mu#1}");
+defineMacro("\\mod", "\\allowbreak" +
+    "\\mathchoice{\\mkern18mu}{\\mkern12mu}{\\mkern12mu}{\\mkern12mu}" +
+    "{\\rm mod}\\,\\,#1");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e

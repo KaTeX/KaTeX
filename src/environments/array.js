@@ -68,8 +68,8 @@ function parseArray(
     style: StyleStr,
 ): ParseNode<"array"> {
     // Parse body of array with \\ temporarily mapped to \cr
-    const oldNewline = parser.gullet.macros["\\\\"];
-    parser.gullet.macros["\\\\"] = "\\cr";
+    parser.gullet.beginGroup();
+    parser.gullet.macros.set("\\\\", "\\cr");
 
     let row = [];
     const body = [row];
@@ -125,7 +125,7 @@ function parseArray(
     result.numHLinesBeforeRow = numHLinesBeforeRow;
     // $FlowFixMe: The required fields were added immediately above.
     const res: ArrayEnvNodeData = result;
-    parser.gullet.macros["\\\\"] = oldNewline;
+    parser.gullet.endGroup();
     return new ParseNode("array", res, parser.mode);
 }
 
@@ -207,7 +207,7 @@ const htmlBuilder = function(group, options) {
         const rowGap = groupValue.rowGaps[r];
         let gap = 0;
         if (rowGap) {
-            gap = calculateSize(rowGap.value, options);
+            gap = calculateSize(rowGap.value.value, options);
             if (gap > 0) { // \@argarraycr
                 gap += arstrutDepth;
                 if (depth < gap) {
@@ -502,6 +502,7 @@ defineEnvironment({
         res = parseArray(context.parser, res, dCellStyle(context.envName));
         if (delimiters) {
             res = new ParseNode("leftright", {
+                type: "leftright",
                 body: [res],
                 left: delimiters[0],
                 right: delimiters[1],
@@ -549,6 +550,7 @@ defineEnvironment({
         };
         res = parseArray(context.parser, res, dCellStyle(context.envName));
         res = new ParseNode("leftright", {
+            type: "leftright",
             body: [res],
             left: "\\{",
             right: ".",

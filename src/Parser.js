@@ -4,20 +4,20 @@
 import functions from "./functions";
 import environments from "./environments";
 import MacroExpander from "./MacroExpander";
-import symbols, { extraLatin } from "./symbols";
-import { validUnit } from "./units";
-import { supportedCodepoint } from "./unicodeScripts";
+import symbols, {extraLatin} from "./symbols";
+import {validUnit} from "./units";
+import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
 import ParseNode from "./ParseNode";
 import ParseError from "./ParseError";
-import { combiningDiacriticalMarksEndRegex } from "./Lexer.js";
+import {combiningDiacriticalMarksEndRegex} from "./Lexer.js";
 import Settings from "./Settings";
-import { Token } from "./Token";
+import {Token} from "./Token";
 
-import type { Mode, ArgType, BreakToken } from "./types";
-import type { FunctionContext, FunctionSpec } from "./defineFunction";
-import type { EnvSpec } from "./defineEnvironment";
+import type {Mode, ArgType, BreakToken} from "./types";
+import type {FunctionContext, FunctionSpec} from "./defineFunction";
+import type {EnvSpec} from "./defineEnvironment";
 
 /**
  * This file contains the parser used to parse out a TeX expression from the
@@ -86,11 +86,6 @@ export default class Parser {
         // Create a new macro expander (gullet) and (indirectly via that) also a
         // new lexer (mouth) for this parser (stomach, in the language of TeX)
         this.gullet = new MacroExpander(input, settings, this.mode);
-        // Use old \color behavior (same as LaTeX's \textcolor) if requested.
-        // We do this after the macros object has been copied by MacroExpander.
-        if (settings.colorIsTextColor) {
-            this.gullet.macros["\\color"] = "\\textcolor";
-        }
         // Store the settings for use in parsing
         this.settings = settings;
         // Count leftright depth (for \middle errors)
@@ -133,21 +128,27 @@ export default class Parser {
      * Main parsing function, which parses an entire input.
      */
     parse(): ParseNode<*>[] {
+        // Create a group namespace for the math expression.
+        // (LaTeX creates a new group for every $...$, $$...$$, \[...\].)
+        this.gullet.beginGroup();
+
+        // Use old \color behavior (same as LaTeX's \textcolor) if requested.
+        // We do this within the group for the math expression, so it doesn't
+        // pollute settings.macros.
+        if (this.settings.colorIsTextColor) {
+            this.gullet.macros.set("\\color", "\\textcolor");
+        }
+
         // Try to parse the input
         this.consume();
-        const parse = this.parseInput();
-        return parse;
-    }
+        const parse = this.parseExpression(false);
 
-    /**
-     * Parses an entire input tree.
-     */
-    parseInput(): ParseNode<*>[] {
-        // Parse an expression
-        const expression = this.parseExpression(false);
         // If we succeeded, make sure there's an EOF at the end
         this.expect("EOF", false);
-        return expression;
+
+        // End the group namespace for the expression
+        this.gullet.endGroup();
+        return parse;
     }
 
     static endOfExpression = ["}", "\\end", "\\right", "&"];
@@ -407,6 +408,7 @@ export default class Parser {
         if (superscript || subscript) {
             // If we got either a superscript or subscript, create a supsub
             return new ParseNode("supsub", {
+                type: "supsub",
                 base: base,
                 sup: superscript,
                 sub: subscript,
@@ -794,7 +796,10 @@ export default class Parser {
         // and keep them as-is. Some browser will replace backslashes with
         // forward slashes.
         const url = raw.replace(/\\([#$%&~_^{}])/g, '$1');
-        return newArgument(new ParseNode("url", url, this.mode), res);
+        return newArgument(new ParseNode("url", {
+            type: "url",
+            value: url,
+        }, this.mode), res);
     }
 
     /**
@@ -822,7 +827,10 @@ export default class Parser {
         if (!validUnit(data)) {
             throw new ParseError("Invalid unit: '" + data.unit + "'", res);
         }
-        return newArgument(new ParseNode("size", data, this.mode), res);
+        return newArgument(new ParseNode("size", {
+            type: "size",
+            value: data,
+        }, this.mode), res);
     }
 
     /**
@@ -844,6 +852,8 @@ export default class Parser {
             if (mode) {
                 this.switchMode(mode);
             }
+            // Start a new group namespace
+            this.gullet.beginGroup();
             // If we get a brace, parse an expression
             this.consume();
             const expression = this.parseExpression(false, optional ? "]" : "}");
@@ -852,6 +862,8 @@ export default class Parser {
             if (mode) {
                 this.switchMode(outerMode);
             }
+            // End group namespace before consuming symbol after close brace
+            this.gullet.endGroup();
             // Make sure we get a close brace
             this.expect(optional ? "]" : "}");
             if (mode === "text") {
@@ -936,6 +948,7 @@ export default class Parser {
             arg = arg.slice(1, -1);  // remove first and last char
             return newArgument(
                 new ParseNode("verb", {
+                    type: "verb",
                     body: arg,
                     star: star,
                 }, "text"), nucleus);
