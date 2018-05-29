@@ -5,15 +5,10 @@ import ParseError from "../src/ParseError";
 import parseTree from "../src/parseTree";
 import Settings from "../src/Settings";
 
-export const defaultSettings = new Settings({
-    strict: false, // deal with warnings only when desired
-});
+export const nonstrictSettings = new Settings({strict: false});
 export const strictSettings = new Settings({strict: true});
 
-export const _getBuilt = function(expr, settings = defaultSettings) {
-    if (settings === defaultSettings) {
-        settings.macros = {};
-    }
+export const _getBuilt = function(expr, settings = new Settings()) {
     let rootNode = katex.__renderToDomTree(expr, settings);
 
     if (rootNode.classes.indexOf('katex-error') >= 0) {
@@ -43,7 +38,7 @@ export const _getBuilt = function(expr, settings = defaultSettings) {
  * @param settings
  * @returns {Object}
  */
-export const getBuilt = function(expr, settings = defaultSettings) {
+export const getBuilt = function(expr, settings = new Settings()) {
     expect(expr).toBuild(settings);
     return _getBuilt(expr, settings);
 };
@@ -54,7 +49,7 @@ export const getBuilt = function(expr, settings = defaultSettings) {
  * @param settings
  * @returns {Object}
  */
-export const getParsed = function(expr, settings = defaultSettings) {
+export const getParsed = function(expr, settings = new Settings()) {
     expect(expr).toParse(settings);
     return parseTree(expr, settings);
 };
@@ -73,7 +68,7 @@ export const stripPositions = function(expr) {
 };
 
 export const parseAndSetResult = function(expr, result,
-                                          settings = defaultSettings) {
+                                          settings = new Settings()) {
     try {
         return parseTree(expr, settings);
     } catch (e) {
@@ -89,7 +84,7 @@ export const parseAndSetResult = function(expr, result,
 };
 
 export const buildAndSetResult = function(expr, result,
-                                          settings = defaultSettings) {
+                                          settings = new Settings()) {
     try {
         return _getBuilt(expr, settings);
     } catch (e) {
