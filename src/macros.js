@@ -5,6 +5,7 @@
  */
 
 import fontMetricsData from "../submodules/katex-fonts/fontMetricsData";
+import functions from "./functions";
 import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
@@ -37,6 +38,11 @@ export interface MacroContextInterface {
      * Similar in behavior to TeX's `\expandafter\futurelet`.
      */
     expandAfterFuture(): Token;
+
+    /**
+     * Recursively expand first token, then return first non-expandable token.
+     */
+    expandNextToken(): Token;
 
     /**
      * Consume the specified number of arguments from the token stream,
@@ -106,11 +112,12 @@ defineMacro("\\TextOrMath", function(context) {
     }
 });
 
-// Basic support for global macro definitions:
-//     \gdef\macro{expansion}
-//     \gdef\macro#1{expansion}
-//     \gdef\macro#1#2{expansion}
-//     \gdef\macro#1#2#3#4#5#6#7#8#9{expansion}
+// Basic support for macro definitions:
+//     \def\macro{expansion}
+//     \def\macro#1{expansion}
+//     \def\macro#1#2{expansion}
+//     \def\macro#1#2#3#4#5#6#7#8#9{expansion}
+// Also the \gdef and \global\def equivalents
 const def = (context, global: boolean) => {
     let arg = context.consumeArgs(1)[0];
     if (arg.length !== 1) {
@@ -149,6 +156,7 @@ defineMacro("\\global", (context) => {
         throw new ParseError("Invalid command after \\global");
     }
     const command = next[0].text;
+    // TODO: Should expand command
     if (command === "\\def") {
         // \global\def is equivalent to \gdef
         return def(context, true);
@@ -156,6 +164,54 @@ defineMacro("\\global", (context) => {
         throw new ParseError(`Invalid command '${command}' after \\global`);
     }
 });
+
+// \newcommand{\macro}[args]{definition}
+// \renewcommand{\macro}[args]{definition}
+// TODO: Optional arguments: \newcommand{\macro}[args][default]{definition}
+const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
+    let arg = context.consumeArgs(1)[0];
+    if (arg.length !== 1) {
+        throw new ParseError(
+            "\\newcommand's first argument must be a macro name");
+    }
+    const name = arg[0].text;
+
+    const exists = context.macros.get(name) || functions.hasOwnProperty(name);
+    if (exists && !existsOK) {
+        throw new ParseError(`Command ${name} already defined in \\newcommand`);
+    }
+    if (!exists && !nonexistsOK) {
+        throw new ParseError(
+            `Command ${name} not already defined in \\renewcommand`);
+    }
+
+    let numArgs = 0;
+    arg = context.consumeArgs(1)[0];
+    if (arg.length === 1 && arg[0].text === "[") {
+        let argText = '';
+        let token = context.expandNextToken();
+        while (token.text !== "]" && token.text !== "EOF") {
+            // TODO: Should properly expand arg, e.g., ignore {}s
+            argText += token.text;
+            token = context.expandNextToken();
+        }
+        if (!argText.match(/^\s*[0-9]+\s*$/)) {
+            throw new ParseError(`Invalid number of arguments: ${argText}`);
+        }
+        numArgs = parseInt(argText);
+        arg = context.consumeArgs(1)[0];
+    }
+
+    // Final arg is the expansion of the macro
+    context.macros.set(name, {
+        tokens: arg,
+        numArgs,
+    });
+    return '';
+};
+defineMacro("\\newcommand", (context) => newcommand(context, false, true));
+defineMacro("\\renewcommand", (context) => newcommand(context, true, false));
+defineMacro("\\providecommand", (context) => newcommand(context, true, true));
 
 //////////////////////////////////////////////////////////////////////
 // Grouping
