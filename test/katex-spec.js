@@ -2757,11 +2757,16 @@ describe("A macro expander", function() {
         expect(macros["\\foo"]).toBeFalsy();
     });
 
-    it("\\newcommand defines macros", () => {
+    it("\\newcommand defines new macros", () => {
         compareParseTree("\\newcommand\\foo{x^2}\\foo+\\foo", "x^2+x^2");
         compareParseTree("\\newcommand{\\foo}{x^2}\\foo+\\foo", "x^2+x^2");
+        // Function detection
         expect("\\newcommand\\bar{x^2}\\bar+\\bar").toNotParse();
         expect("\\newcommand{\\bar}{x^2}\\bar+\\bar").toNotParse();
+        // Symbol detection
+        expect("\\newcommand\\lambda{x^2}\\lambda").toNotParse();
+        expect("\\newcommand\\textdollar{x^2}\\textdollar").toNotParse();
+        // Macro detection
         expect("\\newcommand{\\foo}{1}\\foo\\newcommand{\\foo}{2}\\foo")
             .toNotParse();
     });
