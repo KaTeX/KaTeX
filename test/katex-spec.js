@@ -14,6 +14,7 @@ import {
     defaultSettings,
     _getBuilt, getBuilt, getParsed, stripPositions,
 } from "./helpers";
+import strictSettings from "./helpers";
 
 const defaultOptions = new Options({
     style: Style.TEXT,
@@ -23,15 +24,15 @@ const defaultOptions = new Options({
 
 describe("A parser", function() {
     it("should not fail on an empty string", function() {
-        expect("").toParse();
+        expect("").toParse(strictSettings);
     });
 
     it("should ignore whitespace", function() {
-        expect("    x    y    ").toParseLike("xy");
+        expect("    x    y    ").toParseLike("xy", strictSettings);
     });
 
     it("should ignore whitespace in atom", function() {
-        expect("    x   ^ y    ").toParseLike("x^y");
+        expect("    x   ^ y    ").toParseLike("x^y", strictSettings);
     });
 });
 
@@ -102,7 +103,7 @@ describe("A punct parser", function() {
     const expression = ",;\\colon";
 
     it("should not fail", function() {
-        expect(expression).toParse();
+        expect(expression).toParse(strictSettings);
     });
 
     it("should build a list of puncts", function() {
@@ -643,15 +644,15 @@ describe("A text parser", function() {
     });
 
     it("should parse math within text group", function() {
-        expect("\\text{graph: $y = mx + b$}").toParse();
-        expect("\\text{graph: \\(y = mx + b\\)}").toParse();
+        expect("\\text{graph: $y = mx + b$}").toParse(strictSettings);
+        expect("\\text{graph: \\(y = mx + b\\)}").toParse(strictSettings);
     });
 
     it("should parse math within text within math within text", function() {
-        expect("\\text{hello $x + \\text{world $y$} + z$}").toParse();
-        expect("\\text{hello \\(x + \\text{world $y$} + z\\)}").toParse();
-        expect("\\text{hello $x + \\text{world \\(y\\)} + z$}").toParse();
-        expect("\\text{hello \\(x + \\text{world \\(y\\)} + z\\)}").toParse();
+        expect("\\text{hello $x + \\text{world $y$} + z$}").toParse(strictSettings);
+        expect("\\text{hello \\(x + \\text{world $y$} + z\\)}").toParse(strictSettings);
+        expect("\\text{hello $x + \\text{world \\(y\\)} + z$}").toParse(strictSettings);
+        expect("\\text{hello \\(x + \\text{world \\(y\\)} + z\\)}").toParse(strictSettings);
     });
 
     it("should forbid \\( within math mode", function() {
@@ -2463,7 +2464,7 @@ describe("Symbols", function() {
         // http://mirrors.ctan.org/fonts/amsfonts/doc/amsfonts.pdf
         const symbols = "\\yen\\checkmark\\circledR\\maltese";
         expect(symbols).toBuild();
-        expect(`\\text{${symbols}}`).toBuild();
+        expect(`\\text{${symbols}}`).toBuild(strictSettings);
     });
 });
 
@@ -2829,7 +2830,7 @@ describe("Unicode accents", function() {
             "\\tilde n" +
             "\\grave o\\acute o\\hat o\\tilde o\\ddot o" +
             "\\grave u\\acute u\\hat u\\ddot u" +
-            "\\acute y\\ddot y");
+            "\\acute y\\ddot y", strictSettings);
     });
 
     it("should parse Latin-1 letters in text mode", function() {
@@ -2849,68 +2850,68 @@ describe("Unicode accents", function() {
             "\\~n" +
             "\\`o\\'o\\^o\\~o\\\"o" +
             "\\`u\\'u\\^u\\\"u" +
-            "\\'y\\\"y}");
+            "\\'y\\\"y}", strictSettings);
     });
 
     it("should support \\aa in text mode", function() {
-        expect("\\text{\\aa\\AA}").toParseLike("\\text{\\r a\\r A}");
-        expect("\\aa").toNotParse(new Settings({strict: true}));
-        expect("\\Aa").toNotParse(new Settings({strict: true}));
+        expect("\\text{\\aa\\AA}").toParseLike("\\text{\\r a\\r A}", strictSettings);
+        expect("\\aa").toNotParse(strictSettings);
+        expect("\\Aa").toNotParse(strictSettings);
     });
 
     it("should parse combining characters", function() {
-        expect("A\u0301C\u0301").toParseLike("Á\\acute C");
-        expect("\\text{A\u0301C\u0301}").toParseLike("\\text{Á\\'C}");
+        expect("A\u0301C\u0301").toParseLike("Á\\acute C", strictSettings);
+        expect("\\text{A\u0301C\u0301}").toParseLike("\\text{Á\\'C}", strictSettings);
     });
 
     it("should parse multi-accented characters", function() {
-        expect("ấā́ắ\\text{ấā́ắ}").toParse();
+        expect("ấā́ắ\\text{ấā́ắ}").toParse(strictSettings);
         // Doesn't parse quite the same as
         // "\\text{\\'{\\^a}\\'{\\=a}\\'{\\u a}}" because of the ordgroups.
     });
 
     it("should parse accented i's and j's", function() {
-        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ");
-        expect("ấā́ắ\\text{ấā́ắ}").toParse();
+        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ", strictSettings);
+        expect("ấā́ắ\\text{ấā́ắ}").toParse(strictSettings);
     });
 });
 
 describe("Unicode", function() {
     it("should parse negated relations", function() {
-        expect("∉∤∦≁≆≠≨≩≮≯≰≱⊀⊁⊈⊉⊊⊋⊬⊭⊮⊯⋠⋡⋦⋧⋨⋩⋬⋭⪇⪈⪉⪊⪵⪶⪹⪺⫋⫌").toParse();
+        expect("∉∤∦≁≆≠≨≩≮≯≰≱⊀⊁⊈⊉⊊⊋⊬⊭⊮⊯⋠⋡⋦⋧⋨⋩⋬⋭⪇⪈⪉⪊⪵⪶⪹⪺⫋⫌").toParse(strictSettings);
     });
 
-    it("should parse relations", function() {
-        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙⟂⊨∌").toParse();
+    it("should build relations", function() {
+        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙⟂⊨∌").toBuild(strictSettings);
     });
 
-    it("should parse big operators", function() {
-        expect("∏∐∑∫∬∭∮⋀⋁⋂⋃⨀⨁⨂⨄⨆").toParse();
+    it("should build big operators", function() {
+        expect("∏∐∑∫∬∭∮⋀⋁⋂⋃⨀⨁⨂⨄⨆").toBuild(strictSettings);
     });
 
-    it("should parse more relations", function() {
-        expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆≘≙≚≛≝≞≟").toBuild();
+    it("should build more relations", function() {
+        expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆≘≙≚≛≝≞≟").toBuild(strictSettings);
     });
 
     it("should parse symbols", function() {
-        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼\u00b7").toParse();
+        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼\u00b7").toParse(strictSettings);
     });
 
     it("should build Greek capital letters", function() {
         expect("\u0391\u0392\u0395\u0396\u0397\u0399\u039A\u039C\u039D" +
-                "\u039F\u03A1\u03A4\u03A7").toBuild();
+                "\u039F\u03A1\u03A4\u03A7").toBuild(strictSettings);
     });
 
-    it("should parse arrows", function() {
-        expect("←↑→↓↔↕↖↗↘↙↚↛↞↠↢↣↦↩↪↫↬↭↮↰↱↶↷↼↽↾↾↿⇀⇁⇂⇃⇄⇆⇇⇈⇉").toParse();
+    it("should build arrows", function() {
+        expect("←↑→↓↔↕↖↗↘↙↚↛↞↠↢↣↦↩↪↫↬↭↮↰↱↶↷↼↽↾↾↿⇀⇁⇂⇃⇄⇆⇇⇈⇉").toBuild(strictSettings);
     });
 
-    it("should parse more arrows", function() {
-        expect("⇊⇋⇌⇍⇎⇏⇐⇑⇒⇓⇔⇕⇚⇛⇝⟵⟶⟷⟸⟹⟺⟼").toParse();
+    it("should build more arrows", function() {
+        expect("⇊⇋⇌⇍⇎⇏⇐⇑⇒⇓⇔⇕⇚⇛⇝⟵⟶⟷⟸⟹⟺⟼").toBuild(strictSettings);
     });
 
-    it("should parse binary operators", function() {
-        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toParse();
+    it("should build binary operators", function() {
+        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
     });
 
     it("should build delimiters", function() {
@@ -2937,7 +2938,7 @@ describe("Unicode", function() {
         wideCharStr += String.fromCharCode(0xD835, 0xDFE2);   // sans serif zero
         wideCharStr += String.fromCharCode(0xD835, 0xDFEC);   // bold sans zero
         wideCharStr += String.fromCharCode(0xD835, 0xDFF6);   // monospace zero
-        expect(wideCharStr).toBuild();
+        expect(wideCharStr).toBuild(strictSettings);
 
         let wideCharText = "\text{";
         wideCharText += String.fromCharCode(0xD835, 0xDC00);   // bold A
@@ -2954,7 +2955,7 @@ describe("Unicode", function() {
         wideCharText += String.fromCharCode(0xD835, 0xDFEC);   // bold sans zero
         wideCharText += String.fromCharCode(0xD835, 0xDFF6);   // monospace zero
         wideCharText += "}";
-        expect(wideCharText).toBuild();
+        expect(wideCharText).toBuild(strictSettings);
     });
 });
 
@@ -3042,16 +3043,16 @@ describe("Newlines via \\\\ and \\newline", function() {
 
 describe("Symbols", function() {
     it("should parse \\text{\\i\\j}", () => {
-        expect("\\text{\\i\\j}").toBuild();
+        expect("\\text{\\i\\j}").toBuild(strictSettings);
     });
 
     it("should parse spacing functions in math or text mode", () => {
-        expect("A\\;B\\,C\\nobreakspace \\text{A\\;B\\,C\\nobreakspace}").toBuild();
+        expect("A\\;B\\,C\\nobreakspace \\text{A\\;B\\,C\\nobreakspace}").toBuild(strictSettings);
     });
 
     it("should render ligature commands like their unicode characters", () => {
-        const commands = getBuilt("\\text{\\ae\\AE\\oe\\OE\\o\\O\\ss}");
-        const unicode = getBuilt("\\text{æÆœŒøØß}");
+        const commands = getBuilt("\\text{\\ae\\AE\\oe\\OE\\o\\O\\ss}, strictSettings");
+        const unicode = getBuilt("\\text{æÆœŒøØß}, strictSettings");
         expect(commands).toEqual(unicode);
     });
 });
@@ -3086,7 +3087,7 @@ describe("strict setting", function() {
 
     it("should always allow unicode text in text mode", () => {
         expect("\\text{é試}").toParse(new Settings({strict: false}));
-        expect("\\text{é試}").toParse(new Settings({strict: true}));
+        expect("\\text{é試}").toParse(strictSettings);
         expect("\\text{é試}").toParse();
     });
 
