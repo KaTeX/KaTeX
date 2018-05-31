@@ -50,11 +50,26 @@ defineFunction({
         if (func in fontAliases) {
             func = fontAliases[func];
         }
-        return {
+        const fontData = {
             type: "font",
             font: func.slice(1),
             body: body,
         };
+        // amsbsy.sty's \boldsymbol inherits the argument's bin|rel|ord status
+        // (similar to \stackrel in functions/mclass.js)
+        if (func === "\\boldsymbol") {
+            const atomType = (body.type === "ordgroup" ?
+                body.value.length && body.value[0].type : body.type);
+            console.log(atomType);
+            if (/^(bin|rel)$/.test(atomType)) {
+                return {
+                    type: "mclass",
+                    mclass: "m" + atomType,
+                    value: [new ParseNode("font", fontData)]
+                };
+            }
+        }
+        return fontData;
     },
     htmlBuilder,
     mathmlBuilder,

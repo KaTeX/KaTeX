@@ -57,12 +57,8 @@ defineFunction({
             // LaTeX applies \binrel spacing to \overset and \underset. \binrel
             // spacing varies with (bin|rel|ord) of the atom in the argument.
             // We'll do the same.
-            let atomType = "";
-            if (baseArg.type === "ordgroup") {
-                atomType = baseArg.value[0].type;
-            } else {
-                atomType = baseArg.type;
-            }
+            const atomType = (baseArg.type === "ordgroup" ?
+                baseArg.value.length && baseArg.value[0].type : baseArg.type);
             if (/^(bin|rel)$/.test(atomType)) {
                 mclass = "m" + atomType;
             } else {
