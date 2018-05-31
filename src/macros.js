@@ -69,6 +69,7 @@ export function defineMacro(name: string, body: MacroDefinition) {
 // List of commands that act like macros but aren't defined as a macro,
 // function, or symbol.
 export const implicitCommands = {
+    "\\relax": true,     // MacroExpander.js
     "^": true,           // Parser.js
     "_": true,           // Parser.js
     "\\limits": true,    // Parser.js
