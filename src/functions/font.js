@@ -64,7 +64,9 @@ defineFunction({
                 return {
                     type: "mclass",
                     mclass: "m" + atomType,
-                    value: [new ParseNode("font", fontData)],
+                    value: [
+                        new ParseNode("font", fontData, context.parser.mode),
+                    ],
                 };
             }
         }
