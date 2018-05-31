@@ -11,10 +11,9 @@ import Options from "../src/Options";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
 import {
-    defaultSettings,
+    defaultSettings, strictSettings,
     _getBuilt, getBuilt, getParsed, stripPositions,
 } from "./helpers";
-import strictSettings from "./helpers";
 
 const defaultOptions = new Options({
     style: Style.TEXT,
@@ -2830,7 +2829,7 @@ describe("Unicode accents", function() {
             "\\tilde n" +
             "\\grave o\\acute o\\hat o\\tilde o\\ddot o" +
             "\\grave u\\acute u\\hat u\\ddot u" +
-            "\\acute y\\ddot y", strictSettings);
+            "\\acute y\\ddot y");
     });
 
     it("should parse Latin-1 letters in text mode", function() {
@@ -2871,7 +2870,7 @@ describe("Unicode accents", function() {
     });
 
     it("should parse accented i's and j's", function() {
-        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ", strictSettings);
+        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ");
         expect("ấā́ắ\\text{ấā́ắ}").toParse();
     });
 });
