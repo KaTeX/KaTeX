@@ -112,7 +112,6 @@ export const buildExpression = function(expression, options) {
         if (group.type === 'mtext' && lastGroup && lastGroup.type === 'mtext'
             && group.getAttribute('mathvariant') ===
                lastGroup.getAttribute('mathvariant')) {
-            console.log(group);
             lastGroup.children.push(...group.children);
         // Concatenate adjacent <mn>s
         } else if (group.type === 'mn' &&
