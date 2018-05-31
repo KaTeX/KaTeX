@@ -57,7 +57,7 @@ class Settings {
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
         this.strict = utils.deflt(options.strict, "warn");
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
-        this.maxExpand = Math.max(0, utils.deflt(options.maxExpand, Infinity));
+        this.maxExpand = Math.max(0, utils.deflt(options.maxExpand, 1000));
     }
 
     /**
