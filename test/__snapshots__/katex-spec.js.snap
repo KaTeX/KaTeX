@@ -21,6 +21,20 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "attributes": {
     },
     "children": [
+      {
+        "attributes": {
+        },
+        "children": [
+        ],
+        "classes": [
+          "mord"
+        ],
+        "depth": 0,
+        "height": 0,
+        "maxFontSize": 0,
+        "style": {
+        }
+      }
     ],
     "classes": [
       "mord"
@@ -330,49 +344,63 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     },
     "children": [
       {
-        "classes": [
-          "mord",
-          "boldsymbol"
-        ],
-        "depth": 0,
-        "height": 0.44444,
-        "italic": 0,
-        "maxFontSize": 1,
-        "skew": 0,
-        "style": {
+        "attributes": {
         },
-        "value": "x",
-        "width": 0.65903
-      },
-      {
+        "children": [
+          {
+            "classes": [
+              "mord",
+              "boldsymbol"
+            ],
+            "depth": 0,
+            "height": 0.44444,
+            "italic": 0,
+            "maxFontSize": 1,
+            "skew": 0,
+            "style": {
+            },
+            "value": "x",
+            "width": 0.65903
+          },
+          {
+            "classes": [
+              "mord",
+              "boldsymbol"
+            ],
+            "depth": 0.19444,
+            "height": 0.44444,
+            "italic": 0.03704,
+            "maxFontSize": 1,
+            "skew": 0,
+            "style": {
+            },
+            "value": "y",
+            "width": 0.59028
+          },
+          {
+            "classes": [
+              "mord",
+              "boldsymbol"
+            ],
+            "depth": 0,
+            "height": 0.44444,
+            "italic": 0.04213,
+            "maxFontSize": 1,
+            "skew": 0,
+            "style": {
+            },
+            "value": "z",
+            "width": 0.55509
+          }
+        ],
         "classes": [
-          "mord",
-          "boldsymbol"
+          "mord"
         ],
         "depth": 0.19444,
         "height": 0.44444,
-        "italic": 0.03704,
         "maxFontSize": 1,
-        "skew": 0,
         "style": {
-        },
-        "value": "y",
-        "width": 0.59028
-      },
-      {
-        "classes": [
-          "mord",
-          "boldsymbol"
-        ],
-        "depth": 0,
-        "height": 0.44444,
-        "italic": 0.04213,
-        "maxFontSize": 1,
-        "skew": 0,
-        "style": {
-        },
-        "value": "z",
-        "width": 0.55509
+        }
       }
     ],
     "classes": [

@@ -30,15 +30,15 @@ const fontAliases = {
 defineFunction({
     type: "font",
     names: [
-        // styles
-        "\\mathrm", "\\mathit", "\\mathbf", "\\boldsymbol",
+        // styles, except \boldsymbol defined below
+        "\\mathrm", "\\mathit", "\\mathbf",
 
         // families
         "\\mathbb", "\\mathcal", "\\mathfrak", "\\mathscr", "\\mathsf",
         "\\mathtt",
 
-        // aliases
-        "\\Bbb", "\\bold", "\\frak", "\\bm",
+        // aliases, except \bm defined below
+        "\\Bbb", "\\bold", "\\frak",
     ],
     props: {
         numArgs: 1,
@@ -50,30 +50,45 @@ defineFunction({
         if (func in fontAliases) {
             func = fontAliases[func];
         }
-        const fontData = {
+        return {
             type: "font",
             font: func.slice(1),
-            body: body,
+            body,
         };
-        // amsbsy.sty's \boldsymbol inherits the argument's bin|rel|ord status
-        // (similar to \stackrel in functions/mclass.js)
-        if (func === "\\boldsymbol") {
-            const atomType = (body.type === "ordgroup" ?
-                body.value.length && body.value[0].type : body.type);
-            if (/^(bin|rel)$/.test(atomType)) {
-                return {
-                    type: "mclass",
-                    mclass: "m" + atomType,
-                    value: [
-                        new ParseNode("font", fontData, context.parser.mode),
-                    ],
-                };
-            }
-        }
-        return fontData;
     },
     htmlBuilder,
     mathmlBuilder,
+});
+
+defineFunction({
+    type: "mclass",
+    names: ["\\boldsymbol", "\\bm"],
+    props: {
+        numArgs: 1,
+        greediness: 2,
+    },
+    handler: (context, args) => {
+        const body = args[0];
+        // amsbsy.sty's \boldsymbol inherits the argument's bin|rel|ord status
+        // (similar to \stackrel in functions/mclass.js)
+        let mclass = "mord";
+        const atomType = (body.type === "ordgroup" ?
+            body.value.length && body.value[0].type : body.type);
+        if (/^(bin|rel)$/.test(atomType)) {
+            mclass = "m" + atomType;
+        }
+        return {
+            type: "mclass",
+            mclass,
+            value: [
+                new ParseNode("font", {
+                    type: "font",
+                    font: "boldsymbol",
+                    body,
+                }, context.parser.mode),
+            ],
+        };
+    },
 });
 
 const oldFontFuncsMap = {
