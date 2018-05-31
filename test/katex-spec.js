@@ -2860,19 +2860,19 @@ describe("Unicode accents", function() {
     });
 
     it("should parse combining characters", function() {
-        expect("A\u0301C\u0301").toParseLike("Á\\acute C", strictSettings);
+        expect("A\u0301C\u0301").toParseLike("Á\\acute C");
         expect("\\text{A\u0301C\u0301}").toParseLike("\\text{Á\\'C}", strictSettings);
     });
 
     it("should parse multi-accented characters", function() {
-        expect("ấā́ắ\\text{ấā́ắ}").toParse(strictSettings);
+        expect("ấā́ắ\\text{ấā́ắ}").toParse();
         // Doesn't parse quite the same as
         // "\\text{\\'{\\^a}\\'{\\=a}\\'{\\u a}}" because of the ordgroups.
     });
 
     it("should parse accented i's and j's", function() {
         expect("íȷ́").toParseLike("\\acute ı\\acute ȷ", strictSettings);
-        expect("ấā́ắ\\text{ấā́ắ}").toParse(strictSettings);
+        expect("ấā́ắ\\text{ấā́ắ}").toParse();
     });
 });
 
@@ -3051,8 +3051,8 @@ describe("Symbols", function() {
     });
 
     it("should render ligature commands like their unicode characters", () => {
-        const commands = getBuilt("\\text{\\ae\\AE\\oe\\OE\\o\\O\\ss}, strictSettings");
-        const unicode = getBuilt("\\text{æÆœŒøØß}, strictSettings");
+        const commands = getBuilt("\\text{\\ae\\AE\\oe\\OE\\o\\O\\ss}", strictSettings);
+        const unicode = getBuilt("\\text{æÆœŒøØß}", strictSettings);
         expect(commands).toEqual(unicode);
     });
 });
