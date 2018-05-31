@@ -60,12 +60,11 @@ defineFunction({
         if (func === "\\boldsymbol") {
             const atomType = (body.type === "ordgroup" ?
                 body.value.length && body.value[0].type : body.type);
-            console.log(atomType);
             if (/^(bin|rel)$/.test(atomType)) {
                 return {
                     type: "mclass",
                     mclass: "m" + atomType,
-                    value: [new ParseNode("font", fontData)]
+                    value: [new ParseNode("font", fontData)],
                 };
             }
         }

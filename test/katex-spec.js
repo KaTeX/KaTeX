@@ -1441,6 +1441,12 @@ describe("A font parser", function() {
     it("should have the correct greediness", function() {
         expect("e^\\mathbf{x}").toParse();
     });
+
+    it("\\boldsymbol should inherit mbin/mrel from argument", () => {
+        const built = _getBuilt("a\\boldsymbol{}b\\boldsymbol{=}c" +
+            "\\boldsymbol{+}d\\boldsymbol{++}e\\boldsymbol{xyz}f");
+        expect(built).toMatchSnapshot();
+    });
 });
 
 describe("A comment parser", function() {
