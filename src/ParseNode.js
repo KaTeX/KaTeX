@@ -203,8 +203,9 @@ export type ParseNodeTypes = {
         alignment: string,
         body: ParseNode<*>,
     |},
-    "leftright": LeftRightDelimType | {|
-        type: "leftright",
+    "leftright": LeftRightDelimType,
+    "leftright-right": {|
+        type: "leftright-right",
         value: string,
     |},
     "mathchoice": {|
