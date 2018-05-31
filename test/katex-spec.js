@@ -1132,6 +1132,10 @@ describe("A begin/end parser", function() {
         expect("\\begin{matrix}\\hline a&b\\\\ \\hline c&d\\end{matrix}").toParse();
     });
 
+    it("should forbid hlines outside array environment", () => {
+        expect("\\hline").toNotParse();
+    });
+
     it("should error when name is mismatched", function() {
         expect("\\begin{matrix}a&b\\\\c&d\\end{pmatrix}").toNotParse();
     });
@@ -2769,6 +2773,8 @@ describe("A macro expander", function() {
         // Macro detection
         expect("\\newcommand{\\foo}{1}\\foo\\newcommand{\\foo}{2}\\foo")
             .toNotParse();
+        // Implicit detection
+        expect("\\newcommand\\limits{}").toNotParse();
     });
 
     it("\\renewcommand redefines macros", () => {

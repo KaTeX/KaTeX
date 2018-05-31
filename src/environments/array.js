@@ -1,6 +1,7 @@
 // @flow
 import buildCommon from "../buildCommon";
 import defineEnvironment from "../defineEnvironment";
+import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import ParseNode from "../ParseNode";
@@ -616,4 +617,18 @@ defineEnvironment({
     handler: alignedHandler,
     htmlBuilder,
     mathmlBuilder,
+});
+
+// Catch \hline outside array envirnoment
+defineFunction({
+    type: "text", // Doesn't matter what this is.
+    names: ["\\hline"],
+    props: {
+        numArgs: 0,
+        allowedInText: true,
+        allowedInMath: true,
+    },
+    handler(context, args) {
+        throw new ParseError("\\hline valid only within array environment");
+    },
 });

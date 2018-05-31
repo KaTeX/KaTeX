@@ -66,6 +66,15 @@ export function defineMacro(name: string, body: MacroDefinition) {
     builtinMacros[name] = body;
 }
 
+// List of commands that act like macros but aren't defined as a macro,
+// function, or symbol.
+export const implicitCommands = {
+    "^": true,           // Parser.js
+    "_": true,           // Parser.js
+    "\\limits": true,    // Parser.js
+    "\\nolimits": true,  // Parser.js
+};
+
 //////////////////////////////////////////////////////////////////////
 // macro tools
 
@@ -178,7 +187,8 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
 
     // A command is "defined" in KaTeX if it's a macro, function, or symbol.
     const exists = context.macros.get(name) || functions.hasOwnProperty(name) ||
-        symbols.math.hasOwnProperty(name) || symbols.text.hasOwnProperty(name);
+        symbols.math.hasOwnProperty(name) || symbols.text.hasOwnProperty(name)
+        || implicitCommands.hasOwnProperty(name);
     if (exists && !existsOK) {
         throw new ParseError(`Command ${name} already defined in \\newcommand`);
     }
