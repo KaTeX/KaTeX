@@ -5,6 +5,7 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
+import {assertNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -133,44 +134,50 @@ function leftRightGroupValue(group: ParseNode<"leftright">): LeftRightDelimType 
 
 
 defineFunction({
+    type: "leftright-right",
+    names: ["\\right"],
+    props: {
+        numArgs: 1,
+    },
+    handler: (context, args) => {
+        // \left case below triggers parsing of \right in
+        //   `const right = parser.parseFunction();`
+        // uses this return value.
+        return {
+            type: "leftright-right",
+            value: checkDelimiter(args[0], context).value,
+        };
+    },
+});
+
+
+defineFunction({
     type: "leftright",
-    names: [
-        "\\left", "\\right",
-    ],
+    names: ["\\left"],
     props: {
         numArgs: 1,
     },
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
 
-        if (context.funcName === "\\left") {
-            const parser = context.parser;
-            // Parse out the implicit body
-            ++parser.leftrightDepth;
-            // parseExpression stops before '\\right'
-            const body = parser.parseExpression(false);
-            --parser.leftrightDepth;
-            // Check the next token
-            parser.expect("\\right", false);
-            const right = parser.parseFunction();
-            if (!right) {
-                throw new ParseError('failed to parse function after \\right');
-            }
-            return {
-                type: "leftright",
-                body: body,
-                left: delim.value,
-                right: right.value.value,
-            };
-        } else {
-            // This is a little weird. We return this object which gets turned
-            // into a ParseNode which gets returned by
-            // `const right = parser.parseFunction();` up above.
-            return {
-                type: "leftright",
-                value: delim.value,
-            };
+        const parser = context.parser;
+        // Parse out the implicit body
+        ++parser.leftrightDepth;
+        // parseExpression stops before '\\right'
+        const body = parser.parseExpression(false);
+        --parser.leftrightDepth;
+        // Check the next token
+        parser.expect("\\right", false);
+        const right = parser.parseFunction();
+        if (!right) {
+            throw new ParseError('failed to parse function after \\right');
         }
+        return {
+            type: "leftright",
+            body: body,
+            left: delim.value,
+            right: assertNodeType(right, "leftright-right").value.value,
+        };
     },
     htmlBuilder: (group, options) => {
         const groupValue = leftRightGroupValue(group);
