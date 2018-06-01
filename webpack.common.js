@@ -1,8 +1,7 @@
 // @flow
 const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 /*::
 type Target = {|
@@ -48,6 +47,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         },
     };
     return {
+        mode: dev ? 'development' : 'production',
         context: __dirname,
         entry: {
             [target.name]: target.entry,
@@ -69,19 +69,18 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                 },
                 {
                     test: /\.css$/,
-                    use: ExtractTextPlugin.extract({
-                        fallback: 'style-loader',
-                        use: [cssLoader],
-                    }),
+                    use: [
+                        dev ? 'style-loader' : MiniCssExtractPlugin.loader,
+                        cssLoader,
+                    ],
                 },
                 {
                     test: /\.less$/,
-                    use: ExtractTextPlugin.extract({
-                        fallback: 'style-loader',
-                        use: [cssLoader, {
-                            loader: 'less-loader',
-                        }],
-                    }),
+                    use: [
+                        dev ? 'style-loader' : MiniCssExtractPlugin.loader,
+                        cssLoader,
+                        'less-loader',
+                    ],
                 },
                 {
                     test: /\.(ttf|woff|woff2)$/,
@@ -96,23 +95,26 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         },
         externals: 'katex',
         plugins: [
-            new webpack.EnvironmentPlugin({
-                NODE_ENV: dev ? 'development' : 'production',
-            }),
-            dev && new webpack.NamedModulesPlugin(),
-            minimize && new UglifyJsPlugin({
-                uglifyOptions: {
-                    output: {
-                        ascii_only: true,
-                    },
-                },
-            }),
-            new ExtractTextPlugin({
+            !dev && new MiniCssExtractPlugin({
                 filename: minimize ? '[name].min.css' : '[name].css',
-                disable: dev,
             }),
         ].filter(Boolean),
         devtool: dev && 'inline-source-map',
+        optimization: {
+            minimize,
+            minimizer: [
+                new UglifyJsPlugin({
+                    uglifyOptions: {
+                        output: {
+                            ascii_only: true,
+                        },
+                    },
+                }),
+            ],
+        },
+        performance: {
+            hints: false,
+        },
     };
 }
 

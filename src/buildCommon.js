@@ -6,14 +6,15 @@
  */
 
 import domTree from "./domTree";
-import { getCharacterMetrics } from "./fontMetrics";
+import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
-import stretchy from "./stretchy";
+import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
 
 import type Options from "./Options";
 import type ParseNode from "./ParseNode";
+import type {NodeType} from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {Mode} from "./types";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
@@ -137,7 +138,7 @@ const mathDefault = function(
     mode: Mode,
     options: Options,
     classes: string[],
-    type: string, // TODO(#892): Use ParseNode type here.
+    type: NodeType,
 ): domTree.symbolNode {
     if (type === "mathord") {
         const fontLookup = mathit(value, mode, options, classes);
@@ -228,10 +229,10 @@ const boldsymbol = function(
 /**
  * Makes either a mathord or textord in the correct font and color.
  */
-const makeOrd = function(
-    group: ParseNode,
+const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
+    group: ParseNode<NODETYPE>,
     options: Options,
-    type: string, // TODO(#892): Use ParseNode type here.
+    type: "mathord" | "textord",
 ): domTree.symbolNode {
     const mode = group.mode;
     const value = group.value;
@@ -241,9 +242,12 @@ const makeOrd = function(
     // Math mode or Old font (i.e. \rm)
     const isFont = mode === "math" || (mode === "text" && options.font);
     const fontOrFamily = isFont ? options.font : options.fontFamily;
-    if (fontOrFamily) {
-        // a non default font is in use for this group
-        // i.e, user have used \it, etc to change font shape and/or weight
+    if (value.charCodeAt(0) === 0xD835) {
+        // surrogate pairs get special treatment
+        const [wideFontName, wideFontClass] = wideCharacterFont(value, mode);
+        return makeSymbol(value, wideFontName, mode, options,
+            classes.concat(wideFontClass));
+    } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
         if (fontOrFamily === "boldsymbol") {
@@ -349,14 +353,11 @@ const makeSvgSpan = (
 const makeLineSpan = function(
     className: string,
     options: Options,
+    thickness?: number,
 ) {
-    // Return a span with an SVG image of a horizontal line. The SVG path
-    // fills the middle fifth of the span. We want an extra tall span
-    // because Chrome will sometimes not display a span that is 0.04em tall.
-    const lineHeight = options.fontMetrics().defaultRuleThickness;
-    const line = stretchy.ruleSpan(className, lineHeight, options);
-    line.height = lineHeight;
-    line.style.height = 5 * line.height + "em";
+    const line = makeSpan([className], [], options);
+    line.height = thickness || options.fontMetrics().defaultRuleThickness;
+    line.style.borderBottomWidth = line.height + "em";
     line.maxFontSize = 1.0;
     return line;
 };
@@ -396,7 +397,7 @@ const makeFragment = function(
 export type VListElem = {|
     type: "elem",
     elem: HtmlDomNode,
-    marginLeft?: string,
+    marginLeft?: ?string,
     marginRight?: string,
     wrapperClasses?: string[],
     wrapperStyle?: CssStyle,
@@ -405,7 +406,7 @@ type VListElemAndShift = {|
     type: "elem",
     elem: HtmlDomNode,
     shift: number,
-    marginLeft?: string,
+    marginLeft?: ?string,
     marginRight?: string,
     wrapperClasses?: string[],
     wrapperStyle?: CssStyle,
@@ -595,9 +596,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
 };
 
 // Converts verb group into body string, dealing with \verb* form
-const makeVerb = function(group: ParseNode, options: Options): string {
-    // TODO(#892): Make ParseNode type-safe and confirm `group.type` to guarantee
-    // that `group.value.body` is of type string.
+const makeVerb = function(group: ParseNode<"verb">, options: Options): string {
     let text = group.value.body;
     if (group.value.star) {
         text = text.replace(/ /g, '\u2423');  // Open Box
@@ -612,8 +611,8 @@ const makeVerb = function(group: ParseNode, options: Options): string {
 // either a vertical or horizontal list. In KaTeX, at least for now, it's
 // static space between elements in a horizontal layout.
 const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
-    // Make an empty span for the rule
-    const rule = makeSpan(["mord", "rule"], [], options);
+    // Make an empty span for the space
+    const rule = makeSpan(["mspace"], [], options);
     const size = calculateSize(measurement, options);
     rule.style.marginRight = `${size}em`;
     return rule;
@@ -625,14 +624,8 @@ const retrieveTextFontName = function(
     fontWeight: string,
     fontShape: string,
 ): string {
-    const baseFontName = retrieveBaseFontName(fontFamily);
-    const fontStylesName = retrieveFontStylesName(fontWeight, fontShape);
-    return `${baseFontName}-${fontStylesName}`;
-};
-
-const retrieveBaseFontName = function(font: string): string {
     let baseFontName = "";
-    switch (font) {
+    switch (fontFamily) {
         case "amsrm":
             baseFontName = "AMS";
             break;
@@ -646,66 +639,44 @@ const retrieveBaseFontName = function(font: string): string {
             baseFontName = "Typewriter";
             break;
         default: // probably a font added by a plugin
-            baseFontName = font;
+            baseFontName = fontFamily;
     }
-    return baseFontName;
+
+    let fontStylesName;
+    if (fontWeight === "textbf" && fontShape === "textit") {
+        fontStylesName = "BoldItalic";
+    } else if (fontWeight === "textbf") {
+        fontStylesName = "Bold";
+    } else if (fontWeight === "textit") {
+        fontStylesName = "Italic";
+    } else {
+        fontStylesName = "Regular";
+    }
+
+    return `${baseFontName}-${fontStylesName}`;
 };
 
-const retrieveFontStylesName = function(
-    fontWeight?: string,
-    fontShape?: string,
-): string {
-    let fontStylesName = '';
-    if (fontWeight === "textbf") {
-        fontStylesName += "Bold";
-    }
-    if (fontShape === "textit") {
-        fontStylesName += "Italic";
-    }
-    return fontStylesName || "Regular";
-};
-
-// A map of spacing functions to their attributes, like size and corresponding
-// CSS class
-const spacingFunctions: {[string]: {| size: string, className: string |}} = {
-    "\\qquad": {
-        size: "2em",
-        className: "qquad",
-    },
-    "\\quad": {
-        size: "1em",
-        className: "quad",
-    },
-    "\\enspace": {
-        size: "0.5em",
-        className: "enspace",
-    },
-    "\\;": {
-        size: "0.277778em",
-        className: "thickspace",
-    },
-    "\\:": {
-        size: "0.22222em",
-        className: "mediumspace",
-    },
-    "\\,": {
-        size: "0.16667em",
-        className: "thinspace",
-    },
-    "\\!": {
-        size: "-0.16667em",
-        className: "negativethinspace",
-    },
+// A map of CSS-based spacing functions to their CSS class.
+const cssSpace: {[string]: string} = {
+    "\\nobreak": "nobreak",
+    "\\allowbreak": "allowbreak",
 };
 
 // A lookup table to determine whether a spacing function/symbol should be
-// treated like a regular space character.
-const regularSpace: {[string]: boolean} = {
-    " ": true,
-    "\\ ": true,
-    "~": true,
-    "\\space": true,
-    "\\nobreakspace": true,
+// treated like a regular space character.  If a symbol or command is a key
+// in this table, then it should be a regular space character.  Furthermore,
+// the associated value may have a `className` specifying an extra CSS class
+// to add to the created `span`.
+const regularSpace: {[string]: { className?: string }} = {
+    " ": {},
+    "\\ ": {},
+    "~": {
+        className: "nobreak",
+    },
+    "\\space": {},
+    "\\nobreakspace": {
+        className: "nobreak",
+    },
 };
 
 /**
@@ -803,6 +774,6 @@ export default {
     staticSvg,
     svgData,
     tryCombineChars,
-    spacingFunctions,
+    cssSpace,
     regularSpace,
 };

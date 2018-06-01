@@ -35,6 +35,10 @@ describe("A MathML builder", function() {
         expect(getMathML("\\sin{x}+1\\;\\text{a}")).toMatchSnapshot();
     });
 
+    it('should concatenate digits into single <mn>', () => {
+        expect(getMathML("\\sin{\\alpha}=0.34")).toMatchSnapshot();
+    });
+
     it('should make prime operators into <mo> nodes', () => {
         expect(getMathML("f'")).toMatchSnapshot();
     });
@@ -94,8 +98,24 @@ describe("A MathML builder", function() {
             .toMatchSnapshot();
     });
 
-    it('accents turn into <mover accent="true"> in MathML', function() {
+    it('accents turn into <mover accent="true"> in MathML', () => {
         expect(getMathML("über fiancée", {unicodeTextInMathMode: true}))
             .toMatchSnapshot();
+    });
+
+    it('tags use <mlabeledtr>', () => {
+        expect(getMathML("\\tag{hi} x+y^2", {displayMode: true}))
+            .toMatchSnapshot();
+    });
+
+    it('normal spaces render normally', function() {
+        expect(getMathML("\\kern1em\\kern1ex")).toMatchSnapshot();
+    });
+    it('special spaces render specially', function() {
+        expect(getMathML(
+            "\\,\\thinspace\\:\\medspace\\;\\thickspace" +
+            "\\!\\negthinspace\\negmedspace\\negthickspace" +
+            "\\mkern1mu\\mkern3mu\\mkern4mu\\mkern5mu" +
+            "\\mkern-1mu\\mkern-3mu\\mkern-4mu\\mkern-5mu")).toMatchSnapshot();
     });
 });

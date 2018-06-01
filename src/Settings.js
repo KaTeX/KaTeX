@@ -1,12 +1,20 @@
 // @flow
+/* eslint no-console:0 */
 /**
  * This is a module for storing settings passed into KaTeX. It correctly handles
  * default settings.
  */
 
 import utils from "./utils";
+import ParseError from "./ParseError.js";
+import ParseNode from "./ParseNode";
+import {Token} from "./Token";
 
-import type { MacroMap } from "./macros";
+import type {MacroMap} from "./macros";
+
+export type StrictFunction =
+    (errorCode: string, errorMsg: string, token?: Token | ParseNode<*>) =>
+    ?(boolean | string);
 
 export type SettingsOptions = {
     displayMode?: boolean;
@@ -14,8 +22,9 @@ export type SettingsOptions = {
     errorColor?: string;
     macros?: MacroMap;
     colorIsTextColor?: boolean;
-    unicodeTextInMathMode?: boolean;
+    strict?: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize?: number;
+    maxExpand?: number;
 };
 
 /**
@@ -34,8 +43,9 @@ class Settings {
     errorColor: string;
     macros: MacroMap;
     colorIsTextColor: boolean;
-    unicodeTextInMathMode: boolean;
+    strict: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize: number;
+    maxExpand: number;
 
     constructor(options: SettingsOptions) {
         // allow null options
@@ -45,9 +55,77 @@ class Settings {
         this.errorColor = utils.deflt(options.errorColor, "#cc0000");
         this.macros = options.macros || {};
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
-        this.unicodeTextInMathMode =
-            utils.deflt(options.unicodeTextInMathMode, false);
+        this.strict = utils.deflt(options.strict, "warn");
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
+        this.maxExpand = Math.max(0, utils.deflt(options.maxExpand, 1000));
+    }
+
+    /**
+     * Report nonstrict (non-LaTeX-compatible) input.
+     * Can safely not be called if `this.strict` is false in JavaScript.
+     */
+    reportNonstrict(errorCode: string, errorMsg: string,
+                    token?: Token | ParseNode<*>) {
+        let strict = this.strict;
+        if (typeof strict === "function") {
+            // Allow return value of strict function to be boolean or string
+            // (or null/undefined, meaning no further processing).
+            strict = strict(errorCode, errorMsg, token);
+        }
+        if (!strict || strict === "ignore") {
+            return;
+        } else if (strict === true || strict === "error") {
+            throw new ParseError(
+                "LaTeX-incompatible input and strict mode is set to 'error': " +
+                `${errorMsg} [${errorCode}]`, token);
+        } else if (strict === "warn") {
+            typeof console !== "undefined" && console.warn(
+                "LaTeX-incompatible input and strict mode is set to 'warn': " +
+                `${errorMsg} [${errorCode}]`);
+        } else {  // won't happen in type-safe code
+            typeof console !== "undefined" && console.warn(
+                "LaTeX-incompatible input and strict mode is set to " +
+                `unrecognized '${strict}': ${errorMsg} [${errorCode}]`);
+        }
+    }
+
+    /**
+     * Check whether to apply strict (LaTeX-adhering) behavior for unusual
+     * input (like `\\`).  Unlike `nonstrict`, will not throw an error;
+     * instead, "error" translates to a return value of `true`, while "ignore"
+     * translates to a return value of `false`.  May still print a warning:
+     * "warn" prints a warning and returns `false`.
+     * This is for the second category of `errorCode`s listed in the README.
+     */
+    useStrictBehavior(errorCode: string, errorMsg: string,
+                      token?: Token | ParseNode<*>) {
+        let strict = this.strict;
+        if (typeof strict === "function") {
+            // Allow return value of strict function to be boolean or string
+            // (or null/undefined, meaning no further processing).
+            // But catch any exceptions thrown by function, treating them
+            // like "error".
+            try {
+                strict = strict(errorCode, errorMsg, token);
+            } catch (error) {
+                strict = "error";
+            }
+        }
+        if (!strict || strict === "ignore") {
+            return false;
+        } else if (strict === true || strict === "error") {
+            return true;
+        } else if (strict === "warn") {
+            typeof console !== "undefined" && console.warn(
+                "LaTeX-incompatible input and strict mode is set to 'warn': " +
+                `${errorMsg} [${errorCode}]`);
+            return false;
+        } else {  // won't happen in type-safe code
+            typeof console !== "undefined" && console.warn(
+                "LaTeX-incompatible input and strict mode is set to " +
+                `unrecognized '${strict}': ${errorMsg} [${errorCode}]`);
+            return false;
+        }
     }
 }
 

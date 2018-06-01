@@ -1,7 +1,7 @@
 // @flow
-import { supportedCodepoint } from "./unicodeScripts";
+import {supportedCodepoint} from "./unicodeScripts";
 
-import type { Mode } from "./types";
+import type {Mode} from "./types";
 
 /**
  * This file contains metrics regarding fonts and individual symbols. The sigma

@@ -57,6 +57,53 @@ exports[`A MathML builder accents turn into <mover accent="true"> in MathML 1`] 
 
 `;
 
+exports[`A MathML builder normal spaces render normally 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mspace width="1em">
+      </mspace>
+      <mspace width="0.431em">
+      </mspace>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\kern1em\\kern1ex
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder should concatenate digits into single <mn> 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mi>
+        sin
+      </mi>
+      <mo>
+        ⁡
+      </mo>
+      <mi>
+        α
+      </mi>
+      <mo>
+        =
+      </mo>
+      <mn>
+        0.34
+      </mn>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\sin{\\alpha}=0.34
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder should generate <mphantom> nodes for \\phantom 1`] = `
 
 <math>
@@ -87,19 +134,18 @@ exports[`A MathML builder should generate the right types of nodes 1`] = `
       <mo>
         ⁡
       </mo>
-      <mrow>
-        <mi>
-          x
-        </mi>
-      </mrow>
+      <mi>
+        x
+      </mi>
       <mo>
         +
       </mo>
       <mn>
         1
       </mn>
-      <mspace width="0.277778em">
-      </mspace>
+      <mtext>
+        &ThickSpace;
+      </mtext>
       <mtext>
         a
       </mtext>
@@ -142,7 +188,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
       <msub>
         <mo>
           <mi mathvariant="normal">
-            lim sup
+            lim&ThinSpace;sup
           </mi>
           <mo>
             ⁡
@@ -177,7 +223,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} in dis
       <munder>
         <mo>
           <mi mathvariant="normal">
-            lim sup
+            lim&ThinSpace;sup
           </mi>
           <mo>
             ⁡
@@ -209,32 +255,30 @@ exports[`A MathML builder should render boldsymbol with the correct mathvariants
 <math>
   <semantics>
     <mrow>
-      <mrow>
-        <mi mathvariant="bold-italic">
-          A
-        </mi>
-        <mi mathvariant="bold-italic">
-          x
-        </mi>
-        <mn mathvariant="bold-italic">
-          2
-        </mn>
-        <mi mathvariant="bold-italic">
-          k
-        </mi>
-        <mi mathvariant="bold-italic">
-          ω
-        </mi>
-        <mi mathvariant="bold-italic">
-          Ω
-        </mi>
-        <mi mathvariant="bold-italic">
-          ı
-        </mi>
-        <mo mathvariant="bold-italic">
-          +
-        </mo>
-      </mrow>
+      <mi mathvariant="bold-italic">
+        A
+      </mi>
+      <mi mathvariant="bold-italic">
+        x
+      </mi>
+      <mn mathvariant="bold-italic">
+        2
+      </mn>
+      <mi mathvariant="bold-italic">
+        k
+      </mi>
+      <mi mathvariant="bold-italic">
+        ω
+      </mi>
+      <mi mathvariant="bold-italic">
+        Ω
+      </mi>
+      <mi mathvariant="bold-italic">
+        ı
+      </mi>
+      <mo mathvariant="bold-italic">
+        +
+      </mo>
     </mrow>
     <annotation encoding="application/x-tex">
       \\boldsymbol{Ax2k\\omega\\Omega\\imath+}
@@ -296,35 +340,33 @@ exports[`A MathML builder should render mathchoice as if there was nothing 2`] =
 <math>
   <semantics>
     <mrow>
-      <mrow>
-        <msubsup>
-          <mo>
-            ∑
-          </mo>
-          <mrow>
-            <mi>
-              k
-            </mi>
-            <mo>
-              =
-            </mo>
-            <mn>
-              0
-            </mn>
-          </mrow>
-          <mi mathvariant="normal">
-            ∞
-          </mi>
-        </msubsup>
-        <msup>
-          <mi>
-            x
-          </mi>
+      <msubsup>
+        <mo>
+          ∑
+        </mo>
+        <mrow>
           <mi>
             k
           </mi>
-        </msup>
-      </mrow>
+          <mo>
+            =
+          </mo>
+          <mn>
+            0
+          </mn>
+        </mrow>
+        <mi mathvariant="normal">
+          ∞
+        </mi>
+      </msubsup>
+      <msup>
+        <mi>
+          x
+        </mi>
+        <mi>
+          k
+        </mi>
+      </msup>
     </mrow>
     <annotation encoding="application/x-tex">
       \\mathchoice{D}{\\sum_{k = 0}^{\\infty} x^k}{S}{SS}
@@ -343,11 +385,9 @@ exports[`A MathML builder should render mathchoice as if there was nothing 3`] =
         <mi>
           x
         </mi>
-        <mrow>
-          <mi>
-            T
-          </mi>
-        </mrow>
+        <mi>
+          T
+        </mi>
       </msub>
     </mrow>
     <annotation encoding="application/x-tex">
@@ -371,11 +411,9 @@ exports[`A MathML builder should render mathchoice as if there was nothing 4`] =
           <mi>
             y
           </mi>
-          <mrow>
-            <mi>
-              T
-            </mi>
-          </mrow>
+          <mi>
+            T
+          </mi>
         </msub>
       </msub>
     </mrow>
@@ -392,11 +430,9 @@ exports[`A MathML builder should set href attribute for href appropriately 1`] =
 <math>
   <semantics>
     <mrow>
-      <mrow href="http://example.org">
-        <mi>
-          α
-        </mi>
-      </mrow>
+      <mi href="http://example.org">
+        α
+      </mi>
     </mrow>
     <annotation encoding="application/x-tex">
       \\href{http://example.org}{\\alpha}
@@ -412,11 +448,9 @@ exports[`A MathML builder should use <menclose> for colorbox 1`] = `
   <semantics>
     <mrow>
       <menclose mathbackground="red">
-        <mrow>
-          <mtext>
-            b
-          </mtext>
-        </mrow>
+        <mtext>
+          b
+        </mtext>
       </menclose>
     </mrow>
     <annotation encoding="application/x-tex">
@@ -433,11 +467,9 @@ exports[`A MathML builder should use <mpadded> for raisebox 1`] = `
   <semantics>
     <mrow>
       <mpadded voffset="0.25em">
-        <mrow>
-          <mtext>
-            b
-          </mtext>
-        </mrow>
+        <mtext>
+          b
+        </mtext>
       </mpadded>
     </mrow>
     <annotation encoding="application/x-tex">
@@ -500,6 +532,113 @@ exports[`A MathML builder should use <munderover> for large operators 1`] = `
     </mrow>
     <annotation encoding="application/x-tex">
       \\displaystyle\\sum_a^b
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder special spaces render specially 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mtext>
+        &ThinSpace;
+      </mtext>
+      <mtext>
+        &ThinSpace;
+      </mtext>
+      <mtext>
+        &MediumSpace;
+      </mtext>
+      <mtext>
+        &MediumSpace;
+      </mtext>
+      <mtext>
+        &ThickSpace;
+      </mtext>
+      <mtext>
+        &ThickSpace;
+      </mtext>
+      <mtext>
+        &NegativeThinSpace;
+      </mtext>
+      <mtext>
+        &NegativeThinSpace;
+      </mtext>
+      <mtext>
+        &NegativeMediumSpace;
+      </mtext>
+      <mtext>
+        &NegativeThickSpace;
+      </mtext>
+      <mtext>
+        &VeryThinSpace;
+      </mtext>
+      <mtext>
+        &ThinSpace;
+      </mtext>
+      <mtext>
+        &MediumSpace;
+      </mtext>
+      <mtext>
+        &ThickSpace;
+      </mtext>
+      <mtext>
+        &NegativeVeryThinSpace;
+      </mtext>
+      <mtext>
+        &NegativeThinSpace;
+      </mtext>
+      <mtext>
+        &NegativeMediumSpace;
+      </mtext>
+      <mtext>
+        &NegativeThickSpace;
+      </mtext>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\,\\thinspace\\:\\medspace\\;\\thickspace\\!\\negthinspace\\negmedspace\\negthickspace\\mkern1mu\\mkern3mu\\mkern4mu\\mkern5mu\\mkern-1mu\\mkern-3mu\\mkern-4mu\\mkern-5mu
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder tags use <mlabeledtr> 1`] = `
+
+<math>
+  <semantics>
+    <mtable side="right">
+      <mlabeledtr>
+        <mtd>
+          <mtext>
+            (hi)
+          </mtext>
+        </mtd>
+        <mtd>
+          <mrow>
+            <mi>
+              x
+            </mi>
+            <mo>
+              +
+            </mo>
+            <msup>
+              <mi>
+                y
+              </mi>
+              <mn>
+                2
+              </mn>
+            </msup>
+          </mrow>
+        </mtd>
+      </mlabeledtr>
+    </mtable>
+    <annotation encoding="application/x-tex">
+      \\tag{hi} x+y^2
     </annotation>
   </semantics>
 </math>

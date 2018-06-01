@@ -6,7 +6,7 @@
  * `.reset` functions.
  */
 
-import { getFontMetrics } from "./fontMetrics";
+import {getFontMetrics} from "./fontMetrics";
 import type {FontMetrics} from "./fontMetrics";
 import type {StyleInterface} from "./Style";
 

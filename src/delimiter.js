@@ -26,7 +26,7 @@ import Style from "./Style";
 
 import domTree from "./domTree";
 import buildCommon from "./buildCommon";
-import { getCharacterMetrics } from "./fontMetrics";
+import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
 

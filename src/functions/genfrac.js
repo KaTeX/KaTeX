@@ -75,7 +75,9 @@ defineFunction({
         let style = options.style;
         if (group.value.size === "display") {
             style = Style.DISPLAY;
-        } else if (group.value.size === "text") {
+        } else if (group.value.size === "text" &&
+            style.size === Style.DISPLAY.size) {
+            // We're in a \tfrac but incoming style is displaystyle, so:
             style = Style.TEXT;
         }
 
@@ -166,12 +168,7 @@ defineFunction({
                 positionType: "individualShift",
                 children: [
                     {type: "elem", elem: denomm, shift: denomShift},
-                    // The next line would ordinarily contain "shift: midShift".
-                    // But we put the rule into a a span that is 5 rules tall,
-                    // to overcome a Chrome rendering issue. Put another way,
-                    // we've replaced a kern of width = 2 * ruleWidth with a
-                    // bottom padding inside the SVG = 2 * ruleWidth.
-                    {type: "elem", elem: rule,   shift: midShift + 2 * ruleWidth},
+                    {type: "elem", elem: rule,   shift: midShift},
                     {type: "elem", elem: numerm, shift: -numShift},
                 ],
             }, options);
@@ -248,11 +245,42 @@ defineFunction({
                 withDelims.push(rightOp);
             }
 
-            const outerNode = new mathMLTree.MathNode("mrow", withDelims);
-
-            return outerNode;
+            return mml.makeRow(withDelims);
         }
 
         return node;
     },
 });
+
+// Infix generalized fractions -- these are not rendered directly, but replaced
+// immediately by one of the variants above.
+defineFunction({
+    type: "infix",
+    names: ["\\over", "\\choose", "\\atop"],
+    props: {
+        numArgs: 0,
+        infix: true,
+    },
+    handler(context) {
+        let replaceWith;
+        switch (context.funcName) {
+            case "\\over":
+                replaceWith = "\\frac";
+                break;
+            case "\\choose":
+                replaceWith = "\\binom";
+                break;
+            case "\\atop":
+                replaceWith = "\\\\atopfrac";
+                break;
+            default:
+                throw new Error("Unrecognized infix genfrac command");
+        }
+        return {
+            type: "infix",
+            replaceWith: replaceWith,
+            token: context.token,
+        };
+    },
+});
+

@@ -11,15 +11,20 @@
 import ParseError from "./src/ParseError";
 import Settings from "./src/Settings";
 
-import { buildTree, buildHTMLTree } from "./src/buildTree";
+import {buildTree, buildHTMLTree} from "./src/buildTree";
 import parseTree from "./src/parseTree";
+import buildCommon from "./src/buildCommon";
+import domTree from "./src/domTree";
 import utils from "./src/utils";
 
 import type {SettingsOptions} from "./src/Settings";
 import type ParseNode from "./src/ParseNode";
 
-import { addFontMetrics } from './src/fontMetrics';
-import { defineSymbol } from './src/symbols';
+import {defineSymbol} from './src/symbols';
+import {defineMacro} from './src/macros';
+import {addFontMetrics} from './src/fontMetrics';
+
+import {version} from "./package.json";
 
 /**
  * Parse and build an expression, and place that expression in the DOM node
@@ -66,9 +71,29 @@ const renderToString = function(
 const generateParseTree = function(
     expression: string,
     options: SettingsOptions,
-): ParseNode[] {
+): ParseNode<*>[] {
     const settings = new Settings(options);
     return parseTree(expression, settings);
+};
+
+/**
+ * If the given error is a KaTeX ParseError and options.throwOnError is false,
+ * renders the invalid LaTeX as a span with hover title giving the KaTeX
+ * error message.  Otherwise, simply throws the error.
+ */
+const renderError = function(
+    error,
+    expression: string,
+    options: Settings,
+) {
+    if (options.throwOnError || !(error instanceof ParseError)) {
+        throw error;
+    }
+    const node = buildCommon.makeSpan(["katex-error"],
+        [new domTree.symbolNode(expression)]);
+    node.setAttribute("title", error.toString());
+    node.setAttribute("style", `color:${options.errorColor}`);
+    return node;
 };
 
 /**
@@ -80,8 +105,12 @@ const renderToDomTree = function(
     options: SettingsOptions,
 ) {
     const settings = new Settings(options);
-    const tree = parseTree(expression, settings);
-    return buildTree(tree, expression, settings);
+    try {
+        const tree = parseTree(expression, settings);
+        return buildTree(tree, expression, settings);
+    } catch (error) {
+        return renderError(error, expression, settings);
+    }
 };
 
 /**
@@ -93,11 +122,19 @@ const renderToHTMLTree = function(
     options: SettingsOptions,
 ) {
     const settings = new Settings(options);
-    const tree = parseTree(expression, settings);
-    return buildHTMLTree(tree, expression, settings);
+    try {
+        const tree = parseTree(expression, settings);
+        return buildHTMLTree(tree, expression, settings);
+    } catch (error) {
+        return renderError(error, expression, settings);
+    }
 };
 
 export default {
+    /**
+     * Current KaTeX version
+     */
+    version,
     /**
      * Renders the given LaTeX into an HTML+MathML combination, and adds
      * it as a child to the specified DOM node.
@@ -146,6 +183,10 @@ export default {
     __addFontMetrics: addFontMetrics,
     /*
      * adds a new symbol to internal symbols table
-    */
+     */
     __defineSymbol: defineSymbol,
+    /**
+     * adds a new macro to builtin macro list
+     */
+    __defineMacro: defineMacro,
 };

@@ -8,24 +8,17 @@
  *
  * Similar functions for working with MathML nodes exist in mathMLTree.js.
  */
-import { scriptFromCodepoint } from "./unicodeScripts";
+import {scriptFromCodepoint} from "./unicodeScripts";
 import utils from "./utils";
 import svgGeometry from "./svgGeometry";
 import type Options from "./Options";
 
 /**
  * Create an HTML className based on a list of classes. In addition to joining
- * with spaces, we also remove null or empty classes.
+ * with spaces, we also remove empty classes.
  */
 const createClass = function(classes: string[]): string {
-    classes = classes.slice();
-    for (let i = classes.length - 1; i >= 0; i--) {
-        if (!classes[i]) {
-            classes.splice(i, 1);
-        }
-    }
-
-    return classes.join(" ");
+    return classes.filter(cls => cls).join(" ");
 };
 
 // To ensure that all nodes have compatible signatures for these methods.
@@ -40,6 +33,7 @@ export interface HtmlDomNode extends VirtualNodeInterface {
     depth: number;
     maxFontSize: number;
 
+    hasClass(className: string): boolean;
     tryCombine(sibling: HtmlDomNode): boolean;
 }
 
@@ -52,24 +46,16 @@ export type SvgChildNode = pathNode | lineNode;
 
 export type CssStyle = {[name: string]: string};
 
-/**
- * This node represents a span node, with a className, a list of children, and
- * an inline style. It also contains information about its height, depth, and
- * maxFontSize.
- *
- * Represents two types with different uses: SvgSpan to wrap an SVG and DomSpan
- * otherwise. This typesafety is important when HTML builders access a span's
- * children.
- */
-class span<ChildType: VirtualNodeInterface> implements HtmlDomNode {
-    classes: string[];
+export class HtmlDomContainer<ChildType: VirtualNodeInterface>
+       implements HtmlDomNode {
     children: ChildType[];
+    attributes: {[string]: string};
+    classes: string[];
     height: number;
     depth: number;
     width: ?number;
     maxFontSize: number;
     style: CssStyle;
-    attributes: {[string]: string};
 
     constructor(
         classes?: string[],
@@ -79,11 +65,11 @@ class span<ChildType: VirtualNodeInterface> implements HtmlDomNode {
     ) {
         this.classes = classes || [];
         this.children = children || [];
+        this.attributes = {};
         this.height = 0;
         this.depth = 0;
         this.maxFontSize = 0;
         this.style = Object.assign({}, style);
-        this.attributes = {};
         if (options) {
             if (options.style.isTight()) {
                 this.classes.push("mtight");
@@ -96,194 +82,69 @@ class span<ChildType: VirtualNodeInterface> implements HtmlDomNode {
     }
 
     /**
-     * Sets an arbitrary attribute on the span. Warning: use this wisely. Not all
-     * browsers support attributes the same, and having too many custom attributes
-     * is probably bad.
+     * Sets an arbitrary attribute on the node. Warning: use this wisely. Not
+     * all browsers support attributes the same, and having too many custom
+     * attributes is probably bad.
      */
     setAttribute(attribute: string, value: string) {
         this.attributes[attribute] = value;
     }
 
+    hasClass(className: string): boolean {
+        return utils.contains(this.classes, className);
+    }
+
+    /**
+     * Try to combine with given sibling.  Returns true if the sibling has
+     * been successfully merged into this node, and false otherwise.
+     * Default behavior fails (returns false).
+     */
     tryCombine(sibling: HtmlDomNode): boolean {
         return false;
     }
 
+    tagName(): string {
+        throw new Error("use of generic HtmlDomContainer tagName");
+    }
+
     /**
-     * Convert the span into an HTML node
+     * Convert into an HTML node
      */
-    toNode(): HTMLSpanElement {
-        const span = document.createElement("span");
+    toNode(): HTMLElement {
+        const node = document.createElement(this.tagName());
 
         // Apply the class
-        span.className = createClass(this.classes);
+        node.className = createClass(this.classes);
 
         // Apply inline styles
         for (const style in this.style) {
             if (Object.prototype.hasOwnProperty.call(this.style, style)) {
-                // $FlowFixMe Flow doesn't seem to understand span.style's type.
-                span.style[style] = this.style[style];
+                // $FlowFixMe Flow doesn't seem to understand node.style's type.
+                node.style[style] = this.style[style];
             }
         }
 
         // Apply attributes
         for (const attr in this.attributes) {
-            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                span.setAttribute(attr, this.attributes[attr]);
+            if (this.attributes.hasOwnProperty(attr)) {
+                node.setAttribute(attr, this.attributes[attr]);
             }
         }
 
         // Append the children, also as HTML nodes
         for (let i = 0; i < this.children.length; i++) {
-            span.appendChild(this.children[i].toNode());
+            node.appendChild(this.children[i].toNode());
         }
 
-        return span;
+        return node;
     }
 
     /**
-     * Convert the span into an HTML markup string
+     * Convert into an HTML markup string
      */
     toMarkup(): string {
-        let markup = "<span";
+        let markup = "<" + this.tagName();
 
-        // Add the class
-        if (this.classes.length) {
-            markup += " class=\"";
-            markup += utils.escape(createClass(this.classes));
-            markup += "\"";
-        }
-
-        let styles = "";
-
-        // Add the styles, after hyphenation
-        for (const style in this.style) {
-            if (this.style.hasOwnProperty(style)) {
-                styles += utils.hyphenate(style) + ":" + this.style[style] + ";";
-            }
-        }
-
-        if (styles) {
-            markup += " style=\"" + utils.escape(styles) + "\"";
-        }
-
-        // Add the attributes
-        for (const attr in this.attributes) {
-            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                markup += " " + attr + "=\"";
-                markup += utils.escape(this.attributes[attr]);
-                markup += "\"";
-            }
-        }
-
-        markup += ">";
-
-        // Add the markup of the children, also as markup
-        for (let i = 0; i < this.children.length; i++) {
-            markup += this.children[i].toMarkup();
-        }
-
-        markup += "</span>";
-
-        return markup;
-    }
-}
-
-/**
- * This node represents an anchor (<a>) element with a hyperlink, a list of classes,
- * a list of children, and an inline style. It also contains information about its
- * height, depth, and maxFontSize.
- */
-class anchor implements HtmlDomNode {
-    href: string;
-    classes: string[];
-    children: HtmlDomNode[];
-    height: number;
-    depth: number;
-    maxFontSize: number;
-    style: CssStyle;
-    attributes: {[string]: string};
-
-    constructor(
-        href: string,
-        classes: string[],
-        children: HtmlDomNode[],
-        options: Options,
-    ) {
-        this.href = href;
-        this.classes = classes;
-        this.children = children;
-        this.height = 0;
-        this.depth = 0;
-        this.maxFontSize = 0;
-        this.style = {};
-        this.attributes = {};
-        if (options.style.isTight()) {
-            this.classes.push("mtight");
-        }
-        const color = options.getColor();
-        if (color) {
-            this.style.color = color;
-        }
-    }
-
-    /**
-     * Sets an arbitrary attribute on the anchor. Warning: use this wisely. Not all
-     * browsers support attributes the same, and having too many custom attributes
-     * is probably bad.
-     */
-    setAttribute(attribute: string, value: string) {
-        this.attributes[attribute] = value;
-    }
-
-    tryCombine(sibling: HtmlDomNode): boolean {
-        return false;
-    }
-
-    /**
-     * Convert the anchor into an HTML node
-     */
-    toNode(): HTMLAnchorElement {
-        const a = document.createElement("a");
-
-        // Apply the href
-        a.setAttribute('href', this.href);
-
-        // Apply the class
-        if (this.classes.length) {
-            a.className = createClass(this.classes);
-        }
-
-        // Apply inline styles
-        for (const style in this.style) {
-            if (Object.prototype.hasOwnProperty.call(this.style, style)) {
-                // $FlowFixMe Flow doesn't seem to understand a.style's type.
-                a.style[style] = this.style[style];
-            }
-        }
-
-        // Apply attributes
-        for (const attr in this.attributes) {
-            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                a.setAttribute(attr, this.attributes[attr]);
-            }
-        }
-
-        // Append the children, also as HTML nodes
-        for (let i = 0; i < this.children.length; i++) {
-            a.appendChild(this.children[i].toNode());
-        }
-
-        return a;
-    }
-
-    /**
-     * Convert the a into an HTML markup string
-     */
-    toMarkup(): string {
-        let markup = "<a";
-
-        // Add the href
-        markup += ` href="${utils.escape(this.href)}"`;
         // Add the class
         if (this.classes.length) {
             markup += ` class="${utils.escape(createClass(this.classes))}"`;
@@ -299,27 +160,75 @@ class anchor implements HtmlDomNode {
         }
 
         if (styles) {
-            markup += " style=\"" + utils.escape(styles) + "\"";
+            markup += ` style="${utils.escape(styles)}"`;
         }
 
         // Add the attributes
         for (const attr in this.attributes) {
-            if (attr !== "href" &&
-                Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                markup += ` ${attr}="${utils.escape(this.attributes[attr])}"`;
+            if (this.attributes.hasOwnProperty(attr)) {
+                markup += " " + attr + "=\"";
+                markup += utils.escape(this.attributes[attr]);
+                markup += "\"";
             }
         }
 
         markup += ">";
 
         // Add the markup of the children, also as markup
-        for (const child of this.children) {
-            markup += child.toMarkup();
+        for (let i = 0; i < this.children.length; i++) {
+            markup += this.children[i].toMarkup();
         }
 
-        markup += "</a>";
+        markup += `</${this.tagName()}>`;
 
         return markup;
+    }
+}
+
+/**
+ * This node represents a span node, with a className, a list of children, and
+ * an inline style. It also contains information about its height, depth, and
+ * maxFontSize.
+ *
+ * Represents two types with different uses: SvgSpan to wrap an SVG and DomSpan
+ * otherwise. This typesafety is important when HTML builders access a span's
+ * children.
+ */
+class span<ChildType: VirtualNodeInterface> extends HtmlDomContainer<ChildType> {
+    constructor(
+        classes?: string[],
+        children?: ChildType[],
+        options?: Options,
+        style?: CssStyle,
+    ) {
+        super(classes, children, options, style);
+    }
+
+    tagName() {
+        return "span";
+    }
+}
+
+/**
+ * This node represents an anchor (<a>) element with a hyperlink, a list of classes,
+ * a list of children, and an inline style. It also contains information about its
+ * height, depth, and maxFontSize.
+ */
+class anchor extends HtmlDomContainer<HtmlDomNode> {
+    href: string;
+
+    constructor(
+        href: string,
+        classes: string[],
+        children: HtmlDomNode[],
+        options: Options,
+    ) {
+        super(classes, children, options);
+        this.setAttribute('href', href);
+    }
+
+    tagName() {
+        return "a";
     }
 }
 
@@ -342,6 +251,10 @@ class documentFragment implements HtmlDomNode {
         this.height = 0;
         this.depth = 0;
         this.maxFontSize = 0;
+    }
+
+    hasClass(className: string): boolean {
+        return utils.contains(this.classes, className);
     }
 
     tryCombine(sibling: HtmlDomNode): boolean {
@@ -437,6 +350,10 @@ class symbolNode implements HtmlDomNode {
         if (/[îïíì]/.test(this.value)) {    // add ī when we add Extended Latin
             this.value = iCombinations[this.value];
         }
+    }
+
+    hasClass(className: string): boolean {
+        return utils.contains(this.classes, className);
     }
 
     tryCombine(sibling: HtmlDomNode): boolean {
