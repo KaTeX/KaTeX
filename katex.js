@@ -181,8 +181,8 @@ export default {
      * each key in the new object represents a font name
     */
     __addFontMetrics: addFontMetrics,
-    /*
-     * adds a new symbol to internal symbols table
+    /**
+     * adds a new symbol to builtin symbols table
      */
     __defineSymbol: defineSymbol,
     /**
