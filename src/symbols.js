@@ -301,16 +301,16 @@ defineSymbol(math, ams, close, "\u2518", "\\lrcorner", true);
 
 // AMS Binary Relations
 defineSymbol(math, ams, rel, "\u2266", "\\leqq", true);
-defineSymbol(math, ams, rel, "\u2a7d", "\\leqslant");
+defineSymbol(math, ams, rel, "\u2a7d", "\\leqslant", true);
 defineSymbol(math, ams, rel, "\u2a95", "\\eqslantless", true);
-defineSymbol(math, ams, rel, "\u2272", "\\lesssim");
-defineSymbol(math, ams, rel, "\u2a85", "\\lessapprox");
+defineSymbol(math, ams, rel, "\u2272", "\\lesssim", true);
+defineSymbol(math, ams, rel, "\u2a85", "\\lessapprox", true);
 defineSymbol(math, ams, rel, "\u224a", "\\approxeq", true);
 defineSymbol(math, ams, bin, "\u22d6", "\\lessdot");
 defineSymbol(math, ams, rel, "\u22d8", "\\lll", true);
-defineSymbol(math, ams, rel, "\u2276", "\\lessgtr");
-defineSymbol(math, ams, rel, "\u22da", "\\lesseqgtr");
-defineSymbol(math, ams, rel, "\u2a8b", "\\lesseqqgtr");
+defineSymbol(math, ams, rel, "\u2276", "\\lessgtr", true);
+defineSymbol(math, ams, rel, "\u22da", "\\lesseqgtr", true);
+defineSymbol(math, ams, rel, "\u2a8b", "\\lesseqqgtr", true);
 defineSymbol(math, ams, rel, "\u2251", "\\doteqdot");
 defineSymbol(math, ams, rel, "\u2253", "\\risingdotseq", true);
 defineSymbol(math, ams, rel, "\u2252", "\\fallingdotseq", true);
