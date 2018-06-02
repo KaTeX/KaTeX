@@ -1,6 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
+import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -36,13 +37,13 @@ defineFunction({
         allowedInText: true,
         consumeMode: "text",
     },
-    handler(context, args) {
+    handler({parser, funcName}, args) {
         const body = args[0];
-        return {
+        return new ParseNode("text", {
             type: "text",
             body: ordargument(body),
-            font: context.funcName,
-        };
+            font: funcName,
+        }, parser.mode);
     },
     htmlBuilder(group, options) {
         const font = group.value.font;

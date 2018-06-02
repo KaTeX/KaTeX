@@ -17,15 +17,15 @@ defineFunction({
         argTypes: ["size", "text"],
         allowedInText: true,
     },
-    handler(context, args) {
+    handler({parser}, args) {
         const amount = assertNodeType(args[0], "size");
         const body = args[1];
-        return {
+        return new ParseNode("raisebox", {
             type: "raisebox",
             dy: amount,
             body: body,
             value: ordargument(body),
-        };
+        }, parser.mode);
     },
     htmlBuilder(group, options) {
         const text = new ParseNode("text", {

@@ -4,12 +4,11 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import stretchy from "../stretchy";
 import Style from "../Style";
-import {assertNodeType, checkNodeType} from "../ParseNode";
+import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type ParseNode from "../ParseNode";
 import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "horizBrace", but
@@ -126,13 +125,13 @@ defineFunction({
     props: {
         numArgs: 1,
     },
-    handler(context, args) {
-        return {
+    handler({parser, funcName}, args) {
+        return new ParseNode("horizBrace", {
             type: "horizBrace",
-            label: context.funcName,
-            isOver: /^\\over/.test(context.funcName),
+            label: funcName,
+            isOver: /^\\over/.test(funcName),
             base: args[0],
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,

@@ -244,8 +244,8 @@ export default class Parser {
                 denomNode = new ParseNode("ordgroup", denomBody, this.mode);
             }
 
-            const value = this.callFunction(funcName, [numerNode, denomNode], []);
-            return [new ParseNode(value.type, value, this.mode)];
+            const node = this.callFunction(funcName, [numerNode, denomNode], []);
+            return [node];
         } else {
             return body;
         }
@@ -443,9 +443,11 @@ export default class Parser {
         if (func === "\\begin") {
             // begin...end is similar to left...right
             const begin = this.parseGivenFunction(start);
+            // $FlowFixMe
             const envName = begin.value.name;
             if (!environments.hasOwnProperty(envName)) {
                 throw new ParseError(
+                    // $FlowFixMe
                     "No such environment: " + envName, begin.value.nameGroup);
             }
             // Build the environment object. Arguments and other information will
@@ -464,9 +466,11 @@ export default class Parser {
             const end = this.parseFunction();
             if (!end) {
                 throw new ParseError("failed to parse function after \\end");
+            // $FlowFixMe
             } else if (end.value.name !== envName) {
                 throw new ParseError(
                     "Mismatch: \\begin{" + envName + "} matched " +
+                    // $FlowFixMe
                     "by \\end{" + end.value.name + "}",
                     endNameToken);
             }
@@ -521,9 +525,8 @@ export default class Parser {
             }
             const {args, optArgs} = this.parseArguments(func, funcData);
             const token = baseGroup.token;
-            const result = this.callFunction(
+            return this.callFunction(
                 func, args, optArgs, token, breakOnTokenText);
-            return new ParseNode(result.type, result, this.mode);
         } else {
             return baseGroup.result;
         }
@@ -538,7 +541,7 @@ export default class Parser {
         optArgs: (?ParseNode<*>)[],
         token?: Token,
         breakOnTokenText?: BreakToken,
-    ): * {
+    ): ParseNode<*> {
         const context: FunctionContext = {
             funcName: name,
             parser: this,
