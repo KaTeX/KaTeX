@@ -304,8 +304,8 @@ StretchyAccentColor: |
 StrikeThrough: |
     \begin{array}{l}
         \cancel x \quad \cancel{2B} + \bcancel 5 +\bcancel{5ay} \\
-        \sout{5ab} + \sout{5ABC} + \xcancel{\oint_S{\vec E\cdot\hat n\,\mathrm d a}} \\
-        \frac{x+\cancel B}{x+\cancel x} + \frac{x+\cancel y}{x} + \cancel{B}_1^2 + \cancel{B^2} \\
+        \sout{5ab} + \sout{5ABC} + \xcancel{\oint_S{\vec E\cdot\hat n\,\mathrm d a}} \\[0.3em]
+        \frac{x+\cancel B}{x+\cancel x} + \frac{x+\cancel y}{x} + \cancel{B}_1^2 + \cancel{B^2} \\[0.2em]
         \left\lvert\cancel{ac}\right\rvert
     \end{array}
 StrikeThroughColor: |

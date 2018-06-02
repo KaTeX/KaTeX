@@ -19,6 +19,13 @@ const htmlBuilder = (group, options) => {
     let img;
     let imgShift = 0;
 
+    // In the LaTeX cancel package, line geometry is slightly different
+    // depending on whether the subject is wider than it is tall, or vice versa.
+    // We don't know the width of a group, so as a proxy, we test if
+    // the subject is a single character. This captures most of the
+    // subjects that should get the "tall" treatment.
+    const isSingleChar = utils.isCharacterBox(group.value.body);
+
     if (label === "sout") {
         img = buildCommon.makeSpan(["stretchy", "sout"]);
         img.height = options.fontMetrics().defaultRuleThickness / scale;
@@ -26,7 +33,13 @@ const htmlBuilder = (group, options) => {
 
     } else {
         // Add horizontal padding
-        inner.classes.push(/cancel/.test(label) ? "cancel-pad" : "boxpad");
+        if (/cancel/.test(label)) {
+            if (!isSingleChar) {
+                inner.classes.push("cancel-pad");
+            }
+        } else {
+            inner.classes.push("boxpad");
+        }
 
         // Add vertical padding
         let vertPad = 0;
@@ -35,7 +48,7 @@ const htmlBuilder = (group, options) => {
         if (/box/.test(label)) {
             vertPad = label === "colorbox" ? 0.3 : 0.34;
         } else {
-            vertPad = utils.isCharacterBox(group.value.body) ? 0.2 : 0;
+            vertPad = isSingleChar ? 0.2 : 0;
         }
 
         img = stretchy.encloseSpan(inner, label, vertPad, options);
@@ -80,8 +93,14 @@ const htmlBuilder = (group, options) => {
     }
 
     if (/cancel/.test(label)) {
+        // The cancel package documentation says that cancel lines add their height
+        // to the expression, but tests show that isn't how it actually works.
+        vlist.height = inner.height;
+        vlist.depth = inner.depth;
+    }
+
+    if (/cancel/.test(label) && !isSingleChar) {
         // cancel does not create horiz space for its line extension.
-        // That is, not when adjacent to a mord.
         return buildCommon.makeSpan(["mord", "cancel-lap"], [vlist], options);
     } else {
         return buildCommon.makeSpan(["mord"], [vlist], options);
