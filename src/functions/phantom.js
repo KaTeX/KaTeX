@@ -2,6 +2,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
+import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -12,12 +13,12 @@ defineFunction({
     props: {
         numArgs: 1,
     },
-    handler: (context, args) => {
+    handler: ({parser}, args) => {
         const body = args[0];
-        return {
+        return new ParseNode("phantom", {
             type: "phantom",
             value: ordargument(body),
-        };
+        }, parser.mode);
     },
     htmlBuilder: (group, options) => {
         const elements = html.buildExpression(
@@ -42,13 +43,13 @@ defineFunction({
     props: {
         numArgs: 1,
     },
-    handler: (context, args) => {
+    handler: ({parser}, args) => {
         const body = args[0];
-        return {
+        return new ParseNode("hphantom", {
             type: "hphantom",
             value: ordargument(body),
             body: body,
-        };
+        }, parser.mode);
     },
     htmlBuilder: (group, options) => {
         let node = buildCommon.makeSpan(
@@ -84,13 +85,13 @@ defineFunction({
     props: {
         numArgs: 1,
     },
-    handler: (context, args) => {
+    handler: ({parser}, args) => {
         const body = args[0];
-        return {
+        return new ParseNode("vphantom", {
             type: "vphantom",
             value: ordargument(body),
             body: body,
-        };
+        }, parser.mode);
     },
     htmlBuilder: (group, options) => {
         const inner = buildCommon.makeSpan(

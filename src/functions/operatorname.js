@@ -16,12 +16,12 @@ defineFunction({
     props: {
         numArgs: 1,
     },
-    handler: (context, args) => {
+    handler: ({parser}, args) => {
         const body = args[0];
-        return {
+        return new ParseNode("operatorname", {
             type: "operatorname",
             value: ordargument(body),
-        };
+        }, parser.mode);
     },
 
     htmlBuilder: (group, options) => {

@@ -5,12 +5,11 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
-import {assertNodeType} from "../ParseNode";
+import ParseNode, {assertNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type ParseNode from "../ParseNode";
 import type {LeftRightDelimType} from "../ParseNode";
 import type {FunctionContext} from "../defineFunction";
 
@@ -79,12 +78,12 @@ defineFunction({
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
 
-        return {
+        return new ParseNode("delimsizing", {
             type: "delimsizing",
             size: delimiterSizes[context.funcName].size,
             mclass: delimiterSizes[context.funcName].mclass,
             value: delim.value,
-        };
+        }, context.parser.mode);
     },
     htmlBuilder: (group, options) => {
         const delim = group.value.value;
@@ -143,10 +142,10 @@ defineFunction({
         // \left case below triggers parsing of \right in
         //   `const right = parser.parseFunction();`
         // uses this return value.
-        return {
+        return new ParseNode("leftright-right", {
             type: "leftright-right",
             value: checkDelimiter(args[0], context).value,
-        };
+        }, context.parser.mode);
     },
 });
 
@@ -172,12 +171,12 @@ defineFunction({
         if (!right) {
             throw new ParseError('failed to parse function after \\right');
         }
-        return {
+        return new ParseNode("leftright", {
             type: "leftright",
             body: body,
             left: delim.value,
             right: assertNodeType(right, "leftright-right").value.value,
-        };
+        }, parser.mode);
     },
     htmlBuilder: (group, options) => {
         const groupValue = leftRightGroupValue(group);
@@ -284,10 +283,10 @@ defineFunction({
             throw new ParseError("\\middle without preceding \\left", delim);
         }
 
-        return {
+        return new ParseNode("middle", {
             type: "middle",
             value: delim.value,
-        };
+        }, context.parser.mode);
     },
     htmlBuilder: (group, options) => {
         let middleDelim;
