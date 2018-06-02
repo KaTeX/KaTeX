@@ -272,6 +272,15 @@ const htmlBuilder = function(group, options) {
                     -(totalHeight - offset) + "em";
 
                 cols.push(separator);
+            } else if (colDescr.separator === ":") {
+                const separator = buildCommon.makeSpan(
+                    ["vertical-separator", "vs-dashed"], [], options
+                );
+                separator.style.height = totalHeight + "em";
+                separator.style.verticalAlign =
+                    -(totalHeight - offset) + "em";
+
+                cols.push(separator);
             } else {
                 throw new ParseError(
                     "Invalid separator type: " + colDescr.separator);
@@ -453,6 +462,11 @@ defineEnvironment({
                 return {
                     type: "separator",
                     separator: "|",
+                };
+            } else if (ca === ":") {
+                return {
+                    type: "separator",
+                    separator: ":",
                 };
             }
             throw new ParseError(
