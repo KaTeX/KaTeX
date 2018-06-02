@@ -9,7 +9,7 @@ import {validUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
-import ParseNode from "./ParseNode";
+import ParseNode, {assertNodeType} from "./ParseNode";
 import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer.js";
 import Settings from "./Settings";
@@ -442,12 +442,12 @@ export default class Parser {
 
         if (func === "\\begin") {
             // begin...end is similar to left...right
-            const begin = this.parseGivenFunction(start);
-            // $FlowFixMe
+            const begin =
+                assertNodeType(this.parseGivenFunction(start), "environment");
+
             const envName = begin.value.name;
             if (!environments.hasOwnProperty(envName)) {
                 throw new ParseError(
-                    // $FlowFixMe
                     "No such environment: " + envName, begin.value.nameGroup);
             }
             // Build the environment object. Arguments and other information will
@@ -463,14 +463,12 @@ export default class Parser {
             const result = env.handler(context, args, optArgs);
             this.expect("\\end", false);
             const endNameToken = this.nextToken;
-            const end = this.parseFunction();
+            const end = assertNodeType(this.parseFunction(), "environment");
             if (!end) {
                 throw new ParseError("failed to parse function after \\end");
-            // $FlowFixMe
             } else if (end.value.name !== envName) {
                 throw new ParseError(
                     "Mismatch: \\begin{" + envName + "} matched " +
-                    // $FlowFixMe
                     "by \\end{" + end.value.name + "}",
                     endNameToken);
             }
