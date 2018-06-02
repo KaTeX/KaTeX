@@ -1,6 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import ParseError from "../ParseError";
+import ParseNode from "../ParseNode";
 
 // Switching from text mode back to math mode
 defineFunction({
@@ -12,8 +13,7 @@ defineFunction({
         allowedInMath: false,
         consumeMode: "math",
     },
-    handler(context, args) {
-        const {funcName, parser} = context;
+    handler({funcName, parser}, args) {
         const outerMode = parser.mode;
         parser.switchMode("math");
         const close = (funcName === "\\(" ? "\\)" : "$");
@@ -23,11 +23,11 @@ defineFunction({
         parser.expect(close, false);
         parser.switchMode(outerMode);
         parser.consume();
-        return {
+        return new ParseNode("styling", {
             type: "styling",
             style: "text",
             value: body,
-        };
+        }, parser.mode);
     },
 });
 
