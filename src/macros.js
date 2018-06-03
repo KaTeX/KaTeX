@@ -223,6 +223,17 @@ defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
 defineMacro("\\rlap", "\\mathrlap{\\textrm{#1}}");
 defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 
+// Negated symbols from base/fontmath.ltx:
+// \def\neq{\not=} \let\ne=\neq
+// \DeclareRobustCommand
+//   \notin{\mathrel{\m@th\mathpalette\c@ncel\in}}
+// \def\c@ncel#1#2{\m@th\ooalign{$\hfil#1\mkern1mu/\hfil$\crcr$#1#2$}}
+defineMacro("\\neq", "\\not=");
+defineMacro("\\ne", "\\neq");
+defineMacro("\u2260", "\\neq");
+defineMacro("\\notin", "\\mathrel{{\\in}\\mathllap{/\\mskip1mu}}");
+defineMacro("\u2209", "\\notin");
+
 // Unicode stacked relations
 defineMacro("\u2258",
     "\\mathrel{=\\kern{-1em}\\raisebox{0.4em}{$\\scriptsize\\frown$}}");
