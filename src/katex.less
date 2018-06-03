@@ -542,15 +542,10 @@
     .cancel-pad {
         padding: 0 0.2em 0 0.2em;    // ref: cancel package  \advance\dimen@ 2\p@ %  "+2"
     }
-    .mord + .cancel-lap,
-    .mbin + .cancel-lap {
-        margin-left: -0.2em;
-    }
-    .cancel-lap + .mord,
-    .cancel-lap + .mbin,
-    .cancel-lap + .msupsub {
-        margin-left: -0.2em;
-    }
+    .cancel-lap {
+        margin-left: -0.2em;    // \cancel does not affect horizontal spacing.
+        margin-right: -0.2em;   // Apply negative margin to correct for 0.2em padding
+    }                           // inside the \cancel group.
     .sout {
         border-bottom-style: solid;
         border-bottom-width: 0.08em;

@@ -12,7 +12,7 @@ import * as mml from "../buildMathML";
 defineFunction({
     type: "genfrac",
     names: [
-        "\\dfrac", "\\frac", "\\tfrac",
+        "\\cfrac", "\\dfrac", "\\frac", "\\tfrac",
         "\\dbinom", "\\binom", "\\tbinom",
         "\\\\atopfrac", // can’t be entered directly
     ],
@@ -29,6 +29,7 @@ defineFunction({
         let size = "auto";
 
         switch (funcName) {
+            case "\\cfrac":
             case "\\dfrac":
             case "\\frac":
             case "\\tfrac":
@@ -49,6 +50,7 @@ defineFunction({
         }
 
         switch (funcName) {
+            case "\\cfrac":
             case "\\dfrac":
             case "\\dbinom":
                 size = "display";
@@ -61,6 +63,7 @@ defineFunction({
 
         return new ParseNode("genfrac", {
             type: "genfrac",
+            continued: funcName === "\\cfrac",
             numer: numer,
             denom: denom,
             hasBarLine: hasBarLine,
@@ -88,6 +91,15 @@ defineFunction({
 
         newOptions = options.havingStyle(nstyle);
         const numerm = html.buildGroup(group.value.numer, newOptions, options);
+
+        if (group.value.continued) {
+            // \cfrac inserts a \strut into the numerator.
+            // Get \strut dimensions from TeXbook page 353.
+            const hStrut = 8.5 / options.fontMetrics().ptPerEm;
+            const dStrut = 3.5 / options.fontMetrics().ptPerEm;
+            numerm.height = numerm.height < hStrut ? hStrut : numerm.height;
+            numerm.depth = numerm.depth < dStrut ? dStrut : numerm.depth;
+        }
 
         newOptions = options.havingStyle(dstyle);
         const denomm = html.buildGroup(group.value.denom, newOptions, options);
@@ -198,7 +210,10 @@ defineFunction({
                 group.value.leftDelim, delimSize, true,
                 options.havingStyle(style), group.mode, ["mopen"]);
         }
-        if (group.value.rightDelim == null) {
+
+        if (group.value.continued) {
+            rightDelim = buildCommon.makeSpan([]); // zero width for \cfrac
+        } else if (group.value.rightDelim == null) {
             rightDelim = html.makeNullDelimiter(options, ["mclose"]);
         } else {
             rightDelim = delimiter.customSizedDelim(
