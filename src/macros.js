@@ -250,6 +250,16 @@ defineMacro("\u203C", "\\mathclose{!\\mkern-0.8mu!}");
 defineMacro("\u220C", "\\notni");
 
 //////////////////////////////////////////////////////////////////////
+// LaTeX_2ε
+
+// \vdots{\vbox{\baselineskip4\p@  \lineskiplimit\z@
+// \kern6\p@\hbox{.}\hbox{.}\hbox{.}}}
+// We'll call \varvdots, which gets a glyph from symbols.js.
+// The zero-width rule gets us an equivalent to the vertical 6pt kern.
+defineMacro("\\vdots", "\\mathord{\\varvdots\\rule{0pt}{15pt}}");
+defineMacro("\u22ee", "\\vdots");
+
+//////////////////////////////////////////////////////////////////////
 // amsmath.sty
 // http://mirrors.concertpass.com/tex-archive/macros/latex/required/amsmath/amsmath.pdf
 
