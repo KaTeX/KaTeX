@@ -9,7 +9,7 @@ import {validUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
-import ParseNode from "./ParseNode";
+import ParseNode, {assertNodeType} from "./ParseNode";
 import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer.js";
 import Settings from "./Settings";
@@ -244,8 +244,8 @@ export default class Parser {
                 denomNode = new ParseNode("ordgroup", denomBody, this.mode);
             }
 
-            const value = this.callFunction(funcName, [numerNode, denomNode], []);
-            return [new ParseNode(value.type, value, this.mode)];
+            const node = this.callFunction(funcName, [numerNode, denomNode], []);
+            return [node];
         } else {
             return body;
         }
@@ -442,7 +442,9 @@ export default class Parser {
 
         if (func === "\\begin") {
             // begin...end is similar to left...right
-            const begin = this.parseGivenFunction(start);
+            const begin =
+                assertNodeType(this.parseGivenFunction(start), "environment");
+
             const envName = begin.value.name;
             if (!environments.hasOwnProperty(envName)) {
                 throw new ParseError(
@@ -461,7 +463,7 @@ export default class Parser {
             const result = env.handler(context, args, optArgs);
             this.expect("\\end", false);
             const endNameToken = this.nextToken;
-            const end = this.parseFunction();
+            const end = assertNodeType(this.parseFunction(), "environment");
             if (!end) {
                 throw new ParseError("failed to parse function after \\end");
             } else if (end.value.name !== envName) {
@@ -521,9 +523,8 @@ export default class Parser {
             }
             const {args, optArgs} = this.parseArguments(func, funcData);
             const token = baseGroup.token;
-            const result = this.callFunction(
+            return this.callFunction(
                 func, args, optArgs, token, breakOnTokenText);
-            return new ParseNode(result.type, result, this.mode);
         } else {
             return baseGroup.result;
         }
@@ -538,7 +539,7 @@ export default class Parser {
         optArgs: (?ParseNode<*>)[],
         token?: Token,
         breakOnTokenText?: BreakToken,
-    ): * {
+    ): ParseNode<*> {
         const context: FunctionContext = {
             funcName: name,
             parser: this,

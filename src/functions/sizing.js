@@ -3,6 +3,7 @@ import buildCommon from "../buildCommon";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
+import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -55,18 +56,16 @@ defineFunction({
         numArgs: 0,
         allowedInText: true,
     },
-    handler: (context, args) => {
-        const {breakOnTokenText, funcName, parser} = context;
-
+    handler: ({breakOnTokenText, funcName, parser}, args) => {
         parser.consumeSpaces();
         const body = parser.parseExpression(false, breakOnTokenText);
 
-        return {
+        return new ParseNode("sizing", {
             type: "sizing",
             // Figure out what size to use based on the list of functions above
             size: utils.indexOf(sizeFuncs, funcName) + 1,
             value: body,
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder: (group, options) => {

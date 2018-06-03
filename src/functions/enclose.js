@@ -4,7 +4,7 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
-import {assertNodeType} from "../ParseNode";
+import ParseNode, {assertNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -146,15 +146,15 @@ defineFunction({
         greediness: 3,
         argTypes: ["color", "text"],
     },
-    handler(context, args, optArgs) {
+    handler({parser, funcName}, args, optArgs) {
         const color = assertNodeType(args[0], "color-token");
         const body = args[1];
-        return {
+        return new ParseNode("enclose", {
             type: "enclose",
-            label: context.funcName,
+            label: funcName,
             backgroundColor: color,
             body: body,
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,
@@ -169,17 +169,17 @@ defineFunction({
         greediness: 3,
         argTypes: ["color", "color", "text"],
     },
-    handler(context, args, optArgs) {
+    handler({parser, funcName}, args, optArgs) {
         const borderColor = assertNodeType(args[0], "color-token");
         const backgroundColor = assertNodeType(args[1], "color-token");
         const body = args[2];
-        return {
+        return new ParseNode("enclose", {
             type: "enclose",
-            label: context.funcName,
+            label: funcName,
             backgroundColor: backgroundColor,
             borderColor: borderColor,
             body: body,
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,
@@ -191,13 +191,13 @@ defineFunction({
     props: {
         numArgs: 1,
     },
-    handler(context, args, optArgs) {
+    handler({parser, funcName}, args, optArgs) {
         const body = args[0];
-        return {
+        return new ParseNode("enclose", {
             type: "enclose",
-            label: context.funcName,
+            label: funcName,
             body: body,
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,

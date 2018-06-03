@@ -171,6 +171,7 @@ export type ParseNodeTypes = {
     |},
     "genfrac": {|
         type: "genfrac",
+        continued: boolean,
         numer: ParseNode<*>,
         denom: ParseNode<*>,
         hasBarLine: boolean,
