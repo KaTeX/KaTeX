@@ -426,6 +426,7 @@ describe("A frac parser", function() {
     const expression = "\\frac{x}{y}";
     const dfracExpression = "\\dfrac{x}{y}";
     const tfracExpression = "\\tfrac{x}{y}";
+    const cfracExpression = "\\cfrac{x}{y}";
 
     it("should not fail", function() {
         expect(expression).toParse();
@@ -457,6 +458,12 @@ describe("A frac parser", function() {
         expect(tfracParse.type).toEqual("genfrac");
         expect(tfracParse.value.numer).toBeDefined();
         expect(tfracParse.value.denom).toBeDefined();
+
+        const cfracParse = getParsed(cfracExpression)[0];
+
+        expect(cfracParse.type).toEqual("genfrac");
+        expect(cfracParse.value.numer).toBeDefined();
+        expect(cfracParse.value.denom).toBeDefined();
     });
 
     it("should parse atop", function() {
@@ -1165,6 +1172,12 @@ describe("A begin/end parser", function() {
     it("should eat a final newline", function() {
         const m3 = getParsed("\\begin{matrix}a&b\\\\ c&d \\\\ \\end{matrix}")[0];
         expect(m3.value.body.length).toBe(2);
+    });
+
+    it("should grab \\arraystretch", function() {
+        const parse = getParsed("\\def\\arraystretch{1.5}" +
+            "\\begin{matrix}a&b\\\\c&d\\end{matrix}");
+        expect(parse).toMatchSnapshot();
     });
 });
 
@@ -2313,7 +2326,7 @@ describe("An array environment", function() {
     });
 
     it("should accept vertical separators", function() {
-        const parse = getParsed("\\begin{array}{|l||c|}\\end{array}");
+        const parse = getParsed("\\begin{array}{|l||c:r::}\\end{array}");
         expect(parse[0].type).toBe("array");
         expect(parse[0].value.cols).toEqual([
             {type: "separator", separator: "|"},
@@ -2321,7 +2334,10 @@ describe("An array environment", function() {
             {type: "separator", separator: "|"},
             {type: "separator", separator: "|"},
             {type: "align", align: "c"},
-            {type: "separator", separator: "|"},
+            {type: "separator", separator: ":"},
+            {type: "align", align: "r"},
+            {type: "separator", separator: ":"},
+            {type: "separator", separator: ":"},
         ]);
     });
 
