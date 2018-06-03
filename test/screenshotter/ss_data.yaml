@@ -296,7 +296,7 @@ StretchyAccent: |
     \begin{array}{l}
         \overrightarrow{AB} \quad \overleftarrow{AB} \quad \Overrightarrow{AB} \quad \overleftrightarrow{AB} \quad \overgroup{AB} \\
         \overlinesegment{AB} \quad \overleftharpoon{AB} \quad \overrightharpoon{AB} \quad \color{red}{\overrightarrow{AB}} \quad \widehat{\theta} \widetilde{A} \\
-        \widehat{AB} \quad \widehat{ABC} \quad \widetilde{AB} \quad \widetilde{ABC} \\
+        \widecheck{AB} \quad \widehat{ABC} \quad \widetilde{AB} \quad \widetilde{ABC} \\
         \overrightarrow{F} + \overrightarrow{AB} + \overrightarrow{F}^2 + \overrightarrow{F}_2 + \overrightarrow{F}_1^2 \\
         \overrightarrow{AB}^2+\frac{\overrightarrow{AB}}{\overrightarrow{AB}} + \sqrt{\overrightarrow{AB}} + \left\lvert\overrightarrow{AB}\right\rvert
     \end{array}

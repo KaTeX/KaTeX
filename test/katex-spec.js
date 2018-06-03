@@ -1852,6 +1852,7 @@ describe("An accent parser", function() {
 
     it("should parse stretchy, shifty accents", function() {
         expect("\\widehat{x}").toParse();
+        expect("\\widecheck{x}").toParse();
     });
 
     it("should parse stretchy, non-shifty accents", function() {
@@ -1879,6 +1880,7 @@ describe("An accent builder", function() {
 describe("A stretchy and shifty accent builder", function() {
     it("should not fail", function() {
         expect("\\widehat{AB}").toBuild();
+        expect("\\widecheck{AB}").toBuild();
         expect("\\widehat{AB}^2").toBuild();
         expect("\\widehat{AB}_2").toBuild();
         expect("\\widehat{AB}_2^2").toBuild();
