@@ -7,13 +7,14 @@
     ],
     "plugins": [
         "transform-runtime",
-        "transform-class-properties"
+        "transform-class-properties",
+        "external-helpers"
     ],
     "env": {
         "test": {
             "plugins": [
                 "transform-es2015-modules-commonjs"
-            ],
+            ]
         }
     }
 }

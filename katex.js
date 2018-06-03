@@ -23,7 +23,8 @@ import type ParseNode from "./src/ParseNode";
 import {defineSymbol} from './src/symbols';
 import {defineMacro} from './src/macros';
 
-import {version} from "./package.json";
+// import {version} from "./package.json";
+const version = "1.0.0";
 
 /**
  * Parse and build an expression, and place that expression in the DOM node

@@ -2,6 +2,7 @@
 const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack');
 
 /*::
 type Target = {|
@@ -98,6 +99,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             !dev && new MiniCssExtractPlugin({
                 filename: minimize ? '[name].min.css' : '[name].css',
             }),
+            new webpack.optimize.ModuleConcatenationPlugin(),
         ].filter(Boolean),
         devtool: dev && 'inline-source-map',
         optimization: {
@@ -114,6 +116,12 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         },
         performance: {
             hints: false,
+        },
+        stats: {
+            // Examine all modules
+            maxModules: Infinity,
+            // Display bailout reasons
+            optimizationBailout: true,
         },
     };
 }
