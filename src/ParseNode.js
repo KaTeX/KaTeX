@@ -171,6 +171,7 @@ export type ParseNodeTypes = {
     |},
     "genfrac": {|
         type: "genfrac",
+        continued: boolean,
         numer: ParseNode<*>,
         denom: ParseNode<*>,
         hasBarLine: boolean,
@@ -203,8 +204,9 @@ export type ParseNodeTypes = {
         alignment: string,
         body: ParseNode<*>,
     |},
-    "leftright": LeftRightDelimType | {|
-        type: "leftright",
+    "leftright": LeftRightDelimType,
+    "leftright-right": {|
+        type: "leftright-right",
         value: string,
     |},
     "mathchoice": {|

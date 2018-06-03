@@ -5,11 +5,11 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
+import ParseNode, {assertNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type ParseNode from "../ParseNode";
 import type {LeftRightDelimType} from "../ParseNode";
 import type {FunctionContext} from "../defineFunction";
 
@@ -78,12 +78,12 @@ defineFunction({
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
 
-        return {
+        return new ParseNode("delimsizing", {
             type: "delimsizing",
             size: delimiterSizes[context.funcName].size,
             mclass: delimiterSizes[context.funcName].mclass,
             value: delim.value,
-        };
+        }, context.parser.mode);
     },
     htmlBuilder: (group, options) => {
         const delim = group.value.value;
@@ -133,44 +133,50 @@ function leftRightGroupValue(group: ParseNode<"leftright">): LeftRightDelimType 
 
 
 defineFunction({
+    type: "leftright-right",
+    names: ["\\right"],
+    props: {
+        numArgs: 1,
+    },
+    handler: (context, args) => {
+        // \left case below triggers parsing of \right in
+        //   `const right = parser.parseFunction();`
+        // uses this return value.
+        return new ParseNode("leftright-right", {
+            type: "leftright-right",
+            value: checkDelimiter(args[0], context).value,
+        }, context.parser.mode);
+    },
+});
+
+
+defineFunction({
     type: "leftright",
-    names: [
-        "\\left", "\\right",
-    ],
+    names: ["\\left"],
     props: {
         numArgs: 1,
     },
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
 
-        if (context.funcName === "\\left") {
-            const parser = context.parser;
-            // Parse out the implicit body
-            ++parser.leftrightDepth;
-            // parseExpression stops before '\\right'
-            const body = parser.parseExpression(false);
-            --parser.leftrightDepth;
-            // Check the next token
-            parser.expect("\\right", false);
-            const right = parser.parseFunction();
-            if (!right) {
-                throw new ParseError('failed to parse function after \\right');
-            }
-            return {
-                type: "leftright",
-                body: body,
-                left: delim.value,
-                right: right.value.value,
-            };
-        } else {
-            // This is a little weird. We return this object which gets turned
-            // into a ParseNode which gets returned by
-            // `const right = parser.parseFunction();` up above.
-            return {
-                type: "leftright",
-                value: delim.value,
-            };
+        const parser = context.parser;
+        // Parse out the implicit body
+        ++parser.leftrightDepth;
+        // parseExpression stops before '\\right'
+        const body = parser.parseExpression(false);
+        --parser.leftrightDepth;
+        // Check the next token
+        parser.expect("\\right", false);
+        const right = parser.parseFunction();
+        if (!right) {
+            throw new ParseError('failed to parse function after \\right');
         }
+        return new ParseNode("leftright", {
+            type: "leftright",
+            body: body,
+            left: delim.value,
+            right: assertNodeType(right, "leftright-right").value.value,
+        }, parser.mode);
     },
     htmlBuilder: (group, options) => {
         const groupValue = leftRightGroupValue(group);
@@ -277,10 +283,10 @@ defineFunction({
             throw new ParseError("\\middle without preceding \\left", delim);
         }
 
-        return {
+        return new ParseNode("middle", {
             type: "middle",
             value: delim.value,
-        };
+        }, context.parser.mode);
     },
     htmlBuilder: (group, options) => {
         let middleDelim;
