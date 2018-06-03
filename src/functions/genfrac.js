@@ -4,6 +4,7 @@ import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import Style from "../Style";
+import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -19,7 +20,7 @@ defineFunction({
         numArgs: 2,
         greediness: 2,
     },
-    handler: (context, args) => {
+    handler: ({parser, funcName}, args) => {
         const numer = args[0];
         const denom = args[1];
         let hasBarLine;
@@ -27,7 +28,7 @@ defineFunction({
         let rightDelim = null;
         let size = "auto";
 
-        switch (context.funcName) {
+        switch (funcName) {
             case "\\dfrac":
             case "\\frac":
             case "\\tfrac":
@@ -47,7 +48,7 @@ defineFunction({
                 throw new Error("Unrecognized genfrac command");
         }
 
-        switch (context.funcName) {
+        switch (funcName) {
             case "\\dfrac":
             case "\\dbinom":
                 size = "display";
@@ -58,7 +59,7 @@ defineFunction({
                 break;
         }
 
-        return {
+        return new ParseNode("genfrac", {
             type: "genfrac",
             numer: numer,
             denom: denom,
@@ -66,7 +67,7 @@ defineFunction({
             leftDelim: leftDelim,
             rightDelim: rightDelim,
             size: size,
-        };
+        }, parser.mode);
     },
     htmlBuilder: (group, options) => {
         // Fractions are handled in the TeXbook on pages 444-445, rules 15(a-e).
@@ -261,9 +262,9 @@ defineFunction({
         numArgs: 0,
         infix: true,
     },
-    handler(context) {
+    handler({parser, funcName, token}) {
         let replaceWith;
-        switch (context.funcName) {
+        switch (funcName) {
             case "\\over":
                 replaceWith = "\\frac";
                 break;
@@ -276,11 +277,11 @@ defineFunction({
             default:
                 throw new Error("Unrecognized infix genfrac command");
         }
-        return {
+        return new ParseNode("infix", {
             type: "infix",
             replaceWith: replaceWith,
-            token: context.token,
-        };
+            token: token,
+        }, parser.mode);
     },
 });
 

@@ -44,17 +44,17 @@ defineFunction({
         numArgs: 1,
         greediness: 2,
     },
-    handler: (context, args) => {
+    handler: ({parser, funcName}, args) => {
         const body = args[0];
-        let func = context.funcName;
+        let func = funcName;
         if (func in fontAliases) {
             func = fontAliases[func];
         }
-        return {
+        return new ParseNode("font", {
             type: "font",
             font: func.slice(1),
             body: body,
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,
@@ -76,18 +76,17 @@ defineFunction({
         numArgs: 0,
         allowedInText: true,
     },
-    handler: (context, args) => {
-        const {parser, funcName, breakOnTokenText} = context;
-
+    handler: ({parser, funcName, breakOnTokenText}, args) => {
+        const {mode} = parser;
         parser.consumeSpaces();
         const body = parser.parseExpression(true, breakOnTokenText);
         const style = oldFontFuncsMap[funcName];
 
-        return {
+        return new ParseNode("font", {
             type: "font",
             font: style,
             body: new ParseNode("ordgroup", body, parser.mode),
-        };
+        }, mode);
     },
     htmlBuilder,
     mathmlBuilder,
