@@ -2324,7 +2324,7 @@ describe("An array environment", function() {
     });
 
     it("should accept vertical separators", function() {
-        const parse = getParsed("\\begin{array}{|l||c|}\\end{array}");
+        const parse = getParsed("\\begin{array}{|l||c:r::}\\end{array}");
         expect(parse[0].type).toBe("array");
         expect(parse[0].value.cols).toEqual([
             {type: "separator", separator: "|"},
@@ -2332,7 +2332,10 @@ describe("An array environment", function() {
             {type: "separator", separator: "|"},
             {type: "separator", separator: "|"},
             {type: "align", align: "c"},
-            {type: "separator", separator: "|"},
+            {type: "separator", separator: ":"},
+            {type: "align", align: "r"},
+            {type: "separator", separator: ":"},
+            {type: "separator", separator: ":"},
         ]);
     });
 
