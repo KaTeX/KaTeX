@@ -63,7 +63,7 @@ defineFunction({
 
         return new ParseNode("genfrac", {
             type: "genfrac",
-            continued: context.funcName === "\\cfrac",
+            continued: funcName === "\\cfrac",
             numer: numer,
             denom: denom,
             hasBarLine: hasBarLine,
