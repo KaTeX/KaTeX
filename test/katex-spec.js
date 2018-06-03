@@ -1411,13 +1411,12 @@ describe("A font parser", function() {
         expect(nestedParse.value.font).toEqual("mathbb");
         expect(nestedParse.value.type).toEqual("font");
 
-        expect(nestedParse.value.body.value.length).toEqual(3);
+        expect(nestedParse.value.body.value.length).toEqual(4);
         const bbBody = nestedParse.value.body.value;
         expect(bbBody[0].type).toEqual("mathord");
-        expect(bbBody[1].type).toEqual("rel");
-        expect(bbBody[2].type).toEqual("font");
-        expect(bbBody[2].value.font).toEqual("mathrm");
-        expect(bbBody[2].value.type).toEqual("font");
+        expect(bbBody[3].type).toEqual("font");
+        expect(bbBody[3].value.font).toEqual("mathrm");
+        expect(bbBody[3].value.type).toEqual("font");
     });
 
     it("should work with \\textcolor", function() {
@@ -2900,7 +2899,7 @@ describe("Unicode", function() {
     });
 
     it("should parse symbols", function() {
-        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼\u00b7").toParse(strictSettings);
+        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼⋮\u00b7").toParse(strictSettings);
     });
 
     it("should build Greek capital letters", function() {
