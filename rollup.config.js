@@ -14,11 +14,11 @@ export default {
         name: 'katex',
     },
     plugins: [
+        json(),
         babel({
             exclude: 'node_modules/**',
             runtimeHelpers: true,
         }),
-        json(),
         flow(),
         resolve(),
         commonjs({
