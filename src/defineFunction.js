@@ -3,7 +3,7 @@ import {checkNodeType} from "./ParseNode";
 import domTree from "./domTree";
 
 import type Parser from "./Parser";
-import type ParseNode, {NodeType, NodeValue} from "./ParseNode";
+import type ParseNode, {NodeType} from "./ParseNode";
 import type Options from "./Options";
 import type {ArgType, BreakToken, Mode} from "./types";
 import type {HtmlDomNode} from "./domTree";
@@ -22,7 +22,7 @@ export type FunctionHandler<NODETYPE: NodeType> = (
     context: FunctionContext,
     args: ParseNode<*>[],
     optArgs: (?ParseNode<*>)[],
-) => NodeValue<NODETYPE>;
+) => ParseNode<NODETYPE>;
 
 export type HtmlBuilder<NODETYPE> = (ParseNode<NODETYPE>, Options) => HtmlDomNode;
 export type MathMLBuilder<NODETYPE> = (

@@ -29,13 +29,13 @@ defineFunction({
     props: {
         numArgs: 1,
     },
-    handler(context, args) {
+    handler({parser, funcName}, args) {
         const body = args[0];
-        return {
+        return new ParseNode("mclass", {
             type: "mclass",
-            mclass: "m" + context.funcName.substr(5),
+            mclass: "m" + funcName.substr(5),
             value: ordargument(body),
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,
@@ -48,12 +48,12 @@ defineFunction({
     props: {
         numArgs: 2,
     },
-    handler(context, args) {
+    handler({parser, funcName}, args) {
         const baseArg = args[1];
         const shiftedArg = args[0];
 
         let mclass = "mrel";  // default. May change below.
-        if (context.funcName !== "\\stackrel") {
+        if (funcName !== "\\stackrel") {
             // LaTeX applies \binrel spacing to \overset and \underset. \binrel
             // spacing varies with (bin|rel|ord) of the atom in the argument.
             // We'll do the same.
@@ -74,22 +74,22 @@ defineFunction({
             limits: true,
             alwaysHandleSupSub: true,
             symbol: false,
-            suppressBaseShift: context.funcName !== "\\stackrel",
+            suppressBaseShift: funcName !== "\\stackrel",
             value: ordargument(baseArg),
         }, baseArg.mode);
 
         const supsub = new ParseNode("supsub", {
             type: "supsub",
             base: baseOp,
-            sup: context.funcName === "\\underset" ? null : shiftedArg,
-            sub: context.funcName === "\\underset" ? shiftedArg : null,
+            sup: funcName === "\\underset" ? null : shiftedArg,
+            sub: funcName === "\\underset" ? shiftedArg : null,
         }, shiftedArg.mode);
 
-        return {
+        return new ParseNode("mclass", {
             type: "mclass",
             mclass: mclass,
             value: [supsub],
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,

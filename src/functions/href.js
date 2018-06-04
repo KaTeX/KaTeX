@@ -1,7 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import {assertNodeType} from "../ParseNode";
+import ParseNode, {assertNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -13,14 +13,14 @@ defineFunction({
         numArgs: 2,
         argTypes: ["url", "original"],
     },
-    handler: (context, args) => {
+    handler: ({parser}, args) => {
         const body = args[1];
         const href = assertNodeType(args[0], "url").value.value;
-        return {
+        return new ParseNode("href", {
             type: "href",
             href: href,
             body: ordargument(body),
-        };
+        }, parser.mode);
     },
     htmlBuilder: (group, options) => {
         const elements = html.buildExpression(

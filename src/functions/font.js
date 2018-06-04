@@ -44,17 +44,17 @@ defineFunction({
         numArgs: 1,
         greediness: 2,
     },
-    handler: (context, args) => {
+    handler: ({parser, funcName}, args) => {
         const body = args[0];
-        let func = context.funcName;
+        let func = funcName;
         if (func in fontAliases) {
             func = fontAliases[func];
         }
-        return {
+        return new ParseNode("font", {
             type: "font",
             font: func.slice(1),
             body,
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,
@@ -67,7 +67,7 @@ defineFunction({
         numArgs: 1,
         greediness: 2,
     },
-    handler: (context, args) => {
+    handler: ({parser}, args) => {
         const body = args[0];
         // amsbsy.sty's \boldsymbol inherits the argument's bin|rel|ord status
         // (similar to \stackrel in functions/mclass.js)
@@ -77,7 +77,7 @@ defineFunction({
         if (/^(bin|rel)$/.test(atomType)) {
             mclass = "m" + atomType;
         }
-        return {
+        return new ParseNode("mclass", {
             type: "mclass",
             mclass,
             value: [
@@ -85,9 +85,9 @@ defineFunction({
                     type: "font",
                     font: "boldsymbol",
                     body,
-                }, context.parser.mode),
+                }, parser.mode),
             ],
-        };
+        }, parser.mode);
     },
 });
 
@@ -107,18 +107,17 @@ defineFunction({
         numArgs: 0,
         allowedInText: true,
     },
-    handler: (context, args) => {
-        const {parser, funcName, breakOnTokenText} = context;
-
+    handler: ({parser, funcName, breakOnTokenText}, args) => {
+        const {mode} = parser;
         parser.consumeSpaces();
         const body = parser.parseExpression(true, breakOnTokenText);
         const style = oldFontFuncsMap[funcName];
 
-        return {
+        return new ParseNode("font", {
             type: "font",
             font: style,
             body: new ParseNode("ordgroup", body, parser.mode),
-        };
+        }, mode);
     },
     htmlBuilder,
     mathmlBuilder,
