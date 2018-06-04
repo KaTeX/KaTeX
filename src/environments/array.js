@@ -88,8 +88,8 @@ function parseArray(
         }
     }
 
-    let lastRow = [];
-    const body = [lastRow];
+    let row = [];
+    const body = [row];
     const rowGaps = [];
     const numHLinesBeforeRow = [];
 
@@ -106,15 +106,15 @@ function parseArray(
                 value: [cell],
             }, parser.mode);
         }
-        lastRow.push(cell);
+        row.push(cell);
         const next = parser.nextToken.text;
         if (next === "&") {
             parser.consume();
         } else if (next === "\\end") {
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
             // the last line is empty.
-            // NOTE: Currently, `cell` is the last item added into `lastRow`.
-            if (lastRow.length === 1 && cell.value.value[0].value.length === 0) {
+            // NOTE: Currently, `cell` is the last item added into `row`.
+            if (row.length === 1 && cell.value.value[0].value.length === 0) {
                 body.pop();
             }
             break;
@@ -128,8 +128,8 @@ function parseArray(
             // check for \hline(s) following the row separator
             numHLinesBeforeRow.push(getNumHLines(parser));
 
-            lastRow = [];
-            body.push(lastRow);
+            row = [];
+            body.push(row);
         } else {
             throw new ParseError("Expected & or \\\\ or \\cr or \\end",
                                  parser.nextToken);
