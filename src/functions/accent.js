@@ -209,7 +209,7 @@ defineFunction({
     type: "accent",
     names: [
         "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
-        "\\check", "\\hat", "\\vec", "\\dot", "\\mathring",
+        "\\check", "\\hat", "\\vec", "\\dot", "\\mathring", "\\widecheck",
         "\\widehat", "\\widetilde", "\\overrightarrow", "\\overleftarrow",
         "\\Overrightarrow", "\\overleftrightarrow", "\\overgroup",
         "\\overlinesegment", "\\overleftharpoon", "\\overrightharpoon",
@@ -223,7 +223,8 @@ defineFunction({
         const isStretchy = !NON_STRETCHY_ACCENT_REGEX.test(context.funcName);
         const isShifty = !isStretchy ||
             context.funcName === "\\widehat" ||
-            context.funcName === "\\widetilde";
+            context.funcName === "\\widetilde" ||
+            context.funcName === "\\widecheck";
 
         return new ParseNode("accent", {
             type: "accent",
