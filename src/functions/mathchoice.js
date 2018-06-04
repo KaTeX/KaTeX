@@ -2,6 +2,8 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import Style from "../Style";
+import ParseNode from "../ParseNode";
+
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
@@ -26,14 +28,14 @@ defineFunction({
     props: {
         numArgs: 4,
     },
-    handler: (context, args) => {
-        return {
+    handler: ({parser}, args) => {
+        return new ParseNode("mathchoice", {
             type: "mathchoice",
             display:      ordargument(args[0]),
             text:         ordargument(args[1]),
             script:       ordargument(args[2]),
             scriptscript: ordargument(args[3]),
-        };
+        }, parser.mode);
     },
     htmlBuilder: (group, options) => {
         const body = chooseMathStyle(group, options);

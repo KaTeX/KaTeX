@@ -33,7 +33,7 @@ Alignedat: |
         3a &= 3 & 17b &= 34 &\quad 400c &= 1200
     \end{alignedat}
 Arrays: |
-    \left(\begin{array}{|rl|c||}
+    \left(\begin{array}{|rl:c||}
         1&2&3\\
         1+1&2+1&3+1\cr1\over2&\scriptstyle 1/2&\frac12\\[1ex]
         \begin{pmatrix}x\\y\end{pmatrix}&0&\begin{vmatrix}a&b\\c&d\end{vmatrix}
@@ -106,7 +106,7 @@ ExtensibleArrows: |
         \xrightleftharpoons[ab]{ABC} + \xhookrightarrow[ab]{ABC} \\
         \xtwoheadrightarrow{ABC} + \frac{\xrightarrow[ab]{ABC}}{\xrightarrow[ab]{ABC}} + \left\lvert\xrightarrow[ab]{ABC}\right\rvert
     \end{array}
-FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}
+FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}\; \cfrac{1}{1+\cfrac{1}{x}}
 Functions: \sin\cos\tan\ln\log
 Gathered: |
     \begin{gathered}
@@ -224,7 +224,8 @@ NewLine: |
 Not: |
     \begin{array}{l}
         \not=\not>\not\geq\not\in\not<\not\leq\not{abc} \\
-        \not xy + ab \not xy
+        \not xy + ab \not xy \\
+        a \neq b \notin c
     \end{array}
 NullDelimiterInteraction: a \bigl. + 2 \quad \left. + a \right)
 OldFont: |
@@ -304,8 +305,8 @@ StretchyAccentColor: |
 StrikeThrough: |
     \begin{array}{l}
         \cancel x \quad \cancel{2B} + \bcancel 5 +\bcancel{5ay} \\
-        \sout{5ab} + \sout{5ABC} + \xcancel{\oint_S{\vec E\cdot\hat n\,\mathrm d a}} \\
-        \frac{x+\cancel B}{x+\cancel x} + \frac{x+\cancel y}{x} + \cancel{B}_1^2 + \cancel{B^2} \\
+        \sout{5ab} + \sout{5ABC} + \xcancel{\oint_S{\vec E\cdot\hat n\,\mathrm d a}} \\[0.3em]
+        \frac{x+\cancel B}{x+\cancel x} + \frac{x+\cancel y}{x} + \cancel{B}_1^2 + \cancel{B^2} \\[0.2em]
         \left\lvert\cancel{ac}\right\rvert
     \end{array}
 StrikeThroughColor: |

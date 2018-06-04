@@ -25,7 +25,7 @@ type AlignSpec = { type: "separator", separator: string } | {
 export type ArrayEnvNodeData = {|
     type: "array",
     hskipBeforeAndAfter?: boolean,
-    arraystretch?: number,
+    arraystretch: number,
     addJot?: boolean,
     cols?: AlignSpec[],
     body: ParseNode<*>[][], // List of rows in the (2D) array.
@@ -70,6 +70,20 @@ function parseArray(
     // Parse body of array with \\ temporarily mapped to \cr
     parser.gullet.beginGroup();
     parser.gullet.macros.set("\\\\", "\\cr");
+
+    // Get current arraystretch if it's not set by the environment
+    if (!result.arraystretch) {
+        const arraystretch = parser.gullet.expandMacroAsText("\\arraystretch");
+        if (arraystretch == null) {
+            // Default \arraystretch from lttab.dtx
+            result.arraystretch = 1;
+        } else {
+            result.arraystretch = parseFloat(arraystretch);
+            if (!result.arraystretch || result.arraystretch < 0) {
+                throw new ParseError(`Invalid \\arraystretch: ${arraystretch}`);
+            }
+        }
+    }
 
     let row = [];
     const body = [row];
@@ -166,10 +180,7 @@ const htmlBuilder = function(group, options) {
     // Default \jot from ltmath.dtx
     // TODO(edemaine): allow overriding \jot via \setlength (#687)
     const jot = 3 * pt;
-    // Default \arraystretch from lttab.dtx
-    // TODO(gagern): may get redefined once we have user-defined macros
-    const arraystretch = utils.deflt(groupValue.arraystretch, 1);
-    const arrayskip = arraystretch * baselineskip;
+    const arrayskip = groupValue.arraystretch * baselineskip;
     const arstrutHeight = 0.7 * arrayskip; // \strutbox in ltfsstrc.dtx and
     const arstrutDepth = 0.3 * arrayskip;  // \@arstrutbox in lttab.dtx
 
@@ -272,6 +283,15 @@ const htmlBuilder = function(group, options) {
                     -(totalHeight - offset) + "em";
 
                 cols.push(separator);
+            } else if (colDescr.separator === ":") {
+                const separator = buildCommon.makeSpan(
+                    ["vertical-separator", "vs-dashed"], [], options
+                );
+                separator.style.height = totalHeight + "em";
+                separator.style.verticalAlign =
+                    -(totalHeight - offset) + "em";
+
+                cols.push(separator);
             } else {
                 throw new ParseError(
                     "Invalid separator type: " + colDescr.separator);
@@ -358,7 +378,7 @@ const mathmlBuilder = function(group, options) {
         }));
 };
 
-// Convinient function for aligned and alignedat environments.
+// Convenience function for aligned and alignedat environments.
 const alignedHandler = function(context, args) {
     const cols = [];
     let res = {
@@ -453,6 +473,11 @@ defineEnvironment({
                 return {
                     type: "separator",
                     separator: "|",
+                };
+            } else if (ca === ":") {
+                return {
+                    type: "separator",
+                    separator: ":",
                 };
             }
             throw new ParseError(
