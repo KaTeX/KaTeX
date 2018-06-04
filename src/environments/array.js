@@ -4,8 +4,8 @@ import defineEnvironment from "../defineEnvironment";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import ParseNode from "../ParseNode";
-import {assertNodeType, assertNodeTypes2} from "../ParseNode";
-import {checkNodeType, checkNodeTypes2} from "../ParseNode";
+import {assertNodeType, assertSymbolNodeType} from "../ParseNode";
+import {checkNodeType, checkSymbolNodeType} from "../ParseNode";
 import {calculateSize} from "../units";
 import utils from "../utils";
 
@@ -464,14 +464,13 @@ defineEnvironment({
     handler(context, args) {
         // Since no types are specified above, the two possibilities are
         // - The argument is wrapped in {} or [], in which case Parser's
-        //   parseGroup() returns an "ordgroup" wrapping combinations of
-        //   "mathord"s ("l", "c") or "textord"s ("|").
-        // - The argument is a bare "mathord" or "textord".
-        const ordNode = checkNodeTypes2(args[0], "mathord", "textord");
+        //   parseGroup() returns an "ordgroup" wrapping some symbol node.
+        // - The argument is a bare symbol node.
+        const symNode = checkSymbolNodeType(args[0]);
         const colalign: AnyParseNode[] =
-            ordNode ? [args[0]] : assertNodeType(args[0], "ordgroup").value;
+            symNode ? [args[0]] : assertNodeType(args[0], "ordgroup").value;
         const cols = colalign.map(function(nde) {
-            const node = assertNodeTypes2(nde, "mathord", "textord");
+            const node = assertSymbolNodeType(nde);
             const ca = node.value;
             if ("lcr".indexOf(ca) !== -1) {
                 return {

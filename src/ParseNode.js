@@ -394,39 +394,6 @@ export function checkNodeType<NODETYPE: NodeType>(
  * Returns the node more strictly typed iff it is of the given type. Otherwise,
  * returns null.
  */
-export function assertNodeTypes2<NODETYPE1: NodeType, NODETYPE2: NodeType>(
-    node: ?AnyParseNode,
-    type1: NODETYPE1,
-    type2: NODETYPE2,
-): ParseNode<NODETYPE1> | ParseNode<NODETYPE2> {
-    const typedNode = checkNodeTypes2(node, type1, type2);
-    if (!typedNode) {
-        throw new Error(
-            `Expected node of type ${type1} or ${type2}, but got ` +
-            (node ? `node of type ${node.type}` : String(node)));
-    }
-    // $FlowFixMe: Might be related to https://github.com/facebook/flow/issues/6379
-    return typedNode;
-}
-
-/**
- * Returns the node more strictly typed iff it is of the given type. Otherwise,
- * returns null.
- */
-export function checkNodeTypes2<NODETYPE1: NodeType, NODETYPE2: NodeType>(
-    node: ?AnyParseNode,
-    type1: NODETYPE1,
-    type2: NODETYPE2,
-): ?ParseNode<NODETYPE1> | ParseNode<NODETYPE2> {
-    // Explicit type needed due to https://github.com/facebook/flow/issues/6379
-    return checkNodeType(node, type1) ||
-        (checkNodeType(node, type2): ?ParseNode<NODETYPE2>);
-}
-
-/**
- * Returns the node more strictly typed iff it is of the given type. Otherwise,
- * returns null.
- */
 export function assertSymbolNodeType(node: ?AnyParseNode): SymbolParseNode {
     const typedNode = checkSymbolNodeType(node);
     if (!typedNode) {
