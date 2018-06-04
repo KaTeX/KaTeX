@@ -22,7 +22,7 @@ import type ParseNode from "./src/ParseNode";
 
 import {defineSymbol} from './src/symbols';
 import {defineMacro} from './src/macros';
-import {addFontMetrics} from './src/fontMetrics';
+import {setFontMetrics} from './src/fontMetrics';
 
 import {version} from "./package.json";
 
@@ -180,7 +180,7 @@ export default {
      * extends internal font metrics object with a new object
      * each key in the new object represents a font name
     */
-    __addFontMetrics: addFontMetrics,
+    __setFontMetrics: setFontMetrics,
     /**
      * adds a new symbol to builtin symbols table
      */
