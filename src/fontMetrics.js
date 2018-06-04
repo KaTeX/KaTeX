@@ -88,7 +88,7 @@ const sigmasAndXis = {
 // metrics, including height, depth, italic correction, and skew (kern from the
 // character to the corresponding \skewchar)
 // This map is generated via `make metrics`. It should not be changed manually.
-import defaultMetricMap from "../submodules/katex-fonts/fontMetricsData";
+import metricMap from "../submodules/katex-fonts/fontMetricsData";
 
 // These are very rough approximations.  We default to Times New Roman which
 // should have Latin-1 and Cyrillic characters, but may not depending on the
@@ -184,18 +184,16 @@ export type CharacterMetrics = {
 };
 
 export type MetricMap = {
-    [string]: { [string]: number[] }
+    [string]: number[]
 }
-let metricMap = {};
 
 /**
- * This function extends metricMap object with a new metric information
+ * This function adds new font metrics to default metricMap
+ * It can also override existing metrics
  */
-export function addFontMetrics(newMetrics: MetricMap) {
-    metricMap = Object.assign(metricMap, newMetrics);
+export function setFontMetrics(fontName: string, metrics: MetricMap) {
+    metricMap[fontName] = metrics;
 }
-// add the default font metrics
-addFontMetrics(defaultMetricMap);
 
 /**
  * This function is a convenience function for looking up information in the
@@ -254,7 +252,7 @@ const fontMetricsBySizeIndex: {[FontSizeIndex]: FontMetrics} = {};
 /**
  * Get the font metrics for a given size.
  */
-export function getFontMetrics(size: number): FontMetrics {
+export function getGlobalMetrics(size: number): FontMetrics {
     let sizeIndex: FontSizeIndex;
     if (size >= 5) {
         sizeIndex = 0;

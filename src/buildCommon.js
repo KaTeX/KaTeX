@@ -638,8 +638,8 @@ const retrieveTextFontName = function(
         case "texttt":
             baseFontName = "Typewriter";
             break;
-        default: // probably a font added by a plugin
-            baseFontName = fontFamily;
+        default:
+            baseFontName = fontFamily; // use fonts added by a plugin
     }
 
     let fontStylesName;

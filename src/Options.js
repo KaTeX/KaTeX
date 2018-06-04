@@ -6,7 +6,7 @@
  * `.reset` functions.
  */
 
-import {getFontMetrics} from "./fontMetrics";
+import {getGlobalMetrics} from "./fontMetrics";
 import type {FontMetrics} from "./fontMetrics";
 import type {StyleInterface} from "./Style";
 
@@ -27,7 +27,7 @@ const sizeStyleMap = [
 ];
 
 const sizeMultipliers = [
-    // fontMetrics.js:getFontMetrics also uses size indexes, so if
+    // fontMetrics.js:getGlobalMetrics also uses size indexes, so if
     // you change size indexes, change that function.
     0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.44, 1.728, 2.074, 2.488,
 ];
@@ -266,7 +266,7 @@ class Options {
      */
     fontMetrics(): FontMetrics {
         if (!this._fontMetrics) {
-            this._fontMetrics = getFontMetrics(this.size);
+            this._fontMetrics = getGlobalMetrics(this.size);
         }
         return this._fontMetrics;
     }
