@@ -362,7 +362,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         const dashes = buildCommon.makeLineSpan("hdashline", options, 0.05);
         const vListElems = [{type: "elem", elem: body, shift: 0}];
         while (hlines.length > 0) {
-            const hline = hlines.pop()
+            const hline = hlines.pop();
             const lineShift = hline.pos - offset;
             if (hline.isDashed) {
                 vListElems.push({type: "elem", elem: dashes, shift: lineShift});
