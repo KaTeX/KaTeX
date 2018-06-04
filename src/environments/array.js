@@ -51,7 +51,7 @@ type ArrayEnvNodeDataIncomplete = {|
 function getHLines(parser: Parser): boolean[] {
     // Return an array. The array length = number of hlines.
     // Each element in the array tells if the line is dashed.
-    let hlineInfo = [];
+    const hlineInfo = [];
     parser.consumeSpaces();
     let nxt = parser.nextToken.text;
     while (nxt === "\\hline" || nxt === "\\hdashline") {
