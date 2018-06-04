@@ -198,7 +198,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         let n = 0;
         while (hlinesInGap.length > 0) {
             n += 1;
-            if (n > 0) {
+            if (n > 1) {
                 totalHeight += 0.25;
             }
             hlines.push({pos: totalHeight, isDashed: hlinesInGap.pop()});
