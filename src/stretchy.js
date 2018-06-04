@@ -11,7 +11,7 @@ import mathMLTree from "./mathMLTree";
 import utils from "./utils";
 
 import type Options from "./Options";
-import type ParseNode from "./ParseNode";
+import type ParseNode, {AnyParseNode} from "./ParseNode";
 import type {DomSpan, SvgSpan} from "./domTree";
 
 const stretchyCodePoint: {[string]: string} = {
@@ -159,7 +159,7 @@ const katexImagesData: {
         "shortrightharpoonabovebar"], 1.75, 716],
 };
 
-const groupLength = function(arg: ParseNode<*>): number {
+const groupLength = function(arg: AnyParseNode): number {
     if (arg.type === "ordgroup") {
         return arg.value.length;
     } else {

@@ -2,7 +2,6 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseError from "../ParseError";
 import ParseNode, {assertNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
@@ -99,10 +98,7 @@ defineFunction({
         argTypes: ["color"],
     },
     handler({parser, breakOnTokenText}, args) {
-        const color = args[0];
-        if (!color) {
-            throw new ParseError("\\color not followed by color");
-        }
+        const color = assertNodeType(args[0], "color-token");
 
         // If we see a styling function, parse out the implicit body
         const body = parser.parseExpression(true, breakOnTokenText);

@@ -24,9 +24,20 @@ type Font = "main" | "ams"
 // types for raw text tokens, and we want to avoid conflicts with higher-level
 // `ParseNode` types. These `ParseNode`s are constructed within `Parser` by
 // looking up the `symbols` map.
-export type Group =
-    "accent-token" | "bin" | "close" | "inner" | "mathord" |
-    "op-token" | "open" | "punct" | "rel" | "spacing" | "textord";
+export const GROUPS = { // Set of all the groups.
+    "accent-token": 1,
+    "bin": 1,
+    "close": 1,
+    "inner": 1,
+    "mathord": 1,
+    "op-token": 1,
+    "open": 1,
+    "punct": 1,
+    "rel": 1,
+    "spacing": 1,
+    "textord": 1,
+};
+export type Group = $Keys<typeof GROUPS>;
 type CharInfoMap = {[string]: {font: Font, group: Group, replace: ?string}};
 
 const symbols: {[Mode]: CharInfoMap} = {

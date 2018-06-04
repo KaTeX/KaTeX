@@ -5,6 +5,7 @@ import domTree from "../domTree";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import Style from "../Style";
+import {checkNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -184,13 +185,13 @@ defineFunctionBuilders({
         let isBrace = false;
         let isOver;
         let isSup;
-        if (group.value.base) {
-            if (group.value.base.value.type === "horizBrace") {
-                isSup = (group.value.sup ? true : false);
-                if (isSup === group.value.base.value.isOver) {
-                    isBrace = true;
-                    isOver = group.value.base.value.isOver;
-                }
+
+        const horizBrace = checkNodeType(group.value.base, "horizBrace");
+        if (horizBrace) {
+            isSup = !!group.value.sup;
+            if (isSup === horizBrace.value.isOver) {
+                isBrace = true;
+                isOver = horizBrace.value.isOver;
             }
         }
 
