@@ -302,7 +302,7 @@ export default class MacroExpander implements MacroContextInterface {
      * `implicitCommands`.
      */
     isDefined(name: string): boolean {
-        return this.macros.get(name) != null ||
+        return this.macros.has(name) ||
             functions.hasOwnProperty(name) ||
             symbols.math.hasOwnProperty(name) ||
             symbols.text.hasOwnProperty(name) ||
