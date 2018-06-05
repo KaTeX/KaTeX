@@ -61,6 +61,18 @@ const styleMap: {[StyleString]: StyleInterface} = {
 
 type Side = "left" | "right";
 
+const DomEnum = {
+    mord: "mord",
+    mop: "mop",
+    mbin: "mbin",
+    mrel: "mrel",
+    mopen: "mopen",
+    mclose: "mclose",
+    mpunct: "mpunct",
+    minner: "minner",
+};
+export type DomType = $Keys<typeof DomEnum>;
+
 /**
  * Take a list of nodes, build them in order, and return a list of the built
  * nodes. documentFragments are flattened into their contents, so the
@@ -73,7 +85,7 @@ export const buildExpression = function(
     expression: *[],
     options: Options,
     isRealGroup: boolean,
-    surrounding: [?string, ?string] = [null, null],
+    surrounding: [?DomType, ?DomType] = [null, null],
 ): HtmlDomNode[] {
     // Parse expressions into `groups`.
     const rawGroups: HtmlDomNode[] = [];
@@ -208,18 +220,6 @@ const getOutermostNode = function(
     }
     return node;
 };
-
-const DomEnum = {
-    mord: "mord",
-    mop: "mop",
-    mbin: "mbin",
-    mrel: "mrel",
-    mopen: "mopen",
-    mclose: "mclose",
-    mpunct: "mpunct",
-    minner: "minner",
-};
-export type DomType = $Keys<typeof DomEnum>;
 
 // Return math atom class (mclass) of a domTree.
 export const getTypeOfDomTree = function(
