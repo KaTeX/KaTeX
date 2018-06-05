@@ -5,7 +5,8 @@ import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import ParseNode from "../ParseNode";
-import {assertNodeType} from "../ParseNode";
+import {assertNodeType, assertSymbolNodeType} from "../ParseNode";
+import {checkNodeType, checkSymbolNodeType} from "../ParseNode";
 import {calculateSize} from "../units";
 import utils from "../utils";
 
@@ -13,7 +14,9 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Parser from "../Parser";
+import type {AnyParseNode} from "../ParseNode";
 import type {StyleStr} from "../types";
+import type {HtmlBuilder, MathMLBuilder} from "../defineFunction";
 
 // Data stored in the ParseNode associated with the environment.
 type AlignSpec = { type: "separator", separator: string } | {
@@ -26,11 +29,11 @@ type AlignSpec = { type: "separator", separator: string } | {
 export type ArrayEnvNodeData = {|
     type: "array",
     hskipBeforeAndAfter?: boolean,
-    arraystretch?: number,
+    arraystretch: number,
     addJot?: boolean,
     cols?: AlignSpec[],
-    body: ParseNode<*>[][], // List of rows in the (2D) array.
-    rowGaps: (?ParseNode<*>)[],
+    body: AnyParseNode[][], // List of rows in the (2D) array.
+    rowGaps: (?ParseNode<"size">)[],
     numHLinesBeforeRow: number[],
 |};
 // Same as above but with some fields not yet filled.
@@ -41,8 +44,8 @@ type ArrayEnvNodeDataIncomplete = {|
     addJot?: boolean,
     cols?: AlignSpec[],
     // Before these fields are filled.
-    body?: ParseNode<*>[][],
-    rowGaps?: (?ParseNode<*>)[],
+    body?: AnyParseNode[][],
+    rowGaps?: (?ParseNode<"size">)[],
     numHLinesBeforeRow?: number[],
 |};
 
@@ -72,6 +75,20 @@ function parseArray(
     parser.gullet.beginGroup();
     parser.gullet.macros.set("\\\\", "\\cr");
 
+    // Get current arraystretch if it's not set by the environment
+    if (!result.arraystretch) {
+        const arraystretch = parser.gullet.expandMacroAsText("\\arraystretch");
+        if (arraystretch == null) {
+            // Default \arraystretch from lttab.dtx
+            result.arraystretch = 1;
+        } else {
+            result.arraystretch = parseFloat(arraystretch);
+            if (!result.arraystretch || result.arraystretch < 0) {
+                throw new ParseError(`Invalid \\arraystretch: ${arraystretch}`);
+            }
+        }
+    }
+
     let row = [];
     const body = [row];
     const rowGaps = [];
@@ -97,10 +114,8 @@ function parseArray(
         } else if (next === "\\end") {
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
             // the last line is empty.
-            const lastRow = body[body.length - 1];
-            if (body.length > 1
-                && lastRow.length === 1
-                && lastRow[0].value.value[0].value.length === 0) {
+            // NOTE: Currently, `cell` is the last item added into `row`.
+            if (row.length === 1 && cell.value.value[0].value.length === 0) {
                 body.pop();
             }
             break;
@@ -148,8 +163,7 @@ type Outrow = {
     pos: number,
 };
 
-const htmlBuilder = function(group, options) {
-    const groupValue = assertNodeType(group, "array").value;
+const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     let r;
     let c;
     const nr = group.value.body.length;
@@ -167,10 +181,7 @@ const htmlBuilder = function(group, options) {
     // Default \jot from ltmath.dtx
     // TODO(edemaine): allow overriding \jot via \setlength (#687)
     const jot = 3 * pt;
-    // Default \arraystretch from lttab.dtx
-    // TODO(gagern): may get redefined once we have user-defined macros
-    const arraystretch = utils.deflt(groupValue.arraystretch, 1);
-    const arrayskip = arraystretch * baselineskip;
+    const arrayskip = group.value.arraystretch * baselineskip;
     const arstrutHeight = 0.7 * arrayskip; // \strutbox in ltfsstrc.dtx and
     const arstrutDepth = 0.3 * arrayskip;  // \@arstrutbox in lttab.dtx
 
@@ -184,8 +195,8 @@ const htmlBuilder = function(group, options) {
         hlinePos.push(totalHeight);
     }
 
-    for (r = 0; r < groupValue.body.length; ++r) {
-        const inrow = groupValue.body[r];
+    for (r = 0; r < group.value.body.length; ++r) {
+        const inrow = group.value.body[r];
         let height = arstrutHeight; // \@array adds an \@arstrut
         let depth = arstrutDepth;   // to each tow (via the template)
 
@@ -205,7 +216,7 @@ const htmlBuilder = function(group, options) {
             outrow[c] = elt;
         }
 
-        const rowGap = groupValue.rowGaps[r];
+        const rowGap = group.value.rowGaps[r];
         let gap = 0;
         if (rowGap) {
             gap = calculateSize(rowGap.value.value, options);
@@ -220,7 +231,7 @@ const htmlBuilder = function(group, options) {
         // In AMS multiline environments such as aligned and gathered, rows
         // correspond to lines that have additional \jot added to the
         // \baselineskip via \openup.
-        if (groupValue.addJot) {
+        if (group.value.addJot) {
             depth += jot;
         }
 
@@ -241,7 +252,7 @@ const htmlBuilder = function(group, options) {
     }
 
     const offset = totalHeight / 2 + options.fontMetrics().axisHeight;
-    const colDescriptions = groupValue.cols || [];
+    const colDescriptions = group.value.cols || [];
     const cols = [];
     let colSep;
     let colDescrNum;
@@ -273,6 +284,15 @@ const htmlBuilder = function(group, options) {
                     -(totalHeight - offset) + "em";
 
                 cols.push(separator);
+            } else if (colDescr.separator === ":") {
+                const separator = buildCommon.makeSpan(
+                    ["vertical-separator", "vs-dashed"], [], options
+                );
+                separator.style.height = totalHeight + "em";
+                separator.style.verticalAlign =
+                    -(totalHeight - offset) + "em";
+
+                cols.push(separator);
             } else {
                 throw new ParseError(
                     "Invalid separator type: " + colDescr.separator);
@@ -288,7 +308,7 @@ const htmlBuilder = function(group, options) {
         }
 
         let sepwidth;
-        if (c > 0 || groupValue.hskipBeforeAndAfter) {
+        if (c > 0 || group.value.hskipBeforeAndAfter) {
             sepwidth = utils.deflt(colDescr.pregap, arraycolsep);
             if (sepwidth !== 0) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
@@ -319,7 +339,7 @@ const htmlBuilder = function(group, options) {
             [col]);
         cols.push(col);
 
-        if (c < nc - 1 || groupValue.hskipBeforeAndAfter) {
+        if (c < nc - 1 || group.value.hskipBeforeAndAfter) {
             sepwidth = utils.deflt(colDescr.postgap, arraycolsep);
             if (sepwidth !== 0) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
@@ -347,10 +367,9 @@ const htmlBuilder = function(group, options) {
     return buildCommon.makeSpan(["mord"], [body], options);
 };
 
-const mathmlBuilder = function(group, options) {
-    const groupValue = assertNodeType(group, "array").value;
+const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     return new mathMLTree.MathNode(
-        "mtable", groupValue.body.map(function(row) {
+        "mtable", group.value.body.map(function(row) {
             return new mathMLTree.MathNode(
                 "mtr", row.map(function(cell) {
                     return new mathMLTree.MathNode(
@@ -359,7 +378,7 @@ const mathmlBuilder = function(group, options) {
         }));
 };
 
-// Convinient function for aligned and alignedat environments.
+// Convenience function for aligned and alignedat environments.
 const alignedHandler = function(context, args) {
     const cols = [];
     let res = {
@@ -381,10 +400,12 @@ const alignedHandler = function(context, args) {
     let numMaths;
     let numCols = 0;
     const emptyGroup = new ParseNode("ordgroup", [], context.mode);
-    if (args[0] && args[0].value) {
+    const ordgroup = checkNodeType(args[0], "ordgroup");
+    if (ordgroup) {
         let arg0 = "";
-        for (let i = 0; i < args[0].value.length; i++) {
-            arg0 += args[0].value[i].value;
+        for (let i = 0; i < ordgroup.value.length; i++) {
+            const textord = assertNodeType(ordgroup.value[i], "textord");
+            arg0 += textord.value;
         }
         numMaths = Number(arg0);
         numCols = numMaths * 2;
@@ -393,7 +414,8 @@ const alignedHandler = function(context, args) {
     res.value.body.forEach(function(row) {
         for (let i = 1; i < row.length; i += 2) {
             // Modify ordgroup node within styling node
-            const ordgroup = row[i].value.value[0];
+            const styling = assertNodeType(row[i], "styling");
+            const ordgroup = assertNodeType(styling.value.value[0], "ordgroup");
             ordgroup.value.unshift(emptyGroup);
         }
         if (!isAligned) { // Case 1
@@ -440,10 +462,16 @@ defineEnvironment({
     props: {
         numArgs: 1,
     },
-    handler: function(context, args) {
-        let colalign = args[0];
-        colalign = colalign.value.map ? colalign.value : [colalign];
-        const cols = colalign.map(function(node) {
+    handler(context, args) {
+        // Since no types are specified above, the two possibilities are
+        // - The argument is wrapped in {} or [], in which case Parser's
+        //   parseGroup() returns an "ordgroup" wrapping some symbol node.
+        // - The argument is a bare symbol node.
+        const symNode = checkSymbolNodeType(args[0]);
+        const colalign: AnyParseNode[] =
+            symNode ? [args[0]] : assertNodeType(args[0], "ordgroup").value;
+        const cols = colalign.map(function(nde) {
+            const node = assertSymbolNodeType(nde);
             const ca = node.value;
             if ("lcr".indexOf(ca) !== -1) {
                 return {
@@ -455,10 +483,13 @@ defineEnvironment({
                     type: "separator",
                     separator: "|",
                 };
+            } else if (ca === ":") {
+                return {
+                    type: "separator",
+                    separator: ":",
+                };
             }
-            throw new ParseError(
-                "Unknown column alignment: " + node.value,
-                node);
+            throw new ParseError("Unknown column alignment: " + ca, nde);
         });
         let res = {
             type: "array",

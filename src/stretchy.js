@@ -11,11 +11,12 @@ import mathMLTree from "./mathMLTree";
 import utils from "./utils";
 
 import type Options from "./Options";
-import type ParseNode from "./ParseNode";
+import type ParseNode, {AnyParseNode} from "./ParseNode";
 import type {DomSpan, SvgSpan} from "./domTree";
 
 const stretchyCodePoint: {[string]: string} = {
     widehat: "^",
+    widecheck: "ˇ",
     widetilde: "~",
     utilde: "~",
     overleftarrow: "\u2190",
@@ -159,7 +160,7 @@ const katexImagesData: {
         "shortrightharpoonabovebar"], 1.75, 716],
 };
 
-const groupLength = function(arg: ParseNode<*>): number {
+const groupLength = function(arg: AnyParseNode): number {
     if (arg.type === "ordgroup") {
         return arg.value.length;
     } else {
@@ -180,7 +181,8 @@ const svgSpan = function(
     } {
         let viewBoxWidth = 400000;  // default
         const label = group.value.label.substr(1);
-        if (utils.contains(["widehat", "widetilde", "utilde"], label)) {
+        if (utils.contains(["widehat", "widecheck", "widetilde", "utilde"],
+            label)) {
             // Each type in the `if` statement corresponds to one of the ParseNode
             // types below. This narrowing is required to access `grp.value.base`.
             // $FlowFixMe
@@ -193,18 +195,24 @@ const svgSpan = function(
             let height;
 
             if (numChars > 5) {
-                viewBoxHeight = (label === "widehat" ? 420 : 312);
-                viewBoxWidth = (label === "widehat" ? 2364 : 2340);
-                // Next get the span height, in 1000 ems
-                height = (label === "widehat" ? 0.42 : 0.34);
-                pathName = (label === "widehat" ? "widehat" : "tilde") + "4";
+                if (label === "widehat" || label === "widecheck") {
+                    viewBoxHeight = 420;
+                    viewBoxWidth = 2364;
+                    height = 0.42;
+                    pathName = label + "4";
+                } else {
+                    viewBoxHeight = 312;
+                    viewBoxWidth = 2340;
+                    height = 0.34;
+                    pathName = "tilde4";
+                }
             } else {
                 const imgIndex = [1, 1, 2, 2, 3, 3][numChars];
-                if (label === "widehat") {
+                if (label === "widehat" || label === "widecheck") {
                     viewBoxWidth = [0, 1062, 2364, 2364, 2364][imgIndex];
                     viewBoxHeight = [0, 239, 300, 360, 420][imgIndex];
                     height = [0, 0.24, 0.3, 0.3, 0.36, 0.42][imgIndex];
-                    pathName = "widehat" + imgIndex;
+                    pathName = label + imgIndex;
                 } else {
                     viewBoxWidth = [0, 600, 1033, 2339, 2340][imgIndex];
                     viewBoxHeight = [0, 260, 286, 306, 312][imgIndex];

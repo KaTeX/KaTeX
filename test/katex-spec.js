@@ -426,6 +426,7 @@ describe("A frac parser", function() {
     const expression = "\\frac{x}{y}";
     const dfracExpression = "\\dfrac{x}{y}";
     const tfracExpression = "\\tfrac{x}{y}";
+    const cfracExpression = "\\cfrac{x}{y}";
 
     it("should not fail", function() {
         expect(expression).toParse();
@@ -457,6 +458,12 @@ describe("A frac parser", function() {
         expect(tfracParse.type).toEqual("genfrac");
         expect(tfracParse.value.numer).toBeDefined();
         expect(tfracParse.value.denom).toBeDefined();
+
+        const cfracParse = getParsed(cfracExpression)[0];
+
+        expect(cfracParse.type).toEqual("genfrac");
+        expect(cfracParse.value.numer).toBeDefined();
+        expect(cfracParse.value.denom).toBeDefined();
     });
 
     it("should parse atop", function() {
@@ -1170,6 +1177,12 @@ describe("A begin/end parser", function() {
         const m3 = getParsed("\\begin{matrix}a&b\\\\ c&d \\\\ \\end{matrix}")[0];
         expect(m3.value.body.length).toBe(2);
     });
+
+    it("should grab \\arraystretch", function() {
+        const parse = getParsed("\\def\\arraystretch{1.5}" +
+            "\\begin{matrix}a&b\\\\c&d\\end{matrix}");
+        expect(parse).toMatchSnapshot();
+    });
 });
 
 describe("A sqrt parser", function() {
@@ -1408,13 +1421,12 @@ describe("A font parser", function() {
         expect(nestedParse.value.font).toEqual("mathbb");
         expect(nestedParse.value.type).toEqual("font");
 
-        expect(nestedParse.value.body.value.length).toEqual(3);
+        expect(nestedParse.value.body.value.length).toEqual(4);
         const bbBody = nestedParse.value.body.value;
         expect(bbBody[0].type).toEqual("mathord");
-        expect(bbBody[1].type).toEqual("rel");
-        expect(bbBody[2].type).toEqual("font");
-        expect(bbBody[2].value.font).toEqual("mathrm");
-        expect(bbBody[2].value.type).toEqual("font");
+        expect(bbBody[3].type).toEqual("font");
+        expect(bbBody[3].value.font).toEqual("mathrm");
+        expect(bbBody[3].value.type).toEqual("font");
     });
 
     it("should work with \\textcolor", function() {
@@ -1857,6 +1869,7 @@ describe("An accent parser", function() {
 
     it("should parse stretchy, shifty accents", function() {
         expect("\\widehat{x}").toParse();
+        expect("\\widecheck{x}").toParse();
     });
 
     it("should parse stretchy, non-shifty accents", function() {
@@ -1884,6 +1897,7 @@ describe("An accent builder", function() {
 describe("A stretchy and shifty accent builder", function() {
     it("should not fail", function() {
         expect("\\widehat{AB}").toBuild();
+        expect("\\widecheck{AB}").toBuild();
         expect("\\widehat{AB}^2").toBuild();
         expect("\\widehat{AB}_2").toBuild();
         expect("\\widehat{AB}_2^2").toBuild();
@@ -2316,7 +2330,7 @@ describe("An array environment", function() {
     });
 
     it("should accept vertical separators", function() {
-        const parse = getParsed("\\begin{array}{|l||c|}\\end{array}");
+        const parse = getParsed("\\begin{array}{|l||c:r::}\\end{array}");
         expect(parse[0].type).toBe("array");
         expect(parse[0].value.cols).toEqual([
             {type: "separator", separator: "|"},
@@ -2324,7 +2338,10 @@ describe("An array environment", function() {
             {type: "separator", separator: "|"},
             {type: "separator", separator: "|"},
             {type: "align", align: "c"},
-            {type: "separator", separator: "|"},
+            {type: "separator", separator: ":"},
+            {type: "align", align: "r"},
+            {type: "separator", separator: ":"},
+            {type: "separator", separator: ":"},
         ]);
     });
 
@@ -2948,7 +2965,7 @@ describe("Unicode", function() {
     });
 
     it("should parse symbols", function() {
-        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼\u00b7").toParse(strictSettings);
+        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼⋮\u00b7").toParse(strictSettings);
     });
 
     it("should build Greek capital letters", function() {
