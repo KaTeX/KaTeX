@@ -1,6 +1,5 @@
 // @flow
 import {checkNodeType} from "./ParseNode";
-import domTree from "./domTree";
 
 import type Parser from "./Parser";
 import type ParseNode, {AnyParseNode, NodeType} from "./ParseNode";
@@ -28,7 +27,7 @@ export type HtmlBuilder<NODETYPE> = (ParseNode<NODETYPE>, Options) => HtmlDomNod
 export type MathMLBuilder<NODETYPE> = (
     group: ParseNode<NODETYPE>,
     options: Options,
-) => MathNodeClass | domTree.documentFragment;
+) => MathNodeClass;
 
 // More general version of `HtmlBuilder` for nodes (e.g. \sum, accent types)
 // whose presence impacts super/subscripting. In this case, ParseNode<"supsub">
@@ -119,8 +118,6 @@ type FunctionDefSpec<NODETYPE: NodeType> = {|
     // This should not modify the `ParseNode`.
     htmlBuilder?: HtmlBuilder<NODETYPE>,
 
-    // TODO: Currently functions/op.js returns documentFragment. Refactor it
-    // and update the return type of this function.
     // This function returns an object representing the MathML structure to be
     // created when rendering the defined LaTeX function.
     // This should not modify the `ParseNode`.

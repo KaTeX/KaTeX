@@ -240,7 +240,7 @@ class anchor extends HtmlDomContainer<HtmlDomNode> {
  * contains children and doesn't have any HTML properties. It also keeps track
  * of a height, depth, and maxFontSize.
  */
-class documentFragment implements HtmlDomNode {
+export class documentFragment implements HtmlDomNode {
     children: HtmlDomNode[];
     classes: string[];         // Never used; needed for satisfying interface.
     height: number;

@@ -11,6 +11,8 @@
 
 import utils from "./utils";
 
+import type {documentFragment} from "./domTree";
+
 /**
  * MathML node types used in KaTeX. For a complete list of MathML nodes, see
  * https://developer.mozilla.org/en-US/docs/Web/MathML/Element.
@@ -24,7 +26,9 @@ export type MathNodeType =
     "mrow" | "menclose" |
     "mstyle" | "mpadded" | "mphantom";
 
-export type MathNodeClass = MathNode | TextNode | SpaceNode;
+// TODO: Currently functions/op.js returns documentFragment. Refactor it and
+// update the return type of this function.
+export type MathNodeClass = MathNode | TextNode | SpaceNode | documentFragment;
 
 /**
  * This node represents a general purpose MathML node of any type. The
