@@ -3,11 +3,10 @@ import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import stretchy from "../stretchy";
+import ParseNode from "../ParseNode.js";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
-
-import type ParseNode from "../ParseNode.js";
 
 // Stretchy arrows with an optional argument
 defineFunction({
@@ -27,13 +26,13 @@ defineFunction({
         numArgs: 1,
         numOptionalArgs: 1,
     },
-    handler(context, args, optArgs) {
-        return {
+    handler({parser, funcName}, args, optArgs) {
+        return new ParseNode("xArrow", {
             type: "xArrow",   // x for extensible
-            label: context.funcName,
+            label: funcName,
             body: args[0],
             below: optArgs[0],
-        };
+        }, parser.mode);
     },
     // Flow is unable to correctly infer the type of `group`, even though it's
     // unamibiguously determined from the passed-in `type` above.

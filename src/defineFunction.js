@@ -3,7 +3,7 @@ import {checkNodeType} from "./ParseNode";
 import domTree from "./domTree";
 
 import type Parser from "./Parser";
-import type ParseNode, {NodeType, NodeValue} from "./ParseNode";
+import type ParseNode, {AnyParseNode, NodeType} from "./ParseNode";
 import type Options from "./Options";
 import type {ArgType, BreakToken, Mode} from "./types";
 import type {HtmlDomNode} from "./domTree";
@@ -20,9 +20,9 @@ export type FunctionContext = {|
 
 export type FunctionHandler<NODETYPE: NodeType> = (
     context: FunctionContext,
-    args: ParseNode<*>[],
-    optArgs: (?ParseNode<*>)[],
-) => NodeValue<NODETYPE>;
+    args: AnyParseNode[],
+    optArgs: (?AnyParseNode)[],
+) => ParseNode<NODETYPE>;
 
 export type HtmlBuilder<NODETYPE> = (ParseNode<NODETYPE>, Options) => HtmlDomNode;
 export type MathMLBuilder<NODETYPE> = (
@@ -245,7 +245,7 @@ export function defineFunctionBuilders<NODETYPE: NodeType>({
 
 // Since the corresponding buildHTML/buildMathML function expects a
 // list of elements, we normalize for different kinds of arguments
-export const ordargument = function(arg: ParseNode<*>): ParseNode<*>[] {
+export const ordargument = function(arg: AnyParseNode): AnyParseNode[] {
     const node = checkNodeType(arg, "ordgroup");
     return node ? node.value : [arg];
 };

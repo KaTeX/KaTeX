@@ -4,19 +4,19 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
-import {assertNodeType, checkNodeType} from "../ParseNode";
+import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type ParseNode from "../ParseNode";
+import type {AnyParseNode} from "../ParseNode";
 import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "accent", but
 // also "supsub" since an accent can affect super/subscripting.
 export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
     // Accents are handled in the TeXbook pg. 443, rule 12.
-    let base: ParseNode<*>;
+    let base: AnyParseNode;
     let group: ParseNode<"accent">;
 
     const supSub = checkNodeType(grp, "supsub");
@@ -225,13 +225,13 @@ defineFunction({
             context.funcName === "\\widehat" ||
             context.funcName === "\\widetilde";
 
-        return {
+        return new ParseNode("accent", {
             type: "accent",
             label: context.funcName,
             isStretchy: isStretchy,
             isShifty: isShifty,
             base: base,
-        };
+        }, context.parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,
@@ -252,13 +252,13 @@ defineFunction({
     handler: (context, args) => {
         const base = args[0];
 
-        return {
+        return new ParseNode("accent", {
             type: "accent",
             label: context.funcName,
             isStretchy: false,
             isShifty: true,
             base: base,
-        };
+        }, context.parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,
