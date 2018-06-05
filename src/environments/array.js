@@ -619,7 +619,7 @@ defineEnvironment({
     mathmlBuilder,
 });
 
-// Catch \hline outside array envirnoment
+// Catch \hline outside array environment
 defineFunction({
     type: "text", // Doesn't matter what this is.
     names: ["\\hline"],

@@ -185,11 +185,12 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
 
     const exists = context.isDefined(name);
     if (exists && !existsOK) {
-        throw new ParseError(`Command ${name} already defined in \\newcommand`);
+        throw new ParseError(`\\newcommand{${name}} attempting to redefine ` +
+            `${name}; use \\renewcommand`);
     }
     if (!exists && !nonexistsOK) {
-        throw new ParseError(
-            `Command ${name} not already defined in \\renewcommand`);
+        throw new ParseError(`\\renewcommand{${name}} when command ${name} ` +
+            `does not yet exist; use \\newcommand`);
     }
 
     let numArgs = 0;
