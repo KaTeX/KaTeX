@@ -76,7 +76,12 @@ Colors:
 ColorImplicit: bl{ack\color{red}red\textcolor{green}{green}red\color{blue}blue}black
 ColorSpacing: \textcolor{red}{\displaystyle \int x} + 1
 Colorbox:  a \colorbox{teal} B \fcolorbox{blue}{red}{C} e+\colorbox{teal}x
-DashesAndQuotes: \text{``a'' b---c -- d----`e'-{-}-f}--``x''
+DashesAndQuotes: |
+    \begin{array}{l}
+        \text{``a'' b---c -- d----`e'-{-}-f} -- \\
+        \text{\it ``a'' b---c -- d----`e'-{-}-f} ``x'' \\
+        \text{\tt ``a''---} \texttt{``a''---} \mathtt{--} \\
+    \end{array}
 DeepFontSizing:
     tex: |
         a^{\big| x^{\big(}}_{\Big\uparrow} +
@@ -295,7 +300,7 @@ StretchyAccent: |
     \begin{array}{l}
         \overrightarrow{AB} \quad \overleftarrow{AB} \quad \Overrightarrow{AB} \quad \overleftrightarrow{AB} \quad \overgroup{AB} \\
         \overlinesegment{AB} \quad \overleftharpoon{AB} \quad \overrightharpoon{AB} \quad \color{red}{\overrightarrow{AB}} \quad \widehat{\theta} \widetilde{A} \\
-        \widehat{AB} \quad \widehat{ABC} \quad \widetilde{AB} \quad \widetilde{ABC} \\
+        \widecheck{AB} \quad \widehat{ABC} \quad \widetilde{AB} \quad \widetilde{ABC} \\
         \overrightarrow{F} + \overrightarrow{AB} + \overrightarrow{F}^2 + \overrightarrow{F}_2 + \overrightarrow{F}_1^2 \\
         \overrightarrow{AB}^2+\frac{\overrightarrow{AB}}{\overrightarrow{AB}} + \sqrt{\overrightarrow{AB}} + \left\lvert\overrightarrow{AB}\right\rvert
     \end{array}
