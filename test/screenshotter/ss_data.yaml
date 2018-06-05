@@ -290,6 +290,7 @@ Spacing: |
         ^3+[-1][1-1]1=1(=1)\lvert a\rvert~b \\
         \scriptstyle{^3+[-1][1-1]1=1(=1)\lvert a\rvert~b} \\
         \scriptscriptstyle{^3+[-1][1-1]1=1(=1)\lvert a\rvert~b} \\
+        a : a \colon a \\
     \end{matrix}
 Sqrt: |
     \sqrt{\sqrt{\sqrt{x}}}_{\sqrt{\sqrt{x}}}^{\sqrt{\sqrt{\sqrt{x}}}

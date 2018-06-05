@@ -99,7 +99,7 @@ describe("A rel parser", function() {
 });
 
 describe("A punct parser", function() {
-    const expression = ",;\\colon";
+    const expression = ",;";
 
     it("should not fail", function() {
         expect(expression).toParse(strictSettings);
@@ -113,6 +113,12 @@ describe("A punct parser", function() {
             const group = parse[i];
             expect(group.type).toEqual("punct");
         }
+    });
+});
+
+describe("A \\colon builder", function() {
+    it("should not fail", function() {
+        expect("a \\colon b").toBuild(strictSettings);
     });
 });
 
