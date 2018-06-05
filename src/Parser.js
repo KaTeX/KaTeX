@@ -198,6 +198,9 @@ export default class Parser {
             }
             body.push(atom);
         }
+        if (this.mode === "text") {
+            this.formLigatures(body);
+        }
         return this.handleInfixNodes(body);
     }
 
@@ -870,9 +873,6 @@ export default class Parser {
             this.gullet.endGroup();
             // Make sure we get a close brace
             this.expect(optional ? "]" : "}");
-            if (mode === "text") {
-                this.formLigatures(expression);
-            }
             return newArgument(
                 new ParseNode(
                     "ordgroup", expression, this.mode, firstToken, lastToken),
