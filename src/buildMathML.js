@@ -1,3 +1,4 @@
+// @flow
 /**
  * This file converts a parse tree into a cooresponding MathML tree. The main
  * entry point is the `buildMathML` function, which takes a parse tree from the
@@ -11,12 +12,24 @@ import ParseError from "./ParseError";
 import symbols, {ligatures} from "./symbols";
 import utils from "./utils";
 import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
+import {assertType} from "./utils";
+import {MathNode, TextNode} from "./mathMLTree";
+
+import type Options from "./Options";
+import type {AnyParseNode, SymbolParseNode} from "./ParseNode";
+import type {DomSpan} from "./domTree";
+import type {MathDomNode} from "./mathMLTree";
+import type {FontVariant, Mode} from "./types";
 
 /**
  * Takes a symbol and converts it into a MathML text node after performing
  * optional replacement from symbols.js.
  */
-export const makeText = function(text, mode, options) {
+export const makeText = function(
+    text: string,
+    mode: Mode,
+    options?: Options,
+): TextNode {
     if (symbols[mode][text] && symbols[mode][text].replace &&
         text.charCodeAt(0) !== 0xD835 &&
         !(ligatures.hasOwnProperty(text) && options &&
@@ -32,7 +45,7 @@ export const makeText = function(text, mode, options) {
  * Wrap the given array of nodes in an <mrow> node if needed, i.e.,
  * unless the array has length 1.  Always returns a single node.
  */
-export const makeRow = function(body) {
+export const makeRow = function(body: MathDomNode[]): MathDomNode {
     if (body.length === 1) {
         return body[0];
     } else {
@@ -43,7 +56,10 @@ export const makeRow = function(body) {
 /**
  * Returns the math variant as a string or null if none is required.
  */
-export const getVariant = function(group, options) {
+export const getVariant = function(
+    group: SymbolParseNode,
+    options: Options,
+): ?FontVariant {
     // Handle \text... font specifiers as best we can.
     // MathML has a limited list of allowable mathvariant specifiers; see
     // https://www.w3.org/TR/MathML3/chapter3.html#presm.commatt
@@ -103,29 +119,35 @@ export const getVariant = function(group, options) {
  * MathML nodes.  Also combine consecutive <mtext> outputs into a single
  * <mtext> tag.
  */
-export const buildExpression = function(expression, options) {
+export const buildExpression = function(
+    expression: AnyParseNode[],
+    options: Options,
+): MathDomNode[] {
     const groups = [];
     let lastGroup;
     for (let i = 0; i < expression.length; i++) {
         const group = buildGroup(expression[i], options);
-        // Concatenate adjacent <mtext>s
-        if (group.type === 'mtext' && lastGroup && lastGroup.type === 'mtext'
-            && group.getAttribute('mathvariant') ===
-               lastGroup.getAttribute('mathvariant')) {
-            lastGroup.children.push(...group.children);
-        // Concatenate adjacent <mn>s
-        } else if (group.type === 'mn' &&
-                   lastGroup && lastGroup.type === 'mn') {
-            lastGroup.children.push(...group.children);
-        // Concatenate <mn>...</mn> followed by <mi>.</mi>
-        } else if (group.type === 'mi' && group.children.length === 1 &&
-                   group.children[0].text === '.' &&
-                   lastGroup && lastGroup.type === 'mn') {
-            lastGroup.children.push(...group.children);
-        } else {
-            groups.push(group);
-            lastGroup = group;
+        if (group instanceof MathNode && lastGroup instanceof MathNode) {
+            // Concatenate adjacent <mtext>s
+            if (group.type === 'mtext' && lastGroup.type === 'mtext'
+                && group.getAttribute('mathvariant') ===
+                   lastGroup.getAttribute('mathvariant')) {
+                lastGroup.children.push(...group.children);
+                continue;
+            // Concatenate adjacent <mn>s
+            } else if (group.type === 'mn' && lastGroup.type === 'mn') {
+                lastGroup.children.push(...group.children);
+                continue;
+            // Concatenate <mn>...</mn> followed by <mi>.</mi>
+            } else if (group.type === 'mi' && group.children.length === 1 &&
+                       assertType(group.children[0], TextNode).text === '.' &&
+                       lastGroup.type === 'mn') {
+                lastGroup.children.push(...group.children);
+                continue;
+            }
         }
+        groups.push(group);
+        lastGroup = group;
     }
 
     // TODO(kevinb): combine \\not with mrels and mords
@@ -137,7 +159,10 @@ export const buildExpression = function(expression, options) {
  * Equivalent to buildExpression, but wraps the elements in an <mrow>
  * if there's more than one.  Returns a single node instead of an array.
  */
-export const buildExpressionRow = function(expression, options) {
+export const buildExpressionRow = function(
+    expression: AnyParseNode[],
+    options: Options,
+): MathDomNode {
     return makeRow(buildExpression(expression, options));
 };
 
@@ -145,14 +170,18 @@ export const buildExpressionRow = function(expression, options) {
  * Takes a group from the parser and calls the appropriate groupBuilders function
  * on it to produce a MathML node.
  */
-export const buildGroup = function(group, options) {
+export const buildGroup = function(
+    group: ?AnyParseNode,
+    options: Options,
+): MathDomNode {
     if (!group) {
         return new mathMLTree.MathNode("mrow");
     }
 
     if (groupBuilders[group.type]) {
         // Call the groupBuilders function
-        const result = groupBuilders[group.type](group, options);
+        // $FlowFixMe
+        const result: MathDomNode = groupBuilders[group.type](group, options);
         return result;
     } else {
         throw new ParseError(
@@ -168,13 +197,17 @@ export const buildGroup = function(group, options) {
  * Note that we actually return a domTree element with a `<math>` inside it so
  * we can do appropriate styling.
  */
-export default function buildMathML(tree, texExpression, options) {
+export default function buildMathML(
+    tree: AnyParseNode[],
+    texExpression: string,
+    options: Options,
+): DomSpan {
     const expression = buildExpression(tree, options);
 
     // Wrap up the expression in an mrow so it is presented in the semantics
     // tag correctly, unless it's a single <mrow> or <mtable>.
     let wrapper;
-    if (expression.length === 1 &&
+    if (expression.length === 1 && expression[0] instanceof MathNode &&
         utils.contains(["mrow", "mtable"], expression[0].type)) {
         wrapper = expression[0];
     } else {
@@ -193,5 +226,9 @@ export default function buildMathML(tree, texExpression, options) {
     const math = new mathMLTree.MathNode("math", [semantics]);
 
     // You can't style <math> nodes, so we wrap the node in a span.
+    // NOTE: The span class is not typed to have <math> nodes as children, and
+    // we don't want to make the children type more generic since the children
+    // of span are expected to have more fields in `buildHtml` contexts.
+    // $FlowFixMe
     return buildCommon.makeSpan(["katex-mathml"], [math]);
 }

@@ -142,6 +142,18 @@ export const assert = function<T>(value: ?T): T {
     return value;
 };
 
+export const assertType = function<T>(val: mixed, Cls: Class<T>): T {
+    if (val instanceof Cls) {
+        return val;
+    }
+
+    // $FlowFixMe: Get constructor name if possible.
+    const expected = String(Cls.name || Cls);
+    // $FlowFixMe: Get constructor name if possible; else stringify value.
+    const actual = String(val.constructor.name || val);
+    throw new Error(`Expected ${expected} but got ${actual}.`);
+};
+
 export default {
     contains,
     deflt,

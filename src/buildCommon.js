@@ -18,7 +18,7 @@ import type ParseNode from "./ParseNode";
 import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {NodeType} from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
-import type {Mode} from "./types";
+import type {FontVariant, Mode} from "./types";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
 
@@ -697,7 +697,7 @@ const regularSpace: {[string]: { className?: string }} = {
  * - fontName: the "style" parameter to fontMetrics.getCharacterMetrics
  */
 // A map between tex font commands an MathML mathvariant attribute values
-const fontMap: {[string]: {| variant: string, fontName: string |}} = {
+const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
     // styles
     "mathbf": {
         variant: "bold",

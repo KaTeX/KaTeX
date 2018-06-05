@@ -114,18 +114,14 @@ defineFunction({
         }
     },
     mathmlBuilder(group, options) {
-        let node;
-        if (group.value.index) {
-            node = new mathMLTree.MathNode(
+        const {body, index} = group.value;
+        return index ?
+            new mathMLTree.MathNode(
                 "mroot", [
-                    mml.buildGroup(group.value.body, options),
-                    mml.buildGroup(group.value.index, options),
-                ]);
-        } else {
-            node = new mathMLTree.MathNode(
-                "msqrt", [mml.buildGroup(group.value.body, options)]);
-        }
-
-        return node;
+                    mml.buildGroup(body, options),
+                    mml.buildGroup(index, options),
+                ]) :
+            new mathMLTree.MathNode(
+                "msqrt", [mml.buildGroup(body, options)]);
     },
 });
