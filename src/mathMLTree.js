@@ -51,6 +51,13 @@ export class MathNode {
     }
 
     /**
+     * Gets an attribute on a MathML node.
+     */
+    getAttribute(name: string): string {
+        return this.attributes[name];
+    }
+
+    /**
      * Converts the math node into a MathML-namespaced DOM element.
      */
     toNode(): Node {
