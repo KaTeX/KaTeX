@@ -56,7 +56,7 @@ function getHLines(parser: Parser): boolean[] {
     let nxt = parser.nextToken.text;
     while (nxt === "\\hline" || nxt === "\\hdashline") {
         parser.consume();
-        hlineInfo.unshift(nxt === "\\hdashline");
+        hlineInfo.push(nxt === "\\hdashline");
         parser.consumeSpaces();
         nxt = parser.nextToken.text;
     }
@@ -195,13 +195,11 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
     // Set a position for \hline(s) at the top of the array, if any.
     function setHLinePos(hlinesInGap: boolean[]) {
-        let n = 0;
-        while (hlinesInGap.length > 0) {
-            n += 1;
-            if (n > 1) {
+        for (let i = 0; i < hlinesInGap.length; ++i) {
+            if (i > 0) {
                 totalHeight += 0.25;
             }
-            hlines.push({pos: totalHeight, isDashed: hlinesInGap.pop()});
+            hlines.push({pos: totalHeight, isDashed: hlinesInGap[i]});
         }
     }
     setHLinePos(hLinesBeforeRow[0]);
