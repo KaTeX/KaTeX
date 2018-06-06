@@ -291,8 +291,8 @@ defineMacro("\\varOmega", "\\mathit{\\Omega}");
 
 // \renewcommand{\colon}{\nobreak\mskip2mu\mathpunct{}\nonscript
 // \mkern-\thinmuskip{:}\mskip6muplus1mu\relax}
-defineMacro("\\colon", "{\\mkern2mu\\mathpunct{}" +
-    "\\mathchoice{\\mkern-3mu}{\\mkern-3mu}{}{}{:}\\mkern7mu}");
+defineMacro("\\colon", "\\nobreak\\mskip2mu\\mathpunct{}" +
+    "\\mathchoice{\\mkern-3mu}{\\mkern-3mu}{}{}{:}\\mskip6mu");
 
 // \newcommand{\boxed}[1]{\fbox{\m@th$\displaystyle#1$}}
 defineMacro("\\boxed", "\\fbox{\\displaystyle{#1}}");

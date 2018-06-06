@@ -116,12 +116,6 @@ describe("A punct parser", function() {
     });
 });
 
-describe("A \\colon builder", function() {
-    it("should not fail", function() {
-        expect("a \\colon b").toBuild(strictSettings);
-    });
-});
-
 describe("An open parser", function() {
     const expression = "([";
 
