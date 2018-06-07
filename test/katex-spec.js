@@ -99,7 +99,7 @@ describe("A rel parser", function() {
 });
 
 describe("A punct parser", function() {
-    const expression = ",;\\colon";
+    const expression = ",;";
 
     it("should not fail", function() {
         expect(expression).toParse(strictSettings);
@@ -1137,6 +1137,7 @@ describe("A begin/end parser", function() {
 
     it("should parse an environment with hlines", function() {
         expect("\\begin{matrix}\\hline a&b\\\\ \\hline c&d\\end{matrix}").toParse();
+        expect("\\begin{matrix}\\hdashline a&b\\\\ \\hdashline c&d\\end{matrix}").toParse();
     });
 
     it("should forbid hlines outside array environment", () => {
