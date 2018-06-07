@@ -1,16 +1,14 @@
 // @flow
-import {groupTypes as htmlGroupTypes} from "./buildHTML";
-import {groupTypes as mathmlGroupTypes} from "./buildMathML";
 import {checkNodeType} from "./ParseNode";
 import domTree from "./domTree";
 
 import type Parser from "./Parser";
-import type ParseNode, {NodeType, NodeValue} from "./ParseNode";
+import type ParseNode, {AnyParseNode, NodeType} from "./ParseNode";
 import type Options from "./Options";
 import type {ArgType, BreakToken, Mode} from "./types";
 import type {HtmlDomNode} from "./domTree";
 import type {Token} from "./Token";
-import type {MathNode, TextNode} from "./mathMLTree";
+import type {MathNodeClass} from "./mathMLTree";
 
 /** Context provided to function handlers for error messages. */
 export type FunctionContext = {|
@@ -22,15 +20,21 @@ export type FunctionContext = {|
 
 export type FunctionHandler<NODETYPE: NodeType> = (
     context: FunctionContext,
-    args: ParseNode<*>[],
-    optArgs: (?ParseNode<*>)[],
-) => NodeValue<NODETYPE>;
+    args: AnyParseNode[],
+    optArgs: (?AnyParseNode)[],
+) => ParseNode<NODETYPE>;
 
 export type HtmlBuilder<NODETYPE> = (ParseNode<NODETYPE>, Options) => HtmlDomNode;
 export type MathMLBuilder<NODETYPE> = (
     group: ParseNode<NODETYPE>,
     options: Options,
-) => MathNode | TextNode | domTree.documentFragment;
+) => MathNodeClass | domTree.documentFragment;
+
+// More general version of `HtmlBuilder` for nodes (e.g. \sum, accent types)
+// whose presence impacts super/subscripting. In this case, ParseNode<"supsub">
+// delegates its HTML building to the HtmlBuilder corresponding to these nodes.
+export type HtmlBuilderSupSub<NODETYPE> =
+    (ParseNode<"supsub"> | ParseNode<NODETYPE>, Options) => HtmlDomNode;
 
 export type FunctionPropSpec = {
     // The number of arguments the function takes.
@@ -164,6 +168,18 @@ export type FunctionSpec<NODETYPE: NodeType> = {|
  */
 export const _functions: {[string]: FunctionSpec<*>} = {};
 
+/**
+ * All HTML builders. Should be only used in the `define*` and the `build*ML`
+ * functions.
+ */
+export const _htmlGroupBuilders: {[string]: HtmlBuilder<*>} = {};
+
+/**
+ * All MathML builders. Should be only used in the `define*` and the `build*ML`
+ * functions.
+ */
+export const _mathmlGroupBuilders: {[string]: MathMLBuilder<*>} = {};
+
 export default function defineFunction<NODETYPE: NodeType>({
     type,
     nodeType,
@@ -189,14 +205,18 @@ export default function defineFunction<NODETYPE: NodeType>({
         handler: handler,
     };
     for (let i = 0; i < names.length; ++i) {
+        // TODO: The value type of _functions should be a type union of all
+        // possible `FunctionSpec<>` possibilities instead of `FunctionSpec<*>`,
+        // which is an existential type.
+        // $FlowFixMe
         _functions[names[i]] = data;
     }
     if (type) {
         if (htmlBuilder) {
-            htmlGroupTypes[type] = htmlBuilder;
+            _htmlGroupBuilders[type] = htmlBuilder;
         }
         if (mathmlBuilder) {
-            mathmlGroupTypes[type] = mathmlBuilder;
+            _mathmlGroupBuilders[type] = mathmlBuilder;
         }
     }
 }
@@ -208,11 +228,11 @@ export default function defineFunction<NODETYPE: NodeType>({
  */
 export function defineFunctionBuilders<NODETYPE: NodeType>({
     type, htmlBuilder, mathmlBuilder,
-}: {
+}: {|
     type: NODETYPE,
-    htmlBuilder: HtmlBuilder<NODETYPE>,
+    htmlBuilder?: HtmlBuilder<NODETYPE>,
     mathmlBuilder: MathMLBuilder<NODETYPE>,
-}) {
+|}) {
     defineFunction({
         type,
         names: [],
@@ -225,7 +245,7 @@ export function defineFunctionBuilders<NODETYPE: NodeType>({
 
 // Since the corresponding buildHTML/buildMathML function expects a
 // list of elements, we normalize for different kinds of arguments
-export const ordargument = function(arg: ParseNode<*>): ParseNode<*>[] {
+export const ordargument = function(arg: AnyParseNode): AnyParseNode[] {
     const node = checkNodeType(arg, "ordgroup");
     return node ? node.value : [arg];
 };

@@ -4,16 +4,16 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import stretchy from "../stretchy";
 import Style from "../Style";
-import {assertNodeType, checkNodeType} from "../ParseNode";
+import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type ParseNode from "../ParseNode";
+import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "horizBrace", but
 // also "supsub" since an over/underbrace can affect super/subscripting.
-function htmlBuilder(grp: ParseNode<*>, options) {
+export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
     const style = options.style;
 
     // Pull out the `ParseNode<"horizBrace">` if `grp` is a "supsub" node.
@@ -29,11 +29,7 @@ function htmlBuilder(grp: ParseNode<*>, options) {
                 supSub.value.sup, options.havingStyle(style.sup()), options) :
             html.buildGroup(
                 supSub.value.sub, options.havingStyle(style.sub()), options);
-        // The supsub `base` must be non-null in this context. Otherwise,
-        // this `htmlBuilder` handler wouldn't have been invoked.
-        // $FlowFixMe
-        const base: ParseNode<*> = supSub.value.base;
-        group = assertNodeType(base, "horizBrace");
+        group = assertNodeType(supSub.value.base, "horizBrace");
     } else {
         group = assertNodeType(grp, "horizBrace");
     }
@@ -112,7 +108,15 @@ function htmlBuilder(grp: ParseNode<*>, options) {
 
     return buildCommon.makeSpan(
         ["mord", (group.value.isOver ? "mover" : "munder")], [vlist], options);
-}
+};
+
+const mathmlBuilder: MathMLBuilder<"horizBrace"> = (group, options) => {
+    const accentNode = stretchy.mathMLnode(group.value.label);
+    return new mathMLTree.MathNode(
+        (group.value.isOver ? "mover" : "munder"),
+        [mml.buildGroup(group.value.base, options), accentNode]
+    );
+};
 
 // Horizontal stretchy braces
 defineFunction({
@@ -121,22 +125,14 @@ defineFunction({
     props: {
         numArgs: 1,
     },
-    handler(context, args) {
-        return {
+    handler({parser, funcName}, args) {
+        return new ParseNode("horizBrace", {
             type: "horizBrace",
-            label: context.funcName,
-            isOver: /^\\over/.test(context.funcName),
+            label: funcName,
+            isOver: /^\\over/.test(funcName),
             base: args[0],
-        };
+        }, parser.mode);
     },
     htmlBuilder,
-    mathmlBuilder(group, options) {
-        const accentNode = stretchy.mathMLnode(group.value.label);
-        return new mathMLTree.MathNode(
-            (group.value.isOver ? "mover" : "munder"),
-            [mml.buildGroup(group.value.base, options), accentNode]
-        );
-    },
+    mathmlBuilder,
 });
-
-

@@ -24,9 +24,20 @@ type Font = "main" | "ams"
 // types for raw text tokens, and we want to avoid conflicts with higher-level
 // `ParseNode` types. These `ParseNode`s are constructed within `Parser` by
 // looking up the `symbols` map.
-export type Group =
-    "accent-token" | "bin" | "close" | "inner" | "mathord" |
-    "op-token" | "open" | "punct" | "rel" | "spacing" | "textord";
+export const GROUPS = { // Set of all the groups.
+    "accent-token": 1,
+    "bin": 1,
+    "close": 1,
+    "inner": 1,
+    "mathord": 1,
+    "op-token": 1,
+    "open": 1,
+    "punct": 1,
+    "rel": 1,
+    "spacing": 1,
+    "textord": 1,
+};
+export type Group = $Keys<typeof GROUPS>;
 type CharInfoMap = {[string]: {font: Font, group: Group, replace: ?string}};
 
 const symbols: {[Mode]: CharInfoMap} = {
@@ -301,16 +312,16 @@ defineSymbol(math, ams, close, "\u2518", "\\lrcorner", true);
 
 // AMS Binary Relations
 defineSymbol(math, ams, rel, "\u2266", "\\leqq", true);
-defineSymbol(math, ams, rel, "\u2a7d", "\\leqslant");
+defineSymbol(math, ams, rel, "\u2a7d", "\\leqslant", true);
 defineSymbol(math, ams, rel, "\u2a95", "\\eqslantless", true);
-defineSymbol(math, ams, rel, "\u2272", "\\lesssim");
-defineSymbol(math, ams, rel, "\u2a85", "\\lessapprox");
+defineSymbol(math, ams, rel, "\u2272", "\\lesssim", true);
+defineSymbol(math, ams, rel, "\u2a85", "\\lessapprox", true);
 defineSymbol(math, ams, rel, "\u224a", "\\approxeq", true);
 defineSymbol(math, ams, bin, "\u22d6", "\\lessdot");
 defineSymbol(math, ams, rel, "\u22d8", "\\lll", true);
-defineSymbol(math, ams, rel, "\u2276", "\\lessgtr");
-defineSymbol(math, ams, rel, "\u22da", "\\lesseqgtr");
-defineSymbol(math, ams, rel, "\u2a8b", "\\lesseqqgtr");
+defineSymbol(math, ams, rel, "\u2276", "\\lessgtr", true);
+defineSymbol(math, ams, rel, "\u22da", "\\lesseqgtr", true);
+defineSymbol(math, ams, rel, "\u2a8b", "\\lesseqqgtr", true);
 defineSymbol(math, ams, rel, "\u2251", "\\doteqdot");
 defineSymbol(math, ams, rel, "\u2253", "\\risingdotseq", true);
 defineSymbol(math, ams, rel, "\u2252", "\\fallingdotseq", true);
@@ -325,7 +336,7 @@ defineSymbol(math, ams, rel, "\u227e", "\\precsim", true);
 defineSymbol(math, ams, rel, "\u2ab7", "\\precapprox", true);
 defineSymbol(math, ams, rel, "\u22b2", "\\vartriangleleft");
 defineSymbol(math, ams, rel, "\u22b4", "\\trianglelefteq");
-defineSymbol(math, ams, rel, "\u22a8", "\\vDash");
+defineSymbol(math, ams, rel, "\u22a8", "\\vDash", true);
 defineSymbol(math, ams, rel, "\u22aa", "\\Vvdash", true);
 defineSymbol(math, ams, rel, "\u2323", "\\smallsmile");
 defineSymbol(math, ams, rel, "\u2322", "\\smallfrown");
@@ -477,7 +488,7 @@ defineSymbol(math, main, textord, "O", "\u039F");
 defineSymbol(math, main, textord, "P", "\u03A1");
 defineSymbol(math, main, textord, "T", "\u03A4");
 defineSymbol(math, main, textord, "X", "\u03A7");
-defineSymbol(math, main, textord, "\u00ac", "\\neg");
+defineSymbol(math, main, textord, "\u00ac", "\\neg", true);
 defineSymbol(math, main, textord, "\u00ac", "\\lnot");
 defineSymbol(math, main, textord, "\u22a4", "\\top");
 defineSymbol(math, main, textord, "\u22a5", "\\bot");
@@ -552,7 +563,6 @@ defineSymbol(math, main, rel, "\u2265", "\\geq", true);
 defineSymbol(math, main, rel, "\u2190", "\\gets");
 defineSymbol(math, main, rel, ">", "\\gt");
 defineSymbol(math, main, rel, "\u2208", "\\in", true);
-defineSymbol(math, main, rel, "\u2209", "\\notin", true);
 defineSymbol(math, main, rel, "\u0338", "\\not");
 defineSymbol(math, main, rel, "\u2282", "\\subset", true);
 defineSymbol(math, main, rel, "\u2283", "\\supset", true);
@@ -565,40 +575,23 @@ defineSymbol(math, main, rel, "\u2190", "\\leftarrow", true);
 defineSymbol(math, main, rel, "\u2264", "\\le");
 defineSymbol(math, main, rel, "\u2264", "\\leq", true);
 defineSymbol(math, main, rel, "<", "\\lt");
-defineSymbol(math, main, rel, "\u2260", "\\ne", true);
-defineSymbol(math, main, rel, "\u2260", "\\neq");
 defineSymbol(math, main, rel, "\u2192", "\\rightarrow", true);
 defineSymbol(math, main, rel, "\u2192", "\\to");
 defineSymbol(math, ams, rel, "\u2271", "\\ngeq", true);
 defineSymbol(math, ams, rel, "\u2270", "\\nleq", true);
-defineSymbol(math, main, spacing, null, "\\!");
 defineSymbol(math, main, spacing, "\u00a0", "\\ ");
 defineSymbol(math, main, spacing, "\u00a0", "~");
-defineSymbol(math, main, spacing, null, "\\,");
-defineSymbol(math, main, spacing, null, "\\:");
-defineSymbol(math, main, spacing, null, "\\;");
-defineSymbol(math, main, spacing, null, "\\enspace");
-defineSymbol(math, main, spacing, null, "\\qquad");
-defineSymbol(math, main, spacing, null, "\\quad");
 defineSymbol(math, main, spacing, "\u00a0", "\\space");
 // Ref: LaTeX Source 2e: \DeclareRobustCommand{\nobreakspace}{%
 defineSymbol(math, main, spacing, "\u00a0", "\\nobreakspace");
-defineSymbol(text, main, spacing, null, "\\!");
 defineSymbol(text, main, spacing, "\u00a0", "\\ ");
 defineSymbol(text, main, spacing, "\u00a0", "~");
-defineSymbol(text, main, spacing, null, "\\,");
-defineSymbol(text, main, spacing, null, "\\:");
-defineSymbol(text, main, spacing, null, "\\;");
-defineSymbol(text, main, spacing, null, "\\enspace");
-defineSymbol(text, main, spacing, null, "\\qquad");
-defineSymbol(text, main, spacing, null, "\\quad");
 defineSymbol(text, main, spacing, "\u00a0", "\\space");
 defineSymbol(text, main, spacing, "\u00a0", "\\nobreakspace");
 defineSymbol(math, main, spacing, null, "\\nobreak");
 defineSymbol(math, main, spacing, null, "\\allowbreak");
 defineSymbol(math, main, punct, ",", ",");
 defineSymbol(math, main, punct, ";", ";");
-defineSymbol(math, main, punct, ":", "\\colon");
 defineSymbol(math, ams, bin, "\u22bc", "\\barwedge", true);
 defineSymbol(math, ams, bin, "\u22bb", "\\veebar", true);
 defineSymbol(math, main, bin, "\u2299", "\\odot", true);
@@ -669,7 +662,7 @@ defineSymbol(text, main, inner, "\u2026", "\\ldots", true);
 defineSymbol(math, main, inner, "\u2026", "\\ldots", true);
 defineSymbol(math, main, inner, "\u22ef", "\\@cdots", true);
 defineSymbol(math, main, inner, "\u22f1", "\\ddots", true);
-defineSymbol(math, main, textord, "\u22ee", "\\vdots", true);
+defineSymbol(math, main, textord, "\u22ee", "\\varvdots"); // \vdots is a macro
 defineSymbol(math, main, accent, "\u02ca", "\\acute");
 defineSymbol(math, main, accent, "\u02cb", "\\grave");
 defineSymbol(math, main, accent, "\u00a8", "\\ddot");
@@ -705,6 +698,14 @@ defineSymbol(text, main, accent, "\u02c7", "\\v"); // caron
 defineSymbol(text, main, accent, "\u00a8", '\\"'); // diaresis
 defineSymbol(text, main, accent, "\u02dd", "\\H"); // double acute
 defineSymbol(text, main, accent, "\u25ef", "\\textcircled"); // \bigcirc glyph
+
+// These ligatures are detected and created in Parser.js's `formLigatures`.
+export const ligatures = {
+    "--": true,
+    "---": true,
+    "``": true,
+    "''": true,
+};
 
 defineSymbol(text, main, textord, "\u2013", "--");
 defineSymbol(text, main, textord, "\u2013", "\\textendash");

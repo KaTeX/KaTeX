@@ -1,6 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
+import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -17,6 +18,20 @@ const textFontWeights = {
 
 const textFontShapes = {
     "\\textit": "textit",
+};
+
+const optionsWithFont = (group, options) => {
+    const font = group.value.font;
+    // Checks if the argument is a font family or a font style.
+    if (!font) {
+        return options;
+    } else if (textFontFamilies[font]) {
+        return options.withTextFontFamily(textFontFamilies[font]);
+    } else if (textFontWeights[font]) {
+        return options.withTextFontWeight(textFontWeights[font]);
+    } else {
+        return options.withTextFontShape(textFontShapes[font]);
+    }
 };
 
 defineFunction({
@@ -36,32 +51,22 @@ defineFunction({
         allowedInText: true,
         consumeMode: "text",
     },
-    handler(context, args) {
+    handler({parser, funcName}, args) {
         const body = args[0];
-        return {
+        return new ParseNode("text", {
             type: "text",
             body: ordargument(body),
-            font: context.funcName,
-        };
+            font: funcName,
+        }, parser.mode);
     },
     htmlBuilder(group, options) {
-        const font = group.value.font;
-        // Checks if the argument is a font family or a font style.
-        let newOptions;
-        if (!font) {
-            newOptions = options;
-        } else if (textFontFamilies[font]) {
-            newOptions = options.withTextFontFamily(textFontFamilies[font]);
-        } else if (textFontWeights[font]) {
-            newOptions = options.withTextFontWeight(textFontWeights[font]);
-        } else {
-            newOptions = options.withTextFontShape(textFontShapes[font]);
-        }
+        const newOptions = optionsWithFont(group, options);
         const inner = html.buildExpression(group.value.body, newOptions, true);
         buildCommon.tryCombineChars(inner);
         return buildCommon.makeSpan(["mord", "text"], inner, newOptions);
     },
     mathmlBuilder(group, options) {
-        return mml.makeTextRow(group.value.body, options);
+        const newOptions = optionsWithFont(group, options);
+        return mml.buildExpressionRow(group.value.body, newOptions);
     },
 });

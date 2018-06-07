@@ -20,18 +20,12 @@ defaults: &defaults
           - node_modules
 
     - run:
-        name: Verify screenshots and generate diff
-        command: node dockers/Screenshotter/screenshotter.js --seleniumIP localhost -b $CIRCLE_JOB --verify --diff
-    - run:
-        name: Generate new screenshots
-        when: always
-        command: |
-            rm -rf test/screenshotter/images/*
-            node dockers/Screenshotter/screenshotter.js --seleniumIP localhost -b $CIRCLE_JOB
+        name: Verify screenshots and generate diffs and new screenshots
+        command: node dockers/Screenshotter/screenshotter.js --seleniumIP localhost -b $CIRCLE_JOB --verify --diff --new
 
     - store_artifacts:
-        path: test/screenshotter/images
-        destination: image
+        path: test/screenshotter/new
+        destination: new
     - store_artifacts:
         path: test/screenshotter/diff
         destination: diff

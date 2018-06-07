@@ -1,5 +1,152 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`A begin/end parser should grab \\arraystretch 1`] = `
+[
+  {
+    "type": "array",
+    "mode": "math",
+    "value": {
+      "type": "array",
+      "arraystretch": 1.5,
+      "body": [
+        [
+          {
+            "type": "styling",
+            "mode": "math",
+            "value": {
+              "type": "styling",
+              "style": "text",
+              "value": [
+                {
+                  "type": "ordgroup",
+                  "mode": "math",
+                  "value": [
+                    {
+                      "type": "mathord",
+                      "loc": {
+                        "end": 37,
+                        "lexer": {
+                          "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                          "pos": 56
+                        },
+                        "start": 36
+                      },
+                      "mode": "math",
+                      "value": "a"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "type": "styling",
+            "mode": "math",
+            "value": {
+              "type": "styling",
+              "style": "text",
+              "value": [
+                {
+                  "type": "ordgroup",
+                  "mode": "math",
+                  "value": [
+                    {
+                      "type": "mathord",
+                      "loc": {
+                        "end": 39,
+                        "lexer": {
+                          "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                          "pos": 56
+                        },
+                        "start": 38
+                      },
+                      "mode": "math",
+                      "value": "b"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        [
+          {
+            "type": "styling",
+            "mode": "math",
+            "value": {
+              "type": "styling",
+              "style": "text",
+              "value": [
+                {
+                  "type": "ordgroup",
+                  "mode": "math",
+                  "value": [
+                    {
+                      "type": "mathord",
+                      "loc": {
+                        "end": 42,
+                        "lexer": {
+                          "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                          "pos": 56
+                        },
+                        "start": 41
+                      },
+                      "mode": "math",
+                      "value": "c"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "type": "styling",
+            "mode": "math",
+            "value": {
+              "type": "styling",
+              "style": "text",
+              "value": [
+                {
+                  "type": "ordgroup",
+                  "mode": "math",
+                  "value": [
+                    {
+                      "type": "mathord",
+                      "loc": {
+                        "end": 44,
+                        "lexer": {
+                          "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                          "pos": 56
+                        },
+                        "start": 43
+                      },
+                      "mode": "math",
+                      "value": "d"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      ],
+      "hLinesBeforeRow": [
+        [
+        ],
+        [
+        ],
+        [
+        ]
+      ],
+      "hskipBeforeAndAfter": false,
+      "rowGaps": [
+        null
+      ]
+    }
+  }
+]
+`;
+
 exports[`A parser that does not throw on unsupported commands should build katex-error span for other type of KaTeX error 1`] = `
 {
   "attributes": {

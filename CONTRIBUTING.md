@@ -157,27 +157,18 @@ Flow by running `npm run test:flow`. See [Flow](https://flow.org/) for more deta
 
 ## Working with submodules
 
-The fonts for KaTeX live in a submodule which appears in submodules/katex-fonts.
-Most of the time you won't have to worry about this unless you're making
-changes to fonts or switching between branches where submodules/katex0fonts
-point to different commits.
+The fonts for KaTeX live in a submodule stored in `submodules/katex-fonts`.
+When you first clone the KaTeX repository, use
+`git submodule update --init --recursive` to download the corresponding
+fonts repository.  After running `npm install`, you should have Git hooks that
+will automatically run this command after switching to branches
+where `submodules/katex-fonts` point to different commits.
 
-If you're not familiar with submodule, it's probably easiest to get started by
-adding the following aliases to your .gitconfig:
-```
-[alias]
-  # Versions of commands that handle submodules properly.
-  co = "!f() { git checkout \"$@\" && git submodule update --init --recursive; }; f"
-  p = "!f() { git pull \"$@\" && git submodule update --init --recursive; }; f"
-  m = "!f() { git merge \"$@\" && git submodule update --init --recursive; }; f"
-  gsu = "!f() { git submodule sync --recursive && git submodule update --init --recursive; }; f"
-```
-`git co`, `git p`, and `git m` work just like `git checkout`, `git pull`, and
-`git merge` respectively but automatically update submodules.  For more info
-about how to use git submodules see https://chrisjean.com/git-submodules-adding-using-removing-and-updating/.
-
-When submitting pull requests, that update katex-fonts, you'll need to submit
+When submitting pull requests that update katex-fonts, you'll need to submit
 two pull requests: one for [KaTeX/katex-fonts](https:/github.com/KaTeX/katex-fonts) and one for [Khan/KaTeX](https://github.com/Khan/KaTeX).
+
+For more info about how to use git submodules,
+see https://chrisjean.com/git-submodules-adding-using-removing-and-updating/.
 
 ## CLA
 

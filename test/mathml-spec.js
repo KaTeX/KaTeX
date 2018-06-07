@@ -8,13 +8,9 @@ import Options from "../src/Options";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
 
-const defaultSettings = new Settings({});
-
-const getMathML = function(expr, settings) {
-    const usedSettings = settings ? settings : defaultSettings;
-
+const getMathML = function(expr, settings = new Settings()) {
     let startStyle = Style.TEXT;
-    if (usedSettings.displayMode) {
+    if (settings.displayMode) {
         startStyle = Style.DISPLAY;
     }
 
@@ -24,7 +20,7 @@ const getMathML = function(expr, settings) {
         maxSize: Infinity,
     });
 
-    const built = buildMathML(parseTree(expr, usedSettings), expr, options);
+    const built = buildMathML(parseTree(expr, settings), expr, options);
 
     // Strip off the surrounding <span>
     return built.children[0].toMarkup();
@@ -33,6 +29,10 @@ const getMathML = function(expr, settings) {
 describe("A MathML builder", function() {
     it('should generate the right types of nodes', () => {
         expect(getMathML("\\sin{x}+1\\;\\text{a}")).toMatchSnapshot();
+    });
+
+    it('should concatenate digits into single <mn>', () => {
+        expect(getMathML("\\sin{\\alpha}=0.34")).toMatchSnapshot();
     });
 
     it('should make prime operators into <mo> nodes', () => {
@@ -101,6 +101,31 @@ describe("A MathML builder", function() {
 
     it('tags use <mlabeledtr>', () => {
         expect(getMathML("\\tag{hi} x+y^2", {displayMode: true}))
+            .toMatchSnapshot();
+    });
+
+    it('normal spaces render normally', function() {
+        expect(getMathML("\\kern1em\\kern1ex")).toMatchSnapshot();
+    });
+    it('special spaces render specially', function() {
+        expect(getMathML(
+            "\\,\\thinspace\\:\\medspace\\;\\thickspace" +
+            "\\!\\negthinspace\\negmedspace\\negthickspace" +
+            "\\mkern1mu\\mkern3mu\\mkern4mu\\mkern5mu" +
+            "\\mkern-1mu\\mkern-3mu\\mkern-4mu\\mkern-5mu")).toMatchSnapshot();
+    });
+
+    it('ligatures render properly', () => {
+        expect(getMathML("\\text{```Hi----'''}--" +
+                         "\\texttt{```Hi----'''}" +
+                         "\\text{\\tt ```Hi----'''}")).toMatchSnapshot();
+    });
+
+    it('\\text fonts become mathvariant', () => {
+        expect(getMathML("\\text{" +
+            "roman\\textit{italic\\textbf{bold italic}}\\textbf{bold}" +
+            "\\textsf{ss\\textit{italic\\textbf{bold italic}}\\textbf{bold}}" +
+            "\\texttt{tt\\textit{italic\\textbf{bold italic}}\\textbf{bold}}}"))
             .toMatchSnapshot();
     });
 });

@@ -1,5 +1,5 @@
 // @flow
-const { targets, createConfig } = require('./webpack.common');
+const {targets, createConfig} = require('./webpack.common');
 
 module.exports = [ //                              dev   minify
     ...targets.map(target => createConfig(target, false, false)),

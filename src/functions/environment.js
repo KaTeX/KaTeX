@@ -1,6 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import ParseError from "../ParseError";
+import ParseNode, {assertNodeType} from "../ParseNode";
 
 // Environment delimiters. HTML/MathML rendering is defined in the corresponding
 // defineEnvironment definitions.
@@ -11,19 +12,19 @@ defineFunction({
         numArgs: 1,
         argTypes: ["text"],
     },
-    handler(context, args) {
+    handler({parser}, args) {
         const nameGroup = args[0];
         if (nameGroup.type !== "ordgroup") {
             throw new ParseError("Invalid environment name", nameGroup);
         }
         let name = "";
         for (let i = 0; i < nameGroup.value.length; ++i) {
-            name += nameGroup.value[i].value;
+            name += assertNodeType(nameGroup.value[i], "textord").value;
         }
-        return {
+        return new ParseNode("environment", {
             type: "environment",
             name: name,
             nameGroup: nameGroup,
-        };
+        }, parser.mode);
     },
 });

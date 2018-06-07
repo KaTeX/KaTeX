@@ -9,16 +9,21 @@ import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
 import ParseError from "./ParseError";
+import type Namespace from "./Namespace";
+
+import type {Mode} from "./types";
 
 /**
  * Provides context to macros defined by functions. Implemented by
  * MacroExpander.
  */
 export interface MacroContextInterface {
+    mode: Mode;
+
     /**
      * Object mapping macros to their expansions.
      */
-    macros: MacroMap;
+    macros: Namespace<MacroDefinition>;
 
     /**
      * Returns the topmost token on the stack, without expanding it.
@@ -34,16 +39,41 @@ export interface MacroContextInterface {
     expandAfterFuture(): Token;
 
     /**
+     * Recursively expand first token, then return first non-expandable token.
+     */
+    expandNextToken(): Token;
+
+    /**
+     * Fully expand the given macro name and return the resulting list of
+     * tokens, or return `undefined` if no such macro is defined.
+     */
+    expandMacro(name: string): Token[] | void;
+
+    /**
+     * Fully expand the given macro name and return the result as a string,
+     * or return `undefined` if no such macro is defined.
+     */
+    expandMacroAsText(name: string): string | void;
+
+    /**
      * Consume the specified number of arguments from the token stream,
      * and return the resulting array of arguments.
      */
     consumeArgs(numArgs: number): Token[][];
+
+    /**
+     * Determine whether a command is currently "defined" (has some
+     * functionality), meaning that it's a macro (in the current group),
+     * a function, a symbol, or one of the special commands listed in
+     * `implicitCommands`.
+     */
+    isDefined(name: string): boolean;
 }
 
 /** Macro tokens (in reverse order). */
 export type MacroExpansion = {tokens: Token[], numArgs: number};
 
-type MacroDefinition = string | MacroExpansion |
+export type MacroDefinition = string | MacroExpansion |
     (MacroContextInterface => (string | MacroExpansion));
 export type MacroMap = {[string]: MacroDefinition};
 
@@ -101,12 +131,13 @@ defineMacro("\\TextOrMath", function(context) {
     }
 });
 
-// Basic support for global macro definitions:
-//     \gdef\macro{expansion}
-//     \gdef\macro#1{expansion}
-//     \gdef\macro#1#2{expansion}
-//     \gdef\macro#1#2#3#4#5#6#7#8#9{expansion}
-defineMacro("\\gdef", function(context) {
+// Basic support for macro definitions:
+//     \def\macro{expansion}
+//     \def\macro#1{expansion}
+//     \def\macro#1#2{expansion}
+//     \def\macro#1#2#3#4#5#6#7#8#9{expansion}
+// Also the \gdef and \global\def equivalents
+const def = (context, global: boolean) => {
     let arg = context.consumeArgs(1)[0];
     if (arg.length !== 1) {
         throw new ParseError("\\gdef's first argument must be a macro name");
@@ -130,12 +161,77 @@ defineMacro("\\gdef", function(context) {
         arg = context.consumeArgs(1)[0];
     }
     // Final arg is the expansion of the macro
-    context.macros[name] = {
+    context.macros.set(name, {
         tokens: arg,
         numArgs,
-    };
+    }, global);
     return '';
+};
+defineMacro("\\gdef", (context) => def(context, true));
+defineMacro("\\def", (context) => def(context, false));
+defineMacro("\\global", (context) => {
+    const next = context.consumeArgs(1)[0];
+    if (next.length !== 1) {
+        throw new ParseError("Invalid command after \\global");
+    }
+    const command = next[0].text;
+    // TODO: Should expand command
+    if (command === "\\def") {
+        // \global\def is equivalent to \gdef
+        return def(context, true);
+    } else {
+        throw new ParseError(`Invalid command '${command}' after \\global`);
+    }
 });
+
+// \newcommand{\macro}[args]{definition}
+// \renewcommand{\macro}[args]{definition}
+// TODO: Optional arguments: \newcommand{\macro}[args][default]{definition}
+const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
+    let arg = context.consumeArgs(1)[0];
+    if (arg.length !== 1) {
+        throw new ParseError(
+            "\\newcommand's first argument must be a macro name");
+    }
+    const name = arg[0].text;
+
+    const exists = context.isDefined(name);
+    if (exists && !existsOK) {
+        throw new ParseError(`\\newcommand{${name}} attempting to redefine ` +
+            `${name}; use \\renewcommand`);
+    }
+    if (!exists && !nonexistsOK) {
+        throw new ParseError(`\\renewcommand{${name}} when command ${name} ` +
+            `does not yet exist; use \\newcommand`);
+    }
+
+    let numArgs = 0;
+    arg = context.consumeArgs(1)[0];
+    if (arg.length === 1 && arg[0].text === "[") {
+        let argText = '';
+        let token = context.expandNextToken();
+        while (token.text !== "]" && token.text !== "EOF") {
+            // TODO: Should properly expand arg, e.g., ignore {}s
+            argText += token.text;
+            token = context.expandNextToken();
+        }
+        if (!argText.match(/^\s*[0-9]+\s*$/)) {
+            throw new ParseError(`Invalid number of arguments: ${argText}`);
+        }
+        numArgs = parseInt(argText);
+        arg = context.consumeArgs(1)[0];
+    }
+
+    // Final arg is the expansion of the macro
+    context.macros.set(name, {
+        tokens: arg,
+        numArgs,
+    });
+    return '';
+};
+defineMacro("\\newcommand", (context) => newcommand(context, false, true));
+defineMacro("\\renewcommand", (context) => newcommand(context, true, false));
+defineMacro("\\providecommand", (context) => newcommand(context, true, true));
 
 //////////////////////////////////////////////////////////////////////
 // Grouping
@@ -203,6 +299,17 @@ defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
 defineMacro("\\rlap", "\\mathrlap{\\textrm{#1}}");
 defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 
+// Negated symbols from base/fontmath.ltx:
+// \def\neq{\not=} \let\ne=\neq
+// \DeclareRobustCommand
+//   \notin{\mathrel{\m@th\mathpalette\c@ncel\in}}
+// \def\c@ncel#1#2{\m@th\ooalign{$\hfil#1\mkern1mu/\hfil$\crcr$#1#2$}}
+defineMacro("\\neq", "\\not=");
+defineMacro("\\ne", "\\neq");
+defineMacro("\u2260", "\\neq");
+defineMacro("\\notin", "\\mathrel{{\\in}\\mathllap{/\\mskip1mu}}");
+defineMacro("\u2209", "\\notin");
+
 // Unicode stacked relations
 defineMacro("\u2258",
     "\\mathrel{=\\kern{-1em}\\raisebox{0.4em}{$\\scriptsize\\frown$}}");
@@ -212,6 +319,21 @@ defineMacro("\u225B", "\\stackrel{\\scriptsize\\star}{=}");
 defineMacro("\u225D", "\\stackrel{\\tiny\\mathrm{def}}{=}");
 defineMacro("\u225E", "\\stackrel{\\tiny\\mathrm{m}}{=}");
 defineMacro("\u225F", "\\stackrel{\\tiny?}{=}");
+
+// Misc Unicode
+defineMacro("\u27C2", "\\perp");
+defineMacro("\u203C", "\\mathclose{!\\mkern-0.8mu!}");
+defineMacro("\u220C", "\\notni");
+
+//////////////////////////////////////////////////////////////////////
+// LaTeX_2ε
+
+// \vdots{\vbox{\baselineskip4\p@  \lineskiplimit\z@
+// \kern6\p@\hbox{.}\hbox{.}\hbox{.}}}
+// We'll call \varvdots, which gets a glyph from symbols.js.
+// The zero-width rule gets us an equivalent to the vertical 6pt kern.
+defineMacro("\\vdots", "\\mathord{\\varvdots\\rule{0pt}{15pt}}");
+defineMacro("\u22ee", "\\vdots");
 
 //////////////////////////////////////////////////////////////////////
 // amsmath.sty
@@ -230,6 +352,11 @@ defineMacro("\\varUpsilon", "\\mathit{\\Upsilon}");
 defineMacro("\\varPhi", "\\mathit{\\Phi}");
 defineMacro("\\varPsi", "\\mathit{\\Psi}");
 defineMacro("\\varOmega", "\\mathit{\\Omega}");
+
+// \renewcommand{\colon}{\nobreak\mskip2mu\mathpunct{}\nonscript
+// \mkern-\thinmuskip{:}\mskip6muplus1mu\relax}
+defineMacro("\\colon", "\\nobreak\\mskip2mu\\mathpunct{}" +
+    "\\mathchoice{\\mkern-3mu}{\\mkern-3mu}{}{}{:}\\mskip6mu");
 
 // \newcommand{\boxed}[1]{\fbox{\m@th$\displaystyle#1$}}
 defineMacro("\\boxed", "\\fbox{\\displaystyle{#1}}");
@@ -267,8 +394,6 @@ const dotsByToken = {
     '\\bigoplus': '\\dotsb',
     '\\bigodot': '\\dotsb',
     '\\bigsqcup': '\\dotsb',
-    '\\implies': '\\dotsb',
-    '\\impliedby': '\\dotsb',
     '\\And': '\\dotsb',
     '\\longrightarrow': '\\dotsb',
     '\\Longrightarrow': '\\dotsb',
@@ -279,11 +404,9 @@ const dotsByToken = {
     '\\mapsto': '\\dotsb',
     '\\longmapsto': '\\dotsb',
     '\\hookrightarrow': '\\dotsb',
-    '\\iff': '\\dotsb',
     '\\doteq': '\\dotsb',
     // Symbols whose definition starts with \mathbin:
     '\\mathbin': '\\dotsb',
-    '\\bmod': '\\dotsb',
     // Symbols whose definition starts with \mathrel:
     '\\mathrel': '\\dotsb',
     '\\relbar': '\\dotsb',
@@ -391,20 +514,74 @@ defineMacro("\\DOTSI", "\\relax");
 defineMacro("\\DOTSB", "\\relax");
 defineMacro("\\DOTSX", "\\relax");
 
-// http://texdoc.net/texmf-dist/doc/latex/amsmath/amsmath.pdf
-defineMacro("\\thinspace", "\\,");    //   \let\thinspace\,
-defineMacro("\\medspace", "\\:");     //   \let\medspace\:
-defineMacro("\\thickspace", "\\;");   //   \let\thickspace\;
+// Spacing, based on amsmath.sty's override of LaTeX defaults
+// \DeclareRobustCommand{\tmspace}[3]{%
+//   \ifmmode\mskip#1#2\else\kern#1#3\fi\relax}
+defineMacro("\\tmspace", "\\TextOrMath{\\kern#1#3}{\\mskip#1#2}\\relax");
+// \renewcommand{\,}{\tmspace+\thinmuskip{.1667em}}
+// TODO: math mode should use \thinmuskip
+defineMacro("\\,", "\\tmspace+{3mu}{.1667em}");
+// \let\thinspace\,
+defineMacro("\\thinspace", "\\,");
+// \renewcommand{\:}{\tmspace+\medmuskip{.2222em}}
+// TODO: math mode should use \medmuskip = 4mu plus 2mu minus 4mu
+defineMacro("\\:", "\\tmspace+{4mu}{.2222em}");
+// \let\medspace\:
+defineMacro("\\medspace", "\\:");
+// \renewcommand{\;}{\tmspace+\thickmuskip{.2777em}}
+// TODO: math mode should use \thickmuskip = 5mu plus 5mu
+defineMacro("\\;", "\\tmspace+{5mu}{.2777em}");
+// \let\thickspace\;
+defineMacro("\\thickspace", "\\;");
+// \renewcommand{\!}{\tmspace-\thinmuskip{.1667em}}
+// TODO: math mode should use \thinmuskip
+defineMacro("\\!", "\\tmspace-{3mu}{.1667em}");
+// \let\negthinspace\!
+defineMacro("\\negthinspace", "\\!");
+// \newcommand{\negmedspace}{\tmspace-\medmuskip{.2222em}}
+// TODO: math mode should use \medmuskip
+defineMacro("\\negmedspace", "\\tmspace-{4mu}{.2222em}");
+// \newcommand{\negthickspace}{\tmspace-\thickmuskip{.2777em}}
+// TODO: math mode should use \thickmuskip
+defineMacro("\\negthickspace", "\\tmspace-{5mu}{.277em}");
+// \def\enspace{\kern.5em }
+defineMacro("\\enspace", "\\kern.5em ");
+// \def\enskip{\hskip.5em\relax}
+defineMacro("\\enskip", "\\hskip.5em\\relax");
+// \def\quad{\hskip1em\relax}
+defineMacro("\\quad", "\\hskip1em\\relax");
+// \def\qquad{\hskip2em\relax}
+defineMacro("\\qquad", "\\hskip2em\\relax");
 
 // \tag@in@display form of \tag
 defineMacro("\\tag", "\\@ifstar\\tag@literal\\tag@paren");
 defineMacro("\\tag@paren", "\\tag@literal{({#1})}");
 defineMacro("\\tag@literal", (context) => {
-    if (context.macros["\\df@tag"]) {
+    if (context.macros.get("\\df@tag")) {
         throw new ParseError("Multiple \\tag");
     }
     return "\\gdef\\df@tag{\\text{#1}}";
 });
+
+// \renewcommand{\bmod}{\nonscript\mskip-\medmuskip\mkern5mu\mathbin
+//   {\operator@font mod}\penalty900
+//   \mkern5mu\nonscript\mskip-\medmuskip}
+// \newcommand{\pod}[1]{\allowbreak
+//   \if@display\mkern18mu\else\mkern8mu\fi(#1)}
+// \renewcommand{\pmod}[1]{\pod{{\operator@font mod}\mkern6mu#1}}
+// \newcommand{\mod}[1]{\allowbreak\if@display\mkern18mu
+//   \else\mkern12mu\fi{\operator@font mod}\,\,#1}
+// TODO: math mode should use \medmuskip = 4mu plus 2mu minus 4mu
+defineMacro("\\bmod",
+    "\\mathchoice{\\mskip1mu}{\\mskip1mu}{\\mskip5mu}{\\mskip5mu}" +
+    "\\mathbin{\\rm mod}" +
+    "\\mathchoice{\\mskip1mu}{\\mskip1mu}{\\mskip5mu}{\\mskip5mu}");
+defineMacro("\\pod", "\\allowbreak" +
+    "\\mathchoice{\\mkern18mu}{\\mkern8mu}{\\mkern8mu}{\\mkern8mu}(#1)");
+defineMacro("\\pmod", "\\pod{{\\rm mod}\\mkern6mu#1}");
+defineMacro("\\mod", "\\allowbreak" +
+    "\\mathchoice{\\mkern18mu}{\\mkern12mu}{\\mkern12mu}{\\mkern12mu}" +
+    "{\\rm mod}\\,\\,#1");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
@@ -460,31 +637,38 @@ defineMacro("\\ordinarycolon", ":");
 //TODO(edemaine): Not yet centered. Fix via \raisebox or #726
 defineMacro("\\vcentcolon", "\\mathrel{\\mathop\\ordinarycolon}");
 // \providecommand*\dblcolon{\vcentcolon\mathrel{\mkern-.9mu}\vcentcolon}
-defineMacro("\\dblcolon", "\\vcentcolon\\mathrel{\\mkern-.9mu}\\vcentcolon");
+defineMacro("\\dblcolon",
+    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-.9mu}\\vcentcolon}");
 // \providecommand*\coloneqq{\vcentcolon\mathrel{\mkern-1.2mu}=}
-defineMacro("\\coloneqq", "\\vcentcolon\\mathrel{\\mkern-1.2mu}=");
+defineMacro("\\coloneqq", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}=}");
 // \providecommand*\Coloneqq{\dblcolon\mathrel{\mkern-1.2mu}=}
-defineMacro("\\Coloneqq", "\\dblcolon\\mathrel{\\mkern-1.2mu}=");
+defineMacro("\\Coloneqq", "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}=}");
 // \providecommand*\coloneq{\vcentcolon\mathrel{\mkern-1.2mu}\mathrel{-}}
-defineMacro("\\coloneq", "\\vcentcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}");
+defineMacro("\\coloneq",
+    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}}");
 // \providecommand*\Coloneq{\dblcolon\mathrel{\mkern-1.2mu}\mathrel{-}}
-defineMacro("\\Coloneq", "\\dblcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}");
+defineMacro("\\Coloneq",
+    "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}}");
 // \providecommand*\eqqcolon{=\mathrel{\mkern-1.2mu}\vcentcolon}
-defineMacro("\\eqqcolon", "=\\mathrel{\\mkern-1.2mu}\\vcentcolon");
+defineMacro("\\eqqcolon", "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
 // \providecommand*\Eqqcolon{=\mathrel{\mkern-1.2mu}\dblcolon}
-defineMacro("\\Eqqcolon", "=\\mathrel{\\mkern-1.2mu}\\dblcolon");
+defineMacro("\\Eqqcolon", "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\dblcolon}");
 // \providecommand*\eqcolon{\mathrel{-}\mathrel{\mkern-1.2mu}\vcentcolon}
-defineMacro("\\eqcolon", "\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\vcentcolon");
+defineMacro("\\eqcolon",
+    "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
 // \providecommand*\Eqcolon{\mathrel{-}\mathrel{\mkern-1.2mu}\dblcolon}
-defineMacro("\\Eqcolon", "\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\dblcolon");
+defineMacro("\\Eqcolon",
+    "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\dblcolon}");
 // \providecommand*\colonapprox{\vcentcolon\mathrel{\mkern-1.2mu}\approx}
-defineMacro("\\colonapprox", "\\vcentcolon\\mathrel{\\mkern-1.2mu}\\approx");
+defineMacro("\\colonapprox",
+    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\approx}");
 // \providecommand*\Colonapprox{\dblcolon\mathrel{\mkern-1.2mu}\approx}
-defineMacro("\\Colonapprox", "\\dblcolon\\mathrel{\\mkern-1.2mu}\\approx");
+defineMacro("\\Colonapprox",
+    "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\approx}");
 // \providecommand*\colonsim{\vcentcolon\mathrel{\mkern-1.2mu}\sim}
-defineMacro("\\colonsim", "\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim");
+defineMacro("\\colonsim", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim}");
 // \providecommand*\Colonsim{\dblcolon\mathrel{\mkern-1.2mu}\sim}
-defineMacro("\\Colonsim", "\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim");
+defineMacro("\\Colonsim", "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim}");
 
 // Some Unicode characters are implemented with macros to mathtools functions.
 defineMacro("\u2254", "\\coloneqq");  // :=
@@ -511,11 +695,14 @@ defineMacro("\\coloncolonapprox", "\\Colonapprox");
 defineMacro("\\coloncolonsim", "\\Colonsim");
 
 // Additional macros, implemented by analogy with mathtools definitions:
-defineMacro("\\simcolon", "\\sim\\mathrel{\\mkern-1.2mu}\\vcentcolon");
-defineMacro("\\simcoloncolon", "\\sim\\mathrel{\\mkern-1.2mu}\\dblcolon");
-defineMacro("\\approxcolon", "\\approx\\mathrel{\\mkern-1.2mu}\\vcentcolon");
+defineMacro("\\simcolon",
+    "\\mathrel{\\sim\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
+defineMacro("\\simcoloncolon",
+    "\\mathrel{\\sim\\mathrel{\\mkern-1.2mu}\\dblcolon}");
+defineMacro("\\approxcolon",
+    "\\mathrel{\\approx\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
 defineMacro("\\approxcoloncolon",
-            "\\approx\\mathrel{\\mkern-1.2mu}\\dblcolon");
+            "\\mathrel{\\approx\\mathrel{\\mkern-1.2mu}\\dblcolon}");
 
 // Present in newtxmath, pxfonts and txfonts
 // TODO: The unicode character U+220C ∌ should be added to the font, and this

@@ -43,9 +43,7 @@ const printActualErrorMessage = error => {
     return `But it didn't throw anything.`;
 };
 
-export const defaultSettings = new Settings({
-    strict: false, // deal with warnings only when desired
-});
+export const nonstrictSettings = new Settings({strict: false});
 export const strictSettings = new Settings({strict: true});
 
 const _getBuilt = (expr, settings) => {
@@ -127,7 +125,7 @@ const getTree = (expr, settings, mode) => {
     return result._tree;
 };
 
-export const expectKaTeX = (expr, settings = defaultSettings, mode,
+export const expectKaTeX = (expr, settings = new Settings(), mode,
                             expectFail, expected) => {
     let pass = true; // whether succeeded
     let _tree;
@@ -162,8 +160,7 @@ export const expectKaTeX = (expr, settings = defaultSettings, mode,
     };
 };
 
-export const expectEquivalent = (actual, expected, settings = defaultSettings,
-                                 mode, expand) => {
+export const expectEquivalent = (actual, expected, settings, mode, expand) => {
     const actualTree = getTree(actual, settings, mode);
     const expectedTree = getTree(expected, settings, mode);
     const pass = JSON.stringify(stripPositions(actualTree)) ===
