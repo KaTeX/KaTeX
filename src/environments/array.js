@@ -664,13 +664,14 @@ defineEnvironment({
 // Catch \hline outside array environment
 defineFunction({
     type: "text", // Doesn't matter what this is.
-    names: ["\\hline"],
+    names: ["\\hline", "\\hdashline"],
     props: {
         numArgs: 0,
         allowedInText: true,
         allowedInMath: true,
     },
     handler(context, args) {
-        throw new ParseError("\\hline valid only within array environment");
+        throw new ParseError(
+            `${context.funcName} valid only within array environment`);
     },
 });
