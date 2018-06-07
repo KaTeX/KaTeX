@@ -145,7 +145,7 @@ export type ParseNodeTypes = {
     "size": {|
         type: "size",
         value: Measurement,
-		isBlank: boolean;
+        isBlank: boolean;
     |},
     "styling": {|
         type: "styling",
@@ -245,7 +245,7 @@ export type ParseNodeTypes = {
         leftDelim: ?string,
         rightDelim: ?string,
         size: StyleStr | "auto",
-		sizeNode: ?ParseNode<"size">,
+        barSize: Measurement | null,
     |},
     "horizBrace": {|
         type: "horizBrace",
@@ -261,9 +261,9 @@ export type ParseNodeTypes = {
     "infix": {|
         type: "infix",
         replaceWith: string,
-		sizeNode: ?ParseNode<"size">,
-        leftDelim: ?AnyParseNode[],
-        rightDelim: ?AnyParseNode[],
+        sizeNode?: ParseNode<"size">,
+        leftDelim?: AnyParseNode,
+        rightDelim?: AnyParseNode,
         token: ?Token,
     |},
     "kern": {|

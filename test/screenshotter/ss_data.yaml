@@ -113,7 +113,7 @@ ExtensibleArrows: |
     \end{array}
 FractionTest: |
     \begin{array}{l}
-        \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}\; \cfrac{1}{1+\cfrac{1}{x}} \\
+        \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}\; \cfrac{1}{1+\cfrac{1}{x}} \\[2.5em]
         {a \brace b} \; {a \brack b} \; \genfrac \{ ]{0.8pt}{0}{a}{b} \; {a \above1.0pt b} \; {a \abovewithdelims ( ] 0.8pt b} \; {a \atopwithdelims ( ] b} \; {a \overwithdelims ( ] b}
     \end{array}
 Functions: \sin\cos\tan\ln\log

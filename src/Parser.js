@@ -253,10 +253,10 @@ export default class Parser {
                 case "\\\\atopwithdelimsfrac":
                 case "\\\\overwithdelimsfrac":
                 case "\\\\abovewithdelimsfrac":
-					// Deal with infix functions that have more operands
-					// than just numerator and denominator.
+                    // These functions have more parameters than just numerator
+                    // and denominator.
                     node = this.callFunction(funcName,
-						[numerNode, body[overIndex], denomNode], []);
+                        [numerNode, body[overIndex], denomNode], []);
                     break;
                 default:
                     node = this.callFunction(funcName,
@@ -839,7 +839,7 @@ export default class Parser {
         if (!res) {
             return null;
         }
-        if (!optional && this.nextToken.text.length === 0) {
+        if (!optional && res.text.length === 0) {
             // Because this is !optional, it won't affect \kern, \hspace, etc.
             // It will capture the mandatory arguments to \genfrac and similar.
             res.text = "0pt";    // Enable \above{}

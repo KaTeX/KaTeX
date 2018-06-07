@@ -291,6 +291,7 @@ defineFunction({
             leftDelim: leftDelim,
             rightDelim: rightDelim,
             size: size,
+            barSize: null,
         }, parser.mode);
     },
 
@@ -338,10 +339,11 @@ defineFunction({
 
 const stylArray = ["display", "text", "script", "scriptscript"];
 
-const delimFromNode = function(delimNode: ParseNode): string | null {
+// $FlowFixMe
+const delimFromValue = function(delimString: string): string | null {
     let delim = null;
-    if (delimNode.value.length > 0) {
-        delim = delimNode.value;
+    if (delimString.length > 0) {
+        delim = delimString;
         delim = delim === "." ? null : delim;
     }
     return delim;
@@ -358,8 +360,8 @@ defineFunction({
     handler: ({parser, funcName}, args) => {
         const [leftNode, rightNode, barNode, styl, numer, denom] = args;
 
-        const leftDelim = delimFromNode(leftNode);
-        const rightDelim = delimFromNode(rightNode);
+        const leftDelim = delimFromValue(leftNode.value);
+        const rightDelim = delimFromValue(rightNode.value);
 
         let hasBarLine;
         let barSize = null;
@@ -369,15 +371,20 @@ defineFunction({
             // a standard bar size.
             hasBarLine = true;
         } else {
+            // $FlowFixMe
             barSize = barNode.value.value;
+            // $FlowFixMe
             hasBarLine = barSize.number > 0;
         }
 
         let size = "auto";
+        // $FlowFixMe
         if (styl.value.length > 0) {
+            // $FlowFixMe
             size = stylArray[styl.value[0].value];
         }
 
+        // $FlowFixMe
         return new ParseNode("genfrac", {
             type: "genfrac",
             numer: numer,
@@ -397,20 +404,62 @@ defineFunction({
 
 // Infix fractions with more operands than just numerator and denominator
 defineFunction({
-    type: "genfrac",
+    type: "infix",
     names: ["\\above"],
     props: {
         numArgs: 1,
+        argTypes: ["size"],
         infix: true,
-        argTypes: ["size"]
     },
-    handler: ({parser, funcName, token}, args) => {
-        const sizeNode = args[0];
+    handler({parser, funcName, token}, args) {
+        const [sizeNode] = args;
+        // $FlowFixMe
         return new ParseNode("infix", {
             type: "infix",
             replaceWith: "\\\\abovefrac",
-            token: token,
             sizeNode: sizeNode,
+            token: token,
+        }, parser.mode);
+    },
+});
+
+defineFunction({
+    type: "infix",
+    names: ["\\atopwithdelims", "\\overwithdelims"],
+    props: {
+        numArgs: 2,
+        infix: true,
+    },
+    handler({parser, funcName, token}, args) {
+        const [leftDelim, rightDelim] = args;
+        return new ParseNode("infix", {
+            type: "infix",
+            replaceWith: "\\" + funcName + "frac",
+            leftDelim: leftDelim,
+            rightDelim: rightDelim,
+            token: token,
+        }, parser.mode);
+    },
+});
+
+defineFunction({
+    type: "infix",
+    names: ["\\abovewithdelims"],
+    props: {
+        numArgs: 3,
+        argTypes: ["math", "math", "size"],
+        infix: true,
+    },
+    handler({parser, funcName, token}, args) {
+        const [leftDelim, rightDelim, sizeNode] = args;
+        // $FlowFixMe
+        return new ParseNode("infix", {
+            type: "infix",
+            replaceWith: "\\\\abovewithdelimsfrac",
+            leftDelim: leftDelim,
+            rightDelim: rightDelim,
+            sizeNode: sizeNode,
+            token: token,
         }, parser.mode);
     },
 });
@@ -420,14 +469,16 @@ defineFunction({
     names: ["\\\\abovefrac"],
     props: {
         numArgs: 3,
-        argTypes: ["math", "math", "size"],
+        argTypes: ["math", "size", "math"],
     },
     handler: ({parser, funcName}, args) => {
-		const [numer, infixNode, denom] = args;
-//		console.log(infixNode);
-		const barSize = infixNode.value.sizeNode.value.value;
-        const hasBarLine = barSize.number > 0;
+        const [numer, sizeNode, denom] = args;
 
+        // $FlowFixMe
+        const barSize = sizeNode.value.sizeNode.value.value;
+        // $FlowFixMe
+        const hasBarLine = barSize.number > 0;
+        // $FlowFixMe
         return new ParseNode("genfrac", {
             type: "genfrac",
             numer: numer,
@@ -447,34 +498,16 @@ defineFunction({
 
 defineFunction({
     type: "genfrac",
-    names: ["\\atopwithdelims", "\\overwithdelims"],
-    props: {
-        numArgs: 2,
-        infix: true,
-    },
-    handler: ({parser, funcName, token}, args) => {
-        const replaceWith = "\\" + funcName + "frac";
-        const [leftDelim, rightDelim] = args;
-        return new ParseNode("infix", {
-            type: "infix",
-            replaceWith: replaceWith,
-            leftDelim: leftDelim,
-            rightDelim: rightDelim,
-            token: token,
-        }, parser.mode);
-    },
-});
-
-defineFunction({
-    type: "genfrac",
     names: ["\\\\atopwithdelimsfrac", "\\\\overwithdelimsfrac"],
     props: {
         numArgs: 4,
     },
     handler: ({parser, funcName}, args) => {
-		const [numer, infixNode, denom] = args;
-        const leftDelim = delimFromNode(infixNode.value.leftDelim);
-        const rightDelim = delimFromNode(infixNode.value.rightDelim);
+        const [numer, infixNode, denom] = args;
+        // $FlowFixMe
+        const leftDelim = delimFromValue(infixNode.value.leftDelim.value);
+        // $FlowFixMe
+        const rightDelim = delimFromValue(infixNode.value.rightDelim.value);
         const hasBarLine = funcName === "\\\\overwithdelimsfrac";
 
         return new ParseNode("genfrac", {
@@ -496,37 +529,18 @@ defineFunction({
 
 defineFunction({
     type: "genfrac",
-    names: ["\\abovewithdelims"],
-    props: {
-        numArgs: 3,
-        infix: true,
-        argTypes: ["math", "math", "size"],
-    },
-    handler: ({parser, funcName, token}, args) => {
-		const [leftDelim, rightDelim, sizeNode] = args;
-		
-        return new ParseNode("infix", {
-            type: "infix",
-            replaceWith: "\\\\abovewithdelimsfrac",
-            leftDelim: leftDelim,
-            rightDelim: rightDelim,
-            sizeNode: sizeNode,
-            token: token,
-        }, parser.mode);
-    },
-});
-
-defineFunction({
-    type: "genfrac",
     names: ["\\\\abovewithdelimsfrac"],
     props: {
-        numArgs: 1,
+        numArgs: 5,
     },
     handler: ({parser, funcName}, args) => {
-		const [numer, infixNode, denom] = args;
-        const leftDelim = delimFromNode(infixNode.value.leftDelim);
-        const rightDelim = delimFromNode(infixNode.value.rightDelim);
+       const [numer, infixNode, denom] = args;
+        // $FlowFixMe
+        const leftDelim = delimFromValue(infixNode.value.leftDelim.value);
+        // $FlowFixMe
+        const rightDelim = delimFromValue(infixNode.value.rightDelim.value);
 
+        // $FlowFixMe
         const barSize = infixNode.value.sizeNode.value.value;
         const hasBarLine = barSize.number > 0;
 
