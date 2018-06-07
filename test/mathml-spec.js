@@ -8,13 +8,9 @@ import Options from "../src/Options";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
 
-const defaultSettings = new Settings({});
-
-const getMathML = function(expr, settings) {
-    const usedSettings = settings ? settings : defaultSettings;
-
+const getMathML = function(expr, settings = new Settings()) {
     let startStyle = Style.TEXT;
-    if (usedSettings.displayMode) {
+    if (settings.displayMode) {
         startStyle = Style.DISPLAY;
     }
 
@@ -24,7 +20,7 @@ const getMathML = function(expr, settings) {
         maxSize: Infinity,
     });
 
-    const built = buildMathML(parseTree(expr, usedSettings), expr, options);
+    const built = buildMathML(parseTree(expr, settings), expr, options);
 
     // Strip off the surrounding <span>
     return built.children[0].toMarkup();

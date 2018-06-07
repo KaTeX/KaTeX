@@ -11,7 +11,7 @@ import Options from "../src/Options";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
 import {
-    defaultSettings, strictSettings,
+    strictSettings, nonstrictSettings,
     _getBuilt, getBuilt, getParsed, stripPositions,
 } from "./helpers";
 
@@ -1138,6 +1138,10 @@ describe("A begin/end parser", function() {
     it("should parse an environment with hlines", function() {
         expect("\\begin{matrix}\\hline a&b\\\\ \\hline c&d\\end{matrix}").toParse();
         expect("\\begin{matrix}\\hdashline a&b\\\\ \\hdashline c&d\\end{matrix}").toParse();
+    });
+
+    it("should forbid hlines outside array environment", () => {
+        expect("\\hline").toNotParse();
     });
 
     it("should error when name is mismatched", function() {
@@ -2282,7 +2286,7 @@ describe("A smash builder", function() {
 describe("A parser error", function() {
     it("should report the position of an error", function() {
         try {
-            parseTree("\\sqrt}", defaultSettings);
+            parseTree("\\sqrt}", new Settings());
         } catch (e) {
             expect(e.position).toEqual(5);
         }
@@ -2490,7 +2494,7 @@ describe("A macro expander", function() {
     const compareParseTree = function(actual, expected, macros) {
         const settings = new Settings({macros: macros});
         actual = stripPositions(parseTree(actual, settings));
-        expected = stripPositions(parseTree(expected, defaultSettings));
+        expected = stripPositions(parseTree(expected, new Settings()));
         expect(actual).toEqual(expected);
     };
 
@@ -2775,6 +2779,57 @@ describe("A macro expander", function() {
         expect(macros["\\foo"]).toBeFalsy();
     });
 
+    it("\\newcommand defines new macros", () => {
+        compareParseTree("\\newcommand\\foo{x^2}\\foo+\\foo", "x^2+x^2");
+        compareParseTree("\\newcommand{\\foo}{x^2}\\foo+\\foo", "x^2+x^2");
+        // Function detection
+        expect("\\newcommand\\bar{x^2}\\bar+\\bar").toNotParse();
+        expect("\\newcommand{\\bar}{x^2}\\bar+\\bar").toNotParse();
+        // Symbol detection
+        expect("\\newcommand\\lambda{x^2}\\lambda").toNotParse();
+        expect("\\newcommand\\textdollar{x^2}\\textdollar").toNotParse();
+        // Macro detection
+        expect("\\newcommand{\\foo}{1}\\foo\\newcommand{\\foo}{2}\\foo")
+            .toNotParse();
+        // Implicit detection
+        expect("\\newcommand\\limits{}").toNotParse();
+    });
+
+    it("\\renewcommand redefines macros", () => {
+        expect("\\renewcommand\\foo{x^2}\\foo+\\foo").toNotParse();
+        expect("\\renewcommand{\\foo}{x^2}\\foo+\\foo").toNotParse();
+        compareParseTree("\\renewcommand\\bar{x^2}\\bar+\\bar", "x^2+x^2");
+        compareParseTree("\\renewcommand{\\bar}{x^2}\\bar+\\bar", "x^2+x^2");
+        expect("\\newcommand{\\foo}{1}\\foo\\renewcommand{\\foo}{2}\\foo")
+            .toParseLike("12");
+    });
+
+    it("\\providecommand (re)defines macros", () => {
+        compareParseTree("\\providecommand\\foo{x^2}\\foo+\\foo", "x^2+x^2");
+        compareParseTree("\\providecommand{\\foo}{x^2}\\foo+\\foo", "x^2+x^2");
+        compareParseTree("\\providecommand\\bar{x^2}\\bar+\\bar", "x^2+x^2");
+        compareParseTree("\\providecommand{\\bar}{x^2}\\bar+\\bar", "x^2+x^2");
+        expect("\\newcommand{\\foo}{1}\\foo\\providecommand{\\foo}{2}\\foo")
+            .toParseLike("12");
+        expect("\\providecommand{\\foo}{1}\\foo\\renewcommand{\\foo}{2}\\foo")
+            .toParseLike("12");
+        expect("\\providecommand{\\foo}{1}\\foo\\providecommand{\\foo}{2}\\foo")
+            .toParseLike("12");
+    });
+
+    it("\\newcommand is local", () => {
+        expect("\\newcommand\\foo{1}\\foo{\\renewcommand\\foo{2}\\foo}\\foo")
+            .toParseLike("1{2}1");
+    });
+
+    it("\\newcommand accepts number of arguments", () => {
+        compareParseTree("\\newcommand\\foo[1]{#1^2}\\foo x+\\foo{y}",
+                         "x^2+y^2");
+        compareParseTree("\\newcommand\\foo[10]{#1^2}\\foo 0123456789", "0^2");
+        expect("\\newcommand\\foo[x]{}").toNotParse();
+        expect("\\newcommand\\foo[1.5]{}").toNotParse();
+    });
+
     // This may change in the future, if we support the extra features of
     // \hspace.
     it("should treat \\hspace, \\hskip like \\kern", function() {
@@ -2847,7 +2902,7 @@ describe("Unicode accents", function() {
             "\\tilde n" +
             "\\grave o\\acute o\\hat o\\tilde o\\ddot o" +
             "\\grave u\\acute u\\hat u\\ddot u" +
-            "\\acute y\\ddot y");
+            "\\acute y\\ddot y", nonstrictSettings);
     });
 
     it("should parse Latin-1 letters in text mode", function() {
@@ -2877,19 +2932,19 @@ describe("Unicode accents", function() {
     });
 
     it("should parse combining characters", function() {
-        expect("A\u0301C\u0301").toParseLike("Á\\acute C");
+        expect("A\u0301C\u0301").toParseLike("Á\\acute C", nonstrictSettings);
         expect("\\text{A\u0301C\u0301}").toParseLike("\\text{Á\\'C}", strictSettings);
     });
 
     it("should parse multi-accented characters", function() {
-        expect("ấā́ắ\\text{ấā́ắ}").toParse();
+        expect("ấā́ắ\\text{ấā́ắ}").toParse(nonstrictSettings);
         // Doesn't parse quite the same as
         // "\\text{\\'{\\^a}\\'{\\=a}\\'{\\u a}}" because of the ordgroups.
     });
 
     it("should parse accented i's and j's", function() {
-        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ");
-        expect("ấā́ắ\\text{ấā́ắ}").toParse();
+        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ", nonstrictSettings);
+        expect("ấā́ắ\\text{ấā́ắ}").toParse(nonstrictSettings);
     });
 });
 
@@ -3076,8 +3131,8 @@ describe("Symbols", function() {
 
 describe("strict setting", function() {
     it("should allow unicode text when not strict", () => {
-        expect("é").toParse(new Settings({strict: false}));
-        expect("試").toParse(new Settings({strict: false}));
+        expect("é").toParse(new Settings(nonstrictSettings));
+        expect("試").toParse(new Settings(nonstrictSettings));
         expect("é").toParse(new Settings({strict: "ignore"}));
         expect("試").toParse(new Settings({strict: "ignore"}));
         expect("é").toParse(new Settings({strict: () => false}));
@@ -3103,7 +3158,7 @@ describe("strict setting", function() {
     });
 
     it("should always allow unicode text in text mode", () => {
-        expect("\\text{é試}").toParse(new Settings({strict: false}));
+        expect("\\text{é試}").toParse(nonstrictSettings);
         expect("\\text{é試}").toParse(strictSettings);
         expect("\\text{é試}").toParse();
     });
