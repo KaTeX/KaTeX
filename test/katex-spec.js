@@ -99,7 +99,7 @@ describe("A rel parser", function() {
 });
 
 describe("A punct parser", function() {
-    const expression = ",;\\colon";
+    const expression = ",;";
 
     it("should not fail", function() {
         expect(expression).toParse(strictSettings);
