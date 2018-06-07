@@ -1,6 +1,7 @@
 // @flow
 import buildCommon from "../buildCommon";
 import defineEnvironment from "../defineEnvironment";
+import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import ParseNode from "../ParseNode";
@@ -33,7 +34,7 @@ export type ArrayEnvNodeData = {|
     cols?: AlignSpec[],
     body: AnyParseNode[][], // List of rows in the (2D) array.
     rowGaps: (?ParseNode<"size">)[],
-    numHLinesBeforeRow: number[],
+    hLinesBeforeRow: Array<boolean[]>,
 |};
 // Same as above but with some fields not yet filled.
 type ArrayEnvNodeDataIncomplete = {|
@@ -45,18 +46,22 @@ type ArrayEnvNodeDataIncomplete = {|
     // Before these fields are filled.
     body?: AnyParseNode[][],
     rowGaps?: (?ParseNode<"size">)[],
-    numHLinesBeforeRow?: number[],
+    hLinesBeforeRow?: Array<boolean[]>,
 |};
 
-function getNumHLines(parser: Parser): number {
-    let n = 0;
+function getHLines(parser: Parser): boolean[] {
+    // Return an array. The array length = number of hlines.
+    // Each element in the array tells if the line is dashed.
+    const hlineInfo = [];
     parser.consumeSpaces();
-    while (parser.nextToken.text === "\\hline") {
+    let nxt = parser.nextToken.text;
+    while (nxt === "\\hline" || nxt === "\\hdashline") {
         parser.consume();
-        n++;
+        hlineInfo.push(nxt === "\\hdashline");
         parser.consumeSpaces();
+        nxt = parser.nextToken.text;
     }
-    return n;
+    return hlineInfo;
 }
 
 /**
@@ -91,10 +96,10 @@ function parseArray(
     let row = [];
     const body = [row];
     const rowGaps = [];
-    const numHLinesBeforeRow = [];
+    const hLinesBeforeRow = [];
 
     // Test for \hline at the top of the array.
-    numHLinesBeforeRow.push(getNumHLines(parser));
+    hLinesBeforeRow.push(getHLines(parser));
 
     while (true) {  // eslint-disable-line no-constant-condition
         let cell = parser.parseExpression(false, "\\cr");
@@ -117,6 +122,9 @@ function parseArray(
             if (row.length === 1 && cell.value.value[0].value.length === 0) {
                 body.pop();
             }
+            if (hLinesBeforeRow.length < body.length + 1) {
+                hLinesBeforeRow.push([]);
+            }
             break;
         } else if (next === "\\cr") {
             const cr = parser.parseFunction();
@@ -126,7 +134,7 @@ function parseArray(
             rowGaps.push(assertNodeType(cr, "cr").value.size);
 
             // check for \hline(s) following the row separator
-            numHLinesBeforeRow.push(getNumHLines(parser));
+            hLinesBeforeRow.push(getHLines(parser));
 
             row = [];
             body.push(row);
@@ -137,7 +145,7 @@ function parseArray(
     }
     result.body = body;
     result.rowGaps = rowGaps;
-    result.numHLinesBeforeRow = numHLinesBeforeRow;
+    result.hLinesBeforeRow = hLinesBeforeRow;
     // $FlowFixMe: The required fields were added immediately above.
     const res: ArrayEnvNodeData = result;
     parser.gullet.endGroup();
@@ -166,10 +174,10 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     let r;
     let c;
     const nr = group.value.body.length;
-    const numHLinesBeforeRow = group.value.numHLinesBeforeRow;
+    const hLinesBeforeRow = group.value.hLinesBeforeRow;
     let nc = 0;
     let body = new Array(nr);
-    const hlinePos = [];
+    const hlines = [];
 
     // Horizontal spacing
     const pt = 1 / options.fontMetrics().ptPerEm;
@@ -187,12 +195,15 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     let totalHeight = 0;
 
     // Set a position for \hline(s) at the top of the array, if any.
-    for (let i = 1; i <= numHLinesBeforeRow[0]; i++) {
-        if (i >  1) {              // The first \hline doesn't add to height.
-            totalHeight += 0.25;
+    function setHLinePos(hlinesInGap: boolean[]) {
+        for (let i = 0; i < hlinesInGap.length; ++i) {
+            if (i > 0) {
+                totalHeight += 0.25;
+            }
+            hlines.push({pos: totalHeight, isDashed: hlinesInGap[i]});
         }
-        hlinePos.push(totalHeight);
     }
+    setHLinePos(hLinesBeforeRow[0]);
 
     for (r = 0; r < group.value.body.length; ++r) {
         const inrow = group.value.body[r];
@@ -242,12 +253,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         body[r] = outrow;
 
         // Set a position for \hline(s), if any.
-        for (let i = 1; i <= numHLinesBeforeRow[r + 1]; i++) {
-            if (i >  1) {               // the first \hline doesn't add height
-                totalHeight += 0.25;
-            }
-            hlinePos.push(totalHeight);
-        }
+        setHLinePos(hLinesBeforeRow[r + 1]);
     }
 
     const offset = totalHeight / 2 + options.fontMetrics().axisHeight;
@@ -350,16 +356,22 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     body = buildCommon.makeSpan(["mtable"], cols);
 
     // Add \hline(s), if any.
-    if (hlinePos.length > 0) {
+    if (hlines.length > 0) {
         const line = buildCommon.makeLineSpan("hline", options, 0.05);
-        const vListChildren = [{type: "elem", elem: body, shift: 0}];
-        while (hlinePos.length > 0) {
-            const lineShift = hlinePos.pop() - offset;
-            vListChildren.push({type: "elem", elem: line, shift: lineShift});
+        const dashes = buildCommon.makeLineSpan("hdashline", options, 0.05);
+        const vListElems = [{type: "elem", elem: body, shift: 0}];
+        while (hlines.length > 0) {
+            const hline = hlines.pop();
+            const lineShift = hline.pos - offset;
+            if (hline.isDashed) {
+                vListElems.push({type: "elem", elem: dashes, shift: lineShift});
+            } else {
+                vListElems.push({type: "elem", elem: line, shift: lineShift});
+            }
         }
         body = buildCommon.makeVList({
             positionType: "individualShift",
-            children: vListChildren,
+            children: vListElems,
         }, options);
     }
 
@@ -647,4 +659,19 @@ defineEnvironment({
     handler: alignedHandler,
     htmlBuilder,
     mathmlBuilder,
+});
+
+// Catch \hline outside array environment
+defineFunction({
+    type: "text", // Doesn't matter what this is.
+    names: ["\\hline", "\\hdashline"],
+    props: {
+        numArgs: 0,
+        allowedInText: true,
+        allowedInMath: true,
+    },
+    handler(context, args) {
+        throw new ParseError(
+            `${context.funcName} valid only within array environment`);
+    },
 });
