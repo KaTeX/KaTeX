@@ -369,3 +369,77 @@ exports[`An implicit group parser within optional groups should work with sizing
   }
 ]
 `;
+
+exports[`Extending katex by new fonts and symbols Add new font class to new extended symbols 1`] = `
+
+<span class="katex">
+  <span class="katex-mathml">
+    <math>
+      <semantics>
+        <mrow>
+          <mi mathvariant="normal">
+            ۹
+          </mi>
+          <msup>
+            <mi mathvariant="normal">
+              ۹
+            </mi>
+            <mi mathvariant="normal">
+              ۱
+            </mi>
+          </msup>
+          <mi mathvariant="normal">
+            ۱
+          </mi>
+        </mrow>
+        <annotation encoding="application/x-tex">
+          ۹۹^۱۱
+        </annotation>
+      </semantics>
+    </math>
+  </span>
+  <span class="katex-html"
+        aria-hidden="true"
+  >
+    <span class="base">
+      <span class="strut"
+            style="height:0.84425em;vertical-align:0em;"
+      >
+      </span>
+      <span class="mord mockEasternArabicFont-Regular">
+        ۹
+      </span>
+      <span class="mord">
+        <span class="mord mockEasternArabicFont-Regular">
+          ۹
+        </span>
+        <span class="msupsub">
+          <span class="vlist-t">
+            <span class="vlist-r">
+              <span class="vlist"
+                    style="height:0.84425em;"
+              >
+                <span style="top:-3.063em;margin-right:0.05em;">
+                  <span class="pstrut"
+                        style="height:2.7em;"
+                  >
+                  </span>
+                  <span class="sizing reset-size6 size3 mtight">
+                    <span class="mord mockEasternArabicFont-Regular mtight">
+                      ۱
+                    </span>
+                  </span>
+                </span>
+              </span>
+            </span>
+          </span>
+        </span>
+      </span>
+      <span class="mord mockEasternArabicFont-Regular">
+        ۱
+      </span>
+    </span>
+  </span>
+</span>
+
+`;
