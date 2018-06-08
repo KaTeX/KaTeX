@@ -384,16 +384,18 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
             <mi mathvariant="normal">
               ۹
             </mi>
-            <mi mathvariant="normal">
-              ۱
-            </mi>
+            <mrow>
+              <mi mathvariant="normal">
+                ۱
+              </mi>
+              <mi mathvariant="normal">
+                ۱
+              </mi>
+            </mrow>
           </msup>
-          <mi mathvariant="normal">
-            ۱
-          </mi>
         </mrow>
         <annotation encoding="application/x-tex">
-          ۹۹^۱۱
+          ۹۹^{۱۱}
         </annotation>
       </semantics>
     </math>
@@ -425,8 +427,13 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
                   >
                   </span>
                   <span class="sizing reset-size6 size3 mtight">
-                    <span class="mord mockEasternArabicFont-Regular mtight">
-                      ۱
+                    <span class="mord mtight">
+                      <span class="mord mockEasternArabicFont-Regular mtight">
+                        ۱
+                      </span>
+                      <span class="mord mockEasternArabicFont-Regular mtight">
+                        ۱
+                      </span>
                     </span>
                   </span>
                 </span>
@@ -434,9 +441,6 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
             </span>
           </span>
         </span>
-      </span>
-      <span class="mord mockEasternArabicFont-Regular">
-        ۱
       </span>
     </span>
   </span>
