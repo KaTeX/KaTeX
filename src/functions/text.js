@@ -20,6 +20,20 @@ const textFontShapes = {
     "\\textit": "textit",
 };
 
+const optionsWithFont = (group, options) => {
+    const font = group.value.font;
+    // Checks if the argument is a font family or a font style.
+    if (!font) {
+        return options;
+    } else if (textFontFamilies[font]) {
+        return options.withTextFontFamily(textFontFamilies[font]);
+    } else if (textFontWeights[font]) {
+        return options.withTextFontWeight(textFontWeights[font]);
+    } else {
+        return options.withTextFontShape(textFontShapes[font]);
+    }
+};
+
 defineFunction({
     type: "text",
     names: [
@@ -46,23 +60,13 @@ defineFunction({
         }, parser.mode);
     },
     htmlBuilder(group, options) {
-        const font = group.value.font;
-        // Checks if the argument is a font family or a font style.
-        let newOptions;
-        if (!font) {
-            newOptions = options;
-        } else if (textFontFamilies[font]) {
-            newOptions = options.withTextFontFamily(textFontFamilies[font]);
-        } else if (textFontWeights[font]) {
-            newOptions = options.withTextFontWeight(textFontWeights[font]);
-        } else {
-            newOptions = options.withTextFontShape(textFontShapes[font]);
-        }
+        const newOptions = optionsWithFont(group, options);
         const inner = html.buildExpression(group.value.body, newOptions, true);
         buildCommon.tryCombineChars(inner);
         return buildCommon.makeSpan(["mord", "text"], inner, newOptions);
     },
     mathmlBuilder(group, options) {
-        return mml.buildExpressionRow(group.value.body, options);
+        const newOptions = optionsWithFont(group, options);
+        return mml.buildExpressionRow(group.value.body, newOptions);
     },
 });

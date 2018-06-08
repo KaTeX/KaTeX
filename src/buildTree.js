@@ -6,7 +6,7 @@ import Options from "./Options";
 import Settings from "./Settings";
 import Style from "./Style";
 
-import type ParseNode from "./ParseNode";
+import type {AnyParseNode} from "./ParseNode";
 import type {DomSpan} from "./domTree";
 
 const optionsFromSettings = function(settings: Settings) {
@@ -17,7 +17,7 @@ const optionsFromSettings = function(settings: Settings) {
 };
 
 export const buildTree = function(
-    tree: ParseNode<*>[],
+    tree: AnyParseNode[],
     expression: string,
     settings: Settings,
 ): DomSpan {
@@ -39,7 +39,7 @@ export const buildTree = function(
 };
 
 export const buildHTMLTree = function(
-    tree: ParseNode<*>[],
+    tree: AnyParseNode[],
     expression: string,
     settings: Settings,
 ): DomSpan {

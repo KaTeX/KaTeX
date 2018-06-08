@@ -4,7 +4,7 @@
 /* global describe: false */
 import Settings from "../src/Settings";
 import {scriptFromCodepoint, supportedCodepoint} from "../src/unicodeScripts";
-import {strictSettings} from "./helpers";
+import {strictSettings, nonstrictSettings} from "./helpers";
 
 describe("unicode", function() {
     it("should parse Latin-1 inside \\text{}", function() {
@@ -21,7 +21,7 @@ describe("unicode", function() {
 
     it("should parse Latin-1 outside \\text{}", function() {
         expect('ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ' +
-            'ÇÐÞçðþ').toParse();
+            'ÇÐÞçðþ').toParse(nonstrictSettings);
     });
 
     it("should parse all lower case Greek letters", function() {

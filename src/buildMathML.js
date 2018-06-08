@@ -8,7 +8,7 @@ import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import mathMLTree from "./mathMLTree";
 import ParseError from "./ParseError";
-import symbols from "./symbols";
+import symbols, {ligatures} from "./symbols";
 import utils from "./utils";
 import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
 
@@ -16,11 +16,13 @@ import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
  * Takes a symbol and converts it into a MathML text node after performing
  * optional replacement from symbols.js.
  */
-export const makeText = function(text, mode) {
-    if (symbols[mode][text] && symbols[mode][text].replace) {
-        if (text.charCodeAt(0) !== 0xD835) {
-            text = symbols[mode][text].replace;
-        }
+export const makeText = function(text, mode, options) {
+    if (symbols[mode][text] && symbols[mode][text].replace &&
+        text.charCodeAt(0) !== 0xD835 &&
+        !(ligatures.hasOwnProperty(text) && options &&
+          ((options.fontFamily && options.fontFamily.substr(4, 2) === "tt") ||
+           (options.font && options.font.substr(4, 2) === "tt")))) {
+        text = symbols[mode][text].replace;
     }
 
     return new mathMLTree.TextNode(text);
@@ -42,6 +44,31 @@ export const makeRow = function(body) {
  * Returns the math variant as a string or null if none is required.
  */
 export const getVariant = function(group, options) {
+    // Handle \text... font specifiers as best we can.
+    // MathML has a limited list of allowable mathvariant specifiers; see
+    // https://www.w3.org/TR/MathML3/chapter3.html#presm.commatt
+    if (options.fontFamily === "texttt") {
+        return "monospace";
+    } else if (options.fontFamily === "textsf") {
+        if (options.fontShape === "textit" &&
+            options.fontWeight === "textbf") {
+            return "sans-serif-bold-italic";
+        } else if (options.fontShape === "textit") {
+            return "sans-serif-italic";
+        } else if (options.fontWeight === "textbf") {
+            return "bold-sans-serif";
+        } else {
+            return "sans-serif";
+        }
+    } else if (options.fontShape === "textit" &&
+               options.fontWeight === "textbf") {
+        return "bold-italic";
+    } else if (options.fontShape === "textit") {
+        return "italic";
+    } else if (options.fontWeight === "textbf") {
+        return "bold";
+    }
+
     const font = options.font;
     if (!font) {
         return null;
@@ -82,7 +109,9 @@ export const buildExpression = function(expression, options) {
     for (let i = 0; i < expression.length; i++) {
         const group = buildGroup(expression[i], options);
         // Concatenate adjacent <mtext>s
-        if (group.type === 'mtext' && lastGroup && lastGroup.type === 'mtext') {
+        if (group.type === 'mtext' && lastGroup && lastGroup.type === 'mtext'
+            && group.getAttribute('mathvariant') ===
+               lastGroup.getAttribute('mathvariant')) {
             lastGroup.children.push(...group.children);
         // Concatenate adjacent <mn>s
         } else if (group.type === 'mn' &&

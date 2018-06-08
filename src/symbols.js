@@ -24,9 +24,20 @@ type Font = "main" | "ams";
 // types for raw text tokens, and we want to avoid conflicts with higher-level
 // `ParseNode` types. These `ParseNode`s are constructed within `Parser` by
 // looking up the `symbols` map.
-export type Group =
-    "accent-token" | "bin" | "close" | "inner" | "mathord" |
-    "op-token" | "open" | "punct" | "rel" | "spacing" | "textord";
+export const GROUPS = { // Set of all the groups.
+    "accent-token": 1,
+    "bin": 1,
+    "close": 1,
+    "inner": 1,
+    "mathord": 1,
+    "op-token": 1,
+    "open": 1,
+    "punct": 1,
+    "rel": 1,
+    "spacing": 1,
+    "textord": 1,
+};
+export type Group = $Keys<typeof GROUPS>;
 type CharInfoMap = {[string]: {font: Font, group: Group, replace: ?string}};
 
 const symbols: {[Mode]: CharInfoMap} = {
@@ -581,7 +592,6 @@ defineSymbol(math, main, spacing, null, "\\nobreak");
 defineSymbol(math, main, spacing, null, "\\allowbreak");
 defineSymbol(math, main, punct, ",", ",");
 defineSymbol(math, main, punct, ";", ";");
-defineSymbol(math, main, punct, ":", "\\colon");
 defineSymbol(math, ams, bin, "\u22bc", "\\barwedge", true);
 defineSymbol(math, ams, bin, "\u22bb", "\\veebar", true);
 defineSymbol(math, main, bin, "\u2299", "\\odot", true);
@@ -688,6 +698,14 @@ defineSymbol(text, main, accent, "\u02c7", "\\v"); // caron
 defineSymbol(text, main, accent, "\u00a8", '\\"'); // diaresis
 defineSymbol(text, main, accent, "\u02dd", "\\H"); // double acute
 defineSymbol(text, main, accent, "\u25ef", "\\textcircled"); // \bigcirc glyph
+
+// These ligatures are detected and created in Parser.js's `formLigatures`.
+export const ligatures = {
+    "--": true,
+    "---": true,
+    "``": true,
+    "''": true,
+};
 
 defineSymbol(text, main, textord, "\u2013", "--");
 defineSymbol(text, main, textord, "\u2013", "\\textendash");
