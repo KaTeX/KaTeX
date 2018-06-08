@@ -10,14 +10,14 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 import buildCommon from "./buildCommon";
 import domTree from "./domTree";
-import utils from "./utils";
+import utils, {assert} from "./utils";
 import {checkNodeType} from "./ParseNode";
 import {spacings, tightSpacings} from "./spacingData";
 import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";
 
 import type Options from "./Options";
+import type {AnyParseNode} from "./ParseNode";
 import type {HtmlDomNode, DomSpan} from "./domTree";
-import type {StyleInterface} from "./Style";
 
 const makeSpan = buildCommon.makeSpan;
 
@@ -51,8 +51,7 @@ const isBinRightCanceller = function(
     }
 };
 
-type StyleString = "display" | "text" | "script" | "scriptscript";
-const styleMap: {[StyleString]: StyleInterface} = {
+const styleMap = {
     "display": Style.DISPLAY,
     "text": Style.TEXT,
     "script": Style.SCRIPT,
@@ -82,7 +81,7 @@ export type DomType = $Keys<typeof DomEnum>;
  * consisting type of nodes that will be added to the left and right.
  */
 export const buildExpression = function(
-    expression: *[],
+    expression: AnyParseNode[],
     options: Options,
     isRealGroup: boolean,
     surrounding: [?DomType, ?DomType] = [null, null],
@@ -92,7 +91,6 @@ export const buildExpression = function(
     for (let i = 0; i < expression.length; i++) {
         const output = buildGroup(expression[i], options);
         if (output instanceof domTree.documentFragment) {
-            // $FlowFixMe: should consist entirely of `symbolNode`s and `span`s.
             const children: HtmlDomNode[] = output.children;
             rawGroups.push(...children);
         } else {
@@ -113,8 +111,7 @@ export const buildExpression = function(
     // Before determining what spaces to insert, perform bin cancellation.
     // Binary operators change to ordinary symbols in some contexts.
     for (let i = 1; i < nonSpaces.length - 1; i++) {
-        // $FlowFixMe: Only the first and last can be nullable.
-        const nonSpacesI: HtmlDomNode = nonSpaces[i];
+        const nonSpacesI: HtmlDomNode = assert(nonSpaces[i]);
         const left = getOutermostNode(nonSpacesI, "left");
         if (left.classes[0] === "mbin" &&
                 isBinLeftCanceller(nonSpaces[i - 1], isRealGroup)) {
@@ -156,8 +153,7 @@ export const buildExpression = function(
             // document fragment of elements.  sizingGroup sets `isRealGroup`
             // to false to avoid processing spans multiple times.
             if (left && right && isRealGroup) {
-                // $FlowFixMe: Not null since `right` is not null.
-                const nonSpacesJp1: HtmlDomNode = nonSpaces[j + 1];
+                const nonSpacesJp1: HtmlDomNode = assert(nonSpaces[j + 1]);
                 const space = isLeftTight(nonSpacesJp1)
                     ? tightSpacings[left][right]
                     : spacings[left][right];
@@ -259,7 +255,7 @@ export const makeNullDelimiter = function(
  * between parents and children.
  */
 export const buildGroup = function(
-    group: *,
+    group: ?AnyParseNode,
     options: Options,
     baseOptions?: Options,
 ): HtmlDomNode {
@@ -321,7 +317,7 @@ function buildHTMLUnbreakable(children, options) {
  * Take an entire parse tree, and build it into an appropriate set of HTML
  * nodes.
  */
-export default function buildHTML(tree: *, options: Options): DomSpan {
+export default function buildHTML(tree: AnyParseNode[], options: Options): DomSpan {
     // buildExpression is destructive, so we need to make a clone
     // of the incoming tree so that it isn't accidentally changed
     tree = JSON.parse(JSON.stringify(tree));

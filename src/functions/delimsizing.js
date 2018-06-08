@@ -311,10 +311,9 @@ defineFunction({
 
             const isMiddle: IsMiddle = {value: group.value.value, options};
             // Property `isMiddle` not defined on `span`. It is only used in
-            // this file above. Fixing this correctly requires refactoring the
-            // htmlBuilder return type to support passing additional data.
-            // An easier, but unideal option would be to add `isMiddle` to
-            // `span` just for this case.
+            // this file above.
+            // TODO: Fix this violation of the `span` type and possibly rename
+            // things since `isMiddle` sounds like a boolean, but is a struct.
             // $FlowFixMe
             middleDelim.isMiddle = isMiddle;
         }

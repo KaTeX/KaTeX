@@ -20,7 +20,6 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
     let base: AnyParseNode;
     let group: ParseNode<"accent">;
 
-    // $FlowFixMe: Maybe due to https://github.com/facebook/flow/issues/6379
     const supSub: ?ParseNode<"supsub"> = checkNodeType(grp, "supsub");
     let supSubGroup;
     if (supSub) {
