@@ -8,7 +8,6 @@ import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
-import type {Measurement} from "../units" ;       //  <-- NEW!
 import {calculateSize} from "../units";           //  <-- NEW!
 
 const htmlBuilder = (group, options) => {
@@ -320,13 +319,13 @@ defineFunction({
             case "\\atop":
                 replaceWith = "\\\\atopfrac";
                 break;
-             case "\\brace":
+            case "\\brace":
                 replaceWith = "\\\\bracefrac";
                 break;
             case "\\brack":
                 replaceWith = "\\\\brackfrac";
                 break;
-           default:
+            default:
                 throw new Error("Unrecognized infix genfrac command");
         }
         return new ParseNode("infix", {
@@ -534,7 +533,7 @@ defineFunction({
         numArgs: 5,
     },
     handler: ({parser, funcName}, args) => {
-       const [numer, infixNode, denom] = args;
+        const [numer, infixNode, denom] = args;
         // $FlowFixMe
         const leftDelim = delimFromValue(infixNode.value.leftDelim.value);
         // $FlowFixMe

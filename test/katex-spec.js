@@ -476,7 +476,7 @@ describe("A frac parser", function() {
         expect(genfracParse.value.denom).toBeDefined();
         expect(genfracParse.value.leftDelim).toBeDefined();
         expect(genfracParse.value.rightDelim).toBeDefined();
-	});
+    });
 
     it("should fail, given math as a line thickness to genfrac", function() {
         const badGenFrac = "\\genfrac ( ] {b+c}{0}{a}{b+c}";
@@ -525,9 +525,9 @@ describe("An over/brace/brack parser", function() {
         expect(parse.type).toEqual("genfrac");
         expect(parse.value.numer).toBeDefined();
         expect(parse.value.denom).toBeDefined();
-		
+
         const parseBraceFrac = getParsed(braceFrac)[0];
-		
+
         expect(parseBraceFrac.type).toEqual("genfrac");
         expect(parseBraceFrac.value.numer).toBeDefined();
         expect(parseBraceFrac.value.denom).toBeDefined();
@@ -541,7 +541,7 @@ describe("An over/brace/brack parser", function() {
         expect(parseBrackFrac.value.denom).toBeDefined();
         expect(parseBrackFrac.value.leftDelim).toBeDefined();
         expect(parseBrackFrac.value.rightDelim).toBeDefined();
-		
+
     });
 
     it("should create a numerator from the atoms before \\over", function() {
