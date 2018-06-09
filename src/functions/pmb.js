@@ -10,16 +10,26 @@ import * as mml from "../buildMathML";
 const htmlBuilder = (group, options) => {
     // \pmb works by typesetting three copies of
     // the given argument with small offsets.
+
+    // The AMS code is in ambsy.sty
+    // \def\pmb@#1#2{\setbox8\hbox{$\m@th#1{#2}$}%
+    // \setboxz@h{$\m@th#1\mkern.5mu$}\pmbraise@\wdz@
+    // \binrel@{#2}%
+    // \dimen@-\wd8  %
+    // \binrel@@{%
+    // \mkern-.8mu\copy8  %
+    // \kern\dimen@\mkern.4mu\raise\pmbraise@\copy8  %
+    // \kern\dimen@\mkern.4mu\box8  }%
+    // }
+
     const node = html.buildGroup(group.value.body, options);
     const orig = buildCommon.makeSpan([], [node], options);
 
-    let copy1 = buildCommon.makeSpan([], [node], options);
     const hkern1 = buildCommon.makeGlue({number: 0.4, unit: "mu"}, options);
-    copy1 = buildCommon.makeSpan([], [hkern1, copy1], options);
+    const copy1 = buildCommon.makeSpan([], [hkern1, orig], options);
 
-    let copy2 = buildCommon.makeSpan([], [node], options);
     const hkern2 = buildCommon.makeGlue({number: 0.8, unit: "mu"}, options);
-    copy2 = buildCommon.makeSpan([], [hkern2, copy2], options);
+    const copy2 = buildCommon.makeSpan([], [hkern2, orig], options);
 
     const vshift = calculateSize({number:0.4, unit: "mu"}, options);
 
