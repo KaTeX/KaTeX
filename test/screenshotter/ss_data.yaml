@@ -258,6 +258,7 @@ OverUnderset: |
     \overset { x = y } { \sqrt { a b } }
     \end{array}
 Phantom: \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x} \left(\vphantom{\int_t} zzz \right) \left( X \hphantom{\frac{\frac X X}{X}} \right)
+Pmb: \mu\pmb{\mu}\pmb{=}\mu\pmb{+}\mu
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
 Raisebox: \frac{a}{a\raisebox{0.5em}{b}} \cdot \frac{a\raisebox{-0.5em}{b}}{a} \cdot \sqrt{a\raisebox{0.5em}{b}} \cdot \sqrt{a\raisebox{-0.5em}{b}} \cdot \sqrt{a\raisebox{0.5em}{b}\raisebox{-0.5em}{b}}

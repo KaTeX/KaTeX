@@ -1460,6 +1460,16 @@ describe("A font parser", function() {
     });
 });
 
+describe("A \\pmb builder", function() {
+    it("should not fail", function() {
+        expect("\\pmb{\\mu}").toBuild();
+        expect("\\pmb{=}").toBuild();
+        expect("\\pmb{+}").toBuild();
+        expect("\\pmb{\\frac{x^2}{x_1}}").toBuild();
+        expect("\\pmb{}").toBuild();
+    });
+});
+
 describe("A comment parser", function() {
     it("should parse comments at the end of a line", () => {
         expect("a^2 + b^2 = c^2 % Pythagoras' Theorem\n").toParse();
