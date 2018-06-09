@@ -35,7 +35,7 @@ const delimiterSizes = {
 };
 
 const delimiters = [
-    "(", ")", "[", "\\lbrack", "]", "\\rbrack",
+    "(", ")", "[", "]",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\u230a", "\u230b",
     "\\lceil", "\\rceil", "\u2308", "\u2309",
