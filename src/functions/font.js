@@ -72,8 +72,8 @@ defineFunction({
         // amsbsy.sty's \boldsymbol inherits the argument's bin|rel|ord status
         // (similar to \stackrel in functions/mclass.js)
         let mclass = "mord";
-        const atomType = (body.type === "ordgroup" ?
-            body.value.length && body.value[0].type : body.type);
+        const atomType = (body.type === "ordgroup" && body.value.length ?
+            body.value[0].type : body.type);
         if (/^(bin|rel)$/.test(atomType)) {
             mclass = "m" + atomType;
         }
