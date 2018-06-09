@@ -21,7 +21,7 @@ const htmlBuilder = (group, options) => {
     const hkern2 = buildCommon.makeGlue({number: 0.8, unit: "mu"}, options);
     copy2 = buildCommon.makeSpan([], [hkern2, copy2], options);
 
-    const vshift = calculateSize({number:0.4, unit: "mu"}, options);;
+    const vshift = calculateSize({number:0.4, unit: "mu"}, options);
 
     const mclass = group.value.mclass;
 
