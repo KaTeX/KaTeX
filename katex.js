@@ -18,7 +18,7 @@ import domTree from "./src/domTree";
 import utils from "./src/utils";
 
 import type {SettingsOptions} from "./src/Settings";
-import type ParseNode from "./src/ParseNode";
+import type {AnyParseNode} from "./src/ParseNode";
 
 import {defineSymbol} from './src/symbols';
 import {defineMacro} from './src/macros';
@@ -70,7 +70,7 @@ const renderToString = function(
 const generateParseTree = function(
     expression: string,
     options: SettingsOptions,
-): ParseNode<*>[] {
+): AnyParseNode[] {
     const settings = new Settings(options);
     return parseTree(expression, settings);
 };

@@ -12,7 +12,9 @@
         .mfrac .frac-line,
         .overline .overline-line,
         .underline .underline-line,
-        .hline {
+        .hline,
+        .hdashline,
+        .rule {
             min-height: 1px;
         }
     }
@@ -287,6 +289,12 @@
         display: inline-block;
         width: 100%;
         border-bottom-style: solid;
+    }
+
+    .hdashline {
+        display: inline-block;
+        width: 100%;
+        border-bottom-style: dashed;
     }
 
     .sqrt {

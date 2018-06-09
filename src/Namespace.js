@@ -56,7 +56,21 @@ export default class Namespace<Value> {
     }
 
     /**
-     * Get the current value of a name.
+     * Detect whether `name` has a definition.  Equivalent to
+     * `get(name) != null`.
+     */
+    has(name: string): boolean {
+        return this.current.hasOwnProperty(name) ||
+               this.builtins.hasOwnProperty(name);
+    }
+
+    /**
+     * Get the current value of a name, or `undefined` if there is no value.
+     *
+     * Note: Do not use `if (namespace.get(...))` to detect whether a macro
+     * is defined, as the definition may be the empty string which evaluates
+     * to `false` in JavaScript.  Use `if (namespace.get(...) != null)` or
+     * `if (namespace.has(...))`.
      */
     get(name: string): ?Value {
         if (this.current.hasOwnProperty(name)) {

@@ -5,11 +5,12 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
-import ParseNode, {assertNodeType} from "../ParseNode";
+import ParseNode, {assertNodeType, checkSymbolNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
+import type {AnyParseNode, SymbolParseNode} from "../ParseNode";
 import type {LeftRightDelimType} from "../ParseNode";
 import type {FunctionContext} from "../defineFunction";
 
@@ -34,7 +35,7 @@ const delimiterSizes = {
 };
 
 const delimiters = [
-    "(", ")", "[", "\\lbrack", "]", "\\rbrack",
+    "(", ")", "[", "]",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\u230a", "\u230b",
     "\\lceil", "\\rceil", "\u2308", "\u2309",
@@ -52,14 +53,15 @@ const delimiters = [
 
 // Delimiter functions
 function checkDelimiter(
-    delim: ParseNode<*>,
+    delim: AnyParseNode,
     context: FunctionContext,
-): ParseNode<*> {
-    if (utils.contains(delimiters, delim.value)) {
-        return delim;
+): SymbolParseNode {
+    const symDelim = checkSymbolNodeType(delim);
+    if (symDelim && utils.contains(delimiters, symDelim.value)) {
+        return symDelim;
     } else {
         throw new ParseError(
-            "Invalid delimiter: '" + delim.value + "' after '" +
+            "Invalid delimiter: '" + String(delim.value) + "' after '" +
             context.funcName + "'", delim);
     }
 }

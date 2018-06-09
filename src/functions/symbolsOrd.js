@@ -22,7 +22,7 @@ defineFunctionBuilders({
     mathmlBuilder(group, options) {
         const node = new mathMLTree.MathNode(
             "mi",
-            [mml.makeText(group.value, group.mode)]);
+            [mml.makeText(group.value, group.mode, options)]);
 
         const variant = mml.getVariant(group, options) || "italic";
         if (variant !== defaultVariant[node.type]) {
@@ -38,8 +38,7 @@ defineFunctionBuilders({
         return buildCommon.makeOrd(group, options, "textord");
     },
     mathmlBuilder(group, options) {
-        const text = mml.makeText(group.value, group.mode);
-
+        const text = mml.makeText(group.value, group.mode, options);
         const variant = mml.getVariant(group, options) || "normal";
 
         let node;

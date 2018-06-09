@@ -130,11 +130,15 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
           }
         ]
       ],
-      "hskipBeforeAndAfter": false,
-      "numHLinesBeforeRow": [
-        0,
-        0
+      "hLinesBeforeRow": [
+        [
+        ],
+        [
+        ],
+        [
+        ]
       ],
+      "hskipBeforeAndAfter": false,
       "rowGaps": [
         null
       ]
