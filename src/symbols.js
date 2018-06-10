@@ -617,7 +617,9 @@ defineSymbol(text, main, textord, "}", "\\textbraceright");
 defineSymbol(math, main, open, "{", "\\lbrace");
 defineSymbol(math, main, close, "}", "\\rbrace");
 defineSymbol(math, main, open, "[", "\\lbrack");
+defineSymbol(text, main, textord, "[", "\\lbrack");
 defineSymbol(math, main, close, "]", "\\rbrack");
+defineSymbol(text, main, textord, "]", "\\rbrack");
 defineSymbol(text, main, textord, "<", "\\textless"); // in T1 fontenc
 defineSymbol(text, main, textord, ">", "\\textgreater"); // in T1 fontenc
 defineSymbol(math, main, open, "\u230a", "\\lfloor", true);
