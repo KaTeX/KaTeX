@@ -19,7 +19,7 @@
 
 import type {Mode} from "./types";
 
-type Font = "main" | "ams"
+type Font = "main" | "ams";
 // Some of these have a "-token" suffix since these are also used as `ParseNode`
 // types for raw text tokens, and we want to avoid conflicts with higher-level
 // `ParseNode` types. These `ParseNode`s are constructed within `Parser` by
