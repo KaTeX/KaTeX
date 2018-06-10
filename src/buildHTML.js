@@ -1,3 +1,4 @@
+// @flow
 /**
  * This file does the main work of building a domTree structure from a parse
  * tree. The entry point is the `buildHTML` function, which takes a parse tree.
@@ -7,19 +8,26 @@
 
 import ParseError from "./ParseError";
 import Style from "./Style";
-
 import buildCommon from "./buildCommon";
 import domTree from "./domTree";
-import utils from "./utils";
+import utils, {assert} from "./utils";
+import {checkNodeType} from "./ParseNode";
 import {spacings, tightSpacings} from "./spacingData";
 import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";
+
+import type Options from "./Options";
+import type {AnyParseNode} from "./ParseNode";
+import type {HtmlDomNode, DomSpan} from "./domTree";
 
 const makeSpan = buildCommon.makeSpan;
 
 // Binary atoms (first class `mbin`) change into ordinary atoms (`mord`)
 // depending on their surroundings. See TeXbook pg. 442-446, Rules 5 and 6,
 // and the text before Rule 19.
-const isBinLeftCanceller = function(node, isRealGroup) {
+const isBinLeftCanceller = function(
+    node: ?HtmlDomNode,
+    isRealGroup: boolean,
+): boolean {
     // TODO: This code assumes that a node's math class is the first element
     // of its `classes` array. A later cleanup should ensure this, for
     // instance by changing the signature of `makeSpan`.
@@ -31,7 +39,10 @@ const isBinLeftCanceller = function(node, isRealGroup) {
     }
 };
 
-const isBinRightCanceller = function(node, isRealGroup) {
+const isBinRightCanceller = function(
+    node: ?HtmlDomNode,
+    isRealGroup: boolean,
+): boolean {
     if (node) {
         return utils.contains(["mrel", "mclose", "mpunct"],
                               getTypeOfDomTree(node, "left"));
@@ -47,6 +58,20 @@ const styleMap = {
     "scriptscript": Style.SCRIPTSCRIPT,
 };
 
+type Side = "left" | "right";
+
+const DomEnum = {
+    mord: "mord",
+    mop: "mop",
+    mbin: "mbin",
+    mrel: "mrel",
+    mopen: "mopen",
+    mclose: "mclose",
+    mpunct: "mpunct",
+    minner: "minner",
+};
+export type DomType = $Keys<typeof DomEnum>;
+
 /**
  * Take a list of nodes, build them in order, and return a list of the built
  * nodes. documentFragments are flattened into their contents, so the
@@ -55,14 +80,19 @@ const styleMap = {
  * a partial group (e.g. one created by \color). `surrounding` is an array
  * consisting type of nodes that will be added to the left and right.
  */
-export const buildExpression = function(expression, options, isRealGroup,
-        surrounding = [null, null]) {
+export const buildExpression = function(
+    expression: AnyParseNode[],
+    options: Options,
+    isRealGroup: boolean,
+    surrounding: [?DomType, ?DomType] = [null, null],
+): HtmlDomNode[] {
     // Parse expressions into `groups`.
-    const rawGroups = [];
+    const rawGroups: HtmlDomNode[] = [];
     for (let i = 0; i < expression.length; i++) {
         const output = buildGroup(expression[i], options);
         if (output instanceof domTree.documentFragment) {
-            rawGroups.push(...output.children);
+            const children: HtmlDomNode[] = output.children;
+            rawGroups.push(...children);
         } else {
             rawGroups.push(output);
         }
@@ -71,23 +101,24 @@ export const buildExpression = function(expression, options, isRealGroup,
 
     // Ignore explicit spaces (e.g., \;, \,) when determining what implicit
     // spacing should go between atoms of different classes, and add dummy
-    // spans for determining spacings between surrounding atoms
-    const nonSpaces = [
-        surrounding[0] && makeSpan([surrounding[0]], [], options),
+    // spans for determining spacings between surrounding atoms.
+    const nonSpaces: (?HtmlDomNode)[] = [
+        surrounding[0] ? makeSpan([surrounding[0]], [], options) : null,
         ...rawGroups.filter(group => group && group.classes[0] !== "mspace"),
-        surrounding[1] && makeSpan([surrounding[1]], [], options),
+        surrounding[1] ? makeSpan([surrounding[1]], [], options) : null,
     ];
 
     // Before determining what spaces to insert, perform bin cancellation.
     // Binary operators change to ordinary symbols in some contexts.
     for (let i = 1; i < nonSpaces.length - 1; i++) {
-        const left = getOutermostNode(nonSpaces[i], "left");
+        const nonSpacesI: HtmlDomNode = assert(nonSpaces[i]);
+        const left = getOutermostNode(nonSpacesI, "left");
         if (left.classes[0] === "mbin" &&
                 isBinLeftCanceller(nonSpaces[i - 1], isRealGroup)) {
             left.classes[0] = "mord";
         }
 
-        const right = getOutermostNode(nonSpaces[i], "right");
+        const right = getOutermostNode(nonSpacesI, "right");
         if (right.classes[0] === "mbin" &&
                 isBinRightCanceller(nonSpaces[i + 1], isRealGroup)) {
             right.classes[0] = "mord";
@@ -122,7 +153,8 @@ export const buildExpression = function(expression, options, isRealGroup,
             // document fragment of elements.  sizingGroup sets `isRealGroup`
             // to false to avoid processing spans multiple times.
             if (left && right && isRealGroup) {
-                const space = isLeftTight(nonSpaces[j + 1])
+                const nonSpacesJp1: HtmlDomNode = assert(nonSpaces[j + 1]);
+                const space = isLeftTight(nonSpacesJp1)
                     ? tightSpacings[left][right]
                     : spacings[left][right];
 
@@ -130,12 +162,16 @@ export const buildExpression = function(expression, options, isRealGroup,
                     let glueOptions = options;
 
                     if (expression.length === 1) {
-                        if (expression[0].type === "sizing") {
-                            glueOptions = options.havingSize(
-                                expression[0].value.size);
-                        } else if (expression[0].type === "styling") {
+                        const node =
+                            checkNodeType(expression[0], "sizing") ||
+                            checkNodeType(expression[0], "styling");
+                        if (!node) {
+                            // No match.
+                        } else if (node.type === "sizing") {
+                            glueOptions = options.havingSize(node.value.size);
+                        } else if (node.type === "styling") {
                             glueOptions = options.havingStyle(
-                                styleMap[expression[0].value.style]);
+                                styleMap[node.value.style]);
                         }
                     }
 
@@ -148,13 +184,14 @@ export const buildExpression = function(expression, options, isRealGroup,
 
     // Process \\not commands within the group.
     for (let i = 0; i < groups.length; i++) {
-        if (groups[i].value === "\u0338") {
-            groups[i].style.position = "absolute";
+        const group = groups[i];
+        if (group instanceof domTree.symbolNode && group.value === "\u0338") {
+            group.style.position = "absolute";
             // TODO(kevinb) fix this for Safari by switching to a non-combining
             // character for \not.
             // This value was determined empirically.
             // TODO(kevinb) figure out the real math for this value.
-            groups[i].style.paddingLeft = "0.8em";
+            group.style.paddingLeft = "0.8em";
         }
     }
 
@@ -162,16 +199,18 @@ export const buildExpression = function(expression, options, isRealGroup,
 };
 
 // Return the outermost node of a domTree.
-const getOutermostNode = function(node, side = "right") {
+const getOutermostNode = function(
+    node: HtmlDomNode,
+    side: Side,
+): HtmlDomNode {
     if (node instanceof domTree.documentFragment ||
             node instanceof domTree.anchor) {
-        if (node.children.length) {
+        const children = node.children;
+        if (children.length) {
             if (side === "right") {
-                return getOutermostNode(
-                    node.children[node.children.length - 1]);
+                return getOutermostNode(children[children.length - 1], "right");
             } else if (side === "left") {
-                return getOutermostNode(
-                    node.children[0]);
+                return getOutermostNode(children[0], "right");
             }
         }
     }
@@ -179,7 +218,10 @@ const getOutermostNode = function(node, side = "right") {
 };
 
 // Return math atom class (mclass) of a domTree.
-export const getTypeOfDomTree = function(node, side = "right") {
+export const getTypeOfDomTree = function(
+    node: ?HtmlDomNode,
+    side: Side,
+): ?DomType {
     if (!node) {
         return null;
     }
@@ -187,25 +229,22 @@ export const getTypeOfDomTree = function(node, side = "right") {
     node = getOutermostNode(node, side);
     // This makes a lot of assumptions as to where the type of atom
     // appears.  We should do a better job of enforcing this.
-    if (utils.contains([
-        "mord", "mop", "mbin", "mrel", "mopen", "mclose",
-        "mpunct", "minner",
-    ], node.classes[0])) {
-        return node.classes[0];
-    }
-    return null;
+    return DomEnum[node.classes[0]] || null;
 };
 
 // If `node` is an atom return whether it's been assigned the mtight class.
 // If `node` is a document fragment, return the value of isLeftTight() for the
 // leftmost node in the fragment.
 // 'mtight' indicates that the node is script or scriptscript style.
-export const isLeftTight = function(node) {
+export const isLeftTight = function(node: HtmlDomNode): boolean {
     node = getOutermostNode(node, "left");
     return node.hasClass("mtight");
 };
 
-export const makeNullDelimiter = function(options, classes) {
+export const makeNullDelimiter = function(
+    options: Options,
+    classes: string[],
+): DomSpan {
     const moreClasses = ["nulldelimiter"].concat(options.baseSizingClasses());
     return makeSpan(classes.concat(moreClasses));
 };
@@ -215,14 +254,19 @@ export const makeNullDelimiter = function(options, classes) {
  * function for it. It also handles the interaction of size and style changes
  * between parents and children.
  */
-export const buildGroup = function(group, options, baseOptions) {
+export const buildGroup = function(
+    group: ?AnyParseNode,
+    options: Options,
+    baseOptions?: Options,
+): HtmlDomNode {
     if (!group) {
         return makeSpan();
     }
 
     if (groupBuilders[group.type]) {
         // Call the groupBuilders function
-        let groupNode = groupBuilders[group.type](group, options);
+        // $FlowFixMe
+        let groupNode: HtmlDomNode = groupBuilders[group.type](group, options);
 
         // If the size changed between the parent and the current group, account
         // for that size difference.
@@ -273,7 +317,7 @@ function buildHTMLUnbreakable(children, options) {
  * Take an entire parse tree, and build it into an appropriate set of HTML
  * nodes.
  */
-export default function buildHTML(tree, options) {
+export default function buildHTML(tree: AnyParseNode[], options: Options): DomSpan {
     // buildExpression is destructive, so we need to make a clone
     // of the incoming tree so that it isn't accidentally changed
     tree = JSON.parse(JSON.stringify(tree));
@@ -349,7 +393,7 @@ export default function buildHTML(tree, options) {
 
     // Adjust the strut of the tag to be the maximum height of all children
     // (the height of the enclosing htmlNode) for proper vertical alignment.
-    if (tag) {
+    if (tagChild) {
         const strut = tagChild.children[0];
         strut.style.height = (htmlNode.height + htmlNode.depth) + "em";
         strut.style.verticalAlign = (-htmlNode.depth) + "em";

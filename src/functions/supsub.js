@@ -175,7 +175,7 @@ defineFunctionBuilders({
         }
 
         // Wrap the supsub vlist in a span.msupsub to reset text-align.
-        const mclass = html.getTypeOfDomTree(base) || "mord";
+        const mclass = html.getTypeOfDomTree(base, "right") || "mord";
         return buildCommon.makeSpan([mclass],
             [base, buildCommon.makeSpan(["msupsub"], [supsub])],
             options);
