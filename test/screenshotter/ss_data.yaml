@@ -62,7 +62,9 @@ BinCancellation: |
     \end{array}
 BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}
 BoldSpacing: \mathbf{A}^2+\mathbf{B}_3*\mathscr{C}'
-BoldSymbol: \sum_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\omega}+ \int_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\Omega}+\boldsymbol{Ax2k\omega\Omega\imath+}
+BoldSymbol: |
+  \sum_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\omega}+ \int_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\Omega}+\boldsymbol{Ax2k\omega\Omega\imath+} \\
+  x \boldsymbol{+} y \boldsymbol{=} z
 Boxed: \boxed{F=ma} \quad \boxed{ac}\color{magenta}{\boxed{F}}\boxed{F=mg}
 Cases: |
     f(a,b)=\begin{cases}

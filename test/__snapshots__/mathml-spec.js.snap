@@ -382,30 +382,34 @@ exports[`A MathML builder should render boldsymbol with the correct mathvariants
 <math>
   <semantics>
     <mrow>
-      <mi mathvariant="bold-italic">
-        A
-      </mi>
-      <mi mathvariant="bold-italic">
-        x
-      </mi>
-      <mn mathvariant="bold-italic">
-        2
-      </mn>
-      <mi mathvariant="bold-italic">
-        k
-      </mi>
-      <mi mathvariant="bold-italic">
-        ω
-      </mi>
-      <mi mathvariant="bold-italic">
-        Ω
-      </mi>
-      <mi mathvariant="bold-italic">
-        ı
-      </mi>
-      <mo mathvariant="bold-italic">
-        +
-      </mo>
+      <mstyle>
+        <mrow>
+          <mi mathvariant="bold-italic">
+            A
+          </mi>
+          <mi mathvariant="bold-italic">
+            x
+          </mi>
+          <mn mathvariant="bold-italic">
+            2
+          </mn>
+          <mi mathvariant="bold-italic">
+            k
+          </mi>
+          <mi mathvariant="bold-italic">
+            ω
+          </mi>
+          <mi mathvariant="bold-italic">
+            Ω
+          </mi>
+          <mi mathvariant="bold-italic">
+            ı
+          </mi>
+          <mo mathvariant="bold-italic">
+            +
+          </mo>
+        </mrow>
+      </mstyle>
     </mrow>
     <annotation encoding="application/x-tex">
       \\boldsymbol{Ax2k\\omega\\Omega\\imath+}

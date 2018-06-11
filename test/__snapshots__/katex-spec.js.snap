@@ -147,6 +147,436 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
 ]
 `;
 
+exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] = `
+[
+  {
+    "classes": [
+      "mord",
+      "mathit"
+    ],
+    "depth": 0,
+    "height": 0.43056,
+    "italic": 0,
+    "maxFontSize": 1,
+    "skew": 0,
+    "style": {
+    },
+    "value": "a",
+    "width": 0.52859
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+      {
+        "attributes": {
+        },
+        "children": [
+        ],
+        "classes": [
+          "mord"
+        ],
+        "depth": 0,
+        "height": 0,
+        "maxFontSize": 0,
+        "style": {
+        }
+      }
+    ],
+    "classes": [
+      "mord"
+    ],
+    "depth": 0,
+    "height": 0,
+    "maxFontSize": 0,
+    "style": {
+    }
+  },
+  {
+    "classes": [
+      "mord",
+      "mathit"
+    ],
+    "depth": 0,
+    "height": 0.69444,
+    "italic": 0,
+    "maxFontSize": 1,
+    "skew": 0,
+    "style": {
+    },
+    "value": "b",
+    "width": 0.42917
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+    ],
+    "classes": [
+      "mspace"
+    ],
+    "depth": 0,
+    "height": 0,
+    "maxFontSize": 0,
+    "style": {
+      "marginRight": "0.2777777777777778em"
+    }
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+      {
+        "attributes": {
+        },
+        "children": [
+          {
+            "classes": [
+              "mrel",
+              "mathbf"
+            ],
+            "depth": -0.10889,
+            "height": 0.39111,
+            "italic": 0,
+            "maxFontSize": 1,
+            "skew": 0,
+            "style": {
+            },
+            "value": "=",
+            "width": 0.89444
+          }
+        ],
+        "classes": [
+          "mord"
+        ],
+        "depth": 0,
+        "height": 0.39111,
+        "maxFontSize": 1,
+        "style": {
+        }
+      }
+    ],
+    "classes": [
+      "mrel"
+    ],
+    "depth": 0,
+    "height": 0.39111,
+    "maxFontSize": 1,
+    "style": {
+    }
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+    ],
+    "classes": [
+      "mspace"
+    ],
+    "depth": 0,
+    "height": 0,
+    "maxFontSize": 0,
+    "style": {
+      "marginRight": "0.2777777777777778em"
+    }
+  },
+  {
+    "classes": [
+      "mord",
+      "mathit"
+    ],
+    "depth": 0,
+    "height": 0.43056,
+    "italic": 0,
+    "maxFontSize": 1,
+    "skew": 0.05556,
+    "style": {
+    },
+    "value": "c",
+    "width": 0.43276
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+    ],
+    "classes": [
+      "mspace"
+    ],
+    "depth": 0,
+    "height": 0,
+    "maxFontSize": 0,
+    "style": {
+      "marginRight": "0.2222222222222222em"
+    }
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+      {
+        "attributes": {
+        },
+        "children": [
+          {
+            "classes": [
+              "mord",
+              "mathbf"
+            ],
+            "depth": 0.13333,
+            "height": 0.63333,
+            "italic": 0,
+            "maxFontSize": 1,
+            "skew": 0,
+            "style": {
+            },
+            "value": "+",
+            "width": 0.89444
+          }
+        ],
+        "classes": [
+          "mord"
+        ],
+        "depth": 0.13333,
+        "height": 0.63333,
+        "maxFontSize": 1,
+        "style": {
+        }
+      }
+    ],
+    "classes": [
+      "mbin"
+    ],
+    "depth": 0.13333,
+    "height": 0.63333,
+    "maxFontSize": 1,
+    "style": {
+    }
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+    ],
+    "classes": [
+      "mspace"
+    ],
+    "depth": 0,
+    "height": 0,
+    "maxFontSize": 0,
+    "style": {
+      "marginRight": "0.2222222222222222em"
+    }
+  },
+  {
+    "classes": [
+      "mord",
+      "mathit"
+    ],
+    "depth": 0,
+    "height": 0.69444,
+    "italic": 0,
+    "maxFontSize": 1,
+    "skew": 0.16667,
+    "style": {
+    },
+    "value": "d",
+    "width": 0.52049
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+    ],
+    "classes": [
+      "mspace"
+    ],
+    "depth": 0,
+    "height": 0,
+    "maxFontSize": 0,
+    "style": {
+      "marginRight": "0.2222222222222222em"
+    }
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+      {
+        "attributes": {
+        },
+        "children": [
+          {
+            "classes": [
+              "mord",
+              "mathbf"
+            ],
+            "depth": 0.13333,
+            "height": 0.63333,
+            "italic": 0,
+            "maxFontSize": 1,
+            "skew": 0,
+            "style": {
+            },
+            "value": "+",
+            "width": 0.89444
+          },
+          {
+            "classes": [
+              "mord",
+              "mathbf"
+            ],
+            "depth": 0.13333,
+            "height": 0.63333,
+            "italic": 0,
+            "maxFontSize": 1,
+            "skew": 0,
+            "style": {
+            },
+            "value": "+",
+            "width": 0.89444
+          }
+        ],
+        "classes": [
+          "mord"
+        ],
+        "depth": 0.13333,
+        "height": 0.63333,
+        "maxFontSize": 1,
+        "style": {
+        }
+      }
+    ],
+    "classes": [
+      "mbin"
+    ],
+    "depth": 0.13333,
+    "height": 0.63333,
+    "maxFontSize": 1,
+    "style": {
+    }
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+    ],
+    "classes": [
+      "mspace"
+    ],
+    "depth": 0,
+    "height": 0,
+    "maxFontSize": 0,
+    "style": {
+      "marginRight": "0.2222222222222222em"
+    }
+  },
+  {
+    "classes": [
+      "mord",
+      "mathit"
+    ],
+    "depth": 0,
+    "height": 0.43056,
+    "italic": 0,
+    "maxFontSize": 1,
+    "skew": 0.05556,
+    "style": {
+    },
+    "value": "e",
+    "width": 0.46563
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+      {
+        "attributes": {
+        },
+        "children": [
+          {
+            "classes": [
+              "mord",
+              "boldsymbol"
+            ],
+            "depth": 0,
+            "height": 0.44444,
+            "italic": 0,
+            "maxFontSize": 1,
+            "skew": 0,
+            "style": {
+            },
+            "value": "x",
+            "width": 0.65903
+          },
+          {
+            "classes": [
+              "mord",
+              "boldsymbol"
+            ],
+            "depth": 0.19444,
+            "height": 0.44444,
+            "italic": 0.03704,
+            "maxFontSize": 1,
+            "skew": 0,
+            "style": {
+            },
+            "value": "y",
+            "width": 0.59028
+          },
+          {
+            "classes": [
+              "mord",
+              "boldsymbol"
+            ],
+            "depth": 0,
+            "height": 0.44444,
+            "italic": 0.04213,
+            "maxFontSize": 1,
+            "skew": 0,
+            "style": {
+            },
+            "value": "z",
+            "width": 0.55509
+          }
+        ],
+        "classes": [
+          "mord"
+        ],
+        "depth": 0.19444,
+        "height": 0.44444,
+        "maxFontSize": 1,
+        "style": {
+        }
+      }
+    ],
+    "classes": [
+      "mord"
+    ],
+    "depth": 0.19444,
+    "height": 0.44444,
+    "maxFontSize": 1,
+    "style": {
+    }
+  },
+  {
+    "classes": [
+      "mord",
+      "mathit"
+    ],
+    "depth": 0.19444,
+    "height": 0.69444,
+    "italic": 0.10764,
+    "maxFontSize": 1,
+    "skew": 0.16667,
+    "style": {
+    },
+    "value": "f",
+    "width": 0.48959
+  }
+]
+`;
+
 exports[`A parser that does not throw on unsupported commands should build katex-error span for other type of KaTeX error 1`] = `
 {
   "attributes": {
