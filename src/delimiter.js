@@ -26,7 +26,7 @@ import Style from "./Style";
 
 import domTree from "./domTree";
 import buildCommon from "./buildCommon";
-import fontMetrics from "./fontMetrics";
+import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
 
@@ -48,7 +48,7 @@ const getMetrics = function(
 ): CharacterMetrics {
     const replace = symbols.math[symbol] && symbols.math[symbol].replace;
     const metrics =
-        fontMetrics.getCharacterMetrics(replace || symbol, font, mode);
+        getCharacterMetrics(replace || symbol, font, mode);
     if (!metrics) {
         throw new Error(`Unsupported symbol ${symbol} and font size ${font}.`);
     }
@@ -219,12 +219,12 @@ const makeStackedDelim = function(
         top = "\\Uparrow";
         repeat = "\u2016";
         bottom = "\\Downarrow";
-    } else if (delim === "[") {
+    } else if (delim === "[" || delim === "\\lbrack") {
         top = "\u23a1";
         repeat = "\u23a2";
         bottom = "\u23a3";
         font = "Size4-Regular";
-    } else if (delim === "]") {
+    } else if (delim === "]" || delim === "\\rbrack") {
         top = "\u23a4";
         repeat = "\u23a5";
         bottom = "\u23a6";
@@ -480,7 +480,7 @@ const makeSqrtImage = function(
 // There are three kinds of delimiters, delimiters that stack when they become
 // too large
 const stackLargeDelimiters = [
-    "(", ")", "[", "]",
+    "(", ")", "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\u230a", "\u230b",
     "\\lceil", "\\rceil", "\u2308", "\u2309",

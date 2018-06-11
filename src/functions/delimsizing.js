@@ -10,6 +10,7 @@ import ParseNode, {assertNodeType, checkSymbolNodeType} from "../ParseNode";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
+import type Options from "../Options";
 import type {AnyParseNode, SymbolParseNode} from "../ParseNode";
 import type {LeftRightDelimType} from "../ParseNode";
 import type {FunctionContext} from "../defineFunction";
@@ -35,7 +36,7 @@ const delimiterSizes = {
 };
 
 const delimiters = [
-    "(", ")", "[", "]",
+    "(", ")", "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\u230a", "\u230b",
     "\\lceil", "\\rceil", "\u2308", "\u2309",
@@ -50,6 +51,8 @@ const delimiters = [
     "\\updownarrow", "\\Updownarrow",
     ".",
 ];
+
+type IsMiddle = {value: string, options: Options};
 
 // Delimiter functions
 function checkDelimiter(
@@ -192,6 +195,9 @@ defineFunction({
 
         // Calculate its height and depth
         for (let i = 0; i < inner.length; i++) {
+            // Property `isMiddle` not defined on `span`. See comment in
+            // "middle"'s htmlBuilder.
+            // $FlowFixMe
             if (inner[i].isMiddle) {
                 hadMiddle = true;
             } else {
@@ -224,11 +230,15 @@ defineFunction({
         if (hadMiddle) {
             for (let i = 1; i < inner.length; i++) {
                 const middleDelim = inner[i];
-                if (middleDelim.isMiddle) {
+                // Property `isMiddle` not defined on `span`. See comment in
+                // "middle"'s htmlBuilder.
+                // $FlowFixMe
+                const isMiddle: IsMiddle = middleDelim.isMiddle;
+                if (isMiddle) {
                     // Apply the options that were active when \middle was called
                     inner[i] = delimiter.leftRightDelim(
-                        middleDelim.isMiddle.value, innerHeight, innerDepth,
-                        middleDelim.isMiddle.options, group.mode, []);
+                        isMiddle.value, innerHeight, innerDepth,
+                        isMiddle.options, group.mode, []);
                 }
             }
         }
@@ -299,13 +309,13 @@ defineFunction({
                 group.value.value, 1, options,
                 group.mode, []);
 
+            const isMiddle: IsMiddle = {value: group.value.value, options};
             // Property `isMiddle` not defined on `span`. It is only used in
-            // this file above. Fixing this correctly requires refactoring the
-            // htmlBuilder return type to support passing additional data.
-            // An easier, but unideal option would be to add `isMiddle` to
-            // `span` just for this case.
+            // this file above.
+            // TODO: Fix this violation of the `span` type and possibly rename
+            // things since `isMiddle` sounds like a boolean, but is a struct.
             // $FlowFixMe
-            middleDelim.isMiddle = {value: group.value.value, options};
+            middleDelim.isMiddle = isMiddle;
         }
         return middleDelim;
     },

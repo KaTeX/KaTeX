@@ -183,6 +183,18 @@ export type CharacterMetrics = {
     width: number;
 };
 
+export type MetricMap = {
+    [string]: number[]
+}
+
+/**
+ * This function adds new font metrics to default metricMap
+ * It can also override existing metrics
+ */
+export function setFontMetrics(fontName: string, metrics: MetricMap) {
+    metricMap[fontName] = metrics;
+}
+
 /**
  * This function is a convenience function for looking up information in the
  * metricMap table. It takes a character as a string, and a font.
@@ -190,7 +202,7 @@ export type CharacterMetrics = {
  * Note: the `width` property may be undefined if fontMetricsData.js wasn't
  * built using `Make extended_metrics`.
  */
-const getCharacterMetrics = function(
+export function getCharacterMetrics(
     character: string,
     font: string,
     mode: Mode,
@@ -227,7 +239,7 @@ const getCharacterMetrics = function(
             width: metrics[4],
         };
     }
-};
+}
 
 type FontSizeIndex = 0 | 1 | 2;
 export type FontMetrics = {
@@ -240,7 +252,7 @@ const fontMetricsBySizeIndex: {[FontSizeIndex]: FontMetrics} = {};
 /**
  * Get the font metrics for a given size.
  */
-const getFontMetrics = function(size: number): FontMetrics {
+export function getGlobalMetrics(size: number): FontMetrics {
     let sizeIndex: FontSizeIndex;
     if (size >= 5) {
         sizeIndex = 0;
@@ -260,9 +272,4 @@ const getFontMetrics = function(size: number): FontMetrics {
         }
     }
     return fontMetricsBySizeIndex[sizeIndex];
-};
-
-export default {
-    getFontMetrics: getFontMetrics,
-    getCharacterMetrics: getCharacterMetrics,
-};
+}

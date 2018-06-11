@@ -21,6 +21,8 @@ const createClass = function(classes: string[]): string {
     return classes.filter(cls => cls).join(" ");
 };
 
+export type CssStyle = {[name: string]: string};
+
 // To ensure that all nodes have compatible signatures for these methods.
 interface VirtualNodeInterface {
     toNode(): Node;
@@ -32,6 +34,7 @@ export interface HtmlDomNode extends VirtualNodeInterface {
     height: number;
     depth: number;
     maxFontSize: number;
+    style: CssStyle;
 
     hasClass(className: string): boolean;
     tryCombine(sibling: HtmlDomNode): boolean;
@@ -44,7 +47,6 @@ export type SvgSpan = span<svgNode>;
 
 export type SvgChildNode = pathNode | lineNode;
 
-export type CssStyle = {[name: string]: string};
 
 export class HtmlDomContainer<ChildType: VirtualNodeInterface>
        implements HtmlDomNode {
@@ -259,6 +261,14 @@ class documentFragment implements HtmlDomNode {
 
     tryCombine(sibling: HtmlDomNode): boolean {
         return false;
+    }
+
+    get style(): CssStyle {
+        throw new Error('DocumentFragment does not support style.');
+    }
+
+    set style(_: CssStyle) {
+        throw new Error('DocumentFragment does not support style.');
     }
 
     /**
@@ -579,6 +589,26 @@ class lineNode implements VirtualNodeInterface {
         markup += "/>";
 
         return markup;
+    }
+}
+
+export function assertSymbolDomNode(
+    group: HtmlDomNode,
+): symbolNode {
+    if (group instanceof symbolNode) {
+        return group;
+    } else {
+        throw new Error(`Expected symbolNode but got ${String(group)}.`);
+    }
+}
+
+export function assertDomContainer(
+    group: HtmlDomNode,
+): HtmlDomContainer<HtmlDomNode> {
+    if (group instanceof HtmlDomContainer) {
+        return group;
+    } else {
+        throw new Error(`Expected HtmlDomContainer but got ${String(group)}.`);
     }
 }
 
