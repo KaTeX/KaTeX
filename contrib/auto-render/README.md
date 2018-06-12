@@ -91,6 +91,10 @@ in addition to two auto-render-specific keys:
 - `errorCallback`: A callback method returning a message and an error stack
   in case of an critical error during rendering. The default uses `console.error`.
 
-Note that the `displayMode` property of the options object is ignored, and is
+The `displayMode` property of the options object is ignored, and is
 instead taken from the `display` key of the corresponding entry in the
 `delimiters` key.
+
+The same `options.macros` object (which defaults to an empty object `{}`)
+is passed into several calls to `katex.render`, so that consecutive equations
+can build up shared macros by `\gdef`.
