@@ -522,14 +522,14 @@ code {
 
     <table class="symbol">
         <tr>
-            <td>\(\begin{matrix} a & b \\ c & d \end{matrix}\)</td>
+            <td>\(\begin{matrix} a &amp; b \\ c &amp; d \end{matrix}\)</td>
             <td>
                 <pre><code>\begin{matrix}
    a &amp; b \\
    c &amp; d
 \end{matrix}</code></pre>
             </td>
-            <td>\(\begin{array}{cc}a & b\\c & d\end{array}\)</td>
+            <td>\(\begin{array}{cc}a &amp; b\\c &amp; d\end{array}\)</td>
             <td>
                 <pre><code>\begin{array}{cc}
    a &amp; b \\
@@ -545,14 +545,14 @@ code {
             </td>
         </tr>
         <tr>
-            <td>\(\begin{pmatrix} a & b \\ c & d \end{pmatrix}\)</td>
+            <td>\(\begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}\)</td>
             <td>
                 <pre><code>\begin{pmatrix}
    a &amp; b \\
    c &amp; d
 \end{pmatrix}</code></pre>
             </td>
-            <td>\(\begin{bmatrix} a & b \\ c & d \end{bmatrix}\)</td>
+            <td>\(\begin{bmatrix} a &amp; b \\ c &amp; d \end{bmatrix}\)</td>
             <td>
                 <pre><code>\begin{bmatrix}
    a &amp; b \\
@@ -568,14 +568,14 @@ code {
 			</td>
 		</tr>
         <tr>
-            <td>\(\begin{vmatrix} a & b \\ c & d \end{vmatrix}\)</td>
+            <td>\(\begin{vmatrix} a &amp; b \\ c &amp; d \end{vmatrix}\)</td>
             <td>
                 <pre><code>\begin{vmatrix}
    a &amp; b \\
    c &amp; d
 \end{vmatrix}</code></pre>
             </td>
-            <td>\(\begin{Vmatrix} a & b \\ c & d \end{Vmatrix}\)</td>
+            <td>\(\begin{Vmatrix} a &amp; b \\ c &amp; d \end{Vmatrix}\)</td>
             <td>
                 <pre><code>\begin{Vmatrix}
    a &amp; b \\
@@ -591,14 +591,14 @@ code {
 			</td>
         </tr>
         <tr>
-            <td>\(\begin{Bmatrix} a & b \\ c & d \end{Bmatrix}\)</td>
+            <td>\(\begin{Bmatrix} a &amp; b \\ c &amp; d \end{Bmatrix}\)</td>
             <td>
                 <pre><code>\begin{Bmatrix}
    a &amp; b \\
    c &amp; d
 \end{Bmatrix}</code></pre>
             </td>
-            <td>\(\def\arraystretch{1.5}\begin{array}{c|c:c} a & b & c \\ \hline d & e & f \\ \hdashline g & h & i \end{array}\)</td>
+            <td>\(\def\arraystretch{1.5}\begin{array}{c|c:c} a &amp; b &amp; c \\ \hline d &amp; e &amp; f \\ \hdashline g &amp; h &amp; i \end{array}\)</td>
             <td>
                 <pre><code>\def\arraystretch{1.5}
 \begin{array}{c|c:c}
@@ -608,7 +608,7 @@ code {
    g &amp; h &amp; i
 \end{array}</code></pre>
             </td>
-            <td>\(x = \begin{cases} a &\text{if } b \\ c &\text{if } d \end{cases}\)</td>
+            <td>\(x = \begin{cases} a &amp;\text{if } b \\ c &amp;\text{if } d \end{cases}\)</td>
             <td>
                 <pre><code>x = \begin{cases}
    a &amp;\text{if } b  \\
@@ -1234,10 +1234,10 @@ code {
 			<td>\(\gdef\bar#1{#1^2}&nbsp;\bar{y} + \bar{y}\)</td>
 			<td><strong>\gdef</strong>\bar#1{#1^2}&nbsp;\bar{y} + \bar{y}</td>
 		</tr>
-		<tr> <td></td>  <td>\global\def\macroname[args]{definition}</td> </tr>
-		<tr> <td></td>  <td>\newcommand\macroname[args]{definition}</td>  </tr>
-		<tr> <td></td>  <td>\renewcommand\macroname[args]{definition}</td>  </tr>
-		<tr> <td></td>  <td>\providecommand\macroname[args]{definition}</td>  </tr>
+		<tr> <td></td>  <td>\global\def\macroname#1#2…{definition}</td> </tr>
+		<tr> <td></td>  <td>\newcommand\macroname#1#2…{definition}</td>  </tr>
+		<tr> <td></td>  <td>\renewcommand\macroname#1#2…{definition}</td>  </tr>
+		<tr> <td></td>  <td>\providecommand\macroname#1#2…{definition}</td>  </tr>
 	</table>
 
 	<div class="indented">
@@ -1251,13 +1251,16 @@ code {
 	<p>Available functions include every function on this page and:</p>
 	<table class="indented all-code">
 		<tr>
-			<td>\mathchoice</td>   <td>\@ifnextchar</td>  <td>\relax</td>
+			<td>\mathchoice</td>
+			<td>\@ifstar</td>
+			<td>\@firstoftwo</td>
+			<td>\relax</td>
 		</tr>
 		<tr>
-			<td>\TextOrMath</td>   <td>\@firstoftwo</td>  <td></td>
-		</tr>
-		<tr>
-			<td>\@ifstar</td>      <td>\@secondoftwo</td>  <td></td>
+			<td>\TextOrMath</td>
+			<td>\@ifnextchar</td>
+			<td>\@secondoftwo</td>
+			<td></td>
 		</tr>
 	</table>
 				
