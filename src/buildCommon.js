@@ -747,7 +747,7 @@ const svgData: {
 } = {
      //   path, width, height
     vec: ["vec", 0.471, 0.714],                // values from the font glyph
-    oiintSize1: ["oiintSize1", 0.805, 0.499],  // oval to overlay the integrand
+    oiintSize1: ["oiintSize1", 0.957, 0.499],  // oval to overlay the integrand
     oiintSize2: ["oiintSize2", 1.472, 0.659],
     oiiintSize1: ["oiiintSize1", 1.304, 0.499],
     oiiintSize2: ["oiiintSize2", 1.98, 0.659],

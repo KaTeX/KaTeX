@@ -71,6 +71,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
         if (stash.length > 0) {
             // We're in \oiint or \oiiint. Overlay the oval.
             // TODO: When font glyphs are available, delete this code.
+            const italic = base.italic;
             const oval = buildCommon.staticSvg(stash + "Size"
                 + (large ? "2" : "1"), options);
             base = buildCommon.makeVList({
@@ -83,6 +84,8 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             // $FlowFixMe
             group.value.body = "\\" + stash;
             base.classes.unshift("mop");
+            // $FlowFixMe
+            base.italic = italic;
         }
     } else if (group.value.value) {
         // If this is a list, compose that list.
@@ -108,7 +111,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     // If content of op is a single symbol, shift it vertically.
     let baseShift = 0;
     let slant = 0;
-    if (base instanceof domTree.symbolNode && !group.value.suppressBaseShift) {
+    if ((base instanceof domTree.symbolNode
+        || group.value.body === "\\oiint" || group.value.body === "\\oiiint")
+        && !group.value.suppressBaseShift) {
         // We suppress the shift of the base of \overset and \underset. Otherwise,
         // shift the symbol so its center lies on the axis (rule 13). It
         // appears that our fonts have the centers of the symbols already
@@ -119,6 +124,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             options.fontMetrics().axisHeight;
 
         // The slant of the symbol is just its italic correction.
+        // $FlowFixMe
         slant = base.italic;
     }
 
