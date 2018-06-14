@@ -54,9 +54,36 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     if (group.value.symbol) {
         // If this is a symbol, create the symbol.
         const fontName = large ? "Size2-Regular" : "Size1-Regular";
+
+        let stash = "";
+        if (group.value.body === "\\oiint" || group.value.body === "\\oiiint") {
+            // No font glyphs yet, so use a glyph w/o the oval.
+            // TODO: When font glyphs are available, delete this code.
+            stash = group.value.body.substr(1);
+            // $FlowFixMe
+            group.value.body = stash === "oiint" ? "\\iint" : "\\iiint";
+        }
+
         base = buildCommon.makeSymbol(
             group.value.body, fontName, "math", options,
             ["mop", "op-symbol", large ? "large-op" : "small-op"]);
+
+        if (stash.length > 0) {
+            // We're in \oiint or \oiiint. Overlay the oval.
+            // TODO: When font glyphs are available, delete this code.
+            const oval = buildCommon.staticSvg(stash + "Size"
+                + (large ? "2" : "1"), options);
+            base = buildCommon.makeVList({
+                positionType: "individualShift",
+                children: [
+                    {type: "elem", elem: base, shift: 0},
+                    {type: "elem", elem: oval, shift: large ? 0.08 : 0},
+                ],
+            }, options);
+            // $FlowFixMe
+            group.value.body = "\\" + stash;
+            base.classes.unshift("mop");
+        }
     } else if (group.value.value) {
         // If this is a list, compose that list.
         const inner = html.buildExpression(group.value.value, options, true);
@@ -308,6 +335,8 @@ const singleCharIntegrals: {[string]: string} = {
     "\u222c": "\\iint",
     "\u222d": "\\iiint",
     "\u222e": "\\oint",
+    "\u222f": "\\oiint",
+    "\u2230": "\\oiiint",
 };
 
 defineFunction({
@@ -379,8 +408,8 @@ defineFunction({
 defineFunction({
     type: "op",
     names: [
-        "\\int", "\\iint", "\\iiint", "\\oint", "\u222b", "\u222c",
-        "\u222d", "\u222e",
+        "\\int", "\\iint", "\\iiint", "\\oint", "\\oiint", "\\oiiint",
+        "\u222b", "\u222c", "\u222d", "\u222e", "\u222f", "\u2230",
     ],
     props: {
         numArgs: 0,
