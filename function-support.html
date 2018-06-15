@@ -5,10 +5,10 @@
     <meta name="viewport" content="initial-scale=1">
     <title>Function Support in KaTeX</title>
     <link rel="icon" href="http://khan.github.io/favicon.ico">
-	
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.css" integrity="sha384-BTL0nVi8DnMrNdMQZG1Ww6yasK9ZGnUxL1ZWukXQ7fygA1py52yPp9W4wrR00VML" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.js" integrity="sha384-y6SGsNt7yZECc4Pf86XmQhC4hG2wxL6Upkt9N1efhFxfh6wlxBH0mJiTE8XYclC1" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/contrib/auto-render.min.js" integrity="sha384-IiI65aU9ZYub2MY9zhtKd1H2ps7xxf+eb2YFG9lX6uRqpXCvBTOidPRCXCrQ++Uc" crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" ></script>
 
 <style>
 * { margin:0; padding:0; }  /* reset */
@@ -340,8 +340,8 @@ code {
 			<td>\ddot{a}</td>
 			<td>\(\underline{AB}\)</td>
 			<td>\underline{AB}</td>
-			<td></td>
-			<td></td>
+			<td>\(\widecheck{ac}\)</td>
+			<td>\widecheck{ac}</td>
 			<td></td>
 			<td></td>
 		</tr>
@@ -440,8 +440,8 @@ code {
             <td>|</td>
             <td>\(\vert\)</td>
             <td>\vert</td>
-            <td>\(&#x231C;&#x231D;\)</td>
-            <td>&#x231C;&#x231D;</td>
+            <td>┌&nbsp;┐</td>
+            <td>┌&nbsp;┐</td>
             <td>\(\ulcorner \urcorner\)</td>
             <td>\ulcorner<br>\urcorner</td>
             <td>\(\Downarrow\)</td>
@@ -452,8 +452,8 @@ code {
             <td>\|</td>
             <td>\(\Vert\)</td>
             <td>\Vert</td>
-            <td>\(&#x231E;&#x231F;\)</td>
-            <td>&#x231E;&#x231F;</td>
+            <td>└&nbsp;┘</td>
+            <td>└&nbsp;┘</td>
             <td>\(\llcorner \lrcorner\)</td>
             <td>\llcorner<br>\lrcorner</td>
             <td>\(\Updownarrow\)</td>
@@ -522,18 +522,17 @@ code {
 
     <table class="symbol">
         <tr>
-            <td>\(\begin{matrix} a & b \\ c & d \end{matrix}\)</td>
+            <td>\(\begin{matrix} a &amp; b \\ c &amp; d \end{matrix}\)</td>
             <td>
                 <pre><code>\begin{matrix}
    a &amp; b \\
    c &amp; d
 \end{matrix}</code></pre>
             </td>
-            <td>\(\begin{array}{c|c} g & b \\ \hline c & d \end{array}\)</td>
+            <td>\(\begin{array}{cc}a &amp; b\\c &amp; d\end{array}\)</td>
             <td>
-                <pre><code>\begin{array}{c|c}
-   g &amp; b \\
-   \hline
+                <pre><code>\begin{array}{cc}
+   a &amp; b \\
    c &amp; d
 \end{array}</code></pre>
             </td>
@@ -546,14 +545,14 @@ code {
             </td>
         </tr>
         <tr>
-            <td>\(\begin{pmatrix} a & b \\ c & d \end{pmatrix}\)</td>
+            <td>\(\begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}\)</td>
             <td>
                 <pre><code>\begin{pmatrix}
    a &amp; b \\
    c &amp; d
 \end{pmatrix}</code></pre>
             </td>
-            <td>\(\begin{bmatrix} a & b \\ c & d \end{bmatrix}\)</td>
+            <td>\(\begin{bmatrix} a &amp; b \\ c &amp; d \end{bmatrix}\)</td>
             <td>
                 <pre><code>\begin{bmatrix}
    a &amp; b \\
@@ -567,16 +566,16 @@ code {
     3&x+&13&y = 4
 \end{alignedat}</code></pre>
 			</td>
-			</tr>
+		</tr>
         <tr>
-            <td>\(\begin{vmatrix} a & b \\ c & d \end{vmatrix}\)</td>
+            <td>\(\begin{vmatrix} a &amp; b \\ c &amp; d \end{vmatrix}\)</td>
             <td>
                 <pre><code>\begin{vmatrix}
    a &amp; b \\
    c &amp; d
 \end{vmatrix}</code></pre>
             </td>
-            <td>\(\begin{Vmatrix} a & b \\ c & d \end{Vmatrix}\)</td>
+            <td>\(\begin{Vmatrix} a &amp; b \\ c &amp; d \end{Vmatrix}\)</td>
             <td>
                 <pre><code>\begin{Vmatrix}
    a &amp; b \\
@@ -592,16 +591,24 @@ code {
 			</td>
         </tr>
         <tr>
-            <td>\(\begin{Bmatrix} a & b \\ c & d \end{Bmatrix}\)</td>
+            <td>\(\begin{Bmatrix} a &amp; b \\ c &amp; d \end{Bmatrix}\)</td>
             <td>
                 <pre><code>\begin{Bmatrix}
    a &amp; b \\
    c &amp; d
 \end{Bmatrix}</code></pre>
             </td>
-			<td></td>
-			<td></td>
-            <td>\(x = \begin{cases} a &\text{if } b \\ c &\text{if } d \end{cases}\)</td>
+            <td>\(\def\arraystretch{1.5}\begin{array}{c|c:c} a &amp; b &amp; c \\ \hline d &amp; e &amp; f \\ \hdashline g &amp; h &amp; i \end{array}\)</td>
+            <td>
+                <pre><code>\def\arraystretch{1.5}
+\begin{array}{c|c:c}
+   a &amp; b &amp; c \\ \hline
+   d &amp; e &amp; f \\
+   \hdashline
+   g &amp; h &amp; i
+\end{array}</code></pre>
+            </td>
+            <td>\(x = \begin{cases} a &amp;\text{if } b \\ c &amp;\text{if } d \end{cases}\)</td>
             <td>
                 <pre><code>x = \begin{cases}
    a &amp;\text{if } b  \\
@@ -614,7 +621,7 @@ code {
     <div class="indented">
 		<p>KaTeX also supports <code>{darray}</code> and <code>{dcases}</code>.</p>
 	
-        <p>Acceptable line separators include: <code>\\</code>, <code>\cr</code>, and <code>\cr[<em>distance</em>]</code>. <em>Distance</em> can be written with any of the <a href="#units">KaTeX units</a>.</p>
+        <p>Acceptable line separators include: <code>\\</code>, <code>\cr</code>, <code>\\[<em>distance</em>]</code>, and <code>\cr[<em>distance</em>]</code>. <em>Distance</em> can be written with any of the <a href="#units">KaTeX units</a>.</p>
 
         <p>KaTeX does not yet support <code>\cline</code> or <code>\multicolumn</code>.</p>
     </div>
@@ -795,6 +802,7 @@ code {
             <td>\(\text{\o}\)</td>
             <td>\text{\o}</td>
 		</tr>
+		<tr>
             <td>\(\jmath\)</td>
             <td>\jmath</td>
             <td>Ⅎ</td>
@@ -805,6 +813,7 @@ code {
             <td>\text{\AA}</td>
             <td>\(\text{\O}\)</td>
             <td>\text{\O}</td>
+		</tr>
 		<tr>
             <td>ℵ</td>
             <td>\aleph</td>
@@ -817,6 +826,7 @@ code {
             <td>\(\text{\ss}\)</td>
             <td>\text{\ss}</td>
 		</tr>
+		<tr>
             <td>ℶ</td>
             <td>\beth</td>
             <td>ℓ</td>
@@ -827,6 +837,7 @@ code {
             <td>\text{\AE}</td>
             <td>\(\text{\i}\)</td>
             <td>\text{\i}</td>
+		</tr>
 		<tr>
             <td>ℷ</td>
             <td>\gimel</td>
@@ -913,8 +924,7 @@ code {
 		
 		<p>If the KaTeX rendering mode is set to <code>strict: false</code> or <code>strict:"warn"</code> (default), then KaTeX will accept all Unicode letters. The letters not listed above will be rendered from system fonts, not KaTeX-supplied fonts, so their typography may clash. They may also cause small vertical alignment issues. KaTeX has detailed metrics for glyphs in Latin, Greek, and Cyrillic, but other glyphs are treated as if they are each as tall as the letter <q>M</q>.</p>
 		
-<!--		<p>For Persian composite characters, a user-supplied <a href="https://github.com/HosseinAgha/persian-katex-plugin">plug-in</a> is under development.</p>
--->
+		<p>For Persian composite characters, a user-supplied <a href="https://github.com/HosseinAgha/persian-katex-plugin">plug-in</a> is under development.</p>
 
 	<br>
 
@@ -965,7 +975,7 @@ code {
 	<p>Hard line breaks are <code>\\</code> and <code>\newline</code>.</p>
 	
 	<p>In display math, KaTeX does not insert automatic line breaks. It ignores display math hard line breaks when rendering option <code>strict: true</code>.</p>
-	
+
 <h3 id="overlap">Overlap</h3>
 
     <table class="symbol">
@@ -1205,7 +1215,7 @@ code {
 	<table>
 		<tr>
 			<td>Direct Input:</td>
-			<td><span style="font-family: KaTeX_Main, KaTeX_AMS;">∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← ↔</span> ℂ ℍ ℕ ℙ ℚ ℝ ℤ</td>
+			<td><span style="font-family: KaTeX_Main, KaTeX_AMS;">∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← ↔ ¬</span> ℂ ℍ ℕ ℙ ℚ ℝ ℤ</td>
 		</tr>
 	</table>
 
@@ -1214,14 +1224,46 @@ code {
     </div>
 
 <h2 id="macros">Macros</h2>
+	<table class="symbol">
+		<tr>
+			<td>\(\def\foo{x^2}\foo + \foo\)</td>
+			<td><strong>\def</strong>\foo{x^2}&nbsp;\foo + \foo</td>
+		</tr>
+		<tr>
+			<td>\(\gdef\bar#1{#1^2}&nbsp;\bar{y} + \bar{y}\)</td>
+			<td><strong>\gdef</strong>\bar#1{#1^2}&nbsp;\bar{y} + \bar{y}</td>
+		</tr>
+		<tr> <td></td>  <td>\global\def\macroname#1#2…{definition}</td> </tr>
+		<tr> <td></td>  <td>\newcommand\macroname[numargs]{definition}</td>  </tr>
+		<tr> <td></td>  <td>\renewcommand\macroname[numargs]{definition}</td>  </tr>
+		<tr> <td></td>  <td>\providecommand\macroname[numargs]{definition}</td>  </tr>
+	</table>
+
 	<div class="indented">
-	<p>Macros can be defined either via  a KaTeX <a href="https://github.com/Khan/KaTeX#rendering-options">rendering option</a> or by <code>\gdef</code>. Available functions include:</p>
-		<div class="indented">
-		<p><code>\mathchoice \TextOrMath \@ifstar \@ifnextchar \@firstoftwo \@secondoftwo \relax</code></p>
-		</div>
+		<p>Macros can also be defined in the KaTeX <a href="https://github.com/Khan/KaTeX#rendering-options">rendering options</a>.</p>
+
+		<p>Macros accept up to ten arguments: <code>#1</code>, <code>#2</code>, etc.</p>
 		
-	<p><code>@</code> is a valid character for commands, as if <code>\makeatletter</code> were in effect.</p>	
+		<p><code>\gdef</code> and <code>\global\def</code> macros will persist between math expressions.</p>
 	</div>
+
+	<p>Available functions include every function on this page and:</p>
+	<table class="indented all-code">
+		<tr>
+			<td>\mathchoice</td>
+			<td>\@ifstar</td>
+			<td>\@firstoftwo</td>
+			<td>\relax</td>
+		</tr>
+		<tr>
+			<td>\TextOrMath</td>
+			<td>\@ifnextchar</td>
+			<td>\@secondoftwo</td>
+			<td></td>
+		</tr>
+	</table>
+				
+	<p><code>@</code> is a valid character for commands, as if <code>\makeatletter</code> were in effect.</p>	
 	
 
 <h2 id="big">Big Operators</h2>
@@ -1495,18 +1537,18 @@ code {
         <tr>
             <td>\(\frac{a}{b}\)</td>
             <td>\frac{a}{b}</td>
-            <td>\(\dfrac{a}{b}\)</td>
-            <td>\dfrac{a}{b}</td>
+            <td>\(\tfrac{a}{b}\)</td>
+            <td>\tfrac{a}{b}</td>
             <td>\({a}/{b}\)</td>
             <td>{a}/{b}</td>
         </tr>
         <tr>
             <td>\({a}\over{b}\)</td>
             <td>{a}\over{b}</td>
-            <td>\(\tfrac{a}{b}\)</td>
-            <td>\tfrac{a}{b}</td>
-            <td></td>
-            <td></td>
+            <td>\(\dfrac{a}{b}\)</td>
+            <td>\dfrac{a}{b}</td>
+            <td>\(\cfrac{a}{1 + \cfrac{1}{b}}\)</td>
+            <td>\cfrac{a}{1 + \cfrac{1}{b}}</td>
         </tr>
     </table>
 
@@ -1684,7 +1726,7 @@ code {
 		<tr>
 			<td>&gt;</td>
 			<td>&gt;</td>
-			<td>\({\dblcolon}\)</td>
+			<td>\(\dblcolon\)</td>
 			<td>\dblcolon</td>
 			<td>⪌</td>
 			<td>\gtreqqless</td>
@@ -1744,7 +1786,7 @@ code {
 		<tr>
 			<td>∍</td>
 			<td>\backepsilon</td>
-			<td>\({\eqcolon}\)</td>
+			<td>\(\eqcolon\)</td>
 			<td>\eqcolon</td>
 			<td>≤</td>
 			<td>\le</td>
@@ -1756,7 +1798,7 @@ code {
 		<tr>
 			<td>∽</td>
 			<td>\backsim</td>
-			<td>\({\Eqcolon}\)</td>
+			<td>\(\Eqcolon\)</td>
 			<td>\Eqcolon</td>
 			<td>≤</td>
 			<td>\leq</td>
@@ -1768,7 +1810,7 @@ code {
 		<tr>
 			<td>⋍</td>
 			<td>\backsimeq</td>
-			<td>\({\eqqcolon}\)</td>
+			<td>\(\eqqcolon\)</td>
 			<td>\eqqcolon</td>
 			<td>≦</td>
 			<td>\leqq</td>
@@ -1780,7 +1822,7 @@ code {
 		<tr>
 			<td>≬</td>
 			<td>\between</td>
-			<td>\({\Eqqcolon}\)</td>
+			<td>\(\Eqqcolon\)</td>
 			<td>\Eqqcolon</td>
 			<td>⩽</td>
 			<td>\leqslant</td>
@@ -1838,7 +1880,7 @@ code {
 			<td>\vartriangle</td>
 		</tr>
 		<tr>
-			<td>\({\colonapprox}\)</td>
+			<td>\(\colonapprox\)</td>
 			<td>\colonapprox</td>
 			<td>≒</td>
 			<td>\fallingdotseq</td>
@@ -1850,7 +1892,7 @@ code {
 			<td>\vartriangleleft</td>
 		</tr>
 		<tr>
-			<td>\({\Colonapprox}\)</td>
+			<td>\(\Colonapprox\)</td>
 			<td>\Colonapprox</td>
 			<td>⌢</td>
 			<td>\frown</td>
@@ -1862,7 +1904,7 @@ code {
 			<td>\vartriangleright</td>
 		</tr>
 		<tr>
-			<td>\({\coloneq}\)</td>
+			<td>\(\coloneq\)</td>
 			<td>\coloneq</td>
 			<td>≥</td>
 			<td>\ge</td>
@@ -1874,7 +1916,7 @@ code {
 			<td>\vcentcolon</td>
 		</tr>
 		<tr>
-			<td>\({\Coloneq}\)</td>
+			<td>\(\Coloneq\)</td>
 			<td>\Coloneq</td>
 			<td>≥</td>
 			<td>\geq</td>
@@ -1886,7 +1928,7 @@ code {
 			<td>\vdash</td>
 		</tr>
 		<tr>
-			<td>\({\coloneqq}\)</td>
+			<td>\(\coloneqq\)</td>
 			<td>\coloneqq</td>
 			<td>≧</td>
 			<td>\geqq</td>
@@ -1898,7 +1940,7 @@ code {
 			<td>\vDash</td>
 		</tr>
 		<tr>
-			<td>\({\Coloneqq}\)</td>
+			<td>\(\Coloneqq\)</td>
 			<td>\Coloneqq</td>
 			<td>⩾</td>
 			<td>\geqslant</td>
@@ -1910,7 +1952,7 @@ code {
 			<td>\Vdash</td>
 		</tr>
 		<tr>
-			<td>\({\colonsim}\)</td>
+			<td>\(\colonsim\)</td>
 			<td>\colonsim</td>
 			<td>≫</td>
 			<td>\gg</td>
@@ -1922,7 +1964,7 @@ code {
 			<td>\Vvdash</td>
 		</tr>
 		<tr>
-			<td>\({\Colonsim}\)</td>
+			<td>\(\Colonsim\)</td>
 			<td>\Colonsim</td>
 			<td>⋙</td>
 			<td>\ggg</td>
@@ -1961,8 +2003,7 @@ code {
 	<table>
 		<tr>
 			<td>Direct Input:</td>
-			<td><span style="font-family: KaTeX_Main, KaTeX_AMS;">= &lt; &gt; : ∈ ∋ ∝ ∼ ∽ ≂ ≃ ≅ ≈ ≊ ≍ ≎ ≏ ≐ ≑ ≒ ≓ ≖ ≗ ≜ ≡ ≤ ≥ ≦ ≧ ≪ ≫ ≬ ≳ ≷ ≺ ≻ ≼ ≽ ≾ ≿ ⊂ ⊃ ⊆ ⊇ ⊏ ⊐ ⊑ ⊒ ⊢ ⊣ ⊩ ⊪ ⊸ ⋈ ⋍ ⋐ ⋑ ⋔ ⋘ ⋙ ⋛ ⋞ ⋟ ⌢ ⌣ ⩾ ⪆ ⪌ ⪕ ⪖ ⪯ ⪰ ⪷ ⪸ ⫅ ⫆
-			</span>≔ ≕ ⩴ ≘ ≙ ≚ ≛ ≝ ≞ ≟</td>
+			<td><span style="font-family: KaTeX_Main, KaTeX_AMS;">= &lt; &gt; : ∈ ∋ ∝ ∼ ∽ ≂ ≃ ≅ ≈ ≊ ≍ ≎ ≏ ≐ ≑ ≒ ≓ ≖ ≗ ≜ ≡ ≤ ≥ ≦ ≧ ≪ ≫ ≬ ≳ ≷ ≺ ≻ ≼ ≽ ≾ ≿ ⊂ ⊃ ⊆ ⊇ ⊏ ⊐ ⊑ ⊒ ⊢ ⊣ ⊩ ⊪ ⊸ ⋈ ⋍ ⋐ ⋑ ⋔ ⋘ ⋙ ⋛ ⋞ ⋟ ⌢ ⌣ ⩾ ⪆ ⪌ ⪕ ⪖ ⪯ ⪰ ⪷ ⪸ ⫅ ⫆ ≲ ⩽ ⪅ ≶ ⋚ ⪋ ⟂ ⊨ </span>≔ ≕ ⩴ ≘ ≙ ≚ ≛ ≝ ≞ ≟</td>
 		</tr>
 	</table>
 
@@ -2134,7 +2175,7 @@ code {
 	<table>
 		<tr>
 			<td>Direct Input:</td>
-			<td style="font-family: KaTeX_Main, KaTeX_AMS;">∉ ∤ ∦ ≁ ≆ ≠ ≨ ≩ ≮ ≯ ≰ ≱ ⊀ ⊁ ⊈ ⊉ ⊊ ⊋ ⊬ ⊭ ⊮ ⊯ ⋠ ⋡ ⋦ ⋧ ⋨ ⋩ ⋬ ⋭ ⪇ ⪈ ⪉ ⪊ ⪵ ⪶ ⪹ ⪺ ⫋ ⫌</td>
+			<td style="font-family: KaTeX_Main, KaTeX_AMS;">∉ ∌ ∤ ∦ ≁ ≆ ≠ ≨ ≩ ≮ ≯ ≰ ≱ ⊀ ⊁ ⊈ ⊉ ⊊ ⊋ ⊬ ⊭ ⊮ ⊯ ⋠ ⋡ ⋦ ⋧ ⋨ ⋩ ⋬ ⋭ ⪇ ⪈ ⪉ ⪊ ⪵ ⪶ ⪹ ⪺ ⫋ ⫌</td>
 		</tr>
 	</table>
 	
@@ -2875,8 +2916,8 @@ code {
 			<td>\text{\textbraceright}</td>
 			<td>⊤</td>
 			<td>\top</td>
-			<td>\(\text{\textasciitilde}\)</td>   <td>\text{\textasciitilde}</td>
-			<td></td>   <td></td>
+			<td>\(\text{\textasciitilde}\)</td>
+			<td>\text{\textasciitilde}</td>
 		</tr>
 		<tr>
 			<td></td>   <td></td>
@@ -2899,11 +2940,11 @@ code {
 	<table>
 		<tr>
 			<td>Direct Input:</td>
-			<td style="font-family: KaTeX_Main, KaTeX_AMS;">£ ¥ ∇ ∞ · ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓ °</td>
+			<td style="font-family: KaTeX_Main, KaTeX_AMS;">£ ¥ ∇ ∞ · ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓ ° …&nbsp;&nbsp;⋮&nbsp;&nbsp;⋯&nbsp;&nbsp;⋱&nbsp;&nbsp;! ‼</td>
 		</tr>
 	</table>	
-		
 	
+
 	<h2 id="units">Units</h2>
 
 	<p>In KaTeX, units are proportioned as they are in TeX.<br>
