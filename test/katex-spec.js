@@ -185,37 +185,61 @@ describe("A subscript and superscript parser", function() {
     it("should produce supsubs for superscript", function() {
         const parse = getParsed("x^2")[0];
 
-        expect(parse.type).toBe("supsub");
-        expect(parse.value.base).toBeDefined();
-        expect(parse.value.sup).toBeDefined();
-        expect(parse.value.sub).toBeUndefined();
+        expect(parse).toEqual(
+            expect.objectContaining({
+                type: "supsub",
+                value: expect.objectContaining({
+                    base: expect.any(Object),
+                    sub: undefined,
+                    sup: expect.any(Object),
+                }),
+            }),
+        );
     });
 
     it("should produce supsubs for subscript", function() {
         const parse = getParsed("x_3")[0];
 
-        expect(parse.type).toBe("supsub");
-        expect(parse.value.base).toBeDefined();
-        expect(parse.value.sub).toBeDefined();
-        expect(parse.value.sup).toBeUndefined();
+        expect(parse).toEqual(
+            expect.objectContaining({
+                type: "supsub",
+                value: expect.objectContaining({
+                    base: expect.any(Object),
+                    sub: expect.any(Object),
+                    sup: undefined,
+                }),
+            }),
+        );
     });
 
     it("should produce supsubs for ^_", function() {
         const parse = getParsed("x^2_3")[0];
 
-        expect(parse.type).toBe("supsub");
-        expect(parse.value.base).toBeDefined();
-        expect(parse.value.sup).toBeDefined();
-        expect(parse.value.sub).toBeDefined();
+        expect(parse).toEqual(
+            expect.objectContaining({
+                type: "supsub",
+                value: expect.objectContaining({
+                    base: expect.any(Object),
+                    sub: expect.any(Object),
+                    sup: expect.any(Object),
+                }),
+            }),
+        );
     });
 
     it("should produce supsubs for _^", function() {
         const parse = getParsed("x_3^2")[0];
 
-        expect(parse.type).toBe("supsub");
-        expect(parse.value.base).toBeDefined();
-        expect(parse.value.sup).toBeDefined();
-        expect(parse.value.sub).toBeDefined();
+        expect(parse).toEqual(
+            expect.objectContaining({
+                type: "supsub",
+                value: expect.objectContaining({
+                    base: expect.any(Object),
+                    sub: expect.any(Object),
+                    sup: expect.any(Object),
+                }),
+            }),
+        );
     });
 
     it("should produce the same thing regardless of order", function() {
