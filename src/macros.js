@@ -625,6 +625,50 @@ defineMacro("\\@hspace", "\\hskip #1\\relax");
 defineMacro("\\@hspacer", "\\rule{0pt}{0pt}\\hskip #1\\relax");
 
 //////////////////////////////////////////////////////////////////////
+// mhchem
+
+const mhChemExpansion = function(context, fName: "ce"|"pu"): string {
+    // Functions \ce and \pu are from the mhchem extension.
+    // $FlowFixMe
+    if (typeof mhchem != "object") {
+        throw new ParseError("\\" + fName + " is not supported. The " +
+        "mhchem extension is missing.");
+    }
+
+    // Reconstruct the string argument.
+    const args = context.consumeArgs(1)[0];
+    let str = "";
+    for (let i = args.length - 1; i >= 0; i--) {
+      str += args[i].text;
+      if (args[i].text.charAt(0) === "\\") {
+          str += " ";  // Separate functions from text.
+      }
+      // Eliminate spaces between any function and {
+      str = str.replace(/\s(?=\{)/g, "");
+    }
+
+    // Call the mhchem extension.
+    const mhChemResult = mhchem.expand(str, fName);
+    if (mhChemResult.errorMsg.length > 0) {
+        throw new ParseError(mhChemResult.errorMsg);
+    } else {
+        return mhChemResult.expansion;
+    }
+};
+
+defineMacro("\\ce", function(context) {
+    return mhChemExpansion(context, "ce");
+});
+
+defineMacro("\\pu", function(context) {
+    return mhChemExpansion(context, "pu");
+});
+
+//  Needed for \bond for the ~ forms
+defineMacro("\\tripledash", `\\vphantom{-}\\raisebox{2mu}{$\\mkern2mu\\tiny\\text{-}
+\\mkern1mu\\text{-}\\mkern1mu\\text{-}\\mkern2mu$}`);
+
+//////////////////////////////////////////////////////////////////////
 // mathtools.sty
 
 //\providecommand\ordinarycolon{:}
