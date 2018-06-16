@@ -12,7 +12,7 @@ import utils from "./utils";
 
 import type Options from "./Options";
 import type ParseNode, {AnyParseNode} from "./ParseNode";
-import type {DomSpan, SvgSpan} from "./domTree";
+import type {DomSpan, HtmlDomNode, SvgSpan} from "./domTree";
 
 const stretchyCodePoint: {[string]: string} = {
     widehat: "^",
@@ -300,7 +300,7 @@ const svgSpan = function(
 };
 
 const encloseSpan = function(
-    inner: DomSpan,
+    inner: HtmlDomNode,
     label: string,
     pad: number,
     options: Options,

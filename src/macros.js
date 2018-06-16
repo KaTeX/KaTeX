@@ -244,14 +244,10 @@ defineMacro("\\endgroup", "}");
 // Symbols from latex.ltx:
 // \def\lq{`}
 // \def\rq{'}
-// \def\lbrack{[}
-// \def\rbrack{]}
 // \def \aa {\r a}
 // \def \AA {\r A}
 defineMacro("\\lq", "`");
 defineMacro("\\rq", "'");
-defineMacro("\\lbrack", "[");
-defineMacro("\\rbrack", "]");
 defineMacro("\\aa", "\\r a");
 defineMacro("\\AA", "\\r A");
 
