@@ -183,9 +183,7 @@ describe("A subscript and superscript parser", function() {
     });
 
     it("should produce supsubs for superscript", function() {
-        const parse = getParsed("x^2")[0];
-
-        expect(parse).toMatchObject({
+        expect(getParsed("x^2")[0]).toMatchObject({
             type: "supsub",
             value: {
                 base: expect.any(Object),
@@ -196,9 +194,7 @@ describe("A subscript and superscript parser", function() {
     });
 
     it("should produce supsubs for subscript", function() {
-        const parse = getParsed("x_3")[0];
-
-        expect(parse).toMatchObject({
+        expect(getParsed("x_3")[0]).toMatchObject({
             type: "supsub",
             value: {
                 base: expect.any(Object),
@@ -209,9 +205,7 @@ describe("A subscript and superscript parser", function() {
     });
 
     it("should produce supsubs for ^_", function() {
-        const parse = getParsed("x^2_3")[0];
-
-        expect(parse).toMatchObject({
+        expect(getParsed("x^2_3")[0]).toMatchObject({
             type: "supsub",
             value: {
                 base: expect.any(Object),
@@ -222,9 +216,7 @@ describe("A subscript and superscript parser", function() {
     });
 
     it("should produce supsubs for _^", function() {
-        const parse = getParsed("x_3^2")[0];
-
-        expect(parse).toMatchObject({
+        expect(getParsed("x_3^2")[0]).toMatchObject({
             type: "supsub",
             value: {
                 base: expect.any(Object),
