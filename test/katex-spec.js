@@ -2881,40 +2881,40 @@ describe("Unicode accents", function() {
         // TODO(edemaine): Unsupported Latin-1 letters in math: ÇÐÞçðþ
         expect`ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ`
         .toParseLike(
-            "\\grave A\\acute A\\hat A\\tilde A\\ddot A\\mathring A" +
-            "\\grave E\\acute E\\hat E\\ddot E" +
-            "\\grave I\\acute I\\hat I\\ddot I" +
-            "\\tilde N" +
-            "\\grave O\\acute O\\hat O\\tilde O\\ddot O" +
-            "\\grave U\\acute U\\hat U\\ddot U" +
-            "\\acute Y" +
-            "\\grave a\\acute a\\hat a\\tilde a\\ddot a\\mathring a" +
-            "\\grave e\\acute e\\hat e\\ddot e" +
-            "\\grave ı\\acute ı\\hat ı\\ddot ı" +
-            "\\tilde n" +
-            "\\grave o\\acute o\\hat o\\tilde o\\ddot o" +
-            "\\grave u\\acute u\\hat u\\ddot u" +
-            "\\acute y\\ddot y", nonstrictSettings);
+            r`\grave A\acute A\hat A\tilde A\ddot A\mathring A` +
+            r`\grave E\acute E\hat E\ddot E` +
+            r`\grave I\acute I\hat I\ddot I` +
+            r`\tilde N` +
+            r`\grave O\acute O\hat O\tilde O\ddot O` +
+            r`\grave U\acute U\hat U\ddot U` +
+            r`\acute Y` +
+            r`\grave a\acute a\hat a\tilde a\ddot a\mathring a` +
+            r`\grave e\acute e\hat e\ddot e` +
+            r`\grave ı\acute ı\hat ı\ddot ı` +
+            r`\tilde n` +
+            r`\grave o\acute o\hat o\tilde o\ddot o` +
+            r`\grave u\acute u\hat u\ddot u` +
+            r`\acute y\ddot y`, nonstrictSettings);
     });
 
     it("should parse Latin-1 letters in text mode", function() {
         // TODO(edemaine): Unsupported Latin-1 letters in text: ÇÐÞçðþ
         expect`\text{ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿ}`
         .toParseLike(
-            "\\text{\\`A\\'A\\^A\\~A\\\"A\\r A" +
-            "\\`E\\'E\\^E\\\"E" +
-            "\\`I\\'I\\^I\\\"I" +
-            "\\~N" +
-            "\\`O\\'O\\^O\\~O\\\"O" +
-            "\\`U\\'U\\^U\\\"U" +
-            "\\'Y" +
-            "\\`a\\'a\\^a\\~a\\\"a\\r a" +
-            "\\`e\\'e\\^e\\\"e" +
-            "\\`ı\\'ı\\^ı\\\"ı" +
-            "\\~n" +
-            "\\`o\\'o\\^o\\~o\\\"o" +
-            "\\`u\\'u\\^u\\\"u" +
-            "\\'y\\\"y}", strictSettings);
+            r`\text{\`A\'A\^A\~A\"A\r A` +
+            r`\`E\'E\^E\"E` +
+            r`\`I\'I\^I\"I` +
+            r`\~N` +
+            r`\`O\'O\^O\~O\"O` +
+            r`\`U\'U\^U\"U` +
+            r`\'Y` +
+            r`\`a\'a\^a\~a\"a\r a` +
+            r`\`e\'e\^e\"e` +
+            r`\`ı\'ı\^ı\"ı` +
+            r`\~n` +
+            r`\`o\'o\^o\~o\"o` +
+            r`\`u\'u\^u\"u` +
+            r`\'y\"y}`, strictSettings);
     });
 
     it("should support \\aa in text mode", function() {
