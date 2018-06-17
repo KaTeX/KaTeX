@@ -4,7 +4,7 @@
  * files.
  */
 
-import type ParseNode from "./ParseNode";
+import type {AnyParseNode} from "./ParseNode";
 
 /**
  * Provide an `indexOf` function which works in IE8, but defers to native if
@@ -96,10 +96,8 @@ function clearNode(node: Node) {
  * cases, this will just be the group itself, but when ordgroups and colors have
  * a single element, we want to pull that out.
  */
-const getBaseElem = function(group: ParseNode<*>): ParseNode<*> | false {
-    if (!group) {
-        return false;
-    } else if (group.type === "ordgroup") {
+const getBaseElem = function(group: AnyParseNode): AnyParseNode {
+    if (group.type === "ordgroup") {
         if (group.value.length === 1) {
             return getBaseElem(group.value[0]);
         } else {
@@ -123,7 +121,7 @@ const getBaseElem = function(group: ParseNode<*>): ParseNode<*> | false {
  * with a single character in them. To decide if something is a character box,
  * we find its innermost group, and see if it is a single character.
  */
-const isCharacterBox = function(group: ParseNode<*>): boolean {
+const isCharacterBox = function(group: AnyParseNode): boolean {
     const baseElem = getBaseElem(group);
 
     // These are all they types of groups which hold single characters
@@ -135,6 +133,13 @@ const isCharacterBox = function(group: ParseNode<*>): boolean {
         baseElem.type === "open" ||
         baseElem.type === "close" ||
         baseElem.type === "punct";
+};
+
+export const assert = function<T>(value: ?T): T {
+    if (!value) {
+        throw new Error('Expected non-null, but got ' + String(value));
+    }
+    return value;
 };
 
 export default {

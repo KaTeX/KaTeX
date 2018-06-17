@@ -1,15 +1,13 @@
 // @flow
-import {groupTypes as htmlGroupTypes} from "./buildHTML";
-import {groupTypes as mathmlGroupTypes} from "./buildMathML";
+import {_htmlGroupBuilders, _mathmlGroupBuilders} from "./defineFunction";
 
-import Options from "./Options";
 import ParseNode from "./ParseNode";
 
 import type Parser from "./Parser";
+import type {AnyParseNode} from "./ParseNode";
 import type {ArgType, Mode} from "./types";
-import type {HtmlDomNode} from "./domTree";
 import type {NodeType} from "./ParseNode";
-import type {MathNode} from "./mathMLTree";
+import type {HtmlBuilder, MathMLBuilder} from "./defineFunction";
 
 /**
  * The context contains the following properties:
@@ -30,8 +28,8 @@ type EnvContext = {|
  */
 type EnvHandler<NODETYPE: NodeType> = (
     context: EnvContext,
-    args: ParseNode<*>[],
-    optArgs: (?ParseNode<*>)[],
+    args: AnyParseNode[],
+    optArgs: (?AnyParseNode)[],
 ) => ParseNode<NODETYPE>;
 
 /**
@@ -86,11 +84,11 @@ type EnvDefSpec<NODETYPE: NodeType> = {|
 
     // This function returns an object representing the DOM structure to be
     // created when rendering the defined LaTeX function.
-    htmlBuilder: (group: ParseNode<NODETYPE>, options: Options) => HtmlDomNode,
+    htmlBuilder: HtmlBuilder<NODETYPE>,
 
     // This function returns an object representing the MathML structure to be
     // created when rendering the defined LaTeX function.
-    mathmlBuilder: (group: ParseNode<NODETYPE>, options: Options) => MathNode,
+    mathmlBuilder: MathMLBuilder<NODETYPE>,
 |};
 
 export default function defineEnvironment<NODETYPE: NodeType>({
@@ -111,12 +109,16 @@ export default function defineEnvironment<NODETYPE: NodeType>({
         handler,
     };
     for (let i = 0; i < names.length; ++i) {
+        // TODO: The value type of _environments should be a type union of all
+        // possible `EnvSpec<>` possibilities instead of `EnvSpec<*>`, which is
+        // an existential type.
+        // $FlowFixMe
         _environments[names[i]] = data;
     }
     if (htmlBuilder) {
-        htmlGroupTypes[type] = htmlBuilder;
+        _htmlGroupBuilders[type] = htmlBuilder;
     }
     if (mathmlBuilder) {
-        mathmlGroupTypes[type] = mathmlBuilder;
+        _mathmlGroupBuilders[type] = mathmlBuilder;
     }
 }

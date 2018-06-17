@@ -8,25 +8,20 @@
  *
  * Similar functions for working with MathML nodes exist in mathMLTree.js.
  */
-import { scriptFromCodepoint } from "./unicodeScripts";
+import {scriptFromCodepoint} from "./unicodeScripts";
 import utils from "./utils";
 import svgGeometry from "./svgGeometry";
 import type Options from "./Options";
 
 /**
  * Create an HTML className based on a list of classes. In addition to joining
- * with spaces, we also remove null or empty classes.
+ * with spaces, we also remove empty classes.
  */
 const createClass = function(classes: string[]): string {
-    classes = classes.slice();
-    for (let i = classes.length - 1; i >= 0; i--) {
-        if (!classes[i]) {
-            classes.splice(i, 1);
-        }
-    }
-
-    return classes.join(" ");
+    return classes.filter(cls => cls).join(" ");
 };
+
+export type CssStyle = {[name: string]: string};
 
 // To ensure that all nodes have compatible signatures for these methods.
 interface VirtualNodeInterface {
@@ -39,6 +34,7 @@ export interface HtmlDomNode extends VirtualNodeInterface {
     height: number;
     depth: number;
     maxFontSize: number;
+    style: CssStyle;
 
     hasClass(className: string): boolean;
     tryCombine(sibling: HtmlDomNode): boolean;
@@ -51,7 +47,6 @@ export type SvgSpan = span<svgNode>;
 
 export type SvgChildNode = pathNode | lineNode;
 
-export type CssStyle = {[name: string]: string};
 
 export class HtmlDomContainer<ChildType: VirtualNodeInterface>
        implements HtmlDomNode {
@@ -266,6 +261,14 @@ class documentFragment implements HtmlDomNode {
 
     tryCombine(sibling: HtmlDomNode): boolean {
         return false;
+    }
+
+    get style(): CssStyle {
+        throw new Error('DocumentFragment does not support style.');
+    }
+
+    set style(_: CssStyle) {
+        throw new Error('DocumentFragment does not support style.');
     }
 
     /**
@@ -586,6 +589,26 @@ class lineNode implements VirtualNodeInterface {
         markup += "/>";
 
         return markup;
+    }
+}
+
+export function assertSymbolDomNode(
+    group: HtmlDomNode,
+): symbolNode {
+    if (group instanceof symbolNode) {
+        return group;
+    } else {
+        throw new Error(`Expected symbolNode but got ${String(group)}.`);
+    }
+}
+
+export function assertDomContainer(
+    group: HtmlDomNode,
+): HtmlDomContainer<HtmlDomNode> {
+    if (group instanceof HtmlDomContainer) {
+        return group;
+    } else {
+        throw new Error(`Expected HtmlDomContainer but got ${String(group)}.`);
     }
 }
 

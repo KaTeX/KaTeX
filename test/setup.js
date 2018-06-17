@@ -2,7 +2,7 @@
 
 import stringify from 'json-stable-stringify';
 import {
-    defaultSettings, Mode,
+    Mode,
     expectKaTeX, expectEquivalent, expectToWarn,
 } from "./helpers";
 
@@ -40,7 +40,7 @@ expect.extend({
     },
 
     toFailWithParseError: function(expr, expected) {
-        const result = expectKaTeX(expr, defaultSettings, Mode.PARSE, !this.isNot,
+        const result = expectKaTeX(expr, undefined, Mode.PARSE, !this.isNot,
                                    expected);
         result.pass = !result.pass; // expectKaTeX.pass is true if succeeded
         return result;

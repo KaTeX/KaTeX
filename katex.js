@@ -11,18 +11,20 @@
 import ParseError from "./src/ParseError";
 import Settings from "./src/Settings";
 
-import { buildTree, buildHTMLTree } from "./src/buildTree";
+import {buildTree, buildHTMLTree} from "./src/buildTree";
 import parseTree from "./src/parseTree";
 import buildCommon from "./src/buildCommon";
 import domTree from "./src/domTree";
 import utils from "./src/utils";
 
 import type {SettingsOptions} from "./src/Settings";
-import type ParseNode from "./src/ParseNode";
+import type {AnyParseNode} from "./src/ParseNode";
 
-import { defineSymbol } from './src/symbols';
+import {defineSymbol} from './src/symbols';
+import {defineMacro} from './src/macros';
+import {setFontMetrics} from './src/fontMetrics';
 
-import { version } from "./package.json";
+import {version} from "./package.json";
 
 /**
  * Parse and build an expression, and place that expression in the DOM node
@@ -69,7 +71,7 @@ const renderToString = function(
 const generateParseTree = function(
     expression: string,
     options: SettingsOptions,
-): ParseNode<*>[] {
+): AnyParseNode[] {
     const settings = new Settings(options);
     return parseTree(expression, settings);
 };
@@ -175,7 +177,16 @@ export default {
      */
     __renderToHTMLTree: renderToHTMLTree,
     /**
-     * adds a new symbol to internal symbols table
+     * extends internal font metrics object with a new object
+     * each key in the new object represents a font name
     */
+    __setFontMetrics: setFontMetrics,
+    /**
+     * adds a new symbol to builtin symbols table
+     */
     __defineSymbol: defineSymbol,
+    /**
+     * adds a new macro to builtin macro list
+     */
+    __defineMacro: defineMacro,
 };

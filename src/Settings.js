@@ -7,13 +7,13 @@
 
 import utils from "./utils";
 import ParseError from "./ParseError.js";
-import ParseNode from "./ParseNode";
 import {Token} from "./Token";
 
-import type { MacroMap } from "./macros";
+import type {AnyParseNode} from "./ParseNode";
+import type {MacroMap} from "./macros";
 
 export type StrictFunction =
-    (errorCode: string, errorMsg: string, token?: Token | ParseNode<*>) =>
+    (errorCode: string, errorMsg: string, token?: Token | AnyParseNode) =>
     ?(boolean | string);
 
 export type SettingsOptions = {
@@ -57,7 +57,7 @@ class Settings {
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
         this.strict = utils.deflt(options.strict, "warn");
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
-        this.maxExpand = Math.max(0, utils.deflt(options.maxExpand, Infinity));
+        this.maxExpand = Math.max(0, utils.deflt(options.maxExpand, 1000));
     }
 
     /**
@@ -65,7 +65,7 @@ class Settings {
      * Can safely not be called if `this.strict` is false in JavaScript.
      */
     reportNonstrict(errorCode: string, errorMsg: string,
-                    token?: Token | ParseNode<*>) {
+                    token?: Token | AnyParseNode) {
         let strict = this.strict;
         if (typeof strict === "function") {
             // Allow return value of strict function to be boolean or string
@@ -98,7 +98,7 @@ class Settings {
      * This is for the second category of `errorCode`s listed in the README.
      */
     useStrictBehavior(errorCode: string, errorMsg: string,
-                      token?: Token | ParseNode<*>) {
+                      token?: Token | AnyParseNode) {
         let strict = this.strict;
         if (typeof strict === "function") {
             // Allow return value of strict function to be boolean or string

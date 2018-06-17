@@ -6,8 +6,8 @@
  */
 
 import domTree from "./domTree";
-import fontMetrics from "./fontMetrics";
-import symbols from "./symbols";
+import {getCharacterMetrics} from "./fontMetrics";
+import symbols, {ligatures} from "./symbols";
 import utils from "./utils";
 import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
@@ -43,7 +43,7 @@ const lookupSymbol = function(
     }
     return {
         value: value,
-        metrics: fontMetrics.getCharacterMetrics(value, fontName, mode),
+        metrics: getCharacterMetrics(value, fontName, mode),
     };
 };
 
@@ -152,12 +152,19 @@ const mathDefault = function(
             return makeSymbol(
                 value, fontName, mode, options,
                 classes.concat("amsrm", options.fontWeight, options.fontShape));
-        } else { // if (font === "main") {
+        } else if (font === "main" || !font) {
             const fontName = retrieveTextFontName("textrm", options.fontWeight,
                   options.fontShape);
             return makeSymbol(
                 value, fontName, mode, options,
                 classes.concat(options.fontWeight, options.fontShape));
+        } else { // fonts added by plugins
+            const fontName = retrieveTextFontName(font, options.fontWeight,
+                  options.fontShape);
+            // We add font name as a css class
+            return makeSymbol(
+                value, fontName, mode, options,
+                classes.concat(fontName, options.fontWeight, options.fontShape));
         }
     } else {
         throw new Error("unexpected type: " + type + " in mathDefault");
@@ -222,11 +229,11 @@ const boldsymbol = function(
 /**
  * Makes either a mathord or textord in the correct font and color.
  */
-const makeOrd = function(
-    group: ParseNode<*>,
+const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
+    group: ParseNode<NODETYPE>,
     options: Options,
-    type: NodeType,
-): domTree.symbolNode {
+    type: "mathord" | "textord",
+): domTree.symbolNode | domTree.documentFragment {
     const mode = group.mode;
     const value = group.value;
 
@@ -238,7 +245,8 @@ const makeOrd = function(
     if (value.charCodeAt(0) === 0xD835) {
         // surrogate pairs get special treatment
         const [wideFontName, wideFontClass] = wideCharacterFont(value, mode);
-        return makeSymbol(value, wideFontName, mode, options, [wideFontClass]);
+        return makeSymbol(value, wideFontName, mode, options,
+            classes.concat(wideFontClass));
     } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
@@ -259,9 +267,19 @@ const makeOrd = function(
                                             options.fontShape);
             fontClasses = [fontOrFamily, options.fontWeight, options.fontShape];
         }
+
         if (lookupSymbol(value, fontName, mode).metrics) {
             return makeSymbol(value, fontName, mode, options,
                 classes.concat(fontClasses));
+        } else if (ligatures.hasOwnProperty(value) &&
+                   fontName.substr(0, 10) === "Typewriter") {
+            // Deconstruct ligatures in monospace fonts (\texttt, \tt).
+            const parts = [];
+            for (let i = 0; i < value.length; i++) {
+                parts.push(makeSymbol(value[i], fontName, mode, options,
+                                      classes.concat(fontClasses)));
+            }
+            return makeFragment(parts);
         } else {
             return mathDefault(value, mode, options, classes, type);
         }
@@ -389,7 +407,7 @@ const makeFragment = function(
 export type VListElem = {|
     type: "elem",
     elem: HtmlDomNode,
-    marginLeft?: string,
+    marginLeft?: ?string,
     marginRight?: string,
     wrapperClasses?: string[],
     wrapperStyle?: CssStyle,
@@ -398,7 +416,7 @@ type VListElemAndShift = {|
     type: "elem",
     elem: HtmlDomNode,
     shift: number,
-    marginLeft?: string,
+    marginLeft?: ?string,
     marginRight?: string,
     wrapperClasses?: string[],
     wrapperStyle?: CssStyle,
@@ -600,7 +618,7 @@ const makeVerb = function(group: ParseNode<"verb">, options: Options): string {
 };
 
 // Glue is a concept from TeX which is a flexible space between elements in
-// either a vertical or horizontal list.  In KaTeX, at least for now, it's
+// either a vertical or horizontal list. In KaTeX, at least for now, it's
 // static space between elements in a horizontal layout.
 const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
     // Make an empty span for the space
@@ -610,7 +628,7 @@ const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
     return rule;
 };
 
-// Takes an Options object, and returns the appropriate fontLookup
+// Takes font options, and returns the appropriate fontLookup name
 const retrieveTextFontName = function(
     fontFamily: string,
     fontWeight: string,
@@ -631,7 +649,7 @@ const retrieveTextFontName = function(
             baseFontName = "Typewriter";
             break;
         default:
-            throw new Error(`Invalid font provided: ${fontFamily}`);
+            baseFontName = fontFamily; // use fonts added by a plugin
     }
 
     let fontStylesName;
@@ -648,45 +666,10 @@ const retrieveTextFontName = function(
     return `${baseFontName}-${fontStylesName}`;
 };
 
-// A map of spacing functions to their attributes, like size and corresponding
-// CSS class
-const spacingFunctions: {[string]: {| size: string, className: string |}} = {
-    "\\qquad": {
-        size: "2em",
-        className: "qquad",
-    },
-    "\\quad": {
-        size: "1em",
-        className: "quad",
-    },
-    "\\enspace": {
-        size: "0.5em",
-        className: "enspace",
-    },
-    "\\;": {
-        size: "0.277778em",
-        className: "thickspace",
-    },
-    "\\:": {
-        size: "0.22222em",
-        className: "mediumspace",
-    },
-    "\\,": {
-        size: "0.16667em",
-        className: "thinspace",
-    },
-    "\\!": {
-        size: "-0.16667em",
-        className: "negativethinspace",
-    },
-    "\\nobreak": {
-        size: "0em",
-        className: "nobreak",
-    },
-    "\\allowbreak": {
-        size: "0em",
-        className: "allowbreak",
-    },
+// A map of CSS-based spacing functions to their CSS class.
+const cssSpace: {[string]: string} = {
+    "\\nobreak": "nobreak",
+    "\\allowbreak": "allowbreak",
 };
 
 // A lookup table to determine whether a spacing function/symbol should be
@@ -801,6 +784,6 @@ export default {
     staticSvg,
     svgData,
     tryCombineChars,
-    spacingFunctions,
+    cssSpace,
     regularSpace,
 };
