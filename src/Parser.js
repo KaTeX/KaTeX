@@ -655,13 +655,10 @@ export default class Parser {
         }
         if (type === "string") {
             const res = this.parseStringGroup(type, optional, true);
-            if (!res) {
-                return null;
-            }
-            return newArgument(new ParseNode("string", {
+            return res != null ? newArgument(new ParseNode("string", {
                 type: "string",
                 value: res.text,
-            }, this.mode), res);
+            }, this.mode), res) : null;
         }
 
         // By the time we get here, type is one of "text" or "math".
@@ -690,11 +687,9 @@ export default class Parser {
         if (optional && this.nextToken.text !== groupStart) {
             return null;
         }
-
         const outerMode = this.mode;
         this.mode = "text";
         this.expect(groupStart);
-
         let str = "";
         let nest = 0;
         const firstToken = this.nextToken;
