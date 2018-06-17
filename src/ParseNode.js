@@ -73,11 +73,11 @@ export type AnyParseNode =
     ParseNode<"op"> |
     ParseNode<"ordgroup"> |
     ParseNode<"size"> |
+    ParseNode<"string"> |
     ParseNode<"styling"> |
     ParseNode<"supsub"> |
     ParseNode<"tag"> |
     ParseNode<"text"> |
-    ParseNode<"url"> |
     ParseNode<"verb"> |
     ParseNode<"accent"> |
     ParseNode<"accentUnder"> |
@@ -89,6 +89,7 @@ export type AnyParseNode =
     ParseNode<"genfrac"> |
     ParseNode<"horizBrace"> |
     ParseNode<"href"> |
+    ParseNode<"html"> |
     ParseNode<"infix"> |
     ParseNode<"kern"> |
     ParseNode<"lap"> |
