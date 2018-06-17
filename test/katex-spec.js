@@ -1573,10 +1573,9 @@ describe("An HTML font tree-builder", function() {
         const markup = katex.renderToString(String.fromCharCode(0xD835, 0xDC00));
         expect(markup).toContain("<span class=\"mord mathbf\">A</span>");
 
-        const phrase1 = getBuilt(String.fromCharCode(0xD835, 0xDC00) +
-            " = " + String.fromCharCode(0xD835, 0xDC1A))[0];
-        const phrase2 = getBuilt("\\mathbf A = \\mathbf a")[0];
-        expect(phrase1).toEqual(phrase2);
+        expect(String.fromCharCode(0xD835, 0xDC00) +
+                " = " + String.fromCharCode(0xD835, 0xDC1A))
+            .toBuildLike`\mathbf A = \mathbf a`;
     });
 
     it("should throw TypeError when the expression is of the wrong type", function() {
@@ -2464,10 +2463,9 @@ describe("A parser that does not throw on unsupported commands", function() {
 
 describe("The symbol table integrity", function() {
     it("should treat certain symbols as synonyms", function() {
-        expect(getBuilt("<")).toEqual(getBuilt("\\lt"));
-        expect(getBuilt(">")).toEqual(getBuilt("\\gt"));
-        expect(getBuilt("\\left<\\frac{1}{x}\\right>"))
-            .toEqual(getBuilt("\\left\\lt\\frac{1}{x}\\right\\gt"));
+        expect`<`.toBuildLike`\lt`;
+        expect`>`.toBuildLike`\gt`;
+        expect`\left<\frac{1}{x}\right>`.toBuildLike`\left\lt\frac{1}{x}\right\gt`;
     });
 });
 
@@ -2482,52 +2480,51 @@ describe("Symbols", function() {
 });
 
 describe("A macro expander", function() {
-
-    const compareParseTree = function(actual, expected, macros) {
-        const settings = new Settings({macros: macros});
-        actual = stripPositions(parseTree(actual, settings));
-        expected = stripPositions(parseTree(expected, new Settings()));
-        expect(actual).toEqual(expected);
-    };
-
     it("should produce individual tokens", function() {
-        compareParseTree("e^\\foo", "e^1 23", {"\\foo": "123"});
+        expect`e^\foo`.toParseLike("e^1 23",
+            new Settings({macros: {"\\foo": "123"}}));
     });
 
     it("should preserve leading spaces inside macro definition", function() {
-        compareParseTree("\\text{\\foo}", "\\text{ x}", {"\\foo": " x"});
+        expect`\text{\foo}`.toParseLike(r`\text{ x}`,
+            new Settings({macros: {"\\foo": " x"}}));
     });
 
     it("should preserve leading spaces inside macro argument", function() {
-        compareParseTree("\\text{\\foo{ x}}", "\\text{ x}", {"\\foo": "#1"});
+        expect`\text{\foo{ x}}`.toParseLike(r`\text{ x}`,
+            new Settings({macros: {"\\foo": "#1"}}));
     });
 
     it("should ignore expanded spaces in math mode", function() {
-        compareParseTree("\\foo", "x", {"\\foo": " x"});
+        expect`\foo`.toParseLike("x", new Settings({macros: {"\\foo": " x"}}));
     });
 
     it("should consume spaces after control-word macro", function() {
-        compareParseTree("\\text{\\foo }", "\\text{x}", {"\\foo": "x"});
+        expect`\text{\foo }`.toParseLike(r`\text{x}`,
+            new Settings({macros: {"\\foo": "x"}}));
     });
 
     it("should consume spaces after macro with \\relax", function() {
-        compareParseTree("\\text{\\foo }", "\\text{}", {"\\foo": "\\relax"});
+        expect`\text{\foo }`.toParseLike(r`\text{}`,
+            new Settings({macros: {"\\foo": "\\relax"}}));
     });
 
     it("should not consume spaces after control-word expansion", function() {
-        compareParseTree("\\text{\\\\ }", "\\text{ }", {"\\\\": "\\relax"});
+        expect`\text{\\ }`.toParseLike(r`\text{ }`,
+            new Settings({macros: {"\\\\": "\\relax"}}));
     });
 
     it("should consume spaces after \\relax", function() {
-        compareParseTree("\\text{\\relax }", "\\text{}");
+        expect`\text{\relax }`.toParseLike`\text{}`;
     });
 
     it("should consume spaces after control-word function", function() {
-        compareParseTree("\\text{\\KaTeX }", "\\text{\\KaTeX}");
+        expect`\text{\KaTeX }`.toParseLike`\text{\KaTeX}`;
     });
 
     it("should preserve spaces after control-symbol macro", function() {
-        compareParseTree("\\text{\\% y}", "\\text{x y}", {"\\%": "x"});
+        expect`\text{\% y}`.toParseLike(r`\text{x y}`,
+            new Settings({macros: {"\\%": "x"}}));
     });
 
     it("should preserve spaces after control-symbol function", function() {
@@ -2535,73 +2532,75 @@ describe("A macro expander", function() {
     });
 
     it("should consume spaces between arguments", function() {
-        compareParseTree("\\text{\\foo 1 2}", "\\text{12end}", {"\\foo": "#1#2end"});
-        compareParseTree("\\text{\\foo {1} {2}}", "\\text{12end}", {"\\foo": "#1#2end"});
+        expect`\text{\foo 1 2}`.toParseLike(r`\text{12end}`,
+            new Settings({macros: {"\\foo": "#1#2end"}}));
+        expect`\text{\foo {1} {2}}`.toParseLike(r`\text{12end}`,
+            new Settings({macros: {"\\foo": "#1#2end"}}));
     });
 
     it("should allow for multiple expansion", function() {
-        compareParseTree("1\\foo2", "1aa2", {
+        expect`1\foo2`.toParseLike("1aa2", new Settings({macros: {
             "\\foo": "\\bar\\bar",
             "\\bar": "a",
-        });
+        }}));
     });
 
     it("should allow for multiple expansion with argument", function() {
-        compareParseTree("1\\foo2", "12222", {
+        expect`1\foo2`.toParseLike("12222", new Settings({macros: {
             "\\foo": "\\bar{#1}\\bar{#1}",
             "\\bar": "#1#1",
-        });
+        }}));
     });
 
     it("should allow for macro argument", function() {
-        compareParseTree("\\foo\\bar", "(x)", {
+        expect`\foo\bar`.toParseLike("(x)", new Settings({macros: {
             "\\foo": "(#1)",
             "\\bar": "x",
-        });
+        }}));
     });
 
     it("should allow for space macro argument (text version)", function() {
-        compareParseTree("\\text{\\foo\\bar}", "\\text{( )}", {
+        expect`\text{\foo\bar}`.toParseLike(r`\text{( )}`, new Settings({macros: {
             "\\foo": "(#1)",
             "\\bar": " ",
-        });
+        }}));
     });
 
     it("should allow for space macro argument (math version)", function() {
-        compareParseTree("\\foo\\bar", "()", {
+        expect`\foo\bar`.toParseLike("()", new Settings({macros: {
             "\\foo": "(#1)",
             "\\bar": " ",
-        });
+        }}));
     });
 
     it("should allow for space second argument (text version)", function() {
-        compareParseTree("\\text{\\foo\\bar\\bar}", "\\text{( , )}", {
+        expect`\text{\foo\bar\bar}`.toParseLike(r`\text{( , )}`, new Settings({macros: {
             "\\foo": "(#1,#2)",
             "\\bar": " ",
-        });
+        }}));
     });
 
     it("should allow for space second argument (math version)", function() {
-        compareParseTree("\\foo\\bar\\bar", "(,)", {
+        expect`\foo\bar\bar`.toParseLike("(,)", new Settings({macros: {
             "\\foo": "(#1,#2)",
             "\\bar": " ",
-        });
+        }}));
     });
 
     it("should allow for empty macro argument", function() {
-        compareParseTree("\\foo\\bar", "()", {
+        expect`\foo\bar`.toParseLike("()", new Settings({macros: {
             "\\foo": "(#1)",
             "\\bar": "",
-        });
+        }}));
     });
 
     // TODO: The following is not currently possible to get working, given that
     // functions and macros are dealt with separately.
 /*
     it("should allow for space function arguments", function() {
-        compareParseTree("\\frac\\bar\\bar", "\\frac{}{}", {
+        expect`\frac\bar\bar`.toParseLike(r`\frac{}{}`, new Settings({macros: {
             "\\bar": " ",
-        });
+        }}));
     });
 */
 
@@ -2617,9 +2616,9 @@ describe("A macro expander", function() {
     });
 
     it("should allow aliasing characters", function() {
-        compareParseTree("x’=c", "x'=c", {
+        expect`x’=c`.toParseLike("x'=c", new Settings({macros: {
             "’": "'",
-        });
+        }}));
     });
 
     it("\\@firstoftwo should consume both, and avoid errors", function() {
@@ -2680,31 +2679,31 @@ describe("A macro expander", function() {
     });
 
     it("\\TextOrMath should work in a macro", function() {
-        compareParseTree("\\mode\\text{\\mode$\\mode$\\mode}\\mode",
-            "math\\text{text$math$text}math",
-            {"\\mode": "\\TextOrMath{text}{math}"});
+        expect`\mode\text{\mode$\mode$\mode}\mode`
+            .toParseLike(r`math\text{text$math$text}math`, new Settings({macros: {
+                "\\mode": "\\TextOrMath{text}{math}",
+            }}));
     });
 
     it("\\TextOrMath should work in a macro passed to \\text", function() {
-        compareParseTree("\\text\\mode", "\\text t",
-            {"\\mode": "\\TextOrMath{t}{m}"});
+        expect`\text\mode`.toParseLike(r`\text t`, new Settings({macros:
+            {"\\mode": "\\TextOrMath{t}{m}"}}));
     });
 
     // TODO(edemaine): This doesn't work yet.  Parses like `\text text`,
     // which doesn't treat all four letters as an argument.
     //it("\\TextOrMath should work in a macro passed to \\text", function() {
-    //    compareParseTree("\\text\\mode", "\\text{text}",
+    //    expect`\text\mode`.toParseLike(r`\text{text}`, new Settings({macros:
     //        {"\\mode": "\\TextOrMath{text}{math}"});
     //});
 
     it("\\gdef defines macros", function() {
-        compareParseTree("\\gdef\\foo{x^2}\\foo+\\foo", "x^2+x^2");
-        compareParseTree("\\gdef{\\foo}{x^2}\\foo+\\foo", "x^2+x^2");
-        compareParseTree("\\gdef\\foo{hi}\\foo+\\text{\\foo}", "hi+\\text{hi}");
-        compareParseTree("\\gdef\\foo#1{hi #1}\\text{\\foo{Alice}, \\foo{Bob}}",
-            "\\text{hi Alice, hi Bob}");
-        compareParseTree("\\gdef\\foo#1#2{(#1,#2)}\\foo 1 2+\\foo 3 4",
-            "(1,2)+(3,4)");
+        expect`\gdef\foo{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
+        expect`\gdef{\foo}{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
+        expect`\gdef\foo{hi}\foo+\text{\foo}`.toParseLike`hi+\text{hi}`;
+        expect`\gdef\foo#1{hi #1}\text{\foo{Alice}, \foo{Bob}}`
+            .toParseLike`\text{hi Alice, hi Bob}`;
+        expect`\gdef\foo#1#2{(#1,#2)}\foo 1 2+\foo 3 4`.toParseLike`(1,2)+(3,4)`;
         expect`\gdef\foo#2{}`.not.toParse();
         expect`\gdef\foo#1#3{}`.not.toParse();
         expect`\gdef\foo#1#2#3#4#5#6#7#8#9{}`.toParse();
@@ -2772,8 +2771,8 @@ describe("A macro expander", function() {
     });
 
     it("\\newcommand defines new macros", () => {
-        compareParseTree("\\newcommand\\foo{x^2}\\foo+\\foo", "x^2+x^2");
-        compareParseTree("\\newcommand{\\foo}{x^2}\\foo+\\foo", "x^2+x^2");
+        expect`\newcommand\foo{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
+        expect`\newcommand{\foo}{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
         // Function detection
         expect`\newcommand\bar{x^2}\bar+\bar`.not.toParse();
         expect`\newcommand{\bar}{x^2}\bar+\bar`.not.toParse();
@@ -2790,17 +2789,16 @@ describe("A macro expander", function() {
     it("\\renewcommand redefines macros", () => {
         expect`\renewcommand\foo{x^2}\foo+\foo`.not.toParse();
         expect`\renewcommand{\foo}{x^2}\foo+\foo`.not.toParse();
-        compareParseTree("\\renewcommand\\bar{x^2}\\bar+\\bar", "x^2+x^2");
-        compareParseTree("\\renewcommand{\\bar}{x^2}\\bar+\\bar", "x^2+x^2");
-        expect`\newcommand{\foo}{1}\foo\renewcommand{\foo}{2}\foo`
-            .toParseLike`12`;
+        expect`\renewcommand\bar{x^2}\bar+\bar`.toParseLike`x^2+x^2`;
+        expect`\renewcommand{\bar}{x^2}\bar+\bar`.toParseLike`x^2+x^2`;
+        expect`\newcommand{\foo}{1}\foo\renewcommand{\foo}{2}\foo`.toParseLike`12`;
     });
 
     it("\\providecommand (re)defines macros", () => {
-        compareParseTree("\\providecommand\\foo{x^2}\\foo+\\foo", "x^2+x^2");
-        compareParseTree("\\providecommand{\\foo}{x^2}\\foo+\\foo", "x^2+x^2");
-        compareParseTree("\\providecommand\\bar{x^2}\\bar+\\bar", "x^2+x^2");
-        compareParseTree("\\providecommand{\\bar}{x^2}\\bar+\\bar", "x^2+x^2");
+        expect`\providecommand\foo{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
+        expect`\providecommand{\foo}{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
+        expect`\providecommand\bar{x^2}\bar+\bar`.toParseLike`x^2+x^2`;
+        expect`\providecommand{\bar}{x^2}\bar+\bar`.toParseLike`x^2+x^2`;
         expect`\newcommand{\foo}{1}\foo\providecommand{\foo}{2}\foo`
             .toParseLike`12`;
         expect`\providecommand{\foo}{1}\foo\renewcommand{\foo}{2}\foo`
@@ -2815,9 +2813,8 @@ describe("A macro expander", function() {
     });
 
     it("\\newcommand accepts number of arguments", () => {
-        compareParseTree("\\newcommand\\foo[1]{#1^2}\\foo x+\\foo{y}",
-                         "x^2+y^2");
-        compareParseTree("\\newcommand\\foo[10]{#1^2}\\foo 0123456789", "0^2");
+        expect`\newcommand\foo[1]{#1^2}\foo x+\foo{y}`.toParseLike`x^2+y^2`;
+        expect`\newcommand\foo[10]{#1^2}\foo 0123456789`.toParseLike`0^2`;
         expect`\newcommand\foo[x]{}`.not.toParse();
         expect`\newcommand\foo[1.5]{}`.not.toParse();
     });
@@ -3063,27 +3060,20 @@ describe("The \\mathchoice function", function() {
     const cmd = r`\sum_{k = 0}^{\infty} x^k`;
 
     it("should render as if there is nothing other in display math", function() {
-        const plain = getBuilt("\\displaystyle" + cmd)[0];
-        const built = getBuilt(`\\displaystyle\\mathchoice{${cmd}}{T}{S}{SS}`)[0];
-        expect(built).toEqual(plain);
+        expect(`\\displaystyle\\mathchoice{${cmd}}{T}{S}{SS}`)
+            .toBuildLike(`\\displaystyle${cmd}`);
     });
 
     it("should render as if there is nothing other in text", function() {
-        const plain = getBuilt(cmd)[0];
-        const built = getBuilt(`\\mathchoice{D}{${cmd}}{S}{SS}`)[0];
-        expect(built).toEqual(plain);
+        expect(`\\mathchoice{D}{${cmd}}{S}{SS}`).toBuildLike(cmd);
     });
 
     it("should render as if there is nothing other in scriptstyle", function() {
-        const plain = getBuilt(`x_{${cmd}}`)[0];
-        const built = getBuilt(`x_{\\mathchoice{D}{T}{${cmd}}{SS}}`)[0];
-        expect(built).toEqual(plain);
+        expect(`x_{\\mathchoice{D}{T}{${cmd}}{SS}}`).toBuildLike(`x_{${cmd}}`);
     });
 
     it("should render  as if there is nothing other in scriptscriptstyle", function() {
-        const plain = getBuilt(`x_{y_{${cmd}}}`)[0];
-        const built = getBuilt(`x_{y_{\\mathchoice{D}{T}{S}{${cmd}}}}`)[0];
-        expect(built).toEqual(plain);
+        expect(`x_{y_{\\mathchoice{D}{T}{S}{${cmd}}}}`).toBuildLike(`x_{y_{${cmd}}}`);
     });
 });
 
@@ -3114,9 +3104,7 @@ describe("Symbols", function() {
     });
 
     it("should render ligature commands like their unicode characters", () => {
-        const commands = getBuilt("\\text{\\ae\\AE\\oe\\OE\\o\\O\\ss}", strictSettings);
-        const unicode = getBuilt("\\text{æÆœŒøØß}", strictSettings);
-        expect(commands).toEqual(unicode);
+        expect`\text{\ae\AE\oe\OE\o\O\ss}`.toBuildLike(r`\text{æÆœŒøØß}`, strictSettings);
     });
 });
 
