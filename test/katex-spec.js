@@ -531,10 +531,8 @@ describe("An over parser", function() {
     });
 
     it("should handle \\textstyle correctly", function() {
-        expect`\textstyle 1 \over 2`
-            .toParseLike`\frac{\textstyle 1}{2}`;
-        expect`{\textstyle 1} \over 2`
-            .toParseLike`\frac{\textstyle 1}{2}`;
+        expect`\textstyle 1 \over 2`.toParseLike`\frac{\textstyle 1}{2}`;
+        expect`{\textstyle 1} \over 2`.toParseLike`\frac{\textstyle 1}{2}`;
     });
 
     it("should handle nested factions", function() {
@@ -683,8 +681,7 @@ describe("A text parser", function() {
     });
 
     it("should omit spaces after commands", function() {
-        expect`\text{\textellipsis !}`
-            .toParseLike`\text{\textellipsis!}`;
+        expect`\text{\textellipsis !}`.toParseLike`\text{\textellipsis!}`;
     });
 });
 
@@ -1473,10 +1470,8 @@ describe("A comment parser", function() {
     });
 
     it("should not produce or consume space", () => {
-        expect("\\text{hello% comment 1\nworld}")
-            .toParseLike`\text{helloworld}`;
-        expect("\\text{hello% comment\n\nworld}")
-            .toParseLike`\text{hello world}`;
+        expect("\\text{hello% comment 1\nworld}").toParseLike`\text{helloworld}`;
+        expect("\\text{hello% comment\n\nworld}").toParseLike`\text{hello world}`;
     });
 
     it("should not include comments in the output", () => {
@@ -2335,18 +2330,15 @@ describe("A cases environment", function() {
 describe("An aligned environment", function() {
 
     it("should parse its input", function() {
-        expect`\begin{aligned}a&=b&c&=d\\e&=f\end{aligned}`
-            .toParse();
+        expect`\begin{aligned}a&=b&c&=d\\e&=f\end{aligned}`.toParse();
     });
 
     it("should allow cells in brackets", function() {
-        expect`\begin{aligned}[a]&[b]\\ [c]&[d]\end{aligned}`
-            .toParse();
+        expect`\begin{aligned}[a]&[b]\\ [c]&[d]\end{aligned}`.toParse();
     });
 
     it("should forbid cells in brackets without space", function() {
-        expect`\begin{aligned}[a]&[b]\\[c]&[d]\end{aligned}`
-            .not.toParse();
+        expect`\begin{aligned}[a]&[b]\\[c]&[d]\end{aligned}`.not.toParse();
     });
 
     it("should not eat the last row when its first cell is empty", function() {
@@ -2635,8 +2627,7 @@ describe("A macro expander", function() {
     });
 
     it("\\TextOrMath should work later after \\text", function() {
-        expect`\text{hello \TextOrMath{text}{math}}`
-            .toParseLike`\text{hello text}`;
+        expect`\text{hello \TextOrMath{text}{math}}`.toParseLike`\text{hello text}`;
     });
 
     it("\\TextOrMath should work immediately after \\text ends", function() {
@@ -2645,13 +2636,11 @@ describe("A macro expander", function() {
     });
 
     it("\\TextOrMath should work immediately after $", function() {
-        expect`\text{$\TextOrMath{text}{math}$}`
-            .toParseLike`\text{$math$}`;
+        expect`\text{$\TextOrMath{text}{math}$}`.toParseLike`\text{$math$}`;
     });
 
     it("\\TextOrMath should work later after $", function() {
-        expect`\text{$x+\TextOrMath{text}{math}$}`
-            .toParseLike`\text{$x+math$}`;
+        expect`\text{$x+\TextOrMath{text}{math}$}`.toParseLike`\text{$x+math$}`;
     });
 
     it("\\TextOrMath should work immediately after $ ends", function() {
@@ -2761,8 +2750,7 @@ describe("A macro expander", function() {
         expect`\newcommand\lambda{x^2}\lambda`.not.toParse();
         expect`\newcommand\textdollar{x^2}\textdollar`.not.toParse();
         // Macro detection
-        expect`\newcommand{\foo}{1}\foo\newcommand{\foo}{2}\foo`
-            .not.toParse();
+        expect`\newcommand{\foo}{1}\foo\newcommand{\foo}{2}\foo`.not.toParse();
         // Implicit detection
         expect`\newcommand\limits{}`.not.toParse();
     });
@@ -2808,13 +2796,11 @@ describe("A macro expander", function() {
     });
 
     it("should expand \\limsup as expected", () => {
-        expect`\limsup`
-            .toParseLike`\mathop{\operatorname{lim\,sup}}\limits`;
+        expect`\limsup`.toParseLike`\mathop{\operatorname{lim\,sup}}\limits`;
     });
 
     it("should expand \\liminf as expected", () => {
-        expect`\liminf`
-            .toParseLike`\mathop{\operatorname{lim\,inf}}\limits`;
+        expect`\liminf`.toParseLike`\mathop{\operatorname{lim\,inf}}\limits`;
     });
 });
 
@@ -3135,8 +3121,7 @@ describe("Internal __* interface", function() {
 
     it("__parse renders same as renderToString", () => {
         const parsed = katex.__parse(latex);
-        expect(buildTree(parsed, latex, new Settings()).toMarkup())
-            .toEqual(rendered);
+        expect(buildTree(parsed, latex, new Settings()).toMarkup()).toEqual(rendered);
     });
 
     it("__renderToDomTree renders same as renderToString", () => {
