@@ -11,6 +11,11 @@ import {RECEIVED_COLOR, printReceived, printExpected} from 'jest-matcher-utils';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 
 /**
+ * Return the first raw string if x is tagged literal. Otherwise return x.
+ */
+export const r = x => x != null && x.hasOwnProperty('raw') ? x.raw[0] : x;
+
+/**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
  * This function is from https://github.com/facebook/jest/blob/9867e16e518d50c79
@@ -127,6 +132,7 @@ const getTree = (expr, settings, mode) => {
 
 export const expectKaTeX = (expr, settings = new Settings(), mode,
                             expectFail, expected) => {
+    expr = r(expr); // support tagging literals
     let pass = true; // whether succeeded
     let _tree;
     let error;
