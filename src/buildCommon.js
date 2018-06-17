@@ -6,8 +6,8 @@
  */
 
 import domTree from "./domTree";
-import fontMetrics from "./fontMetrics";
-import symbols from "./symbols";
+import {getCharacterMetrics} from "./fontMetrics";
+import symbols, {ligatures} from "./symbols";
 import utils from "./utils";
 import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
@@ -43,7 +43,7 @@ const lookupSymbol = function(
     }
     return {
         value: value,
-        metrics: fontMetrics.getCharacterMetrics(value, fontName, mode),
+        metrics: getCharacterMetrics(value, fontName, mode),
     };
 };
 
@@ -152,12 +152,19 @@ const mathDefault = function(
             return makeSymbol(
                 value, fontName, mode, options,
                 classes.concat("amsrm", options.fontWeight, options.fontShape));
-        } else { // if (font === "main") {
+        } else if (font === "main" || !font) {
             const fontName = retrieveTextFontName("textrm", options.fontWeight,
                   options.fontShape);
             return makeSymbol(
                 value, fontName, mode, options,
                 classes.concat(options.fontWeight, options.fontShape));
+        } else { // fonts added by plugins
+            const fontName = retrieveTextFontName(font, options.fontWeight,
+                  options.fontShape);
+            // We add font name as a css class
+            return makeSymbol(
+                value, fontName, mode, options,
+                classes.concat(fontName, options.fontWeight, options.fontShape));
         }
     } else {
         throw new Error("unexpected type: " + type + " in mathDefault");
@@ -226,7 +233,7 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     group: ParseNode<NODETYPE>,
     options: Options,
     type: "mathord" | "textord",
-): domTree.symbolNode {
+): domTree.symbolNode | domTree.documentFragment {
     const mode = group.mode;
     const value = group.value;
 
@@ -260,9 +267,19 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
                                             options.fontShape);
             fontClasses = [fontOrFamily, options.fontWeight, options.fontShape];
         }
+
         if (lookupSymbol(value, fontName, mode).metrics) {
             return makeSymbol(value, fontName, mode, options,
                 classes.concat(fontClasses));
+        } else if (ligatures.hasOwnProperty(value) &&
+                   fontName.substr(0, 10) === "Typewriter") {
+            // Deconstruct ligatures in monospace fonts (\texttt, \tt).
+            const parts = [];
+            for (let i = 0; i < value.length; i++) {
+                parts.push(makeSymbol(value[i], fontName, mode, options,
+                                      classes.concat(fontClasses)));
+            }
+            return makeFragment(parts);
         } else {
             return mathDefault(value, mode, options, classes, type);
         }
@@ -601,7 +618,7 @@ const makeVerb = function(group: ParseNode<"verb">, options: Options): string {
 };
 
 // Glue is a concept from TeX which is a flexible space between elements in
-// either a vertical or horizontal list.  In KaTeX, at least for now, it's
+// either a vertical or horizontal list. In KaTeX, at least for now, it's
 // static space between elements in a horizontal layout.
 const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
     // Make an empty span for the space
@@ -611,7 +628,7 @@ const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
     return rule;
 };
 
-// Takes an Options object, and returns the appropriate fontLookup
+// Takes font options, and returns the appropriate fontLookup name
 const retrieveTextFontName = function(
     fontFamily: string,
     fontWeight: string,
@@ -632,7 +649,7 @@ const retrieveTextFontName = function(
             baseFontName = "Typewriter";
             break;
         default:
-            throw new Error(`Invalid font provided: ${fontFamily}`);
+            baseFontName = fontFamily; // use fonts added by a plugin
     }
 
     let fontStylesName;

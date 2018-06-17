@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import ParseError from "../ParseError";
-import ParseNode from "../ParseNode";
+import ParseNode, {assertNodeType} from "../ParseNode";
 
 // Environment delimiters. HTML/MathML rendering is defined in the corresponding
 // defineEnvironment definitions.
@@ -19,7 +19,7 @@ defineFunction({
         }
         let name = "";
         for (let i = 0; i < nameGroup.value.length; ++i) {
-            name += nameGroup.value[i].value;
+            name += assertNodeType(nameGroup.value[i], "textord").value;
         }
         return new ParseNode("environment", {
             type: "environment",

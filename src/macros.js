@@ -39,6 +39,11 @@ export interface MacroContextInterface {
     expandAfterFuture(): Token;
 
     /**
+     * Recursively expand first token, then return first non-expandable token.
+     */
+    expandNextToken(): Token;
+
+    /**
      * Fully expand the given macro name and return the resulting list of
      * tokens, or return `undefined` if no such macro is defined.
      */
@@ -55,6 +60,14 @@ export interface MacroContextInterface {
      * and return the resulting array of arguments.
      */
     consumeArgs(numArgs: number): Token[][];
+
+    /**
+     * Determine whether a command is currently "defined" (has some
+     * functionality), meaning that it's a macro (in the current group),
+     * a function, a symbol, or one of the special commands listed in
+     * `implicitCommands`.
+     */
+    isDefined(name: string): boolean;
 }
 
 /** Macro tokens (in reverse order). */
@@ -118,11 +131,12 @@ defineMacro("\\TextOrMath", function(context) {
     }
 });
 
-// Basic support for global macro definitions:
-//     \gdef\macro{expansion}
-//     \gdef\macro#1{expansion}
-//     \gdef\macro#1#2{expansion}
-//     \gdef\macro#1#2#3#4#5#6#7#8#9{expansion}
+// Basic support for macro definitions:
+//     \def\macro{expansion}
+//     \def\macro#1{expansion}
+//     \def\macro#1#2{expansion}
+//     \def\macro#1#2#3#4#5#6#7#8#9{expansion}
+// Also the \gdef and \global\def equivalents
 const def = (context, global: boolean) => {
     let arg = context.consumeArgs(1)[0];
     if (arg.length !== 1) {
@@ -161,6 +175,7 @@ defineMacro("\\global", (context) => {
         throw new ParseError("Invalid command after \\global");
     }
     const command = next[0].text;
+    // TODO: Should expand command
     if (command === "\\def") {
         // \global\def is equivalent to \gdef
         return def(context, true);
@@ -168,6 +183,55 @@ defineMacro("\\global", (context) => {
         throw new ParseError(`Invalid command '${command}' after \\global`);
     }
 });
+
+// \newcommand{\macro}[args]{definition}
+// \renewcommand{\macro}[args]{definition}
+// TODO: Optional arguments: \newcommand{\macro}[args][default]{definition}
+const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
+    let arg = context.consumeArgs(1)[0];
+    if (arg.length !== 1) {
+        throw new ParseError(
+            "\\newcommand's first argument must be a macro name");
+    }
+    const name = arg[0].text;
+
+    const exists = context.isDefined(name);
+    if (exists && !existsOK) {
+        throw new ParseError(`\\newcommand{${name}} attempting to redefine ` +
+            `${name}; use \\renewcommand`);
+    }
+    if (!exists && !nonexistsOK) {
+        throw new ParseError(`\\renewcommand{${name}} when command ${name} ` +
+            `does not yet exist; use \\newcommand`);
+    }
+
+    let numArgs = 0;
+    arg = context.consumeArgs(1)[0];
+    if (arg.length === 1 && arg[0].text === "[") {
+        let argText = '';
+        let token = context.expandNextToken();
+        while (token.text !== "]" && token.text !== "EOF") {
+            // TODO: Should properly expand arg, e.g., ignore {}s
+            argText += token.text;
+            token = context.expandNextToken();
+        }
+        if (!argText.match(/^\s*[0-9]+\s*$/)) {
+            throw new ParseError(`Invalid number of arguments: ${argText}`);
+        }
+        numArgs = parseInt(argText);
+        arg = context.consumeArgs(1)[0];
+    }
+
+    // Final arg is the expansion of the macro
+    context.macros.set(name, {
+        tokens: arg,
+        numArgs,
+    });
+    return '';
+};
+defineMacro("\\newcommand", (context) => newcommand(context, false, true));
+defineMacro("\\renewcommand", (context) => newcommand(context, true, false));
+defineMacro("\\providecommand", (context) => newcommand(context, true, true));
 
 //////////////////////////////////////////////////////////////////////
 // Grouping
@@ -180,14 +244,10 @@ defineMacro("\\endgroup", "}");
 // Symbols from latex.ltx:
 // \def\lq{`}
 // \def\rq{'}
-// \def\lbrack{[}
-// \def\rbrack{]}
 // \def \aa {\r a}
 // \def \AA {\r A}
 defineMacro("\\lq", "`");
 defineMacro("\\rq", "'");
-defineMacro("\\lbrack", "[");
-defineMacro("\\rbrack", "]");
 defineMacro("\\aa", "\\r a");
 defineMacro("\\AA", "\\r A");
 
@@ -288,6 +348,11 @@ defineMacro("\\varUpsilon", "\\mathit{\\Upsilon}");
 defineMacro("\\varPhi", "\\mathit{\\Phi}");
 defineMacro("\\varPsi", "\\mathit{\\Psi}");
 defineMacro("\\varOmega", "\\mathit{\\Omega}");
+
+// \renewcommand{\colon}{\nobreak\mskip2mu\mathpunct{}\nonscript
+// \mkern-\thinmuskip{:}\mskip6muplus1mu\relax}
+defineMacro("\\colon", "\\nobreak\\mskip2mu\\mathpunct{}" +
+    "\\mathchoice{\\mkern-3mu}{\\mkern-3mu}{}{}{:}\\mskip6mu");
 
 // \newcommand{\boxed}[1]{\fbox{\m@th$\displaystyle#1$}}
 defineMacro("\\boxed", "\\fbox{\\displaystyle{#1}}");

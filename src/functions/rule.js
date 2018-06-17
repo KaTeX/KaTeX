@@ -19,7 +19,7 @@ defineFunction({
         const height = assertNodeType(args[1], "size");
         return new ParseNode("rule", {
             type: "rule",
-            shift: shift && shift.value,
+            shift: shift && assertNodeType(shift, "size").value.value,
             width: width.value.value,
             height: height.value.value,
         }, parser.mode);

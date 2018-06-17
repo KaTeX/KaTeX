@@ -9,11 +9,12 @@ import ParseError from "./ParseError";
 import ParseNode from "./ParseNode";
 
 import type Settings from "./Settings";
+import type {AnyParseNode} from "./ParseNode";
 
 /**
  * Parses an expression using a Parser, then returns the parsed result.
  */
-const parseTree = function(toParse: string, settings: Settings): ParseNode<*>[] {
+const parseTree = function(toParse: string, settings: Settings): AnyParseNode[] {
     if (!(typeof toParse === 'string' || toParse instanceof String)) {
         throw new TypeError('KaTeX can only parse string typed expression');
     }

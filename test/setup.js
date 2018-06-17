@@ -4,10 +4,10 @@
 import katex from "../katex";
 import ParseError from "../src/ParseError";
 import parseTree from "../src/parseTree";
+import Settings from "../src/Settings";
 import Warning from "./Warning";
 import stringify from 'json-stable-stringify';
 import {
-    defaultSettings,
     _getBuilt, buildAndSetResult, parseAndSetResult, stripPositions,
 } from "./helpers";
 
@@ -44,7 +44,7 @@ global.console.warn = jest.fn((warning) => {
 // Expect extensions
 
 expect.extend({
-    toParse: function(actual, settings = defaultSettings) {
+    toParse: function(actual, settings = new Settings()) {
         const result = {
             pass: true,
             message: () => `'${actual}' succeeded parsing`,
@@ -53,7 +53,7 @@ expect.extend({
         return result;
     },
 
-    toNotParse: function(actual, settings = defaultSettings) {
+    toNotParse: function(actual, settings = new Settings()) {
         const result = {
             pass: false,
             message: () =>
@@ -79,7 +79,7 @@ expect.extend({
     toFailWithParseError: function(actual, expected) {
         const prefix = "KaTeX parse error: ";
         try {
-            parseTree(actual, defaultSettings);
+            parseTree(actual, new Settings());
             return {
                 pass: false,
                 message: () => `'${actual}' parsed without error`,
@@ -115,7 +115,7 @@ expect.extend({
         }
     },
 
-    toBuild: function(actual, settings = defaultSettings) {
+    toBuild: function(actual, settings = new Settings()) {
         const result = {
             pass: true,
             message: () => `'${actual}' succeeded in building`,
@@ -124,7 +124,7 @@ expect.extend({
         return result;
     },
 
-    toNotBuild: function(actual, settings = defaultSettings) {
+    toNotBuild: function(actual, settings = new Settings()) {
         const result = {
             pass: false,
             message: () =>
@@ -147,7 +147,7 @@ expect.extend({
         return result;
     },
 
-    toParseLike: function(actual, expected, settings = defaultSettings) {
+    toParseLike: function(actual, expected, settings = new Settings()) {
         const result = {
             pass: true,
             message: () =>
@@ -174,7 +174,7 @@ expect.extend({
         return result;
     },
 
-    toBuildLike: function(actual, expected, settings = defaultSettings) {
+    toBuildLike: function(actual, expected, settings = new Settings()) {
         const result = {
             pass: true,
             message: () =>
@@ -201,7 +201,7 @@ expect.extend({
         return result;
     },
 
-    toWarn: function(actual, settings = defaultSettings) {
+    toWarn: function(actual, settings = new Settings()) {
         const result = {
             pass: false,
             message: () =>

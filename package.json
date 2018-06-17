@@ -30,7 +30,8 @@
     "eslint": "^4.14.0",
     "eslint-plugin-flowtype": "^2.40.1",
     "file-loader": "^1.1.11",
-    "flow-bin": "^0.73.0",
+    "flow-bin": "^0.74.0",
+    "husky": "^1.0.0-rc.8",
     "jest": "^23.0.1",
     "jest-serializer-html": "^5.0.0",
     "js-yaml": "^3.10.0",
@@ -41,7 +42,6 @@
     "mini-css-extract-plugin": "^0.4.0",
     "mkdirp": "^0.5.1",
     "pako": "1.0.6",
-    "pre-commit": "^1.2.2",
     "query-string": "^6.1.0",
     "rimraf": "^2.6.2",
     "selenium-webdriver": "^3.6.0",
@@ -79,12 +79,16 @@
     "dist:zip": "cd build && tar czf katex.tar.gz katex/ && zip -rq katex.zip katex/",
     "dist:dist": "rimraf dist/ && cp -r build/katex/ dist/"
   },
-  "pre-commit": [
-    "test:lint"
-  ],
   "dependencies": {
     "match-at": "^0.1.1",
     "nomnom": "^1.8.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run test:lint",
+      "post-merge": "git submodule update --init --recursive",
+      "post-checkout": "git submodule update --init --recursive"
+    }
   },
   "jest": {
     "collectCoverageFrom": [
