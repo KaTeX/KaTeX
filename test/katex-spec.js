@@ -1818,27 +1818,8 @@ describe("A markup generator", function() {
 
 describe("A parse tree generator", function() {
     it("generates a tree", function() {
-        const tree = stripPositions(katex.__parse("\\sigma^2"));
-        expect(JSON.stringify(tree)).toEqual(JSON.stringify([
-            {
-                "type": "supsub",
-                "value": {
-                    "type": "supsub",
-                    "base": {
-                        "type": "mathord",
-                        "value": "\\sigma",
-                        "mode": "math",
-                    },
-                    "sup": {
-                        "type": "textord",
-                        "value": "2",
-                        "mode": "math",
-                    },
-                    "sub": undefined,
-                },
-                "mode": "math",
-            },
-        ]));
+        const tree = stripPositions(getParsed`\sigma^2`);
+        expect(tree).toMatchSnapshot();
     });
 });
 
