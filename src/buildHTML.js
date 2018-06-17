@@ -205,7 +205,7 @@ const getOutermostNode = function(
 ): HtmlDomNode {
     if (node instanceof domTree.documentFragment ||
             node instanceof domTree.anchor ||
-            node.hasClass("enclosing")) {
+            (node instanceof domTree.span && node.hasClass("enclosing"))) {
         const children = node.children;
         if (children.length) {
             if (side === "right") {

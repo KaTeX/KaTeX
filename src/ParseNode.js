@@ -261,7 +261,7 @@ export type ParseNodeTypes = {
         type: "html",
         class?: string,
         cssId?: string,
-        body: ParseNode<*>[],
+        body: AnyParseNode[],
     |},
     "infix": {|
         type: "infix",
