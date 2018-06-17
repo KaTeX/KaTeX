@@ -18,7 +18,7 @@ export type Mode = "math" | "text";
 //                 first argument is special and the second
 //                 argument is parsed normally)
 //   - Mode: Node group parsed in given mode.
-export type ArgType = "color" | "size" | "url" | "original" | Mode;
+export type ArgType = "color" | "size" | "string" | "original" | Mode;
 
 // LaTeX display style.
 export type StyleStr = "text" | "display" | "script" | "scriptscript";

@@ -80,6 +80,10 @@ export type ParseNodeTypes = {
         type: "size",
         value: Measurement,
     |},
+    "string": {|
+        type: "string",
+        value: string,
+    |},
     "styling": {|
         type: "styling",
         style: StyleStr,
@@ -100,10 +104,6 @@ export type ParseNodeTypes = {
         type: "text",
         body: ParseNode<*>[],
         font?: string,
-    |},
-    "url": {|
-        type: "url",
-        value: string,
     |},
     "verb": {|
         type: "verb",
@@ -188,6 +188,12 @@ export type ParseNodeTypes = {
     "href": {|
         type: "href",
         href: string,
+        body: ParseNode<*>[],
+    |},
+    "html": {|
+        type: "html",
+        class?: string,
+        cssId?: string,
         body: ParseNode<*>[],
     |},
     "infix": {|

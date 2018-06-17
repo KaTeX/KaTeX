@@ -19,6 +19,7 @@ import "./functions/font";
 import "./functions/genfrac";
 import "./functions/horizBrace";
 import "./functions/href";
+import "./functions/html";
 import "./functions/kern";
 import "./functions/lap";
 import "./functions/math";

@@ -11,11 +11,16 @@ defineFunction({
     names: ["\\href"],
     props: {
         numArgs: 2,
-        argTypes: ["url", "original"],
+        argTypes: ["string", "original"],
     },
     handler: ({parser}, args) => {
         const body = args[1];
-        const href = assertNodeType(args[0], "url").value.value;
+        // hyperref package allows backslashes alone in href, but doesn't generate
+        // valid links in such cases; we interpret this as "undefiend" behaviour,
+        // and keep them as-is. Some browser will replace backslashes with
+        // forward slashes.
+        const href = assertNodeType(args[0], "string").value.value
+                .replace(/\\([#$%&~_^{}])/g, '$1');
         return new ParseNode("href", {
             type: "href",
             href: href,

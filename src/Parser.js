@@ -647,8 +647,15 @@ export default class Parser {
         if (type === "size") {
             return this.parseSizeGroup(optional);
         }
-        if (type === "url") {
-            return this.parseUrlGroup(optional);
+        if (type === "string") {
+            const res = this.parseStringGroup(type, optional, true);
+            if (!res) {
+                return null;
+            }
+            return newArgument(new ParseNode("string", {
+                type: "string",
+                value: res.text,
+            }, this.mode), res);
         }
 
         // By the time we get here, type is one of "text" or "math".
@@ -664,56 +671,29 @@ export default class Parser {
 
     /**
      * Parses a group, essentially returning the string formed by the
-     * brace-enclosed tokens plus some position information.
+     * brace-enclosed tokens plus some position information. If `braces`,
+     * nested braces are taken into consideration.
      */
     parseStringGroup(
         modeName: ArgType,  // Used to describe the mode in error messages.
         optional: boolean,
+        braces: ?boolean,
     ): ?Token {
-        if (optional && this.nextToken.text !== "[") {
+        const groupStart = optional ? "[" : "{";
+        const groupEnd = optional ? "]" : "}";
+        if (optional && this.nextToken.text !== groupStart) {
             return null;
         }
-        const outerMode = this.mode;
-        this.mode = "text";
-        this.expect(optional ? "[" : "{");
-        let str = "";
-        const firstToken = this.nextToken;
-        let lastToken = firstToken;
-        while (this.nextToken.text !== (optional ? "]" : "}")) {
-            if (this.nextToken.text === "EOF") {
-                throw new ParseError(
-                    "Unexpected end of input in " + modeName,
-                    firstToken.range(this.nextToken, str));
-            }
-            lastToken = this.nextToken;
-            str += lastToken.text;
-            this.consume();
-        }
-        this.mode = outerMode;
-        this.expect(optional ? "]" : "}");
-        return firstToken.range(lastToken, str);
-    }
 
-    /**
-     * Parses a group, essentially returning the string formed by the
-     * brace-enclosed tokens plus some position information, possibly
-     * with nested braces.
-     */
-    parseStringGroupWithBalancedBraces(
-        modeName: ArgType,  // Used to describe the mode in error messages.
-        optional: boolean,
-    ): ?Token {
-        if (optional && this.nextToken.text !== "[") {
-            return null;
-        }
         const outerMode = this.mode;
         this.mode = "text";
-        this.expect(optional ? "[" : "{");
+        this.expect(groupStart);
+
         let str = "";
         let nest = 0;
         const firstToken = this.nextToken;
         let lastToken = firstToken;
-        while (nest > 0 || this.nextToken.text !== (optional ? "]" : "}")) {
+        while ((braces && nest > 0) || this.nextToken.text !== groupEnd) {
             if (this.nextToken.text === "EOF") {
                 throw new ParseError(
                     "Unexpected end of input in " + modeName,
@@ -721,21 +701,15 @@ export default class Parser {
             }
             lastToken = this.nextToken;
             str += lastToken.text;
-            if (lastToken.text === "{") {
-                nest += 1;
-            } else if (lastToken.text === "}") {
-                if (nest <= 0) {
-                    throw new ParseError(
-                        "Unbalanced brace of input in " + modeName,
-                        firstToken.range(this.nextToken, str));
-                } else {
-                    nest -= 1;
-                }
+            if (lastToken.text === groupStart) {
+                nest++;
+            } else if (lastToken.text === groupEnd) {
+                nest--;
             }
             this.consume();
         }
         this.mode = outerMode;
-        this.expect(optional ? "]" : "}");
+        this.expect(groupEnd);
         return firstToken.range(lastToken, str);
     }
 
@@ -781,26 +755,6 @@ export default class Parser {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
         return newArgument(new ParseNode("color-token", match[0], this.mode), res);
-    }
-
-    /**
-     * Parses a url string.
-     */
-    parseUrlGroup(optional: boolean): ?ParsedArg {
-        const res = this.parseStringGroupWithBalancedBraces("url", optional);
-        if (!res) {
-            return null;
-        }
-        const raw = res.text;
-        // hyperref package allows backslashes alone in href, but doesn't generate
-        // valid links in such cases; we interpret this as "undefiend" behaviour,
-        // and keep them as-is. Some browser will replace backslashes with
-        // forward slashes.
-        const url = raw.replace(/\\([#$%&~_^{}])/g, '$1');
-        return newArgument(new ParseNode("url", {
-            type: "url",
-            value: url,
-        }, this.mode), res);
     }
 
     /**

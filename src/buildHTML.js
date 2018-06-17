@@ -164,7 +164,8 @@ export const buildExpression = function(expression, options, isRealGroup,
 // Return the outermost node of a domTree.
 const getOutermostNode = function(node, side = "right") {
     if (node instanceof domTree.documentFragment ||
-            node instanceof domTree.anchor) {
+            node instanceof domTree.anchor ||
+            node.hasClass("enclosing")) {
         if (node.children.length) {
             if (side === "right") {
                 return getOutermostNode(
