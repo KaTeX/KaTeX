@@ -55,7 +55,7 @@ describe("An ord parser", function() {
     it("should parse the right number of ords", function() {
         const parse = getParsed(expression);
 
-        expect(parse.length).toBe(expression.length);
+        expect(parse).toHaveLength(expression.length);
     });
 });
 
@@ -307,7 +307,7 @@ describe("A group parser", function() {
     it("should produce a single ord", function() {
         const parse = getParsed`{xy}`;
 
-        expect(parse.length).toBe(1);
+        expect(parse).toHaveLength(1);
 
         const ord = parse[0];
 
@@ -325,7 +325,7 @@ describe("An implicit group parser", function() {
     it("should produce a single object", function() {
         const parse = getParsed`\Large abc`;
 
-        expect(parse.length).toBe(1);
+        expect(parse).toHaveLength(1);
 
         const sizing = parse[0];
 
@@ -336,12 +336,12 @@ describe("An implicit group parser", function() {
     it("should apply only after the function", function() {
         const parse = getParsed`a \Large abc`;
 
-        expect(parse.length).toBe(2);
+        expect(parse).toHaveLength(2);
 
         const sizing = parse[1];
 
         expect(sizing.type).toEqual("sizing");
-        expect(sizing.value.value.length).toBe(3);
+        expect(sizing.value.value).toHaveLength(3);
     });
 
     it("should stop at the ends of groups", function() {
@@ -351,7 +351,7 @@ describe("An implicit group parser", function() {
         const sizing = group.value[1];
 
         expect(sizing.type).toEqual("sizing");
-        expect(sizing.value.value.length).toBe(1);
+        expect(sizing.value.value).toHaveLength(1);
     });
 
     describe("within optional groups", () => {
@@ -496,14 +496,14 @@ describe("An over parser", function() {
         const parse = getParsed(complexOver)[0];
 
         const numer = parse.value.numer;
-        expect(numer.value.length).toEqual(4);
+        expect(numer.value).toHaveLength(4);
     });
 
     it("should create a demonimator from the atoms after \\over", function() {
         const parse = getParsed(complexOver)[0];
 
         const denom = parse.value.numer;
-        expect(denom.value.length).toEqual(4);
+        expect(denom.value).toHaveLength(4);
     });
 
     it("should handle empty numerators", function() {
@@ -634,7 +634,7 @@ describe("A text parser", function() {
     it("should ignore a space before the text group", function() {
         const parse = getParsed(leadingSpaceTextExpression)[0];
         // [m, o, o]
-        expect(parse.value.body.length).toBe(3);
+        expect(parse.value.body).toHaveLength(3);
         expect(
             parse.value.body.map(function(n) { return n.value; }).join("")
         ).toBe("moo");
@@ -1001,13 +1001,13 @@ describe("A non-braced kern parser", function() {
         const abParse2 = getParsed(abKern2);
         const abParse3 = getParsed(abKern3);
 
-        expect(abParse1.length).toEqual(3);
+        expect(abParse1).toHaveLength(3);
         expect(abParse1[0].value).toEqual("a");
         expect(abParse1[2].value).toEqual("b");
-        expect(abParse2.length).toEqual(3);
+        expect(abParse2).toHaveLength(3);
         expect(abParse2[0].value).toEqual("a");
         expect(abParse2[2].value).toEqual("b");
-        expect(abParse3.length).toEqual(3);
+        expect(abParse3).toHaveLength(3);
         expect(abParse3[0].value).toEqual("a");
         expect(abParse3[2].value).toEqual("b");
     });
@@ -1031,7 +1031,7 @@ describe("A non-braced kern parser", function() {
         const abKern = "a\\mkern\t-\r1  \n mu\nb";
         const abParse = getParsed(abKern);
 
-        expect(abParse.length).toEqual(3);
+        expect(abParse).toHaveLength(3);
         expect(abParse[0].value).toEqual("a");
         expect(abParse[1].value.dimension.unit).toEqual("mu");
         expect(abParse[2].value).toEqual("b");
@@ -1167,7 +1167,7 @@ describe("A begin/end parser", function() {
 
     it("should eat a final newline", function() {
         const m3 = getParsed`\begin{matrix}a&b\\ c&d \\ \end{matrix}`[0];
-        expect(m3.value.body.length).toBe(2);
+        expect(m3.value.body).toHaveLength(2);
     });
 
     it("should grab \\arraystretch", function() {
@@ -1365,7 +1365,7 @@ describe("A style change parser", function() {
 
         const displayBody = displayNode.value.value;
 
-        expect(displayBody.length).toEqual(2);
+        expect(displayBody).toHaveLength(2);
         expect(displayBody[0].value).toEqual("e");
     });
 });
@@ -1412,7 +1412,7 @@ describe("A font parser", function() {
         expect(nestedParse.value.font).toEqual("mathbb");
         expect(nestedParse.value.type).toEqual("font");
 
-        expect(nestedParse.value.body.value.length).toEqual(4);
+        expect(nestedParse.value.body.value).toHaveLength(4);
         const bbBody = nestedParse.value.body.value;
         expect(bbBody[0].type).toEqual("mathord");
         expect(bbBody[3].type).toEqual("font");
@@ -1425,7 +1425,7 @@ describe("A font parser", function() {
         expect(colorMathbbParse.value.type).toEqual("color");
         expect(colorMathbbParse.value.color).toEqual("blue");
         const body = colorMathbbParse.value.value;
-        expect(body.length).toEqual(1);
+        expect(body).toHaveLength(1);
         expect(body[0].value.type).toEqual("font");
         expect(body[0].value.font).toEqual("mathbb");
     });
@@ -1438,7 +1438,7 @@ describe("A font parser", function() {
         const bf = getParsed`\mathbf{a\mathrm{b}c}`[0];
         expect(bf.value.type).toEqual("font");
         expect(bf.value.font).toEqual("mathbf");
-        expect(bf.value.body.value.length).toEqual(3);
+        expect(bf.value.body.value).toHaveLength(3);
         expect(bf.value.body.value[0].value).toEqual("a");
         expect(bf.value.body.value[1].value.type).toEqual("font");
         expect(bf.value.body.value[1].value.font).toEqual("mathrm");
@@ -2371,7 +2371,7 @@ describe("An aligned environment", function() {
 
     it("should not eat the last row when its first cell is empty", function() {
         const ae = getParsed`\begin{aligned}&E_1 & (1)\\&E_2 & (2)\\&E_3 & (3)\end{aligned}`[0];
-        expect(ae.value.body.length).toBe(3);
+        expect(ae.value.body).toHaveLength(3);
     });
 });
 
