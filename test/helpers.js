@@ -10,7 +10,7 @@ import {RECEIVED_COLOR, printReceived, printExpected} from 'jest-matcher-utils';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 
 export function ConsoleWarning(message) {
-    Error.captureStackTrace(this, this.constructor);
+    Error.captureStackTrace(this, global.console.warn);
     this.name = this.constructor.name;
     this.message = message;
 }
