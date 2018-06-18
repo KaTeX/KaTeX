@@ -1,5 +1,4 @@
 /* global expect: false */
-/* global jest: false */
 
 import katex from "../katex";
 import ParseError from "../src/ParseError";
@@ -9,6 +8,13 @@ import Settings from "../src/Settings";
 import diff from 'jest-diff';
 import {RECEIVED_COLOR, printReceived, printExpected} from 'jest-matcher-utils';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
+
+export function ConsoleWarning(message) {
+    Error.captureStackTrace(this, this.constructor);
+    this.name = this.constructor.name;
+    this.message = message;
+}
+Object.setPrototypeOf(ConsoleWarning.prototype, Error.prototype);
 
 /**
  * Return the first raw string if x is tagged literal. Otherwise return x.
@@ -26,7 +32,7 @@ const printActualErrorMessage = error => {
     if (error) {
         const {message, stack} = separateMessageFromStack(error.stack);
         return (
-            `Instead, it threw:\n` +
+            'Instead, it threw:\n' +
             RECEIVED_COLOR(
                 `  ${message}` +
                 formatStackTrace(
@@ -45,7 +51,7 @@ const printActualErrorMessage = error => {
             )
         );
     }
-    return `But it didn't throw anything.`;
+    return 'But it didn\'t throw anything.';
 };
 
 export const nonstrictSettings = new Settings({strict: false});
@@ -130,10 +136,10 @@ const getTree = (expr, settings, mode) => {
     return result._tree;
 };
 
-export const expectKaTeX = (expr, settings = new Settings(), mode,
-                            expectFail, expected) => {
+export const expectKaTeX = (expr, settings = new Settings(), mode, isNot,
+                            expectedError) => {
     expr = r(expr); // support tagging literals
-    let pass = true; // whether succeeded
+    let pass = expectedError == null;
     let _tree;
     let error;
     try {
@@ -141,36 +147,35 @@ export const expectKaTeX = (expr, settings = new Settings(), mode,
     } catch (e) {
         error = e;
         if (e instanceof ParseError) {
-            pass = expected !== undefined &&
-                e.message !== `KaTeX parse error: ${expected}`;
+            pass = expectedError === ParseError || (typeof expectedError ===
+                "string" && e.message === `KaTeX parse error: ${expectedError}`);
+        } else if (e instanceof ConsoleWarning) {
+            pass = expectedError === ConsoleWarning;
         } else {
-            pass = !!expectFail; // always fail if error is not ParserError
+            pass = !!isNot; // always fail
         }
     }
 
+    let expected;
+    if (expectedError == null) {
+        expected = (isNot ? 'fail ' : 'success ') + mode.noun;
+    } else {
+        expected = (isNot ? 'not throw a ' : `fail ${mode.noun} with a `) +
+            (expectedError.name || `ParseError matching "${expectedError}"`);
+    }
     return {
         pass,
-        message: expectFail
-            ? () =>
-                `Expected the expression to fail ${mode.noun} with ParseError` +
-                (expected ? ` matching ${printExpected(expected)}` : '') +
-                `:\n  ${printReceived(expr)}\n` +
-                printActualErrorMessage(error)
-            : () =>
-                `Expected the expression to ` + (expected
-                    ? `not throw ParserError matching ${printExpected(expected)}`
-                    : `success ${mode.noun}`) +
-                `:\n  ${printReceived(expr)}\n` +
-                printActualErrorMessage(error),
+        message: () => 'Expected the expression to ' + expected +
+            `:\n  ${printReceived(expr)}\n` +
+            printActualErrorMessage(error),
         _tree, // jest allows the return value of matcher to have custom properties
     };
 };
 
 export const expectEquivalent = (actual, expected, settings, mode, expand) => {
-    const actualTree = getTree(actual, settings, mode);
-    const expectedTree = getTree(expected, settings, mode);
-    const pass = JSON.stringify(stripPositions(actualTree)) ===
-        JSON.stringify(stripPositions(expectedTree));
+    const actualTree = stripPositions(getTree(actual, settings, mode));
+    const expectedTree = stripPositions(getTree(expected, settings, mode));
+    const pass = JSON.stringify(actualTree) === JSON.stringify(expectedTree);
 
     return {
         pass,
@@ -187,38 +192,5 @@ export const expectEquivalent = (actual, expected, settings, mode, expand) => {
                 `${printExpected(expected)} are not equivalent` +
                 (diffString ? `:\n\n${diffString}` : '');
             },
-    };
-};
-
-export const expectToWarn = (expr, settings) => {
-    const oldConsoleWarn = global.console.warn;
-    const mockConsoleWarn = jest.fn();
-
-    global.console.warn = mockConsoleWarn;
-    expect(expr).toBuild(settings);
-    global.console.warn = oldConsoleWarn;
-    const length = mockConsoleWarn.mock.calls.length;
-
-    return {
-        pass: length > 0,
-        message: length > 0
-            ? () => {
-                let warnings = '';
-                for (let i = 0; i < length; i++) {
-                    warnings += `  ${mockConsoleWarn.mock.calls[i][0]}`;
-                    if (i !== length - 1) {
-                        warnings += '\n';
-                    }
-                }
-
-                return `Expected the expression to not generate a warning:\n` +
-                    `  ${printReceived(expr)}\n` +
-                    `Instead, it generated:\n` +
-                    RECEIVED_COLOR(warnings);
-            }
-            : () =>
-                `Expected the expression to generate a warning:\n` +
-                `  ${printReceived(expr)}\n` +
-                `But it didn't generate any warning.`,
     };
 };

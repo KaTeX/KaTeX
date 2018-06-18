@@ -1,9 +1,10 @@
 /* global expect: false */
 
 import stringify from 'json-stable-stringify';
+import ParseError from "../src/ParseError";
 import {
-    Mode,
-    expectKaTeX, expectEquivalent, expectToWarn,
+    Mode, ConsoleWarning,
+    expectKaTeX, expectEquivalent,
 } from "./helpers";
 
 // Serializer support
@@ -30,6 +31,9 @@ const serializer = {
 
 expect.addSnapshotSerializer(serializer);
 
+// Mock console.warn to throw an error
+global.console.warn = x => { throw new ConsoleWarning(x); };
+
 // Expect extensions
 
 expect.extend({
@@ -39,15 +43,16 @@ expect.extend({
         return expectKaTeX(expr, settings, Mode.PARSE, this.isNot);
     },
 
-    toFailWithParseError: function(expr, expected) {
-        const result = expectKaTeX(expr, undefined, Mode.PARSE, !this.isNot,
-                                   expected);
-        result.pass = !result.pass; // expectKaTeX.pass is true if succeeded
-        return result;
+    toFailWithParseError: function(expr, expected = ParseError) {
+        return expectKaTeX(expr, undefined, Mode.PARSE, this.isNot, expected);
     },
 
     toBuild(expr, settings) {
         return expectKaTeX(expr, settings, Mode.BUILD, this.isNot);
+    },
+
+    toWarn(expr, settings) {
+        return expectKaTeX(expr, settings, Mode.BUILD, this.isNot, ConsoleWarning);
     },
 
     toParseLike(expr, expected, settings) {
@@ -57,6 +62,4 @@ expect.extend({
     toBuildLike(expr, expected, settings) {
         return expectEquivalent(expr, expected, settings, Mode.BUILD, this.expand);
     },
-
-    toWarn: (expr, settings) => expectToWarn(expr, settings),
 });
