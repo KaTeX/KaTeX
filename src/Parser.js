@@ -803,6 +803,14 @@ export default class Parser {
         // and keep them as-is. Some browser will replace backslashes with
         // forward slashes.
         const url = raw.replace(/\\([#$%&~_^{}])/g, '$1');
+        const protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
+        if (protocol != null && this.settings.allowedProtocols.indexOf(
+                protocol[1]) === -1) {
+            throw new ParseError('Not allowed \\href protocol', res);
+        } else if (protocol == null && this.settings.allowedProtocols.indexOf(
+                "_relative") === -1) {
+            throw new ParseError('Not allowed relative url in \\href', res);
+        }
         return newArgument(new ParseNode("url", {
             type: "url",
             value: url,
