@@ -12,6 +12,7 @@ defineFunction({
     props: {
         numArgs: 2,
         argTypes: ["string", "original"],
+        allowedInText: true,
     },
     handler: ({parser}, args) => {
         const body = args[1];
