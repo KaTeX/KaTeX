@@ -25,7 +25,7 @@ export type SettingsOptions = {
     strict?: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize?: number;
     maxExpand?: number;
-    allowedProtocols?: string[];
+    allowedProtocols?: string[] | boolean;
 };
 
 /**
@@ -47,7 +47,7 @@ class Settings {
     strict: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize: number;
     maxExpand: number;
-    allowedProtocols: string[];
+    allowedProtocols: string[] | boolean;
 
     constructor(options: SettingsOptions) {
         // allow null options

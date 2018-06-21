@@ -9,6 +9,7 @@ import {validUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
+import utils from "./utils";
 import ParseNode, {assertNodeType, checkNodeType} from "./ParseNode";
 import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer.js";
@@ -804,12 +805,10 @@ export default class Parser {
         // forward slashes.
         const url = raw.replace(/\\([#$%&~_^{}])/g, '$1');
         const protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
-        if (protocol != null && this.settings.allowedProtocols.indexOf(
-                protocol[1]) === -1) {
+        const allowed = this.settings.allowedProtocols;
+        if (typeof allowed === "boolean" ? !allowed : !utils.contains(
+                allowed,  protocol != null ? protocol[1] : "_relative")) {
             throw new ParseError('Not allowed \\href protocol', res);
-        } else if (protocol == null && this.settings.allowedProtocols.indexOf(
-                "_relative") === -1) {
-            throw new ParseError('Not allowed relative url in \\href', res);
         }
         return newArgument(new ParseNode("url", {
             type: "url",

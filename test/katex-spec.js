@@ -2427,12 +2427,18 @@ describe("An href command", function() {
         expect("\\href{ftp://x}{foo}").toParse(new Settings({
             allowedProtocols: ["ftp"],
         }));
+        expect("\\href{ftp://x}{foo}").toParse(new Settings({
+            allowedProtocols: true,
+        }));
     });
 
     it("should not allow protocols not in allowedProtocols", function() {
         expect("\\href{javascript:alert('x')}{foo}").toNotParse();
         expect("\\href{relative}{foo}").toNotParse(new Settings({
             allowedProtocols: [],
+        }));
+        expect("\\href{ftp://x}{foo}").toNotParse(new Settings({
+            allowedProtocols: false,
         }));
     });
 });
