@@ -1350,6 +1350,23 @@ describe("A TeX-compliant parser", function() {
     });
 });
 
+describe("An op symbol builder", function() {
+    it("should not fail", function() {
+        expect("\\int_i^n").toBuild();
+        expect("\\iint_i^n").toBuild();
+        expect("\\iiint_i^n").toBuild();
+        expect("\\int\nolimits_i^n").toBuild();
+        expect("\\iint\nolimits_i^n").toBuild();
+        expect("\\iiint\nolimits_i^n").toBuild();
+        expect("\\oint_i^n").toBuild();
+        expect("\\oiint_i^n").toBuild();
+        expect("\\oiiint_i^n").toBuild();
+        expect("\\oint\nolimits_i^n").toBuild();
+        expect("\\oiint\nolimits_i^n").toBuild();
+        expect("\\oiiint\nolimits_i^n").toBuild();
+    });
+});
+
 describe("A style change parser", function() {
     it("should not fail", function() {
         expect("\\displaystyle x").toParse();
