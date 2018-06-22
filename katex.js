@@ -189,4 +189,8 @@ export default {
      * adds a new macro to builtin macro list
      */
     __defineMacro: defineMacro,
+    /**
+     * Exposes the dom tree, which can be useful for type checking against nodes.
+     */
+    __domTree: domTree,
 };
