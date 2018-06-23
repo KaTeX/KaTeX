@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<!--To text this example, place this file, mhchem.js, katex.js, katex.css,
+    and auto-render.js into the same folder, and run this file.
+  -->
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>mhchem test</title>
+	<link rel="stylesheet" href="katex.css">
+    <script src="mhchem.js" type="text/javascript"></script>
+    <script src="katex.js" type="text/javascript"></script>
+    <script src="auto-render.js" type="text/javascript"></script>
+    <style type="text/css">
+      body {
+          margin: 0px;
+          padding: 0px;
+          font-size: 36px;
+      }
+
+      #test > .blue {
+          color: blue;
+      }
+    </style>
+  </head>
+  <body>
+  
+    <h1>mhchem test</h1>
+
+	<h3 id="chemical-equations-ce)">chemical equations (ce)</h3>
+
+	<p>$\ce{CO2 + C -&gt; 2 CO}$</p>
+
+	<pre><code>$\ce{CO2 + C -&gt; 2 CO}$</code></pre>
+
+	<br>
+
+	<p>$\ce{Hg^2+ -&gt;[I-] HgI2 -&gt;[I-] [Hg^{II}I4]^2-}$</p>
+
+	<pre><code>$\ce{Hg^2+ -&gt;[I-] HgI2 -&gt;[I-] [Hg^{II}I4]^2-}$</code></pre>
+
+	<br>
+
+	<p>$C_p[\ce{H2O(l)}] = \pu{75.3 J // mol K}$</p>
+
+	<pre><code>$C_p[\ce{H2O(l)}] = \pu{75.3 J // mol K}$</code></pre>
+
+	<h3 id="chemical-formulae">chemical formulae</h3>
+
+	<p>$\ce{H2O}$</p>
+
+	<pre><code>$\ce{H2O}$</code></pre>
+
+	<br>
+
+	<p>$\ce{Sb2O3}$</p>
+
+	<pre><code>$\ce{Sb2O3}$</code></pre>
+
+	<h3 id="charges">charges</h3>
+
+	<p>$\ce{H+}$</p>
+
+	<pre><code>$\ce{H+}$</code></pre>
+
+	<br>
+
+	<p>$\ce{CrO4^2-}$</p>
+
+	<pre><code>$\ce{CrO4^2-}$</code></pre>
+
+	<br>
+
+	<p>$\ce{[AgCl2]-}$</p>
+
+	<pre><code>$\ce{[AgCl2]-}$</code></pre>
+
+	<br>
+
+	<p>$\ce{Y^99+}$</p>
+
+	<pre><code>$\ce{Y^99+}$</code></pre>
+
+	<br>
+
+	<p>$\ce{Y^{99+}}$</p>
+
+	<pre><code>$\ce{Y^{99+}}$</code></pre>
+
+	<h3 id="stoichiometric-numbers">stoichiometric numbers</h3>
+
+	<p>$\ce{2 H2O}$</p>
+
+	<pre><code>$\ce{2 H2O}$</code></pre>
+
+	<br>
+
+	<p>$\ce{2H2O}$</p>
+
+	<pre><code>$\ce{2H2O}$</code></pre>
+
+	<br>
+
+	<p>$\ce{0.5 H2O}$</p>
+
+	<pre><code>$\ce{0.5 H2O}$</code></pre>
+
+	<br>
+
+	<p>$\ce{1/2 H2O}$</p>
+
+	<pre><code>$\ce{1/2 H2O}$</code></pre>
+
+	<br>
+
+	<p>$\ce{(1/2) H2O}$</p>
+
+	<pre><code>$\ce{(1/2) H2O}$</code></pre>
+
+	<p>IUPAC Green Book</p>
+
+	<br>
+
+	<p>$\ce{$n$ H2O}$</p>
+
+	<pre><code>$\ce{$n$ H2O}$</code></pre>
+
+	<h3 id="isotopes">isotopes</h3>
+
+	<p>$\ce{^{227}_{90}Th+}$</p>
+
+	<pre><code>$\ce{^{227}_{90}Th+}$</code></pre>
+
+	<br>
+
+	<p>$\ce{^227_90Th+}$</p>
+
+	<pre><code>$\ce{^227_90Th+}$</code></pre>
+
+	<br>
+
+	<p>$\ce{^{0}_{-1}n^{-}}$</p>
+
+	<pre><code>$\ce{^{0}_{-1}n^{-}}$</code></pre>
+
+	<br>
+
+	<p>$\ce{^0_-1n-}$</p>
+
+	<pre><code>$\ce{^0_-1n-}$</code></pre>
+
+	<p>It might be ambiguous whether a superscript belongs to the left or right element. There is automatic detection (digits only = mass number = belongs to right side), but to make sure you can type {} as a separator.</p>
+
+	<br>
+
+	<p>$\ce{H{}^3HO}$</p>
+
+	<pre><code>$\ce{H{}^3HO}$</code></pre>
+
+	<br>
+
+	<p>$\ce{H^3HO}$</p>
+
+	<pre><code>$\ce{H^3HO}$</code></pre>
+
+	<h3 id="reaction-arrows">reaction arrows</h3>
+
+	<p>$\ce{A -&gt; B}$</p>
+
+	<pre><code>$\ce{A -&gt; B}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A &lt;- B}$</p>
+
+	<pre><code>$\ce{A &lt;- B}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A &lt;-&gt; B}$</p>
+
+	<pre><code>$\ce{A &lt;-&gt; B}$</code></pre>
+
+	<p>not to be used according to IUPAC and ACS</p>
+
+	<br>
+
+	<p>$\ce{A &lt;--&gt; B}+$</p>
+
+	<pre><code>$\ce{A &lt;--&gt; B}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A &lt;=&gt; B}$</p>
+
+	<pre><code>$\ce{A &lt;=&gt; B}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A &lt;=&gt;&gt; B}$</p>
+
+	<pre><code>$\ce{A &lt;=&gt;&gt; B}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A &lt;&lt;=&gt; B}$</p>
+
+	<pre><code>$\ce{A &lt;&lt;=&gt; B}$</code></pre>
+
+	<p>Each arrow can take two optional arguments: one for above and one for below. The arrow arguments use the same input syntax as the \ce command.</p>
+
+	<br>
+
+	<p>$\ce{A -&gt;[H2O] B}$</p>
+
+	<p>$\ce{A -&gt;[H2O] B}$</p>
+	
+	<h3 id="chemistry">chemistry</h3>
+
+	<br>
+
+	<p>$\ce{A -&gt;[{text above}][{text below}] B}$</p>
+
+	<pre><code>$\ce{A -&gt;[{text above}][{text below}] B}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A -&gt;[$x$][$x_i$] B}$</p>
+
+	<pre><code>$\ce{A -&gt;[$x$][$x_i$] B}$</code></pre>
+
+	<br>
+
+	<h3 id="parentheses-brackets,-braces">parentheses, brackets, braces</h3>
+
+	<p>Use parentheses ( ) and brackets [ ] normally. Write braces as \{ \}.</p>
+
+	<br>
+
+	<p>$\ce{(NH4)2S}$</p>
+
+	<pre><code>$\ce{(NH4)2S}$</code></pre>
+
+	<br>
+
+	<p>$\ce{[\{(X2)3\}2]^3+}$</p>
+
+	<pre><code>$\ce{[\{(X2)3\}2]^3+}$</code></pre>
+
+	<p>For large parentheses, \left and \right macros need to be in the same math environment, so you might have to put \ce into $ into \ce, but that's fine.</p>
+
+	<br>
+
+	<p>$\ce{CH4 + 2 $\left( \ce{O2 + 79/21 N2} \right)$}$</p>
+
+	<pre><code>$\ce{CH4 + 2 $\left( \ce{O2 + 79/21 N2} \right)$}$</code></pre>
+
+	<h3 id="states-of-aggregation">states of aggregation</h3>
+
+	<p>(not fully supported by latex/mhchem yet)</p>
+
+	<p>$\ce{H2(aq)}$</p>
+
+	<pre><code>$\ce{H2(aq)}$</code></pre>
+
+	<p>IUPAC recommendation</p>
+
+	<br>
+
+	<p>$\ce{CO3^2-_{(aq)}}$</p>
+
+	<pre><code>$\ce{CO3^2-_{(aq)}}$</code></pre>
+
+	<p>not IUPAC-conform, not ACS-conform</p>
+
+	<br>
+
+	<p>$\ce{NaOH(aq,$\infty$)}$</p>
+
+	<pre><code>$\ce{NaOH(aq,$\infty$)}$</code></pre>
+
+	<h3 id="crystal-systems">crystal systems</h3>
+
+	<p>(not fully supported by latex/mhchem yet)</p>
+
+	<p>$\ce{ZnS($c$)}$</p>
+
+	<pre><code>$\ce{ZnS($c$)}$</code></pre>
+
+	<br>
+
+	<p>$\ce{ZnS(\ca$c$)}$</p>
+
+	<pre><code>$\ce{ZnS(\ca$c$)}$</code></pre>
+
+	<p>Circa, tilde</p>
+
+	<h3 id="variables-like-x-n,-2n+1">variables like x, n, 2n+1</h3>
+
+	<p>Typographical conventions say that variables are typeset in an italic font, while other entities (like chemical elements) are typeset in an upright font. mhchem tries to recognize common patterns and use the correct (italic) font, like the x and n in the following examples.</p>
+
+	<br>
+
+	<p>$\ce{NO_x}$</p>
+
+	<pre><code>$\ce{NO_x}$</code></pre>
+
+	<br>
+
+	<p>$\ce{Fe^n+}$</p>
+
+	<pre><code>$\ce{Fe^n+}$</code></pre>
+
+	<br>
+
+	<p>$\ce{x Na(NH4)HPO4 -&gt;[\Delta] (NaPO3)_x + x NH3 ^ + x H2O}$</p>
+
+	<pre><code>$\ce{x Na(NH4)HPO4 -&gt;[\Delta] (NaPO3)_x + x NH3 ^ + x H2O}$</code></pre>
+
+	<p>If a more complex term is not properly recognized, you can switch to math mode (= italics) explicitly.</p>
+
+	<br>
+
+	<h3 id="greek-characters">greek characters</h3>
+
+	<p>Just write <code>\alpha</code> etc. Typographical conventions say that variables are typeset in an italic font, while other entities (like chemical elements) are typeset in an upright font. In the following examples, the Greek character is not a variable that stands for a number, therefore an upright font should be used. Unfortunately, KaTeX does not support upright lower-case Greek characters.</p>
+
+	<br>
+
+	<p>$\ce{\mu-Cl}$</p>
+
+	<pre><code>$\ce{\mu-Cl}$</code></pre>
+
+	<br>
+
+	<p>$\ce{[Pt(\eta^2-C2H4)Cl3]-}$</p>
+
+	<pre><code>$\ce{[Pt(\eta^2-C2H4)Cl3]-}$</code></pre>
+
+	<p>Spaces after a greek character are ignored. This is standard TeX behavior. Insert {} to get the desired output.</p>
+
+	<br>
+
+	<p>$\ce{\beta +}$</p>
+
+	<pre><code>$\ce{\beta +}$</code></pre>
+
+	<br>
+
+	<p>$\ce{^40_18Ar + \gamma{} + \nu_e}$</p>
+
+	<pre><code>$\ce{^40_18Ar + \gamma{} + \nu_e}$</code></pre>
+
+	<h3 id="italic)-math">(italic) math</h3>
+
+	<p>By using <code>$...$</code> you can escape to math mode.</p>
+
+	<br>
+
+	<p>$\ce{NaOH(aq,$\infty$)}$</p>
+
+	<pre><code>$\ce{NaOH(aq,$\infty$)}$</code></pre>
+
+	<br>
+
+	<p>$\ce{Fe(CN)_{$\frac{6}{2}$}}$</p>
+
+	<pre><code>$\ce{Fe(CN)_{$\frac{6}{2}$}}$</code></pre>
+
+	<br>
+
+	<p>$\ce{X_{$i$}^{$x$}}$</p>
+
+	<pre><code>$\ce{X_{$i$}^{$x$}}$</code></pre>
+
+	<br>
+
+	<p>$\ce{X_$i$^$x$}$</p>
+
+	<pre><code>$\ce{X_$i$^$x$}$</code></pre>
+
+	<br>
+
+	<h3 id="italic-text">italic text</h3>
+
+	<p>With the same mechanism you can mimic an italic text font.</p>
+
+	<br>
+
+	<p>$\ce{$cis${-}[PtCl2(NH3)2]}$</p>
+
+	<pre><code>$\ce{$cis${-}[PtCl2(NH3)2]}$</code></pre>
+
+	<br>
+
+	<p>$\ce{CuS($hP12$)}$</p>
+
+	<pre><code>$\ce{CuS($hP12$)}$</code></pre>
+
+	<p>Pearson Symbol</p>
+
+	<p>Spaces will be ignored. Use a ~ when you need to typeset a space.</p>
+
+	<br>
+
+	<h3 id="upright-text-escape-parsing">upright text, escape parsing</h3>
+
+	<p>Enclose upright text with {...}.</p>
+
+	<br>
+
+	<p>$\ce{{Gluconic Acid} + H2O2}$</p>
+
+	<pre><code>$\ce{{Gluconic Acid} + H2O2}$</code></pre>
+
+	<br>
+
+	<p>$\ce{X_{{red}}}$</p>
+
+	<pre><code>$\ce{X_{{red}}}$</code></pre>
+
+	<p>With the same mechanism, you can escape parsing, for instance if you need a simple hyphen (that should not become a bond).</p>
+
+	<br>
+
+	<p>$\ce{{(+)}_589{-}[Co(en)3]Cl3}$</p>
+
+	<pre><code>$\ce{{(+)}_589{-}[Co(en)3]Cl3}$</code></pre>
+
+	<h3 id="bonds">bonds</h3>
+
+	<p>$\ce{C6H5-CHO}$</p>
+
+	<pre><code>$\ce{C6H5-CHO}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A-B=C#D}$</p>
+
+	<pre><code>$\ce{A-B=C#D}$</code></pre>
+
+	<p>mhchem tries to differentiate whether \ce{-} should be a bond, a charge or a hyphen.</p>
+
+	<br>
+
+	<p>$\ce{A\bond{-}B\bond{=}C\bond{#}D}$</p>
+
+	<pre><code>$\ce{A\bond{-}B\bond{=}C\bond{#}D}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A\bond{1}B\bond{2}C\bond{3}D}$</p>
+
+	<pre><code>$\ce{A\bond{1}B\bond{2}C\bond{3}D}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A\bond{~}B\bond{~-}C}$</p>
+
+	<pre><code>$\ce{A\bond{~}B\bond{~-}C}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A\bond{~--}B\bond{~=}C\bond{-~-}D}$</p>
+
+	<pre><code>$\ce{A\bond{~--}B\bond{~=}C\bond{-~-}D}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A\bond{...}B\bond{....}C}$</p>
+
+	<pre><code>$\ce{A\bond{...}B\bond{....}C}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A\bond{-&gt;}B\bond{&lt;-}C}$</p>
+
+	<pre><code>$\ce{A\bond{-&gt;}B\bond{&lt;-}C}$</code></pre>
+
+	<h3 id="addition-compounds">addition compounds</h3>
+
+	<p>$\ce{KCr(SO4)2*12H2O}$</p>
+
+	<pre><code>$\ce{KCr(SO4)2*12H2O}$</code></pre>
+
+	<br>
+
+	<p>$\ce{KCr(SO4)2.12H2O}$</p>
+
+	<pre><code>$\ce{KCr(SO4)2.12H2O}$</code></pre>
+
+	<br>
+
+	<p>$\ce{KCr(SO4)2 * 12 H2O}$</p>
+
+	<pre><code>$\ce{KCr(SO4)2 * 12 H2O}$</code></pre>
+
+	<h3 id="oxidation-states">oxidation states</h3>
+
+	<p>$\ce{Fe^{II}Fe^{III}2O4}$</p>
+
+	<pre><code>$\ce{Fe^{II}Fe^{III}2O4}$</code></pre>
+
+	<h3 id="unpaired-electrons-radical-dots">unpaired electrons, radical dots</h3>
+
+	<p>$\ce{OCO^{.-}}$</p>
+
+	<pre><code>$\ce{OCO^{.-}}$</code></pre>
+
+	<br>
+
+	<p>$\ce{NO^{(2.)-}}$</p>
+
+	<pre><code>$\ce{NO^{(2.)-}}$</code></pre>
+
+	<h3 id="krögervink-notation">kröger-vink notation</h3>
+
+	<p>$\ce{Li^x_{Li,1-2x}Mg^._{Li,x}$V$&apos;_{Li,x}Cl^x_{Cl}}$</p>
+
+	<pre><code>$\ce{Li^x_{Li,1-2x}Mg^._{Li,x}$V$&apos;_{Li,x}Cl^x_{Cl}}$</code></pre>
+
+	<br>
+
+	<p>$\ce{O&apos;&apos;_{i,x}}$</p>
+
+	<pre><code>$\ce{O&apos;&apos;_{i,x}}$</code></pre>
+
+	<br>
+
+	<p>$\ce{M^{..}_i}$</p>
+
+	<pre><code>$\ce{M^{..}_i}$</code></pre>
+
+	<br>
+
+	<p>$\ce{$V$^{4&apos;}_{Ti}}$</p>
+
+	<pre><code>$\ce{$V$^{4&apos;}_{Ti}}$</code></pre>
+
+	<br>
+
+	<p>$\ce{V_{V,1}C_{C,0.8}$V$_{C,0.2}}$</p>
+
+	<pre><code>$\ce{V_{V,1}C_{C,0.8}$V$_{C,0.2}}$</code></pre>
+
+	<p>upright V = Vanadium, italic V = vacancy</p>
+
+	<h3 id="equation-operators">equation operators</h3>
+
+	<p>$\ce{A + B}$</p>
+
+	<pre><code>$\ce{A + B}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A - B}$</p>
+
+	<pre><code>$\ce{A - B}$</code></pre>
+
+	<p>not to be confused with bonds</p>
+
+	<br>
+
+	<p>$\ce{A = B}$</p>
+
+	<pre><code>$\ce{A = B}$</code></pre>
+
+	<p>not to be confused with bonds</p>
+
+	<br>
+
+	<p>$\ce{A \pm B}$</p>
+
+	<pre><code>$\ce{A \pm B}$</code></pre>
+
+	<h3 id="precipitate-and-gas">precipitate and gas</h3>
+
+	<p>$\ce{SO4^2- + Ba^2+ -&gt; BaSO4 v}$</p>
+
+	<pre><code>$\ce{SO4^2- + Ba^2+ -&gt; BaSO4 v}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A v B (v) -&gt; B ^ B (^)}$</p>
+
+	<pre><code>$\ce{A v B (v) -&gt; B ^ B (^)}$</code></pre>
+
+	<h3 id="other-symbols-and-shortcuts">other symbols and shortcuts</h3>
+
+	<p>(not fully supported by latex/mhchem yet)</p>
+
+	<p>$\ce{NO^*}$</p>
+
+	<pre><code>$\ce{NO^*}$</code></pre>
+
+	<p>Excited state</p>
+
+	<br>
+
+	<p>$\ce{1s^2-N}$</p>
+
+	<pre><code>$\ce{1s^2-N}$</code></pre>
+
+	<p>Orbitals</p>
+
+	<br>
+
+	<p>$\ce{n-Pr}$</p>
+
+	<pre><code>$\ce{n-Pr}$</code></pre>
+
+	<br>
+
+	<p>$\ce{iPr}$</p>
+
+	<pre><code>$\ce{iPr}$</code></pre>
+
+	<br>
+
+	<p>$\ce{\ca Fe}$</p>
+
+	<pre><code>$\ce{\ca Fe}$</code></pre>
+
+	<br>
+
+	<p>$\ce{A, B, C; F}$</p>
+
+	<pre><code>$\ce{A, B, C; F}$</code></pre>
+
+	<p>Punctuation</p>
+
+	<br>
+
+	<p>$\ce{{and others}}$</p>
+
+	<pre><code>$\ce{{and others}}$</code></pre>
+
+	<h3 id="complex-examples">complex examples</h3>
+
+	<p>$\ce{Zn^2+ &lt;=&gt;[+ 2OH-][+ 2H+] $\underset{\text{amphoteres Hydroxid}}{\ce{Zn(OH)2 v}}$ &lt;=&gt;[+ 2OH-][+ 2H+] $\underset{\text{Hydroxozikat}}{\ce{[Zn(OH)4]^2-}}$}$</p>
+
+	<pre><code>$\ce{Zn^2+  &lt;=&gt;[+ 2OH-][+ 2H+]  $\underset{\text{amphoteres Hydroxid}}{\ce{Zn(OH)2 v}}$  &lt;=&gt;[+ 2OH-][+ 2H+]  $\underset{\text{Hydroxozikat}}{\ce{[Zn(OH)4]^2-}}$}$</code></pre>
+
+	<p>$\ce{$K = \frac{[\ce{Hg^2+}][\ce{Hg}]}{[\ce{Hg2^2+}]}$}$</p>
+
+	<pre><code>$\ce{$K = \frac{[\ce{Hg^2+}][\ce{Hg}]}{[\ce{Hg2^2+}]}$}$</code></pre>
+
+	<br>
+
+	<p>$\ce{$K = \ce{\frac{[Hg^2+][Hg]}{[Hg2^2+]}}$}$</p>
+
+	<pre><code>$\ce{$K = \ce{\frac{[Hg^2+][Hg]}{[Hg2^2+]}}$}$</code></pre>
+
+	<br>
+
+	<p>$\ce{Hg^2+ -&gt;[I-] $\underset{\mathrm{red}}{\ce{HgI2}}$ -&gt;[I-] $\underset{\mathrm{red}}{\ce{[Hg^{II}I4]^2-}}$}$</p>
+
+	<pre><code>$\ce{Hg^2+ -&gt;[I-]  $\underset{\mathrm{red}}{\ce{HgI2}}$  -&gt;[I-]  $\underset{\mathrm{red}}{\ce{[Hg^{II}I4]^2-}}$}$</code></pre>
+
+	<br>
+
+	<h3 id="physical-units-pu)">physical units (pu)</h3>
+
+	<p>(mathjax/katex only, not for latex/mhchem)</p>
+
+	<p>$\pu{123 kJ}$</p>
+
+	<pre><code>$\pu{123 kJ}$</code></pre>
+
+	<br>
+
+	<p>$\pu{123 mm2}$</p>
+
+	<pre><code>$\pu{123 mm2}$</code></pre>
+
+	<p>There are two conventions regarding the multiplication within units.</p>
+
+	<br>
+
+	<p>$\pu{123 J s}$</p>
+
+	<pre><code>$\pu{123 J s}$</code></pre>
+
+	<br>
+
+	<p>$\pu{123 J*s}$</p>
+
+	<pre><code>$\pu{123 J*s}$</code></pre>
+
+	<p>There are four conventions regarding divisions.</p>
+
+	<br>
+
+	<p>$\pu{123 kJ/mol}$</p>
+
+	<pre><code>$\pu{123 kJ/mol}$</code></pre>
+
+	<br>
+
+	<p>$\pu{123 kJ//mol}$</p>
+
+	<pre><code>$\pu{123 kJ//mol}$</code></pre>
+
+	<br>
+
+	<p>$\pu{123 kJ mol-1}$</p>
+
+	<pre><code>$\pu{123 kJ mol-1}$</code></pre>
+
+	<br>
+
+	<p>$\pu{123 kJ*mol-1}$</p>
+
+	<pre><code>$\pu{123 kJ*mol-1}$</code></pre>
+
+	<p>There are four main conventions for writing numbers in scientific notation.</p>
+
+	<br>
+
+	<p>$\pu{1.2e3 kJ}$</p>
+
+	<pre><code>$\pu{1.2e3 kJ}$</code></pre>
+
+	<br>
+
+	<p>$\pu{1,2e3 kJ}$</p>
+
+	<pre><code>$\pu{1,2e3 kJ}$</code></pre>
+
+	<br>
+
+	<p>$\pu{1.2E3 kJ}$</p>
+
+	<pre><code>$\pu{1.2E3 kJ}$</code></pre>
+
+	<br>
+
+	<p>$\pu{1,2E3 kJ}$</p>
+
+	<pre><code>$\pu{1,2E3 kJ}$</code></pre>
+
+	<p>If you need more control than is offered here, take a look at the siunitx extension.</p>
+
+    <script>
+      renderMathInElement(document.body, {delimiters:[
+				{left: "$$", right: "$$", display: true},
+				{left: "$", right: "$", display: false},
+				{left: "\\(", right: "\\)", display: false},
+				{left: "\\[", right: "\\]", display: true}
+			]});
+    </script>
+  </body>
+</html>
