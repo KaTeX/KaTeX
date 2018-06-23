@@ -12,7 +12,6 @@
  * kinds.
  */
 
-import matchAt from "match-at";
 import ParseError from "./ParseError";
 import SourceLocation from "./SourceLocation";
 import {LexerInterface, Token} from "./Token";
@@ -44,8 +43,7 @@ const controlWordWhitespaceRegex = new RegExp(
 const combiningDiacriticalMarkString = "[\u0300-\u036f]";
 export const combiningDiacriticalMarksEndRegex =
     new RegExp(`${combiningDiacriticalMarkString}+$`);
-const tokenRegex = new RegExp(
-    `(${spaceRegexString}+)|` +                       // whitespace
+const tokenRegexString = `(${spaceRegexString}+)|` +  // whitespace
     `(${commentRegexString}` +                        // comments
     "|[!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
     `${combiningDiacriticalMarkString}*` +            // ...plus accents
@@ -55,10 +53,8 @@ const tokenRegex = new RegExp(
     "|\\\\verb([^*a-zA-Z]).*?\\4" +                   // \verb unstarred
     `|${controlWordWhitespaceRegexString}` +          // \macroName + spaces
     `|${controlSymbolRegexString}` +                  // \\, \', etc.
-    ")"
-);
+    ")";
 
-// tokenRegex has no ^ marker, as required by matchAt.
 // These regexs are for matching results from tokenRegex,
 // so they do have ^ markers.
 export const controlWordRegex = new RegExp(`^${controlWordRegexString}`);
@@ -67,12 +63,12 @@ const commentRegex = new RegExp(`^${commentRegexString}`);
 /** Main Lexer class */
 export default class Lexer implements LexerInterface {
     input: string;
-    pos: number;
+    tokenRegex: RegExp;
 
     constructor(input: string) {
         // Separate accents from characters
         this.input = input;
-        this.pos = 0;
+        this.tokenRegex = new RegExp(tokenRegexString, 'g');
     }
 
     /**
@@ -80,20 +76,17 @@ export default class Lexer implements LexerInterface {
      */
     lex(): Token {
         const input = this.input;
-        const pos = this.pos;
+        const pos = this.tokenRegex.lastIndex;
         if (pos === input.length) {
             return new Token("EOF", new SourceLocation(this, pos, pos));
         }
-        const match = matchAt(tokenRegex, input, pos);
+        const match = this.tokenRegex.exec(input);
         if (match === null) {
             throw new ParseError(
                 `Unexpected character: '${input[pos]}'`,
                 new Token(input[pos], new SourceLocation(this, pos, pos + 1)));
         }
         let text = match[2] || " ";
-        const start = this.pos;
-        this.pos += match[0].length;
-        const end = this.pos;
 
         // Trim any trailing whitespace from control word match
         const controlMatch = text.match(controlWordWhitespaceRegex);
@@ -104,7 +97,8 @@ export default class Lexer implements LexerInterface {
         if (commentRegex.test(text)) {
             return this.lex();
         } else {
-            return new Token(text, new SourceLocation(this, start, end));
+            return new Token(text, new SourceLocation(this, pos,
+                this.tokenRegex.lastIndex));
         }
     }
 }

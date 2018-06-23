@@ -80,7 +80,6 @@
     "dist:dist": "rimraf dist/ && cp -r build/katex/ dist/"
   },
   "dependencies": {
-    "match-at": "^0.1.1",
     "nomnom": "^1.8.1"
   },
   "husky": {
