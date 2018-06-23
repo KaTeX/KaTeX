@@ -627,10 +627,10 @@ defineMacro("\\@hspacer", "\\rule{0pt}{0pt}\\hskip #1\\relax");
 //////////////////////////////////////////////////////////////////////
 // mhchem
 
-const mhChemExpansion = function(context, fName: "ce"|"pu"): string {
+const mhChemExpansion = function(context, fName: "ce" | "pu"): string {
     // Functions \ce and \pu are from the mhchem extension.
     // $FlowFixMe
-    if (typeof mhchem != "object") {
+    if (typeof mhchem !== "object") {
         throw new ParseError("\\" + fName + " is not supported. The " +
         "mhchem extension is missing.");
     }
@@ -639,12 +639,12 @@ const mhChemExpansion = function(context, fName: "ce"|"pu"): string {
     const args = context.consumeArgs(1)[0];
     let str = "";
     for (let i = args.length - 1; i >= 0; i--) {
-      str += args[i].text;
-      if (args[i].text.charAt(0) === "\\") {
-          str += " ";  // Separate functions from text.
-      }
-      // Eliminate spaces between any function and {
-      str = str.replace(/\s(?=\{)/g, "");
+        str += args[i].text;
+        if (args[i].text.charAt(0) === "\\") {
+            str += " ";  // Separate functions from text.
+        }
+        // Eliminate spaces between any function and {
+        str = str.replace(/\s(?=\{)/g, "");
     }
 
     // Call the mhchem extension.

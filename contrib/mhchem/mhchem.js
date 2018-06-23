@@ -1579,6 +1579,6 @@ var mhchem = (function () {
 
 return {
   expand: chemParse,
-}
+};
 
 })();
