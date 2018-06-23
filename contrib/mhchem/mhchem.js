@@ -32,16 +32,16 @@
 //   - use '' for identifiers that can be minified/uglified
 //   - use "" for strings that need to stay untouched
 
-const mhchem = (function () {
+var mhchem = (function () {
 
   //
   //  This is the main function for handing the \ce and \pu commands.
   //  It takes the argument to \ce or \pu and returns the corresponding TeX string.
   //
 
-  const chemParse = (str, stateMachine) => {
+  var chemParse = function (str, stateMachine) {
     try {
-      const tex = texify.go(mhchemParser.go(str, stateMachine));
+      var tex = texify.go(mhchemParser.go(str, stateMachine));
       return {"expansion": tex, "errorMsg": ""};
     } catch (ex) {
       return {"expansion": "", "errorMsg": ex};
