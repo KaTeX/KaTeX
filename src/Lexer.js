@@ -52,8 +52,7 @@ const tokenRegexString = `(${spaceRegexString}+)|` +  // whitespace
     "|\\\\verb\\*([^]).*?\\3" +                       // \verb*
     "|\\\\verb([^*a-zA-Z]).*?\\4" +                   // \verb unstarred
     `|${controlWordWhitespaceRegexString}` +          // \macroName + spaces
-    `|${controlSymbolRegexString}` +                  // \\, \', etc.
-    ")";
+    `|${controlSymbolRegexString})`;                  // \\, \', etc.
 
 // These regexs are for matching results from tokenRegex,
 // so they do have ^ markers.
