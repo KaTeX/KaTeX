@@ -30,10 +30,6 @@ const targets /*: Array<Target> */ = [
         entry: './contrib/copy-tex/copy-tex.js',
     },
     {
-        name: 'contrib/mhchem',
-        entry: './contrib/mhchem/mhchem.js',
-    },
-    {
         name: 'contrib/mathtex-script-type',
         entry: './contrib/mathtex-script-type/mathtex-script-type.js',
     },
