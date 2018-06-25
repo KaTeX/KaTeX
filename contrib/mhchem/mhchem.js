@@ -32,6 +32,22 @@
 //   - use '' for identifiers that can be minified/uglified
 //   - use "" for strings that need to stay untouched
 
+
+// Add \ce, \pu, and \tripledash to the KaTeX macros.
+
+katex.__defineMacro("\\ce", function(context) {
+  return mhchem.expand(context.consumeArgs(1)[0], "ce")
+});
+
+katex.__defineMacro("\\pu", function(context) {
+  return mhchem.expand(context.consumeArgs(1)[0], "pu");
+});
+
+//  Needed for \bond for the ~ forms
+katex.__defineMacro("\\tripledash", "\\vphantom{-}\\raisebox{2mu}{$\\mkern2mu"
+  + "\\tiny\\text{-}\\mkern1mu\\text{-}\\mkern1mu\\text{-}\\mkern2mu$}");
+
+
 var mhchem = (function () {
 
   //
@@ -39,13 +55,19 @@ var mhchem = (function () {
   //  It takes the argument to \ce or \pu and returns the corresponding TeX string.
   //
 
-  var chemParse = function (str, stateMachine) {
-    try {
+  var chemParse = function (tokens, stateMachine) {
+    // Recreate the argument string from KaTeX's array of tokens.
+    var str = "";
+    for (var i = tokens.length - 1; i >= 0; i--) {
+        str += tokens[i].text;
+        if (tokens[i].text.charAt(0) === "\\") {
+            str += " ";  // Separate functions from text.
+        }
+        // Eliminate spaces between any function and {
+        str = str.replace(/\s(?=\{)/g, "");
+    }
       var tex = texify.go(mhchemParser.go(str, stateMachine));
-      return {"expansion": tex, "errorMsg": ""};
-    } catch (ex) {
-      return {"expansion": "", "errorMsg": ex};
-    }    
+      return tex;
   };
 
   //
@@ -1544,7 +1566,7 @@ var mhchem = (function () {
       "v": " \\downarrow{} ",
       "(v)": " \\downarrow{} ",
       "^": " \\uparrow{} ",
-      "(^)": " \\uparrow{} "
+      "(^)": " \\uparrow{} ",
     },
 
     go: function (input, isInner) {
@@ -1574,7 +1596,7 @@ var mhchem = (function () {
     },
     go2: function(input) {
       return this.go(input, true);
-    }
+    },
   };
 
 return {
