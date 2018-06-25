@@ -190,7 +190,7 @@ export default {
      */
     __defineMacro: defineMacro,
     /**
-     * Exposes the dom tree, which can be useful for type checking against nodes.
+     * Expose the dom tree node types, which can be useful for type checking nodes.
      *
      * NOTE: This method is not currently recommended for public use.
      * The internal tree representation is unstable and is very likely
