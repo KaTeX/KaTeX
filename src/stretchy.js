@@ -153,7 +153,7 @@ const katexImagesData: {
     // In mhchem.sty, min-length is 2.0em. But these arrows might appear in the
     // document as \xrightarrow or \xrightleftharpoons. Those have
     // min-length = 1.75em, so we set min-length on these next three to match.
-    xrightleftarrows: [["baraboveleftarrow", "rightarrowabovebar"], 1.75, 901],
+    xrightleftarrows: [["baraboveleftarrow", "rightarrowabovebar"], 1.75, 667],
     xrightequilibrium: [["baraboveshortleftharpoon",
         "rightharpoonaboveshortbar"], 1.75, 716],
     xleftequilibrium: [["shortbaraboveleftharpoon",
