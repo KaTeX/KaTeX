@@ -27,7 +27,7 @@
     "benchmark": "^2.1.4",
     "check-dependencies": "^1.1.0",
     "css-loader": "^0.28.11",
-    "eslint": "^4.14.0",
+    "eslint": "^5.0.0",
     "eslint-plugin-flowtype": "^2.40.1",
     "file-loader": "^1.1.11",
     "flow-bin": "^0.75.0",
