@@ -189,4 +189,12 @@ export default {
      * adds a new macro to builtin macro list
      */
     __defineMacro: defineMacro,
+    /**
+     * Expose the dom tree node types, which can be useful for type checking nodes.
+     *
+     * NOTE: This method is not currently recommended for public use.
+     * The internal tree representation is unstable and is very likely
+     * to change. Use at your own risk.
+     */
+    __domTree: domTree,
 };
