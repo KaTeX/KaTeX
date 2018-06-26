@@ -806,8 +806,8 @@ export default class Parser {
         const url = raw.replace(/\\([#$%&~_^{}])/g, '$1');
         const protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
         const allowed = this.settings.allowedProtocols;
-        if (typeof allowed === "boolean" ? !allowed : !utils.contains(
-                allowed,  protocol != null ? protocol[1] : "_relative")) {
+        if (!utils.contains(allowed,  "*") && !utils.contains(allowed,
+                protocol != null ? protocol[1] : "_relative")) {
             throw new ParseError('Not allowed \\href protocol', res);
         }
         return newArgument(new ParseNode("url", {

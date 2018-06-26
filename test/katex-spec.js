@@ -2445,7 +2445,7 @@ describe("An href command", function() {
             allowedProtocols: ["ftp"],
         }));
         expect("\\href{ftp://x}{foo}").toParse(new Settings({
-            allowedProtocols: true,
+            allowedProtocols: ["*"],
         }));
     });
 
@@ -2453,9 +2453,6 @@ describe("An href command", function() {
         expect("\\href{javascript:alert('x')}{foo}").toNotParse();
         expect("\\href{relative}{foo}").toNotParse(new Settings({
             allowedProtocols: [],
-        }));
-        expect("\\href{ftp://x}{foo}").toNotParse(new Settings({
-            allowedProtocols: false,
         }));
     });
 });
