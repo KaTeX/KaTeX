@@ -80,7 +80,7 @@ export default class Lexer implements LexerInterface {
             return new Token("EOF", new SourceLocation(this, pos, pos));
         }
         const match = this.tokenRegex.exec(input);
-        if (match === null) {
+        if (match === null || match.index !== pos) {
             throw new ParseError(
                 `Unexpected character: '${input[pos]}'`,
                 new Token(input[pos], new SourceLocation(this, pos, pos + 1)));
