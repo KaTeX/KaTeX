@@ -1,4 +1,3 @@
-/* eslint-disable */
 /* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
 /* vim: set ts=2 et sw=2 tw=80: */
 
@@ -59,16 +58,18 @@ var mhchem = (function () {
   var chemParse = function (tokens, stateMachine) {
     // Recreate the argument string from KaTeX's array of tokens.
     var str = "";
+    var expectedLoc = tokens[tokens.length - 1].loc.start
     for (var i = tokens.length - 1; i >= 0; i--) {
-        str += tokens[i].text;
-        if (tokens[i].text.charAt(0) === "\\") {
-            str += " ";  // Separate functions from text.
-        }
-        // Eliminate spaces between any function and {
-        str = str.replace(/\s(?=\{)/g, "");
+	  if(tokens[i].loc.start > expectedLoc) {
+        // context.consumeArgs has eaten a space.
+        str += " ";
+        expectedLoc = tokens[i].loc.start;
+      }
+      str += tokens[i].text;
+      expectedLoc += tokens[i].text.length;
     }
-      var tex = texify.go(mhchemParser.go(str, stateMachine));
-      return tex;
+    var tex = texify.go(mhchemParser.go(str, stateMachine));
+    return tex;
   };
 
   //
