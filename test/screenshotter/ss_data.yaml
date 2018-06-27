@@ -62,7 +62,9 @@ BinCancellation: |
     \end{array}
 BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}
 BoldSpacing: \mathbf{A}^2+\mathbf{B}_3*\mathscr{C}'
-BoldSymbol: \sum_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\omega}+ \int_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\Omega}+\boldsymbol{Ax2k\omega\Omega\imath+}
+BoldSymbol: |
+  \sum_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\omega}+ \int_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\Omega}+\boldsymbol{Ax2k\omega\Omega\imath+} \\
+  x \boldsymbol{+} y \boldsymbol{=} z
 Boxed: \boxed{F=ma} \quad \boxed{ac}\color{magenta}{\boxed{F}}\boxed{F=mg}
 Cases: |
     f(a,b)=\begin{cases}
@@ -134,6 +136,12 @@ GroupMacros:
         \endExp: \egroup
     tex: \startExp a+b\endExp
 HorizontalBraces: \overbrace{\displaystyle{\oint_S{\vec E\cdot\hat n\,\mathrm d a}}}^\text{emf} = \underbrace{\frac{q_{\text{enc}}}{\varepsilon_0}}_{\text{charge}}
+Integrands: |
+    \begin{array}{l}
+        \displaystyle \int + \oint + \iint + \oiint_i^n \\[0.6em]
+        \displaystyle \iiint + \oiiint + \textstyle \int + \oint_i^n \\[0.6em]
+        \iint + \oiint + \iiint + \oiiint
+    \end{array}
 KaTeX:
     tex: \KaTeX
     nolatex: \KaTeX not supported by LaTeX
@@ -261,7 +269,10 @@ OverUnderset: |
     a+b+c+d\overset{b+c=0}\longrightarrow a+d\\
     \overset { x = y } { \sqrt { a b } }
     \end{array}
-Phantom: \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x} \left(\vphantom{\int_t} zzz \right) \left( X \hphantom{\frac{\frac X X}{X}} \right)
+Phantom: \begin{array}{l}
+            \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x} \left(\vphantom{\int_t} zzz \right) \left( X \hphantom{\frac{\frac X X}{X}} \right)\\
+            \text{a \phantom{123} b \hphantom{45678} c \vphantom{101112} d}
+         \end{array}
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
 Raisebox: \frac{a}{a\raisebox{0.5em}{b}} \cdot \frac{a\raisebox{-0.5em}{b}}{a} \cdot \sqrt{a\raisebox{0.5em}{b}} \cdot \sqrt{a\raisebox{-0.5em}{b}} \cdot \sqrt{a\raisebox{0.5em}{b}\raisebox{-0.5em}{b}}

@@ -101,6 +101,13 @@ const renderMathInElement = function(elem, options) {
     }
 
     const optionsCopy = Object.assign({}, defaultAutoRenderOptions, options);
+
+    // Enable sharing of global macros defined via `\gdef` between different
+    // math elements within a single call to `renderMathInElement`.
+    if (!optionsCopy.macros) {
+        optionsCopy.macros = {};
+    }
+
     renderElem(elem, optionsCopy);
 };
 

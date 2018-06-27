@@ -12,6 +12,7 @@ defineFunction({
     names: ["\\phantom"],
     props: {
         numArgs: 1,
+        allowedInText: true,
     },
     handler: ({parser}, args) => {
         const body = args[0];
@@ -42,6 +43,7 @@ defineFunction({
     names: ["\\hphantom"],
     props: {
         numArgs: 1,
+        allowedInText: true,
     },
     handler: ({parser}, args) => {
         const body = args[0];
@@ -84,6 +86,7 @@ defineFunction({
     names: ["\\vphantom"],
     props: {
         numArgs: 1,
+        allowedInText: true,
     },
     handler: ({parser}, args) => {
         const body = args[0];

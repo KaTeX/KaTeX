@@ -135,6 +135,13 @@ const isCharacterBox = function(group: AnyParseNode): boolean {
         baseElem.type === "punct";
 };
 
+export const assert = function<T>(value: ?T): T {
+    if (!value) {
+        throw new Error('Expected non-null, but got ' + String(value));
+    }
+    return value;
+};
+
 export default {
     contains,
     deflt,

@@ -2,6 +2,7 @@
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
+/* global beforeAll: false */
 
 import buildMathML from "../src/buildMathML";
 import buildTree from "../src/buildTree";
@@ -1410,6 +1411,23 @@ describe("A TeX-compliant parser", function() {
     });
 });
 
+describe("An op symbol builder", function() {
+    it("should not fail", function() {
+        expect("\\int_i^n").toBuild();
+        expect("\\iint_i^n").toBuild();
+        expect("\\iiint_i^n").toBuild();
+        expect("\\int\nolimits_i^n").toBuild();
+        expect("\\iint\nolimits_i^n").toBuild();
+        expect("\\iiint\nolimits_i^n").toBuild();
+        expect("\\oint_i^n").toBuild();
+        expect("\\oiint_i^n").toBuild();
+        expect("\\oiiint_i^n").toBuild();
+        expect("\\oint\nolimits_i^n").toBuild();
+        expect("\\oiint\nolimits_i^n").toBuild();
+        expect("\\oiiint\nolimits_i^n").toBuild();
+    });
+});
+
 describe("A style change parser", function() {
     it("should not fail", function() {
         expect("\\displaystyle x").toParse();
@@ -1518,6 +1536,12 @@ describe("A font parser", function() {
 
     it("should have the correct greediness", function() {
         expect("e^\\mathbf{x}").toParse();
+    });
+
+    it("\\boldsymbol should inherit mbin/mrel from argument", () => {
+        const built = _getBuilt("a\\boldsymbol{}b\\boldsymbol{=}c" +
+            "\\boldsymbol{+}d\\boldsymbol{++}e\\boldsymbol{xyz}f");
+        expect(built).toMatchSnapshot();
     });
 });
 
@@ -3250,5 +3274,41 @@ describe("Internal __* interface", function() {
         const renderedSansMathML = rendered.replace(
             /<span class="katex-mathml">.*?<\/span>/, '');
         expect(tree.toMarkup()).toEqual(renderedSansMathML);
+    });
+});
+
+describe("Extending katex by new fonts and symbols", function() {
+    beforeAll(() => {
+        const fontName = "mockEasternArabicFont";
+        // add eastern arabic numbers to symbols table
+        // these symbols are ۰۱۲۳۴۵۶۷۸۹ and ٠١٢٣٤٥٦٧٨٩
+        for (let number = 0; number <= 9; number++) {
+            const persianNum = String.fromCharCode(0x0660 + number);
+            katex.__defineSymbol(
+                "math", fontName, "textord", persianNum, persianNum);
+            const arabicNum = String.fromCharCode(0x06F0 + number);
+            katex.__defineSymbol(
+                "math", fontName, "textord", arabicNum, arabicNum);
+        }
+    });
+    it("should throw on rendering new symbols with no font metrics", () => {
+        // Lets parse 99^11 in eastern arabic
+        const errorMessage = "Font metrics not found for font: mockEasternArabicFont-Regular.";
+        expect(() => {
+            katex.__renderToDomTree("۹۹^{۱۱}", strictSettings);
+        }).toThrow(errorMessage);
+    });
+    it("should add font metrics to metrics map and render successfully", () => {
+        const mockMetrics = {};
+        // mock font metrics for the symbols that we added previously
+        for (let number = 0; number <= 9; number++) {
+            mockMetrics[0x0660 + number] = [-0.00244140625, 0.6875, 0, 0];
+            mockMetrics[0x06F0 + number] = [-0.00244140625, 0.6875, 0, 0];
+        }
+        katex.__setFontMetrics('mockEasternArabicFont-Regular', mockMetrics);
+        expect("۹۹^{۱۱}").toBuild();
+    });
+    it("Add new font class to new extended symbols", () => {
+        expect(katex.renderToString("۹۹^{۱۱}")).toMatchSnapshot();
     });
 });
