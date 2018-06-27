@@ -25,6 +25,7 @@ export type SettingsOptions = {
     strict?: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize?: number;
     maxExpand?: number;
+    allowedProtocols?: string[];
 };
 
 /**
@@ -46,6 +47,7 @@ class Settings {
     strict: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize: number;
     maxExpand: number;
+    allowedProtocols: string[];
 
     constructor(options: SettingsOptions) {
         // allow null options
@@ -58,6 +60,8 @@ class Settings {
         this.strict = utils.deflt(options.strict, "warn");
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
         this.maxExpand = Math.max(0, utils.deflt(options.maxExpand, 1000));
+        this.allowedProtocols = utils.deflt(options.allowedProtocols,
+            ["http", "https", "mailto", "_relative"]);
     }
 
     /**

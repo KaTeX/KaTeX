@@ -2468,6 +2468,23 @@ describe("An href command", function() {
         const markup = katex.renderToString("\\href{http://example.com/}{example here}");
         expect(markup).toContain("<a href=\"http://example.com/\">");
     });
+
+    it("should allow protocols in allowedProtocols", function() {
+        expect("\\href{relative}{foo}").toParse();
+        expect("\\href{ftp://x}{foo}").toParse(new Settings({
+            allowedProtocols: ["ftp"],
+        }));
+        expect("\\href{ftp://x}{foo}").toParse(new Settings({
+            allowedProtocols: ["*"],
+        }));
+    });
+
+    it("should not allow protocols not in allowedProtocols", function() {
+        expect("\\href{javascript:alert('x')}{foo}").toNotParse();
+        expect("\\href{relative}{foo}").toNotParse(new Settings({
+            allowedProtocols: [],
+        }));
+    });
 });
 
 describe("A parser that does not throw on unsupported commands", function() {
