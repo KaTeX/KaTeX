@@ -113,7 +113,11 @@ ExtensibleArrows: |
         \xrightleftharpoons[ab]{ABC} + \xhookrightarrow[ab]{ABC} \\
         \xtwoheadrightarrow{ABC} + \frac{\xrightarrow[ab]{ABC}}{\xrightarrow[ab]{ABC}} + \left\lvert\xrightarrow[ab]{ABC}\right\rvert
     \end{array}
-FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}\; \cfrac{1}{1+\cfrac{1}{x}}
+FractionTest: |
+    \begin{array}{l}
+        \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}\; \cfrac{1}{1+\cfrac{1}{x}} \\[2.5em]
+        {a \brace b} \; {a \brack b}
+    \end{array}
 Functions: \sin\cos\tan\ln\log
 Gathered: |
     \begin{gathered}

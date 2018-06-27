@@ -15,6 +15,7 @@ defineFunction({
         "\\cfrac", "\\dfrac", "\\frac", "\\tfrac",
         "\\dbinom", "\\binom", "\\tbinom",
         "\\\\atopfrac", // can’t be entered directly
+        "\\\\bracefrac", "\\\\brackfrac",   // ditto
     ],
     props: {
         numArgs: 2,
@@ -44,6 +45,16 @@ defineFunction({
                 hasBarLine = false;
                 leftDelim = "(";
                 rightDelim = ")";
+                break;
+            case "\\\\bracefrac":
+                hasBarLine = false;
+                leftDelim = "\\{";
+                rightDelim = "\\}";
+                break;
+            case "\\\\brackfrac":
+                hasBarLine = false;
+                leftDelim = "[";
+                rightDelim = "]";
                 break;
             default:
                 throw new Error("Unrecognized genfrac command");
@@ -272,7 +283,7 @@ defineFunction({
 // immediately by one of the variants above.
 defineFunction({
     type: "infix",
-    names: ["\\over", "\\choose", "\\atop"],
+    names: ["\\over", "\\choose", "\\atop", "\\brace", "\\brack"],
     props: {
         numArgs: 0,
         infix: true,
@@ -288,6 +299,12 @@ defineFunction({
                 break;
             case "\\atop":
                 replaceWith = "\\\\atopfrac";
+                break;
+            case "\\brace":
+                replaceWith = "\\\\bracefrac";
+                break;
+            case "\\brack":
+                replaceWith = "\\\\brackfrac";
                 break;
             default:
                 throw new Error("Unrecognized infix genfrac command");
