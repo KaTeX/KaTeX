@@ -113,7 +113,11 @@ ExtensibleArrows: |
         \xrightleftharpoons[ab]{ABC} + \xhookrightarrow[ab]{ABC} \\
         \xtwoheadrightarrow{ABC} + \frac{\xrightarrow[ab]{ABC}}{\xrightarrow[ab]{ABC}} + \left\lvert\xrightarrow[ab]{ABC}\right\rvert
     \end{array}
-FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}\; \cfrac{1}{1+\cfrac{1}{x}}
+FractionTest: |
+    \begin{array}{l}
+        \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}\; \cfrac{1}{1+\cfrac{1}{x}} \\[2.5em]
+        {a \brace b} \; {a \brack b}
+    \end{array}
 Functions: \sin\cos\tan\ln\log
 Gathered: |
     \begin{gathered}
@@ -265,7 +269,10 @@ OverUnderset: |
     a+b+c+d\overset{b+c=0}\longrightarrow a+d\\
     \overset { x = y } { \sqrt { a b } }
     \end{array}
-Phantom: \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x} \left(\vphantom{\int_t} zzz \right) \left( X \hphantom{\frac{\frac X X}{X}} \right)
+Phantom: \begin{array}{l}
+            \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x} \left(\vphantom{\int_t} zzz \right) \left( X \hphantom{\frac{\frac X X}{X}} \right)\\
+            \text{a \phantom{123} b \hphantom{45678} c \vphantom{101112} d}
+         \end{array}
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
 Raisebox: \frac{a}{a\raisebox{0.5em}{b}} \cdot \frac{a\raisebox{-0.5em}{b}}{a} \cdot \sqrt{a\raisebox{0.5em}{b}} \cdot \sqrt{a\raisebox{-0.5em}{b}} \cdot \sqrt{a\raisebox{0.5em}{b}\raisebox{-0.5em}{b}}

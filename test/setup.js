@@ -19,9 +19,17 @@ const typeFirstCompare = (a, b) => {
     }
 };
 
+const regExpReplacer = (key, value) => {
+    return value instanceof RegExp ? {lastIndex: value.lastIndex} : value;
+};
+
 const serializer = {
     print(val) {
-        return stringify(val, {cmp: typeFirstCompare, space: '  '});
+        return stringify(val, {
+            cmp: typeFirstCompare,
+            space: '  ',
+            replacer: regExpReplacer,
+        });
     },
     test(val) {
         // Leave strings (e.g. XML) to other serializers
