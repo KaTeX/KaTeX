@@ -4,8 +4,6 @@
 [include]
 
 [libs]
-flow-typed
-./node_modules/stylelint/decls
 
 [lints]
 
