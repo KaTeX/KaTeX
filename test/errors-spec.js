@@ -285,9 +285,9 @@ describe("Lexer:", function() {
 
     describe("#_innerLex", function() {
         it("rejects lone surrogate char", function() {
-            expect("\udcba").toFailWithParseError(
+            expect("\udcba ").toFailWithParseError(
                    "Unexpected character: '\udcba' at position 1:" +
-                    " \udcba\u0332");
+                    " \udcba\u0332 ");
         });
         it("rejects lone backslash at end of input", function() {
             expect("\\").toFailWithParseError(
