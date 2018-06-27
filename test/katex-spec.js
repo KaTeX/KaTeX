@@ -477,13 +477,17 @@ describe("A frac parser", function() {
     });
 });
 
-describe("An over parser", function() {
+describe("An over/brace/brack parser", function() {
     const simpleOver = "1 \\over x";
     const complexOver = "1+2i \\over 3+4i";
+    const braceFrac = "a+b \\brace c+d";
+    const brackFrac = "a+b \\brack c+d";
 
     it("should not fail", function() {
         expect(simpleOver).toParse();
         expect(complexOver).toParse();
+        expect(braceFrac).toParse();
+        expect(brackFrac).toParse();
     });
 
     it("should produce a frac", function() {
@@ -500,6 +504,22 @@ describe("An over parser", function() {
         expect(parse.type).toEqual("genfrac");
         expect(parse.value.numer).toBeDefined();
         expect(parse.value.denom).toBeDefined();
+
+        const parseBraceFrac = getParsed(braceFrac)[0];
+
+        expect(parseBraceFrac.type).toEqual("genfrac");
+        expect(parseBraceFrac.value.numer).toBeDefined();
+        expect(parseBraceFrac.value.denom).toBeDefined();
+        expect(parseBraceFrac.value.leftDelim).toBeDefined();
+        expect(parseBraceFrac.value.rightDelim).toBeDefined();
+
+        const parseBrackFrac = getParsed(brackFrac)[0];
+
+        expect(parseBrackFrac.type).toEqual("genfrac");
+        expect(parseBrackFrac.value.numer).toBeDefined();
+        expect(parseBrackFrac.value.denom).toBeDefined();
+        expect(parseBrackFrac.value.leftDelim).toBeDefined();
+        expect(parseBrackFrac.value.rightDelim).toBeDefined();
     });
 
     it("should create a numerator from the atoms before \\over", function() {
@@ -564,6 +584,16 @@ describe("An over parser", function() {
 
         const badOverChoose = "1 \\over 2 \\choose 3";
         expect(badOverChoose).toNotParse();
+    });
+});
+
+describe("A infix builder", function() {
+    it("should not fail", function() {
+        expect("a \\over b").toBuild();
+        expect("a \\atop b").toBuild();
+        expect("a \\choose b").toBuild();
+        expect("a \\brace b").toBuild();
+        expect("a \\brack b").toBuild();
     });
 });
 
