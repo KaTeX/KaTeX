@@ -89,6 +89,7 @@ export type AnyParseNode =
     ParseNode<"genfrac"> |
     ParseNode<"horizBrace"> |
     ParseNode<"href"> |
+    ParseNode<"htmlmathml"> |
     ParseNode<"infix"> |
     ParseNode<"kern"> |
     ParseNode<"lap"> |
@@ -255,6 +256,11 @@ export type ParseNodeTypes = {
         type: "href",
         href: string,
         body: AnyParseNode[],
+    |},
+    "htmlmathml": {|
+        type: "htmlmathml",
+        html: AnyParseNode[],
+        mathml: AnyParseNode[],
     |},
     "infix": {|
         type: "infix",

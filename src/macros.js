@@ -251,15 +251,17 @@ defineMacro("\\rq", "'");
 defineMacro("\\aa", "\\r a");
 defineMacro("\\AA", "\\r A");
 
+// Copyright (C) and registered (R) symbols. Use raw symbol in MathML.
 // \DeclareTextCommandDefault{\textcopyright}{\textcircled{c}}
 // \DeclareTextCommandDefault{\textregistered}{\textcircled{%
 //      \check@mathfonts\fontsize\sf@size\z@\math@fontsfalse\selectfont R}}
 // \DeclareRobustCommand{\copyright}{%
 //    \ifmmode{\nfss@text{\textcopyright}}\else\textcopyright\fi}
-defineMacro("\\textcopyright", "\\textcircled{c}");
+defineMacro("\\textcopyright", "\\html@mathml{\\textcircled{c}}{©}");
 defineMacro("\\copyright",
     "\\TextOrMath{\\textcopyright}{\\text{\\textcopyright}}");
-defineMacro("\\textregistered", "\\textcircled{\\scriptsize R}");
+defineMacro("\\textregistered",
+    "\\html@mathml{\\textcircled{\\scriptsize R}}{®}");
 
 // Unicode double-struck letters
 defineMacro("\u2102", "\\mathbb{C}");
@@ -300,21 +302,29 @@ defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 // \DeclareRobustCommand
 //   \notin{\mathrel{\m@th\mathpalette\c@ncel\in}}
 // \def\c@ncel#1#2{\m@th\ooalign{$\hfil#1\mkern1mu/\hfil$\crcr$#1#2$}}
-defineMacro("\\neq", "\\not=");
+defineMacro("\\neq", "\\html@mathml{\\not=}{\\mathrel{≠}}");
 defineMacro("\\ne", "\\neq");
 defineMacro("\u2260", "\\neq");
-defineMacro("\\notin", "\\mathrel{{\\in}\\mathllap{/\\mskip1mu}}");
+defineMacro("\\notin",
+    "\\html@mathml{\\mathrel{{\\in}\\mathllap{/\\mskip1mu}}}{\\mathrel{∉}}");
 defineMacro("\u2209", "\\notin");
 
 // Unicode stacked relations
-defineMacro("\u2258",
-    "\\mathrel{=\\kern{-1em}\\raisebox{0.4em}{$\\scriptsize\\frown$}}");
-defineMacro("\u2259", "\\stackrel{\\tiny\\wedge}{=}");
-defineMacro("\u225A", "\\stackrel{\\tiny\\vee}{=}");
-defineMacro("\u225B", "\\stackrel{\\scriptsize\\star}{=}");
-defineMacro("\u225D", "\\stackrel{\\tiny\\mathrm{def}}{=}");
-defineMacro("\u225E", "\\stackrel{\\tiny\\mathrm{m}}{=}");
-defineMacro("\u225F", "\\stackrel{\\tiny?}{=}");
+defineMacro("\u2258", "\\html@mathml{" +
+    "\\mathrel{=\\kern{-1em}\\raisebox{0.4em}{$\\scriptsize\\frown$}}" +
+    "}{\\mathrel{\u2258}}");
+defineMacro("\u2259",
+    "\\html@mathml{\\stackrel{\\tiny\\wedge}{=}}{\\mathrel{\u2258}}");
+defineMacro("\u225A",
+    "\\html@mathml{\\stackrel{\\tiny\\vee}{=}}{\\mathrel{\u225A}}");
+defineMacro("\u225B",
+    "\\html@mathml{\\stackrel{\\scriptsize\\star}{=}}{\\mathrel{\u225B}}");
+defineMacro("\u225D",
+    "\\html@mathml{\\stackrel{\\tiny\\mathrm{def}}{=}}{\\mathrel{\u225D}}");
+defineMacro("\u225E",
+    "\\html@mathml{\\stackrel{\\tiny\\mathrm{m}}{=}}{\\mathrel{\u225E}}");
+defineMacro("\u225F",
+    "\\html@mathml{\\stackrel{\\tiny?}{=}}{\\mathrel{\u225F}}");
 
 // Misc Unicode
 defineMacro("\u27C2", "\\perp");
@@ -589,7 +599,9 @@ defineMacro("\\\\", "\\newline");
 // TODO: Doesn't normally work in math mode because \@ fails.  KaTeX doesn't
 // support \@ yet, so that's omitted, and we add \text so that the result
 // doesn't look funny in math mode.
-defineMacro("\\TeX", "\\textrm{T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX}");
+defineMacro("\\TeX", "\\textrm{\\html@mathml{" +
+    "T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX" +
+    "}{TeX}}");
 
 // \DeclareRobustCommand{\LaTeX}{L\kern-.36em%
 //         {\sbox\z@ T%
@@ -607,14 +619,14 @@ defineMacro("\\TeX", "\\textrm{T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX
 // which is size3, which has a scale factor of 0.7 (see Options.js).
 const latexRaiseA = fontMetricsData['Main-Regular']["T".charCodeAt(0)][1] -
     0.7 * fontMetricsData['Main-Regular']["A".charCodeAt(0)][1] + "em";
-defineMacro("\\LaTeX",
-    `\\textrm{L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
-    "\\kern-.15em\\TeX}");
+defineMacro("\\LaTeX", "\\textrm{\\html@mathml{" +
+    `L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    "\\kern-.15em\\TeX}{LaTeX}}");
 
 // New KaTeX logo based on tweaking LaTeX logo
-defineMacro("\\KaTeX",
-    `\\textrm{K\\kern-.17em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
-    "\\kern-.15em\\TeX}");
+defineMacro("\\KaTeX", "\\textrm{\\html@mathml{" +
+    `K\\kern-.17em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    "\\kern-.15em\\TeX}{KaTeX}}");
 
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
 // \def\@hspace#1{\hskip  #1\relax}
@@ -701,9 +713,6 @@ defineMacro("\\approxcoloncolon",
             "\\mathrel{\\approx\\mathrel{\\mkern-1.2mu}\\dblcolon}");
 
 // Present in newtxmath, pxfonts and txfonts
-// TODO: The unicode character U+220C ∌ should be added to the font, and this
-//       macro turned into a propper defineSymbol in symbols.js. That way, the
-//       MathML result will be much cleaner.
-defineMacro("\\notni", "\\not\\ni");
+defineMacro("\\notni", "\\html@mathml{\\not\\ni}{\\mathrel{\u220C}}");
 defineMacro("\\limsup", "\\DOTSB\\mathop{\\operatorname{lim\\,sup}}\\limits");
 defineMacro("\\liminf", "\\DOTSB\\mathop{\\operatorname{lim\\,inf}}\\limits");
