@@ -587,13 +587,18 @@ describe("An over/brace/brack parser", function() {
     });
 });
 
-describe("A infix builder", function() {
+describe("An infix builder", function() {
+    const atopDelim = "a \\atopwithdelims ( ] {b+c}";
+    const overDelim = "a \\overwithdelims ( ] {b+c}";
+
     it("should not fail", function() {
         expect("a \\over b").toBuild();
         expect("a \\atop b").toBuild();
         expect("a \\choose b").toBuild();
         expect("a \\brace b").toBuild();
         expect("a \\brack b").toBuild();
+        expect(atopDelim).toBuild();
+        expect(overDelim).toBuild();
     });
 });
 

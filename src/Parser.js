@@ -248,7 +248,19 @@ export default class Parser {
                 denomNode = new ParseNode("ordgroup", denomBody, this.mode);
             }
 
-            const node = this.callFunction(funcName, [numerNode, denomNode], []);
+            let node;
+            switch (funcName) {
+                case "\\\\atopwithdelimsfrac":
+                case "\\\\overwithdelimsfrac":
+                    // These functions have more parameters than just numerator
+                    // and denominator.
+                    node = this.callFunction(funcName,
+                        [numerNode, body[overIndex], denomNode], []);
+                    break;
+                default:
+                    node = this.callFunction(funcName,
+                        [numerNode, denomNode], []);
+            }
             return [node];
         } else {
             return body;

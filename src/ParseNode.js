@@ -259,6 +259,8 @@ export type ParseNodeTypes = {
     "infix": {|
         type: "infix",
         replaceWith: string,
+        leftDelim?: AnyParseNode,
+        rightDelim?: AnyParseNode,
         token: ?Token,
     |},
     "kern": {|
