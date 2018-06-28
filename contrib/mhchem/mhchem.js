@@ -32,6 +32,8 @@
 //   - use '' for identifiers that can by minified/uglified
 //   - use "" for strings that need to stay untouched
 
+// version: "3.3.0" for KaTeX
+
 
 // Add \ce, \pu, and \tripledash to the KaTeX macros.
 
@@ -1511,7 +1513,7 @@ var mhchem = (function () {
             rd: texify._goInner(buf.rd),
             rq: texify._goInner(buf.rq)
           };
-          var arrow = texify._getArrow(buf.r);
+          var arrow = "\\x" + texify._getArrow(buf.r);
           if (b6.rq) { arrow += "[{" + b6.rq + "}]"; }
           if (b6.rd) {
             arrow += "{" + b6.rd + "}";
@@ -1604,16 +1606,16 @@ var mhchem = (function () {
     },
     _getArrow: function (a) {
       switch (a) {
-        case "->": return "\\xrightarrow";
-        case "\u2192": return "\\xrightarrow";
-        case "\u27F6": return "\\xrightarrow";
-        case "<-": return "\\xleftarrow";
-        case "<->": return "\\xleftrightarrow";
-        case "<-->": return "\\xrightleftarrows";
-        case "<=>": return "\\xrightleftharpoons";
-        case "\u21CC": return "\\xrightleftharpoons";
-        case "<=>>": return "\\xrightequilibrium";
-        case "<<=>": return "\\xleftequilibrium";
+        case "->": return "rightarrow";
+        case "\u2192": return "rightarrow";
+        case "\u27F6": return "rightarrow";
+        case "<-": return "leftarrow";
+        case "<->": return "leftrightarrow";
+        case "<-->": return "rightleftarrows";
+        case "<=>": return "rightleftharpoons";
+        case "\u21CC": return "rightleftharpoons";
+        case "<=>>": return "rightequilibrium";
+        case "<<=>": return "leftequilibrium";
         default:
           assertNever(a);
           throw ["MhchemBugT", "mhchem bug T. Please report."];
