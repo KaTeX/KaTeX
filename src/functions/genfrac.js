@@ -4,7 +4,8 @@ import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import Style from "../Style";
-import ParseNode from "../ParseNode";
+import ParseNode, {assertNodeType} from "../ParseNode";
+import {checkDelimiter} from "./delimsizing";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -361,15 +362,21 @@ defineFunction({
     props: {
         numArgs: 4,
     },
-    handler: ({parser, funcName}, args) => {
-        const [numer, infixNode, denom] = args;
+    handler: (context, args) => {
+        const [numer, , denom] = args;
+
+        const infixNode = assertNodeType(args[1], "infix");
 
         // Look into the parse node to get the desired delimiter.
-        // $FlowFixMe
-        const leftDelim = delimFromValue(infixNode.value.leftDelim.value);
-        // $FlowFixMe
-        const rightDelim = delimFromValue(infixNode.value.rightDelim.value);
-        const hasBarLine = funcName === "\\\\overwithdelimsfrac";
+        const leftDelim = infixNode.value.leftDelim
+            ? delimFromValue(
+                checkDelimiter(infixNode.value.leftDelim, context).value)
+            : null;
+        const rightDelim = infixNode.value.rightDelim
+            ? delimFromValue(
+                checkDelimiter(infixNode.value.rightDelim, context).value)
+            : null;
+        const hasBarLine = context.funcName === "\\\\overwithdelimsfrac";
 
         return new ParseNode("genfrac", {
             type: "genfrac",
@@ -380,7 +387,7 @@ defineFunction({
             leftDelim: leftDelim,
             rightDelim: rightDelim,
             size: "auto",
-        }, parser.mode);
+        }, context.parser.mode);
     },
 
     htmlBuilder,
