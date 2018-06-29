@@ -360,9 +360,20 @@ defineFunction({
         const denom = args[5];
 
         // Look into the parse nodes to get the desired delimiters.
-        const leftNode = assertNodeType(args[0], "open");
+        let leftNode = checkNodeType(args[0], "ordgroup");
+        if (leftNode) {
+            leftNode = assertNodeType(leftNode.value[0], "open");
+        } else {
+            leftNode = assertNodeType(args[0], "open");
+        }
         const leftDelim = delimFromValue(leftNode.value);
-        const rightNode = assertNodeType(args[1], "close");
+
+        let rightNode = checkNodeType(args[1], "ordgroup");
+        if (rightNode) {
+            rightNode = assertNodeType(rightNode.value[0], "close");
+        } else {
+            rightNode = assertNodeType(args[1], "close");
+        }
         const rightDelim = delimFromValue(rightNode.value);
 
         const barNode = assertNodeType(args[2], "size");
@@ -439,7 +450,7 @@ defineFunction({
         const sizeNode = assertNodeType(args[1], "infix");
         const denom = args[2];
 
-		// $FlowFixMe
+        // $FlowFixMe
         const barSize = sizeNode.value.sizeNode.value.value;
         const hasBarLine = barSize.number > 0;
         return new ParseNode("genfrac", {
