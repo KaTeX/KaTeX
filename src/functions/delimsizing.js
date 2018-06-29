@@ -55,7 +55,7 @@ const delimiters = [
 type IsMiddle = {value: string, options: Options};
 
 // Delimiter functions
-function checkDelimiter(
+export function checkDelimiter(
     delim: AnyParseNode,
     context: FunctionContext,
 ): SymbolParseNode {

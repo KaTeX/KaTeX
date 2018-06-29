@@ -4,7 +4,8 @@ import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import Style from "../Style";
-import ParseNode from "../ParseNode";
+import ParseNode, {assertNodeType} from "../ParseNode";
+import {checkDelimiter} from "./delimsizing";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -320,4 +321,75 @@ defineFunction({
             token: token,
         }, parser.mode);
     },
+});
+
+// $FlowFixMe
+const delimFromValue = function(delimString: string): string | null {
+    let delim = null;
+    if (delimString.length > 0) {
+        delim = delimString;
+        delim = delim === "." ? null : delim;
+    }
+    return delim;
+};
+
+// Infix fractions with more operands than just numerator and denominator
+
+defineFunction({
+    type: "infix",
+    names: ["\\atopwithdelims", "\\overwithdelims"],
+    // These two functions allow the author to choose the delims, but not
+    // the bar thickness.
+    props: {
+        numArgs: 2,
+        infix: true,
+    },
+    handler({parser, funcName, token}, args) {
+        const [leftDelim, rightDelim] = args;
+        return new ParseNode("infix", {
+            type: "infix",
+            replaceWith: "\\" + funcName + "frac",
+            leftDelim: leftDelim,
+            rightDelim: rightDelim,
+            token: token,
+        }, parser.mode);
+    },
+});
+
+defineFunction({
+    type: "genfrac",
+    names: ["\\\\atopwithdelimsfrac", "\\\\overwithdelimsfrac"],
+    props: {
+        numArgs: 4,
+    },
+    handler: (context, args) => {
+        const [numer, , denom] = args;
+
+        const infixNode = assertNodeType(args[1], "infix");
+
+        // Look into the parse node to get the desired delimiter.
+        const leftDelim = infixNode.value.leftDelim
+            ? delimFromValue(
+                checkDelimiter(infixNode.value.leftDelim, context).value)
+            : null;
+        const rightDelim = infixNode.value.rightDelim
+            ? delimFromValue(
+                checkDelimiter(infixNode.value.rightDelim, context).value)
+            : null;
+        const hasBarLine = context.funcName === "\\\\overwithdelimsfrac";
+
+        return new ParseNode("genfrac", {
+            type: "genfrac",
+            numer: numer,
+            denom: denom,
+            continued: false,
+            hasBarLine: hasBarLine,
+            leftDelim: leftDelim,
+            rightDelim: rightDelim,
+            size: "auto",
+        }, context.parser.mode);
+    },
+
+    htmlBuilder,
+    mathmlBuilder,
 });
