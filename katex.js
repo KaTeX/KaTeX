@@ -22,6 +22,7 @@ import type {AnyParseNode} from "./src/ParseNode";
 
 import {defineSymbol} from './src/symbols';
 import {defineMacro} from './src/macros';
+import {setFontMetrics} from './src/fontMetrics';
 
 import {version} from "./package.json";
 
@@ -176,11 +177,24 @@ export default {
      */
     __renderToHTMLTree: renderToHTMLTree,
     /**
-     * adds a new symbol to internal symbols table
+     * extends internal font metrics object with a new object
+     * each key in the new object represents a font name
+    */
+    __setFontMetrics: setFontMetrics,
+    /**
+     * adds a new symbol to builtin symbols table
      */
     __defineSymbol: defineSymbol,
     /**
      * adds a new macro to builtin macro list
      */
     __defineMacro: defineMacro,
+    /**
+     * Expose the dom tree node types, which can be useful for type checking nodes.
+     *
+     * NOTE: This method is not currently recommended for public use.
+     * The internal tree representation is unstable and is very likely
+     * to change. Use at your own risk.
+     */
+    __domTree: domTree,
 };

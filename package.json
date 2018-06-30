@@ -27,10 +27,10 @@
     "benchmark": "^2.1.4",
     "check-dependencies": "^1.1.0",
     "css-loader": "^0.28.11",
-    "eslint": "^4.14.0",
+    "eslint": "^5.0.0",
     "eslint-plugin-flowtype": "^2.40.1",
     "file-loader": "^1.1.11",
-    "flow-bin": "^0.74.0",
+    "flow-bin": "^0.75.0",
     "husky": "^1.0.0-rc.8",
     "jest": "^23.0.1",
     "jest-serializer-html": "^5.0.0",
@@ -52,7 +52,7 @@
     "uglifyjs-webpack-plugin": "^1.2.5",
     "webpack": "^4.9.1",
     "webpack-bundle-analyzer": "^2.13.0",
-    "webpack-cli": "^3.0.0",
+    "webpack-cli": "^3.0.1",
     "webpack-dev-server": "^3.1.4"
   },
   "bin": "cli.js",
@@ -80,7 +80,6 @@
     "dist:dist": "rimraf dist/ && cp -r build/katex/ dist/"
   },
   "dependencies": {
-    "match-at": "^0.1.1",
     "nomnom": "^1.8.1"
   },
   "husky": {

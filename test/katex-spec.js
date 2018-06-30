@@ -2,6 +2,7 @@
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
+/* global beforeAll: false */
 
 import buildMathML from "../src/buildMathML";
 import buildTree from "../src/buildTree";
@@ -476,13 +477,17 @@ describe("A frac parser", function() {
     });
 });
 
-describe("An over parser", function() {
+describe("An over/brace/brack parser", function() {
     const simpleOver = "1 \\over x";
     const complexOver = "1+2i \\over 3+4i";
+    const braceFrac = "a+b \\brace c+d";
+    const brackFrac = "a+b \\brack c+d";
 
     it("should not fail", function() {
         expect(simpleOver).toParse();
         expect(complexOver).toParse();
+        expect(braceFrac).toParse();
+        expect(brackFrac).toParse();
     });
 
     it("should produce a frac", function() {
@@ -499,6 +504,22 @@ describe("An over parser", function() {
         expect(parse.type).toEqual("genfrac");
         expect(parse.value.numer).toBeDefined();
         expect(parse.value.denom).toBeDefined();
+
+        const parseBraceFrac = getParsed(braceFrac)[0];
+
+        expect(parseBraceFrac.type).toEqual("genfrac");
+        expect(parseBraceFrac.value.numer).toBeDefined();
+        expect(parseBraceFrac.value.denom).toBeDefined();
+        expect(parseBraceFrac.value.leftDelim).toBeDefined();
+        expect(parseBraceFrac.value.rightDelim).toBeDefined();
+
+        const parseBrackFrac = getParsed(brackFrac)[0];
+
+        expect(parseBrackFrac.type).toEqual("genfrac");
+        expect(parseBrackFrac.value.numer).toBeDefined();
+        expect(parseBrackFrac.value.denom).toBeDefined();
+        expect(parseBrackFrac.value.leftDelim).toBeDefined();
+        expect(parseBrackFrac.value.rightDelim).toBeDefined();
     });
 
     it("should create a numerator from the atoms before \\over", function() {
@@ -563,6 +584,16 @@ describe("An over parser", function() {
 
         const badOverChoose = "1 \\over 2 \\choose 3";
         expect(badOverChoose).toNotParse();
+    });
+});
+
+describe("A infix builder", function() {
+    it("should not fail", function() {
+        expect("a \\over b").toBuild();
+        expect("a \\atop b").toBuild();
+        expect("a \\choose b").toBuild();
+        expect("a \\brace b").toBuild();
+        expect("a \\brack b").toBuild();
     });
 });
 
@@ -1349,6 +1380,23 @@ describe("A TeX-compliant parser", function() {
     });
 });
 
+describe("An op symbol builder", function() {
+    it("should not fail", function() {
+        expect("\\int_i^n").toBuild();
+        expect("\\iint_i^n").toBuild();
+        expect("\\iiint_i^n").toBuild();
+        expect("\\int\nolimits_i^n").toBuild();
+        expect("\\iint\nolimits_i^n").toBuild();
+        expect("\\iiint\nolimits_i^n").toBuild();
+        expect("\\oint_i^n").toBuild();
+        expect("\\oiint_i^n").toBuild();
+        expect("\\oiiint_i^n").toBuild();
+        expect("\\oint\nolimits_i^n").toBuild();
+        expect("\\oiint\nolimits_i^n").toBuild();
+        expect("\\oiiint\nolimits_i^n").toBuild();
+    });
+});
+
 describe("A style change parser", function() {
     it("should not fail", function() {
         expect("\\displaystyle x").toParse();
@@ -1457,6 +1505,12 @@ describe("A font parser", function() {
 
     it("should have the correct greediness", function() {
         expect("e^\\mathbf{x}").toParse();
+    });
+
+    it("\\boldsymbol should inherit mbin/mrel from argument", () => {
+        const built = _getBuilt("a\\boldsymbol{}b\\boldsymbol{=}c" +
+            "\\boldsymbol{+}d\\boldsymbol{++}e\\boldsymbol{xyz}f");
+        expect(built).toMatchSnapshot();
     });
 });
 
@@ -2424,6 +2478,23 @@ describe("An href command", function() {
         const markup = katex.renderToString("\\href{http://example.com/}{example here}");
         expect(markup).toContain("<a href=\"http://example.com/\">");
     });
+
+    it("should allow protocols in allowedProtocols", function() {
+        expect("\\href{relative}{foo}").toParse();
+        expect("\\href{ftp://x}{foo}").toParse(new Settings({
+            allowedProtocols: ["ftp"],
+        }));
+        expect("\\href{ftp://x}{foo}").toParse(new Settings({
+            allowedProtocols: ["*"],
+        }));
+    });
+
+    it("should not allow protocols not in allowedProtocols", function() {
+        expect("\\href{javascript:alert('x')}{foo}").toNotParse();
+        expect("\\href{relative}{foo}").toNotParse(new Settings({
+            allowedProtocols: [],
+        }));
+    });
 });
 
 describe("A parser that does not throw on unsupported commands", function() {
@@ -3199,5 +3270,41 @@ describe("Internal __* interface", function() {
         const renderedSansMathML = rendered.replace(
             /<span class="katex-mathml">.*?<\/span>/, '');
         expect(tree.toMarkup()).toEqual(renderedSansMathML);
+    });
+});
+
+describe("Extending katex by new fonts and symbols", function() {
+    beforeAll(() => {
+        const fontName = "mockEasternArabicFont";
+        // add eastern arabic numbers to symbols table
+        // these symbols are ۰۱۲۳۴۵۶۷۸۹ and ٠١٢٣٤٥٦٧٨٩
+        for (let number = 0; number <= 9; number++) {
+            const persianNum = String.fromCharCode(0x0660 + number);
+            katex.__defineSymbol(
+                "math", fontName, "textord", persianNum, persianNum);
+            const arabicNum = String.fromCharCode(0x06F0 + number);
+            katex.__defineSymbol(
+                "math", fontName, "textord", arabicNum, arabicNum);
+        }
+    });
+    it("should throw on rendering new symbols with no font metrics", () => {
+        // Lets parse 99^11 in eastern arabic
+        const errorMessage = "Font metrics not found for font: mockEasternArabicFont-Regular.";
+        expect(() => {
+            katex.__renderToDomTree("۹۹^{۱۱}", strictSettings);
+        }).toThrow(errorMessage);
+    });
+    it("should add font metrics to metrics map and render successfully", () => {
+        const mockMetrics = {};
+        // mock font metrics for the symbols that we added previously
+        for (let number = 0; number <= 9; number++) {
+            mockMetrics[0x0660 + number] = [-0.00244140625, 0.6875, 0, 0];
+            mockMetrics[0x06F0 + number] = [-0.00244140625, 0.6875, 0, 0];
+        }
+        katex.__setFontMetrics('mockEasternArabicFont-Regular', mockMetrics);
+        expect("۹۹^{۱۱}").toBuild();
+    });
+    it("Add new font class to new extended symbols", () => {
+        expect(katex.renderToString("۹۹^{۱۱}")).toMatchSnapshot();
     });
 });

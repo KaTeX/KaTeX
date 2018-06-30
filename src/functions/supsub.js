@@ -109,6 +109,22 @@ defineFunctionBuilders({
         const multiplier = options.sizeMultiplier;
         const marginRight = (0.5 / metrics.ptPerEm) / multiplier + "em";
 
+        let marginLeft = null;
+        if (subm) {
+            // Subscripts shouldn't be shifted by the base's italic correction.
+            // Account for that by shifting the subscript back the appropriate
+            // amount. Note we only do this when the base is a single symbol.
+            let isOiint = false;
+            if (group.value.base) {
+                isOiint = group.value.base.value.body === "\\oiint" ||
+                    group.value.base.value.body === "\\oiiint";
+            }
+            if (base instanceof domTree.symbolNode || isOiint) {
+                // $FlowFixMe
+                marginLeft = -base.italic + "em";
+            }
+        }
+
         let supsub;
         if (supm && subm) {
             supShift = Math.max(
@@ -128,11 +144,6 @@ defineFunctionBuilders({
                 }
             }
 
-            // Subscripts shouldn't be shifted by the base's italic correction.
-            // Account for that by shifting the subscript back the appropriate
-            // amount. Note we only do this when the base is a single symbol.
-            const marginLeft =
-                base instanceof domTree.symbolNode ? -base.italic + "em" : null;
             const vlistElem = [
                 {type: "elem", elem: subm, shift: subShift, marginRight,
                     marginLeft},
@@ -149,9 +160,6 @@ defineFunctionBuilders({
                 subShift, metrics.sub1,
                 subm.height - 0.8 * metrics.xHeight);
 
-            // See comment above about subscripts not being shifted.
-            const marginLeft =
-                base instanceof domTree.symbolNode ? -base.italic + "em" : null;
             const vlistElem =
                 [{type: "elem", elem: subm, marginLeft, marginRight}];
 
@@ -175,7 +183,7 @@ defineFunctionBuilders({
         }
 
         // Wrap the supsub vlist in a span.msupsub to reset text-align.
-        const mclass = html.getTypeOfDomTree(base) || "mord";
+        const mclass = html.getTypeOfDomTree(base, "right") || "mord";
         return buildCommon.makeSpan([mclass],
             [base, buildCommon.makeSpan(["msupsub"], [supsub])],
             options);

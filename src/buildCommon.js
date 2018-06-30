@@ -6,7 +6,7 @@
  */
 
 import domTree from "./domTree";
-import fontMetrics from "./fontMetrics";
+import {getCharacterMetrics} from "./fontMetrics";
 import symbols, {ligatures} from "./symbols";
 import utils from "./utils";
 import {wideCharacterFont} from "./wide-character";
@@ -43,7 +43,7 @@ const lookupSymbol = function(
     }
     return {
         value: value,
-        metrics: fontMetrics.getCharacterMetrics(value, fontName, mode),
+        metrics: getCharacterMetrics(value, fontName, mode),
     };
 };
 
@@ -152,12 +152,19 @@ const mathDefault = function(
             return makeSymbol(
                 value, fontName, mode, options,
                 classes.concat("amsrm", options.fontWeight, options.fontShape));
-        } else { // if (font === "main") {
+        } else if (font === "main" || !font) {
             const fontName = retrieveTextFontName("textrm", options.fontWeight,
                   options.fontShape);
             return makeSymbol(
                 value, fontName, mode, options,
                 classes.concat(options.fontWeight, options.fontShape));
+        } else { // fonts added by plugins
+            const fontName = retrieveTextFontName(font, options.fontWeight,
+                  options.fontShape);
+            // We add font name as a css class
+            return makeSymbol(
+                value, fontName, mode, options,
+                classes.concat(fontName, options.fontWeight, options.fontShape));
         }
     } else {
         throw new Error("unexpected type: " + type + " in mathDefault");
@@ -611,7 +618,7 @@ const makeVerb = function(group: ParseNode<"verb">, options: Options): string {
 };
 
 // Glue is a concept from TeX which is a flexible space between elements in
-// either a vertical or horizontal list.  In KaTeX, at least for now, it's
+// either a vertical or horizontal list. In KaTeX, at least for now, it's
 // static space between elements in a horizontal layout.
 const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
     // Make an empty span for the space
@@ -621,7 +628,7 @@ const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
     return rule;
 };
 
-// Takes an Options object, and returns the appropriate fontLookup
+// Takes font options, and returns the appropriate fontLookup name
 const retrieveTextFontName = function(
     fontFamily: string,
     fontWeight: string,
@@ -642,7 +649,7 @@ const retrieveTextFontName = function(
             baseFontName = "Typewriter";
             break;
         default:
-            throw new Error(`Invalid font provided: ${fontFamily}`);
+            baseFontName = fontFamily; // use fonts added by a plugin
     }
 
     let fontStylesName;
@@ -739,7 +746,11 @@ const svgData: {
     [string]: ([string, number, number])
 } = {
      //   path, width, height
-    vec: ["vec", 0.471, 0.714],  // values from the font glyph
+    vec: ["vec", 0.471, 0.714],                // values from the font glyph
+    oiintSize1: ["oiintSize1", 0.957, 0.499],  // oval to overlay the integrand
+    oiintSize2: ["oiintSize2", 1.472, 0.659],
+    oiiintSize1: ["oiiintSize1", 1.304, 0.499],
+    oiiintSize2: ["oiiintSize2", 1.98, 0.659],
 };
 
 const staticSvg = function(value: string, options: Options): SvgSpan {

@@ -5,7 +5,7 @@ import SourceLocation from "./SourceLocation";
  * Interface required to break circular dependency between Token, Lexer, and
  * ParseError.
  */
-export interface LexerInterface {input: string, pos: number}
+export interface LexerInterface {input: string, tokenRegex: RegExp}
 
 /**
  * The resulting token returned from `lex`.
@@ -43,4 +43,3 @@ export class Token {
         return new Token(text, SourceLocation.range(this, endToken));
     }
 }
-
