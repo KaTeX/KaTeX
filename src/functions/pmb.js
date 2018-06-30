@@ -21,8 +21,9 @@ const htmlBuilder = (group, options) => {
     // \kern\dimen@\mkern.4mu\raise\pmbraise@\copy8  %
     // \kern\dimen@\mkern.4mu\box8  }%
     // }
+    const body = group.value.body;
 
-    const node = html.buildGroup(group.value.body, options);
+    const node = html.buildGroup(body, options);
     const orig = buildCommon.makeSpan([], [node], options);
 
     const hkern1 = buildCommon.makeGlue({number: 0.4, unit: "mu"}, options);
@@ -33,8 +34,6 @@ const htmlBuilder = (group, options) => {
 
     const vshift = calculateSize({number:0.4, unit: "mu"}, options);
 
-    const mclass = group.value.mclass;
-
     const vlist = buildCommon.makeVList({
         positionType: "individualShift",
         children: [
@@ -43,6 +42,23 @@ const htmlBuilder = (group, options) => {
             {type: "elem", elem: copy2, shift: 0},
         ],
     }, options);
+
+    // Note the \binrel in the AMS macro.
+    // Check the body's contents and apply either bin or rel or ord spacing.
+    let mclass = "mord";   // default
+    let atomType = "mord";
+    if (body.type === "ordgroup") {
+        if (body.value.length === 1) {
+            // single character in a group. Use its type.
+            atomType = body.value[0].type;
+        }
+    } else {
+        atomType = body.type;
+    }
+    if (/^(bin|rel)$/.test(atomType)) {
+        mclass = "m" + atomType;
+    }
+
     return buildCommon.makeSpan([mclass], [vlist], options);
 };
 
@@ -58,22 +74,9 @@ defineFunction({
         allowedInText: true,
     },
     handler({parser, funcName}, args) {
-        const body = args[0];
-        // amsbsy.sty's \pmb inherits the argument's bin|rel|ord status
-        // (similar to \stackrel in functions/mclass.js)
-        let mclass = "mord";
-        if (body.value.length) {
-            const atomType = (body.type === "ordgroup" ?
-                // $FlowFixMe
-                body.value[0].type : body.type);
-            if (/^(bin|rel)$/.test(atomType)) {
-                mclass = "m" + atomType;
-            }
-        }
         return new ParseNode("pmb", {
             type: "pmb",
-            mclass: mclass,
-            body: body,
+            body: args[0],
         }, parser.mode);
     },
     htmlBuilder,

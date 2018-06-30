@@ -321,7 +321,6 @@ export type ParseNodeTypes = {
     |},
     "pmb": {|
         type: "pmb",
-        mclass: string,
         body: AnyParseNode,
     |},
     "raisebox": {|
