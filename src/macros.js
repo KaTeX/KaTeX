@@ -323,7 +323,7 @@ defineMacro("\u220C", "\\notni");
 defineMacro("\u231C", "\\ulcorner");
 defineMacro("\u231D", "\\urcorner");
 defineMacro("\u231E", "\\llcorner");
-defineMacro("\u231F", "\\urcorner");
+defineMacro("\u231F", "\\lrcorner");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX_2ε
