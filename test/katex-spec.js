@@ -3064,6 +3064,7 @@ describe("Unicode", function() {
         expect("\\left\u27e8\\frac{a}{b}\\right\u27e9").toBuild();
         expect("\\left\u23b0\\frac{a}{b}\\right\u23b1").toBuild();
         expect("┌x┐ └x┘").toBuild();
+        expect("\u231Cx\u231D \u231Ex\u231F").toBuild();
     });
 
     it("should build some surrogate pairs", function() {
