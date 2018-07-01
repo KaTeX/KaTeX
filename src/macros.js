@@ -320,6 +320,10 @@ defineMacro("\u225F", "\\stackrel{\\tiny?}{=}");
 defineMacro("\u27C2", "\\perp");
 defineMacro("\u203C", "\\mathclose{!\\mkern-0.8mu!}");
 defineMacro("\u220C", "\\notni");
+defineMacro("\u231C", "\\ulcorner");
+defineMacro("\u231D", "\\urcorner");
+defineMacro("\u231E", "\\llcorner");
+defineMacro("\u231F", "\\urcorner");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX_2ε
