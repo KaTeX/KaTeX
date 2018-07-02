@@ -62,18 +62,49 @@ defineFunction({
 
     mathmlBuilder: (group, options) => {
         // The steps taken here are similar to the html version.
-        let output = [];
-        if (group.value.value.length > 0) {
-            const temp = mml.buildExpression(
-                group.value.value, options.withFont("mathrm"));
+        let expression = mml.buildExpression(
+            group.value.value, options.withFont("mathrm"));
 
-            let word = temp.map(node => node.toText()).join("");
+        // Is expression a string or has it something like a fraction?
+        let isAllString = true;  // default
+        for (const node of expression) {
+            if (node instanceof mathMLTree.SpaceNode) {
+                // Do nothing
+            } else {
+                switch (node.type) {
+                    case "mi":
+                    case "mn":
+                    case "ms":
+                    case "mspace":
+                    case "mtext":
+                        break;  // Do nothing yet.
+                    case "mo":
+                        if (node.children.length === 1) {
+                            if (!node.children[0] instanceof mathMLTree.TextNode) {
+                                isAllString = false;
+                            }
+                        } else {
+                            isAllString = false;
+                        }
+                        break;
+                    default:
+                        isAllString = false;
+                }
+            }
+        }
+
+        if (isAllString) {
+            // Write a single TextNode instead of multiple nested tags.
+            let word = expression.map(node => node.toText()).join("");
+            // Per amsopn package,
+            // change minus to hyphen and \ast to asterisk
             word = word.replace(/\u2212/g, "-");
             word = word.replace(/\u2217/g, "*");
             // word has already been escaped by `node.toText()`
-            output = [new mathMLTree.TextNode(word, false)];
+            expression = [new mathMLTree.TextNode(word, false)];
         }
-        const identifier = new mathMLTree.MathNode("mi", output);
+
+        const identifier = new mathMLTree.MathNode("mi", expression);
         identifier.setAttribute("mathvariant", "normal");
 
         // \u2061 is the same as &ApplyFunction;
