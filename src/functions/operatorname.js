@@ -80,7 +80,8 @@ defineFunction({
                         break;  // Do nothing yet.
                     case "mo":
                         if (node.children.length === 1) {
-                            if (!node.children[0] instanceof mathMLTree.TextNode) {
+                            if (node.children[0] instanceof mathMLTree.TextNode ===
+                                false) {
                                 isAllString = false;
                             }
                         } else {
