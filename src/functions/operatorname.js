@@ -25,11 +25,7 @@ defineFunction({
     },
 
     htmlBuilder: (group, options) => {
-        const output = [];
         if (group.value.value.length > 0) {
-            let letter = "";
-            let mode = "";
-
             const groupValue = group.value.value.map(child => {
                 const childValue = child.value;
                 // In the amsopn package, \newmcodes@ changes four
@@ -42,31 +38,26 @@ defineFunction({
                 }
             });
 
-            // Consolidate Greek letter function names into symbol characters.
-            const temp = html.buildExpression(
+            // Consolidate function names into symbol characters.
+            const expression = html.buildExpression(
                 groupValue, options.withFont("mathrm"), true);
 
-            // All we want from temp are the letters. With them, we'll
-            // create a text operator similar to \tan or \cos.
-            for (const child of temp) {
+            for (const child of expression) {
                 if (child instanceof domTree.symbolNode) {
-                    letter = child.value;
-
-                    // In the amsopn package, \newmcodes@ changes four
-                    // characters, *-/:’, from math operators back into text.
-                    // Given what is in temp, we have to address two of them.
-                    letter = letter.replace(/\u2212/, "-");   // minus => hyphen
-                    letter = letter.replace(/\u2217/, "*");
-
-                    // Use math mode for Greek letters
-                    mode = (/[\u0391-\u03D7]/.test(letter) ? "math" : "text");
-                    output.push(buildCommon.mathsym(letter, mode));
-                } else {
-                    output.push(child);
+                    let letter = child.value;
+                    if (/[\u2212\u2217]/.test(letter)) {
+                        // Per amsopn package,
+                        // change minus to hyphen and \ast to asterisk
+                        letter = letter.replace(/\u2212/, "-");
+                        letter = letter.replace(/\u2217/, "*");
+                        child.value = letter;
+                    }
                 }
             }
+            return buildCommon.makeSpan(["mop"], expression, options);
+        } else {
+            return buildCommon.makeSpan(["mop"], [], options);
         }
-        return buildCommon.makeSpan(["mop"], output, options);
     },
 
     mathmlBuilder: (group, options) => {
