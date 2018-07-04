@@ -83,6 +83,14 @@ defineFunction({
                             if (node.children[0] instanceof mathMLTree.TextNode ===
                                 false) {
                                 isAllString = false;
+                            } else {
+                                let ch = node.children[0].text;
+                                if (/[\u2212\u2217]/.test(ch)) {
+                                    ch = ch.replace("\u2212", "-");
+                                    ch = ch.replace("\u2217", "*");
+                                    node.type = "mtext";
+                                    node.children[0].text = ch;
+                                }
                             }
                         } else {
                             isAllString = false;
