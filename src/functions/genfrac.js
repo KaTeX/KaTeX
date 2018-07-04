@@ -447,11 +447,11 @@ defineFunction({
     },
     handler: ({parser, funcName}, args) => {
         const numer = args[0];
-        const sizeNode = assertNodeType(args[1], "infix");
+        const infixNode = assertNodeType(args[1], "infix");
+		const sizeNode = assertNodeType(infixNode.value.sizeNode, "size");
         const denom = args[2];
 
-        // $FlowFixMe
-        const barSize = sizeNode.value.sizeNode.value.value;
+        const barSize = sizeNode.value.value;
         const hasBarLine = barSize.number > 0;
         return new ParseNode("genfrac", {
             type: "genfrac",
