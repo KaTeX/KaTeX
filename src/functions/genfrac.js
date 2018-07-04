@@ -448,7 +448,7 @@ defineFunction({
     handler: ({parser, funcName}, args) => {
         const numer = args[0];
         const infixNode = assertNodeType(args[1], "infix");
-		const sizeNode = assertNodeType(infixNode.value.sizeNode, "size");
+        const sizeNode = assertNodeType(infixNode.value.sizeNode, "size");
         const denom = args[2];
 
         const barSize = sizeNode.value.value;
