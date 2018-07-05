@@ -391,6 +391,10 @@ defineMacro("\u225F",
 defineMacro("\u27C2", "\\perp");
 defineMacro("\u203C", "\\mathclose{!\\mkern-0.8mu!}");
 defineMacro("\u220C", "\\notni");
+defineMacro("\u231C", "\\ulcorner");
+defineMacro("\u231D", "\\urcorner");
+defineMacro("\u231E", "\\llcorner");
+defineMacro("\u231F", "\\lrcorner");
 defineMacro("\u00A9", "\\copyright");
 defineMacro("\u00AE", "\\textregistered");
 defineMacro("\uFE0F", "\\textregistered");

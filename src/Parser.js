@@ -8,6 +8,7 @@ import {validUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
+import utils from "./utils";
 import ParseNode, {assertNodeType, checkNodeType} from "./ParseNode";
 import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer.js";
@@ -802,6 +803,12 @@ export default class Parser {
         // and keep them as-is. Some browser will replace backslashes with
         // forward slashes.
         const url = raw.replace(/\\([#$%&~_^{}])/g, '$1');
+        const protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
+        const allowed = this.settings.allowedProtocols;
+        if (!utils.contains(allowed,  "*") && !utils.contains(allowed,
+                protocol != null ? protocol[1] : "_relative")) {
+            throw new ParseError('Not allowed \\href protocol', res);
+        }
         return newArgument(new ParseNode("url", {
             type: "url",
             value: url,

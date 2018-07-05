@@ -2471,6 +2471,23 @@ describe("An href command", function() {
         const markup = katex.renderToString("\\href{http://example.com/}{example here}");
         expect(markup).toContain("<a href=\"http://example.com/\">");
     });
+
+    it("should allow protocols in allowedProtocols", function() {
+        expect("\\href{relative}{foo}").toParse();
+        expect("\\href{ftp://x}{foo}").toParse(new Settings({
+            allowedProtocols: ["ftp"],
+        }));
+        expect("\\href{ftp://x}{foo}").toParse(new Settings({
+            allowedProtocols: ["*"],
+        }));
+    });
+
+    it("should not allow protocols not in allowedProtocols", function() {
+        expect("\\href{javascript:alert('x')}{foo}").toNotParse();
+        expect("\\href{relative}{foo}").toNotParse(new Settings({
+            allowedProtocols: [],
+        }));
+    });
 });
 
 describe("A parser that does not throw on unsupported commands", function() {
@@ -3066,6 +3083,7 @@ describe("Unicode", function() {
         expect("\\left\u27e8\\frac{a}{b}\\right\u27e9").toBuild();
         expect("\\left\u23b0\\frac{a}{b}\\right\u23b1").toBuild();
         expect("┌x┐ └x┘").toBuild();
+        expect("\u231Cx\u231D \u231Ex\u231F").toBuild();
     });
 
     it("should build some surrogate pairs", function() {
