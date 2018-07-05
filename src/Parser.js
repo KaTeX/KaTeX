@@ -1,6 +1,5 @@
 // @flow
 /* eslint no-constant-condition:0 */
-/* eslint no-console:0 */
 import functions from "./functions";
 import environments from "./environments";
 import MacroExpander from "./MacroExpander";

@@ -32,6 +32,11 @@ export interface MacroContextInterface {
     future(): Token;
 
     /**
+     * Remove and return the next unexpanded token.
+     */
+    popToken(): Token;
+
+    /**
      * Expand the next token only once (if possible), and return the resulting
      * top token on the stack (without removing anything from the stack).
      * Similar in behavior to TeX's `\expandafter\futurelet`.
@@ -129,6 +134,59 @@ defineMacro("\\TextOrMath", function(context) {
     } else {
         return {tokens: args[1], numArgs: 0};
     }
+});
+
+// Regular expressions for parsing numbers in base 8 through 16
+const numberRegex = {
+    "8": /^[0-7]$/,
+    "10": /^[0-9]$/,
+    "16": /^[0-9a-fA-F]$/,
+};
+
+// TeX \char makes a literal character (catcode 12) using the following forms:
+// (see The TeXBook, p. 43)
+//   \char123  -- decimal
+//   \char'123 -- octal
+//   \char"123 -- hex
+//   \char`x   -- character that can be written (i.e. isn't active)
+//   \char`\x  -- character that cannot be written (e.g. %)
+// These all refer to characters from the font, so we turn them into special
+// calls to a function \@char dealt with in the Parser.
+defineMacro("\\char", function(context) {
+    let token = context.popToken();
+    let base;
+    let number = '';
+    if (token.text === "'") {
+        base = 8;
+        token = context.popToken();
+    } else if (token.text === '"') {
+        base = 16;
+        token = context.popToken();
+    } else if (token.text === "`") {
+        token = context.popToken();
+        if (token.text[0] === "\\") {
+            number = token.text.charCodeAt(1);
+        } else if (token.text === "EOF") {
+            throw new ParseError("\\char` missing argument");
+        } else {
+            number = token.text.charCodeAt(0);
+        }
+    } else {
+        base = 10;
+    }
+    if (base) {
+        // Parse a number in the given base, starting with first `token`.
+        const regex = numberRegex[base];
+        if (!token.text.match(regex)) {
+            throw new ParseError(`Invalid base-${base} digit ${token.text}`);
+        }
+        number = token.text;
+        while (context.future().text.match(regex)) {
+            number += context.popToken().text;
+        }
+        number = parseInt(number, base);
+    }
+    return `\\@char{${number}}`;
 });
 
 // Basic support for macro definitions:
@@ -257,11 +315,11 @@ defineMacro("\\AA", "\\r A");
 //      \check@mathfonts\fontsize\sf@size\z@\math@fontsfalse\selectfont R}}
 // \DeclareRobustCommand{\copyright}{%
 //    \ifmmode{\nfss@text{\textcopyright}}\else\textcopyright\fi}
-defineMacro("\\textcopyright", "\\html@mathml{\\textcircled{c}}{©}");
+defineMacro("\\textcopyright", "\\html@mathml{\\textcircled{c}}{\\char`©}");
 defineMacro("\\copyright",
     "\\TextOrMath{\\textcopyright}{\\text{\\textcopyright}}");
 defineMacro("\\textregistered",
-    "\\html@mathml{\\textcircled{\\scriptsize R}}{®}");
+    "\\html@mathml{\\textcircled{\\scriptsize R}}{\\char`®}");
 
 // Unicode double-struck letters
 defineMacro("\u2102", "\\mathbb{C}");
@@ -302,29 +360,32 @@ defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 // \DeclareRobustCommand
 //   \notin{\mathrel{\m@th\mathpalette\c@ncel\in}}
 // \def\c@ncel#1#2{\m@th\ooalign{$\hfil#1\mkern1mu/\hfil$\crcr$#1#2$}}
-defineMacro("\\neq", "\\html@mathml{\\not=}{\\mathrel{≠}}");
+defineMacro("\\neq", "\\html@mathml{\\not=}{\\mathrel{\\char`≠}}");
 defineMacro("\\ne", "\\neq");
 defineMacro("\u2260", "\\neq");
-defineMacro("\\notin",
-    "\\html@mathml{\\mathrel{{\\in}\\mathllap{/\\mskip1mu}}}{\\mathrel{∉}}");
+defineMacro("\\notin", "\\html@mathml{\\mathrel{{\\in}\\mathllap{/\\mskip1mu}}}"
+                       + "{\\mathrel{\\char`∉}}");
 defineMacro("\u2209", "\\notin");
 
 // Unicode stacked relations
 defineMacro("\u2258", "\\html@mathml{" +
     "\\mathrel{=\\kern{-1em}\\raisebox{0.4em}{$\\scriptsize\\frown$}}" +
-    "}{\\mathrel{\u2258}}");
+    "}{\\mathrel{\\char`\u2258}}");
 defineMacro("\u2259",
-    "\\html@mathml{\\stackrel{\\tiny\\wedge}{=}}{\\mathrel{\u2258}}");
+    "\\html@mathml{\\stackrel{\\tiny\\wedge}{=}}{\\mathrel{\\char`\u2258}}");
 defineMacro("\u225A",
-    "\\html@mathml{\\stackrel{\\tiny\\vee}{=}}{\\mathrel{\u225A}}");
+    "\\html@mathml{\\stackrel{\\tiny\\vee}{=}}{\\mathrel{\\char`\u225A}}");
 defineMacro("\u225B",
-    "\\html@mathml{\\stackrel{\\scriptsize\\star}{=}}{\\mathrel{\u225B}}");
+    "\\html@mathml{\\stackrel{\\scriptsize\\star}{=}}" +
+    "{\\mathrel{\\char`\u225B}}");
 defineMacro("\u225D",
-    "\\html@mathml{\\stackrel{\\tiny\\mathrm{def}}{=}}{\\mathrel{\u225D}}");
+    "\\html@mathml{\\stackrel{\\tiny\\mathrm{def}}{=}}" +
+    "{\\mathrel{\\char`\u225D}}");
 defineMacro("\u225E",
-    "\\html@mathml{\\stackrel{\\tiny\\mathrm{m}}{=}}{\\mathrel{\u225E}}");
+    "\\html@mathml{\\stackrel{\\tiny\\mathrm{m}}{=}}" +
+    "{\\mathrel{\\char`\u225E}}");
 defineMacro("\u225F",
-    "\\html@mathml{\\stackrel{\\tiny?}{=}}{\\mathrel{\u225F}}");
+    "\\html@mathml{\\stackrel{\\tiny?}{=}}{\\mathrel{\\char`\u225F}}");
 
 // Misc Unicode
 defineMacro("\u27C2", "\\perp");
@@ -713,6 +774,6 @@ defineMacro("\\approxcoloncolon",
             "\\mathrel{\\approx\\mathrel{\\mkern-1.2mu}\\dblcolon}");
 
 // Present in newtxmath, pxfonts and txfonts
-defineMacro("\\notni", "\\html@mathml{\\not\\ni}{\\mathrel{\u220C}}");
+defineMacro("\\notni", "\\html@mathml{\\not\\ni}{\\mathrel{\\char`\u220C}}");
 defineMacro("\\limsup", "\\DOTSB\\mathop{\\operatorname{lim\\,sup}}\\limits");
 defineMacro("\\liminf", "\\DOTSB\\mathop{\\operatorname{lim\\,inf}}\\limits");
