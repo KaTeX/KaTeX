@@ -391,6 +391,9 @@ defineMacro("\u225F",
 defineMacro("\u27C2", "\\perp");
 defineMacro("\u203C", "\\mathclose{!\\mkern-0.8mu!}");
 defineMacro("\u220C", "\\notni");
+defineMacro("\u00A9", "\\copyright");
+defineMacro("\u00AE", "\\textregistered");
+defineMacro("\uFE0F", "\\textregistered");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX_2ε
