@@ -104,7 +104,7 @@ defineFunction({
 
         if (isAllString) {
             // Write a single TextNode instead of multiple nested tags.
-            let word = expression.map(node => node.toText()).join("");
+            const word = expression.map(node => node.toText()).join("");
             // word has already been escaped by `node.toText()`
             expression = [new mathMLTree.TextNode(word, false)];
         }
