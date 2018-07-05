@@ -2755,6 +2755,20 @@ describe("A macro expander", function() {
             {"\\mode": "\\TextOrMath{t}{m}"});
     });
 
+    it("\\char produces literal characters", () => {
+        expect("\\char`a").toParseLike("\\char`\\a");
+        expect("\\char`\\%").toParseLike("\\char37");
+        expect("\\char`\\%").toParseLike("\\char'45");
+        expect("\\char`\\%").toParseLike('\\char"25');
+        expect("\\char").toNotParse();
+        expect("\\char`").toNotParse();
+        expect("\\char'").toNotParse();
+        expect('\\char"').toNotParse();
+        expect("\\char'a").toNotParse();
+        expect('\\char"g').toNotParse();
+        expect('\\char"g').toNotParse();
+    });
+
     // TODO(edemaine): This doesn't work yet.  Parses like `\text text`,
     // which doesn't treat all four letters as an argument.
     //it("\\TextOrMath should work in a macro passed to \\text", function() {

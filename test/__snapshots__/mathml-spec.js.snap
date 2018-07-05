@@ -1,5 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`A MathML builder \\html@mathml makes clean symbols 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mtext>
+        ©
+      </mtext>
+      <mi mathvariant="normal">
+        ≠
+      </mi>
+      <mi mathvariant="normal">
+        ∉
+      </mi>
+      <mi mathvariant="normal">
+        ≘
+      </mi>
+      <mtext>
+        KaTeX
+      </mtext>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\copyright\\neq\\notin≘\\KaTeX
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder \\text fonts become mathvariant 1`] = `
 
 <math>
