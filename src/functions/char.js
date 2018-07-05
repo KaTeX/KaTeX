@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import ParseError from "../ParseError";
-import ParseNode from "../ParseNode";
+import ParseNode, {assertNodeType} from "../ParseNode";
 
 // \@char is an internal function that takes a grouped decimal argument like
 // {123} and converts into symbol with code 123.  It is used by the *macro*
@@ -14,19 +14,12 @@ defineFunction({
         allowedInText: true,
     },
     handler({parser}, args) {
-        const arg = args[0];
-        if (arg.type !== "ordgroup") {
-            throw new ParseError(
-                `\\@char has invalid argument type ${arg.type}`);
-        }
+        const arg = assertNodeType(args[0], "ordgroup");
         const group = arg.value;
         let number = "";
         for (let i = 0; i < group.length; i++) {
-            if (group[i].type !== "textord") {
-                throw new ParseError(
-                    `\\@char has invalid argument piece ${group[i].type}`);
-            }
-            number += group[i].value;
+            const node = assertNodeType(group[i], "textord");
+            number += node.value;
         }
         const code = parseInt(number);
         if (isNaN(code)) {
