@@ -93,7 +93,10 @@ describe("A rel parser", function() {
         expect(parse).toBeTruthy();
 
         for (let i = 0; i < parse.length; i++) {
-            const group = parse[i];
+            let group = parse[i];
+            if (group.type === "htmlmathml") {
+                group = group.value.html[0];
+            }
             expect(group.type).toEqual("rel");
         }
     });
@@ -1470,12 +1473,12 @@ describe("A font parser", function() {
         expect(nestedParse.value.font).toEqual("mathbb");
         expect(nestedParse.value.type).toEqual("font");
 
-        expect(nestedParse.value.body.value.length).toEqual(4);
         const bbBody = nestedParse.value.body.value;
+        expect(bbBody.length).toEqual(3);
         expect(bbBody[0].type).toEqual("mathord");
-        expect(bbBody[3].type).toEqual("font");
-        expect(bbBody[3].value.font).toEqual("mathrm");
-        expect(bbBody[3].value.type).toEqual("font");
+        expect(bbBody[2].type).toEqual("font");
+        expect(bbBody[2].value.font).toEqual("mathrm");
+        expect(bbBody[2].value.type).toEqual("font");
     });
 
     it("should work with \\textcolor", function() {
