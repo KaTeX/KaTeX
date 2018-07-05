@@ -105,10 +105,6 @@ defineFunction({
         if (isAllString) {
             // Write a single TextNode instead of multiple nested tags.
             let word = expression.map(node => node.toText()).join("");
-            // Per amsopn package,
-            // change minus to hyphen and \ast to asterisk
-            word = word.replace(/\u2212/g, "-");
-            word = word.replace(/\u2217/g, "*");
             // word has already been escaped by `node.toText()`
             expression = [new mathMLTree.TextNode(word, false)];
         }
