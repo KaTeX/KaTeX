@@ -26,7 +26,7 @@
     "babel-register": "^6.26.0",
     "benchmark": "^2.1.4",
     "check-dependencies": "^1.1.0",
-    "css-loader": "^0.28.11",
+    "css-loader": "^1.0.0",
     "eslint": "^5.0.0",
     "eslint-plugin-flowtype": "^2.40.1",
     "file-loader": "^1.1.11",
