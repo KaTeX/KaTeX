@@ -136,11 +136,11 @@ defineMacro("\\TextOrMath", function(context) {
     }
 });
 
-// Regular expressions for parsing numbers in base 8 through 16
-const numberRegex = {
-    "8": /^[0-7]$/,
-    "10": /^[0-9]$/,
-    "16": /^[0-9a-fA-F]$/,
+// Lookup table for parsing numbers in base 8 through 16
+const digitToNumber = {
+    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8,
+    "9": 9, "a": 10, "A": 10, "b": 11, "B": 11, "c": 12, "C": 12,
+    "d": 13, "D": 13, "e": 14, "E": 14, "f": 15, "F": 15,
 };
 
 // TeX \char makes a literal character (catcode 12) using the following forms:
@@ -176,15 +176,17 @@ defineMacro("\\char", function(context) {
     }
     if (base) {
         // Parse a number in the given base, starting with first `token`.
-        const regex = numberRegex[base];
-        if (!token.text.match(regex)) {
+        number = digitToNumber[token.text];
+        if (number == null || number >= base) {
             throw new ParseError(`Invalid base-${base} digit ${token.text}`);
         }
-        number = token.text;
-        while (context.future().text.match(regex)) {
-            number += context.popToken().text;
+        let digit;
+        while ((digit = digitToNumber[context.future().text]) != null &&
+               digit < base) {
+            number *= base;
+            number += digit;
+            context.popToken();
         }
-        number = parseInt(number, base);
     }
     return `\\@char{${number}}`;
 });
