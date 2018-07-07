@@ -28,10 +28,7 @@ defineFunction({
         if (group.value.value.length > 0) {
             const groupValue = group.value.value.map(child => {
                 const childValue = child.value;
-                // In the amsopn package, \newmcodes@ changes four
-                // characters, *-/:’, from math operators back into text.
-                if (typeof childValue === "string" &&
-                    "*-/:".indexOf(childValue) !== -1) {
+                if (typeof childValue === "string") {
                     return new ParseNode("textord", childValue, child.mode);
                 } else {
                     return child;
