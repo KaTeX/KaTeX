@@ -2437,7 +2437,7 @@ describe("An aligned environment", function() {
 
 describe("operatorname support", function() {
     it("should not fail", function() {
-        expect("\\operatorname{x*π∑\\pi\\sum\\frac a b}").toBuild();
+        expect("\\operatorname{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
     });
 });
 
