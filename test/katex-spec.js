@@ -2439,8 +2439,8 @@ describe("An href command", function() {
     });
 
     it("should not allow protocols not in allowedProtocols", function() {
-        expect("\\href{javascript:alert('x')}{foo}").toNotParse();
-        expect("\\href{relative}{foo}").toNotParse(new Settings({
+        expect("\\href{javascript:alert('x')}{foo}").not.toParse();
+        expect("\\href{relative}{foo}").not.toParse(new Settings({
             allowedProtocols: [],
         }));
     });
