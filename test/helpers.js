@@ -1,5 +1,3 @@
-/* global expect: false */
-
 import katex from "../katex";
 import ParseError from "../src/ParseError";
 import parseTree from "../src/parseTree";
@@ -57,7 +55,14 @@ const printActualErrorMessage = error => {
 export const nonstrictSettings = new Settings({strict: false});
 export const strictSettings = new Settings({strict: true});
 
-const _getBuilt = (expr, settings) => {
+/**
+ * Return the root node of the rendered HTML.
+ * @param expr
+ * @param settings
+ * @returns {Object}
+ */
+export function getBuilt(expr, settings = new Settings()) {
+    expr = r(expr); // support tagging literals
     let rootNode = katex.__renderToDomTree(expr, settings);
 
     if (rootNode.classes.indexOf('katex-error') >= 0) {
@@ -79,15 +84,7 @@ const _getBuilt = (expr, settings) => {
             (node) => node.classes.indexOf("strut") < 0));
     }
     return children;
-};
-
-/**
- * Return the root node of the rendered HTML.
- * @param expr
- * @param settings
- * @returns {Object}
- */
-export const getBuilt = (expr, settings) => getTree(expr, settings, Mode.BUILD);
+}
 
 /**
  * Return the root node of the parse tree.
@@ -95,7 +92,10 @@ export const getBuilt = (expr, settings) => getTree(expr, settings, Mode.BUILD);
  * @param settings
  * @returns {Object}
  */
-export const getParsed = (expr, settings) => getTree(expr, settings, Mode.PARSE);
+export function getParsed(expr, settings = new Settings()) {
+    expr = r(expr); // support tagging literals
+    return parseTree(expr, settings);
+}
 
 export const stripPositions = expr => {
     if (typeof expr !== "object" || expr === null) {
@@ -112,38 +112,22 @@ export const stripPositions = expr => {
 
 export const Mode = {
     PARSE: {
-        apply: parseTree,
-        get: getParsed,
+        apply: getParsed,
         noun: 'parsing',
         Verb: 'Parse',
     },
     BUILD: {
-        apply: _getBuilt,
-        get: getBuilt,
+        apply: getBuilt,
         noun: 'building',
         Verb: 'Build',
     },
 };
 
-const getTree = (expr, settings, mode) => {
-    const result = expectKaTeX(expr, settings, mode);
-    try {
-        expect(result).toHavePassed();
-    } catch (e) {
-        Error.captureStackTrace(e, mode.get); // remove helpers in stack entries
-        throw e;
-    }
-    return result._tree;
-};
-
-export const expectKaTeX = (expr, settings = new Settings(), mode, isNot,
-                            expectedError) => {
-    expr = r(expr); // support tagging literals
+export const expectKaTeX = (expr, settings, mode, isNot, expectedError) => {
     let pass = expectedError == null;
-    let _tree;
     let error;
     try {
-        _tree = mode.apply(expr, settings);
+        mode.apply(expr, settings);
     } catch (e) {
         error = e;
         if (e instanceof ParseError) {
@@ -168,13 +152,12 @@ export const expectKaTeX = (expr, settings = new Settings(), mode, isNot,
         message: () => 'Expected the expression to ' + expected +
             `:\n  ${printReceived(expr)}\n` +
             printActualErrorMessage(error),
-        _tree, // jest allows the return value of matcher to have custom properties
     };
 };
 
 export const expectEquivalent = (actual, expected, settings, mode, expand) => {
-    const actualTree = stripPositions(getTree(actual, settings, mode));
-    const expectedTree = stripPositions(getTree(expected, settings, mode));
+    const actualTree = stripPositions(mode.apply(actual, settings));
+    const expectedTree = stripPositions(mode.apply(expected, settings));
     const pass = JSON.stringify(actualTree) === JSON.stringify(expectedTree);
 
     return {

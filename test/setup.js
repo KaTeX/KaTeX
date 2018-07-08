@@ -45,8 +45,6 @@ global.console.warn = x => { throw new ConsoleWarning(x); };
 // Expect extensions
 
 expect.extend({
-    toHavePassed: result => result,
-
     toParse(expr, settings) {
         return expectKaTeX(expr, settings, Mode.PARSE, this.isNot);
     },
