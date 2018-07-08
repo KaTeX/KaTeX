@@ -45,10 +45,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         cssLoaders[0].options = {importLoaders: 1};
         cssLoaders.push({
             loader: 'postcss-loader',
-            options: {
-                ident: 'postcss',
-                plugins: (loader) => [require('cssnano')()],
-            },
+            options: {plugins: [require('cssnano')()]},
         });
     }
 
