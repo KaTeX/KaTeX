@@ -418,6 +418,8 @@ describe("A frac parser", function() {
     const dfracExpression = r`\dfrac{x}{y}`;
     const tfracExpression = r`\tfrac{x}{y}`;
     const cfracExpression = r`\cfrac{x}{y}`;
+    const genfrac1 = r`\genfrac ( ] {0.06em}{0}{a}{b+c}`;
+    const genfrac2 = r`\genfrac ( ] {0.8pt}{}{a}{b+c}`;
 
     it("should not fail", function() {
         expect(expression).toParse();
@@ -431,13 +433,15 @@ describe("A frac parser", function() {
         expect(parse.value.denom).toBeDefined();
     });
 
-    it("should also parse dfrac and tfrac", function() {
+    it("should also parse cfrac, dfrac, tfrac, and genfrac", function() {
+        expect(cfracExpression).toParse();
         expect(dfracExpression).toParse();
-
         expect(tfracExpression).toParse();
+        expect(genfrac1).toParse();
+        expect(genfrac2).toParse();
     });
 
-    it("should parse dfrac and tfrac as fracs", function() {
+    it("should parse cfrac, dfrac, tfrac, and genfrac as fracs", function() {
         const dfracParse = getParsed(dfracExpression)[0];
 
         expect(dfracParse.type).toEqual("genfrac");
@@ -455,6 +459,24 @@ describe("A frac parser", function() {
         expect(cfracParse.type).toEqual("genfrac");
         expect(cfracParse.value.numer).toBeDefined();
         expect(cfracParse.value.denom).toBeDefined();
+
+        const genfracParse = getParsed(genfrac1)[0];
+
+        expect(genfracParse.type).toEqual("genfrac");
+        expect(genfracParse.value.numer).toBeDefined();
+        expect(genfracParse.value.denom).toBeDefined();
+        expect(genfracParse.value.leftDelim).toBeDefined();
+        expect(genfracParse.value.rightDelim).toBeDefined();
+    });
+
+    it("should fail, given math as a line thickness to genfrac", function() {
+        const badGenFrac = "\\genfrac ( ] {b+c}{0}{a}{b+c}";
+        expect(badGenFrac).not.toParse();
+    });
+
+    it("should fail if genfrac is given less than 6 arguments", function() {
+        const badGenFrac = "\\genfrac ( ] {0.06em}{0}{a}";
+        expect(badGenFrac).not.toParse();
     });
 
     it("should parse atop", function() {
@@ -572,6 +594,17 @@ describe("An over/brace/brack parser", function() {
 
         const badOverChoose = r`1 \over 2 \choose 3`;
         expect(badOverChoose).not.toParse();
+    });
+});
+
+describe("A genfrac builder", function() {
+    it("should not fail", function() {
+        expect("\\frac{x}{y}").toBuild();
+        expect("\\dfrac{x}{y}").toBuild();
+        expect("\\tfrac{x}{y}").toBuild();
+        expect("\\cfrac{x}{y}").toBuild();
+        expect("\\genfrac ( ] {0.06em}{0}{a}{b+c}").toBuild();
+        expect("\\genfrac ( ] {0.8pt}{}{a}{b+c}").toBuild();
     });
 });
 
