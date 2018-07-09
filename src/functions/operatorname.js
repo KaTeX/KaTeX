@@ -90,6 +90,6 @@ defineFunction({
         const operator = new mathMLTree.MathNode("mo",
             [mml.makeText("\u2061", "text")]);
 
-        return new domTree.documentFragment([identifier, operator]);
+        return new mathMLTree.documentFragment([identifier, operator]);
     },
 });

@@ -3,7 +3,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import domTree from "../domTree";
-import mathMLTree from "../mathMLTree";
+import * as mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import Style from "../Style";
 import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
@@ -258,11 +258,9 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
         const operator = new mathMLTree.MathNode("mo",
             [mml.makeText("\u2061", "text")]);
 
-        // TODO: Refactor to not return an HTML DOM object from MathML builder
-        // or refactor documentFragment to be standalone and explicitly reusable
-        // for both HTML and MathML DOM operations. In either case, update the
-        // return type of `mathBuilder` in `defineFunction` to accommodate.
-        return new domTree.documentFragment([node, operator]);
+        // Error: "documentFragment [1] is incompatible with MathNode [2]."
+        // $FlowFixMe: No clue what's wrong. Can't reproduce on flow.org/try.
+        return new mathMLTree.documentFragment([node, operator]);
     }
 
     return node;

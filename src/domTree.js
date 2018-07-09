@@ -12,6 +12,10 @@ import {scriptFromCodepoint} from "./unicodeScripts";
 import utils from "./utils";
 import svgGeometry from "./svgGeometry";
 import type Options from "./Options";
+import * as tree from "./tree";
+
+import type {VirtualNode} from "./tree";
+
 
 /**
  * Create an HTML className based on a list of classes. In addition to joining
@@ -23,13 +27,7 @@ const createClass = function(classes: string[]): string {
 
 export type CssStyle = {[name: string]: string};
 
-// To ensure that all nodes have compatible signatures for these methods.
-interface VirtualNodeInterface {
-    toNode(): Node;
-    toMarkup(): string;
-}
-
-export interface HtmlDomNode extends VirtualNodeInterface {
+export interface HtmlDomNode extends VirtualNode {
     classes: string[];
     height: number;
     depth: number;
@@ -40,15 +38,11 @@ export interface HtmlDomNode extends VirtualNodeInterface {
     tryCombine(sibling: HtmlDomNode): boolean;
 }
 
-// Span wrapping other DOM nodes.
-export type DomSpan = span<HtmlDomNode>;
-// Span wrapping an SVG node.
-export type SvgSpan = span<svgNode>;
 
 export type SvgChildNode = pathNode | lineNode;
 
 
-export class HtmlDomContainer<ChildType: VirtualNodeInterface>
+export class HtmlDomContainer<ChildType: VirtualNode>
        implements HtmlDomNode {
     children: ChildType[];
     attributes: {[string]: string};
@@ -196,7 +190,7 @@ export class HtmlDomContainer<ChildType: VirtualNodeInterface>
  * otherwise. This typesafety is important when HTML builders access a span's
  * children.
  */
-class span<ChildType: VirtualNodeInterface> extends HtmlDomContainer<ChildType> {
+class span<ChildType: VirtualNode> extends HtmlDomContainer<ChildType> {
     constructor(
         classes?: string[],
         children?: ChildType[],
@@ -208,6 +202,33 @@ class span<ChildType: VirtualNodeInterface> extends HtmlDomContainer<ChildType> 
 
     tagName() {
         return "span";
+    }
+}
+
+// NOTE: Defining both DomSpan and SvgSpan type directly as span<HtmlDomNode> and
+// span<svgNode> seems to confuse flow when dealing with the type DomSpan|SvgSpan.
+
+/** Span wrapping other DOM nodes. See NOTE above. */
+export class DomSpan extends span<HtmlDomNode> {
+    constructor(
+        classes?: string[],
+        children?: HtmlDomNode[],
+        options?: Options,
+        style?: CssStyle,
+    ) {
+        super(classes, children, options, style);
+    }
+}
+
+/** Span wrapping an SVG node. See NOTE above. */
+export class SvgSpan extends span<svgNode> {
+    constructor(
+        classes?: string[],
+        children?: svgNode[],
+        options?: Options,
+        style?: CssStyle,
+    ) {
+        super(classes, children, options, style);
     }
 }
 
@@ -235,21 +256,20 @@ class anchor extends HtmlDomContainer<HtmlDomNode> {
 }
 
 /**
- * This node represents a document fragment, which contains elements, but when
- * placed into the DOM doesn't have any representation itself. Thus, it only
- * contains children and doesn't have any HTML properties. It also keeps track
- * of a height, depth, and maxFontSize.
+ * HTML version of the documentFragment that adds otherwise unused fields and
+ * methods to implement HtmlDomNode.
  */
-export class documentFragment implements HtmlDomNode {
-    children: HtmlDomNode[];
-    classes: string[];         // Never used; needed for satisfying interface.
+export class documentFragment extends tree.documentFragment<HtmlDomNode>
+    implements HtmlDomNode {
+    // Never used; needed for satisfying interface.
+    classes: string[];
     height: number;
     depth: number;
     maxFontSize: number;
     style: CssStyle;          // Never used; needed for satisfying interface.
 
-    constructor(children?: HtmlDomNode[]) {
-        this.children = children || [];
+    constructor(children: HtmlDomNode[]) {
+        super(children);
         this.classes = [];
         this.height = 0;
         this.depth = 0;
@@ -263,35 +283,6 @@ export class documentFragment implements HtmlDomNode {
 
     tryCombine(sibling: HtmlDomNode): boolean {
         return false;
-    }
-
-    /**
-     * Convert the fragment into a node
-     */
-    toNode(): Node {
-        // Create a fragment
-        const frag = document.createDocumentFragment();
-
-        // Append the children
-        for (let i = 0; i < this.children.length; i++) {
-            frag.appendChild(this.children[i].toNode());
-        }
-
-        return frag;
-    }
-
-    /**
-     * Convert the fragment into HTML markup
-     */
-    toMarkup(): string {
-        let markup = "";
-
-        // Simply concatenate the markup for the children together
-        for (let i = 0; i < this.children.length; i++) {
-            markup += this.children[i].toMarkup();
-        }
-
-        return markup;
     }
 }
 
@@ -470,7 +461,7 @@ class symbolNode implements HtmlDomNode {
 /**
  * SVG nodes are used to render stretchy wide elements.
  */
-class svgNode implements VirtualNodeInterface {
+class svgNode implements VirtualNode {
     children: SvgChildNode[];
     attributes: {[string]: string};
 
@@ -519,7 +510,7 @@ class svgNode implements VirtualNodeInterface {
     }
 }
 
-class pathNode implements VirtualNodeInterface {
+class pathNode implements VirtualNode {
     pathName: string;
     alternate: ?string;
 
@@ -550,7 +541,7 @@ class pathNode implements VirtualNodeInterface {
     }
 }
 
-class lineNode implements VirtualNodeInterface {
+class lineNode implements VirtualNode {
     attributes: {[string]: string};
 
     constructor(attributes?: {[string]: string}) {
@@ -608,6 +599,8 @@ export function assertDomContainer(
 
 export default {
     span,
+    DomSpan,
+    SvgSpan,
     anchor,
     documentFragment,
     symbolNode,
