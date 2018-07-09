@@ -52,6 +52,11 @@ const printActualErrorMessage = error => {
     return 'But it didn\'t throw anything.';
 };
 
+const printExpectedResult = (mode, isNot, expectedError) => expectedError == null
+    ? (isNot ? 'fail ' : 'success ') + mode
+    : (isNot ? 'not throw a ' : `fail ${mode} with a `) +
+        (expectedError.name || `ParseError matching "${expectedError}"`);
+
 export const nonstrictSettings = new Settings({strict: false});
 export const strictSettings = new Settings({strict: true});
 
@@ -139,17 +144,10 @@ export const expectKaTeX = (expr, settings, mode, isNot, expectedError) => {
             pass = !!isNot; // always fail
         }
     }
-
-    let expected;
-    if (expectedError == null) {
-        expected = (isNot ? 'fail ' : 'success ') + mode.noun;
-    } else {
-        expected = (isNot ? 'not throw a ' : `fail ${mode.noun} with a `) +
-            (expectedError.name || `ParseError matching "${expectedError}"`);
-    }
     return {
         pass,
-        message: () => 'Expected the expression to ' + expected +
+        message: () => 'Expected the expression to ' +
+            printExpectedResult(mode.noun, isNot, expectedError) +
             `:\n  ${printReceived(expr)}\n` +
             printActualErrorMessage(error),
     };
