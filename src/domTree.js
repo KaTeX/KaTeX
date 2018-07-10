@@ -37,7 +37,7 @@ const initNode = function<ChildType>(
     this.height = 0;
     this.depth = 0;
     this.maxFontSize = 0;
-    this.style = Object.assign({}, style);
+    this.style = style || {};
     if (options) {
         if (options.style.isTight()) {
             this.classes.push("mtight");
@@ -362,7 +362,7 @@ class symbolNode implements HtmlDomNode {
         this.skew = skew || 0;
         this.width = width || 0;
         this.classes = classes || [];
-        this.style = Object.assign({}, style);
+        this.style = style || {};
         this.maxFontSize = 0;
 
         // Mark text from non-Latin scripts with specific classes so that we
