@@ -48,7 +48,8 @@ defineFunction({
 
             // All we want from temp are the letters. With them, we'll
             // create a text operator similar to \tan or \cos.
-            for (const child of temp) {
+            for (let i = 0; i < temp.length; i++) {
+                const child = temp[i];
                 if (child instanceof domTree.symbolNode) {
                     letter = child.value;
 

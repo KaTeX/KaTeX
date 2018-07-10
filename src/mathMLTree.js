@@ -70,8 +70,8 @@ export class MathNode {
             }
         }
 
-        for (const child of this.children) {
-            node.appendChild(child.toNode());
+        for (let i = 0; i < this.children.length; i++) {
+            node.appendChild(this.children[i].toNode());
         }
 
         return node;

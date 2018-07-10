@@ -22,7 +22,7 @@
         "indent": "off",
         "indent-legacy": [2, 4, {"SwitchCase": 1}],
         "keyword-spacing": 2,
-        "linebreak-style": [2, "unix"],
+        "linebreak-style": [0, "unix"],
         "max-len": [2, 84, 4, { "ignoreUrls": true, "ignorePattern": "\\brequire\\([\"']|eslint-disable" }],
         "no-alert": 2,
         "no-array-constructor": 2,
@@ -35,6 +35,7 @@
         "no-new": 2,
         "no-new-func": 2,
         "no-new-object": 2,
+        "no-restricted-syntax": [2, "ForOfStatement"],
         "no-spaced-func": 2,
         "no-this-before-super": 2,
         "no-throw-literal": 2,
@@ -70,6 +71,12 @@
         "valid-jsdoc": 0,
         "require-jsdoc": 0
     },
+    "overrides": [{
+        "files": ["cli.js", "src/unicodeMake.js", "*-test.js", "*-spec.js"],
+        "rules": {
+            "no-restricted-syntax": 0
+        }
+    }],
     "env": {
         "es6": true,
         "node": true,
