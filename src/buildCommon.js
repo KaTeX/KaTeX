@@ -244,9 +244,9 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     const fontOrFamily = isFont ? options.font : options.fontFamily;
     if (value.charCodeAt(0) === 0xD835) {
         // surrogate pairs get special treatment
-        const [wideFontName, wideFontClass] = wideCharacterFont(value, mode);
-        return makeSymbol(value, wideFontName, mode, options,
-            classes.concat(wideFontClass));
+        const wideFontData = wideCharacterFont(value, mode);
+        return makeSymbol(value, wideFontData[0], mode, options,
+            classes.concat(wideFontData[1]));
     } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
@@ -759,8 +759,10 @@ const svgData: {
 
 const staticSvg = function(value: string, options: Options): SvgSpan {
     // Create a span with inline SVG for the element.
-    const [pathName, width, height] = svgData[value];
-    const path = new domTree.pathNode(pathName);
+    const data = svgData[value];
+    const path = new domTree.pathNode(data[0]);
+    const width = data[1];
+    const height = data[2];
     const svgNode = new domTree.svgNode([path], {
         "width": width + "em",
         "height": height + "em",

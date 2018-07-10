@@ -35,7 +35,7 @@
         "no-new": 2,
         "no-new-func": 2,
         "no-new-object": 2,
-        "no-restricted-syntax": [2, "ForOfStatement"],
+        "no-restricted-syntax": [2, "ForOfStatement", "ArrayPattern"],
         "no-spaced-func": 2,
         "no-this-before-super": 2,
         "no-throw-literal": 2,
