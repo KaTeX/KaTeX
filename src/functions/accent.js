@@ -41,6 +41,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
         // Rerender the supsub group with its new base, and store that
         // result.
         supSubGroup = assertSpan(html.buildGroup(supSub, options));
+
+        // reset original base
+        supSub.value.base = group;
     } else {
         group = assertNodeType(grp, "accent");
         base = group.value.base;

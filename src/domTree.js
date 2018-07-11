@@ -266,6 +266,7 @@ class documentFragment implements HtmlDomNode {
     height: number;
     depth: number;
     maxFontSize: number;
+    style: CssStyle;          // Never used; needed for satisfying interface.
 
     constructor(children?: HtmlDomNode[]) {
         this.children = children || [];
@@ -273,6 +274,7 @@ class documentFragment implements HtmlDomNode {
         this.height = 0;
         this.depth = 0;
         this.maxFontSize = 0;
+        this.style = {};
     }
 
     hasClass(className: string): boolean {
@@ -281,14 +283,6 @@ class documentFragment implements HtmlDomNode {
 
     tryCombine(sibling: HtmlDomNode): boolean {
         return false;
-    }
-
-    get style(): CssStyle {
-        throw new Error('DocumentFragment does not support style.');
-    }
-
-    set style(_: CssStyle) {
-        throw new Error('DocumentFragment does not support style.');
     }
 
     /**

@@ -22,8 +22,6 @@ export const buildTree = function(
     settings: Settings,
 ): DomSpan {
     const options = optionsFromSettings(settings);
-    // `buildHTML` sometimes messes with the parse tree (like turning bins ->
-    // ords), so we build the MathML version first.
     const mathMLNode = buildMathML(tree, expression, options);
     const htmlNode = buildHTML(tree, options);
 
