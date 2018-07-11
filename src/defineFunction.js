@@ -116,12 +116,14 @@ type FunctionDefSpec<NODETYPE: NodeType> = {|
 
     // This function returns an object representing the DOM structure to be
     // created when rendering the defined LaTeX function.
+    // This should not modify the `ParseNode`.
     htmlBuilder?: HtmlBuilder<NODETYPE>,
 
     // TODO: Currently functions/op.js returns documentFragment. Refactor it
     // and update the return type of this function.
     // This function returns an object representing the MathML structure to be
     // created when rendering the defined LaTeX function.
+    // This should not modify the `ParseNode`.
     mathmlBuilder?: MathMLBuilder<NODETYPE>,
 |};
 
