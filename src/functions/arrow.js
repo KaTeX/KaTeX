@@ -3,7 +3,7 @@ import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import stretchy from "../stretchy";
-import ParseNode from "../ParseNode.js";
+import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -120,4 +120,3 @@ defineFunction({
         return node;
     },
 });
-

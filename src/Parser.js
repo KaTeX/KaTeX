@@ -12,7 +12,7 @@ import unicodeSymbols from "./unicodeSymbols";
 import utils from "./utils";
 import ParseNode, {assertNodeType, checkNodeType} from "./ParseNode";
 import ParseError from "./ParseError";
-import {combiningDiacriticalMarksEndRegex} from "./Lexer.js";
+import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
 import {Token} from "./Token";
 import type {AnyParseNode} from "./ParseNode";
