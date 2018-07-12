@@ -60,7 +60,7 @@
   "bin": "cli.js",
   "scripts": {
     "test": "npm run prestart && npm run test:lint && npm run test:flow && npm run test:jest",
-    "test:lint": "eslint katex.js katex.webpack.js cli.js webpack.common.js webpack.config.js webpack.dev.js src static test contrib dockers && stylelint src/katex.less",
+    "test:lint": "eslint katex.js katex.webpack.js cli.js webpack.*.js src static test contrib dockers && stylelint src/katex.less",
     "test:flow": "flow",
     "test:jest": "jest",
     "test:jest:watch": "jest --watch",
