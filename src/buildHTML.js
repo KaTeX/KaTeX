@@ -318,10 +318,6 @@ function buildHTMLUnbreakable(children, options) {
  * nodes.
  */
 export default function buildHTML(tree: AnyParseNode[], options: Options): DomSpan {
-    // buildExpression is destructive, so we need to make a clone
-    // of the incoming tree so that it isn't accidentally changed
-    tree = JSON.parse(JSON.stringify(tree));
-
     // Strip off outer tag wrapper for processing below.
     let tag = null;
     if (tree.length === 1 && tree[0].type === "tag") {

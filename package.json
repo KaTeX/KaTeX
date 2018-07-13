@@ -32,7 +32,7 @@
     "eslint": "^5.0.0",
     "eslint-plugin-flowtype": "^2.40.1",
     "file-loader": "^1.1.11",
-    "flow-bin": "^0.75.0",
+    "flow-bin": "^0.76.0",
     "husky": "^1.0.0-rc.8",
     "jest": "^23.0.1",
     "jest-serializer-html": "^5.0.0",
@@ -60,7 +60,7 @@
   "bin": "cli.js",
   "scripts": {
     "test": "npm run prestart && npm run test:lint && npm run test:flow && npm run test:jest",
-    "test:lint": "eslint katex.js katex.webpack.js cli.js webpack.common.js webpack.config.js webpack.dev.js src static test contrib dockers && stylelint src/katex.less",
+    "test:lint": "eslint katex.js katex.webpack.js cli.js webpack.*.js src static test contrib dockers && stylelint src/katex.less",
     "test:flow": "flow",
     "test:jest": "jest",
     "test:jest:watch": "jest --watch",

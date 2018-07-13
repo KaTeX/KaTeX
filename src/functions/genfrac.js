@@ -4,10 +4,11 @@ import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import Style from "../Style";
-import ParseNode from "../ParseNode";
+import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
+import {calculateSize} from "../units";
 
 const htmlBuilder = (group, options) => {
     // Fractions are handled in the TeXbook on pages 444-445, rules 15(a-e).
@@ -20,6 +21,10 @@ const htmlBuilder = (group, options) => {
         style.size === Style.DISPLAY.size) {
         // We're in a \tfrac but incoming style is displaystyle, so:
         style = Style.TEXT;
+    } else if (group.value.size === "script") {
+        style = Style.SCRIPT;
+    } else if (group.value.size === "scriptscript") {
+        style = Style.SCRIPTSCRIPT;
     }
 
     const nstyle = style.fracNum();
@@ -45,7 +50,12 @@ const htmlBuilder = (group, options) => {
     let ruleWidth;
     let ruleSpacing;
     if (group.value.hasBarLine) {
-        rule = buildCommon.makeLineSpan("frac-line", options);
+        if (group.value.barSize) {
+            ruleWidth = calculateSize(group.value.barSize, options);
+            rule = buildCommon.makeLineSpan("frac-line", options, ruleWidth);
+        } else {
+            rule = buildCommon.makeLineSpan("frac-line", options);
+        }
         ruleWidth = rule.height;
         ruleSpacing = rule.height;
     } else {
@@ -174,6 +184,9 @@ const mathmlBuilder = (group, options) => {
 
     if (!group.value.hasBarLine) {
         node.setAttribute("linethickness", "0px");
+    } else if (group.value.barSize) {
+        const ruleWidth = calculateSize(group.value.barSize, options);
+        node.setAttribute("linethickness", ruleWidth + "em");
     }
 
     if (group.value.leftDelim != null || group.value.rightDelim != null) {
@@ -277,6 +290,7 @@ defineFunction({
             leftDelim: leftDelim,
             rightDelim: rightDelim,
             size: size,
+            barSize: null,
         }, parser.mode);
     },
 
@@ -320,4 +334,138 @@ defineFunction({
             token: token,
         }, parser.mode);
     },
+});
+
+const stylArray = ["display", "text", "script", "scriptscript"];
+
+const delimFromValue = function(delimString: string): string | null {
+    let delim = null;
+    if (delimString.length > 0) {
+        delim = delimString;
+        delim = delim === "." ? null : delim;
+    }
+    return delim;
+};
+
+defineFunction({
+    type: "genfrac",
+    names: ["\\genfrac"],
+    props: {
+        numArgs: 6,
+        greediness: 6,
+        argTypes: ["math", "math", "size", "text", "math", "math"],
+    },
+    handler: ({parser}, args) => {
+        const numer = args[4];
+        const denom = args[5];
+
+        // Look into the parse nodes to get the desired delimiters.
+        let leftNode = checkNodeType(args[0], "ordgroup");
+        if (leftNode) {
+            leftNode = assertNodeType(leftNode.value[0], "open");
+        } else {
+            leftNode = assertNodeType(args[0], "open");
+        }
+        const leftDelim = delimFromValue(leftNode.value);
+
+        let rightNode = checkNodeType(args[1], "ordgroup");
+        if (rightNode) {
+            rightNode = assertNodeType(rightNode.value[0], "close");
+        } else {
+            rightNode = assertNodeType(args[1], "close");
+        }
+        const rightDelim = delimFromValue(rightNode.value);
+
+        const barNode = assertNodeType(args[2], "size");
+        let hasBarLine;
+        let barSize = null;
+        if (barNode.value.isBlank) {
+            // \genfrac acts differently than \above.
+            // \genfrac treats an empty size group as a signal to use a
+            // standard bar size. \above would see size = 0 and omit the bar.
+            hasBarLine = true;
+        } else {
+            barSize = barNode.value.value;
+            hasBarLine = barSize.number > 0;
+        }
+
+        // Find out if we want displaystyle, textstyle, etc.
+        let size = "auto";
+        let styl = checkNodeType(args[3], "ordgroup");
+        if (styl) {
+            if (styl.value.length > 0) {
+                size = stylArray[Number(styl.value[0].value)];
+            }
+        } else {
+            styl = assertNodeType(args[3], "textord");
+            size = stylArray[Number(styl.value)];
+        }
+
+        return new ParseNode("genfrac", {
+            type: "genfrac",
+            numer: numer,
+            denom: denom,
+            continued: false,
+            hasBarLine: hasBarLine,
+            barSize: barSize,
+            leftDelim: leftDelim,
+            rightDelim: rightDelim,
+            size: size,
+        }, parser.mode);
+    },
+
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+// \above is an infix fraction that also defines a fraction bar size.
+defineFunction({
+    type: "infix",
+    names: ["\\above"],
+    props: {
+        numArgs: 1,
+        argTypes: ["size"],
+        infix: true,
+    },
+    handler({parser, funcName, token}, args) {
+        const sizeNode = assertNodeType(args[0], "size");
+        return new ParseNode("infix", {
+            type: "infix",
+            replaceWith: "\\\\abovefrac",
+            sizeNode: sizeNode,
+            token: token,
+        }, parser.mode);
+    },
+});
+
+defineFunction({
+    type: "genfrac",
+    names: ["\\\\abovefrac"],
+    props: {
+        numArgs: 3,
+        argTypes: ["math", "size", "math"],
+    },
+    handler: ({parser, funcName}, args) => {
+        const numer = args[0];
+        const infixNode = assertNodeType(args[1], "infix");
+        const sizeNode = assertNodeType(infixNode.value.sizeNode, "size");
+        const denom = args[2];
+
+        const barSize = sizeNode.value.value;
+        const hasBarLine = barSize.number > 0;
+        return new ParseNode("genfrac", {
+            type: "genfrac",
+            numer: numer,
+            denom: denom,
+            continued: false,
+            hasBarLine: hasBarLine,
+            barSize: barSize,
+            leftDelim: null,
+            rightDelim: null,
+            size: "auto",
+        }, parser.mode);
+    },
+
+    htmlBuilder,
+    mathmlBuilder,
 });
