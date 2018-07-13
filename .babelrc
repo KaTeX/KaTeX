@@ -1,19 +1,44 @@
 {
     "presets": [
-        ["es2015", {
-            "modules": false
-        }],
         "flow"
     ],
-    "plugins": [
-        "transform-runtime",
-        "transform-class-properties"
-    ],
     "env": {
-        "test": {
-            "plugins": [
-                "transform-es2015-modules-commonjs"
+        "production": {
+            "presets": [
+                ["es2015", {
+                    "modules": false
+                }]
             ],
+            "plugins": [
+                "transform-class-properties",
+                "transform-runtime"
+            ]
+        },
+        "development": {
+            "presets": [
+                ["es2015", {
+                    "modules": false
+                }]
+            ],
+            "plugins": [
+                "transform-class-properties",
+                "transform-runtime"
+            ]
+        },
+        "test": {
+            "presets": [
+                "es2015"
+            ],
+            "plugins": [
+                "transform-class-properties",
+                "transform-runtime"
+            ]
+        },
+        "esm": {
+            "plugins": [
+                "transform-class-properties",
+                "./contrib/babel-plugin-esm/babel-plugin-esm.js"
+            ]
         }
     }
 }

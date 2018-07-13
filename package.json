@@ -3,6 +3,7 @@
   "version": "0.11.0-pre",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
+  "module": "dist/katex.esm.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/Khan/KaTeX.git"
@@ -72,10 +73,11 @@
     "prestart": "node check-node-version.js && check-dependencies && cd src && node unicodeMake.js >unicodeSymbols.js",
     "start": "webpack-dev-server --hot --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
-    "build": "npm run prestart && rimraf build/* && webpack",
+    "build": "npm run prestart && rimraf build/* && webpack && cross-env BABEL_ENV=esm npm run build:esm",
+    "build:esm": "babel src -d build/lib --ignore unicodeMake.js,types.js && babel katex.js -o build/katex.esm.js && babel submodules/katex-fonts/fontMetricsData.js -o build/lib/fontMetricsData.js",
     "watch": "npm run build -- --watch",
     "dist": "npm test && npm run build && npm run dist:copy && npm run dist:zip && npm run dist:dist",
-    "dist:copy": "cd build && mkdirp katex && cp -r katex.js katex.min.js katex.css katex.min.css contrib fonts ../README.md katex",
+    "dist:copy": "cd build && mkdirp katex && cp -r katex.js katex.min.js katex.css katex.min.css katex.esm.js contrib fonts lib ../README.md katex",
     "dist:zip": "cd build && tar czf katex.tar.gz katex/ && zip -rq katex.zip katex/",
     "dist:dist": "rimraf dist/ && cp -r build/katex/ dist/"
   },

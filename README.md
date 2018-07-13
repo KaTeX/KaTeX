@@ -20,6 +20,14 @@ You can [download KaTeX](https://github.com/khan/katex/releases) and host it on 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
+
+KaTeX also provides ECMAScript module. Include `katex.esm.js`, `lib` folder, and `katex{.min}.css`:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
+<script type="module" type="text/javascript">
+    import katex from 'https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.esm.js';
+</script>
 ```
 
 #### In-browser rendering

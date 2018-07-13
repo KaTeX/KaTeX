@@ -19,13 +19,9 @@ function write(file, data) {
 Promise.all(process.argv.slice(3).map(file =>
     read(file, "utf8")
     .then(body => {
-        // Replace size badge url
-        // 1 - url prefix: https://img.badgesize.io/Khan/KaTeX/
-        // 2 - url suffix: /dist/katex.min.js?compression=gzip 
-        const badgeRe = /(https:\/\/img\.badgesize\.io\/Khan\/KaTeX\/v)(?:.+)(\/dist\/katex\.min\.js\?compression=gzip)/g;
-        body = body.replace(badgeRe, (m, pre, post) => {
-            return pre + version + post;
-        });
+        // Replace size badge url and ES module url
+        body = body.replace(/(https:\/\/img\.badgesize\.io\/Khan\/KaTeX\/v)(?:.+)(\/dist\/katex\.min\.js\?compression=gzip)/g, `$1${version}$2`)
+            .replace(/(https?:\/\/cdn\.jsdelivr\.net\/npm\/katex@)(?:.+)(\/dist\/katex\.esm\.js)/g, `$1${version}$2`);
 
         // Replace CDN urls
         // 1 - url prefix: "http…/KaTeX/
