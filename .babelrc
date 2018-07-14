@@ -1,48 +1,40 @@
 {
-    "presets": [
-        "flow"
-    ],
+    "presets": ["flow"],
     "env": {
+        // Duplications are inevitable due to strange .babelrc env merging:
+        // babel/babel#5276. This can be simplified in Babel 7 using .babelrc.js.
         "production": {
-            "presets": [
-                ["es2015", {
-                    "modules": false
-                }]
-            ],
+            "presets": [["es2015", {"modules": false}]],
             "plugins": [
                 "transform-class-properties",
-                "transform-runtime"
-            ]
+                "transform-runtime",
+            ],
         },
         "development": {
-            "presets": [
-                ["es2015", {
-                    "modules": false
-                }]
-            ],
+            "presets": [["es2015", {"modules": false}]],
             "plugins": [
                 "transform-class-properties",
-                "transform-runtime"
-            ]
+                "transform-runtime",
+            ],
         },
         "test": {
-            "presets": [
-                "es2015"
-            ],
+            "presets": ["es2015"],
             "plugins": [
                 "transform-class-properties",
-                "transform-runtime"
-            ]
+                "transform-runtime",
+            ],
         },
         "esm": {
             "plugins": [
                 "transform-class-properties",
                 ["import-rename", {
+                    // source files and font metrics data are moved to lib/
                     "^\\./src/": "./lib/",
                     "^\\.\\./submodules/katex-fonts/": "./",
-                    "\\.(?!js$)[^.]*$": "$&.js"
-                }]
-            ]
-        }
-    }
+                    // browsers are not able to resolve paths like Node
+                    "\\.(?!js$)[^.]*$": "$&.js",
+                }],
+            ],
+        },
+    },
 }
