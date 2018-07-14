@@ -1,5 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`A MathML builder \\html@mathml makes clean symbols 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mtext>
+        ©
+      </mtext>
+      <mi mathvariant="normal">
+        ≠
+      </mi>
+      <mi mathvariant="normal">
+        ∉
+      </mi>
+      <mi mathvariant="normal">
+        ≘
+      </mi>
+      <mtext>
+        KaTeX
+      </mtext>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\copyright\\neq\\notin≘\\KaTeX
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder \\text fonts become mathvariant 1`] = `
 
 <math>
@@ -382,34 +411,32 @@ exports[`A MathML builder should render boldsymbol with the correct mathvariants
 <math>
   <semantics>
     <mrow>
-      <mstyle>
-        <mrow>
-          <mi mathvariant="bold-italic">
-            A
-          </mi>
-          <mi mathvariant="bold-italic">
-            x
-          </mi>
-          <mn mathvariant="bold-italic">
-            2
-          </mn>
-          <mi mathvariant="bold-italic">
-            k
-          </mi>
-          <mi mathvariant="bold-italic">
-            ω
-          </mi>
-          <mi mathvariant="bold-italic">
-            Ω
-          </mi>
-          <mi mathvariant="bold-italic">
-            ı
-          </mi>
-          <mo mathvariant="bold-italic">
-            +
-          </mo>
-        </mrow>
-      </mstyle>
+      <mrow>
+        <mi mathvariant="bold-italic">
+          A
+        </mi>
+        <mi mathvariant="bold-italic">
+          x
+        </mi>
+        <mn mathvariant="bold-italic">
+          2
+        </mn>
+        <mi mathvariant="bold-italic">
+          k
+        </mi>
+        <mi mathvariant="bold-italic">
+          ω
+        </mi>
+        <mi mathvariant="bold-italic">
+          Ω
+        </mi>
+        <mi mathvariant="bold-italic">
+          ı
+        </mi>
+        <mo mathvariant="bold-italic">
+          +
+        </mo>
+      </mrow>
     </mrow>
     <annotation encoding="application/x-tex">
       \\boldsymbol{Ax2k\\omega\\Omega\\imath+}
