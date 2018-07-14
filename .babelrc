@@ -37,7 +37,11 @@
         "esm": {
             "plugins": [
                 "transform-class-properties",
-                "./contrib/babel-plugin-esm/babel-plugin-esm.js"
+                ["import-rename", {
+                    "^\\./src/": "./lib/",
+                    "^\\.\\./submodules/katex-fonts/": "./",
+                    "\\.(?!js$)[^.]*$": "$&.js"
+                }]
             ]
         }
     }
