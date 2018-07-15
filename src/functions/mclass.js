@@ -16,8 +16,6 @@ function htmlBuilder(group, options) {
 
 function mathmlBuilder(group, options) {
     const inner = mml.buildExpression(group.value.value, options);
-    // Error: "documentFragment [1] is incompatible with MathNode [2]."
-    // $FlowFixMe: No clue what's wrong.
     return mathMLTree.newDocumentFragment(inner);
 }
 

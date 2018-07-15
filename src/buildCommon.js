@@ -235,7 +235,7 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     group: ParseNode<NODETYPE>,
     options: Options,
     type: "mathord" | "textord",
-): domTree.symbolNode | HtmlDocumentFragment {
+): HtmlDocumentFragment | domTree.symbolNode {
     const mode = group.mode;
     const value = group.value;
 
@@ -281,8 +281,6 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
                 parts.push(makeSymbol(value[i], fontName, mode, options,
                                       classes.concat(fontClasses)));
             }
-            // Error: "documentFragment [1] is incompatible with symbolNode [2]."
-            // $FlowFixMe: No clue what's wrong.
             return makeFragment(parts);
         } else {
             return mathDefault(value, mode, options, classes, type);
