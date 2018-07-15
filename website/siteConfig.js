@@ -69,7 +69,7 @@ const siteConfig = {
   scripts: ['https://buttons.github.io/buttons.js'],
   stylesheets: ['https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css'],
 
-  separateCss: ['static/css/static'],
+  separateCss: ['static/static', 'static\\static'],
 
   /* On page navigation for the current documentation page */
   onPageNav: 'separate',
