@@ -1,9 +1,6 @@
 // Mapping of Unicode accent characters to their LaTeX equivalent in text and
 // math mode (when they exist).
-
-// NOTE: This module needs to be written with Node-style modules (not
-// ES6 modules) so that unicodeMake.js (a Node application) can import it.
-module.exports = {
+export default {
     '\u0301': {text: "\\'", math: '\\acute'},
     '\u0300': {text: '\\`', math: '\\grave'},
     '\u0308': {text: '\\"', math: '\\ddot'},
