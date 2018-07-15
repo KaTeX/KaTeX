@@ -128,4 +128,9 @@ describe("A MathML builder", function() {
             "\\texttt{tt\\textit{italic\\textbf{bold italic}}\\textbf{bold}}}"))
             .toMatchSnapshot();
     });
+
+    it('\\html@mathml makes clean symbols', () => {
+        expect(getMathML("\\copyright\\neq\\notin\u2258\\KaTeX"))
+            .toMatchSnapshot();
+    });
 });
