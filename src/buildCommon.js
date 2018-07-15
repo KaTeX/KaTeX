@@ -5,7 +5,7 @@
  * different kinds of domTree nodes in a consistent manner.
  */
 
-import domTree, {DomSpan, SvgSpan} from "./domTree";
+import domTree from "./domTree";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols, {ligatures} from "./symbols";
 import utils from "./utils";
@@ -19,7 +19,7 @@ import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {NodeType} from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {Mode} from "./types";
-import type {HtmlDomNode, CssStyle} from "./domTree";
+import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
 
 // The following have to be loaded from Main-Italic font, using class mainit
@@ -348,7 +348,7 @@ const makeSpan = function(
     options?: Options,
     style?: CssStyle,
 ): DomSpan {
-    const span = new domTree.DomSpan(classes, children, options, style);
+    const span = new domTree.span(classes, children, options, style);
 
     sizeElementFromChildren(span);
 
@@ -362,7 +362,7 @@ const makeSvgSpan = (
     children?: domTree.svgNode[],
     options?: Options,
     style?: CssStyle,
-): SvgSpan => new domTree.SvgSpan(classes, children, options, style);
+): SvgSpan => new domTree.span(classes, children, options, style);
 
 const makeLineSpan = function(
     className: string,

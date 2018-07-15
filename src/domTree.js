@@ -38,6 +38,11 @@ export interface HtmlDomNode extends VirtualNode {
     tryCombine(sibling: HtmlDomNode): boolean;
 }
 
+// Span wrapping other DOM nodes.
+export type DomSpan = span<HtmlDomNode>;
+// Span wrapping an SVG node.
+export type SvgSpan = span<svgNode>;
+
 export type SvgChildNode = pathNode | lineNode;
 export type documentFragment = tree.documentFragment<HtmlDomNode>;
 
@@ -202,33 +207,6 @@ class span<ChildType: VirtualNode> extends HtmlDomContainer<ChildType> {
 
     tagName() {
         return "span";
-    }
-}
-
-// NOTE: Defining both DomSpan and SvgSpan type directly as span<HtmlDomNode> and
-// span<svgNode> seems to confuse flow when dealing with the type DomSpan|SvgSpan.
-
-/** Span wrapping other DOM nodes. See NOTE above. */
-export class DomSpan extends span<HtmlDomNode> {
-    constructor(
-        classes?: string[],
-        children?: HtmlDomNode[],
-        options?: Options,
-        style?: CssStyle,
-    ) {
-        super(classes, children, options, style);
-    }
-}
-
-/** Span wrapping an SVG node. See NOTE above. */
-export class SvgSpan extends span<svgNode> {
-    constructor(
-        classes?: string[],
-        children?: svgNode[],
-        options?: Options,
-        style?: CssStyle,
-    ) {
-        super(classes, children, options, style);
     }
 }
 
@@ -568,8 +546,6 @@ export function assertDomContainer(
 
 export default {
     span,
-    DomSpan,
-    SvgSpan,
     anchor,
     symbolNode,
     svgNode,
