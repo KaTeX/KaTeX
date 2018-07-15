@@ -259,8 +259,8 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
             [mml.makeText("\u2061", "text")]);
 
         // Error: "documentFragment [1] is incompatible with MathNode [2]."
-        // $FlowFixMe: No clue what's wrong. Can't reproduce on flow.org/try.
-        return new mathMLTree.documentFragment([node, operator]);
+        // $FlowFixMe: No clue what's wrong.
+        return mathMLTree.newDocumentFragment([node, operator]);
     }
 
     return node;

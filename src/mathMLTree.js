@@ -32,6 +32,11 @@ export interface MathDomNode extends VirtualNode {
     toText(): string;
 }
 
+export type documentFragment = tree.documentFragment<MathNodeClass>;
+export function newDocumentFragment(children: MathNodeClass[]): documentFragment {
+    return new tree.documentFragment(children);
+}
+
 /**
  * This node represents a general purpose MathML node of any type. The
  * constructor requires the type of node to create (for example, `"mo"` or
@@ -228,21 +233,9 @@ class SpaceNode implements MathDomNode {
     }
 }
 
-/** MathML version of the documentFragment. */
-export class documentFragment extends tree.documentFragment<MathNodeClass>
-    implements MathDomNode {
-    constructor(children: MathNodeClass[]) {
-        super(children);
-    }
-
-    toText(): string {
-        return this.children.map(child => child.toText()).join("");
-    }
-}
-
 export default {
     MathNode,
     TextNode,
     SpaceNode,
-    documentFragment,
+    newDocumentFragment,
 };

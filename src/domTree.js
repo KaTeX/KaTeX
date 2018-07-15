@@ -38,8 +38,8 @@ export interface HtmlDomNode extends VirtualNode {
     tryCombine(sibling: HtmlDomNode): boolean;
 }
 
-
 export type SvgChildNode = pathNode | lineNode;
+export type documentFragment = tree.documentFragment<HtmlDomNode>;
 
 
 export class HtmlDomContainer<ChildType: VirtualNode>
@@ -252,37 +252,6 @@ class anchor extends HtmlDomContainer<HtmlDomNode> {
 
     tagName() {
         return "a";
-    }
-}
-
-/**
- * HTML version of the documentFragment that adds otherwise unused fields and
- * methods to implement HtmlDomNode.
- */
-export class documentFragment extends tree.documentFragment<HtmlDomNode>
-    implements HtmlDomNode {
-    // Never used; needed for satisfying interface.
-    classes: string[];
-    height: number;
-    depth: number;
-    maxFontSize: number;
-    style: CssStyle;          // Never used; needed for satisfying interface.
-
-    constructor(children: HtmlDomNode[]) {
-        super(children);
-        this.classes = [];
-        this.height = 0;
-        this.depth = 0;
-        this.maxFontSize = 0;
-        this.style = {};
-    }
-
-    hasClass(className: string): boolean {
-        return utils.contains(this.classes, className);
-    }
-
-    tryCombine(sibling: HtmlDomNode): boolean {
-        return false;
     }
 }
 
@@ -602,7 +571,6 @@ export default {
     DomSpan,
     SvgSpan,
     anchor,
-    documentFragment,
     symbolNode,
     svgNode,
     pathNode,

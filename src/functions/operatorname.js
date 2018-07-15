@@ -90,6 +90,8 @@ defineFunction({
         const operator = new mathMLTree.MathNode("mo",
             [mml.makeText("\u2061", "text")]);
 
-        return new mathMLTree.documentFragment([identifier, operator]);
+        // Error: "documentFragment [1] is incompatible with MathNode [2]."
+        // $FlowFixMe: No clue what's wrong.
+        return mathMLTree.newDocumentFragment([identifier, operator]);
     },
 });
