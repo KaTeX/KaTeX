@@ -26,14 +26,13 @@ export type MathNodeType =
     "mtable" | "mtr" | "mtd" | "mlabeledtr" |
     "mrow" | "menclose" |
     "mstyle" | "mpadded" | "mphantom";
-export type MathNodeClass = MathNode | TextNode | SpaceNode | documentFragment;
 
 export interface MathDomNode extends VirtualNode {
     toText(): string;
 }
 
-export type documentFragment = tree.documentFragment<MathNodeClass>;
-export function newDocumentFragment(children: MathNodeClass[]): documentFragment {
+export type documentFragment = tree.documentFragment<MathDomNode>;
+export function newDocumentFragment(children: MathDomNode[]): documentFragment {
     return new tree.documentFragment(children);
 }
 
@@ -45,9 +44,9 @@ export function newDocumentFragment(children: MathNodeClass[]): documentFragment
 export class MathNode implements MathDomNode {
     type: MathNodeType;
     attributes: {[string]: string};
-    children: MathNodeClass[];
+    children: MathDomNode[];
 
-    constructor(type: MathNodeType, children?: MathNodeClass[]) {
+    constructor(type: MathNodeType, children?: MathDomNode[]) {
         this.type = type;
         this.attributes = {};
         this.children = children || [];
