@@ -56,7 +56,7 @@ defineFunction({
         let lineClearance = theta + phi / 4;
 
         const minDelimiterHeight = (inner.height + inner.depth +
-            lineClearance + theta) * options.sizeMultiplier;
+            lineClearance + theta);
 
         // Create a sqrt SVG of the required minimum size
         const {span: img, ruleWidth, advanceWidth} =

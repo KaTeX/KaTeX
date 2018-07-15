@@ -311,7 +311,10 @@ Sqrt: |
     \sqrt{\sqrt{\sqrt{x}}}_{\sqrt{\sqrt{x}}}^{\sqrt{\sqrt{\sqrt{x}}}
     ^{\sqrt{\sqrt{\sqrt{x}}}}}
 SqrtRoot: |
-    1+\sqrt[3]{2}+\sqrt[1923^234]{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^2}}}}}}}}}}}
+    \begin{array}{l}
+        1+\sqrt[3]{2}+\sqrt[1923^234]{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^2}}}}}}}}}}} \\
+        \Huge \sqrt[3]{M} + x^{\sqrt[3] a}
+    \end{array}
 StackRel: a \stackrel{?}{=} b \stackrel{\text{def}}{=} c
 StretchyAccent: |
     \begin{array}{l}
