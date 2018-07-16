@@ -1,6 +1,7 @@
 // @flow
 // TODO(kevinb): implement \\sl and \\sc
 
+import buildCommon from "../buildCommon";
 import defineFunction from "../defineFunction";
 import ParseNode from "../ParseNode";
 
@@ -69,17 +70,11 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[0];
-        // amsbsy.sty's \boldsymbol inherits the argument's bin|rel|ord status
-        // (similar to \stackrel in functions/mclass.js)
-        let mclass = "mord";
-        const atomType = (body.type === "ordgroup" && body.value.length ?
-            body.value[0].type : body.type);
-        if (/^(bin|rel)$/.test(atomType)) {
-            mclass = "m" + atomType;
-        }
+        // amsbsy.sty's \boldsymbol uses \binrel spacing to inherit the
+        // argument's bin|rel|ord status
         return new ParseNode("mclass", {
             type: "mclass",
-            mclass,
+            mclass: buildCommon.binrelClass(body),
             value: [
                 new ParseNode("font", {
                     type: "font",
