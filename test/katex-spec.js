@@ -2993,6 +2993,17 @@ describe("\\tag support", function() {
     });
 });
 
+describe("\\@binrel automatic bin/rel/ord", () => {
+    it("should generate proper class", () => {
+        expect("L\\@binrel+xR").toParseLike("L\\mathbin xR");
+        expect("L\\@binrel=xR").toParseLike("L\\mathrel xR");
+        expect("L\\@binrel xxR").toParseLike("L\\mathord xR");
+        expect("L\\@binrel{+}{x}R").toParseLike("L\\mathbin{{x}}R");
+        expect("L\\@binrel{=}{x}R").toParseLike("L\\mathrel{{x}}R");
+        expect("L\\@binrel{x}{x}R").toParseLike("L\\mathord{{x}}R");
+    });
+});
+
 describe("A parser taking String objects", function() {
     it("should not fail on an empty String object", function() {
         expect(new String("")).toParse();
