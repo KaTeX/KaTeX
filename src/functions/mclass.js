@@ -1,7 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import domTree from "../domTree";
+import mathMLTree from "../mathMLTree";
 import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
@@ -16,7 +16,7 @@ function htmlBuilder(group, options) {
 
 function mathmlBuilder(group, options) {
     const inner = mml.buildExpression(group.value.value, options);
-    return new domTree.documentFragment(inner);
+    return mathMLTree.newDocumentFragment(inner);
 }
 
 // Math class commands except \mathop
