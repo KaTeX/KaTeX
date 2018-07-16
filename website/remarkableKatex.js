@@ -26,7 +26,7 @@ SOFTWARE.
  * Katex package.
  */
 module.exports = function(md, options) {
-    var katex = require("katex");
+    var katex = require("../");
 
     function renderKatex(source, displayMode) {
         return katex.renderToString(source, {displayMode: displayMode, throwOnError: false});
