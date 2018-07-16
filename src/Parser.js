@@ -1,6 +1,5 @@
 // @flow
 /* eslint no-constant-condition:0 */
-/* eslint no-console:0 */
 import functions from "./functions";
 import environments from "./environments";
 import MacroExpander from "./MacroExpander";
@@ -1016,7 +1015,8 @@ export default class Parser {
             if (this.settings.strict) {
                 if (!supportedCodepoint(text.charCodeAt(0))) {
                     this.settings.reportNonstrict("unknownSymbol",
-                        `Unrecognized Unicode character "${text[0]}"`, nucleus);
+                        `Unrecognized Unicode character "${text[0]}"` +
+                        ` (${text.charCodeAt(0)})`, nucleus);
                 } else if (this.mode === "math") {
                     this.settings.reportNonstrict("unicodeTextInMathMode",
                         `Unicode text character "${text[0]}" used in math mode`,

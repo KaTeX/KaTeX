@@ -8,6 +8,7 @@
             "plugins": [
                 "transform-class-properties",
                 "transform-runtime",
+                "version-inline",
             ],
         },
         "development": {
@@ -15,6 +16,7 @@
             "plugins": [
                 "transform-class-properties",
                 "transform-runtime",
+                "version-inline",
             ],
         },
         "test": {
@@ -22,11 +24,13 @@
             "plugins": [
                 "transform-class-properties",
                 "transform-runtime",
+                "version-inline",
             ],
         },
         "esm": {
             "plugins": [
                 "transform-class-properties",
+                "version-inline",
                 ["import-rename", {
                     // source files and font metrics data are moved to lib/
                     "^\\./src/": "./lib/",
