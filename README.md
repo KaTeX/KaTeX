@@ -164,6 +164,13 @@ will appear larger than 1cm in browser units.
 
 - [katex-ruby](https://github.com/glebm/katex-ruby) Provides server-side rendering and integration with popular Ruby web frameworks (Rails, Hanami, and anything that uses Sprockets).
 
+### AsciiMath
+
+If you want to render math written in [AsciiMath](http://asciimath.org/),
+you'll need to first convert AsciiMath into LaTeX input, then call KaTeX.
+
+- [asciimath2tex](https://github.com/christianp/asciimath2tex)
+  converts AsciiMath to TeX, with KaTeX in mind
 
 ## Contributing
 
