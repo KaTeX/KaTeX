@@ -8,7 +8,7 @@ import * as mml from "../buildMathML";
 // "mathord" and "textord" ParseNodes created in Parser.js from symbol Groups in
 // src/symbols.js.
 
-const defaultVariant = {
+const defaultVariant: {[string]: string} = {
     "mi": "italic",
     "mn": "normal",
     "mtext": "normal",
