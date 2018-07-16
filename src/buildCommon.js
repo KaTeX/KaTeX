@@ -16,7 +16,7 @@ import * as tree from "./tree";
 import type Options from "./Options";
 import type ParseNode from "./ParseNode";
 import type {documentFragment as HtmlDocumentFragment} from "./domTree";
-import type {AnyParseNode, NodeType} from "./ParseNode";
+import type {NodeType} from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {Mode} from "./types";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
@@ -774,22 +774,7 @@ const staticSvg = function(value: string, options: Options): SvgSpan {
     return span;
 };
 
-const binrelClass = (arg: AnyParseNode) => {
-    // \binrel@ spacing varies with (bin|rel|ord) of the atom in the argument.
-    // (by rendering separately and with {}s before and after, and measuring
-    // the change in spacing).  We'll do roughly the same by detecting the
-    // atom type directly.
-    const atomType = (arg.type === "ordgroup" &&
-        arg.value.length ? arg.value[0].type : arg.type);
-    if (/^(bin|rel)$/.test(atomType)) {
-        return "m" + atomType;
-    } else {
-        return "mord";
-    }
-};
-
 export default {
-    binrelClass,
     fontMap,
     makeSymbol,
     mathsym,

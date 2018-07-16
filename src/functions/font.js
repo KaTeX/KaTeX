@@ -1,7 +1,7 @@
 // @flow
 // TODO(kevinb): implement \\sl and \\sc
 
-import buildCommon from "../buildCommon";
+import {binrelClass} from "./mclass";
 import defineFunction from "../defineFunction";
 import ParseNode from "../ParseNode";
 
@@ -74,7 +74,7 @@ defineFunction({
         // argument's bin|rel|ord status
         return new ParseNode("mclass", {
             type: "mclass",
-            mclass: buildCommon.binrelClass(body),
+            mclass: binrelClass(body),
             value: [
                 new ParseNode("font", {
                     type: "font",
