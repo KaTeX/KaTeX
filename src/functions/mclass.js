@@ -16,7 +16,7 @@ function htmlBuilder(group, options) {
 
 function mathmlBuilder(group, options) {
     const inner = mml.buildExpression(group.value.value, options);
-    return new mathMLTree.MathNode("mstyle", inner);
+    return mathMLTree.newDocumentFragment(inner);
 }
 
 // Math class commands except \mathop

@@ -93,7 +93,10 @@ describe("A rel parser", function() {
         expect(parse).toBeTruthy();
 
         for (let i = 0; i < parse.length; i++) {
-            const group = parse[i];
+            let group = parse[i];
+            if (group.type === "htmlmathml") {
+                group = group.value.html[0];
+            }
             expect(group.type).toEqual("rel");
         }
     });
@@ -1503,12 +1506,12 @@ describe("A font parser", function() {
         expect(nestedParse.value.font).toEqual("mathbb");
         expect(nestedParse.value.type).toEqual("font");
 
-        expect(nestedParse.value.body.value.length).toEqual(4);
         const bbBody = nestedParse.value.body.value;
+        expect(bbBody.length).toEqual(3);
         expect(bbBody[0].type).toEqual("mathord");
-        expect(bbBody[3].type).toEqual("font");
-        expect(bbBody[3].value.font).toEqual("mathrm");
-        expect(bbBody[3].value.type).toEqual("font");
+        expect(bbBody[2].type).toEqual("font");
+        expect(bbBody[2].value.font).toEqual("mathrm");
+        expect(bbBody[2].value.type).toEqual("font");
     });
 
     it("should work with \\textcolor", function() {
@@ -2802,6 +2805,20 @@ describe("A macro expander", function() {
             {"\\mode": "\\TextOrMath{t}{m}"});
     });
 
+    it("\\char produces literal characters", () => {
+        expect("\\char`a").toParseLike("\\char`\\a");
+        expect("\\char`\\%").toParseLike("\\char37");
+        expect("\\char`\\%").toParseLike("\\char'45");
+        expect("\\char`\\%").toParseLike('\\char"25');
+        expect("\\char").toNotParse();
+        expect("\\char`").toNotParse();
+        expect("\\char'").toNotParse();
+        expect('\\char"').toNotParse();
+        expect("\\char'a").toNotParse();
+        expect('\\char"g').toNotParse();
+        expect('\\char"g').toNotParse();
+    });
+
     // TODO(edemaine): This doesn't work yet.  Parses like `\text text`,
     // which doesn't treat all four letters as an argument.
     //it("\\TextOrMath should work in a macro passed to \\text", function() {
@@ -3070,7 +3087,9 @@ describe("Unicode", function() {
     });
 
     it("should parse symbols", function() {
-        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼⋮\u00b7").toParse(strictSettings);
+        expect("ð").toParse();  // warns about lacking character metrics
+        expect("£¥ℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼⋮\u00B7\u00A9").toBuild(strictSettings);
+        expect("\\text{£¥\u00A9\u00AE\uFE0F}").toBuild(strictSettings);
     });
 
     it("should build Greek capital letters", function() {

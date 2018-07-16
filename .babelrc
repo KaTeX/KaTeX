@@ -8,7 +8,8 @@
     ],
     "plugins": [
         "transform-runtime",
-        "transform-class-properties"
+        "transform-class-properties",
+        "version-inline"
     ],
     "env": {
         "test": {
