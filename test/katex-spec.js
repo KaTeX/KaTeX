@@ -1270,6 +1270,10 @@ describe("A sqrt parser", function() {
 
         expect(parse.type).toEqual("sqrt");
     });
+
+    it("should build sized square roots", function() {
+        expect("\\Large\\sqrt[3]{x}").toBuild();
+    });
 });
 
 describe("A TeX-compliant parser", function() {
