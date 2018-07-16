@@ -2471,6 +2471,12 @@ describe("An aligned environment", function() {
     });
 });
 
+describe("operatorname support", function() {
+    it("should not fail", function() {
+        expect("\\operatorname{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
+    });
+});
+
 describe("An href command", function() {
     it("should parse its input", function() {
         expect("\\href{http://example.com/}{example here}").toParse();
