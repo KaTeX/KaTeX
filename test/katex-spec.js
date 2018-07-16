@@ -3002,6 +3002,12 @@ describe("\\@binrel automatic bin/rel/ord", () => {
         expect("L\\@binrel{=}{x}R").toParseLike("L\\mathrel{{x}}R");
         expect("L\\@binrel{x}{x}R").toParseLike("L\\mathord{{x}}R");
     });
+
+    it("should base on just first character in group", () => {
+        expect("L\\@binrel{+x}xR").toParseLike("L\\mathbin xR");
+        expect("L\\@binrel{=x}xR").toParseLike("L\\mathrel xR");
+        expect("L\\@binrel{xx}xR").toParseLike("L\\mathord xR");
+    });
 });
 
 describe("A parser taking String objects", function() {
