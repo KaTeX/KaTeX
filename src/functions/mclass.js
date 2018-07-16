@@ -64,11 +64,11 @@ defineFunction({
     props: {
         numArgs: 2,
     },
-    handler({parser}, [baseArg, renderArg]) {
+    handler({parser}, args) {
         return new ParseNode("mclass", {
             type: "mclass",
-            mclass: binrelClass(baseArg),
-            value: [renderArg],
+            mclass: binrelClass(args[0]),
+            value: [args[1]],
         }, parser.mode);
     },
 });
