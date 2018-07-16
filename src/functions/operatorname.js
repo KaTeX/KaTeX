@@ -41,14 +41,10 @@ defineFunction({
 
             for (const child of expression) {
                 if (child instanceof domTree.symbolNode) {
-                    let letter = child.value;
-                    if (/[\u2212\u2217]/.test(letter)) {
-                        // Per amsopn package,
-                        // change minus to hyphen and \ast to asterisk
-                        letter = letter.replace(/\u2212/, "-");
-                        letter = letter.replace(/\u2217/, "*");
-                        child.value = letter;
-                    }
+                    // Per amsopn package,
+                    // change minus to hyphen and \ast to asterisk
+                    child.value = child.value.replace(/\u2212/, "-")
+                        .replace(/\u2217/, "*");
                 }
             }
             return buildCommon.makeSpan(["mop"], expression, options);
