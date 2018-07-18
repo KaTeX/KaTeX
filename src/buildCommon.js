@@ -15,10 +15,10 @@ import * as tree from "./tree";
 
 import type Options from "./Options";
 import type ParseNode from "./ParseNode";
-import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {NodeType} from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {FontVariant, Mode} from "./types";
+import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
 

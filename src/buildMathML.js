@@ -12,7 +12,6 @@ import ParseError from "./ParseError";
 import symbols, {ligatures} from "./symbols";
 import utils from "./utils";
 import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
-import {assertType} from "./utils";
 import {MathNode, TextNode} from "./mathMLTree";
 
 import type Options from "./Options";
@@ -140,10 +139,12 @@ export const buildExpression = function(
                 continue;
             // Concatenate <mn>...</mn> followed by <mi>.</mi>
             } else if (group.type === 'mi' && group.children.length === 1 &&
-                       assertType(group.children[0], TextNode).text === '.' &&
                        lastGroup.type === 'mn') {
-                lastGroup.children.push(...group.children);
-                continue;
+                const child = group.children[0];
+                if (child instanceof TextNode && child.text === '.') {
+                    lastGroup.children.push(...group.children);
+                    continue;
+                }
             }
         }
         groups.push(group);
