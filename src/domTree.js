@@ -28,15 +28,12 @@ const createClass = function(classes: string[]): string {
     return classes.filter(cls => cls).join(" ");
 };
 
-const initNode = function<ChildType>(
+const initNode = function(
     classes?: string[],
-    children?: ChildType[],
     options?: Options,
     style?: CssStyle,
 ) {
     this.classes = classes || [];
-    // $FlowFixMe
-    this.children = children || [];
     this.attributes = {};
     this.height = 0;
     this.depth = 0;
@@ -175,7 +172,8 @@ class span<ChildType: VirtualNode> implements HtmlDomNode {
         options?: Options,
         style?: CssStyle,
     ) {
-        initNode.call(this, classes, children, options, style);
+        initNode.call(this, classes, options, style);
+        this.children = children || [];
     }
 
     /**
@@ -228,7 +226,8 @@ class anchor implements HtmlDomNode {
         children: HtmlDomNode[],
         options: Options,
     ) {
-        initNode.call(this, classes, children, options);
+        initNode.call(this, classes, options);
+        this.children = children || [];
         this.setAttribute('href', href);
     }
 
