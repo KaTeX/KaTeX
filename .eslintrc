@@ -35,7 +35,6 @@
         "no-new": 2,
         "no-new-func": 2,
         "no-new-object": 2,
-        "no-restricted-syntax": [2, "ForOfStatement", "ArrayPattern", "ClassDeclaration[superClass]", "ClassExpression[superClass]"],
         "no-spaced-func": 2,
         "no-this-before-super": 2,
         "no-throw-literal": 2,
@@ -72,9 +71,10 @@
         "require-jsdoc": 0
     },
     "overrides": [{
-        "files": ["cli.js", "src/unicodeMake.js", "*-test.js", "*-spec.js"],
+        "files": ["katex.js", "src/**/*.js"],
+        "excludedFiles": "unicodeMake.js",
         "rules": {
-            "no-restricted-syntax": 0
+            "no-restricted-syntax": [2, "ForOfStatement", "ArrayPattern", "ClassDeclaration[superClass]", "ClassExpression[superClass]"]
         }
     }],
     "env": {
