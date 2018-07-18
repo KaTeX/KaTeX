@@ -1,7 +1,8 @@
 {
     "parser": "babel-eslint",
     "plugins": [
-        "flowtype"
+        "flowtype",
+        "import"
     ],
     "extends": [
         "eslint:recommended",
@@ -75,5 +76,18 @@
         "node": true,
         "browser": true
     },
+    "overrides": [{
+        "files": ["katex.js", "src/**/*.js"],
+        "rules": {
+            "import/no-unresolved": 2,
+            "import/extensions": [2, "never"]
+        },
+        "env": {
+            "node": false
+        },
+        settings: {
+            "import/resolver": {"./eslint-import-resolver": {}}
+        }
+    }],
     "root": true
 }

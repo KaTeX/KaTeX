@@ -1,3 +1,4 @@
+/* eslint-env node */
 /* eslint no-console:0 */
 
 // This is an internal Node tool, not part of the KaTeX distribution,
