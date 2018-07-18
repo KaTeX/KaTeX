@@ -78,6 +78,7 @@
     },
     "overrides": [{
         "files": ["katex.js", "src/**/*.js"],
+        "excludedFiles": "unicodeMake.js",
         "rules": {
             "import/no-unresolved": 2,
             "import/extensions": [2, "never"]
