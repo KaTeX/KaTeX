@@ -1,12 +1,12 @@
 // @flow
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import domTree from "../domTree";
 import mathMLTree from "../mathMLTree";
 import delimiter from "../delimiter";
 import Style from "../Style";
 import ParseNode from "../ParseNode";
 
+import * as tree from "../tree";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
@@ -39,7 +39,7 @@ defineFunction({
 
         // Some groups can return document fragments.  Handle those by wrapping
         // them in a span.
-        if (inner instanceof domTree.documentFragment) {
+        if (inner instanceof tree.documentFragment) {
             inner = buildCommon.makeSpan([], [inner], options);
         }
 
@@ -114,18 +114,14 @@ defineFunction({
         }
     },
     mathmlBuilder(group, options) {
-        let node;
-        if (group.value.index) {
-            node = new mathMLTree.MathNode(
+        const {body, index} = group.value;
+        return index ?
+            new mathMLTree.MathNode(
                 "mroot", [
-                    mml.buildGroup(group.value.body, options),
-                    mml.buildGroup(group.value.index, options),
-                ]);
-        } else {
-            node = new mathMLTree.MathNode(
-                "msqrt", [mml.buildGroup(group.value.body, options)]);
-        }
-
-        return node;
+                    mml.buildGroup(body, options),
+                    mml.buildGroup(index, options),
+                ]) :
+            new mathMLTree.MathNode(
+                "msqrt", [mml.buildGroup(body, options)]);
     },
 });
