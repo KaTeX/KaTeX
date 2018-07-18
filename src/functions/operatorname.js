@@ -63,7 +63,7 @@ defineFunction({
         for (const node of expression) {
             if (node instanceof mathMLTree.SpaceNode) {
                 // Do nothing
-            } else {
+            } else if (node instanceof mathMLTree.MathNode) {
                 switch (node.type) {
                     case "mi":
                     case "mn":
@@ -71,23 +71,23 @@ defineFunction({
                     case "mspace":
                     case "mtext":
                         break;  // Do nothing yet.
-                    case "mo":
-                        if (node.children.length === 1) {
-                            if (node.children[0] instanceof mathMLTree.TextNode ===
-                                false) {
-                                isAllString = false;
-                            } else {
-                                node.children[0].text =
-                                    node.children[0].text.replace(/\u2212/, "-")
+                    case "mo": {
+                        const child = node.children[0];
+                        if (node.children.length === 1 &&
+                            child instanceof mathMLTree.TextNode) {
+                            child.text =
+                                child.text.replace(/\u2212/, "-")
                                     .replace(/\u2217/, "*");
-                            }
                         } else {
                             isAllString = false;
                         }
                         break;
+                    }
                     default:
                         isAllString = false;
                 }
+            } else {
+                isAllString = false;
             }
         }
 

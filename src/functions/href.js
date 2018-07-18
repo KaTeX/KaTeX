@@ -2,6 +2,8 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import ParseNode, {assertNodeType} from "../ParseNode";
+import {assertType} from "../utils";
+import {MathNode} from "../mathMLTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -35,7 +37,7 @@ defineFunction({
     },
     mathmlBuilder: (group, options) => {
         const math = mml.buildExpressionRow(group.value.body, options);
-        math.setAttribute("href", group.value.href);
+        assertType(math, MathNode).setAttribute("href", group.value.href);
         return math;
     },
 });
