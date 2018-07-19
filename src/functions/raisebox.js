@@ -2,7 +2,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode, {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../ParseNode";
 import {calculateSize} from "../units";
 
 import * as mml from "../buildMathML";
@@ -20,24 +20,36 @@ defineFunction({
     handler({parser}, args) {
         const amount = assertNodeType(args[0], "size");
         const body = args[1];
-        return new ParseNode("raisebox", {
+        return {
             type: "raisebox",
-            dy: amount,
-            body: body,
-            value: ordargument(body),
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "raisebox",
+                dy: amount,
+                body: body,
+                value: ordargument(body),
+            },
+        };
     },
     htmlBuilder(group, options) {
-        const text = new ParseNode("text", {
+        const text = {
             type: "text",
-            body: group.value.value,
-            font: "mathrm", // simulate \textrm
-        }, group.mode);
-        const sizedText = new ParseNode("sizing", {
+            mode: group.mode,
+            value: {
+                type: "text",
+                body: group.value.value,
+                font: "mathrm", // simulate \textrm
+            },
+        };
+        const sizedText = {
             type: "sizing",
-            value: [text],
-            size: 6,                // simulate \normalsize
-        }, group.mode);
+            mode: group.mode,
+            value: {
+                type: "sizing",
+                value: [text],
+                size: 6,                // simulate \normalsize
+            },
+        };
         const body = sizing.htmlBuilder(sizedText, options);
         const dy = calculateSize(group.value.dy.value.value, options);
         return buildCommon.makeVList({

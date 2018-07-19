@@ -1,5 +1,4 @@
 // @flow
-import ParseNode from "../ParseNode";
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
@@ -18,10 +17,14 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[0];
-        return new ParseNode("operatorname", {
+        return {
             type: "operatorname",
-            value: ordargument(body),
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "operatorname",
+                value: ordargument(body),
+            },
+        };
     },
 
     htmlBuilder: (group, options) => {
@@ -29,7 +32,11 @@ defineFunction({
             const groupValue = group.value.value.map(child => {
                 const childValue = child.value;
                 if (typeof childValue === "string") {
-                    return new ParseNode("textord", childValue, child.mode);
+                    return {
+                        type: "textord",
+                        mode: child.mode,
+                        value: childValue,
+                    };
                 } else {
                     return child;
                 }

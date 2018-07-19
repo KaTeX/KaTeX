@@ -5,13 +5,13 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
-import ParseNode, {assertNodeType, checkSymbolNodeType} from "../ParseNode";
+import {assertNodeType, checkSymbolNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Options from "../Options";
-import type {AnyParseNode, SymbolParseNode} from "../ParseNode";
+import type {AnyParseNode, ParseNode, SymbolParseNode} from "../ParseNode";
 import type {LeftRightDelimType} from "../ParseNode";
 import type {FunctionContext} from "../defineFunction";
 
@@ -83,12 +83,16 @@ defineFunction({
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
 
-        return new ParseNode("delimsizing", {
+        return {
             type: "delimsizing",
-            size: delimiterSizes[context.funcName].size,
-            mclass: delimiterSizes[context.funcName].mclass,
-            value: delim.value,
-        }, context.parser.mode);
+            mode: context.parser.mode,
+            value: {
+                type: "delimsizing",
+                size: delimiterSizes[context.funcName].size,
+                mclass: delimiterSizes[context.funcName].mclass,
+                value: delim.value,
+            },
+        };
     },
     htmlBuilder: (group, options) => {
         const delim = group.value.value;
@@ -147,10 +151,14 @@ defineFunction({
         // \left case below triggers parsing of \right in
         //   `const right = parser.parseFunction();`
         // uses this return value.
-        return new ParseNode("leftright-right", {
+        return {
             type: "leftright-right",
-            value: checkDelimiter(args[0], context).value,
-        }, context.parser.mode);
+            mode: context.parser.mode,
+            value: {
+                type: "leftright-right",
+                value: checkDelimiter(args[0], context).value,
+            },
+        };
     },
 });
 
@@ -176,12 +184,16 @@ defineFunction({
         if (!right) {
             throw new ParseError('failed to parse function after \\right');
         }
-        return new ParseNode("leftright", {
+        return {
             type: "leftright",
-            body: body,
-            left: delim.value,
-            right: assertNodeType(right, "leftright-right").value.value,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "leftright",
+                body: body,
+                left: delim.value,
+                right: assertNodeType(right, "leftright-right").value.value,
+            },
+        };
     },
     htmlBuilder: (group, options) => {
         const groupValue = leftRightGroupValue(group);
@@ -295,10 +307,14 @@ defineFunction({
             throw new ParseError("\\middle without preceding \\left", delim);
         }
 
-        return new ParseNode("middle", {
+        return {
             type: "middle",
-            value: delim.value,
-        }, context.parser.mode);
+            mode: context.parser.mode,
+            value: {
+                type: "middle",
+                value: delim.value,
+            },
+        };
     },
     htmlBuilder: (group, options) => {
         let middleDelim;

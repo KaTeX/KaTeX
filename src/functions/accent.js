@@ -4,13 +4,13 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
-import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
+import {assertNodeType, checkNodeType} from "../ParseNode";
 import {assertSpan, assertSymbolDomNode} from "../domTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type {AnyParseNode} from "../ParseNode";
+import type {ParseNode, AnyParseNode} from "../ParseNode";
 import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "accent", but
@@ -230,13 +230,17 @@ defineFunction({
             context.funcName === "\\widetilde" ||
             context.funcName === "\\widecheck";
 
-        return new ParseNode("accent", {
+        return {
             type: "accent",
-            label: context.funcName,
-            isStretchy: isStretchy,
-            isShifty: isShifty,
-            base: base,
-        }, context.parser.mode);
+            mode: context.parser.mode,
+            value: {
+                type: "accent",
+                label: context.funcName,
+                isStretchy: isStretchy,
+                isShifty: isShifty,
+                base: base,
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -257,13 +261,17 @@ defineFunction({
     handler: (context, args) => {
         const base = args[0];
 
-        return new ParseNode("accent", {
+        return {
             type: "accent",
-            label: context.funcName,
-            isStretchy: false,
-            isShifty: true,
-            base: base,
-        }, context.parser.mode);
+            mode: context.parser.mode,
+            value: {
+                type: "accent",
+                label: context.funcName,
+                isStretchy: false,
+                isShifty: true,
+                base: base,
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,

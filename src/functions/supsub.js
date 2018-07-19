@@ -14,7 +14,7 @@ import * as horizBrace from "./horizBrace";
 import * as op from "./op";
 
 import type Options from "../Options";
-import type ParseNode from "../ParseNode";
+import type {ParseNode} from "../ParseNode";
 import type {HtmlBuilder} from "../defineFunction";
 import type {MathNodeType} from "../mathMLTree";
 

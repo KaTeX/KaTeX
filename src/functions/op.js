@@ -6,12 +6,13 @@ import domTree from "../domTree";
 import * as mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import Style from "../Style";
-import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
+import {assertNodeType, checkNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
+import type {ParseNode} from "../ParseNode";
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "op", but also
 // "supsub" since some of them (like \int) can affect super/subscripting.
@@ -296,12 +297,16 @@ defineFunction({
         if (fName.length === 1) {
             fName = singleCharBigOps[fName];
         }
-        return new ParseNode("op", {
+        return {
             type: "op",
-            limits: true,
-            symbol: true,
-            body: fName,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "op",
+                limits: true,
+                symbol: true,
+                body: fName,
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -317,12 +322,16 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[0];
-        return new ParseNode("op", {
+        return {
             type: "op",
-            limits: false,
-            symbol: false,
-            value: ordargument(body),
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "op",
+                limits: false,
+                symbol: false,
+                value: ordargument(body),
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -349,12 +358,16 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[0];
-        return new ParseNode("op", {
+        return {
             type: "op",
-            limits: false,
-            symbol: false,
-            value: ordargument(body),
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "op",
+                limits: false,
+                symbol: false,
+                value: ordargument(body),
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -374,12 +387,16 @@ defineFunction({
         numArgs: 0,
     },
     handler({parser, funcName}) {
-        return new ParseNode("op", {
+        return {
             type: "op",
-            limits: false,
-            symbol: false,
-            body: funcName,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "op",
+                limits: false,
+                symbol: false,
+                body: funcName,
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -395,12 +412,16 @@ defineFunction({
         numArgs: 0,
     },
     handler({parser, funcName}) {
-        return new ParseNode("op", {
+        return {
             type: "op",
-            limits: true,
-            symbol: false,
-            body: funcName,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "op",
+                limits: true,
+                symbol: false,
+                body: funcName,
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -421,12 +442,16 @@ defineFunction({
         if (fName.length === 1) {
             fName = singleCharIntegrals[fName];
         }
-        return new ParseNode("op", {
+        return {
             type: "op",
-            limits: false,
-            symbol: true,
-            body: fName,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "op",
+                limits: false,
+                symbol: true,
+                body: fName,
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,

@@ -1,10 +1,8 @@
 // @flow
 import {_htmlGroupBuilders, _mathmlGroupBuilders} from "./defineFunction";
 
-import ParseNode from "./ParseNode";
-
 import type Parser from "./Parser";
-import type {AnyParseNode} from "./ParseNode";
+import type {ParseNode, AnyParseNode} from "./ParseNode";
 import type {ArgType, Mode} from "./types";
 import type {NodeType} from "./ParseNode";
 import type {HtmlBuilder, MathMLBuilder} from "./defineFunction";

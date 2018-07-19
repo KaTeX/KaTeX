@@ -3,7 +3,6 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -17,11 +16,15 @@ defineFunction({
     },
     handler: ({parser, funcName}, args) => {
         const body = args[0];
-        return new ParseNode("lap", {
+        return {
             type: "lap",
-            alignment: funcName.slice(5),
-            body: body,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "lap",
+                alignment: funcName.slice(5),
+                body: body,
+            },
+        };
     },
     htmlBuilder: (group, options) => {
         // mathllap, mathrlap, mathclap

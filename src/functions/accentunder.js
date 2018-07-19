@@ -4,10 +4,11 @@ import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import stretchy from "../stretchy";
-import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
+
+import type {ParseNode} from "../ParseNode";
 
 defineFunction({
     type: "accentUnder",
@@ -20,11 +21,15 @@ defineFunction({
     },
     handler: ({parser, funcName}, args) => {
         const base = args[0];
-        return new ParseNode("accentUnder", {
+        return {
             type: "accentUnder",
-            label: funcName,
-            base: base,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "accentUnder",
+                label: funcName,
+                base: base,
+            },
+        };
     },
     htmlBuilder: (group: ParseNode<"accentUnder">, options) => {
         // Treat under accents much like underlines.

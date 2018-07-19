@@ -4,7 +4,6 @@ import defineEnvironment from "../defineEnvironment";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
-import ParseNode from "../ParseNode";
 import {assertNodeType, assertSymbolNodeType} from "../ParseNode";
 import {checkNodeType, checkSymbolNodeType} from "../ParseNode";
 import {calculateSize} from "../units";
@@ -14,7 +13,7 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Parser from "../Parser";
-import type {AnyParseNode} from "../ParseNode";
+import type {ParseNode, AnyParseNode} from "../ParseNode";
 import type {StyleStr} from "../types";
 import type {HtmlBuilder, MathMLBuilder} from "../defineFunction";
 
@@ -103,13 +102,21 @@ function parseArray(
 
     while (true) {  // eslint-disable-line no-constant-condition
         let cell = parser.parseExpression(false, "\\cr");
-        cell = new ParseNode("ordgroup", cell, parser.mode);
+        cell = {
+            type: "ordgroup",
+            mode: parser.mode,
+            value: cell,
+        };
         if (style) {
-            cell = new ParseNode("styling", {
+            cell = {
                 type: "styling",
-                style: style,
-                value: [cell],
-            }, parser.mode);
+                mode: parser.mode,
+                value: {
+                    type: "styling",
+                    style: style,
+                    value: [cell],
+                },
+            };
         }
         row.push(cell);
         const next = parser.nextToken.text;
@@ -149,7 +156,11 @@ function parseArray(
     // $FlowFixMe: The required fields were added immediately above.
     const res: ArrayEnvNodeData = result;
     parser.gullet.endGroup();
-    return new ParseNode("array", res, parser.mode);
+    return {
+        type: "array",
+        mode: parser.mode,
+        value: res,
+    };
 }
 
 
@@ -410,7 +421,11 @@ const alignedHandler = function(context, args) {
     // binary.  This behavior is implemented in amsmath's \start@aligned.
     let numMaths;
     let numCols = 0;
-    const emptyGroup = new ParseNode("ordgroup", [], context.mode);
+    const emptyGroup = {
+        type: "ordgroup",
+        mode: context.mode,
+        value: [],
+    };
     const ordgroup = checkNodeType(args[0], "ordgroup");
     if (ordgroup) {
         let arg0 = "";
@@ -544,12 +559,16 @@ defineEnvironment({
         };
         res = parseArray(context.parser, res, dCellStyle(context.envName));
         if (delimiters) {
-            res = new ParseNode("leftright", {
+            res = {
                 type: "leftright",
-                body: [res],
-                left: delimiters[0],
-                right: delimiters[1],
-            }, context.mode);
+                mode: context.mode,
+                value: {
+                    type: "leftright",
+                    body: [res],
+                    left: delimiters[0],
+                    right: delimiters[1],
+                },
+            };
         }
         return res;
     },
@@ -592,12 +611,16 @@ defineEnvironment({
             }],
         };
         res = parseArray(context.parser, res, dCellStyle(context.envName));
-        res = new ParseNode("leftright", {
+        res = {
             type: "leftright",
-            body: [res],
-            left: "\\{",
-            right: ".",
-        }, context.mode);
+            mode: context.mode,
+            value: {
+                type: "leftright",
+                body: [res],
+                left: "\\{",
+                right: ".",
+            },
+        };
         return res;
     },
     htmlBuilder,

@@ -3,7 +3,7 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode, {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -43,12 +43,16 @@ defineFunction({
         }
 
         const body = args[0];
-        return new ParseNode("smash", {
+        return {
             type: "smash",
-            body: body,
-            smashHeight: smashHeight,
-            smashDepth: smashDepth,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "smash",
+                body: body,
+                smashHeight: smashHeight,
+                smashDepth: smashDepth,
+            },
+        };
     },
     htmlBuilder: (group, options) => {
         const node = buildCommon.makeSpan(

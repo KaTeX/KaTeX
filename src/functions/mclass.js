@@ -2,7 +2,6 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode from "../ParseNode";
 import type {AnyParseNode} from "../ParseNode";
 
 import * as html from "../buildHTML";
@@ -32,11 +31,15 @@ defineFunction({
     },
     handler({parser, funcName}, args) {
         const body = args[0];
-        return new ParseNode("mclass", {
+        return {
             type: "mclass",
-            mclass: "m" + funcName.substr(5),
-            value: ordargument(body),
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "mclass",
+                mclass: "m" + funcName.substr(5),
+                value: ordargument(body),
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -65,11 +68,15 @@ defineFunction({
         numArgs: 2,
     },
     handler({parser}, args) {
-        return new ParseNode("mclass", {
+        return {
             type: "mclass",
-            mclass: binrelClass(args[0]),
-            value: [args[1]],
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "mclass",
+                mclass: binrelClass(args[0]),
+                value: [args[1]],
+            },
+        };
     },
 });
 
@@ -92,27 +99,39 @@ defineFunction({
             mclass = "mrel";  // for \stackrel
         }
 
-        const baseOp = new ParseNode("op", {
+        const baseOp = {
             type: "op",
-            limits: true,
-            alwaysHandleSupSub: true,
-            symbol: false,
-            suppressBaseShift: funcName !== "\\stackrel",
-            value: ordargument(baseArg),
-        }, baseArg.mode);
+            mode: baseArg.mode,
+            value: {
+                type: "op",
+                limits: true,
+                alwaysHandleSupSub: true,
+                symbol: false,
+                suppressBaseShift: funcName !== "\\stackrel",
+                value: ordargument(baseArg),
+            },
+        };
 
-        const supsub = new ParseNode("supsub", {
+        const supsub = {
             type: "supsub",
-            base: baseOp,
-            sup: funcName === "\\underset" ? null : shiftedArg,
-            sub: funcName === "\\underset" ? shiftedArg : null,
-        }, shiftedArg.mode);
+            mode: shiftedArg.mode,
+            value: {
+                type: "supsub",
+                base: baseOp,
+                sup: funcName === "\\underset" ? null : shiftedArg,
+                sub: funcName === "\\underset" ? shiftedArg : null,
+            },
+        };
 
-        return new ParseNode("mclass", {
+        return {
             type: "mclass",
-            mclass: mclass,
-            value: [supsub],
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "mclass",
+                mclass: mclass,
+                value: [supsub],
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,

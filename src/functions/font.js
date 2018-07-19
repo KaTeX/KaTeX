@@ -3,7 +3,6 @@
 
 import {binrelClass} from "./mclass";
 import defineFunction from "../defineFunction";
-import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -51,11 +50,15 @@ defineFunction({
         if (func in fontAliases) {
             func = fontAliases[func];
         }
-        return new ParseNode("font", {
+        return {
             type: "font",
-            font: func.slice(1),
-            body,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "font",
+                font: func.slice(1),
+                body,
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -72,17 +75,25 @@ defineFunction({
         const body = args[0];
         // amsbsy.sty's \boldsymbol uses \binrel spacing to inherit the
         // argument's bin|rel|ord status
-        return new ParseNode("mclass", {
+        return {
             type: "mclass",
-            mclass: binrelClass(body),
-            value: [
-                new ParseNode("font", {
-                    type: "font",
-                    font: "boldsymbol",
-                    body,
-                }, parser.mode),
-            ],
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "mclass",
+                mclass: binrelClass(body),
+                value: [
+                    {
+                        type: "font",
+                        mode: parser.mode,
+                        value: {
+                            type: "font",
+                            font: "boldsymbol",
+                            body,
+                        },
+                    },
+                ],
+            },
+        };
     },
 });
 
@@ -100,11 +111,19 @@ defineFunction({
         const body = parser.parseExpression(true, breakOnTokenText);
         const style = `math${funcName.slice(1)}`;
 
-        return new ParseNode("font", {
+        return {
             type: "font",
-            font: style,
-            body: new ParseNode("ordgroup", body, parser.mode),
-        }, mode);
+            mode: mode,
+            value: {
+                type: "font",
+                font: style,
+                body: {
+                    type: "ordgroup",
+                    mode: parser.mode,
+                    value: body,
+                },
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,

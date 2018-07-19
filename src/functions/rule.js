@@ -2,7 +2,7 @@
 import buildCommon from "../buildCommon";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
-import ParseNode, {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../ParseNode";
 import {calculateSize} from "../units";
 
 defineFunction({
@@ -17,12 +17,16 @@ defineFunction({
         const shift = optArgs[0];
         const width = assertNodeType(args[0], "size");
         const height = assertNodeType(args[1], "size");
-        return new ParseNode("rule", {
+        return {
             type: "rule",
-            shift: shift && assertNodeType(shift, "size").value.value,
-            width: width.value.value,
-            height: height.value.value,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "rule",
+                shift: shift && assertNodeType(shift, "size").value.value,
+                width: width.value.value,
+                height: height.value.value,
+            },
+        };
     },
     htmlBuilder(group, options) {
         // Make an empty span for the rule
