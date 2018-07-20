@@ -236,9 +236,7 @@ const svgSpan = function(
             const spans = [];
 
             const data = katexImagesData[label];
-            const paths = data[0];
-            const minWidth = data[1];
-            const viewBoxHeight = data[2];
+            const [paths, minWidth, viewBoxHeight] = data;
             const height = viewBoxHeight / 1000;
 
             const numSvgChildren = paths.length;

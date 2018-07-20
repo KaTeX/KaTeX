@@ -74,7 +74,7 @@
         "files": ["katex.js", "src/**/*.js"],
         "excludedFiles": "unicodeMake.js",
         "rules": {
-            "no-restricted-syntax": [2, "ForOfStatement", "ArrayPattern", "ClassDeclaration[superClass]", "ClassExpression[superClass]"]
+            "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"]
         }
     }],
     "env": {
