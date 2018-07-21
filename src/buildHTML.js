@@ -187,12 +187,8 @@ export const buildExpression = function(
     for (let i = 0; i < groups.length; i++) {
         const group = groups[i];
         if (group instanceof domTree.symbolNode && group.value === "\u0338") {
+            // Results in a solidus being overlaid over the following group/atom.
             group.style.position = "absolute";
-            // TODO(kevinb) fix this for Safari by switching to a non-combining
-            // character for \not.
-            // This value was determined empirically.
-            // TODO(kevinb) figure out the real math for this value.
-            group.style.paddingLeft = "0.8em";
         }
     }
 
