@@ -1,14 +1,13 @@
 // @flow
 import {checkNodeType} from "./ParseNode";
-import domTree from "./domTree";
 
 import type Parser from "./Parser";
-import type ParseNode, {NodeType, NodeValue} from "./ParseNode";
+import type ParseNode, {AnyParseNode, NodeType} from "./ParseNode";
 import type Options from "./Options";
 import type {ArgType, BreakToken, Mode} from "./types";
 import type {HtmlDomNode} from "./domTree";
 import type {Token} from "./Token";
-import type {MathNode, TextNode} from "./mathMLTree";
+import type {MathDomNode} from "./mathMLTree";
 
 /** Context provided to function handlers for error messages. */
 export type FunctionContext = {|
@@ -20,15 +19,15 @@ export type FunctionContext = {|
 
 export type FunctionHandler<NODETYPE: NodeType> = (
     context: FunctionContext,
-    args: ParseNode<*>[],
-    optArgs: (?ParseNode<*>)[],
-) => NodeValue<NODETYPE>;
+    args: AnyParseNode[],
+    optArgs: (?AnyParseNode)[],
+) => ParseNode<NODETYPE>;
 
 export type HtmlBuilder<NODETYPE> = (ParseNode<NODETYPE>, Options) => HtmlDomNode;
 export type MathMLBuilder<NODETYPE> = (
     group: ParseNode<NODETYPE>,
     options: Options,
-) => MathNode | TextNode | domTree.documentFragment;
+) => MathDomNode;
 
 // More general version of `HtmlBuilder` for nodes (e.g. \sum, accent types)
 // whose presence impacts super/subscripting. In this case, ParseNode<"supsub">
@@ -116,12 +115,12 @@ type FunctionDefSpec<NODETYPE: NodeType> = {|
 
     // This function returns an object representing the DOM structure to be
     // created when rendering the defined LaTeX function.
+    // This should not modify the `ParseNode`.
     htmlBuilder?: HtmlBuilder<NODETYPE>,
 
-    // TODO: Currently functions/op.js returns documentFragment. Refactor it
-    // and update the return type of this function.
     // This function returns an object representing the MathML structure to be
     // created when rendering the defined LaTeX function.
+    // This should not modify the `ParseNode`.
     mathmlBuilder?: MathMLBuilder<NODETYPE>,
 |};
 
@@ -245,7 +244,7 @@ export function defineFunctionBuilders<NODETYPE: NodeType>({
 
 // Since the corresponding buildHTML/buildMathML function expects a
 // list of elements, we normalize for different kinds of arguments
-export const ordargument = function(arg: ParseNode<*>): ParseNode<*>[] {
+export const ordargument = function(arg: AnyParseNode): AnyParseNode[] {
     const node = checkNodeType(arg, "ordgroup");
     return node ? node.value : [arg];
 };

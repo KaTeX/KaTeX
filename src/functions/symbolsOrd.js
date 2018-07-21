@@ -5,10 +5,12 @@ import mathMLTree from "../mathMLTree";
 
 import * as mml from "../buildMathML";
 
+import type ParseNode from "../ParseNode";
+
 // "mathord" and "textord" ParseNodes created in Parser.js from symbol Groups in
 // src/symbols.js.
 
-const defaultVariant = {
+const defaultVariant: {[string]: string} = {
     "mi": "italic",
     "mn": "normal",
     "mtext": "normal",
@@ -19,10 +21,10 @@ defineFunctionBuilders({
     htmlBuilder(group, options) {
         return buildCommon.makeOrd(group, options, "mathord");
     },
-    mathmlBuilder(group, options) {
+    mathmlBuilder(group: ParseNode<"mathord">, options) {
         const node = new mathMLTree.MathNode(
             "mi",
-            [mml.makeText(group.value, group.mode)]);
+            [mml.makeText(group.value, group.mode, options)]);
 
         const variant = mml.getVariant(group, options) || "italic";
         if (variant !== defaultVariant[node.type]) {
@@ -37,9 +39,8 @@ defineFunctionBuilders({
     htmlBuilder(group, options) {
         return buildCommon.makeOrd(group, options, "textord");
     },
-    mathmlBuilder(group, options) {
-        const text = mml.makeText(group.value, group.mode);
-
+    mathmlBuilder(group: ParseNode<"textord">, options) {
+        const text = mml.makeText(group.value, group.mode, options);
         const variant = mml.getVariant(group, options) || "normal";
 
         let node;

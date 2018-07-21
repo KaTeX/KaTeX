@@ -4,6 +4,8 @@
  * until only non-macro tokens remain.
  */
 
+import functions from "./functions";
+import symbols from "./symbols";
 import Lexer from "./Lexer";
 import {Token} from "./Token";
 import type {Mode} from "./types";
@@ -14,6 +16,16 @@ import builtinMacros from "./macros";
 import type {MacroContextInterface, MacroDefinition, MacroExpansion}
     from "./macros";
 import type Settings from "./Settings";
+
+// List of commands that act like macros but aren't defined as a macro,
+// function, or symbol.  Used in `isDefined`.
+export const implicitCommands = {
+    "\\relax": true,     // MacroExpander.js
+    "^": true,           // Parser.js
+    "_": true,           // Parser.js
+    "\\limits": true,    // Parser.js
+    "\\nolimits": true,  // Parser.js
+};
 
 export default class MacroExpander implements MacroContextInterface {
     maxExpand: number;
@@ -250,6 +262,40 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
+     * Fully expand the given macro name and return the resulting list of
+     * tokens, or return `undefined` if no such macro is defined.
+     */
+    expandMacro(name: string): Token[] | void {
+        if (!this.macros.get(name)) {
+            return undefined;
+        }
+        const output = [];
+        const oldStackLength = this.stack.length;
+        this.pushToken(new Token(name));
+        while (this.stack.length > oldStackLength) {
+            const expanded = this.expandOnce();
+            // expandOnce returns Token if and only if it's fully expanded.
+            if (expanded instanceof Token) {
+                output.push(this.stack.pop());
+            }
+        }
+        return output;
+    }
+
+    /**
+     * Fully expand the given macro name and return the result as a string,
+     * or return `undefined` if no such macro is defined.
+     */
+    expandMacroAsText(name: string): string | void {
+        const tokens = this.expandMacro(name);
+        if (tokens) {
+            return tokens.map((token) => token.text).join("");
+        } else {
+            return tokens;
+        }
+    }
+
+    /**
      * Returns the expanded macro as a reversed array of tokens and a macro
      * argument count.  Or returns `null` if no such macro.
      */
@@ -281,6 +327,20 @@ export default class MacroExpander implements MacroContextInterface {
         }
 
         return expansion;
+    }
+
+    /**
+     * Determine whether a command is currently "defined" (has some
+     * functionality), meaning that it's a macro (in the current group),
+     * a function, a symbol, or one of the special commands listed in
+     * `implicitCommands`.
+     */
+    isDefined(name: string): boolean {
+        return this.macros.has(name) ||
+            functions.hasOwnProperty(name) ||
+            symbols.math.hasOwnProperty(name) ||
+            symbols.text.hasOwnProperty(name) ||
+            implicitCommands.hasOwnProperty(name);
     }
 }
 

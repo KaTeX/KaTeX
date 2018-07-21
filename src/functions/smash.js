@@ -3,6 +3,7 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
+import ParseNode, {assertNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -15,10 +16,10 @@ defineFunction({
         numOptionalArgs: 1,
         allowedInText: true,
     },
-    handler: (context, args, optArgs) => {
+    handler: ({parser}, args, optArgs) => {
         let smashHeight = false;
         let smashDepth = false;
-        const tbArg = optArgs[0];
+        const tbArg = optArgs[0] && assertNodeType(optArgs[0], "ordgroup");
         if (tbArg) {
             // Optional [tb] argument is engaged.
             // ref: amsmath: \renewcommand{\smash}[1][tb]{%
@@ -42,12 +43,12 @@ defineFunction({
         }
 
         const body = args[0];
-        return {
+        return new ParseNode("smash", {
             type: "smash",
             body: body,
             smashHeight: smashHeight,
             smashDepth: smashDepth,
-        };
+        }, parser.mode);
     },
     htmlBuilder: (group, options) => {
         const node = buildCommon.makeSpan(

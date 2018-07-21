@@ -1,5 +1,115 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`A MathML builder \\html@mathml makes clean symbols 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mtext>
+        ©
+      </mtext>
+      <mi mathvariant="normal">
+        ≠
+      </mi>
+      <mi mathvariant="normal">
+        ∉
+      </mi>
+      <mi mathvariant="normal">
+        ≘
+      </mi>
+      <mtext>
+        KaTeX
+      </mtext>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\copyright\\neq\\notin≘\\KaTeX
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder \\text fonts become mathvariant 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mtext>
+        roman
+      </mtext>
+      <mrow>
+        <mtext mathvariant="italic">
+          italic
+        </mtext>
+        <mrow>
+          <mtext mathvariant="bold-italic">
+            bold
+          </mtext>
+          <mtext>
+          </mtext>
+          <mtext mathvariant="bold-italic">
+            italic
+          </mtext>
+        </mrow>
+      </mrow>
+      <mtext mathvariant="bold">
+        bold
+      </mtext>
+      <mrow>
+        <mtext mathvariant="sans-serif">
+          ss
+        </mtext>
+        <mrow>
+          <mtext mathvariant="sans-serif-italic">
+            italic
+          </mtext>
+          <mrow>
+            <mtext mathvariant="sans-serif-bold-italic">
+              bold
+            </mtext>
+            <mtext>
+            </mtext>
+            <mtext mathvariant="sans-serif-bold-italic">
+              italic
+            </mtext>
+          </mrow>
+        </mrow>
+        <mtext mathvariant="bold-sans-serif">
+          bold
+        </mtext>
+      </mrow>
+      <mrow>
+        <mtext mathvariant="monospace">
+          tt
+        </mtext>
+        <mrow>
+          <mtext mathvariant="monospace">
+            italic
+          </mtext>
+          <mrow>
+            <mtext mathvariant="monospace">
+              bold
+            </mtext>
+            <mtext>
+            </mtext>
+            <mtext mathvariant="monospace">
+              italic
+            </mtext>
+          </mrow>
+        </mrow>
+        <mtext mathvariant="monospace">
+          bold
+        </mtext>
+      </mrow>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\text{roman\\textit{italic\\textbf{bold italic}}\\textbf{bold}\\textsf{ss\\textit{italic\\textbf{bold italic}}\\textbf{bold}}\\texttt{tt\\textit{italic\\textbf{bold italic}}\\textbf{bold}}}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder accents turn into <mover accent="true"> in MathML 1`] = `
 
 <math>
@@ -51,6 +161,70 @@ exports[`A MathML builder accents turn into <mover accent="true"> in MathML 1`] 
     </mrow>
     <annotation encoding="application/x-tex">
       über fiancée
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder ligatures render properly 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mtext>
+        “‘Hi—-”’
+      </mtext>
+      <mo>
+        −
+      </mo>
+      <mo>
+        −
+      </mo>
+      <mtext mathvariant="monospace">
+        \`\`‘Hi----&#x27;&#x27;’
+      </mtext>
+      <mrow>
+        <mtext>
+          \`\`
+        </mtext>
+        <mtext mathvariant="monospace">
+          ‘Hi
+        </mtext>
+        <mtext>
+          ---
+        </mtext>
+        <mtext mathvariant="monospace">
+          -
+        </mtext>
+        <mtext>
+          &#x27;&#x27;
+        </mtext>
+        <mtext mathvariant="monospace">
+          ’
+        </mtext>
+      </mrow>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\text{\`\`\`Hi----&#x27;&#x27;&#x27;}--\\texttt{\`\`\`Hi----&#x27;&#x27;&#x27;}\\text{\\tt \`\`\`Hi----&#x27;&#x27;&#x27;}
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder normal spaces render normally 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mspace width="1em">
+      </mspace>
+      <mspace width="0.431em">
+      </mspace>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\kern1em\\kern1ex
     </annotation>
   </semantics>
 </math>
@@ -125,8 +299,9 @@ exports[`A MathML builder should generate the right types of nodes 1`] = `
       <mn>
         1
       </mn>
-      <mspace width="0.277778em">
-      </mspace>
+      <mtext>
+        &ThickSpace;
+      </mtext>
       <mtext>
         a
       </mtext>
@@ -169,7 +344,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
       <msub>
         <mo>
           <mi mathvariant="normal">
-            lim sup
+            lim&ThinSpace;sup
           </mi>
           <mo>
             ⁡
@@ -204,7 +379,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} in dis
       <munder>
         <mo>
           <mi mathvariant="normal">
-            lim sup
+            lim&ThinSpace;sup
           </mi>
           <mo>
             ⁡
@@ -236,30 +411,32 @@ exports[`A MathML builder should render boldsymbol with the correct mathvariants
 <math>
   <semantics>
     <mrow>
-      <mi mathvariant="bold-italic">
-        A
-      </mi>
-      <mi mathvariant="bold-italic">
-        x
-      </mi>
-      <mn mathvariant="bold-italic">
-        2
-      </mn>
-      <mi mathvariant="bold-italic">
-        k
-      </mi>
-      <mi mathvariant="bold-italic">
-        ω
-      </mi>
-      <mi mathvariant="bold-italic">
-        Ω
-      </mi>
-      <mi mathvariant="bold-italic">
-        ı
-      </mi>
-      <mo mathvariant="bold-italic">
-        +
-      </mo>
+      <mrow>
+        <mi mathvariant="bold-italic">
+          A
+        </mi>
+        <mi mathvariant="bold-italic">
+          x
+        </mi>
+        <mn mathvariant="bold-italic">
+          2
+        </mn>
+        <mi mathvariant="bold-italic">
+          k
+        </mi>
+        <mi mathvariant="bold-italic">
+          ω
+        </mi>
+        <mi mathvariant="bold-italic">
+          Ω
+        </mi>
+        <mi mathvariant="bold-italic">
+          ı
+        </mi>
+        <mo mathvariant="bold-italic">
+          +
+        </mo>
+      </mrow>
     </mrow>
     <annotation encoding="application/x-tex">
       \\boldsymbol{Ax2k\\omega\\Omega\\imath+}
@@ -513,6 +690,74 @@ exports[`A MathML builder should use <munderover> for large operators 1`] = `
     </mrow>
     <annotation encoding="application/x-tex">
       \\displaystyle\\sum_a^b
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
+exports[`A MathML builder special spaces render specially 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mtext>
+        &ThinSpace;
+      </mtext>
+      <mtext>
+        &ThinSpace;
+      </mtext>
+      <mtext>
+        &MediumSpace;
+      </mtext>
+      <mtext>
+        &MediumSpace;
+      </mtext>
+      <mtext>
+        &ThickSpace;
+      </mtext>
+      <mtext>
+        &ThickSpace;
+      </mtext>
+      <mtext>
+        &NegativeThinSpace;
+      </mtext>
+      <mtext>
+        &NegativeThinSpace;
+      </mtext>
+      <mtext>
+        &NegativeMediumSpace;
+      </mtext>
+      <mtext>
+        &NegativeThickSpace;
+      </mtext>
+      <mtext>
+        &VeryThinSpace;
+      </mtext>
+      <mtext>
+        &ThinSpace;
+      </mtext>
+      <mtext>
+        &MediumSpace;
+      </mtext>
+      <mtext>
+        &ThickSpace;
+      </mtext>
+      <mtext>
+        &NegativeVeryThinSpace;
+      </mtext>
+      <mtext>
+        &NegativeThinSpace;
+      </mtext>
+      <mtext>
+        &NegativeMediumSpace;
+      </mtext>
+      <mtext>
+        &NegativeThickSpace;
+      </mtext>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\,\\thinspace\\:\\medspace\\;\\thickspace\\!\\negthinspace\\negmedspace\\negthickspace\\mkern1mu\\mkern3mu\\mkern4mu\\mkern5mu\\mkern-1mu\\mkern-3mu\\mkern-4mu\\mkern-5mu
     </annotation>
   </semantics>
 </math>

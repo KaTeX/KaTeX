@@ -1,23 +1,23 @@
 // @flow
 /* eslint no-constant-condition:0 */
-/* eslint no-console:0 */
 import functions from "./functions";
 import environments from "./environments";
 import MacroExpander from "./MacroExpander";
-import symbols, { extraLatin } from "./symbols";
-import { validUnit } from "./units";
-import { supportedCodepoint } from "./unicodeScripts";
+import symbols, {extraLatin} from "./symbols";
+import {validUnit} from "./units";
+import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
-import ParseNode from "./ParseNode";
+import utils from "./utils";
+import ParseNode, {assertNodeType, checkNodeType} from "./ParseNode";
 import ParseError from "./ParseError";
-import { combiningDiacriticalMarksEndRegex } from "./Lexer.js";
+import {combiningDiacriticalMarksEndRegex} from "./Lexer.js";
 import Settings from "./Settings";
-import { Token } from "./Token";
-
-import type { Mode, ArgType, BreakToken } from "./types";
-import type { FunctionContext, FunctionSpec } from "./defineFunction";
-import type { EnvSpec } from "./defineEnvironment";
+import {Token} from "./Token";
+import type {AnyParseNode} from "./ParseNode";
+import type {Mode, ArgType, BreakToken} from "./types";
+import type {FunctionContext, FunctionSpec} from "./defineFunction";
+import type {EnvSpec} from "./defineEnvironment";
 
 /**
  * This file contains the parser used to parse out a TeX expression from the
@@ -60,12 +60,12 @@ type ParsedFunc = {|
 |};
 type ParsedArg = {|
     type: "arg",
-    result: ParseNode<*>,
+    result: AnyParseNode,
     token: Token,
 |};
 type ParsedFuncOrArg = ParsedFunc | ParsedArg;
 
-function newArgument(result: ParseNode<*>, token: Token): ParsedArg {
+function newArgument(result: AnyParseNode, token: Token): ParsedArg {
     return {type: "arg", result, token};
 }
 
@@ -127,7 +127,7 @@ export default class Parser {
     /**
      * Main parsing function, which parses an entire input.
      */
-    parse(): ParseNode<*>[] {
+    parse(): AnyParseNode[] {
         // Create a group namespace for the math expression.
         // (LaTeX creates a new group for every $...$, $$...$$, \[...\].)
         this.gullet.beginGroup();
@@ -167,7 +167,7 @@ export default class Parser {
     parseExpression(
         breakOnInfix: boolean,
         breakOnTokenText?: BreakToken,
-    ): ParseNode<*>[] {
+    ): AnyParseNode[] {
         const body = [];
         // Keep adding atoms to the body until we can't parse any more atoms (either
         // we reached the end, a }, or a \right)
@@ -198,6 +198,9 @@ export default class Parser {
             }
             body.push(atom);
         }
+        if (this.mode === "text") {
+            this.formLigatures(body);
+        }
         return this.handleInfixNodes(body);
     }
 
@@ -208,13 +211,13 @@ export default class Parser {
      * There can only be one infix operator per group.  If there's more than one
      * then the expression is ambiguous.  This can be resolved by adding {}.
      */
-    handleInfixNodes(body: ParseNode<*>[]): ParseNode<*>[] {
+    handleInfixNodes(body: AnyParseNode[]): AnyParseNode[] {
         let overIndex = -1;
         let funcName;
 
         for (let i = 0; i < body.length; i++) {
-            const node = body[i];
-            if (node.type === "infix") {
+            const node = checkNodeType(body[i], "infix");
+            if (node) {
                 if (overIndex !== -1) {
                     throw new ParseError(
                         "only one infix operator per group",
@@ -244,8 +247,14 @@ export default class Parser {
                 denomNode = new ParseNode("ordgroup", denomBody, this.mode);
             }
 
-            const value = this.callFunction(funcName, [numerNode, denomNode], []);
-            return [new ParseNode(value.type, value, this.mode)];
+            let node;
+            if (funcName === "\\\\abovefrac") {
+                node = this.callFunction(funcName,
+                    [numerNode, body[overIndex], denomNode], []);
+            } else {
+                node = this.callFunction(funcName, [numerNode, denomNode], []);
+            }
+            return [node];
         } else {
             return body;
         }
@@ -259,7 +268,7 @@ export default class Parser {
      */
     handleSupSubscript(
         name: string,   // For error reporting.
-    ): ParseNode<*> {
+    ): AnyParseNode {
         const symbolToken = this.nextToken;
         const symbol = symbolToken.text;
         this.consume();
@@ -297,7 +306,7 @@ export default class Parser {
      * Converts the textual input of an unsupported command into a text node
      * contained within a color node whose color is determined by errorColor
      */
-    handleUnsupportedCmd(): ParseNode<*> {
+    handleUnsupportedCmd(): AnyParseNode {
         const text = this.nextToken.text;
         const textordArray = [];
 
@@ -329,7 +338,7 @@ export default class Parser {
     /**
      * Parses a group with optional super/subscripts.
      */
-    parseAtom(breakOnTokenText?: BreakToken): ?ParseNode<*> {
+    parseAtom(breakOnTokenText?: BreakToken): ?AnyParseNode {
         // The body of an atom is an implicit group, so that things like
         // \left(x\right)^2 work correctly.
         const base = this.parseImplicitGroup(breakOnTokenText);
@@ -352,14 +361,15 @@ export default class Parser {
 
             if (lex.text === "\\limits" || lex.text === "\\nolimits") {
                 // We got a limit control
-                if (!base || base.type !== "op") {
+                const opNode = checkNodeType(base, "op");
+                if (opNode) {
+                    const limits = lex.text === "\\limits";
+                    opNode.value.limits = limits;
+                    opNode.value.alwaysHandleSupSub = true;
+                } else {
                     throw new ParseError(
                         "Limit controls must follow a math operator",
                         lex);
-                } else {
-                    const limits = lex.text === "\\limits";
-                    base.value.limits = limits;
-                    base.value.alwaysHandleSupSub = true;
                 }
                 this.consume();
             } else if (lex.text === "^") {
@@ -427,7 +437,7 @@ export default class Parser {
      * implicit grouping after it until the end of the group. E.g.
      *   small text {\Large large text} small text again
      */
-    parseImplicitGroup(breakOnTokenText?: BreakToken): ?ParseNode<*> {
+    parseImplicitGroup(breakOnTokenText?: BreakToken): ?AnyParseNode {
         const start = this.parseSymbol();
 
         if (start == null) {
@@ -442,7 +452,9 @@ export default class Parser {
 
         if (func === "\\begin") {
             // begin...end is similar to left...right
-            const begin = this.parseGivenFunction(start);
+            const begin =
+                assertNodeType(this.parseGivenFunction(start), "environment");
+
             const envName = begin.value.name;
             if (!environments.hasOwnProperty(envName)) {
                 throw new ParseError(
@@ -461,10 +473,12 @@ export default class Parser {
             const result = env.handler(context, args, optArgs);
             this.expect("\\end", false);
             const endNameToken = this.nextToken;
-            const end = this.parseFunction();
+            let end = this.parseFunction();
             if (!end) {
                 throw new ParseError("failed to parse function after \\end");
-            } else if (end.value.name !== envName) {
+            }
+            end = assertNodeType(end, "environment");
+            if (end.value.name !== envName) {
                 throw new ParseError(
                     "Mismatch: \\begin{" + envName + "} matched " +
                     "by \\end{" + end.value.name + "}",
@@ -481,7 +495,7 @@ export default class Parser {
      * Parses an entire function, including its base and all of its arguments.
      * It also handles the case where the parsed node is not a function.
      */
-    parseFunction(): ?ParseNode<*> {
+    parseFunction(): ?AnyParseNode {
         const baseGroup = this.parseGroup();
         return baseGroup ? this.parseGivenFunction(baseGroup) : null;
     }
@@ -493,7 +507,7 @@ export default class Parser {
     parseGivenFunction(
         baseGroup: ParsedFuncOrArg,
         breakOnTokenText?: BreakToken,
-    ): ParseNode<*> {
+    ): AnyParseNode {
         if (baseGroup.type === "fn") {
             const func = baseGroup.result;
             const funcData = functions[func];
@@ -521,9 +535,8 @@ export default class Parser {
             }
             const {args, optArgs} = this.parseArguments(func, funcData);
             const token = baseGroup.token;
-            const result = this.callFunction(
+            return this.callFunction(
                 func, args, optArgs, token, breakOnTokenText);
-            return new ParseNode(result.type, result, this.mode);
         } else {
             return baseGroup.result;
         }
@@ -534,11 +547,11 @@ export default class Parser {
      */
     callFunction(
         name: string,
-        args: ParseNode<*>[],
-        optArgs: (?ParseNode<*>)[],
+        args: AnyParseNode[],
+        optArgs: (?AnyParseNode)[],
         token?: Token,
         breakOnTokenText?: BreakToken,
-    ): * {
+    ): AnyParseNode {
         const context: FunctionContext = {
             funcName: name,
             parser: this,
@@ -560,8 +573,8 @@ export default class Parser {
         func: string,   // Should look like "\name" or "\begin{name}".
         funcData: FunctionSpec<*> | EnvSpec<*>,
     ): {
-        args: ParseNode<*>[],
-        optArgs: (?ParseNode<*>)[],
+        args: AnyParseNode[],
+        optArgs: (?AnyParseNode)[],
     } {
         const totalArgs = funcData.numArgs + funcData.numOptionalArgs;
         if (totalArgs === 0) {
@@ -608,7 +621,7 @@ export default class Parser {
                         "Expected group after '" + func + "'", nextToken);
                 }
             }
-            let argNode: ParseNode<*>;
+            let argNode: AnyParseNode;
             if (arg.type === "fn") {
                 const argGreediness =
                     functions[arg.result].greediness;
@@ -796,6 +809,12 @@ export default class Parser {
         // and keep them as-is. Some browser will replace backslashes with
         // forward slashes.
         const url = raw.replace(/\\([#$%&~_^{}])/g, '$1');
+        const protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
+        const allowed = this.settings.allowedProtocols;
+        if (!utils.contains(allowed,  "*") && !utils.contains(allowed,
+                protocol != null ? protocol[1] : "_relative")) {
+            throw new ParseError('Not allowed \\href protocol', res);
+        }
         return newArgument(new ParseNode("url", {
             type: "url",
             value: url,
@@ -807,6 +826,7 @@ export default class Parser {
      */
     parseSizeGroup(optional: boolean): ?ParsedArg {
         let res;
+        let isBlank = false;
         if (!optional && this.nextToken.text !== "{") {
             res = this.parseRegexGroup(
                 /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2} *$/, "size");
@@ -815,6 +835,13 @@ export default class Parser {
         }
         if (!res) {
             return null;
+        }
+        if (!optional && res.text.length === 0) {
+            // Because we've tested for what is !optional, this block won't
+            // affect \kern, \hspace, etc. It will capture the mandatory arguments
+            // to \genfrac and \above.
+            res.text = "0pt";    // Enable \above{}
+            isBlank = true;      // This is here specifically for \genfrac
         }
         const match = (/([-+]?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(res.text);
         if (!match) {
@@ -830,6 +857,7 @@ export default class Parser {
         return newArgument(new ParseNode("size", {
             type: "size",
             value: data,
+            isBlank: isBlank,
         }, this.mode), res);
     }
 
@@ -866,9 +894,6 @@ export default class Parser {
             this.gullet.endGroup();
             // Make sure we get a close brace
             this.expect(optional ? "]" : "}");
-            if (mode === "text") {
-                this.formLigatures(expression);
-            }
             return newArgument(
                 new ParseNode(
                     "ordgroup", expression, this.mode, firstToken, lastToken),
@@ -894,7 +919,7 @@ export default class Parser {
      * characters in its value.  The representation is still ASCII source.
      * The group will be modified in place.
      */
-    formLigatures(group: ParseNode<*>[]) {
+    formLigatures(group: AnyParseNode[]) {
         let n = group.length - 1;
         for (let i = 0; i < n; ++i) {
             const a = group[i];
@@ -990,7 +1015,8 @@ export default class Parser {
             if (this.settings.strict) {
                 if (!supportedCodepoint(text.charCodeAt(0))) {
                     this.settings.reportNonstrict("unknownSymbol",
-                        `Unrecognized Unicode character "${text[0]}"`, nucleus);
+                        `Unrecognized Unicode character "${text[0]}"` +
+                        ` (${text.charCodeAt(0)})`, nucleus);
                 } else if (this.mode === "math") {
                     this.settings.reportNonstrict("unicodeTextInMathMode",
                         `Unicode text character "${text[0]}" used in math mode`,

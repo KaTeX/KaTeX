@@ -10,6 +10,9 @@
  */
 
 import utils from "./utils";
+import * as tree from "./tree";
+
+import type {VirtualNode} from "./tree";
 
 /**
  * MathML node types used in KaTeX. For a complete list of MathML nodes, see
@@ -24,17 +27,26 @@ export type MathNodeType =
     "mrow" | "menclose" |
     "mstyle" | "mpadded" | "mphantom";
 
+export interface MathDomNode extends VirtualNode {
+    toText(): string;
+}
+
+export type documentFragment = tree.documentFragment<MathDomNode>;
+export function newDocumentFragment(children: MathDomNode[]): documentFragment {
+    return new tree.documentFragment(children);
+}
+
 /**
  * This node represents a general purpose MathML node of any type. The
  * constructor requires the type of node to create (for example, `"mo"` or
  * `"mspace"`, corresponding to `<mo>` and `<mspace>` tags).
  */
-export class MathNode {
+export class MathNode implements MathDomNode {
     type: MathNodeType;
     attributes: {[string]: string};
-    children: (MathNode | TextNode)[];
+    children: MathDomNode[];
 
-    constructor(type: MathNodeType, children?: (MathNode | TextNode)[]) {
+    constructor(type: MathNodeType, children?: MathDomNode[]) {
         this.type = type;
         this.attributes = {};
         this.children = children || [];
@@ -46,6 +58,13 @@ export class MathNode {
      */
     setAttribute(name: string, value: string) {
         this.attributes[name] = value;
+    }
+
+    /**
+     * Gets an attribute on a MathML node.
+     */
+    getAttribute(name: string): string {
+        return this.attributes[name];
     }
 
     /**
@@ -95,18 +114,9 @@ export class MathNode {
     }
 
     /**
-     * Converts the math node into a string, similar to innerText.
+     * Converts the math node into a string, similar to innerText, but escaped.
      */
     toText(): string {
-        if (this.type === "mspace") {
-            if (this.attributes.width === "0.16667em") {
-                return "\u2006";
-            } else {
-                // TODO: Use other space characters for different widths.
-                // https://github.com/Khan/KaTeX/issues/1036
-                return " ";
-            }
-        }
         return this.children.map(child => child.toText()).join("");
     }
 }
@@ -114,36 +124,117 @@ export class MathNode {
 /**
  * This node represents a piece of text.
  */
-export class TextNode {
+export class TextNode implements MathDomNode {
     text: string;
+    needsEscape: boolean;
 
-    constructor(text: string) {
+    constructor(text: string, needsEscape: boolean = true) {
         this.text = text;
+        this.needsEscape = needsEscape;
     }
 
     /**
      * Converts the text node into a DOM text node.
      */
     toNode(): Node {
-        return document.createTextNode(this.text);
+        return document.createTextNode(this.toText());
     }
 
     /**
-     * Converts the text node into HTML markup (which is just the text itself).
+     * Converts the text node into escaped HTML markup
+     * (representing the text itself).
      */
     toMarkup(): string {
-        return utils.escape(this.text);
+        return this.toText();
     }
 
     /**
-     * Converts the text node into a string (which is just the text iteself).
+     * Converts the text node into an escaped string
+     * (representing the text iteself).
      */
     toText(): string {
-        return this.text;
+        return this.needsEscape ? utils.escape(this.text) : this.text;
+    }
+}
+
+/**
+ * This node represents a space, but may render as <mspace.../> or as text,
+ * depending on the width.
+ */
+class SpaceNode implements MathDomNode {
+    width: number;
+    character: ?string;
+
+    /**
+     * Create a Space node with width given in CSS ems.
+     */
+    constructor(width: number) {
+        this.width = width;
+        // See https://www.w3.org/TR/2000/WD-MathML2-20000328/chapter6.html
+        // for a table of space-like characters.  We consistently use the
+        // &LongNames; because Unicode does not have single characters for
+        // &ThickSpace; (\u2005\u200a) and all negative spaces.
+        if (width >= 0.05555 && width <= 0.05556) {
+            this.character = "&VeryThinSpace;";  // \u200a
+        } else if (width >= 0.1666 && width <= 0.1667) {
+            this.character = "&ThinSpace;";      // \u2009
+        } else if (width >= 0.2222 && width <= 0.2223) {
+            this.character = "&MediumSpace;";    // \u2005
+        } else if (width >= 0.2777 && width <= 0.2778) {
+            this.character = "&ThickSpace;";     // \u2005\u200a
+        } else if (width >= -0.05556 && width <= -0.05555) {
+            this.character = "&NegativeVeryThinSpace;";
+        } else if (width >= -0.1667 && width <= -0.1666) {
+            this.character = "&NegativeThinSpace;";
+        } else if (width >= -0.2223 && width <= -0.2222) {
+            this.character = "&NegativeMediumSpace;";
+        } else if (width >= -0.2778 && width <= -0.2777) {
+            this.character = "&NegativeThickSpace;";
+        } else {
+            this.character = null;
+        }
+    }
+
+    /**
+     * Converts the math node into a MathML-namespaced DOM element.
+     */
+    toNode(): Node {
+        if (this.character) {
+            return document.createTextNode(this.character);
+        } else {
+            const node = document.createElementNS(
+                "http://www.w3.org/1998/Math/MathML", "mspace");
+            node.setAttribute("width", this.width + "em");
+            return node;
+        }
+    }
+
+    /**
+     * Converts the math node into an HTML markup string.
+     */
+    toMarkup(): string {
+        if (this.character) {
+            return `<mtext>${this.character}</mtext>`;
+        } else {
+            return `<mspace width="${this.width}em"/>`;
+        }
+    }
+
+    /**
+     * Converts the math node into a string, similar to innerText.
+     */
+    toText(): string {
+        if (this.character) {
+            return this.character;
+        } else {
+            return " ";
+        }
     }
 }
 
 export default {
     MathNode,
     TextNode,
+    SpaceNode,
+    newDocumentFragment,
 };

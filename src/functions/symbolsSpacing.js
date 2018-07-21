@@ -2,6 +2,7 @@
 import {defineFunctionBuilders} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
+import ParseError from "../ParseError";
 
 // ParseNode<"spacing"> created in Parser.js from the "spacing" symbol Groups in
 // src/symbols.js.
@@ -22,12 +23,13 @@ defineFunctionBuilders({
                     [buildCommon.mathsym(group.value, group.mode, options)],
                     options);
             }
-        } else {
-            // Other kinds of spaces are of arbitrary width. We use CSS to
-            // generate these.
+        } else if (buildCommon.cssSpace.hasOwnProperty(group.value)) {
+            // Spaces based on just a CSS class.
             return buildCommon.makeSpan(
-                ["mspace", buildCommon.spacingFunctions[group.value].className],
+                ["mspace", buildCommon.cssSpace[group.value]],
                 [], options);
+        } else {
+            throw new ParseError(`Unknown type of space "${group.value}"`);
         }
     },
     mathmlBuilder(group, options) {
@@ -36,11 +38,11 @@ defineFunctionBuilders({
         if (buildCommon.regularSpace.hasOwnProperty(group.value)) {
             node = new mathMLTree.MathNode(
                 "mtext", [new mathMLTree.TextNode("\u00a0")]);
+        } else if (buildCommon.cssSpace.hasOwnProperty(group.value)) {
+            // CSS-based MathML spaces (\nobreak, \allowbreak) are ignored
+            return new mathMLTree.MathNode("mspace");
         } else {
-            node = new mathMLTree.MathNode("mspace");
-
-            node.setAttribute(
-                "width", buildCommon.spacingFunctions[group.value].size);
+            throw new ParseError(`Unknown type of space "${group.value}"`);
         }
 
         return node;

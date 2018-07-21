@@ -1,6 +1,7 @@
 // @flow
 // TODO(kevinb): implement \\sl and \\sc
 
+import {binrelClass} from "./mclass";
 import defineFunction from "../defineFunction";
 import ParseNode from "../ParseNode";
 
@@ -30,34 +31,59 @@ const fontAliases = {
 defineFunction({
     type: "font",
     names: [
-        // styles
-        "\\mathrm", "\\mathit", "\\mathbf", "\\boldsymbol",
+        // styles, except \boldsymbol defined below
+        "\\mathrm", "\\mathit", "\\mathbf",
 
         // families
         "\\mathbb", "\\mathcal", "\\mathfrak", "\\mathscr", "\\mathsf",
         "\\mathtt",
 
-        // aliases
-        "\\Bbb", "\\bold", "\\frak", "\\bm",
+        // aliases, except \bm defined below
+        "\\Bbb", "\\bold", "\\frak",
     ],
     props: {
         numArgs: 1,
         greediness: 2,
     },
-    handler: (context, args) => {
+    handler: ({parser, funcName}, args) => {
         const body = args[0];
-        let func = context.funcName;
+        let func = funcName;
         if (func in fontAliases) {
             func = fontAliases[func];
         }
-        return {
+        return new ParseNode("font", {
             type: "font",
             font: func.slice(1),
-            body: body,
-        };
+            body,
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,
+});
+
+defineFunction({
+    type: "mclass",
+    names: ["\\boldsymbol", "\\bm"],
+    props: {
+        numArgs: 1,
+        greediness: 2,
+    },
+    handler: ({parser}, args) => {
+        const body = args[0];
+        // amsbsy.sty's \boldsymbol uses \binrel spacing to inherit the
+        // argument's bin|rel|ord status
+        return new ParseNode("mclass", {
+            type: "mclass",
+            mclass: binrelClass(body),
+            value: [
+                new ParseNode("font", {
+                    type: "font",
+                    font: "boldsymbol",
+                    body,
+                }, parser.mode),
+            ],
+        }, parser.mode);
+    },
 });
 
 const oldFontFuncsMap = {
@@ -76,18 +102,17 @@ defineFunction({
         numArgs: 0,
         allowedInText: true,
     },
-    handler: (context, args) => {
-        const {parser, funcName, breakOnTokenText} = context;
-
+    handler: ({parser, funcName, breakOnTokenText}, args) => {
+        const {mode} = parser;
         parser.consumeSpaces();
         const body = parser.parseExpression(true, breakOnTokenText);
         const style = oldFontFuncsMap[funcName];
 
-        return {
+        return new ParseNode("font", {
             type: "font",
             font: style,
             body: new ParseNode("ordgroup", body, parser.mode),
-        };
+        }, mode);
     },
     htmlBuilder,
     mathmlBuilder,

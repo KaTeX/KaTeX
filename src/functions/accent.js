@@ -4,22 +4,23 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
-import {assertNodeType, checkNodeType} from "../ParseNode";
+import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
+import {assertDomContainer, assertSymbolDomNode} from "../domTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type ParseNode from "../ParseNode";
+import type {AnyParseNode} from "../ParseNode";
 import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "accent", but
 // also "supsub" since an accent can affect super/subscripting.
 export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
     // Accents are handled in the TeXbook pg. 443, rule 12.
-    let base: ParseNode<*>;
+    let base: AnyParseNode;
     let group: ParseNode<"accent">;
 
-    const supSub = checkNodeType(grp, "supsub");
+    const supSub: ?ParseNode<"supsub"> = checkNodeType(grp, "supsub");
     let supSubGroup;
     if (supSub) {
         // If our base is a character box, and we have superscripts and
@@ -39,7 +40,10 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
 
         // Rerender the supsub group with its new base, and store that
         // result.
-        supSubGroup = html.buildGroup(supSub, options);
+        supSubGroup = assertDomContainer(html.buildGroup(supSub, options));
+
+        // reset original base
+        supSub.value.base = group;
     } else {
         group = assertNodeType(grp, "accent");
         base = group.value.base;
@@ -64,7 +68,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
         // Then, we render its group to get the symbol inside it
         const baseGroup = html.buildGroup(baseChar, options.havingCrampedStyle());
         // Finally, we pull the skew off of the symbol.
-        skew = baseGroup.skew;
+        skew = assertSymbolDomNode(baseGroup).skew;
         // Note that we now throw away baseGroup, because the layers we
         // removed with getBaseElem might contain things like \color which
         // we can't get rid of.
@@ -209,7 +213,7 @@ defineFunction({
     type: "accent",
     names: [
         "\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve",
-        "\\check", "\\hat", "\\vec", "\\dot", "\\mathring",
+        "\\check", "\\hat", "\\vec", "\\dot", "\\mathring", "\\widecheck",
         "\\widehat", "\\widetilde", "\\overrightarrow", "\\overleftarrow",
         "\\Overrightarrow", "\\overleftrightarrow", "\\overgroup",
         "\\overlinesegment", "\\overleftharpoon", "\\overrightharpoon",
@@ -223,15 +227,16 @@ defineFunction({
         const isStretchy = !NON_STRETCHY_ACCENT_REGEX.test(context.funcName);
         const isShifty = !isStretchy ||
             context.funcName === "\\widehat" ||
-            context.funcName === "\\widetilde";
+            context.funcName === "\\widetilde" ||
+            context.funcName === "\\widecheck";
 
-        return {
+        return new ParseNode("accent", {
             type: "accent",
             label: context.funcName,
             isStretchy: isStretchy,
             isShifty: isShifty,
             base: base,
-        };
+        }, context.parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,
@@ -252,13 +257,13 @@ defineFunction({
     handler: (context, args) => {
         const base = args[0];
 
-        return {
+        return new ParseNode("accent", {
             type: "accent",
             label: context.funcName,
             isStretchy: false,
             isShifty: true,
             base: base,
-        };
+        }, context.parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,

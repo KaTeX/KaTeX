@@ -4,9 +4,9 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import { calculateSize } from "../units";
+import {calculateSize} from "../units";
 import ParseError from "../ParseError";
-import {assertNodeType} from "../ParseNode";
+import ParseNode, {assertNodeType} from "../ParseNode";
 
 // \\ is a macro mapping to either \cr or \newline.  Because they have the
 // same signature, we implement them as one megafunction, with newRow
@@ -23,13 +23,13 @@ defineFunction({
         allowedInText: true,
     },
 
-    handler: (context, args, optArgs) => {
+    handler: ({parser, funcName}, args, optArgs) => {
         const size = optArgs[0];
-        const newRow = (context.funcName === "\\cr");
+        const newRow = (funcName === "\\cr");
         let newLine = false;
         if (!newRow) {
-            if (context.parser.settings.displayMode &&
-                context.parser.settings.useStrictBehavior(
+            if (parser.settings.displayMode &&
+                parser.settings.useStrictBehavior(
                     "newLineInDisplayMode", "In LaTeX, \\\\ or \\newline " +
                     "does nothing in display mode")) {
                 newLine = false;
@@ -37,12 +37,12 @@ defineFunction({
                 newLine = true;
             }
         }
-        return {
+        return new ParseNode("cr", {
             type: "cr",
             newLine,
             newRow,
             size: size && assertNodeType(size, "size"),
-        };
+        }, parser.mode);
     },
 
     // The following builders are called only at the top level,

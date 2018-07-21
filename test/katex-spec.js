@@ -2,6 +2,7 @@
 /* global expect: false */
 /* global it: false */
 /* global describe: false */
+/* global beforeAll: false */
 
 import buildMathML from "../src/buildMathML";
 import buildTree from "../src/buildTree";
@@ -11,7 +12,7 @@ import Options from "../src/Options";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
 import {
-    defaultSettings,
+    strictSettings, nonstrictSettings,
     _getBuilt, getBuilt, getParsed, stripPositions,
 } from "./helpers";
 
@@ -23,15 +24,15 @@ const defaultOptions = new Options({
 
 describe("A parser", function() {
     it("should not fail on an empty string", function() {
-        expect("").toParse();
+        expect("").toParse(strictSettings);
     });
 
     it("should ignore whitespace", function() {
-        expect("    x    y    ").toParseLike("xy");
+        expect("    x    y    ").toParseLike("xy", strictSettings);
     });
 
     it("should ignore whitespace in atom", function() {
-        expect("    x   ^ y    ").toParseLike("x^y");
+        expect("    x   ^ y    ").toParseLike("x^y", strictSettings);
     });
 });
 
@@ -92,17 +93,20 @@ describe("A rel parser", function() {
         expect(parse).toBeTruthy();
 
         for (let i = 0; i < parse.length; i++) {
-            const group = parse[i];
+            let group = parse[i];
+            if (group.type === "htmlmathml") {
+                group = group.value.html[0];
+            }
             expect(group.type).toEqual("rel");
         }
     });
 });
 
 describe("A punct parser", function() {
-    const expression = ",;\\colon";
+    const expression = ",;";
 
     it("should not fail", function() {
-        expect(expression).toParse();
+        expect(expression).toParse(strictSettings);
     });
 
     it("should build a list of puncts", function() {
@@ -426,6 +430,9 @@ describe("A frac parser", function() {
     const expression = "\\frac{x}{y}";
     const dfracExpression = "\\dfrac{x}{y}";
     const tfracExpression = "\\tfrac{x}{y}";
+    const cfracExpression = "\\cfrac{x}{y}";
+    const genfrac1 = "\\genfrac ( ] {0.06em}{0}{a}{b+c}";
+    const genfrac2 = "\\genfrac ( ] {0.8pt}{}{a}{b+c}";
 
     it("should not fail", function() {
         expect(expression).toParse();
@@ -439,13 +446,15 @@ describe("A frac parser", function() {
         expect(parse.value.denom).toBeDefined();
     });
 
-    it("should also parse dfrac and tfrac", function() {
+    it("should also parse cfrac, dfrac, tfrac, and genfrac", function() {
+        expect(cfracExpression).toParse();
         expect(dfracExpression).toParse();
-
         expect(tfracExpression).toParse();
+        expect(genfrac1).toParse();
+        expect(genfrac2).toParse();
     });
 
-    it("should parse dfrac and tfrac as fracs", function() {
+    it("should parse cfrac, dfrac, tfrac, and genfrac as fracs", function() {
         const dfracParse = getParsed(dfracExpression)[0];
 
         expect(dfracParse.type).toEqual("genfrac");
@@ -457,6 +466,30 @@ describe("A frac parser", function() {
         expect(tfracParse.type).toEqual("genfrac");
         expect(tfracParse.value.numer).toBeDefined();
         expect(tfracParse.value.denom).toBeDefined();
+
+        const cfracParse = getParsed(cfracExpression)[0];
+
+        expect(cfracParse.type).toEqual("genfrac");
+        expect(cfracParse.value.numer).toBeDefined();
+        expect(cfracParse.value.denom).toBeDefined();
+
+        const genfracParse = getParsed(genfrac1)[0];
+
+        expect(genfracParse.type).toEqual("genfrac");
+        expect(genfracParse.value.numer).toBeDefined();
+        expect(genfracParse.value.denom).toBeDefined();
+        expect(genfracParse.value.leftDelim).toBeDefined();
+        expect(genfracParse.value.rightDelim).toBeDefined();
+    });
+
+    it("should fail, given math as a line thickness to genfrac", function() {
+        const badGenFrac = "\\genfrac ( ] {b+c}{0}{a}{b+c}";
+        expect(badGenFrac).toNotParse();
+    });
+
+    it("should fail if genfrac is given less than 6 arguments", function() {
+        const badGenFrac = "\\genfrac ( ] {0.06em}{0}{a}";
+        expect(badGenFrac).toNotParse();
     });
 
     it("should parse atop", function() {
@@ -469,13 +502,17 @@ describe("A frac parser", function() {
     });
 });
 
-describe("An over parser", function() {
+describe("An over/brace/brack parser", function() {
     const simpleOver = "1 \\over x";
     const complexOver = "1+2i \\over 3+4i";
+    const braceFrac = "a+b \\brace c+d";
+    const brackFrac = "a+b \\brack c+d";
 
     it("should not fail", function() {
         expect(simpleOver).toParse();
         expect(complexOver).toParse();
+        expect(braceFrac).toParse();
+        expect(brackFrac).toParse();
     });
 
     it("should produce a frac", function() {
@@ -492,6 +529,22 @@ describe("An over parser", function() {
         expect(parse.type).toEqual("genfrac");
         expect(parse.value.numer).toBeDefined();
         expect(parse.value.denom).toBeDefined();
+
+        const parseBraceFrac = getParsed(braceFrac)[0];
+
+        expect(parseBraceFrac.type).toEqual("genfrac");
+        expect(parseBraceFrac.value.numer).toBeDefined();
+        expect(parseBraceFrac.value.denom).toBeDefined();
+        expect(parseBraceFrac.value.leftDelim).toBeDefined();
+        expect(parseBraceFrac.value.rightDelim).toBeDefined();
+
+        const parseBrackFrac = getParsed(brackFrac)[0];
+
+        expect(parseBrackFrac.type).toEqual("genfrac");
+        expect(parseBrackFrac.value.numer).toBeDefined();
+        expect(parseBrackFrac.value.denom).toBeDefined();
+        expect(parseBrackFrac.value.leftDelim).toBeDefined();
+        expect(parseBrackFrac.value.rightDelim).toBeDefined();
     });
 
     it("should create a numerator from the atoms before \\over", function() {
@@ -556,6 +609,27 @@ describe("An over parser", function() {
 
         const badOverChoose = "1 \\over 2 \\choose 3";
         expect(badOverChoose).toNotParse();
+    });
+});
+
+describe("A genfrac builder", function() {
+    it("should not fail", function() {
+        expect("\\frac{x}{y}").toBuild();
+        expect("\\dfrac{x}{y}").toBuild();
+        expect("\\tfrac{x}{y}").toBuild();
+        expect("\\cfrac{x}{y}").toBuild();
+        expect("\\genfrac ( ] {0.06em}{0}{a}{b+c}").toBuild();
+        expect("\\genfrac ( ] {0.8pt}{}{a}{b+c}").toBuild();
+    });
+});
+
+describe("A infix builder", function() {
+    it("should not fail", function() {
+        expect("a \\over b").toBuild();
+        expect("a \\atop b").toBuild();
+        expect("a \\choose b").toBuild();
+        expect("a \\brace b").toBuild();
+        expect("a \\brack b").toBuild();
     });
 });
 
@@ -643,15 +717,15 @@ describe("A text parser", function() {
     });
 
     it("should parse math within text group", function() {
-        expect("\\text{graph: $y = mx + b$}").toParse();
-        expect("\\text{graph: \\(y = mx + b\\)}").toParse();
+        expect("\\text{graph: $y = mx + b$}").toParse(strictSettings);
+        expect("\\text{graph: \\(y = mx + b\\)}").toParse(strictSettings);
     });
 
     it("should parse math within text within math within text", function() {
-        expect("\\text{hello $x + \\text{world $y$} + z$}").toParse();
-        expect("\\text{hello \\(x + \\text{world $y$} + z\\)}").toParse();
-        expect("\\text{hello $x + \\text{world \\(y\\)} + z$}").toParse();
-        expect("\\text{hello \\(x + \\text{world \\(y\\)} + z\\)}").toParse();
+        expect("\\text{hello $x + \\text{world $y$} + z$}").toParse(strictSettings);
+        expect("\\text{hello \\(x + \\text{world $y$} + z\\)}").toParse(strictSettings);
+        expect("\\text{hello $x + \\text{world \\(y\\)} + z$}").toParse(strictSettings);
+        expect("\\text{hello \\(x + \\text{world \\(y\\)} + z\\)}").toParse(strictSettings);
     });
 
     it("should forbid \\( within math mode", function() {
@@ -1130,6 +1204,11 @@ describe("A begin/end parser", function() {
 
     it("should parse an environment with hlines", function() {
         expect("\\begin{matrix}\\hline a&b\\\\ \\hline c&d\\end{matrix}").toParse();
+        expect("\\begin{matrix}\\hdashline a&b\\\\ \\hdashline c&d\\end{matrix}").toParse();
+    });
+
+    it("should forbid hlines outside array environment", () => {
+        expect("\\hline").toNotParse();
     });
 
     it("should error when name is mismatched", function() {
@@ -1165,6 +1244,12 @@ describe("A begin/end parser", function() {
     it("should eat a final newline", function() {
         const m3 = getParsed("\\begin{matrix}a&b\\\\ c&d \\\\ \\end{matrix}")[0];
         expect(m3.value.body.length).toBe(2);
+    });
+
+    it("should grab \\arraystretch", function() {
+        const parse = getParsed("\\def\\arraystretch{1.5}" +
+            "\\begin{matrix}a&b\\\\c&d\\end{matrix}");
+        expect(parse).toMatchSnapshot();
     });
 });
 
@@ -1331,6 +1416,23 @@ describe("A TeX-compliant parser", function() {
     });
 });
 
+describe("An op symbol builder", function() {
+    it("should not fail", function() {
+        expect("\\int_i^n").toBuild();
+        expect("\\iint_i^n").toBuild();
+        expect("\\iiint_i^n").toBuild();
+        expect("\\int\nolimits_i^n").toBuild();
+        expect("\\iint\nolimits_i^n").toBuild();
+        expect("\\iiint\nolimits_i^n").toBuild();
+        expect("\\oint_i^n").toBuild();
+        expect("\\oiint_i^n").toBuild();
+        expect("\\oiiint_i^n").toBuild();
+        expect("\\oint\nolimits_i^n").toBuild();
+        expect("\\oiint\nolimits_i^n").toBuild();
+        expect("\\oiiint\nolimits_i^n").toBuild();
+    });
+});
+
 describe("A style change parser", function() {
     it("should not fail", function() {
         expect("\\displaystyle x").toParse();
@@ -1404,10 +1506,9 @@ describe("A font parser", function() {
         expect(nestedParse.value.font).toEqual("mathbb");
         expect(nestedParse.value.type).toEqual("font");
 
-        expect(nestedParse.value.body.value.length).toEqual(3);
         const bbBody = nestedParse.value.body.value;
+        expect(bbBody.length).toEqual(3);
         expect(bbBody[0].type).toEqual("mathord");
-        expect(bbBody[1].type).toEqual("rel");
         expect(bbBody[2].type).toEqual("font");
         expect(bbBody[2].value.font).toEqual("mathrm");
         expect(bbBody[2].value.type).toEqual("font");
@@ -1440,6 +1541,12 @@ describe("A font parser", function() {
 
     it("should have the correct greediness", function() {
         expect("e^\\mathbf{x}").toParse();
+    });
+
+    it("\\boldsymbol should inherit mbin/mrel from argument", () => {
+        const built = _getBuilt("a\\boldsymbol{}b\\boldsymbol{=}c" +
+            "\\boldsymbol{+}d\\boldsymbol{++}e\\boldsymbol{xyz}f");
+        expect(built).toMatchSnapshot();
     });
 });
 
@@ -1853,6 +1960,7 @@ describe("An accent parser", function() {
 
     it("should parse stretchy, shifty accents", function() {
         expect("\\widehat{x}").toParse();
+        expect("\\widecheck{x}").toParse();
     });
 
     it("should parse stretchy, non-shifty accents", function() {
@@ -1880,6 +1988,7 @@ describe("An accent builder", function() {
 describe("A stretchy and shifty accent builder", function() {
     it("should not fail", function() {
         expect("\\widehat{AB}").toBuild();
+        expect("\\widecheck{AB}").toBuild();
         expect("\\widehat{AB}^2").toBuild();
         expect("\\widehat{AB}_2").toBuild();
         expect("\\widehat{AB}_2^2").toBuild();
@@ -2267,7 +2376,7 @@ describe("A smash builder", function() {
 describe("A parser error", function() {
     it("should report the position of an error", function() {
         try {
-            parseTree("\\sqrt}", defaultSettings);
+            parseTree("\\sqrt}", new Settings());
         } catch (e) {
             expect(e.position).toEqual(5);
         }
@@ -2307,20 +2416,23 @@ describe("An array environment", function() {
         const parse = getParsed("\\begin{array}r1\\\\20\\end{array}");
         expect(parse[0].type).toBe("array");
         expect(parse[0].value.cols).toEqual([
-            { type: "align", align: "r" },
+            {type: "align", align: "r"},
         ]);
     });
 
     it("should accept vertical separators", function() {
-        const parse = getParsed("\\begin{array}{|l||c|}\\end{array}");
+        const parse = getParsed("\\begin{array}{|l||c:r::}\\end{array}");
         expect(parse[0].type).toBe("array");
         expect(parse[0].value.cols).toEqual([
-            { type: "separator", separator: "|" },
-            { type: "align", align: "l" },
-            { type: "separator", separator: "|" },
-            { type: "separator", separator: "|" },
-            { type: "align", align: "c" },
-            { type: "separator", separator: "|" },
+            {type: "separator", separator: "|"},
+            {type: "align", align: "l"},
+            {type: "separator", separator: "|"},
+            {type: "separator", separator: "|"},
+            {type: "align", align: "c"},
+            {type: "separator", separator: ":"},
+            {type: "align", align: "r"},
+            {type: "separator", separator: ":"},
+            {type: "separator", separator: ":"},
         ]);
     });
 
@@ -2359,6 +2471,12 @@ describe("An aligned environment", function() {
     });
 });
 
+describe("operatorname support", function() {
+    it("should not fail", function() {
+        expect("\\operatorname{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
+    });
+});
+
 describe("An href command", function() {
     it("should parse its input", function() {
         expect("\\href{http://example.com/}{example here}").toParse();
@@ -2391,6 +2509,23 @@ describe("An href command", function() {
     it("should be marked up correctly", function() {
         const markup = katex.renderToString("\\href{http://example.com/}{example here}");
         expect(markup).toContain("<a href=\"http://example.com/\">");
+    });
+
+    it("should allow protocols in allowedProtocols", function() {
+        expect("\\href{relative}{foo}").toParse();
+        expect("\\href{ftp://x}{foo}").toParse(new Settings({
+            allowedProtocols: ["ftp"],
+        }));
+        expect("\\href{ftp://x}{foo}").toParse(new Settings({
+            allowedProtocols: ["*"],
+        }));
+    });
+
+    it("should not allow protocols not in allowedProtocols", function() {
+        expect("\\href{javascript:alert('x')}{foo}").toNotParse();
+        expect("\\href{relative}{foo}").toNotParse(new Settings({
+            allowedProtocols: [],
+        }));
     });
 });
 
@@ -2463,7 +2598,7 @@ describe("Symbols", function() {
         // http://mirrors.ctan.org/fonts/amsfonts/doc/amsfonts.pdf
         const symbols = "\\yen\\checkmark\\circledR\\maltese";
         expect(symbols).toBuild();
-        expect(`\\text{${symbols}}`).toBuild();
+        expect(`\\text{${symbols}}`).toBuild(strictSettings);
     });
 });
 
@@ -2472,7 +2607,7 @@ describe("A macro expander", function() {
     const compareParseTree = function(actual, expected, macros) {
         const settings = new Settings({macros: macros});
         actual = stripPositions(parseTree(actual, settings));
-        expected = stripPositions(parseTree(expected, defaultSettings));
+        expected = stripPositions(parseTree(expected, new Settings()));
         expect(actual).toEqual(expected);
     };
 
@@ -2676,6 +2811,20 @@ describe("A macro expander", function() {
             {"\\mode": "\\TextOrMath{t}{m}"});
     });
 
+    it("\\char produces literal characters", () => {
+        expect("\\char`a").toParseLike("\\char`\\a");
+        expect("\\char`\\%").toParseLike("\\char37");
+        expect("\\char`\\%").toParseLike("\\char'45");
+        expect("\\char`\\%").toParseLike('\\char"25');
+        expect("\\char").toNotParse();
+        expect("\\char`").toNotParse();
+        expect("\\char'").toNotParse();
+        expect('\\char"').toNotParse();
+        expect("\\char'a").toNotParse();
+        expect('\\char"g').toNotParse();
+        expect('\\char"g').toNotParse();
+    });
+
     // TODO(edemaine): This doesn't work yet.  Parses like `\text text`,
     // which doesn't treat all four letters as an argument.
     //it("\\TextOrMath should work in a macro passed to \\text", function() {
@@ -2757,6 +2906,57 @@ describe("A macro expander", function() {
         expect(macros["\\foo"]).toBeFalsy();
     });
 
+    it("\\newcommand defines new macros", () => {
+        compareParseTree("\\newcommand\\foo{x^2}\\foo+\\foo", "x^2+x^2");
+        compareParseTree("\\newcommand{\\foo}{x^2}\\foo+\\foo", "x^2+x^2");
+        // Function detection
+        expect("\\newcommand\\bar{x^2}\\bar+\\bar").toNotParse();
+        expect("\\newcommand{\\bar}{x^2}\\bar+\\bar").toNotParse();
+        // Symbol detection
+        expect("\\newcommand\\lambda{x^2}\\lambda").toNotParse();
+        expect("\\newcommand\\textdollar{x^2}\\textdollar").toNotParse();
+        // Macro detection
+        expect("\\newcommand{\\foo}{1}\\foo\\newcommand{\\foo}{2}\\foo")
+            .toNotParse();
+        // Implicit detection
+        expect("\\newcommand\\limits{}").toNotParse();
+    });
+
+    it("\\renewcommand redefines macros", () => {
+        expect("\\renewcommand\\foo{x^2}\\foo+\\foo").toNotParse();
+        expect("\\renewcommand{\\foo}{x^2}\\foo+\\foo").toNotParse();
+        compareParseTree("\\renewcommand\\bar{x^2}\\bar+\\bar", "x^2+x^2");
+        compareParseTree("\\renewcommand{\\bar}{x^2}\\bar+\\bar", "x^2+x^2");
+        expect("\\newcommand{\\foo}{1}\\foo\\renewcommand{\\foo}{2}\\foo")
+            .toParseLike("12");
+    });
+
+    it("\\providecommand (re)defines macros", () => {
+        compareParseTree("\\providecommand\\foo{x^2}\\foo+\\foo", "x^2+x^2");
+        compareParseTree("\\providecommand{\\foo}{x^2}\\foo+\\foo", "x^2+x^2");
+        compareParseTree("\\providecommand\\bar{x^2}\\bar+\\bar", "x^2+x^2");
+        compareParseTree("\\providecommand{\\bar}{x^2}\\bar+\\bar", "x^2+x^2");
+        expect("\\newcommand{\\foo}{1}\\foo\\providecommand{\\foo}{2}\\foo")
+            .toParseLike("12");
+        expect("\\providecommand{\\foo}{1}\\foo\\renewcommand{\\foo}{2}\\foo")
+            .toParseLike("12");
+        expect("\\providecommand{\\foo}{1}\\foo\\providecommand{\\foo}{2}\\foo")
+            .toParseLike("12");
+    });
+
+    it("\\newcommand is local", () => {
+        expect("\\newcommand\\foo{1}\\foo{\\renewcommand\\foo{2}\\foo}\\foo")
+            .toParseLike("1{2}1");
+    });
+
+    it("\\newcommand accepts number of arguments", () => {
+        compareParseTree("\\newcommand\\foo[1]{#1^2}\\foo x+\\foo{y}",
+                         "x^2+y^2");
+        compareParseTree("\\newcommand\\foo[10]{#1^2}\\foo 0123456789", "0^2");
+        expect("\\newcommand\\foo[x]{}").toNotParse();
+        expect("\\newcommand\\foo[1.5]{}").toNotParse();
+    });
+
     // This may change in the future, if we support the extra features of
     // \hspace.
     it("should treat \\hspace, \\hskip like \\kern", function() {
@@ -2799,6 +2999,23 @@ describe("\\tag support", function() {
     });
 });
 
+describe("\\@binrel automatic bin/rel/ord", () => {
+    it("should generate proper class", () => {
+        expect("L\\@binrel+xR").toParseLike("L\\mathbin xR");
+        expect("L\\@binrel=xR").toParseLike("L\\mathrel xR");
+        expect("L\\@binrel xxR").toParseLike("L\\mathord xR");
+        expect("L\\@binrel{+}{x}R").toParseLike("L\\mathbin{{x}}R");
+        expect("L\\@binrel{=}{x}R").toParseLike("L\\mathrel{{x}}R");
+        expect("L\\@binrel{x}{x}R").toParseLike("L\\mathord{{x}}R");
+    });
+
+    it("should base on just first character in group", () => {
+        expect("L\\@binrel{+x}xR").toParseLike("L\\mathbin xR");
+        expect("L\\@binrel{=x}xR").toParseLike("L\\mathrel xR");
+        expect("L\\@binrel{xx}xR").toParseLike("L\\mathord xR");
+    });
+});
+
 describe("A parser taking String objects", function() {
     it("should not fail on an empty String object", function() {
         expect(new String("")).toParse();
@@ -2829,7 +3046,7 @@ describe("Unicode accents", function() {
             "\\tilde n" +
             "\\grave o\\acute o\\hat o\\tilde o\\ddot o" +
             "\\grave u\\acute u\\hat u\\ddot u" +
-            "\\acute y\\ddot y");
+            "\\acute y\\ddot y", nonstrictSettings);
     });
 
     it("should parse Latin-1 letters in text mode", function() {
@@ -2849,68 +3066,70 @@ describe("Unicode accents", function() {
             "\\~n" +
             "\\`o\\'o\\^o\\~o\\\"o" +
             "\\`u\\'u\\^u\\\"u" +
-            "\\'y\\\"y}");
+            "\\'y\\\"y}", strictSettings);
     });
 
     it("should support \\aa in text mode", function() {
-        expect("\\text{\\aa\\AA}").toParseLike("\\text{\\r a\\r A}");
-        expect("\\aa").toNotParse(new Settings({strict: true}));
-        expect("\\Aa").toNotParse(new Settings({strict: true}));
+        expect("\\text{\\aa\\AA}").toParseLike("\\text{\\r a\\r A}", strictSettings);
+        expect("\\aa").toNotParse(strictSettings);
+        expect("\\Aa").toNotParse(strictSettings);
     });
 
     it("should parse combining characters", function() {
-        expect("A\u0301C\u0301").toParseLike("Á\\acute C");
-        expect("\\text{A\u0301C\u0301}").toParseLike("\\text{Á\\'C}");
+        expect("A\u0301C\u0301").toParseLike("Á\\acute C", nonstrictSettings);
+        expect("\\text{A\u0301C\u0301}").toParseLike("\\text{Á\\'C}", strictSettings);
     });
 
     it("should parse multi-accented characters", function() {
-        expect("ấā́ắ\\text{ấā́ắ}").toParse();
+        expect("ấā́ắ\\text{ấā́ắ}").toParse(nonstrictSettings);
         // Doesn't parse quite the same as
         // "\\text{\\'{\\^a}\\'{\\=a}\\'{\\u a}}" because of the ordgroups.
     });
 
     it("should parse accented i's and j's", function() {
-        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ");
-        expect("ấā́ắ\\text{ấā́ắ}").toParse();
+        expect("íȷ́").toParseLike("\\acute ı\\acute ȷ", nonstrictSettings);
+        expect("ấā́ắ\\text{ấā́ắ}").toParse(nonstrictSettings);
     });
 });
 
 describe("Unicode", function() {
     it("should parse negated relations", function() {
-        expect("∉∤∦≁≆≠≨≩≮≯≰≱⊀⊁⊈⊉⊊⊋⊬⊭⊮⊯⋠⋡⋦⋧⋨⋩⋬⋭⪇⪈⪉⪊⪵⪶⪹⪺⫋⫌").toParse();
+        expect("∉∤∦≁≆≠≨≩≮≯≰≱⊀⊁⊈⊉⊊⊋⊬⊭⊮⊯⋠⋡⋦⋧⋨⋩⋬⋭⪇⪈⪉⪊⪵⪶⪹⪺⫋⫌").toParse(strictSettings);
     });
 
-    it("should parse relations", function() {
-        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙").toParse();
+    it("should build relations", function() {
+        expect("∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙⟂⊨∌").toBuild(strictSettings);
     });
 
-    it("should parse big operators", function() {
-        expect("∏∐∑∫∬∭∮⋀⋁⋂⋃⨀⨁⨂⨄⨆").toParse();
+    it("should build big operators", function() {
+        expect("∏∐∑∫∬∭∮⋀⋁⋂⋃⨀⨁⨂⨄⨆").toBuild(strictSettings);
     });
 
-    it("should parse more relations", function() {
-        expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆≘≙≚≛≝≞≟").toBuild();
+    it("should build more relations", function() {
+        expect("⊂⊃⊆⊇⊏⊐⊑⊒⊢⊣⊩⊪⊸⋈⋍⋐⋑⋔⋛⋞⋟⌢⌣⩾⪆⪌⪕⪖⪯⪰⪷⪸⫅⫆≘≙≚≛≝≞≟≲⩽⪅≶⋚⪋").toBuild(strictSettings);
     });
 
     it("should parse symbols", function() {
-        expect("£¥ðℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°\u00b7").toParse();
+        expect("ð").toParse();  // warns about lacking character metrics
+        expect("£¥ℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼⋮\u00B7\u00A9").toBuild(strictSettings);
+        expect("\\text{£¥\u00A9\u00AE\uFE0F}").toBuild(strictSettings);
     });
 
     it("should build Greek capital letters", function() {
         expect("\u0391\u0392\u0395\u0396\u0397\u0399\u039A\u039C\u039D" +
-                "\u039F\u03A1\u03A4\u03A7").toBuild();
+                "\u039F\u03A1\u03A4\u03A7").toBuild(strictSettings);
     });
 
-    it("should parse arrows", function() {
-        expect("←↑→↓↔↕↖↗↘↙↚↛↞↠↢↣↦↩↪↫↬↭↮↰↱↶↷↼↽↾↾↿⇀⇁⇂⇃⇄⇆⇇⇈⇉").toParse();
+    it("should build arrows", function() {
+        expect("←↑→↓↔↕↖↗↘↙↚↛↞↠↢↣↦↩↪↫↬↭↮↰↱↶↷↼↽↾↾↿⇀⇁⇂⇃⇄⇆⇇⇈⇉").toBuild(strictSettings);
     });
 
-    it("should parse more arrows", function() {
-        expect("⇊⇋⇌⇍⇎⇏⇐⇑⇒⇓⇔⇕⇚⇛⇝⟵⟶⟷⟸⟹⟺⟼").toParse();
+    it("should build more arrows", function() {
+        expect("⇊⇋⇌⇍⇎⇏⇐⇑⇒⇓⇔⇕⇚⇛⇝⟵⟶⟷⟸⟹⟺⟼").toBuild(strictSettings);
     });
 
-    it("should parse binary operators", function() {
-        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toParse();
+    it("should build binary operators", function() {
+        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
     });
 
     it("should build delimiters", function() {
@@ -2920,6 +3139,7 @@ describe("Unicode", function() {
         expect("\\left\u27e8\\frac{a}{b}\\right\u27e9").toBuild();
         expect("\\left\u23b0\\frac{a}{b}\\right\u23b1").toBuild();
         expect("┌x┐ └x┘").toBuild();
+        expect("\u231Cx\u231D \u231Ex\u231F").toBuild();
     });
 
     it("should build some surrogate pairs", function() {
@@ -2937,7 +3157,7 @@ describe("Unicode", function() {
         wideCharStr += String.fromCharCode(0xD835, 0xDFE2);   // sans serif zero
         wideCharStr += String.fromCharCode(0xD835, 0xDFEC);   // bold sans zero
         wideCharStr += String.fromCharCode(0xD835, 0xDFF6);   // monospace zero
-        expect(wideCharStr).toBuild();
+        expect(wideCharStr).toBuild(strictSettings);
 
         let wideCharText = "\text{";
         wideCharText += String.fromCharCode(0xD835, 0xDC00);   // bold A
@@ -2954,7 +3174,7 @@ describe("Unicode", function() {
         wideCharText += String.fromCharCode(0xD835, 0xDFEC);   // bold sans zero
         wideCharText += String.fromCharCode(0xD835, 0xDFF6);   // monospace zero
         wideCharText += "}";
-        expect(wideCharText).toBuild();
+        expect(wideCharText).toBuild(strictSettings);
     });
 });
 
@@ -3042,24 +3262,24 @@ describe("Newlines via \\\\ and \\newline", function() {
 
 describe("Symbols", function() {
     it("should parse \\text{\\i\\j}", () => {
-        expect("\\text{\\i\\j}").toBuild();
+        expect("\\text{\\i\\j}").toBuild(strictSettings);
     });
 
     it("should parse spacing functions in math or text mode", () => {
-        expect("A\\;B\\,C\\nobreakspace \\text{A\\;B\\,C\\nobreakspace}").toBuild();
+        expect("A\\;B\\,C\\nobreakspace \\text{A\\;B\\,C\\nobreakspace}").toBuild(strictSettings);
     });
 
     it("should render ligature commands like their unicode characters", () => {
-        const commands = getBuilt("\\text{\\ae\\AE\\oe\\OE\\o\\O\\ss}");
-        const unicode = getBuilt("\\text{æÆœŒøØß}");
+        const commands = getBuilt("\\text{\\ae\\AE\\oe\\OE\\o\\O\\ss}", strictSettings);
+        const unicode = getBuilt("\\text{æÆœŒøØß}", strictSettings);
         expect(commands).toEqual(unicode);
     });
 });
 
 describe("strict setting", function() {
     it("should allow unicode text when not strict", () => {
-        expect("é").toParse(new Settings({strict: false}));
-        expect("試").toParse(new Settings({strict: false}));
+        expect("é").toParse(new Settings(nonstrictSettings));
+        expect("試").toParse(new Settings(nonstrictSettings));
         expect("é").toParse(new Settings({strict: "ignore"}));
         expect("試").toParse(new Settings({strict: "ignore"}));
         expect("é").toParse(new Settings({strict: () => false}));
@@ -3085,8 +3305,8 @@ describe("strict setting", function() {
     });
 
     it("should always allow unicode text in text mode", () => {
-        expect("\\text{é試}").toParse(new Settings({strict: false}));
-        expect("\\text{é試}").toParse(new Settings({strict: true}));
+        expect("\\text{é試}").toParse(nonstrictSettings);
+        expect("\\text{é試}").toParse(strictSettings);
         expect("\\text{é試}").toParse();
     });
 
@@ -3116,5 +3336,41 @@ describe("Internal __* interface", function() {
         const renderedSansMathML = rendered.replace(
             /<span class="katex-mathml">.*?<\/span>/, '');
         expect(tree.toMarkup()).toEqual(renderedSansMathML);
+    });
+});
+
+describe("Extending katex by new fonts and symbols", function() {
+    beforeAll(() => {
+        const fontName = "mockEasternArabicFont";
+        // add eastern arabic numbers to symbols table
+        // these symbols are ۰۱۲۳۴۵۶۷۸۹ and ٠١٢٣٤٥٦٧٨٩
+        for (let number = 0; number <= 9; number++) {
+            const persianNum = String.fromCharCode(0x0660 + number);
+            katex.__defineSymbol(
+                "math", fontName, "textord", persianNum, persianNum);
+            const arabicNum = String.fromCharCode(0x06F0 + number);
+            katex.__defineSymbol(
+                "math", fontName, "textord", arabicNum, arabicNum);
+        }
+    });
+    it("should throw on rendering new symbols with no font metrics", () => {
+        // Lets parse 99^11 in eastern arabic
+        const errorMessage = "Font metrics not found for font: mockEasternArabicFont-Regular.";
+        expect(() => {
+            katex.__renderToDomTree("۹۹^{۱۱}", strictSettings);
+        }).toThrow(errorMessage);
+    });
+    it("should add font metrics to metrics map and render successfully", () => {
+        const mockMetrics = {};
+        // mock font metrics for the symbols that we added previously
+        for (let number = 0; number <= 9; number++) {
+            mockMetrics[0x0660 + number] = [-0.00244140625, 0.6875, 0, 0];
+            mockMetrics[0x06F0 + number] = [-0.00244140625, 0.6875, 0, 0];
+        }
+        katex.__setFontMetrics('mockEasternArabicFont-Regular', mockMetrics);
+        expect("۹۹^{۱۱}").toBuild();
+    });
+    it("Add new font class to new extended symbols", () => {
+        expect(katex.renderToString("۹۹^{۱۱}")).toMatchSnapshot();
     });
 });
