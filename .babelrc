@@ -31,14 +31,6 @@
             "plugins": [
                 "transform-class-properties",
                 "version-inline",
-                ["import-rename", {
-                    // source files and font metrics data are moved to lib/
-                    "^\\./src/": "./lib/",
-                    "^\\.\\./submodules/katex-fonts/": "./",
-                    // file extensions are changed to .mjs
-                    // browsers are not able to resolve paths like Node
-                    "\\.(?!mjs$)[^.]*$": "$&.mjs"
-                }],
             ],
         },
     },
