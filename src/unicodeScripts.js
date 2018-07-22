@@ -84,8 +84,10 @@ const scriptData: Array<Script> = [
  * it is from, or null if it is not part of a known block
  */
 export function scriptFromCodepoint(codepoint: number): ?string {
-    for (const script of scriptData) {
-        for (const block of script.blocks) {
+    for (let i = 0; i < scriptData.length; i++) {
+        const script = scriptData[i];
+        for (let i = 0; i < script.blocks.length; i++) {
+            const block = script.blocks[i];
             if (codepoint >= block[0] && codepoint <= block[1]) {
                 return script.name;
             }

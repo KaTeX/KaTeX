@@ -24,7 +24,7 @@ import {defineSymbol} from './src/symbols';
 import {defineMacro} from './src/macros';
 import {setFontMetrics} from './src/fontMetrics';
 
-import {version} from "./package.json";
+declare var __VERSION__: string;
 
 /**
  * Parse and build an expression, and place that expression in the DOM node
@@ -134,7 +134,7 @@ export default {
     /**
      * Current KaTeX version
      */
-    version,
+    version: __VERSION__,
     /**
      * Renders the given LaTeX into an HTML+MathML combination, and adds
      * it as a child to the specified DOM node.

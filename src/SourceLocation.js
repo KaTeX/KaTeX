@@ -14,7 +14,8 @@ export default class SourceLocation {
         this.lexer = lexer;
         this.start = start;
         this.end = end;
-        Object.freeze(this); // Immutable to allow sharing in range().
+        // $FlowFixMe, do not polyfill
+        Object["freeze"](this); // Immutable to allow sharing in range().
     }
 
     /**
@@ -40,4 +41,3 @@ export default class SourceLocation {
         }
     }
 }
-

@@ -38,7 +38,7 @@ function defineOpFunction<NODETYPE: Group>(
     });
 }
 
-defineOpFunction("bin", (mathNode, group, options) => {
+defineOpFunction("bin", (mathNode, group: ParseNode<"bin">, options) => {
     const variant = mml.getVariant(group, options);
     if (variant === "bold-italic") {
         mathNode.setAttribute("mathvariant", variant);

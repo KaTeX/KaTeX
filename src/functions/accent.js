@@ -5,7 +5,7 @@ import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
 import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
-import {assertDomContainer, assertSymbolDomNode} from "../domTree";
+import {assertSpan, assertSymbolDomNode} from "../domTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -40,7 +40,10 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
 
         // Rerender the supsub group with its new base, and store that
         // result.
-        supSubGroup = assertDomContainer(html.buildGroup(supSub, options));
+        supSubGroup = assertSpan(html.buildGroup(supSub, options));
+
+        // reset original base
+        supSub.value.base = group;
     } else {
         group = assertNodeType(grp, "accent");
         base = group.value.base;

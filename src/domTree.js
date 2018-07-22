@@ -7,11 +7,18 @@
  * work with the DOM.
  *
  * Similar functions for working with MathML nodes exist in mathMLTree.js.
+ *
+ * TODO: refactor `span` and `anchor` into common superclass when
+ * target environments support class inheritance
  */
 import {scriptFromCodepoint} from "./unicodeScripts";
 import utils from "./utils";
 import svgGeometry from "./svgGeometry";
 import type Options from "./Options";
+import * as tree from "./tree";
+
+import type {VirtualNode} from "./tree";
+
 
 /**
  * Create an HTML className based on a list of classes. In addition to joining
@@ -21,15 +28,106 @@ const createClass = function(classes: string[]): string {
     return classes.filter(cls => cls).join(" ");
 };
 
+const initNode = function(
+    classes?: string[],
+    options?: Options,
+    style?: CssStyle,
+) {
+    this.classes = classes || [];
+    this.attributes = {};
+    this.height = 0;
+    this.depth = 0;
+    this.maxFontSize = 0;
+    this.style = style || {};
+    if (options) {
+        if (options.style.isTight()) {
+            this.classes.push("mtight");
+        }
+        const color = options.getColor();
+        if (color) {
+            this.style.color = color;
+        }
+    }
+};
+
+/**
+ * Convert into an HTML node
+ */
+const toNode = function(tagName: string): HTMLElement {
+    const node = document.createElement(tagName);
+
+    // Apply the class
+    node.className = createClass(this.classes);
+
+    // Apply inline styles
+    for (const style in this.style) {
+        if (this.style.hasOwnProperty(style)) {
+            // $FlowFixMe Flow doesn't seem to understand span.style's type.
+            node.style[style] = this.style[style];
+        }
+    }
+
+    // Apply attributes
+    for (const attr in this.attributes) {
+        if (this.attributes.hasOwnProperty(attr)) {
+            node.setAttribute(attr, this.attributes[attr]);
+        }
+    }
+
+    // Append the children, also as HTML nodes
+    for (let i = 0; i < this.children.length; i++) {
+        node.appendChild(this.children[i].toNode());
+    }
+
+    return node;
+};
+
+/**
+ * Convert into an HTML markup string
+ */
+const toMarkup = function(tagName: string): string {
+    let markup = `<${tagName}`;
+
+    // Add the class
+    if (this.classes.length) {
+        markup += ` class="${utils.escape(createClass(this.classes))}"`;
+    }
+
+    let styles = "";
+
+    // Add the styles, after hyphenation
+    for (const style in this.style) {
+        if (this.style.hasOwnProperty(style)) {
+            styles += `${utils.hyphenate(style)}:${this.style[style]};`;
+        }
+    }
+
+    if (styles) {
+        markup += ` style="${utils.escape(styles)}"`;
+    }
+
+    // Add the attributes
+    for (const attr in this.attributes) {
+        if (this.attributes.hasOwnProperty(attr)) {
+            markup += ` ${attr}="${utils.escape(this.attributes[attr])}"`;
+        }
+    }
+
+    markup += ">";
+
+    // Add the markup of the children, also as markup
+    for (let i = 0; i < this.children.length; i++) {
+        markup += this.children[i].toMarkup();
+    }
+
+    markup += `</${tagName}>`;
+
+    return markup;
+};
+
 export type CssStyle = {[name: string]: string};
 
-// To ensure that all nodes have compatible signatures for these methods.
-interface VirtualNodeInterface {
-    toNode(): Node;
-    toMarkup(): string;
-}
-
-export interface HtmlDomNode extends VirtualNodeInterface {
+export interface HtmlDomNode extends VirtualNode {
     classes: string[];
     height: number;
     depth: number;
@@ -46,10 +144,19 @@ export type DomSpan = span<HtmlDomNode>;
 export type SvgSpan = span<svgNode>;
 
 export type SvgChildNode = pathNode | lineNode;
+export type documentFragment = tree.documentFragment<HtmlDomNode>;
 
 
-export class HtmlDomContainer<ChildType: VirtualNodeInterface>
-       implements HtmlDomNode {
+/**
+ * This node represents a span node, with a className, a list of children, and
+ * an inline style. It also contains information about its height, depth, and
+ * maxFontSize.
+ *
+ * Represents two types with different uses: SvgSpan to wrap an SVG and DomSpan
+ * otherwise. This typesafety is important when HTML builders access a span's
+ * children.
+ */
+class span<ChildType: VirtualNode> implements HtmlDomNode {
     children: ChildType[];
     attributes: {[string]: string};
     classes: string[];
@@ -65,26 +172,12 @@ export class HtmlDomContainer<ChildType: VirtualNodeInterface>
         options?: Options,
         style?: CssStyle,
     ) {
-        this.classes = classes || [];
+        initNode.call(this, classes, options, style);
         this.children = children || [];
-        this.attributes = {};
-        this.height = 0;
-        this.depth = 0;
-        this.maxFontSize = 0;
-        this.style = Object.assign({}, style);
-        if (options) {
-            if (options.style.isTight()) {
-                this.classes.push("mtight");
-            }
-            const color = options.getColor();
-            if (color) {
-                this.style.color = color;
-            }
-        }
     }
 
     /**
-     * Sets an arbitrary attribute on the node. Warning: use this wisely. Not
+     * Sets an arbitrary attribute on the span. Warning: use this wisely. Not
      * all browsers support attributes the same, and having too many custom
      * attributes is probably bad.
      */
@@ -105,119 +198,27 @@ export class HtmlDomContainer<ChildType: VirtualNodeInterface>
         return false;
     }
 
-    tagName(): string {
-        throw new Error("use of generic HtmlDomContainer tagName");
-    }
-
-    /**
-     * Convert into an HTML node
-     */
     toNode(): HTMLElement {
-        const node = document.createElement(this.tagName());
-
-        // Apply the class
-        node.className = createClass(this.classes);
-
-        // Apply inline styles
-        for (const style in this.style) {
-            if (Object.prototype.hasOwnProperty.call(this.style, style)) {
-                // $FlowFixMe Flow doesn't seem to understand node.style's type.
-                node.style[style] = this.style[style];
-            }
-        }
-
-        // Apply attributes
-        for (const attr in this.attributes) {
-            if (this.attributes.hasOwnProperty(attr)) {
-                node.setAttribute(attr, this.attributes[attr]);
-            }
-        }
-
-        // Append the children, also as HTML nodes
-        for (let i = 0; i < this.children.length; i++) {
-            node.appendChild(this.children[i].toNode());
-        }
-
-        return node;
+        return toNode.call(this, "span");
     }
 
-    /**
-     * Convert into an HTML markup string
-     */
     toMarkup(): string {
-        let markup = "<" + this.tagName();
-
-        // Add the class
-        if (this.classes.length) {
-            markup += ` class="${utils.escape(createClass(this.classes))}"`;
-        }
-
-        let styles = "";
-
-        // Add the styles, after hyphenation
-        for (const style in this.style) {
-            if (this.style.hasOwnProperty(style)) {
-                styles += utils.hyphenate(style) + ":" + this.style[style] + ";";
-            }
-        }
-
-        if (styles) {
-            markup += ` style="${utils.escape(styles)}"`;
-        }
-
-        // Add the attributes
-        for (const attr in this.attributes) {
-            if (this.attributes.hasOwnProperty(attr)) {
-                markup += " " + attr + "=\"";
-                markup += utils.escape(this.attributes[attr]);
-                markup += "\"";
-            }
-        }
-
-        markup += ">";
-
-        // Add the markup of the children, also as markup
-        for (let i = 0; i < this.children.length; i++) {
-            markup += this.children[i].toMarkup();
-        }
-
-        markup += `</${this.tagName()}>`;
-
-        return markup;
+        return toMarkup.call(this, "span");
     }
 }
 
 /**
- * This node represents a span node, with a className, a list of children, and
- * an inline style. It also contains information about its height, depth, and
- * maxFontSize.
- *
- * Represents two types with different uses: SvgSpan to wrap an SVG and DomSpan
- * otherwise. This typesafety is important when HTML builders access a span's
- * children.
+ * This node represents an anchor (<a>) element with a hyperlink.  See `span`
+ * for further details.
  */
-class span<ChildType: VirtualNodeInterface> extends HtmlDomContainer<ChildType> {
-    constructor(
-        classes?: string[],
-        children?: ChildType[],
-        options?: Options,
-        style?: CssStyle,
-    ) {
-        super(classes, children, options, style);
-    }
-
-    tagName() {
-        return "span";
-    }
-}
-
-/**
- * This node represents an anchor (<a>) element with a hyperlink, a list of classes,
- * a list of children, and an inline style. It also contains information about its
- * height, depth, and maxFontSize.
- */
-class anchor extends HtmlDomContainer<HtmlDomNode> {
-    href: string;
+class anchor implements HtmlDomNode {
+    children: HtmlDomNode[];
+    attributes: {[string]: string};
+    classes: string[];
+    height: number;
+    depth: number;
+    maxFontSize: number;
+    style: CssStyle;
 
     constructor(
         href: string,
@@ -225,34 +226,13 @@ class anchor extends HtmlDomContainer<HtmlDomNode> {
         children: HtmlDomNode[],
         options: Options,
     ) {
-        super(classes, children, options);
+        initNode.call(this, classes, options);
+        this.children = children || [];
         this.setAttribute('href', href);
     }
 
-    tagName() {
-        return "a";
-    }
-}
-
-/**
- * This node represents a document fragment, which contains elements, but when
- * placed into the DOM doesn't have any representation itself. Thus, it only
- * contains children and doesn't have any HTML properties. It also keeps track
- * of a height, depth, and maxFontSize.
- */
-class documentFragment implements HtmlDomNode {
-    children: HtmlDomNode[];
-    classes: string[];         // Never used; needed for satisfying interface.
-    height: number;
-    depth: number;
-    maxFontSize: number;
-
-    constructor(children?: HtmlDomNode[]) {
-        this.children = children || [];
-        this.classes = [];
-        this.height = 0;
-        this.depth = 0;
-        this.maxFontSize = 0;
+    setAttribute(attribute: string, value: string) {
+        this.attributes[attribute] = value;
     }
 
     hasClass(className: string): boolean {
@@ -263,41 +243,12 @@ class documentFragment implements HtmlDomNode {
         return false;
     }
 
-    get style(): CssStyle {
-        throw new Error('DocumentFragment does not support style.');
+    toNode(): HTMLElement {
+        return toNode.call(this, "a");
     }
 
-    set style(_: CssStyle) {
-        throw new Error('DocumentFragment does not support style.');
-    }
-
-    /**
-     * Convert the fragment into a node
-     */
-    toNode(): Node {
-        // Create a fragment
-        const frag = document.createDocumentFragment();
-
-        // Append the children
-        for (let i = 0; i < this.children.length; i++) {
-            frag.appendChild(this.children[i].toNode());
-        }
-
-        return frag;
-    }
-
-    /**
-     * Convert the fragment into HTML markup
-     */
     toMarkup(): string {
-        let markup = "";
-
-        // Simply concatenate the markup for the children together
-        for (let i = 0; i < this.children.length; i++) {
-            markup += this.children[i].toMarkup();
-        }
-
-        return markup;
+        return toMarkup.call(this, "a");
     }
 }
 
@@ -342,7 +293,7 @@ class symbolNode implements HtmlDomNode {
         this.skew = skew || 0;
         this.width = width || 0;
         this.classes = classes || [];
-        this.style = Object.assign({}, style);
+        this.style = style || {};
         this.maxFontSize = 0;
 
         // Mark text from non-Latin scripts with specific classes so that we
@@ -476,7 +427,7 @@ class symbolNode implements HtmlDomNode {
 /**
  * SVG nodes are used to render stretchy wide elements.
  */
-class svgNode implements VirtualNodeInterface {
+class svgNode implements VirtualNode {
     children: SvgChildNode[];
     attributes: {[string]: string};
 
@@ -525,7 +476,7 @@ class svgNode implements VirtualNodeInterface {
     }
 }
 
-class pathNode implements VirtualNodeInterface {
+class pathNode implements VirtualNode {
     pathName: string;
     alternate: ?string;
 
@@ -556,7 +507,7 @@ class pathNode implements VirtualNodeInterface {
     }
 }
 
-class lineNode implements VirtualNodeInterface {
+class lineNode implements VirtualNode {
     attributes: {[string]: string};
 
     constructor(attributes?: {[string]: string}) {
@@ -602,20 +553,19 @@ export function assertSymbolDomNode(
     }
 }
 
-export function assertDomContainer(
+export function assertSpan(
     group: HtmlDomNode,
-): HtmlDomContainer<HtmlDomNode> {
-    if (group instanceof HtmlDomContainer) {
+): span<HtmlDomNode> {
+    if (group instanceof span) {
         return group;
     } else {
-        throw new Error(`Expected HtmlDomContainer but got ${String(group)}.`);
+        throw new Error(`Expected span<HtmlDomNode> but got ${String(group)}.`);
     }
 }
 
 export default {
     span,
     anchor,
-    documentFragment,
     symbolNode,
     svgNode,
     pathNode,

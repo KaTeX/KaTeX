@@ -1,13 +1,15 @@
 {
     "presets": [
         ["es2015", {
-            "modules": false
+            "modules": false,
+            "loose": true
         }],
         "flow"
     ],
     "plugins": [
         "transform-runtime",
-        "transform-class-properties"
+        "transform-class-properties",
+        "version-inline"
     ],
     "env": {
         "test": {

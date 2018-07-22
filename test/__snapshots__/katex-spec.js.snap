@@ -585,6 +585,28 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
 ]
 `;
 
+exports[`A parse tree generator generates a tree 1`] = `
+[
+  {
+    "type": "supsub",
+    "mode": "math",
+    "value": {
+      "type": "supsub",
+      "base": {
+        "type": "mathord",
+        "mode": "math",
+        "value": "\\\\sigma"
+      },
+      "sup": {
+        "type": "textord",
+        "mode": "math",
+        "value": "2"
+      }
+    }
+  }
+]
+`;
+
 exports[`A parser that does not throw on unsupported commands should build katex-error span for other type of KaTeX error 1`] = `
 {
   "attributes": {

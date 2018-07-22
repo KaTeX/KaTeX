@@ -1,6 +1,5 @@
 // @flow
 /* eslint no-constant-condition:0 */
-/* eslint no-console:0 */
 import functions from "./functions";
 import environments from "./environments";
 import MacroExpander from "./MacroExpander";
@@ -248,7 +247,13 @@ export default class Parser {
                 denomNode = new ParseNode("ordgroup", denomBody, this.mode);
             }
 
-            const node = this.callFunction(funcName, [numerNode, denomNode], []);
+            let node;
+            if (funcName === "\\\\abovefrac") {
+                node = this.callFunction(funcName,
+                    [numerNode, body[overIndex], denomNode], []);
+            } else {
+                node = this.callFunction(funcName, [numerNode, denomNode], []);
+            }
             return [node];
         } else {
             return body;
@@ -821,6 +826,7 @@ export default class Parser {
      */
     parseSizeGroup(optional: boolean): ?ParsedArg {
         let res;
+        let isBlank = false;
         if (!optional && this.nextToken.text !== "{") {
             res = this.parseRegexGroup(
                 /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2} *$/, "size");
@@ -829,6 +835,13 @@ export default class Parser {
         }
         if (!res) {
             return null;
+        }
+        if (!optional && res.text.length === 0) {
+            // Because we've tested for what is !optional, this block won't
+            // affect \kern, \hspace, etc. It will capture the mandatory arguments
+            // to \genfrac and \above.
+            res.text = "0pt";    // Enable \above{}
+            isBlank = true;      // This is here specifically for \genfrac
         }
         const match = (/([-+]?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(res.text);
         if (!match) {
@@ -844,6 +857,7 @@ export default class Parser {
         return newArgument(new ParseNode("size", {
             type: "size",
             value: data,
+            isBlank: isBlank,
         }, this.mode), res);
     }
 
@@ -1001,7 +1015,8 @@ export default class Parser {
             if (this.settings.strict) {
                 if (!supportedCodepoint(text.charCodeAt(0))) {
                     this.settings.reportNonstrict("unknownSymbol",
-                        `Unrecognized Unicode character "${text[0]}"`, nucleus);
+                        `Unrecognized Unicode character "${text[0]}"` +
+                        ` (${text.charCodeAt(0)})`, nucleus);
                 } else if (this.mode === "math") {
                     this.settings.reportNonstrict("unicodeTextInMathMode",
                         `Unicode text character "${text[0]}" used in math mode`,

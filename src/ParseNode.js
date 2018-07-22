@@ -89,6 +89,7 @@ export type AnyParseNode =
     ParseNode<"genfrac"> |
     ParseNode<"horizBrace"> |
     ParseNode<"href"> |
+    ParseNode<"htmlmathml"> |
     ParseNode<"infix"> |
     ParseNode<"kern"> |
     ParseNode<"lap"> |
@@ -146,6 +147,7 @@ export type ParseNodeTypes = {
     "size": {|
         type: "size",
         value: Measurement,
+        isBlank: boolean,
     |},
     "styling": {|
         type: "styling",
@@ -245,6 +247,7 @@ export type ParseNodeTypes = {
         leftDelim: ?string,
         rightDelim: ?string,
         size: StyleStr | "auto",
+        barSize: Measurement | null,
     |},
     "horizBrace": {|
         type: "horizBrace",
@@ -257,9 +260,15 @@ export type ParseNodeTypes = {
         href: string,
         body: AnyParseNode[],
     |},
+    "htmlmathml": {|
+        type: "htmlmathml",
+        html: AnyParseNode[],
+        mathml: AnyParseNode[],
+    |},
     "infix": {|
         type: "infix",
         replaceWith: string,
+        sizeNode?: ParseNode<"size">,
         token: ?Token,
     |},
     "kern": {|
