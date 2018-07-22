@@ -11,12 +11,14 @@ import symbols, {ligatures} from "./symbols";
 import utils from "./utils";
 import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
+import * as tree from "./tree";
 
 import type Options from "./Options";
 import type ParseNode from "./ParseNode";
 import type {NodeType} from "./ParseNode";
 import type {CharacterMetrics} from "./fontMetrics";
-import type {Mode} from "./types";
+import type {FontVariant, Mode} from "./types";
+import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
 
@@ -233,7 +235,7 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     group: ParseNode<NODETYPE>,
     options: Options,
     type: "mathord" | "textord",
-): domTree.symbolNode | domTree.documentFragment {
+): HtmlDocumentFragment | domTree.symbolNode {
     const mode = group.mode;
     const value = group.value;
 
@@ -307,7 +309,7 @@ const tryCombineChars = function(chars: HtmlDomNode[]): HtmlDomNode[] {
  * children.
  */
 const sizeElementFromChildren = function(
-    elem: DomSpan | domTree.anchor | domTree.documentFragment,
+    elem: DomSpan | domTree.anchor | HtmlDocumentFragment,
 ) {
     let height = 0;
     let depth = 0;
@@ -394,8 +396,8 @@ const makeAnchor = function(
  */
 const makeFragment = function(
     children: HtmlDomNode[],
-): domTree.documentFragment {
-    const fragment = new domTree.documentFragment(children);
+): HtmlDocumentFragment {
+    const fragment = new tree.documentFragment(children);
 
     sizeElementFromChildren(fragment);
 
@@ -695,7 +697,7 @@ const regularSpace: {[string]: { className?: string }} = {
  * - fontName: the "style" parameter to fontMetrics.getCharacterMetrics
  */
 // A map between tex font commands an MathML mathvariant attribute values
-const fontMap: {[string]: {| variant: string, fontName: string |}} = {
+const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
     // styles
     "mathbf": {
         variant: "bold",

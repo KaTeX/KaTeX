@@ -2471,6 +2471,12 @@ describe("An aligned environment", function() {
     });
 });
 
+describe("operatorname support", function() {
+    it("should not fail", function() {
+        expect("\\operatorname{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
+    });
+});
+
 describe("An href command", function() {
     it("should parse its input", function() {
         expect("\\href{http://example.com/}{example here}").toParse();
@@ -2990,6 +2996,23 @@ describe("\\tag support", function() {
 
     it("should handle \\tag* like \\tag", () => {
         expect("\\tag{hi}x+y").toParseLike("\\tag*{({hi})}x+y", displayMode);
+    });
+});
+
+describe("\\@binrel automatic bin/rel/ord", () => {
+    it("should generate proper class", () => {
+        expect("L\\@binrel+xR").toParseLike("L\\mathbin xR");
+        expect("L\\@binrel=xR").toParseLike("L\\mathrel xR");
+        expect("L\\@binrel xxR").toParseLike("L\\mathord xR");
+        expect("L\\@binrel{+}{x}R").toParseLike("L\\mathbin{{x}}R");
+        expect("L\\@binrel{=}{x}R").toParseLike("L\\mathrel{{x}}R");
+        expect("L\\@binrel{x}{x}R").toParseLike("L\\mathord{{x}}R");
+    });
+
+    it("should base on just first character in group", () => {
+        expect("L\\@binrel{+x}xR").toParseLike("L\\mathbin xR");
+        expect("L\\@binrel{=x}xR").toParseLike("L\\mathrel xR");
+        expect("L\\@binrel{xx}xR").toParseLike("L\\mathord xR");
     });
 });
 
