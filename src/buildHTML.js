@@ -188,7 +188,7 @@ export const buildExpression = function(
         const group = groups[i];
         if (group instanceof domTree.symbolNode && group.value === "\u0338") {
             // Results in a solidus being overlaid over the following group/atom.
-            group.style.position = "absolute";
+            group.style.position = "relative";
         }
     }
 
