@@ -86,18 +86,10 @@ defineFunction({
     },
 });
 
-const oldFontFuncsMap = {
-    "\\rm": "mathrm",
-    "\\sf": "mathsf",
-    "\\tt": "mathtt",
-    "\\bf": "mathbf",
-    "\\it": "mathit",
-};
-
 // Old font changing functions
 defineFunction({
     type: "font",
-    names: Object.keys(oldFontFuncsMap),
+    names: ["\\rm", "\\sf", "\\tt", "\\bf", "\\it"],
     props: {
         numArgs: 0,
         allowedInText: true,
@@ -106,7 +98,7 @@ defineFunction({
         const {mode} = parser;
         parser.consumeSpaces();
         const body = parser.parseExpression(true, breakOnTokenText);
-        const style = oldFontFuncsMap[funcName];
+        const style = `math${funcName.slice(1)}`;
 
         return new ParseNode("font", {
             type: "font",
