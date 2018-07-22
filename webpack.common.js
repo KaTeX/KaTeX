@@ -40,12 +40,15 @@ const targets /*: Array<Target> */ = [
  */
 function createConfig(target /*: Target */, dev /*: boolean */,
         minimize /*: boolean */) /*: Object */ {
-    const cssLoader = {
-        loader: 'css-loader',
-        options: {
-            minimize, // cssnano
-        },
-    };
+    const cssLoaders /*: Array<Object> */ = [{loader: 'css-loader'}];
+    if (minimize) {
+        cssLoaders[0].options = {importLoaders: 1};
+        cssLoaders.push({
+            loader: 'postcss-loader',
+            options: {plugins: [require('cssnano')()]},
+        });
+    }
+
     return {
         mode: dev ? 'development' : 'production',
         context: __dirname,
@@ -74,14 +77,14 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                     test: /\.css$/,
                     use: [
                         dev ? 'style-loader' : MiniCssExtractPlugin.loader,
-                        cssLoader,
+                        ...cssLoaders,
                     ],
                 },
                 {
                     test: /\.less$/,
                     use: [
                         dev ? 'style-loader' : MiniCssExtractPlugin.loader,
-                        cssLoader,
+                        ...cssLoaders,
                         'less-loader',
                     ],
                 },
