@@ -71,10 +71,13 @@ jobs:
 
       - store_artifacts:
           path: build/katex.js
+          destination: katex.js
       - store_artifacts:
           path: build/katex.css
+          destination: katex.css
       - store_artifacts:
           path: build/fonts
+          destination: fonts
 
   firefox:
     docker:
