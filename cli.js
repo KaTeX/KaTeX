@@ -6,8 +6,9 @@
 
 /* eslint no-console:0 */
 
+let katex;
 try {
-    const katex = require("./");
+    katex = require("./");
 } catch (e) {
     console.log("KaTeX not found, likely because dist/katex.js is missing.");
     console.log("Please run 'npm install' and 'npm run dist' before running");
