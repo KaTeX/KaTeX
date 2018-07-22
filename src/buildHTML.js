@@ -14,6 +14,7 @@ import utils, {assert} from "./utils";
 import {checkNodeType} from "./ParseNode";
 import {spacings, tightSpacings} from "./spacingData";
 import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";
+import * as tree from "./tree";
 
 import type Options from "./Options";
 import type {AnyParseNode} from "./ParseNode";
@@ -90,7 +91,7 @@ export const buildExpression = function(
     const rawGroups: HtmlDomNode[] = [];
     for (let i = 0; i < expression.length; i++) {
         const output = buildGroup(expression[i], options);
-        if (output instanceof domTree.documentFragment) {
+        if (output instanceof tree.documentFragment) {
             const children: HtmlDomNode[] = output.children;
             rawGroups.push(...children);
         } else {
@@ -186,12 +187,8 @@ export const buildExpression = function(
     for (let i = 0; i < groups.length; i++) {
         const group = groups[i];
         if (group instanceof domTree.symbolNode && group.value === "\u0338") {
+            // Results in a solidus being overlaid over the following group/atom.
             group.style.position = "absolute";
-            // TODO(kevinb) fix this for Safari by switching to a non-combining
-            // character for \not.
-            // This value was determined empirically.
-            // TODO(kevinb) figure out the real math for this value.
-            group.style.paddingLeft = "0.8em";
         }
     }
 
@@ -203,7 +200,7 @@ const getOutermostNode = function(
     node: HtmlDomNode,
     side: Side,
 ): HtmlDomNode {
-    if (node instanceof domTree.documentFragment ||
+    if (node instanceof tree.documentFragment ||
             node instanceof domTree.anchor) {
         const children = node.children;
         if (children.length) {

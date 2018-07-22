@@ -4,7 +4,7 @@
         // Duplications are inevitable due to strange .babelrc env merging:
         // babel/babel#5276. This can be simplified in Babel 7 using .babelrc.js.
         "production": {
-            "presets": [["es2015", {"modules": false}]],
+            "presets": [["es2015", {"modules": false, "loose": true}]],
             "plugins": [
                 "transform-class-properties",
                 "transform-runtime",
@@ -12,7 +12,7 @@
             ],
         },
         "development": {
-            "presets": [["es2015", {"modules": false}]],
+            "presets": [["es2015", {"modules": false, "loose": true}]],
             "plugins": [
                 "transform-class-properties",
                 "transform-runtime",
@@ -20,7 +20,7 @@
             ],
         },
         "test": {
-            "presets": ["es2015"],
+            "presets": [["es2015", {"loose": true}]],
             "plugins": [
                 "transform-class-properties",
                 "transform-runtime",
