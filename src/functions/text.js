@@ -1,7 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -18,6 +18,20 @@ const textFontWeights = {
 
 const textFontShapes = {
     "\\textit": "textit",
+};
+
+const optionsWithFont = (group, options) => {
+    const font = group.value.font;
+    // Checks if the argument is a font family or a font style.
+    if (!font) {
+        return options;
+    } else if (textFontFamilies[font]) {
+        return options.withTextFontFamily(textFontFamilies[font]);
+    } else if (textFontWeights[font]) {
+        return options.withTextFontWeight(textFontWeights[font]);
+    } else {
+        return options.withTextFontShape(textFontShapes[font]);
+    }
 };
 
 defineFunction({
@@ -37,56 +51,22 @@ defineFunction({
         allowedInText: true,
         consumeMode: "text",
     },
-    handler(context, args) {
+    handler({parser, funcName}, args) {
         const body = args[0];
-        return {
+        return new ParseNode("text", {
             type: "text",
             body: ordargument(body),
-            font: context.funcName,
-        };
+            font: funcName,
+        }, parser.mode);
     },
     htmlBuilder(group, options) {
-        const font = group.value.font;
-        // Checks if the argument is a font family or a font style.
-        let newOptions;
-        if (textFontFamilies[font]) {
-            newOptions = options.withTextFontFamily(textFontFamilies[font]);
-        } else if (textFontWeights[font]) {
-            newOptions = options.withTextFontWeight(textFontWeights[font]);
-        } else {
-            newOptions = options.withTextFontShape(textFontShapes[font]);
-        }
+        const newOptions = optionsWithFont(group, options);
         const inner = html.buildExpression(group.value.body, newOptions, true);
         buildCommon.tryCombineChars(inner);
-        return buildCommon.makeSpan(["mord", "text"],
-            inner, newOptions);
+        return buildCommon.makeSpan(["mord", "text"], inner, newOptions);
     },
     mathmlBuilder(group, options) {
-        const body = group.value.body;
-
-        // Convert each element of the body into MathML, and combine consecutive
-        // <mtext> outputs into a single <mtext> tag.  In this way, we don't
-        // nest non-text items (e.g., $nested-math$) within an <mtext>.
-        const inner = [];
-        let currentText = null;
-        for (let i = 0; i < body.length; i++) {
-            const group = mml.buildGroup(body[i], options);
-            if (group.type === 'mtext' && currentText != null) {
-                Array.prototype.push.apply(currentText.children, group.children);
-            } else {
-                inner.push(group);
-                if (group.type === 'mtext') {
-                    currentText = group;
-                }
-            }
-        }
-
-        // If there is a single tag in the end (presumably <mtext>),
-        // just return it.  Otherwise, wrap them in an <mrow>.
-        if (inner.length === 1) {
-            return inner[0];
-        } else {
-            return new mathMLTree.MathNode("mrow", inner);
-        }
+        const newOptions = optionsWithFont(group, options);
+        return mml.buildExpressionRow(group.value.body, newOptions);
     },
 });

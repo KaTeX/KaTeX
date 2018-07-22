@@ -3,6 +3,7 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
+import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -14,13 +15,13 @@ defineFunction({
         numArgs: 1,
         allowedInText: true,
     },
-    handler: (context, args) => {
+    handler: ({parser, funcName}, args) => {
         const body = args[0];
-        return {
+        return new ParseNode("lap", {
             type: "lap",
-            alignment: context.funcName.slice(5),
+            alignment: funcName.slice(5),
             body: body,
-        };
+        }, parser.mode);
     },
     htmlBuilder: (group, options) => {
         // mathllap, mathrlap, mathclap
@@ -36,8 +37,26 @@ defineFunction({
                 ["inner"], [html.buildGroup(group.value.body, options)]);
         }
         const fix = buildCommon.makeSpan(["fix"], []);
-        return buildCommon.makeSpan(
-            ["mord", group.value.alignment], [inner, fix], options);
+        let node = buildCommon.makeSpan(
+            [group.value.alignment], [inner, fix], options);
+
+        // At this point, we have correctly set horizontal alignment of the
+        // two items involved in the lap.
+        // Next, use a strut to set the height of the HTML bounding box.
+        // Otherwise, a tall argument may be misplaced.
+        const strut = buildCommon.makeSpan(["strut"]);
+        strut.style.height = (node.height + node.depth) + "em";
+        strut.style.verticalAlign = -node.depth + "em";
+        node.children.unshift(strut);
+
+        // Next, prevent vertical misplacement when next to something tall.
+        node = buildCommon.makeVList({
+            positionType: "firstBaseline",
+            children: [{type: "elem", elem: node}],
+        }, options);
+
+        // Get the horizontal spacing correct relative to adjacent items.
+        return buildCommon.makeSpan(["mord"], [node], options);
     },
     mathmlBuilder: (group, options) => {
         // mathllap, mathrlap, mathclap

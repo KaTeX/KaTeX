@@ -4,6 +4,7 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
+import ParseNode, {assertNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -17,7 +18,13 @@ const htmlBuilder = (group, options) => {
     const scale = options.sizeMultiplier;
     let img;
     let imgShift = 0;
-    const isColorbox = /color/.test(label);
+
+    // In the LaTeX cancel package, line geometry is slightly different
+    // depending on whether the subject is wider than it is tall, or vice versa.
+    // We don't know the width of a group, so as a proxy, we test if
+    // the subject is a single character. This captures most of the
+    // subjects that should get the "tall" treatment.
+    const isSingleChar = utils.isCharacterBox(group.value.body);
 
     if (label === "sout") {
         img = buildCommon.makeSpan(["stretchy", "sout"]);
@@ -26,7 +33,13 @@ const htmlBuilder = (group, options) => {
 
     } else {
         // Add horizontal padding
-        inner.classes.push(/cancel/.test(label) ? "cancel-pad" : "boxpad");
+        if (/cancel/.test(label)) {
+            if (!isSingleChar) {
+                inner.classes.push("cancel-pad");
+            }
+        } else {
+            inner.classes.push("boxpad");
+        }
 
         // Add vertical padding
         let vertPad = 0;
@@ -35,22 +48,22 @@ const htmlBuilder = (group, options) => {
         if (/box/.test(label)) {
             vertPad = label === "colorbox" ? 0.3 : 0.34;
         } else {
-            vertPad = utils.isCharacterBox(group.value.body) ? 0.2 : 0;
+            vertPad = isSingleChar ? 0.2 : 0;
         }
 
         img = stretchy.encloseSpan(inner, label, vertPad, options);
         imgShift = inner.depth + vertPad;
 
-        if (isColorbox) {
+        if (group.value.backgroundColor) {
             img.style.backgroundColor = group.value.backgroundColor.value;
-            if (label === "fcolorbox") {
+            if (group.value.borderColor) {
                 img.style.borderColor = group.value.borderColor.value;
             }
         }
     }
 
     let vlist;
-    if (isColorbox) {
+    if (group.value.backgroundColor) {
         vlist = buildCommon.makeVList({
             positionType: "individualShift",
             children: [
@@ -80,8 +93,14 @@ const htmlBuilder = (group, options) => {
     }
 
     if (/cancel/.test(label)) {
+        // The cancel package documentation says that cancel lines add their height
+        // to the expression, but tests show that isn't how it actually works.
+        vlist.height = inner.height;
+        vlist.depth = inner.depth;
+    }
+
+    if (/cancel/.test(label) && !isSingleChar) {
         // cancel does not create horiz space for its line extension.
-        // That is, not when adjacent to a mord.
         return buildCommon.makeSpan(["mord", "cancel-lap"], [vlist], options);
     } else {
         return buildCommon.makeSpan(["mord"], [vlist], options);
@@ -104,19 +123,16 @@ const mathmlBuilder = (group, options) => {
         case "\\fbox":
             node.setAttribute("notation", "box");
             break;
-        case "\\colorbox":
-            node.setAttribute("mathbackground",
-                group.value.backgroundColor.value);
-            break;
         case "\\fcolorbox":
-            node.setAttribute("mathbackground",
-                group.value.backgroundColor.value);
             // TODO(ron): I don't know any way to set the border color.
             node.setAttribute("notation", "box");
             break;
-        default:
-            // xcancel
+        case "\\xcancel":
             node.setAttribute("notation", "updiagonalstrike downdiagonalstrike");
+            break;
+    }
+    if (group.value.backgroundColor) {
+        node.setAttribute("mathbackground", group.value.backgroundColor.value);
     }
     return node;
 };
@@ -130,15 +146,15 @@ defineFunction({
         greediness: 3,
         argTypes: ["color", "text"],
     },
-    handler(context, args, optArgs) {
-        const color = args[0];
+    handler({parser, funcName}, args, optArgs) {
+        const color = assertNodeType(args[0], "color-token");
         const body = args[1];
-        return {
+        return new ParseNode("enclose", {
             type: "enclose",
-            label: context.funcName,
+            label: funcName,
             backgroundColor: color,
             body: body,
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,
@@ -153,17 +169,17 @@ defineFunction({
         greediness: 3,
         argTypes: ["color", "color", "text"],
     },
-    handler(context, args, optArgs) {
-        const borderColor = args[0];
-        const backgroundColor = args[1];
+    handler({parser, funcName}, args, optArgs) {
+        const borderColor = assertNodeType(args[0], "color-token");
+        const backgroundColor = assertNodeType(args[1], "color-token");
         const body = args[2];
-        return {
+        return new ParseNode("enclose", {
             type: "enclose",
-            label: context.funcName,
+            label: funcName,
             backgroundColor: backgroundColor,
             borderColor: borderColor,
             body: body,
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,
@@ -175,13 +191,13 @@ defineFunction({
     props: {
         numArgs: 1,
     },
-    handler(context, args, optArgs) {
+    handler({parser, funcName}, args, optArgs) {
         const body = args[0];
-        return {
+        return new ParseNode("enclose", {
             type: "enclose",
-            label: context.funcName,
+            label: funcName,
             body: body,
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,

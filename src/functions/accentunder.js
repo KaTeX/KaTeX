@@ -4,6 +4,7 @@ import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import stretchy from "../stretchy";
+import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -17,15 +18,15 @@ defineFunction({
     props: {
         numArgs: 1,
     },
-    handler: (context, args) => {
+    handler: ({parser, funcName}, args) => {
         const base = args[0];
-        return {
+        return new ParseNode("accentUnder", {
             type: "accentUnder",
-            label: context.funcName,
+            label: funcName,
             base: base,
-        };
+        }, parser.mode);
     },
-    htmlBuilder: (group, options) => {
+    htmlBuilder: (group: ParseNode<"accentUnder">, options) => {
         // Treat under accents much like underlines.
         const innerGroup = html.buildGroup(group.value.base, options);
 
@@ -49,7 +50,7 @@ defineFunction({
         const accentNode = stretchy.mathMLnode(group.value.label);
         const node = new mathMLTree.MathNode(
             "munder",
-            [mml.buildGroup(group.value.body, options), accentNode]
+            [mml.buildGroup(group.value.base, options), accentNode]
         );
         node.setAttribute("accentunder", "true");
         return node;

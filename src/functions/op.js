@@ -3,26 +3,35 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import domTree from "../domTree";
-import mathMLTree from "../mathMLTree";
+import * as mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import Style from "../Style";
+import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-const htmlBuilder = (group, options) => {
+import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
+
+// NOTE: Unlike most `htmlBuilder`s, this one handles not only "op", but also
+// "supsub" since some of them (like \int) can affect super/subscripting.
+export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     // Operators are handled in the TeXbook pg. 443-444, rule 13(a).
     let supGroup;
     let subGroup;
     let hasLimits = false;
-    if (group.type === "supsub") {
+    let group: ParseNode<"op">;
+    const supSub = checkNodeType(grp, "supsub");
+    if (supSub) {
         // If we have limits, supsub will pass us its group to handle. Pull
         // out the superscript and subscript and set the group to the op in
         // its base.
-        supGroup = group.value.sup;
-        subGroup = group.value.sub;
-        group = group.value.base;
+        supGroup = supSub.value.sup;
+        subGroup = supSub.value.sub;
+        group = assertNodeType(supSub.value.base, "op");
         hasLimits = true;
+    } else {
+        group = assertNodeType(grp, "op");
     }
 
     const style = options.style;
@@ -45,9 +54,39 @@ const htmlBuilder = (group, options) => {
     if (group.value.symbol) {
         // If this is a symbol, create the symbol.
         const fontName = large ? "Size2-Regular" : "Size1-Regular";
+
+        let stash = "";
+        if (group.value.body === "\\oiint" || group.value.body === "\\oiiint") {
+            // No font glyphs yet, so use a glyph w/o the oval.
+            // TODO: When font glyphs are available, delete this code.
+            stash = group.value.body.substr(1);
+            // $FlowFixMe
+            group.value.body = stash === "oiint" ? "\\iint" : "\\iiint";
+        }
+
         base = buildCommon.makeSymbol(
             group.value.body, fontName, "math", options,
             ["mop", "op-symbol", large ? "large-op" : "small-op"]);
+
+        if (stash.length > 0) {
+            // We're in \oiint or \oiiint. Overlay the oval.
+            // TODO: When font glyphs are available, delete this code.
+            const italic = base.italic;
+            const oval = buildCommon.staticSvg(stash + "Size"
+                + (large ? "2" : "1"), options);
+            base = buildCommon.makeVList({
+                positionType: "individualShift",
+                children: [
+                    {type: "elem", elem: base, shift: 0},
+                    {type: "elem", elem: oval, shift: large ? 0.08 : 0},
+                ],
+            }, options);
+            // $FlowFixMe
+            group.value.body = "\\" + stash;
+            base.classes.unshift("mop");
+            // $FlowFixMe
+            base.italic = italic;
+        }
     } else if (group.value.value) {
         // If this is a list, compose that list.
         const inner = html.buildExpression(group.value.value, options, true);
@@ -72,7 +111,9 @@ const htmlBuilder = (group, options) => {
     // If content of op is a single symbol, shift it vertically.
     let baseShift = 0;
     let slant = 0;
-    if (base instanceof domTree.symbolNode && !group.value.suppressBaseShift) {
+    if ((base instanceof domTree.symbolNode
+        || group.value.body === "\\oiint" || group.value.body === "\\oiiint")
+        && !group.value.suppressBaseShift) {
         // We suppress the shift of the base of \overset and \underset. Otherwise,
         // shift the symbol so its center lies on the axis (rule 13). It
         // appears that our fonts have the centers of the symbols already
@@ -83,6 +124,7 @@ const htmlBuilder = (group, options) => {
             options.fontMetrics().axisHeight;
 
         // The slant of the symbol is just its italic correction.
+        // $FlowFixMe
         slant = base.italic;
     }
 
@@ -190,7 +232,7 @@ const htmlBuilder = (group, options) => {
     }
 };
 
-const mathmlBuilder = (group, options) => {
+const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
     let node;
 
     // TODO(emily): handle big operators using the `largeop` attribute
@@ -216,7 +258,7 @@ const mathmlBuilder = (group, options) => {
         const operator = new mathMLTree.MathNode("mo",
             [mml.makeText("\u2061", "text")]);
 
-        return new domTree.documentFragment([node, operator]);
+        return mathMLTree.newDocumentFragment([node, operator]);
     }
 
     return node;
@@ -249,17 +291,17 @@ defineFunction({
     props: {
         numArgs: 0,
     },
-    handler: (context, args) => {
-        let fName = context.funcName;
+    handler: ({parser, funcName}, args) => {
+        let fName = funcName;
         if (fName.length === 1) {
             fName = singleCharBigOps[fName];
         }
-        return {
+        return new ParseNode("op", {
             type: "op",
             limits: true,
             symbol: true,
             body: fName,
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,
@@ -273,14 +315,118 @@ defineFunction({
     props: {
         numArgs: 1,
     },
-    handler: (context, args) => {
+    handler: ({parser}, args) => {
         const body = args[0];
-        return {
+        return new ParseNode("op", {
             type: "op",
             limits: false,
             symbol: false,
             value: ordargument(body),
-        };
+        }, parser.mode);
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+// There are 2 flags for operators; whether they produce limits in
+// displaystyle, and whether they are symbols and should grow in
+// displaystyle. These four groups cover the four possible choices.
+
+const singleCharIntegrals: {[string]: string} = {
+    "\u222b": "\\int",
+    "\u222c": "\\iint",
+    "\u222d": "\\iiint",
+    "\u222e": "\\oint",
+    "\u222f": "\\oiint",
+    "\u2230": "\\oiiint",
+};
+
+defineFunction({
+    type: "op",
+    names: ["\\mathop"],
+    props: {
+        numArgs: 1,
+    },
+    handler: ({parser}, args) => {
+        const body = args[0];
+        return new ParseNode("op", {
+            type: "op",
+            limits: false,
+            symbol: false,
+            value: ordargument(body),
+        }, parser.mode);
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+// No limits, not symbols
+defineFunction({
+    type: "op",
+    names: [
+        "\\arcsin", "\\arccos", "\\arctan", "\\arctg", "\\arcctg",
+        "\\arg", "\\ch", "\\cos", "\\cosec", "\\cosh", "\\cot", "\\cotg",
+        "\\coth", "\\csc", "\\ctg", "\\cth", "\\deg", "\\dim", "\\exp",
+        "\\hom", "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin",
+        "\\sinh", "\\sh", "\\tan", "\\tanh", "\\tg", "\\th",
+    ],
+    props: {
+        numArgs: 0,
+    },
+    handler({parser, funcName}) {
+        return new ParseNode("op", {
+            type: "op",
+            limits: false,
+            symbol: false,
+            body: funcName,
+        }, parser.mode);
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+// Limits, not symbols
+defineFunction({
+    type: "op",
+    names: [
+        "\\det", "\\gcd", "\\inf", "\\lim", "\\max", "\\min", "\\Pr", "\\sup",
+    ],
+    props: {
+        numArgs: 0,
+    },
+    handler({parser, funcName}) {
+        return new ParseNode("op", {
+            type: "op",
+            limits: true,
+            symbol: false,
+            body: funcName,
+        }, parser.mode);
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+// No limits, symbols
+defineFunction({
+    type: "op",
+    names: [
+        "\\int", "\\iint", "\\iiint", "\\oint", "\\oiint", "\\oiiint",
+        "\u222b", "\u222c", "\u222d", "\u222e", "\u222f", "\u2230",
+    ],
+    props: {
+        numArgs: 0,
+    },
+    handler({parser, funcName}) {
+        let fName = funcName;
+        if (fName.length === 1) {
+            fName = singleCharIntegrals[fName];
+        }
+        return new ParseNode("op", {
+            type: "op",
+            limits: false,
+            symbol: true,
+            body: fName,
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,

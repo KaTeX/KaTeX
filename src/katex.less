@@ -11,7 +11,10 @@
 
         .mfrac .frac-line,
         .overline .overline-line,
-        .underline .underline-line {
+        .underline .underline-line,
+        .hline,
+        .hdashline,
+        .rule {
             min-height: 1px;
         }
     }
@@ -23,12 +26,17 @@
     text-align: center;
 
     > .katex {
-        display: inline-block;
-        text-align: initial;
+        display: block;
+        text-align: center;
         white-space: nowrap;
 
         > .katex-html {
-            display: inline-block;
+            display: block;
+
+            > .tag {
+                position: absolute;
+                right: 0px;
+            }
         }
     }
 }
@@ -57,6 +65,13 @@
         height: 1px;
         width: 1px;
         overflow: hidden;
+    }
+
+    .katex-html {
+        /* \newline is an empty block at top level, between .base elements */
+        > .newline {
+            display: block;
+        }
     }
 
     .base {
@@ -231,54 +246,6 @@
 
     .mspace {
         display: inline-block;
-
-        &.negativethinspace {
-            margin-left: -@thinspace;
-        }
-
-        &.muspace {
-            width: @muspace;
-        }
-
-        &.thinspace {
-            width: @thinspace;
-        }
-
-        &.negativemediumspace {
-            margin-left: -@mediumspace;
-        }
-
-        &.mediumspace {
-            width: @mediumspace;
-        }
-
-        &.thickspace {
-            width: @thickspace;
-        }
-
-        &.sixmuspace {
-            width: 0.333333em;
-        }
-
-        &.eightmuspace {
-            width: 0.444444em;
-        }
-
-        &.enspace {
-            width: 0.5em;
-        }
-
-        &.twelvemuspace {
-            width: 0.666667em;
-        }
-
-        &.quad {
-            width: 1em;
-        }
-
-        &.qquad {
-            width: 2em;
-        }
     }
 
     .llap,
@@ -317,10 +284,17 @@
     }
 
     .overline .overline-line,
-    .underline .underline-line {
+    .underline .underline-line,
+    .hline {
         display: inline-block;
         width: 100%;
         border-bottom-style: solid;
+    }
+
+    .hdashline {
+        display: inline-block;
+        width: 100%;
+        border-bottom-style: dashed;
     }
 
     .sqrt {
@@ -437,6 +411,10 @@
             display: inline-block;
             margin: 0 -0.025em;
             border-right: 0.05em solid;
+        }
+
+        .vs-dashed {
+            border-right: 0.05em dashed;
         }
 
         .arraycolsep {
@@ -572,15 +550,10 @@
     .cancel-pad {
         padding: 0 0.2em 0 0.2em;    // ref: cancel package  \advance\dimen@ 2\p@ %  "+2"
     }
-    .mord + .cancel-lap,
-    .mbin + .cancel-lap {
-        margin-left: -0.2em;
-    }
-    .cancel-lap + .mord,
-    .cancel-lap + .mbin,
-    .cancel-lap + .msupsub {
-        margin-left: -0.2em;
-    }
+    .cancel-lap {
+        margin-left: -0.2em;    // \cancel does not affect horizontal spacing.
+        margin-right: -0.2em;   // Apply negative margin to correct for 0.2em padding
+    }                           // inside the \cancel group.
     .sout {
         border-bottom-style: solid;
         border-bottom-width: 0.08em;

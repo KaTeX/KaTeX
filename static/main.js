@@ -14,7 +14,8 @@ function init() {
     input.addEventListener("input", reprocess, false);
     permalink.addEventListener("click", setSearch);
 
-    const options = {displayMode: true, throwOnError: false, macros: {}};
+    const options = {displayMode: true, throwOnError: false};
+    const macros = {};
     const query = queryString.parse(window.location.search);
 
     if (query.text) {
@@ -26,6 +27,17 @@ function init() {
     const displayQuery = (query.displayMode || query.display);
     if (displayQuery && displayQuery.match(/^(0|f|n)/)) {
         options.displayMode = false;
+    }
+
+    // Use `strict=warn` for warning strict mode or `strict=error`
+    // (or `=1`/`=t`/`=true`/`=y`/`=yes`)
+    // to turn off displayMode (which is on by default).
+    if (query.strict) {
+        if (query.strict.match(/^(1|t|y|e)/)) {
+            options.strict = "error";
+        } if (query.strict && query.strict.match(/^(w)/)) {
+            options.strict = "warn";
+        }
     }
 
     // The `before` or `pre` search parameter puts normal text before the math.
@@ -54,7 +66,7 @@ function init() {
     // `c=expansion`.
     Object.getOwnPropertyNames(query).forEach((key) => {
         if (key.match(/^\\|^[^]$/)) {
-            options.macros[key] = query[key];
+            macros[key] = query[key];
         }
     });
 
@@ -67,6 +79,8 @@ function init() {
     }
 
     function reprocess() {
+        // Ignore changes to global macros caused by the expression
+        options.macros = Object.assign({}, macros);
         try {
             katex.render(input.value, math, options);
         } catch (e) {

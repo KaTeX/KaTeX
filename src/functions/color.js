@@ -2,7 +2,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseError from "../ParseError";
+import ParseNode, {assertNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -40,14 +40,14 @@ defineFunction({
         greediness: 3,
         argTypes: ["color", "original"],
     },
-    handler(context, args) {
-        const color = args[0];
+    handler({parser}, args) {
+        const color = assertNodeType(args[0], "color-token");
         const body = args[1];
-        return {
+        return new ParseNode("color", {
             type: "color",
             color: color.value,
             value: ordargument(body),
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,
@@ -76,13 +76,13 @@ defineFunction({
         allowedInText: true,
         greediness: 3,
     },
-    handler(context, args) {
+    handler({parser, funcName}, args) {
         const body = args[0];
-        return {
+        return new ParseNode("color", {
             type: "color",
-            color: "katex-" + context.funcName.slice(1),
+            color: "katex-" + funcName.slice(1),
             value: ordargument(body),
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,
@@ -97,22 +97,17 @@ defineFunction({
         greediness: 3,
         argTypes: ["color"],
     },
-    handler(context, args) {
-        const {parser, breakOnTokenText} = context;
-
-        const color = args[0];
-        if (!color) {
-            throw new ParseError("\\color not followed by color");
-        }
+    handler({parser, breakOnTokenText}, args) {
+        const color = assertNodeType(args[0], "color-token");
 
         // If we see a styling function, parse out the implicit body
         const body = parser.parseExpression(true, breakOnTokenText);
 
-        return {
+        return new ParseNode("color", {
             type: "color",
             color: color.value,
             value: body,
-        };
+        }, parser.mode);
     },
     htmlBuilder,
     mathmlBuilder,

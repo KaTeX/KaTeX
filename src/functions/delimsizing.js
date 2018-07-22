@@ -5,11 +5,14 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
+import ParseNode, {assertNodeType, checkSymbolNodeType} from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type ParseNode from "../ParseNode";
+import type Options from "../Options";
+import type {AnyParseNode, SymbolParseNode} from "../ParseNode";
+import type {LeftRightDelimType} from "../ParseNode";
 import type {FunctionContext} from "../defineFunction";
 
 // Extra data needed for the delimiter handler down below
@@ -49,16 +52,19 @@ const delimiters = [
     ".",
 ];
 
+type IsMiddle = {value: string, options: Options};
+
 // Delimiter functions
 function checkDelimiter(
-    delim: ParseNode<*>,
+    delim: AnyParseNode,
     context: FunctionContext,
-): ParseNode<*> {
-    if (utils.contains(delimiters, delim.value)) {
-        return delim;
+): SymbolParseNode {
+    const symDelim = checkSymbolNodeType(delim);
+    if (symDelim && utils.contains(delimiters, symDelim.value)) {
+        return symDelim;
     } else {
         throw new ParseError(
-            "Invalid delimiter: '" + delim.value + "' after '" +
+            "Invalid delimiter: '" + String(delim.value) + "' after '" +
             context.funcName + "'", delim);
     }
 }
@@ -77,12 +83,12 @@ defineFunction({
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
 
-        return {
+        return new ParseNode("delimsizing", {
             type: "delimsizing",
             size: delimiterSizes[context.funcName].size,
             mclass: delimiterSizes[context.funcName].mclass,
             value: delim.value,
-        };
+        }, context.parser.mode);
     },
     htmlBuilder: (group, options) => {
         const delim = group.value.value;
@@ -122,49 +128,65 @@ defineFunction({
     },
 });
 
+
+function leftRightGroupValue(group: ParseNode<"leftright">): LeftRightDelimType {
+    if (!group.value.body) {
+        throw new Error("Bug: The leftright ParseNode wasn't fully parsed.");
+    }
+    return group.value;
+}
+
+
+defineFunction({
+    type: "leftright-right",
+    names: ["\\right"],
+    props: {
+        numArgs: 1,
+    },
+    handler: (context, args) => {
+        // \left case below triggers parsing of \right in
+        //   `const right = parser.parseFunction();`
+        // uses this return value.
+        return new ParseNode("leftright-right", {
+            type: "leftright-right",
+            value: checkDelimiter(args[0], context).value,
+        }, context.parser.mode);
+    },
+});
+
+
 defineFunction({
     type: "leftright",
-    names: [
-        "\\left", "\\right",
-    ],
+    names: ["\\left"],
     props: {
         numArgs: 1,
     },
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
 
-        if (context.funcName === "\\left") {
-            const parser = context.parser;
-            // Parse out the implicit body
-            ++parser.leftrightDepth;
-            // parseExpression stops before '\\right'
-            const body = parser.parseExpression(false);
-            --parser.leftrightDepth;
-            // Check the next token
-            parser.expect("\\right", false);
-            const right = parser.parseFunction();
-            if (!right) {
-                throw new ParseError('failed to parse function after \\right');
-            }
-            return {
-                type: "leftright",
-                body: body,
-                left: delim.value,
-                right: right.value.value,
-            };
-        } else {
-            // This is a little weird. We return this object which gets turned
-            // into a ParseNode which gets returned by
-            // `const right = parser.parseFunction();` up above.
-            return {
-                type: "leftright",
-                value: delim.value,
-            };
+        const parser = context.parser;
+        // Parse out the implicit body
+        ++parser.leftrightDepth;
+        // parseExpression stops before '\\right'
+        const body = parser.parseExpression(false);
+        --parser.leftrightDepth;
+        // Check the next token
+        parser.expect("\\right", false);
+        const right = parser.parseFunction();
+        if (!right) {
+            throw new ParseError('failed to parse function after \\right');
         }
+        return new ParseNode("leftright", {
+            type: "leftright",
+            body: body,
+            left: delim.value,
+            right: assertNodeType(right, "leftright-right").value.value,
+        }, parser.mode);
     },
     htmlBuilder: (group, options) => {
+        const groupValue = leftRightGroupValue(group);
         // Build the inner expression
-        const inner = html.buildExpression(group.value.body, options, true,
+        const inner = html.buildExpression(groupValue.body, options, true,
             [null, "mclose"]);
 
         let innerHeight = 0;
@@ -173,6 +195,9 @@ defineFunction({
 
         // Calculate its height and depth
         for (let i = 0; i < inner.length; i++) {
+            // Property `isMiddle` not defined on `span`. See comment in
+            // "middle"'s htmlBuilder.
+            // $FlowFixMe
             if (inner[i].isMiddle) {
                 hadMiddle = true;
             } else {
@@ -188,14 +213,14 @@ defineFunction({
         innerDepth *= options.sizeMultiplier;
 
         let leftDelim;
-        if (group.value.left === ".") {
+        if (groupValue.left === ".") {
             // Empty delimiters in \left and \right make null delimiter spaces.
             leftDelim = html.makeNullDelimiter(options, ["mopen"]);
         } else {
             // Otherwise, use leftRightDelim to generate the correct sized
             // delimiter.
             leftDelim = delimiter.leftRightDelim(
-                group.value.left, innerHeight, innerDepth, options,
+                groupValue.left, innerHeight, innerDepth, options,
                 group.mode, ["mopen"]);
         }
         // Add it to the beginning of the expression
@@ -205,22 +230,26 @@ defineFunction({
         if (hadMiddle) {
             for (let i = 1; i < inner.length; i++) {
                 const middleDelim = inner[i];
-                if (middleDelim.isMiddle) {
+                // Property `isMiddle` not defined on `span`. See comment in
+                // "middle"'s htmlBuilder.
+                // $FlowFixMe
+                const isMiddle: IsMiddle = middleDelim.isMiddle;
+                if (isMiddle) {
                     // Apply the options that were active when \middle was called
                     inner[i] = delimiter.leftRightDelim(
-                        middleDelim.isMiddle.value, innerHeight, innerDepth,
-                        middleDelim.isMiddle.options, group.mode, []);
+                        isMiddle.value, innerHeight, innerDepth,
+                        isMiddle.options, group.mode, []);
                 }
             }
         }
 
         let rightDelim;
         // Same for the right delimiter
-        if (group.value.right === ".") {
+        if (groupValue.right === ".") {
             rightDelim = html.makeNullDelimiter(options, ["mclose"]);
         } else {
             rightDelim = delimiter.leftRightDelim(
-                group.value.right, innerHeight, innerDepth, options,
+                groupValue.right, innerHeight, innerDepth, options,
                 group.mode, ["mclose"]);
         }
         // Add it to the end of the expression.
@@ -229,29 +258,28 @@ defineFunction({
         return buildCommon.makeSpan(["minner"], inner, options);
     },
     mathmlBuilder: (group, options) => {
-        const inner = mml.buildExpression(group.value.body, options);
+        const groupValue = leftRightGroupValue(group);
+        const inner = mml.buildExpression(groupValue.body, options);
 
-        if (group.value.left !== ".") {
+        if (groupValue.left !== ".") {
             const leftNode = new mathMLTree.MathNode(
-                "mo", [mml.makeText(group.value.left, group.mode)]);
+                "mo", [mml.makeText(groupValue.left, group.mode)]);
 
             leftNode.setAttribute("fence", "true");
 
             inner.unshift(leftNode);
         }
 
-        if (group.value.right !== ".") {
+        if (groupValue.right !== ".") {
             const rightNode = new mathMLTree.MathNode(
-                "mo", [mml.makeText(group.value.right, group.mode)]);
+                "mo", [mml.makeText(groupValue.right, group.mode)]);
 
             rightNode.setAttribute("fence", "true");
 
             inner.push(rightNode);
         }
 
-        const outerNode = new mathMLTree.MathNode("mrow", inner);
-
-        return outerNode;
+        return mml.makeRow(inner);
     },
 });
 
@@ -267,10 +295,10 @@ defineFunction({
             throw new ParseError("\\middle without preceding \\left", delim);
         }
 
-        return {
+        return new ParseNode("middle", {
             type: "middle",
             value: delim.value,
-        };
+        }, context.parser.mode);
     },
     htmlBuilder: (group, options) => {
         let middleDelim;
@@ -281,19 +309,19 @@ defineFunction({
                 group.value.value, 1, options,
                 group.mode, []);
 
+            const isMiddle: IsMiddle = {value: group.value.value, options};
             // Property `isMiddle` not defined on `span`. It is only used in
-            // this file above. Fixing this correctly requires refactoring the
-            // htmlBuilder return type to support passing additional data.
-            // An easier, but unideal option would be to add `isMiddle` to
-            // `span` just for this case.
+            // this file above.
+            // TODO: Fix this violation of the `span` type and possibly rename
+            // things since `isMiddle` sounds like a boolean, but is a struct.
             // $FlowFixMe
-            middleDelim.isMiddle = {value: group.value.value, options};
+            middleDelim.isMiddle = isMiddle;
         }
         return middleDelim;
     },
     mathmlBuilder: (group, options) => {
         const middleNode = new mathMLTree.MathNode(
-            "mo", [mml.makeText(group.value.middle, group.mode)]);
+            "mo", [mml.makeText(group.value.value, group.mode)]);
         middleNode.setAttribute("fence", "true");
         return middleNode;
     },

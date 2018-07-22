@@ -3,6 +3,7 @@
 
 const childProcess = require("child_process");
 const fs = require("fs");
+const mkdirp = require("mkdirp");
 const jspngopt = require("jspngopt");
 const net = require("net");
 const os = require("os");
@@ -20,6 +21,8 @@ const dstDir = path.normalize(
     path.join(__dirname, "..", "..", "test", "screenshotter", "images"));
 const diffDir = path.normalize(
     path.join(__dirname, "..", "..", "test", "screenshotter", "diff"));
+const newDir = path.normalize(
+    path.join(__dirname, "..", "..", "test", "screenshotter", "new"));
 
 //////////////////////////////////////////////////////////////////////
 // Process command line arguments
@@ -80,6 +83,10 @@ const opts = require("nomnom")
         flag: true,
         help: "With `--verify`, produce image diffs when match fails",
     })
+    .option("new", {
+        flag: true,
+        help: "With `--verify`, generate new screenshots when match fails",
+    })
     .option("attempts", {
         help: "Retry this many times before reporting failure",
         "default": 5,
@@ -125,7 +132,7 @@ function cmd() {
     const args = Array.prototype.slice.call(arguments);
     const cmd = args.shift();
     return childProcess.execFileSync(
-        cmd, args, { encoding: "utf-8" }).replace(/\n$/, "");
+        cmd, args, {encoding: "utf-8"}).replace(/\n$/, "");
 }
 
 function guessDockerIPs() {
@@ -448,8 +455,8 @@ function takeScreenshot(key) {
                         console.error("FAIL! " + key);
                         listOfFailed.push(key);
                         exitStatus = 3;
-                        if (opts.diff) {
-                            return saveScreenshotDiff(key, buf);
+                        if (opts.diff || opts.new) {
+                            return saveFailedScreenshot(key, buf);
                         }
                     } else {
                         console.log("error " + key);
@@ -470,16 +477,20 @@ function takeScreenshot(key) {
         }
     }
 
-    function saveScreenshotDiff(key, buf) {
+    function saveFailedScreenshot(key, buf) {
         const filenamePrefix = key + "-" + opts.browser;
+        const outputDir = opts.new ? newDir : diffDir;
         const baseFile = path.join(dstDir, filenamePrefix + ".png");
         const diffFile = path.join(diffDir, filenamePrefix + "-diff.png");
-        const bufFile = path.join(diffDir, filenamePrefix + "-fail.png");
+        const bufFile = path.join(outputDir, filenamePrefix + ".png");
 
-        return promisify(fs.mkdir, diffDir)
-            .then(null, function() { }) /* Ignore EEXIST error (XXX & others) */
+        let promise = promisify(mkdirp, outputDir)
             .then(function() {
                 return promisify(fs.writeFile, bufFile, buf);
+            });
+        if (opts.diff) {
+            promise = promise.then(function() {
+                return promisify(mkdirp, diffDir);
             })
             .then(function() {
                 return execFile("convert", [
@@ -494,16 +505,26 @@ function takeScreenshot(key) {
                               // corners
                     diffFile, // output file name
                 ]);
-            })
-            .then(function() {
+            });
+        }
+        if (!opts.new) {
+            promise = promise.then(function() {
                 return promisify(fs.unlink, bufFile);
             });
+        }
+        return promise;
     }
 
     function oneDone() {
         if (--countdown === 0) {
             if (listOfFailed.length) {
                 console.error("Failed: " + listOfFailed.join(" "));
+            }
+            if (opts.diff) {
+                console.log("Diffs have been generated in: " + diffDir);
+            }
+            if (opts.new) {
+                console.log("New screenshots have been generated in: " + newDir);
             }
             // devServer.close(cb) will take too long.
             process.exit(exitStatus);

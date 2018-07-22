@@ -33,9 +33,9 @@ Alignedat: |
         3a &= 3 & 17b &= 34 &\quad 400c &= 1200
     \end{alignedat}
 Arrays: |
-    \left(\begin{array}{|rl|c||}
-        1&2&3\\
-        1+1&2+1&3+1\cr1\over2&\scriptstyle 1/2&\frac12\\[1ex]
+    \left(\begin{array}{|rl:c||}
+        1&2&3\\ \hline
+        1+1&2+1&3+1\cr1\over2&\scriptstyle 1/2&\frac12\\[1ex] \hline \hdashline
         \begin{pmatrix}x\\y\end{pmatrix}&0&\begin{vmatrix}a&b\\c&d\end{vmatrix}
     \end{array}\right]
 ArrayMode:
@@ -62,7 +62,9 @@ BinCancellation: |
     \end{array}
 BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}
 BoldSpacing: \mathbf{A}^2+\mathbf{B}_3*\mathscr{C}'
-BoldSymbol: \sum_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\omega}+ \int_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\Omega}+\boldsymbol{Ax2k\omega\Omega\imath+}
+BoldSymbol: |
+  \sum_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\omega}+ \int_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\Omega}+\boldsymbol{Ax2k\omega\Omega\imath+} \\
+  x \boldsymbol{+} y \boldsymbol{=} z
 Boxed: \boxed{F=ma} \quad \boxed{ac}\color{magenta}{\boxed{F}}\boxed{F=mg}
 Cases: |
     f(a,b)=\begin{cases}
@@ -76,7 +78,12 @@ Colors:
 ColorImplicit: bl{ack\color{red}red\textcolor{green}{green}red\color{blue}blue}black
 ColorSpacing: \textcolor{red}{\displaystyle \int x} + 1
 Colorbox:  a \colorbox{teal} B \fcolorbox{blue}{red}{C} e+\colorbox{teal}x
-DashesAndQuotes: \text{``a'' b---c -- d----`e'-{-}-f}--``x''
+DashesAndQuotes: |
+    \begin{array}{l}
+        \text{``a'' b---c -- d----`e'-{-}-f} -- \\
+        \text{\it ``a'' b---c -- d----`e'-{-}-f} ``x'' \\
+        \text{\tt ``a''---} \texttt{``a''---} \mathtt{--} \\
+    \end{array}
 DeepFontSizing:
     tex: |
         a^{\big| x^{\big(}}_{\Big\uparrow} +
@@ -106,7 +113,12 @@ ExtensibleArrows: |
         \xrightleftharpoons[ab]{ABC} + \xhookrightarrow[ab]{ABC} \\
         \xtwoheadrightarrow{ABC} + \frac{\xrightarrow[ab]{ABC}}{\xrightarrow[ab]{ABC}} + \left\lvert\xrightarrow[ab]{ABC}\right\rvert
     \end{array}
-FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}
+FractionTest: |
+    \begin{array}{l}
+        \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}\; \cfrac{1}{1+\cfrac{1}{x}} \\[2.5em]
+        {a \brace b} \; {a \brack b} \; \genfrac \{ ]{0.8pt}{0}{a}{b}
+        \; {a \above1.0pt b}
+    \end{array}
 Functions: \sin\cos\tan\ln\log
 Gathered: |
     \begin{gathered}
@@ -125,13 +137,25 @@ GroupMacros:
         \endExp: \egroup
     tex: \startExp a+b\endExp
 HorizontalBraces: \overbrace{\displaystyle{\oint_S{\vec E\cdot\hat n\,\mathrm d a}}}^\text{emf} = \underbrace{\frac{q_{\text{enc}}}{\varepsilon_0}}_{\text{charge}}
+Integrands: |
+    \begin{array}{l}
+        \displaystyle \int + \oint + \iint + \oiint_i^n \\[0.6em]
+        \displaystyle \iiint + \oiiint + \textstyle \int + \oint_i^n \\[0.6em]
+        \iint + \oiint + \iiint + \oiiint
+    \end{array}
 KaTeX:
     tex: \KaTeX
     nolatex: \KaTeX not supported by LaTeX
 Kern:
     tex: \frac{a\kern{1em}b}{c}a\kern{1em}b\kern{1ex}c\kern{-0.25em}d
     nolatex: LaTeX fails to typeset this, “Missing number, treated as zero.”
-Lap: ab\mathllap{f}cd\mathrlap{g}hij\mathclap{k}lm \; ab\llap{f}cd\rlap{g}hij\clap{k}lm
+# The following test, Lap, is commented out pending a successful screenshotter test.
+# Lap: |
+#     \begin{array}{l}
+#         ab\mathllap{f}cd\mathrlap{g}hij\mathclap{k}lm \; ab\llap{f}cd\rlap{g}hij\clap{k}lm \\
+#         \mathrlap{\frac a b} \frac a b \\
+#         \mathrlap{\overbrace{\phantom{a_0+a_1+a_2}}^m}a_0+a_1+a_2
+#     \end{array}
 LargeRuleNumerator: \frac{\textcolor{blue}{\rule{1em}{2em}}}{x}
 LaTeX: \text{\LaTeX}, \text{\TeX}
 LeftRight: \left( x^2 \right) \left\{ x^{x^{x^{x^x}}} \right.
@@ -206,10 +230,19 @@ NegativeSpace:
 NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
     {\dfrac{c}{d}}\frac{\frac{a}{b}}{\frac{c}{d}}
+NewLine: |
+    \frac{a^2+b^2}{c^2} \newline
+    \frac{a^2+b^2}{c^2} \\[1ex]
+    \begin{pmatrix}
+        a & b \\
+        c & d \cr
+    \end{pmatrix} \\
+    a+b+c+{d+\\e}+f+g
 Not: |
     \begin{array}{l}
         \not=\not>\not\geq\not\in\not<\not\leq\not{abc} \\
-        \not xy + ab \not xy
+        \not xy + ab \not xy \\
+        a \neq b \notin c
     \end{array}
 NullDelimiterInteraction: a \bigl. + 2 \quad \left. + a \right)
 OldFont: |
@@ -237,7 +270,10 @@ OverUnderset: |
     a+b+c+d\overset{b+c=0}\longrightarrow a+d\\
     \overset { x = y } { \sqrt { a b } }
     \end{array}
-Phantom: \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x} \left(\vphantom{\int_t} zzz \right) \left( X \hphantom{\frac{\frac X X}{X}} \right)
+Phantom: \begin{array}{l}
+            \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x} \left(\vphantom{\int_t} zzz \right) \left( X \hphantom{\frac{\frac X X}{X}} \right)\\
+            \text{a \phantom{123} b \hphantom{45678} c \vphantom{101112} d}
+         \end{array}
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
 Raisebox: \frac{a}{a\raisebox{0.5em}{b}} \cdot \frac{a\raisebox{-0.5em}{b}}{a} \cdot \sqrt{a\raisebox{0.5em}{b}} \cdot \sqrt{a\raisebox{-0.5em}{b}} \cdot \sqrt{a\raisebox{0.5em}{b}\raisebox{-0.5em}{b}}
@@ -269,6 +305,7 @@ Spacing: |
         ^3+[-1][1-1]1=1(=1)\lvert a\rvert~b \\
         \scriptstyle{^3+[-1][1-1]1=1(=1)\lvert a\rvert~b} \\
         \scriptscriptstyle{^3+[-1][1-1]1=1(=1)\lvert a\rvert~b} \\
+        a : a \colon a \\
     \end{matrix}
 Sqrt: |
     \sqrt{\sqrt{\sqrt{x}}}_{\sqrt{\sqrt{x}}}^{\sqrt{\sqrt{\sqrt{x}}}
@@ -280,7 +317,7 @@ StretchyAccent: |
     \begin{array}{l}
         \overrightarrow{AB} \quad \overleftarrow{AB} \quad \Overrightarrow{AB} \quad \overleftrightarrow{AB} \quad \overgroup{AB} \\
         \overlinesegment{AB} \quad \overleftharpoon{AB} \quad \overrightharpoon{AB} \quad \color{red}{\overrightarrow{AB}} \quad \widehat{\theta} \widetilde{A} \\
-        \widehat{AB} \quad \widehat{ABC} \quad \widetilde{AB} \quad \widetilde{ABC} \\
+        \widecheck{AB} \quad \widehat{ABC} \quad \widetilde{AB} \quad \widetilde{ABC} \\
         \overrightarrow{F} + \overrightarrow{AB} + \overrightarrow{F}^2 + \overrightarrow{F}_2 + \overrightarrow{F}_1^2 \\
         \overrightarrow{AB}^2+\frac{\overrightarrow{AB}}{\overrightarrow{AB}} + \sqrt{\overrightarrow{AB}} + \left\lvert\overrightarrow{AB}\right\rvert
     \end{array}
@@ -289,8 +326,8 @@ StretchyAccentColor: |
 StrikeThrough: |
     \begin{array}{l}
         \cancel x \quad \cancel{2B} + \bcancel 5 +\bcancel{5ay} \\
-        \sout{5ab} + \sout{5ABC} + \xcancel{\oint_S{\vec E\cdot\hat n\,\mathrm d a}} \\
-        \frac{x+\cancel B}{x+\cancel x} + \frac{x+\cancel y}{x} + \cancel{B}_1^2 + \cancel{B^2} \\
+        \sout{5ab} + \sout{5ABC} + \xcancel{\oint_S{\vec E\cdot\hat n\,\mathrm d a}} \\[0.3em]
+        \frac{x+\cancel B}{x+\cancel x} + \frac{x+\cancel y}{x} + \cancel{B}_1^2 + \cancel{B^2} \\[0.2em]
         \left\lvert\cancel{ac}\right\rvert
     \end{array}
 StrikeThroughColor: |
@@ -323,6 +360,9 @@ SvgReset:
 Symbols1: |
     \maltese\degree\pounds\$
     \text{\maltese\degree\pounds\textdollar}
+Tag:
+    tex: \tag{$+$hi} \frac{x^2}{y}+x^{2^y}
+    display: 1
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
 TextSpace:
   \begin{array}{l}
@@ -338,7 +378,7 @@ TextStacked:
       \textsf{\textrm{\textbf{abc123}} \textbf{abc123} \textit{abc123}}\\
       \textit{abc123 \textbf{abc123} \textsf{abc123}}\\
   \end{matrix}
-TextWithMath: 
+TextWithMath:
   \begin{matrix}
       \text{for $a < b$ and $ c < d $}. \\
       \textsf{for $a < b$ and $ c < d $}. \\
