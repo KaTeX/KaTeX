@@ -27,74 +27,32 @@ const newDir = path.normalize(
 //////////////////////////////////////////////////////////////////////
 // Process command line arguments
 
-const opts = require("nomnom")
-    .option("browser", {
-        abbr: "b",
-        "default": "firefox",
-        help: "Name of the browser to use",
-    })
-    .option("container", {
-        abbr: "c",
-        type: "string",
-        help: "Name or ID of a running docker container to contact",
-    })
-    .option("seleniumURL", {
-        full: "selenium-url",
-        help: "Full URL of the Selenium web driver",
-    })
-    .option("seleniumIP", {
-        full: "selenium-ip",
-        help: "IP address of the Selenium web driver",
-    })
-    .option("seleniumPort", {
-        full: "selenium-port",
-        "default": 4444,
-        help: "Port number of the Selenium web driver",
-    })
-    .option("katexURL", {
-        full: "katex-url",
-        help: "Full URL of the KaTeX development server",
-    })
-    .option("katexIP", {
-        full: "katex-ip",
-        help: "Full URL of the KaTeX development server",
-    })
-    .option("katexPort", {
-        full: "katex-port",
-        help: "Port number of the KaTeX development server",
-    })
-    .option("include", {
-        abbr: "i",
-        help: "Comma-separated list of test cases to process",
-    })
-    .option("exclude", {
-        abbr: "x",
-        help: "Comma-separated list of test cases to exclude",
-    })
-    .option("reload", {
-        flag: true,
-        help: "Reload page for each test",
-    })
-    .option("verify", {
-        flag: true,
-        help: "Check whether screenshot matches current file content",
-    })
-    .option("diff", {
-        flag: true,
-        help: "With `--verify`, produce image diffs when match fails",
-    })
-    .option("new", {
-        flag: true,
-        help: "With `--verify`, generate new screenshots when match fails",
-    })
-    .option("attempts", {
-        help: "Retry this many times before reporting failure",
-        "default": 5,
-    })
-    .option("wait", {
-        help: "Wait this many seconds between page load and screenshot",
-    })
-    .parse();
+const opts = require("commander")
+    .option("-b, --browser <firefox|chrome>",
+        "Name of the browser to use (default firefox)")
+    .option("-c, --container <id>",
+        "Name or ID of a running docker container to contact")
+    .option("--selenium-url <url>", "Full URL of the Selenium web driver")
+    .option("--selenium-ip <ip>", "IP address of the Selenium web driver")
+    .option("--selenium-port <n>",
+        "Port number of the Selenium web driver (default 4444)")
+    .option("--katex-url <url>", "Full URL of the KaTeX development server")
+    .option("--katex-ip <ip>", "IP address of the KaTeX development server")
+    .option("--katex-port <n>", "Port number of the KaTeX development server")
+    .option("-i, --include <tests>",
+        "Comma-separated list of test cases to process")
+    .option("-x, --exclude <tests>",
+        "Comma-separated list of test cases to exclude")
+    .option("--reload", "Reload page for each test")
+    .option("--verify", "Check whether screenshot matches current file content")
+    .option("--diff", "With `--verify`, produce image diffs when match fails")
+    .option("--new",
+        "With `--verify`, generate new screenshots when match fails")
+    .option("--attempts <n>",
+        "Retry this many times before reporting failure (default 5)")
+    .option("--wait <secs>",
+        "Wait this many seconds between page load and screenshot")
+    .parse(process.argv);
 
 let listOfCases;
 if (opts.include) {
@@ -109,11 +67,13 @@ if (opts.exclude) {
     });
 }
 
-let seleniumURL = opts.seleniumURL;
-let seleniumIP = opts.seleniumIP;
-let seleniumPort = opts.seleniumPort;
-let katexURL = opts.katexURL;
-let katexIP = opts.katexIP;
+const browser = opts.browser || "firefox";
+const numAttempts = opts.attempts || 5;
+let seleniumURL = opts.seleniumUrl;
+let seleniumIP = opts.seleniumIp;
+let seleniumPort = opts.seleniumPort || 4444;
+let katexURL = opts.katexUrl;
+let katexIP = opts.katexIp;
 let katexPort = opts.katexPort;
 
 //////////////////////////////////////////////////////////////////////
@@ -252,7 +212,7 @@ function tryConnect() {
 let driver;
 let driverReady = false;
 function buildDriver() {
-    const builder = new selenium.Builder().forBrowser(opts.browser);
+    const builder = new selenium.Builder().forBrowser(browser);
     const ffProfile = new firefox.Profile();
     ffProfile.setPreference(
         "browser.startup.homepage_override.mstone", "ignore");
@@ -291,7 +251,7 @@ function setSize(reqW, reqH) {
             findHostIP();
             return;
         }
-        if (++attempts > opts.attempts) {
+        if (++attempts > numAttempts) {
             throw new Error("Failed to set window size correctly.");
         }
         return setSize(targetW + reqW - actualW, targetH + reqH - actualH);
@@ -389,7 +349,7 @@ function takeScreenshot(key) {
         return;
     }
 
-    let file = path.join(dstDir, key + "-" + opts.browser + ".png");
+    let file = path.join(dstDir, key + "-" + browser + ".png");
     let retry = 0;
     let loadExpected = null;
     if (opts.verify) {
@@ -430,7 +390,7 @@ function takeScreenshot(key) {
             throw new Error("Expected " + targetW + " x " + targetH +
                             ", got " + img.width + "x" + img.height);
         }
-        if (key === "Lap" && opts.browser === "firefox" &&
+        if (key === "Lap" && browser === "firefox" &&
             img.buf[0x32] === 0xf8) {
             /* There is some strange non-determinism with this case,
              * causing slight vertical shifts.  The first difference
@@ -439,7 +399,7 @@ function takeScreenshot(key) {
              * output file name for one of these cases, we accept both.
              */
             key += "_alt";
-            file = path.join(dstDir, key + "-" + opts.browser + ".png");
+            file = path.join(dstDir, key + "-" + browser + ".png");
             if (loadExpected) {
                 loadExpected = promisify(fs.readFile, file);
             }
@@ -451,7 +411,7 @@ function takeScreenshot(key) {
         if (loadExpected) {
             return loadExpected.then(function(expected) {
                 if (!buf.equals(expected)) {
-                    if (++retry >= opts.attempts) {
+                    if (++retry >= numAttempts) {
                         console.error("FAIL! " + key);
                         listOfFailed.push(key);
                         exitStatus = 3;
@@ -478,7 +438,7 @@ function takeScreenshot(key) {
     }
 
     function saveFailedScreenshot(key, buf) {
-        const filenamePrefix = key + "-" + opts.browser;
+        const filenamePrefix = key + "-" + browser;
         const outputDir = opts.new ? newDir : diffDir;
         const baseFile = path.join(dstDir, filenamePrefix + ".png");
         const diffFile = path.join(diffDir, filenamePrefix + "-diff.png");

@@ -4,12 +4,10 @@
 const fs = require("fs");
 const childProcess = require("child_process");
 
-const opts = require("nomnom")
-    .option("spacing", {
-        flag: true,
-        help: "Print mismatches involving spacing commands",
-    })
-    .parse();
+const opts = require("commander")
+    .option("-s, --spacing",
+        "Print mismatches involving spacing commands")
+    .parse(process.argv);
 
 const symbols = require("../src/symbols");
 const keys = Object.keys(symbols.math);

@@ -6,13 +6,20 @@
 
 /* eslint no-console:0 */
 
-const katex = require("./");
-const json = require("./package.json");
+try {
+    const katex = require("./");
+} catch (e) {
+    console.log("KaTeX not found, likely because dist/katex.js is missing.");
+    console.log("Please run 'npm install' and 'npm run dist' before running");
+    console.log("cli.js from the KaTeX repository.");
+    return;
+}
+const {version} = require("./package.json");
 const fs = require("fs");
 
 const options = require("commander")
-    .version(json.version)
-    .option("-d, --display-mode", "displayMode",
+    .version(version)
+    .option("-d, --display-mode",
         "Render math in display mode, which puts the math in display style " +
         "(so \\int and \\sum are large, for example), and centers the math " +
         "on the page on its own line.")
