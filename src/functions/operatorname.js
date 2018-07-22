@@ -39,7 +39,8 @@ defineFunction({
             const expression = html.buildExpression(
                 groupValue, options.withFont("mathrm"), true);
 
-            for (const child of expression) {
+            for (let i = 0; i < expression.length; i++) {
+                const child = expression[i];
                 if (child instanceof domTree.symbolNode) {
                     // Per amsopn package,
                     // change minus to hyphen and \ast to asterisk
@@ -60,7 +61,8 @@ defineFunction({
 
         // Is expression a string or has it something like a fraction?
         let isAllString = true;  // default
-        for (const node of expression) {
+        for (let i = 0; i < expression.length; i++) {
+            const node = expression[i];
             if (node instanceof mathMLTree.SpaceNode) {
                 // Do nothing
             } else if (node instanceof mathMLTree.MathNode) {
