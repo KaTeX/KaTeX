@@ -64,7 +64,13 @@ jobs:
 
       - run:
           name: Run tests
-          command: npm test
+          command: npm test -- -- --coverage
+      - run:
+          name: Install codecov and upload results
+          command: |
+              sudo npm install -g codecov
+              codecov
+
       - run:
           name: Build KaTeX
           command: npm run build
