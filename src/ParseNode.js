@@ -104,7 +104,6 @@ export type AnyParseNode =
     ParseNode<"phantom"> |
     ParseNode<"hphantom"> |
     ParseNode<"vphantom"> |
-    ParseNode<"pmb"> |
     ParseNode<"raisebox"> |
     ParseNode<"rule"> |
     ParseNode<"sizing"> |
@@ -327,10 +326,6 @@ export type ParseNodeTypes = {
         type: "vphantom",
         body: AnyParseNode,
         value: AnyParseNode[],
-    |},
-    "pmb": {|
-        type: "pmb",
-        body: AnyParseNode,
     |},
     "raisebox": {|
         type: "raisebox",
