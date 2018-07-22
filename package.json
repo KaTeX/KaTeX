@@ -31,7 +31,6 @@
     "css-loader": "^0.28.11",
     "eslint": "^5.0.0",
     "eslint-plugin-flowtype": "^2.40.1",
-    "eslint-plugin-import": "^2.13.0",
     "file-loader": "^1.1.11",
     "flow-bin": "^0.77.0",
     "husky": "^1.0.0-rc.8",

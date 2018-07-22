@@ -1,8 +1,7 @@
 {
     "parser": "babel-eslint",
     "plugins": [
-        "flowtype",
-        "import"
+        "flowtype"
     ],
     "extends": [
         "eslint:recommended",
@@ -80,14 +79,10 @@
         "files": ["katex.js", "src/**/*.js"],
         "excludedFiles": "unicodeMake.js",
         "rules": {
-            "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"],
-            "import/no-unresolved": 2
+            "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"]
         },
         "env": {
             "node": false
-        },
-        settings: {
-            "import/resolver": {"./eslint-import-resolver": {}}
         }
     }],
     "root": true
