@@ -83,7 +83,7 @@
     "dist:dist": "rimraf dist/ && cp -r build/katex/ dist/"
   },
   "dependencies": {
-    "nomnom": "^1.8.1"
+    "commander": "^2.16.0"
   },
   "husky": {
     "hooks": {
