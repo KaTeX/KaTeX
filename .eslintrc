@@ -71,13 +71,6 @@
         "valid-jsdoc": 0,
         "require-jsdoc": 0
     },
-    "overrides": [{
-        "files": ["katex.js", "src/**/*.js"],
-        "excludedFiles": "unicodeMake.js",
-        "rules": {
-            "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"]
-        }
-    }],
     "env": {
         "es6": true,
         "node": true,
@@ -87,8 +80,8 @@
         "files": ["katex.js", "src/**/*.js"],
         "excludedFiles": "unicodeMake.js",
         "rules": {
-            "import/no-unresolved": 2,
-            "import/extensions": [2, "never"]
+            "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"],
+            "import/no-unresolved": 2
         },
         "env": {
             "node": false
