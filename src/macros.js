@@ -663,7 +663,7 @@ defineMacro("\\mod", "\\allowbreak" +
 // It works by typesetting three copies of the argument with small offsets.
 // Ref: a rather lengthy macro in ambsy.sty
 defineMacro("\\pmb", "\\html@mathml{\\@binrel{#1}{\\mathrlap{\\mathrlap{#1}" +
-    "{\\mkern0.4mu\\raisebox0.4mu{$#1$}}}{\\mkern0.8mu#1}}}{\\mathbf{#1}}");
+    "\\mkern0.4mu\\raisebox{0.4mu}{$#1$}}{\\mkern0.8mu#1}}}{\\mathbf{#1}}");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e

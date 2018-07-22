@@ -1542,6 +1542,7 @@ describe("A \\pmb builder", function() {
         expect("\\pmb{+}").toBuild();
         expect("\\pmb{\\frac{x^2}{x_1}}").toBuild();
         expect("\\pmb{}").toBuild();
+        expect("\\def\\x{1}\\pmb{\\x\\def\\x{2}}").toParseLike("\\pmb{1}");
     });
 });
 
