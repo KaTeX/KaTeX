@@ -46,11 +46,13 @@ export default class Namespace<Value> {
                 "to pop global namespace; please report this as a bug");
         }
         const undefs = this.undefStack.pop();
-        for (const undef of Object.getOwnPropertyNames(undefs)) {
-            if (undefs[undef] === undefined) {
-                delete this.current[undef];
-            } else {
-                this.current[undef] = undefs[undef];
+        for (const undef in undefs) {
+            if (undefs.hasOwnProperty(undef)) {
+                if (undefs[undef] === undefined) {
+                    delete this.current[undef];
+                } else {
+                    this.current[undef] = undefs[undef];
+                }
             }
         }
     }
