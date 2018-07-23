@@ -93,7 +93,11 @@ describe("A rel parser", function() {
             if (group.type === "htmlmathml") {
                 group = group.value.html[0];
             }
-            expect(group.type).toEqual("rel");
+            if (group.type === "mclass") {
+                expect(group.value.mclass).toEqual("mrel");
+            } else {
+                expect(group.type).toEqual("rel");
+            }
         }
     });
 });
