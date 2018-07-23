@@ -10,10 +10,10 @@ let katex;
 try {
     katex = require("./");
 } catch (e) {
-    console.log("KaTeX could not import, likely because dist/katex.js is missing.");
-    console.log("Please run 'npm install' and 'npm run dist' before running");
-    console.log("cli.js from the KaTeX repository.");
-    console.log();
+    console.error("KaTeX could not import, likely because dist/katex.js is missing.");
+    console.error("Please run 'npm install' and 'npm run dist' before running");
+    console.error("cli.js from the KaTeX repository.");
+    console.error();
     throw e;
 }
 const {version} = require("./package.json");
@@ -36,7 +36,7 @@ const options = require("commander")
     .option("-b, --color-is-text-color",
         "Makes \\color behave like LaTeX's 2-argument \\textcolor, " +
         "instead of LaTeX's one-argument \\color mode change.")
-    .option("-s, --strict",
+    .option("-S, --strict",
         "Turn on strict / LaTeX faithfulness mode, which throws an error " +
         "if the input uses features that are not supported by LaTeX")
     .option("-s, --max-size <n>",
@@ -52,8 +52,10 @@ const options = require("commander")
     .option("-m, --macro <def>",
         "Define custom macro of the form '\\foo:expansion' (use multiple -m " +
         "arguments for multiple macros).",
-        (def, defs) => defs.push(def),
-        [])
+        (def, defs) => {
+            defs.push(def);
+            return defs;
+        }, [])
     .option("-f, --macro-file <path>",
         "Read macro definitions, one per line, from the given file.")
     .option("-i, --input <path>", "Read LaTeX input from the given file.")
