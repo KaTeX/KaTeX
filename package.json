@@ -81,7 +81,7 @@
     "dist:zip": "cd dist && tar czf ../katex.tar.gz * && zip -rq ../katex.zip *"
   },
   "dependencies": {
-    "nomnom": "^1.8.1"
+    "commander": "^2.16.0"
   },
   "husky": {
     "hooks": {
