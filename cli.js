@@ -10,10 +10,11 @@ let katex;
 try {
     katex = require("./");
 } catch (e) {
-    console.log("KaTeX not found, likely because dist/katex.js is missing.");
+    console.log("KaTeX could not import, likely because dist/katex.js is missing.");
     console.log("Please run 'npm install' and 'npm run dist' before running");
     console.log("cli.js from the KaTeX repository.");
-    return;
+    console.log();
+    throw e;
 }
 const {version} = require("./package.json");
 const fs = require("fs");
@@ -48,9 +49,12 @@ const options = require("commander")
         "prevent e.g. infinite macro loops.  If set to Infinity, the macro " +
         "expander will try to fully expand as in LaTeX.",
         (n) => (n === "Infinity" ? Infinity : parseInt(n)))
-    .option("-m, --macros <defs>",
-        "Custom macros of the form '\\foo:expansion', separated by ';'",
-        (defs) => defs.split(";"))
+    .option("-m, --macro <def>",
+        "Custom macro of the form '\\foo:expansion' (use multiple -m " +
+        "arguments for multiple macros)",
+        (def, defs) => {
+            defs.push(def);
+        }, [])
     .option("-f, --macro-file <path>",
         "Read macro definitions, one per line, from the given file")
     .option("-i, --input <path>", "Read LaTeX input from the given file.")
@@ -72,8 +76,8 @@ function readMacros() {
 function splitMacros(macroStrings) {
     // Override macros from macro file (if any)
     // with macros from command line (if any)
-    if (options.macros) {
-        macroStrings = macroStrings.concat(options.macros);
+    if (options.macro) {
+        macroStrings = macroStrings.concat(options.macro);
     }
 
     const macros = {};
