@@ -10,7 +10,8 @@ let katex;
 try {
     katex = require("./");
 } catch (e) {
-    console.error("KaTeX could not import, likely because dist/katex.js is missing.");
+    console.error(
+        "KaTeX could not import, likely because dist/katex.js is missing.");
     console.error("Please run 'npm install' and 'npm run build' before running");
     console.error("cli.js from the KaTeX repository.");
     console.error();
