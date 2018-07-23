@@ -43,7 +43,7 @@ const options = require("commander")
         "If non-zero, all user-specified sizes, e.g. in " +
         "\\rule{500em}{500em}, will be capped to maxSize ems. " +
         "Otherwise, elements and spaces can be arbitrarily large",
-        parseInt)
+        0, parseInt)
     .option("-e, --max-expand <n>",
         "Limit the number of macro expansions to the specified number, to " +
         "prevent e.g. infinite macro loops.  If set to Infinity, the macro " +
@@ -75,9 +75,7 @@ function readMacros() {
 function splitMacros(macroStrings) {
     // Override macros from macro file (if any)
     // with macros from command line (if any)
-    if (options.macro) {
-        macroStrings = macroStrings.concat(options.macro);
-    }
+    macroStrings = macroStrings.concat(options.macro);
 
     const macros = {};
 
