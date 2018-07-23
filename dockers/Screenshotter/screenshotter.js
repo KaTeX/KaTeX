@@ -27,9 +27,6 @@ const newDir = path.normalize(
 //////////////////////////////////////////////////////////////////////
 // Process command line arguments
 
-// Work-around for https://github.com/tj/commander.js/issues/686
-const parseIntDecimal = (n) => parseInt(n, 10);
-
 const opts = require("commander")
     .option("-b, --browser <firefox|chrome>",
         "Name of the browser to use", "firefox")
@@ -38,11 +35,11 @@ const opts = require("commander")
     .option("--selenium-url <url>", "Full URL of the Selenium web driver")
     .option("--selenium-ip <ip>", "IP address of the Selenium web driver")
     .option("--selenium-port <n>",
-        "Port number of the Selenium web driver", parseIntDecimal, 4444)
+        "Port number of the Selenium web driver", 4444, parseInt)
     .option("--katex-url <url>", "Full URL of the KaTeX development server")
     .option("--katex-ip <ip>", "IP address of the KaTeX development server")
     .option("--katex-port <n>",
-        "Port number of the KaTeX development server", parseIntDecimal)
+        "Port number of the KaTeX development server", parseInt)
     .option("-i, --include <tests>",
         "Comma-separated list of test cases to process")
     .option("-x, --exclude <tests>",
@@ -53,7 +50,7 @@ const opts = require("commander")
     .option("--new",
         "With `--verify`, generate new screenshots when match fails")
     .option("--attempts <n>",
-        "Retry this many times before reporting failure", parseIntDecimal, 5)
+        "Retry this many times before reporting failure", 5, parseInt)
     .option("--wait <secs>",
         "Wait this many seconds between page load and screenshot", parseFloat)
     .parse(process.argv);

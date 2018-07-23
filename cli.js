@@ -26,11 +26,11 @@ const options = require("commander")
         "(so \\int and \\sum are large, for example), and centers the math " +
         "on the page on its own line.")
     .option("-t, --no-throw-on-error",
-        "Render errors (in the color given by errorColor) instead of " +
+        "Render errors (in the color given by --error-color) instead of " +
         "throwing a ParseError exception when encountering an error.")
     .option("-c, --error-color <color>",
         "A color string given in the format 'rgb' or 'rrggbb' (no #). " +
-        "This option determines the color of errors rendered by the -t option",
+        "This option determines the color of errors rendered by the -t option.",
         "#cc0000",
         (color) => "#" + color)
     .option("-b, --color-is-text-color",
@@ -50,13 +50,12 @@ const options = require("commander")
         "expander will try to fully expand as in LaTeX.",
         (n) => (n === "Infinity" ? Infinity : parseInt(n)))
     .option("-m, --macro <def>",
-        "Custom macro of the form '\\foo:expansion' (use multiple -m " +
-        "arguments for multiple macros)",
-        (def, defs) => {
-            defs.push(def);
-        }, [])
+        "Define custom macro of the form '\\foo:expansion' (use multiple -m " +
+        "arguments for multiple macros).",
+        (def, defs) => defs.push(def),
+        [])
     .option("-f, --macro-file <path>",
-        "Read macro definitions, one per line, from the given file")
+        "Read macro definitions, one per line, from the given file.")
     .option("-i, --input <path>", "Read LaTeX input from the given file.")
     .option("-o, --output <path>", "Write html output to the given file.")
     .parse(process.argv);
