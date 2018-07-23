@@ -665,6 +665,15 @@ defineMacro("\\mod", "\\allowbreak" +
     "\\mathchoice{\\mkern18mu}{\\mkern12mu}{\\mkern12mu}{\\mkern12mu}" +
     "{\\rm mod}\\,\\,#1");
 
+// \pmb    --   A simulation of bold.
+// It works by typesetting three copies of the argument with small offsets.
+// Ref: a rather lengthy macro in ambsy.sty
+defineMacro("\\pmb", "\\html@mathml{\\@binrel{#1}{" +
+    "\\mathrlap{#1}" +
+    "\\mathrlap{\\mkern0.4mu\\raisebox{0.4mu}{$#1$}}" +
+    "{\\mkern0.8mu#1}" +
+    "}}{\\mathbf{#1}}");
+
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
 
