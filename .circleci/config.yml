@@ -29,7 +29,7 @@ screenshotter: &screenshotter
 
     - run:
         name: Verify screenshots and generate diffs and new screenshots
-        command: node dockers/Screenshotter/screenshotter.js --seleniumIP localhost -b $CIRCLE_JOB --verify --diff --new
+        command: node dockers/Screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new
 
     - store_artifacts:
         path: test/screenshotter/new
