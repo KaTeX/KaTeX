@@ -76,13 +76,13 @@ jobs:
           command: npm run build
 
       - store_artifacts:
-          path: build/katex.js
+          path: dist/katex.js
           destination: katex.js
       - store_artifacts:
-          path: build/katex.css
+          path: dist/katex.css
           destination: katex.css
       - store_artifacts:
-          path: build/fonts
+          path: dist/fonts
           destination: fonts
 
   firefox:
