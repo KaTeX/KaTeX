@@ -19,7 +19,7 @@ const data = require("../../test/screenshotter/ss_data");
 
 // Change to KaTeX root directory so that webpack (in particular
 // babel-plugin-version-inline) runs correctly.
-process.chdir(path.join(__dirname, "..", ".."))
+process.chdir(path.join(__dirname, "..", ".."));
 const dstDir = path.normalize(path.join("test", "screenshotter", "images"));
 const diffDir = path.normalize(path.join("test", "screenshotter", "diff"));
 const newDir = path.normalize(path.join("test", "screenshotter", "new"));
