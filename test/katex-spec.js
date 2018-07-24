@@ -93,7 +93,11 @@ describe("A rel parser", function() {
             if (group.type === "htmlmathml") {
                 group = group.value.html[0];
             }
-            expect(group.type).toEqual("rel");
+            if (group.type === "mclass") {
+                expect(group.value.mclass).toEqual("mrel");
+            } else {
+                expect(group.type).toEqual("rel");
+            }
         }
     });
 });
@@ -1532,6 +1536,17 @@ describe("A font parser", function() {
     it("\\boldsymbol should inherit mbin/mrel from argument", () => {
         const built = getBuilt`a\boldsymbol{}b\boldsymbol{=}c\boldsymbol{+}d\boldsymbol{++}e\boldsymbol{xyz}f`;
         expect(built).toMatchSnapshot();
+    });
+});
+
+describe("A \\pmb builder", function() {
+    it("should not fail", function() {
+        expect("\\pmb{\\mu}").toBuild();
+        expect("\\pmb{=}").toBuild();
+        expect("\\pmb{+}").toBuild();
+        expect("\\pmb{\\frac{x^2}{x_1}}").toBuild();
+        expect("\\pmb{}").toBuild();
+        expect("\\def\\x{1}\\pmb{\\x\\def\\x{2}}").toParseLike("\\pmb{1}");
     });
 });
 

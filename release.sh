@@ -109,7 +109,7 @@ sed -i.bak -E 's|"version": "[^"]+",|"version": "'$VERSION'",|' package.json
 rm -f package.json.bak
 
 # Build generated files and add them to the repository (for bower)
-git clean -fdx build dist
+git clean -fdx dist
 npm run dist
 sed -i.bak -E '/^\/dist\/$/d' .gitignore
 rm -f .gitignore.bak
@@ -145,7 +145,7 @@ if [ ! -z "$NEXT_VERSION" ]; then
     git commit -n -m "Bump $BRANCH to v$NEXT_VERSION-pre"
     git push origin "$BRANCH"
 
-    # Go back to the tag which has build/katex.tar.gz and build/katex.zip
+    # Go back to the tag which has katex.tar.gz and katex.zip
     git checkout "v$VERSION"
 fi
 
@@ -153,7 +153,7 @@ echo ""
 echo "The automatic parts are done!"
 echo "Now all that's left is to create the release on github."
 echo "Visit https://github.com/Khan/KaTeX/releases/new?tag=v$VERSION to edit the release notes"
-echo "Don't forget to upload build/katex.tar.gz and build/katex.zip to the release!"
+echo "Don't forget to upload katex.tar.gz and katex.zip to the release!"
 
 if [[ ${DRY_RUN} ]]; then
     echo ""
