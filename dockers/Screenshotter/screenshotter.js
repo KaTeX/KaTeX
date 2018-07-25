@@ -17,84 +17,43 @@ const webpackDevServer = require("webpack-dev-server");
 const webpackConfig = require("../../webpack.dev");
 const data = require("../../test/screenshotter/ss_data");
 
-const dstDir = path.normalize(
-    path.join(__dirname, "..", "..", "test", "screenshotter", "images"));
-const diffDir = path.normalize(
-    path.join(__dirname, "..", "..", "test", "screenshotter", "diff"));
-const newDir = path.normalize(
-    path.join(__dirname, "..", "..", "test", "screenshotter", "new"));
+// Change to KaTeX root directory so that webpack (in particular
+// babel-plugin-version-inline) runs correctly.
+process.chdir(path.join(__dirname, "..", ".."));
+const dstDir = path.normalize(path.join("test", "screenshotter", "images"));
+const diffDir = path.normalize(path.join("test", "screenshotter", "diff"));
+const newDir = path.normalize(path.join("test", "screenshotter", "new"));
 
 //////////////////////////////////////////////////////////////////////
 // Process command line arguments
 
-const opts = require("nomnom")
-    .option("browser", {
-        abbr: "b",
-        "default": "firefox",
-        help: "Name of the browser to use",
-    })
-    .option("container", {
-        abbr: "c",
-        type: "string",
-        help: "Name or ID of a running docker container to contact",
-    })
-    .option("seleniumURL", {
-        full: "selenium-url",
-        help: "Full URL of the Selenium web driver",
-    })
-    .option("seleniumIP", {
-        full: "selenium-ip",
-        help: "IP address of the Selenium web driver",
-    })
-    .option("seleniumPort", {
-        full: "selenium-port",
-        "default": 4444,
-        help: "Port number of the Selenium web driver",
-    })
-    .option("katexURL", {
-        full: "katex-url",
-        help: "Full URL of the KaTeX development server",
-    })
-    .option("katexIP", {
-        full: "katex-ip",
-        help: "Full URL of the KaTeX development server",
-    })
-    .option("katexPort", {
-        full: "katex-port",
-        help: "Port number of the KaTeX development server",
-    })
-    .option("include", {
-        abbr: "i",
-        help: "Comma-separated list of test cases to process",
-    })
-    .option("exclude", {
-        abbr: "x",
-        help: "Comma-separated list of test cases to exclude",
-    })
-    .option("reload", {
-        flag: true,
-        help: "Reload page for each test",
-    })
-    .option("verify", {
-        flag: true,
-        help: "Check whether screenshot matches current file content",
-    })
-    .option("diff", {
-        flag: true,
-        help: "With `--verify`, produce image diffs when match fails",
-    })
-    .option("new", {
-        flag: true,
-        help: "With `--verify`, generate new screenshots when match fails",
-    })
-    .option("attempts", {
-        help: "Retry this many times before reporting failure",
-        "default": 5,
-    })
-    .option("wait", {
-        help: "Wait this many seconds between page load and screenshot",
-    })
-    .parse();
+const opts = require("commander")
+    .option("-b, --browser <firefox|chrome>",
+        "Name of the browser to use", "firefox")
+    .option("-c, --container <id>",
+        "Name or ID of a running docker container to contact")
+    .option("--selenium-url <url>", "Full URL of the Selenium web driver")
+    .option("--selenium-ip <ip>", "IP address of the Selenium web driver")
+    .option("--selenium-port <n>",
+        "Port number of the Selenium web driver", 4444, parseInt)
+    .option("--katex-url <url>", "Full URL of the KaTeX development server")
+    .option("--katex-ip <ip>", "IP address of the KaTeX development server")
+    .option("--katex-port <n>",
+        "Port number of the KaTeX development server", parseInt)
+    .option("-i, --include <tests>",
+        "Comma-separated list of test cases to process")
+    .option("-x, --exclude <tests>",
+        "Comma-separated list of test cases to exclude")
+    .option("--reload", "Reload page for each test")
+    .option("--verify", "Check whether screenshot matches current file content")
+    .option("--diff", "With `--verify`, produce image diffs when match fails")
+    .option("--new",
+        "With `--verify`, generate new screenshots when match fails")
+    .option("--attempts <n>",
+        "Retry this many times before reporting failure", 5, parseInt)
+    .option("--wait <secs>",
+        "Wait this many seconds between page load and screenshot", parseFloat)
+    .parse(process.argv);
 
 let listOfCases;
 if (opts.include) {
@@ -109,11 +68,11 @@ if (opts.exclude) {
     });
 }
 
-let seleniumURL = opts.seleniumURL;
-let seleniumIP = opts.seleniumIP;
+let seleniumURL = opts.seleniumUrl;
+let seleniumIP = opts.seleniumIp;
 let seleniumPort = opts.seleniumPort;
-let katexURL = opts.katexURL;
-let katexIP = opts.katexIP;
+let katexURL = opts.katexUrl;
+let katexIP = opts.katexIp;
 let katexPort = opts.katexPort;
 
 //////////////////////////////////////////////////////////////////////
