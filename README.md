@@ -1,5 +1,6 @@
 # [<img src="https://khan.github.io/KaTeX/katex-logo.svg" width="130" alt="KaTeX">](https://khan.github.io/KaTeX/)
 [![Build Status](https://travis-ci.org/Khan/KaTeX.svg?branch=master)](https://travis-ci.org/Khan/KaTeX)
+[![CircleCI](https://circleci.com/gh/Khan/KaTeX.svg?style=svg)](https://circleci.com/gh/Khan/KaTeX)
 [![codecov](https://codecov.io/gh/Khan/KaTeX/branch/master/graph/badge.svg)](https://codecov.io/gh/Khan/KaTeX)
 [![Join the chat at https://gitter.im/Khan/KaTeX](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Khan/KaTeX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Greenkeeper badge](https://badges.greenkeeper.io/Khan/KaTeX.svg)](https://greenkeeper.io/)
 ![](https://img.badgesize.io/Khan/KaTeX/v0.10.0-beta/dist/katex.min.js?compression=gzip)
