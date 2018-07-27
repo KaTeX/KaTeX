@@ -357,6 +357,12 @@ defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
 defineMacro("\\rlap", "\\mathrlap{\\textrm{#1}}");
 defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 
+// \not is defined by base/fontmath.ltx via
+// \DeclareMathSymbol{\not}{\mathrel}{symbols}{"36}
+// It's thus treated like a \mathrel, but defined by a symbol that has zero
+// width but extends to the right.  We use \rlap to get that spacing.
+defineMacro("\\not", '\\mathrel{\\mathrlap\\@not}');
+
 // Negated symbols from base/fontmath.ltx:
 // \def\neq{\not=} \let\ne=\neq
 // \DeclareRobustCommand
@@ -658,6 +664,15 @@ defineMacro("\\pmod", "\\pod{{\\rm mod}\\mkern6mu#1}");
 defineMacro("\\mod", "\\allowbreak" +
     "\\mathchoice{\\mkern18mu}{\\mkern12mu}{\\mkern12mu}{\\mkern12mu}" +
     "{\\rm mod}\\,\\,#1");
+
+// \pmb    --   A simulation of bold.
+// It works by typesetting three copies of the argument with small offsets.
+// Ref: a rather lengthy macro in ambsy.sty
+defineMacro("\\pmb", "\\html@mathml{\\@binrel{#1}{" +
+    "\\mathrlap{#1}" +
+    "\\mathrlap{\\mkern0.4mu\\raisebox{0.4mu}{$#1$}}" +
+    "{\\mkern0.8mu#1}" +
+    "}}{\\mathbf{#1}}");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e

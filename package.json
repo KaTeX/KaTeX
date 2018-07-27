@@ -27,11 +27,12 @@
     "babel-register": "^6.26.0",
     "benchmark": "^2.1.4",
     "check-dependencies": "^1.1.0",
-    "css-loader": "^0.28.11",
+    "css-loader": "^1.0.0",
+    "cssnano": "^4.0.1",
     "eslint": "^5.0.0",
     "eslint-plugin-flowtype": "^2.40.1",
     "file-loader": "^1.1.11",
-    "flow-bin": "^0.76.0",
+    "flow-bin": "^0.77.0",
     "husky": "^1.0.0-rc.8",
     "jest": "^23.0.1",
     "jest-serializer-html": "^5.0.0",
@@ -43,6 +44,7 @@
     "mini-css-extract-plugin": "^0.4.0",
     "mkdirp": "^0.5.1",
     "pako": "1.0.6",
+    "postcss-loader": "^2.1.5",
     "query-string": "^6.1.0",
     "rimraf": "^2.6.2",
     "selenium-webdriver": "^3.6.0",
@@ -68,20 +70,18 @@
     "test:screenshots": "npm run test:screenshots:update -- --verify",
     "test:screenshots:update": "npm run prestart && dockers/Screenshotter/screenshotter.sh",
     "test:perf": "npm run prestart && NODE_ENV=test node test/perf-test.js",
-    "clean": "rm -rf build/* node_modules/",
+    "clean": "rm -rf dist/ node_modules/",
     "clean-install": "npm run clean && npm i",
     "prestart": "node check-node-version.js && check-dependencies && node src/unicodeMake.js > src/unicodeSymbols.js",
     "start": "webpack-dev-server --hot --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
-    "build": "npm run prestart && rimraf build/* && webpack",
+    "build": "npm run prestart && rimraf dist/ && mkdirp dist && cp README.md dist && webpack",
     "watch": "npm run build -- --watch",
-    "dist": "npm test && npm run build && npm run dist:copy && npm run dist:zip && npm run dist:dist",
-    "dist:copy": "cd build && mkdirp katex && cp -r katex.js katex.min.js katex.css katex.min.css contrib fonts ../README.md katex",
-    "dist:zip": "cd build && tar czf katex.tar.gz katex/ && zip -rq katex.zip katex/",
-    "dist:dist": "rimraf dist/ && cp -r build/katex/ dist/"
+    "dist": "npm test && npm run build && npm run dist:zip",
+    "dist:zip": "cd dist && tar czf ../katex.tar.gz * && zip -rq ../katex.zip *"
   },
   "dependencies": {
-    "nomnom": "^1.8.1"
+    "commander": "^2.16.0"
   },
   "husky": {
     "hooks": {

@@ -203,8 +203,7 @@ defineFunctionBuilders({
             }
         }
 
-        const children = [
-            mml.buildGroup(group.value.base, options)];
+        const children = [mml.buildGroup(group.value.base, options)];
 
         if (group.value.sub) {
             children.push(mml.buildGroup(group.value.sub, options));

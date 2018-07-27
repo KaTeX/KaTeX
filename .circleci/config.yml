@@ -1,27 +1,35 @@
-defaults: &defaults
+checkout_submodule: &checkout_submodule
+  run:
+    name: Checkout submodule
+    command: |
+        git submodule sync
+        git submodule update --init --recursive
+
+npm_cache_key: &npm_cache_key
+  npm-deps-v1-{{ checksum "package.json" }}
+
+restore_npm_cache: &restore_npm_cache
+  restore_cache:
+    keys:
+      - *npm_cache_key
+      - npm-deps-v1-
+
+npm_install: &npm_install
+  run:
+    name: Install npm dependencies
+    command: npm install
+
+screenshotter: &screenshotter
   steps:
     - checkout
-    - run:
-        name: Checkout submodule
-        command: |
-            git submodule sync
-            git submodule update --init --recursive
+    - *checkout_submodule
 
-    - restore_cache:
-        keys:
-          - npm-deps-{{ checksum "package.json" }}
-          - npm-deps-
-    - run:
-        name: Install npm dependencies
-        command: npm install
-    - save_cache:
-        key: npm-deps-{{ checksum "package.json" }}
-        paths:
-          - node_modules
+    - *restore_npm_cache
+    - *npm_install
 
     - run:
         name: Verify screenshots and generate diffs and new screenshots
-        command: node dockers/Screenshotter/screenshotter.js --seleniumIP localhost -b $CIRCLE_JOB --verify --diff --new
+        command: node dockers/Screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new
 
     - store_artifacts:
         path: test/screenshotter/new
@@ -32,20 +40,66 @@ defaults: &defaults
 
 version: 2
 jobs:
+  test:
+    docker:
+      - image: circleci/node:6
+    steps:
+      - run:
+          name: Check whether the build is running on the main repository
+          command: |
+              if [[ $CIRCLE_PULL_REQUEST && $CIRCLE_PROJECT_USERNAME != "Khan" ]]; then
+                echo "Please disable CircleCI on your forked repository!"
+                exit 1
+              fi
+
+      - checkout
+      - *checkout_submodule
+
+      - *restore_npm_cache
+      - *npm_install
+      - save_cache:
+          key: *npm_cache_key
+          paths:
+            - node_modules
+
+      - run:
+          name: Run tests
+          command: npm test -- -- --coverage
+      - run:
+          name: Install codecov and upload results
+          command: |
+              sudo npm install -g codecov
+              codecov
+
+      - run:
+          name: Build KaTeX
+          command: npm run build
+
+      - store_artifacts:
+          path: dist/katex.js
+          destination: katex.js
+      - store_artifacts:
+          path: dist/katex.css
+          destination: katex.css
+      - store_artifacts:
+          path: dist/fonts
+          destination: fonts
+
   firefox:
     docker:
       - image: circleci/node:6
       - image: selenium/standalone-firefox:2.48.2
-    <<: *defaults
+    <<: *screenshotter
   chrome:
     docker:
       - image: circleci/node:6
       - image: selenium/standalone-chrome:2.48.2
-    <<: *defaults
+    <<: *screenshotter
 
 workflows:
   version: 2
   screenshotter:
     jobs:
+      - test
       - firefox
       - chrome
