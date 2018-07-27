@@ -17,12 +17,12 @@ const webpackDevServer = require("webpack-dev-server");
 const webpackConfig = require("../../webpack.dev")[0];
 const data = require("../../test/screenshotter/ss_data");
 
-const dstDir = path.normalize(
-    path.join(__dirname, "..", "..", "test", "screenshotter", "images"));
-const diffDir = path.normalize(
-    path.join(__dirname, "..", "..", "test", "screenshotter", "diff"));
-const newDir = path.normalize(
-    path.join(__dirname, "..", "..", "test", "screenshotter", "new"));
+// Change to KaTeX root directory so that webpack (in particular
+// babel-plugin-version-inline) runs correctly.
+process.chdir(path.join(__dirname, "..", ".."));
+const dstDir = path.normalize(path.join("test", "screenshotter", "images"));
+const diffDir = path.normalize(path.join("test", "screenshotter", "diff"));
+const newDir = path.normalize(path.join("test", "screenshotter", "new"));
 
 //////////////////////////////////////////////////////////////////////
 // Process command line arguments
