@@ -28,7 +28,7 @@ For a list of things that are not (yet) in KaTeX, there is a [wiki page](https:
 |||||
 |:---------------------|:---------------------|:---------------------|:-----
 |$\text{\'{a}}$ `\'{a}`|$\text{\~{a}}$ `\~{a}`|$\text{\.{a}}$ `\.{a}`|$\text{\H{a}}$ `\H{a}`
-|$\text{\`{a}}$ `\`{a}`|$\text{\={a}}$ `\={a}`|$\text{\"{a}}$ `\"{a}`|$\text{\v{a}}$ `\v{a}`
+|$\text{\`{a}}$ <code>\\`{a}</code>|$\text{\={a}}$ `\={a}`|$\text{\"{a}}$ `\"{a}`|$\text{\v{a}}$ `\v{a}`
 |$\text{\^{a}}$ `\^{a}`|$\text{\u{a}}$ `\u{a}`|$\text{\r{a}}$ `\r{a}`|
 
 See also [letters](#letters)
@@ -41,8 +41,8 @@ See also [letters](#letters)
 |$[ ]$ `[ ]` |$\lbrack~\rbrack$ `\lbrack`<br>$~~~~$`\rbrack`|$⌊~⌋$ `⌊ ⌋`|$\lfloor~\rfloor$ `\lfloor`<br>$~~~~$`\rfloor` |$\downarrow$ `\downarrow`
 |$\{ \}$ `\{ \}`|$\lbrace \rbrace$ `\lbrace`<br>$~~~~$`\rbrace`|$⎰⎱$ `⎰⎱`  |$\lmoustache \rmoustache$ `\lmoustache`<br>$~~~~$`\rmoustache`|$\updownarrow$ `\updownarrow`
 |$⟨~⟩$ `⟨ ⟩` |$\langle~\rangle$ `\langle`<br>$~~~~$`\rangle`|$⟮~⟯$ `⟮ ⟯`|$\lgroup~\rgroup$ `\lgroup`<br>`\rgroup` |$\Uparrow$ `\Uparrow`
-|$\vert$ $\colorbox{#f3f3f4}{\textbar}$ |$\vert$ `\vert` |$┌ ┐$ `┌ ┐`|$\ulcorner \urcorner$ `\ulcorner`<br>$~~~~$`\urcorner`  |$\Downarrow$ `\Downarrow`
-|$\Vert$ $\colorbox{#f3f3f4}{\textbar\textbar}$ |$\Vert$ `\Vert` |$└ ┘$ `└ ┘`|$\llcorner \lrcorner$ `\llcorner`<br>$~~~~$`\lrcorner`  |$\Updownarrow$ `\Updownarrow`
+|$\vert$ <code>&#124;</code> |$\vert$ `\vert` |$┌ ┐$ `┌ ┐`|$\ulcorner \urcorner$ `\ulcorner`<br>$~~~~$`\urcorner`  |$\Downarrow$ `\Downarrow`
+|$\Vert$ <code>&#92;&#124;</code> |$\Vert$ `\Vert` |$└ ┘$ `└ ┘`|$\llcorner \lrcorner$ `\llcorner`<br>$~~~~$`\lrcorner`  |$\Updownarrow$ `\Updownarrow`
 |$\lvert~\rvert$ `\lvert`<br>$~~~~$`\rvert`|$\lVert~\rVert$ `\lVert`<br>$~~~~$`\rVert` |`\left.`|  `\right.` |$\backslash$ `\backslash`
 
 **Delimiter Sizing**
@@ -115,7 +115,7 @@ $α β γ δ ϵ ζ η θ ι κ λ μ ν ξ o π ρ σ τ υ ϕ χ ψ ω ε ϑ ϖ
 | $\aleph$ `\aleph`| $\Game$ `\Game`| $\wp$ `\wp`| $\text{\ae}$ `\text{\ae}`| $\text{\ss}$ `\text{\ss}` |
 | $\beth$ `\beth` | $\ell$ `\ell` | $\partial$ `\partial` | $\text{\AE}$ `\text{\AE}`| $\text{\i}$ `\text{\i}`  |
 | $\gimel$ `\gimel`| $\hbar$ `\hbar`| $\nabla$ `\nabla`| $\text{\oe}$ `\text{\oe}`| $\text{\j}$ `\text{\j}`  |
-| $\daleth$ `\daleth`  | $\hslash$ `\hslash` | $\Bbbk$ `\Bbbk` | $\text{\OE}$ `\text{\OE}`|  |
+| $\daleth$ `\daleth`  | $\hslash$ `\hslash` | $\Bbbk$ `\Bbbk` | $\text{\OE}$ `\text{\OE}`|
 
 Direct Input: $∂ ∇ ℑ Ⅎ ℵ ℶ ℷ ℸ ⅁ ℏ$ ð <br>
 ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝÞß<br>àáâãäåçèéêëìíîïðñòóôöùúûüýþÿ
@@ -222,7 +222,7 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 |$\in$ `\in` |$\mid$ `\mid`  |$\to$ `\to`|$\implies$ `\implies`
 |$\notin$ `\notin` |$\land$ `\land`|$\gets$ `\gets`  |$\impliedby$ `\impliedby`
 |$\ni$ `\ni` |$\lor$ `\lor`  |$\leftrightarrow$ `\leftrightarrow`|$\iff$ `\iff`
-|$\notni$ `\notni` ||  |
+|$\notni$ `\notni` |
 
 Direct Input:`∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← ↔ ¬ ℂ ℍ ℕ ℙ ℚ ℝ ℤ`
 
@@ -237,7 +237,7 @@ Direct Input:`∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← �
 |$~$                                   | `\renewcommand\macroname[numargs]{definition}`
 |$~$                                   | `\providecommand\macroname[numargs]{definition}`
 
-Macros can also be defined in the KaTeX [rendering options](./options).
+Macros can also be defined in the KaTeX [rendering options](options.md).
 
 Macros accept up to ten arguments: #1, #2, etc.
 
@@ -259,9 +259,9 @@ Available functions include:
 | $\int$ `\int`  | $\coprod$ `\coprod`  | $\bigwedge$ `\bigwedge` | $\bigoplus$ `\bigoplus`
 | $\iint$ `\iint`| $\intop$ `\intop` | $\bigcap$ `\bigcap`  | $\bigodot$ `\bigodot`
 | $\iiint$ `\iiint` | $\smallint$ `\smallint` | $\bigcup$ `\bigcup`  | $\biguplus$ `\biguplus`
-| $\oint$ `\oint`| | $\bigsqcup$ `\bigsqcup` | 
+| $\oint$ `\oint`| | $\bigsqcup$ `\bigsqcup` ||
 
-Direct Input: $∫ ∬ ∭ ∮ ∏ ∐ ∑ ⋀ ⋁ ⋂ ⋃ ⨀ ⨁ ⨂ ⨄ ⨆$ 
+Direct Input: $∫ ∬ ∭ ∮ ∏ ∐ ∑ ⋀ ⋁ ⋂ ⋃ ⨀ ⨁ ⨂ ⨄ ⨆$
 
 ### Binary Operators
 
@@ -313,7 +313,7 @@ Direct Input: $+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ 
 | $\cos$ `\cos` | $\exp$ `\exp`  | $\tanh$ `\tanh`| $\min$ `\min` |
 | $\cosec$ `\cosec`  | $\hom$ `\hom`  | $\tg$ `\tg`  | $\Pr$ `\Pr`  |
 | $\cosh$ `\cosh`| $\ker$ `\ker`  | $\th$ `\th`  | $\sup$ `\sup` |
-| $\cot$ `\cot` | $\lg$ `\lg`| $\operatorname{f}$ `\operatorname{f}` |  |
+| $\cot$ `\cot` | $\lg$ `\lg`| $\operatorname{f}$ `\operatorname{f}` |
 
 Functions on the right column of this table can take `\limits`.
 
@@ -385,8 +385,8 @@ $\not =$ `\not =`
 | $\ncong$ `\ncong`  | $\nprec$ `\nprec` | $\nvdash$ `\nvdash`  | $\varsubsetneqq$ `\varsubsetneqq` |
 | $\ne$ `\ne`  | $\npreceq$ `\npreceq`  | $\nvDash$ `\nvDash`  | $\varsupsetneq$ `\varsupsetneq`  |
 | $\neq$ `\neq` | $\nshortmid$ `\nshortmid`| $\nVDash$ `\nVDash`  | $\varsupsetneqq$ `\varsupsetneqq` |
-| $\ngeq$ `\ngeq`| $\nshortparallel$ `\nshortparallel` | $\nVdash$ `\nVdash`  ||
-| $\ngeqq$ `\ngeqq`  | $\nsim$ `\nsim`  | $\precnapprox$ `\precnapprox`||
+| $\ngeq$ `\ngeq`| $\nshortparallel$ `\nshortparallel` | $\nVdash$ `\nVdash`  |
+| $\ngeqq$ `\ngeqq`  | $\nsim$ `\nsim`  | $\precnapprox$ `\precnapprox`|
 
 Direct Input: $∉ ∌ ∤ ∦ ≁ ≆ ≠ ≨ ≩ ≮ ≯ ≰ ≱ ⊀ ⊁ ⊈ ⊉ ⊊ ⊋ ⊬ ⊭ ⊮ ⊯ ⋠ ⋡$<br>
 $⋦ ⋧ ⋨ ⋩ ⋬ ⋭ ⪇ ⪈ ⪉ ⪊ ⪵ ⪶ ⪹ ⪺ ⫋ ⫌$
@@ -439,7 +439,7 @@ $⇍ ⇎ ⇏ ⇐ ⇑ ⇒ ⇓ ⇔ ⇕ ⇚ ⇛ ⇝ ⇠ ⇢ ⟵ ⟶ ⟷ ⟸ ⟹ ⟺
 |$\xleftharpoondown{abc}$ `\xleftharpoondown{abc}`    |$\xrightharpoondown{abc}$ `\xrightharpoondown{abc}`
 |$\xleftrightharpoons{abc}$ `\xleftrightharpoons{abc}`|$\xrightleftharpoons{abc}$ `\xrightleftharpoons{abc}`
 |$\xtofrom{abc}$ `\xtofrom{abc}`                      |$\xmapsto{abc}$ `\xmapsto{abc}`
-|$\xlongequal{abc}$ `\xlongequal{abc}`                |$~$
+|$\xlongequal{abc}$ `\xlongequal{abc}`
 
 Extensible arrows all can take an optional argument in the same manner<br>as `\xrightarrow[under]{over}`.
 
@@ -520,7 +520,7 @@ One can stack font family, font weight, and font shape by using the `\textXX` v
 |$\text{---}$ `\text{---}`|$\square$ `\square`  |$\text{\textdaggerdbl}$ `\text{\textdaggerdbl}`
 |$\text{\textemdash}$ `\text{\textemdash}`  |$\blacksquare$ `\blacksquare` |$\angle$ `\angle`
 |$\text{\textasciitilde}$ `\text{\textasciitilde}`|$\triangle$ `\triangle` |$\measuredangle$ `\measuredangle`
-|$`$ ```|$\triangledown$ `\triangledown`  |$\sphericalangle$ `\sphericalangle`
+|$`$ <code>`</code>|$\triangledown$ `\triangledown`  |$\sphericalangle$ `\sphericalangle`
 |$\text{\textquoteleft}$ `\text{\textquoteleft}`  |$\triangleleft$ `\triangleleft`  |$\top$ `\top`
 |$\lq$ `\lq`  |$\triangleright$ `\triangleright`|$\bot$ `\bot`
 |$\text{\textquoteright}$ `\text{\textquoteright}`|$\bigtriangledown$ `\bigtriangledown`  |$\text{\textdollar}$ `\$`
@@ -564,4 +564,4 @@ where:
 
 F = (font size of surrounding HTML text)/(10 pt)
 
-G = 1.21 by default, because KaTeX font-size is normally 1.21 × the surrounding font size. This value [can be over-ridden](./font.html#font-size-and-lengths) by the CSS of an HTML page.
+G = 1.21 by default, because KaTeX font-size is normally 1.21 × the surrounding font size. This value [can be over-ridden](font.md#font-size-and-lengths) by the CSS of an HTML page.
