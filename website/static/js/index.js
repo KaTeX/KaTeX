@@ -1,3 +1,5 @@
+/* eslint-disable no-var */
+/* global katex: false */
 window.startup = function() {
     var tex = document.getElementsByClassName("tex");
     Array.prototype.forEach.call(tex, function(el) {
@@ -10,10 +12,10 @@ window.startup = function() {
     function doDemo() {
         try {
             katex.render(demoInput.value, demoOutput, {
-                displayMode: true
+                displayMode: true,
             });
-        } catch(err) {
-            while(demoOutput.lastChild) {
+        } catch (err) {
+            while (demoOutput.lastChild) {
                 demoOutput.removeChild(demoOutput.lastChild);
             }
             var msg = document.createTextNode(err.message);
