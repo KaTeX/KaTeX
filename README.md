@@ -32,13 +32,6 @@ Call `katex.render` with a TeX expression and a DOM element to render into:
 katex.render("c = \\pm\\sqrt{a^2 + b^2}", element);
 ```
 
-To avoid escaping the backslash (double backslash), you can use
-[`String.raw`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
-(but beware that `${`, `\u` and `\x` may still need escaping):
-```js
-katex.render(String.raw`c = \pm\sqrt{a^2 + b^2}`, element);
-```
-
 If KaTeX can't parse the expression, it throws a `katex.ParseError` error.
 
 #### Server side rendering or rendering to a string
