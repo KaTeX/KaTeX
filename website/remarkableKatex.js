@@ -22,30 +22,32 @@ SOFTWARE.
 */
 
 /**
- * Plugin for Remarkable Markdown processor which transforms $..$ and $$..$$ sequences into math HTML using the
- * Katex package.
+ * Plugin for Remarkable Markdown processor which transforms $..$ and $$..$$
+ * sequences into math HTML using the KaTeX package.
  */
 module.exports = function(md, options) {
-    var katex = require("../");
+    const katex = require("../");
 
     function renderKatex(source, displayMode) {
-        return katex.renderToString(source, {displayMode: displayMode, throwOnError: false});
+        return katex.renderToString(source, {displayMode, throwOnError: false});
     }
 
     /**
-     * Parse '$$' as a block. I don't think this is needed since it is already done in the parseInlineKatex
-     * method. Based off of similar method in remarkable.
+     * Parse '$$' as a block. Based off of similar method in remarkable.
      */
     function parseBlockKatex(state, startLine, endLine) {
-        var marker, len, params, nextLine, mem,
-            haveEndMarker = false,
-            pos = state.bMarks[startLine] + state.tShift[startLine],
-            max = state.eMarks[startLine];
-        var dollar = 0x24;
+        let len;
+        let params;
+        let nextLine;
+        let mem;
+        let haveEndMarker = false;
+        let pos = state.bMarks[startLine] + state.tShift[startLine];
+        let max = state.eMarks[startLine];
+        const dollar = 0x24;
 
         if (pos + 1 > max) { return false; }
 
-        marker = state.src.charCodeAt(pos);
+        const marker = state.src.charCodeAt(pos);
         if (marker !== dollar) { return false; }
 
         // scan marker length
@@ -53,7 +55,7 @@ module.exports = function(md, options) {
         pos = state.skipChars(pos, marker);
         len = pos - mem;
 
-        if (len != 2)  { return false; }
+        if (len !== 2)  { return false; }
 
         // search end of block
         nextLine = startLine;
@@ -61,7 +63,6 @@ module.exports = function(md, options) {
         for (;;) {
             ++nextLine;
             if (nextLine >= endLine) {
-
                 // unclosed block should be autoclosed by end of document.
                 // also block seems to be autoclosed by end of parent
                 break;
@@ -71,14 +72,13 @@ module.exports = function(md, options) {
             max = state.eMarks[nextLine];
 
             if (pos < max && state.tShift[nextLine] < state.blkIndent) {
-
                 // non-empty line with negative indent should stop the list:
                 // - ```
                 //  test
                 break;
             }
 
-            if (state.src.charCodeAt(pos) !== dollar) { continue };
+            if (state.src.charCodeAt(pos) !== dollar) { continue; }
 
             if (state.tShift[nextLine] - state.blkIndent >= 4) {
 
@@ -102,34 +102,39 @@ module.exports = function(md, options) {
             break;
         }
 
-        // If a fence has heading spaces, they should be removed from its inner block
+        // If a fence has heading spaces, they should be removed from
+        // its inner block
         len = state.tShift[startLine];
 
         state.line = nextLine + (haveEndMarker ? 1 : 0);
 
-        var content = state.getLines(startLine + 1, nextLine, len, true)
-                           .replace(/[ \n]+/g, ' ')
-                           .trim();
+        const content = state.getLines(startLine + 1, nextLine, len, true)
+                             .replace(/[ \n]+/g, ' ')
+                             .trim();
 
         state.tokens.push({
             type: 'katex',
-            params: params,
-            content: content,
+            params,
+            content,
             lines: [startLine, state.line],
             level: state.level,
-            block: true
+            block: true,
         });
 
         return true;
     }
 
     /**
-     * Look for '$' or '$$' spans in Markdown text. Based off of the 'fenced' parser in remarkable.
+     * Look for '$' or '$$' spans in Markdown text.
+     * Based off of the 'fenced' parser in remarkable.
      */
     function parseInlineKatex(state, silent) {
-        var dollar = 0x24;
-        var pos = state.pos;
-        var start = pos, max = state.posMax, marker, matchStart, matchEnd ;
+        const dollar = 0x24;
+        let pos = state.pos;
+        const start = pos;
+        const max = state.posMax;
+        let matchStart;
+        let matchEnd ;
 
         if (state.src.charCodeAt(pos) !== dollar) { return false; }
         ++pos;
@@ -138,7 +143,7 @@ module.exports = function(md, options) {
             ++pos;
         }
 
-        marker = state.src.slice(start, pos);
+        const marker = state.src.slice(start, pos);
         if (marker.length > 2) { return false; }
 
         matchStart = matchEnd = pos;
@@ -150,17 +155,17 @@ module.exports = function(md, options) {
                 ++matchEnd;
             }
 
-            if (matchEnd - matchStart == marker.length) {
+            if (matchEnd - matchStart === marker.length) {
                 if (!silent) {
-                    var content = state.src.slice(pos, matchStart)
-                                           .replace(/[ \n]+/g, ' ')
-                                           .trim();
+                    const content = state.src.slice(pos, matchStart)
+                                             .replace(/[ \n]+/g, ' ')
+                                             .trim();
 
                     state.push({
                         type: 'katex',
-                        content: content,
+                        content,
                         block: marker.length > 1,
-                        level: state.level
+                        level: state.level,
                     });
                 }
 
@@ -169,7 +174,9 @@ module.exports = function(md, options) {
             }
         }
 
-        if (! silent) state.pending += marker;
+        if (!silent) {
+            state.pending += marker;
+        }
         state.pos += marker.length;
 
         return true;
