@@ -17,42 +17,43 @@ You can execute with the relative path: `./node_modules/.bin/katex`
 > To use CLI from local clone, you need to build the project first by
 running `npm run dist`
 
-# Usage
+## Usage
 
-## `-d, --display-mode`
-If true the math will be rendered in display mode, which will put the math in
-display style (so `\int` and `\sum` are large, for example), and will center the
-math on the page on its own line.  [false]
+### `-V, --version`
+Output the version number
 
-## `-t, --no-throw-on-error`
-If true, KaTeX will throw a ParseError when it encounters an unsupported command.
-If false, KaTeX will render the unsupported command as text in the color given by
-errorColor.  [true]
+### `-d, --display-mode`
+Render math in display mode, which puts the math in display style (so \int and \sum are large, for example), and centers the math on the page on its own line.
 
-## `-c color, --error-color color`
-A color string given in the format 'rgb' or 'rrggbb'. This option determines the
-color which unsupported commands are rendered in.  [#cc0000]
+### `-t, --no-throw-on-error`
+Render errors (in the color given by --error-color) instead of throwing a ParseError exception when encountering an error.
 
-## `-b, --color-is-text-color`
-Makes \color behave like LaTeX's 2-argument \textcolor, instead of LaTeX's
-one-argument \color mode change.  [false]
+### `-c, --error-color <color>`
+A color string given in the format 'rgb' or 'rrggbb' (no #). This option determines the color of errors rendered by the -t option. (default: #cc0000)
 
-## `-u, --unicode-text-in-math-mode`
-Add support for unicode text characters in math mode.  [false]
+### `-b, --color-is-text-color`
+Makes \color behave like LaTeX's 2-argument \textcolor, instead of LaTeX's one-argument \color mode change.
 
-## `-s size, --max-size size`
-If non-zero, all user-specified sizes, e.g. in \rule{500em}{500em}, will be capped
-to maxSize ems. Otherwise, elements and spaces can be arbitrarily large  [0]
+### `-S, --strict`
+Turn on strict / LaTeX faithfulness mode, which throws an error if the input uses features that are not supported by LaTeX
 
-## `-m macro:expansion, --macro macro:expansion`
-A custom macro. Each macro is a property with a name like \name which maps to a
-string that describes the expansion of the macro.  []
+### `-s, --max-size <n>`
+If non-zero, all user-specified sizes, e.g. in \rule{500em}{500em}, will be capped to maxSize ems. Otherwise, elements and spaces can be arbitrarily large (default: 0)
 
-## `-f path, --macro-file path`
-Read macro definitions from the given file.
+### `-e, --max-expand <n>`
+Limit the number of macro expansions to the specified number, to prevent e.g. infinite macro loops.  If set to Infinity, the macro expander will try to fully expand as in LaTeX.
 
-## `-i path, --input path`
+### `-m, --macro <def>`
+Define custom macro of the form '\foo:expansion' (use multiple -m arguments for multiple macros).
+
+### `-f, --macro-file <path>`
+Read macro definitions, one per line, from the given file.
+
+### `-i, --input <path>`
 Read LaTeX input from the given file.
 
-## `-o path, --output path`
+### `-o, --output <path>`
 Write html output to the given file.
+
+### `-h, --help`
+Output usage information

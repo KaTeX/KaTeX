@@ -20,7 +20,7 @@ try {
 const {version} = require("./package.json");
 const fs = require("fs");
 
-const options = require("commander")
+const program = require("commander")
     .version(version)
     .option("-d, --display-mode",
         "Render math in display mode, which puts the math in display style " +
@@ -60,8 +60,22 @@ const options = require("commander")
     .option("-f, --macro-file <path>",
         "Read macro definitions, one per line, from the given file.")
     .option("-i, --input <path>", "Read LaTeX input from the given file.")
-    .option("-o, --output <path>", "Write html output to the given file.")
-    .parse(process.argv);
+    .option("-o, --output <path>", "Write html output to the given file.");
+
+// To generate documentation for the CLI, uncomment lines below and
+// run `./cli.js markdown-help`
+/* program.command('markdown-help')
+    .action(() => {
+        console.log(program.options.map(option => `### \`${option.flags}\`
+${option.description}${((option.bool && option.defaultValue !== undefined)
+    ? ' (default: ' + option.defaultValue + ')' : '')}
+`)
+            .concat(['### `-h, --help`\nOutput usage information'])
+            .join('\n'));
+        process.exit();
+    }); */
+
+const options = program.parse(process.argv);
 
 
 function readMacros() {
