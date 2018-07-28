@@ -28,7 +28,7 @@ For a list of things that are not (yet) in KaTeX, there is a [wiki page](https:
 |||||
 |:---------------------|:---------------------|:---------------------|:-----
 |$\text{\'{a}}$ `\'{a}`|$\text{\~{a}}$ `\~{a}`|$\text{\.{a}}$ `\.{a}`|$\text{\H{a}}$ `\H{a}`
-|$\text{\`{a}}$ `\`{a}`|$\text{\={a}}$ `\={a}`|$\text{\"{a}}$ `\"{a}`|$\text{\v{a}}$ `\v{a}`
+|$\text{\`{a}}$ <code>\\`{a}</code>|$\text{\={a}}$ `\={a}`|$\text{\"{a}}$ `\"{a}`|$\text{\v{a}}$ `\v{a}`
 |$\text{\^{a}}$ `\^{a}`|$\text{\u{a}}$ `\u{a}`|$\text{\r{a}}$ `\r{a}`|
 
 See also [letters](#letters)
@@ -520,7 +520,7 @@ One can stack font family, font weight, and font shape by using the `\textXX` v
 |$\text{---}$ `\text{---}`|$\square$ `\square`  |$\text{\textdaggerdbl}$ `\text{\textdaggerdbl}`
 |$\text{\textemdash}$ `\text{\textemdash}`  |$\blacksquare$ `\blacksquare` |$\angle$ `\angle`
 |$\text{\textasciitilde}$ `\text{\textasciitilde}`|$\triangle$ `\triangle` |$\measuredangle$ `\measuredangle`
-|$`$ ```|$\triangledown$ `\triangledown`  |$\sphericalangle$ `\sphericalangle`
+|$`$ <code>`</code>|$\triangledown$ `\triangledown`  |$\sphericalangle$ `\sphericalangle`
 |$\text{\textquoteleft}$ `\text{\textquoteleft}`  |$\triangleleft$ `\triangleleft`  |$\top$ `\top`
 |$\lq$ `\lq`  |$\triangleright$ `\triangleright`|$\bot$ `\bot`
 |$\text{\textquoteright}$ `\text{\textquoteright}`|$\bigtriangledown$ `\bigtriangledown`  |$\text{\textdollar}$ `\$`
