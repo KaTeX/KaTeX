@@ -115,7 +115,7 @@ $α β γ δ ϵ ζ η θ ι κ λ μ ν ξ o π ρ σ τ υ ϕ χ ψ ω ε ϑ ϖ
 | $\aleph$ `\aleph`| $\Game$ `\Game`| $\wp$ `\wp`| $\text{\ae}$ `\text{\ae}`| $\text{\ss}$ `\text{\ss}` |
 | $\beth$ `\beth` | $\ell$ `\ell` | $\partial$ `\partial` | $\text{\AE}$ `\text{\AE}`| $\text{\i}$ `\text{\i}`  |
 | $\gimel$ `\gimel`| $\hbar$ `\hbar`| $\nabla$ `\nabla`| $\text{\oe}$ `\text{\oe}`| $\text{\j}$ `\text{\j}`  |
-| $\daleth$ `\daleth`  | $\hslash$ `\hslash` | $\Bbbk$ `\Bbbk` | $\text{\OE}$ `\text{\OE}`|  |
+| $\daleth$ `\daleth`  | $\hslash$ `\hslash` | $\Bbbk$ `\Bbbk` | $\text{\OE}$ `\text{\OE}`|
 
 Direct Input: $∂ ∇ ℑ Ⅎ ℵ ℶ ℷ ℸ ⅁ ℏ$ ð <br>
 ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝÞß<br>àáâãäåçèéêëìíîïðñòóôöùúûüýþÿ
@@ -222,7 +222,7 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 |$\in$ `\in` |$\mid$ `\mid`  |$\to$ `\to`|$\implies$ `\implies`
 |$\notin$ `\notin` |$\land$ `\land`|$\gets$ `\gets`  |$\impliedby$ `\impliedby`
 |$\ni$ `\ni` |$\lor$ `\lor`  |$\leftrightarrow$ `\leftrightarrow`|$\iff$ `\iff`
-|$\notni$ `\notni` ||  |
+|$\notni$ `\notni` |
 
 Direct Input:`∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← ↔ ¬ ℂ ℍ ℕ ℙ ℚ ℝ ℤ`
 
@@ -259,9 +259,9 @@ Available functions include:
 | $\int$ `\int`  | $\coprod$ `\coprod`  | $\bigwedge$ `\bigwedge` | $\bigoplus$ `\bigoplus`
 | $\iint$ `\iint`| $\intop$ `\intop` | $\bigcap$ `\bigcap`  | $\bigodot$ `\bigodot`
 | $\iiint$ `\iiint` | $\smallint$ `\smallint` | $\bigcup$ `\bigcup`  | $\biguplus$ `\biguplus`
-| $\oint$ `\oint`| | $\bigsqcup$ `\bigsqcup` | 
+| $\oint$ `\oint`| | $\bigsqcup$ `\bigsqcup` ||
 
-Direct Input: $∫ ∬ ∭ ∮ ∏ ∐ ∑ ⋀ ⋁ ⋂ ⋃ ⨀ ⨁ ⨂ ⨄ ⨆$ 
+Direct Input: $∫ ∬ ∭ ∮ ∏ ∐ ∑ ⋀ ⋁ ⋂ ⋃ ⨀ ⨁ ⨂ ⨄ ⨆$
 
 ### Binary Operators
 
@@ -313,7 +313,7 @@ Direct Input: $+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ 
 | $\cos$ `\cos` | $\exp$ `\exp`  | $\tanh$ `\tanh`| $\min$ `\min` |
 | $\cosec$ `\cosec`  | $\hom$ `\hom`  | $\tg$ `\tg`  | $\Pr$ `\Pr`  |
 | $\cosh$ `\cosh`| $\ker$ `\ker`  | $\th$ `\th`  | $\sup$ `\sup` |
-| $\cot$ `\cot` | $\lg$ `\lg`| $\operatorname{f}$ `\operatorname{f}` |  |
+| $\cot$ `\cot` | $\lg$ `\lg`| $\operatorname{f}$ `\operatorname{f}` |
 
 Functions on the right column of this table can take `\limits`.
 
@@ -385,8 +385,8 @@ $\not =$ `\not =`
 | $\ncong$ `\ncong`  | $\nprec$ `\nprec` | $\nvdash$ `\nvdash`  | $\varsubsetneqq$ `\varsubsetneqq` |
 | $\ne$ `\ne`  | $\npreceq$ `\npreceq`  | $\nvDash$ `\nvDash`  | $\varsupsetneq$ `\varsupsetneq`  |
 | $\neq$ `\neq` | $\nshortmid$ `\nshortmid`| $\nVDash$ `\nVDash`  | $\varsupsetneqq$ `\varsupsetneqq` |
-| $\ngeq$ `\ngeq`| $\nshortparallel$ `\nshortparallel` | $\nVdash$ `\nVdash`  ||
-| $\ngeqq$ `\ngeqq`  | $\nsim$ `\nsim`  | $\precnapprox$ `\precnapprox`||
+| $\ngeq$ `\ngeq`| $\nshortparallel$ `\nshortparallel` | $\nVdash$ `\nVdash`  |
+| $\ngeqq$ `\ngeqq`  | $\nsim$ `\nsim`  | $\precnapprox$ `\precnapprox`|
 
 Direct Input: $∉ ∌ ∤ ∦ ≁ ≆ ≠ ≨ ≩ ≮ ≯ ≰ ≱ ⊀ ⊁ ⊈ ⊉ ⊊ ⊋ ⊬ ⊭ ⊮ ⊯ ⋠ ⋡$<br>
 $⋦ ⋧ ⋨ ⋩ ⋬ ⋭ ⪇ ⪈ ⪉ ⪊ ⪵ ⪶ ⪹ ⪺ ⫋ ⫌$
@@ -439,7 +439,7 @@ $⇍ ⇎ ⇏ ⇐ ⇑ ⇒ ⇓ ⇔ ⇕ ⇚ ⇛ ⇝ ⇠ ⇢ ⟵ ⟶ ⟷ ⟸ ⟹ ⟺
 |$\xleftharpoondown{abc}$ `\xleftharpoondown{abc}`    |$\xrightharpoondown{abc}$ `\xrightharpoondown{abc}`
 |$\xleftrightharpoons{abc}$ `\xleftrightharpoons{abc}`|$\xrightleftharpoons{abc}$ `\xrightleftharpoons{abc}`
 |$\xtofrom{abc}$ `\xtofrom{abc}`                      |$\xmapsto{abc}$ `\xmapsto{abc}`
-|$\xlongequal{abc}$ `\xlongequal{abc}`                |$~$
+|$\xlongequal{abc}$ `\xlongequal{abc}`
 
 Extensible arrows all can take an optional argument in the same manner<br>as `\xrightarrow[under]{over}`.
 
