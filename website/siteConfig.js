@@ -10,73 +10,71 @@
 
 /* List of projects/orgs using your project for the users page */
 const users = [
-  {
-    caption: 'GitLab',
-    image: 'https://gitlab.com/gitlab-com/gitlab-artwork/raw/master/logo/logo-square.png',
-    infoLink: 'https://gitlab.com/',
-    pinned: true,
-  },
+    {
+        caption: 'GitLab',
+        image: 'https://gitlab.com/gitlab-com/gitlab-artwork/raw/master/logo/logo-square.png',
+        infoLink: 'https://gitlab.com/',
+        pinned: true,
+    },
 ];
 
 const siteConfig = {
-  title: 'KaTeX',
-  tagline: 'The fastest math typesetting library for the web',
-  url: 'https://khan.github.io',
-  baseUrl: '/KaTeX/',
+    title: 'KaTeX',
+    tagline: 'The fastest math typesetting library for the web',
+    url: 'https://khan.github.io',
+    baseUrl: '/KaTeX/',
 
-  // Used for publishing and more
-  projectName: 'KaTeX',
-  organizationName: 'Khan',
+    // Used for publishing and more
+    projectName: 'KaTeX',
+    organizationName: 'Khan',
 
-  headerLinks: [
-    {doc: 'node', label: 'Docs'},
-    {page: 'users', label: 'Users'},
-    {href: 'https://github.com/Khan/KaTeX', label: 'GitHub'},
-    {search: true},
-  ],
+    headerLinks: [
+        {doc: 'node', label: 'Docs'},
+        {page: 'users', label: 'Users'},
+        {href: 'https://github.com/Khan/KaTeX', label: 'GitHub'},
+        {search: true},
+    ],
+    users,
 
-  // If you have users set above, you add it here:
-  users,
+    /* path to images for header/footer */
+    headerIcon: 'img/katex-logo.svg',
+    footerIcon: 'img/katex-logo.svg',
+    favicon: 'https://khan.github.io/favicon.ico',
 
-  /* path to images for header/footer */
-  headerIcon: 'img/katex-logo.svg',
-  footerIcon: 'img/katex-logo.svg',
-  favicon: 'https://khan.github.io/favicon.ico',
+    disableHeaderTitle: true,
 
-  disableHeaderTitle: true,
+    /* colors for website */
+    colors: {
+        primaryColor: '#329894',
+        secondaryColor: '#266e6c',
+    },
 
-  /* colors for website */
-  colors: {
-    primaryColor: '#329894',
-    secondaryColor: '#266e6c',
-  },
-
-  // This copyright info is used in /core/Footer.js and blog rss/atom feeds.
-  copyright:
+    // This copyright info is used in /core/Footer.js and blog rss/atom feeds.
+    copyright:
     'Copyright © ' +
     new Date().getFullYear() +
     ' Khan Academy',
 
-  highlight: {
-    // Highlight.js theme to use for syntax highlighting in code blocks
-    theme: 'default',
-  },
+    highlight: {
+        // Highlight.js theme to use for syntax highlighting in code blocks
+        theme: 'default',
+    },
 
-  markdownPlugins: [require('./remarkableKatex'), require('./empty_thead')],
+    markdownPlugins: [require('./remarkableKatex'), require('./empty_thead')],
 
-  scripts: ['https://buttons.github.io/buttons.js'],
-  stylesheets: ['https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css'],
+    scripts: ['https://buttons.github.io/buttons.js'],
+    stylesheets: ['https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css'],
 
-  separateCss: ['static/static', 'static\\static'],
+    separateCss: ['static/static', 'static\\static'],
 
-  /* On page navigation for the current documentation page */
-  onPageNav: 'separate',
+    /* On page navigation for the current documentation page */
+    onPageNav: 'separate',
 
-  /* Open Graph and Twitter card images */
-  ogImage: 'img/og_logo.png',
-  twitterImage: 'img/og_logo.png',
+    /* Open Graph and Twitter card images */
+    ogImage: 'img/og_logo.png',
+    twitterImage: 'img/og_logo.png',
 
-  repoUrl: 'https://github.com/Khan/KaTeX',
+    repoUrl: 'https://github.com/Khan/KaTeX',
 };
 
 module.exports = siteConfig;
