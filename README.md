@@ -1,4 +1,4 @@
-# [<img src="https://khan.github.io/KaTeX/katex-logo.svg" width="130" alt="KaTeX">](https://khan.github.io/KaTeX/)
+# [<img src="https://cdn.rawgit.com/Khan/KaTeX/84189cd3adae24d92e766d14eb80d6e54f3c7dca/katex-logo.svg" width="130" alt="KaTeX">](https://khan.github.io/KaTeX/)
 [![Build Status](https://travis-ci.org/Khan/KaTeX.svg?branch=master)](https://travis-ci.org/Khan/KaTeX)
 [![CircleCI](https://circleci.com/gh/Khan/KaTeX.svg?style=svg)](https://circleci.com/gh/Khan/KaTeX)
 [![codecov](https://codecov.io/gh/Khan/KaTeX/branch/master/graph/badge.svg)](https://codecov.io/gh/Khan/KaTeX)
