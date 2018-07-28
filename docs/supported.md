@@ -237,7 +237,7 @@ Direct Input:`∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← �
 |$~$                                   | `\renewcommand\macroname[numargs]{definition}`
 |$~$                                   | `\providecommand\macroname[numargs]{definition}`
 
-Macros can also be defined in the KaTeX [rendering options](./options).
+Macros can also be defined in the KaTeX [rendering options](options.md).
 
 Macros accept up to ten arguments: #1, #2, etc.
 
@@ -564,4 +564,4 @@ where:
 
 F = (font size of surrounding HTML text)/(10 pt)
 
-G = 1.21 by default, because KaTeX font-size is normally 1.21 × the surrounding font size. This value [can be over-ridden](./font.html#font-size-and-lengths) by the CSS of an HTML page.
+G = 1.21 by default, because KaTeX font-size is normally 1.21 × the surrounding font size. This value [can be over-ridden](font.md#font-size-and-lengths) by the CSS of an HTML page.
