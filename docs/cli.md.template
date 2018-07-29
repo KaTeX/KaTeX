@@ -14,7 +14,7 @@ npx katex
 > Above uses the `npx` command to run the locally installed executable.
 You can execute with the relative path: `./node_modules/.bin/katex`
 
-> To use CLI from local clone, you need to build the project first by
-running `npm run build`
+> To use CLI from local clone, you need to build the project first.
+See [Building from Source](node.md#building-from-source) for more details.
 
 ## Options
