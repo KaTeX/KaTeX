@@ -36,5 +36,5 @@ npm install # or yarn install
 npm run build # or yarn build
 ```
 <br>
-> You can manually download the package and source codes from
-[here](https://github.com/Khan/KaTeX/releases)
+> You can manually download the package and source code from
+[GitHub releases](https://github.com/Khan/KaTeX/releases).

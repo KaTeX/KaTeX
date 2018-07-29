@@ -12,9 +12,9 @@ all of KaTeX.
 Use `maxSize` option for preventing large width/height visual affronts,
 use `maxExpand` for preventing infinite macro loop attacks, and
 use `allowedProtocols` for preventing certain protocols in `\href`. Please
-refer to [Options](options.md) for more detail.
+refer to [Options](options.md) for more details.
 
 The error message thrown by KaTeX may contain unescaped LaTeX source code.
-See [Handling Errors](error.md) for more detail.
+See [Handling Errors](error.md) for more details.
 
 > If you discovered a security issue, please let us know via https://hackerone.com/khanacademy

@@ -25,7 +25,7 @@ copy `katex.js`, `katex.css`(or `katex.min.js` and `katex.min.css` to use minifi
 versions) and `fonts` from `/katex`, and include like above.
 
 You can also build from source. See [Building from Source](node.md#building-from-source)
-for more detail.
+for more details.
 
 ## Bundler
 Use [`Node.js` package managers](node.md) to install KaTeX and require it in your
