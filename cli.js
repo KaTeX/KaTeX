@@ -62,10 +62,10 @@ const program = require("commander")
     .option("-i, --input <path>", "Read LaTeX input from the given file.")
     .option("-o, --output <path>", "Write html output to the given file.");
 
-// To generate documentation for the CLI, uncomment lines below and
-// run `./cli.js markdown-help`
-/* program.command('markdown-help')
+program.command('markdown-help')
+    .description('Print markdown version of the help')
     .action(() => {
+        console.log();
         console.log(program.options.map(option => `### \`${option.flags}\`
 ${option.description}${((option.bool && option.defaultValue !== undefined)
     ? ' (default: ' + option.defaultValue + ')' : '')}
@@ -73,7 +73,7 @@ ${option.description}${((option.bool && option.defaultValue !== undefined)
             .concat(['### `-h, --help`\nOutput usage information'])
             .join('\n'));
         process.exit();
-    }); */
+    });
 
 const options = program.parse(process.argv);
 
