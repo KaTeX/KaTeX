@@ -2,7 +2,7 @@
 // Simple CLI for KaTeX.
 // Reads TeX from stdin, outputs HTML to stdout.
 // To run this from the repository, you must first build KaTeX by running
-// `yarn install` and `yarn run build`.
+// `yarn install` and `yarn build`.
 
 /* eslint no-console:0 */
 
@@ -12,7 +12,7 @@ try {
 } catch (e) {
     console.error(
         "KaTeX could not import, likely because dist/katex.js is missing.");
-    console.error("Please run 'yarn install' and 'yarn run build' before running");
+    console.error("Please run 'yarn install' and 'yarn build' before running");
     console.error("cli.js from the KaTeX repository.");
     console.error();
     throw e;

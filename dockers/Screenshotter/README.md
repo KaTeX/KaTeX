@@ -8,7 +8,7 @@ installed and running.
 If all you want is (re)create
 all the snapshots for all the browsers, then you can do so by:
 
-    yarn run test:screenshots:update
+    yarn test:screenshots:update
 
 It will fetch all required selenium docker images, and use them to
 take screenshots.
@@ -69,7 +69,7 @@ Examples:
 
 You can verify screenshots by running:
 
-    yarn run test:screenshots
+    yarn test:screenshots
 
 or passing `--verify` option to `screenshotter.js` or `screenshotter.sh`.
 See above for more details.

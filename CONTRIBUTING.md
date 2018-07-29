@@ -74,7 +74,7 @@ by running `yarn add webpack-dev-server@2.7.1`.
 
 The JavaScript parser and some of the HTML and MathML tree
 builders are tested with Jest. These tests can be run using node with
-`yarn run test:jest`.  If you need to debug the tests see
+`yarn test:jest`.  If you need to debug the tests see
 [https://facebook.github.io/jest/docs/troubleshooting.html](https://facebook.github.io/jest/docs/troubleshooting.html)
 
 The interactive editor can also be used for debugging tests in the browser by
@@ -88,9 +88,9 @@ tests when you submit a pull request, in case you forget.
 If you make any changes to Parser.js, add Jest tests to ensure they work.
 
 Some tests verify the structure of the output tree using [snapshot testing](https://facebook.github.io/jest/docs/en/snapshot-testing.html).
-Those snapshots can be updated by running `yarn run test:jest:update`.
+Those snapshots can be updated by running `yarn test:jest:update`.
 
-Also, test code coverage can be collected by `yarn run test:jest:coverage`.
+Also, test code coverage can be collected by `yarn test:jest:coverage`.
 You can view the report in `coverage/lcov-report/index.html`.
 
 #### Screenshot tests
@@ -126,7 +126,7 @@ try to test in IE 9, using [modern.ie](http://modern.ie) VMs.
 ## Building
 
 KaTeX is built using webpack with configuration `webpack.config.js`. Run
-`yarn run build` to build the project.
+`yarn build` to build the project.
 
 ## Style guide
 
@@ -141,12 +141,12 @@ Code
 
 In general, try to make your code blend in with the surrounding code.
 
-The code can be linted by running `yarn run test:lint`, which lints JavaScript
+The code can be linted by running `yarn test:lint`, which lints JavaScript
 files using ESLint and stylesheets using stylelint. They must pass to commit
 the changes.
 
 Some files have flowtype annotations and can be checked for type errors using
-Flow by running `yarn run test:flow`. See [Flow](https://flow.org/) for more details.
+Flow by running `yarn test:flow`. See [Flow](https://flow.org/) for more details.
 
 ## Pull Requests
 
