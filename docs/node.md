@@ -20,4 +20,4 @@ yarn add katex
 yarn global add katex
 ```
 <br>
-> You can manually download the package from [here](https://github.com/Khan/KaTeX/releases)
+> You can manually download the package from the list of [KaTeX releases](https://github.com/Khan/KaTeX/releases).
