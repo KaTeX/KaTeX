@@ -25,6 +25,9 @@ copy `katex.js`, `katex.css`
 (or `katex.min.js` and `katex.min.css` to use minified versions),
 and the `fonts` directory, and include like above.
 
+You can also build from source. See [Building from Source](node.md#building-from-source)
+for more details.
+
 ## Bundler
 Use [Node.js package managers](node.md) to install KaTeX and require it in your
 project. Then bundle using bundlers like [webpack](https://webpack.js.org/) or

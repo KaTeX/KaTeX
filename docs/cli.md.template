@@ -15,7 +15,7 @@ npx katex
 after `npm install katex`.  You can also execute with the relative path:
 `./node_modules/.bin/katex`
 
-> To use CLI from local Git clone, you need to build the project first by
-running `npm install` and then `npm run build`.
+> To use the CLI from local Git clone, you need to build the project first.
+See [Building from Source](node.md#building-from-source) for more details.
 
 ## Options
