@@ -5,27 +5,27 @@ checkout_submodule: &checkout_submodule
         git submodule sync
         git submodule update --init --recursive
 
-npm_cache_key: &npm_cache_key
-  npm-deps-v1-{{ checksum "package.json" }}
+node_modules_cache_key: &node_modules_cache_key
+  yarn-deps-v1-{{ checksum "yarn.lock" }}
 
-restore_npm_cache: &restore_npm_cache
+restore_node_modules_cache: &restore_node_modules_cache
   restore_cache:
     keys:
-      - *npm_cache_key
-      - npm-deps-v1-
+      - *node_modules_cache_key
+      - yarn-deps-v1-
 
-npm_install: &npm_install
+yarn_install: &yarn_install
   run:
-    name: Install npm dependencies
-    command: npm install
+    name: Install dependencies
+    command: yarn install
 
 screenshotter: &screenshotter
   steps:
     - checkout
     - *checkout_submodule
 
-    - *restore_npm_cache
-    - *npm_install
+    - *restore_node_modules_cache
+    - *yarn_install
 
     - run:
         name: Verify screenshots and generate diffs and new screenshots
@@ -55,25 +55,25 @@ jobs:
       - checkout
       - *checkout_submodule
 
-      - *restore_npm_cache
-      - *npm_install
+      - *restore_node_modules_cache
+      - *yarn_install
       - save_cache:
-          key: *npm_cache_key
+          key: *node_modules_cache_key
           paths:
             - node_modules
 
       - run:
           name: Run tests
-          command: npm test -- -- --coverage
+          command: yarn test --coverage
       - run:
           name: Install codecov and upload results
           command: |
-              sudo npm install -g codecov
+              sudo yarn global add codecov
               codecov
 
       - run:
           name: Build KaTeX
-          command: npm run build
+          command: yarn run build
 
       - store_artifacts:
           path: dist/katex.js

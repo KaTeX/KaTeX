@@ -12,10 +12,10 @@ before_script:
   - docker pull selenium/standalone-chrome:2.48.2
   - docker images --no-trunc
 install:
-  - npm install
-  - npm ls || true
-  - npm install -g codecov
+  - yarn install
+  - yarn list || true
+  - yarn global add codecov
 script:
-  - npm test
-  - npm run test:jest:coverage && codecov
-  - npm run test:screenshots
+  - yarn test --coverage
+  - codecov
+  - yarn run test:screenshots

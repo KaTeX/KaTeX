@@ -15,7 +15,7 @@ npx katex
 You can execute with the relative path: `./node_modules/.bin/katex`
 
 > To use CLI from local clone, you need to build the project first by
-running `npm run dist`
+running `yarn run dist`
 
 # Usage
 
