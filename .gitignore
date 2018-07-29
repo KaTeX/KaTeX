@@ -16,6 +16,7 @@ diff.png
 /test/symgroups.pdf
 /test/screenshotter/unicode-fonts
 coverage/
+docs/cli.md
 lib/core/metadata.js
 lib/core/MetadataBlog.js
 website/translated_docs
