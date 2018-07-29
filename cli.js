@@ -2,7 +2,7 @@
 // Simple CLI for KaTeX.
 // Reads TeX from stdin, outputs HTML to stdout.
 // To run this from the repository, you must first build KaTeX by running
-// `npm install` and `npm run build`.
+// `yarn install` and `yarn run build`.
 
 /* eslint no-console:0 */
 
@@ -12,7 +12,7 @@ try {
 } catch (e) {
     console.error(
         "KaTeX could not import, likely because dist/katex.js is missing.");
-    console.error("Please run 'npm install' and 'npm run build' before running");
+    console.error("Please run 'yarn install' and 'yarn run build' before running");
     console.error("cli.js from the KaTeX repository.");
     console.error();
     throw e;
@@ -20,7 +20,7 @@ try {
 const {version} = require("./package.json");
 const fs = require("fs");
 
-const options = require("commander")
+const program = require("commander")
     .version(version)
     .option("-d, --display-mode",
         "Render math in display mode, which puts the math in display style " +
@@ -60,8 +60,22 @@ const options = require("commander")
     .option("-f, --macro-file <path>",
         "Read macro definitions, one per line, from the given file.")
     .option("-i, --input <path>", "Read LaTeX input from the given file.")
-    .option("-o, --output <path>", "Write html output to the given file.")
-    .parse(process.argv);
+    .option("-o, --output <path>", "Write html output to the given file.");
+
+program.command('markdown-help')
+    .description('Print markdown version of the help')
+    .action(() => {
+        console.log();
+        console.log(program.options.map(option => `### \`${option.flags}\`
+${option.description}${((option.bool && option.defaultValue !== undefined)
+    ? ' (default: ' + option.defaultValue + ')' : '')}
+`)
+            .concat(['### `-h, --help`\nOutput usage information'])
+            .join('\n'));
+        process.exit();
+    });
+
+const options = program.parse(process.argv);
 
 
 function readMacros() {

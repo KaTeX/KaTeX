@@ -27,10 +27,12 @@
     "babel-register": "^6.26.0",
     "benchmark": "^2.1.4",
     "check-dependencies": "^1.1.0",
+    "codecov": "^3.0.4",
     "css-loader": "^1.0.0",
     "cssnano": "^4.0.1",
     "eslint": "^5.0.0",
     "eslint-plugin-flowtype": "^2.40.1",
+    "eslint-plugin-react": "^7.10.0",
     "file-loader": "^1.1.11",
     "flow-bin": "^0.77.0",
     "husky": "^1.0.0-rc.8",
@@ -60,24 +62,24 @@
   },
   "bin": "cli.js",
   "scripts": {
-    "test": "npm run prestart && npm run test:lint && npm run test:flow && npm run test:jest",
-    "test:lint": "eslint katex.js katex.webpack.js cli.js webpack.*.js src static test contrib dockers && stylelint src/katex.less",
+    "test": "yarn run prestart && yarn run test:lint && yarn run test:flow && yarn run test:jest",
+    "test:lint": "eslint katex.js katex.webpack.js cli.js webpack.*.js src static test contrib dockers website && stylelint src/katex.less",
     "test:flow": "flow",
     "test:jest": "jest",
     "test:jest:watch": "jest --watch",
     "test:jest:update": "jest --updateSnapshot",
     "test:jest:coverage": "jest --coverage",
-    "test:screenshots": "npm run test:screenshots:update -- --verify",
-    "test:screenshots:update": "npm run prestart && dockers/Screenshotter/screenshotter.sh",
-    "test:perf": "npm run prestart && NODE_ENV=test node test/perf-test.js",
+    "test:screenshots": "yarn run test:screenshots:update --verify",
+    "test:screenshots:update": "yarn run prestart && dockers/Screenshotter/screenshotter.sh",
+    "test:perf": "yarn run prestart && NODE_ENV=test node test/perf-test.js",
     "clean": "rm -rf dist/ node_modules/",
-    "clean-install": "npm run clean && npm i",
+    "clean-install": "yarn run clean && yarn install",
     "prestart": "node check-node-version.js && check-dependencies && node src/unicodeMake.js > src/unicodeSymbols.js",
     "start": "webpack-dev-server --hot --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
-    "build": "npm run prestart && rimraf dist/ && mkdirp dist && cp README.md dist && webpack",
-    "watch": "npm run build -- --watch",
-    "dist": "npm test && npm run build && npm run dist:zip",
+    "build": "yarn run prestart && rimraf dist/ && mkdirp dist && cp README.md dist && webpack",
+    "watch": "yarn run build --watch",
+    "dist": "yarn test && yarn run build && yarn run dist:zip",
     "dist:zip": "cd dist && tar czf ../katex.tar.gz * && zip -rq ../katex.zip *"
   },
   "dependencies": {
@@ -85,7 +87,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run test:lint",
+      "pre-commit": "yarn run test:lint",
       "post-merge": "git submodule update --init --recursive",
       "post-checkout": "git submodule update --init --recursive"
     }
@@ -102,6 +104,7 @@
     "testMatch": [
       "**/test/*-spec.js"
     ],
+    "testURL": "http://localhost/",
     "transform": {
       "^.+\\.js$": "babel-jest"
     }
