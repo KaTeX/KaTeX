@@ -115,10 +115,26 @@ sed -i.bak -E '/^\/dist\/$/d' .gitignore
 rm -f .gitignore.bak
 git add .gitignore dist/
 
+# Edit docs to use CSS from CDN
+grep -l '"/KaTeX/static/katex.min.css"' docs/*.md | xargs sed -i.bak \
+    's|"/KaTeX/static/katex.min.css"|"https://cdn.jsdelivr.net/npm/katex@./dist/katex.min.css" integrity="sha256-katex.min.css" crossorigin="anonymous"|'
+
 # Update the version number in CDN URLs included in the README and the documentation,
 # and regenerate the Subresource Integrity hash for these files.
 node update-sri.js "${VERSION}" README.md contrib/*/README.md dist/README.md \
     docs/*.md docs/*.md.bak website/pages/index.html
+
+# Generate a new version of the docs and publish the website
+pushd website
+npm run version "${VERSION}"
+
+# Restore docs to use local built CSS
+for file in ../docs/*.md.bak; do
+    mv -f "$file" "${file%.bak}"
+done
+
+USE_SSH=true npm run publish-gh-pages
+popd
 
 # Make the commit and tag, and push them.
 git add package.json bower.json README.md contrib/*/README.md dist/README.md \
