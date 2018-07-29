@@ -147,25 +147,30 @@ git push origin "v$VERSION"
 # Update npm (bower and cdnjs update automatically)
 npm publish
 
-if [ ! -z "$NEXT_VERSION" ]; then
-    # Go back to original branch to bump
-    git checkout "$BRANCH"
+# Go back to original branch to bump
+git checkout "$BRANCH"
 
-    # Edit package.json and bower.json to the right version
+if [ ! -z "$NEXT_VERSION" ]; then
+    # Edit package.json and bower.json to the next version
     sed -i.bak -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' package.json
     rm -f package.json.bak
-
-    # Refer to the just-released version in the documentation of the
-    # development branch, too.  Most people will read docs on master.
-    git checkout "v${VERSION}" -- README.md contrib/*/README.md docs/*.md website/
-
     git add package.json bower.json
-    git commit -n -m "Bump $BRANCH to v$NEXT_VERSION-pre"
-    git push origin "$BRANCH"
-
-    # Go back to the tag which has katex.tar.gz and katex.zip
-    git checkout "v$VERSION"
 fi
+
+# Refer to the just-released version in the documentation of the
+# development branch, too.  Most people will read docs on master.
+git checkout "v${VERSION}" -- README.md contrib/*/README.md docs/*.md website/
+
+if [[ -z "$NEXT_VERSION" ]]; then
+    git commit -n -m "Release v$VERSION"
+else
+    git commit -n -m "Bump $BRANCH to v$NEXT_VERSION-pre"
+fi
+
+git push origin "$BRANCH"
+
+# Go back to the tag which has katex.tar.gz and katex.zip
+git checkout "v$VERSION"
 
 echo ""
 echo "The automatic parts are done!"
