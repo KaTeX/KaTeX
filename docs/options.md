@@ -18,6 +18,9 @@ You can provide an object of options as the last argument to `katex.render` and 
     incorrect (especially in terms of vertical heights).
   - `"unicodeTextInMathMode"`: Use of Unicode text characters in math mode.
   - `"mathVsTextUnits"`: Mismatch of math vs. text commands and units/mode.
+  - `"commentAtEnd"`: Use of `%` comment without a terminating newline.
+    LaTeX would thereby comment out the end of math mode (e.g. `$`),
+    causing an error.
   A second category of `errorCode`s never throw errors, but their strictness
   affects the behavior of KaTeX:
   - `"newLineInDisplayMode"`: Use of `\\` or `\newline` in display mode

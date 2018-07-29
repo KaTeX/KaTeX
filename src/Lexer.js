@@ -15,6 +15,7 @@
 import ParseError from "./ParseError";
 import SourceLocation from "./SourceLocation";
 import {LexerInterface, Token} from "./Token";
+import type Settings from "./Settings";
 
 /* The following tokenRegex
  * - matches typical whitespace (but not NBSP etc.) using its first group
@@ -33,7 +34,7 @@ import {LexerInterface, Token} from "./Token";
  * still reject the input.
  */
 const spaceRegexString = "[ \r\n\t]";
-const commentRegexString = "%[^\n]*[\n]";
+const commentRegexString = "%[^\n]*(?:\n|$)";
 const controlWordRegexString = "\\\\[a-zA-Z@]+";
 const controlSymbolRegexString = "\\\\[^\uD800-\uDFFF]";
 const controlWordWhitespaceRegexString =
@@ -57,16 +58,17 @@ const tokenRegexString = `(${spaceRegexString}+)|` +  // whitespace
 // These regexs are for matching results from tokenRegex,
 // so they do have ^ markers.
 export const controlWordRegex = new RegExp(`^${controlWordRegexString}`);
-const commentRegex = new RegExp(`^${commentRegexString}`);
 
 /** Main Lexer class */
 export default class Lexer implements LexerInterface {
     input: string;
+    settings: Settings;
     tokenRegex: RegExp;
 
-    constructor(input: string) {
+    constructor(input: string, settings: Settings) {
         // Separate accents from characters
         this.input = input;
+        this.settings = settings;
         this.tokenRegex = new RegExp(tokenRegexString, 'g');
     }
 
@@ -93,7 +95,12 @@ export default class Lexer implements LexerInterface {
             text = controlMatch[1];
         }
 
-        if (commentRegex.test(text)) {
+        if (text[0] === "%") {
+            if (text[text.length - 1] !== "\n") {
+                this.settings.reportNonstrict("commentAtEnd",
+                    "% comment has no terminating newline; LaTeX would " +
+                    "fail because of commenting the end of math mode (e.g. $)");
+            }
             return this.lex();
         } else {
             return new Token(text, new SourceLocation(this, pos,

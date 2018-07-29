@@ -1563,8 +1563,9 @@ describe("A comment parser", function() {
         expect("% comment 1\n% comment 2\n").toParse();
     });
 
-    it("should not parse a comment that isn't followed by a newline", () => {
-        expect`x%y`.not.toParse();
+    it("should not parse a comment without newline in strict mode", () => {
+        expect`x%y`.not.toParse(strictSettings);
+        expect`x%y`.toParse(nonstrictSettings);
     });
 
     it("should not produce or consume space", () => {

@@ -28,7 +28,7 @@ import type {EnvSpec} from "./defineEnvironment";
  *
  * The main functions (the `.parse...` ones) take a position in the current
  * parse string to parse tokens from. The lexer (found in Lexer.js, stored at
- * this.lexer) also supports pulling out tokens at arbitrary places. When
+ * this.gullet.lexer) also supports pulling out tokens at arbitrary places. When
  * individual tokens are needed at a position, the lexer is called to pull out a
  * token, which is then used.
  *
