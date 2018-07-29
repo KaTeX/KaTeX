@@ -28,8 +28,12 @@ usage() {
     echo " When releasing a new major version:"
     echo "   ./release.sh 0.7.0 0.8.0"
     echo ""
-    echo "You may omit NEXT_VERSION in order to avoid creating a commit on"
-    echo "the branch from which the release was created.  Not recommended."
+    echo "You may omit NEXT_VERSION in order to avoid updating the version field"
+    echo "of the package.json."
+    echo ""
+    echo "Run this on the master branch, if you have permission to directly push"
+    echo "to the master branch. Otherwise, create a branch with the version number"
+    echo "as its name, e.g., 'v1.0.0', and run this on it."
     exit $1
 }
 
@@ -174,7 +178,14 @@ git checkout "v$VERSION"
 
 echo ""
 echo "The automatic parts are done!"
-echo "Now all that's left is to create the release on github."
+
+if [[ $BRANCH != "master" ]]; then
+    echo "Now all that's left is to create a pull request against master from '$BRANCH'"
+    echo "and to create the release on github."
+else
+    echo "Now all that's left is to create the release on github."
+fi
+
 echo "Visit https://github.com/Khan/KaTeX/releases/new?tag=v$VERSION to edit the release notes"
 echo "Don't forget to upload katex.tar.gz and katex.zip to the release!"
 
