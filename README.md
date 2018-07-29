@@ -15,6 +15,8 @@ KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the we
 
 KaTeX supports all major browsers, including Chrome, Safari, Firefox, Opera, Edge, and IE 9 - IE 11.
 
+The list of supported commands can be found [here](https://khan.github.io/KaTeX/docs/supported.html).
+
 ## Getting started
 
 [Download KaTeX](https://github.com/khan/katex/releases) and host it on your server or include the `katex.min.js` and `katex.min.css` files on your page directly from a CDN:
