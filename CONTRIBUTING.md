@@ -82,7 +82,7 @@ copy/pasting the test case to be debugged into the editor.  The permalink option
 can come in really useful when doing repeated runs of the same test case.
 
 The Jest tests should be run after every change, even the addition of small
-symbols. However, [Travis](https://travis-ci.org/Khan/KaTeX/) will run these
+symbols. However, [CircleCI](https://circleci.com/gh/Khan/KaTeX) will run these
 tests when you submit a pull request, in case you forget.
 
 If you make any changes to Parser.js, add Jest tests to ensure they work.

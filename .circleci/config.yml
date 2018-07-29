@@ -66,10 +66,8 @@ jobs:
           name: Run tests
           command: yarn test --coverage
       - run:
-          name: Install codecov and upload results
-          command: |
-              sudo yarn global add codecov
-              codecov
+          name: Upload code coverage reports to Codecov
+          command: ./node_modules/.bin/codecov
 
       - run:
           name: Build KaTeX

@@ -27,6 +27,7 @@
     "babel-register": "^6.26.0",
     "benchmark": "^2.1.4",
     "check-dependencies": "^1.1.0",
+    "codecov": "^3.0.4",
     "css-loader": "^1.0.0",
     "cssnano": "^4.0.1",
     "eslint": "^5.0.0",
