@@ -29,7 +29,7 @@ before the close body tag:
 ```
 
 See [index.html](index.html) for an example.
-(To run this example from a clone of the repository, run `npm start`
+(To run this example from a clone of the repository, run `yarn start`
 in the root KaTeX directory, and then visit
 http://localhost:7936/contrib/auto-render/index.html
 with your web browser.)

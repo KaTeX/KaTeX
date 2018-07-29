@@ -36,7 +36,7 @@ Based on this information and what you want to support with your website, you mi
 For example, if you wanted to create a trimmed down version of KaTeX, you could only include the `woff` files and gain the most support with the least number of files. To do this:
 
 1. Set `@use-ttf`, and `@use-woff2` to `false` at the top of [fonts.less](https://github.com/KaTeX/katex-fonts/blob/master/fonts.less).
-2. Rebuild KaTeX by running `npm run build` from the top-level directory.
+2. Rebuild KaTeX by running `yarn run build` from the top-level directory.
 3. Include only the `build/fonts/*.woff2` files in your distribution.
 
 ## Location of font files
@@ -44,5 +44,5 @@ For example, if you wanted to create a trimmed down version of KaTeX, you could 
 The default build of KaTeX expects the KaTeX fonts to be located in a directory called `fonts` which is a sibling of the `katex.min.css` stylesheet. This can be changed as such:
 
 1. At the top of the [fonts.less](https://github.com/KaTeX/katex-fonts/blob/master/fonts.less) file, set `@font-folder` to the location of your fonts. You can use relative or absolute paths, so setting it to `"/fonts"` would cause it to search for the fonts in a root `fonts` folder, while `"../fonts"` would search in a `fonts` directory one level above the `katex.min.css` file.
-2. Rebuild KaTeX by running `npm run build` from the top-level directory.
+2. Rebuild KaTeX by running `yarn run build` from the top-level directory.
 3. Use the newly generated `build/katex.min.css` file, and place the fonts where you indicated.
