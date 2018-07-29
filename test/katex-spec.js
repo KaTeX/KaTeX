@@ -2452,33 +2452,69 @@ describe("operatorname support", function() {
     });
 });
 
-describe("An href command", function() {
+describe("href and url commands", function() {
+    // We can't use raw strings for \url because \u is for Unicode escapes.
+
     it("should parse its input", function() {
-        expect`\href{http://example.com/}{example here}`.toParse();
+        expect`\href{http://example.com/}{example here}`.toBuild();
+        expect("\\url{http://example.com/}").toBuild();
+    });
+
+    it("should allow empty URLs", function() {
+        expect`\href{}{example here}`.toBuild();
+        expect("\\url{}").toBuild();
+    });
+
+    it("should allow single-character URLs", () => {
+        expect`\href%end`.toParseLike("\\href{%}end");
+        expect`\href %end`.toParseLike("\\href{%}end");
+        expect("\\url%end").toParseLike("\\url{%}end");
+        expect("\\url %end").toParseLike("\\url{%}end");
+        expect("\\url end").toParseLike("\\url{e}nd");
+        expect("\\url%end").toParseLike("\\url {%}end");
+    });
+
+    it("should detect missing second argument in \\href", () => {
+        expect`\href{http://example.com/}`.not.toParse();
+        expect`\href%`.not.toParse();
+        expect`\href %`.not.toParse();
+    });
+
+    it("should allow spaces single-character URLs", () => {
+        expect`\href %end`.toParseLike("\\href{%}end");
+        expect("\\url %end").toParseLike("\\url{%}end");
     });
 
     it("should allow letters [#$%&~_^] without escaping", function() {
         const url = "http://example.org/~bar/#top?foo=$foo&bar=ba^r_boo%20baz";
-        const hash = getParsed(`\\href{${url}}{\\alpha}`)[0];
-        expect(hash.value.href).toBe(url);
+        const parsed1 = getParsed(`\\href{${url}}{\\alpha}`)[0];
+        expect(parsed1.value.href).toBe(url);
+        const parsed2 = getParsed(`\\url{${url}}`)[0];
+        expect(parsed2.value.href).toBe(url);
     });
 
     it("should allow balanced braces in url", function() {
         const url = "http://example.org/{too}";
-        const hash = getParsed(`\\href{${url}}{\\alpha}`)[0];
-        expect(hash.value.href).toBe(url);
+        const parsed1 = getParsed(`\\href{${url}}{\\alpha}`)[0];
+        expect(parsed1.value.href).toBe(url);
+        const parsed2 = getParsed(`\\url{${url}}`)[0];
+        expect(parsed2.value.href).toBe(url);
     });
 
     it("should not allow unbalanced brace(s) in url", function() {
         expect`\href{http://example.com/{a}{bar}`.not.toParse();
         expect`\href{http://example.com/}a}{bar}`.not.toParse();
+        expect`\\url{http://example.com/{a}`.not.toParse();
+        expect`\\url{http://example.com/}a}`.not.toParse();
     });
 
     it("should allow escape for letters [#$%&~_^{}]", function() {
         const url = "http://example.org/~bar/#top?foo=$}foo{&bar=bar^r_boo%20baz";
         const input = url.replace(/([#$%&~_^{}])/g, '\\$1');
-        const ae = getParsed(`\\href{${input}}{\\alpha}`)[0];
-        expect(ae.value.href).toBe(url);
+        const parsed1 = getParsed(`\\href{${input}}{\\alpha}`)[0];
+        expect(parsed1.value.href).toBe(url);
+        const parsed2 = getParsed(`\\url{${input}}`)[0];
+        expect(parsed2.value.href).toBe(url);
     });
 
     it("should be marked up correctly", function() {

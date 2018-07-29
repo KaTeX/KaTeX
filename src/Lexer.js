@@ -33,7 +33,7 @@ import type Settings from "./Settings";
  * If there is no matching function or symbol definition, the Parser will
  * still reject the input.
  */
-const spaceRegexString = "[ \r\n\t]";
+export const spaceRegexString = "[ \r\n\t]";
 const commentRegexString = "%[^\n]*(?:\n|$)";
 const controlWordRegexString = "\\\\[a-zA-Z@]+";
 const controlSymbolRegexString = "\\\\[^\uD800-\uDFFF]";
@@ -44,6 +44,10 @@ const controlWordWhitespaceRegex = new RegExp(
 const combiningDiacriticalMarkString = "[\u0300-\u036f]";
 export const combiningDiacriticalMarksEndRegex =
     new RegExp(`${combiningDiacriticalMarkString}+$`);
+const urlFunctionRegexString = "(\\\\href|\\\\url)" +
+    `(?:${spaceRegexString}*\\{((?:[^{}\\\\]|\\\\[^]|{[^{}]*})*)\\}` +
+    `|${spaceRegexString}+([^{}])` +
+    `|${spaceRegexString}*([^{}a-zA-Z]))`;
 const tokenRegexString = `(${spaceRegexString}+)|` +  // whitespace
     `(${commentRegexString}` +                        // comments
     "|[!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
@@ -52,12 +56,14 @@ const tokenRegexString = `(${spaceRegexString}+)|` +  // whitespace
     `${combiningDiacriticalMarkString}*` +            // ...plus accents
     "|\\\\verb\\*([^]).*?\\3" +                       // \verb*
     "|\\\\verb([^*a-zA-Z]).*?\\4" +                   // \verb unstarred
+    `|${urlFunctionRegexString}` +                    // URL arguments
     `|${controlWordWhitespaceRegexString}` +          // \macroName + spaces
     `|${controlSymbolRegexString})`;                  // \\, \', etc.
 
 // These regexs are for matching results from tokenRegex,
 // so they do have ^ markers.
 export const controlWordRegex = new RegExp(`^${controlWordRegexString}`);
+export const urlFunctionRegex = new RegExp(`^${urlFunctionRegexString}`);
 
 /** Main Lexer class */
 export default class Lexer implements LexerInterface {
@@ -92,7 +98,7 @@ export default class Lexer implements LexerInterface {
         // Trim any trailing whitespace from control word match
         const controlMatch = text.match(controlWordWhitespaceRegex);
         if (controlMatch) {
-            text = controlMatch[1];
+            text = controlMatch[1] + text.slice(controlMatch[0].length);
         }
 
         if (text[0] === "%") {
