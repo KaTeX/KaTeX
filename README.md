@@ -36,7 +36,26 @@ katex.render("c = \\pm\\sqrt{a^2 + b^2}", element);
 
 If KaTeX can't parse the expression, it throws a `katex.ParseError` error.
 
-To render all math expressions on the page, see [Auto-render Extension](https://khan.github.io/KaTeX/docs/autorender.html).
+#### Rendering expressions in text elements
+
+Include another script, `contrib/auto-render.min.js`:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"></script>
+````
+
+Then, call the `renderMathInElement` function with a DOM element containing expressions in a script tag before the closing body tag:
+
+```html
+<body>
+  ...
+  <script>
+    renderMathInElement(document.body);
+  </script>
+</body>
+```
+
+See [Auto-render Extension](https://khan.github.io/KaTeX/docs/autorender.html) for more detail.
 
 #### Server side rendering or rendering to a string
 
