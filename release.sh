@@ -102,13 +102,13 @@ git checkout "$BRANCH"
 git pull
 git checkout --detach
 
-# Edit package.json and bower.json to the right version (see
+# Edit package.json to the right version (see
 # http://stackoverflow.com/a/22084103 for why we need the .bak file to make
 # this mac & linux compatible)
 sed -i.bak -E 's|"version": "[^"]+",|"version": "'$VERSION'",|' package.json
 rm -f package.json.bak
 
-# Build generated files and add them to the repository (for bower)
+# Build generated files and add them to the repository
 git clean -fdx dist
 npm run dist
 sed -i.bak -E '/^\/dist\/$/d' .gitignore
@@ -137,24 +137,24 @@ USE_SSH=true npm run publish-gh-pages
 popd
 
 # Make the commit and tag, and push them.
-git add package.json bower.json README.md contrib/*/README.md dist/README.md \
+git add package.json README.md contrib/*/README.md dist/README.md \
     docs/*.md website/
 git commit -n -m "v$VERSION"
 git diff --stat --exit-code # check for uncommitted changes
 git tag -a "v$VERSION" -m "v$VERSION"
 git push origin "v$VERSION"
 
-# Update npm (bower and cdnjs update automatically)
+# Update npm (cdnjs update automatically)
 npm publish
 
 # Go back to original branch to bump
 git checkout "$BRANCH"
 
 if [ ! -z "$NEXT_VERSION" ]; then
-    # Edit package.json and bower.json to the next version
+    # Edit package.json to the next version
     sed -i.bak -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' package.json
     rm -f package.json.bak
-    git add package.json bower.json
+    git add package.json
 fi
 
 # Refer to the just-released version in the documentation of the
