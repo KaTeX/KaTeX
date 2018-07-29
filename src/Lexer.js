@@ -33,7 +33,7 @@ import type Settings from "./Settings";
  * If there is no matching function or symbol definition, the Parser will
  * still reject the input.
  */
-export const spaceRegexString = "[ \r\n\t]";
+const spaceRegexString = "[ \r\n\t]";
 const commentRegexString = "%[^\n]*(?:\n|$)";
 const controlWordRegexString = "\\\\[a-zA-Z@]+";
 const controlSymbolRegexString = "\\\\[^\uD800-\uDFFF]";
