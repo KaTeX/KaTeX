@@ -1,3 +1,6 @@
+/**
+ * Plugin for Remarkable Markdown processor which removes empty thead of tables
+ */
 module.exports = function(md, options) {
     function removeEmptyThead(state) {
         const tokens = state.tokens;
