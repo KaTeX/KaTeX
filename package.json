@@ -103,6 +103,7 @@
     "testMatch": [
       "**/test/*-spec.js"
     ],
+    "testURL": "http://localhost/",
     "transform": {
       "^.+\\.js$": "babel-jest"
     }
