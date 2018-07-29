@@ -13,9 +13,9 @@ KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the we
  * **Self contained:** KaTeX has no dependencies and can easily be bundled with your website resources.
  * **Server side rendering:** KaTeX produces the same output regardless of browser or environment, so you can pre-render expressions using Node.js and send them as plain HTML.
 
-KaTeX supports all major browsers, including Chrome, Safari, Firefox, Opera, Edge, and IE 9 - IE 11.
+KaTeX is compatible with all major browsers, including Chrome, Safari, Firefox, Opera, Edge, and IE 9 - IE 11.
 
-The list of supported commands can be found [here](https://khan.github.io/KaTeX/docs/supported.html).
+KaTeX supports much (but not all) of LaTeX and many LaTeX packages. See the [list of supported functions](https://khan.github.io/KaTeX/docs/supported.html).
 
 ## Getting started
 
@@ -38,7 +38,7 @@ If KaTeX can't parse the expression, it throws a `katex.ParseError` error.
 
 #### Rendering expressions in text elements
 
-Include another script, `contrib/auto-render.min.js`:
+To automatically render math in text elements, include the [auto-render script](https://khan.github.io/KaTeX/docs/autorender.html) `contrib/auto-render.min.js`, or via CDN:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"></script>
@@ -55,7 +55,7 @@ Then, call the `renderMathInElement` function with a DOM element containing expr
 </body>
 ```
 
-See [Auto-render Extension](https://khan.github.io/KaTeX/docs/autorender.html) for more detail.
+See [Auto-render Extension](https://khan.github.io/KaTeX/docs/autorender.html) for more details.
 
 #### Server side rendering or rendering to a string
 
