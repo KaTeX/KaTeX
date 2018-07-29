@@ -115,12 +115,14 @@ sed -i.bak -E '/^\/dist\/$/d' .gitignore
 rm -f .gitignore.bak
 git add .gitignore dist/
 
-# Update the version number in CDN URLs included in the README files,
+# Update the version number in CDN URLs included in the README and the documentation,
 # and regenerate the Subresource Integrity hash for these files.
-node update-sri.js "${VERSION}" README.md contrib/*/README.md dist/README.md
+node update-sri.js "${VERSION}" README.md contrib/*/README.md dist/README.md \
+    docs/*.md docs/*.md.bak website/pages/index.html
 
 # Make the commit and tag, and push them.
-git add package.json bower.json README.md contrib/*/README.md dist/README.md
+git add package.json bower.json README.md contrib/*/README.md dist/README.md \
+    docs/*.md website/
 git commit -n -m "v$VERSION"
 git diff --stat --exit-code # check for uncommitted changes
 git tag -a "v$VERSION" -m "v$VERSION"
@@ -139,7 +141,7 @@ if [ ! -z "$NEXT_VERSION" ]; then
 
     # Refer to the just-released version in the documentation of the
     # development branch, too.  Most people will read docs on master.
-    git checkout "v${VERSION}" -- README.md contrib/*/README.md
+    git checkout "v${VERSION}" -- README.md contrib/*/README.md docs/*.md website/
 
     git add package.json bower.json
     git commit -n -m "Bump $BRANCH to v$NEXT_VERSION-pre"
