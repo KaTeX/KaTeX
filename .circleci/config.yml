@@ -61,6 +61,11 @@ jobs:
           key: *node_modules_cache_key
           paths:
             - node_modules
+      - run:
+          name: Greenkeeper: update and commit yarn.lock
+          command: |
+              greenkeeper-lockfile-update
+              greenkeeper-lockfile-upload
 
       - run:
           name: Run tests
