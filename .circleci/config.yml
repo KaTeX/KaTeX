@@ -64,8 +64,8 @@ jobs:
       - run:
           name: Greenkeeper - update and commit yarn.lock
           command: |
-              greenkeeper-lockfile-update
-              greenkeeper-lockfile-upload
+              ./node_modules/.bin/greenkeeper-lockfile-update
+              ./node_modules/.bin/greenkeeper-lockfile-upload
 
       - run:
           name: Run tests
