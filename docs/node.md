@@ -22,7 +22,7 @@ yarn global add katex
 
 ## Building from Source
 
-To build you will need Git, Node.js 6.9 or later, and npm or Yarn.
+To build you will need Git, Node.js 6.9 or later, and Yarn.
 
 Clone a copy of the GitHub source repository:
 ```bash
@@ -32,8 +32,8 @@ cd KaTeX
 
 Then install dependencies and run `build` script:
 ```bash
-npm install # or yarn install
-npm run build # or yarn build
+yarn
+yarn build
 ```
 
 > You can manually download the package and source code from

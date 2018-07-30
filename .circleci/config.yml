@@ -17,7 +17,7 @@ restore_node_modules_cache: &restore_node_modules_cache
 yarn_install: &yarn_install
   run:
     name: Install dependencies
-    command: yarn install
+    command: yarn
 
 screenshotter: &screenshotter
   steps:
@@ -71,7 +71,7 @@ jobs:
 
       - run:
           name: Build KaTeX
-          command: yarn run build
+          command: yarn build
 
       - store_artifacts:
           path: dist/katex.js
