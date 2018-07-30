@@ -581,19 +581,16 @@ exports[`A parse tree generator generates a tree 1`] = `
 [
   {
     "type": "supsub",
+    "base": {
+      "type": "mathord",
+      "mode": "math",
+      "value": "\\\\sigma"
+    },
     "mode": "math",
-    "value": {
-      "type": "supsub",
-      "base": {
-        "type": "mathord",
-        "mode": "math",
-        "value": "\\\\sigma"
-      },
-      "sup": {
-        "type": "textord",
-        "mode": "math",
-        "value": "2"
-      }
+    "sup": {
+      "type": "textord",
+      "mode": "math",
+      "value": "2"
     }
   }
 ]

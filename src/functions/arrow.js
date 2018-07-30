@@ -31,12 +31,9 @@ defineFunction({
         return {
             type: "xArrow",
             mode: parser.mode,
-            value: {
-                type: "xArrow",   // x for extensible
-                label: funcName,
-                body: args[0],
-                below: optArgs[0],
-            },
+            label: funcName,
+            body: args[0],
+            below: optArgs[0],
         };
     },
     // Flow is unable to correctly infer the type of `group`, even though it's
@@ -48,14 +45,14 @@ defineFunction({
         // Ref: amsmath.dtx:   \hbox{$\scriptstyle\mkern#3mu{#6}\mkern#4mu$}%
 
         let newOptions = options.havingStyle(style.sup());
-        const upperGroup = html.buildGroup(group.value.body, newOptions, options);
+        const upperGroup = html.buildGroup(group.body, newOptions, options);
         upperGroup.classes.push("x-arrow-pad");
 
         let lowerGroup;
-        if (group.value.below) {
+        if (group.below) {
             // Build the lower group
             newOptions = options.havingStyle(style.sub());
-            lowerGroup = html.buildGroup(group.value.below, newOptions, options);
+            lowerGroup = html.buildGroup(group.below, newOptions, options);
             lowerGroup.classes.push("x-arrow-pad");
         }
 
@@ -68,7 +65,7 @@ defineFunction({
         // 2 mu kern. Ref: amsmath.dtx: #7\if0#2\else\mkern#2mu\fi
         let upperShift = -options.fontMetrics().axisHeight
             - 0.5 * arrowBody.height - 0.111; // 0.111 em = 2 mu
-        if (upperGroup.depth > 0.25 || group.value.label === "\\xleftequilibrium") {
+        if (upperGroup.depth > 0.25 || group.label === "\\xleftequilibrium") {
             upperShift -= upperGroup.depth;  // shift up if depth encroaches
         }
 
@@ -102,22 +99,22 @@ defineFunction({
         return buildCommon.makeSpan(["mrel", "x-arrow"], [vlist], options);
     },
     mathmlBuilder(group, options) {
-        const arrowNode = stretchy.mathMLnode(group.value.label);
+        const arrowNode = stretchy.mathMLnode(group.label);
         let node;
         let lowerNode;
 
-        if (group.value.body) {
-            const upperNode = mml.buildGroup(group.value.body, options);
-            if (group.value.below) {
-                lowerNode = mml.buildGroup(group.value.below, options);
+        if (group.body) {
+            const upperNode = mml.buildGroup(group.body, options);
+            if (group.below) {
+                lowerNode = mml.buildGroup(group.below, options);
                 node = new mathMLTree.MathNode(
                     "munderover", [arrowNode, lowerNode, upperNode]
                 );
             } else {
                 node = new mathMLTree.MathNode("mover", [arrowNode, upperNode]);
             }
-        } else if (group.value.below) {
-            lowerNode = mml.buildGroup(group.value.below, options);
+        } else if (group.below) {
+            lowerNode = mml.buildGroup(group.below, options);
             node = new mathMLTree.MathNode("munder", [arrowNode, lowerNode]);
         } else {
             node = new mathMLTree.MathNode("mover", [arrowNode]);

@@ -368,8 +368,8 @@ export default class Parser {
                 const opNode = checkNodeType(base, "op");
                 if (opNode) {
                     const limits = lex.text === "\\limits";
-                    opNode.value.limits = limits;
-                    opNode.value.alwaysHandleSupSub = true;
+                    opNode.limits = limits;
+                    opNode.alwaysHandleSupSub = true;
                 } else {
                     throw new ParseError(
                         "Limit controls must follow a math operator",
@@ -424,12 +424,9 @@ export default class Parser {
             return {
                 type: "supsub",
                 mode: this.mode,
-                value: {
-                    type: "supsub",
-                    base: base,
-                    sup: superscript,
-                    sub: subscript,
-                },
+                base: base,
+                sup: superscript,
+                sub: subscript,
             };
         } else {
             // Otherwise return the original body
@@ -872,6 +869,7 @@ export default class Parser {
         let n = group.length - 1;
         for (let i = 0; i < n; ++i) {
             const a = group[i];
+            // $FlowFixMe: Not every node type has a `value` property.
             const v = a.value;
             if (v === "-" && group[i + 1].value === "-") {
                 if (i + 1 < n && group[i + 2].value === "-") {
@@ -1085,13 +1083,10 @@ export default class Parser {
                     type: "accent",
                     mode: this.mode,
                     loc: SourceLocation.range(nucleus),
-                    value: {
-                        type: "accent",
-                        label: command,
-                        isStretchy: false,
-                        isShifty: true,
-                        base: symbol,
-                    },
+                    label: command,
+                    isStretchy: false,
+                    isShifty: true,
+                    base: symbol,
                 };
             }
         }

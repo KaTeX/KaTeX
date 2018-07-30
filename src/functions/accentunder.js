@@ -24,19 +24,16 @@ defineFunction({
         return {
             type: "accentUnder",
             mode: parser.mode,
-            value: {
-                type: "accentUnder",
-                label: funcName,
-                base: base,
-            },
+            label: funcName,
+            base: base,
         };
     },
     htmlBuilder: (group: ParseNode<"accentUnder">, options) => {
         // Treat under accents much like underlines.
-        const innerGroup = html.buildGroup(group.value.base, options);
+        const innerGroup = html.buildGroup(group.base, options);
 
         const accentBody = stretchy.svgSpan(group, options);
-        const kern = group.value.label === "\\utilde" ? 0.12 : 0;
+        const kern = group.label === "\\utilde" ? 0.12 : 0;
 
         // Generate the vlist, with the appropriate kerns
         const vlist = buildCommon.makeVList({
@@ -52,10 +49,10 @@ defineFunction({
         return buildCommon.makeSpan(["mord", "accentunder"], [vlist], options);
     },
     mathmlBuilder: (group, options) => {
-        const accentNode = stretchy.mathMLnode(group.value.label);
+        const accentNode = stretchy.mathMLnode(group.label);
         const node = new mathMLTree.MathNode(
             "munder",
-            [mml.buildGroup(group.value.base, options), accentNode]
+            [mml.buildGroup(group.base, options), accentNode]
         );
         node.setAttribute("accentunder", "true");
         return node;
