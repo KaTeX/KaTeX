@@ -33,7 +33,8 @@ usage() {
     echo ""
     echo "Run this on the master branch, if you have permission to directly push"
     echo "to the master branch. Otherwise, create a branch with the version number"
-    echo "as its name, e.g., 'v1.0.0', and run this on it."
+    echo "as its name and a suffix to distinguish from its tag, e.g.,"
+    echo "'v1.0.0-release', and run this on it."
     exit $1
 }
 
