@@ -58,7 +58,7 @@ single file.  The goal is to have all functions use this new system.
 ## Testing
 
 Local testing can be done by running the webpack-dev-server using configuration
-`webpack.dev.js`. Run `yarn install` to install dependencies, and then `yarn start`
+`webpack.dev.js`. Run `yarn` to install dependencies, and then `yarn start`
 to start the server.
 
 This will host an interactive editor at
@@ -160,7 +160,7 @@ Flow by running `yarn test:flow`. See [Flow](https://flow.org/) for more details
 The fonts for KaTeX live in a submodule stored in `submodules/katex-fonts`.
 When you first clone the KaTeX repository, use
 `git submodule update --init --recursive` to download the corresponding
-fonts repository.  After running `yarn install`, you should have Git hooks that
+fonts repository.  After running `yarn`, you should have Git hooks that
 will automatically run this command after switching to branches
 where `submodules/katex-fonts` point to different commits.
 

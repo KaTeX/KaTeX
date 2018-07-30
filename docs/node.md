@@ -32,7 +32,7 @@ cd KaTeX
 
 Then install dependencies and run `build` script:
 ```bash
-npm install # or yarn install
+npm install # or yarn
 npm run build # or yarn build
 ```
 <br>
