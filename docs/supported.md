@@ -200,7 +200,7 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 | `\thinspace` | ³∕₁₈ em space| `\skip{distance}`  | space, width = *distance* |
 | `\:`| ⁴∕₁₈ em space| `\mskip{distance}` | space, width = *distance* |
 | `\medspace`  | ⁴∕₁₈ em space| `\hspace{distance}`| space, width = *distance* |
-| `\;`| ⁵∕₁₈ em space| `\hspace\*{distance}` | space, width = *distance* |
+| `\;`| ⁵∕₁₈ em space| `\hspace*{distance}` | space, width = *distance* |
 | `\thickspace`| ⁵∕₁₈ em space| `\phantom{content}`| space the width and height of content |
 | `\enspace`| ½ em space| `\hphantom{content}`  | space the width of content|
 | `\quad`| 1 em space| `\vphantom{content}`  | a strut the height of content|
@@ -297,13 +297,13 @@ Direct Input: $+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ 
 
 ||||
 |:--------------------------|:----------------------------|:-----
-|$\frac{a}{b}$ `\frac{a}{b}`|$\tfrac{a}{b}$ `\tfrac{a}{b}`|${a}/{b}$ `{a}/{b}`
-|${a}\over{b}$ `{a}\over{b}`|$\dfrac{a}{b}$ `\dfrac{a}{b}`|$\cfrac{a}{1 + \cfrac{1}{b}}$ `\cfrac{a}{1 + \cfrac{1}{b}}`
+|$\frac{a}{b}$ `\frac{a}{b}`|$\tfrac{a}{b}$ `\tfrac{a}{b}`|$a/b$ `a/b`
+|${a \over b}$ `{a \over b}`|$\dfrac{a}{b}$ `\dfrac{a}{b}`|$\cfrac{a}{1 + \cfrac{1}{b}}$ `\cfrac{a}{1 + \cfrac{1}{b}}`
 
 |||
 |:------------------------------|:-----
 |$\binom{n}{k}$ `\binom{n}{k}`  |$\dbinom{n}{k}$ `\dbinom{n}{k}`
-|${n}\choose{k}$ `{n}\choose{k}`|$\tbinom{n}{k}$ `\tbinom{n}{k}`
+|${n \choose k}$ `{n \choose k}`|$\tbinom{n}{k}$ `\tbinom{n}{k}`
 
 ### Math Operators
 
