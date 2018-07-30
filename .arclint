@@ -2,7 +2,7 @@
   "linters": {
     "katex-linter": {
       "type": "script-and-regex",
-      "script-and-regex.script": "npm run test:lint || true",
+      "script-and-regex.script": "yarn run test:lint || true",
       "script-and-regex.regex": "/^(?P<file>\\S+): line (?P<line>\\d+), col \\d+, (?P<message>.*)$/m"
     }
   }
