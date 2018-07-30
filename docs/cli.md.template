@@ -3,19 +3,19 @@ id: cli
 title: CLI
 ---
 
-KaTeX installed [using Node.js package managers](node.md) comes with a built-in CLI
-which can be used to render TeX to HTML from the command line. By default, CLI will
-take the input from `stdin`.
+KaTeX installed [using Node.js package managers](node.md) comes with a
+built-in command-line interface (CLI) which can be used to render TeX to HTML.
+By default, CLI will take the input from standard input.
 
 ```bash
 npx katex
 ```
 
-> Above uses the `npx` command to run the locally installed executable.
-You can execute with the relative path: `./node_modules/.bin/katex`
+> Above uses the `npx` command to run the locally installed executable
+after `npm install katex`.  You can also execute with the relative path:
+`./node_modules/.bin/katex`
 
-> To use CLI from local clone, you need to build the project first by
-running `yarn build`.  See [Building from Source](node.md#building-from-source) 
-for more details.
+> To use the CLI from local Git clone, you need to build the project first.
+See [Building from Source](node.md#building-from-source) for more details.
 
 ## Options

@@ -35,6 +35,6 @@ Then install dependencies and run `build` script:
 yarn
 yarn build
 ```
-<br>
+
 > You can manually download the package and source code from
 [GitHub releases](https://github.com/Khan/KaTeX/releases).
