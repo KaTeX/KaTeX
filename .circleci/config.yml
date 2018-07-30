@@ -19,10 +19,22 @@ yarn_install: &yarn_install
     name: Install dependencies
     command: yarn
 
+skip_tests: &skip_tests
+  run:
+    name: Skip tests
+    command: circleci step halt
+
 screenshotter: &screenshotter
   steps:
     - checkout
     - *checkout_submodule
+
+    - run:
+        name: List SSH keys
+        command: |
+            ssh-add -l
+
+    - *skip_tests
 
     - *restore_node_modules_cache
     - *yarn_install
@@ -54,6 +66,8 @@ jobs:
 
       - checkout
       - *checkout_submodule
+
+      - *skip_tests
 
       - *restore_node_modules_cache
       - *yarn_install
