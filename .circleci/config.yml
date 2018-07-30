@@ -62,7 +62,7 @@ jobs:
           paths:
             - node_modules
       - run:
-          name: Greenkeeper: update and commit yarn.lock
+          name: Greenkeeper - update and commit yarn.lock
           command: |
               greenkeeper-lockfile-update
               greenkeeper-lockfile-upload
