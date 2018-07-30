@@ -106,7 +106,7 @@ rm -f package.json.bak
 
 # Build generated files and add them to the repository (for bower)
 git clean -fdx dist
-yarn run dist
+yarn dist
 sed -i.bak -E '/^\/dist\/$/d' .gitignore
 rm -f .gitignore.bak
 git add .gitignore dist/

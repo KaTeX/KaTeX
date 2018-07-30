@@ -2,7 +2,7 @@
 id: options
 title: Options
 ---
-You can provide an object of options as the last argument to `katex.render` and `katex.renderToString`. Available options are:
+You can provide an object of options as the last argument to [`katex.render` and `katex.renderToString`](api.md). Available options are:
 
 - `displayMode`: `boolean`. If `true` the math will be rendered in display mode, which will put the math in display style (so `\int` and `\sum` are large, for example), and will center the math on the page on its own line. If `false` the math will be rendered in inline mode. (default: `false`)
 - `throwOnError`: `boolean`. If `true` (the default), KaTeX will throw a `ParseError` when it encounters an unsupported command or invalid LaTeX. If `false`, KaTeX will render unsupported commands as text, and render invalid LaTeX as its source code with hover text giving the error, in the color given by `errorColor`.
