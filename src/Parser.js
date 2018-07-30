@@ -890,6 +890,10 @@ export default class Parser {
             return newFunction(nucleus);
         } else if (/^\\(href|url)[^a-zA-Z]/.test(text)) {
             const match = text.match(urlFunctionRegex);
+            if (!match) {
+                throw new ParseError(
+                    `Internal error: invalid URL token '${text}'`, nucleus);
+            }
             const funcName = match[1];
             // match[2] is the only one that can be an empty string,
             // so it must be at the end of the following or chain:
@@ -899,22 +903,24 @@ export default class Parser {
             // "undefined" behaviour, and keep them as-is. Some browser will
             // replace backslashes with forward slashes.
             const url = rawUrl.replace(/\\([#$%&~_^{}])/g, '$1');
-            const protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
+            let protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
+            protocol = (protocol != null ? protocol[1] : "_relative");
             const allowed = this.settings.allowedProtocols;
-            if (!utils.contains(allowed,  "*") && !utils.contains(allowed,
-                    protocol != null ? protocol[1] : "_relative")) {
-                throw new ParseError('Not allowed \\href protocol', nucleus);
+            if (!utils.contains(allowed,  "*") &&
+                !utils.contains(allowed, protocol)) {
+                throw new ParseError(
+                    `Forbidden protocol '${protocol}' in ${funcName}`, nucleus);
             }
             const urlArg = new ParseNode("url", {
                 type: "url",
                 value: url,
             }, this.mode);
             this.consume();
-            if (funcName === "\\href") {
+            if (funcName === "\\href") {  // two arguments
                 this.consumeSpaces();  // ignore spaces between arguments
                 let description = this.parseGroupOfType("original", false);
                 if (description == null) {
-                    throw new ParseError("\\href missing second argument",
+                    throw new ParseError(`${funcName} missing second argument`,
                         nucleus);
                 }
                 if (description.type === "fn") {
@@ -923,9 +929,10 @@ export default class Parser {
                     description = description.result;
                 }
                 return newArgument(this.callFunction(
-                    funcName, [urlArg, description], []));
-            } else {  // \url
-                return newArgument(this.callFunction(funcName, [urlArg], []));
+                    funcName, [urlArg, description], []), nucleus);
+            } else {  // one argument (\url)
+                return newArgument(this.callFunction(
+                    funcName, [urlArg], []), nucleus);
             }
         } else if (/^\\verb[^a-zA-Z]/.test(text)) {
             this.consume();
