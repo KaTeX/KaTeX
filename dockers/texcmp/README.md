@@ -30,7 +30,7 @@ the even larger overhead of setting up docker and creating the initial
 image, then you may instead execute the commands
 
     cd dockers/texcmp
-    npm install
+    yarn
     node texcmp.js
 
 from the root of your KaTeX directory tree.  Required tools include the
