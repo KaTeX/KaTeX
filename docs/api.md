@@ -16,8 +16,8 @@ To avoid escaping the backslash (double backslash), you can use
 katex.render(String.raw`c = \pm\sqrt{a^2 + b^2}`, element);
 ```
 
-If KaTeX can't parse the expression, it throws a `ParseError`. See [handling errors](error.md)
-for configuring how to handle errors.
+If KaTeX can't parse the expression, it throws a `katex.ParseError` by default.
+See [handling errors](error.md) for configuring how to handle errors.
 
 ## Server side rendering or rendering to a string
 To generate HTML on the server or to generate an HTML string of the rendered math, you can use `katex.renderToString`:
