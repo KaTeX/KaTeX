@@ -128,13 +128,13 @@ Direct Input: $∂ ∇ ℑ Ⅎ ℵ ℶ ℷ ℸ ⅁ ℏ$ ð <br>
 
 **Unicode Mathematical Alphanumeric Symbols**
 
-| Item|  Range  |  Item|  Range  |
-|--------------|---------------|---------------------|---------------|
-| Bold|  A-Z a-z 0-9  |  Double-struck|  A-Z k  |
-| Italic |  A-Z a-z|  Sans serif|  A-Z a-z 0-9  |
-| Bold Italic  |  A-Z a-z|  Sans serif bold |  A-Z a-z 0-9  |
-| Script |  A-Z |  Sans serif italic  |  A-Z a-z|
-| Fractur|  A-Z a-z|  Monospace |  A-Z a-z 0-9  |
+| Item        |  Range           |  Item            |  Range  |
+|-------------|------------------|------------------|---------------|
+| Bold        | $\text{𝐀-𝐙 𝐚-𝐳}$ |  Double-struck    |  $\text{𝔸-ℤ 𝕜}$  |
+| Italic      | $\text{𝐴-𝑍 𝑎-𝑧}$ |  Sans serif       |  $\text{𝖠-𝖹 𝖺-𝗓}$  |
+| Bold Italic | $\text{𝑨-𝒁 𝒂-𝒛}$ |  Sans serif bold  |  $\text{𝗔-𝗭 𝗮-𝘇}$  |
+| Script      | $\text{𝒜- 𝒵}$   |  Sans serif italic |  $\text{𝘈-𝘡 𝘢-𝘻}$|
+| Fractur     | $\text{𝔄-ℨ 𝔞-𝔷}$ |  Monospace         |  $\text{𝙰-𝚉 𝚊-𝚣}$  |
 
 **Unicode**
 
