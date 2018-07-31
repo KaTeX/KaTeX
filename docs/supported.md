@@ -130,11 +130,10 @@ Direct Input: $∂ ∇ ℑ Ⅎ ℵ ℶ ℷ ℸ ⅁ ℏ$ ð <br>
 
 | Item        |  Range           |  Item            |  Range  |
 |-------------|------------------|------------------|---------------|
-| Bold        | $\text{𝐀-𝐙 𝐚-𝐳}$ |  Double-struck    |  $\text{𝔸-ℤ 𝕜}$  |
+| Bold        | $\text{𝐀-𝐙 𝐚-𝐳}$ |  Double-struck    |  $\text{𝔸-}ℤ\ 𝕜$  |
 | Italic      | $\text{𝐴-𝑍 𝑎-𝑧}$ |  Sans serif       |  $\text{𝖠-𝖹 𝖺-𝗓}$  |
-| Bold Italic | $\text{𝑨-𝒁 𝒂-𝒛}$ |  Sans serif bold  |  $\text{𝗔-𝗭 𝗮-𝘇}$  |
-| Script      | $\text{𝒜- 𝒵}$   |  Sans serif italic |  $\text{𝘈-𝘡 𝘢-𝘻}$|
-| Fractur     | $\text{𝔄-ℨ 𝔞-𝔷}$ |  Monospace         |  $\text{𝙰-𝚉 𝚊-𝚣}$  |
+| Bold Italic | $\text{𝑨-𝒁 𝒂-𝒛}$ |  Monospace      |  $\text{𝙰-𝚉 𝚊-𝚣}$  |
+| Script      | $\text{𝒜-𝒵}$    |  Fractur         | $\text{𝔄-}ℨ\text{ 𝔞-𝔷}$|
 
 **Unicode**
 
