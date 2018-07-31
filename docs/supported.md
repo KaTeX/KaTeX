@@ -128,13 +128,12 @@ Direct Input: $∂ ∇ ℑ Ⅎ ℵ ℶ ℷ ℸ ⅁ ℏ$ ð <br>
 
 **Unicode Mathematical Alphanumeric Symbols**
 
-| Item|  Range  |  Item|  Range  |
-|--------------|---------------|---------------------|---------------|
-| Bold|  A-Z a-z 0-9  |  Double-struck|  A-Z k  |
-| Italic |  A-Z a-z|  Sans serif|  A-Z a-z 0-9  |
-| Bold Italic  |  A-Z a-z|  Sans serif bold |  A-Z a-z 0-9  |
-| Script |  A-Z |  Sans serif italic  |  A-Z a-z|
-| Fractur|  A-Z a-z|  Monospace |  A-Z a-z 0-9  |
+| Item        |  Range           |  Item            |  Range  |
+|-------------|------------------|------------------|---------------|
+| Bold        | $\text{𝐀-𝐙 𝐚-𝐳}$ |  Double-struck    |  $\text{𝔸-}ℤ\ 𝕜$  |
+| Italic      | $\text{𝐴-𝑍 𝑎-𝑧}$ |  Sans serif       |  $\text{𝖠-𝖹 𝖺-𝗓}$  |
+| Bold Italic | $\text{𝑨-𝒁 𝒂-𝒛}$ |  Monospace      |  $\text{𝙰-𝚉 𝚊-𝚣}$  |
+| Script      | $\text{𝒜-𝒵}$    |  Fractur         | $\text{𝔄-}ℨ\text{ 𝔞-𝔷}$|
 
 **Unicode**
 
@@ -200,7 +199,7 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 | `\thinspace` | ³∕₁₈ em space| `\skip{distance}`  | space, width = *distance* |
 | `\:`| ⁴∕₁₈ em space| `\mskip{distance}` | space, width = *distance* |
 | `\medspace`  | ⁴∕₁₈ em space| `\hspace{distance}`| space, width = *distance* |
-| `\;`| ⁵∕₁₈ em space| `\hspace\*{distance}` | space, width = *distance* |
+| `\;`| ⁵∕₁₈ em space| `\hspace*{distance}` | space, width = *distance* |
 | `\thickspace`| ⁵∕₁₈ em space| `\phantom{content}`| space the width and height of content |
 | `\enspace`| ½ em space| `\hphantom{content}`  | space the width of content|
 | `\quad`| 1 em space| `\vphantom{content}`  | a strut the height of content|
@@ -297,13 +296,13 @@ Direct Input: $+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ 
 
 ||||
 |:--------------------------|:----------------------------|:-----
-|$\frac{a}{b}$ `\frac{a}{b}`|$\tfrac{a}{b}$ `\tfrac{a}{b}`|${a}/{b}$ `{a}/{b}`
-|${a}\over{b}$ `{a}\over{b}`|$\dfrac{a}{b}$ `\dfrac{a}{b}`|$\cfrac{a}{1 + \cfrac{1}{b}}$ `\cfrac{a}{1 + \cfrac{1}{b}}`
+|$\frac{a}{b}$ `\frac{a}{b}`|$\tfrac{a}{b}$ `\tfrac{a}{b}`|$a/b$ `a/b`
+|${a \over b}$ `{a \over b}`|$\dfrac{a}{b}$ `\dfrac{a}{b}`|$\cfrac{a}{1 + \cfrac{1}{b}}$ `\cfrac{a}{1 + \cfrac{1}{b}}`
 
 |||
 |:------------------------------|:-----
 |$\binom{n}{k}$ `\binom{n}{k}`  |$\dbinom{n}{k}$ `\dbinom{n}{k}`
-|${n}\choose{k}$ `{n}\choose{k}`|$\tbinom{n}{k}$ `\tbinom{n}{k}`
+|${n \choose k}$ `{n \choose k}`|$\tbinom{n}{k}$ `\tbinom{n}{k}`
 
 ### Math Operators
 
