@@ -28,9 +28,9 @@ type AlignSpec = { type: "separator", separator: string } | {
 export type ArrayEnvNodeData = {|
     type: "array",
     hskipBeforeAndAfter?: boolean,
-    arraystretch: number,
     addJot?: boolean,
     cols?: AlignSpec[],
+    arraystretch: number,
     body: AnyParseNode[][], // List of rows in the (2D) array.
     rowGaps: (?ParseNode<"size">)[],
     hLinesBeforeRow: Array<boolean[]>,
@@ -39,10 +39,10 @@ export type ArrayEnvNodeData = {|
 type ArrayEnvNodeDataIncomplete = {|
     type: "array",
     hskipBeforeAndAfter?: boolean,
-    arraystretch?: number,
     addJot?: boolean,
     cols?: AlignSpec[],
     // Before these fields are filled.
+    arraystretch?: number,
     body?: AnyParseNode[][],
     rowGaps?: (?ParseNode<"size">)[],
     hLinesBeforeRow?: Array<boolean[]>,
@@ -126,7 +126,8 @@ function parseArray(
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
             // the last line is empty.
             // NOTE: Currently, `cell` is the last item added into `row`.
-            if (row.length === 1 && cell.value.value[0].value.length === 0) {
+            if (row.length === 1 && cell.type === "styling" &&
+                cell.value.value[0].value.length === 0) {
                 body.pop();
             }
             if (hLinesBeforeRow.length < body.length + 1) {
@@ -544,7 +545,7 @@ defineEnvironment({
     props: {
         numArgs: 0,
     },
-    handler: function(context) {
+    handler(context) {
         const delimiters = {
             "matrix": null,
             "pmatrix": ["(", ")"],
@@ -553,12 +554,19 @@ defineEnvironment({
             "vmatrix": ["|", "|"],
             "Vmatrix": ["\\Vert", "\\Vert"],
         }[context.envName];
-        let res = {
+        const payload = {
             type: "array",
             hskipBeforeAndAfter: false, // \hskip -\arraycolsep in amsmath
         };
-        res = parseArray(context.parser, res, dCellStyle(context.envName));
+        let res: ParseNode<"array"> =
+            parseArray(context.parser, payload, dCellStyle(context.envName));
         if (delimiters) {
+            // TODO: This violates the requirement that the return value must be
+            // ParseNode<"array">. Fix this either by changing this
+            // implementation or the type of defineEnvironment(). It doesn't
+            // ultimately hurt anything since the returned "leftright" will be
+            // handled by its htmlBuilder and mathmlBuilder.
+            // $FlowFixMe
             res = {
                 type: "leftright",
                 mode: context.mode,
@@ -590,8 +598,8 @@ defineEnvironment({
     props: {
         numArgs: 0,
     },
-    handler: function(context) {
-        let res = {
+    handler(context) {
+        const payload = {
             type: "array",
             arraystretch: 1.2,
             cols: [{
@@ -610,7 +618,14 @@ defineEnvironment({
                 postgap: 0,
             }],
         };
-        res = parseArray(context.parser, res, dCellStyle(context.envName));
+        let res: ParseNode<"array"> =
+            parseArray(context.parser, payload, dCellStyle(context.envName));
+        // TODO: This violates the requirement that the return value must be
+        // ParseNode<"array">. Fix this either by changing this
+        // implementation or the type of defineEnvironment(). It doesn't
+        // ultimately hurt anything since the returned "leftright" will be
+        // handled by its htmlBuilder and mathmlBuilder.
+        // $FlowFixMe
         res = {
             type: "leftright",
             mode: context.mode,

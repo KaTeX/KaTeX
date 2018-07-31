@@ -590,7 +590,10 @@ export function checkNodeType<NODETYPE: NodeType>(
     type: NODETYPE,
 ): ?ParseNode<NODETYPE> {
     if (node && node.type === type) {
-        // $FlowFixMe: Inference not sophisticated enough to figure this out.
+        // The definition of ParseNode<TYPE> doesn't communicate to flow that
+        // `type: TYPE` (as that's not explicitly mentioned anywhere), though that
+        // happens to be true for all our value types.
+        // $FlowFixMe
         return node;
     }
     return null;

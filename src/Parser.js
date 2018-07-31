@@ -15,7 +15,7 @@ import {combiningDiacriticalMarksEndRegex, urlFunctionRegex} from "./Lexer.js";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
-import type {AnyParseNode} from "./ParseNode";
+import type {AnyParseNode, SymbolParseNode} from "./ParseNode";
 import type {Mode, ArgType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
 import type {EnvSpec} from "./defineEnvironment";
@@ -1010,7 +1010,7 @@ export default class Parser {
             }
         }
         // Recognize base symbol
-        let symbol = null;
+        let symbol: AnyParseNode;
         if (symbols[this.mode][text]) {
             if (this.settings.strict && this.mode === 'math' &&
                 extraLatin.indexOf(text) >= 0) {
@@ -1018,12 +1018,15 @@ export default class Parser {
                     `Latin-1/Unicode text character "${text[0]}" used in ` +
                     `math mode`, nucleus);
             }
-            symbol = {
+            // TODO(#1492): Remove this override once this becomes an "atom" type.
+            // $FlowFixMe
+            const s: SymbolParseNode = {
                 type: symbols[this.mode][text].group,
                 mode: this.mode,
                 loc: SourceLocation.range(nucleus),
                 value: text,
             };
+            symbol = s;
         } else if (text.charCodeAt(0) >= 0x80) { // no symbol for e.g. ^
             if (this.settings.strict) {
                 if (!supportedCodepoint(text.charCodeAt(0))) {
