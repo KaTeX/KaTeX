@@ -14,6 +14,7 @@ defineFunction({
     props: {
         numArgs: 2,
         argTypes: ["url", "original"],
+        allowedInText: true,
     },
     handler: ({parser}, args) => {
         const body = args[1];
@@ -39,5 +40,36 @@ defineFunction({
         const math = mml.buildExpressionRow(group.value.body, options);
         assertType(math, MathNode).setAttribute("href", group.value.href);
         return math;
+    },
+});
+
+defineFunction({
+    type: "href",
+    names: ["\\url"],
+    props: {
+        numArgs: 1,
+        argTypes: ["url"],
+        allowedInText: true,
+    },
+    handler: ({parser}, args) => {
+        const href = assertNodeType(args[0], "url").value.value;
+        const chars = [];
+        for (let i = 0; i < href.length; i++) {
+            let c = href[i];
+            if (c === "~") {
+                c = "\\textasciitilde";
+            }
+            chars.push(new ParseNode("textord", c, "text"));
+        }
+        const body = new ParseNode("text", {
+            type: "text",
+            font: "\\texttt",
+            body: chars,
+        }, parser.mode);
+        return new ParseNode("href", {
+            type: "href",
+            href: href,
+            body: ordargument(body),
+        }, parser.mode);
     },
 });
