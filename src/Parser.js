@@ -9,12 +9,13 @@ import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
 import utils from "./utils";
-import ParseNode, {assertNodeType, checkNodeType} from "./ParseNode";
+import {assertNodeType, checkNodeType} from "./parseNode";
 import ParseError from "./ParseError";
-import {combiningDiacriticalMarksEndRegex} from "./Lexer";
+import {combiningDiacriticalMarksEndRegex, urlFunctionRegex} from "./Lexer";
 import Settings from "./Settings";
+import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
-import type {AnyParseNode} from "./ParseNode";
+import type {AnyParseNode, SymbolParseNode} from "./parseNode";
 import type {Mode, ArgType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
 import type {EnvSpec} from "./defineEnvironment";
@@ -28,7 +29,7 @@ import type {EnvSpec} from "./defineEnvironment";
  *
  * The main functions (the `.parse...` ones) take a position in the current
  * parse string to parse tokens from. The lexer (found in Lexer.js, stored at
- * this.lexer) also supports pulling out tokens at arbitrary places. When
+ * this.gullet.lexer) also supports pulling out tokens at arbitrary places. When
  * individual tokens are needed at a position, the lexer is called to pull out a
  * token, which is then used.
  *
@@ -238,13 +239,13 @@ export default class Parser {
             if (numerBody.length === 1 && numerBody[0].type === "ordgroup") {
                 numerNode = numerBody[0];
             } else {
-                numerNode = new ParseNode("ordgroup", numerBody, this.mode);
+                numerNode = {type: "ordgroup", mode: this.mode, value: numerBody};
             }
 
             if (denomBody.length === 1 && denomBody[0].type === "ordgroup") {
                 denomNode = denomBody[0];
             } else {
-                denomNode = new ParseNode("ordgroup", denomBody, this.mode);
+                denomNode = {type: "ordgroup", mode: this.mode, value: denomBody};
             }
 
             let node;
@@ -311,25 +312,27 @@ export default class Parser {
         const textordArray = [];
 
         for (let i = 0; i < text.length; i++) {
-            textordArray.push(new ParseNode("textord", text[i], "text"));
+            textordArray.push({type: "textord", mode: "text", value: text[i]});
         }
 
-        const textNode = new ParseNode(
-            "text",
-            {
-                body: textordArray,
+        const textNode = {
+            type: "text",
+            mode: this.mode,
+            value: {
                 type: "text",
+                body: textordArray,
             },
-            this.mode);
+        };
 
-        const colorNode = new ParseNode(
-            "color",
-            {
+        const colorNode = {
+            type: "color",
+            value: {
+                type: "color",
                 color: this.settings.errorColor,
                 value: [textNode],
-                type: "color",
             },
-            this.mode);
+            mode: this.mode,
+        };
 
         this.consume();
         return colorNode;
@@ -389,7 +392,7 @@ export default class Parser {
                 if (superscript) {
                     throw new ParseError("Double superscript", lex);
                 }
-                const prime = new ParseNode("textord", "\\prime", this.mode);
+                const prime = {type: "textord", mode: this.mode, value: "\\prime"};
 
                 // Many primes can be grouped together, so we handle this here
                 const primes = [prime];
@@ -406,7 +409,7 @@ export default class Parser {
                     primes.push(this.handleSupSubscript("superscript"));
                 }
                 // Put everything into an ordgroup as the superscript
-                superscript = new ParseNode("ordgroup", primes, this.mode);
+                superscript = {type: "ordgroup", mode: this.mode, value: primes};
             } else {
                 // If it wasn't ^, _, or ', stop parsing super/subscripts
                 break;
@@ -417,12 +420,16 @@ export default class Parser {
         // but need to check here for type check to pass.
         if (superscript || subscript) {
             // If we got either a superscript or subscript, create a supsub
-            return new ParseNode("supsub", {
+            return {
                 type: "supsub",
-                base: base,
-                sup: superscript,
-                sub: subscript,
-            }, this.mode);
+                mode: this.mode,
+                value: {
+                    type: "supsub",
+                    base: base,
+                    sup: superscript,
+                    sub: subscript,
+                },
+            };
         } else {
             // Otherwise return the original body
             return base;
@@ -660,7 +667,9 @@ export default class Parser {
             return this.parseSizeGroup(optional);
         }
         if (type === "url") {
-            return this.parseUrlGroup(optional);
+            throw new ParseError(
+                "Internal bug: 'url' arguments should be handled by Lexer",
+                this.nextToken);
         }
 
         // By the time we get here, type is one of "text" or "math".
@@ -699,51 +708,6 @@ export default class Parser {
             }
             lastToken = this.nextToken;
             str += lastToken.text;
-            this.consume();
-        }
-        this.mode = outerMode;
-        this.expect(optional ? "]" : "}");
-        return firstToken.range(lastToken, str);
-    }
-
-    /**
-     * Parses a group, essentially returning the string formed by the
-     * brace-enclosed tokens plus some position information, possibly
-     * with nested braces.
-     */
-    parseStringGroupWithBalancedBraces(
-        modeName: ArgType,  // Used to describe the mode in error messages.
-        optional: boolean,
-    ): ?Token {
-        if (optional && this.nextToken.text !== "[") {
-            return null;
-        }
-        const outerMode = this.mode;
-        this.mode = "text";
-        this.expect(optional ? "[" : "{");
-        let str = "";
-        let nest = 0;
-        const firstToken = this.nextToken;
-        let lastToken = firstToken;
-        while (nest > 0 || this.nextToken.text !== (optional ? "]" : "}")) {
-            if (this.nextToken.text === "EOF") {
-                throw new ParseError(
-                    "Unexpected end of input in " + modeName,
-                    firstToken.range(this.nextToken, str));
-            }
-            lastToken = this.nextToken;
-            str += lastToken.text;
-            if (lastToken.text === "{") {
-                nest += 1;
-            } else if (lastToken.text === "}") {
-                if (nest <= 0) {
-                    throw new ParseError(
-                        "Unbalanced brace of input in " + modeName,
-                        firstToken.range(this.nextToken, str));
-                } else {
-                    nest -= 1;
-                }
-            }
             this.consume();
         }
         this.mode = outerMode;
@@ -792,33 +756,11 @@ export default class Parser {
         if (!match) {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
-        return newArgument(new ParseNode("color-token", match[0], this.mode), res);
-    }
-
-    /**
-     * Parses a url string.
-     */
-    parseUrlGroup(optional: boolean): ?ParsedArg {
-        const res = this.parseStringGroupWithBalancedBraces("url", optional);
-        if (!res) {
-            return null;
-        }
-        const raw = res.text;
-        // hyperref package allows backslashes alone in href, but doesn't generate
-        // valid links in such cases; we interpret this as "undefiend" behaviour,
-        // and keep them as-is. Some browser will replace backslashes with
-        // forward slashes.
-        const url = raw.replace(/\\([#$%&~_^{}])/g, '$1');
-        const protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
-        const allowed = this.settings.allowedProtocols;
-        if (!utils.contains(allowed,  "*") && !utils.contains(allowed,
-                protocol != null ? protocol[1] : "_relative")) {
-            throw new ParseError('Not allowed \\href protocol', res);
-        }
-        return newArgument(new ParseNode("url", {
-            type: "url",
-            value: url,
-        }, this.mode), res);
+        return newArgument({
+            type: "color-token",
+            mode: this.mode,
+            value: match[0],
+        }, res);
     }
 
     /**
@@ -854,11 +796,15 @@ export default class Parser {
         if (!validUnit(data)) {
             throw new ParseError("Invalid unit: '" + data.unit + "'", res);
         }
-        return newArgument(new ParseNode("size", {
+        return newArgument({
             type: "size",
-            value: data,
-            isBlank: isBlank,
-        }, this.mode), res);
+            mode: this.mode,
+            value: {
+                type: "size",
+                value: data,
+                isBlank: isBlank,
+            },
+        }, res);
     }
 
     /**
@@ -894,10 +840,12 @@ export default class Parser {
             this.gullet.endGroup();
             // Make sure we get a close brace
             this.expect(optional ? "]" : "}");
-            return newArgument(
-                new ParseNode(
-                    "ordgroup", expression, this.mode, firstToken, lastToken),
-                    firstToken.range(lastToken, firstToken.text));
+            return newArgument({
+                type: "ordgroup",
+                mode: this.mode,
+                loc: SourceLocation.range(firstToken, lastToken),
+                value: expression,
+            }, firstToken.range(lastToken, firstToken.text));
         } else {
             // Otherwise, just return a nucleus, or nothing for an optional group
             if (mode) {
@@ -926,18 +874,30 @@ export default class Parser {
             const v = a.value;
             if (v === "-" && group[i + 1].value === "-") {
                 if (i + 1 < n && group[i + 2].value === "-") {
-                    group.splice(i, 3, new ParseNode(
-                        "textord", "---", "text", a, group[i + 2]));
+                    group.splice(i, 3, {
+                        type: "textord",
+                        mode: "text",
+                        loc: SourceLocation.range(a, group[i + 2]),
+                        value: "---",
+                    });
                     n -= 2;
                 } else {
-                    group.splice(i, 2, new ParseNode(
-                        "textord", "--", "text", a, group[i + 1]));
+                    group.splice(i, 2, {
+                        type: "textord",
+                        mode: "text",
+                        loc: SourceLocation.range(a, group[i + 1]),
+                        value: "--",
+                    });
                     n -= 1;
                 }
             }
             if ((v === "'" || v === "`") && group[i + 1].value === v) {
-                group.splice(i, 2, new ParseNode(
-                    "textord", v + v, "text", a, group[i + 1]));
+                group.splice(i, 2, {
+                    type: "textord",
+                    mode: "text",
+                    loc: SourceLocation.range(a, group[i + 1]),
+                    value: v + v,
+                });
                 n -= 1;
             }
         }
@@ -957,6 +917,56 @@ export default class Parser {
             // The token will be consumed later in parseGivenFunction
             // (after possibly switching modes).
             return newFunction(nucleus);
+        } else if (/^\\(href|url)[^a-zA-Z]/.test(text)) {
+            const match = text.match(urlFunctionRegex);
+            if (!match) {
+                throw new ParseError(
+                    `Internal error: invalid URL token '${text}'`, nucleus);
+            }
+            const funcName = match[1];
+            // match[2] is the only one that can be an empty string,
+            // so it must be at the end of the following or chain:
+            const rawUrl = match[4] || match[3] || match[2];
+            // hyperref package allows backslashes alone in href, but doesn't
+            // generate valid links in such cases; we interpret this as
+            // "undefined" behaviour, and keep them as-is. Some browser will
+            // replace backslashes with forward slashes.
+            const url = rawUrl.replace(/\\([#$%&~_^{}])/g, '$1');
+            let protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
+            protocol = (protocol != null ? protocol[1] : "_relative");
+            const allowed = this.settings.allowedProtocols;
+            if (!utils.contains(allowed,  "*") &&
+                !utils.contains(allowed, protocol)) {
+                throw new ParseError(
+                    `Forbidden protocol '${protocol}' in ${funcName}`, nucleus);
+            }
+            const urlArg = {
+                type: "url",
+                mode: this.mode,
+                value: {
+                    type: "url",
+                    value: url,
+                },
+            };
+            this.consume();
+            if (funcName === "\\href") {  // two arguments
+                this.consumeSpaces();  // ignore spaces between arguments
+                let description = this.parseGroupOfType("original", false);
+                if (description == null) {
+                    throw new ParseError(`${funcName} missing second argument`,
+                        nucleus);
+                }
+                if (description.type === "fn") {
+                    description = this.parseGivenFunction(description);
+                } else { // arg.type === "arg"
+                    description = description.result;
+                }
+                return newArgument(this.callFunction(
+                    funcName, [urlArg, description], []), nucleus);
+            } else {  // one argument (\url)
+                return newArgument(this.callFunction(
+                    funcName, [urlArg], []), nucleus);
+            }
         } else if (/^\\verb[^a-zA-Z]/.test(text)) {
             this.consume();
             let arg = text.slice(5);
@@ -971,12 +981,15 @@ export default class Parser {
                     please report what input caused this bug`);
             }
             arg = arg.slice(1, -1);  // remove first and last char
-            return newArgument(
-                new ParseNode("verb", {
+            return newArgument({
+                type: "verb",
+                mode: "text",
+                value: {
                     type: "verb",
                     body: arg,
                     star: star,
-                }, "text"), nucleus);
+                },
+            }, nucleus);
         }
         // At this point, we should have a symbol, possibly with accents.
         // First expand any accented base symbol according to unicodeSymbols.
@@ -1001,7 +1014,7 @@ export default class Parser {
             }
         }
         // Recognize base symbol
-        let symbol = null;
+        let symbol: AnyParseNode;
         if (symbols[this.mode][text]) {
             if (this.settings.strict && this.mode === 'math' &&
                 extraLatin.indexOf(text) >= 0) {
@@ -1009,8 +1022,15 @@ export default class Parser {
                     `Latin-1/Unicode text character "${text[0]}" used in ` +
                     `math mode`, nucleus);
             }
-            symbol = new ParseNode(symbols[this.mode][text].group,
-                            text, this.mode, nucleus);
+            // TODO(#1492): Remove this override once this becomes an "atom" type.
+            // $FlowFixMe
+            const s: SymbolParseNode = {
+                type: symbols[this.mode][text].group,
+                mode: this.mode,
+                loc: SourceLocation.range(nucleus),
+                value: text,
+            };
+            symbol = s;
         } else if (text.charCodeAt(0) >= 0x80) { // no symbol for e.g. ^
             if (this.settings.strict) {
                 if (!supportedCodepoint(text.charCodeAt(0))) {
@@ -1023,7 +1043,12 @@ export default class Parser {
                         nucleus);
                 }
             }
-            symbol = new ParseNode("textord", text, this.mode, nucleus);
+            symbol = {
+                type: "textord",
+                mode: this.mode,
+                loc: SourceLocation.range(nucleus),
+                value: text,
+            };
         } else {
             return null;  // EOF, ^, _, {, }, etc.
         }
@@ -1041,13 +1066,18 @@ export default class Parser {
                         `Accent ${accent} unsupported in ${this.mode} mode`,
                         nucleus);
                 }
-                symbol = new ParseNode("accent", {
+                symbol = {
                     type: "accent",
-                    label: command,
-                    isStretchy: false,
-                    isShifty: true,
-                    base: symbol,
-                }, this.mode, nucleus);
+                    mode: this.mode,
+                    loc: SourceLocation.range(nucleus),
+                    value: {
+                        type: "accent",
+                        label: command,
+                        isStretchy: false,
+                        isShifty: true,
+                        base: symbol,
+                    },
+                };
             }
         }
         return newArgument(symbol, nucleus);

@@ -4,12 +4,13 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import stretchy from "../stretchy";
 import Style from "../Style";
-import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
+import {assertNodeType, checkNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
+import type {ParseNode} from "../parseNode";
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "horizBrace", but
 // also "supsub" since an over/underbrace can affect super/subscripting.
@@ -126,12 +127,16 @@ defineFunction({
         numArgs: 1,
     },
     handler({parser, funcName}, args) {
-        return new ParseNode("horizBrace", {
+        return {
             type: "horizBrace",
-            label: funcName,
-            isOver: /^\\over/.test(funcName),
-            base: args[0],
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "horizBrace",
+                label: funcName,
+                isOver: /^\\over/.test(funcName),
+                base: args[0],
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,

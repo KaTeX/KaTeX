@@ -2,7 +2,6 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -16,10 +15,14 @@ defineFunction({
     },
     handler({parser}, args) {
         const body = args[0];
-        return new ParseNode("underline", {
+        return {
             type: "underline",
-            body: body,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "underline",
+                body: body,
+            },
+        };
     },
     htmlBuilder(group, options) {
         // Underlines are handled in the TeXbook pg 443, Rule 10.

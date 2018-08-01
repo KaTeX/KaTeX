@@ -1,6 +1,7 @@
 /* global expect: false */
 
 import stringify from 'json-stable-stringify';
+import Lexer from "../src/Lexer";
 import ParseError from "../src/ParseError";
 import {
     Mode, ConsoleWarning,
@@ -19,8 +20,16 @@ const typeFirstCompare = (a, b) => {
     }
 };
 
-const regExpReplacer = (key, value) => {
-    return value instanceof RegExp ? {lastIndex: value.lastIndex} : value;
+const replacer = (key, value) => {
+    if (value instanceof Lexer) {
+        return {
+            input: value.input,
+            // omit value.settings
+            lastIndex: value.tokenRegex.lastIndex,
+        };
+    } else {
+        return value;
+    }
 };
 
 const serializer = {
@@ -28,7 +37,7 @@ const serializer = {
         return stringify(val, {
             cmp: typeFirstCompare,
             space: '  ',
-            replacer: regExpReplacer,
+            replacer: replacer,
         });
     },
     test(val) {

@@ -11,13 +11,13 @@ import Style from "./Style";
 import buildCommon from "./buildCommon";
 import domTree from "./domTree";
 import utils, {assert} from "./utils";
-import {checkNodeType} from "./ParseNode";
+import {checkNodeType} from "./parseNode";
 import {spacings, tightSpacings} from "./spacingData";
 import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";
 import * as tree from "./tree";
 
 import type Options from "./Options";
-import type {AnyParseNode} from "./ParseNode";
+import type {AnyParseNode} from "./parseNode";
 import type {HtmlDomNode, DomSpan} from "./domTree";
 
 const makeSpan = buildCommon.makeSpan;

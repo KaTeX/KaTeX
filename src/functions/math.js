@@ -1,7 +1,6 @@
 // @flow
 import defineFunction from "../defineFunction";
 import ParseError from "../ParseError";
-import ParseNode from "../ParseNode";
 
 // Switching from text mode back to math mode
 defineFunction({
@@ -23,11 +22,15 @@ defineFunction({
         parser.expect(close, false);
         parser.switchMode(outerMode);
         parser.consume();
-        return new ParseNode("styling", {
+        return {
             type: "styling",
-            style: "text",
-            value: body,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "styling",
+                style: "text",
+                value: body,
+            },
+        };
     },
 });
 

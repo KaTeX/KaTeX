@@ -4,7 +4,7 @@ import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import Style from "../Style";
-import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
+import {assertNodeType, checkNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -281,17 +281,21 @@ defineFunction({
                 break;
         }
 
-        return new ParseNode("genfrac", {
+        return {
             type: "genfrac",
-            continued: funcName === "\\cfrac",
-            numer: numer,
-            denom: denom,
-            hasBarLine: hasBarLine,
-            leftDelim: leftDelim,
-            rightDelim: rightDelim,
-            size: size,
-            barSize: null,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "genfrac",
+                continued: funcName === "\\cfrac",
+                numer: numer,
+                denom: denom,
+                hasBarLine: hasBarLine,
+                leftDelim: leftDelim,
+                rightDelim: rightDelim,
+                size: size,
+                barSize: null,
+            },
+        };
     },
 
     htmlBuilder,
@@ -328,11 +332,15 @@ defineFunction({
             default:
                 throw new Error("Unrecognized infix genfrac command");
         }
-        return new ParseNode("infix", {
+        return {
             type: "infix",
-            replaceWith: replaceWith,
-            token: token,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "infix",
+                replaceWith: replaceWith,
+                token: token,
+            },
+        };
     },
 });
 
@@ -401,17 +409,21 @@ defineFunction({
             size = stylArray[Number(styl.value)];
         }
 
-        return new ParseNode("genfrac", {
+        return {
             type: "genfrac",
-            numer: numer,
-            denom: denom,
-            continued: false,
-            hasBarLine: hasBarLine,
-            barSize: barSize,
-            leftDelim: leftDelim,
-            rightDelim: rightDelim,
-            size: size,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "genfrac",
+                numer: numer,
+                denom: denom,
+                continued: false,
+                hasBarLine: hasBarLine,
+                barSize: barSize,
+                leftDelim: leftDelim,
+                rightDelim: rightDelim,
+                size: size,
+            },
+        };
     },
 
     htmlBuilder,
@@ -429,12 +441,16 @@ defineFunction({
     },
     handler({parser, funcName, token}, args) {
         const sizeNode = assertNodeType(args[0], "size");
-        return new ParseNode("infix", {
+        return {
             type: "infix",
-            replaceWith: "\\\\abovefrac",
-            sizeNode: sizeNode,
-            token: token,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "infix",
+                replaceWith: "\\\\abovefrac",
+                sizeNode: sizeNode,
+                token: token,
+            },
+        };
     },
 });
 
@@ -453,17 +469,21 @@ defineFunction({
 
         const barSize = sizeNode.value.value;
         const hasBarLine = barSize.number > 0;
-        return new ParseNode("genfrac", {
+        return {
             type: "genfrac",
-            numer: numer,
-            denom: denom,
-            continued: false,
-            hasBarLine: hasBarLine,
-            barSize: barSize,
-            leftDelim: null,
-            rightDelim: null,
-            size: "auto",
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "genfrac",
+                numer: numer,
+                denom: denom,
+                continued: false,
+                hasBarLine: hasBarLine,
+                barSize: barSize,
+                leftDelim: null,
+                rightDelim: null,
+                size: "auto",
+            },
+        };
     },
 
     htmlBuilder,

@@ -2,7 +2,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode, {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -43,11 +43,15 @@ defineFunction({
     handler({parser}, args) {
         const color = assertNodeType(args[0], "color-token");
         const body = args[1];
-        return new ParseNode("color", {
+        return {
             type: "color",
-            color: color.value,
-            value: ordargument(body),
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "color",
+                color: color.value,
+                value: ordargument(body),
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -78,11 +82,15 @@ defineFunction({
     },
     handler({parser, funcName}, args) {
         const body = args[0];
-        return new ParseNode("color", {
+        return {
             type: "color",
-            color: "katex-" + funcName.slice(1),
-            value: ordargument(body),
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "color",
+                color: "katex-" + funcName.slice(1),
+                value: ordargument(body),
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -103,11 +111,15 @@ defineFunction({
         // If we see a styling function, parse out the implicit body
         const body = parser.parseExpression(true, breakOnTokenText);
 
-        return new ParseNode("color", {
+        return {
             type: "color",
-            color: color.value,
-            value: body,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "color",
+                color: color.value,
+                value: body,
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,

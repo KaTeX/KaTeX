@@ -15,7 +15,7 @@ import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
 import {MathNode, TextNode} from "./mathMLTree";
 
 import type Options from "./Options";
-import type {AnyParseNode, SymbolParseNode} from "./ParseNode";
+import type {AnyParseNode, SymbolParseNode} from "./parseNode";
 import type {DomSpan} from "./domTree";
 import type {MathDomNode} from "./mathMLTree";
 import type {FontVariant, Mode} from "./types";

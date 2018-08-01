@@ -6,7 +6,7 @@ import mathMLTree from "../mathMLTree";
 import * as mml from "../buildMathML";
 
 import type Options from "../Options";
-import type ParseNode from "../ParseNode";
+import type {ParseNode} from "../parseNode";
 import type {Group} from "../symbols";
 
 // Operator ParseNodes created in Parser.js from symbol Groups in src/symbols.js.

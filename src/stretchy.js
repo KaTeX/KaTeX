@@ -11,7 +11,7 @@ import mathMLTree from "./mathMLTree";
 import utils from "./utils";
 
 import type Options from "./Options";
-import type ParseNode, {AnyParseNode} from "./ParseNode";
+import type {ParseNode, AnyParseNode} from "./parseNode";
 import type {DomSpan, HtmlDomNode, SvgSpan} from "./domTree";
 
 const stretchyCodePoint: {[string]: string} = {

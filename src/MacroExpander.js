@@ -28,17 +28,19 @@ export const implicitCommands = {
 };
 
 export default class MacroExpander implements MacroContextInterface {
-    maxExpand: number;
+    settings: Settings;
+    expansionCount: number;
     lexer: Lexer;
     macros: Namespace<MacroDefinition>;
     stack: Token[];
     mode: Mode;
 
     constructor(input: string, settings: Settings, mode: Mode) {
+        this.settings = settings;
+        this.expansionCount = 0;
         this.feed(input);
         // Make new global namespace
         this.macros = new Namespace(builtinMacros, settings.macros);
-        this.maxExpand = settings.maxExpand;
         this.mode = mode;
         this.stack = []; // contains tokens in REVERSE order
     }
@@ -48,7 +50,7 @@ export default class MacroExpander implements MacroContextInterface {
      * (with existing macros etc.).
      */
     feed(input: string) {
-        this.lexer = new Lexer(input);
+        this.lexer = new Lexer(input, this.settings);
     }
 
     /**
@@ -188,12 +190,10 @@ export default class MacroExpander implements MacroContextInterface {
             this.pushToken(topToken);
             return topToken;
         }
-        if (this.maxExpand !== Infinity) {
-            this.maxExpand--;
-            if (this.maxExpand < 0) {
-                throw new ParseError("Too many expansions: infinite loop or " +
-                    "need to increase maxExpand setting");
-            }
+        this.expansionCount++;
+        if (this.expansionCount > this.settings.maxExpand) {
+            throw new ParseError("Too many expansions: infinite loop or " +
+                "need to increase maxExpand setting");
         }
         let tokens = expansion.tokens;
         if (expansion.numArgs) {
@@ -314,7 +314,7 @@ export default class MacroExpander implements MacroContextInterface {
                     ++numArgs;
                 }
             }
-            const bodyLexer = new Lexer(expansion);
+            const bodyLexer = new Lexer(expansion, this.settings);
             const tokens = [];
             let tok = bodyLexer.lex();
             while (tok.text !== "EOF") {

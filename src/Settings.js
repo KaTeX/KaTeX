@@ -9,7 +9,7 @@ import utils from "./utils";
 import ParseError from "./ParseError";
 import {Token} from "./Token";
 
-import type {AnyParseNode} from "./ParseNode";
+import type {AnyParseNode} from "./parseNode";
 import type {MacroMap} from "./macros";
 
 export type StrictFunction =
