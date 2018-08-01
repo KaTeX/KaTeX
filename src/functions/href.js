@@ -1,7 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import ParseNode, {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 import {assertType} from "../utils";
 import {MathNode} from "../mathMLTree";
 
@@ -19,11 +19,15 @@ defineFunction({
     handler: ({parser}, args) => {
         const body = args[1];
         const href = assertNodeType(args[0], "url").value.value;
-        return new ParseNode("href", {
+        return {
             type: "href",
-            href: href,
-            body: ordargument(body),
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "href",
+                href: href,
+                body: ordargument(body),
+            },
+        };
     },
     htmlBuilder: (group, options) => {
         const elements = html.buildExpression(
@@ -59,17 +63,29 @@ defineFunction({
             if (c === "~") {
                 c = "\\textasciitilde";
             }
-            chars.push(new ParseNode("textord", c, "text"));
+            chars.push({
+                type: "textord",
+                mode: "text",
+                value: c,
+            });
         }
-        const body = new ParseNode("text", {
+        const body = {
             type: "text",
-            font: "\\texttt",
-            body: chars,
-        }, parser.mode);
-        return new ParseNode("href", {
+            mode: parser.mode,
+            value: {
+                type: "text",
+                font: "\\texttt",
+                body: chars,
+            },
+        };
+        return {
             type: "href",
-            href: href,
-            body: ordargument(body),
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "href",
+                href: href,
+                body: ordargument(body),
+            },
+        };
     },
 });

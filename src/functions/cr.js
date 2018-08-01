@@ -6,7 +6,7 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import {calculateSize} from "../units";
 import ParseError from "../ParseError";
-import ParseNode, {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 
 // \\ is a macro mapping to either \cr or \newline.  Because they have the
 // same signature, we implement them as one megafunction, with newRow
@@ -37,12 +37,16 @@ defineFunction({
                 newLine = true;
             }
         }
-        return new ParseNode("cr", {
+        return {
             type: "cr",
-            newLine,
-            newRow,
-            size: size && assertNodeType(size, "size"),
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "cr",
+                newLine,
+                newRow,
+                size: size && assertNodeType(size, "size"),
+            },
+        };
     },
 
     // The following builders are called only at the top level,

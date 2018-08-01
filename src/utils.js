@@ -4,7 +4,7 @@
  * files.
  */
 
-import type {AnyParseNode} from "./ParseNode";
+import type {AnyParseNode} from "./parseNode";
 
 /**
  * Provide an `indexOf` function which works in IE8, but defers to native if
