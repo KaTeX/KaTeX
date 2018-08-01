@@ -10,7 +10,7 @@ table td {
 </style>
 This is a list of TeX functions supported by KaTeX. It is sorted into logical groups.
 
-There is a similar list, [sorted alphabetically]{./supported_alpha.md}.
+There is a similar [Support Table](./support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
 
 ## Accents
 

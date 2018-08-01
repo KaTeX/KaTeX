@@ -1,7 +1,6 @@
-﻿---
-id: supported_alpha
-title: Functions Sorted Alphabetically
-sidebar_label: Functions - Alpha Sort
+---
+id: support_table
+title: Support Table
 ---
 <!-- {@stylesheet: static/katex.min.css} -->
 <style>
@@ -17,16 +16,18 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
-|'|$'$||
-|`\'`|$\text{\'{a}}$|`\text{\'{a}}`|
+|\!|$n!$|`n!`|
 |#|$\def\bar#1{#1^2} \bar{y}$|`\def\bar#1{#1^2} \bar{y}`|
 |\\#|$\#$||
 |%||`%this is a comment`|
 |\\%|$\%$||
 |&|$\begin{matrix} a & b\cr c & d \end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |\\&|$\&$||
+|'|$'$||
+|`\'`|$\text{\'{a}}$|`\text{\'{a}}`|
+|(|$($||
+|)|$)$||
 |\\ |$a\ b$|`a\ b`|
-|\!|$n!$|`n!`|
 |\\"|$\text{\"{a}}$|`\text{\"{a}}`|
 |\\$|$\text{\textdollar}$||
 |\\,|$a\,\,{b}$|`a\,\,{b}`|
@@ -36,12 +37,16 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |_|$x_i$|`x_i`|
 |\\_|$\_$||
 |\\\`|$\text{\`{a}}$|<code>\text{\'{a}}</code>|
+|&#060;|$<$||
 |\\=|$\text{\={a}}$|<code>\text{\={a}}</code>|
 | >|$>$||
+|\[|$[$||
+|\]|$]$||
 |{|${a}$|`{a}`|
 |}|${a}$|`{a}`|
 |\\{|$\{$|`\{`|
 |\\}|$\}$|`\}`|
+|&#124;|$\vert$||
 |~|$\text{no~no~no~breaks}$|`\text{no~no~no~breaks}`|
 |\\~|$\text{\~{a}}$|<code>\text{\~{a}}</code>|
 |\\\\|$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
@@ -65,6 +70,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |{aligned}|$\begin{aligned}a&=b+c\\d+e&=f\end{aligned}$|`\begin{aligned}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{aligned}`|
 |{alignat}|<span style="color:firebrick;">Not supported</span>|see `{alignedat}`|
 |{alignedat}|$\begin{alignedat}{2}10&x+&3&y=2\\3&x+&13&y=4\end{alignedat}$|`\begin{alignedat}{2}`<br>&nbsp;&nbsp;&nbsp;`10&x+ &3&y = 2 \\`<br>&nbsp;&nbsp;&nbsp;` 3&x+&13&y = 4`<br>`\end{alignedat}`|
+|\allowbreak|||
 |\Alpha|<span style="color:firebrick;">Not supported</span>||
 |\alpha|$\alpha$||
 |\amalg|$\amalg$||
@@ -76,6 +82,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\approx|$\approx$||
 |\approxeq|$\approxeq$||
 |\arccos|$\arccos$||
+|\arcctg|$\arcctg$||
 |\arcsin|$\arcsin$||
 |\arctan|$\arctan$||
 |\arctg|$\arctg$||
@@ -179,9 +186,11 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
+|\C|<span style="color:firebrick;">Not supported</span>||
 |\cal|<span style="color:firebrick;">Not supported</span>|see `\mathcal`
 |\cancel|$\cancel{5}$|`\cancel{5}`|
 |\cancelto|<span style="color:firebrick;">Not supported</span>||
+|\cancer|<span style="color:firebrick;">Not supported</span>||
 |\Cap|$\Cap$||
 |\cap|$\cap$||
 |{cases}|$\begin{cases}a&\text{if }b\\c&\text{if }d\end{cases}$|`\begin{cases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{cases}`|
@@ -193,7 +202,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\ce |<span style="color:firebrick;">Not supported</span>|A PR is pending
 |\cee|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem
 |\centerdot|$a\centerdot b$|`a\centerdot b`|
-|\cf |<span style="color:firebrick;">Not supported</span>||
+|\cf|<span style="color:firebrick;">Not supported</span>||
 |\cfrac|$\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}$|`\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}`|
 |\check|$\check{oe}$|`\check{oe}`|
 |\ch|$\ch$||
@@ -212,6 +221,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\circledS|$\circledS$||
 |\class|<span style="color:firebrick;">Not supported</span>|A PR is pending.
 |\cline|<span style="color:firebrick;">Not supported</span>||
+|\clubs|<span style="color:firebrick;">Not supported</span>||
 |\clubsuit|$\clubsuit$||
 |\cnums|<span style="color:firebrick;">Not supported</span>||
 |\colon|$\colon$||
@@ -289,6 +299,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\diagup|$\diagup$||
 |\Diamond|$\Diamond$||
 |\diamond|$\diamond$||
+|\diamonds|<span style="color:firebrick;">Not supported</span>||
 |\diamondsuit|$\diamondsuit$||
 |\dim|$\dim$||
 |\displaylines|<span style="color:firebrick;">Not supported</span>||
@@ -321,6 +332,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |:---------------|:------------|:-----------------|
 |\ell|$\ell$||
 |\else|<span style="color:firebrick;">Not supported</span>||
+|\empty|<span style="color:firebrick;">Not supported</span>||
 |\emptyset|$\emptyset$||
 |\enclose|<span style="color:firebrick;">Not supported</span>|Non standard
 |\end|$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
@@ -334,6 +346,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\Eqcolon|$\Eqcolon$||
 |\eqcolon|$\eqcolon$||
 |{equation}|<span style="color:firebrick;">Not supported</span>||
+|{eqnarray}|<span style="color:firebrick;">Not supported</span>||
 |\Eqqcolon|$\Eqqcolon$||
 |\eqqcolon|$\eqqcolon$||
 |\eqref|<span style="color:firebrick;">Not supported</span>||
@@ -408,13 +421,14 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\H|$\text{\H{a}}$|`\text{\H{a}}`|
-|\Haar|<span style="color:firebrick;">Not supported</span>||
-|\hAar|<span style="color:firebrick;">Not supported</span>||
-|\haar|<span style="color:firebrick;">Not supported</span>||
+|\Harr|<span style="color:firebrick;">Not supported</span>||
+|\hArr|<span style="color:firebrick;">Not supported</span>||
+|\harr|<span style="color:firebrick;">Not supported</span>||
 |\hat|$\hat{\theta}$|`\hat{\theta}`|
 |\hbar|$\hbar$||
 |\hbox|<span style="color:firebrick;">Not supported</span>||
-|\hdashline}|$\begin{matrix}a&b\\ \hdashline c &d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`\hdashline`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
+|\hdashline|$\begin{matrix}a&b\\ \hdashline c &d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`\hdashline`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
+|\hearts|<span style="color:firebrick;">Not supported</span>||
 |\heartsuit|$\heartsuit$||
 |\hfill|<span style="color:firebrick;">Not supported</span>||
 |\hline|$\begin{matrix}a&b\\ \hline c &d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\ \hline`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
@@ -482,6 +496,8 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
+|\L|<span style="color:firebrick;">Not supported</span>||
+|\l|<span style="color:firebrick;">Not supported</span>||
 |\Lambda|$\Lambda$||
 |\lambda|$\lambda$||
 |\land|$\land$||
@@ -600,6 +616,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\mathrm|$\mathrm{AaBb123}$|`\mathrm{AaBb123}`|
 |\mathscr|$\mathscr{AB}$|`\mathscr{AaBb123}`<br>KaTeX supports A-Z|
 |\mathsf|$\mathsf{AaBb123}$|`\mathsf{AaBb123}`|
+|\mathsterling|$\mathsterling$||
 |\mathstrut|<span style="color:firebrick;">Not supported</span>||
 |\mathtip|<span style="color:firebrick;">Not supported</span>||
 |\mathtt|$\mathtt{AaBb123}$|`\mathtt{AaBb123}`|
@@ -626,6 +643,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\Mu|<span style="color:firebrick;">Not supported</span>||
 |\mu|$\mu$||
 |\multicolumn|<span style="color:firebrick;">Not supported</span>||
+|{multiline}|<span style="color:firebrick;">Not supported</span>||
 |\multimap|$\multimap$||
 
 ## N
@@ -662,6 +680,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\nleqslant|$\nleqslant$||
 |\nless|$\nless$||
 |\nmid|$\nmid$||
+|\nobreak|||
 |\nobreakspace|$a\nobreakspace b$|`a\nobreakspace b`|
 |\nolimits|$\lim\nolimits_x$|`\lim\nolimits_x`|
 |\normalsize|$\normalsize normalsize$|`\normalsize normalsize`|
@@ -729,12 +748,13 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\overleftrightarrow|$\overleftrightarrow{AB}$|`\overleftrightarrow{AB}`|
 |\overline|$\overline{\text{a long argument}}$|`\overline{\text{a long argument}}`|
 |\overlinesegment|$\overlinesegment{AB}$|`\overlinesegment{AB}`|
+|\overparen|<span style="color:firebrick;">Not supported</span>||
 |\Overrightarrow|$\Overrightarrow{AB}$|`\Overrightarrow{AB}`|
 |\overrightarrow|$\overrightarrow{AB}$|`\overrightarrow{AB}`|
 |\overrightharpoon|$\overrightharpoon{ac}$|`\overrightharpoon{ac}`|
 |\overset|$\overset{!}{=}$|`\overset{!}{=}`|
 |\overwithdelims|<span style="color:firebrick;">Not supported</span>||
-|\owns|$\owns$|
+|\owns|$\owns$||
 
 ## P
 
@@ -743,6 +763,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\P|$\text{\P}$|`\text{\P}`|
 |\pagecolor|<span style="color:firebrick;">Not supported</span>||
 |\parallel|$\parallel$||
+|\part|<span style="color:firebrick;">Not supported</span>||
 |\partial|$\partial$||
 |\perp|$\perp$||
 |\phantom|$\Gamma^{\phantom{i}j}_{i\phantom{j}k}$|`\Gamma^{\phantom{i}j}_{i\phantom{j}k}`|
@@ -766,7 +787,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\precapprox|$\precapprox$||
 |\preccurlyeq|$\preccurlyeq$||
 |\preceq|$\preceq$||
-|\precnapprox|$\precnapprox$|
+|\precnapprox|$\precnapprox$||
 |\precneqq|$\precneqq$||
 |\precnsim|$\precnsim$||
 |\precsim|$\precsim$||
@@ -785,6 +806,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\Q|<span style="color:firebrick;">Not supported</span>||
 |\qquad|$a\qquad\qquad{b}$|`a\qquad\qquad{b}`|
 |\quad|$a\quad\quad{b}$|`a\quad\quad{b}`|
+|\R|<span style="color:firebrick;">Not supported</span>||
 |\r|$\text{\r{a}}$|`\text{\r{a}}`|
 |\raise|<span style="color:firebrick;">Not supported</span>|see `\raisebox`|
 |\raisebox|$h\raisebox{2pt}{ighe}r$|`h\raisebox{2pt}{ighe}r`|
@@ -800,6 +822,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\Reals|<span style="color:firebrick;">Not supported</span>||
 |\reals|<span style="color:firebrick;">Not supported</span>||
 |\ref|<span style="color:firebrick;">Not supported</span>||
+|\relax|||
 |\renewcommand|$\newcommand\hail{\text{Ahoy!}} \hail$|`\newcommand\hail{\text{Ahoy!}} \hail`|
 |\renewenvironment|<span style="color:firebrick;">Not supported</span>||
 |\require|<span style="color:firebrick;">Not supported</span>||
@@ -843,6 +866,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\Sampi|<span style="color:firebrick;">Not supported</span>||
 |\sampi|<span style="color:firebrick;">Not supported</span>||
 |\scalebox|<span style="color:firebrick;">Not supported</span>||
+|\scr|<span style="color:firebrick;">Not supported</span>|See `\mathscr`|
 |\scriptscriptstyle|$\scriptscriptstyle \frac cd$|`\scriptscriptstyle \frac cd`|
 |\scriptsize|$\scriptsize scriptsize$|`\scriptsize scriptsize`|
 |\scriptstyle|$\frac ab + {\scriptstyle \frac cd}$|`\frac ab + {\scriptstyle \frac cd}`|
@@ -865,19 +889,23 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\simeq|$\simeq$||
 |\sin|$\sin$||
 |\sinh|$\sinh$||
+|\sixptsize|$\sixptsize sixptsize$|`\sixptsize sixptsize`|
 |\sh|$\sh$||
 |\skew|<span style="color:firebrick;">Not supported</span>||
 |\skip|<span style="color:firebrick;">Not supported</span>||
 |\small|$\small small$|`\small small`|
 |\smallfrown|$\smallfrown$||
 |\smallint|$\smallint$||
+|{smallmatrix}|<span style="color:firebrick;">Not supported</span>||
 |\smallsetminus|$\smallsetminus$||
 |\smallsmile|$\smallsmile$||
 |\smash|$\left(x^{\smash{2}}\right)$|`\left(x^{\smash{2}}\right)`|
 |\smile|$\smile$||
+|\smiley|<span style="color:firebrick;">Not supported</span>||
 |\sout|$\sout{abc}$|`\sout{abc}`|
 |\Space|<span style="color:firebrick;">Not supported</span>|see `\space`
 |\space|$a\space{b}$|`a\space{b}`|
+|\spades|<span style="color:firebrick;">Not supported</span>||
 |\spadesuit|$\spadesuit$||
 |\sphericalangle|$\sphericalangle$||
 |{split}|<span style="color:firebrick;">Not supported</span>||
@@ -896,6 +924,8 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\stigma|<span style="color:firebrick;">Not supported</span>||
 |\strut|<span style="color:firebrick;">Not supported</span>||
 |\style|<span style="color:firebrick;">Not supported</span>|Non standard|
+|\SUB|<span style="color:firebrick;">Not supported</span>||
+|{subarray}|<span style="color:firebrick;">Not supported</span>||
 |\sube|<span style="color:firebrick;">Not supported</span>||
 |\Subset|$\Subset$||
 |\subset|$\subset$||
@@ -947,6 +977,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\textcolor|$\textcolor{blue}{F=ma}$|`\textcolor{blue}{F=ma}`|
 |\textdagger|$\text{\textdagger}$|`\text{\textdagger}`|
 |\textdaggerdbl|$\text{\textdaggerdbl}$|`\text{\textdaggerdbl}`|
+|\textdegree|$\text{\textdegree}$|`\text{\textdegree}`|
 |\textdollar|$\text{\textdollar}$|`\text{\textdollar}`|
 |\textellipsis|$\text{\textellipsis}$|`\text{\textellipsis}`|
 |\textemdash|$\text{\textemdash}$|`\text{\textemdash`|
@@ -1014,6 +1045,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\underrightarrow|$\underrightarrow{AB}$|`\underrightarrow{AB}`|
 |\underline|$\underline{\text{a long argument}}$|`\underline{\text{a long argument}}`|
 |\underlinesegment|$\underlinesegment{AB}$|`\underlinesegment{AB}`|
+|\underparen|<span style="color:firebrick;">Not supported</span>||
 |\underrightarrow|$\underrightarrow{AB}$|`\underrightarrow{AB}`|
 |\underset|$\underset{!}{=}$|`\underset{!}{=}`|
 |\unicode|<span style="color:firebrick;">Not supported</span>||
