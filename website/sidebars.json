@@ -3,6 +3,6 @@
     "Installation": ["node", "browser"],
     "Usage": ["api", "cli", "autorender", "libs"],
     "Configuring KaTeX": ["options", "security", "error", "font"],
-    "Misc": ["supported", "issues"]
+    "Misc": ["supported", "supported_alpha", "issues"]
   }
 }
