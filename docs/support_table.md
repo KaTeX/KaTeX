@@ -36,9 +36,9 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\\;|$a\;\;{b}$|a`\;\;{b}`|
 |_|$x_i$|`x_i`|
 |\\_|$\_$||
-|\\\`|$\text{\`{a}}$|<code>\text{\'{a}}</code>|
+|\\\`|$\text{\`{a}}$|<code>\text{\\'{a}}</code>|
 |&#060;|$<$||
-|\\=|$\text{\={a}}$|<code>\text{\={a}}</code>|
+|\\=|$\text{\={a}}$|<code>\text{\\={a}}</code>|
 | >|$>$||
 |\[|$[$||
 |\]|$]$||
@@ -94,7 +94,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\arrowvert|<span style="color:firebrick;">Not supported</span>||
 |\ast|$\ast$||
 |\asymp|$\asymp$||
-|\atop|$a \atop b$|`a atop b`|
+|\atop|$a \atop b$|`a \atop b`|
 |\atopwithdelims|<span style="color:firebrick;">Not supported</span>||
 
 ## B
@@ -178,6 +178,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\brack||In master|
 |\breve|$\breve{eu}$|`\breve{eu}`|
 |\buildrel|<span style="color:firebrick;">Not supported</span>||
+|\bull|<span style="color:firebrick;">Not supported</span>|See `\bullet`|
 |\bullet|$\bullet$||
 |\Bumpeq|$\Bumpeq$||
 |\bumpeq|$\bumpeq$||
@@ -186,8 +187,8 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
-|\C|<span style="color:firebrick;">Not supported</span>||
-|\cal|<span style="color:firebrick;">Not supported</span>|see `\mathcal`
+|\C|<span style="color:firebrick;">Not supported</span>|See `\Bbb{C}`|
+|\cal|<span style="color:firebrick;">Not supported</span>|See `\mathcal`
 |\cancel|$\cancel{5}$|`\cancel{5}`|
 |\cancelto|<span style="color:firebrick;">Not supported</span>||
 |\cancer|<span style="color:firebrick;">Not supported</span>||
@@ -358,6 +359,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\eta|$\eta$||
 |\eth|$\eth$||
 |\euro|<span style="color:firebrick;">Not supported</span>||
+|\exist|<span style="color:firebrick;">Not supported</span>|See `\exists`|
 |\exists|$\exists$||
 |\exp|$\exp$||
 
@@ -491,6 +493,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\Koppa|<span style="color:firebrick;">Not supported</span>||
 |\koppa|<span style="color:firebrick;">Not supported</span>||
 |\label|<span style="color:firebrick;">Not supported</span>||
+|\lang|<span style="color:firebrick;">Not supported</span>|See `\langle`|
 
 ## L
 
@@ -650,6 +653,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
+|\N|<span style="color:firebrick;">Not supported</span>|See `\Bbb{N}`|
 |\nabla|$\nabla$||
 |\natnums|<span style="color:firebrick;">Not supported</span>||
 |\natural|$\natural$||
@@ -779,7 +783,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\pmatrix|<span style="color:firebrick;">Not supported</span>|See `{pmatrix}`|
 |{pmatrix}|$\begin{pmatrix}a&b\\c&d\end{pmatrix}$|`\begin{pmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{pmatrix}`
 |\pmb||In master|
-|\pmod|$x\pmod a$|`\pmod`|
+|\pmod|$x\pmod a$|`x\pmod a`|
 |\pod|$x \pod a$|`x \pod a`|
 |\pounds|$\pounds$||
 |\Pr|$\Pr$||
@@ -803,13 +807,14 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
-|\Q|<span style="color:firebrick;">Not supported</span>||
+|\Q|<span style="color:firebrick;">Not supported</span>|See `\Bbb{Q}`|
 |\qquad|$a\qquad\qquad{b}$|`a\qquad\qquad{b}`|
 |\quad|$a\quad\quad{b}$|`a\quad\quad{b}`|
-|\R|<span style="color:firebrick;">Not supported</span>||
+|\R|<span style="color:firebrick;">Not supported</span>|See `\Bbb{R}`|
 |\r|$\text{\r{a}}$|`\text{\r{a}}`|
 |\raise|<span style="color:firebrick;">Not supported</span>|see `\raisebox`|
 |\raisebox|$h\raisebox{2pt}{ighe}r$|`h\raisebox{2pt}{ighe}r`|
+|\rang|<span style="color:firebrick;">Not supported</span>|see `\rangle`|
 |\rangle|$\rangle$||
 |\Rarr|<span style="color:firebrick;">Not supported</span>||
 |\rArr|<span style="color:firebrick;">Not supported</span>||
@@ -823,7 +828,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\reals|<span style="color:firebrick;">Not supported</span>||
 |\ref|<span style="color:firebrick;">Not supported</span>||
 |\relax|||
-|\renewcommand|$\newcommand\hail{\text{Ahoy!}} \hail$|`\newcommand\hail{\text{Ahoy!}} \hail`|
+|\renewcommand|$\def\hail{Hi!}\renewcommand\hail{\text{Ahoy!}} \hail$|`\def\hail{Hi!}`<br>`\renewcommand\hail{\text{Ahoy!}} \hail`|
 |\renewenvironment|<span style="color:firebrick;">Not supported</span>||
 |\require|<span style="color:firebrick;">Not supported</span>||
 |\restriction|$\restriction$||
@@ -980,8 +985,8 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\textdegree|$\text{\textdegree}$|`\text{\textdegree}`|
 |\textdollar|$\text{\textdollar}$|`\text{\textdollar}`|
 |\textellipsis|$\text{\textellipsis}$|`\text{\textellipsis}`|
-|\textemdash|$\text{\textemdash}$|`\text{\textemdash`|
-|\textendash|$\text{\textendash}$|`\text{\textendash`|
+|\textemdash|$\text{\textemdash}$|`\text{\textemdash}`|
+|\textendash|$\text{\textendash}$|`\text{\textendash}`|
 |\textgreater|$\text{\textgreater}$|`\text{\textgreater}`|
 |\textit|$\textit{AaBb}$|`\textit{AaBb}`|
 |\textless|$\text{\textless}$|`\text{\textless}`|
@@ -992,6 +997,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\textquoteright|$\text{\textquoteright}$|`\text{\textquoteright}`|
 |\textregistered|$\text{\textregistered}$|`\text{\textregistered}`|
 |\textrm|$\textrm{AaBb123}$|`\textrm{AaBb123}`|
+|\textsc|<span style="color:firebrick;">Not supported</span>||
 |\textsf|$\textsf{AaBb123}$|`\textsf{AaBb123}`|
 |\textsterling|$\text{\textsterling}$|`\text{\textsterling}`|
 |\textstyle|$\textstyle\sum_0^n$|`\textstyle\sum_0^n`|
@@ -1117,6 +1123,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\verb|$\verb!\frac a b!$|`\verb!\frac a b!`|
 |\Vert|$\Vert$||
 |\vert|$\vert$||
+|\vfill|<span style="color:firebrick;">Not supported</span>||
 |\vline|<span style="color:firebrick;">Not supported</span>||
 |{Vmatrix}|$\begin{Vmatrix}a&b\\c&d\end{Vmatrix}$|`\begin{Vmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{Vmatrix}`|
 |{vmatrix}|$\begin{vmatrix}a&b\\c&d\end{vmatrix}$|`\begin{vmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{vmatrix}`|
@@ -1130,7 +1137,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\wedge|$\wedge$||
 |\weierp|<span style="color:firebrick;">Not supported</span>|See `\wp`|
 |\widecheck|$\widecheck{AB}$|`\widecheck{AB}`|
-|\widehat|$\widehat{AB}$|`$\widehat{AB}`|
+|\widehat|$\widehat{AB}$|`\widehat{AB}`|
 |\wideparen|<span style="color:firebrick;">Not supported</span>||
 |\widetilde|$\widetilde{AB}$|`\widetilde{AB}`|
 |\wp|$\wp$||
@@ -1168,6 +1175,6 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\yen|$\yen$||
-|\Z|<span style="color:firebrick;">Not supported</span>||
+|\Z|<span style="color:firebrick;">Not supported</span>|See `\Bbb{Z}`|
 |\Zeta|<span style="color:firebrick;">Not supported</span>||
 |\zeta|$\zeta$||
