@@ -2,7 +2,7 @@
 import {_htmlGroupBuilders, _mathmlGroupBuilders} from "./defineFunction";
 
 import type Parser from "./Parser";
-import type {ParseNode, AnyParseNode} from "./parseNode";
+import type {AnyParseNode} from "./parseNode";
 import type {ArgType, Mode} from "./types";
 import type {NodeType} from "./parseNode";
 import type {HtmlBuilder, MathMLBuilder} from "./defineFunction";
@@ -24,11 +24,11 @@ type EnvContext = {|
  *  - args: an array of arguments passed to \begin{name}
  *  - optArgs: an array of optional arguments passed to \begin{name}
  */
-type EnvHandler<NODETYPE: NodeType> = (
+type EnvHandler = (
     context: EnvContext,
     args: AnyParseNode[],
     optArgs: (?AnyParseNode)[],
-) => ParseNode<NODETYPE>;
+) => AnyParseNode;
 
 /**
  *  - numArgs: (default 0) The number of arguments after the \begin{name} function.
@@ -55,9 +55,7 @@ export type EnvSpec<NODETYPE: NodeType> = {|
     greediness: number,
     allowedInText: boolean,
     numOptionalArgs: number,
-    // FLOW TYPE NOTES: Same issue as the notes on the handler of FunctionSpec
-    // in defineFunction.
-    handler: EnvHandler<*>,
+    handler: EnvHandler,
 |};
 
 /**
@@ -78,7 +76,7 @@ type EnvDefSpec<NODETYPE: NodeType> = {|
     // Properties that control how the environments are parsed.
     props: EnvProps,
 
-    handler: EnvHandler<NODETYPE>,
+    handler: EnvHandler,
 
     // This function returns an object representing the DOM structure to be
     // created when rendering the defined LaTeX function.

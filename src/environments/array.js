@@ -558,27 +558,18 @@ defineEnvironment({
             type: "array",
             hskipBeforeAndAfter: false, // \hskip -\arraycolsep in amsmath
         };
-        let res: ParseNode<"array"> =
+        const res: ParseNode<"array"> =
             parseArray(context.parser, payload, dCellStyle(context.envName));
-        if (delimiters) {
-            // TODO: This violates the requirement that the return value must be
-            // ParseNode<"array">. Fix this either by changing this
-            // implementation or the type of defineEnvironment(). It doesn't
-            // ultimately hurt anything since the returned "leftright" will be
-            // handled by its htmlBuilder and mathmlBuilder.
-            // $FlowFixMe
-            res = {
+        return delimiters ? {
+            type: "leftright",
+            mode: context.mode,
+            value: {
                 type: "leftright",
-                mode: context.mode,
-                value: {
-                    type: "leftright",
-                    body: [res],
-                    left: delimiters[0],
-                    right: delimiters[1],
-                },
-            };
-        }
-        return res;
+                body: [res],
+                left: delimiters[0],
+                right: delimiters[1],
+            },
+        } : res;
     },
     htmlBuilder,
     mathmlBuilder,
@@ -618,15 +609,9 @@ defineEnvironment({
                 postgap: 0,
             }],
         };
-        let res: ParseNode<"array"> =
+        const res: ParseNode<"array"> =
             parseArray(context.parser, payload, dCellStyle(context.envName));
-        // TODO: This violates the requirement that the return value must be
-        // ParseNode<"array">. Fix this either by changing this
-        // implementation or the type of defineEnvironment(). It doesn't
-        // ultimately hurt anything since the returned "leftright" will be
-        // handled by its htmlBuilder and mathmlBuilder.
-        // $FlowFixMe
-        res = {
+        return {
             type: "leftright",
             mode: context.mode,
             value: {
@@ -636,7 +621,6 @@ defineEnvironment({
                 right: ".",
             },
         };
-        return res;
     },
     htmlBuilder,
     mathmlBuilder,
