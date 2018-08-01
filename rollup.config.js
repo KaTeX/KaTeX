@@ -5,7 +5,7 @@ process.env.BABEL_ENV = 'esm';
 export default {
     input: 'katex.js',
     output: {
-        file: 'build/katex.mjs',
+        file: 'dist/katex.mjs',
         format: 'es',
     },
     plugins: [
