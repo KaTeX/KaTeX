@@ -2,7 +2,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import type {AnyParseNode} from "../ParseNode";
+import type {AnyParseNode} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";

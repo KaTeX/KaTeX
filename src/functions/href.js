@@ -1,7 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 import {assertType} from "../utils";
 import {MathNode} from "../mathMLTree";
 

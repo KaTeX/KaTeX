@@ -2,7 +2,7 @@
 import buildCommon from "../buildCommon";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
-import {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 import {calculateSize} from "../units";
 
 defineFunction({

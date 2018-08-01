@@ -8,7 +8,7 @@ import stretchy from "../stretchy";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type {ParseNode} from "../ParseNode";
+import type {ParseNode} from "../parseNode";
 
 defineFunction({
     type: "accentUnder",

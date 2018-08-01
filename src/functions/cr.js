@@ -6,7 +6,7 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import {calculateSize} from "../units";
 import ParseError from "../ParseError";
-import {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 
 // \\ is a macro mapping to either \cr or \newline.  Because they have the
 // same signature, we implement them as one megafunction, with newRow

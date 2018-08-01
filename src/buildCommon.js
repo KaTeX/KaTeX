@@ -14,8 +14,8 @@ import {calculateSize} from "./units";
 import * as tree from "./tree";
 
 import type Options from "./Options";
-import type {ParseNode} from "./ParseNode";
-import type {NodeType} from "./ParseNode";
+import type {ParseNode} from "./parseNode";
+import type {NodeType} from "./parseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {FontVariant, Mode} from "./types";
 import type {documentFragment as HtmlDocumentFragment} from "./domTree";

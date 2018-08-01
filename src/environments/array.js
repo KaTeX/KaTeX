@@ -4,8 +4,8 @@ import defineEnvironment from "../defineEnvironment";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
-import {assertNodeType, assertSymbolNodeType} from "../ParseNode";
-import {checkNodeType, checkSymbolNodeType} from "../ParseNode";
+import {assertNodeType, assertSymbolNodeType} from "../parseNode";
+import {checkNodeType, checkSymbolNodeType} from "../parseNode";
 import {calculateSize} from "../units";
 import utils from "../utils";
 
@@ -13,7 +13,7 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Parser from "../Parser";
-import type {ParseNode, AnyParseNode} from "../ParseNode";
+import type {ParseNode, AnyParseNode} from "../parseNode";
 import type {StyleStr} from "../types";
 import type {HtmlBuilder, MathMLBuilder} from "../defineFunction";
 

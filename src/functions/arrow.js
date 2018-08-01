@@ -7,7 +7,7 @@ import stretchy from "../stretchy";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type {ParseNode} from "../ParseNode.js";
+import type {ParseNode} from "../parseNode";
 
 // Stretchy arrows with an optional argument
 defineFunction({

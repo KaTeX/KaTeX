@@ -5,14 +5,14 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
-import {assertNodeType, checkSymbolNodeType} from "../ParseNode";
+import {assertNodeType, checkSymbolNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Options from "../Options";
-import type {AnyParseNode, ParseNode, SymbolParseNode} from "../ParseNode";
-import type {LeftRightDelimType} from "../ParseNode";
+import type {AnyParseNode, ParseNode, SymbolParseNode} from "../parseNode";
+import type {LeftRightDelimType} from "../parseNode";
 import type {FunctionContext} from "../defineFunction";
 
 // Extra data needed for the delimiter handler down below

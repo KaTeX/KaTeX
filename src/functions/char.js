@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import ParseError from "../ParseError";
-import {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 
 // \@char is an internal function that takes a grouped decimal argument like
 // {123} and converts into symbol with code 123.  It is used by the *macro*

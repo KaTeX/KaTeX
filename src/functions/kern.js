@@ -5,7 +5,7 @@ import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import {calculateSize} from "../units";
-import {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 
 // TODO: \hskip and \mskip should support plus and minus in lengths
 

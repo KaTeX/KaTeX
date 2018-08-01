@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import ParseError from "../ParseError";
-import {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 
 // Environment delimiters. HTML/MathML rendering is defined in the corresponding
 // defineEnvironment definitions.

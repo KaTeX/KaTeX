@@ -8,7 +8,7 @@ import Parser from "./Parser";
 import ParseError from "./ParseError";
 
 import type Settings from "./Settings";
-import type {AnyParseNode} from "./ParseNode";
+import type {AnyParseNode} from "./parseNode";
 
 /**
  * Parses an expression using a Parser, then returns the parsed result.

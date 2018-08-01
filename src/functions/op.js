@@ -6,13 +6,13 @@ import domTree from "../domTree";
 import * as mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import Style from "../Style";
-import {assertNodeType, checkNodeType} from "../ParseNode";
+import {assertNodeType, checkNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
-import type {ParseNode} from "../ParseNode";
+import type {ParseNode} from "../parseNode";
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "op", but also
 // "supsub" since some of them (like \int) can affect super/subscripting.
