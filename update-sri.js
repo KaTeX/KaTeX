@@ -21,7 +21,7 @@ Promise.all(process.argv.slice(3).map(file =>
     .then(body => {
         // Replace size badge url and ES module url
         body = body.replace(/(https:\/\/img\.badgesize\.io\/Khan\/KaTeX\/v)(?:.+)(\/dist\/katex\.min\.js\?compression=gzip)/g, `$1${version}$2`)
-            .replace(/(https?:\/\/cdn\.jsdelivr\.net\/npm\/katex@)(?:.+)(\/dist\/katex\.esm\.js)/g, `$1${version}$2`);
+            .replace(/(https?:\/\/cdn\.jsdelivr\.net\/npm\/katex@)(?:.+)(\/dist\/katex\.mjs)/g, `$1${version}$2`);
 
         // Replace CDN urls
         // 1 - url prefix: "http…/KaTeX/
