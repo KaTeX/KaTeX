@@ -19,6 +19,15 @@ KaTeX also provides minified versions:
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha256-sI/DdD47R/Sa54XZDNFjRWlS+Dv8MC5xfkqQLRh0Jes=" crossorigin="anonymous">
 ```
 
+ECMAScript module is also available:
+
+```html
+<script type="module" type="text/javascript">
+    import katex from 'https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.mjs';
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
+```
+
 ## Download & Host Things Yourself
 Download a [KaTeX release](https://github.com/Khan/KaTeX/releases),
 copy `katex.js`, `katex.css`
