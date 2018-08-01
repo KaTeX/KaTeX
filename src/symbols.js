@@ -148,7 +148,7 @@ defineSymbol(text, main, textord, "\u2020", "\\dag");
 defineSymbol(text, main, textord, "\u2020", "\\textdagger");
 defineSymbol(math, main, textord, "\u2021", "\\ddag");
 defineSymbol(text, main, textord, "\u2021", "\\ddag");
-defineSymbol(text, main, textord, "\u2020", "\\textdaggerdbl");
+defineSymbol(text, main, textord, "\u2021", "\\textdaggerdbl");
 
 // Large Delimiters
 defineSymbol(math, main, close, "\u23b1", "\\rmoustache", true);
