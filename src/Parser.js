@@ -940,10 +940,14 @@ export default class Parser {
                 throw new ParseError(
                     `Forbidden protocol '${protocol}' in ${funcName}`, nucleus);
             }
-            const urlArg = new ParseNode("url", {
+            const urlArg = {
                 type: "url",
-                value: url,
-            }, this.mode);
+                mode: this.mode,
+                value: {
+                    type: "url",
+                    value: url,
+                },
+            };
             this.consume();
             if (funcName === "\\href") {  // two arguments
                 this.consumeSpaces();  // ignore spaces between arguments

@@ -63,17 +63,29 @@ defineFunction({
             if (c === "~") {
                 c = "\\textasciitilde";
             }
-            chars.push(new ParseNode("textord", c, "text"));
+            chars.push({
+                type: "textord",
+                mode: "text",
+                value: c,
+            });
         }
-        const body = new ParseNode("text", {
+        const body = {
             type: "text",
-            font: "\\texttt",
-            body: chars,
-        }, parser.mode);
-        return new ParseNode("href", {
+            mode: parser.mode,
+            value: {
+                type: "text",
+                font: "\\texttt",
+                body: chars,
+            },
+        };
+        return {
             type: "href",
-            href: href,
-            body: ordargument(body),
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "href",
+                href: href,
+                body: ordargument(body),
+            },
+        };
     },
 });
