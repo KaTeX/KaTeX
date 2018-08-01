@@ -117,8 +117,8 @@ rm -f .gitignore.bak
 git add .gitignore dist/
 
 # Edit docs to use CSS from CDN
-grep -l '"/KaTeX/static/katex.min.css"' docs/*.md | xargs sed -i.bak \
-    's|"/KaTeX/static/katex.min.css"|"https://cdn.jsdelivr.net/npm/katex@./dist/katex.min.css" integrity="sha256-katex.min.css" crossorigin="anonymous"|'
+grep -l '{@stylesheet: static/katex.min.css}' docs/*.md | xargs sed -i.bak \
+    's|{@stylesheet: static/katex.min.css}|<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@./dist/katex.min.css" integrity="sha256-katex.min.css" crossorigin="anonymous"/>|'
 
 # Update the version number in CDN URLs included in the README and the documentation,
 # and regenerate the Subresource Integrity hash for these files.
