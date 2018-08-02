@@ -5,7 +5,7 @@ import domTree from "../domTree";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import Style from "../Style";
-import {checkNodeType} from "../ParseNode";
+import {checkNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -14,7 +14,7 @@ import * as horizBrace from "./horizBrace";
 import * as op from "./op";
 
 import type Options from "../Options";
-import type ParseNode from "../ParseNode";
+import type {ParseNode} from "../parseNode";
 import type {HtmlBuilder} from "../defineFunction";
 import type {MathNodeType} from "../mathMLTree";
 

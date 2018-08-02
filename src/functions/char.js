@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import ParseError from "../ParseError";
-import ParseNode, {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 
 // \@char is an internal function that takes a grouped decimal argument like
 // {123} and converts into symbol with code 123.  It is used by the *macro*
@@ -25,6 +25,10 @@ defineFunction({
         if (isNaN(code)) {
             throw new ParseError(`\\@char has non-numeric argument ${number}`);
         }
-        return new ParseNode("textord", String.fromCharCode(code), parser.mode);
+        return {
+            type: "textord",
+            mode: parser.mode,
+            value: String.fromCharCode(code),
+        };
     },
 });

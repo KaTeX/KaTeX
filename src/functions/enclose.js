@@ -4,7 +4,7 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
-import ParseNode, {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -149,12 +149,16 @@ defineFunction({
     handler({parser, funcName}, args, optArgs) {
         const color = assertNodeType(args[0], "color-token");
         const body = args[1];
-        return new ParseNode("enclose", {
+        return {
             type: "enclose",
-            label: funcName,
-            backgroundColor: color,
-            body: body,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "enclose",
+                label: funcName,
+                backgroundColor: color,
+                body: body,
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -173,13 +177,17 @@ defineFunction({
         const borderColor = assertNodeType(args[0], "color-token");
         const backgroundColor = assertNodeType(args[1], "color-token");
         const body = args[2];
-        return new ParseNode("enclose", {
+        return {
             type: "enclose",
-            label: funcName,
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            body: body,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "enclose",
+                label: funcName,
+                backgroundColor: backgroundColor,
+                borderColor: borderColor,
+                body: body,
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -193,11 +201,15 @@ defineFunction({
     },
     handler({parser, funcName}, args, optArgs) {
         const body = args[0];
-        return new ParseNode("enclose", {
+        return {
             type: "enclose",
-            label: funcName,
-            body: body,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "enclose",
+                label: funcName,
+                body: body,
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,
