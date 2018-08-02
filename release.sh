@@ -127,14 +127,14 @@ node update-sri.js "${VERSION}" README.md contrib/*/README.md dist/README.md \
 
 # Generate a new version of the docs and publish the website
 pushd website
-npm run version "${VERSION}"
+yarn version "${VERSION}"
 
 # Restore docs to use local built CSS
 # for file in ../docs/*.md.bak; do
 #     mv -f "$file" "${file%.bak}"
 # done
 
-USE_SSH=true npm run publish-gh-pages
+USE_SSH=true yarn publish-gh-pages
 popd
 
 # Make the commit and tag, and push them.
