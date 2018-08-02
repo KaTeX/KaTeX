@@ -27,7 +27,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |&|$\begin{matrix} a & b\cr c & d \end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |\\&|$\&$||
 |'|$'$||
-|`\'`|$\text{\'{a}}$|`\text{\'{a}}`|
+|\\\'|$\text{\'{a}}$|`\text{\'{a}}`|
 |(|$($||
 |)|$)$||
 |\\\(…\\\)|$\text{\(\frac a b\)}$|`\text{\(\frac a b\)}`|
@@ -293,7 +293,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\ddots|$\ddots$||
 |\DeclareMathOperator|<span style="color:firebrick;">Not supported</span>||
 |\def|$\def\foo{x^2} \foo + \foo$|`\def\foo{x^2} \foo + \foo`|
-|\definecolor|<span style="color:firebrick;">Not supported</span>||
+|\definecolor|<span style="color:firebrick;">Not supported</span>|[Issue #750](https://github.com/Khan/KaTeX/issues/750)|
 |\deg|$\deg$||
 |\degree|$\degree$||
 |\delta|$\delta$||
@@ -338,7 +338,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\ell|$\ell$||
-|\else|<span style="color:firebrick;">Not supported</span>||
+|\else|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/Khan/KaTeX/issues/1003)|
 |\empty|<span style="color:firebrick;">Not supported</span>||
 |\emptyset|$\emptyset$||
 |\enclose|<span style="color:firebrick;">Not supported</span>|Non standard
@@ -376,7 +376,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\fallingdotseq|$\fallingdotseq$||
 |\fbox|$\fbox{Hi there!}$|`\fbox{Hi there!}`|
 |\fcolorbox|$\fcolorbox{red}{aqua}{A}$|`\fcolorbox{red}{aqua}{A}`|
-|\fi|<span style="color:firebrick;">Not supported</span>||
+|\fi|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/Khan/KaTeX/issues/1003)|
 |\Finv|$\Finv$||
 |\flat|$\flat$||
 |\footnotesize|$\footnotesize footnotesize$|`\footnotesize footnotesize`|
@@ -439,7 +439,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\hearts|<span style="color:firebrick;">Not supported</span>||
 |\heartsuit|$\heartsuit$||
 |\hfil|<span style="color:firebrick;">Not supported</span>||
-|\hfill|<span style="color:firebrick;">Not supported</span>|[Issue #269](https://github.com/Khan/KaTeX/issues/269)|
+|\hfill|<span style="color:firebrick;">Not supported</span>|Issues [#164](https://github.com/Khan/KaTeX/issues/164) & [#269](https://github.com/Khan/KaTeX/issues/269)|
 |\hline|$\begin{matrix}a&b\\ \hline c &d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\ \hline`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |\hom|$\hom$||
 |\hookleftarrow|$\hookleftarrow$||
@@ -459,10 +459,10 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\i|$\text{\i}$|`\text{\i}`|
 |\idotsint|<span style="color:firebrick;">Not supported</span>||
 |\iddots|<span style="color:firebrick;">Not supported</span>|[Issue #1223](https://github.com/Khan/KaTeX/issues/1223)|
-|\if|<span style="color:firebrick;">Not supported</span>||
+|\if|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/Khan/KaTeX/issues/1003)|
 |\iff|$A\iff B$|`A\iff B`|
-|\ifmode|<span style="color:firebrick;">Not supported</span>||
-|\ifx|<span style="color:firebrick;">Not supported</span>||
+|\ifmode|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/Khan/KaTeX/issues/1003)|
+|\ifx|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/Khan/KaTeX/issues/1003)|
 |\iiiint|<span style="color:firebrick;">Not supported</span>||
 |\iiint|$\iiint$||
 |\iint|$\iint$||
@@ -472,7 +472,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\impliedby|$P\impliedby Q$|`P\impliedby Q`|
 |\implies|$P\implies Q$|`P\implies Q`|
 |\in|$\in$||
-|\includegraphics|<span style="color:firebrick;">Not supported</span>||
+|\includegraphics|<span style="color:firebrick;">Not supported</span>|[Issue #898](https://github.com/Khan/KaTeX/issues/898)|
 |\inf|$\inf$||
 |\infin|<span style="color:firebrick;">Not supported</span>||
 |\infty|$\infty$||
@@ -551,7 +551,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\lesseqqgtr|$\lesseqqgtr$||
 |\lessgtr|$\lessgtr$||
 |\lesssim|$\lesssim$||
-|\let|<span style="color:firebrick;">Not supported</span>||
+|\let|<span style="color:firebrick;">Not supported</span>|[Issue #1413](https://github.com/Khan/KaTeX/issues/1413)|
 |\lfloor|$\lfloor$||
 |\lg|$\lg$||
 |\lgroup|$\lgroup$||
@@ -673,7 +673,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\negthinspace|$a\negthinspace b$|`a\negthinspace b`|
 |\neq|$\neq$||
 |\newcommand|$\newcommand\chk{\checkmark} \chk$|`\newcommand\chk{\checkmark} \chk`|
-|\newenvironment|<span style="color:firebrick;">Not supported</span>||
+|\newenvironment|<span style="color:firebrick;">Not supported</span>|[Issue #37](https://github.com/Khan/KaTeX/issues/37)|
 |\Newextarrow|<span style="color:firebrick;">Not supported</span>||
 |\newline|$a\newline b$|`a\newline b`|
 |\nexists|$\nexists$||
@@ -1004,7 +1004,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\textquoteright|$\text{\textquoteright}$|`\text{\textquoteright}`|
 |\textregistered|$\text{\textregistered}$|`\text{\textregistered}`|
 |\textrm|$\textrm{AaBb123}$|`\textrm{AaBb123}`|
-|\textsc|<span style="color:firebrick;">Not supported</span>||
+|\textsc|<span style="color:firebrick;">Not supported</span>|[Issue #471](https://github.com/Khan/KaTeX/issues/471)|
 |\textsf|$\textsf{AaBb123}$|`\textsf{AaBb123}`|
 |\textsterling|$\text{\textsterling}$|`\text{\textsterling}`|
 |\textstyle|$\textstyle\sum_0^n$|`\textstyle\sum_0^n`|
