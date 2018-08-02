@@ -4,7 +4,7 @@ import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import Style from "../Style";
-import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
+import {assertNodeType, assertAtomFamily, checkNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -281,17 +281,21 @@ defineFunction({
                 break;
         }
 
-        return new ParseNode("genfrac", {
+        return {
             type: "genfrac",
-            continued: funcName === "\\cfrac",
-            numer: numer,
-            denom: denom,
-            hasBarLine: hasBarLine,
-            leftDelim: leftDelim,
-            rightDelim: rightDelim,
-            size: size,
-            barSize: null,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "genfrac",
+                continued: funcName === "\\cfrac",
+                numer: numer,
+                denom: denom,
+                hasBarLine: hasBarLine,
+                leftDelim: leftDelim,
+                rightDelim: rightDelim,
+                size: size,
+                barSize: null,
+            },
+        };
     },
 
     htmlBuilder,
@@ -328,11 +332,15 @@ defineFunction({
             default:
                 throw new Error("Unrecognized infix genfrac command");
         }
-        return new ParseNode("infix", {
+        return {
             type: "infix",
-            replaceWith: replaceWith,
-            token: token,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "infix",
+                replaceWith: replaceWith,
+                token: token,
+            },
+        };
     },
 });
 
@@ -362,17 +370,17 @@ defineFunction({
         // Look into the parse nodes to get the desired delimiters.
         let leftNode = checkNodeType(args[0], "ordgroup");
         if (leftNode) {
-            leftNode = assertNodeType(leftNode.value[0], "open");
+            leftNode = assertAtomFamily(leftNode.value[0], "open");
         } else {
-            leftNode = assertNodeType(args[0], "open");
+            leftNode = assertAtomFamily(args[0], "open");
         }
         const leftDelim = delimFromValue(leftNode.value);
 
         let rightNode = checkNodeType(args[1], "ordgroup");
         if (rightNode) {
-            rightNode = assertNodeType(rightNode.value[0], "close");
+            rightNode = assertAtomFamily(rightNode.value[0], "close");
         } else {
-            rightNode = assertNodeType(args[1], "close");
+            rightNode = assertAtomFamily(args[1], "close");
         }
         const rightDelim = delimFromValue(rightNode.value);
 
@@ -401,17 +409,21 @@ defineFunction({
             size = stylArray[Number(styl.value)];
         }
 
-        return new ParseNode("genfrac", {
+        return {
             type: "genfrac",
-            numer: numer,
-            denom: denom,
-            continued: false,
-            hasBarLine: hasBarLine,
-            barSize: barSize,
-            leftDelim: leftDelim,
-            rightDelim: rightDelim,
-            size: size,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "genfrac",
+                numer: numer,
+                denom: denom,
+                continued: false,
+                hasBarLine: hasBarLine,
+                barSize: barSize,
+                leftDelim: leftDelim,
+                rightDelim: rightDelim,
+                size: size,
+            },
+        };
     },
 
     htmlBuilder,
@@ -429,12 +441,16 @@ defineFunction({
     },
     handler({parser, funcName, token}, args) {
         const sizeNode = assertNodeType(args[0], "size");
-        return new ParseNode("infix", {
+        return {
             type: "infix",
-            replaceWith: "\\\\abovefrac",
-            sizeNode: sizeNode,
-            token: token,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "infix",
+                replaceWith: "\\\\abovefrac",
+                sizeNode: sizeNode,
+                token: token,
+            },
+        };
     },
 });
 
@@ -453,17 +469,21 @@ defineFunction({
 
         const barSize = sizeNode.value.value;
         const hasBarLine = barSize.number > 0;
-        return new ParseNode("genfrac", {
+        return {
             type: "genfrac",
-            numer: numer,
-            denom: denom,
-            continued: false,
-            hasBarLine: hasBarLine,
-            barSize: barSize,
-            leftDelim: null,
-            rightDelim: null,
-            size: "auto",
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "genfrac",
+                numer: numer,
+                denom: denom,
+                continued: false,
+                hasBarLine: hasBarLine,
+                barSize: barSize,
+                leftDelim: null,
+                rightDelim: null,
+                size: "auto",
+            },
+        };
     },
 
     htmlBuilder,

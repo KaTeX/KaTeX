@@ -4,7 +4,6 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import delimiter from "../delimiter";
 import Style from "../Style";
-import ParseNode from "../ParseNode";
 
 import * as tree from "../tree";
 import * as html from "../buildHTML";
@@ -20,11 +19,15 @@ defineFunction({
     handler({parser}, args, optArgs) {
         const index = optArgs[0];
         const body = args[0];
-        return new ParseNode("sqrt", {
+        return {
             type: "sqrt",
-            body: body,
-            index: index,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "sqrt",
+                body: body,
+                index: index,
+            },
+        };
     },
     htmlBuilder(group, options) {
         // Square roots are handled in the TeXbook pg. 443, Rule 11.
