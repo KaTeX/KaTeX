@@ -4,7 +4,7 @@
  * files.
  */
 
-import type {AnyParseNode} from "./ParseNode";
+import type {AnyParseNode} from "./parseNode";
 
 /**
  * Provide an `indexOf` function which works in IE8, but defers to native if
@@ -127,12 +127,7 @@ const isCharacterBox = function(group: AnyParseNode): boolean {
     // These are all they types of groups which hold single characters
     return baseElem.type === "mathord" ||
         baseElem.type === "textord" ||
-        baseElem.type === "bin" ||
-        baseElem.type === "rel" ||
-        baseElem.type === "inner" ||
-        baseElem.type === "open" ||
-        baseElem.type === "close" ||
-        baseElem.type === "punct";
+        baseElem.type === "atom";
 };
 
 export const assert = function<T>(value: ?T): T {
@@ -140,6 +135,18 @@ export const assert = function<T>(value: ?T): T {
         throw new Error('Expected non-null, but got ' + String(value));
     }
     return value;
+};
+
+export const assertType = function<T>(val: mixed, Cls: Class<T>): T {
+    if (val instanceof Cls) {
+        return val;
+    }
+
+    // $FlowFixMe: Get constructor name if possible.
+    const expected = String(Cls.name || Cls);
+    // $FlowFixMe: Get constructor name if possible; else stringify value.
+    const actual = String(val.constructor.name || val);
+    throw new Error(`Expected ${expected} but got ${actual}.`);
 };
 
 export default {

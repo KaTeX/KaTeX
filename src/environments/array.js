@@ -4,9 +4,8 @@ import defineEnvironment from "../defineEnvironment";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
-import ParseNode from "../ParseNode";
-import {assertNodeType, assertSymbolNodeType} from "../ParseNode";
-import {checkNodeType, checkSymbolNodeType} from "../ParseNode";
+import {assertNodeType, assertSymbolNodeType} from "../parseNode";
+import {checkNodeType, checkSymbolNodeType} from "../parseNode";
 import {calculateSize} from "../units";
 import utils from "../utils";
 
@@ -14,7 +13,7 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Parser from "../Parser";
-import type {AnyParseNode} from "../ParseNode";
+import type {ParseNode, AnyParseNode} from "../parseNode";
 import type {StyleStr} from "../types";
 import type {HtmlBuilder, MathMLBuilder} from "../defineFunction";
 
@@ -29,9 +28,9 @@ type AlignSpec = { type: "separator", separator: string } | {
 export type ArrayEnvNodeData = {|
     type: "array",
     hskipBeforeAndAfter?: boolean,
-    arraystretch: number,
     addJot?: boolean,
     cols?: AlignSpec[],
+    arraystretch: number,
     body: AnyParseNode[][], // List of rows in the (2D) array.
     rowGaps: (?ParseNode<"size">)[],
     hLinesBeforeRow: Array<boolean[]>,
@@ -40,10 +39,10 @@ export type ArrayEnvNodeData = {|
 type ArrayEnvNodeDataIncomplete = {|
     type: "array",
     hskipBeforeAndAfter?: boolean,
-    arraystretch?: number,
     addJot?: boolean,
     cols?: AlignSpec[],
     // Before these fields are filled.
+    arraystretch?: number,
     body?: AnyParseNode[][],
     rowGaps?: (?ParseNode<"size">)[],
     hLinesBeforeRow?: Array<boolean[]>,
@@ -103,13 +102,21 @@ function parseArray(
 
     while (true) {  // eslint-disable-line no-constant-condition
         let cell = parser.parseExpression(false, "\\cr");
-        cell = new ParseNode("ordgroup", cell, parser.mode);
+        cell = {
+            type: "ordgroup",
+            mode: parser.mode,
+            value: cell,
+        };
         if (style) {
-            cell = new ParseNode("styling", {
+            cell = {
                 type: "styling",
-                style: style,
-                value: [cell],
-            }, parser.mode);
+                mode: parser.mode,
+                value: {
+                    type: "styling",
+                    style: style,
+                    value: [cell],
+                },
+            };
         }
         row.push(cell);
         const next = parser.nextToken.text;
@@ -119,7 +126,8 @@ function parseArray(
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
             // the last line is empty.
             // NOTE: Currently, `cell` is the last item added into `row`.
-            if (row.length === 1 && cell.value.value[0].value.length === 0) {
+            if (row.length === 1 && cell.type === "styling" &&
+                cell.value.value[0].value.length === 0) {
                 body.pop();
             }
             if (hLinesBeforeRow.length < body.length + 1) {
@@ -149,7 +157,11 @@ function parseArray(
     // $FlowFixMe: The required fields were added immediately above.
     const res: ArrayEnvNodeData = result;
     parser.gullet.endGroup();
-    return new ParseNode("array", res, parser.mode);
+    return {
+        type: "array",
+        mode: parser.mode,
+        value: res,
+    };
 }
 
 
@@ -410,7 +422,11 @@ const alignedHandler = function(context, args) {
     // binary.  This behavior is implemented in amsmath's \start@aligned.
     let numMaths;
     let numCols = 0;
-    const emptyGroup = new ParseNode("ordgroup", [], context.mode);
+    const emptyGroup = {
+        type: "ordgroup",
+        mode: context.mode,
+        value: [],
+    };
     const ordgroup = checkNodeType(args[0], "ordgroup");
     if (ordgroup) {
         let arg0 = "";
@@ -529,7 +545,7 @@ defineEnvironment({
     props: {
         numArgs: 0,
     },
-    handler: function(context) {
+    handler(context) {
         const delimiters = {
             "matrix": null,
             "pmatrix": ["(", ")"],
@@ -538,20 +554,22 @@ defineEnvironment({
             "vmatrix": ["|", "|"],
             "Vmatrix": ["\\Vert", "\\Vert"],
         }[context.envName];
-        let res = {
+        const payload = {
             type: "array",
             hskipBeforeAndAfter: false, // \hskip -\arraycolsep in amsmath
         };
-        res = parseArray(context.parser, res, dCellStyle(context.envName));
-        if (delimiters) {
-            res = new ParseNode("leftright", {
+        const res: ParseNode<"array"> =
+            parseArray(context.parser, payload, dCellStyle(context.envName));
+        return delimiters ? {
+            type: "leftright",
+            mode: context.mode,
+            value: {
                 type: "leftright",
                 body: [res],
                 left: delimiters[0],
                 right: delimiters[1],
-            }, context.mode);
-        }
-        return res;
+            },
+        } : res;
     },
     htmlBuilder,
     mathmlBuilder,
@@ -571,8 +589,8 @@ defineEnvironment({
     props: {
         numArgs: 0,
     },
-    handler: function(context) {
-        let res = {
+    handler(context) {
+        const payload = {
             type: "array",
             arraystretch: 1.2,
             cols: [{
@@ -591,14 +609,18 @@ defineEnvironment({
                 postgap: 0,
             }],
         };
-        res = parseArray(context.parser, res, dCellStyle(context.envName));
-        res = new ParseNode("leftright", {
+        const res: ParseNode<"array"> =
+            parseArray(context.parser, payload, dCellStyle(context.envName));
+        return {
             type: "leftright",
-            body: [res],
-            left: "\\{",
-            right: ".",
-        }, context.mode);
-        return res;
+            mode: context.mode,
+            value: {
+                type: "leftright",
+                body: [res],
+                left: "\\{",
+                right: ".",
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,

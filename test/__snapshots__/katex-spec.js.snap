@@ -27,9 +27,7 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
                         "end": 37,
                         "lexer": {
                           "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                          "tokenRegex": {
-                            "lastIndex": 56
-                          }
+                          "lastIndex": 56
                         },
                         "start": 36
                       },
@@ -58,9 +56,7 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
                         "end": 39,
                         "lexer": {
                           "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                          "tokenRegex": {
-                            "lastIndex": 56
-                          }
+                          "lastIndex": 56
                         },
                         "start": 38
                       },
@@ -91,9 +87,7 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
                         "end": 42,
                         "lexer": {
                           "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                          "tokenRegex": {
-                            "lastIndex": 56
-                          }
+                          "lastIndex": 56
                         },
                         "start": 41
                       },
@@ -122,9 +116,7 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
                         "end": 44,
                         "lexer": {
                           "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                          "tokenRegex": {
-                            "lastIndex": 56
-                          }
+                          "lastIndex": 56
                         },
                         "start": 43
                       },
@@ -581,6 +573,28 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     },
     "value": "f",
     "width": 0.48959
+  }
+]
+`;
+
+exports[`A parse tree generator generates a tree 1`] = `
+[
+  {
+    "type": "supsub",
+    "mode": "math",
+    "value": {
+      "type": "supsub",
+      "base": {
+        "type": "mathord",
+        "mode": "math",
+        "value": "\\\\sigma"
+      },
+      "sup": {
+        "type": "textord",
+        "mode": "math",
+        "value": "2"
+      }
+    }
   }
 ]
 `;

@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "prestart": "cp ../docs/cli.md.template ../docs/cli.md && node ../cli.js markdown-help >> ../docs/cli.md",
+    "start": "docusaurus-start",
+    "build": "npm run prestart && docusaurus-build",
+    "publish-gh-pages": "npm run prestart && docusaurus-publish",
+    "write-translations": "docusaurus-write-translations",
+    "version": "docusaurus-version",
+    "rename-version": "docusaurus-rename-version"
+  },
+  "devDependencies": {
+    "docusaurus": "^1.3.2"
+  },
+  "dependencies": {}
+}

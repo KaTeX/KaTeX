@@ -3,7 +3,6 @@ import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import Style from "../Style";
 import {sizingGroup} from "./sizing";
-import ParseNode from "../ParseNode";
 
 import * as mml from "../buildMathML";
 
@@ -33,13 +32,17 @@ defineFunction({
         // here and in buildHTML and de-dupe the enumeration of all the styles).
         // $FlowFixMe: The names above exactly match the styles.
         const style: StyleStr = funcName.slice(1, funcName.length - 5);
-        return new ParseNode("styling", {
+        return {
             type: "styling",
-            // Figure out what style to use by pulling out the style from
-            // the function name
-            style,
-            value: body,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "styling",
+                // Figure out what style to use by pulling out the style from
+                // the function name
+                style,
+                value: body,
+            },
+        };
     },
     htmlBuilder: (group, options) => {
         // Style changes are handled in the TeXbook on pg. 442, Rule 3.

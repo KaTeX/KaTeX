@@ -14,11 +14,11 @@ import {calculateSize} from "./units";
 import * as tree from "./tree";
 
 import type Options from "./Options";
-import type ParseNode from "./ParseNode";
-import type {documentFragment as HtmlDocumentFragment} from "./domTree";
-import type {NodeType} from "./ParseNode";
+import type {ParseNode} from "./parseNode";
+import type {NodeType} from "./parseNode";
 import type {CharacterMetrics} from "./fontMetrics";
-import type {Mode} from "./types";
+import type {FontVariant, Mode} from "./types";
+import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
 
@@ -315,7 +315,8 @@ const sizeElementFromChildren = function(
     let depth = 0;
     let maxFontSize = 0;
 
-    for (const child of elem.children) {
+    for (let i = 0; i < elem.children.length; i++) {
+        const child = elem.children[i];
         if (child.height > height) {
             height = child.height;
         }
@@ -490,7 +491,8 @@ const getVListChildrenAndDepth = function(params: VListParam): {
         // We always start at the bottom, so calculate the bottom by adding up
         // all the sizes
         let bottom = params.positionData;
-        for (const child of params.children) {
+        for (let i = 0; i < params.children.length; i++) {
+            const child = params.children[i];
             bottom -= child.type === "kern"
                 ? child.size
                 : child.elem.height + child.elem.depth;
@@ -531,7 +533,8 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     // be positioned precisely without worrying about font ascent and
     // line-height.
     let pstrutSize = 0;
-    for (const child of children) {
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
         if (child.type === "elem") {
             const elem = child.elem;
             pstrutSize = Math.max(pstrutSize, elem.maxFontSize, elem.height);
@@ -546,7 +549,8 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     let minPos = depth;
     let maxPos = depth;
     let currPos = depth;
-    for (const child of children) {
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
         if (child.type === "kern") {
             currPos += child.size;
         } else {
@@ -697,7 +701,7 @@ const regularSpace: {[string]: { className?: string }} = {
  * - fontName: the "style" parameter to fontMetrics.getCharacterMetrics
  */
 // A map between tex font commands an MathML mathvariant attribute values
-const fontMap: {[string]: {| variant: string, fontName: string |}} = {
+const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
     // styles
     "mathbf": {
         variant: "bold",

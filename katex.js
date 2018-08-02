@@ -18,7 +18,7 @@ import domTree from "./src/domTree";
 import utils from "./src/utils";
 
 import type {SettingsOptions} from "./src/Settings";
-import type {AnyParseNode} from "./src/ParseNode";
+import type {AnyParseNode} from "./src/parseNode";
 
 import {defineSymbol} from './src/symbols';
 import {defineMacro} from './src/macros';

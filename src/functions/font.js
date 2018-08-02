@@ -1,8 +1,8 @@
 // @flow
 // TODO(kevinb): implement \\sl and \\sc
 
+import {binrelClass} from "./mclass";
 import defineFunction from "../defineFunction";
-import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -50,11 +50,15 @@ defineFunction({
         if (func in fontAliases) {
             func = fontAliases[func];
         }
-        return new ParseNode("font", {
+        return {
             type: "font",
-            font: func.slice(1),
-            body,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "font",
+                font: func.slice(1),
+                body,
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -69,40 +73,34 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[0];
-        // amsbsy.sty's \boldsymbol inherits the argument's bin|rel|ord status
-        // (similar to \stackrel in functions/mclass.js)
-        let mclass = "mord";
-        const atomType = (body.type === "ordgroup" && body.value.length ?
-            body.value[0].type : body.type);
-        if (/^(bin|rel)$/.test(atomType)) {
-            mclass = "m" + atomType;
-        }
-        return new ParseNode("mclass", {
+        // amsbsy.sty's \boldsymbol uses \binrel spacing to inherit the
+        // argument's bin|rel|ord status
+        return {
             type: "mclass",
-            mclass,
-            value: [
-                new ParseNode("font", {
-                    type: "font",
-                    font: "boldsymbol",
-                    body,
-                }, parser.mode),
-            ],
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "mclass",
+                mclass: binrelClass(body),
+                value: [
+                    {
+                        type: "font",
+                        mode: parser.mode,
+                        value: {
+                            type: "font",
+                            font: "boldsymbol",
+                            body,
+                        },
+                    },
+                ],
+            },
+        };
     },
 });
-
-const oldFontFuncsMap = {
-    "\\rm": "mathrm",
-    "\\sf": "mathsf",
-    "\\tt": "mathtt",
-    "\\bf": "mathbf",
-    "\\it": "mathit",
-};
 
 // Old font changing functions
 defineFunction({
     type: "font",
-    names: Object.keys(oldFontFuncsMap),
+    names: ["\\rm", "\\sf", "\\tt", "\\bf", "\\it"],
     props: {
         numArgs: 0,
         allowedInText: true,
@@ -111,13 +109,21 @@ defineFunction({
         const {mode} = parser;
         parser.consumeSpaces();
         const body = parser.parseExpression(true, breakOnTokenText);
-        const style = oldFontFuncsMap[funcName];
+        const style = `math${funcName.slice(1)}`;
 
-        return new ParseNode("font", {
+        return {
             type: "font",
-            font: style,
-            body: new ParseNode("ordgroup", body, parser.mode),
-        }, mode);
+            mode: mode,
+            value: {
+                type: "font",
+                font: style,
+                body: {
+                    type: "ordgroup",
+                    mode: parser.mode,
+                    value: body,
+                },
+            },
+        };
     },
     htmlBuilder,
     mathmlBuilder,

@@ -1,8 +1,8 @@
 // @flow
-import {checkNodeType} from "./ParseNode";
+import {checkNodeType} from "./parseNode";
 
 import type Parser from "./Parser";
-import type ParseNode, {AnyParseNode, NodeType} from "./ParseNode";
+import type {ParseNode, AnyParseNode, NodeType} from "./parseNode";
 import type Options from "./Options";
 import type {ArgType, BreakToken, Mode} from "./types";
 import type {HtmlDomNode} from "./domTree";

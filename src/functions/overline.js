@@ -2,7 +2,6 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -15,10 +14,14 @@ defineFunction({
     },
     handler({parser}, args) {
         const body = args[0];
-        return new ParseNode("overline", {
+        return {
             type: "overline",
-            body: body,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "overline",
+                body: body,
+            },
+        };
     },
     htmlBuilder(group, options) {
         // Overlines are handled in the TeXbook pg 443, Rule 9.

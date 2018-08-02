@@ -2,7 +2,6 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -16,10 +15,14 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[0];
-        return new ParseNode("phantom", {
+        return {
             type: "phantom",
-            value: ordargument(body),
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "phantom",
+                value: ordargument(body),
+            },
+        };
     },
     htmlBuilder: (group, options) => {
         const elements = html.buildExpression(
@@ -47,11 +50,15 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[0];
-        return new ParseNode("hphantom", {
+        return {
             type: "hphantom",
-            value: ordargument(body),
-            body: body,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "hphantom",
+                value: ordargument(body),
+                body: body,
+            },
+        };
     },
     htmlBuilder: (group, options) => {
         let node = buildCommon.makeSpan(
@@ -90,11 +97,15 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[0];
-        return new ParseNode("vphantom", {
+        return {
             type: "vphantom",
-            value: ordargument(body),
-            body: body,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "vphantom",
+                value: ordargument(body),
+                body: body,
+            },
+        };
     },
     htmlBuilder: (group, options) => {
         const inner = buildCommon.makeSpan(

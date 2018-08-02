@@ -38,7 +38,7 @@ while [ $# -gt 0 ]; do
         --dry-run|-n|--just-print)
             DRY_RUN=true
             git() { echo "git $*"; }
-            npm() { echo "npm $*"; }
+            yarn() { echo "yarn $*"; }
             ;;
         -h|-\?|--help)
             usage 0
@@ -74,10 +74,6 @@ if ! command git diff --stat --exit-code HEAD; then
     echo "Please make sure you have no uncommitted changes" >&2
     : $((++INSANE))
 fi
-if ! command npm owner ls katex | grep -q "^$(command npm whoami) <"; then
-    echo "You don't seem do be logged into npm, use \`npm login\`" >&2
-    : $((++INSANE))
-fi
 if [[ $BRANCH != @(v*|master) ]]; then
     echo "'$BRANCH' does not look like a release branch to me" >&2
     : $((++INSANE))
@@ -109,8 +105,8 @@ sed -i.bak -E 's|"version": "[^"]+",|"version": "'$VERSION'",|' package.json
 rm -f package.json.bak
 
 # Build generated files and add them to the repository (for bower)
-git clean -fdx build dist
-npm run dist
+git clean -fdx dist
+yarn dist
 sed -i.bak -E '/^\/dist\/$/d' .gitignore
 rm -f .gitignore.bak
 git add .gitignore dist/
@@ -127,7 +123,7 @@ git tag -a "v$VERSION" -m "v$VERSION"
 git push origin "v$VERSION"
 
 # Update npm (bower and cdnjs update automatically)
-npm publish
+yarn publish
 
 if [ ! -z "$NEXT_VERSION" ]; then
     # Go back to original branch to bump
@@ -145,7 +141,7 @@ if [ ! -z "$NEXT_VERSION" ]; then
     git commit -n -m "Bump $BRANCH to v$NEXT_VERSION-pre"
     git push origin "$BRANCH"
 
-    # Go back to the tag which has build/katex.tar.gz and build/katex.zip
+    # Go back to the tag which has katex.tar.gz and katex.zip
     git checkout "v$VERSION"
 fi
 
@@ -153,12 +149,12 @@ echo ""
 echo "The automatic parts are done!"
 echo "Now all that's left is to create the release on github."
 echo "Visit https://github.com/Khan/KaTeX/releases/new?tag=v$VERSION to edit the release notes"
-echo "Don't forget to upload build/katex.tar.gz and build/katex.zip to the release!"
+echo "Don't forget to upload katex.tar.gz and katex.zip to the release!"
 
 if [[ ${DRY_RUN} ]]; then
     echo ""
     echo "This was a dry run."
-    echo "Operations using git or npm were printed not executed."
+    echo "Operations using git or yarn were printed not executed."
     echo "Some files got modified, though, so you might want to undo "
     echo "these changes now, e.g. using \`git checkout -- .\` or similar."
     echo ""

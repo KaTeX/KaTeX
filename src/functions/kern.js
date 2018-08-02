@@ -5,7 +5,7 @@ import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import {calculateSize} from "../units";
-import ParseNode, {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 
 // TODO: \hskip and \mskip should support plus and minus in lengths
 
@@ -39,10 +39,14 @@ defineFunction({
                 }
             }
         }
-        return new ParseNode("kern", {
+        return {
             type: "kern",
-            dimension: size.value.value,
-        }, parser.mode);
+            mode: parser.mode,
+            value: {
+                type: "kern",
+                dimension: size.value.value,
+            },
+        };
     },
     htmlBuilder: (group, options) => {
         return buildCommon.makeGlue(group.value.dimension, options);

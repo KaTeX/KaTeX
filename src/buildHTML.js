@@ -11,13 +11,13 @@ import Style from "./Style";
 import buildCommon from "./buildCommon";
 import domTree from "./domTree";
 import utils, {assert} from "./utils";
-import {checkNodeType} from "./ParseNode";
+import {checkNodeType} from "./parseNode";
 import {spacings, tightSpacings} from "./spacingData";
 import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";
 import * as tree from "./tree";
 
 import type Options from "./Options";
-import type {AnyParseNode} from "./ParseNode";
+import type {AnyParseNode} from "./parseNode";
 import type {HtmlDomNode, DomSpan} from "./domTree";
 
 const makeSpan = buildCommon.makeSpan;
@@ -180,19 +180,6 @@ export const buildExpression = function(
                 }
             }
             j++;
-        }
-    }
-
-    // Process \\not commands within the group.
-    for (let i = 0; i < groups.length; i++) {
-        const group = groups[i];
-        if (group instanceof domTree.symbolNode && group.value === "\u0338") {
-            group.style.position = "absolute";
-            // TODO(kevinb) fix this for Safari by switching to a non-combining
-            // character for \not.
-            // This value was determined empirically.
-            // TODO(kevinb) figure out the real math for this value.
-            group.style.paddingLeft = "0.8em";
         }
     }
 
