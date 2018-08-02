@@ -127,7 +127,7 @@ node update-sri.js "${VERSION}" README.md contrib/*/README.md dist/README.md \
 
 # Generate a new version of the docs and publish the website
 pushd website
-yarn version "${VERSION}"
+yarn run version "${VERSION}"
 
 # Restore docs to use local built CSS
 # for file in ../docs/*.md.bak; do
