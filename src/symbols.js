@@ -24,20 +24,25 @@ type Font = "main" | "ams";
 // types for raw text tokens, and we want to avoid conflicts with higher-level
 // `ParseNode` types. These `ParseNode`s are constructed within `Parser` by
 // looking up the `symbols` map.
-export const GROUPS = { // Set of all the groups.
-    "accent-token": 1,
+export const ATOMS = {
     "bin": 1,
     "close": 1,
     "inner": 1,
-    "mathord": 1,
-    "op-token": 1,
     "open": 1,
     "punct": 1,
     "rel": 1,
+};
+export const NON_ATOMS = {
+    "accent-token": 1,
+    "mathord": 1,
+    "op-token": 1,
     "spacing": 1,
     "textord": 1,
 };
-export type Group = $Keys<typeof GROUPS>;
+
+export type Atom = $Keys<typeof ATOMS>;
+export type NonAtom = $Keys<typeof NON_ATOMS>
+export type Group = Atom | NonAtom;
 type CharInfoMap = {[string]: {font: Font, group: Group, replace: ?string}};
 
 const symbols: {[Mode]: CharInfoMap} = {
@@ -148,7 +153,7 @@ defineSymbol(text, main, textord, "\u2020", "\\dag");
 defineSymbol(text, main, textord, "\u2020", "\\textdagger");
 defineSymbol(math, main, textord, "\u2021", "\\ddag");
 defineSymbol(text, main, textord, "\u2021", "\\ddag");
-defineSymbol(text, main, textord, "\u2020", "\\textdaggerdbl");
+defineSymbol(text, main, textord, "\u2021", "\\textdaggerdbl");
 
 // Large Delimiters
 defineSymbol(math, main, close, "\u23b1", "\\rmoustache", true);
