@@ -71,7 +71,8 @@ describe("A bin parser", function() {
 
         for (let i = 0; i < parse.length; i++) {
             const group = parse[i];
-            expect(group.type).toEqual("bin");
+            expect(group.type).toEqual("atom");
+            expect(group.family).toEqual("bin");
         }
     });
 });
@@ -96,7 +97,8 @@ describe("A rel parser", function() {
             if (group.type === "mclass") {
                 expect(group.value.mclass).toEqual("mrel");
             } else {
-                expect(group.type).toEqual("rel");
+                expect(group.type).toEqual("atom");
+                expect(group.family).toEqual("rel");
             }
         }
     });
@@ -114,7 +116,8 @@ describe("A punct parser", function() {
 
         for (let i = 0; i < parse.length; i++) {
             const group = parse[i];
-            expect(group.type).toEqual("punct");
+            expect(group.type).toEqual("atom");
+            expect(group.family).toEqual("punct");
         }
     });
 });
@@ -131,7 +134,8 @@ describe("An open parser", function() {
 
         for (let i = 0; i < parse.length; i++) {
             const group = parse[i];
-            expect(group.type).toEqual("open");
+            expect(group.type).toEqual("atom");
+            expect(group.family).toEqual("open");
         }
     });
 });
@@ -148,7 +152,8 @@ describe("A close parser", function() {
 
         for (let i = 0; i < parse.length; i++) {
             const group = parse[i];
-            expect(group.type).toEqual("close");
+            expect(group.type).toEqual("atom");
+            expect(group.family).toEqual("close");
         }
     });
 });
