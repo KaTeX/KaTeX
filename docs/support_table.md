@@ -12,11 +12,14 @@ table td {
 
 This is a list of TeX functions, sorted alphabetically. This list includes functions that KaTeX supports and some that it doesn't support. There is a similar page, with functions [sorted by type](./supported.md).
 
+If you know the shape of a character, but not its name, [Detexify](http://detexify.kirelabs.org/classify.html) can help.
+
 ## Symbols
 
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\!|$n!$|`n!`|
+|\\\!|$a\!b$|`a\!b`|
 |#|$\def\bar#1{#1^2} \bar{y}$|`\def\bar#1{#1^2} \bar{y}`|
 |\\#|$\#$||
 |%||`%this is a comment`|
@@ -27,6 +30,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |`\'`|$\text{\'{a}}$|`\text{\'{a}}`|
 |(|$($||
 |)|$)$||
+|\\\(…\\\)|$\text{\(\frac a b\)}$|`\text{\(\frac a b\)}`|
 |\\ |$a\ b$|`a\ b`|
 |\\"|$\text{\"{a}}$|`\text{\"{a}}`|
 |\\$|$\text{\textdollar}$||
@@ -44,14 +48,15 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\]|$]$||
 |{|${a}$|`{a}`|
 |}|${a}$|`{a}`|
-|\\{|$\{$|`\{`|
-|\\}|$\}$|`\}`|
+|\\{|$\{$||
+|\\}|$\}$||
 |&#124;|$\vert$||
+|\\&#124;|$\Vert$||
 |~|$\text{no~no~no~breaks}$|`\text{no~no~no~breaks}`|
-|\\~|$\text{\~{a}}$|<code>\text{\~{a}}</code>|
+|\\~|$\text{\~{a}}$|<code>\text{\\~{a}}</code>|
 |\\\\|$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |^|$x^i$|`x^i`|
-|\\^|$\text{\^{a}}$|<code>\text{\^{a}}<\code>|
+|\\^|$\text{\^{a}}$|<code>\text{\\^{a}}</code>|
 
 ## A
 
@@ -138,13 +143,13 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\bigm|$\bigm\vert$|`\bigm\vert`|
 |\Bigm|$\Bigm\vert$|`\Bigm\vert`|
 |\bigodot|$\bigodot$||
-|\bigominus|<span style="color:firebrick;">Not supported</span>||
+|\bigominus|<span style="color:firebrick;">Not supported</span>|[Issue #1222](https://github.com/Khan/KaTeX/issues/1222)|
 |\bigoplus|$\bigoplus$||
-|\bigoslash|<span style="color:firebrick;">Not supported</span>||
+|\bigoslash|<span style="color:firebrick;">Not supported</span>|[Issue #1222](https://github.com/Khan/KaTeX/issues/1222)|
 |\bigotimes|$\bigotimes$||
 |\bigr|$\bigr)$|`\bigr)`|
 |\Bigr|$\Bigr)$|`\Bigr)`|
-|\bigsqcap|<span style="color:firebrick;">Not supported</span>||
+|\bigsqcap|<span style="color:firebrick;">Not supported</span>|[Issue #1222](https://github.com/Khan/KaTeX/issues/1222)|
 |\bigsqcup|$\bigsqcup$||
 |\bigstar|$\bigstar$||
 |\bigtriangledown|$\bigtriangledown$||
@@ -191,7 +196,6 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\cal|<span style="color:firebrick;">Not supported</span>|See `\mathcal`
 |\cancel|$\cancel{5}$|`\cancel{5}`|
 |\cancelto|<span style="color:firebrick;">Not supported</span>||
-|\cancer|<span style="color:firebrick;">Not supported</span>||
 |\Cap|$\Cap$||
 |\cap|$\cap$||
 |{cases}|$\begin{cases}a&\text{if }b\\c&\text{if }d\end{cases}$|`\begin{cases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{cases}`|
@@ -203,7 +207,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\ce |<span style="color:firebrick;">Not supported</span>|A PR is pending
 |\cee|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem
 |\centerdot|$a\centerdot b$|`a\centerdot b`|
-|\cf|<span style="color:firebrick;">Not supported</span>||
+|\cf|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem|
 |\cfrac|$\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}$|`\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}`|
 |\check|$\check{oe}$|`\check{oe}`|
 |\ch|$\ch$||
@@ -221,7 +225,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\circledR|$\circledR$||
 |\circledS|$\circledS$||
 |\class|<span style="color:firebrick;">Not supported</span>|A PR is pending.
-|\cline|<span style="color:firebrick;">Not supported</span>||
+|\cline|<span style="color:firebrick;">Not supported</span>|[Issue #269](https://github.com/Khan/KaTeX/issues/269)|
 |\clubs|<span style="color:firebrick;">Not supported</span>||
 |\clubsuit|$\clubsuit$||
 |\cnums|<span style="color:firebrick;">Not supported</span>||
@@ -271,7 +275,9 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\Dagger|<span style="color:firebrick;">Not supported</span>||
 |\dagger|$\dagger$||
 |\daleth|$\daleth$||
-|\Darr|<span style="color:firebrick;">Not supported</span>||
+|\Darr|<span style="color:firebrick;">Not supported</span>|See `\Downarrow`|
+|\dArr|<span style="color:firebrick;">Not supported</span>||
+|\darr|<span style="color:firebrick;">Not supported</span>|See `\downarrow`|
 {darray}|$\begin{darray}{cc}a&b\\c&d\end{darray}$ | `\begin{darray}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{darray}`|
 |\dashleftarrow|$\dashleftarrow$||
 |\dashrightarrow|$\dashrightarrow$||
@@ -346,11 +352,11 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\eqcirc|$\eqcirc$||
 |\Eqcolon|$\Eqcolon$||
 |\eqcolon|$\eqcolon$||
-|{equation}|<span style="color:firebrick;">Not supported</span>||
+|{equation}|<span style="color:firebrick;">Not supported</span>|[Issue #445](https://github.com/Khan/KaTeX/issues/445)|
 |{eqnarray}|<span style="color:firebrick;">Not supported</span>||
 |\Eqqcolon|$\Eqqcolon$||
 |\eqqcolon|$\eqqcolon$||
-|\eqref|<span style="color:firebrick;">Not supported</span>||
+|\eqref|<span style="color:firebrick;">Not supported</span>|[Issue #350](https://github.com/Khan/KaTeX/issues/350)|
 |\eqsim|$\eqsim$||
 |\eqslantgtr|$\eqslantgtr$||
 |\eqslantless|$\eqslantless$||
@@ -432,7 +438,8 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\hdashline|$\begin{matrix}a&b\\ \hdashline c &d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`\hdashline`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |\hearts|<span style="color:firebrick;">Not supported</span>||
 |\heartsuit|$\heartsuit$||
-|\hfill|<span style="color:firebrick;">Not supported</span>||
+|\hfil|<span style="color:firebrick;">Not supported</span>||
+|\hfill|<span style="color:firebrick;">Not supported</span>|[Issue #269](https://github.com/Khan/KaTeX/issues/269)|
 |\hline|$\begin{matrix}a&b\\ \hline c &d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\ \hline`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |\hom|$\hom$||
 |\hookleftarrow|$\hookleftarrow$||
@@ -451,7 +458,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |:---------------|:------------|:-----------------|
 |\i|$\text{\i}$|`\text{\i}`|
 |\idotsint|<span style="color:firebrick;">Not supported</span>||
-|\iddots|<span style="color:firebrick;">Not supported</span>||
+|\iddots|<span style="color:firebrick;">Not supported</span>|[Issue #1223](https://github.com/Khan/KaTeX/issues/1223)|
 |\if|<span style="color:firebrick;">Not supported</span>||
 |\iff|$A\iff B$|`A\iff B`|
 |\ifmode|<span style="color:firebrick;">Not supported</span>||
@@ -645,7 +652,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\mspace|<span style="color:firebrick;">Not supported</span>||
 |\Mu|<span style="color:firebrick;">Not supported</span>||
 |\mu|$\mu$||
-|\multicolumn|<span style="color:firebrick;">Not supported</span>||
+|\multicolumn|<span style="color:firebrick;">Not supported</span>|[Issue #269](https://github.com/Khan/KaTeX/issues/269)|
 |{multiline}|<span style="color:firebrick;">Not supported</span>||
 |\multimap|$\multimap$||
 
@@ -738,7 +745,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\omicron|$\omicron$||
 |\ominus|$\ominus$||
 |\operatorname|$\operatorname{asin} x$|\operatorname{asin} x|
-|\operatorname\*|<span style="color:firebrick;">Not supported</span>|
+|\operatorname\*|<span style="color:firebrick;">Not supported</span>|[Issue #1242](https://github.com/Khan/KaTeX/issues/1242)|
 |\oplus|$\oplus$||
 |\or|<span style="color:firebrick;">Not supported</span>||
 |\oslash|$\oslash$||
@@ -752,7 +759,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\overleftrightarrow|$\overleftrightarrow{AB}$|`\overleftrightarrow{AB}`|
 |\overline|$\overline{\text{a long argument}}$|`\overline{\text{a long argument}}`|
 |\overlinesegment|$\overlinesegment{AB}$|`\overlinesegment{AB}`|
-|\overparen|<span style="color:firebrick;">Not supported</span>||
+|\overparen|<span style="color:firebrick;">Not supported</span>|See `\overgroup`|
 |\Overrightarrow|$\Overrightarrow{AB}$|`\Overrightarrow{AB}`|
 |\overrightarrow|$\overrightarrow{AB}$|`\overrightarrow{AB}`|
 |\overrightharpoon|$\overrightharpoon{ac}$|`\overrightharpoon{ac}`|
@@ -826,7 +833,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\real|<span style="color:firebrick;">Not supported</span>||
 |\Reals|<span style="color:firebrick;">Not supported</span>||
 |\reals|<span style="color:firebrick;">Not supported</span>||
-|\ref|<span style="color:firebrick;">Not supported</span>||
+|\ref|<span style="color:firebrick;">Not supported</span>|[Issue #350](https://github.com/Khan/KaTeX/issues/350)|
 |\relax|||
 |\renewcommand|$\def\hail{Hi!}\renewcommand\hail{\text{Ahoy!}} \hail$|`\def\hail{Hi!}`<br>`\renewcommand\hail{\text{Ahoy!}} \hail`|
 |\renewenvironment|<span style="color:firebrick;">Not supported</span>||
@@ -853,7 +860,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\rm|$\rm AaBb12$|`\rm AaBb12`|
 |\rmoustache|$\rmoustache$||
 |\root|<span style="color:firebrick;">Not supported</span>||
-|\rotatebox|<span style="color:firebrick;">Not supported</span>||
+|\rotatebox|<span style="color:firebrick;">Not supported</span>|[Issue #681](https://github.com/Khan/KaTeX/issues/681)|
 |\rq|$\rq$||
 |\Rrightarrow|$\Rrightarrow$||
 |\Rsh|$\Rsh$||
@@ -879,7 +886,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\searrow|$\searrow$||
 |\sec|$\sec$||
 |\sect|<span style="color:firebrick;">Not supported</span>||
-|\setlength|<span style="color:firebrick;">Not supported</span>||
+|\setlength|<span style="color:firebrick;">Not supported</span>|[Issue #687](https://github.com/Khan/KaTeX/issues/687)|
 |\setminus|$\setminus$||
 |\sf|$\sf AaBb123$|`\sf AaBb123`|
 |\sharp|$\sharp$||
@@ -913,7 +920,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\spades|<span style="color:firebrick;">Not supported</span>||
 |\spadesuit|$\spadesuit$||
 |\sphericalangle|$\sphericalangle$||
-|{split}|<span style="color:firebrick;">Not supported</span>||
+|{split}|<span style="color:firebrick;">Not supported</span>|[Issue #1345](https://github.com/Khan/KaTeX/issues/1345)|
 |\sqcap|$\sqcap$||
 |\sqcup|$\sqcup$||
 |\square|$\square$||
@@ -1051,7 +1058,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\underrightarrow|$\underrightarrow{AB}$|`\underrightarrow{AB}`|
 |\underline|$\underline{\text{a long argument}}$|`\underline{\text{a long argument}}`|
 |\underlinesegment|$\underlinesegment{AB}$|`\underlinesegment{AB}`|
-|\underparen|<span style="color:firebrick;">Not supported</span>||
+|\underparen|<span style="color:firebrick;">Not supported</span>|See `\undergroup`|
 |\underrightarrow|$\underrightarrow{AB}$|`\underrightarrow{AB}`|
 |\underset|$\underset{!}{=}$|`\underset{!}{=}`|
 |\unicode|<span style="color:firebrick;">Not supported</span>||
@@ -1123,8 +1130,9 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\verb|$\verb!\frac a b!$|`\verb!\frac a b!`|
 |\Vert|$\Vert$||
 |\vert|$\vert$||
+|\vfil|<span style="color:firebrick;">Not supported</span>||
 |\vfill|<span style="color:firebrick;">Not supported</span>||
-|\vline|<span style="color:firebrick;">Not supported</span>||
+|\vline|<span style="color:firebrick;">Not supported</span>|[Issue #269](https://github.com/Khan/KaTeX/issues/269)|
 |{Vmatrix}|$\begin{Vmatrix}a&b\\c&d\end{Vmatrix}$|`\begin{Vmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{Vmatrix}`|
 |{vmatrix}|$\begin{vmatrix}a&b\\c&d\end{vmatrix}$|`\begin{vmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{vmatrix}`|
 |\vphantom|$\overline{\vphantom{M}a}$|`\overline{\vphantom{M}a}`|
@@ -1138,7 +1146,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 |\weierp|<span style="color:firebrick;">Not supported</span>|See `\wp`|
 |\widecheck|$\widecheck{AB}$|`\widecheck{AB}`|
 |\widehat|$\widehat{AB}$|`\widehat{AB}`|
-|\wideparen|<span style="color:firebrick;">Not supported</span>||
+|\wideparen|<span style="color:firebrick;">Not supported</span>|[Issue #560](https://github.com/Khan/KaTeX/issues/560)|
 |\widetilde|$\widetilde{AB}$|`\widetilde{AB}`|
 |\wp|$\wp$||
 |\wr|$\wr$||
