@@ -48,7 +48,9 @@ function Versions(props) {
               </tbody>
             </table>
             <h3 id="rc">Latest Version</h3>
-            Here you can find the latest documentation and unreleased code.
+            <p>
+              Here you can find the latest documentation and unreleased code.
+            </p>
             <table className="versions">
               <tbody>
                 <tr>
