@@ -809,6 +809,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\providecommand|$\providecommand\greet{\text{Hello}} \greet$|`\providecommand\greet{\text{Hello}} \greet`|
 |\psi|$\psi$||
 |\Psi|$\Psi$||
+|\pu||A PR is pending|
 
 ## QR
 
