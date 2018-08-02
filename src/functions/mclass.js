@@ -45,15 +45,14 @@ defineFunction({
     mathmlBuilder,
 });
 
-export const binrelClass = (arg: AnyParseNode) => {
+export const binrelClass = (arg: AnyParseNode): string => {
     // \binrel@ spacing varies with (bin|rel|ord) of the atom in the argument.
     // (by rendering separately and with {}s before and after, and measuring
     // the change in spacing).  We'll do roughly the same by detecting the
     // atom type directly.
-    const atomType = (arg.type === "ordgroup" &&
-        arg.value.length ? arg.value[0].type : arg.type);
-    if (/^(bin|rel)$/.test(atomType)) {
-        return "m" + atomType;
+    const atom = (arg.type === "ordgroup" && arg.value.length ? arg.value[0] : arg);
+    if (atom.type === "atom" && (atom.family === "bin" || atom.family === "rel")) {
+        return "m" + atom.family;
     } else {
         return "mord";
     }

@@ -4,7 +4,7 @@ import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import Style from "../Style";
-import {assertNodeType, checkNodeType} from "../parseNode";
+import {assertNodeType, assertAtomFamily, checkNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -370,17 +370,17 @@ defineFunction({
         // Look into the parse nodes to get the desired delimiters.
         let leftNode = checkNodeType(args[0], "ordgroup");
         if (leftNode) {
-            leftNode = assertNodeType(leftNode.value[0], "open");
+            leftNode = assertAtomFamily(leftNode.value[0], "open");
         } else {
-            leftNode = assertNodeType(args[0], "open");
+            leftNode = assertAtomFamily(args[0], "open");
         }
         const leftDelim = delimFromValue(leftNode.value);
 
         let rightNode = checkNodeType(args[1], "ordgroup");
         if (rightNode) {
-            rightNode = assertNodeType(rightNode.value[0], "close");
+            rightNode = assertAtomFamily(rightNode.value[0], "close");
         } else {
-            rightNode = assertNodeType(args[1], "close");
+            rightNode = assertAtomFamily(args[1], "close");
         }
         const rightDelim = delimFromValue(rightNode.value);
 

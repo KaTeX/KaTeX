@@ -3,7 +3,7 @@
 import functions from "./functions";
 import environments from "./environments";
 import MacroExpander from "./MacroExpander";
-import symbols, {extraLatin} from "./symbols";
+import symbols, {ATOMS, extraLatin} from "./symbols";
 import {validUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
@@ -16,6 +16,7 @@ import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
 import type {AnyParseNode, SymbolParseNode} from "./parseNode";
+import type {Atom, Group} from "./symbols";
 import type {Mode, ArgType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
 import type {EnvSpec} from "./defineEnvironment";
@@ -1022,14 +1023,28 @@ export default class Parser {
                     `Latin-1/Unicode text character "${text[0]}" used in ` +
                     `math mode`, nucleus);
             }
-            // TODO(#1492): Remove this override once this becomes an "atom" type.
-            // $FlowFixMe
-            const s: SymbolParseNode = {
-                type: symbols[this.mode][text].group,
-                mode: this.mode,
-                loc: SourceLocation.range(nucleus),
-                value: text,
-            };
+            const group: Group = symbols[this.mode][text].group;
+            const loc = SourceLocation.range(nucleus);
+            let s: SymbolParseNode;
+            if (ATOMS.hasOwnProperty(group)) {
+                // $FlowFixMe
+                const family: Atom = group;
+                s = {
+                    type: "atom",
+                    mode: this.mode,
+                    family,
+                    loc,
+                    value: text,
+                };
+            } else {
+                // $FlowFixMe
+                s = {
+                    type: group,
+                    mode: this.mode,
+                    loc,
+                    value: text,
+                };
+            }
             symbol = s;
         } else if (text.charCodeAt(0) >= 0x80) { // no symbol for e.g. ^
             if (this.settings.strict) {

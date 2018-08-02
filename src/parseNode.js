@@ -1,7 +1,8 @@
 // @flow
-import {GROUPS} from "./symbols";
+import {NON_ATOMS} from "./symbols";
 import type SourceLocation from "./SourceLocation";
 import type {ArrayEnvNodeData} from "./environments/array";
+import type {Atom} from "./symbols";
 import type {Mode, StyleStr} from "./types";
 import type {Token} from "./Token";
 import type {Measurement} from "./units";
@@ -18,15 +19,10 @@ export type LeftRightDelimType = {|
 
 // ParseNode's corresponding to Symbol `Group`s in symbols.js.
 export type SymbolParseNode =
+    ParseNode<"atom"> |
     ParseNode<"accent-token"> |
-    ParseNode<"bin"> |
-    ParseNode<"close"> |
-    ParseNode<"inner"> |
     ParseNode<"mathord"> |
     ParseNode<"op-token"> |
-    ParseNode<"open"> |
-    ParseNode<"punct"> |
-    ParseNode<"rel"> |
     ParseNode<"spacing"> |
     ParseNode<"textord">;
 
@@ -162,56 +158,15 @@ type ParseNodeTypes = {
     // From symbol groups, constructed in Parser.js via `symbols` lookup.
     // (Some of these have "-token" suffix to distinguish them from existing
     // `ParseNode` types.)
-    "accent-token": {|
-        type: "accent-token",
-        mode: Mode,
-        loc?: ?SourceLocation,
-        value: string,
-    |},
-    "bin": {|
-        type: "bin",
-        mode: Mode,
-        loc?: ?SourceLocation,
-        value: string,
-    |},
-    "close": {|
-        type: "close",
-        mode: Mode,
-        loc?: ?SourceLocation,
-        value: string,
-    |},
-    "inner": {|
-        type: "inner",
+    "atom": {|
+        type: "atom",
+        family: Atom,
         mode: Mode,
         loc?: ?SourceLocation,
         value: string,
     |},
     "mathord": {|
         type: "mathord",
-        mode: Mode,
-        loc?: ?SourceLocation,
-        value: string,
-    |},
-    "op-token": {|
-        type: "op-token",
-        mode: Mode,
-        loc?: ?SourceLocation,
-        value: string,
-    |},
-    "open": {|
-        type: "open",
-        mode: Mode,
-        loc?: ?SourceLocation,
-        value: string,
-    |},
-    "punct": {|
-        type: "punct",
-        mode: Mode,
-        loc?: ?SourceLocation,
-        value: string,
-    |},
-    "rel": {|
-        type: "rel",
         mode: Mode,
         loc?: ?SourceLocation,
         value: string,
@@ -224,6 +179,19 @@ type ParseNodeTypes = {
     |},
     "textord": {|
         type: "textord",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        value: string,
+    |},
+    // These "-token" types don't have corresponding HTML/MathML builders.
+    "accent-token": {|
+        type: "accent-token",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        value: string,
+    |},
+    "op-token": {|
+        type: "op-token",
         mode: Mode,
         loc?: ?SourceLocation,
         value: string,
@@ -600,6 +568,40 @@ export function checkNodeType<NODETYPE: NodeType>(
 }
 
 /**
+ * Asserts that the node is of the given type and returns it with stricter
+ * typing. Throws if the node's type does not match.
+ */
+export function assertAtomFamily(
+    node: ?AnyParseNode,
+    family: Atom,
+): ParseNode<"atom"> {
+    const typedNode = checkAtomFamily(node, family);
+    if (!typedNode) {
+        throw new Error(
+            `Expected node of type "atom" and family "${family}", but got ` +
+            (node ?
+                (node.type === "atom" ?
+                    `atom of family ${node.family}` :
+                    `node of type ${node.type}`) :
+                String(node)));
+    }
+    return typedNode;
+}
+
+/**
+ * Returns the node more strictly typed iff it is of the given type. Otherwise,
+ * returns null.
+ */
+export function checkAtomFamily(
+    node: ?AnyParseNode,
+    family: Atom,
+): ?ParseNode<"atom"> {
+    return node && node.type === "atom" && node.family === family ?
+        node :
+        null;
+}
+
+/**
  * Returns the node more strictly typed iff it is of the given type. Otherwise,
  * returns null.
  */
@@ -618,7 +620,7 @@ export function assertSymbolNodeType(node: ?AnyParseNode): SymbolParseNode {
  * returns null.
  */
 export function checkSymbolNodeType(node: ?AnyParseNode): ?SymbolParseNode {
-    if (node && GROUPS.hasOwnProperty(node.type)) {
+    if (node && (node.type === "atom" || NON_ATOMS.hasOwnProperty(node.type))) {
         // $FlowFixMe
         return node;
     }

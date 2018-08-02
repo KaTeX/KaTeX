@@ -127,12 +127,7 @@ const isCharacterBox = function(group: AnyParseNode): boolean {
     // These are all they types of groups which hold single characters
     return baseElem.type === "mathord" ||
         baseElem.type === "textord" ||
-        baseElem.type === "bin" ||
-        baseElem.type === "rel" ||
-        baseElem.type === "inner" ||
-        baseElem.type === "open" ||
-        baseElem.type === "close" ||
-        baseElem.type === "punct";
+        baseElem.type === "atom";
 };
 
 export const assert = function<T>(value: ?T): T {
