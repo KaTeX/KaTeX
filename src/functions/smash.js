@@ -26,7 +26,9 @@ defineFunction({
             //               def\mb@t{\ht}\def\mb@b{\dp}\def\mb@tb{\ht\z@\z@\dp}%
             let letter = "";
             for (let i = 0; i < tbArg.value.length; ++i) {
-                letter = tbArg.value[i].value;
+                const node = tbArg.value[i];
+                // $FlowFixMe: Not every node type has a `value` property.
+                letter = node.value;
                 if (letter === "t") {
                     smashHeight = true;
                 } else if (letter === "b") {

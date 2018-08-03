@@ -30,6 +30,7 @@ defineFunction({
     htmlBuilder: (group, options) => {
         if (group.value.value.length > 0) {
             const groupValue = group.value.value.map(child => {
+                // $FlowFixMe: Check if the node has a string `value` property.
                 const childValue = child.value;
                 if (typeof childValue === "string") {
                     return {
