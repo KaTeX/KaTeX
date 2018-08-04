@@ -1,5 +1,5 @@
 body {
-    font: 16px/1.4 "proxima-nova", "Helvetica Neue", Arial, Helvetica, sans-serif;
+    font: 16px/1.4 "Lato", "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 
 .container {
@@ -22,7 +22,7 @@ body {
 .cta a {
     border-radius: 3px;
     display: inline-block;
-    font-weight: 600;
+    font-weight: 700;
     margin: 0 10px;
     padding: 8px 24px;
     text-decoration: none;
@@ -46,7 +46,7 @@ body {
 }
 
 .tagline em {
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .header .cta a {
@@ -122,13 +122,14 @@ body {
 .subtagline {
     color: #329894;
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 700;
     padding: 20px 0;
     text-align: center;
 }
 
 .features {
     font-size: 20px;
+    font-weight: 300;
     margin: 0 auto;
     width: 540px;
 }
