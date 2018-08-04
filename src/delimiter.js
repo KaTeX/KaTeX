@@ -417,10 +417,10 @@ const makeSqrtImage = function(
 } {
     // Define a newOptions that removes the effect of size changes such as \Huge.
     // We don't pick different a height surd for \Huge. For it, we scale up.
-    let newOptions = options.havingBaseSizing();
+    const newOptions = options.havingBaseSizing();
 
     // Pick the desired surd glyph from a sequence of surds.
-    let delim = traverseSequence("\\surd", height * newOptions.sizeMultiplier,
+    const delim = traverseSequence("\\surd", height * newOptions.sizeMultiplier,
         stackLargeDelimiterSequence, newOptions);
 
     let sizeMultiplier = newOptions.sizeMultiplier;  // default
