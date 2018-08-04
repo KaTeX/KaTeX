@@ -346,9 +346,11 @@ SupSubLeftAlignReset: |
 SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
 SurrogatePairs: |
     \begin{array}{l}
-        𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜 \\
-        \text{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜} \\
-        \mathrm{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜}
+        𝐀𝐚𝟎𝐴𝑎𝑨𝒂𝔅𝔞𝔸𝒜 \\
+        𝖠𝖺𝟢𝗔𝗮𝟬𝘼𝙖𝙰𝚊𝟶 \\
+        \text{𝐀𝐚𝟎𝐴𝑎𝑨𝒂𝔅𝔞𝔸𝒜} \\
+        \text{𝖠𝖺𝟢𝗔𝗮𝟬𝘼𝙖𝙰𝚊𝟶}
+        \mathrm{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜} \\
     \end{array}
 SvgReset:
     # This math uses a lot of SVG glyphs
@@ -419,5 +421,3 @@ VerticalSpacing:
     pre: potato<br>blah
     tex: x^{\Huge y}z
     post: <br>moo
-WideCharacters: |
-    𝐀 𝐚 𝟎 𝐴 𝑎 𝑨 𝒂 𝒜 𝒶 𝔄 𝔞 𝔸 𝕜 𝖠 𝖺 𝟢 𝗔 𝗮 𝟬 𝘼 𝙖 𝙰 𝚊 𝟶
