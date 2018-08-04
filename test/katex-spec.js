@@ -191,36 +191,36 @@ describe("A subscript and superscript parser", function() {
         const parse = getParsed`x^2`[0];
 
         expect(parse.type).toBe("supsub");
-        expect(parse.value.base).toBeDefined();
-        expect(parse.value.sup).toBeDefined();
-        expect(parse.value.sub).toBeUndefined();
+        expect(parse.base).toBeDefined();
+        expect(parse.sup).toBeDefined();
+        expect(parse.sub).toBeUndefined();
     });
 
     it("should produce supsubs for subscript", function() {
         const parse = getParsed`x_3`[0];
 
         expect(parse.type).toBe("supsub");
-        expect(parse.value.base).toBeDefined();
-        expect(parse.value.sub).toBeDefined();
-        expect(parse.value.sup).toBeUndefined();
+        expect(parse.base).toBeDefined();
+        expect(parse.sub).toBeDefined();
+        expect(parse.sup).toBeUndefined();
     });
 
     it("should produce supsubs for ^_", function() {
         const parse = getParsed`x^2_3`[0];
 
         expect(parse.type).toBe("supsub");
-        expect(parse.value.base).toBeDefined();
-        expect(parse.value.sup).toBeDefined();
-        expect(parse.value.sub).toBeDefined();
+        expect(parse.base).toBeDefined();
+        expect(parse.sup).toBeDefined();
+        expect(parse.sub).toBeDefined();
     });
 
     it("should produce supsubs for _^", function() {
         const parse = getParsed`x_3^2`[0];
 
         expect(parse.type).toBe("supsub");
-        expect(parse.value.base).toBeDefined();
-        expect(parse.value.sup).toBeDefined();
-        expect(parse.value.sub).toBeDefined();
+        expect(parse.base).toBeDefined();
+        expect(parse.sup).toBeDefined();
+        expect(parse.sub).toBeDefined();
     });
 
     it("should produce the same thing regardless of order", function() {
@@ -304,10 +304,10 @@ describe("A parser with limit controls", function() {
         "of the preceding op node", function() {
 
         let parsedInput = getParsed`\int\nolimits\limits_2^2`;
-        expect(parsedInput[0].value.base.value.limits).toBe(true);
+        expect(parsedInput[0].base.limits).toBe(true);
 
         parsedInput = getParsed`\int\limits_2\nolimits^2`;
-        expect(parsedInput[0].value.base.value.limits).toBe(false);
+        expect(parsedInput[0].base.limits).toBe(false);
     });
 });
 

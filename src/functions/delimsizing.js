@@ -64,8 +64,9 @@ function checkDelimiter(
         return symDelim;
     } else {
         throw new ParseError(
-            "Invalid delimiter: '" + String(delim.value) + "' after '" +
-            context.funcName + "'", delim);
+            "Invalid delimiter: '" +
+            (symDelim ? symDelim.value : JSON.stringify(delim)) +
+            "' after '" + context.funcName + "'", delim);
     }
 }
 

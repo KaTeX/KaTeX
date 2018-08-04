@@ -402,7 +402,8 @@ defineFunction({
         let styl = checkNodeType(args[3], "ordgroup");
         if (styl) {
             if (styl.value.length > 0) {
-                size = stylArray[Number(styl.value[0].value)];
+                const textOrd = assertNodeType(styl.value[0], "textord");
+                size = stylArray[Number(textOrd.value)];
             }
         } else {
             styl = assertNodeType(args[3], "textord");

@@ -25,19 +25,17 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
         // Ref: LaTeX source2e: }}}}\limits}
         // i.e. LaTeX treats the brace similar to an op and passes it
         // with \limits, so we need to assign supsub style.
-        supSubGroup = supSub.value.sup ?
-            html.buildGroup(
-                supSub.value.sup, options.havingStyle(style.sup()), options) :
-            html.buildGroup(
-                supSub.value.sub, options.havingStyle(style.sub()), options);
-        group = assertNodeType(supSub.value.base, "horizBrace");
+        supSubGroup = supSub.sup ?
+            html.buildGroup(supSub.sup, options.havingStyle(style.sup()), options) :
+            html.buildGroup(supSub.sub, options.havingStyle(style.sub()), options);
+        group = assertNodeType(supSub.base, "horizBrace");
     } else {
         group = assertNodeType(grp, "horizBrace");
     }
 
     // Build the base group
     const body = html.buildGroup(
-        group.value.base, options.havingBaseStyle(Style.DISPLAY));
+        group.base, options.havingBaseStyle(Style.DISPLAY));
 
     // Create the stretchy element
     const braceBody = stretchy.svgSpan(group, options);
@@ -45,7 +43,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
     // Generate the vlist, with the appropriate kerns        ┏━━━━━━━━┓
     // This first vlist contains the content and the brace:   equation
     let vlist;
-    if (group.value.isOver) {
+    if (group.isOver) {
         vlist = buildCommon.makeVList({
             positionType: "firstBaseline",
             children: [
@@ -81,10 +79,10 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
         //    equation           eqn                 eqn
 
         const vSpan = buildCommon.makeSpan(
-            ["mord", (group.value.isOver ? "mover" : "munder")],
+            ["mord", (group.isOver ? "mover" : "munder")],
             [vlist], options);
 
-        if (group.value.isOver) {
+        if (group.isOver) {
             vlist = buildCommon.makeVList({
                 positionType: "firstBaseline",
                 children: [
@@ -108,14 +106,14 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
     }
 
     return buildCommon.makeSpan(
-        ["mord", (group.value.isOver ? "mover" : "munder")], [vlist], options);
+        ["mord", (group.isOver ? "mover" : "munder")], [vlist], options);
 };
 
 const mathmlBuilder: MathMLBuilder<"horizBrace"> = (group, options) => {
-    const accentNode = stretchy.mathMLnode(group.value.label);
+    const accentNode = stretchy.mathMLnode(group.label);
     return new mathMLTree.MathNode(
-        (group.value.isOver ? "mover" : "munder"),
-        [mml.buildGroup(group.value.base, options), accentNode]
+        (group.isOver ? "mover" : "munder"),
+        [mml.buildGroup(group.base, options), accentNode]
     );
 };
 
@@ -130,12 +128,9 @@ defineFunction({
         return {
             type: "horizBrace",
             mode: parser.mode,
-            value: {
-                type: "horizBrace",
-                label: funcName,
-                isOver: /^\\over/.test(funcName),
-                base: args[0],
-            },
+            label: funcName,
+            isOver: /^\\over/.test(funcName),
+            base: args[0],
         };
     },
     htmlBuilder,
