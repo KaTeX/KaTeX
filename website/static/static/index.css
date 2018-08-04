@@ -176,7 +176,7 @@ b {
     background-position: 50% 50%;
     background-size: cover;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    height: 340px;
+    padding-top: 42%;
     width: 100%;
 }
 
