@@ -1,11 +1,16 @@
 body {
     font: 16px/1.4 "Lato", "Helvetica Neue", Arial, Helvetica, sans-serif;
+    margin: 0;
+}
+
+b {
+  font-weight: bolder;
 }
 
 .container {
     margin: 0 auto;
-    margin: 0 auto;
-    width: 800px;
+    width: 100%;
+    max-width: 800px;
 }
 
 .header, .footer {
@@ -29,7 +34,7 @@ body {
 }
 
 .header {
-    padding: 40px 0 0;
+    padding: 40px 15px 0;
 }
 
 .logo {
@@ -64,18 +69,19 @@ body {
     margin: 50px 0 0;
 }
 
-.demo,
-.demo-left,
-.demo-right {
-    height: 260px;
+.demo {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
 }
 
 .demo-left,
 .demo-right {
     box-sizing: border-box;
-    float: left;
     padding: 20px 30px;
-    width: 50%;
+    height: 260px;
+    width: 100%;
 }
 
 .demo-instructions {
@@ -95,6 +101,8 @@ body {
     color: #fff;
     font: 14px Menlo, monospace;
     height: 160px;
+    margin: 0;
+    overflow: auto;
     padding: 10px;
     resize: none;
     width: 100%;
@@ -116,7 +124,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     min-height: 400px;
     position: relative;
-    padding: 30px 0;
+    padding: 30px 15px;
 }
 
 .subtagline {
@@ -131,7 +139,7 @@ body {
     font-size: 20px;
     font-weight: 300;
     margin: 0 auto;
-    width: 540px;
+    max-width: 540px;
 }
 
 .features > li {
@@ -186,7 +194,7 @@ body {
 }
 
 .footer {
-    padding: 30px 0;
+    padding: 30px 15px;
     font-size: 21px;
 }
 
@@ -210,4 +218,21 @@ body {
 
 .errorMessage {
     color: red;
+}
+
+@media only screen and (min-width: 736px) {
+    .demo-left,
+    .demo-right {
+        -ms-flex-preferred-size: 0;
+        flex-basis: 0;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+    }
+}
+
+@media only screen and (max-width: 735px) {
+    .cta a {
+        display: block;
+        margin-bottom: 10px;
+    }
 }
