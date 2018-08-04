@@ -101,25 +101,19 @@ defineFunction({
         const baseOp = {
             type: "op",
             mode: baseArg.mode,
-            value: {
-                type: "op",
-                limits: true,
-                alwaysHandleSupSub: true,
-                symbol: false,
-                suppressBaseShift: funcName !== "\\stackrel",
-                value: ordargument(baseArg),
-            },
+            limits: true,
+            alwaysHandleSupSub: true,
+            symbol: false,
+            suppressBaseShift: funcName !== "\\stackrel",
+            value: ordargument(baseArg),
         };
 
         const supsub = {
             type: "supsub",
             mode: shiftedArg.mode,
-            value: {
-                type: "supsub",
-                base: baseOp,
-                sup: funcName === "\\underset" ? null : shiftedArg,
-                sub: funcName === "\\underset" ? shiftedArg : null,
-            },
+            base: baseOp,
+            sup: funcName === "\\underset" ? null : shiftedArg,
+            sub: funcName === "\\underset" ? shiftedArg : null,
         };
 
         return {
