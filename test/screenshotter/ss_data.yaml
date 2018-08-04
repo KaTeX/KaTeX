@@ -419,5 +419,5 @@ VerticalSpacing:
     pre: potato<br>blah
     tex: x^{\Huge y}z
     post: <br>moo
-WideCharacters:
+WideCharacters: |
     𝐀 𝐚 𝟎 𝐴 𝑎 𝑨 𝒂 𝒜 𝒶 𝔄 𝔞 𝔸 𝕜 𝖠 𝖺 𝟢 𝗔 𝗮 𝟬 𝘼 𝙖 𝙰 𝚊 𝟶
