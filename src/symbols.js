@@ -834,7 +834,7 @@ defineSymbol(text, main, textord, "k", wideChar);
 
 // Next, some wide character numerals
 for (let i = 0; i < 10; i++) {
-    const ch = letters.charAt(i);
+    const ch = i.toString();
 
     wideChar = String.fromCharCode(0xD835, 0xDFCE + i);  // 0-9 bold
     defineSymbol(math, main, mathord, ch, wideChar);
