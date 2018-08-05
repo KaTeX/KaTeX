@@ -225,7 +225,7 @@ ModSpacing: |
     \end{array}
 NegativeSpaceBetweenRel: A =\!= B
 NegativeSpace:
-    tex: \fbox{\$1,\!000,\!000}\KaTeX
+    tex: \boxed{\$1,\!000,\!000}\KaTeX
     post: .
 NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}

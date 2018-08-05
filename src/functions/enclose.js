@@ -195,7 +195,28 @@ defineFunction({
 
 defineFunction({
     type: "enclose",
-    names: ["\\cancel", "\\bcancel", "\\xcancel", "\\sout", "\\fbox"],
+    names: ["\\fbox"],
+    props: {
+        numArgs: 1,
+        argTypes: ["text"],
+        allowedInText: true,
+    },
+    handler({parser}, args) {
+        return {
+            type: "enclose",
+            mode: parser.mode,
+            value: {
+                type: "enclose",
+                label: "\\fbox",
+                body: args[0],
+            },
+        };
+    },
+});
+
+defineFunction({
+    type: "enclose",
+    names: ["\\cancel", "\\bcancel", "\\xcancel", "\\sout"],
     props: {
         numArgs: 1,
     },
