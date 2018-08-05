@@ -2156,6 +2156,12 @@ describe("A boxed builder", function() {
     });
 });
 
+describe("An fbox parser, unlike a boxed parser,", function() {
+    it("should fail when given math", function() {
+        expect`\fbox{\frac a b}`.not.toParse();
+    });
+});
+
 describe("A colorbox parser", function() {
     it("should not fail, given a text argument", function() {
         expect`\colorbox{red}{a b}`.toParse();
