@@ -209,10 +209,10 @@ defineFunction({
                 type: "enclose",
                 label: "\\fbox",
                 body: args[0],
-            }
+            },
         };
-    }
-})
+    },
+});
 
 defineFunction({
     type: "enclose",
