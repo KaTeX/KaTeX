@@ -358,10 +358,7 @@ type ParseNodeTypes = {
         type: "overline",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "overline",
-            body: AnyParseNode,
-        |},
+        body: AnyParseNode,
     |},
     "phantom": {|
         type: "phantom",
