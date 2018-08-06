@@ -288,11 +288,8 @@ type ParseNodeTypes = {
         type: "lap",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "lap",
-            alignment: string,
-            body: AnyParseNode,
-        |},
+        alignment: string,
+        body: AnyParseNode,
     |},
     "leftright": {|
         type: "leftright",
