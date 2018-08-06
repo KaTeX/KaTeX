@@ -354,16 +354,6 @@ type ParseNodeTypes = {
             value: AnyParseNode[],
         |},
     |},
-    "mod": {|
-        type: "mod",
-        mode: Mode,
-        loc?: ?SourceLocation,
-        value: {|
-            type: "mod",
-            modType: string,
-            value: ?AnyParseNode[],
-        |},
-    |},
     "operatorname": {|
         type: "operatorname",
         mode: Mode,
