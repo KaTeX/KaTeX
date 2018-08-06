@@ -382,11 +382,7 @@ type ParseNodeTypes = {
         type: "vphantom",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "vphantom",
-            body: AnyParseNode,
-            value: AnyParseNode[],
-        |},
+        body: AnyParseNode,
     |},
     "raisebox": {|
         type: "raisebox",

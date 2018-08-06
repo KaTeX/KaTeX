@@ -93,23 +93,19 @@ defineFunction({
         return {
             type: "vphantom",
             mode: parser.mode,
-            value: {
-                type: "vphantom",
-                value: ordargument(body),
-                body: body,
-            },
+            body,
         };
     },
     htmlBuilder: (group, options) => {
         const inner = buildCommon.makeSpan(
             ["inner"],
-            [html.buildGroup(group.value.body, options.withPhantom())]);
+            [html.buildGroup(group.body, options.withPhantom())]);
         const fix = buildCommon.makeSpan(["fix"], []);
         return buildCommon.makeSpan(
             ["mord", "rlap"], [inner, fix], options);
     },
     mathmlBuilder: (group, options) => {
-        const inner = mml.buildExpression(group.value.value, options);
+        const inner = mml.buildExpression(ordargument(group.body), options);
         const node = new mathMLTree.MathNode("mphantom", inner);
         node.setAttribute("width", "0px");
         return node;
