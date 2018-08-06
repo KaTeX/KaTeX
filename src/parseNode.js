@@ -10,13 +10,6 @@ import type {Measurement} from "./units";
 export type NodeType = $Keys<ParseNodeTypes>;
 export type ParseNode<TYPE: NodeType> = $ElementType<ParseNodeTypes, TYPE>;
 
-export type LeftRightDelimType = {|
-    type: "leftright",
-    body: AnyParseNode[],
-    left: string,
-    right: string,
-|};
-
 // ParseNode's corresponding to Symbol `Group`s in symbols.js.
 export type SymbolParseNode =
     ParseNode<"atom"> |
@@ -116,11 +109,8 @@ type ParseNodeTypes = {
         type: "tag",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "tag",
-            body: AnyParseNode[],
-            tag: AnyParseNode[],
-        |},
+        body: AnyParseNode[],
+        tag: AnyParseNode[],
     |},
     "text": {|
         type: "text",
@@ -136,20 +126,14 @@ type ParseNodeTypes = {
         type: "url",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "url",
-            value: string,
-        |},
+        url: string,
     |},
     "verb": {|
         type: "verb",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "verb",
-            body: string,
-            star: boolean,
-        |},
+        body: string,
+        star: boolean,
     |},
     // From symbol groups, constructed in Parser.js via `symbols` lookup.
     // (Some of these have "-token" suffix to distinguish them from existing
@@ -216,23 +200,17 @@ type ParseNodeTypes = {
         type: "cr",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "cr",
-            newRow: boolean,
-            newLine: boolean,
-            size: ?ParseNode<"size">,
-        |},
+        newRow: boolean,
+        newLine: boolean,
+        size: ?ParseNode<"size">,
     |},
     "delimsizing": {|
         type: "delimsizing",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "delimsizing",
-            size: 1 | 2 | 3 | 4,
-            mclass: "mopen" | "mclose" | "mrel" | "mord",
-            value: string,
-        |},
+        size: 1 | 2 | 3 | 4,
+        mclass: "mopen" | "mclose" | "mrel" | "mord",
+        delim: string,
     |},
     "enclose": {|
         type: "enclose",
@@ -260,11 +238,8 @@ type ParseNodeTypes = {
         type: "font",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "font",
-            font: string,
-            body: AnyParseNode,
-        |},
+        font: string,
+        body: AnyParseNode,
     |},
     "genfrac": {|
         type: "genfrac",
@@ -294,11 +269,8 @@ type ParseNodeTypes = {
         type: "href",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "href",
-            href: string,
-            body: AnyParseNode[],
-        |},
+        href: string,
+        body: AnyParseNode[],
     |},
     "htmlmathml": {|
         type: "htmlmathml",
@@ -344,57 +316,37 @@ type ParseNodeTypes = {
         type: "leftright",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: LeftRightDelimType,
+        body: AnyParseNode[],
+        left: string,
+        right: string,
     |},
     "leftright-right": {|
         type: "leftright-right",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "leftright-right",
-            value: string,
-        |},
+        delim: string,
     |},
     "mathchoice": {|
         type: "mathchoice",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "mathchoice",
-            display: AnyParseNode[],
-            text: AnyParseNode[],
-            script: AnyParseNode[],
-            scriptscript: AnyParseNode[],
-        |},
+        display: AnyParseNode[],
+        text: AnyParseNode[],
+        script: AnyParseNode[],
+        scriptscript: AnyParseNode[],
     |},
     "middle": {|
         type: "middle",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "middle",
-            value: string,
-        |},
+        delim: string,
     |},
     "mclass": {|
         type: "mclass",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "mclass",
-            mclass: string,
-            value: AnyParseNode[],
-        |},
-    |},
-    "mod": {|
-        type: "mod",
-        mode: Mode,
-        loc?: ?SourceLocation,
-        value: {|
-            type: "mod",
-            modType: string,
-            value: ?AnyParseNode[],
-        |},
+        mclass: string,
+        body: AnyParseNode[],
     |},
     "operatorname": {|
         type: "operatorname",
@@ -418,30 +370,19 @@ type ParseNodeTypes = {
         type: "phantom",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "phantom",
-            value: AnyParseNode[],
-        |},
+        body: AnyParseNode[],
     |},
     "hphantom": {|
         type: "hphantom",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "hphantom",
-            body: AnyParseNode,
-            value: AnyParseNode[],
-        |},
+        body: AnyParseNode,
     |},
     "vphantom": {|
         type: "vphantom",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "vphantom",
-            body: AnyParseNode,
-            value: AnyParseNode[],
-        |},
+        body: AnyParseNode,
     |},
     "raisebox": {|
         type: "raisebox",

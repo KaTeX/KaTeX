@@ -751,22 +751,19 @@ exports[`An implicit group parser within optional groups should work with old fo
         "value": [
           {
             "type": "font",
-            "mode": "math",
-            "value": {
-              "type": "font",
-              "body": {
-                "type": "ordgroup",
-                "mode": "math",
-                "value": [
-                  {
-                    "type": "textord",
-                    "mode": "math",
-                    "value": "3"
-                  }
-                ]
-              },
-              "font": "mathtt"
-            }
+            "body": {
+              "type": "ordgroup",
+              "mode": "math",
+              "value": [
+                {
+                  "type": "textord",
+                  "mode": "math",
+                  "value": "3"
+                }
+              ]
+            },
+            "font": "mathtt",
+            "mode": "math"
           }
         ]
       }

@@ -7,15 +7,17 @@ import type {AnyParseNode} from "../parseNode";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
+import type {ParseNode} from "../parseNode";
+
 const makeSpan = buildCommon.makeSpan;
 
-function htmlBuilder(group, options) {
-    const elements = html.buildExpression(group.value.value, options, true);
-    return makeSpan([group.value.mclass], elements, options);
+function htmlBuilder(group: ParseNode<"mclass">, options) {
+    const elements = html.buildExpression(group.body, options, true);
+    return makeSpan([group.mclass], elements, options);
 }
 
-function mathmlBuilder(group, options) {
-    const inner = mml.buildExpression(group.value.value, options);
+function mathmlBuilder(group: ParseNode<"mclass">, options) {
+    const inner = mml.buildExpression(group.body, options);
     return mathMLTree.newDocumentFragment(inner);
 }
 
@@ -34,11 +36,8 @@ defineFunction({
         return {
             type: "mclass",
             mode: parser.mode,
-            value: {
-                type: "mclass",
-                mclass: "m" + funcName.substr(5),
-                value: ordargument(body),
-            },
+            mclass: "m" + funcName.substr(5),
+            body: ordargument(body),
         };
     },
     htmlBuilder,
@@ -70,11 +69,8 @@ defineFunction({
         return {
             type: "mclass",
             mode: parser.mode,
-            value: {
-                type: "mclass",
-                mclass: binrelClass(args[0]),
-                value: [args[1]],
-            },
+            mclass: binrelClass(args[0]),
+            body: [args[1]],
         };
     },
 });
@@ -119,11 +115,8 @@ defineFunction({
         return {
             type: "mclass",
             mode: parser.mode,
-            value: {
-                type: "mclass",
-                mclass: mclass,
-                value: [supsub],
-            },
+            mclass,
+            body: [supsub],
         };
     },
     htmlBuilder,

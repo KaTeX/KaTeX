@@ -95,7 +95,7 @@ describe("A rel parser", function() {
                 group = group.value.html[0];
             }
             if (group.type === "mclass") {
-                expect(group.value.mclass).toEqual("mrel");
+                expect(group.mclass).toEqual("mrel");
             } else {
                 expect(group.type).toEqual("atom");
                 expect(group.family).toEqual("rel");
@@ -895,16 +895,16 @@ describe("A delimiter sizing parser", function() {
         const leftParse = getParsed(normalDelim)[0];
         const rightParse = getParsed(bigDelim)[0];
 
-        expect(leftParse.value.mclass).toEqual("mopen");
-        expect(rightParse.value.mclass).toEqual("mclose");
+        expect(leftParse.mclass).toEqual("mopen");
+        expect(rightParse.mclass).toEqual("mclose");
     });
 
     it("should parse the correct size delimiter", function() {
         const smallParse = getParsed(normalDelim)[0];
         const bigParse = getParsed(bigDelim)[0];
 
-        expect(smallParse.value.size).toEqual(1);
-        expect(bigParse.value.size).toEqual(4);
+        expect(smallParse.size).toEqual(1);
+        expect(bigParse.size).toEqual(4);
     });
 });
 
@@ -1122,8 +1122,8 @@ describe("A left/right parser", function() {
         const parse = getParsed(normalLeftRight)[0];
 
         expect(parse.type).toEqual("leftright");
-        expect(parse.value.left).toEqual("(");
-        expect(parse.value.right).toEqual(")");
+        expect(parse.left).toEqual("(");
+        expect(parse.right).toEqual(")");
     });
 
     it("should error when it is mismatched", function() {
@@ -1476,37 +1476,37 @@ describe("A font parser", function() {
 
     it("should produce the correct fonts", function() {
         const mathbbParse = getParsed`\mathbb x`[0];
-        expect(mathbbParse.value.font).toEqual("mathbb");
-        expect(mathbbParse.value.type).toEqual("font");
+        expect(mathbbParse.font).toEqual("mathbb");
+        expect(mathbbParse.type).toEqual("font");
 
         const mathrmParse = getParsed`\mathrm x`[0];
-        expect(mathrmParse.value.font).toEqual("mathrm");
-        expect(mathrmParse.value.type).toEqual("font");
+        expect(mathrmParse.font).toEqual("mathrm");
+        expect(mathrmParse.type).toEqual("font");
 
         const mathitParse = getParsed`\mathit x`[0];
-        expect(mathitParse.value.font).toEqual("mathit");
-        expect(mathitParse.value.type).toEqual("font");
+        expect(mathitParse.font).toEqual("mathit");
+        expect(mathitParse.type).toEqual("font");
 
         const mathcalParse = getParsed`\mathcal C`[0];
-        expect(mathcalParse.value.font).toEqual("mathcal");
-        expect(mathcalParse.value.type).toEqual("font");
+        expect(mathcalParse.font).toEqual("mathcal");
+        expect(mathcalParse.type).toEqual("font");
 
         const mathfrakParse = getParsed`\mathfrak C`[0];
-        expect(mathfrakParse.value.font).toEqual("mathfrak");
-        expect(mathfrakParse.value.type).toEqual("font");
+        expect(mathfrakParse.font).toEqual("mathfrak");
+        expect(mathfrakParse.type).toEqual("font");
     });
 
     it("should parse nested font commands", function() {
         const nestedParse = getParsed`\mathbb{R \neq \mathrm{R}}`[0];
-        expect(nestedParse.value.font).toEqual("mathbb");
-        expect(nestedParse.value.type).toEqual("font");
+        expect(nestedParse.font).toEqual("mathbb");
+        expect(nestedParse.type).toEqual("font");
 
-        const bbBody = nestedParse.value.body.value;
+        const bbBody = nestedParse.body.value;
         expect(bbBody).toHaveLength(3);
         expect(bbBody[0].type).toEqual("mathord");
         expect(bbBody[2].type).toEqual("font");
-        expect(bbBody[2].value.font).toEqual("mathrm");
-        expect(bbBody[2].value.type).toEqual("font");
+        expect(bbBody[2].font).toEqual("mathrm");
+        expect(bbBody[2].type).toEqual("font");
     });
 
     it("should work with \\textcolor", function() {
@@ -1515,8 +1515,8 @@ describe("A font parser", function() {
         expect(colorMathbbParse.value.color).toEqual("blue");
         const body = colorMathbbParse.value.value;
         expect(body).toHaveLength(1);
-        expect(body[0].value.type).toEqual("font");
-        expect(body[0].value.font).toEqual("mathbb");
+        expect(body[0].type).toEqual("font");
+        expect(body[0].font).toEqual("mathbb");
     });
 
     it("should not parse a series of font commands", function() {
@@ -1525,13 +1525,13 @@ describe("A font parser", function() {
 
     it("should nest fonts correctly", function() {
         const bf = getParsed`\mathbf{a\mathrm{b}c}`[0];
-        expect(bf.value.type).toEqual("font");
-        expect(bf.value.font).toEqual("mathbf");
-        expect(bf.value.body.value).toHaveLength(3);
-        expect(bf.value.body.value[0].value).toEqual("a");
-        expect(bf.value.body.value[1].value.type).toEqual("font");
-        expect(bf.value.body.value[1].value.font).toEqual("mathrm");
-        expect(bf.value.body.value[2].value).toEqual("c");
+        expect(bf.type).toEqual("font");
+        expect(bf.font).toEqual("mathbf");
+        expect(bf.body.value).toHaveLength(3);
+        expect(bf.body.value[0].value).toEqual("a");
+        expect(bf.body.value[1].type).toEqual("font");
+        expect(bf.body.value[1].font).toEqual("mathrm");
+        expect(bf.body.value[2].value).toEqual("c");
     });
 
     it("should have the correct greediness", function() {
@@ -2292,7 +2292,7 @@ describe("A phantom parser", function() {
         const parse = getParsed`\phantom{x}`[0];
 
         expect(parse.type).toEqual("phantom");
-        expect(parse.value.value).toBeDefined();
+        expect(parse.body).toBeDefined();
     });
 });
 
@@ -2499,17 +2499,17 @@ describe("href and url commands", function() {
     it("should allow letters [#$%&~_^] without escaping", function() {
         const url = "http://example.org/~bar/#top?foo=$foo&bar=ba^r_boo%20baz";
         const parsed1 = getParsed(`\\href{${url}}{\\alpha}`)[0];
-        expect(parsed1.value.href).toBe(url);
+        expect(parsed1.href).toBe(url);
         const parsed2 = getParsed(`\\url{${url}}`)[0];
-        expect(parsed2.value.href).toBe(url);
+        expect(parsed2.href).toBe(url);
     });
 
     it("should allow balanced braces in url", function() {
         const url = "http://example.org/{too}";
         const parsed1 = getParsed(`\\href{${url}}{\\alpha}`)[0];
-        expect(parsed1.value.href).toBe(url);
+        expect(parsed1.href).toBe(url);
         const parsed2 = getParsed(`\\url{${url}}`)[0];
-        expect(parsed2.value.href).toBe(url);
+        expect(parsed2.href).toBe(url);
     });
 
     it("should not allow unbalanced brace(s) in url", function() {
@@ -2523,9 +2523,9 @@ describe("href and url commands", function() {
         const url = "http://example.org/~bar/#top?foo=$}foo{&bar=bar^r_boo%20baz";
         const input = url.replace(/([#$%&~_^{}])/g, '\\$1');
         const parsed1 = getParsed(`\\href{${input}}{\\alpha}`)[0];
-        expect(parsed1.value.href).toBe(url);
+        expect(parsed1.href).toBe(url);
         const parsed2 = getParsed(`\\url{${input}}`)[0];
-        expect(parsed2.value.href).toBe(url);
+        expect(parsed2.href).toBe(url);
     });
 
     it("should be marked up correctly", function() {

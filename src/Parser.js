@@ -942,10 +942,7 @@ export default class Parser {
             const urlArg = {
                 type: "url",
                 mode: this.mode,
-                value: {
-                    type: "url",
-                    value: url,
-                },
+                url,
             };
             this.consume();
             if (funcName === "\\href") {  // two arguments
@@ -983,11 +980,8 @@ export default class Parser {
             return newArgument({
                 type: "verb",
                 mode: "text",
-                value: {
-                    type: "verb",
-                    body: arg,
-                    star: star,
-                },
+                body: arg,
+                star,
             }, nucleus);
         }
         // At this point, we should have a symbol, possibly with accents.

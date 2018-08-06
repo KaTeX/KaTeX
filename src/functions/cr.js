@@ -40,12 +40,9 @@ defineFunction({
         return {
             type: "cr",
             mode: parser.mode,
-            value: {
-                type: "cr",
-                newLine,
-                newRow,
-                size: size && assertNodeType(size, "size"),
-            },
+            newLine,
+            newRow,
+            size: size && assertNodeType(size, "size"),
         };
     },
 
@@ -53,16 +50,16 @@ defineFunction({
     // not within tabular/array environments.
 
     htmlBuilder: (group, options) => {
-        if (group.value.newRow) {
+        if (group.newRow) {
             throw new ParseError(
                 "\\cr valid only within a tabular/array environment");
         }
         const span = buildCommon.makeSpan(["mspace"], [], options);
-        if (group.value.newLine) {
+        if (group.newLine) {
             span.classes.push("newline");
-            if (group.value.size) {
+            if (group.size) {
                 span.style.marginTop =
-                    calculateSize(group.value.size.value.value, options) + "em";
+                    calculateSize(group.size.value.value, options) + "em";
             }
         }
         return span;
@@ -70,11 +67,11 @@ defineFunction({
 
     mathmlBuilder: (group, options) => {
         const node = new mathMLTree.MathNode("mspace");
-        if (group.value.newLine) {
+        if (group.newLine) {
             node.setAttribute("linebreak", "newline");
-            if (group.value.size) {
+            if (group.size) {
                 node.setAttribute("height",
-                    calculateSize(group.value.size.value.value, options) + "em");
+                    calculateSize(group.size.value.value, options) + "em");
             }
         }
         return node;

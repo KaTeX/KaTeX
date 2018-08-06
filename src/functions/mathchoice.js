@@ -6,19 +6,16 @@ import Style from "../Style";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-const chooseMathStyle = (group, options) => {
-    const style = options.style;
-    if (style.size === Style.DISPLAY.size) {
-        return group.value.display;
-    } else if  (style.size === Style.TEXT.size) {
-        return group.value.text;
-    } else if  (style.size === Style.SCRIPT.size) {
-        return group.value.script;
-    } else if  (style.size === Style.SCRIPTSCRIPT.size) {
-        return group.value.scriptscript;
-    }
-    return group.value.text;
+import type {ParseNode} from "../parseNode";
 
+const chooseMathStyle = (group: ParseNode<"mathchoice">, options) => {
+    switch (options.style.size) {
+        case Style.DISPLAY.size: return group.display;
+        case Style.TEXT.size: return group.text;
+        case Style.SCRIPT.size: return group.script;
+        case Style.SCRIPTSCRIPT.size: return group.scriptscript;
+        default: return group.text;
+    }
 };
 
 defineFunction({
@@ -31,13 +28,10 @@ defineFunction({
         return {
             type: "mathchoice",
             mode: parser.mode,
-            value: {
-                type: "mathchoice",
-                display:      ordargument(args[0]),
-                text:         ordargument(args[1]),
-                script:       ordargument(args[2]),
-                scriptscript: ordargument(args[3]),
-            },
+            display:      ordargument(args[0]),
+            text:         ordargument(args[1]),
+            script:       ordargument(args[2]),
+            scriptscript: ordargument(args[3]),
         };
     },
     htmlBuilder: (group, options) => {
