@@ -1122,8 +1122,8 @@ describe("A left/right parser", function() {
         const parse = getParsed(normalLeftRight)[0];
 
         expect(parse.type).toEqual("leftright");
-        expect(parse.value.left).toEqual("(");
-        expect(parse.value.right).toEqual(")");
+        expect(parse.left).toEqual("(");
+        expect(parse.right).toEqual(")");
     });
 
     it("should error when it is mismatched", function() {

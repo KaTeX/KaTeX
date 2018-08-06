@@ -10,13 +10,6 @@ import type {Measurement} from "./units";
 export type NodeType = $Keys<ParseNodeTypes>;
 export type ParseNode<TYPE: NodeType> = $ElementType<ParseNodeTypes, TYPE>;
 
-export type LeftRightDelimType = {|
-    type: "leftright",
-    body: AnyParseNode[],
-    left: string,
-    right: string,
-|};
-
 // ParseNode's corresponding to Symbol `Group`s in symbols.js.
 export type SymbolParseNode =
     ParseNode<"atom"> |
@@ -326,7 +319,9 @@ type ParseNodeTypes = {
         type: "leftright",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: LeftRightDelimType,
+        body: AnyParseNode[],
+        left: string,
+        right: string,
     |},
     "leftright-right": {|
         type: "leftright-right",
