@@ -460,10 +460,10 @@ export default class Parser {
             const begin =
                 assertNodeType(this.parseGivenFunction(start), "environment");
 
-            const envName = begin.value.name;
+            const envName = begin.name;
             if (!environments.hasOwnProperty(envName)) {
                 throw new ParseError(
-                    "No such environment: " + envName, begin.value.nameGroup);
+                    "No such environment: " + envName, begin.nameGroup);
             }
             // Build the environment object. Arguments and other information will
             // be made available to the begin and end methods using properties.
@@ -483,10 +483,9 @@ export default class Parser {
                 throw new ParseError("failed to parse function after \\end");
             }
             end = assertNodeType(end, "environment");
-            if (end.value.name !== envName) {
+            if (end.name !== envName) {
                 throw new ParseError(
-                    "Mismatch: \\begin{" + envName + "} matched " +
-                    "by \\end{" + end.value.name + "}",
+                    `Mismatch: \\begin{${envName}} matched by \\end{${end.name}}`,
                     endNameToken);
             }
             return result;

@@ -225,11 +225,8 @@ type ParseNodeTypes = {
         type: "environment",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "environment",
-            name: string,
-            nameGroup: AnyParseNode,
-        |},
+        name: string,
+        nameGroup: AnyParseNode,
     |},
     "font": {|
         type: "font",
