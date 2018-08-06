@@ -63,11 +63,12 @@ const renderElem = function(elem, optionsCopy) {
             // Element node
             let shouldRender = optionsCopy.ignoredTags.indexOf(
                 childNode.nodeName.toLowerCase()) === -1;
-            
+
             if (shouldRender && optionsCopy.ignoreClasses) {
                 for (let j = 0; j < optionsCopy.ignoreClasses.length; j++) {
                     for (let k = 0; k < childNode.classList.length; k++) {
-                        if (optionsCopy.ignoreClasses[j] === childNode.classList[k]) {
+                        if (optionsCopy.ignoreClasses[j] ===
+                                childNode.classList[k]) {
                             shouldRender = false;
                             break;
                         }
