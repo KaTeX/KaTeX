@@ -7,6 +7,8 @@ const onScroll = () => {
     timer = setTimeout(() => {
         let found = false;
         const headings = document.querySelectorAll('.toc-headings > li > a');
+        // Some computations based on
+        // https://github.com/makotot/scrollspy/blob/master/src/js/modules/scrollspy.js
         const scrollTop = document.documentElement.scrollTop ||
             document.body.scrollTop;
         const scrollBottom = scrollTop + window.innerHeight;
