@@ -61,23 +61,11 @@ const renderElem = function(elem, optionsCopy) {
             elem.replaceChild(frag, childNode);
         } else if (childNode.nodeType === 1) {
             // Element node
-            let shouldRender = optionsCopy.ignoredTags.indexOf(
-                childNode.nodeName.toLowerCase()) === -1;
-
-            if (shouldRender && optionsCopy.ignoreClasses) {
-                for (let j = 0; j < optionsCopy.ignoreClasses.length; j++) {
-                    for (let k = 0; k < childNode.classList.length; k++) {
-                        if (optionsCopy.ignoreClasses[j] ===
-                                childNode.classList[k]) {
-                            shouldRender = false;
-                            break;
-                        }
-                    }
-                    if (shouldRender === false) {
-                        break;
-                    }
-                }
-            }
+            const className = ' ' + childNode.className + ' ';
+            const shouldRender = optionsCopy.ignoredTags.indexOf(
+                childNode.nodeName.toLowerCase()) === -1 &&
+                    optionsCopy.ignoreClasses.every(
+                        x => className.indexOf(' ' + x + ' ') === -1);
 
             if (shouldRender) {
                 renderElem(childNode, optionsCopy);
