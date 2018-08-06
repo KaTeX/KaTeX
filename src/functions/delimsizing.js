@@ -147,10 +147,7 @@ defineFunction({
         return {
             type: "leftright-right",
             mode: context.parser.mode,
-            value: {
-                type: "leftright-right",
-                value: checkDelimiter(args[0], context).value,
-            },
+            delim: checkDelimiter(args[0], context).value,
         };
     },
 });
@@ -182,7 +179,7 @@ defineFunction({
             mode: parser.mode,
             body,
             left: delim.value,
-            right: assertNodeType(right, "leftright-right").value.value,
+            right: assertNodeType(right, "leftright-right").delim,
         };
     },
     htmlBuilder: (group, options) => {

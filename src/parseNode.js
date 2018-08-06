@@ -327,10 +327,7 @@ type ParseNodeTypes = {
         type: "leftright-right",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "leftright-right",
-            value: string,
-        |},
+        delim: string,
     |},
     "mathchoice": {|
         type: "mathchoice",
