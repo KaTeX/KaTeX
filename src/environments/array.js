@@ -139,7 +139,7 @@ function parseArray(
             if (!cr) {
                 throw new ParseError(`Failed to parse function after ${next}`);
             }
-            rowGaps.push(assertNodeType(cr, "cr").value.size);
+            rowGaps.push(assertNodeType(cr, "cr").size);
 
             // check for \hline(s) following the row separator
             hLinesBeforeRow.push(getHLines(parser));
@@ -563,12 +563,9 @@ defineEnvironment({
         return delimiters ? {
             type: "leftright",
             mode: context.mode,
-            value: {
-                type: "leftright",
-                body: [res],
-                left: delimiters[0],
-                right: delimiters[1],
-            },
+            body: [res],
+            left: delimiters[0],
+            right: delimiters[1],
         } : res;
     },
     htmlBuilder,
@@ -614,12 +611,9 @@ defineEnvironment({
         return {
             type: "leftright",
             mode: context.mode,
-            value: {
-                type: "leftright",
-                body: [res],
-                left: "\\{",
-                right: ".",
-            },
+            body: [res],
+            left: "\\{",
+            right: ".",
         };
     },
     htmlBuilder,

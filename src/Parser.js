@@ -223,10 +223,10 @@ export default class Parser {
                 if (overIndex !== -1) {
                     throw new ParseError(
                         "only one infix operator per group",
-                        node.value.token);
+                        node.token);
                 }
                 overIndex = i;
-                funcName = node.value.replaceWith;
+                funcName = node.replaceWith;
             }
         }
 
@@ -327,12 +327,9 @@ export default class Parser {
 
         const colorNode = {
             type: "color",
-            value: {
-                type: "color",
-                color: this.settings.errorColor,
-                value: [textNode],
-            },
             mode: this.mode,
+            color: this.settings.errorColor,
+            body: [textNode],
         };
 
         this.consume();
@@ -460,10 +457,10 @@ export default class Parser {
             const begin =
                 assertNodeType(this.parseGivenFunction(start), "environment");
 
-            const envName = begin.value.name;
+            const envName = begin.name;
             if (!environments.hasOwnProperty(envName)) {
                 throw new ParseError(
-                    "No such environment: " + envName, begin.value.nameGroup);
+                    "No such environment: " + envName, begin.nameGroup);
             }
             // Build the environment object. Arguments and other information will
             // be made available to the begin and end methods using properties.
@@ -483,10 +480,9 @@ export default class Parser {
                 throw new ParseError("failed to parse function after \\end");
             }
             end = assertNodeType(end, "environment");
-            if (end.value.name !== envName) {
+            if (end.name !== envName) {
                 throw new ParseError(
-                    "Mismatch: \\begin{" + envName + "} matched " +
-                    "by \\end{" + end.value.name + "}",
+                    `Mismatch: \\begin{${envName}} matched by \\end{${end.name}}`,
                     endNameToken);
             }
             return result;
@@ -942,10 +938,7 @@ export default class Parser {
             const urlArg = {
                 type: "url",
                 mode: this.mode,
-                value: {
-                    type: "url",
-                    value: url,
-                },
+                url,
             };
             this.consume();
             if (funcName === "\\href") {  // two arguments
@@ -983,11 +976,8 @@ export default class Parser {
             return newArgument({
                 type: "verb",
                 mode: "text",
-                value: {
-                    type: "verb",
-                    body: arg,
-                    star: star,
-                },
+                body: arg,
+                star,
             }, nucleus);
         }
         // At this point, we should have a symbol, possibly with accents.

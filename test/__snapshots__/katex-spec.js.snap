@@ -643,42 +643,39 @@ exports[`An implicit group parser within optional groups should work style comma
 [
   {
     "type": "sqrt",
-    "mode": "math",
-    "value": {
-      "type": "sqrt",
-      "body": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "mathord",
-            "mode": "math",
-            "value": "x"
-          }
-        ]
-      },
-      "index": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
+    "body": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "mathord",
+          "mode": "math",
+          "value": "x"
+        }
+      ]
+    },
+    "index": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "styling",
+          "mode": "math",
+          "value": {
             "type": "styling",
-            "mode": "math",
-            "value": {
-              "type": "styling",
-              "style": "text",
-              "value": [
-                {
-                  "type": "textord",
-                  "mode": "math",
-                  "value": "3"
-                }
-              ]
-            }
+            "style": "text",
+            "value": [
+              {
+                "type": "textord",
+                "mode": "math",
+                "value": "3"
+              }
+            ]
           }
-        ]
-      }
-    }
+        }
+      ]
+    },
+    "mode": "math"
   }
 ]
 `;
@@ -687,42 +684,36 @@ exports[`An implicit group parser within optional groups should work with \\colo
 [
   {
     "type": "sqrt",
-    "mode": "math",
-    "value": {
-      "type": "sqrt",
-      "body": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "mathord",
-            "mode": "math",
-            "value": "x"
-          }
-        ]
-      },
-      "index": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "color",
-            "mode": "math",
-            "value": {
-              "type": "color",
-              "color": "red",
-              "value": [
-                {
-                  "type": "textord",
-                  "mode": "math",
-                  "value": "3"
-                }
-              ]
+    "body": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "mathord",
+          "mode": "math",
+          "value": "x"
+        }
+      ]
+    },
+    "index": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "color",
+          "body": [
+            {
+              "type": "textord",
+              "mode": "math",
+              "value": "3"
             }
-          }
-        ]
-      }
-    }
+          ],
+          "color": "red",
+          "mode": "math"
+        }
+      ]
+    },
+    "mode": "math"
   }
 ]
 `;
@@ -731,46 +722,40 @@ exports[`An implicit group parser within optional groups should work with old fo
 [
   {
     "type": "sqrt",
-    "mode": "math",
-    "value": {
-      "type": "sqrt",
-      "body": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "mathord",
+    "body": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "mathord",
+          "mode": "math",
+          "value": "x"
+        }
+      ]
+    },
+    "index": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "font",
+          "body": {
+            "type": "ordgroup",
             "mode": "math",
-            "value": "x"
-          }
-        ]
-      },
-      "index": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "font",
-            "mode": "math",
-            "value": {
-              "type": "font",
-              "body": {
-                "type": "ordgroup",
+            "value": [
+              {
+                "type": "textord",
                 "mode": "math",
-                "value": [
-                  {
-                    "type": "textord",
-                    "mode": "math",
-                    "value": "3"
-                  }
-                ]
-              },
-              "font": "mathtt"
-            }
-          }
-        ]
-      }
-    }
+                "value": "3"
+              }
+            ]
+          },
+          "font": "mathtt",
+          "mode": "math"
+        }
+      ]
+    },
+    "mode": "math"
   }
 ]
 `;
@@ -779,42 +764,36 @@ exports[`An implicit group parser within optional groups should work with sizing
 [
   {
     "type": "sqrt",
-    "mode": "math",
-    "value": {
-      "type": "sqrt",
-      "body": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "mathord",
-            "mode": "math",
-            "value": "x"
-          }
-        ]
-      },
-      "index": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "sizing",
-            "mode": "math",
-            "value": {
-              "type": "sizing",
-              "size": 5,
-              "value": [
-                {
-                  "type": "textord",
-                  "mode": "math",
-                  "value": "3"
-                }
-              ]
+    "body": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "mathord",
+          "mode": "math",
+          "value": "x"
+        }
+      ]
+    },
+    "index": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "sizing",
+          "body": [
+            {
+              "type": "textord",
+              "mode": "math",
+              "value": "3"
             }
-          }
-        ]
-      }
-    }
+          ],
+          "mode": "math",
+          "size": 5
+        }
+      ]
+    },
+    "mode": "math"
   }
 ]
 `;

@@ -169,7 +169,7 @@ export const buildExpression = function(
                         if (!node) {
                             // No match.
                         } else if (node.type === "sizing") {
-                            glueOptions = options.havingSize(node.value.size);
+                            glueOptions = options.havingSize(node.size);
                         } else if (node.type === "styling") {
                             glueOptions = options.havingStyle(
                                 styleMap[node.value.style]);
@@ -309,8 +309,8 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
     // Strip off outer tag wrapper for processing below.
     let tag = null;
     if (tree.length === 1 && tree[0].type === "tag") {
-        tag = tree[0].value.tag;
-        tree = tree[0].value.body;
+        tag = tree[0].tag;
+        tree = tree[0].body;
     }
 
     // Build the expression contained in the tree

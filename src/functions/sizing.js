@@ -8,9 +8,15 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Options from "../Options";
+import type {AnyParseNode} from "../parseNode";
 import type {HtmlBuilder} from "../defineFunction";
+import type {documentFragment as HtmlDocumentFragment} from "../domTree";
 
-export function sizingGroup(value: *, options: Options, baseOptions: Options) {
+export function sizingGroup(
+    value: AnyParseNode[],
+    options: Options,
+    baseOptions: Options,
+): HtmlDocumentFragment {
     const inner = html.buildExpression(value, options, false);
     const multiplier = options.sizeMultiplier / baseOptions.sizeMultiplier;
 
@@ -44,8 +50,8 @@ export const htmlBuilder: HtmlBuilder<"sizing"> = (group, options) => {
     // Handle sizing operators like \Huge. Real TeX doesn't actually allow
     // these functions inside of math expressions, so we do some special
     // handling.
-    const newOptions = options.havingSize(group.value.size);
-    return sizingGroup(group.value.value, newOptions, options);
+    const newOptions = options.havingSize(group.size);
+    return sizingGroup(group.body, newOptions, options);
 };
 
 defineFunction({
@@ -62,18 +68,15 @@ defineFunction({
         return {
             type: "sizing",
             mode: parser.mode,
-            value: {
-                type: "sizing",
-                // Figure out what size to use based on the list of functions above
-                size: utils.indexOf(sizeFuncs, funcName) + 1,
-                value: body,
-            },
+            // Figure out what size to use based on the list of functions above
+            size: utils.indexOf(sizeFuncs, funcName) + 1,
+            body,
         };
     },
     htmlBuilder,
     mathmlBuilder: (group, options) => {
-        const newOptions = options.havingSize(group.value.size);
-        const inner = mml.buildExpression(group.value.value, newOptions);
+        const newOptions = options.havingSize(group.size);
+        const inner = mml.buildExpression(group.body, newOptions);
 
         const node = new mathMLTree.MathNode("mstyle", inner);
 

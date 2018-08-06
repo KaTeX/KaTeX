@@ -104,13 +104,13 @@ const getBaseElem = function(group: AnyParseNode): AnyParseNode {
             return group;
         }
     } else if (group.type === "color") {
-        if (group.value.value.length === 1) {
-            return getBaseElem(group.value.value[0]);
+        if (group.body.length === 1) {
+            return getBaseElem(group.body[0]);
         } else {
             return group;
         }
     } else if (group.type === "font") {
-        return getBaseElem(group.value.body);
+        return getBaseElem(group.body);
     } else {
         return group;
     }

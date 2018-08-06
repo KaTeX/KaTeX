@@ -225,7 +225,7 @@ ModSpacing: |
     \end{array}
 NegativeSpaceBetweenRel: A =\!= B
 NegativeSpace:
-    tex: \fbox{\$1,\!000,\!000}\KaTeX
+    tex: \boxed{\$1,\!000,\!000}\KaTeX
     post: .
 NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
@@ -349,9 +349,11 @@ SupSubLeftAlignReset: |
 SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
 SurrogatePairs: |
     \begin{array}{l}
-        𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜 \\
-        \text{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜} \\
-        \mathrm{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜}
+        𝐀𝐚𝟎𝐴𝑎𝑨𝒂𝔅𝔞𝔸𝒜 \\
+        𝖠𝖺𝟢𝗔𝗮𝟬𝘈𝘢𝙰𝚊𝟶 \\
+        \text{𝐀𝐚𝟎𝐴𝑎𝑨𝒂𝔅𝔞𝔸𝒜} \\
+        \text{𝖠𝖺𝟢𝗔𝗮𝟬𝘈𝘢𝙰𝚊𝟶} \\
+        \mathrm{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜} \\
     \end{array}
 SvgReset:
     # This math uses a lot of SVG glyphs

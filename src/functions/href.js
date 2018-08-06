@@ -18,31 +18,21 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[1];
-        const href = assertNodeType(args[0], "url").value.value;
+        const href = assertNodeType(args[0], "url").url;
         return {
             type: "href",
             mode: parser.mode,
-            value: {
-                type: "href",
-                href: href,
-                body: ordargument(body),
-            },
+            href,
+            body: ordargument(body),
         };
     },
     htmlBuilder: (group, options) => {
-        const elements = html.buildExpression(
-            group.value.body,
-            options,
-            false
-        );
-
-        const href = group.value.href;
-
-        return new buildCommon.makeAnchor(href, [], elements, options);
+        const elements = html.buildExpression(group.body, options, false);
+        return new buildCommon.makeAnchor(group.href, [], elements, options);
     },
     mathmlBuilder: (group, options) => {
-        const math = mml.buildExpressionRow(group.value.body, options);
-        assertType(math, MathNode).setAttribute("href", group.value.href);
+        const math = mml.buildExpressionRow(group.body, options);
+        assertType(math, MathNode).setAttribute("href", group.href);
         return math;
     },
 });
@@ -56,7 +46,7 @@ defineFunction({
         allowedInText: true,
     },
     handler: ({parser}, args) => {
-        const href = assertNodeType(args[0], "url").value.value;
+        const href = assertNodeType(args[0], "url").url;
         const chars = [];
         for (let i = 0; i < href.length; i++) {
             let c = href[i];
@@ -81,11 +71,8 @@ defineFunction({
         return {
             type: "href",
             mode: parser.mode,
-            value: {
-                type: "href",
-                href: href,
-                body: ordargument(body),
-            },
+            href,
+            body: ordargument(body),
         };
     },
 });

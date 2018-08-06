@@ -9,8 +9,8 @@ import * as mml from "../buildMathML";
 
 const htmlBuilder = (group, options) => {
     const elements = html.buildExpression(
-        group.value.value,
-        options.withColor(group.value.color),
+        group.body,
+        options.withColor(group.color),
         false
     );
 
@@ -22,11 +22,11 @@ const htmlBuilder = (group, options) => {
 };
 
 const mathmlBuilder = (group, options) => {
-    const inner = mml.buildExpression(group.value.value, options);
+    const inner = mml.buildExpression(group.body, options);
 
     const node = new mathMLTree.MathNode("mstyle", inner);
 
-    node.setAttribute("mathcolor", group.value.color);
+    node.setAttribute("mathcolor", group.color);
 
     return node;
 };
@@ -46,11 +46,8 @@ defineFunction({
         return {
             type: "color",
             mode: parser.mode,
-            value: {
-                type: "color",
-                color: color.value,
-                value: ordargument(body),
-            },
+            color: color.value,
+            body: ordargument(body),
         };
     },
     htmlBuilder,
@@ -85,11 +82,8 @@ defineFunction({
         return {
             type: "color",
             mode: parser.mode,
-            value: {
-                type: "color",
-                color: "katex-" + funcName.slice(1),
-                value: ordargument(body),
-            },
+            color: "katex-" + funcName.slice(1),
+            body: ordargument(body),
         };
     },
     htmlBuilder,
@@ -114,11 +108,8 @@ defineFunction({
         return {
             type: "color",
             mode: parser.mode,
-            value: {
-                type: "color",
-                color: color.value,
-                value: body,
-            },
+            color: color.value,
+            body,
         };
     },
     htmlBuilder,
