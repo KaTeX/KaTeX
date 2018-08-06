@@ -17,17 +17,14 @@ defineFunction({
         return {
             type: "overline",
             mode: parser.mode,
-            value: {
-                type: "overline",
-                body: body,
-            },
+            body,
         };
     },
     htmlBuilder(group, options) {
         // Overlines are handled in the TeXbook pg 443, Rule 9.
 
         // Build the inner group in the cramped style.
-        const innerGroup = html.buildGroup(group.value.body,
+        const innerGroup = html.buildGroup(group.body,
             options.havingCrampedStyle());
 
         // Create the line above the body
@@ -53,7 +50,7 @@ defineFunction({
 
         const node = new mathMLTree.MathNode(
             "mover",
-            [mml.buildGroup(group.value.body, options), operator]);
+            [mml.buildGroup(group.body, options), operator]);
         node.setAttribute("accent", "true");
 
         return node;

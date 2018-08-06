@@ -48,23 +48,20 @@ defineFunction({
         return {
             type: "smash",
             mode: parser.mode,
-            value: {
-                type: "smash",
-                body: body,
-                smashHeight: smashHeight,
-                smashDepth: smashDepth,
-            },
+            body,
+            smashHeight,
+            smashDepth,
         };
     },
     htmlBuilder: (group, options) => {
         const node = buildCommon.makeSpan(
-            ["mord"], [html.buildGroup(group.value.body, options)]);
+            ["mord"], [html.buildGroup(group.body, options)]);
 
-        if (!group.value.smashHeight && !group.value.smashDepth) {
+        if (!group.smashHeight && !group.smashDepth) {
             return node;
         }
 
-        if (group.value.smashHeight) {
+        if (group.smashHeight) {
             node.height = 0;
             // In order to influence makeVList, we have to reset the children.
             if (node.children) {
@@ -74,7 +71,7 @@ defineFunction({
             }
         }
 
-        if (group.value.smashDepth) {
+        if (group.smashDepth) {
             node.depth = 0;
             if (node.children) {
                 for (let i = 0; i < node.children.length; i++) {
@@ -95,13 +92,13 @@ defineFunction({
     },
     mathmlBuilder: (group, options) => {
         const node = new mathMLTree.MathNode(
-            "mpadded", [mml.buildGroup(group.value.body, options)]);
+            "mpadded", [mml.buildGroup(group.body, options)]);
 
-        if (group.value.smashHeight) {
+        if (group.smashHeight) {
             node.setAttribute("height", "0px");
         }
 
-        if (group.value.smashDepth) {
+        if (group.smashDepth) {
             node.setAttribute("depth", "0px");
         }
 

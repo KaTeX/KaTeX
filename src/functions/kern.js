@@ -42,17 +42,14 @@ defineFunction({
         return {
             type: "kern",
             mode: parser.mode,
-            value: {
-                type: "kern",
-                dimension: size.value.value,
-            },
+            dimension: size.value.value,
         };
     },
     htmlBuilder: (group, options) => {
-        return buildCommon.makeGlue(group.value.dimension, options);
+        return buildCommon.makeGlue(group.dimension, options);
     },
     mathmlBuilder: (group, options) => {
-        const dimension = calculateSize(group.value.dimension, options);
+        const dimension = calculateSize(group.dimension, options);
         return new mathMLTree.SpaceNode(dimension);
     },
 });

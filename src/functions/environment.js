@@ -24,11 +24,8 @@ defineFunction({
         return {
             type: "environment",
             mode: parser.mode,
-            value: {
-                type: "environment",
-                name: name,
-                nameGroup: nameGroup,
-            },
+            name,
+            nameGroup,
         };
     },
 });
