@@ -419,10 +419,7 @@ type ParseNodeTypes = {
         type: "underline",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "underline",
-            body: AnyParseNode,
-        |},
+        body: AnyParseNode,
     |},
     "xArrow": {|
         type: "xArrow",
