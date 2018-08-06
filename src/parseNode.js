@@ -382,12 +382,8 @@ type ParseNodeTypes = {
         type: "raisebox",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "raisebox",
-            dy: ParseNode<"size">,
-            body: AnyParseNode,
-            value: AnyParseNode[],
-        |},
+        dy: ParseNode<"size">,
+        body: AnyParseNode,
     |},
     "rule": {|
         type: "rule",

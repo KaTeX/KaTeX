@@ -23,12 +23,8 @@ defineFunction({
         return {
             type: "raisebox",
             mode: parser.mode,
-            value: {
-                type: "raisebox",
-                dy: amount,
-                body: body,
-                value: ordargument(body),
-            },
+            dy: amount,
+            body,
         };
     },
     htmlBuilder(group, options) {
@@ -37,7 +33,7 @@ defineFunction({
             mode: group.mode,
             value: {
                 type: "text",
-                body: group.value.value,
+                body: ordargument(group.body),
                 font: "mathrm", // simulate \textrm
             },
         };
@@ -51,7 +47,7 @@ defineFunction({
             },
         };
         const body = sizing.htmlBuilder(sizedText, options);
-        const dy = calculateSize(group.value.dy.value.value, options);
+        const dy = calculateSize(group.dy.value.value, options);
         return buildCommon.makeVList({
             positionType: "shift",
             positionData: -dy,
@@ -60,9 +56,8 @@ defineFunction({
     },
     mathmlBuilder(group, options) {
         const node = new mathMLTree.MathNode(
-            "mpadded", [mml.buildGroup(group.value.body, options)]);
-        const dy =
-            group.value.dy.value.value.number + group.value.dy.value.value.unit;
+            "mpadded", [mml.buildGroup(group.body, options)]);
+        const dy = group.dy.value.value.number + group.dy.value.value.unit;
         node.setAttribute("voffset", dy);
         return node;
     },
