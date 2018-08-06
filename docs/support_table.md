@@ -99,7 +99,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\arrowvert|<span style="color:firebrick;">Not supported</span>||
 |\ast|$\ast$||
 |\asymp|$\asymp$||
-|\atop|$a \atop b$|`a \atop b`|
+|\atop|${a \atop b}$|`{a \atop b}`|
 |\atopwithdelims|<span style="color:firebrick;">Not supported</span>||
 
 ## B

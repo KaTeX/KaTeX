@@ -57,12 +57,12 @@ $\left(\LARGE{AB}\right)$ `\left(\LARGE{AB}\right)`
 
 $( \big( \Big( \bigg( \Bigg($ `( \big( \Big( \bigg( \Bigg(`
 
-|||||
-|:--------|:------|:--------|:------|
-|`\left`  |`\big` |`\bigl`  |`\bigr`
-|`\middle`|`\Big` |`\Bigl`  |`\Bigr`
-|`\right` |`\bigg`|`\biggl` |`\biggr`
-|         |`\Bigg`|`\Biggl` |`\Biggr`
+||||||
+|:--------|:------|:--------|:-------|:------|
+|`\left`  |`\big` |`\bigl`  |`\bigm` |`\bigr`
+|`\middle`|`\Big` |`\Bigl`  |`\Bigm` | `\Bigr`
+|`\right` |`\bigg`|`\biggl` |`\biggm`|`\biggr`
+|         |`\Bigg`|`\Biggl` |`\Biggm`|`\Biggr`
 
 
 ## Environments
@@ -126,7 +126,7 @@ $α β γ δ ϵ ζ η θ ι κ λ μ ν ξ o π ρ σ τ υ ϕ χ ψ ω ε ϑ ϖ
 | $\gimel$ `\gimel`| $\hbar$ `\hbar`| $\nabla$ `\nabla`| $\text{\oe}$ `\text{\oe}`| $\text{\j}$ `\text{\j}`  |
 | $\daleth$ `\daleth`  | $\hslash$ `\hslash` | $\Bbbk$ `\Bbbk` | $\text{\OE}$ `\text{\OE}`|
 
-Direct Input: $∂ ∇ ℑ Ⅎ ℵ ℶ ℷ ℸ ⅁ ℏ$ ð <br>
+Direct Input: $∂ ∇ ℑ Ⅎ ℵ ℶ ℷ ℸ ⅁ ℏ ð$ <br>
 ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝÞß<br>àáâãäåçèéêëìíîïðñòóôöùúûüýþÿ
 
 **Unicode Mathematical Alphanumeric Symbols**
@@ -195,28 +195,27 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 
 **Spacing**
 
-| Function  | Produces  | Function  | Produces|
-|:----------------|:-------------------|:----------------------|:--------------------------------------|
-| `\!`| – ³∕₁₈ em space | `\kern{distance}`  | space, width = *distance* |
-| `\,`| ³∕₁₈ em space| `\mkern{distance}` | space, width = *distance* |
-| `\thinspace` | ³∕₁₈ em space| `\skip{distance}`  | space, width = *distance* |
-| `\:`| ⁴∕₁₈ em space| `\mskip{distance}` | space, width = *distance* |
-| `\medspace`  | ⁴∕₁₈ em space| `\hspace{distance}`| space, width = *distance* |
-| `\;`| ⁵∕₁₈ em space| `\hspace*{distance}` | space, width = *distance* |
-| `\thickspace`| ⁵∕₁₈ em space| `\phantom{content}`| space the width and height of content |
-| `\enspace`| ½ em space| `\hphantom{content}`  | space the width of content|
-| `\quad`| 1 em space| `\vphantom{content}`  | a strut the height of content|
-| `\qquad`  | 2 em space|  ||
-| `~`| non-breaking space |  ||
-| `\<space>`  |  space |  ||
-| `\nobreakspace` | non-breaking space |  ||
-| `\space`  |  space |  ||
+| Function        | Produces           | Function             | Produces|
+|:----------------|:-------------------|:---------------------|:--------------------------------------|
+| `\,`            | ³∕₁₈ em space      | `\kern{distance}`    | space, width = *distance*
+| `\thinspace`    | ³∕₁₈ em space      | `\mkern{distance}`   | space, width = *distance*
+| `\:`            | ⁴∕₁₈ em space      | `\mskip{distance}`   | space, width = *distance*
+| `\medspace`     | ⁴∕₁₈ em space      | `\hskip{distance}`   | space, width = *distance*
+| `\;`            | ⁵∕₁₈ em space      | `\hspace{distance}`  | space, width = *distance*
+| `\thickspace`   | ⁵∕₁₈ em space      | `\hspace*{distance}` | space, width = *distance*
+| `\enspace`      | ½ em space         | `\phantom{content}`  | space the width and height of content
+| `\quad`         | 1 em space         | `\hphantom{content}` | space the width of content
+| `\qquad`        | 2 em space         | `\vphantom{content}` | a strut the height of content
+| `~`             | non-breaking space | `\!`                 | – ³∕₁₈ em space
+| `\<space>`      | space              | `\negthinspace`      | – ³∕₁₈ em space
+| `\nobreakspace` | non-breaking space | `\negmedspace`       | – ⁴∕₁₈ em space
+| `\space`        | space              | `\negthickspace`     | – ⁵∕₁₈ em space
 
 **Notes:**
 
 `distance` will accept any of the [KaTeX units](#units).
 
-`\kern`, `\mkern`, and `\hspace` accept unbraced distances, as in: `\kern1em`.
+`\kern`, `\mkern`, `\mskip`, and `\hspace` accept unbraced distances, as in: `\kern1em`.
 
 `\mkern` and `\mskip` will not work in text mode and both will write a console warning for any unit except `mu`.
 
@@ -253,7 +252,7 @@ Macros accept up to ten arguments: #1, #2, etc.
 
 Available functions include:
 
-`\mathchoice` `\TextOrMath` `\@ifstar` `\@ifnextchar` `\@firstoftwo` `\@secondoftwo` `\relax`
+`\mathchoice` `\TextOrMath` `\@ifstar` `\@ifnextchar` `\@firstoftwo` `\@secondoftwo` `\relax` `\allowbreak` `\nobreak`
 
 @ is a valid character for commands, as if `\makeatletter` were in effect.
 
@@ -372,7 +371,7 @@ $\stackrel{!}{=}$ `\stackrel{!}{=}`
 
 Direct Input: $= < > : ∈ ∋ ∝ ∼ ∽ ≂ ≃ ≅ ≈ ≊ ≍ ≎ ≏ ≐ ≑ ≒ ≓ ≖ ≗ ≜ ≡ ≤ ≥ ≦ ≧$<br>
 $≫ ≬ ≳ ≷ ≺ ≻ ≼ ≽ ≾ ≿ ⊂ ⊃ ⊆ ⊇ ⊏ ⊐ ⊑ ⊒ ⊢ ⊣ ⊩ ⊪ ⊸ ⋈ ⋍ ⋐ ⋑ ⋔ ⋙ ⋛ ⋞ ⋟ ⌢ ⌣$ <br>
-$⩾ ⪆ ⪌ ⪕ ⪖ ⪯ ⪰ ⪷ ⪸ ⫅ ⫆ ≲ ⩽ ⪅ ≶ ⋚ ⪋ ⟂ ⊨ ≔ ≕ ⩴$
+$⩾ ⪆ ⪌ ⪕ ⪖ ⪯ ⪰ ⪷ ⪸ ⫅ ⫆ ≲ ⩽ ⪅ ≶ ⋚ ⪋ ⟂ ⊨$ `≔ ≕ ⩴`
 
 ### Negated Relations
 
@@ -470,7 +469,7 @@ $\textcolor{#228B22}{F=ma}$ `\textcolor{#228B22}{F=ma}`<br>
 $\colorbox{aqua}{A}$ `\colorbox{aqua}{A}`<br>
 $\fcolorbox{red}{aqua}{A}$ `\fcolorbox{red}{aqua}{A}`
 
-For color definition, KaTeX color functions will accept the standard HTML [predefined color names](https://www.w3schools.com/colors/colors-names.asp). They will also accept an RGB argument in CSS hexa­decimal style.
+For color definition, KaTeX color functions will accept the standard HTML [predefined color names](https://www.w3schools.com/colors/colors_names.asp). They will also accept an RGB argument in CSS hexa­decimal style.
 
 **Font**
 
@@ -516,40 +515,42 @@ One can stack font family, font weight, and font shape by using the `\textXX` v
 ## Symbols and Punctuation
 
 ||||
-|:------------------------------------------------------|:--------------------------------------------|:-----
-| `% comment`  |$\dots$ `\dots`|$\nabla$ `\nabla`
-|$\%$ `\%` |$\cdots$ `\cdots` |$\infty$ `\infty`
-|$\#$ `\#` |$\ddots$ `\ddots` |$\checkmark$ `\checkmark`
-|$\&$ `\&` |$\ldots$ `\ldots` |$\dag$ `\dag`
-|$\_$ `\_` |$\vdots$ `\vdots` |$\dagger$ `\dagger`
-|$\text{\textunderscore}$ `\text{\textunderscore}`|$\mathellipsis$ `\mathellipsis`  |$\text{\textdagger}$ `\text{\textdagger}`
-|$\text{--}$ `\text{--}`  |$\text{\textellipsis}$ `\text{\textellipsis}`|$\ddag$ `\ddag`
-|$\text{\textendash}$ `\text{\textendash}`  |$\Box$ `\Box`  |$\ddagger$ `\ddagger`
-|$\text{---}$ `\text{---}`|$\square$ `\square`  |$\text{\textdaggerdbl}$ `\text{\textdaggerdbl}`
-|$\text{\textemdash}$ `\text{\textemdash}`  |$\blacksquare$ `\blacksquare` |$\angle$ `\angle`
-|$\text{\textasciitilde}$ `\text{\textasciitilde}`|$\triangle$ `\triangle` |$\measuredangle$ `\measuredangle`
-|$`$ <code>`</code>|$\triangledown$ `\triangledown`  |$\sphericalangle$ `\sphericalangle`
-|$\text{\textquoteleft}$ `\text{\textquoteleft}`  |$\triangleleft$ `\triangleleft`  |$\top$ `\top`
-|$\lq$ `\lq`  |$\triangleright$ `\triangleright`|$\bot$ `\bot`
-|$\text{\textquoteright}$ `\text{\textquoteright}`|$\bigtriangledown$ `\bigtriangledown`  |$\text{\textdollar}$ `\$`
-|$\rq$ `\rq`  |$\bigtriangleup$ `\bigtriangleup`|$\text{\textdollar}$ `\text{\textdollar}`
-|$\text{\textquotedblleft}$ `\text{\textquotedblleft}`  |$\blacktriangle$ `\blacktriangle`|$\pounds$ `\pounds`
-|$"$ `"`|$\blacktriangledown$ `\blacktriangledown` |$\text{\textsterling}$ `\text{\textsterling}`
-|$\text{\textquotedblright}$ `\text{\textquotedblright}`|$\blacktriangleleft$ `\blacktriangleleft` |$\yen$ `\yen`
-|$\colon$ `\colon`  |$\blacktriangleright$ `\blacktriangleright`  |$\surd$ `\surd`
-|$\backprime$ `\backprime`|$\diamond$ `\diamond`|$\degree$ `\degree`
-|$\prime$ `\prime`  |$\Diamond$ `\Diamond`|$\diagdown$ `\diagdown`
-|$\text{\textless}$ `\text{\textless}`|$\lozenge$ `\lozenge`|$\diagup$ `\diagup`
-|$\text{\textgreater}$ `\text{\textgreater}`|$\blacklozenge$ `\blacklozenge`  |$\flat$ `\flat`
-|$\text{\textbar}$ `\text{\textbar}`  |$\star$ `\star`|$\natural$ `\natural`
-|$\text{\textbardbl}$ `\text{\textbardbl}`  |$\bigstar$ `\bigstar`|$\sharp$ `\sharp`
-|$\text{\textbraceleft}$ `\text{\textbraceleft}`  |$\clubsuit$ `\clubsuit` |$\copyright$ `\copyright`
-|$\text{\textbraceright}$ `\text{\textbraceright}`|$\diamondsuit$ `\diamondsuit` |$\circledR$ `\circledR`
-|$\text{\P}$ `\text{\P}`  |$\heartsuit$ `\heartsuit`  |$\text{\textregistered}$ `\text{\textregistered}`
-|$\text{\S}$ `\text{\S}`  |$\spadesuit$ `\spadesuit`  |$\circledS$ `\circledS`
-|$\maltese$ `\maltese` |$\mho$ `\mho`  |$\text{\textcircled a}$ `\text{\textcircled a}`
-
-$\KaTeX$ `\KaTeX`  $\LaTeX$ `\LaTeX`$\TeX$ `\TeX`
+|:----------|:----------|:----------|
+|`% comment`|$\dots$ `\dots`|$ \KaTeX$ ` \KaTeX`
+|$\%$ `\%`|$\cdots$ `\cdots`|$ \LaTeX$ ` \LaTeX`
+|$\#$ `\#`|$\ddots$ `\ddots`|$ \TeX$ ` \TeX`
+|$\&$ `\&`|$\ldots$ `\ldots`|$\nabla$ `\nabla`
+|$\_$ `\_`|$\vdots$ `\vdots`|$\infty$ `\infty`
+|$\text{\textunderscore}$ `\text{\textunderscore}`|$\dotsb$ `\dotsb`|$\checkmark$ `\checkmark`
+|$\text{--}$ `\text{--}`|$\dotsc$ `\dotsc`|$\dag$ `\dag`
+|$\text{\textendash}$ `\text{\textendash}`|$\dotsi$ `\dotsi`|$\dagger$ `\dagger`
+|$\text{---}$ `\text{---}`|$\dotsm$ `\dotsm`|$ \text{\textdagger}$ ` \text{\textdagger}`
+|$\text{\textemdash}$ `\text{\textemdash}`|$\dotso$ `\dotso`|$\ddag$ `\ddag`
+|$ \text{\textasciitilde}$ ` \text{\textasciitilde}`|$\mathellipsis$ `\mathellipsis`|$\ddagger$ `\ddagger`
+|$`$ <code>`</code>|$\text{\textellipsis}$ `\text{\textellipsis}`|$\text{\textdaggerdbl}$ `\text{\textdaggerdbl}`
+|$\text{\textquoteleft}$ `text{\textquoteleft}`|$\Box$ `\Box`|$\angle$ `\angle`
+|$\lq$ `\lq`|$\square$ `\square`|$\measuredangle$ `\measuredangle`
+|$\text{\textquoteright}$ `\text{\textquoteright}`|$\blacksquare$ `\blacksquare`|$\sphericalangle$ `\sphericalangle`
+|$\rq$ `\rq`|$\triangle$ `\triangle`|$\top$ `\top`
+|$\text{\textquotedblleft}$ `\text{\textquotedblleft}`|$\triangledown$ `\triangledown`|$\bot$ `\bot`
+|$"$ `"`|$\triangleleft$ `\triangleleft`|$\text{\textdollar}$ <code>\\$</code>
+|$\text{\textquotedblright}$ `\text{\textquotedblright}`|$\triangleright$ `\triangleright`|$\text{\textdollar}$ `\text{\textdollar}`
+|$\colon$ `\colon`|$\bigtriangledown$ `\bigtriangledown`|$\pounds$ `\pounds`
+|$\backprime$ `\backprime`|$\bigtriangleup$ `\bigtriangleup`|$\mathsterling$ `\mathsterling`
+|$\prime$ `\prime`|$\blacktriangle$ `\blacktriangle`|$\text{\textsterling}$ `\text{\textsterling}`
+|$\text{\textless}$ `\text{\textless}`|$\blacktriangledown$ `\blacktriangledown`|$\yen$ `\yen`
+|$\text{\textgreater}$ `\text{\textgreater}`|$\blacktriangleleft$ `\blacktriangleleft`|$\surd$ `\surd`
+|$\text{\textbar}$ `\text{\textbar}`|$\blacktriangleright$ `\blacktriangleright`|$\degree$ `\degree`
+|$\text{\textbardbl}$ `\text{\textbardbl}`|$\diamond$ `\diamond`|$\text{\textdegree}$ `\text{\textdegree}`
+|$\text{\textbraceleft}$ `\text{\textbraceleft}`|$\Diamond$ `\Diamond`|$\mho$ `\mho`
+|$\text{\textbraceright}$ `\text{\textbraceright}`|$\lozenge$ `\lozenge`|$\diagdown$ `\diagdown`
+|$\text{\P}$ `\text{\P}`|$\blacklozenge$ `\blacklozenge`|$\diagup$ `\diagup`
+|$\text{\S}$ `\text{\S}`|$\star$ `\star`|$\maltese$ `\maltese`
+|$\copyright$ `\copyright`|$\bigstar$ `\bigstar`|$\flat$ `\flat`
+|$\circledR$ `\circledR`|$\clubsuit$ `\clubsuit`|$\natural$ `\natural`
+|$\text{\textregistered}$ `\text{\textregistered}`|$\diamondsuit$ `\diamondsuit`|$\sharp$ `\sharp`
+|$\circledS$ `\circledS`|$\heartsuit$ `\heartsuit`
+|$\text{\textcircled a}$ `\text{\textcircled a}`|$\spadesuit$ `\spadesuit`
 
 Direct Input: $£ ¥ ∇ ∞ · ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓ …  ⋮  ⋯  ⋱  !$ ‼
 
