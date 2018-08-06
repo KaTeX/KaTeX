@@ -10,15 +10,15 @@ import * as mml from "../buildMathML";
 import type {ParseNode} from "../parseNode";
 
 const htmlBuilder = (group: ParseNode<"font">, options) => {
-    const font = group.value.font;
+    const font = group.font;
     const newOptions = options.withFont(font);
-    return html.buildGroup(group.value.body, newOptions);
+    return html.buildGroup(group.body, newOptions);
 };
 
 const mathmlBuilder = (group: ParseNode<"font">, options) => {
-    const font = group.value.font;
+    const font = group.font;
     const newOptions = options.withFont(font);
-    return mml.buildGroup(group.value.body, newOptions);
+    return mml.buildGroup(group.body, newOptions);
 };
 
 const fontAliases = {
@@ -54,11 +54,8 @@ defineFunction({
         return {
             type: "font",
             mode: parser.mode,
-            value: {
-                type: "font",
-                font: func.slice(1),
-                body,
-            },
+            font: func.slice(1),
+            body,
         };
     },
     htmlBuilder,
@@ -84,11 +81,8 @@ defineFunction({
                 {
                     type: "font",
                     mode: parser.mode,
-                    value: {
-                        type: "font",
-                        font: "boldsymbol",
-                        body,
-                    },
+                    font: "boldsymbol",
+                    body,
                 },
             ],
         };
@@ -112,14 +106,11 @@ defineFunction({
         return {
             type: "font",
             mode: mode,
-            value: {
-                type: "font",
-                font: style,
-                body: {
-                    type: "ordgroup",
-                    mode: parser.mode,
-                    value: body,
-                },
+            font: style,
+            body: {
+                type: "ordgroup",
+                mode: parser.mode,
+                value: body,
             },
         };
     },

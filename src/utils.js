@@ -110,7 +110,7 @@ const getBaseElem = function(group: AnyParseNode): AnyParseNode {
             return group;
         }
     } else if (group.type === "font") {
-        return getBaseElem(group.value.body);
+        return getBaseElem(group.body);
     } else {
         return group;
     }

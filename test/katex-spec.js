@@ -1476,37 +1476,37 @@ describe("A font parser", function() {
 
     it("should produce the correct fonts", function() {
         const mathbbParse = getParsed`\mathbb x`[0];
-        expect(mathbbParse.value.font).toEqual("mathbb");
-        expect(mathbbParse.value.type).toEqual("font");
+        expect(mathbbParse.font).toEqual("mathbb");
+        expect(mathbbParse.type).toEqual("font");
 
         const mathrmParse = getParsed`\mathrm x`[0];
-        expect(mathrmParse.value.font).toEqual("mathrm");
-        expect(mathrmParse.value.type).toEqual("font");
+        expect(mathrmParse.font).toEqual("mathrm");
+        expect(mathrmParse.type).toEqual("font");
 
         const mathitParse = getParsed`\mathit x`[0];
-        expect(mathitParse.value.font).toEqual("mathit");
-        expect(mathitParse.value.type).toEqual("font");
+        expect(mathitParse.font).toEqual("mathit");
+        expect(mathitParse.type).toEqual("font");
 
         const mathcalParse = getParsed`\mathcal C`[0];
-        expect(mathcalParse.value.font).toEqual("mathcal");
-        expect(mathcalParse.value.type).toEqual("font");
+        expect(mathcalParse.font).toEqual("mathcal");
+        expect(mathcalParse.type).toEqual("font");
 
         const mathfrakParse = getParsed`\mathfrak C`[0];
-        expect(mathfrakParse.value.font).toEqual("mathfrak");
-        expect(mathfrakParse.value.type).toEqual("font");
+        expect(mathfrakParse.font).toEqual("mathfrak");
+        expect(mathfrakParse.type).toEqual("font");
     });
 
     it("should parse nested font commands", function() {
         const nestedParse = getParsed`\mathbb{R \neq \mathrm{R}}`[0];
-        expect(nestedParse.value.font).toEqual("mathbb");
-        expect(nestedParse.value.type).toEqual("font");
+        expect(nestedParse.font).toEqual("mathbb");
+        expect(nestedParse.type).toEqual("font");
 
-        const bbBody = nestedParse.value.body.value;
+        const bbBody = nestedParse.body.value;
         expect(bbBody).toHaveLength(3);
         expect(bbBody[0].type).toEqual("mathord");
         expect(bbBody[2].type).toEqual("font");
-        expect(bbBody[2].value.font).toEqual("mathrm");
-        expect(bbBody[2].value.type).toEqual("font");
+        expect(bbBody[2].font).toEqual("mathrm");
+        expect(bbBody[2].type).toEqual("font");
     });
 
     it("should work with \\textcolor", function() {
@@ -1515,8 +1515,8 @@ describe("A font parser", function() {
         expect(colorMathbbParse.value.color).toEqual("blue");
         const body = colorMathbbParse.value.value;
         expect(body).toHaveLength(1);
-        expect(body[0].value.type).toEqual("font");
-        expect(body[0].value.font).toEqual("mathbb");
+        expect(body[0].type).toEqual("font");
+        expect(body[0].font).toEqual("mathbb");
     });
 
     it("should not parse a series of font commands", function() {
@@ -1525,13 +1525,13 @@ describe("A font parser", function() {
 
     it("should nest fonts correctly", function() {
         const bf = getParsed`\mathbf{a\mathrm{b}c}`[0];
-        expect(bf.value.type).toEqual("font");
-        expect(bf.value.font).toEqual("mathbf");
-        expect(bf.value.body.value).toHaveLength(3);
-        expect(bf.value.body.value[0].value).toEqual("a");
-        expect(bf.value.body.value[1].value.type).toEqual("font");
-        expect(bf.value.body.value[1].value.font).toEqual("mathrm");
-        expect(bf.value.body.value[2].value).toEqual("c");
+        expect(bf.type).toEqual("font");
+        expect(bf.font).toEqual("mathbf");
+        expect(bf.body.value).toHaveLength(3);
+        expect(bf.body.value[0].value).toEqual("a");
+        expect(bf.body.value[1].type).toEqual("font");
+        expect(bf.body.value[1].font).toEqual("mathrm");
+        expect(bf.body.value[2].value).toEqual("c");
     });
 
     it("should have the correct greediness", function() {

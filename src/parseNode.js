@@ -238,11 +238,8 @@ type ParseNodeTypes = {
         type: "font",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "font",
-            font: string,
-            body: AnyParseNode,
-        |},
+        font: string,
+        body: AnyParseNode,
     |},
     "genfrac": {|
         type: "genfrac",
