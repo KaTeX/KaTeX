@@ -780,8 +780,8 @@ describe("A color parser", function() {
         const parse = getParsed(colorExpression)[0];
 
         expect(parse.type).toEqual("color");
-        expect(parse.value.color).toBeDefined();
-        expect(parse.value.value).toBeDefined();
+        expect(parse.color).toBeDefined();
+        expect(parse.body).toBeDefined();
     });
 
     it("should parse a custom color", function() {
@@ -793,8 +793,8 @@ describe("A color parser", function() {
         const parse1 = getParsed(customColorExpression1)[0];
         const parse2 = getParsed(customColorExpression2)[0];
 
-        expect(parse1.value.color).toEqual("#fA6");
-        expect(parse2.value.color).toEqual("#fA6fA6");
+        expect(parse1.color).toEqual("#fA6");
+        expect(parse2.color).toEqual("#fA6fA6");
     });
 
     it("should not parse a bad custom color", function() {
@@ -1513,9 +1513,9 @@ describe("A font parser", function() {
 
     it("should work with \\textcolor", function() {
         const colorMathbbParse = getParsed`\textcolor{blue}{\mathbb R}`[0];
-        expect(colorMathbbParse.value.type).toEqual("color");
-        expect(colorMathbbParse.value.color).toEqual("blue");
-        const body = colorMathbbParse.value.value;
+        expect(colorMathbbParse.type).toEqual("color");
+        expect(colorMathbbParse.color).toEqual("blue");
+        const body = colorMathbbParse.body;
         expect(body).toHaveLength(1);
         expect(body[0].type).toEqual("font");
         expect(body[0].font).toEqual("mathbb");
@@ -2591,7 +2591,7 @@ describe("A parser that does not throw on unsupported commands", function() {
     it("should produce color nodes with a color value given by errorColor", function() {
         const parsedInput = getParsed(r`\error`, noThrowSettings);
         expect(parsedInput[0].type).toBe("color");
-        expect(parsedInput[0].value.color).toBe(errorColor);
+        expect(parsedInput[0].color).toBe(errorColor);
     });
 
     it("should build katex-error span for other type of KaTeX error", function() {

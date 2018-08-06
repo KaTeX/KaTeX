@@ -34,11 +34,8 @@ type ParseNodeTypes = {
         type: "color",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "color",
-            color: string,
-            value: AnyParseNode[],
-        |},
+        color: string,
+        body: AnyParseNode[],
     |},
     "color-token": {|
         type: "color-token",

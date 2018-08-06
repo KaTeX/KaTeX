@@ -701,18 +701,15 @@ exports[`An implicit group parser within optional groups should work with \\colo
       "value": [
         {
           "type": "color",
-          "mode": "math",
-          "value": {
-            "type": "color",
-            "color": "red",
-            "value": [
-              {
-                "type": "textord",
-                "mode": "math",
-                "value": "3"
-              }
-            ]
-          }
+          "body": [
+            {
+              "type": "textord",
+              "mode": "math",
+              "value": "3"
+            }
+          ],
+          "color": "red",
+          "mode": "math"
         }
       ]
     },

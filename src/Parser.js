@@ -327,12 +327,9 @@ export default class Parser {
 
         const colorNode = {
             type: "color",
-            value: {
-                type: "color",
-                color: this.settings.errorColor,
-                value: [textNode],
-            },
             mode: this.mode,
+            color: this.settings.errorColor,
+            body: [textNode],
         };
 
         this.consume();
