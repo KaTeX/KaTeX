@@ -352,10 +352,7 @@ type ParseNodeTypes = {
         type: "operatorname",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "operatorname",
-            value: AnyParseNode[],
-        |},
+        body: AnyParseNode[],
     |},
     "overline": {|
         type: "overline",
