@@ -216,13 +216,10 @@ type ParseNodeTypes = {
         type: "enclose",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "enclose",
-            label: string,
-            backgroundColor?: ParseNode<"color-token">,
-            borderColor?: ParseNode<"color-token">,
-            body: AnyParseNode,
-        |},
+        label: string,
+        backgroundColor?: ParseNode<"color-token">,
+        borderColor?: ParseNode<"color-token">,
+        body: AnyParseNode,
     |},
     "environment": {|
         type: "environment",
