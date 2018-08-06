@@ -93,6 +93,8 @@ const defaultAutoRenderOptions = {
         "script", "noscript", "style", "textarea", "pre", "code",
     ],
 
+    ignoredClasses: [],
+
     errorCallback: function(msg, err) {
         console.error(msg, err);
     },
