@@ -942,10 +942,7 @@ export default class Parser {
             const urlArg = {
                 type: "url",
                 mode: this.mode,
-                value: {
-                    type: "url",
-                    value: url,
-                },
+                url,
             };
             this.consume();
             if (funcName === "\\href") {  // two arguments

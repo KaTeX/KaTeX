@@ -136,10 +136,7 @@ type ParseNodeTypes = {
         type: "url",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "url",
-            value: string,
-        |},
+        url: string,
     |},
     "verb": {|
         type: "verb",

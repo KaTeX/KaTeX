@@ -18,7 +18,7 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[1];
-        const href = assertNodeType(args[0], "url").value.value;
+        const href = assertNodeType(args[0], "url").url;
         return {
             type: "href",
             mode: parser.mode,
@@ -56,7 +56,7 @@ defineFunction({
         allowedInText: true,
     },
     handler: ({parser}, args) => {
-        const href = assertNodeType(args[0], "url").value.value;
+        const href = assertNodeType(args[0], "url").url;
         const chars = [];
         for (let i = 0; i < href.length; i++) {
             let c = href[i];
