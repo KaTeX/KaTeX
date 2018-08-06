@@ -762,6 +762,20 @@ describe("A text parser", function() {
     });
 });
 
+describe("A texvc builder", function() {
+    it("should not fail", function() {
+        expect("\\lang\\N\\darr\\R\\dArr\\Z\\Darr\\alef\\rang").toBuild();
+        expect("\\alefsym\\uarr\\Alpha\\uArr\\Beta\\Uarr\\Chi").toBuild();
+        expect("\\clubs\\diamonds\\hearts\\spades\\cnums\\Complex").toBuild();
+        expect("\\Dagger\\empty\\harr\\Epsilon\\hArr\\Eta\\Harr\\exist").toBuild();
+        expect("\\image\\larr\\infin\\lArr\\Iota\\Larr\\isin\\Kappa").toBuild();
+        expect("\\Mu\\lrarr\\natnums\\lrArr\\Nu\\Lrarr\\Omicron").toBuild();
+        expect("\\real\\rarr\\plusmn\\rArr\\reals\\Rarr\\Reals\\Rho").toBuild();
+        expect("\\text{\\sect}\\sdot\\sub\\sube\\supe").toBuild();
+        expect("\\Tau\\thetasym\\weierp\\Zeta").toBuild();
+    });
+});
+
 describe("A color parser", function() {
     const colorExpression = r`\blue{x}`;
     const newColorExpression = r`\redA{x}`;
