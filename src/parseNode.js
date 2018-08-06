@@ -207,12 +207,9 @@ type ParseNodeTypes = {
         type: "cr",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "cr",
-            newRow: boolean,
-            newLine: boolean,
-            size: ?ParseNode<"size">,
-        |},
+        newRow: boolean,
+        newLine: boolean,
+        size: ?ParseNode<"size">,
     |},
     "delimsizing": {|
         type: "delimsizing",

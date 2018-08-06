@@ -139,7 +139,7 @@ function parseArray(
             if (!cr) {
                 throw new ParseError(`Failed to parse function after ${next}`);
             }
-            rowGaps.push(assertNodeType(cr, "cr").value.size);
+            rowGaps.push(assertNodeType(cr, "cr").size);
 
             // check for \hline(s) following the row separator
             hLinesBeforeRow.push(getHLines(parser));
