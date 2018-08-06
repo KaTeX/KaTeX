@@ -52,7 +52,7 @@ const delimiters = [
     ".",
 ];
 
-type IsMiddle = {value: string, options: Options};
+type IsMiddle = {delim: string, options: Options};
 
 // Delimiter functions
 function checkDelimiter(
@@ -244,7 +244,7 @@ defineFunction({
                 if (isMiddle) {
                     // Apply the options that were active when \middle was called
                     inner[i] = delimiter.leftRightDelim(
-                        isMiddle.value, innerHeight, innerDepth,
+                        isMiddle.delim, innerHeight, innerDepth,
                         isMiddle.options, group.mode, []);
                 }
             }
@@ -305,22 +305,19 @@ defineFunction({
         return {
             type: "middle",
             mode: context.parser.mode,
-            value: {
-                type: "middle",
-                value: delim.value,
-            },
+            delim: delim.value,
         };
     },
     htmlBuilder: (group, options) => {
         let middleDelim;
-        if (group.value.value === ".") {
+        if (group.delim === ".") {
             middleDelim = html.makeNullDelimiter(options, []);
         } else {
             middleDelim = delimiter.sizedDelim(
-                group.value.value, 1, options,
+                group.delim, 1, options,
                 group.mode, []);
 
-            const isMiddle: IsMiddle = {value: group.value.value, options};
+            const isMiddle: IsMiddle = {delim: group.delim, options};
             // Property `isMiddle` not defined on `span`. It is only used in
             // this file above.
             // TODO: Fix this violation of the `span` type and possibly rename
@@ -332,7 +329,7 @@ defineFunction({
     },
     mathmlBuilder: (group, options) => {
         const middleNode = new mathMLTree.MathNode(
-            "mo", [mml.makeText(group.value.value, group.mode)]);
+            "mo", [mml.makeText(group.delim, group.mode)]);
         middleNode.setAttribute("fence", "true");
         return middleNode;
     },

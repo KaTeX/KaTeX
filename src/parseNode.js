@@ -353,10 +353,7 @@ type ParseNodeTypes = {
         type: "middle",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "middle",
-            value: string,
-        |},
+        delim: string,
     |},
     "mclass": {|
         type: "mclass",
