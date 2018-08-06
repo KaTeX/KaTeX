@@ -980,11 +980,8 @@ export default class Parser {
             return newArgument({
                 type: "verb",
                 mode: "text",
-                value: {
-                    type: "verb",
-                    body: arg,
-                    star: star,
-                },
+                body: arg,
+                star,
             }, nucleus);
         }
         // At this point, we should have a symbol, possibly with accents.

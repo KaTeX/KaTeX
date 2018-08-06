@@ -142,11 +142,8 @@ type ParseNodeTypes = {
         type: "verb",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "verb",
-            body: string,
-            star: boolean,
-        |},
+        body: string,
+        star: boolean,
     |},
     // From symbol groups, constructed in Parser.js via `symbols` lookup.
     // (Some of these have "-token" suffix to distinguish them from existing
