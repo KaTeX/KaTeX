@@ -404,12 +404,9 @@ type ParseNodeTypes = {
         type: "smash",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "smash",
-            body: AnyParseNode,
-            smashHeight: boolean,
-            smashDepth: boolean,
-        |},
+        body: AnyParseNode,
+        smashHeight: boolean,
+        smashDepth: boolean,
     |},
     "sqrt": {|
         type: "sqrt",
