@@ -116,11 +116,8 @@ type ParseNodeTypes = {
         type: "tag",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "tag",
-            body: AnyParseNode[],
-            tag: AnyParseNode[],
-        |},
+        body: AnyParseNode[],
+        tag: AnyParseNode[],
     |},
     "text": {|
         type: "text",
