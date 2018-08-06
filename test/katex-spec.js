@@ -1022,10 +1022,10 @@ describe("A kern parser", function() {
         const muParse = getParsed(muKern)[0];
         const abParse = getParsed(abKern)[1];
 
-        expect(emParse.value.dimension.unit).toEqual("em");
-        expect(exParse.value.dimension.unit).toEqual("ex");
-        expect(muParse.value.dimension.unit).toEqual("mu");
-        expect(abParse.value.dimension.unit).toEqual("em");
+        expect(emParse.dimension.unit).toEqual("em");
+        expect(exParse.dimension.unit).toEqual("ex");
+        expect(muParse.dimension.unit).toEqual("mu");
+        expect(abParse.dimension.unit).toEqual("em");
     });
 
     it("should not parse invalid units", function() {
@@ -1035,12 +1035,12 @@ describe("A kern parser", function() {
 
     it("should parse negative sizes", function() {
         const parse = getParsed`\kern{-1em}`[0];
-        expect(parse.value.dimension.number).toBeCloseTo(-1);
+        expect(parse.dimension.number).toBeCloseTo(-1);
     });
 
     it("should parse positive sizes", function() {
         const parse = getParsed`\kern{+1em}`[0];
-        expect(parse.value.dimension.number).toBeCloseTo(1);
+        expect(parse.dimension.number).toBeCloseTo(1);
     });
 });
 
@@ -1062,12 +1062,12 @@ describe("A non-braced kern parser", function() {
         const abParse2 = getParsed(abKern2)[1];
         const abParse3 = getParsed(abKern3)[1];
 
-        expect(emParse.value.dimension.unit).toEqual("em");
-        expect(exParse.value.dimension.unit).toEqual("ex");
-        expect(muParse.value.dimension.unit).toEqual("mu");
-        expect(abParse1.value.dimension.unit).toEqual("mu");
-        expect(abParse2.value.dimension.unit).toEqual("mu");
-        expect(abParse3.value.dimension.unit).toEqual("mu");
+        expect(emParse.dimension.unit).toEqual("em");
+        expect(exParse.dimension.unit).toEqual("ex");
+        expect(muParse.dimension.unit).toEqual("mu");
+        expect(abParse1.dimension.unit).toEqual("mu");
+        expect(abParse2.dimension.unit).toEqual("mu");
+        expect(abParse3.dimension.unit).toEqual("mu");
     });
 
     it("should parse elements on either side of a kern", function() {
@@ -1093,12 +1093,12 @@ describe("A non-braced kern parser", function() {
 
     it("should parse negative sizes", function() {
         const parse = getParsed`\kern-1em`[0];
-        expect(parse.value.dimension.number).toBeCloseTo(-1);
+        expect(parse.dimension.number).toBeCloseTo(-1);
     });
 
     it("should parse positive sizes", function() {
         const parse = getParsed`\kern+1em`[0];
-        expect(parse.value.dimension.number).toBeCloseTo(1);
+        expect(parse.dimension.number).toBeCloseTo(1);
     });
 
     it("should handle whitespace", function() {
@@ -1107,7 +1107,7 @@ describe("A non-braced kern parser", function() {
 
         expect(abParse).toHaveLength(3);
         expect(abParse[0].value).toEqual("a");
-        expect(abParse[1].value.dimension.unit).toEqual("mu");
+        expect(abParse[1].dimension.unit).toEqual("mu");
         expect(abParse[2].value).toEqual("b");
     });
 });

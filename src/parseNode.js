@@ -282,10 +282,7 @@ type ParseNodeTypes = {
         type: "kern",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "kern",
-            dimension: Measurement,
-        |},
+        dimension: Measurement,
     |},
     "lap": {|
         type: "lap",
