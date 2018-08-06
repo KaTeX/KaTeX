@@ -5,6 +5,7 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import Style from "../Style";
 import {assertNodeType, assertAtomFamily, checkNodeType} from "../parseNode";
+import {assert} from "../utils";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -357,7 +358,7 @@ defineFunction({
         greediness: 6,
         argTypes: ["math", "math", "size", "text", "math", "math"],
     },
-    handler: ({parser}, args) => {
+    handler({parser}, args) {
         const numer = args[4];
         const denom = args[5];
 
@@ -381,13 +382,13 @@ defineFunction({
         const barNode = assertNodeType(args[2], "size");
         let hasBarLine;
         let barSize = null;
-        if (barNode.value.isBlank) {
+        if (barNode.isBlank) {
             // \genfrac acts differently than \above.
             // \genfrac treats an empty size group as a signal to use a
             // standard bar size. \above would see size = 0 and omit the bar.
             hasBarLine = true;
         } else {
-            barSize = barNode.value.value;
+            barSize = barNode.value;
             hasBarLine = barSize.number > 0;
         }
 
@@ -432,12 +433,11 @@ defineFunction({
         infix: true,
     },
     handler({parser, funcName, token}, args) {
-        const sizeNode = assertNodeType(args[0], "size");
         return {
             type: "infix",
             mode: parser.mode,
             replaceWith: "\\\\abovefrac",
-            sizeNode,
+            size: assertNodeType(args[0], "size").value,
             token,
         };
     },
@@ -452,11 +452,9 @@ defineFunction({
     },
     handler: ({parser, funcName}, args) => {
         const numer = args[0];
-        const infixNode = assertNodeType(args[1], "infix");
-        const sizeNode = assertNodeType(infixNode.sizeNode, "size");
+        const barSize = assert(assertNodeType(args[1], "infix").size);
         const denom = args[2];
 
-        const barSize = sizeNode.value.value;
         const hasBarLine = barSize.number > 0;
         return {
             type: "genfrac",

@@ -16,6 +16,7 @@ import type Parser from "../Parser";
 import type {ParseNode, AnyParseNode} from "../parseNode";
 import type {StyleStr} from "../types";
 import type {HtmlBuilder, MathMLBuilder} from "../defineFunction";
+import type {Measurement} from "../units";
 
 // Data stored in the ParseNode associated with the environment.
 type AlignSpec = { type: "separator", separator: string } | {
@@ -32,7 +33,7 @@ export type ArrayEnvNodeData = {|
     cols?: AlignSpec[],
     arraystretch: number,
     body: AnyParseNode[][], // List of rows in the (2D) array.
-    rowGaps: (?ParseNode<"size">)[],
+    rowGaps: (?Measurement)[],
     hLinesBeforeRow: Array<boolean[]>,
 |};
 // Same as above but with some fields not yet filled.
@@ -44,7 +45,7 @@ type ArrayEnvNodeDataIncomplete = {|
     // Before these fields are filled.
     arraystretch?: number,
     body?: AnyParseNode[][],
-    rowGaps?: (?ParseNode<"size">)[],
+    rowGaps?: (?Measurement)[],
     hLinesBeforeRow?: Array<boolean[]>,
 |};
 
@@ -241,7 +242,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         const rowGap = group.value.rowGaps[r];
         let gap = 0;
         if (rowGap) {
-            gap = calculateSize(rowGap.value.value, options);
+            gap = calculateSize(rowGap, options);
             if (gap > 0) { // \@argarraycr
                 gap += arstrutDepth;
                 if (depth < gap) {

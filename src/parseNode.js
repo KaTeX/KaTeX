@@ -78,11 +78,8 @@ type ParseNodeTypes = {
         type: "size",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "size",
-            value: Measurement,
-            isBlank: boolean,
-        |},
+        value: Measurement,
+        isBlank: boolean,
     |},
     "styling": {|
         type: "styling",
@@ -199,7 +196,7 @@ type ParseNodeTypes = {
         loc?: ?SourceLocation,
         newRow: boolean,
         newLine: boolean,
-        size: ?ParseNode<"size">,
+        size: ?Measurement,
     |},
     "delimsizing": {|
         type: "delimsizing",
@@ -272,7 +269,7 @@ type ParseNodeTypes = {
         mode: Mode,
         loc?: ?SourceLocation,
         replaceWith: string,
-        sizeNode?: ParseNode<"size">,
+        size?: Measurement,
         token: ?Token,
     |},
     "kern": {|
@@ -358,7 +355,7 @@ type ParseNodeTypes = {
         type: "raisebox",
         mode: Mode,
         loc?: ?SourceLocation,
-        dy: ParseNode<"size">,
+        dy: Measurement,
         body: AnyParseNode,
     |},
     "rule": {|
