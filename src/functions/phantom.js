@@ -50,16 +50,12 @@ defineFunction({
         return {
             type: "hphantom",
             mode: parser.mode,
-            value: {
-                type: "hphantom",
-                value: ordargument(body),
-                body: body,
-            },
+            body,
         };
     },
     htmlBuilder: (group, options) => {
         let node = buildCommon.makeSpan(
-            [], [html.buildGroup(group.value.body, options.withPhantom())]);
+            [], [html.buildGroup(group.body, options.withPhantom())]);
         node.height = 0;
         node.depth = 0;
         if (node.children) {
@@ -78,7 +74,7 @@ defineFunction({
         return node;
     },
     mathmlBuilder: (group, options) => {
-        const inner = mml.buildExpression(group.value.value, options);
+        const inner = mml.buildExpression(ordargument(group.body), options);
         const node = new mathMLTree.MathNode("mphantom", inner);
         node.setAttribute("height", "0px");
         return node;
