@@ -95,7 +95,7 @@ describe("A rel parser", function() {
                 group = group.value.html[0];
             }
             if (group.type === "mclass") {
-                expect(group.value.mclass).toEqual("mrel");
+                expect(group.mclass).toEqual("mrel");
             } else {
                 expect(group.type).toEqual("atom");
                 expect(group.family).toEqual("rel");

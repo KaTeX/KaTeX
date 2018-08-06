@@ -7,14 +7,15 @@ import defineFunction from "../defineFunction";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
+import type {ParseNode} from "../parseNode";
 
-const htmlBuilder = (group, options) => {
+const htmlBuilder = (group: ParseNode<"font">, options) => {
     const font = group.value.font;
     const newOptions = options.withFont(font);
     return html.buildGroup(group.value.body, newOptions);
 };
 
-const mathmlBuilder = (group, options) => {
+const mathmlBuilder = (group: ParseNode<"font">, options) => {
     const font = group.value.font;
     const newOptions = options.withFont(font);
     return mml.buildGroup(group.value.body, newOptions);
@@ -78,21 +79,18 @@ defineFunction({
         return {
             type: "mclass",
             mode: parser.mode,
-            value: {
-                type: "mclass",
-                mclass: binrelClass(body),
-                value: [
-                    {
+            mclass: binrelClass(body),
+            body: [
+                {
+                    type: "font",
+                    mode: parser.mode,
+                    value: {
                         type: "font",
-                        mode: parser.mode,
-                        value: {
-                            type: "font",
-                            font: "boldsymbol",
-                            body,
-                        },
+                        font: "boldsymbol",
+                        body,
                     },
-                ],
-            },
+                },
+            ],
         };
     },
 });

@@ -348,11 +348,8 @@ type ParseNodeTypes = {
         type: "mclass",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "mclass",
-            mclass: string,
-            value: AnyParseNode[],
-        |},
+        mclass: string,
+        body: AnyParseNode[],
     |},
     "operatorname": {|
         type: "operatorname",
