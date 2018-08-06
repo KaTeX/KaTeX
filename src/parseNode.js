@@ -412,11 +412,8 @@ type ParseNodeTypes = {
         type: "sqrt",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "sqrt",
-            body: AnyParseNode,
-            index: ?AnyParseNode,
-        |},
+        body: AnyParseNode,
+        index: ?AnyParseNode,
     |},
     "underline": {|
         type: "underline",
