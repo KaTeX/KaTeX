@@ -333,13 +333,10 @@ type ParseNodeTypes = {
         type: "mathchoice",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "mathchoice",
-            display: AnyParseNode[],
-            text: AnyParseNode[],
-            script: AnyParseNode[],
-            scriptscript: AnyParseNode[],
-        |},
+        display: AnyParseNode[],
+        text: AnyParseNode[],
+        script: AnyParseNode[],
+        scriptscript: AnyParseNode[],
     |},
     "middle": {|
         type: "middle",
