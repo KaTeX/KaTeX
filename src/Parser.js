@@ -223,10 +223,10 @@ export default class Parser {
                 if (overIndex !== -1) {
                     throw new ParseError(
                         "only one infix operator per group",
-                        node.value.token);
+                        node.token);
                 }
                 overIndex = i;
-                funcName = node.value.replaceWith;
+                funcName = node.replaceWith;
             }
         }
 

@@ -274,12 +274,9 @@ type ParseNodeTypes = {
         type: "infix",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "infix",
-            replaceWith: string,
-            sizeNode?: ParseNode<"size">,
-            token: ?Token,
-        |},
+        replaceWith: string,
+        sizeNode?: ParseNode<"size">,
+        token: ?Token,
     |},
     "kern": {|
         type: "kern",
