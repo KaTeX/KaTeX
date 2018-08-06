@@ -291,11 +291,8 @@ type ParseNodeTypes = {
         type: "href",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "href",
-            href: string,
-            body: AnyParseNode[],
-        |},
+        href: string,
+        body: AnyParseNode[],
     |},
     "htmlmathml": {|
         type: "htmlmathml",

@@ -2499,17 +2499,17 @@ describe("href and url commands", function() {
     it("should allow letters [#$%&~_^] without escaping", function() {
         const url = "http://example.org/~bar/#top?foo=$foo&bar=ba^r_boo%20baz";
         const parsed1 = getParsed(`\\href{${url}}{\\alpha}`)[0];
-        expect(parsed1.value.href).toBe(url);
+        expect(parsed1.href).toBe(url);
         const parsed2 = getParsed(`\\url{${url}}`)[0];
-        expect(parsed2.value.href).toBe(url);
+        expect(parsed2.href).toBe(url);
     });
 
     it("should allow balanced braces in url", function() {
         const url = "http://example.org/{too}";
         const parsed1 = getParsed(`\\href{${url}}{\\alpha}`)[0];
-        expect(parsed1.value.href).toBe(url);
+        expect(parsed1.href).toBe(url);
         const parsed2 = getParsed(`\\url{${url}}`)[0];
-        expect(parsed2.value.href).toBe(url);
+        expect(parsed2.href).toBe(url);
     });
 
     it("should not allow unbalanced brace(s) in url", function() {
@@ -2523,9 +2523,9 @@ describe("href and url commands", function() {
         const url = "http://example.org/~bar/#top?foo=$}foo{&bar=bar^r_boo%20baz";
         const input = url.replace(/([#$%&~_^{}])/g, '\\$1');
         const parsed1 = getParsed(`\\href{${input}}{\\alpha}`)[0];
-        expect(parsed1.value.href).toBe(url);
+        expect(parsed1.href).toBe(url);
         const parsed2 = getParsed(`\\url{${input}}`)[0];
-        expect(parsed2.value.href).toBe(url);
+        expect(parsed2.href).toBe(url);
     });
 
     it("should be marked up correctly", function() {
