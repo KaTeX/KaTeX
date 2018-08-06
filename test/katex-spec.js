@@ -342,7 +342,8 @@ describe("An implicit group parser", function() {
         const sizing = parse[0];
 
         expect(sizing.type).toEqual("sizing");
-        expect(sizing.value).toBeTruthy();
+        expect(sizing.body).toBeTruthy();
+        expect(sizing.size).toBeDefined();
     });
 
     it("should apply only after the function", function() {
@@ -353,7 +354,7 @@ describe("An implicit group parser", function() {
         const sizing = parse[1];
 
         expect(sizing.type).toEqual("sizing");
-        expect(sizing.value.value).toHaveLength(3);
+        expect(sizing.body).toHaveLength(3);
     });
 
     it("should stop at the ends of groups", function() {
@@ -363,7 +364,7 @@ describe("An implicit group parser", function() {
         const sizing = group.value[1];
 
         expect(sizing.type).toEqual("sizing");
-        expect(sizing.value.value).toHaveLength(1);
+        expect(sizing.body).toHaveLength(1);
     });
 
     describe("within optional groups", () => {
@@ -641,7 +642,8 @@ describe("A sizing parser", function() {
         const parse = getParsed(sizeExpression)[0];
 
         expect(parse.type).toEqual("sizing");
-        expect(parse.value).toBeDefined();
+        expect(parse.size).toBeDefined();
+        expect(parse.body).toBeDefined();
     });
 });
 

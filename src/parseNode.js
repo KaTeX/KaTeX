@@ -397,11 +397,8 @@ type ParseNodeTypes = {
         type: "sizing",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "sizing",
-            size: number,
-            value: AnyParseNode[],
-        |},
+        size: number,
+        body: AnyParseNode[],
     |},
     "smash": {|
         type: "smash",

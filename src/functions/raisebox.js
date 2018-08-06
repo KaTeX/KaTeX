@@ -40,11 +40,8 @@ defineFunction({
         const sizedText = {
             type: "sizing",
             mode: group.mode,
-            value: {
-                type: "sizing",
-                value: [text],
-                size: 6,                // simulate \normalsize
-            },
+            body: [text],
+            size: 6,                // simulate \normalsize
         };
         const body = sizing.htmlBuilder(sizedText, options);
         const dy = calculateSize(group.dy.value.value, options);

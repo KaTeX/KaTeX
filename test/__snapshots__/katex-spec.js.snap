@@ -796,18 +796,15 @@ exports[`An implicit group parser within optional groups should work with sizing
         "value": [
           {
             "type": "sizing",
+            "body": [
+              {
+                "type": "textord",
+                "mode": "math",
+                "value": "3"
+              }
+            ],
             "mode": "math",
-            "value": {
-              "type": "sizing",
-              "size": 5,
-              "value": [
-                {
-                  "type": "textord",
-                  "mode": "math",
-                  "value": "3"
-                }
-              ]
-            }
+            "size": 5
           }
         ]
       }
