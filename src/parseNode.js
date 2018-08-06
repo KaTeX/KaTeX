@@ -389,12 +389,9 @@ type ParseNodeTypes = {
         type: "rule",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "rule",
-            shift: ?Measurement,
-            width: Measurement,
-            height: Measurement,
-        |},
+        shift: ?Measurement,
+        width: Measurement,
+        height: Measurement,
     |},
     "sizing": {|
         type: "sizing",

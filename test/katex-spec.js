@@ -984,25 +984,25 @@ describe("A rule parser", function() {
         const emParse = getParsed(emRule)[0];
         const exParse = getParsed(exRule)[0];
 
-        expect(emParse.value.width.unit).toEqual("em");
-        expect(emParse.value.height.unit).toEqual("em");
+        expect(emParse.width.unit).toEqual("em");
+        expect(emParse.height.unit).toEqual("em");
 
-        expect(exParse.value.width.unit).toEqual("ex");
-        expect(exParse.value.height.unit).toEqual("em");
+        expect(exParse.width.unit).toEqual("ex");
+        expect(exParse.height.unit).toEqual("em");
     });
 
     it("should parse the number correctly", function() {
         const hardNumberParse = getParsed(hardNumberRule)[0];
 
-        expect(hardNumberParse.value.width.number).toBeCloseTo(1.24);
-        expect(hardNumberParse.value.height.number).toBeCloseTo(2.45);
+        expect(hardNumberParse.width.number).toBeCloseTo(1.24);
+        expect(hardNumberParse.height.number).toBeCloseTo(2.45);
     });
 
     it("should parse negative sizes", function() {
         const parse = getParsed`\rule{-1em}{- 0.2em}`[0];
 
-        expect(parse.value.width.number).toBeCloseTo(-1);
-        expect(parse.value.height.number).toBeCloseTo(-0.2);
+        expect(parse.width.number).toBeCloseTo(-1);
+        expect(parse.height.number).toBeCloseTo(-0.2);
     });
 });
 
