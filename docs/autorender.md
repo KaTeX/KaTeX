@@ -81,8 +81,8 @@ in addition to two auto-render-specific keys:
 - `ignoredTags`: This is a list of DOM node types to ignore when recursing
   through. The default value is
   `["script", "noscript", "style", "textarea", "pre", "code"]`.
-  
-- `ignoreClasses`: This is a list of DOM node class names to ignore when
+
+- `ignoredClasses`: This is a list of DOM node class names to ignore when
   recursing through. By default, this value is not set.
 
 - `errorCallback`: A callback method returning a message and an error stack

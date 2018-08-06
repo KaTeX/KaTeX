@@ -64,7 +64,7 @@ const renderElem = function(elem, optionsCopy) {
             const className = ' ' + childNode.className + ' ';
             const shouldRender = optionsCopy.ignoredTags.indexOf(
                 childNode.nodeName.toLowerCase()) === -1 &&
-                    optionsCopy.ignoreClasses.every(
+                    optionsCopy.ignoredClasses.every(
                         x => className.indexOf(' ' + x + ' ') === -1);
 
             if (shouldRender) {
