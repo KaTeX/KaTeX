@@ -2292,7 +2292,7 @@ describe("A phantom parser", function() {
         const parse = getParsed`\phantom{x}`[0];
 
         expect(parse.type).toEqual("phantom");
-        expect(parse.value.value).toBeDefined();
+        expect(parse.body).toBeDefined();
     });
 });
 

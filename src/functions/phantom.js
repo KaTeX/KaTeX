@@ -18,15 +18,12 @@ defineFunction({
         return {
             type: "phantom",
             mode: parser.mode,
-            value: {
-                type: "phantom",
-                value: ordargument(body),
-            },
+            body: ordargument(body),
         };
     },
     htmlBuilder: (group, options) => {
         const elements = html.buildExpression(
-            group.value.value,
+            group.body,
             options.withPhantom(),
             false
         );
@@ -36,7 +33,7 @@ defineFunction({
         return new buildCommon.makeFragment(elements);
     },
     mathmlBuilder: (group, options) => {
-        const inner = mml.buildExpression(group.value.value, options);
+        const inner = mml.buildExpression(group.body, options);
         return new mathMLTree.MathNode("mphantom", inner);
     },
 });

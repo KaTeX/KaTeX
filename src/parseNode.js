@@ -370,10 +370,7 @@ type ParseNodeTypes = {
         type: "phantom",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "phantom",
-            value: AnyParseNode[],
-        |},
+        body: AnyParseNode[],
     |},
     "hphantom": {|
         type: "hphantom",
