@@ -15,15 +15,15 @@ const htmlBuilder = (group, options) => {
     // Figure out what style this fraction should be in based on the
     // function used
     let style = options.style;
-    if (group.value.size === "display") {
+    if (group.size === "display") {
         style = Style.DISPLAY;
-    } else if (group.value.size === "text" &&
+    } else if (group.size === "text" &&
         style.size === Style.DISPLAY.size) {
         // We're in a \tfrac but incoming style is displaystyle, so:
         style = Style.TEXT;
-    } else if (group.value.size === "script") {
+    } else if (group.size === "script") {
         style = Style.SCRIPT;
-    } else if (group.value.size === "scriptscript") {
+    } else if (group.size === "scriptscript") {
         style = Style.SCRIPTSCRIPT;
     }
 
@@ -32,9 +32,9 @@ const htmlBuilder = (group, options) => {
     let newOptions;
 
     newOptions = options.havingStyle(nstyle);
-    const numerm = html.buildGroup(group.value.numer, newOptions, options);
+    const numerm = html.buildGroup(group.numer, newOptions, options);
 
-    if (group.value.continued) {
+    if (group.continued) {
         // \cfrac inserts a \strut into the numerator.
         // Get \strut dimensions from TeXbook page 353.
         const hStrut = 8.5 / options.fontMetrics().ptPerEm;
@@ -44,14 +44,14 @@ const htmlBuilder = (group, options) => {
     }
 
     newOptions = options.havingStyle(dstyle);
-    const denomm = html.buildGroup(group.value.denom, newOptions, options);
+    const denomm = html.buildGroup(group.denom, newOptions, options);
 
     let rule;
     let ruleWidth;
     let ruleSpacing;
-    if (group.value.hasBarLine) {
-        if (group.value.barSize) {
-            ruleWidth = calculateSize(group.value.barSize, options);
+    if (group.hasBarLine) {
+        if (group.barSize) {
+            ruleWidth = calculateSize(group.barSize, options);
             rule = buildCommon.makeLineSpan("frac-line", options, ruleWidth);
         } else {
             rule = buildCommon.makeLineSpan("frac-line", options);
@@ -150,21 +150,21 @@ const htmlBuilder = (group, options) => {
 
     let leftDelim;
     let rightDelim;
-    if (group.value.leftDelim == null) {
+    if (group.leftDelim == null) {
         leftDelim = html.makeNullDelimiter(options, ["mopen"]);
     } else {
         leftDelim = delimiter.customSizedDelim(
-            group.value.leftDelim, delimSize, true,
+            group.leftDelim, delimSize, true,
             options.havingStyle(style), group.mode, ["mopen"]);
     }
 
-    if (group.value.continued) {
+    if (group.continued) {
         rightDelim = buildCommon.makeSpan([]); // zero width for \cfrac
-    } else if (group.value.rightDelim == null) {
+    } else if (group.rightDelim == null) {
         rightDelim = html.makeNullDelimiter(options, ["mclose"]);
     } else {
         rightDelim = delimiter.customSizedDelim(
-            group.value.rightDelim, delimSize, true,
+            group.rightDelim, delimSize, true,
             options.havingStyle(style), group.mode, ["mclose"]);
     }
 
@@ -178,23 +178,23 @@ const mathmlBuilder = (group, options) => {
     const node = new mathMLTree.MathNode(
         "mfrac",
         [
-            mml.buildGroup(group.value.numer, options),
-            mml.buildGroup(group.value.denom, options),
+            mml.buildGroup(group.numer, options),
+            mml.buildGroup(group.denom, options),
         ]);
 
-    if (!group.value.hasBarLine) {
+    if (!group.hasBarLine) {
         node.setAttribute("linethickness", "0px");
-    } else if (group.value.barSize) {
-        const ruleWidth = calculateSize(group.value.barSize, options);
+    } else if (group.barSize) {
+        const ruleWidth = calculateSize(group.barSize, options);
         node.setAttribute("linethickness", ruleWidth + "em");
     }
 
-    if (group.value.leftDelim != null || group.value.rightDelim != null) {
+    if (group.leftDelim != null || group.rightDelim != null) {
         const withDelims = [];
 
-        if (group.value.leftDelim != null) {
+        if (group.leftDelim != null) {
             const leftOp = new mathMLTree.MathNode(
-                "mo", [new mathMLTree.TextNode(group.value.leftDelim)]);
+                "mo", [new mathMLTree.TextNode(group.leftDelim)]);
 
             leftOp.setAttribute("fence", "true");
 
@@ -203,9 +203,9 @@ const mathmlBuilder = (group, options) => {
 
         withDelims.push(node);
 
-        if (group.value.rightDelim != null) {
+        if (group.rightDelim != null) {
             const rightOp = new mathMLTree.MathNode(
-                "mo", [new mathMLTree.TextNode(group.value.rightDelim)]);
+                "mo", [new mathMLTree.TextNode(group.rightDelim)]);
 
             rightOp.setAttribute("fence", "true");
 
@@ -284,17 +284,14 @@ defineFunction({
         return {
             type: "genfrac",
             mode: parser.mode,
-            value: {
-                type: "genfrac",
-                continued: funcName === "\\cfrac",
-                numer: numer,
-                denom: denom,
-                hasBarLine: hasBarLine,
-                leftDelim: leftDelim,
-                rightDelim: rightDelim,
-                size: size,
-                barSize: null,
-            },
+            continued: funcName === "\\cfrac",
+            numer,
+            denom,
+            hasBarLine,
+            leftDelim,
+            rightDelim,
+            size,
+            barSize: null,
         };
     },
 
@@ -413,17 +410,14 @@ defineFunction({
         return {
             type: "genfrac",
             mode: parser.mode,
-            value: {
-                type: "genfrac",
-                numer: numer,
-                denom: denom,
-                continued: false,
-                hasBarLine: hasBarLine,
-                barSize: barSize,
-                leftDelim: leftDelim,
-                rightDelim: rightDelim,
-                size: size,
-            },
+            numer,
+            denom,
+            continued: false,
+            hasBarLine,
+            barSize,
+            leftDelim,
+            rightDelim,
+            size,
         };
     },
 
@@ -473,17 +467,14 @@ defineFunction({
         return {
             type: "genfrac",
             mode: parser.mode,
-            value: {
-                type: "genfrac",
-                numer: numer,
-                denom: denom,
-                continued: false,
-                hasBarLine: hasBarLine,
-                barSize: barSize,
-                leftDelim: null,
-                rightDelim: null,
-                size: "auto",
-            },
+            numer,
+            denom,
+            continued: false,
+            hasBarLine,
+            barSize,
+            leftDelim: null,
+            rightDelim: null,
+            size: "auto",
         };
     },
 

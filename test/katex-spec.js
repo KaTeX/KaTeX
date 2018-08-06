@@ -442,8 +442,8 @@ describe("A frac parser", function() {
         const parse = getParsed(expression)[0];
 
         expect(parse.type).toEqual("genfrac");
-        expect(parse.value.numer).toBeDefined();
-        expect(parse.value.denom).toBeDefined();
+        expect(parse.numer).toBeDefined();
+        expect(parse.denom).toBeDefined();
     });
 
     it("should also parse cfrac, dfrac, tfrac, and genfrac", function() {
@@ -458,28 +458,28 @@ describe("A frac parser", function() {
         const dfracParse = getParsed(dfracExpression)[0];
 
         expect(dfracParse.type).toEqual("genfrac");
-        expect(dfracParse.value.numer).toBeDefined();
-        expect(dfracParse.value.denom).toBeDefined();
+        expect(dfracParse.numer).toBeDefined();
+        expect(dfracParse.denom).toBeDefined();
 
         const tfracParse = getParsed(tfracExpression)[0];
 
         expect(tfracParse.type).toEqual("genfrac");
-        expect(tfracParse.value.numer).toBeDefined();
-        expect(tfracParse.value.denom).toBeDefined();
+        expect(tfracParse.numer).toBeDefined();
+        expect(tfracParse.denom).toBeDefined();
 
         const cfracParse = getParsed(cfracExpression)[0];
 
         expect(cfracParse.type).toEqual("genfrac");
-        expect(cfracParse.value.numer).toBeDefined();
-        expect(cfracParse.value.denom).toBeDefined();
+        expect(cfracParse.numer).toBeDefined();
+        expect(cfracParse.denom).toBeDefined();
 
         const genfracParse = getParsed(genfrac1)[0];
 
         expect(genfracParse.type).toEqual("genfrac");
-        expect(genfracParse.value.numer).toBeDefined();
-        expect(genfracParse.value.denom).toBeDefined();
-        expect(genfracParse.value.leftDelim).toBeDefined();
-        expect(genfracParse.value.rightDelim).toBeDefined();
+        expect(genfracParse.numer).toBeDefined();
+        expect(genfracParse.denom).toBeDefined();
+        expect(genfracParse.leftDelim).toBeDefined();
+        expect(genfracParse.rightDelim).toBeDefined();
     });
 
     it("should fail, given math as a line thickness to genfrac", function() {
@@ -496,9 +496,9 @@ describe("A frac parser", function() {
         const parse = getParsed`x \atop y`[0];
 
         expect(parse.type).toEqual("genfrac");
-        expect(parse.value.numer).toBeDefined();
-        expect(parse.value.denom).toBeDefined();
-        expect(parse.value.hasBarLine).toEqual(false);
+        expect(parse.numer).toBeDefined();
+        expect(parse.denom).toBeDefined();
+        expect(parse.hasBarLine).toEqual(false);
     });
 });
 
@@ -521,43 +521,43 @@ describe("An over/brace/brack parser", function() {
         parse = getParsed(simpleOver)[0];
 
         expect(parse.type).toEqual("genfrac");
-        expect(parse.value.numer).toBeDefined();
-        expect(parse.value.denom).toBeDefined();
+        expect(parse.numer).toBeDefined();
+        expect(parse.denom).toBeDefined();
 
         parse = getParsed(complexOver)[0];
 
         expect(parse.type).toEqual("genfrac");
-        expect(parse.value.numer).toBeDefined();
-        expect(parse.value.denom).toBeDefined();
+        expect(parse.numer).toBeDefined();
+        expect(parse.denom).toBeDefined();
 
         const parseBraceFrac = getParsed(braceFrac)[0];
 
         expect(parseBraceFrac.type).toEqual("genfrac");
-        expect(parseBraceFrac.value.numer).toBeDefined();
-        expect(parseBraceFrac.value.denom).toBeDefined();
-        expect(parseBraceFrac.value.leftDelim).toBeDefined();
-        expect(parseBraceFrac.value.rightDelim).toBeDefined();
+        expect(parseBraceFrac.numer).toBeDefined();
+        expect(parseBraceFrac.denom).toBeDefined();
+        expect(parseBraceFrac.leftDelim).toBeDefined();
+        expect(parseBraceFrac.rightDelim).toBeDefined();
 
         const parseBrackFrac = getParsed(brackFrac)[0];
 
         expect(parseBrackFrac.type).toEqual("genfrac");
-        expect(parseBrackFrac.value.numer).toBeDefined();
-        expect(parseBrackFrac.value.denom).toBeDefined();
-        expect(parseBrackFrac.value.leftDelim).toBeDefined();
-        expect(parseBrackFrac.value.rightDelim).toBeDefined();
+        expect(parseBrackFrac.numer).toBeDefined();
+        expect(parseBrackFrac.denom).toBeDefined();
+        expect(parseBrackFrac.leftDelim).toBeDefined();
+        expect(parseBrackFrac.rightDelim).toBeDefined();
     });
 
     it("should create a numerator from the atoms before \\over", function() {
         const parse = getParsed(complexOver)[0];
 
-        const numer = parse.value.numer;
+        const numer = parse.numer;
         expect(numer.value).toHaveLength(4);
     });
 
     it("should create a demonimator from the atoms after \\over", function() {
         const parse = getParsed(complexOver)[0];
 
-        const denom = parse.value.numer;
+        const denom = parse.numer;
         expect(denom.value).toHaveLength(4);
     });
 
@@ -565,24 +565,24 @@ describe("An over/brace/brack parser", function() {
         const emptyNumerator = r`\over x`;
         const parse = getParsed(emptyNumerator)[0];
         expect(parse.type).toEqual("genfrac");
-        expect(parse.value.numer).toBeDefined();
-        expect(parse.value.denom).toBeDefined();
+        expect(parse.numer).toBeDefined();
+        expect(parse.denom).toBeDefined();
     });
 
     it("should handle empty denominators", function() {
         const emptyDenominator = r`1 \over`;
         const parse = getParsed(emptyDenominator)[0];
         expect(parse.type).toEqual("genfrac");
-        expect(parse.value.numer).toBeDefined();
-        expect(parse.value.denom).toBeDefined();
+        expect(parse.numer).toBeDefined();
+        expect(parse.denom).toBeDefined();
     });
 
     it("should handle \\displaystyle correctly", function() {
         const displaystyleExpression = r`\displaystyle 1 \over 2`;
         const parse = getParsed(displaystyleExpression)[0];
         expect(parse.type).toEqual("genfrac");
-        expect(parse.value.numer.value[0].type).toEqual("styling");
-        expect(parse.value.denom).toBeDefined();
+        expect(parse.numer.value[0].type).toEqual("styling");
+        expect(parse.denom).toBeDefined();
     });
 
     it("should handle \\textstyle correctly", function() {
@@ -594,11 +594,11 @@ describe("An over/brace/brack parser", function() {
         const nestedOverExpression = r`{1 \over 2} \over 3`;
         const parse = getParsed(nestedOverExpression)[0];
         expect(parse.type).toEqual("genfrac");
-        expect(parse.value.numer.value[0].type).toEqual("genfrac");
-        expect(parse.value.numer.value[0].value.numer.value[0].value).toEqual("1");
-        expect(parse.value.numer.value[0].value.denom.value[0].value).toEqual("2");
-        expect(parse.value.denom).toBeDefined();
-        expect(parse.value.denom.value[0].value).toEqual("3");
+        expect(parse.numer.value[0].type).toEqual("genfrac");
+        expect(parse.numer.value[0].numer.value[0].value).toEqual("1");
+        expect(parse.numer.value[0].denom.value[0].value).toEqual("2");
+        expect(parse.denom).toBeDefined();
+        expect(parse.denom.value[0].value).toEqual("3");
     });
 
     it("should fail with multiple overs in the same group", function() {
