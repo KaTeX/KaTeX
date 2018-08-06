@@ -87,39 +87,33 @@ defineFunction({
         return {
             type: "delimsizing",
             mode: context.parser.mode,
-            value: {
-                type: "delimsizing",
-                size: delimiterSizes[context.funcName].size,
-                mclass: delimiterSizes[context.funcName].mclass,
-                value: delim.value,
-            },
+            size: delimiterSizes[context.funcName].size,
+            mclass: delimiterSizes[context.funcName].mclass,
+            delim: delim.value,
         };
     },
     htmlBuilder: (group, options) => {
-        const delim = group.value.value;
-
-        if (delim === ".") {
+        if (group.delim === ".") {
             // Empty delimiters still count as elements, even though they don't
             // show anything.
-            return buildCommon.makeSpan([group.value.mclass]);
+            return buildCommon.makeSpan([group.mclass]);
         }
 
         // Use delimiter.sizedDelim to generate the delimiter.
         return delimiter.sizedDelim(
-                delim, group.value.size, options, group.mode,
-                [group.value.mclass]);
+                group.delim, group.size, options, group.mode, [group.mclass]);
     },
     mathmlBuilder: (group) => {
         const children = [];
 
-        if (group.value.value !== ".") {
-            children.push(mml.makeText(group.value.value, group.mode));
+        if (group.delim !== ".") {
+            children.push(mml.makeText(group.delim, group.mode));
         }
 
         const node = new mathMLTree.MathNode("mo", children);
 
-        if (group.value.mclass === "mopen" ||
-            group.value.mclass === "mclose") {
+        if (group.mclass === "mopen" ||
+            group.mclass === "mclose") {
             // Only some of the delimsizing functions act as fences, and they
             // return "mopen" or "mclose" mclass.
             node.setAttribute("fence", "true");

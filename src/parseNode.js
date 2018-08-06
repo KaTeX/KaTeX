@@ -215,12 +215,9 @@ type ParseNodeTypes = {
         type: "delimsizing",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "delimsizing",
-            size: 1 | 2 | 3 | 4,
-            mclass: "mopen" | "mclose" | "mrel" | "mord",
-            value: string,
-        |},
+        size: 1 | 2 | 3 | 4,
+        mclass: "mopen" | "mclose" | "mrel" | "mord",
+        delim: string,
     |},
     "enclose": {|
         type: "enclose",
