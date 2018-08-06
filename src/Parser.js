@@ -793,11 +793,8 @@ export default class Parser {
         return newArgument({
             type: "size",
             mode: this.mode,
-            value: {
-                type: "size",
-                value: data,
-                isBlank: isBlank,
-            },
+            value: data,
+            isBlank,
         }, res);
     }
 
