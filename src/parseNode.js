@@ -267,11 +267,8 @@ type ParseNodeTypes = {
         type: "htmlmathml",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "htmlmathml",
-            html: AnyParseNode[],
-            mathml: AnyParseNode[],
-        |},
+        html: AnyParseNode[],
+        mathml: AnyParseNode[],
     |},
     "infix": {|
         type: "infix",
