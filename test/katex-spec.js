@@ -1239,7 +1239,7 @@ describe("A begin/end parser", function() {
 
     it("should eat a final newline", function() {
         const m3 = getParsed`\begin{matrix}a&b\\ c&d \\ \end{matrix}`[0];
-        expect(m3.value.body).toHaveLength(2);
+        expect(m3.body).toHaveLength(2);
     });
 
     it("should grab \\arraystretch", function() {
@@ -2405,7 +2405,7 @@ describe("An array environment", function() {
     it("should accept a single alignment character", function() {
         const parse = getParsed`\begin{array}r1\\20\end{array}`;
         expect(parse[0].type).toBe("array");
-        expect(parse[0].value.cols).toEqual([
+        expect(parse[0].cols).toEqual([
             {type: "align", align: "r"},
         ]);
     });
@@ -2413,7 +2413,7 @@ describe("An array environment", function() {
     it("should accept vertical separators", function() {
         const parse = getParsed`\begin{array}{|l||c:r::}\end{array}`;
         expect(parse[0].type).toBe("array");
-        expect(parse[0].value.cols).toEqual([
+        expect(parse[0].cols).toEqual([
             {type: "separator", separator: "|"},
             {type: "align", align: "l"},
             {type: "separator", separator: "|"},
@@ -2453,7 +2453,7 @@ describe("An aligned environment", function() {
 
     it("should not eat the last row when its first cell is empty", function() {
         const ae = getParsed`\begin{aligned}&E_1 & (1)\\&E_2 & (2)\\&E_3 & (3)\end{aligned}`[0];
-        expect(ae.value.body).toHaveLength(3);
+        expect(ae.body).toHaveLength(3);
     });
 });
 

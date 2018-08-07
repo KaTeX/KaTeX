@@ -4,133 +4,130 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
 [
   {
     "type": "array",
-    "mode": "math",
-    "value": {
-      "type": "array",
-      "arraystretch": 1.5,
-      "body": [
-        [
-          {
-            "type": "styling",
-            "body": [
-              {
-                "type": "ordgroup",
-                "mode": "math",
-                "value": [
-                  {
-                    "type": "mathord",
-                    "loc": {
-                      "end": 37,
-                      "lexer": {
-                        "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                        "lastIndex": 56
-                      },
-                      "start": 36
+    "arraystretch": 1.5,
+    "body": [
+      [
+        {
+          "type": "styling",
+          "body": [
+            {
+              "type": "ordgroup",
+              "mode": "math",
+              "value": [
+                {
+                  "type": "mathord",
+                  "loc": {
+                    "end": 37,
+                    "lexer": {
+                      "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                      "lastIndex": 56
                     },
-                    "mode": "math",
-                    "value": "a"
-                  }
-                ]
-              }
-            ],
-            "mode": "math",
-            "style": "text"
-          },
-          {
-            "type": "styling",
-            "body": [
-              {
-                "type": "ordgroup",
-                "mode": "math",
-                "value": [
-                  {
-                    "type": "mathord",
-                    "loc": {
-                      "end": 39,
-                      "lexer": {
-                        "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                        "lastIndex": 56
-                      },
-                      "start": 38
+                    "start": 36
+                  },
+                  "mode": "math",
+                  "value": "a"
+                }
+              ]
+            }
+          ],
+          "mode": "math",
+          "style": "text"
+        },
+        {
+          "type": "styling",
+          "body": [
+            {
+              "type": "ordgroup",
+              "mode": "math",
+              "value": [
+                {
+                  "type": "mathord",
+                  "loc": {
+                    "end": 39,
+                    "lexer": {
+                      "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                      "lastIndex": 56
                     },
-                    "mode": "math",
-                    "value": "b"
-                  }
-                ]
-              }
-            ],
-            "mode": "math",
-            "style": "text"
-          }
-        ],
-        [
-          {
-            "type": "styling",
-            "body": [
-              {
-                "type": "ordgroup",
-                "mode": "math",
-                "value": [
-                  {
-                    "type": "mathord",
-                    "loc": {
-                      "end": 42,
-                      "lexer": {
-                        "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                        "lastIndex": 56
-                      },
-                      "start": 41
-                    },
-                    "mode": "math",
-                    "value": "c"
-                  }
-                ]
-              }
-            ],
-            "mode": "math",
-            "style": "text"
-          },
-          {
-            "type": "styling",
-            "body": [
-              {
-                "type": "ordgroup",
-                "mode": "math",
-                "value": [
-                  {
-                    "type": "mathord",
-                    "loc": {
-                      "end": 44,
-                      "lexer": {
-                        "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                        "lastIndex": 56
-                      },
-                      "start": 43
-                    },
-                    "mode": "math",
-                    "value": "d"
-                  }
-                ]
-              }
-            ],
-            "mode": "math",
-            "style": "text"
-          }
-        ]
+                    "start": 38
+                  },
+                  "mode": "math",
+                  "value": "b"
+                }
+              ]
+            }
+          ],
+          "mode": "math",
+          "style": "text"
+        }
       ],
-      "hLinesBeforeRow": [
-        [
-        ],
-        [
-        ],
-        [
-        ]
-      ],
-      "hskipBeforeAndAfter": false,
-      "rowGaps": [
-        null
+      [
+        {
+          "type": "styling",
+          "body": [
+            {
+              "type": "ordgroup",
+              "mode": "math",
+              "value": [
+                {
+                  "type": "mathord",
+                  "loc": {
+                    "end": 42,
+                    "lexer": {
+                      "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                      "lastIndex": 56
+                    },
+                    "start": 41
+                  },
+                  "mode": "math",
+                  "value": "c"
+                }
+              ]
+            }
+          ],
+          "mode": "math",
+          "style": "text"
+        },
+        {
+          "type": "styling",
+          "body": [
+            {
+              "type": "ordgroup",
+              "mode": "math",
+              "value": [
+                {
+                  "type": "mathord",
+                  "loc": {
+                    "end": 44,
+                    "lexer": {
+                      "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                      "lastIndex": 56
+                    },
+                    "start": 43
+                  },
+                  "mode": "math",
+                  "value": "d"
+                }
+              ]
+            }
+          ],
+          "mode": "math",
+          "style": "text"
+        }
       ]
-    }
+    ],
+    "hLinesBeforeRow": [
+      [
+      ],
+      [
+      ],
+      [
+      ]
+    ],
+    "hskipBeforeAndAfter": false,
+    "mode": "math",
+    "rowGaps": [
+      null
+    ]
   }
 ]
 `;
