@@ -31,11 +31,8 @@ defineFunction({
         const text = {
             type: "text",
             mode: group.mode,
-            value: {
-                type: "text",
-                body: ordargument(group.body),
-                font: "mathrm", // simulate \textrm
-            },
+            body: ordargument(group.body),
+            font: "mathrm", // simulate \textrm
         };
         const sizedText = {
             type: "sizing",
