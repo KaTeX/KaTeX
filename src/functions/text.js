@@ -20,7 +20,7 @@ const textFontShapes = {
 };
 
 const optionsWithFont = (group, options) => {
-    const font = group.value.font;
+    const font = group.font;
     // Checks if the argument is a font family or a font style.
     if (!font) {
         return options;
@@ -55,21 +55,18 @@ defineFunction({
         return {
             type: "text",
             mode: parser.mode,
-            value: {
-                type: "text",
-                body: ordargument(body),
-                font: funcName,
-            },
+            body: ordargument(body),
+            font: funcName,
         };
     },
     htmlBuilder(group, options) {
         const newOptions = optionsWithFont(group, options);
-        const inner = html.buildExpression(group.value.body, newOptions, true);
+        const inner = html.buildExpression(group.body, newOptions, true);
         buildCommon.tryCombineChars(inner);
         return buildCommon.makeSpan(["mord", "text"], inner, newOptions);
     },
     mathmlBuilder(group, options) {
         const newOptions = optionsWithFont(group, options);
-        return mml.buildExpressionRow(group.value.body, newOptions);
+        return mml.buildExpressionRow(group.body, newOptions);
     },
 });

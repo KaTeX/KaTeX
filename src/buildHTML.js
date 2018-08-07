@@ -171,8 +171,7 @@ export const buildExpression = function(
                         } else if (node.type === "sizing") {
                             glueOptions = options.havingSize(node.size);
                         } else if (node.type === "styling") {
-                            glueOptions = options.havingStyle(
-                                styleMap[node.value.style]);
+                            glueOptions = options.havingStyle(styleMap[node.style]);
                         }
                     }
 

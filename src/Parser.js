@@ -319,10 +319,7 @@ export default class Parser {
         const textNode = {
             type: "text",
             mode: this.mode,
-            value: {
-                type: "text",
-                body: textordArray,
-            },
+            body: textordArray,
         };
 
         const colorNode = {
