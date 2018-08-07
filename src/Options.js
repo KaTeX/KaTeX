@@ -180,6 +180,30 @@ class Options {
     }
 
     /**
+     * Remove the effect of sizing changes such as \Huge.
+     * Keep the effect of the current style, such as \scriptstyle.
+     */
+    havingBaseSizing(): Options {
+        let size;
+        switch (this.style.id) {
+            case 4:
+            case 5:
+                size = 3;  // normalsize in scriptstyle
+                break;
+            case 6:
+            case 7:
+                size = 1;  // normalsize in scriptscriptstyle
+                break;
+            default:
+                size = 6;  // normalsize in textstyle or displaystyle
+        }
+        return this.extend({
+            style: this.style.text(),
+            size: size,
+        });
+    }
+
+    /**
      * Create a new options object with the given color.
      */
     withColor(color: string): Options {
