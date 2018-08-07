@@ -666,12 +666,12 @@ describe("A text parser", function() {
         const parse = getParsed(textExpression)[0];
 
         expect(parse.type).toEqual("text");
-        expect(parse.value).toBeDefined();
+        expect(parse.body).toBeDefined();
     });
 
     it("should produce textords instead of mathords", function() {
         const parse = getParsed(textExpression)[0];
-        const group = parse.value.body;
+        const group = parse.body;
 
         expect(group[0].type).toEqual("textord");
     });
@@ -694,7 +694,7 @@ describe("A text parser", function() {
 
     it("should contract spaces", function() {
         const parse = getParsed(spaceTextExpression)[0];
-        const group = parse.value.body;
+        const group = parse.body;
 
         expect(group[0].type).toEqual("spacing");
         expect(group[1].type).toEqual("textord");
@@ -709,10 +709,8 @@ describe("A text parser", function() {
     it("should ignore a space before the text group", function() {
         const parse = getParsed(leadingSpaceTextExpression)[0];
         // [m, o, o]
-        expect(parse.value.body).toHaveLength(3);
-        expect(
-            parse.value.body.map(function(n) { return n.value; }).join("")
-        ).toBe("moo");
+        expect(parse.body).toHaveLength(3);
+        expect(parse.body.map(n => n.value).join("")).toBe("moo");
     });
 
     it("should parse math within text group", function() {
@@ -860,14 +858,14 @@ describe("A tie parser", function() {
 
     it("should produce spacing in text mode", function() {
         const text = getParsed(textTie)[0];
-        const parse = text.value.body;
+        const parse = text.body;
 
         expect(parse[1].type).toEqual("spacing");
     });
 
     it("should not contract with spaces in text mode", function() {
         const text = getParsed(textTie)[0];
-        const parse = text.value.body;
+        const parse = text.body;
 
         expect(parse[2].type).toEqual("spacing");
     });

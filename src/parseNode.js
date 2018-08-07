@@ -107,11 +107,8 @@ type ParseNodeTypes = {
         type: "text",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "text",
-            body: AnyParseNode[],
-            font?: string,
-        |},
+        body: AnyParseNode[],
+        font?: string,
     |},
     "url": {|
         type: "url",
