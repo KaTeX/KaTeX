@@ -88,7 +88,7 @@ The `{array}` environment does not yet support `\cline` or `\multicolumn`.
 
 |||
 |:----------------|:-------------------|
-| $\href{https://khan.github.io/KaTeX/}{KaTeX}$ | `\href{https://khan.github.io/KaTeX/}{KaTeX}` |
+| $\href{https://khan.github.io/KaTeX/}{\KaTeX}$ | `\href{https://khan.github.io/KaTeX/}{\KaTeX}` |
 | $\url{https://khan.github.io/KaTeX/}$ | `\url{https://khan.github.io/KaTeX/}` |
 
 ## Letters and Unicode

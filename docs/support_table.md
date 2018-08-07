@@ -445,7 +445,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\hookleftarrow|$\hookleftarrow$||
 |\hookrightarrow|$\hookrightarrow$||
 |\hphantom|$a\hphantom{bc}d$|`a\hphantom{bc}d`|
-|\href|$\href{https://khan.github.io/KaTeX/}{KaTeX}$|`\href{https://khan.github.io/KaTeX/}{KaTeX}`|
+|\href|$\href{https://khan.github.io/KaTeX/}{\KaTeX}$|`\href{https://khan.github.io/KaTeX/}{\KaTeX}`|
 |\hskip|$w\hskip1em i\hskip2em d$|`w\hskip1em i\hskip2em d`|
 |\hslash|$\hslash$||
 |\hspace|$s\hspace7ex k$|`s\hspace7ex k`|
