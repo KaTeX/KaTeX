@@ -25,11 +25,8 @@ defineFunction({
         return {
             type: "styling",
             mode: parser.mode,
-            value: {
-                type: "styling",
-                style: "text",
-                value: body,
-            },
+            style: "text",
+            body,
         };
     },
 });

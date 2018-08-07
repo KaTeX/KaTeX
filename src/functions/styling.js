@@ -23,7 +23,7 @@ defineFunction({
         numArgs: 0,
         allowedInText: true,
     },
-    handler: ({breakOnTokenText, funcName, parser}, args) => {
+    handler({breakOnTokenText, funcName, parser}, args) {
         // parse out the implicit body
         parser.consumeSpaces();
         const body = parser.parseExpression(true, breakOnTokenText);
@@ -35,22 +35,19 @@ defineFunction({
         return {
             type: "styling",
             mode: parser.mode,
-            value: {
-                type: "styling",
-                // Figure out what style to use by pulling out the style from
-                // the function name
-                style,
-                value: body,
-            },
+            // Figure out what style to use by pulling out the style from
+            // the function name
+            style,
+            body,
         };
     },
-    htmlBuilder: (group, options) => {
+    htmlBuilder(group, options) {
         // Style changes are handled in the TeXbook on pg. 442, Rule 3.
-        const newStyle = styleMap[group.value.style];
+        const newStyle = styleMap[group.style];
         const newOptions = options.havingStyle(newStyle).withFont('');
-        return sizingGroup(group.value.value, newOptions, options);
+        return sizingGroup(group.body, newOptions, options);
     },
-    mathmlBuilder: (group, options) => {
+    mathmlBuilder(group, options) {
         // Figure out what style we're changing to.
         // TODO(kevinb): dedupe this with buildHTML.js
         // This will be easier of handling of styling nodes is in the same file.
@@ -61,10 +58,10 @@ defineFunction({
             "scriptscript": Style.SCRIPTSCRIPT,
         };
 
-        const newStyle = styleMap[group.value.style];
+        const newStyle = styleMap[group.style];
         const newOptions = options.havingStyle(newStyle);
 
-        const inner = mml.buildExpression(group.value.value, newOptions);
+        const inner = mml.buildExpression(group.body, newOptions);
 
         const node = new mathMLTree.MathNode("mstyle", inner);
 
@@ -75,7 +72,7 @@ defineFunction({
             "scriptscript": ["2", "false"],
         };
 
-        const attr = styleAttributes[group.value.style];
+        const attr = styleAttributes[group.style];
 
         node.setAttribute("scriptlevel", attr[0]);
         node.setAttribute("displaystyle", attr[1]);

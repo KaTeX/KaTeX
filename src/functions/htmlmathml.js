@@ -16,22 +16,19 @@ defineFunction({
         return {
             type: "htmlmathml",
             mode: parser.mode,
-            value: {
-                type: "htmlmathml",
-                html:   ordargument(args[0]),
-                mathml: ordargument(args[1]),
-            },
+            html:   ordargument(args[0]),
+            mathml: ordargument(args[1]),
         };
     },
     htmlBuilder: (group, options) => {
         const elements = html.buildExpression(
-            group.value.html,
+            group.html,
             options,
             false
         );
         return new buildCommon.makeFragment(elements);
     },
     mathmlBuilder: (group, options) => {
-        return mml.buildExpressionRow(group.value.mathml, options);
+        return mml.buildExpressionRow(group.mathml, options);
     },
 });

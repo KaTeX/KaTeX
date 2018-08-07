@@ -368,7 +368,7 @@ defineMacro("\\not", '\\mathrel{\\mathrlap\\@not}');
 // \DeclareRobustCommand
 //   \notin{\mathrel{\m@th\mathpalette\c@ncel\in}}
 // \def\c@ncel#1#2{\m@th\ooalign{$\hfil#1\mkern1mu/\hfil$\crcr$#1#2$}}
-defineMacro("\\neq", "\\html@mathml{\\not=}{\\mathrel{\\char`≠}}");
+defineMacro("\\neq", "\\html@mathml{\\mathrel{\\not=}}{\\mathrel{\\char`≠}}");
 defineMacro("\\ne", "\\neq");
 defineMacro("\u2260", "\\neq");
 defineMacro("\\notin", "\\html@mathml{\\mathrel{{\\in}\\mathllap{/\\mskip1mu}}}"
@@ -441,7 +441,7 @@ defineMacro("\\colon", "\\nobreak\\mskip2mu\\mathpunct{}" +
     "\\mathchoice{\\mkern-3mu}{\\mkern-3mu}{}{}{:}\\mskip6mu");
 
 // \newcommand{\boxed}[1]{\fbox{\m@th$\displaystyle#1$}}
-defineMacro("\\boxed", "\\fbox{\\displaystyle{#1}}");
+defineMacro("\\boxed", "\\fbox{$\\displaystyle{#1}$}");
 
 // \def\iff{\DOTSB\;\Longleftrightarrow\;}
 // \def\implies{\DOTSB\;\Longrightarrow\;}
