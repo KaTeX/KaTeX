@@ -139,7 +139,8 @@ popd
 
 # Make the commit and tag, and push them.
 git add package.json README.md contrib/*/README.md dist/README.md \
-    docs/*.md website/
+    docs/*.md website/pages/index.html website/versioned_docs/ \
+    website/versioned_sidebars/ website/versions.json
 git commit -n -m "v$VERSION"
 git diff --stat --exit-code # check for uncommitted changes
 git tag -a "v$VERSION" -m "v$VERSION"
