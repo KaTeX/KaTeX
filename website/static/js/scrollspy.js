@@ -1,37 +1,44 @@
-const epsilon = 10;
-let timer;
-const onScroll = () => {
-    if (timer) {  // throttle
-        return;
-    }
-    timer = setTimeout(() => {
-        let found = false;
-        const headings = document.querySelectorAll('.toc-headings > li > a');
-        // Some computations based on
-        // https://github.com/makotot/scrollspy/blob/master/src/js/modules/scrollspy.js
-        const scrollTop = document.documentElement.scrollTop ||
-            document.body.scrollTop;
-        const scrollBottom = scrollTop + window.innerHeight;
-        for (let i = 0; i < headings.length; i++) {
-            // if !found and i is the last element, highlight the last
-            let current = !found;
-            if (!found && i < headings.length - 1) {
-                const next = headings[i + 1].href.split('#')[1];
-                const nextHeader = document.getElementById(next);
-                const top = nextHeader.getBoundingClientRect().top + scrollTop;
-                current = top > scrollTop + epsilon;
-            }
-            if (current) {
-                found = true;
-                headings[i].className = "active";
-            } else {
-                headings[i].className = "";
-            }
+// Based in part on
+// https://github.com/makotot/scrollspy/blob/master/src/js/modules/scrollspy.js
+(function () {
+    const OFFSET = 10;
+    let timer;
+    let headingsCache;
+    const findHeadings = () =>
+        document.querySelectorAll('.toc-headings > li > a');
+    const onScroll = () => {
+        if (timer) {  // throttle
+            clearTimeout(timer);
         }
-        timer = null;
-    }, 50);
-};
-document.addEventListener('scroll', onScroll);
-document.addEventListener('resize', onScroll);
-document.addEventListener('ready', onScroll);
-onScroll();
+        timer = setTimeout(() => {
+            let found = false;
+            let headings = headingsCache ? headingsCache : findHeadings();
+            const scrollTop = window.pageYOffset;
+            // scrollspy uses
+            // document.documentElement.scrollTop || document.body.scrollTop;
+            for (let i = 0; i < headings.length; i++) {
+                // if !found and i is the last element, highlight the last
+                let current = !found;
+                if (!found && i < headings.length - 1) {
+                    const next = headings[i + 1].href.split('#')[1];
+                    const nextHeader = document.getElementById(next);
+                    const top = nextHeader.getBoundingClientRect().top;
+                    current = top > OFFSET;
+                }
+                if (current) {
+                    found = true;
+                    headings[i].className = "active";
+                } else {
+                    headings[i].className = "";
+                }
+            }
+            timer = null;
+        }, 100);
+    };
+    document.addEventListener('scroll', onScroll);
+    document.addEventListener('resize', onScroll);
+    document.addEventListener('DOMContentLoaded', () => {
+        headingsCache = findHeadings();
+        onScroll();
+    });
+})();
