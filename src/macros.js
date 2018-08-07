@@ -806,7 +806,7 @@ defineMacro("\\liminf", "\\DOTSB\\mathop{\\operatorname{lim\\,inf}}\\limits");
 // texvc.sty
 
 // The texvc package contains macros available in mediawiki pages.
-// We omit the functions deprecated at 
+// We omit the functions deprecated at
 // https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated-syntax
 
 // We also omit texvc's \O, which conflicts with \text{\O}
