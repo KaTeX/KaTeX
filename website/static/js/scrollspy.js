@@ -1,10 +1,10 @@
-// Based in part on
-// https://github.com/makotot/scrollspy/blob/master/src/js/modules/scrollspy.js
+// Inspired by ScrollSpy as in e.g. Bootstrap
+
 (function () {
     const OFFSET = 10;
     let timer;
     let headingsCache;
-    const findHeadings = () =>
+    const findHeadings = () => headingsCache ? headingsCache :
         document.querySelectorAll('.toc-headings > li > a');
     const onScroll = () => {
         if (timer) {  // throttle
@@ -12,10 +12,8 @@
         }
         timer = setTimeout(() => {
             let found = false;
-            let headings = headingsCache ? headingsCache : findHeadings();
+            let headings = findHeadings();
             const scrollTop = window.pageYOffset;
-            // scrollspy uses
-            // document.documentElement.scrollTop || document.body.scrollTop;
             for (let i = 0; i < headings.length; i++) {
                 // if !found and i is the last element, highlight the last
                 let current = !found;
@@ -38,6 +36,7 @@
     document.addEventListener('scroll', onScroll);
     document.addEventListener('resize', onScroll);
     document.addEventListener('DOMContentLoaded', () => {
+        // Cache the headings once the page has fully loaded.
         headingsCache = findHeadings();
         onScroll();
     });
