@@ -5,7 +5,7 @@
     "build": "npm run prestart && docusaurus-build",
     "publish-gh-pages": "npm run prestart && docusaurus-publish",
     "write-translations": "docusaurus-write-translations",
-    "version": "docusaurus-version",
+    "version": "npm run prestart && docusaurus-version",
     "rename-version": "docusaurus-rename-version"
   },
   "devDependencies": {
