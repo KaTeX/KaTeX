@@ -12,121 +12,109 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
         [
           {
             "type": "styling",
-            "mode": "math",
-            "value": {
-              "type": "styling",
-              "style": "text",
-              "value": [
-                {
-                  "type": "ordgroup",
-                  "mode": "math",
-                  "value": [
-                    {
-                      "type": "mathord",
-                      "loc": {
-                        "end": 37,
-                        "lexer": {
-                          "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                          "lastIndex": 56
-                        },
-                        "start": 36
+            "body": [
+              {
+                "type": "ordgroup",
+                "mode": "math",
+                "value": [
+                  {
+                    "type": "mathord",
+                    "loc": {
+                      "end": 37,
+                      "lexer": {
+                        "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                        "lastIndex": 56
                       },
-                      "mode": "math",
-                      "value": "a"
-                    }
-                  ]
-                }
-              ]
-            }
+                      "start": 36
+                    },
+                    "mode": "math",
+                    "value": "a"
+                  }
+                ]
+              }
+            ],
+            "mode": "math",
+            "style": "text"
           },
           {
             "type": "styling",
-            "mode": "math",
-            "value": {
-              "type": "styling",
-              "style": "text",
-              "value": [
-                {
-                  "type": "ordgroup",
-                  "mode": "math",
-                  "value": [
-                    {
-                      "type": "mathord",
-                      "loc": {
-                        "end": 39,
-                        "lexer": {
-                          "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                          "lastIndex": 56
-                        },
-                        "start": 38
+            "body": [
+              {
+                "type": "ordgroup",
+                "mode": "math",
+                "value": [
+                  {
+                    "type": "mathord",
+                    "loc": {
+                      "end": 39,
+                      "lexer": {
+                        "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                        "lastIndex": 56
                       },
-                      "mode": "math",
-                      "value": "b"
-                    }
-                  ]
-                }
-              ]
-            }
+                      "start": 38
+                    },
+                    "mode": "math",
+                    "value": "b"
+                  }
+                ]
+              }
+            ],
+            "mode": "math",
+            "style": "text"
           }
         ],
         [
           {
             "type": "styling",
-            "mode": "math",
-            "value": {
-              "type": "styling",
-              "style": "text",
-              "value": [
-                {
-                  "type": "ordgroup",
-                  "mode": "math",
-                  "value": [
-                    {
-                      "type": "mathord",
-                      "loc": {
-                        "end": 42,
-                        "lexer": {
-                          "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                          "lastIndex": 56
-                        },
-                        "start": 41
+            "body": [
+              {
+                "type": "ordgroup",
+                "mode": "math",
+                "value": [
+                  {
+                    "type": "mathord",
+                    "loc": {
+                      "end": 42,
+                      "lexer": {
+                        "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                        "lastIndex": 56
                       },
-                      "mode": "math",
-                      "value": "c"
-                    }
-                  ]
-                }
-              ]
-            }
+                      "start": 41
+                    },
+                    "mode": "math",
+                    "value": "c"
+                  }
+                ]
+              }
+            ],
+            "mode": "math",
+            "style": "text"
           },
           {
             "type": "styling",
-            "mode": "math",
-            "value": {
-              "type": "styling",
-              "style": "text",
-              "value": [
-                {
-                  "type": "ordgroup",
-                  "mode": "math",
-                  "value": [
-                    {
-                      "type": "mathord",
-                      "loc": {
-                        "end": 44,
-                        "lexer": {
-                          "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                          "lastIndex": 56
-                        },
-                        "start": 43
+            "body": [
+              {
+                "type": "ordgroup",
+                "mode": "math",
+                "value": [
+                  {
+                    "type": "mathord",
+                    "loc": {
+                      "end": 44,
+                      "lexer": {
+                        "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                        "lastIndex": 56
                       },
-                      "mode": "math",
-                      "value": "d"
-                    }
-                  ]
-                }
-              ]
-            }
+                      "start": 43
+                    },
+                    "mode": "math",
+                    "value": "d"
+                  }
+                ]
+              }
+            ],
+            "mode": "math",
+            "style": "text"
           }
         ]
       ],
@@ -660,18 +648,15 @@ exports[`An implicit group parser within optional groups should work style comma
       "value": [
         {
           "type": "styling",
+          "body": [
+            {
+              "type": "textord",
+              "mode": "math",
+              "value": "3"
+            }
+          ],
           "mode": "math",
-          "value": {
-            "type": "styling",
-            "style": "text",
-            "value": [
-              {
-                "type": "textord",
-                "mode": "math",
-                "value": "3"
-              }
-            ]
-          }
+          "style": "text"
         }
       ]
     },

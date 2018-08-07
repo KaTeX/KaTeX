@@ -85,11 +85,8 @@ type ParseNodeTypes = {
         type: "styling",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "styling",
-            style: StyleStr,
-            value: AnyParseNode[],
-        |},
+        style: StyleStr,
+        body: AnyParseNode[],
     |},
     "supsub": {|
         type: "supsub",

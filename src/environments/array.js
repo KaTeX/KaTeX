@@ -112,11 +112,8 @@ function parseArray(
             cell = {
                 type: "styling",
                 mode: parser.mode,
-                value: {
-                    type: "styling",
-                    style: style,
-                    value: [cell],
-                },
+                style,
+                body: [cell],
             };
         }
         row.push(cell);
@@ -128,7 +125,7 @@ function parseArray(
             // the last line is empty.
             // NOTE: Currently, `cell` is the last item added into `row`.
             if (row.length === 1 && cell.type === "styling" &&
-                cell.value.value[0].value.length === 0) {
+                cell.body[0].value.length === 0) {
                 body.pop();
             }
             if (hLinesBeforeRow.length < body.length + 1) {
@@ -443,7 +440,7 @@ const alignedHandler = function(context, args) {
         for (let i = 1; i < row.length; i += 2) {
             // Modify ordgroup node within styling node
             const styling = assertNodeType(row[i], "styling");
-            const ordgroup = assertNodeType(styling.value.value[0], "ordgroup");
+            const ordgroup = assertNodeType(styling.body[0], "ordgroup");
             ordgroup.value.unshift(emptyGroup);
         }
         if (!isAligned) { // Case 1

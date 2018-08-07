@@ -1440,10 +1440,10 @@ describe("A style change parser", function() {
 
     it("should produce the correct style", function() {
         const displayParse = getParsed`\displaystyle x`[0];
-        expect(displayParse.value.style).toEqual("display");
+        expect(displayParse.style).toEqual("display");
 
         const scriptscriptParse = getParsed`\scriptscriptstyle x`[0];
-        expect(scriptscriptParse.value.style).toEqual("scriptscript");
+        expect(scriptscriptParse.style).toEqual("scriptscript");
     });
 
     it("should only change the style within its group", function() {
@@ -1454,7 +1454,7 @@ describe("A style change parser", function() {
 
         expect(displayNode.type).toEqual("styling");
 
-        const displayBody = displayNode.value.value;
+        const displayBody = displayNode.body;
 
         expect(displayBody).toHaveLength(2);
         expect(displayBody[0].value).toEqual("e");
