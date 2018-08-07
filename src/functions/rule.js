@@ -20,9 +20,9 @@ defineFunction({
         return {
             type: "rule",
             mode: parser.mode,
-            shift: shift && assertNodeType(shift, "size").value.value,
-            width: width.value.value,
-            height: height.value.value,
+            shift: shift && assertNodeType(shift, "size").value,
+            width: width.value,
+            height: height.value,
         };
     },
     htmlBuilder(group, options) {
