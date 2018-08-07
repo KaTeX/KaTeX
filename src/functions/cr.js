@@ -23,7 +23,7 @@ defineFunction({
         allowedInText: true,
     },
 
-    handler: ({parser, funcName}, args, optArgs) => {
+    handler({parser, funcName}, args, optArgs) {
         const size = optArgs[0];
         const newRow = (funcName === "\\cr");
         let newLine = false;
@@ -42,14 +42,14 @@ defineFunction({
             mode: parser.mode,
             newLine,
             newRow,
-            size: size && assertNodeType(size, "size"),
+            size: size && assertNodeType(size, "size").value,
         };
     },
 
     // The following builders are called only at the top level,
     // not within tabular/array environments.
 
-    htmlBuilder: (group, options) => {
+    htmlBuilder(group, options) {
         if (group.newRow) {
             throw new ParseError(
                 "\\cr valid only within a tabular/array environment");
@@ -59,19 +59,19 @@ defineFunction({
             span.classes.push("newline");
             if (group.size) {
                 span.style.marginTop =
-                    calculateSize(group.size.value.value, options) + "em";
+                    calculateSize(group.size, options) + "em";
             }
         }
         return span;
     },
 
-    mathmlBuilder: (group, options) => {
+    mathmlBuilder(group, options) {
         const node = new mathMLTree.MathNode("mspace");
         if (group.newLine) {
             node.setAttribute("linebreak", "newline");
             if (group.size) {
                 node.setAttribute("height",
-                    calculateSize(group.size.value.value, options) + "em");
+                    calculateSize(group.size, options) + "em");
             }
         }
         return node;

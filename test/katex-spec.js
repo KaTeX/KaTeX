@@ -666,12 +666,12 @@ describe("A text parser", function() {
         const parse = getParsed(textExpression)[0];
 
         expect(parse.type).toEqual("text");
-        expect(parse.value).toBeDefined();
+        expect(parse.body).toBeDefined();
     });
 
     it("should produce textords instead of mathords", function() {
         const parse = getParsed(textExpression)[0];
-        const group = parse.value.body;
+        const group = parse.body;
 
         expect(group[0].type).toEqual("textord");
     });
@@ -694,7 +694,7 @@ describe("A text parser", function() {
 
     it("should contract spaces", function() {
         const parse = getParsed(spaceTextExpression)[0];
-        const group = parse.value.body;
+        const group = parse.body;
 
         expect(group[0].type).toEqual("spacing");
         expect(group[1].type).toEqual("textord");
@@ -709,10 +709,8 @@ describe("A text parser", function() {
     it("should ignore a space before the text group", function() {
         const parse = getParsed(leadingSpaceTextExpression)[0];
         // [m, o, o]
-        expect(parse.value.body).toHaveLength(3);
-        expect(
-            parse.value.body.map(function(n) { return n.value; }).join("")
-        ).toBe("moo");
+        expect(parse.body).toHaveLength(3);
+        expect(parse.body.map(n => n.value).join("")).toBe("moo");
     });
 
     it("should parse math within text group", function() {
@@ -759,6 +757,20 @@ describe("A text parser", function() {
 
     it("should omit spaces after commands", function() {
         expect`\text{\textellipsis !}`.toParseLike`\text{\textellipsis!}`;
+    });
+});
+
+describe("A texvc builder", function() {
+    it("should not fail", function() {
+        expect("\\lang\\N\\darr\\R\\dArr\\Z\\Darr\\alef\\rang").toBuild();
+        expect("\\alefsym\\uarr\\Alpha\\uArr\\Beta\\Uarr\\Chi").toBuild();
+        expect("\\clubs\\diamonds\\hearts\\spades\\cnums\\Complex").toBuild();
+        expect("\\Dagger\\empty\\harr\\Epsilon\\hArr\\Eta\\Harr\\exist").toBuild();
+        expect("\\image\\larr\\infin\\lArr\\Iota\\Larr\\isin\\Kappa").toBuild();
+        expect("\\Mu\\lrarr\\natnums\\lrArr\\Nu\\Lrarr\\Omicron").toBuild();
+        expect("\\real\\rarr\\plusmn\\rArr\\reals\\Rarr\\Reals\\Rho").toBuild();
+        expect("\\text{\\sect}\\sdot\\sub\\sube\\supe").toBuild();
+        expect("\\Tau\\thetasym\\weierp\\Zeta").toBuild();
     });
 });
 
@@ -860,14 +872,14 @@ describe("A tie parser", function() {
 
     it("should produce spacing in text mode", function() {
         const text = getParsed(textTie)[0];
-        const parse = text.value.body;
+        const parse = text.body;
 
         expect(parse[1].type).toEqual("spacing");
     });
 
     it("should not contract with spaces in text mode", function() {
         const text = getParsed(textTie)[0];
-        const parse = text.value.body;
+        const parse = text.body;
 
         expect(parse[2].type).toEqual("spacing");
     });
@@ -1241,7 +1253,7 @@ describe("A begin/end parser", function() {
 
     it("should eat a final newline", function() {
         const m3 = getParsed`\begin{matrix}a&b\\ c&d \\ \end{matrix}`[0];
-        expect(m3.value.body).toHaveLength(2);
+        expect(m3.body).toHaveLength(2);
     });
 
     it("should grab \\arraystretch", function() {
@@ -1444,10 +1456,10 @@ describe("A style change parser", function() {
 
     it("should produce the correct style", function() {
         const displayParse = getParsed`\displaystyle x`[0];
-        expect(displayParse.value.style).toEqual("display");
+        expect(displayParse.style).toEqual("display");
 
         const scriptscriptParse = getParsed`\scriptscriptstyle x`[0];
-        expect(scriptscriptParse.value.style).toEqual("scriptscript");
+        expect(scriptscriptParse.style).toEqual("scriptscript");
     });
 
     it("should only change the style within its group", function() {
@@ -1458,7 +1470,7 @@ describe("A style change parser", function() {
 
         expect(displayNode.type).toEqual("styling");
 
-        const displayBody = displayNode.value.value;
+        const displayBody = displayNode.body;
 
         expect(displayBody).toHaveLength(2);
         expect(displayBody[0].value).toEqual("e");
@@ -2411,7 +2423,7 @@ describe("An array environment", function() {
     it("should accept a single alignment character", function() {
         const parse = getParsed`\begin{array}r1\\20\end{array}`;
         expect(parse[0].type).toBe("array");
-        expect(parse[0].value.cols).toEqual([
+        expect(parse[0].cols).toEqual([
             {type: "align", align: "r"},
         ]);
     });
@@ -2419,7 +2431,7 @@ describe("An array environment", function() {
     it("should accept vertical separators", function() {
         const parse = getParsed`\begin{array}{|l||c:r::}\end{array}`;
         expect(parse[0].type).toBe("array");
-        expect(parse[0].value.cols).toEqual([
+        expect(parse[0].cols).toEqual([
             {type: "separator", separator: "|"},
             {type: "align", align: "l"},
             {type: "separator", separator: "|"},
@@ -2459,7 +2471,7 @@ describe("An aligned environment", function() {
 
     it("should not eat the last row when its first cell is empty", function() {
         const ae = getParsed`\begin{aligned}&E_1 & (1)\\&E_2 & (2)\\&E_3 & (3)\end{aligned}`[0];
-        expect(ae.value.body).toHaveLength(3);
+        expect(ae.body).toHaveLength(3);
     });
 });
 
