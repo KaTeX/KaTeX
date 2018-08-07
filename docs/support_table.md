@@ -81,8 +81,8 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\alpha|$\alpha$||
 |\amalg|$\amalg$||
 |\And|$\And$||
-|\and|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated-syntax)|
-|\ang|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated-syntax)|
+|\and|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
+|\ang|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
 |\angl|<span style="color:firebrick;">Not supported</span>||
 |\angle|$\angle$||
 |\approx|$\approx$||
@@ -193,7 +193,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
-|\C|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated-syntax)|
+|\C|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
 |\cal|<span style="color:firebrick;">Not supported</span>|See `\mathcal`
 |\cancel|$\cancel{5}$|`\cancel{5}`|
 |\cancelto|<span style="color:firebrick;">Not supported</span>||
@@ -773,7 +773,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\P|$\text{\P}$|`\text{\P}`|
-|\pagecolor|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated-syntax)|
+|\pagecolor|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
 |\parallel|$\parallel$||
 |\part|<span style="color:firebrick;">Not supported</span>||
 |\partial|$\partial$||
