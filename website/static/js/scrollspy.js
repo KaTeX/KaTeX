@@ -1,6 +1,6 @@
 // Inspired by ScrollSpy as in e.g. Bootstrap
 
-(function () {
+(function() {
     const OFFSET = 10;
     let timer;
     let headingsCache;
@@ -13,8 +13,7 @@
         timer = setTimeout(() => {
             timer = null;
             let found = false;
-            let headings = findHeadings();
-            const scrollTop = window.pageYOffset;
+            const headings = findHeadings();
             for (let i = 0; i < headings.length; i++) {
                 // if !found and i is the last element, highlight the last
                 let current = !found;
