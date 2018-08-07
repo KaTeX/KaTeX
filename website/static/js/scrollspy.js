@@ -11,6 +11,7 @@
             clearTimeout(timer);
         }
         timer = setTimeout(() => {
+            timer = null;
             let found = false;
             let headings = findHeadings();
             const scrollTop = window.pageYOffset;
@@ -21,6 +22,9 @@
                     const next = headings[i + 1].href.split('#')[1];
                     const nextHeader = document.getElementById(next);
                     const top = nextHeader.getBoundingClientRect().top;
+                    // The following tests whether top + scrollTop
+                    // (the top of the header) is greater than scrollTop
+                    // (the top of the window), with OFFSET pixels of slop.
                     current = top > OFFSET;
                 }
                 if (current) {
@@ -30,7 +34,6 @@
                     headings[i].className = "";
                 }
             }
-            timer = null;
         }, 100);
     };
     document.addEventListener('scroll', onScroll);
