@@ -62,11 +62,8 @@ defineFunction({
         const body = {
             type: "text",
             mode: parser.mode,
-            value: {
-                type: "text",
-                font: "\\texttt",
-                body: chars,
-            },
+            font: "\\texttt",
+            body: chars,
         };
         return {
             type: "href",
