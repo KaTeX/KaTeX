@@ -4,7 +4,6 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import delimiter from "../delimiter";
 import Style from "../Style";
-import ParseNode from "../ParseNode";
 
 import * as tree from "../tree";
 import * as html from "../buildHTML";
@@ -20,18 +19,19 @@ defineFunction({
     handler({parser}, args, optArgs) {
         const index = optArgs[0];
         const body = args[0];
-        return new ParseNode("sqrt", {
+        return {
             type: "sqrt",
-            body: body,
-            index: index,
-        }, parser.mode);
+            mode: parser.mode,
+            body,
+            index,
+        };
     },
     htmlBuilder(group, options) {
         // Square roots are handled in the TeXbook pg. 443, Rule 11.
 
         // First, we do the same steps as in overline to build the inner group
         // and line
-        let inner = html.buildGroup(group.value.body, options.havingCrampedStyle());
+        let inner = html.buildGroup(group.body, options.havingCrampedStyle());
         if (inner.height === 0) {
             // Render a small surd.
             inner.height = options.fontMetrics().xHeight;
@@ -86,14 +86,14 @@ defineFunction({
             ],
         }, options);
 
-        if (!group.value.index) {
+        if (!group.index) {
             return buildCommon.makeSpan(["mord", "sqrt"], [body], options);
         } else {
             // Handle the optional root index
 
             // The index is always in scriptscript style
             const newOptions = options.havingStyle(Style.SCRIPTSCRIPT);
-            const rootm = html.buildGroup(group.value.index, newOptions, options);
+            const rootm = html.buildGroup(group.index, newOptions, options);
 
             // The amount the index is shifted by. This is taken from the TeX
             // source, in the definition of `\r@@t`.
@@ -114,7 +114,7 @@ defineFunction({
         }
     },
     mathmlBuilder(group, options) {
-        const {body, index} = group.value;
+        const {body, index} = group;
         return index ?
             new mathMLTree.MathNode(
                 "mroot", [

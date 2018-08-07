@@ -3,7 +3,6 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -17,28 +16,29 @@ defineFunction({
     },
     handler: ({parser, funcName}, args) => {
         const body = args[0];
-        return new ParseNode("lap", {
+        return {
             type: "lap",
+            mode: parser.mode,
             alignment: funcName.slice(5),
-            body: body,
-        }, parser.mode);
+            body,
+        };
     },
     htmlBuilder: (group, options) => {
         // mathllap, mathrlap, mathclap
         let inner;
-        if (group.value.alignment === "clap") {
+        if (group.alignment === "clap") {
             // ref: https://www.math.lsu.edu/~aperlis/publications/mathclap/
             inner = buildCommon.makeSpan(
-                [], [html.buildGroup(group.value.body, options)]);
+                [], [html.buildGroup(group.body, options)]);
             // wrap, since CSS will center a .clap > .inner > span
             inner = buildCommon.makeSpan(["inner"], [inner], options);
         } else {
             inner = buildCommon.makeSpan(
-                ["inner"], [html.buildGroup(group.value.body, options)]);
+                ["inner"], [html.buildGroup(group.body, options)]);
         }
         const fix = buildCommon.makeSpan(["fix"], []);
         let node = buildCommon.makeSpan(
-            [group.value.alignment], [inner, fix], options);
+            [group.alignment], [inner, fix], options);
 
         // At this point, we have correctly set horizontal alignment of the
         // two items involved in the lap.
@@ -61,10 +61,10 @@ defineFunction({
     mathmlBuilder: (group, options) => {
         // mathllap, mathrlap, mathclap
         const node = new mathMLTree.MathNode(
-            "mpadded", [mml.buildGroup(group.value.body, options)]);
+            "mpadded", [mml.buildGroup(group.body, options)]);
 
-        if (group.value.alignment !== "rlap")    {
-            const offset = (group.value.alignment === "llap" ? "-1" : "-0.5");
+        if (group.alignment !== "rlap")    {
+            const offset = (group.alignment === "llap" ? "-1" : "-0.5");
             node.setAttribute("lspace", offset + "width");
         }
         node.setAttribute("width", "0px");

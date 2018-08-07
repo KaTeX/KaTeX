@@ -14,8 +14,8 @@ import {calculateSize} from "./units";
 import * as tree from "./tree";
 
 import type Options from "./Options";
-import type ParseNode from "./ParseNode";
-import type {NodeType} from "./ParseNode";
+import type {ParseNode} from "./parseNode";
+import type {NodeType} from "./parseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {FontVariant, Mode} from "./types";
 import type {documentFragment as HtmlDocumentFragment} from "./domTree";
@@ -613,8 +613,8 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
 
 // Converts verb group into body string, dealing with \verb* form
 const makeVerb = function(group: ParseNode<"verb">, options: Options): string {
-    let text = group.value.body;
-    if (group.value.star) {
+    let text = group.body;
+    if (group.star) {
         text = text.replace(/ /g, '\u2423');  // Open Box
     } else {
         text = text.replace(/ /g, '\xA0');    // No-Break Space

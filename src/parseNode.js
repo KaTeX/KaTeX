@@ -1,132 +1,62 @@
 // @flow
-import SourceLocation from "./SourceLocation";
-import {GROUPS} from "./symbols";
-import type {ArrayEnvNodeData} from "./environments/array";
+import {NON_ATOMS} from "./symbols";
+import type SourceLocation from "./SourceLocation";
+import type {AlignSpec} from "./environments/array";
+import type {Atom} from "./symbols";
 import type {Mode, StyleStr} from "./types";
 import type {Token} from "./Token";
 import type {Measurement} from "./units";
 
-/**
- * The resulting parse tree nodes of the parse tree.
- *
- * It is possible to provide position information, so that a `ParseNode` can
- * fulfill a role similar to a `Token` in error reporting.
- * For details on the corresponding properties see `Token` constructor.
- * Providing such information can lead to better error reporting.
- */
-export default class ParseNode<TYPE: NodeType> {
-    type: TYPE;
-    value: NodeValue<TYPE>;
-    mode: Mode;
-    loc: ?SourceLocation;
-
-    constructor(
-        type: TYPE,             // type of node, like e.g. "ordgroup"
-        value: NodeValue<TYPE>, // type-specific representation of the node
-        mode: Mode,         // parse mode in action for this node, "math" or "text"
-        first?: {loc: ?SourceLocation}, // first token or node of the input for
-                            // this node, will omit position information if unset
-        last?: {loc: ?SourceLocation},  // last token or node of the input for this
-                            // node, will default to firstToken if unset
-    ) {
-        this.type = type;
-        this.value = value;
-        this.mode = mode;
-        this.loc = SourceLocation.range(first, last);
-    }
-}
-
 export type NodeType = $Keys<ParseNodeTypes>;
-export type NodeValue<TYPE: NodeType> = $ElementType<ParseNodeTypes, TYPE>;
-
-export type LeftRightDelimType = {|
-    type: "leftright",
-    body: AnyParseNode[],
-    left: string,
-    right: string,
-|};
+export type ParseNode<TYPE: NodeType> = $ElementType<ParseNodeTypes, TYPE>;
 
 // ParseNode's corresponding to Symbol `Group`s in symbols.js.
 export type SymbolParseNode =
+    ParseNode<"atom"> |
     ParseNode<"accent-token"> |
-    ParseNode<"bin"> |
-    ParseNode<"close"> |
-    ParseNode<"inner"> |
     ParseNode<"mathord"> |
     ParseNode<"op-token"> |
-    ParseNode<"open"> |
-    ParseNode<"punct"> |
-    ParseNode<"rel"> |
     ParseNode<"spacing"> |
     ParseNode<"textord">;
 
 // Union of all possible `ParseNode<>` types.
-// Unable to derive this directly from `ParseNodeTypes` due to
-// https://github.com/facebook/flow/issues/6369.
-// Cannot use `ParseNode<NodeType>` since `ParseNode` is not strictly co-variant
-// w.r.t. its type parameter due to the way the value type is computed.
-export type AnyParseNode =
-    SymbolParseNode |
-    ParseNode<"array"> |
-    ParseNode<"color"> |
-    ParseNode<"color-token"> |
-    ParseNode<"op"> |
-    ParseNode<"ordgroup"> |
-    ParseNode<"size"> |
-    ParseNode<"styling"> |
-    ParseNode<"supsub"> |
-    ParseNode<"tag"> |
-    ParseNode<"text"> |
-    ParseNode<"url"> |
-    ParseNode<"verb"> |
-    ParseNode<"accent"> |
-    ParseNode<"accentUnder"> |
-    ParseNode<"cr"> |
-    ParseNode<"delimsizing"> |
-    ParseNode<"enclose"> |
-    ParseNode<"environment"> |
-    ParseNode<"font"> |
-    ParseNode<"genfrac"> |
-    ParseNode<"horizBrace"> |
-    ParseNode<"href"> |
-    ParseNode<"htmlmathml"> |
-    ParseNode<"infix"> |
-    ParseNode<"kern"> |
-    ParseNode<"lap"> |
-    ParseNode<"leftright"> |
-    ParseNode<"leftright-right"> |
-    ParseNode<"mathchoice"> |
-    ParseNode<"middle"> |
-    ParseNode<"mclass"> |
-    ParseNode<"mod"> |
-    ParseNode<"operatorname"> |
-    ParseNode<"overline"> |
-    ParseNode<"phantom"> |
-    ParseNode<"hphantom"> |
-    ParseNode<"vphantom"> |
-    ParseNode<"raisebox"> |
-    ParseNode<"rule"> |
-    ParseNode<"sizing"> |
-    ParseNode<"smash"> |
-    ParseNode<"sqrt"> |
-    ParseNode<"underline"> |
-    ParseNode<"xArrow">;
+export type AnyParseNode = $Values<ParseNodeTypes>;
 
-// Map from `type` field value to corresponding `value` type.
-export type ParseNodeTypes = {
-    "array": ArrayEnvNodeData,
+// Map from `NodeType` to the corresponding `ParseNode`.
+type ParseNodeTypes = {
+    "array": {|
+        type: "array",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        hskipBeforeAndAfter?: boolean,
+        addJot?: boolean,
+        cols?: AlignSpec[],
+        arraystretch: number,
+        body: AnyParseNode[][], // List of rows in the (2D) array.
+        rowGaps: (?Measurement)[],
+        hLinesBeforeRow: Array<boolean[]>,
+    |},
     "color": {|
         type: "color",
+        mode: Mode,
+        loc?: ?SourceLocation,
         color: string,
-        value: AnyParseNode[],
+        body: AnyParseNode[],
     |},
-    "color-token": string,
+    "color-token": {|
+        type: "color-token",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        value: string,
+    |},
     // To avoid requiring run-time type assertions, this more carefully captures
     // the requirements on the fields per the op.js htmlBuilder logic:
     // - `body` and `value` are NEVER set simultanouesly.
     // - When `symbol` is true, `body` is set.
     "op": {|
         type: "op",
+        mode: Mode,
+        loc?: ?SourceLocation,
         limits: boolean,
         alwaysHandleSupSub?: boolean,
         suppressBaseShift?: boolean,
@@ -135,6 +65,8 @@ export type ParseNodeTypes = {
         value?: void,
     |} | {|
         type: "op",
+        mode: Mode,
+        loc?: ?SourceLocation,
         limits: boolean,
         alwaysHandleSupSub?: boolean,
         suppressBaseShift?: boolean,
@@ -142,60 +74,108 @@ export type ParseNodeTypes = {
         body?: void,
         value: AnyParseNode[],
     |},
-    "ordgroup": AnyParseNode[],
+    "ordgroup": {|
+        type: "ordgroup",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        value: AnyParseNode[],
+    |},
     "size": {|
         type: "size",
+        mode: Mode,
+        loc?: ?SourceLocation,
         value: Measurement,
         isBlank: boolean,
     |},
     "styling": {|
         type: "styling",
+        mode: Mode,
+        loc?: ?SourceLocation,
         style: StyleStr,
-        value: AnyParseNode[],
+        body: AnyParseNode[],
     |},
     "supsub": {|
         type: "supsub",
+        mode: Mode,
+        loc?: ?SourceLocation,
         base: ?AnyParseNode,
         sup?: ?AnyParseNode,
         sub?: ?AnyParseNode,
     |},
     "tag": {|
         type: "tag",
+        mode: Mode,
+        loc?: ?SourceLocation,
         body: AnyParseNode[],
         tag: AnyParseNode[],
     |},
     "text": {|
         type: "text",
+        mode: Mode,
+        loc?: ?SourceLocation,
         body: AnyParseNode[],
         font?: string,
     |},
     "url": {|
         type: "url",
-        value: string,
+        mode: Mode,
+        loc?: ?SourceLocation,
+        url: string,
     |},
     "verb": {|
         type: "verb",
+        mode: Mode,
+        loc?: ?SourceLocation,
         body: string,
         star: boolean,
     |},
     // From symbol groups, constructed in Parser.js via `symbols` lookup.
     // (Some of these have "-token" suffix to distinguish them from existing
     // `ParseNode` types.)
-    "accent-token": string,
-    "bin": string,
-    "close": string,
-    "inner": string,
-    "mathord": string,
-    "op-token": string,
-    "open": string,
-    "punct": string,
-    "rel": string,
-    "spacing": string,
-    "textord": string,
+    "atom": {|
+        type: "atom",
+        family: Atom,
+        mode: Mode,
+        loc?: ?SourceLocation,
+        value: string,
+    |},
+    "mathord": {|
+        type: "mathord",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        value: string,
+    |},
+    "spacing": {|
+        type: "spacing",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        value: string,
+    |},
+    "textord": {|
+        type: "textord",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        value: string,
+    |},
+    // These "-token" types don't have corresponding HTML/MathML builders.
+    "accent-token": {|
+        type: "accent-token",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        value: string,
+    |},
+    "op-token": {|
+        type: "op-token",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        value: string,
+    |},
     // From functions.js and functions/*.js. See also "color", "op", "styling",
     // and "text" above.
     "accent": {|
         type: "accent",
+        mode: Mode,
+        loc?: ?SourceLocation,
         label: string,
         isStretchy?: boolean,
         isShifty?: boolean,
@@ -203,6 +183,8 @@ export type ParseNodeTypes = {
     |},
     "accentUnder": {|
         type: "accentUnder",
+        mode: Mode,
+        loc?: ?SourceLocation,
         label: string,
         isStretchy?: boolean,
         isShifty?: boolean,
@@ -210,18 +192,24 @@ export type ParseNodeTypes = {
     |},
     "cr": {|
         type: "cr",
+        mode: Mode,
+        loc?: ?SourceLocation,
         newRow: boolean,
         newLine: boolean,
-        size: ?ParseNode<"size">,
+        size: ?Measurement,
     |},
     "delimsizing": {|
         type: "delimsizing",
+        mode: Mode,
+        loc?: ?SourceLocation,
         size: 1 | 2 | 3 | 4,
         mclass: "mopen" | "mclose" | "mrel" | "mord",
-        value: string,
+        delim: string,
     |},
     "enclose": {|
         type: "enclose",
+        mode: Mode,
+        loc?: ?SourceLocation,
         label: string,
         backgroundColor?: ParseNode<"color-token">,
         borderColor?: ParseNode<"color-token">,
@@ -229,16 +217,22 @@ export type ParseNodeTypes = {
     |},
     "environment": {|
         type: "environment",
+        mode: Mode,
+        loc?: ?SourceLocation,
         name: string,
         nameGroup: AnyParseNode,
     |},
     "font": {|
         type: "font",
+        mode: Mode,
+        loc?: ?SourceLocation,
         font: string,
         body: AnyParseNode,
     |},
     "genfrac": {|
         type: "genfrac",
+        mode: Mode,
+        loc?: ?SourceLocation,
         continued: boolean,
         numer: AnyParseNode,
         denom: AnyParseNode,
@@ -250,42 +244,65 @@ export type ParseNodeTypes = {
     |},
     "horizBrace": {|
         type: "horizBrace",
+        mode: Mode,
+        loc?: ?SourceLocation,
         label: string,
         isOver: boolean,
         base: AnyParseNode,
     |},
     "href": {|
         type: "href",
+        mode: Mode,
+        loc?: ?SourceLocation,
         href: string,
         body: AnyParseNode[],
     |},
     "htmlmathml": {|
         type: "htmlmathml",
+        mode: Mode,
+        loc?: ?SourceLocation,
         html: AnyParseNode[],
         mathml: AnyParseNode[],
     |},
     "infix": {|
         type: "infix",
+        mode: Mode,
+        loc?: ?SourceLocation,
         replaceWith: string,
-        sizeNode?: ParseNode<"size">,
+        size?: Measurement,
         token: ?Token,
     |},
     "kern": {|
         type: "kern",
+        mode: Mode,
+        loc?: ?SourceLocation,
         dimension: Measurement,
     |},
     "lap": {|
         type: "lap",
+        mode: Mode,
+        loc?: ?SourceLocation,
         alignment: string,
         body: AnyParseNode,
     |},
-    "leftright": LeftRightDelimType,
+    "leftright": {|
+        type: "leftright",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        body: AnyParseNode[],
+        left: string,
+        right: string,
+    |},
     "leftright-right": {|
         type: "leftright-right",
-        value: string,
+        mode: Mode,
+        loc?: ?SourceLocation,
+        delim: string,
     |},
     "mathchoice": {|
         type: "mathchoice",
+        mode: Mode,
+        loc?: ?SourceLocation,
         display: AnyParseNode[],
         text: AnyParseNode[],
         script: AnyParseNode[],
@@ -293,74 +310,94 @@ export type ParseNodeTypes = {
     |},
     "middle": {|
         type: "middle",
-        value: string,
+        mode: Mode,
+        loc?: ?SourceLocation,
+        delim: string,
     |},
     "mclass": {|
         type: "mclass",
+        mode: Mode,
+        loc?: ?SourceLocation,
         mclass: string,
-        value: AnyParseNode[],
-    |},
-    "mod": {|
-        type: "mod",
-        modType: string,
-        value: ?AnyParseNode[],
+        body: AnyParseNode[],
     |},
     "operatorname": {|
         type: "operatorname",
-        value: AnyParseNode[],
+        mode: Mode,
+        loc?: ?SourceLocation,
+        body: AnyParseNode[],
     |},
     "overline": {|
         type: "overline",
+        mode: Mode,
+        loc?: ?SourceLocation,
         body: AnyParseNode,
     |},
     "phantom": {|
         type: "phantom",
-        value: AnyParseNode[],
+        mode: Mode,
+        loc?: ?SourceLocation,
+        body: AnyParseNode[],
     |},
     "hphantom": {|
         type: "hphantom",
+        mode: Mode,
+        loc?: ?SourceLocation,
         body: AnyParseNode,
-        value: AnyParseNode[],
     |},
     "vphantom": {|
         type: "vphantom",
+        mode: Mode,
+        loc?: ?SourceLocation,
         body: AnyParseNode,
-        value: AnyParseNode[],
     |},
     "raisebox": {|
         type: "raisebox",
-        dy: ParseNode<"size">,
+        mode: Mode,
+        loc?: ?SourceLocation,
+        dy: Measurement,
         body: AnyParseNode,
-        value: AnyParseNode[],
     |},
     "rule": {|
         type: "rule",
+        mode: Mode,
+        loc?: ?SourceLocation,
         shift: ?Measurement,
         width: Measurement,
         height: Measurement,
     |},
     "sizing": {|
         type: "sizing",
+        mode: Mode,
+        loc?: ?SourceLocation,
         size: number,
-        value: AnyParseNode[],
+        body: AnyParseNode[],
     |},
     "smash": {|
         type: "smash",
+        mode: Mode,
+        loc?: ?SourceLocation,
         body: AnyParseNode,
         smashHeight: boolean,
         smashDepth: boolean,
     |},
     "sqrt": {|
         type: "sqrt",
+        mode: Mode,
+        loc?: ?SourceLocation,
         body: AnyParseNode,
         index: ?AnyParseNode,
     |},
     "underline": {|
         type: "underline",
+        mode: Mode,
+        loc?: ?SourceLocation,
         body: AnyParseNode,
     |},
     "xArrow": {|
         type: "xArrow",
+        mode: Mode,
+        loc?: ?SourceLocation,
         label: string,
         body: AnyParseNode,
         below: ?AnyParseNode,
@@ -381,6 +418,7 @@ export function assertNodeType<NODETYPE: NodeType>(
             `Expected node of type ${type}, but got ` +
             (node ? `node of type ${node.type}` : String(node)));
     }
+    // $FlowFixMe: Unsure why.
     return typedNode;
 }
 
@@ -393,10 +431,47 @@ export function checkNodeType<NODETYPE: NodeType>(
     type: NODETYPE,
 ): ?ParseNode<NODETYPE> {
     if (node && node.type === type) {
-        // $FlowFixMe: Inference not sophisticated enough to figure this out.
+        // The definition of ParseNode<TYPE> doesn't communicate to flow that
+        // `type: TYPE` (as that's not explicitly mentioned anywhere), though that
+        // happens to be true for all our value types.
+        // $FlowFixMe
         return node;
     }
     return null;
+}
+
+/**
+ * Asserts that the node is of the given type and returns it with stricter
+ * typing. Throws if the node's type does not match.
+ */
+export function assertAtomFamily(
+    node: ?AnyParseNode,
+    family: Atom,
+): ParseNode<"atom"> {
+    const typedNode = checkAtomFamily(node, family);
+    if (!typedNode) {
+        throw new Error(
+            `Expected node of type "atom" and family "${family}", but got ` +
+            (node ?
+                (node.type === "atom" ?
+                    `atom of family ${node.family}` :
+                    `node of type ${node.type}`) :
+                String(node)));
+    }
+    return typedNode;
+}
+
+/**
+ * Returns the node more strictly typed iff it is of the given type. Otherwise,
+ * returns null.
+ */
+export function checkAtomFamily(
+    node: ?AnyParseNode,
+    family: Atom,
+): ?ParseNode<"atom"> {
+    return node && node.type === "atom" && node.family === family ?
+        node :
+        null;
 }
 
 /**
@@ -418,7 +493,7 @@ export function assertSymbolNodeType(node: ?AnyParseNode): SymbolParseNode {
  * returns null.
  */
 export function checkSymbolNodeType(node: ?AnyParseNode): ?SymbolParseNode {
-    if (node && GROUPS.hasOwnProperty(node.type)) {
+    if (node && (node.type === "atom" || NON_ATOMS.hasOwnProperty(node.type))) {
         // $FlowFixMe
         return node;
     }
