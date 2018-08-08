@@ -16,6 +16,8 @@ KaTeX is compatible with all major browsers, including Chrome, Safari, Firefox, 
 
 KaTeX supports much (but not all) of LaTeX and many LaTeX packages. See the [list of supported functions](https://khan.github.io/KaTeX/docs/supported.html).
 
+Try out KaTeX [on the demo page](https://khan.github.io/KaTeX/#demo)!
+
 ## Getting started
 
 [Download KaTeX](https://github.com/khan/katex/releases) and host it on your server or include the `katex.min.js` and `katex.min.css` files on your page directly from a CDN:
