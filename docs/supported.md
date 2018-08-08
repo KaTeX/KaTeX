@@ -3,7 +3,7 @@ id: supported
 title: Supported Functions
 ---
 <style>
-table tr, 
+table tr,
 table td {
     vertical-align: middle;
 }
@@ -27,7 +27,7 @@ There is a similar [Support Table](./support_table.md), sorted alphabetically, t
 |$\ddot{a}$ `\ddot{a}`  |$\underleftrightarrow{AB}$ `\underleftrightarrow{AB}`|$\underbrace{AB}$ `\underbrace{AB}`
 |$\grave{a}$ `\grave{a}`|$\overline{AB}$ `\overline{AB}` |$\overlinesegment{AB}$ `\overlinesegment{AB}`
 |$\hat{\theta}$ `\hat{\theta}`|$\underline{AB}$ `\underline{AB}`  |$\underlinesegment{AB}$ `\underlinesegment{AB}`
-|$\widehat{ac}$ `\widehat{ac}`|$\widecheck{ac}$ `\widecheck{ac}`  |  
+|$\widehat{ac}$ `\widehat{ac}`|$\widecheck{ac}$ `\widecheck{ac}`  |
 
 ***Accent functions inside \\text{…}***
 
