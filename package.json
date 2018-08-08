@@ -70,7 +70,7 @@
     "test:jest:update": "jest --updateSnapshot",
     "test:jest:coverage": "jest --coverage",
     "test:screenshots": "yarn test:screenshots:update --verify",
-    "test:screenshots:update": "yarn prestart && dockers/Screenshotter/screenshotter.sh",
+    "test:screenshots:update": "yarn prestart && dockers/screenshotter/screenshotter.sh",
     "test:perf": "yarn prestart && NODE_ENV=test node test/perf-test.js",
     "clean": "rm -rf dist/ node_modules/",
     "clean-install": "yarn clean && yarn",
