@@ -61,8 +61,11 @@ const renderElem = function(elem, optionsCopy) {
             elem.replaceChild(frag, childNode);
         } else if (childNode.nodeType === 1) {
             // Element node
+            const className = ' ' + childNode.className + ' ';
             const shouldRender = optionsCopy.ignoredTags.indexOf(
-                childNode.nodeName.toLowerCase()) === -1;
+                childNode.nodeName.toLowerCase()) === -1 &&
+                    optionsCopy.ignoredClasses.every(
+                        x => className.indexOf(' ' + x + ' ') === -1);
 
             if (shouldRender) {
                 renderElem(childNode, optionsCopy);
@@ -89,6 +92,8 @@ const defaultAutoRenderOptions = {
     ignoredTags: [
         "script", "noscript", "style", "textarea", "pre", "code",
     ],
+
+    ignoredClasses: [],
 
     errorCallback: function(msg, err) {
         console.error(msg, err);
