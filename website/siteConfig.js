@@ -33,9 +33,21 @@ const users = [
         pinned: true,
     },
     {
+        caption: 'CoCalc',
+        image: 'https://cdn.rawgit.com/sagemathinc/cocalc/baa4fc57/src/webapp-lib/cocalc-logo.svg',
+        infoLink: 'https://cocalc.com/',
+        pinned: true,
+    },
+    {
         caption: 'Dropbox Paper',
         image: 'https://aem.dropbox.com/cms/content/dam/dropbox/www/en-us/branding/app-paper-ios@2x.png',
         infoLink: 'https://paper.dropbox.com/',
+        pinned: true,
+    },
+    {
+        caption: 'Editor.md',
+        image: 'https://pandao.github.io/editor.md/images/logos/editormd-logo-180x180.png',
+        infoLink: 'https://pandao.github.io/editor.md/en.html',
         pinned: true,
     },
     {
@@ -57,6 +69,12 @@ const users = [
         pinned: true,
     },
     {
+        caption: 'Gatsby',
+        image: 'https://www.gatsbyjs.org/monogram.svg',
+        infoLink: 'https://www.gatsbyjs.org/',
+        pinned: true,
+    },
+    {
         caption: 'Gradescope',
         image: 'https://pbs.twimg.com/profile_images/920085750095298560/AqGnlpiJ_400x400.jpg',
         infoLink: 'https://www.gradescope.com/',
@@ -66,6 +84,12 @@ const users = [
         caption: 'hack.chat',
         image: 'https://hack.chat/apple-icon-180x180.png',
         infoLink: 'https://hack.chat/',
+        pinned: true,
+    },
+    {
+        caption: 'Idyll',
+        image: 'https://cdn.rawgit.com/idyll-lang/idyll-lang.github.io/src/images/logo.svg',
+        infoLink: 'https://idyll-lang.org/',
         pinned: true,
     },
     {
@@ -81,6 +105,18 @@ const users = [
         pinned: true,
     },
     {
+        caption: 'Quill',
+        image: 'https://quilljs.com/assets/images/logo.svg',
+        infoLink: 'https://quilljs.com/',
+        pinned: true,
+    },
+    {
+        caption: 'Rocket.Chat',
+        image: 'https://cdn.rawgit.com/RocketChat/Rocket.Chat.Artwork/master/Logos/icon.svg',
+        infoLink: 'https://rocket.chat/',
+        pinned: true,
+    },
+    {
         caption: 'Slides',
         image: 'https://s3.amazonaws.com/uploads.uservoice.com/logo/design_setting/116173/original/slides-symbol-150x150.png',
         infoLink: 'https://slides.com/',
@@ -90,6 +126,12 @@ const users = [
         caption: 'Spinning Numbers',
         image: 'https://spinningnumbers.org/i/sn_logo2.svg',
         infoLink: 'https://spinningnumbers.org/',
+        pinned: true,
+    },
+    {
+        caption: 'StackEdit',
+        image: 'https://cdn.rawgit.com/benweet/stackedit/master/static/landing/favicon.ico',
+        infoLink: 'https://stackedit.io/',
         pinned: true,
     },
 ];

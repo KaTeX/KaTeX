@@ -16,6 +16,19 @@ ul.toc-headings > li {
     height: 80%;
 }
 
+.showcaseSection .logos .imgbox {
+    width: 168px;   /* 128px for img + 20*2 for padding */
+    height: 168px;  /* 128px for img + 20*2 for padding */
+    position: relative;
+}
+.showcaseSection .logos .imgbox img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
 }
 
