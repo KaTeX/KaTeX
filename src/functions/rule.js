@@ -20,12 +20,9 @@ defineFunction({
         return {
             type: "rule",
             mode: parser.mode,
-            value: {
-                type: "rule",
-                shift: shift && assertNodeType(shift, "size").value.value,
-                width: width.value.value,
-                height: height.value.value,
-            },
+            shift: shift && assertNodeType(shift, "size").value,
+            width: width.value,
+            height: height.value,
         };
     },
     htmlBuilder(group, options) {
@@ -34,12 +31,12 @@ defineFunction({
 
         // Calculate the shift, width, and height of the rule, and account for units
         let shift = 0;
-        if (group.value.shift) {
-            shift = calculateSize(group.value.shift, options);
+        if (group.shift) {
+            shift = calculateSize(group.shift, options);
         }
 
-        const width = calculateSize(group.value.width, options);
-        const height = calculateSize(group.value.height, options);
+        const width = calculateSize(group.width, options);
+        const height = calculateSize(group.height, options);
 
         // Style the rule to the right size
         rule.style.borderRightWidth = width + "em";

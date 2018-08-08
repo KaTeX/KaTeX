@@ -20,16 +20,13 @@ defineFunction({
         return {
             type: "operatorname",
             mode: parser.mode,
-            value: {
-                type: "operatorname",
-                value: ordargument(body),
-            },
+            body: ordargument(body),
         };
     },
 
     htmlBuilder: (group, options) => {
-        if (group.value.value.length > 0) {
-            const groupValue = group.value.value.map(child => {
+        if (group.body.length > 0) {
+            const body = group.body.map(child => {
                 // $FlowFixMe: Check if the node has a string `value` property.
                 const childValue = child.value;
                 if (typeof childValue === "string") {
@@ -45,7 +42,7 @@ defineFunction({
 
             // Consolidate function names into symbol characters.
             const expression = html.buildExpression(
-                groupValue, options.withFont("mathrm"), true);
+                body, options.withFont("mathrm"), true);
 
             for (let i = 0; i < expression.length; i++) {
                 const child = expression[i];
@@ -65,7 +62,7 @@ defineFunction({
     mathmlBuilder: (group, options) => {
         // The steps taken here are similar to the html version.
         let expression = mml.buildExpression(
-            group.value.value, options.withFont("mathrm"));
+            group.body, options.withFont("mathrm"));
 
         // Is expression a string or has it something like a fraction?
         let isAllString = true;  // default

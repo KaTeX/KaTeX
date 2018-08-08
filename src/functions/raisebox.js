@@ -18,40 +18,30 @@ defineFunction({
         allowedInText: true,
     },
     handler({parser}, args) {
-        const amount = assertNodeType(args[0], "size");
+        const amount = assertNodeType(args[0], "size").value;
         const body = args[1];
         return {
             type: "raisebox",
             mode: parser.mode,
-            value: {
-                type: "raisebox",
-                dy: amount,
-                body: body,
-                value: ordargument(body),
-            },
+            dy: amount,
+            body,
         };
     },
     htmlBuilder(group, options) {
         const text = {
             type: "text",
             mode: group.mode,
-            value: {
-                type: "text",
-                body: group.value.value,
-                font: "mathrm", // simulate \textrm
-            },
+            body: ordargument(group.body),
+            font: "mathrm", // simulate \textrm
         };
         const sizedText = {
             type: "sizing",
             mode: group.mode,
-            value: {
-                type: "sizing",
-                value: [text],
-                size: 6,                // simulate \normalsize
-            },
+            body: [text],
+            size: 6,                // simulate \normalsize
         };
         const body = sizing.htmlBuilder(sizedText, options);
-        const dy = calculateSize(group.value.dy.value.value, options);
+        const dy = calculateSize(group.dy, options);
         return buildCommon.makeVList({
             positionType: "shift",
             positionData: -dy,
@@ -60,9 +50,8 @@ defineFunction({
     },
     mathmlBuilder(group, options) {
         const node = new mathMLTree.MathNode(
-            "mpadded", [mml.buildGroup(group.value.body, options)]);
-        const dy =
-            group.value.dy.value.value.number + group.value.dy.value.value.unit;
+            "mpadded", [mml.buildGroup(group.body, options)]);
+        const dy = group.dy.number + group.dy.unit;
         node.setAttribute("voffset", dy);
         return node;
     },
