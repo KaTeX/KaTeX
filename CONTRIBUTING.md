@@ -7,18 +7,14 @@ help solving a problem, feel free to stop by our [gitter channel](https://gitter
 ## Helpful contributions
 
 If you'd like to contribute, try contributing new symbols or functions that
-KaTeX doesn't currently support. The wiki has a page which lists [all of the
-supported
-functions](https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX) as
-well as a page that describes how to [examine TeX commands and where to find
+KaTeX doesn't currently support. The documentation has pages listing
+[supported functions](https://khan.github.io/KaTeX/docs/supported.html) and
+[functions that KaTeX supports and some that it doesn't support](https://khan.github.io/KaTeX/docs/support_table.html).
+You can check them to see if we don't support a function you like, or try your
+function in the interactive demo at [http://khan.github.io/KaTeX/](http://khan.github.io/KaTeX/).
+The wiki has a page that describes how to [examine TeX commands and where to find
 rules](https://github.com/Khan/KaTeX/wiki/Examining-TeX) which can be quite
-useful when adding new commands. There's also a user-contributed
-[preview page](http://utensil-site.github.io/available-in-katex/)
-showing how KaTeX would render a series of symbols/functions (including the ones
-MathJax listed in their documentation and the extra ones supported by KaTeX). You
-can check them to see if we don't support a function you like, or try your
-function in the interactive demo at
-[http://khan.github.io/KaTeX/](http://khan.github.io/KaTeX/).
+useful when adding new commands.
 
 #### Single symbols
 
@@ -151,7 +147,7 @@ Flow by running `yarn test:flow`. See [Flow](https://flow.org/) for more details
 ## Pull Requests
 
  - link back to the original issue(s) whenever possible
- - new commands should be added to the [wiki](https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX)
+ - new commands should be added to `docs/support_table.md` and `docs/supported.md`
  - commits should be squashed before merging
  - large pull requests should be broken into separate pull requests (or multiple logically cohesive commits), if possible
 
