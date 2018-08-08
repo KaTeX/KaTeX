@@ -8,7 +8,7 @@
         document.querySelectorAll('.toc-headings > li > a');
     const onScroll = () => {
         if (timer) {  // throttle
-            clearTimeout(timer);
+            return;
         }
         timer = setTimeout(() => {
             timer = null;
@@ -23,7 +23,8 @@
                     const top = nextHeader.getBoundingClientRect().top;
                     // The following tests whether top + scrollTop
                     // (the top of the header) is greater than scrollTop
-                    // (the top of the window), with OFFSET pixels of slop.
+                    // (where scrollTop = window.pageYOffset, the top of
+                    // the window), with OFFSET pixels of slop.
                     current = top > OFFSET;
                 }
                 if (current) {
