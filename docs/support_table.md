@@ -823,7 +823,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\r|$\text{\r{a}}$|`\text{\r{a}}`|
 |\raise|<span style="color:firebrick;">Not supported</span>|see `\raisebox`|
 |\raisebox|$h\raisebox{2pt}{ighe}r$|`h\raisebox{2pt}{ighe}r`|
-|\rang|$\angle A\rang$|`\angle A\rang`|
+|\rang|$\langle A\rang$|`\langle A\rang`|
 |\rangle|$\rangle$||
 |\Rarr|$\Rarr$||
 |\rArr|$\rArr$||

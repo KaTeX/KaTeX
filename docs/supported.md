@@ -609,10 +609,12 @@ G = 1.21 by default, because KaTeX font-size is normally 1.21 × the surroundin
 
 The effect of style and size:
 
+<div class="katex-cards" id="unit-blocks">
+
 |  Unit  |     textstyle     | scriptscript |  huge  |
-|:-------|:-----------------:|:------------:|:------:|
+|:------:|:-----------------:|:------------:|:------:|
 |em or ex|$\rule{1em}{1em}$  |$\scriptscriptstyle\rule{1em}{1em}$  |$\huge\rule{1em}{1em}$
 | mu     |$\rule{18mu}{18mu}$|$\scriptscriptstyle\rule{18mu}{18mu}$|$\huge\rule{18mu}{18mu}$
 | others |$\rule{10pt}{10pt}$|$\scriptscriptstyle\rule{10pt}{10pt}$|$\huge\rule{10pt}{10pt}$
 
-
+</div>

@@ -24,7 +24,7 @@ ul.toc-headings > li {
             
     /* Tables with headings are converted instead to a card format */
     /* That is, each cell is its own row, with a heading to its left. */
-    /* CSS mostly from: https://css-tricks.com/responsive-data-tables/ */
+    /* This CSS mostly from: https://css-tricks.com/responsive-data-tables/ */
     
 	/* Force table to not be like tables anymore */
 	.katex-cards table, thead, tbody, th, td, tr { 
@@ -86,6 +86,11 @@ ul.toc-headings > li {
     #unit-tbl td:nth-of-type(3):before { content: "Unit:"; }
 	#unit-tbl td:nth-of-type(2):before,
 	#unit-tbl td:nth-of-type(4):before { content: "Value:"; }
+
+    #unit-blocks td:nth-of-type(2):before { content: "textstyle:"; }
+    #unit-blocks td:nth-of-type(3):before { content: "scriptscript:"; }
+	#unit-blocks td:nth-of-type(4):before { content: "huge:"; }
+    #unit-blocks td {background-color: #fff;}
 }
 
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
