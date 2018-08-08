@@ -415,12 +415,18 @@ const makeSqrtImage = function(
     ruleWidth: number,
     advanceWidth: number,
 } {
-    const delim =
-        traverseSequence("\\surd", height, stackLargeDelimiterSequence, options);
+    // Define a newOptions that removes the effect of size changes such as \Huge.
+    // We don't pick different a height surd for \Huge. For it, we scale up.
+    const newOptions = options.havingBaseSizing();
+
+    // Pick the desired surd glyph from a sequence of surds.
+    const delim = traverseSequence("\\surd", height * newOptions.sizeMultiplier,
+        stackLargeDelimiterSequence, newOptions);
+
+    let sizeMultiplier = newOptions.sizeMultiplier;  // default
 
     // Create a span containing an SVG image of a sqrt symbol.
     let span;
-    let sizeMultiplier = options.sizeMultiplier;  // default
     let spanHeight = 0;
     let texHeight = 0;
     let viewBoxHeight = 0;
@@ -435,13 +441,16 @@ const makeSqrtImage = function(
     if (delim.type === "small") {
         // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
         viewBoxHeight = 1000 + vbPad;  // 1000 unit glyph height.
-        const newOptions = options.havingBaseStyle(delim.style);
-        sizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
-        spanHeight = (1.0 + emPad) * sizeMultiplier;
-        texHeight = 1.00 * sizeMultiplier;
+        if (height < 1.0) {
+            sizeMultiplier = 1.0;   // mimic a \textfont radical
+        } else if (height < 1.4) {
+            sizeMultiplier = 0.7;   // mimic a \scriptfont radical
+        }
+        spanHeight = (1.0 + emPad) / sizeMultiplier;
+        texHeight = 1.00 / sizeMultiplier;
         span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, options);
         span.style.minWidth = "0.853em";
-        advanceWidth = 0.833 * sizeMultiplier;  // from the font.
+        advanceWidth = 0.833 / sizeMultiplier;  // from the font.
 
     } else if (delim.type === "large") {
         // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
@@ -450,17 +459,17 @@ const makeSqrtImage = function(
         spanHeight = (sizeToMaxHeight[delim.size] + emPad) / sizeMultiplier;
         span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight, options);
         span.style.minWidth = "1.02em";
-        advanceWidth = 1.0 / sizeMultiplier;  // from the font.
+        advanceWidth = 1.0 / sizeMultiplier; // 1.0 from the font.
 
     } else {
         // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
         // We'll use a single SVG to accomplish the same thing.
-        spanHeight = height / sizeMultiplier + emPad;
-        texHeight = height / sizeMultiplier;
+        spanHeight = height + emPad;
+        texHeight = height;
         viewBoxHeight = Math.floor(1000 * height) + vbPad;
         span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, options);
         span.style.minWidth = "0.742em";
-        advanceWidth = 1.056 / sizeMultiplier;
+        advanceWidth = 1.056;
     }
 
     span.height = texHeight;
