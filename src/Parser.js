@@ -319,10 +319,7 @@ export default class Parser {
         const textNode = {
             type: "text",
             mode: this.mode,
-            value: {
-                type: "text",
-                body: textordArray,
-            },
+            body: textordArray,
         };
 
         const colorNode = {
@@ -793,11 +790,8 @@ export default class Parser {
         return newArgument({
             type: "size",
             mode: this.mode,
-            value: {
-                type: "size",
-                value: data,
-                isBlank: isBlank,
-            },
+            value: data,
+            isBlank,
         }, res);
     }
 

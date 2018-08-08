@@ -1,7 +1,7 @@
 // @flow
 import {NON_ATOMS} from "./symbols";
 import type SourceLocation from "./SourceLocation";
-import type {ArrayEnvNodeData} from "./environments/array";
+import type {AlignSpec} from "./environments/array";
 import type {Atom} from "./symbols";
 import type {Mode, StyleStr} from "./types";
 import type {Token} from "./Token";
@@ -28,7 +28,13 @@ type ParseNodeTypes = {
         type: "array",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: ArrayEnvNodeData,
+        hskipBeforeAndAfter?: boolean,
+        addJot?: boolean,
+        cols?: AlignSpec[],
+        arraystretch: number,
+        body: AnyParseNode[][], // List of rows in the (2D) array.
+        rowGaps: (?Measurement)[],
+        hLinesBeforeRow: Array<boolean[]>,
     |},
     "color": {|
         type: "color",
@@ -78,21 +84,15 @@ type ParseNodeTypes = {
         type: "size",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "size",
-            value: Measurement,
-            isBlank: boolean,
-        |},
+        value: Measurement,
+        isBlank: boolean,
     |},
     "styling": {|
         type: "styling",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "styling",
-            style: StyleStr,
-            value: AnyParseNode[],
-        |},
+        style: StyleStr,
+        body: AnyParseNode[],
     |},
     "supsub": {|
         type: "supsub",
@@ -113,11 +113,8 @@ type ParseNodeTypes = {
         type: "text",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: {|
-            type: "text",
-            body: AnyParseNode[],
-            font?: string,
-        |},
+        body: AnyParseNode[],
+        font?: string,
     |},
     "url": {|
         type: "url",
@@ -199,7 +196,7 @@ type ParseNodeTypes = {
         loc?: ?SourceLocation,
         newRow: boolean,
         newLine: boolean,
-        size: ?ParseNode<"size">,
+        size: ?Measurement,
     |},
     "delimsizing": {|
         type: "delimsizing",
@@ -272,7 +269,7 @@ type ParseNodeTypes = {
         mode: Mode,
         loc?: ?SourceLocation,
         replaceWith: string,
-        sizeNode?: ParseNode<"size">,
+        size?: Measurement,
         token: ?Token,
     |},
     "kern": {|
@@ -358,7 +355,7 @@ type ParseNodeTypes = {
         type: "raisebox",
         mode: Mode,
         loc?: ?SourceLocation,
-        dy: ParseNode<"size">,
+        dy: Measurement,
         body: AnyParseNode,
     |},
     "rule": {|
