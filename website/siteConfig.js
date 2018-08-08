@@ -15,6 +15,12 @@ const baseUrl = process.env.BASE_URL || (process.env.CONTEXT ? '/' : '/KaTeX/');
 /* List of projects/orgs using your project for the users page */
 const users = [
     {
+        caption: 'Khan Academy',
+        image: 'https://pbs.twimg.com/profile_images/1021871312195612673/MlailSlw_400x400.jpg',
+        infoLink: 'https://www.khanacademy.org/',
+        pinned: true,
+    },
+    {
         caption: 'Bokeh',
         image: 'https://bokeh.pydata.org/en/latest/_static/images/logo.png',
         infoLink: 'https://bokeh.pydata.org/',
@@ -36,12 +42,6 @@ const users = [
         caption: 'Expii',
         image: 'https://78.media.tumblr.com/avatar_ccde3e53e98f_128.pnj',
         infoLink: 'https://www.expii.com/',
-        pinned: true,
-    },
-    {
-        caption: 'Facebook Messenger',
-        image: 'https://en.facebookbrand.com/wp-content/uploads/2016/09/messenger_icon2.png',
-        infoLink: 'https://www.messenger.com/',
         pinned: true,
     },
     {
@@ -69,9 +69,9 @@ const users = [
         pinned: true,
     },
     {
-        caption: 'Khan Academy',
-        image: 'https://pbs.twimg.com/profile_images/1021871312195612673/MlailSlw_400x400.jpg',
-        infoLink: 'https://www.khanacademy.org/',
+        caption: 'Messenger',
+        image: 'https://en.facebookbrand.com/wp-content/uploads/2016/09/messenger_icon2.png',
+        infoLink: 'https://www.messenger.com/',
         pinned: true,
     },
     {
@@ -82,7 +82,7 @@ const users = [
     },
     {
         caption: 'Slides',
-        image: 'https://s3.amazonaws.com/uploads.uservoice.com/logo/design_setting/116173/original/slides-symbol-150x150.png?1375394320',
+        image: 'https://s3.amazonaws.com/uploads.uservoice.com/logo/design_setting/116173/original/slides-symbol-150x150.png',
         infoLink: 'https://slides.com/',
         pinned: true,
     },
