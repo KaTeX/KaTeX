@@ -33,6 +33,7 @@ const siteConfig = {
     organizationName: 'Khan',
 
     headerLinks: [
+        {href: baseUrl + '#demo', label: 'Try'},
         {doc: 'node', label: 'Docs'},
         {page: 'users', label: 'Users'},
         {href: 'https://github.com/Khan/KaTeX', label: 'GitHub'},
