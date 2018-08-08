@@ -33,6 +33,7 @@ const siteConfig = {
     organizationName: 'Khan',
 
     headerLinks: [
+        {href: baseUrl + '#demo', label: 'Try'},
         {doc: 'node', label: 'Docs'},
         {page: 'users', label: 'Users'},
         {href: 'https://github.com/Khan/KaTeX', label: 'GitHub'},
@@ -68,7 +69,7 @@ const siteConfig = {
 
     scripts: [
         'https://buttons.github.io/buttons.js',
-        '/js/scrollspy.js',
+        baseUrl + 'js/scrollspy.js',
     ],
     stylesheets: ['https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css'],
 
