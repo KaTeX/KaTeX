@@ -21,7 +21,7 @@ Promise.all(process.argv.slice(3).map(file =>
     .then(body => {
         // Replace size badge url
         // 1 - url prefix: https://img.badgesize.io/Khan/KaTeX/
-        // 2 - url suffix: /dist/katex.min.js?compression=gzip
+        // 2 - url suffix: /dist/katex.min.js?compression=gzip 
         const badgeRe = /(https:\/\/img\.badgesize\.io\/Khan\/KaTeX\/v)(?:.+)(\/dist\/katex\.min\.js\?compression=gzip)/g;
         body = body.replace(badgeRe, (m, pre, post) => {
             return pre + version + post;
