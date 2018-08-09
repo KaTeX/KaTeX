@@ -20,12 +20,31 @@ Try out KaTeX [on the demo page](https://khan.github.io/KaTeX/#demo)!
 
 ## Getting started
 
-[Download KaTeX](https://github.com/khan/katex/releases) and host it on your server or include the `katex.min.js` and `katex.min.css` files on your page directly from a CDN:
+### Starter template
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
+<!DOCTYPE html>
+<!-- KaTeX requires the use of the HTML5 doctype. Without it, KaTeX may not render properly -->
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+  </head>
+  ...
+</html>
 ```
+
+You can also [download KaTeX](https://github.com/khan/katex/releases) and host it yourself.
+
+For details on how to configure auto-render extension, refer to [the documentation](https://khan.github.io/KaTeX/docs/autorender.html).
+
+### API
 
 #### In-browser rendering
 
@@ -44,27 +63,6 @@ try {
 ```
 
 If KaTeX can't parse the expression, it throws a `katex.ParseError` error.
-
-#### Rendering expressions in text elements
-
-To automatically render math in text elements, include the [auto-render script](https://khan.github.io/KaTeX/docs/autorender.html) `contrib/auto-render.min.js`, or via CDN:
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"></script>
-````
-
-Then, call the `renderMathInElement` function with a DOM element containing expressions in a script tag before the closing body tag:
-
-```html
-<body>
-  ...
-  <script>
-    renderMathInElement(document.body);
-  </script>
-</body>
-```
-
-See [Auto-render Extension](https://khan.github.io/KaTeX/docs/autorender.html) for more details.
 
 #### Server side rendering or rendering to a string
 
