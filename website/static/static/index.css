@@ -242,12 +242,12 @@ b {
     display: inline-block;
     font-size: inherit;
     height: 1em;
-    vertical-align: -.125em;
+    vertical-align: -0.125em;
     margin-right: 3px;
 }
 
 .svg-inline--fa.fa-w-14 {
-    width: .875em;
+    width: 0.875em;
 }
 
 .svg-inline--fa.fa-w-16 {
