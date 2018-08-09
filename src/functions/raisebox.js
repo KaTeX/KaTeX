@@ -2,7 +2,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode, {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 import {calculateSize} from "../units";
 
 import * as mml from "../buildMathML";
@@ -18,28 +18,30 @@ defineFunction({
         allowedInText: true,
     },
     handler({parser}, args) {
-        const amount = assertNodeType(args[0], "size");
+        const amount = assertNodeType(args[0], "size").value;
         const body = args[1];
-        return new ParseNode("raisebox", {
+        return {
             type: "raisebox",
+            mode: parser.mode,
             dy: amount,
-            body: body,
-            value: ordargument(body),
-        }, parser.mode);
+            body,
+        };
     },
     htmlBuilder(group, options) {
-        const text = new ParseNode("text", {
+        const text = {
             type: "text",
-            body: group.value.value,
+            mode: group.mode,
+            body: ordargument(group.body),
             font: "mathrm", // simulate \textrm
-        }, group.mode);
-        const sizedText = new ParseNode("sizing", {
+        };
+        const sizedText = {
             type: "sizing",
-            value: [text],
+            mode: group.mode,
+            body: [text],
             size: 6,                // simulate \normalsize
-        }, group.mode);
+        };
         const body = sizing.htmlBuilder(sizedText, options);
-        const dy = calculateSize(group.value.dy.value.value, options);
+        const dy = calculateSize(group.dy, options);
         return buildCommon.makeVList({
             positionType: "shift",
             positionData: -dy,
@@ -48,9 +50,8 @@ defineFunction({
     },
     mathmlBuilder(group, options) {
         const node = new mathMLTree.MathNode(
-            "mpadded", [mml.buildGroup(group.value.body, options)]);
-        const dy =
-            group.value.dy.value.value.number + group.value.dy.value.value.unit;
+            "mpadded", [mml.buildGroup(group.body, options)]);
+        const dy = group.dy.number + group.dy.unit;
         node.setAttribute("voffset", dy);
         return node;
     },

@@ -2,7 +2,6 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -15,16 +14,16 @@ defineFunction({
         allowedInText: true,
     },
     handler({parser}, args) {
-        const body = args[0];
-        return new ParseNode("underline", {
+        return {
             type: "underline",
-            body: body,
-        }, parser.mode);
+            mode: parser.mode,
+            body: args[0],
+        };
     },
     htmlBuilder(group, options) {
         // Underlines are handled in the TeXbook pg 443, Rule 10.
         // Build the inner group.
-        const innerGroup = html.buildGroup(group.value.body, options);
+        const innerGroup = html.buildGroup(group.body, options);
 
         // Create the line to go below the body
         const line = buildCommon.makeLineSpan("underline-line", options);
@@ -50,7 +49,7 @@ defineFunction({
 
         const node = new mathMLTree.MathNode(
             "munder",
-            [mml.buildGroup(group.value.body, options), operator]);
+            [mml.buildGroup(group.body, options), operator]);
         node.setAttribute("accentunder", "true");
 
         return node;

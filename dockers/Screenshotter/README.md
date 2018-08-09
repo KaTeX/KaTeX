@@ -8,7 +8,7 @@ installed and running.
 If all you want is (re)create
 all the snapshots for all the browsers, then you can do so by:
 
-    npm run test:screenshots:update
+    yarn test:screenshots:update
 
 It will fetch all required selenium docker images, and use them to
 take screenshots.
@@ -32,7 +32,7 @@ For Chrome, simply replace both occurrences of `firefox` with `chrome`.
 
 It is possible to run `screenshotter.js` without the use of Docker:
 
-    npm install selenium-webdriver
+    yarn add selenium-webdriver
     node dockers/Screenshotter/screenshotter.js
 
 This will generate screenshots using the Firefox installed on your system.
@@ -69,7 +69,7 @@ Examples:
 
 You can verify screenshots by running:
 
-    npm run test:screenshots
+    yarn test:screenshots
 
 or passing `--verify` option to `screenshotter.js` or `screenshotter.sh`.
 See above for more details.

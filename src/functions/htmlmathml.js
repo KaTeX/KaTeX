@@ -1,7 +1,6 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -14,21 +13,22 @@ defineFunction({
         allowedInText: true,
     },
     handler: ({parser}, args) => {
-        return new ParseNode("htmlmathml", {
+        return {
             type: "htmlmathml",
+            mode: parser.mode,
             html:   ordargument(args[0]),
             mathml: ordargument(args[1]),
-        }, parser.mode);
+        };
     },
     htmlBuilder: (group, options) => {
         const elements = html.buildExpression(
-            group.value.html,
+            group.html,
             options,
             false
         );
         return new buildCommon.makeFragment(elements);
     },
     mathmlBuilder: (group, options) => {
-        return mml.buildExpressionRow(group.value.mathml, options);
+        return mml.buildExpressionRow(group.mathml, options);
     },
 });

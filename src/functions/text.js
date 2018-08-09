@@ -1,7 +1,6 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -21,7 +20,7 @@ const textFontShapes = {
 };
 
 const optionsWithFont = (group, options) => {
-    const font = group.value.font;
+    const font = group.font;
     // Checks if the argument is a font family or a font style.
     if (!font) {
         return options;
@@ -53,20 +52,21 @@ defineFunction({
     },
     handler({parser, funcName}, args) {
         const body = args[0];
-        return new ParseNode("text", {
+        return {
             type: "text",
+            mode: parser.mode,
             body: ordargument(body),
             font: funcName,
-        }, parser.mode);
+        };
     },
     htmlBuilder(group, options) {
         const newOptions = optionsWithFont(group, options);
-        const inner = html.buildExpression(group.value.body, newOptions, true);
+        const inner = html.buildExpression(group.body, newOptions, true);
         buildCommon.tryCombineChars(inner);
         return buildCommon.makeSpan(["mord", "text"], inner, newOptions);
     },
     mathmlBuilder(group, options) {
         const newOptions = optionsWithFont(group, options);
-        return mml.buildExpressionRow(group.value.body, newOptions);
+        return mml.buildExpressionRow(group.body, newOptions);
     },
 });

@@ -2,7 +2,7 @@
 id: options
 title: Options
 ---
-You can provide an object of options as the last argument to `katex.render` and `katex.renderToString`. Available options are:
+You can provide an object of options as the last argument to [`katex.render` and `katex.renderToString`](api.md). Available options are:
 
 - `displayMode`: `boolean`. If `true` the math will be rendered in display mode, which will put the math in display style (so `\int` and `\sum` are large, for example), and will center the math on the page on its own line. If `false` the math will be rendered in inline mode. (default: `false`)
 - `throwOnError`: `boolean`. If `true` (the default), KaTeX will throw a `ParseError` when it encounters an unsupported command or invalid LaTeX. If `false`, KaTeX will render unsupported commands as text, and render invalid LaTeX as its source code with hover text giving the error, in the color given by `errorColor`.
@@ -18,6 +18,9 @@ You can provide an object of options as the last argument to `katex.render` and 
     incorrect (especially in terms of vertical heights).
   - `"unicodeTextInMathMode"`: Use of Unicode text characters in math mode.
   - `"mathVsTextUnits"`: Mismatch of math vs. text commands and units/mode.
+  - `"commentAtEnd"`: Use of `%` comment without a terminating newline.
+    LaTeX would thereby comment out the end of math mode (e.g. `$`),
+    causing an error.
   A second category of `errorCode`s never throw errors, but their strictness
   affects the behavior of KaTeX:
   - `"newLineInDisplayMode"`: Use of `\\` or `\newline` in display mode

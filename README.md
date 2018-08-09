@@ -1,6 +1,6 @@
-# [<img src="https://khan.github.io/KaTeX/katex-logo.svg" width="130" alt="KaTeX">](https://khan.github.io/KaTeX/)
-[![Build Status](https://travis-ci.org/Khan/KaTeX.svg?branch=master)](https://travis-ci.org/Khan/KaTeX)
-[![CircleCI](https://circleci.com/gh/Khan/KaTeX.svg?style=svg)](https://circleci.com/gh/Khan/KaTeX)
+# [<img src="https://cdn.rawgit.com/Khan/KaTeX/84189cd3adae24d92e766d14eb80d6e54f3c7dca/katex-logo.svg" width="130" alt="KaTeX">](https://khan.github.io/KaTeX/)
+[![npm](https://img.shields.io/npm/v/katex.svg)](https://www.npmjs.com/package/katex)
+[![CircleCI](https://circleci.com/gh/Khan/KaTeX.svg?style=shield)](https://circleci.com/gh/Khan/KaTeX)
 [![codecov](https://codecov.io/gh/Khan/KaTeX/branch/master/graph/badge.svg)](https://codecov.io/gh/Khan/KaTeX)
 [![Join the chat at https://gitter.im/Khan/KaTeX](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Khan/KaTeX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Greenkeeper badge](https://badges.greenkeeper.io/Khan/KaTeX.svg)](https://greenkeeper.io/)
 ![](https://img.badgesize.io/Khan/KaTeX/v0.10.0-beta/dist/katex.min.js?compression=gzip)
@@ -12,7 +12,11 @@ KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the we
  * **Self contained:** KaTeX has no dependencies and can easily be bundled with your website resources.
  * **Server side rendering:** KaTeX produces the same output regardless of browser or environment, so you can pre-render expressions using Node.js and send them as plain HTML.
 
-KaTeX supports all major browsers, including Chrome, Safari, Firefox, Opera, Edge, and IE 9 - IE 11. More information can be found on the [list of supported commands](https://khan.github.io/KaTeX/function-support.html) and on the [wiki](https://github.com/khan/katex/wiki).
+KaTeX is compatible with all major browsers, including Chrome, Safari, Firefox, Opera, Edge, and IE 9–11.
+
+KaTeX supports much (but not all) of LaTeX and many LaTeX packages. See the [list of supported functions](https://khan.github.io/KaTeX/docs/supported.html).
+
+Try out KaTeX [on the demo page](https://khan.github.io/KaTeX/#demo)!
 
 ## Getting started
 
@@ -31,14 +35,28 @@ Call `katex.render` with a TeX expression and a DOM element to render into:
 katex.render("c = \\pm\\sqrt{a^2 + b^2}", element);
 ```
 
-To avoid escaping the backslash (double backslash), you can use
-[`String.raw`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
-(but beware that `${`, `\u` and `\x` may still need escaping):
-```js
-katex.render(String.raw`c = \pm\sqrt{a^2 + b^2}`, element);
+If KaTeX can't parse the expression, it throws a `katex.ParseError` error.
+
+#### Rendering expressions in text elements
+
+To automatically render math in text elements, include the [auto-render script](https://khan.github.io/KaTeX/docs/autorender.html) `contrib/auto-render.min.js`, or via CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"></script>
+````
+
+Then, call the `renderMathInElement` function with a DOM element containing expressions in a script tag before the closing body tag:
+
+```html
+<body>
+  ...
+  <script>
+    renderMathInElement(document.body);
+  </script>
+</body>
 ```
 
-If KaTeX can't parse the expression, it throws a `katex.ParseError` error.
+See [Auto-render Extension](https://khan.github.io/KaTeX/docs/autorender.html) for more details.
 
 #### Server side rendering or rendering to a string
 

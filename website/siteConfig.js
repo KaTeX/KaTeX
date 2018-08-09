@@ -34,13 +34,14 @@ const siteConfig = {
     title: 'KaTeX',
     tagline: 'The fastest math typesetting library for the web',
     url: 'https://khan.github.io',
-    baseUrl: '/KaTeX/',
+    baseUrl,
 
     // Used for publishing and more
     projectName: 'KaTeX',
     organizationName: 'Khan',
 
     headerLinks: [
+        {href: baseUrl + '#demo', label: 'Try'},
         {doc: 'node', label: 'Docs'},
         {page: 'users', label: 'Users'},
         {href: 'https://github.com/Khan/KaTeX', label: 'GitHub'},
@@ -78,7 +79,10 @@ const siteConfig = {
         require('./empty_thead'),
     ],
 
-    scripts: ['https://buttons.github.io/buttons.js'],
+    scripts: [
+        'https://buttons.github.io/buttons.js',
+        baseUrl + 'js/scrollspy.js',
+    ],
 
     separateCss: ['static/static', 'static\\static'],
 

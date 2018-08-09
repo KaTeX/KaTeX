@@ -4,153 +4,130 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
 [
   {
     "type": "array",
-    "mode": "math",
-    "value": {
-      "type": "array",
-      "arraystretch": 1.5,
-      "body": [
-        [
-          {
-            "type": "styling",
-            "mode": "math",
-            "value": {
-              "type": "styling",
-              "style": "text",
+    "arraystretch": 1.5,
+    "body": [
+      [
+        {
+          "type": "styling",
+          "body": [
+            {
+              "type": "ordgroup",
+              "mode": "math",
               "value": [
                 {
-                  "type": "ordgroup",
+                  "type": "mathord",
+                  "loc": {
+                    "end": 37,
+                    "lexer": {
+                      "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                      "lastIndex": 56
+                    },
+                    "start": 36
+                  },
                   "mode": "math",
-                  "value": [
-                    {
-                      "type": "mathord",
-                      "loc": {
-                        "end": 37,
-                        "lexer": {
-                          "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                          "tokenRegex": {
-                            "lastIndex": 56
-                          }
-                        },
-                        "start": 36
-                      },
-                      "mode": "math",
-                      "value": "a"
-                    }
-                  ]
+                  "value": "a"
                 }
               ]
             }
-          },
-          {
-            "type": "styling",
-            "mode": "math",
-            "value": {
-              "type": "styling",
-              "style": "text",
+          ],
+          "mode": "math",
+          "style": "text"
+        },
+        {
+          "type": "styling",
+          "body": [
+            {
+              "type": "ordgroup",
+              "mode": "math",
               "value": [
                 {
-                  "type": "ordgroup",
+                  "type": "mathord",
+                  "loc": {
+                    "end": 39,
+                    "lexer": {
+                      "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                      "lastIndex": 56
+                    },
+                    "start": 38
+                  },
                   "mode": "math",
-                  "value": [
-                    {
-                      "type": "mathord",
-                      "loc": {
-                        "end": 39,
-                        "lexer": {
-                          "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                          "tokenRegex": {
-                            "lastIndex": 56
-                          }
-                        },
-                        "start": 38
-                      },
-                      "mode": "math",
-                      "value": "b"
-                    }
-                  ]
+                  "value": "b"
                 }
               ]
             }
-          }
-        ],
-        [
-          {
-            "type": "styling",
-            "mode": "math",
-            "value": {
-              "type": "styling",
-              "style": "text",
-              "value": [
-                {
-                  "type": "ordgroup",
-                  "mode": "math",
-                  "value": [
-                    {
-                      "type": "mathord",
-                      "loc": {
-                        "end": 42,
-                        "lexer": {
-                          "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                          "tokenRegex": {
-                            "lastIndex": 56
-                          }
-                        },
-                        "start": 41
-                      },
-                      "mode": "math",
-                      "value": "c"
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "type": "styling",
-            "mode": "math",
-            "value": {
-              "type": "styling",
-              "style": "text",
-              "value": [
-                {
-                  "type": "ordgroup",
-                  "mode": "math",
-                  "value": [
-                    {
-                      "type": "mathord",
-                      "loc": {
-                        "end": 44,
-                        "lexer": {
-                          "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
-                          "tokenRegex": {
-                            "lastIndex": 56
-                          }
-                        },
-                        "start": 43
-                      },
-                      "mode": "math",
-                      "value": "d"
-                    }
-                  ]
-                }
-              ]
-            }
-          }
-        ]
+          ],
+          "mode": "math",
+          "style": "text"
+        }
       ],
-      "hLinesBeforeRow": [
-        [
-        ],
-        [
-        ],
-        [
-        ]
-      ],
-      "hskipBeforeAndAfter": false,
-      "rowGaps": [
-        null
+      [
+        {
+          "type": "styling",
+          "body": [
+            {
+              "type": "ordgroup",
+              "mode": "math",
+              "value": [
+                {
+                  "type": "mathord",
+                  "loc": {
+                    "end": 42,
+                    "lexer": {
+                      "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                      "lastIndex": 56
+                    },
+                    "start": 41
+                  },
+                  "mode": "math",
+                  "value": "c"
+                }
+              ]
+            }
+          ],
+          "mode": "math",
+          "style": "text"
+        },
+        {
+          "type": "styling",
+          "body": [
+            {
+              "type": "ordgroup",
+              "mode": "math",
+              "value": [
+                {
+                  "type": "mathord",
+                  "loc": {
+                    "end": 44,
+                    "lexer": {
+                      "input": "\\\\def\\\\arraystretch{1.5}\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}",
+                      "lastIndex": 56
+                    },
+                    "start": 43
+                  },
+                  "mode": "math",
+                  "value": "d"
+                }
+              ]
+            }
+          ],
+          "mode": "math",
+          "style": "text"
+        }
       ]
-    }
+    ],
+    "hLinesBeforeRow": [
+      [
+      ],
+      [
+      ],
+      [
+      ]
+    ],
+    "hskipBeforeAndAfter": false,
+    "mode": "math",
+    "rowGaps": [
+      null
+    ]
   }
 ]
 `;
@@ -589,19 +566,16 @@ exports[`A parse tree generator generates a tree 1`] = `
 [
   {
     "type": "supsub",
+    "base": {
+      "type": "mathord",
+      "mode": "math",
+      "value": "\\\\sigma"
+    },
     "mode": "math",
-    "value": {
-      "type": "supsub",
-      "base": {
-        "type": "mathord",
-        "mode": "math",
-        "value": "\\\\sigma"
-      },
-      "sup": {
-        "type": "textord",
-        "mode": "math",
-        "value": "2"
-      }
+    "sup": {
+      "type": "textord",
+      "mode": "math",
+      "value": "2"
     }
   }
 ]
@@ -654,42 +628,36 @@ exports[`An implicit group parser within optional groups should work style comma
 [
   {
     "type": "sqrt",
-    "mode": "math",
-    "value": {
-      "type": "sqrt",
-      "body": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "mathord",
-            "mode": "math",
-            "value": "x"
-          }
-        ]
-      },
-      "index": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "styling",
-            "mode": "math",
-            "value": {
-              "type": "styling",
-              "style": "text",
-              "value": [
-                {
-                  "type": "textord",
-                  "mode": "math",
-                  "value": "3"
-                }
-              ]
+    "body": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "mathord",
+          "mode": "math",
+          "value": "x"
+        }
+      ]
+    },
+    "index": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "styling",
+          "body": [
+            {
+              "type": "textord",
+              "mode": "math",
+              "value": "3"
             }
-          }
-        ]
-      }
-    }
+          ],
+          "mode": "math",
+          "style": "text"
+        }
+      ]
+    },
+    "mode": "math"
   }
 ]
 `;
@@ -698,42 +666,36 @@ exports[`An implicit group parser within optional groups should work with \\colo
 [
   {
     "type": "sqrt",
-    "mode": "math",
-    "value": {
-      "type": "sqrt",
-      "body": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "mathord",
-            "mode": "math",
-            "value": "x"
-          }
-        ]
-      },
-      "index": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "color",
-            "mode": "math",
-            "value": {
-              "type": "color",
-              "color": "red",
-              "value": [
-                {
-                  "type": "textord",
-                  "mode": "math",
-                  "value": "3"
-                }
-              ]
+    "body": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "mathord",
+          "mode": "math",
+          "value": "x"
+        }
+      ]
+    },
+    "index": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "color",
+          "body": [
+            {
+              "type": "textord",
+              "mode": "math",
+              "value": "3"
             }
-          }
-        ]
-      }
-    }
+          ],
+          "color": "red",
+          "mode": "math"
+        }
+      ]
+    },
+    "mode": "math"
   }
 ]
 `;
@@ -742,46 +704,40 @@ exports[`An implicit group parser within optional groups should work with old fo
 [
   {
     "type": "sqrt",
-    "mode": "math",
-    "value": {
-      "type": "sqrt",
-      "body": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "mathord",
+    "body": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "mathord",
+          "mode": "math",
+          "value": "x"
+        }
+      ]
+    },
+    "index": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "font",
+          "body": {
+            "type": "ordgroup",
             "mode": "math",
-            "value": "x"
-          }
-        ]
-      },
-      "index": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "font",
-            "mode": "math",
-            "value": {
-              "type": "font",
-              "body": {
-                "type": "ordgroup",
+            "value": [
+              {
+                "type": "textord",
                 "mode": "math",
-                "value": [
-                  {
-                    "type": "textord",
-                    "mode": "math",
-                    "value": "3"
-                  }
-                ]
-              },
-              "font": "mathtt"
-            }
-          }
-        ]
-      }
-    }
+                "value": "3"
+              }
+            ]
+          },
+          "font": "mathtt",
+          "mode": "math"
+        }
+      ]
+    },
+    "mode": "math"
   }
 ]
 `;
@@ -790,42 +746,36 @@ exports[`An implicit group parser within optional groups should work with sizing
 [
   {
     "type": "sqrt",
-    "mode": "math",
-    "value": {
-      "type": "sqrt",
-      "body": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "mathord",
-            "mode": "math",
-            "value": "x"
-          }
-        ]
-      },
-      "index": {
-        "type": "ordgroup",
-        "mode": "math",
-        "value": [
-          {
-            "type": "sizing",
-            "mode": "math",
-            "value": {
-              "type": "sizing",
-              "size": 5,
-              "value": [
-                {
-                  "type": "textord",
-                  "mode": "math",
-                  "value": "3"
-                }
-              ]
+    "body": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "mathord",
+          "mode": "math",
+          "value": "x"
+        }
+      ]
+    },
+    "index": {
+      "type": "ordgroup",
+      "mode": "math",
+      "value": [
+        {
+          "type": "sizing",
+          "body": [
+            {
+              "type": "textord",
+              "mode": "math",
+              "value": "3"
             }
-          }
-        ]
-      }
-    }
+          ],
+          "mode": "math",
+          "size": 5
+        }
+      ]
+    },
+    "mode": "math"
   }
 ]
 `;
