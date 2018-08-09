@@ -4,7 +4,7 @@ body {
 }
 
 b {
-  font-weight: bolder;
+    font-weight: bolder;
 }
 
 .container {
@@ -13,7 +13,8 @@ b {
     max-width: 800px;
 }
 
-.header, .footer {
+.header,
+.footer {
     color: #fff;
     background: #329894;
     overflow: hidden;
@@ -64,16 +65,13 @@ b {
 }
 
 .demo {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    font-size: 22px;
-    margin: 50px 0 0;
-}
-
-.demo {
     display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    font-size: 22px;
+    margin: 50px 0 0;
 }
 
 .demo-left,
@@ -184,6 +182,7 @@ b {
     padding-top: 50px;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .main .cta a {
     border: 3px solid;
     color: #329894;
@@ -212,6 +211,7 @@ b {
     font-size: 16px;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .credits a {
     color: white;
 }
