@@ -236,3 +236,20 @@ b {
         margin-bottom: 10px;
     }
 }
+
+.svg-inline--fa {
+    overflow: visible;
+    display: inline-block;
+    font-size: inherit;
+    height: 1em;
+    vertical-align: -.125em;
+    margin-right: 3px;
+}
+
+.svg-inline--fa.fa-w-14 {
+    width: .875em;
+}
+
+.svg-inline--fa.fa-w-16 {
+    width: 1em;
+}
