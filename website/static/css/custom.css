@@ -1,6 +1,6 @@
 .onPageNav ul li,
 .onPageNav ul ul li {
-    padding-bottom: 0px; /* moved to ul ul, ul a, ul ul a */
+    padding-bottom: 0; /* moved to ul ul, ul a, ul ul a */
 }
 
 .onPageNav ul ul {
@@ -103,6 +103,7 @@
     #unit-blocks td {background-color: #fff;}
 }
 
+/* stylelint-disable block-no-empty */
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
 }
 
