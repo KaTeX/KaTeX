@@ -529,7 +529,7 @@ One can stack font family, font weight, and font shape by using the `\textXX` v
 |$`$ <code>`</code>|$\triangledown$ `\triangledown`  |$\sphericalangle$ `\sphericalangle`
 |$\text{\textquoteleft}$ `\text{\textquoteleft}`  |$\triangleleft$ `\triangleleft`  |$\top$ `\top`
 |$\lq$ `\lq`  |$\triangleright$ `\triangleright`|$\bot$ `\bot`
-|$\text{\textquoteright}$ `\text{\textquoteright}`|$\bigtriangledown$ `\bigtriangledown`  |$\text{\textdollar}$ `\$`
+|$\text{\textquoteright}$ `\text{\textquoteright}`|$\bigtriangledown$ `\bigtriangledown`  |$\$$ `\$`
 |$\rq$ `\rq`  |$\bigtriangleup$ `\bigtriangleup`|$\text{\textdollar}$ `\text{\textdollar}`
 |$\text{\textquotedblleft}$ `\text{\textquotedblleft}`  |$\blacktriangle$ `\blacktriangle`|$\pounds$ `\pounds`
 |$"$ `"`|$\blacktriangledown$ `\blacktriangledown` |$\text{\textsterling}$ `\text{\textsterling}`
