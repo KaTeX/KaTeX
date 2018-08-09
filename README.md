@@ -32,7 +32,15 @@ Try out KaTeX [on the demo page](https://khan.github.io/KaTeX/#demo)!
 Call `katex.render` with a TeX expression and a DOM element to render into:
 
 ```js
-katex.render("c = \\pm\\sqrt{a^2 + b^2}", element);
+try {
+    katex.render("c = \\pm\\sqrt{a^2 + b^2}", element);
+} catch (e) {
+    if (e instanceof katex.ParseError) {
+        // KaTeX can't parse the expression
+    } else {
+        throw e;
+    }
+}
 ```
 
 If KaTeX can't parse the expression, it throws a `katex.ParseError` error.
@@ -63,8 +71,16 @@ See [Auto-render Extension](https://khan.github.io/KaTeX/docs/autorender.html) f
 To generate HTML on the server or to generate an HTML string of the rendered math, you can use `katex.renderToString`:
 
 ```js
-var html = katex.renderToString("c = \\pm\\sqrt{a^2 + b^2}");
-// '<span class="katex">...</span>'
+try {
+    var html = katex.renderToString("c = \\pm\\sqrt{a^2 + b^2}");
+    // '<span class="katex">...</span>'
+} catch (e) {
+    if (e instanceof katex.ParseError) {
+        // KaTeX can't parse the expression
+    } else {
+        throw e;
+    }
+}
 ```
 
 Make sure to include the CSS and font files, but there is no need to include the JavaScript. Like `render`, `renderToString` throws if it can't parse the expression.

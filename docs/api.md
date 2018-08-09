@@ -6,7 +6,15 @@ title: API
 Call `katex.render` with a TeX expression and a DOM element to render into:
 
 ```js
-katex.render("c = \\pm\\sqrt{a^2 + b^2}", element);
+try {
+    katex.render("c = \\pm\\sqrt{a^2 + b^2}", element);
+} catch (e) {
+    if (e instanceof katex.ParseError) {
+        // KaTeX can't parse the expression
+    } else {
+        throw e;
+    }
+}
 ```
 
 To avoid escaping the backslash (double backslash), you can use
@@ -23,6 +31,14 @@ See [handling errors](error.md) for configuring how to handle errors.
 To generate HTML on the server or to generate an HTML string of the rendered math, you can use `katex.renderToString`:
 
 ```js
-var html = katex.renderToString("c = \\pm\\sqrt{a^2 + b^2}");
-// '<span class="katex">...</span>'
+try {
+    var html = katex.renderToString("c = \\pm\\sqrt{a^2 + b^2}");
+    // '<span class="katex">...</span>'
+} catch (e) {
+    if (e instanceof katex.ParseError) {
+        // KaTeX can't parse the expression
+    } else {
+        throw e;
+    }
+}
 ```
