@@ -2,6 +2,7 @@
 id: supported
 title: Supported Functions
 ---
+{@stylesheet: static/katex.min.css}
 <style>
 table tr, 
 table td {

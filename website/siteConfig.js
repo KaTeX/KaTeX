@@ -8,6 +8,18 @@
 // See https://docusaurus.io/docs/site-config.html for all the possible
 // site configuration options.
 
+// If BASE_URL environment variable is set, use it as baseUrl.
+// If on netlify, use '/'. Otherwise use '/KaTeX/'.
+const baseUrl = process.env.BASE_URL || (process.env.CONTEXT ? '/' : '/KaTeX/');
+
+// Plugin for Remarkable to inject variables
+const {Plugin: Embed} = require('remarkable-embed');
+const embed = new Embed();
+
+// {@stylesheet: path}
+embed.register('stylesheet',
+    path => `<link rel="stylesheet" href="${baseUrl}${path}"/>`);
+
 /* List of projects/orgs using your project for the users page */
 const users = [
     {
@@ -60,10 +72,13 @@ const siteConfig = {
         theme: 'default',
     },
 
-    markdownPlugins: [require('./remarkableKatex'), require('./empty_thead')],
+    markdownPlugins: [
+        embed.hook,
+        require('./remarkableKatex'),
+        require('./empty_thead'),
+    ],
 
     scripts: ['https://buttons.github.io/buttons.js'],
-    stylesheets: ['https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css'],
 
     separateCss: ['static/static', 'static\\static'],
 
