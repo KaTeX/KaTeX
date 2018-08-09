@@ -13,37 +13,20 @@ using a CDN:
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
 ```
 
-Then, call the exposed `renderMathInElement` function in a script tag
-before the close body tag:
+> The loading of scripts are [deferred using `defer` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
+to speed up page rendering and `renderMathInElement` is called after auto-render
+script is loaded using `onload` attribute. You can also call the
+`renderMathInElement` when (or after) [`DOMContentLoaded` event is fired on the
+`document`](https://developer.mozilla.org/ko/docs/Web/Reference/Events/DOMContentLoaded).
 
-```html
-<body>
-  ...
-  <script>
-    renderMathInElement(document.body);
-  </script>
-</body>
-```
-
-If you prefer to have all your setup inside the html `<head>`,
-you can use the following script there
-(instead of the one above at the end of the `<body>`):
-
-```html
-<head>
-  ...
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body);
-    });
-  </script>
-  ...
-</head>
-```
+> If you do not use `defer` attribute, `renderMathInElement` should be called
+right before the closing body tag(`</body>`) or when (or after) `DOMContentLoaded`
+event is fired on the `document`.
 
 ## API
 This extension exposes a single function, `window.renderMathInElement`, with
