@@ -46,7 +46,7 @@
     "mini-css-extract-plugin": "^0.4.0",
     "mkdirp": "^0.5.1",
     "pako": "1.0.6",
-    "postcss-loader": "^2.1.5",
+    "postcss-loader": "^3.0.0",
     "query-string": "^6.1.0",
     "rimraf": "^2.6.2",
     "selenium-webdriver": "^3.6.0",
