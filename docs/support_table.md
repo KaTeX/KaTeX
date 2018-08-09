@@ -2,7 +2,7 @@
 id: support_table
 title: Support Table
 ---
-<!-- {@stylesheet: static/katex.min.css} -->
+{@stylesheet: static/katex.min.css}
 <style>
 table tr,
 table td {
