@@ -1,6 +1,6 @@
 /* eslint-disable no-var */
 /* global katex: false */
-document.addEventListener("DOMContentLoaded", function() {
+(function() {
     var tex = document.getElementsByClassName("tex");
     Array.prototype.forEach.call(tex, function(el) {
         katex.render(el.getAttribute("data-expr"), el);
@@ -31,4 +31,4 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     doDemo();
-});
+})();
