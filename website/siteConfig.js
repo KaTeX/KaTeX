@@ -74,7 +74,6 @@ const siteConfig = {
         'https://buttons.github.io/buttons.js',
         baseUrl + 'js/scrollspy.js',
     ],
-    stylesheets: ['https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css'],
 
     separateCss: ['static/static', 'static\\static'],
 
