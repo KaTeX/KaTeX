@@ -1,7 +1,7 @@
 // @flow
 import {Token} from "./Token";
 
-import type {AnyParseNode} from "./ParseNode";
+import type {AnyParseNode} from "./parseNode";
 
 /**
  * This is the ParseError class, which is the main error thrown by KaTeX

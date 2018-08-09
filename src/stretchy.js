@@ -11,7 +11,7 @@ import mathMLTree from "./mathMLTree";
 import utils from "./utils";
 
 import type Options from "./Options";
-import type ParseNode, {AnyParseNode} from "./ParseNode";
+import type {ParseNode, AnyParseNode} from "./parseNode";
 import type {DomSpan, HtmlDomNode, SvgSpan} from "./domTree";
 
 const stretchyCodePoint: {[string]: string} = {
@@ -180,16 +180,16 @@ const svgSpan = function(
         height: number,
     } {
         let viewBoxWidth = 400000;  // default
-        const label = group.value.label.substr(1);
+        const label = group.label.substr(1);
         if (utils.contains(["widehat", "widecheck", "widetilde", "utilde"],
             label)) {
             // Each type in the `if` statement corresponds to one of the ParseNode
-            // types below. This narrowing is required to access `grp.value.base`.
+            // types below. This narrowing is required to access `grp.base`.
             // $FlowFixMe
             const grp: ParseNode<"accent"> | ParseNode<"accentUnder"> = group;
             // There are four SVG images available for each function.
             // Choose a taller image when there are more characters.
-            const numChars = groupLength(grp.value.base);
+            const numChars = groupLength(grp.base);
             let viewBoxHeight;
             let pathName;
             let height;

@@ -10,12 +10,14 @@ const React = require('react');
 class Footer extends React.Component {
     docUrl(doc, language) {
         const baseUrl = this.props.config.baseUrl;
-        return baseUrl + 'docs/' + (language ? language + '/' : '') + doc;
+        return baseUrl + 'docs/' + (language && language !== 'en'
+            ? language + '/' : '') + doc;
     }
 
     pageUrl(doc, language) {
         const baseUrl = this.props.config.baseUrl;
-        return baseUrl + (language ? language + '/' : '') + doc;
+        return baseUrl + (language && language !== 'en'
+            ? language + '/' : '') + doc;
     }
 
     render() {
@@ -43,7 +45,7 @@ class Footer extends React.Component {
                 <a href={this.docUrl('options.html', this.props.language)}>
                   Configuration
                 </a>
-                <a href={this.docUrl('support.html', this.props.language)}>
+                <a href={this.docUrl('supported.html', this.props.language)}>
                   Misc
                 </a>
               </div>

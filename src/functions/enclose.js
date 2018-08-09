@@ -4,7 +4,7 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
-import ParseNode, {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -12,9 +12,9 @@ import * as mml from "../buildMathML";
 
 const htmlBuilder = (group, options) => {
     // \cancel, \bcancel, \xcancel, \sout, \fbox, \colorbox, \fcolorbox
-    const inner = html.buildGroup(group.value.body, options);
+    const inner = html.buildGroup(group.body, options);
 
-    const label = group.value.label.substr(1);
+    const label = group.label.substr(1);
     const scale = options.sizeMultiplier;
     let img;
     let imgShift = 0;
@@ -24,7 +24,7 @@ const htmlBuilder = (group, options) => {
     // We don't know the width of a group, so as a proxy, we test if
     // the subject is a single character. This captures most of the
     // subjects that should get the "tall" treatment.
-    const isSingleChar = utils.isCharacterBox(group.value.body);
+    const isSingleChar = utils.isCharacterBox(group.body);
 
     if (label === "sout") {
         img = buildCommon.makeSpan(["stretchy", "sout"]);
@@ -54,16 +54,16 @@ const htmlBuilder = (group, options) => {
         img = stretchy.encloseSpan(inner, label, vertPad, options);
         imgShift = inner.depth + vertPad;
 
-        if (group.value.backgroundColor) {
-            img.style.backgroundColor = group.value.backgroundColor.value;
-            if (group.value.borderColor) {
-                img.style.borderColor = group.value.borderColor.value;
+        if (group.backgroundColor) {
+            img.style.backgroundColor = group.backgroundColor.value;
+            if (group.borderColor) {
+                img.style.borderColor = group.borderColor.value;
             }
         }
     }
 
     let vlist;
-    if (group.value.backgroundColor) {
+    if (group.backgroundColor) {
         vlist = buildCommon.makeVList({
             positionType: "individualShift",
             children: [
@@ -109,8 +109,8 @@ const htmlBuilder = (group, options) => {
 
 const mathmlBuilder = (group, options) => {
     const node = new mathMLTree.MathNode(
-        "menclose", [mml.buildGroup(group.value.body, options)]);
-    switch (group.value.label) {
+        "menclose", [mml.buildGroup(group.body, options)]);
+    switch (group.label) {
         case "\\cancel":
             node.setAttribute("notation", "updiagonalstrike");
             break;
@@ -131,8 +131,8 @@ const mathmlBuilder = (group, options) => {
             node.setAttribute("notation", "updiagonalstrike downdiagonalstrike");
             break;
     }
-    if (group.value.backgroundColor) {
-        node.setAttribute("mathbackground", group.value.backgroundColor.value);
+    if (group.backgroundColor) {
+        node.setAttribute("mathbackground", group.backgroundColor.value);
     }
     return node;
 };
@@ -149,12 +149,13 @@ defineFunction({
     handler({parser, funcName}, args, optArgs) {
         const color = assertNodeType(args[0], "color-token");
         const body = args[1];
-        return new ParseNode("enclose", {
+        return {
             type: "enclose",
+            mode: parser.mode,
             label: funcName,
             backgroundColor: color,
-            body: body,
-        }, parser.mode);
+            body,
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -173,13 +174,14 @@ defineFunction({
         const borderColor = assertNodeType(args[0], "color-token");
         const backgroundColor = assertNodeType(args[1], "color-token");
         const body = args[2];
-        return new ParseNode("enclose", {
+        return {
             type: "enclose",
+            mode: parser.mode,
             label: funcName,
             backgroundColor: backgroundColor,
             borderColor: borderColor,
-            body: body,
-        }, parser.mode);
+            body,
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -187,17 +189,36 @@ defineFunction({
 
 defineFunction({
     type: "enclose",
-    names: ["\\cancel", "\\bcancel", "\\xcancel", "\\sout", "\\fbox"],
+    names: ["\\fbox"],
+    props: {
+        numArgs: 1,
+        argTypes: ["text"],
+        allowedInText: true,
+    },
+    handler({parser}, args) {
+        return {
+            type: "enclose",
+            mode: parser.mode,
+            label: "\\fbox",
+            body: args[0],
+        };
+    },
+});
+
+defineFunction({
+    type: "enclose",
+    names: ["\\cancel", "\\bcancel", "\\xcancel", "\\sout"],
     props: {
         numArgs: 1,
     },
     handler({parser, funcName}, args, optArgs) {
         const body = args[0];
-        return new ParseNode("enclose", {
+        return {
             type: "enclose",
+            mode: parser.mode,
             label: funcName,
-            body: body,
-        }, parser.mode);
+            body,
+        };
     },
     htmlBuilder,
     mathmlBuilder,

@@ -2,21 +2,22 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode from "../ParseNode";
-import type {AnyParseNode} from "../ParseNode";
+import type {AnyParseNode} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
+import type {ParseNode} from "../parseNode";
+
 const makeSpan = buildCommon.makeSpan;
 
-function htmlBuilder(group, options) {
-    const elements = html.buildExpression(group.value.value, options, true);
-    return makeSpan([group.value.mclass], elements, options);
+function htmlBuilder(group: ParseNode<"mclass">, options) {
+    const elements = html.buildExpression(group.body, options, true);
+    return makeSpan([group.mclass], elements, options);
 }
 
-function mathmlBuilder(group, options) {
-    const inner = mml.buildExpression(group.value.value, options);
+function mathmlBuilder(group: ParseNode<"mclass">, options) {
+    const inner = mml.buildExpression(group.body, options);
     return mathMLTree.newDocumentFragment(inner);
 }
 
@@ -32,25 +33,25 @@ defineFunction({
     },
     handler({parser, funcName}, args) {
         const body = args[0];
-        return new ParseNode("mclass", {
+        return {
             type: "mclass",
+            mode: parser.mode,
             mclass: "m" + funcName.substr(5),
-            value: ordargument(body),
-        }, parser.mode);
+            body: ordargument(body),
+        };
     },
     htmlBuilder,
     mathmlBuilder,
 });
 
-export const binrelClass = (arg: AnyParseNode) => {
+export const binrelClass = (arg: AnyParseNode): string => {
     // \binrel@ spacing varies with (bin|rel|ord) of the atom in the argument.
     // (by rendering separately and with {}s before and after, and measuring
     // the change in spacing).  We'll do roughly the same by detecting the
     // atom type directly.
-    const atomType = (arg.type === "ordgroup" &&
-        arg.value.length ? arg.value[0].type : arg.type);
-    if (/^(bin|rel)$/.test(atomType)) {
-        return "m" + atomType;
+    const atom = (arg.type === "ordgroup" && arg.value.length ? arg.value[0] : arg);
+    if (atom.type === "atom" && (atom.family === "bin" || atom.family === "rel")) {
+        return "m" + atom.family;
     } else {
         return "mord";
     }
@@ -65,11 +66,12 @@ defineFunction({
         numArgs: 2,
     },
     handler({parser}, args) {
-        return new ParseNode("mclass", {
+        return {
             type: "mclass",
+            mode: parser.mode,
             mclass: binrelClass(args[0]),
-            value: [args[1]],
-        }, parser.mode);
+            body: [args[1]],
+        };
     },
 });
 
@@ -92,27 +94,30 @@ defineFunction({
             mclass = "mrel";  // for \stackrel
         }
 
-        const baseOp = new ParseNode("op", {
+        const baseOp = {
             type: "op",
+            mode: baseArg.mode,
             limits: true,
             alwaysHandleSupSub: true,
             symbol: false,
             suppressBaseShift: funcName !== "\\stackrel",
             value: ordargument(baseArg),
-        }, baseArg.mode);
+        };
 
-        const supsub = new ParseNode("supsub", {
+        const supsub = {
             type: "supsub",
+            mode: shiftedArg.mode,
             base: baseOp,
             sup: funcName === "\\underset" ? null : shiftedArg,
             sub: funcName === "\\underset" ? shiftedArg : null,
-        }, shiftedArg.mode);
+        };
 
-        return new ParseNode("mclass", {
+        return {
             type: "mclass",
-            mclass: mclass,
-            value: [supsub],
-        }, parser.mode);
+            mode: parser.mode,
+            mclass,
+            body: [supsub],
+        };
     },
     htmlBuilder,
     mathmlBuilder,

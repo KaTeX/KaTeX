@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KaTeX – The fastest math typesetting library for the web</title>
     <meta name="Description" content="KaTeX – The fastest math typesetting library for the web">
     <meta property="og:title" content="KaTeX – The fastest math typesetting library for the web">
@@ -11,11 +12,9 @@
     <meta property="og:description" content="Simple API, no dependencies – yet super-fast on all major browsers.">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.css" integrity="sha256-7GAtDQ79wTEOjhBKf70uBQG7A5yyb+8rigu07atXWDY=" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,700i" rel="stylesheet">
     <link href="https://use.fontawesome.com/efe646278d.css" type="text/css" rel="stylesheet">
     <link href="static/index.css" type="text/css" rel="stylesheet">
-    <script src="//use.typekit.net/ulc1wme.js"></script>
-    <script>try{Typekit.load();}catch(e){}</script>
   </head>
   <body>
     <div class="header"><div class="container">
@@ -28,7 +27,7 @@
         <a href="docs/api.html" role="button"><i class="fa fa-book"></i> Documentation</a>
         <a href="https://github.com/Khan/KaTeX" role="button"><i class="fa fa-github"></i> View on GitHub</a>
       </div>
-      <div class="demo">
+      <div class="demo" id="demo">
         <div class="demo-left">
           <div class="demo-instructions">
             <label for="demo-input">Type an expression:</label>

@@ -3,8 +3,8 @@ id: autorender
 title: Auto-render Extension
 ---
 This is an extension to automatically render all of the math inside of text. It
-searches all of the text nodes in a given element for the given delimiters, and
-renders the math in place.
+searches all of the text nodes within a given element for the given delimiters,
+ignoring certain tags like `<pre>`, and renders the math in place.
 
 ## Usage
 This extension isn't part of KaTeX proper, so the script needs to be included
@@ -81,6 +81,9 @@ in addition to two auto-render-specific keys:
 - `ignoredTags`: This is a list of DOM node types to ignore when recursing
   through. The default value is
   `["script", "noscript", "style", "textarea", "pre", "code"]`.
+
+- `ignoredClasses`: This is a list of DOM node class names to ignore when
+  recursing through. By default, this value is not set.
 
 - `errorCallback`: A callback method returning a message and an error stack
   in case of an critical error during rendering. The default uses `console.error`.

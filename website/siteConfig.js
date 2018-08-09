@@ -8,6 +8,10 @@
 // See https://docusaurus.io/docs/site-config.html for all the possible
 // site configuration options.
 
+// If BASE_URL environment variable is set, use it as baseUrl.
+// If on netlify, use '/'. Otherwise use '/KaTeX/'.
+const baseUrl = process.env.BASE_URL || (process.env.CONTEXT ? '/' : '/KaTeX/');
+
 /* List of projects/orgs using your project for the users page */
 const users = [
     {
@@ -22,13 +26,14 @@ const siteConfig = {
     title: 'KaTeX',
     tagline: 'The fastest math typesetting library for the web',
     url: 'https://khan.github.io',
-    baseUrl: '/KaTeX/',
+    baseUrl,
 
     // Used for publishing and more
     projectName: 'KaTeX',
     organizationName: 'Khan',
 
     headerLinks: [
+        {href: baseUrl + '#demo', label: 'Try'},
         {doc: 'node', label: 'Docs'},
         {page: 'users', label: 'Users'},
         {href: 'https://github.com/Khan/KaTeX', label: 'GitHub'},
@@ -65,7 +70,10 @@ const siteConfig = {
         require('./lib/empty_thead'),
     ],
 
-    scripts: ['https://buttons.github.io/buttons.js'],
+    scripts: [
+        'https://buttons.github.io/buttons.js',
+        baseUrl + 'js/scrollspy.js',
+    ],
     stylesheets: ['https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css'],
 
     separateCss: ['static/static', 'static\\static'],

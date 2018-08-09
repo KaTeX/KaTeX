@@ -13,8 +13,7 @@ title: Common Issues
   `\\[0.1em]` instead of the standard line separator distance.
 - KaTeX does not support the `align` environment because LaTeX doesn't support
   `align` in math mode.  The `aligned` environment offers the same functionality
-  but in math mode, so use that instead or define a macro that maps `align` to
-  `aligned`.
+  but in math mode, so use that instead.
 - MathJax defines `\color` to be like `\textcolor` by default; set KaTeX's
   `colorIsTextColor` option to `true` for this behavior.  KaTeX's default
   behavior matches MathJax with its `color.js` extension enabled.

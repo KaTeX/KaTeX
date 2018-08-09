@@ -4,7 +4,7 @@
  * files.
  */
 
-import type {AnyParseNode} from "./ParseNode";
+import type {AnyParseNode} from "./parseNode";
 
 /**
  * Provide an `indexOf` function which works in IE8, but defers to native if
@@ -104,13 +104,13 @@ const getBaseElem = function(group: AnyParseNode): AnyParseNode {
             return group;
         }
     } else if (group.type === "color") {
-        if (group.value.value.length === 1) {
-            return getBaseElem(group.value.value[0]);
+        if (group.body.length === 1) {
+            return getBaseElem(group.body[0]);
         } else {
             return group;
         }
     } else if (group.type === "font") {
-        return getBaseElem(group.value.body);
+        return getBaseElem(group.body);
     } else {
         return group;
     }
@@ -127,12 +127,7 @@ const isCharacterBox = function(group: AnyParseNode): boolean {
     // These are all they types of groups which hold single characters
     return baseElem.type === "mathord" ||
         baseElem.type === "textord" ||
-        baseElem.type === "bin" ||
-        baseElem.type === "rel" ||
-        baseElem.type === "inner" ||
-        baseElem.type === "open" ||
-        baseElem.type === "close" ||
-        baseElem.type === "punct";
+        baseElem.type === "atom";
 };
 
 export const assert = function<T>(value: ?T): T {

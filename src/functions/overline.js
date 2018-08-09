@@ -2,7 +2,6 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -15,16 +14,17 @@ defineFunction({
     },
     handler({parser}, args) {
         const body = args[0];
-        return new ParseNode("overline", {
+        return {
             type: "overline",
-            body: body,
-        }, parser.mode);
+            mode: parser.mode,
+            body,
+        };
     },
     htmlBuilder(group, options) {
         // Overlines are handled in the TeXbook pg 443, Rule 9.
 
         // Build the inner group in the cramped style.
-        const innerGroup = html.buildGroup(group.value.body,
+        const innerGroup = html.buildGroup(group.body,
             options.havingCrampedStyle());
 
         // Create the line above the body
@@ -50,7 +50,7 @@ defineFunction({
 
         const node = new mathMLTree.MathNode(
             "mover",
-            [mml.buildGroup(group.value.body, options), operator]);
+            [mml.buildGroup(group.body, options), operator]);
         node.setAttribute("accent", "true");
 
         return node;
