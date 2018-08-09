@@ -65,13 +65,15 @@ const siteConfig = {
         theme: 'default',
     },
 
-    markdownPlugins: [require('./remarkableKatex'), require('./empty_thead')],
+    markdownPlugins: [
+        require('./lib/remarkableKatex'),
+        require('./lib/empty_thead'),
+    ],
 
     scripts: [
         'https://buttons.github.io/buttons.js',
         baseUrl + 'js/scrollspy.js',
     ],
-    stylesheets: ['https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css'],
 
     separateCss: ['static/static', 'static\\static'],
 
