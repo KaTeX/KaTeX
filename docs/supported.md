@@ -55,6 +55,7 @@ See also [letters](#letters)
 |$\vert$ <code>&#124;</code> |$\vert$ `\vert` |$┌ ┐$ `┌ ┐`|$\ulcorner \urcorner$ `\ulcorner`<br>$~~~~$`\urcorner`  |$\Downarrow$ `\Downarrow`
 |$\Vert$ <code>&#92;&#124;</code> |$\Vert$ `\Vert` |$└ ┘$ `└ ┘`|$\llcorner \lrcorner$ `\llcorner`<br>$~~~~$`\lrcorner`  |$\Updownarrow$ `\Updownarrow`
 |$\lvert~\rvert$ `\lvert`<br>$~~~~$`\rvert`|$\lVert~\rVert$ `\lVert`<br>$~~~~~$`\rVert` |`\left.`|  `\right.` |$\backslash$ `\backslash`
+|$\lang~\rang$ `\lang`<br>$~~~~$`\rang`
 
 **Delimiter Sizing**
 
@@ -107,14 +108,17 @@ The `{array}` environment does not yet support `\cline` or `\multicolumn`.
 
 **Greek Letters**
 
-Direct Input: $Α Β Γ Δ Ε Ζ Η Θ$ $Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω$  
+Direct Input: $Α Β Γ Δ Ε Ζ Η Θ$ $Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω$
 $α β γ δ ϵ ζ η θ ι κ λ μ ν ξ o$ $π ρ σ τ υ ϕ χ ψ ω ε ϑ ϖ ϱ ς φ$
 
 |||||
 |---------------|-------------|-------------|---------------|
-| $\Gamma$ `\Gamma`| $\Delta$ `\Delta` | $\Theta$ `\Theta` | $\Lambda$ `\Lambda`  |
-| $\Xi$ `\Xi`| $\Pi$ `\Pi` | $\Sigma$ `\Sigma` | $\Upsilon$ `\Upsilon` |
-| $\Phi$ `\Phi`  | $\Psi$ `\Psi`| $\Omega$ `\Omega` ||
+| $\Alpha$ `\Alpha` | $\Beta$ `\Beta` | $\Gamma$ `\Gamma`| $\Delta$ `\Delta`
+| $\Epsilon$ `\Epsilon` | $\Zeta$ `\Zeta` | $\Eta$ `\Eta` | $\Theta$ `\Theta`
+| $\Iota$ `\Iota` | $\Kappa$ `\Kappa` | $\Lambda$ `\Lambda` | $\Mu$ `\Mu`
+| $\Nu$ `\Nu` | $\Xi$ `\Xi` | $\Omicron$ `\Omicron` | $\Pi$ `\Pi`
+| $\Sigma$ `\Sigma` | $\Tau$ `\Tau` | $\Upsilon$ `\Upsilon` | $\Phi$ `\Phi`
+| $\Chi$ `\Chi` | $\Psi$ `\Psi`| $\Omega$ `\Omega`
 | $\varGamma$ `\varGamma`| $\varDelta$ `\varDelta` | $\varTheta$ `\varTheta` | $\varLambda$ `\varLambda`  |
 | $\varXi$ `\varXi`| $\varPi$ `\varPi` | $\varSigma$ `\varSigma` | $\varUpsilon$ `\varUpsilon` |
 | $\varPhi$ `\varPhi`  | $\varPsi$ `\varPsi`| $\varOmega$ `\varOmega` ||
@@ -124,21 +128,25 @@ $α β γ δ ϵ ζ η θ ι κ λ μ ν ξ o$ $π ρ σ τ υ ϕ χ ψ ω ε ϑ 
 | $\nu$ `\nu`| $\xi$ `\xi` | $\omicron$ `\omicron`  | $\pi$ `\pi`|
 | $\rho$ `\rho`  | $\sigma$ `\sigma` | $\tau$ `\tau`| $\upsilon$ `\upsilon` |
 | $\phi$ `\phi`  | $\chi$ `\chi`| $\psi$ `\psi`| $\omega$ `\omega`|
-| $\varepsilon$ `\varepsilon` | $\varkappa$ `\varkappa` | $\vartheta$ `\vartheta` | $\varpi$ `\varpi`|
-| $\varrho$ `\varrho`  | $\varsigma$ `\varsigma` | $\varphi$ `\varphi`| $\digamma $ `\digamma `|
+| $\varepsilon$ `\varepsilon` | $\varkappa$ `\varkappa` | $\vartheta$ `\vartheta` | $\thetasym$ `\thetasym`
+| $\varpi$ `\varpi`| $\varrho$ `\varrho`  | $\varsigma$ `\varsigma` | $\varphi$ `\varphi`
+| $\digamma $ `\digamma`
 
 **Other Letters**
 
 ||||||
-|------------|-----------|----------|---------|----------|
-| $\imath$ `imath` | $\eth$ `\eth` | $\Im$ `\Im`| $\text{\aa}$ `\text{\aa}`| $\text{\o}$ `\text{\o}`  |
-| $\jmath$ `\jmath`| $\Finv$ `\Finv`| $\Re$ `\Re`| $\text{\AA}$ `\text{\AA}`| $\text{\O}$ `\text{\O}`  |
-| $\aleph$ `\aleph`| $\Game$ `\Game`| $\wp$ `\wp`| $\text{\ae}$ `\text{\ae}`| $\text{\ss}$ `\text{\ss}` |
-| $\beth$ `\beth` | $\ell$ `\ell` | $\partial$ `\partial` | $\text{\AE}$ `\text{\AE}`| $\text{\i}$ `\text{\i}`  |
-| $\gimel$ `\gimel`| $\hbar$ `\hbar`| $\nabla$ `\nabla`| $\text{\oe}$ `\text{\oe}`| $\text{\j}$ `\text{\j}`  |
-| $\daleth$ `\daleth`  | $\hslash$ `\hslash` | $\Bbbk$ `\Bbbk` | $\text{\OE}$ `\text{\OE}`|
+|:----------|:----------|:----------|:----------|:----------|
+|$\imath$ `\imath`|$\nabla$ `\nabla`|$\Im$ `\Im`|$\Reals$ `\Reals`|$\text{\OE}$ `\text{\OE}`
+|$\jmath$ `\jmath`|$\partial$ `\partial`|$\image$ `\image`|$\wp$ `\wp`|$\text{\o}$ `\text{\o}`
+|$\aleph$ `\aleph`|$\Game$ `\Game`|$\Bbbk$ `\Bbbk`|$\weierp$ `\weierp`|$\text{\O}$ `\text{\O}`
+|$\alef$ `\alef`|$\Finv$ `\Finv`|$\N$ `\N`|$\Z$ `\Z`|$\text{\ss}$ `\text{\ss}`
+|$\alefsym$ `\alefsym`|$\cnums$ `\cnums`|$\natnums$ `\natnums`|$\text{\aa}$ `\text{\aa}`|$\text{\i}$ `\text{\i}`
+|$\beth$ `\beth`|$\Complex$ `\Complex`|$\R$ `\R`|$\text{\AA}$ `\text{\AA}`|$\text{\j}$ `\text{\j}`
+|$\gimel$ `\gimel`|$\ell$ `\ell`|$\Re$ `\Re`|$\text{\ae}$ `\text{\ae}`
+|$\daleth$ `\daleth`|$\hbar$ `\hbar`|$\real$ `\real`|$\text{\AE}$ `\text{\AE}`
+|$\eth$ `\eth`|$\hslash$ `\hslash`|$\reals$ `\reals`|$\text{\oe}$ `\text{\oe}`
 
-Direct Input: $∂ ∇ ℑ Ⅎ ℵ ℶ ℷ ℸ ⅁ ℏ ð$ 
+Direct Input: $∂ ∇ ℑ Ⅎ ℵ ℶ ℷ ℸ ⅁ ℏ ð$
 ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝÞßàáâãäåçèéêëìíîïðñòóôöùúûüýþÿ
 
 </div>
@@ -248,14 +256,14 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 ## Logic and Set Theory
 
 |||||
-|:--------------------|:--------------------------|:----------------------------------|:-----
-|$\forall$ `\forall`  |$\complement$ `\complement`|$\therefore$ `\therefore` |$\neg$ `\neg` or `\lnot`
-|$\exists$ `\exists`  |$\subset$ `\subset`  |$\because$ `\because`  |$\emptyset$ `\emptyset`
-|$\nexists$ `\nexists`|$\supset$ `\supset`  |$\mapsto$ `\mapsto` |$\varnothing$ `\varnothing`
-|$\in$ `\in` |$\mid$ `\mid`  |$\to$ `\to`|$\implies$ `\implies`
-|$\notin$ `\notin` |$\land$ `\land`|$\gets$ `\gets`  |$\impliedby$ `\impliedby`
-|$\ni$ `\ni` |$\lor$ `\lor`  |$\leftrightarrow$ `\leftrightarrow`|$\iff$ `\iff`
-|$\notni$ `\notni` |
+|:--------------------|:--------------------------|:----------------------------|:-----
+|$\forall$ `\forall`  |$\complement$ `\complement`|$\therefore$ `\therefore`    |$\emptyset$ `\emptyset`
+|$\exists$ `\exists`  |$\subset$ `\subset`  |$\because$ `\because`              |$\empty$ `\empty`
+|$\exist$ `\exist`    |$\supset$ `\supset`  |$\mapsto$ `\mapsto`                |$\varnothing$ `\varnothing`
+|$\nexists$ `\nexists`|$\mid$ `\mid`        |$\to$ `\to`                        |$\implies$ `\implies`
+|$\in$ `\in`          |$\land$ `\land`      |$\gets$ `\gets`                    |$\impliedby$ `\impliedby`
+|$\isin$ `\isin`      |$\lor$ `\lor`        |$\leftrightarrow$ `\leftrightarrow`|$\iff$ `\iff`
+|$\notin$ `\notin`    |$\ni$ `\ni`          |$\notni$ `\notni`                  |$\neg$ `\neg` or `\lnot`
 
 Direct Input: $∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← ↔ ¬$ ℂ ℍ ℕ ℙ ℚ ℝ
 
@@ -291,7 +299,7 @@ Available functions include:
 | $\sum$ `\sum`    | $\prod$ `\prod`         | $\bigotimes$ `\bigotimes`| $\bigvee$ `\bigvee`
 | $\int$ `\int`    | $\coprod$ `\coprod`     | $\bigoplus$ `\bigoplus`  | $\bigwedge$ `\bigwedge`
 | $\iint$ `\iint`  | $\intop$ `\intop`       | $\bigodot$ `\bigodot`    | $\bigcap$ `\bigcap`
-| $\iiint$ `\iiint`| $\smallint$ `\smallint` | $\biguplus$ `\biguplus`  | $\bigcup$ `\bigcup`  
+| $\iiint$ `\iiint`| $\smallint$ `\smallint` | $\biguplus$ `\biguplus`  | $\bigcup$ `\bigcup`
 | $\oint$ `\oint`  | $\oiint$ `\oiint`       | $\oiiint$ `\oiiint`      | $\bigsqcup$ `\bigsqcup`
 
 Direct Input: $∫ ∬ ∭ ∮ ∏ ∐ ∑ ⋀ ⋁ ⋂ ⋃ ⨀ ⨁ ⨂ ⨄ ⨆$
@@ -316,7 +324,7 @@ Direct Input: $∫ ∬ ∭ ∮ ∏ ∐ ∑ ⋀ ⋁ ⋂ ⋃ ⨀ ⨁ ⨂ ⨄ ⨆$
 | $\boxtimes$ `\boxtimes` | $\dotplus$ `\dotplus`  | $\oplus$ `\oplus` | $\vee$ `\vee` |
 | $\bullet$ `\bullet`| $\doublebarwedge$ `\doublebarwedge` | $\otimes$ `\otimes`| $\veebar$ `\veebar` |
 | $\Cap$ `\Cap`| $\doublecap$ `\doublecap`| $\oslash$ `\oslash`| $\wedge$ `\wedge`  |
-| $\cap$ `\cap`| $\doublecup$ `\doublecup`| $\pm$ `\pm` | $\wr$ `\wr`  |
+| $\cap$ `\cap`| $\doublecup$ `\doublecup`| $\pm$ `\pm` or `\plusmn` | $\wr$ `\wr`  |
 
 Direct Input: $+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ ⊖ ⊗ ⊘ ⊙ ⊚ ⊛ ⊝$
 
@@ -366,8 +374,8 @@ $\stackrel{!}{=}$ `\stackrel{!}{=}`
 |$=$ `=` |$\eqcirc$ `\eqcirc`  |$\lesseqgtr$ `\lesseqgtr`  |$\sqsupset$ `\sqsupset`
 |$<$ `<` |$\eqcolon$ `\eqcolon`|$\lesseqqgtr$ `\lesseqqgtr`|$\sqsupseteq$ `\sqsupseteq`
 |$>$ `>` |$\Eqcolon$ `\Eqcolon`|$\lessgtr$ `\lessgtr`|$\Subset$ `\Subset`
-|$:$ `:` |$\eqqcolon$ `\eqqcolon` |$\lesssim$ `\lesssim`|$\subset$ `\subset`
-|$\approx$ `\approx` |$\Eqqcolon$ `\Eqqcolon` |$\ll$ `\ll` |$\subseteq$ `\subseteq`
+|$:$ `:` |$\eqqcolon$ `\eqqcolon` |$\lesssim$ `\lesssim`|$\subset$ `\subset` or `\sub`
+|$\approx$ `\approx` |$\Eqqcolon$ `\Eqqcolon` |$\ll$ `\ll` |$\subseteq$ `\subseteq` or `\sube`
 |$\approxeq$ `\approxeq`|$\eqsim$ `\eqsim` |$\lll$ `\lll`  |$\subseteqq$ `\subseteqq`
 |$\asymp$ `\asymp`|$\eqslantgtr$ `\eqslantgtr`|$\llless$ `\llless`  |$\succ$ `\succ`
 |$\backepsilon$ `\backepsilon`|$\eqslantless$ `\eqslantless` |$\lt$ `\lt` |$\succapprox$ `\succapprox`
@@ -376,7 +384,7 @@ $\stackrel{!}{=}$ `\stackrel{!}{=}`
 |$\between$ `\between`  |$\frown$ `\frown` |$\multimap$ `\multimap` |$\succsim$ `\succsim`
 |$\bowtie$ `\bowtie` |$\ge$ `\ge` |$\owns$ `\owns`|$\Supset$ `\Supset`
 |$\bumpeq$ `\bumpeq` |$\geq$ `\geq`  |$\parallel$ `\parallel` |$\supset$ `\supset`
-|$\Bumpeq$ `\Bumpeq` |$\geqq$ `\geqq`|$\perp$ `\perp`|$\supseteq$ `\supseteq`
+|$\Bumpeq$ `\Bumpeq` |$\geqq$ `\geqq`|$\perp$ `\perp`|$\supseteq$ `\supseteq` or `\supe`
 |$\circeq$ `\circeq` |$\geqslant$ `\geqslant` |$\pitchfork$ `\pitchfork`  |$\supseteqq$ `\supseteqq`
 |$\colonapprox$ `\colonapprox`|$\gg$ `\gg` |$\prec$ `\prec`|$\thickapprox$ `\thickapprox`
 |$\Colonapprox$ `\Colonapprox`|$\ggg$ `\ggg`  |$\precapprox$ `\precapprox`|$\thicksim$ `\thicksim`
@@ -387,7 +395,7 @@ $\stackrel{!}{=}$ `\stackrel{!}{=}`
 |$\colonsim$ `\colonsim`|$\gtreqqless$ `\gtreqqless`|$\risingdotseq$ `\risingdotseq`  |$\vartriangle$ `\vartriangle`
 |$\Colonsim$ `\Colonsim`|$\gtrless$ `\gtrless`|$\shortmid$ `\shortmid` |$\vartriangleleft$ `\vartriangleleft`
 |$\cong$ `\cong`  |$\gtrsim$ `\gtrsim`  |$\shortparallel$ `\shortparallel`|$\vartriangleright$ `\vartriangleright`
-|$\curlyeqprec$ `\curlyeqprec`|$\in$ `\in` |$\sim$ `\sim`  |$\vcentcolon$ `\vcentcolon`
+|$\curlyeqprec$ `\curlyeqprec`|$\in$ `\in` or `\isin` |$\sim$ `\sim`  |$\vcentcolon$ `\vcentcolon`
 |$\curlyeqsucc$ `\curlyeqsucc`|$\Join$ `\Join`|$\simeq$ `\simeq` |$\vdash$ `\vdash`
 |$\dashv$ `\dashv`|$\le$ `\le` |$\smallfrown$ `\smallfrown`|$\vDash$ `\vDash`
 |$\dblcolon$ `\dblcolon`|$\leq$ `\leq`  |$\smallsmile$ `\smallsmile`|$\Vdash$ `\Vdash`
@@ -425,33 +433,38 @@ Direct Input: $∉ ∌ ∤ ∦ ≁ ≆ ≠ ≨ ≩ ≮ ≯ ≰ ≱ ⊀ ⊁ ⊈ �
 ### Arrows
 
 ||||
-|:--------------------------------------|:--------------------------------------------|:-----
-|$\circlearrowleft$ `\circlearrowleft`  |$\Leftrightarrow$ `\Leftrightarrow` |$\rightarrow$ `\rightarrow`
-|$\circlearrowright$ `\circlearrowright`|$\leftrightarrows$ `\leftrightarrows`  |$\Rightarrow$ `\Rightarrow`
-|$\curvearrowleft$ `\curvearrowleft` |$\leftrightharpoons$ `\leftrightharpoons` |$\rightarrowtail$ `\rightarrowtail`
-|$\curvearrowright$ `\curvearrowright`  |$\leftrightsquigarrow$ `\leftrightsquigarrow`|$\rightharpoondown$ `\rightharpoondown`
+|:----------|:----------|:----------|
+|$\circlearrowleft$ `\circlearrowleft`|$\leftharpoonup$ `\leftharpoonup`|$\rArr$ `\rArr`
+|$\circlearrowright$ `\circlearrowright`|$\leftleftarrows$ `\leftleftarrows`|$\rarr$ `\rarr`
+|$\curvearrowleft$ `\curvearrowleft`|$\leftrightarrow$ `\leftrightarrow`|$\restriction$ `\restriction`
+|$\curvearrowright$ `\curvearrowright`|$\Leftrightarrow$ `\Leftrightarrow`|$\rightarrow$ `\rightarrow`
+|$\Darr$ `\Darr`|$\leftrightarrows$ `\leftrightarrows`|$\Rightarrow$ `\Rightarrow`
+|$\dArr$ `\dArr`|$\leftrightharpoons$ `\leftrightharpoons`|$\rightarrowtail$ `\rightarrowtail`
+|$\darr$ `\darr`|$\leftrightsquigarrow$ `\leftrightsquigarrow`|$\rightharpoondown$ `\rightharpoondown`
 |$\dashleftarrow$ `\dashleftarrow`|$\Lleftarrow$ `\Lleftarrow`|$\rightharpoonup$ `\rightharpoonup`
-|$\dashrightarrow$ `\dashrightarrow` |$\longleftarrow$ `\longleftarrow`|$\rightleftarrows$ `\rightleftarrows`
-|$\downarrow$ `\downarrow`  |$\Longleftarrow$ `\Longleftarrow`|$\rightleftharpoons$ `\rightleftharpoons`
-|$\Downarrow$ `\Downarrow`  |$\longleftrightarrow$ `\longleftrightarrow`  |$\rightrightarrows$ `\rightrightarrows`
-|$\downdownarrows$ `\downdownarrows` |$\Longleftrightarrow$ `\Longleftrightarrow`  |$\rightsquigarrow$ `\rightsquigarrow`
-|$\downharpoonleft$ `\downharpoonleft`  |$\longmapsto$ `\longmapsto`|$\Rrightarrow$ `\Rrightarrow`
-|$\downharpoonright$ `\downharpoonright`|$\longrightarrow$ `\longrightarrow` |$\Rsh$ `\Rsh`
-|$\gets$ `\gets`|$\Longrightarrow$ `\Longrightarrow` |$\searrow$ `\searrow`
-|$\hookleftarrow$ `\hookleftarrow`|$\looparrowleft$ `\looparrowleft`|$\swarrow$ `\swarrow`
-|$\hookrightarrow$ `\hookrightarrow` |$\looparrowright$ `\looparrowright` |$\to$ `\to`
-|$\iff$ `\iff`  |$\Lsh$ `\Lsh`  |$\twoheadleftarrow$ `\twoheadleftarrow`
-|$\impliedby$ `\impliedby`  |$\mapsto$ `\mapsto`  |$\twoheadrightarrow$ `\twoheadrightarrow`
+|$\dashrightarrow$ `\dashrightarrow`|$\longleftarrow$ `\longleftarrow`|$\rightleftarrows$ `\rightleftarrows`
+|$\downarrow$ `\downarrow`|$\Longleftarrow$ `\Longleftarrow`|$\rightleftharpoons$ `\rightleftharpoons`
+|$\Downarrow$ `\Downarrow`|$\longleftrightarrow$ `\longleftrightarrow`|$\rightrightarrows$ `\rightrightarrows`
+|$\downdownarrows$ `\downdownarrows`|$\Longleftrightarrow$ `\Longleftrightarrow`|$\rightsquigarrow$ `\rightsquigarrow`
+|$\downharpoonleft$ `\downharpoonleft`|$\longmapsto$ `\longmapsto`|$\Rrightarrow$ `\Rrightarrow`
+|$\downharpoonright$ `\downharpoonright`|$\longrightarrow$ `\longrightarrow`|$\Rsh$ `\Rsh`
+|$\gets$ `\gets`|$\Longrightarrow$ `\Longrightarrow`|$\searrow$ `\searrow`
+|$\Harr$ `\Harr`|$\looparrowleft$ `\looparrowleft`|$\swarrow$ `\swarrow`
+|$\hArr$ `\hArr`|$\looparrowright$ `\looparrowright`|$\to$ `\to`
+|$\harr$ `\harr`|$\Lrarr$ `\Lrarr`|$\twoheadleftarrow$ `\twoheadleftarrow`
+|$\hookleftarrow$ `\hookleftarrow`|$\lrArr$ `\lrArr`|$\twoheadrightarrow$ `\twoheadrightarrow`
+|$\hookrightarrow$ `\hookrightarrow`|$\lrarr$ `\lrarr`|$\Uarr$ `\Uarr`
+|$\iff$ `\iff`|$\Lsh$ `\Lsh`|$\uArr$ `\uArr`
+|$\impliedby$ `\impliedby`|$\mapsto$ `\mapsto`|$\uarr$ `\uarr`
 |$\implies$ `\implies`|$\nearrow$ `\nearrow`|$\uparrow$ `\uparrow`
-|$\leadsto$ `\leadsto`|$\nleftarrow$ `\nleftarrow`|$\Uparrow$ `\Uparrow`
-|$\leftarrow$ `\leftarrow`  |$\nLeftarrow$ `\nLeftarrow`|$\updownarrow$ `\updownarrow`
-|$\Leftarrow$ `\Leftarrow`  |$\nleftrightarrow$ `\nleftrightarrow`  |$\Updownarrow$ `\Updownarrow`
-|$\leftarrowtail$ `\leftarrowtail`|$\nLeftrightarrow$ `\nLeftrightarrow`  |$\upharpoonleft$ `\upharpoonleft`
-|$\leftharpoondown$ `\leftharpoondown`  |$\nrightarrow$ `\nrightarrow` |$\upharpoonright$ `\upharpoonright`
-|$\leftharpoonup$ `\leftharpoonup`|$\nRightarrow$ `\nRightarrow` |$\upuparrows$ `\upuparrows`
-|$\leftleftarrows$ `\leftleftarrows` |$\nwarrow$ `\nwarrow`|
-|$\leftrightarrow$ `\leftrightarrow` |$\restriction$ `\restriction` |
-
+|$\Larr$ `\Larr`|$\nleftarrow$ `\nleftarrow`|$\Uparrow$ `\Uparrow`
+|$\lArr$ `\lArr`|$\nLeftarrow$ `\nLeftarrow`|$\updownarrow$ `\updownarrow`
+|$\larr$ `\larr`|$\nleftrightarrow$ `\nleftrightarrow`|$\Updownarrow$ `\Updownarrow`
+|$\leadsto$ `\leadsto`|$\nLeftrightarrow$ `\nLeftrightarrow`|$\upharpoonleft$ `\upharpoonleft`
+|$\leftarrow$ `\leftarrow`|$\nrightarrow$ `\nrightarrow`|$\upharpoonright$ `\upharpoonright`
+|$\Leftarrow$ `\Leftarrow`|$\nRightarrow$ `\nRightarrow`|$\upuparrows$ `\upuparrows`
+|$\leftarrowtail$ `\leftarrowtail`|$\nwarrow$ `\nwarrow`
+|$\leftharpoondown$ `\leftharpoondown`|$\Rarr$ `\Rarr`
 
 Direct Input: $← ↑ → ↓ ↔ ↕ ↖ ↗ ↘ ↙ ↚ ↛ ↞ ↠ ↢ ↣ ↦ ↩ ↪ ↫ ↬ ↭ ↮ ↰ ↱↶ ↷ ↺ ↻ ↼ ↽ ↾ ↾ ↿ ⇀ ⇁ ⇂ ⇃ ⇄ ⇆ ⇇ ⇈ ⇉ ⇊ ⇋ ⇌⇍ ⇎ ⇏ ⇐ ⇑ ⇒ ⇓ ⇔ ⇕ ⇚ ⇛ ⇝ ⇠ ⇢ ⟵ ⟶ ⟷ ⟸ ⟹ ⟺ ⟼$ ↽
 
@@ -509,7 +522,7 @@ For color definition, KaTeX color functions will accept the standard HTML [pred
 
 One can stack font family, font weight, and font shape by using the `\textXX` versions of the font functions. So `\textsf{\textbf{H}}` will produce $\textsf{\textbf{H}}$. The other versions do not stack, e.g., `\mathsf{\mathbf{H}}` will produce $\mathsf{\mathbf{H}}$.
 
-In cases where KaTeX fonts do not have a bold glyph, `\pmb` can simulate one. For example, `\pmb{\mu}` renders as : $\pmb{\mu}$ 
+In cases where KaTeX fonts do not have a bold glyph, `\pmb` can simulate one. For example, `\pmb{\mu}` renders as : $\pmb{\mu}$
 
 **Size**
 
@@ -540,41 +553,43 @@ In cases where KaTeX fonts do not have a bold glyph, `\pmb` can simulate one. Fo
 
 ||||
 |:----------|:----------|:----------|
-|`% comment`|$\dots$ `\dots`|$ \KaTeX$ ` \KaTeX`
-|$\%$ `\%`|$\cdots$ `\cdots`|$ \LaTeX$ ` \LaTeX`
-|$\#$ `\#`|$\ddots$ `\ddots`|$ \TeX$ ` \TeX`
+|`% comment`|$\dots$ `\dots`|$\KaTeX$ `\KaTeX`
+|$\%$ `\%`|$\cdots$ `\cdots`|$\LaTeX$ `\LaTeX`
+|$\#$ `\#`|$\ddots$ `\ddots`|$\TeX$ `\TeX`
 |$\&$ `\&`|$\ldots$ `\ldots`|$\nabla$ `\nabla`
 |$\_$ `\_`|$\vdots$ `\vdots`|$\infty$ `\infty`
-|$\text{\textunderscore}$ `\text{\textunderscore}`|$\dotsb$ `\dotsb`|$\checkmark$ `\checkmark`
-|$\text{--}$ `\text{--}`|$\dotsc$ `\dotsc`|$\dag$ `\dag`
-|$\text{\textendash}$ `\text{\textendash}`|$\dotsi$ `\dotsi`|$\dagger$ `\dagger`
-|$\text{---}$ `\text{---}`|$\dotsm$ `\dotsm`|$ \text{\textdagger}$ ` \text{\textdagger}`
-|$\text{\textemdash}$ `\text{\textemdash}`|$\dotso$ `\dotso`|$\ddag$ `\ddag`
-|$ \text{\textasciitilde}$ ` \text{\textasciitilde}`|$\mathellipsis$ `\mathellipsis`|$\ddagger$ `\ddagger`
-|$`$ <code>`</code>|$\text{\textellipsis}$ `\text{\textellipsis}`|$\text{\textdaggerdbl}$ `\text{\textdaggerdbl}`
-|$\text{\textquoteleft}$ `text{\textquoteleft}`|$\Box$ `\Box`|$\angle$ `\angle`
-|$\lq$ `\lq`|$\square$ `\square`|$\measuredangle$ `\measuredangle`
-|$\text{\textquoteright}$ `\text{\textquoteright}`|$\blacksquare$ `\blacksquare`|$\sphericalangle$ `\sphericalangle`
-|$\rq$ `\rq`|$\triangle$ `\triangle`|$\top$ `\top`
-|$\text{\textquotedblleft}$ `\text{\textquotedblleft}`|$\triangledown$ `\triangledown`|$\bot$ `\bot`
-|$"$ `"`|$\triangleleft$ `\triangleleft`|$\$$ <code>\\$</code>
-|$\text{\textquotedblright}$ `\text{\textquotedblright}`|$\triangleright$ `\triangleright`|$\text{\textdollar}$ `\text{\textdollar}`
-|$\colon$ `\colon`|$\bigtriangledown$ `\bigtriangledown`|$\pounds$ `\pounds`
-|$\backprime$ `\backprime`|$\bigtriangleup$ `\bigtriangleup`|$\mathsterling$ `\mathsterling`
-|$\prime$ `\prime`|$\blacktriangle$ `\blacktriangle`|$\text{\textsterling}$ `\text{\textsterling}`
-|$\text{\textless}$ `\text{\textless}`|$\blacktriangledown$ `\blacktriangledown`|$\yen$ `\yen`
-|$\text{\textgreater}$ `\text{\textgreater}`|$\blacktriangleleft$ `\blacktriangleleft`|$\surd$ `\surd`
-|$\text{\textbar}$ `\text{\textbar}`|$\blacktriangleright$ `\blacktriangleright`|$\degree$ `\degree`
-|$\text{\textbardbl}$ `\text{\textbardbl}`|$\diamond$ `\diamond`|$\text{\textdegree}$ `\text{\textdegree}`
-|$\text{\textbraceleft}$ `\text{\textbraceleft}`|$\Diamond$ `\Diamond`|$\mho$ `\mho`
-|$\text{\textbraceright}$ `\text{\textbraceright}`|$\lozenge$ `\lozenge`|$\diagdown$ `\diagdown`
-|$\text{\P}$ `\text{\P}`|$\blacklozenge$ `\blacklozenge`|$\diagup$ `\diagup`
-|$\text{\S}$ `\text{\S}`|$\star$ `\star`|$\maltese$ `\maltese`
+|$\text{\textunderscore}$ `\text{\textunderscore}`|$\dotsb$ `\dotsb`|$\infin$ `\infin`
+|$\text{--}$ `\text{--}`|$\dotsc$ `\dotsc`|$\checkmark$ `\checkmark`
+|$\text{\textendash}$ `\text{\textendash}`|$\dotsi$ `\dotsi`|$\dag$ `\dag`
+|$\text{---}$ `\text{---}`|$\dotsm$ `\dotsm`|$\dagger$ `\dagger`
+|$\text{\textemdash}$ `\text{\textemdash}`|$\dotso$ `\dotso`|$\text{\textdagger}$ `\text{\textdagger}`
+|$\text{\textasciitilde}$ `\text{\textasciitilde}`|$\sdot$ `\sdot`|$\ddag$ `\ddag`
+|$`$ <code>`</code>|$\mathellipsis$ `\mathellipsis`|$\ddagger$ `\ddagger`
+|$\text{\textquoteleft}$ `text{\textquoteleft}`|$\text{\textellipsis}$ `\text{\textellipsis}`|$\text{\textdaggerdbl}$ `\text{\textdaggerdbl}`
+|$\lq$ `\lq`|$\Box$ `\Box`|$\Dagger$ `\Dagger`
+|$\text{\textquoteright}$ `\text{\textquoteright}`|$\square$ `\square`|$\angle$ `\angle`
+|$\rq$ `\rq`|$\blacksquare$ `\blacksquare`|$\measuredangle$ `\measuredangle`
+|$\text{\textquotedblleft}$ `\text{\textquotedblleft}`|$\triangle$ `\triangle`|$\sphericalangle$ `\sphericalangle`
+|$"$ `"`|$\triangledown$ `\triangledown`|$\top$ `\top`
+|$\text{\textquotedblright}$ `\text{\textquotedblright}`|$\triangleleft$ `\triangleleft`|$\bot$ `\bot`
+|$\colon$ `\colon`|$\triangleright$ `\triangleright`|$\$$ `\$`
+|$\backprime$ `\backprime`|$\bigtriangledown$ `\bigtriangledown`|$\text{\textdollar}$ `\text{\textdollar}`
+|$\prime$ `\prime`|$\bigtriangleup$ `\bigtriangleup`|$\pounds$ `\pounds`
+|$\text{\textless}$ `\text{\textless}`|$\blacktriangle$ `\blacktriangle`|$\mathsterling$ `\mathsterling`
+|$\text{\textgreater}$ `\text{\textgreater}`|$\blacktriangledown$ `\blacktriangledown`|$\text{\textsterling}$ `\text{\textsterling}`
+|$\text{\textbar}$ `\text{\textbar}`|$\blacktriangleleft$ `\blacktriangleleft`|$\yen$ `\yen`
+|$\text{\textbardbl}$ `\text{\textbardbl}`|$\blacktriangleright$ `\blacktriangleright`|$\surd$ `\surd`
+|$\text{\textbraceleft}$ `\text{\textbraceleft}`|$\diamond$ `\diamond`|$\degree$ `\degree`
+|$\text{\textbraceright}$ `\text{\textbraceright}`|$\Diamond$ `\Diamond`|$\text{\textdegree}$ `\text{\textdegree}`
+|$\text{\P}$ `\text{\P}`|$\lozenge$ `\lozenge`|$\mho$ `\mho`
+|$\text{\S}$ `\text{\S}`|$\blacklozenge$ `\blacklozenge`|$\diagdown$ `\diagdown`
+|$\text{\sect}$ `\text{\sect}`|$\star$ `\star`|$\diagup$ `\diagup`
 |$\copyright$ `\copyright`|$\bigstar$ `\bigstar`|$\flat$ `\flat`
 |$\circledR$ `\circledR`|$\clubsuit$ `\clubsuit`|$\natural$ `\natural`
-|$\text{\textregistered}$ `\text{\textregistered}`|$\diamondsuit$ `\diamondsuit`|$\sharp$ `\sharp`
-|$\circledS$ `\circledS`|$\heartsuit$ `\heartsuit`
-|$\text{\textcircled a}$ `\text{\textcircled a}`|$\spadesuit$ `\spadesuit`
+|$\text{\textregistered}$ `\text{\textregistered}`|$\clubs$ `\clubs`|$\sharp$ `\sharp`
+|$\circledS$ `\circledS`|$\diamondsuit$ `\diamondsuit`|$\heartsuit$ `\heartsuit`
+|$\text{\textcircled a}$ `\text{\textcircled a}`|$\diamonds$ `\diamonds`|$\hearts$ `\hearts`
+|$\maltese$ `\maltese`|$\spadesuit$ `\spadesuit`|$\spades$ `\spades`
 
 Direct Input: $£ ¥ ∇ ∞ · ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓ …  ⋮  ⋯  ⋱  !$ ‼
 

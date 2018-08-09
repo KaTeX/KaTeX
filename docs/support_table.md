@@ -775,7 +775,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\P|$\text{\P}$|`\text{\P}`|
 |\pagecolor|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
 |\parallel|$\parallel$||
-|\part|<span style="color:firebrick;">Not supported</span>||
+|\part|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
 |\partial|$\partial$||
 |\perp|$\perp$||
 |\phantom|$\Gamma^{\phantom{i}j}_{i\phantom{j}k}$|`\Gamma^{\phantom{i}j}_{i\phantom{j}k}`|
