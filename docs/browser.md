@@ -25,6 +25,17 @@ to speed up page rendering. The `katex` object will be available after
 If you do not use `defer`, `katex` object will be available after corresponding
 `script` tag.
 
+> If KaTeX is not used immediately or not critical, you can load KaTeX
+asynchronously. Add [`async` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
+to `script` and use [`rel="preload"` and `onload` attribute](https://github.com/filamentgroup/loadCSS)
+on `link`.
+
+> You can prefetch KaTeX fonts to prevent FOUT or FOIT. Use [Web Font Loader](https://github.com/typekit/webfontloader)
+or add [`<link rel="preload" href=(path to WOFF2 font) as="font" type="font/woff2" crossorigin="anonymous">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Preloading_content)
+to `head`. (Note that only few browsers [support `rel="preload"`](https://caniuse.com/#feat=link-rel-preload),
+and they all support WOFF2 so preloading WOFF2 fonts is enough.) You can use
+Chrome DevTools Network panel or similar to view which fonts are used.
+
 ## Download & Host Things Yourself
 Download a [KaTeX release](https://github.com/Khan/KaTeX/releases),
 copy `katex.js`, `katex.css`
