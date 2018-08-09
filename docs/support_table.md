@@ -2,7 +2,7 @@
 id: support_table
 title: Support Table
 ---
-<!-- {@stylesheet: static/katex.min.css} -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
 <style>
 table tr,
 table td {

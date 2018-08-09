@@ -2,6 +2,7 @@
 id: supported
 title: Supported Functions
 ---
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
 <style>
 p {overflow-wrap: break-word;}
 table tr,
@@ -556,7 +557,7 @@ In cases where KaTeX fonts do not have a bold glyph, `\pmb` can simulate one. Fo
 |$\text{\textquoteright}$ `\text{\textquoteright}`|$\blacksquare$ `\blacksquare`|$\sphericalangle$ `\sphericalangle`
 |$\rq$ `\rq`|$\triangle$ `\triangle`|$\top$ `\top`
 |$\text{\textquotedblleft}$ `\text{\textquotedblleft}`|$\triangledown$ `\triangledown`|$\bot$ `\bot`
-|$"$ `"`|$\triangleleft$ `\triangleleft`|$\text{\textdollar}$ <code>\\$</code>
+|$"$ `"`|$\triangleleft$ `\triangleleft`|$\$$ <code>\\$</code>
 |$\text{\textquotedblright}$ `\text{\textquotedblright}`|$\triangleright$ `\triangleright`|$\text{\textdollar}$ `\text{\textdollar}`
 |$\colon$ `\colon`|$\bigtriangledown$ `\bigtriangledown`|$\pounds$ `\pounds`
 |$\backprime$ `\backprime`|$\bigtriangleup$ `\bigtriangleup`|$\mathsterling$ `\mathsterling`
