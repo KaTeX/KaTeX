@@ -1,7 +1,6 @@
 {
   "scripts": {
-    "prestart": "node lib/build.js",
-    "start": "docusaurus-start",
+    "start": "node lib/build.js && docusaurus-start",
     "build": "node lib/build.js && docusaurus-build",
     "publish-gh-pages": "node lib/build.js && docusaurus-publish",
     "write-translations": "docusaurus-write-translations",
