@@ -512,7 +512,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\label|<span style="color:firebrick;">Not supported</span>||
 |\land|$\land$||
 |\lang|$\lang A\rangle$|`\lang A\rangle`|
-|\langle|$\langle$||
+|\langle|$\langle A\rangle$|`\langle A\rangle`|
 |\Larr|$\Larr$||
 |\lArr|$\lArr$||
 |\larr|$\larr$||
@@ -824,7 +824,7 @@ If you know the shape of a character, but not its name, [Detexify](http://detexi
 |\raise|<span style="color:firebrick;">Not supported</span>|see `\raisebox`|
 |\raisebox|$h\raisebox{2pt}{ighe}r$|`h\raisebox{2pt}{ighe}r`|
 |\rang|$\langle A\rang$|`\langle A\rang`|
-|\rangle|$\rangle$||
+|\rangle|$\langle A\rangle$|`\langle A\rangle`|
 |\Rarr|$\Rarr$||
 |\rArr|$\rArr$||
 |\rarr|$\rarr$||

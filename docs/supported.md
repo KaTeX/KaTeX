@@ -10,6 +10,10 @@ table td {
     vertical-align: middle;
     overflow-wrap: break-word;
 }
+.onPageNav {
+    flex: 0 0 200px;
+    margin-left: 10px !important;
+}
 </style>
 This is a list of TeX functions supported by KaTeX. It is sorted into logical groups.
 
@@ -108,8 +112,8 @@ The `{array}` environment does not yet support `\cline` or `\multicolumn`.
 
 **Greek Letters**
 
-Direct Input: $Α Β Γ Δ Ε Ζ Η Θ$ $Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω$
-$α β γ δ ϵ ζ η θ ι κ λ μ ν ξ o$ $π ρ σ τ υ ϕ χ ψ ω ε ϑ ϖ ϱ ς φ$
+Direct Input: $\allowbreak Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω$  
+$\allowbreak α β γ δ ϵ ζ η θ ι κ λ μ ν ξ o π ρ σ τ υ ϕ χ ψ ω ε ϑ ϖ ϱ ς φ$
 
 |||||
 |---------------|-------------|-------------|---------------|
@@ -184,28 +188,27 @@ For Persian composite characters, a user-supplied [plug-in](https://github.com/
 |$\xcancel{ABC}$ `\xcancel{ABC}`|$\not =$ `\not =`
 |$\sout{abc}$ `\sout{abc}`|$\boxed{\pi=\frac c d}$ `\boxed{\pi=\frac c d}`
 
-
 `\tag{hi} x+y^{2x}`
 $$\tag{hi} x+y^{2x}$$
 
 `\tag*{hi} x+y^{2x}`
 $$\tag*{hi} x+y^{2x}$$
 
-### Line Breaks and Vertical Layout
+### Line Breaks
 
-KaTeX 0.10.0+ will insert automatic line breaks in inline math after relations or binary operators such as “=” or “+”. These can be suppressed by placing math inside a pair of braces, as in `{F=ma}`.
+KaTeX 0.10.0+ will insert automatic line breaks in inline math after relations or binary operators such as “=” or “+”. These can be suppressed by `\nobreak` or by placing math inside a pair of braces, as in `{F=ma}`. `\allowbreak` will allow automatic line breaks at locations other than relations or operators.
 
 Hard line breaks are `\\` and `\newline`.
 
 In display math, KaTeX does not insert automatic line breaks. It ignores display math hard line breaks when rendering option `strict: true`.
 
-**Vertical Layout**
+### Vertical Layout
 
 ||||
 |:--------------|:----------------------------------------|:-----
 |$x_n$ `x_n` |$\stackrel{!}{=}$ `\stackrel{!}{=}`  |$a \atop b$ `a \atop b`
 |$e^x$ `e^x` |$\overset{!}{=}$ `\overset{!}{=}` |$a\raisebox{0.25em}{b}c$ `a\raisebox{0.25em}{b}c`
-|$_u^o $ `_u^o `|$\underset{!}{=}$ `\underset{!}{=}`| $~$
+|$_u^o $ `_u^o `|$\underset{!}{=}$ `\underset{!}{=}`
 
 The second argument of `\raisebox` can contain math if it is nested within `$…$` delimiters, as in `\raisebox{0.25em}{$\frac a b$}`
 
@@ -280,13 +283,13 @@ Direct Input: $∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← �
 
 Macros can also be defined in the KaTeX [rendering options](options.md).
 
-Macros accept up to ten arguments: #1, #2, etc.
+Macros accept up to nine arguments: #1, #2, etc.
 
 `\gdef` and `\global\def` macros will persist between math expressions.
 
 Available functions include:
 
-`\mathchoice` `\TextOrMath` `\@ifstar` `\@ifnextchar` `\@firstoftwo` `\@secondoftwo` `\relax` `\allowbreak` `\nobreak`
+`\char` `\mathchoice` `\TextOrMath` `\@ifstar` `\@ifnextchar` `\@firstoftwo` `\@secondoftwo` `\relax`
 
 @ is a valid character for commands, as if `\makeatletter` were in effect.
 
@@ -504,7 +507,7 @@ $\textcolor{#228B22}{F=ma}$ `\textcolor{#228B22}{F=ma}`<br>
 $\colorbox{aqua}{A}$ `\colorbox{aqua}{A}`<br>
 $\fcolorbox{red}{aqua}{A}$ `\fcolorbox{red}{aqua}{A}`
 
-For color definition, KaTeX color functions will accept the standard HTML [predefined color names](https://www.w3schools.com/colors/colors_names.asp). They will also accept an RGB argument in CSS hexa­decimal style.
+For color definition, KaTeX color functions will accept the standard HTML [predefined color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords). They will also accept an RGB argument in CSS hexa­decimal style.
 
 **Font**
 
@@ -619,7 +622,7 @@ where:
 
 F = (font size of surrounding HTML text)/(10 pt)
 
-G = 1.21 by default, because KaTeX font-size is normally 1.21 × the surrounding font size. This value [can be over-ridden](font.md#font-size-and-lengths) by the CSS of an HTML page.
+G = 1.21 by default, because KaTeX font-size is normally 1.21 × the surrounding font size. This value [can be overridden](font.md#font-size-and-lengths) by the CSS of an HTML page.
 
 </div>
 
