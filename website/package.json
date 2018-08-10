@@ -2,10 +2,10 @@
   "scripts": {
     "prestart": "node lib/build.js",
     "start": "docusaurus-start",
-    "build": "yarn prestart && docusaurus-build",
-    "publish-gh-pages": "yarn prestart && docusaurus-publish",
+    "build": "node lib/build.js && docusaurus-build",
+    "publish-gh-pages": "node lib/build.js && docusaurus-publish",
     "write-translations": "docusaurus-write-translations",
-    "version": "yarn prestart && docusaurus-version",
+    "version": "node lib/build.js && docusaurus-version",
     "rename-version": "docusaurus-rename-version"
   },
   "devDependencies": {
