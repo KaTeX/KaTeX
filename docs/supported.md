@@ -2,7 +2,11 @@
 id: supported
 title: Supported Functions
 ---
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
+This is a list of TeX functions supported by KaTeX. It is sorted into logical groups.
+
+There is a similar [Support Table](./support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
+
+{@stylesheet: katex.min.css}
 <style>
 p {overflow-wrap: break-word;}
 table tr,
@@ -15,9 +19,6 @@ table td {
     margin-left: 10px !important;
 }
 </style>
-This is a list of TeX functions supported by KaTeX. It is sorted into logical groups.
-
-There is a similar [Support Table](./support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
 
 <div class="katex-hopscotch">
 

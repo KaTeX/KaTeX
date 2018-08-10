@@ -2,17 +2,17 @@
 id: support_table
 title: Support Table
 ---
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
+This is a list of TeX functions, sorted alphabetically. This list includes functions that KaTeX supports and some that it doesn't support. There is a similar page, with functions [sorted by type](./supported.md).
+
+If you know the shape of a character, but not its name, [Detexify](http://detexify.kirelabs.org/classify.html) can help.
+
+{@stylesheet: katex.min.css}
 <style>
 table tr,
 table td {
     vertical-align: middle;
 }
 </style>
-
-This is a list of TeX functions, sorted alphabetically. This list includes functions that KaTeX supports and some that it doesn't support. There is a similar page, with functions [sorted by type](./supported.md).
-
-If you know the shape of a character, but not its name, [Detexify](http://detexify.kirelabs.org/classify.html) can help.
 
 ## Symbols
 
