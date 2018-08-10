@@ -116,9 +116,9 @@ sed -i.bak -E '/^\/dist\/$/d' .gitignore
 rm -f .gitignore.bak
 git add .gitignore dist/
 
-# Edit docs to use CSS from CDN (#1520)
-# grep -l '{@stylesheet: static/katex.min.css}' docs/*.md | xargs sed -i.bak \
-#     's|{@stylesheet: static/katex.min.css}|<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@./dist/katex.min.css" integrity="sha256-katex.min.css" crossorigin="anonymous"/>|'
+# Edit docs to use CSS from CDN
+grep -l '{@stylesheet: katex.min.css}' docs/*.md | xargs sed -i.bak \
+    's|{@stylesheet: katex.min.css}|<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@./dist/katex.min.css" integrity="sha384-katex.min.css" crossorigin="anonymous"/>|'
 
 # Update the version number in CDN URLs included in the README and the documentation,
 # and regenerate the Subresource Integrity hash for these files.
@@ -130,9 +130,9 @@ pushd website
 yarn run version "${VERSION}"
 
 # Restore docs to use local built CSS
-# for file in ../docs/*.md.bak; do
-#     mv -f "$file" "${file%.bak}"
-# done
+for file in ../docs/*.md.bak; do
+    mv -f "$file" "${file%.bak}"
+done
 
 USE_SSH=true yarn publish-gh-pages
 popd
