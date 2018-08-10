@@ -18,15 +18,30 @@ using a CDN:
     onload="renderMathInElement(document.body);"></script>
 ```
 
-> The loading of scripts are [deferred using `defer` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
-to speed up page rendering and `renderMathInElement` is called after auto-render
-script is loaded using `onload` attribute. You can also call the
-`renderMathInElement` when (or after) [`DOMContentLoaded` event is fired on the
-`document`](https://developer.mozilla.org/ko/docs/Web/Reference/Events/DOMContentLoaded).
+> Above, the [`defer` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
+indicates that the script doesn't need to execute until the page has loaded,
+speeding up page rendering; and the `onload` attribute calls
+`renderMathInElement` once the auto-render script loads.
 
-> If you do not use `defer` attribute, `renderMathInElement` should be called
-right before the closing body tag(`</body>`) or when (or after) `DOMContentLoaded`
-event is fired on the `document`.
+Alternatively, you can call the `renderMathInElement` when (or after) the
+[`DOMContentLoaded` event](https://developer.mozilla.org/ko/docs/Web/Reference/Events/DOMContentLoaded)
+fires on the document.
+This approach is useful for specifying or computing options, or if you don't
+want to use an `onload` attribute (e.g., you don't want to use `async`).
+For example:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            // ...options...
+        });
+    });
+</script>
+```
 
 ## API
 This extension exposes a single function, `window.renderMathInElement`, with
