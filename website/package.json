@@ -3,6 +3,7 @@
     "start": "node lib/build.js && docusaurus-start",
     "build": "node lib/build.js && docusaurus-build",
     "publish-gh-pages": "node lib/build.js && docusaurus-publish",
+    "postpublish-gh-pages": "node lib/build.js",
     "write-translations": "docusaurus-write-translations",
     "version": "node lib/build.js && docusaurus-version",
     "rename-version": "docusaurus-rename-version"

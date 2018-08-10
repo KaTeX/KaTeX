@@ -47,26 +47,29 @@ function Versions(props) {
                 </tr>
               </tbody>
             </table>
-            <h3 id="rc">Latest Version</h3>
-            <p>
-              Here you can find the latest documentation and unreleased code.
-            </p>
-            <table className="versions">
-              <tbody>
-                <tr>
-                  <th>master</th>
-                  <td>
-                    <a
-                      href={`${baseUrl}docs/${language}next/node.html`}>
-                      Documentation
-                    </a>
-                  </td>
-                  <td>
-                    <a href={repoUrl}>Source Code</a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            {process.env.npm_lifecycle_event !== 'publish-gh-pages' &&
+              <div>
+                <h3 id="rc">Latest Version</h3>
+                <p>
+                  Here you can find the latest documentation and unreleased code.
+                </p>
+                <table className="versions">
+                  <tbody>
+                    <tr>
+                      <th>master</th>
+                      <td>
+                        <a href={`${baseUrl}docs/${language}next/node.html`}>
+                          Documentation
+                        </a>
+                      </td>
+                      <td>
+                        <a href={repoUrl}>Source Code</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            }
             <h3 id="archive">Past Versions</h3>
             <p>
               Here you can find documentation for previous versions of KaTeX.
