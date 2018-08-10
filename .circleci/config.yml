@@ -29,7 +29,7 @@ screenshotter: &screenshotter
 
     - run:
         name: Verify screenshots and generate diffs and new screenshots
-        command: node dockers/Screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new
+        command: node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new
 
     - store_artifacts:
         path: test/screenshotter/new
@@ -74,11 +74,11 @@ jobs:
           command: yarn build
 
       - store_artifacts:
-          path: dist/katex.js
-          destination: katex.js
+          path: dist/katex.min.js
+          destination: katex.min.js
       - store_artifacts:
-          path: dist/katex.css
-          destination: katex.css
+          path: dist/katex.min.css
+          destination: katex.min.css
       - store_artifacts:
           path: dist/fonts
           destination: fonts
