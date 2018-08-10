@@ -66,8 +66,8 @@ const siteConfig = {
     },
 
     markdownPlugins: [
-        require('./lib/remarkableKatex'),
-        require('./lib/empty_thead'),
+        require('./lib/remarkable-katex'),
+        require('./lib/empty-thead'),
     ],
 
     scripts: [

@@ -1,11 +1,11 @@
 {
   "scripts": {
-    "prestart": "cp ../docs/cli.md.template ../docs/cli.md && node ../cli.js markdown-help >> ../docs/cli.md",
+    "prestart": "node lib/build.js",
     "start": "docusaurus-start",
-    "build": "npm run prestart && docusaurus-build",
-    "publish-gh-pages": "npm run prestart && docusaurus-publish",
+    "build": "node lib/build.js && docusaurus-build",
+    "publish-gh-pages": "node lib/build.js && docusaurus-publish",
     "write-translations": "docusaurus-write-translations",
-    "version": "npm run prestart && docusaurus-version",
+    "version": "node lib/build.js && docusaurus-version",
     "rename-version": "docusaurus-rename-version"
   },
   "devDependencies": {
