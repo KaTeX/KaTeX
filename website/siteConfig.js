@@ -75,8 +75,8 @@ const siteConfig = {
 
     markdownPlugins: [
         embed.hook,
-        require('./remarkableKatex'),
-        require('./empty_thead'),
+        require('./lib/remarkableKatex'),
+        require('./lib/empty_thead'),
     ],
 
     scripts: [

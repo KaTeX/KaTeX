@@ -74,11 +74,11 @@ jobs:
           command: yarn build
 
       - store_artifacts:
-          path: dist/katex.js
-          destination: katex.js
+          path: dist/katex.min.js
+          destination: katex.min.js
       - store_artifacts:
-          path: dist/katex.css
-          destination: katex.css
+          path: dist/katex.min.css
+          destination: katex.min.css
       - store_artifacts:
           path: dist/fonts
           destination: fonts
