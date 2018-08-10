@@ -26,6 +26,102 @@
     height: 80%;
 }
 
+/* Add special CSS for supported.md rendered on mobile */
+@media screen and (max-width: 480px) {
+    /* We have two styles for very narrow screens.
+    * We apply the hopscotch style to headless tables. It breaks
+    * tables down so that each cell acts like a <div>
+    *
+    * We apply a card style to tables with headings. This converts
+    * each cell into its own row, with a heading to its left.
+    */
+
+    .katex-cards table td {
+        display: block;
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    .katex-hopscotch table td {
+        display: inline-block;
+        background: #fff;
+    }
+
+    .katex-hopscotch table tr {
+        border: none;
+        background: #fff;
+    }
+
+    .katex-cards table,
+    .katex-cards thead,
+    .katex-cards tbody,
+    .katex-cards th {
+        display: block;
+    }
+
+    /* Hide table headers (but not display: none;, for accessibility) */
+    .katex-cards thead tr {
+        display: block;
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .katex-cards td:nth-of-type(1),
+    .katex-cards td:nth-of-type(2) { background-color: #fff; }
+
+    .katex-cards td:nth-of-type(3),
+    .katex-cards td:nth-of-type(4) { background-color: #f6f8fa; }
+
+    .katex-cards table td:nth-child(even) { border-bottom: 1px solid #ccc; }
+
+    .katex-cards td::before {
+        /* Now like a table header */
+        position: absolute;
+
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+    }
+
+    /*
+    Label the data
+    */
+    #spacing-tbl td:nth-of-type(1)::before,
+    #spacing-tbl td:nth-of-type(3)::before { content: "Function:"; }
+
+    #spacing-tbl td:nth-of-type(2)::before,
+    #spacing-tbl td:nth-of-type(4)::before { content: "Produces:"; }
+
+    #math-alpha td:nth-of-type(1)::before,
+    #math-alpha td:nth-of-type(3)::before { content: "Item:"; }
+
+    #math-alpha td:nth-of-type(2)::before,
+    #math-alpha td:nth-of-type(4)::before { content: "Range:"; }
+
+    #environments td:nth-of-type(1)::before,
+    #environments td:nth-of-type(3)::before { content: "Environment:"; }
+
+    #environments td:nth-of-type(2)::before,
+    #environments td:nth-of-type(4)::before { content: "From code:"; }
+
+    #unit-tbl td:nth-of-type(1)::before,
+    #unit-tbl td:nth-of-type(3)::before { content: "Unit:"; }
+
+    #unit-tbl td:nth-of-type(2)::before,
+    #unit-tbl td:nth-of-type(4)::before { content: "Value:"; }
+
+    #unit-blocks td:nth-of-type(2)::before { content: "textstyle:"; }
+    #unit-blocks td:nth-of-type(3)::before { content: "scriptscript:"; }
+    #unit-blocks td:nth-of-type(4)::before { content: "huge:"; }
+    #unit-blocks td { background-color: #fff; }
+}
+
 /* stylelint-disable block-no-empty */
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
 }
