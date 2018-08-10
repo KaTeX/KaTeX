@@ -4,7 +4,8 @@
  * representation instead of the LaTeX source code.  (Full selections will
  * still produce the LaTeX source code.)
  */
-.katex, .katex-display {
+.katex,
+.katex-display {
     user-select: all;
     -moz-user-select: all;
     -webkit-user-select: all;
