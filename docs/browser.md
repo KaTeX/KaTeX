@@ -19,22 +19,22 @@ KaTeX also provides minified versions:
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
 ```
 
-> The loading of scripts are [deferred using `defer` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes).
+> The loading of scripts are [deferred using `defer` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
 to speed up page rendering. The `katex` object will be available after
 [`DOMContentLoaded` event is fired on the `document`](https://developer.mozilla.org/ko/docs/Web/Reference/Events/DOMContentLoaded).
 If you do not use `defer`, `katex` object will be available after corresponding
 `script` tag.
 
-> If KaTeX is not used immediately or not critical, you can load KaTeX
+> If KaTeX is not used immediately or not critical, it is possible to load KaTeX
 asynchronously. Add [`async` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
 to `script` and use [`rel="preload"` and `onload` attribute](https://github.com/filamentgroup/loadCSS)
 on `link`.
 
 > You can prefetch KaTeX fonts to prevent FOUT or FOIT. Use [Web Font Loader](https://github.com/typekit/webfontloader)
 or add [`<link rel="preload" href=(path to WOFF2 font) as="font" type="font/woff2" crossorigin="anonymous">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Preloading_content)
-to `head`. (Note that only few browsers [support `rel="preload"`](https://caniuse.com/#feat=link-rel-preload),
+to `head`. (Note that only few browsers [support `rel="preload"`](https://caniuse.com/#feat=link-rel-preload)
 and they all support WOFF2 so preloading WOFF2 fonts is enough.) You can use
-Chrome DevTools Network panel or similar to view which fonts are used.
+Chrome DevTools Network panel or similar to find out which fonts are used.
 
 ## Download & Host Things Yourself
 Download a [KaTeX release](https://github.com/Khan/KaTeX/releases),

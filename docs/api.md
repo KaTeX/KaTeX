@@ -37,7 +37,7 @@ inputs as the TeX source code in red (by default), with the error message as
 hover text.  Without this option, invalid LaTeX will cause a
 `katex.ParseError` exception to be thrown.  See [handling errors](error.md).
 
-## Options
+## Configuring KaTeX
 
 The last argument to `katex.render` and `katex.renderToString` can contain
 [a variety of rendering options](options.md).

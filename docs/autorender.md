@@ -25,9 +25,9 @@ speeding up page rendering; and the `onload` attribute calls
 
 Alternatively, you can call the `renderMathInElement` when (or after) the
 [`DOMContentLoaded` event](https://developer.mozilla.org/ko/docs/Web/Reference/Events/DOMContentLoaded)
-fires on the document.
+fires on the document or in another deferred script.
 This approach is useful for specifying or computing options, or if you don't
-want to use an `onload` attribute (e.g., you don't want to use `async`).
+want to use an `defer` or `onload` attribute.
 For example:
 
 ```html
