@@ -5,7 +5,7 @@
 // In this way, only this tool, and not the distribution/browser,
 // needs String's normalize function.
 
-require('babel-register')({plugins: ["transform-es2015-modules-commonjs"]});
+require('@babel/register')({presets: [["@babel/env", {loose: true}]]});
 const accents = require('./unicodeAccents').default;
 
 console.log("// @flow");

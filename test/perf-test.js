@@ -10,7 +10,6 @@
  * - allow users to specify a different string or strings
  * - provide a way to test the performance against different branches
  */
-require('babel-register');
 const Benchmark = require('benchmark');
 const yaml = require('js-yaml');
 const fs = require('fs');
@@ -20,6 +19,7 @@ const filename = path.resolve(__dirname, 'screenshotter/ss_data.yaml');
 const data = yaml.load(fs.readFileSync(filename, 'utf-8'));
 
 console.log('compiling katex...');
+require('@babel/register')({presets: [["@babel/env", {loose: true}]]});
 const katex = require('../katex').default;
 console.log('');
 
