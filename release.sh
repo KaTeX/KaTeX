@@ -110,7 +110,7 @@ if [[ "$CONFIRM" != "y" ]]; then
 fi
 
 git checkout "$BRANCH"
-git pull
+# git pull
 
 if [[ $BRANCH != "master" ]]; then
     # Build generated files
