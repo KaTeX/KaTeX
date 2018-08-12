@@ -64,7 +64,7 @@
   "scripts": {
     "test": "yarn prestart && yarn test:lint && yarn test:flow && yarn test:jest",
     "test:lint": "yarn test:lint:js && yarn test:lint:css",
-    "test:lint:js": "eslint katex.js katex.webpack.js cli.js webpack.*.js src static test contrib dockers website",
+    "test:lint:js": "eslint update-sri.js katex.js katex.webpack.js cli.js webpack.*.js src static test contrib dockers website",
     "test:lint:css": "stylelint src/katex.less static/main.css contrib/**/*.css website/static/**/*.css",
     "test:flow": "flow",
     "test:jest": "jest",

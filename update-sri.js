@@ -1,5 +1,7 @@
+// Update badge and CDN urls and subresource integrity hashes
+// Usage: node update-sri.js <VERSION> FILES...
+// To check SRI hashes, pass `check` as VERSION
 const fs = require("fs");
-const path = require("path");
 const sriToolbox = require("sri-toolbox");
 
 const version = process.argv[2];
@@ -20,12 +22,8 @@ Promise.all(process.argv.slice(3).map(file =>
     read(file, "utf8")
     .then(body => {
         // Replace size badge url
-        // 1 - url prefix: https://img.badgesize.io/Khan/KaTeX/
-        // 2 - url suffix: /dist/katex.min.js?compression=gzip 
-        const badgeRe = /(https:\/\/img\.badgesize\.io\/Khan\/KaTeX\/v)(?:.+)(\/dist\/katex\.min\.js\?compression=gzip)/g;
-        body = body.replace(badgeRe, (m, pre, post) => {
-            return pre + version + post;
-        });
+        // eslint-disable-next-line max-len
+        body = body.replace(/(https:\/\/img\.badgesize\.io\/Khan\/KaTeX\/v)(?:.+)(\/dist\/katex\.min\.js\?compression=gzip)/g, `$1${version}$2`);
 
         // Replace CDN urls
         // 1 - url prefix: "http…/KaTeX/
@@ -35,24 +33,37 @@ Promise.all(process.argv.slice(3).map(file =>
         // 5 - integrity opening quote: "
         // 6 - old hash: sha384-…
         // 7 - integrity hash algorithm: sha384
-        const cdnRe = /((["'])https?:\/\/cdn\.jsdelivr\.net\/npm\/katex@)[^\/"']+(\/([^"']+)\2(?:\s+integrity=(["'])(([^-]+)-[^"']+)\5)?)/g;
+        // eslint-disable-next-line max-len
+        const cdnRe = /((["'])https?:\/\/cdn\.jsdelivr\.net\/npm\/katex@)[^/"']+(\/([^"']+)\2(?:\s+integrity=(["'])(([^-]+)-[^"']+)\5)?)/g;
         const hashes = {};
         body = body.replace(cdnRe, (m, pre, oq1, post, file, oq2, old, algo) => {
             if (old) {
-                hashes[old] = { file, algo };
+                hashes[old] = {file, algo};
             }
             return pre + version + post;
         });
-        return Promise.all(Object.keys(hashes).map(hash =>
+        let promise = Promise.all(Object.keys(hashes).map(hash =>
             read(hashes[hash].file, null)
             .then(data => {
-                body = body.replace(hash, sriToolbox.generate({
+                const newHash = sriToolbox.generate({
                     algorithms: [hashes[hash].algo],
-                }, data));
+                }, data);
+                body = body.replace(hash, newHash);
+
+                if (version === "check" && hash !== newHash) {
+                    throw new Error("SRI mismatch! " +
+                        "Please run the release script again.");
+                }
             })
-        )).then(() => write(file, body));
+        ));
+
+        if (version !== "check") {
+            promise = promise.then(() => write(file, body));
+        }
+        return promise;
     })
 )).then(() => process.exit(0), err => {
+    // eslint-disable-next-line no-console
     console.error(err.stack);
     process.exit(1);
 });
