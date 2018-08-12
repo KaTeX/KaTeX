@@ -9,14 +9,14 @@ Use CDN to deliver KaTeX to your project:
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.css" integrity="sha384-uayAVT74OKnJRynMT7ZCp9xwD2vaZgfeRZie6NhTqlu0eLPogAg14A4dlnCcuuMy" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.js" integrity="sha384-DZKmaZm1qamJ1e1OAhLevEi0F+xXTp7YMO6uqfdUZkuXQk6YLFRoWYdhkhJeymsQ" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.js" integrity="sha384-IsQHATGRdh1udSST2JDWHPm8JRnP+h378YNJQWCrUhQKlbPGukYhN8uWN9brnJtl" crossorigin="anonymous"></script>
 ```
 
 KaTeX also provides minified versions:
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.min.css" integrity="sha384-V2aA1l0T0v8Xc49/G/99lnQINjPV395WcAUNy16CyJ3CkhWeaed8RjR/VVpSB9nL" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.min.js" integrity="sha384-tcTS5kuLpocnrXDx246sHaiNl/JSpp2wI8/gy3z8H6d1EbEptGnuRD1taQdg1kPu" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.min.js" integrity="sha384-zsocTD8Agk2odAyI6q4R5AkfcZXO/riE8nRW5DrYDJ8NrwAmX6rptoT7VyErPtoY" crossorigin="anonymous"></script>
 ```
 
 > The loading of scripts are [deferred using `defer` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)

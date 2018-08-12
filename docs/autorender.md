@@ -13,7 +13,7 @@ using a CDN:
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.min.css" integrity="sha384-V2aA1l0T0v8Xc49/G/99lnQINjPV395WcAUNy16CyJ3CkhWeaed8RjR/VVpSB9nL" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.min.js" integrity="sha384-tcTS5kuLpocnrXDx246sHaiNl/JSpp2wI8/gy3z8H6d1EbEptGnuRD1taQdg1kPu" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.min.js" integrity="sha384-zsocTD8Agk2odAyI6q4R5AkfcZXO/riE8nRW5DrYDJ8NrwAmX6rptoT7VyErPtoY" crossorigin="anonymous"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/contrib/auto-render.min.js" integrity="sha384-Wxr5exiPP7ytVluVOsq0TQ/I7Gklivv3nwLWPoSHG5BKazgGtb7o7Xpk2piUPl3d" crossorigin="anonymous"
     onload="renderMathInElement(document.body);"></script>
 ```
@@ -31,9 +31,9 @@ want to use a `defer` or `onload` attribute.
 For example:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.min.css" integrity="sha384-V2aA1l0T0v8Xc49/G/99lnQINjPV395WcAUNy16CyJ3CkhWeaed8RjR/VVpSB9nL" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.min.js" integrity="sha384-zsocTD8Agk2odAyI6q4R5AkfcZXO/riE8nRW5DrYDJ8NrwAmX6rptoT7VyErPtoY" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/contrib/auto-render.min.js" integrity="sha384-Wxr5exiPP7ytVluVOsq0TQ/I7Gklivv3nwLWPoSHG5BKazgGtb7o7Xpk2piUPl3d" crossorigin="anonymous"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         renderMathInElement(document.body, {
