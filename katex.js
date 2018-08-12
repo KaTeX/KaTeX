@@ -49,7 +49,7 @@ if (typeof document !== "undefined") {
                 "website has a suitable doctype.");
 
         render = function() {
-            throw new ParseError("KaTeX doesn't work in quirks mode.");
+            throw new ParseError("KaTeX doesn't work in quirks mode!");
         };
     }
 }
