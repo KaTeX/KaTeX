@@ -31,6 +31,8 @@ usage() {
     echo "Open a pull request and after it gets merged, run with --publish"
     echo "option on the master branch."
     echo ""
+    echo "To update SRI hashes, run this again on the generated release branch"
+    echo ""
     echo "Examples:"
     echo " When releasing a v0.6.3:"
     echo "   ./release.sh 0.6.3 0.6.4"
@@ -84,13 +86,15 @@ if ! command git diff --stat --exit-code HEAD; then
     echo "Please make sure you have no uncommitted changes" >&2
     : $((++INSANE))
 fi
-if [[ $BRANCH != "master" ]]; then
+if [[ $BRANCH != @(v*-release|master) ]]; then
     echo "'$BRANCH' does not look like a release branch to me" >&2
     : $((++INSANE))
 fi
 
 if [[ $PUBLISH ]]; then
     echo "About to publish $VERSION from $BRANCH. "
+elif [[ $BRANCH != "master" ]]; then
+    echo "About to update SRI hashes for $BRANCH. "
 elif [[ -z "$NEXT_VERSION" ]]; then
     echo "About to release $VERSION from $BRANCH. "
 else
@@ -105,10 +109,24 @@ if [[ "$CONFIRM" != "y" ]]; then
     exit 1
 fi
 
-if [[ ! $PUBLISH ]]; then
+git checkout "$BRANCH"
+git pull
+
+if [[ $BRANCH != "master" ]]; then
+    # Build generated files
+    yarn build
+
+    # Regenerate the Subresource Integrity hash in the README and the documentation
+    node update-sri.js "${VERSION}" README.md contrib/*/README.md \
+        docs/*.md website/pages/index.html website/versioned_docs/version-$VERSION/*.md
+
+    # Make the commit and push
+    git add README.md contrib/*/README.md \
+        docs website/pages/index.html website/versioned_docs/
+    git commit -n -m "Update SRI hashes"
+    git push
+elif [[ ! $PUBLISH ]]; then
     # Make a release branch
-    git checkout "$BRANCH"
-    git pull
     git checkout -b "v$VERSION-release"
 
     # Edit package.json to the right version, as it's inlined (see
@@ -167,8 +185,6 @@ if [[ ! $PUBLISH ]]; then
     echo "you have to run the release script again."
 else
     # Make a new detached HEAD
-    git checkout "$BRANCH"
-    git pull
     git checkout --detach
 
     # Edit package.json to the right version
@@ -181,6 +197,9 @@ else
     sed -i.bak -E '/^\/dist\/$/d' .gitignore
     rm -f .gitignore.bak
 
+    # Check Subresource Integrity hashes
+    node update-sri.js check README.md contrib/*/README.md
+
     # Make the commit and tag, and push them.
     git add package.json .gitignore dist/
     git commit -n -m "v$VERSION"
@@ -191,7 +210,7 @@ else
     # Update npm (cdnjs update automatically)
     yarn publish --new-version "${VERSION}"
 
-    # publish the website
+    # Publish the website
     pushd website
     USE_SSH=true yarn publish-gh-pages
     popd
