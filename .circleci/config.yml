@@ -71,7 +71,7 @@ jobs:
 
       - run:
           name: Build KaTeX
-          command: yarn build
+          command: USE_TTF=false yarn build
 
       - store_artifacts:
           path: dist/katex.min.js
