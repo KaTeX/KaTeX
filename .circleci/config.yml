@@ -92,11 +92,13 @@ jobs:
     docker:
       - image: circleci/node:6
       - image: selenium/standalone-chrome:2.48.2
+        environment:
+          DBUS_SESSION_BUS_ADDRESS: /dev/null
     <<: *screenshotter
 
 workflows:
   version: 2
-  screenshotter:
+  test:
     jobs:
       - test
       - firefox
