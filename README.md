@@ -3,7 +3,7 @@
 [![CircleCI](https://circleci.com/gh/Khan/KaTeX.svg?style=shield)](https://circleci.com/gh/Khan/KaTeX)
 [![codecov](https://codecov.io/gh/Khan/KaTeX/branch/master/graph/badge.svg)](https://codecov.io/gh/Khan/KaTeX)
 [![Join the chat at https://gitter.im/Khan/KaTeX](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Khan/KaTeX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Greenkeeper badge](https://badges.greenkeeper.io/Khan/KaTeX.svg)](https://greenkeeper.io/)
-![](https://img.badgesize.io/Khan/KaTeX/v0.10.0-beta/dist/katex.min.js?compression=gzip)
+![](https://img.badgesize.io/Khan/KaTeX/v1.1.0/dist/katex.min.js?compression=gzip)
 
 KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the web.
 
@@ -27,13 +27,13 @@ Try out KaTeX [on the demo page](https://khan.github.io/KaTeX/#demo)!
 <!-- KaTeX requires the use of the HTML5 doctype. Without it, KaTeX may not render properly -->
 <html>
   <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.min.css" integrity="sha384-V2aA1l0T0v8Xc49/G/99lnQINjPV395WcAUNy16CyJ3CkhWeaed8RjR/VVpSB9nL" crossorigin="anonymous">
 
     <!-- The loading of KaTeX is deferred to speed up page rendering -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/katex.min.js" integrity="sha384-zsocTD8Agk2odAyI6q4R5AkfcZXO/riE8nRW5DrYDJ8NrwAmX6rptoT7VyErPtoY" crossorigin="anonymous"></script>
 
     <!-- To automatically render math in text elements, include the auto-render extension: -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/contrib/auto-render.min.js" integrity="sha384-Wxr5exiPP7ytVluVOsq0TQ/I7Gklivv3nwLWPoSHG5BKazgGtb7o7Xpk2piUPl3d" crossorigin="anonymous"
         onload="renderMathInElement(document.body);"></script>
   </head>
   ...
