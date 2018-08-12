@@ -71,7 +71,7 @@
         "require-jsdoc": 0
     },
     "overrides": [{
-        "files": ["katex.js", "src/**/*.js"],
+        "files": ["katex.js", "src/**/*.js", "contrib/**/*.js"],
         "excludedFiles": "unicodeMake.js",
         "rules": {
             "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"]
