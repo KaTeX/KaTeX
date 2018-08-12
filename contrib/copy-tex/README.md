@@ -21,8 +21,8 @@ provided by this extension).  Without this CSS, partially selected equations
 will just get the usual HTML copy/paste behavior.
 
 ```html
-<link href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/copy-tex.min.js" integrity="sha384-jLtlhlpasgCe2I4eVNEStxiWP4slZdWUk3E3FgbblMBxLs6YlA/rMNSeiGTRfAQ/" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css">
+<script src="https://cdn.jsdelivr.net/npm/katex@1.1.0/dist/contrib/copy-tex.min.js" integrity="sha384-C6+I57LTtRxci6ohCckeDBUvozd3Zm2ThSCEQCHq+d2rw+RtSlWxylHmWiFq9Okv" crossorigin="anonymous"></script>
 ```
 
 See [index.html](index.html) for an example.

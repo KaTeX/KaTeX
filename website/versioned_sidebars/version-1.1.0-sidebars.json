@@ -1,0 +1,25 @@
+{
+  "version-1.1.0-docs": {
+    "Installation": [
+      "version-1.1.0-node",
+      "version-1.1.0-browser"
+    ],
+    "Usage": [
+      "version-1.1.0-api",
+      "version-1.1.0-cli",
+      "version-1.1.0-autorender",
+      "version-1.1.0-libs"
+    ],
+    "Configuring KaTeX": [
+      "version-1.1.0-options",
+      "version-1.1.0-security",
+      "version-1.1.0-error",
+      "version-1.1.0-font"
+    ],
+    "Misc": [
+      "version-1.1.0-supported",
+      "version-1.1.0-support_table",
+      "version-1.1.0-issues"
+    ]
+  }
+}

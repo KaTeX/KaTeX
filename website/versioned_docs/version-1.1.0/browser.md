@@ -1,6 +1,7 @@
 ---
-id: browser
+id: version-1.1.0-browser
 title: Browser
+original_id: browser
 ---
 > KaTeX supports all major browsers, including Chrome, Safari, Firefox, Opera, Edge, and IE 9–11.
 
