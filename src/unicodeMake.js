@@ -4,7 +4,15 @@
 // whose purpose is to generate unicodeSymbols.js in this directory.
 // In this way, only this tool, and not the distribution/browser,
 // needs String's normalize function.
+const path = require('path');
 const fs = require('fs');
+
+const target = path.join(__dirname, 'unicodeSymbols.js');
+const targetMtime = fs.statSync(target).mtime;
+if (fs.statSync(__filename).mtime <= targetMtime && fs.statSync(
+        path.join(__dirname, 'unicodeAccents.js')).mtime <= targetMtime) {
+    return;
+}
 
 require('babel-register')({plugins: ["transform-es2015-modules-commonjs"]});
 const accents = require('./unicodeAccents').default;
