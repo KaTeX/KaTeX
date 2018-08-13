@@ -17,6 +17,7 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "babel-core": "^6.26.3",
     "babel-eslint": "^8.1.2",
     "babel-jest": "^23.0.1",
     "babel-loader": "^7.1.4",
@@ -36,6 +37,7 @@
     "eslint-plugin-transform-runtime-aliasing": "^1.0.0",
     "file-loader": "^1.1.11",
     "flow-bin": "^0.78.0",
+    "fs-extra": "^7.0.0",
     "greenkeeper-lockfile": "^1.15.1",
     "husky": "^1.0.0-rc.8",
     "jest": "^23.0.1",
