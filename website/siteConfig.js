@@ -25,7 +25,7 @@ const users = [
         image: 'https://raw.githubusercontent.com/tonton-pixel/vade-mecum-shelf/master/icons/icon.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
         pinned: true,
-    }
+    },
 ];
 
 const siteConfig = {
