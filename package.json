@@ -33,6 +33,7 @@
     "eslint": "^5.0.0",
     "eslint-plugin-flowtype": "^2.40.1",
     "eslint-plugin-react": "^7.10.0",
+    "eslint-plugin-transform-runtime-aliasing": "^0.1.1",
     "file-loader": "^1.1.11",
     "flow-bin": "^0.78.0",
     "husky": "^1.0.0-rc.8",
