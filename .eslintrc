@@ -71,18 +71,21 @@
         "valid-jsdoc": 0,
         "require-jsdoc": 0
     },
+    "env": {
+        "es6": true,
+        "node": true,
+        "browser": true
+    },
     "overrides": [{
         "files": ["katex.js", "src/**/*.js", "contrib/**/*.js"],
         "excludedFiles": ["*-spec.js", "unicodeMake.js"],
         "rules": {
             "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"],
             "transform-runtime-aliasing/no-transform-runtime-aliasing": 2
+        },
+        "env": {
+            "node": false
         }
     }],
-    "env": {
-        "es6": true,
-        "node": true,
-        "browser": true
-    },
     "root": true
 }

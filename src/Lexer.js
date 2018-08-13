@@ -14,7 +14,9 @@
 
 import ParseError from "./ParseError";
 import SourceLocation from "./SourceLocation";
-import {LexerInterface, Token} from "./Token";
+import {Token} from "./Token";
+
+import type {LexerInterface} from "./Token";
 import type Settings from "./Settings";
 
 /* The following tokenRegex

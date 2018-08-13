@@ -11,7 +11,7 @@ import unicodeSymbols from "./unicodeSymbols";
 import utils from "./utils";
 import {assertNodeType, checkNodeType} from "./parseNode";
 import ParseError from "./ParseError";
-import {combiningDiacriticalMarksEndRegex, urlFunctionRegex} from "./Lexer.js";
+import {combiningDiacriticalMarksEndRegex, urlFunctionRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
