@@ -146,7 +146,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "skew": 0,
     "style": {
     },
-    "value": "a",
+    "text": "a",
     "width": 0.52859
   },
   {
@@ -189,7 +189,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "skew": 0,
     "style": {
     },
-    "value": "b",
+    "text": "b",
     "width": 0.42917
   },
   {
@@ -227,7 +227,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "skew": 0,
             "style": {
             },
-            "value": "=",
+            "text": "=",
             "width": 0.89444
           }
         ],
@@ -277,7 +277,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "skew": 0.05556,
     "style": {
     },
-    "value": "c",
+    "text": "c",
     "width": 0.43276
   },
   {
@@ -315,7 +315,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "skew": 0,
             "style": {
             },
-            "value": "+",
+            "text": "+",
             "width": 0.89444
           }
         ],
@@ -365,7 +365,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "skew": 0.16667,
     "style": {
     },
-    "value": "d",
+    "text": "d",
     "width": 0.52049
   },
   {
@@ -403,7 +403,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "skew": 0,
             "style": {
             },
-            "value": "+",
+            "text": "+",
             "width": 0.89444
           },
           {
@@ -418,7 +418,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "skew": 0,
             "style": {
             },
-            "value": "+",
+            "text": "+",
             "width": 0.89444
           }
         ],
@@ -468,7 +468,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "skew": 0.05556,
     "style": {
     },
-    "value": "e",
+    "text": "e",
     "width": 0.46563
   },
   {
@@ -491,7 +491,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "skew": 0,
             "style": {
             },
-            "value": "x",
+            "text": "x",
             "width": 0.65903
           },
           {
@@ -506,7 +506,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "skew": 0,
             "style": {
             },
-            "value": "y",
+            "text": "y",
             "width": 0.59028
           },
           {
@@ -521,7 +521,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "skew": 0,
             "style": {
             },
-            "value": "z",
+            "text": "z",
             "width": 0.55509
           }
         ],
@@ -556,7 +556,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "skew": 0.16667,
     "style": {
     },
-    "value": "f",
+    "text": "f",
     "width": 0.48959
   }
 ]
@@ -598,7 +598,7 @@ exports[`A parser that does not throw on unsupported commands should build katex
       "skew": 0,
       "style": {
       },
-      "value": "2^2^2",
+      "text": "2^2^2",
       "width": 0
     }
   ],

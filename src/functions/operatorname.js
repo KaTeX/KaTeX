@@ -49,7 +49,7 @@ defineFunction({
                 if (child instanceof domTree.symbolNode) {
                     // Per amsopn package,
                     // change minus to hyphen and \ast to asterisk
-                    child.value = child.value.replace(/\u2212/, "-")
+                    child.text = child.text.replace(/\u2212/, "-")
                         .replace(/\u2217/, "*");
                 }
             }

@@ -266,7 +266,7 @@ const iCombinations = {
  * whether it has CSS classes, styles, or needs italic correction.
  */
 class symbolNode implements HtmlDomNode {
-    value: string;
+    text: string;
     height: number;
     depth: number;
     italic: number;
@@ -277,7 +277,7 @@ class symbolNode implements HtmlDomNode {
     style: CssStyle;
 
     constructor(
-        value: string,
+        text: string,
         height?: number,
         depth?: number,
         italic?: number,
@@ -286,7 +286,7 @@ class symbolNode implements HtmlDomNode {
         classes?: string[],
         style?: CssStyle,
     ) {
-        this.value = value;
+        this.text = text;
         this.height = height || 0;
         this.depth = depth || 0;
         this.italic = italic || 0;
@@ -303,13 +303,13 @@ class symbolNode implements HtmlDomNode {
         // We use CSS class names like cjk_fallback, hangul_fallback and
         // brahmic_fallback. See ./unicodeScripts.js for the set of possible
         // script names
-        const script = scriptFromCodepoint(this.value.charCodeAt(0));
+        const script = scriptFromCodepoint(this.text.charCodeAt(0));
         if (script) {
             this.classes.push(script + "_fallback");
         }
 
-        if (/[îïíì]/.test(this.value)) {    // add ī when we add Extended Latin
-            this.value = iCombinations[this.value];
+        if (/[îïíì]/.test(this.text)) {    // add ī when we add Extended Latin
+            this.text = iCombinations[this.text];
         }
     }
 
@@ -338,7 +338,7 @@ class symbolNode implements HtmlDomNode {
                 return false;
             }
         }
-        this.value += sibling.value;
+        this.text += sibling.text;
         this.height = Math.max(this.height, sibling.height);
         this.depth = Math.max(this.depth, sibling.depth);
         this.italic = sibling.italic;
@@ -350,7 +350,7 @@ class symbolNode implements HtmlDomNode {
      * created if it is needed.
      */
     toNode(): Node {
-        const node = document.createTextNode(this.value);
+        const node = document.createTextNode(this.text);
         let span = null;
 
         if (this.italic > 0) {
@@ -412,7 +412,7 @@ class symbolNode implements HtmlDomNode {
             markup += " style=\"" + utils.escape(styles) + "\"";
         }
 
-        const escaped = utils.escape(this.value);
+        const escaped = utils.escape(this.text);
         if (needsSpan) {
             markup += ">";
             markup += escaped;
