@@ -7,7 +7,7 @@ post_checkout: &post_checkout
         if [[ $CIRCLE_PULL_REQUEST ]]; then
           BASE_COMMIT=$(curl -s -H "Authorization: token a61ecb2fc5b72da54431""1b3db3875c96854958a8" \
             https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$CIRCLE_PR_NUMBER \
-            | jq -r ".base.sha | select(. != null)")
+            | jq -r ".base.sha | select(. != null)")...
         else
           BASE_COMMIT=HEAD^
         fi
