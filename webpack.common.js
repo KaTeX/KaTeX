@@ -49,6 +49,13 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         });
     }
 
+    const lessOptions = {};
+    if (process.env.USE_TTF === "false") {
+        lessOptions.modifyVars = {
+            'use-ttf': false,
+        };
+    }
+
     return {
         mode: dev ? 'development' : 'production',
         context: __dirname,
@@ -85,7 +92,10 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                     use: [
                         dev ? 'style-loader' : MiniCssExtractPlugin.loader,
                         ...cssLoaders,
-                        'less-loader',
+                        {
+                            loader: 'less-loader',
+                            options: lessOptions,
+                        },
                     ],
                 },
                 {
