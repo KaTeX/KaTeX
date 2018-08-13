@@ -1,9 +1,21 @@
-checkout_submodule: &checkout_submodule
+post_checkout: &post_checkout
   run:
-    name: Checkout submodule
+    name: Checkout submodule and get changed files
     command: |
         git submodule sync
         git submodule update --init --recursive
+        if [[ $CIRCLE_PULL_REQUEST ]]; then
+          BASE_COMMIT=$(curl -s -H "Authorization: token a61ecb2fc5b72da54431""1b3db3875c96854958a8" \
+            https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$CIRCLE_PR_NUMBER \
+            | jq -r ".base.sha | select(. != null)")
+        else
+          BASE_COMMIT=HEAD^
+        fi
+        if [[ $BASE_COMMIT ]]; then
+          CHANGED=$(git diff --name-only $BASE_COMMIT)
+          echo $CHANGED
+          echo 'export CHANGED="$CHANGED"' >> $BASH_ENV
+        fi
 
 node_modules_cache_key: &node_modules_cache_key
   yarn-deps-v1-{{ checksum "yarn.lock" }}
@@ -22,7 +34,13 @@ yarn_install: &yarn_install
 screenshotter: &screenshotter
   steps:
     - checkout
-    - *checkout_submodule
+    - *post_checkout
+    - run:
+        name: Skip screenshotter if no KaTeX code has been changed
+        command: |
+            if [[ $CHANGED ]]; then
+              echo $CHANGED | grep -qvE '^contrib/|^docs/|^static/|^website/|^LICENSE|\.md$' || circleci step halt
+            fi
 
     - *restore_node_modules_cache
     - *yarn_install
@@ -53,7 +71,13 @@ jobs:
               fi
 
       - checkout
-      - *checkout_submodule
+      - *post_checkout
+      - run:
+          name: Skip screenshotter if only documentation has been changed
+          command: |
+              if [[ $CHANGED ]]; then
+                echo $CHANGED | grep -qvE '^docs/|^LICENSE|\.md$' || circleci step halt
+              fi
 
       - *restore_node_modules_cache
       - *yarn_install
