@@ -2,7 +2,8 @@
   "name": "katex",
   "version": "0.11.0-pre",
   "description": "Fast math typesetting for the web.",
-  "main": "dist/katex.js",
+  "main": "dist/katex",
+  "module": "dist/katex.mjs",
   "repository": {
     "type": "git",
     "url": "git://github.com/Khan/KaTeX.git"
@@ -36,6 +37,7 @@
     "eslint-plugin-transform-runtime-aliasing": "^0.1.1",
     "file-loader": "^1.1.11",
     "flow-bin": "^0.78.0",
+    "greenkeeper-lockfile": "^1.15.1",
     "husky": "^1.0.0-rc.8",
     "jest": "^23.0.1",
     "jest-serializer-html": "^5.0.0",
@@ -50,6 +52,8 @@
     "postcss-loader": "^3.0.0",
     "query-string": "^6.1.0",
     "rimraf": "^2.6.2",
+    "rollup": "^0.63.4",
+    "rollup-plugin-babel": "^3.0.7",
     "selenium-webdriver": "^3.6.0",
     "sri-toolbox": "^0.2.0",
     "style-loader": "^0.22.0",
@@ -80,7 +84,7 @@
     "prestart": "node check-node-version.js && check-dependencies && node src/unicodeMake.js > src/unicodeSymbols.js",
     "start": "webpack-dev-server --hot --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
-    "build": "yarn prestart && rimraf dist/ && mkdirp dist && cp README.md dist && webpack",
+    "build": "yarn prestart && rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c && webpack",
     "watch": "yarn build --watch",
     "dist": "yarn test && yarn build && yarn dist:zip",
     "dist:zip": "cd dist && tar czf ../katex.tar.gz * && zip -rq ../katex.zip *"
