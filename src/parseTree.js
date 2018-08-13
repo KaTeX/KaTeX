@@ -32,11 +32,8 @@ const parseTree = function(toParse: string, settings: Settings): AnyParseNode[] 
         tree = [{
             type: "tag",
             mode: "text",
-            value: {
-                type: "tag",
-                body: tree,
-                tag: parser.parse(),
-            },
+            body: tree,
+            tag: parser.parse(),
         }];
     }
 

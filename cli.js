@@ -62,21 +62,12 @@ const program = require("commander")
     .option("-i, --input <path>", "Read LaTeX input from the given file.")
     .option("-o, --output <path>", "Write html output to the given file.");
 
-program.command('markdown-help')
-    .description('Print markdown version of the help')
-    .action(() => {
-        console.log();
-        console.log(program.options.map(option => `### \`${option.flags}\`
-${option.description}${((option.bool && option.defaultValue !== undefined)
-    ? ' (default: ' + option.defaultValue + ')' : '')}
-`)
-            .concat(['### `-h, --help`\nOutput usage information'])
-            .join('\n'));
-        process.exit();
-    });
+if (require.main !== module) {
+    module.exports = program;
+    return;
+}
 
 const options = program.parse(process.argv);
-
 
 function readMacros() {
     if (options.macroFile) {

@@ -16,58 +16,67 @@ KaTeX is compatible with all major browsers, including Chrome, Safari, Firefox, 
 
 KaTeX supports much (but not all) of LaTeX and many LaTeX packages. See the [list of supported functions](https://khan.github.io/KaTeX/docs/supported.html).
 
+Try out KaTeX [on the demo page](https://khan.github.io/KaTeX/#demo)!
+
 ## Getting started
 
-[Download KaTeX](https://github.com/khan/katex/releases) and host it on your server or include the `katex.min.js` and `katex.min.css` files on your page directly from a CDN:
+### Starter template
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
-```
+<!DOCTYPE html>
+<!-- KaTeX requires the use of the HTML5 doctype. Without it, KaTeX may not render properly -->
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
 
-#### In-browser rendering
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
 
-Call `katex.render` with a TeX expression and a DOM element to render into:
-
-```js
-katex.render("c = \\pm\\sqrt{a^2 + b^2}", element);
-```
-
-If KaTeX can't parse the expression, it throws a `katex.ParseError` error.
-
-#### Rendering expressions in text elements
-
-To automatically render math in text elements, include the [auto-render script](https://khan.github.io/KaTeX/docs/autorender.html) `contrib/auto-render.min.js`, or via CDN:
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"></script>
-````
-
-Then, call the `renderMathInElement` function with a DOM element containing expressions in a script tag before the closing body tag:
-
-```html
-<body>
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+  </head>
   ...
-  <script>
-    renderMathInElement(document.body);
-  </script>
-</body>
+</html>
 ```
 
-See [Auto-render Extension](https://khan.github.io/KaTeX/docs/autorender.html) for more details.
+You can also [download KaTeX](https://github.com/khan/katex/releases) and host it yourself.
 
-#### Server side rendering or rendering to a string
+For details on how to configure auto-render extension, refer to [the documentation](https://khan.github.io/KaTeX/docs/autorender.html).
 
-To generate HTML on the server or to generate an HTML string of the rendered math, you can use `katex.renderToString`:
+### API
+
+Call `katex.render` to render a TeX expression directly into a DOM element.
+For example:
 
 ```js
-var html = katex.renderToString("c = \\pm\\sqrt{a^2 + b^2}");
+katex.render("c = \\pm\\sqrt{a^2 + b^2}", element, {
+    throwOnError: false
+});
+```
+
+Call `katex.renderToString` to generate an HTML string of the rendered math,
+e.g., for server-side rendering.  For example:
+
+```js
+var html = katex.renderToString("c = \\pm\\sqrt{a^2 + b^2}", {
+    throwOnError: false
+});
 // '<span class="katex">...</span>'
 ```
 
-Make sure to include the CSS and font files, but there is no need to include the JavaScript. Like `render`, `renderToString` throws if it can't parse the expression.
+Make sure to include the CSS and font files in both cases.
+If you are doing all rendering on the server, there is no need to include the
+JavaScript on the client.
 
-## Documentation
+The examples above use the `throwOnError: false` option, which renders invalid
+inputs as the TeX source code in red (by default), with the error message as
+hover text.  For other available options, see the
+[API documentation](https://khan.github.io/KaTeX/docs/api.html),
+[options documentation](https://khan.github.io/KaTeX/docs/options.html), and
+[handling errors documentation](https://khan.github.io/KaTeX/docs/error.html).
+
+## Demo and Documentation
 
 Learn more about using KaTeX [on the website](https://khan.github.io/KaTeX)!
 

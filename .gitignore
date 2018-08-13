@@ -24,3 +24,5 @@ website/build/
 website/yarn.lock
 website/node_modules
 website/i18n/*
+website/static/static/katex.*
+website/static/static/fonts

@@ -10,10 +10,10 @@ defineFunctionBuilders({
         const table = new mathMLTree.MathNode("mtable", [
             new mathMLTree.MathNode("mlabeledtr", [
                 new mathMLTree.MathNode("mtd", [
-                    mml.buildExpressionRow(group.value.tag, options),
+                    mml.buildExpressionRow(group.tag, options),
                 ]),
                 new mathMLTree.MathNode("mtd", [
-                    mml.buildExpressionRow(group.value.body, options),
+                    mml.buildExpressionRow(group.body, options),
                 ]),
             ]),
         ]);

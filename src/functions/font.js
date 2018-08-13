@@ -7,17 +7,18 @@ import defineFunction from "../defineFunction";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
+import type {ParseNode} from "../parseNode";
 
-const htmlBuilder = (group, options) => {
-    const font = group.value.font;
+const htmlBuilder = (group: ParseNode<"font">, options) => {
+    const font = group.font;
     const newOptions = options.withFont(font);
-    return html.buildGroup(group.value.body, newOptions);
+    return html.buildGroup(group.body, newOptions);
 };
 
-const mathmlBuilder = (group, options) => {
-    const font = group.value.font;
+const mathmlBuilder = (group: ParseNode<"font">, options) => {
+    const font = group.font;
     const newOptions = options.withFont(font);
-    return mml.buildGroup(group.value.body, newOptions);
+    return mml.buildGroup(group.body, newOptions);
 };
 
 const fontAliases = {
@@ -53,11 +54,8 @@ defineFunction({
         return {
             type: "font",
             mode: parser.mode,
-            value: {
-                type: "font",
-                font: func.slice(1),
-                body,
-            },
+            font: func.slice(1),
+            body,
         };
     },
     htmlBuilder,
@@ -78,21 +76,15 @@ defineFunction({
         return {
             type: "mclass",
             mode: parser.mode,
-            value: {
-                type: "mclass",
-                mclass: binrelClass(body),
-                value: [
-                    {
-                        type: "font",
-                        mode: parser.mode,
-                        value: {
-                            type: "font",
-                            font: "boldsymbol",
-                            body,
-                        },
-                    },
-                ],
-            },
+            mclass: binrelClass(body),
+            body: [
+                {
+                    type: "font",
+                    mode: parser.mode,
+                    font: "boldsymbol",
+                    body,
+                },
+            ],
         };
     },
 });
@@ -114,14 +106,11 @@ defineFunction({
         return {
             type: "font",
             mode: mode,
-            value: {
-                type: "font",
-                font: style,
-                body: {
-                    type: "ordgroup",
-                    mode: parser.mode,
-                    value: body,
-                },
+            font: style,
+            body: {
+                type: "ordgroup",
+                mode: parser.mode,
+                value: body,
             },
         };
     },

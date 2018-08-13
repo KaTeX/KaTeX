@@ -3,7 +3,7 @@
 import functions from "./functions";
 import environments from "./environments";
 import MacroExpander from "./MacroExpander";
-import symbols, {extraLatin} from "./symbols";
+import symbols, {ATOMS, extraLatin} from "./symbols";
 import {validUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
@@ -16,6 +16,7 @@ import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
 import type {AnyParseNode, SymbolParseNode} from "./parseNode";
+import type {Atom, Group} from "./symbols";
 import type {Mode, ArgType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
 import type {EnvSpec} from "./defineEnvironment";
@@ -222,10 +223,10 @@ export default class Parser {
                 if (overIndex !== -1) {
                     throw new ParseError(
                         "only one infix operator per group",
-                        node.value.token);
+                        node.token);
                 }
                 overIndex = i;
-                funcName = node.value.replaceWith;
+                funcName = node.replaceWith;
             }
         }
 
@@ -318,20 +319,14 @@ export default class Parser {
         const textNode = {
             type: "text",
             mode: this.mode,
-            value: {
-                type: "text",
-                body: textordArray,
-            },
+            body: textordArray,
         };
 
         const colorNode = {
             type: "color",
-            value: {
-                type: "color",
-                color: this.settings.errorColor,
-                value: [textNode],
-            },
             mode: this.mode,
+            color: this.settings.errorColor,
+            body: [textNode],
         };
 
         this.consume();
@@ -367,8 +362,8 @@ export default class Parser {
                 const opNode = checkNodeType(base, "op");
                 if (opNode) {
                     const limits = lex.text === "\\limits";
-                    opNode.value.limits = limits;
-                    opNode.value.alwaysHandleSupSub = true;
+                    opNode.limits = limits;
+                    opNode.alwaysHandleSupSub = true;
                 } else {
                     throw new ParseError(
                         "Limit controls must follow a math operator",
@@ -423,12 +418,9 @@ export default class Parser {
             return {
                 type: "supsub",
                 mode: this.mode,
-                value: {
-                    type: "supsub",
-                    base: base,
-                    sup: superscript,
-                    sub: subscript,
-                },
+                base: base,
+                sup: superscript,
+                sub: subscript,
             };
         } else {
             // Otherwise return the original body
@@ -462,10 +454,10 @@ export default class Parser {
             const begin =
                 assertNodeType(this.parseGivenFunction(start), "environment");
 
-            const envName = begin.value.name;
+            const envName = begin.name;
             if (!environments.hasOwnProperty(envName)) {
                 throw new ParseError(
-                    "No such environment: " + envName, begin.value.nameGroup);
+                    "No such environment: " + envName, begin.nameGroup);
             }
             // Build the environment object. Arguments and other information will
             // be made available to the begin and end methods using properties.
@@ -485,10 +477,9 @@ export default class Parser {
                 throw new ParseError("failed to parse function after \\end");
             }
             end = assertNodeType(end, "environment");
-            if (end.value.name !== envName) {
+            if (end.name !== envName) {
                 throw new ParseError(
-                    "Mismatch: \\begin{" + envName + "} matched " +
-                    "by \\end{" + end.value.name + "}",
+                    `Mismatch: \\begin{${envName}} matched by \\end{${end.name}}`,
                     endNameToken);
             }
             return result;
@@ -799,11 +790,8 @@ export default class Parser {
         return newArgument({
             type: "size",
             mode: this.mode,
-            value: {
-                type: "size",
-                value: data,
-                isBlank: isBlank,
-            },
+            value: data,
+            isBlank,
         }, res);
     }
 
@@ -871,6 +859,7 @@ export default class Parser {
         let n = group.length - 1;
         for (let i = 0; i < n; ++i) {
             const a = group[i];
+            // $FlowFixMe: Not every node type has a `value` property.
             const v = a.value;
             if (v === "-" && group[i + 1].value === "-") {
                 if (i + 1 < n && group[i + 2].value === "-") {
@@ -943,10 +932,7 @@ export default class Parser {
             const urlArg = {
                 type: "url",
                 mode: this.mode,
-                value: {
-                    type: "url",
-                    value: url,
-                },
+                url,
             };
             this.consume();
             if (funcName === "\\href") {  // two arguments
@@ -984,11 +970,8 @@ export default class Parser {
             return newArgument({
                 type: "verb",
                 mode: "text",
-                value: {
-                    type: "verb",
-                    body: arg,
-                    star: star,
-                },
+                body: arg,
+                star,
             }, nucleus);
         }
         // At this point, we should have a symbol, possibly with accents.
@@ -1022,14 +1005,28 @@ export default class Parser {
                     `Latin-1/Unicode text character "${text[0]}" used in ` +
                     `math mode`, nucleus);
             }
-            // TODO(#1492): Remove this override once this becomes an "atom" type.
-            // $FlowFixMe
-            const s: SymbolParseNode = {
-                type: symbols[this.mode][text].group,
-                mode: this.mode,
-                loc: SourceLocation.range(nucleus),
-                value: text,
-            };
+            const group: Group = symbols[this.mode][text].group;
+            const loc = SourceLocation.range(nucleus);
+            let s: SymbolParseNode;
+            if (ATOMS.hasOwnProperty(group)) {
+                // $FlowFixMe
+                const family: Atom = group;
+                s = {
+                    type: "atom",
+                    mode: this.mode,
+                    family,
+                    loc,
+                    value: text,
+                };
+            } else {
+                // $FlowFixMe
+                s = {
+                    type: group,
+                    mode: this.mode,
+                    loc,
+                    value: text,
+                };
+            }
             symbol = s;
         } else if (text.charCodeAt(0) >= 0x80) { // no symbol for e.g. ^
             if (this.settings.strict) {
@@ -1070,13 +1067,10 @@ export default class Parser {
                     type: "accent",
                     mode: this.mode,
                     loc: SourceLocation.range(nucleus),
-                    value: {
-                        type: "accent",
-                        label: command,
-                        isStretchy: false,
-                        isShifty: true,
-                        base: symbol,
-                    },
+                    label: command,
+                    isStretchy: false,
+                    isShifty: true,
+                    base: symbol,
                 };
             }
         }

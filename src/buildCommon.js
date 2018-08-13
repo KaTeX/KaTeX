@@ -613,8 +613,8 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
 
 // Converts verb group into body string, dealing with \verb* form
 const makeVerb = function(group: ParseNode<"verb">, options: Options): string {
-    let text = group.value.body;
-    if (group.value.star) {
+    let text = group.body;
+    if (group.star) {
         text = text.replace(/ /g, '\u2423');  // Open Box
     } else {
         text = text.replace(/ /g, '\xA0');    // No-Break Space
