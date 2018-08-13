@@ -750,7 +750,7 @@ export default class Parser {
         return newArgument({
             type: "color-token",
             mode: this.mode,
-            value: match[0],
+            color: match[0],
         }, res);
     }
 

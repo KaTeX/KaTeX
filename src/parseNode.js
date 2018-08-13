@@ -47,7 +47,7 @@ type ParseNodeTypes = {
         type: "color-token",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: string,
+        color: string,
     |},
     // To avoid requiring run-time type assertions, this more carefully captures
     // the requirements on the fields per the op.js htmlBuilder logic:
@@ -211,8 +211,8 @@ type ParseNodeTypes = {
         mode: Mode,
         loc?: ?SourceLocation,
         label: string,
-        backgroundColor?: ParseNode<"color-token">,
-        borderColor?: ParseNode<"color-token">,
+        backgroundColor?: string,
+        borderColor?: string,
         body: AnyParseNode,
     |},
     "environment": {|
