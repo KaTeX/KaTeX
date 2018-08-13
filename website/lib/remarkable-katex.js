@@ -26,7 +26,7 @@ SOFTWARE.
  * sequences into math HTML using the KaTeX package.
  */
 module.exports = function(md, options) {
-    const katex = require("../");
+    const katex = require("../../");
 
     function renderKatex(source, displayMode) {
         return katex.renderToString(source, {displayMode, throwOnError: false});
@@ -130,11 +130,13 @@ module.exports = function(md, options) {
      */
     function parseInlineKatex(state, silent) {
         const dollar = 0x24;
+        const backslash = 0x5c;
         let pos = state.pos;
         const start = pos;
         const max = state.posMax;
         let matchStart;
-        let matchEnd ;
+        let matchEnd;
+        let esc;
 
         if (state.src.charCodeAt(pos) !== dollar) { return false; }
         ++pos;
@@ -150,6 +152,13 @@ module.exports = function(md, options) {
 
         while ((matchStart = state.src.indexOf('$', matchEnd)) !== -1) {
             matchEnd = matchStart + 1;
+
+            // bypass escaped delimiters
+            esc = matchStart - 1;
+            while (state.src.charCodeAt(esc) === backslash) {
+                --esc;
+            }
+            if ((matchStart - esc) % 2 === 0) { continue; }
 
             while (matchEnd < max && state.src.charCodeAt(matchEnd) === dollar) {
                 ++matchEnd;
