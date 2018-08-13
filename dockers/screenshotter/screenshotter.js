@@ -492,19 +492,18 @@ function browserSideWait(milliseconds) {
 }
 
 // Execute a given command, and return a promise to its output.
-// Don't denodeify here, since fail branch needs access to stderr.
 function execFile(cmd, args, opts) {
-    const deferred = new selenium.promise.Deferred();
-    childProcess.execFile(cmd, args, opts, function(err, stdout, stderr) {
-        if (err) {
-            console.error("Error executing " + cmd + " " + args.join(" "));
-            console.error(stdout + stderr);
-            err.stdout = stdout;
-            err.stderr = stderr;
-            deferred.reject(err);
-        } else {
-            deferred.fulfill(stdout);
-        }
+    return new Promise(function(resolve, reject) {
+        childProcess.execFile(cmd, args, opts, function(err, stdout, stderr) {
+            if (err) {
+                console.error("Error executing " + cmd + " " + args.join(" "));
+                console.error(stdout + stderr);
+                err.stdout = stdout;
+                err.stderr = stderr;
+                reject(err);
+            } else {
+                resolve(stdout);
+            }
+        });
     });
-    return deferred.promise;
 }
