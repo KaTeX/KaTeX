@@ -24,7 +24,7 @@ embed.register('stylesheet',
 const users = [
     {
         caption: 'Khan Academy',
-        image: 'https://pbs.twimg.com/profile_images/1021871312195612673/MlailSlw_400x400.jpg',
+        image: 'https://avatars0.githubusercontent.com/u/15455',
         infoLink: 'https://www.khanacademy.org/',
         pinned: true,
     },
@@ -71,15 +71,15 @@ const users = [
         pinned: true,
     },
     {
-        caption: 'Gitter',
-        image: 'https://assets.gitlab-static.net/uploads/-/system/project/avatar/3601513/gitter_logo.png',
-        infoLink: 'https://gitter.im/',
-        pinned: true,
-    },
-    {
         caption: 'Gatsby',
         image: 'https://www.gatsbyjs.org/monogram.svg',
         infoLink: 'https://www.gatsbyjs.org/',
+        pinned: true,
+    },
+    {
+        caption: 'Gitter',
+        image: 'https://assets.gitlab-static.net/uploads/-/system/project/avatar/3601513/gitter_logo.png',
+        infoLink: 'https://gitter.im/',
         pinned: true,
     },
     {
@@ -138,13 +138,13 @@ const users = [
     },
     {
         caption: 'StackEdit',
-        image: 'https://cdn.rawgit.com/benweet/stackedit/master/static/landing/favicon.ico',
+        image: 'https://cdn.rawgit.com/benweet/stackedit/0632445a/src/assets/iconStackedit.svg',
         infoLink: 'https://stackedit.io/',
         pinned: true,
     },
     {
         caption: 'Vade Mecum Shelf',
-        image: 'https://raw.githubusercontent.com/tonton-pixel/vade-mecum-shelf/master/icons/icon.png',
+        image: 'https://cdn.rawgit.com/tonton-pixel/vade-mecum-shelf/43013aec/icons/icon.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
         pinned: true,
     },
