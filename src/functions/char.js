@@ -15,7 +15,7 @@ defineFunction({
     },
     handler({parser}, args) {
         const arg = assertNodeType(args[0], "ordgroup");
-        const group = arg.value;
+        const group = arg.body;
         let number = "";
         for (let i = 0; i < group.length; i++) {
             const node = assertNodeType(group[i], "textord");

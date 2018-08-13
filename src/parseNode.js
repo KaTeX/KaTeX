@@ -78,7 +78,7 @@ type ParseNodeTypes = {
         type: "ordgroup",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: AnyParseNode[],
+        body: AnyParseNode[],
     |},
     "size": {|
         type: "size",

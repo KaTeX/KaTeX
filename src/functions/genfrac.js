@@ -365,7 +365,7 @@ defineFunction({
         // Look into the parse nodes to get the desired delimiters.
         let leftNode = checkNodeType(args[0], "ordgroup");
         if (leftNode) {
-            leftNode = assertAtomFamily(leftNode.value[0], "open");
+            leftNode = assertAtomFamily(leftNode.body[0], "open");
         } else {
             leftNode = assertAtomFamily(args[0], "open");
         }
@@ -373,7 +373,7 @@ defineFunction({
 
         let rightNode = checkNodeType(args[1], "ordgroup");
         if (rightNode) {
-            rightNode = assertAtomFamily(rightNode.value[0], "close");
+            rightNode = assertAtomFamily(rightNode.body[0], "close");
         } else {
             rightNode = assertAtomFamily(args[1], "close");
         }
@@ -396,8 +396,8 @@ defineFunction({
         let size = "auto";
         let styl = checkNodeType(args[3], "ordgroup");
         if (styl) {
-            if (styl.value.length > 0) {
-                const textOrd = assertNodeType(styl.value[0], "textord");
+            if (styl.body.length > 0) {
+                const textOrd = assertNodeType(styl.body[0], "textord");
                 size = stylArray[Number(textOrd.text)];
             }
         } else {
