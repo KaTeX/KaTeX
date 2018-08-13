@@ -17,6 +17,7 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "@octokit/rest": "^15.9.5",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.1.2",
     "babel-jest": "^23.0.1",
@@ -87,7 +88,7 @@
     "analyze": "webpack --config webpack.analyze.js",
     "build": "yarn prestart && rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c && webpack",
     "watch": "yarn build --watch",
-    "dist": "yarn test && yarn build && yarn dist:zip",
+    "dist": "yarn build && yarn dist:zip",
     "dist:zip": "cd dist && tar czf ../katex.tar.gz * && zip -rq ../katex.zip *"
   },
   "dependencies": {
