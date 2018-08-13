@@ -104,13 +104,8 @@ type FunctionDefSpec<NODETYPE: NodeType> = {|
     // Properties that control how the functions are parsed.
     props: FunctionPropSpec,
 
-    // The handler is called to handle these functions and their arguments.
-    // The function should return an object with the following keys:
-    //   - type: The type of element that this is. This is then used in
-    //          buildHTML/buildMathML to determine which function
-    //          should be called to build this node into a DOM node
-    // Any other data can be added to the object, which will be passed
-    // in to the function in buildHTML/buildMathML as `group.value`.
+    // The handler is called to handle these functions and their arguments and
+    // returns a `ParseNode`.
     handler: ?FunctionHandler<NODETYPE>,
 
     // This function returns an object representing the DOM structure to be
