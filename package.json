@@ -81,7 +81,7 @@
     "test:perf": "yarn prestart && NODE_ENV=test node test/perf-test.js",
     "clean": "rm -rf dist/ node_modules/",
     "clean-install": "yarn clean && yarn",
-    "prestart": "node check-node-version.js && check-dependencies && node src/unicodeMake.js > src/unicodeSymbols.js",
+    "prestart": "node check-node-version.js && check-dependencies && node src/unicodeMake.js",
     "start": "webpack-dev-server --hot --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
     "build": "yarn prestart && rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c && webpack",
