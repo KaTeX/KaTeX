@@ -101,7 +101,8 @@
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.js",
-      "contrib/**/*.js"
+      "contrib/**/*.js",
+      "!src/unicodeMake.js"
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
     "snapshotSerializers": [
