@@ -240,13 +240,13 @@ export default class Parser {
             if (numerBody.length === 1 && numerBody[0].type === "ordgroup") {
                 numerNode = numerBody[0];
             } else {
-                numerNode = {type: "ordgroup", mode: this.mode, value: numerBody};
+                numerNode = {type: "ordgroup", mode: this.mode, body: numerBody};
             }
 
             if (denomBody.length === 1 && denomBody[0].type === "ordgroup") {
                 denomNode = denomBody[0];
             } else {
-                denomNode = {type: "ordgroup", mode: this.mode, value: denomBody};
+                denomNode = {type: "ordgroup", mode: this.mode, body: denomBody};
             }
 
             let node;
@@ -404,7 +404,7 @@ export default class Parser {
                     primes.push(this.handleSupSubscript("superscript"));
                 }
                 // Put everything into an ordgroup as the superscript
-                superscript = {type: "ordgroup", mode: this.mode, value: primes};
+                superscript = {type: "ordgroup", mode: this.mode, body: primes};
             } else {
                 // If it wasn't ^, _, or ', stop parsing super/subscripts
                 break;
@@ -832,7 +832,7 @@ export default class Parser {
                 type: "ordgroup",
                 mode: this.mode,
                 loc: SourceLocation.range(firstToken, lastToken),
-                value: expression,
+                body: expression,
             }, firstToken.range(lastToken, firstToken.text));
         } else {
             // Otherwise, just return a nucleus, or nothing for an optional group

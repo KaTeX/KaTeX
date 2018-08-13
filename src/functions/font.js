@@ -110,7 +110,7 @@ defineFunction({
             body: {
                 type: "ordgroup",
                 mode: parser.mode,
-                value: body,
+                body,
             },
         };
     },

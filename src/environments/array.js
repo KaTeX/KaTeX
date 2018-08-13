@@ -87,7 +87,7 @@ function parseArray(
         cell = {
             type: "ordgroup",
             mode: parser.mode,
-            value: cell,
+            body: cell,
         };
         if (style) {
             cell = {
@@ -106,7 +106,7 @@ function parseArray(
             // the last line is empty.
             // NOTE: Currently, `cell` is the last item added into `row`.
             if (row.length === 1 && cell.type === "styling" &&
-                cell.body[0].value.length === 0) {
+                cell.body[0].body.length === 0) {
                 body.pop();
             }
             if (hLinesBeforeRow.length < body.length + 1) {
@@ -400,13 +400,13 @@ const alignedHandler = function(context, args) {
     const emptyGroup = {
         type: "ordgroup",
         mode: context.mode,
-        value: [],
+        body: [],
     };
     const ordgroup = checkNodeType(args[0], "ordgroup");
     if (ordgroup) {
         let arg0 = "";
-        for (let i = 0; i < ordgroup.value.length; i++) {
-            const textord = assertNodeType(ordgroup.value[i], "textord");
+        for (let i = 0; i < ordgroup.body.length; i++) {
+            const textord = assertNodeType(ordgroup.body[i], "textord");
             arg0 += textord.text;
         }
         numMaths = Number(arg0);
@@ -418,7 +418,7 @@ const alignedHandler = function(context, args) {
             // Modify ordgroup node within styling node
             const styling = assertNodeType(row[i], "styling");
             const ordgroup = assertNodeType(styling.body[0], "ordgroup");
-            ordgroup.value.unshift(emptyGroup);
+            ordgroup.body.unshift(emptyGroup);
         }
         if (!isAligned) { // Case 1
             const curMaths = row.length / 2;
@@ -471,7 +471,7 @@ defineEnvironment({
         // - The argument is a bare symbol node.
         const symNode = checkSymbolNodeType(args[0]);
         const colalign: AnyParseNode[] =
-            symNode ? [args[0]] : assertNodeType(args[0], "ordgroup").value;
+            symNode ? [args[0]] : assertNodeType(args[0], "ordgroup").body;
         const cols = colalign.map(function(nde) {
             const node = assertSymbolNodeType(nde);
             const ca = node.text;

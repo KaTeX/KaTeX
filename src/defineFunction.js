@@ -241,5 +241,5 @@ export function defineFunctionBuilders<NODETYPE: NodeType>({
 // list of elements, we normalize for different kinds of arguments
 export const ordargument = function(arg: AnyParseNode): AnyParseNode[] {
     const node = checkNodeType(arg, "ordgroup");
-    return node ? node.value : [arg];
+    return node ? node.body : [arg];
 };

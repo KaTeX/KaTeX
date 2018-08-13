@@ -12,8 +12,7 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
           "body": [
             {
               "type": "ordgroup",
-              "mode": "math",
-              "value": [
+              "body": [
                 {
                   "type": "mathord",
                   "loc": {
@@ -27,7 +26,8 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
                   "mode": "math",
                   "text": "a"
                 }
-              ]
+              ],
+              "mode": "math"
             }
           ],
           "mode": "math",
@@ -38,8 +38,7 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
           "body": [
             {
               "type": "ordgroup",
-              "mode": "math",
-              "value": [
+              "body": [
                 {
                   "type": "mathord",
                   "loc": {
@@ -53,7 +52,8 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
                   "mode": "math",
                   "text": "b"
                 }
-              ]
+              ],
+              "mode": "math"
             }
           ],
           "mode": "math",
@@ -66,8 +66,7 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
           "body": [
             {
               "type": "ordgroup",
-              "mode": "math",
-              "value": [
+              "body": [
                 {
                   "type": "mathord",
                   "loc": {
@@ -81,7 +80,8 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
                   "mode": "math",
                   "text": "c"
                 }
-              ]
+              ],
+              "mode": "math"
             }
           ],
           "mode": "math",
@@ -92,8 +92,7 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
           "body": [
             {
               "type": "ordgroup",
-              "mode": "math",
-              "value": [
+              "body": [
                 {
                   "type": "mathord",
                   "loc": {
@@ -107,7 +106,8 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
                   "mode": "math",
                   "text": "d"
                 }
-              ]
+              ],
+              "mode": "math"
             }
           ],
           "mode": "math",
@@ -630,19 +630,18 @@ exports[`An implicit group parser within optional groups should work style comma
     "type": "sqrt",
     "body": {
       "type": "ordgroup",
-      "mode": "math",
-      "value": [
+      "body": [
         {
           "type": "mathord",
           "mode": "math",
           "text": "x"
         }
-      ]
+      ],
+      "mode": "math"
     },
     "index": {
       "type": "ordgroup",
-      "mode": "math",
-      "value": [
+      "body": [
         {
           "type": "styling",
           "body": [
@@ -655,7 +654,8 @@ exports[`An implicit group parser within optional groups should work style comma
           "mode": "math",
           "style": "text"
         }
-      ]
+      ],
+      "mode": "math"
     },
     "mode": "math"
   }
@@ -668,19 +668,18 @@ exports[`An implicit group parser within optional groups should work with \\colo
     "type": "sqrt",
     "body": {
       "type": "ordgroup",
-      "mode": "math",
-      "value": [
+      "body": [
         {
           "type": "mathord",
           "mode": "math",
           "text": "x"
         }
-      ]
+      ],
+      "mode": "math"
     },
     "index": {
       "type": "ordgroup",
-      "mode": "math",
-      "value": [
+      "body": [
         {
           "type": "color",
           "body": [
@@ -693,7 +692,8 @@ exports[`An implicit group parser within optional groups should work with \\colo
           "color": "red",
           "mode": "math"
         }
-      ]
+      ],
+      "mode": "math"
     },
     "mode": "math"
   }
@@ -706,36 +706,36 @@ exports[`An implicit group parser within optional groups should work with old fo
     "type": "sqrt",
     "body": {
       "type": "ordgroup",
-      "mode": "math",
-      "value": [
+      "body": [
         {
           "type": "mathord",
           "mode": "math",
           "text": "x"
         }
-      ]
+      ],
+      "mode": "math"
     },
     "index": {
       "type": "ordgroup",
-      "mode": "math",
-      "value": [
+      "body": [
         {
           "type": "font",
           "body": {
             "type": "ordgroup",
-            "mode": "math",
-            "value": [
+            "body": [
               {
                 "type": "textord",
                 "mode": "math",
                 "text": "3"
               }
-            ]
+            ],
+            "mode": "math"
           },
           "font": "mathtt",
           "mode": "math"
         }
-      ]
+      ],
+      "mode": "math"
     },
     "mode": "math"
   }
@@ -748,19 +748,18 @@ exports[`An implicit group parser within optional groups should work with sizing
     "type": "sqrt",
     "body": {
       "type": "ordgroup",
-      "mode": "math",
-      "value": [
+      "body": [
         {
           "type": "mathord",
           "mode": "math",
           "text": "x"
         }
-      ]
+      ],
+      "mode": "math"
     },
     "index": {
       "type": "ordgroup",
-      "mode": "math",
-      "value": [
+      "body": [
         {
           "type": "sizing",
           "body": [
@@ -773,7 +772,8 @@ exports[`An implicit group parser within optional groups should work with sizing
           "mode": "math",
           "size": 5
         }
-      ]
+      ],
+      "mode": "math"
     },
     "mode": "math"
   }
