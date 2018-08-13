@@ -369,7 +369,7 @@ defineFunction({
         } else {
             leftNode = assertAtomFamily(args[0], "open");
         }
-        const leftDelim = delimFromValue(leftNode.value);
+        const leftDelim = delimFromValue(leftNode.text);
 
         let rightNode = checkNodeType(args[1], "ordgroup");
         if (rightNode) {
@@ -377,7 +377,7 @@ defineFunction({
         } else {
             rightNode = assertAtomFamily(args[1], "close");
         }
-        const rightDelim = delimFromValue(rightNode.value);
+        const rightDelim = delimFromValue(rightNode.text);
 
         const barNode = assertNodeType(args[2], "size");
         let hasBarLine;
@@ -398,11 +398,11 @@ defineFunction({
         if (styl) {
             if (styl.value.length > 0) {
                 const textOrd = assertNodeType(styl.value[0], "textord");
-                size = stylArray[Number(textOrd.value)];
+                size = stylArray[Number(textOrd.text)];
             }
         } else {
             styl = assertNodeType(args[3], "textord");
-            size = stylArray[Number(styl.value)];
+            size = stylArray[Number(styl.text)];
         }
 
         return {

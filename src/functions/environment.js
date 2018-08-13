@@ -19,7 +19,7 @@ defineFunction({
         }
         let name = "";
         for (let i = 0; i < nameGroup.value.length; ++i) {
-            name += assertNodeType(nameGroup.value[i], "textord").value;
+            name += assertNodeType(nameGroup.value[i], "textord").text;
         }
         return {
             type: "environment",
