@@ -61,6 +61,16 @@ jobs:
           key: *node_modules_cache_key
           paths:
             - node_modules
+
+      - add_ssh_keys:
+          fingerprints:
+            - "e1:ac:13:98:98:8b:fd:38:81:12:28:55:75:a1:da:73"
+      - run:
+          name: Test SSH key
+          command: |
+              if [[ $CIRCLE_BRANCH == "master" ]]; then
+                ssh -T git@github.com
+              fi
       - run:
           name: Greenkeeper - update and commit yarn.lock
           command: |
