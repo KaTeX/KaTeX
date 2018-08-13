@@ -6,10 +6,9 @@
 
 import Parser from "./Parser";
 import ParseError from "./ParseError";
-import ParseNode from "./ParseNode";
 
 import type Settings from "./Settings";
-import type {AnyParseNode} from "./ParseNode";
+import type {AnyParseNode} from "./parseNode";
 
 /**
  * Parses an expression using a Parser, then returns the parsed result.
@@ -30,11 +29,12 @@ const parseTree = function(toParse: string, settings: Settings): AnyParseNode[] 
             throw new ParseError("\\tag works only in display equations");
         }
         parser.gullet.feed("\\df@tag");
-        tree = [new ParseNode("tag", {
+        tree = [{
             type: "tag",
+            mode: "text",
             body: tree,
             tag: parser.parse(),
-        }, "text")];
+        }];
     }
 
     return tree;

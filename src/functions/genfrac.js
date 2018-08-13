@@ -4,7 +4,8 @@ import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import Style from "../Style";
-import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
+import {assertNodeType, assertAtomFamily, checkNodeType} from "../parseNode";
+import {assert} from "../utils";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -15,15 +16,15 @@ const htmlBuilder = (group, options) => {
     // Figure out what style this fraction should be in based on the
     // function used
     let style = options.style;
-    if (group.value.size === "display") {
+    if (group.size === "display") {
         style = Style.DISPLAY;
-    } else if (group.value.size === "text" &&
+    } else if (group.size === "text" &&
         style.size === Style.DISPLAY.size) {
         // We're in a \tfrac but incoming style is displaystyle, so:
         style = Style.TEXT;
-    } else if (group.value.size === "script") {
+    } else if (group.size === "script") {
         style = Style.SCRIPT;
-    } else if (group.value.size === "scriptscript") {
+    } else if (group.size === "scriptscript") {
         style = Style.SCRIPTSCRIPT;
     }
 
@@ -32,9 +33,9 @@ const htmlBuilder = (group, options) => {
     let newOptions;
 
     newOptions = options.havingStyle(nstyle);
-    const numerm = html.buildGroup(group.value.numer, newOptions, options);
+    const numerm = html.buildGroup(group.numer, newOptions, options);
 
-    if (group.value.continued) {
+    if (group.continued) {
         // \cfrac inserts a \strut into the numerator.
         // Get \strut dimensions from TeXbook page 353.
         const hStrut = 8.5 / options.fontMetrics().ptPerEm;
@@ -44,14 +45,14 @@ const htmlBuilder = (group, options) => {
     }
 
     newOptions = options.havingStyle(dstyle);
-    const denomm = html.buildGroup(group.value.denom, newOptions, options);
+    const denomm = html.buildGroup(group.denom, newOptions, options);
 
     let rule;
     let ruleWidth;
     let ruleSpacing;
-    if (group.value.hasBarLine) {
-        if (group.value.barSize) {
-            ruleWidth = calculateSize(group.value.barSize, options);
+    if (group.hasBarLine) {
+        if (group.barSize) {
+            ruleWidth = calculateSize(group.barSize, options);
             rule = buildCommon.makeLineSpan("frac-line", options, ruleWidth);
         } else {
             rule = buildCommon.makeLineSpan("frac-line", options);
@@ -150,21 +151,21 @@ const htmlBuilder = (group, options) => {
 
     let leftDelim;
     let rightDelim;
-    if (group.value.leftDelim == null) {
+    if (group.leftDelim == null) {
         leftDelim = html.makeNullDelimiter(options, ["mopen"]);
     } else {
         leftDelim = delimiter.customSizedDelim(
-            group.value.leftDelim, delimSize, true,
+            group.leftDelim, delimSize, true,
             options.havingStyle(style), group.mode, ["mopen"]);
     }
 
-    if (group.value.continued) {
+    if (group.continued) {
         rightDelim = buildCommon.makeSpan([]); // zero width for \cfrac
-    } else if (group.value.rightDelim == null) {
+    } else if (group.rightDelim == null) {
         rightDelim = html.makeNullDelimiter(options, ["mclose"]);
     } else {
         rightDelim = delimiter.customSizedDelim(
-            group.value.rightDelim, delimSize, true,
+            group.rightDelim, delimSize, true,
             options.havingStyle(style), group.mode, ["mclose"]);
     }
 
@@ -178,23 +179,23 @@ const mathmlBuilder = (group, options) => {
     const node = new mathMLTree.MathNode(
         "mfrac",
         [
-            mml.buildGroup(group.value.numer, options),
-            mml.buildGroup(group.value.denom, options),
+            mml.buildGroup(group.numer, options),
+            mml.buildGroup(group.denom, options),
         ]);
 
-    if (!group.value.hasBarLine) {
+    if (!group.hasBarLine) {
         node.setAttribute("linethickness", "0px");
-    } else if (group.value.barSize) {
-        const ruleWidth = calculateSize(group.value.barSize, options);
+    } else if (group.barSize) {
+        const ruleWidth = calculateSize(group.barSize, options);
         node.setAttribute("linethickness", ruleWidth + "em");
     }
 
-    if (group.value.leftDelim != null || group.value.rightDelim != null) {
+    if (group.leftDelim != null || group.rightDelim != null) {
         const withDelims = [];
 
-        if (group.value.leftDelim != null) {
+        if (group.leftDelim != null) {
             const leftOp = new mathMLTree.MathNode(
-                "mo", [new mathMLTree.TextNode(group.value.leftDelim)]);
+                "mo", [new mathMLTree.TextNode(group.leftDelim)]);
 
             leftOp.setAttribute("fence", "true");
 
@@ -203,9 +204,9 @@ const mathmlBuilder = (group, options) => {
 
         withDelims.push(node);
 
-        if (group.value.rightDelim != null) {
+        if (group.rightDelim != null) {
             const rightOp = new mathMLTree.MathNode(
-                "mo", [new mathMLTree.TextNode(group.value.rightDelim)]);
+                "mo", [new mathMLTree.TextNode(group.rightDelim)]);
 
             rightOp.setAttribute("fence", "true");
 
@@ -281,17 +282,18 @@ defineFunction({
                 break;
         }
 
-        return new ParseNode("genfrac", {
+        return {
             type: "genfrac",
+            mode: parser.mode,
             continued: funcName === "\\cfrac",
-            numer: numer,
-            denom: denom,
-            hasBarLine: hasBarLine,
-            leftDelim: leftDelim,
-            rightDelim: rightDelim,
-            size: size,
+            numer,
+            denom,
+            hasBarLine,
+            leftDelim,
+            rightDelim,
+            size,
             barSize: null,
-        }, parser.mode);
+        };
     },
 
     htmlBuilder,
@@ -328,11 +330,12 @@ defineFunction({
             default:
                 throw new Error("Unrecognized infix genfrac command");
         }
-        return new ParseNode("infix", {
+        return {
             type: "infix",
-            replaceWith: replaceWith,
-            token: token,
-        }, parser.mode);
+            mode: parser.mode,
+            replaceWith,
+            token,
+        };
     },
 });
 
@@ -355,37 +358,37 @@ defineFunction({
         greediness: 6,
         argTypes: ["math", "math", "size", "text", "math", "math"],
     },
-    handler: ({parser}, args) => {
+    handler({parser}, args) {
         const numer = args[4];
         const denom = args[5];
 
         // Look into the parse nodes to get the desired delimiters.
         let leftNode = checkNodeType(args[0], "ordgroup");
         if (leftNode) {
-            leftNode = assertNodeType(leftNode.value[0], "open");
+            leftNode = assertAtomFamily(leftNode.value[0], "open");
         } else {
-            leftNode = assertNodeType(args[0], "open");
+            leftNode = assertAtomFamily(args[0], "open");
         }
         const leftDelim = delimFromValue(leftNode.value);
 
         let rightNode = checkNodeType(args[1], "ordgroup");
         if (rightNode) {
-            rightNode = assertNodeType(rightNode.value[0], "close");
+            rightNode = assertAtomFamily(rightNode.value[0], "close");
         } else {
-            rightNode = assertNodeType(args[1], "close");
+            rightNode = assertAtomFamily(args[1], "close");
         }
         const rightDelim = delimFromValue(rightNode.value);
 
         const barNode = assertNodeType(args[2], "size");
         let hasBarLine;
         let barSize = null;
-        if (barNode.value.isBlank) {
+        if (barNode.isBlank) {
             // \genfrac acts differently than \above.
             // \genfrac treats an empty size group as a signal to use a
             // standard bar size. \above would see size = 0 and omit the bar.
             hasBarLine = true;
         } else {
-            barSize = barNode.value.value;
+            barSize = barNode.value;
             hasBarLine = barSize.number > 0;
         }
 
@@ -394,24 +397,26 @@ defineFunction({
         let styl = checkNodeType(args[3], "ordgroup");
         if (styl) {
             if (styl.value.length > 0) {
-                size = stylArray[Number(styl.value[0].value)];
+                const textOrd = assertNodeType(styl.value[0], "textord");
+                size = stylArray[Number(textOrd.value)];
             }
         } else {
             styl = assertNodeType(args[3], "textord");
             size = stylArray[Number(styl.value)];
         }
 
-        return new ParseNode("genfrac", {
+        return {
             type: "genfrac",
-            numer: numer,
-            denom: denom,
+            mode: parser.mode,
+            numer,
+            denom,
             continued: false,
-            hasBarLine: hasBarLine,
-            barSize: barSize,
-            leftDelim: leftDelim,
-            rightDelim: rightDelim,
-            size: size,
-        }, parser.mode);
+            hasBarLine,
+            barSize,
+            leftDelim,
+            rightDelim,
+            size,
+        };
     },
 
     htmlBuilder,
@@ -428,13 +433,13 @@ defineFunction({
         infix: true,
     },
     handler({parser, funcName, token}, args) {
-        const sizeNode = assertNodeType(args[0], "size");
-        return new ParseNode("infix", {
+        return {
             type: "infix",
+            mode: parser.mode,
             replaceWith: "\\\\abovefrac",
-            sizeNode: sizeNode,
-            token: token,
-        }, parser.mode);
+            size: assertNodeType(args[0], "size").value,
+            token,
+        };
     },
 });
 
@@ -447,23 +452,22 @@ defineFunction({
     },
     handler: ({parser, funcName}, args) => {
         const numer = args[0];
-        const infixNode = assertNodeType(args[1], "infix");
-        const sizeNode = assertNodeType(infixNode.value.sizeNode, "size");
+        const barSize = assert(assertNodeType(args[1], "infix").size);
         const denom = args[2];
 
-        const barSize = sizeNode.value.value;
         const hasBarLine = barSize.number > 0;
-        return new ParseNode("genfrac", {
+        return {
             type: "genfrac",
-            numer: numer,
-            denom: denom,
+            mode: parser.mode,
+            numer,
+            denom,
             continued: false,
-            hasBarLine: hasBarLine,
-            barSize: barSize,
+            hasBarLine,
+            barSize,
             leftDelim: null,
             rightDelim: null,
             size: "auto",
-        }, parser.mode);
+        };
     },
 
     htmlBuilder,

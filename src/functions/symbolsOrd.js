@@ -5,7 +5,7 @@ import mathMLTree from "../mathMLTree";
 
 import * as mml from "../buildMathML";
 
-import type ParseNode from "../ParseNode";
+import type {ParseNode} from "../parseNode";
 
 // "mathord" and "textord" ParseNodes created in Parser.js from symbol Groups in
 // src/symbols.js.

@@ -2,7 +2,6 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode from "../ParseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -16,14 +15,15 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[0];
-        return new ParseNode("phantom", {
+        return {
             type: "phantom",
-            value: ordargument(body),
-        }, parser.mode);
+            mode: parser.mode,
+            body: ordargument(body),
+        };
     },
     htmlBuilder: (group, options) => {
         const elements = html.buildExpression(
-            group.value.value,
+            group.body,
             options.withPhantom(),
             false
         );
@@ -33,7 +33,7 @@ defineFunction({
         return new buildCommon.makeFragment(elements);
     },
     mathmlBuilder: (group, options) => {
-        const inner = mml.buildExpression(group.value.value, options);
+        const inner = mml.buildExpression(group.body, options);
         return new mathMLTree.MathNode("mphantom", inner);
     },
 });
@@ -47,15 +47,15 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[0];
-        return new ParseNode("hphantom", {
+        return {
             type: "hphantom",
-            value: ordargument(body),
-            body: body,
-        }, parser.mode);
+            mode: parser.mode,
+            body,
+        };
     },
     htmlBuilder: (group, options) => {
         let node = buildCommon.makeSpan(
-            [], [html.buildGroup(group.value.body, options.withPhantom())]);
+            [], [html.buildGroup(group.body, options.withPhantom())]);
         node.height = 0;
         node.depth = 0;
         if (node.children) {
@@ -74,7 +74,7 @@ defineFunction({
         return node;
     },
     mathmlBuilder: (group, options) => {
-        const inner = mml.buildExpression(group.value.value, options);
+        const inner = mml.buildExpression(ordargument(group.body), options);
         const node = new mathMLTree.MathNode("mphantom", inner);
         node.setAttribute("height", "0px");
         return node;
@@ -90,22 +90,22 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[0];
-        return new ParseNode("vphantom", {
+        return {
             type: "vphantom",
-            value: ordargument(body),
-            body: body,
-        }, parser.mode);
+            mode: parser.mode,
+            body,
+        };
     },
     htmlBuilder: (group, options) => {
         const inner = buildCommon.makeSpan(
             ["inner"],
-            [html.buildGroup(group.value.body, options.withPhantom())]);
+            [html.buildGroup(group.body, options.withPhantom())]);
         const fix = buildCommon.makeSpan(["fix"], []);
         return buildCommon.makeSpan(
             ["mord", "rlap"], [inner, fix], options);
     },
     mathmlBuilder: (group, options) => {
-        const inner = mml.buildExpression(group.value.value, options);
+        const inner = mml.buildExpression(ordargument(group.body), options);
         const node = new mathMLTree.MathNode("mphantom", inner);
         node.setAttribute("width", "0px");
         return node;

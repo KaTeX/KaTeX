@@ -1,14 +1,20 @@
 body {
-    font: 16px/1.4 "proxima-nova", "Helvetica Neue", Arial, Helvetica, sans-serif;
+    font: 16px/1.4 "Lato", "Helvetica Neue", Arial, Helvetica, sans-serif;
+    margin: 0;
+}
+
+b {
+    font-weight: bolder;
 }
 
 .container {
     margin: 0 auto;
-    margin: 0 auto;
-    width: 800px;
+    width: 100%;
+    max-width: 800px;
 }
 
-.header, .footer {
+.header,
+.footer {
     color: #fff;
     background: #329894;
     overflow: hidden;
@@ -22,14 +28,14 @@ body {
 .cta a {
     border-radius: 3px;
     display: inline-block;
-    font-weight: 600;
+    font-weight: 700;
     margin: 0 10px;
     padding: 8px 24px;
     text-decoration: none;
 }
 
 .header {
-    padding: 40px 0 0;
+    padding: 40px 15px 0;
 }
 
 .logo {
@@ -46,7 +52,7 @@ body {
 }
 
 .tagline em {
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .header .cta a {
@@ -59,23 +65,21 @@ body {
 }
 
 .demo {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     font-size: 22px;
     margin: 50px 0 0;
 }
 
-.demo,
-.demo-left,
-.demo-right {
-    height: 260px;
-}
-
 .demo-left,
 .demo-right {
     box-sizing: border-box;
-    float: left;
     padding: 20px 30px;
-    width: 50%;
+    height: 260px;
+    width: 100%;
 }
 
 .demo-instructions {
@@ -95,6 +99,8 @@ body {
     color: #fff;
     font: 14px Menlo, monospace;
     height: 160px;
+    margin: 0;
+    overflow: auto;
     padding: 10px;
     resize: none;
     width: 100%;
@@ -116,21 +122,22 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     min-height: 400px;
     position: relative;
-    padding: 30px 0;
+    padding: 30px 15px;
 }
 
 .subtagline {
     color: #329894;
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 700;
     padding: 20px 0;
     text-align: center;
 }
 
 .features {
     font-size: 20px;
+    font-weight: 300;
     margin: 0 auto;
-    width: 540px;
+    max-width: 540px;
 }
 
 .features > li {
@@ -167,7 +174,7 @@ body {
     background-position: 50% 50%;
     background-size: cover;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    height: 340px;
+    padding-top: 42%;
     width: 100%;
 }
 
@@ -175,6 +182,7 @@ body {
     padding-top: 50px;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .main .cta a {
     border: 3px solid;
     color: #329894;
@@ -185,7 +193,7 @@ body {
 }
 
 .footer {
-    padding: 30px 0;
+    padding: 30px 15px;
     font-size: 21px;
 }
 
@@ -203,10 +211,45 @@ body {
     font-size: 16px;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .credits a {
     color: white;
 }
 
 .errorMessage {
     color: red;
+}
+
+@media only screen and (min-width: 736px) {
+    .demo-left,
+    .demo-right {
+        -ms-flex-preferred-size: 0;
+        flex-basis: 0;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+    }
+}
+
+@media only screen and (max-width: 735px) {
+    .cta a {
+        display: block;
+        margin-bottom: 10px;
+    }
+}
+
+.svg-inline--fa {
+    overflow: visible;
+    display: inline-block;
+    font-size: inherit;
+    height: 1em;
+    vertical-align: -0.125em;
+    margin-right: 3px;
+}
+
+.svg-inline--fa.fa-w-14 {
+    width: 0.875em;
+}
+
+.svg-inline--fa.fa-w-16 {
+    width: 1em;
 }
