@@ -82,6 +82,7 @@
         "rules": {
             "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"],
             "transform-runtime-aliasing/no-transform-runtime-aliasing": 2
+        },
         "env": {
             "node": false
         }
