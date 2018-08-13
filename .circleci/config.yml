@@ -73,7 +73,7 @@ jobs:
 
       - run:
           name: Run tests
-          command: yarn test --coverage
+          command: yarn test -i --coverage
       - run:
           name: Upload code coverage reports to Codecov
           command: ./node_modules/.bin/codecov
