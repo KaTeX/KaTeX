@@ -92,6 +92,7 @@ describe("A rel parser", function() {
         for (let i = 0; i < parse.length; i++) {
             let group = parse[i];
             if (group.type === "htmlmathml") {
+                expect(group.html).toHaveLength(1);
                 group = group.html[0];
             }
             if (group.type === "mclass") {

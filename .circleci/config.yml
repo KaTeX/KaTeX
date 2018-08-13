@@ -29,7 +29,7 @@ screenshotter: &screenshotter
 
     - run:
         name: Verify screenshots and generate diffs and new screenshots
-        command: node dockers/Screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new
+        command: node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new
 
     - store_artifacts:
         path: test/screenshotter/new
@@ -62,6 +62,15 @@ jobs:
           paths:
             - node_modules
 
+      - add_ssh_keys:
+          fingerprints:
+            - "e1:ac:13:98:98:8b:fd:38:81:12:28:55:75:a1:da:73"
+      - run:
+          name: Greenkeeper - update and commit yarn.lock
+          command: |
+              ./node_modules/.bin/greenkeeper-lockfile-update
+              ./node_modules/.bin/greenkeeper-lockfile-upload
+
       - run:
           name: Run tests
           command: yarn test --coverage
@@ -71,14 +80,14 @@ jobs:
 
       - run:
           name: Build KaTeX
-          command: yarn build
+          command: USE_TTF=false yarn build
 
       - store_artifacts:
-          path: dist/katex.js
-          destination: katex.js
+          path: dist/katex.min.js
+          destination: katex.min.js
       - store_artifacts:
-          path: dist/katex.css
-          destination: katex.css
+          path: dist/katex.min.css
+          destination: katex.min.css
       - store_artifacts:
           path: dist/fonts
           destination: fonts
@@ -92,11 +101,13 @@ jobs:
     docker:
       - image: circleci/node:6
       - image: selenium/standalone-chrome:2.48.2
+        environment:
+          DBUS_SESSION_BUS_ADDRESS: /dev/null
     <<: *screenshotter
 
 workflows:
   version: 2
-  screenshotter:
+  test:
     jobs:
       - test
       - firefox

@@ -12,6 +12,14 @@
 // If on netlify, use '/'. Otherwise use '/KaTeX/'.
 const baseUrl = process.env.BASE_URL || (process.env.CONTEXT ? '/' : '/KaTeX/');
 
+// Plugin for Remarkable to inject variables
+const {Plugin: Embed} = require('remarkable-embed');
+const embed = new Embed();
+
+ // {@stylesheet: path}
+embed.register('stylesheet',
+    path => `<link rel="stylesheet" href="${baseUrl}static/${path}"/>`);
+
 /* List of projects/orgs using your project for the users page */
 const users = [
     {
@@ -134,6 +142,12 @@ const users = [
         infoLink: 'https://stackedit.io/',
         pinned: true,
     },
+    {
+        caption: 'Vade Mecum Shelf',
+        image: 'https://raw.githubusercontent.com/tonton-pixel/vade-mecum-shelf/master/icons/icon.png',
+        infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
+        pinned: true,
+    },
 ];
 
 const siteConfig = {
@@ -179,13 +193,16 @@ const siteConfig = {
         theme: 'default',
     },
 
-    markdownPlugins: [require('./remarkableKatex'), require('./empty_thead')],
+    markdownPlugins: [
+        embed.hook,
+        require('./lib/remarkable-katex'),
+        require('./lib/empty-thead'),
+    ],
 
     scripts: [
         'https://buttons.github.io/buttons.js',
         baseUrl + 'js/scrollspy.js',
     ],
-    stylesheets: ['https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css'],
 
     separateCss: ['static/static', 'static\\static'],
 

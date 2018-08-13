@@ -6,7 +6,7 @@
  */
 
 import utils from "./utils";
-import ParseError from "./ParseError.js";
+import ParseError from "./ParseError";
 import {Token} from "./Token";
 
 import type {AnyParseNode} from "./parseNode";

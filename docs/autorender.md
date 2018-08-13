@@ -13,36 +13,34 @@ using a CDN:
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
 ```
 
-Then, call the exposed `renderMathInElement` function in a script tag
-before the close body tag:
+> Above, the [`defer` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
+indicates that the script doesn't need to execute until the page has loaded,
+speeding up page rendering; and the `onload` attribute calls
+`renderMathInElement` once the auto-render script loads.
+
+Alternatively, you can call the `renderMathInElement` when (or after) the
+[`DOMContentLoaded` event](https://developer.mozilla.org/ko/docs/Web/Reference/Events/DOMContentLoaded)
+fires on the document or in another deferred script.
+This approach is useful for specifying or computing options, or if you don't
+want to use a `defer` or `onload` attribute.
+For example:
 
 ```html
-<body>
-  ...
-  <script>
-    renderMathInElement(document.body);
-  </script>
-</body>
-```
-
-If you prefer to have all your setup inside the html `<head>`,
-you can use the following script there
-(instead of the one above at the end of the `<body>`):
-
-```html
-<head>
-  ...
-  <script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"></script>
+<script>
     document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body);
+        renderMathInElement(document.body, {
+            // ...options...
+        });
     });
-  </script>
-  ...
-</head>
+</script>
 ```
 
 ## API
