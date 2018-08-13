@@ -36,6 +36,7 @@
     "eslint-plugin-transform-runtime-aliasing": "^0.1.1",
     "file-loader": "^1.1.11",
     "flow-bin": "^0.78.0",
+    "greenkeeper-lockfile": "^1.15.1",
     "husky": "^1.0.0-rc.8",
     "jest": "^23.0.1",
     "jest-serializer-html": "^5.0.0",
