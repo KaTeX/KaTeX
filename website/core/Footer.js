@@ -64,7 +64,6 @@ class Footer extends React.Component {
               </div>
               <div>
                 <h5>More</h5>
-                <a href="https://github.com/orgs/KaTeX/people">Team</a>
                 <a href="https://github.com/Khan/KaTeX/graphs/contributors">Contributors</a>
                 <a
                   className="github-button"
