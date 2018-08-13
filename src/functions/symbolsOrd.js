@@ -24,7 +24,7 @@ defineFunctionBuilders({
     mathmlBuilder(group: ParseNode<"mathord">, options) {
         const node = new mathMLTree.MathNode(
             "mi",
-            [mml.makeText(group.value, group.mode, options)]);
+            [mml.makeText(group.text, group.mode, options)]);
 
         const variant = mml.getVariant(group, options) || "italic";
         if (variant !== defaultVariant[node.type]) {
@@ -40,17 +40,17 @@ defineFunctionBuilders({
         return buildCommon.makeOrd(group, options, "textord");
     },
     mathmlBuilder(group: ParseNode<"textord">, options) {
-        const text = mml.makeText(group.value, group.mode, options);
+        const text = mml.makeText(group.text, group.mode, options);
         const variant = mml.getVariant(group, options) || "normal";
 
         let node;
         if (group.mode === 'text') {
             node = new mathMLTree.MathNode("mtext", [text]);
-        } else if (/[0-9]/.test(group.value)) {
+        } else if (/[0-9]/.test(group.text)) {
             // TODO(kevinb) merge adjacent <mn> nodes
             // do it as a post processing step
             node = new mathMLTree.MathNode("mn", [text]);
-        } else if (group.value === "\\prime") {
+        } else if (group.text === "\\prime") {
             node = new mathMLTree.MathNode("mo", [text]);
         } else {
             node = new mathMLTree.MathNode("mi", [text]);

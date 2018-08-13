@@ -407,7 +407,7 @@ const alignedHandler = function(context, args) {
         let arg0 = "";
         for (let i = 0; i < ordgroup.value.length; i++) {
             const textord = assertNodeType(ordgroup.value[i], "textord");
-            arg0 += textord.value;
+            arg0 += textord.text;
         }
         numMaths = Number(arg0);
         numCols = numMaths * 2;
@@ -474,7 +474,7 @@ defineEnvironment({
             symNode ? [args[0]] : assertNodeType(args[0], "ordgroup").value;
         const cols = colalign.map(function(nde) {
             const node = assertSymbolNodeType(nde);
-            const ca = node.value;
+            const ca = node.text;
             if ("lcr".indexOf(ca) !== -1) {
                 return {
                     type: "align",

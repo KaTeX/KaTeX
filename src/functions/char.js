@@ -19,7 +19,7 @@ defineFunction({
         let number = "";
         for (let i = 0; i < group.length; i++) {
             const node = assertNodeType(group[i], "textord");
-            number += node.value;
+            number += node.text;
         }
         const code = parseInt(number);
         if (isNaN(code)) {
@@ -28,7 +28,7 @@ defineFunction({
         return {
             type: "textord",
             mode: parser.mode,
-            value: String.fromCharCode(code),
+            text: String.fromCharCode(code),
         };
     },
 });

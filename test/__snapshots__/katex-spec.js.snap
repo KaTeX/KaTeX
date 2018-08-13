@@ -25,7 +25,7 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
                     "start": 36
                   },
                   "mode": "math",
-                  "value": "a"
+                  "text": "a"
                 }
               ]
             }
@@ -51,7 +51,7 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
                     "start": 38
                   },
                   "mode": "math",
-                  "value": "b"
+                  "text": "b"
                 }
               ]
             }
@@ -79,7 +79,7 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
                     "start": 41
                   },
                   "mode": "math",
-                  "value": "c"
+                  "text": "c"
                 }
               ]
             }
@@ -105,7 +105,7 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
                     "start": 43
                   },
                   "mode": "math",
-                  "value": "d"
+                  "text": "d"
                 }
               ]
             }
@@ -569,13 +569,13 @@ exports[`A parse tree generator generates a tree 1`] = `
     "base": {
       "type": "mathord",
       "mode": "math",
-      "value": "\\\\sigma"
+      "text": "\\\\sigma"
     },
     "mode": "math",
     "sup": {
       "type": "textord",
       "mode": "math",
-      "value": "2"
+      "text": "2"
     }
   }
 ]
@@ -635,7 +635,7 @@ exports[`An implicit group parser within optional groups should work style comma
         {
           "type": "mathord",
           "mode": "math",
-          "value": "x"
+          "text": "x"
         }
       ]
     },
@@ -649,7 +649,7 @@ exports[`An implicit group parser within optional groups should work style comma
             {
               "type": "textord",
               "mode": "math",
-              "value": "3"
+              "text": "3"
             }
           ],
           "mode": "math",
@@ -673,7 +673,7 @@ exports[`An implicit group parser within optional groups should work with \\colo
         {
           "type": "mathord",
           "mode": "math",
-          "value": "x"
+          "text": "x"
         }
       ]
     },
@@ -687,7 +687,7 @@ exports[`An implicit group parser within optional groups should work with \\colo
             {
               "type": "textord",
               "mode": "math",
-              "value": "3"
+              "text": "3"
             }
           ],
           "color": "red",
@@ -711,7 +711,7 @@ exports[`An implicit group parser within optional groups should work with old fo
         {
           "type": "mathord",
           "mode": "math",
-          "value": "x"
+          "text": "x"
         }
       ]
     },
@@ -728,7 +728,7 @@ exports[`An implicit group parser within optional groups should work with old fo
               {
                 "type": "textord",
                 "mode": "math",
-                "value": "3"
+                "text": "3"
               }
             ]
           },
@@ -753,7 +753,7 @@ exports[`An implicit group parser within optional groups should work with sizing
         {
           "type": "mathord",
           "mode": "math",
-          "value": "x"
+          "text": "x"
         }
       ]
     },
@@ -767,7 +767,7 @@ exports[`An implicit group parser within optional groups should work with sizing
             {
               "type": "textord",
               "mode": "math",
-              "value": "3"
+              "text": "3"
             }
           ],
           "mode": "math",

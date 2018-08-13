@@ -596,10 +596,10 @@ describe("An over/brace/brack parser", function() {
         const parse = getParsed(nestedOverExpression)[0];
         expect(parse.type).toEqual("genfrac");
         expect(parse.numer.value[0].type).toEqual("genfrac");
-        expect(parse.numer.value[0].numer.value[0].value).toEqual("1");
-        expect(parse.numer.value[0].denom.value[0].value).toEqual("2");
+        expect(parse.numer.value[0].numer.value[0].text).toEqual("1");
+        expect(parse.numer.value[0].denom.value[0].text).toEqual("2");
         expect(parse.denom).toBeDefined();
-        expect(parse.denom.value[0].value).toEqual("3");
+        expect(parse.denom.value[0].text).toEqual("3");
     });
 
     it("should fail with multiple overs in the same group", function() {
@@ -711,7 +711,7 @@ describe("A text parser", function() {
         const parse = getParsed(leadingSpaceTextExpression)[0];
         // [m, o, o]
         expect(parse.body).toHaveLength(3);
-        expect(parse.body.map(n => n.value).join("")).toBe("moo");
+        expect(parse.body.map(n => n.text).join("")).toBe("moo");
     });
 
     it("should parse math within text group", function() {
@@ -1089,14 +1089,14 @@ describe("A non-braced kern parser", function() {
         const abParse3 = getParsed(abKern3);
 
         expect(abParse1).toHaveLength(3);
-        expect(abParse1[0].value).toEqual("a");
-        expect(abParse1[2].value).toEqual("b");
+        expect(abParse1[0].text).toEqual("a");
+        expect(abParse1[2].text).toEqual("b");
         expect(abParse2).toHaveLength(3);
-        expect(abParse2[0].value).toEqual("a");
-        expect(abParse2[2].value).toEqual("b");
+        expect(abParse2[0].text).toEqual("a");
+        expect(abParse2[2].text).toEqual("b");
         expect(abParse3).toHaveLength(3);
-        expect(abParse3[0].value).toEqual("a");
-        expect(abParse3[2].value).toEqual("b");
+        expect(abParse3[0].text).toEqual("a");
+        expect(abParse3[2].text).toEqual("b");
     });
 
     it("should not parse invalid units", function() {
@@ -1119,9 +1119,9 @@ describe("A non-braced kern parser", function() {
         const abParse = getParsed(abKern);
 
         expect(abParse).toHaveLength(3);
-        expect(abParse[0].value).toEqual("a");
+        expect(abParse[0].text).toEqual("a");
         expect(abParse[1].dimension.unit).toEqual("mu");
-        expect(abParse[2].value).toEqual("b");
+        expect(abParse[2].text).toEqual("b");
     });
 });
 
@@ -1474,7 +1474,7 @@ describe("A style change parser", function() {
         const displayBody = displayNode.body;
 
         expect(displayBody).toHaveLength(2);
-        expect(displayBody[0].value).toEqual("e");
+        expect(displayBody[0].text).toEqual("e");
     });
 });
 
@@ -1547,10 +1547,10 @@ describe("A font parser", function() {
         expect(bf.type).toEqual("font");
         expect(bf.font).toEqual("mathbf");
         expect(bf.body.value).toHaveLength(3);
-        expect(bf.body.value[0].value).toEqual("a");
+        expect(bf.body.value[0].text).toEqual("a");
         expect(bf.body.value[1].type).toEqual("font");
         expect(bf.body.value[1].font).toEqual("mathrm");
-        expect(bf.body.value[2].value).toEqual("c");
+        expect(bf.body.value[2].text).toEqual("c");
     });
 
     it("should have the correct greediness", function() {
