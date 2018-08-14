@@ -82,10 +82,10 @@ class Footer extends React.Component {
               target="_blank" // eslint-disable-line react/jsx-no-target-blank
               className="fbOpenSource">
               <img
-                src={this.props.config.baseUrl + 'img/khan-academy.png'}
+                src={this.props.config.baseUrl + 'img/khan-academy.svg'}
                 alt="Khan Academy"
-                width="180"
-                height="17"
+                width="175"
+                height="28"
               />
             </a>
             <section className="copyright">{this.props.config.copyright}</section>
