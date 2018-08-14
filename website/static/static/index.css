@@ -7,6 +7,13 @@ b {
     font-weight: bolder;
 }
 
+textarea {
+    margin: 0;
+    overflow: auto;
+    resize: none;
+    width: 100%;
+}
+
 .maximized {
     position: fixed;
     top: 0;
@@ -123,11 +130,7 @@ b {
     box-sizing: border-box;
     color: #fff;
     font: 14px Menlo, monospace;
-    margin: 0;
-    overflow: auto;
     padding: 10px;
-    resize: none;
-    width: 100%;
     -ms-flex-positive: 1;
     flex-grow: 1;
 }
@@ -292,7 +295,6 @@ b {
 }
 
 #macros {
-    width: 100%;
     height: 150px;
 }
 
