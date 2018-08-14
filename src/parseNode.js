@@ -62,7 +62,7 @@ type ParseNodeTypes = {
         suppressBaseShift?: boolean,
         symbol: boolean,
         name: string,
-        value?: void,
+        body?: void,
     |} | {|
         type: "op",
         mode: Mode,
@@ -72,7 +72,7 @@ type ParseNodeTypes = {
         suppressBaseShift?: boolean,
         symbol: false,  // If 'symbol' is true, `body` *must* be set.
         name?: void,
-        value: AnyParseNode[],
+        body: AnyParseNode[],
     |},
     "ordgroup": {|
         type: "ordgroup",

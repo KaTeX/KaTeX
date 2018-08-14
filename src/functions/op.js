@@ -88,9 +88,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             // $FlowFixMe
             base.italic = italic;
         }
-    } else if (group.value) {
+    } else if (group.body) {
         // If this is a list, compose that list.
-        const inner = html.buildExpression(group.value, options, true);
+        const inner = html.buildExpression(group.body, options, true);
         if (inner.length === 1 && inner[0] instanceof domTree.symbolNode) {
             base = inner[0];
             base.classes[0] = "mop"; // replace old mclass
@@ -242,10 +242,10 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
         // This is a symbol. Just add the symbol.
         node = new mathMLTree.MathNode(
             "mo", [mml.makeText(group.name, group.mode)]);
-    } else if (group.value) {
+    } else if (group.body) {
         // This is an operator with children. Add them.
         node = new mathMLTree.MathNode(
-            "mo", mml.buildExpression(group.value, options));
+            "mo", mml.buildExpression(group.body, options));
     } else {
         // This is a text operator. Add all of the characters from the
         // operator's name.
@@ -324,7 +324,7 @@ defineFunction({
             mode: parser.mode,
             limits: false,
             symbol: false,
-            value: ordargument(body),
+            body: ordargument(body),
         };
     },
     htmlBuilder,
@@ -357,7 +357,7 @@ defineFunction({
             mode: parser.mode,
             limits: false,
             symbol: false,
-            value: ordargument(body),
+            body: ordargument(body),
         };
     },
     htmlBuilder,
