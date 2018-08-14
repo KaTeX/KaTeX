@@ -102,9 +102,11 @@
         if (!demo.classList.contains("maximized")) {
             demo.insertBefore(optionsPanel, demo.childNodes[0]);
             demo.classList.add("maximized");
+            maximize.innerHTML = 'Minimize editor';
         } else {
             overlay.appendChild(optionsPanel);
             demo.classList.remove("maximized");
+            maximize.innerHTML = 'Maximize editor';
         }
     });
 
