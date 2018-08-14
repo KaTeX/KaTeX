@@ -45,7 +45,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     let large = false;
     if (style.size === Style.DISPLAY.size &&
         group.symbol &&
-        !utils.contains(noSuccessor, group.body)) {
+        !utils.contains(noSuccessor, group.name)) {
 
         // Most symbol operators get larger in displaystyle (rule 13)
         large = true;
@@ -57,16 +57,16 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
         const fontName = large ? "Size2-Regular" : "Size1-Regular";
 
         let stash = "";
-        if (group.body === "\\oiint" || group.body === "\\oiiint") {
+        if (group.name === "\\oiint" || group.name === "\\oiiint") {
             // No font glyphs yet, so use a glyph w/o the oval.
             // TODO: When font glyphs are available, delete this code.
-            stash = group.body.substr(1);
+            stash = group.name.substr(1);
             // $FlowFixMe
-            group.body = stash === "oiint" ? "\\iint" : "\\iiint";
+            group.name = stash === "oiint" ? "\\iint" : "\\iiint";
         }
 
         base = buildCommon.makeSymbol(
-            group.body, fontName, "math", options,
+            group.name, fontName, "math", options,
             ["mop", "op-symbol", large ? "large-op" : "small-op"]);
 
         if (stash.length > 0) {
@@ -83,7 +83,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
                 ],
             }, options);
             // $FlowFixMe
-            group.body = "\\" + stash;
+            group.name = "\\" + stash;
             base.classes.unshift("mop");
             // $FlowFixMe
             base.italic = italic;
@@ -103,8 +103,8 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
         // TODO(emily): Add a space in the middle of some of these
         // operators, like \limsup
         const output = [];
-        for (let i = 1; i < group.body.length; i++) {
-            output.push(buildCommon.mathsym(group.body[i], group.mode));
+        for (let i = 1; i < group.name.length; i++) {
+            output.push(buildCommon.mathsym(group.name[i], group.mode));
         }
         base = buildCommon.makeSpan(["mop"], output, options);
     }
@@ -113,7 +113,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     let baseShift = 0;
     let slant = 0;
     if ((base instanceof domTree.symbolNode
-        || group.body === "\\oiint" || group.body === "\\oiiint")
+        || group.name === "\\oiint" || group.name === "\\oiiint")
         && !group.suppressBaseShift) {
         // We suppress the shift of the base of \overset and \underset. Otherwise,
         // shift the symbol so its center lies on the axis (rule 13). It
@@ -241,7 +241,7 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
     if (group.symbol) {
         // This is a symbol. Just add the symbol.
         node = new mathMLTree.MathNode(
-            "mo", [mml.makeText(group.body, group.mode)]);
+            "mo", [mml.makeText(group.name, group.mode)]);
     } else if (group.value) {
         // This is an operator with children. Add them.
         node = new mathMLTree.MathNode(
@@ -252,7 +252,7 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
         // TODO(emily): Add a space in the middle of some of these
         // operators, like \limsup.
         node = new mathMLTree.MathNode(
-            "mi", [new mathMLTree.TextNode(group.body.slice(1))]);
+            "mi", [new mathMLTree.TextNode(group.name.slice(1))]);
 
         // Append an <mo>&ApplyFunction;</mo>.
         // ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.4
@@ -302,7 +302,7 @@ defineFunction({
             mode: parser.mode,
             limits: true,
             symbol: true,
-            body: fName,
+            name: fName,
         };
     },
     htmlBuilder,
@@ -383,7 +383,7 @@ defineFunction({
             mode: parser.mode,
             limits: false,
             symbol: false,
-            body: funcName,
+            name: funcName,
         };
     },
     htmlBuilder,
@@ -405,7 +405,7 @@ defineFunction({
             mode: parser.mode,
             limits: true,
             symbol: false,
-            body: funcName,
+            name: funcName,
         };
     },
     htmlBuilder,
@@ -432,7 +432,7 @@ defineFunction({
             mode: parser.mode,
             limits: false,
             symbol: true,
-            body: fName,
+            name: fName,
         };
     },
     htmlBuilder,
