@@ -101,7 +101,7 @@ defineFunction({
             alwaysHandleSupSub: true,
             symbol: false,
             suppressBaseShift: funcName !== "\\stackrel",
-            value: ordargument(baseArg),
+            body: ordargument(baseArg),
         };
 
         const supsub = {
