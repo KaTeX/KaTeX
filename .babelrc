@@ -1,21 +1,37 @@
 {
-    "presets": [
-        ["es2015", {
-            "modules": false,
-            "loose": true
-        }],
-        "flow"
-    ],
-    "plugins": [
-        "transform-runtime",
-        "transform-class-properties",
-        "version-inline"
-    ],
+    "presets": ["flow"],
     "env": {
-        "test": {
+        // Duplications are inevitable due to strange .babelrc env merging:
+        // babel/babel#5276. This can be simplified in Babel 7 using .babelrc.js.
+        "production": {
+            "presets": [["es2015", {"modules": false, "loose": true}]],
             "plugins": [
-                "transform-es2015-modules-commonjs"
+                "transform-class-properties",
+                "transform-runtime",
+                "version-inline",
             ],
-        }
-    }
+        },
+        "development": {
+            "presets": [["es2015", {"modules": false, "loose": true}]],
+            "plugins": [
+                "transform-class-properties",
+                "transform-runtime",
+                "version-inline",
+            ],
+        },
+        "test": {
+            "presets": [["es2015", {"loose": true}]],
+            "plugins": [
+                "transform-class-properties",
+                "transform-runtime",
+                "version-inline",
+            ],
+        },
+        "esm": {
+            "plugins": [
+                "transform-class-properties",
+                "version-inline",
+            ],
+        },
+    },
 }

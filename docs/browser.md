@@ -36,6 +36,15 @@ to `head`. (Note that only few browsers [support `rel="preload"`](https://canius
 and they all support WOFF2 so preloading WOFF2 fonts is enough.) You can use
 Chrome DevTools Network panel or similar to find out which fonts are used.
 
+ECMAScript module is also available:
+
+```html
+<script type="module" type="text/javascript">
+    import katex from 'https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.mjs';
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
+```
+
 ## Download & Host Things Yourself
 Download a [KaTeX release](https://github.com/Khan/KaTeX/releases),
 copy `katex.js`, `katex.css`

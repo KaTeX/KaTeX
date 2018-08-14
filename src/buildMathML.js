@@ -96,17 +96,17 @@ export const getVariant = function(
         return "bold-italic";
     }
 
-    let value = group.value;
-    if (utils.contains(["\\imath", "\\jmath"], value)) {
+    let text = group.text;
+    if (utils.contains(["\\imath", "\\jmath"], text)) {
         return null;
     }
 
-    if (symbols[mode][value] && symbols[mode][value].replace) {
-        value = symbols[mode][value].replace;
+    if (symbols[mode][text] && symbols[mode][text].replace) {
+        text = symbols[mode][text].replace;
     }
 
     const fontName = buildCommon.fontMap[font].fontName;
-    if (getCharacterMetrics(value, fontName, mode)) {
+    if (getCharacterMetrics(text, fontName, mode)) {
         return buildCommon.fontMap[font].variant;
     }
 
