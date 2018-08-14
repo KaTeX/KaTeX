@@ -7,6 +7,23 @@ b {
     font-weight: bolder;
 }
 
+.maximized {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.overlayed {
+    overflow: hidden;
+}
+
 .container {
     margin: 0 auto;
     width: 100%;
@@ -74,10 +91,14 @@ b {
     margin: 50px 0 0;
 }
 
+.demo.maximized {
+    z-index: 3000;
+}
+
 .demo-left,
 .demo-right {
     box-sizing: border-box;
-    padding: 20px 30px;
+    padding: 20px 30px 30px;
     height: 260px;
     width: 100%;
 }
@@ -90,6 +111,10 @@ b {
 
 .demo-left {
     background: #444;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
 }
 
 .demo-left textarea {
@@ -98,12 +123,24 @@ b {
     box-sizing: border-box;
     color: #fff;
     font: 14px Menlo, monospace;
-    height: 160px;
     margin: 0;
     overflow: auto;
     padding: 10px;
     resize: none;
     width: 100%;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+}
+
+#options {
+    cursor: pointer;
+    float: right;
+    font-size: 20px;
+    color: white;
+}
+
+.maximized #options {
+    display: none;
 }
 
 .demo-right {
@@ -115,6 +152,11 @@ b {
     font-size: 18px;
     padding: 10px 0;
     overflow: auto;
+}
+
+.maximized .demo-left,
+.maximized .demo-right {
+    height: 100%;
 }
 
 .main {
@@ -220,6 +262,40 @@ b {
     color: red;
 }
 
+.overlay {
+    background-color: rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+    display: none;
+}
+
+.overlayed .overlay {
+    display: block;
+}
+
+#options-panel {
+    background: #fafafa;
+    padding: 10px 30px;
+    overflow: auto;
+}
+
+.overlay #options-panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2000;
+    box-shadow: 5px 0 5px rgba(50, 50, 50, 0.5);
+}
+
+.demo #options-panel {
+    color: black;
+}
+
+#macros {
+    width: 100%;
+    height: 150px;
+}
+
 @media only screen and (min-width: 736px) {
     .demo-left,
     .demo-right {
@@ -234,6 +310,10 @@ b {
     .cta a {
         display: block;
         margin-bottom: 10px;
+    }
+
+    #options {
+        display: none;
     }
 }
 
