@@ -264,6 +264,16 @@ type ParseNodeTypes = {
         html: AnyParseNode[],
         mathml: AnyParseNode[],
     |},
+    "includegraphics": {|
+        type: "includegraphics",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        alt: string,
+        width: Measurement,
+        height: Measurement,
+        totalheight: Measurement,
+        src: string,
+    |},
     "infix": {|
         type: "infix",
         mode: Mode,

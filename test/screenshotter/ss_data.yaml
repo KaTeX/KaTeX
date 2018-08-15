@@ -137,6 +137,13 @@ GroupMacros:
         \endExp: \egroup
     tex: \startExp a+b\endExp
 HorizontalBraces: \overbrace{\displaystyle{\oint_S{\vec E\cdot\hat n\,\mathrm d a}}}^\text{emf} = \underbrace{\frac{q_{\text{enc}}}{\varepsilon_0}}_{\text{charge}}
+Includegraphics: |
+    \def\logo{\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}}
+    \def\logoB{\includegraphics[height=0.4em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}}
+    \begin{array}{l}
+        \underline{A\logo} + \sqrt{\logo} + \tfrac{A\logo}{\logo}\\[1em]
+        \underline{A\logoB} + \sqrt{x\logoB} + \tfrac{A\logoB}{\logoB}
+    \end{array}
 Integrands: |
     \begin{array}{l}
         \displaystyle \int + \oint + \iint + \oiint_i^n \\[0.6em]
