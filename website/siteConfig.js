@@ -29,12 +29,6 @@ const users = [
         pinned: true,
     },
     {
-        caption: 'Bokeh',
-        image: 'https://bokeh.pydata.org/en/latest/_static/images/logo.png',
-        infoLink: 'https://bokeh.pydata.org/',
-        pinned: true,
-    },
-    {
         caption: 'CindyJS',
         image: 'https://cindyjs.org/assets/img/logo.png',
         infoLink: 'https://cindyjs.org/',
