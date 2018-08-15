@@ -78,7 +78,7 @@ const users = [
     },
     {
         caption: 'Gradescope',
-        image: 'https://pbs.twimg.com/profile_images/920085750095298560/AqGnlpiJ_400x400.jpg',
+        image: '../img/gradescope_logo.png',
         infoLink: 'https://www.gradescope.com/',
         pinned: true,
     },

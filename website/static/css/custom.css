@@ -46,6 +46,14 @@
     position: relative;
 }
 
+@media only screen and (max-width: 735px) {
+    .showcaseSection .logos .imgbox {
+        width: 104px;   /* 64px for img + 20*2 for padding */
+        height: 104px;  /* 64px for img + 20*2 for padding */
+        position: relative;
+    }
+}
+
 .showcaseSection .logos .imgbox img {
     position: absolute;
     left: 0;
