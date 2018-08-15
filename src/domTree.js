@@ -301,7 +301,7 @@ class img implements VirtualNode {
     }
 
     toMarkup(): string {
-        let markup = `<img  src='${this.src} 'alt='${this.alt}' `
+        let markup = `<img  src='${this.src} 'alt='${this.alt}' `;
 
         // Add the styles, after hyphenation
         let styles = "";

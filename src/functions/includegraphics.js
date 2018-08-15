@@ -1,8 +1,8 @@
 // @flow
 import defineFunction from "../defineFunction";
 import type {Measurement} from "../units";
-import buildCommon from "../buildCommon";
 import {calculateSize, validUnit} from "../units";
+import ParseError from "../ParseError";
 import domTree from "../domTree";
 import mathMLTree from "../mathMLTree";
 
@@ -22,14 +22,15 @@ const sizeData = function(str: string): Measurement {
     } else {
         const match = (/([-+]?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(str);
         if (!match) {
-            throw "KaTeX parse error: Invalid size in \\includegraphics: '" + str + "'";
+            throw new ParseError("Invalid size: '" + str
+                + "' in \\includegraphics");
         }
         const data = {
             number: +(match[1] + match[2]), // sign + magnitude, cast to number
             unit: match[3],
         };
         if (!validUnit(data)) {
-            throw "KaTeX parse error: Invalid unit in \\includegraphics: '" + str + "'";
+            throw new ParseError("Invalid unit: '" + data.unit + "' in \\includegraphics.");
         }
         return data;
     }
@@ -54,9 +55,9 @@ defineFunction({
             const attributeStr = stringFromParseGroup(optArgs[0].body);
             // Parser.js does not parse key/value pairs. We get a string.
             const attributes = attributeStr.split(",");
-            for (const attr of attributes) {
-                const keyVal = attr.split("=");
-                if (keyVal.length = 2) {
+            for (let i = 0; i < attributes.length; i++) {
+                const keyVal = attributes[i].split("=");
+                if (keyVal.length === 2) {
                     const str = keyVal[1].trim();
                     switch (keyVal[0].trim()) {
                         case "alt":
@@ -70,6 +71,7 @@ defineFunction({
                             break;
                         case "totalheight":
                             totalheight = sizeData(str);
+                            break;
                         default:
                             // Do nothing.
                     }
@@ -77,12 +79,12 @@ defineFunction({
             }
         }
 
-        let src = stringFromParseGroup(args[0].body);
+        const src = stringFromParseGroup(args[0].body);
 
         if (alt === "") {
             // No alt given. Use the file name. Strip away the path.
             alt = src;
-            alt = alt.replace(/^.*[\\\/]/, '')
+            alt = alt.replace(/^.*[\\/]/, '');
             alt = alt.substring(0, alt.lastIndexOf('.'));
         }
 
@@ -117,7 +119,7 @@ defineFunction({
             style.verticalAlign = -depth + "em";
         }
 
-        let node = new domTree.img(group.src, group.alt, style);
+        const node = new domTree.img(group.src, group.alt, style);
         node.height = height;
         node.depth = depth;
 
