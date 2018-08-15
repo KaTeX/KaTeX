@@ -1887,7 +1887,7 @@ describe("A MathML font tree-builder", function() {
 });
 
 describe("An includegraphics builder", function() {
-    const img = "\\includegraphics[height=0.9em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}"
+    const img = "\\includegraphics[height=0.9em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}";
     it("should not fail", function() {
         expect(img).toBuild();
     });

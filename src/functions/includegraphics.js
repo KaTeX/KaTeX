@@ -30,7 +30,8 @@ const sizeData = function(str: string): Measurement {
             unit: match[3],
         };
         if (!validUnit(data)) {
-            throw new ParseError("Invalid unit: '" + data.unit + "' in \\includegraphics.");
+            throw new ParseError("Invalid unit: '" + data.unit
+             + "' in \\includegraphics.");
         }
         return data;
     }
