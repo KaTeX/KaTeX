@@ -162,7 +162,7 @@ const katexImagesData: {
 
 const groupLength = function(arg: AnyParseNode): number {
     if (arg.type === "ordgroup") {
-        return arg.value.length;
+        return arg.body.length;
     } else {
         return 1;
     }

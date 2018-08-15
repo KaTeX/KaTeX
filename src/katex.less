@@ -4,23 +4,6 @@
 // The mu unit is defined as 1/18 em
 @mu: 1/18em;
 
-@media screen {
-    .katex {
-        .mtable .vertical-separator {
-            min-width: 1px;
-        }
-
-        .mfrac .frac-line,
-        .overline .overline-line,
-        .underline .underline-line,
-        .hline,
-        .hdashline,
-        .rule {
-            min-height: 1px;
-        }
-    }
-}
-
 .katex {
     font: normal 1.21em KaTeX_Main, Times New Roman, serif;
     line-height: 1.2;
@@ -240,6 +223,16 @@
         }
     }
 
+    // Prevent Chrome from disappearing frac-lines, rules, etc.
+    .mfrac .frac-line,
+    .overline .overline-line,
+    .underline .underline-line,
+    .hline,
+    .hdashline,
+    .rule {
+        min-height: 1px;
+    }
+
     .mspace {
         display: inline-block;
     }
@@ -411,6 +404,7 @@
             display: inline-block;
             margin: 0 -0.025em;
             border-right: 0.05em solid;
+            min-width: 1px;  // Prevent Chrome from omitting a line.
         }
 
         .vs-dashed {

@@ -237,28 +237,28 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     type: "mathord" | "textord",
 ): HtmlDocumentFragment | domTree.symbolNode {
     const mode = group.mode;
-    const value = group.value;
+    const text = group.text;
 
     const classes = ["mord"];
 
     // Math mode or Old font (i.e. \rm)
     const isFont = mode === "math" || (mode === "text" && options.font);
     const fontOrFamily = isFont ? options.font : options.fontFamily;
-    if (value.charCodeAt(0) === 0xD835) {
+    if (text.charCodeAt(0) === 0xD835) {
         // surrogate pairs get special treatment
-        const [wideFontName, wideFontClass] = wideCharacterFont(value, mode);
-        return makeSymbol(value, wideFontName, mode, options,
+        const [wideFontName, wideFontClass] = wideCharacterFont(text, mode);
+        return makeSymbol(text, wideFontName, mode, options,
             classes.concat(wideFontClass));
     } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
         if (fontOrFamily === "boldsymbol") {
-            const fontData = boldsymbol(value, mode, options, classes);
+            const fontData = boldsymbol(text, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
         } else if (fontOrFamily === "mathit" ||
-                   utils.contains(mainitLetters, value)) {
-            const fontData = mathit(value, mode, options, classes);
+                   utils.contains(mainitLetters, text)) {
+            const fontData = mathit(text, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
         } else if (isFont) {
@@ -270,23 +270,23 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
             fontClasses = [fontOrFamily, options.fontWeight, options.fontShape];
         }
 
-        if (lookupSymbol(value, fontName, mode).metrics) {
-            return makeSymbol(value, fontName, mode, options,
+        if (lookupSymbol(text, fontName, mode).metrics) {
+            return makeSymbol(text, fontName, mode, options,
                 classes.concat(fontClasses));
-        } else if (ligatures.hasOwnProperty(value) &&
+        } else if (ligatures.hasOwnProperty(text) &&
                    fontName.substr(0, 10) === "Typewriter") {
             // Deconstruct ligatures in monospace fonts (\texttt, \tt).
             const parts = [];
-            for (let i = 0; i < value.length; i++) {
-                parts.push(makeSymbol(value[i], fontName, mode, options,
+            for (let i = 0; i < text.length; i++) {
+                parts.push(makeSymbol(text[i], fontName, mode, options,
                                       classes.concat(fontClasses)));
             }
             return makeFragment(parts);
         } else {
-            return mathDefault(value, mode, options, classes, type);
+            return mathDefault(text, mode, options, classes, type);
         }
     } else {
-        return mathDefault(value, mode, options, classes, type);
+        return mathDefault(text, mode, options, classes, type);
     }
 };
 

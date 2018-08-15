@@ -115,8 +115,8 @@ defineFunctionBuilders({
             // Account for that by shifting the subscript back the appropriate
             // amount. Note we only do this when the base is a single symbol.
             const isOiint =
-                group.base && group.base.type === "op" && group.base.body &&
-                (group.base.body === "\\oiint" || group.base.body === "\\oiiint");
+                group.base && group.base.type === "op" && group.base.name &&
+                (group.base.name === "\\oiint" || group.base.name === "\\oiiint");
             if (base instanceof domTree.symbolNode || isOiint) {
                 // $FlowFixMe
                 marginLeft = -base.italic + "em";

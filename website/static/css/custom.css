@@ -26,6 +26,20 @@
     height: 80%;
 }
 
+.nav-footer .copyright {
+    line-height: 1.5;
+}
+
+.nav-footer .copyright a {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.nav-footer .copyright a:hover,
+.nav-footer .copyright a:focus {
+    color: white;
+    text-decoration: none;
+}
+
 .showcaseSection .logos .imgbox {
     width: 168px;   /* 128px for img + 20*2 for padding */
     height: 168px;  /* 128px for img + 20*2 for padding */

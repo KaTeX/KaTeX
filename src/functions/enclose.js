@@ -55,9 +55,9 @@ const htmlBuilder = (group, options) => {
         imgShift = inner.depth + vertPad;
 
         if (group.backgroundColor) {
-            img.style.backgroundColor = group.backgroundColor.value;
+            img.style.backgroundColor = group.backgroundColor;
             if (group.borderColor) {
-                img.style.borderColor = group.borderColor.value;
+                img.style.borderColor = group.borderColor;
             }
         }
     }
@@ -132,7 +132,7 @@ const mathmlBuilder = (group, options) => {
             break;
     }
     if (group.backgroundColor) {
-        node.setAttribute("mathbackground", group.backgroundColor.value);
+        node.setAttribute("mathbackground", group.backgroundColor);
     }
     return node;
 };
@@ -147,7 +147,7 @@ defineFunction({
         argTypes: ["color", "text"],
     },
     handler({parser, funcName}, args, optArgs) {
-        const color = assertNodeType(args[0], "color-token");
+        const color = assertNodeType(args[0], "color-token").color;
         const body = args[1];
         return {
             type: "enclose",
@@ -171,15 +171,15 @@ defineFunction({
         argTypes: ["color", "color", "text"],
     },
     handler({parser, funcName}, args, optArgs) {
-        const borderColor = assertNodeType(args[0], "color-token");
-        const backgroundColor = assertNodeType(args[1], "color-token");
+        const borderColor = assertNodeType(args[0], "color-token").color;
+        const backgroundColor = assertNodeType(args[1], "color-token").color;
         const body = args[2];
         return {
             type: "enclose",
             mode: parser.mode,
             label: funcName,
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
+            backgroundColor,
+            borderColor,
             body,
         };
     },
