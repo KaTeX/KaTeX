@@ -9,7 +9,8 @@ const opts = require("commander")
         "Print mismatches involving spacing commands")
     .parse(process.argv);
 
-const symbols = require("../src/symbols");
+require('babel-register')({plugins: ["transform-es2015-modules-commonjs"]});
+const symbols = require("../src/symbols").default;
 const keys = Object.keys(symbols.math);
 keys.sort();
 const types = [

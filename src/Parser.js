@@ -11,7 +11,7 @@ import unicodeSymbols from "./unicodeSymbols";
 import utils from "./utils";
 import {assertNodeType, checkNodeType} from "./parseNode";
 import ParseError from "./ParseError";
-import {combiningDiacriticalMarksEndRegex, urlFunctionRegex} from "./Lexer.js";
+import {combiningDiacriticalMarksEndRegex, urlFunctionRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
@@ -240,13 +240,13 @@ export default class Parser {
             if (numerBody.length === 1 && numerBody[0].type === "ordgroup") {
                 numerNode = numerBody[0];
             } else {
-                numerNode = {type: "ordgroup", mode: this.mode, value: numerBody};
+                numerNode = {type: "ordgroup", mode: this.mode, body: numerBody};
             }
 
             if (denomBody.length === 1 && denomBody[0].type === "ordgroup") {
                 denomNode = denomBody[0];
             } else {
-                denomNode = {type: "ordgroup", mode: this.mode, value: denomBody};
+                denomNode = {type: "ordgroup", mode: this.mode, body: denomBody};
             }
 
             let node;
@@ -313,7 +313,7 @@ export default class Parser {
         const textordArray = [];
 
         for (let i = 0; i < text.length; i++) {
-            textordArray.push({type: "textord", mode: "text", value: text[i]});
+            textordArray.push({type: "textord", mode: "text", text: text[i]});
         }
 
         const textNode = {
@@ -387,7 +387,7 @@ export default class Parser {
                 if (superscript) {
                     throw new ParseError("Double superscript", lex);
                 }
-                const prime = {type: "textord", mode: this.mode, value: "\\prime"};
+                const prime = {type: "textord", mode: this.mode, text: "\\prime"};
 
                 // Many primes can be grouped together, so we handle this here
                 const primes = [prime];
@@ -404,7 +404,7 @@ export default class Parser {
                     primes.push(this.handleSupSubscript("superscript"));
                 }
                 // Put everything into an ordgroup as the superscript
-                superscript = {type: "ordgroup", mode: this.mode, value: primes};
+                superscript = {type: "ordgroup", mode: this.mode, body: primes};
             } else {
                 // If it wasn't ^, _, or ', stop parsing super/subscripts
                 break;
@@ -750,7 +750,7 @@ export default class Parser {
         return newArgument({
             type: "color-token",
             mode: this.mode,
-            value: match[0],
+            color: match[0],
         }, res);
     }
 
@@ -832,7 +832,7 @@ export default class Parser {
                 type: "ordgroup",
                 mode: this.mode,
                 loc: SourceLocation.range(firstToken, lastToken),
-                value: expression,
+                body: expression,
             }, firstToken.range(lastToken, firstToken.text));
         } else {
             // Otherwise, just return a nucleus, or nothing for an optional group
@@ -859,15 +859,15 @@ export default class Parser {
         let n = group.length - 1;
         for (let i = 0; i < n; ++i) {
             const a = group[i];
-            // $FlowFixMe: Not every node type has a `value` property.
-            const v = a.value;
-            if (v === "-" && group[i + 1].value === "-") {
-                if (i + 1 < n && group[i + 2].value === "-") {
+            // $FlowFixMe: Not every node type has a `text` property.
+            const v = a.text;
+            if (v === "-" && group[i + 1].text === "-") {
+                if (i + 1 < n && group[i + 2].text === "-") {
                     group.splice(i, 3, {
                         type: "textord",
                         mode: "text",
                         loc: SourceLocation.range(a, group[i + 2]),
-                        value: "---",
+                        text: "---",
                     });
                     n -= 2;
                 } else {
@@ -875,17 +875,17 @@ export default class Parser {
                         type: "textord",
                         mode: "text",
                         loc: SourceLocation.range(a, group[i + 1]),
-                        value: "--",
+                        text: "--",
                     });
                     n -= 1;
                 }
             }
-            if ((v === "'" || v === "`") && group[i + 1].value === v) {
+            if ((v === "'" || v === "`") && group[i + 1].text === v) {
                 group.splice(i, 2, {
                     type: "textord",
                     mode: "text",
                     loc: SourceLocation.range(a, group[i + 1]),
-                    value: v + v,
+                    text: v + v,
                 });
                 n -= 1;
             }
@@ -1016,7 +1016,7 @@ export default class Parser {
                     mode: this.mode,
                     family,
                     loc,
-                    value: text,
+                    text,
                 };
             } else {
                 // $FlowFixMe
@@ -1024,7 +1024,7 @@ export default class Parser {
                     type: group,
                     mode: this.mode,
                     loc,
-                    value: text,
+                    text,
                 };
             }
             symbol = s;
@@ -1044,7 +1044,7 @@ export default class Parser {
                 type: "textord",
                 mode: this.mode,
                 loc: SourceLocation.range(nucleus),
-                value: text,
+                text,
             };
         } else {
             return null;  // EOF, ^, _, {, }, etc.

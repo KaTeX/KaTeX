@@ -25,10 +25,10 @@ defineFunction({
             // ref: amsmath: \renewcommand{\smash}[1][tb]{%
             //               def\mb@t{\ht}\def\mb@b{\dp}\def\mb@tb{\ht\z@\z@\dp}%
             let letter = "";
-            for (let i = 0; i < tbArg.value.length; ++i) {
-                const node = tbArg.value[i];
-                // $FlowFixMe: Not every node type has a `value` property.
-                letter = node.value;
+            for (let i = 0; i < tbArg.body.length; ++i) {
+                const node = tbArg.body[i];
+                // $FlowFixMe: Not every node type has a `text` property.
+                letter = node.text;
                 if (letter === "t") {
                     smashHeight = true;
                 } else if (letter === "b") {

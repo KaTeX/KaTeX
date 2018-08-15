@@ -1,7 +1,8 @@
 {
     "parser": "babel-eslint",
     "plugins": [
-        "flowtype"
+        "flowtype",
+        "transform-runtime-aliasing"
     ],
     "extends": [
         "eslint:recommended",
@@ -70,17 +71,21 @@
         "valid-jsdoc": 0,
         "require-jsdoc": 0
     },
-    "overrides": [{
-        "files": ["katex.js", "src/**/*.js"],
-        "excludedFiles": "unicodeMake.js",
-        "rules": {
-            "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"]
-        }
-    }],
     "env": {
         "es6": true,
         "node": true,
         "browser": true
     },
+    "overrides": [{
+        "files": ["katex.js", "src/**/*.js", "contrib/**/*.js"],
+        "excludedFiles": ["*-spec.js", "unicodeMake.js"],
+        "rules": {
+            "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"],
+            "transform-runtime-aliasing/no-transform-runtime-aliasing": 2
+        },
+        "env": {
+            "node": false
+        }
+    }],
     "root": true
 }
