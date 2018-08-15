@@ -18,8 +18,8 @@ defineFunction({
             throw new ParseError("Invalid environment name", nameGroup);
         }
         let name = "";
-        for (let i = 0; i < nameGroup.value.length; ++i) {
-            name += assertNodeType(nameGroup.value[i], "textord").value;
+        for (let i = 0; i < nameGroup.body.length; ++i) {
+            name += assertNodeType(nameGroup.body[i], "textord").text;
         }
         return {
             type: "environment",

@@ -47,7 +47,7 @@ type ParseNodeTypes = {
         type: "color-token",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: string,
+        color: string,
     |},
     // To avoid requiring run-time type assertions, this more carefully captures
     // the requirements on the fields per the op.js htmlBuilder logic:
@@ -61,8 +61,8 @@ type ParseNodeTypes = {
         alwaysHandleSupSub?: boolean,
         suppressBaseShift?: boolean,
         symbol: boolean,
-        body: string,
-        value?: void,
+        name: string,
+        body?: void,
     |} | {|
         type: "op",
         mode: Mode,
@@ -71,14 +71,14 @@ type ParseNodeTypes = {
         alwaysHandleSupSub?: boolean,
         suppressBaseShift?: boolean,
         symbol: false,  // If 'symbol' is true, `body` *must* be set.
-        body?: void,
-        value: AnyParseNode[],
+        name?: void,
+        body: AnyParseNode[],
     |},
     "ordgroup": {|
         type: "ordgroup",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: AnyParseNode[],
+        body: AnyParseNode[],
     |},
     "size": {|
         type: "size",
@@ -137,38 +137,38 @@ type ParseNodeTypes = {
         family: Atom,
         mode: Mode,
         loc?: ?SourceLocation,
-        value: string,
+        text: string,
     |},
     "mathord": {|
         type: "mathord",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: string,
+        text: string,
     |},
     "spacing": {|
         type: "spacing",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: string,
+        text: string,
     |},
     "textord": {|
         type: "textord",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: string,
+        text: string,
     |},
     // These "-token" types don't have corresponding HTML/MathML builders.
     "accent-token": {|
         type: "accent-token",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: string,
+        text: string,
     |},
     "op-token": {|
         type: "op-token",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: string,
+        text: string,
     |},
     // From functions.js and functions/*.js. See also "color", "op", "styling",
     // and "text" above.
@@ -211,8 +211,8 @@ type ParseNodeTypes = {
         mode: Mode,
         loc?: ?SourceLocation,
         label: string,
-        backgroundColor?: ParseNode<"color-token">,
-        borderColor?: ParseNode<"color-token">,
+        backgroundColor?: string,
+        borderColor?: string,
         body: AnyParseNode,
     |},
     "environment": {|
