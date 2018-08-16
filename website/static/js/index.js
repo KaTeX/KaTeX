@@ -111,7 +111,7 @@
     });
 
     katexOptions.map(function(el) {
-        el.addEventListener("input", doDemo);
+        el.addEventListener("change", doDemo);
     });
 
     // eslint-disable-next-line no-new
