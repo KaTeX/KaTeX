@@ -116,16 +116,16 @@
     // eslint-disable-next-line no-new
     new ClipboardJS(copyCode, {
         text: function() {
-            return `katex.render(${JSON.stringify(demoInput.value)
-                }, /* element */, ${JSON.stringify(getOptions())})`;
+            return 'katex.render(' + JSON.stringify(demoInput.value) +
+                ', /* element */, ' + JSON.stringify(getOptions()) + ')';
         },
     });
 
     // eslint-disable-next-line no-new
     new ClipboardJS(copyPermalink, {
         text: function() {
-            return `${location.href}?data=${
-                encodeURIComponent(JSON.stringify(getOptions(true)))}`;
+            return location.protocol + '//' + location.host + location.pathname +
+                '?data=' + encodeURIComponent(JSON.stringify(getOptions(true)));
         },
     });
 
