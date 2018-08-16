@@ -15,19 +15,6 @@ textarea {
 }
 
 .maximized {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0 !important;
-}
-
-.hidden {
-    display: none !important;
-}
-
-.overlayed {
     overflow: hidden;
 }
 
@@ -98,8 +85,15 @@ textarea {
     margin: 50px 0 0;
 }
 
-.demo.maximized {
-    z-index: 3000;
+.maximized .demo {
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 260px;
+    right: 0;
+    height: 100%;
+    margin: 0;
+    z-index: 1000;
 }
 
 .demo-left,
@@ -155,11 +149,6 @@ textarea {
     font-size: 18px;
     padding: 10px 0;
     overflow: auto;
-}
-
-.maximized .demo-left,
-.maximized .demo-right {
-    height: 100%;
 }
 
 .main {

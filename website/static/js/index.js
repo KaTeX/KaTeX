@@ -7,7 +7,6 @@
         katex.render(el.getAttribute("data-expr"), el);
     });
 
-    var demo = document.getElementById("demo");
     var demoInput = document.getElementById("demo-input");
     var demoOutput = document.getElementById("demo-output");
     var overlay = document.getElementById("overlay");
@@ -99,13 +98,11 @@
     });
 
     maximize.addEventListener("click", function() {
-        if (!demo.classList.contains("maximized")) {
-            demo.insertBefore(optionsPanel, demo.childNodes[0]);
-            demo.classList.add("maximized");
+        if (!document.body.classList.contains("maximized")) {
+            document.body.classList.add("maximized");
             maximize.innerHTML = 'Minimize editor';
         } else {
-            overlay.appendChild(optionsPanel);
-            demo.classList.remove("maximized");
+            document.body.classList.remove("maximized");
             maximize.innerHTML = 'Maximize editor';
         }
     });
