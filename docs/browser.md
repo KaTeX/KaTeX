@@ -47,8 +47,8 @@ ECMAScript module is also available:
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
 ```
 
-> Use `nomodule` attribute to provide a fallback for older browsers that do not
-support ES modules.
+> Use [`nomodule` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
+to provide a fallback for older browsers that do not support ES modules.
 
 ## Download & Host Things Yourself
 Download a [KaTeX release](https://github.com/Khan/KaTeX/releases),
