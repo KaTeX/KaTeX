@@ -53,6 +53,7 @@
     "query-string": "^6.1.0",
     "rimraf": "^2.6.2",
     "rollup": "^0.63.4",
+    "rollup-plugin-alias": "^1.4.0",
     "rollup-plugin-babel": "^3.0.7",
     "selenium-webdriver": "^3.6.0",
     "sri-toolbox": "^0.2.0",

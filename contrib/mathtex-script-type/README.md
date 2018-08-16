@@ -14,8 +14,6 @@ This extension should be loaded *after* all `script type=math/tex` blocks that y
 ```html
 <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/mathtex-script-type.min.js" integrity="sha384-LJ2FmexL77rmGm6SIpxq7y+XA6bkLzGZEgCywzKOZG/ws4va9fUVu2neMjvc3zdv"></script>
 ```
-Note that if the URL above contains `...` in-place of a version string, then this script has not yet
-been deployed to the CDN.
 You can download the script and use it locally, or from a local KaTeX installation instead.
 
 For example, in the following simple page, we first load KaTeX as usual.
@@ -30,7 +28,12 @@ After we're done writing `math/tex` scripts, we load this extension.
    </head>
    <body>
       <script type="math/tex">x+\sqrt{1-x^2}</script>
-      <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/mathtex-script-type.min.js" integrity="sha384-En8cse3uW4xErwYkF3uTpWEw4BdLEWrWT2u1BttQuilGrJjAKcpGeC2ihwJ/wRD4"></script>
+      <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/mathtex-script-type.min.js" integrity="sha384-En8cse3uW4xErwYkF3uTpWEw4BdLEWrWT2u1BttQuilGrJjAKcpGeC2ihwJ/wRD4" crossorigin="anonymous"></script>
    </body>
 </html>
 ```
+
+ECMAScript module is also available:
+```html
+<script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/mathtex-script-type.mjs" integrity="sha384-En8cse3uW4xErwYkF3uTpWEw4BdLEWrWT2u1BttQuilGrJjAKcpGeC2ihwJ/wRD4" crossorigin="anonymous"></script>
+````

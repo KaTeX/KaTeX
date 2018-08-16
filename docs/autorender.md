@@ -43,6 +43,18 @@ For example:
 </script>
 ```
 
+ECMAScript module is also available:
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
+<script type="module">
+    import renderMathInElement from "https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.mjs";
+    renderMathInElement(document.body);
+</script>
+```
+
+> You can use [`nomodule` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
+to provide a fallback for older browsers that do not support ES modules.
+
 ## API
 This extension exposes a single function, `window.renderMathInElement`, with
 the following API:
