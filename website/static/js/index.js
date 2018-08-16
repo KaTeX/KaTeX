@@ -9,14 +9,13 @@
 
     var demoInput = document.getElementById("demo-input");
     var demoOutput = document.getElementById("demo-output");
-    var overlay = document.getElementById("overlay");
     var optionsButton = document.getElementById("options");
     var optionsPanel = document.getElementById("options-panel");
     var maximize = document.getElementById("maximize");
     var copyCode = document.getElementById("code");
     var copyPermalink = document.getElementById("permalink");
 
-    var match = window.location.search.match(/[?&]data=([^&#]*)/);
+    var match = window.location.search.match(/[?&]data=([^&]*)/);
     var data = {};
     if (match) {
         try {
@@ -85,16 +84,13 @@
     demoInput.addEventListener("input", doDemo);
 
     optionsButton.addEventListener("click", function() {
-        document.body.classList.add("overlayed");
-    });
-
-    overlay.addEventListener("click", function() {
-        document.body.classList.remove("overlayed");
-        demoInput.focus();
-    });
-
-    optionsPanel.addEventListener("click", function(e) {
-        e.stopPropagation();
+        if (!optionsPanel.classList.contains('opened')) {
+            optionsPanel.classList.remove('closed');
+            optionsPanel.classList.add('opened');
+        } else {
+            optionsPanel.classList.remove('opened');
+            optionsPanel.classList.add('closed');
+        }
     });
 
     maximize.addEventListener("click", function() {
@@ -117,7 +113,6 @@
             return `katex.render(${JSON.stringify(demoInput.value)
                 }, /* element */, ${JSON.stringify(getOptions())})`;
         },
-        container: optionsPanel,
     });
 
     // eslint-disable-next-line no-new

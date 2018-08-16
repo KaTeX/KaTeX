@@ -49,7 +49,7 @@
           View on GitHub
         </a>
       </div>
-      <div class="demo" id="demo">
+      <div class="demo">
         <div class="demo-left">
           <div class="demo-instructions">
             <label for="demo-input">Type an expression:</label>
@@ -122,41 +122,39 @@ f(x) = \int_{-\infty}^\infty
       </span>
     </div></div>
 
-    <div class="overlay maximized" id="overlay">
-      <div id="options-panel">
-        <h3>KaTeX Options</h3>
-        <table>
-          <tr>
-            <td><label for="displayMode">displayMode</label></td>
-            <td><input type="checkbox" id="displayMode" checked/></td>
-          </tr>
-          <tr>
-            <td><label for="throwOnError">throwOnError</label></td>
-            <td><input type="checkbox" id="throwOnError" checked/></td>
-          </tr>
-          <tr>
-            <td><label for="errorColor">errorColor</label></td>
-            <td><input type="color" id="errorColor" value="#cc0000"/></td>
-          </tr>
-          <tr>
-            <td><label for="strict">strict</label></td>
-            <td>
-              <select id="strict">
-                <option value="error">error</option>
-                <option value="warn" selected>warn</option>
-                <option value="ignore">ignore</option>
-              </select>
-            </td>
-          </tr>
-        </table>
-        <h4><label for="macros">macros</label></h4>
-        <textarea id="macros" placeholder="JSON"></textarea>
+    <div id="options-panel">
+      <h3>KaTeX Options</h3>
+      <table>
+        <tr>
+          <td><label for="displayMode">displayMode</label></td>
+          <td><input type="checkbox" id="displayMode" checked/></td>
+        </tr>
+        <tr>
+          <td><label for="throwOnError">throwOnError</label></td>
+          <td><input type="checkbox" id="throwOnError" checked/></td>
+        </tr>
+        <tr>
+          <td><label for="errorColor">errorColor</label></td>
+          <td><input type="color" id="errorColor" value="#cc0000"/></td>
+        </tr>
+        <tr>
+          <td><label for="strict">strict</label></td>
+          <td>
+            <select id="strict">
+              <option value="error">error</option>
+              <option value="warn" selected>warn</option>
+              <option value="ignore">ignore</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+      <h4><label for="macros">macros</label></h4>
+      <textarea id="macros" placeholder="JSON"></textarea>
 
-        <h3>Editor Options</h3>
-        <div><button id="maximize">Maximize editor</button></div>
-        <div><button id="code" data-clipboard-text="">Copy KaTeX code</button></div>
-        <div><button id="permalink" data-clipboard-text="">Copy Permalink</button></div>
-      </div>
+      <h3>Editor Options</h3>
+      <div><button id="maximize">Maximize editor</button></div>
+      <div><button id="code">Copy KaTeX code</button></div>
+      <div><button id="permalink">Copy Permalink</button></div>
     </div>
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
