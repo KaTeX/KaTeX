@@ -41,6 +41,7 @@ ECMAScript module is also available:
 ```html
 <script type="module" type="text/javascript">
     import katex from 'https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.mjs';
+    ...
 </script>
 <script nomodule defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.js" integrity="sha384-omQnemkEC7UFlIZ175SaCJSWuRHhTjsVtJqXKshMhaJ7OLmAaWmbgLU5TrGGQISk" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
