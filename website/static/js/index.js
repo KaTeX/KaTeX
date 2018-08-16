@@ -15,6 +15,12 @@
     var copyCode = document.getElementById("code");
     var copyPermalink = document.getElementById("permalink");
 
+    if (window.location.hash === '#demo') {
+        optionsPanel.classList.add('opened');
+        document.body.classList.add("maximized");
+        maximize.innerHTML = 'Minimize editor';
+    }
+
     var match = window.location.search.match(/[?&]data=([^&]*)/);
     var data = {};
     if (match) {
