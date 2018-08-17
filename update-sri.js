@@ -1,3 +1,6 @@
+// Update badge and CDN urls and subresource integrity hashes
+// Usage: node update-sri.js <VERSION> FILES...
+// To check SRI hashes, pass `check` as VERSION
 const fs = require("fs-extra");
 const sriToolbox = require("sri-toolbox");
 
@@ -27,14 +30,22 @@ Promise.all(process.argv.slice(3).map(file =>
             }
             return pre + version + post;
         });
-        return Promise.all(Object.keys(hashes).map(hash =>
+        const promise = Promise.all(Object.keys(hashes).map(hash =>
             fs.readFile(hashes[hash].file, null)
             .then(data => {
-                body = body.replace(hash, sriToolbox.generate({
+                const newHash = sriToolbox.generate({
                     algorithms: [hashes[hash].algo],
-                }, data));
+                }, data);
+                body = body.replace(hash, newHash);
+
+                if (version === "check" && hash !== newHash) {
+                    throw new Error("SRI mismatch! " +
+                        "Please run the release script again.");
+                }
             })
-        )).then(() => fs.writeFile(file, body));
+        ));
+        return version === "check" ? promise
+            : promise.then(() => fs.writeFile(file, body));
     })
 )).then(() => process.exit(0), err => {
     // eslint-disable-next-line no-console
