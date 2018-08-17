@@ -7,6 +7,21 @@ b {
     font-weight: bolder;
 }
 
+textarea {
+    margin: 0;
+    overflow: auto;
+    resize: none;
+    width: 100%;
+}
+
+[type="color"] {
+    width: 60px;
+}
+
+.maximized {
+    overflow: hidden;
+}
+
 .container {
     margin: 0 auto;
     width: 100%;
@@ -74,10 +89,22 @@ b {
     margin: 50px 0 0;
 }
 
+.maximized .demo {
+    -ms-flex-direction: column;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 260px;
+    right: 0;
+    height: 100%;
+    margin: 0;
+    z-index: 1000;
+}
+
 .demo-left,
 .demo-right {
     box-sizing: border-box;
-    padding: 20px 30px;
+    padding: 20px 30px 30px;
     height: 260px;
     width: 100%;
 }
@@ -90,6 +117,10 @@ b {
 
 .demo-left {
     background: #444;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
 }
 
 .demo-left textarea {
@@ -98,12 +129,20 @@ b {
     box-sizing: border-box;
     color: #fff;
     font: 14px Menlo, monospace;
-    height: 160px;
-    margin: 0;
-    overflow: auto;
     padding: 10px;
-    resize: none;
-    width: 100%;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+}
+
+#options {
+    cursor: pointer;
+    float: right;
+    font-size: 20px;
+    color: white;
+}
+
+.maximized #options {
+    display: none;
 }
 
 .demo-right {
@@ -220,6 +259,35 @@ b {
     color: red;
 }
 
+#options-panel {
+    background: #fafafa;
+    box-shadow: 3px 0 3px rgba(50, 50, 50, 0.3);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 200px;
+    transform: translateX(-110%);
+    -webkit-transform: translateX(-110%);
+    z-index: 2000;
+    padding: 10px 30px;
+    overflow: auto;
+}
+
+.opened {
+    animation: slide-right 0.5s forwards;
+    -webkit-animation: slide-right 0.5s forwards;
+}
+
+.closed {
+    animation: slide-left 0.5s forwards;
+    -webkit-animation: slide-left 0.5s forwards;
+}
+
+#macros {
+    height: 150px;
+}
+
 @media only screen and (min-width: 736px) {
     .demo-left,
     .demo-right {
@@ -234,6 +302,10 @@ b {
     .cta a {
         display: block;
         margin-bottom: 10px;
+    }
+
+    #options {
+        display: none;
     }
 }
 
@@ -252,4 +324,22 @@ b {
 
 .svg-inline--fa.fa-w-16 {
     width: 1em;
+}
+
+@keyframes slide-right {
+    100% { transform: translateX(0%); }
+}
+
+@-webkit-keyframes slide-right {
+    100% { -webkit-transform: translateX(0%); }
+}
+
+@keyframes slide-left {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-110%); }
+}
+
+@-webkit-keyframes slide-left {
+    0% { -webkit-transform: translateX(0%); }
+    100% { -webkit-transform: translateX(-110%); }
 }
