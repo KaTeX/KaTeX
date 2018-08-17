@@ -17,6 +17,7 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "babel-core": "^6.26.3",
     "babel-eslint": "^8.1.2",
     "babel-jest": "^23.0.1",
     "babel-loader": "^7.1.4",
@@ -27,7 +28,6 @@
     "babel-preset-flow": "^6.23.0",
     "babel-register": "^6.26.0",
     "benchmark": "^2.1.4",
-    "check-dependencies": "^1.1.0",
     "codecov": "^3.0.4",
     "css-loader": "^1.0.0",
     "cssnano": "^4.0.1",
@@ -37,6 +37,7 @@
     "eslint-plugin-transform-runtime-aliasing": "^1.0.0",
     "file-loader": "^1.1.11",
     "flow-bin": "^0.78.0",
+    "fs-extra": "^7.0.0",
     "greenkeeper-lockfile": "^1.15.1",
     "husky": "^1.0.0-rc.8",
     "jest": "^23.0.1",
@@ -69,7 +70,7 @@
   "scripts": {
     "test": "yarn prestart && yarn test:lint && yarn test:flow && yarn test:jest",
     "test:lint": "yarn test:lint:js && yarn test:lint:css",
-    "test:lint:js": "eslint katex.js katex.webpack.js cli.js webpack.*.js src static test contrib dockers website",
+    "test:lint:js": "eslint *.js src static test contrib dockers website",
     "test:lint:css": "stylelint src/katex.less static/main.css contrib/**/*.css website/static/**/*.css",
     "test:flow": "flow",
     "test:jest": "jest",
@@ -81,7 +82,7 @@
     "test:perf": "yarn prestart && NODE_ENV=test node test/perf-test.js",
     "clean": "rm -rf dist/ node_modules/",
     "clean-install": "yarn clean && yarn",
-    "prestart": "node check-node-version.js && check-dependencies && node src/unicodeMake.js > src/unicodeSymbols.js",
+    "prestart": "node check-node-version.js && yarn check && node src/unicodeMake.js",
     "start": "webpack-dev-server --hot --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
     "build": "yarn prestart && rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c && webpack",
@@ -102,7 +103,8 @@
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.js",
-      "contrib/**/*.js"
+      "contrib/**/*.js",
+      "!src/unicodeMake.js"
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
     "snapshotSerializers": [
