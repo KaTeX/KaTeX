@@ -20,6 +20,9 @@ post_checkout: &post_checkout
 node_modules_cache_key: &node_modules_cache_key
   yarn-deps-v1-{{ checksum "yarn.lock" }}
 
+website_cache_key: &website_cache_key
+  website-deps-v1-{{ .Branch }}-{{ checksum "website/package.json" }}
+
 restore_node_modules_cache: &restore_node_modules_cache
   restore_cache:
     keys:
@@ -115,6 +118,26 @@ jobs:
       - store_artifacts:
           path: dist/fonts
           destination: fonts
+
+      - restore_cache:
+          keys:
+            - *website_cache_key
+            - website-deps-v1-{{ .Branch }}-
+            - website-deps-v1-
+      - run:
+          name: Deploy to GitHub Pages
+          command: |
+              if [[ $CIRCLE_BRANCH == "master" ]]; then
+                git config --global user.email "<GITHUB_USERNAME>@users.noreply.github.com"
+                git config --global user.name "<YOUR_NAME>"
+                echo "machine github.com login <GITHUB_USERNAME> password $GITHUB_TOKEN" > ~/.netrc
+                cd website && yarn && GIT_USER=<GIT_USER> yarn run publish-gh-pages
+                # cd website && yarn && USE_SSH=true yarn run publish-gh-pages
+              fi
+      - save_cache:
+          key: *website_cache_key
+          paths:
+            - website/node_modules
 
   firefox:
     docker:
