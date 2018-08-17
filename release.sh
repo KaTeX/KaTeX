@@ -173,7 +173,6 @@ elif [[ ! $PUBLISH ]]; then
     else
         git commit -n -m "Release v$VERSION" -m "Bump $BRANCH to v$NEXT_VERSION-pre"
     fi
-    git diff --stat --exit-code # check for uncommitted changes
     git push -u origin "v$VERSION-release"
 
     echo ""
@@ -221,6 +220,8 @@ else
     echo "Visit https://github.com/Khan/KaTeX/releases/new?tag=v$VERSION to edit the release notes."
     echo "Don't forget to upload katex.tar.gz and katex.zip to the release!"
 fi
+
+git diff --stat --exit-code # check for uncommitted changes
 
 if [[ ${DRY_RUN} ]]; then
     echo ""
