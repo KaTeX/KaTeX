@@ -49,7 +49,7 @@ export const binrelClass = (arg: AnyParseNode): string => {
     // (by rendering separately and with {}s before and after, and measuring
     // the change in spacing).  We'll do roughly the same by detecting the
     // atom type directly.
-    const atom = (arg.type === "ordgroup" && arg.value.length ? arg.value[0] : arg);
+    const atom = (arg.type === "ordgroup" && arg.body.length ? arg.body[0] : arg);
     if (atom.type === "atom" && (atom.family === "bin" || atom.family === "rel")) {
         return "m" + atom.family;
     } else {
@@ -101,7 +101,7 @@ defineFunction({
             alwaysHandleSupSub: true,
             symbol: false,
             suppressBaseShift: funcName !== "\\stackrel",
-            value: ordargument(baseArg),
+            body: ordargument(baseArg),
         };
 
         const supsub = {

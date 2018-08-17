@@ -2,7 +2,8 @@
   "name": "katex",
   "version": "0.11.0-pre",
   "description": "Fast math typesetting for the web.",
-  "main": "dist/katex.js",
+  "main": "dist/katex",
+  "module": "dist/katex.mjs",
   "repository": {
     "type": "git",
     "url": "git://github.com/Khan/KaTeX.git"
@@ -16,6 +17,7 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "babel-core": "^6.26.3",
     "babel-eslint": "^8.1.2",
     "babel-jest": "^23.0.1",
     "babel-loader": "^7.1.4",
@@ -26,15 +28,17 @@
     "babel-preset-flow": "^6.23.0",
     "babel-register": "^6.26.0",
     "benchmark": "^2.1.4",
-    "check-dependencies": "^1.1.0",
     "codecov": "^3.0.4",
     "css-loader": "^1.0.0",
     "cssnano": "^4.0.1",
     "eslint": "^5.0.0",
     "eslint-plugin-flowtype": "^2.40.1",
     "eslint-plugin-react": "^7.10.0",
+    "eslint-plugin-transform-runtime-aliasing": "^1.0.0",
     "file-loader": "^1.1.11",
-    "flow-bin": "^0.78.0",
+    "flow-bin": "^0.79.0",
+    "fs-extra": "^7.0.0",
+    "greenkeeper-lockfile": "^1.15.1",
     "husky": "^1.0.0-rc.8",
     "jest": "^23.0.1",
     "jest-serializer-html": "^5.0.0",
@@ -49,6 +53,8 @@
     "postcss-loader": "^3.0.0",
     "query-string": "^6.1.0",
     "rimraf": "^2.6.2",
+    "rollup": "^0.63.4",
+    "rollup-plugin-babel": "^3.0.7",
     "selenium-webdriver": "^3.6.0",
     "sri-toolbox": "^0.2.0",
     "style-loader": "^0.22.0",
@@ -64,7 +70,7 @@
   "scripts": {
     "test": "yarn prestart && yarn test:lint && yarn test:flow && yarn test:jest",
     "test:lint": "yarn test:lint:js && yarn test:lint:css",
-    "test:lint:js": "eslint update-sri.js katex.js katex.webpack.js cli.js webpack.*.js src static test contrib dockers website",
+    "test:lint:js": "eslint *.js src static test contrib dockers website",
     "test:lint:css": "stylelint src/katex.less static/main.css contrib/**/*.css website/static/**/*.css",
     "test:flow": "flow",
     "test:jest": "jest",
@@ -76,10 +82,10 @@
     "test:perf": "yarn prestart && NODE_ENV=test node test/perf-test.js",
     "clean": "rm -rf dist/ node_modules/",
     "clean-install": "yarn clean && yarn",
-    "prestart": "node check-node-version.js && check-dependencies && node src/unicodeMake.js > src/unicodeSymbols.js",
+    "prestart": "node check-node-version.js && yarn check && node src/unicodeMake.js",
     "start": "webpack-dev-server --hot --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
-    "build": "yarn prestart && rimraf dist/ && mkdirp dist && cp README.md dist && webpack",
+    "build": "yarn prestart && rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c && webpack",
     "watch": "yarn build --watch",
     "dist": "yarn test && yarn build && yarn dist:zip",
     "dist:zip": "cd dist && tar czf ../katex.tar.gz * && zip -rq ../katex.zip *"
@@ -97,7 +103,8 @@
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.js",
-      "contrib/**/*.js"
+      "contrib/**/*.js",
+      "!src/unicodeMake.js"
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
     "snapshotSerializers": [

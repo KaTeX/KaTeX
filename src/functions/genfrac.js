@@ -365,19 +365,19 @@ defineFunction({
         // Look into the parse nodes to get the desired delimiters.
         let leftNode = checkNodeType(args[0], "ordgroup");
         if (leftNode) {
-            leftNode = assertAtomFamily(leftNode.value[0], "open");
+            leftNode = assertAtomFamily(leftNode.body[0], "open");
         } else {
             leftNode = assertAtomFamily(args[0], "open");
         }
-        const leftDelim = delimFromValue(leftNode.value);
+        const leftDelim = delimFromValue(leftNode.text);
 
         let rightNode = checkNodeType(args[1], "ordgroup");
         if (rightNode) {
-            rightNode = assertAtomFamily(rightNode.value[0], "close");
+            rightNode = assertAtomFamily(rightNode.body[0], "close");
         } else {
             rightNode = assertAtomFamily(args[1], "close");
         }
-        const rightDelim = delimFromValue(rightNode.value);
+        const rightDelim = delimFromValue(rightNode.text);
 
         const barNode = assertNodeType(args[2], "size");
         let hasBarLine;
@@ -396,13 +396,13 @@ defineFunction({
         let size = "auto";
         let styl = checkNodeType(args[3], "ordgroup");
         if (styl) {
-            if (styl.value.length > 0) {
-                const textOrd = assertNodeType(styl.value[0], "textord");
-                size = stylArray[Number(textOrd.value)];
+            if (styl.body.length > 0) {
+                const textOrd = assertNodeType(styl.body[0], "textord");
+                size = stylArray[Number(textOrd.text)];
             }
         } else {
             styl = assertNodeType(args[3], "textord");
-            size = stylArray[Number(styl.value)];
+            size = stylArray[Number(styl.text)];
         }
 
         return {

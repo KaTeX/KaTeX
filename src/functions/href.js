@@ -56,7 +56,7 @@ defineFunction({
             chars.push({
                 type: "textord",
                 mode: "text",
-                value: c,
+                text: c,
             });
         }
         const body = {

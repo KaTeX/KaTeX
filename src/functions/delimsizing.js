@@ -59,13 +59,13 @@ function checkDelimiter(
     context: FunctionContext,
 ): SymbolParseNode {
     const symDelim = checkSymbolNodeType(delim);
-    if (symDelim && utils.contains(delimiters, symDelim.value)) {
+    if (symDelim && utils.contains(delimiters, symDelim.text)) {
         return symDelim;
     } else {
         throw new ParseError(
             "Invalid delimiter: '" +
             // $FlowFixMe, do not polyfill
-            (symDelim ? symDelim.value : JSON["stringify"](delim)) +
+            (symDelim ? symDelim.text : JSON["stringify"](delim)) +
             "' after '" + context.funcName + "'", delim);
     }
 }
@@ -89,7 +89,7 @@ defineFunction({
             mode: context.parser.mode,
             size: delimiterSizes[context.funcName].size,
             mclass: delimiterSizes[context.funcName].mclass,
-            delim: delim.value,
+            delim: delim.text,
         };
     },
     htmlBuilder: (group, options) => {
@@ -148,7 +148,7 @@ defineFunction({
         return {
             type: "leftright-right",
             mode: context.parser.mode,
-            delim: checkDelimiter(args[0], context).value,
+            delim: checkDelimiter(args[0], context).text,
         };
     },
 });
@@ -179,7 +179,7 @@ defineFunction({
             type: "leftright",
             mode: parser.mode,
             body,
-            left: delim.value,
+            left: delim.text,
             right: assertNodeType(right, "leftright-right").delim,
         };
     },
@@ -298,7 +298,7 @@ defineFunction({
         return {
             type: "middle",
             mode: context.parser.mode,
-            delim: delim.value,
+            delim: delim.text,
         };
     },
     htmlBuilder: (group, options) => {
