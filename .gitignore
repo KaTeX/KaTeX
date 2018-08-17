@@ -17,6 +17,7 @@ diff.png
 /test/screenshotter/unicode-fonts
 coverage/
 docs/cli.md
+docs.bak
 lib/core/metadata.js
 lib/core/MetadataBlog.js
 website/translated_docs

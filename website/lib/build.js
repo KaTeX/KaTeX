@@ -11,6 +11,16 @@ ${option.description}${((option.bool && option.defaultValue !== undefined)
 `),
     '### `-h, --help`\nOutput usage information', ''].join('\n'));
 
-// copy local built CSS and fonts
-fs.copySync('../dist/katex.min.css', 'static/static/katex.min.css');
-fs.copySync('../dist/fonts', 'static/static/fonts');
+if (process.env.npm_lifecycle_event !== 'publish-gh-pages') {
+    // copy local built CSS and fonts
+    fs.copySync('../dist/katex.min.css', 'static/static/katex.min.css');
+    fs.copySync('../dist/fonts', 'static/static/fonts');
+} else {
+    // do not publish master (next) documentation on gh-pages
+    fs.removeSync('static/static/katex.min.css');
+    fs.removeSync('static/static/fonts');
+
+    fs.removeSync('../docs.bak');
+    fs.moveSync('../docs', '../docs.bak');
+    fs.ensureDirSync('../docs');
+}
