@@ -1,11 +1,5 @@
 const fs = require('fs-extra');
 
-if (process.env.npm_lifecycle_event === 'postpublish-gh-pages') {
-    fs.removeSync('../docs');
-    fs.moveSync('../docs.bak', '../docs');
-    process.exit();
-}
-
 // generate cli.md
 const cli = require('../../cli');
 const template = fs.readFileSync('../docs/cli.md.template');
