@@ -5,12 +5,11 @@ import splitAtDelimiters from "./splitAtDelimiters";
 
 const splitWithDelimiters = function(text, delimiters) {
     let data = [{type: "text", data: text}];
-    for (let i = 0; i < delimiters.length; i++) {
-        const delimiter = delimiters[i];
+    delimiters.forEach((delimiter) => {
         data = splitAtDelimiters(
             data, delimiter.left, delimiter.right,
             delimiter.display || false);
-    }
+    });
     return data;
 };
 
