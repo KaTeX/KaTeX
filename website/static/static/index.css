@@ -86,6 +86,7 @@ textarea {
 }
 
 .maximized .demo {
+    -ms-flex-direction: column;
     flex-direction: column;
     position: fixed;
     top: 0;
