@@ -51,8 +51,7 @@ const renderMathInText = function(text, optionsCopy) {
 };
 
 const renderElem = function(elem, optionsCopy) {
-    for (let i = 0; i < elem.childNodes.length; i++) {
-        const childNode = elem.childNodes[i];
+    elem.childNodes.forEach((childNode, i) => {
         if (childNode.nodeType === 3) {
             // Text node
             const frag = renderMathInText(childNode.textContent, optionsCopy);
@@ -71,7 +70,7 @@ const renderElem = function(elem, optionsCopy) {
             }
         }
         // Otherwise, it's something else, and ignore it.
-    }
+    });
 };
 
 const renderMathInElement = function(elem, options) {
