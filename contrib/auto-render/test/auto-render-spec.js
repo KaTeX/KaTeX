@@ -27,33 +27,32 @@ beforeEach(function() {
                 return message;
             }
 
-            for (let i = 0; i < split.length; i++) {
-                const real = split[i];
-                const correct = result[i];
+            let good = true;
+            split.forEach((real, i) => {
+                if(good){
+                    const correct = result[i];
+                    let diff;
 
-                let good = true;
-                let diff;
+                    if (real.type !== correct.type) {
+                        good = false;
+                        diff = "type";
+                    } else if (real.data !== correct.data) {
+                        good = false;
+                        diff = "data";
+                    } else if (real.display !== correct.display) {
+                        good = false;
+                        diff = "display";
+                    }
 
-                if (real.type !== correct.type) {
-                    good = false;
-                    diff = "type";
-                } else if (real.data !== correct.data) {
-                    good = false;
-                    diff = "data";
-                } else if (real.display !== correct.display) {
-                    good = false;
-                    diff = "display";
+                    if (!good) {
+                        message.pass = false;
+                        message.message = "Difference at split " +
+                            (i + 1) + ": " + JSON.stringify(real) +
+                            " vs. " + JSON.stringify(correct) +
+                            " (" + diff + " differs)";
+                    }
                 }
-
-                if (!good) {
-                    message.pass = false;
-                    message.message = "Difference at split " +
-                        (i + 1) + ": " + JSON.stringify(real) +
-                        " vs. " + JSON.stringify(correct) +
-                        " (" + diff + " differs)";
-                    break;
-                }
-            }
+            })
 
             return message;
         },
