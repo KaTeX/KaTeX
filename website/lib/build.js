@@ -11,6 +11,22 @@ ${option.description}${((option.bool && option.defaultValue !== undefined)
 `),
     '### `-h, --help`\nOutput usage information', ''].join('\n'));
 
-// copy local built CSS and fonts
+// copy local built KaTeX
+fs.copySync('../dist/katex.min.js', 'static/static/katex.min.js');
 fs.copySync('../dist/katex.min.css', 'static/static/katex.min.css');
 fs.copySync('../dist/fonts', 'static/static/fonts');
+
+// use KaTeX from CDN on the main page for GitHub Pages
+if (process.env.npm_lifecycle_event === 'publish-gh-pages') {
+    let version;
+    try {
+        version = require('../versions.json')[0];
+    } catch (e) {
+        version = "0.10.0-beta";
+    }
+
+    let indexHtml = fs.readFileSync('pages/index.html', 'utf8');
+    indexHtml = indexHtml.replace(/(["'])static\/(katex|fonts)/g,
+        `$1https://cdn.jsdelivr.net/npm/katex@${version}/dist/$2`);
+    fs.writeFileSync('pages/index.html', indexHtml);
+}
