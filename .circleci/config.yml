@@ -13,7 +13,7 @@ post_checkout: &post_checkout
         fi
         if [[ $BASE_COMMIT ]]; then
           CHANGED=$(git diff --name-only $BASE_COMMIT)
-          echo $CHANGED
+          echo "$CHANGED"
           echo 'export CHANGED="$CHANGED"' >> $BASH_ENV
         fi
 
@@ -39,7 +39,7 @@ screenshotter: &screenshotter
         name: Skip screenshotter if no KaTeX code has been changed
         command: |
             if [[ $CHANGED ]]; then
-              echo $CHANGED | grep -qvE '^contrib/|^docs/|^static/|^website/|^LICENSE|\.md$' || circleci step halt
+              echo "$CHANGED" | grep -qvE '^contrib/|^docs/|^static/|^website/|^LICENSE|\.md$' || circleci step halt
             fi
 
     - *restore_node_modules_cache
@@ -76,7 +76,7 @@ jobs:
           name: Skip screenshotter if only documentation has been changed
           command: |
               if [[ $CHANGED ]]; then
-                echo $CHANGED | grep -qvE '^docs/|^LICENSE|\.md$' || circleci step halt
+                echo "$CHANGED" | grep -qvE '^docs/|^LICENSE|\.md$' || circleci step halt
               fi
 
       - *restore_node_modules_cache
