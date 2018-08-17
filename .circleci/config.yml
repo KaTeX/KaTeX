@@ -14,7 +14,7 @@ post_checkout: &post_checkout
         if [[ $BASE_COMMIT ]]; then
           CHANGED=$(git diff --name-only $BASE_COMMIT)
           echo "$CHANGED"
-          echo 'export CHANGED="$CHANGED"' >> $BASH_ENV
+          echo "export CHANGED=\"$CHANGED\"" >> $BASH_ENV
         fi
 
 node_modules_cache_key: &node_modules_cache_key
