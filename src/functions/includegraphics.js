@@ -74,7 +74,8 @@ defineFunction({
                             totalheight = sizeData(str);
                             break;
                         default:
-                            // Do nothing.
+                            throw new ParseError("Invalid key: '" + keyVal[0] +
+                                "' in \\includegraphics.");
                     }
                 }
             }
