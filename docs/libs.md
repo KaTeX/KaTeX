@@ -17,6 +17,9 @@ These libraries are maintained by third-parties.
 ### Angular2+
 - [ng-katex](https://github.com/garciparedes/ng-katex): Angular module to write beautiful math expressions with TeX syntax boosted by KaTeX library
 
+### iOS
+- [KaTeX-iOS](https://github.com/ianarawjo/KaTeX-iOS): iOS UIView that renders TeX expressions with KaTeX
+
 ### React
 - [react-latex](https://github.com/zzish/react-latex): React component to render latex strings, based on KaTeX
 - [react-katex](https://github.com/talyssonoc/react-katex): React components that use KaTeX to typeset math expressions
