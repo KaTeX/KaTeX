@@ -20,15 +20,15 @@ const renderMathInText = function(text, optionsCopy) {
     const data = splitWithDelimiters(text, optionsCopy.delimiters);
     const fragment = document.createDocumentFragment();
 
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].type === "text") {
-            fragment.appendChild(document.createTextNode(data[i].data));
+    data.forEach((datum) => {
+        if (datum.type === "text") {
+            fragment.appendChild(document.createTextNode(datum.data));
         } else {
             const span = document.createElement("span");
-            const math = data[i].data;
+            const math = datum.data;
             // Override any display mode defined in the settings with that
             // defined by the text itself
-            optionsCopy.displayMode = data[i].display;
+            optionsCopy.displayMode = datum.display;
             try {
                 katex.render(math, span, optionsCopy);
             } catch (e) {
@@ -36,16 +36,16 @@ const renderMathInText = function(text, optionsCopy) {
                     throw e;
                 }
                 optionsCopy.errorCallback(
-                    "KaTeX auto-render: Failed to parse `" + data[i].data +
+                    "KaTeX auto-render: Failed to parse `" + datum.data +
                     "` with ",
                     e
                 );
-                fragment.appendChild(document.createTextNode(data[i].rawData));
-                continue;
+                fragment.appendChild(document.createTextNode(datum.rawData));
+                return;
             }
             fragment.appendChild(span);
         }
-    }
+    });
 
     return fragment;
 };
@@ -82,7 +82,7 @@ const renderMathInElement = function(elem, options) {
     const optionsCopy = {};
 
     // Object.assign(optionsCopy, option)
-    Object.keys(options).map(function(option){
+    Object.keys(options).map((option) => {
         optionsCopy[option] = option;
     });
 
