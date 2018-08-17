@@ -14,3 +14,8 @@ ${option.description}${((option.bool && option.defaultValue !== undefined)
 // copy local built CSS and fonts
 fs.copySync('../dist/katex.min.css', 'static/static/katex.min.css');
 fs.copySync('../dist/fonts', 'static/static/fonts');
+
+if (process.env.CONTEXT === 'production') {
+    // do not deploy versioned docs to netlify production deploy
+    fs.removeSync('versions.json');
+}
