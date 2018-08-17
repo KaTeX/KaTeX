@@ -58,8 +58,9 @@
             </a>
           </div>
           <textarea id="demo-input" spellcheck="false">
-f(x) = \int_{-\infty}^\infty
-    \hat f(\xi)\,e^{2 \pi i \xi x}
+% \f is defined as f(#1) using the macro
+\f{x} = \int_{-\infty}^\infty
+    \hat \f\xi\,e^{2 \pi i \xi x}
     \,d\xi</textarea>
         </div>
         <div class="demo-right">
@@ -149,7 +150,10 @@ f(x) = \int_{-\infty}^\infty
         </tr>
       </table>
       <h4><label for="macros">macros</label></h4>
-      <textarea id="macros" placeholder="JSON"></textarea>
+      <textarea id="macros" placeholder="JSON">
+{
+    "\\f": "f(#1)"
+}</textarea>
 
       <h3>Editor Options</h3>
       <div><button id="maximize">Maximize editor</button></div>
