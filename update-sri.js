@@ -44,11 +44,8 @@ Promise.all(process.argv.slice(3).map(file =>
                 }
             })
         ));
-
-        if (version !== "check") {
-            return promise.then(() => fs.writeFile(file, body));
-        }
-        return promise;
+        return version === "check" ? promise
+            : promise.then(() => fs.writeFile(file, body));
     })
 )).then(() => process.exit(0), err => {
     // eslint-disable-next-line no-console
