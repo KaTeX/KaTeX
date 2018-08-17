@@ -106,6 +106,7 @@ defineFunction({
 
         if (group.totalheight.number > 0) {
             depth = calculateSize(group.totalheight, options) - height;
+            depth = depth.toFixed(2);
         }
 
         let width = 0;
@@ -116,6 +117,8 @@ defineFunction({
         const style = {height: height + depth + "em"};
         if (width > 0) {
             style.width = width + "em";
+            // Over-rule any max-width: 100% that the img may inherit.
+            style.maxWidth = width + "em";
         }
         if (depth > 0) {
             style.verticalAlign = -depth + "em";
@@ -135,6 +138,7 @@ defineFunction({
         let depth = 0;
         if (group.totalheight.number > 0) {
             depth = calculateSize(group.totalheight, options) - height;
+            depth = depth.toFixed(2);
             node.setAttribute("valign", "-" + depth + "em");
         }
         node.setAttribute("height", height + depth + "em");
