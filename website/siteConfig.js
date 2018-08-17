@@ -99,7 +99,7 @@ const users = [
     },
     {
         caption: 'Rocket.Chat',
-        image: 'https://cdn.rawgit.com/RocketChat/Rocket.Chat.Artwork/master/Logos/icon.svg',
+        image: 'https://cdn.rawgit.com/RocketChat/Rocket.Chat.Artwork/1f7b68b78878fcef47f32aa0965930a1c12cd0b4/Logos/icon.svg',
         infoLink: 'https://rocket.chat/',
     },
     {
