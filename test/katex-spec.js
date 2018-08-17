@@ -325,7 +325,7 @@ describe("A group parser", function() {
         const ord = parse[0];
 
         expect(ord.type).toMatch("ord");
-        expect(ord.value).toBeTruthy();
+        expect(ord.body).toBeTruthy();
     });
 });
 
@@ -362,7 +362,7 @@ describe("An implicit group parser", function() {
         const parse = getParsed`a { b \Large c } d`;
 
         const group = parse[1];
-        const sizing = group.value[1];
+        const sizing = group.body[1];
 
         expect(sizing.type).toEqual("sizing");
         expect(sizing.body).toHaveLength(1);
@@ -552,14 +552,14 @@ describe("An over/brace/brack parser", function() {
         const parse = getParsed(complexOver)[0];
 
         const numer = parse.numer;
-        expect(numer.value).toHaveLength(4);
+        expect(numer.body).toHaveLength(4);
     });
 
     it("should create a demonimator from the atoms after \\over", function() {
         const parse = getParsed(complexOver)[0];
 
         const denom = parse.numer;
-        expect(denom.value).toHaveLength(4);
+        expect(denom.body).toHaveLength(4);
     });
 
     it("should handle empty numerators", function() {
@@ -582,7 +582,7 @@ describe("An over/brace/brack parser", function() {
         const displaystyleExpression = r`\displaystyle 1 \over 2`;
         const parse = getParsed(displaystyleExpression)[0];
         expect(parse.type).toEqual("genfrac");
-        expect(parse.numer.value[0].type).toEqual("styling");
+        expect(parse.numer.body[0].type).toEqual("styling");
         expect(parse.denom).toBeDefined();
     });
 
@@ -595,11 +595,11 @@ describe("An over/brace/brack parser", function() {
         const nestedOverExpression = r`{1 \over 2} \over 3`;
         const parse = getParsed(nestedOverExpression)[0];
         expect(parse.type).toEqual("genfrac");
-        expect(parse.numer.value[0].type).toEqual("genfrac");
-        expect(parse.numer.value[0].numer.value[0].text).toEqual("1");
-        expect(parse.numer.value[0].denom.value[0].text).toEqual("2");
+        expect(parse.numer.body[0].type).toEqual("genfrac");
+        expect(parse.numer.body[0].numer.body[0].text).toEqual("1");
+        expect(parse.numer.body[0].denom.body[0].text).toEqual("2");
         expect(parse.denom).toBeDefined();
-        expect(parse.denom.value[0].text).toEqual("3");
+        expect(parse.denom.body[0].text).toEqual("3");
     });
 
     it("should fail with multiple overs in the same group", function() {
@@ -1467,7 +1467,7 @@ describe("A style change parser", function() {
         const text = r`a b { c d \displaystyle e f } g h`;
         const parse = getParsed(text);
 
-        const displayNode = parse[2].value[2];
+        const displayNode = parse[2].body[2];
 
         expect(displayNode.type).toEqual("styling");
 
@@ -1520,7 +1520,7 @@ describe("A font parser", function() {
         expect(nestedParse.font).toEqual("mathbb");
         expect(nestedParse.type).toEqual("font");
 
-        const bbBody = nestedParse.body.value;
+        const bbBody = nestedParse.body.body;
         expect(bbBody).toHaveLength(3);
         expect(bbBody[0].type).toEqual("mathord");
         expect(bbBody[2].type).toEqual("font");
@@ -1546,11 +1546,11 @@ describe("A font parser", function() {
         const bf = getParsed`\mathbf{a\mathrm{b}c}`[0];
         expect(bf.type).toEqual("font");
         expect(bf.font).toEqual("mathbf");
-        expect(bf.body.value).toHaveLength(3);
-        expect(bf.body.value[0].text).toEqual("a");
-        expect(bf.body.value[1].type).toEqual("font");
-        expect(bf.body.value[1].font).toEqual("mathrm");
-        expect(bf.body.value[2].text).toEqual("c");
+        expect(bf.body.body).toHaveLength(3);
+        expect(bf.body.body[0].text).toEqual("a");
+        expect(bf.body.body[1].type).toEqual("font");
+        expect(bf.body.body[1].font).toEqual("mathrm");
+        expect(bf.body.body[2].text).toEqual("c");
     });
 
     it("should have the correct greediness", function() {

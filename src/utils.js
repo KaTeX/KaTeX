@@ -98,8 +98,8 @@ function clearNode(node: Node) {
  */
 const getBaseElem = function(group: AnyParseNode): AnyParseNode {
     if (group.type === "ordgroup") {
-        if (group.value.length === 1) {
-            return getBaseElem(group.value[0]);
+        if (group.body.length === 1) {
+            return getBaseElem(group.body[0]);
         } else {
             return group;
         }

@@ -61,8 +61,8 @@ type ParseNodeTypes = {
         alwaysHandleSupSub?: boolean,
         suppressBaseShift?: boolean,
         symbol: boolean,
-        body: string,
-        value?: void,
+        name: string,
+        body?: void,
     |} | {|
         type: "op",
         mode: Mode,
@@ -71,14 +71,14 @@ type ParseNodeTypes = {
         alwaysHandleSupSub?: boolean,
         suppressBaseShift?: boolean,
         symbol: false,  // If 'symbol' is true, `body` *must* be set.
-        body?: void,
-        value: AnyParseNode[],
+        name?: void,
+        body: AnyParseNode[],
     |},
     "ordgroup": {|
         type: "ordgroup",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: AnyParseNode[],
+        body: AnyParseNode[],
     |},
     "size": {|
         type: "size",

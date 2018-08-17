@@ -25,8 +25,8 @@ defineFunction({
             // ref: amsmath: \renewcommand{\smash}[1][tb]{%
             //               def\mb@t{\ht}\def\mb@b{\dp}\def\mb@tb{\ht\z@\z@\dp}%
             let letter = "";
-            for (let i = 0; i < tbArg.value.length; ++i) {
-                const node = tbArg.value[i];
+            for (let i = 0; i < tbArg.body.length; ++i) {
+                const node = tbArg.body[i];
                 // $FlowFixMe: Not every node type has a `text` property.
                 letter = node.text;
                 if (letter === "t") {
