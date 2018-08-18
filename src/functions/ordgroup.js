@@ -8,8 +8,9 @@ import * as mml from "../buildMathML";
 defineFunctionBuilders({
     type: "ordgroup",
     htmlBuilder(group, options) {
+        const inner = html.buildExpression(group.body, options, true);
         return buildCommon.makeSpan(
-            ["mord"], html.buildExpression(group.body, options, true), options);
+            ["mord"], buildCommon.tryCombineChars(inner), options);
     },
     mathmlBuilder(group, options) {
         return mml.buildExpressionRow(group.body, options);

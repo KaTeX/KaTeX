@@ -41,10 +41,6 @@ export class documentFragment<ChildType: VirtualNode>
         return utils.contains(this.classes, className);
     }
 
-    tryCombine(sibling: HtmlDomNode): boolean {
-        return false;
-    }
-
     /** Convert the fragment into a node. */
     toNode(): Node {
         const frag = document.createDocumentFragment();

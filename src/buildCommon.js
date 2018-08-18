@@ -15,7 +15,6 @@ import * as tree from "./tree";
 
 import type Options from "./Options";
 import type {ParseNode} from "./parseNode";
-import type {NodeType} from "./parseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {FontVariant, Mode} from "./types";
 import type {documentFragment as HtmlDocumentFragment} from "./domTree";
@@ -133,47 +132,6 @@ const mathsym = function(
 };
 
 /**
- * Makes a symbol in the default font for mathords and textords.
- */
-const mathDefault = function(
-    value: string,
-    mode: Mode,
-    options: Options,
-    classes: string[],
-    type: NodeType,
-): domTree.symbolNode {
-    if (type === "mathord") {
-        const fontLookup = mathit(value, mode, options, classes);
-        return makeSymbol(value, fontLookup.fontName, mode, options,
-            classes.concat([fontLookup.fontClass]));
-    } else if (type === "textord") {
-        const font = symbols[mode][value] && symbols[mode][value].font;
-        if (font === "ams") {
-            const fontName = retrieveTextFontName("amsrm", options.fontWeight,
-                  options.fontShape);
-            return makeSymbol(
-                value, fontName, mode, options,
-                classes.concat("amsrm", options.fontWeight, options.fontShape));
-        } else if (font === "main" || !font) {
-            const fontName = retrieveTextFontName("textrm", options.fontWeight,
-                  options.fontShape);
-            return makeSymbol(
-                value, fontName, mode, options,
-                classes.concat(options.fontWeight, options.fontShape));
-        } else { // fonts added by plugins
-            const fontName = retrieveTextFontName(font, options.fontWeight,
-                  options.fontShape);
-            // We add font name as a css class
-            return makeSymbol(
-                value, fontName, mode, options,
-                classes.concat(fontName, options.fontWeight, options.fontShape));
-        }
-    } else {
-        throw new Error("unexpected type: " + type + " in mathDefault");
-    }
-};
-
-/**
  * Determines which of the two font names (Main-Italic and Math-Italic) and
  * corresponding style tags (mainit or mathit) to use for font "mathit",
  * depending on the symbol.  Use this function instead of fontMap for font
@@ -282,21 +240,53 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
                                       classes.concat(fontClasses)));
             }
             return makeFragment(parts);
-        } else {
-            return mathDefault(text, mode, options, classes, type);
+        }
+    }
+
+    // Makes a symbol in the default font for mathords and textords.
+    if (type === "mathord") {
+        const fontLookup = mathit(text, mode, options, classes);
+        return makeSymbol(text, fontLookup.fontName, mode, options,
+            classes.concat([fontLookup.fontClass]));
+    } else if (type === "textord") {
+        const font = symbols[mode][text] && symbols[mode][text].font;
+        if (font === "ams") {
+            const fontName = retrieveTextFontName("amsrm", options.fontWeight,
+                  options.fontShape);
+            return makeSymbol(
+                text, fontName, mode, options,
+                classes.concat("amsrm", options.fontWeight, options.fontShape));
+        } else if (font === "main" || !font) {
+            const fontName = retrieveTextFontName("textrm", options.fontWeight,
+                  options.fontShape);
+            return makeSymbol(
+                text, fontName, mode, options,
+                classes.concat(options.fontWeight, options.fontShape));
+        } else { // fonts added by plugins
+            const fontName = retrieveTextFontName(font, options.fontWeight,
+                  options.fontShape);
+            // We add font name as a css class
+            return makeSymbol(
+                text, fontName, mode, options,
+                classes.concat(fontName, options.fontWeight, options.fontShape));
         }
     } else {
-        return mathDefault(text, mode, options, classes, type);
+        throw new Error("unexpected type: " + type + " in makeOrd");
     }
 };
 
 /**
- * Combine as many characters as possible in the given array of characters
- * via their tryCombine method.
+ * Combine consequetive domTree.symbolNodes into a single symbolNode.
  */
 const tryCombineChars = function(chars: HtmlDomNode[]): HtmlDomNode[] {
     for (let i = 0; i < chars.length - 1; i++) {
-        if (chars[i].tryCombine(chars[i + 1])) {
+        const prev = chars[i];
+        const next = chars[i + 1];
+        if (prev instanceof domTree.symbolNode &&
+                next instanceof domTree.symbolNode) {
+            prev.text += next.text;
+            prev.height = Math.max(prev.height, next.height);
+            prev.depth = Math.max(prev.depth, next.depth);
             chars.splice(i + 1, 1);
             i--;
         }
