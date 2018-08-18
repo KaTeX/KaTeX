@@ -52,7 +52,7 @@ beforeEach(function() {
                             " (" + diff + " differs)";
                     }
                 }
-            })
+            });
 
             return message;
         },
