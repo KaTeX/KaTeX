@@ -282,16 +282,40 @@ const tryCombineChars = function(chars: HtmlDomNode[]): HtmlDomNode[] {
     for (let i = 0; i < chars.length - 1; i++) {
         const prev = chars[i];
         const next = chars[i + 1];
-        if (prev instanceof domTree.symbolNode &&
-                next instanceof domTree.symbolNode) {
-            if (domTree.createClass(prev.classes) ===
-                    domTree.createClass(next.classes)) {
-                prev.text += next.text;
-                prev.height = Math.max(prev.height, next.height);
-                prev.depth = Math.max(prev.depth, next.depth);
-                chars.splice(i + 1, 1);
-                i--;
+        if (prev instanceof domTree.symbolNode
+            && next instanceof domTree.symbolNode) {
+
+            if (domTree.createClass(prev.classes) !==
+                domTree.createClass(next.classes)) {
+                continue;
             }
+
+            let skip = false;
+
+            for (const style in prev.style) {
+                if (prev.style.hasOwnProperty(style)
+                    && prev.style[style] !== next.style[style]) {
+                    skip = true;
+                }
+            }
+            if (skip) {
+                continue;
+            }
+            for (const style in next.style) {
+                if (next.style.hasOwnProperty(style)
+                    && prev.style[style] !== next.style[style]) {
+                    skip = true;
+                }
+            }
+            if (skip) {
+                continue;
+            }
+
+            prev.text += next.text;
+            prev.height = Math.max(prev.height, next.height);
+            prev.depth = Math.max(prev.depth, next.depth);
+            chars.splice(i + 1, 1);
+            i--;
         }
     }
     return chars;

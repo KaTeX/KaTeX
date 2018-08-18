@@ -61,6 +61,8 @@ defineFunction({
     },
     htmlBuilder(group, options) {
         const newOptions = optionsWithFont(group, options);
+        // TODO(kevinb): split group.body into combinable parts to avoid having
+        // complicated checks in buildCommon.tryCombineChars.
         const inner = html.buildExpression(group.body, newOptions, true);
         return buildCommon.makeSpan(
             ["mord", "text"], buildCommon.tryCombineChars(inner), newOptions);
