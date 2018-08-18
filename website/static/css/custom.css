@@ -26,6 +26,12 @@
     height: 80%;
 }
 
+.nav-footer .logo {
+    display: block;
+    margin: 1em auto;
+    width: 175px;
+}
+
 .nav-footer .copyright {
     line-height: 1.5;
 }
@@ -38,6 +44,28 @@
 .nav-footer .copyright a:focus {
     color: white;
     text-decoration: none;
+}
+
+.showcaseSection .logos .imgbox {
+    width: 168px;   /* 128px for img + 20*2 for padding */
+    height: 168px;  /* 128px for img + 20*2 for padding */
+    position: relative;
+}
+
+@media only screen and (max-width: 735px) {
+    .showcaseSection .logos .imgbox {
+        width: 104px;   /* 64px for img + 20*2 for padding */
+        height: 104px;  /* 64px for img + 20*2 for padding */
+        position: relative;
+    }
+}
+
+.showcaseSection .logos .imgbox img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
 }
 
 /* Add special CSS for supported.md rendered on mobile */

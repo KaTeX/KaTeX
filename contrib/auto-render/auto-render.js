@@ -85,7 +85,7 @@ const renderMathInElement = function(elem, options) {
     // Object.assign(optionsCopy, option)
     for (const option in options) {
         if (options.hasOwnProperty(option)) {
-            optionsCopy[option] = option;
+            optionsCopy[option] = options[option];
         }
     }
 
