@@ -284,11 +284,14 @@ const tryCombineChars = function(chars: HtmlDomNode[]): HtmlDomNode[] {
         const next = chars[i + 1];
         if (prev instanceof domTree.symbolNode &&
                 next instanceof domTree.symbolNode) {
-            prev.text += next.text;
-            prev.height = Math.max(prev.height, next.height);
-            prev.depth = Math.max(prev.depth, next.depth);
-            chars.splice(i + 1, 1);
-            i--;
+            if (domTree.createClass(prev.classes) ===
+                    domTree.createClass(next.classes)) {
+                prev.text += next.text;
+                prev.height = Math.max(prev.height, next.height);
+                prev.depth = Math.max(prev.depth, next.depth);
+                chars.splice(i + 1, 1);
+                i--;
+            }
         }
     }
     return chars;

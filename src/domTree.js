@@ -528,4 +528,5 @@ export default {
     svgNode,
     pathNode,
     lineNode,
+    createClass,
 };
