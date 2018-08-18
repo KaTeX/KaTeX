@@ -21,6 +21,8 @@ import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
 
+const {symbolNode, createClass} = domTree;
+
 // The following have to be loaded from Main-Italic font, using class mainit
 const mainitLetters = [
     "\\imath", "ı",       // dotless i
@@ -276,40 +278,44 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
 };
 
 /**
- * Combine consequetive domTree.symbolNodes into a single symbolNode.
+ * Returns true if subsequent symbolNodes have the same classes, skew, maxFont,
+ * and styles.
  */
-const tryCombineChars = function(chars: HtmlDomNode[]): HtmlDomNode[] {
+const canCombine = (prev: symbolNode, next: symbolNode) => {
+    if (createClass(prev.classes) !== createClass(next.classes)
+        || prev.skew !== next.skew
+        || prev.maxFontSize !== next.maxFontSize) {
+        return false;
+    }
+
+    for (const style in prev.style) {
+        if (prev.style.hasOwnProperty(style)
+            && prev.style[style] !== next.style[style]) {
+            return false;
+        }
+    }
+
+    for (const style in next.style) {
+        if (next.style.hasOwnProperty(style)
+            && prev.style[style] !== next.style[style]) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+/**
+ * Combine consequetive domTree.symbolNodes into a single symbolNode.
+ * Note: this function mutates the argument.
+ */
+const tryCombineChars = (chars: HtmlDomNode[]): HtmlDomNode[] => {
     for (let i = 0; i < chars.length - 1; i++) {
         const prev = chars[i];
         const next = chars[i + 1];
         if (prev instanceof domTree.symbolNode
-            && next instanceof domTree.symbolNode) {
-
-            if (domTree.createClass(prev.classes) !==
-                domTree.createClass(next.classes)) {
-                continue;
-            }
-
-            let skip = false;
-
-            for (const style in prev.style) {
-                if (prev.style.hasOwnProperty(style)
-                    && prev.style[style] !== next.style[style]) {
-                    skip = true;
-                }
-            }
-            if (skip) {
-                continue;
-            }
-            for (const style in next.style) {
-                if (next.style.hasOwnProperty(style)
-                    && prev.style[style] !== next.style[style]) {
-                    skip = true;
-                }
-            }
-            if (skip) {
-                continue;
-            }
+            && next instanceof domTree.symbolNode
+            && canCombine(prev, next)) {
 
             prev.text += next.text;
             prev.height = Math.max(prev.height, next.height);
