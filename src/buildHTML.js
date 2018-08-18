@@ -9,7 +9,7 @@
 import ParseError from "./ParseError";
 import Style from "./Style";
 import buildCommon from "./buildCommon";
-import domTree from "./domTree";
+import {Anchor} from "./domTree";
 import utils, {assert} from "./utils";
 import {checkNodeType} from "./parseNode";
 import {spacings, tightSpacings} from "./spacingData";
@@ -191,7 +191,7 @@ const getOutermostNode = function(
     side: Side,
 ): HtmlDomNode {
     if (node instanceof tree.documentFragment ||
-            node instanceof domTree.anchor) {
+            node instanceof Anchor) {
         const children = node.children;
         if (children.length) {
             if (side === "right") {

@@ -14,7 +14,7 @@ import Settings from "./src/Settings";
 import {buildTree, buildHTMLTree} from "./src/buildTree";
 import parseTree from "./src/parseTree";
 import buildCommon from "./src/buildCommon";
-import domTree from "./src/domTree";
+import domTree, {SymbolNode} from "./src/domTree";
 import utils from "./src/utils";
 
 import type {SettingsOptions} from "./src/Settings";
@@ -90,7 +90,7 @@ const renderError = function(
         throw error;
     }
     const node = buildCommon.makeSpan(["katex-error"],
-        [new domTree.symbolNode(expression)]);
+        [new SymbolNode(expression)]);
     node.setAttribute("title", error.toString());
     node.setAttribute("style", `color:${options.errorColor}`);
     return node;
