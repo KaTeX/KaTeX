@@ -26,6 +26,12 @@
     height: 80%;
 }
 
+.nav-footer .logo {
+    display: block;
+    margin: 1em auto;
+    width: 175px;
+}
+
 /* Add special CSS for supported.md rendered on mobile */
 @media screen and (max-width: 480px) {
     /* We have two styles for very narrow screens.

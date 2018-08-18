@@ -79,8 +79,7 @@ class Footer extends React.Component {
 
             <a
               href="https://www.khanacademy.org/"
-              target="_blank" // eslint-disable-line react/jsx-no-target-blank
-              className="fbOpenSource">
+              className="logo">
               <img
                 src={this.props.config.baseUrl + 'img/khan-academy.svg'}
                 alt="Khan Academy"
