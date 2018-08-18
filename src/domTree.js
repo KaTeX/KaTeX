@@ -562,12 +562,3 @@ export function assertSpan(
         throw new Error(`Expected span<HtmlDomNode> but got ${String(group)}.`);
     }
 }
-
-export default {
-    Span,
-    Anchor,
-    SymbolNode,
-    SvgNode,
-    PathNode,
-    LineNode,
-};

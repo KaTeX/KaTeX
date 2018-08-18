@@ -14,7 +14,14 @@ import Settings from "./src/Settings";
 import {buildTree, buildHTMLTree} from "./src/buildTree";
 import parseTree from "./src/parseTree";
 import buildCommon from "./src/buildCommon";
-import domTree, {SymbolNode} from "./src/domTree";
+import {
+    Span,
+    Anchor,
+    SymbolNode,
+    SvgNode,
+    PathNode,
+    LineNode,
+} from "./src/domTree";
 import utils from "./src/utils";
 
 import type {SettingsOptions} from "./src/Settings";
@@ -196,5 +203,12 @@ export default {
      * The internal tree representation is unstable and is very likely
      * to change. Use at your own risk.
      */
-    __domTree: domTree,
+    __domTree: {
+        Span,
+        Anchor,
+        SymbolNode,
+        SvgNode,
+        PathNode,
+        LineNode,
+    },
 };
