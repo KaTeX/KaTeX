@@ -161,6 +161,7 @@ function startServer() {
     }
     const port = Math.floor(Math.random() * (maxPort - minPort)) + minPort;
     const compiler = webpack(webpackConfig);
+    /* eslint-disable-next-line new-cap */
     const wds = new webpackDevServer(compiler, webpackConfig.devServer);
     const server = wds.listen(port);
     server.once("listening", function() {

@@ -14,7 +14,7 @@ import utils, {assert} from "./utils";
 import {checkNodeType} from "./parseNode";
 import {spacings, tightSpacings} from "./spacingData";
 import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";
-import * as tree from "./tree";
+import {DocumentFragment} from "./tree";
 
 import type Options from "./Options";
 import type {AnyParseNode} from "./parseNode";
@@ -91,7 +91,7 @@ export const buildExpression = function(
     const rawGroups: HtmlDomNode[] = [];
     for (let i = 0; i < expression.length; i++) {
         const output = buildGroup(expression[i], options);
-        if (output instanceof tree.documentFragment) {
+        if (output instanceof DocumentFragment) {
             const children: HtmlDomNode[] = output.children;
             rawGroups.push(...children);
         } else {
@@ -190,7 +190,7 @@ const getOutermostNode = function(
     node: HtmlDomNode,
     side: Side,
 ): HtmlDomNode {
-    if (node instanceof tree.documentFragment ||
+    if (node instanceof DocumentFragment ||
             node instanceof Anchor) {
         const children = node.children;
         if (children.length) {

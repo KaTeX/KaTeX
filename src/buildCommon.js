@@ -11,7 +11,7 @@ import symbols, {ligatures} from "./symbols";
 import utils from "./utils";
 import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
-import * as tree from "./tree";
+import {DocumentFragment} from "./tree";
 
 import type Options from "./Options";
 import type {ParseNode} from "./parseNode";
@@ -398,7 +398,7 @@ const makeAnchor = function(
 const makeFragment = function(
     children: HtmlDomNode[],
 ): HtmlDocumentFragment {
-    const fragment = new tree.documentFragment(children);
+    const fragment = new DocumentFragment(children);
 
     sizeElementFromChildren(fragment);
 

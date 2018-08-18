@@ -15,7 +15,7 @@ import {scriptFromCodepoint} from "./unicodeScripts";
 import utils from "./utils";
 import svgGeometry from "./svgGeometry";
 import type Options from "./Options";
-import * as tree from "./tree";
+import {DocumentFragment} from "./tree";
 
 import type {VirtualNode} from "./tree";
 
@@ -144,7 +144,7 @@ export type DomSpan = Span<HtmlDomNode>;
 export type SvgSpan = Span<SvgNode>;
 
 export type SvgChildNode = PathNode | LineNode;
-export type documentFragment = tree.documentFragment<HtmlDomNode>;
+export type documentFragment = DocumentFragment<HtmlDomNode>;
 
 
 /**

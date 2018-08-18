@@ -26,7 +26,7 @@ defineFunction({
             options,
             false
         );
-        return new buildCommon.makeFragment(elements);
+        return buildCommon.makeFragment(elements);
     },
     mathmlBuilder: (group, options) => {
         return mml.buildExpressionRow(group.mathml, options);
