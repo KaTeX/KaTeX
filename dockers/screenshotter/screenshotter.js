@@ -301,13 +301,13 @@ function findHostIP() {
     for (const dev in devs) {
         if (devs.hasOwnProperty(dev)) {
             const addrs = devs[dev];
-            for (let i = 0; i < addrs.length; ++i) {
-                let addr = addrs[i].address;
+            ips = addrs.map(function(element){
+                let addr = element.address;
                 if (/:/.test(addr)) {
                     addr = "[" + addr + "]";
                 }
-                ips.push(addr);
-            }
+                return addr;
+            });
         }
     }
     console.log("Looking for host IP among " + ips.join(", "));
