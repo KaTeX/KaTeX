@@ -301,12 +301,12 @@ function findHostIP() {
     for (const dev in devs) {
         if (devs.hasOwnProperty(dev)) {
             const addrs = devs[dev];
-            ips = addrs.map(function(element){
+            addrs.forEach((element) => {
                 let addr = element.address;
                 if (/:/.test(addr)) {
                     addr = "[" + addr + "]";
                 }
-                return addr;
+                ips.push(addr);
             });
         }
     }
