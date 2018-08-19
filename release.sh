@@ -211,6 +211,7 @@ else
 
     # Publish the website
     pushd website
+    yarn
     USE_SSH=true yarn publish-gh-pages
     popd
 

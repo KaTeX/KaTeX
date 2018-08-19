@@ -116,6 +116,20 @@ jobs:
           path: dist/fonts
           destination: fonts
 
+      - run:
+          name: Deploy release version
+          command: |
+              NEW_VERSION=$(git diff -U0 HEAD^ -- website/versions.json |\
+                { grep '^+\s\+' || test $? = 1; } | sed -r 's/\+\s+"(.*)",?/\1/')
+              if [[ $CIRCLE_BRANCH == "master" && $NEW_VERSION ]]; then
+                git config --global user.email "katex@users.noreply.github.com"
+                git config --global user.name "KaTeX Release Bot"
+                echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+
+                ./release.sh -p $NEW_VERSION
+                node .circleci/create-github-release.js $NEW_VERSION
+              fi
+
   firefox:
     docker:
       - image: circleci/node:6
