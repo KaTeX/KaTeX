@@ -188,17 +188,16 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
     // Set a position for \hline(s) at the top of the array, if any.
     function setHLinePos(hlinesInGap: boolean[]) {
-        for (let i = 0; i < hlinesInGap.length; ++i) {
+        hlinesInGap.forEach((element, i) => {
             if (i > 0) {
                 totalHeight += 0.25;
             }
-            hlines.push({pos: totalHeight, isDashed: hlinesInGap[i]});
-        }
+            hlines.push({pos: totalHeight, isDashed: element});
+        });
     }
     setHLinePos(hLinesBeforeRow[0]);
 
-    for (r = 0; r < group.body.length; ++r) {
-        const inrow = group.body[r];
+    group.body.forEach((inrow, r) => {
         let height = arstrutHeight; // \@array adds an \@arstrut
         let depth = arstrutDepth;   // to each tow (via the template)
 
@@ -207,8 +206,8 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         }
 
         const outrow: Outrow = (new Array(inrow.length): any);
-        for (c = 0; c < inrow.length; ++c) {
-            const elt = html.buildGroup(inrow[c], options);
+        inrow.forEach((element, c) => {
+            const elt = html.buildGroup(element, options);
             if (depth < elt.depth) {
                 depth = elt.depth;
             }
@@ -216,7 +215,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
                 height = elt.height;
             }
             outrow[c] = elt;
-        }
+        });
 
         const rowGap = group.rowGaps[r];
         let gap = 0;
@@ -246,7 +245,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
         // Set a position for \hline(s), if any.
         setHLinePos(hLinesBeforeRow[r + 1]);
-    }
+    });
 
     const offset = totalHeight / 2 + options.fontMetrics().axisHeight;
     const colDescriptions = group.cols || [];
@@ -405,15 +404,15 @@ const alignedHandler = function(context, args) {
     const ordgroup = checkNodeType(args[0], "ordgroup");
     if (ordgroup) {
         let arg0 = "";
-        for (let i = 0; i < ordgroup.body.length; i++) {
-            const textord = assertNodeType(ordgroup.body[i], "textord");
+        ordgroup.body.forEach((element) => {
+            const textord = assertNodeType(element, "textord");
             arg0 += textord.text;
-        }
+        });
         numMaths = Number(arg0);
         numCols = numMaths * 2;
     }
     const isAligned = !numCols;
-    res.body.forEach(function(row) {
+    res.body.forEach((row) => {
         for (let i = 1; i < row.length; i += 2) {
             // Modify ordgroup node within styling node
             const styling = assertNodeType(row[i], "styling");
