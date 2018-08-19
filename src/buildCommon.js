@@ -282,6 +282,7 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
 const canCombine = (prev: SymbolNode, next: SymbolNode) => {
     if (createClass(prev.classes) !== createClass(next.classes)
         || prev.skew !== next.skew
+        || prev.italic !== next.italic
         || prev.maxFontSize !== next.maxFontSize) {
         return false;
     }
