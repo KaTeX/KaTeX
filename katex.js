@@ -14,7 +14,14 @@ import Settings from "./src/Settings";
 import {buildTree, buildHTMLTree} from "./src/buildTree";
 import parseTree from "./src/parseTree";
 import buildCommon from "./src/buildCommon";
-import domTree from "./src/domTree";
+import {
+    Span,
+    Anchor,
+    SymbolNode,
+    SvgNode,
+    PathNode,
+    LineNode,
+} from "./src/domTree";
 import utils from "./src/utils";
 
 import type {SettingsOptions} from "./src/Settings";
@@ -90,7 +97,7 @@ const renderError = function(
         throw error;
     }
     const node = buildCommon.makeSpan(["katex-error"],
-        [new domTree.symbolNode(expression)]);
+        [new SymbolNode(expression)]);
     node.setAttribute("title", error.toString());
     node.setAttribute("style", `color:${options.errorColor}`);
     return node;
@@ -196,5 +203,12 @@ export default {
      * The internal tree representation is unstable and is very likely
      * to change. Use at your own risk.
      */
-    __domTree: domTree,
+    __domTree: {
+        Span,
+        Anchor,
+        SymbolNode,
+        SvgNode,
+        PathNode,
+        LineNode,
+    },
 };

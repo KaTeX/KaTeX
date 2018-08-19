@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.11.0-pre",
+  "version": "0.10.0-pre",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex",
   "module": "dist/katex.mjs",
@@ -51,7 +51,7 @@
     "mkdirp": "^0.5.1",
     "pako": "1.0.6",
     "postcss-loader": "^3.0.0",
-    "query-string": "^6.1.0",
+    "query-string": "^5.1.1",
     "rimraf": "^2.6.2",
     "rollup": "^0.63.4",
     "rollup-plugin-babel": "^3.0.7",
