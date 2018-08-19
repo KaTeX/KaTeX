@@ -9,14 +9,14 @@ Use CDN to deliver KaTeX to your project:
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.css" integrity="sha384-JwmmMju6Z7M9jiY4RXeJLoNb3aown2QCC/cI7JPgmOLsn3n33pdwAj0Ml/CMMd1W" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.js" integrity="sha384-P3TGHygedOtVJ4NpCMJBg8zlUhnx3cw0uffQ5Ppy58dxHIJkXfcyf8HvjLpucohW" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.js" integrity="sha384-U1Xj9KV5ZO2ZCtlx8DVCJRvUocnqBByPupt6P3sjFne85Vgp3dIcX+38yiXaSLlr" crossorigin="anonymous"></script>
 ```
 
 KaTeX also provides minified versions:
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.min.css" integrity="sha384-JwmmMju6Z7M9jiY4RXeJLoNb3aown2QCC/cI7JPgmOLsn3n33pdwAj0Ml/CMMd1W" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.min.js" integrity="sha384-HfSid88/k05FhUa2Qk7I3hgXARcblhK5ec5QB5hA4LGHh5+oqtrwKN9Ad5Rb8iZQ" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.min.js" integrity="sha384-ttOZCNX+557qK00I95MHw9tttcgWn2PjR/bXecuEvENq6nevFtwSSQ6bYEN6AetB" crossorigin="anonymous"></script>
 ```
 
 > The loading of scripts are [deferred using `defer` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
@@ -43,7 +43,7 @@ ECMAScript module is also available:
     import katex from 'https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.mjs';
     ...
 </script>
-<script nomodule defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.js" integrity="sha384-pGuYA7LziPYUHteKzazOkOJoQ44gRzjqaTF/Ur7QKZq3E+x5ixdzP90jatypOMQ4" crossorigin="anonymous"></script>
+<script nomodule defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.js" integrity="sha384-U1Xj9KV5ZO2ZCtlx8DVCJRvUocnqBByPupt6P3sjFne85Vgp3dIcX+38yiXaSLlr" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.css" integrity="sha384-JwmmMju6Z7M9jiY4RXeJLoNb3aown2QCC/cI7JPgmOLsn3n33pdwAj0Ml/CMMd1W" crossorigin="anonymous">
 ```
 
