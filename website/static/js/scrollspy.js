@@ -14,7 +14,7 @@
             timer = null;
             let found = false;
             const headings = findHeadings();
-            for (let i = 0; i < headings.length; i++) {
+            headings.forEach((heading, i) => {
                 // if !found and i is the last element, highlight the last
                 let current = !found;
                 if (!found && i < headings.length - 1) {
@@ -29,11 +29,11 @@
                 }
                 if (current) {
                     found = true;
-                    headings[i].className = "active";
+                    heading.className = "active";
                 } else {
-                    headings[i].className = "";
+                    heading.className = "";
                 }
-            }
+            });
         }, 100);
     };
     document.addEventListener('scroll', onScroll);
