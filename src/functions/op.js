@@ -2,7 +2,7 @@
 // Limits, symbols
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import domTree from "../domTree";
+import {SymbolNode} from "../domTree";
 import * as mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import Style from "../Style";
@@ -91,7 +91,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     } else if (group.body) {
         // If this is a list, compose that list.
         const inner = html.buildExpression(group.body, options, true);
-        if (inner.length === 1 && inner[0] instanceof domTree.symbolNode) {
+        if (inner.length === 1 && inner[0] instanceof SymbolNode) {
             base = inner[0];
             base.classes[0] = "mop"; // replace old mclass
         } else {
@@ -112,7 +112,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     // If content of op is a single symbol, shift it vertically.
     let baseShift = 0;
     let slant = 0;
-    if ((base instanceof domTree.symbolNode
+    if ((base instanceof SymbolNode
         || group.name === "\\oiint" || group.name === "\\oiiint")
         && !group.suppressBaseShift) {
         // We suppress the shift of the base of \overset and \underset. Otherwise,

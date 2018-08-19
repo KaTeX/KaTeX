@@ -83,6 +83,11 @@ const users = [
         infoLink: 'https://idyll-lang.org/',
     },
     {
+        caption: 'Interactive Mathematics',
+        image: 'https://www.intmath.com/intmath-logo.svg',
+        infoLink: 'https://www.intmath.com/',
+    },
+    {
         caption: 'Messenger',
         image: 'https://en.facebookbrand.com/wp-content/uploads/2016/09/messenger_icon2.png',
         infoLink: 'https://www.messenger.com/',

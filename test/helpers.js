@@ -31,6 +31,7 @@ const printActualErrorMessage = error => {
         const {message, stack} = separateMessageFromStack(error.stack);
         return (
             'Instead, it threw:\n' +
+            /* eslint-disable-next-line new-cap */
             RECEIVED_COLOR(
                 `  ${message}` +
                 formatStackTrace(
