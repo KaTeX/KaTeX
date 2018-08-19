@@ -46,10 +46,9 @@ describe("An ord parser", function() {
     it("should build a list of ords", function() {
         const parse = getParsed(expression);
 
-        for (let i = 0; i < parse.length; i++) {
-            const group = parse[i];
+        parse.forEach((group) => {
             expect(group.type).toMatch("ord");
-        }
+        });
     });
 
     it("should parse the right number of ords", function() {
@@ -69,11 +68,10 @@ describe("A bin parser", function() {
     it("should build a list of bins", function() {
         const parse = getParsed(expression);
 
-        for (let i = 0; i < parse.length; i++) {
-            const group = parse[i];
+        parse.forEach((group) => {
             expect(group.type).toEqual("atom");
             expect(group.family).toEqual("bin");
-        }
+        });
     });
 });
 
@@ -89,8 +87,7 @@ describe("A rel parser", function() {
     it("should build a list of rels", function() {
         const parse = getParsed(expression);
 
-        for (let i = 0; i < parse.length; i++) {
-            let group = parse[i];
+        parse.forEach((group) => {
             if (group.type === "htmlmathml") {
                 expect(group.html).toHaveLength(1);
                 group = group.html[0];
@@ -101,7 +98,7 @@ describe("A rel parser", function() {
                 expect(group.type).toEqual("atom");
                 expect(group.family).toEqual("rel");
             }
-        }
+        });
     });
 });
 
@@ -115,11 +112,10 @@ describe("A punct parser", function() {
     it("should build a list of puncts", function() {
         const parse = getParsed(expression);
 
-        for (let i = 0; i < parse.length; i++) {
-            const group = parse[i];
+        parse.forEach((group) => {
             expect(group.type).toEqual("atom");
             expect(group.family).toEqual("punct");
-        }
+        });
     });
 });
 
@@ -133,11 +129,10 @@ describe("An open parser", function() {
     it("should build a list of opens", function() {
         const parse = getParsed(expression);
 
-        for (let i = 0; i < parse.length; i++) {
-            const group = parse[i];
+        parse.forEach((group) => {
             expect(group.type).toEqual("atom");
             expect(group.family).toEqual("open");
-        }
+        });
     });
 });
 
@@ -151,11 +146,10 @@ describe("A close parser", function() {
     it("should build a list of closes", function() {
         const parse = getParsed(expression);
 
-        for (let i = 0; i < parse.length; i++) {
-            const group = parse[i];
+        parse.forEach((group) => {
             expect(group.type).toEqual("atom");
             expect(group.family).toEqual("close");
-        }
+        });
     });
 });
 
@@ -1196,11 +1190,11 @@ describe("left/right builder", () => {
         [r`\left\langle \right\rangle`, '\\left\u27e8 \\right\u27e9'],
     ];
 
-    for (const [actual, expected] of cases) {
+    cases.forEach(([actual, expected]) => {
         it(`should build "${actual}" like "${expected}"`, () => {
             expect(actual).toBuildLike(expected);
         });
-    }
+    });
 });
 
 describe("A begin/end parser", function() {
@@ -1301,9 +1295,9 @@ describe("A TeX-compliant parser", function() {
             r`\text`,
         ];
 
-        for (let i = 0; i < missingGroups.length; i++) {
-            expect(missingGroups[i]).not.toParse();
-        }
+        missingGroups.forEach((group) => {
+            expect(group).not.toParse();
+        });
     });
 
     it("should fail when there are missing sup/subscripts", function() {
@@ -1328,9 +1322,9 @@ describe("A TeX-compliant parser", function() {
             r`\sqrt \mathllap x`,
         ];
 
-        for (let i = 0; i < badArguments.length; i++) {
-            expect(badArguments[i]).not.toParse();
-        }
+        badArguments.forEach((argument) => {
+            expect(argument).not.toParse();
+        });
     });
 
     it("should work when the arguments have braces", function() {
@@ -1346,9 +1340,9 @@ describe("A TeX-compliant parser", function() {
             r`\sqrt {\mathllap x}`,
         ];
 
-        for (let i = 0; i < goodArguments.length; i++) {
-            expect(goodArguments[i]).toParse();
-        }
+        goodArguments.forEach((argument) => {
+            expect(argument).toParse();
+        });
     });
 
     it("should fail when sup/subscripts require arguments", function() {
@@ -1359,9 +1353,9 @@ describe("A TeX-compliant parser", function() {
             r`x_\mathllap x`,
         ];
 
-        for (let i = 0; i < badSupSubscripts.length; i++) {
-            expect(badSupSubscripts[i]).not.toParse();
-        }
+        badSupSubscripts.forEach((subscript) => {
+            expect(subscript).not.toParse();
+        });
     });
 
     it("should work when sup/subscripts arguments have braces", function() {
@@ -1372,9 +1366,9 @@ describe("A TeX-compliant parser", function() {
             r`x_{\mathllap x}`,
         ];
 
-        for (let i = 0; i < goodSupSubscripts.length; i++) {
-            expect(goodSupSubscripts[i]).toParse();
-        }
+        goodSupSubscripts.forEach((subscript) => {
+            expect(subscript).toParse();
+        });
     });
 
     it("should parse multiple primes correctly", function() {
@@ -1410,9 +1404,9 @@ describe("A TeX-compliant parser", function() {
             r`x^\left( x \right)`,
         ];
 
-        for (let i = 0; i < badLeftArguments.length; i++) {
-            expect(badLeftArguments[i]).not.toParse();
-        }
+        badLeftArguments.forEach((argument) => {
+            expect(argument).not.toParse();
+        });
     });
 
     it("should succeed when there are braces around the \\left/\\right", function() {
@@ -1424,9 +1418,9 @@ describe("A TeX-compliant parser", function() {
             r`x^{\left( x \right)}`,
         ];
 
-        for (let i = 0; i < goodLeftArguments.length; i++) {
-            expect(goodLeftArguments[i]).toParse();
-        }
+        goodLeftArguments.forEach((argument) => {
+            expect(argument).toParse();
+        });
     });
 });
 

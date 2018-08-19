@@ -38,7 +38,7 @@ const testsToRun = [
     "Units",
 ];
 
-for (const key of testsToRun) {
+testsToRun.forEach((key) => {
     const value = data[key];
     if (typeof value === "string") {
         suite.add(key, () => katex.renderToString(value));
@@ -48,7 +48,7 @@ for (const key of testsToRun) {
         };
         suite.add(key, () => katex.renderToString(value.tex, options));
     }
-}
+});
 
 // Print out the ops/sec for each test
 suite.on('cycle', function(event) {
