@@ -82,7 +82,7 @@ const renderMathInElement = function(elem, options) {
 
     // Object.assign(optionsCopy, option)
     Object.keys(options).map((option) => {
-        optionsCopy[option] = option;
+        optionsCopy[option] = options[option];
     });
 
     // default options
