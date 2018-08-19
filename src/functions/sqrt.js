@@ -5,7 +5,7 @@ import mathMLTree from "../mathMLTree";
 import delimiter from "../delimiter";
 import Style from "../Style";
 
-import * as tree from "../tree";
+import {DocumentFragment} from "../tree";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
@@ -39,7 +39,7 @@ defineFunction({
 
         // Some groups can return document fragments.  Handle those by wrapping
         // them in a span.
-        if (inner instanceof tree.documentFragment) {
+        if (inner instanceof DocumentFragment) {
             inner = buildCommon.makeSpan([], [inner], options);
         }
 

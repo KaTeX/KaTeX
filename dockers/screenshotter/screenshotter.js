@@ -2,8 +2,7 @@
 "use strict";
 
 const childProcess = require("child_process");
-const fs = require("fs");
-const mkdirp = require("mkdirp");
+const fs = require("fs-extra");
 const jspngopt = require("jspngopt");
 const net = require("net");
 const os = require("os");
@@ -13,7 +12,7 @@ const selenium = require("selenium-webdriver");
 const firefox = require("selenium-webdriver/firefox");
 
 const webpack = require('webpack');
-const webpackDevServer = require("webpack-dev-server");
+const WebpackDevServer = require("webpack-dev-server");
 const webpackConfig = require("../../webpack.dev")[0];
 const data = require("../../test/screenshotter/ss_data");
 
@@ -162,7 +161,7 @@ function startServer() {
     }
     const port = Math.floor(Math.random() * (maxPort - minPort)) + minPort;
     const compiler = webpack(webpackConfig);
-    const wds = new webpackDevServer(compiler, webpackConfig.devServer);
+    const wds = new WebpackDevServer(compiler, webpackConfig.devServer);
     const server = wds.listen(port);
     server.once("listening", function() {
         devServer = wds;
@@ -352,7 +351,7 @@ function takeScreenshot(key) {
     let retry = 0;
     let loadExpected = null;
     if (opts.verify) {
-        loadExpected = promisify(fs.readFile, file);
+        loadExpected = fs.readFile(file);
     }
 
     const url = katexURL + "test/screenshotter/test.html?" + itm.query;
@@ -400,7 +399,7 @@ function takeScreenshot(key) {
             key += "_alt";
             file = path.join(dstDir, key + "-" + opts.browser + ".png");
             if (loadExpected) {
-                loadExpected = promisify(fs.readFile, file);
+                loadExpected = fs.readFile(file);
             }
         }
         const opt = new jspngopt.Optimizer({
@@ -430,7 +429,7 @@ function takeScreenshot(key) {
                 }
             });
         } else {
-            return promisify(fs.writeFile, file, buf).then(function() {
+            return fs.writeFile(file, buf).then(function() {
                 console.log(key);
             });
         }
@@ -443,16 +442,11 @@ function takeScreenshot(key) {
         const diffFile = path.join(diffDir, filenamePrefix + "-diff.png");
         const bufFile = path.join(outputDir, filenamePrefix + ".png");
 
-        let promise = promisify(mkdirp, outputDir)
-            .then(function() {
-                return promisify(fs.writeFile, bufFile, buf);
-            });
+        let promise = fs.ensureDir(outputDir)
+            .then(fs.writeFile(bufFile, buf));
         if (opts.diff) {
-            promise = promise.then(function() {
-                return promisify(mkdirp, diffDir);
-            })
-            .then(function() {
-                return execFile("convert", [
+            promise = promise.then(fs.ensureDir(diffDir))
+                .then(execFile("convert", [
                     "-fill", "white",
                     // First image: saved screenshot in red
                     "(", baseFile, "-colorize", "100,0,0", ")",
@@ -463,13 +457,10 @@ function takeScreenshot(key) {
                     "-trim",  // remove everything with the same color as the
                               // corners
                     diffFile, // output file name
-                ]);
-            });
+                ]));
         }
         if (!opts.new) {
-            promise = promise.then(function() {
-                return promisify(fs.unlink, bufFile);
-            });
+            promise = promise.then(fs.unlink(bufFile));
         }
         return promise;
     }
@@ -500,38 +491,19 @@ function browserSideWait(milliseconds) {
         milliseconds);
 }
 
-// Turn node callback style into a call returning a promise,
-// like Q.nfcall but using Selenium promises instead of Q ones.
-// Second and later arguments are passed to the function named in the
-// first argument, and a callback is added as last argument.
-function promisify(f) {
-    const args = Array.prototype.slice.call(arguments, 1);
-    const deferred = new selenium.promise.Deferred();
-    args.push(function(err, val) {
-        if (err) {
-            deferred.reject(err);
-        } else {
-            deferred.fulfill(val);
-        }
-    });
-    f.apply(null, args);
-    return deferred.promise;
-}
-
 // Execute a given command, and return a promise to its output.
-// Don't denodeify here, since fail branch needs access to stderr.
 function execFile(cmd, args, opts) {
-    const deferred = new selenium.promise.Deferred();
-    childProcess.execFile(cmd, args, opts, function(err, stdout, stderr) {
-        if (err) {
-            console.error("Error executing " + cmd + " " + args.join(" "));
-            console.error(stdout + stderr);
-            err.stdout = stdout;
-            err.stderr = stderr;
-            deferred.reject(err);
-        } else {
-            deferred.fulfill(stdout);
-        }
+    return new Promise(function(resolve, reject) {
+        childProcess.execFile(cmd, args, opts, function(err, stdout, stderr) {
+            if (err) {
+                console.error("Error executing " + cmd + " " + args.join(" "));
+                console.error(stdout + stderr);
+                err.stdout = stdout;
+                err.stderr = stderr;
+                reject(err);
+            } else {
+                resolve(stdout);
+            }
+        });
     });
-    return deferred.promise;
 }
