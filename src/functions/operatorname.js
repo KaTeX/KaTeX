@@ -2,7 +2,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import domTree from "../domTree";
+import {SymbolNode} from "../domTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -46,7 +46,7 @@ defineFunction({
 
             for (let i = 0; i < expression.length; i++) {
                 const child = expression[i];
-                if (child instanceof domTree.symbolNode) {
+                if (child instanceof SymbolNode) {
                     // Per amsopn package,
                     // change minus to hyphen and \ast to asterisk
                     child.text = child.text.replace(/\u2212/, "-")

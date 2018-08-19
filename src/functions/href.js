@@ -28,7 +28,7 @@ defineFunction({
     },
     htmlBuilder: (group, options) => {
         const elements = html.buildExpression(group.body, options, false);
-        return new buildCommon.makeAnchor(group.href, [], elements, options);
+        return buildCommon.makeAnchor(group.href, [], elements, options);
     },
     mathmlBuilder: (group, options) => {
         const math = mml.buildExpressionRow(group.body, options);
