@@ -112,11 +112,9 @@ class Options {
             maxSize: this.maxSize,
         };
 
-        for (const key in extension) {
-            if (extension.hasOwnProperty(key)) {
+        Object.keys(extension).forEach((key) => {
                 data[key] = extension[key];
-            }
-        }
+        });
 
         return new Options(data);
     }

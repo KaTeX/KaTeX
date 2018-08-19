@@ -124,32 +124,32 @@ export const buildExpression = function(
 ): MathDomNode[] {
     const groups = [];
     let lastGroup;
-    for (let i = 0; i < expression.length; i++) {
-        const group = buildGroup(expression[i], options);
+    expression.forEach((element) => {
+        const group = buildGroup(element, options);
         if (group instanceof MathNode && lastGroup instanceof MathNode) {
             // Concatenate adjacent <mtext>s
             if (group.type === 'mtext' && lastGroup.type === 'mtext'
                 && group.getAttribute('mathvariant') ===
                    lastGroup.getAttribute('mathvariant')) {
                 lastGroup.children.push(...group.children);
-                continue;
+                return;
             // Concatenate adjacent <mn>s
             } else if (group.type === 'mn' && lastGroup.type === 'mn') {
                 lastGroup.children.push(...group.children);
-                continue;
+                return;
             // Concatenate <mn>...</mn> followed by <mi>.</mi>
             } else if (group.type === 'mi' && group.children.length === 1 &&
                        lastGroup.type === 'mn') {
                 const child = group.children[0];
                 if (child instanceof TextNode && child.text === '.') {
                     lastGroup.children.push(...group.children);
-                    continue;
+                    return;
                 }
             }
         }
         groups.push(group);
         lastGroup = group;
-    }
+    });
 
     // TODO(kevinb): combine \\not with mrels and mords
 

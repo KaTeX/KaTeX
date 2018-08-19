@@ -60,24 +60,20 @@ const toNode = function(tagName: string): HTMLElement {
     node.className = createClass(this.classes);
 
     // Apply inline styles
-    for (const style in this.style) {
-        if (this.style.hasOwnProperty(style)) {
-            // $FlowFixMe Flow doesn't seem to understand span.style's type.
-            node.style[style] = this.style[style];
-        }
-    }
+    Object.keys(this.style).map((style) => {
+        // $FlowFixMe Flow doesn't seem to understand span.style's type.
+        node.style[style] = this.style[style];
+    }):
 
     // Apply attributes
-    for (const attr in this.attributes) {
-        if (this.attributes.hasOwnProperty(attr)) {
-            node.setAttribute(attr, this.attributes[attr]);
-        }
-    }
+    Object.keys(this.attributes).map((attr) => {
+        node.setAttribute(attr, this.attributes[attr]);
+    });
 
     // Append the children, also as HTML nodes
-    for (let i = 0; i < this.children.length; i++) {
-        node.appendChild(this.children[i].toNode());
-    }
+    this.children.map((element) => {
+        node.appendChild(element.toNode());
+    });
 
     return node;
 };
@@ -116,9 +112,9 @@ const toMarkup = function(tagName: string): string {
     markup += ">";
 
     // Add the markup of the children, also as markup
-    for (let i = 0; i < this.children.length; i++) {
-        markup += this.children[i].toMarkup();
-    }
+    markup = this.children.reduce((concatenation, child) => {
+        return concatenation + child.toMarkup();
+    }, markup);
 
     markup += `</${tagName}>`;
 
@@ -447,9 +443,9 @@ class svgNode implements VirtualNode {
             }
         }
 
-        for (let i = 0; i < this.children.length; i++) {
-            node.appendChild(this.children[i].toNode());
-        }
+        this.children.forEach((element) => {
+            node.appendChild(element.toNode());
+        });
         return node;
     }
 
@@ -465,9 +461,9 @@ class svgNode implements VirtualNode {
 
         markup += ">";
 
-        for (let i = 0; i < this.children.length; i++) {
-            markup += this.children[i].toMarkup();
-        }
+        markup = this.children.reduce((concatenation, element) => {
+            return concatenation + element.toMarkup();
+        }, markup);
 
         markup += "</svg>";
 

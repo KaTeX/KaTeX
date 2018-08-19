@@ -276,11 +276,10 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
         } else if (ligatures.hasOwnProperty(text) &&
                    fontName.substr(0, 10) === "Typewriter") {
             // Deconstruct ligatures in monospace fonts (\texttt, \tt).
-            const parts = [];
-            for (let i = 0; i < text.length; i++) {
-                parts.push(makeSymbol(text[i], fontName, mode, options,
-                                      classes.concat(fontClasses)));
-            }
+            const parts = text.map((element) => {
+                return makeSymbol(element, fontName, mode, options,
+                                      classes.concat(fontClasses));
+            });
             return makeFragment(parts);
         } else {
             return mathDefault(text, mode, options, classes, type);
@@ -315,8 +314,7 @@ const sizeElementFromChildren = function(
     let depth = 0;
     let maxFontSize = 0;
 
-    for (let i = 0; i < elem.children.length; i++) {
-        const child = elem.children[i];
+    elem.children.forEach((child) => { 
         if (child.height > height) {
             height = child.height;
         }
@@ -326,7 +324,7 @@ const sizeElementFromChildren = function(
         if (child.maxFontSize > maxFontSize) {
             maxFontSize = child.maxFontSize;
         }
-    }
+    });
 
     elem.height = height;
     elem.depth = depth;
@@ -490,14 +488,12 @@ const getVListChildrenAndDepth = function(params: VListParam): {
     if (params.positionType === "top") {
         // We always start at the bottom, so calculate the bottom by adding up
         // all the sizes
-        let bottom = params.positionData;
-        for (let i = 0; i < params.children.length; i++) {
-            const child = params.children[i];
-            bottom -= child.type === "kern"
+        depth = params.children.reduce((size, child) => {
+            return (size - (child.type === "kern"
                 ? child.size
-                : child.elem.height + child.elem.depth;
-        }
-        depth = bottom;
+                : child.elem.height + child.elem.depth));
+        }, params.positionData);
+        
     } else if (params.positionType === "bottom") {
         depth = -params.positionData;
     } else {
@@ -533,13 +529,12 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     // be positioned precisely without worrying about font ascent and
     // line-height.
     let pstrutSize = 0;
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i];
+    children.forEach((child) => {
         if (child.type === "elem") {
             const elem = child.elem;
             pstrutSize = Math.max(pstrutSize, elem.maxFontSize, elem.height);
         }
-    }
+    }):
     pstrutSize += 2;
     const pstrut = makeSpan(["pstrut"], []);
     pstrut.style.height = pstrutSize + "em";
@@ -549,8 +544,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     let minPos = depth;
     let maxPos = depth;
     let currPos = depth;
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i];
+    children.forEach((child) => {
         if (child.type === "kern") {
             currPos += child.size;
         } else {
@@ -572,7 +566,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
         }
         minPos = Math.min(minPos, currPos);
         maxPos = Math.max(maxPos, currPos);
-    }
+    });
 
     // The vlist contents go in a table-cell with `vertical-align:bottom`.
     // This cell's bottom edge will determine the containing table's baseline

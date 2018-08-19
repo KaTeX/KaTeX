@@ -104,13 +104,13 @@ export default function defineEnvironment<NODETYPE: NodeType>({
         numOptionalArgs: 0,
         handler,
     };
-    for (let i = 0; i < names.length; ++i) {
+    names.forEach((name) => {
         // TODO: The value type of _environments should be a type union of all
         // possible `EnvSpec<>` possibilities instead of `EnvSpec<*>`, which is
         // an existential type.
         // $FlowFixMe
-        _environments[names[i]] = data;
-    }
+        _environments[name] = data;
+    });
     if (htmlBuilder) {
         _htmlGroupBuilders[type] = htmlBuilder;
     }

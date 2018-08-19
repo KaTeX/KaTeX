@@ -198,13 +198,13 @@ export default function defineFunction<NODETYPE: NodeType>({
         consumeMode: props.consumeMode,
         handler: handler,
     };
-    for (let i = 0; i < names.length; ++i) {
+    names.forEach((name) => {
         // TODO: The value type of _functions should be a type union of all
         // possible `FunctionSpec<>` possibilities instead of `FunctionSpec<*>`,
         // which is an existential type.
         // $FlowFixMe
-        _functions[names[i]] = data;
-    }
+        _functions[name] = data;
+    });
     if (type) {
         if (htmlBuilder) {
             _htmlGroupBuilders[type] = htmlBuilder;

@@ -89,15 +89,15 @@ export const buildExpression = function(
 ): HtmlDomNode[] {
     // Parse expressions into `groups`.
     const rawGroups: HtmlDomNode[] = [];
-    for (let i = 0; i < expression.length; i++) {
-        const output = buildGroup(expression[i], options);
+    expression.forEach((element) => {
+        const output = buildGroup(element, options);
         if (output instanceof tree.documentFragment) {
             const children: HtmlDomNode[] = output.children;
             rawGroups.push(...children);
         } else {
             rawGroups.push(output);
         }
-    }
+    });
     // At this point `rawGroups` consists entirely of `symbolNode`s and `span`s.
 
     // Ignore explicit spaces (e.g., \;, \,) when determining what implicit

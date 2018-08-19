@@ -217,8 +217,8 @@ export default class Parser {
         let overIndex = -1;
         let funcName;
 
-        for (let i = 0; i < body.length; i++) {
-            const node = checkNodeType(body[i], "infix");
+        body.forEach((element, i) => {
+            const node = checkNodeType(element, "infix");
             if (node) {
                 if (overIndex !== -1) {
                     throw new ParseError(
@@ -228,7 +228,7 @@ export default class Parser {
                 overIndex = i;
                 funcName = node.replaceWith;
             }
-        }
+        });
 
         if (overIndex !== -1 && funcName) {
             let numerNode;
@@ -310,11 +310,10 @@ export default class Parser {
      */
     handleUnsupportedCmd(): AnyParseNode {
         const text = this.nextToken.text;
-        const textordArray = [];
 
-        for (let i = 0; i < text.length; i++) {
-            textordArray.push({type: "textord", mode: "text", text: text[i]});
-        }
+        const textordArray = text.map((element) => {
+            return {type: "textord", mode: "text", text: element};
+        });
 
         const textNode = {
             type: "text",

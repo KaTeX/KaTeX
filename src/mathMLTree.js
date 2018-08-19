@@ -80,9 +80,9 @@ export class MathNode implements MathDomNode {
             }
         }
 
-        for (let i = 0; i < this.children.length; i++) {
-            node.appendChild(this.children[i].toNode());
-        }
+        this.children.forEach((child) => {
+            node.appendChild(child.toNode());
+        });
 
         return node;
     }
@@ -104,9 +104,9 @@ export class MathNode implements MathDomNode {
 
         markup += ">";
 
-        for (let i = 0; i < this.children.length; i++) {
-            markup += this.children[i].toMarkup();
-        }
+        this.children.forEach((child) => {
+            markup += child.toMarkup();
+        });
 
         markup += "</" + this.type + ">";
 
