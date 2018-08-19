@@ -1,45 +1,8 @@
+/* stylelint-disable font-family-no-missing-generic-family-keyword */
 @import "../submodules/katex-fonts/fonts.less";
 
 // The mu unit is defined as 1/18 em
-@mu: 1.0/18.0em;
-
-@media screen {
-    .katex {
-        .mtable .vertical-separator {
-            min-width: 1px;
-        }
-
-        .mfrac .frac-line,
-        .overline .overline-line,
-        .underline .underline-line,
-        .hline,
-        .hdashline,
-        .rule {
-            min-height: 1px;
-        }
-    }
-}
-
-.katex-display {
-    display: block;
-    margin: 1em 0;
-    text-align: center;
-
-    > .katex {
-        display: block;
-        text-align: center;
-        white-space: nowrap;
-
-        > .katex-html {
-            display: block;
-
-            > .tag {
-                position: absolute;
-                right: 0px;
-            }
-        }
-    }
-}
+@mu: 1/18em;
 
 .katex {
     font: normal 1.21em KaTeX_Main, Times New Roman, serif;
@@ -135,7 +98,8 @@
         font-family: KaTeX_AMS;
     }
 
-    .mathbb, .textbb {
+    .mathbb,
+    .textbb {
         font-family: KaTeX_AMS;
     }
 
@@ -143,7 +107,8 @@
         font-family: KaTeX_Caligraphic;
     }
 
-    .mathfrak, .textfrak {
+    .mathfrak,
+    .textfrak {
         font-family: KaTeX_Fraktur;
     }
 
@@ -151,20 +116,24 @@
         font-family: KaTeX_Typewriter;
     }
 
-    .mathscr, .textscr {
+    .mathscr,
+    .textscr {
         font-family: KaTeX_Script;
     }
 
-    .mathsf, .textsf {
+    .mathsf,
+    .textsf {
         font-family: KaTeX_SansSerif;
     }
 
-    .mathboldsf, .textboldsf {
+    .mathboldsf,
+    .textboldsf {
         font-family: KaTeX_SansSerif;
         font-weight: bold;
     }
 
-    .mathitsf, .textitsf {
+    .mathitsf,
+    .textitsf {
         font-family: KaTeX_SansSerif;
         font-style: italic;
     }
@@ -181,7 +150,7 @@
 
     // This value is also used in fontMetrics.js, if you change it make sure the
     // values match.
-    @ptperem: 10.0;
+    @ptperem: 10;
     @nulldelimiterspace: 1.2em / @ptperem;
 
     @muspace: 0.055556em;       // 1mu
@@ -254,6 +223,16 @@
         }
     }
 
+    // Prevent Chrome from disappearing frac-lines, rules, etc.
+    .mfrac .frac-line,
+    .overline .overline-line,
+    .underline .underline-line,
+    .hline,
+    .hdashline,
+    .rule {
+        min-height: 1px;
+    }
+
     .mspace {
         display: inline-block;
     }
@@ -282,7 +261,7 @@
         left: 0;
     }
 
-    .clap > .inner  > span {
+    .clap > .inner > span {
         margin-left: -50%;
         margin-right: 50%;
     }
@@ -316,7 +295,8 @@
         }
     }
 
-    .sizing, .fontsize-ensurer {
+    .sizing,
+    .fontsize-ensurer {
         display: inline-block;
 
         @size1: 0.5;
@@ -324,7 +304,7 @@
         @size3: 0.7;
         @size4: 0.8;
         @size5: 0.9;
-        @size6: 1.0;
+        @size6: 1;
         @size7: 1.2;
         @size8: 1.44;
         @size9: 1.728;
@@ -335,6 +315,7 @@
             &.reset-size@{from}.size@{to} {
                 @sizeFromVariable: ~"size@{from}";
                 @sizeToVariable: ~"size@{to}";
+
                 font-size: (@@sizeToVariable / @@sizeFromVariable) * 1em;
             }
         }
@@ -364,6 +345,7 @@
             .delim-size1 > span {
                 font-family: KaTeX_Size1;
             }
+
             .delim-size4 > span {
                 font-family: KaTeX_Size4;
             }
@@ -385,6 +367,7 @@
         &.small-op {
             font-family: KaTeX_Size1;
         }
+
         &.large-op {
             font-family: KaTeX_Size2;
         }
@@ -401,14 +384,14 @@
             text-align: center;
         }
 
+        .accent-body {
+            position: relative; // so that 'left' can shift the accent
+        }
+
         // Accents that are not of the accent-full class have zero width
         // (do not contribute to the width of the final symbol).
         .accent-body:not(.accent-full) {
             width: 0;
-        }
-
-        .accent-body {
-            position: relative; // so that 'left' can shift the accent
         }
     }
 
@@ -421,6 +404,7 @@
             display: inline-block;
             margin: 0 -0.025em;
             border-right: 0.05em solid;
+            min-width: 1px;  // Prevent Chrome from omitting a line.
         }
 
         .vs-dashed {
@@ -487,8 +471,8 @@
         position: relative;
         overflow: hidden;
 
-        &:before,
-        &:after {
+        &::before,
+        &::after {
             content: "";
         }
     }
@@ -549,24 +533,49 @@
     .boxpad {
         padding: 0 0.3em 0 0.3em;      // \fboxsep = 3pt
     }
+
     .fbox {
         box-sizing: border-box;
         border: 0.04em solid black;   // \fboxrule = 0.4pt
     }
+
     .fcolorbox {
         box-sizing: border-box;
         border: 0.04em solid;   // \fboxrule = 0.4pt
     }
+
     .cancel-pad {
         padding: 0 0.2em 0 0.2em;    // ref: cancel package  \advance\dimen@ 2\p@ %  "+2"
     }
+
     .cancel-lap {
         margin-left: -0.2em;    // \cancel does not affect horizontal spacing.
         margin-right: -0.2em;   // Apply negative margin to correct for 0.2em padding
     }                           // inside the \cancel group.
+
     .sout {
         border-bottom-style: solid;
         border-bottom-width: 0.08em;
     }
+}
 
+.katex-display {
+    display: block;
+    margin: 1em 0;
+    text-align: center;
+
+    > .katex {
+        display: block;
+        text-align: center;
+        white-space: nowrap;
+
+        > .katex-html {
+            display: block;
+
+            > .tag {
+                position: absolute;
+                right: 0;
+            }
+        }
+    }
 }

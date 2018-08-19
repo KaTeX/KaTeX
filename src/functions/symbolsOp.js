@@ -11,11 +11,11 @@ defineFunctionBuilders({
     type: "atom",
     htmlBuilder(group, options) {
         return buildCommon.mathsym(
-            group.value, group.mode, options, ["m" + group.family]);
+            group.text, group.mode, options, ["m" + group.family]);
     },
     mathmlBuilder(group, options) {
         const node = new mathMLTree.MathNode(
-            "mo", [mml.makeText(group.value, group.mode)]);
+            "mo", [mml.makeText(group.text, group.mode)]);
         if (group.family === "bin") {
             const variant = mml.getVariant(group, options);
             if (variant === "bold-italic") {

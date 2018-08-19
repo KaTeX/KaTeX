@@ -15,7 +15,7 @@ import {scriptFromCodepoint} from "./unicodeScripts";
 import utils from "./utils";
 import svgGeometry from "./svgGeometry";
 import type Options from "./Options";
-import * as tree from "./tree";
+import {DocumentFragment} from "./tree";
 
 import type {VirtualNode} from "./tree";
 
@@ -139,12 +139,12 @@ export interface HtmlDomNode extends VirtualNode {
 }
 
 // Span wrapping other DOM nodes.
-export type DomSpan = span<HtmlDomNode>;
+export type DomSpan = Span<HtmlDomNode>;
 // Span wrapping an SVG node.
-export type SvgSpan = span<svgNode>;
+export type SvgSpan = Span<SvgNode>;
 
-export type SvgChildNode = pathNode | lineNode;
-export type documentFragment = tree.documentFragment<HtmlDomNode>;
+export type SvgChildNode = PathNode | LineNode;
+export type documentFragment = DocumentFragment<HtmlDomNode>;
 
 
 /**
@@ -156,7 +156,7 @@ export type documentFragment = tree.documentFragment<HtmlDomNode>;
  * otherwise. This typesafety is important when HTML builders access a span's
  * children.
  */
-class span<ChildType: VirtualNode> implements HtmlDomNode {
+export class Span<ChildType: VirtualNode> implements HtmlDomNode {
     children: ChildType[];
     attributes: {[string]: string};
     classes: string[];
@@ -211,7 +211,7 @@ class span<ChildType: VirtualNode> implements HtmlDomNode {
  * This node represents an anchor (<a>) element with a hyperlink.  See `span`
  * for further details.
  */
-class anchor implements HtmlDomNode {
+export class Anchor implements HtmlDomNode {
     children: HtmlDomNode[];
     attributes: {[string]: string};
     classes: string[];
@@ -265,8 +265,8 @@ const iCombinations = {
  * to a single text node, or a span with a single text node in it, depending on
  * whether it has CSS classes, styles, or needs italic correction.
  */
-class symbolNode implements HtmlDomNode {
-    value: string;
+export class SymbolNode implements HtmlDomNode {
+    text: string;
     height: number;
     depth: number;
     italic: number;
@@ -277,7 +277,7 @@ class symbolNode implements HtmlDomNode {
     style: CssStyle;
 
     constructor(
-        value: string,
+        text: string,
         height?: number,
         depth?: number,
         italic?: number,
@@ -286,7 +286,7 @@ class symbolNode implements HtmlDomNode {
         classes?: string[],
         style?: CssStyle,
     ) {
-        this.value = value;
+        this.text = text;
         this.height = height || 0;
         this.depth = depth || 0;
         this.italic = italic || 0;
@@ -303,13 +303,13 @@ class symbolNode implements HtmlDomNode {
         // We use CSS class names like cjk_fallback, hangul_fallback and
         // brahmic_fallback. See ./unicodeScripts.js for the set of possible
         // script names
-        const script = scriptFromCodepoint(this.value.charCodeAt(0));
+        const script = scriptFromCodepoint(this.text.charCodeAt(0));
         if (script) {
             this.classes.push(script + "_fallback");
         }
 
-        if (/[îïíì]/.test(this.value)) {    // add ī when we add Extended Latin
-            this.value = iCombinations[this.value];
+        if (/[îïíì]/.test(this.text)) {    // add ī when we add Extended Latin
+            this.text = iCombinations[this.text];
         }
     }
 
@@ -319,7 +319,7 @@ class symbolNode implements HtmlDomNode {
 
     tryCombine(sibling: HtmlDomNode): boolean {
         if (!sibling
-            || !(sibling instanceof symbolNode)
+            || !(sibling instanceof SymbolNode)
             || this.italic > 0
             || createClass(this.classes) !== createClass(sibling.classes)
             || this.skew !== sibling.skew
@@ -338,7 +338,7 @@ class symbolNode implements HtmlDomNode {
                 return false;
             }
         }
-        this.value += sibling.value;
+        this.text += sibling.text;
         this.height = Math.max(this.height, sibling.height);
         this.depth = Math.max(this.depth, sibling.depth);
         this.italic = sibling.italic;
@@ -350,7 +350,7 @@ class symbolNode implements HtmlDomNode {
      * created if it is needed.
      */
     toNode(): Node {
-        const node = document.createTextNode(this.value);
+        const node = document.createTextNode(this.text);
         let span = null;
 
         if (this.italic > 0) {
@@ -412,7 +412,7 @@ class symbolNode implements HtmlDomNode {
             markup += " style=\"" + utils.escape(styles) + "\"";
         }
 
-        const escaped = utils.escape(this.value);
+        const escaped = utils.escape(this.text);
         if (needsSpan) {
             markup += ">";
             markup += escaped;
@@ -427,7 +427,7 @@ class symbolNode implements HtmlDomNode {
 /**
  * SVG nodes are used to render stretchy wide elements.
  */
-class svgNode implements VirtualNode {
+export class SvgNode implements VirtualNode {
     children: SvgChildNode[];
     attributes: {[string]: string};
 
@@ -476,7 +476,7 @@ class svgNode implements VirtualNode {
     }
 }
 
-class pathNode implements VirtualNode {
+export class PathNode implements VirtualNode {
     pathName: string;
     alternate: ?string;
 
@@ -507,7 +507,7 @@ class pathNode implements VirtualNode {
     }
 }
 
-class lineNode implements VirtualNode {
+export class LineNode implements VirtualNode {
     attributes: {[string]: string};
 
     constructor(attributes?: {[string]: string}) {
@@ -545,8 +545,8 @@ class lineNode implements VirtualNode {
 
 export function assertSymbolDomNode(
     group: HtmlDomNode,
-): symbolNode {
-    if (group instanceof symbolNode) {
+): SymbolNode {
+    if (group instanceof SymbolNode) {
         return group;
     } else {
         throw new Error(`Expected symbolNode but got ${String(group)}.`);
@@ -555,19 +555,10 @@ export function assertSymbolDomNode(
 
 export function assertSpan(
     group: HtmlDomNode,
-): span<HtmlDomNode> {
-    if (group instanceof span) {
+): Span<HtmlDomNode> {
+    if (group instanceof Span) {
         return group;
     } else {
         throw new Error(`Expected span<HtmlDomNode> but got ${String(group)}.`);
     }
 }
-
-export default {
-    span,
-    anchor,
-    symbolNode,
-    svgNode,
-    pathNode,
-    lineNode,
-};

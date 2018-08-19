@@ -2,7 +2,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import domTree from "../domTree";
+import {SymbolNode} from "../domTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -27,13 +27,13 @@ defineFunction({
     htmlBuilder: (group, options) => {
         if (group.body.length > 0) {
             const body = group.body.map(child => {
-                // $FlowFixMe: Check if the node has a string `value` property.
-                const childValue = child.value;
-                if (typeof childValue === "string") {
+                // $FlowFixMe: Check if the node has a string `text` property.
+                const childText = child.text;
+                if (typeof childText === "string") {
                     return {
                         type: "textord",
                         mode: child.mode,
-                        value: childValue,
+                        text: childText,
                     };
                 } else {
                     return child;
@@ -46,10 +46,10 @@ defineFunction({
 
             for (let i = 0; i < expression.length; i++) {
                 const child = expression[i];
-                if (child instanceof domTree.symbolNode) {
+                if (child instanceof SymbolNode) {
                     // Per amsopn package,
                     // change minus to hyphen and \ast to asterisk
-                    child.value = child.value.replace(/\u2212/, "-")
+                    child.text = child.text.replace(/\u2212/, "-")
                         .replace(/\u2217/, "*");
                 }
             }

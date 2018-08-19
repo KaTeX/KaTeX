@@ -93,7 +93,7 @@ You can view the report in `coverage/lcov-report/index.html`.
 
 To ensure the final output looks good, we screenshot different expressions.
 These tests can be run by using the
-[Screenshotter docker](https://github.com/Khan/KaTeX/tree/master/dockers/Screenshotter).
+[screenshotter docker](https://github.com/Khan/KaTeX/tree/master/dockers/screenshotter).
 
 The screenshot tests should be run if you add anything more significant than
 individual symbols. These tests are not automatically run, so please remember!

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!--To test ECMA modules, run `npm run build` and then `npm start`
+    in the root KaTeX directory and then visit with a web browser
+    which supports modules: http://localhost:7936/module.html
+  -->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>KaTeX Test</title>
+        <link rel="stylesheet" type="text/css" href="/dist/katex.css">
+        <link rel="stylesheet" type="text/css" href="/main.css">
+        <script type="module" type="text/javascript">
+            import katex from '/dist/katex.mjs';
+
+            const input = document.getElementById("input");
+            const math = document.getElementById("math");
+
+            input.addEventListener("input", reprocess, false);
+            reprocess();
+
+            function reprocess() {
+                try {
+                    katex.render(input.value, math, {displayMode: true, throwOnError: false, macros: {}});
+                } catch (e) {
+                    if (e.__proto__ === katex.ParseError.prototype) {
+                        console.error(e);
+                    } else {
+                        throw e;
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <textarea id="input" rows="5">
+\left( x \right) \left( x^2 \right) % comment
+\left( \frac{a}{b} \right) \left( \frac{a^2}{b} \right)
+\left( \dfrac{a}{b} \right) \left( \dfrac{a^2}{b} \right)
+        </textarea>
+        <div id="math"></div>
+    </body>
+</html>

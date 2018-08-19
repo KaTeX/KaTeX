@@ -268,5 +268,6 @@ function fftImage(image) {
 // Create a new matrix of preconfigured dimensions, initialized to zero
 function createMatrix() {
     const array = new Float64Array(alignWidth * alignHeight);
+    /* eslint-disable-next-line new-cap */
     return new ndarray(array, [alignWidth, alignHeight]);
 }

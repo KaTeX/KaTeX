@@ -1,7 +1,7 @@
 // @flow
 import {defineFunctionBuilders} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import domTree from "../domTree";
+import {SymbolNode} from "../domTree";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import Style from "../Style";
@@ -115,9 +115,9 @@ defineFunctionBuilders({
             // Account for that by shifting the subscript back the appropriate
             // amount. Note we only do this when the base is a single symbol.
             const isOiint =
-                group.base && group.base.type === "op" && group.base.body &&
-                (group.base.body === "\\oiint" || group.base.body === "\\oiiint");
-            if (base instanceof domTree.symbolNode || isOiint) {
+                group.base && group.base.type === "op" && group.base.name &&
+                (group.base.name === "\\oiint" || group.base.name === "\\oiiint");
+            if (base instanceof SymbolNode || isOiint) {
                 // $FlowFixMe
                 marginLeft = -base.italic + "em";
             }

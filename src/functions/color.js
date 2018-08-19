@@ -18,7 +18,7 @@ const htmlBuilder = (group, options) => {
     // To accomplish this, we wrap the results in a fragment, so the inner
     // elements will be able to directly interact with their neighbors. For
     // example, `\color{red}{2 +} 3` has the same spacing as `2 + 3`
-    return new buildCommon.makeFragment(elements);
+    return buildCommon.makeFragment(elements);
 };
 
 const mathmlBuilder = (group, options) => {
@@ -41,12 +41,12 @@ defineFunction({
         argTypes: ["color", "original"],
     },
     handler({parser}, args) {
-        const color = assertNodeType(args[0], "color-token");
+        const color = assertNodeType(args[0], "color-token").color;
         const body = args[1];
         return {
             type: "color",
             mode: parser.mode,
-            color: color.value,
+            color,
             body: ordargument(body),
         };
     },
@@ -100,7 +100,7 @@ defineFunction({
         argTypes: ["color"],
     },
     handler({parser, breakOnTokenText}, args) {
-        const color = assertNodeType(args[0], "color-token");
+        const color = assertNodeType(args[0], "color-token").color;
 
         // If we see a styling function, parse out the implicit body
         const body = parser.parseExpression(true, breakOnTokenText);
@@ -108,7 +108,7 @@ defineFunction({
         return {
             type: "color",
             mode: parser.mode,
-            color: color.value,
+            color,
             body,
         };
     },
