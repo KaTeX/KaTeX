@@ -10,7 +10,7 @@
  */
 
 import utils from "./utils";
-import * as tree from "./tree";
+import {DocumentFragment} from "./tree";
 
 import type {VirtualNode} from "./tree";
 
@@ -31,9 +31,9 @@ export interface MathDomNode extends VirtualNode {
     toText(): string;
 }
 
-export type documentFragment = tree.documentFragment<MathDomNode>;
+export type documentFragment = DocumentFragment<MathDomNode>;
 export function newDocumentFragment(children: MathDomNode[]): documentFragment {
-    return new tree.documentFragment(children);
+    return new DocumentFragment(children);
 }
 
 /**

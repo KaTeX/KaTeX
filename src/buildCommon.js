@@ -5,13 +5,13 @@
  * different kinds of domTree nodes in a consistent manner.
  */
 
-import domTree from "./domTree";
+import {SymbolNode, Anchor, Span, PathNode, SvgNode, createClass} from "./domTree";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols, {ligatures} from "./symbols";
 import utils from "./utils";
 import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
-import * as tree from "./tree";
+import {DocumentFragment} from "./tree";
 
 import type Options from "./Options";
 import type {ParseNode} from "./parseNode";
@@ -20,8 +20,6 @@ import type {FontVariant, Mode} from "./types";
 import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
-
-const {symbolNode, createClass} = domTree;
 
 // The following have to be loaded from Main-Italic font, using class mainit
 const mainitLetters = [
@@ -66,7 +64,7 @@ const makeSymbol = function(
     mode: Mode,
     options?: Options,
     classes?: string[],
-): domTree.symbolNode {
+): SymbolNode {
     const lookup = lookupSymbol(value, fontName, mode);
     const metrics = lookup.metrics;
     value = lookup.value;
@@ -77,7 +75,7 @@ const makeSymbol = function(
         if (mode === "text") {
             italic = 0;
         }
-        symbolNode = new domTree.symbolNode(
+        symbolNode = new SymbolNode(
             value, metrics.height, metrics.depth, italic, metrics.skew,
             metrics.width, classes);
     } else {
@@ -85,7 +83,7 @@ const makeSymbol = function(
         typeof console !== "undefined" && console.warn(
             "No character metrics for '" + value + "' in style '" +
                 fontName + "'");
-        symbolNode = new domTree.symbolNode(value, 0, 0, 0, 0, 0, classes);
+        symbolNode = new SymbolNode(value, 0, 0, 0, 0, 0, classes);
     }
 
     if (options) {
@@ -113,7 +111,7 @@ const mathsym = function(
     mode: Mode,
     options?: Options,
     classes?: string[] = [],
-): domTree.symbolNode {
+): SymbolNode {
     // Decide what font to render the symbol in by its entry in the symbols
     // table.
     // Have a special case for when the value = \ because the \ is used as a
@@ -195,7 +193,7 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     group: ParseNode<NODETYPE>,
     options: Options,
     type: "mathord" | "textord",
-): HtmlDocumentFragment | domTree.symbolNode {
+): HtmlDocumentFragment | SymbolNode {
     const mode = group.mode;
     const text = group.text;
 
@@ -281,7 +279,7 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
  * Returns true if subsequent symbolNodes have the same classes, skew, maxFont,
  * and styles.
  */
-const canCombine = (prev: symbolNode, next: symbolNode) => {
+const canCombine = (prev: SymbolNode, next: SymbolNode) => {
     if (createClass(prev.classes) !== createClass(next.classes)
         || prev.skew !== next.skew
         || prev.maxFontSize !== next.maxFontSize) {
@@ -313,8 +311,8 @@ const tryCombineChars = (chars: HtmlDomNode[]): HtmlDomNode[] => {
     for (let i = 0; i < chars.length - 1; i++) {
         const prev = chars[i];
         const next = chars[i + 1];
-        if (prev instanceof domTree.symbolNode
-            && next instanceof domTree.symbolNode
+        if (prev instanceof SymbolNode
+            && next instanceof SymbolNode
             && canCombine(prev, next)) {
 
             prev.text += next.text;
@@ -332,7 +330,7 @@ const tryCombineChars = (chars: HtmlDomNode[]): HtmlDomNode[] => {
  * children.
  */
 const sizeElementFromChildren = function(
-    elem: DomSpan | domTree.anchor | HtmlDocumentFragment,
+    elem: DomSpan | Anchor | HtmlDocumentFragment,
 ) {
     let height = 0;
     let depth = 0;
@@ -370,7 +368,7 @@ const makeSpan = function(
     options?: Options,
     style?: CssStyle,
 ): DomSpan {
-    const span = new domTree.span(classes, children, options, style);
+    const span = new Span(classes, children, options, style);
 
     sizeElementFromChildren(span);
 
@@ -381,10 +379,10 @@ const makeSpan = function(
 // This is also a separate method for typesafety.
 const makeSvgSpan = (
     classes?: string[],
-    children?: domTree.svgNode[],
+    children?: SvgNode[],
     options?: Options,
     style?: CssStyle,
-): SvgSpan => new domTree.span(classes, children, options, style);
+): SvgSpan => new Span(classes, children, options, style);
 
 const makeLineSpan = function(
     className: string,
@@ -408,7 +406,7 @@ const makeAnchor = function(
     children: HtmlDomNode[],
     options: Options,
 ) {
-    const anchor = new domTree.anchor(href, classes, children, options);
+    const anchor = new Anchor(href, classes, children, options);
 
     sizeElementFromChildren(anchor);
 
@@ -421,7 +419,7 @@ const makeAnchor = function(
 const makeFragment = function(
     children: HtmlDomNode[],
 ): HtmlDocumentFragment {
-    const fragment = new tree.documentFragment(children);
+    const fragment = new DocumentFragment(children);
 
     sizeElementFromChildren(fragment);
 
@@ -617,7 +615,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
 
         // Safari wants the first row to have inline content; otherwise it
         // puts the bottom of the *second* row on the baseline.
-        const topStrut = makeSpan(["vlist-s"], [new domTree.symbolNode("\u200b")]);
+        const topStrut = makeSpan(["vlist-s"], [new SymbolNode("\u200b")]);
 
         rows = [makeSpan(["vlist-r"], [vlist, topStrut]),
             makeSpan(["vlist-r"], [depthStrut])];
@@ -785,8 +783,8 @@ const svgData: {
 const staticSvg = function(value: string, options: Options): SvgSpan {
     // Create a span with inline SVG for the element.
     const [pathName, width, height] = svgData[value];
-    const path = new domTree.pathNode(pathName);
-    const svgNode = new domTree.svgNode([path], {
+    const path = new PathNode(pathName);
+    const svgNode = new SvgNode([path], {
         "width": width + "em",
         "height": height + "em",
         // Override CSS rule `.katex svg { width: 100% }`

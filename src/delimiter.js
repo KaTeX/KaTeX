@@ -24,7 +24,7 @@
 import ParseError from "./ParseError";
 import Style from "./Style";
 
-import domTree from "./domTree";
+import {PathNode, SvgNode, SymbolNode} from "./domTree";
 import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
@@ -125,7 +125,7 @@ const mathrmSize = function(
     size: number,
     mode: Mode,
     options: Options,
-): domTree.symbolNode {
+): SymbolNode {
     return buildCommon.makeSymbol(value, "Size" + size + "-Regular",
         mode, options);
 };
@@ -391,9 +391,9 @@ const sqrtSvg = function(
 -294.333-240-727l-212 -643 -85 170c-4-3.333-8.333-7.667-13 -13l-13-13l77-155
  77-156c66 199.333 139 419.667 219 661 l218 661zM702 ${vbPad}H400000v40H742z`;
     }
-    const pathNode = new domTree.pathNode(sqrtName, alternate);
+    const pathNode = new PathNode(sqrtName, alternate);
 
-    const svg =  new domTree.svgNode([pathNode], {
+    const svg =  new SvgNode([pathNode], {
         // Note: 1000:1 ratio of viewBox to document em width.
         "width": "400em",
         "height": height + "em",

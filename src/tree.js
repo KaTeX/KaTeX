@@ -18,7 +18,7 @@ export interface VirtualNode {
  * placed into the DOM doesn't have any representation itself. It only contains
  * children and doesn't have any DOM node properties.
  */
-export class documentFragment<ChildType: VirtualNode>
+export class DocumentFragment<ChildType: VirtualNode>
     implements HtmlDomNode, MathDomNode {
     children: ChildType[];
     // HtmlDomNode

@@ -15,7 +15,7 @@ import {scriptFromCodepoint} from "./unicodeScripts";
 import utils from "./utils";
 import svgGeometry from "./svgGeometry";
 import type Options from "./Options";
-import * as tree from "./tree";
+import {DocumentFragment} from "./tree";
 
 import type {VirtualNode} from "./tree";
 
@@ -24,7 +24,7 @@ import type {VirtualNode} from "./tree";
  * Create an HTML className based on a list of classes. In addition to joining
  * with spaces, we also remove empty classes.
  */
-const createClass = function(classes: string[]): string {
+export const createClass = function(classes: string[]): string {
     return classes.filter(cls => cls).join(" ");
 };
 
@@ -138,12 +138,12 @@ export interface HtmlDomNode extends VirtualNode {
 }
 
 // Span wrapping other DOM nodes.
-export type DomSpan = span<HtmlDomNode>;
+export type DomSpan = Span<HtmlDomNode>;
 // Span wrapping an SVG node.
-export type SvgSpan = span<svgNode>;
+export type SvgSpan = Span<SvgNode>;
 
-export type SvgChildNode = pathNode | lineNode;
-export type documentFragment = tree.documentFragment<HtmlDomNode>;
+export type SvgChildNode = PathNode | LineNode;
+export type documentFragment = DocumentFragment<HtmlDomNode>;
 
 
 /**
@@ -155,7 +155,7 @@ export type documentFragment = tree.documentFragment<HtmlDomNode>;
  * otherwise. This typesafety is important when HTML builders access a span's
  * children.
  */
-class span<ChildType: VirtualNode> implements HtmlDomNode {
+export class Span<ChildType: VirtualNode> implements HtmlDomNode {
     children: ChildType[];
     attributes: {[string]: string};
     classes: string[];
@@ -201,7 +201,7 @@ class span<ChildType: VirtualNode> implements HtmlDomNode {
  * This node represents an anchor (<a>) element with a hyperlink.  See `span`
  * for further details.
  */
-class anchor implements HtmlDomNode {
+export class Anchor implements HtmlDomNode {
     children: HtmlDomNode[];
     attributes: {[string]: string};
     classes: string[];
@@ -251,7 +251,7 @@ const iCombinations = {
  * to a single text node, or a span with a single text node in it, depending on
  * whether it has CSS classes, styles, or needs italic correction.
  */
-class symbolNode implements HtmlDomNode {
+export class SymbolNode implements HtmlDomNode {
     text: string;
     height: number;
     depth: number;
@@ -385,7 +385,7 @@ class symbolNode implements HtmlDomNode {
 /**
  * SVG nodes are used to render stretchy wide elements.
  */
-class svgNode implements VirtualNode {
+export class SvgNode implements VirtualNode {
     children: SvgChildNode[];
     attributes: {[string]: string};
 
@@ -434,7 +434,7 @@ class svgNode implements VirtualNode {
     }
 }
 
-class pathNode implements VirtualNode {
+export class PathNode implements VirtualNode {
     pathName: string;
     alternate: ?string;
 
@@ -465,7 +465,7 @@ class pathNode implements VirtualNode {
     }
 }
 
-class lineNode implements VirtualNode {
+export class LineNode implements VirtualNode {
     attributes: {[string]: string};
 
     constructor(attributes?: {[string]: string}) {
@@ -503,8 +503,8 @@ class lineNode implements VirtualNode {
 
 export function assertSymbolDomNode(
     group: HtmlDomNode,
-): symbolNode {
-    if (group instanceof symbolNode) {
+): SymbolNode {
+    if (group instanceof SymbolNode) {
         return group;
     } else {
         throw new Error(`Expected symbolNode but got ${String(group)}.`);
@@ -513,20 +513,10 @@ export function assertSymbolDomNode(
 
 export function assertSpan(
     group: HtmlDomNode,
-): span<HtmlDomNode> {
-    if (group instanceof span) {
+): Span<HtmlDomNode> {
+    if (group instanceof Span) {
         return group;
     } else {
         throw new Error(`Expected span<HtmlDomNode> but got ${String(group)}.`);
     }
 }
-
-export default {
-    span,
-    anchor,
-    symbolNode,
-    svgNode,
-    pathNode,
-    lineNode,
-    createClass,
-};
