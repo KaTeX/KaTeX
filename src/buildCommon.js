@@ -611,18 +611,6 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     return vtable;
 };
 
-// Converts verb group into body string, dealing with \verb* form
-const makeVerb = function(group: ParseNode<"verb">, options: Options): string {
-    let text = group.body;
-    if (group.star) {
-        text = text.replace(/ /g, '\u2423');  // Open Box
-    } else {
-        text = text.replace(/ /g, '\xA0');    // No-Break Space
-        // (so that, in particular, spaces don't coalesce)
-    }
-    return text;
-};
-
 // Glue is a concept from TeX which is a flexible space between elements in
 // either a vertical or horizontal list. In KaTeX, at least for now, it's
 // static space between elements in a horizontal layout.
@@ -670,29 +658,6 @@ const retrieveTextFontName = function(
     }
 
     return `${baseFontName}-${fontStylesName}`;
-};
-
-// A map of CSS-based spacing functions to their CSS class.
-const cssSpace: {[string]: string} = {
-    "\\nobreak": "nobreak",
-    "\\allowbreak": "allowbreak",
-};
-
-// A lookup table to determine whether a spacing function/symbol should be
-// treated like a regular space character.  If a symbol or command is a key
-// in this table, then it should be a regular space character.  Furthermore,
-// the associated value may have a `className` specifying an extra CSS class
-// to add to the created `span`.
-const regularSpace: {[string]: { className?: string }} = {
-    " ": {},
-    "\\ ": {},
-    "~": {
-        className: "nobreak",
-    },
-    "\\space": {},
-    "\\nobreakspace": {
-        className: "nobreak",
-    },
 };
 
 /**
@@ -789,11 +754,8 @@ export default {
     makeFragment,
     makeVList,
     makeOrd,
-    makeVerb,
     makeGlue,
     staticSvg,
     svgData,
     tryCombineChars,
-    cssSpace,
-    regularSpace,
 };
