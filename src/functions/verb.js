@@ -4,7 +4,7 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 
-import type {ParseNode} from "../ParseNode";
+import type {ParseNode} from "../parseNode";
 
 defineFunction({
     type: "verb",
