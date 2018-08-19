@@ -9,8 +9,8 @@ original_id: browser
 Use CDN to deliver KaTeX to your project:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.js" integrity="sha384-pGuYA7LziPYUHteKzazOkOJoQ44gRzjqaTF/Ur7QKZq3E+x5ixdzP90jatypOMQ4" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.css" integrity="sha384-JwmmMju6Z7M9jiY4RXeJLoNb3aown2QCC/cI7JPgmOLsn3n33pdwAj0Ml/CMMd1W" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.js" integrity="sha384-P3TGHygedOtVJ4NpCMJBg8zlUhnx3cw0uffQ5Ppy58dxHIJkXfcyf8HvjLpucohW" crossorigin="anonymous"></script>
 ```
 
 KaTeX also provides minified versions:
