@@ -44,15 +44,14 @@ defineFunction({
             const expression = html.buildExpression(
                 body, options.withFont("mathrm"), true);
 
-            for (let i = 0; i < expression.length; i++) {
-                const child = expression[i];
+            expression.forEach((child) => {
                 if (child instanceof domTree.symbolNode) {
                     // Per amsopn package,
                     // change minus to hyphen and \ast to asterisk
                     child.text = child.text.replace(/\u2212/, "-")
                         .replace(/\u2217/, "*");
                 }
-            }
+            });
             return buildCommon.makeSpan(["mop"], expression, options);
         } else {
             return buildCommon.makeSpan(["mop"], [], options);
@@ -67,7 +66,7 @@ defineFunction({
         // Is expression a string or has it something like a fraction?
         let isAllString = true;  // default
         for (let i = 0; i < expression.length; i++) {
-            const node = expression[i];
+        expression.forEach((node) => {
             if (node instanceof mathMLTree.SpaceNode) {
                 // Do nothing
             } else if (node instanceof mathMLTree.MathNode) {
@@ -96,7 +95,7 @@ defineFunction({
             } else {
                 isAllString = false;
             }
-        }
+        });
 
         if (isAllString) {
             // Write a single TextNode instead of multiple nested tags.

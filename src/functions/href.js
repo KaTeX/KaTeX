@@ -47,18 +47,17 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const href = assertNodeType(args[0], "url").url;
-        const chars = [];
-        for (let i = 0; i < href.length; i++) {
-            let c = href[i];
+        const chars = href.map((element) => {
+            let c = element;
             if (c === "~") {
                 c = "\\textasciitilde";
             }
-            chars.push({
+            return ({
                 type: "textord",
                 mode: "text",
                 text: c,
             });
-        }
+        });
         const body = {
             type: "text",
             mode: parser.mode,

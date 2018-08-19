@@ -59,10 +59,10 @@ defineFunction({
         node.height = 0;
         node.depth = 0;
         if (node.children) {
-            for (let i = 0; i < node.children.length; i++) {
-                node.children[i].height = 0;
-                node.children[i].depth = 0;
-            }
+            node.children.forEach((element, i, nodeChildren) => {
+                nodeChildren[i].height = 0;
+                nodeChildren[i].depth = 0;
+            });
         }
 
         // See smash for comment re: use of makeVList

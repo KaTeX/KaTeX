@@ -21,17 +21,16 @@ defineFunction({
     },
     htmlBuilder(group, options) {
         const text = buildCommon.makeVerb(group, options);
-        const body = [];
         // \verb enters text mode and therefore is sized like \textstyle
         const newOptions = options.havingStyle(options.style.text());
-        for (let i = 0; i < text.length; i++) {
-            let c = text[i];
+        const body = text.map((element) => {
+            let c = element;
             if (c === '~') {
                 c = '\\textasciitilde';
             }
-            body.push(buildCommon.makeSymbol(c, "Typewriter-Regular",
+            return (buildCommon.makeSymbol(c, "Typewriter-Regular",
                 group.mode, newOptions, ["mord", "texttt"]));
-        }
+        });
         buildCommon.tryCombineChars(body);
         return buildCommon.makeSpan(
             ["mord", "text"].concat(newOptions.sizingClasses(options)),

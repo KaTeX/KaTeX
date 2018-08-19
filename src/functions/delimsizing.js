@@ -194,17 +194,17 @@ defineFunction({
         let hadMiddle = false;
 
         // Calculate its height and depth
-        for (let i = 0; i < inner.length; i++) {
+        inner.forEach((element) => {
             // Property `isMiddle` not defined on `span`. See comment in
             // "middle"'s htmlBuilder.
             // $FlowFixMe
-            if (inner[i].isMiddle) {
+            if (element.isMiddle) {
                 hadMiddle = true;
             } else {
-                innerHeight = Math.max(inner[i].height, innerHeight);
-                innerDepth = Math.max(inner[i].depth, innerDepth);
+                innerHeight = Math.max(element.height, innerHeight);
+                innerDepth = Math.max(element.depth, innerDepth);
             }
-        }
+        });
 
         // The size of delimiters is the same, regardless of what style we are
         // in. Thus, to correctly calculate the size of delimiter we need around
