@@ -23,14 +23,14 @@ defineFunction({
         const text = buildCommon.makeVerb(group, options);
         // \verb enters text mode and therefore is sized like \textstyle
         const newOptions = options.havingStyle(options.style.text());
-        const body = text.map((element) => {
-            let c = element;
+        for (let i = 0; i < text.length; i++) {
+            let c = text[i];
             if (c === '~') {
                 c = '\\textasciitilde';
             }
-            return (buildCommon.makeSymbol(c, "Typewriter-Regular",
+            body.push(buildCommon.makeSymbol(c, "Typewriter-Regular",
                 group.mode, newOptions, ["mord", "texttt"]));
-        });
+        }
         buildCommon.tryCombineChars(body);
         return buildCommon.makeSpan(
             ["mord", "text"].concat(newOptions.sizingClasses(options)),
