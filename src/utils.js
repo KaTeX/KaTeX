@@ -18,9 +18,13 @@ const indexOf = function<T>(list: Array<T>, elem: T): number {
     if (nativeIndexOf && list.indexOf === nativeIndexOf) {
         return list.indexOf(elem);
     }
-    return list.findIndex((item) => {
-        return item === elem;
-    });
+    const l = list.length;
+    for (let i = 0; i < l; i++) {
+        if (list[i] === elem) {
+            return i;
+        }
+    }
+    return -1;
 };
 
 /**
