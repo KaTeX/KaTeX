@@ -81,9 +81,11 @@ const renderMathInElement = function(elem, options) {
     const optionsCopy = {};
 
     // Object.assign(optionsCopy, option)
-    Object.keys(options).map((option) => {
-        optionsCopy[option] = options[option];
-    });
+    for (const option in options) {
+        if (options.hasOwnProperty(option)) {
+            optionsCopy[option] = options[option];
+        }
+    }
 
     // default options
     optionsCopy.delimiters = optionsCopy.delimiters || [
