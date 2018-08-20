@@ -63,7 +63,7 @@ const toNode = function(tagName: string): HTMLElement {
     Object.keys(this.style).map((style) => {
         // $FlowFixMe Flow doesn't seem to understand span.style's type.
         node.style[style] = this.style[style];
-    }):
+    });
 
     // Apply attributes
     Object.keys(this.attributes).map((attr) => {

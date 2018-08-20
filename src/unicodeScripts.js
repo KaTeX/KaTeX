@@ -89,7 +89,9 @@ export function scriptFromCodepoint(codepoint: number): ?string {
             return (codepoint >= block[0] && codepoint <= block[1]);
         });
     });
-    if(script) return script.name;
+    if (script) {
+        return script.name;
+    }
     return null;
 }
 

@@ -65,7 +65,6 @@ defineFunction({
 
         // Is expression a string or has it something like a fraction?
         let isAllString = true;  // default
-        for (let i = 0; i < expression.length; i++) {
         expression.forEach((node) => {
             if (node instanceof mathMLTree.SpaceNode) {
                 // Do nothing

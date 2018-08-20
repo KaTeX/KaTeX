@@ -16,11 +16,10 @@ defineFunction({
     handler({parser}, args) {
         const arg = assertNodeType(args[0], "ordgroup");
         const group = arg.body;
-        let number = "";
-        group.forEach((element) => {
+        let number = group.reduce((concatenation, element) => {
             const node = assertNodeType(element, "textord");
-            number += node.text;
-        }
+            return concatenation + node.text;
+        }, "");
         const code = parseInt(number);
         if (isNaN(code)) {
             throw new ParseError(`\\@char has non-numeric argument ${number}`);

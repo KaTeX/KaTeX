@@ -17,7 +17,7 @@ defineFunction({
         if (nameGroup.type !== "ordgroup") {
             throw new ParseError("Invalid environment name", nameGroup);
         }
-        let name = nameGroup.body.reduce((name, element) => {
+        const name = nameGroup.body.reduce((name, element) => {
             return name + assertNodeType(element, "textord").text;
         }, "");
         return {

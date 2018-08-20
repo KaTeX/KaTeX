@@ -528,13 +528,13 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     // with no additional line-height spacing. This allows the item baseline to
     // be positioned precisely without worrying about font ascent and
     // line-height.
-    let pstrutSize = 0;
-    children.forEach((child) => {
+    let pstrutSize = children.reduce((pstrutSize, child) => {
         if (child.type === "elem") {
             const elem = child.elem;
-            pstrutSize = Math.max(pstrutSize, elem.maxFontSize, elem.height);
+            return Math.max(pstrutSize, elem.maxFontSize, elem.height);
         }
-    }):
+        return pstrutSize;
+    }, 0);
     pstrutSize += 2;
     const pstrut = makeSpan(["pstrut"], []);
     pstrut.style.height = pstrutSize + "em";

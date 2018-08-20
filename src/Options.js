@@ -113,7 +113,7 @@ class Options {
         };
 
         Object.keys(extension).forEach((key) => {
-                data[key] = extension[key];
+            data[key] = extension[key];
         });
 
         return new Options(data);

@@ -60,7 +60,7 @@ export class documentFragment<ChildType: VirtualNode>
     toMarkup(): string {
 
         // Simply concatenate the markup for the children together.
-        let markup = this.children.reduce((concatenation, child) => {
+        const markup = this.children.reduce((concatenation, child) => {
             return concatenation + child.toMarkup();
         }, "");
 
