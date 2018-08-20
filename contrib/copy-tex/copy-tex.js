@@ -12,8 +12,10 @@ document.addEventListener('copy', function(event) {
         return;  // default action OK if no .katex-mathml elements
     }
     // Preserve usual HTML copy/paste behavior.
-    const html = fragment.childNodes.map(node => node.outerHTML);
-    
+    const html = [];
+    Array.prototype.forEach.call(fragment.childNodes, function (item) {
+        html.push(item.outerHTML);
+    });
     event.clipboardData.setData('text/html', html.join(''));
     // Rewrite plain-text version.
     event.clipboardData.setData('text/plain',
