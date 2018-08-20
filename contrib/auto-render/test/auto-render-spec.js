@@ -27,31 +27,31 @@ beforeEach(function() {
                 return message;
             }
 
-            let good = true;
-            split.forEach((real, i) => {
-                if (good) {
-                    const correct = result[i];
-                    let diff;
+            split.find((real, i) => {
+                const correct = result[i];
+                
+                let good = true;
+                let diff;
 
-                    if (real.type !== correct.type) {
-                        good = false;
-                        diff = "type";
-                    } else if (real.data !== correct.data) {
-                        good = false;
-                        diff = "data";
-                    } else if (real.display !== correct.display) {
-                        good = false;
-                        diff = "display";
-                    }
-
-                    if (!good) {
-                        message.pass = false;
-                        message.message = "Difference at split " +
-                            (i + 1) + ": " + JSON.stringify(real) +
-                            " vs. " + JSON.stringify(correct) +
-                            " (" + diff + " differs)";
-                    }
+                if (real.type !== correct.type) {
+                    good = false;
+                    diff = "type";
+                } else if (real.data !== correct.data) {
+                    good = false;
+                    diff = "data";
+                } else if (real.display !== correct.display) {
+                    good = false;
+                    diff = "display";
                 }
+
+                if (!good) {
+                    message.pass = false;
+                    message.message = "Difference at split " +
+                        (i + 1) + ": " + JSON.stringify(real) +
+                        " vs. " + JSON.stringify(correct) +
+                        " (" + diff + " differs)";
+                }
+                return !good;
             });
 
             return message;
