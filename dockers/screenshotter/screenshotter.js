@@ -464,7 +464,9 @@ function takeScreenshot(key) {
                 });
         }
         if (!opts.new) {
-            promise = promise.then(() => fs.unlink(bufFile));
+            promise = promise.then(function() {
+                return fs.unlink(bufFile)
+            });
         }
         return promise;
     }
