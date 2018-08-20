@@ -7,31 +7,10 @@
 import type {AnyParseNode} from "./parseNode";
 
 /**
- * Provide an `indexOf` function which works in IE8, but defers to native if
- * possible.
- */
-const nativeIndexOf = Array.prototype.indexOf;
-const indexOf = function<T>(list: Array<T>, elem: T): number {
-    if (list == null) {
-        return -1;
-    }
-    if (nativeIndexOf && list.indexOf === nativeIndexOf) {
-        return list.indexOf(elem);
-    }
-    const l = list.length;
-    for (let i = 0; i < l; i++) {
-        if (list[i] === elem) {
-            return i;
-        }
-    }
-    return -1;
-};
-
-/**
  * Return whether an element is contained in a list
  */
 const contains = function<T>(list: Array<T>, elem: T): boolean {
-    return indexOf(list, elem) !== -1;
+    return list.indexOf(elem) !== -1;
 };
 
 /**
@@ -154,7 +133,6 @@ export default {
     deflt,
     escape,
     hyphenate,
-    indexOf,
     setTextContent,
     clearNode,
     getBaseElem,
