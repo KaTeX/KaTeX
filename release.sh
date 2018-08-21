@@ -93,7 +93,7 @@ fi
 
 if [[ $PUBLISH ]]; then
     echo "About to publish $VERSION from $BRANCH. "
-elif [[ $BRANCH != "master" ]]; then
+elif [[ $BRANCH == @(v*-release) ]]; then
     echo "About to update SRI hashes for $BRANCH. "
 elif [[ -z "$NEXT_VERSION" ]]; then
     echo "About to release $VERSION from $BRANCH. "
@@ -125,7 +125,7 @@ if [[ ! $PUBLISH ]]; then
     # Build generated files
     yarn build
 
-    if [[ $BRANCH == "master" ]]; then
+    if [[ $BRANCH != @(v*-release) ]]; then
         if [ ! -z "$NEXT_VERSION" ]; then
             # Edit package.json to the next version
             sed -i.bak -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' package.json
@@ -163,7 +163,7 @@ if [[ ! $PUBLISH ]]; then
     git add package.json README.md contrib/*/README.md \
         docs website/pages/index.html website/versioned_docs/ \
         website/versioned_sidebars/ website/versions.json
-    if [[ $BRANCH != "master" ]]; then
+    if [[ $BRANCH == @(v*-release) ]]; then
         git commit -n -m "Update SRI hashes"
     elif [[ -z "$NEXT_VERSION" ]]; then
         git commit -n -m "Release v$VERSION"
