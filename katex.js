@@ -22,7 +22,6 @@ import {
     PathNode,
     LineNode,
 } from "./src/domTree";
-import utils from "./src/utils";
 
 import type {SettingsOptions} from "./src/Settings";
 import type {AnyParseNode} from "./src/parseNode";
@@ -42,7 +41,7 @@ let render = function(
     baseNode: Node,
     options: SettingsOptions,
 ) {
-    utils.clearNode(baseNode);
+    baseNode.textContent = "";
     const node = renderToDomTree(expression, options).toNode();
     baseNode.appendChild(node);
 };
