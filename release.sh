@@ -205,7 +205,8 @@ else
     git push "$ORIGIN" "v$VERSION"
 
     # Update npm (cdnjs update automatically)
-    yarn publish --new-version "$VERSION"
+    # Fallback to npm publish, if yarn cannot authenticate, e.g., 2FA
+    yarn publish --new-version "$VERSION" || npm publish
 
     # Publish the website
     pushd website
