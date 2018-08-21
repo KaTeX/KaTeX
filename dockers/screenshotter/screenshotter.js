@@ -475,24 +475,30 @@ function takeScreenshot(key) {
         const bufFile = path.join(outputDir, filenamePrefix + ".png");
 
         let promise = fs.ensureDir(outputDir)
-            .then(fs.writeFile(bufFile, buf));
+            .then(function() {
+                return fs.writeFile(bufFile, buf);
+            });
         if (opts.diff) {
             promise = promise.then(fs.ensureDir(diffDir))
-                .then(execFile("convert", [
-                    "-fill", "white",
-                    // First image: saved screenshot in red
-                    "(", baseFile, "-colorize", "100,0,0", ")",
-                    // Second image: new screenshot in green
-                    "(", bufFile, "-colorize", "0,80,0", ")",
-                    // Composite them
-                    "-compose", "darken", "-composite",
-                    "-trim",  // remove everything with the same color as the
-                              // corners
-                    diffFile, // output file name
-                ]));
+                .then(function() {
+                    return execFile("convert", [
+                        "-fill", "white",
+                        // First image: saved screenshot in red
+                        "(", baseFile, "-colorize", "100,0,0", ")",
+                        // Second image: new screenshot in green
+                        "(", bufFile, "-colorize", "0,80,0", ")",
+                        // Composite them
+                        "-compose", "darken", "-composite",
+                        "-trim",  // remove everything with the same color as
+                                  // the corners
+                        diffFile, // output file name
+                    ]);
+                });
         }
         if (!opts.new) {
-            promise = promise.then(fs.unlink(bufFile));
+            promise = promise.then(function() {
+                return fs.unlink(bufFile);
+            });
         }
         return promise;
     }
