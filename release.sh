@@ -96,7 +96,7 @@ if [[ $PUBLISH ]]; then
     echo "About to publish $VERSION from $BRANCH. "
 elif [[ $BRANCH == @(v*-release) ]]; then
     echo "About to update SRI hashes for $BRANCH. "
-elif [[ -z "$NEXT_VERSION" ]]; then
+elif [[ ! $NEXT_VERSION ]]; then
     echo "About to release $VERSION from $BRANCH. "
 else
     echo "About to release $VERSION from $BRANCH and bump to $NEXT_VERSION-pre."
@@ -106,7 +106,7 @@ if [[ $INSANE != 0 ]]; then
 else
     read -r -p "Look good? [y/n] " CONFIRM
 fi
-if [[ "$CONFIRM" != "y" ]]; then
+if [[ $CONFIRM != "y" ]]; then
     exit 1
 fi
 
@@ -139,12 +139,12 @@ if [[ ! $PUBLISH ]]; then
 
         # Update the version number in CDN URLs included in the README and the documentation,
         # and regenerate the Subresource Integrity hash for these files.
-        node update-sri.js "${VERSION}" README.md contrib/*/README.md \
+        node update-sri.js "$VERSION" README.md contrib/*/README.md \
             docs/*.md docs/*.md.bak website/pages/index.html
 
         # Generate a new version of the docs
         pushd website
-        yarn run version "${VERSION}"
+        yarn run version "$VERSION"
         popd
 
         # Restore docs to use local built CSS
@@ -156,7 +156,7 @@ if [[ ! $PUBLISH ]]; then
         git checkout package.json
 
         # Regenerate the Subresource Integrity hash in the README and the documentation
-        node update-sri.js "${VERSION}" README.md contrib/*/README.md \
+        node update-sri.js "$VERSION" README.md contrib/*/README.md \
             docs/*.md website/pages/index.html website/versioned_docs/version-$VERSION/*.md
     fi
 
@@ -166,7 +166,7 @@ if [[ ! $PUBLISH ]]; then
         website/versioned_sidebars/ website/versions.json
     if [[ $BRANCH == @(v*-release) ]]; then
         git commit -n -m "Update SRI hashes"
-    elif [[ -z "$NEXT_VERSION" ]]; then
+    elif [[ ! $NEXT_VERSION ]]; then
         git commit -n -m "Release v$VERSION"
     else
         git commit -n -m "Release v$VERSION" -m "Bump $BRANCH to v$NEXT_VERSION-pre"
@@ -205,7 +205,7 @@ else
     git push "$ORIGIN" "v$VERSION"
 
     # Update npm (cdnjs update automatically)
-    yarn publish --new-version "${VERSION}"
+    yarn publish --new-version "$VERSION"
 
     # Publish the website
     pushd website
@@ -221,7 +221,7 @@ fi
 
 git diff --stat --exit-code # check for uncommitted changes
 
-if [[ ${DRY_RUN} ]]; then
+if [[ $DRY_RUN ]]; then
     echo ""
     echo "This was a dry run."
     echo "Operations using git or yarn were printed not executed."
