@@ -6,6 +6,7 @@ shopt -s extglob
 VERSION=
 NEXT_VERSION=
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
+ORIGIN=${ORIGIN:-origin}
 NARGS=0
 DRY_RUN=
 PUBLISH=
@@ -170,7 +171,7 @@ if [[ ! $PUBLISH ]]; then
     else
         git commit -n -m "Release v$VERSION" -m "Bump $BRANCH to v$NEXT_VERSION-pre"
     fi
-    git push -u origin "v$VERSION-release"
+    git push -u "$ORIGIN" "v$VERSION-release"
 
     echo ""
     echo "The automatic parts are done!"
@@ -201,7 +202,7 @@ else
     git commit -n -m "v$VERSION"
     git diff --stat --exit-code # check for uncommitted changes
     git tag -a "v$VERSION" -m "v$VERSION"
-    git push origin "v$VERSION"
+    git push "$ORIGIN" "v$VERSION"
 
     # Update npm (cdnjs update automatically)
     yarn publish --new-version "${VERSION}"
