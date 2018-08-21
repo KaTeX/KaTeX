@@ -11,6 +11,9 @@ const path = require("path");
 const selenium = require("selenium-webdriver");
 const firefox = require("selenium-webdriver/firefox");
 
+const istanbulApi = require('istanbul-api');
+const istanbulLibCoverage = require('istanbul-lib-coverage');
+
 const webpack = require('webpack');
 const WebpackDevServer = require("webpack-dev-server");
 const webpackConfig = require("../../webpack.dev")[0];
@@ -48,6 +51,7 @@ const opts = require("commander")
     .option("--diff", "With `--verify`, produce image diffs when match fails")
     .option("--new",
         "With `--verify`, generate new screenshots when match fails")
+    .option("--coverage", "Collect and report test coverage information")
     .option("--attempts <n>",
         "Retry this many times before reporting failure", 5, parseInt)
     .option("--wait <secs>",
@@ -151,6 +155,7 @@ let attempts = 0;
 // Start up development server
 
 let devServer = null;
+let coverageMap;
 const minPort = 32768;
 const maxPort = 61000;
 
@@ -160,6 +165,19 @@ function startServer() {
         return;
     }
     const port = Math.floor(Math.random() * (maxPort - minPort)) + minPort;
+
+    if (opts.coverage) {
+        coverageMap = istanbulLibCoverage.createCoverageMap({});
+        webpackConfig.module.rules[0].use = {
+            loader: 'babel-loader',
+            options: {
+                plugins: [['istanbul', {
+                    include: ["src/**/*.js"],
+                    exclude: ["src/unicodeMake.js"],
+                }]],
+            },
+        };
+    }
     const compiler = webpack(webpackConfig);
     const wds = new WebpackDevServer(compiler, webpackConfig.devServer);
     const server = wds.listen(port);
@@ -364,9 +382,23 @@ function takeScreenshot(key) {
                     "handle_search_string(" +
                     JSON.stringify("?" + itm.query) + ", callback);")
                 .then(waitThenScreenshot);
+        } else if (opts.coverage) {
+            // collect coverage before reloading
+            collectCoverage().then(function() {
+                return driver.get(url).then(waitThenScreenshot);
+            });
         } else {
             driver.get(url).then(waitThenScreenshot);
         }
+    }
+
+    function collectCoverage() {
+        return driver.executeScript('return window.__coverage__;')
+            .then(function(result) {
+                if (result) {
+                    coverageMap.merge(result);
+                }
+            });
     }
 
     function waitThenScreenshot() {
@@ -475,6 +507,16 @@ function takeScreenshot(key) {
             }
             if (opts.new) {
                 console.log("New screenshots have been generated in: " + newDir);
+            }
+            if (opts.coverage) {
+                collectCoverage().then(function() {
+                    const reporter = istanbulApi.createReporter();
+                    reporter.addAll(['json', 'text', 'lcov']);
+                    reporter.write(coverageMap);
+
+                    process.exit(exitStatus);
+                });
+                return;
             }
             // devServer.close(cb) will take too long.
             process.exit(exitStatus);
