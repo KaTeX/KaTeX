@@ -282,7 +282,6 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
 const canCombine = (prev: SymbolNode, next: SymbolNode) => {
     if (createClass(prev.classes) !== createClass(next.classes)
         || prev.skew !== next.skew
-        || prev.italic !== next.italic
         || prev.maxFontSize !== next.maxFontSize) {
         return false;
     }
@@ -319,6 +318,10 @@ const tryCombineChars = (chars: HtmlDomNode[]): HtmlDomNode[] => {
             prev.text += next.text;
             prev.height = Math.max(prev.height, next.height);
             prev.depth = Math.max(prev.depth, next.depth);
+            // Use the last character's italic correction since we use
+            // it to add padding to the right of the span created from
+            // the combined characters.
+            prev.italic = next.italic;
             chars.splice(i + 1, 1);
             i--;
         }
