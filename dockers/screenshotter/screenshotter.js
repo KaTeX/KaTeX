@@ -511,7 +511,7 @@ function takeScreenshot(key) {
             if (opts.coverage) {
                 collectCoverage().then(function() {
                     const reporter = istanbulApi.createReporter();
-                    reporter.addAll(['json', 'text', 'lcov', 'clover']);
+                    reporter.addAll(['json', 'text', 'lcov']);
                     reporter.write(coverageMap);
 
                     process.exit(exitStatus);
