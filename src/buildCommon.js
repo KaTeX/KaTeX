@@ -276,10 +276,11 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
         } else if (ligatures.hasOwnProperty(text) &&
                    fontName.substr(0, 10) === "Typewriter") {
             // Deconstruct ligatures in monospace fonts (\texttt, \tt).
-            const parts = text.map((element) => {
-                return makeSymbol(element, fontName, mode, options,
-                                      classes.concat(fontClasses));
-            });
+            const parts = [];
+            for (let i = 0; i < text.length; i++) {
+                parts.push(makeSymbol(text[i], fontName, mode, options,
+                                      classes.concat(fontClasses)));
+            }
             return makeFragment(parts);
         } else {
             return mathDefault(text, mode, options, classes, type);

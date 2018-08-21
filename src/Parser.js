@@ -310,10 +310,11 @@ export default class Parser {
      */
     handleUnsupportedCmd(): AnyParseNode {
         const text = this.nextToken.text;
+        const textordArray = [];
 
-        const textordArray = text.map((element) => {
-            return {type: "textord", mode: "text", text: element};
-        });
+        for (let i = 0; i < text.length; i++) {
+            textordArray.push({type: "textord", mode: "text", text: text[i]});
+        }
 
         const textNode = {
             type: "text",

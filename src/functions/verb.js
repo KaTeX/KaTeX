@@ -21,6 +21,7 @@ defineFunction({
     },
     htmlBuilder(group, options) {
         const text = buildCommon.makeVerb(group, options);
+        const body = [];
         // \verb enters text mode and therefore is sized like \textstyle
         const newOptions = options.havingStyle(options.style.text());
         for (let i = 0; i < text.length; i++) {
