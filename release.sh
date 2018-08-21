@@ -112,22 +112,9 @@ fi
 git checkout "$BRANCH"
 git pull
 
-if [[ $BRANCH != "master" ]]; then
-    # Build generated files
-    yarn build
-
-    # Regenerate the Subresource Integrity hash in the README and the documentation
-    node update-sri.js "${VERSION}" README.md contrib/*/README.md \
-        docs/*.md website/pages/index.html website/versioned_docs/version-$VERSION/*.md
-
-    # Make the commit and push
-    git add README.md contrib/*/README.md \
-        docs website/pages/index.html website/versioned_docs/
-    git commit -n -m "Update SRI hashes"
-    git push
-elif [[ ! $PUBLISH ]]; then
+if [[ ! $PUBLISH ]]; then
     # Make a release branch
-    git checkout -b "v$VERSION-release"
+    git checkout -B "v$VERSION-release"
 
     # Edit package.json to the right version, as it's inlined (see
     # http://stackoverflow.com/a/22084103 for why we need the .bak file to make
@@ -138,37 +125,47 @@ elif [[ ! $PUBLISH ]]; then
     # Build generated files
     yarn build
 
-    if [ ! -z "$NEXT_VERSION" ]; then
-        # Edit package.json to the next version
-        sed -i.bak -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' package.json
-        rm -f package.json.bak
-        git add package.json
+    if [[ $BRANCH == "master" ]]; then
+        if [ ! -z "$NEXT_VERSION" ]; then
+            # Edit package.json to the next version
+            sed -i.bak -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' package.json
+            rm -f package.json.bak
+        fi
+
+        # Edit docs to use CSS from CDN
+        grep -l '{@stylesheet: katex.min.css}' docs/*.md | xargs sed -i.bak \
+            's|{@stylesheet: katex.min.css}|<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@./dist/katex.min.css" integrity="sha384-katex.min.css" crossorigin="anonymous"/>|'
+
+        # Update the version number in CDN URLs included in the README and the documentation,
+        # and regenerate the Subresource Integrity hash for these files.
+        node update-sri.js "${VERSION}" README.md contrib/*/README.md \
+            docs/*.md docs/*.md.bak website/pages/index.html
+
+        # Generate a new version of the docs
+        pushd website
+        yarn run version "${VERSION}"
+        popd
+
+        # Restore docs to use local built CSS
+        for file in docs/*.md.bak; do
+            mv -f "$file" "${file%.bak}"
+        done
+    else
+        # Restore package.json
+        git checkout package.json
+
+        # Regenerate the Subresource Integrity hash in the README and the documentation
+        node update-sri.js "${VERSION}" README.md contrib/*/README.md \
+            docs/*.md website/pages/index.html website/versioned_docs/version-$VERSION/*.md
     fi
-
-    # Edit docs to use CSS from CDN
-    grep -l '{@stylesheet: katex.min.css}' docs/*.md | xargs sed -i.bak \
-        's|{@stylesheet: katex.min.css}|<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@./dist/katex.min.css" integrity="sha384-katex.min.css" crossorigin="anonymous"/>|'
-
-    # Update the version number in CDN URLs included in the README and the documentation,
-    # and regenerate the Subresource Integrity hash for these files.
-    node update-sri.js "${VERSION}" README.md contrib/*/README.md \
-        docs/*.md docs/*.md.bak website/pages/index.html
-
-    # Generate a new version of the docs
-    pushd website
-    yarn run version "${VERSION}"
-    popd
-
-    # Restore docs to use local built CSS
-    for file in docs/*.md.bak; do
-        mv -f "$file" "${file%.bak}"
-    done
 
     # Make the commit and push
     git add package.json README.md contrib/*/README.md \
         docs website/pages/index.html website/versioned_docs/ \
         website/versioned_sidebars/ website/versions.json
-    if [[ -z "$NEXT_VERSION" ]]; then
+    if [[ $BRANCH != "master" ]]; then
+        git commit -n -m "Update SRI hashes"
+    elif [[ -z "$NEXT_VERSION" ]]; then
         git commit -n -m "Release v$VERSION"
     else
         git commit -n -m "Release v$VERSION" -m "Bump $BRANCH to v$NEXT_VERSION-pre"
