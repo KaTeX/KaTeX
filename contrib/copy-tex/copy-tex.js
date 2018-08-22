@@ -13,8 +13,8 @@ document.addEventListener('copy', function(event) {
     }
     // Preserve usual HTML copy/paste behavior.
     const html = [];
-    Array.prototype.forEach.call(fragment.childNodes, function(item) {
-        html.push(item.outerHTML);
+    Array.prototype.forEach.call(fragment.childNodes, function(node) {
+        html.push(node.outerHTML);
     });
     event.clipboardData.setData('text/html', html.join(''));
     // Rewrite plain-text version.

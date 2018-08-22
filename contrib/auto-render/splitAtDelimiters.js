@@ -30,9 +30,9 @@ const findEndOfMath = function(delimiter, text, startIndex) {
 const splitAtDelimiters = function(startData, leftDelim, rightDelim, display) {
     const finalData = [];
 
-    startData.forEach((obj) => {
-        if (obj.type === "text") {
-            const text = obj.data;
+    startData.forEach((datum) => {
+        if (datum.type === "text") {
+            const text = datum.data;
 
             let lookingForLeft = true;
             let currIndex = 0;
@@ -92,7 +92,7 @@ const splitAtDelimiters = function(startData, leftDelim, rightDelim, display) {
                 data: text.slice(currIndex),
             });
         } else {
-            finalData.push(obj);
+            finalData.push(datum);
         }
     });
 
