@@ -1,5 +1,5 @@
 ---
-id: version-0.10.0-rc-libs
+id: version-0.10.0-rc.1-libs
 title: Extensions & Libraries
 original_id: libs
 ---

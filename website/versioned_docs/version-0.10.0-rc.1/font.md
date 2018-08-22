@@ -1,5 +1,5 @@
 ---
-id: version-0.10.0-rc-font
+id: version-0.10.0-rc.1-font
 title: Font
 original_id: font
 ---
