@@ -3398,3 +3398,17 @@ describe("Extending katex by new fonts and symbols", function() {
         expect(katex.renderToString("۹۹^{۱۱}")).toMatchSnapshot();
     });
 });
+
+describe("\\data function", () => {
+    it("should add data attributes to nodes to be rendered into HTML", () => {
+        expect(katex.renderToString("\\data{a=b, c = d}{5+4}")).toMatchSnapshot();
+    });
+
+    it("supports children overriding and adding data attributes", () => {
+        expect(katex.renderToString("\\data{a=b, c = d}{5+\\data{a=e, f=g}{4}}")).toMatchSnapshot();
+    });
+
+    it("handles nested functions like fractions", () => {
+        expect(katex.renderToString("\\data{value=0}{\\frac{5}{\\data{value=1, cats=dogs}{4}}}")).toMatchSnapshot();
+    });
+});

@@ -13,6 +13,7 @@ import "./functions/arrow";
 import "./functions/char";
 import "./functions/color";
 import "./functions/cr";
+import "./functions/data";
 import "./functions/delimsizing";
 import "./functions/enclose";
 import "./functions/environment";

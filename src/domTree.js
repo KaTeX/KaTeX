@@ -47,6 +47,12 @@ const initNode = function(
         if (color) {
             this.style.color = color;
         }
+        const attrs = options.attributes;
+        for (const key in attrs) {
+            if (attrs.hasOwnProperty(key)) {
+                this.setAttribute(key, attrs[key]);
+            }
+        }
     }
 };
 
@@ -287,6 +293,7 @@ export class SymbolNode implements HtmlDomNode {
     maxFontSize: number;
     classes: string[];
     style: CssStyle;
+    attributes: {[string]: string};
 
     constructor(
         text: string,
@@ -307,6 +314,7 @@ export class SymbolNode implements HtmlDomNode {
         this.classes = classes || [];
         this.style = style || {};
         this.maxFontSize = 0;
+        this.attributes = {};
 
         // Mark text from non-Latin scripts with specific classes so that we
         // can specify which fonts to use.  This allows us to render these
@@ -323,6 +331,10 @@ export class SymbolNode implements HtmlDomNode {
         if (/[îïíì]/.test(this.text)) {    // add ī when we add Extended Latin
             this.text = iCombinations[this.text];
         }
+    }
+
+    setAttribute(attribute: string, value: string) {
+        this.attributes[attribute] = value;
     }
 
     hasClass(className: string): boolean {
@@ -352,6 +364,13 @@ export class SymbolNode implements HtmlDomNode {
                 span = span || document.createElement("span");
                 // $FlowFixMe Flow doesn't seem to understand span.style's type.
                 span.style[style] = this.style[style];
+            }
+        }
+
+        for (const attr in this.attributes) {
+            if (this.attributes.hasOwnProperty(attr)) {
+                span = span || document.createElement("span");
+                span.setAttribute(attr, this.attributes[attr]);
             }
         }
 
@@ -394,6 +413,14 @@ export class SymbolNode implements HtmlDomNode {
         if (styles) {
             needsSpan = true;
             markup += " style=\"" + utils.escape(styles) + "\"";
+        }
+
+        for (const attr in this.attributes) {
+            if (this.attributes.hasOwnProperty(attr)) {
+                needsSpan = true;
+                const value = utils.escape(this.attributes[attr]);
+                markup += " " + attr + "=\"" + value + "\"";
+            }
         }
 
         const escaped = utils.escape(this.text);

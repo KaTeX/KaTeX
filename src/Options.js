@@ -47,6 +47,7 @@ export type OptionsData = {
     fontWeight?: string;
     fontShape?: string;
     sizeMultiplier?: number;
+    attributes?: {[string]: string};
     maxSize: number;
 };
 
@@ -72,6 +73,7 @@ class Options {
     fontShape: string;
     sizeMultiplier: number;
     maxSize: number;
+    attributes: {[string]: string};
     _fontMetrics: FontMetrics | void;
 
     /**
@@ -91,6 +93,7 @@ class Options {
         this.fontShape = data.fontShape || '';
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
+        this.attributes = data.attributes || {};
         this._fontMetrics = undefined;
     }
 
@@ -110,11 +113,29 @@ class Options {
             fontWeight: this.fontWeight,
             fontShape: this.fontShape,
             maxSize: this.maxSize,
+            attributes: {},
         };
 
         for (const key in extension) {
             if (extension.hasOwnProperty(key)) {
-                data[key] = extension[key];
+                if (key === "attributes") {
+                    // Object.assign({}, this.attributes, extension.attributes)
+                    const thisAttrs = this.attributes || {};
+                    for (const attr in thisAttrs) {
+                        if (thisAttrs.hasOwnProperty(attr)) {
+                            data.attributes[attr] = thisAttrs[attr];
+                        }
+                    }
+
+                    const extAttrs = extension.attributes || {};
+                    for (const attr in extAttrs) {
+                        if (extAttrs.hasOwnProperty(attr)) {
+                            data.attributes[attr] = extAttrs[attr];
+                        }
+                    }
+                } else {
+                    data[key] = extension[key];
+                }
             }
         }
 
@@ -200,6 +221,15 @@ class Options {
         return this.extend({
             style: this.style.text(),
             size: size,
+        });
+    }
+
+    /**
+     * Create a new options object with the given attributes.
+     */
+    withAttributes(attributes: {[string]: string}): Options {
+        return this.extend({
+            attributes: attributes,
         });
     }
 

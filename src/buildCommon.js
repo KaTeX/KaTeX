@@ -95,6 +95,12 @@ const makeSymbol = function(
         if (color) {
             symbolNode.style.color = color;
         }
+        const attrs = options.attributes;
+        for (const key in attrs) {
+            if (attrs.hasOwnProperty(key)) {
+                symbolNode.setAttribute(key, attrs[key]);
+            }
+        }
     }
 
     return symbolNode;

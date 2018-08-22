@@ -1,5 +1,259 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`\\data function handles nested functions like fractions 1`] = `
+
+<span class="katex">
+  <span class="katex-mathml">
+    <math>
+      <semantics>
+        <mrow>
+          <mdata>
+            <mfrac>
+              <mn>
+                5
+              </mn>
+              <mdata>
+                <mn>
+                  4
+                </mn>
+              </mdata>
+            </mfrac>
+          </mdata>
+        </mrow>
+        <annotation encoding="application/x-tex">
+          \\data{value=0}{\\frac{5}{\\data{value=1, cats=dogs}{4}}}
+        </annotation>
+      </semantics>
+    </math>
+  </span>
+  <span class="katex-html"
+        aria-hidden="true"
+  >
+    <span class="base">
+      <span class="strut"
+            style="height:1.190108em;vertical-align:-0.345em;"
+      >
+      </span>
+      <span class="mord"
+            data-value="0"
+      >
+        <span class="mopen nulldelimiter">
+        </span>
+        <span class="mfrac">
+          <span class="vlist-t vlist-t2">
+            <span class="vlist-r">
+              <span class="vlist"
+                    style="height:0.845108em;"
+              >
+                <span style="top:-2.6550000000000002em;">
+                  <span class="pstrut"
+                        style="height:3em;"
+                  >
+                  </span>
+                  <span class="sizing reset-size6 size3 mtight">
+                    <span class="mord mtight">
+                      <span class="mord mtight"
+                            data-value="1"
+                            data-cats="dogs"
+                      >
+                        4
+                      </span>
+                    </span>
+                  </span>
+                </span>
+                <span style="top:-3.23em;">
+                  <span class="pstrut"
+                        style="height:3em;"
+                  >
+                  </span>
+                  <span class="frac-line"
+                        style="border-bottom-width:0.04em;"
+                        data-value="0"
+                  >
+                  </span>
+                </span>
+                <span style="top:-3.394em;">
+                  <span class="pstrut"
+                        style="height:3em;"
+                  >
+                  </span>
+                  <span class="sizing reset-size6 size3 mtight">
+                    <span class="mord mtight">
+                      <span class="mord mtight">
+                        5
+                      </span>
+                    </span>
+                  </span>
+                </span>
+              </span>
+              <span class="vlist-s">
+                ​
+              </span>
+            </span>
+            <span class="vlist-r">
+              <span class="vlist"
+                    style="height:0.345em;"
+              >
+                <span>
+                </span>
+              </span>
+            </span>
+          </span>
+        </span>
+        <span class="mclose nulldelimiter">
+        </span>
+      </span>
+    </span>
+  </span>
+</span>
+
+`;
+
+exports[`\\data function should add data attributes to nodes to be rendered into HTML 1`] = `
+
+<span class="katex">
+  <span class="katex-mathml">
+    <math>
+      <semantics>
+        <mrow>
+          <mdata>
+            <mn>
+              5
+            </mn>
+            <mo>
+              +
+            </mo>
+            <mn>
+              4
+            </mn>
+          </mdata>
+        </mrow>
+        <annotation encoding="application/x-tex">
+          \\data{a=b, c = d}{5+4}
+        </annotation>
+      </semantics>
+    </math>
+  </span>
+  <span class="katex-html"
+        aria-hidden="true"
+  >
+    <span class="base">
+      <span class="strut"
+            style="height:0.72777em;vertical-align:-0.08333em;"
+      >
+      </span>
+      <span class="mord"
+            data-a="b"
+            data-c="d"
+      >
+        5
+      </span>
+      <span class="mspace"
+            style="margin-right:0.2222222222222222em;"
+      >
+      </span>
+      <span class="mbin"
+            data-a="b"
+            data-c="d"
+      >
+        +
+      </span>
+      <span class="mspace"
+            style="margin-right:0.2222222222222222em;"
+      >
+      </span>
+    </span>
+    <span class="base">
+      <span class="strut"
+            style="height:0.64444em;vertical-align:0em;"
+      >
+      </span>
+      <span class="mord"
+            data-a="b"
+            data-c="d"
+      >
+        4
+      </span>
+    </span>
+  </span>
+</span>
+
+`;
+
+exports[`\\data function supports children overriding and adding data attributes 1`] = `
+
+<span class="katex">
+  <span class="katex-mathml">
+    <math>
+      <semantics>
+        <mrow>
+          <mdata>
+            <mn>
+              5
+            </mn>
+            <mo>
+              +
+            </mo>
+            <mdata>
+              <mn>
+                4
+              </mn>
+            </mdata>
+          </mdata>
+        </mrow>
+        <annotation encoding="application/x-tex">
+          \\data{a=b, c = d}{5+\\data{a=e, f=g}{4}}
+        </annotation>
+      </semantics>
+    </math>
+  </span>
+  <span class="katex-html"
+        aria-hidden="true"
+  >
+    <span class="base">
+      <span class="strut"
+            style="height:0.72777em;vertical-align:-0.08333em;"
+      >
+      </span>
+      <span class="mord"
+            data-a="b"
+            data-c="d"
+      >
+        5
+      </span>
+      <span class="mspace"
+            style="margin-right:0.2222222222222222em;"
+      >
+      </span>
+      <span class="mbin"
+            data-a="b"
+            data-c="d"
+      >
+        +
+      </span>
+      <span class="mspace"
+            style="margin-right:0.2222222222222222em;"
+      >
+      </span>
+    </span>
+    <span class="base">
+      <span class="strut"
+            style="height:0.64444em;vertical-align:0em;"
+      >
+      </span>
+      <span class="mord"
+            data-a="e"
+            data-c="d"
+            data-f="g"
+      >
+        4
+      </span>
+    </span>
+  </span>
+</span>
+
+`;
+
 exports[`A begin/end parser should grab \\arraystretch 1`] = `
 [
   {
@@ -135,6 +389,8 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
 exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] = `
 [
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathit"
@@ -178,6 +434,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     }
   },
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathit"
@@ -216,6 +474,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
         },
         "children": [
           {
+            "attributes": {
+            },
             "classes": [
               "mrel",
               "mathbf"
@@ -266,6 +526,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     }
   },
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathit"
@@ -304,6 +566,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
         },
         "children": [
           {
+            "attributes": {
+            },
             "classes": [
               "mord",
               "mathbf"
@@ -354,6 +618,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     }
   },
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathit"
@@ -392,6 +658,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
         },
         "children": [
           {
+            "attributes": {
+            },
             "classes": [
               "mord",
               "mathbf"
@@ -407,6 +675,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "width": 0.89444
           },
           {
+            "attributes": {
+            },
             "classes": [
               "mord",
               "mathbf"
@@ -457,6 +727,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     }
   },
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathit"
@@ -480,6 +752,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
         },
         "children": [
           {
+            "attributes": {
+            },
             "classes": [
               "mord",
               "boldsymbol"
@@ -495,6 +769,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "width": 0.65903
           },
           {
+            "attributes": {
+            },
             "classes": [
               "mord",
               "boldsymbol"
@@ -510,6 +786,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "width": 0.59028
           },
           {
+            "attributes": {
+            },
             "classes": [
               "mord",
               "boldsymbol"
@@ -545,6 +823,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     }
   },
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathit"
@@ -589,6 +869,8 @@ exports[`A parser that does not throw on unsupported commands should build katex
   },
   "children": [
     {
+      "attributes": {
+      },
       "classes": [
       ],
       "depth": 0,
