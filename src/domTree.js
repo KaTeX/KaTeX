@@ -60,19 +60,23 @@ const toNode = function(tagName: string): HTMLElement {
     node.className = createClass(this.classes);
 
     // Apply inline styles
-    Object.keys(this.style).map((style) => {
-        // $FlowFixMe Flow doesn't seem to understand span.style's type.
-        node.style[style] = this.style[style];
-    });
+    for (const style in this.style) {
+        if (this.style.hasOwnProperty(style)) {
+            // $FlowFixMe Flow doesn't seem to understand span.style's type.
+            node.style[style] = this.style[style];
+        }
+    }
 
     // Apply attributes
-    Object.keys(this.attributes).map((attr) => {
-        node.setAttribute(attr, this.attributes[attr]);
-    });
+    for (const attr in this.attributes) {
+        if (this.attributes.hasOwnProperty(attr)) {
+            node.setAttribute(attr, this.attributes[attr]);
+        }
+    }
 
     // Append the children, also as HTML nodes
-    this.children.map((element) => {
-        node.appendChild(element.toNode());
+    Array.prototype.forEach.call(this.children, function(child) {
+        node.appendChild(child.toNode());
     });
 
     return node;
@@ -112,9 +116,9 @@ const toMarkup = function(tagName: string): string {
     markup += ">";
 
     // Add the markup of the children, also as markup
-    markup = this.children.reduce((concatenation, child) => {
-        return concatenation + child.toMarkup();
-    }, markup);
+    Array.prototype.forEach.call(this.children, function(child) {
+        markup += child.toMarkup();
+    });
 
     markup += `</${tagName}>`;
 
@@ -443,8 +447,8 @@ class svgNode implements VirtualNode {
             }
         }
 
-        this.children.forEach((element) => {
-            node.appendChild(element.toNode());
+        Array.prototype.forEach.call(this.children, function(child) {
+            node.appendChild(child.toNode());
         });
         return node;
     }
@@ -461,9 +465,9 @@ class svgNode implements VirtualNode {
 
         markup += ">";
 
-        markup = this.children.reduce((concatenation, element) => {
-            return concatenation + element.toMarkup();
-        }, markup);
+        Array.prototype.forEach.call(this.children, function(child) {
+            markup += child.toMarkup();
+        });
 
         markup += "</svg>";
 

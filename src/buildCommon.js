@@ -315,7 +315,7 @@ const sizeElementFromChildren = function(
     let depth = 0;
     let maxFontSize = 0;
 
-    elem.children.forEach((child) => { 
+    Array.prototype.forEach.call(elem.children, function(child) {
         if (child.height > height) {
             height = child.height;
         }
@@ -489,12 +489,13 @@ const getVListChildrenAndDepth = function(params: VListParam): {
     if (params.positionType === "top") {
         // We always start at the bottom, so calculate the bottom by adding up
         // all the sizes
-        depth = params.children.reduce((size, child) => {
-            return (size - (child.type === "kern"
+        let bottom = params.positionData;
+        Array.prototype.forEach.call(params.children, function(child) {
+            bottom -= child.type === "kern"
                 ? child.size
-                : child.elem.height + child.elem.depth));
-        }, params.positionData);
-        
+                : child.elem.height + child.elem.depth;
+        });
+        depth = bottom;
     } else if (params.positionType === "bottom") {
         depth = -params.positionData;
     } else {
@@ -529,13 +530,13 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     // with no additional line-height spacing. This allows the item baseline to
     // be positioned precisely without worrying about font ascent and
     // line-height.
-    let pstrutSize = children.reduce((pstrutSize, child) => {
+    let pstrutSize = 0;
+    Array.prototype.forEach.call(children, function(child) {
         if (child.type === "elem") {
             const elem = child.elem;
-            return Math.max(pstrutSize, elem.maxFontSize, elem.height);
+            pstrutSize = Math.max(pstrutSize, elem.maxFontSize, elem.height);
         }
-        return pstrutSize;
-    }, 0);
+    });
     pstrutSize += 2;
     const pstrut = makeSpan(["pstrut"], []);
     pstrut.style.height = pstrutSize + "em";
@@ -545,7 +546,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     let minPos = depth;
     let maxPos = depth;
     let currPos = depth;
-    children.forEach((child) => {
+    Array.prototype.forEach.call(children, function(child) {
         if (child.type === "kern") {
             currPos += child.size;
         } else {

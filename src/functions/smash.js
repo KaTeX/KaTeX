@@ -25,7 +25,8 @@ defineFunction({
             // ref: amsmath: \renewcommand{\smash}[1][tb]{%
             //               def\mb@t{\ht}\def\mb@b{\dp}\def\mb@tb{\ht\z@\z@\dp}%
             let letter = "";
-            tbArg.body.some((node) => {
+            for (let i = 0; i < tbArg.body.length; ++i) {
+                const node = tbArg.body[i];
                 // $FlowFixMe: Not every node type has a `text` property.
                 letter = node.text;
                 if (letter === "t") {
@@ -35,9 +36,9 @@ defineFunction({
                 } else {
                     smashHeight = false;
                     smashDepth = false;
+                    break;
                 }
-                return (!smashHeight && !smashDepth);
-            });
+            }
         } else {
             smashHeight = true;
             smashDepth = true;
@@ -64,18 +65,18 @@ defineFunction({
             node.height = 0;
             // In order to influence makeVList, we have to reset the children.
             if (node.children) {
-                node.children.forEach((element, i, nodeChildren) => {
-                    nodeChildren[i].height = 0;
-                });
+                for (let i = 0; i < node.children.length; i++) {
+                    node.children[i].height = 0;
+                }
             }
         }
 
         if (group.smashDepth) {
             node.depth = 0;
             if (node.children) {
-                node.children.forEach((element, i, nodeChildren) => {
-                    nodeChildren[i].depth = 0;
-                });
+                for (let i = 0; i < node.children.length; i++) {
+                    node.children[i].depth = 0;
+                }
             }
         }
 

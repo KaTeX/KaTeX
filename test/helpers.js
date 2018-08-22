@@ -84,8 +84,8 @@ export function getBuilt(expr, settings = new Settings()) {
 
     // combine the non-strut children of all base spans
     const children = [];
-    builtHTML.children.forEach((child) => {
-        children.push(...child.children.filter(
+    Array.prototype.forEach.call(builtHTML.children, function(node) {
+        children.push(...node.children.filter(
             (node) => node.classes.indexOf("strut") < 0));
     });
     return children;

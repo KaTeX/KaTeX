@@ -14,7 +14,7 @@
             timer = null;
             let found = false;
             const headings = findHeadings();
-            headings.forEach((heading, i) => {
+            Array.prototype.forEach.call(headings, function(heading, i) {
                 // if !found and i is the last element, highlight the last
                 let current = !found;
                 if (!found && i < headings.length - 1) {

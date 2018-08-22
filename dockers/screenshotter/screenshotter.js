@@ -298,15 +298,18 @@ function findHostIP() {
     // Next, enumerate all network addresses
     const ips = [];
     const devs = os.networkInterfaces();
-    Object.values(devs).forEach((addrs) => {
-        addrs.forEach((element) => {
-            let addr = element.address;
-            if (/:/.test(addr)) {
-                addr = "[" + addr + "]";
+    for (const dev in devs) {
+        if (devs.hasOwnProperty(dev)) {
+            const addrs = devs[dev];
+            for (let i = 0; i < addrs.length; ++i) {
+                let addr = addrs[i].address;
+                if (/:/.test(addr)) {
+                    addr = "[" + addr + "]";
+                }
+                ips.push(addr);
             }
-            ips.push(addr);
-        });
-    });
+        }
+    }
     console.log("Looking for host IP among " + ips.join(", "));
 
     // Load a data: URI document which attempts to contact each of these IPs

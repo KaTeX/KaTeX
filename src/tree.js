@@ -49,7 +49,7 @@ export class documentFragment<ChildType: VirtualNode>
     toNode(): Node {
         const frag = document.createDocumentFragment();
 
-        this.children.forEach((child) => {
+        Array.prototype.forEach.call(this.children, function(child) {
             frag.appendChild(child.toNode());
         });
 
@@ -58,11 +58,12 @@ export class documentFragment<ChildType: VirtualNode>
 
     /** Convert the fragment into HTML markup. */
     toMarkup(): string {
+        let markup = "";
 
         // Simply concatenate the markup for the children together.
-        const markup = this.children.reduce((concatenation, child) => {
-            return concatenation + child.toMarkup();
-        }, "");
+        Array.prototype.forEach.call(this.children, function(child) {
+            markup += child.toMarkup();
+        });
 
         return markup;
     }

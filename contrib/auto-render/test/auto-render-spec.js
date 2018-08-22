@@ -29,7 +29,7 @@ beforeEach(function() {
 
             split.find((real, i) => {
                 const correct = result[i];
-                
+
                 let good = true;
                 let diff;
 

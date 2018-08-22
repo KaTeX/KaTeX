@@ -46,7 +46,7 @@ describe("An ord parser", function() {
     it("should build a list of ords", function() {
         const parse = getParsed(expression);
 
-        parse.forEach((group) => {
+        Array.prototype.forEach.call(parse, function(group) {
             expect(group.type).toMatch("ord");
         });
     });
@@ -68,7 +68,7 @@ describe("A bin parser", function() {
     it("should build a list of bins", function() {
         const parse = getParsed(expression);
 
-        parse.forEach((group) => {
+        Array.prototype.forEach.call(parse, function(group) {
             expect(group.type).toEqual("atom");
             expect(group.family).toEqual("bin");
         });
@@ -87,7 +87,7 @@ describe("A rel parser", function() {
     it("should build a list of rels", function() {
         const parse = getParsed(expression);
 
-        parse.forEach((group) => {
+        Array.prototype.forEach.call(parse, function(group) {
             if (group.type === "htmlmathml") {
                 expect(group.html).toHaveLength(1);
                 group = group.html[0];
@@ -112,7 +112,7 @@ describe("A punct parser", function() {
     it("should build a list of puncts", function() {
         const parse = getParsed(expression);
 
-        parse.forEach((group) => {
+        Array.prototype.forEach.call(parse, function(group) {
             expect(group.type).toEqual("atom");
             expect(group.family).toEqual("punct");
         });
@@ -129,7 +129,7 @@ describe("An open parser", function() {
     it("should build a list of opens", function() {
         const parse = getParsed(expression);
 
-        parse.forEach((group) => {
+        Array.prototype.forEach.call(parse, function(group) {
             expect(group.type).toEqual("atom");
             expect(group.family).toEqual("open");
         });
@@ -146,7 +146,7 @@ describe("A close parser", function() {
     it("should build a list of closes", function() {
         const parse = getParsed(expression);
 
-        parse.forEach((group) => {
+        Array.prototype.forEach.call(parse, function(group) {
             expect(group.type).toEqual("atom");
             expect(group.family).toEqual("close");
         });

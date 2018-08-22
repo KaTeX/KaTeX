@@ -188,16 +188,16 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
     // Set a position for \hline(s) at the top of the array, if any.
     function setHLinePos(hlinesInGap: boolean[]) {
-        hlinesInGap.forEach((element, i) => {
+        hlinesInGap.forEach((info, i) => {
             if (i > 0) {
                 totalHeight += 0.25;
             }
-            hlines.push({pos: totalHeight, isDashed: element});
+            hlines.push({pos: totalHeight, isDashed: info});
         });
     }
     setHLinePos(hLinesBeforeRow[0]);
 
-    group.body.forEach((inrow, r) => {
+    Array.prototype.forEach.call(group.body, function(inrow, r) {
         let height = arstrutHeight; // \@array adds an \@arstrut
         let depth = arstrutDepth;   // to each tow (via the template)
 
@@ -206,7 +206,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         }
 
         const outrow: Outrow = (new Array(inrow.length): any);
-        inrow.forEach((element, c) => {
+        Array.prototype.forEach.call(inrow, function(element, c) {
             const elt = html.buildGroup(element, options);
             if (depth < elt.depth) {
                 depth = elt.depth;
@@ -404,7 +404,7 @@ const alignedHandler = function(context, args) {
     const ordgroup = checkNodeType(args[0], "ordgroup");
     if (ordgroup) {
         let arg0 = "";
-        ordgroup.body.forEach((element) => {
+        Array.prototype.forEach.call(ordgroup.body, function(element) {
             const textord = assertNodeType(element, "textord");
             arg0 += textord.text;
         });

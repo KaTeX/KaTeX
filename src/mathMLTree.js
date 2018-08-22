@@ -80,7 +80,7 @@ export class MathNode implements MathDomNode {
             }
         }
 
-        this.children.forEach((child) => {
+        Array.prototype.forEach.call(this.children, function(child) {
             node.appendChild(child.toNode());
         });
 
@@ -104,7 +104,7 @@ export class MathNode implements MathDomNode {
 
         markup += ">";
 
-        this.children.forEach((child) => {
+        Array.prototype.forEach.call(this.children, function(child) {
             markup += child.toMarkup();
         });
 

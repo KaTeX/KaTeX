@@ -13,7 +13,7 @@ document.addEventListener('copy', function(event) {
     }
     // Preserve usual HTML copy/paste behavior.
     const html = [];
-    Array.prototype.forEach.call(fragment.childNodes, function (item) {
+    Array.prototype.forEach.call(fragment.childNodes, function(item) {
         html.push(item.outerHTML);
     });
     event.clipboardData.setData('text/html', html.join(''));

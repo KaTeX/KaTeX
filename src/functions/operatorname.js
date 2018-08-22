@@ -44,7 +44,7 @@ defineFunction({
             const expression = html.buildExpression(
                 body, options.withFont("mathrm"), true);
 
-            expression.forEach((child) => {
+            Array.prototype.forEach.call(expression, function(child) {
                 if (child instanceof domTree.symbolNode) {
                     // Per amsopn package,
                     // change minus to hyphen and \ast to asterisk
@@ -65,7 +65,7 @@ defineFunction({
 
         // Is expression a string or has it something like a fraction?
         let isAllString = true;  // default
-        expression.forEach((node) => {
+        Array.prototype.forEach.call(expression, function(node) {
             if (node instanceof mathMLTree.SpaceNode) {
                 // Do nothing
             } else if (node instanceof mathMLTree.MathNode) {

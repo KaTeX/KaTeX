@@ -47,12 +47,13 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const href = assertNodeType(args[0], "url").url;
-        const chars = href.map((element) => {
+        const chars = [];
+        Array.prototype.forEach.call(href, function(element) {
             let c = element;
             if (c === "~") {
                 c = "\\textasciitilde";
             }
-            return ({
+            chars.push({
                 type: "textord",
                 mode: "text",
                 text: c,

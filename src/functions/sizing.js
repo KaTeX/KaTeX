@@ -22,20 +22,20 @@ export function sizingGroup(
 
     // Add size-resetting classes to the inner list and set maxFontSize
     // manually. Handle nested size changes.
-    inner.forEach((element) => {
-        const pos = utils.indexOf(element.classes, "sizing");
+    Array.prototype.forEach.call(inner, function(node) {
+        const pos = utils.indexOf(node.classes, "sizing");
         if (pos < 0) {
-            Array.prototype.push.apply(element.classes,
+            Array.prototype.push.apply(node.classes,
                 options.sizingClasses(baseOptions));
-        } else if (element.classes[pos + 1] === "reset-size" + options.size) {
-            // This is a nested size change: e.g., "element" is the "b" in
+        } else if (node.classes[pos + 1] === "reset-size" + options.size) {
+            // This is a nested size change: e.g., "node" is the "b" in
             // `\Huge a \small b`. Override the old size (the `reset-` class)
             // but not the new size.
-            element.classes[pos + 1] = "reset-size" + baseOptions.size;
+            node.classes[pos + 1] = "reset-size" + baseOptions.size;
         }
 
-        element.height *= multiplier;
-        element.depth *= multiplier;
+        node.height *= multiplier;
+        node.depth *= multiplier;
     });
 
     return buildCommon.makeFragment(inner);

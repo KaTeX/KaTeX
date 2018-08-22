@@ -51,7 +51,7 @@ const renderMathInText = function(text, optionsCopy) {
 };
 
 const renderElem = function(elem, optionsCopy) {
-    Array.prototype.forEach.call(elem.childNodes, function (childNode, i) {
+    Array.prototype.forEach.call(elem.childNodes, function(childNode, i) {
         if (childNode.nodeType === 3) {
             // Text node
             const frag = renderMathInText(childNode.textContent, optionsCopy);
