@@ -1,5 +1,5 @@
 ---
-id: version-0.10.0-rc-cli
+id: version-0.10.0-rc.1-cli
 title: CLI
 original_id: cli
 ---
