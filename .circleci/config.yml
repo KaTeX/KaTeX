@@ -29,7 +29,7 @@ restore_node_modules_cache: &restore_node_modules_cache
 yarn_install: &yarn_install
   run:
     name: Install dependencies
-    command: yarn
+    command: yarn check || curl -o- -L https://yarnpkg.com/install.sh | bash && yarn
 
 codecov: &codecov
   run:
