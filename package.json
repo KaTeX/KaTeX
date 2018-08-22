@@ -2,8 +2,7 @@
   "name": "katex",
   "version": "0.10.0-pre",
   "description": "Fast math typesetting for the web.",
-  "main": "dist/katex",
-  "module": "dist/katex.mjs",
+  "main": "dist/katex.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/Khan/KaTeX.git"
