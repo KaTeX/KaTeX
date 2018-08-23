@@ -10,7 +10,7 @@ commands:
               git submodule sync
               git submodule update --init --recursive
       - run:
-          name: Get changed files and skip tests if only documentation has been changed
+          name: Get changed files
           command: |
               if [[ $CIRCLE_PULL_REQUEST ]]; then
                 BASE_COMMIT=$(curl -s -H "Authorization: token a61ecb2fc5b72da54431""1b3db3875c96854958a8" \
