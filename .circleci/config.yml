@@ -43,7 +43,7 @@ commands:
       - run:
           name: Install dependencies
           # upgrade Yarn before installing dependencies, if needed
-          command: yarn check || curl -o- -L https://yarnpkg.com/install.sh | bash && yarn
+          command: yarn check || { curl -o- -L https://yarnpkg.com/install.sh | bash && yarn; }
       - save_cache:
           key: yarn-deps-v1-{{ checksum "yarn.lock" }}
           paths:
