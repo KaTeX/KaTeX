@@ -151,7 +151,7 @@ const siteConfig = {
     /* path to images for header/footer */
     headerIcon: 'img/katex-logo.svg',
     footerIcon: 'img/katex-logo.svg',
-    favicon: 'https://khan.github.io/favicon.ico',
+    favicon: '../favicon.ico',
 
     disableHeaderTitle: true,
 
