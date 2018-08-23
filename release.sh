@@ -209,8 +209,20 @@ else
     yarn publish --new-version "$VERSION" || npm publish
 
     # Publish the website
+    # If gh-pages branch is protected, push to another branch
     pushd website
-    USE_SSH=true yarn publish-gh-pages
+    PUBLISH_GH_PAGES=$(USE_SSH=true yarn publish-gh-pages 2>&1 | tee /dev/tty || true)
+    if echo "$PUBLISH_GH_PAGES" | grep -qEi 'GH006|protected branch'; then
+        pushd build/KaTeX-gh-pages
+        git checkout -B "v$VERSION-gh-pages"
+        git push -u origin "v$VERSION-gh-pages"
+        popd
+
+        echo ""
+        echo "GitHub pages branch is protected."
+        echo "Create a pull request against gh-pages from 'v$VERSION-gh-pages'"
+        echo "Visit https://github.com/Khan/KaTeX/pulls to open a pull request."
+    fi
     popd
 
     echo ""
