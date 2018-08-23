@@ -87,7 +87,8 @@ describe("A rel parser", function() {
     it("should build a list of rels", function() {
         const parse = getParsed(expression);
 
-        Array.prototype.forEach.call(parse, function(group) {
+        Array.prototype.forEach.call(parse, function(node) {
+            let group = node;
             if (group.type === "htmlmathml") {
                 expect(group.html).toHaveLength(1);
                 group = group.html[0];

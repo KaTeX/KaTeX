@@ -2,7 +2,7 @@ import katex from "katex";
 
 let scripts = document.body.getElementsByTagName("script");
 scripts = Array.prototype.slice.call(scripts);
-Array.prototype.forEach.call(scripts, function(script) {
+scripts.forEach(function(script) {
     if (!script.type || !script.type.match(/math\/tex/i)) {
         return -1;
     }

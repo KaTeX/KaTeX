@@ -12,7 +12,8 @@ export const katexReplaceWithTex = function(fragment,
     // Remove .katex-html blocks that are preceded by .katex-mathml blocks
     // (which will get replaced below).
     const katexHtml = fragment.querySelectorAll('.katex-mathml + .katex-html');
-    Array.prototype.forEach.call(katexHtml, function(element) {
+    Array.prototype.forEach.call(katexHtml, function(node) {
+        const element = node;
         if (element.remove) {
             element.remove(null);
         } else {
@@ -22,7 +23,8 @@ export const katexReplaceWithTex = function(fragment,
     // Replace .katex-mathml elements with their annotation (TeX source)
     // descendant, with inline delimiters.
     const katexMathml = fragment.querySelectorAll('.katex-mathml');
-    Array.prototype.forEach.call(katexMathml, function(element) {
+    Array.prototype.forEach.call(katexMathml, function(node) {
+        const element = node;
         const texSource = element.querySelector('annotation');
         if (texSource) {
             if (element.replaceWith) {
@@ -36,7 +38,8 @@ export const katexReplaceWithTex = function(fragment,
     });
     // Switch display math to display delimiters.
     const displays = fragment.querySelectorAll('.katex-display annotation');
-    Array.prototype.forEach.call(displays, function(element) {
+    Array.prototype.forEach.call(displays, function(node) {
+        const element = node;
         element.innerHTML = copyDelimiters.display[0] +
             element.innerHTML.substr(copyDelimiters.inline[0].length,
                 element.innerHTML.length - copyDelimiters.inline[0].length

@@ -14,7 +14,7 @@
             timer = null;
             let found = false;
             const headings = findHeadings();
-            Array.prototype.forEach.call(headings, function(heading, i) {
+            Array.prototype.forEach.call(headings, function(element, i, headings) {
                 // if !found and i is the last element, highlight the last
                 let current = !found;
                 if (!found && i < headings.length - 1) {
@@ -29,9 +29,9 @@
                 }
                 if (current) {
                     found = true;
-                    heading.className = "active";
+                    headings[i].className = "active";
                 } else {
-                    heading.className = "";
+                    headings[i].className = "";
                 }
             });
         }, 100);

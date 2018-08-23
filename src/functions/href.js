@@ -48,8 +48,8 @@ defineFunction({
     handler: ({parser}, args) => {
         const href = assertNodeType(args[0], "url").url;
         const chars = [];
-        Array.prototype.forEach.call(href, function(element) {
-            let c = element;
+        Array.prototype.forEach.call(href, function(node) {
+            let c = node;
             if (c === "~") {
                 c = "\\textasciitilde";
             }

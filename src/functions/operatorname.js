@@ -44,7 +44,8 @@ defineFunction({
             const expression = html.buildExpression(
                 body, options.withFont("mathrm"), true);
 
-            Array.prototype.forEach.call(expression, function(child) {
+            Array.prototype.forEach.call(expression, function(node) {
+                const child = node;
                 if (child instanceof domTree.symbolNode) {
                     // Per amsopn package,
                     // change minus to hyphen and \ast to asterisk
