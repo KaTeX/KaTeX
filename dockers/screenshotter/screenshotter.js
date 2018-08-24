@@ -526,14 +526,19 @@ function takeScreenshot(key) {
                     const reporter = istanbulApi.createReporter();
                     reporter.addAll(['json', 'text', 'lcov']);
                     reporter.write(coverageMap);
-
-                    process.exit(exitStatus);
+                    done();
                 });
                 return;
             }
-            // devServer.close(cb) will take too long.
-            process.exit(exitStatus);
+            done();
         }
+    }
+
+    function done() {
+        // devServer.close(cb) will take too long.
+        driver.quit().then(() => {
+            process.exit(exitStatus);
+        });
     }
 }
 
