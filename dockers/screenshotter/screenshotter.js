@@ -229,12 +229,14 @@ let driver;
 let driverReady = false;
 function buildDriver() {
     const builder = new selenium.Builder().forBrowser(opts.browser);
-    const ffProfile = new firefox.Profile();
-    ffProfile.setPreference(
-        "browser.startup.homepage_override.mstone", "ignore");
-    ffProfile.setPreference("browser.startup.page", 0);
-    const ffOptions = new firefox.Options().setProfile(ffProfile);
-    builder.setFirefoxOptions(ffOptions);
+    if (opts.browser === "firefox") {
+        const ffProfile = new firefox.Profile();
+        ffProfile.setPreference(
+            "browser.startup.homepage_override.mstone", "ignore");
+        ffProfile.setPreference("browser.startup.page", 0);
+        const ffOptions = new firefox.Options().setProfile(ffProfile);
+        builder.setFirefoxOptions(ffOptions);
+    }
     if (seleniumURL) {
         builder.usingServer(seleniumURL);
     }
