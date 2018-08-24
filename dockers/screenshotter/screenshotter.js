@@ -30,7 +30,7 @@ const newDir = path.normalize(path.join("test", "screenshotter", "new"));
 // Process command line arguments
 
 const opts = require("commander")
-    .option("-b, --browser <firefox|chrome>",
+    .option("-b, --browser <firefox|chrome|ie|edge|safari>",
         "Name of the browser to use", "firefox")
     .option("-c, --container <id>",
         "Name or ID of a running docker container to contact")
