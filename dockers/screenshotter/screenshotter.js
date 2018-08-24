@@ -38,6 +38,8 @@ const opts = require("commander")
     .option("--selenium-ip <ip>", "IP address of the Selenium web driver")
     .option("--selenium-port <n>",
         "Port number of the Selenium web driver", 4444, parseInt)
+    .option("--selenium-capabilities <JSON>",
+        "Desired capabilities of the Selenium web driver", JSON.parse)
     .option("--katex-url <url>", "Full URL of the KaTeX development server")
     .option("--katex-ip <ip>", "IP address of the KaTeX development server")
     .option("--katex-port <n>",
@@ -239,6 +241,9 @@ function buildDriver() {
     }
     if (seleniumURL) {
         builder.usingServer(seleniumURL);
+    }
+    if (opts.seleniumCapabilities) {
+        builder.withCapabilities(opts.seleniumCapabilities);
     }
     driver = builder.build();
     driver.manage().timeouts().setScriptTimeout(3000).then(function() {
