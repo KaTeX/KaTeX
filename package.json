@@ -55,7 +55,7 @@
     "postcss-loader": "^3.0.0",
     "query-string": "^5.1.1",
     "rimraf": "^2.6.2",
-    "rollup": "^0.63.4",
+    "rollup": "^0.65.0",
     "rollup-plugin-babel": "^3.0.7",
     "selenium-webdriver": "^3.6.0",
     "sri-toolbox": "^0.2.0",
