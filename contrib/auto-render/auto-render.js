@@ -62,10 +62,28 @@ const renderElem = function(elem, optionsCopy) {
         } else if (childNode.nodeType === 1) {
             // Element node
             const className = ' ' + childNode.className + ' ';
-            const shouldRender = optionsCopy.ignoredTags.indexOf(
-                childNode.nodeName.toLowerCase()) === -1 &&
-                    optionsCopy.ignoredClasses.every(
-                        x => className.indexOf(' ' + x + ' ') === -1);
+            const inRenderedClass = optionsCopy.ignoredClasses.every(
+                x => className.indexOf(' ' + x + ' ') === -1);
+
+            let shouldRender;
+
+            if (inRenderedClass) {
+                if (optionsCopy.ignoredTags) {
+                    if (Array.isArray(optionsCopy.ignoredTags)) {
+                        shouldRender = optionsCopy.ignoredTags.indexOf(
+                            childNode.nodeName.toLowerCase()) === -1;
+                    } else if (typeof optionsCopy.ignoredTags === "function") {
+                        shouldRender = !optionsCopy.ignoredTags(childNode);
+                    }
+                } else {
+                    if (Array.isArray(optionsCopy.shouldRender)) {
+                        shouldRender = optionsCopy.shouldRender.includes(
+                            childNode.nodeName.toLowerCase());
+                    } else if (typeof optionsCopy.shouldRender === "function") {
+                        shouldRender = optionsCopy.shouldRender(childNode);
+                    }
+                }
+            }
 
             if (shouldRender) {
                 renderElem(childNode, optionsCopy);
@@ -102,9 +120,17 @@ const renderMathInElement = function(elem, options) {
         // treating it as if it were the start of a KaTeX math zone.
         {left: "\\[", right: "\\]", display: true},
     ];
-    optionsCopy.ignoredTags = optionsCopy.ignoredTags || [
-        "script", "noscript", "style", "textarea", "pre", "code",
-    ];
+
+    if (optionsCopy.ignoredTags && optionsCopy.shouldRender) {
+        throw new Error(
+            "Please specify either ignoredTags or shouldRender, not both"
+	);
+    } else if (!optionsCopy.ignoredTags && !optionsCopy.shouldRender) {
+        optionsCopy.ignoredTags = [
+            "script", "noscript", "style", "textarea", "pre", "code",
+        ];
+    }
+
     optionsCopy.ignoredClasses = optionsCopy.ignoredClasses || [];
     optionsCopy.errorCallback = optionsCopy.errorCallback || console.error;
 
