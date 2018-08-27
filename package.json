@@ -41,7 +41,7 @@
     "greenkeeper-lockfile": "^1.15.1",
     "husky": "^1.0.0-rc.8",
     "istanbul-api": "^1.3.1",
-    "istanbul-lib-coverage": "^1.2.0",
+    "istanbul-lib-coverage": "^2.0.1",
     "jest": "^23.0.1",
     "jest-serializer-html": "^5.0.0",
     "js-yaml": "^3.10.0",
