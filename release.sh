@@ -48,6 +48,7 @@ while [ $# -gt 0 ]; do
         --dry-run|-n|--just-print)
             DRY_RUN=true
             git() { echo "git $*"; }
+            npm() { echo "npm $*"; }
             yarn() { echo "yarn $*"; }
             ;;
         --publish|-p)
