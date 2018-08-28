@@ -2,7 +2,6 @@
 import buildCommon from "../buildCommon";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
-import utils from "../utils";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -23,7 +22,7 @@ export function sizingGroup(
     // Add size-resetting classes to the inner list and set maxFontSize
     // manually. Handle nested size changes.
     for (let i = 0; i < inner.length; i++) {
-        const pos = utils.indexOf(inner[i].classes, "sizing");
+        const pos = inner[i].classes.indexOf("sizing");
         if (pos < 0) {
             Array.prototype.push.apply(inner[i].classes,
                 options.sizingClasses(baseOptions));
@@ -69,7 +68,7 @@ defineFunction({
             type: "sizing",
             mode: parser.mode,
             // Figure out what size to use based on the list of functions above
-            size: utils.indexOf(sizeFuncs, funcName) + 1,
+            size: sizeFuncs.indexOf(funcName) + 1,
             body,
         };
     },

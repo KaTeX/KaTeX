@@ -32,10 +32,11 @@ defineFunction({
             body.push(buildCommon.makeSymbol(c, "Typewriter-Regular",
                 group.mode, newOptions, ["mord", "texttt"]));
         }
-        buildCommon.tryCombineChars(body);
         return buildCommon.makeSpan(
             ["mord", "text"].concat(newOptions.sizingClasses(options)),
-            body, newOptions);
+            buildCommon.tryCombineChars(body),
+            newOptions,
+        );
     },
     mathmlBuilder(group, options) {
         const text = new mathMLTree.TextNode(buildCommon.makeVerb(group, options));

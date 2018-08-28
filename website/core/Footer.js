@@ -64,6 +64,7 @@ class Footer extends React.Component {
               </div>
               <div>
                 <h5>More</h5>
+                <a href="https://github.com/Khan/KaTeX/graphs/contributors">Contributors</a>
                 <a
                   className="github-button"
                   href={this.props.config.repoUrl}
@@ -79,16 +80,18 @@ class Footer extends React.Component {
 
             <a
               href="https://www.khanacademy.org/"
-              target="_blank" // eslint-disable-line react/jsx-no-target-blank
-              className="fbOpenSource">
+              className="logo">
               <img
-                src={this.props.config.baseUrl + 'img/khan-academy.png'}
+                src={this.props.config.baseUrl + 'img/khan-academy.svg'}
                 alt="Khan Academy"
-                width="180"
-                height="17"
+                width="175"
+                height="28"
               />
             </a>
-            <section className="copyright">{this.props.config.copyright}</section>
+            <section className="copyright">
+                Licensed under <a href="https://github.com/Khan/KaTeX/blob/master/LICENSE">MIT License</a><br/>
+                {this.props.config.copyright}
+            </section>
           </footer>
         );
     }
