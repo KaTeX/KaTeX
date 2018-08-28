@@ -14,8 +14,8 @@ export default class SourceLocation {
         this.lexer = lexer;
         this.start = start;
         this.end = end;
-        // $FlowFixMe, do not polyfill
-        Object["freeze"](this); // Immutable to allow sharing in range().
+        // eslint-disable-next-line transform-runtime-aliasing/no-transform-runtime-aliasing
+        Object.freeze(this); // Immutable to allow sharing in range().
     }
 
     /**

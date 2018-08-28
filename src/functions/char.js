@@ -21,6 +21,7 @@ defineFunction({
             const node = assertNodeType(group[i], "textord");
             number += node.text;
         }
+        // eslint-disable-next-line transform-runtime-aliasing/no-transform-runtime-aliasing
         const code = parseInt(number);
         if (isNaN(code)) {
             throw new ParseError(`\\@char has non-numeric argument ${number}`);

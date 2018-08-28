@@ -11,9 +11,7 @@ module.exports = api => {
         "@babel/flow",
     ];
     const plugins = [
-        ["@babel/transform-runtime", {
-            corejs: 2,
-        }],
+        "@babel/transform-runtime",
         ["@babel/proposal-class-properties", {
             loose: true,
         }],
