@@ -14,7 +14,7 @@ if (fs.statSync(__filename).mtime <= targetMtime && fs.statSync(
     return;
 }
 
-require('@babel/register')({presets: [["@babel/env", {loose: true}]]});
+require('@babel/register');
 const accents = require('./unicodeAccents').default;
 
 const encode = function(string) {

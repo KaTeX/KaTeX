@@ -19,7 +19,7 @@ const filename = path.resolve(__dirname, 'screenshotter/ss_data.yaml');
 const data = yaml.load(fs.readFileSync(filename, 'utf-8'));
 
 console.log('compiling katex...');
-require('@babel/register')({presets: [["@babel/env", {loose: true}]]});
+require('@babel/register');
 const katex = require('../katex').default;
 console.log('');
 
