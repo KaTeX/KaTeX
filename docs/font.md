@@ -25,19 +25,17 @@ will appear larger than 1cm in browser units.
 
 ## Kinds of fonts used
 
-The default build of KaTeX includes each of the needed fonts in three different formats: `ttf`, `woff`, and `woff2`.
+KaTeX provides fonts in three different formats: `ttf`, `woff`, and `woff2`.
 
-- `ttf`s are included to support old versions of Chrome, Safari, Firefox, etc. (Here "old" means Firefox 3.5, Chrome < 5, and Safari <= 5.1, all of which are no longer supported: see [woff](http://caniuse.com/#search=woff) vs. [ttf](http://caniuse.com/#search=ttf)).
-- `woff` is the format that is most widely supported (all modern browsers support it), so it probably provides the most benefit to being included.
-- `woff2`s are included for very new versions of Chrome, because they are much smaller and faster to load.
+- `ttf`s are included to support very old browsers and local installation. [Browser support](http://caniuse.com/#feat=ttf)
+- `woff` is the format that is most widely supported (all modern browsers support it), so it probably provides the most benefit to being included. [Browser support](http://caniuse.com/#feat=woff)
+- `woff2`s are included for modern browsers, because they are much smaller and faster to load. [Browser support](http://caniuse.com/#feat=woff2)
 
-Based on this information and what you want to support with your website, you might decide to include different versions of the fonts besides what comes with the standard installation.
+KaTeX will automatically include only necessary fonts for target environments
+specified by [Browserslist config](https://github.com/browserslist/browserslist#environment-variables).
 
-For example, if you wanted to create a trimmed down version of KaTeX, you could only include the `woff` files and gain the most support with the least number of files. To do this:
-
-1. Set `@use-ttf`, and `@use-woff2` to `false` at the top of [fonts.less](https://github.com/KaTeX/katex-fonts/blob/master/fonts.less).
-2. Rebuild KaTeX by running `yarn build` from the top-level directory.
-3. Include only the `build/fonts/*.woff` files in your distribution.
+To force a font type to be included or excluded, set `USE_(FONT NAME)` environment
+variable to `"true"` or `"false"`, respectively.`
 
 ## Location of font files
 
