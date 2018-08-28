@@ -76,9 +76,15 @@ in addition to two auto-render-specific keys:
   ]
   ```
 
-- `ignoredTags`: This is a list of DOM node types to ignore when recursing
-  through. The default value is
-  `["script", "noscript", "style", "textarea", "pre", "code"]`.
+- `ignoredTags`: This can be a list of DOM node types to ignore when recursing
+  through, or a function that accepts a node and returns a boolean. The default value is
+  `["script", "noscript", "style", "textarea", "pre", "code"]`. This should not be set
+  if `shouldRender` has been explicitly assigned a value.
+
+- `shouldRender`: This can be a list of DOM node types to render when recursing
+  through, or a function that accepts a node and returns a boolean. By default, this
+  value is not set. This should not be set if `ignoredTags` has been explicitly
+  assigned a value.
 
 - `ignoredClasses`: This is a list of DOM node class names to ignore when
   recursing through. By default, this value is not set.
