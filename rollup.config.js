@@ -1,6 +1,6 @@
 import babel from 'rollup-plugin-babel';
 
-process.env.BABEL_ENV = 'esm';
+process.env.NODE_ENV = 'esm';
 
 export default {
     input: 'katex.js',
