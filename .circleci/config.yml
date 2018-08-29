@@ -13,8 +13,8 @@ post_checkout: &post_checkout
         fi
         if [[ $BASE_COMMIT ]]; then
           CHANGED=$(git diff --name-only $BASE_COMMIT)
-          echo $CHANGED
-          echo 'export CHANGED="$CHANGED"' >> $BASH_ENV
+          echo "$CHANGED"
+          echo "export CHANGED=\"$CHANGED\"" >> $BASH_ENV
         fi
 
 node_modules_cache_key: &node_modules_cache_key
@@ -31,6 +31,11 @@ yarn_install: &yarn_install
     name: Install dependencies
     command: yarn
 
+codecov: &codecov
+  run:
+    name: Upload code coverage reports to Codecov
+    command: ./node_modules/.bin/codecov
+
 screenshotter: &screenshotter
   steps:
     - checkout
@@ -39,7 +44,7 @@ screenshotter: &screenshotter
         name: Skip screenshotter if no KaTeX code has been changed
         command: |
             if [[ $CHANGED ]]; then
-              echo $CHANGED | grep -qvE '^contrib/|^docs/|^static/|^website/|^LICENSE|\.md$' || circleci step halt
+              echo "$CHANGED" | grep -qvE '^contrib/|^docs/|^static/|^website/|^LICENSE|\.md$' || circleci step halt
             fi
 
     - *restore_node_modules_cache
@@ -47,7 +52,8 @@ screenshotter: &screenshotter
 
     - run:
         name: Verify screenshots and generate diffs and new screenshots
-        command: node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new
+        command: node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new --coverage
+    - *codecov
 
     - store_artifacts:
         path: test/screenshotter/new
@@ -76,7 +82,7 @@ jobs:
           name: Skip screenshotter if only documentation has been changed
           command: |
               if [[ $CHANGED ]]; then
-                echo $CHANGED | grep -qvE '^docs/|^LICENSE|\.md$' || circleci step halt
+                echo "$CHANGED" | grep -qvE '^docs/|^LICENSE|\.md$' || circleci step halt
               fi
 
       - *restore_node_modules_cache
@@ -98,9 +104,7 @@ jobs:
       - run:
           name: Run tests
           command: yarn test --coverage
-      - run:
-          name: Upload code coverage reports to Codecov
-          command: ./node_modules/.bin/codecov
+      - *codecov
 
       - run:
           name: Build KaTeX

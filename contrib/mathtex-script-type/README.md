@@ -12,7 +12,7 @@ Load the extension by adding the following line to your HTML file.
 This extension should be loaded *after* all `script type=math/tex` blocks that you want to render.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/mathtex-script-type.min.js" integrity="sha384-LJ2FmexL77rmGm6SIpxq7y+XA6bkLzGZEgCywzKOZG/ws4va9fUVu2neMjvc3zdv"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/mathtex-script-type.min.js" integrity="sha384-LJ2FmexL77rmGm6SIpxq7y+XA6bkLzGZEgCywzKOZG/ws4va9fUVu2neMjvc3zdv"></script>
 ```
 Note that if the URL above contains `...` in-place of a version string, then this script has not yet
 been deployed to the CDN.
@@ -25,12 +25,12 @@ After we're done writing `math/tex` scripts, we load this extension.
 ```html
 <html>
    <head>
-       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
-       <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
+       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+       <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
    </head>
    <body>
       <script type="math/tex">x+\sqrt{1-x^2}</script>
-      <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/mathtex-script-type.min.js" integrity="sha384-En8cse3uW4xErwYkF3uTpWEw4BdLEWrWT2u1BttQuilGrJjAKcpGeC2ihwJ/wRD4"></script>
+      <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/mathtex-script-type.min.js" integrity="sha384-LJ2FmexL77rmGm6SIpxq7y+XA6bkLzGZEgCywzKOZG/ws4va9fUVu2neMjvc3zdv"></script>
    </body>
 </html>
 ```

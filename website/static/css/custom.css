@@ -26,6 +26,12 @@
     height: 80%;
 }
 
+.nav-footer .logo {
+    display: block;
+    margin: 1em auto;
+    width: 175px;
+}
+
 .nav-footer .copyright {
     line-height: 1.5;
 }

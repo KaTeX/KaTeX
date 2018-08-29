@@ -41,7 +41,7 @@ defineFunction({
             options,
             false
         );
-        return new buildCommon.makeFragment(elements);
+        return buildCommon.makeFragment(elements);
     },
     mathmlBuilder: (group, options) => {
         const body = chooseMathStyle(group, options);
