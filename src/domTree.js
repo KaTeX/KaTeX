@@ -241,7 +241,7 @@ export class Anchor implements HtmlDomNode {
 /**
  * This node represents an image embed (<img>) element.
  */
-class img implements VirtualNode {
+export class Img implements VirtualNode {
     src: string;
     alt: string;
     classes: string[];
@@ -262,11 +262,7 @@ class img implements VirtualNode {
     }
 
     hasClass(className: string): boolean {
-        return false;
-    }
-
-    tryCombine(sibling: HtmlDomNode): boolean {
-        return false;
+        return utils.contains(this.classes, className);
     }
 
     toNode(): Node {

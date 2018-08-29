@@ -3,7 +3,7 @@ import defineFunction from "../defineFunction";
 import type {Measurement} from "../units";
 import {calculateSize, validUnit} from "../units";
 import ParseError from "../ParseError";
-import domTree from "../domTree";
+import {Img} from "../domTree";
 import mathMLTree from "../mathMLTree";
 
 const stringFromParseGroup = function(textArray: [ParseNode<"textord">]): string {
@@ -106,7 +106,7 @@ defineFunction({
 
         if (group.totalheight.number > 0) {
             depth = calculateSize(group.totalheight, options) - height;
-            depth = depth.toFixed(2);
+            depth = Number(depth.toFixed(2));
         }
 
         let width = 0;
@@ -124,7 +124,7 @@ defineFunction({
             style.verticalAlign = -depth + "em";
         }
 
-        const node = new domTree.img(group.src, group.alt, style);
+        const node = new Img(group.src, group.alt, style);
         node.height = height;
         node.depth = depth;
 
