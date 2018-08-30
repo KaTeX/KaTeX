@@ -132,7 +132,7 @@ const users = [
 const siteConfig = {
     title: 'KaTeX',
     tagline: 'The fastest math typesetting library for the web',
-    url: 'https://khan.github.io',
+    url: 'https://katex.org',
     baseUrl,
 
     // Used for publishing and more
