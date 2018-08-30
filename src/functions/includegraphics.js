@@ -5,11 +5,23 @@ import {calculateSize, validUnit} from "../units";
 import ParseError from "../ParseError";
 import {Img} from "../domTree";
 import mathMLTree from "../mathMLTree";
+import {assertNodeType, checkNodeType} from "../parseNode";
 
-const stringFromParseGroup = function(textArray: [ParseNode<"textord">]): string {
+import type {AnyParseNode} from "../parseNode";
+import type {CssStyle} from "../domTree";
+
+// TODO: make it easier for commands to get the macro expanded text
+// from inside an ordgroup argument.
+const stringFromParseGroup = function(textArray: AnyParseNode[]): string {
     let str = "";
     for (let i = 0; i < textArray.length; i++) {
-        str += textArray[i].text;
+        const textord = checkNodeType(textArray[i], "textord");
+        const spacing = checkNodeType(textArray[i], "spacing");
+        if (textord) {
+            str += textord.text;
+        } else if (spacing) {
+            str += spacing.text;
+        }
     }
     return str;
 };
@@ -53,7 +65,8 @@ defineFunction({
         let alt = "";
 
         if (optArgs[0]) {
-            const attributeStr = stringFromParseGroup(optArgs[0].body);
+            const attributeStr = stringFromParseGroup(
+                assertNodeType(optArgs[0], "ordgroup").body);
             // Parser.js does not parse key/value pairs. We get a string.
             const attributes = attributeStr.split(",");
             for (let i = 0; i < attributes.length; i++) {
@@ -81,7 +94,8 @@ defineFunction({
             }
         }
 
-        const src = stringFromParseGroup(args[0].body);
+        const src = stringFromParseGroup(
+            assertNodeType(args[0], "ordgroup").body);
 
         if (alt === "") {
             // No alt given. Use the file name. Strip away the path.
@@ -114,7 +128,7 @@ defineFunction({
             width = calculateSize(group.width, options);
         }
 
-        const style = {height: height + depth + "em"};
+        const style: CssStyle = {height: height + depth + "em"};
         if (width > 0) {
             style.width = width + "em";
             // Over-rule any max-width: 100% that the img may inherit.
@@ -147,7 +161,7 @@ defineFunction({
             const width = calculateSize(group.width, options);
             node.setAttribute("width", width + "em");
         }
-        node.setAttribute("src", group.path);
+        node.setAttribute("src", group.src);
         return node;
     },
 });
