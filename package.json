@@ -90,7 +90,6 @@
     "dist:zip": "cd dist && tar czf ../katex.tar.gz * && zip -rq ../katex.zip *"
   },
   "dependencies": {
-    "ajv": "^6.5.3",
     "commander": "^2.16.0"
   },
   "husky": {
