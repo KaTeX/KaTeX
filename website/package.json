@@ -8,7 +8,7 @@
     "rename-version": "docusaurus-rename-version"
   },
   "devDependencies": {
-    "docusaurus": "^1.3.2",
+    "docusaurus": "^1.3.3",
     "fs-extra": "^7.0.0",
     "remarkable-embed": "^0.4.1"
   },
