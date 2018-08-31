@@ -1,0 +1,9 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/node:6
+    steps:
+      - run:
+          name: Skip CircleCI build
+          command: 'true'
