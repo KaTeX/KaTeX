@@ -197,7 +197,8 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     }
     setHLinePos(hLinesBeforeRow[0]);
 
-    Array.prototype.forEach.call(group.body, function(inrow, r) {
+    for (r = 0; r < group.body.length; ++r) {
+        const inrow = group.body[r];
         let height = arstrutHeight; // \@array adds an \@arstrut
         let depth = arstrutDepth;   // to each tow (via the template)
 
@@ -206,7 +207,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         }
 
         const outrow: Outrow = (new Array(inrow.length): any);
-        Array.prototype.forEach.call(inrow, function(element, c) {
+        inrow.forEach((element, c) => {
             const elt = html.buildGroup(element, options);
             if (depth < elt.depth) {
                 depth = elt.depth;
@@ -245,7 +246,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
         // Set a position for \hline(s), if any.
         setHLinePos(hLinesBeforeRow[r + 1]);
-    });
+    }
 
     const offset = totalHeight / 2 + options.fontMetrics().axisHeight;
     const colDescriptions = group.cols || [];
