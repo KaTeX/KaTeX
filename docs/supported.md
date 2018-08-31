@@ -6,7 +6,7 @@ This is a list of TeX functions supported by KaTeX. It is sorted into logical gr
 
 There is a similar [Support Table](./support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
 
-{@stylesheet: katex.min.css}
+<link rel="stylesheet" href="/static/katex.min.css"/>
 <style>
 p {overflow-wrap: break-word;}
 table tr,
@@ -106,8 +106,8 @@ The `{array}` environment does not yet support `\cline` or `\multicolumn`.
 
 |||
 |:----------------|:-------------------|
-| $\href{https://khan.github.io/KaTeX/}{\KaTeX}$ | `\href{https://khan.github.io/KaTeX/}{\KaTeX}` |
-| $\url{https://khan.github.io/KaTeX/}$ | `\url{https://khan.github.io/KaTeX/}` |
+| $\href{https://katex.org/}{\KaTeX}$ | `\href{https://katex.org/}{\KaTeX}` |
+| $\url{https://katex.org/}$ | `\url{https://katex.org/}` |
 
 ## Letters and Unicode
 

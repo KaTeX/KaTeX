@@ -4,7 +4,7 @@
     "dist/katex.js",
     "dist/katex.css"
   ],
-  "homepage": "http://khan.github.io/KaTeX/",
+  "homepage": "https://katex.org/",
   "description": "Fast math typesetting for the web.",
   "moduleType": [
     "amd",
