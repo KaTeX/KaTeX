@@ -27,12 +27,12 @@ will appear larger than 1cm in browser units.
 
 KaTeX provides fonts in three different formats: `ttf`, `woff`, and `woff2`.
 
-- `ttf`s are included to support very old browsers and local installation. [Browser support](http://caniuse.com/#feat=ttf)
-- `woff` is the format that is most widely supported (all modern browsers support it), so it probably provides the most benefit to being included. [Browser support](http://caniuse.com/#feat=woff)
-- `woff2`s are included for modern browsers, because they are much smaller and faster to load. [Browser support](http://caniuse.com/#feat=woff2)
+- `ttf`s are included to support very old browsers and local installation. [Browser support](https://caniuse.com/#feat=ttf)
+- `woff` is the format that is most widely supported (all modern browsers support it), so it probably provides the most benefit to being included. [Browser support](https://caniuse.com/#feat=woff)
+- `woff2`s are included for modern browsers, because they are much smaller and faster to load. [Browser support](https://caniuse.com/#feat=woff2)
 
 KaTeX will automatically include only necessary fonts for target environments
-specified by [Browserslist config](https://github.com/browserslist/browserslist#environment-variables).
+specified by [Browserslist config](https://github.com/browserslist/browserslist#queries).
 
 To force a font type to be included or excluded, set `USE_(FONT NAME)` environment
 variable to `"true"` or `"false"`, respectively.`
