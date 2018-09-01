@@ -215,7 +215,6 @@ const def = (context, global: boolean) => {
             throw new ParseError(`Invalid argument number "${arg[0].text}"`);
         }
         numArgs++;
-        // eslint-disable-next-line transform-runtime-aliasing/no-transform-runtime-aliasing
         if (parseInt(arg[0].text) !== numArgs) {
             throw new ParseError(`Argument number "${arg[0].text}" out of order`);
         }
@@ -279,7 +278,6 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
         if (!argText.match(/^\s*[0-9]+\s*$/)) {
             throw new ParseError(`Invalid number of arguments: ${argText}`);
         }
-        // eslint-disable-next-line transform-runtime-aliasing/no-transform-runtime-aliasing
         numArgs = parseInt(argText);
         arg = context.consumeArgs(1)[0];
     }

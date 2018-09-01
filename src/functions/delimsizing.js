@@ -64,7 +64,6 @@ function checkDelimiter(
     } else {
         throw new ParseError(
             "Invalid delimiter: '" +
-            // eslint-disable-next-line transform-runtime-aliasing/no-transform-runtime-aliasing
             (symDelim ? symDelim.text : JSON.stringify(delim)) +
             "' after '" + context.funcName + "'", delim);
     }

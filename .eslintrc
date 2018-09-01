@@ -82,7 +82,10 @@
         "excludedFiles": ["*-spec.js", "unicodeMake.js"],
         "rules": {
             "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"],
-            "transform-runtime-aliasing/no-transform-runtime-aliasing": [2, {"transformEnabled": false}]
+            "transform-runtime-aliasing/no-transform-runtime-aliasing": [2, {
+                "transformEnabled": false,
+                "ignore": ["parseInt", "parseFloat", "JSON.stringify"]
+            }]
         },
         "env": {
             "node": false

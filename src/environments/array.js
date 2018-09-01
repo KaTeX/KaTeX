@@ -67,7 +67,6 @@ function parseArray(
             // Default \arraystretch from lttab.dtx
             arraystretch = 1;
         } else {
-            // eslint-disable-next-line transform-runtime-aliasing/no-transform-runtime-aliasing
             arraystretch = parseFloat(stretch);
             if (!arraystretch || arraystretch < 0) {
                 throw new ParseError(`Invalid \\arraystretch: ${stretch}`);
