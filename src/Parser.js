@@ -748,15 +748,11 @@ export default class Parser {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
         let color = match[0];
-        if (color.charAt(0) !== "#" && color.length === 6) {
-           // Check for HTML predefined color words that are 6 letters long.
-           // If not predefined, allow a 6-digit color specification without
-           // a leading #, as in the xcolor package's HTML color model.
-           const colorWordRegEx = RegExp("^(silver|maroon|purple|yellow|orange" +
-               "|bisque|indigo|orchid|salmon|sienna|tomato|violet)$",'i');
-           if (!colorWordRegEx.test(color)) {
-               color = "#" + color;
-           }
+        if (/^[0-9a-f]{6}$/i.test(color)) {
+            // We allow a 6-digit HTML color spec without a leading "#". 
+            // This follows the xcolor package's HTML color model.
+            // Predefined color names are all missed by this RegEx pattern.
+            color = "#" + color;
         }
         return newArgument({
             type: "color-token",
