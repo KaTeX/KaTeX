@@ -2,6 +2,7 @@
   "groups": {
     "default": {
       "packages": [
+        "website/package.json",
         "package.json"
       ]
     }
