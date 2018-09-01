@@ -749,7 +749,7 @@ export default class Parser {
         }
         let color = match[0];
         if (/^[0-9a-f]{6}$/i.test(color)) {
-            // We allow a 6-digit HTML color spec without a leading "#". 
+            // We allow a 6-digit HTML color spec without a leading "#".
             // This follows the xcolor package's HTML color model.
             // Predefined color names are all missed by this RegEx pattern.
             color = "#" + color;
