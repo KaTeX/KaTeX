@@ -135,8 +135,8 @@ if [[ ! $PUBLISH ]]; then
         fi
 
         # Edit docs to use CSS from CDN
-        grep -l '{@stylesheet: katex.min.css}' docs/*.md | xargs sed -i.bak \
-            's|{@stylesheet: katex.min.css}|<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@./dist/katex.min.css" integrity="sha384-katex.min.css" crossorigin="anonymous"/>|'
+        grep -l '/static/' docs/*.md | xargs sed -i.bak \
+            's|/static/\([^"]\+\)|https://cdn.jsdelivr.net/npm/katex@./dist/\1" integrity="sha384-\1|'
 
         # Update the version number in CDN URLs included in the README and the documentation,
         # and regenerate the Subresource Integrity hash for these files.
