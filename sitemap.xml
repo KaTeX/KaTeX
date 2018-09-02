@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url> <loc>https://khan.github.io/KaTeX/users.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> <xhtml:link rel="canonical" href="https://katex.org/en/users.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/versions.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> <xhtml:link rel="canonical" href="https://katex.org/en/versions.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/next/api.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/next/api.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/next/autorender.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/next/autorender.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/next/browser.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/next/browser.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/next/cli.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/next/cli.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/next/error.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/next/error.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/next/font.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/next/font.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/next/issues.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/next/issues.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/next/libs.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/next/libs.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/next/node.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/next/node.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/next/options.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/next/options.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/next/security.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/next/security.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/next/support_table.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/next/support_table.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/next/supported.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/next/supported.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/api.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/api.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/autorender.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/autorender.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/browser.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/browser.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/cli.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/cli.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/error.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/error.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/font.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/font.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/issues.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/issues.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/libs.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/libs.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/node.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/node.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/options.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/options.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/security.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/security.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/support_table.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/support_table.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/docs/supported.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/supported.html" /> </url>
+<url> <loc>https://khan.github.io/KaTeX/function-support.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="canonical" href="https://katex.org/docs/supported.html" /> </url>
+</urlset>
