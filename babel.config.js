@@ -1,5 +1,5 @@
 module.exports = api => {
-    const isESMBuild = api.cache(() => process.env.NODE_ENV === "esm");
+    const isESMBuild = api.env("esm");
 
     const presets = [
         ["@babel/env", {
