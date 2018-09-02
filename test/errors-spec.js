@@ -296,10 +296,10 @@ describe("Lexer:", function() {
     });
 
     describe("#_innerLexColor", function() {
-        it("reject hex notation without #", function() {
-            expect`\textcolor{1a2b3c}{foo}`.toFailWithParseError(
-                   "Invalid color: '1a2b3c'" +
-                   " at position 12: \\textcolor{1̲a̲2̲b̲3̲c̲}{foo}");
+        it("reject 3-digit hex notation without #", function() {
+            expect`\textcolor{1a2}{foo}`.toFailWithParseError(
+                   "Invalid color: '1a2'" +
+                   " at position 12: \\textcolor{1̲a̲2̲}{foo}");
         });
     });
 

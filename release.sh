@@ -6,6 +6,7 @@ shopt -s extglob
 VERSION=
 NEXT_VERSION=
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
+ORIGIN=${ORIGIN:-origin}
 NARGS=0
 DRY_RUN=
 PUBLISH=
@@ -47,6 +48,7 @@ while [ $# -gt 0 ]; do
         --dry-run|-n|--just-print)
             DRY_RUN=true
             git() { echo "git $*"; }
+            npm() { echo "npm $*"; }
             yarn() { echo "yarn $*"; }
             ;;
         --publish|-p)
@@ -93,9 +95,9 @@ fi
 
 if [[ $PUBLISH ]]; then
     echo "About to publish $VERSION from $BRANCH. "
-elif [[ $BRANCH != "master" ]]; then
+elif [[ $BRANCH == @(v*-release) ]]; then
     echo "About to update SRI hashes for $BRANCH. "
-elif [[ -z "$NEXT_VERSION" ]]; then
+elif [[ ! $NEXT_VERSION ]]; then
     echo "About to release $VERSION from $BRANCH. "
 else
     echo "About to release $VERSION from $BRANCH and bump to $NEXT_VERSION-pre."
@@ -105,29 +107,16 @@ if [[ $INSANE != 0 ]]; then
 else
     read -r -p "Look good? [y/n] " CONFIRM
 fi
-if [[ "$CONFIRM" != "y" ]]; then
+if [[ $CONFIRM != "y" ]]; then
     exit 1
 fi
 
 git checkout "$BRANCH"
 git pull
 
-if [[ $BRANCH != "master" ]]; then
-    # Build generated files
-    yarn build
-
-    # Regenerate the Subresource Integrity hash in the README and the documentation
-    node update-sri.js "${VERSION}" README.md contrib/*/README.md \
-        docs/*.md website/pages/index.html website/versioned_docs/version-$VERSION/*.md
-
-    # Make the commit and push
-    git add README.md contrib/*/README.md \
-        docs website/pages/index.html website/versioned_docs/
-    git commit -n -m "Update SRI hashes"
-    git push
-elif [[ ! $PUBLISH ]]; then
+if [[ ! $PUBLISH ]]; then
     # Make a release branch
-    git checkout -b "v$VERSION-release"
+    git checkout -B "v$VERSION-release"
 
     # Edit package.json to the right version, as it's inlined (see
     # http://stackoverflow.com/a/22084103 for why we need the .bak file to make
@@ -138,42 +127,52 @@ elif [[ ! $PUBLISH ]]; then
     # Build generated files
     yarn build
 
-    if [ ! -z "$NEXT_VERSION" ]; then
-        # Edit package.json to the next version
-        sed -i.bak -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' package.json
-        rm -f package.json.bak
-        git add package.json
+    if [[ $BRANCH != @(v*-release) ]]; then
+        if [ ! -z "$NEXT_VERSION" ]; then
+            # Edit package.json to the next version
+            sed -i.bak -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' package.json
+            rm -f package.json.bak
+        fi
+
+        # Edit docs to use CSS from CDN
+        grep -l '/static/' docs/*.md | xargs sed -i.bak \
+            's|/static/\([^"]\+\)|https://cdn.jsdelivr.net/npm/katex@./dist/\1" integrity="sha384-\1|'
+
+        # Update the version number in CDN URLs included in the README and the documentation,
+        # and regenerate the Subresource Integrity hash for these files.
+        node update-sri.js "$VERSION" README.md contrib/*/README.md \
+            docs/*.md docs/*.md.bak website/pages/index.html
+
+        # Generate a new version of the docs
+        pushd website
+        yarn run version "$VERSION"
+        popd
+
+        # Restore docs to use local built CSS
+        for file in docs/*.md.bak; do
+            mv -f "$file" "${file%.bak}"
+        done
+    else
+        # Restore package.json
+        git checkout package.json
+
+        # Regenerate the Subresource Integrity hash in the README and the documentation
+        node update-sri.js "$VERSION" README.md contrib/*/README.md \
+            docs/*.md website/pages/index.html website/versioned_docs/version-$VERSION/*.md
     fi
-
-    # Edit docs to use CSS from CDN
-    grep -l '{@stylesheet: katex.min.css}' docs/*.md | xargs sed -i.bak \
-        's|{@stylesheet: katex.min.css}|<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@./dist/katex.min.css" integrity="sha384-katex.min.css" crossorigin="anonymous"/>|'
-
-    # Update the version number in CDN URLs included in the README and the documentation,
-    # and regenerate the Subresource Integrity hash for these files.
-    node update-sri.js "${VERSION}" README.md contrib/*/README.md \
-        docs/*.md docs/*.md.bak website/pages/index.html
-
-    # Generate a new version of the docs
-    pushd website
-    yarn run version "${VERSION}"
-    popd
-
-    # Restore docs to use local built CSS
-    for file in docs/*.md.bak; do
-        mv -f "$file" "${file%.bak}"
-    done
 
     # Make the commit and push
     git add package.json README.md contrib/*/README.md \
         docs website/pages/index.html website/versioned_docs/ \
         website/versioned_sidebars/ website/versions.json
-    if [[ -z "$NEXT_VERSION" ]]; then
+    if [[ $BRANCH == @(v*-release) ]]; then
+        git commit -n -m "Update SRI hashes"
+    elif [[ ! $NEXT_VERSION ]]; then
         git commit -n -m "Release v$VERSION"
     else
         git commit -n -m "Release v$VERSION" -m "Bump $BRANCH to v$NEXT_VERSION-pre"
     fi
-    git push -u origin "v$VERSION-release"
+    git push -u "$ORIGIN" "v$VERSION-release"
 
     echo ""
     echo "The automatic parts are done!"
@@ -204,14 +203,27 @@ else
     git commit -n -m "v$VERSION"
     git diff --stat --exit-code # check for uncommitted changes
     git tag -a "v$VERSION" -m "v$VERSION"
-    git push origin "v$VERSION"
+    git push "$ORIGIN" "v$VERSION"
 
     # Update npm (cdnjs update automatically)
-    yarn publish --new-version "${VERSION}"
+    # Fallback to npm publish, if yarn cannot authenticate, e.g., 2FA
+    yarn publish --new-version "$VERSION" || npm publish
 
     # Publish the website
+    # If gh-pages branch is protected, push to another branch
     pushd website
-    USE_SSH=true yarn publish-gh-pages
+    PUBLISH_GH_PAGES=$(USE_SSH=true yarn publish-gh-pages 2>&1 | tee /dev/tty || true)
+    if echo "$PUBLISH_GH_PAGES" | grep -qEi 'GH006|protected branch'; then
+        pushd build/KaTeX-gh-pages
+        git checkout -B "v$VERSION-gh-pages"
+        git push -u origin "v$VERSION-gh-pages"
+        popd
+
+        echo ""
+        echo "GitHub pages branch is protected."
+        echo "Create a pull request against gh-pages from 'v$VERSION-gh-pages'"
+        echo "Visit https://github.com/Khan/KaTeX/pulls to open a pull request."
+    fi
     popd
 
     echo ""
@@ -223,7 +235,7 @@ fi
 
 git diff --stat --exit-code # check for uncommitted changes
 
-if [[ ${DRY_RUN} ]]; then
+if [[ $DRY_RUN ]]; then
     echo ""
     echo "This was a dry run."
     echo "Operations using git or yarn were printed not executed."

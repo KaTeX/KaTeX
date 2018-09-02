@@ -38,7 +38,7 @@
     "eslint-plugin-react": "^7.10.0",
     "eslint-plugin-transform-runtime-aliasing": "^1.2.0",
     "file-loader": "^1.1.11",
-    "flow-bin": "^0.79.0",
+    "flow-bin": "^0.80.0",
     "fs-extra": "^7.0.0",
     "greenkeeper-lockfile": "^1.15.1",
     "husky": "^1.0.0-rc.8",
@@ -92,7 +92,7 @@
     "build": "yarn prestart && rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c && webpack",
     "watch": "yarn build --watch",
     "dist": "yarn test && yarn build && yarn dist:zip",
-    "dist:zip": "cd dist && tar czf ../katex.tar.gz * && zip -rq ../katex.zip *"
+    "dist:zip": "rimraf katex/ katex.tar.gz katex.zip && cp -R dist katex && tar czf katex.tar.gz katex && zip -rq katex.zip katex && rimraf katex/"
   },
   "dependencies": {
     "commander": "^2.16.0"
