@@ -24,7 +24,7 @@ import type {VirtualNode} from "./tree";
  * Create an HTML className based on a list of classes. In addition to joining
  * with spaces, we also remove empty classes.
  */
-const createClass = function(classes: string[]): string {
+export const createClass = function(classes: string[]): string {
     return classes.filter(cls => cls).join(" ");
 };
 
@@ -125,7 +125,33 @@ const toMarkup = function(tagName: string): string {
     return markup;
 };
 
-export type CssStyle = {[name: string]: string};
+// Making the type below exact with all optional fields doesn't work due to
+// - https://github.com/facebook/flow/issues/4582
+// - https://github.com/facebook/flow/issues/5688
+// However, since *all* fields are optional, $Shape<> works as suggested in 5688
+// above.
+// This type does not include all CSS properties. Additional properties should
+// be added as needed.
+export type CssStyle = $Shape<{
+    backgroundColor: string,
+    borderBottomWidth: string,
+    borderColor: string,
+    borderRightWidth: string,
+    borderTopWidth: string,
+    bottom: string,
+    color: string,
+    height: string,
+    left: string,
+    marginLeft: string,
+    marginRight: string,
+    marginTop: string,
+    minWidth: string,
+    paddingLeft: string,
+    position: string,
+    top: string,
+    width: string,
+    verticalAlign: string,
+}> & {};
 
 export interface HtmlDomNode extends VirtualNode {
     classes: string[];
@@ -135,7 +161,6 @@ export interface HtmlDomNode extends VirtualNode {
     style: CssStyle;
 
     hasClass(className: string): boolean;
-    tryCombine(sibling: HtmlDomNode): boolean;
 }
 
 // Span wrapping other DOM nodes.
@@ -189,15 +214,6 @@ export class Span<ChildType: VirtualNode> implements HtmlDomNode {
         return utils.contains(this.classes, className);
     }
 
-    /**
-     * Try to combine with given sibling.  Returns true if the sibling has
-     * been successfully merged into this node, and false otherwise.
-     * Default behavior fails (returns false).
-     */
-    tryCombine(sibling: HtmlDomNode): boolean {
-        return false;
-    }
-
     toNode(): HTMLElement {
         return toNode.call(this, "span");
     }
@@ -237,10 +253,6 @@ export class Anchor implements HtmlDomNode {
 
     hasClass(className: string): boolean {
         return utils.contains(this.classes, className);
-    }
-
-    tryCombine(sibling: HtmlDomNode): boolean {
-        return false;
     }
 
     toNode(): HTMLElement {
@@ -315,34 +327,6 @@ export class SymbolNode implements HtmlDomNode {
 
     hasClass(className: string): boolean {
         return utils.contains(this.classes, className);
-    }
-
-    tryCombine(sibling: HtmlDomNode): boolean {
-        if (!sibling
-            || !(sibling instanceof SymbolNode)
-            || this.italic > 0
-            || createClass(this.classes) !== createClass(sibling.classes)
-            || this.skew !== sibling.skew
-            || this.maxFontSize !== sibling.maxFontSize) {
-            return false;
-        }
-        for (const style in this.style) {
-            if (this.style.hasOwnProperty(style)
-                && this.style[style] !== sibling.style[style]) {
-                return false;
-            }
-        }
-        for (const style in sibling.style) {
-            if (sibling.style.hasOwnProperty(style)
-                && this.style[style] !== sibling.style[style]) {
-                return false;
-            }
-        }
-        this.text += sibling.text;
-        this.height = Math.max(this.height, sibling.height);
-        this.depth = Math.max(this.depth, sibling.depth);
-        this.italic = sibling.italic;
-        return true;
     }
 
     /**

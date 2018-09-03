@@ -38,14 +38,14 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - yarn-deps-v1-{{ checksum "yarn.lock" }}
-            - yarn-deps-v1-
+            - yarn-deps-v2-{{ checksum "yarn.lock" }}
+            - yarn-deps-v2-
       - run:
           name: Install dependencies
           # upgrade Yarn before installing dependencies, if needed
           command: yarn check || { curl -o- -L https://yarnpkg.com/install.sh | bash && yarn; }
       - save_cache:
-          key: yarn-deps-v1-{{ checksum "yarn.lock" }}
+          key: yarn-deps-v2-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
 

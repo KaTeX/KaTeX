@@ -5,7 +5,7 @@
  * different kinds of domTree nodes in a consistent manner.
  */
 
-import {SymbolNode, Anchor, Span, PathNode, SvgNode} from "./domTree";
+import {SymbolNode, Anchor, Span, PathNode, SvgNode, createClass} from "./domTree";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols, {ligatures} from "./symbols";
 import utils from "./utils";
@@ -15,7 +15,6 @@ import {DocumentFragment} from "./tree";
 
 import type Options from "./Options";
 import type {ParseNode} from "./parseNode";
-import type {NodeType} from "./parseNode";
 import type {CharacterMetrics} from "./fontMetrics";
 import type {FontVariant, Mode} from "./types";
 import type {documentFragment as HtmlDocumentFragment} from "./domTree";
@@ -133,47 +132,6 @@ const mathsym = function(
 };
 
 /**
- * Makes a symbol in the default font for mathords and textords.
- */
-const mathDefault = function(
-    value: string,
-    mode: Mode,
-    options: Options,
-    classes: string[],
-    type: NodeType,
-): SymbolNode {
-    if (type === "mathord") {
-        const fontLookup = mathit(value, mode, options, classes);
-        return makeSymbol(value, fontLookup.fontName, mode, options,
-            classes.concat([fontLookup.fontClass]));
-    } else if (type === "textord") {
-        const font = symbols[mode][value] && symbols[mode][value].font;
-        if (font === "ams") {
-            const fontName = retrieveTextFontName("amsrm", options.fontWeight,
-                  options.fontShape);
-            return makeSymbol(
-                value, fontName, mode, options,
-                classes.concat("amsrm", options.fontWeight, options.fontShape));
-        } else if (font === "main" || !font) {
-            const fontName = retrieveTextFontName("textrm", options.fontWeight,
-                  options.fontShape);
-            return makeSymbol(
-                value, fontName, mode, options,
-                classes.concat(options.fontWeight, options.fontShape));
-        } else { // fonts added by plugins
-            const fontName = retrieveTextFontName(font, options.fontWeight,
-                  options.fontShape);
-            // We add font name as a css class
-            return makeSymbol(
-                value, fontName, mode, options,
-                classes.concat(fontName, options.fontWeight, options.fontShape));
-        }
-    } else {
-        throw new Error("unexpected type: " + type + " in mathDefault");
-    }
-};
-
-/**
  * Determines which of the two font names (Main-Italic and Math-Italic) and
  * corresponding style tags (mainit or mathit) to use for font "mathit",
  * depending on the symbol.  Use this function instead of fontMap for font
@@ -282,21 +240,88 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
                                       classes.concat(fontClasses)));
             }
             return makeFragment(parts);
-        } else {
-            return mathDefault(text, mode, options, classes, type);
+        }
+    }
+
+    // Makes a symbol in the default font for mathords and textords.
+    if (type === "mathord") {
+        const fontLookup = mathit(text, mode, options, classes);
+        return makeSymbol(text, fontLookup.fontName, mode, options,
+            classes.concat([fontLookup.fontClass]));
+    } else if (type === "textord") {
+        const font = symbols[mode][text] && symbols[mode][text].font;
+        if (font === "ams") {
+            const fontName = retrieveTextFontName("amsrm", options.fontWeight,
+                  options.fontShape);
+            return makeSymbol(
+                text, fontName, mode, options,
+                classes.concat("amsrm", options.fontWeight, options.fontShape));
+        } else if (font === "main" || !font) {
+            const fontName = retrieveTextFontName("textrm", options.fontWeight,
+                  options.fontShape);
+            return makeSymbol(
+                text, fontName, mode, options,
+                classes.concat(options.fontWeight, options.fontShape));
+        } else { // fonts added by plugins
+            const fontName = retrieveTextFontName(font, options.fontWeight,
+                  options.fontShape);
+            // We add font name as a css class
+            return makeSymbol(
+                text, fontName, mode, options,
+                classes.concat(fontName, options.fontWeight, options.fontShape));
         }
     } else {
-        return mathDefault(text, mode, options, classes, type);
+        throw new Error("unexpected type: " + type + " in makeOrd");
     }
 };
 
 /**
- * Combine as many characters as possible in the given array of characters
- * via their tryCombine method.
+ * Returns true if subsequent symbolNodes have the same classes, skew, maxFont,
+ * and styles.
  */
-const tryCombineChars = function(chars: HtmlDomNode[]): HtmlDomNode[] {
+const canCombine = (prev: SymbolNode, next: SymbolNode) => {
+    if (createClass(prev.classes) !== createClass(next.classes)
+        || prev.skew !== next.skew
+        || prev.maxFontSize !== next.maxFontSize) {
+        return false;
+    }
+
+    for (const style in prev.style) {
+        if (prev.style.hasOwnProperty(style)
+            && prev.style[style] !== next.style[style]) {
+            return false;
+        }
+    }
+
+    for (const style in next.style) {
+        if (next.style.hasOwnProperty(style)
+            && prev.style[style] !== next.style[style]) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+/**
+ * Combine consequetive domTree.symbolNodes into a single symbolNode.
+ * Note: this function mutates the argument.
+ */
+const tryCombineChars = (chars: HtmlDomNode[]): HtmlDomNode[] => {
     for (let i = 0; i < chars.length - 1; i++) {
-        if (chars[i].tryCombine(chars[i + 1])) {
+        const prev = chars[i];
+        const next = chars[i + 1];
+        if (prev instanceof SymbolNode
+            && next instanceof SymbolNode
+            && canCombine(prev, next)) {
+
+            prev.text += next.text;
+            prev.height = Math.max(prev.height, next.height);
+            prev.depth = Math.max(prev.depth, next.depth);
+            // Use the last character's italic correction since we use
+            // it to add padding to the right of the span created from
+            // the combined characters.
+            prev.italic = next.italic;
             chars.splice(i + 1, 1);
             i--;
         }
@@ -611,18 +636,6 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     return vtable;
 };
 
-// Converts verb group into body string, dealing with \verb* form
-const makeVerb = function(group: ParseNode<"verb">, options: Options): string {
-    let text = group.body;
-    if (group.star) {
-        text = text.replace(/ /g, '\u2423');  // Open Box
-    } else {
-        text = text.replace(/ /g, '\xA0');    // No-Break Space
-        // (so that, in particular, spaces don't coalesce)
-    }
-    return text;
-};
-
 // Glue is a concept from TeX which is a flexible space between elements in
 // either a vertical or horizontal list. In KaTeX, at least for now, it's
 // static space between elements in a horizontal layout.
@@ -670,29 +683,6 @@ const retrieveTextFontName = function(
     }
 
     return `${baseFontName}-${fontStylesName}`;
-};
-
-// A map of CSS-based spacing functions to their CSS class.
-const cssSpace: {[string]: string} = {
-    "\\nobreak": "nobreak",
-    "\\allowbreak": "allowbreak",
-};
-
-// A lookup table to determine whether a spacing function/symbol should be
-// treated like a regular space character.  If a symbol or command is a key
-// in this table, then it should be a regular space character.  Furthermore,
-// the associated value may have a `className` specifying an extra CSS class
-// to add to the created `span`.
-const regularSpace: {[string]: { className?: string }} = {
-    " ": {},
-    "\\ ": {},
-    "~": {
-        className: "nobreak",
-    },
-    "\\space": {},
-    "\\nobreakspace": {
-        className: "nobreak",
-    },
 };
 
 /**
@@ -789,11 +779,8 @@ export default {
     makeFragment,
     makeVList,
     makeOrd,
-    makeVerb,
     makeGlue,
     staticSvg,
     svgData,
     tryCombineChars,
-    cssSpace,
-    regularSpace,
 };
