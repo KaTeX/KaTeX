@@ -1,4 +1,4 @@
-# [<img src="https://cdn.rawgit.com/Khan/KaTeX/84189cd3adae24d92e766d14eb80d6e54f3c7dca/katex-logo.svg" width="130" alt="KaTeX">](https://khan.github.io/KaTeX/)
+# [<img src="https://cdn.rawgit.com/Khan/KaTeX/84189cd3adae24d92e766d14eb80d6e54f3c7dca/katex-logo.svg" width="130" alt="KaTeX">](https://katex.org/)
 [![npm](https://img.shields.io/npm/v/katex.svg)](https://www.npmjs.com/package/katex)
 [![CircleCI](https://circleci.com/gh/Khan/KaTeX.svg?style=shield)](https://circleci.com/gh/Khan/KaTeX)
 [![codecov](https://codecov.io/gh/Khan/KaTeX/branch/master/graph/badge.svg)](https://codecov.io/gh/Khan/KaTeX)
@@ -15,9 +15,9 @@ KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the we
 
 KaTeX is compatible with all major browsers, including Chrome, Safari, Firefox, Opera, Edge, and IE 9–11.
 
-KaTeX supports much (but not all) of LaTeX and many LaTeX packages. See the [list of supported functions](https://khan.github.io/KaTeX/docs/supported.html).
+KaTeX supports much (but not all) of LaTeX and many LaTeX packages. See the [list of supported functions](https://katex.org/docs/supported.html).
 
-Try out KaTeX [on the demo page](https://khan.github.io/KaTeX/#demo)!
+Try out KaTeX [on the demo page](https://katex.org/#demo)!
 
 ## Getting started
 
@@ -43,7 +43,7 @@ Try out KaTeX [on the demo page](https://khan.github.io/KaTeX/#demo)!
 
 You can also [download KaTeX](https://github.com/khan/katex/releases) and host it yourself.
 
-For details on how to configure auto-render extension, refer to [the documentation](https://khan.github.io/KaTeX/docs/autorender.html).
+For details on how to configure auto-render extension, refer to [the documentation](https://katex.org/docs/autorender.html).
 
 ### API
 
@@ -73,13 +73,13 @@ JavaScript on the client.
 The examples above use the `throwOnError: false` option, which renders invalid
 inputs as the TeX source code in red (by default), with the error message as
 hover text.  For other available options, see the
-[API documentation](https://khan.github.io/KaTeX/docs/api.html),
-[options documentation](https://khan.github.io/KaTeX/docs/options.html), and
-[handling errors documentation](https://khan.github.io/KaTeX/docs/error.html).
+[API documentation](https://katex.org/docs/api.html),
+[options documentation](https://katex.org/docs/options.html), and
+[handling errors documentation](https://katex.org/docs/error.html).
 
 ## Demo and Documentation
 
-Learn more about using KaTeX [on the website](https://khan.github.io/KaTeX)!
+Learn more about using KaTeX [on the website](https://katex.org)!
 
 ## Contributing
 
