@@ -1,5 +1,5 @@
 ---
-id: version-0.10.0-rc-support_table
+id: version-0.10.0-rc.1-support_table
 title: Support Table
 original_id: support_table
 ---
@@ -7,7 +7,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 If you know the shape of a character, but not its name, [Detexify](http://detexify.kirelabs.org/classify.html) can help.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous"/>
 <style>
 table tr,
 table td {
@@ -447,7 +447,7 @@ table td {
 |\hookleftarrow|$\hookleftarrow$||
 |\hookrightarrow|$\hookrightarrow$||
 |\hphantom|$a\hphantom{bc}d$|`a\hphantom{bc}d`|
-|\href|$\href{https://khan.github.io/KaTeX/}{\KaTeX}$|`\href{https://khan.github.io/KaTeX/}{\KaTeX}`|
+|\href|$\href{https://katex.org/}{\KaTeX}$|`\href{https://katex.org/}{\KaTeX}`|
 |\hskip|$w\hskip1em i\hskip2em d$|`w\hskip1em i\hskip2em d`|
 |\hslash|$\hslash$||
 |\hspace|$s\hspace7ex k$|`s\hspace7ex k`|
@@ -1079,7 +1079,7 @@ table td {
 |\upsilon|$\upsilon$||
 |\upuparrows|$\upuparrows$||
 |\urcorner|$\urcorner$||
-|\url|$\footnotesize\url{https://khan.github.io/KaTeX/}$|`\url{https://khan.github.io/KaTeX/}`|
+|\url|$\footnotesize\url{https://katex.org/}$|`\url{https://katex.org/}`|
 |\utilde|$\utilde{AB}$|`\utilde{AB}`|
 
 ## V

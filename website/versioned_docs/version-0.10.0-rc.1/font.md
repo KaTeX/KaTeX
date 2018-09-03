@@ -1,5 +1,5 @@
 ---
-id: version-0.10.0-rc-font
+id: version-0.10.0-rc.1-font
 title: Font
 original_id: font
 ---
@@ -28,7 +28,7 @@ will appear larger than 1cm in browser units.
 
 The default build of KaTeX includes each of the needed fonts in three different formats: `ttf`, `woff`, and `woff2`.
 
-- `ttf`s are included to support old versions of Chrome, Safari, Firefox, etc. (Here "old" means Firefox 3.5, Chrome < 5, and Safari <= 5.1, all of which are no longer supported: see [woff](http://caniuse.com/#search=woff) vs. [ttf](http://caniuse.com/#search=ttf)).
+- `ttf`s are included to support old versions of Chrome, Safari, Firefox, etc. (Here "old" means Firefox 3.5, Chrome < 5, and Safari <= 5.1, all of which are no longer supported: see [woff](https://caniuse.com/#search=woff) vs. [ttf](https://caniuse.com/#search=ttf)).
 - `woff` is the format that is most widely supported (all modern browsers support it), so it probably provides the most benefit to being included.
 - `woff2`s are included for very new versions of Chrome, because they are much smaller and faster to load.
 

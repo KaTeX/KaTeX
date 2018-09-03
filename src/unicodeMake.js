@@ -14,7 +14,7 @@ if (fs.statSync(__filename).mtime <= targetMtime && fs.statSync(
     return;
 }
 
-require('babel-register')({plugins: ["transform-es2015-modules-commonjs"]});
+require('@babel/register');
 const accents = require('./unicodeAccents').default;
 
 const encode = function(string) {

@@ -1,10 +1,10 @@
-# [<img src="https://cdn.rawgit.com/Khan/KaTeX/84189cd3adae24d92e766d14eb80d6e54f3c7dca/katex-logo.svg" width="130" alt="KaTeX">](https://khan.github.io/KaTeX/)
+# [<img src="https://cdn.rawgit.com/Khan/KaTeX/84189cd3adae24d92e766d14eb80d6e54f3c7dca/katex-logo.svg" width="130" alt="KaTeX">](https://katex.org/)
 [![npm](https://img.shields.io/npm/v/katex.svg)](https://www.npmjs.com/package/katex)
 [![CircleCI](https://circleci.com/gh/Khan/KaTeX.svg?style=shield)](https://circleci.com/gh/Khan/KaTeX)
 [![codecov](https://codecov.io/gh/Khan/KaTeX/branch/master/graph/badge.svg)](https://codecov.io/gh/Khan/KaTeX)
 [![Join the chat at https://gitter.im/Khan/KaTeX](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Khan/KaTeX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Greenkeeper badge](https://badges.greenkeeper.io/Khan/KaTeX.svg)](https://greenkeeper.io/)
 [![jsDelivr](https://data.jsdelivr.com/v1/package/npm/katex/badge?style=rounded)](https://www.jsdelivr.com/package/npm/katex)
-![](https://img.badgesize.io/Khan/KaTeX/v0.10.0-rc/dist/katex.min.js?compression=gzip)
+![](https://img.badgesize.io/Khan/KaTeX/v0.10.0-rc.1/dist/katex.min.js?compression=gzip)
 
 KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the web.
 
@@ -15,9 +15,9 @@ KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the we
 
 KaTeX is compatible with all major browsers, including Chrome, Safari, Firefox, Opera, Edge, and IE 9–11.
 
-KaTeX supports much (but not all) of LaTeX and many LaTeX packages. See the [list of supported functions](https://khan.github.io/KaTeX/docs/supported.html).
+KaTeX supports much (but not all) of LaTeX and many LaTeX packages. See the [list of supported functions](https://katex.org/docs/supported.html).
 
-Try out KaTeX [on the demo page](https://khan.github.io/KaTeX/#demo)!
+Try out KaTeX [on the demo page](https://katex.org/#demo)!
 
 ## Getting started
 
@@ -28,13 +28,13 @@ Try out KaTeX [on the demo page](https://khan.github.io/KaTeX/#demo)!
 <!-- KaTeX requires the use of the HTML5 doctype. Without it, KaTeX may not render properly -->
 <html>
   <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
 
     <!-- The loading of KaTeX is deferred to speed up page rendering -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/katex.min.js" integrity="sha384-ttOZCNX+557qK00I95MHw9tttcgWn2PjR/bXecuEvENq6nevFtwSSQ6bYEN6AetB" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
 
     <!-- To automatically render math in text elements, include the auto-render extension: -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc/dist/contrib/auto-render.min.js" integrity="sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF" crossorigin="anonymous"
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js" integrity="sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF" crossorigin="anonymous"
         onload="renderMathInElement(document.body);"></script>
   </head>
   ...
@@ -43,7 +43,7 @@ Try out KaTeX [on the demo page](https://khan.github.io/KaTeX/#demo)!
 
 You can also [download KaTeX](https://github.com/khan/katex/releases) and host it yourself.
 
-For details on how to configure auto-render extension, refer to [the documentation](https://khan.github.io/KaTeX/docs/autorender.html).
+For details on how to configure auto-render extension, refer to [the documentation](https://katex.org/docs/autorender.html).
 
 ### API
 
@@ -73,13 +73,13 @@ JavaScript on the client.
 The examples above use the `throwOnError: false` option, which renders invalid
 inputs as the TeX source code in red (by default), with the error message as
 hover text.  For other available options, see the
-[API documentation](https://khan.github.io/KaTeX/docs/api.html),
-[options documentation](https://khan.github.io/KaTeX/docs/options.html), and
-[handling errors documentation](https://khan.github.io/KaTeX/docs/error.html).
+[API documentation](https://katex.org/docs/api.html),
+[options documentation](https://katex.org/docs/options.html), and
+[handling errors documentation](https://katex.org/docs/error.html).
 
 ## Demo and Documentation
 
-Learn more about using KaTeX [on the website](https://khan.github.io/KaTeX)!
+Learn more about using KaTeX [on the website](https://katex.org)!
 
 ## Contributing
 

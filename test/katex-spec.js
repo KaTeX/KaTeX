@@ -780,6 +780,7 @@ describe("A color parser", function() {
     const newColorExpression = r`\redA{x}`;
     const customColorExpression1 = r`\textcolor{#fA6}{x}`;
     const customColorExpression2 = r`\textcolor{#fA6fA6}{x}`;
+    const customColorExpression3 = r`\textcolor{fA6fA6}{x}`;
     const badCustomColorExpression1 = r`\textcolor{bad-color}{x}`;
     const badCustomColorExpression2 = r`\textcolor{#fA6f}{x}`;
     const badCustomColorExpression3 = r`\textcolor{#gA6}{x}`;
@@ -800,14 +801,17 @@ describe("A color parser", function() {
     it("should parse a custom color", function() {
         expect(customColorExpression1).toParse();
         expect(customColorExpression2).toParse();
+        expect(customColorExpression3).toParse();
     });
 
     it("should correctly extract the custom color", function() {
         const parse1 = getParsed(customColorExpression1)[0];
         const parse2 = getParsed(customColorExpression2)[0];
+        const parse3 = getParsed(customColorExpression3)[0];
 
         expect(parse1.color).toEqual("#fA6");
         expect(parse2.color).toEqual("#fA6fA6");
+        expect(parse3.color).toEqual("#fA6fA6");
     });
 
     it("should not parse a bad custom color", function() {
