@@ -447,7 +447,7 @@ table td {
 |\hookleftarrow|$\hookleftarrow$||
 |\hookrightarrow|$\hookrightarrow$||
 |\hphantom|$a\hphantom{bc}d$|`a\hphantom{bc}d`|
-|\href|$\href{https://khan.github.io/KaTeX/}{\KaTeX}$|`\href{https://khan.github.io/KaTeX/}{\KaTeX}`|
+|\href|$\href{https://katex.org/}{\KaTeX}$|`\href{https://katex.org/}{\KaTeX}`|
 |\hskip|$w\hskip1em i\hskip2em d$|`w\hskip1em i\hskip2em d`|
 |\hslash|$\hslash$||
 |\hspace|$s\hspace7ex k$|`s\hspace7ex k`|
@@ -1079,7 +1079,7 @@ table td {
 |\upsilon|$\upsilon$||
 |\upuparrows|$\upuparrows$||
 |\urcorner|$\urcorner$||
-|\url|$\footnotesize\url{https://khan.github.io/KaTeX/}$|`\url{https://khan.github.io/KaTeX/}`|
+|\url|$\footnotesize\url{https://katex.org/}$|`\url{https://katex.org/}`|
 |\utilde|$\utilde{AB}$|`\utilde{AB}`|
 
 ## V

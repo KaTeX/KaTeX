@@ -135,8 +135,8 @@ if [[ ! $PUBLISH ]]; then
         fi
 
         # Edit docs to use CSS from CDN
-        grep -l '{@stylesheet: katex.min.css}' docs/*.md | xargs sed -i.bak \
-            's|{@stylesheet: katex.min.css}|<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@./dist/katex.min.css" integrity="sha384-katex.min.css" crossorigin="anonymous"/>|'
+        grep -l '/static/' docs/*.md | xargs sed -i.bak \
+            's|/static/\([^"]\+\)|https://cdn.jsdelivr.net/npm/katex@./dist/\1" integrity="sha384-\1|'
 
         # Update the version number in CDN URLs included in the README and the documentation,
         # and regenerate the Subresource Integrity hash for these files.
@@ -208,23 +208,6 @@ else
     # Update npm (cdnjs update automatically)
     # Fallback to npm publish, if yarn cannot authenticate, e.g., 2FA
     yarn publish --new-version "$VERSION" || npm publish
-
-    # Publish the website
-    # If gh-pages branch is protected, push to another branch
-    pushd website
-    PUBLISH_GH_PAGES=$(USE_SSH=true yarn publish-gh-pages 2>&1 | tee /dev/tty || true)
-    if echo "$PUBLISH_GH_PAGES" | grep -qEi 'GH006|protected branch'; then
-        pushd build/KaTeX-gh-pages
-        git checkout -B "v$VERSION-gh-pages"
-        git push -u origin "v$VERSION-gh-pages"
-        popd
-
-        echo ""
-        echo "GitHub pages branch is protected."
-        echo "Create a pull request against gh-pages from 'v$VERSION-gh-pages'"
-        echo "Visit https://github.com/Khan/KaTeX/pulls to open a pull request."
-    fi
-    popd
 
     echo ""
     echo "The automatic parts are done!"

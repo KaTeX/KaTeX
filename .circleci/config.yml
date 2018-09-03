@@ -18,13 +18,13 @@ post_checkout: &post_checkout
         fi
 
 node_modules_cache_key: &node_modules_cache_key
-  yarn-deps-v1-{{ checksum "yarn.lock" }}
+  yarn-deps-v2-{{ checksum "yarn.lock" }}
 
 restore_node_modules_cache: &restore_node_modules_cache
   restore_cache:
     keys:
       - *node_modules_cache_key
-      - yarn-deps-v1-
+      - yarn-deps-v2-
 
 yarn_install: &yarn_install
   run:
