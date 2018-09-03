@@ -172,6 +172,14 @@ const siteConfig = {
 
     separateCss: ['static/static', 'static\\static'],
 
+    algolia: {
+        apiKey: '46ecd80046d78d4e5d9a5c06f559dfaa',
+        indexName: 'katex',
+        algoliaOptions: {
+            facetFilters: ['language:LANGUAGE', 'version:VERSION'],
+        },
+    },
+
     /* On page navigation for the current documentation page */
     onPageNav: 'separate',
 
