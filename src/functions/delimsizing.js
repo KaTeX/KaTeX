@@ -64,8 +64,7 @@ function checkDelimiter(
     } else {
         throw new ParseError(
             "Invalid delimiter: '" +
-            // $FlowFixMe, do not polyfill
-            (symDelim ? symDelim.text : JSON["stringify"](delim)) +
+            (symDelim ? symDelim.text : JSON.stringify(delim)) +
             "' after '" + context.funcName + "'", delim);
     }
 }
