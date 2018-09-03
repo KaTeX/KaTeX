@@ -8,18 +8,6 @@
 // See https://docusaurus.io/docs/site-config.html for all the possible
 // site configuration options.
 
-// If BASE_URL environment variable is set, use it as baseUrl.
-// If on netlify, use '/'. Otherwise use '/KaTeX/'.
-const baseUrl = process.env.BASE_URL || (process.env.CONTEXT ? '/' : '/KaTeX/');
-
-// Plugin for Remarkable to inject variables
-const {Plugin: Embed} = require('remarkable-embed');
-const embed = new Embed();
-
- // {@stylesheet: path}
-embed.register('stylesheet',
-    path => `<link rel="stylesheet" href="${baseUrl}static/${path}"/>`);
-
 /* List of projects/orgs using your project for the users page */
 const users = [
     {
@@ -49,7 +37,7 @@ const users = [
     },
     {
         caption: 'Expii',
-        image: baseUrl + 'img/expii_logo.png',
+        image: '/img/expii_logo.png',
         infoLink: 'https://www.expii.com/',
     },
     {
@@ -69,7 +57,7 @@ const users = [
     },
     {
         caption: 'Gradescope',
-        image: baseUrl + 'img/gradescope_logo.png',
+        image: '/img/gradescope_logo.png',
         infoLink: 'https://www.gradescope.com/',
     },
     {
@@ -132,15 +120,15 @@ const users = [
 const siteConfig = {
     title: 'KaTeX',
     tagline: 'The fastest math typesetting library for the web',
-    url: 'https://khan.github.io',
-    baseUrl,
+    url: 'https://katex.org',
+    baseUrl: '/',
 
     // Used for publishing and more
     projectName: 'KaTeX',
     organizationName: 'Khan',
 
     headerLinks: [
-        {href: baseUrl + '#demo', label: 'Try'},
+        {href: '/#demo', label: 'Try'},
         {doc: 'node', label: 'Docs'},
         {page: 'users', label: 'Users'},
         {href: 'https://github.com/Khan/KaTeX', label: 'GitHub'},
@@ -173,17 +161,24 @@ const siteConfig = {
     },
 
     markdownPlugins: [
-        embed.hook,
         require('./lib/remarkable-katex'),
         require('./lib/empty-thead'),
     ],
 
     scripts: [
         'https://buttons.github.io/buttons.js',
-        baseUrl + 'js/scrollspy.js',
+        '/js/scrollspy.js',
     ],
 
     separateCss: ['static/static', 'static\\static'],
+
+    algolia: {
+        apiKey: '46ecd80046d78d4e5d9a5c06f559dfaa',
+        indexName: 'katex',
+        algoliaOptions: {
+            facetFilters: ['language:LANGUAGE', 'version:VERSION'],
+        },
+    },
 
     /* On page navigation for the current documentation page */
     onPageNav: 'separate',

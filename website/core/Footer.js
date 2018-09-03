@@ -56,7 +56,7 @@ class Footer extends React.Component {
                 </a>
                 <a href="https://gitter.im/Khan/KaTeX">Gitter Chat</a>
                 <a
-                  href="http://stackoverflow.com/questions/tagged/katex"
+                  href="https://stackoverflow.com/questions/tagged/katex"
                   target="_blank"
                   rel="noreferrer noopener">
                   Stack Overflow

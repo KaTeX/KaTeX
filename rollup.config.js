@@ -3,7 +3,7 @@ import alias from 'rollup-plugin-alias';
 
 const {targets} = require('./webpack.common');
 
-process.env.BABEL_ENV = 'esm';
+process.env.NODE_ENV = 'esm';
 
 export default targets.map(({name, entry}) => ({
     input: entry.replace('.webpack', ''),
@@ -12,7 +12,7 @@ export default targets.map(({name, entry}) => ({
         format: 'es',
     },
     plugins: [
-        babel(),
+        babel({runtimeHelpers: true}),
         alias({
             katex: '../katex.mjs',
         }),
