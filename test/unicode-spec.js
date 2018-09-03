@@ -110,7 +110,7 @@ describe("unicodeScripts", () => {
     const scriptNames = Object.keys(scriptRegExps);
 
     const allRegExp = new RegExp(
-        Object.values(scriptRegExps).map(re => re.source).join('|')
+        scriptNames.map(script => scriptRegExps[script].source).join('|')
     );
 
     it("supportedCodepoint() should return the correct values", () => {
