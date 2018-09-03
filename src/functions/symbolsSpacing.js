@@ -4,6 +4,29 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 
+// A map of CSS-based spacing functions to their CSS class.
+const cssSpace: {[string]: string} = {
+    "\\nobreak": "nobreak",
+    "\\allowbreak": "allowbreak",
+};
+
+// A lookup table to determine whether a spacing function/symbol should be
+// treated like a regular space character.  If a symbol or command is a key
+// in this table, then it should be a regular space character.  Furthermore,
+// the associated value may have a `className` specifying an extra CSS class
+// to add to the created `span`.
+const regularSpace: {[string]: { className?: string }} = {
+    " ": {},
+    "\\ ": {},
+    "~": {
+        className: "nobreak",
+    },
+    "\\space": {},
+    "\\nobreakspace": {
+        className: "nobreak",
+    },
+};
+
 // ParseNode<"spacing"> created in Parser.js from the "spacing" symbol Groups in
 // src/symbols.js.
 defineFunctionBuilders({
@@ -48,26 +71,3 @@ defineFunctionBuilders({
         return node;
     },
 });
-
-// A map of CSS-based spacing functions to their CSS class.
-const cssSpace: {[string]: string} = {
-    "\\nobreak": "nobreak",
-    "\\allowbreak": "allowbreak",
-};
-
-// A lookup table to determine whether a spacing function/symbol should be
-// treated like a regular space character.  If a symbol or command is a key
-// in this table, then it should be a regular space character.  Furthermore,
-// the associated value may have a `className` specifying an extra CSS class
-// to add to the created `span`.
-const regularSpace: {[string]: { className?: string }} = {
-    " ": {},
-    "\\ ": {},
-    "~": {
-        className: "nobreak",
-    },
-    "\\space": {},
-    "\\nobreakspace": {
-        className: "nobreak",
-    },
-};
