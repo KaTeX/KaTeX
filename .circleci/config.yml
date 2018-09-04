@@ -1,68 +1,84 @@
-post_checkout: &post_checkout
-  run:
-    name: Checkout submodule and get changed files
-    command: |
-        git submodule sync
-        git submodule update --init --recursive
-        if [[ $CIRCLE_PULL_REQUEST ]]; then
-          BASE_COMMIT=$(curl -s -H "Authorization: token a61ecb2fc5b72da54431""1b3db3875c96854958a8" \
-            https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$CIRCLE_PR_NUMBER \
-            | jq -r ".base.sha | select(. != null)")...
-        else
-          BASE_COMMIT=HEAD^
-        fi
-        if [[ $BASE_COMMIT ]]; then
-          CHANGED=$(git diff --name-only $BASE_COMMIT)
-          echo "$CHANGED"
-          echo "export CHANGED=\"$CHANGED\"" >> $BASH_ENV
-        fi
+version: 2.1
 
-node_modules_cache_key: &node_modules_cache_key
-  yarn-deps-v1-{{ checksum "yarn.lock" }}
+commands:
+  checkout_repo:
+    steps:
+      - checkout
+      - run:
+          name: Checkout submodule
+          command: |
+              git submodule sync
+              git submodule update --init --recursive
+      - run:
+          name: Get changed files
+          command: |
+              if [[ $CIRCLE_PULL_REQUEST ]]; then
+                BASE_COMMIT=$(curl -s -H "Authorization: token a61ecb2fc5b72da54431""1b3db3875c96854958a8" \
+                  https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$CIRCLE_PR_NUMBER \
+                  | jq -r ".base.sha | select(. != null)")...
+              else
+                BASE_COMMIT=HEAD^
+              fi
+              if [[ $BASE_COMMIT ]]; then
+                CHANGED=$(git diff --name-only $BASE_COMMIT)
+                echo "$CHANGED"
+                echo "export CHANGED=\"$CHANGED\"" >> $BASH_ENV
+              fi
 
-restore_node_modules_cache: &restore_node_modules_cache
-  restore_cache:
-    keys:
-      - *node_modules_cache_key
-      - yarn-deps-v1-
+  skip_if_only_changed:
+    parameters:
+      filter:
+        type: string
+    steps:
+      - run:
+          name: Skip tests if only "<< parameters.filter >>" are changed
+          command: echo "$CHANGED" | grep -qvE '<< parameters.filter >>' || circleci step halt
 
-yarn_install: &yarn_install
-  run:
-    name: Install dependencies
-    command: yarn
+  install_dependencies:
+    steps:
+      - restore_cache:
+          keys:
+            - yarn-deps-v2-{{ checksum "yarn.lock" }}
+            - yarn-deps-v2-
+      - run:
+          name: Install dependencies
+          # upgrade Yarn before installing dependencies, if needed
+          command: yarn check || { curl -o- -L https://yarnpkg.com/install.sh | bash && yarn; }
+      - save_cache:
+          key: yarn-deps-v2-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
 
-codecov: &codecov
-  run:
-    name: Upload code coverage reports to Codecov
-    command: ./node_modules/.bin/codecov
+  codecov:
+    parameters:
+      flag:
+        type: string
+    steps:
+      - run:
+          name: Upload code coverage reports to Codecov
+          # do not upload if screenshotter tests are skipped
+          command: ./node_modules/.bin/codecov -F "<< parameters.flag >>"
 
-screenshotter: &screenshotter
-  steps:
-    - checkout
-    - *post_checkout
-    - run:
-        name: Skip screenshotter if no KaTeX code has been changed
-        command: |
-            if [[ $CHANGED ]]; then
-              echo "$CHANGED" | grep -qvE '^contrib/|^docs/|^static/|^website/|^LICENSE|\.md$' || circleci step halt
-            fi
+  screenshotter:
+    steps:
+      - checkout_repo
+      - skip_if_only_changed:
+          filter: '^docs/|^static/|^website/|^LICENSE|\.md$'
+      - install_dependencies
 
-    - *restore_node_modules_cache
-    - *yarn_install
+      - run:
+          name: Verify screenshots and generate diffs and new screenshots
+          command: node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new --coverage
+      - codecov:
+          flag: screenshotter
 
-    - run:
-        name: Verify screenshots and generate diffs and new screenshots
-        command: node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new --coverage
-    - *codecov
+      - store_artifacts:
+          path: test/screenshotter/new
+          destination: new
+      - store_artifacts:
+          path: test/screenshotter/diff
+          destination: diff
 
-    - store_artifacts:
-        path: test/screenshotter/new
-        destination: new
-    - store_artifacts:
-        path: test/screenshotter/diff
-        destination: diff
-
-version: 2
 jobs:
   test:
     docker:
@@ -76,65 +92,56 @@ jobs:
                 exit 1
               fi
 
-      - checkout
-      - *post_checkout
-      - run:
-          name: Skip screenshotter if only documentation has been changed
-          command: |
-              if [[ $CHANGED ]]; then
-                echo "$CHANGED" | grep -qvE '^docs/|^LICENSE|\.md$' || circleci step halt
-              fi
-
-      - *restore_node_modules_cache
-      - *yarn_install
-      - save_cache:
-          key: *node_modules_cache_key
-          paths:
-            - node_modules
+      - checkout_repo
+      - skip_if_only_changed:
+          filter: '^docs/|^LICENSE|\.md$'
+      - install_dependencies
 
       - add_ssh_keys:
           fingerprints:
             - "e1:ac:13:98:98:8b:fd:38:81:12:28:55:75:a1:da:73"
       - run:
           name: Greenkeeper - update and commit yarn.lock
+          environment:
+            # greenkeeper-lockfile detects build by checking it's the first job
+            # of the first workflow. As we run jobs parallel, it may not be the
+            # first job
+            CIRCLE_PREVIOUS_BUILD_NUM: ""
           command: |
               ./node_modules/.bin/greenkeeper-lockfile-update
               ./node_modules/.bin/greenkeeper-lockfile-upload
 
       - run:
-          name: Run tests
-          command: yarn test --coverage
-      - *codecov
-
+          name: Lint code
+          command: yarn test:lint
+      - skip_if_only_changed:
+          filter: '^static/|^website/'
       - run:
-          name: Build KaTeX
-          command: USE_TTF=false yarn build
-
-      - store_artifacts:
-          path: dist/katex.min.js
-          destination: katex.min.js
-      - store_artifacts:
-          path: dist/katex.min.css
-          destination: katex.min.css
-      - store_artifacts:
-          path: dist/fonts
-          destination: fonts
+          name: Run Flow and Jest tests
+          command: |
+              yarn test:flow
+              yarn test:jest --coverage
+      - codecov:
+          flag: test
 
   firefox:
     docker:
       - image: circleci/node:6
       - image: selenium/standalone-firefox:2.48.2
-    <<: *screenshotter
+    steps:
+      - screenshotter
+
   chrome:
     docker:
       - image: circleci/node:6
       - image: selenium/standalone-chrome:2.48.2
         environment:
+          # workaround for https://github.com/SeleniumHQ/docker-selenium/issues/87
           DBUS_SESSION_BUS_ADDRESS: /dev/null
-    <<: *screenshotter
+    steps:
+      - screenshotter
 
 workflows:
-  version: 2
   test:
     jobs:
       - test

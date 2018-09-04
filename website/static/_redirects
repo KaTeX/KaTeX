@@ -1,0 +1,6 @@
+https://katex.netlify.com/* https://katex.org/:splat 301!
+
+/function-support.html /docs/supported.html 301
+
+/docs/en/* /docs/:splat 301
+/docs /docs/node.html 301
