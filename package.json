@@ -61,7 +61,7 @@
     "rollup-plugin-babel": "^4.0.2",
     "selenium-webdriver": "^3.6.0",
     "sri-toolbox": "^0.2.0",
-    "style-loader": "^0.22.0",
+    "style-loader": "^0.23.0",
     "stylelint": "^9.2.1",
     "stylelint-config-standard": "^18.0.0",
     "uglifyjs-webpack-plugin": "^1.2.5",
