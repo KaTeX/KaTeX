@@ -72,7 +72,7 @@ const makeSymbol = function(
     let symbolNode;
     if (metrics) {
         let italic = metrics.italic;
-        if (mode === "text") {
+        if (mode === "text" || (options && options.font === "mathit")) {
             italic = 0;
         }
         symbolNode = new SymbolNode(
@@ -216,9 +216,8 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
             fontClasses = [fontData.fontClass];
         } else if (fontOrFamily === "mathit" ||
                    utils.contains(mainitLetters, text)) {
-            const fontData = mathit(text, mode, options, classes);
-            fontName = fontData.fontName;
-            fontClasses = [fontData.fontClass];
+            fontName = "Main-Italic";
+            fontClasses = ["mainit"];
         } else if (isFont) {
             fontName = fontMap[fontOrFamily].fontName;
             fontClasses = [fontOrFamily];
@@ -702,6 +701,10 @@ const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
         fontName: "Main-Regular",
     },
     "textit": {
+        variant: "italic",
+        fontName: "Main-Italic",
+    },
+    "mathit": {
         variant: "italic",
         fontName: "Main-Italic",
     },
