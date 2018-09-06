@@ -21,8 +21,8 @@ import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
 
-// The following have to be loaded from Main-Italic font, using class mainit
-const mainitLetters = [
+// The following have to be loaded from Main-Italic font, using class mathit
+const mathitLetters = [
     "\\imath", "ı",       // dotless i
     "\\jmath", "ȷ",       // dotless j
     "\\pounds", "\\mathsterling", "\\textsterling", "£",   // pounds symbol
@@ -133,11 +133,10 @@ const mathsym = function(
 
 /**
  * Determines which of the two font names (Main-Italic and Math-Italic) and
- * corresponding style tags (mainit or mathit) to use for font "mathit",
- * depending on the symbol.  Use this function instead of fontMap for font
- * "mathit".
+ * corresponding style tags (maindefault or mathit) to use for default math font,
+ * depending on the symbol.
  */
-const mathit = function(
+const mathdefault = function(
     value: string,
     mode: Mode,
     options: Options,
@@ -146,15 +145,15 @@ const mathit = function(
     if (/[0-9]/.test(value.charAt(0)) ||
             // glyphs for \imath and \jmath do not exist in Math-Italic so we
             // need to use Main-Italic instead
-            utils.contains(mainitLetters, value)) {
+            utils.contains(mathitLetters, value)) {
         return {
             fontName: "Main-Italic",
-            fontClass: "mainit",
+            fontClass: "mathit",
         };
     } else {
         return {
             fontName: "Math-Italic",
-            fontClass: "mathit",
+            fontClass: "mathdefault",
         };
     }
 };
@@ -214,10 +213,9 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
             const fontData = boldsymbol(text, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
-        } else if (fontOrFamily === "mathit" ||
-                   utils.contains(mainitLetters, text)) {
+        } else if (utils.contains(mathitLetters, text)) {
             fontName = "Main-Italic";
-            fontClasses = ["mainit"];
+            fontClasses = ["mathit"];
         } else if (isFont) {
             fontName = fontMap[fontOrFamily].fontName;
             fontClasses = [fontOrFamily];
@@ -244,7 +242,7 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
 
     // Makes a symbol in the default font for mathords and textords.
     if (type === "mathord") {
-        const fontLookup = mathit(text, mode, options, classes);
+        const fontLookup = mathdefault(text, mode, options, classes);
         return makeSymbol(text, fontLookup.fontName, mode, options,
             classes.concat([fontLookup.fontClass]));
     } else if (type === "textord") {
@@ -709,10 +707,10 @@ const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
         fontName: "Main-Italic",
     },
 
-    // "mathit" and "boldsymbol" are missing because they require the use of two
-    // fonts: Main-Italic and Math-Italic for "mathit", and Math-BoldItalic and
-    // Main-Bold for "boldsymbol".  This is handled by a special case in makeOrd
-    // which ends up calling mathit and boldsymbol.
+    // Default math font and "boldsymbol" are missing because they require the
+    // use of two fonts: Main-Italic and Math-Italic for default math font, and
+    // Math-BoldItalic and Main-Bold for "boldsymbol".  This is handled by a
+    // special case in makeOrd which ends up calling mathdefault and boldsymbol.
 
     // families
     "mathbb": {
