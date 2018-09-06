@@ -159,6 +159,36 @@ const mathdefault = function(
 };
 
 /**
+ * Determines which of the font names (Main-Italic, Math-Italic, and Caligraphic)
+ * and corresponding style tags (mathit, mathdefault, or mathcal) to use for font
+ * "mathnormal", depending on the symbol.  Use this function instead of fontMap for
+ * font "mathnormal".
+ */
+const mathnormal = function(
+    value: string,
+    mode: Mode,
+    options: Options,
+    classes: string[],
+): {| fontName: string, fontClass: string |} {
+    if (utils.contains(mathitLetters, value)) {
+        return {
+            fontName: "Main-Italic",
+            fontClass: "mathit",
+        };
+    } else if (/[0-9]/.test(value.charAt(0))) {
+        return {
+            fontName: "Caligraphic-Regular",
+            fontClass: "mathcal",
+        };
+    } else {
+        return {
+            fontName: "Math-Italic",
+            fontClass: "mathdefault",
+        };
+    }
+};
+
+/**
  * Determines which of the two font names (Main-Bold and Math-BoldItalic) and
  * corresponding style tags (mathbf or boldsymbol) to use for font "boldsymbol",
  * depending on the symbol.  Use this function instead of fontMap for font
@@ -209,8 +239,10 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
-        if (fontOrFamily === "boldsymbol") {
-            const fontData = boldsymbol(text, mode, options, classes);
+        if (fontOrFamily === "boldsymbol" || fontOrFamily === "mathnormal") {
+            const fontData = fontOrFamily === "boldsymbol"
+                ? boldsymbol(text, mode, options, classes)
+                : mathnormal(text, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
         } else if (utils.contains(mathitLetters, text)) {
@@ -707,10 +739,12 @@ const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
         fontName: "Main-Italic",
     },
 
-    // Default math font and "boldsymbol" are missing because they require the
-    // use of two fonts: Main-Italic and Math-Italic for default math font, and
+    // Default math font, "mathnormal" and "boldsymbol" are missing because they
+    // require the use of several fonts: Main-Italic and Math-Italic for default
+    // math font, Main-Italic, Math-Italic, Caligraphic for "mathnormal", and
     // Math-BoldItalic and Main-Bold for "boldsymbol".  This is handled by a
-    // special case in makeOrd which ends up calling mathdefault and boldsymbol.
+    // special case in makeOrd which ends up calling mathdefault, mathnormal,
+    // and boldsymbol.
 
     // families
     "mathbb": {
