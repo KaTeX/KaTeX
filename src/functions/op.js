@@ -345,26 +345,6 @@ const singleCharIntegrals: {[string]: string} = {
     "\u2230": "\\oiiint",
 };
 
-defineFunction({
-    type: "op",
-    names: ["\\mathop"],
-    props: {
-        numArgs: 1,
-    },
-    handler: ({parser}, args) => {
-        const body = args[0];
-        return {
-            type: "op",
-            mode: parser.mode,
-            limits: false,
-            symbol: false,
-            body: ordargument(body),
-        };
-    },
-    htmlBuilder,
-    mathmlBuilder,
-});
-
 // No limits, not symbols
 defineFunction({
     type: "op",

@@ -6,7 +6,7 @@ This is a list of TeX functions supported by KaTeX. It is sorted into logical gr
 
 There is a similar [Support Table](./support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
 
-{@stylesheet: katex.min.css}
+<link rel="stylesheet" href="/static/katex.min.css"/>
 <style>
 p {overflow-wrap: break-word;}
 table tr,
@@ -106,11 +106,12 @@ The `{array}` environment does not yet support `\cline` or `\multicolumn`.
 
 |||
 |:----------------|:-------------------|
-| $\href{https://khan.github.io/KaTeX/}{\KaTeX}$ | `\href{https://khan.github.io/KaTeX/}{\KaTeX}` |
-| $\url{https://khan.github.io/KaTeX/}$ | `\url{https://khan.github.io/KaTeX/}` |
+| $\href{https://katex.org/}{\KaTeX}$ | `\href{https://katex.org/}{\KaTeX}` |
+| $\url{https://katex.org/}$ | `\url{https://katex.org/}` |
 | $\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}$ | `\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}` |
 
 `\includegraphics` supports`height`, `width`, `totalheight`, and `alt` in it's first argument. `height` is required.
+
 
 ## Letters and Unicode
 
@@ -511,7 +512,7 @@ $\textcolor{#228B22}{F=ma}$ `\textcolor{#228B22}{F=ma}`<br>
 $\colorbox{aqua}{A}$ `\colorbox{aqua}{A}`<br>
 $\fcolorbox{red}{aqua}{A}$ `\fcolorbox{red}{aqua}{A}`
 
-For color definition, KaTeX color functions will accept the standard HTML [predefined color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords). They will also accept an RGB argument in CSS hexa­decimal style.
+For color definition, KaTeX color functions will accept the standard HTML [predefined color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords). They will also accept an RGB argument in CSS hexa­decimal style. The "#" is optional before a six-digit specification.
 
 **Font**
 

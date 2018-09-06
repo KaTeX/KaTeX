@@ -125,7 +125,33 @@ const toMarkup = function(tagName: string): string {
     return markup;
 };
 
-export type CssStyle = {[name: string]: string};
+// Making the type below exact with all optional fields doesn't work due to
+// - https://github.com/facebook/flow/issues/4582
+// - https://github.com/facebook/flow/issues/5688
+// However, since *all* fields are optional, $Shape<> works as suggested in 5688
+// above.
+// This type does not include all CSS properties. Additional properties should
+// be added as needed.
+export type CssStyle = $Shape<{
+    backgroundColor: string,
+    borderBottomWidth: string,
+    borderColor: string,
+    borderRightWidth: string,
+    borderTopWidth: string,
+    bottom: string,
+    color: string,
+    height: string,
+    left: string,
+    marginLeft: string,
+    marginRight: string,
+    marginTop: string,
+    minWidth: string,
+    paddingLeft: string,
+    position: string,
+    top: string,
+    width: string,
+    verticalAlign: string,
+}> & {};
 
 export interface HtmlDomNode extends VirtualNode {
     classes: string[];

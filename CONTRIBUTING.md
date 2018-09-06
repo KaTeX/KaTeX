@@ -8,10 +8,10 @@ help solving a problem, feel free to stop by our [gitter channel](https://gitter
 
 If you'd like to contribute, try contributing new symbols or functions that
 KaTeX doesn't currently support. The documentation has pages listing
-[supported functions](https://khan.github.io/KaTeX/docs/supported.html) and
-[functions that KaTeX supports and some that it doesn't support](https://khan.github.io/KaTeX/docs/support_table.html).
+[supported functions](https://katex.org/docs/supported.html) and
+[functions that KaTeX supports and some that it doesn't support](https://katex.org/docs/support_table.html).
 You can check them to see if we don't support a function you like, or try your
-function in the interactive demo at [http://khan.github.io/KaTeX/](http://khan.github.io/KaTeX/).
+function in the interactive demo at [http://katex.org/](http://katex.org/).
 The wiki has a page that describes how to [examine TeX commands and where to find
 rules](https://github.com/Khan/KaTeX/wiki/Examining-TeX) which can be quite
 useful when adding new commands.
