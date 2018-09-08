@@ -2507,7 +2507,7 @@ describe("href and url commands", function() {
     // We can't use raw strings for \url because \u is for Unicode escapes.
 
     it("should parse its input", function() {
-        expect`\href{http://example.com/}{example here}`.toBuild();
+        expect`\href{http://example.com/}{\sin}`.toBuild();
         expect("\\url{http://example.com/}").toBuild();
     });
 
