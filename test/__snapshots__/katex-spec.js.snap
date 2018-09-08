@@ -857,3 +857,96 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
 </span>
 
 `;
+
+exports[`href and url commands should not affect spacing around 1`] = `
+[
+  {
+    "classes": [
+      "mord",
+      "mathit"
+    ],
+    "depth": 0,
+    "height": 0.43056,
+    "italic": 0,
+    "maxFontSize": 1,
+    "skew": 0,
+    "style": {
+    },
+    "text": "a",
+    "width": 0.52859
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+    ],
+    "classes": [
+      "mspace"
+    ],
+    "depth": 0,
+    "height": 0,
+    "maxFontSize": 0,
+    "style": {
+      "marginRight": "0.2222222222222222em"
+    }
+  },
+  {
+    "attributes": {
+      "href": "http://example.com/"
+    },
+    "children": [
+      {
+        "classes": [
+          "mbin"
+        ],
+        "depth": 0.08333,
+        "height": 0.58333,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0,
+        "style": {
+        },
+        "text": "+",
+        "width": 0.77778
+      },
+      {
+        "attributes": {
+        },
+        "children": [
+        ],
+        "classes": [
+          "mspace"
+        ],
+        "depth": 0,
+        "height": 0,
+        "maxFontSize": 0,
+        "style": {
+          "marginRight": "0.2222222222222222em"
+        }
+      },
+      {
+        "classes": [
+          "mord",
+          "mathit"
+        ],
+        "depth": 0,
+        "height": 0.69444,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0,
+        "style": {
+        },
+        "text": "b",
+        "width": 0.42917
+      }
+    ],
+    "classes": [
+    ],
+    "depth": 0.08333,
+    "height": 0.69444,
+    "maxFontSize": 1,
+    "style": {
+    }
+  }
+]
+`;

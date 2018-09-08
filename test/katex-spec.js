@@ -2572,6 +2572,11 @@ describe("href and url commands", function() {
             allowedProtocols: [],
         }));
     });
+
+    it("should not affect spacing around", function() {
+        const built = getBuilt`a\href{http://example.com/}{+b}`;
+        expect(built).toMatchSnapshot();
+    });
 });
 
 describe("A parser that does not throw on unsupported commands", function() {
