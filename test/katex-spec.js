@@ -2386,6 +2386,23 @@ describe("A smash builder", function() {
     });
 });
 
+describe("A document fragment", function() {
+    it("should have paddings applied inside an extensible arrow", function() {
+        const markup = katex.renderToString("\\tiny\\xrightarrow\\textcolor{red}{x}");
+        expect(markup).toContain("x-arrow-pad");
+    });
+
+    it("should have paddings applied inside an enclose", function() {
+        const markup = katex.renderToString(r`\fbox\textcolor{red}{x}`);
+        expect(markup).toContain("boxpad");
+    });
+
+    it("should have paddings applied inside a square root", function() {
+        const markup = katex.renderToString(r`\sqrt\textcolor{red}{x}`);
+        expect(markup).toContain("padding-left");
+    });
+});
+
 describe("A parser error", function() {
     it("should report the position of an error", function() {
         try {
