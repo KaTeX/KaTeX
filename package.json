@@ -37,7 +37,7 @@
     "eslint-plugin-flowtype": "^2.40.1",
     "eslint-plugin-react": "^7.10.0",
     "eslint-plugin-transform-runtime-aliasing": "^1.2.0",
-    "file-loader": "^1.1.11",
+    "file-loader": "^2.0.0",
     "flow-bin": "^0.80.0",
     "fs-extra": "^7.0.0",
     "greenkeeper-lockfile": "^1.15.1",
