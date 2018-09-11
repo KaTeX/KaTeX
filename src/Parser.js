@@ -933,7 +933,7 @@ export default class Parser {
                     type: "keyVals",
                     mode: this.mode,
                     keyVals,
-                }
+                };
             }
 
             // Get the URL. The tokenRegEx returned the function name and the
