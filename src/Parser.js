@@ -657,9 +657,9 @@ export default class Parser {
         if (type === "size") {
             return this.parseSizeGroup(optional);
         }
-        if (type === "url") {
+        if (type === "url" || type === "keyVals") {
             throw new ParseError(
-                "Internal bug: 'url' arguments should be handled by Lexer",
+                "Internal bug: '" + type + "' arguments should be handled by Lexer",
                 this.nextToken);
         }
 
@@ -913,16 +913,37 @@ export default class Parser {
             // The token will be consumed later in parseGivenFunction
             // (after possibly switching modes).
             return newFunction(nucleus);
-        } else if (/^\\(href|url)[^a-zA-Z]/.test(text)) {
+        } else if (/^\\(href|url|includegraphics)[^a-zA-Z]/.test(text)) {
             const match = text.match(urlFunctionRegex);
             if (!match) {
                 throw new ParseError(
                     `Internal error: invalid URL token '${text}'`, nucleus);
             }
             const funcName = match[1];
-            // match[2] is the only one that can be an empty string,
-            // so it must be at the end of the following or chain:
-            const rawUrl = match[4] || match[3] || match[2];
+
+            let keyValsArg;
+            if (funcName === "\\includegraphics") {
+                // Get the key/value pairs in the first argument.
+                if (!match[2]) {
+                    throw new ParseError(
+                    `Internal error: empty key/val token '${text}'`, nucleus);
+                }
+                const keyVals = match[2].slice(1, -1).trim();
+                keyValsArg = {
+                    type: "keyVals",
+                    mode: this.mode,
+                    keyVals,
+                }
+            }
+
+            // Get the URL. The tokenRegEx returned the function name and the
+            // URL all together in `match`. This enabled the RegEx to return URLs
+            // that contain "%" in URL escapes. The typical match from tokenRegEx
+            // would treat a "%" as the beginning of a comment.
+
+            // match[2] and match[3] are the only ones that can be an empty string,
+            // so url must be at the end of the following or chain:
+            const rawUrl = match[5] || match[4] || match[3];
             // hyperref package allows backslashes alone in href, but doesn't
             // generate valid links in such cases; we interpret this as
             // "undefined" behaviour, and keep them as-is. Some browser will
@@ -956,6 +977,9 @@ export default class Parser {
                 }
                 return newArgument(this.callFunction(
                     funcName, [urlArg, description], []), nucleus);
+            } else if (funcName === "\\includegraphics") {
+                return newArgument(this.callFunction(
+                    funcName, [urlArg], [keyValsArg]), nucleus);
             } else {  // one argument (\url)
                 return newArgument(this.callFunction(
                     funcName, [urlArg], []), nucleus);

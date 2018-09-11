@@ -5,26 +5,8 @@ import {calculateSize, validUnit} from "../units";
 import ParseError from "../ParseError";
 import {Img} from "../domTree";
 import mathMLTree from "../mathMLTree";
-import {assertNodeType, checkNodeType} from "../parseNode";
-
-import type {AnyParseNode} from "../parseNode";
+import {assertNodeType} from "../parseNode";
 import type {CssStyle} from "../domTree";
-
-// TODO: make it easier for commands to get the macro expanded text
-// from inside an ordgroup argument.
-const stringFromParseGroup = function(textArray: AnyParseNode[]): string {
-    let str = "";
-    for (let i = 0; i < textArray.length; i++) {
-        const textord = checkNodeType(textArray[i], "textord");
-        const spacing = checkNodeType(textArray[i], "spacing");
-        if (textord) {
-            str += textord.text;
-        } else if (spacing) {
-            str += spacing.text;
-        }
-    }
-    return str;
-};
 
 const sizeData = function(str: string): Measurement {
     if (/^[-+]? *(\d+(\.\d*)?|\.\d+)$/.test(str)) {
@@ -55,7 +37,12 @@ defineFunction({
     props: {
         numArgs: 1,
         numOptionalArgs: 1,
-        argTypes: ["text", "text"],
+        argTypes: ["keyVals", "url"],
+        // Note: Parser.js does not use the "url" arg type or "keyVals" arg type
+        // to match arguments.
+        // Instead, both the \includegraphics function and its arguments are
+        // captured in a single RegEx match by urlFunctionRegex in Lexer.js.
+        // This enables "%" to be used for url escapes inside a url string.
         allowedInText: false,
     },
     handler: ({parser}, args, optArgs) => {
@@ -65,8 +52,8 @@ defineFunction({
         let alt = "";
 
         if (optArgs[0]) {
-            const attributeStr = stringFromParseGroup(
-                assertNodeType(optArgs[0], "ordgroup").body);
+            const attributeStr = assertNodeType(optArgs[0], "keyVals").keyVals;
+
             // Parser.js does not parse key/value pairs. We get a string.
             const attributes = attributeStr.split(",");
             for (let i = 0; i < attributes.length; i++) {
@@ -94,8 +81,7 @@ defineFunction({
             }
         }
 
-        const src = stringFromParseGroup(
-            assertNodeType(args[0], "ordgroup").body);
+        const src = assertNodeType(args[0], "url").url;
 
         if (alt === "") {
             // No alt given. Use the file name. Strip away the path.
@@ -131,8 +117,6 @@ defineFunction({
         const style: CssStyle = {height: height + depth + "em"};
         if (width > 0) {
             style.width = width + "em";
-            // Over-rule any max-width: 100% that the img may inherit.
-            style.maxWidth = width + "em";
         }
         if (depth > 0) {
             style.verticalAlign = -depth + "em";

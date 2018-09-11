@@ -14,6 +14,10 @@ defineFunction({
     props: {
         numArgs: 2,
         argTypes: ["url", "original"],
+        // Note: Parser.js does not use the "url" arg type to match arguments.
+        // Instead, both the \href function and its url argument are captured
+        // by a single urlFunctionRegex match in Lexer.js.
+        // This enables "%" to be used for url escapes inside a url string.
         allowedInText: true,
     },
     handler: ({parser}, args) => {
