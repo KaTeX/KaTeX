@@ -40,7 +40,6 @@
     "file-loader": "^2.0.0",
     "flow-bin": "^0.80.0",
     "fs-extra": "^7.0.0",
-    "greenkeeper-lockfile": "^1.15.1",
     "husky": "^1.0.0-rc.8",
     "istanbul-api": "^2.0.5",
     "istanbul-lib-coverage": "^2.0.1",
