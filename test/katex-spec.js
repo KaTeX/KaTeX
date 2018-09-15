@@ -2518,12 +2518,6 @@ describe("href and url commands", function() {
         expect("\\url%end").toParseLike("\\url {%}end");
     });
 
-    it("should detect missing second argument in \\href", () => {
-        expect`\href{http://example.com/}`.not.toParse();
-        expect`\href%`.not.toParse();
-        expect`\href %`.not.toParse();
-    });
-
     it("should allow spaces single-character URLs", () => {
         expect`\href %end`.toParseLike("\\href{%}end");
         expect("\\url %end").toParseLike("\\url{%}end");

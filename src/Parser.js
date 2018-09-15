@@ -11,7 +11,7 @@ import unicodeSymbols from "./unicodeSymbols";
 import utils from "./utils";
 import {assertNodeType, checkNodeType} from "./parseNode";
 import ParseError from "./ParseError";
-import {combiningDiacriticalMarksEndRegex, urlFunctionRegex} from "./Lexer";
+import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
@@ -660,9 +660,7 @@ export default class Parser {
             return this.parseSizeGroup(optional);
         }
         if (type === "url") {
-            throw new ParseError(
-                "Internal bug: 'url' arguments should be handled by Lexer",
-                this.nextToken);
+            return this.parseUrlGroup(optional);
         }
         if (type === "raw") {
             const token = this.parseStringGroup("raw", optional, true);
@@ -863,6 +861,34 @@ export default class Parser {
     }
 
     /**
+     * Parses an URL, checking escaped letters and allowed protocols.
+     */
+    parseUrlGroup(optional: boolean): ?ParsedArg {
+        const res = this.parseStringGroup("url", optional, true); // get raw string
+        if (!res) {
+            return null;
+        }
+        // hyperref package allows backslashes alone in href, but doesn't
+        // generate valid links in such cases; we interpret this as
+        // "undefined" behaviour, and keep them as-is. Some browser will
+        // replace backslashes with forward slashes.
+        const url = res.text.replace(/\\([#$%&~_^{}])/g, '$1');
+        let protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
+        protocol = (protocol != null ? protocol[1] : "_relative");
+        const allowed = this.settings.allowedProtocols;
+        if (!utils.contains(allowed,  "*") &&
+            !utils.contains(allowed, protocol)) {
+            throw new ParseError(
+                `Forbidden protocol '${protocol}'`, res);
+        }
+        return newArgument({
+            type: "url",
+            mode: this.mode,
+            url,
+        }, res);
+    }
+
+    /**
      * If `optional` is false or absent, this parses an ordinary group,
      * which is either a single nucleus (like "x") or an expression
      * in braces (like "{x+y}").
@@ -973,53 +999,6 @@ export default class Parser {
             // The token will be consumed later in parseGivenFunction
             // (after possibly switching modes).
             return newFunction(nucleus);
-        } else if (/^\\(href|url)[^a-zA-Z]/.test(text)) {
-            const match = text.match(urlFunctionRegex);
-            if (!match) {
-                throw new ParseError(
-                    `Internal error: invalid URL token '${text}'`, nucleus);
-            }
-            const funcName = match[1];
-            // match[2] is the only one that can be an empty string,
-            // so it must be at the end of the following or chain:
-            const rawUrl = match[4] || match[3] || match[2];
-            // hyperref package allows backslashes alone in href, but doesn't
-            // generate valid links in such cases; we interpret this as
-            // "undefined" behaviour, and keep them as-is. Some browser will
-            // replace backslashes with forward slashes.
-            const url = rawUrl.replace(/\\([#$%&~_^{}])/g, '$1');
-            let protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
-            protocol = (protocol != null ? protocol[1] : "_relative");
-            const allowed = this.settings.allowedProtocols;
-            if (!utils.contains(allowed,  "*") &&
-                !utils.contains(allowed, protocol)) {
-                throw new ParseError(
-                    `Forbidden protocol '${protocol}' in ${funcName}`, nucleus);
-            }
-            const urlArg = {
-                type: "url",
-                mode: this.mode,
-                url,
-            };
-            this.consume();
-            if (funcName === "\\href") {  // two arguments
-                this.consumeSpaces();  // ignore spaces between arguments
-                let description = this.parseGroupOfType("original", false);
-                if (description == null) {
-                    throw new ParseError(`${funcName} missing second argument`,
-                        nucleus);
-                }
-                if (description.type === "fn") {
-                    description = this.parseGivenFunction(description);
-                } else { // arg.type === "arg"
-                    description = description.result;
-                }
-                return newArgument(this.callFunction(
-                    funcName, [urlArg, description], []), nucleus);
-            } else {  // one argument (\url)
-                return newArgument(this.callFunction(
-                    funcName, [urlArg], []), nucleus);
-            }
         } else if (/^\\verb[^a-zA-Z]/.test(text)) {
             this.consume();
             let arg = text.slice(5);
