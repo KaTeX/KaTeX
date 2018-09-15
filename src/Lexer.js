@@ -17,11 +17,9 @@ import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
 
 import type {LexerInterface} from "./Token";
-import type Settings from "./Settings";
 
 /* The following tokenRegex
  * - matches typical whitespace (but not NBSP etc.) using its first group
- * - matches comments (must have trailing newlines)
  * - does not match any control character \x00-\x1f except whitespace
  * - does not match a bare backslash
  * - matches any ASCII character except those just mentioned
@@ -36,7 +34,6 @@ import type Settings from "./Settings";
  * still reject the input.
  */
 const spaceRegexString = "[ \r\n\t]";
-const commentRegexString = "%[^\n]*(?:\n|$)";
 const controlWordRegexString = "\\\\[a-zA-Z@]+";
 const controlSymbolRegexString = "\\\\[^\uD800-\uDFFF]";
 const controlWordWhitespaceRegexString =
@@ -51,8 +48,7 @@ const urlFunctionRegexString = "(\\\\href|\\\\url)" +
     `|${spaceRegexString}+([^{}])` +
     `|${spaceRegexString}*([^{}a-zA-Z]))`;
 const tokenRegexString = `(${spaceRegexString}+)|` +  // whitespace
-    `(${commentRegexString}` +                        // comments
-    "|[!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
+    "([!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
     `${combiningDiacriticalMarkString}*` +            // ...plus accents
     "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair
     `${combiningDiacriticalMarkString}*` +            // ...plus accents
@@ -70,13 +66,11 @@ export const urlFunctionRegex = new RegExp(`^${urlFunctionRegexString}`);
 /** Main Lexer class */
 export default class Lexer implements LexerInterface {
     input: string;
-    settings: Settings;
     tokenRegex: RegExp;
 
-    constructor(input: string, settings: Settings) {
+    constructor(input: string) {
         // Separate accents from characters
         this.input = input;
-        this.settings = settings;
         this.tokenRegex = new RegExp(tokenRegexString, 'g');
     }
 
@@ -103,16 +97,7 @@ export default class Lexer implements LexerInterface {
             text = controlMatch[1] + text.slice(controlMatch[0].length);
         }
 
-        if (text[0] === "%") {
-            if (text[text.length - 1] !== "\n") {
-                this.settings.reportNonstrict("commentAtEnd",
-                    "% comment has no terminating newline; LaTeX would " +
-                    "fail because of commenting the end of math mode (e.g. $)");
-            }
-            return this.lex();
-        } else {
-            return new Token(text, new SourceLocation(this, pos,
-                this.tokenRegex.lastIndex));
-        }
+        return new Token(text, new SourceLocation(this, pos,
+            this.tokenRegex.lastIndex));
     }
 }

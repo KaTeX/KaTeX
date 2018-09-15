@@ -1591,6 +1591,16 @@ describe("A comment parser", function() {
         expect("% comment 1\n% comment 2\n").toParse();
     });
 
+    it("should parse comments between subscript and superscript", () => {
+        expect("x_3 %comment\n^2").toParseLike`x_3^2`;
+    });
+
+    it("should parse comments in size and color groups", () => {
+        expect("\\kern{1 %kern\nem}").toParse();
+        expect("\\kern1 %kern\nem").toParse();
+        expect("\\color{#f00%red\n}").toParse();
+    });
+
     it("should not parse a comment without newline in strict mode", () => {
         expect`x%y`.not.toParse(strictSettings);
         expect`x%y`.toParse(nonstrictSettings);
