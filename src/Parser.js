@@ -662,6 +662,14 @@ export default class Parser {
                 "Internal bug: 'url' arguments should be handled by Lexer",
                 this.nextToken);
         }
+        if (type === "raw") {
+            const token = this.parseStringGroup("raw", optional, true);
+            return token ? newArgument({
+                type: "raw",
+                mode: this.mode,
+                string: token.text,
+            }, token) : null;
+        }
 
         // By the time we get here, type is one of "text" or "math".
         // Specify this as mode to parseGroup.
@@ -681,28 +689,47 @@ export default class Parser {
     parseStringGroup(
         modeName: ArgType,  // Used to describe the mode in error messages.
         optional: boolean,
+        raw?: boolean,
     ): ?Token {
-        if (optional && this.nextToken.text !== "[") {
-            return null;
+        const groupBegin = optional ? "[" : "{";
+        const groupEnd = optional ? "]" : "}";
+        const nextToken = this.nextToken;
+        if (nextToken.text !== groupBegin) {
+            if (optional) {
+                return null;
+            } else if (raw && nextToken.text !== "EOF" &&
+                    /[^{}[\]]/.test(nextToken.text)) {
+                // allow a single character in raw string group
+                this.consume();
+                return nextToken;
+            }
         }
         const outerMode = this.mode;
         this.mode = "text";
-        this.expect(optional ? "[" : "{");
+        this.expect(groupBegin);
         let str = "";
         const firstToken = this.nextToken;
+        let nested = 0; // allow nested braces in raw string group
         let lastToken = firstToken;
-        while (this.nextToken.text !== (optional ? "]" : "}")) {
-            if (this.nextToken.text === "EOF") {
-                throw new ParseError(
-                    "Unexpected end of input in " + modeName,
-                    firstToken.range(this.nextToken, str));
+        while ((raw && nested > 0) || this.nextToken.text !== groupEnd) {
+            switch (this.nextToken.text) {
+                case "EOF":
+                    throw new ParseError(
+                        "Unexpected end of input in " + modeName,
+                        firstToken.range(lastToken, str));
+                case groupBegin:
+                    nested++;
+                    break;
+                case groupEnd:
+                    nested--;
+                    break;
             }
             lastToken = this.nextToken;
             str += lastToken.text;
             this.consume();
         }
         this.mode = outerMode;
-        this.expect(optional ? "]" : "}");
+        this.expect(groupEnd);
         return firstToken.range(lastToken, str);
     }
 
