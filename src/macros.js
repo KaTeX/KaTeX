@@ -298,8 +298,6 @@ defineMacro("\\providecommand", (context) => newcommand(context, true, true));
 // \let\bgroup={ \let\egroup=}
 defineMacro("\\bgroup", "{");
 defineMacro("\\egroup", "}");
-defineMacro("\\begingroup", "{");
-defineMacro("\\endgroup", "}");
 
 // Symbols from latex.ltx:
 // \def\lq{`}

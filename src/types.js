@@ -24,10 +24,9 @@ export type ArgType = "color" | "size" | "url" | "original" | Mode;
 export type StyleStr = "text" | "display" | "script" | "scriptscript";
 
 // Allowable token text for "break" arguments in parser.
-export type BreakToken = "]" | "}" | "$" | "\\)" | "\\cr";
+export type BreakToken = "]" | "}" | "\\endgroup" | "$" | "\\)" | "\\cr";
 
 // Math font variants.
 export type FontVariant = "bold" | "bold-italic" | "bold-sans-serif" |
     "double-struck" | "fraktur" | "italic" | "monospace" | "normal" | "sans-serif" |
     "sans-serif-bold-italic" | "sans-serif-italic" | "script";
-

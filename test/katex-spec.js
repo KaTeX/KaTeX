@@ -329,6 +329,34 @@ describe("A group parser", function() {
     });
 });
 
+describe("A \\begingroup...\\endgroup parser", function() {
+    it("should not fail", function() {
+        expect`\begingroup xy \endgroup`.toParse();
+    });
+
+    it("should fail when it is mismatched", function() {
+        expect`\begingroup xy`.not.toParse();
+        expect`\begingroup xy }`.not.toParse();
+    });
+
+    it("should produce a semi-simple group", function() {
+        const parse = getParsed`\begingroup xy \endgroup`;
+
+        expect(parse).toHaveLength(1);
+
+        const ord = parse[0];
+
+        expect(ord.type).toMatch("ord");
+        expect(ord.body).toBeTruthy();
+        expect(ord.semisimple).toBeTruthy();
+    });
+
+    it("should not affect spacing in math mode", function() {
+        const built = getBuilt`\begingroup x+ \endgroup y`;
+        expect(built).toMatchSnapshot();
+    });
+});
+
 describe("An implicit group parser", function() {
     it("should not fail", function() {
         expect`\Large x`.toParse();

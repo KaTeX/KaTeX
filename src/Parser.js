@@ -153,7 +153,7 @@ export default class Parser {
         return parse;
     }
 
-    static endOfExpression = ["}", "\\end", "\\right", "&"];
+    static endOfExpression = ["}", "\\endgroup", "\\end", "\\right", "&"];
 
     /**
      * Parses an "expression", which is a list of atoms.
@@ -815,43 +815,51 @@ export default class Parser {
     parseGroup(optional?: boolean, mode?: Mode): ?ParsedFuncOrArg {
         const outerMode = this.mode;
         const firstToken = this.nextToken;
-        // Try to parse an open brace
+        let semisimple;
+        let groupEnd;
+        // Try to parse an open brace or \begingroup
         if (this.nextToken.text === (optional ? "[" : "{")) {
-            // Switch to specified mode before we expand symbol after brace
-            if (mode) {
-                this.switchMode(mode);
-            }
-            // Start a new group namespace
-            this.gullet.beginGroup();
-            // If we get a brace, parse an expression
-            this.consume();
-            const expression = this.parseExpression(false, optional ? "]" : "}");
-            const lastToken = this.nextToken;
-            // Switch mode back before consuming symbol after close brace
-            if (mode) {
-                this.switchMode(outerMode);
-            }
-            // End group namespace before consuming symbol after close brace
-            this.gullet.endGroup();
-            // Make sure we get a close brace
-            this.expect(optional ? "]" : "}");
-            return newArgument({
-                type: "ordgroup",
-                mode: this.mode,
-                loc: SourceLocation.range(firstToken, lastToken),
-                body: expression,
-            }, firstToken.range(lastToken, firstToken.text));
-        } else {
-            // Otherwise, just return a nucleus, or nothing for an optional group
-            if (mode) {
-                this.switchMode(mode);
-            }
+            groupEnd = optional ? "]" : "}";
+        } else if (!optional && this.nextToken.text === "\\begingroup") {
+            // A group formed by /begingroup...\endgroup is a semi-simple group,
+            // which doesn't affect spacing in math mode, i.e., is transparent
+            semisimple = true;
+            groupEnd = "\\endgroup";
+        }
+        // Switch to specified mode before we expand symbol after brace
+        if (mode) {
+            this.switchMode(mode);
+        }
+        if (!groupEnd) {
+            // If we didn't get brace, just return a nucleus,
+            // or nothing for an optional group
             const result = optional ? null : this.parseSymbol();
             if (mode) {
                 this.switchMode(outerMode);
             }
             return result;
         }
+        // Start a new group namespace
+        this.gullet.beginGroup();
+        // If we get a brace, parse an expression
+        this.consume();
+        const expression = this.parseExpression(false, groupEnd);
+        const lastToken = this.nextToken;
+        // Switch mode back before consuming symbol after close brace
+        if (mode) {
+            this.switchMode(outerMode);
+        }
+        // End group namespace before consuming symbol after close brace
+        this.gullet.endGroup();
+        // Make sure we get a close brace or \endgroup
+        this.expect(groupEnd);
+        return newArgument({
+            type: "ordgroup",
+            mode: this.mode,
+            loc: SourceLocation.range(firstToken, lastToken),
+            body: expression,
+            semisimple,
+        }, firstToken.range(lastToken, firstToken.text));
     }
 
     /**
