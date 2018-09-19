@@ -2,7 +2,7 @@
 /* eslint no-constant-condition:0 */
 import functions from "./functions";
 import environments from "./environments";
-import MacroExpander from "./MacroExpander";
+import MacroExpander, {implicitCommands} from "./MacroExpander";
 import symbols, {ATOMS, extraLatin} from "./symbols";
 import {validUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
@@ -190,12 +190,6 @@ export default class Parser {
             }
             const atom = this.parseAtom(breakOnTokenText);
             if (!atom) {
-                if (!this.settings.throwOnError && lex.text[0] === "\\") {
-                    const errorNode = this.handleUnsupportedCmd();
-                    body.push(errorNode);
-                    continue;
-                }
-
                 break;
             }
             body.push(atom);
@@ -278,14 +272,10 @@ export default class Parser {
         const group = this.parseGroup();
 
         if (!group) {
-            if (!this.settings.throwOnError && this.nextToken.text[0] === "\\") {
-                return this.handleUnsupportedCmd();
-            } else {
-                throw new ParseError(
-                    "Expected group after '" + symbol + "'",
-                    symbolToken
-                );
-            }
+            throw new ParseError(
+                "Expected group after '" + symbol + "'",
+                symbolToken
+            );
         }
 
         if (group.type === "fn") {
@@ -603,7 +593,7 @@ export default class Parser {
                 this.consumeSpaces();
             }
             const nextToken = this.nextToken;
-            let arg = argType ?
+            const arg = argType ?
                 this.parseGroupOfType(argType, isOptional) :
                 this.parseGroup(isOptional);
             if (!arg) {
@@ -611,13 +601,8 @@ export default class Parser {
                     optArgs.push(null);
                     continue;
                 }
-                if (!this.settings.throwOnError &&
-                    this.nextToken.text[0] === "\\") {
-                    arg = newArgument(this.handleUnsupportedCmd(), nextToken);
-                } else {
-                    throw new ParseError(
-                        "Expected group after '" + func + "'", nextToken);
-                }
+                throw new ParseError(
+                    "Expected group after '" + func + "'", nextToken);
             }
             let argNode: AnyParseNode;
             if (arg.type === "fn") {
@@ -1053,6 +1038,12 @@ export default class Parser {
                 loc: SourceLocation.range(nucleus),
                 text,
             };
+        } else if (text[0] === "\\" && !implicitCommands.hasOwnProperty(text)) {
+            if (this.settings.throwOnError) {
+                throw new ParseError(
+                    "Undefined control sequence: " + text, nucleus);
+            }
+            return newArgument(this.handleUnsupportedCmd(), nucleus);
         } else {
             return null;  // EOF, ^, _, {, }, etc.
         }

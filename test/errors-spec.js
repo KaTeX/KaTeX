@@ -113,21 +113,11 @@ describe("Parser:", function() {
         });
     });
 
-    describe("#parseArguments", function() {
-        it("complains about missing argument at end of input", function() {
-            expect`2\sqrt`.toFailWithParseError(
-                   "Expected group after '\\sqrt' at end of input: 2\\sqrt");
-        });
-        it("complains about missing argument at end of group", function() {
-            expect`1^{2\sqrt}`.toFailWithParseError(
-                   "Expected group after '\\sqrt'" +
-                   " at position 10: 1^{2\\sqrt}̲");
-        });
-        it("complains about functions as arguments to others", function() {
-            // TODO: The position looks pretty wrong here
-            expect`\sqrt\over2`.toFailWithParseError(
-                   "Got function '\\over' as argument to '\\sqrt'" +
-                   " at position 6: \\sqrt\\̲o̲v̲e̲r̲2");
+    describe("#parseSymbol", function() {
+        it("complains about undefined control sequence", function() {
+            expect`\xyz`.toFailWithParseError(
+                   "Undefined control sequence: \\xyz" +
+                   " at position 1: \\̲x̲y̲z̲");
         });
     });
 
