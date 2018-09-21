@@ -169,17 +169,14 @@ defineFunction({
         const body = parser.parseExpression(false);
         --parser.leftrightDepth;
         // Check the next token
-        parser.expect("\\right", false);
-        const right = parser.parseFunction();
-        if (!right) {
-            throw new ParseError('failed to parse function after \\right');
-        }
+        const right = assertNodeType(
+            parser.parseFunction("\\right"), "leftright-right");
         return {
             type: "leftright",
             mode: parser.mode,
             body,
             left: delim.text,
-            right: assertNodeType(right, "leftright-right").delim,
+            right: right.delim,
         };
     },
     htmlBuilder: (group, options) => {

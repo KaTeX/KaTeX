@@ -114,11 +114,8 @@ function parseArray(
             }
             break;
         } else if (next === "\\cr") {
-            const cr = parser.parseFunction();
-            if (!cr) {
-                throw new ParseError(`Failed to parse function after ${next}`);
-            }
-            rowGaps.push(assertNodeType(cr, "cr").size);
+            const cr = assertNodeType(parser.parseFunction("\\cr"), "cr");
+            rowGaps.push(cr.size);
 
             // check for \hline(s) following the row separator
             hLinesBeforeRow.push(getHLines(parser));

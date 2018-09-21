@@ -427,14 +427,12 @@ export default class Parser {
      *   small text {\Large large text} small text again
      */
     parseImplicitGroup(breakOnTokenText?: BreakToken): ?AnyParseNode {
-        const start = this.parseSymbol();
+        const start = this.parseGroup();
 
         if (start == null) {
-            // If we didn't get anything we handle, fall back to parseFunction
-            return this.parseFunction();
+            return null;
         } else if (start.type === "arg") {
-            // Defer to parseGivenFunction if it's not a function we handle
-            return this.parseGivenFunction(start);
+            return start.result;
         }
 
         const func = start.result;
@@ -460,13 +458,8 @@ export default class Parser {
                 parser: this,
             };
             const result = env.handler(context, args, optArgs);
-            this.expect("\\end", false);
             const endNameToken = this.nextToken;
-            let end = this.parseFunction();
-            if (!end) {
-                throw new ParseError("failed to parse function after \\end");
-            }
-            end = assertNodeType(end, "environment");
+            const end = assertNodeType(this.parseFunction("\\end"), "environment");
             if (end.name !== envName) {
                 throw new ParseError(
                     `Mismatch: \\begin{${envName}} matched by \\end{${end.name}}`,
@@ -480,54 +473,47 @@ export default class Parser {
     }
 
     /**
-     * Parses an entire function, including its base and all of its arguments.
-     * It also handles the case where the parsed node is not a function.
+     * Parses an entire function of which name is provided, including its base
+     * and all of its arguments.
      */
-    parseFunction(): ?AnyParseNode {
-        const baseGroup = this.parseGroup();
-        return baseGroup ? this.parseGivenFunction(baseGroup) : null;
+    parseFunction(
+        name: string,
+    ): AnyParseNode {
+        this.expect(name, false);
+        return this.parseGivenFunction(newFunction(this.nextToken));
     }
 
     /**
-     * Same as parseFunction(), except that the base is provided, guaranteeing a
-     * non-nullable result.
+     * Same as parseFunction(), except that the base is provided.
      */
     parseGivenFunction(
-        baseGroup: ParsedFuncOrArg,
+        baseGroup: ParsedFunc,
         breakOnTokenText?: BreakToken,
     ): AnyParseNode {
-        if (baseGroup.type === "fn") {
-            const func = baseGroup.result;
-            const funcData = functions[func];
-            if (this.mode === "text" && !funcData.allowedInText) {
-                throw new ParseError(
-                    "Can't use function '" + func + "' in text mode",
-                    baseGroup.token);
-            } else if (this.mode === "math" &&
-                funcData.allowedInMath === false) {
-                throw new ParseError(
-                    "Can't use function '" + func + "' in math mode",
-                    baseGroup.token);
-            }
-
-            // Consume the command token after possibly switching to the
-            // mode specified by the function (for instant mode switching),
-            // and then immediately switch back.
-            if (funcData.consumeMode) {
-                const oldMode = this.mode;
-                this.switchMode(funcData.consumeMode);
-                this.consume();
-                this.switchMode(oldMode);
-            } else {
-                this.consume();
-            }
-            const {args, optArgs} = this.parseArguments(func, funcData);
-            const token = baseGroup.token;
-            return this.callFunction(
-                func, args, optArgs, token, breakOnTokenText);
-        } else {
-            return baseGroup.result;
+        const func = baseGroup.result;
+        const funcData = functions[func];
+        if (this.mode === "text" && !funcData.allowedInText) {
+            throw new ParseError(
+                "Can't use function '" + func + "' in text mode", baseGroup.token);
+        } else if (this.mode === "math" && funcData.allowedInMath === false) {
+            throw new ParseError(
+                "Can't use function '" + func + "' in math mode", baseGroup.token);
         }
+
+        // Consume the command token after possibly switching to the
+        // mode specified by the function (for instant mode switching),
+        // and then immediately switch back.
+        if (funcData.consumeMode) {
+            const oldMode = this.mode;
+            this.switchMode(funcData.consumeMode);
+            this.consume();
+            this.switchMode(oldMode);
+        } else {
+            this.consume();
+        }
+        const {args, optArgs} = this.parseArguments(func, funcData);
+        const token = baseGroup.token;
+        return this.callFunction(func, args, optArgs, token, breakOnTokenText);
     }
 
     /**
