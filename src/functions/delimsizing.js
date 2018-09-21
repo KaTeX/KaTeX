@@ -169,8 +169,8 @@ defineFunction({
         const body = parser.parseExpression(false);
         --parser.leftrightDepth;
         // Check the next token
-        const right = assertNodeType(
-            parser.parseFunction("\\right"), "leftright-right");
+        parser.expect("\\right", false);
+        const right = assertNodeType(parser.parseFunction(), "leftright-right");
         return {
             type: "leftright",
             mode: parser.mode,

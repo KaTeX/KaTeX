@@ -381,20 +381,9 @@ export default class Parser {
     }
 
     /**
-     * Parses an entire function of which name is provided, including its base
-     * and all of its arguments.
-     */
-    parseFunction(
-        name: string,
-    ): ?AnyParseNode {
-        this.expect(name, false);
-        return this.parseGivenFunction();
-    }
-
-    /**
      * Same as parseFunction(), except that the base is provided.
      */
-    parseGivenFunction(
+    parseFunction(
         breakOnTokenText?: BreakToken,
     ): ?AnyParseNode {
         const token = this.nextToken;
@@ -729,7 +718,7 @@ export default class Parser {
                     "Got function '" + text + "' with no arguments " +
                         "as " + name, firstToken);
             }
-            result = this.parseGivenFunction(breakOnTokenText);
+            result = this.parseFunction(breakOnTokenText);
         } else {
             // Otherwise, just return a nucleus
             result = this.parseSymbol();

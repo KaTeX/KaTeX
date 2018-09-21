@@ -41,9 +41,9 @@ defineFunction({
                 parser,
             };
             const result = env.handler(context, args, optArgs);
+            parser.expect("\\end", false);
             const endNameToken = parser.nextToken;
-            const end = assertNodeType(
-                parser.parseFunction("\\end"), "environment");
+            const end = assertNodeType(parser.parseFunction(), "environment");
             if (end.name !== envName) {
                 throw new ParseError(
                     `Mismatch: \\begin{${envName}} matched by \\end{${end.name}}`,

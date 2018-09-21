@@ -114,7 +114,7 @@ function parseArray(
             }
             break;
         } else if (next === "\\cr") {
-            const cr = assertNodeType(parser.parseFunction("\\cr"), "cr");
+            const cr = assertNodeType(parser.parseFunction(), "cr");
             rowGaps.push(cr.size);
 
             // check for \hline(s) following the row separator
