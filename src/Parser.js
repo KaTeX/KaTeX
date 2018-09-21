@@ -14,7 +14,7 @@ import {combiningDiacriticalMarksEndRegex, urlFunctionRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
-import type {AnyParseNode, SymbolParseNode} from "./parseNode";
+import type {ParseNode, AnyParseNode, SymbolParseNode} from "./parseNode";
 import type {Atom, Group} from "./symbols";
 import type {Mode, ArgType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
@@ -47,32 +47,8 @@ import type {EnvSpec} from "./defineEnvironment";
  * There are also extra `.handle...` functions, which pull out some reused
  * functionality into self-contained functions.
  *
- * The earlier functions return ParseNodes.
- * The later functions (which are called deeper in the parse) sometimes return
- * ParsedFuncOrArg, which contain a ParseNode as well as some data about
- * whether the parsed object is a function which is missing some arguments, or a
- * standalone object which can be used as an argument to another function.
+ * The functions return ParseNodes.
  */
-
-type ParsedFunc = {|
-    type: "fn",
-    result: string, // Function name defined via defineFunction (e.g. "\\frac").
-    token: Token,
-|};
-type ParsedArg = {|
-    type: "arg",
-    result: AnyParseNode,
-    token: Token,
-|};
-type ParsedFuncOrArg = ParsedFunc | ParsedArg;
-
-function newArgument(result: AnyParseNode, token: Token): ParsedArg {
-    return {type: "arg", result, token};
-}
-
-function newFunction(token: Token): ParsedFunc {
-    return {type: "fn", result: token.text, token};
-}
 
 export default class Parser {
     mode: Mode;
@@ -268,7 +244,7 @@ export default class Parser {
         const symbol = symbolToken.text;
         this.consume();
         this.consumeSpaces(); // ignore spaces before sup/subscript argument
-        const group = this.parseGroup();
+        const group = this.parseGroup(name, false, Parser.SUPSUB_GREEDINESS);
 
         if (!group) {
             throw new ParseError(
@@ -277,20 +253,7 @@ export default class Parser {
             );
         }
 
-        if (group.type === "fn") {
-            // ^ and _ have a greediness, so handle interactions with functions'
-            // greediness
-            const funcGreediness = functions[group.result].greediness;
-            if (funcGreediness > Parser.SUPSUB_GREEDINESS) {
-                return this.parseGivenFunction(group);
-            } else {
-                throw new ParseError(
-                    "Got function '" + group.result + "' with no arguments " +
-                        "as " + name, symbolToken);
-            }
-        } else {
-            return group.result;
-        }
+        return group;
     }
 
     /**
@@ -328,7 +291,7 @@ export default class Parser {
     parseAtom(breakOnTokenText?: BreakToken): ?AnyParseNode {
         // The body of an atom is an implicit group, so that things like
         // \left(x\right)^2 work correctly.
-        const base = this.parseImplicitGroup(breakOnTokenText);
+        const base = this.parseGroup("atom", false, null, breakOnTokenText);
 
         // In text mode, we don't have superscripts or subscripts
         if (this.mode === "text") {
@@ -418,51 +381,34 @@ export default class Parser {
     }
 
     /**
-     * Parses an implicit group, which is a group that starts at the end of a
-     * specified, and ends right before a higher explicit group ends, or at EOL. It
-     * is used for functions that appear to affect the current style, like \Large or
-     * \textrm, where instead of keeping a style we just pretend that there is an
-     * implicit grouping after it until the end of the group. E.g.
-     *   small text {\Large large text} small text again
-     */
-    parseImplicitGroup(breakOnTokenText?: BreakToken): ?AnyParseNode {
-        const start = this.parseGroup();
-
-        if (start == null) {
-            return null;
-        } else if (start.type === "arg") {
-            return start.result;
-        } else { // start.type === "fn"
-            return this.parseGivenFunction(start, breakOnTokenText);
-        }
-    }
-
-    /**
      * Parses an entire function of which name is provided, including its base
      * and all of its arguments.
      */
     parseFunction(
         name: string,
-    ): AnyParseNode {
+    ): ?AnyParseNode {
         this.expect(name, false);
-        return this.parseGivenFunction(newFunction(this.nextToken));
+        return this.parseGivenFunction();
     }
 
     /**
      * Same as parseFunction(), except that the base is provided.
      */
     parseGivenFunction(
-        baseGroup: ParsedFunc,
         breakOnTokenText?: BreakToken,
-    ): AnyParseNode {
-        const func = baseGroup.result;
+    ): ?AnyParseNode {
+        const token = this.nextToken;
+        const func = token.text;
         const funcData = functions[func];
+        if (!funcData) {
+            return null;
+        }
         if (this.mode === "text" && !funcData.allowedInText) {
             throw new ParseError(
-                "Can't use function '" + func + "' in text mode", baseGroup.token);
+                "Can't use function '" + func + "' in text mode", token);
         } else if (this.mode === "math" && funcData.allowedInMath === false) {
             throw new ParseError(
-                "Can't use function '" + func + "' in math mode", baseGroup.token);
+                "Can't use function '" + func + "' in math mode", token);
         }
 
         // Consume the command token after possibly switching to the
@@ -477,7 +423,6 @@ export default class Parser {
             this.consume();
         }
         const {args, optArgs} = this.parseArguments(func, funcData);
-        const token = baseGroup.token;
         return this.callFunction(func, args, optArgs, token, breakOnTokenText);
     }
 
@@ -544,9 +489,8 @@ export default class Parser {
                 this.consumeSpaces();
             }
             const nextToken = this.nextToken;
-            const arg = argType ?
-                this.parseGroupOfType(argType, isOptional) :
-                this.parseGroup(isOptional);
+            const arg = this.parseGroupOfType("argument to '" + func + "'",
+                argType, isOptional, baseGreediness);
             if (!arg) {
                 if (isOptional) {
                     optArgs.push(null);
@@ -555,21 +499,7 @@ export default class Parser {
                 throw new ParseError(
                     "Expected group after '" + func + "'", nextToken);
             }
-            let argNode: AnyParseNode;
-            if (arg.type === "fn") {
-                const argGreediness =
-                    functions[arg.result].greediness;
-                if (argGreediness > baseGreediness) {
-                    argNode = this.parseGivenFunction(arg);
-                } else {
-                    throw new ParseError(
-                        "Got function '" + arg.result + "' as " +
-                        "argument to '" + func + "'", nextToken);
-                }
-            } else {
-                argNode = arg.result;
-            }
-            (isOptional ? optArgs : args).push(argNode);
+            (isOptional ? optArgs : args).push(arg);
         }
 
         return {args, optArgs};
@@ -579,29 +509,31 @@ export default class Parser {
      * Parses a group when the mode is changing.
      */
     parseGroupOfType(
-        type: ArgType,  // Used to describe the mode in error messages.
+        name: string,
+        type: ?ArgType,
         optional: boolean,
-    ): ?ParsedFuncOrArg {
-        // Handle `original` argTypes
-        if (type === "original") {
-            type = this.mode;
+        greediness: ?number,
+    ): ?AnyParseNode {
+        switch (type) {
+            case "color":
+                return this.parseColorGroup(optional);
+            case "size":
+                return this.parseSizeGroup(optional);
+            case "url":
+                throw new ParseError(
+                    "Internal bug: 'url' arguments should be handled by Lexer",
+                    this.nextToken);
+            case "math":
+            case "text":
+                return this.parseGroup(name, optional, greediness, undefined, type);
+            case "original":
+            case null:
+            case undefined:
+                return this.parseGroup(name, optional, greediness);
+            default:
+                throw new ParseError(
+                    "Unknown group type as " + name, this.nextToken);
         }
-
-        if (type === "color") {
-            return this.parseColorGroup(optional);
-        }
-        if (type === "size") {
-            return this.parseSizeGroup(optional);
-        }
-        if (type === "url") {
-            throw new ParseError(
-                "Internal bug: 'url' arguments should be handled by Lexer",
-                this.nextToken);
-        }
-
-        // By the time we get here, type is one of "text" or "math".
-        // Specify this as mode to parseGroup.
-        return this.parseGroup(optional, type);
     }
 
     consumeSpaces() {
@@ -674,7 +606,7 @@ export default class Parser {
     /**
      * Parses a color description.
      */
-    parseColorGroup(optional: boolean): ?ParsedArg {
+    parseColorGroup(optional: boolean): ?ParseNode<"color-token"> {
         const res = this.parseStringGroup("color", optional);
         if (!res) {
             return null;
@@ -690,17 +622,17 @@ export default class Parser {
             // Predefined color names are all missed by this RegEx pattern.
             color = "#" + color;
         }
-        return newArgument({
+        return {
             type: "color-token",
             mode: this.mode,
             color,
-        }, res);
+        };
     }
 
     /**
      * Parses a size specification, consisting of magnitude and unit.
      */
-    parseSizeGroup(optional: boolean): ?ParsedArg {
+    parseSizeGroup(optional: boolean): ?ParseNode<"size"> {
         let res;
         let isBlank = false;
         if (!optional && this.nextToken.text !== "{") {
@@ -730,12 +662,12 @@ export default class Parser {
         if (!validUnit(data)) {
             throw new ParseError("Invalid unit: '" + data.unit + "'", res);
         }
-        return newArgument({
+        return {
             type: "size",
             mode: this.mode,
             value: data,
             isBlank,
-        }, res);
+        };
     }
 
     /**
@@ -748,15 +680,24 @@ export default class Parser {
      * If `mode` is present, switches to that mode while parsing the group,
      * and switches back after.
      */
-    parseGroup(optional?: boolean, mode?: Mode): ?ParsedFuncOrArg {
+    parseGroup(
+        name: string, // For error reporting.
+        optional?: boolean,
+        greediness?: ?number,
+        breakOnTokenText?: BreakToken,
+        mode?: Mode,
+    ): ?AnyParseNode {
         const outerMode = this.mode;
         const firstToken = this.nextToken;
+        const text = firstToken.text;
+        // Switch to specified mode
+        if (mode) {
+            this.switchMode(mode);
+        }
+
+        let result;
         // Try to parse an open brace
-        if (this.nextToken.text === (optional ? "[" : "{")) {
-            // Switch to specified mode before we expand symbol after brace
-            if (mode) {
-                this.switchMode(mode);
-            }
+        if (text === (optional ? "[" : "{")) {
             // Start a new group namespace
             this.gullet.beginGroup();
             // If we get a brace, parse an expression
@@ -771,23 +712,34 @@ export default class Parser {
             this.gullet.endGroup();
             // Make sure we get a close brace
             this.expect(optional ? "]" : "}");
-            return newArgument({
+            return {
                 type: "ordgroup",
                 mode: this.mode,
                 loc: SourceLocation.range(firstToken, lastToken),
                 body: expression,
-            }, firstToken.range(lastToken, firstToken.text));
+            };
+        } else if (optional) {
+            // Return nothing for an optional group
+            result = null;
+        } else if (functions[text]) {
+            // If there exists a function with this name, check function
+            // greediness and if valid, parse and return the function
+            if (greediness != null && functions[text].greediness <= greediness) {
+                throw new ParseError(
+                    "Got function '" + text + "' with no arguments " +
+                        "as " + name, firstToken);
+            }
+            result = this.parseGivenFunction(breakOnTokenText);
         } else {
-            // Otherwise, just return a nucleus, or nothing for an optional group
-            if (mode) {
-                this.switchMode(mode);
-            }
-            const result = optional ? null : this.parseSymbol();
-            if (mode) {
-                this.switchMode(outerMode);
-            }
-            return result;
+            // Otherwise, just return a nucleus
+            result = this.parseSymbol();
         }
+
+        // Switch mode back
+        if (mode) {
+            this.switchMode(outerMode);
+        }
+        return result;
     }
 
     /**
@@ -836,20 +788,14 @@ export default class Parser {
     }
 
     /**
-     * Parse a single symbol out of the string. Here, we handle both the functions
-     * we have defined, as well as the single character symbols
+     * Parse a single symbol out of the string. Here, we handle single character
+     * symbols and special functions like verbatim
      */
-    parseSymbol(): ?ParsedFuncOrArg {
+    parseSymbol(): ?AnyParseNode {
         const nucleus = this.nextToken;
         let text = nucleus.text;
 
-        if (functions[text]) {
-            // If there exists a function with this name, we return the
-            // function and say that it is a function.
-            // The token will be consumed later in parseGivenFunction
-            // (after possibly switching modes).
-            return newFunction(nucleus);
-        } else if (/^\\(href|url)[^a-zA-Z]/.test(text)) {
+        if (/^\\(href|url)[^a-zA-Z]/.test(text)) {
             const match = text.match(urlFunctionRegex);
             if (!match) {
                 throw new ParseError(
@@ -880,21 +826,15 @@ export default class Parser {
             this.consume();
             if (funcName === "\\href") {  // two arguments
                 this.consumeSpaces();  // ignore spaces between arguments
-                let description = this.parseGroupOfType("original", false);
+                const description = this.parseGroupOfType("argument to '\\href'",
+                    "original", false, null);
                 if (description == null) {
                     throw new ParseError(`${funcName} missing second argument`,
                         nucleus);
                 }
-                if (description.type === "fn") {
-                    description = this.parseGivenFunction(description);
-                } else { // arg.type === "arg"
-                    description = description.result;
-                }
-                return newArgument(this.callFunction(
-                    funcName, [urlArg, description], []), nucleus);
+                return this.callFunction(funcName, [urlArg, description], []);
             } else {  // one argument (\url)
-                return newArgument(this.callFunction(
-                    funcName, [urlArg], []), nucleus);
+                return this.callFunction(funcName, [urlArg], []);
             }
         } else if (/^\\verb[^a-zA-Z]/.test(text)) {
             this.consume();
@@ -910,12 +850,12 @@ export default class Parser {
                     please report what input caused this bug`);
             }
             arg = arg.slice(1, -1);  // remove first and last char
-            return newArgument({
+            return {
                 type: "verb",
                 mode: "text",
                 body: arg,
                 star,
-            }, nucleus);
+            };
         }
         // At this point, we should have a symbol, possibly with accents.
         // First expand any accented base symbol according to unicodeSymbols.
@@ -994,7 +934,7 @@ export default class Parser {
                 throw new ParseError(
                     "Undefined control sequence: " + text, nucleus);
             }
-            return newArgument(this.handleUnsupportedCmd(), nucleus);
+            return this.handleUnsupportedCmd();
         } else {
             return null;  // EOF, ^, _, {, }, etc.
         }
@@ -1023,6 +963,6 @@ export default class Parser {
                 };
             }
         }
-        return newArgument(symbol, nucleus);
+        return symbol;
     }
 }

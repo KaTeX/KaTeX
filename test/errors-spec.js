@@ -29,7 +29,7 @@ describe("Parser:", function() {
         it("rejects \\sqrt as argument to ^", function() {
             expect`1^\sqrt{2}`.toFailWithParseError(
                    "Got function '\\sqrt' with no arguments as superscript" +
-                   " at position 2: 1^̲\\sqrt{2}");
+                   " at position 3: 1^\\̲s̲q̲r̲t̲{2}");
         });
     });
 
@@ -108,8 +108,8 @@ describe("Parser:", function() {
         it("complains about functions as arguments to others", function() {
             // TODO: The position looks pretty wrong here
             expect`\sqrt\over2`.toFailWithParseError(
-                   "Got function '\\over' as argument to '\\sqrt'" +
-                   " at position 6: \\sqrt\\̲o̲v̲e̲r̲2");
+                   "Got function '\\over' with no arguments as argument to" +
+                   " '\\sqrt' at position 6: \\sqrt\\̲o̲v̲e̲r̲2");
         });
     });
 
