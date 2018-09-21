@@ -106,7 +106,6 @@ describe("Parser:", function() {
                    " at position 10: 1^{2\\sqrt}̲");
         });
         it("complains about functions as arguments to others", function() {
-            // TODO: The position looks pretty wrong here
             expect`\sqrt\over2`.toFailWithParseError(
                    "Got function '\\over' with no arguments as argument to" +
                    " '\\sqrt' at position 6: \\sqrt\\̲o̲v̲e̲r̲2");
@@ -238,7 +237,6 @@ describe("environments.js:", function() {
 
     describe("array environment", function() {
         it("rejects unknown column types", function() {
-            // TODO: The error position here looks strange
             expect`\begin{array}{cba}\end{array}`.toFailWithParseError(
                    "Unknown column alignment: b at position 16:" +
                    " \\begin{array}{cb̲a}\\end{array}");
