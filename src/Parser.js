@@ -1,7 +1,6 @@
 // @flow
 /* eslint no-constant-condition:0 */
 import functions from "./functions";
-import environments from "./environments";
 import MacroExpander, {implicitCommands} from "./MacroExpander";
 import symbols, {ATOMS, extraLatin} from "./symbols";
 import {validUnit} from "./units";
@@ -9,7 +8,7 @@ import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
 import utils from "./utils";
-import {assertNodeType, checkNodeType} from "./parseNode";
+import {checkNodeType} from "./parseNode";
 import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex, urlFunctionRegex} from "./Lexer";
 import Settings from "./Settings";
@@ -433,41 +432,7 @@ export default class Parser {
             return null;
         } else if (start.type === "arg") {
             return start.result;
-        }
-
-        const func = start.result;
-
-        if (func === "\\begin") {
-            // begin...end is similar to left...right
-            const begin =
-                assertNodeType(this.parseGivenFunction(start), "environment");
-
-            const envName = begin.name;
-            if (!environments.hasOwnProperty(envName)) {
-                throw new ParseError(
-                    "No such environment: " + envName, begin.nameGroup);
-            }
-            // Build the environment object. Arguments and other information will
-            // be made available to the begin and end methods using properties.
-            const env = environments[envName];
-            const {args, optArgs} =
-                this.parseArguments("\\begin{" + envName + "}", env);
-            const context = {
-                mode: this.mode,
-                envName: envName,
-                parser: this,
-            };
-            const result = env.handler(context, args, optArgs);
-            const endNameToken = this.nextToken;
-            const end = assertNodeType(this.parseFunction("\\end"), "environment");
-            if (end.name !== envName) {
-                throw new ParseError(
-                    `Mismatch: \\begin{${envName}} matched by \\end{${end.name}}`,
-                    endNameToken);
-            }
-            return result;
-        } else {
-            // Defer to parseGivenFunction if it's not a function we handle
+        } else { // start.type === "fn"
             return this.parseGivenFunction(start, breakOnTokenText);
         }
     }
