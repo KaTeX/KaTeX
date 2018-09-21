@@ -381,16 +381,23 @@ export default class Parser {
     }
 
     /**
-     * Same as parseFunction(), except that the base is provided.
+     * Parses an entire function, including its base and all of its arguments.
      */
     parseFunction(
         breakOnTokenText?: BreakToken,
+        name?: string, // For error reporting.
+        greediness?: ?number,
     ): ?AnyParseNode {
         const token = this.nextToken;
         const func = token.text;
         const funcData = functions[func];
         if (!funcData) {
             return null;
+        }
+        if (greediness != null && funcData.greediness <= greediness) {
+            throw new ParseError(
+                "Got function '" + func + "' with no arguments" +
+                (name ? " as " + name : ""), token);
         }
         if (this.mode === "text" && !funcData.allowedInText) {
             throw new ParseError(
@@ -662,7 +669,9 @@ export default class Parser {
     /**
      * If `optional` is false or absent, this parses an ordinary group,
      * which is either a single nucleus (like "x") or an expression
-     * in braces (like "{x+y}").
+     * in braces (like "{x+y}") or an implicit group, a group that starts
+     * at the current position, and ends right before a higher explicit
+     * group ends, or at EOF.
      * If `optional` is true, it parses either a bracket-delimited expression
      * (like "[x+y]") or returns null to indicate the absence of a
      * bracket-enclosed group.
@@ -710,18 +719,19 @@ export default class Parser {
         } else if (optional) {
             // Return nothing for an optional group
             result = null;
-        } else if (functions[text]) {
-            // If there exists a function with this name, check function
-            // greediness and if valid, parse and return the function
-            if (greediness != null && functions[text].greediness <= greediness) {
-                throw new ParseError(
-                    "Got function '" + text + "' with no arguments " +
-                        "as " + name, firstToken);
-            }
-            result = this.parseFunction(breakOnTokenText);
         } else {
+            // If there exists a function with this name, parse the function.
             // Otherwise, just return a nucleus
-            result = this.parseSymbol();
+            result = this.parseFunction(breakOnTokenText, name, greediness) ||
+                this.parseSymbol();
+            if (result == null && text[0] === "\\" &&
+                    !implicitCommands.hasOwnProperty(text)) {
+                if (this.settings.throwOnError) {
+                    throw new ParseError(
+                        "Undefined control sequence: " + text, firstToken);
+                }
+                result = this.handleUnsupportedCmd();
+            }
         }
 
         // Switch mode back
@@ -918,12 +928,6 @@ export default class Parser {
                 loc: SourceLocation.range(nucleus),
                 text,
             };
-        } else if (text[0] === "\\" && !implicitCommands.hasOwnProperty(text)) {
-            if (this.settings.throwOnError) {
-                throw new ParseError(
-                    "Undefined control sequence: " + text, nucleus);
-            }
-            return this.handleUnsupportedCmd();
         } else {
             return null;  // EOF, ^, _, {, }, etc.
         }

@@ -113,7 +113,7 @@ describe("Parser:", function() {
         });
     });
 
-    describe("#parseSymbol", function() {
+    describe("#parseGroup", function() {
         it("complains about undefined control sequence", function() {
             expect`\xyz`.toFailWithParseError(
                    "Undefined control sequence: \\xyz" +
