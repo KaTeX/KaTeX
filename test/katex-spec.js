@@ -2532,7 +2532,7 @@ describe("href and url commands", function() {
     });
 
     it("should allow balanced braces in url", function() {
-        const url = "http://example.org/{too}";
+        const url = "http://example.org/{{}t{oo}}";
         const parsed1 = getParsed(`\\href{${url}}{\\alpha}`)[0];
         expect(parsed1.href).toBe(url);
         const parsed2 = getParsed(`\\url{${url}}`)[0];
