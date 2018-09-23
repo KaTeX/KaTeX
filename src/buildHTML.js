@@ -106,7 +106,7 @@ export const buildExpression = function(
 
     // Before determining what spaces to insert, perform bin cancellation.
     // Binary operators change to ordinary symbols in some contexts.
-    traverseNodes(groups, (node, prev) => {
+    traverseNonSpaceNodes(groups, (node, prev) => {
         const prevType = prev.classes[0];
         const type = node.classes[0];
         if (prevType === "mbin" && utils.contains(binRightCanceller, type)) {
@@ -116,7 +116,7 @@ export const buildExpression = function(
         }
     }, {node: dummyPrev}, dummyNext);
 
-    traverseNodes(groups, (node, prev) => {
+    traverseNonSpaceNodes(groups, (node, prev) => {
         const prevType = getTypeOfDomTree(prev);
         const type = getTypeOfDomTree(node);
 
@@ -136,7 +136,8 @@ export const buildExpression = function(
 // previous node as arguments, optionally returning a node to insert after the
 // previous node. `prev` is an object with the previous node and `insertAfter`
 // function to insert after it. `next` is a node that will be added to the right.
-const traverseNodes = function(
+// Used for bin cancellation and inserting spacings.
+const traverseNonSpaceNodes = function(
     nodes: HtmlDomNode[],
     callback: (HtmlDomNode, HtmlDomNode) => ?HtmlDomNode,
     prev: {|
@@ -152,8 +153,8 @@ const traverseNodes = function(
     for (; i < nodes.length; i++) {
         const node = nodes[i];
         const partialGroup = checkPartialGroup(node);
-        if (partialGroup) {
-            traverseNodes(partialGroup.children, callback, prev); // Recursive DFS
+        if (partialGroup) { // Recursive DFS
+            traverseNonSpaceNodes(partialGroup.children, callback, prev);
             continue;
         }
 
@@ -184,8 +185,7 @@ const traverseNodes = function(
     }
 };
 
-// Check if given node is a partial group, i.e., does not affect spacing around,
-// like fragment.
+// Check if given node is a partial group, i.e., does not affect spacing around.
 const checkPartialGroup = function(
     node: HtmlDomNode,
 ): ?(DocumentFragment<HtmlDomNode> | Anchor) {

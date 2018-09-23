@@ -352,8 +352,7 @@ describe("A \\begingroup...\\endgroup parser", function() {
     });
 
     it("should not affect spacing in math mode", function() {
-        const built = getBuilt`\begingroup x+ \endgroup y`;
-        expect(built).toMatchSnapshot();
+        expect`\begingroup x+ \endgroup y`.toBuildLike`x+y`;
     });
 });
 
