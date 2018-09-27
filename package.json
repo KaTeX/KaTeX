@@ -24,7 +24,7 @@
     "@babel/register": "^7.0.0",
     "@babel/runtime": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-eslint": "^9.0.0",
+    "babel-eslint": "^10.0.1",
     "babel-jest": "^23.0.1",
     "babel-loader": "^8.0.2",
     "babel-plugin-istanbul": "^5.0.1",
