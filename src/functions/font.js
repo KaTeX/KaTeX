@@ -32,7 +32,7 @@ defineFunction({
     type: "font",
     names: [
         // styles, except \boldsymbol defined below
-        "\\mathrm", "\\mathit", "\\mathbf",
+        "\\mathrm", "\\mathit", "\\mathbf", "\\mathnormal",
 
         // families
         "\\mathbb", "\\mathcal", "\\mathfrak", "\\mathscr", "\\mathsf",
