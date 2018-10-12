@@ -85,7 +85,7 @@ export const getVariant = function(
     }
 
     const font = options.font;
-    if (!font) {
+    if (!font || font === "mathnormal") {
         return null;
     }
 
