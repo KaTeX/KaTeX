@@ -863,7 +863,7 @@ exports[`href and url commands should not affect spacing around 1`] = `
   {
     "classes": [
       "mord",
-      "mathit"
+      "mathdefault"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -927,7 +927,7 @@ exports[`href and url commands should not affect spacing around 1`] = `
       {
         "classes": [
           "mord",
-          "mathit"
+          "mathdefault"
         ],
         "depth": 0,
         "height": 0.69444,
