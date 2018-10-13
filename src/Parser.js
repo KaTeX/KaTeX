@@ -11,7 +11,7 @@ import unicodeSymbols from "./unicodeSymbols";
 import utils from "./utils";
 import {assertNodeType, checkNodeType} from "./parseNode";
 import ParseError from "./ParseError";
-import {combiningDiacriticalMarksEndRegex, urlFunctionRegex} from "./Lexer";
+import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
@@ -405,6 +405,8 @@ export default class Parser {
                 }
                 // Put everything into an ordgroup as the superscript
                 superscript = {type: "ordgroup", mode: this.mode, body: primes};
+            } else if (lex.text === "%") {
+                this.consumeComment();
             } else {
                 // If it wasn't ^, _, or ', stop parsing super/subscripts
                 break;
@@ -658,9 +660,15 @@ export default class Parser {
             return this.parseSizeGroup(optional);
         }
         if (type === "url") {
-            throw new ParseError(
-                "Internal bug: 'url' arguments should be handled by Lexer",
-                this.nextToken);
+            return this.parseUrlGroup(optional);
+        }
+        if (type === "raw") {
+            const token = this.parseStringGroup("raw", optional, true);
+            return token ? newArgument({
+                type: "raw",
+                mode: this.mode,
+                string: token.text,
+            }, token) : null;
         }
 
         // By the time we get here, type is one of "text" or "math".
@@ -674,6 +682,27 @@ export default class Parser {
         }
     }
 
+    consumeComment() {
+        // the newline character is normalized in Lexer, check original source
+        while (this.nextToken.text !== "EOF" && this.nextToken.loc &&
+                this.nextToken.loc.getSource().indexOf("\n") === -1) {
+            this.consume();
+        }
+        if (this.nextToken.text === "EOF") {
+            this.settings.reportNonstrict("commentAtEnd",
+                "% comment has no terminating newline; LaTeX would " +
+                "fail because of commenting the end of math mode (e.g. $)");
+        }
+        if (this.mode === "math") {
+            this.consumeSpaces(); // ignore spaces in math mode
+        } else if (this.nextToken.loc) { // text mode
+            const source = this.nextToken.loc.getSource();
+            if (source.indexOf("\n") === source.length - 1) {
+                this.consumeSpaces(); // if no space after the first newline
+            }
+        }
+    }
+
     /**
      * Parses a group, essentially returning the string formed by the
      * brace-enclosed tokens plus some position information.
@@ -681,28 +710,53 @@ export default class Parser {
     parseStringGroup(
         modeName: ArgType,  // Used to describe the mode in error messages.
         optional: boolean,
+        raw?: boolean,
     ): ?Token {
-        if (optional && this.nextToken.text !== "[") {
-            return null;
+        const groupBegin = optional ? "[" : "{";
+        const groupEnd = optional ? "]" : "}";
+        const nextToken = this.nextToken;
+        if (nextToken.text !== groupBegin) {
+            if (optional) {
+                return null;
+            } else if (raw && nextToken.text !== "EOF" &&
+                    /[^{}[\]]/.test(nextToken.text)) {
+                // allow a single character in raw string group
+                this.consume();
+                return nextToken;
+            }
         }
         const outerMode = this.mode;
         this.mode = "text";
-        this.expect(optional ? "[" : "{");
+        this.expect(groupBegin);
         let str = "";
         const firstToken = this.nextToken;
+        let nested = 0; // allow nested braces in raw string group
         let lastToken = firstToken;
-        while (this.nextToken.text !== (optional ? "]" : "}")) {
-            if (this.nextToken.text === "EOF") {
-                throw new ParseError(
-                    "Unexpected end of input in " + modeName,
-                    firstToken.range(this.nextToken, str));
+        while ((raw && nested > 0) || this.nextToken.text !== groupEnd) {
+            switch (this.nextToken.text) {
+                case "EOF":
+                    throw new ParseError(
+                        "Unexpected end of input in " + modeName,
+                        firstToken.range(lastToken, str));
+                case "%":
+                    if (!raw) { // allow % in raw string group
+                        this.consumeComment();
+                        continue;
+                    }
+                    break;
+                case groupBegin:
+                    nested++;
+                    break;
+                case groupEnd:
+                    nested--;
+                    break;
             }
             lastToken = this.nextToken;
             str += lastToken.text;
             this.consume();
         }
         this.mode = outerMode;
-        this.expect(optional ? "]" : "}");
+        this.expect(groupEnd);
         return firstToken.range(lastToken, str);
     }
 
@@ -720,8 +774,12 @@ export default class Parser {
         const firstToken = this.nextToken;
         let lastToken = firstToken;
         let str = "";
-        while (this.nextToken.text !== "EOF"
-            && regex.test(str + this.nextToken.text)) {
+        while (this.nextToken.text !== "EOF" && (regex.test(
+                str + this.nextToken.text) || this.nextToken.text === "%")) {
+            if (this.nextToken.text === "%") {
+                this.consumeComment();
+                continue;
+            }
             lastToken = this.nextToken;
             str += lastToken.text;
             this.consume();
@@ -799,6 +857,34 @@ export default class Parser {
             mode: this.mode,
             value: data,
             isBlank,
+        }, res);
+    }
+
+    /**
+     * Parses an URL, checking escaped letters and allowed protocols.
+     */
+    parseUrlGroup(optional: boolean): ?ParsedArg {
+        const res = this.parseStringGroup("url", optional, true); // get raw string
+        if (!res) {
+            return null;
+        }
+        // hyperref package allows backslashes alone in href, but doesn't
+        // generate valid links in such cases; we interpret this as
+        // "undefined" behaviour, and keep them as-is. Some browser will
+        // replace backslashes with forward slashes.
+        const url = res.text.replace(/\\([#$%&~_^{}])/g, '$1');
+        let protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
+        protocol = (protocol != null ? protocol[1] : "_relative");
+        const allowed = this.settings.allowedProtocols;
+        if (!utils.contains(allowed,  "*") &&
+            !utils.contains(allowed, protocol)) {
+            throw new ParseError(
+                `Forbidden protocol '${protocol}'`, res);
+        }
+        return newArgument({
+            type: "url",
+            mode: this.mode,
+            url,
         }, res);
     }
 
@@ -913,53 +999,6 @@ export default class Parser {
             // The token will be consumed later in parseGivenFunction
             // (after possibly switching modes).
             return newFunction(nucleus);
-        } else if (/^\\(href|url)[^a-zA-Z]/.test(text)) {
-            const match = text.match(urlFunctionRegex);
-            if (!match) {
-                throw new ParseError(
-                    `Internal error: invalid URL token '${text}'`, nucleus);
-            }
-            const funcName = match[1];
-            // match[2] is the only one that can be an empty string,
-            // so it must be at the end of the following or chain:
-            const rawUrl = match[4] || match[3] || match[2];
-            // hyperref package allows backslashes alone in href, but doesn't
-            // generate valid links in such cases; we interpret this as
-            // "undefined" behaviour, and keep them as-is. Some browser will
-            // replace backslashes with forward slashes.
-            const url = rawUrl.replace(/\\([#$%&~_^{}])/g, '$1');
-            let protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
-            protocol = (protocol != null ? protocol[1] : "_relative");
-            const allowed = this.settings.allowedProtocols;
-            if (!utils.contains(allowed,  "*") &&
-                !utils.contains(allowed, protocol)) {
-                throw new ParseError(
-                    `Forbidden protocol '${protocol}' in ${funcName}`, nucleus);
-            }
-            const urlArg = {
-                type: "url",
-                mode: this.mode,
-                url,
-            };
-            this.consume();
-            if (funcName === "\\href") {  // two arguments
-                this.consumeSpaces();  // ignore spaces between arguments
-                let description = this.parseGroupOfType("original", false);
-                if (description == null) {
-                    throw new ParseError(`${funcName} missing second argument`,
-                        nucleus);
-                }
-                if (description.type === "fn") {
-                    description = this.parseGivenFunction(description);
-                } else { // arg.type === "arg"
-                    description = description.result;
-                }
-                return newArgument(this.callFunction(
-                    funcName, [urlArg, description], []), nucleus);
-            } else {  // one argument (\url)
-                return newArgument(this.callFunction(
-                    funcName, [urlArg], []), nucleus);
-            }
         } else if (/^\\verb[^a-zA-Z]/.test(text)) {
             this.consume();
             let arg = text.slice(5);
@@ -980,6 +1019,9 @@ export default class Parser {
                 body: arg,
                 star,
             }, nucleus);
+        } else if (text === "%") {
+            this.consumeComment();
+            return this.parseSymbol();
         }
         // At this point, we should have a symbol, possibly with accents.
         // First expand any accented base symbol according to unicodeSymbols.
