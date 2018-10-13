@@ -44,7 +44,7 @@ const program = require("commander")
         "If non-zero, all user-specified sizes, e.g. in " +
         "\\rule{500em}{500em}, will be capped to maxSize ems. " +
         "Otherwise, elements and spaces can be arbitrarily large",
-        0, parseInt)
+        Infinity, parseInt)
     .option("-e, --max-expand <n>",
         "Limit the number of macro expansions to the specified number, to " +
         "prevent e.g. infinite macro loops.  If set to Infinity, the macro " +

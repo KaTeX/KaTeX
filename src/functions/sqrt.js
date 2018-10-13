@@ -5,7 +5,6 @@ import mathMLTree from "../mathMLTree";
 import delimiter from "../delimiter";
 import Style from "../Style";
 
-import {DocumentFragment} from "../tree";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
@@ -39,9 +38,7 @@ defineFunction({
 
         // Some groups can return document fragments.  Handle those by wrapping
         // them in a span.
-        if (inner instanceof DocumentFragment) {
-            inner = buildCommon.makeSpan([], [inner], options);
-        }
+        inner = buildCommon.wrapFragment(inner, options);
 
         // Calculate the minimum size for the \surd delimiter
         const metrics = options.fontMetrics();
