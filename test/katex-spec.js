@@ -1483,13 +1483,15 @@ describe("A style change parser", function() {
 });
 
 describe("A font parser", function() {
-    it("should parse \\mathrm, \\mathbb, and \\mathit", function() {
+    it("should parse \\mathrm, \\mathbb, \\mathit, and \\mathnormal", function() {
         expect`\mathrm x`.toParse();
         expect`\mathbb x`.toParse();
         expect`\mathit x`.toParse();
+        expect`\mathnormal x`.toParse();
         expect`\mathrm {x + 1}`.toParse();
         expect`\mathbb {x + 1}`.toParse();
         expect`\mathit {x + 1}`.toParse();
+        expect`\mathnormal {x + 1}`.toParse();
     });
 
     it("should parse \\mathcal and \\mathfrak", function() {
@@ -1509,6 +1511,10 @@ describe("A font parser", function() {
         const mathitParse = getParsed`\mathit x`[0];
         expect(mathitParse.font).toEqual("mathit");
         expect(mathitParse.type).toEqual("font");
+
+        const mathnormalParse = getParsed`\mathnormal x`[0];
+        expect(mathnormalParse.font).toEqual("mathnormal");
+        expect(mathnormalParse.type).toEqual("font");
 
         const mathcalParse = getParsed`\mathcal C`[0];
         expect(mathcalParse.font).toEqual("mathcal");
@@ -1789,6 +1795,19 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mn mathvariant=\"italic\">2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi>\u03A9</mi>");   // \Omega
+        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
+    it("should render \\mathnormal{" + contents + "} with the correct mathvariants", function() {
+        const tex = `\\mathnormal{${contents}}`;
+        const tree = getParsed(tex);
+        const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi>A</mi>");
+        expect(markup).toContain("<mi>x</mi>");
+        expect(markup).toContain("<mn>2</mn>");
+        expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
         expect(markup).toContain("<mi>\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
