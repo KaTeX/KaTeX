@@ -29,7 +29,7 @@ describe("Parser:", function() {
         it("rejects \\sqrt as argument to ^", function() {
             expect`1^\sqrt{2}`.toFailWithParseError(
                    "Got function '\\sqrt' with no arguments as superscript" +
-                   " at position 2: 1^̲\\sqrt{2}");
+                   " at position 3: 1^\\̲s̲q̲r̲t̲{2}");
         });
     });
 
@@ -106,28 +106,17 @@ describe("Parser:", function() {
                    " at position 10: 1^{2\\sqrt}̲");
         });
         it("complains about functions as arguments to others", function() {
-            // TODO: The position looks pretty wrong here
             expect`\sqrt\over2`.toFailWithParseError(
-                   "Got function '\\over' as argument to '\\sqrt'" +
-                   " at position 6: \\sqrt\\̲o̲v̲e̲r̲2");
+                   "Got function '\\over' with no arguments as argument to" +
+                   " '\\sqrt' at position 6: \\sqrt\\̲o̲v̲e̲r̲2");
         });
     });
 
-    describe("#parseArguments", function() {
-        it("complains about missing argument at end of input", function() {
-            expect`2\sqrt`.toFailWithParseError(
-                   "Expected group after '\\sqrt' at end of input: 2\\sqrt");
-        });
-        it("complains about missing argument at end of group", function() {
-            expect`1^{2\sqrt}`.toFailWithParseError(
-                   "Expected group after '\\sqrt'" +
-                   " at position 10: 1^{2\\sqrt}̲");
-        });
-        it("complains about functions as arguments to others", function() {
-            // TODO: The position looks pretty wrong here
-            expect`\sqrt\over2`.toFailWithParseError(
-                   "Got function '\\over' as argument to '\\sqrt'" +
-                   " at position 6: \\sqrt\\̲o̲v̲e̲r̲2");
+    describe("#parseGroup", function() {
+        it("complains about undefined control sequence", function() {
+            expect`\xyz`.toFailWithParseError(
+                   "Undefined control sequence: \\xyz" +
+                   " at position 1: \\̲x̲y̲z̲");
         });
     });
 
@@ -248,7 +237,6 @@ describe("environments.js:", function() {
 
     describe("array environment", function() {
         it("rejects unknown column types", function() {
-            // TODO: The error position here looks strange
             expect`\begin{array}{cba}\end{array}`.toFailWithParseError(
                    "Unknown column alignment: b at position 16:" +
                    " \\begin{array}{cb̲a}\\end{array}");
