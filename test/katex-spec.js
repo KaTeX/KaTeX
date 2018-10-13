@@ -1597,6 +1597,16 @@ describe("A comment parser", function() {
         expect("% comment 1\n% comment 2\n").toParse();
     });
 
+    it("should parse comments between subscript and superscript", () => {
+        expect("x_3 %comment\n^2").toParseLike`x_3^2`;
+    });
+
+    it("should parse comments in size and color groups", () => {
+        expect("\\kern{1 %kern\nem}").toParse();
+        expect("\\kern1 %kern\nem").toParse();
+        expect("\\color{#f00%red\n}").toParse();
+    });
+
     it("should not parse a comment without newline in strict mode", () => {
         expect`x%y`.not.toParse(strictSettings);
         expect`x%y`.toParse(nonstrictSettings);
@@ -2527,12 +2537,6 @@ describe("href and url commands", function() {
         expect("\\url%end").toParseLike("\\url {%}end");
     });
 
-    it("should detect missing second argument in \\href", () => {
-        expect`\href{http://example.com/}`.not.toParse();
-        expect`\href%`.not.toParse();
-        expect`\href %`.not.toParse();
-    });
-
     it("should allow spaces single-character URLs", () => {
         expect`\href %end`.toParseLike("\\href{%}end");
         expect("\\url %end").toParseLike("\\url{%}end");
@@ -2547,7 +2551,7 @@ describe("href and url commands", function() {
     });
 
     it("should allow balanced braces in url", function() {
-        const url = "http://example.org/{too}";
+        const url = "http://example.org/{{}t{oo}}";
         const parsed1 = getParsed(`\\href{${url}}{\\alpha}`)[0];
         expect(parsed1.href).toBe(url);
         const parsed2 = getParsed(`\\url{${url}}`)[0];
