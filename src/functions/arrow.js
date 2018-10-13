@@ -44,15 +44,19 @@ defineFunction({
         // Build the argument groups in the appropriate style.
         // Ref: amsmath.dtx:   \hbox{$\scriptstyle\mkern#3mu{#6}\mkern#4mu$}%
 
+        // Some groups can return document fragments.  Handle those by wrapping
+        // them in a span.
         let newOptions = options.havingStyle(style.sup());
-        const upperGroup = html.buildGroup(group.body, newOptions, options);
+        const upperGroup = buildCommon.wrapFragment(
+            html.buildGroup(group.body, newOptions, options), options);
         upperGroup.classes.push("x-arrow-pad");
 
         let lowerGroup;
         if (group.below) {
             // Build the lower group
             newOptions = options.havingStyle(style.sub());
-            lowerGroup = html.buildGroup(group.below, newOptions, options);
+            lowerGroup = buildCommon.wrapFragment(
+                html.buildGroup(group.below, newOptions, options), options);
             lowerGroup.classes.push("x-arrow-pad");
         }
 

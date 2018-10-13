@@ -1597,6 +1597,16 @@ describe("A comment parser", function() {
         expect("% comment 1\n% comment 2\n").toParse();
     });
 
+    it("should parse comments between subscript and superscript", () => {
+        expect("x_3 %comment\n^2").toParseLike`x_3^2`;
+    });
+
+    it("should parse comments in size and color groups", () => {
+        expect("\\kern{1 %kern\nem}").toParse();
+        expect("\\kern1 %kern\nem").toParse();
+        expect("\\color{#f00%red\n}").toParse();
+    });
+
     it("should not parse a comment without newline in strict mode", () => {
         expect`x%y`.not.toParse(strictSettings);
         expect`x%y`.toParse(nonstrictSettings);
@@ -2405,6 +2415,23 @@ describe("A smash builder", function() {
     });
 });
 
+describe("A document fragment", function() {
+    it("should have paddings applied inside an extensible arrow", function() {
+        const markup = katex.renderToString("\\tiny\\xrightarrow\\textcolor{red}{x}");
+        expect(markup).toContain("x-arrow-pad");
+    });
+
+    it("should have paddings applied inside an enclose", function() {
+        const markup = katex.renderToString(r`\fbox\textcolor{red}{x}`);
+        expect(markup).toContain("boxpad");
+    });
+
+    it("should have paddings applied inside a square root", function() {
+        const markup = katex.renderToString(r`\sqrt\textcolor{red}{x}`);
+        expect(markup).toContain("padding-left");
+    });
+});
+
 describe("A parser error", function() {
     it("should report the position of an error", function() {
         try {
@@ -2509,7 +2536,7 @@ describe("href and url commands", function() {
     // We can't use raw strings for \url because \u is for Unicode escapes.
 
     it("should parse its input", function() {
-        expect`\href{http://example.com/}{example here}`.toBuild();
+        expect`\href{http://example.com/}{\sin}`.toBuild();
         expect("\\url{http://example.com/}").toBuild();
     });
 
@@ -2527,12 +2554,6 @@ describe("href and url commands", function() {
         expect("\\url%end").toParseLike("\\url {%}end");
     });
 
-    it("should detect missing second argument in \\href", () => {
-        expect`\href{http://example.com/}`.not.toParse();
-        expect`\href%`.not.toParse();
-        expect`\href %`.not.toParse();
-    });
-
     it("should allow spaces single-character URLs", () => {
         expect`\href %end`.toParseLike("\\href{%}end");
         expect("\\url %end").toParseLike("\\url{%}end");
@@ -2547,7 +2568,7 @@ describe("href and url commands", function() {
     });
 
     it("should allow balanced braces in url", function() {
-        const url = "http://example.org/{too}";
+        const url = "http://example.org/{{}t{oo}}";
         const parsed1 = getParsed(`\\href{${url}}{\\alpha}`)[0];
         expect(parsed1.href).toBe(url);
         const parsed2 = getParsed(`\\url{${url}}`)[0];
