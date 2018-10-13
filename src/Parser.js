@@ -771,12 +771,13 @@ export default class Parser {
         const outerMode = this.mode;
         const firstToken = this.nextToken;
         const text = firstToken.text;
-        let groupEnd;
-        let result;
         // Switch to specified mode
         if (mode) {
             this.switchMode(mode);
         }
+
+        let groupEnd;
+        let result;
         // Try to parse an open brace or \begingroup
         if (optional ? text === "["  : text === "{" || text === "\\begingroup") {
             groupEnd = Parser.endOfGroup[text];
@@ -793,6 +794,10 @@ export default class Parser {
                 mode: this.mode,
                 loc: SourceLocation.range(firstToken, lastToken),
                 body: expression,
+                // A group formed by \begingroup...\endgroup is a semi-simple group
+                // which doesn't affect spacing in math mode, i.e., is transparent.
+                // https://tex.stackexchange.com/questions/1930/when-should-one-
+                // use-begingroup-instead-of-bgroup
                 semisimple: text === "\\begingroup" || undefined,
             };
         } else if (optional) {
@@ -812,6 +817,7 @@ export default class Parser {
                 result = this.handleUnsupportedCmd();
             }
         }
+
         // Switch mode back
         if (mode) {
             this.switchMode(outerMode);
