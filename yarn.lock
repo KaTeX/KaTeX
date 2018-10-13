@@ -2703,9 +2703,9 @@ eslint-plugin-react@^7.10.0:
     jsx-ast-utils "^2.0.1"
     prop-types "^15.6.2"
 
-eslint-plugin-transform-runtime-aliasing@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-transform-runtime-aliasing/-/eslint-plugin-transform-runtime-aliasing-1.2.0.tgz#f5e35418b0a1f2e5510c1d4e592180fcde52cba3"
+eslint-plugin-transform-runtime-aliasing@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-transform-runtime-aliasing/-/eslint-plugin-transform-runtime-aliasing-2.0.0.tgz#ddb1ad88a9f0d97ea892c95cb421d7fbb5e01676"
 
 eslint-scope@3.7.1:
   version "3.7.1"
