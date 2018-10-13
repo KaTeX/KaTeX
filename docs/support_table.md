@@ -522,6 +522,7 @@ table td {
 |\LaTeX|$\LaTeX$||
 |\lbrace|$\lbrace$||
 |\lbrack|$\lbrack$||
+|\lparen|$\lparen||
 |\lceil|$\lceil$||
 |\ldotp|$\ldotp$||
 |\ldots|$\ldots$||
@@ -831,6 +832,7 @@ table td {
 |\rarr|$\rarr$||
 |\rbrace|$\rbrace$||
 |\rbrack|$\rbrack$||
+|\rparen|$\rparen$||
 |\rceil|$\rceil$||
 |\Re|$\Re$||
 |\real|$\real$||

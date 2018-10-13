@@ -245,12 +245,12 @@ const makeStackedDelim = function(
         top = "\u23a4";
         repeat = bottom = "\u23a5";
         font = "Size4-Regular";
-    } else if (delim === "(") {
+    } else if (delim === "(" || delim === "\\lparen") {
         top = "\u239b";
         repeat = "\u239c";
         bottom = "\u239d";
         font = "Size4-Regular";
-    } else if (delim === ")") {
+    } else if (delim === ")" || delim === "\\rparen") {
         top = "\u239e";
         repeat = "\u239f";
         bottom = "\u23a0";
@@ -489,7 +489,8 @@ const makeSqrtImage = function(
 // There are three kinds of delimiters, delimiters that stack when they become
 // too large
 const stackLargeDelimiters = [
-    "(", ")", "[", "\\lbrack", "]", "\\rbrack",
+    "(", "\\lparen", ")", "\\rparen",
+    "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\u230a", "\u230b",
     "\\lceil", "\\rceil", "\u2308", "\u2309",
