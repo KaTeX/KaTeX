@@ -459,6 +459,20 @@ const makeFragment = function(
     return fragment;
 };
 
+/**
+ * Wraps group in a span if it's a document fragment, allowing to apply classes
+ * and styles
+ */
+const wrapFragment = function(
+    group: HtmlDomNode,
+    options: Options,
+): HtmlDomNode {
+    if (group instanceof DocumentFragment) {
+        return makeSpan([], [group], options);
+    }
+    return group;
+};
+
 
 // These are exact object types to catch typos in the names of the optional fields.
 export type VListElem = {|
@@ -812,6 +826,7 @@ export default {
     makeLineSpan,
     makeAnchor,
     makeFragment,
+    wrapFragment,
     makeVList,
     makeOrd,
     makeGlue,
