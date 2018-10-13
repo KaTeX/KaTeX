@@ -718,7 +718,7 @@ export default class Parser {
     /**
      * Parses an URL, checking escaped letters and allowed protocols.
      */
-    parseUrlGroup(optional: boolean): ?ParsedArg {
+    parseUrlGroup(optional: boolean): ?ParseNode<"url"> {
         const res = this.parseStringGroup("url", optional, true); // get raw string
         if (!res) {
             return null;
