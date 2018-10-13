@@ -137,7 +137,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathit"
+      "mathdefault"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -180,7 +180,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathit"
+      "mathdefault"
     ],
     "depth": 0,
     "height": 0.69444,
@@ -268,7 +268,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathit"
+      "mathdefault"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -356,7 +356,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathit"
+      "mathdefault"
     ],
     "depth": 0,
     "height": 0.69444,
@@ -459,7 +459,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathit"
+      "mathdefault"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -547,7 +547,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathit"
+      "mathdefault"
     ],
     "depth": 0.19444,
     "height": 0.69444,

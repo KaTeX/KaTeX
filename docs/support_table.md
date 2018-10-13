@@ -617,6 +617,7 @@ table td {
 |\mathinner|$ab\mathinner{\text{inside}}cd$|`ab\mathinner{\text{inside}}cd`|
 |\mathit|$\mathit{AaBb}$|`\mathit{AaBb}`<br>KaTeX supports A-Za-z|
 |\mathllap|${=}\mathllap{/\,}$|`{=}\mathllap{/\,}`|
+|\mathnormal|$\mathnormal{AaBb}$|`\mathnormal{AaBb}`<br>KaTeX supports A-Za-z|
 |\mathop|$\mathop{\star}_a^b$|`\mathop{\star}_a^b`|
 |\mathopen|$a + \mathopen\lt b) + c$|`a + \mathopen\lt b) + c`|
 |\mathord|$1\mathord{,}234{,}567$|`1\mathord{,}234{,}567`|
