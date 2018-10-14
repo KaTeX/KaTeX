@@ -522,7 +522,6 @@ table td {
 |\LaTeX|$\LaTeX$||
 |\lbrace|$\lbrace$||
 |\lbrack|$\lbrack$||
-|\lparen|$\lparen||
 |\lceil|$\lceil$||
 |\ldotp|$\ldotp$||
 |\ldots|$\ldots$||
@@ -588,6 +587,7 @@ table td {
 |\lor|$\lor$||
 |\lower|<span style="color:firebrick;">Not supported</span>||
 |\lozenge|$\lozenge$||
+|\lparen|$\lparen$||
 |\Lrarr|$\Lrarr$||
 |\lrArr|$\lrArr$||
 |\lrarr|$\lrarr$||
@@ -832,7 +832,6 @@ table td {
 |\rarr|$\rarr$||
 |\rbrace|$\rbrace$||
 |\rbrack|$\rbrack$||
-|\rparen|$\rparen$||
 |\rceil|$\rceil$||
 |\Re|$\Re$||
 |\real|$\real$||
@@ -866,6 +865,7 @@ table td {
 |\rmoustache|$\rmoustache$||
 |\root|<span style="color:firebrick;">Not supported</span>||
 |\rotatebox|<span style="color:firebrick;">Not supported</span>|[Issue #681](https://github.com/Khan/KaTeX/issues/681)|
+|\rparen|$\rparen$||
 |\rq|$\rq$||
 |\Rrightarrow|$\Rrightarrow$||
 |\Rsh|$\Rsh$||
