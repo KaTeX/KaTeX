@@ -1198,6 +1198,7 @@ describe("left/right builder", () => {
     const cases = [
         [r`\left\langle \right\rangle`, r`\left< \right>`],
         [r`\left\langle \right\rangle`, '\\left\u27e8 \\right\u27e9'],
+        [r`\left\lparen \right\rparen`, r`\left( \right)`],
     ];
 
     for (const [actual, expected] of cases) {

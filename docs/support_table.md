@@ -587,6 +587,7 @@ table td {
 |\lor|$\lor$||
 |\lower|<span style="color:firebrick;">Not supported</span>||
 |\lozenge|$\lozenge$||
+|\lparen|$\lparen$||
 |\Lrarr|$\Lrarr$||
 |\lrArr|$\lrArr$||
 |\lrarr|$\lrarr$||
@@ -864,6 +865,7 @@ table td {
 |\rmoustache|$\rmoustache$||
 |\root|<span style="color:firebrick;">Not supported</span>||
 |\rotatebox|<span style="color:firebrick;">Not supported</span>|[Issue #681](https://github.com/Khan/KaTeX/issues/681)|
+|\rparen|$\rparen$||
 |\rq|$\rq$||
 |\Rrightarrow|$\Rrightarrow$||
 |\Rsh|$\Rsh$||
