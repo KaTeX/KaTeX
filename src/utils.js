@@ -100,7 +100,10 @@ export const fixStyleDecimalPlaces = function(
     styleString: string,
     decimalPlaces: number = 4,
 ): string {
-    const sequence = styleString.match(/[\d.-]+|[\D]+/g);
+	const sequence = styleString.match(/[\d.-]+|[\D]+/g);
+	if (sequence === null) {
+		return styleString;
+	}
     const value = sequence[0];
     if (isNaN(value)) {
         return styleString;
