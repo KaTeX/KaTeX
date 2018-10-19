@@ -103,11 +103,11 @@ export const fixStyleDecimalPlaces = function(
     const sequence = styleString.match(/[\d.-]+|[\D]+/g);
     const value = sequence[0];
     if (isNaN(value)) {
-	    return styleString;
+        return styleString;
     }
     const trimmedValue = parseFloat(value).toFixed(decimalPlaces).toString();
     return trimmedValue + sequence.slice(1).join('');
-}
+};
 
 export default {
     contains,
