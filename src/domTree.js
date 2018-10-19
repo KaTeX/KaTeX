@@ -62,9 +62,9 @@ const toNode = function(tagName: string): HTMLElement {
     // Apply inline styles
     for (const style in this.style) {
         if (this.style.hasOwnProperty(style)) {
-            const cleanStyle = utils.fixStyleDecimalPlaces(this.style[style]);
+            const roundedStyle = utils.fixStyleDecimalPlaces(this.style[style]);
             // $FlowFixMe Flow doesn't seem to understand span.style's type.
-            node.style[style] = cleanStyle;
+            node.style[style] = roundedStyle;
         }
     }
 
