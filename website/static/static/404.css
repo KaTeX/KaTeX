@@ -45,3 +45,9 @@ body {
         font-size: 32px;
     }
 }
+
+@media only screen and (max-width: 350px) {
+    .not-found-equation {
+        font-size: 25px;
+    }
+}
