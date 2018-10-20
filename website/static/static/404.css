@@ -10,6 +10,38 @@ body {
 
 .main,
 .main > * {
-    text-align: center;
     font-weight: 300;
+    color: #222;
+}
+
+.not-found-equation {
+    text-align: center;
+    font-size: 58px;
+}
+
+.container.not-found-information {
+    max-width: 580px;
+}
+
+.main .page-not-found {
+    font-size: 22px;
+    margin-bottom: 33px;
+}
+
+.main .cta {
+    padding-top: 0;
+}
+
+.main .cta > p {
+    font-size: 18px;
+}
+
+.align-left {
+    text-align: start;
+}
+
+@media only screen and (max-width: 735px) {
+    .not-found-equation {
+        font-size: 32px;
+    }
 }
