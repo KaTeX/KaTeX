@@ -8,8 +8,8 @@ body {
     justify-content: space-between;
 }
 
-.main .container,
-.main .container > * {
+.main,
+.main > * {
     text-align: center;
     font-weight: 300;
 }
