@@ -37,12 +37,7 @@ defineFunction({
     props: {
         numArgs: 1,
         numOptionalArgs: 1,
-        argTypes: ["keyVals", "url"],
-        // Note: Parser.js does not use the "url" arg type or "keyVals" arg type
-        // to match arguments.
-        // Instead, both the \includegraphics function and its arguments are
-        // captured in a single RegEx match by urlFunctionRegex in Lexer.js.
-        // This enables "%" to be used for url escapes inside a url string.
+        argTypes: ["raw", "url"],
         allowedInText: false,
     },
     handler: ({parser}, args, optArgs) => {
@@ -52,7 +47,7 @@ defineFunction({
         let alt = "";
 
         if (optArgs[0]) {
-            const attributeStr = assertNodeType(optArgs[0], "keyVals").keyVals;
+            const attributeStr = assertNodeType(optArgs[0], "raw").string;
 
             // Parser.js does not parse key/value pairs. We get a string.
             const attributes = attributeStr.split(",");

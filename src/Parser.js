@@ -521,6 +521,9 @@ export default class Parser {
             case "math":
             case "text":
                 return this.parseGroup(name, optional, greediness, undefined, type);
+            case "raw":
+                const tkn = this.parseStringGroup("raw", optional, true);
+                return {type: "raw", mode: "text", string: tkn.text};
             case "original":
             case null:
             case undefined:
@@ -870,7 +873,6 @@ export default class Parser {
     parseSymbol(): ?AnyParseNode {
         const nucleus = this.nextToken;
         let text = nucleus.text;
-
 
         if (/^\\verb[^a-zA-Z]/.test(text)) {
             this.consume();
