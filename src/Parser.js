@@ -522,8 +522,8 @@ export default class Parser {
             case "text":
                 return this.parseGroup(name, optional, greediness, undefined, type);
             case "raw":
-                const tkn = this.parseStringGroup("raw", optional, true);
-                return {type: "raw", mode: "text", string: tkn.text};
+                return {type: "raw", mode: "text",
+                    string: this.parseStringGroup("raw", optional, true).text};
             case "original":
             case null:
             case undefined:
