@@ -17,11 +17,9 @@ import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
 
 import type {LexerInterface} from "./Token";
-import type Settings from "./Settings";
 
 /* The following tokenRegex
  * - matches typical whitespace (but not NBSP etc.) using its first group
- * - matches comments (must have trailing newlines)
  * - does not match any control character \x00-\x1f except whitespace
  * - does not match a bare backslash
  * - matches any ASCII character except those just mentioned
@@ -36,7 +34,6 @@ import type Settings from "./Settings";
  * still reject the input.
  */
 const spaceRegexString = "[ \r\n\t]";
-const commentRegexString = "%[^\n]*(?:\n|$)";
 const controlWordRegexString = "\\\\[a-zA-Z@]+";
 const controlSymbolRegexString = "\\\\[^\uD800-\uDFFF]";
 const controlWordWhitespaceRegexString =
@@ -46,38 +43,29 @@ const controlWordWhitespaceRegex = new RegExp(
 const combiningDiacriticalMarkString = "[\u0300-\u036f]";
 export const combiningDiacriticalMarksEndRegex =
     new RegExp(`${combiningDiacriticalMarkString}+$`);
-const urlFunctionRegexString = "(\\\\href|\\\\url|\\\\includegraphics)" +
-    `(?:${spaceRegexString}*(\\[[^\\]]*\\]))?` +
-    `(?:${spaceRegexString}*\\{((?:[^{}\\\\]|\\\\[^]|{[^{}]*})*)\\}` +
-    `|${spaceRegexString}+([^{}])` +
-    `|${spaceRegexString}*([^{}a-zA-Z]))`;
+
 const tokenRegexString = `(${spaceRegexString}+)|` +  // whitespace
-    `(${commentRegexString}` +                        // comments
-    "|[!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
+    "([!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
     `${combiningDiacriticalMarkString}*` +            // ...plus accents
     "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair
     `${combiningDiacriticalMarkString}*` +            // ...plus accents
     "|\\\\verb\\*([^]).*?\\3" +                       // \verb*
     "|\\\\verb([^*a-zA-Z]).*?\\4" +                   // \verb unstarred
-    `|${urlFunctionRegexString}` +                    // URL arguments
     `|${controlWordWhitespaceRegexString}` +          // \macroName + spaces
     `|${controlSymbolRegexString})`;                  // \\, \', etc.
 
 // These regexs are for matching results from tokenRegex,
 // so they do have ^ markers.
 export const controlWordRegex = new RegExp(`^${controlWordRegexString}`);
-export const urlFunctionRegex = new RegExp(`^${urlFunctionRegexString}`);
 
 /** Main Lexer class */
 export default class Lexer implements LexerInterface {
     input: string;
-    settings: Settings;
     tokenRegex: RegExp;
 
-    constructor(input: string, settings: Settings) {
+    constructor(input: string) {
         // Separate accents from characters
         this.input = input;
-        this.settings = settings;
         this.tokenRegex = new RegExp(tokenRegexString, 'g');
     }
 
@@ -101,19 +89,10 @@ export default class Lexer implements LexerInterface {
         // Trim any trailing whitespace from control word match
         const controlMatch = text.match(controlWordWhitespaceRegex);
         if (controlMatch) {
-            text = controlMatch[1] + text.slice(controlMatch[0].length);
+            text = controlMatch[1];
         }
 
-        if (text[0] === "%") {
-            if (text[text.length - 1] !== "\n") {
-                this.settings.reportNonstrict("commentAtEnd",
-                    "% comment has no terminating newline; LaTeX would " +
-                    "fail because of commenting the end of math mode (e.g. $)");
-            }
-            return this.lex();
-        } else {
-            return new Token(text, new SourceLocation(this, pos,
-                this.tokenRegex.lastIndex));
-        }
+        return new Token(text, new SourceLocation(this, pos,
+            this.tokenRegex.lastIndex));
     }
 }

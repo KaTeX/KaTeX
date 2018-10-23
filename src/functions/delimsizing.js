@@ -35,7 +35,8 @@ const delimiterSizes = {
 };
 
 const delimiters = [
-    "(", ")", "[", "\\lbrack", "]", "\\rbrack",
+    "(", "\\lparen", ")", "\\rparen",
+    "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\u230a", "\u230b",
     "\\lceil", "\\rceil", "\u2308", "\u2309",
@@ -170,16 +171,13 @@ defineFunction({
         --parser.leftrightDepth;
         // Check the next token
         parser.expect("\\right", false);
-        const right = parser.parseFunction();
-        if (!right) {
-            throw new ParseError('failed to parse function after \\right');
-        }
+        const right = assertNodeType(parser.parseFunction(), "leftright-right");
         return {
             type: "leftright",
             mode: parser.mode,
             body,
             left: delim.text,
-            right: assertNodeType(right, "leftright-right").delim,
+            right: right.delim,
         };
     },
     htmlBuilder: (group, options) => {
