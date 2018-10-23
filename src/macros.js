@@ -803,6 +803,18 @@ defineMacro("\\limsup", "\\DOTSB\\mathop{\\operatorname{lim\\,sup}}\\limits");
 defineMacro("\\liminf", "\\DOTSB\\mathop{\\operatorname{lim\\,inf}}\\limits");
 
 //////////////////////////////////////////////////////////////////////
+// semantic
+
+// The semantic package renders the next two items by calling a glyph from the
+// bbold package. Those glyphs do not exist in the KaTeX fonts. Hence the macros.
+
+defineMacro("\u27e6", "\\mathopen{[\\mkern-3.2mu[}");  // blackboard bold [
+defineMacro("\u27e7", "\\mathclose{]\\mkern-3.2mu]}"); // blackboard bold ]
+
+// TODO: Create variable sized versions of the last two items. I believe that
+// will require new font glyphs.
+
+//////////////////////////////////////////////////////////////////////
 // texvc.sty
 
 // The texvc package contains macros available in mediawiki pages.
