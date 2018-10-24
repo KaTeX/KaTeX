@@ -3,6 +3,7 @@ body {
 }
 
 .main {
+    display: -ms-flexbox;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
