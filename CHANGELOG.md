@@ -1,9 +1,9 @@
-# Change Log
+# Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
-## [v0.10.0] - RC
+## [v0.10.0]
 ### Added
-- Unicode: °, delimiters, 1D400-1D7FF, \ll, \lll, ≘≙≚≛≝≞≟, Unicode Mathematical Alphanumeric Symbols, ⟂ ¬ ⊨ ‼ ∌ ≲ ⩽ ⪅ ≶ ⋚ ⪋, corner (#1203, #1207, #1260, #1273, #1274, #1232, #1377, #1389, #1459)
+- Unicode: °, delimiters, 1D400-1D7FF, \ll, \lll, ≘≙≚≛≝≞≟, Unicode Mathematical Alphanumeric Symbols, ⟂ ¬ ⊨ ‼ ∌ ≲ ⩽ ⪅ ≶ ⋚ ⪋, corner, ⟦⟧ (#1203, #1207, #1260, #1273, #1274, #1232, #1377, #1389, #1459, #1750)
 - \yen support on text mode (#1208)
 - \( (#1213)
 - Add defineSymbol to the main katex object (#1263)
@@ -31,39 +31,47 @@ All notable changes to this project will be documented in this file. This CHANGE
 - Remove `match-at` dependency, use RegExp for lexer (#1447)
 - \brace and \brack (#1453)
 - Allow only allowed protocols in \href (#1440)
+  - **BREAKING CHANGE:** Only "http", "https", "mailto", and relative URLs are allowed in \href and \url by default.
 - \genfrac and \above (#1455, #1458)
 - \char character escaping and nicer MathML via \html@mathml (#1454)
 - \@binrel (#1487)
 - \pmb (#1418)
-- KaTeX website & documentation (#1484, #1515, #1518, #1514, #1526, #1516, #1519, #1527, #1564, #1566, #1584)
+- KaTeX website & documentation (#1484, #1515, #1518, #1514, #1526, #1516, #1519, #1527, #1564, #1566, #1584, #1571, #1642, #1680, #1683, #1688, #1631, #1727)
 - Improve supported functions documentation (#1511, #1517, #1532, #1533, #1576, #1556, #1580, #1602)
 - Alpha sorted function support page (#1536)
 - MediaWiki (texvc) (#1558)
 - Add ignore option for class names in auto-render (#1555)
 - ScrollSpy for table of contents in the documentation (#1557, #1567, #1568)
-- Build ECMAScript modules (#1479, #1622)
+- Build ECMAScript modules (#1479, #1622, #1653)
 - Enable environment variable USE_TTF to disable bundling TTF fonts (#1600)
 - List of KaTeX users (#1569, #1579)
+- Browserslist (#1662)
+- 6-digit color without # (#1690)
+- \mathnormal (#1700)
+- \lparen and \rparen (#1741)
 
 ### Changed
-- Port to @flow: delimiter, spacingData, unicodeSymbols, buildHTML, buildMathML, parseNode, defineFunction (#1177, #1195, #1206, #1239, #1247, #1276, #1312, #1324, #1361, #1373, #1393, #1386, #1387, #1408, #1478, #1486, #1534, #1541, #1542, #1551, #1552, #1554, #1559, #1606, #1609, #1612, #1637)
+- Port to @flow: delimiter, spacingData, unicodeSymbols, buildHTML, buildMathML, parseNode, defineFunction, CssStyle (#1177, #1195, #1206, #1239, #1247, #1276, #1312, #1324, #1361, #1373, #1393, #1386, #1387, #1408, #1478, #1486, #1534, #1541, #1542, #1551, #1552, #1554, #1559, #1606, #1609, #1612, #1637, #1684)
 - Online screenshot diff/generation using CircleCI (#1187)
 - Add display/displayMode toggle on test page (#1193)
 - Change CDN links (#1243)
 - Changelog for KaTeX (#1322)
 - Move test helpers into common modules (#1318)
 - Move function handlers to functions/ (#1323, #1325, #1328, #1329, #1331, #1327, #1334, #1339, #1349, #1359, #1332, #1335)
-- Add regenerate option to the screenshotter (#1220)
+- Improve screenshotter (#1220, #1644, #1643)
 - Upgrade to webpack 4 (#1337, #1435)
 - Automatic submodule updating via husky tool (#1391)
 - Refactor test helpers (#1336)
 - Change build directory to `dist` and cleanup NPM scripts (#1500, #1610)
 - Switch from nomnom to commander (#1496)
-- Add test job to CircleCI (#1235)
+- Add test job to CircleCI (#1235, #1658)
 - Switch npm to Yarn (#1522, #1528)
-- Improve release script & enable versioning documentation (#1521, #1603)
+- Improve release script & enable versioning documentation (#1521, #1603, #1660, #1665)
 - Enable stylelint-config-standard, lint CSS files (#1575)
 - Rename Screenshotter -> screenshotter (#1573)
+- Refactor buildCommon (#1633, #1640)
+- Upgrade to Babel 7 (#1595)
+- Refactor Parser (#1711, #1723)
 
 ### Fixed
 - Fix nested math mode in non-default text mode (#1111)
@@ -116,6 +124,9 @@ All notable changes to this project will be documented in this file. This CHANGE
 - Fix \fbox (#1550)
 - Fix \Large roots (#1485)
 - index.html: replace font, make responsive, improve demo (#1547, #1577, #1615, #1601)
+- Remove duplicate defineFunction invocation for \mathop (#1701)
+- Fix tag positioning to live within katex-html parent (#1721)
+- Fix `\mathit` font and italic correction (#1700)
 
 
 ## [v0.9.0] - 2018-02-18
