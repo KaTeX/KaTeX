@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file. This CHANGE
 ### Added
 - Unicode: °, delimiters, 1D400-1D7FF, \ll, \lll, ≘≙≚≛≝≞≟, Unicode Mathematical Alphanumeric Symbols, ⟂ ¬ ⊨ ‼ ∌ ≲ ⩽ ⪅ ≶ ⋚ ⪋, corner, ⟦⟧ (#1203, #1207, #1260, #1273, #1274, #1232, #1377, #1389, #1459, #1750)
 - \yen support on text mode (#1208)
-- \( (#1213)
+- `\(` (#1213)
 - Add defineSymbol to the main katex object (#1263)
 - Capital Greek letters (#1283, #1285)
 - Add version to katex object (#1279, #1475)
@@ -13,7 +13,7 @@ All notable changes to this project will be documented in this file. This CHANGE
 - Tilde \textasciitilde (#1286)
 - Line breaks for inline formulas (#1287)
 - \hline (#1306)
-- Top-level \newline and \\ in inline math (#1298)
+- Top-level \newline and `\\` in inline math (#1298)
 - Strict mode, unicode text in math mode (#1117, #1278)
 - Strict setting for \newline display-mode behavior (#1314)
 - Allow all Unicode symbols in nonstrict mode (#1217)
@@ -126,7 +126,7 @@ All notable changes to this project will be documented in this file. This CHANGE
 - index.html: replace font, make responsive, improve demo (#1547, #1577, #1615, #1601)
 - Remove duplicate defineFunction invocation for \mathop (#1701)
 - Fix tag positioning to live within katex-html parent (#1721)
-- Fix `\mathit` font and italic correction (#1700)
+- Fix \mathit font and italic correction (#1700)
 
 
 ## [v0.9.0] - 2018-02-18
