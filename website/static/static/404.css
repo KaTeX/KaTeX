@@ -5,6 +5,7 @@ body {
 .main {
     display: -ms-flexbox;
     display: flex;
+    -ms-flex-direction: column;
     flex-direction: column;
     justify-content: space-between;
 }
