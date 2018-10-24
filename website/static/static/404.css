@@ -7,6 +7,7 @@ body {
     display: flex;
     -ms-flex-direction: column;
     flex-direction: column;
+    -ms-flex-pack: justify;
     justify-content: space-between;
 }
 
