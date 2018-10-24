@@ -36,7 +36,8 @@ Promise.all(process.argv.slice(3).map(file =>
                 const newHash = sriToolbox.generate({
                     algorithms: [hashes[hash].algo],
                 }, data);
-                body = body.replace(hash, newHash);
+                body = body.replace(
+                    new RegExp(hash.replace(/\+/g, '\\+'), 'g'), newHash);
 
                 if (version === "check" && hash !== newHash) {
                     throw new Error("SRI mismatch! " +
