@@ -95,7 +95,7 @@ All notable changes to this project will be documented in this file. This CHANGE
 - Fix vertical alignment of \underbrace (#1304)
 - Use one strut instead of two (#1307)
 - Fix MacroExpander space handling (#1314)
-- Cleanup MathML <mrow>, <mtext>, <mn> (#1338)
+- Cleanup MathML `<mrow>`, `<mtext>`, `<mn>` (#1338)
 - Fix lap vertical alignment. (#1162)
 - Fix nested \tfrac (#1370)
 - Fix \coloneq etc (#1372)
