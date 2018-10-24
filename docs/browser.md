@@ -43,8 +43,8 @@ ECMAScript module is also available:
     import katex from 'https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.mjs';
     ...
 </script>
-<script nomodule defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.js" integrity="sha384-atIluo+2Hixq8HCazSQWa1JjeC5L0CQeWAx74Q+EbqgAW4UixbrBQF4+1jvBX01b" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.css" integrity="sha384-JwmmMju6Z7M9jiY4RXeJLoNb3aown2QCC/cI7JPgmOLsn3n33pdwAj0Ml/CMMd1W" crossorigin="anonymous">
+<script nomodule defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.js" integrity="sha384-sHpDk0ttnaySgcNstuGpV1jcEuSS79ZgxZYWm53dQ3xLjFjB42hJKTofiebM/LOM" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.css" integrity="sha384-xNwWFq3SIvM4dq/1RUyWumk8nj/0KFg4TOnNcfzUU4X2gNn3WoRML69gO7waf3xh" crossorigin="anonymous">
 ```
 
 > Use [`nomodule` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
