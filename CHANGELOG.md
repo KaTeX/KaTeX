@@ -49,6 +49,7 @@ All notable changes to this project will be documented in this file. This CHANGE
 - 6-digit color without # (#1690)
 - \mathnormal (#1700)
 - \lparen and \rparen (#1741)
+- `\>` (#1752)
 
 ### Changed
 - Port to @flow: delimiter, spacingData, unicodeSymbols, buildHTML, buildMathML, parseNode, defineFunction, CssStyle (#1177, #1195, #1206, #1239, #1247, #1276, #1312, #1324, #1361, #1373, #1393, #1386, #1387, #1408, #1478, #1486, #1534, #1541, #1542, #1551, #1552, #1554, #1559, #1606, #1609, #1612, #1637, #1684)
