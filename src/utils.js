@@ -91,27 +91,6 @@ export const assert = function<T>(value: ?T): T {
     return value;
 };
 
-/**
- * Accepts a string with one number followed by arbitrary non-numeric characters
- * (e.g., '3.14159px'). Returns the string with the number rounded to the given
- * precision and the original non-numeric characters (e.g., '3.1416px').
- */
-export const fixStyleDecimalPlaces = function(
-    styleString: string,
-    decimalPlaces: number = 4,
-): string {
-    const sequence = styleString.match(/[\d.-]+|[\D]+/g);
-    if (sequence === null) {
-        return styleString;
-    }
-    const value = sequence[0];
-    if (isNaN(value)) {
-        return styleString;
-    }
-    const trimmedValue = parseFloat(value).toFixed(decimalPlaces).toString();
-    return trimmedValue + sequence.slice(1).join('');
-};
-
 export default {
     contains,
     deflt,
@@ -119,5 +98,4 @@ export default {
     hyphenate,
     getBaseElem,
     isCharacterBox,
-    fixStyleDecimalPlaces,
 };

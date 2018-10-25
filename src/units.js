@@ -94,5 +94,6 @@ export const calculateSize = function(
             scale *= unitOptions.sizeMultiplier / options.sizeMultiplier;
         }
     }
-    return Math.min(sizeValue.number * scale, options.maxSize);
+    const scaled = Math.min(sizeValue.number * scale, options.maxSize);
+    return +scaled.toFixed(4);
 };
