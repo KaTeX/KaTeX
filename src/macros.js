@@ -605,8 +605,10 @@ defineMacro("\\tmspace", "\\TextOrMath{\\kern#1#3}{\\mskip#1#2}\\relax");
 defineMacro("\\,", "\\tmspace+{3mu}{.1667em}");
 // \let\thinspace\,
 defineMacro("\\thinspace", "\\,");
+// \def\>{\mskip\medmuskip}
 // \renewcommand{\:}{\tmspace+\medmuskip{.2222em}}
-// TODO: math mode should use \medmuskip = 4mu plus 2mu minus 4mu
+// TODO: \> and math mode of \: should use \medmuskip = 4mu plus 2mu minus 4mu
+defineMacro("\\>", "\\mskip{4mu}");
 defineMacro("\\:", "\\tmspace+{4mu}{.2222em}");
 // \let\medspace\:
 defineMacro("\\medspace", "\\:");

@@ -714,6 +714,9 @@ exports[`A MathML builder special spaces render specially 1`] = `
         &MediumSpace;
       </mtext>
       <mtext>
+        &MediumSpace;
+      </mtext>
+      <mtext>
         &ThickSpace;
       </mtext>
       <mtext>
@@ -757,7 +760,7 @@ exports[`A MathML builder special spaces render specially 1`] = `
       </mtext>
     </mrow>
     <annotation encoding="application/x-tex">
-      \\,\\thinspace\\:\\medspace\\;\\thickspace\\!\\negthinspace\\negmedspace\\negthickspace\\mkern1mu\\mkern3mu\\mkern4mu\\mkern5mu\\mkern-1mu\\mkern-3mu\\mkern-4mu\\mkern-5mu
+      \\,\\thinspace\\:\\&gt;\\medspace\\;\\thickspace\\!\\negthinspace\\negmedspace\\negthickspace\\mkern1mu\\mkern3mu\\mkern4mu\\mkern5mu\\mkern-1mu\\mkern-3mu\\mkern-4mu\\mkern-5mu
     </annotation>
   </semantics>
 </math>
