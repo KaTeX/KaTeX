@@ -752,7 +752,7 @@ describe("A text parser", function() {
     });
 
     it("should parse spacing functions", function() {
-        expect`a b\, \; \! \: ~ \thinspace \medspace \quad \ `.toBuild();
+        expect`a b\, \; \! \: \> ~ \thinspace \medspace \quad \ `.toBuild();
         expect`\enspace \thickspace \qquad \space \nobreakspace`.toBuild();
     });
 
