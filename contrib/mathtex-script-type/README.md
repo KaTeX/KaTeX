@@ -26,7 +26,7 @@ After we're done writing `math/tex` scripts, we load this extension.
 <html>
    <head>
        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
-       <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-3xe4tfB9lt4vO/rJQrXFI0A1rdfCasWpdb+4Pnu1ppcqnI98M6I2F1i+Xbagzt9T" crossorigin="anonymous"></script>
+       <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
    </head>
    <body>
       <script type="math/tex">x+\sqrt{1-x^2}</script>
