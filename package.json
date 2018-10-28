@@ -61,7 +61,7 @@
     "selenium-webdriver": "^3.6.0",
     "sri-toolbox": "^0.2.0",
     "style-loader": "^0.23.0",
-    "stylelint": "^9.2.1",
+    "stylelint": "9.6.0",
     "stylelint-config-standard": "^18.0.0",
     "uglifyjs-webpack-plugin": "^2.0.0",
     "webpack": "^4.9.1",
