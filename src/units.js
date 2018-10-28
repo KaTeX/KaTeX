@@ -95,5 +95,9 @@ export const calculateSize = function(
         }
     }
     const scaled = Math.min(sizeValue.number * scale, options.maxSize);
+    // Round to 4 decimal places, or to the nearest 1/10,000th em. The TeXbook
+    // gives an acceptable rounding error of 100sp (which would be the nearest
+    // 1/6551.6em with our ptPerEm = 10):
+    // http://www.ctex.org/documents/shredder/src/texbook.pdf#page=69
     return +scaled.toFixed(4);
 };
