@@ -30,7 +30,7 @@ const newDir = path.normalize(path.join("test", "screenshotter", "new"));
 // Process command line arguments
 
 const opts = require("commander")
-    .option("-b, --browser <firefox|chrome>",
+    .option("-b, --browser <firefox|chrome|ie|edge|safari>",
         "Name of the browser to use", "firefox")
     .option("-c, --container <id>",
         "Name or ID of a running docker container to contact")
@@ -38,6 +38,8 @@ const opts = require("commander")
     .option("--selenium-ip <ip>", "IP address of the Selenium web driver")
     .option("--selenium-port <n>",
         "Port number of the Selenium web driver", 4444, parseInt)
+    .option("--selenium-capabilities <JSON>",
+        "Desired capabilities of the Selenium web driver", JSON.parse)
     .option("--katex-url <url>", "Full URL of the KaTeX development server")
     .option("--katex-ip <ip>", "IP address of the KaTeX development server")
     .option("--katex-port <n>",
@@ -229,14 +231,19 @@ let driver;
 let driverReady = false;
 function buildDriver() {
     const builder = new selenium.Builder().forBrowser(opts.browser);
-    const ffProfile = new firefox.Profile();
-    ffProfile.setPreference(
-        "browser.startup.homepage_override.mstone", "ignore");
-    ffProfile.setPreference("browser.startup.page", 0);
-    const ffOptions = new firefox.Options().setProfile(ffProfile);
-    builder.setFirefoxOptions(ffOptions);
+    if (opts.browser === "firefox") {
+        const ffProfile = new firefox.Profile();
+        ffProfile.setPreference(
+            "browser.startup.homepage_override.mstone", "ignore");
+        ffProfile.setPreference("browser.startup.page", 0);
+        const ffOptions = new firefox.Options().setProfile(ffProfile);
+        builder.setFirefoxOptions(ffOptions);
+    }
     if (seleniumURL) {
         builder.usingServer(seleniumURL);
+    }
+    if (opts.seleniumCapabilities) {
+        builder.withCapabilities(opts.seleniumCapabilities);
     }
     driver = builder.build();
     driver.manage().timeouts().setScriptTimeout(3000).then(function() {
@@ -519,14 +526,19 @@ function takeScreenshot(key) {
                     const reporter = istanbulApi.createReporter();
                     reporter.addAll(['json', 'text', 'lcov']);
                     reporter.write(coverageMap);
-
-                    process.exit(exitStatus);
+                    done();
                 });
                 return;
             }
-            // devServer.close(cb) will take too long.
-            process.exit(exitStatus);
+            done();
         }
+    }
+
+    function done() {
+        // devServer.close(cb) will take too long.
+        driver.quit().then(() => {
+            process.exit(exitStatus);
+        });
     }
 }
 
