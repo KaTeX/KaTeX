@@ -34,7 +34,7 @@
     "css-loader": "^1.0.0",
     "cssnano": "^4.0.1",
     "eslint": "^5.0.0",
-    "eslint-plugin-flowtype": "^2.40.1",
+    "eslint-plugin-flowtype": "^3.0.0",
     "eslint-plugin-react": "^7.10.0",
     "eslint-plugin-transform-runtime-aliasing": "^2.0.0",
     "file-loader": "^2.0.0",

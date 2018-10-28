@@ -109,7 +109,7 @@ describe("A MathML builder", function() {
     });
     it('special spaces render specially', function() {
         expect(getMathML(
-            "\\,\\thinspace\\:\\medspace\\;\\thickspace" +
+            "\\,\\thinspace\\:\\>\\medspace\\;\\thickspace" +
             "\\!\\negthinspace\\negmedspace\\negthickspace" +
             "\\mkern1mu\\mkern3mu\\mkern4mu\\mkern5mu" +
             "\\mkern-1mu\\mkern-3mu\\mkern-4mu\\mkern-5mu")).toMatchSnapshot();

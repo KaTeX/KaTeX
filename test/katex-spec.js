@@ -779,7 +779,7 @@ describe("A text parser", function() {
     });
 
     it("should parse spacing functions", function() {
-        expect`a b\, \; \! \: ~ \thinspace \medspace \quad \ `.toBuild();
+        expect`a b\, \; \! \: \> ~ \thinspace \medspace \quad \ `.toBuild();
         expect`\enspace \thickspace \qquad \space \nobreakspace`.toBuild();
     });
 
@@ -1225,6 +1225,7 @@ describe("left/right builder", () => {
     const cases = [
         [r`\left\langle \right\rangle`, r`\left< \right>`],
         [r`\left\langle \right\rangle`, '\\left\u27e8 \\right\u27e9'],
+        [r`\left\lparen \right\rparen`, r`\left( \right)`],
     ];
 
     for (const [actual, expected] of cases) {
@@ -3247,6 +3248,7 @@ describe("Unicode", function() {
         expect("\\left\u23b0\\frac{a}{b}\\right\u23b1").toBuild();
         expect`┌x┐ └x┘`.toBuild();
         expect("\u231Cx\u231D \u231Ex\u231F").toBuild();
+        expect("\u27E6x\u27E7").toBuild();
     });
 
     it("should build some surrogate pairs", function() {

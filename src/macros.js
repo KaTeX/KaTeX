@@ -603,8 +603,10 @@ defineMacro("\\tmspace", "\\TextOrMath{\\kern#1#3}{\\mskip#1#2}\\relax");
 defineMacro("\\,", "\\tmspace+{3mu}{.1667em}");
 // \let\thinspace\,
 defineMacro("\\thinspace", "\\,");
+// \def\>{\mskip\medmuskip}
 // \renewcommand{\:}{\tmspace+\medmuskip{.2222em}}
-// TODO: math mode should use \medmuskip = 4mu plus 2mu minus 4mu
+// TODO: \> and math mode of \: should use \medmuskip = 4mu plus 2mu minus 4mu
+defineMacro("\\>", "\\mskip{4mu}");
 defineMacro("\\:", "\\tmspace+{4mu}{.2222em}");
 // \let\medspace\:
 defineMacro("\\medspace", "\\:");
@@ -799,6 +801,18 @@ defineMacro("\\approxcoloncolon",
 defineMacro("\\notni", "\\html@mathml{\\not\\ni}{\\mathrel{\\char`\u220C}}");
 defineMacro("\\limsup", "\\DOTSB\\mathop{\\operatorname{lim\\,sup}}\\limits");
 defineMacro("\\liminf", "\\DOTSB\\mathop{\\operatorname{lim\\,inf}}\\limits");
+
+//////////////////////////////////////////////////////////////////////
+// semantic
+
+// The semantic package renders the next two items by calling a glyph from the
+// bbold package. Those glyphs do not exist in the KaTeX fonts. Hence the macros.
+
+defineMacro("\u27e6", "\\mathopen{[\\mkern-3.2mu[}");  // blackboard bold [
+defineMacro("\u27e7", "\\mathclose{]\\mkern-3.2mu]}"); // blackboard bold ]
+
+// TODO: Create variable sized versions of the last two items. I believe that
+// will require new font glyphs.
 
 //////////////////////////////////////////////////////////////////////
 // texvc.sty

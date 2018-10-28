@@ -53,14 +53,14 @@ See also [letters](#letters)
 
 ||||||
 |:-----------------------------------|:---------------------------------------|:----------|:-------------------------------------------------------|:-----
-|$( )$ `( )` |$\lt~\gt$ `\lt \gt` |$⌈~⌉$ `⌈ ⌉`|$\lceil~\rceil$ `\lceil`<br>$~~~~~$`\rceil`  |$\uparrow$ `\uparrow`
-|$[ ]$ `[ ]` |$\lbrack~\rbrack$ `\lbrack`<br>$~~~~$`\rbrack`|$⌊~⌋$ `⌊ ⌋`|$\lfloor~\rfloor$ `\lfloor`<br>$~~~~~$`\rfloor` |$\downarrow$ `\downarrow`
+|$(~)$ `( )` |$\lparen~\rparen$ `\lparen`<br>$~~~~$`\rparen`|$⌈~⌉$ `⌈ ⌉`|$\lceil~\rceil$ `\lceil`<br>$~~~~~$`\rceil`  |$\uparrow$ `\uparrow`
+|$[~]$ `[ ]` |$\lbrack~\rbrack$ `\lbrack`<br>$~~~~$`\rbrack`|$⌊~⌋$ `⌊ ⌋`|$\lfloor~\rfloor$ `\lfloor`<br>$~~~~~$`\rfloor` |$\downarrow$ `\downarrow`
 |$\{ \}$ `\{ \}`|$\lbrace \rbrace$ `\lbrace`<br>$~~~~$`\rbrace`|$⎰⎱$ `⎰⎱`  |$\lmoustache \rmoustache$ `\lmoustache`<br>$~~~~$`\rmoustache`|$\updownarrow$ `\updownarrow`
 |$⟨~⟩$ `⟨ ⟩` |$\langle~\rangle$ `\langle`<br>$~~~~$`\rangle`|$⟮~⟯$ `⟮ ⟯`|$\lgroup~\rgroup$ `\lgroup`<br>$~~~~~$`\rgroup` |$\Uparrow$ `\Uparrow`
 |$\vert$ <code>&#124;</code> |$\vert$ `\vert` |$┌ ┐$ `┌ ┐`|$\ulcorner \urcorner$ `\ulcorner`<br>$~~~~$`\urcorner`  |$\Downarrow$ `\Downarrow`
 |$\Vert$ <code>&#92;&#124;</code> |$\Vert$ `\Vert` |$└ ┘$ `└ ┘`|$\llcorner \lrcorner$ `\llcorner`<br>$~~~~$`\lrcorner`  |$\Updownarrow$ `\Updownarrow`
 |$\lvert~\rvert$ `\lvert`<br>$~~~~$`\rvert`|$\lVert~\rVert$ `\lVert`<br>$~~~~~$`\rVert` |`\left.`|  `\right.` |$\backslash$ `\backslash`
-|$\lang~\rang$ `\lang`<br>$~~~~$`\rang`
+|$\lang~\rang$ `\lang`<br>$~~~~$`\rang`|$\lt~\gt$ `\lt \gt`|$⟦~⟧$ `⟦ ⟧`|
 
 **Delimiter Sizing**
 
@@ -233,17 +233,18 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 |:----------------|:-------------------|:---------------------|:--------------------------------------|
 | `\,`            | ³∕₁₈ em space      | `\kern{distance}`    | space, width = *distance*
 | `\thinspace`    | ³∕₁₈ em space      | `\mkern{distance}`   | space, width = *distance*
-| `\:`            | ⁴∕₁₈ em space      | `\mskip{distance}`   | space, width = *distance*
-| `\medspace`     | ⁴∕₁₈ em space      | `\hskip{distance}`   | space, width = *distance*
-| `\;`            | ⁵∕₁₈ em space      | `\hspace{distance}`  | space, width = *distance*
-| `\thickspace`   | ⁵∕₁₈ em space      | `\hspace*{distance}` | space, width = *distance*
-| `\enspace`      | ½ em space         | `\phantom{content}`  | space the width and height of content
-| `\quad`         | 1 em space         | `\hphantom{content}` | space the width of content
-| `\qquad`        | 2 em space         | `\vphantom{content}` | a strut the height of content
-| `~`             | non-breaking space | `\!`                 | – ³∕₁₈ em space
-| `\<space>`      | space              | `\negthinspace`      | – ³∕₁₈ em space
-| `\nobreakspace` | non-breaking space | `\negmedspace`       | – ⁴∕₁₈ em space
-| `\space`        | space              | `\negthickspace`     | – ⁵∕₁₈ em space
+| `\>`            | ⁴∕₁₈ em space      | `\mskip{distance}`   | space, width = *distance*
+| `\:`            | ⁴∕₁₈ em space      | `\hskip{distance}`   | space, width = *distance*
+| `\medspace`     | ⁴∕₁₈ em space      | `\hspace{distance}`  | space, width = *distance*
+| `\;`            | ⁵∕₁₈ em space      | `\hspace*{distance}` | space, width = *distance*
+| `\thickspace`   | ⁵∕₁₈ em space      | `\phantom{content}`  | space the width and height of content
+| `\enspace`      | ½ em space         | `\hphantom{content}` | space the width of content
+| `\quad`         | 1 em space         | `\vphantom{content}` | a strut the height of content
+| `\qquad`        | 2 em space         | `\!`                 | – ³∕₁₈ em space
+| `~`             | non-breaking space | `\negthinspace`      | – ³∕₁₈ em space
+| `\<space>`      | space              | `\negmedspace`       | – ⁴∕₁₈ em space
+| `\nobreakspace` | non-breaking space | `\negthickspace`     | – ⁵∕₁₈ em space
+| `\space`        | space              |
 
 </div>
 
