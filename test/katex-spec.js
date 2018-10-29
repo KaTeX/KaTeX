@@ -329,6 +329,33 @@ describe("A group parser", function() {
     });
 });
 
+describe("A \\begingroup...\\endgroup parser", function() {
+    it("should not fail", function() {
+        expect`\begingroup xy \endgroup`.toParse();
+    });
+
+    it("should fail when it is mismatched", function() {
+        expect`\begingroup xy`.not.toParse();
+        expect`\begingroup xy }`.not.toParse();
+    });
+
+    it("should produce a semi-simple group", function() {
+        const parse = getParsed`\begingroup xy \endgroup`;
+
+        expect(parse).toHaveLength(1);
+
+        const ord = parse[0];
+
+        expect(ord.type).toMatch("ord");
+        expect(ord.body).toBeTruthy();
+        expect(ord.semisimple).toBeTruthy();
+    });
+
+    it("should not affect spacing in math mode", function() {
+        expect`\begingroup x+ \endgroup y`.toBuildLike`x+y`;
+    });
+});
+
 describe("An implicit group parser", function() {
     it("should not fail", function() {
         expect`\Large x`.toParse();
@@ -2612,6 +2639,11 @@ describe("href and url commands", function() {
         expect("\\href{relative}{foo}").not.toParse(new Settings({
             allowedProtocols: [],
         }));
+    });
+
+    it("should not affect spacing around", function() {
+        const built = getBuilt`a\href{http://example.com/}{+b}`;
+        expect(built).toMatchSnapshot();
     });
 });
 
