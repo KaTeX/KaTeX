@@ -3,6 +3,7 @@
   "version": "0.10.1-pre",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
+  "homepage": "https://katex.org",
   "repository": {
     "type": "git",
     "url": "git://github.com/Khan/KaTeX.git"
