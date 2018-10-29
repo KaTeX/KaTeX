@@ -17,6 +17,10 @@ export default class SourceLocation {
         this.end = end;
     }
 
+    getSource(): string {
+        return this.lexer.input.slice(this.start, this.end);
+    }
+
     /**
      * Merges two `SourceLocation`s from location providers, given they are
      * provided in order of appearance.

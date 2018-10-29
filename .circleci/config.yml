@@ -38,14 +38,19 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - yarn-deps-v2-{{ checksum "yarn.lock" }}
-            - yarn-deps-v2-
+            - yarn-deps-v3-{{ checksum "yarn.lock" }}
+            - yarn-deps-v3-
       - run:
           name: Install dependencies
           # upgrade Yarn before installing dependencies, if needed
-          command: yarn check || { curl -o- -L https://yarnpkg.com/install.sh | bash && yarn; }
+          command: |
+              if ! yarn check; then
+                curl -o- -L https://yarnpkg.com/install.sh | PROFILE=$BASH_ENV bash
+                source $BASH_ENV
+                yarn
+              fi
       - save_cache:
-          key: yarn-deps-v2-{{ checksum "yarn.lock" }}
+          key: yarn-deps-v3-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
 
@@ -96,20 +101,6 @@ jobs:
       - skip_if_only_changed:
           filter: '^docs/|^LICENSE|\.md$'
       - install_dependencies
-
-      - add_ssh_keys:
-          fingerprints:
-            - "e1:ac:13:98:98:8b:fd:38:81:12:28:55:75:a1:da:73"
-      - run:
-          name: Greenkeeper - update and commit yarn.lock
-          environment:
-            # greenkeeper-lockfile detects build by checking it's the first job
-            # of the first workflow. As we run jobs parallel, it may not be the
-            # first job
-            CIRCLE_PREVIOUS_BUILD_NUM: ""
-          command: |
-              ./node_modules/.bin/greenkeeper-lockfile-update
-              ./node_modules/.bin/greenkeeper-lockfile-upload
 
       - run:
           name: Lint code
