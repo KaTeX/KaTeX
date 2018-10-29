@@ -1,5 +1,5 @@
 ---
-id: version-0.10.0-rc.1-support_table
+id: version-0.10.0-support_table
 title: Support Table
 original_id: support_table
 ---
@@ -7,7 +7,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 If you know the shape of a character, but not its name, [Detexify](http://detexify.kirelabs.org/classify.html) can help.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y"/>
 <style>
 table tr,
 table td {
@@ -588,6 +588,7 @@ table td {
 |\lor|$\lor$||
 |\lower|<span style="color:firebrick;">Not supported</span>||
 |\lozenge|$\lozenge$||
+|\lparen|$\lparen$||
 |\Lrarr|$\Lrarr$||
 |\lrArr|$\lrArr$||
 |\lrarr|$\lrarr$||
@@ -618,6 +619,7 @@ table td {
 |\mathinner|$ab\mathinner{\text{inside}}cd$|`ab\mathinner{\text{inside}}cd`|
 |\mathit|$\mathit{AaBb}$|`\mathit{AaBb}`<br>KaTeX supports A-Za-z|
 |\mathllap|${=}\mathllap{/\,}$|`{=}\mathllap{/\,}`|
+|\mathnormal|$\mathnormal{AaBb}$|`\mathnormal{AaBb}`<br>KaTeX supports A-Za-z|
 |\mathop|$\mathop{\star}_a^b$|`\mathop{\star}_a^b`|
 |\mathopen|$a + \mathopen\lt b) + c$|`a + \mathopen\lt b) + c`|
 |\mathord|$1\mathord{,}234{,}567$|`1\mathord{,}234{,}567`|
@@ -864,6 +866,7 @@ table td {
 |\rmoustache|$\rmoustache$||
 |\root|<span style="color:firebrick;">Not supported</span>||
 |\rotatebox|<span style="color:firebrick;">Not supported</span>|[Issue #681](https://github.com/Khan/KaTeX/issues/681)|
+|\rparen|$\rparen$||
 |\rq|$\rq$||
 |\Rrightarrow|$\Rrightarrow$||
 |\Rsh|$\Rsh$||

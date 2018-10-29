@@ -1,5 +1,5 @@
 ---
-id: version-0.10.0-rc.1-node
+id: version-0.10.0-node
 title: Node.js
 original_id: node
 ---
