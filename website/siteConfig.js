@@ -81,6 +81,11 @@ const users = [
         infoLink: 'https://www.messenger.com/',
     },
     {
+        caption: 'namu.wiki',
+        image: '/img/namuwiki_logo.png',
+        infoLink: 'https://namu.wiki/',
+    },
+    {
         caption: 'Observable',
         image: 'https://pbs.twimg.com/profile_images/970805785503477760/HfTZJiZo_400x400.jpg',
         infoLink: 'https://beta.observablehq.com/',
