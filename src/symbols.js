@@ -771,6 +771,24 @@ for (let i = 0; i < letters.length; i++) {
     defineSymbol(text, main, textord, ch, ch);
 }
 
+// Blackboard bold and script letters in Unicode range
+defineSymbol(math, ams, textord, "C", "\u2102");  // blackboard bold
+defineSymbol(text, ams, textord, "C", "\u2102");
+defineSymbol(math, ams, textord, "H", "\u210D");
+defineSymbol(text, ams, textord, "H", "\u210D");
+defineSymbol(math, ams, textord, "N", "\u2115");
+defineSymbol(text, ams, textord, "N", "\u2115");
+defineSymbol(math, ams, textord, "P", "\u2119");
+defineSymbol(text, ams, textord, "P", "\u2119");
+defineSymbol(math, ams, textord, "Q", "\u211A");
+defineSymbol(text, ams, textord, "Q", "\u211A");
+defineSymbol(math, ams, textord, "R", "\u211D");
+defineSymbol(text, ams, textord, "R", "\u211D");
+defineSymbol(math, ams, textord, "Z", "\u2124");
+defineSymbol(text, ams, textord, "Z", "\u2124");
+defineSymbol(math, main, mathord, "h", "\u210E");  // italic h, Planck constant
+defineSymbol(text, main, mathord, "h", "\u210E");
+
 // The next loop loads wide (surrogate pair) characters.
 // We support some letters in the Unicode range U+1D400 to U+1D7FF,
 // Mathematical Alphanumeric Symbols.
