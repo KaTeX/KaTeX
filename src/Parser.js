@@ -128,7 +128,13 @@ export default class Parser {
         return parse;
     }
 
-    static endOfExpression = ["}", "\\end", "\\right", "&"];
+    static endOfExpression = ["}", "\\endgroup", "\\end", "\\right", "&"];
+
+    static endOfGroup = {
+        "[": "]",
+        "{": "}",
+        "\\begingroup": "\\endgroup",
+    }
 
     /**
      * Parses an "expression", which is a list of atoms.
@@ -773,28 +779,29 @@ export default class Parser {
             this.switchMode(mode);
         }
 
+        let groupEnd;
         let result;
-        // Try to parse an open brace
-        if (text === (optional ? "[" : "{")) {
+        // Try to parse an open brace or \begingroup
+        if (optional ? text === "["  : text === "{" || text === "\\begingroup") {
+            groupEnd = Parser.endOfGroup[text];
             // Start a new group namespace
             this.gullet.beginGroup();
             // If we get a brace, parse an expression
             this.consume();
-            const expression = this.parseExpression(false, optional ? "]" : "}");
+            const expression = this.parseExpression(false, groupEnd);
             const lastToken = this.nextToken;
-            // Switch mode back before consuming symbol after close brace
-            if (mode) {
-                this.switchMode(outerMode);
-            }
             // End group namespace before consuming symbol after close brace
             this.gullet.endGroup();
-            // Make sure we get a close brace
-            this.expect(optional ? "]" : "}");
-            return {
+            result = {
                 type: "ordgroup",
                 mode: this.mode,
                 loc: SourceLocation.range(firstToken, lastToken),
                 body: expression,
+                // A group formed by \begingroup...\endgroup is a semi-simple group
+                // which doesn't affect spacing in math mode, i.e., is transparent.
+                // https://tex.stackexchange.com/questions/1930/when-should-one-
+                // use-begingroup-instead-of-bgroup
+                semisimple: text === "\\begingroup" || undefined,
             };
         } else if (optional) {
             // Return nothing for an optional group
@@ -817,6 +824,10 @@ export default class Parser {
         // Switch mode back
         if (mode) {
             this.switchMode(outerMode);
+        }
+        // Make sure we got a close brace
+        if (groupEnd) {
+            this.expect(groupEnd);
         }
         return result;
     }
