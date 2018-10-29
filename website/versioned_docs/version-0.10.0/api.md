@@ -1,5 +1,5 @@
 ---
-id: version-0.10.0-rc.1-api
+id: version-0.10.0-api
 title: API
 original_id: api
 ---

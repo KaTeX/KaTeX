@@ -1,5 +1,5 @@
 ---
-id: version-0.10.0-rc.1-cli
+id: version-0.10.0-cli
 title: CLI
 original_id: cli
 ---
@@ -40,7 +40,7 @@ Makes \color behave like LaTeX's 2-argument \textcolor, instead of LaTeX's one-a
 Turn on strict / LaTeX faithfulness mode, which throws an error if the input uses features that are not supported by LaTeX
 
 ### `-s, --max-size <n>`
-If non-zero, all user-specified sizes, e.g. in \rule{500em}{500em}, will be capped to maxSize ems. Otherwise, elements and spaces can be arbitrarily large (default: 0)
+If non-zero, all user-specified sizes, e.g. in \rule{500em}{500em}, will be capped to maxSize ems. Otherwise, elements and spaces can be arbitrarily large (default: Infinity)
 
 ### `-e, --max-expand <n>`
 Limit the number of macro expansions to the specified number, to prevent e.g. infinite macro loops.  If set to Infinity, the macro expander will try to fully expand as in LaTeX.
