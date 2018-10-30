@@ -59,7 +59,6 @@
     "rimraf": "^2.6.2",
     "rollup": "^0.66.0",
     "rollup-plugin-alias": "^1.4.0",
-    "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-babel": "^4.0.2",
     "selenium-webdriver": "^3.6.0",
     "sri-toolbox": "^0.2.0",
