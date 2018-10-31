@@ -33,7 +33,8 @@ After we're done writing `math/tex` scripts, we load this extension.
 </html>
 ```
 
+<!-- TODO: uncomment when releasing a new version
 ECMAScript module is also available:
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/mathtex-script-type.mjs" integrity="sha384-En8cse3uW4xErwYkF3uTpWEw4BdLEWrWT2u1BttQuilGrJjAKcpGeC2ihwJ/wRD4" crossorigin="anonymous"></script>
-````
+```` -->

@@ -35,10 +35,11 @@ If you want to build your own custom copy handler based on this one,
 copy the `copy-tex.js` into your codebase and replace the `require`
 statement with `require('katex/contrib/copy-tex/katex2tex.js')`.
 
+<!-- TODO: uncomment when releasing a new version
 ECMAScript module is also available:
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/copy-tex.mjs" integrity="sha384-jLtlhlpasgCe2I4eVNEStxiWP4slZdWUk3E3FgbblMBxLs6YlA/rMNSeiGTRfAQ/" crossorigin="anonymous"></script>
-````
+```` -->
 
 ### Known Issues
 
