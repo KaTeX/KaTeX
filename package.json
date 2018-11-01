@@ -1,8 +1,9 @@
 {
   "name": "katex",
-  "version": "0.10.0-pre",
+  "version": "0.10.1-pre",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
+  "homepage": "https://katex.org",
   "repository": {
     "type": "git",
     "url": "git://github.com/Khan/KaTeX.git"
@@ -38,7 +39,7 @@
     "eslint-plugin-react": "^7.10.0",
     "eslint-plugin-transform-runtime-aliasing": "^2.0.0",
     "file-loader": "^2.0.0",
-    "flow-bin": "^0.83.0",
+    "flow-bin": "^0.84.0",
     "fs-extra": "^7.0.0",
     "husky": "^1.0.0-rc.8",
     "istanbul-api": "^2.0.5",
@@ -57,6 +58,7 @@
     "query-string": "^6.2.0",
     "rimraf": "^2.6.2",
     "rollup": "^0.66.0",
+    "rollup-plugin-alias": "^1.4.0",
     "rollup-plugin-babel": "^4.0.2",
     "selenium-webdriver": "^3.6.0",
     "sri-toolbox": "^0.2.0",

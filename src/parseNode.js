@@ -85,6 +85,7 @@ type ParseNodeTypes = {
         mode: Mode,
         loc?: ?SourceLocation,
         body: AnyParseNode[],
+        semisimple?: boolean,
     |},
     "raw": {|
         type: "raw",
