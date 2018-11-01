@@ -752,7 +752,7 @@ describe("A text parser", function() {
     });
 
     it("should parse spacing functions", function() {
-        expect`a b\, \; \! \: ~ \thinspace \medspace \quad \ `.toBuild();
+        expect`a b\, \; \! \: \> ~ \thinspace \medspace \quad \ `.toBuild();
         expect`\enspace \thickspace \qquad \space \nobreakspace`.toBuild();
     });
 
@@ -3227,6 +3227,7 @@ describe("Unicode", function() {
         expect("\\left\u23b0\\frac{a}{b}\\right\u23b1").toBuild();
         expect`┌x┐ └x┘`.toBuild();
         expect("\u231Cx\u231D \u231Ex\u231F").toBuild();
+        expect("\u27E6x\u27E7").toBuild();
     });
 
     it("should build some surrogate pairs", function() {
