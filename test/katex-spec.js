@@ -2658,6 +2658,15 @@ describe("href and url commands", function() {
     });
 });
 
+describe("A raw text parser", function() {
+    it("should not not parse a mal-formed string", function() {
+        // In the next line, the first character passed to \includegraphics is a
+        // Unicode combining character. So this is a test that the parser will catch a bad string.
+        expect("\\includegraphics[\u030aheight=0.8em, totalheight=0.9em, width=0.9em]{" + "https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").not.toParse();
+    });
+});
+
+
 describe("A parser that does not throw on unsupported commands", function() {
     // The parser breaks on unsupported commands unless it is explicitly
     // told not to
