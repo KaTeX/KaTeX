@@ -27,7 +27,7 @@ const targets /*: Array<Target> */ = [
     },
     {
         name: 'contrib/copy-tex',
-        entry: './contrib/copy-tex/copy-tex.js',
+        entry: './contrib/copy-tex/copy-tex.webpack.js',
     },
     {
         name: 'contrib/mathtex-script-type',
@@ -40,12 +40,22 @@ const targets /*: Array<Target> */ = [
  */
 function createConfig(target /*: Target */, dev /*: boolean */,
         minimize /*: boolean */) /*: Object */ {
-    const cssLoader = {
-        loader: 'css-loader',
-        options: {
-            minimize, // cssnano
-        },
-    };
+    const cssLoaders /*: Array<Object> */ = [{loader: 'css-loader'}];
+    if (minimize) {
+        cssLoaders[0].options = {importLoaders: 1};
+        cssLoaders.push({
+            loader: 'postcss-loader',
+            options: {plugins: [require('cssnano')()]},
+        });
+    }
+
+    const lessOptions = {};
+    if (process.env.USE_TTF === "false") {
+        lessOptions.modifyVars = {
+            'use-ttf': false,
+        };
+    }
+
     return {
         mode: dev ? 'development' : 'production',
         context: __dirname,
@@ -60,7 +70,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             // Enable output modules to be used in browser or Node.
             // See: https://github.com/webpack/webpack/issues/6522
             globalObject: "(typeof self !== 'undefined' ? self : this)",
-            path: path.resolve(__dirname, 'build'),
+            path: path.resolve(__dirname, 'dist'),
             publicPath: dev ? '/' : '',
         },
         module: {
@@ -74,15 +84,18 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                     test: /\.css$/,
                     use: [
                         dev ? 'style-loader' : MiniCssExtractPlugin.loader,
-                        cssLoader,
+                        ...cssLoaders,
                     ],
                 },
                 {
                     test: /\.less$/,
                     use: [
                         dev ? 'style-loader' : MiniCssExtractPlugin.loader,
-                        cssLoader,
-                        'less-loader',
+                        ...cssLoaders,
+                        {
+                            loader: 'less-loader',
+                            options: lessOptions,
+                        },
                     ],
                 },
                 {

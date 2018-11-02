@@ -8,11 +8,15 @@ import * as mml from "../buildMathML";
 defineFunctionBuilders({
     type: "ordgroup",
     htmlBuilder(group, options) {
+        if (group.semisimple) {
+            return buildCommon.makeFragment(
+                html.buildExpression(group.body, options, false));
+        }
         return buildCommon.makeSpan(
-            ["mord"], html.buildExpression(group.value, options, true), options);
+            ["mord"], html.buildExpression(group.body, options, true), options);
     },
     mathmlBuilder(group, options) {
-        return mml.buildExpressionRow(group.value, options);
+        return mml.buildExpressionRow(group.body, options);
     },
 });
 

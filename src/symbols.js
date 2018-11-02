@@ -24,20 +24,25 @@ type Font = "main" | "ams";
 // types for raw text tokens, and we want to avoid conflicts with higher-level
 // `ParseNode` types. These `ParseNode`s are constructed within `Parser` by
 // looking up the `symbols` map.
-export const GROUPS = { // Set of all the groups.
-    "accent-token": 1,
+export const ATOMS = {
     "bin": 1,
     "close": 1,
     "inner": 1,
-    "mathord": 1,
-    "op-token": 1,
     "open": 1,
     "punct": 1,
     "rel": 1,
+};
+export const NON_ATOMS = {
+    "accent-token": 1,
+    "mathord": 1,
+    "op-token": 1,
     "spacing": 1,
     "textord": 1,
 };
-export type Group = $Keys<typeof GROUPS>;
+
+export type Atom = $Keys<typeof ATOMS>;
+export type NonAtom = $Keys<typeof NON_ATOMS>
+export type Group = Atom | NonAtom;
 type CharInfoMap = {[string]: {font: Font, group: Group, replace: ?string}};
 
 const symbols: {[Mode]: CharInfoMap} = {
@@ -148,7 +153,7 @@ defineSymbol(text, main, textord, "\u2020", "\\dag");
 defineSymbol(text, main, textord, "\u2020", "\\textdagger");
 defineSymbol(math, main, textord, "\u2021", "\\ddag");
 defineSymbol(text, main, textord, "\u2021", "\\ddag");
-defineSymbol(text, main, textord, "\u2020", "\\textdaggerdbl");
+defineSymbol(text, main, textord, "\u2021", "\\textdaggerdbl");
 
 // Large Delimiters
 defineSymbol(math, main, close, "\u23b1", "\\rmoustache", true);
@@ -563,7 +568,7 @@ defineSymbol(math, main, rel, "\u2265", "\\geq", true);
 defineSymbol(math, main, rel, "\u2190", "\\gets");
 defineSymbol(math, main, rel, ">", "\\gt");
 defineSymbol(math, main, rel, "\u2208", "\\in", true);
-defineSymbol(math, main, rel, "\u0338", "\\not");
+defineSymbol(math, main, rel, "\u0338", "\\@not");
 defineSymbol(math, main, rel, "\u2282", "\\subset", true);
 defineSymbol(math, main, rel, "\u2283", "\\supset", true);
 defineSymbol(math, main, rel, "\u2286", "\\subseteq", true);
@@ -620,6 +625,8 @@ defineSymbol(math, main, open, "[", "\\lbrack");
 defineSymbol(text, main, textord, "[", "\\lbrack");
 defineSymbol(math, main, close, "]", "\\rbrack");
 defineSymbol(text, main, textord, "]", "\\rbrack");
+defineSymbol(math, main, open, "(", "\\lparen");
+defineSymbol(math, main, close, ")", "\\rparen");
 defineSymbol(text, main, textord, "<", "\\textless"); // in T1 fontenc
 defineSymbol(text, main, textord, ">", "\\textgreater"); // in T1 fontenc
 defineSymbol(math, main, open, "\u230a", "\\lfloor", true);
@@ -764,6 +771,24 @@ for (let i = 0; i < letters.length; i++) {
     defineSymbol(text, main, textord, ch, ch);
 }
 
+// Blackboard bold and script letters in Unicode range
+defineSymbol(math, ams, textord, "C", "\u2102");  // blackboard bold
+defineSymbol(text, ams, textord, "C", "\u2102");
+defineSymbol(math, ams, textord, "H", "\u210D");
+defineSymbol(text, ams, textord, "H", "\u210D");
+defineSymbol(math, ams, textord, "N", "\u2115");
+defineSymbol(text, ams, textord, "N", "\u2115");
+defineSymbol(math, ams, textord, "P", "\u2119");
+defineSymbol(text, ams, textord, "P", "\u2119");
+defineSymbol(math, ams, textord, "Q", "\u211A");
+defineSymbol(text, ams, textord, "Q", "\u211A");
+defineSymbol(math, ams, textord, "R", "\u211D");
+defineSymbol(text, ams, textord, "R", "\u211D");
+defineSymbol(math, ams, textord, "Z", "\u2124");
+defineSymbol(text, ams, textord, "Z", "\u2124");
+defineSymbol(math, main, mathord, "h", "\u210E");  // italic h, Planck constant
+defineSymbol(text, main, mathord, "h", "\u210E");
+
 // The next loop loads wide (surrogate pair) characters.
 // We support some letters in the Unicode range U+1D400 to U+1D7FF,
 // Mathematical Alphanumeric Symbols.
@@ -829,7 +854,7 @@ defineSymbol(text, main, textord, "k", wideChar);
 
 // Next, some wide character numerals
 for (let i = 0; i < 10; i++) {
-    const ch = letters.charAt(i);
+    const ch = i.toString();
 
     wideChar = String.fromCharCode(0xD835, 0xDFCE + i);  // 0-9 bold
     defineSymbol(math, main, mathord, ch, wideChar);

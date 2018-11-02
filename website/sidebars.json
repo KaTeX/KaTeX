@@ -1,0 +1,8 @@
+{
+  "docs": {
+    "Installation": ["node", "browser"],
+    "Usage": ["api", "cli", "autorender", "libs"],
+    "Configuring KaTeX": ["options", "security", "error", "font"],
+    "Misc": ["supported", "support_table", "issues"]
+  }
+}

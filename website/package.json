@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "start": "node lib/build.js && docusaurus-start",
+    "build": "node lib/build.js && docusaurus-build",
+    "write-translations": "docusaurus-write-translations",
+    "version": "node lib/build.js && docusaurus-version",
+    "rename-version": "docusaurus-rename-version"
+  },
+  "devDependencies": {
+    "docusaurus": "^1.5.0",
+    "fs-extra": "^7.0.0"
+  },
+  "dependencies": {}
+}

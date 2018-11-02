@@ -4,34 +4,13 @@
  * files.
  */
 
-import type {AnyParseNode} from "./ParseNode";
-
-/**
- * Provide an `indexOf` function which works in IE8, but defers to native if
- * possible.
- */
-const nativeIndexOf = Array.prototype.indexOf;
-const indexOf = function<T>(list: Array<T>, elem: T): number {
-    if (list == null) {
-        return -1;
-    }
-    if (nativeIndexOf && list.indexOf === nativeIndexOf) {
-        return list.indexOf(elem);
-    }
-    const l = list.length;
-    for (let i = 0; i < l; i++) {
-        if (list[i] === elem) {
-            return i;
-        }
-    }
-    return -1;
-};
+import type {AnyParseNode} from "./parseNode";
 
 /**
  * Return whether an element is contained in a list
  */
 const contains = function<T>(list: Array<T>, elem: T): boolean {
-    return indexOf(list, elem) !== -1;
+    return list.indexOf(elem) !== -1;
 };
 
 /**
@@ -67,50 +46,25 @@ function escape(text: mixed): string {
 }
 
 /**
- * A function to set the text content of a DOM element in all supported
- * browsers. Note that we don't define this if there is no document.
- */
-let setTextContent;
-if (typeof document !== "undefined") {
-    const testNode = document.createElement("span");
-    if ("textContent" in testNode) {
-        setTextContent = function(node: Node, text: string) {
-            node.textContent = text;
-        };
-    } else {
-        setTextContent = function(node: Node, text: string) {
-            node.innerText = text;
-        };
-    }
-}
-
-/**
- * A function to clear a node.
- */
-function clearNode(node: Node) {
-    setTextContent(node, "");
-}
-
-/**
  * Sometimes we want to pull out the innermost element of a group. In most
  * cases, this will just be the group itself, but when ordgroups and colors have
  * a single element, we want to pull that out.
  */
 const getBaseElem = function(group: AnyParseNode): AnyParseNode {
     if (group.type === "ordgroup") {
-        if (group.value.length === 1) {
-            return getBaseElem(group.value[0]);
+        if (group.body.length === 1) {
+            return getBaseElem(group.body[0]);
         } else {
             return group;
         }
     } else if (group.type === "color") {
-        if (group.value.value.length === 1) {
-            return getBaseElem(group.value.value[0]);
+        if (group.body.length === 1) {
+            return getBaseElem(group.body[0]);
         } else {
             return group;
         }
     } else if (group.type === "font") {
-        return getBaseElem(group.value.body);
+        return getBaseElem(group.body);
     } else {
         return group;
     }
@@ -127,12 +81,7 @@ const isCharacterBox = function(group: AnyParseNode): boolean {
     // These are all they types of groups which hold single characters
     return baseElem.type === "mathord" ||
         baseElem.type === "textord" ||
-        baseElem.type === "bin" ||
-        baseElem.type === "rel" ||
-        baseElem.type === "inner" ||
-        baseElem.type === "open" ||
-        baseElem.type === "close" ||
-        baseElem.type === "punct";
+        baseElem.type === "atom";
 };
 
 export const assert = function<T>(value: ?T): T {
@@ -147,9 +96,6 @@ export default {
     deflt,
     escape,
     hyphenate,
-    indexOf,
-    setTextContent,
-    clearNode,
     getBaseElem,
     isCharacterBox,
 };

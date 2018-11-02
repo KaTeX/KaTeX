@@ -4,13 +4,13 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
-import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
-import {assertDomContainer, assertSymbolDomNode} from "../domTree";
+import {assertNodeType, checkNodeType} from "../parseNode";
+import {assertSpan, assertSymbolDomNode} from "../domTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type {AnyParseNode} from "../ParseNode";
+import type {ParseNode, AnyParseNode} from "../parseNode";
 import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "accent", but
@@ -32,25 +32,28 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
         // rendering that, while keeping track of where the accent is.
 
         // The real accent group is the base of the supsub group
-        group = assertNodeType(supSub.value.base, "accent");
+        group = assertNodeType(supSub.base, "accent");
         // The character box is the base of the accent group
-        base = group.value.base;
+        base = group.base;
         // Stick the character box into the base of the supsub group
-        supSub.value.base = base;
+        supSub.base = base;
 
         // Rerender the supsub group with its new base, and store that
         // result.
-        supSubGroup = assertDomContainer(html.buildGroup(supSub, options));
+        supSubGroup = assertSpan(html.buildGroup(supSub, options));
+
+        // reset original base
+        supSub.base = group;
     } else {
         group = assertNodeType(grp, "accent");
-        base = group.value.base;
+        base = group.base;
     }
 
     // Build the base group
     const body = html.buildGroup(base, options.havingCrampedStyle());
 
     // Does the accent need to shift for the skew of a character?
-    const mustShift = group.value.isShifty && utils.isCharacterBox(base);
+    const mustShift = group.isShifty && utils.isCharacterBox(base);
 
     // Calculate the skew of the accent. This is based on the line "If the
     // nucleus is not a single character, let s = 0; otherwise set s to the
@@ -79,10 +82,10 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
 
     // Build the accent
     let accentBody;
-    if (!group.value.isStretchy) {
+    if (!group.isStretchy) {
         let accent;
         let width: number;
-        if (group.value.label === "\\vec") {
+        if (group.label === "\\vec") {
             // Before version 0.9, \vec used the combining font glyph U+20D7.
             // But browsers, especially Safari, are not consistent in how they
             // render combining characters when not preceded by a character.
@@ -92,7 +95,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
             width = buildCommon.svgData.vec[1];
         } else {
             accent = buildCommon.makeSymbol(
-                group.value.label, "Main-Regular", group.mode, options);
+                group.label, "Main-Regular", group.mode, options);
             // Remove the italic correction of the accent, because it only serves to
             // shift the accent over to a place we don't want.
             accent.italic = 0;
@@ -104,7 +107,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
         // "Full" accents expand the width of the resulting symbol to be
         // at least the width of the accent, and overlap directly onto the
         // character without any vertical offset.
-        const accentFull = (group.value.label === "\\textcircled");
+        const accentFull = (group.label === "\\textcircled");
         if (accentFull) {
             accentBody.classes.push('accent-full');
             clearance = body.height;
@@ -125,7 +128,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
 
         // \textcircled uses the \bigcirc glyph, so it needs some
         // vertical adjustment to match LaTeX.
-        if (group.value.label === "\\textcircled") {
+        if (group.label === "\\textcircled") {
             accentBody.style.top = ".2em";
         }
 
@@ -182,18 +185,14 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
 };
 
 const mathmlBuilder: MathMLBuilder<"accent"> = (group, options) => {
-    const groupValue = group.value;
-    let accentNode;
-    if (groupValue.isStretchy) {
-        accentNode = stretchy.mathMLnode(groupValue.label);
-    } else {
-        accentNode = new mathMLTree.MathNode(
-            "mo", [mml.makeText(groupValue.label, group.mode)]);
-    }
+    const accentNode =
+        group.isStretchy ?
+            stretchy.mathMLnode(group.label) :
+            new mathMLTree.MathNode("mo", [mml.makeText(group.label, group.mode)]);
 
     const node = new mathMLTree.MathNode(
         "mover",
-        [mml.buildGroup(groupValue.base, options), accentNode]);
+        [mml.buildGroup(group.base, options), accentNode]);
 
     node.setAttribute("accent", "true");
 
@@ -227,13 +226,14 @@ defineFunction({
             context.funcName === "\\widetilde" ||
             context.funcName === "\\widecheck";
 
-        return new ParseNode("accent", {
+        return {
             type: "accent",
+            mode: context.parser.mode,
             label: context.funcName,
             isStretchy: isStretchy,
             isShifty: isShifty,
             base: base,
-        }, context.parser.mode);
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -254,13 +254,14 @@ defineFunction({
     handler: (context, args) => {
         const base = args[0];
 
-        return new ParseNode("accent", {
+        return {
             type: "accent",
+            mode: context.parser.mode,
             label: context.funcName,
             isStretchy: false,
             isShifty: true,
             base: base,
-        }, context.parser.mode);
+        };
     },
     htmlBuilder,
     mathmlBuilder,

@@ -5,13 +5,13 @@
  * and other CSS trickery.
  */
 
-import domTree from "./domTree";
+import {LineNode, PathNode, SvgNode} from "./domTree";
 import buildCommon from "./buildCommon";
 import mathMLTree from "./mathMLTree";
 import utils from "./utils";
 
 import type Options from "./Options";
-import type ParseNode, {AnyParseNode} from "./ParseNode";
+import type {ParseNode, AnyParseNode} from "./parseNode";
 import type {DomSpan, HtmlDomNode, SvgSpan} from "./domTree";
 
 const stretchyCodePoint: {[string]: string} = {
@@ -153,7 +153,7 @@ const katexImagesData: {
     // In mhchem.sty, min-length is 2.0em. But these arrows might appear in the
     // document as \xrightarrow or \xrightleftharpoons. Those have
     // min-length = 1.75em, so we set min-length on these next three to match.
-    xrightleftarrows: [["baraboveleftarrow", "rightarrowabovebar"], 1.75, 667],
+    xrightleftarrows: [["baraboveleftarrow", "rightarrowabovebar"], 1.75, 901],
     xrightequilibrium: [["baraboveshortleftharpoon",
         "rightharpoonaboveshortbar"], 1.75, 716],
     xleftequilibrium: [["shortbaraboveleftharpoon",
@@ -162,7 +162,7 @@ const katexImagesData: {
 
 const groupLength = function(arg: AnyParseNode): number {
     if (arg.type === "ordgroup") {
-        return arg.value.length;
+        return arg.body.length;
     } else {
         return 1;
     }
@@ -180,16 +180,16 @@ const svgSpan = function(
         height: number,
     } {
         let viewBoxWidth = 400000;  // default
-        const label = group.value.label.substr(1);
+        const label = group.label.substr(1);
         if (utils.contains(["widehat", "widecheck", "widetilde", "utilde"],
             label)) {
             // Each type in the `if` statement corresponds to one of the ParseNode
-            // types below. This narrowing is required to access `grp.value.base`.
+            // types below. This narrowing is required to access `grp.base`.
             // $FlowFixMe
             const grp: ParseNode<"accent"> | ParseNode<"accentUnder"> = group;
             // There are four SVG images available for each function.
             // Choose a taller image when there are more characters.
-            const numChars = groupLength(grp.value.base);
+            const numChars = groupLength(grp.base);
             let viewBoxHeight;
             let pathName;
             let height;
@@ -220,8 +220,8 @@ const svgSpan = function(
                     pathName = "tilde" + imgIndex;
                 }
             }
-            const path = new domTree.pathNode(pathName);
-            const svgNode = new domTree.svgNode([path], {
+            const path = new PathNode(pathName);
+            const svgNode = new SvgNode([path], {
                 "width": "100%",
                 "height": height + "em",
                 "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
@@ -260,9 +260,9 @@ const svgSpan = function(
             }
 
             for (let i = 0; i < numSvgChildren; i++) {
-                const path = new domTree.pathNode(paths[i]);
+                const path = new PathNode(paths[i]);
 
-                const svgNode = new domTree.svgNode([path], {
+                const svgNode = new SvgNode([path], {
                     "width": "400em",
                     "height": height + "em",
                     "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
@@ -326,7 +326,7 @@ const encloseSpan = function(
 
         const lines = [];
         if (/^[bx]cancel$/.test(label)) {
-            lines.push(new domTree.lineNode({
+            lines.push(new LineNode({
                 "x1": "0",
                 "y1": "0",
                 "x2": "100%",
@@ -336,7 +336,7 @@ const encloseSpan = function(
         }
 
         if (/^x?cancel$/.test(label)) {
-            lines.push(new domTree.lineNode({
+            lines.push(new LineNode({
                 "x1": "0",
                 "y1": "100%",
                 "x2": "100%",
@@ -345,7 +345,7 @@ const encloseSpan = function(
             }));
         }
 
-        const svgNode = new domTree.svgNode(lines, {
+        const svgNode = new SvgNode(lines, {
             "width": "100%",
             "height": totalHeight + "em",
         });

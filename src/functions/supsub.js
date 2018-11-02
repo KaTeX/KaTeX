@@ -1,11 +1,11 @@
 // @flow
 import {defineFunctionBuilders} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import domTree from "../domTree";
+import {SymbolNode} from "../domTree";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import Style from "../Style";
-import {checkNodeType} from "../ParseNode";
+import {checkNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -14,7 +14,7 @@ import * as horizBrace from "./horizBrace";
 import * as op from "./op";
 
 import type Options from "../Options";
-import type ParseNode from "../ParseNode";
+import type {ParseNode} from "../parseNode";
 import type {HtmlBuilder} from "../defineFunction";
 import type {MathNodeType} from "../mathMLTree";
 
@@ -29,21 +29,21 @@ const htmlBuilderDelegate = function(
     group: ParseNode<"supsub">,
     options: Options,
 ): ?HtmlBuilder<*> {
-    const base = group.value.base;
+    const base = group.base;
     if (!base) {
         return null;
     } else if (base.type === "op") {
         // Operators handle supsubs differently when they have limits
         // (e.g. `\displaystyle\sum_2^3`)
-        const delegate = base.value.limits &&
+        const delegate = base.limits &&
             (options.style.size === Style.DISPLAY.size ||
-            base.value.alwaysHandleSupSub);
+            base.alwaysHandleSupSub);
         return delegate ? op.htmlBuilder : null;
     } else if (base.type === "accent") {
-        return utils.isCharacterBox(base.value.base) ? accent.htmlBuilder : null;
+        return utils.isCharacterBox(base.base) ? accent.htmlBuilder : null;
     } else if (base.type === "horizBrace") {
-        const isSup = !group.value.sub;
-        return isSup === base.value.isOver ? horizBrace.htmlBuilder : null;
+        const isSup = !group.sub;
+        return isSup === base.isOver ? horizBrace.htmlBuilder : null;
     } else {
         return null;
     }
@@ -64,7 +64,7 @@ defineFunctionBuilders({
             return builderDelegate(group, options);
         }
 
-        const {base: valueBase, sup: valueSup, sub: valueSub} = group.value;
+        const {base: valueBase, sup: valueSup, sub: valueSub} = group;
         const base = html.buildGroup(valueBase, options);
         let supm;
         let subm;
@@ -114,12 +114,10 @@ defineFunctionBuilders({
             // Subscripts shouldn't be shifted by the base's italic correction.
             // Account for that by shifting the subscript back the appropriate
             // amount. Note we only do this when the base is a single symbol.
-            let isOiint = false;
-            if (group.value.base) {
-                isOiint = group.value.base.value.body === "\\oiint" ||
-                    group.value.base.value.body === "\\oiiint";
-            }
-            if (base instanceof domTree.symbolNode || isOiint) {
+            const isOiint =
+                group.base && group.base.type === "op" && group.base.name &&
+                (group.base.name === "\\oiint" || group.base.name === "\\oiiint");
+            if (base instanceof SymbolNode || isOiint) {
                 // $FlowFixMe
                 marginLeft = -base.italic + "em";
             }
@@ -194,46 +192,48 @@ defineFunctionBuilders({
         let isOver;
         let isSup;
 
-        const horizBrace = checkNodeType(group.value.base, "horizBrace");
+        const horizBrace = checkNodeType(group.base, "horizBrace");
         if (horizBrace) {
-            isSup = !!group.value.sup;
-            if (isSup === horizBrace.value.isOver) {
+            isSup = !!group.sup;
+            if (isSup === horizBrace.isOver) {
                 isBrace = true;
-                isOver = horizBrace.value.isOver;
+                isOver = horizBrace.isOver;
             }
         }
 
-        const children = [
-            mml.buildGroup(group.value.base, options)];
+        const children = [mml.buildGroup(group.base, options)];
 
-        if (group.value.sub) {
-            children.push(mml.buildGroup(group.value.sub, options));
+        if (group.sub) {
+            children.push(mml.buildGroup(group.sub, options));
         }
 
-        if (group.value.sup) {
-            children.push(mml.buildGroup(group.value.sup, options));
+        if (group.sup) {
+            children.push(mml.buildGroup(group.sup, options));
         }
 
         let nodeType: MathNodeType;
         if (isBrace) {
             nodeType = (isOver ? "mover" : "munder");
-        } else if (!group.value.sub) {
-            const base = group.value.base;
-            if (base && base.value.limits && options.style === Style.DISPLAY) {
+        } else if (!group.sub) {
+            const base = group.base;
+            if (base && base.type === "op" && base.limits &&
+                options.style === Style.DISPLAY) {
                 nodeType = "mover";
             } else {
                 nodeType = "msup";
             }
-        } else if (!group.value.sup) {
-            const base = group.value.base;
-            if (base && base.value.limits && options.style === Style.DISPLAY) {
+        } else if (!group.sup) {
+            const base = group.base;
+            if (base && base.type === "op" && base.limits &&
+                options.style === Style.DISPLAY) {
                 nodeType = "munder";
             } else {
                 nodeType = "msub";
             }
         } else {
-            const base = group.value.base;
-            if (base && base.value.limits && options.style === Style.DISPLAY) {
+            const base = group.base;
+            if (base && base.type === "op" && base.limits &&
+                options.style === Style.DISPLAY) {
                 nodeType = "munderover";
             } else {
                 nodeType = "msubsup";

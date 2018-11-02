@@ -24,7 +24,7 @@
 import ParseError from "./ParseError";
 import Style from "./Style";
 
-import domTree from "./domTree";
+import {PathNode, SvgNode, SymbolNode} from "./domTree";
 import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
@@ -125,7 +125,7 @@ const mathrmSize = function(
     size: number,
     mode: Mode,
     options: Options,
-): domTree.symbolNode {
+): SymbolNode {
     return buildCommon.makeSymbol(value, "Size" + size + "-Regular",
         mode, options);
 };
@@ -245,12 +245,12 @@ const makeStackedDelim = function(
         top = "\u23a4";
         repeat = bottom = "\u23a5";
         font = "Size4-Regular";
-    } else if (delim === "(") {
+    } else if (delim === "(" || delim === "\\lparen") {
         top = "\u239b";
         repeat = "\u239c";
         bottom = "\u239d";
         font = "Size4-Regular";
-    } else if (delim === ")") {
+    } else if (delim === ")" || delim === "\\rparen") {
         top = "\u239e";
         repeat = "\u239f";
         bottom = "\u23a0";
@@ -391,9 +391,9 @@ const sqrtSvg = function(
 -294.333-240-727l-212 -643 -85 170c-4-3.333-8.333-7.667-13 -13l-13-13l77-155
  77-156c66 199.333 139 419.667 219 661 l218 661zM702 ${vbPad}H400000v40H742z`;
     }
-    const pathNode = new domTree.pathNode(sqrtName, alternate);
+    const pathNode = new PathNode(sqrtName, alternate);
 
-    const svg =  new domTree.svgNode([pathNode], {
+    const svg =  new SvgNode([pathNode], {
         // Note: 1000:1 ratio of viewBox to document em width.
         "width": "400em",
         "height": height + "em",
@@ -415,12 +415,18 @@ const makeSqrtImage = function(
     ruleWidth: number,
     advanceWidth: number,
 } {
-    const delim =
-        traverseSequence("\\surd", height, stackLargeDelimiterSequence, options);
+    // Define a newOptions that removes the effect of size changes such as \Huge.
+    // We don't pick different a height surd for \Huge. For it, we scale up.
+    const newOptions = options.havingBaseSizing();
+
+    // Pick the desired surd glyph from a sequence of surds.
+    const delim = traverseSequence("\\surd", height * newOptions.sizeMultiplier,
+        stackLargeDelimiterSequence, newOptions);
+
+    let sizeMultiplier = newOptions.sizeMultiplier;  // default
 
     // Create a span containing an SVG image of a sqrt symbol.
     let span;
-    let sizeMultiplier = options.sizeMultiplier;  // default
     let spanHeight = 0;
     let texHeight = 0;
     let viewBoxHeight = 0;
@@ -435,13 +441,16 @@ const makeSqrtImage = function(
     if (delim.type === "small") {
         // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
         viewBoxHeight = 1000 + vbPad;  // 1000 unit glyph height.
-        const newOptions = options.havingBaseStyle(delim.style);
-        sizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
-        spanHeight = (1.0 + emPad) * sizeMultiplier;
-        texHeight = 1.00 * sizeMultiplier;
+        if (height < 1.0) {
+            sizeMultiplier = 1.0;   // mimic a \textfont radical
+        } else if (height < 1.4) {
+            sizeMultiplier = 0.7;   // mimic a \scriptfont radical
+        }
+        spanHeight = (1.0 + emPad) / sizeMultiplier;
+        texHeight = 1.00 / sizeMultiplier;
         span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, options);
         span.style.minWidth = "0.853em";
-        advanceWidth = 0.833 * sizeMultiplier;  // from the font.
+        advanceWidth = 0.833 / sizeMultiplier;  // from the font.
 
     } else if (delim.type === "large") {
         // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
@@ -450,17 +459,17 @@ const makeSqrtImage = function(
         spanHeight = (sizeToMaxHeight[delim.size] + emPad) / sizeMultiplier;
         span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight, options);
         span.style.minWidth = "1.02em";
-        advanceWidth = 1.0 / sizeMultiplier;  // from the font.
+        advanceWidth = 1.0 / sizeMultiplier; // 1.0 from the font.
 
     } else {
         // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
         // We'll use a single SVG to accomplish the same thing.
-        spanHeight = height / sizeMultiplier + emPad;
-        texHeight = height / sizeMultiplier;
+        spanHeight = height + emPad;
+        texHeight = height;
         viewBoxHeight = Math.floor(1000 * height) + vbPad;
         span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, options);
         span.style.minWidth = "0.742em";
-        advanceWidth = 1.056 / sizeMultiplier;
+        advanceWidth = 1.056;
     }
 
     span.height = texHeight;
@@ -480,7 +489,8 @@ const makeSqrtImage = function(
 // There are three kinds of delimiters, delimiters that stack when they become
 // too large
 const stackLargeDelimiters = [
-    "(", ")", "[", "\\lbrack", "]", "\\rbrack",
+    "(", "\\lparen", ")", "\\rparen",
+    "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\u230a", "\u230b",
     "\\lceil", "\\rceil", "\u2308", "\u2309",

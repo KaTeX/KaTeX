@@ -4,9 +4,8 @@ import defineEnvironment from "../defineEnvironment";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
-import ParseNode from "../ParseNode";
-import {assertNodeType, assertSymbolNodeType} from "../ParseNode";
-import {checkNodeType, checkSymbolNodeType} from "../ParseNode";
+import {assertNodeType, assertSymbolNodeType} from "../parseNode";
+import {checkNodeType, checkSymbolNodeType} from "../parseNode";
 import {calculateSize} from "../units";
 import utils from "../utils";
 
@@ -14,40 +13,17 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Parser from "../Parser";
-import type {AnyParseNode} from "../ParseNode";
+import type {ParseNode, AnyParseNode} from "../parseNode";
 import type {StyleStr} from "../types";
 import type {HtmlBuilder, MathMLBuilder} from "../defineFunction";
 
 // Data stored in the ParseNode associated with the environment.
-type AlignSpec = { type: "separator", separator: string } | {
+export type AlignSpec = { type: "separator", separator: string } | {
     type: "align",
     align: string,
     pregap?: number,
     postgap?: number,
 };
-
-export type ArrayEnvNodeData = {|
-    type: "array",
-    hskipBeforeAndAfter?: boolean,
-    arraystretch: number,
-    addJot?: boolean,
-    cols?: AlignSpec[],
-    body: AnyParseNode[][], // List of rows in the (2D) array.
-    rowGaps: (?ParseNode<"size">)[],
-    hLinesBeforeRow: Array<boolean[]>,
-|};
-// Same as above but with some fields not yet filled.
-type ArrayEnvNodeDataIncomplete = {|
-    type: "array",
-    hskipBeforeAndAfter?: boolean,
-    arraystretch?: number,
-    addJot?: boolean,
-    cols?: AlignSpec[],
-    // Before these fields are filled.
-    body?: AnyParseNode[][],
-    rowGaps?: (?ParseNode<"size">)[],
-    hLinesBeforeRow?: Array<boolean[]>,
-|};
 
 function getHLines(parser: Parser): boolean[] {
     // Return an array. The array length = number of hlines.
@@ -72,7 +48,12 @@ function getHLines(parser: Parser): boolean[] {
  */
 function parseArray(
     parser: Parser,
-    result: ArrayEnvNodeDataIncomplete,
+    {hskipBeforeAndAfter, addJot, cols, arraystretch}: {|
+        hskipBeforeAndAfter?: boolean,
+        addJot?: boolean,
+        cols?: AlignSpec[],
+        arraystretch?: number,
+    |},
     style: StyleStr,
 ): ParseNode<"array"> {
     // Parse body of array with \\ temporarily mapped to \cr
@@ -80,15 +61,15 @@ function parseArray(
     parser.gullet.macros.set("\\\\", "\\cr");
 
     // Get current arraystretch if it's not set by the environment
-    if (!result.arraystretch) {
-        const arraystretch = parser.gullet.expandMacroAsText("\\arraystretch");
-        if (arraystretch == null) {
+    if (!arraystretch) {
+        const stretch = parser.gullet.expandMacroAsText("\\arraystretch");
+        if (stretch == null) {
             // Default \arraystretch from lttab.dtx
-            result.arraystretch = 1;
+            arraystretch = 1;
         } else {
-            result.arraystretch = parseFloat(arraystretch);
-            if (!result.arraystretch || result.arraystretch < 0) {
-                throw new ParseError(`Invalid \\arraystretch: ${arraystretch}`);
+            arraystretch = parseFloat(stretch);
+            if (!arraystretch || arraystretch < 0) {
+                throw new ParseError(`Invalid \\arraystretch: ${stretch}`);
             }
         }
     }
@@ -103,13 +84,18 @@ function parseArray(
 
     while (true) {  // eslint-disable-line no-constant-condition
         let cell = parser.parseExpression(false, "\\cr");
-        cell = new ParseNode("ordgroup", cell, parser.mode);
+        cell = {
+            type: "ordgroup",
+            mode: parser.mode,
+            body: cell,
+        };
         if (style) {
-            cell = new ParseNode("styling", {
+            cell = {
                 type: "styling",
-                style: style,
-                value: [cell],
-            }, parser.mode);
+                mode: parser.mode,
+                style,
+                body: [cell],
+            };
         }
         row.push(cell);
         const next = parser.nextToken.text;
@@ -119,7 +105,8 @@ function parseArray(
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
             // the last line is empty.
             // NOTE: Currently, `cell` is the last item added into `row`.
-            if (row.length === 1 && cell.value.value[0].value.length === 0) {
+            if (row.length === 1 && cell.type === "styling" &&
+                cell.body[0].body.length === 0) {
                 body.pop();
             }
             if (hLinesBeforeRow.length < body.length + 1) {
@@ -127,11 +114,8 @@ function parseArray(
             }
             break;
         } else if (next === "\\cr") {
-            const cr = parser.parseFunction();
-            if (!cr) {
-                throw new ParseError(`Failed to parse function after ${next}`);
-            }
-            rowGaps.push(assertNodeType(cr, "cr").value.size);
+            const cr = assertNodeType(parser.parseFunction(), "cr");
+            rowGaps.push(cr.size);
 
             // check for \hline(s) following the row separator
             hLinesBeforeRow.push(getHLines(parser));
@@ -143,13 +127,18 @@ function parseArray(
                                  parser.nextToken);
         }
     }
-    result.body = body;
-    result.rowGaps = rowGaps;
-    result.hLinesBeforeRow = hLinesBeforeRow;
-    // $FlowFixMe: The required fields were added immediately above.
-    const res: ArrayEnvNodeData = result;
     parser.gullet.endGroup();
-    return new ParseNode("array", res, parser.mode);
+    return {
+        type: "array",
+        mode: parser.mode,
+        addJot,
+        arraystretch,
+        body,
+        cols,
+        rowGaps,
+        hskipBeforeAndAfter,
+        hLinesBeforeRow,
+    };
 }
 
 
@@ -173,8 +162,8 @@ type Outrow = {
 const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     let r;
     let c;
-    const nr = group.value.body.length;
-    const hLinesBeforeRow = group.value.hLinesBeforeRow;
+    const nr = group.body.length;
+    const hLinesBeforeRow = group.hLinesBeforeRow;
     let nc = 0;
     let body = new Array(nr);
     const hlines = [];
@@ -188,7 +177,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     // Default \jot from ltmath.dtx
     // TODO(edemaine): allow overriding \jot via \setlength (#687)
     const jot = 3 * pt;
-    const arrayskip = group.value.arraystretch * baselineskip;
+    const arrayskip = group.arraystretch * baselineskip;
     const arstrutHeight = 0.7 * arrayskip; // \strutbox in ltfsstrc.dtx and
     const arstrutDepth = 0.3 * arrayskip;  // \@arstrutbox in lttab.dtx
 
@@ -205,8 +194,8 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     }
     setHLinePos(hLinesBeforeRow[0]);
 
-    for (r = 0; r < group.value.body.length; ++r) {
-        const inrow = group.value.body[r];
+    for (r = 0; r < group.body.length; ++r) {
+        const inrow = group.body[r];
         let height = arstrutHeight; // \@array adds an \@arstrut
         let depth = arstrutDepth;   // to each tow (via the template)
 
@@ -226,10 +215,10 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             outrow[c] = elt;
         }
 
-        const rowGap = group.value.rowGaps[r];
+        const rowGap = group.rowGaps[r];
         let gap = 0;
         if (rowGap) {
-            gap = calculateSize(rowGap.value.value, options);
+            gap = calculateSize(rowGap, options);
             if (gap > 0) { // \@argarraycr
                 gap += arstrutDepth;
                 if (depth < gap) {
@@ -241,7 +230,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         // In AMS multiline environments such as aligned and gathered, rows
         // correspond to lines that have additional \jot added to the
         // \baselineskip via \openup.
-        if (group.value.addJot) {
+        if (group.addJot) {
             depth += jot;
         }
 
@@ -257,7 +246,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     }
 
     const offset = totalHeight / 2 + options.fontMetrics().axisHeight;
-    const colDescriptions = group.value.cols || [];
+    const colDescriptions = group.cols || [];
     const cols = [];
     let colSep;
     let colDescrNum;
@@ -313,7 +302,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         }
 
         let sepwidth;
-        if (c > 0 || group.value.hskipBeforeAndAfter) {
+        if (c > 0 || group.hskipBeforeAndAfter) {
             sepwidth = utils.deflt(colDescr.pregap, arraycolsep);
             if (sepwidth !== 0) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
@@ -344,7 +333,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             [col]);
         cols.push(col);
 
-        if (c < nc - 1 || group.value.hskipBeforeAndAfter) {
+        if (c < nc - 1 || group.hskipBeforeAndAfter) {
             sepwidth = utils.deflt(colDescr.postgap, arraycolsep);
             if (sepwidth !== 0) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
@@ -380,7 +369,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
 const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     return new mathMLTree.MathNode(
-        "mtable", group.value.body.map(function(row) {
+        "mtable", group.body.map(function(row) {
             return new mathMLTree.MathNode(
                 "mtr", row.map(function(cell) {
                     return new mathMLTree.MathNode(
@@ -392,12 +381,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
 // Convenience function for aligned and alignedat environments.
 const alignedHandler = function(context, args) {
     const cols = [];
-    let res = {
-        type: "array",
-        cols,
-        addJot: true,
-    };
-    res = parseArray(context.parser, res, "display");
+    const res = parseArray(context.parser, {cols, addJot: true}, "display");
 
     // Determining number of columns.
     // 1. If the first argument is given, we use it as a number of columns,
@@ -410,24 +394,28 @@ const alignedHandler = function(context, args) {
     // binary.  This behavior is implemented in amsmath's \start@aligned.
     let numMaths;
     let numCols = 0;
-    const emptyGroup = new ParseNode("ordgroup", [], context.mode);
+    const emptyGroup = {
+        type: "ordgroup",
+        mode: context.mode,
+        body: [],
+    };
     const ordgroup = checkNodeType(args[0], "ordgroup");
     if (ordgroup) {
         let arg0 = "";
-        for (let i = 0; i < ordgroup.value.length; i++) {
-            const textord = assertNodeType(ordgroup.value[i], "textord");
-            arg0 += textord.value;
+        for (let i = 0; i < ordgroup.body.length; i++) {
+            const textord = assertNodeType(ordgroup.body[i], "textord");
+            arg0 += textord.text;
         }
         numMaths = Number(arg0);
         numCols = numMaths * 2;
     }
     const isAligned = !numCols;
-    res.value.body.forEach(function(row) {
+    res.body.forEach(function(row) {
         for (let i = 1; i < row.length; i += 2) {
             // Modify ordgroup node within styling node
             const styling = assertNodeType(row[i], "styling");
-            const ordgroup = assertNodeType(styling.value.value[0], "ordgroup");
-            ordgroup.value.unshift(emptyGroup);
+            const ordgroup = assertNodeType(styling.body[0], "ordgroup");
+            ordgroup.body.unshift(emptyGroup);
         }
         if (!isAligned) { // Case 1
             const curMaths = row.length / 2;
@@ -480,10 +468,10 @@ defineEnvironment({
         // - The argument is a bare symbol node.
         const symNode = checkSymbolNodeType(args[0]);
         const colalign: AnyParseNode[] =
-            symNode ? [args[0]] : assertNodeType(args[0], "ordgroup").value;
+            symNode ? [args[0]] : assertNodeType(args[0], "ordgroup").body;
         const cols = colalign.map(function(nde) {
             const node = assertSymbolNodeType(nde);
-            const ca = node.value;
+            const ca = node.text;
             if ("lcr".indexOf(ca) !== -1) {
                 return {
                     type: "align",
@@ -502,13 +490,11 @@ defineEnvironment({
             }
             throw new ParseError("Unknown column alignment: " + ca, nde);
         });
-        let res = {
-            type: "array",
-            cols: cols,
+        const res = {
+            cols,
             hskipBeforeAndAfter: true, // \@preamble in lttab.dtx
         };
-        res = parseArray(context.parser, res, dCellStyle(context.envName));
-        return res;
+        return parseArray(context.parser, res, dCellStyle(context.envName));
     },
     htmlBuilder,
     mathmlBuilder,
@@ -529,7 +515,7 @@ defineEnvironment({
     props: {
         numArgs: 0,
     },
-    handler: function(context) {
+    handler(context) {
         const delimiters = {
             "matrix": null,
             "pmatrix": ["(", ")"],
@@ -538,20 +524,17 @@ defineEnvironment({
             "vmatrix": ["|", "|"],
             "Vmatrix": ["\\Vert", "\\Vert"],
         }[context.envName];
-        let res = {
-            type: "array",
-            hskipBeforeAndAfter: false, // \hskip -\arraycolsep in amsmath
-        };
-        res = parseArray(context.parser, res, dCellStyle(context.envName));
-        if (delimiters) {
-            res = new ParseNode("leftright", {
-                type: "leftright",
-                body: [res],
-                left: delimiters[0],
-                right: delimiters[1],
-            }, context.mode);
-        }
-        return res;
+        // \hskip -\arraycolsep in amsmath
+        const payload = {hskipBeforeAndAfter: false};
+        const res: ParseNode<"array"> =
+            parseArray(context.parser, payload, dCellStyle(context.envName));
+        return delimiters ? {
+            type: "leftright",
+            mode: context.mode,
+            body: [res],
+            left: delimiters[0],
+            right: delimiters[1],
+        } : res;
     },
     htmlBuilder,
     mathmlBuilder,
@@ -571,9 +554,8 @@ defineEnvironment({
     props: {
         numArgs: 0,
     },
-    handler: function(context) {
-        let res = {
-            type: "array",
+    handler(context) {
+        const payload = {
             arraystretch: 1.2,
             cols: [{
                 type: "align",
@@ -591,14 +573,15 @@ defineEnvironment({
                 postgap: 0,
             }],
         };
-        res = parseArray(context.parser, res, dCellStyle(context.envName));
-        res = new ParseNode("leftright", {
+        const res: ParseNode<"array"> =
+            parseArray(context.parser, payload, dCellStyle(context.envName));
+        return {
             type: "leftright",
+            mode: context.mode,
             body: [res],
             left: "\\{",
             right: ".",
-        }, context.mode);
-        return res;
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -628,17 +611,15 @@ defineEnvironment({
     props: {
         numArgs: 0,
     },
-    handler: function(context) {
-        let res = {
-            type: "array",
+    handler(context) {
+        const res = {
             cols: [{
                 type: "align",
                 align: "c",
             }],
             addJot: true,
         };
-        res = parseArray(context.parser, res, "display");
-        return res;
+        return parseArray(context.parser, res, "display");
     },
     htmlBuilder,
     mathmlBuilder,

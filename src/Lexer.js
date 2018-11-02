@@ -12,14 +12,14 @@
  * kinds.
  */
 
-import matchAt from "match-at";
 import ParseError from "./ParseError";
 import SourceLocation from "./SourceLocation";
-import {LexerInterface, Token} from "./Token";
+import {Token} from "./Token";
+
+import type {LexerInterface} from "./Token";
 
 /* The following tokenRegex
  * - matches typical whitespace (but not NBSP etc.) using its first group
- * - matches comments (must have trailing newlines)
  * - does not match any control character \x00-\x1f except whitespace
  * - does not match a bare backslash
  * - matches any ASCII character except those just mentioned
@@ -34,7 +34,6 @@ import {LexerInterface, Token} from "./Token";
  * still reject the input.
  */
 const spaceRegexString = "[ \r\n\t]";
-const commentRegexString = "%[^\n]*[\n]";
 const controlWordRegexString = "\\\\[a-zA-Z@]+";
 const controlSymbolRegexString = "\\\\[^\uD800-\uDFFF]";
 const controlWordWhitespaceRegexString =
@@ -44,35 +43,29 @@ const controlWordWhitespaceRegex = new RegExp(
 const combiningDiacriticalMarkString = "[\u0300-\u036f]";
 export const combiningDiacriticalMarksEndRegex =
     new RegExp(`${combiningDiacriticalMarkString}+$`);
-const tokenRegex = new RegExp(
-    `(${spaceRegexString}+)|` +                       // whitespace
-    `(${commentRegexString}` +                        // comments
-    "|[!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
+const tokenRegexString = `(${spaceRegexString}+)|` +  // whitespace
+    "([!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
     `${combiningDiacriticalMarkString}*` +            // ...plus accents
     "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair
     `${combiningDiacriticalMarkString}*` +            // ...plus accents
     "|\\\\verb\\*([^]).*?\\3" +                       // \verb*
     "|\\\\verb([^*a-zA-Z]).*?\\4" +                   // \verb unstarred
     `|${controlWordWhitespaceRegexString}` +          // \macroName + spaces
-    `|${controlSymbolRegexString}` +                  // \\, \', etc.
-    ")"
-);
+    `|${controlSymbolRegexString})`;                  // \\, \', etc.
 
-// tokenRegex has no ^ marker, as required by matchAt.
 // These regexs are for matching results from tokenRegex,
 // so they do have ^ markers.
 export const controlWordRegex = new RegExp(`^${controlWordRegexString}`);
-const commentRegex = new RegExp(`^${commentRegexString}`);
 
 /** Main Lexer class */
 export default class Lexer implements LexerInterface {
     input: string;
-    pos: number;
+    tokenRegex: RegExp;
 
     constructor(input: string) {
         // Separate accents from characters
         this.input = input;
-        this.pos = 0;
+        this.tokenRegex = new RegExp(tokenRegexString, 'g');
     }
 
     /**
@@ -80,20 +73,17 @@ export default class Lexer implements LexerInterface {
      */
     lex(): Token {
         const input = this.input;
-        const pos = this.pos;
+        const pos = this.tokenRegex.lastIndex;
         if (pos === input.length) {
             return new Token("EOF", new SourceLocation(this, pos, pos));
         }
-        const match = matchAt(tokenRegex, input, pos);
-        if (match === null) {
+        const match = this.tokenRegex.exec(input);
+        if (match === null || match.index !== pos) {
             throw new ParseError(
                 `Unexpected character: '${input[pos]}'`,
                 new Token(input[pos], new SourceLocation(this, pos, pos + 1)));
         }
         let text = match[2] || " ";
-        const start = this.pos;
-        this.pos += match[0].length;
-        const end = this.pos;
 
         // Trim any trailing whitespace from control word match
         const controlMatch = text.match(controlWordWhitespaceRegex);
@@ -101,10 +91,7 @@ export default class Lexer implements LexerInterface {
             text = controlMatch[1];
         }
 
-        if (commentRegex.test(text)) {
-            return this.lex();
-        } else {
-            return new Token(text, new SourceLocation(this, start, end));
-        }
+        return new Token(text, new SourceLocation(this, pos,
+            this.tokenRegex.lastIndex));
     }
 }

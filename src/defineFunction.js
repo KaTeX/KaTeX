@@ -1,14 +1,13 @@
 // @flow
-import {checkNodeType} from "./ParseNode";
-import domTree from "./domTree";
+import {checkNodeType} from "./parseNode";
 
 import type Parser from "./Parser";
-import type ParseNode, {AnyParseNode, NodeType} from "./ParseNode";
+import type {ParseNode, AnyParseNode, NodeType} from "./parseNode";
 import type Options from "./Options";
 import type {ArgType, BreakToken, Mode} from "./types";
 import type {HtmlDomNode} from "./domTree";
 import type {Token} from "./Token";
-import type {MathNodeClass} from "./mathMLTree";
+import type {MathDomNode} from "./mathMLTree";
 
 /** Context provided to function handlers for error messages. */
 export type FunctionContext = {|
@@ -28,7 +27,7 @@ export type HtmlBuilder<NODETYPE> = (ParseNode<NODETYPE>, Options) => HtmlDomNod
 export type MathMLBuilder<NODETYPE> = (
     group: ParseNode<NODETYPE>,
     options: Options,
-) => MathNodeClass | domTree.documentFragment;
+) => MathDomNode;
 
 // More general version of `HtmlBuilder` for nodes (e.g. \sum, accent types)
 // whose presence impacts super/subscripting. In this case, ParseNode<"supsub">
@@ -105,23 +104,18 @@ type FunctionDefSpec<NODETYPE: NodeType> = {|
     // Properties that control how the functions are parsed.
     props: FunctionPropSpec,
 
-    // The handler is called to handle these functions and their arguments.
-    // The function should return an object with the following keys:
-    //   - type: The type of element that this is. This is then used in
-    //          buildHTML/buildMathML to determine which function
-    //          should be called to build this node into a DOM node
-    // Any other data can be added to the object, which will be passed
-    // in to the function in buildHTML/buildMathML as `group.value`.
+    // The handler is called to handle these functions and their arguments and
+    // returns a `ParseNode`.
     handler: ?FunctionHandler<NODETYPE>,
 
     // This function returns an object representing the DOM structure to be
     // created when rendering the defined LaTeX function.
+    // This should not modify the `ParseNode`.
     htmlBuilder?: HtmlBuilder<NODETYPE>,
 
-    // TODO: Currently functions/op.js returns documentFragment. Refactor it
-    // and update the return type of this function.
     // This function returns an object representing the MathML structure to be
     // created when rendering the defined LaTeX function.
+    // This should not modify the `ParseNode`.
     mathmlBuilder?: MathMLBuilder<NODETYPE>,
 |};
 
@@ -247,5 +241,5 @@ export function defineFunctionBuilders<NODETYPE: NodeType>({
 // list of elements, we normalize for different kinds of arguments
 export const ordargument = function(arg: AnyParseNode): AnyParseNode[] {
     const node = checkNodeType(arg, "ordgroup");
-    return node ? node.value : [arg];
+    return node ? node.body : [arg];
 };

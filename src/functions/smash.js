@@ -3,7 +3,7 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode, {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -25,8 +25,10 @@ defineFunction({
             // ref: amsmath: \renewcommand{\smash}[1][tb]{%
             //               def\mb@t{\ht}\def\mb@b{\dp}\def\mb@tb{\ht\z@\z@\dp}%
             let letter = "";
-            for (let i = 0; i < tbArg.value.length; ++i) {
-                letter = tbArg.value[i].value;
+            for (let i = 0; i < tbArg.body.length; ++i) {
+                const node = tbArg.body[i];
+                // $FlowFixMe: Not every node type has a `text` property.
+                letter = node.text;
                 if (letter === "t") {
                     smashHeight = true;
                 } else if (letter === "b") {
@@ -43,22 +45,23 @@ defineFunction({
         }
 
         const body = args[0];
-        return new ParseNode("smash", {
+        return {
             type: "smash",
-            body: body,
-            smashHeight: smashHeight,
-            smashDepth: smashDepth,
-        }, parser.mode);
+            mode: parser.mode,
+            body,
+            smashHeight,
+            smashDepth,
+        };
     },
     htmlBuilder: (group, options) => {
         const node = buildCommon.makeSpan(
-            ["mord"], [html.buildGroup(group.value.body, options)]);
+            ["mord"], [html.buildGroup(group.body, options)]);
 
-        if (!group.value.smashHeight && !group.value.smashDepth) {
+        if (!group.smashHeight && !group.smashDepth) {
             return node;
         }
 
-        if (group.value.smashHeight) {
+        if (group.smashHeight) {
             node.height = 0;
             // In order to influence makeVList, we have to reset the children.
             if (node.children) {
@@ -68,7 +71,7 @@ defineFunction({
             }
         }
 
-        if (group.value.smashDepth) {
+        if (group.smashDepth) {
             node.depth = 0;
             if (node.children) {
                 for (let i = 0; i < node.children.length; i++) {
@@ -89,13 +92,13 @@ defineFunction({
     },
     mathmlBuilder: (group, options) => {
         const node = new mathMLTree.MathNode(
-            "mpadded", [mml.buildGroup(group.value.body, options)]);
+            "mpadded", [mml.buildGroup(group.body, options)]);
 
-        if (group.value.smashHeight) {
+        if (group.smashHeight) {
             node.setAttribute("height", "0px");
         }
 
-        if (group.value.smashDepth) {
+        if (group.smashDepth) {
             node.setAttribute("depth", "0px");
         }
 

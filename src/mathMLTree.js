@@ -10,6 +10,9 @@
  */
 
 import utils from "./utils";
+import {DocumentFragment} from "./tree";
+
+import type {VirtualNode} from "./tree";
 
 /**
  * MathML node types used in KaTeX. For a complete list of MathML nodes, see
@@ -22,21 +25,28 @@ export type MathNodeType =
     "mfrac" | "mroot" | "msqrt" |
     "mtable" | "mtr" | "mtd" | "mlabeledtr" |
     "mrow" | "menclose" |
-    "mstyle" | "mpadded" | "mphantom";
+    "mstyle" | "mpadded" | "mphantom" | "mglyph";
 
-export type MathNodeClass = MathNode | TextNode | SpaceNode;
+export interface MathDomNode extends VirtualNode {
+    toText(): string;
+}
+
+export type documentFragment = DocumentFragment<MathDomNode>;
+export function newDocumentFragment(children: MathDomNode[]): documentFragment {
+    return new DocumentFragment(children);
+}
 
 /**
  * This node represents a general purpose MathML node of any type. The
  * constructor requires the type of node to create (for example, `"mo"` or
  * `"mspace"`, corresponding to `<mo>` and `<mspace>` tags).
  */
-export class MathNode {
+export class MathNode implements MathDomNode {
     type: MathNodeType;
     attributes: {[string]: string};
-    children: (MathNode | TextNode)[];
+    children: MathDomNode[];
 
-    constructor(type: MathNodeType, children?: (MathNode | TextNode)[]) {
+    constructor(type: MathNodeType, children?: MathDomNode[]) {
         this.type = type;
         this.attributes = {};
         this.children = children || [];
@@ -70,8 +80,8 @@ export class MathNode {
             }
         }
 
-        for (const child of this.children) {
-            node.appendChild(child.toNode());
+        for (let i = 0; i < this.children.length; i++) {
+            node.appendChild(this.children[i].toNode());
         }
 
         return node;
@@ -114,7 +124,7 @@ export class MathNode {
 /**
  * This node represents a piece of text.
  */
-export class TextNode {
+export class TextNode implements MathDomNode {
     text: string;
     needsEscape: boolean;
 
@@ -151,7 +161,7 @@ export class TextNode {
  * This node represents a space, but may render as <mspace.../> or as text,
  * depending on the width.
  */
-class SpaceNode {
+class SpaceNode implements MathDomNode {
     width: number;
     character: ?string;
 
@@ -226,4 +236,5 @@ export default {
     MathNode,
     TextNode,
     SpaceNode,
+    newDocumentFragment,
 };

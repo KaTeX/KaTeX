@@ -1,9 +1,8 @@
 // @flow
-import ParseNode from "../ParseNode";
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import domTree from "../domTree";
+import {SymbolNode} from "../domTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -18,71 +17,95 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[0];
-        return new ParseNode("operatorname", {
+        return {
             type: "operatorname",
-            value: ordargument(body),
-        }, parser.mode);
+            mode: parser.mode,
+            body: ordargument(body),
+        };
     },
 
     htmlBuilder: (group, options) => {
-        const output = [];
-        if (group.value.value.length > 0) {
-            let letter = "";
-            let mode = "";
-
-            const groupValue = group.value.value.map(child => {
-                const childValue = child.value;
-                // In the amsopn package, \newmcodes@ changes four
-                // characters, *-/:’, from math operators back into text.
-                if (typeof childValue === "string" &&
-                    "*-/:".indexOf(childValue) !== -1) {
-                    return new ParseNode("textord", childValue, child.mode);
+        if (group.body.length > 0) {
+            const body = group.body.map(child => {
+                // $FlowFixMe: Check if the node has a string `text` property.
+                const childText = child.text;
+                if (typeof childText === "string") {
+                    return {
+                        type: "textord",
+                        mode: child.mode,
+                        text: childText,
+                    };
                 } else {
                     return child;
                 }
             });
 
-            // Consolidate Greek letter function names into symbol characters.
-            const temp = html.buildExpression(
-                groupValue, options.withFont("mathrm"), true);
+            // Consolidate function names into symbol characters.
+            const expression = html.buildExpression(
+                body, options.withFont("mathrm"), true);
 
-            // All we want from temp are the letters. With them, we'll
-            // create a text operator similar to \tan or \cos.
-            for (const child of temp) {
-                if (child instanceof domTree.symbolNode) {
-                    letter = child.value;
-
-                    // In the amsopn package, \newmcodes@ changes four
-                    // characters, *-/:’, from math operators back into text.
-                    // Given what is in temp, we have to address two of them.
-                    letter = letter.replace(/\u2212/, "-");   // minus => hyphen
-                    letter = letter.replace(/\u2217/, "*");
-
-                    // Use math mode for Greek letters
-                    mode = (/[\u0391-\u03D7]/.test(letter) ? "math" : "text");
-                    output.push(buildCommon.mathsym(letter, mode));
-                } else {
-                    output.push(child);
+            for (let i = 0; i < expression.length; i++) {
+                const child = expression[i];
+                if (child instanceof SymbolNode) {
+                    // Per amsopn package,
+                    // change minus to hyphen and \ast to asterisk
+                    child.text = child.text.replace(/\u2212/, "-")
+                        .replace(/\u2217/, "*");
                 }
             }
+            return buildCommon.makeSpan(["mop"], expression, options);
+        } else {
+            return buildCommon.makeSpan(["mop"], [], options);
         }
-        return buildCommon.makeSpan(["mop"], output, options);
     },
 
     mathmlBuilder: (group, options) => {
         // The steps taken here are similar to the html version.
-        let output = [];
-        if (group.value.value.length > 0) {
-            const temp = mml.buildExpression(
-                group.value.value, options.withFont("mathrm"));
+        let expression = mml.buildExpression(
+            group.body, options.withFont("mathrm"));
 
-            let word = temp.map(node => node.toText()).join("");
-            word = word.replace(/\u2212/g, "-");
-            word = word.replace(/\u2217/g, "*");
-            // word has already been escaped by `node.toText()`
-            output = [new mathMLTree.TextNode(word, false)];
+        // Is expression a string or has it something like a fraction?
+        let isAllString = true;  // default
+        for (let i = 0; i < expression.length; i++) {
+            const node = expression[i];
+            if (node instanceof mathMLTree.SpaceNode) {
+                // Do nothing
+            } else if (node instanceof mathMLTree.MathNode) {
+                switch (node.type) {
+                    case "mi":
+                    case "mn":
+                    case "ms":
+                    case "mspace":
+                    case "mtext":
+                        break;  // Do nothing yet.
+                    case "mo": {
+                        const child = node.children[0];
+                        if (node.children.length === 1 &&
+                            child instanceof mathMLTree.TextNode) {
+                            child.text =
+                                child.text.replace(/\u2212/, "-")
+                                    .replace(/\u2217/, "*");
+                        } else {
+                            isAllString = false;
+                        }
+                        break;
+                    }
+                    default:
+                        isAllString = false;
+                }
+            } else {
+                isAllString = false;
+            }
         }
-        const identifier = new mathMLTree.MathNode("mi", output);
+
+        if (isAllString) {
+            // Write a single TextNode instead of multiple nested tags.
+            const word = expression.map(node => node.toText()).join("");
+            // word has already been escaped by `node.toText()`
+            expression = [new mathMLTree.TextNode(word, false)];
+        }
+
+        const identifier = new mathMLTree.MathNode("mi", expression);
         identifier.setAttribute("mathvariant", "normal");
 
         // \u2061 is the same as &ApplyFunction;
@@ -90,6 +113,6 @@ defineFunction({
         const operator = new mathMLTree.MathNode("mo",
             [mml.makeText("\u2061", "text")]);
 
-        return new domTree.documentFragment([identifier, operator]);
+        return mathMLTree.newDocumentFragment([identifier, operator]);
     },
 });

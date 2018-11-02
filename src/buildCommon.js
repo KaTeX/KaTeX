@@ -5,23 +5,24 @@
  * different kinds of domTree nodes in a consistent manner.
  */
 
-import domTree from "./domTree";
+import {SymbolNode, Anchor, Span, PathNode, SvgNode, createClass} from "./domTree";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols, {ligatures} from "./symbols";
 import utils from "./utils";
 import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
+import {DocumentFragment} from "./tree";
 
 import type Options from "./Options";
-import type ParseNode from "./ParseNode";
-import type {NodeType} from "./ParseNode";
+import type {ParseNode} from "./parseNode";
 import type {CharacterMetrics} from "./fontMetrics";
-import type {Mode} from "./types";
+import type {FontVariant, Mode} from "./types";
+import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
 
-// The following have to be loaded from Main-Italic font, using class mainit
-const mainitLetters = [
+// The following have to be loaded from Main-Italic font, using class mathit
+const mathitLetters = [
     "\\imath", "ı",       // dotless i
     "\\jmath", "ȷ",       // dotless j
     "\\pounds", "\\mathsterling", "\\textsterling", "£",   // pounds symbol
@@ -63,7 +64,7 @@ const makeSymbol = function(
     mode: Mode,
     options?: Options,
     classes?: string[],
-): domTree.symbolNode {
+): SymbolNode {
     const lookup = lookupSymbol(value, fontName, mode);
     const metrics = lookup.metrics;
     value = lookup.value;
@@ -71,10 +72,10 @@ const makeSymbol = function(
     let symbolNode;
     if (metrics) {
         let italic = metrics.italic;
-        if (mode === "text") {
+        if (mode === "text" || (options && options.font === "mathit")) {
             italic = 0;
         }
-        symbolNode = new domTree.symbolNode(
+        symbolNode = new SymbolNode(
             value, metrics.height, metrics.depth, italic, metrics.skew,
             metrics.width, classes);
     } else {
@@ -82,7 +83,7 @@ const makeSymbol = function(
         typeof console !== "undefined" && console.warn(
             "No character metrics for '" + value + "' in style '" +
                 fontName + "'");
-        symbolNode = new domTree.symbolNode(value, 0, 0, 0, 0, 0, classes);
+        symbolNode = new SymbolNode(value, 0, 0, 0, 0, 0, classes);
     }
 
     if (options) {
@@ -110,7 +111,7 @@ const mathsym = function(
     mode: Mode,
     options?: Options,
     classes?: string[] = [],
-): domTree.symbolNode {
+): SymbolNode {
     // Decide what font to render the symbol in by its entry in the symbols
     // table.
     // Have a special case for when the value = \ because the \ is used as a
@@ -131,53 +132,11 @@ const mathsym = function(
 };
 
 /**
- * Makes a symbol in the default font for mathords and textords.
- */
-const mathDefault = function(
-    value: string,
-    mode: Mode,
-    options: Options,
-    classes: string[],
-    type: NodeType,
-): domTree.symbolNode {
-    if (type === "mathord") {
-        const fontLookup = mathit(value, mode, options, classes);
-        return makeSymbol(value, fontLookup.fontName, mode, options,
-            classes.concat([fontLookup.fontClass]));
-    } else if (type === "textord") {
-        const font = symbols[mode][value] && symbols[mode][value].font;
-        if (font === "ams") {
-            const fontName = retrieveTextFontName("amsrm", options.fontWeight,
-                  options.fontShape);
-            return makeSymbol(
-                value, fontName, mode, options,
-                classes.concat("amsrm", options.fontWeight, options.fontShape));
-        } else if (font === "main" || !font) {
-            const fontName = retrieveTextFontName("textrm", options.fontWeight,
-                  options.fontShape);
-            return makeSymbol(
-                value, fontName, mode, options,
-                classes.concat(options.fontWeight, options.fontShape));
-        } else { // fonts added by plugins
-            const fontName = retrieveTextFontName(font, options.fontWeight,
-                  options.fontShape);
-            // We add font name as a css class
-            return makeSymbol(
-                value, fontName, mode, options,
-                classes.concat(fontName, options.fontWeight, options.fontShape));
-        }
-    } else {
-        throw new Error("unexpected type: " + type + " in mathDefault");
-    }
-};
-
-/**
  * Determines which of the two font names (Main-Italic and Math-Italic) and
- * corresponding style tags (mainit or mathit) to use for font "mathit",
- * depending on the symbol.  Use this function instead of fontMap for font
- * "mathit".
+ * corresponding style tags (maindefault or mathit) to use for default math font,
+ * depending on the symbol.
  */
-const mathit = function(
+const mathdefault = function(
     value: string,
     mode: Mode,
     options: Options,
@@ -186,15 +145,45 @@ const mathit = function(
     if (/[0-9]/.test(value.charAt(0)) ||
             // glyphs for \imath and \jmath do not exist in Math-Italic so we
             // need to use Main-Italic instead
-            utils.contains(mainitLetters, value)) {
+            utils.contains(mathitLetters, value)) {
         return {
             fontName: "Main-Italic",
-            fontClass: "mainit",
+            fontClass: "mathit",
         };
     } else {
         return {
             fontName: "Math-Italic",
+            fontClass: "mathdefault",
+        };
+    }
+};
+
+/**
+ * Determines which of the font names (Main-Italic, Math-Italic, and Caligraphic)
+ * and corresponding style tags (mathit, mathdefault, or mathcal) to use for font
+ * "mathnormal", depending on the symbol.  Use this function instead of fontMap for
+ * font "mathnormal".
+ */
+const mathnormal = function(
+    value: string,
+    mode: Mode,
+    options: Options,
+    classes: string[],
+): {| fontName: string, fontClass: string |} {
+    if (utils.contains(mathitLetters, value)) {
+        return {
+            fontName: "Main-Italic",
             fontClass: "mathit",
+        };
+    } else if (/[0-9]/.test(value.charAt(0))) {
+        return {
+            fontName: "Caligraphic-Regular",
+            fontClass: "mathcal",
+        };
+    } else {
+        return {
+            fontName: "Math-Italic",
+            fontClass: "mathdefault",
         };
     }
 };
@@ -233,32 +222,32 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     group: ParseNode<NODETYPE>,
     options: Options,
     type: "mathord" | "textord",
-): domTree.symbolNode | domTree.documentFragment {
+): HtmlDocumentFragment | SymbolNode {
     const mode = group.mode;
-    const value = group.value;
+    const text = group.text;
 
     const classes = ["mord"];
 
     // Math mode or Old font (i.e. \rm)
     const isFont = mode === "math" || (mode === "text" && options.font);
     const fontOrFamily = isFont ? options.font : options.fontFamily;
-    if (value.charCodeAt(0) === 0xD835) {
+    if (text.charCodeAt(0) === 0xD835) {
         // surrogate pairs get special treatment
-        const [wideFontName, wideFontClass] = wideCharacterFont(value, mode);
-        return makeSymbol(value, wideFontName, mode, options,
+        const [wideFontName, wideFontClass] = wideCharacterFont(text, mode);
+        return makeSymbol(text, wideFontName, mode, options,
             classes.concat(wideFontClass));
     } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
-        if (fontOrFamily === "boldsymbol") {
-            const fontData = boldsymbol(value, mode, options, classes);
+        if (fontOrFamily === "boldsymbol" || fontOrFamily === "mathnormal") {
+            const fontData = fontOrFamily === "boldsymbol"
+                ? boldsymbol(text, mode, options, classes)
+                : mathnormal(text, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
-        } else if (fontOrFamily === "mathit" ||
-                   utils.contains(mainitLetters, value)) {
-            const fontData = mathit(value, mode, options, classes);
-            fontName = fontData.fontName;
-            fontClasses = [fontData.fontClass];
+        } else if (utils.contains(mathitLetters, text)) {
+            fontName = "Main-Italic";
+            fontClasses = ["mathit"];
         } else if (isFont) {
             fontName = fontMap[fontOrFamily].fontName;
             fontClasses = [fontOrFamily];
@@ -268,33 +257,100 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
             fontClasses = [fontOrFamily, options.fontWeight, options.fontShape];
         }
 
-        if (lookupSymbol(value, fontName, mode).metrics) {
-            return makeSymbol(value, fontName, mode, options,
+        if (lookupSymbol(text, fontName, mode).metrics) {
+            return makeSymbol(text, fontName, mode, options,
                 classes.concat(fontClasses));
-        } else if (ligatures.hasOwnProperty(value) &&
+        } else if (ligatures.hasOwnProperty(text) &&
                    fontName.substr(0, 10) === "Typewriter") {
             // Deconstruct ligatures in monospace fonts (\texttt, \tt).
             const parts = [];
-            for (let i = 0; i < value.length; i++) {
-                parts.push(makeSymbol(value[i], fontName, mode, options,
+            for (let i = 0; i < text.length; i++) {
+                parts.push(makeSymbol(text[i], fontName, mode, options,
                                       classes.concat(fontClasses)));
             }
             return makeFragment(parts);
-        } else {
-            return mathDefault(value, mode, options, classes, type);
+        }
+    }
+
+    // Makes a symbol in the default font for mathords and textords.
+    if (type === "mathord") {
+        const fontLookup = mathdefault(text, mode, options, classes);
+        return makeSymbol(text, fontLookup.fontName, mode, options,
+            classes.concat([fontLookup.fontClass]));
+    } else if (type === "textord") {
+        const font = symbols[mode][text] && symbols[mode][text].font;
+        if (font === "ams") {
+            const fontName = retrieveTextFontName("amsrm", options.fontWeight,
+                  options.fontShape);
+            return makeSymbol(
+                text, fontName, mode, options,
+                classes.concat("amsrm", options.fontWeight, options.fontShape));
+        } else if (font === "main" || !font) {
+            const fontName = retrieveTextFontName("textrm", options.fontWeight,
+                  options.fontShape);
+            return makeSymbol(
+                text, fontName, mode, options,
+                classes.concat(options.fontWeight, options.fontShape));
+        } else { // fonts added by plugins
+            const fontName = retrieveTextFontName(font, options.fontWeight,
+                  options.fontShape);
+            // We add font name as a css class
+            return makeSymbol(
+                text, fontName, mode, options,
+                classes.concat(fontName, options.fontWeight, options.fontShape));
         }
     } else {
-        return mathDefault(value, mode, options, classes, type);
+        throw new Error("unexpected type: " + type + " in makeOrd");
     }
 };
 
 /**
- * Combine as many characters as possible in the given array of characters
- * via their tryCombine method.
+ * Returns true if subsequent symbolNodes have the same classes, skew, maxFont,
+ * and styles.
  */
-const tryCombineChars = function(chars: HtmlDomNode[]): HtmlDomNode[] {
+const canCombine = (prev: SymbolNode, next: SymbolNode) => {
+    if (createClass(prev.classes) !== createClass(next.classes)
+        || prev.skew !== next.skew
+        || prev.maxFontSize !== next.maxFontSize) {
+        return false;
+    }
+
+    for (const style in prev.style) {
+        if (prev.style.hasOwnProperty(style)
+            && prev.style[style] !== next.style[style]) {
+            return false;
+        }
+    }
+
+    for (const style in next.style) {
+        if (next.style.hasOwnProperty(style)
+            && prev.style[style] !== next.style[style]) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+/**
+ * Combine consequetive domTree.symbolNodes into a single symbolNode.
+ * Note: this function mutates the argument.
+ */
+const tryCombineChars = (chars: HtmlDomNode[]): HtmlDomNode[] => {
     for (let i = 0; i < chars.length - 1; i++) {
-        if (chars[i].tryCombine(chars[i + 1])) {
+        const prev = chars[i];
+        const next = chars[i + 1];
+        if (prev instanceof SymbolNode
+            && next instanceof SymbolNode
+            && canCombine(prev, next)) {
+
+            prev.text += next.text;
+            prev.height = Math.max(prev.height, next.height);
+            prev.depth = Math.max(prev.depth, next.depth);
+            // Use the last character's italic correction since we use
+            // it to add padding to the right of the span created from
+            // the combined characters.
+            prev.italic = next.italic;
             chars.splice(i + 1, 1);
             i--;
         }
@@ -307,13 +363,14 @@ const tryCombineChars = function(chars: HtmlDomNode[]): HtmlDomNode[] {
  * children.
  */
 const sizeElementFromChildren = function(
-    elem: DomSpan | domTree.anchor | domTree.documentFragment,
+    elem: DomSpan | Anchor | HtmlDocumentFragment,
 ) {
     let height = 0;
     let depth = 0;
     let maxFontSize = 0;
 
-    for (const child of elem.children) {
+    for (let i = 0; i < elem.children.length; i++) {
+        const child = elem.children[i];
         if (child.height > height) {
             height = child.height;
         }
@@ -344,7 +401,7 @@ const makeSpan = function(
     options?: Options,
     style?: CssStyle,
 ): DomSpan {
-    const span = new domTree.span(classes, children, options, style);
+    const span = new Span(classes, children, options, style);
 
     sizeElementFromChildren(span);
 
@@ -355,10 +412,10 @@ const makeSpan = function(
 // This is also a separate method for typesafety.
 const makeSvgSpan = (
     classes?: string[],
-    children?: domTree.svgNode[],
+    children?: SvgNode[],
     options?: Options,
     style?: CssStyle,
-): SvgSpan => new domTree.span(classes, children, options, style);
+): SvgSpan => new Span(classes, children, options, style);
 
 const makeLineSpan = function(
     className: string,
@@ -382,7 +439,7 @@ const makeAnchor = function(
     children: HtmlDomNode[],
     options: Options,
 ) {
-    const anchor = new domTree.anchor(href, classes, children, options);
+    const anchor = new Anchor(href, classes, children, options);
 
     sizeElementFromChildren(anchor);
 
@@ -394,12 +451,26 @@ const makeAnchor = function(
  */
 const makeFragment = function(
     children: HtmlDomNode[],
-): domTree.documentFragment {
-    const fragment = new domTree.documentFragment(children);
+): HtmlDocumentFragment {
+    const fragment = new DocumentFragment(children);
 
     sizeElementFromChildren(fragment);
 
     return fragment;
+};
+
+/**
+ * Wraps group in a span if it's a document fragment, allowing to apply classes
+ * and styles
+ */
+const wrapFragment = function(
+    group: HtmlDomNode,
+    options: Options,
+): HtmlDomNode {
+    if (group instanceof DocumentFragment) {
+        return makeSpan([], [group], options);
+    }
+    return group;
 };
 
 
@@ -488,7 +559,8 @@ const getVListChildrenAndDepth = function(params: VListParam): {
         // We always start at the bottom, so calculate the bottom by adding up
         // all the sizes
         let bottom = params.positionData;
-        for (const child of params.children) {
+        for (let i = 0; i < params.children.length; i++) {
+            const child = params.children[i];
             bottom -= child.type === "kern"
                 ? child.size
                 : child.elem.height + child.elem.depth;
@@ -529,7 +601,8 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     // be positioned precisely without worrying about font ascent and
     // line-height.
     let pstrutSize = 0;
-    for (const child of children) {
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
         if (child.type === "elem") {
             const elem = child.elem;
             pstrutSize = Math.max(pstrutSize, elem.maxFontSize, elem.height);
@@ -544,7 +617,8 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     let minPos = depth;
     let maxPos = depth;
     let currPos = depth;
-    for (const child of children) {
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
         if (child.type === "kern") {
             currPos += child.size;
         } else {
@@ -588,7 +662,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
 
         // Safari wants the first row to have inline content; otherwise it
         // puts the bottom of the *second* row on the baseline.
-        const topStrut = makeSpan(["vlist-s"], [new domTree.symbolNode("\u200b")]);
+        const topStrut = makeSpan(["vlist-s"], [new SymbolNode("\u200b")]);
 
         rows = [makeSpan(["vlist-r"], [vlist, topStrut]),
             makeSpan(["vlist-r"], [depthStrut])];
@@ -603,18 +677,6 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     vtable.height = maxPos;
     vtable.depth = -minPos;
     return vtable;
-};
-
-// Converts verb group into body string, dealing with \verb* form
-const makeVerb = function(group: ParseNode<"verb">, options: Options): string {
-    let text = group.value.body;
-    if (group.value.star) {
-        text = text.replace(/ /g, '\u2423');  // Open Box
-    } else {
-        text = text.replace(/ /g, '\xA0');    // No-Break Space
-        // (so that, in particular, spaces don't coalesce)
-    }
-    return text;
 };
 
 // Glue is a concept from TeX which is a flexible space between elements in
@@ -666,36 +728,13 @@ const retrieveTextFontName = function(
     return `${baseFontName}-${fontStylesName}`;
 };
 
-// A map of CSS-based spacing functions to their CSS class.
-const cssSpace: {[string]: string} = {
-    "\\nobreak": "nobreak",
-    "\\allowbreak": "allowbreak",
-};
-
-// A lookup table to determine whether a spacing function/symbol should be
-// treated like a regular space character.  If a symbol or command is a key
-// in this table, then it should be a regular space character.  Furthermore,
-// the associated value may have a `className` specifying an extra CSS class
-// to add to the created `span`.
-const regularSpace: {[string]: { className?: string }} = {
-    " ": {},
-    "\\ ": {},
-    "~": {
-        className: "nobreak",
-    },
-    "\\space": {},
-    "\\nobreakspace": {
-        className: "nobreak",
-    },
-};
-
 /**
  * Maps TeX font commands to objects containing:
  * - variant: string used for "mathvariant" attribute in buildMathML.js
  * - fontName: the "style" parameter to fontMetrics.getCharacterMetrics
  */
 // A map between tex font commands an MathML mathvariant attribute values
-const fontMap: {[string]: {| variant: string, fontName: string |}} = {
+const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
     // styles
     "mathbf": {
         variant: "bold",
@@ -709,11 +748,17 @@ const fontMap: {[string]: {| variant: string, fontName: string |}} = {
         variant: "italic",
         fontName: "Main-Italic",
     },
+    "mathit": {
+        variant: "italic",
+        fontName: "Main-Italic",
+    },
 
-    // "mathit" and "boldsymbol" are missing because they require the use of two
-    // fonts: Main-Italic and Math-Italic for "mathit", and Math-BoldItalic and
-    // Main-Bold for "boldsymbol".  This is handled by a special case in makeOrd
-    // which ends up calling mathit and boldsymbol.
+    // Default math font, "mathnormal" and "boldsymbol" are missing because they
+    // require the use of several fonts: Main-Italic and Math-Italic for default
+    // math font, Main-Italic, Math-Italic, Caligraphic for "mathnormal", and
+    // Math-BoldItalic and Main-Bold for "boldsymbol".  This is handled by a
+    // special case in makeOrd which ends up calling mathdefault, mathnormal,
+    // and boldsymbol.
 
     // families
     "mathbb": {
@@ -756,8 +801,8 @@ const svgData: {
 const staticSvg = function(value: string, options: Options): SvgSpan {
     // Create a span with inline SVG for the element.
     const [pathName, width, height] = svgData[value];
-    const path = new domTree.pathNode(pathName);
-    const svgNode = new domTree.svgNode([path], {
+    const path = new PathNode(pathName);
+    const svgNode = new SvgNode([path], {
         "width": width + "em",
         "height": height + "em",
         // Override CSS rule `.katex svg { width: 100% }`
@@ -781,13 +826,11 @@ export default {
     makeLineSpan,
     makeAnchor,
     makeFragment,
+    wrapFragment,
     makeVList,
     makeOrd,
-    makeVerb,
     makeGlue,
     staticSvg,
     svgData,
     tryCombineChars,
-    cssSpace,
-    regularSpace,
 };

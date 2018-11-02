@@ -14,17 +14,23 @@ import Settings from "./src/Settings";
 import {buildTree, buildHTMLTree} from "./src/buildTree";
 import parseTree from "./src/parseTree";
 import buildCommon from "./src/buildCommon";
-import domTree from "./src/domTree";
-import utils from "./src/utils";
+import {
+    Span,
+    Anchor,
+    SymbolNode,
+    SvgNode,
+    PathNode,
+    LineNode,
+} from "./src/domTree";
 
 import type {SettingsOptions} from "./src/Settings";
-import type {AnyParseNode} from "./src/ParseNode";
+import type {AnyParseNode} from "./src/parseNode";
 
 import {defineSymbol} from './src/symbols';
 import {defineMacro} from './src/macros';
 import {setFontMetrics} from './src/fontMetrics';
 
-import {version} from "./package.json";
+declare var __VERSION__: string;
 
 /**
  * Parse and build an expression, and place that expression in the DOM node
@@ -35,7 +41,7 @@ let render = function(
     baseNode: Node,
     options: SettingsOptions,
 ) {
-    utils.clearNode(baseNode);
+    baseNode.textContent = "";
     const node = renderToDomTree(expression, options).toNode();
     baseNode.appendChild(node);
 };
@@ -90,7 +96,7 @@ const renderError = function(
         throw error;
     }
     const node = buildCommon.makeSpan(["katex-error"],
-        [new domTree.symbolNode(expression)]);
+        [new SymbolNode(expression)]);
     node.setAttribute("title", error.toString());
     node.setAttribute("style", `color:${options.errorColor}`);
     return node;
@@ -134,7 +140,7 @@ export default {
     /**
      * Current KaTeX version
      */
-    version,
+    version: __VERSION__,
     /**
      * Renders the given LaTeX into an HTML+MathML combination, and adds
      * it as a child to the specified DOM node.
@@ -196,5 +202,12 @@ export default {
      * The internal tree representation is unstable and is very likely
      * to change. Use at your own risk.
      */
-    __domTree: domTree,
+    __domTree: {
+        Span,
+        Anchor,
+        SymbolNode,
+        SvgNode,
+        PathNode,
+        LineNode,
+    },
 };

@@ -6,10 +6,10 @@
  */
 
 import utils from "./utils";
-import ParseError from "./ParseError.js";
+import ParseError from "./ParseError";
 import {Token} from "./Token";
 
-import type {AnyParseNode} from "./ParseNode";
+import type {AnyParseNode} from "./parseNode";
 import type {MacroMap} from "./macros";
 
 export type StrictFunction =
@@ -25,6 +25,7 @@ export type SettingsOptions = {
     strict?: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize?: number;
     maxExpand?: number;
+    allowedProtocols?: string[];
 };
 
 /**
@@ -46,6 +47,7 @@ class Settings {
     strict: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize: number;
     maxExpand: number;
+    allowedProtocols: string[];
 
     constructor(options: SettingsOptions) {
         // allow null options
@@ -58,6 +60,8 @@ class Settings {
         this.strict = utils.deflt(options.strict, "warn");
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
         this.maxExpand = Math.max(0, utils.deflt(options.maxExpand, 1000));
+        this.allowedProtocols = utils.deflt(options.allowedProtocols,
+            ["http", "https", "mailto", "_relative"]);
     }
 
     /**

@@ -2,15 +2,15 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseNode, {assertNodeType} from "../ParseNode";
+import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 const htmlBuilder = (group, options) => {
     const elements = html.buildExpression(
-        group.value.value,
-        options.withColor(group.value.color),
+        group.body,
+        options.withColor(group.color),
         false
     );
 
@@ -18,15 +18,15 @@ const htmlBuilder = (group, options) => {
     // To accomplish this, we wrap the results in a fragment, so the inner
     // elements will be able to directly interact with their neighbors. For
     // example, `\color{red}{2 +} 3` has the same spacing as `2 + 3`
-    return new buildCommon.makeFragment(elements);
+    return buildCommon.makeFragment(elements);
 };
 
 const mathmlBuilder = (group, options) => {
-    const inner = mml.buildExpression(group.value.value, options);
+    const inner = mml.buildExpression(group.body, options);
 
     const node = new mathMLTree.MathNode("mstyle", inner);
 
-    node.setAttribute("mathcolor", group.value.color);
+    node.setAttribute("mathcolor", group.color);
 
     return node;
 };
@@ -41,13 +41,14 @@ defineFunction({
         argTypes: ["color", "original"],
     },
     handler({parser}, args) {
-        const color = assertNodeType(args[0], "color-token");
+        const color = assertNodeType(args[0], "color-token").color;
         const body = args[1];
-        return new ParseNode("color", {
+        return {
             type: "color",
-            color: color.value,
-            value: ordargument(body),
-        }, parser.mode);
+            mode: parser.mode,
+            color,
+            body: ordargument(body),
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -78,11 +79,12 @@ defineFunction({
     },
     handler({parser, funcName}, args) {
         const body = args[0];
-        return new ParseNode("color", {
+        return {
             type: "color",
+            mode: parser.mode,
             color: "katex-" + funcName.slice(1),
-            value: ordargument(body),
-        }, parser.mode);
+            body: ordargument(body),
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -98,16 +100,17 @@ defineFunction({
         argTypes: ["color"],
     },
     handler({parser, breakOnTokenText}, args) {
-        const color = assertNodeType(args[0], "color-token");
+        const color = assertNodeType(args[0], "color-token").color;
 
         // If we see a styling function, parse out the implicit body
         const body = parser.parseExpression(true, breakOnTokenText);
 
-        return new ParseNode("color", {
+        return {
             type: "color",
-            color: color.value,
-            value: body,
-        }, parser.mode);
+            mode: parser.mode,
+            color,
+            body,
+        };
     },
     htmlBuilder,
     mathmlBuilder,

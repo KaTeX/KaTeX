@@ -1,14 +1,11 @@
-/* global jest: false */
 /* global expect: false */
 
-import katex from "../katex";
-import ParseError from "../src/ParseError";
-import parseTree from "../src/parseTree";
-import Settings from "../src/Settings";
-import Warning from "./Warning";
 import stringify from 'json-stable-stringify';
+import Lexer from "../src/Lexer";
+import ParseError from "../src/ParseError";
 import {
-    _getBuilt, buildAndSetResult, parseAndSetResult, stripPositions,
+    Mode, ConsoleWarning,
+    expectKaTeX, expectEquivalent,
 } from "./helpers";
 
 // Serializer support
@@ -23,9 +20,25 @@ const typeFirstCompare = (a, b) => {
     }
 };
 
+const replacer = (key, value) => {
+    if (value instanceof Lexer) {
+        return {
+            input: value.input,
+            // omit value.settings
+            lastIndex: value.tokenRegex.lastIndex,
+        };
+    } else {
+        return value;
+    }
+};
+
 const serializer = {
     print(val) {
-        return stringify(val, {cmp: typeFirstCompare, space: '  '});
+        return stringify(val, {
+            cmp: typeFirstCompare,
+            space: '  ',
+            replacer: replacer,
+        });
     },
     test(val) {
         // Leave strings (e.g. XML) to other serializers
@@ -35,192 +48,33 @@ const serializer = {
 
 expect.addSnapshotSerializer(serializer);
 
-// Turn warnings into errors
-
-global.console.warn = jest.fn((warning) => {
-    throw new Warning(warning);
-});
+// Mock console.warn to throw an error
+global.console.warn = x => { throw new ConsoleWarning(x); };
 
 // Expect extensions
 
 expect.extend({
-    toParse: function(actual, settings = new Settings()) {
-        const result = {
-            pass: true,
-            message: () => `'${actual}' succeeded parsing`,
-        };
-        parseAndSetResult(actual, result, settings);
-        return result;
+    toParse(expr, settings) {
+        return expectKaTeX(expr, settings, Mode.PARSE, this.isNot);
     },
 
-    toNotParse: function(actual, settings = new Settings()) {
-        const result = {
-            pass: false,
-            message: () =>
-                `Expected '${actual}' to fail parsing, but it succeeded`,
-        };
-
-        try {
-            parseTree(actual, settings);
-        } catch (e) {
-            if (e instanceof ParseError) {
-                result.pass = true;
-                result.message = () => `'${actual}' correctly didn't parse ` +
-                    `with error: ${e.message}`;
-            } else {
-                result.message = () => `'${actual}' failed parsing ` +
-                    `with unknown error: ${e.message}`;
-            }
-        }
-
-        return result;
+    toFailWithParseError: function(expr, expected = ParseError) {
+        return expectKaTeX(expr, undefined, Mode.PARSE, this.isNot, expected);
     },
 
-    toFailWithParseError: function(actual, expected) {
-        const prefix = "KaTeX parse error: ";
-        try {
-            parseTree(actual, new Settings());
-            return {
-                pass: false,
-                message: () => `'${actual}' parsed without error`,
-            };
-        } catch (e) {
-            if (expected === undefined) {
-                return {
-                    pass: true,
-                    message: () => `'${actual}' parsed with error`,
-                };
-            }
-            const msg = e.message;
-            const exp = prefix + expected;
-            if (msg === exp) {
-                return {
-                    pass: true,
-                    message: () =>
-                        `'${actual}' parsed with expected error '${expected}'`,
-                };
-            } else if (msg.slice(0, 19) === prefix) {
-                return {
-                    pass: false,
-                    message: () => `'${actual}' parsed with error ` +
-                        `'${msg.slice(19)}' but expected '${expected}'`,
-                };
-            } else {
-                return {
-                    pass: false,
-                    message: () => `'${actual}' caused error '${msg}' ` +
-                        `but expected '${exp}'`,
-                };
-            }
-        }
+    toBuild(expr, settings) {
+        return expectKaTeX(expr, settings, Mode.BUILD, this.isNot);
     },
 
-    toBuild: function(actual, settings = new Settings()) {
-        const result = {
-            pass: true,
-            message: () => `'${actual}' succeeded in building`,
-        };
-        buildAndSetResult(actual, result, settings);
-        return result;
+    toWarn(expr, settings) {
+        return expectKaTeX(expr, settings, Mode.BUILD, this.isNot, ConsoleWarning);
     },
 
-    toNotBuild: function(actual, settings = new Settings()) {
-        const result = {
-            pass: false,
-            message: () =>
-                `Expected '${actual}' to fail building, but it succeeded`,
-        };
-
-        try {
-            _getBuilt(actual, settings);
-        } catch (e) {
-            if (e instanceof ParseError) {
-                result.pass = true;
-                result.message = () => `'${actual}' correctly ` +
-                    `didn't build with error: ${e.message}`;
-            } else {
-                result.message = () => `'${actual}' failed ` +
-                    `building with unknown error: ${e.message}`;
-            }
-        }
-
-        return result;
+    toParseLike(expr, expected, settings) {
+        return expectEquivalent(expr, expected, settings, Mode.PARSE, this.expand);
     },
 
-    toParseLike: function(actual, expected, settings = new Settings()) {
-        const result = {
-            pass: true,
-            message: () =>
-                `Parse trees of '${actual}' and '${expected}' are equivalent`,
-        };
-
-        const actualTree = parseAndSetResult(actual, result, settings);
-        if (!actualTree) {
-            return result;
-        }
-        const expectedTree = parseAndSetResult(expected, result, settings);
-        if (!expectedTree) {
-            return result;
-        }
-
-        stripPositions(actualTree);
-        stripPositions(expectedTree);
-
-        if (JSON.stringify(actualTree) !== JSON.stringify(expectedTree)) {
-            result.pass = false;
-            result.message = () => `Parse trees of '${actual}' and ` +
-                `'${expected}' are not equivalent`;
-        }
-        return result;
-    },
-
-    toBuildLike: function(actual, expected, settings = new Settings()) {
-        const result = {
-            pass: true,
-            message: () =>
-                `Build trees of '${actual}' and '${expected}' are equivalent`,
-        };
-
-        const actualTree = buildAndSetResult(actual, result, settings);
-        if (!actualTree) {
-            return result;
-        }
-        const expectedTree = buildAndSetResult(expected, result, settings);
-        if (!expectedTree) {
-            return result;
-        }
-
-        stripPositions(actualTree);
-        stripPositions(expectedTree);
-
-        if (JSON.stringify(actualTree) !== JSON.stringify(expectedTree)) {
-            result.pass = false;
-            result.message = () => `Build trees of '${actual}' and ` +
-                `'${expected}' are not equivalent`;
-        }
-        return result;
-    },
-
-    toWarn: function(actual, settings = new Settings()) {
-        const result = {
-            pass: false,
-            message: () =>
-                `Expected '${actual}' to generate a warning, but it succeeded`,
-        };
-
-        try {
-            katex.__renderToDomTree(actual, settings);
-        } catch (e) {
-            if (e instanceof Warning) {
-                result.pass = true;
-                result.message = () =>
-                    `'${actual}' correctly generated warning: ${e.message}`;
-            } else {
-                result.message = () =>
-                    `'${actual}' failed building with unknown error: ${e.message}`;
-            }
-        }
-
-        return result;
+    toBuildLike(expr, expected, settings) {
+        return expectEquivalent(expr, expected, settings, Mode.BUILD, this.expand);
     },
 });

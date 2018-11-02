@@ -113,7 +113,12 @@ ExtensibleArrows: |
         \xrightleftharpoons[ab]{ABC} + \xhookrightarrow[ab]{ABC} \\
         \xtwoheadrightarrow{ABC} + \frac{\xrightarrow[ab]{ABC}}{\xrightarrow[ab]{ABC}} + \left\lvert\xrightarrow[ab]{ABC}\right\rvert
     \end{array}
-FractionTest: \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}\; \cfrac{1}{1+\cfrac{1}{x}}
+FractionTest: |
+    \begin{array}{l}
+        \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}\; \cfrac{1}{1+\cfrac{1}{x}} \\[2.5em]
+        {a \brace b} \; {a \brack b} \; \genfrac \{ ]{0.8pt}{0}{a}{b}
+        \; {a \above1.0pt b}
+    \end{array}
 Functions: \sin\cos\tan\ln\log
 Gathered: |
     \begin{gathered}
@@ -132,6 +137,13 @@ GroupMacros:
         \endExp: \egroup
     tex: \startExp a+b\endExp
 HorizontalBraces: \overbrace{\displaystyle{\oint_S{\vec E\cdot\hat n\,\mathrm d a}}}^\text{emf} = \underbrace{\frac{q_{\text{enc}}}{\varepsilon_0}}_{\text{charge}}
+Includegraphics: |
+    \def\logo{\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}}
+    \def\logoB{\includegraphics[height=0.4em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}}
+    \begin{array}{l}
+        \underline{A\logo} + \sqrt{\logo} + \tfrac{A\logo}{\logo}\\[1em]
+        \underline{A\logoB} + \sqrt{x\logoB} + \tfrac{A\logoB}{\logoB}
+    \end{array}
 Integrands: |
     \begin{array}{l}
         \displaystyle \int + \oint + \iint + \oiint_i^n \\[0.6em]
@@ -195,6 +207,7 @@ MathBf: \mathbf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathCal: \mathcal{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathFrak: \mathfrak{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathIt: \mathit{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathNormal: \mathnormal{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathOp: a\mathop+b\mathop:c\mathop{\delta}e\mathop{\textrm{and}}f\mathrel{\mathop{:}}=g\sin h
 MathRm: \mathrm{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathSf: \mathsf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
@@ -220,7 +233,7 @@ ModSpacing: |
     \end{array}
 NegativeSpaceBetweenRel: A =\!= B
 NegativeSpace:
-    tex: \fbox{\$1,\!000,\!000}\KaTeX
+    tex: \boxed{\$1,\!000,\!000}\KaTeX
     post: .
 NestedFractions: |
     \dfrac{\frac{a}{b}}{\frac{c}{d}}\dfrac{\dfrac{a}{b}}
@@ -269,6 +282,7 @@ Phantom: \begin{array}{l}
             \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x} \left(\vphantom{\int_t} zzz \right) \left( X \hphantom{\frac{\frac X X}{X}} \right)\\
             \text{a \phantom{123} b \hphantom{45678} c \vphantom{101112} d}
          \end{array}
+Pmb: \mu\pmb{\mu}\pmb{=}\mu\pmb{+}\mu
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
 Raisebox: \frac{a}{a\raisebox{0.5em}{b}} \cdot \frac{a\raisebox{-0.5em}{b}}{a} \cdot \sqrt{a\raisebox{0.5em}{b}} \cdot \sqrt{a\raisebox{-0.5em}{b}} \cdot \sqrt{a\raisebox{0.5em}{b}\raisebox{-0.5em}{b}}
@@ -306,7 +320,10 @@ Sqrt: |
     \sqrt{\sqrt{\sqrt{x}}}_{\sqrt{\sqrt{x}}}^{\sqrt{\sqrt{\sqrt{x}}}
     ^{\sqrt{\sqrt{\sqrt{x}}}}}
 SqrtRoot: |
-    1+\sqrt[3]{2}+\sqrt[1923^234]{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^2}}}}}}}}}}}
+    \begin{array}{l}
+        1+\sqrt[3]{2}+\sqrt[1923^234]{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^2}}}}}}}}}}} \\
+        \Huge \sqrt[3]{M} + x^{\sqrt[3] a}
+    \end{array}
 StackRel: a \stackrel{?}{=} b \stackrel{\text{def}}{=} c
 StretchyAccent: |
     \begin{array}{l}
@@ -340,9 +357,11 @@ SupSubLeftAlignReset: |
 SupSubOffsets: \displaystyle \int_{2+3}x f^{2+3}+3\lim_{2+3+4+5}f
 SurrogatePairs: |
     \begin{array}{l}
-        𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜 \\
-        \text{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜} \\
-        \mathrm{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜}
+        𝐀𝐚𝟎𝐴𝑎𝑨𝒂𝔅𝔞𝔸𝒜 \\
+        𝖠𝖺𝟢𝗔𝗮𝟬𝘈𝘢𝙰𝚊𝟶 \\
+        \text{𝐀𝐚𝟎𝐴𝑎𝑨𝒂𝔅𝔞𝔸𝒜} \\
+        \text{𝖠𝖺𝟢𝗔𝗮𝟬𝘈𝘢𝙰𝚊𝟶} \\
+        \mathrm{𝐀𝐚𝑨𝒂𝔅𝔞𝔸𝒜} \\
     \end{array}
 SvgReset:
     # This math uses a lot of SVG glyphs

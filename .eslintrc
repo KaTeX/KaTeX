@@ -1,7 +1,8 @@
 {
     "parser": "babel-eslint",
     "plugins": [
-        "flowtype"
+        "flowtype",
+        "transform-runtime-aliasing"
     ],
     "extends": [
         "eslint:recommended",
@@ -24,6 +25,7 @@
         "keyword-spacing": 2,
         "linebreak-style": [2, "unix"],
         "max-len": [2, 84, 4, { "ignoreUrls": true, "ignorePattern": "\\brequire\\([\"']|eslint-disable" }],
+        "new-cap": 2,
         "no-alert": 2,
         "no-array-constructor": 2,
         "no-console": 2,
@@ -75,5 +77,19 @@
         "node": true,
         "browser": true
     },
+    "overrides": [{
+        "files": ["katex.js", "src/**/*.js", "contrib/**/*.js"],
+        "excludedFiles": ["*-spec.js", "unicodeMake.js"],
+        "rules": {
+            "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"],
+            "transform-runtime-aliasing/no-transform-runtime-aliasing": [2, {
+                "transformEnabled": false,
+                "ignore": ["parseInt", "parseFloat", "JSON.stringify"]
+            }]
+        },
+        "env": {
+            "node": false
+        }
+    }],
     "root": true
 }

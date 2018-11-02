@@ -109,7 +109,7 @@ describe("A MathML builder", function() {
     });
     it('special spaces render specially', function() {
         expect(getMathML(
-            "\\,\\thinspace\\:\\medspace\\;\\thickspace" +
+            "\\,\\thinspace\\:\\>\\medspace\\;\\thickspace" +
             "\\!\\negthinspace\\negmedspace\\negthickspace" +
             "\\mkern1mu\\mkern3mu\\mkern4mu\\mkern5mu" +
             "\\mkern-1mu\\mkern-3mu\\mkern-4mu\\mkern-5mu")).toMatchSnapshot();
@@ -126,6 +126,11 @@ describe("A MathML builder", function() {
             "roman\\textit{italic\\textbf{bold italic}}\\textbf{bold}" +
             "\\textsf{ss\\textit{italic\\textbf{bold italic}}\\textbf{bold}}" +
             "\\texttt{tt\\textit{italic\\textbf{bold italic}}\\textbf{bold}}}"))
+            .toMatchSnapshot();
+    });
+
+    it('\\html@mathml makes clean symbols', () => {
+        expect(getMathML("\\copyright\\neq\\notin\u2258\\KaTeX"))
             .toMatchSnapshot();
     });
 });

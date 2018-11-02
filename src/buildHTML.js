@@ -9,14 +9,15 @@
 import ParseError from "./ParseError";
 import Style from "./Style";
 import buildCommon from "./buildCommon";
-import domTree from "./domTree";
-import utils, {assert} from "./utils";
-import {checkNodeType} from "./ParseNode";
+import {Anchor} from "./domTree";
+import utils from "./utils";
+import {checkNodeType} from "./parseNode";
 import {spacings, tightSpacings} from "./spacingData";
 import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";
+import {DocumentFragment} from "./tree";
 
 import type Options from "./Options";
-import type {AnyParseNode} from "./ParseNode";
+import type {AnyParseNode} from "./parseNode";
 import type {HtmlDomNode, DomSpan} from "./domTree";
 
 const makeSpan = buildCommon.makeSpan;
@@ -24,32 +25,8 @@ const makeSpan = buildCommon.makeSpan;
 // Binary atoms (first class `mbin`) change into ordinary atoms (`mord`)
 // depending on their surroundings. See TeXbook pg. 442-446, Rules 5 and 6,
 // and the text before Rule 19.
-const isBinLeftCanceller = function(
-    node: ?HtmlDomNode,
-    isRealGroup: boolean,
-): boolean {
-    // TODO: This code assumes that a node's math class is the first element
-    // of its `classes` array. A later cleanup should ensure this, for
-    // instance by changing the signature of `makeSpan`.
-    if (node) {
-        return utils.contains(["mbin", "mopen", "mrel", "mop", "mpunct"],
-                              getTypeOfDomTree(node, "right"));
-    } else {
-        return isRealGroup;
-    }
-};
-
-const isBinRightCanceller = function(
-    node: ?HtmlDomNode,
-    isRealGroup: boolean,
-): boolean {
-    if (node) {
-        return utils.contains(["mrel", "mclose", "mpunct"],
-                              getTypeOfDomTree(node, "left"));
-    } else {
-        return isRealGroup;
-    }
-};
+const binLeftCanceller = ["leftmost", "mbin", "mopen", "mrel", "mop", "mpunct"];
+const binRightCanceller = ["rightmost", "mrel", "mclose", "mpunct"];
 
 const styleMap = {
     "display": Style.DISPLAY,
@@ -70,7 +47,7 @@ const DomEnum = {
     mpunct: "mpunct",
     minner: "minner",
 };
-export type DomType = $Keys<typeof DomEnum>;
+type DomType = $Keys<typeof DomEnum>;
 
 /**
  * Take a list of nodes, build them in order, and return a list of the built
@@ -87,115 +64,135 @@ export const buildExpression = function(
     surrounding: [?DomType, ?DomType] = [null, null],
 ): HtmlDomNode[] {
     // Parse expressions into `groups`.
-    const rawGroups: HtmlDomNode[] = [];
+    const groups: HtmlDomNode[] = [];
     for (let i = 0; i < expression.length; i++) {
         const output = buildGroup(expression[i], options);
-        if (output instanceof domTree.documentFragment) {
+        if (output instanceof DocumentFragment) {
             const children: HtmlDomNode[] = output.children;
-            rawGroups.push(...children);
+            groups.push(...children);
         } else {
-            rawGroups.push(output);
+            groups.push(output);
         }
     }
-    // At this point `rawGroups` consists entirely of `symbolNode`s and `span`s.
 
-    // Ignore explicit spaces (e.g., \;, \,) when determining what implicit
-    // spacing should go between atoms of different classes, and add dummy
-    // spans for determining spacings between surrounding atoms.
-    const nonSpaces: (?HtmlDomNode)[] = [
-        surrounding[0] ? makeSpan([surrounding[0]], [], options) : null,
-        ...rawGroups.filter(group => group && group.classes[0] !== "mspace"),
-        surrounding[1] ? makeSpan([surrounding[1]], [], options) : null,
-    ];
+    // If `expression` is a partial group, let the parent handle spacings
+    // to avoid processing groups multiple times.
+    if (!isRealGroup) {
+        return groups;
+    }
+
+    let glueOptions = options;
+    if (expression.length === 1) {
+        const node = checkNodeType(expression[0], "sizing") ||
+            checkNodeType(expression[0], "styling");
+        if (!node) {
+            // No match.
+        } else if (node.type === "sizing") {
+            glueOptions = options.havingSize(node.size);
+        } else if (node.type === "styling") {
+            glueOptions = options.havingStyle(styleMap[node.style]);
+        }
+    }
+
+    // Dummy spans for determining spacings between surrounding atoms.
+    // If `expression` has no atoms on the left or right, class "leftmost"
+    // or "rightmost", respectively, is used to indicate it.
+    const dummyPrev = makeSpan([surrounding[0] || "leftmost"], [], options);
+    const dummyNext = makeSpan([surrounding[1] || "rightmost"], [], options);
+
+    // TODO: These code assumes that a node's math class is the first element
+    // of its `classes` array. A later cleanup should ensure this, for
+    // instance by changing the signature of `makeSpan`.
 
     // Before determining what spaces to insert, perform bin cancellation.
     // Binary operators change to ordinary symbols in some contexts.
-    for (let i = 1; i < nonSpaces.length - 1; i++) {
-        const nonSpacesI: HtmlDomNode = assert(nonSpaces[i]);
-        const left = getOutermostNode(nonSpacesI, "left");
-        if (left.classes[0] === "mbin" &&
-                isBinLeftCanceller(nonSpaces[i - 1], isRealGroup)) {
-            left.classes[0] = "mord";
+    traverseNonSpaceNodes(groups, (node, prev) => {
+        const prevType = prev.classes[0];
+        const type = node.classes[0];
+        if (prevType === "mbin" && utils.contains(binRightCanceller, type)) {
+            prev.classes[0] = "mord";
+        } else if (type === "mbin" && utils.contains(binLeftCanceller, prevType)) {
+            node.classes[0] = "mord";
         }
+    }, {node: dummyPrev}, dummyNext);
 
-        const right = getOutermostNode(nonSpacesI, "right");
-        if (right.classes[0] === "mbin" &&
-                isBinRightCanceller(nonSpaces[i + 1], isRealGroup)) {
-            right.classes[0] = "mord";
+    traverseNonSpaceNodes(groups, (node, prev) => {
+        const prevType = getTypeOfDomTree(prev);
+        const type = getTypeOfDomTree(node);
+
+        // 'mtight' indicates that the node is script or scriptscript style.
+        const space = prevType && type ? (node.hasClass("mtight")
+            ? tightSpacings[prevType][type]
+            : spacings[prevType][type]) : null;
+        if (space) { // Insert glue (spacing) after the `prev`.
+            return buildCommon.makeGlue(space, glueOptions);
         }
-    }
-
-    const groups = [];
-    let j = 0;
-    for (let i = 0; i < rawGroups.length; i++) {
-        groups.push(rawGroups[i]);
-
-        // For any group that is not a space, get the next non-space.  Then
-        // lookup what implicit space should be placed between those atoms and
-        // add it to groups.
-        if (rawGroups[i].classes[0] !== "mspace" && j < nonSpaces.length - 1) {
-            // if current non-space node is left dummy span, add a glue before
-            // first real non-space node
-            if (j === 0) {
-                groups.pop();
-                i--;
-            }
-
-            // Get the type of the current non-space node.  If it's a document
-            // fragment, get the type of the rightmost node in the fragment.
-            const left = getTypeOfDomTree(nonSpaces[j], "right");
-
-            // Get the type of the next non-space node.  If it's a document
-            // fragment, get the type of the leftmost node in the fragment.
-            const right = getTypeOfDomTree(nonSpaces[j + 1], "left");
-
-            // We use buildExpression inside of sizingGroup, but it returns a
-            // document fragment of elements.  sizingGroup sets `isRealGroup`
-            // to false to avoid processing spans multiple times.
-            if (left && right && isRealGroup) {
-                const nonSpacesJp1: HtmlDomNode = assert(nonSpaces[j + 1]);
-                const space = isLeftTight(nonSpacesJp1)
-                    ? tightSpacings[left][right]
-                    : spacings[left][right];
-
-                if (space) {
-                    let glueOptions = options;
-
-                    if (expression.length === 1) {
-                        const node =
-                            checkNodeType(expression[0], "sizing") ||
-                            checkNodeType(expression[0], "styling");
-                        if (!node) {
-                            // No match.
-                        } else if (node.type === "sizing") {
-                            glueOptions = options.havingSize(node.value.size);
-                        } else if (node.type === "styling") {
-                            glueOptions = options.havingStyle(
-                                styleMap[node.value.style]);
-                        }
-                    }
-
-                    groups.push(buildCommon.makeGlue(space, glueOptions));
-                }
-            }
-            j++;
-        }
-    }
-
-    // Process \\not commands within the group.
-    for (let i = 0; i < groups.length; i++) {
-        const group = groups[i];
-        if (group instanceof domTree.symbolNode && group.value === "\u0338") {
-            group.style.position = "absolute";
-            // TODO(kevinb) fix this for Safari by switching to a non-combining
-            // character for \not.
-            // This value was determined empirically.
-            // TODO(kevinb) figure out the real math for this value.
-            group.style.paddingLeft = "0.8em";
-        }
-    }
+    }, {node: dummyPrev}, dummyNext);
 
     return groups;
+};
+
+// Depth-first traverse non-space `nodes`, calling `callback` with the current and
+// previous node as arguments, optionally returning a node to insert after the
+// previous node. `prev` is an object with the previous node and `insertAfter`
+// function to insert after it. `next` is a node that will be added to the right.
+// Used for bin cancellation and inserting spacings.
+const traverseNonSpaceNodes = function(
+    nodes: HtmlDomNode[],
+    callback: (HtmlDomNode, HtmlDomNode) => ?HtmlDomNode,
+    prev: {|
+        node: HtmlDomNode,
+        insertAfter?: HtmlDomNode => void,
+    |},
+    next: ?HtmlDomNode,
+) {
+    if (next) { // temporarily append the right node, if exists
+        nodes.push(next);
+    }
+    let i = 0;
+    for (; i < nodes.length; i++) {
+        const node = nodes[i];
+        const partialGroup = checkPartialGroup(node);
+        if (partialGroup) { // Recursive DFS
+            traverseNonSpaceNodes(partialGroup.children, callback, prev);
+            continue;
+        }
+
+        // Ignore explicit spaces (e.g., \;, \,) when determining what implicit
+        // spacing should go between atoms of different classes
+        if (node.classes[0] === "mspace") {
+            continue;
+        }
+
+        const result = callback(node, prev.node);
+        if (result) {
+            if (prev.insertAfter) {
+                prev.insertAfter(result);
+            } else { // insert at front
+                nodes.unshift(result);
+                i++;
+            }
+        }
+
+        prev.node = node;
+        prev.insertAfter = (index => n => {
+            nodes.splice(index + 1, 0, n);
+            i++;
+        })(i);
+    }
+    if (next) {
+        nodes.pop();
+    }
+};
+
+// Check if given node is a partial group, i.e., does not affect spacing around.
+const checkPartialGroup = function(
+    node: HtmlDomNode,
+): ?(DocumentFragment<HtmlDomNode> | Anchor) {
+    if (node instanceof DocumentFragment || node instanceof Anchor) {
+        return node;
+    }
+    return null;
 };
 
 // Return the outermost node of a domTree.
@@ -203,14 +200,14 @@ const getOutermostNode = function(
     node: HtmlDomNode,
     side: Side,
 ): HtmlDomNode {
-    if (node instanceof domTree.documentFragment ||
-            node instanceof domTree.anchor) {
-        const children = node.children;
+    const partialGroup = checkPartialGroup(node);
+    if (partialGroup) {
+        const children = partialGroup.children;
         if (children.length) {
             if (side === "right") {
                 return getOutermostNode(children[children.length - 1], "right");
             } else if (side === "left") {
-                return getOutermostNode(children[0], "right");
+                return getOutermostNode(children[0], "left");
             }
         }
     }
@@ -218,27 +215,20 @@ const getOutermostNode = function(
 };
 
 // Return math atom class (mclass) of a domTree.
+// If `side` is given, it will get the type of the outermost node at given side.
 export const getTypeOfDomTree = function(
     node: ?HtmlDomNode,
-    side: Side,
+    side: ?Side,
 ): ?DomType {
     if (!node) {
         return null;
     }
-
-    node = getOutermostNode(node, side);
+    if (side) {
+        node = getOutermostNode(node, side);
+    }
     // This makes a lot of assumptions as to where the type of atom
     // appears.  We should do a better job of enforcing this.
     return DomEnum[node.classes[0]] || null;
-};
-
-// If `node` is an atom return whether it's been assigned the mtight class.
-// If `node` is a document fragment, return the value of isLeftTight() for the
-// leftmost node in the fragment.
-// 'mtight' indicates that the node is script or scriptscript style.
-export const isLeftTight = function(node: HtmlDomNode): boolean {
-    node = getOutermostNode(node, "left");
-    return node.hasClass("mtight");
 };
 
 export const makeNullDelimiter = function(
@@ -318,15 +308,11 @@ function buildHTMLUnbreakable(children, options) {
  * nodes.
  */
 export default function buildHTML(tree: AnyParseNode[], options: Options): DomSpan {
-    // buildExpression is destructive, so we need to make a clone
-    // of the incoming tree so that it isn't accidentally changed
-    tree = JSON.parse(JSON.stringify(tree));
-
     // Strip off outer tag wrapper for processing below.
     let tag = null;
     if (tree.length === 1 && tree[0].type === "tag") {
-        tag = tree[0].value.tag;
-        tree = tree[0].value.body;
+        tag = tree[0].tag;
+        tree = tree[0].body;
     }
 
     // Build the expression contained in the tree

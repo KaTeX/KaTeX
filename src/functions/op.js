@@ -2,16 +2,17 @@
 // Limits, symbols
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import domTree from "../domTree";
-import mathMLTree from "../mathMLTree";
+import {SymbolNode} from "../domTree";
+import * as mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import Style from "../Style";
-import ParseNode, {assertNodeType, checkNodeType} from "../ParseNode";
+import {assertNodeType, checkNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
+import type {ParseNode} from "../parseNode";
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "op", but also
 // "supsub" since some of them (like \int) can affect super/subscripting.
@@ -26,9 +27,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
         // If we have limits, supsub will pass us its group to handle. Pull
         // out the superscript and subscript and set the group to the op in
         // its base.
-        supGroup = supSub.value.sup;
-        subGroup = supSub.value.sub;
-        group = assertNodeType(supSub.value.base, "op");
+        supGroup = supSub.sup;
+        subGroup = supSub.sub;
+        group = assertNodeType(supSub.base, "op");
         hasLimits = true;
     } else {
         group = assertNodeType(grp, "op");
@@ -43,29 +44,29 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
 
     let large = false;
     if (style.size === Style.DISPLAY.size &&
-        group.value.symbol &&
-        !utils.contains(noSuccessor, group.value.body)) {
+        group.symbol &&
+        !utils.contains(noSuccessor, group.name)) {
 
         // Most symbol operators get larger in displaystyle (rule 13)
         large = true;
     }
 
     let base;
-    if (group.value.symbol) {
+    if (group.symbol) {
         // If this is a symbol, create the symbol.
         const fontName = large ? "Size2-Regular" : "Size1-Regular";
 
         let stash = "";
-        if (group.value.body === "\\oiint" || group.value.body === "\\oiiint") {
+        if (group.name === "\\oiint" || group.name === "\\oiiint") {
             // No font glyphs yet, so use a glyph w/o the oval.
             // TODO: When font glyphs are available, delete this code.
-            stash = group.value.body.substr(1);
+            stash = group.name.substr(1);
             // $FlowFixMe
-            group.value.body = stash === "oiint" ? "\\iint" : "\\iiint";
+            group.name = stash === "oiint" ? "\\iint" : "\\iiint";
         }
 
         base = buildCommon.makeSymbol(
-            group.value.body, fontName, "math", options,
+            group.name, fontName, "math", options,
             ["mop", "op-symbol", large ? "large-op" : "small-op"]);
 
         if (stash.length > 0) {
@@ -82,19 +83,20 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
                 ],
             }, options);
             // $FlowFixMe
-            group.value.body = "\\" + stash;
+            group.name = "\\" + stash;
             base.classes.unshift("mop");
             // $FlowFixMe
             base.italic = italic;
         }
-    } else if (group.value.value) {
+    } else if (group.body) {
         // If this is a list, compose that list.
-        const inner = html.buildExpression(group.value.value, options, true);
-        if (inner.length === 1 && inner[0] instanceof domTree.symbolNode) {
+        const inner = html.buildExpression(group.body, options, true);
+        if (inner.length === 1 && inner[0] instanceof SymbolNode) {
             base = inner[0];
             base.classes[0] = "mop"; // replace old mclass
         } else {
-            base = buildCommon.makeSpan(["mop"], inner, options);
+            base = buildCommon.makeSpan(
+                ["mop"], buildCommon.tryCombineChars(inner), options);
         }
     } else {
         // Otherwise, this is a text operator. Build the text from the
@@ -102,8 +104,8 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
         // TODO(emily): Add a space in the middle of some of these
         // operators, like \limsup
         const output = [];
-        for (let i = 1; i < group.value.body.length; i++) {
-            output.push(buildCommon.mathsym(group.value.body[i], group.mode));
+        for (let i = 1; i < group.name.length; i++) {
+            output.push(buildCommon.mathsym(group.name[i], group.mode));
         }
         base = buildCommon.makeSpan(["mop"], output, options);
     }
@@ -111,9 +113,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     // If content of op is a single symbol, shift it vertically.
     let baseShift = 0;
     let slant = 0;
-    if ((base instanceof domTree.symbolNode
-        || group.value.body === "\\oiint" || group.value.body === "\\oiiint")
-        && !group.value.suppressBaseShift) {
+    if ((base instanceof SymbolNode
+        || group.name === "\\oiint" || group.name === "\\oiiint")
+        && !group.suppressBaseShift) {
         // We suppress the shift of the base of \overset and \underset. Otherwise,
         // shift the symbol so its center lies on the axis (rule 13). It
         // appears that our fonts have the centers of the symbols already
@@ -237,32 +239,28 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
 
     // TODO(emily): handle big operators using the `largeop` attribute
 
-    if (group.value.symbol) {
+    if (group.symbol) {
         // This is a symbol. Just add the symbol.
         node = new mathMLTree.MathNode(
-            "mo", [mml.makeText(group.value.body, group.mode)]);
-    } else if (group.value.value) {
+            "mo", [mml.makeText(group.name, group.mode)]);
+    } else if (group.body) {
         // This is an operator with children. Add them.
         node = new mathMLTree.MathNode(
-            "mo", mml.buildExpression(group.value.value, options));
+            "mo", mml.buildExpression(group.body, options));
     } else {
         // This is a text operator. Add all of the characters from the
         // operator's name.
         // TODO(emily): Add a space in the middle of some of these
         // operators, like \limsup.
         node = new mathMLTree.MathNode(
-            "mi", [new mathMLTree.TextNode(group.value.body.slice(1))]);
+            "mi", [new mathMLTree.TextNode(group.name.slice(1))]);
 
         // Append an <mo>&ApplyFunction;</mo>.
         // ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.4
         const operator = new mathMLTree.MathNode("mo",
             [mml.makeText("\u2061", "text")]);
 
-        // TODO: Refactor to not return an HTML DOM object from MathML builder
-        // or refactor documentFragment to be standalone and explicitly reusable
-        // for both HTML and MathML DOM operations. In either case, update the
-        // return type of `mathBuilder` in `defineFunction` to accommodate.
-        return new domTree.documentFragment([node, operator]);
+        return mathMLTree.newDocumentFragment([node, operator]);
     }
 
     return node;
@@ -300,12 +298,13 @@ defineFunction({
         if (fName.length === 1) {
             fName = singleCharBigOps[fName];
         }
-        return new ParseNode("op", {
+        return {
             type: "op",
+            mode: parser.mode,
             limits: true,
             symbol: true,
-            body: fName,
-        }, parser.mode);
+            name: fName,
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -321,12 +320,13 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[0];
-        return new ParseNode("op", {
+        return {
             type: "op",
+            mode: parser.mode,
             limits: false,
             symbol: false,
-            value: ordargument(body),
-        }, parser.mode);
+            body: ordargument(body),
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -345,25 +345,6 @@ const singleCharIntegrals: {[string]: string} = {
     "\u2230": "\\oiiint",
 };
 
-defineFunction({
-    type: "op",
-    names: ["\\mathop"],
-    props: {
-        numArgs: 1,
-    },
-    handler: ({parser}, args) => {
-        const body = args[0];
-        return new ParseNode("op", {
-            type: "op",
-            limits: false,
-            symbol: false,
-            value: ordargument(body),
-        }, parser.mode);
-    },
-    htmlBuilder,
-    mathmlBuilder,
-});
-
 // No limits, not symbols
 defineFunction({
     type: "op",
@@ -378,12 +359,13 @@ defineFunction({
         numArgs: 0,
     },
     handler({parser, funcName}) {
-        return new ParseNode("op", {
+        return {
             type: "op",
+            mode: parser.mode,
             limits: false,
             symbol: false,
-            body: funcName,
-        }, parser.mode);
+            name: funcName,
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -399,12 +381,13 @@ defineFunction({
         numArgs: 0,
     },
     handler({parser, funcName}) {
-        return new ParseNode("op", {
+        return {
             type: "op",
+            mode: parser.mode,
             limits: true,
             symbol: false,
-            body: funcName,
-        }, parser.mode);
+            name: funcName,
+        };
     },
     htmlBuilder,
     mathmlBuilder,
@@ -425,12 +408,13 @@ defineFunction({
         if (fName.length === 1) {
             fName = singleCharIntegrals[fName];
         }
-        return new ParseNode("op", {
+        return {
             type: "op",
+            mode: parser.mode,
             limits: false,
             symbol: true,
-            body: fName,
-        }, parser.mode);
+            name: fName,
+        };
     },
     htmlBuilder,
     mathmlBuilder,
