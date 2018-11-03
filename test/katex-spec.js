@@ -1947,6 +1947,17 @@ describe("A MathML font tree-builder", function() {
     });
 });
 
+describe("An includegraphics builder", function() {
+    const img = "\\includegraphics[height=0.9em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}";
+    it("should not fail", function() {
+        expect(img).toBuild();
+    });
+
+    it("should produce mords", function() {
+        expect(getBuilt(img)[0].classes).toContain("mord");
+    });
+});
+
 describe("A bin builder", function() {
     it("should create mbins normally", function() {
         const built = getBuilt`x + y`;
@@ -2646,6 +2657,15 @@ describe("href and url commands", function() {
         expect(built).toMatchSnapshot();
     });
 });
+
+describe("A raw text parser", function() {
+    it("should not not parse a mal-formed string", function() {
+        // In the next line, the first character passed to \includegraphics is a
+        // Unicode combining character. So this is a test that the parser will catch a bad string.
+        expect("\\includegraphics[\u030aheight=0.8em, totalheight=0.9em, width=0.9em]{" + "https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").not.toParse();
+    });
+});
+
 
 describe("A parser that does not throw on unsupported commands", function() {
     // The parser breaks on unsupported commands unless it is explicitly
