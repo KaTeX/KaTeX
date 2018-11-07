@@ -527,6 +527,18 @@ export default class Parser {
             case "math":
             case "text":
                 return this.parseGroup(name, optional, greediness, undefined, type);
+            case "raw": {
+                const token = this.parseStringGroup("raw", optional, true);
+                if (token) {
+                    return {
+                        type: "raw",
+                        mode: "text",
+                        string: token.text,
+                    };
+                } else {
+                    throw new ParseError("Expected raw group", this.nextToken);
+                }
+            }
             case "original":
             case null:
             case undefined:
