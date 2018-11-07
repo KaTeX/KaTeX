@@ -1,6 +1,6 @@
 // @flow
 const path = require('path');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const browserslist = require('browserslist')();
@@ -133,8 +133,8 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         optimization: {
             minimize,
             minimizer: [
-                new UglifyJsPlugin({
-                    uglifyOptions: {
+                new TerserPlugin({
+                    terserOptions: {
                         output: {
                             ascii_only: true,
                         },
