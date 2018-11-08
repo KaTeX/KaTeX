@@ -298,8 +298,6 @@ defineMacro("\\providecommand", (context) => newcommand(context, true, true));
 // \let\bgroup={ \let\egroup=}
 defineMacro("\\bgroup", "{");
 defineMacro("\\egroup", "}");
-defineMacro("\\begingroup", "{");
-defineMacro("\\endgroup", "}");
 
 // Symbols from latex.ltx:
 // \def\lq{`}
@@ -322,17 +320,6 @@ defineMacro("\\copyright",
     "\\TextOrMath{\\textcopyright}{\\text{\\textcopyright}}");
 defineMacro("\\textregistered",
     "\\html@mathml{\\textcircled{\\scriptsize R}}{\\char`®}");
-
-// Unicode double-struck letters
-defineMacro("\u2102", "\\mathbb{C}");
-defineMacro("\u210D", "\\mathbb{H}");
-defineMacro("\u2115", "\\mathbb{N}");
-defineMacro("\u2119", "\\mathbb{P}");
-defineMacro("\u211A", "\\mathbb{Q}");
-defineMacro("\u211D", "\\mathbb{R}");
-defineMacro("\u2124", "\\mathbb{Z}");
-
-defineMacro("\u210E", "\\mathit{h}");   // Planck constant
 
 // Characters omitted from Unicode range 1D400–1D7FF
 defineMacro("\u212C", "\\mathscr{B}");  // script

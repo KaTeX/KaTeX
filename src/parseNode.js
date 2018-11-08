@@ -49,6 +49,12 @@ type ParseNodeTypes = {
         loc?: ?SourceLocation,
         color: string,
     |},
+    "keyVals": {|
+        type: "keyVals",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        keyVals: string,
+    |},
     // To avoid requiring run-time type assertions, this more carefully captures
     // the requirements on the fields per the op.js htmlBuilder logic:
     // - `body` and `value` are NEVER set simultanouesly.
@@ -79,6 +85,7 @@ type ParseNodeTypes = {
         mode: Mode,
         loc?: ?SourceLocation,
         body: AnyParseNode[],
+        semisimple?: boolean,
     |},
     "raw": {|
         type: "raw",
@@ -269,6 +276,16 @@ type ParseNodeTypes = {
         loc?: ?SourceLocation,
         html: AnyParseNode[],
         mathml: AnyParseNode[],
+    |},
+    "includegraphics": {|
+        type: "includegraphics",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        alt: string,
+        width: Measurement,
+        height: Measurement,
+        totalheight: Measurement,
+        src: string,
     |},
     "infix": {|
         type: "infix",

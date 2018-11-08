@@ -1,5 +1,5 @@
 ---
-id: version-0.10.0-rc.1-security
+id: version-0.10.0-security
 title: Security
 original_id: security
 ---

@@ -329,6 +329,33 @@ describe("A group parser", function() {
     });
 });
 
+describe("A \\begingroup...\\endgroup parser", function() {
+    it("should not fail", function() {
+        expect`\begingroup xy \endgroup`.toParse();
+    });
+
+    it("should fail when it is mismatched", function() {
+        expect`\begingroup xy`.not.toParse();
+        expect`\begingroup xy }`.not.toParse();
+    });
+
+    it("should produce a semi-simple group", function() {
+        const parse = getParsed`\begingroup xy \endgroup`;
+
+        expect(parse).toHaveLength(1);
+
+        const ord = parse[0];
+
+        expect(ord.type).toMatch("ord");
+        expect(ord.body).toBeTruthy();
+        expect(ord.semisimple).toBeTruthy();
+    });
+
+    it("should not affect spacing in math mode", function() {
+        expect`\begingroup x+ \endgroup y`.toBuildLike`x+y`;
+    });
+});
+
 describe("An implicit group parser", function() {
     it("should not fail", function() {
         expect`\Large x`.toParse();
@@ -1920,6 +1947,17 @@ describe("A MathML font tree-builder", function() {
     });
 });
 
+describe("An includegraphics builder", function() {
+    const img = "\\includegraphics[height=0.9em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}";
+    it("should not fail", function() {
+        expect(img).toBuild();
+    });
+
+    it("should produce mords", function() {
+        expect(getBuilt(img)[0].classes).toContain("mord");
+    });
+});
+
 describe("A bin builder", function() {
     it("should create mbins normally", function() {
         const built = getBuilt`x + y`;
@@ -2613,7 +2651,21 @@ describe("href and url commands", function() {
             allowedProtocols: [],
         }));
     });
+
+    it("should not affect spacing around", function() {
+        const built = getBuilt`a\href{http://example.com/}{+b}`;
+        expect(built).toMatchSnapshot();
+    });
 });
+
+describe("A raw text parser", function() {
+    it("should not not parse a mal-formed string", function() {
+        // In the next line, the first character passed to \includegraphics is a
+        // Unicode combining character. So this is a test that the parser will catch a bad string.
+        expect("\\includegraphics[\u030aheight=0.8em, totalheight=0.9em, width=0.9em]{" + "https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").not.toParse();
+    });
+});
+
 
 describe("A parser that does not throw on unsupported commands", function() {
     // The parser breaks on unsupported commands unless it is explicitly
@@ -3187,8 +3239,8 @@ describe("Unicode", function() {
 
     it("should parse symbols", function() {
         expect("ð").toParse();  // warns about lacking character metrics
-        expect("£¥ℂℍℑℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼⋮\u00B7\u00A9").toBuild(strictSettings);
-        expect("\\text{£¥\u00A9\u00AE\uFE0F}").toBuild(strictSettings);
+        expect("£¥ℂℍℑℎℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼⋮\u00B7\u00A9").toBuild(strictSettings);
+        expect("\\text{£¥ℂℍℎ\u00A9\u00AE\uFE0F}").toBuild(strictSettings);
     });
 
     it("should build Greek capital letters", function() {
