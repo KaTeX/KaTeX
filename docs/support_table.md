@@ -206,7 +206,7 @@ table td {
 |\cdot|$\cdot$||
 |\cdotp|$\cdotp$||
 |\cdots|$\cdots$||
-|\ce |<span style="color:firebrick;">Not supported</span>|A PR is pending
+|\ce |See the [mhchem Manual](https://github.com/Khan/KaTeX/tree/master/contrib/mhchem-manual.html)|Requires an [extension](https://github.com/Khan/KaTeX/tree/master/contrib/)|
 |\cee|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem
 |\centerdot|$a\centerdot b$|`a\centerdot b`|
 |\cf|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem|
@@ -813,7 +813,7 @@ table td {
 |\providecommand|$\providecommand\greet{\text{Hello}} \greet$|`\providecommand\greet{\text{Hello}} \greet`|
 |\psi|$\psi$||
 |\Psi|$\Psi$||
-|\pu||A PR is pending|
+|\pu|See the [mhchem Manual](https://github.com/Khan/KaTeX/tree/master/contrib/mhchem-manual.html)|Requires an [extension](https://github.com/Khan/KaTeX/tree/master/contrib/)|
 
 ## QR
 

@@ -1,16 +1,19 @@
 # mhchem extension
 
-This extension adds to KaTeX the `\ce` and `\pu` functions from the [mhchem](https://mhchem.github.io/MathJax-mhchem/) package.
+This extension adds to KaTeX the `\ce` and `\pu` functions from the [mhchem](mhchem-manual.html) package.
 
 ### Usage
 
-This extension isn't part of core KaTeX, so the script should be separately included. Write the following line into the page’s `<head>`. Place it *after* the line that points to `katex.js`.
+This extension isn't part of core KaTeX, so the script should be separately included. Write the following line into the HTML page’s `<head>`. Place it *after* the line that calls `katex.js`.
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mhchem.min.js"></script>
 ```
 
-See [index.html](index.html) for an example. To test the example, place `index.html`,  and `mhchem.js` into the same folder, and run `index.html` with your web browser.
+### Syntax
+
+See the [mhchem Manual](mhchem-manual.html) for a full explanation of the input syntax,
+with working examples. The manual also includes a demonstration box.
 
 ### Browser Support
 

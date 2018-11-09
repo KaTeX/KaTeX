@@ -111,6 +111,7 @@
       "contrib/**/*.js",
       "!src/unicodeMake.js"
     ],
+    "modulePathIgnorePatterns": ["mhchem"],
     "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
     "snapshotSerializers": [
       "jest-serializer-html"
