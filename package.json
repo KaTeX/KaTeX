@@ -6,7 +6,7 @@
   "homepage": "https://katex.org",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Khan/KaTeX.git"
+    "url": "git://github.com/KaTeX/KaTeX.git"
   },
   "files": [
     "katex.js",

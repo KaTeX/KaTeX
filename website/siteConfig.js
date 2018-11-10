@@ -136,7 +136,7 @@ const siteConfig = {
         {href: '/#demo', label: 'Try'},
         {doc: 'node', label: 'Docs'},
         {page: 'users', label: 'Users'},
-        {href: 'https://github.com/Khan/KaTeX', label: 'GitHub'},
+        {href: 'https://github.com/KaTeX/KaTeX', label: 'GitHub'},
         {search: true},
     ],
     users,
@@ -192,7 +192,7 @@ const siteConfig = {
     ogImage: 'img/og_logo.png',
     twitterImage: 'img/og_logo.png',
 
-    repoUrl: 'https://github.com/Khan/KaTeX',
+    repoUrl: 'https://github.com/KaTeX/KaTeX',
 };
 
 module.exports = siteConfig;
