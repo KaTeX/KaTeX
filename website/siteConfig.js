@@ -22,7 +22,7 @@ const users = [
     },
     {
         caption: 'CoCalc',
-        image: 'https://cdn.rawgit.com/sagemathinc/cocalc/baa4fc57/src/webapp-lib/cocalc-logo.svg',
+        image: '/img/cocalc_logo.svg',
         infoLink: 'https://cocalc.com/',
     },
     {
@@ -67,7 +67,7 @@ const users = [
     },
     {
         caption: 'Idyll',
-        image: 'https://cdn.rawgit.com/idyll-lang/idyll-lang.github.io/src/images/logo.svg',
+        image: 'https://idyll-lang.org/static/images/logo.svg',
         infoLink: 'https://idyll-lang.org/',
     },
     {
@@ -97,7 +97,7 @@ const users = [
     },
     {
         caption: 'Rocket.Chat',
-        image: 'https://cdn.rawgit.com/RocketChat/Rocket.Chat.Artwork/1f7b68b78878fcef47f32aa0965930a1c12cd0b4/Logos/icon.svg',
+        image: '/img/rocketchat_logo.svg',
         infoLink: 'https://rocket.chat/',
     },
     {
@@ -112,12 +112,12 @@ const users = [
     },
     {
         caption: 'StackEdit',
-        image: 'https://cdn.rawgit.com/benweet/stackedit/0632445a/src/assets/iconStackedit.svg',
+        image: '/img/stackedit_logo.svg',
         infoLink: 'https://stackedit.io/',
     },
     {
         caption: 'Vade Mecum Shelf',
-        image: 'https://cdn.rawgit.com/tonton-pixel/vade-mecum-shelf/43013aec/icons/icon.png',
+        image: '/img/vade_mecum_shelf_logo.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
     },
 ];
