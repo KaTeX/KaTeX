@@ -21,8 +21,8 @@ import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
 
-// The following have to be loaded from Main-Italic font, using class mainit
-const mainitLetters = [
+// The following have to be loaded from Main-Italic font, using class mathit
+const mathitLetters = [
     "\\imath", "ı",       // dotless i
     "\\jmath", "ȷ",       // dotless j
     "\\pounds", "\\mathsterling", "\\textsterling", "£",   // pounds symbol
@@ -72,7 +72,7 @@ const makeSymbol = function(
     let symbolNode;
     if (metrics) {
         let italic = metrics.italic;
-        if (mode === "text") {
+        if (mode === "text" || (options && options.font === "mathit")) {
             italic = 0;
         }
         symbolNode = new SymbolNode(
@@ -139,11 +139,10 @@ const mathsym = function(
 
 /**
  * Determines which of the two font names (Main-Italic and Math-Italic) and
- * corresponding style tags (mainit or mathit) to use for font "mathit",
- * depending on the symbol.  Use this function instead of fontMap for font
- * "mathit".
+ * corresponding style tags (maindefault or mathit) to use for default math font,
+ * depending on the symbol.
  */
-const mathit = function(
+const mathdefault = function(
     value: string,
     mode: Mode,
     options: Options,
@@ -152,15 +151,45 @@ const mathit = function(
     if (/[0-9]/.test(value.charAt(0)) ||
             // glyphs for \imath and \jmath do not exist in Math-Italic so we
             // need to use Main-Italic instead
-            utils.contains(mainitLetters, value)) {
+            utils.contains(mathitLetters, value)) {
         return {
             fontName: "Main-Italic",
-            fontClass: "mainit",
+            fontClass: "mathit",
         };
     } else {
         return {
             fontName: "Math-Italic",
+            fontClass: "mathdefault",
+        };
+    }
+};
+
+/**
+ * Determines which of the font names (Main-Italic, Math-Italic, and Caligraphic)
+ * and corresponding style tags (mathit, mathdefault, or mathcal) to use for font
+ * "mathnormal", depending on the symbol.  Use this function instead of fontMap for
+ * font "mathnormal".
+ */
+const mathnormal = function(
+    value: string,
+    mode: Mode,
+    options: Options,
+    classes: string[],
+): {| fontName: string, fontClass: string |} {
+    if (utils.contains(mathitLetters, value)) {
+        return {
+            fontName: "Main-Italic",
             fontClass: "mathit",
+        };
+    } else if (/[0-9]/.test(value.charAt(0))) {
+        return {
+            fontName: "Caligraphic-Regular",
+            fontClass: "mathcal",
+        };
+    } else {
+        return {
+            fontName: "Math-Italic",
+            fontClass: "mathdefault",
         };
     }
 };
@@ -216,15 +245,15 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
-        if (fontOrFamily === "boldsymbol") {
-            const fontData = boldsymbol(text, mode, options, classes);
+        if (fontOrFamily === "boldsymbol" || fontOrFamily === "mathnormal") {
+            const fontData = fontOrFamily === "boldsymbol"
+                ? boldsymbol(text, mode, options, classes)
+                : mathnormal(text, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
-        } else if (fontOrFamily === "mathit" ||
-                   utils.contains(mainitLetters, text)) {
-            const fontData = mathit(text, mode, options, classes);
-            fontName = fontData.fontName;
-            fontClasses = [fontData.fontClass];
+        } else if (utils.contains(mathitLetters, text)) {
+            fontName = "Main-Italic";
+            fontClasses = ["mathit"];
         } else if (isFont) {
             fontName = fontMap[fontOrFamily].fontName;
             fontClasses = [fontOrFamily];
@@ -251,7 +280,7 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
 
     // Makes a symbol in the default font for mathords and textords.
     if (type === "mathord") {
-        const fontLookup = mathit(text, mode, options, classes);
+        const fontLookup = mathdefault(text, mode, options, classes);
         return makeSymbol(text, fontLookup.fontName, mode, options,
             classes.concat([fontLookup.fontClass]));
     } else if (type === "textord") {
@@ -434,6 +463,20 @@ const makeFragment = function(
     sizeElementFromChildren(fragment);
 
     return fragment;
+};
+
+/**
+ * Wraps group in a span if it's a document fragment, allowing to apply classes
+ * and styles
+ */
+const wrapFragment = function(
+    group: HtmlDomNode,
+    options: Options,
+): HtmlDomNode {
+    if (group instanceof DocumentFragment) {
+        return makeSpan([], [group], options);
+    }
+    return group;
 };
 
 
@@ -711,11 +754,17 @@ const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
         variant: "italic",
         fontName: "Main-Italic",
     },
+    "mathit": {
+        variant: "italic",
+        fontName: "Main-Italic",
+    },
 
-    // "mathit" and "boldsymbol" are missing because they require the use of two
-    // fonts: Main-Italic and Math-Italic for "mathit", and Math-BoldItalic and
-    // Main-Bold for "boldsymbol".  This is handled by a special case in makeOrd
-    // which ends up calling mathit and boldsymbol.
+    // Default math font, "mathnormal" and "boldsymbol" are missing because they
+    // require the use of several fonts: Main-Italic and Math-Italic for default
+    // math font, Main-Italic, Math-Italic, Caligraphic for "mathnormal", and
+    // Math-BoldItalic and Main-Bold for "boldsymbol".  This is handled by a
+    // special case in makeOrd which ends up calling mathdefault, mathnormal,
+    // and boldsymbol.
 
     // families
     "mathbb": {
@@ -783,6 +832,7 @@ export default {
     makeLineSpan,
     makeAnchor,
     makeFragment,
+    wrapFragment,
     makeVList,
     makeOrd,
     makeGlue,

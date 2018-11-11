@@ -1,5 +1,5 @@
 ---
-id: version-0.10.0-rc.1-options
+id: version-0.10.0-options
 title: Options
 original_id: options
 ---

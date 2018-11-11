@@ -44,6 +44,7 @@ table td {
 |&#060;|$<$||
 |\\=|$\text{\={a}}$|<code>\text{\\={a}}</code>|
 | >|$>$||
+|\\>|$a\>\>{b}$|`a\>\>{b}`|
 |\[|$[$||
 |\]|$]$||
 |{|${a}$|`{a}`|
@@ -473,7 +474,7 @@ table td {
 |\impliedby|$P\impliedby Q$|`P\impliedby Q`|
 |\implies|$P\implies Q$|`P\implies Q`|
 |\in|$\in$||
-|\includegraphics|<span style="color:firebrick;">Not supported</span>|[Issue #898](https://github.com/Khan/KaTeX/issues/898)|
+|\includegraphics|$\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}$|`\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}`|
 |\inf|$\inf$||
 |\infin|$\infin$||
 |\infty|$\infty$||
@@ -587,6 +588,7 @@ table td {
 |\lor|$\lor$||
 |\lower|<span style="color:firebrick;">Not supported</span>||
 |\lozenge|$\lozenge$||
+|\lparen|$\lparen$||
 |\Lrarr|$\Lrarr$||
 |\lrArr|$\lrArr$||
 |\lrarr|$\lrarr$||
@@ -617,6 +619,7 @@ table td {
 |\mathinner|$ab\mathinner{\text{inside}}cd$|`ab\mathinner{\text{inside}}cd`|
 |\mathit|$\mathit{AaBb}$|`\mathit{AaBb}`<br>KaTeX supports A-Za-z|
 |\mathllap|${=}\mathllap{/\,}$|`{=}\mathllap{/\,}`|
+|\mathnormal|$\mathnormal{AaBb}$|`\mathnormal{AaBb}`<br>KaTeX supports A-Za-z|
 |\mathop|$\mathop{\star}_a^b$|`\mathop{\star}_a^b`|
 |\mathopen|$a + \mathopen\lt b) + c$|`a + \mathopen\lt b) + c`|
 |\mathord|$1\mathord{,}234{,}567$|`1\mathord{,}234{,}567`|
@@ -863,6 +866,7 @@ table td {
 |\rmoustache|$\rmoustache$||
 |\root|<span style="color:firebrick;">Not supported</span>||
 |\rotatebox|<span style="color:firebrick;">Not supported</span>|[Issue #681](https://github.com/Khan/KaTeX/issues/681)|
+|\rparen|$\rparen$||
 |\rq|$\rq$||
 |\Rrightarrow|$\Rrightarrow$||
 |\Rsh|$\Rsh$||

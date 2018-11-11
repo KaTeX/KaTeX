@@ -12,7 +12,10 @@ import * as mml from "../buildMathML";
 
 const htmlBuilder = (group, options) => {
     // \cancel, \bcancel, \xcancel, \sout, \fbox, \colorbox, \fcolorbox
-    const inner = html.buildGroup(group.body, options);
+    // Some groups can return document fragments.  Handle those by wrapping
+    // them in a span.
+    const inner = buildCommon.wrapFragment(
+        html.buildGroup(group.body, options), options);
 
     const label = group.label.substr(1);
     const scale = options.sizeMultiplier;
