@@ -1143,6 +1143,8 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
 exports[`href and url commands should not affect spacing around 1`] = `
 [
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathdefault"
@@ -1178,6 +1180,8 @@ exports[`href and url commands should not affect spacing around 1`] = `
     },
     "children": [
       {
+        "attributes": {
+        },
         "classes": [
           "mbin"
         ],
@@ -1207,6 +1211,8 @@ exports[`href and url commands should not affect spacing around 1`] = `
         }
       },
       {
+        "attributes": {
+        },
         "classes": [
           "mord",
           "mathdefault"

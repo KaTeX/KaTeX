@@ -1,7 +1,6 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import ParseError from "../ParseError";
 
 import {assertNodeType} from "../parseNode";
 
@@ -14,29 +13,21 @@ defineFunction({
     props: {
         numArgs: 2,
         allowedInText: true,
-        argTypes: ["text", "original"],
+        argTypes: ["raw", "original"],
     },
     handler: ({parser}, args) => {
+        const attributeStr = assertNodeType(args[0], "raw").string;
         const body = args[1];
 
-        const attribGroup = args[0];
-        if (attribGroup.type !== "ordgroup") {
-            throw new ParseError("Invalid data attributes", attribGroup);
-        }
-        let dataAttributes = "";
-        for (let i = 0; i < attribGroup.body.length; ++i) {
-            if (attribGroup.body[i].type === "spacing") {
-                continue;
-            }
-            dataAttributes += assertNodeType(attribGroup.body[i], "textord").text;
-        }
-        dataAttributes = dataAttributes.split(',');
-        dataAttributes = dataAttributes.map(p => p.split('='));
-
-        const attributes = dataAttributes.reduce((obj, val) => {
-            obj["data-" + val[0]] = val[1] || '';
-            return obj;
-        }, {});
+        const attributes = attributeStr
+            .split(',')
+            .map(p => p.split('='))
+            .reduce((obj, val) => {
+                const name = val[0].trim();
+                const value = val[1] || '';
+                obj["data-" + name] = value.trim();
+                return obj;
+            }, {});
 
         return {
             type: "data",
