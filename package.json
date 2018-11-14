@@ -109,9 +109,9 @@
     "collectCoverageFrom": [
       "src/**/*.js",
       "contrib/**/*.js",
-      "!src/unicodeMake.js"
+      "!src/unicodeMake.js",
+      "!contrib/mhchem/**"
     ],
-    "modulePathIgnorePatterns": ["mhchem"],
     "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
     "snapshotSerializers": [
       "jest-serializer-html"
