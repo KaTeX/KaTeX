@@ -3364,6 +3364,320 @@ describe("The \\mathchoice function", function() {
     });
 });
 
+describe("An mhchem parser", function() {
+    it("should parse chemical equations", () => {
+        expect`\ce{CO2 + C -> 2 CO}`
+            .toParseLike`{\mathrm{CO}{\vphantom{X}}_{\smash[t]{2}} {}+{} \mathrm{C}\xrightarrow{}2\,\mathrm{CO}}`;
+        expect`\ce{Hg^2+ ->[I-] HgI2 ->[I-] [Hg^{II}I4]^2-}`
+            .toParseLike`{\mathrm{Hg}{\vphantom{X}}^{2+}\xrightarrow{\mathrm{I}{\vphantom{X}}^{-}}\mathrm{HgI}{\vphantom{X}}_{\smash[t]{2}}\xrightarrow{\mathrm{I}{\vphantom{X}}^{-}}[\mathrm{Hg}{\vphantom{X}}^{\mathrm{II}}\mathrm{I}{\vphantom{X}}_{\smash[t]{4}}]{\vphantom{X}}^{2-}}`;
+    });
+
+    it("should parse chemical formulae", () => {
+        expect`\ce{H2O}`
+            .toParseLike`{\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}`;
+        expect`\ce{Sb2O3}`
+            .toParseLike`{\mathrm{Sb}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}{\vphantom{X}}_{\smash[t]{3}}}`;
+    });
+
+    it("should parse Charges", () => {
+        expect`\ce{H+}`
+            .toParseLike`{\mathrm{H}{\vphantom{X}}^{+}}`;
+        expect`\ce{CrO4^2-}`
+            .toParseLike`{\mathrm{CrO}{\vphantom{X}}_{\smash[t]{4}}{\vphantom{X}}^{2-}}`;
+        expect`\ce{[AgCl2]-}`
+            .toParseLike`{[\mathrm{AgCl}{\vphantom{X}}_{\smash[t]{2}}]{\vphantom{X}}^{-}}`;
+        expect`\ce{Y^99+}`
+            .toParseLike`{\mathrm{Y}{\vphantom{X}}^{99+}}`;
+        expect`\ce{Y^{99+}}`
+            .toParseLike`{\mathrm{Y}{\vphantom{X}}^{99+}}`;
+    });
+
+    it("should parse Stoichiometric Numbers", () => {
+        expect`\ce{2 H2O}`
+            .toParseLike`{2\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}`;
+        expect`\ce{2H2O}`
+            .toParseLike`{2\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}`;
+        expect`\ce{0.5 H2O}`
+            .toParseLike`{0.5\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}`;
+        expect`\ce{1/2 H2O}`
+            .toParseLike`{\mathchoice{\textstyle\frac{1}{2}}{\frac{1}{2}}{\frac{1}{2}}{\frac{1}{2}}\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}`;
+        expect`\ce{(1/2) H2O}`
+            .toParseLike`{(1/2)\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}`;
+        expect`\ce{$n$ H2O}`
+            .toParseLike`{n \,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}`;
+        expect`\ce{n H2O}`
+            .toParseLike`{n\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}`;
+        expect`\ce{nH2O}`
+            .toParseLike`{n\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}`;
+        expect`\ce{n/2 H2O}`
+            .toParseLike`{\mathchoice{\textstyle\frac{n}{2}}{\frac{n}{2}}{\frac{n}{2}}{\frac{n}{2}}\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}`;
+    });
+
+    it("should parse Isotopes", () => {
+        expect`\ce{^{227}_{90}Th+}`
+            .toParseLike`{{\vphantom{X}}^{\hphantom{227}}_{\hphantom{90}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{227}}_{\vphantom{2}\mathllap{\smash[t]{90}}}\mathrm{Th}{\vphantom{X}}^{+}}`;
+        expect`\ce{^227_90Th+}`
+            .toParseLike`{{\vphantom{X}}^{\hphantom{227}}_{\hphantom{90}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{227}}_{\vphantom{2}\mathllap{\smash[t]{90}}}\mathrm{Th}{\vphantom{X}}^{+}}`;
+        expect`\ce{^{0}_{-1}n^{-}}`
+            .toParseLike`{{\vphantom{X}}^{\hphantom{0}}_{\hphantom{-1}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{0}}_{\vphantom{2}\mathllap{\smash[t]{-1}}}\mathrm{n}{\vphantom{X}}^{-}}`;
+        expect`\ce{^0_-1n-}`
+            .toParseLike`{{\vphantom{X}}^{\hphantom{0}}_{\hphantom{-1}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{0}}_{\vphantom{2}\mathllap{\smash[t]{-1}}}\mathrm{n}{\vphantom{X}}^{-}}`;
+        expect`\ce{H{}^3HO}`
+            .toParseLike`{\mathrm{H}{\vphantom{X}}^{\hphantom{3}}_{\hphantom{}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{3}}_{\vphantom{2}\mathllap{\smash[t]{}}}\mathrm{HO}}`;
+        expect`\ce{H^3HO}`
+            .toParseLike`{\mathrm{H}{\vphantom{X}}^{\hphantom{3}}_{\hphantom{}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{3}}_{\vphantom{2}\mathllap{\smash[t]{}}}\mathrm{HO}}`;
+    });
+
+    it("should parse Reaction Arrows", () => {
+        expect`\ce{A -> B}`
+            .toParseLike`{\mathrm{A}\xrightarrow{}\mathrm{B}}`;
+        expect`\ce{A <- B}`
+            .toParseLike`{\mathrm{A}\xleftarrow{}\mathrm{B}}`;
+        expect`\ce{A <-> B}`
+            .toParseLike`{\mathrm{A}\xleftrightarrow{}\mathrm{B}}`;
+        expect`\ce{A <--> B}`
+            .toParseLike`{\mathrm{A}\xrightleftarrows{}\mathrm{B}}`;
+        expect`\ce{A <=> B}`
+            .toParseLike`{\mathrm{A}\xrightleftharpoons{}\mathrm{B}}`;
+        expect`\ce{A <=>> B}`
+            .toParseLike`{\mathrm{A}\xrightequilibrium{}\mathrm{B}}`;
+        expect`\ce{A <<=> B}`
+            .toParseLike`{\mathrm{A}\xleftequilibrium{}\mathrm{B}}`;
+        expect`\ce{A ->[H2O] B}`
+            .toParseLike`{\mathrm{A}\xrightarrow{\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}\mathrm{B}}`;
+        expect`\ce{A ->[{text above}][{text below}] B}`
+            .toParseLike`{\mathrm{A}\xrightarrow[{{\text{text below}}}]{{\text{text above}}}\mathrm{B}}`;
+        expect`\ce{A ->[$x$][$x_i$] B}`
+            .toParseLike`{\mathrm{A}\xrightarrow[{x_i }]{x }\mathrm{B}}`;
+    });
+
+    it("should parse Parentheses, Brackets, Braces", () => {
+        expect`\ce{(NH4)2S}`
+            .toParseLike`{(\mathrm{NH}{\vphantom{X}}_{\smash[t]{4}}){\vphantom{X}}_{\smash[t]{2}}\mathrm{S}}`;
+        expect`\ce{[\{(X2)3\}2]^3+}`
+            .toParseLike`{[\{(\mathrm{X}{\vphantom{X}}_{\smash[t]{2}}){\vphantom{X}}_{\smash[t]{3}}\}{\vphantom{X}}_{\smash[t]{2}}]{\vphantom{X}}^{3+}}`;
+        expect`\ce{CH4 + 2 $\left( \ce{O2 + 79/21 N2} \right)$}`
+            .toParseLike`{\mathrm{CH}{\vphantom{X}}_{\smash[t]{4}} {}+{} 2\,\left(  \mathrm{O}{\vphantom{X}}_{\smash[t]{2}} {}+{} \mathchoice{\textstyle\frac{79}{21}}{\frac{79}{21}}{\frac{79}{21}}{\frac{79}{21}}\,\mathrm{N}{\vphantom{X}}_{\smash[t]{2}} \right) }`;
+    });
+
+    it("should parse States of Aggregation", () => {
+        expect`\ce{H2(aq)}`
+            .toParseLike`{\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mskip2mu (\mathrm{aq})}`;
+        expect`\ce{CO3^2-_{(aq)}}`
+            .toParseLike`{\mathrm{CO}{\vphantom{X}}_{\smash[t]{3}}{\vphantom{X}}^{2-}{\vphantom{X}}_{\smash[t]{\mskip1mu (\mathrm{aq})}}}`;
+        expect`\ce{CO3^2-{}_{(aq)}}`
+            .toParseLike`{\mathrm{CO}{\vphantom{X}}_{\smash[t]{3}}{\vphantom{X}}^{2-}{\vphantom{X}}_{\smash[t]{\mskip1mu (\mathrm{aq})}}}`;
+        expect`\ce{NaOH(aq,$\infty$)}`
+            .toParseLike`{\mathrm{NaOH}\mskip2mu (\mathrm{aq},\infty )}`;
+    });
+
+    it("should parse Crystal Systems", () => {
+        expect`\ce{ZnS ($c$)}`
+            .toParseLike`{\mathrm{ZnS}\mskip2mu (c )}`;
+        expect`\ce{ZnS (\ca$c$)}`
+            .toParseLike`{\mathrm{ZnS}\mskip2mu ({\sim}c )}`;
+    });
+
+    it("should parse Variables like __*x*, *n*, 2*n*+1__", () => {
+        expect`\ce{NO_x}`
+            .toParseLike`{\mathrm{NO}{\vphantom{X}}_{\smash[t]{x }}}`;
+        expect`\ce{Fe^n+}`
+            .toParseLike`{\mathrm{Fe}{\vphantom{X}}^{n +}}`;
+        expect`\ce{x Na(NH4)HPO4 ->[\Delta] (NaPO3)_x + x NH3 ^ + x H2O}`
+            .toParseLike`{x\,\mathrm{Na}(\mathrm{NH}{\vphantom{X}}_{\smash[t]{4}})\mathrm{HPO}{\vphantom{X}}_{\smash[t]{4}}\xrightarrow{\mathrm{\Delta}}(\mathrm{NaPO}{\vphantom{X}}_{\smash[t]{3}}){\vphantom{X}}_{\smash[t]{x }} {}+{} x\,\mathrm{NH}{\vphantom{X}}_{\smash[t]{3}} \uparrow{}  {}+{} x\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}`;
+    });
+
+    it("should parse Greek Characters", () => {
+        expect`\ce{\mu-Cl}`
+            .toParseLike`{\mathrm{\mu}\text{-}\mathrm{Cl}}`;
+        expect`\ce{[Pt(\eta^2-C2H4)Cl3]-}`
+            .toParseLike`{[\mathrm{Pt}(\mathrm{\eta}{\vphantom{X}}^{2}\text{-}\mathrm{C}{\vphantom{X}}_{\smash[t]{2}}\mathrm{H}{\vphantom{X}}_{\smash[t]{4}})\mathrm{Cl}{\vphantom{X}}_{\smash[t]{3}}]{\vphantom{X}}^{-}}`;
+        expect`\ce{\beta +}`
+            .toParseLike`{\mathrm{\beta }{\vphantom{X}}^{+}}`;
+        expect`\ce{^40_18Ar + \gamma{} + \nu_e}`
+            .toParseLike`{{\vphantom{X}}^{\hphantom{40}}_{\hphantom{18}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{40}}_{\vphantom{2}\mathllap{\smash[t]{18}}}\mathrm{Ar} {}+{} \mathrm{\gamma{}} {}+{} \mathrm{\nu}{\vphantom{X}}_{\smash[t]{e }}}`;
+    });
+
+    it("should parse (Italic) Math", () => {
+        expect`\ce{NaOH(aq,$\infty$)}`
+            .toParseLike`{\mathrm{NaOH}\mskip2mu (\mathrm{aq},\infty )}`;
+        expect`\ce{Fe(CN)_{$\frac{6}{2}$}}`
+            .toParseLike`{\mathrm{Fe}(\mathrm{CN}){\vphantom{X}}_{\smash[t]{\frac{6}{2} }}}`;
+        expect`\ce{X_{$i$}^{$x$}}`
+            .toParseLike`{\mathrm{X}{\vphantom{X}}_{\smash[t]{i }}{\vphantom{X}}^{x }}`;
+        expect`\ce{X_$i$^$x$}`
+            .toParseLike`{\mathrm{X}{\vphantom{X}}_{\smash[t]{i }}{\vphantom{X}}^{x }}`;
+    });
+
+    it("should parse Italic Text", () => {
+        expect("\\ce{$cis${-}[PtCl2(NH3)2]}").toParseLike`{cis {\text{-}}[\mathrm{PtCl}{\vphantom{X}}_{\smash[t]{2}}(\mathrm{NH}{\vphantom{X}}_{\smash[t]{3}}){\vphantom{X}}_{\smash[t]{2}}]}`;
+        expect`\ce{CuS($hP12$)}`
+            .toParseLike`{\mathrm{CuS}(hP12 )}`;
+    });
+
+    it("should parse Upright Text, Escape Parsing", () => {
+        expect`\ce{{Gluconic Acid} + H2O2}`
+            .toParseLike`{{\text{Gluconic Acid}} {}+{} \mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}{\vphantom{X}}_{\smash[t]{2}}}`;
+        expect`\ce{X_{{red}}}`
+            .toParseLike`{\mathrm{X}{\vphantom{X}}_{\smash[t]{\text{red}}}}`;
+        expect`\ce{{(+)}_589{-}[Co(en)3]Cl3}`
+            .toParseLike`{{\text{(+)}}{\vphantom{X}}_{\smash[t]{589}}{\text{-}}[\mathrm{Co}(\mathrm{en}){\vphantom{X}}_{\smash[t]{3}}]\mathrm{Cl}{\vphantom{X}}_{\smash[t]{3}}}`;
+    });
+
+    it("should parse Bonds", () => {
+        expect`\ce{C6H5-CHO}`
+            .toParseLike`{\mathrm{C}{\vphantom{X}}_{\smash[t]{6}}\mathrm{H}{\vphantom{X}}_{\smash[t]{5}}{-}\mathrm{CHO}}`;
+        expect`\ce{A-B=C#D}`
+            .toParseLike`{\mathrm{A}{-}\mathrm{B}{=}\mathrm{C}{\equiv}\mathrm{D}}`;
+        expect`\ce{A\bond{-}B\bond{=}C\bond{#}D}`
+            .toParseLike`{\mathrm{A}{-}\mathrm{B}{=}\mathrm{C}{\equiv}\mathrm{D}}`;
+        expect`\ce{A\bond{1}B\bond{2}C\bond{3}D}`
+            .toParseLike`{\mathrm{A}{-}\mathrm{B}{=}\mathrm{C}{\equiv}\mathrm{D}}`;
+        expect`\ce{A\bond{~}B\bond{~-}C}`
+            .toParseLike`{\mathrm{A}{\tripledash}\mathrm{B}{\mathrlap{\raisebox{-.1em}{$-$}}\raisebox{.1em}{$\tripledash$}}\mathrm{C}}`;
+        expect`\ce{A\bond{~--}B\bond{~=}C\bond{-~-}D}`
+            .toParseLike`{\mathrm{A}{\mathrlap{\raisebox{-.2em}{$-$}}\mathrlap{\raisebox{.2em}{$\tripledash$}}-}\mathrm{B}{\mathrlap{\raisebox{-.2em}{$-$}}\mathrlap{\raisebox{.2em}{$\tripledash$}}-}\mathrm{C}{\mathrlap{\raisebox{-.2em}{$-$}}\mathrlap{\raisebox{.2em}{$-$}}\tripledash}\mathrm{D}}`;
+        expect`\ce{A\bond{...}B\bond{....}C}`
+            .toParseLike`{\mathrm{A}{{\cdot}{\cdot}{\cdot}}\mathrm{B}{{\cdot}{\cdot}{\cdot}{\cdot}}\mathrm{C}}`;
+        expect`\ce{A\bond{->}B\bond{<-}C}`
+            .toParseLike`{\mathrm{A}{\rightarrow}\mathrm{B}{\leftarrow}\mathrm{C}}`;
+    });
+
+    it("should parse Addition Compounds", () => {
+        expect`\ce{KCr(SO4)2*12H2O}`
+            .toParseLike`{\mathrm{KCr}(\mathrm{SO}{\vphantom{X}}_{\smash[t]{4}}){\vphantom{X}}_{\smash[t]{2}}\,{\cdot}\,12\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}`;
+        expect`\ce{KCr(SO4)2.12H2O}`
+            .toParseLike`{\mathrm{KCr}(\mathrm{SO}{\vphantom{X}}_{\smash[t]{4}}){\vphantom{X}}_{\smash[t]{2}}\,{\cdot}\,12\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}`;
+        expect`\ce{KCr(SO4)2 * 12 H2O}`
+            .toParseLike`{\mathrm{KCr}(\mathrm{SO}{\vphantom{X}}_{\smash[t]{4}}){\vphantom{X}}_{\smash[t]{2}}\,{\cdot}\,12\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}`;
+    });
+
+    it("should parse Oxidation States", () => {
+        expect`\ce{Fe^{II}Fe^{III}2O4}`
+            .toParseLike`{\mathrm{Fe}{\vphantom{X}}^{\mathrm{II}}\mathrm{Fe}{\vphantom{X}}^{\mathrm{III}}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}{\vphantom{X}}_{\smash[t]{4}}}`;
+    });
+
+    it("should parse Unpaired Electrons, Radical Dots", () => {
+        expect`\ce{OCO^{.-}}`
+            .toParseLike`{\mathrm{OCO}{\vphantom{X}}^{\mkern1mu \bullet\mkern1mu -}}`;
+        expect`\ce{NO^{(2.)-}}`
+            .toParseLike`{\mathrm{NO}{\vphantom{X}}^{(2\mkern1mu \bullet\mkern1mu )-}}`;
+    });
+
+    it("should parse Kröger-Vink Notation", () => {
+        expect`\ce{Li^x_{Li,1-2x}Mg^._{Li,x}$V$'_{Li,x}Cl^x_{Cl}}`
+            .toParseLike`{\mathrm{Li}{\vphantom{X}}^{{\times}}_{\smash[t]{\mathrm{Li}{,}\mkern1mu 1-2x }}\mathrm{Mg}{\vphantom{X}}^{\mkern1mu \bullet\mkern1mu }_{\smash[t]{\mathrm{Li}{,}\mkern1mu x }}V {\vphantom{X}}^{\prime }_{\smash[t]{\mathrm{Li}{,}\mkern1mu x }}\mathrm{Cl}{\vphantom{X}}^{{\times}}_{\smash[t]{\mathrm{Cl}}}}`;
+        expect`\ce{O''_{i,x}}`
+            .toParseLike`{\mathrm{O}{\vphantom{X}}^{\prime \prime }_{\smash[t]{\mathrm{i}{,}\mkern1mu x }}}`;
+        expect`\ce{M^{..}_i}`
+            .toParseLike`{\mathrm{M}{\vphantom{X}}^{\mkern1mu \bullet\mkern1mu \mkern1mu \bullet\mkern1mu }_{\smash[t]{\mathrm{i}}}}`;
+        expect`\ce{$V$^{4'}_{Ti}}`
+            .toParseLike`{V {\vphantom{X}}^{4\prime }_{\smash[t]{\mathrm{Ti}}}}`;
+        expect`\ce{V_{V,1}C_{C,0.8}$V$_{C,0.2}}`
+            .toParseLike`{\mathrm{V}{\vphantom{X}}_{\smash[t]{\mathrm{V}{,}\mkern1mu 1}}\mathrm{C}{\vphantom{X}}_{\smash[t]{\mathrm{C}{,}\mkern1mu 0.8}}V {\vphantom{X}}_{\smash[t]{\mathrm{C}{,}\mkern1mu 0.2}}}`;
+    });
+
+    it("should parse Equation Operators", () => {
+        expect`\ce{A + B}`
+            .toParseLike`{\mathrm{A} {}+{} \mathrm{B}}`;
+        expect`\ce{A - B}`
+            .toParseLike`{\mathrm{A} {}-{} \mathrm{B}}`;
+        expect`\ce{A = B}`
+            .toParseLike`{\mathrm{A} {}={} \mathrm{B}}`;
+        expect`\ce{A \pm B}`
+            .toParseLike`{\mathrm{A} {}\pm{} \mathrm{B}}`;
+    });
+
+    it("should parse Precipitate and Gas", () => {
+        expect`\ce{SO4^2- + Ba^2+ -> BaSO4 v}`
+            .toParseLike`{\mathrm{SO}{\vphantom{X}}_{\smash[t]{4}}{\vphantom{X}}^{2-} {}+{} \mathrm{Ba}{\vphantom{X}}^{2+}\xrightarrow{}\mathrm{BaSO}{\vphantom{X}}_{\smash[t]{4}} \downarrow{} }`;
+        expect`\ce{A v B (v) -> B ^ B (^)}`
+            .toParseLike`{\mathrm{A} \downarrow{} ~\mathrm{B} \downarrow{} \xrightarrow{}\mathrm{B} \uparrow{} ~\mathrm{B} \uparrow{} }`;
+    });
+
+    it("should parse Other Symbols and Shortcuts", () => {
+        expect`\ce{NO^*}`
+            .toParseLike`{\mathrm{NO}{\vphantom{X}}^{*}}`;
+        expect`\ce{1s^2-N}`
+            .toParseLike`{1\mathrm{s}{\vphantom{X}}^{2}\text{-}\mathrm{N}}`;
+        expect`\ce{n-Pr}`
+            .toParseLike`{n \text{-}\mathrm{Pr}}`;
+        expect`\ce{iPr}`
+            .toParseLike`{\mathrm{iPr}}`;
+        expect`\ce{\ca Fe}`
+            .toParseLike`{{\sim}\mathrm{Fe}}`;
+        expect`\ce{A, B, C; F}`
+            .toParseLike`{\mathrm{A}{,}\mkern6mu \mathrm{B}{,}\mkern6mu \mathrm{C}{;}\mkern6mu \mathrm{F}}`;
+        expect`\ce{{and others}}`
+            .toParseLike`{{\text{and others}}}`;
+    });
+
+    it("should parse Complex Examples", () => {
+        expect`\ce{Zn^2+  <=>[+ 2OH-][+ 2H+]  $\underset{\text{amphoteres Hydroxid}}{\ce{Zn(OH)2 v}}$  <=>[+ 2OH-][+ 2H+]  $\underset{\text{Hydroxozikat}}{\ce{[Zn(OH)4]^2-}}$}`
+            .toParseLike`{\mathrm{Zn}{\vphantom{X}}^{2+}\xrightleftharpoons[{ {}+{} 2\,\mathrm{H}{\vphantom{X}}^{+}}]{ {}+{} 2\,\mathrm{OH}{\vphantom{X}}^{-}}\underset{\text{amphoteres Hydroxid}}{\ce{Zn(OH)2 v}} \xrightleftharpoons[{ {}+{} 2\,\mathrm{H}{\vphantom{X}}^{+}}]{ {}+{} 2\,\mathrm{OH}{\vphantom{X}}^{-}}\underset{\text{Hydroxozikat}}{\ce{[Zn(OH)4]^2-}} }`;
+        expect`\ce{$K = \frac{[\ce{Hg^2+}][\ce{Hg}]}{[\ce{Hg2^2+}]}$}`
+            .toParseLike`{K = \frac{[\ce{Hg^2+}][\ce{Hg}]}{[\ce{Hg2^2+}]} }`;
+        expect`\ce{$K = \ce{\frac{[Hg^2+][Hg]}{[Hg2^2+]}}$}`
+            .toParseLike`{K =  \frac{[\mathrm{Hg}{\vphantom{X}}^{2+}][\mathrm{Hg}]}{[\mathrm{Hg}{\vphantom{X}}_{\smash[t]{2}}{\vphantom{X}}^{2+}]}}`;
+        expect`\ce{Hg^2+ ->[I-]  $\underset{\mathrm{red}}{\ce{HgI2}}$  ->[I-]  $\underset{\mathrm{red}}{\ce{[Hg^{II}I4]^2-}}$}`
+            .toParseLike`{\mathrm{Hg}{\vphantom{X}}^{2+}\xrightarrow{\mathrm{I}{\vphantom{X}}^{-}}\underset{\mathrm{red}}{\ce{HgI2}} \xrightarrow{\mathrm{I}{\vphantom{X}}^{-}}\underset{\mathrm{red}}{\ce{[Hg^{II}I4]^2-}} }`;
+    });
+
+    it("should parse \\pu", () => {
+        expect`\pu{123 kJ}`
+            .toParseLike`{123~\mathrm{kJ}}`;
+        expect`\pu{123 mm2}`
+            .toParseLike`{123~\mathrm{mm^{2}}}`;
+        expect`\pu{123 J s}`
+            .toParseLike`{123~\mathrm{J}\mkern3mu \mathrm{s}}`;
+        expect`\pu{123 J*s}`
+            .toParseLike`{123~\mathrm{J}\mkern1mu{\cdot}\mkern1mu \mathrm{s}}`;
+        expect`\pu{123 kJ/mol}`
+            .toParseLike`{123~\mathrm{kJ}/\mathrm{mol}}`;
+        expect`\pu{123 kJ//mol}`
+            .toParseLike`{123~\mathchoice{\textstyle\frac{\mathrm{kJ}}{\mathrm{mol}}}{\frac{\mathrm{kJ}}{\mathrm{mol}}}{\frac{\mathrm{kJ}}{\mathrm{mol}}}{\frac{\mathrm{kJ}}{\mathrm{mol}}}}`;
+        expect`\pu{123 kJ mol^-1}`
+            .toParseLike`{123~\mathrm{kJ}\mkern3mu \mathrm{mol^{-1}}}`;
+        expect`\pu{123 kJ*mol-1}`
+            .toParseLike`{123~\mathrm{kJ}\mkern1mu{\cdot}\mkern1mu \mathrm{mol^{-1}}}`;
+        expect`\pu{123 kJ.mol-1}`
+            .toParseLike`{123~\mathrm{kJ}\mkern1mu{\cdot}\mkern1mu \mathrm{mol^{-1}}}`;
+        expect`\pu{1.2e3 kJ}`
+            .toParseLike`{1.2\cdot 10^{3}~\mathrm{kJ}}`;
+        expect`\pu{1,2e3 kJ}`
+            .toParseLike`{1{,}2\cdot 10^{3}~\mathrm{kJ}}`;
+        expect`\pu{1.2E3 kJ}`
+            .toParseLike`{1.2\times 10^{3}~\mathrm{kJ}}`;
+        expect`\pu{1,2E3 kJ}`
+            .toParseLike`{1{,}2\times 10^{3}~\mathrm{kJ}}`;
+        expect`\pu{1234}`
+            .toParseLike`{1234}`;
+        expect`\pu{12345}`
+            .toParseLike`{12\mkern2mu 345}`;
+        expect("\\pu{1\u00B0C}")
+            .toParseLike`{1~\mathrm{{}^{\circ}C}}`;
+        expect`\pu{23.4782(32) m}`
+            .toParseLike`{23.4782(32)~\mathrm{m}}`;
+        expect`\pu{8.00001 \pm 0.00005 nm}`
+            .toParseLike`{8.000\mkern2mu 01 {}\pm{} 0.000\mkern2mu 05~\mathrm{nm}}`;
+        expect`\pu{.25}`
+            .toParseLike`{.25}`;
+        expect`\pu{1 mol }`
+            .toParseLike`{1~\mathrm{mol}~}`;
+        expect`\pu{123 l//100km}`
+            .toParseLike`{123~\mathchoice{\textstyle\frac{\mathrm{l}}{100~\mathrm{km}}}{\frac{\mathrm{l}}{100~\mathrm{km}}}{\frac{\mathrm{l}}{100~\mathrm{km}}}{\frac{\mathrm{l}}{100~\mathrm{km}}}}`;
+    });
+});
+
+describe("An mhchem builder", function() {
+    it("should build reaction arrows", () => {
+        expect`\ce{A <--> B}`.toBuild;
+        expect`\ce{A <=> B}`.toBuild;
+        expect`\ce{A <=>> B}`.toBuild;
+        expect`\ce{A <<=> B}`.toBuild;
+    });
+});
+
 describe("Newlines via \\\\ and \\newline", function() {
     it("should build \\\\ and \\newline the same", () => {
         expect`hello \\ world`.toBuildLike`hello \newline world`;

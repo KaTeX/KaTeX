@@ -276,6 +276,16 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 
 Direct Input: $∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← ↔ ¬$ ℂ ℍ ℕ ℙ ℚ ℝ
 
+## mhchem
+
+|||||
+|:-----------------------|:----------------------|:-------------------|:---------
+|$\ce{CO2 + C -> 2 CO}$  | `\ce{CO2 + C -> 2 CO}`|$\ce{A\bond{~}B\bond{~-}C}$ |`\ce{A\bond{~}B\bond{~-}C}`
+|$\ce{^{227}_{90}Th+}$   | `\ce{^{227}_{90}Th+}` |$\ce{OCO^{.-}}$ | `\ce{OCO^{.-}}`
+|$\ce{A ->[H2O] B}$      | `\ce{A ->[H2O] B}`    |$\pu{123 kJ*mol-1}$ | `\pu{123 kJ*mol-1}`
+
+Much more information is available at the [mhchem Manual](https://mhchem.github.io/MathJax-mhchem/).
+
 ## Macros
 
 |||

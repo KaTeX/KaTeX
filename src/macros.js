@@ -10,6 +10,7 @@ import utils from "./utils";
 import {Token} from "./Token";
 import ParseError from "./ParseError";
 import type Namespace from "./Namespace";
+import {chemParse} from "./mhchem";
 
 import type {Mode} from "./types";
 
@@ -790,6 +791,23 @@ defineMacro("\\approxcoloncolon",
 defineMacro("\\notni", "\\html@mathml{\\not\\ni}{\\mathrel{\\char`\u220C}}");
 defineMacro("\\limsup", "\\DOTSB\\mathop{\\operatorname{lim\\,sup}}\\limits");
 defineMacro("\\liminf", "\\DOTSB\\mathop{\\operatorname{lim\\,inf}}\\limits");
+
+//////////////////////////////////////////////////////////////////////
+// mhchem
+
+defineMacro("\\ce", function(context) {
+    return chemParse(context.consumeArgs(1)[0], "ce");
+});
+
+defineMacro("\\pu", function(context) {
+    return chemParse(context.consumeArgs(1)[0], "pu");
+});
+
+//  Needed for \bond for the ~ forms
+//  Raise by 2.56mu, not 2mu. We're raising a hyphen-minus, U+002D, not
+//  a mathematical minus, U+2212. So we need that extra 0.56.
+defineMacro("\\tripledash", "{\\vphantom{-}\\raisebox{2.56mu}{$\\mkern2mu"
++ "\\tiny\\text{-}\\mkern1mu\\text{-}\\mkern1mu\\text{-}\\mkern2mu$}}");
 
 //////////////////////////////////////////////////////////////////////
 // semantic
