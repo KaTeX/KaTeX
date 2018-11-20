@@ -25,7 +25,7 @@ export type MathNodeType =
     "mfrac" | "mroot" | "msqrt" |
     "mtable" | "mtr" | "mtd" | "mlabeledtr" |
     "mrow" | "menclose" |
-    "mstyle" | "mpadded" | "mphantom";
+    "mstyle" | "mpadded" | "mphantom" | "mglyph";
 
 export interface MathDomNode extends VirtualNode {
     toText(): string;

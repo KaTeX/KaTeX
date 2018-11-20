@@ -184,7 +184,7 @@ defineFunction({
         assertParsed(group);
         // Build the inner expression
         const inner = html.buildExpression(group.body, options, true,
-            [null, "mclose"]);
+            ["mopen", "mclose"]);
 
         let innerHeight = 0;
         let innerDepth = 0;

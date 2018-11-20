@@ -1,5 +1,18 @@
 version: 2.1
 
+executors:
+  firefox:
+    docker:
+      - image: circleci/node:6
+      - image: selenium/standalone-firefox:2.48.2
+  chrome:
+    docker:
+      - image: circleci/node:6
+      - image: selenium/standalone-chrome:2.48.2
+        environment:
+          # workaround for https://github.com/SeleniumHQ/docker-selenium/issues/87
+          DBUS_SESSION_BUS_ADDRESS: /dev/null
+
 commands:
   checkout_repo:
     steps:
@@ -43,7 +56,12 @@ commands:
       - run:
           name: Install dependencies
           # upgrade Yarn before installing dependencies, if needed
-          command: yarn check || { curl -o- -L https://yarnpkg.com/install.sh | bash && yarn; }
+          command: |
+              if ! yarn check; then
+                curl -o- -L https://yarnpkg.com/install.sh | PROFILE=$BASH_ENV bash
+                source $BASH_ENV
+                yarn
+              fi
       - save_cache:
           key: yarn-deps-v3-{{ checksum "yarn.lock" }}
           paths:
@@ -59,26 +77,6 @@ commands:
           # do not upload if screenshotter tests are skipped
           command: ./node_modules/.bin/codecov -F "<< parameters.flag >>"
 
-  screenshotter:
-    steps:
-      - checkout_repo
-      - skip_if_only_changed:
-          filter: '^docs/|^static/|^website/|^LICENSE|\.md$'
-      - install_dependencies
-
-      - run:
-          name: Verify screenshots and generate diffs and new screenshots
-          command: node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new --coverage
-      - codecov:
-          flag: screenshotter
-
-      - store_artifacts:
-          path: test/screenshotter/new
-          destination: new
-      - store_artifacts:
-          path: test/screenshotter/diff
-          destination: diff
-
 jobs:
   test:
     docker:
@@ -87,7 +85,7 @@ jobs:
       - run:
           name: Check whether the build is running on the main repository
           command: |
-              if [[ $CIRCLE_PULL_REQUEST && $CIRCLE_PROJECT_USERNAME != "Khan" ]]; then
+              if [[ $CIRCLE_PULL_REQUEST && $CIRCLE_PROJECT_USERNAME != "KaTeX" ]]; then
                 echo "Please disable CircleCI on your forked repository!"
                 exit 1
               fi
@@ -110,26 +108,36 @@ jobs:
       - codecov:
           flag: test
 
-  firefox:
-    docker:
-      - image: circleci/node:6
-      - image: selenium/standalone-firefox:2.48.2
+  screenshotter:
+    parameters:
+      browser:
+        type: executor
+    executor: << parameters.browser >>
     steps:
-      - screenshotter
+      - checkout_repo
+      - skip_if_only_changed:
+          filter: '^docs/|^static/|^website/|^LICENSE|\.md$'
+      - install_dependencies
 
-  chrome:
-    docker:
-      - image: circleci/node:6
-      - image: selenium/standalone-chrome:2.48.2
-        environment:
-          # workaround for https://github.com/SeleniumHQ/docker-selenium/issues/87
-          DBUS_SESSION_BUS_ADDRESS: /dev/null
-    steps:
-      - screenshotter
+      - run:
+          name: Verify screenshots and generate diffs and new screenshots
+          command: node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new --coverage
+      - codecov:
+          flag: screenshotter
+      - store_artifacts:
+          path: test/screenshotter/new
+          destination: new
+      - store_artifacts:
+          path: test/screenshotter/diff
+          destination: diff
 
 workflows:
   test:
     jobs:
       - test
-      - firefox
-      - chrome
+      - screenshotter:
+          name: firefox
+          browser: firefox
+      - screenshotter:
+          name: chrome
+          browser: chrome
