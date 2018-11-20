@@ -1,6 +1,6 @@
 # mhchem extension
 
-This extension adds to KaTeX the `\ce` and `\pu` functions from the [mhchem](mhchem-manual.html) package.
+This extension adds to KaTeX the `\ce` and `\pu` functions from the [mhchem](https://mhchem.github.io/MathJax-mhchem/) package.
 
 ### Usage
 
@@ -12,8 +12,7 @@ This extension isn't part of core KaTeX, so the script should be separately incl
 
 ### Syntax
 
-See the [mhchem Manual](mhchem-manual.html) for a full explanation of the input syntax,
-with working examples. The manual also includes a demonstration box.
+See the [mhchem Manual](https://mhchem.github.io/MathJax-mhchem/) for a full explanation of the input syntax, with working examples. The manual also includes a demonstration box.
 
 ### Browser Support
 
