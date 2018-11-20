@@ -54,7 +54,7 @@ class Footer extends React.Component {
                 <a href={this.pageUrl('users.html', this.props.language)}>
                   Who is using KaTeX?
                 </a>
-                <a href="https://gitter.im/Khan/KaTeX">Gitter Chat</a>
+                <a href="https://gitter.im/KaTeX/KaTeX">Gitter Chat</a>
                 <a
                   href="https://stackoverflow.com/questions/tagged/katex"
                   target="_blank"
@@ -64,12 +64,12 @@ class Footer extends React.Component {
               </div>
               <div>
                 <h5>More</h5>
-                <a href="https://github.com/Khan/KaTeX/graphs/contributors">Contributors</a>
+                <a href="https://github.com/KaTeX/KaTeX/graphs/contributors">Contributors</a>
                 <a
                   className="github-button"
                   href={this.props.config.repoUrl}
                   data-icon="octicon-star"
-                  data-count-href="/Khan/KaTeX/stargazers"
+                  data-count-href="/KaTeX/KaTeX/stargazers"
                   data-show-count={true}
                   data-count-aria-label="# stargazers on GitHub"
                   aria-label="Star this project on GitHub">
@@ -89,7 +89,7 @@ class Footer extends React.Component {
               />
             </a>
             <section className="copyright">
-                Licensed under <a href="https://github.com/Khan/KaTeX/blob/master/LICENSE">MIT License</a><br/>
+                Licensed under <a href="https://github.com/KaTeX/KaTeX/blob/master/LICENSE">MIT License</a><br/>
                 {this.props.config.copyright}
             </section>
           </footer>

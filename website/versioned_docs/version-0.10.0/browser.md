@@ -65,7 +65,7 @@ Chrome DevTools Network panel or similar to find out which fonts are used.
 to provide a fallback for older browsers that do not support ES modules.
 
 ## Download & Host Things Yourself
-Download a [KaTeX release](https://github.com/Khan/KaTeX/releases),
+Download a [KaTeX release](https://github.com/KaTeX/KaTeX/releases),
 copy `katex.js`, `katex.css`
 (or `katex.min.js` and `katex.min.css` to use minified versions),
 and the `fonts` directory, and include or import it like above.
