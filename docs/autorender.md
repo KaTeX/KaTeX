@@ -99,7 +99,7 @@ in addition to two auto-render-specific keys:
 - `errorCallback`: A callback method returning a message and an error stack
   in case of an critical error during rendering. The default uses `console.error`.
 
-- `preProcess`: A callback function, `(math: string): string`, used to process
+- `preProcess`: A callback function, `(math: string) => string`, used to process
   math expressions before rendering.
 
 The `displayMode` property of the options object is ignored, and is
