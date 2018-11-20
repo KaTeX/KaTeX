@@ -26,7 +26,7 @@ To build you will need Git, Node.js 6.9 or later, and Yarn.
 
 Clone a copy of the GitHub source repository:
 ```bash
-git clone https://github.com/Khan/KaTeX.git
+git clone https://github.com/KaTeX/KaTeX.git
 cd KaTeX
 ```
 
@@ -45,7 +45,7 @@ npm install /path/to/KaTeX
 ```
 
 > You can manually download the package and source code from
-[GitHub releases](https://github.com/Khan/KaTeX/releases).
+[GitHub releases](https://github.com/KaTeX/KaTeX/releases).
 
 ## Importing
 KaTeX is exported as a CommonJS module, which can be imported using `require`:

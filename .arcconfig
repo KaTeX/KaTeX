@@ -1,5 +1,0 @@
-{
-    "project_id": "KaTeX",
-    "conduit_uri": "https://phabricator.khanacademy.org/",
-    "lint.engine": "ArcanistConfigurationDrivenLintEngine"
-}

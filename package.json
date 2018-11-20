@@ -6,7 +6,7 @@
   "homepage": "https://katex.org",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Khan/KaTeX.git"
+    "url": "git://github.com/KaTeX/KaTeX.git"
   },
   "files": [
     "katex.js",
@@ -87,7 +87,7 @@
     "test:perf": "yarn prestart && NODE_ENV=test node test/perf-test.js",
     "clean": "rm -rf dist/ node_modules/",
     "clean-install": "yarn clean && yarn",
-    "prestart": "node check-node-version.js && yarn check && node src/unicodeMake.js",
+    "prestart": "yarn check && node src/unicodeMake.js",
     "start": "webpack-dev-server --hot --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
     "build": "yarn prestart && rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c && webpack",

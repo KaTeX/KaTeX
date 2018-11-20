@@ -177,7 +177,7 @@ if [[ ! $PUBLISH ]]; then
     echo ""
     echo "The automatic parts are done!"
     echo "Now create a pull request against master from 'v$VERSION-release'"
-    echo "Visit https://github.com/Khan/KaTeX/pulls to open a pull request."
+    echo "Visit https://github.com/KaTeX/KaTeX/pulls to open a pull request."
     echo "After it gets merged, run './release.sh -p $VERSION'!"
     echo "Note that if KaTeX source code is changed after running this script,"
     echo "you have to run the release script again."
@@ -212,7 +212,7 @@ else
     echo ""
     echo "The automatic parts are done!"
     echo "Now all that's left is to create the release on GitHub."
-    echo "Visit https://github.com/Khan/KaTeX/releases/new?tag=v$VERSION to edit the release notes."
+    echo "Visit https://github.com/KaTeX/KaTeX/releases/new?tag=v$VERSION to edit the release notes."
     echo "Don't forget to upload katex.tar.gz and katex.zip to the release!"
 fi
 
