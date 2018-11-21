@@ -14,10 +14,6 @@ table td {
     vertical-align: middle;
     overflow-wrap: break-word;
 }
-.onPageNav {
-    flex: 0 0 200px;
-    margin-left: 10px !important;
-}
 </style>
 
 <div class="katex-hopscotch">
