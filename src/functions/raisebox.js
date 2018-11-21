@@ -6,7 +6,7 @@ import {assertNodeType} from "../parseNode";
 import {calculateSize} from "../units";
 
 import * as mml from "../buildMathML";
-import * as sizing from "./sizing";
+import {htmlBuilder as textHtmlBuilder} from "./text";
 
 // Box manipulation
 defineFunction({
@@ -34,13 +34,7 @@ defineFunction({
             body: ordargument(group.body),
             font: "mathrm", // simulate \textrm
         };
-        const sizedText = {
-            type: "sizing",
-            mode: group.mode,
-            body: [text],
-            size: 6,                // simulate \normalsize
-        };
-        const body = sizing.htmlBuilder(sizedText, options);
+        const body = textHtmlBuilder(text, options);
         const dy = calculateSize(group.dy, options);
         return buildCommon.makeVList({
             positionType: "shift",
