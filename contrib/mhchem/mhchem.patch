@@ -52,17 +52,14 @@
 > //  a mathematical minus, U+2212. So we need that extra 0.56.
 > katex.__defineMacro("\\tripledash", "{\\vphantom{-}\\raisebox{2.56mu}{$\\mkern2mu"
 > + "\\tiny\\text{-}\\mkern1mu\\text{-}\\mkern1mu\\text{-}\\mkern2mu$}}");
-52,55c70,73
+52,55c70
 <     //
 <     //  Store the string when a CE object is created
 <     //
 <     Init: function (string) { this.string = string; },
 ---
->   //
->   //  This is the main function for handing the \ce and \pu commands.
->   //  It takes the argument to \ce or \pu and returns the corresponding TeX string.
->   //
-57,64c75,83
+> import katex from "katex";
+57,64c72,85
 <     //
 <     //  This converts the CE string to a TeX string.
 <     //
@@ -72,6 +69,11 @@
 <       } catch (ex) {
 <         TEX.Error(ex);
 ---
+>   //
+>   //  This is the main function for handing the \ce and \pu commands.
+>   //  It takes the argument to \ce or \pu and returns the corresponding TeX string.
+>   //
+> 
 >   var chemParse = function (tokens, stateMachine) {
 >     // Recreate the argument string from KaTeX's array of tokens.
 >     var str = "";
@@ -81,22 +83,22 @@
 >         // context.consumeArgs has eaten a space.
 >         str += " ";
 >         expectedLoc = tokens[i].loc.start;
-65a85,86
+65a87,88
 >       str += tokens[i].text;
 >       expectedLoc += tokens[i].text.length;
-67c88,90
+67c90,92
 <   });
 ---
 >     var tex = texify.go(mhchemParser.go(str, stateMachine));
 >     return tex;
 >   };
-1405,1406c1428,1429
+1405,1406c1430,1431
 <             res += "^{\\smash[t]{\\vphantom{2}}\\llap{"+(b5.b||"")+"}}";
 <             res += "_{\\vphantom{2}\\llap{\\smash[t]{"+(b5.p||"")+"}}}";
 ---
 >             res += "^{\\smash[t]{\\vphantom{2}}\\mathllap{"+(b5.b||"")+"}}";
 >             res += "_{\\vphantom{2}\\mathllap{\\smash[t]{"+(b5.p||"")+"}}}";
-1508,1520c1531,1534
+1508,1520c1533,1536
 <           var arrow = texify._getArrow(buf.r);
 <           if (b6.rd || b6.rq) {
 <             if (buf.r === "<=>"  ||  buf.r === "<=>>"  ||  buf.r === "<<=>"  ||  buf.r === "<-->") {
@@ -115,21 +117,21 @@
 >           if (b6.rq) { arrow += "[{" + b6.rq + "}]"; }
 >           if (b6.rd) {
 >             arrow += "{" + b6.rd + "}";
-1522c1536
+1522c1538
 <             arrow = " {}\\mathrel{\\long"+arrow+"}{} ";
 ---
 >             arrow += "{}";
-1615c1629
+1615c1631
 <         case "<-->": return "leftrightarrows";
 ---
 >         case "<-->": return "rightleftarrows";
-1618,1619c1632,1633
+1618,1619c1634,1635
 <         case "<=>>": return "Rightleftharpoons";
 <         case "<<=>": return "Leftrightharpoons";
 ---
 >         case "<=>>": return "rightequilibrium";
 >         case "<<=>": return "leftequilibrium";
-1634,1637c1648,1651
+1634,1637c1650,1653
 <         case "~-": return "{\\rlap{\\lower.1em{-}}\\raise.1em{\\tripledash}}";
 <         case "~=": return "{\\rlap{\\lower.2em{-}}\\rlap{\\raise.2em{\\tripledash}}-}";
 <         case "~--": return "{\\rlap{\\lower.2em{-}}\\rlap{\\raise.2em{\\tripledash}}-}";
@@ -139,7 +141,7 @@
 >         case "~=": return "{\\mathrlap{\\raisebox{-.2em}{$-$}}\\mathrlap{\\raisebox{.2em}{$\\tripledash$}}-}";
 >         case "~--": return "{\\mathrlap{\\raisebox{-.2em}{$-$}}\\mathrlap{\\raisebox{.2em}{$\\tripledash$}}-}";
 >         case "-~-": return "{\\mathrlap{\\raisebox{-.2em}{$-$}}\\mathrlap{\\raisebox{.2em}{$-$}}\\tripledash}";
-1680,1770d1693
+1680,1770d1695
 < 
 <   //
 <   // MathJax definitions
