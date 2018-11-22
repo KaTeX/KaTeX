@@ -363,8 +363,6 @@ export default class Parser {
                 }
                 // Put everything into an ordgroup as the superscript
                 superscript = {type: "ordgroup", mode: this.mode, body: primes};
-            } else if (lex.text === "%") {
-                this.consumeComment();
             } else {
                 // If it wasn't ^, _, or ', stop parsing super/subscripts
                 break;
@@ -412,6 +410,11 @@ export default class Parser {
         } else if (this.mode === "math" && funcData.allowedInMath === false) {
             throw new ParseError(
                 "Can't use function '" + func + "' in math mode", token);
+        }
+
+        // hyperref package sets the catcode of % as an active character
+        if (funcData.argTypes && funcData.argTypes[0] === "url") {
+            this.gullet.lexer.setCatcode("%", 13);
         }
 
         // Consume the command token after possibly switching to the
@@ -504,6 +507,9 @@ export default class Parser {
             }
             (isOptional ? optArgs : args).push(arg);
         }
+        if (funcData.argTypes && funcData.argTypes.indexOf("url") !== -1) {
+            this.gullet.lexer.setCatcode("%", 13);
+        }
 
         return {args, optArgs};
     }
@@ -555,27 +561,6 @@ export default class Parser {
         }
     }
 
-    consumeComment() {
-        // the newline character is normalized in Lexer, check original source
-        while (this.nextToken.text !== "EOF" && this.nextToken.loc &&
-                this.nextToken.loc.getSource().indexOf("\n") === -1) {
-            this.consume();
-        }
-        if (this.nextToken.text === "EOF") {
-            this.settings.reportNonstrict("commentAtEnd",
-                "% comment has no terminating newline; LaTeX would " +
-                "fail because of commenting the end of math mode (e.g. $)");
-        }
-        if (this.mode === "math") {
-            this.consumeSpaces(); // ignore spaces in math mode
-        } else if (this.nextToken.loc) { // text mode
-            const source = this.nextToken.loc.getSource();
-            if (source.indexOf("\n") === source.length - 1) {
-                this.consumeSpaces(); // if no space after the first newline
-            }
-        }
-    }
-
     /**
      * Parses a group, essentially returning the string formed by the
      * brace-enclosed tokens plus some position information.
@@ -594,6 +579,7 @@ export default class Parser {
             } else if (raw && nextToken.text !== "EOF" &&
                     /[^{}[\]]/.test(nextToken.text)) {
                 // allow a single character in raw string group
+                this.gullet.lexer.setCatcode("%", 14); // reset the catcode of %
                 this.consume();
                 return nextToken;
             }
@@ -611,12 +597,6 @@ export default class Parser {
                     throw new ParseError(
                         "Unexpected end of input in " + modeName,
                         firstToken.range(lastToken, str));
-                case "%":
-                    if (!raw) { // allow % in raw string group
-                        this.consumeComment();
-                        continue;
-                    }
-                    break;
                 case groupBegin:
                     nested++;
                     break;
@@ -629,6 +609,7 @@ export default class Parser {
             this.consume();
         }
         this.mode = outerMode;
+        this.gullet.lexer.setCatcode("%", 14); // reset the catcode of %
         this.expect(groupEnd);
         return firstToken.range(lastToken, str);
     }
@@ -647,12 +628,8 @@ export default class Parser {
         const firstToken = this.nextToken;
         let lastToken = firstToken;
         let str = "";
-        while (this.nextToken.text !== "EOF" && (regex.test(
-                str + this.nextToken.text) || this.nextToken.text === "%")) {
-            if (this.nextToken.text === "%") {
-                this.consumeComment();
-                continue;
-            }
+        while (this.nextToken.text !== "EOF" &&
+                regex.test(str + this.nextToken.text)) {
             lastToken = this.nextToken;
             str += lastToken.text;
             this.consume();
@@ -914,9 +891,6 @@ export default class Parser {
                 body: arg,
                 star,
             };
-        } else if (text === "%") {
-            this.consumeComment();
-            return this.parseSymbol();
         }
         // At this point, we should have a symbol, possibly with accents.
         // First expand any accented base symbol according to unicodeSymbols.

@@ -17,6 +17,7 @@ import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
 
 import type {LexerInterface} from "./Token";
+import type Settings from "./Settings";
 
 /* The following tokenRegex
  * - matches typical whitespace (but not NBSP etc.) using its first group
@@ -53,19 +54,26 @@ const tokenRegexString = `(${spaceRegexString}+)|` +  // whitespace
     `|${controlWordWhitespaceRegexString}` +          // \macroName + spaces
     `|${controlSymbolRegexString})`;                  // \\, \', etc.
 
-// These regexs are for matching results from tokenRegex,
-// so they do have ^ markers.
-export const controlWordRegex = new RegExp(`^${controlWordRegexString}`);
-
 /** Main Lexer class */
 export default class Lexer implements LexerInterface {
     input: string;
+    settings: Settings;
     tokenRegex: RegExp;
+    // category codes, only supports comment characters (14) for now
+    catcode: {[string]: number};
 
-    constructor(input: string) {
+    constructor(input: string, settings: Settings) {
         // Separate accents from characters
         this.input = input;
+        this.settings = settings;
         this.tokenRegex = new RegExp(tokenRegexString, 'g');
+        this.catcode = {
+            "%": 14, // comment character
+        };
+    }
+
+    setCatcode(char: string, code: number) {
+        this.catcode[char] = code;
     }
 
     /**
@@ -84,6 +92,19 @@ export default class Lexer implements LexerInterface {
                 new Token(input[pos], new SourceLocation(this, pos, pos + 1)));
         }
         let text = match[2] || " ";
+
+        if (this.catcode[text] === 14) { // comment character
+            const nlIndex = input.indexOf('\n', pos);
+            if (nlIndex === -1) {
+                this.tokenRegex.lastIndex = input.length; // EOF
+                this.settings.reportNonstrict("commentAtEnd",
+                    "% comment has no terminating newline; LaTeX would " +
+                    "fail because of commenting the end of math mode (e.g. $)");
+            } else {
+                this.tokenRegex.lastIndex = nlIndex + 1;
+            }
+            return this.lex();
+        }
 
         // Trim any trailing whitespace from control word match
         const controlMatch = text.match(controlWordWhitespaceRegex);
