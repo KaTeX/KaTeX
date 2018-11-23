@@ -1,12 +1,12 @@
 // @flow
-import defineFunction, {ordargument} from "../defineFunction";
+import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
 import {calculateSize} from "../units";
 
+import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
-import {htmlBuilder as textHtmlBuilder} from "./text";
 
 // Box manipulation
 defineFunction({
@@ -14,7 +14,7 @@ defineFunction({
     names: ["\\raisebox"],
     props: {
         numArgs: 2,
-        argTypes: ["size", "text"],
+        argTypes: ["size", "hbox"],
         allowedInText: true,
     },
     handler({parser}, args) {
@@ -28,13 +28,7 @@ defineFunction({
         };
     },
     htmlBuilder(group, options) {
-        const text = {
-            type: "text",
-            mode: group.mode,
-            body: ordargument(group.body),
-            font: "mathrm", // simulate \textrm
-        };
-        const body = textHtmlBuilder(text, options);
+        const body = html.buildGroup(group.body, options);
         const dy = calculateSize(group.dy, options);
         return buildCommon.makeVList({
             positionType: "shift",

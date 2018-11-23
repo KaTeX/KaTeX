@@ -527,6 +527,28 @@ export default class Parser {
             case "math":
             case "text":
                 return this.parseGroup(name, optional, greediness, undefined, type);
+            case "hbox": {
+                const group = this.parseGroup(
+                    name, optional, greediness, undefined, "text");
+                if (!group) {
+                    return group;
+                }
+                /* "styling" group below suffices to transition to text mode
+                const textGroup = {
+                    type: "text",
+                    mode: this.mode,
+                    body: [group],
+                    font: "mathrm", // simulate \textrm
+                };
+                */
+                const styledGroup = {
+                    type: "styling",
+                    mode: group.mode,
+                    body: [group], // [textGroup]
+                    style: "text", // simulate \textstyle
+                };
+                return styledGroup;
+            }
             case "raw": {
                 const token = this.parseStringGroup("raw", optional, true);
                 if (token) {

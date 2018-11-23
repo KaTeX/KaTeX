@@ -49,15 +49,6 @@ defineFunction({
     },
     mathmlBuilder(group, options) {
         // Figure out what style we're changing to.
-        // TODO(kevinb): dedupe this with buildHTML.js
-        // This will be easier of handling of styling nodes is in the same file.
-        const styleMap = {
-            "display": Style.DISPLAY,
-            "text": Style.TEXT,
-            "script": Style.SCRIPT,
-            "scriptscript": Style.SCRIPTSCRIPT,
-        };
-
         const newStyle = styleMap[group.style];
         const newOptions = options.havingStyle(newStyle);
 

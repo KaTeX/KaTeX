@@ -5,8 +5,6 @@ import buildCommon from "../buildCommon";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type {HtmlBuilder} from "../defineFunction";
-
 // Non-mathy text, possibly in a font
 const textFontFamilies = {
     "\\text": undefined, "\\textrm": "textrm", "\\textsf": "textsf",
@@ -35,13 +33,6 @@ const optionsWithFont = (group, options) => {
     }
 };
 
-export const htmlBuilder: HtmlBuilder<"text"> = (group, options) => {
-    const newOptions = optionsWithFont(group, options);
-    const inner = html.buildExpression(group.body, newOptions, true);
-    return buildCommon.makeSpan(
-        ["mord", "text"], buildCommon.tryCombineChars(inner), newOptions);
-};
-
 defineFunction({
     type: "text",
     names: [
@@ -68,7 +59,12 @@ defineFunction({
             font: funcName,
         };
     },
-    htmlBuilder,
+    htmlBuilder(group, options) {
+        const newOptions = optionsWithFont(group, options);
+        const inner = html.buildExpression(group.body, newOptions, true);
+        return buildCommon.makeSpan(
+            ["mord", "text"], buildCommon.tryCombineChars(inner), newOptions);
+    },
     mathmlBuilder(group, options) {
         const newOptions = optionsWithFont(group, options);
         return mml.buildExpressionRow(group.body, newOptions);
