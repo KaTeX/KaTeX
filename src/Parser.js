@@ -507,9 +507,6 @@ export default class Parser {
             }
             (isOptional ? optArgs : args).push(arg);
         }
-        if (funcData.argTypes && funcData.argTypes.indexOf("url") !== -1) {
-            this.gullet.lexer.setCatcode("%", 13);
-        }
 
         return {args, optArgs};
     }
