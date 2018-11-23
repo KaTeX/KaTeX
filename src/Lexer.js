@@ -94,7 +94,7 @@ export default class Lexer implements LexerInterface {
         let text = match[2] || " ";
 
         if (this.catcode[text] === 14) { // comment character
-            const nlIndex = input.indexOf('\n', pos);
+            const nlIndex = input.indexOf('\n', this.tokenRegex.lastIndex);
             if (nlIndex === -1) {
                 this.tokenRegex.lastIndex = input.length; // EOF
                 this.settings.reportNonstrict("commentAtEnd",
