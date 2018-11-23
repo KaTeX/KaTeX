@@ -4,7 +4,6 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import {calculateSize} from "../units";
 
 // \\ is a macro mapping to either \cr or \newline.  Because they have the
 // same signature, we implement them as one megafunction, with newRow
@@ -23,7 +22,7 @@ defineFunction({
     handler({parser, funcName}, args, optArgs) {
         return {
             type: "nop",
-            mode: parser.mode
+            mode: parser.mode,
         };
     },
 
@@ -31,7 +30,6 @@ defineFunction({
     // not within tabular/array environments.
 
     htmlBuilder(group, options) {
-	console.log('nop');
         return buildCommon.makeSpan(["mspace"], [], options);
     },
 
