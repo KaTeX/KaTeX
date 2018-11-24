@@ -50,7 +50,7 @@ export default class MacroExpander implements MacroContextInterface {
      * (with existing macros etc.).
      */
     feed(input: string) {
-        this.lexer = new Lexer(input);
+        this.lexer = new Lexer(input, this.settings);
     }
 
     /**
@@ -314,7 +314,7 @@ export default class MacroExpander implements MacroContextInterface {
                     ++numArgs;
                 }
             }
-            const bodyLexer = new Lexer(expansion);
+            const bodyLexer = new Lexer(expansion, this.settings);
             const tokens = [];
             let tok = bodyLexer.lex();
             while (tok.text !== "EOF") {
@@ -343,4 +343,3 @@ export default class MacroExpander implements MacroContextInterface {
             implicitCommands.hasOwnProperty(name);
     }
 }
-
