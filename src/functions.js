@@ -47,4 +47,3 @@ import "./functions/tag";
 import "./functions/text";
 import "./functions/underline";
 import "./functions/verb";
-import "./functions/xmlclass";
