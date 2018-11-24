@@ -25,7 +25,6 @@ defineFunction({
     },
     handler({breakOnTokenText, funcName, parser}, args) {
         // parse out the implicit body
-        parser.consumeSpaces();
         const body = parser.parseExpression(true, breakOnTokenText);
 
         // TODO: Refactor to avoid duplicating styleMap in multiple places (e.g.

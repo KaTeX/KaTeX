@@ -1627,12 +1627,32 @@ describe("A comment parser", function() {
 
     it("should parse comments between subscript and superscript", () => {
         expect("x_3 %comment\n^2").toParseLike`x_3^2`;
+        expect("x^ %comment\n{2}").toParseLike`x^{2}`;
+        expect("x^ %comment\n\\frac{1}{2}").toParseLike`x^\frac{1}{2}`;
     });
 
     it("should parse comments in size and color groups", () => {
         expect("\\kern{1 %kern\nem}").toParse();
         expect("\\kern1 %kern\nem").toParse();
         expect("\\color{#f00%red\n}").toParse();
+    });
+
+    it("should parse comments before an expression", () => {
+        expect("%comment\n{2}").toParseLike`{2}`;
+    });
+
+    it("should parse comments before and between \\hline", () => {
+        expect("\\begin{matrix}a&b\\\\ %hline\n" +
+            "\\hline %hline\n" +
+            "\\hline c&d\\end{matrix}").toParse();
+    });
+
+    it("should parse comments in the macro definition", () => {
+        expect("\\def\\foo{1 %}\n2}\n\\foo").toParseLike`12`;
+    });
+
+    it("should not expand nor ignore spaces after a command sequence in a comment", () => {
+        expect("\\def\\foo{1\n2}\nx %\\foo\n").toParseLike`x`;
     });
 
     it("should not parse a comment without newline in strict mode", () => {
@@ -2586,9 +2606,8 @@ describe("href and url commands", function() {
 
     it("should allow single-character URLs", () => {
         expect`\href%end`.toParseLike("\\href{%}end");
-        expect`\href %end`.toParseLike("\\href{%}end");
         expect("\\url%end").toParseLike("\\url{%}end");
-        expect("\\url %end").toParseLike("\\url{%}end");
+        expect("\\url%%end\n").toParseLike("\\url{%}");
         expect("\\url end").toParseLike("\\url{e}nd");
         expect("\\url%end").toParseLike("\\url {%}end");
     });
@@ -2628,6 +2647,10 @@ describe("href and url commands", function() {
         expect(parsed1.href).toBe(url);
         const parsed2 = getParsed(`\\url{${input}}`)[0];
         expect(parsed2.href).toBe(url);
+    });
+
+    it("should allow comments after URLs", function() {
+        expect("\\url{http://example.com/}%comment\n").toBuild();
     });
 
     it("should be marked up correctly", function() {
