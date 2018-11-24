@@ -95,6 +95,7 @@ export default {
     contains,
     deflt,
     escape,
+    unescape,
     hyphenate,
     getBaseElem,
     isCharacterBox,

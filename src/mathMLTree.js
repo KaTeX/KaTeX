@@ -126,18 +126,16 @@ export class MathNode implements MathDomNode {
  */
 export class TextNode implements MathDomNode {
     text: string;
-    needsEscape: boolean;
 
-    constructor(text: string, needsEscape: boolean = true) {
+    constructor(text: string) {
         this.text = text;
-        this.needsEscape = needsEscape;
     }
 
     /**
      * Converts the text node into a DOM text node.
      */
     toNode(): Node {
-        return document.createTextNode(this.toText());
+        return document.createTextNode(this.text);
     }
 
     /**
@@ -145,7 +143,7 @@ export class TextNode implements MathDomNode {
      * (representing the text itself).
      */
     toMarkup(): string {
-        return this.toText();
+        return utils.escape(this.toText());
     }
 
     /**
@@ -153,7 +151,7 @@ export class TextNode implements MathDomNode {
      * (representing the text iteself).
      */
     toText(): string {
-        return this.needsEscape ? utils.escape(this.text) : this.text;
+        return this.text;
     }
 }
 
@@ -171,25 +169,25 @@ class SpaceNode implements MathDomNode {
     constructor(width: number) {
         this.width = width;
         // See https://www.w3.org/TR/2000/WD-MathML2-20000328/chapter6.html
-        // for a table of space-like characters.  We consistently use the
-        // &LongNames; because Unicode does not have single characters for
-        // &ThickSpace; (\u2005\u200a) and all negative spaces.
+        // for a table of space-like characters.  We use Unicode
+        // representations instead of &LongNames; as it's not clear how to
+        // make the latter via document.createTextNode.
         if (width >= 0.05555 && width <= 0.05556) {
-            this.character = "&VeryThinSpace;";  // \u200a
+            this.character = "\u200a";           // &VeryThinSpace;
         } else if (width >= 0.1666 && width <= 0.1667) {
-            this.character = "&ThinSpace;";      // \u2009
+            this.character = "\u2009";           // &ThinSpace;
         } else if (width >= 0.2222 && width <= 0.2223) {
-            this.character = "&MediumSpace;";    // \u2005
+            this.character = "\u2005";           // &MediumSpace;
         } else if (width >= 0.2777 && width <= 0.2778) {
-            this.character = "&ThickSpace;";     // \u2005\u200a
+            this.character = "\u2005\u200a";     // &ThickSpace;
         } else if (width >= -0.05556 && width <= -0.05555) {
-            this.character = "&NegativeVeryThinSpace;";
+            this.character = "\u200a\u2063";     // &NegativeVeryThinSpace;
         } else if (width >= -0.1667 && width <= -0.1666) {
-            this.character = "&NegativeThinSpace;";
+            this.character = "\u2009\u2063";     // &NegativeThinSpace;
         } else if (width >= -0.2223 && width <= -0.2222) {
-            this.character = "&NegativeMediumSpace;";
+            this.character = "\u205f\u2063";     // &NegativeMediumSpace;
         } else if (width >= -0.2778 && width <= -0.2777) {
-            this.character = "&NegativeThickSpace;";
+            this.character = "\u2005\u2063";     // &NegativeThickSpace;
         } else {
             this.character = null;
         }

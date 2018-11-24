@@ -5197,13 +5197,6 @@ jest-runtime@^23.5.0:
     write-file-atomic "^2.1.0"
     yargs "^11.0.0"
 
-jest-serializer-html@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/jest-serializer-html/-/jest-serializer-html-5.0.0.tgz#6848c4d8fb0f6c6dcb1e26a05e46d66c7ff9edb9"
-  integrity sha512-WfBvUnFdcZNJZMHuOWQFry+5qScsLhoaPxUOzXTqxGIp7BzWMEgr2sG/GKdLTIIfyNviAVp3k4jcqHtBkG18Lg==
-  dependencies:
-    diffable-html "^3.0.0"
-
 jest-serializer@^23.0.1:
   version "23.0.1"
   resolved "https://registry.yarnpkg.com/jest-serializer/-/jest-serializer-23.0.1.tgz#a3776aeb311e90fe83fab9e533e85102bd164165"

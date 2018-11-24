@@ -36,6 +36,7 @@
     "codecov": "^3.0.4",
     "css-loader": "^1.0.0",
     "cssnano": "^4.0.1",
+    "diffable-html": "^3.0.0",
     "eslint": "^5.0.0",
     "eslint-plugin-flowtype": "^3.0.0",
     "eslint-plugin-react": "^7.10.0",
@@ -47,7 +48,6 @@
     "istanbul-api": "^2.0.5",
     "istanbul-lib-coverage": "^2.0.1",
     "jest": "^23.5.0",
-    "jest-serializer-html": "^5.0.0",
     "js-yaml": "^3.10.0",
     "json-stable-stringify": "^1.0.1",
     "jspngopt": "^0.2.0",
@@ -115,9 +115,6 @@
       "!contrib/mhchem/**"
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
-    "snapshotSerializers": [
-      "jest-serializer-html"
-    ],
     "testMatch": [
       "**/test/*-spec.js"
     ],
