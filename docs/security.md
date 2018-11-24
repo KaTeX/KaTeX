@@ -9,10 +9,12 @@ Of course, it is always a good idea to sanitize the HTML, though you will need
 a rather generous whitelist (including some of SVG and MathML) to support
 all of KaTeX.
 
-Use `maxSize` option for preventing large width/height visual affronts,
-use `maxExpand` for preventing infinite macro loop attacks, and
-use `allowedProtocols` for preventing certain protocols in `\href`. Please
-refer to [Options](options.md) for more details.
+A variety of options give finer control over the security of KaTeX
+with untrusted inputs; refer to [Options](options.md) for more details.
+* `maxSize` can prevent large width/height visual affronts.
+* `maxExpand` can prevent infinite macro loop attacks.
+* `allowedProtocols` can prevent certain protocols in URLs (e.g., with `\href`)
+* `trust` can allow certain commands that are not always safe (e.g., `\includegraphics`)
 
 The error message thrown by KaTeX may contain unescaped LaTeX source code.
 See [Handling Errors](error.md) for more details.

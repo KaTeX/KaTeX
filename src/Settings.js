@@ -16,6 +16,8 @@ export type StrictFunction =
     (errorCode: string, errorMsg: string, token?: Token | AnyParseNode) =>
     ?(boolean | string);
 
+export type TrustFunction = (command: string, ...args: Array) => ?boolean;
+
 export type SettingsOptions = {
     displayMode?: boolean;
     leqno?: boolean;
@@ -25,6 +27,7 @@ export type SettingsOptions = {
     macros?: MacroMap;
     colorIsTextColor?: boolean;
     strict?: boolean | "ignore" | "warn" | "error" | StrictFunction;
+    trust?: boolean | TrustFunction;
     maxSize?: number;
     maxExpand?: number;
     allowedProtocols?: string[];
@@ -49,6 +52,7 @@ class Settings {
     macros: MacroMap;
     colorIsTextColor: boolean;
     strict: boolean | "ignore" | "warn" | "error" | StrictFunction;
+    trust: boolean | TrustFunction;
     maxSize: number;
     maxExpand: number;
     allowedProtocols: string[];
@@ -64,6 +68,7 @@ class Settings {
         this.macros = options.macros || {};
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
         this.strict = utils.deflt(options.strict, "warn");
+        this.trust = utils.deflt(options.trust, false);
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
         this.maxExpand = Math.max(0, utils.deflt(options.maxExpand, 1000));
         this.allowedProtocols = utils.deflt(options.allowedProtocols,
@@ -136,6 +141,14 @@ class Settings {
                 `unrecognized '${strict}': ${errorMsg} [${errorCode}]`);
             return false;
         }
+    }
+
+    isTrusted(command: string, ...args) {
+        let trust = this.trust;
+        if (typeof strict === "function") {
+            trust = trust(command, ...args);
+        }
+        return Boolean(trust);
     }
 }
 

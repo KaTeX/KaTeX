@@ -29,6 +29,8 @@ You can provide an object of options as the last argument to [`katex.render` and
   - `"newLineInDisplayMode"`: Use of `\\` or `\newline` in display mode
     (outside an array/tabular environment).  In strict mode, no line break
     results, as in LaTeX.
+- `trust`: `boolean` or `function` (default: `false`). If `false` (do not trust input), prevent any commands like `\includegraphics` that could enable adverse behavior, rendering them instead in `errorColor`. If `true` (trust input), allow all such commands. Provide a custom function `handler(command, ...)` to customize behavior depending on the command and possibly its arguments (e.g. a URL).  A list of such commands:
+  - `"\\includegraphics"`, with URL argument
 
 For example:
 

@@ -266,8 +266,7 @@ export default class Parser {
      * Converts the textual input of an unsupported command into a text node
      * contained within a color node whose color is determined by errorColor
      */
-    handleUnsupportedCmd(): AnyParseNode {
-        const text = this.nextToken.text;
+    formatUnsupportedCmd(text: string): AnyParseNode {
         const textordArray = [];
 
         for (let i = 0; i < text.length; i++) {
@@ -287,7 +286,6 @@ export default class Parser {
             body: [textNode],
         };
 
-        this.consume();
         return colorNode;
     }
 
@@ -803,7 +801,8 @@ export default class Parser {
                     throw new ParseError(
                         "Undefined control sequence: " + text, firstToken);
                 }
-                result = this.handleUnsupportedCmd();
+                result = this.formatUnsupportedCmd(text);
+                this.consume();
             }
         }
 
