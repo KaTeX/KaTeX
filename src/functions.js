@@ -27,7 +27,6 @@ import "./functions/lap";
 import "./functions/math";
 import "./functions/mathchoice";
 import "./functions/mclass";
-import "./functions/nop";
 import "./functions/op";
 import "./functions/operatorname";
 import "./functions/ordgroup";
