@@ -46,15 +46,17 @@ function escape(text: mixed): string {
 }
 
 const UNESCAPE_LOOKUP = {};
-let UNESCAPE_REGEX_str = '';
-for (let key in ESCAPE_LOOKUP) {
-    const value = ESCAPE_LOOKUP[key];
-    UNESCAPE_LOOKUP[value] = key;
-    UNESCAPE_REGEX_str += '|' + value;
+let UNESCAPE_REGEX_STR = '';
+for (const key in ESCAPE_LOOKUP) {
+    if (ESCAPE_LOOKUP.hasOwnProperty(key)) {
+        const value = ESCAPE_LOOKUP[key];
+        UNESCAPE_LOOKUP[value] = key;
+        UNESCAPE_REGEX_STR += '|' + value;
+    }
 }
-UNESCAPE_REGEX_str = UNESCAPE_REGEX_str.substr(1);
+UNESCAPE_REGEX_STR = UNESCAPE_REGEX_STR.substr(1);
 
-const UNESCAPE_REGEX = new RegExp(UNESCAPE_REGEX_str, 'g');
+const UNESCAPE_REGEX = new RegExp(UNESCAPE_REGEX_STR, 'g');
 
 /**
  * Unescapes text escaped by `escape`.
