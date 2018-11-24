@@ -337,7 +337,8 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
             // Watch for \nobreak along the way.
             let nobreak = false;
             while (i < expression.length - 1 &&
-                   expression[i + 1].hasClass("mspace")) {
+                   expression[i + 1].hasClass("mspace") &&
+                   !expression[i + 1].hasClass("newline")) {
                 i++;
                 parts.push(expression[i]);
                 if (expression[i].hasClass("nobreak")) {
