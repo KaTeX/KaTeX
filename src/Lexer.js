@@ -60,20 +60,20 @@ export default class Lexer implements LexerInterface {
     settings: Settings;
     tokenRegex: RegExp;
     // category codes, only supports comment characters (14) for now
-    catcode: {[string]: number};
+    catcodes: {[string]: number};
 
     constructor(input: string, settings: Settings) {
         // Separate accents from characters
         this.input = input;
         this.settings = settings;
         this.tokenRegex = new RegExp(tokenRegexString, 'g');
-        this.catcode = {
+        this.catcodes = {
             "%": 14, // comment character
         };
     }
 
     setCatcode(char: string, code: number) {
-        this.catcode[char] = code;
+        this.catcodes[char] = code;
     }
 
     /**
@@ -93,7 +93,7 @@ export default class Lexer implements LexerInterface {
         }
         let text = match[2] || " ";
 
-        if (this.catcode[text] === 14) { // comment character
+        if (this.catcodes[text] === 14) { // comment character
             const nlIndex = input.indexOf('\n', this.tokenRegex.lastIndex);
             if (nlIndex === -1) {
                 this.tokenRegex.lastIndex = input.length; // EOF
