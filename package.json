@@ -109,7 +109,8 @@
     "collectCoverageFrom": [
       "src/**/*.js",
       "contrib/**/*.js",
-      "!src/unicodeMake.js"
+      "!src/unicodeMake.js",
+      "!contrib/mhchem/**"
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
     "snapshotSerializers": [
