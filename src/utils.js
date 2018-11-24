@@ -45,6 +45,24 @@ function escape(text: mixed): string {
     return String(text).replace(ESCAPE_REGEX, match => ESCAPE_LOOKUP[match]);
 }
 
+const UNESCAPE_LOOKUP = {};
+let UNESCAPE_REGEX_str = '';
+for (let key in ESCAPE_LOOKUP) {
+    const value = ESCAPE_LOOKUP[key];
+    UNESCAPE_LOOKUP[value] = key;
+    UNESCAPE_REGEX_str += '|' + value;
+}
+UNESCAPE_REGEX_str = UNESCAPE_REGEX_str.substr(1);
+
+const UNESCAPE_REGEX = new RegExp(UNESCAPE_REGEX_str, 'g');
+
+/**
+ * Unescapes text escaped by `escape`.
+ */
+function unescape(text: string): string {
+    return text.replace(UNESCAPE_REGEX, match => UNESCAPE_LOOKUP[match]);
+}
+
 /**
  * Sometimes we want to pull out the innermost element of a group. In most
  * cases, this will just be the group itself, but when ordgroups and colors have
@@ -95,6 +113,7 @@ export default {
     contains,
     deflt,
     escape,
+    unescape,
     hyphenate,
     getBaseElem,
     isCharacterBox,

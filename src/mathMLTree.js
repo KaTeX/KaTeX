@@ -137,7 +137,9 @@ export class TextNode implements MathDomNode {
      * Converts the text node into a DOM text node.
      */
     toNode(): Node {
-        return document.createTextNode(this.toText());
+        // createTextNode escapes given text, so unescape if already escaped.
+        return document.createTextNode(
+            this.needsEscape ? this.text : utils.unescape(this.text));
     }
 
     /**
