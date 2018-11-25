@@ -3379,6 +3379,15 @@ describe("Newlines via \\\\ and \\newline", function() {
         expect`a\\b\begin{matrix}x&y\\z&w\end{matrix}\\c`
             .toParseLike`a\newline b\begin{matrix}x&y\cr z&w\end{matrix}\newline c`;
     });
+
+    it("\\\\ causes newline, even after mrel and mop", () => {
+        const markup = katex.renderToString(r`M = \\ a + \\ b \\ c`);
+        // Ensure newlines appear outside base spans (because, in this regexp,
+        // base span occurs immediately after each newline span).
+        expect(markup).toMatch(
+            /(<span class="base">.*?<\/span><span class="mspace newline"><\/span>){3}<span class="base">/);
+        expect(markup).toMatchSnapshot();
+    });
 });
 
 describe("Symbols", function() {
