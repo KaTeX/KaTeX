@@ -128,7 +128,13 @@ export default class Parser {
         return parse;
     }
 
-    static endOfExpression = ["}", "\\end", "\\right", "&"];
+    static endOfExpression = ["}", "\\endgroup", "\\end", "\\right", "&"];
+
+    static endOfGroup = {
+        "[": "]",
+        "{": "}",
+        "\\begingroup": "\\endgroup",
+    }
 
     /**
      * Parses an "expression", which is a list of atoms.
@@ -357,8 +363,6 @@ export default class Parser {
                 }
                 // Put everything into an ordgroup as the superscript
                 superscript = {type: "ordgroup", mode: this.mode, body: primes};
-            } else if (lex.text === "%") {
-                this.consumeComment();
             } else {
                 // If it wasn't ^, _, or ', stop parsing super/subscripts
                 break;
@@ -406,6 +410,11 @@ export default class Parser {
         } else if (this.mode === "math" && funcData.allowedInMath === false) {
             throw new ParseError(
                 "Can't use function '" + func + "' in math mode", token);
+        }
+
+        // hyperref package sets the catcode of % as an active character
+        if (funcData.argTypes && funcData.argTypes[0] === "url") {
+            this.gullet.lexer.setCatcode("%", 13);
         }
 
         // Consume the command token after possibly switching to the
@@ -521,6 +530,18 @@ export default class Parser {
             case "math":
             case "text":
                 return this.parseGroup(name, optional, greediness, undefined, type);
+            case "raw": {
+                const token = this.parseStringGroup("raw", optional, true);
+                if (token) {
+                    return {
+                        type: "raw",
+                        mode: "text",
+                        string: token.text,
+                    };
+                } else {
+                    throw new ParseError("Expected raw group", this.nextToken);
+                }
+            }
             case "original":
             case null:
             case undefined:
@@ -534,27 +555,6 @@ export default class Parser {
     consumeSpaces() {
         while (this.nextToken.text === " ") {
             this.consume();
-        }
-    }
-
-    consumeComment() {
-        // the newline character is normalized in Lexer, check original source
-        while (this.nextToken.text !== "EOF" && this.nextToken.loc &&
-                this.nextToken.loc.getSource().indexOf("\n") === -1) {
-            this.consume();
-        }
-        if (this.nextToken.text === "EOF") {
-            this.settings.reportNonstrict("commentAtEnd",
-                "% comment has no terminating newline; LaTeX would " +
-                "fail because of commenting the end of math mode (e.g. $)");
-        }
-        if (this.mode === "math") {
-            this.consumeSpaces(); // ignore spaces in math mode
-        } else if (this.nextToken.loc) { // text mode
-            const source = this.nextToken.loc.getSource();
-            if (source.indexOf("\n") === source.length - 1) {
-                this.consumeSpaces(); // if no space after the first newline
-            }
         }
     }
 
@@ -576,6 +576,7 @@ export default class Parser {
             } else if (raw && nextToken.text !== "EOF" &&
                     /[^{}[\]]/.test(nextToken.text)) {
                 // allow a single character in raw string group
+                this.gullet.lexer.setCatcode("%", 14); // reset the catcode of %
                 this.consume();
                 return nextToken;
             }
@@ -593,12 +594,6 @@ export default class Parser {
                     throw new ParseError(
                         "Unexpected end of input in " + modeName,
                         firstToken.range(lastToken, str));
-                case "%":
-                    if (!raw) { // allow % in raw string group
-                        this.consumeComment();
-                        continue;
-                    }
-                    break;
                 case groupBegin:
                     nested++;
                     break;
@@ -611,6 +606,7 @@ export default class Parser {
             this.consume();
         }
         this.mode = outerMode;
+        this.gullet.lexer.setCatcode("%", 14); // reset the catcode of %
         this.expect(groupEnd);
         return firstToken.range(lastToken, str);
     }
@@ -629,12 +625,8 @@ export default class Parser {
         const firstToken = this.nextToken;
         let lastToken = firstToken;
         let str = "";
-        while (this.nextToken.text !== "EOF" && (regex.test(
-                str + this.nextToken.text) || this.nextToken.text === "%")) {
-            if (this.nextToken.text === "%") {
-                this.consumeComment();
-                continue;
-            }
+        while (this.nextToken.text !== "EOF" &&
+                regex.test(str + this.nextToken.text)) {
             lastToken = this.nextToken;
             str += lastToken.text;
             this.consume();
@@ -770,28 +762,29 @@ export default class Parser {
             this.switchMode(mode);
         }
 
+        let groupEnd;
         let result;
-        // Try to parse an open brace
-        if (text === (optional ? "[" : "{")) {
+        // Try to parse an open brace or \begingroup
+        if (optional ? text === "["  : text === "{" || text === "\\begingroup") {
+            groupEnd = Parser.endOfGroup[text];
             // Start a new group namespace
             this.gullet.beginGroup();
             // If we get a brace, parse an expression
             this.consume();
-            const expression = this.parseExpression(false, optional ? "]" : "}");
+            const expression = this.parseExpression(false, groupEnd);
             const lastToken = this.nextToken;
-            // Switch mode back before consuming symbol after close brace
-            if (mode) {
-                this.switchMode(outerMode);
-            }
             // End group namespace before consuming symbol after close brace
             this.gullet.endGroup();
-            // Make sure we get a close brace
-            this.expect(optional ? "]" : "}");
-            return {
+            result = {
                 type: "ordgroup",
                 mode: this.mode,
                 loc: SourceLocation.range(firstToken, lastToken),
                 body: expression,
+                // A group formed by \begingroup...\endgroup is a semi-simple group
+                // which doesn't affect spacing in math mode, i.e., is transparent.
+                // https://tex.stackexchange.com/questions/1930/when-should-one-
+                // use-begingroup-instead-of-bgroup
+                semisimple: text === "\\begingroup" || undefined,
             };
         } else if (optional) {
             // Return nothing for an optional group
@@ -814,6 +807,10 @@ export default class Parser {
         // Switch mode back
         if (mode) {
             this.switchMode(outerMode);
+        }
+        // Make sure we got a close brace
+        if (groupEnd) {
+            this.expect(groupEnd);
         }
         return result;
     }
@@ -891,9 +888,6 @@ export default class Parser {
                 body: arg,
                 star,
             };
-        } else if (text === "%") {
-            this.consumeComment();
-            return this.parseSymbol();
         }
         // At this point, we should have a symbol, possibly with accents.
         // First expand any accented base symbol according to unicodeSymbols.

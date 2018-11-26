@@ -14,10 +14,6 @@ table td {
     vertical-align: middle;
     overflow-wrap: break-word;
 }
-.onPageNav {
-    flex: 0 0 200px;
-    margin-left: 10px !important;
-}
 </style>
 
 <div class="katex-hopscotch">
@@ -108,6 +104,10 @@ The `{array}` environment does not yet support `\cline` or `\multicolumn`.
 |:----------------|:-------------------|
 | $\href{https://katex.org/}{\KaTeX}$ | `\href{https://katex.org/}{\KaTeX}` |
 | $\url{https://katex.org/}$ | `\url{https://katex.org/}` |
+| $\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}$ | `\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}` |
+
+`\includegraphics` supports`height`, `width`, `totalheight`, and `alt` in it's first argument. `height` is required.
+
 
 ## Letters and Unicode
 

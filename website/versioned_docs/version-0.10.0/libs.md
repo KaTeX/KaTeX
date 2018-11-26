@@ -1,5 +1,5 @@
 ---
-id: version-0.10.0-rc.1-libs
+id: version-0.10.0-libs
 title: Extensions & Libraries
 original_id: libs
 ---
@@ -8,8 +8,8 @@ original_id: libs
 These extensions are provided by KaTeX.
 
 - [Auto-render](autorender.md): Automatically renders all of the math inside text
-- [Copy-tex](https://github.com/Khan/KaTeX/tree/master/contrib/copy-tex): When selecting and copying KaTeX-rendered elements, copies their LaTeX source to the clipboard
-- [`math/tex` Custom Script Type](https://github.com/Khan/KaTeX/tree/master/contrib/mathtex-script-type): Automatically displays LaTeX math inside `script` tags with `type=math/tex`
+- [Copy-tex](https://github.com/KaTeX/KaTeX/tree/master/contrib/copy-tex): When selecting and copying KaTeX-rendered elements, copies their LaTeX source to the clipboard
+- [`math/tex` Custom Script Type](https://github.com/KaTeX/KaTeX/tree/master/contrib/mathtex-script-type): Automatically displays LaTeX math inside `script` tags with `type=math/tex`
 
 ## Libraries
 
@@ -35,3 +35,7 @@ If you want to render math written in [AsciiMath](http://asciimath.org/),
 you'll need to first convert AsciiMath into LaTeX input, then call KaTeX.
 
 - [asciimath2tex](https://github.com/christianp/asciimath2tex): Converts AsciiMath to TeX, with KaTeX in mind
+
+### Canvas LaTeX
+
+- [canvas-latex](https://github.com/CurriculumAssociates/canvas-latex): Renders mathematical expressions on HTML5's canvas element. Supports popular libraries like: CreateJS, and PIXI.

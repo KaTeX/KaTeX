@@ -1,5 +1,5 @@
 ---
-id: version-0.10.0-rc.1-issues
+id: version-0.10.0-issues
 title: Common Issues
 original_id: issues
 ---

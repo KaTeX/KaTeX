@@ -11,7 +11,7 @@ Promise.all(process.argv.slice(3).map(file =>
     .then(body => {
         // Replace size badge url
         // eslint-disable-next-line max-len
-        body = body.replace(/(https:\/\/img\.badgesize\.io\/Khan\/KaTeX\/v)(?:.+)(\/dist\/katex\.min\.js\?compression=gzip)/g, `$1${version}$2`);
+        body = body.replace(/(https:\/\/img\.badgesize\.io\/KaTeX\/KaTeX\/v)(?:.+)(\/dist\/katex\.min\.js\?compression=gzip)/g, `$1${version}$2`);
 
         // Replace CDN urls
         // 1 - url prefix: "http…/KaTeX/
@@ -36,7 +36,8 @@ Promise.all(process.argv.slice(3).map(file =>
                 const newHash = sriToolbox.generate({
                     algorithms: [hashes[hash].algo],
                 }, data);
-                body = body.replace(hash, newHash);
+                body = body.replace(
+                    new RegExp(hash.replace(/\+/g, '\\+'), 'g'), newHash);
 
                 if (version === "check" && hash !== newHash) {
                     throw new Error("SRI mismatch! " +

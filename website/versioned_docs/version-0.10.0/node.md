@@ -1,6 +1,7 @@
 ---
-id: node
+id: version-0.10.0-node
 title: Node.js
+original_id: node
 ---
 ## Installation
 ### npm
