@@ -584,6 +584,7 @@ const getVListChildrenAndDepth = function(params: VListParam): {
     return {children: params.children, depth};
 };
 
+
 /**
  * Makes a vertical list by stacking elements and kerns on top of each other.
  * Allows for many different ways of specifying the positioning method.
@@ -608,7 +609,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
             pstrutSize = Math.max(pstrutSize, elem.maxFontSize, elem.height);
         }
     }
-    pstrutSize += 2;
+    pstrutSize = utils.round(pstrutSize + 2);
     const pstrut = makeSpan(["pstrut"], []);
     pstrut.style.height = pstrutSize + "em";
 
@@ -627,7 +628,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
             const style = child.wrapperStyle || {};
 
             const childWrap = makeSpan(classes, [pstrut, elem], undefined, style);
-            childWrap.style.top = (-pstrutSize - currPos - elem.depth) + "em";
+            childWrap.style.top = utils.round(-pstrutSize - currPos - elem.depth) + "em";
             if (child.marginLeft) {
                 childWrap.style.marginLeft = child.marginLeft;
             }
@@ -636,10 +637,10 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
             }
 
             realChildren.push(childWrap);
-            currPos += elem.height + elem.depth;
+            currPos += utils.round(elem.height + elem.depth);
         }
-        minPos = Math.min(minPos, currPos);
-        maxPos = Math.max(maxPos, currPos);
+        minPos = utils.round(Math.min(minPos, currPos));
+        maxPos = utils.round(Math.max(maxPos, currPos));
     }
 
     // The vlist contents go in a table-cell with `vertical-align:bottom`.
