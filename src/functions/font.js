@@ -99,7 +99,6 @@ defineFunction({
     },
     handler: ({parser, funcName, breakOnTokenText}, args) => {
         const {mode} = parser;
-        parser.consumeSpaces();
         const body = parser.parseExpression(true, breakOnTokenText);
         const style = `math${funcName.slice(1)}`;
 

@@ -6,7 +6,7 @@
   "homepage": "https://katex.org",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Khan/KaTeX.git"
+    "url": "git://github.com/KaTeX/KaTeX.git"
   },
   "files": [
     "katex.js",
@@ -65,7 +65,7 @@
     "selenium-webdriver": "^3.6.0",
     "sri-toolbox": "^0.2.0",
     "style-loader": "^0.23.0",
-    "stylelint": "^9.2.1",
+    "stylelint": "9.6.0",
     "stylelint-config-standard": "^18.0.0",
     "terser-webpack-plugin": "^1.1.0",
     "webpack": "^4.9.1",
@@ -89,7 +89,7 @@
     "test:perf": "yarn prestart && NODE_ENV=test node test/perf-test.js",
     "clean": "rm -rf dist/ node_modules/",
     "clean-install": "yarn clean && yarn",
-    "prestart": "node check-node-version.js && yarn check && node src/unicodeMake.js",
+    "prestart": "yarn check && node src/unicodeMake.js",
     "start": "webpack-dev-server --hot --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
     "build": "yarn prestart && rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c && webpack",
@@ -111,7 +111,8 @@
     "collectCoverageFrom": [
       "src/**/*.js",
       "contrib/**/*.js",
-      "!src/unicodeMake.js"
+      "!src/unicodeMake.js",
+      "!contrib/mhchem/**"
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
     "snapshotSerializers": [

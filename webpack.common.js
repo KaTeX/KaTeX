@@ -32,6 +32,10 @@ const targets /*: Array<Target> */ = [
         library: 'renderMathInElement',
     },
     {
+        name: 'contrib/mhchem',
+        entry: './contrib/mhchem/mhchem.js',
+    },
+    {
         name: 'contrib/copy-tex',
         entry: './contrib/copy-tex/copy-tex.webpack.js',
     },
