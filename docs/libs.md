@@ -9,6 +9,7 @@ These extensions are provided by KaTeX.
 - [Auto-render](autorender.md): Automatically renders all of the math inside text
 - [Copy-tex](https://github.com/Khan/KaTeX/tree/master/contrib/copy-tex): When selecting and copying KaTeX-rendered elements, copies their LaTeX source to the clipboard
 - [`math/tex` Custom Script Type](https://github.com/Khan/KaTeX/tree/master/contrib/mathtex-script-type): Automatically displays LaTeX math inside `script` tags with `type=math/tex`
+- [mhchem](https://github.com/Khan/KaTeX/tree/master/contrib/mhchem): Write beautiful chemical equations easily
 
 ## Libraries
 
