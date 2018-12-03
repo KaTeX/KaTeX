@@ -237,15 +237,15 @@ describe("A delimiter splitter", function() {
 });
 
 describe("Pre-process callback", function() {
-    it("replace `²` with `^2 `", function() {
+    it("replace `-squared` with `^2 `", function() {
         const el1 = document.createElement('div');
-        el1.textContent = 'Circle equation: $x² + y² = r²$.';
+        el1.textContent = 'Circle equation: $x-squared + y-squared = r-squared$.';
         const el2 = document.createElement('div');
         el2.textContent = 'Circle equation: $x^2 + y^2 = r^2$.';
         const delimiters = [{left: "$", right: "$", display: false}];
         renderMathInElement(el1, {
             delimiters,
-            preProcess: math => math.replace(/²/g, '^2'),
+            preProcess: math => math.replace(/-squared/g, '^2'),
         });
         renderMathInElement(el2, {delimiters});
         expect(el1.innerHTML).toEqual(el2.innerHTML);
