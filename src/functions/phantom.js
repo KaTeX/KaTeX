@@ -2,6 +2,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
+import {binrelClass} from "./mclass";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -71,7 +72,9 @@ defineFunction({
             children: [{type: "elem", elem: node}],
         }, options);
 
-        return node;
+        // Wrap with the atom type of the original argument.
+        const mclass = binrelClass(group.body);
+        return  buildCommon.makeSpan([mclass], [node], options);
     },
     mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(ordargument(group.body), options);

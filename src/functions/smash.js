@@ -4,6 +4,7 @@ import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
+import {binrelClass} from "./mclass";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -55,7 +56,7 @@ defineFunction({
     },
     htmlBuilder: (group, options) => {
         const node = buildCommon.makeSpan(
-            ["mord"], [html.buildGroup(group.body, options)]);
+            [], [html.buildGroup(group.body, options)]);
 
         if (!group.smashHeight && !group.smashDepth) {
             return node;
@@ -85,10 +86,14 @@ defineFunction({
         // makeVList applies "display: table-cell", which prevents the browser
         // from acting on that line height. So we'll call makeVList now.
 
-        return buildCommon.makeVList({
+        const smashedNode = buildCommon.makeVList({
             positionType: "firstBaseline",
             children: [{type: "elem", elem: node}],
         }, options);
+
+        // Wrap with the atom type of the original argument.
+        const mclass = binrelClass(group.body);
+        return buildCommon.makeSpan([mclass], [smashedNode], options);
     },
     mathmlBuilder: (group, options) => {
         const node = new mathMLTree.MathNode(
