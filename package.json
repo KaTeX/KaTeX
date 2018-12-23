@@ -39,7 +39,7 @@
     "eslint-plugin-react": "^7.10.0",
     "eslint-plugin-transform-runtime-aliasing": "^2.0.0",
     "file-loader": "^2.0.0",
-    "flow-bin": "^0.84.0",
+    "flow-bin": "^0.89.0",
     "fs-extra": "^7.0.0",
     "husky": "^1.0.0-rc.8",
     "istanbul-api": "^2.0.5",
