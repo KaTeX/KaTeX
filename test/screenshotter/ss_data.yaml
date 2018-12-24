@@ -308,7 +308,7 @@ SizingBaseline:
     post: M
 Sizing: |
     {\Huge x}{\LARGE y}{\normalsize z}{\scriptsize w}\sqrt[\small 3]{x+1}
-Smash: \left( X^{\smash 2} \right) \sqrt{\smash[b]{y+}}
+Smash: \left( X^{\smash 2} \right) \sqrt{\smash[b]{y=}}
 Spacing: |
     \begin{matrix}
         ^3+[-1][1-1]1=1(=1)\lvert a\rvert~b \\
