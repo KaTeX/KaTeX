@@ -1627,12 +1627,32 @@ describe("A comment parser", function() {
 
     it("should parse comments between subscript and superscript", () => {
         expect("x_3 %comment\n^2").toParseLike`x_3^2`;
+        expect("x^ %comment\n{2}").toParseLike`x^{2}`;
+        expect("x^ %comment\n\\frac{1}{2}").toParseLike`x^\frac{1}{2}`;
     });
 
     it("should parse comments in size and color groups", () => {
         expect("\\kern{1 %kern\nem}").toParse();
         expect("\\kern1 %kern\nem").toParse();
         expect("\\color{#f00%red\n}").toParse();
+    });
+
+    it("should parse comments before an expression", () => {
+        expect("%comment\n{2}").toParseLike`{2}`;
+    });
+
+    it("should parse comments before and between \\hline", () => {
+        expect("\\begin{matrix}a&b\\\\ %hline\n" +
+            "\\hline %hline\n" +
+            "\\hline c&d\\end{matrix}").toParse();
+    });
+
+    it("should parse comments in the macro definition", () => {
+        expect("\\def\\foo{1 %}\n2}\n\\foo").toParseLike`12`;
+    });
+
+    it("should not expand nor ignore spaces after a command sequence in a comment", () => {
+        expect("\\def\\foo{1\n2}\nx %\\foo\n").toParseLike`x`;
     });
 
     it("should not parse a comment without newline in strict mode", () => {
@@ -2586,9 +2606,8 @@ describe("href and url commands", function() {
 
     it("should allow single-character URLs", () => {
         expect`\href%end`.toParseLike("\\href{%}end");
-        expect`\href %end`.toParseLike("\\href{%}end");
         expect("\\url%end").toParseLike("\\url{%}end");
-        expect("\\url %end").toParseLike("\\url{%}end");
+        expect("\\url%%end\n").toParseLike("\\url{%}");
         expect("\\url end").toParseLike("\\url{e}nd");
         expect("\\url%end").toParseLike("\\url {%}end");
     });
@@ -2630,6 +2649,10 @@ describe("href and url commands", function() {
         expect(parsed2.href).toBe(url);
     });
 
+    it("should allow comments after URLs", function() {
+        expect("\\url{http://example.com/}%comment\n").toBuild();
+    });
+
     it("should be marked up correctly", function() {
         const markup = katex.renderToString(r`\href{http://example.com/}{example here}`);
         expect(markup).toContain("<a href=\"http://example.com/\">");
@@ -2663,6 +2686,9 @@ describe("A raw text parser", function() {
         // In the next line, the first character passed to \includegraphics is a
         // Unicode combining character. So this is a test that the parser will catch a bad string.
         expect("\\includegraphics[\u030aheight=0.8em, totalheight=0.9em, width=0.9em]{" + "https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").not.toParse();
+    });
+    it("should return null for a omitted optional string", function() {
+        expect("\\includegraphics{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").toParse();
     });
 });
 

@@ -36,6 +36,16 @@ yarn
 yarn build
 ```
 
+It will automatically transpile code and include only necessary fonts for
+target environments specified by [Browserslist config](https://github.com/browserslist/browserslist#environment-variables).
+For example, if you are making a web app for a kiosk with Chrome 68, run
+`BROWSERSLIST="Chrome 68" yarn build` and it will produce build with no
+transpilation, as it fully supports ES6, and only include WOFF2 fonts.
+
+You can override included fonts using environment variables. Set `USE_(FONT NAME)`
+environment variable to `"true"` or `"false"`, to force a font type to be included
+or excluded, respectively.`
+
 If you'd like to use the built KaTeX in other projects, install the package by
 specifying the path:
 ```bash
