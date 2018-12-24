@@ -280,7 +280,7 @@ OverUnderset: |
     \end{array}
 Phantom: \begin{array}{l}
             \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x} \left(\vphantom{\int_t} zzz \right) \left( X \hphantom{\frac{\frac X X}{X}} \right)\\
-            \text{a \phantom{123} b \hphantom{\frac{1}{2}}=c \vphantom{101112} d}
+            \text{a \phantom{123}} b \hphantom{\frac{1}{2}}=c \vphantom{101112} d
          \end{array}
 Pmb: \mu\pmb{\mu}\pmb{=}\mu\pmb{+}\mu
 PrimeSpacing: f'+f_2'+f^{f'}
