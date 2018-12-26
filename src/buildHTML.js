@@ -334,10 +334,11 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
             expression[i].hasClass("mrel") ||
             expression[i].hasClass("allowbreak")) {
             // Put any post-operator glue on same line as operator.
-            // Watch for \nobreak along the way.
+            // Watch for \nobreak along the way, and stop at \newline.
             let nobreak = false;
             while (i < expression.length - 1 &&
-                   expression[i + 1].hasClass("mspace")) {
+                   expression[i + 1].hasClass("mspace") &&
+                   !expression[i + 1].hasClass("newline")) {
                 i++;
                 parts.push(expression[i]);
                 if (expression[i].hasClass("nobreak")) {
