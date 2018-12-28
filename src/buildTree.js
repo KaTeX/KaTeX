@@ -28,7 +28,7 @@ const displayWrap = function(node: DomSpan, settings: Settings): DomSpan {
         node = buildCommon.makeSpan(classes, [node]);
     }
     return node;
-}
+};
 
 export const buildTree = function(
     tree: AnyParseNode[],
