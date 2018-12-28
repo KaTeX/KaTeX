@@ -51,7 +51,7 @@ defineFunction({
         return {
             type: "hphantom",
             mode: parser.mode,
-            strict: (parser.settings.strict !== false),
+            strict: parser.settings.useStrictBehavior(),
             body,
         };
     },

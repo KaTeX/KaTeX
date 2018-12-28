@@ -50,7 +50,7 @@ defineFunction({
             type: "smash",
             mode: parser.mode,
             body,
-            strict: (parser.settings.strict !== false),
+            strict: parser.settings.useStrictBehavior(),
             smashHeight,
             smashDepth,
         };
