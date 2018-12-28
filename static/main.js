@@ -29,6 +29,11 @@ function init() {
         options.displayMode = false;
     }
 
+    // Use `leqno=1` (or `=t`/`=true`/`=y`/`=yes`) to put tags on left side.
+    if (query.leqno && query.leqno.match(/^(1|t|y)/)) {
+        options.leqno = true;
+    }
+
     // Use `strict=warn` for warning strict mode or `strict=error`
     // (or `=1`/`=t`/`=true`/`=y`/`=yes`)
     // to turn off displayMode (which is on by default).
