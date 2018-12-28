@@ -50,6 +50,7 @@ defineFunction({
             type: "smash",
             mode: parser.mode,
             body,
+            strict: (parser.settings.strict !== false),
             smashHeight,
             smashDepth,
         };
@@ -91,8 +92,8 @@ defineFunction({
             children: [{type: "elem", elem: node}],
         }, options);
 
-        // Wrap with the atom type of the original argument.
-        const mclass = binrelClass(group.body);
+        //TeX spaces as a group (same as ord). We improve with bin|rel|ord, if not strict.
+        const mclass = group.strict ? "mord" : binrelClass(group.body);
         return buildCommon.makeSpan([mclass], [smashedNode], options);
     },
     mathmlBuilder: (group, options) => {

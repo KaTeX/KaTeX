@@ -2008,14 +2008,25 @@ describe("A bin builder", function() {
     });
 });
 
-describe("A \\phantom builder and a \\smash builder", function() {
-    it("should both inherit the atom type of their argument", function() {
-        expect(getBuilt`\hphantom{a}`[0].classes).toContain("mord");
-        expect(getBuilt`a\hphantom{=}b`[2].classes).toContain("mrel");
-        expect(getBuilt`a\hphantom{+}b`[2].classes).toContain("mbin");
-        expect(getBuilt`\smash{a}`[0].classes).toContain("mord");
-        expect(getBuilt`\smash{=}`[0].classes).toContain("mrel");
-        expect(getBuilt`a\smash{+}b`[2].classes).toContain("mbin");
+describe("A non-strict \\phantom builder and \\smash builder", function() {
+    it("should both inherit the bin|rel|ord atom type of their argument", function() {
+        expect(getBuilt('\\hphantom{a}', nonstrictSettings)[0].classes).toContain("mord");
+        expect(getBuilt('a\\hphantom{=}b', nonstrictSettings)[2].classes).toContain("mrel");
+        expect(getBuilt('a\\hphantom{+}b', nonstrictSettings)[2].classes).toContain("mbin");
+        expect(getBuilt('\\smash{a}', nonstrictSettings)[0].classes).toContain("mord");
+        expect(getBuilt('\\smash{=}', nonstrictSettings)[0].classes).toContain("mrel");
+        expect(getBuilt('a\\smash{+}b', nonstrictSettings)[2].classes).toContain("mbin");
+    });
+});
+
+describe("A strict \\phantom builder and \\smash builder", function() {
+    it("should both build a mord", function() {
+        expect(getBuilt('\\hphantom{a}', strictSettings)[0].classes).toContain("mord");
+        expect(getBuilt('a\\hphantom{=}b', strictSettings)[2].classes).toContain("mord");
+        expect(getBuilt('a\\hphantom{+}b', strictSettings)[2].classes).toContain("mord");
+        expect(getBuilt('\\smash{a}', strictSettings)[0].classes).toContain("mord");
+        expect(getBuilt('\\smash{=}', strictSettings)[0].classes).toContain("mord");
+        expect(getBuilt('a\\smash{+}b', strictSettings)[2].classes).toContain("mord");
     });
 });
 
