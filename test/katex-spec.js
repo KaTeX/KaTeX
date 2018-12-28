@@ -3153,6 +3153,29 @@ describe("\\tag support", function() {
     });
 });
 
+describe("leqno and fleqn rendering options", () => {
+    const expr = r`\tag{hi}x+y`;
+    for (const opt of ["leqno", "fleqn"]) {
+        it(`should not add ${opt} class by default`, () => {
+            const settings = new Settings({displayMode: true});
+            const built = katex.__renderToDomTree(expr, settings);
+            expect(built.classes).not.toContain(opt);
+        });
+        it(`should not add ${opt} class when false`, () => {
+            const settings = new Settings({displayMode: true});
+            settings[opt] = false;
+            const built = katex.__renderToDomTree(expr, settings);
+            expect(built.classes).not.toContain(opt);
+        });
+        it(`should add ${opt} class when true`, () => {
+            const settings = new Settings({displayMode: true});
+            settings[opt] = true;
+            const built = katex.__renderToDomTree(expr, settings);
+            expect(built.classes).toContain(opt);
+        });
+    }
+});
+
 describe("\\@binrel automatic bin/rel/ord", () => {
     it("should generate proper class", () => {
         expect("L\\@binrel+xR").toParseLike("L\\mathbin xR");
