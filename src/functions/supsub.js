@@ -207,7 +207,7 @@ defineFunctionBuilders({
             group.type === "supsub" &&
             group.base.type === "op" &&
             children[0].children.length > 1
-        ) ? children[0].children.pop() : null
+        ) ? children[0].children.pop() : null;
 
         if (group.sub) {
             children.push(mml.buildGroup(group.sub, options));
