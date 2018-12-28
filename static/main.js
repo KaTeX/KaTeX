@@ -14,7 +14,7 @@ function init() {
     input.addEventListener("input", reprocess, false);
     permalink.addEventListener("click", setSearch);
 
-    const options = {displayMode: true, throwOnError: false};
+    const options = {displayMode: true, throwOnError: true};
     const macros = {};
     const query = queryString.parse(window.location.search);
 

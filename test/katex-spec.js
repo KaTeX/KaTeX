@@ -2687,6 +2687,9 @@ describe("A raw text parser", function() {
         // Unicode combining character. So this is a test that the parser will catch a bad string.
         expect("\\includegraphics[\u030aheight=0.8em, totalheight=0.9em, width=0.9em]{" + "https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").not.toParse();
     });
+    it("should return null for a omitted optional string", function() {
+        expect("\\includegraphics{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").toParse();
+    });
 });
 
 
@@ -3401,6 +3404,15 @@ describe("Newlines via \\\\ and \\newline", function() {
     it("array redefines and resets \\\\", () => {
         expect`a\\b\begin{matrix}x&y\\z&w\end{matrix}\\c`
             .toParseLike`a\newline b\begin{matrix}x&y\cr z&w\end{matrix}\newline c`;
+    });
+
+    it("\\\\ causes newline, even after mrel and mop", () => {
+        const markup = katex.renderToString(r`M = \\ a + \\ b \\ c`);
+        // Ensure newlines appear outside base spans (because, in this regexp,
+        // base span occurs immediately after each newline span).
+        expect(markup).toMatch(
+            /(<span class="base">.*?<\/span><span class="mspace newline"><\/span>){3}<span class="base">/);
+        expect(markup).toMatchSnapshot();
     });
 });
 

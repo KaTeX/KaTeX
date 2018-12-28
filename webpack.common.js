@@ -1,7 +1,13 @@
 // @flow
 const path = require('path');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+const browserslist = require('browserslist')();
+const caniuse = require('caniuse-lite');
+
+// from the least supported to the most supported
+const fonts = ['woff2', 'woff', 'ttf'];
 
 /*::
 type Target = {|
@@ -53,11 +59,19 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         });
     }
 
-    const lessOptions = {};
-    if (process.env.USE_TTF === "false") {
-        lessOptions.modifyVars = {
-            'use-ttf': false,
-        };
+    // use only necessary fonts, overridable by environment variables
+    const lessOptions = {modifyVars: {}};
+    let isCovered = false;
+    for (const font of fonts) {
+        const override = process.env[`USE_${font.toUpperCase()}`];
+        const useFont = override === "true" || override !== "false" && !isCovered;
+        lessOptions.modifyVars[`use-${font}`] = useFont;
+
+        const support = caniuse.feature(caniuse.features[font]).stats;
+        isCovered = isCovered || useFont && browserslist.every(browser => {
+            const [name, version] = browser.split(' ');
+            return !support[name] || support[name][version] === 'y';
+        });
     }
 
     return {
@@ -123,8 +137,8 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         optimization: {
             minimize,
             minimizer: [
-                new UglifyJsPlugin({
-                    uglifyOptions: {
+                new TerserPlugin({
+                    terserOptions: {
                         output: {
                             ascii_only: true,
                         },

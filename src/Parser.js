@@ -531,6 +531,9 @@ export default class Parser {
             case "text":
                 return this.parseGroup(name, optional, greediness, undefined, type);
             case "raw": {
+                if (optional && this.nextToken.text === "{") {
+                    return null;
+                }
                 const token = this.parseStringGroup("raw", optional, true);
                 if (token) {
                     return {
