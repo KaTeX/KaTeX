@@ -42,7 +42,8 @@
 
         var settings = {
             displayMode: !!query["display"],
-            throwOnError: !query["noThrow"]
+            throwOnError: !query["noThrow"],
+            trust: true  // trust test inputs
         };
         if (query["errorColor"]) {
             settings.errorColor = query["errorColor"];
