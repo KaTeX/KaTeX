@@ -22,6 +22,9 @@ const displayWrap = function(node: DomSpan, settings: Settings): DomSpan {
         if (settings.leqno) {
             classes.push("leqno");
         }
+        if (settings.fleqn) {
+            classes.push("fleqn");
+        }
         node = buildCommon.makeSpan(classes, [node]);
     }
     return node;

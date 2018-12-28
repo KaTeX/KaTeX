@@ -19,6 +19,7 @@ export type StrictFunction =
 export type SettingsOptions = {
     displayMode?: boolean;
     leqno?: boolean;
+    fleqn?: boolean;
     throwOnError?: boolean;
     errorColor?: string;
     macros?: MacroMap;
@@ -42,6 +43,7 @@ export type SettingsOptions = {
 class Settings {
     displayMode: boolean;
     leqno: boolean;
+    fleqn: boolean;
     throwOnError: boolean;
     errorColor: string;
     macros: MacroMap;
@@ -56,6 +58,7 @@ class Settings {
         options = options || {};
         this.displayMode = utils.deflt(options.displayMode, false);
         this.leqno = utils.deflt(options.leqno, false);
+        this.fleqn = utils.deflt(options.fleqn, false);
         this.throwOnError = utils.deflt(options.throwOnError, true);
         this.errorColor = utils.deflt(options.errorColor, "#cc0000");
         this.macros = options.macros || {};
