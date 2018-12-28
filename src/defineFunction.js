@@ -2,7 +2,8 @@
 import {checkNodeType} from "./parseNode";
 
 import type Parser from "./Parser";
-import type {ParseNode, AnyParseNode, NodeType} from "./parseNode";
+import type {ParseNode, AnyParseNode, NodeType, UnsupportedCmdParseNode}
+    from "./parseNode";
 import type Options from "./Options";
 import type {ArgType, BreakToken, Mode} from "./types";
 import type {HtmlDomNode} from "./domTree";
@@ -21,7 +22,7 @@ export type FunctionHandler<NODETYPE: NodeType> = (
     context: FunctionContext,
     args: AnyParseNode[],
     optArgs: (?AnyParseNode)[],
-) => ParseNode<NODETYPE>;
+) => ParseNode<NODETYPE> | UnsupportedCmdParseNode;
 
 export type HtmlBuilder<NODETYPE> = (ParseNode<NODETYPE>, Options) => HtmlDomNode;
 export type MathMLBuilder<NODETYPE> = (

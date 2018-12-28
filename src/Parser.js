@@ -14,7 +14,8 @@ import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
-import type {ParseNode, AnyParseNode, SymbolParseNode} from "./parseNode";
+import type {ParseNode, AnyParseNode, SymbolParseNode, UnsupportedCmdParseNode}
+    from "./parseNode";
 import type {Atom, Group} from "./symbols";
 import type {Mode, ArgType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
@@ -266,7 +267,7 @@ export default class Parser {
      * Converts the textual input of an unsupported command into a text node
      * contained within a color node whose color is determined by errorColor
      */
-    formatUnsupportedCmd(text: string): AnyParseNode {
+    formatUnsupportedCmd(text: string): UnsupportedCmdParseNode {
         const textordArray = [];
 
         for (let i = 0; i < text.length; i++) {
@@ -721,8 +722,7 @@ export default class Parser {
         // "undefined" behaviour, and keep them as-is. Some browser will
         // replace backslashes with forward slashes.
         const url = res.text.replace(/\\([#$%&~_^{}])/g, '$1');
-        let protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
-        protocol = (protocol != null ? protocol[1] : "_relative");
+        const protocol = utils.urlToProtocol(url);
         const allowed = this.settings.allowedProtocols;
         if (!utils.contains(allowed,  "*") &&
             !utils.contains(allowed, protocol)) {

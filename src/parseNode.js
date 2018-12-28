@@ -19,6 +19,9 @@ export type SymbolParseNode =
     ParseNode<"spacing"> |
     ParseNode<"textord">;
 
+// ParseNode from `Parser.formatUnsupportedCmd`
+export type UnsupportedCmdParseNode = ParseNode<"color">;
+
 // Union of all possible `ParseNode<>` types.
 export type AnyParseNode = $Values<ParseNodeTypes>;
 

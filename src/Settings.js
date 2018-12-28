@@ -16,7 +16,15 @@ export type StrictFunction =
     (errorCode: string, errorMsg: string, token?: Token | AnyParseNode) =>
     ?(boolean | string);
 
-export type TrustFunction = (command: string, ...args: Array) => ?boolean;
+export type TrustContextTypes = {
+    "\\includegraphics": {|
+        command: "\\includegraphics",
+        url: string,
+        protocol: string,
+    |},
+};
+export type AnyTrustContext = $Values<TrustContextTypes>;
+export type TrustFunction = (context: AnyTrustContext) => ?boolean;
 
 export type SettingsOptions = {
     displayMode?: boolean;
@@ -43,7 +51,7 @@ export type SettingsOptions = {
  *                 math (true), meaning that the math starts in \displaystyle
  *                 and is placed in a block with vertical margin.
  */
-class Settings {
+export default class Settings {
     displayMode: boolean;
     leqno: boolean;
     fleqn: boolean;
@@ -143,13 +151,11 @@ class Settings {
         }
     }
 
-    isTrusted(command: string, ...args) {
+    isTrusted(context: AnyTrustContext) {
         let trust = this.trust;
-        if (typeof strict === "function") {
-            trust = trust(command, ...args);
+        if (typeof trust === "function") {
+            trust = trust(context);
         }
         return Boolean(trust);
     }
 }
-
-export default Settings;
