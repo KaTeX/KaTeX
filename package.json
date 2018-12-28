@@ -126,7 +126,7 @@
       "^.+\\.js$": "babel-jest"
     },
     "moduleNameMapper": {
-      "^katex$": "<rootDir>/dist/katex.js"
+      "^katex$": "<rootDir>/katex.js"
     }
   }
 }
