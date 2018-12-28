@@ -104,7 +104,7 @@ jobs:
           name: Run Flow and Jest tests
           command: |
               yarn test:flow
-              yarn test:jest --coverage
+              yarn test:jest --coverage --runInBand
       - codecov:
           flag: test
 
