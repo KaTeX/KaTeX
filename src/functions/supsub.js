@@ -202,6 +202,12 @@ defineFunctionBuilders({
         }
 
         const children = [mml.buildGroup(group.base, options)];
+        // Was a \u2061 appended to an operator with a sub?
+        const applyFunction = (
+            group.type === "supsub" &&
+            group.base.type === "op" &&
+            children[0].children.length > 1
+        ) ? children[0].children.pop() : null
 
         if (group.sub) {
             children.push(mml.buildGroup(group.sub, options));
@@ -240,7 +246,10 @@ defineFunctionBuilders({
             }
         }
 
-        const node = new mathMLTree.MathNode(nodeType, children);
+        let node = new mathMLTree.MathNode(nodeType, children);
+        if (applyFunction) {
+            node = new mathMLTree.MathNode("mo", [node, applyFunction]);
+        }
 
         return node;
     },
