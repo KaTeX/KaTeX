@@ -73,7 +73,8 @@ defineFunction({
             children: [{type: "elem", elem: node}],
         }, options);
 
-        //TeX spaces as a group (same as ord). We improve with bin|rel|ord, if not strict.
+        // TeX spaces as a group (same spacing as ord).
+        // We improve with bin|rel|ord, if not strict.
         const mclass = group.strict ? "mord" : binrelClass(group.body);
         return  buildCommon.makeSpan([mclass], [node], options);
     },
