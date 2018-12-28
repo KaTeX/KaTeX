@@ -26,6 +26,9 @@ You can provide an object of options as the last argument to [`katex.render` and
   - `"newLineInDisplayMode"`: Use of `\\` or `\newline` in display mode
     (outside an array/tabular environment).  In strict mode, no line break
     results, as in LaTeX.
+  - `"phantomSpacing"`: `\hphantom` and `\smash` default to useful "binrel"
+    behavior where they inherit the spacing of their child.  In strict mode,
+    these commands always have op spacing, as in LaTeX.
 
 For example:
 

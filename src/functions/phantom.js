@@ -51,7 +51,8 @@ defineFunction({
         return {
             type: "hphantom",
             mode: parser.mode,
-            strict: (parser.settings.strict !== false),
+            strict: parser.settings.useStrictBehavior("phantomSpacing",
+                "In LaTeX, \\hphantom always has op spacing"),
             body,
         };
     },
@@ -76,7 +77,7 @@ defineFunction({
         // TeX spaces as a group (same spacing as ord).
         // We improve with bin|rel|ord, if not strict.
         const mclass = group.strict ? "mord" : binrelClass(group.body);
-        return  buildCommon.makeSpan([mclass], [node], options);
+        return buildCommon.makeSpan([mclass], [node], options);
     },
     mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(ordargument(group.body), options);
