@@ -646,6 +646,8 @@ describe("A genfrac builder", function() {
         expect("\\cfrac{x}{y}").toBuild();
         expect("\\genfrac ( ] {0.06em}{0}{a}{b+c}").toBuild();
         expect("\\genfrac ( ] {0.8pt}{}{a}{b+c}").toBuild();
+        expect("\\genfrac {} {} {0.8pt}{}{a}{b+c}").toBuild();
+        expect("\\genfrac [ {} {0.8pt}{}{a}{b+c}").toBuild();
     });
 });
 
