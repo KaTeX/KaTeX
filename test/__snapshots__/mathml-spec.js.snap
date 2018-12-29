@@ -231,6 +231,36 @@ exports[`A MathML builder normal spaces render normally 1`] = `
 
 `;
 
+exports[`A MathML builder should append \\u2061 after the subscript of log_2, not before the subscript 1`] = `
+
+<math>
+  <semantics>
+    <mrow>
+      <mo>
+        <msub>
+          <mi>
+            log
+          </mi>
+          <mn>
+            2
+          </mn>
+        </msub>
+        <mo>
+          ⁡
+        </mo>
+      </mo>
+      <mi>
+        x
+      </mi>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\log_2 x
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder should concatenate digits into single <mn> 1`] = `
 
 <math>

@@ -133,4 +133,9 @@ describe("A MathML builder", function() {
         expect(getMathML("\\copyright\\neq\\notin\u2258\\KaTeX"))
             .toMatchSnapshot();
     });
+
+    it('should append \\u2061 after the subscript of log_2, not before the subscript', () => {
+        expect(getMathML("\\log_2 x"))
+            .toMatchSnapshot();
+    });
 });
