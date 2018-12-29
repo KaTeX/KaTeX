@@ -2008,25 +2008,14 @@ describe("A bin builder", function() {
     });
 });
 
-describe("A non-strict \\phantom builder and \\smash builder", function() {
-    it("should both inherit the bin|rel|ord atom type of their argument", function() {
-        expect(getBuilt('\\hphantom{a}', nonstrictSettings)[0].classes).toContain("mord");
-        expect(getBuilt('a\\hphantom{=}b', nonstrictSettings)[2].classes).toContain("mrel");
-        expect(getBuilt('a\\hphantom{+}b', nonstrictSettings)[2].classes).toContain("mbin");
-        expect(getBuilt('\\smash{a}', nonstrictSettings)[0].classes).toContain("mord");
-        expect(getBuilt('\\smash{=}', nonstrictSettings)[0].classes).toContain("mrel");
-        expect(getBuilt('a\\smash{+}b', nonstrictSettings)[2].classes).toContain("mbin");
-    });
-});
-
-describe("A strict \\phantom builder and \\smash builder", function() {
+describe("A \\phantom builder and \\smash builder", function() {
     it("should both build a mord", function() {
-        expect(getBuilt('\\hphantom{a}', strictSettings)[0].classes).toContain("mord");
-        expect(getBuilt('a\\hphantom{=}b', strictSettings)[2].classes).toContain("mord");
-        expect(getBuilt('a\\hphantom{+}b', strictSettings)[2].classes).toContain("mord");
-        expect(getBuilt('\\smash{a}', strictSettings)[0].classes).toContain("mord");
-        expect(getBuilt('\\smash{=}', strictSettings)[0].classes).toContain("mord");
-        expect(getBuilt('a\\smash{+}b', strictSettings)[2].classes).toContain("mord");
+        expect(getBuilt`\hphantom{a}`[0].classes).toContain("mord");
+        expect(getBuilt`a\hphantom{=}b`[2].classes).toContain("mord");
+        expect(getBuilt`a\hphantom{+}b`[2].classes).toContain("mord");
+        expect(getBuilt`\smash{a}`[0].classes).toContain("mord");
+        expect(getBuilt`\smash{=}`[0].classes).toContain("mord");
+        expect(getBuilt`a\smash{+}b`[2].classes).toContain("mord");
     });
 });
 
@@ -2414,11 +2403,11 @@ describe("A phantom parser", function() {
         expect`\phantom{x}`.toParse();
         expect`\phantom{x^2}`.toParse();
         expect`\phantom{x}^2`.toParse();
-        expect`\phantom x`.toParse(nonstrictSettings);
-        expect`\hphantom{x}`.toParse(nonstrictSettings);
-        expect`\hphantom{x^2}`.toParse(nonstrictSettings);
-        expect`\hphantom{x}^2`.toParse(nonstrictSettings);
-        expect`\hphantom x`.toParse(nonstrictSettings);
+        expect`\phantom x`.toParse();
+        expect`\hphantom{x}`.toParse();
+        expect`\hphantom{x^2}`.toParse();
+        expect`\hphantom{x}^2`.toParse();
+        expect`\hphantom x`.toParse();
     });
 
     it("should build a phantom node", function() {
@@ -2436,10 +2425,10 @@ describe("A phantom builder", function() {
         expect`\phantom{x}^2`.toBuild();
         expect`\phantom x`.toBuild();
 
-        expect`\hphantom{x}`.toBuild(nonstrictSettings);
-        expect`\hphantom{x^2}`.toBuild(nonstrictSettings);
-        expect`\hphantom{x}^2`.toBuild(nonstrictSettings);
-        expect`\hphantom x`.toBuild(nonstrictSettings);
+        expect`\hphantom{x}`.toBuild();
+        expect`\hphantom{x^2}`.toBuild();
+        expect`\hphantom{x}^2`.toBuild();
+        expect`\hphantom x`.toBuild();
     });
 
     it("should make the children transparent", function() {
@@ -2459,24 +2448,24 @@ describe("A phantom builder", function() {
 
 describe("A smash parser", function() {
     it("should not fail", function() {
-        expect`\smash{x}`.toParse(nonstrictSettings);
-        expect`\smash{x^2}`.toParse(nonstrictSettings);
-        expect`\smash{x}^2`.toParse(nonstrictSettings);
-        expect`\smash x`.toParse(nonstrictSettings);
+        expect`\smash{x}`.toParse();
+        expect`\smash{x^2}`.toParse();
+        expect`\smash{x}^2`.toParse();
+        expect`\smash x`.toParse();
 
-        expect`\smash[b]{x}`.toParse(nonstrictSettings);
-        expect`\smash[b]{x^2}`.toParse(nonstrictSettings);
-        expect`\smash[b]{x}^2`.toParse(nonstrictSettings);
-        expect`\smash[b] x`.toParse(nonstrictSettings);
+        expect`\smash[b]{x}`.toParse();
+        expect`\smash[b]{x^2}`.toParse();
+        expect`\smash[b]{x}^2`.toParse();
+        expect`\smash[b] x`.toParse();
 
-        expect`\smash[]{x}`.toParse(nonstrictSettings);
-        expect`\smash[]{x^2}`.toParse(nonstrictSettings);
-        expect`\smash[]{x}^2`.toParse(nonstrictSettings);
-        expect`\smash[] x`.toParse(nonstrictSettings);
+        expect`\smash[]{x}`.toParse();
+        expect`\smash[]{x^2}`.toParse();
+        expect`\smash[]{x}^2`.toParse();
+        expect`\smash[] x`.toParse();
     });
 
     it("should build a smash node", function() {
-        const parse = getParsed(r`\smash{x}`, nonstrictSettings)[0];
+        const parse = getParsed`\smash{x}`[0];
 
         expect(parse.type).toEqual("smash");
     });

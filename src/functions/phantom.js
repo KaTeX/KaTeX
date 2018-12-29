@@ -2,7 +2,6 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import {binrelClass} from "./mclass";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -51,8 +50,6 @@ defineFunction({
         return {
             type: "hphantom",
             mode: parser.mode,
-            strict: parser.settings.useStrictBehavior("phantomSpacing",
-                "In LaTeX, \\hphantom always has op spacing"),
             body,
         };
     },
@@ -74,10 +71,8 @@ defineFunction({
             children: [{type: "elem", elem: node}],
         }, options);
 
-        // TeX spaces as a group (same spacing as ord).
-        // We improve with bin|rel|ord, if not strict.
-        const mclass = group.strict ? "mord" : binrelClass(group.body);
-        return buildCommon.makeSpan([mclass], [node], options);
+        // For spacing, TeX treats \smash as a math group (same spacing as ord).
+        return buildCommon.makeSpan(["mord"], [node], options);
     },
     mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(ordargument(group.body), options);

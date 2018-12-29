@@ -365,7 +365,6 @@ type ParseNodeTypes = {
     "hphantom": {|
         type: "hphantom",
         mode: Mode,
-        strict: boolean,
         loc?: ?SourceLocation,
         body: AnyParseNode,
     |},
@@ -402,7 +401,6 @@ type ParseNodeTypes = {
         mode: Mode,
         loc?: ?SourceLocation,
         body: AnyParseNode,
-        strict: boolean,
         smashHeight: boolean,
         smashDepth: boolean,
     |},
