@@ -203,12 +203,12 @@ defineFunctionBuilders({
 
         const children = [mml.buildGroup(group.base, options)];
         // Was a \u2061 appended to an operator with a sub?
-        let applyFunction = null 
+        let applyFunction = null;
         if ( group.type === "supsub") {
             if (group.base) {
                 if (group.base.type === "op") {
                     if (children[0].children.length > 1) {
-                        applyFunction = children[0].children.pop()
+                        applyFunction = children[0].children.pop();
                     }
                 }
             }

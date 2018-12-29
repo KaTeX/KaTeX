@@ -134,7 +134,8 @@ describe("A MathML builder", function() {
             .toMatchSnapshot();
     });
 
-    it('should append \\u2061 after the subscript of log_2, not before the subscript', () => {
+    it('should append \\u2061 after the subscript of log_2, ' +
+        'not before the subscript', () => {
         expect(getMathML("\\log_2 x"))
             .toMatchSnapshot();
     });
