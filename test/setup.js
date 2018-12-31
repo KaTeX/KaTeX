@@ -1,6 +1,5 @@
 /* global expect: false */
 
-import toDiffableHtml from 'diffable-html';
 import stringify from 'json-stable-stringify';
 import Lexer from "../src/Lexer";
 import ParseError from "../src/ParseError";
@@ -8,21 +7,6 @@ import {
     Mode, ConsoleWarning,
     expectKaTeX, expectEquivalent,
 } from "./helpers";
-
-// HTML/MathML serializer
-
-// This serializer is based on jest-serializer-html
-// [https://github.com/rayrutjes/jest-serializer-html/blob/master/index.js]
-// but using an updated diffable-html which avoids trimming Unicode
-// whitespace.
-expect.addSnapshotSerializer({
-    print(val) {
-        return toDiffableHtml(val);
-    },
-    test(val) {
-        return typeof val === 'string' && val.trim()[0] === '<';
-    },
-});
 
 // JSON serializer
 
