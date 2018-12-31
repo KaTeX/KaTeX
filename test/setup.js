@@ -13,18 +13,11 @@ import {
 
 // This serializer is based on jest-serializer-html
 // [https://github.com/rayrutjes/jest-serializer-html/blob/master/index.js]
-// but with a hack to prevent strings from getting trimmed, which is important
-// in particular for MathML space tests, but also to ensure we aren't
-// generating extra spaces.
+// but using an updated diffable-html which avoids trimming Unicode
+// whitespace.
 expect.addSnapshotSerializer({
     print(val) {
-        const trim = String.prototype.trim;
-        String.prototype.trim = function() { return this; };
-        try {
-            return toDiffableHtml(val);
-        } finally {
-            String.prototype.trim = trim;
-        }
+        return toDiffableHtml(val);
     },
     test(val) {
         return typeof val === 'string' && val.trim()[0] === '<';
