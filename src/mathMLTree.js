@@ -147,7 +147,7 @@ export class TextNode implements MathDomNode {
     }
 
     /**
-      * Converts the text node into a string
+     * Converts the text node into a string
      * (representing the text iteself).
      */
     toText(): string {
