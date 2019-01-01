@@ -8,7 +8,7 @@ import {
     expectKaTeX, expectEquivalent,
 } from "./helpers";
 
-// Serializer support
+// JSON serializer
 
 const typeFirstCompare = (a, b) => {
     if (a.key === 'type') {

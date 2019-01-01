@@ -47,7 +47,7 @@
     "istanbul-api": "^2.0.5",
     "istanbul-lib-coverage": "^2.0.1",
     "jest": "^23.5.0",
-    "jest-serializer-html": "^5.0.0",
+    "jest-serializer-html": "^6.0.0",
     "js-yaml": "^3.10.0",
     "json-stable-stringify": "^1.0.1",
     "jspngopt": "^0.2.0",

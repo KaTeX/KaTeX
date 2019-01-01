@@ -21,6 +21,7 @@ You can provide an object of options as the last argument to [`katex.render` and
   - `"commentAtEnd"`: Use of `%` comment without a terminating newline.
     LaTeX would thereby comment out the end of math mode (e.g. `$`),
     causing an error.
+
   A second category of `errorCode`s never throw errors, but their strictness
   affects the behavior of KaTeX:
   - `"newLineInDisplayMode"`: Use of `\\` or `\newline` in display mode
