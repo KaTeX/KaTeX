@@ -2008,6 +2008,17 @@ describe("A bin builder", function() {
     });
 });
 
+describe("A \\phantom builder and \\smash builder", function() {
+    it("should both build a mord", function() {
+        expect(getBuilt`\hphantom{a}`[0].classes).toContain("mord");
+        expect(getBuilt`a\hphantom{=}b`[2].classes).toContain("mord");
+        expect(getBuilt`a\hphantom{+}b`[2].classes).toContain("mord");
+        expect(getBuilt`\smash{a}`[0].classes).toContain("mord");
+        expect(getBuilt`\smash{=}`[0].classes).toContain("mord");
+        expect(getBuilt`a\smash{+}b`[2].classes).toContain("mord");
+    });
+});
+
 describe("A markup generator", function() {
     it("marks trees up", function() {
         // Just a few quick sanity checks here...
@@ -2462,15 +2473,15 @@ describe("A smash parser", function() {
 
 describe("A smash builder", function() {
     it("should not fail", function() {
-        expect`\smash{x}`.toBuild();
-        expect`\smash{x^2}`.toBuild();
-        expect`\smash{x}^2`.toBuild();
-        expect`\smash x`.toBuild();
+        expect`\smash{x}`.toBuild(nonstrictSettings);
+        expect`\smash{x^2}`.toBuild(nonstrictSettings);
+        expect`\smash{x}^2`.toBuild(nonstrictSettings);
+        expect`\smash x`.toBuild(nonstrictSettings);
 
-        expect`\smash[b]{x}`.toBuild();
-        expect`\smash[b]{x^2}`.toBuild();
-        expect`\smash[b]{x}^2`.toBuild();
-        expect`\smash[b] x`.toBuild();
+        expect`\smash[b]{x}`.toBuild(nonstrictSettings);
+        expect`\smash[b]{x^2}`.toBuild(nonstrictSettings);
+        expect`\smash[b]{x}^2`.toBuild(nonstrictSettings);
+        expect`\smash[b] x`.toBuild(nonstrictSettings);
     });
 });
 
