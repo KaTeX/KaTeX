@@ -876,3 +876,12 @@ defineMacro("\\thetasym", "\\vartheta");
 // TODO: defineMacro("\\varcoppa", "\\\mbox{\\coppa}");
 defineMacro("\\weierp", "\\wp");
 defineMacro("\\Zeta", "\\mathrm{Z}");
+
+//////////////////////////////////////////////////////////////////////
+// Custom macros
+
+// Define useful macros that are not present in current LaTeX packages.
+// Once they are, move them to the right place later
+
+defineMacro("\\argmin", "\\DOTSB\\mathop{\\operatorname{arg\\,min}}\\limits");
+defineMacro("\\argmax", "\\DOTSB\\mathop{\\operatorname{arg\\,max}}\\limits");

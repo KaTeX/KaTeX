@@ -3140,6 +3140,14 @@ describe("A macro expander", function() {
     it("should expand \\liminf as expected", () => {
         expect`\liminf`.toParseLike`\mathop{\operatorname{lim\,inf}}\limits`;
     });
+
+    it("should expand \\argmin as expected", () => {
+        expect`\argmin`.toParseLike`\mathop{\operatorname{arg\,min}}\limits`;
+    });
+
+    it("should expand \\argmax as expected", () => {
+        expect`\argmax`.toParseLike`\mathop{\operatorname{arg\,max}}\limits`;
+    });
 });
 
 describe("\\tag support", function() {
