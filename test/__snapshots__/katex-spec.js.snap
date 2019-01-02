@@ -142,6 +142,10 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "depth": 0,
     "height": 0.43056,
     "italic": 0,
+    "loc": {
+      "end": 1,
+      "start": 0
+    },
     "maxFontSize": 1,
     "skew": 0,
     "style": {
@@ -185,6 +189,10 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "depth": 0,
     "height": 0.69444,
     "italic": 0,
+    "loc": {
+      "end": 15,
+      "start": 14
+    },
     "maxFontSize": 1,
     "skew": 0,
     "style": {
@@ -223,6 +231,10 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "depth": -0.10889,
             "height": 0.39111,
             "italic": 0,
+            "loc": {
+              "end": 28,
+              "start": 27
+            },
             "maxFontSize": 1,
             "skew": 0,
             "style": {
@@ -273,6 +285,10 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "depth": 0,
     "height": 0.43056,
     "italic": 0,
+    "loc": {
+      "end": 30,
+      "start": 29
+    },
     "maxFontSize": 1,
     "skew": 0.05556,
     "style": {
@@ -311,6 +327,10 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "depth": 0.13333,
             "height": 0.63333,
             "italic": 0,
+            "loc": {
+              "end": 43,
+              "start": 42
+            },
             "maxFontSize": 1,
             "skew": 0,
             "style": {
@@ -361,6 +381,10 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "depth": 0,
     "height": 0.69444,
     "italic": 0,
+    "loc": {
+      "end": 45,
+      "start": 44
+    },
     "maxFontSize": 1,
     "skew": 0.16667,
     "style": {
@@ -399,6 +423,10 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "depth": 0.13333,
             "height": 0.63333,
             "italic": 0,
+            "loc": {
+              "end": 58,
+              "start": 57
+            },
             "maxFontSize": 1,
             "skew": 0,
             "style": {
@@ -414,6 +442,10 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "depth": 0.13333,
             "height": 0.63333,
             "italic": 0,
+            "loc": {
+              "end": 59,
+              "start": 58
+            },
             "maxFontSize": 1,
             "skew": 0,
             "style": {
@@ -464,6 +496,10 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "depth": 0,
     "height": 0.43056,
     "italic": 0,
+    "loc": {
+      "end": 61,
+      "start": 60
+    },
     "maxFontSize": 1,
     "skew": 0.05556,
     "style": {
@@ -487,6 +523,10 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "depth": 0,
             "height": 0.44444,
             "italic": 0,
+            "loc": {
+              "end": 74,
+              "start": 73
+            },
             "maxFontSize": 1,
             "skew": 0,
             "style": {
@@ -502,6 +542,10 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "depth": 0.19444,
             "height": 0.44444,
             "italic": 0.03704,
+            "loc": {
+              "end": 75,
+              "start": 74
+            },
             "maxFontSize": 1,
             "skew": 0,
             "style": {
@@ -517,6 +561,10 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "depth": 0,
             "height": 0.44444,
             "italic": 0.04213,
+            "loc": {
+              "end": 76,
+              "start": 75
+            },
             "maxFontSize": 1,
             "skew": 0,
             "style": {
@@ -552,6 +600,10 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "depth": 0.19444,
     "height": 0.69444,
     "italic": 0.10764,
+    "loc": {
+      "end": 78,
+      "start": 77
+    },
     "maxFontSize": 1,
     "skew": 0.16667,
     "style": {
@@ -594,6 +646,7 @@ exports[`A parser that does not throw on unsupported commands should build katex
       "depth": 0,
       "height": 0,
       "italic": 0,
+      "loc": null,
       "maxFontSize": 0,
       "skew": 0,
       "style": {
@@ -980,6 +1033,10 @@ exports[`href and url commands should not affect spacing around 1`] = `
     "depth": 0,
     "height": 0.43056,
     "italic": 0,
+    "loc": {
+      "end": 1,
+      "start": 0
+    },
     "maxFontSize": 1,
     "skew": 0,
     "style": {
@@ -1014,6 +1071,10 @@ exports[`href and url commands should not affect spacing around 1`] = `
         "depth": 0.08333,
         "height": 0.58333,
         "italic": 0,
+        "loc": {
+          "end": 29,
+          "start": 28
+        },
         "maxFontSize": 1,
         "skew": 0,
         "style": {
@@ -1044,6 +1105,10 @@ exports[`href and url commands should not affect spacing around 1`] = `
         "depth": 0,
         "height": 0.69444,
         "italic": 0,
+        "loc": {
+          "end": 30,
+          "start": 29
+        },
         "maxFontSize": 1,
         "skew": 0,
         "style": {

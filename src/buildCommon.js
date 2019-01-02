@@ -70,6 +70,10 @@ const makeSymbol = function(
     value = lookup.value;
 
     let symbolNode;
+    let loc = null;  // source location
+    if (options != null) {
+        loc = options.loc;
+    }
     if (metrics) {
         let italic = metrics.italic;
         if (mode === "text" || (options && options.font === "mathit")) {
@@ -77,13 +81,14 @@ const makeSymbol = function(
         }
         symbolNode = new SymbolNode(
             value, metrics.height, metrics.depth, italic, metrics.skew,
-            metrics.width, classes);
+            metrics.width, classes, undefined, loc);
     } else {
         // TODO(emily): Figure out a good way to only print this in development
         typeof console !== "undefined" && console.warn(
             "No character metrics for '" + value + "' in style '" +
                 fontName + "'");
-        symbolNode = new SymbolNode(value, 0, 0, 0, 0, 0, classes);
+        symbolNode = new SymbolNode(value, 0, 0, 0, 0, 0, classes, undefined,
+            loc);
     }
 
     if (options) {

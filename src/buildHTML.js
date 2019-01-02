@@ -254,6 +254,12 @@ export const buildGroup = function(
     }
 
     if (groupBuilders[group.type]) {
+        if (group.loc) {
+            options.loc = {
+                start: group.loc.start,
+                end: group.loc.end,
+            };
+        }
         // Call the groupBuilders function
         // $FlowFixMe
         let groupNode: HtmlDomNode = groupBuilders[group.type](group, options);

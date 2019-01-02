@@ -492,6 +492,11 @@
         overflow: hidden;     // This line applies to all browsers.
     }
 
+    // This style is added so that click event can pass through things like sqrt
+    span.hide-tail {
+        pointer-events: none;
+    }
+
     .halfarrow-left {
         position: absolute;
         left: 0;

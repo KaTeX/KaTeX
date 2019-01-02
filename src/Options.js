@@ -72,6 +72,7 @@ class Options {
     fontShape: string;
     sizeMultiplier: number;
     maxSize: number;
+    loc: ?{start: number, end: number};
     _fontMetrics: FontMetrics | void;
 
     /**
@@ -91,6 +92,7 @@ class Options {
         this.fontShape = data.fontShape || '';
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
+        this.loc = null;
         this._fontMetrics = undefined;
     }
 

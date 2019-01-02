@@ -350,6 +350,7 @@ export class SymbolNode implements HtmlDomNode {
     maxFontSize: number;
     classes: string[];
     style: CssStyle;
+    loc: ?{start: number, end: number};
 
     constructor(
         text: string,
@@ -360,6 +361,7 @@ export class SymbolNode implements HtmlDomNode {
         width?: number,
         classes?: string[],
         style?: CssStyle,
+        loc?: ?{start: number, end: number},
     ) {
         this.text = text;
         this.height = height || 0;
@@ -370,6 +372,7 @@ export class SymbolNode implements HtmlDomNode {
         this.classes = classes || [];
         this.style = style || {};
         this.maxFontSize = 0;
+        this.loc = loc || null;
 
         // Mark text from non-Latin scripts with specific classes so that we
         // can specify which fonts to use.  This allows us to render these
@@ -420,6 +423,11 @@ export class SymbolNode implements HtmlDomNode {
 
         if (span) {
             span.appendChild(node);
+            if (this.loc != null) {
+                const {start, end} = this.loc;
+                span.setAttribute('leaf', start.toString());
+                span.setAttribute('boat', end.toString());
+            }
             return span;
         } else {
             return node;
