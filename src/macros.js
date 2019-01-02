@@ -878,10 +878,8 @@ defineMacro("\\weierp", "\\wp");
 defineMacro("\\Zeta", "\\mathrm{Z}");
 
 //////////////////////////////////////////////////////////////////////
-// Custom macros
-
-// Define useful macros that are not present in current LaTeX packages.
-// Once they are, move them to the right place later
+// statmath.sty
+// https://ctan.math.illinois.edu/macros/latex/contrib/statmath/statmath.pdf
 
 defineMacro("\\argmin", "\\DOTSB\\mathop{\\operatorname{arg\\,min}}\\limits");
 defineMacro("\\argmax", "\\DOTSB\\mathop{\\operatorname{arg\\,max}}\\limits");
