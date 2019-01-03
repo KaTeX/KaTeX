@@ -6,7 +6,7 @@ debug.log
 last.png
 diff.png
 /.npm-install.stamp
-/dist/
+# /dist/
 /test/screenshotter/tex/
 /test/screenshotter/diff/
 /test/screenshotter/new/
