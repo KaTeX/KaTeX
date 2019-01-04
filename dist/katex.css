@@ -936,6 +936,15 @@
 .katex span.hide-tail {
   pointer-events: none;
 }
+.katex span.vlist-r {
+  pointer-events: none;
+}
+.katex span.mord {
+  pointer-events: auto;
+}
+.katex span.mord.mathdefault {
+  pointer-events: auto;
+}
 .katex .halfarrow-left {
   position: absolute;
   left: 0;

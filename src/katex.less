@@ -497,6 +497,21 @@
         pointer-events: none;
     }
 
+    // This style is added so that click event can pass through things like large empty span
+    span.vlist-r {
+        pointer-events: none;
+    }
+
+    // This is for overwriting the pointer-events for regular numbers so they can still catch click event
+    span.mord {
+        pointer-events: auto;
+    }
+
+    // This is for overwriting the pointer-events for regular math signs so they can still catch click event
+    span.mord.mathdefault {
+        pointer-events: auto;
+    }
+
     .halfarrow-left {
         position: absolute;
         left: 0;

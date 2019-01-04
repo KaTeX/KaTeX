@@ -26,3 +26,4 @@ website/node_modules
 website/i18n/*
 website/static/static/katex.*
 website/static/static/fonts
+.idea/
