@@ -74,6 +74,12 @@ const toNode = function(tagName: string): HTMLElement {
         }
     }
 
+    // make all vlist-s span not editable to stop cursor showing on them
+    // because they are just empty span
+    if (node.className === 'vlist-s') {
+        node.setAttribute('contenteditable', 'false');
+    }
+
     // Append the children, also as HTML nodes
     for (let i = 0; i < this.children.length; i++) {
         node.appendChild(this.children[i].toNode());

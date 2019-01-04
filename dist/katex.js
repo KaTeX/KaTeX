@@ -963,6 +963,12 @@ var _toNode = function toNode(tagName) {
     if (this.attributes.hasOwnProperty(attr)) {
       node.setAttribute(attr, this.attributes[attr]);
     }
+  } // make all vlist-s span not editable to stop cursor showing on them
+  // because they are just empty span
+
+
+  if (node.className === 'vlist-s') {
+    node.setAttribute('contenteditable', 'false');
   } // Append the children, also as HTML nodes
 
 
