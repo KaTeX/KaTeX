@@ -46,6 +46,7 @@ exports[`A MathML builder \\text fonts become mathvariant 1`] = `
             bold
           </mtext>
           <mtext>
+             
           </mtext>
           <mtext mathvariant="bold-italic">
             italic
@@ -68,6 +69,7 @@ exports[`A MathML builder \\text fonts become mathvariant 1`] = `
               bold
             </mtext>
             <mtext>
+               
             </mtext>
             <mtext mathvariant="sans-serif-bold-italic">
               italic
@@ -91,6 +93,7 @@ exports[`A MathML builder \\text fonts become mathvariant 1`] = `
               bold
             </mtext>
             <mtext>
+               
             </mtext>
             <mtext mathvariant="monospace">
               italic
@@ -330,7 +333,7 @@ exports[`A MathML builder should generate the right types of nodes 1`] = `
         1
       </mn>
       <mtext>
-        &ThickSpace;
+          
       </mtext>
       <mtext>
         a
@@ -374,7 +377,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
       <msub>
         <mo>
           <mi mathvariant="normal">
-            lim&ThinSpace;sup
+            lim sup
           </mi>
           <mo>
             ⁡
@@ -409,7 +412,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} in dis
       <munder>
         <mo>
           <mi mathvariant="normal">
-            lim&ThinSpace;sup
+            lim sup
           </mi>
           <mo>
             ⁡
@@ -732,61 +735,61 @@ exports[`A MathML builder special spaces render specially 1`] = `
   <semantics>
     <mrow>
       <mtext>
-        &ThinSpace;
+         
       </mtext>
       <mtext>
-        &ThinSpace;
+         
       </mtext>
       <mtext>
-        &MediumSpace;
+         
       </mtext>
       <mtext>
-        &MediumSpace;
+         
       </mtext>
       <mtext>
-        &MediumSpace;
+         
       </mtext>
       <mtext>
-        &ThickSpace;
+          
       </mtext>
       <mtext>
-        &ThickSpace;
+          
       </mtext>
       <mtext>
-        &NegativeThinSpace;
+         ⁣
       </mtext>
       <mtext>
-        &NegativeThinSpace;
+         ⁣
       </mtext>
       <mtext>
-        &NegativeMediumSpace;
+         ⁣
       </mtext>
       <mtext>
-        &NegativeThickSpace;
+         ⁣
       </mtext>
       <mtext>
-        &VeryThinSpace;
+         
       </mtext>
       <mtext>
-        &ThinSpace;
+         
       </mtext>
       <mtext>
-        &MediumSpace;
+         
       </mtext>
       <mtext>
-        &ThickSpace;
+          
       </mtext>
       <mtext>
-        &NegativeVeryThinSpace;
+         ⁣
       </mtext>
       <mtext>
-        &NegativeThinSpace;
+         ⁣
       </mtext>
       <mtext>
-        &NegativeMediumSpace;
+         ⁣
       </mtext>
       <mtext>
-        &NegativeThickSpace;
+         ⁣
       </mtext>
     </mrow>
     <annotation encoding="application/x-tex">

@@ -2803,10 +2803,10 @@ diff@^3.2.0:
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.5.0.tgz#800c0dd1e0a8bfbc95835c202ad220fe317e5a12"
   integrity sha512-A46qtFgd+g7pDZinpnwiRJtxbC1hpgf0uzP3iG89scHk0AUC7A1TGxf5OiiOUv/JMZR8GOt8hL900hV0bOy5xA==
 
-diffable-html@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/diffable-html/-/diffable-html-3.0.0.tgz#3766be8bcf6e90e061bdc321e04e14fc0630853f"
-  integrity sha512-lUxHiU00DexR/wKcY56OiJZmB0D66ghidYfU4VxUMG09TDx+1jjO7/dFrZKI2p9z00tWY/7ZeO9BBEi6n0jUYQ==
+diffable-html@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/diffable-html/-/diffable-html-4.0.0.tgz#eb44a189785115bacd04829f31658fcd3c0ce590"
+  integrity sha512-keJdgy2qBkdrrnwP1YE6e834d4Y+mV0aRFzk8w7WzyAJVbQVfcJltSmUWB3r/NOoO/0jt7RdJlvy5ioyqvmQcw==
   dependencies:
     htmlparser2 "^3.9.2"
 
@@ -5197,12 +5197,12 @@ jest-runtime@^23.5.0:
     write-file-atomic "^2.1.0"
     yargs "^11.0.0"
 
-jest-serializer-html@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/jest-serializer-html/-/jest-serializer-html-5.0.0.tgz#6848c4d8fb0f6c6dcb1e26a05e46d66c7ff9edb9"
-  integrity sha512-WfBvUnFdcZNJZMHuOWQFry+5qScsLhoaPxUOzXTqxGIp7BzWMEgr2sG/GKdLTIIfyNviAVp3k4jcqHtBkG18Lg==
+jest-serializer-html@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/jest-serializer-html/-/jest-serializer-html-6.0.0.tgz#39ce49a42b3937d1687f93923814d21b47ae9a85"
+  integrity sha512-S855oT9Yt1T07I45+uRaLsH22TR5lAvgqBxKreqDKs6QmcaxzapGgKamc4J2KxMrPc2uDdWcuOaprcjIuVUxvQ==
   dependencies:
-    diffable-html "^3.0.0"
+    diffable-html "^4.0.0"
 
 jest-serializer@^23.0.1:
   version "23.0.1"
