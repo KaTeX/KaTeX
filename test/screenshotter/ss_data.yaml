@@ -115,7 +115,7 @@ ExtensibleArrows: |
     \end{array}
 FractionTest: |
     \begin{array}{l}
-        \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}\; \cfrac{1}{1+\cfrac{1}{x}} \\[2.5em]
+        \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}\; \cfrac{1}{1+\cfrac{1}{x}} \xrightarrow[\dfrac g h]{\displaystyle\frac g h} \\[2.5em]
         {a \brace b} \; {a \brack b} \; \genfrac \{ ]{0.8pt}{0}{a}{b}
         \; {a \above1.0pt b}
     \end{array}
