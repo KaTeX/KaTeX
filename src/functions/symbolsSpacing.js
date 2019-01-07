@@ -42,6 +42,7 @@ defineFunctionBuilders({
                 ord.classes.push(className);
                 return ord;
             } else {
+                console.log(module.id);
                 return buildCommon.makeSpan(["mspace", className],
                     [buildCommon.mathsym(group.text, group.mode, options)],
                     options);

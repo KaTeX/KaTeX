@@ -44,7 +44,7 @@ export class DocumentFragment<ChildType: VirtualNode>
     /** Convert the fragment into a node. */
     toNode(): Node {
         const frag = document.createDocumentFragment();
-
+        console.log(module.id, 'toNode');
         for (let i = 0; i < this.children.length; i++) {
             frag.appendChild(this.children[i].toNode());
         }

@@ -82,6 +82,7 @@ export const buildExpression = function(
     }
 
     let glueOptions = options;
+    console.log('glueOptions', glueOptions);
     if (expression.length === 1) {
         const node = checkNodeType(expression[0], "sizing") ||
             checkNodeType(expression[0], "styling");
@@ -252,14 +253,14 @@ export const buildGroup = function(
     if (!group) {
         return makeSpan();
     }
+    if (group.loc) {
+        options.loc = {
+            start: group.loc.start,
+            end: group.loc.end,
+        };
+    }
 
     if (groupBuilders[group.type]) {
-        if (group.loc) {
-            options.loc = {
-                start: group.loc.start,
-                end: group.loc.end,
-            };
-        }
         // Call the groupBuilders function
         // $FlowFixMe
         let groupNode: HtmlDomNode = groupBuilders[group.type](group, options);
@@ -275,6 +276,19 @@ export const buildGroup = function(
 
             groupNode.height *= multiplier;
             groupNode.depth *= multiplier;
+        }
+
+    
+        if (group.type === 'sqrt') {
+            console.log('options.loc', options.loc);
+            const before = buildCommon.makeSpan(['mspace']);
+            before.setAttribute('start', options.loc.end.toString());
+            before.setAttribute('end', options.loc.end.toString());
+            groupNode.children.unshift(before);
+            const after = buildCommon.makeSpan(['mspace']);
+            after.setAttribute('start', group.body.loc.end.toString());
+            after.setAttribute('end', group.body.loc.end.toString());
+            groupNode.children.push(after);
         }
 
         return groupNode;

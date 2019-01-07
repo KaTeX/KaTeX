@@ -689,6 +689,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
 // static space between elements in a horizontal layout.
 const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
     // Make an empty span for the space
+    console.log(module.id, 'makeGlue');
     const rule = makeSpan(["mspace"], [], options);
     const size = calculateSize(measurement, options);
     rule.style.marginRight = `${size}em`;

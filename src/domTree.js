@@ -54,6 +54,9 @@ const initNode = function(
  * Convert into an HTML node
  */
 const toNode = function(tagName: string): HTMLElement {
+    if (this.classes.indexOf('mspace') !== -1) {
+        console.log('gotcha');
+    }
     const node = document.createElement(tagName);
 
     // Apply the class
