@@ -94,6 +94,8 @@ table td {
 |\arctan|$\arctan$||
 |\arctg|$\arctg$||
 |\arg|$\arg$||
+|\argmax|$\argmax$||
+|\argmin|$\argmin$||
 |{array}|$\begin{array}{cc}a&b\\c&d\end{array}$ | `\begin{array}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{array}`|
 |\array|<span style="color:firebrick;">Not supported</span>|see `{array}`|
 |\arraystretch|$\def\arraystretch{1.5}\begin{array}{cc}a&b\\c&d\end{array}$|`\def\arraystretch{1.5}`<br>`\begin{array}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{array}`|
