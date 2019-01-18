@@ -22,6 +22,7 @@ AccentsText: |
     \text{\'A} & \text{\.A} & \text{\`A} & \text{\"A} & \text{\H{A}} & \text{\r{A}} \\
     \text{\.I İ} & \text{\H e e̋} & \text{\i ı}
     \end{array}
+ActuarialAngles: 1 + a_{x:\angl{n}i} = \frac{a_{\angl{h_{j_j}}\frac{i^{(m)}}{m}}}{a_{\lcroof{n^2}}}
 Aligned: |
     \begin{aligned}
         a &= 1 & b &= 2 \\

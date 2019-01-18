@@ -428,7 +428,9 @@ defineMacro("\\colon", "\\nobreak\\mskip2mu\\mathpunct{}" +
     "\\mathchoice{\\mkern-3mu}{\\mkern-3mu}{}{}{:}\\mskip6mu");
 
 // \newcommand{\boxed}[1]{\fbox{\m@th$\displaystyle#1$}}
+// \newcommand{\angln}{\angl{n}}
 defineMacro("\\boxed", "\\fbox{$\\displaystyle{#1}$}");
+defineMacro("\\angln", "\\angl{n}");
 
 // \def\iff{\DOTSB\;\Longleftrightarrow\;}
 // \def\implies{\DOTSB\;\Longrightarrow\;}

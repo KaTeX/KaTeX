@@ -72,6 +72,10 @@ describe("A MathML builder", function() {
         expect(getMathML("\\colorbox{red}{b}")).toMatchSnapshot();
     });
 
+    it('should use <menclose> for angl', () => {
+        expect(getMathML("\\angl{n}")).toMatchSnapshot();
+    });
+
     it('should set href attribute for href appropriately', () => {
         expect(getMathML("\\href{http://example.org}{\\alpha}")).toMatchSnapshot();
         expect(getMathML("p \\Vdash \\beta \\href{http://example.org}{+ \\alpha} \\times \\gamma"));

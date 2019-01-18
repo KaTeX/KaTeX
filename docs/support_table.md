@@ -84,8 +84,9 @@ table td {
 |\And|$\And$||
 |\and|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
 |\ang|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
-|\angl|<span style="color:firebrick;">Not supported</span>||
+|\angl|$\angl{x}$|`\angl{x}`|
 |\angle|$\angle$||
+|\angln|$\angln$|Macro for `\angl{n}`|
 |\approx|$\approx$||
 |\approxeq|$\approxeq$||
 |\arccos|$\arccos$||
@@ -526,6 +527,7 @@ table td {
 |\lbrace|$\lbrace$||
 |\lbrack|$\lbrack$||
 |\lceil|$\lceil$||
+|\lcroof|$a_{\lcroof{n}}$|`a_{\lcroof{n}}`|
 |\ldotp|$\ldotp$||
 |\ldots|$\ldots$||
 |\le|$\le$||

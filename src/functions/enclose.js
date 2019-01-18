@@ -5,6 +5,7 @@ import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
 import {assertNodeType} from "../parseNode";
+import {calculateSize} from "../units";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -33,6 +34,40 @@ const htmlBuilder = (group, options) => {
         img = buildCommon.makeSpan(["stretchy", "sout"]);
         img.height = options.fontMetrics().defaultRuleThickness / scale;
         imgShift = -0.5 * options.fontMetrics().xHeight;
+
+    } else if (label === "angl" || label === "lcroof") {
+        const vlineThickness = calculateSize({number: 0.4, unit: "pt"}, options);
+        let hlineThickness = vlineThickness;
+
+        if (label === "lcroof") {
+            hlineThickness = calculateSize({number: 0.6, unit: "pt"}, options);
+        }
+
+        // Put some space before inner (but under the angle)
+        inner.classes.push("actangle-pad");
+
+        const parenDepth = 0.25; //in em, the depth of a parenthesis
+        inner.depth = Math.max(inner.depth, parenDepth);
+
+        imgShift += parenDepth;
+
+        // Height of the angle computation :
+        // 1. Take inner's height + depth of a parenthesis,
+        //    because we only want to extend this far down.
+        const totalInnerHeight = inner.height + parenDepth;
+        // 2. Account for the hline (for thicker hlines especially)
+        // 3. Add 15/24rd (hey, magic number) of the parenthesis' descender's
+        //    vertical allowance, to ensure we have enough space between the
+        //    hline and inner.
+        const verticalKerning = 15 * parenDepth / 24;
+        const totalHeight = totalInnerHeight + hlineThickness + verticalKerning;
+        img = buildCommon.makeSpan(["stretchy", "actangle"], [], options);
+        img.height = totalHeight;
+        img.style.height = totalHeight + "em";
+
+        // Style the angle top bar to the right width
+        img.style.borderTopWidth = hlineThickness + "em";
+        img.style.borderRightWidth = vlineThickness + "em";
 
     } else {
         // Add horizontal padding
@@ -105,6 +140,8 @@ const htmlBuilder = (group, options) => {
     if (/cancel/.test(label) && !isSingleChar) {
         // cancel does not create horiz space for its line extension.
         return buildCommon.makeSpan(["mord", "cancel-lap"], [vlist], options);
+    } else if (label === "angl" || label === "lcroof") {
+        return buildCommon.makeSpan(["mord", "actangle-lap"], [vlist], options);
     } else {
         return buildCommon.makeSpan(["mord"], [vlist], options);
     }
@@ -132,6 +169,10 @@ const mathmlBuilder = (group, options) => {
             break;
         case "\\xcancel":
             node.setAttribute("notation", "updiagonalstrike downdiagonalstrike");
+            break;
+        case "\\lcroof":
+        case "\\angl":
+            node.setAttribute("notation", "actuarial");
             break;
     }
     if (group.backgroundColor) {
@@ -210,7 +251,7 @@ defineFunction({
 
 defineFunction({
     type: "enclose",
-    names: ["\\cancel", "\\bcancel", "\\xcancel", "\\sout"],
+    names: ["\\cancel", "\\bcancel", "\\xcancel", "\\sout", "\\angl", "\\lcroof"],
     props: {
         numArgs: 1,
     },

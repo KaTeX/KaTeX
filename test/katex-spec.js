@@ -2400,6 +2400,57 @@ describe("A strike-through builder", function() {
     });
 });
 
+describe("An actuarial angle parser", function() {
+    it("should not fail", function() {
+        expect`\angl{n}`.toParse();
+        expect`a_{\angl{n}}`.toParse();
+        expect`a^2_{\angl{n_2}}`.toParse();
+        expect`a_{\angl{n}i}`.toParse();
+        expect`a_{\angl n}`.toParse();
+
+        expect`\lcroof{n}`.toParse();
+        expect`a_{\lcroof{n}}`.toParse();
+        expect`a^2_{\lcroof{n_2}}`.toParse();
+        expect`a_{\lcroof{n}i}`.toParse();
+        expect`a_{\lcroof n}`.toParse();
+    });
+
+    it("should produce enclose", function() {
+        const anglParse = getParsed`\angl n`[0];
+        expect(anglParse.type).toEqual("enclose");
+
+        const roofParse = getParsed`\lcroof n`[0];
+        expect(roofParse.type).toEqual("enclose");
+    });
+});
+
+describe("A actuarial angle builder", function() {
+    it("should not fail", function() {
+        expect`a_{\angl{n}}`.toBuild();
+        expect`a^2_{\angl{n_2}}`.toBuild();
+        expect`a_{\angl{n}i}`.toBuild();
+        expect`a_{\angl n}`.toBuild();
+
+        expect`a_{\lcroof{n}}`.toBuild();
+        expect`a^2_{\lcroof{n_2}}`.toBuild();
+        expect`a_{\lcroof{n}i}`.toBuild();
+        expect`a_{\lcroof n}`.toBuild();
+    });
+
+    it("should produce mords", function() {
+        expect(getBuilt`\angl n`[0].classes).toContain("mord");
+        expect(getBuilt`\lcroof n`[0].classes).toContain("mord");
+    });
+
+    it("should be styled to the actangle class", function() {
+        const anglMarkup = katex.renderToString(r`a_{\angl{n} i}`);
+        expect(anglMarkup).toContain("actangle");
+
+        const roofMarkup = katex.renderToString(r`a_{\lcroof{n} i}`);
+        expect(roofMarkup).toContain("actangle");
+    });
+});
+
 describe("A phantom parser", function() {
     it("should not fail", function() {
         expect`\phantom{x}`.toParse();
