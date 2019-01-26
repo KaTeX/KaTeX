@@ -642,7 +642,7 @@ defineSymbol(math, main, textord, "\u2225", "\\Vert");
 defineSymbol(text, main, textord, "\u2225", "\\textbardbl");
 defineSymbol(text, main, textord, "~", "\\textasciitilde");
 defineSymbol(text, main, textord, "\\", "\\textbackslash");
-defineSymbol(text, main, textord, "\^", "\\textasciicircum");
+defineSymbol(text, main, textord, "^", "\\textasciicircum");
 defineSymbol(math, main, rel, "\u2191", "\\uparrow", true);
 defineSymbol(math, main, rel, "\u21d1", "\\Uparrow", true);
 defineSymbol(math, main, rel, "\u2193", "\\downarrow", true);
