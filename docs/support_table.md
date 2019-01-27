@@ -988,6 +988,8 @@ table td {
 |\TeX|$\TeX$||
 |\text|$\text{ yes }\&\text{ no }$|`\text{ yes }\&\text{ no }`|
 |\textasciitilde|$\text{\textasciitilde}$|`\text{\textasciitilde}`|
+|\textasciicircum|$\text{\textasciicircum}$|`\text{\textasciicircum}`|
+|\textbackslash|$\text{\textbackslash}$|`\text{\textbackslash}`|
 |\textbar|$\text{\textbar}$|`\text{\textbar}`|
 |\textbardbl|$\text{\textbardbl}$|`\text{\textbardbl}`|
 |\textbf|$\textbf{AaBb123}$|`\textbf{AaBb123}`|
