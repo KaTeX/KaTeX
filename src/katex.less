@@ -588,3 +588,14 @@
         }
     }
 }
+
+// Left-justified tags (default is right-justified)
+.katex-display.leqno > .katex > .katex-html > .tag {
+    left: 0;
+    right: auto;
+}
+
+// Flush-left display math
+.katex-display.fleqn > .katex {
+    text-align: left;
+}
