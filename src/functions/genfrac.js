@@ -363,21 +363,17 @@ defineFunction({
         const denom = args[5];
 
         // Look into the parse nodes to get the desired delimiters.
-        let leftNode = checkNodeType(args[0], "ordgroup");
+        let leftNode = checkNodeType(args[0], "atom");
         if (leftNode) {
-            leftNode = assertAtomFamily(leftNode.body[0], "open");
-        } else {
             leftNode = assertAtomFamily(args[0], "open");
         }
-        const leftDelim = delimFromValue(leftNode.text);
+        const leftDelim = leftNode ? delimFromValue(leftNode.text) : null;
 
-        let rightNode = checkNodeType(args[1], "ordgroup");
+        let rightNode = checkNodeType(args[1], "atom");
         if (rightNode) {
-            rightNode = assertAtomFamily(rightNode.body[0], "close");
-        } else {
             rightNode = assertAtomFamily(args[1], "close");
         }
-        const rightDelim = delimFromValue(rightNode.text);
+        const rightDelim = rightNode ? delimFromValue(rightNode.text) : null;
 
         const barNode = assertNodeType(args[2], "size");
         let hasBarLine;

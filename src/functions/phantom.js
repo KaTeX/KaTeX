@@ -71,7 +71,8 @@ defineFunction({
             children: [{type: "elem", elem: node}],
         }, options);
 
-        return node;
+        // For spacing, TeX treats \smash as a math group (same spacing as ord).
+        return buildCommon.makeSpan(["mord"], [node], options);
     },
     mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(ordargument(group.body), options);
