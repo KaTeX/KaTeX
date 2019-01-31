@@ -160,21 +160,24 @@ const traverseNonSpaceNodes = function(
 
         // Ignore explicit spaces (e.g., \;, \,) when determining what implicit
         // spacing should go between atoms of different classes
-        if (node.classes[0] === "mspace") {
-            continue;
-        }
-
-        const result = callback(node, prev.node);
-        if (result) {
-            if (prev.insertAfter) {
-                prev.insertAfter(result);
-            } else { // insert at front
-                nodes.unshift(result);
-                i++;
+        const nonspace = !node.hasClass("mspace");
+        if (nonspace) {
+            const result = callback(node, prev.node);
+            if (result) {
+                if (prev.insertAfter) {
+                    prev.insertAfter(result);
+                } else { // insert at front
+                    nodes.unshift(result);
+                    i++;
+                }
             }
         }
 
-        prev.node = node;
+        if (nonspace) {
+            prev.node = node;
+        } else if (node.hasClass("newline")) {
+            prev.node = makeSpan(["leftmost"]); // treat like beginning of line
+        }
         prev.insertAfter = (index => n => {
             nodes.splice(index + 1, 0, n);
             i++;
