@@ -916,10 +916,6 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
       <span class="mrel">
         =
       </span>
-      <span class="mspace"
-            style="margin-right:0.2777777777777778em;"
-      >
-      </span>
     </span>
     <span class="mspace newline">
     </span>
@@ -937,10 +933,6 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
       </span>
       <span class="mbin">
         +
-      </span>
-      <span class="mspace"
-            style="margin-right:0.2222222222222222em;"
-      >
       </span>
     </span>
     <span class="mspace newline">
