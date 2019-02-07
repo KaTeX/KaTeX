@@ -102,7 +102,13 @@ defineFunction({
     handler({parser, breakOnTokenText}, args) {
         const color = assertNodeType(args[0], "color-token").color;
 
-        // If we see a styling function, parse out the implicit body
+        // Set macro \current@color in current namespace to store the current
+        // color, mimicking the behavior of color.sty.
+        // This is currently used just to correctly color a \right
+        // that follows a \color command.
+        parser.gullet.macros.set("\\current@color", color);
+
+        // Parse out the implicit body that should be colored.
         const body = parser.parseExpression(true, breakOnTokenText);
 
         return {

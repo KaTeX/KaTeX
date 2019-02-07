@@ -534,6 +534,7 @@ defineEnvironment({
             body: [res],
             left: delimiters[0],
             right: delimiters[1],
+            rightColor: undefined, // \right uninfluenced by \color in array
         } : res;
     },
     htmlBuilder,
@@ -581,6 +582,7 @@ defineEnvironment({
             body: [res],
             left: "\\{",
             right: ".",
+            rightColor: undefined,
         };
     },
     htmlBuilder,
