@@ -3066,6 +3066,21 @@ describe("A macro expander", function() {
             .toParseLike`11\sqrt[2]{2}11`;
     });
 
+    it("array cells generate groups", () => {
+        expect`\def\x{1}\begin{matrix}\x&\def\x{2}\x&\x\end{matrix}`
+            .toParseLike`\begin{matrix}1&2&1\end{matrix}`;
+    });
+
+    // TODO: This doesn't yet work; before the environment gets called,
+    // {matrix} gets consumed which means that the \def gets executed, before
+    // we can create a group. :-(
+    /*
+    it("array cells generate groups", () => {
+        expect`\def\x{1}\begin{matrix}\def\x{2}&\x\end{matrix}`
+            .toParseLike`\begin{matrix}&1\end{matrix}`;
+    });
+    */
+
     it("\\gdef changes settings.macros", () => {
         const macros = {};
         expect`\gdef\foo{1}`.toParse(new Settings({macros}));

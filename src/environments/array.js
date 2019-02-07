@@ -74,6 +74,9 @@ function parseArray(
         }
     }
 
+    // Start group for first cell
+    parser.gullet.beginGroup();
+
     let row = [];
     const body = [row];
     const rowGaps = [];
@@ -84,9 +87,9 @@ function parseArray(
 
     while (true) {  // eslint-disable-line no-constant-condition
         // Parse each cell in its own group (namespace)
-        parser.gullet.beginGroup();
         let cell = parser.parseExpression(false, "\\cr");
         parser.gullet.endGroup();
+        parser.gullet.beginGroup();
 
         cell = {
             type: "ordgroup",
@@ -131,7 +134,12 @@ function parseArray(
                                  parser.nextToken);
         }
     }
+
+    // End cell group
     parser.gullet.endGroup();
+    // End array group defining \\
+    parser.gullet.endGroup();
+
     return {
         type: "array",
         mode: parser.mode,
