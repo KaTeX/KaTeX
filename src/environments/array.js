@@ -83,7 +83,11 @@ function parseArray(
     hLinesBeforeRow.push(getHLines(parser));
 
     while (true) {  // eslint-disable-line no-constant-condition
+        // Parse each cell in its own group (namespace)
+        parser.gullet.beginGroup();
         let cell = parser.parseExpression(false, "\\cr");
+        parser.gullet.endGroup();
+
         cell = {
             type: "ordgroup",
             mode: parser.mode,
