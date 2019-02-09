@@ -7,7 +7,6 @@ import {Img} from "../domTree";
 import mathMLTree from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
 import type {CssStyle} from "../domTree";
-import utils from "../utils";
 
 const sizeData = function(str: string): Measurement {
     if (/^[-+]? *(\d+(\.\d*)?|\.\d+)$/.test(str)) {
@@ -89,7 +88,6 @@ defineFunction({
         if (!parser.settings.isTrusted({
             command: "\\includegraphics",
             url: src,
-            protocol: utils.urlToProtocol(src),
         })) {
             return parser.formatUnsupportedCmd("\\includegraphics");
         }

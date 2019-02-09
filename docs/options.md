@@ -15,6 +15,7 @@ You can provide an object of options as the last argument to [`katex.render` and
 - `maxExpand`: `number`. Limit the number of macro expansions to the specified number, to prevent e.g. infinite macro loops. If set to `Infinity`, the macro expander will try to fully expand as in LaTeX. (default: 1000)
 - `allowedProtocols`: `string[]`. Allowed protocols in `\href`. Use `_relative` to allow relative urls, and `*` to allow all protocols. (default: `["http", "https", "mailto", "_relative"]`)
 - `strict`: `boolean` or `string` or `function` (default: `"warn"`). If `false` or `"ignore`", allow features that make writing LaTeX convenient but are not actually supported by (Xe)LaTeX (similar to MathJax). If `true` or `"error"` (LaTeX faithfulness mode), throw an error for any such transgressions. If `"warn"` (the default), warn about such behavior via `console.warn`. Provide a custom function `handler(errorCode, errorMsg, token)` to customize behavior depending on the type of transgression (summarized by the string code `errorCode` and detailed in `errorMsg`); this function can also return `"ignore"`, `"error"`, or `"warn"` to use a built-in behavior.  A list of such features and their `errorCode`s:
+
   - `"unknownSymbol"`: Use of unknown Unicode symbol, which will likely also
     lead to warnings about missing character metrics, and layouts may be
     incorrect (especially in terms of vertical heights).
@@ -26,11 +27,26 @@ You can provide an object of options as the last argument to [`katex.render` and
 
   A second category of `errorCode`s never throw errors, but their strictness
   affects the behavior of KaTeX:
+
   - `"newLineInDisplayMode"`: Use of `\\` or `\newline` in display mode
     (outside an array/tabular environment).  In strict mode, no line break
     results, as in LaTeX.
+
 - `trust`: `boolean` or `function` (default: `false`). If `false` (do not trust input), prevent any commands like `\includegraphics` that could enable adverse behavior, rendering them instead in `errorColor`. If `true` (trust input), allow all such commands. Provide a custom function `handler(context)` to customize behavior depending on the context (command, arguments e.g. a URL, etc.).  A list of possible contexts:
+
+  - `{command: "\\url", url, protocol}`
+  - `{command: "\\href", url, protocol}`
   - `{command: "\\includegraphics", url, protocol}`
+
+  Here are some sample trust settings:
+
+  - Forbid specific command: `trust: (context) => context.command !== '\\includegraphics'`
+  - Allow specific command: `trust: (context) => context.command === '\\url'`
+  - Allow multiple specific commands: `trust: (context) => ['\\url', '\\href'].includes(context.command)`
+  - Allow all commands with a specific protocol: `trust: (context) => context.protocol === 'http'`
+  - Allow all commands with specific protocols: `trust: (context) => ['http', 'https', '_relative'].includes(context.protocol)`
+  - Allow all commands but forbid specific protocol: `trust: (context) => context.protocol !== 'file'`
+  - Allow certain commands with specific protocols: `trust: (context) => ['\\url', '\\href'].includes(context.command) && ['http', 'https', '_relative'].includes(context.protocol)`
 
 For example:
 

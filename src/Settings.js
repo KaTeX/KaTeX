@@ -17,10 +17,20 @@ export type StrictFunction =
     ?(boolean | string);
 
 export type TrustContextTypes = {
+    "\\href": {|
+        command: "\\href",
+        url: string,
+        protocol?: string,
+    |},
     "\\includegraphics": {|
         command: "\\includegraphics",
         url: string,
-        protocol: string,
+        protocol?: string,
+    |},
+    "\\url": {|
+        command: "\\url",
+        url: string,
+        protocol?: string,
     |},
 };
 export type AnyTrustContext = $Values<TrustContextTypes>;
@@ -151,7 +161,18 @@ export default class Settings {
         }
     }
 
+    /**
+     * Check whether to test potentially dangerous input, and return
+     * `true` (trusted) or `false` (untrusted).  The sole argument `context`
+     * should be an object with `command` field specifying the relevant LaTeX
+     * command (as a string starting with `\`), and any other arguments, etc.
+     * If `context` has a `url` field, a `protocol` field will automatically
+     * get added by this function (changing the specified object).
+     */
     isTrusted(context: AnyTrustContext) {
+        if (context.url && !context.protocol) {
+            context.protocol = utils.urlToProtocol(context.url);
+        }
         let trust = this.trust;
         if (typeof trust === "function") {
             trust = trust(context);
