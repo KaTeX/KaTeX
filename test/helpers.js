@@ -58,8 +58,8 @@ const printExpectedResult = (mode, isNot, expectedError) => expectedError == nul
     : (isNot ? 'not throw a ' : `fail ${mode} with a `) +
         (expectedError.name || `ParseError matching "${expectedError}"`);
 
-export const nonstrictSettings = new Settings({strict: false});
-export const strictSettings = new Settings({strict: true});
+export const nonstrictSettings = new Settings({strict: false, trust: true});
+export const strictSettings = new Settings({strict: true, trust: true});
 
 /**
  * Return the root node of the rendered HTML.
@@ -67,7 +67,7 @@ export const strictSettings = new Settings({strict: true});
  * @param settings
  * @returns {Object}
  */
-export function getBuilt(expr, settings = new Settings()) {
+export function getBuilt(expr, settings = new Settings({trust: true})) {
     expr = r(expr); // support tagging literals
     let rootNode = katex.__renderToDomTree(expr, settings);
 
@@ -98,7 +98,7 @@ export function getBuilt(expr, settings = new Settings()) {
  * @param settings
  * @returns {Object}
  */
-export function getParsed(expr, settings = new Settings()) {
+export function getParsed(expr, settings = new Settings({trust: true})) {
     expr = r(expr); // support tagging literals
     return parseTree(expr, settings);
 }

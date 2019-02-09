@@ -8,7 +8,7 @@ import Options from "../src/Options";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
 
-const getMathML = function(expr, settings = new Settings()) {
+const getMathML = function(expr, settings = new Settings({trust: true})) {
     let startStyle = Style.TEXT;
     if (settings.displayMode) {
         startStyle = Style.DISPLAY;

@@ -2667,7 +2667,7 @@ describe("href and url commands", function() {
     });
 
     it("should be marked up correctly", function() {
-        const markup = katex.renderToString(r`\href{http://example.com/}{example here}`);
+        const markup = katex.renderToString(r`\href{http://example.com/}{example here}`, {trust: true});
         expect(markup).toContain("<a href=\"http://example.com/\">");
     });
 
@@ -2675,9 +2675,11 @@ describe("href and url commands", function() {
         expect("\\href{relative}{foo}").toParse();
         expect("\\href{ftp://x}{foo}").toParse(new Settings({
             allowedProtocols: ["ftp"],
+            trust: true,
         }));
         expect("\\href{ftp://x}{foo}").toParse(new Settings({
             allowedProtocols: ["*"],
+            trust: true,
         }));
     });
 
