@@ -55,7 +55,7 @@ commands:
             - yarn-deps-v3-
       - run:
           name: Install dependencies
-          command: yarn
+          command: yarn --frozen-lockfile
       - save_cache:
           key: yarn-deps-v3-{{ checksum "yarn.lock" }}
           paths:
