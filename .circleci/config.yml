@@ -55,13 +55,7 @@ commands:
             - yarn-deps-v3-
       - run:
           name: Install dependencies
-          # upgrade Yarn before installing dependencies, if needed
-          command: |
-              if ! yarn check; then
-                curl -o- -L https://yarnpkg.com/install.sh | PROFILE=$BASH_ENV bash
-                source $BASH_ENV
-                yarn
-              fi
+          command: yarn
       - save_cache:
           key: yarn-deps-v3-{{ checksum "yarn.lock" }}
           paths:
