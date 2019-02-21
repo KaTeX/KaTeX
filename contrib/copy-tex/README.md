@@ -21,8 +21,8 @@ provided by this extension).  Without this CSS, partially selected equations
 will just get the usual HTML copy/paste behavior.
 
 ```html
-<link href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/copy-tex.min.js" integrity="sha384-BU/ZjHp6l8sAdA5pVWg7PDyDWxlvDtRbesZdg6/WprhHmvgodUl4JKPQH/53jvNY" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/contrib/copy-tex.min.js" integrity="sha384-XhWAe6BtVcvEdS3FFKT7Mcft4HJjPqMQvi5V4YhzH9Qxw497jC13TupOEvjoIPy7" crossorigin="anonymous"></script>
 ```
 
 See [index.html](index.html) for an example.
@@ -38,7 +38,7 @@ statement with `require('katex/contrib/copy-tex/katex2tex.js')`.
 <!-- TODO: uncomment when releasing a new version
 ECMAScript module is also available:
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/copy-tex.mjs" integrity="sha384-jLtlhlpasgCe2I4eVNEStxiWP4slZdWUk3E3FgbblMBxLs6YlA/rMNSeiGTRfAQ/" crossorigin="anonymous"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/contrib/copy-tex.mjs" integrity="sha384-kS7UtO844uqLwxPmaRwzg1nGbKiHsIteWh+DP2cvT2FtigL0v6w1yPXYKEDzct0C" crossorigin="anonymous"></script>
 ```` -->
 
 ### Known Issues

@@ -12,7 +12,7 @@ Load the extension by adding the following line to your HTML file.
 This extension should be loaded *after* all `script type=math/tex` blocks that you want to render.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/contrib/mathtex-script-type.min.js" integrity="sha384-LJ2FmexL77rmGm6SIpxq7y+XA6bkLzGZEgCywzKOZG/ws4va9fUVu2neMjvc3zdv"></script>
 ```
 You can download the script and use it locally, or from a local KaTeX installation instead.
 
@@ -23,12 +23,12 @@ After we're done writing `math/tex` scripts, we load this extension.
 ```html
 <html>
    <head>
-       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
-       <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css" integrity="sha384-dbVIfZGuN1Yq7/1Ocstc1lUEm+AT+/rCkibIcC/OmWo5f0EA48Vf8CytHzGrSwbQ" crossorigin="anonymous">
+       <script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.js" integrity="sha384-2BKqo+exmr9su6dir+qCw08N2ZKRucY4PrGQPPWU1A7FtlCGjmEGFqXCv5nyM5Ij" crossorigin="anonymous"></script>
    </head>
    <body>
       <script type="math/tex">x+\sqrt{1-x^2}</script>
-      <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy"></script>
+      <script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/contrib/mathtex-script-type.min.js" integrity="sha384-LJ2FmexL77rmGm6SIpxq7y+XA6bkLzGZEgCywzKOZG/ws4va9fUVu2neMjvc3zdv"></script>
    </body>
 </html>
 ```
@@ -36,5 +36,5 @@ After we're done writing `math/tex` scripts, we load this extension.
 <!-- TODO: uncomment when releasing a new version
 ECMAScript module is also available:
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/mathtex-script-type.mjs" integrity="sha384-En8cse3uW4xErwYkF3uTpWEw4BdLEWrWT2u1BttQuilGrJjAKcpGeC2ihwJ/wRD4" crossorigin="anonymous"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/contrib/mathtex-script-type.mjs" integrity="sha384-qc7HqE4GHbr2H9R+C8mTSdJmkkZ9E1bkIRyRrxMsoj3dcbGjILzoXJGcBGGns1bk" crossorigin="anonymous"></script>
 ```` -->
