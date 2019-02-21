@@ -21,7 +21,6 @@ import "./functions/genfrac";
 import "./functions/horizBrace";
 import "./functions/href";
 import "./functions/htmlmathml";
-import "./functions/includegraphics";
 import "./functions/kern";
 import "./functions/lap";
 import "./functions/math";

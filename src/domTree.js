@@ -264,69 +264,6 @@ export class Anchor implements HtmlDomNode {
     }
 }
 
-/**
- * This node represents an image embed (<img>) element.
- */
-export class Img implements VirtualNode {
-    src: string;
-    alt: string;
-    classes: string[];
-    height: number;
-    depth: number;
-    maxFontSize: number;
-    style: CssStyle;
-
-    constructor(
-        src: string,
-        alt: string,
-        style: CssStyle,
-    ) {
-        this.alt = alt;
-        this.src = src;
-        this.classes = ["mord"];
-        this.style = style;
-    }
-
-    hasClass(className: string): boolean {
-        return utils.contains(this.classes, className);
-    }
-
-    toNode(): Node {
-        const node = document.createElement("img");
-        node.src = this.src;
-        node.alt = this.alt;
-        node.className = "mord";
-
-        // Apply inline styles
-        for (const style in this.style) {
-            if (this.style.hasOwnProperty(style)) {
-                // $FlowFixMe
-                node.style[style] = this.style[style];
-            }
-        }
-
-        return node;
-    }
-
-    toMarkup(): string {
-        let markup = `<img  src='${this.src} 'alt='${this.alt}' `;
-
-        // Add the styles, after hyphenation
-        let styles = "";
-        for (const style in this.style) {
-            if (this.style.hasOwnProperty(style)) {
-                styles += `${utils.hyphenate(style)}:${this.style[style]};`;
-            }
-        }
-        if (styles) {
-            markup += ` style="${utils.escape(styles)}"`;
-        }
-
-        markup += "'/>";
-        return markup;
-    }
-}
-
 const iCombinations = {
     'î': '\u0131\u0302',
     'ï': '\u0131\u0308',
