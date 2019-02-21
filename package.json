@@ -79,7 +79,7 @@
     "test:lint:js": "eslint *.js src static test contrib dockers website",
     "test:lint:css": "stylelint src/katex.less static/main.css contrib/**/*.css website/static/**/*.css",
     "test:flow": "flow",
-    "test:jest": "NODE_PATH=./:$NODE_PATH jest",
+    "test:jest": "jest",
     "test:jest:watch": "jest --watch",
     "test:jest:update": "jest --updateSnapshot",
     "test:jest:coverage": "jest --coverage",
@@ -125,6 +125,9 @@
     "testURL": "http://localhost/",
     "transform": {
       "^.+\\.js$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "^katex$": "<rootDir>/katex.js"
     }
   }
 }
