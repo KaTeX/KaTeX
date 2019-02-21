@@ -1,6 +1,31 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [v0.10.1]
+### Added
+- ECMAScript module for contrib (#1624)
+- mhchem extension (#1436)
+- auto-render: optional pre-process callback (#1784)
+- \argmax and \argmin (#1820)
+- \textbackslash and \textasciicircum (#1839)
+- leqno and fleqn support (#1814)
+
+### Changed
+- Include only necessary fonts for target environment specified by Browserslist (#1674)
+
+### Fixed
+- Support blackboard bold in text mode (#1757)
+- Fix spacings in semisimple groups (#1706)
+- Fix parsing comments (#1789)
+- Fix \\ and \newline after operator (#1796)
+- Fix \hphantom width (#1809)
+- Remove double encoding in MathML (#1813)
+- Fix Unicode bigcup (#1836)
+- Fix \genfrac w/ empty delimiter arguments (#1816)
+- \fbox inherits default color (#1847)
+- Fix \not and \neq on Chrome 72 (#1852)
+
+
 ## [v0.10.0]
 ### Added
 - Unicode: °, delimiters, 1D400-1D7FF, \ll, \lll, ≘≙≚≛≝≞≟, Unicode Mathematical Alphanumeric Symbols, ⟂ ¬ ⊨ ‼ ∌ ≲ ⩽ ⪅ ≶ ⋚ ⪋, corner, ⟦⟧ (#1203, #1207, #1260, #1273, #1274, #1232, #1377, #1389, #1459, #1750)
