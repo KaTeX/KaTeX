@@ -542,14 +542,10 @@
         padding: 0 0.3em 0 0.3em;      // \fboxsep = 3pt
     }
 
-    .fbox {
-        box-sizing: border-box;
-        border: 0.04em solid black;   // \fboxrule = 0.4pt
-    }
-
+    .fbox,
     .fcolorbox {
         box-sizing: border-box;
-        border: 0.04em solid;   // \fboxrule = 0.4pt
+        border: 0.04em solid;         // \fboxrule = 0.4pt
     }
 
     .cancel-pad {
@@ -587,4 +583,15 @@
             }
         }
     }
+}
+
+// Left-justified tags (default is right-justified)
+.katex-display.leqno > .katex > .katex-html > .tag {
+    left: 0;
+    right: auto;
+}
+
+// Flush-left display math
+.katex-display.fleqn > .katex {
+    text-align: left;
 }

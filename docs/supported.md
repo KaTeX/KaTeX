@@ -4,7 +4,7 @@ title: Supported Functions
 ---
 This is a list of TeX functions supported by KaTeX. It is sorted into logical groups.
 
-There is a similar [Support Table](./support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
+There is a similar [Support Table](support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
 
 <link rel="stylesheet" href="/static/katex.min.css"/>
 <style>
@@ -360,7 +360,8 @@ Direct Input: $+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ 
 | $\cos$ `\cos` | $\exp$ `\exp`  | $\tanh$ `\tanh`| $\min$ `\min` |
 | $\cosec$ `\cosec`  | $\hom$ `\hom`  | $\tg$ `\tg`  | $\Pr$ `\Pr`  |
 | $\cosh$ `\cosh`| $\ker$ `\ker`  | $\th$ `\th`  | $\sup$ `\sup` |
-| $\cot$ `\cot` | $\lg$ `\lg`| $\operatorname{f}$ `\operatorname{f}` |
+| $\cot$ `\cot` | $\lg$ `\lg`| $\operatorname{f}$ `\operatorname{f}` | $\argmax$ `\argmax` |
+|$\argmin$ `\argmin`|
 
 Functions on the right column of this table can take `\limits`.
 
@@ -569,32 +570,33 @@ In cases where KaTeX fonts do not have a bold glyph, `\pmb` can simulate one. Fo
 |$\text{---}$ `\text{---}`|$\dotsm$ `\dotsm`|$\dagger$ `\dagger`
 |$\text{\textemdash}$ `\text{\textemdash}`|$\dotso$ `\dotso`|$\text{\textdagger}$ `\text{\textdagger}`
 |$\text{\textasciitilde}$ `\text{\textasciitilde}`|$\sdot$ `\sdot`|$\ddag$ `\ddag`
-|$`$ <code>`</code>|$\mathellipsis$ `\mathellipsis`|$\ddagger$ `\ddagger`
-|$\text{\textquoteleft}$ `text{\textquoteleft}`|$\text{\textellipsis}$ `\text{\textellipsis}`|$\text{\textdaggerdbl}$ `\text{\textdaggerdbl}`
-|$\lq$ `\lq`|$\Box$ `\Box`|$\Dagger$ `\Dagger`
-|$\text{\textquoteright}$ `\text{\textquoteright}`|$\square$ `\square`|$\angle$ `\angle`
-|$\rq$ `\rq`|$\blacksquare$ `\blacksquare`|$\measuredangle$ `\measuredangle`
-|$\text{\textquotedblleft}$ `\text{\textquotedblleft}`|$\triangle$ `\triangle`|$\sphericalangle$ `\sphericalangle`
-|$"$ `"`|$\triangledown$ `\triangledown`|$\top$ `\top`
-|$\text{\textquotedblright}$ `\text{\textquotedblright}`|$\triangleleft$ `\triangleleft`|$\bot$ `\bot`
-|$\colon$ `\colon`|$\triangleright$ `\triangleright`|$\$$ `\$`
-|$\backprime$ `\backprime`|$\bigtriangledown$ `\bigtriangledown`|$\text{\textdollar}$ `\text{\textdollar}`
-|$\prime$ `\prime`|$\bigtriangleup$ `\bigtriangleup`|$\pounds$ `\pounds`
-|$\text{\textless}$ `\text{\textless}`|$\blacktriangle$ `\blacktriangle`|$\mathsterling$ `\mathsterling`
-|$\text{\textgreater}$ `\text{\textgreater}`|$\blacktriangledown$ `\blacktriangledown`|$\text{\textsterling}$ `\text{\textsterling}`
-|$\text{\textbar}$ `\text{\textbar}`|$\blacktriangleleft$ `\blacktriangleleft`|$\yen$ `\yen`
-|$\text{\textbardbl}$ `\text{\textbardbl}`|$\blacktriangleright$ `\blacktriangleright`|$\surd$ `\surd`
-|$\text{\textbraceleft}$ `\text{\textbraceleft}`|$\diamond$ `\diamond`|$\degree$ `\degree`
-|$\text{\textbraceright}$ `\text{\textbraceright}`|$\Diamond$ `\Diamond`|$\text{\textdegree}$ `\text{\textdegree}`
-|$\text{\P}$ `\text{\P}`|$\lozenge$ `\lozenge`|$\mho$ `\mho`
-|$\text{\S}$ `\text{\S}`|$\blacklozenge$ `\blacklozenge`|$\diagdown$ `\diagdown`
-|$\text{\sect}$ `\text{\sect}`|$\star$ `\star`|$\diagup$ `\diagup`
-|$\copyright$ `\copyright`|$\bigstar$ `\bigstar`|$\flat$ `\flat`
-|$\circledR$ `\circledR`|$\clubsuit$ `\clubsuit`|$\natural$ `\natural`
-|$\text{\textregistered}$ `\text{\textregistered}`|$\clubs$ `\clubs`|$\sharp$ `\sharp`
-|$\circledS$ `\circledS`|$\diamondsuit$ `\diamondsuit`|$\heartsuit$ `\heartsuit`
-|$\text{\textcircled a}$ `\text{\textcircled a}`|$\diamonds$ `\diamonds`|$\hearts$ `\hearts`
-|$\maltese$ `\maltese`|$\spadesuit$ `\spadesuit`|$\spades$ `\spades`
+|$\text{\textasciicircum}$ `\text{\textasciicircum}`|$\mathellipsis$ `\mathellipsis`|$\ddagger$ `\ddagger`
+|$`$ <code>`</code>|$\text{\textellipsis}$ `\text{\textellipsis}`|$\text{\textdaggerdbl}$ `\text{\textdaggerdbl}`
+|$\text{\textquoteleft}$ `text{\textquoteleft}`|$\Box$ `\Box`|$\Dagger$ `\Dagger`
+|$\lq$ `\lq`|$\square$ `\square`|$\angle$ `\angle`
+|$\text{\textquoteright}$ `\text{\textquoteright}`|$\blacksquare$ `\blacksquare`|$\measuredangle$ `\measuredangle`
+|$\rq$ `\rq`|$\triangle$ `\triangle`|$\sphericalangle$ `\sphericalangle`
+|$\text{\textquotedblleft}$ `\text{\textquotedblleft}`|$\triangledown$ `\triangledown`|$\top$ `\top`
+|$"$ `"`|$\triangleleft$ `\triangleleft`|$\bot$ `\bot`
+|$\text{\textquotedblright}$ `\text{\textquotedblright}`|$\triangleright$ `\triangleright`|$\$$ `\$`
+|$\colon$ `\colon`|$\bigtriangledown$ `\bigtriangledown`|$\text{\textdollar}$ `\text{\textdollar}`
+|$\backprime$ `\backprime`|$\bigtriangleup$ `\bigtriangleup`|$\pounds$ `\pounds`
+|$\prime$ `\prime`|$\blacktriangle$ `\blacktriangle`|$\mathsterling$ `\mathsterling`
+|$\text{\textless}$ `\text{\textless}`|$\blacktriangledown$ `\blacktriangledown`|$\text{\textsterling}$ `\text{\textsterling}`
+|$\text{\textgreater}$ `\text{\textgreater}`|$\blacktriangleleft$ `\blacktriangleleft`|$\yen$ `\yen`
+|$\text{\textbar}$ `\text{\textbar}`|$\blacktriangleright$ `\blacktriangleright`|$\surd$ `\surd`
+|$\text{\textbardbl}$ `\text{\textbardbl}`|$\diamond$ `\diamond`|$\degree$ `\degree`
+|$\text{\textbraceleft}$ `\text{\textbraceleft}`|$\Diamond$ `\Diamond`|$\text{\textdegree}$ `\text{\textdegree}`
+|$\text{\textbraceright}$ `\text{\textbraceright}`|$\lozenge$ `\lozenge`|$\mho$ `\mho`
+|$\text{\textbackslash}$ `\text{\textbackslash}`|$\blacklozenge$ `\blacklozenge`|$\diagdown$ `\diagdown`
+|$\text{\P}$ `\text{\P}`|$\star$ `\star`|$\diagup$ `\diagup`
+|$\text{\S}$ `\text{\S}`|$\bigstar$ `\bigstar`|$\flat$ `\flat`
+|$\text{\sect}$ `\text{\sect}`|$\clubsuit$ `\clubsuit`|$\natural$ `\natural`
+|$\copyright$ `\copyright`|$\clubs$ `\clubs`|$\sharp$ `\sharp`
+|$\circledR$ `\circledR`|$\diamondsuit$ `\diamondsuit`|$\heartsuit$ `\heartsuit`
+|$\text{\textregistered}$ `\text{\textregistered}`|$\diamonds$ `\diamonds`|$\hearts$ `\hearts`
+|$\circledS$ `\circledS`|$\spadesuit$ `\spadesuit`|$\spades$ `\spades`
+|$\text{\textcircled a}$ `\text{\textcircled a}`|$\maltese$ `\maltese`||
 
 Direct Input: $£ ¥ ∇ ∞ · ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓ …  ⋮  ⋯  ⋱  !$ ‼
 

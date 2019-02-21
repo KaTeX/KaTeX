@@ -2,7 +2,7 @@
 id: support_table
 title: Support Table
 ---
-This is a list of TeX functions, sorted alphabetically. This list includes functions that KaTeX supports and some that it doesn't support. There is a similar page, with functions [sorted by type](./supported.md).
+This is a list of TeX functions, sorted alphabetically. This list includes functions that KaTeX supports and some that it doesn't support. There is a similar page, with functions [sorted by type](supported.md).
 
 If you know the shape of a character, but not its name, [Detexify](http://detexify.kirelabs.org/classify.html) can help.
 
@@ -94,6 +94,8 @@ table td {
 |\arctan|$\arctan$||
 |\arctg|$\arctg$||
 |\arg|$\arg$||
+|\argmax|$\argmax$||
+|\argmin|$\argmin$||
 |{array}|$\begin{array}{cc}a&b\\c&d\end{array}$ | `\begin{array}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{array}`|
 |\array|<span style="color:firebrick;">Not supported</span>|see `{array}`|
 |\arraystretch|$\def\arraystretch{1.5}\begin{array}{cc}a&b\\c&d\end{array}$|`\def\arraystretch{1.5}`<br>`\begin{array}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{array}`|
@@ -986,6 +988,8 @@ table td {
 |\TeX|$\TeX$||
 |\text|$\text{ yes }\&\text{ no }$|`\text{ yes }\&\text{ no }`|
 |\textasciitilde|$\text{\textasciitilde}$|`\text{\textasciitilde}`|
+|\textasciicircum|$\text{\textasciicircum}$|`\text{\textasciicircum}`|
+|\textbackslash|$\text{\textbackslash}$|`\text{\textbackslash}`|
 |\textbar|$\text{\textbar}$|`\text{\textbar}`|
 |\textbardbl|$\text{\textbardbl}$|`\text{\textbardbl}`|
 |\textbf|$\textbf{AaBb123}$|`\textbf{AaBb123}`|
