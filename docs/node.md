@@ -22,7 +22,7 @@ yarn global add katex
 ```
 
 ### Building from Source
-To build you will need Git, Node.js 6.9 or later, and Yarn.
+To build you will need Git, Node.js 8 or later, and Yarn.
 
 Clone a copy of the GitHub source repository:
 ```bash
