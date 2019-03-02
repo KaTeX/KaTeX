@@ -1,6 +1,7 @@
 ---
-id: autorender
+id: version-0.10.1-autorender
 title: Auto-render Extension
+original_id: autorender
 ---
 This is an extension to automatically render all of the math inside of text. It
 searches all of the text nodes within a given element for the given delimiters,

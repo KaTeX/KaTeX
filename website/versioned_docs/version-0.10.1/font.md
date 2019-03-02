@@ -1,6 +1,7 @@
 ---
-id: font
+id: version-0.10.1-font
 title: Font
+original_id: font
 ---
 By changing the variables in the `fonts.less` file at the [katex-fonts submodule](https://github.com/KaTeX/katex-fonts/),
 several properties of the way fonts are used can be changed.

@@ -36,8 +36,8 @@
         demoInput.value = data.code;
     }
 
-    var katexOptions = ["displayMode", "throwOnError", "errorColor", "strict",
-        "macros"].map(function(id) {
+    var katexOptions = ["displayMode", "leqno", "fleqn", "throwOnError",
+        "errorColor", "strict", "macros"].map(function(id) {
             var el = document.getElementById(id);
             if (el.type === "checkbox") {
                 if (typeof data[id] === "boolean") {

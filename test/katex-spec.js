@@ -646,6 +646,8 @@ describe("A genfrac builder", function() {
         expect("\\cfrac{x}{y}").toBuild();
         expect("\\genfrac ( ] {0.06em}{0}{a}{b+c}").toBuild();
         expect("\\genfrac ( ] {0.8pt}{}{a}{b+c}").toBuild();
+        expect("\\genfrac {} {} {0.8pt}{}{a}{b+c}").toBuild();
+        expect("\\genfrac [ {} {0.8pt}{}{a}{b+c}").toBuild();
     });
 });
 
@@ -2008,6 +2010,17 @@ describe("A bin builder", function() {
     });
 });
 
+describe("A \\phantom builder and \\smash builder", function() {
+    it("should both build a mord", function() {
+        expect(getBuilt`\hphantom{a}`[0].classes).toContain("mord");
+        expect(getBuilt`a\hphantom{=}b`[2].classes).toContain("mord");
+        expect(getBuilt`a\hphantom{+}b`[2].classes).toContain("mord");
+        expect(getBuilt`\smash{a}`[0].classes).toContain("mord");
+        expect(getBuilt`\smash{=}`[0].classes).toContain("mord");
+        expect(getBuilt`a\smash{+}b`[2].classes).toContain("mord");
+    });
+});
+
 describe("A markup generator", function() {
     it("marks trees up", function() {
         // Just a few quick sanity checks here...
@@ -2462,15 +2475,15 @@ describe("A smash parser", function() {
 
 describe("A smash builder", function() {
     it("should not fail", function() {
-        expect`\smash{x}`.toBuild();
-        expect`\smash{x^2}`.toBuild();
-        expect`\smash{x}^2`.toBuild();
-        expect`\smash x`.toBuild();
+        expect`\smash{x}`.toBuild(nonstrictSettings);
+        expect`\smash{x^2}`.toBuild(nonstrictSettings);
+        expect`\smash{x}^2`.toBuild(nonstrictSettings);
+        expect`\smash x`.toBuild(nonstrictSettings);
 
-        expect`\smash[b]{x}`.toBuild();
-        expect`\smash[b]{x^2}`.toBuild();
-        expect`\smash[b]{x}^2`.toBuild();
-        expect`\smash[b] x`.toBuild();
+        expect`\smash[b]{x}`.toBuild(nonstrictSettings);
+        expect`\smash[b]{x^2}`.toBuild(nonstrictSettings);
+        expect`\smash[b]{x}^2`.toBuild(nonstrictSettings);
+        expect`\smash[b] x`.toBuild(nonstrictSettings);
     });
 });
 
@@ -2686,6 +2699,9 @@ describe("A raw text parser", function() {
         // In the next line, the first character passed to \includegraphics is a
         // Unicode combining character. So this is a test that the parser will catch a bad string.
         expect("\\includegraphics[\u030aheight=0.8em, totalheight=0.9em, width=0.9em]{" + "https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").not.toParse();
+    });
+    it("should return null for a omitted optional string", function() {
+        expect("\\includegraphics{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").toParse();
     });
 });
 
@@ -3124,6 +3140,14 @@ describe("A macro expander", function() {
     it("should expand \\liminf as expected", () => {
         expect`\liminf`.toParseLike`\mathop{\operatorname{lim\,inf}}\limits`;
     });
+
+    it("should expand \\argmin as expected", () => {
+        expect`\argmin`.toParseLike`\mathop{\operatorname{arg\,min}}\limits`;
+    });
+
+    it("should expand \\argmax as expected", () => {
+        expect`\argmax`.toParseLike`\mathop{\operatorname{arg\,max}}\limits`;
+    });
 });
 
 describe("\\tag support", function() {
@@ -3148,6 +3172,29 @@ describe("\\tag support", function() {
     it("should handle \\tag* like \\tag", () => {
         expect`\tag{hi}x+y`.toParseLike(r`\tag*{({hi})}x+y`, displayMode);
     });
+});
+
+describe("leqno and fleqn rendering options", () => {
+    const expr = r`\tag{hi}x+y`;
+    for (const opt of ["leqno", "fleqn"]) {
+        it(`should not add ${opt} class by default`, () => {
+            const settings = new Settings({displayMode: true});
+            const built = katex.__renderToDomTree(expr, settings);
+            expect(built.classes).not.toContain(opt);
+        });
+        it(`should not add ${opt} class when false`, () => {
+            const settings = new Settings({displayMode: true});
+            settings[opt] = false;
+            const built = katex.__renderToDomTree(expr, settings);
+            expect(built.classes).not.toContain(opt);
+        });
+        it(`should add ${opt} class when true`, () => {
+            const settings = new Settings({displayMode: true});
+            settings[opt] = true;
+            const built = katex.__renderToDomTree(expr, settings);
+            expect(built.classes).toContain(opt);
+        });
+    }
 });
 
 describe("\\@binrel automatic bin/rel/ord", () => {
@@ -3401,6 +3448,15 @@ describe("Newlines via \\\\ and \\newline", function() {
     it("array redefines and resets \\\\", () => {
         expect`a\\b\begin{matrix}x&y\\z&w\end{matrix}\\c`
             .toParseLike`a\newline b\begin{matrix}x&y\cr z&w\end{matrix}\newline c`;
+    });
+
+    it("\\\\ causes newline, even after mrel and mop", () => {
+        const markup = katex.renderToString(r`M = \\ a + \\ b \\ c`);
+        // Ensure newlines appear outside base spans (because, in this regexp,
+        // base span occurs immediately after each newline span).
+        expect(markup).toMatch(
+            /(<span class="base">.*?<\/span><span class="mspace newline"><\/span>){3}<span class="base">/);
+        expect(markup).toMatchSnapshot();
     });
 });
 

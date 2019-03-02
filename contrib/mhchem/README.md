@@ -4,10 +4,10 @@ This extension adds to KaTeX the `\ce` and `\pu` functions from the [mhchem](htt
 
 ### Usage
 
-This extension isn't part of core KaTeX, so the script should be separately included. Write the following line into the HTML page’s `<head>`. Place it *after* the line that calls `katex.js`.
+This extension isn't part of core KaTeX, so the script should be separately included. Write the following line into the HTML page's `<head>`. Place it *after* the line that calls `katex.js`.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mhchem.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/contrib/mhchem.min.js"></script>
 ```
 
 ### Syntax

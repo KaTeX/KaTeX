@@ -1,6 +1,7 @@
 ---
-id: options
+id: version-0.10.1-options
 title: Options
+original_id: options
 ---
 You can provide an object of options as the last argument to [`katex.render` and `katex.renderToString`](api.md). Available options are:
 

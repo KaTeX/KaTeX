@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.10.1-pre",
+  "version": "0.10.2-pre",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "homepage": "https://katex.org",
@@ -17,59 +17,60 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/plugin-proposal-class-properties": "^7.0.0",
-    "@babel/plugin-transform-runtime": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
+    "@babel/core": "^7.3.3",
+    "@babel/plugin-proposal-class-properties": "^7.3.3",
+    "@babel/plugin-transform-runtime": "^7.2.0",
+    "@babel/preset-env": "^7.3.1",
     "@babel/preset-flow": "^7.0.0",
     "@babel/register": "^7.0.0",
-    "@babel/runtime": "^7.0.0",
-    "babel-core": "^7.0.0-bridge.0",
+    "@babel/runtime": "^7.3.1",
     "babel-eslint": "^10.0.1",
-    "babel-jest": "^23.0.1",
-    "babel-loader": "^8.0.2",
-    "babel-plugin-istanbul": "^5.0.1",
+    "babel-jest": "^24.1.0",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-istanbul": "^5.1.1",
     "babel-plugin-version-inline": "^1.0.0",
     "benchmark": "^2.1.4",
-    "codecov": "^3.0.4",
-    "css-loader": "^1.0.0",
-    "cssnano": "^4.0.1",
-    "eslint": "^5.0.0",
-    "eslint-plugin-flowtype": "^3.0.0",
-    "eslint-plugin-react": "^7.10.0",
+    "browserslist": "^4.4.1",
+    "caniuse-lite": "^1.0.30000938",
+    "codecov": "^3.2.0",
+    "css-loader": "^2.1.0",
+    "cssnano": "^4.1.10",
+    "eslint": "^5.14.1",
+    "eslint-plugin-flowtype": "^3.4.2",
+    "eslint-plugin-react": "^7.12.4",
     "eslint-plugin-transform-runtime-aliasing": "^2.0.0",
-    "file-loader": "^2.0.0",
-    "flow-bin": "^0.84.0",
-    "fs-extra": "^7.0.0",
-    "husky": "^1.0.0-rc.8",
-    "istanbul-api": "^2.0.5",
-    "istanbul-lib-coverage": "^2.0.1",
-    "jest": "^23.5.0",
-    "jest-serializer-html": "^5.0.0",
-    "js-yaml": "^3.10.0",
+    "file-loader": "^3.0.1",
+    "flow-bin": "^0.93.0",
+    "fs-extra": "^7.0.1",
+    "husky": "^1.3.1",
+    "istanbul-api": "^2.1.1",
+    "istanbul-lib-coverage": "^2.0.3",
+    "jest": "^24.1.0",
+    "jest-serializer-html": "^6.0.0",
+    "js-yaml": "^3.12.1",
     "json-stable-stringify": "^1.0.1",
     "jspngopt": "^0.2.0",
-    "less": "^3.0.4",
+    "less": "^3.9.0",
     "less-loader": "^4.1.0",
-    "mini-css-extract-plugin": "^0.4.0",
+    "mini-css-extract-plugin": "^0.5.0",
     "mkdirp": "^0.5.1",
-    "pako": "1.0.6",
+    "pako": "^1.0.8",
     "postcss-loader": "^3.0.0",
     "query-string": "^6.2.0",
-    "rimraf": "^2.6.2",
-    "rollup": "^0.66.0",
-    "rollup-plugin-alias": "^1.4.0",
-    "rollup-plugin-babel": "^4.0.2",
+    "rimraf": "^2.6.3",
+    "rollup": "^1.2.2",
+    "rollup-plugin-alias": "^1.5.1",
+    "rollup-plugin-babel": "^4.3.2",
     "selenium-webdriver": "^3.6.0",
     "sri-toolbox": "^0.2.0",
-    "style-loader": "^0.23.0",
-    "stylelint": "9.6.0",
-    "stylelint-config-standard": "^18.0.0",
-    "uglifyjs-webpack-plugin": "^2.0.0",
-    "webpack": "^4.9.1",
-    "webpack-bundle-analyzer": "^3.0.0",
-    "webpack-cli": "^3.0.1",
-    "webpack-dev-server": "^3.1.4"
+    "style-loader": "^0.23.1",
+    "stylelint": "^9.10.1",
+    "stylelint-config-standard": "^18.2.0",
+    "terser-webpack-plugin": "^1.2.2",
+    "webpack": "^4.29.5",
+    "webpack-bundle-analyzer": "^3.0.4",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.2.0"
   },
   "bin": "cli.js",
   "scripts": {
@@ -87,7 +88,7 @@
     "test:perf": "yarn prestart && NODE_ENV=test node test/perf-test.js",
     "clean": "rm -rf dist/ node_modules/",
     "clean-install": "yarn clean && yarn",
-    "prestart": "yarn check && node src/unicodeMake.js",
+    "prestart": "node src/unicodeMake.js",
     "start": "webpack-dev-server --hot --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
     "build": "yarn prestart && rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c && webpack",
@@ -96,7 +97,7 @@
     "dist:zip": "rimraf katex/ katex.tar.gz katex.zip && cp -R dist katex && tar czf katex.tar.gz katex && zip -rq katex.zip katex && rimraf katex/"
   },
   "dependencies": {
-    "commander": "^2.16.0"
+    "commander": "^2.19.0"
   },
   "husky": {
     "hooks": {
@@ -112,7 +113,9 @@
       "!src/unicodeMake.js",
       "!contrib/mhchem/**"
     ],
-    "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/setup.js"
+    ],
     "snapshotSerializers": [
       "jest-serializer-html"
     ],
@@ -122,6 +125,9 @@
     "testURL": "http://localhost/",
     "transform": {
       "^.+\\.js$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "^katex$": "<rootDir>/katex.js"
     }
   }
 }

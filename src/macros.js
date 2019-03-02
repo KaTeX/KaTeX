@@ -876,3 +876,10 @@ defineMacro("\\thetasym", "\\vartheta");
 // TODO: defineMacro("\\varcoppa", "\\\mbox{\\coppa}");
 defineMacro("\\weierp", "\\wp");
 defineMacro("\\Zeta", "\\mathrm{Z}");
+
+//////////////////////////////////////////////////////////////////////
+// statmath.sty
+// https://ctan.math.illinois.edu/macros/latex/contrib/statmath/statmath.pdf
+
+defineMacro("\\argmin", "\\DOTSB\\mathop{\\operatorname{arg\\,min}}\\limits");
+defineMacro("\\argmax", "\\DOTSB\\mathop{\\operatorname{arg\\,max}}\\limits");

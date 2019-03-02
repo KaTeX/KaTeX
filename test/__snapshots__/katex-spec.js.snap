@@ -1140,6 +1140,118 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
 
 `;
 
+exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel and mop 1`] = `
+
+<span class="katex">
+  <span class="katex-mathml">
+    <math>
+      <semantics>
+        <mrow>
+          <mi>
+            M
+          </mi>
+          <mo>
+            =
+          </mo>
+          <mspace linebreak="newline">
+          </mspace>
+          <mi>
+            a
+          </mi>
+          <mo>
+            +
+          </mo>
+          <mspace linebreak="newline">
+          </mspace>
+          <mi>
+            b
+          </mi>
+          <mspace linebreak="newline">
+          </mspace>
+          <mi>
+            c
+          </mi>
+        </mrow>
+        <annotation encoding="application/x-tex">
+          M = \\\\ a + \\\\ b \\\\ c
+        </annotation>
+      </semantics>
+    </math>
+  </span>
+  <span class="katex-html"
+        aria-hidden="true"
+  >
+    <span class="base">
+      <span class="strut"
+            style="height:0.68333em;vertical-align:0em;"
+      >
+      </span>
+      <span class="mord mathdefault"
+            style="margin-right:0.10903em;"
+      >
+        M
+      </span>
+      <span class="mspace"
+            style="margin-right:0.2777777777777778em;"
+      >
+      </span>
+      <span class="mrel">
+        =
+      </span>
+      <span class="mspace"
+            style="margin-right:0.2777777777777778em;"
+      >
+      </span>
+    </span>
+    <span class="mspace newline">
+    </span>
+    <span class="base">
+      <span class="strut"
+            style="height:0.66666em;vertical-align:-0.08333em;"
+      >
+      </span>
+      <span class="mord mathdefault">
+        a
+      </span>
+      <span class="mspace"
+            style="margin-right:0.2222222222222222em;"
+      >
+      </span>
+      <span class="mbin">
+        +
+      </span>
+      <span class="mspace"
+            style="margin-right:0.2222222222222222em;"
+      >
+      </span>
+    </span>
+    <span class="mspace newline">
+    </span>
+    <span class="base">
+      <span class="strut"
+            style="height:0.69444em;vertical-align:0em;"
+      >
+      </span>
+      <span class="mord mathdefault">
+        b
+      </span>
+    </span>
+    <span class="mspace newline">
+    </span>
+    <span class="base">
+      <span class="strut"
+            style="height:0.43056em;vertical-align:0em;"
+      >
+      </span>
+      <span class="mord mathdefault">
+        c
+      </span>
+    </span>
+  </span>
+</span>
+
+`;
+
 exports[`href and url commands should not affect spacing around 1`] = `
 [
   {
