@@ -864,7 +864,7 @@ defineMacro("\\Rarr", "\\Rightarrow");
 defineMacro("\\real", "\\Re");
 defineMacro("\\reals", "\\mathbb{R}");
 defineMacro("\\Reals", "\\mathbb{R}");
-defineMacro("\\Rho", "\\mathrm{R}");
+defineMacro("\\Rho", "\\mathrm{P}");
 defineMacro("\\sdot", "\\cdot");
 defineMacro("\\sect", "\\S");
 defineMacro("\\spades", "\\spadesuit");
