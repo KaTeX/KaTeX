@@ -1,6 +1,6 @@
 ---
 name: Rendering bug report
-about: Create a report to help us improve
+about: Report functionality that renders incorrectly/poorly
 title: ''
 labels: bug
 assignees: ''
