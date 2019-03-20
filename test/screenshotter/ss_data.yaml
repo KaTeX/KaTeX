@@ -115,9 +115,10 @@ ExtensibleArrows: |
     \end{array}
 FractionTest: |
     \begin{array}{l}
-        \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}\; \cfrac{1}{1+\cfrac{1}{x}} \xrightarrow[\dfrac g h]{\displaystyle\frac g h} \\[2.5em]
-        {a \brace b} \; {a \brack b} \; \genfrac \{ ]{0.8pt}{0}{a}{b}
-        \; {a \above1.0pt b} \xrightarrow [2.\, \dfrac c d] {1.\, \displaystyle\frac c d}
+        \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2} 
+        \; {a \brace b} \; {a \brack b} \\[1em]
+        \genfrac \{ ]{0.8pt}{0}{a}{b} \; {a \above1.0pt b} \; \cfrac{1}{1+\cfrac{1}{x}} 
+         \xrightarrow[\dfrac g h]{\displaystyle\frac g h} \; \xrightarrow [2.\, \dfrac c d] {1.\, \displaystyle\frac c d}
     \end{array}
 Functions: \sin\cos\tan\ln\log
 Gathered: |
