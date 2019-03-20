@@ -26,6 +26,10 @@ const program = require("commander")
         "Render math in display mode, which puts the math in display style " +
         "(so \\int and \\sum are large, for example), and centers the math " +
         "on the page on its own line.")
+    .option("--leqno",
+        "Render display math in leqno style (left-justified tags).")
+    .option("--fleqn",
+        "Render display math flush left.")
     .option("-t, --no-throw-on-error",
         "Render errors (in the color given by --error-color) instead of " +
         "throwing a ParseError exception when encountering an error.")

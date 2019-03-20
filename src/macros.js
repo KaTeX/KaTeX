@@ -864,7 +864,7 @@ defineMacro("\\Rarr", "\\Rightarrow");
 defineMacro("\\real", "\\Re");
 defineMacro("\\reals", "\\mathbb{R}");
 defineMacro("\\Reals", "\\mathbb{R}");
-defineMacro("\\Rho", "\\mathrm{R}");
+defineMacro("\\Rho", "\\mathrm{P}");
 defineMacro("\\sdot", "\\cdot");
 defineMacro("\\sect", "\\S");
 defineMacro("\\spades", "\\spadesuit");
@@ -876,3 +876,10 @@ defineMacro("\\thetasym", "\\vartheta");
 // TODO: defineMacro("\\varcoppa", "\\\mbox{\\coppa}");
 defineMacro("\\weierp", "\\wp");
 defineMacro("\\Zeta", "\\mathrm{Z}");
+
+//////////////////////////////////////////////////////////////////////
+// statmath.sty
+// https://ctan.math.illinois.edu/macros/latex/contrib/statmath/statmath.pdf
+
+defineMacro("\\argmin", "\\DOTSB\\mathop{\\operatorname{arg\\,min}}\\limits");
+defineMacro("\\argmax", "\\DOTSB\\mathop{\\operatorname{arg\\,max}}\\limits");

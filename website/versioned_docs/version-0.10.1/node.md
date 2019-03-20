@@ -1,6 +1,7 @@
 ---
-id: node
+id: version-0.10.1-node
 title: Node.js
+original_id: node
 ---
 ## Installation
 ### npm
@@ -22,7 +23,7 @@ yarn global add katex
 ```
 
 ### Building from Source
-To build you will need Git, Node.js 8 or later, and Yarn.
+To build you will need Git, Node.js 6.9 or later, and Yarn.
 
 Clone a copy of the GitHub source repository:
 ```bash

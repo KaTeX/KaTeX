@@ -273,7 +273,7 @@ const singleCharBigOps: {[string]: string} = {
     "\u22c0": "\\bigwedge",
     "\u22c1": "\\bigvee",
     "\u22c2": "\\bigcap",
-    "\u22c3": "\\bigcap",
+    "\u22c3": "\\bigcup",
     "\u2a00": "\\bigodot",
     "\u2a01": "\\bigoplus",
     "\u2a02": "\\bigotimes",

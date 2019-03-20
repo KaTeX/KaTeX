@@ -16,6 +16,20 @@ const optionsFromSettings = function(settings: Settings) {
     });
 };
 
+const displayWrap = function(node: DomSpan, settings: Settings): DomSpan {
+    if (settings.displayMode) {
+        const classes = ["katex-display"];
+        if (settings.leqno) {
+            classes.push("leqno");
+        }
+        if (settings.fleqn) {
+            classes.push("fleqn");
+        }
+        node = buildCommon.makeSpan(classes, [node]);
+    }
+    return node;
+};
+
 export const buildTree = function(
     tree: AnyParseNode[],
     expression: string,
@@ -29,11 +43,7 @@ export const buildTree = function(
         mathMLNode, htmlNode,
     ]);
 
-    if (settings.displayMode) {
-        return buildCommon.makeSpan(["katex-display"], [katexNode]);
-    } else {
-        return katexNode;
-    }
+    return displayWrap(katexNode, settings);
 };
 
 export const buildHTMLTree = function(
@@ -44,11 +54,7 @@ export const buildHTMLTree = function(
     const options = optionsFromSettings(settings);
     const htmlNode = buildHTML(tree, options);
     const katexNode = buildCommon.makeSpan(["katex"], [htmlNode]);
-    if (settings.displayMode) {
-        return buildCommon.makeSpan(["katex-display"], [katexNode]);
-    } else {
-        return katexNode;
-    }
+    return displayWrap(katexNode, settings);
 };
 
 export default buildTree;

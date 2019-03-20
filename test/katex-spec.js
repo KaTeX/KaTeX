@@ -3140,6 +3140,14 @@ describe("A macro expander", function() {
     it("should expand \\liminf as expected", () => {
         expect`\liminf`.toParseLike`\mathop{\operatorname{lim\,inf}}\limits`;
     });
+
+    it("should expand \\argmin as expected", () => {
+        expect`\argmin`.toParseLike`\mathop{\operatorname{arg\,min}}\limits`;
+    });
+
+    it("should expand \\argmax as expected", () => {
+        expect`\argmax`.toParseLike`\mathop{\operatorname{arg\,max}}\limits`;
+    });
 });
 
 describe("\\tag support", function() {
@@ -3164,6 +3172,29 @@ describe("\\tag support", function() {
     it("should handle \\tag* like \\tag", () => {
         expect`\tag{hi}x+y`.toParseLike(r`\tag*{({hi})}x+y`, displayMode);
     });
+});
+
+describe("leqno and fleqn rendering options", () => {
+    const expr = r`\tag{hi}x+y`;
+    for (const opt of ["leqno", "fleqn"]) {
+        it(`should not add ${opt} class by default`, () => {
+            const settings = new Settings({displayMode: true});
+            const built = katex.__renderToDomTree(expr, settings);
+            expect(built.classes).not.toContain(opt);
+        });
+        it(`should not add ${opt} class when false`, () => {
+            const settings = new Settings({displayMode: true});
+            settings[opt] = false;
+            const built = katex.__renderToDomTree(expr, settings);
+            expect(built.classes).not.toContain(opt);
+        });
+        it(`should add ${opt} class when true`, () => {
+            const settings = new Settings({displayMode: true});
+            settings[opt] = true;
+            const built = katex.__renderToDomTree(expr, settings);
+            expect(built.classes).toContain(opt);
+        });
+    }
 });
 
 describe("\\@binrel automatic bin/rel/ord", () => {

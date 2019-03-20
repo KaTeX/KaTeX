@@ -1,6 +1,7 @@
 ---
-id: libs
+id: version-0.10.1-libs
 title: Extensions & Libraries
+original_id: libs
 ---
 ## Extensions
 
