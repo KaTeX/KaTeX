@@ -17,7 +17,9 @@ const htmlBuilder = (group, options) => {
     // function used
     let style = options.style;
     if (group.size === "display") {
-        style = Style.DISPLAY;
+        // Get display style as a default.
+        // If incoming style is sub/sup, use style.text() to get correct size.
+        style = style.id > 3 ? style.text() : Style.DISPLAY;
     } else if (group.size === "text" &&
         style.size === Style.DISPLAY.size) {
         // We're in a \tfrac but incoming style is displaystyle, so:
@@ -69,7 +71,7 @@ const htmlBuilder = (group, options) => {
     let numShift;
     let clearance;
     let denomShift;
-    if (style.size === Style.DISPLAY.size) {
+    if (style.size === Style.DISPLAY.size || group.size === "display") {
         numShift = options.fontMetrics().num1;
         if (ruleWidth > 0) {
             clearance = 3 * ruleSpacing;
