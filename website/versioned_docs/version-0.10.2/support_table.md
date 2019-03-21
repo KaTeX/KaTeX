@@ -1,13 +1,13 @@
 ---
-id: version-0.10.0-support_table
+id: version-0.10.2-support_table
 title: Support Table
 original_id: support_table
 ---
-This is a list of TeX functions, sorted alphabetically. This list includes functions that KaTeX supports and some that it doesn't support. There is a similar page, with functions [sorted by type](./supported.md).
+This is a list of TeX functions, sorted alphabetically. This list includes functions that KaTeX supports and some that it doesn't support. There is a similar page, with functions [sorted by type](supported.md).
 
 If you know the shape of a character, but not its name, [Detexify](http://detexify.kirelabs.org/classify.html) can help.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-dbVIfZGuN1Yq7/1Ocstc1lUEm+AT+/rCkibIcC/OmWo5f0EA48Vf8CytHzGrSwbQ" crossorigin="anonymous"/>
 <style>
 table tr,
 table td {
@@ -45,6 +45,7 @@ table td {
 |&#060;|$<$||
 |\\=|$\text{\={a}}$|<code>\text{\\={a}}</code>|
 | >|$>$||
+|\\>|$a\>\>{b}$|`a\>\>{b}`|
 |\[|$[$||
 |\]|$]$||
 |{|${a}$|`{a}`|
@@ -94,6 +95,8 @@ table td {
 |\arctan|$\arctan$||
 |\arctg|$\arctg$||
 |\arg|$\arg$||
+|\argmax|$\argmax$||
+|\argmin|$\argmin$||
 |{array}|$\begin{array}{cc}a&b\\c&d\end{array}$ | `\begin{array}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{array}`|
 |\array|<span style="color:firebrick;">Not supported</span>|see `{array}`|
 |\arraystretch|$\def\arraystretch{1.5}\begin{array}{cc}a&b\\c&d\end{array}$|`\def\arraystretch{1.5}`<br>`\begin{array}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{array}`|
@@ -206,7 +209,7 @@ table td {
 |\cdot|$\cdot$||
 |\cdotp|$\cdotp$||
 |\cdots|$\cdots$||
-|\ce |<span style="color:firebrick;">Not supported</span>|A PR is pending
+|\ce |${\mathrm{C}{\vphantom{X}}_{\smash[t]{6}}\mathrm{H}{\vphantom{X}}_{\smash[t]{5}}{-}\mathrm{CHO}}$|`\ce{C6H5-CHO}` Requires an [extension](https://github.com/KaTeX/KaTeX/tree/master/contrib/mhchem/)|
 |\cee|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem
 |\centerdot|$a\centerdot b$|`a\centerdot b`|
 |\cf|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem|
@@ -474,7 +477,7 @@ table td {
 |\impliedby|$P\impliedby Q$|`P\impliedby Q`|
 |\implies|$P\implies Q$|`P\implies Q`|
 |\in|$\in$||
-|\includegraphics|<span style="color:firebrick;">Not supported</span>|[Issue #898](https://github.com/KaTeX/KaTeX/issues/898)|
+|\includegraphics|<span style="color:firebrick;">Not supported</span>|[Issue #898](https://github.com/Khan/KaTeX/issues/898)|
 |\inf|$\inf$||
 |\infin|$\infin$||
 |\infty|$\infty$||
@@ -813,7 +816,7 @@ table td {
 |\providecommand|$\providecommand\greet{\text{Hello}} \greet$|`\providecommand\greet{\text{Hello}} \greet`|
 |\psi|$\psi$||
 |\Psi|$\Psi$||
-|\pu||A PR is pending|
+|\pu |${123~\mathchoice{\textstyle\frac{\mathrm{kJ}}{\mathrm{mol}}}{\frac{\mathrm{kJ}}{\mathrm{mol}}}{\frac{\mathrm{kJ}}{\mathrm{mol}}}{\frac{\mathrm{kJ}}{\mathrm{mol}}}}$|`\pu{123 kJ//mol}` Requires an [extension](https://github.com/KaTeX/KaTeX/tree/master/contrib/mhchem/)|
 
 ## QR
 
@@ -986,6 +989,8 @@ table td {
 |\TeX|$\TeX$||
 |\text|$\text{ yes }\&\text{ no }$|`\text{ yes }\&\text{ no }`|
 |\textasciitilde|$\text{\textasciitilde}$|`\text{\textasciitilde}`|
+|\textasciicircum|$\text{\textasciicircum}$|`\text{\textasciicircum}`|
+|\textbackslash|$\text{\textbackslash}$|`\text{\textbackslash}`|
 |\textbar|$\text{\textbar}$|`\text{\textbar}`|
 |\textbardbl|$\text{\textbardbl}$|`\text{\textbardbl}`|
 |\textbf|$\textbf{AaBb123}$|`\textbf{AaBb123}`|

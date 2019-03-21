@@ -1,5 +1,5 @@
 ---
-id: version-0.10.0-error
+id: version-0.10.2-error
 title: Handling Errors
 original_id: error
 ---
