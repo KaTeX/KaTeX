@@ -28,12 +28,12 @@ const adjustStyle = (group, options) => {
     } else if (group.size === "scriptscript") {
         style = Style.SCRIPTSCRIPT;
     }
-    return style
-}
+    return style;
+};
 
 const htmlBuilder = (group, options) => {
     // Fractions are handled in the TeXbook on pages 444-445, rules 15(a-e).
-    const style = adjustStyle(group, options)
+    const style = adjustStyle(group, options);
 
     const nstyle = style.fracNum();
     const dstyle = style.fracDen();
@@ -195,7 +195,7 @@ const mathmlBuilder = (group, options) => {
         node = new mathMLTree.MathNode("mstyle", [node]);
         const isDisplay = (style.size === Style.DISPLAY.size) ? "true" : "false";
         node.setAttribute("displaystyle", isDisplay);
-        node.setAttribute("scriptlevel", "0"); 
+        node.setAttribute("scriptlevel", "0");
     }
 
     if (!group.hasBarLine) {
