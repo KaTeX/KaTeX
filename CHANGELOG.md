@@ -1,6 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [v0.10.2]
+### Changed
+- Upgrade minimum development Node version to 8 (#1861)
+
+### Fixed
+- Fix capital \Rho (#1870)
+- Improve MathML accents (#1877)
+- Fix nested \dfrac (#1825)
+- Fix \not width on Safari (#1878)
+
+
 ## [v0.10.1]
 ### Added
 - ECMAScript module for contrib (#1624)
