@@ -77,7 +77,7 @@ defineFunction({
     mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(ordargument(group.body), options);
         const phantom = new mathMLTree.MathNode("mphantom", inner);
-        const node = new mathMLTree.MathNode("mphantom", [phantom]);
+        const node = new mathMLTree.MathNode("mpadded", [phantom]);
         node.setAttribute("height", "0px");
         node.setAttribute("depth", "0px");
         return node;
@@ -110,7 +110,7 @@ defineFunction({
     mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(ordargument(group.body), options);
         const phantom = new mathMLTree.MathNode("mphantom", inner);
-        const node = new mathMLTree.MathNode("mphantom", [phantom]);
+        const node = new mathMLTree.MathNode("mpadded", [phantom]);
         node.setAttribute("width", "0px");
         return node;
     },
