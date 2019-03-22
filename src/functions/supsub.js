@@ -217,7 +217,7 @@ defineFunctionBuilders({
         } else if (!group.sub) {
             const base = group.base;
             if (base && base.type === "op" && base.limits &&
-               (options.style === Style.DISPLAY || base.alwaysHandleSupSub)) {
+                (options.style === Style.DISPLAY || base.alwaysHandleSupSub)) {
                 nodeType = "mover";
             } else {
                 nodeType = "msup";
@@ -225,7 +225,7 @@ defineFunctionBuilders({
         } else if (!group.sup) {
             const base = group.base;
             if (base && base.type === "op" && base.limits &&
-            (options.style === Style.DISPLAY || base.alwaysHandleSupSub)) {
+                (options.style === Style.DISPLAY || base.alwaysHandleSupSub)) {
                 nodeType = "munder";
             } else {
                 nodeType = "msub";
