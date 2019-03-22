@@ -344,7 +344,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
 <math>
   <semantics>
     <mrow>
-      <msub>
+      <munder>
         <mo>
           <mi mathvariant="normal">
             lim sup
@@ -364,7 +364,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
             ∞
           </mi>
         </mrow>
-      </msub>
+      </munder>
     </mrow>
     <annotation encoding="application/x-tex">
       \\limsup_{x \\rightarrow \\infty}
