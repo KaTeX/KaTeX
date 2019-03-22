@@ -70,14 +70,14 @@ defineFunction({
                 node = buildCommon.makeVList({
                     positionType: "top",
                     positionData: node.height - shift,
-                    children: [{ type: "elem", elem: node }],
+                    children: [{type: "elem", elem: node}],
                 }, options);
             }
 
             nodes.push(node);
 
             if (i < sequence.length - 2) {
-                const horizKern = { number: sequence[i + 1], unit: "mu" };
+                const horizKern = {number: sequence[i + 1], unit: "mu"};
                 const glue = buildCommon.makeGlue(horizKern, options);
                 nodes.push(glue);
             }
@@ -88,7 +88,7 @@ defineFunction({
 
     mathmlBuilder(group, options) {
         const node = new mathMLTree.MathNode(
-            "mo", [makeText(eqSymbol[group.name], group.mode)])
+            "mo", [makeText(eqSymbol[group.name], group.mode)]);
         return node;
     },
 });
