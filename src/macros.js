@@ -716,13 +716,7 @@ defineMacro("\\@hspacer", "\\rule{0pt}{0pt}\\hskip #1\\relax");
 //\providecommand\ordinarycolon{:}
 defineMacro("\\ordinarycolon", ":");
 //\def\vcentcolon{\mathrel{\mathop\ordinarycolon}}
-//TODO(edemaine): Not yet centered. Fix via \raisebox or #726
 defineMacro("\\vcentcolon", "\\mathrel{\\mathop\\ordinarycolon}");
-// \providecommand*\dblcolon{\vcentcolon\mathrel{\mkern-.9mu}\vcentcolon}
-defineMacro("\\dblcolon",
-    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-.9mu}\\vcentcolon}");
-// \providecommand*\coloneqq{\vcentcolon\mathrel{\mkern-1.2mu}=}
-defineMacro("\\coloneqq", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}=}");
 // \providecommand*\Coloneqq{\dblcolon\mathrel{\mkern-1.2mu}=}
 defineMacro("\\Coloneqq", "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}=}");
 // \providecommand*\coloneq{\vcentcolon\mathrel{\mkern-1.2mu}\mathrel{-}}
@@ -731,13 +725,8 @@ defineMacro("\\coloneq",
 // \providecommand*\Coloneq{\dblcolon\mathrel{\mkern-1.2mu}\mathrel{-}}
 defineMacro("\\Coloneq",
     "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}}");
-// \providecommand*\eqqcolon{=\mathrel{\mkern-1.2mu}\vcentcolon}
-defineMacro("\\eqqcolon", "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
 // \providecommand*\Eqqcolon{=\mathrel{\mkern-1.2mu}\dblcolon}
 defineMacro("\\Eqqcolon", "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\dblcolon}");
-// \providecommand*\eqcolon{\mathrel{-}\mathrel{\mkern-1.2mu}\vcentcolon}
-defineMacro("\\eqcolon",
-    "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
 // \providecommand*\Eqcolon{\mathrel{-}\mathrel{\mkern-1.2mu}\dblcolon}
 defineMacro("\\Eqcolon",
     "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\dblcolon}");
@@ -753,8 +742,8 @@ defineMacro("\\colonsim", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim}"
 defineMacro("\\Colonsim", "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim}");
 
 // Some Unicode characters are implemented with macros to mathtools functions.
-defineMacro("\u2254", "\\coloneqq");  // :=
-defineMacro("\u2255", "\\eqqcolon");  // =:
+//defineMacro("\u2254", "\\coloneqq");  // :=
+//defineMacro("\u2255", "\\eqqcolon");  // =:
 defineMacro("\u2A74", "\\Coloneqq");  // ::=
 
 //////////////////////////////////////////////////////////////////////

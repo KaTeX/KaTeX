@@ -331,6 +331,12 @@ type ParseNodeTypes = {
         script: AnyParseNode[],
         scriptscript: AnyParseNode[],
     |},
+    "mathrel": {|
+        type: "mathrel",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        name: string,
+    |},
     "middle": {|
         type: "middle",
         mode: Mode,
