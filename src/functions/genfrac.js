@@ -197,7 +197,7 @@ const mathmlBuilder = (group, options) => {
 
         if (group.leftDelim != null) {
             const leftOp = new mathMLTree.MathNode(
-                "mo", 
+                "mo",
                 [new mathMLTree.TextNode(group.leftDelim.replace("\\", ""))]
             );
 
