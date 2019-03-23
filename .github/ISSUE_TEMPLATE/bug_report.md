@@ -10,6 +10,7 @@ assignees: ''
 > Before reporting a bug
 - [ ] Check [common issues](https://katex.org/docs/issues.html).
 - [ ] Check the bug is reproducible in [the demo](https://katex.org). If not, check KaTeX is up-to-date and installed correctly.
+- [ ] Search existing issues.
 
 **Describe the bug:**
 A clear and concise description of what the bug is. If your installation is available on the web or you can provide a minimal repo or CodePen that reproduces the bug, please add the link to it.
