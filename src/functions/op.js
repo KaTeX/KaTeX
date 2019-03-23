@@ -261,7 +261,7 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
         if (group.parentIsSupSub) {
             node = new mathMLTree.MathNode("mo", [node, operator]);
         } else {
-            return mathMLTree.newDocumentFragment([node, operator]);
+            node = mathMLTree.newDocumentFragment([node, operator]);
         }
     }
 
