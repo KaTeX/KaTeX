@@ -357,13 +357,6 @@ let exitStatus = 0;
 const listOfFailed = [];
 
 function takeScreenshots() {
-    driver.executeScript('return document.fonts;')
-        .then(function(result) {
-            if (result) {
-                console.log(result);
-            }
-        });
-
     listOfCases.forEach(takeScreenshot);
 }
 
@@ -394,7 +387,8 @@ function takeScreenshot(key) {
             driver.executeAsyncScript(
                     "var callback = arguments[arguments.length - 1]; " +
                     "handle_search_string(" +
-                    JSON.stringify("?" + itm.query) + ", callback);")
+                    JSON.stringify("?" + itm.query) + ", callback);" +
+                    "return document.fonts;")
                 .then(waitThenScreenshot);
         } else if (opts.coverage) {
             // collect coverage before reloading
@@ -415,10 +409,13 @@ function takeScreenshot(key) {
             });
     }
 
-    function waitThenScreenshot() {
+    function waitThenScreenshot(result) {
         driverReady = true;
         if (opts.wait) {
             browserSideWait(1000 * opts.wait);
+        }
+        if (result) {
+            console.log(result);
         }
         const promise = driver.takeScreenshot().then(haveScreenshot);
         if (retry === 0) {
