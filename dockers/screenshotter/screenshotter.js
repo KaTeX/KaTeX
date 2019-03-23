@@ -388,7 +388,7 @@ function takeScreenshot(key) {
                     "var callback = arguments[arguments.length - 1]; " +
                     "handle_search_string(" +
                     JSON.stringify("?" + itm.query) + ", callback);" +
-                    "return document.fonts;")
+                    "return document.fonts.ready;")
                 .then(waitThenScreenshot);
         } else if (opts.coverage) {
             // collect coverage before reloading
@@ -416,6 +416,7 @@ function takeScreenshot(key) {
         }
         if (result) {
             console.log(result);
+            console.log(typeof result);
         }
         const promise = driver.takeScreenshot().then(haveScreenshot);
         if (retry === 0) {
