@@ -417,6 +417,10 @@ function takeScreenshot(key) {
         if (result) {
             console.log(result);
             console.log(typeof result);
+            if (result.ready) {
+                console.log(result.ready);
+                console.log(typeof result.ready);
+            }
         }
         const promise = driver.takeScreenshot().then(haveScreenshot);
         if (retry === 0) {
