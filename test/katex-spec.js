@@ -3308,8 +3308,7 @@ describe("Unicode", function() {
     });
 
     it("should parse symbols", function() {
-        expect("ð").toParse();  // warns about lacking character metrics
-        expect("£¥ℂℍℑℎℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼⋮\u00B7\u00A9").toBuild(strictSettings);
+        expect("£¥ℂℍℑℎℓℕ℘ℙℚℜℝℤℲℵðℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼⋮\u00B7\u00A9").toBuild(strictSettings);
         expect("\\text{£¥ℂℍℎ\u00A9\u00AE\uFE0F}").toBuild(strictSettings);
     });
 
