@@ -12,7 +12,7 @@ assignees: ''
 - [ ] Check the bug is reproducible in [the demo](https://katex.org). If not, check KaTeX is up-to-date and installed correctly.
 
 **Describe the bug:**
-A clear and concise description of what the bug is.
+A clear and concise description of what the bug is. If your installation is available on the web or you can provide a minimal repo or CodePen that reproduces the bug, please add the link to it.
 
 **(La)TeX code:**
 The code of (La)TeX you tried to render:
