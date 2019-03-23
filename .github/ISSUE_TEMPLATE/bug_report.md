@@ -7,7 +7,9 @@ assignees: ''
 
 ---
 
-> Please check common issues in https://katex.org/docs/issues.html before reporting a bug!
+> Before reporting a bug
+- [ ] Check [common issues](https://katex.org/docs/issues.html).
+- [ ] Check the bug is reproducible in [the demo](https://katex.org). If not, check KaTeX is up-to-date and installed correctly.
 
 **Describe the bug:**
 A clear and concise description of what the bug is.
