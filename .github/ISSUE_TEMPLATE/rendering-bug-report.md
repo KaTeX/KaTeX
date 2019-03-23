@@ -7,26 +7,31 @@ assignees: ''
 
 ---
 
-**Describe the bug**
+> Before reporting a bug
+- [ ] Check [common issues](https://katex.org/docs/issues.html).
+- [ ] Check the bug is reproducible in [the demo](https://katex.org). If not, check KaTeX is up-to-date and installed correctly.
+
+**Describe the bug:**
 A clear and concise description of what the bug is.
 
-**LaTeX code**
-The code of LaTeX you tried to render:
+**(La)TeX code:**
+The code of (La)TeX you tried to render:
 ```latex
 
 ```
 
-**Expected behavior**
-A clear and concise description of what you expected to happen. You can obtain a LaTeX rendering using [QuickLaTeX](https://www.quicklatex.com/).
+**Expected behavior:**
+A clear and concise description of what you expected to happen. KaTeX's general goal is to render as LaTeX does, so if possible, please include a LaTeX rendering. You can obtain one using [QuickLaTeX](https://www.quicklatex.com/).
 
-**Screenshots**
+**Screenshots:**
 If applicable, add screenshots to help explain your problem.
 
 **Environment (please complete the following information):**
+ - KaTeX Version: [Can be checked via `katex.version`]
  - Device: [e.g. Desktop, iPhone 8]
  - OS: [e.g. Windows 10, iOS 11]
  - Browser: [e.g. Chrome, Safari]
  - Version: [e.g. 72]
 
-**Additional context**
-Add any other context about the problem here.
+**Additional context:**
+Add any other context about the problem here. If you're using a library to use KaTeX, please include its name and setup.
