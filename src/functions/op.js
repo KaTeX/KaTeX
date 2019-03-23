@@ -252,15 +252,19 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
         // operator's name.
         // TODO(emily): Add a space in the middle of some of these
         // operators, like \limsup.
-        node = new mathMLTree.MathNode(
-            "mi", [new mathMLTree.TextNode(group.name.slice(1))]);
+        if (group.parentIsSupSub) {
+            node = new mathMLTree.MathNode(
+                "mo", [new mathMLTree.TextNode(group.name.slice(1))]);
+        } else {
+            node = new mathMLTree.MathNode(
+                "mi", [new mathMLTree.TextNode(group.name.slice(1))]);
+            // Append an <mo>&ApplyFunction;</mo>.
+            // ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.4
+            const operator = new mathMLTree.MathNode("mo",
+                [mml.makeText("\u2061", "text")]);
 
-        // Append an <mo>&ApplyFunction;</mo>.
-        // ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.4
-        const operator = new mathMLTree.MathNode("mo",
-            [mml.makeText("\u2061", "text")]);
-
-        return mathMLTree.newDocumentFragment([node, operator]);
+            return mathMLTree.newDocumentFragment([node, operator]);
+        }
     }
 
     return node;
@@ -302,6 +306,7 @@ defineFunction({
             type: "op",
             mode: parser.mode,
             limits: true,
+            parentIsSupSub: false,
             symbol: true,
             name: fName,
         };
@@ -324,6 +329,7 @@ defineFunction({
             type: "op",
             mode: parser.mode,
             limits: false,
+            parentIsSupSub: false,
             symbol: false,
             body: ordargument(body),
         };
@@ -363,6 +369,7 @@ defineFunction({
             type: "op",
             mode: parser.mode,
             limits: false,
+            parentIsSupSub: false,
             symbol: false,
             name: funcName,
         };
@@ -385,6 +392,7 @@ defineFunction({
             type: "op",
             mode: parser.mode,
             limits: true,
+            parentIsSupSub: false,
             symbol: false,
             name: funcName,
         };
@@ -412,6 +420,7 @@ defineFunction({
             type: "op",
             mode: parser.mode,
             limits: false,
+            parentIsSupSub: false,
             symbol: true,
             name: fName,
         };
