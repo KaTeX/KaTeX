@@ -61,16 +61,6 @@ commands:
           paths:
             - node_modules
 
-  codecov:
-    parameters:
-      flag:
-        type: string
-    steps:
-      - run:
-          name: Upload code coverage reports to Codecov
-          # do not upload if screenshotter tests are skipped
-          command: ./node_modules/.bin/codecov -F "<< parameters.flag >>"
-
 jobs:
   test:
     docker:
@@ -99,8 +89,9 @@ jobs:
           command: |
               yarn test:flow
               yarn test:jest --coverage --runInBand
-      - codecov:
-          flag: test
+      - run:
+          name: Upload code coverage reports to Codecov
+          command: ./node_modules/.bin/codecov
 
   screenshotter:
     parameters:
@@ -115,9 +106,7 @@ jobs:
 
       - run:
           name: Verify screenshots and generate diffs and new screenshots
-          command: node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new --coverage
-      - codecov:
-          flag: screenshotter
+          command: node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new
       - store_artifacts:
           path: test/screenshotter/new
           destination: new
