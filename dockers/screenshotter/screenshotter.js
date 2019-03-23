@@ -357,6 +357,13 @@ let exitStatus = 0;
 const listOfFailed = [];
 
 function takeScreenshots() {
+    driver.executeScript('return document.fonts;')
+        .then(function(result) {
+            if (result) {
+                console.log(result);
+            }
+        });
+
     listOfCases.forEach(takeScreenshot);
 }
 
