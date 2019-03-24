@@ -719,10 +719,13 @@ defineMacro("\\ordinarycolon", ":");
 //TODO(edemaine): Not yet centered. Fix via \raisebox or #726
 defineMacro("\\vcentcolon", "\\mathrel{\\mathop\\ordinarycolon}");
 // \providecommand*\dblcolon{\vcentcolon\mathrel{\mkern-.9mu}\vcentcolon}
-defineMacro("\\dblcolon",
-    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-.9mu}\\vcentcolon}");
+defineMacro("\\dblcolon", "\\html@mathml{" +
+    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-.9mu}\\vcentcolon}}" +
+    "{\\mathop{\\char\"2237}}");
 // \providecommand*\coloneqq{\vcentcolon\mathrel{\mkern-1.2mu}=}
-defineMacro("\\coloneqq", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}=}");
+defineMacro("\\coloneqq", "\\html@mathml{" +
+    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}=}}" +
+    "{\\mathop{\\char\"2254}}"); // ≔
 // \providecommand*\Coloneqq{\dblcolon\mathrel{\mkern-1.2mu}=}
 defineMacro("\\Coloneqq", "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}=}");
 // \providecommand*\coloneq{\vcentcolon\mathrel{\mkern-1.2mu}\mathrel{-}}
@@ -732,12 +735,15 @@ defineMacro("\\coloneq",
 defineMacro("\\Coloneq",
     "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}}");
 // \providecommand*\eqqcolon{=\mathrel{\mkern-1.2mu}\vcentcolon}
-defineMacro("\\eqqcolon", "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
+defineMacro("\\eqqcolon", "\\html@mathml{" +
+    "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\vcentcolon}}" +
+    "{\\mathop{\\char\"2255}}"); // ≕
 // \providecommand*\Eqqcolon{=\mathrel{\mkern-1.2mu}\dblcolon}
 defineMacro("\\Eqqcolon", "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\dblcolon}");
 // \providecommand*\eqcolon{\mathrel{-}\mathrel{\mkern-1.2mu}\vcentcolon}
-defineMacro("\\eqcolon",
-    "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
+defineMacro("\\eqcolon", "\\html@mathml{" +
+    "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\vcentcolon}}" +
+    "{\\mathop{\\char\"2239}}");
 // \providecommand*\Eqcolon{\mathrel{-}\mathrel{\mkern-1.2mu}\dblcolon}
 defineMacro("\\Eqcolon",
     "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\dblcolon}");
@@ -753,6 +759,8 @@ defineMacro("\\colonsim", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim}"
 defineMacro("\\Colonsim", "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim}");
 
 // Some Unicode characters are implemented with macros to mathtools functions.
+defineMacro("\u2237", "\\dblcolon");  // ::
+defineMacro("\u2239", "\\eqcolon");  // -:
 defineMacro("\u2254", "\\coloneqq");  // :=
 defineMacro("\u2255", "\\eqqcolon");  // =:
 defineMacro("\u2A74", "\\Coloneqq");  // ::=
@@ -864,7 +872,7 @@ defineMacro("\\Rarr", "\\Rightarrow");
 defineMacro("\\real", "\\Re");
 defineMacro("\\reals", "\\mathbb{R}");
 defineMacro("\\Reals", "\\mathbb{R}");
-defineMacro("\\Rho", "\\mathrm{R}");
+defineMacro("\\Rho", "\\mathrm{P}");
 defineMacro("\\sdot", "\\cdot");
 defineMacro("\\sect", "\\S");
 defineMacro("\\spades", "\\spadesuit");
