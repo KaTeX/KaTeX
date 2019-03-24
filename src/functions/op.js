@@ -134,7 +134,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     if (hasLimits) {
         return assembleSupSub(base, supGroup, subGroup, options,
             style, slant, baseShift);
-            
+
     } else {
         if (baseShift) {
             base.style.position = "relative";
