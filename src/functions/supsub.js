@@ -201,6 +201,10 @@ defineFunctionBuilders({
             }
         }
 
+        if (group.base && group.base.type === "op") {
+            group.base.parentIsSupSub = true;
+        }
+
         const children = [mml.buildGroup(group.base, options)];
 
         if (group.sub) {
