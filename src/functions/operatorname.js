@@ -12,7 +12,7 @@ import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
 import type {ParseNode} from "../parseNode";
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only
-// "operatorname", but also  "supsub" since \operatorname* can 
+// "operatorname", but also  "supsub" since \operatorname* can
 // affect super/subscripting.
 export const htmlBuilder: HtmlBuilderSupSub<"operatorname"> = (grp, options) => {
     // Operators are handled in the TeXbook pg. 443-444, rule 13(a).

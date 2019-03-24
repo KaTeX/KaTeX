@@ -229,7 +229,8 @@ defineFunctionBuilders({
             if (base && base.type === "op" && base.limits &&
                 (options.style === Style.DISPLAY || base.alwaysHandleSupSub)) {
                 nodeType = "mover";
-            } else if (base && base.type === "operatorname" && base.alwaysHandleSupSub &&
+            } else if (base && base.type === "operatorname" &&
+                base.alwaysHandleSupSub &&
                 (base.limits || options.style === Style.DISPLAY)) {
                 nodeType = "mover";
             } else {
@@ -240,7 +241,8 @@ defineFunctionBuilders({
             if (base && base.type === "op" && base.limits &&
                 (options.style === Style.DISPLAY || base.alwaysHandleSupSub)) {
                 nodeType = "munder";
-            } else if (base && base.type === "operatorname" && base.alwaysHandleSupSub &&
+            } else if (base && base.type === "operatorname" &&
+                base.alwaysHandleSupSub &&
                 (options.style === Style.DISPLAY || base.limits)) {
                 nodeType = "munder";
             } else {
@@ -251,7 +253,8 @@ defineFunctionBuilders({
             if (base && base.type === "op" && base.limits &&
                 options.style === Style.DISPLAY) {
                 nodeType = "munderover";
-            } else if (base && base.type === "operatorname" && base.alwaysHandleSupSub &&
+            } else if (base && base.type === "operatorname" &&
+                base.alwaysHandleSupSub &&
                 (options.style === Style.DISPLAY || base.limits)) {
                 nodeType = "munderover";
             } else {

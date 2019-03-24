@@ -330,7 +330,7 @@ export default class Parser {
                     } else {
                         throw new ParseError(
                             "Limit controls must follow a math operator",
-                            lex);    
+                            lex);
                     }
                 }
                 this.consume();
