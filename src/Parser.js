@@ -317,15 +317,21 @@ export default class Parser {
 
             if (lex.text === "\\limits" || lex.text === "\\nolimits") {
                 // We got a limit control
-                const opNode = checkNodeType(base, "op");
+                let opNode = checkNodeType(base, "op");
                 if (opNode) {
                     const limits = lex.text === "\\limits";
                     opNode.limits = limits;
                     opNode.alwaysHandleSupSub = true;
                 } else {
-                    throw new ParseError(
-                        "Limit controls must follow a math operator",
-                        lex);
+                    opNode = checkNodeType(base, "operatorname");
+                    if (opNode && opNode.alwaysHandleSupSub) {
+                        const limits = lex.text === "\\limits";
+                        opNode.limits = limits;
+                    } else {
+                        throw new ParseError(
+                            "Limit controls must follow a math operator",
+                            lex);    
+                    }
                 }
                 this.consume();
             } else if (lex.text === "^") {

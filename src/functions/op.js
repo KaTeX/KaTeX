@@ -250,8 +250,6 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
     } else {
         // This is a text operator. Add all of the characters from the
         // operator's name.
-        // TODO(emily): Add a space in the middle of some of these
-        // operators, like \limsup.
         if (group.parentIsSupSub) {
             node = new mathMLTree.MathNode(
                 "mo", [new mathMLTree.TextNode(group.name.slice(1))]);

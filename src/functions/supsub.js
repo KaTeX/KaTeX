@@ -12,6 +12,7 @@ import * as mml from "../buildMathML";
 import * as accent from "./accent";
 import * as horizBrace from "./horizBrace";
 import * as op from "./op";
+import * as operatorname from "./operatorname";
 
 import type Options from "../Options";
 import type {ParseNode} from "../parseNode";
@@ -39,6 +40,10 @@ const htmlBuilderDelegate = function(
             (options.style.size === Style.DISPLAY.size ||
             base.alwaysHandleSupSub);
         return delegate ? op.htmlBuilder : null;
+    } else if (base.type === "operatorname") {
+        const delegate = base.alwaysHandleSupSub &&
+            (options.style.size === Style.DISPLAY.size || base.limits);
+        return delegate ? operatorname.htmlBuilder : null;
     } else if (base.type === "accent") {
         return utils.isCharacterBox(base.base) ? accent.htmlBuilder : null;
     } else if (base.type === "horizBrace") {
@@ -201,7 +206,8 @@ defineFunctionBuilders({
             }
         }
 
-        if (group.base && group.base.type === "op") {
+        if (group.base &&
+            (group.base.type === "op" || group.base.type === "operatorname")) {
             group.base.parentIsSupSub = true;
         }
 
@@ -223,6 +229,9 @@ defineFunctionBuilders({
             if (base && base.type === "op" && base.limits &&
                 (options.style === Style.DISPLAY || base.alwaysHandleSupSub)) {
                 nodeType = "mover";
+            } else if (base && base.type === "operatorname" && base.alwaysHandleSupSub &&
+                (base.limits || options.style === Style.DISPLAY)) {
+                nodeType = "mover";
             } else {
                 nodeType = "msup";
             }
@@ -231,6 +240,9 @@ defineFunctionBuilders({
             if (base && base.type === "op" && base.limits &&
                 (options.style === Style.DISPLAY || base.alwaysHandleSupSub)) {
                 nodeType = "munder";
+            } else if (base && base.type === "operatorname" && base.alwaysHandleSupSub &&
+                (options.style === Style.DISPLAY || base.limits)) {
+                nodeType = "munder";
             } else {
                 nodeType = "msub";
             }
@@ -238,6 +250,9 @@ defineFunctionBuilders({
             const base = group.base;
             if (base && base.type === "op" && base.limits &&
                 options.style === Style.DISPLAY) {
+                nodeType = "munderover";
+            } else if (base && base.type === "operatorname" && base.alwaysHandleSupSub &&
+                (options.style === Style.DISPLAY || base.limits)) {
                 nodeType = "munderover";
             } else {
                 nodeType = "msubsup";

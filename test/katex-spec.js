@@ -2601,6 +2601,9 @@ describe("An aligned environment", function() {
 describe("operatorname support", function() {
     it("should not fail", function() {
         expect("\\operatorname{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
+        expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
+        expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}_y x").toBuild();
+        expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}\\limits_y x").toBuild();
     });
 });
 
@@ -3134,19 +3137,19 @@ describe("A macro expander", function() {
     });
 
     it("should expand \\limsup as expected", () => {
-        expect`\limsup`.toParseLike`\mathop{\operatorname{lim\,sup}}\limits`;
+        expect`\limsup`.toParseLike`\operatorname*{lim\,sup}`;
     });
 
     it("should expand \\liminf as expected", () => {
-        expect`\liminf`.toParseLike`\mathop{\operatorname{lim\,inf}}\limits`;
+        expect`\liminf`.toParseLike`\operatorname*{lim\,inf}`;
     });
 
     it("should expand \\argmin as expected", () => {
-        expect`\argmin`.toParseLike`\mathop{\operatorname{arg\,min}}\limits`;
+        expect`\argmin`.toParseLike`\operatorname*{arg\,min}`;
     });
 
     it("should expand \\argmax as expected", () => {
-        expect`\argmax`.toParseLike`\mathop{\operatorname{arg\,max}}\limits`;
+        expect`\argmax`.toParseLike`\operatorname*{arg\,max}`;
     });
 });
 

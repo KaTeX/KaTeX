@@ -1,4 +1,4 @@
-# List of test cases for which we create screenshots and other documents.
+operatorname# List of test cases for which we create screenshots and other documents.
 # Each value in the top level dictionary is either a string or a dict
 # which may contain the following keys:
 # - tex: the KaTeX input string
@@ -263,7 +263,8 @@ OldFont: |
 OperatorName: |
     \begin{matrix}
         \operatorname g (z) + 5\operatorname{g}z + \operatorname{Gam-ma}(z) \\
-        \operatorname{Gam ma}(z) + \operatorname{\Gamma}(z) + \operatorname{}x
+        \operatorname{Gam ma}(z) + \operatorname{\Gamma}(z) + \operatorname{}x \\
+        \operatorname*{asin} x + \operatorname*{asin}_y x + \operatorname*{asin}\limits_y x
     \end{matrix}
 OpLimits: |
     \begin{matrix}
