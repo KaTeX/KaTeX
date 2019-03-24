@@ -66,6 +66,7 @@ type ParseNodeTypes = {
         limits: boolean,
         alwaysHandleSupSub?: boolean,
         suppressBaseShift?: boolean,
+        parentIsSupSub: boolean,
         symbol: boolean,
         name: string,
         body?: void,
@@ -76,6 +77,7 @@ type ParseNodeTypes = {
         limits: boolean,
         alwaysHandleSupSub?: boolean,
         suppressBaseShift?: boolean,
+        parentIsSupSub: boolean,
         symbol: false,  // If 'symbol' is true, `body` *must* be set.
         name?: void,
         body: AnyParseNode[],
