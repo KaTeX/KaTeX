@@ -1,4 +1,4 @@
-operatorname# List of test cases for which we create screenshots and other documents.
+# List of test cases for which we create screenshots and other documents.
 # Each value in the top level dictionary is either a string or a dict
 # which may contain the following keys:
 # - tex: the KaTeX input string
