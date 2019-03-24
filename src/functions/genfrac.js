@@ -197,7 +197,9 @@ const mathmlBuilder = (group, options) => {
 
         if (group.leftDelim != null) {
             const leftOp = new mathMLTree.MathNode(
-                "mo", [new mathMLTree.TextNode(group.leftDelim)]);
+                "mo",
+                [new mathMLTree.TextNode(group.leftDelim.replace("\\", ""))]
+            );
 
             leftOp.setAttribute("fence", "true");
 
@@ -208,7 +210,9 @@ const mathmlBuilder = (group, options) => {
 
         if (group.rightDelim != null) {
             const rightOp = new mathMLTree.MathNode(
-                "mo", [new mathMLTree.TextNode(group.rightDelim)]);
+                "mo",
+                [new mathMLTree.TextNode(group.rightDelim.replace("\\", ""))]
+            );
 
             rightOp.setAttribute("fence", "true");
 
