@@ -161,18 +161,18 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
     } else {
         // This is a text operator. Add all of the characters from the
         // operator's name.
+        // TODO(emily): Add a space in the middle of some of these
+        // operators, like \limsup.
+        node = new mathMLTree.MathNode(
+            "mi", [new mathMLTree.TextNode(group.name.slice(1))]);
+        // Append an <mo>&ApplyFunction;</mo>.
+        // ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.4
+        const operator = new mathMLTree.MathNode("mo",
+            [mml.makeText("\u2061", "text")]);
         if (group.parentIsSupSub) {
-            node = new mathMLTree.MathNode(
-                "mo", [new mathMLTree.TextNode(group.name.slice(1))]);
+            node = new mathMLTree.MathNode("mo", [node, operator]);
         } else {
-            node = new mathMLTree.MathNode(
-                "mi", [new mathMLTree.TextNode(group.name.slice(1))]);
-            // Append an <mo>&ApplyFunction;</mo>.
-            // ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.4
-            const operator = new mathMLTree.MathNode("mo",
-                [mml.makeText("\u2061", "text")]);
-
-            return mathMLTree.newDocumentFragment([node, operator]);
+            node = mathMLTree.newDocumentFragment([node, operator]);
         }
     }
 
