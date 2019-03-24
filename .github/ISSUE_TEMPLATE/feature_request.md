@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+> Before requesting a feature, please search for [existing issues](https://github.com/KaTeX/KaTeX/issues).
+
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
