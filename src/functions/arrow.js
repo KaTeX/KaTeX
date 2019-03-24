@@ -9,6 +9,14 @@ import * as mml from "../buildMathML";
 
 import type {ParseNode} from "../parseNode";
 
+// Helper function
+const paddedNode = group => {
+    const node = new mathMLTree.MathNode("mpadded", [group]);
+    node.setAttribute("width", "+0.6em");
+    node.setAttribute("lspace", "0.3em");
+    return node
+};
+
 // Stretchy arrows with an optional argument
 defineFunction({
     type: "xArrow",
@@ -108,9 +116,11 @@ defineFunction({
         let lowerNode;
 
         if (group.body) {
-            const upperNode = mml.buildGroup(group.body, options);
+            let upperNode = mml.buildGroup(group.body, options);
+            upperNode = paddedNode(upperNode);
             if (group.below) {
                 lowerNode = mml.buildGroup(group.below, options);
+                lowerNode = paddedNode(lowerNode);
                 node = new mathMLTree.MathNode(
                     "munderover", [arrowNode, lowerNode, upperNode]
                 );
@@ -119,9 +129,14 @@ defineFunction({
             }
         } else if (group.below) {
             lowerNode = mml.buildGroup(group.below, options);
+            lowerNode = paddedNode(lowerNode);
             node = new mathMLTree.MathNode("munder", [arrowNode, lowerNode]);
         } else {
-            node = new mathMLTree.MathNode("mover", [arrowNode]);
+            // This should never happen. Parser.js throws an error if there is no argument.
+            node = new mathMLTree.MathNode("mpadded", []);
+            node.setAttribute("width", "+0.6em");
+            node.setAttribute("lspace", "0.3em");
+            node = new mathMLTree.MathNode("mover", [arrowNode, node]);
         }
         return node;
     },
