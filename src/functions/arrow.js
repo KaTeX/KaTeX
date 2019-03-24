@@ -14,7 +14,7 @@ const paddedNode = group => {
     const node = new mathMLTree.MathNode("mpadded", [group]);
     node.setAttribute("width", "+0.6em");
     node.setAttribute("lspace", "0.3em");
-    return node
+    return node;
 };
 
 // Stretchy arrows with an optional argument
@@ -132,7 +132,8 @@ defineFunction({
             lowerNode = paddedNode(lowerNode);
             node = new mathMLTree.MathNode("munder", [arrowNode, lowerNode]);
         } else {
-            // This should never happen. Parser.js throws an error if there is no argument.
+            // This should never happen.
+            // Parser.js throws an error if there is no argument.
             node = new mathMLTree.MathNode("mpadded", []);
             node.setAttribute("width", "+0.6em");
             node.setAttribute("lspace", "0.3em");
