@@ -321,6 +321,10 @@ defineFunction({
         const middleNode = new mathMLTree.MathNode(
             "mo", [mml.makeText(group.delim, group.mode)]);
         middleNode.setAttribute("fence", "true");
+        // MathML gives 5/18em spacing to each <mo> element.
+        // \middle should get delimiter spacing instead.
+        middleNode.setAttribute("lspace", "0.05em");
+        middleNode.setAttribute("rspace", "0.05em");
         return middleNode;
     },
 });
