@@ -367,8 +367,14 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     return buildCommon.makeSpan(["mord"], [body], options);
 };
 
+const alignMap = {
+    c: "center ",
+    l: "left ",
+    r: "right ",
+};
+
 const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
-    return new mathMLTree.MathNode(
+    const table = new mathMLTree.MathNode(
         "mtable", group.body.map(function(row) {
             return new mathMLTree.MathNode(
                 "mtr", row.map(function(cell) {
@@ -376,6 +382,97 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
                         "mtd", [mml.buildGroup(cell, options)]);
                 }));
         }));
+
+    // Set column alignment, row spacing, column spacing, and
+    // array lines by setting attributes on the table element.
+    
+    // Set the row spacing. In MathML, we specify a gap distance.
+    // We do not use rowGap[] because MathML automatically increases
+    // cell height with the height/depth of the element content.
+    const gap = 0.16 + group.arraystretch - 1 + (group.addJot ? 0.09 : 0);
+    table.setAttribute("rowspacing", gap + "em");
+
+    // MathML table lines go only between cells.
+    // To place a line on an edge we'll use <menclose>, if necessary.
+    let menclose = "";
+    let align = "";
+
+    if (group.cols) {
+        // Find column alignment, column spacing, and  vertical lines.
+        let columnLines = "";
+        let prevTypeWasAlign = false;
+        let iStart = 0;
+        let iEnd = group.cols.length;
+
+        const cols = group.cols;
+
+        if (cols[0].type === "separator") {
+            menclose += "top ";
+            iStart = 1;
+        }
+        if (cols[cols.length - 1].type === "separator") {
+            menclose += "bottom ";
+            iEnd -= 1;
+        }
+
+        for (let i = iStart; i < iEnd; i++) {
+            if (cols[i].type === "align") {
+                align += alignMap[cols[i].align];
+
+                if (prevTypeWasAlign) {
+                    columnLines += "none ";
+                }
+                prevTypeWasAlign = true;
+
+            } else if (cols[i].type === "separator") {
+                // MathML accepts only single lines between cells.
+                // So we read only the first of consecutive separators.
+                if (prevTypeWasAlign) {
+                    columnLines += cols[i].separator === "|"
+                        ? "solid "
+                        : "dashed ";
+                    prevTypeWasAlign = false;
+                }
+            }
+        }
+
+        table.setAttribute("columnalign", align.trim());
+
+        if (/[sd]/.test(columnLines)) {
+            table.setAttribute("columnlines", columnLines.trim());
+        }
+    }
+
+    // Is there a column set to right-align? That sets the spacing.
+    table.setAttribute("columnspacing", /ri/.test(align) ? "0em" : "1em");
+
+    // Address \hline and \hdashline
+    let rowLines = "";
+    const hlines = group.hLinesBeforeRow;
+
+    menclose += hlines[0].length > 0 ? "left " : "";
+    menclose += hlines[hlines.length - 1].length > 0 ? "right " : "";
+
+    for (let i = 1; i < hlines.length - 1; i++) {
+        if (hlines[i].length === 0) {
+            rowLines += "none ";
+        } else {
+            // MathML accepts only a single line between any pair of rows.
+            // So read only the first element.
+            rowLines += hlines[i][0] ? "dashed " : "solid ";
+        }
+    }
+    if (/[sd]/.test(rowLines)) {
+        table.setAttribute("rowlines", rowLines.trim());
+    }
+
+    if (menclose === "") {
+        return table;
+    } else {
+        const wrapper =  new mathMLTree.MathNode("menclose", [table]);
+        wrapper.setAttribute("notation", menclose.trim());
+        return wrapper;
+    }
 };
 
 // Convenience function for aligned and alignedat environments.
