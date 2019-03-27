@@ -809,6 +809,8 @@ defineMacro("\\nleqq", "\\html@mathml{\\@nleqq}{\u2270}");
 defineMacro("\\nleqslant", "\\html@mathml{\\@nleqslant}{\u2270}");
 defineMacro("\\nshortmid", "\\html@mathml{\\@nshortmid}{∤}");
 defineMacro("\\nshortparallel", "\\html@mathml{\\@nshortparallel}{∦}");
+defineMacro("\\nsubseteqq", "\\html@mathml{\\@nsubseteqq}{\u2288}");
+defineMacro("\\nsupseteqq", "\\html@mathml{\\@nsupseteqq}{\u2289}");
 defineMacro("\\varsubsetneq", "\\html@mathml{\\@varsubsetneq}{⊊}");
 defineMacro("\\varsubsetneqq", "\\html@mathml{\\@varsubsetneqq}{⫋}");
 defineMacro("\\varsupsetneq", "\\html@mathml{\\@varsupsetneq}{⊋}");

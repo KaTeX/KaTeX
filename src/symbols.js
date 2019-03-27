@@ -246,7 +246,7 @@ defineSymbol(math, ams, rel, "\u2226", "\\nparallel", true);
 defineSymbol(math, ams, rel, "\u22af", "\\nVDash", true);
 defineSymbol(math, ams, rel, "\u22eb", "\\ntriangleright");
 defineSymbol(math, ams, rel, "\u22ed", "\\ntrianglerighteq", true);
-defineSymbol(math, ams, rel, "\ue018", "\\nsupseteqq");
+defineSymbol(math, ams, rel, "\ue018", "\\@nsupseteqq");
 defineSymbol(math, ams, rel, "\u228b", "\\supsetneq", true);
 defineSymbol(math, ams, rel, "\ue01b", "\\@varsupsetneq");
 defineSymbol(math, ams, rel, "\u2acc", "\\supsetneqq", true);
@@ -254,7 +254,7 @@ defineSymbol(math, ams, rel, "\ue019", "\\@varsupsetneqq");
 defineSymbol(math, ams, rel, "\u22ae", "\\nVdash", true);
 defineSymbol(math, ams, rel, "\u2ab5", "\\precneqq", true);
 defineSymbol(math, ams, rel, "\u2ab6", "\\succneqq", true);
-defineSymbol(math, ams, rel, "\ue016", "\\nsubseteqq");
+defineSymbol(math, ams, rel, "\ue016", "\\@nsubseteqq");
 defineSymbol(math, ams, bin, "\u22b4", "\\unlhd");
 defineSymbol(math, ams, bin, "\u22b5", "\\unrhd");
 
