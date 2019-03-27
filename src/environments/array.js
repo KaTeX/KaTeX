@@ -385,7 +385,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
 
     // Set column alignment, row spacing, column spacing, and
     // array lines by setting attributes on the table element.
-    
+
     // Set the row spacing. In MathML, we specify a gap distance.
     // We do not use rowGap[] because MathML automatically increases
     // cell height with the height/depth of the element content.
