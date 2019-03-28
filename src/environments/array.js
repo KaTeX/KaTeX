@@ -48,11 +48,12 @@ function getHLines(parser: Parser): boolean[] {
  */
 function parseArray(
     parser: Parser,
-    {hskipBeforeAndAfter, addJot, cols, arraystretch}: {|
+    {hskipBeforeAndAfter, addJot, cols, arraystretch, isAlign}: {|
         hskipBeforeAndAfter?: boolean,
         addJot?: boolean,
         cols?: AlignSpec[],
         arraystretch?: number,
+        isAlign?: boolean,
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
@@ -138,6 +139,7 @@ function parseArray(
         rowGaps,
         hskipBeforeAndAfter,
         hLinesBeforeRow,
+        isAlign,
     };
 }
 
@@ -443,8 +445,9 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
         }
     }
 
-    // Is there a column set to right-align? That sets the spacing.
-    table.setAttribute("columnspacing", /ri/.test(align) ? "0em" : "1em");
+    // {aligned} and {alignedat} get 0 column spacing.
+    // The others get 1em.
+    table.setAttribute("columnspacing", group.isAlign ? "0em" : "1em");
 
     // Address \hline and \hdashline
     let rowLines = "";
@@ -478,7 +481,12 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
 // Convenience function for aligned and alignedat environments.
 const alignedHandler = function(context, args) {
     const cols = [];
-    const res = parseArray(context.parser, {cols, addJot: true}, "display");
+    const res = parseArray(
+        context.parser,
+        {cols, addJot: true, isAlign: true},
+        "display",
+    );
+    console.log(res);
 
     // Determining number of columns.
     // 1. If the first argument is given, we use it as a number of columns,

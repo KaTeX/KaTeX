@@ -28,6 +28,7 @@ type ParseNodeTypes = {
         type: "array",
         mode: Mode,
         loc?: ?SourceLocation,
+        isAlign?: boolean,
         hskipBeforeAndAfter?: boolean,
         addJot?: boolean,
         cols?: AlignSpec[],
