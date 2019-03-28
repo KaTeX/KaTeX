@@ -2998,6 +2998,12 @@ describe("A macro expander", function() {
         expect('\\char"g').not.toParse();
     });
 
+    it("should build Unicode private area characters", function() {
+        expect`\gvertneqq\lvertneqq\ngeqq\ngeqslant\nleqq`.toBuild();
+        expect`\nleqslant\nshortmid\nshortparallel\varsubsetneq`.toBuild();
+        expect`\varsubsetneqq\varsupsetneq\varsupsetneqq`.toBuild();
+    });
+
     // TODO(edemaine): This doesn't work yet.  Parses like `\text text`,
     // which doesn't treat all four letters as an argument.
     //it("\\TextOrMath should work in a macro passed to \\text", function() {
