@@ -55,10 +55,25 @@ defineFunction({
         return rule;
     },
     mathmlBuilder(group, options) {
-        // TODO(emily): Figure out if there's an actual way to draw black boxes
-        // in MathML.
-        const node = new mathMLTree.MathNode("mrow");
+        const width = calculateSize(group.width, options);
+        const height = calculateSize(group.height, options);
+        const shift = (group.shift) ? calculateSize(group.shift, options) : 0;
+        let color = options.color && options.getColor();
+        color = color ? color : "black";
 
-        return node;
+        const rule = new mathMLTree.MathNode("mspace");
+        rule.setAttribute("mathbackground", color);
+        rule.setAttribute("width", width + "em");
+        rule.setAttribute("height", height + "em");
+
+        const wrapper = new mathMLTree.MathNode("mpadded", [rule]);
+        const prefix = shift >= 0 ? "+" : "";
+        wrapper.setAttribute("height", prefix + shift + "em");
+        if (shift < 0) {
+            wrapper.setAttribute("depth", "+" + Math.abs(shift) + "em");
+        }
+        wrapper.setAttribute("voffset", shift + "em");
+
+        return wrapper;
     },
 });
