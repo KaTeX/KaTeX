@@ -486,7 +486,6 @@ const alignedHandler = function(context, args) {
         {cols, addJot: true, isAlign: true},
         "display",
     );
-    console.log(res);
 
     // Determining number of columns.
     // 1. If the first argument is given, we use it as a number of columns,
