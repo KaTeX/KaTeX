@@ -813,6 +813,23 @@ defineMacro("\\limsup", "\\DOTSB\\mathop{\\operatorname{lim\\,sup}}\\limits");
 defineMacro("\\liminf", "\\DOTSB\\mathop{\\operatorname{lim\\,inf}}\\limits");
 
 //////////////////////////////////////////////////////////////////////
+// MathML alternates for KaTeX glyphs in the Unicode private area
+defineMacro("\\gvertneqq", "\\html@mathml{\\@gvertneqq}{\u2269}");
+defineMacro("\\lvertneqq", "\\html@mathml{\\@lvertneqq}{\u2268}");
+defineMacro("\\ngeqq", "\\html@mathml{\\@ngeqq}{\u2271}");
+defineMacro("\\ngeqslant", "\\html@mathml{\\@ngeqslant}{\u2271}");
+defineMacro("\\nleqq", "\\html@mathml{\\@nleqq}{\u2270}");
+defineMacro("\\nleqslant", "\\html@mathml{\\@nleqslant}{\u2270}");
+defineMacro("\\nshortmid", "\\html@mathml{\\@nshortmid}{∤}");
+defineMacro("\\nshortparallel", "\\html@mathml{\\@nshortparallel}{∦}");
+defineMacro("\\nsubseteqq", "\\html@mathml{\\@nsubseteqq}{\u2288}");
+defineMacro("\\nsupseteqq", "\\html@mathml{\\@nsupseteqq}{\u2289}");
+defineMacro("\\varsubsetneq", "\\html@mathml{\\@varsubsetneq}{⊊}");
+defineMacro("\\varsubsetneqq", "\\html@mathml{\\@varsubsetneqq}{⫋}");
+defineMacro("\\varsupsetneq", "\\html@mathml{\\@varsupsetneq}{⊋}");
+defineMacro("\\varsupsetneqq", "\\html@mathml{\\@varsupsetneqq}{⫌}");
+
+//////////////////////////////////////////////////////////////////////
 // semantic
 
 // The semantic package renders the next two items by calling a glyph from the
