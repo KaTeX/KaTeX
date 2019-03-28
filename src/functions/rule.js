@@ -58,8 +58,7 @@ defineFunction({
         const width = calculateSize(group.width, options);
         const height = calculateSize(group.height, options);
         const shift = (group.shift) ? calculateSize(group.shift, options) : 0;
-        let color = options.color && options.getColor();
-        color = color ? color : "black";
+        const color = options.color && options.getColor() || "black";
 
         const rule = new mathMLTree.MathNode("mspace");
         rule.setAttribute("mathbackground", color);
@@ -67,10 +66,11 @@ defineFunction({
         rule.setAttribute("height", height + "em");
 
         const wrapper = new mathMLTree.MathNode("mpadded", [rule]);
-        const prefix = shift >= 0 ? "+" : "";
-        wrapper.setAttribute("height", prefix + shift + "em");
-        if (shift < 0) {
-            wrapper.setAttribute("depth", "+" + Math.abs(shift) + "em");
+        if (shift >= 0) {
+            wrapper.setAttribute("height", "+" + shift + "em");
+        } else {
+            wrapper.setAttribute("height", shift + "em");
+            wrapper.setAttribute("depth", "+" + (-shift) + "em");
         }
         wrapper.setAttribute("voffset", shift + "em");
 
