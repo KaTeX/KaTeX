@@ -464,13 +464,9 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     menclose += hlines[hlines.length - 1].length > 0 ? "right " : "";
 
     for (let i = 1; i < hlines.length - 1; i++) {
-        if (hlines[i].length === 0) {
-            rowLines += "none ";
-        } else {
-            // MathML accepts only a single line between any pair of rows.
-            // So read only the first element.
-            rowLines += hlines[i][0] ? "dashed " : "solid ";
-        }
+        rowLines += (hlines[i].length === 0)
+          ? "none "
+          :  hlines[i][0]; // MathML accepts only a single line. Read one element.
     }
     if (/[sd]/.test(rowLines)) {
         table.setAttribute("rowlines", rowLines.trim());
