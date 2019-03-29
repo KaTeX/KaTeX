@@ -18,7 +18,7 @@ const adjustStyle = (size, originalStyle) => {
     if (size === "display") {
         // Get display style as a default.
         // If incoming style is sub/sup, use style.text() to get correct size.
-        style = style.id > Style.SCRIPT.id ? style.text() : Style.DISPLAY;
+        style = style.id >= Style.SCRIPT.id ? style.text() : Style.DISPLAY;
     } else if (size === "text" &&
         style.size === Style.DISPLAY.size) {
         // We're in a \tfrac but incoming style is displaystyle, so:
