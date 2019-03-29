@@ -11,9 +11,7 @@ import type {ParseNode} from "../parseNode";
 
 // Helper function
 const paddedNode = group => {
-    const node = (group)
-      ? new mathMLTree.MathNode("mpadded", [group])
-      : new mathMLTree.MathNode("mpadded", []);
+    const node = new mathMLTree.MathNode("mpadded", group ? [group] : []);
     node.setAttribute("width", "+0.6em");
     node.setAttribute("lspace", "0.3em");
     return node;
@@ -127,7 +125,7 @@ defineFunction({
                 node = new mathMLTree.MathNode("mover", [arrowNode, upperNode]);
             }
         } else if (group.below) {
-            const lowerNode = paddedNode( mml.buildGroup(group.below, options));
+            const lowerNode = paddedNode(mml.buildGroup(group.below, options));
             node = new mathMLTree.MathNode("munder", [arrowNode, lowerNode]);
         } else {
             // This should never happen.
