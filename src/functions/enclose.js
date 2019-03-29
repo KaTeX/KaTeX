@@ -112,7 +112,7 @@ const htmlBuilder = (group, options) => {
 
 const mathmlBuilder = (group, options) => {
     const node = new mathMLTree.MathNode(
-        (group.label === "\\fcolorbox") ? "mpadded" :"menclose",
+        (group.label === "\\fcolorbox") ? "mpadded" : "menclose",
         [mml.buildGroup(group.body, options)]
     );
     switch (group.label) {
@@ -135,8 +135,7 @@ const mathmlBuilder = (group, options) => {
             node.setAttribute("height", "+5px");
             node.setAttribute("lspace", "5px");
             // $FlowFixMe: Flow doesn't see that group.borderColor is a string.
-            const border = "border: 1.5px solid " + group.borderColor;
-            node.setAttribute("style", border);
+            node.setAttribute("style", "border: 1.5px solid " + group.borderColor);
             break;
         case "\\xcancel":
             node.setAttribute("notation", "updiagonalstrike downdiagonalstrike");
