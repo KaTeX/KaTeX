@@ -467,7 +467,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
         rowLines += (hlines[i].length === 0)
           ? "none "
              // MathML accepts only a single line between rows. Read one element.
-          : hlines[i][0] ? "dashed " : "solid ";  
+          : hlines[i][0] ? "dashed " : "solid ";
     }
     if (/[sd]/.test(rowLines)) {
         table.setAttribute("rowlines", rowLines.trim());
