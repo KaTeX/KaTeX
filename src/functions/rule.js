@@ -30,13 +30,9 @@ defineFunction({
         const rule = buildCommon.makeSpan(["mord", "rule"], [], options);
 
         // Calculate the shift, width, and height of the rule, and account for units
-        let shift = 0;
-        if (group.shift) {
-            shift = calculateSize(group.shift, options);
-        }
-
         const width = calculateSize(group.width, options);
         const height = calculateSize(group.height, options);
+        const shift = (group.shift) ? calculateSize(group.shift, options) : 0;
 
         // Style the rule to the right size
         rule.style.borderRightWidth = width + "em";
