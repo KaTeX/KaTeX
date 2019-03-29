@@ -112,7 +112,9 @@ const htmlBuilder = (group, options) => {
 
 const mathmlBuilder = (group, options) => {
     const node = new mathMLTree.MathNode(
-        "menclose", [mml.buildGroup(group.body, options)]);
+        (group.label === "\\fcolorbox") ? "mpadded" :"menclose",
+        [mml.buildGroup(group.body, options)]
+    );
     switch (group.label) {
         case "\\cancel":
             node.setAttribute("notation", "updiagonalstrike");
@@ -127,8 +129,14 @@ const mathmlBuilder = (group, options) => {
             node.setAttribute("notation", "box");
             break;
         case "\\fcolorbox":
-            // TODO(ron): I don't know any way to set the border color.
-            node.setAttribute("notation", "box");
+            // <menclose> cannot set a border color. So use <mpadded> instead.
+            // Set some attributes that come included with <menclose>.
+            node.setAttribute("width", "+10px");
+            node.setAttribute("height", "+5px");
+            node.setAttribute("lspace", "5px");
+            // $FlowFixMe: Flow doesn't see that group.borderColor is a string.
+            const border = "border: 1.5px solid " + group.borderColor;
+            node.setAttribute("style", border);
             break;
         case "\\xcancel":
             node.setAttribute("notation", "updiagonalstrike downdiagonalstrike");
