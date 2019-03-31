@@ -360,8 +360,8 @@ Direct Input: $+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ 
 | $\cos$ `\cos` | $\exp$ `\exp`  | $\tanh$ `\tanh`| $\min$ `\min` |
 | $\cosec$ `\cosec`  | $\hom$ `\hom`  | $\tg$ `\tg`  | $\Pr$ `\Pr`  |
 | $\cosh$ `\cosh`| $\ker$ `\ker`  | $\th$ `\th`  | $\sup$ `\sup` |
-| $\cot$ `\cot` | $\lg$ `\lg`| $\operatorname{f}$ `\operatorname{f}` | $\argmax$ `\argmax` |
-|$\argmin$ `\argmin`|
+| $\cot$ `\cot` | $\lg$ `\lg`|  | $\argmax$ `\argmax` |
+|$\argmin$ `\argmin`|  | $\operatorname{f}$ `\operatorname{f}`| $\operatorname*{f}$ `\operatorname*{f}`|
 
 Functions on the right column of this table can take `\limits`.
 
