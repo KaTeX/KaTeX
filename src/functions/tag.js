@@ -9,6 +9,8 @@ defineFunctionBuilders({
     mathmlBuilder(group, options) {
         const pad = new mathMLTree.MathNode("mtd", []);
         pad.setAttribute("width", "50%");
+        const pad2 = new mathMLTree.MathNode("mtd", []);
+        pad2.setAttribute("width", "50%");
 
         const table = new mathMLTree.MathNode("mtable", [
             new mathMLTree.MathNode("mtr", [
@@ -16,7 +18,7 @@ defineFunctionBuilders({
                 new mathMLTree.MathNode("mtd", [
                     mml.buildExpressionRow(group.body, options),
                 ]),
-                pad,
+                pad2,
                 new mathMLTree.MathNode("mtd", [
                     mml.buildExpressionRow(group.tag, options),
                 ]),
