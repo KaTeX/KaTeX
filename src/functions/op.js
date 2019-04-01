@@ -226,7 +226,6 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             ["mop", "op-limits"], [finalGroup], options);
     } else {
         if (baseShift) {
-            base.style.position = "relative";
             base.style.top = baseShift + "em";
         }
 
