@@ -44,4 +44,4 @@ you'll need to first convert AsciiMath into LaTeX input, then call KaTeX.
 - [canvas-latex](https://github.com/CurriculumAssociates/canvas-latex): Renders mathematical expressions on HTML5's canvas element. Supports popular libraries like: CreateJS, and PIXI.
 
 ### Web-Components
-- [katex-element](https://github.com/georges-gomes/katex-element) KaTeX wrapped in a custom element. Simply use `<katex-element>` in HTML - framework independent.
+- [katex-element](https://github.com/georges-gomes/katex-element): KaTeX wrapped in a custom element. Simply use `<katex-element>` in HTML - framework independent.
