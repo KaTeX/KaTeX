@@ -52,8 +52,8 @@ defineFunction({
 
         // Next, prevent vertical misplacement when next to something tall.
         // This code resolves issue #1234
-       node = buildCommon.makeSpan(["thinbox"], [node], options);
-       return buildCommon.makeSpan(["mord", "vbox"], [node], options);
+        node = buildCommon.makeSpan(["thinbox"], [node], options);
+        return buildCommon.makeSpan(["mord", "vbox"], [node], options);
     },
     mathmlBuilder: (group, options) => {
         // mathllap, mathrlap, mathclap
