@@ -157,12 +157,12 @@ KaTeX:
 Kern:
     tex: \frac{a\kern{1em}b}{c}a\kern{1em}b\kern{1ex}c\kern{-0.25em}d
     nolatex: LaTeX fails to typeset this, “Missing number, treated as zero.”
- Lap: |
-     \begin{array}{l}
-         ab\mathllap{f}cd\mathrlap{g}hij\mathclap{k}lm \; ab\llap{f}cd\rlap{g}hij\clap{k}lm \\
-         \mathrlap{\frac a b} \frac a b \\
-         \mathrlap{\overbrace{\phantom{a_0+a_1+a_2}}^m}a_0+a_1+a_2
-     \end{array}
+Lap: |
+    \begin{array}{l}
+        ab\mathllap{f}cd\mathrlap{g}hij\mathclap{k}lm \; ab\llap{f}cd\rlap{g}hij\clap{k}lm \\
+        \mathrlap{\frac a b} \frac a b \\
+        \mathrlap{\overbrace{\phantom{a_0+a_1+a_2}}^m}a_0+a_1+a_2
+    \end{array}
 LargeRuleNumerator: \frac{\textcolor{blue}{\rule{1em}{2em}}}{x}
 LaTeX: \text{\LaTeX}, \text{\TeX}
 LeftRight: \left( x^2 \right) \left\{ x^{x^{x^{x^x}}} \right.
