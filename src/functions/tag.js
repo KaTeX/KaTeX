@@ -8,7 +8,7 @@ const pad = () => {
     const padNode = new mathMLTree.MathNode("mtd", []);
     padNode.setAttribute("width", "50%");
     return padNode;
-}
+};
 
 defineFunctionBuilders({
     type: "tag",
