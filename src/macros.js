@@ -394,6 +394,13 @@ defineMacro("\u00A9", "\\copyright");
 defineMacro("\u00AE", "\\textregistered");
 defineMacro("\uFE0F", "\\textregistered");
 
+// The KaTeX fonts have corners at codepoints that don't match Unicode.
+// For MathML purposes, use the Unicode code point.
+defineMacro("\\ulcorner", "\\html@mathml{\\@ulcorner}{\\mathop{\\char\"231c}}");
+defineMacro("\\urcorner", "\\html@mathml{\\@urcorner}{\\mathop{\\char\"231d}}");
+defineMacro("\\llcorner", "\\html@mathml{\\@llcorner}{\\mathop{\\char\"231e}}");
+defineMacro("\\lrcorner", "\\html@mathml{\\@lrcorner}{\\mathop{\\char\"231f}}");
+
 //////////////////////////////////////////////////////////////////////
 // LaTeX_2ε
 

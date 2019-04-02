@@ -311,10 +311,10 @@ defineSymbol(math, ams, textord, "\u03dd", "\\digamma");
 defineSymbol(math, ams, textord, "\u03f0", "\\varkappa");
 
 // AMS Delimiters
-defineSymbol(math, ams, open, "\u250c", "\\ulcorner", true);
-defineSymbol(math, ams, close, "\u2510", "\\urcorner", true);
-defineSymbol(math, ams, open, "\u2514", "\\llcorner", true);
-defineSymbol(math, ams, close, "\u2518", "\\lrcorner", true);
+defineSymbol(math, ams, open, "\u250c", "\\@ulcorner", true);
+defineSymbol(math, ams, close, "\u2510", "\\@urcorner", true);
+defineSymbol(math, ams, open, "\u2514", "\\@llcorner", true);
+defineSymbol(math, ams, close, "\u2518", "\\@lrcorner", true);
 
 // AMS Binary Relations
 defineSymbol(math, ams, rel, "\u2266", "\\leqq", true);
