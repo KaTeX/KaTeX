@@ -1007,6 +1007,7 @@ table td {
 |\textgreater|$\text{\textgreater}$|`\text{\textgreater}`|
 |\textit|$\textit{AaBb}$|`\textit{AaBb}`|
 |\textless|$\text{\textless}$|`\text{\textless}`|
+|\textmd|$\textmd{AaBb123}$|`\textmd{AaBb123}`|
 |\textnormal|$\textnormal{AB}$|`\textnormal{AB}`|
 |\textquotedblleft|$\text{\textquotedblleft}$|`\text{\textquotedblleft}`|
 |\textquotedblright|$\text{\textquotedblright}$|`\text{\textquotedblright}`|
@@ -1021,6 +1022,7 @@ table td {
 |\texttip|<span style="color:firebrick;">Not supported</span>||
 |\texttt|$\texttt{AaBb123}$|`\texttt{AaBb123}`|
 |\textunderscore|$\text{\textunderscore}$|`\text{\textunderscore}`|
+|\textup|$\textup{AaBb123}$|`\textup{AaBb123}`|
 |\textvisiblespace|<span style="color:firebrick;">Not supported</span>||
 |\tfrac|$\tfrac ab$|`\tfrac ab`|
 |\tg|$\tg$||
