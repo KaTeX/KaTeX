@@ -112,7 +112,7 @@ const htmlBuilder = (group, options) => {
 
 const mathmlBuilder = (group, options) => {
     const node = new mathMLTree.MathNode(
-        (group.label === "\\fcolorbox") ? "mpadded" : "menclose",
+        (group.label.indexOf("colorbox") > -1) ? "mpadded" : "menclose",
         [mml.buildGroup(group.body, options)]
     );
     switch (group.label) {
@@ -129,13 +129,18 @@ const mathmlBuilder = (group, options) => {
             node.setAttribute("notation", "box");
             break;
         case "\\fcolorbox":
-            // <menclose> cannot set a border color. So use <mpadded> instead.
-            // Set some attributes that come included with <menclose>.
-            node.setAttribute("width", "+10px");
-            node.setAttribute("height", "+5px");
-            node.setAttribute("lspace", "5px");
-            node.setAttribute("style", "border: 1.5px solid " +
-                String(group.borderColor));
+        case "\\colorbox":
+            // <menclose> doesn't have a good notation option. So use <mpadded>
+            // instead. Set some attributes that come included with <menclose>.
+            node.setAttribute("width", "+6pt");
+            node.setAttribute("height", "+6pt");
+            node.setAttribute("lspace", "3pt"); // LaTeX source2e: \fboxsep = 3pt
+            node.setAttribute("voffset", "3pt");
+            if (group.label === "\\fcolorbox") {
+                const thk = options.fontMetrics().defaultRuleThickness;
+                node.setAttribute("style", "border: " + thk + "em solid " +
+                    String(group.borderColor));
+            }
             break;
         case "\\xcancel":
             node.setAttribute("notation", "updiagonalstrike downdiagonalstrike");
