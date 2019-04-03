@@ -25,6 +25,10 @@ export type AlignSpec = { type: "separator", separator: string } | {
     postgap?: number,
 };
 
+// Constants to indicate column separation
+const ALIGN = 1;
+const ALIGNAT = 2;
+
 function getHLines(parser: Parser): boolean[] {
     // Return an array. The array length = number of hlines.
     // Each element in the array tells if the line is dashed.
@@ -48,12 +52,12 @@ function getHLines(parser: Parser): boolean[] {
  */
 function parseArray(
     parser: Parser,
-    {hskipBeforeAndAfter, addJot, cols, arraystretch, isAlign}: {|
+    {hskipBeforeAndAfter, addJot, cols, arraystretch, colSeparationType}: {|
         hskipBeforeAndAfter?: boolean,
         addJot?: boolean,
         cols?: AlignSpec[],
         arraystretch?: number,
-        isAlign?: boolean,
+        colSeparationType?: number,
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
@@ -139,7 +143,7 @@ function parseArray(
         rowGaps,
         hskipBeforeAndAfter,
         hLinesBeforeRow,
-        isAlign,
+        colSeparationType,
     };
 }
 
@@ -452,9 +456,19 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
         }
     }
 
-    // {aligned} and {alignedat} get 0 column spacing.
-    // The others get 1em.
-    table.setAttribute("columnspacing", group.isAlign ? "0em" : "1em");
+    // Set column spacing.
+    if (group.colSeparationType === ALIGN) {
+        const cols = group.cols || [];
+        let spacing = "";
+        for (let i = 1; i < cols.length; i++) {
+            spacing += i % 2 ? "0em " : "1em ";
+        }
+        table.setAttribute("columnspacing", spacing.trim());
+    } else if (group.colSeparationType === ALIGNAT) {
+        table.setAttribute("columnspacing", "0em");
+    } else {
+        table.setAttribute("columnspacing", "1em");
+    }
 
     // Address \hline and \hdashline
     let rowLines = "";
@@ -485,11 +499,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
 // Convenience function for aligned and alignedat environments.
 const alignedHandler = function(context, args) {
     const cols = [];
-    const res = parseArray(
-        context.parser,
-        {cols, addJot: true, isAlign: true},
-        "display",
-    );
+    const res = parseArray(context.parser, {cols, addJot: true}, "display");
 
     // Determining number of columns.
     // 1. If the first argument is given, we use it as a number of columns,
@@ -556,6 +566,7 @@ const alignedHandler = function(context, args) {
             postgap: 0,
         };
     }
+    res.colSeparationType = isAligned ? ALIGN : ALIGNAT;
     return res;
 };
 
