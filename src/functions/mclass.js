@@ -99,6 +99,7 @@ defineFunction({
             mode: baseArg.mode,
             limits: true,
             alwaysHandleSupSub: true,
+            parentIsSupSub: false,
             symbol: false,
             suppressBaseShift: funcName !== "\\stackrel",
             body: ordargument(baseArg),

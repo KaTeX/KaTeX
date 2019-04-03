@@ -11,22 +11,29 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 import {calculateSize} from "../units";
 
-const htmlBuilder = (group, options) => {
-    // Fractions are handled in the TeXbook on pages 444-445, rules 15(a-e).
+const adjustStyle = (size, originalStyle) => {
     // Figure out what style this fraction should be in based on the
     // function used
-    let style = options.style;
-    if (group.size === "display") {
-        style = Style.DISPLAY;
-    } else if (group.size === "text" &&
+    let style = originalStyle;
+    if (size === "display") {
+        // Get display style as a default.
+        // If incoming style is sub/sup, use style.text() to get correct size.
+        style = style.id >= Style.SCRIPT.id ? style.text() : Style.DISPLAY;
+    } else if (size === "text" &&
         style.size === Style.DISPLAY.size) {
         // We're in a \tfrac but incoming style is displaystyle, so:
         style = Style.TEXT;
-    } else if (group.size === "script") {
+    } else if (size === "script") {
         style = Style.SCRIPT;
-    } else if (group.size === "scriptscript") {
+    } else if (size === "scriptscript") {
         style = Style.SCRIPTSCRIPT;
     }
+    return style;
+};
+
+const htmlBuilder = (group, options) => {
+    // Fractions are handled in the TeXbook on pages 444-445, rules 15(a-e).
+    const style = adjustStyle(group.size, options.style);
 
     const nstyle = style.fracNum();
     const dstyle = style.fracDen();
@@ -69,7 +76,7 @@ const htmlBuilder = (group, options) => {
     let numShift;
     let clearance;
     let denomShift;
-    if (style.size === Style.DISPLAY.size) {
+    if (style.size === Style.DISPLAY.size || group.size === "display") {
         numShift = options.fontMetrics().num1;
         if (ruleWidth > 0) {
             clearance = 3 * ruleSpacing;
@@ -176,12 +183,20 @@ const htmlBuilder = (group, options) => {
 };
 
 const mathmlBuilder = (group, options) => {
-    const node = new mathMLTree.MathNode(
+    let node = new mathMLTree.MathNode(
         "mfrac",
         [
             mml.buildGroup(group.numer, options),
             mml.buildGroup(group.denom, options),
         ]);
+
+    const style = adjustStyle(group.size, options.style);
+    if (style.size !== options.style.size) {
+        node = new mathMLTree.MathNode("mstyle", [node]);
+        const isDisplay = (style.size === Style.DISPLAY.size) ? "true" : "false";
+        node.setAttribute("displaystyle", isDisplay);
+        node.setAttribute("scriptlevel", "0");
+    }
 
     if (!group.hasBarLine) {
         node.setAttribute("linethickness", "0px");
@@ -195,7 +210,9 @@ const mathmlBuilder = (group, options) => {
 
         if (group.leftDelim != null) {
             const leftOp = new mathMLTree.MathNode(
-                "mo", [new mathMLTree.TextNode(group.leftDelim)]);
+                "mo",
+                [new mathMLTree.TextNode(group.leftDelim.replace("\\", ""))]
+            );
 
             leftOp.setAttribute("fence", "true");
 
@@ -206,7 +223,9 @@ const mathmlBuilder = (group, options) => {
 
         if (group.rightDelim != null) {
             const rightOp = new mathMLTree.MathNode(
-                "mo", [new mathMLTree.TextNode(group.rightDelim)]);
+                "mo",
+                [new mathMLTree.TextNode(group.rightDelim.replace("\\", ""))]
+            );
 
             rightOp.setAttribute("fence", "true");
 

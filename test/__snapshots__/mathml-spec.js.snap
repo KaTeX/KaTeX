@@ -344,7 +344,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
 <math>
   <semantics>
     <mrow>
-      <msub>
+      <munder>
         <mo>
           <mi mathvariant="normal">
             lim sup
@@ -364,7 +364,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
             ∞
           </mi>
         </mrow>
-      </msub>
+      </munder>
     </mrow>
     <annotation encoding="application/x-tex">
       \\limsup_{x \\rightarrow \\infty}
@@ -774,12 +774,9 @@ exports[`A MathML builder tags use <mlabeledtr> 1`] = `
 
 <math>
   <semantics>
-    <mtable side="right">
-      <mlabeledtr>
-        <mtd>
-          <mtext>
-            (hi)
-          </mtext>
+    <mtable width="100%">
+      <mtr>
+        <mtd width="50%">
         </mtd>
         <mtd>
           <mrow>
@@ -799,7 +796,14 @@ exports[`A MathML builder tags use <mlabeledtr> 1`] = `
             </msup>
           </mrow>
         </mtd>
-      </mlabeledtr>
+        <mtd width="50%">
+        </mtd>
+        <mtd>
+          <mtext>
+            (hi)
+          </mtext>
+        </mtd>
+      </mtr>
     </mtable>
     <annotation encoding="application/x-tex">
       \\tag{hi} x+y^2
