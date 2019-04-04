@@ -25,9 +25,8 @@ export type AlignSpec = { type: "separator", separator: string } | {
     postgap?: number,
 };
 
-// Constants to indicate column separation
-const ALIGN = 1;
-const ALIGNAT = 2;
+// Type to indicate column separation in MathML
+export type ColSeparationType = "align" | "alignat";
 
 function getHLines(parser: Parser): boolean[] {
     // Return an array. The array length = number of hlines.
@@ -57,7 +56,7 @@ function parseArray(
         addJot?: boolean,
         cols?: AlignSpec[],
         arraystretch?: number,
-        colSeparationType?: number,
+        colSeparationType?: ColSeparationType,
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
@@ -412,12 +411,11 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
 
     if (group.cols) {
         // Find column alignment, column spacing, and  vertical lines.
+        const cols = group.cols;
         let columnLines = "";
         let prevTypeWasAlign = false;
         let iStart = 0;
-        let iEnd = group.cols.length;
-
-        const cols = group.cols;
+        let iEnd = cols.length;
 
         if (cols[0].type === "separator") {
             menclose += "top ";
@@ -436,7 +434,6 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
                     columnLines += "none ";
                 }
                 prevTypeWasAlign = true;
-
             } else if (cols[i].type === "separator") {
                 // MathML accepts only single lines between cells.
                 // So we read only the first of consecutive separators.
@@ -457,14 +454,14 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     }
 
     // Set column spacing.
-    if (group.colSeparationType === ALIGN) {
+    if (group.colSeparationType === "align") {
         const cols = group.cols || [];
         let spacing = "";
         for (let i = 1; i < cols.length; i++) {
             spacing += i % 2 ? "0em " : "1em ";
         }
         table.setAttribute("columnspacing", spacing.trim());
-    } else if (group.colSeparationType === ALIGNAT) {
+    } else if (group.colSeparationType === "alignat") {
         table.setAttribute("columnspacing", "0em");
     } else {
         table.setAttribute("columnspacing", "1em");
@@ -566,7 +563,7 @@ const alignedHandler = function(context, args) {
             postgap: 0,
         };
     }
-    res.colSeparationType = isAligned ? ALIGN : ALIGNAT;
+    res.colSeparationType = isAligned ? "align" : "alignat";
     return res;
 };
 

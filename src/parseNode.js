@@ -1,7 +1,7 @@
 // @flow
 import {NON_ATOMS} from "./symbols";
 import type SourceLocation from "./SourceLocation";
-import type {AlignSpec} from "./environments/array";
+import type {AlignSpec, ColSeparationType} from "./environments/array";
 import type {Atom} from "./symbols";
 import type {Mode, StyleStr} from "./types";
 import type {Token} from "./Token";
@@ -28,7 +28,7 @@ type ParseNodeTypes = {
         type: "array",
         mode: Mode,
         loc?: ?SourceLocation,
-        colSeparationType?: number,
+        colSeparationType?: ColSeparationType,
         hskipBeforeAndAfter?: boolean,
         addJot?: boolean,
         cols?: AlignSpec[],
