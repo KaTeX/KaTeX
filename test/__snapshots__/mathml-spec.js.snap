@@ -608,11 +608,16 @@ exports[`A MathML builder should use <menclose> for colorbox 1`] = `
 <math>
   <semantics>
     <mrow>
-      <menclose mathbackground="red">
+      <mpadded width="+6pt"
+               height="+6pt"
+               lspace="3pt"
+               voffset="3pt"
+               mathbackground="red"
+      >
         <mtext>
           b
         </mtext>
-      </menclose>
+      </mpadded>
     </mrow>
     <annotation encoding="application/x-tex">
       \\colorbox{red}{b}
