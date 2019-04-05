@@ -145,6 +145,19 @@ export const buildExpression = function(
                     lastGroup.children.push(...group.children);
                     continue;
                 }
+            } else if (lastGroup.type === 'mi' && lastGroup.children.length === 1) {
+                const lastChild = lastGroup.children[0];
+                if (lastChild instanceof TextNode && lastChild.text === '\u0338' &&
+                    (group.type === 'mo' || group.type === 'mi' ||
+                        group.type === 'mn')) {
+                    const child = group.children[0];
+                    if (child instanceof TextNode && child.text.length > 0) {
+                        // Overlay with combining character long solidus
+                        child.text = child.text.slice(0, 1) + "\u0338" +
+                            child.text.slice(1);
+                        groups.pop();
+                    }
+                }
             }
         }
         groups.push(group);
