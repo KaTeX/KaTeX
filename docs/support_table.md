@@ -129,6 +129,7 @@ table td {
 |\beth|$\beth$||
 |\between|$\between$||
 |\bf|$\bf AaBb12$|`\bf AaBb12`|
+|\bfseries|<span style="color:firebrick;">Not supported</span>||
 |\big|$\big(\big)$|`\big(\big)`|
 |\Big|$\Big(\Big)$|`\Big(\Big)`|
 |\bigcap|$\bigcap$||
@@ -343,6 +344,8 @@ table td {
 |:---------------|:------------|:-----------------|
 |\ell|$\ell$||
 |\else|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
+|\em|<span style="color:firebrick;">Not supported</span>||
+|\emph|<span style="color:firebrick;">Not supported</span>||
 |\empty|$\empty$||
 |\emptyset|$\emptyset$||
 |\enclose|<span style="color:firebrick;">Not supported</span>|Non standard
@@ -488,6 +491,7 @@ table td {
 |\iota|$\iota$||
 |\isin|$\isin$||
 |\it|${\it AaBb}$|`{\it AaBb}`|
+|\itshape|<span style="color:firebrick;">Not supported</span>||
 
 ## JK
 
@@ -640,6 +644,8 @@ table td {
 |{matrix}|$\begin{matrix}a&b\\c&d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |\max|$\max$||
 |\mbox|<span style="color:firebrick;">Not supported</span>||
+|\md|<span style="color:firebrick;">Not supported</span>||
+|\mdseries|<span style="color:firebrick;">Not supported</span>||
 |\measuredangle|$\measuredangle$||
 |\medspace|$a\medspace b$|`a\medspace b`|
 |\mho|$\mho$||
@@ -700,6 +706,7 @@ table td {
 |\nobreak|||
 |\nobreakspace|$a\nobreakspace b$|`a\nobreakspace b`|
 |\nolimits|$\lim\nolimits_x$|`\lim\nolimits_x`|
+|\normalfont|<span style="color:firebrick;">Not supported</span>||
 |\normalsize|$\normalsize normalsize$|`\normalsize normalsize`|
 |\not|$\not =$|`\not =`|
 |\notag|<span style="color:firebrick;">Not supported</span>||
@@ -885,6 +892,7 @@ table td {
 |\S|$\text{\S}$|`\text{\S}`|
 |\Sampi|<span style="color:firebrick;">Not supported</span>||
 |\sampi|<span style="color:firebrick;">Not supported</span>||
+|\sc|<span style="color:firebrick;">Not supported</span>|[Issue #471](https://github.com/KaTeX/KaTeX/issues/471)|
 |\scalebox|<span style="color:firebrick;">Not supported</span>||
 |\scr|<span style="color:firebrick;">Not supported</span>|See `\mathscr`|
 |\scriptscriptstyle|$\scriptscriptstyle \frac cd$|`\scriptscriptstyle \frac cd`|
@@ -913,6 +921,7 @@ table td {
 |\sh|$\sh$||
 |\skew|<span style="color:firebrick;">Not supported</span>||
 |\skip|<span style="color:firebrick;">Not supported</span>||
+|\sl|<span style="color:firebrick;">Not supported</span>||
 |\small|$\small small$|`\small small`|
 |\smallfrown|$\smallfrown$||
 |\smallint|$\smallint$||
@@ -1007,6 +1016,7 @@ table td {
 |\textgreater|$\text{\textgreater}$|`\text{\textgreater}`|
 |\textit|$\textit{AaBb}$|`\textit{AaBb}`|
 |\textless|$\text{\textless}$|`\text{\textless}`|
+|\textmd|$\textmd{AaBb123}$|`\textmd{AaBb123}`|
 |\textnormal|$\textnormal{AB}$|`\textnormal{AB}`|
 |\textquotedblleft|$\text{\textquotedblleft}$|`\text{\textquotedblleft}`|
 |\textquotedblright|$\text{\textquotedblright}$|`\text{\textquotedblright}`|
@@ -1016,11 +1026,13 @@ table td {
 |\textrm|$\textrm{AaBb123}$|`\textrm{AaBb123}`|
 |\textsc|<span style="color:firebrick;">Not supported</span>|[Issue #471](https://github.com/KaTeX/KaTeX/issues/471)|
 |\textsf|$\textsf{AaBb123}$|`\textsf{AaBb123}`|
+|\textsl|<span style="color:firebrick;">Not supported</span>||
 |\textsterling|$\text{\textsterling}$|`\text{\textsterling}`|
 |\textstyle|$\textstyle\sum_0^n$|`\textstyle\sum_0^n`|
 |\texttip|<span style="color:firebrick;">Not supported</span>||
 |\texttt|$\texttt{AaBb123}$|`\texttt{AaBb123}`|
 |\textunderscore|$\text{\textunderscore}$|`\text{\textunderscore}`|
+|\textup|$\textup{AaBb123}$|`\textup{AaBb123}`|
 |\textvisiblespace|<span style="color:firebrick;">Not supported</span>||
 |\tfrac|$\tfrac ab$|`\tfrac ab`|
 |\tg|$\tg$||
@@ -1074,6 +1086,7 @@ table td {
 |\unicode|<span style="color:firebrick;">Not supported</span>||
 |\unlhd|$\unlhd$||
 |\unrhd|$\unrhd$||
+|\up|<span style="color:firebrick;">Not supported</span>||
 |\Uparrow|$\Uparrow$||
 |\uparrow|$\uparrow$||
 |\Updownarrow|$\Updownarrow$||
@@ -1082,6 +1095,7 @@ table td {
 |\upharpoonright|$\upharpoonright$||
 |\uplus|$\uplus$||
 |\uproot|<span style="color:firebrick;">Not supported</span>||
+|\upshape|<span style="color:firebrick;">Not supported</span>||
 |\Upsilon|$\Upsilon$||
 |\upsilon|$\upsilon$||
 |\upuparrows|$\upuparrows$||
