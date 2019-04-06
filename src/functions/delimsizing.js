@@ -318,9 +318,19 @@ defineFunction({
         return middleDelim;
     },
     mathmlBuilder: (group, options) => {
-        const middleNode = new mathMLTree.MathNode(
-            "mo", [mml.makeText(group.delim, group.mode)]);
+        // A Firefox \middle will strech a character vertically only if it
+        // is in the fence part of the operator dictionary at:
+        // https://www.w3.org/TR/MathML3/appendixc.html.
+        // So we need to avoid U+2223 and use plain "|" instead.
+        const textNode = (group.delim === "\\vert" || group.delim === "|")
+            ? mml.makeText("|", "text")
+            : mml.makeText(group.delim, group.mode);
+        const middleNode = new mathMLTree.MathNode("mo", [textNode]);
         middleNode.setAttribute("fence", "true");
+        // MathML gives 5/18em spacing to each <mo> element.
+        // \middle should get delimiter spacing instead.
+        middleNode.setAttribute("lspace", "0.05em");
+        middleNode.setAttribute("rspace", "0.05em");
         return middleNode;
     },
 });

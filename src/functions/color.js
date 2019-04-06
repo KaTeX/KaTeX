@@ -22,7 +22,8 @@ const htmlBuilder = (group, options) => {
 };
 
 const mathmlBuilder = (group, options) => {
-    const inner = mml.buildExpression(group.body, options);
+    const inner = mml.buildExpression(group.body,
+        options.withColor(group.color));
 
     const node = new mathMLTree.MathNode("mstyle", inner);
 

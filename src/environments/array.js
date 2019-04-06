@@ -25,6 +25,9 @@ export type AlignSpec = { type: "separator", separator: string } | {
     postgap?: number,
 };
 
+// Type to indicate column separation in MathML
+export type ColSeparationType = "align" | "alignat";
+
 function getHLines(parser: Parser): boolean[] {
     // Return an array. The array length = number of hlines.
     // Each element in the array tells if the line is dashed.
@@ -48,11 +51,12 @@ function getHLines(parser: Parser): boolean[] {
  */
 function parseArray(
     parser: Parser,
-    {hskipBeforeAndAfter, addJot, cols, arraystretch}: {|
+    {hskipBeforeAndAfter, addJot, cols, arraystretch, colSeparationType}: {|
         hskipBeforeAndAfter?: boolean,
         addJot?: boolean,
         cols?: AlignSpec[],
         arraystretch?: number,
+        colSeparationType?: ColSeparationType,
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
@@ -138,6 +142,7 @@ function parseArray(
         rowGaps,
         hskipBeforeAndAfter,
         hLinesBeforeRow,
+        colSeparationType,
     };
 }
 
@@ -367,8 +372,14 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     return buildCommon.makeSpan(["mord"], [body], options);
 };
 
+const alignMap = {
+    c: "center ",
+    l: "left ",
+    r: "right ",
+};
+
 const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
-    return new mathMLTree.MathNode(
+    const table = new mathMLTree.MathNode(
         "mtable", group.body.map(function(row) {
             return new mathMLTree.MathNode(
                 "mtr", row.map(function(cell) {
@@ -376,6 +387,110 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
                         "mtd", [mml.buildGroup(cell, options)]);
                 }));
         }));
+
+    // Set column alignment, row spacing, column spacing, and
+    // array lines by setting attributes on the table element.
+
+    // Set the row spacing. In MathML, we specify a gap distance.
+    // We do not use rowGap[] because MathML automatically increases
+    // cell height with the height/depth of the element content.
+
+    // LaTeX \arraystretch multiplies the row baseline-to-baseline distance.
+    // We simulate this by adding (arraystretch - 1)em to the gap. This
+    // does a reasonable job of adjusting arrays containing 1 em tall content.
+
+    // The 0.16 and 0.09 values are found emprically. They produce an array
+    // similar to LaTeX and in which content does not interfere with \hines.
+    const gap = 0.16 + group.arraystretch - 1 + (group.addJot ? 0.09 : 0);
+    table.setAttribute("rowspacing", gap + "em");
+
+    // MathML table lines go only between cells.
+    // To place a line on an edge we'll use <menclose>, if necessary.
+    let menclose = "";
+    let align = "";
+
+    if (group.cols) {
+        // Find column alignment, column spacing, and  vertical lines.
+        const cols = group.cols;
+        let columnLines = "";
+        let prevTypeWasAlign = false;
+        let iStart = 0;
+        let iEnd = cols.length;
+
+        if (cols[0].type === "separator") {
+            menclose += "top ";
+            iStart = 1;
+        }
+        if (cols[cols.length - 1].type === "separator") {
+            menclose += "bottom ";
+            iEnd -= 1;
+        }
+
+        for (let i = iStart; i < iEnd; i++) {
+            if (cols[i].type === "align") {
+                align += alignMap[cols[i].align];
+
+                if (prevTypeWasAlign) {
+                    columnLines += "none ";
+                }
+                prevTypeWasAlign = true;
+            } else if (cols[i].type === "separator") {
+                // MathML accepts only single lines between cells.
+                // So we read only the first of consecutive separators.
+                if (prevTypeWasAlign) {
+                    columnLines += cols[i].separator === "|"
+                        ? "solid "
+                        : "dashed ";
+                    prevTypeWasAlign = false;
+                }
+            }
+        }
+
+        table.setAttribute("columnalign", align.trim());
+
+        if (/[sd]/.test(columnLines)) {
+            table.setAttribute("columnlines", columnLines.trim());
+        }
+    }
+
+    // Set column spacing.
+    if (group.colSeparationType === "align") {
+        const cols = group.cols || [];
+        let spacing = "";
+        for (let i = 1; i < cols.length; i++) {
+            spacing += i % 2 ? "0em " : "1em ";
+        }
+        table.setAttribute("columnspacing", spacing.trim());
+    } else if (group.colSeparationType === "alignat") {
+        table.setAttribute("columnspacing", "0em");
+    } else {
+        table.setAttribute("columnspacing", "1em");
+    }
+
+    // Address \hline and \hdashline
+    let rowLines = "";
+    const hlines = group.hLinesBeforeRow;
+
+    menclose += hlines[0].length > 0 ? "left " : "";
+    menclose += hlines[hlines.length - 1].length > 0 ? "right " : "";
+
+    for (let i = 1; i < hlines.length - 1; i++) {
+        rowLines += (hlines[i].length === 0)
+          ? "none "
+             // MathML accepts only a single line between rows. Read one element.
+          : hlines[i][0] ? "dashed " : "solid ";
+    }
+    if (/[sd]/.test(rowLines)) {
+        table.setAttribute("rowlines", rowLines.trim());
+    }
+
+    if (menclose === "") {
+        return table;
+    } else {
+        const wrapper =  new mathMLTree.MathNode("menclose", [table]);
+        wrapper.setAttribute("notation", menclose.trim());
+        return wrapper;
+    }
 };
 
 // Convenience function for aligned and alignedat environments.
@@ -448,6 +563,7 @@ const alignedHandler = function(context, args) {
             postgap: 0,
         };
     }
+    res.colSeparationType = isAligned ? "align" : "alignat";
     return res;
 };
 
