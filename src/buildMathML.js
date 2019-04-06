@@ -163,31 +163,6 @@ export const buildExpression = function(
         groups.push(group);
         lastGroup = group;
     }
-
-    // Combine \not with mrels and mords
-    for (let i = (groups.length - 2); i >= 0; i--) {
-        const group = groups[i];
-        if (group instanceof MathNode && group.type === 'mi' &&
-                group.children.length === 1) {
-            const child = group.children[0];
-            if (child instanceof TextNode && child.text === '\u0338') {
-                const nextGroup = groups[i + 1];
-                if (nextGroup instanceof MathNode && (nextGroup.type === 'mo' ||
-                        nextGroup.type === 'mi' || nextGroup.type === 'mn')) {
-                    const nextChild = nextGroup.children[0];
-                    if (nextChild instanceof TextNode) {
-                        if (nextChild.text.length > 0) {
-                            // Overlay with combining character long solidus
-                            nextChild.text = nextChild.text.slice(0, 1) +
-                                "\u0338" + nextChild.text.slice(1);
-                            groups.splice(i, 1);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     return groups;
 };
 
