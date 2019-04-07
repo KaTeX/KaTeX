@@ -36,6 +36,10 @@ const sizeAtStyle = function(size: number, style: StyleInterface): number {
     return style.size < 2 ? size : sizeStyleMap[size - 1][style.size - 1];
 };
 
+// In these types, "" (empty string) means "no change".
+export type FontWeight = "textbf" | "textmd" | "";
+export type FontShape = "textit" | "textup" | "";
+
 export type OptionsData = {
     style: StyleInterface;
     color?: string | void;
@@ -44,8 +48,8 @@ export type OptionsData = {
     phantom?: boolean;
     font?: string;
     fontFamily?: string;
-    fontWeight?: string;
-    fontShape?: string;
+    fontWeight?: FontWeight;
+    fontShape?: FontShape;
     sizeMultiplier?: number;
     maxSize: number;
 };
@@ -68,8 +72,8 @@ class Options {
     // See: https://tex.stackexchange.com/questions/22350/difference-between-textrm-and-mathrm
     font: string;
     fontFamily: string;
-    fontWeight: string;
-    fontShape: string;
+    fontWeight: FontWeight;
+    fontShape: FontShape;
     sizeMultiplier: number;
     maxSize: number;
     _fontMetrics: FontMetrics | void;
@@ -244,7 +248,7 @@ class Options {
     /**
      * Creates a new options object with the given font weight
      */
-    withTextFontWeight(fontWeight: string): Options {
+    withTextFontWeight(fontWeight: FontWeight): Options {
         return this.extend({
             fontWeight,
             font: "",
@@ -254,7 +258,7 @@ class Options {
     /**
      * Creates a new options object with the given font weight
      */
-    withTextFontShape(fontShape: string): Options {
+    withTextFontShape(fontShape: FontShape): Options {
         return this.extend({
             fontShape,
             font: "",
