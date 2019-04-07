@@ -31,7 +31,35 @@
     <span id="math"></span>
     <span id="post"></span>
     <script type="text/javascript">
-      function handle_search_string(search, callback) {
+      function load_fonts(callback) {
+        if (!document.fonts || !document.fonts.load) {
+          callback();
+          return;
+        }
+
+        var results = [];
+        function load_font(name, style) {
+          // 10px is arbitrarily selected value
+          results.push(document.fonts.load((style || "") + " 10px " + name));
+        }
+
+        var fonts = {AMS:1,Caligraphic:3,Fraktur:3,Main:15,Math:12,Script:1,
+            SansSerif:7,Size1:1,Size2:1,Size3:1,Size4:1,Typewriter:1}; // see below
+        for (var f in fonts) {
+          var ff = fonts[f];
+          var name = "KaTeX_" + f;
+          if (ff & 1) load_font(name);
+          if (ff & 2) load_font(name, "bold");
+          if (ff & 4) load_font(name, "italic");
+          if (ff & 8) load_font(name, "bold italic");
+        }
+        load_font("Mincho");
+        load_font("Batang");
+
+        Promise.all(results).then(callback)
+      }
+
+      function handle_search_string(search) {
         var query = {};
         var re = /(?:^\?|&)([^&=]+)(?:=([^&]+))?/g;
         var match;
@@ -58,12 +86,6 @@
         katex.render(query["tex"], mathNode, settings);
         document.getElementById("pre").innerHTML = query["pre"] || "";
         document.getElementById("post").innerHTML = query["post"] || "";
-
-        if (callback && document.fonts && document.fonts.ready) {
-          document.fonts.ready.then(callback);
-        } else if (callback) {
-          callback();
-        }
       }
       handle_search_string(window.location.search);
     </script>
