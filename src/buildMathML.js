@@ -121,7 +121,19 @@ export const getVariant = function(
 export const buildExpression = function(
     expression: AnyParseNode[],
     options: Options,
+    isOrdgroup?: boolean,
 ): MathDomNode[] {
+    if (expression.length === 1) {
+        const group = buildGroup(expression[0], options);
+        if (isOrdgroup && group instanceof MathNode && group.type === "mo") {
+            // When TeX writers want to suppress spacing on an operator,
+            // they often put the operator by itself inside braces.
+            group.setAttribute("lspace", "0em");
+            group.setAttribute("rspace", "0em");
+        }
+        return [group];
+    }
+
     const groups = [];
     let lastGroup;
     for (let i = 0; i < expression.length; i++) {
@@ -173,8 +185,9 @@ export const buildExpression = function(
 export const buildExpressionRow = function(
     expression: AnyParseNode[],
     options: Options,
+    isOrdgroup?: boolean,
 ): MathDomNode {
-    return makeRow(buildExpression(expression, options));
+    return makeRow(buildExpression(expression, options, isOrdgroup));
 };
 
 /**
