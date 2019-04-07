@@ -3,7 +3,6 @@ import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import type {AnyParseNode} from "../parseNode";
-import {MathNode} from "../mathMLTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -19,13 +18,14 @@ function htmlBuilder(group: ParseNode<"mclass">, options) {
 
 function mathmlBuilder(group: ParseNode<"mclass">, options) {
     const inner = mml.buildExpression(group.body, options);
+    const node;
     switch (group.mclass) {
         case "minner":
             return mathMLTree.newDocumentFragment(inner);
         case "mord":
             return new mathMLTree.MathNode("mi", inner);
         default:
-            const node = new mathMLTree.MathNode("mo", inner);
+            node = new mathMLTree.MathNode("mo", inner);
             // Set spacing based on what is the most likely adjacent atom type.
             // See TeXbook p170.
             if (group.mclass === "mbin") {
