@@ -334,6 +334,9 @@ defineMacro("\u212D", "\\mathfrak{C}");  // Fraktur
 defineMacro("\u210C", "\\mathfrak{H}");
 defineMacro("\u2128", "\\mathfrak{Z}");
 
+// \Bbbk has a KaTeX glyph at "k". The Unicode glyph is outside the BMP.
+defineMacro("\\Bbbk", "\\html@mathml{\\@Bbbk}{\ud835\udd5c}");
+
 // Unicode middle dot
 // The KaTeX fonts do not contain U+00B7. Instead, \cdotp displays
 // the dot at U+22C5 and gives it punct spacing.
