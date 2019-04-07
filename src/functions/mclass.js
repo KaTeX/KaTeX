@@ -18,7 +18,7 @@ function htmlBuilder(group: ParseNode<"mclass">, options) {
 
 function mathmlBuilder(group: ParseNode<"mclass">, options) {
     const inner = mml.buildExpression(group.body, options);
-    const node;
+    let node;
     switch (group.mclass) {
         case "minner":
             return mathMLTree.newDocumentFragment(inner);
