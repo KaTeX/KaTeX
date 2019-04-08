@@ -279,7 +279,6 @@ defineSymbol(math, ams, textord, "\u2204", "\\nexists");
 defineSymbol(math, ams, textord, "\u2127", "\\mho");
 defineSymbol(math, ams, textord, "\u2132", "\\Finv", true);
 defineSymbol(math, ams, textord, "\u2141", "\\Game", true);
-defineSymbol(math, ams, textord, "\u006b", "\\@Bbbk");
 defineSymbol(math, ams, textord, "\u2035", "\\backprime");
 defineSymbol(math, ams, textord, "\u25b2", "\\blacktriangle");
 defineSymbol(math, ams, textord, "\u25bc", "\\blacktriangledown");
