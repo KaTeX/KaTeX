@@ -211,10 +211,11 @@ export function getCharacterMetrics(
         throw new Error(`Font metrics not found for font: ${font}.`);
     }
     let ch = character.charCodeAt(0);
-    if (character[0] in extraCharacterMap) {
-        ch = extraCharacterMap[character[0]].charCodeAt(0);
-    }
     let metrics = metricMap[font][ch];
+    if (!metrics && character[0] in extraCharacterMap) {
+        ch = extraCharacterMap[character[0]].charCodeAt(0);
+        metrics = metricMap[font][ch];
+    }
 
     if (!metrics && mode === 'text') {
         // We don't typically have font metrics for Asian scripts.

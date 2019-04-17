@@ -348,7 +348,8 @@ defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 // \DeclareMathSymbol{\not}{\mathrel}{symbols}{"36}
 // It's thus treated like a \mathrel, but defined by a symbol that has zero
 // width but extends to the right.  We use \rlap to get that spacing.
-defineMacro("\\not", '\\mathrel{\\mathrlap\\@not}');
+// For MathML we write U+0338 here. buildMathML.js will then do the overlay.
+defineMacro("\\not", '\\html@mathml{\\mathrel{\\mathrlap\\@not}}{\\char"338}');
 
 // Negated symbols from base/fontmath.ltx:
 // \def\neq{\not=} \let\ne=\neq
@@ -719,40 +720,61 @@ defineMacro("\\ordinarycolon", ":");
 //TODO(edemaine): Not yet centered. Fix via \raisebox or #726
 defineMacro("\\vcentcolon", "\\mathrel{\\mathop\\ordinarycolon}");
 // \providecommand*\dblcolon{\vcentcolon\mathrel{\mkern-.9mu}\vcentcolon}
-defineMacro("\\dblcolon",
-    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-.9mu}\\vcentcolon}");
+defineMacro("\\dblcolon", "\\html@mathml{" +
+    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-.9mu}\\vcentcolon}}" +
+    "{\\mathop{\\char\"2237}}");
 // \providecommand*\coloneqq{\vcentcolon\mathrel{\mkern-1.2mu}=}
-defineMacro("\\coloneqq", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}=}");
+defineMacro("\\coloneqq", "\\html@mathml{" +
+    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}=}}" +
+    "{\\mathop{\\char\"2254}}"); // ≔
 // \providecommand*\Coloneqq{\dblcolon\mathrel{\mkern-1.2mu}=}
-defineMacro("\\Coloneqq", "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}=}");
+defineMacro("\\Coloneqq", "\\html@mathml{" +
+    "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}=}}" +
+    "{\\mathop{\\char\"2237\\char\"3d}}");
 // \providecommand*\coloneq{\vcentcolon\mathrel{\mkern-1.2mu}\mathrel{-}}
-defineMacro("\\coloneq",
-    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}}");
+defineMacro("\\coloneq", "\\html@mathml{" +
+    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}}}" +
+    "{\\mathop{\\char\"3a\\char\"2212}}");
 // \providecommand*\Coloneq{\dblcolon\mathrel{\mkern-1.2mu}\mathrel{-}}
-defineMacro("\\Coloneq",
-    "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}}");
+defineMacro("\\Coloneq", "\\html@mathml{" +
+    "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}}}" +
+    "{\\mathop{\\char\"2237\\char\"2212}}");
 // \providecommand*\eqqcolon{=\mathrel{\mkern-1.2mu}\vcentcolon}
-defineMacro("\\eqqcolon", "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
+defineMacro("\\eqqcolon", "\\html@mathml{" +
+    "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\vcentcolon}}" +
+    "{\\mathop{\\char\"2255}}"); // ≕
 // \providecommand*\Eqqcolon{=\mathrel{\mkern-1.2mu}\dblcolon}
-defineMacro("\\Eqqcolon", "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\dblcolon}");
+defineMacro("\\Eqqcolon", "\\html@mathml{" +
+    "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\dblcolon}}" +
+    "{\\mathop{\\char\"3d\\char\"2237}}");
 // \providecommand*\eqcolon{\mathrel{-}\mathrel{\mkern-1.2mu}\vcentcolon}
-defineMacro("\\eqcolon",
-    "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
+defineMacro("\\eqcolon", "\\html@mathml{" +
+    "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\vcentcolon}}" +
+    "{\\mathop{\\char\"2239}}");
 // \providecommand*\Eqcolon{\mathrel{-}\mathrel{\mkern-1.2mu}\dblcolon}
-defineMacro("\\Eqcolon",
-    "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\dblcolon}");
+defineMacro("\\Eqcolon", "\\html@mathml{" +
+    "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\dblcolon}}" +
+    "{\\mathop{\\char\"2212\\char\"2237}}");
 // \providecommand*\colonapprox{\vcentcolon\mathrel{\mkern-1.2mu}\approx}
-defineMacro("\\colonapprox",
-    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\approx}");
+defineMacro("\\colonapprox", "\\html@mathml{" +
+    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\approx}}" +
+    "{\\mathop{\\char\"3a\\char\"2248}}");
 // \providecommand*\Colonapprox{\dblcolon\mathrel{\mkern-1.2mu}\approx}
-defineMacro("\\Colonapprox",
-    "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\approx}");
+defineMacro("\\Colonapprox", "\\html@mathml{" +
+    "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\approx}}" +
+    "{\\mathop{\\char\"2237\\char\"2248}}");
 // \providecommand*\colonsim{\vcentcolon\mathrel{\mkern-1.2mu}\sim}
-defineMacro("\\colonsim", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim}");
+defineMacro("\\colonsim", "\\html@mathml{" +
+    "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim}}" +
+    "{\\mathop{\\char\"3a\\char\"223c}}");
 // \providecommand*\Colonsim{\dblcolon\mathrel{\mkern-1.2mu}\sim}
-defineMacro("\\Colonsim", "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim}");
+defineMacro("\\Colonsim", "\\html@mathml{" +
+    "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim}}" +
+    "{\\mathop{\\char\"2237\\char\"223c}}");
 
 // Some Unicode characters are implemented with macros to mathtools functions.
+defineMacro("\u2237", "\\dblcolon");  // ::
+defineMacro("\u2239", "\\eqcolon");  // -:
 defineMacro("\u2254", "\\coloneqq");  // :=
 defineMacro("\u2255", "\\eqqcolon");  // =:
 defineMacro("\u2A74", "\\Coloneqq");  // ::=
@@ -790,6 +812,23 @@ defineMacro("\\approxcoloncolon",
 defineMacro("\\notni", "\\html@mathml{\\not\\ni}{\\mathrel{\\char`\u220C}}");
 defineMacro("\\limsup", "\\DOTSB\\mathop{\\operatorname{lim\\,sup}}\\limits");
 defineMacro("\\liminf", "\\DOTSB\\mathop{\\operatorname{lim\\,inf}}\\limits");
+
+//////////////////////////////////////////////////////////////////////
+// MathML alternates for KaTeX glyphs in the Unicode private area
+defineMacro("\\gvertneqq", "\\html@mathml{\\@gvertneqq}{\u2269}");
+defineMacro("\\lvertneqq", "\\html@mathml{\\@lvertneqq}{\u2268}");
+defineMacro("\\ngeqq", "\\html@mathml{\\@ngeqq}{\u2271}");
+defineMacro("\\ngeqslant", "\\html@mathml{\\@ngeqslant}{\u2271}");
+defineMacro("\\nleqq", "\\html@mathml{\\@nleqq}{\u2270}");
+defineMacro("\\nleqslant", "\\html@mathml{\\@nleqslant}{\u2270}");
+defineMacro("\\nshortmid", "\\html@mathml{\\@nshortmid}{∤}");
+defineMacro("\\nshortparallel", "\\html@mathml{\\@nshortparallel}{∦}");
+defineMacro("\\nsubseteqq", "\\html@mathml{\\@nsubseteqq}{\u2288}");
+defineMacro("\\nsupseteqq", "\\html@mathml{\\@nsupseteqq}{\u2289}");
+defineMacro("\\varsubsetneq", "\\html@mathml{\\@varsubsetneq}{⊊}");
+defineMacro("\\varsubsetneqq", "\\html@mathml{\\@varsubsetneqq}{⫋}");
+defineMacro("\\varsupsetneq", "\\html@mathml{\\@varsupsetneq}{⊋}");
+defineMacro("\\varsupsetneqq", "\\html@mathml{\\@varsupsetneqq}{⫌}");
 
 //////////////////////////////////////////////////////////////////////
 // semantic
