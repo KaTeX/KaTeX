@@ -28,7 +28,7 @@ if (process.env.CONTEXT === 'production') {
     let indexHtml = fs.readFileSync('pages/index.html', 'utf8');
     indexHtml = indexHtml.replace(/(["'])static\/(katex|fonts)/g,
         `$1https://cdn.jsdelivr.net/npm/katex@${version}/dist/$2`);
-        //CDN pathway different for `copy-tex` and `mhchem`
+    // the CDN pathway is different for `copy-tex` and `mhchem`
     indexHtml = indexHtml.replace(/(["'])static\/(copy-tex|mhchem)/g,
             `$1https://cdn.jsdelivr.net/npm/katex@${version}/dist/contrib/$2`);
     fs.writeFileSync('pages/index.html', indexHtml);
