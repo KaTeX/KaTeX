@@ -334,6 +334,9 @@ defineMacro("\u212D", "\\mathfrak{C}");  // Fraktur
 defineMacro("\u210C", "\\mathfrak{H}");
 defineMacro("\u2128", "\\mathfrak{Z}");
 
+// Define \Bbbk with a macro that works in both HTML and MathML.
+defineMacro("\\Bbbk", "\\Bbb{k}");
+
 // Unicode middle dot
 // The KaTeX fonts do not contain U+00B7. Instead, \cdotp displays
 // the dot at U+22C5 and gives it punct spacing.
