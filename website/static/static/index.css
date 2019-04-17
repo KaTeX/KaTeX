@@ -248,11 +248,17 @@ textarea {
 .credits {
     float: left;
     font-size: 16px;
+    line-height: 1.5;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
 .credits a {
     color: white;
+}
+
+.credits img {
+    height: 26px;
+    vertical-align: middle;
 }
 
 .errorMessage {
