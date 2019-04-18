@@ -55,42 +55,6 @@ defineFunction({
     mathmlBuilder,
 });
 
-// TODO(kevinb): define these using macros
-defineFunction({
-    type: "color",
-    names: [
-        "\\blue", "\\orange", "\\pink", "\\red",
-        "\\green", "\\gray", "\\purple",
-        "\\blueA", "\\blueB", "\\blueC", "\\blueD", "\\blueE",
-        "\\tealA", "\\tealB", "\\tealC", "\\tealD", "\\tealE",
-        "\\greenA", "\\greenB", "\\greenC", "\\greenD", "\\greenE",
-        "\\goldA", "\\goldB", "\\goldC", "\\goldD", "\\goldE",
-        "\\redA", "\\redB", "\\redC", "\\redD", "\\redE",
-        "\\maroonA", "\\maroonB", "\\maroonC", "\\maroonD", "\\maroonE",
-        "\\purpleA", "\\purpleB", "\\purpleC", "\\purpleD", "\\purpleE",
-        "\\mintA", "\\mintB", "\\mintC",
-        "\\grayA", "\\grayB", "\\grayC", "\\grayD", "\\grayE",
-        "\\grayF", "\\grayG", "\\grayH", "\\grayI",
-        "\\kaBlue", "\\kaGreen",
-    ],
-    props: {
-        numArgs: 1,
-        allowedInText: true,
-        greediness: 3,
-    },
-    handler({parser, funcName}, args) {
-        const body = args[0];
-        return {
-            type: "color",
-            mode: parser.mode,
-            color: "katex-" + funcName.slice(1),
-            body: ordargument(body),
-        };
-    },
-    htmlBuilder,
-    mathmlBuilder,
-});
-
 defineFunction({
     type: "color",
     names: ["\\color"],
