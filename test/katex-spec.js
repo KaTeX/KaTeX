@@ -1708,6 +1708,15 @@ describe("An HTML font tree-builder", function() {
         expect(markup).toContain("<span class=\"mord textit\">R</span>");
     });
 
+    it("should render \\textup{R} with the correct font", function() {
+        const markup1 = katex.renderToString(r`\textup{R}`);
+        expect(markup1).toContain("<span class=\"mord textup\">R</span>");
+        const markup2 = katex.renderToString(r`\textit{\textup{R}}`);
+        expect(markup2).toContain("<span class=\"mord textup\">R</span>");
+        const markup3 = katex.renderToString(r`\textup{\textit{R}}`);
+        expect(markup3).toContain("<span class=\"mord textit\">R</span>");
+    });
+
     it("should render \\text{R\\textit{S}T} with the correct fonts", function() {
         const markup = katex.renderToString(r`\text{R\textit{S}T}`);
         expect(markup).toContain("<span class=\"mord\">R</span>");
@@ -1718,6 +1727,15 @@ describe("An HTML font tree-builder", function() {
     it("should render \\textbf{R} with the correct font", function() {
         const markup = katex.renderToString(r`\textbf{R}`);
         expect(markup).toContain("<span class=\"mord textbf\">R</span>");
+    });
+
+    it("should render \\textmd{R} with the correct font", function() {
+        const markup1 = katex.renderToString(r`\textmd{R}`);
+        expect(markup1).toContain("<span class=\"mord textmd\">R</span>");
+        const markup2 = katex.renderToString(r`\textbf{\textmd{R}}`);
+        expect(markup2).toContain("<span class=\"mord textmd\">R</span>");
+        const markup3 = katex.renderToString(r`\textmd{\textbf{R}}`);
+        expect(markup3).toContain("<span class=\"mord textbf\">R</span>");
     });
 
     it("should render \\textsf{R} with the correct font", function() {
@@ -2998,6 +3016,12 @@ describe("A macro expander", function() {
         expect('\\char"g').not.toParse();
     });
 
+    it("should build Unicode private area characters", function() {
+        expect`\gvertneqq\lvertneqq\ngeqq\ngeqslant\nleqq`.toBuild();
+        expect`\nleqslant\nshortmid\nshortparallel\varsubsetneq`.toBuild();
+        expect`\varsubsetneqq\varsupsetneq\varsupsetneqq`.toBuild();
+    });
+
     // TODO(edemaine): This doesn't work yet.  Parses like `\text text`,
     // which doesn't treat all four letters as an argument.
     //it("\\TextOrMath should work in a macro passed to \\text", function() {
@@ -3308,8 +3332,7 @@ describe("Unicode", function() {
     });
 
     it("should parse symbols", function() {
-        expect("ð").toParse();  // warns about lacking character metrics
-        expect("£¥ℂℍℑℎℓℕ℘ℙℚℜℝℤℲℵℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼⋮\u00B7\u00A9").toBuild(strictSettings);
+        expect("£¥ℂℍℑℎℓℕ℘ℙℚℜℝℤℲℵðℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼⋮\u00B7\u00A9").toBuild(strictSettings);
         expect("\\text{£¥ℂℍℎ\u00A9\u00AE\uFE0F}").toBuild(strictSettings);
     });
 
