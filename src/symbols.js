@@ -625,6 +625,8 @@ defineSymbol(math, main, open, "[", "\\lbrack");
 defineSymbol(text, main, textord, "[", "\\lbrack");
 defineSymbol(math, main, close, "]", "\\rbrack");
 defineSymbol(text, main, textord, "]", "\\rbrack");
+defineSymbol(math, main, open, "\u27e6", "\\llbrack", true);
+defineSymbol(math, main, close, "\u27e7", "\\rrbrack", true);
 defineSymbol(math, main, open, "(", "\\lparen");
 defineSymbol(math, main, close, ")", "\\rparen");
 defineSymbol(text, main, textord, "<", "\\textless"); // in T1 fontenc
