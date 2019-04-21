@@ -4,6 +4,9 @@
 // The mu unit is defined as 1/18 em
 @mu: 1/18em;
 
+// The version is dynamically set from package.json via webpack.common.js
+@version: "";
+
 .katex {
     font: normal 1.21em KaTeX_Main, Times New Roman, serif;
     line-height: 1.2;
@@ -17,6 +20,10 @@
     // Prevent background resetting on elements in Windows's high-contrast
     // mode, while still allowing background/foreground setting on root .katex
     * { -ms-high-contrast-adjust: none !important; }
+
+    .katex-version::after {
+        content: @version;
+    }
 
     .katex-mathml {
         // Accessibility hack to only show to screen readers

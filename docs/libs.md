@@ -21,6 +21,9 @@ These libraries are maintained by third-parties.
 ### iOS
 - [KaTeX-iOS](https://github.com/ianarawjo/KaTeX-iOS): iOS UIView that renders TeX expressions with KaTeX
 
+### Android
+- [KaTeXView](https://github.com/judemanutd/KaTeXView): An android library that uses Khan Academy KaTeX for TeX math rendering.
+
 ### React
 - [react-latex](https://github.com/zzish/react-latex): React component to render latex strings, based on KaTeX
 - [react-katex](https://github.com/talyssonoc/react-katex): React components that use KaTeX to typeset math expressions
