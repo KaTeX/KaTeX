@@ -36,10 +36,12 @@ const htmlBuilder = (group, options) => {
         imgShift = -0.5 * options.fontMetrics().xHeight;
 
     } else if (label === "angl" || label === "lcroof") {
+        //0.4pt matches the top&side line thickness in the actuarialangle package
         const vlineThickness = calculateSize({number: 0.4, unit: "pt"}, options);
         let hlineThickness = vlineThickness;
 
         if (label === "lcroof") {
+            //0.6pt matches the top bar thickness of \lcroof from lifecon package
             hlineThickness = calculateSize({number: 0.6, unit: "pt"}, options);
         }
 
