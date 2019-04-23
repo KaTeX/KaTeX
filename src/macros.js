@@ -841,6 +841,8 @@ defineMacro("\\varsupsetneqq", "\\html@mathml{\\@varsupsetneqq}{⫌}");
 
 defineMacro("\u27e6", "\\mathopen{[\\mkern-3.2mu[}");  // blackboard bold [
 defineMacro("\u27e7", "\\mathclose{]\\mkern-3.2mu]}"); // blackboard bold ]
+defineMacro("\\llbrace", "\\mathopen{\\{\\mkern-3.2mu[}");  // blackboard bold {
+defineMacro("\\rrbrace", "\\mathclose{]\\mkern-3.2mu\\}}"); // blackboard bold }
 
 // TODO: Create variable sized versions of the last two items. I believe that
 // will require new font glyphs.
