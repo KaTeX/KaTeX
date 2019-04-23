@@ -113,7 +113,7 @@ The `{array}` environment does not yet support `\cline` or `\multicolumn`.
 
 **Greek Letters**
 
-Direct Input: $Α Β Γ Δ Ε Ζ Η Θ Ι \allowbreak Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω$  
+Direct Input: $Α Β Γ Δ Ε Ζ Η Θ Ι \allowbreak Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω$
 $\allowbreak α β γ δ ϵ ζ η θ ι κ λ μ ν ξ o π \allowbreak ρ σ τ υ ϕ χ ψ ω ε ϑ ϖ ϱ ς φ$
 
 |||||
@@ -361,7 +361,8 @@ Direct Input: $+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ 
 | $\cosec$ `\cosec`  | $\hom$ `\hom`  | $\tg$ `\tg`  | $\Pr$ `\Pr`  |
 | $\cosh$ `\cosh`| $\ker$ `\ker`  | $\th$ `\th`  | $\sup$ `\sup` |
 | $\cot$ `\cot` | $\lg$ `\lg`| $\operatorname{f}$ `\operatorname{f}` | $\argmax$ `\argmax` |
-|$\argmin$ `\argmin`|
+| | | |$\argmin$ `\argmin`|
+| | | | $\plim$ `\plim` |
 
 Functions on the right column of this table can take `\limits`.
 

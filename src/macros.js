@@ -925,6 +925,7 @@ defineMacro("\\Zeta", "\\mathrm{Z}");
 
 defineMacro("\\argmin", "\\DOTSB\\mathop{\\operatorname{arg\\,min}}\\limits");
 defineMacro("\\argmax", "\\DOTSB\\mathop{\\operatorname{arg\\,max}}\\limits");
+defineMacro("\\plim", "\\DOTSB\\mathop{\\operatorname{plim}}\\limits");
 
 // Custom Khan Academy colors, should be moved to an optional package
 defineMacro("\\blue", "\\textcolor{##6495ed}{#1}");

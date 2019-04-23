@@ -3165,6 +3165,10 @@ describe("A macro expander", function() {
         expect`\liminf`.toParseLike`\mathop{\operatorname{lim\,inf}}\limits`;
     });
 
+    it("should expand \\plim as expected", () => {
+        expect`\plim`.toParseLike`\mathop{\operatorname{plim}}\limits`;
+    });
+
     it("should expand \\argmin as expected", () => {
         expect`\argmin`.toParseLike`\mathop{\operatorname{arg\,min}}\limits`;
     });

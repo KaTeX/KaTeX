@@ -798,6 +798,7 @@ table td {
 |\pi|$\pi$||
 |{picture}|<span style="color:firebrick;">Not supported</span>||
 |\pitchfork|$\pitchfork$||
+|\plim|$\plim$||
 |\plusmn|$\plusmn$||
 |\pm|$\pm$||
 |\pmatrix|<span style="color:firebrick;">Not supported</span>|See `{pmatrix}`|
