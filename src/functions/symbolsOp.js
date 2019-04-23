@@ -23,6 +23,10 @@ defineFunctionBuilders({
             }
         } else if (group.family === "punct") {
             node.setAttribute("separator", "true");
+        } else if (group.family === "open" || group.family === "close") {
+            // Delims built here should not stretch vertically.
+            // See delimsizing.js for stretchy delims.
+            node.setAttribute("stretchy", "false");
         }
         return node;
     },
