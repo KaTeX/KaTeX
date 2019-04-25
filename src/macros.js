@@ -334,6 +334,9 @@ defineMacro("\u212D", "\\mathfrak{C}");  // Fraktur
 defineMacro("\u210C", "\\mathfrak{H}");
 defineMacro("\u2128", "\\mathfrak{Z}");
 
+// Define \Bbbk with a macro that works in both HTML and MathML.
+defineMacro("\\Bbbk", "\\Bbb{k}");
+
 // Unicode middle dot
 // The KaTeX fonts do not contain U+00B7. Instead, \cdotp displays
 // the dot at U+22C5 and gives it punct spacing.
@@ -348,7 +351,8 @@ defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 // \DeclareMathSymbol{\not}{\mathrel}{symbols}{"36}
 // It's thus treated like a \mathrel, but defined by a symbol that has zero
 // width but extends to the right.  We use \rlap to get that spacing.
-defineMacro("\\not", '\\mathrel{\\mathrlap\\@not}');
+// For MathML we write U+0338 here. buildMathML.js will then do the overlay.
+defineMacro("\\not", '\\html@mathml{\\mathrel{\\mathrlap\\@not}}{\\char"338}');
 
 // Negated symbols from base/fontmath.ltx:
 // \def\neq{\not=} \let\ne=\neq
@@ -827,13 +831,20 @@ defineMacro("\\varsupsetneq", "\\html@mathml{\\@varsupsetneq}{⊋}");
 defineMacro("\\varsupsetneqq", "\\html@mathml{\\@varsupsetneqq}{⫌}");
 
 //////////////////////////////////////////////////////////////////////
-// semantic
+// stmaryrd and semantic
 
-// The semantic package renders the next two items by calling a glyph from the
-// bbold package. Those glyphs do not exist in the KaTeX fonts. Hence the macros.
+// The stmaryrd and semantic packages render the next four items by calling a
+// glyph. Those glyphs do not exist in the KaTeX fonts. Hence the macros.
 
-defineMacro("\u27e6", "\\mathopen{[\\mkern-3.2mu[}");  // blackboard bold [
-defineMacro("\u27e7", "\\mathclose{]\\mkern-3.2mu]}"); // blackboard bold ]
+defineMacro("\\llbracket", "\\html@mathml{" +
+    "\\mathopen{[\\mkern-3.2mu[}}" +
+    "{\\mathopen{\\char`\u27e6}}");
+defineMacro("\\rrbracket", "\\html@mathml{" +
+    "\\mathclose{]\\mkern-3.2mu]}}" +
+    "{\\mathclose{\\char`\u27e7}}");
+
+defineMacro("\u27e6", "\\llbracket"); // blackboard bold [
+defineMacro("\u27e7", "\\rrbracket"); // blackboard bold ]
 
 // TODO: Create variable sized versions of the last two items. I believe that
 // will require new font glyphs.
@@ -918,3 +929,61 @@ defineMacro("\\Zeta", "\\mathrm{Z}");
 
 defineMacro("\\argmin", "\\DOTSB\\mathop{\\operatorname{arg\\,min}}\\limits");
 defineMacro("\\argmax", "\\DOTSB\\mathop{\\operatorname{arg\\,max}}\\limits");
+
+// Custom Khan Academy colors, should be moved to an optional package
+defineMacro("\\blue", "\\textcolor{##6495ed}{#1}");
+defineMacro("\\orange", "\\textcolor{##ffa500}{#1}");
+defineMacro("\\pink", "\\textcolor{##ff00af}{#1}");
+defineMacro("\\red", "\\textcolor{##df0030}{#1}");
+defineMacro("\\green", "\\textcolor{##28ae7b}{#1}");
+defineMacro("\\gray", "\\textcolor{gray}{##1}");
+defineMacro("\\purple", "\\textcolor{##9d38bd}{#1}");
+defineMacro("\\blueA", "\\textcolor{##ccfaff}{#1}");
+defineMacro("\\blueB", "\\textcolor{##80f6ff}{#1}");
+defineMacro("\\blueC", "\\textcolor{##63d9ea}{#1}");
+defineMacro("\\blueD", "\\textcolor{##11accd}{#1}");
+defineMacro("\\blueE", "\\textcolor{##0c7f99}{#1}");
+defineMacro("\\tealA", "\\textcolor{##94fff5}{#1}");
+defineMacro("\\tealB", "\\textcolor{##26edd5}{#1}");
+defineMacro("\\tealC", "\\textcolor{##01d1c1}{#1}");
+defineMacro("\\tealD", "\\textcolor{##01a995}{#1}");
+defineMacro("\\tealE", "\\textcolor{##208170}{#1}");
+defineMacro("\\greenA", "\\textcolor{##b6ffb0}{#1}");
+defineMacro("\\greenB", "\\textcolor{##8af281}{#1}");
+defineMacro("\\greenC", "\\textcolor{##74cf70}{#1}");
+defineMacro("\\greenD", "\\textcolor{##1fab54}{#1}");
+defineMacro("\\greenE", "\\textcolor{##0d923f}{#1}");
+defineMacro("\\goldA", "\\textcolor{##ffd0a9}{#1}");
+defineMacro("\\goldB", "\\textcolor{##ffbb71}{#1}");
+defineMacro("\\goldC", "\\textcolor{##ff9c39}{#1}");
+defineMacro("\\goldD", "\\textcolor{##e07d10}{#1}");
+defineMacro("\\goldE", "\\textcolor{##a75a05}{#1}");
+defineMacro("\\redA", "\\textcolor{##fca9a9}{#1}");
+defineMacro("\\redB", "\\textcolor{##ff8482}{#1}");
+defineMacro("\\redC", "\\textcolor{##f9685d}{#1}");
+defineMacro("\\redD", "\\textcolor{##e84d39}{#1}");
+defineMacro("\\redE", "\\textcolor{##bc2612}{#1}");
+defineMacro("\\maroonA", "\\textcolor{##ffbde0}{#1}");
+defineMacro("\\maroonB", "\\textcolor{##ff92c6}{#1}");
+defineMacro("\\maroonC", "\\textcolor{##ed5fa6}{#1}");
+defineMacro("\\maroonD", "\\textcolor{##ca337c}{#1}");
+defineMacro("\\maroonE", "\\textcolor{##9e034e}{#1}");
+defineMacro("\\purpleA", "\\textcolor{##ddd7ff}{#1}");
+defineMacro("\\purpleB", "\\textcolor{##c6b9fc}{#1}");
+defineMacro("\\purpleC", "\\textcolor{##aa87ff}{#1}");
+defineMacro("\\purpleD", "\\textcolor{##7854ab}{#1}");
+defineMacro("\\purpleE", "\\textcolor{##543b78}{#1}");
+defineMacro("\\mintA", "\\textcolor{##f5f9e8}{#1}");
+defineMacro("\\mintB", "\\textcolor{##edf2df}{#1}");
+defineMacro("\\mintC", "\\textcolor{##e0e5cc}{#1}");
+defineMacro("\\grayA", "\\textcolor{##f6f7f7}{#1}");
+defineMacro("\\grayB", "\\textcolor{##f0f1f2}{#1}");
+defineMacro("\\grayC", "\\textcolor{##e3e5e6}{#1}");
+defineMacro("\\grayD", "\\textcolor{##d6d8da}{#1}");
+defineMacro("\\grayE", "\\textcolor{##babec2}{#1}");
+defineMacro("\\grayF", "\\textcolor{##888d93}{#1}");
+defineMacro("\\grayG", "\\textcolor{##626569}{#1}");
+defineMacro("\\grayH", "\\textcolor{##3b3e40}{#1}");
+defineMacro("\\grayI", "\\textcolor{##21242c}{#1}");
+defineMacro("\\kaBlue", "\\textcolor{##314453}{#1}");
+defineMacro("\\kaGreen", "\\textcolor{##71B307}{#1}");
