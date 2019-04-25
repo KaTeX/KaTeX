@@ -846,7 +846,7 @@ defineMacro("\\rrbracket", "\\html@mathml{" +
     "\\mathclose{]\\mkern-3.2mu]}}" +
     "{\\mathclose{\\char`\u27e7}}");
 
-defineMacro("\u27e6", "\\llbracket");  // blackboard bold [
+defineMacro("\u27e6", "\\llbracket"); // blackboard bold [
 defineMacro("\u27e7", "\\rrbracket"); // blackboard bold ]
 
 // TODO: Create variable sized versions of the last two items. I believe that
