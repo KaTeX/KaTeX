@@ -662,7 +662,9 @@ defineMacro("\\mod", "\\allowbreak" +
 // The version in ambsy.sty works by typesetting three copies of the argument
 // with small offsets. We use two copies. We omit the vertical offset because
 // of rendering problems that makeVList encounters in Safari.
-defineMacro("\\pmb", "\\@binrel{#1}{\\mathrlap{#1}\\kern0.5px#1}");
+defineMacro("\\pmb", "\\html@mathml{" +
+    "\\@binrel{#1}{\\mathrlap{#1}\\kern0.5px#1}}" +
+    "{\\mathbf{#1}}");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
