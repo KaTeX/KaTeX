@@ -279,7 +279,6 @@ defineSymbol(math, ams, textord, "\u2204", "\\nexists");
 defineSymbol(math, ams, textord, "\u2127", "\\mho");
 defineSymbol(math, ams, textord, "\u2132", "\\Finv", true);
 defineSymbol(math, ams, textord, "\u2141", "\\Game", true);
-defineSymbol(math, ams, textord, "\u006b", "\\Bbbk");
 defineSymbol(math, ams, textord, "\u2035", "\\backprime");
 defineSymbol(math, ams, textord, "\u25b2", "\\blacktriangle");
 defineSymbol(math, ams, textord, "\u25bc", "\\blacktriangledown");
@@ -626,6 +625,8 @@ defineSymbol(math, main, open, "[", "\\lbrack");
 defineSymbol(text, main, textord, "[", "\\lbrack");
 defineSymbol(math, main, close, "]", "\\rbrack");
 defineSymbol(text, main, textord, "]", "\\rbrack");
+defineSymbol(math, main, open, "\u27e6", "\\llbracket", true);
+defineSymbol(math, main, close, "\u27e7", "\\rrbracket", true);
 defineSymbol(math, main, open, "(", "\\lparen");
 defineSymbol(math, main, close, ")", "\\rparen");
 defineSymbol(text, main, textord, "<", "\\textless"); // in T1 fontenc
