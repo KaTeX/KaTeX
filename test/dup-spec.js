@@ -1,10 +1,20 @@
+/* global expect: false */
+/* global it: false */
+/* global describe: false */
+
 import symbols from '../src/symbols.js';
 import macros from '../src/macros.js';
 
 describe("Symbols and macros", () => {
-    for (let macro in macros) {
+    for (const macro in macros) {
+        if (!macros.hasOwnProperty(macro)) {
+            continue;
+        }
         it(`macro ${macro} should not shadow a symbol`, () => {
-            for (let kind in symbols) {
+            for (const kind in symbols) {
+                if (!symbols.hasOwnProperty(kind)) {
+                    continue;
+                }
                 expect(symbols[kind][macro]).toBeFalsy();
             }
         });
