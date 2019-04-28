@@ -526,6 +526,7 @@ table td {
 |\Large|$\Large Large$|`\Large Large`|
 |\LARGE|$\LARGE LARGE$|`\LARGE LARGE`|
 |\LaTeX|$\LaTeX$||
+|\lBrace|$\lBrace$||
 |\lbrace|$\lbrace$||
 |\lbrack|$\lbrack$||
 |\lceil|$\lceil$||
@@ -569,6 +570,7 @@ table td {
 |\limsup|$\limsup$||
 |\ll|$\ll$||
 |\llap|${=}\llap{/\,}$|`{=}\llap{/\,}`|
+|\llbracket|$\llbracket$||
 |\llcorner|$\llcorner$||
 |\Lleftarrow|$\Lleftarrow$||
 |\lll|$\lll$||
@@ -839,6 +841,7 @@ table td {
 |\Rarr|$\Rarr$||
 |\rArr|$\rArr$||
 |\rarr|$\rarr$||
+|\rBrace|$\rBrace$||
 |\rbrace|$\rbrace$||
 |\rbrack|$\rbrack$||
 |\rceil|$\rceil$||
@@ -876,6 +879,7 @@ table td {
 |\rotatebox|<span style="color:firebrick;">Not supported</span>|[Issue #681](https://github.com/KaTeX/KaTeX/issues/681)|
 |\rparen|$\rparen$||
 |\rq|$\rq$||
+|\rrbracket|$\rrbracket$||
 |\Rrightarrow|$\Rrightarrow$||
 |\Rsh|$\Rsh$||
 |\rtimes|$\rtimes$||

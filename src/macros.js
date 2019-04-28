@@ -834,13 +834,30 @@ defineMacro("\\varsupsetneq", "\\html@mathml{\\@varsupsetneq}{⊋}");
 defineMacro("\\varsupsetneqq", "\\html@mathml{\\@varsupsetneqq}{⫌}");
 
 //////////////////////////////////////////////////////////////////////
-// semantic
+// stmaryrd and semantic
 
-// The semantic package renders the next two items by calling a glyph from the
-// bbold package. Those glyphs do not exist in the KaTeX fonts. Hence the macros.
+// The stmaryrd and semantic packages render the next four items by calling a
+// glyph. Those glyphs do not exist in the KaTeX fonts. Hence the macros.
 
-defineMacro("\u27e6", "\\mathopen{[\\mkern-3.2mu[}");  // blackboard bold [
-defineMacro("\u27e7", "\\mathclose{]\\mkern-3.2mu]}"); // blackboard bold ]
+defineMacro("\\llbracket", "\\html@mathml{" +
+    "\\mathopen{[\\mkern-3.2mu[}}" +
+    "{\\mathopen{\\char`\u27e6}}");
+defineMacro("\\rrbracket", "\\html@mathml{" +
+    "\\mathclose{]\\mkern-3.2mu]}}" +
+    "{\\mathclose{\\char`\u27e7}}");
+
+defineMacro("\u27e6", "\\llbracket"); // blackboard bold [
+defineMacro("\u27e7", "\\rrbracket"); // blackboard bold ]
+
+defineMacro("\\lBrace", "\\html@mathml{" +
+    "\\mathopen{\\{\\mkern-3.2mu[}}" +
+    "{\\mathopen{\\char`\u2983}}");
+defineMacro("\\rBrace", "\\html@mathml{" +
+    "\\mathclose{]\\mkern-3.2mu\\}}}" +
+    "{\\mathclose{\\char`\u2984}}");
+
+defineMacro("\u2983", "\\lBrace"); // blackboard bold {
+defineMacro("\u2984", "\\rBrace"); // blackboard bold }
 
 // TODO: Create variable sized versions of the last two items. I believe that
 // will require new font glyphs.
