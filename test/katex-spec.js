@@ -1987,7 +1987,8 @@ describe("A MathML font tree-builder", function() {
     });
 });
 
-describe("An includegraphics builder", function() {
+// Disabled until https://github.com/KaTeX/KaTeX/pull/1794 is merged.
+describe.skip("An includegraphics builder", function() {
     const img = "\\includegraphics[height=0.9em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}";
     it("should not fail", function() {
         expect(img).toBuild();
@@ -2718,7 +2719,8 @@ describe("A raw text parser", function() {
         // Unicode combining character. So this is a test that the parser will catch a bad string.
         expect("\\includegraphics[\u030aheight=0.8em, totalheight=0.9em, width=0.9em]{" + "https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").not.toParse();
     });
-    it("should return null for a omitted optional string", function() {
+    // Disabled until https://github.com/KaTeX/KaTeX/pull/1794 is merged.
+    it.skip("should return null for a omitted optional string", function() {
         expect("\\includegraphics{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").toParse();
     });
 });
@@ -3362,6 +3364,7 @@ describe("Unicode", function() {
         expect`┌x┐ └x┘`.toBuild();
         expect("\u231Cx\u231D \u231Ex\u231F").toBuild();
         expect("\u27E6x\u27E7").toBuild();
+        expect("\\lBrace \\rBrace").toBuild();
     });
 
     it("should build some surrogate pairs", function() {

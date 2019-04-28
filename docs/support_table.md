@@ -479,7 +479,6 @@ table td {
 |\impliedby|$P\impliedby Q$|`P\impliedby Q`|
 |\implies|$P\implies Q$|`P\implies Q`|
 |\in|$\in$||
-|\includegraphics|$\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}$|`\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}`|
 |\inf|$\inf$||
 |\infin|$\infin$||
 |\infty|$\infty$||
@@ -527,6 +526,7 @@ table td {
 |\Large|$\Large Large$|`\Large Large`|
 |\LARGE|$\LARGE LARGE$|`\LARGE LARGE`|
 |\LaTeX|$\LaTeX$||
+|\lBrace|$\lBrace$||
 |\lbrace|$\lbrace$||
 |\lbrack|$\lbrack$||
 |\lceil|$\lceil$||
@@ -570,6 +570,7 @@ table td {
 |\limsup|$\limsup$||
 |\ll|$\ll$||
 |\llap|${=}\llap{/\,}$|`{=}\llap{/\,}`|
+|\llbracket|$\llbracket$||
 |\llcorner|$\llcorner$||
 |\Lleftarrow|$\Lleftarrow$||
 |\lll|$\lll$||
@@ -840,6 +841,7 @@ table td {
 |\Rarr|$\Rarr$||
 |\rArr|$\rArr$||
 |\rarr|$\rarr$||
+|\rBrace|$\rBrace$||
 |\rbrace|$\rbrace$||
 |\rbrack|$\rbrack$||
 |\rceil|$\rceil$||
@@ -877,6 +879,7 @@ table td {
 |\rotatebox|<span style="color:firebrick;">Not supported</span>|[Issue #681](https://github.com/KaTeX/KaTeX/issues/681)|
 |\rparen|$\rparen$||
 |\rq|$\rq$||
+|\rrbracket|$\rrbracket$||
 |\Rrightarrow|$\Rrightarrow$||
 |\Rsh|$\Rsh$||
 |\rtimes|$\rtimes$||

@@ -299,81 +299,13 @@ class Options {
         return this._fontMetrics;
     }
 
-    /**
-     * A map of color names to CSS colors.
-     * TODO(emily): Remove this when we have real macros
-     */
-    static colorMap = {
-        "katex-blue": "#6495ed",
-        "katex-orange": "#ffa500",
-        "katex-pink": "#ff00af",
-        "katex-red": "#df0030",
-        "katex-green": "#28ae7b",
-        "katex-gray": "gray",
-        "katex-purple": "#9d38bd",
-        "katex-blueA": "#ccfaff",
-        "katex-blueB": "#80f6ff",
-        "katex-blueC": "#63d9ea",
-        "katex-blueD": "#11accd",
-        "katex-blueE": "#0c7f99",
-        "katex-tealA": "#94fff5",
-        "katex-tealB": "#26edd5",
-        "katex-tealC": "#01d1c1",
-        "katex-tealD": "#01a995",
-        "katex-tealE": "#208170",
-        "katex-greenA": "#b6ffb0",
-        "katex-greenB": "#8af281",
-        "katex-greenC": "#74cf70",
-        "katex-greenD": "#1fab54",
-        "katex-greenE": "#0d923f",
-        "katex-goldA": "#ffd0a9",
-        "katex-goldB": "#ffbb71",
-        "katex-goldC": "#ff9c39",
-        "katex-goldD": "#e07d10",
-        "katex-goldE": "#a75a05",
-        "katex-redA": "#fca9a9",
-        "katex-redB": "#ff8482",
-        "katex-redC": "#f9685d",
-        "katex-redD": "#e84d39",
-        "katex-redE": "#bc2612",
-        "katex-maroonA": "#ffbde0",
-        "katex-maroonB": "#ff92c6",
-        "katex-maroonC": "#ed5fa6",
-        "katex-maroonD": "#ca337c",
-        "katex-maroonE": "#9e034e",
-        "katex-purpleA": "#ddd7ff",
-        "katex-purpleB": "#c6b9fc",
-        "katex-purpleC": "#aa87ff",
-        "katex-purpleD": "#7854ab",
-        "katex-purpleE": "#543b78",
-        "katex-mintA": "#f5f9e8",
-        "katex-mintB": "#edf2df",
-        "katex-mintC": "#e0e5cc",
-        "katex-grayA": "#f6f7f7",
-        "katex-grayB": "#f0f1f2",
-        "katex-grayC": "#e3e5e6",
-        "katex-grayD": "#d6d8da",
-        "katex-grayE": "#babec2",
-        "katex-grayF": "#888d93",
-        "katex-grayG": "#626569",
-        "katex-grayH": "#3b3e40",
-        "katex-grayI": "#21242c",
-        "katex-kaBlue": "#314453",
-        "katex-kaGreen": "#71B307",
-    };
 
     /**
-     * Gets the CSS color of the current options object, accounting for the
-     * `colorMap`.
+     * Gets the CSS color of the current options object
      */
     getColor(): string | void {
         if (this.phantom) {
             return "transparent";
-        } else if (
-            this.color != null &&
-            Options.colorMap.hasOwnProperty(this.color)
-        ) {
-            return Options.colorMap[this.color];
         } else {
             return this.color;
         }
