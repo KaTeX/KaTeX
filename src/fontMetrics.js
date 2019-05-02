@@ -82,6 +82,10 @@ const sigmasAndXis = {
     // The space between adjacent `|` columns in an array definition. From
     // `\showthe\doublerulesep` in LaTeX. Equals 2.0 / ptPerEm.
     doubleRuleSep: [0.2, 0.2, 0.2],
+
+    // The width of separator lines in {array} environments. From
+    // `\showthe\arrayrulewidth` in LaTeX. Equals 0.4 / ptPerEm.
+    arrayRuleWidth: [0.04, 0.04, 0.04],
 };
 
 // This map contains a mapping from font name and character code to character

@@ -173,6 +173,11 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     let body = new Array(nr);
     const hlines = [];
 
+    const ruleThickness = Math.max(
+        (options.fontMetrics().arrayRuleWidth), // From LaTeX \showthe\arrayrulewidth. Equals 0.04 em.
+        options.minRuleThickness,                // User override.
+    );
+
     // Horizontal spacing
     const pt = 1 / options.fontMetrics().ptPerEm;
     const arraycolsep = 5 * pt; // \arraycolsep in article.cls
@@ -274,20 +279,15 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
                 cols.push(colSep);
             }
 
-            if (colDescr.separator === "|") {
+            if (colDescr.separator === "|" || colDescr.separator === ":") {
+                const lineType = (colDescr.separator === "|") ? "solid" : "dashed";
                 const separator = buildCommon.makeSpan(
                     ["vertical-separator"], [], options
                 );
                 separator.style.height = totalHeight + "em";
-                separator.style.verticalAlign =
-                    -(totalHeight - offset) + "em";
-
-                cols.push(separator);
-            } else if (colDescr.separator === ":") {
-                const separator = buildCommon.makeSpan(
-                    ["vertical-separator", "vs-dashed"], [], options
-                );
-                separator.style.height = totalHeight + "em";
+                separator.style.borderRightWidth = `${ruleThickness}em`;
+                separator.style.borderRightStyle = "lineType";
+                separator.style.margin = `0 -${ruleThickness / 2}em`;
                 separator.style.verticalAlign =
                     -(totalHeight - offset) + "em";
 
@@ -351,8 +351,8 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
     // Add \hline(s), if any.
     if (hlines.length > 0) {
-        const line = buildCommon.makeLineSpan("hline", options, 0.05);
-        const dashes = buildCommon.makeLineSpan("hdashline", options, 0.05);
+        const line = buildCommon.makeLineSpan("hline", options, ruleThickness);
+        const dashes = buildCommon.makeLineSpan("hdashline", options, ruleThickness);
         const vListElems = [{type: "elem", elem: body, shift: 0}];
         while (hlines.length > 0) {
             const hline = hlines.pop();

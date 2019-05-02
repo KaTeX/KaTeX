@@ -46,15 +46,25 @@ const htmlBuilder = (group, options) => {
 
         // Add vertical padding
         let vertPad = 0;
+        const isBoxed = (/box/.test(label));
+        let ruleThickness = 0;
         // ref: LaTeX source2e: \fboxsep = 3pt;  \fboxrule = .4pt
         // ref: cancel package: \advance\totalheight2\p@ % "+2"
-        if (/box/.test(label)) {
-            vertPad = label === "colorbox" ? 0.3 : 0.34;
+        if (isBoxed) {
+            ruleThickness = Math.max(
+                0.04,                       // \fboxrule = .4pt from LaTeX2e
+                options.minRuleThickness, // User override.
+            );
+            vertPad = 0.3 + (label === "colorbox" ? 0 : ruleThickness);
         } else {
             vertPad = isSingleChar ? 0.2 : 0;
         }
 
         img = stretchy.encloseSpan(inner, label, vertPad, options);
+        if (isBoxed) {
+            img.style.borderStyle = "solid";
+            img.style.borderWidth = `${ruleThickness}em`;
+        }
         imgShift = inner.depth + vertPad;
 
         if (group.backgroundColor) {
