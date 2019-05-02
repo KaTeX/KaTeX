@@ -286,7 +286,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
                 );
                 separator.style.height = totalHeight + "em";
                 separator.style.borderRightWidth = `${ruleThickness}em`;
-                separator.style.borderRightStyle = "lineType";
+                separator.style.borderRightStyle = lineType;
                 separator.style.margin = `0 -${ruleThickness / 2}em`;
                 separator.style.verticalAlign =
                     -(totalHeight - offset) + "em";
