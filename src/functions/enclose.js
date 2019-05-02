@@ -50,7 +50,7 @@ const htmlBuilder = (group, options) => {
         let ruleThickness = 0;
         // ref: LaTeX source2e: \fboxsep = 3pt;  \fboxrule = .4pt
         // ref: cancel package: \advance\totalheight2\p@ % "+2"
-        if (isBoxed) {
+        if (/box/.test(label)) {
             ruleThickness = Math.max(
                 0.04,                       // \fboxrule = .4pt from LaTeX2e
                 options.minRuleThickness, // User override.
@@ -61,7 +61,7 @@ const htmlBuilder = (group, options) => {
         }
 
         img = stretchy.encloseSpan(inner, label, vertPad, options);
-        if (isBoxed) {
+        if (/fbox|boxed/.test(label)) {
             img.style.borderStyle = "solid";
             img.style.borderWidth = `${ruleThickness}em`;
         }
