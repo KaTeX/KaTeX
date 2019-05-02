@@ -13,7 +13,9 @@ const optionsFromSettings = function(settings: Settings) {
     return new Options({
         style: (settings.displayMode ? Style.DISPLAY : Style.TEXT),
         maxSize: settings.maxSize,
-        minRuleThickness: settings.minRuleThickness,
+        minRuleThickness: isNaN(settings.minRuleThickness)
+            ? 0.04
+            : settings.minRuleThickness,
     });
 };
 
