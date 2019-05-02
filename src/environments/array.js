@@ -174,8 +174,9 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     const hlines = [];
 
     const ruleThickness = Math.max(
-        (options.fontMetrics().arrayRuleWidth), // From LaTeX \showthe\arrayrulewidth. Equals 0.04 em.
-        options.minRuleThickness,                // User override.
+        // From LaTeX \showthe\arrayrulewidth. Equals 0.04 em.
+        (options.fontMetrics().arrayRuleWidth),
+        options.minRuleThickness,  // User override.
     );
 
     // Horizontal spacing
@@ -352,7 +353,8 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     // Add \hline(s), if any.
     if (hlines.length > 0) {
         const line = buildCommon.makeLineSpan("hline", options, ruleThickness);
-        const dashes = buildCommon.makeLineSpan("hdashline", options, ruleThickness);
+        const dashes = buildCommon.makeLineSpan("hdashline", options,
+            ruleThickness);
         const vListElems = [{type: "elem", elem: body, shift: 0}];
         while (hlines.length > 0) {
             const hline = hlines.pop();

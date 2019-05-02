@@ -25,7 +25,7 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 
 import {PathNode, SvgNode, SymbolNode} from "./domTree";
-import {sqrtPath} from "./svgGeometry"
+import {sqrtPath} from "./svgGeometry";
 import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
@@ -436,7 +436,7 @@ const makeSqrtImage = function(
 
     // The standard sqrt SVGs each have a 0.04em thick viniculum.
     // If Settings.minRuleThickness is larger than that, we add extraViniculum.
-    const extraViniculum = Math.max(0, 
+    const extraViniculum = Math.max(0,
         options.minRuleThickness - options.fontMetrics().sqrtRuleThickness);
 
     // Create a span containing an SVG image of a sqrt symbol.
