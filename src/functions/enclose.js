@@ -60,7 +60,7 @@ const htmlBuilder = (group, options) => {
         }
 
         img = stretchy.encloseSpan(inner, label, vertPad, options);
-        if (/fbox|boxed/.test(label)) {
+        if (/fbox|boxed|fcolorbox/.test(label)) {
             img.style.borderStyle = "solid";
             img.style.borderWidth = `${ruleThickness}em`;
         }
