@@ -17,3 +17,25 @@ title: Common Issues
 - MathJax defines `\color` to be like `\textcolor` by default; set KaTeX's
   `colorIsTextColor` option to `true` for this behavior.  KaTeX's default
   behavior matches MathJax with its `color.js` extension enabled.
+
+## Troubleshooting
+
+To check the stylesheet (katex.css) is properly loaded, add following code to
+anywhere in the document:
+
+```html
+<style>
+  .katex-version {display: none;}
+  .katex-version::after {content:"0.10.2 or earlier";}
+</style>
+<span class="katex">
+  <span class="katex-mathml">The KaTeX stylesheet is not loaded!</span>
+  <span class="katex-version rule">KaTeX stylesheet version: </span>
+</span>
+```
+
+If it is loaded properly, it'll show its version. Make sure its version matches
+the version of the JavaScript file (katex.js), which is defined in `katex.version`.
+If it is not loaded properly, it'll show:
+
+> The KaTeX stylesheet is not loaded!

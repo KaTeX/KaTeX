@@ -190,19 +190,19 @@ const mathmlBuilder = (group, options) => {
             mml.buildGroup(group.denom, options),
         ]);
 
+    if (!group.hasBarLine) {
+        node.setAttribute("linethickness", "0px");
+    } else if (group.barSize) {
+        const ruleWidth = calculateSize(group.barSize, options);
+        node.setAttribute("linethickness", ruleWidth + "em");
+    }
+
     const style = adjustStyle(group.size, options.style);
     if (style.size !== options.style.size) {
         node = new mathMLTree.MathNode("mstyle", [node]);
         const isDisplay = (style.size === Style.DISPLAY.size) ? "true" : "false";
         node.setAttribute("displaystyle", isDisplay);
         node.setAttribute("scriptlevel", "0");
-    }
-
-    if (!group.hasBarLine) {
-        node.setAttribute("linethickness", "0px");
-    } else if (group.barSize) {
-        const ruleWidth = calculateSize(group.barSize, options);
-        node.setAttribute("linethickness", ruleWidth + "em");
     }
 
     if (group.leftDelim != null || group.rightDelim != null) {

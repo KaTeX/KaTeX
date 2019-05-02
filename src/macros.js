@@ -334,6 +334,9 @@ defineMacro("\u212D", "\\mathfrak{C}");  // Fraktur
 defineMacro("\u210C", "\\mathfrak{H}");
 defineMacro("\u2128", "\\mathfrak{Z}");
 
+// Define \Bbbk with a macro that works in both HTML and MathML.
+defineMacro("\\Bbbk", "\\Bbb{k}");
+
 // Unicode middle dot
 // The KaTeX fonts do not contain U+00B7. Instead, \cdotp displays
 // the dot at U+22C5 and gives it punct spacing.
@@ -348,7 +351,8 @@ defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 // \DeclareMathSymbol{\not}{\mathrel}{symbols}{"36}
 // It's thus treated like a \mathrel, but defined by a symbol that has zero
 // width but extends to the right.  We use \rlap to get that spacing.
-defineMacro("\\not", '\\mathrel{\\mathrlap\\@not}');
+// For MathML we write U+0338 here. buildMathML.js will then do the overlay.
+defineMacro("\\not", '\\html@mathml{\\mathrel{\\mathrlap\\@not}}{\\char"338}');
 
 // Negated symbols from base/fontmath.ltx:
 // \def\neq{\not=} \let\ne=\neq
@@ -830,13 +834,30 @@ defineMacro("\\varsupsetneq", "\\html@mathml{\\@varsupsetneq}{⊋}");
 defineMacro("\\varsupsetneqq", "\\html@mathml{\\@varsupsetneqq}{⫌}");
 
 //////////////////////////////////////////////////////////////////////
-// semantic
+// stmaryrd and semantic
 
-// The semantic package renders the next two items by calling a glyph from the
-// bbold package. Those glyphs do not exist in the KaTeX fonts. Hence the macros.
+// The stmaryrd and semantic packages render the next four items by calling a
+// glyph. Those glyphs do not exist in the KaTeX fonts. Hence the macros.
 
-defineMacro("\u27e6", "\\mathopen{[\\mkern-3.2mu[}");  // blackboard bold [
-defineMacro("\u27e7", "\\mathclose{]\\mkern-3.2mu]}"); // blackboard bold ]
+defineMacro("\\llbracket", "\\html@mathml{" +
+    "\\mathopen{[\\mkern-3.2mu[}}" +
+    "{\\mathopen{\\char`\u27e6}}");
+defineMacro("\\rrbracket", "\\html@mathml{" +
+    "\\mathclose{]\\mkern-3.2mu]}}" +
+    "{\\mathclose{\\char`\u27e7}}");
+
+defineMacro("\u27e6", "\\llbracket"); // blackboard bold [
+defineMacro("\u27e7", "\\rrbracket"); // blackboard bold ]
+
+defineMacro("\\lBrace", "\\html@mathml{" +
+    "\\mathopen{\\{\\mkern-3.2mu[}}" +
+    "{\\mathopen{\\char`\u2983}}");
+defineMacro("\\rBrace", "\\html@mathml{" +
+    "\\mathclose{]\\mkern-3.2mu\\}}}" +
+    "{\\mathclose{\\char`\u2984}}");
+
+defineMacro("\u2983", "\\lBrace"); // blackboard bold {
+defineMacro("\u2984", "\\rBrace"); // blackboard bold }
 
 // TODO: Create variable sized versions of the last two items. I believe that
 // will require new font glyphs.
