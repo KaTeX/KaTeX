@@ -46,7 +46,6 @@ const htmlBuilder = (group, options) => {
 
         // Add vertical padding
         let vertPad = 0;
-        const isBoxed = (/box/.test(label));
         let ruleThickness = 0;
         // ref: LaTeX source2e: \fboxsep = 3pt;  \fboxrule = .4pt
         // ref: cancel package: \advance\totalheight2\p@ % "+2"
