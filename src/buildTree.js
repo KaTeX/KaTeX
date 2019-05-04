@@ -57,4 +57,18 @@ export const buildHTMLTree = function(
     return displayWrap(katexNode, settings);
 };
 
+export const buildMathMLTree = function(
+    tree: AnyParseNode[],
+    expression: string,
+    settings: Settings,
+): DomSpan {
+    const options = optionsFromSettings(settings);
+    const mathMLNode = buildMathML(tree, expression, options);
+    // Flow doesn't think a DomSpan has children.
+    // $FlowFixMe
+    const node = (buildCommon.makeSpan([], [mathMLNode])).children[0].children[0];
+    node.setAttribute("xmlns", "http://www.w3.org/1998/Math/MathML");
+    return node;
+};
+
 export default buildTree;

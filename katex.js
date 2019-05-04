@@ -11,7 +11,7 @@
 import ParseError from "./src/ParseError";
 import Settings from "./src/Settings";
 
-import {buildTree, buildHTMLTree} from "./src/buildTree";
+import {buildTree, buildHTMLTree, buildMathMLTree} from "./src/buildTree";
 import parseTree from "./src/parseTree";
 import buildCommon from "./src/buildCommon";
 import {
@@ -68,6 +68,35 @@ const renderToString = function(
     options: SettingsOptions,
 ): string {
     const markup = renderToDomTree(expression, options).toMarkup();
+    return markup;
+};
+
+/**
+ * Parse and build a MathML expression, and place that expression in the DOM node
+ * given.
+ */
+let renderMathML = function(
+    expression: string,
+    baseNode: Node,
+    options: SettingsOptions,
+) {
+    baseNode.textContent = "";
+    const settings = new Settings(options);
+    const tree = parseTree(expression, settings);
+    const node = buildMathMLTree(tree, expression, settings).toNode();
+    baseNode.appendChild(node);
+};
+
+/**
+ * Parse and build an expression, and return only the MathML markup.
+ */
+const renderMathMLToString = function(
+    expression: string,
+    options: SettingsOptions,
+): string {
+    const settings = new Settings(options);
+    const tree = parseTree(expression, settings);
+    const markup = buildMathMLTree(tree, expression, settings).toMarkup();
     return markup;
 };
 
@@ -151,6 +180,19 @@ export default {
      * for sending to the client.
      */
     renderToString,
+    /**
+     * KaTeX error, usually during parsing.
+     */
+    /**
+     * Renders the given LaTeX into a MathML-only, and adds
+     * it as a child to the specified DOM node.
+     */
+    renderMathML,
+    /**
+     * Renders the given LaTeX into a MathML-only string,
+     * for sending to the client.
+     */
+    renderMathMLToString,
     /**
      * KaTeX error, usually during parsing.
      */
