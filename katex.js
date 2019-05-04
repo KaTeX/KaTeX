@@ -75,7 +75,7 @@ const renderToString = function(
  * Parse and build a MathML expression, and place that expression in the DOM node
  * given.
  */
-let renderMathML = function(
+const renderMathML = function(
     expression: string,
     baseNode: Node,
     options: SettingsOptions,
