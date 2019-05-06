@@ -2588,6 +2588,43 @@ describe("An array environment", function() {
 
 });
 
+describe("A subarray environment", function() {
+
+    it("should accept only a single alignment character", function() {
+        const parse = getParsed`\begin{subarray}{c}a \\ b\end{subarray}`;
+        expect(parse[0].type).toBe("array");
+        expect(parse[0].cols).toEqual([
+            {type: "align", align: "c"},
+        ]);
+        expect`\begin{subarray}{cc}a \\ b\end{subarray}`.not.toParse();
+        expect`\begin{subarray}{c}a & b \\ c & d\end{subarray}`.not.toParse();
+        expect`\begin{subarray}{c}a \\ b\end{subarray}`.toBuild();
+    });
+
+});
+
+describe("A substack function", function() {
+
+    it("should build", function() {
+        expect`\sum_{\substack{ 0<i<m \\ 0<j<n }}  P(i,j)`.toBuild();
+    });
+    it("should accommodate spaces in the argument", function() {
+        expect`\sum_{\substack{ 0<i<m \\ 0<j<n }}  P(i,j)`.toBuild();
+    });
+    it("should accommodate macros in the argument", function() {
+        expect`\sum_{\substack{ 0<i<\varPi \\ 0<j<\pi }}  P(i,j)`.toBuild();
+    });
+
+});
+
+describe("A smallmatrix environment", function() {
+
+    it("should build", function() {
+        expect`\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}`.toBuild();
+    });
+
+});
+
 describe("A cases environment", function() {
 
     it("should parse its input", function() {
