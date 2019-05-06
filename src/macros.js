@@ -436,14 +436,14 @@ defineMacro("\\substack", function(context) {
     let expectedLoc = tokens[tokens.length - 1].loc.start;
     for (let i = tokens.length - 1; i >= 0; i--) {
         // $FlowFixMe
-        if(tokens[i].loc.start > expectedLoc) {
+        if (tokens[i].loc.start > expectedLoc) {
             // context.consumeArgs has eaten a space.
             argStr += " ";
             // $FlowFixMe
             expectedLoc = tokens[i].loc.start;
         }
-      argStr += tokens[i].text;
-      expectedLoc += tokens[i].text.length;
+        argStr += tokens[i].text;
+        expectedLoc += tokens[i].text.length;
     }
     return `\\begin{subarray}{c}${argStr}\\end{subarray}`;
 });

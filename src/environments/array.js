@@ -175,7 +175,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
     // Horizontal spacing
     const pt = 1 / options.fontMetrics().ptPerEm;
-    const arraycolsep = 
+    const arraycolsep =
         (group.colSeparationType && group.colSeparationType === "small")
         ? 0.2778 // \thickspace, i.e. 5/18em, per amsmath.dtx for {smallmatrix}
         : 5 * pt; // \arraycolsep in article.cls
@@ -499,7 +499,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     if (group.arraystretch && group.arraystretch < 1) {
         // A small array. Wrap in scriptstyle so row gap is not too large.
         table =  new mathMLTree.MathNode("mstyle", [table]);
-        table.setAttribute("scriptlevel","1");
+        table.setAttribute("scriptlevel", "1");
     }
 
     return table;
@@ -675,8 +675,7 @@ defineEnvironment({
         numArgs: 0,
     },
     handler(context) {
-        // 
-        const payload = { arraystretch: 0.5 };
+        const payload = {arraystretch: 0.5};
         const res = parseArray(context.parser, payload, "script");
         res.colSeparationType = "small";
         return res;
