@@ -374,6 +374,7 @@ const makeStackedDelim = function(
 const vbPad = 80;   // padding above the surd, measured inside the viewBox.
 const emPad = 0.08; // padding, in ems, measured in the document.
 
+// The viniculum can be made thicker than usual by a KaTeX rendering option.
 /*                                                  viniculum
                                                    /
          /▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒←extraViniculum
