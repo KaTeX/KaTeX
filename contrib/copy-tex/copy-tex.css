@@ -6,6 +6,7 @@
  */
 .katex,
 .katex-display {
+    position: relative;
     user-select: all;
     -moz-user-select: all;
     -webkit-user-select: all;
