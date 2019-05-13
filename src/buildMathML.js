@@ -212,6 +212,7 @@ export default function buildMathML(
     tree: AnyParseNode[],
     texExpression: string,
     options: Options,
+    forMathmlOnly: boolean,
 ): DomSpan {
     const expression = buildExpression(tree, options);
 
@@ -235,11 +236,13 @@ export default function buildMathML(
         "semantics", [wrapper, annotation]);
 
     const math = new mathMLTree.MathNode("math", [semantics]);
+    math.setAttribute("xmlns", "http://www.w3.org/1998/Math/MathML");
 
     // You can't style <math> nodes, so we wrap the node in a span.
     // NOTE: The span class is not typed to have <math> nodes as children, and
     // we don't want to make the children type more generic since the children
     // of span are expected to have more fields in `buildHtml` contexts.
+    const wrapperClass = forMathmlOnly ? "katex" : "katex-mathml";
     // $FlowFixMe
-    return buildCommon.makeSpan(["katex-mathml"], [math]);
+    return buildCommon.makeSpan([wrapperClass], [math]);
 }

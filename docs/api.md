@@ -20,28 +20,11 @@ katex.render(String.raw`c = \pm\sqrt{a^2 + b^2}`, element, {
 });
 ```
 
-To render MathML instead of HTML into an element, call:
-
-```js
-katex.renderMathML("c = \\pm\\sqrt{a^2 + b^2}", element, {
-    throwOnError: false
-});
-```
-
 ## Server-side rendering or rendering to a string
 To generate HTML on the server or to generate an HTML string of the rendered math, you can use `katex.renderToString`:
 
 ```js
 var html = katex.renderToString("c = \\pm\\sqrt{a^2 + b^2}", {
-    throwOnError: false
-});
-// '<span class="katex">...</span>'
-```
-
-To generate MathML on the server or to generate a MathML string, call: 
-
-```js
-var html = katex.renderMathMLToString("c = \\pm\\sqrt{a^2 + b^2}", {
     throwOnError: false
 });
 // '<span class="katex">...</span>'

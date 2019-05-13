@@ -36,12 +36,17 @@ export const buildTree = function(
     settings: Settings,
 ): DomSpan {
     const options = optionsFromSettings(settings);
-    const mathMLNode = buildMathML(tree, expression, options);
-    const htmlNode = buildHTML(tree, options);
-
-    const katexNode = buildCommon.makeSpan(["katex"], [
-        mathMLNode, htmlNode,
-    ]);
+    let katexNode;
+    if (settings.output === "mathml") {
+        return  buildMathML(tree, expression, options, true);
+    } else if (settings.output === "html") {
+        const htmlNode = buildHTML(tree, options);
+        katexNode = buildCommon.makeSpan(["katex"], [htmlNode]);
+    } else {
+        const mathMLNode = buildMathML(tree, expression, options, false);
+        const htmlNode = buildHTML(tree, options);
+        katexNode = buildCommon.makeSpan(["katex"], [mathMLNode, htmlNode]);
+    }
 
     return displayWrap(katexNode, settings);
 };
@@ -55,20 +60,6 @@ export const buildHTMLTree = function(
     const htmlNode = buildHTML(tree, options);
     const katexNode = buildCommon.makeSpan(["katex"], [htmlNode]);
     return displayWrap(katexNode, settings);
-};
-
-export const buildMathMLTree = function(
-    tree: AnyParseNode[],
-    expression: string,
-    settings: Settings,
-): DomSpan {
-    const options = optionsFromSettings(settings);
-    const mathMLNode = buildMathML(tree, expression, options);
-    // Flow doesn't think a DomSpan has children.
-    // $FlowFixMe
-    const node = (buildCommon.makeSpan([], [mathMLNode])).children[0].children[0];
-    node.setAttribute("xmlns", "http://www.w3.org/1998/Math/MathML");
-    return node;
 };
 
 export default buildTree;
