@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file. This CHANGE
 ### Added
 - Approximate font metrics only when metrics don't exist (#1898)
 - Add KaTeX version to stylesheet and troubleshooting guide (#1893)
-- Add symbol double square brackets (#1947)
+- Add symbol double square brackets (#1947, #1954)
 - Support double-square curly braces (#1953)
 
  ### Changed
@@ -18,7 +18,6 @@ All notable changes to this project will be documented in this file. This CHANGE
 - Add Browserstack logo (#1879)
 - Added Android library (#1943)
 - Move custom colors used by Khan into macros.js (#1933)
-- Remove redundant symbols from #1947 (#1954)
 - Test for duplicate symbols/macros (#1955)
 - Include extensions mhchem & copy-tex in home-page (#1932)
 
@@ -51,7 +50,7 @@ All notable changes to this project will be documented in this file. This CHANGE
 - Prevent inadvertent tall delims (#1948)
 
  ### Removed
-- Disable \includegraphics until trust settings is merged (#1951) 
+- Re-added code for \includegraphics but disabled the function until trust settings is merged (#1951) 
 
 ## [v0.10.1]
 ### Added
