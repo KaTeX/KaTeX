@@ -1,6 +1,7 @@
 ---
-id: supported
+id: version-0.10.2-supported
 title: Supported Functions
+original_id: supported
 ---
 This is a list of TeX functions supported by KaTeX. It is sorted into logical groups.
 
