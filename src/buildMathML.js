@@ -94,6 +94,19 @@ export const getVariant = function(
         return "italic";
     } else if (font === "boldsymbol") {
         return "bold-italic";
+    } else if (font === "mathbf") {
+        return "bold";
+    } else if (font === "mathbb") {
+        return "double-struck";
+    } else if (font === "mathfrak") {
+        return "fraktur";
+    } else if (font === "mathscr" || font === "mathcal") {
+        // MathML makes no distinction between script and caligrahpic
+        return "script";
+    } else if (font === "mathsf") {
+        return "sans-serif";
+    } else if (font === "mathtt") {
+        return "monospace";
     }
 
     let text = group.text;
