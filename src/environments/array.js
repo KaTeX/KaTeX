@@ -181,7 +181,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         // We're in a {smallmatrix}. Default column space is \thickspace,
         // i.e. 5/18em = 0.2778em, per amsmath.dtx for {smallmatrix}.
         // But that needs adjustment because LaTeX applies \scriptstyle to the
-        // entire array, including the colspace, but this function applies 
+        // entire array, including the colspace, but this function applies
         // \scriptstyle only inside each element.
         const localMultiplier = options.havingStyle(Style.SCRIPT).sizeMultiplier;
         arraycolsep = 0.2778 * (localMultiplier / options.sizeMultiplier);
