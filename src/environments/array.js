@@ -1,5 +1,6 @@
 // @flow
 import buildCommon from "../buildCommon";
+import Style from "../Style";
 import defineEnvironment from "../defineEnvironment";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
@@ -175,10 +176,16 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
     // Horizontal spacing
     const pt = 1 / options.fontMetrics().ptPerEm;
-    const arraycolsep =
-        (group.colSeparationType && group.colSeparationType === "small")
-        ? 0.2778 // \thickspace, i.e. 5/18em, per amsmath.dtx for {smallmatrix}
-        : 5 * pt; // \arraycolsep in article.cls
+    let arraycolsep = 5 * pt; // default value, i.e. \arraycolsep in article.cls
+    if (group.colSeparationType && group.colSeparationType === "small") {
+        // We're in a {smallmatrix}. Default column space is \thickspace,
+        // i.e. 5/18em = 0.2778em, per amsmath.dtx for {smallmatrix}.
+        // But that needs adjustment because LaTeX applies \scriptstyle to the
+        // entire array, including the colspace, but this function applies 
+        // \scriptstyle only inside each element.
+        const localMultiplier = options.havingStyle(Style.SCRIPT).sizeMultiplier;
+        arraycolsep = 0.2778 * (localMultiplier / options.sizeMultiplier);
+    }
 
     // Vertical spacing
     const baselineskip = 12 * pt; // see size10.clo
