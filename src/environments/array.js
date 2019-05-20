@@ -405,7 +405,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     // The 0.16 and 0.09 values are found emprically. They produce an array
     // similar to LaTeX and in which content does not interfere with \hines.
     const gap = (group.arraystretch === 0.5)
-        ? "0.1"  // {smallmatrix}, {subarray}
+        ? 0.1  // {smallmatrix}, {subarray}
         : 0.16 + group.arraystretch - 1 + (group.addJot ? 0.09 : 0);
     table.setAttribute("rowspacing", gap + "em");
 
@@ -492,13 +492,13 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     }
 
     if (menclose !== "") {
-        table =  new mathMLTree.MathNode("menclose", [table]);
+        table = new mathMLTree.MathNode("menclose", [table]);
         table.setAttribute("notation", menclose.trim());
     }
 
     if (group.arraystretch && group.arraystretch < 1) {
         // A small array. Wrap in scriptstyle so row gap is not too large.
-        table =  new mathMLTree.MathNode("mstyle", [table]);
+        table = new mathMLTree.MathNode("mstyle", [table]);
         table.setAttribute("scriptlevel", "1");
     }
 

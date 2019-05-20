@@ -427,26 +427,7 @@ defineMacro("\\varPsi", "\\mathit{\\Psi}");
 defineMacro("\\varOmega", "\\mathit{\\Omega}");
 
 //\newcommand{\substack}[1]{\subarray{c}#1\endsubarray}
-defineMacro("\\substack", function(context) {
-    // A simple expansion of the argument causes a Parse error at "\\".
-    // So recreate the original text of the argument.
-    const tokens = context.consumeArgs(1)[0];
-    let argStr = "";
-    // $FlowFixMe
-    let expectedLoc = tokens[tokens.length - 1].loc.start;
-    for (let i = tokens.length - 1; i >= 0; i--) {
-        // $FlowFixMe
-        if (tokens[i].loc.start > expectedLoc) {
-            // context.consumeArgs has eaten a space.
-            argStr += " ";
-            // $FlowFixMe
-            expectedLoc = tokens[i].loc.start;
-        }
-        argStr += tokens[i].text;
-        expectedLoc += tokens[i].text.length;
-    }
-    return `\\begin{subarray}{c}${argStr}\\end{subarray}`;
-});
+defineMacro("\\substack", "\\begin{subarray}{c}#1\\end{subarray}");
 
 // \renewcommand{\colon}{\nobreak\mskip2mu\mathpunct{}\nonscript
 // \mkern-\thinmuskip{:}\mskip6muplus1mu\relax}
