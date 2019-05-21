@@ -5,6 +5,10 @@ title: Options
 You can provide an object of options as the last argument to [`katex.render` and `katex.renderToString`](api.md). Available options are:
 
 - `displayMode`: `boolean`. If `true` the math will be rendered in display mode, which will put the math in display style (so `\int` and `\sum` are large, for example), and will center the math on the page on its own line. If `false` the math will be rendered in inline mode. (default: `false`)
+- `output`: `string`. Determines the markup language of the output. The valid choices are:
+  - `html`: Outputs KaTeX in HTML only.
+  - `mathml`: Outputs KaTeX in MathML only.
+  - `htmlAndMathml`: Outputs HTML for visual rendering and includes MathML for accessibility. This is the default.
 - `leqno`: `boolean`. If `true`, display math has `\tag`s rendered on the left instead of the right, like `\usepackage[leqno]{amsmath}` in LaTeX.
 - `fleqn`: `boolean`. If `true`, display math renders flush left, like `\documentclass[fleqn]` in LaTeX.
 - `throwOnError`: `boolean`. If `true` (the default), KaTeX will throw a `ParseError` when it encounters an unsupported command or invalid LaTeX. If `false`, KaTeX will render unsupported commands as text, and render invalid LaTeX as its source code with hover text giving the error, in the color given by `errorColor`.

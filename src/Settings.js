@@ -18,6 +18,7 @@ export type StrictFunction =
 
 export type SettingsOptions = {
     displayMode?: boolean;
+    output?: "html" | "mathml" | "htmlAndMathml";
     leqno?: boolean;
     fleqn?: boolean;
     throwOnError?: boolean;
@@ -43,6 +44,7 @@ export type SettingsOptions = {
  */
 class Settings {
     displayMode: boolean;
+    output: "html" | "mathml" | "htmlAndMathml";
     leqno: boolean;
     fleqn: boolean;
     throwOnError: boolean;
@@ -59,6 +61,7 @@ class Settings {
         // allow null options
         options = options || {};
         this.displayMode = utils.deflt(options.displayMode, false);
+        this.output = utils.deflt(options.output, "htmlAndMathml");
         this.leqno = utils.deflt(options.leqno, false);
         this.fleqn = utils.deflt(options.fleqn, false);
         this.throwOnError = utils.deflt(options.throwOnError, true);

@@ -426,6 +426,9 @@ defineMacro("\\varPhi", "\\mathit{\\Phi}");
 defineMacro("\\varPsi", "\\mathit{\\Psi}");
 defineMacro("\\varOmega", "\\mathit{\\Omega}");
 
+//\newcommand{\substack}[1]{\subarray{c}#1\endsubarray}
+defineMacro("\\substack", "\\begin{subarray}{c}#1\\end{subarray}");
+
 // \renewcommand{\colon}{\nobreak\mskip2mu\mathpunct{}\nonscript
 // \mkern-\thinmuskip{:}\mskip6muplus1mu\relax}
 defineMacro("\\colon", "\\nobreak\\mskip2mu\\mathpunct{}" +
