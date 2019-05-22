@@ -95,7 +95,7 @@ const sqrtTall = function(
     viewBoxHeight: number
 ): string {
     // sqrtTall is from glyph U23B7 in the font KaTeX_Size4-Regular
-    // One path edge has a variable length. It runs from the viniculumn
+    // One path edge has a variable length. It runs vertically from the viniculumn
     // to a point near (14 units) the bottom of the surd. The viniculum
     // is normally 40 units thick. So the length of the line in question is:
     const vertSegment = viewBoxHeight - 54 - hLinePad - extraViniculum;
@@ -118,14 +118,19 @@ export const sqrtPath = function(
     switch (size) {
         case "sqrtMain":
             path = sqrtMain(extraViniculum, hLinePad);
+            break;
         case "sqrtSize1":
             path = sqrtSize1(extraViniculum, hLinePad);
+            break;
         case "sqrtSize2":
             path = sqrtSize2(extraViniculum, hLinePad);
+            break;
         case "sqrtSize3":
             path = sqrtSize3(extraViniculum, hLinePad);
+            break;
         case "sqrtSize4":
             path = sqrtSize4(extraViniculum, hLinePad);
+            break;
         case "sqrtTall":
             path = sqrtTall(extraViniculum, hLinePad, viewBoxHeight);
     }

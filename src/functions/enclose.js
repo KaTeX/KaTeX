@@ -53,7 +53,7 @@ const htmlBuilder = (group, options) => {
                 options.fontMetrics().fboxrule, // default
                 options.minRuleThickness, // User override.
             );
-            vertPad = options.fontMetrics().fboxsep + 
+            vertPad = options.fontMetrics().fboxsep +
                 (label === "colorbox" ? 0 : ruleThickness);
         } else {
             vertPad = isSingleChar ? 0.2 : 0;
@@ -120,6 +120,7 @@ const htmlBuilder = (group, options) => {
 };
 
 const mathmlBuilder = (group, options) => {
+    let fboxsep = 0;
     const node = new mathMLTree.MathNode(
         (group.label.indexOf("colorbox") > -1) ? "mpadded" : "menclose",
         [mml.buildGroup(group.body, options)]
@@ -141,7 +142,7 @@ const mathmlBuilder = (group, options) => {
         case "\\colorbox":
             // <menclose> doesn't have a good notation option. So use <mpadded>
             // instead. Set some attributes that come included with <menclose>.
-            const fboxsep = options.fontMetrics().fboxsep *
+            fboxsep = options.fontMetrics().fboxsep *
                 options.fontMetrics().ptPerEm;
             node.setAttribute("width", `+${2 * fboxsep}pt`);
             node.setAttribute("height", `+${2 * fboxsep}pt`);
