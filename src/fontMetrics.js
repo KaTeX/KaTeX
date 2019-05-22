@@ -86,6 +86,10 @@ const sigmasAndXis = {
     // The width of separator lines in {array} environments. From
     // `\showthe\arrayrulewidth` in LaTeX. Equals 0.4 / ptPerEm.
     arrayRuleWidth: [0.04, 0.04, 0.04],
+
+    // Two values from LaTeX source2e:
+    fboxsep: [0.3, 0.3, 0.3], //        3 pt / ptPerEm
+    fboxrule: [0.04, 0.04, 0.04], // 0.4 pt / ptPerEm
 };
 
 // This map contains a mapping from font name and character code to character

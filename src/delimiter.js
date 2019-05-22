@@ -374,17 +374,6 @@ const makeStackedDelim = function(
 const vbPad = 80;   // padding above the surd, measured inside the viewBox.
 const emPad = 0.08; // padding, in ems, measured in the document.
 
-// The viniculum can be made thicker than usual by a KaTeX rendering option.
-/*                                                  viniculum
-                                                   /
-         /▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒←extraViniculum
-        / █████████████████████←0.04em (40 unit) std viniculum thickness
-       / /
-      / /
-     / /\
-    / / surd
-*/
-
 const sqrtSvg = function(
     sqrtName: string,
     height: number,
@@ -392,16 +381,8 @@ const sqrtSvg = function(
     extraViniculum: number,
     options: Options,
 ): SvgSpan {
-    let vertSegment = 0;
-    if (sqrtName === "sqrtTall") {
-        // sqrtTall is from glyph U23B7 in the font KaTeX_Size4-Regular
-        // One path edge has a variable length. It runs from the viniculumn
-        // to a point near (14 units) the bottom of the surd. The viniculum
-        // is normally 40 units thick. So the length of the line in question is:
-        vertSegment = viewBoxHeight - 54 - vbPad - 1000 * extraViniculum;
-    }
-    const alternate = sqrtPath(sqrtName, extraViniculum, vertSegment);
-    const pathNode = new PathNode(sqrtName, alternate);
+    const path = sqrtPath(sqrtName, extraViniculum, viewBoxHeight);
+    const pathNode = new PathNode(sqrtName, path);
 
     const svg =  new SvgNode([pathNode], {
         // Note: 1000:1 ratio of viewBox to document em width.

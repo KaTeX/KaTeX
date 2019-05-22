@@ -323,7 +323,9 @@ Spacing: |
     \end{matrix}
 Sqrt: |
     \sqrt{\sqrt{\sqrt{x}}}_{\sqrt{\sqrt{x}}}^{\sqrt{\sqrt{\sqrt{x}}}
-    ^{\sqrt{\sqrt{\sqrt{x}}}}}
+    ^{\sqrt{\sqrt{\sqrt{x}}}}} \\
+    \sqrt{\frac{\frac{A}{B}}{\frac{A}{B}}} \;
+    \frac{1}{\sqrt{\frac{\frac{\frac{A}{B}}{\frac{A}{B}}}{\frac{\frac{A}{B}}{\frac{A}{B}}}}}
 SqrtRoot: |
     \begin{array}{l}
         1+\sqrt[3]{2}+\sqrt[1923^234]{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^{2^2}}}}}}}}}}} \\

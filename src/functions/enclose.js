@@ -47,14 +47,14 @@ const htmlBuilder = (group, options) => {
         // Add vertical padding
         let vertPad = 0;
         let ruleThickness = 0;
-        // ref: LaTeX source2e: \fboxsep = 3pt;  \fboxrule = .4pt
         // ref: cancel package: \advance\totalheight2\p@ % "+2"
         if (/box/.test(label)) {
             ruleThickness = Math.max(
-                0.04,                       // \fboxrule = .4pt from LaTeX2e
+                options.fontMetrics().fboxrule, // default
                 options.minRuleThickness, // User override.
             );
-            vertPad = 0.3 + (label === "colorbox" ? 0 : ruleThickness);
+            vertPad = options.fontMetrics().fboxsep + 
+                (label === "colorbox" ? 0 : ruleThickness);
         } else {
             vertPad = isSingleChar ? 0.2 : 0;
         }
@@ -141,12 +141,17 @@ const mathmlBuilder = (group, options) => {
         case "\\colorbox":
             // <menclose> doesn't have a good notation option. So use <mpadded>
             // instead. Set some attributes that come included with <menclose>.
-            node.setAttribute("width", "+6pt");
-            node.setAttribute("height", "+6pt");
-            node.setAttribute("lspace", "3pt"); // LaTeX source2e: \fboxsep = 3pt
-            node.setAttribute("voffset", "3pt");
+            const fboxsep = options.fontMetrics().fboxsep *
+                options.fontMetrics().ptPerEm;
+            node.setAttribute("width", `+${2 * fboxsep}pt`);
+            node.setAttribute("height", `+${2 * fboxsep}pt`);
+            node.setAttribute("lspace", `${fboxsep}pt`); //
+            node.setAttribute("voffset", `${fboxsep}pt`);
             if (group.label === "\\fcolorbox") {
-                const thk = options.fontMetrics().defaultRuleThickness;
+                const thk = Math.max(
+                    options.fontMetrics().fboxrule, // default
+                    options.minRuleThickness, // user override
+                );
                 node.setAttribute("style", "border: " + thk + "em solid " +
                     String(group.borderColor));
             }

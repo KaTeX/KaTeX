@@ -424,7 +424,7 @@ const makeLineSpan = function(
 ) {
     const line = makeSpan([className], [], options);
     line.height = Math.max(
-        (thickness || options.fontMetrics().defaultRuleThickness),
+        thickness || options.fontMetrics().defaultRuleThickness,
         options.minRuleThickness,
     );
     line.style.borderBottomWidth = line.height + "em";

@@ -68,8 +68,8 @@ class Settings {
         this.errorColor = utils.deflt(options.errorColor, "#cc0000");
         this.macros = options.macros || {};
         this.minRuleThickness = Math.max(
-            0.04,
-            utils.deflt(options.minRuleThickness)
+            0,
+            utils.deflt(options.minRuleThickness, 0)
         );
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
         this.strict = utils.deflt(options.strict, "warn");
