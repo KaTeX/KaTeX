@@ -59,7 +59,7 @@ M${1001 + extraViniculum} ${hLinePad}h400000v${40 + extraViniculum}h-400000z`;
 
 const sqrtSize2 = function(extraViniculum: number, hLinePad: number): string {
     // size2 is from glyph U221A in the font KaTeX_Size2-Regular
-    return `M983 ${10+ extraViniculum + hLinePad}
+    return `M983 ${10 + extraViniculum + hLinePad}
 l${extraViniculum / 3.13} -${extraViniculum}
 c4,-6.7,10,-10,18,-10 H400000v${40 + extraViniculum}
 H1013.1s-83.4,268,-264.1,840c-180.7,572,-277,876.3,-289,913c-4.7,4.7,-12.7,7,-24,7
