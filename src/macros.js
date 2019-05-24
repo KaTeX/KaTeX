@@ -426,6 +426,9 @@ defineMacro("\\varPhi", "\\mathit{\\Phi}");
 defineMacro("\\varPsi", "\\mathit{\\Psi}");
 defineMacro("\\varOmega", "\\mathit{\\Omega}");
 
+//\newcommand{\substack}[1]{\subarray{c}#1\endsubarray}
+defineMacro("\\substack", "\\begin{subarray}{c}#1\\end{subarray}");
+
 // \renewcommand{\colon}{\nobreak\mskip2mu\mathpunct{}\nonscript
 // \mkern-\thinmuskip{:}\mskip6muplus1mu\relax}
 defineMacro("\\colon", "\\nobreak\\mskip2mu\\mathpunct{}" +
@@ -847,6 +850,16 @@ defineMacro("\\rrbracket", "\\html@mathml{" +
 
 defineMacro("\u27e6", "\\llbracket"); // blackboard bold [
 defineMacro("\u27e7", "\\rrbracket"); // blackboard bold ]
+
+defineMacro("\\lBrace", "\\html@mathml{" +
+    "\\mathopen{\\{\\mkern-3.2mu[}}" +
+    "{\\mathopen{\\char`\u2983}}");
+defineMacro("\\rBrace", "\\html@mathml{" +
+    "\\mathclose{]\\mkern-3.2mu\\}}}" +
+    "{\\mathclose{\\char`\u2984}}");
+
+defineMacro("\u2983", "\\lBrace"); // blackboard bold {
+defineMacro("\u2984", "\\rBrace"); // blackboard bold }
 
 // TODO: Create variable sized versions of the last two items. I believe that
 // will require new font glyphs.
