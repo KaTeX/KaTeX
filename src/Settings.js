@@ -24,6 +24,7 @@ export type SettingsOptions = {
     throwOnError?: boolean;
     errorColor?: string;
     macros?: MacroMap;
+    minRuleThickness?: number;
     colorIsTextColor?: boolean;
     strict?: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize?: number;
@@ -49,6 +50,7 @@ class Settings {
     throwOnError: boolean;
     errorColor: string;
     macros: MacroMap;
+    minRuleThickness: number;
     colorIsTextColor: boolean;
     strict: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize: number;
@@ -65,6 +67,10 @@ class Settings {
         this.throwOnError = utils.deflt(options.throwOnError, true);
         this.errorColor = utils.deflt(options.errorColor, "#cc0000");
         this.macros = options.macros || {};
+        this.minRuleThickness = Math.max(
+            0,
+            utils.deflt(options.minRuleThickness, 0)
+        );
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
         this.strict = utils.deflt(options.strict, "warn");
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
