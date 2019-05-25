@@ -18,11 +18,13 @@ export type StrictFunction =
 
 export type SettingsOptions = {
     displayMode?: boolean;
+    output?: "html" | "mathml" | "htmlAndMathml";
     leqno?: boolean;
     fleqn?: boolean;
     throwOnError?: boolean;
     errorColor?: string;
     macros?: MacroMap;
+    minRuleThickness?: number;
     colorIsTextColor?: boolean;
     strict?: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize?: number;
@@ -42,11 +44,13 @@ export type SettingsOptions = {
  */
 class Settings {
     displayMode: boolean;
+    output: "html" | "mathml" | "htmlAndMathml";
     leqno: boolean;
     fleqn: boolean;
     throwOnError: boolean;
     errorColor: string;
     macros: MacroMap;
+    minRuleThickness: number;
     colorIsTextColor: boolean;
     strict: boolean | "ignore" | "warn" | "error" | StrictFunction;
     maxSize: number;
@@ -57,11 +61,16 @@ class Settings {
         // allow null options
         options = options || {};
         this.displayMode = utils.deflt(options.displayMode, false);
+        this.output = utils.deflt(options.output, "htmlAndMathml");
         this.leqno = utils.deflt(options.leqno, false);
         this.fleqn = utils.deflt(options.fleqn, false);
         this.throwOnError = utils.deflt(options.throwOnError, true);
         this.errorColor = utils.deflt(options.errorColor, "#cc0000");
         this.macros = options.macros || {};
+        this.minRuleThickness = Math.max(
+            0,
+            utils.deflt(options.minRuleThickness, 0)
+        );
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
         this.strict = utils.deflt(options.strict, "warn");
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));

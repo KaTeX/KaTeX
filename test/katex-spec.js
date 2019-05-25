@@ -1833,11 +1833,11 @@ describe("A MathML font tree-builder", function() {
         const tree = getParsed(tex);
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         expect(markup).toContain("<mi mathvariant=\"double-struck\">A</mi>");
-        expect(markup).toContain("<mi>x</mi>");
-        expect(markup).toContain("<mn>2</mn>");
-        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
-        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mi mathvariant=\"double-struck\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"double-struck\">2</mn>");
+        expect(markup).toContain("<mi mathvariant=\"double-struck\">\u03c9</mi>");  // \omega
+        expect(markup).toContain("<mi mathvariant=\"double-struck\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi mathvariant=\"double-struck\">\u0131</mi>");  // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1887,9 +1887,9 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mi mathvariant=\"bold\">A</mi>");
         expect(markup).toContain("<mi mathvariant=\"bold\">x</mi>");
         expect(markup).toContain("<mn mathvariant=\"bold\">2</mn>");
-        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"bold\">\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"bold\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mi mathvariant=\"bold\">\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1898,13 +1898,11 @@ describe("A MathML font tree-builder", function() {
         const tree = getParsed(tex);
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         expect(markup).toContain("<mi mathvariant=\"script\">A</mi>");
-        expect(markup).toContain("<mi>x</mi>");                             // script is caps only
+        expect(markup).toContain("<mi mathvariant=\"script\">x</mi>");
         expect(markup).toContain("<mn mathvariant=\"script\">2</mn>");
-        // MathJax marks everything below as "script" except \omega
-        // We don't have these glyphs in "caligraphic" and neither does MathJax
-        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
-        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mi mathvariant=\"script\">\u03c9</mi>"); // \omega
+        expect(markup).toContain("<mi mathvariant=\"script\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi mathvariant=\"script\">\u0131</mi>"); // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1915,11 +1913,9 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mi mathvariant=\"fraktur\">A</mi>");
         expect(markup).toContain("<mi mathvariant=\"fraktur\">x</mi>");
         expect(markup).toContain("<mn mathvariant=\"fraktur\">2</mn>");
-        // MathJax marks everything below as "fraktur" except \omega
-        // We don't have these glyphs in "fraktur" and neither does MathJax
-        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
-        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mi mathvariant=\"fraktur\">\u03c9</mi>"); // \omega
+        expect(markup).toContain("<mi mathvariant=\"fraktur\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi mathvariant=\"fraktur\">\u0131</mi>"); // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1928,13 +1924,11 @@ describe("A MathML font tree-builder", function() {
         const tree = getParsed(tex);
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         expect(markup).toContain("<mi mathvariant=\"script\">A</mi>");
-        // MathJax marks everything below as "script" except \omega
-        // We don't have these glyphs in "script" and neither does MathJax
-        expect(markup).toContain("<mi>x</mi>");
-        expect(markup).toContain("<mn>2</mn>");
-        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
-        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mi mathvariant=\"script\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"script\">2</mn>");
+        expect(markup).toContain("<mi mathvariant=\"script\">\u03c9</mi>"); // \omega
+        expect(markup).toContain("<mi mathvariant=\"script\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi mathvariant=\"script\">\u0131</mi>"); // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1945,9 +1939,9 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mi mathvariant=\"sans-serif\">A</mi>");
         expect(markup).toContain("<mi mathvariant=\"sans-serif\">x</mi>");
         expect(markup).toContain("<mn mathvariant=\"sans-serif\">2</mn>");
-        expect(markup).toContain("<mi>\u03c9</mi>");                            // \omega
+        expect(markup).toContain("<mi mathvariant=\"sans-serif\">\u03c9</mi>"); // \omega
         expect(markup).toContain("<mi mathvariant=\"sans-serif\">\u03A9</mi>"); // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");                            // \imath
+        expect(markup).toContain("<mi mathvariant=\"sans-serif\">\u0131</mi>"); // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1987,7 +1981,8 @@ describe("A MathML font tree-builder", function() {
     });
 });
 
-describe("An includegraphics builder", function() {
+// Disabled until https://github.com/KaTeX/KaTeX/pull/1794 is merged.
+describe.skip("An includegraphics builder", function() {
     const img = "\\includegraphics[height=0.9em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}";
     it("should not fail", function() {
         expect(img).toBuild();
@@ -2587,6 +2582,43 @@ describe("An array environment", function() {
 
 });
 
+describe("A subarray environment", function() {
+
+    it("should accept only a single alignment character", function() {
+        const parse = getParsed`\begin{subarray}{c}a \\ b\end{subarray}`;
+        expect(parse[0].type).toBe("array");
+        expect(parse[0].cols).toEqual([
+            {type: "align", align: "c"},
+        ]);
+        expect`\begin{subarray}{cc}a \\ b\end{subarray}`.not.toParse();
+        expect`\begin{subarray}{c}a & b \\ c & d\end{subarray}`.not.toParse();
+        expect`\begin{subarray}{c}a \\ b\end{subarray}`.toBuild();
+    });
+
+});
+
+describe("A substack function", function() {
+
+    it("should build", function() {
+        expect`\sum_{\substack{ 0<i<m \\ 0<j<n }}  P(i,j)`.toBuild();
+    });
+    it("should accommodate spaces in the argument", function() {
+        expect`\sum_{\substack{ 0<i<m \\ 0<j<n }}  P(i,j)`.toBuild();
+    });
+    it("should accommodate macros in the argument", function() {
+        expect`\sum_{\substack{ 0<i<\varPi \\ 0<j<\pi }}  P(i,j)`.toBuild();
+    });
+
+});
+
+describe("A smallmatrix environment", function() {
+
+    it("should build", function() {
+        expect`\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}`.toBuild();
+    });
+
+});
+
 describe("A cases environment", function() {
 
     it("should parse its input", function() {
@@ -2718,7 +2750,8 @@ describe("A raw text parser", function() {
         // Unicode combining character. So this is a test that the parser will catch a bad string.
         expect("\\includegraphics[\u030aheight=0.8em, totalheight=0.9em, width=0.9em]{" + "https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").not.toParse();
     });
-    it("should return null for a omitted optional string", function() {
+    // Disabled until https://github.com/KaTeX/KaTeX/pull/1794 is merged.
+    it.skip("should return null for a omitted optional string", function() {
         expect("\\includegraphics{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").toParse();
     });
 });
@@ -3366,6 +3399,8 @@ describe("Unicode", function() {
         expect`┌x┐ └x┘`.toBuild();
         expect("\u231Cx\u231D \u231Ex\u231F").toBuild();
         expect("\u27E6x\u27E7").toBuild();
+        expect("\\llbracket \\rrbracket").toBuild();
+        expect("\\lBrace \\rBrace").toBuild();
     });
 
     it("should build some surrogate pairs", function() {
