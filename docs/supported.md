@@ -361,8 +361,7 @@ Direct Input: $+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ 
 | $\cosec$ `\cosec`  | $\hom$ `\hom`  | $\tg$ `\tg`  | $\Pr$ `\Pr`  |
 | $\cosh$ `\cosh`| $\ker$ `\ker`  | $\th$ `\th`  | $\sup$ `\sup` |
 | $\cot$ `\cot` | $\lg$ `\lg`| $\operatorname{f}$ `\operatorname{f}` | $\argmax$ `\argmax` |
-| | | |$\argmin$ `\argmin`|
-| | | | $\plim$ `\plim` |
+| $\argmin$ `\argmin`| $\plim$ `\plim` |
 
 Functions on the right column of this table can take `\limits`.
 
