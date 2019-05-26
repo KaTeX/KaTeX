@@ -43,7 +43,6 @@ For example:
 </script>
 ```
 
-<!-- TODO: uncomment when releasing a new version
 ECMAScript module is also available:
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">

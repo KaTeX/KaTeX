@@ -25,6 +25,7 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 
 import {PathNode, SvgNode, SymbolNode} from "./domTree";
+import {sqrtPath} from "./svgGeometry";
 import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
@@ -377,21 +378,11 @@ const sqrtSvg = function(
     sqrtName: string,
     height: number,
     viewBoxHeight: number,
+    extraViniculum: number,
     options: Options,
 ): SvgSpan {
-    let alternate;
-    if (sqrtName === "sqrtTall") {
-        // sqrtTall is from glyph U23B7 in the font KaTeX_Size4-Regular
-        // One path edge has a variable length. It runs from the viniculumn
-        // to a point near (14 units) the bottom of the surd. The viniculum
-        // is 40 units thick. So the length of the line in question is:
-        const vertSegment = viewBoxHeight - 54 - vbPad;
-        alternate = `M702 ${vbPad}H400000v40H742v${vertSegment}l-4 4-4 4c-.667.7
--2 1.5-4 2.5s-4.167 1.833-6.5 2.5-5.5 1-9.5 1h-12l-28-84c-16.667-52-96.667
--294.333-240-727l-212 -643 -85 170c-4-3.333-8.333-7.667-13 -13l-13-13l77-155
- 77-156c66 199.333 139 419.667 219 661 l218 661zM702 ${vbPad}H400000v40H742z`;
-    }
-    const pathNode = new PathNode(sqrtName, alternate);
+    const path = sqrtPath(sqrtName, extraViniculum, viewBoxHeight);
+    const pathNode = new PathNode(sqrtName, path);
 
     const svg =  new SvgNode([pathNode], {
         // Note: 1000:1 ratio of viewBox to document em width.
@@ -425,6 +416,11 @@ const makeSqrtImage = function(
 
     let sizeMultiplier = newOptions.sizeMultiplier;  // default
 
+    // The standard sqrt SVGs each have a 0.04em thick viniculum.
+    // If Settings.minRuleThickness is larger than that, we add extraViniculum.
+    const extraViniculum = Math.max(0,
+        options.minRuleThickness - options.fontMetrics().sqrtRuleThickness);
+
     // Create a span containing an SVG image of a sqrt symbol.
     let span;
     let spanHeight = 0;
@@ -440,34 +436,39 @@ const makeSqrtImage = function(
 
     if (delim.type === "small") {
         // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
-        viewBoxHeight = 1000 + vbPad;  // 1000 unit glyph height.
+        // 1000 unit normal glyph height.
+        viewBoxHeight = 1000 + 1000 * extraViniculum + vbPad;
         if (height < 1.0) {
             sizeMultiplier = 1.0;   // mimic a \textfont radical
         } else if (height < 1.4) {
             sizeMultiplier = 0.7;   // mimic a \scriptfont radical
         }
-        spanHeight = (1.0 + emPad) / sizeMultiplier;
-        texHeight = 1.00 / sizeMultiplier;
-        span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, options);
+        spanHeight = (1.0 + extraViniculum + emPad) / sizeMultiplier;
+        texHeight = (1.00 + extraViniculum) / sizeMultiplier;
+        span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, extraViniculum,
+            options);
         span.style.minWidth = "0.853em";
         advanceWidth = 0.833 / sizeMultiplier;  // from the font.
 
     } else if (delim.type === "large") {
         // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
         viewBoxHeight = (1000 + vbPad) * sizeToMaxHeight[delim.size];
-        texHeight = sizeToMaxHeight[delim.size] / sizeMultiplier;
-        spanHeight = (sizeToMaxHeight[delim.size] + emPad) / sizeMultiplier;
-        span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight, options);
+        texHeight = (sizeToMaxHeight[delim.size] + extraViniculum) / sizeMultiplier;
+        spanHeight = (sizeToMaxHeight[delim.size] + extraViniculum + emPad)
+            / sizeMultiplier;
+        span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight,
+            extraViniculum, options);
         span.style.minWidth = "1.02em";
         advanceWidth = 1.0 / sizeMultiplier; // 1.0 from the font.
 
     } else {
         // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
         // We'll use a single SVG to accomplish the same thing.
-        spanHeight = height + emPad;
-        texHeight = height;
-        viewBoxHeight = Math.floor(1000 * height) + vbPad;
-        span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, options);
+        spanHeight = height + extraViniculum + emPad;
+        texHeight = height + extraViniculum;
+        viewBoxHeight = Math.floor(1000 * height + extraViniculum) + vbPad;
+        span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, extraViniculum,
+            options);
         span.style.minWidth = "0.742em";
         advanceWidth = 1.056;
     }
@@ -482,7 +483,8 @@ const makeSqrtImage = function(
         // This actually should depend on the chosen font -- e.g. \boldmath
         // should use the thicker surd symbols from e.g. KaTeX_Main-Bold, and
         // have thicker rules.
-        ruleWidth: options.fontMetrics().sqrtRuleThickness * sizeMultiplier,
+        ruleWidth: (options.fontMetrics().sqrtRuleThickness + extraViniculum)
+            * sizeMultiplier,
     };
 };
 
