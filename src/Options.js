@@ -52,6 +52,7 @@ export type OptionsData = {
     fontShape?: FontShape;
     sizeMultiplier?: number;
     maxSize: number;
+    minRuleThickness: number;
 };
 
 /**
@@ -76,6 +77,7 @@ class Options {
     fontShape: FontShape;
     sizeMultiplier: number;
     maxSize: number;
+    minRuleThickness: number;
     _fontMetrics: FontMetrics | void;
 
     /**
@@ -95,6 +97,7 @@ class Options {
         this.fontShape = data.fontShape || '';
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
+        this.minRuleThickness = data.minRuleThickness;
         this._fontMetrics = undefined;
     }
 
@@ -114,6 +117,7 @@ class Options {
             fontWeight: this.fontWeight,
             fontShape: this.fontShape,
             maxSize: this.maxSize,
+            minRuleThickness: this.minRuleThickness,
         };
 
         for (const key in extension) {
