@@ -291,9 +291,6 @@ const makeStackedDelim = function(
     }
 
     // Get the metrics of the four sections
-    // We will overlap each glyph by 0.005em, to prevent a gap due to browser
-    // floating point rounding error. So the effective height of each section
-    // will be 0.005 less than reported by getMetrics().
     const topMetrics = getMetrics(top, font, mode);
     const topHeightTotal = topMetrics.height + topMetrics.depth;
     const repeatMetrics = getMetrics(repeat, font, mode);
