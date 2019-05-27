@@ -295,16 +295,16 @@ const makeStackedDelim = function(
     // floating point rounding error. So the effective height of each section
     // will be 0.005 less than reported by getMetrics().
     const topMetrics = getMetrics(top, font, mode);
-    const topHeightTotal = topMetrics.height + topMetrics.depth - 0.005;
+    const topHeightTotal = topMetrics.height + topMetrics.depth;
     const repeatMetrics = getMetrics(repeat, font, mode);
-    const repeatHeightTotal = repeatMetrics.height + repeatMetrics.depth - 0.005;
+    const repeatHeightTotal = repeatMetrics.height + repeatMetrics.depth;
     const bottomMetrics = getMetrics(bottom, font, mode);
-    const bottomHeightTotal = bottomMetrics.height + bottomMetrics.depth - 0.005;
+    const bottomHeightTotal = bottomMetrics.height + bottomMetrics.depth;
     let middleHeightTotal = 0;
     let middleFactor = 1;
     if (middle !== null) {
         const middleMetrics = getMetrics(middle, font, mode);
-        middleHeightTotal = middleMetrics.height + middleMetrics.depth - 0.005;
+        middleHeightTotal = middleMetrics.height + middleMetrics.depth;
         middleFactor = 2; // repeat symmetrically above and below middle
     }
 
@@ -313,8 +313,8 @@ const makeStackedDelim = function(
     const minHeight = topHeightTotal + bottomHeightTotal + middleHeightTotal;
 
     // Compute the number of copies of the repeat symbol we will need
-    const repeatCount = Math.ceil(
-        (heightTotal - minHeight) / (middleFactor * repeatHeightTotal));
+    const repeatCount = Math.max(0, Math.ceil(
+        (heightTotal - minHeight) / (middleFactor * repeatHeightTotal)));
 
     // Compute the total height of the delimiter including all the symbols
     const realHeightTotal =
@@ -331,6 +331,15 @@ const makeStackedDelim = function(
     // Calculate the depth
     const depth = realHeightTotal / 2 - axisHeight;
 
+    // We will shift each repeat element downwards by 0.005em, to prevent a gap
+    // due to browser floating point roundting error. 
+    const lap = { type: "kern", size: -0.005 };
+    // Then, at the last element-to element joint, we will add one extra repeat 
+    // element to cover the gap created by the shifts.
+    // Find the shift needed to align the extra element with its top 0.005em above
+    // the lower end of the top element.
+    const shiftOfExtraElement = (repeatCount + 1) * 0.005 - repeatHeightTotal;
+
     // Now, we start building the pieces that will go into the vlist
 
     // Keep a list of the inner pieces
@@ -342,31 +351,33 @@ const makeStackedDelim = function(
     if (middle === null) {
         // Add that many symbols
         for (let i = 0; i < repeatCount; i++) {
-            inners.push({type: "kern", size: -0.005}); // overlap
+            inners.push(lap); // overlap
             inners.push(makeInner(repeat, font, mode));
         }
     } else {
         // When there is a middle bit, we need the middle part and two repeated
         // sections
         for (let i = 0; i < repeatCount; i++) {
-            inners.push({type: "kern", size: -0.005});
+            inners.push(lap);
             inners.push(makeInner(repeat, font, mode));
         }
-        if (repeatCount > 0) {
-            inners.push({type: "kern", size: repeatCount * 0.005});
-        }
+        // Insert one extra repeat element.
+        inners.push({type: "kern", size: shiftOfExtraElement});
+        inners.push(makeInner(repeat, font, mode));
+        inners.push(lap);
+        // Now insert the middle of the brace.
         inners.push(makeInner(middle, font, mode));
         for (let i = 0; i < repeatCount; i++) {
-            inners.push({type: "kern", size: -0.005});
+            inners.push(lap);
             inners.push(makeInner(repeat, font, mode));
         }
     }
 
-    if (repeatCount > 0) {
-        // Add a kern that displaces the top back up to its proper postion,
-        // as if we had not overlapped the repeat glyphs.
-        inners.push({type: "kern", size: repeatCount * 0.005});
-    }
+    // To cover the gap create by the overlaps, insert one more repeat element,
+    // at a position that juts 0.005 above the bottom of the top element.
+    inners.push({type: "kern", size: shiftOfExtraElement });
+    inners.push(makeInner(repeat, font, mode));
+    inners.push(lap);
 
     // Add the top symbol
     inners.push(makeInner(top, font, mode));
