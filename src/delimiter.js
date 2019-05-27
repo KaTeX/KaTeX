@@ -291,17 +291,20 @@ const makeStackedDelim = function(
     }
 
     // Get the metrics of the four sections
+    // We will overlap each glyph by 0.005em, to prevent a gap due to browser
+    // floating point rounding error. So the effective height of each section
+    // will be 0.005 less than reported by getMetrics().
     const topMetrics = getMetrics(top, font, mode);
-    const topHeightTotal = topMetrics.height + topMetrics.depth;
+    const topHeightTotal = topMetrics.height + topMetrics.depth - 0.005;
     const repeatMetrics = getMetrics(repeat, font, mode);
-    const repeatHeightTotal = repeatMetrics.height + repeatMetrics.depth;
+    const repeatHeightTotal = repeatMetrics.height + repeatMetrics.depth - 0.005;
     const bottomMetrics = getMetrics(bottom, font, mode);
-    const bottomHeightTotal = bottomMetrics.height + bottomMetrics.depth;
+    const bottomHeightTotal = bottomMetrics.height + bottomMetrics.depth - 0.005;
     let middleHeightTotal = 0;
     let middleFactor = 1;
     if (middle !== null) {
         const middleMetrics = getMetrics(middle, font, mode);
-        middleHeightTotal = middleMetrics.height + middleMetrics.depth;
+        middleHeightTotal = middleMetrics.height + middleMetrics.depth - 0.005;
         middleFactor = 2; // repeat symmetrically above and below middle
     }
 
@@ -339,18 +342,30 @@ const makeStackedDelim = function(
     if (middle === null) {
         // Add that many symbols
         for (let i = 0; i < repeatCount; i++) {
+            inners.push({type: "kern", size: -0.005}); // overlap
             inners.push(makeInner(repeat, font, mode));
         }
     } else {
         // When there is a middle bit, we need the middle part and two repeated
         // sections
         for (let i = 0; i < repeatCount; i++) {
+            inners.push({type: "kern", size: -0.005});
             inners.push(makeInner(repeat, font, mode));
+        }
+        if (repeatCount > 0) {
+            inners.push({type: "kern", size: repeatCount * 0.005});
         }
         inners.push(makeInner(middle, font, mode));
         for (let i = 0; i < repeatCount; i++) {
+            inners.push({type: "kern", size: -0.005});
             inners.push(makeInner(repeat, font, mode));
         }
+    }
+
+    if (repeatCount > 0) {
+        // Add a kern that displaces the top back up to its proper postion,
+        // as if we had not overlapped the repeat glyphs.
+        inners.push({type: "kern", size: repeatCount * 0.005});
     }
 
     // Add the top symbol
