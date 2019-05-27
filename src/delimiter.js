@@ -331,13 +331,14 @@ const makeStackedDelim = function(
     // Calculate the depth
     const depth = realHeightTotal / 2 - axisHeight;
 
+    // The next two line of code vary from the TeX procedure.
     // We will shift each repeat element downwards by 0.005em, to prevent a gap
-    // due to browser floating point roundting error. 
-    const lap = { type: "kern", size: -0.005 };
-    // Then, at the last element-to element joint, we will add one extra repeat 
+    // due to browser floating point roundting error.
+    const lap = {type: "kern", size: -0.005};
+    // Then, at the last element-to element joint, we will add one extra repeat
     // element to cover the gap created by the shifts.
-    // Find the shift needed to align the extra element with its top 0.005em above
-    // the lower end of the top element.
+    // Find the shift needed to align the upper end of the extra element at a point
+    // 0.005em above the lower end of the top element.
     const shiftOfExtraElement = (repeatCount + 1) * 0.005 - repeatHeightTotal;
 
     // Now, we start building the pieces that will go into the vlist
@@ -375,7 +376,7 @@ const makeStackedDelim = function(
 
     // To cover the gap create by the overlaps, insert one more repeat element,
     // at a position that juts 0.005 above the bottom of the top element.
-    inners.push({type: "kern", size: shiftOfExtraElement });
+    inners.push({type: "kern", size: shiftOfExtraElement});
     inners.push(makeInner(repeat, font, mode));
     inners.push(lap);
 
