@@ -178,6 +178,9 @@ const makeInner = function(
     return {type: "elem", elem: inner};
 };
 
+// Helper for makeStackedDelim
+const lap = {type: "kern", size: -0.005};
+
 /**
  * Make a stacked delimiter out of a given delimiter, with the total height at
  * least `heightTotal`. This routine is mentioned on page 442 of the TeXbook.
@@ -328,11 +331,10 @@ const makeStackedDelim = function(
     // Calculate the depth
     const depth = realHeightTotal / 2 - axisHeight;
 
-    // The next two line of code vary from the TeX procedure.
-    // We will shift each repeat element downwards by 0.005em, to prevent a gap
+    // This function differs from the TeX procedure in one way.
+    // We shift each repeat element downwards by 0.005em, to prevent a gap
     // due to browser floating point roundting error.
-    const lap = {type: "kern", size: -0.005};
-    // Then, at the last element-to element joint, we will add one extra repeat
+    // Then, at the last element-to element joint, we add one extra repeat
     // element to cover the gap created by the shifts.
     // Find the shift needed to align the upper end of the extra element at a point
     // 0.005em above the lower end of the top element.
