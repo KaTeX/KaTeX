@@ -333,7 +333,7 @@ const makeStackedDelim = function(
 
     // This function differs from the TeX procedure in one way.
     // We shift each repeat element downwards by 0.005em, to prevent a gap
-    // due to browser floating point roundting error.
+    // due to browser floating point rounding error.
     // Then, at the last element-to element joint, we add one extra repeat
     // element to cover the gap created by the shifts.
     // Find the shift needed to align the upper end of the extra element at a point
