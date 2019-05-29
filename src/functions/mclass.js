@@ -3,7 +3,6 @@ import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
-import {assertNodeType} from "../parseNode";
 import type {AnyParseNode} from "../parseNode";
 
 import * as html from "../buildHTML";
@@ -24,7 +23,7 @@ function mathmlBuilder(group: ParseNode<"mclass">, options) {
 
     if (group.mclass === "minner") {
         return mathMLTree.newDocumentFragment(inner);
-    } else if (group.mclass === "mord"){
+    } else if (group.mclass === "mord") {
         if (group.isCharacterBox) {
             // $FlowFixMe: cast to MathNode type in order to set type
             node = (inner[0]: mathMLTree.MathNode);
@@ -40,7 +39,7 @@ function mathmlBuilder(group: ParseNode<"mclass">, options) {
         } else {
             node = new mathMLTree.MathNode("mo", inner);
         }
-        
+
         // Set spacing based on what is the most likely adjacent atom type.
         // See TeXbook p170.
         if (group.mclass === "mbin") {
