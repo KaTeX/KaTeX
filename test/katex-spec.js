@@ -3130,7 +3130,7 @@ describe("A macro expander", function() {
 
     // TODO: This doesn't yet work; before the environment gets called,
     // {matrix} gets consumed which means that the \def gets executed, before
-    // we can create a group. :-(
+    // we can create a group. :-(  Issue #1989
     /*
     it("array cells generate groups", () => {
         expect`\def\x{1}\begin{matrix}\def\x{2}&\x\end{matrix}`
