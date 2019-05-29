@@ -2,6 +2,8 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
+import utils from "../utils";
+import {assertNodeType} from "../parseNode";
 import type {AnyParseNode} from "../parseNode";
 
 import * as html from "../buildHTML";
@@ -17,31 +19,44 @@ function htmlBuilder(group: ParseNode<"mclass">, options) {
 }
 
 function mathmlBuilder(group: ParseNode<"mclass">, options) {
-    const inner = mml.buildExpression(group.body, options);
     let node;
-    switch (group.mclass) {
-        case "minner":
-            return mathMLTree.newDocumentFragment(inner);
-        case "mord":
-            return new mathMLTree.MathNode("mi", inner);
-        default:
+    const inner = mml.buildExpression(group.body, options);
+
+    if (group.mclass === "minner") {
+        return mathMLTree.newDocumentFragment(inner);
+    } else if (group.mclass === "mord"){
+        if (group.isCharacterBox) {
+            // $FlowFixMe: cast to MathNode type in order to set type
+            node = (inner[0]: mathMLTree.MathNode);
+            node.type = "mi";
+        } else {
+            node = new mathMLTree.MathNode("mi", inner);
+        }
+    } else {
+        if (group.isCharacterBox) {
+            // $FlowFixMe: cast to MathNode type in order to set attributes
+            node = (inner[0]: mathMLTree.MathNode);
+            node.type = "mo";
+        } else {
             node = new mathMLTree.MathNode("mo", inner);
-            // Set spacing based on what is the most likely adjacent atom type.
-            // See TeXbook p170.
-            if (group.mclass === "mbin") {
-                node.setAttribute("lspace", "0.22em"); // medium space
-                node.setAttribute("rspace", "0.22em");
-            } else if (group.mclass === "mpunct") {
-                node.setAttribute("lspace", "0em");
-                node.setAttribute("rspace", "0.17em"); // thinspace
-            } else if (group.mclass === "mopen" || group.mclass === "mclose") {
-                node.setAttribute("lspace", "0em");
-                node.setAttribute("rspace", "0em");
-            }
-            // MathML <mo> default space is 5/18 em, so <mrel> needs no action.
-            // Ref: https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mo
-            return node;
+        }
+        
+        // Set spacing based on what is the most likely adjacent atom type.
+        // See TeXbook p170.
+        if (group.mclass === "mbin") {
+            node.attributes.lspace = "0.22em"; // medium space
+            node.attributes.rspace = "0.22em";
+        } else if (group.mclass === "mpunct") {
+            node.attributes.lspace = "0em";
+            node.attributes.rspace = "0.17em"; // thinspace
+        } else if (group.mclass === "mopen" || group.mclass === "mclose") {
+            node.attributes.lspace = "0em";
+            node.attributes.rspace = "0em";
+        }
+        // MathML <mo> default space is 5/18 em, so <mrel> needs no action.
+        // Ref: https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mo
     }
+    return node;
 }
 
 // Math class commands except \mathop
@@ -61,6 +76,7 @@ defineFunction({
             mode: parser.mode,
             mclass: "m" + funcName.substr(5),
             body: ordargument(body),
+            isCharacterBox: utils.isCharacterBox(body),
         };
     },
     htmlBuilder,
@@ -94,6 +110,7 @@ defineFunction({
             mode: parser.mode,
             mclass: binrelClass(args[0]),
             body: [args[1]],
+            isCharacterBox: utils.isCharacterBox(args[1]),
         };
     },
 });
@@ -141,6 +158,7 @@ defineFunction({
             mode: parser.mode,
             mclass,
             body: [supsub],
+            isCharacterBox: utils.isCharacterBox(supsub),
         };
     },
     htmlBuilder,

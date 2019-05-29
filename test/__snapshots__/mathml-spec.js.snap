@@ -8,20 +8,14 @@ exports[`A MathML builder \\html@mathml makes clean symbols 1`] = `
       <mtext>
         ©
       </mtext>
-      <mo>
-        <mi mathvariant="normal">
-          ≠
-        </mi>
+      <mo mathvariant="normal">
+        ≠
       </mo>
-      <mo>
-        <mi mathvariant="normal">
-          ∉
-        </mi>
+      <mo mathvariant="normal">
+        ∉
       </mo>
-      <mo>
-        <mi mathvariant="normal">
-          ≘
-        </mi>
+      <mo mathvariant="normal">
+        ≘
       </mo>
       <mtext>
         KaTeX
