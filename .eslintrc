@@ -77,6 +77,11 @@
         "node": true,
         "browser": true
     },
+    "settings": {
+        "react": {
+            "version": "16.8"
+        }
+    },
     "overrides": [{
         "files": ["katex.js", "src/**/*.js", "contrib/**/*.js"],
         "excludedFiles": ["*-spec.js", "unicodeMake.js"],

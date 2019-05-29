@@ -87,8 +87,8 @@ const users = [
     },
     {
         caption: 'Observable',
-        image: 'https://pbs.twimg.com/profile_images/970805785503477760/HfTZJiZo_400x400.jpg',
-        infoLink: 'https://beta.observablehq.com/',
+        image: 'https://avatars0.githubusercontent.com/u/30080011',
+        infoLink: 'https://observablehq.com/',
     },
     {
         caption: 'Quill',

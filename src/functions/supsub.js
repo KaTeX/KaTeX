@@ -201,6 +201,10 @@ defineFunctionBuilders({
             }
         }
 
+        if (group.base && group.base.type === "op") {
+            group.base.parentIsSupSub = true;
+        }
+
         const children = [mml.buildGroup(group.base, options)];
 
         if (group.sub) {
@@ -217,7 +221,7 @@ defineFunctionBuilders({
         } else if (!group.sub) {
             const base = group.base;
             if (base && base.type === "op" && base.limits &&
-                options.style === Style.DISPLAY) {
+                (options.style === Style.DISPLAY || base.alwaysHandleSupSub)) {
                 nodeType = "mover";
             } else {
                 nodeType = "msup";
@@ -225,7 +229,7 @@ defineFunctionBuilders({
         } else if (!group.sup) {
             const base = group.base;
             if (base && base.type === "op" && base.limits &&
-                options.style === Style.DISPLAY) {
+                (options.style === Style.DISPLAY || base.alwaysHandleSupSub)) {
                 nodeType = "munder";
             } else {
                 nodeType = "msub";

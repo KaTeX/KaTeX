@@ -1,6 +1,82 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [v0.10.2]
+### Added
+- Approximate font metrics only when metrics don't exist (#1898)
+- Add KaTeX version to stylesheet and troubleshooting guide (#1893)
+- Add symbol double square brackets (#1947, #1954)
+- Support double-square curly braces (#1953)
+
+ ### Changed
+- Upgrade minimum development Node version to v8 (#1861)
+- Disable @babel/env debug (#1874)
+- Add issue templates (#1862)
+- Added 'katex-element' (#1905)
+- Fix Users' logo and url (#1896)
+- Load fonts before running screenshotter (#1891)
+- Add Browserstack logo (#1879)
+- Added Android library (#1943)
+- Move custom colors used by Khan into macros.js (#1933)
+- Test for duplicate symbols/macros (#1955)
+- Include extensions mhchem & copy-tex in home-page (#1932)
+
+ ### Fixed
+- Fix \Rho (#1870)
+- Fix nested \dfrac (#1825)
+- Improve MathML accents (#1877)
+- Improve MathML for \overset, \stackrel, and \underset (#1886)
+- Fix \not (U+E020) RBearing (width) (#1878)
+- Fix ApplyFunction character (#1890)
+- Improve MathML for \limits (#1897)
+- Improve MathML for \hphantom and \vphantom (#1883)
+- Improve MathML for \coloneqq, \dblcolon, \eqcolon, and \eqqcolon (#1889)
+- Improve MathML for \brace (#1884)
+- Fix \middle spacing (#1906)
+- Get a tall \middle\vert from MathML (#1911)
+- Improve more coloneq (#1902)
+- Make \smallint small in \displaystyle (#1907)
+- Improve MathML for characters in Unicode private use area (#1908)
+- Improve MathML for extensible arrows (#1901)
+- Improve MathML for \rule (#1912)
+- Improve MathML for fractions (#1882)
+- Improve MathML for \tag (#1915)
+- Improve MathML for \colorbox and \fcolorbox (#1914)
+- Improve MathML for environments (#1910)
+- Improve MathML for \genfrac barline (#1925)
+- Support \textup and \textmd (#1921) 
+- Improve MathML for \not (#1923)
+- Improve MathML for \Bbbk (#1930)
+- Prevent inadvertent tall delims (#1948)
+
+ ### Removed
+- Re-added code for \includegraphics but disabled the function until trust settings is merged (#1951) 
+
+## [v0.10.1]
+### Added
+- ECMAScript module for contrib (#1624)
+- mhchem extension (#1436)
+- auto-render: optional pre-process callback (#1784)
+- \argmax and \argmin (#1820)
+- \textbackslash and \textasciicircum (#1839)
+- leqno and fleqn support (#1814)
+
+### Changed
+- Include only necessary fonts for target environment specified by Browserslist (#1674)
+
+### Fixed
+- Support blackboard bold in text mode (#1757)
+- Fix spacings in semisimple groups (#1706)
+- Fix parsing comments (#1789)
+- Fix \\ and \newline after operator (#1796)
+- Fix \hphantom width (#1809)
+- Remove double encoding in MathML (#1813)
+- Fix Unicode bigcup (#1836)
+- Fix \genfrac w/ empty delimiter arguments (#1816)
+- \fbox inherits default color (#1847)
+- Fix \not and \neq on Chrome 72 (#1852)
+
+
 ## [v0.10.0]
 ### Added
 - Unicode: °, delimiters, 1D400-1D7FF, \ll, \lll, ≘≙≚≛≝≞≟, Unicode Mathematical Alphanumeric Symbols, ⟂ ¬ ⊨ ‼ ∌ ≲ ⩽ ⪅ ≶ ⋚ ⪋, corner, ⟦⟧ (#1203, #1207, #1260, #1273, #1274, #1232, #1377, #1389, #1459, #1750)

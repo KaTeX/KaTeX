@@ -384,18 +384,17 @@ function takeScreenshot(key) {
 
     function loadMath() {
         if (!opts.reload && driverReady) {
-            driver.executeAsyncScript(
-                    "var callback = arguments[arguments.length - 1]; " +
+            driver.executeScript(
                     "handle_search_string(" +
-                    JSON.stringify("?" + itm.query) + ", callback);")
+                    JSON.stringify("?" + itm.query) + ");")
                 .then(waitThenScreenshot);
         } else if (opts.coverage) {
             // collect coverage before reloading
             collectCoverage().then(function() {
-                return driver.get(url).then(waitThenScreenshot);
+                return driver.get(url).then(loadFonts);
             });
         } else {
-            driver.get(url).then(waitThenScreenshot);
+            driver.get(url).then(loadFonts);
         }
     }
 
@@ -406,6 +405,13 @@ function takeScreenshot(key) {
                     coverageMap.merge(result);
                 }
             });
+    }
+
+    function loadFonts() {
+        driver.executeAsyncScript(
+                "var callback = arguments[arguments.length - 1]; " +
+                "load_fonts(callback);")
+            .then(waitThenScreenshot);
     }
 
     function waitThenScreenshot() {

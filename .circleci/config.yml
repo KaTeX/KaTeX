@@ -3,11 +3,11 @@ version: 2.1
 executors:
   firefox:
     docker:
-      - image: circleci/node:6
+      - image: circleci/node:8
       - image: selenium/standalone-firefox:2.48.2
   chrome:
     docker:
-      - image: circleci/node:6
+      - image: circleci/node:8
       - image: selenium/standalone-chrome:2.48.2
         environment:
           # workaround for https://github.com/SeleniumHQ/docker-selenium/issues/87
@@ -55,13 +55,7 @@ commands:
             - yarn-deps-v3-
       - run:
           name: Install dependencies
-          # upgrade Yarn before installing dependencies, if needed
-          command: |
-              if ! yarn check; then
-                curl -o- -L https://yarnpkg.com/install.sh | PROFILE=$BASH_ENV bash
-                source $BASH_ENV
-                yarn
-              fi
+          command: yarn --frozen-lockfile
       - save_cache:
           key: yarn-deps-v3-{{ checksum "yarn.lock" }}
           paths:
@@ -80,7 +74,7 @@ commands:
 jobs:
   test:
     docker:
-      - image: circleci/node:6
+      - image: circleci/node:8
     steps:
       - run:
           name: Check whether the build is running on the main repository

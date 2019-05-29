@@ -423,7 +423,10 @@ const makeLineSpan = function(
     thickness?: number,
 ) {
     const line = makeSpan([className], [], options);
-    line.height = thickness || options.fontMetrics().defaultRuleThickness;
+    line.height = Math.max(
+        thickness || options.fontMetrics().defaultRuleThickness,
+        options.minRuleThickness,
+    );
     line.style.borderBottomWidth = line.height + "em";
     line.maxFontSize = 1.0;
     return line;

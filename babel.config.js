@@ -3,7 +3,6 @@ module.exports = api => {
 
     const presets = [
         ["@babel/env", {
-            debug: true,
             loose: true,
         }],
         "@babel/flow",
