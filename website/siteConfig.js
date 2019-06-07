@@ -116,6 +116,11 @@ const users = [
         infoLink: 'https://stackedit.io/',
     },
     {
+        caption: 'Tutti Quanti Shelf',
+        image: '/img/tutti_quanti_shelf_logo.png',
+        infoLink: 'https://github.com/tonton-pixel/tutti-quanti-shelf/',
+    },
+    {
         caption: 'Vade Mecum Shelf',
         image: '/img/vade_mecum_shelf_logo.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
