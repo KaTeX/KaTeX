@@ -117,7 +117,7 @@ const users = [
     },
     {
         caption: 'Tutti Quanti Shelf',
-        image: 'https://github.com/tonton-pixel/tutti-quanti-shelf/blob/master/icons/icon.png,
+        image: 'https://github.com/tonton-pixel/tutti-quanti-shelf/blob/master/icons/icon.png',
         infoLink: 'https://github.com/tonton-pixel/tutti-quanti-shelf/',
     },
     {
