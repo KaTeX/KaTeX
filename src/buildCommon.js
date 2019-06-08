@@ -142,10 +142,9 @@ const mathdefault = function(
     options: Options,
     classes: string[],
 ): {| fontName: string, fontClass: string |} {
-    if (/[0-9]/.test(value.charAt(0)) ||
-            // glyphs for \imath and \jmath do not exist in Math-Italic so we
-            // need to use Main-Italic instead
-            utils.contains(mathitLetters, value)) {
+    // glyphs for \imath and \jmath do not exist in Math-Italic so we
+    // need to use Main-Italic instead
+    if (utils.contains(mathitLetters, value)) {
         return {
             fontName: "Main-Italic",
             fontClass: "mathit",
