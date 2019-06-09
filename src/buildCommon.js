@@ -23,8 +23,6 @@ import type {Measurement} from "./units";
 
 // The following have to be loaded from Main-Italic font, using class mathit
 const mathitLetters = [
-    "\\imath", "ı",       // dotless i
-    "\\jmath", "ȷ",       // dotless j
     "\\pounds", "\\mathsterling", "\\textsterling", "£",   // pounds symbol
 ];
 
