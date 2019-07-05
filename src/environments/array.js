@@ -79,6 +79,9 @@ function parseArray(
         }
     }
 
+    // Start group for first cell
+    parser.gullet.beginGroup();
+
     let row = [];
     const body = [row];
     const rowGaps = [];
@@ -88,7 +91,11 @@ function parseArray(
     hLinesBeforeRow.push(getHLines(parser));
 
     while (true) {  // eslint-disable-line no-constant-condition
+        // Parse each cell in its own group (namespace)
         let cell = parser.parseExpression(false, "\\cr");
+        parser.gullet.endGroup();
+        parser.gullet.beginGroup();
+
         cell = {
             type: "ordgroup",
             mode: parser.mode,
@@ -132,7 +139,12 @@ function parseArray(
                                  parser.nextToken);
         }
     }
+
+    // End cell group
     parser.gullet.endGroup();
+    // End array group defining \\
+    parser.gullet.endGroup();
+
     return {
         type: "array",
         mode: parser.mode,
@@ -671,6 +683,7 @@ defineEnvironment({
             body: [res],
             left: delimiters[0],
             right: delimiters[1],
+            rightColor: undefined, // \right uninfluenced by \color in array
         } : res;
     },
     htmlBuilder,
@@ -775,6 +788,7 @@ defineEnvironment({
             body: [res],
             left: "\\{",
             right: ".",
+            rightColor: undefined,
         };
     },
     htmlBuilder,

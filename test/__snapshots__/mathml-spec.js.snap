@@ -8,15 +8,15 @@ exports[`A MathML builder \\html@mathml makes clean symbols 1`] = `
       <mtext>
         ©
       </mtext>
-      <mi mathvariant="normal">
+      <mo mathvariant="normal">
         ≠
-      </mi>
-      <mi mathvariant="normal">
+      </mo>
+      <mo mathvariant="normal">
         ∉
-      </mi>
-      <mi mathvariant="normal">
+      </mo>
+      <mo mathvariant="normal">
         ≘
-      </mi>
+      </mo>
       <mtext>
         KaTeX
       </mtext>
@@ -306,7 +306,10 @@ exports[`A MathML builder should make prime operators into <mo> nodes 1`] = `
         <mi>
           f
         </mi>
-        <mo mathvariant="normal">
+        <mo mathvariant="normal"
+            lspace="0em"
+            rspace="0em"
+        >
           ′
         </mo>
       </msup>
@@ -394,32 +397,34 @@ exports[`A MathML builder should render boldsymbol with the correct mathvariants
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
-      <mrow>
-        <mi mathvariant="bold-italic">
-          A
-        </mi>
-        <mi mathvariant="bold-italic">
-          x
-        </mi>
-        <mn mathvariant="bold-italic">
-          2
-        </mn>
-        <mi mathvariant="bold-italic">
-          k
-        </mi>
-        <mi mathvariant="bold-italic">
-          ω
-        </mi>
-        <mi mathvariant="bold-italic">
-          Ω
-        </mi>
-        <mi mathvariant="bold-italic">
-          ı
-        </mi>
-        <mo mathvariant="bold-italic">
-          +
-        </mo>
-      </mrow>
+      <mi>
+        <mrow>
+          <mi mathvariant="bold-italic">
+            A
+          </mi>
+          <mi mathvariant="bold-italic">
+            x
+          </mi>
+          <mn mathvariant="bold-italic">
+            2
+          </mn>
+          <mi mathvariant="bold-italic">
+            k
+          </mi>
+          <mi mathvariant="bold-italic">
+            ω
+          </mi>
+          <mi mathvariant="bold-italic">
+            Ω
+          </mi>
+          <mi mathvariant="bold-italic">
+            ı
+          </mi>
+          <mo mathvariant="bold-italic">
+            +
+          </mo>
+        </mrow>
+      </mi>
     </mrow>
     <annotation encoding="application/x-tex">
       \\boldsymbol{Ax2k\\omega\\Omega\\imath+}

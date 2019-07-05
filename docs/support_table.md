@@ -212,7 +212,8 @@ table td {
 |\ce |${\mathrm{C}{\vphantom{X}}_{\smash[t]{6}}\mathrm{H}{\vphantom{X}}_{\smash[t]{5}}{-}\mathrm{CHO}}$|`\ce{C6H5-CHO}` Requires an [extension](https://github.com/KaTeX/KaTeX/tree/master/contrib/mhchem/)|
 |\cee|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem
 |\centerdot|$a\centerdot b$|`a\centerdot b`|
-|\cf|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem|
+|\cf|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem;
+use `\ce` instead|
 |\cfrac|$\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}$|`\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}`|
 |\check|$\check{oe}$|`\check{oe}`|
 |\ch|$\ch$||
@@ -799,6 +800,7 @@ table td {
 |\pi|$\pi$||
 |{picture}|<span style="color:firebrick;">Not supported</span>||
 |\pitchfork|$\pitchfork$||
+|\plim|$\plim$||
 |\plusmn|$\plusmn$||
 |\pm|$\pm$||
 |\pmatrix|<span style="color:firebrick;">Not supported</span>|See `{pmatrix}`|
