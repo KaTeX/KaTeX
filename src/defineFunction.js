@@ -23,6 +23,8 @@ export type FunctionHandler<NODETYPE: NodeType> = (
     args: AnyParseNode[],
     optArgs: (?AnyParseNode)[],
 ) => UnsupportedCmdParseNode | ParseNode<NODETYPE>;
+// Note: reverse the order of the return type union will cause a flow error.
+// See https://github.com/facebook/flow/issues/3663.
 
 export type HtmlBuilder<NODETYPE> = (ParseNode<NODETYPE>, Options) => HtmlDomNode;
 export type MathMLBuilder<NODETYPE> = (

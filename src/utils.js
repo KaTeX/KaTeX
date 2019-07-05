@@ -95,7 +95,7 @@ export const assert = function<T>(value: ?T): T {
  * Return the protocol of a URL, or "_relative" if the URL does not specify a
  * protocol (and thus is relative).
  */
-export const urlToProtocol = function(url: string): string {
+export const protocolFromUrl = function(url: string): string {
     const protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
     return (protocol != null ? protocol[1] : "_relative");
 };
@@ -107,5 +107,5 @@ export default {
     hyphenate,
     getBaseElem,
     isCharacterBox,
-    urlToProtocol,
+    protocolFromUrl,
 };

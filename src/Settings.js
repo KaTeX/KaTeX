@@ -176,7 +176,7 @@ export default class Settings {
      */
     isTrusted(context: AnyTrustContext) {
         if (context.url && !context.protocol) {
-            context.protocol = utils.urlToProtocol(context.url);
+            context.protocol = utils.protocolFromUrl(context.url);
         }
         let trust = this.trust;
         if (typeof trust === "function") {
