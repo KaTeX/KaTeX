@@ -22,7 +22,7 @@ export type FunctionHandler<NODETYPE: NodeType> = (
     context: FunctionContext,
     args: AnyParseNode[],
     optArgs: (?AnyParseNode)[],
-) => ParseNode<NODETYPE> | UnsupportedCmdParseNode;
+) => UnsupportedCmdParseNode | ParseNode<NODETYPE>;
 
 export type HtmlBuilder<NODETYPE> = (ParseNode<NODETYPE>, Options) => HtmlDomNode;
 export type MathMLBuilder<NODETYPE> = (
@@ -200,10 +200,6 @@ export default function defineFunction<NODETYPE: NodeType>({
         handler: handler,
     };
     for (let i = 0; i < names.length; ++i) {
-        // TODO: The value type of _functions should be a type union of all
-        // possible `FunctionSpec<>` possibilities instead of `FunctionSpec<*>`,
-        // which is an existential type.
-        // $FlowFixMe
         _functions[names[i]] = data;
     }
     if (type) {

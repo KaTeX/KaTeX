@@ -2721,25 +2721,6 @@ describe("href and url commands", function() {
         expect(markup).toContain("<a href=\"http://example.com/\">");
     });
 
-    it("should allow protocols in allowedProtocols", function() {
-        expect("\\href{relative}{foo}").toParse();
-        expect("\\href{ftp://x}{foo}").toParse(new Settings({
-            allowedProtocols: ["ftp"],
-            trust: true,
-        }));
-        expect("\\href{ftp://x}{foo}").toParse(new Settings({
-            allowedProtocols: ["*"],
-            trust: true,
-        }));
-    });
-
-    it("should not allow protocols not in allowedProtocols", function() {
-        expect("\\href{javascript:alert('x')}{foo}").not.toParse();
-        expect("\\href{relative}{foo}").not.toParse(new Settings({
-            allowedProtocols: [],
-        }));
-    });
-
     it("should not affect spacing around", function() {
         const built = getBuilt`a\href{http://example.com/}{+b}`;
         expect(built).toMatchSnapshot();

@@ -7,7 +7,6 @@ import {validUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
-import utils from "./utils";
 import {checkNodeType} from "./parseNode";
 import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer";
@@ -722,13 +721,6 @@ export default class Parser {
         // "undefined" behaviour, and keep them as-is. Some browser will
         // replace backslashes with forward slashes.
         const url = res.text.replace(/\\([#$%&~_^{}])/g, '$1');
-        const protocol = utils.urlToProtocol(url);
-        const allowed = this.settings.allowedProtocols;
-        if (!utils.contains(allowed,  "*") &&
-            !utils.contains(allowed, protocol)) {
-            throw new ParseError(
-                `Forbidden protocol '${protocol}'`, res);
-        }
         return {
             type: "url",
             mode: this.mode,

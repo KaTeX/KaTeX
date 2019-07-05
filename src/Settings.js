@@ -50,7 +50,6 @@ export type SettingsOptions = {
     trust?: boolean | TrustFunction;
     maxSize?: number;
     maxExpand?: number;
-    allowedProtocols?: string[];
 };
 
 /**
@@ -77,7 +76,6 @@ export default class Settings {
     trust: boolean | TrustFunction;
     maxSize: number;
     maxExpand: number;
-    allowedProtocols: string[];
 
     constructor(options: SettingsOptions) {
         // allow null options
@@ -98,8 +96,6 @@ export default class Settings {
         this.trust = utils.deflt(options.trust, false);
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
         this.maxExpand = Math.max(0, utils.deflt(options.maxExpand, 1000));
-        this.allowedProtocols = utils.deflt(options.allowedProtocols,
-            ["http", "https", "mailto", "_relative"]);
     }
 
     /**
