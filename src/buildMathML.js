@@ -44,7 +44,7 @@ export const makeText = function(
  * Wrap the given array of nodes in an <mrow> node if needed, i.e.,
  * unless the array has length 1.  Always returns a single node.
  */
-export const makeRow = function(body: MathDomNode[]): MathDomNode {
+export const makeRow = function(body: $ReadOnlyArray<MathDomNode>): MathDomNode {
     if (body.length === 1) {
         return body[0];
     } else {
@@ -135,7 +135,7 @@ export const buildExpression = function(
     expression: AnyParseNode[],
     options: Options,
     isOrdgroup?: boolean,
-): MathDomNode[] {
+): MathNode[] {
     if (expression.length === 1) {
         const group = buildGroup(expression[0], options);
         if (isOrdgroup && group instanceof MathNode && group.type === "mo") {
@@ -210,7 +210,7 @@ export const buildExpressionRow = function(
 export const buildGroup = function(
     group: ?AnyParseNode,
     options: Options,
-): MathDomNode {
+): MathNode {
     if (!group) {
         return new mathMLTree.MathNode("mrow");
     }

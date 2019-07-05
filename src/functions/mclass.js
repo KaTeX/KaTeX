@@ -18,23 +18,21 @@ function htmlBuilder(group: ParseNode<"mclass">, options) {
 }
 
 function mathmlBuilder(group: ParseNode<"mclass">, options) {
-    let node;
+    let node: mathMLTree.MathNode;
     const inner = mml.buildExpression(group.body, options);
 
     if (group.mclass === "minner") {
         return mathMLTree.newDocumentFragment(inner);
     } else if (group.mclass === "mord") {
         if (group.isCharacterBox) {
-            // $FlowFixMe: cast to MathNode type in order to set type
-            node = (inner[0]: mathMLTree.MathNode);
+            node = inner[0];
             node.type = "mi";
         } else {
             node = new mathMLTree.MathNode("mi", inner);
         }
     } else {
         if (group.isCharacterBox) {
-            // $FlowFixMe: cast to MathNode type in order to set attributes
-            node = (inner[0]: mathMLTree.MathNode);
+            node = inner[0];
             node.type = "mo";
         } else {
             node = new mathMLTree.MathNode("mo", inner);
