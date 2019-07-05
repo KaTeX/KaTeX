@@ -348,6 +348,7 @@ type ParseNodeTypes = {
         loc?: ?SourceLocation,
         mclass: string,
         body: AnyParseNode[],
+        isCharacterBox: boolean,
     |},
     "operatorname": {|
         type: "operatorname",

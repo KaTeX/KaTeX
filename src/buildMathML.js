@@ -44,7 +44,7 @@ export const makeText = function(
  * Wrap the given array of nodes in an <mrow> node if needed, i.e.,
  * unless the array has length 1.  Always returns a single node.
  */
-export const makeRow = function(body: MathDomNode[]): MathDomNode {
+export const makeRow = function(body: $ReadOnlyArray<MathDomNode>): MathDomNode {
     if (body.length === 1) {
         return body[0];
     } else {
@@ -134,7 +134,19 @@ export const getVariant = function(
 export const buildExpression = function(
     expression: AnyParseNode[],
     options: Options,
-): MathDomNode[] {
+    isOrdgroup?: boolean,
+): MathNode[] {
+    if (expression.length === 1) {
+        const group = buildGroup(expression[0], options);
+        if (isOrdgroup && group instanceof MathNode && group.type === "mo") {
+            // When TeX writers want to suppress spacing on an operator,
+            // they often put the operator by itself inside braces.
+            group.setAttribute("lspace", "0em");
+            group.setAttribute("rspace", "0em");
+        }
+        return [group];
+    }
+
     const groups = [];
     let lastGroup;
     for (let i = 0; i < expression.length; i++) {
@@ -186,8 +198,9 @@ export const buildExpression = function(
 export const buildExpressionRow = function(
     expression: AnyParseNode[],
     options: Options,
+    isOrdgroup?: boolean,
 ): MathDomNode {
-    return makeRow(buildExpression(expression, options));
+    return makeRow(buildExpression(expression, options, isOrdgroup));
 };
 
 /**
@@ -197,7 +210,7 @@ export const buildExpressionRow = function(
 export const buildGroup = function(
     group: ?AnyParseNode,
     options: Options,
-): MathDomNode {
+): MathNode {
     if (!group) {
         return new mathMLTree.MathNode("mrow");
     }
