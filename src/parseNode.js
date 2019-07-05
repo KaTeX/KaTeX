@@ -318,12 +318,14 @@ type ParseNodeTypes = {
         body: AnyParseNode[],
         left: string,
         right: string,
+        rightColor: ?string, // undefined means "inherit"
     |},
     "leftright-right": {|
         type: "leftright-right",
         mode: Mode,
         loc?: ?SourceLocation,
         delim: string,
+        color: ?string, // undefined means "inherit"
     |},
     "mathchoice": {|
         type: "mathchoice",
