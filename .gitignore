@@ -26,3 +26,5 @@ website/node_modules
 website/i18n/*
 website/static/static/katex.*
 website/static/static/fonts
+website/static/static/copy-tex.*
+website/static/static/mhchem.*

@@ -1,6 +1,7 @@
 ---
-id: support_table
+id: version-0.10.2-support_table
 title: Support Table
+original_id: support_table
 ---
 This is a list of TeX functions, sorted alphabetically. This list includes functions that KaTeX supports and some that it doesn't support. There is a similar page, with functions [sorted by type](supported.md).
 
@@ -212,8 +213,7 @@ table td {
 |\ce |${\mathrm{C}{\vphantom{X}}_{\smash[t]{6}}\mathrm{H}{\vphantom{X}}_{\smash[t]{5}}{-}\mathrm{CHO}}$|`\ce{C6H5-CHO}` Requires an [extension](https://github.com/KaTeX/KaTeX/tree/master/contrib/mhchem/)|
 |\cee|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem
 |\centerdot|$a\centerdot b$|`a\centerdot b`|
-|\cf|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem;
-use `\ce` instead|
+|\cf|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem|
 |\cfrac|$\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}$|`\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}`|
 |\check|$\check{oe}$|`\check{oe}`|
 |\ch|$\ch$||
@@ -800,7 +800,6 @@ use `\ce` instead|
 |\pi|$\pi$||
 |{picture}|<span style="color:firebrick;">Not supported</span>||
 |\pitchfork|$\pitchfork$||
-|\plim|$\plim$||
 |\plusmn|$\plusmn$||
 |\pm|$\pm$||
 |\pmatrix|<span style="color:firebrick;">Not supported</span>|See `{pmatrix}`|
@@ -930,7 +929,7 @@ use `\ce` instead|
 |\small|$\small small$|`\small small`|
 |\smallfrown|$\smallfrown$||
 |\smallint|$\smallint$||
-|{smallmatrix}|$\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}$|`\begin{smallmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{smallmatrix}`|
+|{smallmatrix}|<span style="color:firebrick;">Not supported</span>||
 |\smallsetminus|$\smallsetminus$||
 |\smallsmile|$\smallsmile$||
 |\smash|$\left(x^{\smash{2}}\right)$|`\left(x^{\smash{2}}\right)`|
@@ -967,7 +966,7 @@ use `\ce` instead|
 |\subseteqq|$\subseteqq$||
 |\subsetneq|$\subsetneq$||
 |\subsetneqq|$\subsetneqq$||
-|\substack|$$\sum_{\substack{0<i<m\\0<j<n}}$$|`\sum_{\substack{0<i<m\\0<j<n}}`|
+|\substack|<span style="color:firebrick;">Not supported</span>||
 |\succ|$\succ$||
 |\succapprox|$\succapprox$||
 |\succcurlyeq|$\succcurlyeq$||

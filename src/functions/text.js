@@ -13,10 +13,12 @@ const textFontFamilies = {
 
 const textFontWeights = {
     "\\textbf": "textbf",
+    "\\textmd": "textmd",
 };
 
 const textFontShapes = {
     "\\textit": "textit",
+    "\\textup": "textup",
 };
 
 const optionsWithFont = (group, options) => {
@@ -39,9 +41,9 @@ defineFunction({
         // Font families
         "\\text", "\\textrm", "\\textsf", "\\texttt", "\\textnormal",
         // Font weights
-        "\\textbf",
+        "\\textbf", "\\textmd",
         // Font Shapes
-        "\\textit",
+        "\\textit", "\\textup",
     ],
     props: {
         numArgs: 1,

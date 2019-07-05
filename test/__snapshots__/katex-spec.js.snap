@@ -784,7 +784,7 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
 
 <span class="katex">
   <span class="katex-mathml">
-    <math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
       <semantics>
         <mrow>
           <mi mathvariant="normal">
@@ -862,7 +862,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
 
 <span class="katex">
   <span class="katex-mathml">
-    <math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
       <semantics>
         <mrow>
           <mi>
