@@ -1,7 +1,7 @@
 // @flow
 import {NON_ATOMS} from "./symbols";
 import type SourceLocation from "./SourceLocation";
-import type {AlignSpec} from "./environments/array";
+import type {AlignSpec, ColSeparationType} from "./environments/array";
 import type {Atom} from "./symbols";
 import type {Mode, StyleStr} from "./types";
 import type {Token} from "./Token";
@@ -31,6 +31,7 @@ type ParseNodeTypes = {
         type: "array",
         mode: Mode,
         loc?: ?SourceLocation,
+        colSeparationType?: ColSeparationType,
         hskipBeforeAndAfter?: boolean,
         addJot?: boolean,
         cols?: AlignSpec[],
@@ -69,6 +70,7 @@ type ParseNodeTypes = {
         limits: boolean,
         alwaysHandleSupSub?: boolean,
         suppressBaseShift?: boolean,
+        parentIsSupSub: boolean,
         symbol: boolean,
         name: string,
         body?: void,
@@ -79,6 +81,7 @@ type ParseNodeTypes = {
         limits: boolean,
         alwaysHandleSupSub?: boolean,
         suppressBaseShift?: boolean,
+        parentIsSupSub: boolean,
         symbol: false,  // If 'symbol' is true, `body` *must* be set.
         name?: void,
         body: AnyParseNode[],
@@ -318,12 +321,14 @@ type ParseNodeTypes = {
         body: AnyParseNode[],
         left: string,
         right: string,
+        rightColor: ?string, // undefined means "inherit"
     |},
     "leftright-right": {|
         type: "leftright-right",
         mode: Mode,
         loc?: ?SourceLocation,
         delim: string,
+        color: ?string, // undefined means "inherit"
     |},
     "mathchoice": {|
         type: "mathchoice",
@@ -346,6 +351,7 @@ type ParseNodeTypes = {
         loc?: ?SourceLocation,
         mclass: string,
         body: AnyParseNode[],
+        isCharacterBox: boolean,
     |},
     "operatorname": {|
         type: "operatorname",

@@ -13,12 +13,14 @@
 
 \newcommand{\blue}[1]{\textcolor{blue}{#1}}
 
+% Based on LaTeX's definition of \LaTeX, with L changed to K and kerns
+% changed as in src/macros.js
 \DeclareRobustCommand{\KaTeX}{\mbox{%
-K\kern-.26em%
-{\sbox0 T\vbox to\ht0{\kern.05em\hbox%
+K\kern-.17em%
+{\sbox0 T\vbox to\ht0{\hbox%
   {\fontsize{.75em}{1em}\selectfont A}%
 \vss}}%
-\kern-.23em%
+\kern-.15em%
 \TeX}}
 
 % Thanks to http://tex.stackexchange.com/a/26017/16923

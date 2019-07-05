@@ -38,11 +38,13 @@ export type TrustFunction = (context: AnyTrustContext) => ?boolean;
 
 export type SettingsOptions = {
     displayMode?: boolean;
+    output?: "html" | "mathml" | "htmlAndMathml";
     leqno?: boolean;
     fleqn?: boolean;
     throwOnError?: boolean;
     errorColor?: string;
     macros?: MacroMap;
+    minRuleThickness?: number;
     colorIsTextColor?: boolean;
     strict?: boolean | "ignore" | "warn" | "error" | StrictFunction;
     trust?: boolean | TrustFunction;
@@ -63,11 +65,13 @@ export type SettingsOptions = {
  */
 export default class Settings {
     displayMode: boolean;
+    output: "html" | "mathml" | "htmlAndMathml";
     leqno: boolean;
     fleqn: boolean;
     throwOnError: boolean;
     errorColor: string;
     macros: MacroMap;
+    minRuleThickness: number;
     colorIsTextColor: boolean;
     strict: boolean | "ignore" | "warn" | "error" | StrictFunction;
     trust: boolean | TrustFunction;
@@ -79,11 +83,16 @@ export default class Settings {
         // allow null options
         options = options || {};
         this.displayMode = utils.deflt(options.displayMode, false);
+        this.output = utils.deflt(options.output, "htmlAndMathml");
         this.leqno = utils.deflt(options.leqno, false);
         this.fleqn = utils.deflt(options.fleqn, false);
         this.throwOnError = utils.deflt(options.throwOnError, true);
         this.errorColor = utils.deflt(options.errorColor, "#cc0000");
         this.macros = options.macros || {};
+        this.minRuleThickness = Math.max(
+            0,
+            utils.deflt(options.minRuleThickness, 0)
+        );
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
         this.strict = utils.deflt(options.strict, "warn");
         this.trust = utils.deflt(options.trust, false);
