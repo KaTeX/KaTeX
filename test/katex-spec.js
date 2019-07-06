@@ -2654,7 +2654,7 @@ describe("operatorname support", function() {
     });
 });
 
-describe.only("href and url commands", function() {
+describe("href and url commands", function() {
     // We can't use raw strings for \url because \u is for Unicode escapes.
 
     it("should parse its input", function() {

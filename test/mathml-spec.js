@@ -8,7 +8,7 @@ import Options from "../src/Options";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
 
-const getMathML = function(expr, settings = new Settings({trust: true})) {
+const getMathML = function(expr, settings = new Settings({trust: false})) {
     let startStyle = Style.TEXT;
     if (settings.displayMode) {
         startStyle = Style.DISPLAY;
@@ -73,7 +73,9 @@ describe("A MathML builder", function() {
     });
 
     it('should set href attribute for href appropriately', () => {
-        expect(getMathML("\\href{http://example.org}{\\alpha}")).toMatchSnapshot();
+        expect(
+            getMathML("\\href{http://example.org}{\\alpha}", new Settings({trust: true})),
+        ).toMatchSnapshot();
         expect(getMathML("p \\Vdash \\beta \\href{http://example.org}{+ \\alpha} \\times \\gamma"));
     });
 
