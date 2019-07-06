@@ -178,10 +178,9 @@ export default class Settings {
         if (context.url && !context.protocol) {
             context.protocol = utils.protocolFromUrl(context.url);
         }
-        let trust = this.trust;
-        if (typeof trust === "function") {
-            trust = trust(context);
-        }
+        const trust = typeof this.trust === "function"
+            ? this.trust(context)
+            : this.trust;
         return Boolean(trust);
     }
 }
