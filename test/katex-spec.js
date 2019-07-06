@@ -3390,7 +3390,7 @@ describe("Unicode", function() {
 
     it("should build Greek capital letters", function() {
         expect("\u0391\u0392\u0395\u0396\u0397\u0399\u039A\u039C\u039D" +
-                "\u039F\u03A1\u03A4\u03A7").toBuild(strictSettings);
+                "\u039F\u03A1\u03A4\u03A7\u03DD").toBuild(strictSettings);
     });
 
     it("should build arrows", function() {
