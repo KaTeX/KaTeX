@@ -1021,7 +1021,7 @@ exports[`href and url commands should allow all protocols when trust option is t
 ]
 `;
 
-exports[`href and url commands should allow explicitly allow protocols 1`] = `
+exports[`href and url commands should allow explicitly allowed protocols 1`] = `
 [
   {
     "type": "href",
@@ -1072,7 +1072,7 @@ exports[`href and url commands should allow explicitly allow protocols 1`] = `
 ]
 `;
 
-exports[`href and url commands should allow relative URLs when trust option is false 1`] = `
+exports[`href and url commands should forbid relative URLs when trust option is false 1`] = `
 [
   {
     "type": "color",

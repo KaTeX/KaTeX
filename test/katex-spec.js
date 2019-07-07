@@ -2726,12 +2726,12 @@ describe("href and url commands", function() {
         expect(built).toMatchSnapshot();
     });
 
-    it("should allow relative URLs when trust option is false", () => {
+    it("should forbid relative URLs when trust option is false", () => {
         const parsed = getParsed("\\href{relative}{foo}");
         expect(parsed).toMatchSnapshot();
     });
 
-    it("should allow explicitly allow protocols", () => {
+    it("should allow explicitly allowed protocols", () => {
         const parsed = getParsed(
             "\\href{ftp://x}{foo}",
             new Settings({trust: (context) => context.protocol === "ftp"}),
