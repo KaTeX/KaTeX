@@ -101,6 +101,13 @@ The `{array}` environment does not yet support `\cline` or `\multicolumn`.
 
 ## HTML
 
+The following "raw HTML" features are potentially dangerous for untrusted
+inputs, so they are disabled by default, and attempting to use them produces
+the command names in red (which you can configure via the `errorColor`
+[option](options.md)).  To fully trust your LaTeX input, you need to pass
+an option of `trust: true`; you can also enable just some of the commands
+or for just some URLs via the `trust` [option](options.md).
+
 |||
 |:----------------|:-------------------|
 | $\href{https://katex.org/}{\KaTeX}$ | `\href{https://katex.org/}{\KaTeX}` |

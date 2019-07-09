@@ -7,14 +7,14 @@ import {validUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
-import utils from "./utils";
 import {checkNodeType} from "./parseNode";
 import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
-import type {ParseNode, AnyParseNode, SymbolParseNode} from "./parseNode";
+import type {ParseNode, AnyParseNode, SymbolParseNode, UnsupportedCmdParseNode}
+    from "./parseNode";
 import type {Atom, Group} from "./symbols";
 import type {Mode, ArgType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
@@ -266,8 +266,7 @@ export default class Parser {
      * Converts the textual input of an unsupported command into a text node
      * contained within a color node whose color is determined by errorColor
      */
-    handleUnsupportedCmd(): AnyParseNode {
-        const text = this.nextToken.text;
+    formatUnsupportedCmd(text: string): UnsupportedCmdParseNode {
         const textordArray = [];
 
         for (let i = 0; i < text.length; i++) {
@@ -287,7 +286,6 @@ export default class Parser {
             body: [textNode],
         };
 
-        this.consume();
         return colorNode;
     }
 
@@ -723,14 +721,6 @@ export default class Parser {
         // "undefined" behaviour, and keep them as-is. Some browser will
         // replace backslashes with forward slashes.
         const url = res.text.replace(/\\([#$%&~_^{}])/g, '$1');
-        let protocol = /^\s*([^\\/#]*?)(?::|&#0*58|&#x0*3a)/i.exec(url);
-        protocol = (protocol != null ? protocol[1] : "_relative");
-        const allowed = this.settings.allowedProtocols;
-        if (!utils.contains(allowed,  "*") &&
-            !utils.contains(allowed, protocol)) {
-            throw new ParseError(
-                `Forbidden protocol '${protocol}'`, res);
-        }
         return {
             type: "url",
             mode: this.mode,
@@ -803,7 +793,8 @@ export default class Parser {
                     throw new ParseError(
                         "Undefined control sequence: " + text, firstToken);
                 }
-                result = this.handleUnsupportedCmd();
+                result = this.formatUnsupportedCmd(text);
+                this.consume();
             }
         }
 

@@ -453,7 +453,7 @@ use `\ce` instead|
 |\hookleftarrow|$\hookleftarrow$||
 |\hookrightarrow|$\hookrightarrow$||
 |\hphantom|$a\hphantom{bc}d$|`a\hphantom{bc}d`|
-|\href|$\href{https://katex.org/}{\KaTeX}$|`\href{https://katex.org/}{\KaTeX}`|
+|\href|$\href{https://katex.org/}{\KaTeX}$|`\href{https://katex.org/}{\KaTeX}` Requires `trust` [option](options.md)|
 |\hskip|$w\hskip1em i\hskip2em d$|`w\hskip1em i\hskip2em d`|
 |\hslash|$\hslash$||
 |\hspace|$s\hspace7ex k$|`s\hspace7ex k`|
@@ -1105,7 +1105,7 @@ use `\ce` instead|
 |\upsilon|$\upsilon$||
 |\upuparrows|$\upuparrows$||
 |\urcorner|$\urcorner$||
-|\url|$\footnotesize\url{https://katex.org/}$|`\url{https://katex.org/}`|
+|\url|$\footnotesize\url{https://katex.org/}$|`\url{https://katex.org/}` Requires `trust` [option](options.md)|
 |\utilde|$\utilde{AB}$|`\utilde{AB}`|
 
 ## V
