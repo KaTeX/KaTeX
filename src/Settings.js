@@ -16,6 +16,26 @@ export type StrictFunction =
     (errorCode: string, errorMsg: string, token?: Token | AnyParseNode) =>
     ?(boolean | string);
 
+export type TrustContextTypes = {
+    "\\href": {|
+        command: "\\href",
+        url: string,
+        protocol?: string,
+    |},
+    "\\includegraphics": {|
+        command: "\\includegraphics",
+        url: string,
+        protocol?: string,
+    |},
+    "\\url": {|
+        command: "\\url",
+        url: string,
+        protocol?: string,
+    |},
+};
+export type AnyTrustContext = $Values<TrustContextTypes>;
+export type TrustFunction = (context: AnyTrustContext) => ?boolean;
+
 export type SettingsOptions = {
     displayMode?: boolean;
     output?: "html" | "mathml" | "htmlAndMathml";
@@ -24,11 +44,12 @@ export type SettingsOptions = {
     throwOnError?: boolean;
     errorColor?: string;
     macros?: MacroMap;
+    minRuleThickness?: number;
     colorIsTextColor?: boolean;
     strict?: boolean | "ignore" | "warn" | "error" | StrictFunction;
+    trust?: boolean | TrustFunction;
     maxSize?: number;
     maxExpand?: number;
-    allowedProtocols?: string[];
 };
 
 /**
@@ -41,7 +62,7 @@ export type SettingsOptions = {
  *                 math (true), meaning that the math starts in \displaystyle
  *                 and is placed in a block with vertical margin.
  */
-class Settings {
+export default class Settings {
     displayMode: boolean;
     output: "html" | "mathml" | "htmlAndMathml";
     leqno: boolean;
@@ -49,11 +70,12 @@ class Settings {
     throwOnError: boolean;
     errorColor: string;
     macros: MacroMap;
+    minRuleThickness: number;
     colorIsTextColor: boolean;
     strict: boolean | "ignore" | "warn" | "error" | StrictFunction;
+    trust: boolean | TrustFunction;
     maxSize: number;
     maxExpand: number;
-    allowedProtocols: string[];
 
     constructor(options: SettingsOptions) {
         // allow null options
@@ -65,12 +87,15 @@ class Settings {
         this.throwOnError = utils.deflt(options.throwOnError, true);
         this.errorColor = utils.deflt(options.errorColor, "#cc0000");
         this.macros = options.macros || {};
+        this.minRuleThickness = Math.max(
+            0,
+            utils.deflt(options.minRuleThickness, 0)
+        );
         this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
         this.strict = utils.deflt(options.strict, "warn");
+        this.trust = utils.deflt(options.trust, false);
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
         this.maxExpand = Math.max(0, utils.deflt(options.maxExpand, 1000));
-        this.allowedProtocols = utils.deflt(options.allowedProtocols,
-            ["http", "https", "mailto", "_relative"]);
     }
 
     /**
@@ -140,6 +165,22 @@ class Settings {
             return false;
         }
     }
-}
 
-export default Settings;
+    /**
+     * Check whether to test potentially dangerous input, and return
+     * `true` (trusted) or `false` (untrusted).  The sole argument `context`
+     * should be an object with `command` field specifying the relevant LaTeX
+     * command (as a string starting with `\`), and any other arguments, etc.
+     * If `context` has a `url` field, a `protocol` field will automatically
+     * get added by this function (changing the specified object).
+     */
+    isTrusted(context: AnyTrustContext) {
+        if (context.url && !context.protocol) {
+            context.protocol = utils.protocolFromUrl(context.url);
+        }
+        const trust = typeof this.trust === "function"
+            ? this.trust(context)
+            : this.trust;
+        return Boolean(trust);
+    }
+}

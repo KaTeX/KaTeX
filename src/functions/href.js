@@ -18,6 +18,14 @@ defineFunction({
     handler: ({parser}, args) => {
         const body = args[1];
         const href = assertNodeType(args[0], "url").url;
+
+        if (!parser.settings.isTrusted({
+            command: "\\href",
+            url: href,
+        })) {
+            return parser.formatUnsupportedCmd("\\href");
+        }
+
         return {
             type: "href",
             mode: parser.mode,
@@ -49,6 +57,14 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const href = assertNodeType(args[0], "url").url;
+
+        if (!parser.settings.isTrusted({
+            command: "\\url",
+            url: href,
+        })) {
+            return parser.formatUnsupportedCmd("\\url");
+        }
+
         const chars = [];
         for (let i = 0; i < href.length; i++) {
             let c = href[i];

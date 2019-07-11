@@ -212,7 +212,8 @@ table td {
 |\ce |${\mathrm{C}{\vphantom{X}}_{\smash[t]{6}}\mathrm{H}{\vphantom{X}}_{\smash[t]{5}}{-}\mathrm{CHO}}$|`\ce{C6H5-CHO}` Requires an [extension](https://github.com/KaTeX/KaTeX/tree/master/contrib/mhchem/)|
 |\cee|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem
 |\centerdot|$a\centerdot b$|`a\centerdot b`|
-|\cf|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem|
+|\cf|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem;
+use `\ce` instead|
 |\cfrac|$\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}$|`\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}`|
 |\check|$\check{oe}$|`\check{oe}`|
 |\ch|$\ch$||
@@ -452,7 +453,7 @@ table td {
 |\hookleftarrow|$\hookleftarrow$||
 |\hookrightarrow|$\hookrightarrow$||
 |\hphantom|$a\hphantom{bc}d$|`a\hphantom{bc}d`|
-|\href|$\href{https://katex.org/}{\KaTeX}$|`\href{https://katex.org/}{\KaTeX}`|
+|\href|$\href{https://katex.org/}{\KaTeX}$|`\href{https://katex.org/}{\KaTeX}` Requires `trust` [option](options.md)|
 |\hskip|$w\hskip1em i\hskip2em d$|`w\hskip1em i\hskip2em d`|
 |\hslash|$\hslash$||
 |\hspace|$s\hspace7ex k$|`s\hspace7ex k`|
@@ -799,6 +800,7 @@ table td {
 |\pi|$\pi$||
 |{picture}|<span style="color:firebrick;">Not supported</span>||
 |\pitchfork|$\pitchfork$||
+|\plim|$\plim$||
 |\plusmn|$\plusmn$||
 |\pm|$\pm$||
 |\pmatrix|<span style="color:firebrick;">Not supported</span>|See `{pmatrix}`|
@@ -928,7 +930,7 @@ table td {
 |\small|$\small small$|`\small small`|
 |\smallfrown|$\smallfrown$||
 |\smallint|$\smallint$||
-|{smallmatrix}|<span style="color:firebrick;">Not supported</span>||
+|{smallmatrix}|$\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}$|`\begin{smallmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{smallmatrix}`|
 |\smallsetminus|$\smallsetminus$||
 |\smallsmile|$\smallsmile$||
 |\smash|$\left(x^{\smash{2}}\right)$|`\left(x^{\smash{2}}\right)`|
@@ -965,7 +967,7 @@ table td {
 |\subseteqq|$\subseteqq$||
 |\subsetneq|$\subsetneq$||
 |\subsetneqq|$\subsetneqq$||
-|\substack|<span style="color:firebrick;">Not supported</span>||
+|\substack|$$\sum_{\substack{0<i<m\\0<j<n}}$$|`\sum_{\substack{0<i<m\\0<j<n}}`|
 |\succ|$\succ$||
 |\succapprox|$\succapprox$||
 |\succcurlyeq|$\succcurlyeq$||
@@ -1103,7 +1105,7 @@ table td {
 |\upsilon|$\upsilon$||
 |\upuparrows|$\upuparrows$||
 |\urcorner|$\urcorner$||
-|\url|$\footnotesize\url{https://katex.org/}$|`\url{https://katex.org/}`|
+|\url|$\footnotesize\url{https://katex.org/}$|`\url{https://katex.org/}` Requires `trust` [option](options.md)|
 |\utilde|$\utilde{AB}$|`\utilde{AB}`|
 
 ## V

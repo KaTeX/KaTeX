@@ -32,7 +32,9 @@ export interface MathDomNode extends VirtualNode {
 }
 
 export type documentFragment = DocumentFragment<MathDomNode>;
-export function newDocumentFragment(children: MathDomNode[]): documentFragment {
+export function newDocumentFragment(
+    children: $ReadOnlyArray<MathDomNode>
+): documentFragment {
     return new DocumentFragment(children);
 }
 
@@ -44,9 +46,9 @@ export function newDocumentFragment(children: MathDomNode[]): documentFragment {
 export class MathNode implements MathDomNode {
     type: MathNodeType;
     attributes: {[string]: string};
-    children: MathDomNode[];
+    children: $ReadOnlyArray<MathDomNode>;
 
-    constructor(type: MathNodeType, children?: MathDomNode[]) {
+    constructor(type: MathNodeType, children?: $ReadOnlyArray<MathDomNode>) {
         this.type = type;
         this.attributes = {};
         this.children = children || [];

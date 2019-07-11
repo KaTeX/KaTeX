@@ -14,6 +14,8 @@ This extension isn't part of core KaTeX, so the script should be separately incl
 
 See the [mhchem Manual](https://mhchem.github.io/MathJax-mhchem/) for a full explanation of the input syntax, with working examples. The manual also includes a demonstration box.
 
+Note that old versions of `mhchem.sty` used `\cf` for chemical formula and `\ce` for chemical equations, but `\cf` has been deprecated in place of `\ce`. This extension supports only `\ce`. You can define a macro mapping `\cf` to `\ce` if needed.
+
 ### Browser Support
 
 This extension has been tested on Chrome, Firefox, Opera, and Edge.

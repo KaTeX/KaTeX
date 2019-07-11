@@ -426,6 +426,9 @@ defineMacro("\\varPhi", "\\mathit{\\Phi}");
 defineMacro("\\varPsi", "\\mathit{\\Psi}");
 defineMacro("\\varOmega", "\\mathit{\\Omega}");
 
+//\newcommand{\substack}[1]{\subarray{c}#1\endsubarray}
+defineMacro("\\substack", "\\begin{subarray}{c}#1\\end{subarray}");
+
 // \renewcommand{\colon}{\nobreak\mskip2mu\mathpunct{}\nonscript
 // \mkern-\thinmuskip{:}\mskip6muplus1mu\relax}
 defineMacro("\\colon", "\\nobreak\\mskip2mu\\mathpunct{}" +
@@ -659,13 +662,12 @@ defineMacro("\\mod", "\\allowbreak" +
     "{\\rm mod}\\,\\,#1");
 
 // \pmb    --   A simulation of bold.
-// It works by typesetting three copies of the argument with small offsets.
-// Ref: a rather lengthy macro in ambsy.sty
-defineMacro("\\pmb", "\\html@mathml{\\@binrel{#1}{" +
-    "\\mathrlap{#1}" +
-    "\\mathrlap{\\mkern0.4mu\\raisebox{0.4mu}{$#1$}}" +
-    "{\\mkern0.8mu#1}" +
-    "}}{\\mathbf{#1}}");
+// The version in ambsy.sty works by typesetting three copies of the argument
+// with small offsets. We use two copies. We omit the vertical offset because
+// of rendering problems that makeVList encounters in Safari.
+defineMacro("\\pmb", "\\html@mathml{" +
+    "\\@binrel{#1}{\\mathrlap{#1}\\kern0.5px#1}}" +
+    "{\\mathbf{#1}}");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
@@ -942,6 +944,7 @@ defineMacro("\\Zeta", "\\mathrm{Z}");
 
 defineMacro("\\argmin", "\\DOTSB\\operatorname*{arg\\,min}");
 defineMacro("\\argmax", "\\DOTSB\\operatorname*{arg\\,max}");
+defineMacro("\\plim", "\\DOTSB\\mathop{\\operatorname{plim}}\\limits");
 
 // Custom Khan Academy colors, should be moved to an optional package
 defineMacro("\\blue", "\\textcolor{##6495ed}{#1}");
