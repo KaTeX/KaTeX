@@ -2796,9 +2796,9 @@ escodegen@^1.9.1:
     source-map "~0.6.1"
 
 eslint-plugin-flowtype@^3.4.2:
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-3.4.2.tgz#55475e10b05fd714d60bceebbbed596cb8706b16"
-  integrity sha512-sv6O6fiN3dIwhU4qRxfcyIpbKGVvsxwIQ6vgBLudpQKjH1rEyEFEOjGzGEUBTQP9J8LdTZm37OjiqZ0ZeFOa6g==
+  version "3.10.4"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-3.10.4.tgz#442ae8933d0160443d9f28d505fec34c03ce1e15"
+  integrity sha512-OYzNDV08jXq/l0UdhSt275UipREgL5iqtN16SgFlAXJD8OmBAmZNh/QCg5h+L6FrrdPJgEXsVukihN8ceJ11MQ==
   dependencies:
     lodash "^4.17.11"
 
