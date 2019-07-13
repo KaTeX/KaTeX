@@ -1833,11 +1833,11 @@ describe("A MathML font tree-builder", function() {
         const tree = getParsed(tex);
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         expect(markup).toContain("<mi mathvariant=\"double-struck\">A</mi>");
-        expect(markup).toContain("<mi>x</mi>");
-        expect(markup).toContain("<mn>2</mn>");
-        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
-        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mi mathvariant=\"double-struck\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"double-struck\">2</mn>");
+        expect(markup).toContain("<mi mathvariant=\"double-struck\">\u03c9</mi>");  // \omega
+        expect(markup).toContain("<mi mathvariant=\"double-struck\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi mathvariant=\"double-struck\">\u0131</mi>");  // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1887,9 +1887,9 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mi mathvariant=\"bold\">A</mi>");
         expect(markup).toContain("<mi mathvariant=\"bold\">x</mi>");
         expect(markup).toContain("<mn mathvariant=\"bold\">2</mn>");
-        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
+        expect(markup).toContain("<mi mathvariant=\"bold\">\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"bold\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mi mathvariant=\"bold\">\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1898,13 +1898,11 @@ describe("A MathML font tree-builder", function() {
         const tree = getParsed(tex);
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         expect(markup).toContain("<mi mathvariant=\"script\">A</mi>");
-        expect(markup).toContain("<mi>x</mi>");                             // script is caps only
+        expect(markup).toContain("<mi mathvariant=\"script\">x</mi>");
         expect(markup).toContain("<mn mathvariant=\"script\">2</mn>");
-        // MathJax marks everything below as "script" except \omega
-        // We don't have these glyphs in "caligraphic" and neither does MathJax
-        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
-        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mi mathvariant=\"script\">\u03c9</mi>"); // \omega
+        expect(markup).toContain("<mi mathvariant=\"script\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi mathvariant=\"script\">\u0131</mi>"); // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1915,11 +1913,9 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mi mathvariant=\"fraktur\">A</mi>");
         expect(markup).toContain("<mi mathvariant=\"fraktur\">x</mi>");
         expect(markup).toContain("<mn mathvariant=\"fraktur\">2</mn>");
-        // MathJax marks everything below as "fraktur" except \omega
-        // We don't have these glyphs in "fraktur" and neither does MathJax
-        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
-        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mi mathvariant=\"fraktur\">\u03c9</mi>"); // \omega
+        expect(markup).toContain("<mi mathvariant=\"fraktur\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi mathvariant=\"fraktur\">\u0131</mi>"); // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1928,13 +1924,11 @@ describe("A MathML font tree-builder", function() {
         const tree = getParsed(tex);
         const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
         expect(markup).toContain("<mi mathvariant=\"script\">A</mi>");
-        // MathJax marks everything below as "script" except \omega
-        // We don't have these glyphs in "script" and neither does MathJax
-        expect(markup).toContain("<mi>x</mi>");
-        expect(markup).toContain("<mn>2</mn>");
-        expect(markup).toContain("<mi>\u03c9</mi>");                        // \omega
-        expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>"); // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");                        // \imath
+        expect(markup).toContain("<mi mathvariant=\"script\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"script\">2</mn>");
+        expect(markup).toContain("<mi mathvariant=\"script\">\u03c9</mi>"); // \omega
+        expect(markup).toContain("<mi mathvariant=\"script\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi mathvariant=\"script\">\u0131</mi>"); // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1945,9 +1939,9 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mi mathvariant=\"sans-serif\">A</mi>");
         expect(markup).toContain("<mi mathvariant=\"sans-serif\">x</mi>");
         expect(markup).toContain("<mn mathvariant=\"sans-serif\">2</mn>");
-        expect(markup).toContain("<mi>\u03c9</mi>");                            // \omega
+        expect(markup).toContain("<mi mathvariant=\"sans-serif\">\u03c9</mi>"); // \omega
         expect(markup).toContain("<mi mathvariant=\"sans-serif\">\u03A9</mi>"); // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");                            // \imath
+        expect(markup).toContain("<mi mathvariant=\"sans-serif\">\u0131</mi>"); // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -2588,6 +2582,43 @@ describe("An array environment", function() {
 
 });
 
+describe("A subarray environment", function() {
+
+    it("should accept only a single alignment character", function() {
+        const parse = getParsed`\begin{subarray}{c}a \\ b\end{subarray}`;
+        expect(parse[0].type).toBe("array");
+        expect(parse[0].cols).toEqual([
+            {type: "align", align: "c"},
+        ]);
+        expect`\begin{subarray}{cc}a \\ b\end{subarray}`.not.toParse();
+        expect`\begin{subarray}{c}a & b \\ c & d\end{subarray}`.not.toParse();
+        expect`\begin{subarray}{c}a \\ b\end{subarray}`.toBuild();
+    });
+
+});
+
+describe("A substack function", function() {
+
+    it("should build", function() {
+        expect`\sum_{\substack{ 0<i<m \\ 0<j<n }}  P(i,j)`.toBuild();
+    });
+    it("should accommodate spaces in the argument", function() {
+        expect`\sum_{\substack{ 0<i<m \\ 0<j<n }}  P(i,j)`.toBuild();
+    });
+    it("should accommodate macros in the argument", function() {
+        expect`\sum_{\substack{ 0<i<\varPi \\ 0<j<\pi }}  P(i,j)`.toBuild();
+    });
+
+});
+
+describe("A smallmatrix environment", function() {
+
+    it("should build", function() {
+        expect`\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}`.toBuild();
+    });
+
+});
+
 describe("A cases environment", function() {
 
     it("should parse its input", function() {
@@ -2654,17 +2685,17 @@ describe("href and url commands", function() {
 
     it("should allow letters [#$%&~_^] without escaping", function() {
         const url = "http://example.org/~bar/#top?foo=$foo&bar=ba^r_boo%20baz";
-        const parsed1 = getParsed(`\\href{${url}}{\\alpha}`)[0];
+        const parsed1 = getParsed(`\\href{${url}}{\\alpha}`, new Settings({trust: true}))[0];
         expect(parsed1.href).toBe(url);
-        const parsed2 = getParsed(`\\url{${url}}`)[0];
+        const parsed2 = getParsed(`\\url{${url}}`, new Settings({trust: true}))[0];
         expect(parsed2.href).toBe(url);
     });
 
     it("should allow balanced braces in url", function() {
         const url = "http://example.org/{{}t{oo}}";
-        const parsed1 = getParsed(`\\href{${url}}{\\alpha}`)[0];
+        const parsed1 = getParsed(`\\href{${url}}{\\alpha}`, new Settings({trust: true}))[0];
         expect(parsed1.href).toBe(url);
-        const parsed2 = getParsed(`\\url{${url}}`)[0];
+        const parsed2 = getParsed(`\\url{${url}}`, new Settings({trust: true}))[0];
         expect(parsed2.href).toBe(url);
     });
 
@@ -2678,9 +2709,9 @@ describe("href and url commands", function() {
     it("should allow escape for letters [#$%&~_^{}]", function() {
         const url = "http://example.org/~bar/#top?foo=$}foo{&bar=bar^r_boo%20baz";
         const input = url.replace(/([#$%&~_^{}])/g, '\\$1');
-        const parsed1 = getParsed(`\\href{${input}}{\\alpha}`)[0];
+        const parsed1 = getParsed(`\\href{${input}}{\\alpha}`, new Settings({trust: true}))[0];
         expect(parsed1.href).toBe(url);
-        const parsed2 = getParsed(`\\url{${input}}`)[0];
+        const parsed2 = getParsed(`\\url{${input}}`, new Settings({trust: true}))[0];
         expect(parsed2.href).toBe(url);
     });
 
@@ -2689,30 +2720,42 @@ describe("href and url commands", function() {
     });
 
     it("should be marked up correctly", function() {
-        const markup = katex.renderToString(r`\href{http://example.com/}{example here}`);
+        const markup = katex.renderToString(r`\href{http://example.com/}{example here}`, {trust: true});
         expect(markup).toContain("<a href=\"http://example.com/\">");
     });
 
-    it("should allow protocols in allowedProtocols", function() {
-        expect("\\href{relative}{foo}").toParse();
-        expect("\\href{ftp://x}{foo}").toParse(new Settings({
-            allowedProtocols: ["ftp"],
-        }));
-        expect("\\href{ftp://x}{foo}").toParse(new Settings({
-            allowedProtocols: ["*"],
-        }));
-    });
-
-    it("should not allow protocols not in allowedProtocols", function() {
-        expect("\\href{javascript:alert('x')}{foo}").not.toParse();
-        expect("\\href{relative}{foo}").not.toParse(new Settings({
-            allowedProtocols: [],
-        }));
-    });
-
     it("should not affect spacing around", function() {
-        const built = getBuilt`a\href{http://example.com/}{+b}`;
+        const built = getBuilt("a\\href{http://example.com/}{+b}", new Settings({trust: true}));
         expect(built).toMatchSnapshot();
+    });
+
+    it("should forbid relative URLs when trust option is false", () => {
+        const parsed = getParsed("\\href{relative}{foo}");
+        expect(parsed).toMatchSnapshot();
+    });
+
+    it("should allow explicitly allowed protocols", () => {
+        const parsed = getParsed(
+            "\\href{ftp://x}{foo}",
+            new Settings({trust: (context) => context.protocol === "ftp"}),
+        );
+        expect(parsed).toMatchSnapshot();
+    });
+
+    it("should allow all protocols when trust option is true", () => {
+        const parsed = getParsed(
+            "\\href{ftp://x}{foo}",
+            new Settings({trust: true}),
+        );
+        expect(parsed).toMatchSnapshot();
+    });
+
+    it("should not allow explicitly disallow protocols", () => {
+        const parsed = getParsed(
+            "\\href{javascript:alert('x')}{foo}",
+            new Settings({trust: context => context.protocol !== "javascript"}),
+        );
+        expect(parsed).toMatchSnapshot();
     });
 });
 
@@ -3095,6 +3138,21 @@ describe("A macro expander", function() {
             .toParseLike`11\sqrt[2]{2}11`;
     });
 
+    it("array cells generate groups", () => {
+        expect`\def\x{1}\begin{matrix}\x&\def\x{2}\x&\x\end{matrix}`
+            .toParseLike`\begin{matrix}1&2&1\end{matrix}`;
+    });
+
+    // TODO: This doesn't yet work; before the environment gets called,
+    // {matrix} gets consumed which means that the \def gets executed, before
+    // we can create a group. :-(  Issue #1989
+    /*
+    it("array cells generate groups", () => {
+        expect`\def\x{1}\begin{matrix}\def\x{2}&\x\end{matrix}`
+            .toParseLike`\begin{matrix}&1\end{matrix}`;
+    });
+    */
+
     it("\\gdef changes settings.macros", () => {
         const macros = {};
         expect`\gdef\foo{1}`.toParse(new Settings({macros}));
@@ -3168,6 +3226,10 @@ describe("A macro expander", function() {
 
     it("should expand \\liminf as expected", () => {
         expect`\liminf`.toParseLike`\operatorname*{lim\,inf}`;
+    });
+
+    it("should expand \\plim as expected", () => {
+        expect`\plim`.toParseLike`\mathop{\operatorname{plim}}\limits`;
     });
 
     it("should expand \\argmin as expected", () => {
@@ -3343,7 +3405,7 @@ describe("Unicode", function() {
 
     it("should build Greek capital letters", function() {
         expect("\u0391\u0392\u0395\u0396\u0397\u0399\u039A\u039C\u039D" +
-                "\u039F\u03A1\u03A4\u03A7").toBuild(strictSettings);
+                "\u039F\u03A1\u03A4\u03A7\u03DD").toBuild(strictSettings);
     });
 
     it("should build arrows", function() {
@@ -3367,6 +3429,7 @@ describe("Unicode", function() {
         expect`┌x┐ └x┘`.toBuild();
         expect("\u231Cx\u231D \u231Ex\u231F").toBuild();
         expect("\u27E6x\u27E7").toBuild();
+        expect("\\llbracket \\rrbracket").toBuild();
         expect("\\lBrace \\rBrace").toBuild();
     });
 

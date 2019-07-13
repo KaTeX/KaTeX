@@ -16,7 +16,7 @@ defineFunctionBuilders({
             ["mord"], html.buildExpression(group.body, options, true), options);
     },
     mathmlBuilder(group, options) {
-        return mml.buildExpressionRow(group.body, options);
+        return mml.buildExpressionRow(group.body, options, true);
     },
 });
 

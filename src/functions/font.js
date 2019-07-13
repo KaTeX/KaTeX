@@ -3,6 +3,7 @@
 
 import {binrelClass} from "./mclass";
 import defineFunction from "../defineFunction";
+import utils from "../utils";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -71,6 +72,7 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[0];
+        const isCharacterBox = utils.isCharacterBox(body);
         // amsbsy.sty's \boldsymbol uses \binrel spacing to inherit the
         // argument's bin|rel|ord status
         return {
@@ -85,6 +87,7 @@ defineFunction({
                     body,
                 },
             ],
+            isCharacterBox: isCharacterBox,
         };
     },
 });

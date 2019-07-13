@@ -73,7 +73,9 @@ describe("A MathML builder", function() {
     });
 
     it('should set href attribute for href appropriately', () => {
-        expect(getMathML("\\href{http://example.org}{\\alpha}")).toMatchSnapshot();
+        expect(
+            getMathML("\\href{http://example.org}{\\alpha}", new Settings({trust: true})),
+        ).toMatchSnapshot();
         expect(getMathML("p \\Vdash \\beta \\href{http://example.org}{+ \\alpha} \\times \\gamma"));
     });
 
