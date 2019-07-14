@@ -82,6 +82,14 @@ const sigmasAndXis = {
     // The space between adjacent `|` columns in an array definition. From
     // `\showthe\doublerulesep` in LaTeX. Equals 2.0 / ptPerEm.
     doubleRuleSep: [0.2, 0.2, 0.2],
+
+    // The width of separator lines in {array} environments. From
+    // `\showthe\arrayrulewidth` in LaTeX. Equals 0.4 / ptPerEm.
+    arrayRuleWidth: [0.04, 0.04, 0.04],
+
+    // Two values from LaTeX source2e:
+    fboxsep: [0.3, 0.3, 0.3], //        3 pt / ptPerEm
+    fboxrule: [0.04, 0.04, 0.04], // 0.4 pt / ptPerEm
 };
 
 // This map contains a mapping from font name and character code to character
@@ -211,10 +219,11 @@ export function getCharacterMetrics(
         throw new Error(`Font metrics not found for font: ${font}.`);
     }
     let ch = character.charCodeAt(0);
-    if (character[0] in extraCharacterMap) {
-        ch = extraCharacterMap[character[0]].charCodeAt(0);
-    }
     let metrics = metricMap[font][ch];
+    if (!metrics && character[0] in extraCharacterMap) {
+        ch = extraCharacterMap[character[0]].charCodeAt(0);
+        metrics = metricMap[font][ch];
+    }
 
     if (!metrics && mode === 'text') {
         // We don't typically have font metrics for Asian scripts.

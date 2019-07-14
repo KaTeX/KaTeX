@@ -29,7 +29,8 @@ module.exports = function(md, options) {
     const katex = require("../../");
 
     function renderKatex(source, displayMode) {
-        return katex.renderToString(source, {displayMode, throwOnError: false});
+        return katex.renderToString(source,
+            {displayMode, throwOnError: false, trust: true});
     }
 
     /**

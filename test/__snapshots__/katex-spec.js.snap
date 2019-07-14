@@ -784,7 +784,7 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
 
 <span class="katex">
   <span class="katex-mathml">
-    <math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
       <semantics>
         <mrow>
           <mi mathvariant="normal">
@@ -856,6 +856,263 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
   </span>
 </span>
 
+`;
+
+exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel and mop 1`] = `
+
+<span class="katex">
+  <span class="katex-mathml">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <semantics>
+        <mrow>
+          <mi>
+            M
+          </mi>
+          <mo>
+            =
+          </mo>
+          <mspace linebreak="newline">
+          </mspace>
+          <mi>
+            a
+          </mi>
+          <mo>
+            +
+          </mo>
+          <mspace linebreak="newline">
+          </mspace>
+          <mi>
+            b
+          </mi>
+          <mspace linebreak="newline">
+          </mspace>
+          <mi>
+            c
+          </mi>
+        </mrow>
+        <annotation encoding="application/x-tex">
+          M = \\\\ a + \\\\ b \\\\ c
+        </annotation>
+      </semantics>
+    </math>
+  </span>
+  <span class="katex-html"
+        aria-hidden="true"
+  >
+    <span class="base">
+      <span class="strut"
+            style="height:0.68333em;vertical-align:0em;"
+      >
+      </span>
+      <span class="mord mathdefault"
+            style="margin-right:0.10903em;"
+      >
+        M
+      </span>
+      <span class="mspace"
+            style="margin-right:0.2777777777777778em;"
+      >
+      </span>
+      <span class="mrel">
+        =
+      </span>
+      <span class="mspace"
+            style="margin-right:0.2777777777777778em;"
+      >
+      </span>
+    </span>
+    <span class="mspace newline">
+    </span>
+    <span class="base">
+      <span class="strut"
+            style="height:0.66666em;vertical-align:-0.08333em;"
+      >
+      </span>
+      <span class="mord mathdefault">
+        a
+      </span>
+      <span class="mspace"
+            style="margin-right:0.2222222222222222em;"
+      >
+      </span>
+      <span class="mbin">
+        +
+      </span>
+      <span class="mspace"
+            style="margin-right:0.2222222222222222em;"
+      >
+      </span>
+    </span>
+    <span class="mspace newline">
+    </span>
+    <span class="base">
+      <span class="strut"
+            style="height:0.69444em;vertical-align:0em;"
+      >
+      </span>
+      <span class="mord mathdefault">
+        b
+      </span>
+    </span>
+    <span class="mspace newline">
+    </span>
+    <span class="base">
+      <span class="strut"
+            style="height:0.43056em;vertical-align:0em;"
+      >
+      </span>
+      <span class="mord mathdefault">
+        c
+      </span>
+    </span>
+  </span>
+</span>
+
+`;
+
+exports[`href and url commands should allow all protocols when trust option is true 1`] = `
+[
+  {
+    "type": "href",
+    "body": [
+      {
+        "type": "mathord",
+        "loc": {
+          "end": 16,
+          "lexer": {
+            "input": "\\\\href{ftp://x}{foo}",
+            "lastIndex": 19
+          },
+          "start": 15
+        },
+        "mode": "math",
+        "text": "f"
+      },
+      {
+        "type": "mathord",
+        "loc": {
+          "end": 17,
+          "lexer": {
+            "input": "\\\\href{ftp://x}{foo}",
+            "lastIndex": 19
+          },
+          "start": 16
+        },
+        "mode": "math",
+        "text": "o"
+      },
+      {
+        "type": "mathord",
+        "loc": {
+          "end": 18,
+          "lexer": {
+            "input": "\\\\href{ftp://x}{foo}",
+            "lastIndex": 19
+          },
+          "start": 17
+        },
+        "mode": "math",
+        "text": "o"
+      }
+    ],
+    "href": "ftp://x",
+    "mode": "math"
+  }
+]
+`;
+
+exports[`href and url commands should allow explicitly allowed protocols 1`] = `
+[
+  {
+    "type": "href",
+    "body": [
+      {
+        "type": "mathord",
+        "loc": {
+          "end": 16,
+          "lexer": {
+            "input": "\\\\href{ftp://x}{foo}",
+            "lastIndex": 19
+          },
+          "start": 15
+        },
+        "mode": "math",
+        "text": "f"
+      },
+      {
+        "type": "mathord",
+        "loc": {
+          "end": 17,
+          "lexer": {
+            "input": "\\\\href{ftp://x}{foo}",
+            "lastIndex": 19
+          },
+          "start": 16
+        },
+        "mode": "math",
+        "text": "o"
+      },
+      {
+        "type": "mathord",
+        "loc": {
+          "end": 18,
+          "lexer": {
+            "input": "\\\\href{ftp://x}{foo}",
+            "lastIndex": 19
+          },
+          "start": 17
+        },
+        "mode": "math",
+        "text": "o"
+      }
+    ],
+    "href": "ftp://x",
+    "mode": "math"
+  }
+]
+`;
+
+exports[`href and url commands should forbid relative URLs when trust option is false 1`] = `
+[
+  {
+    "type": "color",
+    "body": [
+      {
+        "type": "text",
+        "body": [
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "\\\\"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "h"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "r"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "e"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "f"
+          }
+        ],
+        "mode": "math"
+      }
+    ],
+    "color": "#cc0000",
+    "mode": "math"
+  }
+]
 `;
 
 exports[`href and url commands should not affect spacing around 1`] = `
@@ -947,6 +1204,49 @@ exports[`href and url commands should not affect spacing around 1`] = `
     "maxFontSize": 1,
     "style": {
     }
+  }
+]
+`;
+
+exports[`href and url commands should not allow explicitly disallow protocols 1`] = `
+[
+  {
+    "type": "color",
+    "body": [
+      {
+        "type": "text",
+        "body": [
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "\\\\"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "h"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "r"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "e"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "f"
+          }
+        ],
+        "mode": "math"
+      }
+    ],
+    "color": "#cc0000",
+    "mode": "math"
   }
 ]
 `;

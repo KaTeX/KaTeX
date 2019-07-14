@@ -68,7 +68,7 @@ export const buildExpression = function(
     for (let i = 0; i < expression.length; i++) {
         const output = buildGroup(expression[i], options);
         if (output instanceof DocumentFragment) {
-            const children: HtmlDomNode[] = output.children;
+            const children: $ReadOnlyArray<HtmlDomNode> = output.children;
             groups.push(...children);
         } else {
             groups.push(output);
@@ -154,6 +154,7 @@ const traverseNonSpaceNodes = function(
         const node = nodes[i];
         const partialGroup = checkPartialGroup(node);
         if (partialGroup) { // Recursive DFS
+            // $FlowFixMe: make nodes a $ReadOnlyArray by returning a new array
             traverseNonSpaceNodes(partialGroup.children, callback, prev);
             continue;
         }
@@ -334,10 +335,11 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
             expression[i].hasClass("mrel") ||
             expression[i].hasClass("allowbreak")) {
             // Put any post-operator glue on same line as operator.
-            // Watch for \nobreak along the way.
+            // Watch for \nobreak along the way, and stop at \newline.
             let nobreak = false;
             while (i < expression.length - 1 &&
-                   expression[i + 1].hasClass("mspace")) {
+                   expression[i + 1].hasClass("mspace") &&
+                   !expression[i + 1].hasClass("newline")) {
                 i++;
                 parts.push(expression[i]);
                 if (expression[i].hasClass("nobreak")) {

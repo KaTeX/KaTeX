@@ -13,7 +13,22 @@ const optionsFromSettings = function(settings: Settings) {
     return new Options({
         style: (settings.displayMode ? Style.DISPLAY : Style.TEXT),
         maxSize: settings.maxSize,
+        minRuleThickness: settings.minRuleThickness,
     });
+};
+
+const displayWrap = function(node: DomSpan, settings: Settings): DomSpan {
+    if (settings.displayMode) {
+        const classes = ["katex-display"];
+        if (settings.leqno) {
+            classes.push("leqno");
+        }
+        if (settings.fleqn) {
+            classes.push("fleqn");
+        }
+        node = buildCommon.makeSpan(classes, [node]);
+    }
+    return node;
 };
 
 export const buildTree = function(
@@ -22,18 +37,19 @@ export const buildTree = function(
     settings: Settings,
 ): DomSpan {
     const options = optionsFromSettings(settings);
-    const mathMLNode = buildMathML(tree, expression, options);
-    const htmlNode = buildHTML(tree, options);
-
-    const katexNode = buildCommon.makeSpan(["katex"], [
-        mathMLNode, htmlNode,
-    ]);
-
-    if (settings.displayMode) {
-        return buildCommon.makeSpan(["katex-display"], [katexNode]);
+    let katexNode;
+    if (settings.output === "mathml") {
+        return  buildMathML(tree, expression, options, true);
+    } else if (settings.output === "html") {
+        const htmlNode = buildHTML(tree, options);
+        katexNode = buildCommon.makeSpan(["katex"], [htmlNode]);
     } else {
-        return katexNode;
+        const mathMLNode = buildMathML(tree, expression, options, false);
+        const htmlNode = buildHTML(tree, options);
+        katexNode = buildCommon.makeSpan(["katex"], [mathMLNode, htmlNode]);
     }
+
+    return displayWrap(katexNode, settings);
 };
 
 export const buildHTMLTree = function(
@@ -44,11 +60,7 @@ export const buildHTMLTree = function(
     const options = optionsFromSettings(settings);
     const htmlNode = buildHTML(tree, options);
     const katexNode = buildCommon.makeSpan(["katex"], [htmlNode]);
-    if (settings.displayMode) {
-        return buildCommon.makeSpan(["katex-display"], [katexNode]);
-    } else {
-        return katexNode;
-    }
+    return displayWrap(katexNode, settings);
 };
 
 export default buildTree;

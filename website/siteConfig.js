@@ -87,8 +87,8 @@ const users = [
     },
     {
         caption: 'Observable',
-        image: 'https://pbs.twimg.com/profile_images/970805785503477760/HfTZJiZo_400x400.jpg',
-        infoLink: 'https://beta.observablehq.com/',
+        image: 'https://avatars0.githubusercontent.com/u/30080011',
+        infoLink: 'https://observablehq.com/',
     },
     {
         caption: 'Quill',
@@ -114,6 +114,11 @@ const users = [
         caption: 'StackEdit',
         image: '/img/stackedit_logo.svg',
         infoLink: 'https://stackedit.io/',
+    },
+    {
+        caption: 'Tutti Quanti Shelf',
+        image: 'https://raw.githubusercontent.com/tonton-pixel/tutti-quanti-shelf/master/icons/icon.png',
+        infoLink: 'https://github.com/tonton-pixel/tutti-quanti-shelf/',
     },
     {
         caption: 'Vade Mecum Shelf',

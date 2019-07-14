@@ -3,13 +3,15 @@ module.exports = api => {
 
     const presets = [
         ["@babel/env", {
-            targets: {
-                esmodules: isESMBuild,
-            },
             loose: true,
         }],
         "@babel/flow",
     ];
+    if (isESMBuild) {
+        presets[0][1].targets = {
+            esmodules: true,
+        };
+    }
     const plugins = [
         "@babel/transform-runtime",
         ["@babel/proposal-class-properties", {

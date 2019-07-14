@@ -26,11 +26,14 @@ const renderMathInText = function(text, optionsCopy) {
             fragment.appendChild(document.createTextNode(data[i].data));
         } else {
             const span = document.createElement("span");
-            const math = data[i].data;
+            let math = data[i].data;
             // Override any display mode defined in the settings with that
             // defined by the text itself
             optionsCopy.displayMode = data[i].display;
             try {
+                if (optionsCopy.preProcess) {
+                    math = optionsCopy.preProcess(math);
+                }
                 katex.render(math, span, optionsCopy);
             } catch (e) {
                 if (!(e instanceof katex.ParseError)) {

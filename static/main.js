@@ -14,7 +14,7 @@ function init() {
     input.addEventListener("input", reprocess, false);
     permalink.addEventListener("click", setSearch);
 
-    const options = {displayMode: true, throwOnError: false};
+    const options = {displayMode: true, throwOnError: true};
     const macros = {};
     const query = queryString.parse(window.location.search);
 
@@ -27,6 +27,16 @@ function init() {
     const displayQuery = (query.displayMode || query.display);
     if (displayQuery && displayQuery.match(/^(0|f|n)/)) {
         options.displayMode = false;
+    }
+
+    // Use `leqno=1` (or `=t`/`=true`/`=y`/`=yes`) to put tags on left side.
+    if (query.leqno && query.leqno.match(/^(1|t|y)/)) {
+        options.leqno = true;
+    }
+
+    // Use `fleqn=1` (or `=t`/`=true`/`=y`/`=yes`) to put tags on left side.
+    if (query.fleqn && query.fleqn.match(/^(1|t|y)/)) {
+        options.fleqn = true;
     }
 
     // Use `strict=warn` for warning strict mode or `strict=error`

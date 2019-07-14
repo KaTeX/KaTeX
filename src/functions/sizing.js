@@ -61,7 +61,6 @@ defineFunction({
         allowedInText: true,
     },
     handler: ({breakOnTokenText, funcName, parser}, args) => {
-        parser.consumeSpaces();
         const body = parser.parseExpression(false, breakOnTokenText);
 
         return {

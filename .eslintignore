@@ -2,3 +2,4 @@
 dist/*
 website/build/*
 **/*.min.js
+contrib/mhchem/*

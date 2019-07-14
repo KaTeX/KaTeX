@@ -4,6 +4,7 @@
 /* global describe: false */
 
 import splitAtDelimiters from "../splitAtDelimiters";
+import renderMathInElement from "../auto-render";
 
 beforeEach(function() {
     expect.extend({
@@ -232,5 +233,21 @@ describe("A delimiter splitter", function() {
                 {type: "math", data: "hello ( world ) boo",
                     rawData: "(hello ( world ) boo)", display: true},
             ]);
+    });
+});
+
+describe("Pre-process callback", function() {
+    it("replace `-squared` with `^2 `", function() {
+        const el1 = document.createElement('div');
+        el1.textContent = 'Circle equation: $x-squared + y-squared = r-squared$.';
+        const el2 = document.createElement('div');
+        el2.textContent = 'Circle equation: $x^2 + y^2 = r^2$.';
+        const delimiters = [{left: "$", right: "$", display: false}];
+        renderMathInElement(el1, {
+            delimiters,
+            preProcess: math => math.replace(/-squared/g, '^2'),
+        });
+        renderMathInElement(el2, {delimiters});
+        expect(el1.innerHTML).toEqual(el2.innerHTML);
     });
 });

@@ -2,21 +2,21 @@
 
 exports[`A MathML builder \\html@mathml makes clean symbols 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <mtext>
         ©
       </mtext>
-      <mi mathvariant="normal">
+      <mo mathvariant="normal">
         ≠
-      </mi>
-      <mi mathvariant="normal">
+      </mo>
+      <mo mathvariant="normal">
         ∉
-      </mi>
-      <mi mathvariant="normal">
+      </mo>
+      <mo mathvariant="normal">
         ≘
-      </mi>
+      </mo>
       <mtext>
         KaTeX
       </mtext>
@@ -31,7 +31,7 @@ exports[`A MathML builder \\html@mathml makes clean symbols 1`] = `
 
 exports[`A MathML builder \\text fonts become mathvariant 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <mtext>
@@ -46,6 +46,7 @@ exports[`A MathML builder \\text fonts become mathvariant 1`] = `
             bold
           </mtext>
           <mtext>
+             
           </mtext>
           <mtext mathvariant="bold-italic">
             italic
@@ -68,6 +69,7 @@ exports[`A MathML builder \\text fonts become mathvariant 1`] = `
               bold
             </mtext>
             <mtext>
+               
             </mtext>
             <mtext mathvariant="sans-serif-bold-italic">
               italic
@@ -91,6 +93,7 @@ exports[`A MathML builder \\text fonts become mathvariant 1`] = `
               bold
             </mtext>
             <mtext>
+               
             </mtext>
             <mtext mathvariant="monospace">
               italic
@@ -112,7 +115,7 @@ exports[`A MathML builder \\text fonts become mathvariant 1`] = `
 
 exports[`A MathML builder accents turn into <mover accent="true"> in MathML 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <mover accent="true">
@@ -169,7 +172,7 @@ exports[`A MathML builder accents turn into <mover accent="true"> in MathML 1`] 
 
 exports[`A MathML builder ligatures render properly 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <mtext>
@@ -182,28 +185,8 @@ exports[`A MathML builder ligatures render properly 1`] = `
         −
       </mo>
       <mtext mathvariant="monospace">
-        \`\`‘Hi----&#x27;&#x27;’
+        \`\`‘Hi----&#x27;&#x27;’\`\`‘Hi----&#x27;&#x27;’
       </mtext>
-      <mrow>
-        <mtext>
-          \`\`
-        </mtext>
-        <mtext mathvariant="monospace">
-          ‘Hi
-        </mtext>
-        <mtext>
-          ---
-        </mtext>
-        <mtext mathvariant="monospace">
-          -
-        </mtext>
-        <mtext>
-          &#x27;&#x27;
-        </mtext>
-        <mtext mathvariant="monospace">
-          ’
-        </mtext>
-      </mrow>
     </mrow>
     <annotation encoding="application/x-tex">
       \\text{\`\`\`Hi----&#x27;&#x27;&#x27;}--\\texttt{\`\`\`Hi----&#x27;&#x27;&#x27;}\\text{\\tt \`\`\`Hi----&#x27;&#x27;&#x27;}
@@ -215,7 +198,7 @@ exports[`A MathML builder ligatures render properly 1`] = `
 
 exports[`A MathML builder normal spaces render normally 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <mspace width="1em">
@@ -233,7 +216,7 @@ exports[`A MathML builder normal spaces render normally 1`] = `
 
 exports[`A MathML builder should concatenate digits into single <mn> 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <mi>
@@ -262,7 +245,7 @@ exports[`A MathML builder should concatenate digits into single <mn> 1`] = `
 
 exports[`A MathML builder should generate <mphantom> nodes for \\phantom 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <mphantom>
@@ -281,7 +264,7 @@ exports[`A MathML builder should generate <mphantom> nodes for \\phantom 1`] = `
 
 exports[`A MathML builder should generate the right types of nodes 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <mi>
@@ -300,7 +283,7 @@ exports[`A MathML builder should generate the right types of nodes 1`] = `
         1
       </mn>
       <mtext>
-        &ThickSpace;
+          
       </mtext>
       <mtext>
         a
@@ -316,14 +299,17 @@ exports[`A MathML builder should generate the right types of nodes 1`] = `
 
 exports[`A MathML builder should make prime operators into <mo> nodes 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <msup>
         <mi>
           f
         </mi>
-        <mo mathvariant="normal">
+        <mo mathvariant="normal"
+            lspace="0em"
+            rspace="0em"
+        >
           ′
         </mo>
       </msup>
@@ -338,13 +324,13 @@ exports[`A MathML builder should make prime operators into <mo> nodes 1`] = `
 
 exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correctly in \\textstyle 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
-      <msub>
+      <munder>
         <mo>
           <mi mathvariant="normal">
-            lim&ThinSpace;sup
+            lim sup
           </mi>
           <mo>
             ⁡
@@ -361,7 +347,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
             ∞
           </mi>
         </mrow>
-      </msub>
+      </munder>
     </mrow>
     <annotation encoding="application/x-tex">
       \\limsup_{x \\rightarrow \\infty}
@@ -373,13 +359,13 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
 
 exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} in displaymode correctly 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <munder>
         <mo>
           <mi mathvariant="normal">
-            lim&ThinSpace;sup
+            lim sup
           </mi>
           <mo>
             ⁡
@@ -408,35 +394,37 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} in dis
 
 exports[`A MathML builder should render boldsymbol with the correct mathvariants 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
-      <mrow>
-        <mi mathvariant="bold-italic">
-          A
-        </mi>
-        <mi mathvariant="bold-italic">
-          x
-        </mi>
-        <mn mathvariant="bold-italic">
-          2
-        </mn>
-        <mi mathvariant="bold-italic">
-          k
-        </mi>
-        <mi mathvariant="bold-italic">
-          ω
-        </mi>
-        <mi mathvariant="bold-italic">
-          Ω
-        </mi>
-        <mi mathvariant="bold-italic">
-          ı
-        </mi>
-        <mo mathvariant="bold-italic">
-          +
-        </mo>
-      </mrow>
+      <mi>
+        <mrow>
+          <mi mathvariant="bold-italic">
+            A
+          </mi>
+          <mi mathvariant="bold-italic">
+            x
+          </mi>
+          <mn mathvariant="bold-italic">
+            2
+          </mn>
+          <mi mathvariant="bold-italic">
+            k
+          </mi>
+          <mi mathvariant="bold-italic">
+            ω
+          </mi>
+          <mi mathvariant="bold-italic">
+            Ω
+          </mi>
+          <mi mathvariant="bold-italic">
+            ı
+          </mi>
+          <mo mathvariant="bold-italic">
+            +
+          </mo>
+        </mrow>
+      </mi>
     </mrow>
     <annotation encoding="application/x-tex">
       \\boldsymbol{Ax2k\\omega\\Omega\\imath+}
@@ -448,7 +436,7 @@ exports[`A MathML builder should render boldsymbol with the correct mathvariants
 
 exports[`A MathML builder should render mathchoice as if there was nothing 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <mstyle scriptlevel="0"
@@ -495,7 +483,7 @@ exports[`A MathML builder should render mathchoice as if there was nothing 1`] =
 
 exports[`A MathML builder should render mathchoice as if there was nothing 2`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <msubsup>
@@ -536,7 +524,7 @@ exports[`A MathML builder should render mathchoice as if there was nothing 2`] =
 
 exports[`A MathML builder should render mathchoice as if there was nothing 3`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <msub>
@@ -558,7 +546,7 @@ exports[`A MathML builder should render mathchoice as if there was nothing 3`] =
 
 exports[`A MathML builder should render mathchoice as if there was nothing 4`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <msub>
@@ -585,7 +573,7 @@ exports[`A MathML builder should render mathchoice as if there was nothing 4`] =
 
 exports[`A MathML builder should set href attribute for href appropriately 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <mi href="http://example.org">
@@ -602,14 +590,19 @@ exports[`A MathML builder should set href attribute for href appropriately 1`] =
 
 exports[`A MathML builder should use <menclose> for colorbox 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
-      <menclose mathbackground="red">
+      <mpadded width="+6pt"
+               height="+6pt"
+               lspace="3pt"
+               voffset="3pt"
+               mathbackground="red"
+      >
         <mtext>
           b
         </mtext>
-      </menclose>
+      </mpadded>
     </mrow>
     <annotation encoding="application/x-tex">
       \\colorbox{red}{b}
@@ -621,7 +614,7 @@ exports[`A MathML builder should use <menclose> for colorbox 1`] = `
 
 exports[`A MathML builder should use <mpadded> for raisebox 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <mpadded voffset="0.25em">
@@ -644,7 +637,7 @@ exports[`A MathML builder should use <mpadded> for raisebox 1`] = `
 
 exports[`A MathML builder should use <msupsub> for regular operators 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <mstyle scriptlevel="0"
@@ -673,7 +666,7 @@ exports[`A MathML builder should use <msupsub> for regular operators 1`] = `
 
 exports[`A MathML builder should use <munderover> for large operators 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <mstyle scriptlevel="0"
@@ -702,65 +695,65 @@ exports[`A MathML builder should use <munderover> for large operators 1`] = `
 
 exports[`A MathML builder special spaces render specially 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
       <mtext>
-        &ThinSpace;
+         
       </mtext>
       <mtext>
-        &ThinSpace;
+         
       </mtext>
       <mtext>
-        &MediumSpace;
+         
       </mtext>
       <mtext>
-        &MediumSpace;
+         
       </mtext>
       <mtext>
-        &MediumSpace;
+         
       </mtext>
       <mtext>
-        &ThickSpace;
+          
       </mtext>
       <mtext>
-        &ThickSpace;
+          
       </mtext>
       <mtext>
-        &NegativeThinSpace;
+         ⁣
       </mtext>
       <mtext>
-        &NegativeThinSpace;
+         ⁣
       </mtext>
       <mtext>
-        &NegativeMediumSpace;
+         ⁣
       </mtext>
       <mtext>
-        &NegativeThickSpace;
+         ⁣
       </mtext>
       <mtext>
-        &VeryThinSpace;
+         
       </mtext>
       <mtext>
-        &ThinSpace;
+         
       </mtext>
       <mtext>
-        &MediumSpace;
+         
       </mtext>
       <mtext>
-        &ThickSpace;
+          
       </mtext>
       <mtext>
-        &NegativeVeryThinSpace;
+         ⁣
       </mtext>
       <mtext>
-        &NegativeThinSpace;
+         ⁣
       </mtext>
       <mtext>
-        &NegativeMediumSpace;
+         ⁣
       </mtext>
       <mtext>
-        &NegativeThickSpace;
+         ⁣
       </mtext>
     </mrow>
     <annotation encoding="application/x-tex">
@@ -773,14 +766,11 @@ exports[`A MathML builder special spaces render specially 1`] = `
 
 exports[`A MathML builder tags use <mlabeledtr> 1`] = `
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
-    <mtable side="right">
-      <mlabeledtr>
-        <mtd>
-          <mtext>
-            (hi)
-          </mtext>
+    <mtable width="100%">
+      <mtr>
+        <mtd width="50%">
         </mtd>
         <mtd>
           <mrow>
@@ -800,7 +790,14 @@ exports[`A MathML builder tags use <mlabeledtr> 1`] = `
             </msup>
           </mrow>
         </mtd>
-      </mlabeledtr>
+        <mtd width="50%">
+        </mtd>
+        <mtd>
+          <mtext>
+            (hi)
+          </mtext>
+        </mtd>
+      </mtr>
     </mtable>
     <annotation encoding="application/x-tex">
       \\tag{hi} x+y^2
