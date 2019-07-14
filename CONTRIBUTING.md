@@ -161,7 +161,7 @@ will automatically run this command after switching to branches
 where `submodules/katex-fonts` point to different commits.
 
 When submitting pull requests that update katex-fonts, you'll need to submit
-two pull requests: one for [KaTeX/katex-fonts](https:/github.com/KaTeX/katex-fonts) and one for [KaTeX/KaTeX](https://github.com/KaTeX/KaTeX).
+two pull requests: one for [KaTeX/katex-fonts](https://github.com/KaTeX/katex-fonts) and one for [KaTeX/KaTeX](https://github.com/KaTeX/KaTeX).
 
 For more info about how to use git submodules,
 see https://chrisjean.com/git-submodules-adding-using-removing-and-updating/.
