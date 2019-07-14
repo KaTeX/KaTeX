@@ -951,7 +951,7 @@ export default class Parser {
             }
             symbol = {
                 type: "textord",
-                mode: this.mode,
+                mode: "text",
                 loc: SourceLocation.range(nucleus),
                 text,
             };
