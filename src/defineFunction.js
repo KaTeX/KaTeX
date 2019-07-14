@@ -179,7 +179,6 @@ export const _mathmlGroupBuilders: {[string]: MathMLBuilder<*>} = {};
 
 export default function defineFunction<NODETYPE: NodeType>({
     type,
-    nodeType,
     names,
     props,
     handler,
