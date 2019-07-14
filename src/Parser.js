@@ -529,23 +529,17 @@ export default class Parser {
             case "text":
                 return this.parseGroup(name, optional, greediness, undefined, type);
             case "hbox": {
+                // hbox argument type wraps the argument in the equivalent of
+                // \hbox, which is like \text but switching to \textstyle size.
                 const group = this.parseGroup(
                     name, optional, greediness, undefined, "text");
                 if (!group) {
                     return group;
                 }
-                /* "styling" group below suffices to transition to text mode
-                const textGroup = {
-                    type: "text",
-                    mode: this.mode,
-                    body: [group],
-                    font: "mathrm", // simulate \textrm
-                };
-                */
                 const styledGroup = {
                     type: "styling",
                     mode: group.mode,
-                    body: [group], // [textGroup]
+                    body: [group],
                     style: "text", // simulate \textstyle
                 };
                 return styledGroup;
