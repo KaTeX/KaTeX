@@ -3,6 +3,8 @@ const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const {version} = require("./package.json");
+
 const browserslist = require('browserslist')();
 const caniuse = require('caniuse-lite');
 
@@ -59,8 +61,11 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         });
     }
 
+    const lessOptions = {modifyVars: {
+        version: `"${version}"`,
+    }};
+
     // use only necessary fonts, overridable by environment variables
-    const lessOptions = {modifyVars: {}};
     let isCovered = false;
     for (const font of fonts) {
         const override = process.env[`USE_${font.toUpperCase()}`];

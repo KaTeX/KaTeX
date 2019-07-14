@@ -2,7 +2,8 @@
 import {checkNodeType} from "./parseNode";
 
 import type Parser from "./Parser";
-import type {ParseNode, AnyParseNode, NodeType} from "./parseNode";
+import type {ParseNode, AnyParseNode, NodeType, UnsupportedCmdParseNode}
+    from "./parseNode";
 import type Options from "./Options";
 import type {ArgType, BreakToken, Mode} from "./types";
 import type {HtmlDomNode} from "./domTree";
@@ -21,7 +22,9 @@ export type FunctionHandler<NODETYPE: NodeType> = (
     context: FunctionContext,
     args: AnyParseNode[],
     optArgs: (?AnyParseNode)[],
-) => ParseNode<NODETYPE>;
+) => UnsupportedCmdParseNode | ParseNode<NODETYPE>;
+// Note: reverse the order of the return type union will cause a flow error.
+// See https://github.com/facebook/flow/issues/3663.
 
 export type HtmlBuilder<NODETYPE> = (ParseNode<NODETYPE>, Options) => HtmlDomNode;
 export type MathMLBuilder<NODETYPE> = (
@@ -176,7 +179,6 @@ export const _mathmlGroupBuilders: {[string]: MathMLBuilder<*>} = {};
 
 export default function defineFunction<NODETYPE: NodeType>({
     type,
-    nodeType,
     names,
     props,
     handler,
@@ -199,10 +201,6 @@ export default function defineFunction<NODETYPE: NodeType>({
         handler: handler,
     };
     for (let i = 0; i < names.length; ++i) {
-        // TODO: The value type of _functions should be a type union of all
-        // possible `FunctionSpec<>` possibilities instead of `FunctionSpec<*>`,
-        // which is an existential type.
-        // $FlowFixMe
         _functions[names[i]] = data;
     }
     if (type) {
