@@ -60,7 +60,7 @@ type DomType = $Keys<typeof DomEnum>;
 export const buildExpression = function(
     expression: AnyParseNode[],
     options: Options,
-    isRealGroup: boolean,
+    isRealGroup: boolean | "root",
     surrounding: [?DomType, ?DomType] = [null, null],
 ): HtmlDomNode[] {
     // Parse expressions into `groups`.
@@ -106,6 +106,7 @@ export const buildExpression = function(
 
     // Before determining what spaces to insert, perform bin cancellation.
     // Binary operators change to ordinary symbols in some contexts.
+    const isRoot = (isRealGroup === "root");
     traverseNonSpaceNodes(groups, (node, prev) => {
         const prevType = prev.classes[0];
         const type = node.classes[0];
@@ -114,7 +115,7 @@ export const buildExpression = function(
         } else if (type === "mbin" && utils.contains(binLeftCanceller, prevType)) {
             node.classes[0] = "mord";
         }
-    }, {node: dummyPrev}, dummyNext);
+    }, {node: dummyPrev}, dummyNext, isRoot);
 
     traverseNonSpaceNodes(groups, (node, prev) => {
         const prevType = getTypeOfDomTree(prev);
@@ -127,7 +128,7 @@ export const buildExpression = function(
         if (space) { // Insert glue (spacing) after the `prev`.
             return buildCommon.makeGlue(space, glueOptions);
         }
-    }, {node: dummyPrev}, dummyNext);
+    }, {node: dummyPrev}, dummyNext, isRoot);
 
     return groups;
 };
@@ -145,6 +146,7 @@ const traverseNonSpaceNodes = function(
         insertAfter?: HtmlDomNode => void,
     |},
     next: ?HtmlDomNode,
+    isRoot: boolean,
 ) {
     if (next) { // temporarily append the right node, if exists
         nodes.push(next);
@@ -154,7 +156,8 @@ const traverseNonSpaceNodes = function(
         const node = nodes[i];
         const partialGroup = checkPartialGroup(node);
         if (partialGroup) { // Recursive DFS
-            traverseNonSpaceNodes(partialGroup.children, callback, prev);
+            traverseNonSpaceNodes(
+                partialGroup.children, callback, prev, null, isRoot);
             continue;
         }
 
@@ -175,7 +178,7 @@ const traverseNonSpaceNodes = function(
 
         if (nonspace) {
             prev.node = node;
-        } else if (node.hasClass("newline")) {
+        } else if (isRoot && node.hasClass("newline")) {
             prev.node = makeSpan(["leftmost"]); // treat like beginning of line
         }
         prev.insertAfter = (index => n => {
@@ -319,7 +322,7 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
     }
 
     // Build the expression contained in the tree
-    const expression = buildExpression(tree, options, true);
+    const expression = buildExpression(tree, options, "root");
 
     const children = [];
 
