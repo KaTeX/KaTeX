@@ -8,7 +8,7 @@
 import {LineNode, PathNode, SvgNode} from "./domTree";
 import buildCommon from "./buildCommon";
 import mathMLTree from "./mathMLTree";
-import utils from "./utils";
+import utils from "./utils/utils";
 
 import type Options from "./Options";
 import type {ParseNode, AnyParseNode} from "./parseNode";

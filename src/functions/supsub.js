@@ -3,7 +3,7 @@ import {defineFunctionBuilders} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import {SymbolNode} from "../domTree";
 import mathMLTree from "../mathMLTree";
-import utils from "../utils";
+import utils from "../utils/utils";
 import Style from "../Style";
 import {checkNodeType} from "../parseNode";
 
@@ -243,7 +243,7 @@ defineFunctionBuilders({
                 nodeType = "munder";
             } else if (base && base.type === "operatorname" &&
                 base.alwaysHandleSupSub &&
-                (options.style === Style.DISPLAY || base.limits)) {
+                (base.limits || options.style === Style.DISPLAY)) {
                 nodeType = "munder";
             } else {
                 nodeType = "msub";

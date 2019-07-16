@@ -3,7 +3,7 @@ import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import {SymbolNode} from "../domTree";
-import {assembleSupSub} from "./assembleSupSub";
+import {assembleSupSub} from "../utils/assembleSupSub";
 import {assertNodeType, checkNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";

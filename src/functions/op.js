@@ -4,9 +4,9 @@ import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import {SymbolNode} from "../domTree";
 import * as mathMLTree from "../mathMLTree";
-import utils from "../utils";
+import utils from "../utils/utils";
 import Style from "../Style";
-import {assembleSupSub} from "./assembleSupSub";
+import {assembleSupSub} from "../utils/assembleSupSub";
 import {assertNodeType, checkNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
@@ -162,8 +162,6 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
     } else {
         // This is a text operator. Add all of the characters from the
         // operator's name.
-        // TODO(emily): Add a space in the middle of some of these
-        // operators, like \limsup.
         node = new mathMLTree.MathNode(
             "mi", [new mathMLTree.TextNode(group.name.slice(1))]);
         // Append an <mo>&ApplyFunction;</mo>.

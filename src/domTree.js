@@ -12,7 +12,7 @@
  * target environments support class inheritance
  */
 import {scriptFromCodepoint} from "./unicodeScripts";
-import utils from "./utils";
+import utils from "./utils/utils";
 import {path} from "./svgGeometry";
 import type Options from "./Options";
 import {DocumentFragment} from "./tree";

@@ -8,7 +8,7 @@ import ParseError from "../ParseError";
 import {assertNodeType, assertSymbolNodeType} from "../parseNode";
 import {checkNodeType, checkSymbolNodeType} from "../parseNode";
 import {calculateSize} from "../units";
-import utils from "../utils";
+import utils from "../utils/utils";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";

@@ -1,18 +1,22 @@
-
+// @flow
 import buildCommon from "../buildCommon";
 import * as html from "../buildHTML";
+import type {StyleInterface} from "../Style";
+import type Options from "../Options"
+import type {DomSpan, SymbolNode} from "../domTree";
+import type {AnyParseNode} from "../parseNode"
 
-// We break this function out because it is common to both op.js and opeartorname.js
+// For an operator with limits, assemble the base, sup, and sub into a span.
 
 export const assembleSupSub = (
-    base,
-    supGroup,
-    subGroup,
-    options,
-    style,
-    slant,
-    baseShift,
-) => {
+    base: DomSpan | SymbolNode,
+    supGroup: ?AnyParseNode,
+    subGroup: ?AnyParseNode,
+    options: Options,
+    style: StyleInterface,
+    slant: number,
+    baseShift: number,
+): DomSpan => {
     // IE 8 clips \int if it is in a display: inline-block. We wrap it
     // in a new span so it is an inline, and works.
     base = buildCommon.makeSpan([], [base]);

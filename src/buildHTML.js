@@ -10,7 +10,7 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 import buildCommon from "./buildCommon";
 import {Anchor} from "./domTree";
-import utils from "./utils";
+import utils from "./utils/utils";
 import {checkNodeType} from "./parseNode";
 import {spacings, tightSpacings} from "./spacingData";
 import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";

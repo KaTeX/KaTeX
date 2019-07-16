@@ -10,7 +10,7 @@ import {getCharacterMetrics} from "./fontMetrics";
 import mathMLTree from "./mathMLTree";
 import ParseError from "./ParseError";
 import symbols, {ligatures} from "./symbols";
-import utils from "./utils";
+import utils from "./utils/utils";
 import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
 import {MathNode, TextNode} from "./mathMLTree";
 

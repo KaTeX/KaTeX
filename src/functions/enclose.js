@@ -2,7 +2,7 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import utils from "../utils";
+import utils from "../utils/utils";
 import stretchy from "../stretchy";
 import {assertNodeType} from "../parseNode";
 

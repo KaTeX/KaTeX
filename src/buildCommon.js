@@ -8,7 +8,7 @@
 import {SymbolNode, Anchor, Span, PathNode, SvgNode, createClass} from "./domTree";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols, {ligatures} from "./symbols";
-import utils from "./utils";
+import utils from "./utils/utils";
 import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
 import {DocumentFragment} from "./tree";
