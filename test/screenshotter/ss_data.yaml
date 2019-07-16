@@ -279,8 +279,7 @@ OpLimits: |
         {\sin_2^2 \lim_2^2 \int_2^2 \sum_2^2}
         {\displaystyle \lim_2^2 \int_2^2 \intop_2^2 \sum_2^2} \\
         \limsup_{x \rightarrow \infty} x \stackrel{?}= \liminf_{x \rightarrow \infty} x \\
-        {\displaystyle \limsup_{x \rightarrow \infty} x} \\
-        \displaystyle \sum_{\substack{0<i<m\\0<j<n}}
+        {\displaystyle \limsup_{x \rightarrow \infty} x\:\: \sum_{\substack{0<i<m\\0<j<n}}}
     \end{matrix}
 OverUnderline: x\underline{x}\underline{\underline{x}}\underline{x_{x_{x_x}}}\underline{x^{x^{x^x}}}\overline{x}\overline{x}\overline{x^{x^{x^x}}} \blue{\overline{\underline{x}}\underline{\overline{x}}}
 OverUnderset: |
