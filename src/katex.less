@@ -48,12 +48,8 @@
         position: relative;
         display: inline-block;
         white-space: nowrap;
-    }
 
-    .base,
-    .sizing {
-        // Fix width of inline-block containers of negative spaces,
-        // working around Chrome bug.
+        // Fix width of containers of negative spaces, working around Chrome bug.
         width: min-content;
     }
 
