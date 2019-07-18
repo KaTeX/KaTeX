@@ -534,6 +534,22 @@ export default class Parser {
             case "math":
             case "text":
                 return this.parseGroup(name, optional, greediness, undefined, type);
+            case "hbox": {
+                // hbox argument type wraps the argument in the equivalent of
+                // \hbox, which is like \text but switching to \textstyle size.
+                const group = this.parseGroup(
+                    name, optional, greediness, undefined, "text");
+                if (!group) {
+                    return group;
+                }
+                const styledGroup = {
+                    type: "styling",
+                    mode: group.mode,
+                    body: [group],
+                    style: "text", // simulate \textstyle
+                };
+                return styledGroup;
+            }
             case "raw": {
                 if (optional && this.nextToken.text === "{") {
                     return null;
