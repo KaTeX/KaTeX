@@ -2,6 +2,9 @@
 id: issues
 title: Common Issues
 ---
+- Be sure to include `<!DOCTYPE html>` at the top of your HTML file, as
+  otherwise your browser will render in "[quirks mode](https://developer.mozilla.org/en-US/docs/Web/HTML/Quirks_Mode_and_Standards_Mode)"
+  which can cause KaTeX to sometimes render incorrectly.
 - Many Markdown preprocessors, such as the one that Jekyll and GitHub Pages use,
   have a "smart quotes" feature.  This changes `'` to `’` which is an issue for
   math containing primes, e.g. `f'`.  This can be worked around by defining a

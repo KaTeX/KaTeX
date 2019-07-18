@@ -3,6 +3,7 @@ id: browser
 title: Browser
 ---
 > KaTeX supports all major browsers, including Chrome, Safari, Firefox, Opera, Edge, and IE 9–11.
+> However, it does not always render correctly in quirks mode, so be sure that your document includes `<!DOCTYPE html>` at the top of your HTML.
 
 ## Global
 If you include the `katex.js` directly, the `katex` object will be available as
