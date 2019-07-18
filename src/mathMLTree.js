@@ -9,7 +9,7 @@
  * domTree.js, creating namespaced DOM nodes and HTML text markup respectively.
  */
 
-import utils from "./utils/utils";
+import utils from "./utils";
 import {DocumentFragment} from "./tree";
 
 import type {VirtualNode} from "./tree";

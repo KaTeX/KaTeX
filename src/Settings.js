@@ -5,7 +5,7 @@
  * default settings.
  */
 
-import utils from "./utils/utils";
+import utils from "./utils";
 import ParseError from "./ParseError";
 import {Token} from "./Token";
 

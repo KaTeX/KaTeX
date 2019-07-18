@@ -4,7 +4,7 @@
  * files.
  */
 
-import type {AnyParseNode} from "../parseNode";
+import type {AnyParseNode} from "./parseNode";
 
 /**
  * Return whether an element is contained in a list

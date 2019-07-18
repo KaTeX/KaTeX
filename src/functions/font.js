@@ -3,7 +3,7 @@
 
 import {binrelClass} from "./mclass";
 import defineFunction from "../defineFunction";
-import utils from "../utils/utils";
+import utils from "../utils";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";

@@ -1,6 +1,6 @@
 // @flow
 
-import utils from "./utils/utils";
+import utils from "./utils";
 
 import type {CssStyle, HtmlDomNode} from "./domTree";
 import type {MathDomNode} from "./mathMLTree";

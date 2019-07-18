@@ -29,7 +29,7 @@ import {sqrtPath} from "./svgGeometry";
 import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
-import utils from "./utils/utils";
+import utils from "./utils";
 
 import type Options from "./Options";
 import type {CharacterMetrics} from "./fontMetrics";

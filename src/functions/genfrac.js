@@ -5,7 +5,7 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import Style from "../Style";
 import {assertNodeType, assertAtomFamily, checkNodeType} from "../parseNode";
-import {assert} from "../utils/utils";
+import {assert} from "../utils";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";

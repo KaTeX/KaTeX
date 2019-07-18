@@ -6,7 +6,7 @@
 
 import fontMetricsData from "../submodules/katex-fonts/fontMetricsData";
 import symbols from "./symbols";
-import utils from "./utils/utils";
+import utils from "./utils";
 import {Token} from "./Token";
 import ParseError from "./ParseError";
 import type Namespace from "./Namespace";

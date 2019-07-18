@@ -1,10 +1,10 @@
 // @flow
-import buildCommon from "../buildCommon";
-import * as html from "../buildHTML";
-import type {StyleInterface} from "../Style";
-import type Options from "../Options";
-import type {DomSpan, SymbolNode} from "../domTree";
-import type {AnyParseNode} from "../parseNode";
+import buildCommon from "../../buildCommon";
+import * as html from "../../buildHTML";
+import type {StyleInterface} from "../../Style";
+import type Options from "../../Options";
+import type {DomSpan, SymbolNode} from "../../domTree";
+import type {AnyParseNode} from "../../parseNode";
 
 // For an operator with limits, assemble the base, sup, and sub into a span.
 

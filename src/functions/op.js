@@ -4,9 +4,9 @@ import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import {SymbolNode} from "../domTree";
 import * as mathMLTree from "../mathMLTree";
-import utils from "../utils/utils";
+import utils from "../utils";
 import Style from "../Style";
-import {assembleSupSub} from "../utils/assembleSupSub";
+import {assembleSupSub} from "./utils/assembleSupSub";
 import {assertNodeType, checkNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";

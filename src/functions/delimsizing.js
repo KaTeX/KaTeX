@@ -4,7 +4,7 @@ import defineFunction from "../defineFunction";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
-import utils from "../utils/utils";
+import utils from "../utils";
 import {assertNodeType, checkSymbolNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";

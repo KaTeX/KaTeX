@@ -3,7 +3,7 @@ import {defineFunctionBuilders} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import {SymbolNode} from "../domTree";
 import mathMLTree from "../mathMLTree";
-import utils from "../utils/utils";
+import utils from "../utils";
 import Style from "../Style";
 import {checkNodeType} from "../parseNode";
 
