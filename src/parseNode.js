@@ -358,6 +358,9 @@ type ParseNodeTypes = {
         mode: Mode,
         loc?: ?SourceLocation,
         body: AnyParseNode[],
+        alwaysHandleSupSub: boolean,
+        limits: boolean,
+        parentIsSupSub: boolean,
     |},
     "overline": {|
         type: "overline",
