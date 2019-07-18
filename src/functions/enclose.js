@@ -222,7 +222,7 @@ defineFunction({
     names: ["\\fbox"],
     props: {
         numArgs: 1,
-        argTypes: ["text"],
+        argTypes: ["hbox"],
         allowedInText: true,
     },
     handler({parser}, args) {

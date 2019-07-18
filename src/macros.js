@@ -695,17 +695,17 @@ defineMacro("\\TeX", "\\textrm{\\html@mathml{" +
 //         \TeX}
 // This code aligns the top of the A with the T (from the perspective of TeX's
 // boxes, though visually the A appears to extend above slightly).
-// We compute the corresponding \raisebox when A is rendered at \scriptsize,
-// which is size3, which has a scale factor of 0.7 (see Options.js).
+// We compute the corresponding \raisebox when A is rendered in \normalsize
+// \scriptstyle, which has a scale factor of 0.7 (see Options.js).
 const latexRaiseA = fontMetricsData['Main-Regular']["T".charCodeAt(0)][1] -
     0.7 * fontMetricsData['Main-Regular']["A".charCodeAt(0)][1] + "em";
 defineMacro("\\LaTeX", "\\textrm{\\html@mathml{" +
-    `L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    `L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptstyle A}` +
     "\\kern-.15em\\TeX}{LaTeX}}");
 
 // New KaTeX logo based on tweaking LaTeX logo
 defineMacro("\\KaTeX", "\\textrm{\\html@mathml{" +
-    `K\\kern-.17em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    `K\\kern-.17em\\raisebox{${latexRaiseA}}{\\scriptstyle A}` +
     "\\kern-.15em\\TeX}{KaTeX}}");
 
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
