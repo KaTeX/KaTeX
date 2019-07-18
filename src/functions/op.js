@@ -106,7 +106,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
         // operators, like \limsup
         const output = [];
         for (let i = 1; i < group.name.length; i++) {
-            output.push(buildCommon.mathsym(group.name[i], group.mode));
+            output.push(buildCommon.mathsym(group.name[i], group.mode, options));
         }
         base = buildCommon.makeSpan(["mop"], output, options);
     }
