@@ -112,9 +112,9 @@ or for just some URLs via the `trust` [option](options.md).
 |:----------------|:-------------------|
 | $\href{https://katex.org/}{\KaTeX}$ | `\href{https://katex.org/}{\KaTeX}` |
 | $\url{https://katex.org/}$ | `\url{https://katex.org/}` |
-| $\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}$ | `\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}` |
+| $\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://katex.org/img/khan-academy.png}$ | `\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://katex.org/img/khan-academy.png}` |
 
-`\includegraphics` supports`height`, `width`, `totalheight`, and `alt` in it's first argument. `height` is required.
+`\includegraphics` supports `height`, `width`, `totalheight`, and `alt` in its first argument. `height` is required.
 
 
 ## Letters and Unicode
