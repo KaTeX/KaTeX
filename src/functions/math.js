@@ -17,11 +17,8 @@ defineFunction({
         parser.switchMode("math");
         const close = (funcName === "\\(" ? "\\)" : "$");
         const body = parser.parseExpression(false, close);
-        // We can't expand the next symbol after the closing $ until after
-        // switching modes back.  So don't consume within expect.
-        parser.expect(close, false);
+        parser.expect(close);
         parser.switchMode(outerMode);
-        parser.consume();
         return {
             type: "styling",
             mode: parser.mode,
