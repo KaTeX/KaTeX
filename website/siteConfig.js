@@ -135,7 +135,7 @@ const siteConfig = {
 
     // Used for publishing and more
     projectName: 'KaTeX',
-    organizationName: 'Khan',
+    organizationName: 'KaTeX',
 
     headerLinks: [
         {href: '/#demo', label: 'Try'},
