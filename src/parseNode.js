@@ -25,6 +25,8 @@ export type UnsupportedCmdParseNode = ParseNode<"color">;
 // Union of all possible `ParseNode<>` types.
 export type AnyParseNode = $Values<ParseNodeTypes>;
 
+export type MClass = "mord" | "mbin" | "mrel" | "mopen" | "mclose" | "mpunct" | "minner";
+
 // Map from `NodeType` to the corresponding `ParseNode`.
 type ParseNodeTypes = {
     "array": {|
@@ -349,7 +351,7 @@ type ParseNodeTypes = {
         type: "mclass",
         mode: Mode,
         loc?: ?SourceLocation,
-        mclass: string,
+        mclass: MClass,
         body: AnyParseNode[],
         isCharacterBox: boolean,
     |},

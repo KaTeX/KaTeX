@@ -1,3 +1,6 @@
+[version]
+0.102.0
+
 [ignore]
 <PROJECT_ROOT>/dist
 

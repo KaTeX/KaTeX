@@ -83,12 +83,16 @@ const stringMap = {
     "\\nabla": "del",
     "\\ell": "ell",
     "\\ldots": "dots",
+    // TODO: add entries for all accents
+    "\\hat": "hat",
 };
 
 const powerMap = {
-    "\\prime": "prime",
-    "\\degree": "degree",
-    "\\circ": "degree",
+    "prime": "prime",
+    "degree": "degrees",
+    "circle": "degrees",
+    "2": "squared",
+    "3": "cubed",
 };
 
 const openMap = {
@@ -117,8 +121,7 @@ const binMap = {
 const relMap = {
     "=": "equals",
     "\\approx": "approximately equals",
-    "\\neq": "does not equal",
-    "\\ne": "does not equal",
+    "≠": "does not equal",
     "\\geq": "is greater than or equal to",
     "\\ge": "is greater than or equal to",
     "\\leq": "is less than or equal to",
@@ -130,6 +133,15 @@ const relMap = {
     "\\rightarrow": "right arrow",
     "\\Rightarrow": "right arrow",
     ":": "colon",
+};
+
+const accentUnderMap = {
+    "\\underleftarrow": "left arrow",
+    "\\underrightarrow": "right arrow",
+    "\\underleftrightarrow": "left-right arrow",
+    "\\undergroup": "group",
+    "\\underlinesegment": "line segment",
+    "\\utilde": "tilde",
 };
 
 type NestedArray<T> = Array<T | NestedArray<T>>;
@@ -157,11 +169,12 @@ const buildString = (
         ret = stringMap[str] || str;
     }
 
+
     // If nothing was found and it's not a plain string or number
-    if (ret === str && !/^\w+$/.test(str)) {
-        // This is likely a case that we'll need to handle
-        throw new Error("KaTeX a11y " + type + " string not found: " + str);
-    }
+    // if (ret === str && !/^\w+$/.test(str)) {
+    //     // This is likely a case that we'll need to handle
+    //     throw new Error("KaTeX a11y " + type + " string not found: " + str);
+    // }
 
     // If the text to add is a number and there is already a string
     // in the list and the last string is a number then we should
@@ -187,12 +200,16 @@ const buildRegion = (
     callback(regionStrings);
 };
 
-const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
+const handleObject = (
+    tree: AnyParseNode,
+    a11yStrings: NestedArray<string>,
+    atomType: Atom | "normal",
+) => {
      // Everything else is assumed to be an object...
     switch (tree.type) {
         case "accent": {
             buildRegion(a11yStrings, (a11yStrings) => {
-                buildA11yStrings(tree.base, a11yStrings);
+                buildA11yStrings(tree.base, a11yStrings, atomType);
                 a11yStrings.push("with");
                 buildString(tree.label, "normal", a11yStrings);
                 a11yStrings.push("on top");
@@ -201,7 +218,13 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
         }
 
         case "accentUnder": {
-            throw new Error("TODO: accentUnder");
+            buildRegion(a11yStrings, (a11yStrings) => {
+                buildA11yStrings(tree.base, a11yStrings, atomType);
+                a11yStrings.push("with");
+                buildString(accentUnderMap[tree.label], "normal", a11yStrings);
+                a11yStrings.push("underneath");
+            });
+            break;
         }
 
         case "accent-token": {
@@ -221,7 +244,7 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
                 }
                 // TODO(kevinb): figure out what should be done for inner
                 case "inner": {
-                    buildA11yStrings(tree, a11yStrings);
+                    buildA11yStrings(tree, a11yStrings, atomType);
                     break;
                 }
                 case "open": {
@@ -249,7 +272,7 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
 
             buildRegion(a11yStrings, (regionStrings) => {
                 regionStrings.push("start color " + color);
-                buildA11yStrings(tree.body, regionStrings);
+                buildA11yStrings(tree.body, regionStrings, atomType);
                 regionStrings.push("end color " + color);
             });
             break;
@@ -276,17 +299,17 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
                 if (tree.hasBarLine) {
                     regionStrings.push("start fraction");
                     leftDelim && buildString(leftDelim, "open", regionStrings);
-                    buildA11yStrings(tree.numer, regionStrings);
+                    buildA11yStrings(tree.numer, regionStrings, atomType);
                     regionStrings.push("divided by");
-                    buildA11yStrings(tree.denom, regionStrings);
+                    buildA11yStrings(tree.denom, regionStrings, atomType);
                     rightDelim && buildString(rightDelim, "close", regionStrings);
                     regionStrings.push("end fraction");
                 } else {
                     regionStrings.push("start binomial");
                     leftDelim && buildString(leftDelim, "open", regionStrings);
-                    buildA11yStrings(tree.numer, regionStrings);
+                    buildA11yStrings(tree.numer, regionStrings, atomType);
                     regionStrings.push("over");
-                    buildA11yStrings(tree.denom, regionStrings);
+                    buildA11yStrings(tree.denom, regionStrings, atomType);
                     rightDelim && buildString(rightDelim, "close", regionStrings);
                     regionStrings.push("end binomial");
                 }
@@ -307,7 +330,7 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
         case "leftright": {
             buildRegion(a11yStrings, (regionStrings) => {
                 buildString(tree.left, "open", regionStrings);
-                buildA11yStrings(tree.body, regionStrings);
+                buildA11yStrings(tree.body, regionStrings, atomType);
                 buildString(tree.right, "close", regionStrings);
             });
             break;
@@ -319,7 +342,7 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
         }
 
         case "lap": {
-            buildA11yStrings(tree.body, a11yStrings);
+            buildA11yStrings(tree.body, a11yStrings, atomType);
             break;
         }
 
@@ -331,7 +354,7 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
         case "op": {
             const {body, name} = tree;
             if (body) {
-                buildA11yStrings(body, a11yStrings);
+                buildA11yStrings(body, a11yStrings, atomType);
             } else if (name) {
                 buildString(name, "normal", a11yStrings);
             }
@@ -343,14 +366,14 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
         }
 
         case "ordgroup": {
-            buildA11yStrings(tree.body, a11yStrings);
+            buildA11yStrings(tree.body, a11yStrings, atomType);
             break;
         }
 
         case "overline": {
             buildRegion(a11yStrings, function(a11yStrings) {
                 a11yStrings.push("start overline");
-                buildA11yStrings(tree.body, a11yStrings);
+                buildA11yStrings(tree.body, a11yStrings, atomType);
                 a11yStrings.push("end overline");
             });
             break;
@@ -362,7 +385,7 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
         }
 
         case "raisebox": {
-            buildA11yStrings(tree.body, a11yStrings);
+            buildA11yStrings(tree.body, a11yStrings, atomType);
             break;
         }
 
@@ -373,7 +396,7 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
         }
 
         case "sizing": {
-            buildA11yStrings(tree.body, a11yStrings);
+            buildA11yStrings(tree.body, a11yStrings, atomType);
             break;
         }
 
@@ -384,23 +407,33 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
 
         case "styling": {
             // We ignore the styling and just pass through the contents
-            buildA11yStrings(tree.body, a11yStrings);
+            buildA11yStrings(tree.body, a11yStrings, atomType);
             break;
         }
 
         case "sqrt": {
-            buildRegion(a11yStrings, (a11yStrings) => {
+            buildRegion(a11yStrings, (regionStrings) => {
                 const {body, index} = tree;
                 if (index) {
-                    a11yStrings.push("root");
-                    a11yStrings.push("start index");
-                    buildA11yStrings(index, a11yStrings);
-                    a11yStrings.push("end index");
+                    const indexString = flatten(
+                        buildA11yStrings(index, [], atomType)).join(",");
+                    if (indexString === "3") {
+                        regionStrings.push("cube root of");
+                        buildA11yStrings(body, regionStrings, atomType);
+                        regionStrings.push("end cube root");
+                        return;
+                    }
+
+                    regionStrings.push("root");
+                    regionStrings.push("start index");
+                    buildA11yStrings(index, regionStrings, atomType);
+                    regionStrings.push("end index");
+                    return;
                 }
 
-                a11yStrings.push("square root of");
-                buildA11yStrings(body, a11yStrings);
-                a11yStrings.push("end square root");
+                regionStrings.push("square root of");
+                buildA11yStrings(body, regionStrings, atomType);
+                regionStrings.push("end square root");
             });
             break;
         }
@@ -409,71 +442,91 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
             const {base, sub, sup} = tree;
 
             if (base) {
-                buildA11yStrings(base, a11yStrings);
+                buildA11yStrings(base, a11yStrings, atomType);
             }
 
             if (sub) {
-                buildRegion(a11yStrings, function(a11yStrings) {
-                    a11yStrings.push("start subscript");
-                    buildA11yStrings(sub, a11yStrings);
-                    a11yStrings.push("end subscript");
+                buildRegion(a11yStrings, function(regionStrings) {
+                    regionStrings.push("start subscript");
+                    buildA11yStrings(sub, regionStrings, atomType);
+                    regionStrings.push("end subscript");
                 });
             }
 
-            // TODO(kevinb): make this work
             if (sup) {
-                // There are some cases that just read better if we don't have
-                // the extra start/end baggage, so we skip the extra text
-                const newPower = powerMap[sup];
-                const supValue = sup.value;
+                buildRegion(a11yStrings, function(regionStrings) {
+                    const supString = flatten(
+                        buildA11yStrings(sup, [], atomType)).join(",");
 
-                // The value stored inside the sup property is not always
-                // consistent. It could be a string (handled above), an object
-                // with a string property in value, or an array of objects that
-                // have a value property.
-                if (!newPower && sup) {
-                    // If supValue is an object and it has a length of 1 we assume
-                    // it's an array that has only a single item in it. This is the
-                    // case that we care about and we only check that one value.
-                    if (typeof sup === "object" && sup.length === 1) {
-                        newPower = powerMap[supValue[0].value];
-
-                        // This is the case where it's a string in the value property
-                    } else {
-                        newPower = powerMap[sup];
-                    }
-                }
-
-                buildRegion(a11yStrings, function(a11yStrings) {
-                    if (newPower) {
-                        a11yStrings.push(newPower);
+                    if (supString in powerMap) {
+                        regionStrings.push(powerMap[supString]);
                         return;
                     }
 
-                    a11yStrings.push("start superscript");
-                    buildA11yStrings(sup, a11yStrings);
-                    a11yStrings.push("end superscript");
+                    regionStrings.push("start superscript");
+                    buildA11yStrings(sup, regionStrings, atomType);
+                    regionStrings.push("end superscript");
                 });
             }
             break;
         }
 
         case "text": {
-            buildA11yStrings(tree.body, a11yStrings);
+            // TODO: handle other fonts
+            if (tree.font === "\\textbf") {
+                buildRegion(a11yStrings, function(regionStrings) {
+                    regionStrings.push("start bold text");
+                    buildA11yStrings(tree.body, regionStrings, atomType);
+                    regionStrings.push("end bold text");
+                });
+                break;
+            }
+            buildRegion(a11yStrings, function(regionStrings) {
+                regionStrings.push("start text");
+                buildA11yStrings(tree.body, regionStrings, atomType);
+                regionStrings.push("end text");
+            });
             break;
         }
 
         case "textord": {
-            buildString(tree.text, "normal", a11yStrings);
+            buildString(tree.text, atomType, a11yStrings);
             break;
         }
 
         case "smash": {
-            throw new Error("TODO: smash");
+            buildA11yStrings(tree.body, a11yStrings, atomType);
+            break;
         }
 
         case "enclose": {
-            throw new Error("TODO: enclose");
+            // TODO: create a map for these.
+            // TODO: differentiate between a body with a single atom, e.g.
+            // "cancel a" instead of "start cancel, a, end cancel"
+            if (/cancel/.test(tree.label)) {
+                buildRegion(a11yStrings, function(regionStrings) {
+                    regionStrings.push("start cancel");
+                    buildA11yStrings(tree.body, regionStrings, atomType);
+                    regionStrings.push("end cancel");
+                });
+                break;
+            } else if (/box/.test(tree.label)) {
+                buildRegion(a11yStrings, function(regionStrings) {
+                    regionStrings.push("start box");
+                    buildA11yStrings(tree.body, regionStrings, atomType);
+                    regionStrings.push("end box");
+                });
+                break;
+            } else if (/sout/.test(tree.label)) {
+                buildRegion(a11yStrings, function(regionStrings) {
+                    regionStrings.push("start strikeout");
+                    buildA11yStrings(tree.body, regionStrings, atomType);
+                    regionStrings.push("end strikeout");
+                });
+                break;
+            }
+            throw new Error(
+                `TODO: enclose node with ${tree.label} not supported yet`);
         }
 
         case "vphantom": {
@@ -521,11 +574,14 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
         }
 
         case "horizBrace": {
-            throw new Error("TODO: horizBrace");
+            buildString(`start ${tree.label.slice(1)}`, "normal", a11yStrings);
+            buildA11yStrings(tree.base, a11yStrings, atomType);
+            buildString(`end ${tree.label.slice(1)}`, "normal", a11yStrings);
+            break;
         }
 
         case "infix": {
-            throw new Error("TODO: infix");
+            throw new Error("All infix nodes are replaced with other nodes");
         }
 
         case "includegraphics": {
@@ -533,7 +589,10 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
         }
 
         case "font": {
-            throw new Error("TODO: font");
+            // TODO: callout the start/end of specific fonts
+            // TODO: map \BBb{N} to "the naturals" or something like that
+            buildA11yStrings(tree.body, a11yStrings, atomType);
+            break;
         }
 
         case "href": {
@@ -541,11 +600,17 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
         }
 
         case "cr": {
+            // used by environments
             throw new Error("TODO: cr");
         }
 
         case "underline": {
-            throw new Error("TODO: underline");
+            buildRegion(a11yStrings, function(a11yStrings) {
+                a11yStrings.push("start underline");
+                buildA11yStrings(tree.body, a11yStrings, atomType);
+                a11yStrings.push("end underline");
+            });
+            break;
         }
 
         case "xArrow": {
@@ -553,15 +618,23 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
         }
 
         case "mclass": {
-            throw new Error("TODO: mclass");
+            // \neq and \ne are macros so we let "htmlmathml" render the mathmal
+            // side of things and extract the text from that.
+            const atomType = tree.mclass.slice(1);
+            buildA11yStrings(tree.body, a11yStrings, atomType);
+            break;
         }
 
         case "mathchoice": {
-            throw new Error("TOOD: mathchoice");
+            // TODO: track which which style we're using, e.g. dispaly, text, etc.
+            // default to text style if even that may not be the correct style
+            buildA11yStrings(tree.text, a11yStrings, atomType);
+            break;
         }
 
         case "htmlmathml": {
-            throw new Error("TODO: htmlmathml");
+            buildA11yStrings(tree.mathml, a11yStrings, atomType);
+            break;
         }
 
         case "middle": {
@@ -574,17 +647,17 @@ const handleObject = (tree: AnyParseNode, a11yStrings: NestedArray<string>) => {
     }
 };
 
-
 const buildA11yStrings = (
     tree: AnyParseNode | AnyParseNode[],
     a11yStrings: NestedArray<string> = [],
+    atomType: Atom | "normal",
 ) => {
     if (tree instanceof Array) {
         for (let i = 0; i < tree.length; i++) {
-            buildA11yStrings(tree[i], a11yStrings);
+            buildA11yStrings(tree[i], a11yStrings, atomType);
         }
     } else {
-        handleObject(tree, a11yStrings);
+        handleObject(tree, a11yStrings, atomType);
     }
 
     return a11yStrings;
@@ -626,7 +699,7 @@ const parseMath = function(text: string) {
 
 const render = function(text: string, a11yNode: Node) {
     const tree = parseMath(text);
-    const a11yStrings = buildA11yStrings(tree);
+    const a11yStrings = buildA11yStrings(tree, [], "normal");
     renderStrings(a11yStrings, a11yNode);
 };
 
@@ -646,7 +719,7 @@ const flatten = function(array) {
 
 const renderString = function(text: string) {
     const tree = parseMath(text);
-    const a11yStrings = buildA11yStrings(tree);
+    const a11yStrings = buildA11yStrings(tree, [], "normal");
     return flatten(a11yStrings).join(", ");
 };
 
