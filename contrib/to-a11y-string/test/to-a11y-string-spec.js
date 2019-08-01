@@ -16,6 +16,11 @@ describe("renderString", () => {
             expect(result).toMatchInlineSnapshot(`"a, with, vector, on top"`);
         });
 
+        test("\\acute{a}", () => {
+            const result = renderString("\\acute{a}");
+            expect(result).toMatchInlineSnapshot(`"a, with, acute, on top"`);
+        });
+
         test("\\hat{a}", () => {
             const result = renderString("\\hat{a}");
             expect(result).toMatchInlineSnapshot(`"a, with, hat, on top"`);
@@ -50,6 +55,13 @@ describe("renderString", () => {
             const result = renderString("\\color{red}1+2");
             expect(result).toMatchInlineSnapshot(
                 `"start color red, 1, plus, 2, end color red"`,
+            );
+        });
+
+        test("\\color{FF0000}", () => {
+            const result = renderString("\\color{FF0000}1+2");
+            expect(result).toMatchInlineSnapshot(
+                `"start color #FF0000, 1, plus, 2, end color #FF0000"`,
             );
         });
 
@@ -245,6 +257,13 @@ describe("renderString", () => {
         });
     });
 
+    describe("inner", () => {
+        test("\\ldots", () => {
+            const result = renderString("\\ldots");
+            expect(result).toMatchInlineSnapshot(`"dots"`);
+        });
+    });
+
     describe("lap", () => {
         test("\\llap", () => {
             const result = renderString("a\\llap{b}");
@@ -257,6 +276,15 @@ describe("renderString", () => {
             const result = renderString("a\\rlap{b}");
             expect(result).toMatchInlineSnapshot(
                 `"a, start text, b, end text"`,
+            );
+        });
+    });
+
+    describe("middle", () => {
+        test("\\middle", () => {
+            const result = renderString("\\left(a\\middle|b\\right)");
+            expect(result).toMatchInlineSnapshot(
+                `"left parenthesis, a, vertical bar, b, right parenthesis"`,
             );
         });
     });
@@ -481,5 +509,12 @@ describe("renderString", () => {
         });
     });
 
-    describe("verb", () => {});
+    describe("verb", () => {
+        test("\\verb", () => {
+            const result = renderString("\\verb|hello|");
+            expect(result).toMatchInlineSnapshot(
+                `"start verbatim, hello, end verbatim"`,
+            );
+        });
+    });
 });

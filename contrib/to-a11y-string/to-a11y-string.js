@@ -10,8 +10,7 @@ import type {Atom} from "../../src/symbols";
 import type {AnyParseNode} from "../../src/parseNode";
 import type {SettingsOptions} from "../../src/Settings";
 
-// TODO: change this to a $FlowIgnore, need to modify .flowconfig for this to work
-// $FlowFixMe: we import the types directly anyways
+// $FlowIgnore: we import the types directly anyways
 import katex from "katex";
 
 const stringMap = {
@@ -85,6 +84,7 @@ const stringMap = {
     "\\ldots": "dots",
     // TODO: add entries for all accents
     "\\hat": "hat",
+    "\\acute": "acute",
 };
 
 const powerMap = {
@@ -230,7 +230,8 @@ const handleObject = (
         }
 
         case "accent-token": {
-            throw new Error("TODO: accent-token");
+            // Used internally by accent symbols.
+            break;
         }
 
         case "atom": {
@@ -246,7 +247,7 @@ const handleObject = (
                 }
                 // TODO(kevinb): figure out what should be done for inner
                 case "inner": {
-                    buildA11yStrings(tree, a11yStrings, atomType);
+                    buildString(tree.text, "inner", a11yStrings);
                     break;
                 }
                 case "open": {
@@ -281,7 +282,9 @@ const handleObject = (
         }
 
         case "color-token": {
-            throw new Error("TODO: color-token");
+            // Used by \color, \colorbox, and \fcolorbox but not directly rendered.
+            // It's a leaf node and has no children so just break.
+            break;
         }
 
         case "delimsizing": {
@@ -360,6 +363,7 @@ const handleObject = (
         }
 
         case "op-token": {
+            // Used internally by operator symbols.
             buildString(tree.text, atomType, a11yStrings);
             break;
         }
@@ -527,15 +531,15 @@ const handleObject = (
                 break;
             }
             throw new Error(
-                `TODO: enclose node with ${tree.label} not supported yet`);
+                `KaTeX-a11y: enclose node with ${tree.label} not supported yet`);
         }
 
         case "vphantom": {
-            throw new Error("TODO: vphantom");
+            throw new Error("KaTeX-a11y: vphantom not implemented yet");
         }
 
         case "hphantom": {
-            throw new Error("TODO: hphantom");
+            throw new Error("KaTeX-a11y: hphantom not implemented yet");
         }
 
         case "operatorname": {
@@ -544,15 +548,15 @@ const handleObject = (
         }
 
         case "array": {
-            throw new Error("TODO: array");
+            throw new Error("KaTeX-a11y: array not implemented yet");
         }
 
         case "keyVals": {
-            throw new Error("TODO: keyVals");
+            throw new Error("KaTeX-a11y: keyVals not implemented yet");
         }
 
         case "raw": {
-            throw new Error("TODO: raw");
+            throw new Error("KaTeX-a11y: raw not implemented yet");
         }
 
         case "size": {
@@ -562,11 +566,11 @@ const handleObject = (
         }
 
         case "url": {
-            throw new Error("TODO: url");
+            throw new Error("KaTeX-a11y: url not implemented yet");
         }
 
         case "tag": {
-            throw new Error("TODO: tag");
+            throw new Error("KaTeX-a11y: tag not implemented yet");
         }
 
         case "verb": {
@@ -577,7 +581,7 @@ const handleObject = (
         }
 
         case "environment": {
-            throw new Error("TODO: environment");
+            throw new Error("KaTeX-a11y: environment not implemented yet");
         }
 
         case "horizBrace": {
@@ -588,11 +592,12 @@ const handleObject = (
         }
 
         case "infix": {
-            throw new Error("All infix nodes are replaced with other nodes");
+            // All infix nodes are replace with other nodes.
+            break;
         }
 
         case "includegraphics": {
-            throw new Error("TODO: includegraphics");
+            throw new Error("KaTeX-a11y: includegraphics not implemented yet");
         }
 
         case "font": {
@@ -603,12 +608,12 @@ const handleObject = (
         }
 
         case "href": {
-            throw new Error("TODO: href");
+            throw new Error("KaTeX-a11y: href not implemented yet");
         }
 
         case "cr": {
-            // used by environments
-            throw new Error("TODO: cr");
+            // This is used by environments.
+            throw new Error("KaTeX-a11y: cr not implemented yet");
         }
 
         case "underline": {
@@ -621,7 +626,7 @@ const handleObject = (
         }
 
         case "xArrow": {
-            throw new Error("TODO: xArrow");
+            throw new Error("KaTeX-a11y: xArrow not implemented yet");
         }
 
         case "mclass": {
@@ -646,7 +651,8 @@ const handleObject = (
         }
 
         case "middle": {
-            throw new Error("TODO: middle");
+            buildString(tree.delim, atomType, a11yStrings);
+            break;
         }
 
         default:
