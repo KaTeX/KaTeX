@@ -376,7 +376,7 @@ describe("renderString", () => {
         });
 
         test("1 \\ne 2", () => {
-            const result = renderString("1 \\neq 2");
+            const result = renderString("1 \\ne 2");
             expect(result).toMatchInlineSnapshot(`"1, does not equal, 2"`);
         });
 
@@ -402,7 +402,7 @@ describe("renderString", () => {
         });
 
         test("1 \\le 2", () => {
-            const result = renderString("1 \\leq 3");
+            const result = renderString("1 \\le 3");
             expect(result).toMatchInlineSnapshot(
                 `"1, is less than or equal to, 3"`,
             );
