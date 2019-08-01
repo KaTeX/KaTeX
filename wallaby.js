@@ -35,55 +35,5 @@ module.exports = function(wallaby) {
         },
 
         testFramework: "jest",
-
-        // setup: function(wallaby) {
-        //     // We require "path" here because this setup function is run
-        //     // in a different context and does not have access to variables
-        //     // from its closure.
-        //     const path = require("path");
-
-        //     const jestConfig = {
-        //         collectCoverageFrom: [
-        //             "src/**/*.js",
-        //             "contrib/**/*.js",
-        //             "!src/unicodeMake.js",
-        //             "!contrib/mhchem/**",
-        //         ],
-        //         setupFilesAfterEnv: [
-        //             path.join(wallaby.localProjectDir, "test/setup.js"),
-        //         ],
-        //         snapshotSerializers: [
-        //             "jest-serializer-html",
-        //         ],
-        //         testMatch: [
-        //             "**/test/*-spec.js",
-        //         ],
-        //         testURL: "http://localhost/",
-        //         // Prevent our jest configuration from re-compiling the files
-        //         // since wallaby has already done that.
-        //         transform: {
-        //             "^.+\\.js$": "babel-jest",
-        //         },
-        //         moduleNameMapper: {
-        //             "^katex$": "<rootDir>/katex.js",
-        //         },
-        //     };
-
-        //     wallaby.testFramework.configure(jestConfig);
-        // },
-
-        // Uncomment to only run tests for files that have been changed.
-        // Coverage reports on http://wallabyjs.com/app will be incomplete
-        // but initial start will be faster.
-        // automaticTestFileSelection: false,
-
-        // Uncomment to only run tests/suites using .only().
-        // Coverage reports on http://wallabyjs.com/app will be incomplete
-        // but initial start will be faster.
-        // runSelectedTestsOnly: true,
-
-        // Uncomment to get additional debug information in the wallaby
-        // console when running testts.
-        // debug: true,
     };
 };
