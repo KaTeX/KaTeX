@@ -38,9 +38,29 @@ describe("renderString", () => {
         });
     });
 
+    describe("atom", () => {
+        test("punct", () => {
+            const result = renderString("1, 2, 3");
+            expect(result).toMatchInlineSnapshot(`"1, comma, 2, comma, 3"`);
+        });
+    });
+
     describe("color", () => {
         test("\\color{red}", () => {
             const result = renderString("\\color{red}1+2");
+            expect(result).toMatchInlineSnapshot(
+                `"start color red, 1, plus, 2, end color red"`,
+            );
+        });
+
+        // colorIsTextColor is an option added in KaTeX 0.9.0 for backward
+        // compatibility. It makes \color parse like \textcolor. We use it
+        // in the KA webapp, and need it here because the tests are written
+        // assuming it is set.
+        test("\\color{red} with {colorIsTextColor: true}", () => {
+            const result = renderString("\\color{red}1+2", {
+                colorIsTextColor: true,
+            });
             expect(result).toMatchInlineSnapshot(
                 `"start color red, 1, end color red, plus, 2"`,
             );
@@ -84,6 +104,15 @@ describe("renderString", () => {
         });
     });
 
+    describe("delimsizing", () => {
+        test("\\bigl(1+2\\bigr)", () => {
+            const result = renderString("\\bigl(1+2\\bigr)");
+            expect(result).toMatchInlineSnapshot(
+                `"left parenthesis, 1, plus, 2, right parenthesis"`,
+            );
+        });
+    });
+
     describe("enclose", () => {
         test("\\cancel", () => {
             const result = renderString("\\cancel{a}");
@@ -99,7 +128,9 @@ describe("renderString", () => {
 
         test("\\sout", () => {
             const result = renderString("\\sout{a}");
-            expect(result).toMatchInlineSnapshot(`"start strikeout, a, end strikeout"`);
+            expect(result).toMatchInlineSnapshot(
+                `"start strikeout, a, end strikeout"`,
+            );
         });
     });
 
@@ -139,7 +170,14 @@ describe("renderString", () => {
         test("log_2", () => {
             const result = renderString("\\log_2{x+1}");
             expect(result).toMatchInlineSnapshot(
-                `"log, start subscript, 2, end subscript, x, plus, 1"`,
+                `"log, start base, 2, end base, x, plus, 1"`,
+            );
+        });
+
+        test("a_{n+1}", () => {
+            const result = renderString("a_{n+1}");
+            expect(result).toMatchInlineSnapshot(
+                `"a, start subscript, n, plus, 1, end subscript"`,
             );
         });
     });
@@ -207,6 +245,22 @@ describe("renderString", () => {
         });
     });
 
+    describe("lap", () => {
+        test("\\llap", () => {
+            const result = renderString("a\\llap{b}");
+            expect(result).toMatchInlineSnapshot(
+                `"a, start text, b, end text"`,
+            );
+        });
+
+        test("\\rlap", () => {
+            const result = renderString("a\\rlap{b}");
+            expect(result).toMatchInlineSnapshot(
+                `"a, start text, b, end text"`,
+            );
+        });
+    });
+
     describe("mod", () => {
         test("\\mod", () => {
             const result = renderString("\\mod{23}");
@@ -217,12 +271,73 @@ describe("renderString", () => {
         });
     });
 
+    describe("op", () => {
+        test("\\lim", () => {
+            const result = renderString("\\lim{x+1}");
+            // TODO: add begin/end to track argument of operators
+            expect(result).toMatchInlineSnapshot(`"limit, x, plus, 1"`);
+        });
+
+        test("\\sin 2\\pi", () => {
+            const result = renderString("\\sin{2\\pi}");
+            // TODO: add begin/end to track argument of operators
+            expect(result).toMatchInlineSnapshot(`"sine, 2, pi"`);
+        });
+
+        test("\\sum_{i=0}", () => {
+            const result = renderString("\\sum_{i=0}");
+            expect(result).toMatchInlineSnapshot(
+                `"sum, start subscript, i, equals, 0, end subscript"`,
+            );
+        });
+
+        test("\u2211_{i=0}", () => {
+            const result = renderString("\u2211_{i=0}");
+            expect(result).toMatchInlineSnapshot(
+                `"sum, start subscript, i, equals, 0, end subscript"`,
+            );
+        });
+    });
+
+    describe("operatorname", () => {
+        test("\\limsup", () => {
+            const result = renderString("\\limsup");
+            // TODO: collate strings so that this is "lim, sup"
+            // NOTE: this also affect HTML and MathML output
+            expect(result).toMatchInlineSnapshot(`"l, i, m, s, u, p"`);
+        });
+
+        test("\\liminf", () => {
+            const result = renderString("\\liminf");
+            expect(result).toMatchInlineSnapshot(`"l, i, m, i, n, f"`);
+        });
+
+        test("\\argmin", () => {
+            const result = renderString("\\argmin");
+            expect(result).toMatchInlineSnapshot(`"a, r, g, m, i, n"`);
+        });
+    });
+
     describe("overline", () => {
         test("\\overline", () => {
             const result = renderString("\\overline{1+2}");
             expect(result).toMatchInlineSnapshot(
                 `"start overline, 1, plus, 2, end overline"`,
             );
+        });
+    });
+
+    describe("phantom", () => {
+        test("\\phantom", () => {
+            const result = renderString("1+\\phantom{2}");
+            expect(result).toMatchInlineSnapshot(`"1, plus, empty space"`);
+        });
+    });
+
+    describe("raisebox", () => {
+        test("\\raisebox", () => {
+            const result = renderString("x+\\raisebox{1em}{y}");
+            expect(result).toMatchInlineSnapshot(`"x, plus, y"`);
         });
     });
 
@@ -269,7 +384,7 @@ describe("renderString", () => {
     describe("rule", () => {
         test("\\rule", () => {
             const result = renderString("\\rule{1em}{1em}");
-            expect(result).toMatchInlineSnapshot(`"rule"`);
+            expect(result).toMatchInlineSnapshot(`"rectangle"`);
         });
     });
 
@@ -365,4 +480,6 @@ describe("renderString", () => {
             );
         });
     });
+
+    describe("verb", () => {});
 });

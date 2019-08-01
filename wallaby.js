@@ -2,7 +2,7 @@ const babelConfig = require("./babel.config.js");
 
 module.exports = function(wallaby) {
     const tests = [
-        // "test/*-spec.js",
+        "test/*-spec.js",
         "contrib/**/test/*-spec.js",
     ];
 

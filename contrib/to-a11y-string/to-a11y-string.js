@@ -4,15 +4,11 @@
  * A library for converting KaTeX math into readable strings.
  */
 
-// NOTE(jeresig): We need to keep this file as pure ES5 to avoid import
-// problems into webapp.
-// NOTE(jeresig): This probably isn't true anymore, we can probably update it!
-/* eslint-disable no-const */
-
 // NOTE: since we're importing types here these files won't actually be
 // included in the build.
 import type {Atom} from "../../src/symbols";
-import type {AnyParseNode} from "../../src/ParseNode";
+import type {AnyParseNode} from "../../src/parseNode";
+import type {SettingsOptions} from "../../src/Settings";
 
 // TODO: change this to a $FlowIgnore, need to modify .flowconfig for this to work
 // $FlowFixMe: we import the types directly anyways
@@ -323,10 +319,6 @@ const handleObject = (
             break;
         }
 
-        // katex: function(tree: ParseNode<"katex">, a11yStrings) {
-        //     a11yStrings.push("KaTeX");
-        // },
-
         case "kern": {
             // No op: we don't attempt to present kerning information
             // to the screen reader.
@@ -368,7 +360,8 @@ const handleObject = (
         }
 
         case "op-token": {
-            throw new Error("TODO: op-token");
+            buildString(tree.text, atomType, a11yStrings);
+            break;
         }
 
         case "ordgroup": {
@@ -396,8 +389,7 @@ const handleObject = (
         }
 
         case "rule": {
-            // NOTE: Is there something more useful that we can put here?
-            a11yStrings.push("rule");
+            a11yStrings.push("rectangle");
             break;
         }
 
@@ -446,16 +438,19 @@ const handleObject = (
 
         case "supsub": {
             const {base, sub, sup} = tree;
+            let isLog = false;
 
             if (base) {
                 buildA11yStrings(base, a11yStrings, atomType);
+                isLog = base.type === "op" && base.name === "\\log";
             }
 
             if (sub) {
+                const regionName = isLog ? "base" : "subscript";
                 buildRegion(a11yStrings, function(regionStrings) {
-                    regionStrings.push("start subscript");
+                    regionStrings.push(`start ${regionName}`);
                     buildA11yStrings(sub, regionStrings, atomType);
-                    regionStrings.push("end subscript");
+                    regionStrings.push(`end ${regionName}`);
                 });
             }
 
@@ -544,7 +539,8 @@ const handleObject = (
         }
 
         case "operatorname": {
-            throw new Error("TODO: operatorname");
+            buildA11yStrings(tree.body, a11yStrings, atomType);
+            break;
         }
 
         case "array": {
@@ -560,7 +556,9 @@ const handleObject = (
         }
 
         case "size": {
-            throw new Error("TODO: size");
+            // Although there are nodes of type "size" in the parse tree, they have
+            // no semantic meaning and should be ignored.
+            break;
         }
 
         case "url": {
@@ -572,7 +570,10 @@ const handleObject = (
         }
 
         case "verb": {
-            throw new Error("TODO: verb");
+            buildString(`start verbatim`, "normal", a11yStrings);
+            buildString(tree.body, "normal", a11yStrings);
+            buildString(`end verbatim`, "normal", a11yStrings);
+            break;
         }
 
         case "environment": {
@@ -670,45 +671,6 @@ const buildA11yStrings = (
     return a11yStrings;
 };
 
-const renderStrings = function(a11yStrings: NestedArray<string>, a11yNode: Node) {
-    const doc = a11yNode.ownerDocument;
-
-    for (let i = 0; i < a11yStrings.length; i++) {
-        const a11yString = a11yStrings[i];
-
-        if (i > 0) {
-            // Note: We insert commas in (not just spaces) to provide
-            // screen readers with some "breathing room". When inserting the
-            // commas the screen reader knows to pause slightly and it provides
-            // an overall better listening experience.
-            a11yNode.appendChild(doc.createTextNode(", "));
-        }
-
-        if (typeof a11yString === "string") {
-            a11yNode.appendChild(doc.createTextNode(a11yString));
-        } else {
-            const newBaseNode = doc.createElement("span");
-            // NOTE(jeresig): We may want to add in a tabIndex property
-            // to the node here, in order to support keyboard navigation.
-            a11yNode.appendChild(newBaseNode);
-            renderStrings(a11yString, newBaseNode);
-        }
-    }
-};
-
-const parseMath = function(text: string) {
-    // colorIsTextColor is an option added in KaTeX 0.9.0 for backward
-    // compatibility. It makes \color parse like \textcolor. We use it
-    // in the KA webapp, and need it here because the tests are written
-    // assuming it is set.
-    return katex.__parse(text, {colorIsTextColor: true});
-};
-
-const render = function(text: string, a11yNode: Node) {
-    const tree = parseMath(text);
-    const a11yStrings = buildA11yStrings(tree, [], "normal");
-    renderStrings(a11yStrings, a11yNode);
-};
 
 const flatten = function(array) {
     let result = [];
@@ -724,12 +686,13 @@ const flatten = function(array) {
     return result;
 };
 
-const renderString = function(text: string) {
-    const tree = parseMath(text);
+const renderString = function(text: string, settings?: SettingsOptions) {
+
+    const tree = katex.__parse(text, settings);
     const a11yStrings = buildA11yStrings(tree, [], "normal");
     return flatten(a11yStrings).join(", ");
 };
 
 export {
-    render, renderString, parseMath,
+    renderString,
 };
