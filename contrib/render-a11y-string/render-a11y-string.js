@@ -180,13 +180,6 @@ const buildString = (
         ret = stringMap[str] || str;
     }
 
-
-    // If nothing was found and it's not a plain string or number
-    // if (ret === str && !/^\w+$/.test(str)) {
-    //     // This is likely a case that we'll need to handle
-    //     throw new Error("KaTeX a11y " + type + " string not found: " + str);
-    // }
-
     // If the text to add is a number and there is already a string
     // in the list and the last string is a number then we should
     // combine them into a single number
