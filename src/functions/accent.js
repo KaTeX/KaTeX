@@ -96,6 +96,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
         } else {
             accent = buildCommon.makeOrd({mode: group.mode, text: group.label},
                 options, "textord");
+            accent = assertSymbolDomNode(accent);
             // Remove the italic correction of the accent, because it only serves to
             // shift the accent over to a place we don't want.
             accent.italic = 0;
