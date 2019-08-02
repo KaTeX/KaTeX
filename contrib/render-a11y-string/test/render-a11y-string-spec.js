@@ -138,6 +138,11 @@ describe("renderA11yString", () => {
             expect(result).toMatchInlineSnapshot(`"start box, a, end box"`);
         });
 
+        test("\\boxed", () => {
+            const result = renderA11yString("\\boxed{a}");
+            expect(result).toMatchInlineSnapshot(`"start box, a, end box"`);
+        });
+
         test("\\sout", () => {
             const result = renderA11yString("\\sout{a}");
             expect(result).toMatchInlineSnapshot(
