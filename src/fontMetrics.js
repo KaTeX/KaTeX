@@ -225,7 +225,7 @@ export function getCharacterMetrics(
         metrics = metricMap[font][ch];
     }
 
-    if (!metrics && mode === 'text') {
+    if (!metrics) {
         // We don't typically have font metrics for Asian scripts.
         // But since we support them in text mode, we need to return
         // some sort of metrics.
