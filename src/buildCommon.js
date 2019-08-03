@@ -102,13 +102,11 @@ const makeSymbol = function(
 /**
  * Makes a symbol in Main-Regular or AMS-Regular.
  * Used for rel, bin, open, close, inner, and punct.
- *
- * TODO(#953): Make `options` mandatory and always pass it in.
  */
 const mathsym = function(
     value: string,
     mode: Mode,
-    options?: Options,
+    options: Options,
     classes?: string[] = [],
 ): SymbolNode {
     // Decide what font to render the symbol in by its entry in the symbols
@@ -118,7 +116,7 @@ const mathsym = function(
     // text ordinal and is therefore not present as a symbol in the symbols
     // table for text, as well as a special case for boldsymbol because it
     // can be used for bold + and -
-    if ((options && options.font && options.font === "boldsymbol") &&
+    if (options.font === "boldsymbol" &&
             lookupSymbol(value, "Main-Bold", mode).metrics) {
         return makeSymbol(value, "Main-Bold", mode, options,
             classes.concat(["mathbf"]));

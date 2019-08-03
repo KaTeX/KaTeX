@@ -112,13 +112,17 @@ or for just some URLs via the `trust` [option](options.md).
 |:----------------|:-------------------|
 | $\href{https://katex.org/}{\KaTeX}$ | `\href{https://katex.org/}{\KaTeX}` |
 | $\url{https://katex.org/}$ | `\url{https://katex.org/}` |
+| $\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://katex.org/img/khan-academy.png}$ | `\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://katex.org/img/khan-academy.png}` |
+
+`\includegraphics` supports `height`, `width`, `totalheight`, and `alt` in its first argument. `height` is required.
+
 
 ## Letters and Unicode
 
 **Greek Letters**
 
 Direct Input: $Α Β Γ Δ Ε Ζ Η Θ Ι \allowbreak Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω$
-$\allowbreak α β γ δ ϵ ζ η θ ι κ λ μ ν ξ o π \allowbreak ρ σ τ υ ϕ χ ψ ω ε ϑ ϖ ϱ ς φ$
+$\allowbreak α β γ δ ϵ ζ η θ ι κ λ μ ν ξ o π \allowbreak ρ σ τ υ ϕ χ ψ ω ε ϑ ϖ ϱ ς φ ϝ$
 
 |||||
 |---------------|-------------|-------------|---------------|
@@ -369,8 +373,8 @@ Direct Input: $+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ 
 | $\cos$ `\cos` | $\exp$ `\exp`  | $\tanh$ `\tanh`| $\min$ `\min` |
 | $\cosec$ `\cosec`  | $\hom$ `\hom`  | $\tg$ `\tg`  | $\Pr$ `\Pr`  |
 | $\cosh$ `\cosh`| $\ker$ `\ker`  | $\th$ `\th`  | $\sup$ `\sup` |
-| $\cot$ `\cot` | $\lg$ `\lg`| $\operatorname{f}$ `\operatorname{f}` | $\argmax$ `\argmax` |
-| $\argmin$ `\argmin`| $\plim$ `\plim` |
+| $\cot$ `\cot` | $\lg$ `\lg`| $\argmax$ `\argmax` | $\argmin$ `\argmin` |
+| $\plim$ `\plim` | $\operatorname{f}$ `\operatorname{f}`| $\operatorname*{f}$ `\operatorname*{f}`| |
 
 Functions on the right column of this table can take `\limits`.
 

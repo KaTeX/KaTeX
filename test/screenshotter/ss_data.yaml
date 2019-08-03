@@ -65,7 +65,8 @@ BinCancellation: |
 BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}
 BoldSpacing: \mathbf{A}^2+\mathbf{B}_3*\mathscr{C}'
 BoldSymbol: |
-  \sum_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\omega}+ \int_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\Omega}+\boldsymbol{Ax2k\omega\Omega\imath+} \\
+  \sum_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\omega}+ \boldsymbol{\int_\alpha^\beta} \boldsymbol{\Omega + {}} \\
+  \boldsymbol{\lim_{x \to \infty} \log Ax2k\omega\Omega\imath+} \\
   x \boldsymbol{+} y \boldsymbol{=} z
 Boxed: \boxed{F=ma} \quad \boxed{ac}\color{magenta}{\boxed{F}}\boxed{F=mg}
 Cases: |
@@ -144,14 +145,13 @@ GroupMacros:
         \endExp: \egroup
     tex: \startExp a+b\endExp
 HorizontalBraces: \overbrace{\displaystyle{\oint_S{\vec E\cdot\hat n\,\mathrm d a}}}^\text{emf} = \underbrace{\frac{q_{\text{enc}}}{\varepsilon_0}}_{\text{charge}}
-# Disabled until https://github.com/KaTeX/KaTeX/pull/1794 is merged.
-# Includegraphics: |
-#     \def\logo{\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}}
-#     \def\logoB{\includegraphics[height=0.4em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}}
-#     \begin{array}{l}
-#         \underline{A\logo} + \sqrt{\logo} + \tfrac{A\logo}{\logo}\\[1em]
-#         \underline{A\logoB} + \sqrt{x\logoB} + \tfrac{A\logoB}{\logoB}
-#     \end{array}
+Includegraphics: |
+    \def\logo{\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{../../website/static/img/khan-academy.png}}
+    \def\logoB{\includegraphics[height=0.4em, totalheight=0.9em, width=0.9em, alt=KA logo]{../../website/static/img/khan-academy.png}}
+    \begin{array}{l}
+        \underline{A\logo} + \sqrt{\logo} + \tfrac{A\logo}{\logo}\\[1em]
+        \underline{A\logoB} + \sqrt{x\logoB} + \tfrac{A\logoB}{\logoB}
+    \end{array}
 Integrands: |
     \begin{array}{l}
         \displaystyle \int + \oint + \iint + \oiint_i^n \\[0.6em]
@@ -159,7 +159,7 @@ Integrands: |
         \iint + \oiint + \iiint + \oiiint
     \end{array}
 KaTeX:
-    tex: \KaTeX
+    tex: \KaTeX, \large \KaTeX
     nolatex: \KaTeX not supported by LaTeX
 Kern:
     tex: \frac{a\kern{1em}b}{c}a\kern{1em}b\kern{1ex}c\kern{-0.25em}d
@@ -172,7 +172,7 @@ Kern:
 #         \mathrlap{\overbrace{\phantom{a_0+a_1+a_2}}^m}a_0+a_1+a_2
 #     \end{array}
 LargeRuleNumerator: \frac{\textcolor{blue}{\rule{1em}{2em}}}{x}
-LaTeX: \text{\LaTeX}, \text{\TeX}
+LaTeX: \text{\LaTeX}, \text{\TeX}, \large \text{\LaTeX}, \text{\TeX}
 LeftRight: \left( x^2 \right) \left\{ x^{x^{x^{x^x}}} \right.
 LeftRightListStyling: a+\left(x+y\right)-x
 LeftRightMiddle: \left( x^2 \middle/ \right) \left\{ x^{x^{x^{x^x}}} \middle/ y \right.\left(x\middle|y\,\middle|\,z\right)
@@ -270,14 +270,16 @@ OldFont: |
 OperatorName: |
     \begin{matrix}
         \operatorname g (z) + 5\operatorname{g}z + \operatorname{Gam-ma}(z) \\
-        \operatorname{Gam ma}(z) + \operatorname{\Gamma}(z) + \operatorname{}x
+        \operatorname{Gam ma}(z) + \operatorname{\Gamma}(z) + \operatorname{}x \\
+        \operatorname*{asin} x + \operatorname*{asin}_y x + \operatorname*{asin}\limits_y x \\[0.3em]
+        {\displaystyle \operatorname*{asin}_y x}
     \end{matrix}
 OpLimits: |
     \begin{matrix}
         {\sin_2^2 \lim_2^2 \int_2^2 \sum_2^2}
         {\displaystyle \lim_2^2 \int_2^2 \intop_2^2 \sum_2^2} \\
         \limsup_{x \rightarrow \infty} x \stackrel{?}= \liminf_{x \rightarrow \infty} x \\
-        \displaystyle \sum_{\substack{0<i<m\\0<j<n}}
+        {\displaystyle \limsup_{x \rightarrow \infty} x\:\: \sum_{\substack{0<i<m\\0<j<n}}}
     \end{matrix}
 OverUnderline: x\underline{x}\underline{\underline{x}}\underline{x_{x_{x_x}}}\underline{x^{x^{x^x}}}\overline{x}\overline{x}\overline{x^{x^{x^x}}} \blue{\overline{\underline{x}}\underline{\overline{x}}}
 OverUnderset: |

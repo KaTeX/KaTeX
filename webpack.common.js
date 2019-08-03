@@ -45,6 +45,10 @@ const targets /*: Array<Target> */ = [
         name: 'contrib/mathtex-script-type',
         entry: './contrib/mathtex-script-type/mathtex-script-type.js',
     },
+    {
+        name: 'contrib/render-a11y-string',
+        entry: './contrib/render-a11y-string/render-a11y-string.js',
+    },
 ];
 
 /**

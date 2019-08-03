@@ -315,15 +315,21 @@ export default class Parser {
 
             if (lex.text === "\\limits" || lex.text === "\\nolimits") {
                 // We got a limit control
-                const opNode = checkNodeType(base, "op");
+                let opNode = checkNodeType(base, "op");
                 if (opNode) {
                     const limits = lex.text === "\\limits";
                     opNode.limits = limits;
                     opNode.alwaysHandleSupSub = true;
                 } else {
-                    throw new ParseError(
-                        "Limit controls must follow a math operator",
-                        lex);
+                    opNode = checkNodeType(base, "operatorname");
+                    if (opNode && opNode.alwaysHandleSupSub) {
+                        const limits = lex.text === "\\limits";
+                        opNode.limits = limits;
+                    } else {
+                        throw new ParseError(
+                            "Limit controls must follow a math operator",
+                            lex);
+                    }
                 }
                 this.consume();
             } else if (lex.text === "^") {
@@ -528,6 +534,22 @@ export default class Parser {
             case "math":
             case "text":
                 return this.parseGroup(name, optional, greediness, undefined, type);
+            case "hbox": {
+                // hbox argument type wraps the argument in the equivalent of
+                // \hbox, which is like \text but switching to \textstyle size.
+                const group = this.parseGroup(
+                    name, optional, greediness, undefined, "text");
+                if (!group) {
+                    return group;
+                }
+                const styledGroup = {
+                    type: "styling",
+                    mode: group.mode,
+                    body: [group],
+                    style: "text", // simulate \textstyle
+                };
+                return styledGroup;
+            }
             case "raw": {
                 if (optional && this.nextToken.text === "{") {
                     return null;

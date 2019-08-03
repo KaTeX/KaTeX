@@ -12,7 +12,7 @@
 const users = [
     {
         caption: 'Khan Academy',
-        image: 'https://avatars0.githubusercontent.com/u/15455',
+        image: '/img/khan-academy.png',
         infoLink: 'https://www.khanacademy.org/',
     },
     {
@@ -135,7 +135,7 @@ const siteConfig = {
 
     // Used for publishing and more
     projectName: 'KaTeX',
-    organizationName: 'Khan',
+    organizationName: 'KaTeX',
 
     headerLinks: [
         {href: '/#demo', label: 'Try'},
