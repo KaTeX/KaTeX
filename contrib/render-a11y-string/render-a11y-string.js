@@ -555,10 +555,6 @@ const handleObject = (
             throw new Error("KaTeX-a11y: array not implemented yet");
         }
 
-        case "keyVals": {
-            throw new Error("KaTeX-a11y: keyVals not implemented yet");
-        }
-
         case "raw": {
             throw new Error("KaTeX-a11y: raw not implemented yet");
         }
