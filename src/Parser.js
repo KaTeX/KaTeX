@@ -971,6 +971,13 @@ export default class Parser {
                         nucleus);
                 }
             }
+            // All nonmathematical Unicode characters are rendered as if they
+            // are in text mode (wrapped in \text) because that's what it
+            // takes to render them in LaTeX.  Setting `mode: this.mode` is
+            // another natural choice (the user requested math mode), but
+            // this makes it more difficult for getCharacterMetrics() to
+            // distinguish Unicode characters without metrics and those for
+            // which we want to simulate the letter M.
             symbol = {
                 type: "textord",
                 mode: "text",
