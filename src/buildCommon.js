@@ -80,9 +80,8 @@ const makeSymbol = function(
             metrics.width, classes);
     } else {
         // TODO(emily): Figure out a good way to only print this in development
-        typeof console !== "undefined" && console.warn(
-            "No character metrics for '" + value + "' in style '" +
-                fontName + "'");
+        typeof console !== "undefined" && console.warn("No character metrics " +
+            `for '${value}' in style '${fontName}' and mode '${mode}'`);
         symbolNode = new SymbolNode(value, 0, 0, 0, 0, 0, classes);
     }
 
