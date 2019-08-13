@@ -3,15 +3,16 @@ All notable changes to this project will be documented in this file. This CHANGE
 
 ## [v0.11.0]
 ### Added
+- **BREAKING CHANGE:** trust setting to indicate whether input text is trusted (#1794)
+  - `\href` and `\url` will break without adjusting the trust setting
 - Add test for double square brackets to katex-spec (#1956)
 - Add option to render only MathML so that its visible (#1966)
 - Support {smallmatrix}, {subarray}, and \substack (#1969)
 - Enable minRuleThickness in rendering options (#1964)
 - Add \plim (#1952)
 - Support Unicode \digamma (#2010)
-- [breaking] trust setting to indicate whether input text is trusted (#1794)
 - Support \operatorname* (#1899)
-- Re-add includegraphics (#2053)
+- Support \includegraphics, with appropriate trust setting (#2053)
 - Add render-a11y-string add-on (#2062)
 
 ### Changed
@@ -21,7 +22,7 @@ All notable changes to this project will be documented in this file. This CHANGE
 - Document mhchem \cf not supported (use \ce instead) (#2008)
 - Replace greenkeeper badge with dependabot badge (#2022)
 - Add Unicode digamma to documentation (#2045)
-- Add katex-xpression to libs page (#2049)
+- Add katex-expression to libs page (#2049)
 - Suggest <!DOCTYPE html> in documentation (#2052)
 - Unicode characters in math render in text mode (#2040)
 
