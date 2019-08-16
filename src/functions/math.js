@@ -10,7 +10,6 @@ defineFunction({
         numArgs: 0,
         allowedInText: true,
         allowedInMath: false,
-        consumeMode: "math",
     },
     handler({funcName, parser}, args) {
         const outerMode = parser.mode;
