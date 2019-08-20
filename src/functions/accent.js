@@ -94,8 +94,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
             accent = buildCommon.staticSvg("vec", options);
             width = buildCommon.svgData.vec[1];
         } else {
-            accent = buildCommon.makeSymbol(
-                group.label, "Main-Regular", group.mode, options);
+            accent = buildCommon.makeOrd({mode: group.mode, text: group.label},
+                options, "textord");
+            accent = assertSymbolDomNode(accent);
             // Remove the italic correction of the accent, because it only serves to
             // shift the accent over to a place we don't want.
             accent.italic = 0;
