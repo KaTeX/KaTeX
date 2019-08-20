@@ -32,6 +32,22 @@ export type TrustContextTypes = {
         url: string,
         protocol?: string,
     |},
+    "\\htmlClass": {|
+        command: "\\htmlClass",
+        class: string,
+    |},
+    "\\htmlId": {|
+        command: "\\htmlId",
+        id: string,
+    |},
+    "\\htmlStyle": {|
+        command: "\\htmlStyle",
+        style: string,
+    |},
+    "\\htmlData": {|
+        command: "\\htmlData",
+        attributes: {[string]: string},
+    |},
 };
 export type AnyTrustContext = $Values<TrustContextTypes>;
 export type TrustFunction = (context: AnyTrustContext) => ?boolean;

@@ -9,7 +9,7 @@
 import ParseError from "./ParseError";
 import Style from "./Style";
 import buildCommon from "./buildCommon";
-import {Anchor} from "./domTree";
+import {Span, Anchor} from "./domTree";
 import utils from "./utils";
 import {checkNodeType} from "./parseNode";
 import {spacings, tightSpacings} from "./spacingData";
@@ -189,8 +189,9 @@ const traverseNonSpaceNodes = function(
 // Check if given node is a partial group, i.e., does not affect spacing around.
 const checkPartialGroup = function(
     node: HtmlDomNode,
-): ?(DocumentFragment<HtmlDomNode> | Anchor) {
-    if (node instanceof DocumentFragment || node instanceof Anchor) {
+): ?(DocumentFragment<HtmlDomNode> | Anchor | DomSpan) {
+    if (node instanceof DocumentFragment || node instanceof Anchor
+        || (node instanceof Span && node.hasClass("enclosing"))) {
         return node;
     }
     return null;
