@@ -952,7 +952,7 @@ defineMacro("\\orange", "\\textcolor{##ffa500}{#1}");
 defineMacro("\\pink", "\\textcolor{##ff00af}{#1}");
 defineMacro("\\red", "\\textcolor{##df0030}{#1}");
 defineMacro("\\green", "\\textcolor{##28ae7b}{#1}");
-defineMacro("\\gray", "\\textcolor{gray}{##1}");
+defineMacro("\\gray", "\\textcolor{gray}{#1}");
 defineMacro("\\purple", "\\textcolor{##9d38bd}{#1}");
 defineMacro("\\blueA", "\\textcolor{##ccfaff}{#1}");
 defineMacro("\\blueB", "\\textcolor{##80f6ff}{#1}");
