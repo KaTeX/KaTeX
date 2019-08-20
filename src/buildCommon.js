@@ -330,7 +330,7 @@ const canCombine = (prev: SymbolNode, next: SymbolNode) => {
 };
 
 /**
- * Combine consequetive domTree.symbolNodes into a single symbolNode.
+ * Combine consecutive domTree.symbolNodes into a single symbolNode.
  * Note: this function mutates the argument.
  */
 const tryCombineChars = (chars: HtmlDomNode[]): HtmlDomNode[] => {
