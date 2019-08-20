@@ -9,7 +9,7 @@ import {strictSettings, nonstrictSettings} from "./helpers";
 describe("unicode", function() {
     it("should parse Latin-1 inside \\text{}", function() {
         expect`\text{ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿÆÇÐØÞßæçðøþ}`
-            .toParse();
+            .toBuild();
     });
 
     it("should not parse Latin-1 outside \\text{} with strict", function() {
@@ -21,19 +21,23 @@ describe("unicode", function() {
 
     it("should parse Latin-1 outside \\text{}", function() {
         expect`ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿÇÐÞçðþ`
-            .toParse(nonstrictSettings);
+            .toBuild(nonstrictSettings);
     });
 
     it("should parse all lower case Greek letters", function() {
-        expect`αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω`.toParse();
+        expect`αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω`.toBuild();
     });
 
     it("should parse math upper case Greek letters", function() {
-        expect`ΓΔΘΛΞΠΣΥΦΨΩ`.toParse();
+        expect`ΓΔΘΛΞΠΣΥΦΨΩ`.toBuild();
     });
 
     it("should parse Cyrillic inside \\text{}", function() {
-        expect`\text{БГДЖЗЙЛФЦШЫЮЯ}`.toParse();
+        expect`\text{БГДЖЗЙЛФЦШЫЮЯ}`.toBuild();
+    });
+
+    it("should parse Cyrillic outside \\text{}", function() {
+        expect`БГДЖЗЙЛФЦШЫЮЯ`.toBuild(nonstrictSettings);
     });
 
     it("should not parse Cyrillic outside \\text{} with strict", function() {
@@ -41,8 +45,13 @@ describe("unicode", function() {
     });
 
     it("should parse CJK inside \\text{}", function() {
-        expect`\text{私はバナナです}`.toParse();
-        expect`\text{여보세요}`.toParse();
+        expect`\text{私はバナナです}`.toBuild();
+        expect`\text{여보세요}`.toBuild();
+    });
+
+    it("should parse CJK outside \\text{}", function() {
+        expect`私はバナナです`.toBuild(nonstrictSettings);
+        expect`여보세요`.toBuild(nonstrictSettings);
     });
 
     it("should not parse CJK outside \\text{} with strict", function() {
@@ -51,7 +60,11 @@ describe("unicode", function() {
     });
 
     it("should parse Devangari inside \\text{}", function() {
-        expect`\text{नमस्ते}`.toParse();
+        expect`\text{नमस्ते}`.toBuild();
+    });
+
+    it("should parse Devangari outside \\text{}", function() {
+        expect`नमस्ते`.toBuild(nonstrictSettings);
     });
 
     it("should not parse Devangari outside \\text{} with strict", function() {
@@ -59,7 +72,11 @@ describe("unicode", function() {
     });
 
     it("should parse Georgian inside \\text{}", function() {
-        expect`\text{გამარჯობა}`.toParse();
+        expect`\text{გამარჯობა}`.toBuild();
+    });
+
+    it("should parse Georgian outside \\text{}", function() {
+        expect`გამარჯობა`.toBuild(nonstrictSettings);
     });
 
     it("should not parse Georgian outside \\text{} with strict", function() {
@@ -67,7 +84,7 @@ describe("unicode", function() {
     });
 
     it("should parse extended Latin characters inside \\text{}", function() {
-        expect`\text{ěščřžůřťďňőİı}`.toParse();
+        expect`\text{ěščřžůřťďňőİı}`.toBuild();
     });
 
     it("should not parse extended Latin outside \\text{} with strict", function() {
