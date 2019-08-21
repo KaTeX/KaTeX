@@ -3079,7 +3079,7 @@ describe("A macro expander", function() {
     // which doesn't treat all four letters as an argument.
     //it("\\TextOrMath should work in a macro passed to \\text", function() {
     //    expect`\text\mode`.toParseLike(r`\text{text}`, new Settings({macros:
-    //        {"\\mode": "\\TextOrMath{text}{math}"});
+    //        {"\\mode": "\\TextOrMath{text}{math}"}});
     //});
 
     it("\\gdef defines macros", function() {
@@ -3144,19 +3144,11 @@ describe("A macro expander", function() {
     });
 
     it("array cells generate groups", () => {
-        expect`\def\x{1}\begin{matrix}\x&\def\x{2}\x&\x\end{matrix}`
-            .toParseLike`\begin{matrix}1&2&1\end{matrix}`;
+        expect`\def\x{1}\begin{matrix}\x&\def\x{2}\x&\x\end{matrix}\x`
+            .toParseLike`\begin{matrix}1&2&1\end{matrix}1`;
+        expect`\def\x{1}\begin{matrix}\def\x{2}\x&\x\end{matrix}\x`
+            .toParseLike`\begin{matrix}2&1\end{matrix}1`;
     });
-
-    // TODO: This doesn't yet work; before the environment gets called,
-    // {matrix} gets consumed which means that the \def gets executed, before
-    // we can create a group. :-(  Issue #1989
-    /*
-    it("array cells generate groups", () => {
-        expect`\def\x{1}\begin{matrix}\def\x{2}&\x\end{matrix}`
-            .toParseLike`\begin{matrix}&1\end{matrix}`;
-    });
-    */
 
     it("\\gdef changes settings.macros", () => {
         const macros = {};

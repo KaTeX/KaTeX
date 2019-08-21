@@ -34,12 +34,12 @@ function getHLines(parser: Parser): boolean[] {
     // Each element in the array tells if the line is dashed.
     const hlineInfo = [];
     parser.consumeSpaces();
-    let nxt = parser.nextToken.text;
+    let nxt = parser.fetch().text;
     while (nxt === "\\hline" || nxt === "\\hdashline") {
         parser.consume();
         hlineInfo.push(nxt === "\\hdashline");
         parser.consumeSpaces();
-        nxt = parser.nextToken.text;
+        nxt = parser.fetch().text;
     }
     return hlineInfo;
 }
@@ -110,7 +110,7 @@ function parseArray(
             };
         }
         row.push(cell);
-        const next = parser.nextToken.text;
+        const next = parser.fetch().text;
         if (next === "&") {
             parser.consume();
         } else if (next === "\\end") {
