@@ -553,7 +553,7 @@ export default class Parser {
                 if (consumeSpaces) {
                     this.consumeSpaces();
                 }
-                if (optional && this.fetch() === "{") {
+                if (optional && this.fetch().text === "{") {
                     return null;
                 }
                 const token = this.parseStringGroup("raw", optional, true);
