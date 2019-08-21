@@ -60,6 +60,8 @@ export interface MacroContextInterface {
      */
     expandMacroAsText(name: string): string | void;
 
+    consumeArg(delims?: ?string[], preserveOutermostBraces?: boolean): Token[];
+
     /**
      * Consume the specified number of arguments from the token stream,
      * and return the resulting array of arguments.
@@ -76,7 +78,11 @@ export interface MacroContextInterface {
 }
 
 /** Macro tokens (in reverse order). */
-export type MacroExpansion = {tokens: Token[], numArgs: number};
+export type MacroExpansion = {
+    tokens: Token[],
+    numArgs: number,
+    delimiters?: string[][],
+};
 
 export type MacroDefinition = string | MacroExpansion |
     (MacroContextInterface => (string | MacroExpansion));
@@ -198,39 +204,59 @@ defineMacro("\\char", function(context) {
 //     \def\macro#1#2#3#4#5#6#7#8#9{expansion}
 // Also the \gdef and \global\def equivalents
 const def = (context, global: boolean) => {
-    let arg = context.consumeArgs(1)[0];
-    if (arg.length !== 1) {
-        throw new ParseError("\\gdef's first argument must be a macro name");
+    let tok = context.popToken();
+    const name = tok.text;
+    if (name[0] !== "\\") {
+        throw new ParseError("Expected a control sequence", tok);
     }
-    const name = arg[0].text;
-    // Count argument specifiers, and check they are in the order #1 #2 ...
+
     let numArgs = 0;
-    arg = context.consumeArgs(1)[0];
-    while (arg.length === 1 && arg[0].text === "#") {
-        arg = context.consumeArgs(1)[0];
-        if (arg.length !== 1) {
-            throw new ParseError(`Invalid argument number length "${arg.length}"`);
+    let preserveOutermostBraces = false;
+    const delimiters = [[]];
+    // <parameter text> contains no braces
+    while (context.future().text !== "{") {
+        tok = context.popToken();
+        if (tok.text === "#") {
+            // If the very last character of the <parameter text> is #, so that
+            // this # is immediately followed by {, TeX will behave as if the {
+            // had been inserted at the right end of both the parameter text
+            // and the replacement text.
+            if (context.future().text === "{") {
+                preserveOutermostBraces = true;
+                break;
+            }
+
+            // A parameter, the first appearance of # must be followed by 1,
+            // the next by 2, and so on; up to nine #’s are allowed
+            tok = context.popToken();
+            if (!(/^[1-9]$/.test(tok.text))) {
+                throw new ParseError(`Invalid argument number "${tok.text}"`);
+            }
+            if (parseInt(tok.text) !== numArgs + 1) {
+                throw new ParseError(`Argument number "${tok.text}" out of order`);
+            }
+            numArgs++;
+            delimiters.push([]);
+        } else if (tok.text === "EOF") {
+            throw new ParseError("Expected a macro definition");
+        } else {
+            delimiters[numArgs].push(tok.text);
         }
-        if (!(/^[1-9]$/.test(arg[0].text))) {
-            throw new ParseError(`Invalid argument number "${arg[0].text}"`);
-        }
-        numArgs++;
-        if (parseInt(arg[0].text) !== numArgs) {
-            throw new ParseError(`Argument number "${arg[0].text}" out of order`);
-        }
-        arg = context.consumeArgs(1)[0];
     }
-    // Final arg is the expansion of the macro
+    // replacement text, enclosed in '{' and '}' and properly nested
+    const tokens = context.consumeArg(null, preserveOutermostBraces);
+
     context.macros.set(name, {
-        tokens: arg,
+        tokens,
         numArgs,
+        delimiters,
     }, global);
     return '';
 };
 defineMacro("\\gdef", (context) => def(context, true));
 defineMacro("\\def", (context) => def(context, false));
 defineMacro("\\global", (context) => {
-    const next = context.consumeArgs(1)[0];
+    const next = context.consumeArg();
     if (next.length !== 1) {
         throw new ParseError("Invalid command after \\global");
     }
@@ -248,7 +274,7 @@ defineMacro("\\global", (context) => {
 // \renewcommand{\macro}[args]{definition}
 // TODO: Optional arguments: \newcommand{\macro}[args][default]{definition}
 const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
-    let arg = context.consumeArgs(1)[0];
+    let arg = context.consumeArg();
     if (arg.length !== 1) {
         throw new ParseError(
             "\\newcommand's first argument must be a macro name");
@@ -266,7 +292,7 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
     }
 
     let numArgs = 0;
-    arg = context.consumeArgs(1)[0];
+    arg = context.consumeArg();
     if (arg.length === 1 && arg[0].text === "[") {
         let argText = '';
         let token = context.expandNextToken();
@@ -279,7 +305,7 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
             throw new ParseError(`Invalid number of arguments: ${argText}`);
         }
         numArgs = parseInt(argText);
-        arg = context.consumeArgs(1)[0];
+        arg = context.consumeArg();
     }
 
     // Final arg is the expansion of the macro
@@ -368,7 +394,7 @@ defineMacro("\u2209", "\\notin");
 
 // Unicode stacked relations
 defineMacro("\u2258", "\\html@mathml{" +
-    "\\mathrel{=\\kern{-1em}\\raisebox{0.4em}{$\\scriptsize\\frown$}}" +
+    "\\mathrel{=\\kern-1em\\raisebox{0.4em}{$\\scriptsize\\frown$}}" +
     "}{\\mathrel{\\char`\u2258}}");
 defineMacro("\u2259",
     "\\html@mathml{\\stackrel{\\tiny\\wedge}{=}}{\\mathrel{\\char`\u2258}}");
@@ -602,7 +628,7 @@ defineMacro("\\thinspace", "\\,");
 // \def\>{\mskip\medmuskip}
 // \renewcommand{\:}{\tmspace+\medmuskip{.2222em}}
 // TODO: \> and math mode of \: should use \medmuskip = 4mu plus 2mu minus 4mu
-defineMacro("\\>", "\\mskip{4mu}");
+defineMacro("\\>", "\\mskip4mu");
 defineMacro("\\:", "\\tmspace+{4mu}{.2222em}");
 // \let\medspace\:
 defineMacro("\\medspace", "\\:");

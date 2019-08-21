@@ -80,6 +80,7 @@ defineFunction({
     ],
     props: {
         numArgs: 1,
+        argTypes: ["primitive"],
     },
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
@@ -140,6 +141,7 @@ defineFunction({
     names: ["\\right"],
     props: {
         numArgs: 1,
+        argTypes: ["primitive"],
     },
     handler: (context, args) => {
         // \left case below triggers parsing of \right in
@@ -165,6 +167,7 @@ defineFunction({
     names: ["\\left"],
     props: {
         numArgs: 1,
+        argTypes: ["primitive"],
     },
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
@@ -298,6 +301,7 @@ defineFunction({
     names: ["\\middle"],
     props: {
         numArgs: 1,
+        argTypes: ["primitive"],
     },
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);

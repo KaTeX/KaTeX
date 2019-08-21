@@ -65,6 +65,7 @@ defineFunction({
     ],
     props: {
         numArgs: 1,
+        argTypes: ["primitive"],
     },
     handler({parser, funcName}, args) {
         const body = args[0];

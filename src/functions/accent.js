@@ -251,6 +251,7 @@ defineFunction({
         numArgs: 1,
         allowedInText: true,
         allowedInMath: false,
+        argTypes: ["primitive"],
     },
     handler: (context, args) => {
         const base = args[0];

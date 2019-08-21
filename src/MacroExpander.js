@@ -7,6 +7,7 @@
 import functions from "./functions";
 import symbols from "./symbols";
 import Lexer from "./Lexer";
+import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
 import type {Mode} from "./types";
 import ParseError from "./ParseError";
@@ -109,6 +110,30 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
+     * Find an macro argument without expanding tokens and append the array of
+     * tokens to the token stack.
+     */
+    findArgument(isOptional: boolean) {
+        let argument;
+        if (isOptional) {
+            if (this.future().text !== "[") {
+                return false;
+            }
+            this.popToken(); // don't include [
+            argument = this.consumeArg(["]"]);
+        } else {
+            argument = this.consumeArg();
+        }
+
+        // indicate the end of an argument
+        const pos = this.lexer.tokenRegex.lastIndex;
+        this.pushToken(new Token("EOF", new SourceLocation(this.lexer, pos, pos)));
+
+        this.pushTokens(argument);
+        return true;
+    }
+
+    /**
      * Consume all following space tokens, without expansion.
      */
     consumeSpaces() {
@@ -122,41 +147,81 @@ export default class MacroExpander implements MacroContextInterface {
         }
     }
 
+    consumeArg(delims?: ?string[], preserveOutermostBraces?: boolean): Token[] {
+        // The argument for a delimited parameter is the shortest (possibly
+        // empty) sequence of tokens with properly nested {...} groups that is
+        // followed ... by this particular list of non-parameter tokens.
+        // The argument for an undelimited parameter is the next nonblank
+        // token, unless that token is ‘{’, when the argument will be the
+        // entire {...} group that follows.
+        const arg: Token[] = [];
+        const isDelimited = delims && delims.length > 0;
+        if (!isDelimited) {
+            // Ignore spaces between arguments.  As the TeXbook says:
+            // "After you have said ‘\def\row#1#2{...}’, you are allowed to
+            //  put spaces between the arguments (e.g., ‘\row x n’), because
+            //  TeX doesn’t use single spaces as undelimited arguments."
+            this.consumeSpaces();
+        }
+        const startOfArg = this.future();
+        let depth = 0;
+        let match = 0;
+        do {
+            const tok = this.popToken();
+            arg.push(tok);
+            if (tok.text === "{") {
+                ++depth;
+            } else if (tok.text === "}") {
+                --depth;
+                if (depth === -1) {
+                    throw new ParseError("Extra }", tok);
+                }
+            } else if (tok.text === "EOF") {
+                throw new ParseError("Unexpected end of input in a macro argument" +
+                    ", expected '" + (delims && isDelimited ? delims[match] : "}") +
+                    "'", tok);
+            }
+            if (delims && isDelimited) {
+                if (depth === 0 && tok.text === delims[match]) {
+                    ++match;
+                    if (match === delims.length) {
+                        arg.splice(-match, match);
+                        break;
+                    }
+                } else {
+                    match = 0;
+                }
+            }
+        } while (depth !== 0 || isDelimited);
+        // If the argument found ... has the form ‘{<nested tokens>}’,
+        // ... the outermost braces enclosing the argument are removed
+        if (!preserveOutermostBraces &&
+                startOfArg.text === "{" && arg[arg.length - 1].text === "}") {
+            arg.pop();
+            arg.shift();
+        }
+        arg.reverse(); // to fit in with stack order
+        return arg;
+    }
+
     /**
      * Consume the specified number of arguments from the token stream,
      * and return the resulting array of arguments.
      */
-    consumeArgs(numArgs: number): Token[][] {
-        const args: Token[][] = [];
-        // obtain arguments, either single token or balanced {…} group
-        for (let i = 0; i < numArgs; ++i) {
-            this.consumeSpaces();  // ignore spaces before each argument
-            const startOfArg = this.popToken();
-            if (startOfArg.text === "{") {
-                const arg: Token[] = [];
-                let depth = 1;
-                while (depth !== 0) {
-                    const tok = this.popToken();
-                    arg.push(tok);
-                    if (tok.text === "{") {
-                        ++depth;
-                    } else if (tok.text === "}") {
-                        --depth;
-                    } else if (tok.text === "EOF") {
-                        throw new ParseError(
-                            "End of input in macro argument",
-                            startOfArg);
-                    }
+    consumeArgs(numArgs: number, delimiters?: string[][]): Token[][] {
+        if (delimiters && delimiters[0].length > 0) {
+            const delims = delimiters[0];
+            for (let i = 0; i < delims.length; i++) {
+                const tok = this.popToken();
+                if (delims[i] !== tok.text) {
+                    throw new ParseError("Use doesn't match its definition", tok);
                 }
-                arg.pop(); // remove last }
-                arg.reverse(); // like above, to fit in with stack order
-                args[i] = arg;
-            } else if (startOfArg.text === "EOF") {
-                throw new ParseError(
-                    "End of input expecting macro argument");
-            } else {
-                args[i] = [startOfArg];
             }
+        }
+
+        const args: Token[][] = [];
+        for (let i = 0; i < numArgs; i++) {
+            args.push(this.consumeArg(delimiters && delimiters[i + 1]));
         }
         return args;
     }
@@ -196,8 +261,8 @@ export default class MacroExpander implements MacroContextInterface {
                 "need to increase maxExpand setting");
         }
         let tokens = expansion.tokens;
+        const args = this.consumeArgs(expansion.numArgs, expansion.delimiters);
         if (expansion.numArgs) {
-            const args = this.consumeArgs(expansion.numArgs);
             // paste arguments in place of the placeholders
             tokens = tokens.slice(); // make a shallow copy
             for (let i = tokens.length - 1; i >= 0; --i) {

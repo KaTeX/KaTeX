@@ -14,7 +14,7 @@ defineFunction({
     names: ["\\kern", "\\mkern", "\\hskip", "\\mskip"],
     props: {
         numArgs: 1,
-        argTypes: ["size"],
+        argTypes: ["primitive_size"],
         allowedInText: true,
     },
     handler({parser, funcName}, args) {

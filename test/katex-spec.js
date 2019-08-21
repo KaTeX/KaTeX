@@ -1055,12 +1055,12 @@ describe("A rule parser", function() {
 });
 
 describe("A kern parser", function() {
-    const emKern = r`\kern{1em}`;
-    const exKern = r`\kern{1ex}`;
-    const muKern = r`\mkern{1mu}`;
-    const abKern = r`a\kern{1em}b`;
-    const badUnitRule = r`\kern{1au}`;
-    const noNumberRule = r`\kern{em}`;
+    const emKern = r`\kern1em`;
+    const exKern = r`\kern1ex`;
+    const muKern = r`\mkern1mu`;
+    const abKern = r`a\kern1emb`;
+    const badUnitRule = r`\kern1au`;
+    const noNumberRule = r`\kern em`;
 
     it("should list the correct units", function() {
         const emParse = getParsed(emKern)[0];
@@ -1080,12 +1080,12 @@ describe("A kern parser", function() {
     });
 
     it("should parse negative sizes", function() {
-        const parse = getParsed`\kern{-1em}`[0];
+        const parse = getParsed`\kern-1em`[0];
         expect(parse.dimension.number).toBeCloseTo(-1);
     });
 
     it("should parse positive sizes", function() {
-        const parse = getParsed`\kern{+1em}`[0];
+        const parse = getParsed`\kern+1em`[0];
         expect(parse.dimension.number).toBeCloseTo(1);
     });
 });
@@ -1634,7 +1634,6 @@ describe("A comment parser", function() {
     });
 
     it("should parse comments in size and color groups", () => {
-        expect("\\kern{1 %kern\nem}").toParse();
         expect("\\kern1 %kern\nem").toParse();
         expect("\\color{#f00%red\n}").toParse();
     });
@@ -2509,23 +2508,6 @@ describe("A smash builder", function() {
     });
 });
 
-describe("A document fragment", function() {
-    it("should have paddings applied inside an extensible arrow", function() {
-        const markup = katex.renderToString("\\tiny\\xrightarrow\\textcolor{red}{x}");
-        expect(markup).toContain("x-arrow-pad");
-    });
-
-    it("should have paddings applied inside an enclose", function() {
-        const markup = katex.renderToString(r`\fbox\textcolor{red}{x}`);
-        expect(markup).toContain("boxpad");
-    });
-
-    it("should have paddings applied inside a square root", function() {
-        const markup = katex.renderToString(r`\sqrt\textcolor{red}{x}`);
-        expect(markup).toContain("padding-left");
-    });
-});
-
 describe("A parser error", function() {
     it("should report the position of an error", function() {
         try {
@@ -2766,11 +2748,6 @@ describe("href and url commands", function() {
 });
 
 describe("A raw text parser", function() {
-    it("should not not parse a mal-formed string", function() {
-        // In the next line, the first character passed to \includegraphics is a
-        // Unicode combining character. So this is a test that the parser will catch a bad string.
-        expect("\\includegraphics[\u030aheight=0.8em, totalheight=0.9em, width=0.9em]{" + "https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").not.toParse();
-    });
     it("should return null for a omitted optional string", function() {
         expect("\\includegraphics{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").toParse();
     });
@@ -3084,7 +3061,6 @@ describe("A macro expander", function() {
 
     it("\\gdef defines macros", function() {
         expect`\gdef\foo{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
-        expect`\gdef{\foo}{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
         expect`\gdef\foo{hi}\foo+\text{\foo}`.toParseLike`hi+\text{hi}`;
         expect`\gdef\foo#1{hi #1}\text{\foo{Alice}, \foo{Bob}}`
             .toParseLike`\text{hi Alice, hi Bob}`;
@@ -3093,14 +3069,13 @@ describe("A macro expander", function() {
         expect`\gdef\foo#1#3{}`.not.toParse();
         expect`\gdef\foo#1#2#3#4#5#6#7#8#9{}`.toParse();
         expect`\gdef\foo#1#2#3#4#5#6#7#8#9#10{}`.not.toParse();
-        expect`\gdef\foo#{}`.not.toParse();
-        expect`\gdef\foo\bar`.toParse();
+        expect`\gdef\foo#{}`.toParse();
+        expect`\gdef\foo\bar`.not.toParse();
         expect`\gdef{\foo\bar}{}`.not.toParse();
         expect`\gdef{}{}`.not.toParse();
-        // TODO: These shouldn't work, but `1` and `{1}` are currently treated
-        // the same, as are `\foo` and `{\foo}`.
+        // TODO: This shouldn't work, but `1` and `{1}` are currently treated
+        // the same.
         //expect`\gdef\foo1`.not.toParse();
-        //expect`\gdef{\foo}{}`.not.toParse();
     });
 
     it("\\def works locally", () => {
@@ -3214,7 +3189,7 @@ describe("A macro expander", function() {
     // \hspace.
     it("should treat \\hspace, \\hskip like \\kern", function() {
         expect`\hspace{1em}`.toParseLike`\kern1em`;
-        expect`\hskip{1em}`.toParseLike`\kern1em`;
+        expect`\hskip1em`.toParseLike`\kern1em`;
     });
 
     it("should expand \\limsup as expected", () => {

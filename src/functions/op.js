@@ -230,6 +230,7 @@ defineFunction({
     names: ["\\mathop"],
     props: {
         numArgs: 1,
+        argTypes: ["primitive"],
     },
     handler: ({parser}, args) => {
         const body = args[0];
