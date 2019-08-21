@@ -444,7 +444,7 @@ defineFunction({
     names: ["\\above"],
     props: {
         numArgs: 1,
-        argTypes: ["size"],
+        argTypes: ["primitive_size"],
         infix: true,
     },
     handler({parser, funcName, token}, args) {
