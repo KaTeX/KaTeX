@@ -466,7 +466,7 @@ use `\ce` instead|
 |:---------------|:------------|:-----------------|
 |\i|$\text{\i}$|`\text{\i}`|
 |\idotsint|<span style="color:firebrick;">Not supported</span>||
-|\iddots|<span style="color:firebrick;">Not supported</span>|[Issue #1223](https://github.com/KaTeX/KaTeX/issues/1223)|
+|\iddots|$\iddots$|
 |\if|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
 |\iff|$A\iff B$|`A\iff B`|
 |\ifmode|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
