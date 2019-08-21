@@ -11,7 +11,7 @@ const target = path.join(__dirname, 'unicodeSymbols.js');
 const targetMtime = fs.statSync(target).mtime;
 if (fs.statSync(__filename).mtime <= targetMtime && fs.statSync(
         path.join(__dirname, 'unicodeAccents.js')).mtime <= targetMtime) {
-    return;
+    process.exit(0);
 }
 
 require('@babel/register');

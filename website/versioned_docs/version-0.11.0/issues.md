@@ -1,6 +1,7 @@
 ---
-id: issues
+id: version-0.11.0-issues
 title: Common Issues
+original_id: issues
 ---
 - Be sure to include `<!DOCTYPE html>` at the top of your HTML file, as
   otherwise your browser will render in "[quirks mode](https://developer.mozilla.org/en-US/docs/Web/HTML/Quirks_Mode_and_Standards_Mode)"

@@ -14,7 +14,7 @@ function init() {
     input.addEventListener("input", reprocess, false);
     permalink.addEventListener("click", setSearch);
 
-    const options = {displayMode: true, throwOnError: true};
+    const options = {displayMode: true, throwOnError: true, trust: true};
     const macros = {};
     const query = queryString.parse(window.location.search);
 
@@ -48,6 +48,11 @@ function init() {
         } if (query.strict && query.strict.match(/^(w)/)) {
             options.strict = "warn";
         }
+    }
+
+    // Use `trust=0` (or `=f`/`=false`/`=n`/`=no`) to not trust input.
+    if (query.trust && query.trust.match(/^(0|f|n)/)) {
+        options.trust = false;
     }
 
     // The `before` or `pre` search parameter puts normal text before the math.
