@@ -129,7 +129,7 @@ const users = [
         caption: 'Notable',
         image: 'https://raw.githubusercontent.com/notable/notable/master/resources/icon/icon.png',
         infoLink: 'https://github.com/notable/notable',
-    }
+    },
 ];
 
 const siteConfig = {
