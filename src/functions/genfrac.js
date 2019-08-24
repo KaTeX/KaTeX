@@ -1,5 +1,5 @@
 // @flow
-import defineFunction from "../defineFunction";
+import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
@@ -382,15 +382,17 @@ defineFunction({
         const denom = args[5];
 
         // Look into the parse nodes to get the desired delimiters.
-        let leftNode = checkNodeType(args[0], "atom");
+        let leftNode = ordargument(args[0])[0];
+        leftNode = checkNodeType(leftNode, "atom");
         if (leftNode) {
-            leftNode = assertAtomFamily(args[0], "open");
+            leftNode = assertAtomFamily(leftNode, "open");
         }
         const leftDelim = leftNode ? delimFromValue(leftNode.text) : null;
 
-        let rightNode = checkNodeType(args[1], "atom");
+        let rightNode = ordargument(args[1])[0];
+        rightNode = checkNodeType(rightNode, "atom");
         if (rightNode) {
-            rightNode = assertAtomFamily(args[1], "close");
+            rightNode = assertAtomFamily(rightNode, "close");
         }
         const rightDelim = rightNode ? delimFromValue(rightNode.text) : null;
 

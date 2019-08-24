@@ -107,7 +107,7 @@ defineFunction({
             type: "mclass",
             mode: parser.mode,
             mclass: binrelClass(args[0]),
-            body: [args[1]],
+            body: ordargument(args[1]),
             isCharacterBox: utils.isCharacterBox(args[1]),
         };
     },
