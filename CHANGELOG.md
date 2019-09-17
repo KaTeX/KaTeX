@@ -2,9 +2,11 @@
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
 ## [v0.11.1]
-### Fixed
+### Changed
 - [Security] Bump mixin-deep from 1.3.1 to 1.3.2 (#2090)
 - [Security] Bump eslint-utils from 1.3.1 to 1.4.2 (#2089)
+
+### Fixed
 - Fix parse timing by separating consume() into fetch() and consume() (#2054)
 - Use current font for accents (#2066)
 - Fix \gray's macro definition (#2075)
