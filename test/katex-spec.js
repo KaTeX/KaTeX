@@ -3162,6 +3162,25 @@ describe("A macro expander", function() {
         expect(macros["\\foo"]).toBeFalsy();
     });
 
+    it("\\def changes settings.macros with globalGroup", () => {
+        const macros = {};
+        expect`\gdef\foo{1}`.toParse(new Settings({macros, globalGroup: true}));
+        expect(macros["\\foo"]).toBeTruthy();
+    });
+
+    it("\\newcommand doesn't change settings.macros", () => {
+        const macros = {};
+        expect`\newcommand\foo{x^2}\foo+\foo`.toParse(new Settings({macros}));
+        expect(macros["\\foo"]).toBeFalsy();
+    });
+
+    it("\\newcommand changes settings.macros with globalGroup", () => {
+        const macros = {};
+        expect`\newcommand\foo{x^2}\foo+\foo`.toParse(
+            new Settings({macros, globalGroup: true}));
+        expect(macros["\\foo"]).toBeTruthy();
+    });
+
     it("\\newcommand defines new macros", () => {
         expect`\newcommand\foo{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
         expect`\newcommand{\foo}{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
