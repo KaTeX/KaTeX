@@ -86,6 +86,11 @@ const users = [
         infoLink: 'https://namu.wiki/',
     },
     {
+        caption: 'Notable',
+        image: 'https://raw.githubusercontent.com/notable/notable/master/resources/icon/icon.png',
+        infoLink: 'https://github.com/notable/notable',
+    },
+    {
         caption: 'Observable',
         image: 'https://avatars0.githubusercontent.com/u/30080011',
         infoLink: 'https://observablehq.com/',
@@ -124,11 +129,6 @@ const users = [
         caption: 'Vade Mecum Shelf',
         image: '/img/vade_mecum_shelf_logo.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
-    },
-    {
-        caption: 'Notable',
-        image: 'https://raw.githubusercontent.com/notable/notable/master/resources/icon/icon.png',
-        infoLink: 'https://github.com/notable/notable',
     },
 ];
 
