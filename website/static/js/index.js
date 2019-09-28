@@ -48,10 +48,12 @@ window.WebFontConfig = {
     }
 
     var katexOptions = ["displayMode", "leqno", "fleqn", "throwOnError",
-        "errorColor", "strict", "macros"].map(function(id) {
+        "errorColor", "strict", "trust", "macros"].map(function(id) {
             var el = document.getElementById(id);
             if (el.type === "checkbox") {
-                if (typeof data[id] === "boolean") {
+                if (typeof data[id] === "boolean" && !(id === "trust" && data[id] &&
+                        // eslint-disable-next-line no-alert, max-len
+                        !confirm("Enable 'trust' setting? Don't enable if you don't trust the source."))) {
                     el.checked = data[id];
                 }
             } else if (data[id]) {
