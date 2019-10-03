@@ -30,7 +30,7 @@ module.exports = function(md, options) {
 
     function renderKatex(source, displayMode) {
         return katex.renderToString(source,
-            {displayMode, throwOnError: false, trust: true});
+            {displayMode, throwOnError: false, trust: true, strict: false});
     }
 
     /**
