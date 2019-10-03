@@ -655,6 +655,10 @@ const handleObject = (
             break;
         }
 
+        case "html": {
+            throw new Error("KaTeX-a11y: html not implemented yet");
+        }
+
         default:
             (tree.type: empty);
             throw new Error("KaTeX a11y un-recognized type: " + tree.type);
