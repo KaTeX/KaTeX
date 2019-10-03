@@ -94,7 +94,8 @@
             }]
         },
         "env": {
-            "node": false
+            "node": false,
+            "jest": false
         }
     }],
     "root": true
