@@ -95,7 +95,7 @@ defineFunction({
 // Old font changing functions
 defineFunction({
     type: "font",
-    names: ["\\rm", "\\sf", "\\tt", "\\bf", "\\it"],
+    names: ["\\rm", "\\sf", "\\tt", "\\bf", "\\it", "\\cal"],
     props: {
         numArgs: 0,
         allowedInText: true,
