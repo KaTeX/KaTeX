@@ -501,14 +501,11 @@ export default class Parser {
 
             const arg = this.parseGroupOfType(`argument to '${func}'`,
                 argType, baseGreediness);
-            if (argToken != null) {
+            if (argToken != null) { // isMacro
+                this.expect("EOF");
                 arg.loc = argToken.loc;
             }
             (isOptional ? optArgs : args).push(arg);
-
-            if (isMacro) {
-                this.expect("EOF");
-            }
         }
 
         return {args, optArgs};
