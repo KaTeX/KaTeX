@@ -108,10 +108,12 @@ defineMacro("\\@secondoftwo", function(context) {
 });
 
 // LaTeX's \@ifnextchar{#1}{#2}{#3} looks ahead to the next (unexpanded)
-// symbol.  If it matches #1, then the macro expands to #2; otherwise, #3.
-// Note, however, that it does not consume the next symbol in either case.
+// symbol that isn't a space, consuming any spaces but not consuming the
+// first nonspace character.  If that nonspace character matches #1, then
+// the macro expands to #2; otherwise, it expands to #3.
 defineMacro("\\@ifnextchar", function(context) {
     const args = context.consumeArgs(3);  // symbol, if, else
+    context.consumeSpaces();
     const nextToken = context.future();
     if (args[0].length === 1 && args[0][0].text === nextToken.text) {
         return {tokens: args[1], numArgs: 0};
