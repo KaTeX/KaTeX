@@ -714,15 +714,12 @@ export default class Parser {
         mode?: Mode,
     ): AnyParseNode {
         const outerMode = this.mode;
-        // Switch to specified mode
-        if (mode) {
+        if (mode) { // Switch to specified mode
             this.switchMode(mode);
         }
 
-        // Start a new group namespace
         this.gullet.beginGroup();
         const expression = this.parseExpression(false, "EOF");
-        // End group namespace before consuming symbol after close brace
         this.gullet.endGroup();
         const result = {
             type: "ordgroup",
@@ -730,8 +727,7 @@ export default class Parser {
             body: expression,
         };
 
-        // Switch mode back
-        if (mode) {
+        if (mode) { // Switch mode back
             this.switchMode(outerMode);
         }
         return result;

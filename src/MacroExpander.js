@@ -117,7 +117,7 @@ export default class MacroExpander implements MacroContextInterface {
         let end;
         let tokens;
         if (isOptional) {
-            if (this.future().text !== "[") {
+            if (this.future().text !== "[") { // \@ifnextchar
                 return null;
             }
             start = this.popToken(); // don't include [
