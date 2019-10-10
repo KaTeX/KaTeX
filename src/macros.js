@@ -60,7 +60,7 @@ export interface MacroContextInterface {
      */
     expandMacroAsText(name: string): string | void;
 
-    consumeArg(delims?: ?string[], preserveOutermostBraces?: boolean): Token[];
+    consumeArg(delims?: ?string[], preserveOutermostBraces?: boolean): MacroArg;
 
     /**
      * Consume the specified number of arguments from the token stream,
@@ -76,6 +76,12 @@ export interface MacroContextInterface {
      */
     isDefined(name: string): boolean;
 }
+
+export type MacroArg = {
+    tokens: Token[],
+    start: Token,
+    end: Token
+};
 
 /** Macro tokens (in reverse order). */
 export type MacroExpansion = {
@@ -244,7 +250,7 @@ const def = (context, global: boolean) => {
         }
     }
     // replacement text, enclosed in '{' and '}' and properly nested
-    const tokens = context.consumeArg(null, preserveOutermostBraces);
+    const {tokens} = context.consumeArg(null, preserveOutermostBraces);
 
     context.macros.set(name, {
         tokens,
@@ -256,7 +262,7 @@ const def = (context, global: boolean) => {
 defineMacro("\\gdef", (context) => def(context, true));
 defineMacro("\\def", (context) => def(context, false));
 defineMacro("\\global", (context) => {
-    const next = context.consumeArg();
+    const next = context.consumeArg().tokens;
     if (next.length !== 1) {
         throw new ParseError("Invalid command after \\global");
     }
@@ -274,7 +280,7 @@ defineMacro("\\global", (context) => {
 // \renewcommand{\macro}[args]{definition}
 // TODO: Optional arguments: \newcommand{\macro}[args][default]{definition}
 const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
-    let arg = context.consumeArg();
+    let arg = context.consumeArg().tokens;
     if (arg.length !== 1) {
         throw new ParseError(
             "\\newcommand's first argument must be a macro name");
@@ -292,7 +298,7 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
     }
 
     let numArgs = 0;
-    arg = context.consumeArg();
+    arg = context.consumeArg().tokens;
     if (arg.length === 1 && arg[0].text === "[") {
         let argText = '';
         let token = context.expandNextToken();
@@ -305,7 +311,7 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
             throw new ParseError(`Invalid number of arguments: ${argText}`);
         }
         numArgs = parseInt(argText);
-        arg = context.consumeArg();
+        arg = context.consumeArg().tokens;
     }
 
     // Final arg is the expansion of the macro

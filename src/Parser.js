@@ -485,23 +485,29 @@ export default class Parser {
                 isMacro = false;
             }
 
+            let argToken;
             if (isMacro) {
                 if (argType === "url") {
                     this.gullet.lexer.setCatcode("%", 13); // active character
                 }
-                if (!this.gullet.findArgument(isOptional)) {
+                argToken = this.gullet.scanArgument(isOptional);
+                this.gullet.lexer.setCatcode("%", 14); // comment character
+
+                if (argToken == null) {
                     optArgs.push(null);
                     continue;
                 }
-                this.gullet.lexer.setCatcode("%", 14); // comment character
             }
 
             const arg = this.parseGroupOfType(`argument to '${func}'`,
                 argType, baseGreediness);
+            if (argToken != null) {
+                arg.loc = argToken.loc;
+            }
             (isOptional ? optArgs : args).push(arg);
 
             if (isMacro) {
-                this.consume();
+                this.expect("EOF");
             }
         }
 
@@ -715,15 +721,12 @@ export default class Parser {
 
         // Start a new group namespace
         this.gullet.beginGroup();
-        const firstToken = this.fetch();
         const expression = this.parseExpression(false, "EOF");
-        const lastToken = this.fetch();
         // End group namespace before consuming symbol after close brace
         this.gullet.endGroup();
         const result = {
             type: "ordgroup",
             mode: this.mode,
-            loc: SourceLocation.range(firstToken, lastToken),
             body: expression,
         };
 

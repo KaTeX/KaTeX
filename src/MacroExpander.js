@@ -7,14 +7,13 @@
 import functions from "./functions";
 import symbols from "./symbols";
 import Lexer from "./Lexer";
-import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
 import type {Mode} from "./types";
 import ParseError from "./ParseError";
 import Namespace from "./Namespace";
 import builtinMacros from "./macros";
 
-import type {MacroContextInterface, MacroDefinition, MacroExpansion}
+import type {MacroContextInterface, MacroDefinition, MacroExpansion, MacroArg}
     from "./macros";
 import type Settings from "./Settings";
 
@@ -111,26 +110,27 @@ export default class MacroExpander implements MacroContextInterface {
 
     /**
      * Find an macro argument without expanding tokens and append the array of
-     * tokens to the token stack.
+     * tokens to the token stack. Uses Token as a container for the result.
      */
-    findArgument(isOptional: boolean) {
-        let argument;
+    scanArgument(isOptional: boolean): ?Token {
+        let start;
+        let end;
+        let tokens;
         if (isOptional) {
             if (this.future().text !== "[") {
-                return false;
+                return null;
             }
-            this.popToken(); // don't include [
-            argument = this.consumeArg(["]"]);
+            start = this.popToken(); // don't include [
+            ({tokens, end} = this.consumeArg(["]"]));
         } else {
-            argument = this.consumeArg();
+            ({tokens, start, end} = this.consumeArg());
         }
 
         // indicate the end of an argument
-        const pos = this.lexer.tokenRegex.lastIndex;
-        this.pushToken(new Token("EOF", new SourceLocation(this.lexer, pos, pos)));
+        this.pushToken(new Token("EOF", end.loc));
 
-        this.pushTokens(argument);
-        return true;
+        this.pushTokens(tokens);
+        return start.range(end, "");
     }
 
     /**
@@ -147,14 +147,14 @@ export default class MacroExpander implements MacroContextInterface {
         }
     }
 
-    consumeArg(delims?: ?string[], preserveOutermostBraces?: boolean): Token[] {
+    consumeArg(delims?: ?string[], preserveOutermostBraces?: boolean): MacroArg {
         // The argument for a delimited parameter is the shortest (possibly
         // empty) sequence of tokens with properly nested {...} groups that is
         // followed ... by this particular list of non-parameter tokens.
         // The argument for an undelimited parameter is the next nonblank
         // token, unless that token is ‘{’, when the argument will be the
         // entire {...} group that follows.
-        const arg: Token[] = [];
+        const tokens: Token[] = [];
         const isDelimited = delims && delims.length > 0;
         if (!isDelimited) {
             // Ignore spaces between arguments.  As the TeXbook says:
@@ -163,12 +163,13 @@ export default class MacroExpander implements MacroContextInterface {
             //  TeX doesn’t use single spaces as undelimited arguments."
             this.consumeSpaces();
         }
-        const startOfArg = this.future();
+        const start = this.future();
+        let tok;
         let depth = 0;
         let match = 0;
         do {
-            const tok = this.popToken();
-            arg.push(tok);
+            tok = this.popToken();
+            tokens.push(tok);
             if (tok.text === "{") {
                 ++depth;
             } else if (tok.text === "}") {
@@ -185,7 +186,7 @@ export default class MacroExpander implements MacroContextInterface {
                 if (depth === 0 && tok.text === delims[match]) {
                     ++match;
                     if (match === delims.length) {
-                        arg.splice(-match, match);
+                        tokens.splice(-match, match);
                         break;
                     }
                 } else {
@@ -196,12 +197,12 @@ export default class MacroExpander implements MacroContextInterface {
         // If the argument found ... has the form ‘{<nested tokens>}’,
         // ... the outermost braces enclosing the argument are removed
         if (!preserveOutermostBraces &&
-                startOfArg.text === "{" && arg[arg.length - 1].text === "}") {
-            arg.pop();
-            arg.shift();
+                start.text === "{" && tokens[tokens.length - 1].text === "}") {
+            tokens.pop();
+            tokens.shift();
         }
-        arg.reverse(); // to fit in with stack order
-        return arg;
+        tokens.reverse(); // to fit in with stack order
+        return {tokens, start, end: tok};
     }
 
     /**
@@ -221,7 +222,7 @@ export default class MacroExpander implements MacroContextInterface {
 
         const args: Token[][] = [];
         for (let i = 0; i < numArgs; i++) {
-            args.push(this.consumeArg(delimiters && delimiters[i + 1]));
+            args.push(this.consumeArg(delimiters && delimiters[i + 1]).tokens);
         }
         return args;
     }

@@ -71,8 +71,8 @@ describe("Parser:", function() {
     describe("#parseImplicitGroup", function() {
         it("reports unknown environments", function() {
             expect`\begin{foo}bar\end{foo}`.toFailWithParseError(
-                   "No such environment: foo at position 8:" +
-                   " \\begin{f̲o̲o̲}̲bar\\end{foo}");
+                   "No such environment: foo at position 7:" +
+                   " \\begin{̲f̲o̲o̲}̲bar\\end{foo}");
         });
         it("reports mismatched environments", function() {
             expect`\begin{pmatrix}1&2\\3&4\end{bmatrix}+5`
