@@ -290,22 +290,22 @@ describe("Lexer:", function() {
         it("reject 3-digit hex notation without #", function() {
             expect`\textcolor{1a2}{foo}`.toFailWithParseError(
                    "Invalid color: '1a2'" +
-                   " at position 12: \\textcolor{1̲a̲2̲}{foo}");
+                   " at position 11: \\textcolor{̲1̲a̲2̲}̲{foo}");
         });
     });
 
     describe("#_innerLexSize", function() {
         it("reject size without unit", function() {
             expect`\rule{0}{2em}`.toFailWithParseError(
-                   "Invalid size: '0' at position 7: \\rule{0̲}{2em}");
+                   "Invalid size: '0' at position 6: \\rule{̲0̲}̲{2em}");
         });
         it("reject size with bogus unit", function() {
             expect`\rule{1au}{2em}`.toFailWithParseError(
-                   "Invalid unit: 'au' at position 7: \\rule{1̲a̲u̲}{2em}");
+                   "Invalid unit: 'au' at position 6: \\rule{̲1̲a̲u̲}̲{2em}");
         });
         it("reject size without number", function() {
             expect`\rule{em}{2em}`.toFailWithParseError(
-                   "Invalid size: 'em' at position 7: \\rule{e̲m̲}{2em}");
+                   "Invalid size: 'em' at position 6: \\rule{̲e̲m̲}̲{2em}");
         });
     });
 

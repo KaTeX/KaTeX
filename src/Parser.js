@@ -476,36 +476,22 @@ export default class Parser {
 
         for (let i = 0; i < totalArgs; i++) {
             let argType = funcData.argTypes && funcData.argTypes[i];
-            let isMacro = !argType || argType.indexOf("primitive") !== 0;
             const isOptional = i < funcData.numOptionalArgs;
 
-            // \sqrt is a macro only if an optional argument exists
+            // \sqrt is primitive if the optional argument doesn't exist
             if (funcData.type === "sqrt" && i === 1 && optArgs[0] == null) {
                 argType = "primitive";
-                isMacro = false;
-            }
-
-            let argToken;
-            if (isMacro) {
-                if (argType === "url") {
-                    this.gullet.lexer.setCatcode("%", 13); // active character
-                }
-                argToken = this.gullet.scanArgument(isOptional);
-                this.gullet.lexer.setCatcode("%", 14); // comment character
-
-                if (argToken == null) {
-                    optArgs.push(null);
-                    continue;
-                }
             }
 
             const arg = this.parseGroupOfType(`argument to '${func}'`,
-                argType, baseGreediness);
-            if (argToken != null) { // isMacro
-                this.expect("EOF");
-                arg.loc = argToken.loc;
+                argType, isOptional, baseGreediness);
+            if (isOptional) {
+                optArgs.push(arg);
+            } else if (arg != null) {
+                args.push(arg);
+            } else { // should be unreachable
+                throw new ParseError("Null argument, please report this as a bug");
             }
-            (isOptional ? optArgs : args).push(arg);
         }
 
         return {args, optArgs};
@@ -517,39 +503,43 @@ export default class Parser {
     parseGroupOfType(
         name: string,
         type: ?ArgType,
+        optional: boolean,
         greediness: ?number,
-    ): AnyParseNode {
+    ): ?AnyParseNode {
         switch (type) {
             case "color":
-                return this.parseColorGroup();
-            case "size":
+                return this.parseColorGroup(optional);
             case "primitive_size":
-                return this.parseSizeGroup(type === "primitive_size");
+            case "size":
+                return this.parseSizeGroup(optional, type === "primitive_size");
             case "url":
-                return this.parseUrlGroup();
+                return this.parseUrlGroup(optional);
             case "math":
             case "text":
-                return this.parseArgumentGroup(type);
+                return this.parseArgumentGroup(optional, type);
             case "hbox": {
                 // hbox argument type wraps the argument in the equivalent of
                 // \hbox, which is like \text but switching to \textstyle size.
-                const group = this.parseArgumentGroup("text");
-                return {
+                const group = this.parseArgumentGroup(optional, "text");
+                return group != null ? {
                     type: "styling",
                     mode: group.mode,
                     body: [group],
                     style: "text", // simulate \textstyle
-                };
+                } : null;
             }
             case "raw": {
-                const token = this.parseStringGroup("raw", true);
-                return {
+                const token = this.parseStringGroup("raw", optional, true);
+                return token != null ? {
                     type: "raw",
                     mode: "text",
                     string: token.text,
-                };
+                } : null;
             }
             case "primitive": {
+                if (optional) {
+                    throw new ParseError("A primitive argument cannot be optional");
+                }
                 const group = this.parseGroup(name, greediness);
                 if (group == null) {
                     throw new ParseError("Expected group as " + name, this.fetch());
@@ -559,7 +549,7 @@ export default class Parser {
             case "original":
             case null:
             case undefined:
-                return this.parseArgumentGroup();
+                return this.parseArgumentGroup(optional);
             default:
                 throw new ParseError(
                     "Unknown group type as " + name, this.fetch());
@@ -581,21 +571,25 @@ export default class Parser {
      */
     parseStringGroup(
         modeName: ArgType,  // Used to describe the mode in error messages.
+        optional: boolean,
         raw?: boolean,
-    ): Token {
+    ): ?Token {
+        const argToken = this.gullet.scanArgument(optional);
+        if (argToken == null) {
+            return null;
+        }
         const outerMode = this.mode;
         this.mode = "text";
         let str = "";
-        const firstToken = this.fetch();
-        let lastToken = firstToken;
         let nextToken;
         while ((nextToken = this.fetch()).text !== "EOF") {
-            lastToken = nextToken;
-            str += lastToken.text;
+            str += nextToken.text;
             this.consume();
         }
+        this.consume();
         this.mode = outerMode;
-        return firstToken.range(lastToken, str);
+        argToken.text = str;
+        return argToken;
     }
 
     /**
@@ -631,8 +625,11 @@ export default class Parser {
     /**
      * Parses a color description.
      */
-    parseColorGroup(): ParseNode<"color-token"> {
-        const res = this.parseStringGroup("color");
+    parseColorGroup(optional: boolean): ?ParseNode<"color-token"> {
+        const res = this.parseStringGroup("color", optional);
+        if (res == null) {
+            return null;
+        }
         const match = (/^(#[a-f0-9]{3}|#?[a-f0-9]{6}|[a-z]+)$/i).exec(res.text);
         if (!match) {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
@@ -654,14 +651,20 @@ export default class Parser {
     /**
      * Parses a size specification, consisting of magnitude and unit.
      */
-    parseSizeGroup(primitive: boolean): ParseNode<"size"> {
+    parseSizeGroup(optional: boolean, primitive: boolean): ?ParseNode<"size"> {
         let res;
         let isBlank = false;
         if (primitive) {
+            if (optional) {
+                throw new ParseError("A primitive argument cannot be optional");
+            }
             res = this.parseRegexGroup(
                 /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2} *$/, "size");
         } else {
-            res = this.parseStringGroup("size");
+            res = this.parseStringGroup("size", optional);
+        }
+        if (res == null) {
+            return null;
         }
         if (res.text.length === 0) {
             // Because we've tested for what is !optional, this block won't
@@ -693,8 +696,13 @@ export default class Parser {
      * Parses an URL, checking escaped letters and allowed protocols,
      * and setting the catcode of % as an active character (as in \hyperref).
      */
-    parseUrlGroup(): ParseNode<"url"> {
-        const res = this.parseStringGroup("url", true); // get raw string
+    parseUrlGroup(optional: boolean): ?ParseNode<"url"> {
+        this.gullet.lexer.setCatcode("%", 13); // active character
+        const res = this.parseStringGroup("url", optional, true); // get raw string
+        this.gullet.lexer.setCatcode("%", 14); // comment character
+        if (res == null) {
+            return null;
+        }
         // hyperref package allows backslashes alone in href, but doesn't
         // generate valid links in such cases; we interpret this as
         // "undefined" behaviour, and keep them as-is. Some browser will
@@ -707,9 +715,11 @@ export default class Parser {
         };
     }
 
-    parseArgumentGroup(
-        mode?: Mode,
-    ): AnyParseNode {
+    parseArgumentGroup(optional: boolean, mode?: Mode): ?AnyParseNode {
+        const argToken = this.gullet.scanArgument(optional);
+        if (argToken == null) {
+            return null;
+        }
         const outerMode = this.mode;
         if (mode) { // Switch to specified mode
             this.switchMode(mode);
@@ -717,10 +727,12 @@ export default class Parser {
 
         this.gullet.beginGroup();
         const expression = this.parseExpression(false, "EOF");
+        this.expect("EOF");
         this.gullet.endGroup();
         const result = {
             type: "ordgroup",
             mode: this.mode,
+            loc: argToken.loc,
             body: expression,
         };
 
