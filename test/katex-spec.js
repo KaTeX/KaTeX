@@ -2939,15 +2939,11 @@ describe("A macro expander", function() {
         }}));
     });
 
-    // TODO: The following is not currently possible to get working, given that
-    // functions and macros are dealt with separately.
-/*
     it("should allow for space function arguments", function() {
         expect`\frac\bar\bar`.toParseLike(r`\frac{}{}`, new Settings({macros: {
             "\\bar": " ",
         }}));
     });
-*/
 
     it("should build \\overset and \\underset", function() {
         expect`\overset{f}{\rightarrow} Y`.toBuild();
@@ -3052,12 +3048,10 @@ describe("A macro expander", function() {
         expect`\varsubsetneqq\varsupsetneq\varsupsetneqq`.toBuild();
     });
 
-    // TODO(edemaine): This doesn't work yet.  Parses like `\text text`,
-    // which doesn't treat all four letters as an argument.
-    //it("\\TextOrMath should work in a macro passed to \\text", function() {
-    //    expect`\text\mode`.toParseLike(r`\text{text}`, new Settings({macros:
-    //        {"\\mode": "\\TextOrMath{text}{math}"}});
-    //});
+    it("\\TextOrMath should work in a macro passed to \\text", function() {
+        expect`\text\mode`.toParseLike(r`\text{text}`, new Settings({macros:
+            {"\\mode": "\\TextOrMath{text}{math}"}}));
+    });
 
     it("\\gdef defines macros", function() {
         expect`\gdef\foo{x^2}\foo+\foo`.toParseLike`x^2+x^2`;

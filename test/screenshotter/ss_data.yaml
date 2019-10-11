@@ -163,7 +163,6 @@ KaTeX:
     nolatex: \KaTeX not supported by LaTeX
 Kern:
     tex: \frac{a\kern1emb}{c}a\kern1emb\kern1exc\kern-0.25emd
-    nolatex: LaTeX fails to typeset this, “Missing number, treated as zero.”
 # The following test, Lap, is commented out pending a successful screenshotter test.
 # Lap: |
 #     \begin{array}{l}
