@@ -509,9 +509,10 @@ export default class Parser {
         switch (type) {
             case "color":
                 return this.parseColorGroup(optional);
-            case "primitive_size":
             case "size":
-                return this.parseSizeGroup(optional, type === "primitive_size");
+            case "size_or_blank":
+            case "size_primitive":
+                return this.parseSizeGroup(optional, type);
             case "url":
                 return this.parseUrlGroup(optional);
             case "math":
@@ -651,10 +652,13 @@ export default class Parser {
     /**
      * Parses a size specification, consisting of magnitude and unit.
      */
-    parseSizeGroup(optional: boolean, primitive: boolean): ?ParseNode<"size"> {
+    parseSizeGroup(optional: boolean, type: ArgType): ?ParseNode<"size"> {
         let res;
         let isBlank = false;
-        if (primitive) {
+        const next = this.gullet.future();
+        if (type === "size_primitive" && (next.text !== "{" ||
+            this.settings.useStrictBehavior("bracedSize",
+                "Size argument should not be enclosed in braces.", next))) {
             if (optional) {
                 throw new ParseError("A primitive argument cannot be optional");
             }
@@ -666,12 +670,10 @@ export default class Parser {
         if (res == null) {
             return null;
         }
-        if (res.text.length === 0) {
-            // Because we've tested for what is !optional, this block won't
-            // affect \kern, \hspace, etc. It will capture the mandatory arguments
-            // to \genfrac and \above.
-            res.text = "0pt";    // Enable \above{}
-            isBlank = true;      // This is here specifically for \genfrac
+        if (type === "size_or_blank" && res.text.length === 0) {
+            // Allow blank argument, e.g., for \genfrac
+            res.text = "0pt";
+            isBlank = true;
         }
         const match = (/([-+]?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(res.text);
         if (!match) {
