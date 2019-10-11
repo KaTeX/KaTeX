@@ -524,7 +524,7 @@ export default class Parser {
                 } : null;
             }
             case "raw": {
-                const token = this.parseStringGroup("raw", optional, true);
+                const token = this.parseStringGroup("raw", optional);
                 return token != null ? {
                     type: "raw",
                     mode: "text",
@@ -567,7 +567,6 @@ export default class Parser {
     parseStringGroup(
         modeName: ArgType,  // Used to describe the mode in error messages.
         optional: boolean,
-        raw?: boolean,
     ): ?Token {
         const argToken = this.gullet.scanArgument(optional);
         if (argToken == null) {
@@ -694,7 +693,7 @@ export default class Parser {
      */
     parseUrlGroup(optional: boolean): ?ParseNode<"url"> {
         this.gullet.lexer.setCatcode("%", 13); // active character
-        const res = this.parseStringGroup("url", optional, true); // get raw string
+        const res = this.parseStringGroup("url", optional);
         this.gullet.lexer.setCatcode("%", 14); // comment character
         if (res == null) {
             return null;
