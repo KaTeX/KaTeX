@@ -1088,6 +1088,11 @@ describe("A kern parser", function() {
         const parse = getParsed`\kern+1em`[0];
         expect(parse.dimension.number).toBeCloseTo(1);
     });
+
+    it("should not parse braced sizes in strict mode", function() {
+        expect`\kern{1em}`.not.toParse(strictSettings);
+        expect`\kern{1em}`.toParse(nonstrictSettings);
+    });
 });
 
 describe("A non-braced kern parser", function() {
@@ -1317,6 +1322,16 @@ describe("A sqrt parser", function() {
 
     it("should build sized square roots", function() {
         expect("\\Large\\sqrt[3]{x}").toBuild();
+    });
+
+    it("should expand argument if optional argument doesn't exist", function() {
+        expect("\\sqrt\\foo").toParseLike("\\sqrt123",
+            new Settings({macros: {"\\foo": "123"}}));
+    });
+
+    it("should not expand argument if optional argument exists", function() {
+        expect("\\sqrt[2]\\foo").toParseLike("\\sqrt[2]{123}",
+            new Settings({macros: {"\\foo": "123"}}));
     });
 });
 
@@ -2898,10 +2913,15 @@ describe("A macro expander", function() {
     });
 
     it("should allow for macro argument", function() {
-        expect`\foo\bar`.toParseLike("(x)", new Settings({macros: {
+        expect`\foo\bar`.toParseLike("(xyz)", new Settings({macros: {
             "\\foo": "(#1)",
-            "\\bar": "x",
+            "\\bar": "xyz",
         }}));
+    });
+
+    it("should allow properly nested group for macro argument", function() {
+        expect`\foo{e^{x_{12}+3}}`.toParseLike("(e^{x_{12}+3})",
+            new Settings({macros: {"\\foo": "(#1)"}}));
     });
 
     it("should allow for space macro argument (text version)", function() {
@@ -3055,7 +3075,7 @@ describe("A macro expander", function() {
 
     it("\\gdef defines macros", function() {
         expect`\gdef\foo{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
-        expect`\gdef\foo{hi}\foo+\text{\foo}`.toParseLike`hi+\text{hi}`;
+        expect`\gdef\foo{hi}\foo+\text\foo`.toParseLike`hi+\text{hi}`;
         expect`\gdef\foo#1{hi #1}\text{\foo{Alice}, \foo{Bob}}`
             .toParseLike`\text{hi Alice, hi Bob}`;
         expect`\gdef\foo#1#2{(#1,#2)}\foo 1 2+\foo 3 4`.toParseLike`(1,2)+(3,4)`;
@@ -3063,13 +3083,18 @@ describe("A macro expander", function() {
         expect`\gdef\foo#1#3{}`.not.toParse();
         expect`\gdef\foo#1#2#3#4#5#6#7#8#9{}`.toParse();
         expect`\gdef\foo#1#2#3#4#5#6#7#8#9#10{}`.not.toParse();
-        expect`\gdef\foo#{}`.toParse();
         expect`\gdef\foo\bar`.not.toParse();
         expect`\gdef{\foo\bar}{}`.not.toParse();
         expect`\gdef{}{}`.not.toParse();
         // TODO: This shouldn't work, but `1` and `{1}` are currently treated
         // the same.
         //expect`\gdef\foo1`.not.toParse();
+    });
+
+    it("\\gdef defines macros with delimited parameter", function() {
+        expect`\gdef\foo|#1||{#1}\text{\foo| x y ||}`.toParseLike`\text{ x y }`;
+        expect`\gdef\foo#1|#2{#1+#2}\foo 1 2 |34`.toParseLike`12+34`;
+        expect`\gdef\foo#1#{#1}\foo1^{23}`.toParseLike`1^{23}`;
     });
 
     it("\\def works locally", () => {
