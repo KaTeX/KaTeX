@@ -151,7 +151,7 @@ export default class MacroExpander implements MacroContextInterface {
      * Consume an argument from the token stream, and return the resulting array
      * of tokens and start/end token.
      */
-    consumeArg(delims?: ?string[], preserveOutermostBraces?: boolean): MacroArg {
+    consumeArg(delims?: ?string[]): MacroArg {
         // The argument for a delimited parameter is the shortest (possibly
         // empty) sequence of tokens with properly nested {...} groups that is
         // followed ... by this particular list of non-parameter tokens.
@@ -187,7 +187,8 @@ export default class MacroExpander implements MacroContextInterface {
                     "'", tok);
             }
             if (delims && isDelimited) {
-                if (depth === 0 && tok.text === delims[match]) {
+                if ((depth === 0 || (depth === 1 && delims[match] === "{")) &&
+                    tok.text === delims[match]) {
                     ++match;
                     if (match === delims.length) {
                         // don't include delims in tokens
@@ -201,8 +202,7 @@ export default class MacroExpander implements MacroContextInterface {
         } while (depth !== 0 || isDelimited);
         // If the argument found ... has the form ‘{<nested tokens>}’,
         // ... the outermost braces enclosing the argument are removed
-        if (!preserveOutermostBraces &&
-                start.text === "{" && tokens[tokens.length - 1].text === "}") {
+        if (start.text === "{" && tokens[tokens.length - 1].text === "}") {
             tokens.pop();
             tokens.shift();
         }
@@ -250,8 +250,8 @@ export default class MacroExpander implements MacroContextInterface {
      * Used to implement `expandAfterFuture` and `expandNextToken`.
      *
      * At the moment, macro expansion doesn't handle delimited macros,
-     * i.e. things like those defined by \def\foo#1\end{…}
-     * See the TeX book page 02ff. for details on how those should behave.
+     * i.e. things like those defined by \def\foo#1\end{…}.
+     * See the TeX book page 202ff. for details on how those should behave.
      */
     expandOnce(): Token | Token[] {
         const topToken = this.popToken();

@@ -60,7 +60,11 @@ export interface MacroContextInterface {
      */
     expandMacroAsText(name: string): string | void;
 
-    consumeArg(delims?: ?string[], preserveOutermostBraces?: boolean): MacroArg;
+    /**
+     * Consume an argument from the token stream, and return the resulting array
+     * of tokens and start/end token.
+     */
+    consumeArg(delims?: ?string[]): MacroArg;
 
     /**
      * Consume the specified number of arguments from the token stream,
@@ -217,7 +221,7 @@ const def = (context, global: boolean) => {
     }
 
     let numArgs = 0;
-    let preserveOutermostBraces = false;
+    let insert;
     const delimiters = [[]];
     // <parameter text> contains no braces
     while (context.future().text !== "{") {
@@ -228,7 +232,8 @@ const def = (context, global: boolean) => {
             // had been inserted at the right end of both the parameter text
             // and the replacement text.
             if (context.future().text === "{") {
-                preserveOutermostBraces = true;
+                insert = context.future();
+                delimiters[numArgs].push("{");
                 break;
             }
 
@@ -250,7 +255,10 @@ const def = (context, global: boolean) => {
         }
     }
     // replacement text, enclosed in '{' and '}' and properly nested
-    const {tokens} = context.consumeArg(null, preserveOutermostBraces);
+    const {tokens} = context.consumeArg();
+    if (insert) {
+        tokens.unshift(insert);
+    }
 
     context.macros.set(name, {
         tokens,
