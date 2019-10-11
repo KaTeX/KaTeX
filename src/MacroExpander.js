@@ -120,7 +120,7 @@ export default class MacroExpander implements MacroContextInterface {
             if (this.future().text !== "[") { // \@ifnextchar
                 return null;
             }
-            start = this.popToken(); // don't include [
+            start = this.popToken(); // don't include [ in tokens
             ({tokens, end} = this.consumeArg(["]"]));
         } else {
             ({tokens, start, end} = this.consumeArg());
@@ -147,6 +147,10 @@ export default class MacroExpander implements MacroContextInterface {
         }
     }
 
+    /**
+     * Consume an argument from the token stream, and return the resulting array
+     * of tokens and start/end token.
+     */
     consumeArg(delims?: ?string[], preserveOutermostBraces?: boolean): MacroArg {
         // The argument for a delimited parameter is the shortest (possibly
         // empty) sequence of tokens with properly nested {...} groups that is
@@ -186,6 +190,7 @@ export default class MacroExpander implements MacroContextInterface {
                 if (depth === 0 && tok.text === delims[match]) {
                     ++match;
                     if (match === delims.length) {
+                        // don't include delims in tokens
                         tokens.splice(-match, match);
                         break;
                     }
@@ -215,7 +220,8 @@ export default class MacroExpander implements MacroContextInterface {
             for (let i = 0; i < delims.length; i++) {
                 const tok = this.popToken();
                 if (delims[i] !== tok.text) {
-                    throw new ParseError("Use doesn't match its definition", tok);
+                    throw new ParseError(
+                        "Use of the macro doesn't match its definition", tok);
                 }
             }
         }
@@ -244,15 +250,14 @@ export default class MacroExpander implements MacroContextInterface {
      * Used to implement `expandAfterFuture` and `expandNextToken`.
      *
      * At the moment, macro expansion doesn't handle delimited macros,
-     * i.e. things like those defined by \def\foo#1\end{…}.
-     * See the TeX book page 202ff. for details on how those should behave.
+     * i.e. things like those defined by \def\foo#1\end{…}
+     * See the TeX book page 02ff. for details on how those should behave.
      */
     expandOnce(): Token | Token[] {
         const topToken = this.popToken();
         const name = topToken.text;
         const expansion = this._getExpansion(name);
-        if (expansion == null) { // mainly checking for undefined here
-            // Fully expanded
+        if (expansion == null) { // Fully expanded
             this.pushToken(topToken);
             return topToken;
         }

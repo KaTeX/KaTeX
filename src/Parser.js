@@ -139,12 +139,6 @@ export default class Parser {
 
     static endOfExpression = ["}", "\\endgroup", "\\end", "\\right", "&"];
 
-    static endOfGroup = {
-        "[": "]",
-        "{": "}",
-        "\\begingroup": "\\endgroup",
-    }
-
     /**
      * Parses an "expression", which is a list of atoms.
      *
@@ -587,7 +581,7 @@ export default class Parser {
             str += nextToken.text;
             this.consume();
         }
-        this.consume();
+        this.consume(); // consume the end of the argument
         this.mode = outerMode;
         argToken.text = str;
         return argToken;
@@ -655,7 +649,7 @@ export default class Parser {
     parseSizeGroup(optional: boolean, type: ArgType): ?ParseNode<"size"> {
         let res;
         let isBlank = false;
-        const next = this.gullet.future();
+        const next = this.gullet.future(); // don't expand before parseStringGroup
         if (type === "size_primitive" && (next.text !== "{" ||
             this.settings.useStrictBehavior("bracedSize",
                 "Size argument should not be enclosed in braces.", next))) {
@@ -717,6 +711,9 @@ export default class Parser {
         };
     }
 
+    /**
+     * Parses an argument.
+     */
     parseArgumentGroup(optional: boolean, mode?: Mode): ?AnyParseNode {
         const argToken = this.gullet.scanArgument(optional);
         if (argToken == null) {
@@ -729,7 +726,7 @@ export default class Parser {
 
         this.gullet.beginGroup();
         const expression = this.parseExpression(false, "EOF");
-        this.expect("EOF");
+        this.expect("EOF"); // expect the end of the argument
         this.gullet.endGroup();
         const result = {
             type: "ordgroup",
@@ -745,23 +742,16 @@ export default class Parser {
     }
 
     /**
-     * If `optional` is false or absent, this parses an ordinary group,
-     * which is either a single nucleus (like "x") or an expression
-     * in braces (like "{x+y}") or an implicit group, a group that starts
-     * at the current position, and ends right before a higher explicit
+     * Parses an ordinary group, which is either a single nucleus (like "x")
+     * or an expression in braces (like "{x+y}") or an implicit group, a group
+     * that starts at the current position, and ends right before a higher explicit
      * group ends, or at EOF.
-     * If `optional` is true, it parses either a bracket-delimited expression
-     * (like "[x+y]") or returns null to indicate the absence of a
-     * bracket-enclosed group.
-     * If `mode` is present, switches to that mode while parsing the group,
-     * and switches back after.
      */
     parseGroup(
         name: string, // For error reporting.
         greediness?: ?number,
         breakOnTokenText?: BreakToken,
     ): ?AnyParseNode {
-        // Get first token
         const firstToken = this.fetch();
         const text = firstToken.text;
 
@@ -769,15 +759,13 @@ export default class Parser {
         // Try to parse an open brace or \begingroup
         if (text === "{" || text === "\\begingroup") {
             this.consume();
-            const groupEnd = Parser.endOfGroup[text];
-            // Start a new group namespace
+            const groupEnd = text === "{" ? "}" : "\\endgroup";
+
             this.gullet.beginGroup();
             // If we get a brace, parse an expression
             const expression = this.parseExpression(false, groupEnd);
             const lastToken = this.fetch();
-            // Check that we got a matching closing brace
-            this.expect(groupEnd);
-            // End group namespace
+            this.expect(groupEnd); // Check that we got a matching closing brace
             this.gullet.endGroup();
             result = {
                 type: "ordgroup",
