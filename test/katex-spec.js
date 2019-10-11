@@ -1616,6 +1616,15 @@ describe("A font parser", function() {
         const built = getBuilt`a\boldsymbol{}b\boldsymbol{=}c\boldsymbol{+}d\boldsymbol{++}e\boldsymbol{xyz}f`;
         expect(built).toMatchSnapshot();
     });
+
+    it("old-style fonts work like new-style fonts", () => {
+        expect`\rm xyz`.toParseLike`\mathrm{xyz}`;
+        expect`\sf xyz`.toParseLike`\mathsf{xyz}`;
+        expect`\tt xyz`.toParseLike`\mathtt{xyz}`;
+        expect`\bf xyz`.toParseLike`\mathbf{xyz}`;
+        expect`\it xyz`.toParseLike`\mathit{xyz}`;
+        expect`\cal xyz`.toParseLike`\mathcal{xyz}`;
+    });
 });
 
 describe("A \\pmb builder", function() {
@@ -3154,6 +3163,25 @@ describe("A macro expander", function() {
         const macros = {};
         expect`\def\foo{1}`.toParse(new Settings({macros}));
         expect(macros["\\foo"]).toBeFalsy();
+    });
+
+    it("\\def changes settings.macros with globalGroup", () => {
+        const macros = {};
+        expect`\gdef\foo{1}`.toParse(new Settings({macros, globalGroup: true}));
+        expect(macros["\\foo"]).toBeTruthy();
+    });
+
+    it("\\newcommand doesn't change settings.macros", () => {
+        const macros = {};
+        expect`\newcommand\foo{x^2}\foo+\foo`.toParse(new Settings({macros}));
+        expect(macros["\\foo"]).toBeFalsy();
+    });
+
+    it("\\newcommand changes settings.macros with globalGroup", () => {
+        const macros = {};
+        expect`\newcommand\foo{x^2}\foo+\foo`.toParse(
+            new Settings({macros, globalGroup: true}));
+        expect(macros["\\foo"]).toBeTruthy();
     });
 
     it("\\newcommand defines new macros", () => {

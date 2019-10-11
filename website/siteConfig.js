@@ -86,6 +86,11 @@ const users = [
         infoLink: 'https://namu.wiki/',
     },
     {
+        caption: 'Notable',
+        image: 'https://notable.md/static/images/logo_app.png',
+        infoLink: 'https://notable.md',
+    },
+    {
         caption: 'Observable',
         image: 'https://avatars0.githubusercontent.com/u/30080011',
         infoLink: 'https://observablehq.com/',

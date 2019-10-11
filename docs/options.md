@@ -53,6 +53,7 @@ You can provide an object of options as the last argument to [`katex.render` and
   - Allow all commands with specific protocols: `trust: (context) => ['http', 'https', '_relative'].includes(context.protocol)`
   - Allow all commands but forbid specific protocol: `trust: (context) => context.protocol !== 'file'`
   - Allow certain commands with specific protocols: `trust: (context) => ['\\url', '\\href'].includes(context.command) && ['http', 'https', '_relative'].includes(context.protocol)`
+- `globalGroup`: `boolean`  (default: `false`). Place KaTeX code in the global group. As a consequence, `\def` and `\newcommand` persist in `macros` across render calls. In LaTeX, constructs such as `\begin{equation}` and `$$` create a local group and prevent definitions from becoming visible outside of those blocks.
 
 For example:
 
