@@ -3092,12 +3092,11 @@ describe("A macro expander", function() {
         expect`\gdef\foo#1#3{}`.not.toParse();
         expect`\gdef\foo#1#2#3#4#5#6#7#8#9{}`.toParse();
         expect`\gdef\foo#1#2#3#4#5#6#7#8#9#10{}`.not.toParse();
+        expect`\gdef\foo1`.not.toParse();
+        expect`\gdef{\foo}{}`.not.toParse();
         expect`\gdef\foo\bar`.not.toParse();
         expect`\gdef{\foo\bar}{}`.not.toParse();
         expect`\gdef{}{}`.not.toParse();
-        // TODO: This shouldn't work, but `1` and `{1}` are currently treated
-        // the same.
-        //expect`\gdef\foo1`.not.toParse();
     });
 
     it("\\gdef defines macros with delimited parameter", function() {
