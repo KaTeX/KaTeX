@@ -37,6 +37,11 @@ export interface MacroContextInterface {
     popToken(): Token;
 
     /**
+     * Consume all following space tokens, without expansion.
+     */
+    consumeSpaces(): void;
+
+    /**
      * Expand the next token only once (if possible), and return the resulting
      * top token on the stack (without removing anything from the stack).
      * Similar in behavior to TeX's `\expandafter\futurelet`.
