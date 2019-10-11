@@ -1601,6 +1601,15 @@ describe("A font parser", function() {
         const built = getBuilt`a\boldsymbol{}b\boldsymbol{=}c\boldsymbol{+}d\boldsymbol{++}e\boldsymbol{xyz}f`;
         expect(built).toMatchSnapshot();
     });
+
+    it("old-style fonts work like new-style fonts", () => {
+        expect`\rm xyz`.toParseLike`\mathrm{xyz}`;
+        expect`\sf xyz`.toParseLike`\mathsf{xyz}`;
+        expect`\tt xyz`.toParseLike`\mathtt{xyz}`;
+        expect`\bf xyz`.toParseLike`\mathbf{xyz}`;
+        expect`\it xyz`.toParseLike`\mathit{xyz}`;
+        expect`\cal xyz`.toParseLike`\mathcal{xyz}`;
+    });
 });
 
 describe("A \\pmb builder", function() {
