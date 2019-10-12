@@ -291,6 +291,8 @@ Direct Input: $∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← �
 |:-------------------------------------|:------
 |$\def\foo{x^2} \foo + \foo$           | `\def\foo{x^2} \foo + \foo`
 |$\gdef\bar#1{#1^2} \bar{y} + \bar{y}$ | `\gdef\bar#1{#1^2} \bar{y} + \bar{y}`
+|                                      | `\edef\macroname#1#2…{definition to be expanded}`
+|                                      | `\xdef\macroname#1#2…{definition to be expanded}`
 |                                      | `\global\def\macroname#1#2…{definition}`
 |                                      | `\newcommand\macroname[numargs]{definition}`
 |                                      | `\renewcommand\macroname[numargs]{definition}`
@@ -300,11 +302,13 @@ Macros can also be defined in the KaTeX [rendering options](options.md).
 
 Macros accept up to nine arguments: #1, #2, etc.
 
-`\gdef` and `\global\def` macros will persist between math expressions.
+`\gdef`, `\xdef`, `\global\def`, and `\global\edef` macros will persist between math expressions.
+
+KaTeX has no `\par`, so all macros are long by default and `\long` will be ignored.
 
 Available functions include:
 
-`\char` `\mathchoice` `\TextOrMath` `\@ifstar` `\@ifnextchar` `\@firstoftwo` `\@secondoftwo` `\relax`
+`\char` `\mathchoice` `\TextOrMath` `\@ifstar` `\@ifnextchar` `\@firstoftwo` `\@secondoftwo` `\relax` `\expandafter` `\noexpand`
 
 @ is a valid character for commands, as if `\makeatletter` were in effect.
 
