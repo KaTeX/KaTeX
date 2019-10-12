@@ -3144,13 +3144,22 @@ describe("A macro expander", function() {
             "\\x\\def\\x{5}\\x}\\x").toParseLike`1{2{34}35}3`;
     });
 
-    it("\\global needs to followed by \\def or \\edef", () => {
+    it("\\global needs to followed by macro prefixes, \\def or \\edef", () => {
         expect`\global\def\foo{}\foo`.toParseLike``;
         expect`\global\edef\foo{}\foo`.toParseLike``;
         // TODO: This doesn't work yet; \global needs to expand argument.
         //expect`\def\DEF{\def}\global\DEF\foo{}\foo`.toParseLike``;
+        expect`\global\global\def\foo{}\foo`.toParseLike``;
+        expect`\global\long\def\foo{}\foo`.toParseLike``;
         expect`\global\foo`.not.toParse();
         expect`\global\bar x`.not.toParse();
+    });
+
+    it("\\long needs to followed by macro prefixes, \\def or \\edef", () => {
+        expect`\long\def\foo{}\foo`.toParseLike``;
+        expect`\long\edef\foo{}\foo`.toParseLike``;
+        expect`\long\global\def\foo{}\foo`.toParseLike``;
+        expect`\long\foo`.not.toParse();
     });
 
     it("Macro arguments do not generate groups", () => {

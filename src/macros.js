@@ -230,27 +230,34 @@ const def = (context, global: boolean, expand: boolean) => {
     }, global);
     return '';
 };
-defineMacro("\\gdef", (context) => def(context, true, false));
-defineMacro("\\def", (context) => def(context, false, false));
-defineMacro("\\xdef", (context) => def(context, true, true));
-defineMacro("\\edef", (context) => def(context, false, true));
-defineMacro("\\global", (context) => {
+const defPrefix = (context, global: boolean) => {
     const next = context.consumeArgs(1)[0];
     if (next.length !== 1) {
-        throw new ParseError("Invalid command after \\global");
+        throw new ParseError("Invalid command after macro prefix");
     }
     const command = next[0].text;
     // TODO: Should expand command
-    if (command === "\\def") {
+    if (command === "\\global") {
+        return defPrefix(context, true);
+    } else if (command === "\\long") {
+        // KaTeX doesn't have \par, so ignore \long
+        return defPrefix(context, global);
+    } else if (command === "\\def") {
         // \global\def is equivalent to \gdef
         return def(context, true, false);
     } else if (command === "\\edef") {
         // \global\edef is equivalent to \xdef
         return def(context, true, true);
     } else {
-        throw new ParseError(`Invalid command '${command}' after \\global`);
+        throw new ParseError(`Invalid command '${command}' after macro prefix`);
     }
-});
+};
+defineMacro("\\gdef", (context) => def(context, true, false));
+defineMacro("\\def", (context) => def(context, false, false));
+defineMacro("\\xdef", (context) => def(context, true, true));
+defineMacro("\\edef", (context) => def(context, false, true));
+defineMacro("\\global", (context) => defPrefix(context, true));
+defineMacro("\\long", (context) => defPrefix(context, false));
 
 // \newcommand{\macro}[args]{definition}
 // \renewcommand{\macro}[args]{definition}
