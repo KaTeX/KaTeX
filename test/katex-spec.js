@@ -3124,6 +3124,10 @@ describe("A macro expander", function() {
         //expect`\gdef{\foo}{}`.not.toParse();
     });
 
+    it("\\xdef should expand definition", function() {
+        expect`\def\foo{a}\xdef\bar{\foo}\def\foo{}\bar`.toParseLike`a`;
+    });
+
     it("\\def works locally", () => {
         expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\def\\x{3}\\x}\\x}\\x")
             .toParseLike`1{2{3}2}1`;
@@ -3140,8 +3144,9 @@ describe("A macro expander", function() {
             "\\x\\def\\x{5}\\x}\\x").toParseLike`1{2{34}35}3`;
     });
 
-    it("\\global needs to followed by \\def", () => {
+    it("\\global needs to followed by \\def or \\edef", () => {
         expect`\global\def\foo{}\foo`.toParseLike``;
+        expect`\global\edef\foo{}\foo`.toParseLike``;
         // TODO: This doesn't work yet; \global needs to expand argument.
         //expect`\def\DEF{\def}\global\DEF\foo{}\foo`.toParseLike``;
         expect`\global\foo`.not.toParse();

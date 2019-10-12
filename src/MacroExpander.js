@@ -183,7 +183,7 @@ export default class MacroExpander implements MacroContextInterface {
      * i.e. things like those defined by \def\foo#1\end{…}.
      * See the TeX book page 202ff. for details on how those should behave.
      */
-    expandOnce(): Token | Token[] {
+    expandOnce(noexpandedAsItself?: boolean): Token | Token[] {
         let topToken = this.popToken();
         const name = topToken.text;
         // TODO: support functions defined using `defineFunction`
@@ -202,7 +202,9 @@ export default class MacroExpander implements MacroContextInterface {
             // as if its meaning were ‘\relax’ if it is a control sequence that
             // would ordinarily be expanded by TEX’s expansion rules.
             topToken = this.popToken();
-            topToken = new Token("\\relax");
+            if (!noexpandedAsItself) {
+                topToken = new Token("\\relax");
+            }
             this.pushToken(topToken);
             return topToken;
         }
@@ -297,6 +299,26 @@ export default class MacroExpander implements MacroContextInterface {
         this.pushToken(new Token(name));
         while (this.stack.length > oldStackLength) {
             const expanded = this.expandOnce();
+            // expandOnce returns Token if and only if it's fully expanded.
+            if (expanded instanceof Token) {
+                output.push(this.stack.pop());
+            }
+        }
+        return output;
+    }
+
+    /**
+     * Fully expand the given tokne stream and return the resulting list of tokens
+     */
+    expandTokens(tokens: Token[]): Token[] {
+        const output = [];
+        const oldStackLength = this.stack.length;
+        tokens = tokens.slice(); // make a shallow copy
+        tokens.reverse();
+        this.pushTokens(tokens);
+        while (this.stack.length > oldStackLength) {
+            // expand the token following \noexpand to itself
+            const expanded = this.expandOnce(true);
             // expandOnce returns Token if and only if it's fully expanded.
             if (expanded instanceof Token) {
                 output.push(this.stack.pop());

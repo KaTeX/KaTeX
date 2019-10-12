@@ -55,6 +55,11 @@ export interface MacroContextInterface {
     expandMacro(name: string): Token[] | void;
 
     /**
+     * Fully expand the given tokne stream and return the resulting list of tokens
+     */
+    expandTokens(tokens: Token[]): Token[];
+
+    /**
      * Fully expand the given macro name and return the result as a string,
      * or return `undefined` if no such macro is defined.
      */
@@ -197,7 +202,7 @@ defineMacro("\\char", function(context) {
 //     \def\macro#1#2{expansion}
 //     \def\macro#1#2#3#4#5#6#7#8#9{expansion}
 // Also the \gdef and \global\def equivalents
-const def = (context, global: boolean) => {
+const def = (context, global: boolean, expand: boolean) => {
     let arg = context.consumeArgs(1)[0];
     if (arg.length !== 1) {
         throw new ParseError("\\gdef's first argument must be a macro name");
@@ -220,6 +225,9 @@ const def = (context, global: boolean) => {
         }
         arg = context.consumeArgs(1)[0];
     }
+    if (expand) {
+        arg = context.expandTokens(arg);
+    }
     // Final arg is the expansion of the macro
     context.macros.set(name, {
         tokens: arg,
@@ -227,8 +235,10 @@ const def = (context, global: boolean) => {
     }, global);
     return '';
 };
-defineMacro("\\gdef", (context) => def(context, true));
-defineMacro("\\def", (context) => def(context, false));
+defineMacro("\\gdef", (context) => def(context, true, false));
+defineMacro("\\def", (context) => def(context, false, false));
+defineMacro("\\xdef", (context) => def(context, true, true));
+defineMacro("\\edef", (context) => def(context, false, true));
 defineMacro("\\global", (context) => {
     const next = context.consumeArgs(1)[0];
     if (next.length !== 1) {
@@ -238,7 +248,10 @@ defineMacro("\\global", (context) => {
     // TODO: Should expand command
     if (command === "\\def") {
         // \global\def is equivalent to \gdef
-        return def(context, true);
+        return def(context, true, false);
+    } else if (command === "\\edef") {
+        // \global\edef is equivalent to \xdef
+        return def(context, true, true);
     } else {
         throw new ParseError(`Invalid command '${command}' after \\global`);
     }
