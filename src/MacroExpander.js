@@ -20,11 +20,12 @@ import type Settings from "./Settings";
 // List of commands that act like macros but aren't defined as a macro,
 // function, or symbol.  Used in `isDefined`.
 export const implicitCommands = {
-    "\\relax": true,     // MacroExpander.js
-    "^": true,           // Parser.js
-    "_": true,           // Parser.js
-    "\\limits": true,    // Parser.js
-    "\\nolimits": true,  // Parser.js
+    "\\relax": true,       // MacroExpander.js
+    "\\expandafter": true, // MacroExpander.js
+    "^": true,             // Parser.js
+    "_": true,             // Parser.js
+    "\\limits": true,      // Parser.js
+    "\\nolimits": true,    // Parser.js
 };
 
 export default class MacroExpander implements MacroContextInterface {
@@ -182,8 +183,21 @@ export default class MacroExpander implements MacroContextInterface {
      * See the TeX book page 202ff. for details on how those should behave.
      */
     expandOnce(): Token | Token[] {
-        const topToken = this.popToken();
+        let topToken = this.popToken();
         const name = topToken.text;
+        // TODO: support functions defined using `defineFunction`
+        if (name === "\\expandafter") {
+            // TeX first reads the token that comes immediately after \expandafter,
+            // without expanding it; let’s call this token t. Then TEX reads the
+            // token that comes after t (and possibly more tokens, if that token
+            // has an argument), replacing it by its expansion. Finally TEX puts
+            // t back in front of that expansion.
+            topToken = this.popToken();
+            this.expandOnce();
+            this.pushToken(topToken);
+            return [topToken];
+        }
+
         const expansion = this._getExpansion(name);
         if (expansion == null) { // mainly checking for undefined here
             // Fully expanded

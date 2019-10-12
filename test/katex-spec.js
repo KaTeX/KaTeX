@@ -2936,6 +2936,13 @@ describe("A macro expander", function() {
         }}));
     });
 
+    it("should delay expansion if preceded by \\expandafter", function() {
+        expect`\expandafter\foo\bar`.toParseLike("x+y", new Settings({macros: {
+            "\\foo": "#1+#2",
+            "\\bar": "xy",
+        }}));
+    });
+
     it("should allow for space macro argument (text version)", function() {
         expect`\text{\foo\bar}`.toParseLike(r`\text{( )}`, new Settings({macros: {
             "\\foo": "(#1)",
