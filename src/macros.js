@@ -55,7 +55,7 @@ export interface MacroContextInterface {
     expandMacro(name: string): Token[] | void;
 
     /**
-     * Fully expand the given tokne stream and return the resulting list of tokens
+     * Fully expand the given token stream and return the resulting list of tokens
      */
     expandTokens(tokens: Token[]): Token[];
 
@@ -196,12 +196,7 @@ defineMacro("\\char", function(context) {
     return `\\@char{${number}}`;
 });
 
-// Basic support for macro definitions:
-//     \def\macro{expansion}
-//     \def\macro#1{expansion}
-//     \def\macro#1#2{expansion}
-//     \def\macro#1#2#3#4#5#6#7#8#9{expansion}
-// Also the \gdef and \global\def equivalents
+// Basic support for macro definitions: \def, \gdef, \edef, \xdef
 const def = (context, global: boolean, expand: boolean) => {
     let arg = context.consumeArgs(1)[0];
     if (arg.length !== 1) {

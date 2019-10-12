@@ -308,7 +308,7 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
-     * Fully expand the given tokne stream and return the resulting list of tokens
+     * Fully expand the given token stream and return the resulting list of tokens
      */
     expandTokens(tokens: Token[]): Token[] {
         const output = [];
