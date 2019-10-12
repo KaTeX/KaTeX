@@ -576,8 +576,6 @@ export default class Parser {
         if (argToken == null) {
             return null;
         }
-        const outerMode = this.mode;
-        this.mode = "text";
         let str = "";
         let nextToken;
         while ((nextToken = this.fetch()).text !== "EOF") {
@@ -585,7 +583,6 @@ export default class Parser {
             this.consume();
         }
         this.consume(); // consume the end of the argument
-        this.mode = outerMode;
         argToken.text = str;
         return argToken;
     }
@@ -599,8 +596,6 @@ export default class Parser {
         regex: RegExp,
         modeName: string,   // Used to describe the mode in error messages.
     ): Token {
-        const outerMode = this.mode;
-        this.mode = "text";
         const firstToken = this.fetch();
         let lastToken = firstToken;
         let str = "";
@@ -616,7 +611,6 @@ export default class Parser {
                 "Invalid " + modeName + ": '" + firstToken.text + "'",
                 firstToken);
         }
-        this.mode = outerMode;
         return firstToken.range(lastToken, str);
     }
 
