@@ -207,7 +207,6 @@ type ParseNodeTypes = {
         type: "cr",
         mode: Mode,
         loc?: ?SourceLocation,
-        newRow: boolean,
         newLine: boolean,
         size: ?Measurement,
     |},

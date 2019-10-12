@@ -61,9 +61,10 @@ function parseArray(
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
-    // Parse body of array with \\ temporarily mapped to \cr
     parser.gullet.beginGroup();
-    parser.gullet.macros.set("\\\\", "\\cr");
+    // \cr is equivalent to \\ without the optional size argument (see below)
+    // TODO: provide helpful error when \cr is used outside the array environment
+    parser.gullet.macros.set("\\cr", "\\\\\\relax");
 
     // Get current arraystretch if it's not set by the environment
     if (!arraystretch) {
@@ -92,7 +93,7 @@ function parseArray(
 
     while (true) {  // eslint-disable-line no-constant-condition
         // Parse each cell in its own group (namespace)
-        let cell = parser.parseExpression(false, "\\cr");
+        let cell = parser.parseExpression(false, "\\\\");
         parser.gullet.endGroup();
         parser.gullet.beginGroup();
 
@@ -125,9 +126,19 @@ function parseArray(
                 hLinesBeforeRow.push([]);
             }
             break;
-        } else if (next === "\\cr") {
-            const cr = assertNodeType(parser.parseFunction(), "cr");
-            rowGaps.push(cr.size);
+        } else if (next === "\\\\") {
+            parser.consume();
+            let size;
+            // \def\Let@{\let\\\math@cr}
+            // \def\math@cr{...\math@cr@}
+            // \def\math@cr@{\new@ifnextchar[\math@cr@@{\math@cr@@[\z@]}}
+            // \def\math@cr@@[#1]{...\math@cr@@@...}
+            // \def\math@cr@@@{\cr}
+            if (parser.gullet.future().text !== " " &&
+                (size = parser.parseSizeGroup(true, "size"))) {
+                size = assertNodeType(size, "size").value;
+            }
+            rowGaps.push(size);
 
             // check for \hline(s) following the row separator
             hLinesBeforeRow.push(getHLines(parser));

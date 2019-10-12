@@ -27,7 +27,7 @@ export type ArgType = "color" | "size" | "url" | "raw" | "original" | "hbox" |
 export type StyleStr = "text" | "display" | "script" | "scriptscript";
 
 // Allowable token text for "break" arguments in parser.
-export type BreakToken = "]" | "}" | "\\endgroup" | "$" | "\\)" | "\\cr" | "EOF";
+export type BreakToken = "]" | "}" | "\\endgroup" | "$" | "\\)" | "\\\\" | "EOF";
 
 // Math font variants.
 export type FontVariant = "bold" | "bold-italic" | "bold-sans-serif" |

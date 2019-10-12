@@ -1287,8 +1287,13 @@ describe("A begin/end parser", function() {
         expect(m2).toParse();
     });
 
-    it("should allow \\cr as a line terminator", function() {
+    it("should allow \\cr and \\\\ as a line terminator", function() {
         expect`\begin{matrix}a&b\cr c&d\end{matrix}`.toParse();
+        expect`\begin{matrix}a&b\\c&d\end{matrix}`.toParse();
+    });
+
+    it("should not allow \\cr to scan for an optional size argument", function() {
+        expect`\begin{matrix}a&b\cr[c]&d\end{matrix}`.toParse();
     });
 
     it("should eat a final newline", function() {
@@ -3549,19 +3554,16 @@ describe("The \\mathchoice function", function() {
 });
 
 describe("Newlines via \\\\ and \\newline", function() {
-    it("should build \\\\ and \\newline the same", () => {
+    it("should build \\\\ without the optional argument and \\newline the same", () => {
         expect`hello \\ world`.toBuildLike`hello \newline world`;
-        expect`hello \\[1ex] world`.toBuildLike(
-            "hello \\newline[1ex] world");
+    });
+
+    it("should not allow \\newline to scan for an optional size argument", () => {
+        expect`hello \newline[w]orld`.toBuild();
     });
 
     it("should not allow \\cr at top level", () => {
         expect`hello \cr world`.not.toBuild();
-    });
-
-    it("array redefines and resets \\\\", () => {
-        expect`a\\b\begin{matrix}x&y\\z&w\end{matrix}\\c`
-            .toParseLike`a\newline b\begin{matrix}x&y\cr z&w\end{matrix}\newline c`;
     });
 
     it("\\\\ causes newline, even after mrel and mop", () => {
