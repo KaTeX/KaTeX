@@ -22,6 +22,7 @@ import type Settings from "./Settings";
 export const implicitCommands = {
     "\\relax": true,       // MacroExpander.js
     "\\expandafter": true, // MacroExpander.js
+    "\\noexpand": true,    // MacroExpander.js
     "^": true,             // Parser.js
     "_": true,             // Parser.js
     "\\limits": true,      // Parser.js
@@ -196,6 +197,14 @@ export default class MacroExpander implements MacroContextInterface {
             this.expandOnce();
             this.pushToken(topToken);
             return [topToken];
+        } else if (name === "\\noexpand") {
+            // The expansion is the token itself; but that token is interpreted
+            // as if its meaning were ‘\relax’ if it is a control sequence that
+            // would ordinarily be expanded by TEX’s expansion rules.
+            topToken = this.popToken();
+            topToken = new Token("\\relax");
+            this.pushToken(topToken);
+            return topToken;
         }
 
         const expansion = this._getExpansion(name);

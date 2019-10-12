@@ -2943,6 +2943,11 @@ describe("A macro expander", function() {
         }}));
     });
 
+    it("should not expand if preceded by \\noexpand", function() {
+        expect`\noexpand\foo y`.toParseLike("y",
+            new Settings({macros: {"\\foo": "x"}}));
+    });
+
     it("should allow for space macro argument (text version)", function() {
         expect`\text{\foo\bar}`.toParseLike(r`\text{( )}`, new Settings({macros: {
             "\\foo": "(#1)",
