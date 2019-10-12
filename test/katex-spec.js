@@ -3089,6 +3089,7 @@ describe("A macro expander", function() {
             .toParseLike`\text{hi Alice, hi Bob}`;
         expect`\gdef\foo#1#2{(#1,#2)}\foo 1 2+\foo 3 4`.toParseLike`(1,2)+(3,4)`;
         expect`\gdef\foo#2{}`.not.toParse();
+        expect`\gdef\foo#a{}`.not.toParse();
         expect`\gdef\foo#1#3{}`.not.toParse();
         expect`\gdef\foo#1#2#3#4#5#6#7#8#9{}`.toParse();
         expect`\gdef\foo#1#2#3#4#5#6#7#8#9#10{}`.not.toParse();
@@ -3103,6 +3104,9 @@ describe("A macro expander", function() {
         expect`\gdef\foo|#1||{#1}\text{\foo| x y ||}`.toParseLike`\text{ x y }`;
         expect`\gdef\foo#1|#2{#1+#2}\foo 1 2 |34`.toParseLike`12+34`;
         expect`\gdef\foo#1#{#1}\foo1^{23}`.toParseLike`1^{23}`;
+        expect`\gdef\foo|{}\foo`.not.toParse();
+        expect`\gdef\foo#1|{#1}\foo1`.not.toParse();
+        expect`\gdef\foo#1|{#1}\foo1}|`.not.toParse();
     });
 
     it("\\def works locally", () => {
