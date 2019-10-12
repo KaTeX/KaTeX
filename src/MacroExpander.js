@@ -249,10 +249,6 @@ export default class MacroExpander implements MacroContextInterface {
      * or the stack will be empty.
      *
      * Used to implement `expandAfterFuture` and `expandNextToken`.
-     *
-     * At the moment, macro expansion doesn't handle delimited macros,
-     * i.e. things like those defined by \def\foo#1\end{…}.
-     * See the TeX book page 202ff. for details on how those should behave.
      */
     expandOnce(): Token | Token[] {
         const topToken = this.popToken();
