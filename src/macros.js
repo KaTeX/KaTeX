@@ -263,10 +263,10 @@ const defPrefix = (context, global: boolean) => {
         return defPrefix(context, global);
     } else if (command === "\\def") {
         // \global\def is equivalent to \gdef
-        return def(context, true, false);
+        return def(context, global, false);
     } else if (command === "\\edef") {
         // \global\edef is equivalent to \xdef
-        return def(context, true, true);
+        return def(context, global, true);
     } else {
         throw new ParseError(`Invalid command '${command}' after macro prefix`);
     }
