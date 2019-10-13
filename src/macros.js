@@ -204,6 +204,9 @@ defineMacro("\\char", function(context) {
 });
 
 // Basic support for macro definitions: \def, \gdef, \edef, \xdef
+// <definition> -> <def><control sequence><definition text>
+// <def> -> \def|\gdef|\edef|\xdef
+// <definition text> -> <parameter text><left brace><balanced text><right brace>
 const def = (context, global: boolean, expand: boolean) => {
     let arg = context.consumeArgs(1)[0];
     if (arg.length !== 1) {
@@ -237,6 +240,15 @@ const def = (context, global: boolean, expand: boolean) => {
     }, global);
     return '';
 };
+defineMacro("\\gdef", (context) => def(context, true, false));
+defineMacro("\\def", (context) => def(context, false, false));
+defineMacro("\\xdef", (context) => def(context, true, true));
+defineMacro("\\edef", (context) => def(context, false, true));
+
+// <assignment> -> <non-macro assignment>|<macro assignment>
+// <non-macro assignment> -> <simple assignment>|\global<non-macro assignment>
+// <macro assignment> -> <definition>|<prefix><macro assignment>
+// <prefix> -> \global|\long|\outer
 const defPrefix = (context, global: boolean) => {
     const next = context.consumeArgs(1)[0];
     if (next.length !== 1) {
@@ -259,10 +271,6 @@ const defPrefix = (context, global: boolean) => {
         throw new ParseError(`Invalid command '${command}' after macro prefix`);
     }
 };
-defineMacro("\\gdef", (context) => def(context, true, false));
-defineMacro("\\def", (context) => def(context, false, false));
-defineMacro("\\xdef", (context) => def(context, true, true));
-defineMacro("\\edef", (context) => def(context, false, true));
 defineMacro("\\global", (context) => defPrefix(context, true));
 defineMacro("\\long", (context) => defPrefix(context, false));
 
