@@ -250,9 +250,10 @@ defineMacro("\\edef", (context) => def(context, false, true));
 //     |\let<control sequence><equals><one optional space><token>
 // <equals> -> <optional spaces>|<optional spaces>=
 const letDef = (context, global: boolean, future: boolean) => {
-    const name = context.popToken().text;
+    let tok = context.popToken();
+    const name = tok.text;
     if (/^(?:[\\{}$&#^_]|EOF)$/.test(name)) {
-        throw new ParseError("Expected a control sequence");
+        throw new ParseError("Expected a control sequence", tok);
     }
 
     const tokens = [];
@@ -261,21 +262,21 @@ const letDef = (context, global: boolean, future: boolean) => {
     } else {
         context.consumeSpaces();
     }
-    let token = context.popToken();
+    tok = context.popToken();
     if (future) {
-        tokens.unshift(token);
-    } else if (token.text === "=") { // consume optional equals
-        token = context.popToken();
-        if (token.text === " ") { // consume one optional space
-            token = context.popToken();
+        tokens.unshift(tok);
+    } else if (tok.text === "=") { // consume optional equals
+        tok = context.popToken();
+        if (tok.text === " ") { // consume one optional space
+            tok = context.popToken();
         }
     }
 
-    const macro = context.macros.get(token.text);
+    const macro = context.macros.get(tok.text);
     // if macro is undefined at this moment, use special command \noexpand@let
     // to not expand at that moment too and pass it to the parser
     context.macros.set(name, macro ||
-        {tokens: [token, new Token("\\noexpand@let")], numArgs: 0}, global);
+        {tokens: [tok, new Token("\\noexpand@let")], numArgs: 0}, global);
     return {tokens, numArgs: 0};
 };
 defineMacro("\\let", (context) => letDef(context, false, false));
