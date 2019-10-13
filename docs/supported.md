@@ -293,6 +293,8 @@ Direct Input: $∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← �
 |$\gdef\bar#1{#1^2} \bar{y} + \bar{y}$ | `\gdef\bar#1{#1^2} \bar{y} + \bar{y}`
 |                                      | `\edef\macroname#1#2…{definition to be expanded}`
 |                                      | `\xdef\macroname#1#2…{definition to be expanded}`
+|                                      | `\let\foo=\bar`
+|                                      | `\futurelet\foo\bar x`
 |                                      | `\global\def\macroname#1#2…{definition}`
 |                                      | `\newcommand\macroname[numargs]{definition}`
 |                                      | `\renewcommand\macroname[numargs]{definition}`

@@ -394,6 +394,7 @@ use `\ce` instead|
 |\frac|$\frac a b$|`\frac a b`|
 |\frak|$\frak{AaBb}$|`\frak{AaBb}`|
 |\frown|$\frown$||
+|\futurelet|||
 
 ## G
 
@@ -563,7 +564,7 @@ use `\ce` instead|
 |\lesseqqgtr|$\lesseqqgtr$||
 |\lessgtr|$\lessgtr$||
 |\lesssim|$\lesssim$||
-|\let|<span style="color:firebrick;">Not supported</span>|[Issue #1413](https://github.com/KaTeX/KaTeX/issues/1413)|
+|\let|||
 |\lfloor|$\lfloor$||
 |\lg|$\lg$||
 |\lgroup|$\lgroup$||
