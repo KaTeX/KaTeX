@@ -216,7 +216,7 @@ defineMacro("\\char", function(context) {
 const def = (context, global: boolean) => {
     let tok = context.popToken();
     const name = tok.text;
-    if (name[0] !== "\\") {
+    if (/^(?:[\\{}$&#^_]|EOF)$/.test(name)) {
         throw new ParseError("Expected a control sequence", tok);
     }
 
