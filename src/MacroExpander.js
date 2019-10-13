@@ -34,6 +34,7 @@ export default class MacroExpander implements MacroContextInterface {
     macros: Namespace<MacroDefinition>;
     stack: Token[];
     mode: Mode;
+    scanning: boolean;
 
     constructor(input: string, settings: Settings, mode: Mode) {
         this.settings = settings;
