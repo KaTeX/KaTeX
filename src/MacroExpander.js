@@ -42,7 +42,7 @@ export default class MacroExpander implements MacroContextInterface {
         // Make new global namespace
         this.macros = new Namespace(builtinMacros, settings.macros);
         this.mode = mode;
-        this.scanning = false;
+        this.scanning = false; // whether to allow expandNextToken to return \relax
         this.stack = []; // contains tokens in REVERSE order
     }
 
