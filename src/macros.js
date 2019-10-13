@@ -245,6 +245,42 @@ defineMacro("\\def", (context) => def(context, false, false));
 defineMacro("\\xdef", (context) => def(context, true, true));
 defineMacro("\\edef", (context) => def(context, false, true));
 
+// <simple assignment> -> <let assignment>
+// <let assignment> -> \futurelet<control sequence><token><token>
+//     |\let<control sequence><equals><one optional space><token>
+// <equals> -> <optional spaces>|<optional spaces>=
+const letDef = (context, global: boolean, future: boolean) => {
+    const name = context.popToken().text;
+    if (/^(?:[\\{}$&#^_]|EOF)$/.test(name)) {
+        throw new ParseError("Expected a control sequence");
+    }
+
+    const tokens = [];
+    if (future) {
+        tokens.unshift(context.popToken());
+    } else {
+        context.consumeSpaces();
+    }
+    let token = context.popToken();
+    if (future) {
+        tokens.unshift(token);
+    } else if (token.text === "=") { // consume optional equals
+        token = context.popToken();
+        if (token.text === " ") { // consume one optional space
+            token = context.popToken();
+        }
+    }
+
+    const macro = context.macros.get(token.text);
+    // if macro is undefined at this moment, use special command \noexpand@let
+    // to not expand at that moment too and pass it to the parser
+    context.macros.set(name, macro ||
+        {tokens: [token, new Token("\\noexpand@let")], numArgs: 0}, global);
+    return {tokens, numArgs: 0};
+};
+defineMacro("\\let", (context) => letDef(context, false, false));
+defineMacro("\\futurelet", (context) => letDef(context, false, true));
+
 // <assignment> -> <non-macro assignment>|<macro assignment>
 // <non-macro assignment> -> <simple assignment>|\global<non-macro assignment>
 // <macro assignment> -> <definition>|<prefix><macro assignment>
@@ -267,6 +303,12 @@ const defPrefix = (context, global: boolean) => {
     } else if (command === "\\edef") {
         // \global\edef is equivalent to \xdef
         return def(context, global, true);
+    } else if (command === "\\let") {
+        // TODO: throw an error if \long is used
+        return letDef(context, global, false);
+    } else if (command === "\\futurelet") {
+        // TODO: throw an error if \long is used
+        return letDef(context, global, true);
     } else {
         throw new ParseError(`Invalid command '${command}' after macro prefix`);
     }

@@ -3208,6 +3208,23 @@ describe("A macro expander", function() {
         expect(macros["\\foo"]).toBeTruthy();
     });
 
+    it("\\let copies the definition", () => {
+        expect`\let\foo=\frac\def\frac{}\foo12`.toParseLike`\frac12`;
+        expect`\def\foo{1}\let\bar\foo\def\foo{2}\bar`.toParseLike`1`;
+        expect`\let\foo{\frac\foo1}{2}`.toParseLike`\frac{1}{2}`;
+        expect`\let\equals==a\equals b`.toParseLike`a=b`;
+    });
+
+    it("\\let should consume one optional space after equals sign", () => {
+        expect`\def\:{\let\space= }\: \text{\space}`.toParseLike`\text{ }`;
+        const tree = getParsed`\def\bold{\bgroup\bf\let\next= }\bold{a}`;
+        expect(tree).toMatchSnapshot();
+    });
+
+    it("\\futurelet should parse correctly", () => {
+        expect`\futurelet\foo\frac1{2+\foo}`.toParseLike`\frac1{2+1}`;
+    });
+
     it("\\newcommand doesn't change settings.macros", () => {
         const macros = {};
         expect`\newcommand\foo{x^2}\foo+\foo`.toParse(new Settings({macros}));

@@ -20,13 +20,14 @@ import type Settings from "./Settings";
 // List of commands that act like macros but aren't defined as a macro,
 // function, or symbol.  Used in `isDefined`.
 export const implicitCommands = {
-    "\\relax": true,       // MacroExpander.js
-    "\\expandafter": true, // MacroExpander.js
-    "\\noexpand": true,    // MacroExpander.js
-    "^": true,             // Parser.js
-    "_": true,             // Parser.js
-    "\\limits": true,      // Parser.js
-    "\\nolimits": true,    // Parser.js
+    "\\relax": true,        // MacroExpander.js
+    "\\expandafter": true,  // MacroExpander.js
+    "\\noexpand": true,     // MacroExpander.js
+    "\\noexpand@let": true, // MacroExpander.js
+    "^": true,              // Parser.js
+    "_": true,              // Parser.js
+    "\\limits": true,       // Parser.js
+    "\\nolimits": true,     // Parser.js
 };
 
 export default class MacroExpander implements MacroContextInterface {
@@ -197,12 +198,14 @@ export default class MacroExpander implements MacroContextInterface {
             this.expandOnce();
             this.pushToken(topToken);
             return [topToken];
-        } else if (name === "\\noexpand") {
+        } else if (name === "\\noexpand" || name === "\\noexpand@let") {
             // The expansion is the token itself; but that token is interpreted
             // as if its meaning were ‘\relax’ if it is a control sequence that
             // would ordinarily be expanded by TEX’s expansion rules.
+            // \noexpand@let is used in \let to not expand the macro if the token
+            // was not macro when it was defined.
             topToken = this.popToken();
-            if (!noexpandedAsItself) {
+            if (!noexpandedAsItself && name !== "\\noexpand@let") {
                 topToken = new Token("\\relax");
             }
             this.pushToken(topToken);
