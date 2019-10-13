@@ -3020,9 +3020,14 @@ describe("A macro expander", function() {
         expect`\@ifstar{yes}{no}?!`.toParseLike`no?!`;
     });
 
-    it("\\@ifnextchar should not consume anything", function() {
+    it("\\@ifnextchar should not consume nonspaces", function() {
         expect`\@ifnextchar!{yes}{no}!!`.toParseLike`yes!!`;
         expect`\@ifnextchar!{yes}{no}?!`.toParseLike`no?!`;
+    });
+
+    it("\\@ifnextchar should consume spaces", function() {
+        expect`\def\x#1{\@ifnextchar x{yes}{no}}\x{}x\x{} x`
+            .toParseLike`yesxyesx`;
     });
 
     it("\\@ifstar should consume star but nothing else", function() {
