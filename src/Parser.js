@@ -654,14 +654,19 @@ export default class Parser {
     ): Token {
         const outerMode = this.mode;
         this.mode = "text";
+        this.gullet.scanning = true; // allow MacroExpander to return \relax
         const firstToken = this.fetch();
         let lastToken = firstToken;
         let str = "";
-        let nextToken;
-        while ((nextToken = this.fetch()).text !== "EOF" &&
+        let nextToken = firstToken;
+        while (nextToken.text !== "EOF" && nextToken.text !== "\\relax" &&
                regex.test(str + nextToken.text)) {
             lastToken = nextToken;
             str += lastToken.text;
+            this.consume();
+            nextToken = this.fetch();
+        }
+        if (nextToken.text === "\\relax") {
             this.consume();
         }
         if (str === "") {
@@ -669,6 +674,7 @@ export default class Parser {
                 "Invalid " + modeName + ": '" + firstToken.text + "'",
                 firstToken);
         }
+        this.gullet.scanning = false;
         this.mode = outerMode;
         return firstToken.range(lastToken, str);
     }

@@ -42,6 +42,7 @@ export default class MacroExpander implements MacroContextInterface {
         // Make new global namespace
         this.macros = new Namespace(builtinMacros, settings.macros);
         this.mode = mode;
+        this.scanning = false;
         this.stack = []; // contains tokens in REVERSE order
     }
 
@@ -248,7 +249,7 @@ export default class MacroExpander implements MacroContextInterface {
             if (expanded instanceof Token) {
                 // \relax stops the expansion, but shouldn't get returned (a
                 // null return value couldn't get implemented as a function).
-                if (expanded.text === "\\relax") {
+                if (expanded.text === "\\relax" && !this.scanning) {
                     this.stack.pop();
                 } else {
                     return this.stack.pop();  // === expanded

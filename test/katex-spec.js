@@ -1137,6 +1137,11 @@ describe("A non-braced kern parser", function() {
         expect(noNumberRule).not.toParse();
     });
 
+    it("should be stopped by \relax", function() {
+        // this will succeed regardless of \relax until #990
+        expect`\kern1em\relax plus`.toParse();
+    });
+
     it("should parse negative sizes", function() {
         const parse = getParsed`\kern-1em`[0];
         expect(parse.dimension.number).toBeCloseTo(-1);
