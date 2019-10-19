@@ -241,6 +241,7 @@ const def = (context, global: boolean, expand: boolean) => {
     }
     if (expand) {
         arg = context.expandTokens(arg);
+        arg.reverse();
     }
     // Final arg is the expansion of the macro
     context.macros.set(name, {

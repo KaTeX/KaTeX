@@ -313,8 +313,6 @@ export default class MacroExpander implements MacroContextInterface {
     expandTokens(tokens: Token[]): Token[] {
         const output = [];
         const oldStackLength = this.stack.length;
-        tokens = tokens.slice(); // make a shallow copy
-        tokens.reverse();
         this.pushTokens(tokens);
         while (this.stack.length > oldStackLength) {
             // expand the token following \noexpand to itself
