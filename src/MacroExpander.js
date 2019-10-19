@@ -208,9 +208,8 @@ export default class MacroExpander implements MacroContextInterface {
             }
         }
 
-        const expansion = !topToken.noexpand &&
-                (!expandableOnly || this.isExpandable(name))
-            ? this._getExpansion(name) : null;
+        const expansion = !topToken.noexpand
+            ? this._getExpansion(name, expandableOnly) : null;
         if (expansion == null) { // Fully expanded
             this.pushToken(topToken);
             return topToken;
@@ -330,7 +329,15 @@ export default class MacroExpander implements MacroContextInterface {
      * Returns the expanded macro as a reversed array of tokens and a macro
      * argument count.  Or returns `null` if no such macro.
      */
-    _getExpansion(name: string): ?MacroExpansion {
+    _getExpansion(name: string, expandableOnly: ?boolean): ?MacroExpansion {
+        if (expandableOnly) {
+            if (name[0] === "\\" && !this.isDefined(name)) {
+                throw new ParseError("Undefined control sequence: " + name);
+            } else if (!this.isExpandable(name)) {
+                return null;
+            }
+        }
+
         const definition = this.macros.get(name);
         if (definition == null) { // mainly checking for undefined here
             return definition;

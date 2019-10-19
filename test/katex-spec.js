@@ -2942,6 +2942,7 @@ describe("A macro expander", function() {
             "\\bar": "xy",
         }}));
         expect`\expandafter\foo\def\foo{x}`.not.toParse();
+        expect`\def\bar{\def\foo{}}\expandafter\bar\foo`.not.toParse();
     });
 
     it("should not expand if preceded by \\noexpand", function() {
@@ -3139,6 +3140,7 @@ describe("A macro expander", function() {
         expect`\def\foo{a}\xdef\bar{\def\noexpand\foo{}}\foo\bar\foo`.toParseLike`a`;
         expect`\def\foo{a}\xdef\bar{\expandafter\foo\noexpand\foo}\def\foo{b}\bar`
             .toParseLike`ab`;
+        expect`\xdef\bar{\foo}`.not.toParse();
     });
 
     it("\\def works locally", () => {
