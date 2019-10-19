@@ -2998,6 +2998,16 @@ describe("A macro expander", function() {
         }}));
     });
 
+    it("conditional should work", function() {
+        expect`\iftrue xyz \fi`.toParseLike`xyz`;
+        expect`\iffalse xyz \else abc \fi`.toParseLike`abc`;
+        expect`\def\bg{\iftrue{\else}\fi}\bg xyz}`.toParseLike`{xyz}`;
+        expect`\iffalse{\fi xyz\iffalse}\fi`.toParseLike`xyz`;
+        expect`\iffalse xyz \else \else abc \fi`.not.toParse();
+        expect`\ifmode xyz`.not.toParse();
+        expect`xyz \fi`.not.toParse();
+    });
+
     it("\\@firstoftwo should consume both, and avoid errors", function() {
         expect`\@firstoftwo{yes}{no}`.toParseLike`yes`;
         expect`\@firstoftwo{yes}{1'_2^3}`.toParseLike`yes`;

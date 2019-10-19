@@ -26,6 +26,11 @@ export interface MacroContextInterface {
     macros: Namespace<MacroDefinition>;
 
     /**
+     * Stack to keep track of \if...\fi nesting
+     */
+    conditional: boolean[];
+
+    /**
      * Returns the topmost token on the stack, without expanding it.
      * Similar in behavior to TeX's `\futurelet`.
      */
@@ -40,6 +45,8 @@ export interface MacroContextInterface {
      * Consume all following space tokens, without expansion.
      */
     consumeSpaces(): void;
+
+    skipConditionalText(): void;
 
     /**
      * Expand the next token only once (if possible), and return the resulting
@@ -90,10 +97,55 @@ export type MacroMap = {[string]: MacroDefinition};
 const builtinMacros: MacroMap = {};
 export default builtinMacros;
 
+export const conditionals = {};
+
 // This function might one day accept an additional argument and do more things.
 export function defineMacro(name: string, body: MacroDefinition) {
     builtinMacros[name] = body;
 }
+
+//////////////////////////////////////////////////////////////////////
+// conditionals
+function defineConditional(
+    name: string,
+    evaluate: MacroContextInterface => boolean
+) {
+    conditionals[name] = true;
+    // When an \if... is expanded, TeX reads ahead as far as necessary
+    // to determine whether the condition is true or false; and if false,
+    // it skips ahead (keeping track of \if...\fi nesting) until finding
+    // the \else, \or, or \fi that ends the skipped text.
+    defineMacro(name, function(context) {
+        const condition = evaluate(context);
+        context.conditional.push(condition);
+        if (!condition) {
+            context.skipConditionalText();
+        }
+        return '';
+    });
+}
+
+defineMacro("\\else", function(context) {
+    // Similarly, when \else is expanded, TeX reads to the end of any text
+    // that ought to be skipped.
+    if (!context.conditional[context.conditional.length - 1]) {
+        throw new ParseError("Extra \\else.");
+    }
+    context.skipConditionalText();
+    return '';
+});
+
+defineMacro("\\fi", function(context) {
+    if (context.conditional.length === 0) {
+        throw new ParseError("Extra \\fi.");
+    }
+    context.conditional.pop();
+    return '';
+});
+
+defineConditional("\\iftrue", () => true);
+defineConditional("\\iffalse", () => false);
+defineConditional("\\ifmmode", (context) => context.mode === 'math');
 
 //////////////////////////////////////////////////////////////////////
 // macro tools

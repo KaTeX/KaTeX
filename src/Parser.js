@@ -131,6 +131,10 @@ export default class Parser {
         // Try to parse the input
         const parse = this.parseExpression(false);
 
+        if (this.gullet.conditional.length) {
+            throw new ParseError("Incomplete conditional!", this.fetch());
+        }
+
         // If we succeeded, make sure there's an EOF at the end
         this.expect("EOF");
 
