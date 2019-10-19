@@ -95,9 +95,18 @@ export type MacroMap = {[string]: MacroDefinition};
 const builtinMacros: MacroMap = {};
 export default builtinMacros;
 
+export const unexpandableMacros = {};
+
 // This function might one day accept an additional argument and do more things.
-export function defineMacro(name: string, body: MacroDefinition) {
+export function defineMacro(
+    name: string,
+    body: MacroDefinition,
+    unexpandable?: boolean,
+) {
     builtinMacros[name] = body;
+    if (unexpandable) {
+        unexpandableMacros[name] = true;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -201,7 +210,7 @@ defineMacro("\\char", function(context) {
         }
     }
     return `\\@char{${number}}`;
-});
+}, true);
 
 // Basic support for macro definitions: \def, \gdef, \edef, \xdef
 // <definition> -> <def><control sequence><definition text>
@@ -240,10 +249,10 @@ const def = (context, global: boolean, expand: boolean) => {
     }, global);
     return '';
 };
-defineMacro("\\gdef", (context) => def(context, true, false));
-defineMacro("\\def", (context) => def(context, false, false));
-defineMacro("\\xdef", (context) => def(context, true, true));
-defineMacro("\\edef", (context) => def(context, false, true));
+defineMacro("\\gdef", (context) => def(context, true, false), true);
+defineMacro("\\def", (context) => def(context, false, false), true);
+defineMacro("\\xdef", (context) => def(context, true, true), true);
+defineMacro("\\edef", (context) => def(context, false, true), true);
 
 // <simple assignment> -> <let assignment>
 // <let assignment> -> \futurelet<control sequence><token><token>
@@ -279,8 +288,8 @@ const letDef = (context, global: boolean, future: boolean) => {
         {tokens: [tok, new Token("\\noexpand@let")], numArgs: 0}, global);
     return {tokens, numArgs: 0};
 };
-defineMacro("\\let", (context) => letDef(context, false, false));
-defineMacro("\\futurelet", (context) => letDef(context, false, true));
+defineMacro("\\let", (context) => letDef(context, false, false), true);
+defineMacro("\\futurelet", (context) => letDef(context, false, true), true);
 
 // <assignment> -> <non-macro assignment>|<macro assignment>
 // <non-macro assignment> -> <simple assignment>|\global<non-macro assignment>
@@ -314,8 +323,8 @@ const defPrefix = (context, global: boolean) => {
         throw new ParseError(`Invalid command '${command}' after macro prefix`);
     }
 };
-defineMacro("\\global", (context) => defPrefix(context, true));
-defineMacro("\\long", (context) => defPrefix(context, false));
+defineMacro("\\global", (context) => defPrefix(context, true), true);
+defineMacro("\\long", (context) => defPrefix(context, false), true);
 
 // \newcommand{\macro}[args]{definition}
 // \renewcommand{\macro}[args]{definition}
@@ -369,8 +378,8 @@ defineMacro("\\providecommand", (context) => newcommand(context, true, true));
 //////////////////////////////////////////////////////////////////////
 // Grouping
 // \let\bgroup={ \let\egroup=}
-defineMacro("\\bgroup", "{");
-defineMacro("\\egroup", "}");
+defineMacro("\\bgroup", "{", true);
+defineMacro("\\egroup", "}", true);
 
 // Symbols from latex.ltx:
 // \def\lq{`}

@@ -11,23 +11,24 @@ import {Token} from "./Token";
 import type {Mode} from "./types";
 import ParseError from "./ParseError";
 import Namespace from "./Namespace";
-import builtinMacros from "./macros";
+import builtinMacros, {unexpandableMacros} from "./macros";
 
 import type {MacroContextInterface, MacroDefinition, MacroExpansion}
     from "./macros";
 import type Settings from "./Settings";
 
 // List of commands that act like macros but aren't defined as a macro,
-// function, or symbol.  Used in `isDefined`.
+// function, or symbol.  Their value indicates whether or not it's expandable.
+// Used in `isDefined` and `isExpandable`.
 export const implicitCommands = {
-    "\\relax": true,        // MacroExpander.js
+    "\\relax": false,       // MacroExpander.js
     "\\expandafter": true,  // MacroExpander.js
     "\\noexpand": true,     // MacroExpander.js
     "\\noexpand@let": true, // MacroExpander.js
-    "^": true,              // Parser.js
-    "_": true,              // Parser.js
-    "\\limits": true,       // Parser.js
-    "\\nolimits": true,     // Parser.js
+    "^": false,             // Parser.js
+    "_": false,             // Parser.js
+    "\\limits": false,      // Parser.js
+    "\\nolimits": false,    // Parser.js
 };
 
 export default class MacroExpander implements MacroContextInterface {
@@ -184,37 +185,46 @@ export default class MacroExpander implements MacroContextInterface {
      * i.e. things like those defined by \def\foo#1\end{…}.
      * See the TeX book page 202ff. for details on how those should behave.
      */
-    expandOnce(noexpandedAsItself?: boolean): Token | Token[] {
+    expandOnce(
+        expandableOnly?: boolean,
+        noexpandedAsItself?: boolean
+    ): Token | Token[] {
         let topToken = this.popToken();
-        const name = topToken.text;
+        let name = topToken.text;
         // TODO: support functions defined using `defineFunction`
         if (name === "\\expandafter") {
             // TeX first reads the token that comes immediately after \expandafter,
-            // without expanding it; let’s call this token t. Then TEX reads the
+            // without expanding it; let’s call this token t. Then TeX reads the
             // token that comes after t (and possibly more tokens, if that token
-            // has an argument), replacing it by its expansion. Finally TEX puts
+            // has an argument), replacing it by its expansion. Finally TeX puts
             // t back in front of that expansion.
             topToken = this.popToken();
-            this.expandOnce();
+            this.expandOnce(true, noexpandedAsItself);
             this.pushToken(topToken);
             return [topToken];
         } else if (name === "\\noexpand" || name === "\\noexpand@let") {
             // The expansion is the token itself; but that token is interpreted
             // as if its meaning were ‘\relax’ if it is a control sequence that
-            // would ordinarily be expanded by TEX’s expansion rules.
+            // would ordinarily be expanded by TeX’s expansion rules.
             // \noexpand@let is used in \let to not expand the macro if the token
             // was not macro when it was defined.
-            topToken = this.popToken();
-            if (!noexpandedAsItself && name !== "\\noexpand@let") {
-                topToken = new Token("\\relax");
+            if (name === "\\noexpand@let") {
+                noexpandedAsItself = true;
             }
-            this.pushToken(topToken);
-            return topToken;
+            topToken = this.popToken();
+            name = topToken.text;
+            if (this.isExpandable(name)) {
+                if (!noexpandedAsItself) {
+                    topToken = new Token("\\relax");
+                }
+                this.pushToken(topToken);
+                return topToken;
+            }
         }
 
-        const expansion = this._getExpansion(name);
-        if (expansion == null) { // mainly checking for undefined here
-            // Fully expanded
+        const expansion = !expandableOnly || this.isExpandable(name)
+            ? this._getExpansion(name) : null;
+        if (expansion == null) { // Fully expanded
             this.pushToken(topToken);
             return topToken;
         }
@@ -294,20 +304,8 @@ export default class MacroExpander implements MacroContextInterface {
      * tokens, or return `undefined` if no such macro is defined.
      */
     expandMacro(name: string): Token[] | void {
-        if (!this.macros.get(name)) {
-            return undefined;
-        }
-        const output = [];
-        const oldStackLength = this.stack.length;
-        this.pushToken(new Token(name));
-        while (this.stack.length > oldStackLength) {
-            const expanded = this.expandOnce();
-            // expandOnce returns Token if and only if it's fully expanded.
-            if (expanded instanceof Token) {
-                output.push(this.stack.pop());
-            }
-        }
-        return output;
+        return this.macros.has(name)
+            ? this.expandTokens([new Token(name)]) : undefined;
     }
 
     /**
@@ -321,7 +319,7 @@ export default class MacroExpander implements MacroContextInterface {
         this.pushTokens(tokens);
         while (this.stack.length > oldStackLength) {
             // expand the token following \noexpand to itself
-            const expanded = this.expandOnce(true);
+            const expanded = this.expandOnce(true, true);
             // expandOnce returns Token if and only if it's fully expanded.
             if (expanded instanceof Token) {
                 output.push(this.stack.pop());
@@ -389,5 +387,12 @@ export default class MacroExpander implements MacroContextInterface {
             symbols.math.hasOwnProperty(name) ||
             symbols.text.hasOwnProperty(name) ||
             implicitCommands.hasOwnProperty(name);
+    }
+
+    isExpandable(name: string): boolean {
+        return this.macros.has(name) ? this.macros.hasCurrent(name) // overriden
+                || !unexpandableMacros.hasOwnProperty(name)
+            : functions.hasOwnProperty(name)/* && !functions[name].primitive*/
+                || implicitCommands[name];
     }
 }
