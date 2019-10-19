@@ -476,8 +476,9 @@ export default class Parser {
             let argType = funcData.argTypes && funcData.argTypes[i];
             const isOptional = i < funcData.numOptionalArgs;
 
-            // \sqrt is primitive if the optional argument doesn't exist
-            if (funcData.type === "sqrt" && i === 1 && optArgs[0] == null) {
+            if ((funcData.primitive && argType == null) ||
+                // \sqrt expands into primitive if optional argument doesn't exist
+                (funcData.type === "sqrt" && i === 1 && optArgs[0] == null)) {
                 argType = "primitive";
             }
 

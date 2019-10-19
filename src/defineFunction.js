@@ -85,6 +85,9 @@ export type FunctionPropSpec = {
 
     // Must be true if the function is an infix operator.
     infix?: boolean,
+
+    // Whether or not the function is a TeX primitive.
+    primitive?: boolean,
 };
 
 type FunctionDefSpec<NODETYPE: NodeType> = {|
@@ -130,6 +133,7 @@ export type FunctionSpec<NODETYPE: NodeType> = {|
     allowedInMath: boolean,
     numOptionalArgs: number,
     infix: boolean,
+    primitive: boolean,
 
     // FLOW TYPE NOTES: Doing either one of the following two
     //
@@ -188,6 +192,7 @@ export default function defineFunction<NODETYPE: NodeType>({
             : props.allowedInMath,
         numOptionalArgs: props.numOptionalArgs || 0,
         infix: !!props.infix,
+        primitive: !!props.primitive,
         handler: handler,
     };
     for (let i = 0; i < names.length; ++i) {
