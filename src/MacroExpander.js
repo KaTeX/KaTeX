@@ -184,7 +184,7 @@ export default class MacroExpander implements MacroContextInterface {
      * i.e. things like those defined by \def\foo#1\end{…}.
      * See the TeX book page 202ff. for details on how those should behave.
      */
-    expandOnce(expandableOnly?: boolean): Token | Token[] {
+    expandOnce(expandOnly?: boolean): Token | Token[] {
         let topToken = this.popToken();
         let name = topToken.text;
         if (name === "\\expandafter") {
@@ -209,7 +209,7 @@ export default class MacroExpander implements MacroContextInterface {
         }
 
         const expansion = !topToken.noexpand
-            ? this._getExpansion(name, expandableOnly) : null;
+            ? this._getExpansion(name, expandOnly) : null;
         if (expansion == null) { // Fully expanded
             this.pushToken(topToken);
             return topToken;
@@ -329,8 +329,8 @@ export default class MacroExpander implements MacroContextInterface {
      * Returns the expanded macro as a reversed array of tokens and a macro
      * argument count.  Or returns `null` if no such macro.
      */
-    _getExpansion(name: string, expandableOnly: ?boolean): ?MacroExpansion {
-        if (expandableOnly) {
+    _getExpansion(name: string, expandOnly: ?boolean): ?MacroExpansion {
+        if (expandOnly) {
             if (name[0] === "\\" && !this.isDefined(name)) {
                 throw new ParseError("Undefined control sequence: " + name);
             } else if (!this.isExpandable(name)) {
