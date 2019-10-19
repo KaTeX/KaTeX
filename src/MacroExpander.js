@@ -21,14 +21,13 @@ import type Settings from "./Settings";
 // function, or symbol.  Their value indicates whether or not it's expandable.
 // Used in `isDefined` and `isExpandable`.
 export const implicitCommands = {
-    "\\relax": false,       // MacroExpander.js
-    "\\expandafter": true,  // MacroExpander.js
-    "\\noexpand": true,     // MacroExpander.js
-    "\\noexpand@let": true, // MacroExpander.js
-    "^": false,             // Parser.js
-    "_": false,             // Parser.js
-    "\\limits": false,      // Parser.js
-    "\\nolimits": false,    // Parser.js
+    "\\relax": false,      // MacroExpander.js
+    "\\expandafter": true, // MacroExpander.js
+    "\\noexpand": true,    // MacroExpander.js
+    "^": false,            // Parser.js
+    "_": false,            // Parser.js
+    "\\limits": false,     // Parser.js
+    "\\nolimits": false,   // Parser.js
 };
 
 export default class MacroExpander implements MacroContextInterface {
@@ -185,10 +184,7 @@ export default class MacroExpander implements MacroContextInterface {
      * i.e. things like those defined by \def\foo#1\end{…}.
      * See the TeX book page 202ff. for details on how those should behave.
      */
-    expandOnce(
-        expandableOnly?: boolean,
-        noexpandedAsItself?: boolean
-    ): Token | Token[] {
+    expandOnce(expandableOnly?: boolean): Token | Token[] {
         let topToken = this.popToken();
         let name = topToken.text;
         if (name === "\\expandafter") {
@@ -198,30 +194,22 @@ export default class MacroExpander implements MacroContextInterface {
             // has an argument), replacing it by its expansion. Finally TeX puts
             // t back in front of that expansion.
             topToken = this.popToken();
-            this.expandOnce(true, noexpandedAsItself);
+            this.expandOnce(true);
             this.pushToken(topToken);
             return [topToken];
-        } else if (name === "\\noexpand" || name === "\\noexpand@let") {
+        } else if (name === "\\noexpand") {
             // The expansion is the token itself; but that token is interpreted
             // as if its meaning were ‘\relax’ if it is a control sequence that
             // would ordinarily be expanded by TeX’s expansion rules.
-            // \noexpand@let is used in \let to not expand the macro if the token
-            // was not macro when it was defined.
-            if (name === "\\noexpand@let") {
-                noexpandedAsItself = true;
-            }
             topToken = this.popToken();
             name = topToken.text;
             if (this.isExpandable(name)) {
-                if (!noexpandedAsItself) {
-                    topToken = new Token("\\relax");
-                }
-                this.pushToken(topToken);
-                return topToken;
+                topToken.noexpand = 1;
             }
         }
 
-        const expansion = !expandableOnly || this.isExpandable(name)
+        const expansion = !topToken.noexpand &&
+                (!expandableOnly || this.isExpandable(name))
             ? this._getExpansion(name) : null;
         if (expansion == null) { // Fully expanded
             this.pushToken(topToken);
@@ -285,7 +273,7 @@ export default class MacroExpander implements MacroContextInterface {
             if (expanded instanceof Token) {
                 // \relax stops the expansion, but shouldn't get returned (a
                 // null return value couldn't get implemented as a function).
-                if (expanded.text === "\\relax") {
+                if (expanded.text === "\\relax" || expanded.noexpand === 1) {
                     this.stack.pop();
                 } else {
                     return this.stack.pop();  // === expanded
@@ -315,10 +303,10 @@ export default class MacroExpander implements MacroContextInterface {
         const oldStackLength = this.stack.length;
         this.pushTokens(tokens);
         while (this.stack.length > oldStackLength) {
-            // expand the token following \noexpand to itself
-            const expanded = this.expandOnce(true, true);
+            const expanded = this.expandOnce(true);
             // expandOnce returns Token if and only if it's fully expanded.
             if (expanded instanceof Token) {
+                expanded.noexpand = 0;
                 output.push(this.stack.pop());
             }
         }

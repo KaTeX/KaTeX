@@ -283,10 +283,12 @@ const letDef = (context, global: boolean, future: boolean) => {
     }
 
     const macro = context.macros.get(tok.text);
-    // if macro is undefined at this moment, use special command \noexpand@let
-    // to not expand at that moment too and pass it to the parser
-    context.macros.set(name, macro ||
-        {tokens: [tok, new Token("\\noexpand@let")], numArgs: 0}, global);
+    if (macro == null) {
+        // if macro is undefined at this moment, set noexpand to 2
+        // to not expand at that moment too and pass it to the parser
+        tok.noexpand = 2;
+    }
+    context.macros.set(name, macro || {tokens: [tok], numArgs: 0}, global);
     return {tokens, numArgs: 0};
 };
 defineMacro("\\let", (context) => letDef(context, false, false), true);

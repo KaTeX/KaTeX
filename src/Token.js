@@ -23,6 +23,7 @@ export interface LexerInterface {input: string, tokenRegex: RegExp}
 export class Token {
     text: string;
     loc: ?SourceLocation;
+    noexpand: ?number; /* 1: treat as \relax, 2: pass to the parser */
 
     constructor(
         text: string,           // the text of this token
