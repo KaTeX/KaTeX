@@ -2941,11 +2941,14 @@ describe("A macro expander", function() {
             "\\foo": "#1+#2",
             "\\bar": "xy",
         }}));
+        expect`\expandafter\foo\def\foo{x}`.not.toParse();
     });
 
     it("should not expand if preceded by \\noexpand", function() {
         expect`\noexpand\foo y`.toParseLike("y",
             new Settings({macros: {"\\foo": "x"}}));
+        expect`\noexpand\frac xy`.toParseLike`xy`;
+        expect`\noexpand\def\foo{xy}\foo`.toParseLike`xy`;
     });
 
     it("should allow for space macro argument (text version)", function() {
@@ -3131,6 +3134,7 @@ describe("A macro expander", function() {
 
     it("\\xdef should expand definition", function() {
         expect`\def\foo{a}\xdef\bar{\foo}\def\foo{}\bar`.toParseLike`a`;
+        expect`\def\foo{a}\xdef\bar{\def\noexpand\foo{}}\foo\bar\foo`.toParseLike`a`;
     });
 
     it("\\def works locally", () => {

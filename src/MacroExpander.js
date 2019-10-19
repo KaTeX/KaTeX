@@ -191,7 +191,6 @@ export default class MacroExpander implements MacroContextInterface {
     ): Token | Token[] {
         let topToken = this.popToken();
         let name = topToken.text;
-        // TODO: support functions defined using `defineFunction`
         if (name === "\\expandafter") {
             // TeX first reads the token that comes immediately after \expandafter,
             // without expanding it; let’s call this token t. Then TeX reads the
