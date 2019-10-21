@@ -245,7 +245,7 @@ export default class MacroExpander implements MacroContextInterface {
      */
     expandNextToken(): Token {
         for (;;) {
-            const expanded = this.expandOnce();
+            const expanded = this.expandOnce(/*TODO(ylem): #2122, this.scanning*/);
             // expandOnce returns Token if and only if it's fully expanded.
             if (expanded instanceof Token) {
                 // \relax stops the expansion, but shouldn't get returned (a
