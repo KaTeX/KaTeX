@@ -21,13 +21,12 @@ import type Settings from "./Settings";
 // function, or symbol.  Their value indicates whether or not it's expandable.
 // Used in `isDefined` and `isExpandable`.
 export const implicitCommands = {
-    "\\relax": false,      // MacroExpander.js
-    "\\expandafter": true, // MacroExpander.js
-    "\\noexpand": true,    // MacroExpander.js
-    "^": false,            // Parser.js
-    "_": false,            // Parser.js
-    "\\limits": false,     // Parser.js
-    "\\nolimits": false,   // Parser.js
+    "\\relax": false,    // MacroExpander.js
+    "\\noexpand": true,  // MacroExpander.js
+    "^": false,          // Parser.js
+    "_": false,          // Parser.js
+    "\\limits": false,   // Parser.js
+    "\\nolimits": false, // Parser.js
 };
 
 export default class MacroExpander implements MacroContextInterface {
@@ -187,17 +186,7 @@ export default class MacroExpander implements MacroContextInterface {
     expandOnce(expandOnly?: boolean): Token | Token[] {
         let topToken = this.popToken();
         let name = topToken.text;
-        if (name === "\\expandafter") {
-            // TeX first reads the token that comes immediately after \expandafter,
-            // without expanding it; let’s call this token t. Then TeX reads the
-            // token that comes after t (and possibly more tokens, if that token
-            // has an argument), replacing it by its expansion. Finally TeX puts
-            // t back in front of that expansion.
-            topToken = this.popToken();
-            this.expandOnce(true);
-            this.pushToken(topToken);
-            return [topToken];
-        } else if (name === "\\noexpand") {
+        if (name === "\\noexpand") {
             // The expansion is the token itself; but that token is interpreted
             // as if its meaning were ‘\relax’ if it is a control sequence that
             // would ordinarily be expanded by TeX’s expansion rules.

@@ -42,6 +42,11 @@ export interface MacroContextInterface {
     consumeSpaces(): void;
 
     /**
+     * Expand the next token only once if possible.
+     */
+    expandOnce(expandOnly?: boolean): Token | Token[];
+
+    /**
      * Expand the next token only once (if possible), and return the resulting
      * top token on the stack (without removing anything from the stack).
      * Similar in behavior to TeX's `\expandafter\futurelet`.
@@ -124,6 +129,17 @@ function defineMacroFunction(
 
 //////////////////////////////////////////////////////////////////////
 // macro tools
+
+defineMacro("\\expandafter", function(context) {
+    // TeX first reads the token that comes immediately after \expandafter,
+    // without expanding it; let’s call this token t. Then TeX reads the
+    // token that comes after t (and possibly more tokens, if that token
+    // has an argument), replacing it by its expansion. Finally TeX puts
+    // t back in front of that expansion.
+    const t = context.popToken();
+    context.expandOnce(true);
+    return {tokens: [t], numArgs: 0};
+});
 
 // LaTeX's \@firstoftwo{#1}{#2} expands to #1, skipping #2
 // TeX source: \long\def\@firstoftwo#1#2{#1}
