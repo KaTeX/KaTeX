@@ -83,30 +83,43 @@ export interface MacroContextInterface {
      * `implicitCommands`.
      */
     isDefined(name: string): boolean;
+
+    /**
+     * Determine whether a command is expandable.
+     */
+    isExpandable(name: string): boolean;
 }
 
 /** Macro tokens (in reverse order). */
-export type MacroExpansion = {tokens: Token[], numArgs: number};
+export type MacroExpansion = {
+    tokens: Token[],
+    numArgs: number,
+    unexpandable?: boolean,
+};
 
-export type MacroDefinition = string | MacroExpansion |
-    (MacroContextInterface => (string | MacroExpansion));
+export type MacroFunction = {
+    (MacroContextInterface): string | MacroExpansion,
+    unexpandable?: boolean,
+}
+
+export type MacroDefinition = string | MacroExpansion | MacroFunction;
 export type MacroMap = {[string]: MacroDefinition};
 
 const builtinMacros: MacroMap = {};
 export default builtinMacros;
 
-export const unexpandableMacros = {};
-
 // This function might one day accept an additional argument and do more things.
-export function defineMacro(
-    name: string,
-    body: MacroDefinition,
-    unexpandable?: boolean,
-) {
+export function defineMacro(name: string, body: MacroDefinition) {
     builtinMacros[name] = body;
-    if (unexpandable) {
-        unexpandableMacros[name] = true;
-    }
+}
+
+function defineMacroFunction(
+    name: string,
+    body: MacroFunction,
+    unexpandable: boolean,
+) {
+    body.unexpandable = unexpandable;
+    defineMacro(name, body);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -173,7 +186,7 @@ const digitToNumber = {
 //   \char`\x  -- character that cannot be written (e.g. %)
 // These all refer to characters from the font, so we turn them into special
 // calls to a function \@char dealt with in the Parser.
-defineMacro("\\char", function(context) {
+defineMacroFunction("\\char", function(context) {
     let token = context.popToken();
     let base;
     let number = '';
@@ -250,10 +263,10 @@ const def = (context, global: boolean, expand: boolean) => {
     }, global);
     return '';
 };
-defineMacro("\\gdef", (context) => def(context, true, false), true);
-defineMacro("\\def", (context) => def(context, false, false), true);
-defineMacro("\\xdef", (context) => def(context, true, true), true);
-defineMacro("\\edef", (context) => def(context, false, true), true);
+defineMacroFunction("\\gdef", (context) => def(context, true, false), true);
+defineMacroFunction("\\def", (context) => def(context, false, false), true);
+defineMacroFunction("\\xdef", (context) => def(context, true, true), true);
+defineMacroFunction("\\edef", (context) => def(context, false, true), true);
 
 // <simple assignment> -> <let assignment>
 // <let assignment> -> \futurelet<control sequence><token><token>
@@ -288,11 +301,15 @@ const letDef = (context, global: boolean, future: boolean) => {
         // to not expand at that moment too and pass it to the parser
         tok.noexpand = 2;
     }
-    context.macros.set(name, macro || {tokens: [tok], numArgs: 0}, global);
+    context.macros.set(name, macro || {
+        tokens: [tok],
+        numArgs: 0,
+        unexpandable: !context.isExpandable(tok.text),
+    }, global);
     return {tokens, numArgs: 0};
 };
-defineMacro("\\let", (context) => letDef(context, false, false), true);
-defineMacro("\\futurelet", (context) => letDef(context, false, true), true);
+defineMacroFunction("\\let", (context) => letDef(context, false, false), true);
+defineMacroFunction("\\futurelet", (context) => letDef(context, false, true), true);
 
 // <assignment> -> <non-macro assignment>|<macro assignment>
 // <non-macro assignment> -> <simple assignment>|\global<non-macro assignment>
@@ -326,8 +343,8 @@ const defPrefix = (context, global: boolean) => {
         throw new ParseError(`Invalid command '${command}' after macro prefix`);
     }
 };
-defineMacro("\\global", (context) => defPrefix(context, true), true);
-defineMacro("\\long", (context) => defPrefix(context, false), true);
+defineMacroFunction("\\global", (context) => defPrefix(context, true), true);
+defineMacroFunction("\\long", (context) => defPrefix(context, false), true);
 
 // \newcommand{\macro}[args]{definition}
 // \renewcommand{\macro}[args]{definition}
@@ -381,8 +398,8 @@ defineMacro("\\providecommand", (context) => newcommand(context, true, true));
 //////////////////////////////////////////////////////////////////////
 // Grouping
 // \let\bgroup={ \let\egroup=}
-defineMacro("\\bgroup", "{", true);
-defineMacro("\\egroup", "}", true);
+defineMacro("\\bgroup", "{");
+defineMacro("\\egroup", "}");
 
 // Symbols from latex.ltx:
 // \def\lq{`}

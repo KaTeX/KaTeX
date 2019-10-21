@@ -11,7 +11,7 @@ import {Token} from "./Token";
 import type {Mode} from "./types";
 import ParseError from "./ParseError";
 import Namespace from "./Namespace";
-import builtinMacros, {unexpandableMacros} from "./macros";
+import builtinMacros from "./macros";
 
 import type {MacroContextInterface, MacroDefinition, MacroExpansion}
     from "./macros";
@@ -363,7 +363,7 @@ export default class MacroExpander implements MacroContextInterface {
             const expanded = {tokens, numArgs};
             return expanded;
         }
-
+        // $FlowIgnore
         return expansion;
     }
 
@@ -381,9 +381,12 @@ export default class MacroExpander implements MacroContextInterface {
             implicitCommands.hasOwnProperty(name);
     }
 
+    /**
+     * Determine whether a command is expandable.
+     */
     isExpandable(name: string): boolean {
-        return this.macros.has(name) ? this.macros.hasCurrent(name) // overriden
-                || !unexpandableMacros.hasOwnProperty(name)
+        const macro = this.macros.get(name);
+        return macro != null ? typeof macro === "string" || !macro.unexpandable
             : functions.hasOwnProperty(name)/* && !functions[name].primitive*/
                 || implicitCommands[name];
     }

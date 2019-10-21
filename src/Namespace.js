@@ -67,13 +67,6 @@ export default class Namespace<Value> {
     }
 
     /**
-     * Detect whether `name` has a non-builtin definition.
-     */
-    hasCurrent(name: string): boolean {
-        return this.current.hasOwnProperty(name);
-    }
-
-    /**
      * Get the current value of a name, or `undefined` if there is no value.
      *
      * Note: Do not use `if (namespace.get(...))` to detect whether a macro
