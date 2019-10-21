@@ -46,6 +46,10 @@ export interface MacroContextInterface {
      */
     consumeSpaces(): void;
 
+    /**
+     * Skips ahead (keeping track of \if...\fi nesting) until finding
+     * the \else, \or, or \fi that ends the skipped text.
+     */
     skipConditionalText(): void;
 
     /**
