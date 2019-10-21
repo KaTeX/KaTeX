@@ -3008,6 +3008,23 @@ describe("A macro expander", function() {
         expect`xyz \fi`.not.toParse();
     });
 
+    it("\\ifx should work", function() {
+        expect`\ifx\foo\relax xyz \fi`.toParseLike`xyz`;
+        expect`\ifx\foo\bar xyz \fi`.toParseLike("xyz", new Settings({macros: {
+            "\\foo": "a",
+            "\\bar": "a",
+        }}));
+        expect`\def\foo{a}\ifx\foo a xyz \else abc \fi`.toParseLike`abc`;
+    });
+
+    it("\\if should work", function() {
+        expect`\if\displaystyle\mathbin xyz \fi`.toParseLike`xyz`;
+        expect`\if\foo a xyz \fi`.toParseLike("xyz", new Settings({macros: {
+            "\\foo": "a",
+        }}));
+        expect`\def\foo{aa}\if\foo xyz \fi`.toParseLike`xyz`;
+    });
+
     it("\\@firstoftwo should consume both, and avoid errors", function() {
         expect`\@firstoftwo{yes}{no}`.toParseLike`yes`;
         expect`\@firstoftwo{yes}{1'_2^3}`.toParseLike`yes`;
