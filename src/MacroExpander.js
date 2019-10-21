@@ -376,6 +376,7 @@ export default class MacroExpander implements MacroContextInterface {
     isExpandable(name: string): boolean {
         const macro = this.macros.get(name);
         return macro != null ? typeof macro === "string" || !macro.unexpandable
+            // TODO(ylem): #2085
             : functions.hasOwnProperty(name)/* && !functions[name].primitive*/
                 || implicitCommands[name];
     }
