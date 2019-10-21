@@ -52,7 +52,6 @@ export type EnvSpec<NODETYPE: NodeType> = {|
     type: NODETYPE, // Need to use the type to avoid error. See NOTES below.
     numArgs: number,
     argTypes?: ArgType[],
-    greediness: number,
     allowedInText: boolean,
     numOptionalArgs: number,
     handler: EnvHandler,
@@ -99,7 +98,6 @@ export default function defineEnvironment<NODETYPE: NodeType>({
     const data = {
         type,
         numArgs: props.numArgs || 0,
-        greediness: 1,
         allowedInText: false,
         numOptionalArgs: 0,
         handler,

@@ -44,7 +44,7 @@ defineFunction({
     ],
     props: {
         numArgs: 1,
-        greediness: 2,
+        grouped: true,
     },
     handler: ({parser, funcName}, args) => {
         const body = args[0];
@@ -68,7 +68,6 @@ defineFunction({
     names: ["\\boldsymbol", "\\bm"],
     props: {
         numArgs: 1,
-        greediness: 2,
     },
     handler: ({parser}, args) => {
         const body = args[0];

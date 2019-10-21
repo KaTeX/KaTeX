@@ -853,13 +853,6 @@ describe("A color parser", function() {
         expect(newColorExpression).toParse();
     });
 
-    it("should have correct greediness", function() {
-        expect`\textcolor{red}a`.toParse();
-        expect`\textcolor{red}{\text{a}}`.toParse();
-        expect`\textcolor{red}\text{a}`.not.toParse();
-        expect`\textcolor{red}\frac12`.not.toParse();
-    });
-
     it("should use one-argument \\color by default", function() {
         expect(oldColorExpression).toParseLike`\textcolor{#fA6}{xy}`;
     });
@@ -1345,7 +1338,8 @@ describe("A TeX-compliant parser", function() {
         expect`x_`.not.toParse();
     });
 
-    it("should fail when arguments require arguments", function() {
+    // TODO(ylem): #2085
+    /* it("should fail when arguments require arguments", function() {
         const badArguments = [
             r`\frac \frac x y z`,
             r`\frac x \frac y z`,
@@ -1365,7 +1359,7 @@ describe("A TeX-compliant parser", function() {
         for (let i = 0; i < badArguments.length; i++) {
             expect(badArguments[i]).not.toParse();
         }
-    });
+    }); */
 
     it("should work when the arguments have braces", function() {
         const goodArguments = [
@@ -1578,9 +1572,9 @@ describe("A font parser", function() {
         expect(body[0].font).toEqual("mathbb");
     });
 
-    it("should not parse a series of font commands", function() {
-        expect`\mathbb \mathrm R`.not.toParse();
-    });
+    // it("should not parse a series of font commands", function() {
+    //     expect`\mathbb \mathrm R`.not.toParse();
+    // });
 
     it("should nest fonts correctly", function() {
         const bf = getParsed`\mathbf{a\mathrm{b}c}`[0];
@@ -2515,23 +2509,6 @@ describe("A smash builder", function() {
         expect`\smash[b]{x^2}`.toBuild(nonstrictSettings);
         expect`\smash[b]{x}^2`.toBuild(nonstrictSettings);
         expect`\smash[b] x`.toBuild(nonstrictSettings);
-    });
-});
-
-describe("A document fragment", function() {
-    it("should have paddings applied inside an extensible arrow", function() {
-        const markup = katex.renderToString("\\tiny\\xrightarrow\\textcolor{red}{x}");
-        expect(markup).toContain("x-arrow-pad");
-    });
-
-    it("should have paddings applied inside an enclose", function() {
-        const markup = katex.renderToString(r`\fbox\textcolor{red}{x}`);
-        expect(markup).toContain("boxpad");
-    });
-
-    it("should have paddings applied inside a square root", function() {
-        const markup = katex.renderToString(r`\sqrt\textcolor{red}{x}`);
-        expect(markup).toContain("padding-left");
     });
 });
 

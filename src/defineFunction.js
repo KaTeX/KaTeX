@@ -48,26 +48,10 @@ export type FunctionPropSpec = {
     // should appear before types for mandatory arguments.
     argTypes?: ArgType[],
 
-    // The greediness of the function to use ungrouped arguments.
-    //
-    // E.g. if you have an expression
-    //   \sqrt \frac 1 2
-    // since \frac has greediness=2 vs \sqrt's greediness=1, \frac
-    // will use the two arguments '1' and '2' as its two arguments,
-    // then that whole function will be used as the argument to
-    // \sqrt. On the other hand, the expressions
-    //   \frac \frac 1 2 3
-    // and
-    //   \frac \sqrt 1 2
-    // will fail because \frac and \frac have equal greediness
-    // and \sqrt has a lower greediness than \frac respectively. To
-    // make these parse, we would have to change them to:
-    //   \frac {\frac 1 2} 3
-    // and
-    //   \frac {\sqrt 1} 2
-    //
-    // The default value is `1`
-    greediness?: number,
+    // Whether it expands to a single token or a braced group of tokens.
+    // If it's grouped, it can be used as an argument to primitive commands,
+    // such as \sqrt (without the optional argument) and super/subscript.
+    grouped?: boolean,
 
     // Whether or not the function is allowed inside text mode
     // (default false)
@@ -125,7 +109,7 @@ export type FunctionSpec<NODETYPE: NodeType> = {|
     type: NODETYPE, // Need to use the type to avoid error. See NOTES below.
     numArgs: number,
     argTypes?: ArgType[],
-    greediness: number,
+    grouped: boolean,
     allowedInText: boolean,
     allowedInMath: boolean,
     numOptionalArgs: number,
@@ -181,7 +165,7 @@ export default function defineFunction<NODETYPE: NodeType>({
         type,
         numArgs: props.numArgs,
         argTypes: props.argTypes,
-        greediness: (props.greediness === undefined) ? 1 : props.greediness,
+        grouped: !!props.grouped,
         allowedInText: !!props.allowedInText,
         allowedInMath: (props.allowedInMath === undefined)
             ? true

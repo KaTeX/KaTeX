@@ -38,7 +38,6 @@ defineFunction({
     props: {
         numArgs: 2,
         allowedInText: true,
-        greediness: 3,
         argTypes: ["color", "original"],
     },
     handler({parser}, args) {
@@ -61,7 +60,6 @@ defineFunction({
     props: {
         numArgs: 1,
         allowedInText: true,
-        greediness: 3,
         argTypes: ["color"],
     },
     handler({parser, breakOnTokenText}, args) {

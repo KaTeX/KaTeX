@@ -173,7 +173,6 @@ defineFunction({
     props: {
         numArgs: 2,
         allowedInText: true,
-        greediness: 3,
         argTypes: ["color", "text"],
     },
     handler({parser, funcName}, args, optArgs) {
@@ -197,7 +196,6 @@ defineFunction({
     props: {
         numArgs: 3,
         allowedInText: true,
-        greediness: 3,
         argTypes: ["color", "color", "text"],
     },
     handler({parser, funcName}, args, optArgs) {

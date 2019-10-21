@@ -250,9 +250,6 @@ export default class Parser {
         }
     }
 
-    // The greediness of a superscript or subscript
-    static SUPSUB_GREEDINESS = 1;
-
     /**
      * Handle a subscript or superscript with nice errors.
      */
@@ -262,9 +259,8 @@ export default class Parser {
         const symbolToken = this.fetch();
         const symbol = symbolToken.text;
         this.consume();
-        const group = this.parseGroup(name, false, Parser.SUPSUB_GREEDINESS,
-            undefined, undefined, true);
-                                 // ignore spaces before sup/subscript argument
+        // ignore spaces before sup/subscript argument
+        const group = this.parseGroup(name, false, undefined, undefined, true);
 
         if (!group) {
             throw new ParseError(
@@ -309,7 +305,7 @@ export default class Parser {
     parseAtom(breakOnTokenText?: BreakToken): ?AnyParseNode {
         // The body of an atom is an implicit group, so that things like
         // \left(x\right)^2 work correctly.
-        const base = this.parseGroup("atom", false, null, breakOnTokenText);
+        const base = this.parseGroup("atom", false, breakOnTokenText);
 
         // In text mode, we don't have superscripts or subscripts
         if (this.mode === "text") {
@@ -409,8 +405,7 @@ export default class Parser {
      */
     parseFunction(
         breakOnTokenText?: BreakToken,
-        name?: string, // For error reporting.
-        greediness?: ?number,
+        name?: string, // For determining its context
     ): ?AnyParseNode {
         const token = this.fetch();
         const func = token.text;
@@ -420,7 +415,7 @@ export default class Parser {
         }
         this.consume(); // consume command token
 
-        if (greediness != null && funcData.greediness <= greediness) {
+        if (name && name !== "atom" && !funcData.grouped) {
             throw new ParseError(
                 "Got function '" + func + "' with no arguments" +
                 (name ? " as " + name : ""), token);
@@ -475,7 +470,6 @@ export default class Parser {
             return {args: [], optArgs: []};
         }
 
-        const baseGreediness = funcData.greediness;
         const args = [];
         const optArgs = [];
 
@@ -495,7 +489,7 @@ export default class Parser {
             // TODO(edemaine)
                 (i === 0 && !isOptional && this.mode === "math");
             const arg = this.parseGroupOfType(`argument to '${func}'`,
-                argType, isOptional, baseGreediness, consumeSpaces);
+                argType, isOptional, consumeSpaces);
             if (!arg) {
                 if (isOptional) {
                     optArgs.push(null);
@@ -517,7 +511,6 @@ export default class Parser {
         name: string,
         type: ?ArgType,
         optional: boolean,
-        greediness: ?number,
         consumeSpaces: boolean,
     ): ?AnyParseNode {
         switch (type) {
@@ -536,11 +529,11 @@ export default class Parser {
             case "math":
             case "text":
                 return this.parseGroup(
-                    name, optional, greediness, undefined, type, consumeSpaces);
+                    name, optional, undefined, type, consumeSpaces);
             case "hbox": {
                 // hbox argument type wraps the argument in the equivalent of
                 // \hbox, which is like \text but switching to \textstyle size.
-                const group = this.parseGroup(name, optional, greediness,
+                const group = this.parseGroup(name, optional,
                     undefined, "text", consumeSpaces);
                 if (!group) {
                     return group;
@@ -574,7 +567,7 @@ export default class Parser {
             case "original":
             case null:
             case undefined:
-                return this.parseGroup(name, optional, greediness,
+                return this.parseGroup(name, optional,
                     undefined, undefined, consumeSpaces);
             default:
                 throw new ParseError(
@@ -776,9 +769,8 @@ export default class Parser {
      * and switches back after.
      */
     parseGroup(
-        name: string, // For error reporting.
+        name: string,
         optional?: boolean,
-        greediness?: ?number,
         breakOnTokenText?: BreakToken,
         mode?: Mode,
         consumeSpaces?: boolean,
@@ -828,7 +820,7 @@ export default class Parser {
         } else {
             // If there exists a function with this name, parse the function.
             // Otherwise, just return a nucleus
-            result = this.parseFunction(breakOnTokenText, name, greediness) ||
+            result = this.parseFunction(breakOnTokenText, name) ||
                 this.parseSymbol();
             if (result == null && text[0] === "\\" &&
                     !implicitCommands.hasOwnProperty(text)) {
