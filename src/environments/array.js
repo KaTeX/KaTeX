@@ -6,7 +6,7 @@ import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import {assertNodeType, assertSymbolNodeType} from "../parseNode";
-import {checkNodeType, checkSymbolNodeType} from "../parseNode";
+import {checkSymbolNodeType} from "../parseNode";
 import {calculateSize} from "../units";
 import utils from "../utils";
 
@@ -547,11 +547,10 @@ const alignedHandler = function(context, args) {
         mode: context.mode,
         body: [],
     };
-    const ordgroup = checkNodeType(args[0], "ordgroup");
-    if (ordgroup) {
+    if (args[0] && args[0].type === "ordgroup") {
         let arg0 = "";
-        for (let i = 0; i < ordgroup.body.length; i++) {
-            const textord = assertNodeType(ordgroup.body[i], "textord");
+        for (let i = 0; i < args[0].body.length; i++) {
+            const textord = assertNodeType(args[0].body[i], "textord");
             arg0 += textord.text;
         }
         numMaths = Number(arg0);
