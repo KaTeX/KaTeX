@@ -248,7 +248,7 @@ defineFunction({
     ],
     props: {
         numArgs: 2,
-        grouped: true,
+        allowedInArgument: true,
     },
     handler: ({parser, funcName}, args) => {
         const numer = args[0];
@@ -397,7 +397,7 @@ defineFunction({
     names: ["\\genfrac"],
     props: {
         numArgs: 6,
-        grouped: true,
+        allowedInArgument: true,
         argTypes: ["math", "math", "size", "text", "math", "math"],
     },
     handler({parser}, args) {

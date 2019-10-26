@@ -51,7 +51,7 @@ export type FunctionPropSpec = {
     // Whether it expands to a single token or a braced group of tokens.
     // If it's grouped, it can be used as an argument to primitive commands,
     // such as \sqrt (without the optional argument) and super/subscript.
-    grouped?: boolean,
+    allowedInArgument?: boolean,
 
     // Whether or not the function is allowed inside text mode
     // (default false)
@@ -109,7 +109,7 @@ export type FunctionSpec<NODETYPE: NodeType> = {|
     type: NODETYPE, // Need to use the type to avoid error. See NOTES below.
     numArgs: number,
     argTypes?: ArgType[],
-    grouped: boolean,
+    allowedInArgument: boolean,
     allowedInText: boolean,
     allowedInMath: boolean,
     numOptionalArgs: number,
@@ -165,7 +165,7 @@ export default function defineFunction<NODETYPE: NodeType>({
         type,
         numArgs: props.numArgs,
         argTypes: props.argTypes,
-        grouped: !!props.grouped,
+        allowedInArgument: !!props.allowedInArgument,
         allowedInText: !!props.allowedInText,
         allowedInMath: (props.allowedInMath === undefined)
             ? true

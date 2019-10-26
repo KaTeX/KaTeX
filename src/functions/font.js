@@ -44,7 +44,7 @@ defineFunction({
     ],
     props: {
         numArgs: 1,
-        grouped: true,
+        allowedInArgument: true,
     },
     handler: ({parser, funcName}, args) => {
         const body = args[0];

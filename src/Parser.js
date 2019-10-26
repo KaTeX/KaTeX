@@ -415,7 +415,7 @@ export default class Parser {
         }
         this.consume(); // consume command token
 
-        if (name && name !== "atom" && !funcData.grouped) {
+        if (name && name !== "atom" && !funcData.allowedInArgument) {
             throw new ParseError(
                 "Got function '" + func + "' with no arguments" +
                 (name ? " as " + name : ""), token);
