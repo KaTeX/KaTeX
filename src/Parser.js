@@ -51,10 +51,11 @@ import type {EnvSpec} from "./defineEnvironment";
  */
 
  // Lookup table for parsing numbers in base 8 through 16
+ // with decimal separators as -1
 const digitToNumber = {
     "0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8,
     "9": 9, "a": 10, "A": 10, "b": 11, "B": 11, "c": 12, "C": 12,
-    "d": 13, "D": 13, "e": 14, "E": 14, "f": 15, "F": 15,
+    "d": 13, "D": 13, "e": 14, "E": 14, "f": 15, "F": 15, ".": -1, ",": -1,
 };
 
 export default class Parser {
@@ -738,7 +739,7 @@ export default class Parser {
                 if (!intToDimen) {
                     throw new ParseError("Can't coerce integer into dimen");
                 }
-                // value = {number: value, unit: "sp"};
+                // value = {number: internal.positive ? value : -value, unit: "sp"};
             }
             return {
                 type: "dimen",
@@ -817,18 +818,28 @@ export default class Parser {
         }
         if (base) {
             // Parse a number in the given base, starting with first `token`.
-            // TODO: handle starting with decimal separator
-            number = digitToNumber[this.fetch().text];
-            if (number == null || number >= base) {
+            let digit;
+            let empty = true;
+            let decimal = type !== "integer" && base === 10 ? 0 : -1;
+            while ((digit = digitToNumber[this.fetch().text]) != null &&
+                   digit < base && (digit >= 0 || !decimal)) {
+                empty = false;
+                if (digit === -1) {
+                    decimal++;
+                } else {
+                    if (decimal > 0) {
+                        decimal++;
+                    }
+                    number *= base;
+                    number += digit;
+                }
+                this.consume();
+            }
+            if (empty) {
                 throw new ParseError(`Invalid base-${base} digit ${token.text}`);
             }
-            this.consume();
-            let digit;
-            while ((digit = digitToNumber[this.fetch().text]) != null &&
-                   digit < base) {
-                number *= base;
-                number += digit;
-                this.consume();
+            if (decimal > 1) {
+                number /= Math.pow(10, decimal - 1);
             }
             token = this.fetch();
             if (token.text === " " || token.text === "\\relax") {
@@ -859,29 +870,6 @@ export default class Parser {
     ): ParseNode<"dimen"> | ParseNode<"glue"> {
         const factor = this.parseIntegerGroup(type);
         if (factor.type === "integer") {
-            this.gullet.scanning = true; // allow MacroExpander to return \relax
-            // <normal dimen> -> <factor><unit of measure>
-            // <normal mudimen> -> <factor><mu unit>
-            let number = factor.value;
-            // if there was a space, it should've been consumed by parseNumberGroup
-            let tok = this.nextToken;
-            if (factor.base === 10 && tok != null &&
-                    (tok.text === "." || tok.text === ",")) {
-                // <deciaml constant> -> . | , | <decimal constant><digit>
-                this.consume();
-                let digit;
-                let fraction = 1;
-                while ((digit = digitToNumber[this.fetch().text]) != null &&
-                       digit < 10) {
-                    fraction /= 10;
-                    number += fraction * digit;
-                    this.consume();
-                }
-            }
-            if (!factor.positive) {
-                number = -number;
-            }
-
             // <unit of measure> -> <optional spaces><internal unit>
             //   | <optional true><physical unit><one optional space>
             // <internal unit> -> em<one optional space> | ex<one optional space>
@@ -889,8 +877,11 @@ export default class Parser {
             // <physical unit> -> pt | pc | in | bp | cm | mm | dd | cc | sp
             // <mu unit> -> <optional spaces><internal muglue>
             //   | mu<one optional space>
+            this.gullet.scanning = true; // allow MacroExpander to return \relax
+            const number = factor.positive ? factor.value : -factor.value;
+
             this.consumeSpaces();
-            tok = this.fetch();
+            const tok = this.fetch();
             if (tok.text[0] === "\\") {
                 const internal = assertNodeType(
                     this.getVariable(tok.text, "dimen", mu, true), "dimen");
