@@ -185,6 +185,8 @@ export default class Parser {
             const atom = this.parseAtom(breakOnTokenText);
             if (!atom) {
                 break;
+            } else if (atom.type === "internal") {
+                continue;
             }
             body.push(atom);
         }
