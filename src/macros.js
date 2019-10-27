@@ -143,61 +143,6 @@ defineMacro("\\TextOrMath", function(context) {
     }
 });
 
-// Lookup table for parsing numbers in base 8 through 16
-const digitToNumber = {
-    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8,
-    "9": 9, "a": 10, "A": 10, "b": 11, "B": 11, "c": 12, "C": 12,
-    "d": 13, "D": 13, "e": 14, "E": 14, "f": 15, "F": 15,
-};
-
-// TeX \char makes a literal character (catcode 12) using the following forms:
-// (see The TeXBook, p. 43)
-//   \char123  -- decimal
-//   \char'123 -- octal
-//   \char"123 -- hex
-//   \char`x   -- character that can be written (i.e. isn't active)
-//   \char`\x  -- character that cannot be written (e.g. %)
-// These all refer to characters from the font, so we turn them into special
-// calls to a function \@char dealt with in the Parser.
-defineMacro("\\char", function(context) {
-    let token = context.popToken();
-    let base;
-    let number = '';
-    if (token.text === "'") {
-        base = 8;
-        token = context.popToken();
-    } else if (token.text === '"') {
-        base = 16;
-        token = context.popToken();
-    } else if (token.text === "`") {
-        token = context.popToken();
-        if (token.text[0] === "\\") {
-            number = token.text.charCodeAt(1);
-        } else if (token.text === "EOF") {
-            throw new ParseError("\\char` missing argument");
-        } else {
-            number = token.text.charCodeAt(0);
-        }
-    } else {
-        base = 10;
-    }
-    if (base) {
-        // Parse a number in the given base, starting with first `token`.
-        number = digitToNumber[token.text];
-        if (number == null || number >= base) {
-            throw new ParseError(`Invalid base-${base} digit ${token.text}`);
-        }
-        let digit;
-        while ((digit = digitToNumber[context.future().text]) != null &&
-               digit < base) {
-            number *= base;
-            number += digit;
-            context.popToken();
-        }
-    }
-    return `\\@char{${number}}`;
-});
-
 // Basic support for macro definitions:
 //     \def\macro{expansion}
 //     \def\macro#1{expansion}

@@ -21,7 +21,7 @@ export type Mode = "math" | "text";
 //                 argument is parsed normally)
 //   - Mode: Node group parsed in given mode.
 export type ArgType = "color" | "size" | "url" | "raw" | "original" | "hbox" |
-    Mode;
+    "integer" | Mode;
 
 // LaTeX display style.
 export type StyleStr = "text" | "display" | "script" | "scriptscript";

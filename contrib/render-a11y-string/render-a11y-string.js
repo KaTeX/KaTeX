@@ -559,6 +559,18 @@ const handleObject = (
             throw new Error("KaTeX-a11y: raw not implemented yet");
         }
 
+        case "integer": {
+            break;
+        }
+
+        case "dimen": {
+            break;
+        }
+
+        case "glue": {
+            break;
+        }
+
         case "size": {
             // Although there are nodes of type "size" in the parse tree, they have
             // no semantic meaning and should be ignored.

@@ -3,11 +3,11 @@
 import functions from "./functions";
 import MacroExpander, {implicitCommands} from "./MacroExpander";
 import symbols, {ATOMS, extraLatin} from "./symbols";
-import {validUnit} from "./units";
+import {validUnit, ptPerUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
-import {checkNodeType} from "./parseNode";
+import {checkNodeType, assertNodeType} from "./parseNode";
 import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
@@ -49,6 +49,13 @@ import type {EnvSpec} from "./defineEnvironment";
  *
  * The functions return ParseNodes.
  */
+
+ // Lookup table for parsing numbers in base 8 through 16
+const digitToNumber = {
+    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8,
+    "9": 9, "a": 10, "A": 10, "b": 11, "B": 11, "c": 12, "C": 12,
+    "d": 13, "D": 13, "e": 14, "E": 14, "f": 15, "F": 15,
+};
 
 export default class Parser {
     mode: Mode;
@@ -526,6 +533,8 @@ export default class Parser {
                     this.consumeSpaces();
                 }
                 return this.parseColorGroup(optional);
+            case "integer":
+                return this.parseIntegerGroup();
             case "size":
                 if (consumeSpaces) {
                     this.consumeSpaces();
@@ -696,6 +705,227 @@ export default class Parser {
             type: "color-token",
             mode: this.mode,
             color,
+        };
+    }
+
+    getVariable(
+        name: string,
+        type: ?string,
+        mu: ?boolean,
+        intToDimen?: boolean
+    ): ParseNode<"integer"> | ParseNode<"dimen"> | ParseNode<"glue"> {
+        // <normal integer> -> <internal integer>
+        // <coerced integer> -> <internal dimen> | <internal glue>
+        // <normal dimen> -> <internal dimen>
+        // <coerced dimen> -> <internal glue>
+        // <coerced mudimen> -> <internal muglue>
+        // TEMP
+        const internal = {
+            type: "dimen",
+            mode: this.mode,
+            value: {number: 1, unit: "pt"},
+        };
+
+        const source = internal.type;
+        let value = internal.value;
+        if (type === source) {
+            return internal;
+        } else if (type === "dimen" && mu) {
+            throw new ParseError(`Can't coerce ${source} into mudimen`);
+        }
+        if (type === "dimen" || type === "glue") {
+            if (source === "integer") {
+                if (!intToDimen) {
+                    throw new ParseError("Can't coerce integer into dimen");
+                }
+                // value = {number: value, unit: "sp"};
+            }
+            return {
+                type: "dimen",
+                mode: this.mode,
+                value,
+            };
+        }
+        value = Math.round(value.number * ptPerUnit[value.unit] / ptPerUnit["sp"]);
+        return {
+            type: "integer",
+            mode: this.mode,
+            positive: value >= 0,
+            value: Math.abs(value),
+        };
+    }
+
+    /**
+     * <number> -> <optional signs><unsigned number>
+     * <dimen> -> <optional signs><unsigned dimen>
+     * <mudimen> -> <optional signs><unsigned mudimen>
+     */
+    parseIntegerGroup(
+        type: string = "integer",
+        mu?: boolean,
+    ): ParseNode<"integer"> | ParseNode<"dimen"> | ParseNode<"glue">  {
+        // <optional signs> -> <optional spaces>
+        //   | <optional signs><plus or minus><optional spaces>
+        let positive = true;
+        this.consumeSpaces();
+        let token;
+        while ((token = this.fetch()).text === "+" || token.text === "-") {
+            if (token.text === "-") {
+                positive = !positive;
+            }
+            this.consume();
+            this.consumeSpaces();
+        }
+
+        // <unsigned number> -> <normal integer> | <coerced integer>
+        // <unsigned dimen> -> <normal dimen> | <coerced dimen>
+        // <unsigned mudimen> -> <normal mudimen> | <coerced mudimen>
+        // <normal dimen> -> <factor><unit of measure>
+        // <normal mudimen> -> <factor><mu unit>
+        // <factor> -> <normal integer> | <decimal constant>
+        let number = 0;
+        let base;
+        if (token.text[0] === "\\") {
+            return this.getVariable(token.text, type, mu);
+        } else if (token.text === "'") {
+            // <normal integer> -> '<octal constant><one optional space>
+            base = 8;
+            this.consume();
+        } else if (token.text === '"') {
+            // <normal integer> -> "<hexademical constant><one optional space>
+            base = 16;
+            this.consume();
+        } else if (token.text === "`") {
+            // <normal integer> -> `<character token><one optional space>
+            // An alphabetic constant denotes the character code in
+            // a <character token>; TeX does not expand this token.
+            this.consume();
+            token = this.gullet.popToken();
+            if (token.text[0] === "\\") {
+                number = token.text.charCodeAt(1);
+            } else if (token.text === "EOF") {
+                throw new ParseError("Missing character token");
+            } else {
+                number = token.text.charCodeAt(0);
+            }
+        } else {
+            // <normal integer> -> <integer constant><one optional space>
+            // <decimal constant> -> <digit><decimal constant>
+            base = 10;
+        }
+        if (base) {
+            // Parse a number in the given base, starting with first `token`.
+            // TODO: handle starting with decimal separator
+            number = digitToNumber[this.fetch().text];
+            if (number == null || number >= base) {
+                throw new ParseError(`Invalid base-${base} digit ${token.text}`);
+            }
+            this.consume();
+            let digit;
+            while ((digit = digitToNumber[this.fetch().text]) != null &&
+                   digit < base) {
+                number *= base;
+                number += digit;
+                this.consume();
+            }
+            if (this.fetch().text === " ") { // consume <one optional space>
+                this.consume();
+            }
+        }
+        // The value of a <number> is the value of the corresponding <unsigned
+        // number>, times −1 for every minus sign in the <optional signs>.
+        return {
+            type: "integer",
+            mode: this.mode,
+            base,
+            positive,
+            value: number,
+        };
+    }
+
+    /**
+     * <dimen> -> <optional signs><unsigned dimen>
+     * <mudimen> -> <optional signs><unsigned mudimen>
+     */
+    parseDimenGroup(
+        type: string = "dimen",
+        mu?: boolean,
+        fil?: boolean,
+    ): ParseNode<"dimen"> | ParseNode<"glue"> {
+        const factor = this.parseIntegerGroup(type);
+        if (factor.type === "integer") {
+            // <normal dimen> -> <factor><unit of measure>
+            // <normal mudimen> -> <factor><mu unit>
+            let number = factor.value;
+            // if there was a space, it should've been consumed by parseNumberGroup
+            let tok = this.nextToken;
+            if (factor.base === 10 && tok != null &&
+                    (tok.text === "." || tok.text === ",")) {
+                // <deciaml constant> -> . | , | <decimal constant><digit>
+                this.consume();
+                let digit;
+                let fraction = 1;
+                while ((digit = digitToNumber[this.fetch().text]) != null &&
+                       digit < 10) {
+                    fraction /= 10;
+                    number += fraction * digit;
+                    this.consume();
+                }
+            }
+            if (!factor.positive) {
+                number = -number;
+            }
+
+            // <unit of measure> -> <optional spaces><internal unit>
+            //   | <optional true><physical unit><one optional space>
+            // <internal unit> -> em<one optional space> | ex<one optional space>
+            //   | <internal integer> | <internal dimen> | <internal glue>
+            // <physical unit> -> pt | pc | in | bp | cm | mm | dd | cc | sp
+            // <mu unit> -> <optional spaces><internal muglue>
+            //   | mu<one optional space>
+            this.consumeSpaces();
+            tok = this.fetch();
+            if (tok.text[0] === "\\") {
+                const internal = assertNodeType(
+                    this.getVariable(tok.text, "dimen", mu, true), "dimen");
+                internal.value.number *= number;
+                return internal;
+            }
+            // TODO: scan unit
+            const unit = "pt";
+            if (this.fetch().text === " ") { // consume <one optional space>
+                this.consume();
+            }
+            return {
+                type: "dimen",
+                mode: this.mode,
+                value: {number, unit},
+            };
+        }
+        return factor;
+    }
+
+    /**
+     * <glue> -> <dimen><stretch><shrink>
+     * <muglue> -> <mudimen><mustretch><mushrink>
+     */
+    parseGlueGroup(mu?: boolean): ParseNode<"glue"> {
+        const dimen = this.parseDimenGroup("glue", mu);
+        if (dimen.type === "glue") {
+            return dimen;
+        }
+        this.consumeSpaces();
+        // TODO: scan plus
+        const stretch = this.parseDimenGroup("dimen", mu, true).value;
+        this.consumeSpaces();
+        // TODO: scan minus
+        const shrink = this.parseDimenGroup("dimen", mu, true).value;
+        return {
+            type: "glue",
+            mode: this.mode,
+            value: dimen.value,
+            stretch,
+            shrink,
         };
     }
 

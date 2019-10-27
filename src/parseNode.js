@@ -93,6 +93,28 @@ type ParseNodeTypes = {
         loc?: ?SourceLocation,
         string: string,
     |},
+    "integer": {|
+        type: "integer",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        positive: boolean,
+        value: number,
+        base?: number,
+    |},
+    "dimen": {|
+        type: "dimen",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        value: Measurement,
+    |},
+    "glue": {|
+        type: "glue",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        value: Measurement,
+        shrink: Measurement,
+        stretch: Measurement,
+    |},
     "size": {|
         type: "size",
         mode: Mode,
