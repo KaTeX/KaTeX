@@ -3074,6 +3074,7 @@ describe("A macro expander", function() {
         expect("\\char`\\%").toParseLike("\\char37");
         expect("\\char`\\%").toParseLike("\\char'45");
         expect("\\char`\\%").toParseLike('\\char"25');
+        expect("\\char37\\relax1").toParseLike('\\char37 1');
         expect("\\char").not.toParse();
         expect("\\char`").not.toParse();
         expect("\\char'").not.toParse();

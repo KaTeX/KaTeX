@@ -764,6 +764,7 @@ export default class Parser {
         type: string = "integer",
         mu?: boolean,
     ): ParseNode<"integer"> | ParseNode<"dimen"> | ParseNode<"glue">  {
+        this.gullet.scanning = true; // allow MacroExpander to return \relax
         // <optional signs> -> <optional spaces>
         //   | <optional signs><plus or minus><optional spaces>
         let positive = true;
@@ -786,6 +787,7 @@ export default class Parser {
         let number = 0;
         let base;
         if (token.text[0] === "\\") {
+            this.gullet.scanning = false;
             return this.getVariable(token.text, type, mu);
         } else if (token.text === "'") {
             // <normal integer> -> '<octal constant><one optional space>
@@ -828,10 +830,13 @@ export default class Parser {
                 number += digit;
                 this.consume();
             }
-            if (this.fetch().text === " ") { // consume <one optional space>
+            token = this.fetch();
+            if (token.text === " " || token.text === "\\relax") {
+                // consume <one optional space> or \relax
                 this.consume();
             }
         }
+        this.gullet.scanning = false;
         // The value of a <number> is the value of the corresponding <unsigned
         // number>, times −1 for every minus sign in the <optional signs>.
         return {
@@ -854,6 +859,7 @@ export default class Parser {
     ): ParseNode<"dimen"> | ParseNode<"glue"> {
         const factor = this.parseIntegerGroup(type);
         if (factor.type === "integer") {
+            this.gullet.scanning = true; // allow MacroExpander to return \relax
             // <normal dimen> -> <factor><unit of measure>
             // <normal mudimen> -> <factor><mu unit>
             let number = factor.value;
@@ -889,6 +895,7 @@ export default class Parser {
                 const internal = assertNodeType(
                     this.getVariable(tok.text, "dimen", mu, true), "dimen");
                 internal.value.number *= number;
+                this.gullet.scanning = false;
                 return internal;
             }
             // TODO: scan unit
@@ -896,6 +903,7 @@ export default class Parser {
             if (this.fetch().text === " ") { // consume <one optional space>
                 this.consume();
             }
+            this.gullet.scanning = false;
             return {
                 type: "dimen",
                 mode: this.mode,
@@ -914,12 +922,14 @@ export default class Parser {
         if (dimen.type === "glue") {
             return dimen;
         }
+        this.gullet.scanning = true; // allow MacroExpander to return \relax
         this.consumeSpaces();
         // TODO: scan plus
         const stretch = this.parseDimenGroup("dimen", mu, true).value;
         this.consumeSpaces();
         // TODO: scan minus
         const shrink = this.parseDimenGroup("dimen", mu, true).value;
+        this.gullet.scanning = false;
         return {
             type: "glue",
             mode: this.mode,
