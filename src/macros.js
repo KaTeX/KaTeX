@@ -80,8 +80,18 @@ export interface MacroContextInterface {
     isDefined(name: string): boolean;
 }
 
+export type MacroArg = {
+    tokens: Token[],
+    start: Token,
+    end: Token
+};
+
 /** Macro tokens (in reverse order). */
-export type MacroExpansion = {tokens: Token[], numArgs: number};
+export type MacroExpansion = {
+    tokens: Token[],
+    numArgs: number,
+    delimiters?: string[][],
+};
 
 export type MacroDefinition = string | MacroExpansion |
     (MacroContextInterface => (string | MacroExpansion));
