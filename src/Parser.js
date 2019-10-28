@@ -601,6 +601,7 @@ export default class Parser {
     }
 
     consumeKeyword(keywords: string[]) {
+        this.gullet.scanning = true; // allow MacroExpander to return \relax
         this.consumeSpaces();
         const tokens = [];
         for (let i = 0; keywords.length > 1 ||
@@ -614,6 +615,7 @@ export default class Parser {
             return keywords[0];
         }
         tokens.reverse();
+        this.gullet.scanning = false; // allow MacroExpander to return \relax
         this.gullet.pushTokens(tokens);
         return null;
     }
@@ -902,14 +904,12 @@ export default class Parser {
         if (dimen.type === "glue") {
             return dimen;
         }
-        this.gullet.scanning = true; // allow MacroExpander to return \relax
-        this.consumeSpaces();
-        // TODO: scan plus
-        const stretch = this.parseDimen("dimen", mu, true).value;
-        this.consumeSpaces();
-        // TODO: scan minus
-        const shrink = this.parseDimen("dimen", mu, true).value;
-        this.gullet.scanning = false;
+        const stretch = this.consumeKeyword(["plus"]) != null
+            ? this.parseDimen("dimen", mu, true).value
+            : {number: 0, unit: "pt"};
+        const shrink = this.consumeKeyword(["minus"]) != null
+            ? this.parseDimen("dimen", mu, true).value
+            : {number: 0, unit: "pt"};
         return {
             type: "glue",
             mode: this.mode,
