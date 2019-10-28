@@ -135,7 +135,7 @@ function parseArray(
             // \def\math@cr@@[#1]{...\math@cr@@@...}
             // \def\math@cr@@@{\cr}
             if (parser.gullet.future().text !== " ") {
-                size = parser.parseSizeGroup(true, "size");
+                size = parser.parseSizeGroup(true);
             }
             rowGaps.push(size ? size.value : null);
 
