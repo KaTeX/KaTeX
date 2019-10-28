@@ -3,7 +3,7 @@
 import functions from "./functions";
 import MacroExpander, {implicitCommands} from "./MacroExpander";
 import symbols, {ATOMS, extraLatin} from "./symbols";
-import {validUnit, ptPerUnit} from "./units";
+import {ptPerUnit, units} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
@@ -601,6 +601,24 @@ export default class Parser {
         }
     }
 
+    consumeKeyword(keywords: string[]) {
+        this.consumeSpaces();
+        const tokens = [];
+        for (let i = 0; keywords.length > 1 ||
+                (keywords.length === 1 && i < keywords[0].length); i++) {
+            const tok = this.fetch();
+            keywords = keywords.filter(keyword => keyword[i] === tok.text);
+            tokens.push(tok);
+            this.consume();
+        }
+        if (keywords.length) {
+            return keywords[0];
+        }
+        tokens.reverse();
+        this.gullet.pushTokens(tokens);
+        return null;
+    }
+
     /**
      * Parses a group, essentially returning the string formed by the
      * brace-enclosed tokens plus some position information.
@@ -836,7 +854,8 @@ export default class Parser {
                 this.consume();
             }
             if (empty) {
-                throw new ParseError(`Invalid base-${base} digit ${token.text}`);
+                throw new ParseError(
+                    `Invalid base-${base} digit ${token.text}`, token);
             }
             if (decimal > 1) {
                 number /= Math.pow(10, decimal - 1);
@@ -889,12 +908,14 @@ export default class Parser {
                 this.gullet.scanning = false;
                 return internal;
             }
-            // TODO: scan unit
-            const unit = "pt";
+            const unit = this.consumeKeyword(units);
+            if (unit == null) {
+                throw new ParseError("Invalid unit");
+            }
+            this.gullet.scanning = false;
             if (this.fetch().text === " ") { // consume <one optional space>
                 this.consume();
             }
-            this.gullet.scanning = false;
             return {
                 type: "dimen",
                 mode: this.mode,
