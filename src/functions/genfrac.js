@@ -375,7 +375,7 @@ defineFunction({
     props: {
         numArgs: 6,
         greediness: 6,
-        argTypes: ["math", "math", "size_or_blank", "text", "math", "math"],
+        argTypes: ["math", "math", "size", "text", "math", "math"],
     },
     handler({parser}, args) {
         const numer = args[4];
@@ -444,7 +444,7 @@ defineFunction({
     names: ["\\above"],
     props: {
         numArgs: 1,
-        argTypes: ["size_primitive"],
+        argTypes: ["size"],
         infix: true,
     },
     handler({parser, funcName, token}, args) {

@@ -509,9 +509,7 @@ export default class Parser {
             case "color":
                 return this.parseColorGroup(optional);
             case "size":
-            case "size_or_blank":
-            case "size_primitive":
-                return this.parseSizeGroup(optional, type);
+                return this.parseSizeGroup(optional);
             case "url":
                 return this.parseUrlGroup(optional);
             case "math":
@@ -644,28 +642,26 @@ export default class Parser {
     /**
      * Parses a size specification, consisting of magnitude and unit.
      */
-    parseSizeGroup(optional: boolean, type: ArgType): ?ParseNode<"size"> {
+    parseSizeGroup(optional: boolean): ?ParseNode<"size"> {
         let res;
         let isBlank = false;
-        const next = this.gullet.future(); // don't expand before parseStringGroup
-        if (type === "size_primitive" && (next.text !== "{" ||
-            this.settings.useStrictBehavior("bracedSize",
-                "Size argument should not be enclosed in braces.", next))) {
-            if (optional) {
-                throw new ParseError("A primitive argument cannot be optional");
-            }
+        // don't expand before parseStringGroup
+        this.gullet.consumeSpaces();
+        if (!optional && this.gullet.future().text !== "{") {
             res = this.parseRegexGroup(
                 /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2} *$/, "size");
         } else {
             res = this.parseStringGroup("size", optional);
         }
-        if (res == null) {
+        if (!res) {
             return null;
         }
-        if (type === "size_or_blank" && res.text.length === 0) {
-            // Allow blank argument, e.g., for \genfrac
-            res.text = "0pt";
-            isBlank = true;
+        if (!optional && res.text.length === 0) {
+            // Because we've tested for what is !optional, this block won't
+            // affect \kern, \hspace, etc. It will capture the mandatory arguments
+            // to \genfrac and \above.
+            res.text = "0pt";    // Enable \above{}
+            isBlank = true;      // This is here specifically for \genfrac
         }
         const match = (/([-+]?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(res.text);
         if (!match) {

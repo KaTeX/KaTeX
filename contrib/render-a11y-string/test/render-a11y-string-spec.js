@@ -256,7 +256,7 @@ describe("renderA11yString", () => {
         });
 
         test("\\above", () => {
-            const result = renderA11yString("a \\above2pt b");
+            const result = renderA11yString("a \\above{2pt} b");
             expect(result).toMatchInlineSnapshot(
                 `"start fraction, a, divided by, b, end fraction"`,
             );
