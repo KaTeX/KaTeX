@@ -11,16 +11,16 @@ defineFunction({
     props: {
         numArgs: 2,
         numOptionalArgs: 1,
-        argTypes: ["size", "size", "size"],
+        argTypes: ["dimen", "dimen", "dimen"],
     },
     handler({parser}, args, optArgs) {
         const shift = optArgs[0];
-        const width = assertNodeType(args[0], "size");
-        const height = assertNodeType(args[1], "size");
+        const width = assertNodeType(args[0], "dimen");
+        const height = assertNodeType(args[1], "dimen");
         return {
             type: "rule",
             mode: parser.mode,
-            shift: shift && assertNodeType(shift, "size").value,
+            shift: shift && assertNodeType(shift, "dimen").value,
             width: width.value,
             height: height.value,
         };

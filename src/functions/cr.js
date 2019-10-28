@@ -19,7 +19,7 @@ defineFunction({
     props: {
         numArgs: 0,
         numOptionalArgs: 1,
-        argTypes: ["size"],
+        argTypes: ["dimen"],
         allowedInText: true,
     },
 
@@ -42,7 +42,7 @@ defineFunction({
             mode: parser.mode,
             newLine,
             newRow,
-            size: size && assertNodeType(size, "size").value,
+            size: size && assertNodeType(size, "dimen").value,
         };
     },
 

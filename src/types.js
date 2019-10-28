@@ -20,8 +20,8 @@ export type Mode = "math" | "text";
 //                 first argument is special and the second
 //                 argument is parsed normally)
 //   - Mode: Node group parsed in given mode.
-export type ArgType = "color" | "size" | "url" | "raw" | "original" | "hbox" |
-    "integer" | Mode;
+export type ArgType = "color" | "dimen" | "url" | "raw" | "original" | "hbox" |
+    "integer" | "dimen_primitive" | "dimen_or_blank" | Mode;
 
 // LaTeX display style.
 export type StyleStr = "text" | "display" | "script" | "scriptscript";

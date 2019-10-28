@@ -14,11 +14,11 @@ defineFunction({
     names: ["\\kern", "\\mkern", "\\hskip", "\\mskip"],
     props: {
         numArgs: 1,
-        argTypes: ["size"],
+        argTypes: ["dimen_primitive"],
         allowedInText: true,
     },
     handler({parser, funcName}, args) {
-        const size = assertNodeType(args[0], "size");
+        const size = assertNodeType(args[0], "dimen");
         if (parser.settings.strict) {
             const mathFunction = (funcName[1] === 'm');  // \mkern, \mskip
             const muUnit = (size.value.unit === 'mu');

@@ -536,11 +536,10 @@ export default class Parser {
                 return this.parseColorGroup(optional);
             case "integer":
                 return this.parseIntegerGroup();
-            case "size":
-                if (consumeSpaces) {
-                    this.consumeSpaces();
-                }
-                return this.parseSizeGroup(optional);
+            case "dimen":
+            case "dimen_primitive":
+            case "dimen_or_blank":
+                return this.parseDimenGroup(optional, type, name);
             case "url":
                 return this.parseUrlGroup(optional, consumeSpaces);
             case "math":
@@ -667,36 +666,6 @@ export default class Parser {
             this.consume();
         }
         this.expect(groupEnd);
-        this.mode = outerMode;
-        return firstToken.range(lastToken, str);
-    }
-
-    /**
-     * Parses a regex-delimited group: the largest sequence of tokens
-     * whose concatenated strings match `regex`. Returns the string
-     * formed by the tokens plus some position information.
-     */
-    parseRegexGroup(
-        regex: RegExp,
-        modeName: string,   // Used to describe the mode in error messages.
-    ): Token {
-        const outerMode = this.mode;
-        this.mode = "text";
-        const firstToken = this.fetch();
-        let lastToken = firstToken;
-        let str = "";
-        let nextToken;
-        while ((nextToken = this.fetch()).text !== "EOF" &&
-               regex.test(str + nextToken.text)) {
-            lastToken = nextToken;
-            str += lastToken.text;
-            this.consume();
-        }
-        if (str === "") {
-            throw new ParseError(
-                "Invalid " + modeName + ": '" + firstToken.text + "'",
-                firstToken);
-        }
         this.mode = outerMode;
         return firstToken.range(lastToken, str);
     }
@@ -872,7 +841,6 @@ export default class Parser {
         return {
             type: "integer",
             mode: this.mode,
-            base,
             positive,
             value: number,
         };
@@ -882,7 +850,7 @@ export default class Parser {
      * <dimen> -> <optional signs><unsigned dimen>
      * <mudimen> -> <optional signs><unsigned mudimen>
      */
-    parseDimenGroup(
+    parseDimen(
         type: string = "dimen",
         mu?: boolean,
         fil?: boolean,
@@ -930,17 +898,17 @@ export default class Parser {
      * <muglue> -> <mudimen><mustretch><mushrink>
      */
     parseGlueGroup(mu?: boolean): ParseNode<"glue"> {
-        const dimen = this.parseDimenGroup("glue", mu);
+        const dimen = this.parseDimen("glue", mu);
         if (dimen.type === "glue") {
             return dimen;
         }
         this.gullet.scanning = true; // allow MacroExpander to return \relax
         this.consumeSpaces();
         // TODO: scan plus
-        const stretch = this.parseDimenGroup("dimen", mu, true).value;
+        const stretch = this.parseDimen("dimen", mu, true).value;
         this.consumeSpaces();
         // TODO: scan minus
-        const shrink = this.parseDimenGroup("dimen", mu, true).value;
+        const shrink = this.parseDimen("dimen", mu, true).value;
         this.gullet.scanning = false;
         return {
             type: "glue",
@@ -954,42 +922,37 @@ export default class Parser {
     /**
      * Parses a size specification, consisting of magnitude and unit.
      */
-    parseSizeGroup(optional: boolean): ?ParseNode<"size"> {
-        let res;
-        let isBlank = false;
-        if (!optional && this.fetch().text !== "{") {
-            res = this.parseRegexGroup(
-                /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2} *$/, "size");
-        } else {
-            res = this.parseStringGroup("size", optional);
+    parseDimenGroup(
+        optional: boolean,
+        type: ArgType,
+        name?: string
+    ): ?ParseNode<"dimen"> {
+        // don't expand before parseStringGroup
+        if (type === "dimen_primitive") {
+            this.gullet.consumeSpaces();
+            const n = this.gullet.future();
+            if (n.text === "{" && !this.settings.useStrictBehavior("bracedSize",
+                   "Size argument should not be enclosed in braces.", n)) {
+                type = "dimen";
+            }
         }
-        if (!res) {
+        // \\ in array environment uses \new@ifnextchar, which don't ignore spaces
+        // This will become simpler with #2085
+        if (type !== "dimen_primitive" && ((name === "argument to '\\cr'" &&
+                this.gullet.future().text === " ") ||
+                this.gullet.scanArgument(optional) == null)) {
             return null;
         }
-        if (!optional && res.text.length === 0) {
-            // Because we've tested for what is !optional, this block won't
-            // affect \kern, \hspace, etc. It will capture the mandatory arguments
-            // to \genfrac and \above.
-            res.text = "0pt";    // Enable \above{}
-            isBlank = true;      // This is here specifically for \genfrac
+        const res = type === "dimen_or_blank" && this.fetch().text === "EOF"
+            ? {
+                type: "dimen",
+                mode: this.mode,
+                value: {number: 0, unit: "blank"},
+            } : this.parseDimen();
+        if (type !== "dimen_primitive" ) {
+            this.expect("EOF");
         }
-        const match = (/([-+]?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(res.text);
-        if (!match) {
-            throw new ParseError("Invalid size: '" + res.text + "'", res);
-        }
-        const data = {
-            number: +(match[1] + match[2]), // sign + magnitude, cast to number
-            unit: match[3],
-        };
-        if (!validUnit(data)) {
-            throw new ParseError("Invalid unit: '" + data.unit + "'", res);
-        }
-        return {
-            type: "size",
-            mode: this.mode,
-            value: data,
-            isBlank,
-        };
+        return assertNodeType(res, "dimen");
     }
 
     /**

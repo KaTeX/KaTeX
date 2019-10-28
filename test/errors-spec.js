@@ -175,7 +175,7 @@ describe("Parser.expect calls:", function() {
         });
         it("complains about missing { for size", function() {
             expect`\rule{1em}[2em]`.toFailWithParseError(
-                   "Invalid size: '[' at position 11: \\rule{1em}[̲2em]");
+                   "Invalid base-10 digit [ at position 11: \\rule{1em}[̲2em]");
         });
         // Can't test for the [ of an optional group since it's optional
         it("complains about missing } for color", function() {
@@ -185,13 +185,13 @@ describe("Parser.expect calls:", function() {
         });
         it("complains about missing ] for size", function() {
             expect`\rule[1em{2em}{3em}`.toFailWithParseError(
-                   "Unexpected end of input in size" +
-                   " at position 7: \\rule[1̲e̲m̲{̲2̲e̲m̲}̲{̲3̲e̲m̲}̲");
+                   "Unexpected end of input in a macro argument," +
+                   " expected ']' at end of input: …e[1em{2em}{3em}");
         });
         it("complains about missing ] for size at end of input", function() {
             expect`\rule[1em`.toFailWithParseError(
-                   "Unexpected end of input in size" +
-                   " at position 7: \\rule[1̲e̲m̲");
+                   "Unexpected end of input in a macro argument," +
+                   " expected ']' at end of input: \\rule[1em");
         });
         it("complains about missing } for color at end of input", function() {
             expect`\textcolor{#123456`.toFailWithParseError(
@@ -293,16 +293,14 @@ describe("Lexer:", function() {
 
     describe("#_innerLexSize", function() {
         it("reject size without unit", function() {
-            expect`\rule{0}{2em}`.toFailWithParseError(
-                   "Invalid size: '0' at position 7: \\rule{0̲}{2em}");
+            expect`\rule{0}{2em}`.toFailWithParseError("Invalid unit");
         });
         it("reject size with bogus unit", function() {
-            expect`\rule{1au}{2em}`.toFailWithParseError(
-                   "Invalid unit: 'au' at position 7: \\rule{1̲a̲u̲}{2em}");
+            expect`\rule{1au}{2em}`.toFailWithParseError("Invalid unit");
         });
         it("reject size without number", function() {
             expect`\rule{em}{2em}`.toFailWithParseError(
-                   "Invalid size: 'em' at position 7: \\rule{e̲m̲}{2em}");
+                   "Invalid base-10 digit e at position 7: \\rule{e̲m}{2em}");
         });
     });
 

@@ -330,7 +330,7 @@ defineMacro("\u2209", "\\notin");
 
 // Unicode stacked relations
 defineMacro("\u2258", "\\html@mathml{" +
-    "\\mathrel{=\\kern{-1em}\\raisebox{0.4em}{$\\scriptsize\\frown$}}" +
+    "\\mathrel{=\\kern-1em\\raisebox{0.4em}{$\\scriptsize\\frown$}}" +
     "}{\\mathrel{\\char`\u2258}}");
 defineMacro("\u2259",
     "\\html@mathml{\\stackrel{\\tiny\\wedge}{=}}{\\mathrel{\\char`\u2258}}");
@@ -564,7 +564,7 @@ defineMacro("\\thinspace", "\\,");
 // \def\>{\mskip\medmuskip}
 // \renewcommand{\:}{\tmspace+\medmuskip{.2222em}}
 // TODO: \> and math mode of \: should use \medmuskip = 4mu plus 2mu minus 4mu
-defineMacro("\\>", "\\mskip{4mu}");
+defineMacro("\\>", "\\mskip4mu");
 defineMacro("\\:", "\\tmspace+{4mu}{.2222em}");
 // \let\medspace\:
 defineMacro("\\medspace", "\\:");

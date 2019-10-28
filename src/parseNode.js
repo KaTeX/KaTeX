@@ -99,7 +99,6 @@ type ParseNodeTypes = {
         loc?: ?SourceLocation,
         positive: boolean,
         value: number,
-        base?: number,
     |},
     "dimen": {|
         type: "dimen",
@@ -114,13 +113,6 @@ type ParseNodeTypes = {
         value: Measurement,
         shrink: Measurement,
         stretch: Measurement,
-    |},
-    "size": {|
-        type: "size",
-        mode: Mode,
-        loc?: ?SourceLocation,
-        value: Measurement,
-        isBlank: boolean,
     |},
     "styling": {|
         type: "styling",

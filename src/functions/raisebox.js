@@ -14,11 +14,11 @@ defineFunction({
     names: ["\\raisebox"],
     props: {
         numArgs: 2,
-        argTypes: ["size", "hbox"],
+        argTypes: ["dimen", "hbox"],
         allowedInText: true,
     },
     handler({parser}, args) {
-        const amount = assertNodeType(args[0], "size").value;
+        const amount = assertNodeType(args[0], "dimen").value;
         const body = args[1];
         return {
             type: "raisebox",

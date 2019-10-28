@@ -571,12 +571,6 @@ const handleObject = (
             break;
         }
 
-        case "size": {
-            // Although there are nodes of type "size" in the parse tree, they have
-            // no semantic meaning and should be ignored.
-            break;
-        }
-
         case "url": {
             throw new Error("KaTeX-a11y: url not implemented yet");
         }
