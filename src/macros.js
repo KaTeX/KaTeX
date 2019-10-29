@@ -11,6 +11,7 @@ import {Token} from "./Token";
 import ParseError from "./ParseError";
 import type Namespace from "./Namespace";
 
+import type {ParseNode} from "./parseNode";
 import type {Mode} from "./types";
 
 /**
@@ -94,7 +95,8 @@ export type MacroExpansion = {
 };
 
 export type MacroDefinition = string | MacroExpansion |
-    (MacroContextInterface => (string | MacroExpansion));
+    (MacroContextInterface => (string | MacroExpansion)) |
+    ParseNode<"integer"> | ParseNode<"dimen"> | ParseNode<"glue">;
 export type MacroMap = {[string]: MacroDefinition};
 
 const builtinMacros: MacroMap = {};

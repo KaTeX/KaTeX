@@ -19,6 +19,11 @@ export type SymbolParseNode =
     ParseNode<"spacing"> |
     ParseNode<"textord">;
 
+export type NumericParseNode =
+    ParseNode<"integer"> |
+    ParseNode<"dimen"> |
+    ParseNode<"glue">;
+
 // ParseNode from `Parser.formatUnsupportedCmd`
 export type UnsupportedCmdParseNode = ParseNode<"color">;
 

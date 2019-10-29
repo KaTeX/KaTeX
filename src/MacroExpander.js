@@ -371,8 +371,8 @@ export default class MacroExpander implements MacroContextInterface {
      */
     _getExpansion(name: string): ?MacroExpansion {
         const definition = this.macros.get(name);
-        if (definition == null) { // mainly checking for undefined here
-            return definition;
+        if (definition == null || definition.type) { // undefined or ParseNode
+            return null;
         }
         const expansion =
             typeof definition === "function" ? definition(this) : definition;

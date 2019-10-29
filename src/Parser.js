@@ -3,18 +3,20 @@
 import functions from "./functions";
 import MacroExpander, {implicitCommands} from "./MacroExpander";
 import symbols, {ATOMS, extraLatin} from "./symbols";
-import {ptPerUnit, units} from "./units";
+import {calculateSize, units} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
 import {checkNodeType, assertNodeType} from "./parseNode";
+import Options from "./Options";
+import Style from "./Style";
 import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
-import type {ParseNode, AnyParseNode, SymbolParseNode, UnsupportedCmdParseNode}
-    from "./parseNode";
+import type {ParseNode, AnyParseNode, SymbolParseNode, NumericParseNode,
+    UnsupportedCmdParseNode} from "./parseNode";
 import type {Atom, Group} from "./symbols";
 import type {Mode, ArgType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
@@ -57,6 +59,15 @@ const digitToNumber = {
     "9": 9, "a": 10, "A": 10, "b": 11, "B": 11, "c": 12, "C": 12,
     "d": 13, "D": 13, "e": 14, "E": 14, "f": 15, "F": 15, ".": -1, ",": -1,
 };
+
+const register = {
+    "\\count": "integer",
+    "\\dimen": "dimen",
+    "\\skip": "glue",
+    "\\muskip": "muglue",
+};
+
+type NumericType = "integer" | "dimen" | "glue";
 
 export default class Parser {
     mode: Mode;
@@ -622,6 +633,71 @@ export default class Parser {
         return null;
     }
 
+    consumeVariable(
+        type: NumericType,
+        mu: ?boolean,
+        intToDimen?: boolean
+    ): NumericParseNode {
+        // <normal integer> -> <internal integer>
+        // <coerced integer> -> <internal dimen> | <internal glue>
+        // <normal dimen> -> <internal dimen>
+        // <coerced dimen> -> <internal glue>
+        // <coerced mudimen> -> <internal muglue>
+        const token = this.fetch();
+        let name = token.text;
+        this.consume();
+        const registerType = register[name];
+        if (registerType) {
+            const number = this.parseIntegerGroup();
+            name += assertNodeType(number, "integer").value;
+        }
+        const variable = this.gullet.macros.get(name);
+        if (variable == null || variable.tokens ||
+                typeof variable === "function" || typeof variable === "string") {
+            throw new ParseError(`Expected a ${type} variable`, token);
+        }
+        const varType = variable.type;
+        if (type === varType) {
+            return variable;
+        } else if (type === "dimen" && mu) {
+            throw new ParseError(`Can't coerce ${varType} into mudimen`);
+        }
+        let value;
+        if (variable.type === "integer") {
+            if (!intToDimen) {
+                throw new ParseError("Can't coerce integer into dimen");
+            }
+            value = {
+                number: variable.positive ? variable.value : -variable.value,
+                unit: "sp",
+            };
+        } else {
+            value = variable.value;
+        }
+        if (type === "dimen" || type === "glue") {
+            return {
+                type: "dimen",
+                mode: this.mode,
+                value,
+            };
+        }
+        // TODO: use current Options
+        const options = new Options({
+            style: Style.TEXT,
+            size: 5,
+            maxSize: Infinity,
+            minRuleThickness: 0,
+        });
+        value = calculateSize(value, options)
+            / calculateSize({number: 1, unit: "sp"}, options);
+        return {
+            type: "integer",
+            mode: this.mode,
+            positive: value >= 0,
+            value: Math.abs(value),
+        };
+    }
+
     /**
      * Parses a group, essentially returning the string formed by the
      * brace-enclosed tokens plus some position information.
@@ -700,62 +776,15 @@ export default class Parser {
         };
     }
 
-    getVariable(
-        name: string,
-        type: ?string,
-        mu: ?boolean,
-        intToDimen?: boolean
-    ): ParseNode<"integer"> | ParseNode<"dimen"> | ParseNode<"glue"> {
-        // <normal integer> -> <internal integer>
-        // <coerced integer> -> <internal dimen> | <internal glue>
-        // <normal dimen> -> <internal dimen>
-        // <coerced dimen> -> <internal glue>
-        // <coerced mudimen> -> <internal muglue>
-        // TEMP
-        const internal = {
-            type: "dimen",
-            mode: this.mode,
-            value: {number: 1, unit: "pt"},
-        };
-
-        const source = internal.type;
-        let value = internal.value;
-        if (type === source) {
-            return internal;
-        } else if (type === "dimen" && mu) {
-            throw new ParseError(`Can't coerce ${source} into mudimen`);
-        }
-        if (type === "dimen" || type === "glue") {
-            if (source === "integer") {
-                if (!intToDimen) {
-                    throw new ParseError("Can't coerce integer into dimen");
-                }
-                // value = {number: internal.positive ? value : -value, unit: "sp"};
-            }
-            return {
-                type: "dimen",
-                mode: this.mode,
-                value,
-            };
-        }
-        value = Math.round(value.number * ptPerUnit[value.unit] / ptPerUnit["sp"]);
-        return {
-            type: "integer",
-            mode: this.mode,
-            positive: value >= 0,
-            value: Math.abs(value),
-        };
-    }
-
     /**
      * <number> -> <optional signs><unsigned number>
      * <dimen> -> <optional signs><unsigned dimen>
      * <mudimen> -> <optional signs><unsigned mudimen>
      */
     parseIntegerGroup(
-        type: string = "integer",
+        type: NumericType = "integer",
         mu?: boolean,
-    ): ParseNode<"integer"> | ParseNode<"dimen"> | ParseNode<"glue">  {
+    ): NumericParseNode  {
         this.gullet.scanning = true; // allow MacroExpander to return \relax
         // <optional signs> -> <optional spaces>
         //   | <optional signs><plus or minus><optional spaces>
@@ -780,7 +809,7 @@ export default class Parser {
         let base;
         if (token.text[0] === "\\") {
             this.gullet.scanning = false;
-            return this.getVariable(token.text, type, mu);
+            return this.consumeVariable(type, mu);
         } else if (token.text === "'") {
             // <normal integer> -> '<octal constant><one optional space>
             base = 8;
@@ -855,7 +884,7 @@ export default class Parser {
      * <mudimen> -> <optional signs><unsigned mudimen>
      */
     parseDimen(
-        type: string = "dimen",
+        type: NumericType = "dimen",
         mu?: boolean,
         fil?: boolean,
     ): ParseNode<"dimen"> | ParseNode<"glue"> {
@@ -875,7 +904,7 @@ export default class Parser {
             const tok = this.fetch();
             if (tok.text[0] === "\\") {
                 const internal = assertNodeType(
-                    this.getVariable(tok.text, "dimen", mu, true), "dimen");
+                    this.consumeVariable("dimen", mu, true), "dimen");
                 internal.value.number *= number;
                 this.gullet.scanning = false;
                 return internal;
@@ -1046,7 +1075,7 @@ export default class Parser {
             // If there exists a function with this name, parse the function.
             // Otherwise, just return a nucleus
             result = this.parseFunction(breakOnTokenText, name, greediness) ||
-                this.parseSymbol();
+                this.parseSymbol() || this.parseRegister();
             if (result == null && text[0] === "\\" &&
                     !implicitCommands.hasOwnProperty(text)) {
                 if (this.settings.throwOnError) {
@@ -1247,5 +1276,51 @@ export default class Parser {
             }
         }
         return symbol;
+    }
+
+    parseRegister(): ?ParseNode<"internal"> {
+        // <simple assignment> -> <variable assignment>
+        // <variable assignment> -> <integer variable><equals><number>
+        //   | <dimen variable><equals><dimen>
+        //   | <glue variable><equals><glue>
+        //   | <muglue variable><equals><muglue>
+        // <equals> -> <optional spaces>|<optional spaces>=
+        let name = this.fetch().text;
+        const registerType = register[name];
+        if (registerType) {
+            this.consume();
+            const number = this.parseIntegerGroup();
+            name += assertNodeType(number, "integer").value;
+        }
+        const variable = this.gullet.macros.get(name);
+        const varType = variable != null && variable.type || registerType;
+        if (!varType) {
+            return null;
+        } else if (!registerType) {
+            this.consume();
+        }
+        this.consumeSpaces();
+        if (this.fetch().text === "=") { // consume optional equals
+            this.consume();
+        }
+        let value;
+        switch (varType) {
+            case "integer":
+                value = this.parseIntegerGroup();
+                break;
+            case "dimen":
+                value = this.parseDimen();
+                break;
+            case "glue":
+                value = this.parseGlueGroup();
+                break;
+            default:
+                throw new ParseError("Unknown register type");
+        }
+        this.gullet.macros.set(name, value);
+        return {
+            type: "internal",
+            mode: this.mode,
+        };
     }
 }
