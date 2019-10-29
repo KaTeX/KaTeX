@@ -53,7 +53,7 @@ export type Measurement = {| number: number, unit: string |};
 
 /**
  * Determine whether the specified unit (either a string defining the unit
- * or a "size" parse node containing a unit field) is valid.
+ * or a "dimen" parse node containing a unit field) is valid.
  */
 export const validUnit = function(unit: string | Measurement): boolean {
     if (typeof unit !== "string") {
@@ -63,8 +63,8 @@ export const validUnit = function(unit: string | Measurement): boolean {
 };
 
 /*
- * Convert a "size" parse node (with numeric "number" and string "unit" fields,
- * as parsed by functions.js argType "size") into a CSS em value for the
+ * Convert a "dimen" parse node (with numeric "number" and string "unit" fields,
+ * as parsed by functions.js argType "dimen") into a CSS em value for the
  * current style/scale.  `options` gives the current options.
  */
 export const calculateSize = function(

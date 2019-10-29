@@ -931,7 +931,7 @@ export default class Parser {
         if (type === "dimen_primitive") {
             this.gullet.consumeSpaces();
             const n = this.gullet.future();
-            if (n.text === "{" && !this.settings.useStrictBehavior("bracedSize",
+            if (n.text === "{" && !this.settings.useStrictBehavior("bracedDimen",
                    "Size argument should not be enclosed in braces.", n)) {
                 type = "dimen";
             }
