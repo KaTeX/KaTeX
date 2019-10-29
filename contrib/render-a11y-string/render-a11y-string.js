@@ -661,6 +661,10 @@ const handleObject = (
             break;
         }
 
+        case "internal": {
+            break;
+        }
+
         default:
             (tree.type: empty);
             throw new Error("KaTeX a11y un-recognized type: " + tree.type);
