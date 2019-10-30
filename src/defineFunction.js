@@ -43,10 +43,9 @@ export type FunctionPropSpec = {
     numArgs: number,
 
     // An array corresponding to each argument of the function, giving the
-    // type of argument that should be parsed. Its length should be equal
-    // to `numOptionalArgs + numArgs`, and types for optional arguments
-    // should appear before types for mandatory arguments.
+    // type of argument that should be parsed.
     argTypes?: ArgType[],
+    optionalArgTypes?: ArgType[],
 
     // The greediness of the function to use ungrouped arguments.
     //
@@ -125,6 +124,7 @@ export type FunctionSpec<NODETYPE: NodeType> = {|
     type: NODETYPE, // Need to use the type to avoid error. See NOTES below.
     numArgs: number,
     argTypes?: ArgType[],
+    optionalArgTypes?: ArgType[],
     greediness: number,
     allowedInText: boolean,
     allowedInMath: boolean,
@@ -181,6 +181,7 @@ export default function defineFunction<NODETYPE: NodeType>({
         type,
         numArgs: props.numArgs,
         argTypes: props.argTypes,
+        optionalArgTypes: props.optionalArgTypes,
         greediness: (props.greediness === undefined) ? 1 : props.greediness,
         allowedInText: !!props.allowedInText,
         allowedInMath: (props.allowedInMath === undefined)

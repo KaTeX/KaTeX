@@ -37,7 +37,8 @@ defineFunction({
     props: {
         numArgs: 1,
         numOptionalArgs: 1,
-        argTypes: ["raw", "url"],
+        optionalArgTypes: ["raw"],
+        argTypes: ["url"],
         allowedInText: false,
     },
     handler: ({parser}, args, optArgs) => {

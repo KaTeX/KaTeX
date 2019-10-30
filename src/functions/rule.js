@@ -11,7 +11,8 @@ defineFunction({
     props: {
         numArgs: 2,
         numOptionalArgs: 1,
-        argTypes: ["size", "size", "size"],
+        optionalArgTypes: ["size"],
+        argTypes: ["size", "size"],
     },
     handler({parser}, args, optArgs) {
         const shift = optArgs[0];

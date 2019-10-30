@@ -52,6 +52,7 @@ export type EnvSpec<NODETYPE: NodeType> = {|
     type: NODETYPE, // Need to use the type to avoid error. See NOTES below.
     numArgs: number,
     argTypes?: ArgType[],
+    optionalArgTypes?: ArgType[],
     greediness: number,
     allowedInText: boolean,
     numOptionalArgs: number,

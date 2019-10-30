@@ -470,8 +470,7 @@ export default class Parser {
         args: AnyParseNode[],
         optArgs: (?AnyParseNode)[],
     } {
-        const totalArgs = funcData.numArgs + funcData.numOptionalArgs;
-        if (totalArgs === 0) {
+        if (funcData.numArgs + funcData.numOptionalArgs === 0) {
             return {args: [], optArgs: []};
         }
 
@@ -479,32 +478,33 @@ export default class Parser {
         const args = [];
         const optArgs = [];
 
-        for (let i = 0; i < totalArgs; i++) {
+        for (let i = 0; i < funcData.numOptionalArgs; i++) {
+            const argType = funcData.optionalArgTypes
+                && funcData.optionalArgTypes[i];
+            const arg = this.parseGroupOfType(`argument to '${func}'`,
+                argType, true, baseGreediness, false);
+            optArgs.push(arg);
+        }
+        for (let i = 0; i < funcData.numArgs; i++) {
             const argType = funcData.argTypes && funcData.argTypes[i];
-            const isOptional = i < funcData.numOptionalArgs;
             // Ignore spaces between arguments.  As the TeXbook says:
             // "After you have said ‘\def\row#1#2{...}’, you are allowed to
             //  put spaces between the arguments (e.g., ‘\row x n’), because
             //  TeX doesn’t use single spaces as undelimited arguments."
-            const consumeSpaces = (i > 0 && !isOptional) ||
             // Also consume leading spaces in math mode, as parseSymbol
             // won't know what to do with them.  This can only happen with
             // macros, e.g. \frac\foo\foo where \foo expands to a space symbol.
             // In LaTeX, the \foo's get treated as (blank) arguments.
             // In KaTeX, for now, both spaces will get consumed.
             // TODO(edemaine)
-                (i === 0 && !isOptional && this.mode === "math");
+            const consumeSpaces = i > 0 || (i === 0 && this.mode === "math");
             const arg = this.parseGroupOfType(`argument to '${func}'`,
-                argType, isOptional, baseGreediness, consumeSpaces);
+                argType, false, baseGreediness, consumeSpaces);
             if (!arg) {
-                if (isOptional) {
-                    optArgs.push(null);
-                    continue;
-                }
                 throw new ParseError(
                     `Expected group after '${func}'`, this.fetch());
             }
-            (isOptional ? optArgs : args).push(arg);
+            args.push(arg);
         }
 
         return {args, optArgs};
