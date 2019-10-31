@@ -118,30 +118,14 @@ type FunctionDefSpec<NODETYPE: NodeType, ATYPES: ArgType[], OTYPES: ArgType[]> =
  */
 export type FunctionSpec
         <NODETYPE: NodeType, ATYPES: ArgType[], OTYPES: ArgType[]> = {|
-    type: NODETYPE, // Need to use the type to avoid error. See NOTES below.
+    type: NODETYPE,
     argTypes?: ATYPES,
     optionalArgTypes?: OTYPES,
     greediness: number,
     allowedInText: boolean,
     allowedInMath: boolean,
     infix: boolean,
-
-    // FLOW TYPE NOTES: Doing either one of the following two
-    //
-    // - removing the NODETYPE type parameter in FunctionSpec above;
-    // - using ?FunctionHandler<NODETYPE> below;
-    //
-    // results in a confusing flow typing error:
-    //   "string literal `styling`. This type is incompatible with..."
-    // pointing to the definition of `defineFunction` and finishing with
-    //   "some incompatible instantiation of `NODETYPE`"
-    //
-    // Having FunctionSpec<NODETYPE> above and FunctionHandler<*> below seems to
-    // circumvent this error. This is not harmful for catching errors since
-    // _functions is typed FunctionSpec<*> (it stores all TeX function specs).
-
-    // Must be specified unless it's handled directly in the parser.
-    handler: ?FunctionHandler<*, ATYPES, OTYPES>,
+    handler: ?FunctionHandler<NODETYPE, ATYPES, OTYPES>,
 |};
 
 /**
