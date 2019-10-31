@@ -18,7 +18,7 @@ export type FunctionContext = {|
     breakOnTokenText?: BreakToken,
 |};
 
-type ArgNode = <V: ArgType>(V) => ParseNode<$ElementType<ArgNodeType, V>>;
+export type ArgNode = <V: ArgType>(V) => ParseNode<$ElementType<ArgNodeType, V>>;
 
 export type FunctionHandler
         <NODETYPE: NodeType, ATYPES: ArgType[], OTYPES: ArgType[]> = (
