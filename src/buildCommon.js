@@ -80,9 +80,8 @@ const makeSymbol = function(
             metrics.width, classes);
     } else {
         // TODO(emily): Figure out a good way to only print this in development
-        typeof console !== "undefined" && console.warn(
-            "No character metrics for '" + value + "' in style '" +
-                fontName + "'");
+        typeof console !== "undefined" && console.warn("No character metrics " +
+            `for '${value}' in style '${fontName}' and mode '${mode}'`);
         symbolNode = new SymbolNode(value, 0, 0, 0, 0, 0, classes);
     }
 
@@ -103,13 +102,11 @@ const makeSymbol = function(
 /**
  * Makes a symbol in Main-Regular or AMS-Regular.
  * Used for rel, bin, open, close, inner, and punct.
- *
- * TODO(#953): Make `options` mandatory and always pass it in.
  */
 const mathsym = function(
     value: string,
     mode: Mode,
-    options?: Options,
+    options: Options,
     classes?: string[] = [],
 ): SymbolNode {
     // Decide what font to render the symbol in by its entry in the symbols
@@ -119,7 +116,7 @@ const mathsym = function(
     // text ordinal and is therefore not present as a symbol in the symbols
     // table for text, as well as a special case for boldsymbol because it
     // can be used for bold + and -
-    if ((options && options.font && options.font === "boldsymbol") &&
+    if (options.font === "boldsymbol" &&
             lookupSymbol(value, "Main-Bold", mode).metrics) {
         return makeSymbol(value, "Main-Bold", mode, options,
             classes.concat(["mathbf"]));
@@ -423,7 +420,10 @@ const makeLineSpan = function(
     thickness?: number,
 ) {
     const line = makeSpan([className], [], options);
-    line.height = thickness || options.fontMetrics().defaultRuleThickness;
+    line.height = Math.max(
+        thickness || options.fontMetrics().defaultRuleThickness,
+        options.minRuleThickness,
+    );
     line.style.borderBottomWidth = line.height + "em";
     line.maxFontSize = 1.0;
     return line;

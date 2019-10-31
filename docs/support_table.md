@@ -198,7 +198,7 @@ table td {
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\C|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
-|\cal|<span style="color:firebrick;">Not supported</span>|See `\mathcal`
+|\cal|$\cal AaBb123$|`\cal AaBb123`|
 |\cancel|$\cancel{5}$|`\cancel{5}`|
 |\cancelto|<span style="color:firebrick;">Not supported</span>||
 |\Cap|$\Cap$||
@@ -212,7 +212,8 @@ table td {
 |\ce |${\mathrm{C}{\vphantom{X}}_{\smash[t]{6}}\mathrm{H}{\vphantom{X}}_{\smash[t]{5}}{-}\mathrm{CHO}}$|`\ce{C6H5-CHO}` Requires an [extension](https://github.com/KaTeX/KaTeX/tree/master/contrib/mhchem/)|
 |\cee|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem
 |\centerdot|$a\centerdot b$|`a\centerdot b`|
-|\cf|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem|
+|\cf|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem;
+use `\ce` instead|
 |\cfrac|$\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}$|`\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}`|
 |\check|$\check{oe}$|`\check{oe}`|
 |\ch|$\ch$||
@@ -452,7 +453,7 @@ table td {
 |\hookleftarrow|$\hookleftarrow$||
 |\hookrightarrow|$\hookrightarrow$||
 |\hphantom|$a\hphantom{bc}d$|`a\hphantom{bc}d`|
-|\href|$\href{https://katex.org/}{\KaTeX}$|`\href{https://katex.org/}{\KaTeX}`|
+|\href|$\href{https://katex.org/}{\KaTeX}$|`\href{https://katex.org/}{\KaTeX}` Requires `trust` [option](options.md)|
 |\hskip|$w\hskip1em i\hskip2em d$|`w\hskip1em i\hskip2em d`|
 |\hslash|$\hslash$||
 |\hspace|$s\hspace7ex k$|`s\hspace7ex k`|
@@ -479,7 +480,7 @@ table td {
 |\impliedby|$P\impliedby Q$|`P\impliedby Q`|
 |\implies|$P\implies Q$|`P\implies Q`|
 |\in|$\in$||
-|\includegraphics|$\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}$|`\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}`|
+|\includegraphics|$\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}$|`\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}` Requires `trust` [option](options.md)
 |\inf|$\inf$||
 |\infin|$\infin$||
 |\infty|$\infty$||
@@ -527,6 +528,7 @@ table td {
 |\Large|$\Large Large$|`\Large Large`|
 |\LARGE|$\LARGE LARGE$|`\LARGE LARGE`|
 |\LaTeX|$\LaTeX$||
+|\lBrace|$\lBrace$||
 |\lbrace|$\lbrace$||
 |\lbrack|$\lbrack$||
 |\lceil|$\lceil$||
@@ -570,6 +572,7 @@ table td {
 |\limsup|$\limsup$||
 |\ll|$\ll$||
 |\llap|${=}\llap{/\,}$|`{=}\llap{/\,}`|
+|\llbracket|$\llbracket$||
 |\llcorner|$\llcorner$||
 |\Lleftarrow|$\Lleftarrow$||
 |\lll|$\lll$||
@@ -758,7 +761,7 @@ table td {
 |\omicron|$\omicron$||
 |\ominus|$\ominus$||
 |\operatorname|$\operatorname{asin} x$|\operatorname{asin} x|
-|\operatorname\*|<span style="color:firebrick;">Not supported</span>|[Issue #1242](https://github.com/KaTeX/KaTeX/issues/1242)|
+|\operatorname\*|$\operatorname{asin}\limits_y x$|`\operatorname{asin}\limits_y x`|
 |\oplus|$\oplus$||
 |\or|<span style="color:firebrick;">Not supported</span>||
 |\oslash|$\oslash$||
@@ -798,6 +801,7 @@ table td {
 |\pi|$\pi$||
 |{picture}|<span style="color:firebrick;">Not supported</span>||
 |\pitchfork|$\pitchfork$||
+|\plim|$\plim$||
 |\plusmn|$\plusmn$||
 |\pm|$\pm$||
 |\pmatrix|<span style="color:firebrick;">Not supported</span>|See `{pmatrix}`|
@@ -840,6 +844,7 @@ table td {
 |\Rarr|$\Rarr$||
 |\rArr|$\rArr$||
 |\rarr|$\rarr$||
+|\rBrace|$\rBrace$||
 |\rbrace|$\rbrace$||
 |\rbrack|$\rbrack$||
 |\rceil|$\rceil$||
@@ -877,6 +882,7 @@ table td {
 |\rotatebox|<span style="color:firebrick;">Not supported</span>|[Issue #681](https://github.com/KaTeX/KaTeX/issues/681)|
 |\rparen|$\rparen$||
 |\rq|$\rq$||
+|\rrbracket|$\rrbracket$||
 |\Rrightarrow|$\Rrightarrow$||
 |\Rsh|$\Rsh$||
 |\rtimes|$\rtimes$||
@@ -925,7 +931,7 @@ table td {
 |\small|$\small small$|`\small small`|
 |\smallfrown|$\smallfrown$||
 |\smallint|$\smallint$||
-|{smallmatrix}|<span style="color:firebrick;">Not supported</span>||
+|{smallmatrix}|$\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}$|`\begin{smallmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{smallmatrix}`|
 |\smallsetminus|$\smallsetminus$||
 |\smallsmile|$\smallsmile$||
 |\smash|$\left(x^{\smash{2}}\right)$|`\left(x^{\smash{2}}\right)`|
@@ -962,7 +968,7 @@ table td {
 |\subseteqq|$\subseteqq$||
 |\subsetneq|$\subsetneq$||
 |\subsetneqq|$\subsetneqq$||
-|\substack|<span style="color:firebrick;">Not supported</span>||
+|\substack|$$\sum_{\substack{0<i<m\\0<j<n}}$$|`\sum_{\substack{0<i<m\\0<j<n}}`|
 |\succ|$\succ$||
 |\succapprox|$\succapprox$||
 |\succcurlyeq|$\succcurlyeq$||
@@ -1100,7 +1106,7 @@ table td {
 |\upsilon|$\upsilon$||
 |\upuparrows|$\upuparrows$||
 |\urcorner|$\urcorner$||
-|\url|$\footnotesize\url{https://katex.org/}$|`\url{https://katex.org/}`|
+|\url|$\footnotesize\url{https://katex.org/}$|`\url{https://katex.org/}` Requires `trust` [option](options.md)|
 |\utilde|$\utilde{AB}$|`\utilde{AB}`|
 
 ## V

@@ -168,6 +168,7 @@
     .vlist-t {
         display: inline-table;
         table-layout: fixed;
+        border-collapse: collapse;
     }
 
     .vlist-r {
@@ -327,8 +328,6 @@
 
     .sizing,
     .fontsize-ensurer {
-        display: inline-block;
-
         @size1: 0.5;
         @size2: 0.6;
         @size3: 0.7;
@@ -432,13 +431,8 @@
     .mtable {
         .vertical-separator {
             display: inline-block;
-            margin: 0 -0.025em;
-            border-right: 0.05em solid;
+            // margin and border-right are set in Javascript
             min-width: 1px;  // Prevent Chrome from omitting a line.
-        }
-
-        .vs-dashed {
-            border-right: 0.05em dashed;
         }
 
         .arraycolsep {
@@ -576,6 +570,7 @@
     .fcolorbox {
         box-sizing: border-box;
         border: 0.04em solid;         // \fboxrule = 0.4pt
+        border-color: inherit;
     }
 
     .cancel-pad {
@@ -624,4 +619,5 @@
 // Flush-left display math
 .katex-display.fleqn > .katex {
     text-align: left;
+    padding-left: 2em;
 }

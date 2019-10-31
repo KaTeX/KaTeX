@@ -2,6 +2,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
+import utils from "../utils";
 import type {AnyParseNode} from "../parseNode";
 
 import * as html from "../buildHTML";
@@ -17,8 +18,42 @@ function htmlBuilder(group: ParseNode<"mclass">, options) {
 }
 
 function mathmlBuilder(group: ParseNode<"mclass">, options) {
+    let node: mathMLTree.MathNode;
     const inner = mml.buildExpression(group.body, options);
-    return mathMLTree.newDocumentFragment(inner);
+
+    if (group.mclass === "minner") {
+        return mathMLTree.newDocumentFragment(inner);
+    } else if (group.mclass === "mord") {
+        if (group.isCharacterBox) {
+            node = inner[0];
+            node.type = "mi";
+        } else {
+            node = new mathMLTree.MathNode("mi", inner);
+        }
+    } else {
+        if (group.isCharacterBox) {
+            node = inner[0];
+            node.type = "mo";
+        } else {
+            node = new mathMLTree.MathNode("mo", inner);
+        }
+
+        // Set spacing based on what is the most likely adjacent atom type.
+        // See TeXbook p170.
+        if (group.mclass === "mbin") {
+            node.attributes.lspace = "0.22em"; // medium space
+            node.attributes.rspace = "0.22em";
+        } else if (group.mclass === "mpunct") {
+            node.attributes.lspace = "0em";
+            node.attributes.rspace = "0.17em"; // thinspace
+        } else if (group.mclass === "mopen" || group.mclass === "mclose") {
+            node.attributes.lspace = "0em";
+            node.attributes.rspace = "0em";
+        }
+        // MathML <mo> default space is 5/18 em, so <mrel> needs no action.
+        // Ref: https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mo
+    }
+    return node;
 }
 
 // Math class commands except \mathop
@@ -36,8 +71,9 @@ defineFunction({
         return {
             type: "mclass",
             mode: parser.mode,
-            mclass: "m" + funcName.substr(5),
+            mclass: "m" + funcName.substr(5), // TODO(kevinb): don't prefix with 'm'
             body: ordargument(body),
+            isCharacterBox: utils.isCharacterBox(body),
         };
     },
     htmlBuilder,
@@ -71,6 +107,7 @@ defineFunction({
             mode: parser.mode,
             mclass: binrelClass(args[0]),
             body: [args[1]],
+            isCharacterBox: utils.isCharacterBox(args[1]),
         };
     },
 });
@@ -118,6 +155,7 @@ defineFunction({
             mode: parser.mode,
             mclass,
             body: [supsub],
+            isCharacterBox: utils.isCharacterBox(supsub),
         };
     },
     htmlBuilder,

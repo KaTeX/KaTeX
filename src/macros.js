@@ -37,6 +37,11 @@ export interface MacroContextInterface {
     popToken(): Token;
 
     /**
+     * Consume all following space tokens, without expansion.
+     */
+    consumeSpaces(): void;
+
+    /**
      * Expand the next token only once (if possible), and return the resulting
      * top token on the stack (without removing anything from the stack).
      * Similar in behavior to TeX's `\expandafter\futurelet`.
@@ -108,10 +113,12 @@ defineMacro("\\@secondoftwo", function(context) {
 });
 
 // LaTeX's \@ifnextchar{#1}{#2}{#3} looks ahead to the next (unexpanded)
-// symbol.  If it matches #1, then the macro expands to #2; otherwise, #3.
-// Note, however, that it does not consume the next symbol in either case.
+// symbol that isn't a space, consuming any spaces but not consuming the
+// first nonspace character.  If that nonspace character matches #1, then
+// the macro expands to #2; otherwise, it expands to #3.
 defineMacro("\\@ifnextchar", function(context) {
     const args = context.consumeArgs(3);  // symbol, if, else
+    context.consumeSpaces();
     const nextToken = context.future();
     if (args[0].length === 1 && args[0][0].text === nextToken.text) {
         return {tokens: args[1], numArgs: 0};
@@ -426,6 +433,9 @@ defineMacro("\\varPhi", "\\mathit{\\Phi}");
 defineMacro("\\varPsi", "\\mathit{\\Psi}");
 defineMacro("\\varOmega", "\\mathit{\\Omega}");
 
+//\newcommand{\substack}[1]{\subarray{c}#1\endsubarray}
+defineMacro("\\substack", "\\begin{subarray}{c}#1\\end{subarray}");
+
 // \renewcommand{\colon}{\nobreak\mskip2mu\mathpunct{}\nonscript
 // \mkern-\thinmuskip{:}\mskip6muplus1mu\relax}
 defineMacro("\\colon", "\\nobreak\\mskip2mu\\mathpunct{}" +
@@ -659,13 +669,12 @@ defineMacro("\\mod", "\\allowbreak" +
     "{\\rm mod}\\,\\,#1");
 
 // \pmb    --   A simulation of bold.
-// It works by typesetting three copies of the argument with small offsets.
-// Ref: a rather lengthy macro in ambsy.sty
-defineMacro("\\pmb", "\\html@mathml{\\@binrel{#1}{" +
-    "\\mathrlap{#1}" +
-    "\\mathrlap{\\mkern0.4mu\\raisebox{0.4mu}{$#1$}}" +
-    "{\\mkern0.8mu#1}" +
-    "}}{\\mathbf{#1}}");
+// The version in ambsy.sty works by typesetting three copies of the argument
+// with small offsets. We use two copies. We omit the vertical offset because
+// of rendering problems that makeVList encounters in Safari.
+defineMacro("\\pmb", "\\html@mathml{" +
+    "\\@binrel{#1}{\\mathrlap{#1}\\kern0.5px#1}}" +
+    "{\\mathbf{#1}}");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
@@ -693,17 +702,17 @@ defineMacro("\\TeX", "\\textrm{\\html@mathml{" +
 //         \TeX}
 // This code aligns the top of the A with the T (from the perspective of TeX's
 // boxes, though visually the A appears to extend above slightly).
-// We compute the corresponding \raisebox when A is rendered at \scriptsize,
-// which is size3, which has a scale factor of 0.7 (see Options.js).
+// We compute the corresponding \raisebox when A is rendered in \normalsize
+// \scriptstyle, which has a scale factor of 0.7 (see Options.js).
 const latexRaiseA = fontMetricsData['Main-Regular']["T".charCodeAt(0)][1] -
     0.7 * fontMetricsData['Main-Regular']["A".charCodeAt(0)][1] + "em";
 defineMacro("\\LaTeX", "\\textrm{\\html@mathml{" +
-    `L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    `L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptstyle A}` +
     "\\kern-.15em\\TeX}{LaTeX}}");
 
 // New KaTeX logo based on tweaking LaTeX logo
 defineMacro("\\KaTeX", "\\textrm{\\html@mathml{" +
-    `K\\kern-.17em\\raisebox{${latexRaiseA}}{\\scriptsize A}` +
+    `K\\kern-.17em\\raisebox{${latexRaiseA}}{\\scriptstyle A}` +
     "\\kern-.15em\\TeX}{KaTeX}}");
 
 // \DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
@@ -813,8 +822,8 @@ defineMacro("\\approxcoloncolon",
 
 // Present in newtxmath, pxfonts and txfonts
 defineMacro("\\notni", "\\html@mathml{\\not\\ni}{\\mathrel{\\char`\u220C}}");
-defineMacro("\\limsup", "\\DOTSB\\mathop{\\operatorname{lim\\,sup}}\\limits");
-defineMacro("\\liminf", "\\DOTSB\\mathop{\\operatorname{lim\\,inf}}\\limits");
+defineMacro("\\limsup", "\\DOTSB\\operatorname*{lim\\,sup}");
+defineMacro("\\liminf", "\\DOTSB\\operatorname*{lim\\,inf}");
 
 //////////////////////////////////////////////////////////////////////
 // MathML alternates for KaTeX glyphs in the Unicode private area
@@ -834,13 +843,30 @@ defineMacro("\\varsupsetneq", "\\html@mathml{\\@varsupsetneq}{⊋}");
 defineMacro("\\varsupsetneqq", "\\html@mathml{\\@varsupsetneqq}{⫌}");
 
 //////////////////////////////////////////////////////////////////////
-// semantic
+// stmaryrd and semantic
 
-// The semantic package renders the next two items by calling a glyph from the
-// bbold package. Those glyphs do not exist in the KaTeX fonts. Hence the macros.
+// The stmaryrd and semantic packages render the next four items by calling a
+// glyph. Those glyphs do not exist in the KaTeX fonts. Hence the macros.
 
-defineMacro("\u27e6", "\\mathopen{[\\mkern-3.2mu[}");  // blackboard bold [
-defineMacro("\u27e7", "\\mathclose{]\\mkern-3.2mu]}"); // blackboard bold ]
+defineMacro("\\llbracket", "\\html@mathml{" +
+    "\\mathopen{[\\mkern-3.2mu[}}" +
+    "{\\mathopen{\\char`\u27e6}}");
+defineMacro("\\rrbracket", "\\html@mathml{" +
+    "\\mathclose{]\\mkern-3.2mu]}}" +
+    "{\\mathclose{\\char`\u27e7}}");
+
+defineMacro("\u27e6", "\\llbracket"); // blackboard bold [
+defineMacro("\u27e7", "\\rrbracket"); // blackboard bold ]
+
+defineMacro("\\lBrace", "\\html@mathml{" +
+    "\\mathopen{\\{\\mkern-3.2mu[}}" +
+    "{\\mathopen{\\char`\u2983}}");
+defineMacro("\\rBrace", "\\html@mathml{" +
+    "\\mathclose{]\\mkern-3.2mu\\}}}" +
+    "{\\mathclose{\\char`\u2984}}");
+
+defineMacro("\u2983", "\\lBrace"); // blackboard bold {
+defineMacro("\u2984", "\\rBrace"); // blackboard bold }
 
 // TODO: Create variable sized versions of the last two items. I believe that
 // will require new font glyphs.
@@ -923,8 +949,9 @@ defineMacro("\\Zeta", "\\mathrm{Z}");
 // statmath.sty
 // https://ctan.math.illinois.edu/macros/latex/contrib/statmath/statmath.pdf
 
-defineMacro("\\argmin", "\\DOTSB\\mathop{\\operatorname{arg\\,min}}\\limits");
-defineMacro("\\argmax", "\\DOTSB\\mathop{\\operatorname{arg\\,max}}\\limits");
+defineMacro("\\argmin", "\\DOTSB\\operatorname*{arg\\,min}");
+defineMacro("\\argmax", "\\DOTSB\\operatorname*{arg\\,max}");
+defineMacro("\\plim", "\\DOTSB\\mathop{\\operatorname{plim}}\\limits");
 
 // Custom Khan Academy colors, should be moved to an optional package
 defineMacro("\\blue", "\\textcolor{##6495ed}{#1}");
@@ -932,7 +959,7 @@ defineMacro("\\orange", "\\textcolor{##ffa500}{#1}");
 defineMacro("\\pink", "\\textcolor{##ff00af}{#1}");
 defineMacro("\\red", "\\textcolor{##df0030}{#1}");
 defineMacro("\\green", "\\textcolor{##28ae7b}{#1}");
-defineMacro("\\gray", "\\textcolor{gray}{##1}");
+defineMacro("\\gray", "\\textcolor{gray}{#1}");
 defineMacro("\\purple", "\\textcolor{##9d38bd}{#1}");
 defineMacro("\\blueA", "\\textcolor{##ccfaff}{#1}");
 defineMacro("\\blueB", "\\textcolor{##80f6ff}{#1}");

@@ -46,15 +46,24 @@ const htmlBuilder = (group, options) => {
 
         // Add vertical padding
         let vertPad = 0;
-        // ref: LaTeX source2e: \fboxsep = 3pt;  \fboxrule = .4pt
+        let ruleThickness = 0;
         // ref: cancel package: \advance\totalheight2\p@ % "+2"
         if (/box/.test(label)) {
-            vertPad = label === "colorbox" ? 0.3 : 0.34;
+            ruleThickness = Math.max(
+                options.fontMetrics().fboxrule, // default
+                options.minRuleThickness, // User override.
+            );
+            vertPad = options.fontMetrics().fboxsep +
+                (label === "colorbox" ? 0 : ruleThickness);
         } else {
             vertPad = isSingleChar ? 0.2 : 0;
         }
 
         img = stretchy.encloseSpan(inner, label, vertPad, options);
+        if (/fbox|boxed|fcolorbox/.test(label)) {
+            img.style.borderStyle = "solid";
+            img.style.borderWidth = `${ruleThickness}em`;
+        }
         imgShift = inner.depth + vertPad;
 
         if (group.backgroundColor) {
@@ -111,6 +120,7 @@ const htmlBuilder = (group, options) => {
 };
 
 const mathmlBuilder = (group, options) => {
+    let fboxsep = 0;
     const node = new mathMLTree.MathNode(
         (group.label.indexOf("colorbox") > -1) ? "mpadded" : "menclose",
         [mml.buildGroup(group.body, options)]
@@ -132,12 +142,17 @@ const mathmlBuilder = (group, options) => {
         case "\\colorbox":
             // <menclose> doesn't have a good notation option. So use <mpadded>
             // instead. Set some attributes that come included with <menclose>.
-            node.setAttribute("width", "+6pt");
-            node.setAttribute("height", "+6pt");
-            node.setAttribute("lspace", "3pt"); // LaTeX source2e: \fboxsep = 3pt
-            node.setAttribute("voffset", "3pt");
+            fboxsep = options.fontMetrics().fboxsep *
+                options.fontMetrics().ptPerEm;
+            node.setAttribute("width", `+${2 * fboxsep}pt`);
+            node.setAttribute("height", `+${2 * fboxsep}pt`);
+            node.setAttribute("lspace", `${fboxsep}pt`); //
+            node.setAttribute("voffset", `${fboxsep}pt`);
             if (group.label === "\\fcolorbox") {
-                const thk = options.fontMetrics().defaultRuleThickness;
+                const thk = Math.max(
+                    options.fontMetrics().fboxrule, // default
+                    options.minRuleThickness, // user override
+                );
                 node.setAttribute("style", "border: " + thk + "em solid " +
                     String(group.borderColor));
             }
@@ -207,7 +222,7 @@ defineFunction({
     names: ["\\fbox"],
     props: {
         numArgs: 1,
-        argTypes: ["text"],
+        argTypes: ["hbox"],
         allowedInText: true,
     },
     handler({parser}, args) {

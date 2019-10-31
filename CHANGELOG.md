@@ -1,6 +1,103 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [v0.11.1]
+### Changed
+- [Security] Bump mixin-deep from 1.3.1 to 1.3.2 (#2090)
+- [Security] Bump eslint-utils from 1.3.1 to 1.4.2 (#2089)
+
+### Fixed
+- Fix parse timing by separating consume() into fetch() and consume() (#2054)
+- Use current font for accents (#2066)
+- Fix \gray's macro definition (#2075)
+
+## [v0.11.0]
+### Added
+- **BREAKING CHANGE:** trust setting to indicate whether input text is trusted (#1794)
+  - `\href` and `\url` will break without adjusting the trust setting
+- Add test for double square brackets to katex-spec (#1956)
+- Add option to render only MathML so that its visible (#1966)
+- Support {smallmatrix}, {subarray}, and \substack (#1969)
+- Enable minRuleThickness in rendering options (#1964)
+- Add \plim (#1952)
+- Support Unicode \digamma (#2010)
+- Support \operatorname* (#1899)
+- Support \includegraphics, with appropriate trust setting (#2053)
+- Add render-a11y-string add-on (#2062)
+
+### Changed
+- DOC: Fix path to built file (#1976)
+- Remove unclosed TODO comment (#1979)
+- Add "Tutti Quanti Shelf" app to users page (#1997)
+- Document mhchem \cf not supported (use \ce instead) (#2008)
+- Replace greenkeeper badge with dependabot badge (#2022)
+- Add Unicode digamma to documentation (#2045)
+- Add katex-expression to libs page (#2049)
+- Suggest <!DOCTYPE html> in documentation (#2052)
+- Unicode characters in math render in text mode (#2040)
+
+### Fixed
+- Improve output of fonts in MathML (#1965)
+- Fix \pmb (#1924)
+- \color affects following \right, put array cells in their own groups (#1845)
+- Improve MathML for classes (#1929)
+- Prevent gaps in tall delimiters (#1986)
+- Fix \sqrt SVG path (#2009)
+- Do not force sizing groups to display inline-block (#2044)
+- Fix font choice in operators like \log (e.g. \boldsymbol{\log}) (#2041)
+- Fix argument font sizing in \fbox and \raisebox, fix font sizing in \TeX, \LaTeX, \KaTeX (#1787)
+
+## [v0.10.2]
+### Added
+- Approximate font metrics only when metrics don't exist (#1898)
+- Add KaTeX version to stylesheet and troubleshooting guide (#1893)
+- Add symbol double square brackets (#1947, #1954)
+- Support double-square curly braces (#1953)
+
+### Changed
+- Upgrade minimum development Node version to v8 (#1861)
+- Disable @babel/env debug (#1874)
+- Add issue templates (#1862)
+- Added 'katex-element' (#1905)
+- Fix Users' logo and url (#1896)
+- Load fonts before running screenshotter (#1891)
+- Add Browserstack logo (#1879)
+- Added Android library (#1943)
+- Move custom colors used by Khan into macros.js (#1933)
+- Test for duplicate symbols/macros (#1955)
+- Include extensions mhchem & copy-tex in home-page (#1932)
+
+### Fixed
+- Fix \Rho (#1870)
+- Fix nested \dfrac (#1825)
+- Improve MathML accents (#1877)
+- Improve MathML for \overset, \stackrel, and \underset (#1886)
+- Fix \not (U+E020) RBearing (width) (#1878)
+- Fix ApplyFunction character (#1890)
+- Improve MathML for \limits (#1897)
+- Improve MathML for \hphantom and \vphantom (#1883)
+- Improve MathML for \coloneqq, \dblcolon, \eqcolon, and \eqqcolon (#1889)
+- Improve MathML for \brace (#1884)
+- Fix \middle spacing (#1906)
+- Get a tall \middle\vert from MathML (#1911)
+- Improve more coloneq (#1902)
+- Make \smallint small in \displaystyle (#1907)
+- Improve MathML for characters in Unicode private use area (#1908)
+- Improve MathML for extensible arrows (#1901)
+- Improve MathML for \rule (#1912)
+- Improve MathML for fractions (#1882)
+- Improve MathML for \tag (#1915)
+- Improve MathML for \colorbox and \fcolorbox (#1914)
+- Improve MathML for environments (#1910)
+- Improve MathML for \genfrac barline (#1925)
+- Support \textup and \textmd (#1921) 
+- Improve MathML for \not (#1923)
+- Improve MathML for \Bbbk (#1930)
+- Prevent inadvertent tall delims (#1948)
+
+### Removed
+- Re-added code for \includegraphics but disabled the function until trust settings is merged (#1951) 
+
 ## [v0.10.1]
 ### Added
 - ECMAScript module for contrib (#1624)

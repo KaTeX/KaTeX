@@ -1,5 +1,6 @@
 // @flow
 import buildCommon from "../buildCommon";
+import Style from "../Style";
 import defineEnvironment from "../defineEnvironment";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
@@ -26,19 +27,19 @@ export type AlignSpec = { type: "separator", separator: string } | {
 };
 
 // Type to indicate column separation in MathML
-export type ColSeparationType = "align" | "alignat";
+export type ColSeparationType = "align" | "alignat" | "small";
 
 function getHLines(parser: Parser): boolean[] {
     // Return an array. The array length = number of hlines.
     // Each element in the array tells if the line is dashed.
     const hlineInfo = [];
     parser.consumeSpaces();
-    let nxt = parser.nextToken.text;
+    let nxt = parser.fetch().text;
     while (nxt === "\\hline" || nxt === "\\hdashline") {
         parser.consume();
         hlineInfo.push(nxt === "\\hdashline");
         parser.consumeSpaces();
-        nxt = parser.nextToken.text;
+        nxt = parser.fetch().text;
     }
     return hlineInfo;
 }
@@ -78,6 +79,9 @@ function parseArray(
         }
     }
 
+    // Start group for first cell
+    parser.gullet.beginGroup();
+
     let row = [];
     const body = [row];
     const rowGaps = [];
@@ -87,7 +91,11 @@ function parseArray(
     hLinesBeforeRow.push(getHLines(parser));
 
     while (true) {  // eslint-disable-line no-constant-condition
+        // Parse each cell in its own group (namespace)
         let cell = parser.parseExpression(false, "\\cr");
+        parser.gullet.endGroup();
+        parser.gullet.beginGroup();
+
         cell = {
             type: "ordgroup",
             mode: parser.mode,
@@ -102,7 +110,7 @@ function parseArray(
             };
         }
         row.push(cell);
-        const next = parser.nextToken.text;
+        const next = parser.fetch().text;
         if (next === "&") {
             parser.consume();
         } else if (next === "\\end") {
@@ -131,7 +139,12 @@ function parseArray(
                                  parser.nextToken);
         }
     }
+
+    // End cell group
     parser.gullet.endGroup();
+    // End array group defining \\
+    parser.gullet.endGroup();
+
     return {
         type: "array",
         mode: parser.mode,
@@ -173,9 +186,24 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     let body = new Array(nr);
     const hlines = [];
 
+    const ruleThickness = Math.max(
+        // From LaTeX \showthe\arrayrulewidth. Equals 0.04 em.
+        (options.fontMetrics().arrayRuleWidth),
+        options.minRuleThickness,  // User override.
+    );
+
     // Horizontal spacing
     const pt = 1 / options.fontMetrics().ptPerEm;
-    const arraycolsep = 5 * pt; // \arraycolsep in article.cls
+    let arraycolsep = 5 * pt; // default value, i.e. \arraycolsep in article.cls
+    if (group.colSeparationType && group.colSeparationType === "small") {
+        // We're in a {smallmatrix}. Default column space is \thickspace,
+        // i.e. 5/18em = 0.2778em, per amsmath.dtx for {smallmatrix}.
+        // But that needs adjustment because LaTeX applies \scriptstyle to the
+        // entire array, including the colspace, but this function applies
+        // \scriptstyle only inside each element.
+        const localMultiplier = options.havingStyle(Style.SCRIPT).sizeMultiplier;
+        arraycolsep = 0.2778 * (localMultiplier / options.sizeMultiplier);
+    }
 
     // Vertical spacing
     const baselineskip = 12 * pt; // see size10.clo
@@ -274,20 +302,15 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
                 cols.push(colSep);
             }
 
-            if (colDescr.separator === "|") {
+            if (colDescr.separator === "|" || colDescr.separator === ":") {
+                const lineType = (colDescr.separator === "|") ? "solid" : "dashed";
                 const separator = buildCommon.makeSpan(
                     ["vertical-separator"], [], options
                 );
                 separator.style.height = totalHeight + "em";
-                separator.style.verticalAlign =
-                    -(totalHeight - offset) + "em";
-
-                cols.push(separator);
-            } else if (colDescr.separator === ":") {
-                const separator = buildCommon.makeSpan(
-                    ["vertical-separator", "vs-dashed"], [], options
-                );
-                separator.style.height = totalHeight + "em";
+                separator.style.borderRightWidth = `${ruleThickness}em`;
+                separator.style.borderRightStyle = lineType;
+                separator.style.margin = `0 -${ruleThickness / 2}em`;
                 separator.style.verticalAlign =
                     -(totalHeight - offset) + "em";
 
@@ -351,8 +374,9 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
     // Add \hline(s), if any.
     if (hlines.length > 0) {
-        const line = buildCommon.makeLineSpan("hline", options, 0.05);
-        const dashes = buildCommon.makeLineSpan("hdashline", options, 0.05);
+        const line = buildCommon.makeLineSpan("hline", options, ruleThickness);
+        const dashes = buildCommon.makeLineSpan("hdashline", options,
+            ruleThickness);
         const vListElems = [{type: "elem", elem: body, shift: 0}];
         while (hlines.length > 0) {
             const hline = hlines.pop();
@@ -379,7 +403,7 @@ const alignMap = {
 };
 
 const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
-    const table = new mathMLTree.MathNode(
+    let table = new mathMLTree.MathNode(
         "mtable", group.body.map(function(row) {
             return new mathMLTree.MathNode(
                 "mtr", row.map(function(cell) {
@@ -401,7 +425,9 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
 
     // The 0.16 and 0.09 values are found emprically. They produce an array
     // similar to LaTeX and in which content does not interfere with \hines.
-    const gap = 0.16 + group.arraystretch - 1 + (group.addJot ? 0.09 : 0);
+    const gap = (group.arraystretch === 0.5)
+        ? 0.1  // {smallmatrix}, {subarray}
+        : 0.16 + group.arraystretch - 1 + (group.addJot ? 0.09 : 0);
     table.setAttribute("rowspacing", gap + "em");
 
     // MathML table lines go only between cells.
@@ -463,6 +489,8 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
         table.setAttribute("columnspacing", spacing.trim());
     } else if (group.colSeparationType === "alignat") {
         table.setAttribute("columnspacing", "0em");
+    } else if (group.colSeparationType === "small") {
+        table.setAttribute("columnspacing", "0.2778em");
     } else {
         table.setAttribute("columnspacing", "1em");
     }
@@ -484,13 +512,18 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
         table.setAttribute("rowlines", rowLines.trim());
     }
 
-    if (menclose === "") {
-        return table;
-    } else {
-        const wrapper =  new mathMLTree.MathNode("menclose", [table]);
-        wrapper.setAttribute("notation", menclose.trim());
-        return wrapper;
+    if (menclose !== "") {
+        table = new mathMLTree.MathNode("menclose", [table]);
+        table.setAttribute("notation", menclose.trim());
     }
+
+    if (group.arraystretch && group.arraystretch < 1) {
+        // A small array. Wrap in scriptstyle so row gap is not too large.
+        table = new mathMLTree.MathNode("mstyle", [table]);
+        table.setAttribute("scriptlevel", "1");
+    }
+
+    return table;
 };
 
 // Convenience function for aligned and alignedat environments.
@@ -650,7 +683,65 @@ defineEnvironment({
             body: [res],
             left: delimiters[0],
             right: delimiters[1],
+            rightColor: undefined, // \right uninfluenced by \color in array
         } : res;
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+defineEnvironment({
+    type: "array",
+    names: ["smallmatrix"],
+    props: {
+        numArgs: 0,
+    },
+    handler(context) {
+        const payload = {arraystretch: 0.5};
+        const res = parseArray(context.parser, payload, "script");
+        res.colSeparationType = "small";
+        return res;
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+defineEnvironment({
+    type: "array",
+    names: ["subarray"],
+    props: {
+        numArgs: 1,
+    },
+    handler(context, args) {
+        // Parsing of {subarray} is similar to {array}
+        const symNode = checkSymbolNodeType(args[0]);
+        const colalign: AnyParseNode[] =
+            symNode ? [args[0]] : assertNodeType(args[0], "ordgroup").body;
+        const cols = colalign.map(function(nde) {
+            const node = assertSymbolNodeType(nde);
+            const ca = node.text;
+            // {subarray} only recognizes "l" & "c"
+            if ("lc".indexOf(ca) !== -1) {
+                return {
+                    type: "align",
+                    align: ca,
+                };
+            }
+            throw new ParseError("Unknown column alignment: " + ca, nde);
+        });
+        if (cols.length > 1) {
+            throw new ParseError("{subarray} can contain only one column");
+        }
+        let res = {
+            cols,
+            hskipBeforeAndAfter: false,
+            arraystretch: 0.5,
+        };
+        res = parseArray(context.parser, res, "script");
+        if (res.body[0].length > 1) {
+            throw new ParseError("{subarray} can contain only one column");
+        }
+        return res;
     },
     htmlBuilder,
     mathmlBuilder,
@@ -697,6 +788,7 @@ defineEnvironment({
             body: [res],
             left: "\\{",
             right: ".",
+            rightColor: undefined,
         };
     },
     htmlBuilder,
