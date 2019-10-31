@@ -13,12 +13,37 @@ import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
-import type {ParseNode, AnyParseNode, SymbolParseNode, UnsupportedCmdParseNode}
-    from "./parseNode";
+import type {ParseNode, NodeType, AnyParseNode, SymbolParseNode,
+    UnsupportedCmdParseNode} from "./parseNode";
 import type {Atom, Group} from "./symbols";
-import type {Mode, ArgType, BreakToken} from "./types";
+import type {Mode, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
 import type {EnvSpec} from "./defineEnvironment";
+
+// LaTeX argument type and the resulting ParseNode type.
+//   - "size": A size-like thing, such as "1em" or "5ex"
+//   - "color": An html color, like "#abc" or "blue"
+//   - "url": An url string, in which "\" will be ignored
+//   -        if it precedes [#$%&~_^\{}]
+//   - "raw": A string, allowing single character, percent sign,
+//            and nested braces
+//   - "original": The same type as the environment that the
+//                 function being parsed is in (e.g. used for the
+//                 bodies of functions like \textcolor where the
+//                 first argument is special and the second
+//                 argument is parsed normally)
+//   - Mode: Node group parsed in given mode.
+export type ArgNodeType = {|
+    "color": "color-token",
+    "size": "size",
+    "url": "url",
+    "raw": "raw",
+    "original": NodeType,
+    "hbox": "styling",
+    "math": NodeType,
+    "text": NodeType,
+|};
+export type ArgType = $Keys<ArgNodeType>;
 
 /**
  * This file contains the parser used to parse out a TeX expression from the

@@ -1,11 +1,11 @@
 // @flow
 import {checkNodeType} from "./parseNode";
 
-import type Parser from "./Parser";
+import type Parser, {ArgNodeType, ArgType} from "./Parser";
 import type {ParseNode, AnyParseNode, NodeType, UnsupportedCmdParseNode}
     from "./parseNode";
 import type Options from "./Options";
-import type {ArgType, BreakToken} from "./types";
+import type {BreakToken} from "./types";
 import type {HtmlDomNode} from "./domTree";
 import type {Token} from "./Token";
 import type {MathDomNode} from "./mathMLTree";
@@ -16,17 +16,6 @@ export type FunctionContext = {|
     parser: Parser,
     token?: Token,
     breakOnTokenText?: BreakToken,
-|};
-
-type ArgNodeType = {|
-    "color": "color-token",
-    "size": "size",
-    "url": "url",
-    "raw": "raw",
-    "original": NodeType,
-    "hbox": "styling",
-    "math": "ordgroup",
-    "text": "ordgroup",
 |};
 
 type ArgNode = <V: ArgType>(V) => ParseNode<$ElementType<ArgNodeType, V>>;
