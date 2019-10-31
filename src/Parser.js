@@ -463,9 +463,9 @@ export default class Parser {
     /**
      * Parses the arguments of a function or environment
      */
-    parseArguments(
+    parseArguments<ATYPE: ArgType[], OTYPE: ArgType[]>(
         func: string,   // Should look like "\name" or "\begin{name}".
-        funcData: FunctionSpec<*> | EnvSpec<*>,
+        funcData: FunctionSpec<*, ATYPE, OTYPE> | EnvSpec<*, ATYPE, OTYPE>,
     ): {
         args: AnyParseNode[],
         optArgs: (?AnyParseNode)[],
