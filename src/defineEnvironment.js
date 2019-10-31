@@ -35,7 +35,11 @@ type EnvHandler = (
  *  - allowedInText: (default false) Whether or not the environment is allowed
  *                   inside text mode (not enforced yet).
  */
-type EnvProps = {};
+type EnvProps<ATYPES: ArgType[], OTYPES: ArgType[]> = {
+    argTypes?: ATYPES,
+    optionalArgTypes?: OTYPES,
+    allowedInText?: boolean,
+};
 
 /**
  * Final enviornment spec for use at parse time.
@@ -60,7 +64,7 @@ export type EnvSpec<NODETYPE: NodeType, ATYPE: ArgType[], OTYPE: ArgType[]> = {|
  */
 export const _environments: {[string]: EnvSpec<*, *, *>} = {};
 
-type EnvDefSpec<NODETYPE: NodeType> = {|
+type EnvDefSpec<NODETYPE: NodeType, ATYPES: ArgType[], OTYPES: ArgType[]> = {|
     // Unique string to differentiate parse nodes.
     type: NODETYPE,
 
@@ -69,7 +73,7 @@ type EnvDefSpec<NODETYPE: NodeType> = {|
     names: Array<string>,
 
     // Properties that control how the environments are parsed.
-    props: EnvProps,
+    props: EnvProps<ATYPES, OTYPES>,
 
     handler: EnvHandler,
 
@@ -82,19 +86,22 @@ type EnvDefSpec<NODETYPE: NodeType> = {|
     mathmlBuilder: MathMLBuilder<NODETYPE>,
 |};
 
-export default function defineEnvironment<NODETYPE: NodeType>({
+export default function defineEnvironment
+    <NODETYPE: NodeType, ATYPES: ArgType[], OTYPES: ArgType[]>({
     type,
     names,
     props,
     handler,
     htmlBuilder,
     mathmlBuilder,
-}: EnvDefSpec<NODETYPE>) {
+}: EnvDefSpec<NODETYPE, ATYPES, OTYPES>) {
     // Set default values of environments.
     const data = {
         type,
+        argTypes: props.argTypes,
+        optionalArgTypes: props.optionalArgTypes,
         greediness: 1,
-        allowedInText: false,
+        allowedInText: !!props.allowedInText,
         handler,
     };
     for (let i = 0; i < names.length; ++i) {
