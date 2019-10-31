@@ -470,28 +470,23 @@ export default class Parser {
         args: AnyParseNode[],
         optArgs: (?AnyParseNode)[],
     } {
-        const numArgs = funcData.argTypes && funcData.argTypes.length || 0;
-        const numOptionalArgs = funcData.optionalArgTypes &&
-            funcData.optionalArgTypes.length || 0;
-        if (!numArgs && !numOptionalArgs) {
-            return {args: [], optArgs: []};
-        }
-
+        const artTypes = funcData.argTypes;
+        const optionalArgTypes = funcData.optionalArgTypes;
         const baseGreediness = funcData.greediness;
         const args = [];
         const optArgs = [];
 
-        if (funcData.optionalArgTypes) {
-            for (let i = 0; i < numOptionalArgs; i++) {
-                const argType = funcData.optionalArgTypes[i];
+        if (optionalArgTypes) {
+            for (let i = 0; i < optionalArgTypes.length; i++) {
+                const argType = optionalArgTypes[i];
                 const arg = this.parseGroupOfType(`argument to '${func}'`,
                     argType, true, baseGreediness, false);
                 optArgs.push(arg);
             }
         }
-        if (funcData.argTypes) {
-            for (let i = 0; i < numArgs; i++) {
-                const argType = funcData.argTypes[i];
+        if (artTypes) {
+            for (let i = 0; i < artTypes.length; i++) {
+                const argType = artTypes[i];
                 // Ignore spaces between arguments.  As the TeXbook says:
                 // "After you have said ‘\def\row#1#2{...}’, you are allowed to
                 //  put spaces between the arguments (e.g., ‘\row x n’), because
@@ -521,7 +516,7 @@ export default class Parser {
      */
     parseGroupOfType(
         name: string,
-        type: ?ArgType,
+        type: ArgType,
         optional: boolean,
         greediness: ?number,
         consumeSpaces: boolean,
