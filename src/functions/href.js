@@ -1,7 +1,6 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import {assertNodeType} from "../parseNode";
 import {MathNode} from "../mathMLTree";
 
 import * as html from "../buildHTML";
@@ -16,7 +15,7 @@ defineFunction({
     },
     handler: ({parser}, args) => {
         const body = args[1];
-        const href = assertNodeType(args[0], "url").url;
+        const href = args[0].url;
 
         if (!parser.settings.isTrusted({
             command: "\\href",
@@ -54,7 +53,7 @@ defineFunction({
         allowedInText: true,
     },
     handler: ({parser}, args) => {
-        const href = assertNodeType(args[0], "url").url;
+        const href = args[0].url;
 
         if (!parser.settings.isTrusted({
             command: "\\url",

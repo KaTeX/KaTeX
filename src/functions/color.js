@@ -2,7 +2,6 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -41,7 +40,7 @@ defineFunction({
         argTypes: ["color", "original"],
     },
     handler({parser}, args) {
-        const color = assertNodeType(args[0], "color-token").color;
+        const color = args[0].color;
         const body = args[1];
         return {
             type: "color",
@@ -63,7 +62,7 @@ defineFunction({
         argTypes: ["color"],
     },
     handler({parser, breakOnTokenText}, args) {
-        const color = assertNodeType(args[0], "color-token").color;
+        const color = args[0].color;
 
         // Set macro \current@color in current namespace to store the current
         // color, mimicking the behavior of color.sty.

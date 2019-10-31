@@ -392,7 +392,7 @@ defineFunction({
         }
         const rightDelim = rightNode ? delimFromValue(rightNode.text) : null;
 
-        const barNode = assertNodeType(args[2], "size");
+        const barNode = args[2];
         let hasBarLine;
         let barSize = null;
         if (barNode.isBlank) {
@@ -449,7 +449,7 @@ defineFunction({
             type: "infix",
             mode: parser.mode,
             replaceWith: "\\\\abovefrac",
-            size: assertNodeType(args[0], "size").value,
+            size: args[0].value,
             token,
         };
     },

@@ -2,7 +2,6 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import {assertNodeType} from "../parseNode";
 import {calculateSize} from "../units";
 
 import * as html from "../buildHTML";
@@ -17,7 +16,7 @@ defineFunction({
         allowedInText: true,
     },
     handler({parser}, args) {
-        const amount = assertNodeType(args[0], "size").value;
+        const amount = args[0].value;
         const body = args[1];
         return {
             type: "raisebox",

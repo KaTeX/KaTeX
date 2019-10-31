@@ -5,7 +5,6 @@ import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import {calculateSize} from "../units";
-import {assertNodeType} from "../parseNode";
 
 // TODO: \hskip and \mskip should support plus and minus in lengths
 
@@ -17,7 +16,7 @@ defineFunction({
         allowedInText: true,
     },
     handler({parser, funcName}, args) {
-        const size = assertNodeType(args[0], "size");
+        const size = args[0];
         if (parser.settings.strict) {
             const mathFunction = (funcName[1] === 'm');  // \mkern, \mskip
             const muUnit = (size.value.unit === 'mu');

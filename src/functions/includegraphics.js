@@ -75,7 +75,7 @@ defineFunction({
             }
         }
 
-        const src = assertNodeType(args[0], "url").url;
+        const src = args[0].url;
 
         if (alt === "") {
             // No alt given. Use the file name. Strip away the path.

@@ -4,7 +4,6 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
-import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -176,7 +175,7 @@ defineFunction({
         argTypes: ["color", "text"],
     },
     handler({parser, funcName}, args, optArgs) {
-        const color = assertNodeType(args[0], "color-token").color;
+        const color = args[0].color;
         const body = args[1];
         return {
             type: "enclose",
@@ -199,8 +198,8 @@ defineFunction({
         argTypes: ["color", "color", "text"],
     },
     handler({parser, funcName}, args, optArgs) {
-        const borderColor = assertNodeType(args[0], "color-token").color;
-        const backgroundColor = assertNodeType(args[1], "color-token").color;
+        const borderColor = args[0].color;
+        const backgroundColor = args[1].color;
         const body = args[2];
         return {
             type: "enclose",

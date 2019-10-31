@@ -14,8 +14,8 @@ defineFunction({
     },
     handler({parser}, args, optArgs) {
         const shift = optArgs[0];
-        const width = assertNodeType(args[0], "size");
-        const height = assertNodeType(args[1], "size");
+        const width = args[0];
+        const height = args[1];
         return {
             type: "rule",
             mode: parser.mode,
