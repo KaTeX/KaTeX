@@ -495,7 +495,7 @@ export default class Parser {
         args: AnyParseNode[],
         optArgs: (?AnyParseNode)[],
     } {
-        const artTypes = funcData.argTypes;
+        const argTypes = funcData.argTypes;
         const optionalArgTypes = funcData.optionalArgTypes;
         const baseGreediness = funcData.greediness;
         const args = [];
@@ -509,9 +509,9 @@ export default class Parser {
                 optArgs.push(arg);
             }
         }
-        if (artTypes) {
-            for (let i = 0; i < artTypes.length; i++) {
-                const argType = artTypes[i];
+        if (argTypes) {
+            for (let i = 0; i < argTypes.length; i++) {
+                const argType = argTypes[i];
                 // Ignore spaces between arguments.  As the TeXbook says:
                 // "After you have said ‘\def\row#1#2{...}’, you are allowed to
                 //  put spaces between the arguments (e.g., ‘\row x n’), because
