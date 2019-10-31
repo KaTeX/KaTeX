@@ -598,11 +598,10 @@ export default class Parser {
                 }
             }
             case "original":
-            case null:
-            case undefined:
                 return this.parseGroup(name, optional, greediness,
                     undefined, undefined, consumeSpaces);
             default:
+                (type: empty);
                 throw new ParseError(
                     "Unknown group type as " + name, this.fetch());
         }
