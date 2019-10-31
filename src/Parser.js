@@ -466,6 +466,7 @@ export default class Parser {
      */
     callFunction(
         name: string,
+        // TODO(ylem): args should be $TupleMap<ARGTYPES, ArgNode>
         args: AnyParseNode[],
         optArgs: (?AnyParseNode)[],
         token?: Token,
@@ -492,6 +493,7 @@ export default class Parser {
         func: string,   // Should look like "\name" or "\begin{name}".
         funcData: FunctionSpec<*, ARGTYPES> | EnvSpec<*, ARGTYPES>,
     ): {
+        // TODO(ylem): args should be $TupleMap<ARGTYPES, ArgNode>
         args: AnyParseNode[],
         optArgs: (?AnyParseNode)[],
     } {
@@ -546,6 +548,7 @@ export default class Parser {
         greediness: ?number,
         consumeSpaces: boolean,
     ): ?AnyParseNode {
+    // TODO(ylem): Return type should be ParseNode<$ElementType<ArgNodeType, type>>
         switch (type) {
             case "color":
                 if (consumeSpaces) {

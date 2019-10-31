@@ -27,6 +27,7 @@ type EnvContext = {|
 type EnvHandler<NODETYPE: NodeType, ARGTYPES: ArgType[]> = (
     context: EnvContext,
     args: $TupleMap<ARGTYPES, ArgNode>,
+    // TODO(ylem): Type optArgs
     optArgs: (?AnyParseNode)[],
 ) => ParseNode<NODETYPE> | ParseNode<"leftright">;
 
