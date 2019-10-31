@@ -10,7 +10,7 @@ defineFunction({
     type: "phantom",
     names: ["\\phantom"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
         allowedInText: true,
     },
     handler: ({parser}, args) => {
@@ -42,7 +42,7 @@ defineFunction({
     type: "hphantom",
     names: ["\\hphantom"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
         allowedInText: true,
     },
     handler: ({parser}, args) => {
@@ -88,7 +88,7 @@ defineFunction({
     type: "vphantom",
     names: ["\\vphantom"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
         allowedInText: true,
     },
     handler: ({parser}, args) => {

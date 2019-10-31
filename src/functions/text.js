@@ -46,7 +46,6 @@ defineFunction({
         "\\textit", "\\textup",
     ],
     props: {
-        numArgs: 1,
         argTypes: ["text"],
         greediness: 2,
         allowedInText: true,

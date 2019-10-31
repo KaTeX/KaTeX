@@ -10,7 +10,7 @@ defineFunction({
     type: "textord",
     names: ["\\@char"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
         allowedInText: true,
     },
     handler({parser}, args) {

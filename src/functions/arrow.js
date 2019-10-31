@@ -32,8 +32,8 @@ defineFunction({
         "\\xrightleftarrows", "\\xrightequilibrium", "\\xleftequilibrium",
     ],
     props: {
-        numArgs: 1,
-        numOptionalArgs: 1,
+        argTypes: ["original"],
+        optionalArgTypes: ["original"],
     },
     handler({parser, funcName}, args, optArgs) {
         return {

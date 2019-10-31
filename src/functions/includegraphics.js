@@ -35,8 +35,6 @@ defineFunction({
     type: "includegraphics",
     names: ["\\includegraphics"],
     props: {
-        numArgs: 1,
-        numOptionalArgs: 1,
         optionalArgTypes: ["raw"],
         argTypes: ["url"],
         allowedInText: false,

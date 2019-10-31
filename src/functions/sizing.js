@@ -57,7 +57,6 @@ defineFunction({
     type: "sizing",
     names: sizeFuncs,
     props: {
-        numArgs: 0,
         allowedInText: true,
     },
     handler: ({breakOnTokenText, funcName, parser}, args) => {

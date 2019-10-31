@@ -247,7 +247,7 @@ defineFunction({
         "\\\\bracefrac", "\\\\brackfrac",   // ditto
     ],
     props: {
-        numArgs: 2,
+        argTypes: ["original", "original"],
         greediness: 2,
     },
     handler: ({parser, funcName}, args) => {
@@ -325,7 +325,6 @@ defineFunction({
     type: "infix",
     names: ["\\over", "\\choose", "\\atop", "\\brace", "\\brack"],
     props: {
-        numArgs: 0,
         infix: true,
     },
     handler({parser, funcName, token}) {
@@ -373,7 +372,6 @@ defineFunction({
     type: "genfrac",
     names: ["\\genfrac"],
     props: {
-        numArgs: 6,
         greediness: 6,
         argTypes: ["math", "math", "size", "text", "math", "math"],
     },
@@ -443,7 +441,6 @@ defineFunction({
     type: "infix",
     names: ["\\above"],
     props: {
-        numArgs: 1,
         argTypes: ["size"],
         infix: true,
     },
@@ -462,7 +459,6 @@ defineFunction({
     type: "genfrac",
     names: ["\\\\abovefrac"],
     props: {
-        numArgs: 3,
         argTypes: ["math", "size", "math"],
     },
     handler: ({parser, funcName}, args) => {

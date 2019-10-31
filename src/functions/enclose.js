@@ -171,7 +171,6 @@ defineFunction({
     type: "enclose",
     names: ["\\colorbox"],
     props: {
-        numArgs: 2,
         allowedInText: true,
         greediness: 3,
         argTypes: ["color", "text"],
@@ -195,7 +194,6 @@ defineFunction({
     type: "enclose",
     names: ["\\fcolorbox"],
     props: {
-        numArgs: 3,
         allowedInText: true,
         greediness: 3,
         argTypes: ["color", "color", "text"],
@@ -221,7 +219,6 @@ defineFunction({
     type: "enclose",
     names: ["\\fbox"],
     props: {
-        numArgs: 1,
         argTypes: ["hbox"],
         allowedInText: true,
     },
@@ -239,7 +236,7 @@ defineFunction({
     type: "enclose",
     names: ["\\cancel", "\\bcancel", "\\xcancel", "\\sout"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler({parser, funcName}, args, optArgs) {
         const body = args[0];

@@ -39,9 +39,6 @@ export type HtmlBuilderSupSub<NODETYPE> =
     (ParseNode<"supsub"> | ParseNode<NODETYPE>, Options) => HtmlDomNode;
 
 export type FunctionPropSpec = {
-    // The number of arguments the function takes.
-    numArgs: number,
-
     // An array corresponding to each argument of the function, giving the
     // type of argument that should be parsed.
     argTypes?: ArgType[],
@@ -75,12 +72,6 @@ export type FunctionPropSpec = {
     // Whether or not the function is allowed inside text mode
     // (default true)
     allowedInMath?: boolean,
-
-    // (optional) The number of optional arguments the function
-    // should parse. If the optional arguments aren't found,
-    // `null` will be passed to the handler in their place.
-    // (default 0)
-    numOptionalArgs?: number,
 
     // Must be true if the function is an infix operator.
     infix?: boolean,
@@ -122,13 +113,11 @@ type FunctionDefSpec<NODETYPE: NodeType> = {|
  */
 export type FunctionSpec<NODETYPE: NodeType> = {|
     type: NODETYPE, // Need to use the type to avoid error. See NOTES below.
-    numArgs: number,
     argTypes?: ArgType[],
     optionalArgTypes?: ArgType[],
     greediness: number,
     allowedInText: boolean,
     allowedInMath: boolean,
-    numOptionalArgs: number,
     infix: boolean,
 
     // FLOW TYPE NOTES: Doing either one of the following two
@@ -179,7 +168,6 @@ export default function defineFunction<NODETYPE: NodeType>({
     // Set default values of functions
     const data = {
         type,
-        numArgs: props.numArgs,
         argTypes: props.argTypes,
         optionalArgTypes: props.optionalArgTypes,
         greediness: (props.greediness === undefined) ? 1 : props.greediness,
@@ -187,7 +175,6 @@ export default function defineFunction<NODETYPE: NodeType>({
         allowedInMath: (props.allowedInMath === undefined)
             ? true
             : props.allowedInMath,
-        numOptionalArgs: props.numOptionalArgs || 0,
         infix: !!props.infix,
         handler: handler,
     };
@@ -219,7 +206,7 @@ export function defineFunctionBuilders<NODETYPE: NodeType>({
     defineFunction({
         type,
         names: [],
-        props: {numArgs: 0},
+        props: {},
         handler() { throw new Error('Should never be called.'); },
         htmlBuilder,
         mathmlBuilder,

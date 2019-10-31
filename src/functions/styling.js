@@ -20,7 +20,6 @@ defineFunction({
         "\\scriptscriptstyle",
     ],
     props: {
-        numArgs: 0,
         allowedInText: true,
     },
     handler({breakOnTokenText, funcName, parser}, args) {

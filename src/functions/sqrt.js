@@ -12,8 +12,8 @@ defineFunction({
     type: "sqrt",
     names: ["\\sqrt"],
     props: {
-        numArgs: 1,
-        numOptionalArgs: 1,
+        argTypes: ["original"],
+        optionalArgTypes: ["original"],
     },
     handler({parser}, args, optArgs) {
         const index = optArgs[0];

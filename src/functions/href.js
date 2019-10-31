@@ -11,7 +11,6 @@ defineFunction({
     type: "href",
     names: ["\\href"],
     props: {
-        numArgs: 2,
         argTypes: ["url", "original"],
         allowedInText: true,
     },
@@ -51,7 +50,6 @@ defineFunction({
     type: "href",
     names: ["\\url"],
     props: {
-        numArgs: 1,
         argTypes: ["url"],
         allowedInText: true,
     },

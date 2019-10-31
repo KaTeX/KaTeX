@@ -122,7 +122,7 @@ defineFunction({
     type: "horizBrace",
     names: ["\\overbrace", "\\underbrace"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler({parser, funcName}, args) {
         return {

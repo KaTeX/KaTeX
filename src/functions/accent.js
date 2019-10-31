@@ -216,7 +216,7 @@ defineFunction({
         "\\overlinesegment", "\\overleftharpoon", "\\overrightharpoon",
     ],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler: (context, args) => {
         const base = args[0];
@@ -248,7 +248,7 @@ defineFunction({
         "\\r", "\\H", "\\v", "\\textcircled",
     ],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
         allowedInText: true,
         allowedInMath: false,
     },

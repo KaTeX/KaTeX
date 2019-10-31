@@ -12,8 +12,8 @@ defineFunction({
     type: "smash",
     names: ["\\smash"],
     props: {
-        numArgs: 1,
-        numOptionalArgs: 1,
+        argTypes: ["original"],
+        optionalArgTypes: ["original"],
         allowedInText: true,
     },
     handler: ({parser}, args, optArgs) => {

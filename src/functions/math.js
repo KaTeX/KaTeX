@@ -7,7 +7,6 @@ defineFunction({
     type: "styling",
     names: ["\\(", "$"],
     props: {
-        numArgs: 0,
         allowedInText: true,
         allowedInMath: false,
     },
@@ -32,7 +31,6 @@ defineFunction({
     type: "text", // Doesn't matter what this is.
     names: ["\\)", "\\]"],
     props: {
-        numArgs: 0,
         allowedInText: true,
         allowedInMath: false,
     },

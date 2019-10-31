@@ -11,7 +11,6 @@ defineFunction({
     type: "environment",
     names: ["\\begin", "\\end"],
     props: {
-        numArgs: 1,
         argTypes: ["text"],
     },
     handler({parser, funcName}, args) {

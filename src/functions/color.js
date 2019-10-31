@@ -36,7 +36,6 @@ defineFunction({
     type: "color",
     names: ["\\textcolor"],
     props: {
-        numArgs: 2,
         allowedInText: true,
         greediness: 3,
         argTypes: ["color", "original"],
@@ -59,7 +58,6 @@ defineFunction({
     type: "color",
     names: ["\\color"],
     props: {
-        numArgs: 1,
         allowedInText: true,
         greediness: 3,
         argTypes: ["color"],

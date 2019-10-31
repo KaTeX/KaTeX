@@ -43,7 +43,7 @@ defineFunction({
         "\\Bbb", "\\bold", "\\frak",
     ],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
         greediness: 2,
     },
     handler: ({parser, funcName}, args) => {
@@ -67,7 +67,7 @@ defineFunction({
     type: "mclass",
     names: ["\\boldsymbol", "\\bm"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
         greediness: 2,
     },
     handler: ({parser}, args) => {
@@ -97,7 +97,6 @@ defineFunction({
     type: "font",
     names: ["\\rm", "\\sf", "\\tt", "\\bf", "\\it", "\\cal"],
     props: {
-        numArgs: 0,
         allowedInText: true,
     },
     handler: ({parser, funcName, breakOnTokenText}, args) => {

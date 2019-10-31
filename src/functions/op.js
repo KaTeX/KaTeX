@@ -202,9 +202,7 @@ defineFunction({
         "\u2210", "\u2211", "\u22c0", "\u22c1", "\u22c2", "\u22c3", "\u2a00",
         "\u2a01", "\u2a02", "\u2a04", "\u2a06",
     ],
-    props: {
-        numArgs: 0,
-    },
+    props: {},
     handler: ({parser, funcName}, args) => {
         let fName = funcName;
         if (fName.length === 1) {
@@ -229,7 +227,7 @@ defineFunction({
     type: "op",
     names: ["\\mathop"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler: ({parser}, args) => {
         const body = args[0];
@@ -269,9 +267,7 @@ defineFunction({
         "\\hom", "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin",
         "\\sinh", "\\sh", "\\tan", "\\tanh", "\\tg", "\\th",
     ],
-    props: {
-        numArgs: 0,
-    },
+    props: {},
     handler({parser, funcName}) {
         return {
             type: "op",
@@ -292,9 +288,7 @@ defineFunction({
     names: [
         "\\det", "\\gcd", "\\inf", "\\lim", "\\max", "\\min", "\\Pr", "\\sup",
     ],
-    props: {
-        numArgs: 0,
-    },
+    props: {},
     handler({parser, funcName}) {
         return {
             type: "op",
@@ -316,9 +310,7 @@ defineFunction({
         "\\int", "\\iint", "\\iiint", "\\oint", "\\oiint", "\\oiiint",
         "\u222b", "\u222c", "\u222d", "\u222e", "\u222f", "\u2230",
     ],
-    props: {
-        numArgs: 0,
-    },
+    props: {},
     handler({parser, funcName}) {
         let fName = funcName;
         if (fName.length === 1) {

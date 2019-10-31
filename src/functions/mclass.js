@@ -64,7 +64,7 @@ defineFunction({
         "\\mathclose", "\\mathpunct", "\\mathinner",
     ],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler({parser, funcName}, args) {
         const body = args[0];
@@ -99,7 +99,7 @@ defineFunction({
     type: "mclass",
     names: ["\\@binrel"],
     props: {
-        numArgs: 2,
+        argTypes: ["original", "original"],
     },
     handler({parser}, args) {
         return {
@@ -117,7 +117,7 @@ defineFunction({
     type: "mclass",
     names: ["\\stackrel", "\\overset", "\\underset"],
     props: {
-        numArgs: 2,
+        argTypes: ["original", "original"],
     },
     handler({parser, funcName}, args) {
         const baseArg = args[1];

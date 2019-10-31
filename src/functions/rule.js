@@ -9,8 +9,6 @@ defineFunction({
     type: "rule",
     names: ["\\rule"],
     props: {
-        numArgs: 2,
-        numOptionalArgs: 1,
         optionalArgTypes: ["size"],
         argTypes: ["size", "size"],
     },

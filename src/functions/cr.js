@@ -17,8 +17,6 @@ defineFunction({
     type: "cr",
     names: ["\\cr", "\\newline"],
     props: {
-        numArgs: 0,
-        numOptionalArgs: 1,
         optionalArgTypes: ["size"],
         allowedInText: true,
     },

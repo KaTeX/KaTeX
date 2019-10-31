@@ -9,7 +9,7 @@ defineFunction({
     type: "htmlmathml",
     names: ["\\html@mathml"],
     props: {
-        numArgs: 2,
+        argTypes: ["original", "original"],
         allowedInText: true,
     },
     handler: ({parser}, args) => {

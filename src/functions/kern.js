@@ -13,7 +13,6 @@ defineFunction({
     type: "kern",
     names: ["\\kern", "\\mkern", "\\hskip", "\\mskip"],
     props: {
-        numArgs: 1,
         argTypes: ["size"],
         allowedInText: true,
     },

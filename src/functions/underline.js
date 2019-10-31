@@ -10,7 +10,7 @@ defineFunction({
     type: "underline",
     names: ["\\underline"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
         allowedInText: true,
     },
     handler({parser}, args) {

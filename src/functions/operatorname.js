@@ -143,7 +143,7 @@ defineFunction({
     type: "operatorname",
     names: ["\\operatorname", "\\operatorname*"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler: ({parser, funcName}, args) => {
         const body = args[0];

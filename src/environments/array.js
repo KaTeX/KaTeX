@@ -608,7 +608,7 @@ defineEnvironment({
     type: "array",
     names: ["array", "darray"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler(context, args) {
         // Since no types are specified above, the two possibilities are
@@ -661,9 +661,7 @@ defineEnvironment({
         "vmatrix",
         "Vmatrix",
     ],
-    props: {
-        numArgs: 0,
-    },
+    props: {},
     handler(context) {
         const delimiters = {
             "matrix": null,
@@ -693,9 +691,7 @@ defineEnvironment({
 defineEnvironment({
     type: "array",
     names: ["smallmatrix"],
-    props: {
-        numArgs: 0,
-    },
+    props: {},
     handler(context) {
         const payload = {arraystretch: 0.5};
         const res = parseArray(context.parser, payload, "script");
@@ -710,7 +706,7 @@ defineEnvironment({
     type: "array",
     names: ["subarray"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler(context, args) {
         // Parsing of {subarray} is similar to {array}
@@ -758,9 +754,7 @@ defineEnvironment({
         "cases",
         "dcases",
     ],
-    props: {
-        numArgs: 0,
-    },
+    props: {},
     handler(context) {
         const payload = {
             arraystretch: 1.2,
@@ -802,9 +796,7 @@ defineEnvironment({
 defineEnvironment({
     type: "array",
     names: ["aligned"],
-    props: {
-        numArgs: 0,
-    },
+    props: {},
     handler: alignedHandler,
     htmlBuilder,
     mathmlBuilder,
@@ -816,9 +808,7 @@ defineEnvironment({
 defineEnvironment({
     type: "array",
     names: ["gathered"],
-    props: {
-        numArgs: 0,
-    },
+    props: {},
     handler(context) {
         const res = {
             cols: [{
@@ -843,7 +833,7 @@ defineEnvironment({
     // but, KaTeX doesn't supports math numbering yet,
     // they make no difference for now.
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler: alignedHandler,
     htmlBuilder,
@@ -855,7 +845,6 @@ defineFunction({
     type: "text", // Doesn't matter what this is.
     names: ["\\hline", "\\hdashline"],
     props: {
-        numArgs: 0,
         allowedInText: true,
         allowedInMath: true,
     },

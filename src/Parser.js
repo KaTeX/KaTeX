@@ -470,7 +470,10 @@ export default class Parser {
         args: AnyParseNode[],
         optArgs: (?AnyParseNode)[],
     } {
-        if (funcData.numArgs + funcData.numOptionalArgs === 0) {
+        const numArgs = funcData.argTypes && funcData.argTypes.length || 0;
+        const numOptionalArgs = funcData.optionalArgTypes &&
+            funcData.optionalArgTypes.length || 0;
+        if (!numArgs && !numOptionalArgs) {
             return {args: [], optArgs: []};
         }
 
@@ -478,33 +481,36 @@ export default class Parser {
         const args = [];
         const optArgs = [];
 
-        for (let i = 0; i < funcData.numOptionalArgs; i++) {
-            const argType = funcData.optionalArgTypes
-                && funcData.optionalArgTypes[i];
-            const arg = this.parseGroupOfType(`argument to '${func}'`,
-                argType, true, baseGreediness, false);
-            optArgs.push(arg);
-        }
-        for (let i = 0; i < funcData.numArgs; i++) {
-            const argType = funcData.argTypes && funcData.argTypes[i];
-            // Ignore spaces between arguments.  As the TeXbook says:
-            // "After you have said ‘\def\row#1#2{...}’, you are allowed to
-            //  put spaces between the arguments (e.g., ‘\row x n’), because
-            //  TeX doesn’t use single spaces as undelimited arguments."
-            // Also consume leading spaces in math mode, as parseSymbol
-            // won't know what to do with them.  This can only happen with
-            // macros, e.g. \frac\foo\foo where \foo expands to a space symbol.
-            // In LaTeX, the \foo's get treated as (blank) arguments.
-            // In KaTeX, for now, both spaces will get consumed.
-            // TODO(edemaine)
-            const consumeSpaces = i > 0 || (i === 0 && this.mode === "math");
-            const arg = this.parseGroupOfType(`argument to '${func}'`,
-                argType, false, baseGreediness, consumeSpaces);
-            if (!arg) {
-                throw new ParseError(
-                    `Expected group after '${func}'`, this.fetch());
+        if (funcData.optionalArgTypes) {
+            for (let i = 0; i < numOptionalArgs; i++) {
+                const argType = funcData.optionalArgTypes[i];
+                const arg = this.parseGroupOfType(`argument to '${func}'`,
+                    argType, true, baseGreediness, false);
+                optArgs.push(arg);
             }
-            args.push(arg);
+        }
+        if (funcData.argTypes) {
+            for (let i = 0; i < numArgs; i++) {
+                const argType = funcData.argTypes[i];
+                // Ignore spaces between arguments.  As the TeXbook says:
+                // "After you have said ‘\def\row#1#2{...}’, you are allowed to
+                //  put spaces between the arguments (e.g., ‘\row x n’), because
+                //  TeX doesn’t use single spaces as undelimited arguments."
+                // Also consume leading spaces in math mode, as parseSymbol
+                // won't know what to do with them.  This can only happen with
+                // macros, e.g. \frac\foo\foo where \foo expands to a space symbol.
+                // In LaTeX, the \foo's get treated as (blank) arguments.
+                // In KaTeX, for now, both spaces will get consumed.
+                // TODO(edemaine)
+                const consumeSpaces = i > 0 || (i === 0 && this.mode === "math");
+                const arg = this.parseGroupOfType(`argument to '${func}'`,
+                    argType, false, baseGreediness, consumeSpaces);
+                if (!arg) {
+                    throw new ParseError(
+                        `Expected group after '${func}'`, this.fetch());
+                }
+                args.push(arg);
+            }
         }
 
         return {args, optArgs};

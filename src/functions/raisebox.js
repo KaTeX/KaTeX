@@ -13,7 +13,6 @@ defineFunction({
     type: "raisebox",
     names: ["\\raisebox"],
     props: {
-        numArgs: 2,
         argTypes: ["size", "hbox"],
         allowedInText: true,
     },

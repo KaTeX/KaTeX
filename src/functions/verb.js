@@ -10,7 +10,6 @@ defineFunction({
     type: "verb",
     names: ["\\verb"],
     props: {
-        numArgs: 0,
         allowedInText: true,
     },
     handler(context, args, optArgs) {

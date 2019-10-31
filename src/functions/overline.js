@@ -10,7 +10,7 @@ defineFunction({
     type: "overline",
     names: ["\\overline"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler({parser}, args) {
         const body = args[0];

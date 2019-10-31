@@ -79,7 +79,7 @@ defineFunction({
         "\\big",  "\\Big",  "\\bigg",  "\\Bigg",
     ],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
@@ -139,7 +139,7 @@ defineFunction({
     type: "leftright-right",
     names: ["\\right"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler: (context, args) => {
         // \left case below triggers parsing of \right in
@@ -164,7 +164,7 @@ defineFunction({
     type: "leftright",
     names: ["\\left"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
@@ -297,7 +297,7 @@ defineFunction({
     type: "middle",
     names: ["\\middle"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);

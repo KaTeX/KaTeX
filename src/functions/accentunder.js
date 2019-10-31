@@ -17,7 +17,7 @@ defineFunction({
         "\\undergroup", "\\underlinesegment", "\\utilde",
     ],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
     },
     handler: ({parser, funcName}, args) => {
         const base = args[0];

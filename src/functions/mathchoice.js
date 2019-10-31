@@ -22,7 +22,7 @@ defineFunction({
     type: "mathchoice",
     names: ["\\mathchoice"],
     props: {
-        numArgs: 4,
+        argTypes: ["original", "original", "original", "original"],
     },
     handler: ({parser}, args) => {
         return {

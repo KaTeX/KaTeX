@@ -11,7 +11,7 @@ defineFunction({
     type: "lap",
     names: ["\\mathllap", "\\mathrlap", "\\mathclap"],
     props: {
-        numArgs: 1,
+        argTypes: ["original"],
         allowedInText: true,
     },
     handler: ({parser, funcName}, args) => {

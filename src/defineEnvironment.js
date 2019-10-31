@@ -31,15 +31,11 @@ type EnvHandler = (
 ) => AnyParseNode;
 
 /**
- *  - numArgs: (default 0) The number of arguments after the \begin{name} function.
  *  - argTypes: (optional) Just like for a function
  *  - allowedInText: (default false) Whether or not the environment is allowed
  *                   inside text mode (not enforced yet).
- *  - numOptionalArgs: (default 0) Just like for a function
  */
-type EnvProps = {
-    numArgs: number,
-};
+type EnvProps = {};
 
 /**
  * Final enviornment spec for use at parse time.
@@ -50,12 +46,10 @@ type EnvProps = {
  */
 export type EnvSpec<NODETYPE: NodeType> = {|
     type: NODETYPE, // Need to use the type to avoid error. See NOTES below.
-    numArgs: number,
     argTypes?: ArgType[],
     optionalArgTypes?: ArgType[],
     greediness: number,
     allowedInText: boolean,
-    numOptionalArgs: number,
     handler: EnvHandler,
 |};
 
@@ -99,10 +93,8 @@ export default function defineEnvironment<NODETYPE: NodeType>({
     // Set default values of environments.
     const data = {
         type,
-        numArgs: props.numArgs || 0,
         greediness: 1,
         allowedInText: false,
-        numOptionalArgs: 0,
         handler,
     };
     for (let i = 0; i < names.length; ++i) {
