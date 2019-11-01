@@ -198,7 +198,7 @@ table td {
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\C|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
-|\cal|<span style="color:firebrick;">Not supported</span>|See `\mathcal`
+|\cal|$\cal AaBb123$|`\cal AaBb123`|
 |\cancel|$\cancel{5}$|`\cancel{5}`|
 |\cancelto|<span style="color:firebrick;">Not supported</span>||
 |\Cap|$\Cap$||
