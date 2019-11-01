@@ -21,8 +21,7 @@ import "./functions/genfrac";
 import "./functions/horizBrace";
 import "./functions/href";
 import "./functions/htmlmathml";
-// Disabled until https://github.com/KaTeX/KaTeX/pull/1794 is merged.
-// import "./functions/includegraphics";
+import "./functions/includegraphics";
 import "./functions/kern";
 import "./functions/lap";
 import "./functions/math";

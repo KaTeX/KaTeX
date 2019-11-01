@@ -50,7 +50,6 @@ defineFunction({
         argTypes: ["text"],
         greediness: 2,
         allowedInText: true,
-        consumeMode: "text",
     },
     handler({parser, funcName}, args) {
         const body = args[0];

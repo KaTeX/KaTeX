@@ -85,6 +85,13 @@ defineFunction({
             alt = alt.substring(0, alt.lastIndexOf('.'));
         }
 
+        if (!parser.settings.isTrusted({
+            command: "\\includegraphics",
+            url: src,
+        })) {
+            return parser.formatUnsupportedCmd("\\includegraphics");
+        }
+
         return {
             type: "includegraphics",
             mode: parser.mode,

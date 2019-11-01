@@ -75,7 +75,8 @@
     "env": {
         "es6": true,
         "node": true,
-        "browser": true
+        "browser": true,
+        "jest": true
     },
     "settings": {
         "react": {
@@ -93,7 +94,8 @@
             }]
         },
         "env": {
-            "node": false
+            "node": false,
+            "jest": false
         }
     }],
     "root": true

@@ -19,6 +19,9 @@ export type SymbolParseNode =
     ParseNode<"spacing"> |
     ParseNode<"textord">;
 
+// ParseNode from `Parser.formatUnsupportedCmd`
+export type UnsupportedCmdParseNode = ParseNode<"color">;
+
 // Union of all possible `ParseNode<>` types.
 export type AnyParseNode = $Values<ParseNodeTypes>;
 
@@ -49,12 +52,6 @@ type ParseNodeTypes = {
         mode: Mode,
         loc?: ?SourceLocation,
         color: string,
-    |},
-    "keyVals": {|
-        type: "keyVals",
-        mode: Mode,
-        loc?: ?SourceLocation,
-        keyVals: string,
     |},
     // To avoid requiring run-time type assertions, this more carefully captures
     // the requirements on the fields per the op.js htmlBuilder logic:
@@ -355,6 +352,9 @@ type ParseNodeTypes = {
         mode: Mode,
         loc?: ?SourceLocation,
         body: AnyParseNode[],
+        alwaysHandleSupSub: boolean,
+        limits: boolean,
+        parentIsSupSub: boolean,
     |},
     "overline": {|
         type: "overline",

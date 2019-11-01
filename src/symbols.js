@@ -306,7 +306,7 @@ defineSymbol(math, ams, textord, "\u2138", "\\daleth", true);
 defineSymbol(math, ams, textord, "\u2137", "\\gimel", true);
 
 // AMS Greek
-defineSymbol(math, ams, textord, "\u03dd", "\\digamma");
+defineSymbol(math, ams, textord, "\u03dd", "\\digamma", true);
 defineSymbol(math, ams, textord, "\u03f0", "\\varkappa");
 
 // AMS Delimiters
