@@ -52,7 +52,7 @@ import type {EnvSpec} from "./defineEnvironment";
  * The functions return ParseNodes.
  */
 
-type NumericType = "integer" | "dimen" | "glue";
+type NumericType = "integer" | "dimen" | "glue" | "mudimen" | "muglue";
 
 export default class Parser {
     mode: Mode;
@@ -636,16 +636,7 @@ export default class Parser {
         return null;
     }
 
-    consumeVariable(
-        type: NumericType,
-        mu: ?boolean,
-        intToDimen?: boolean
-    ): NumericParseNode {
-        // <normal integer> -> <internal integer>
-        // <coerced integer> -> <internal dimen> | <internal glue>
-        // <normal dimen> -> <internal dimen>
-        // <coerced dimen> -> <internal glue>
-        // <coerced mudimen> -> <internal muglue>
+    consumeVariable(type: NumericType, intToDimen?: boolean): NumericParseNode {
         const token = this.fetch();
         let name = token.text;
         this.consume();
@@ -661,9 +652,13 @@ export default class Parser {
         }
         const varType = variable.type;
         if (type === varType) {
+            // <normal integer> -> <internal integer>
+            // <normal dimen> -> <internal dimen>
+            // <glue> -> <optional signs><internal glue>
             return variable;
-        } else if (type === "dimen" && mu) {
-            throw new ParseError(`Can't coerce ${varType} into mudimen`);
+        } else if (type[0] === "m" &&
+                (varType !== "glue" || variable.mode === "text")) { // not a muglue
+            throw new ParseError(`Can't coerce ${varType} into ${type}`);
         }
         let value;
         if (variable.type === "integer") {
@@ -678,12 +673,22 @@ export default class Parser {
             value = variable.value;
         }
         if (type === "dimen" || type === "glue") {
+            // <coerced dimen> -> <internal glue>
+            // <coerced mudimen> -> <internal muglue>
+            // <internal unit> -> <internal integer> | <internal dimen>
+            //   | <internal glue>
+            // An internal glue value can be coerced to be a dimension
+            // by omitting the stretchability and shrinkability
+            // <glue> -> <dimen><stretch><shrink>
             return {
                 type: "dimen",
                 mode: this.mode,
                 value,
             };
         }
+        // <coerced integer> -> <internal dimen> | <internal glue>
+        // An internal dimension can be “coerced” to be an integer
+        // by assuming units of scaled points.
         // TODO: use current Options
         const options = new Options({
             style: Style.TEXT,
@@ -783,11 +788,10 @@ export default class Parser {
      * <number> -> <optional signs><unsigned number>
      * <dimen> -> <optional signs><unsigned dimen>
      * <mudimen> -> <optional signs><unsigned mudimen>
+     * <glue> -> <optional signs><internal glue>
+     * <muglue> -> <optional signs><internal muglue>
      */
-    parseIntegerGroup(
-        type: NumericType = "integer",
-        mu?: boolean,
-    ): NumericParseNode  {
+    parseIntegerGroup(type: NumericType = "integer"): NumericParseNode  {
         this.gullet.scanning = true; // allow MacroExpander to return \relax
         // <optional signs> -> <optional spaces>
         //   | <optional signs><plus or minus><optional spaces>
@@ -812,7 +816,7 @@ export default class Parser {
         let base;
         if (token.text[0] === "\\") {
             this.gullet.scanning = false;
-            return this.consumeVariable(type, mu);
+            return this.consumeVariable(type);
         } else if (token.text === "'") {
             // <normal integer> -> '<octal constant><one optional space>
             base = 8;
@@ -891,11 +895,15 @@ export default class Parser {
      */
     parseDimen(
         type: NumericType = "dimen",
-        mu?: boolean,
         fil?: boolean,
     ): ParseNode<"dimen"> | ParseNode<"glue"> {
         const factor = this.parseIntegerGroup(type);
         if (factor.type === "integer") {
+            if (type === "glue") {
+                type = "dimen";
+            } else if (type === "muglue") {
+                type = "mudimen";
+            }
             // <unit of measure> -> <optional spaces><internal unit>
             //   | <optional true><physical unit><one optional space>
             // <internal unit> -> em<one optional space> | ex<one optional space>
@@ -910,7 +918,7 @@ export default class Parser {
             let tok = this.fetch();
             if (tok.text[0] === "\\") {
                 const internal = assertNodeType(
-                    this.consumeVariable("dimen", mu, true), "dimen");
+                    this.consumeVariable(type, true), "dimen");
                 internal.value.number *= number;
                 this.gullet.scanning = false;
                 return internal;
@@ -918,7 +926,11 @@ export default class Parser {
             const unit = this.consumeKeyword(units);
             if (unit == null) {
                 throw new ParseError("Invalid unit", this.fetch());
+            } else if ((type === "mudimen") !== (unit === "mu")) {
+                this.settings.reportNonstrict("mathVsTextUnits",
+                    `Expected ${type}, got ${unit} units`);
             }
+
             this.gullet.scanning = false;
             tok = this.fetch();
             if (tok.text === " " || tok.text === "\\relax") {
@@ -927,7 +939,7 @@ export default class Parser {
             }
             return {
                 type: "dimen",
-                mode: this.mode,
+                mode: type === "mudimen" ? "math" : "text",
                 value: {number, unit},
             };
         }
@@ -935,19 +947,21 @@ export default class Parser {
     }
 
     /**
-     * <glue> -> <dimen><stretch><shrink>
-     * <muglue> -> <mudimen><mustretch><mushrink>
+     * <glue> -> <optional signs><internal glue> | <dimen><stretch><shrink>
+     * <muglue> -> <optional signs><internal muglue>
+     *   | <mudimen><mustretch><mushrink>
      */
-    parseGlueGroup(mu?: boolean): ParseNode<"glue"> {
-        const dimen = this.parseDimen("glue", mu);
+    parseGlueGroup(type: NumericType = "glue"): ParseNode<"glue"> {
+        const dimen = this.parseDimen(type);
         if (dimen.type === "glue") {
             return dimen;
         }
+        type = type === "muglue" ? "mudimen" : "dimen";
         const stretch = this.consumeKeyword(["plus"]) != null
-            ? this.parseDimen("dimen", mu, true).value
+            ? this.parseDimen("dimen", true).value
             : {number: 0, unit: "pt"};
         const shrink = this.consumeKeyword(["minus"]) != null
-            ? this.parseDimen("dimen", mu, true).value
+            ? this.parseDimen("dimen", true).value
             : {number: 0, unit: "pt"};
         return {
             type: "glue",
