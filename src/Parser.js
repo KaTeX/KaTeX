@@ -628,7 +628,10 @@ export default class Parser {
             return keywords[0];
         }
         tokens.reverse();
-        this.gullet.scanning = false; // allow MacroExpander to return \relax
+        if (tokens[0].text === "\\relax") { // expansion stopped by \relax
+            tokens.shift();
+        }
+        this.gullet.scanning = false;
         this.gullet.pushTokens(tokens);
         return null;
     }
@@ -825,6 +828,9 @@ export default class Parser {
             this.consume();
             token = this.gullet.popToken();
             if (token.text[0] === "\\") {
+                if (token.text.length > 2) {
+                    throw new ParseError("Improper alphabetic constant", token);
+                }
                 number = token.text.charCodeAt(1);
             } else if (token.text === "EOF") {
                 throw new ParseError("Missing character token");
@@ -901,7 +907,7 @@ export default class Parser {
             const number = factor.positive ? factor.value : -factor.value;
 
             this.consumeSpaces();
-            const tok = this.fetch();
+            let tok = this.fetch();
             if (tok.text[0] === "\\") {
                 const internal = assertNodeType(
                     this.consumeVariable("dimen", mu, true), "dimen");
@@ -911,10 +917,12 @@ export default class Parser {
             }
             const unit = this.consumeKeyword(units);
             if (unit == null) {
-                throw new ParseError("Invalid unit");
+                throw new ParseError("Invalid unit", this.fetch());
             }
             this.gullet.scanning = false;
-            if (this.fetch().text === " ") { // consume <one optional space>
+            tok = this.fetch();
+            if (tok.text === " " || tok.text === "\\relax") {
+                // consume <one optional space> or \relax
                 this.consume();
             }
             return {
