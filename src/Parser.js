@@ -52,21 +52,6 @@ import type {EnvSpec} from "./defineEnvironment";
  * The functions return ParseNodes.
  */
 
- // Lookup table for parsing numbers in base 8 through 16
- // with decimal separators as -1
-const digitToNumber = {
-    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8,
-    "9": 9, "a": 10, "A": 10, "b": 11, "B": 11, "c": 12, "C": 12,
-    "d": 13, "D": 13, "e": 14, "E": 14, "f": 15, "F": 15, ".": -1, ",": -1,
-};
-
-const register = {
-    "\\count": "integer",
-    "\\dimen": "dimen",
-    "\\skip": "glue",
-    "\\muskip": "muglue",
-};
-
 type NumericType = "integer" | "dimen" | "glue";
 
 export default class Parser {
@@ -167,6 +152,21 @@ export default class Parser {
         "{": "}",
         "\\begingroup": "\\endgroup",
     }
+
+    // Lookup table for parsing numbers in base 8 through 16
+    // with decimal separators as -1
+    static digitToNumber = {
+        "0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8,
+        "9": 9, "a": 10, "A": 10, "b": 11, "B": 11, "c": 12, "C": 12,
+        "d": 13, "D": 13, "e": 14, "E": 14, "f": 15, "F": 15, ".": -1, ",": -1,
+    };
+
+    static register = {
+        "\\count": "integer",
+        "\\dimen": "dimen",
+        "\\skip": "glue",
+        "\\muskip": "muglue",
+    };
 
     /**
      * Parses an "expression", which is a list of atoms.
@@ -646,7 +646,7 @@ export default class Parser {
         const token = this.fetch();
         let name = token.text;
         this.consume();
-        const registerType = register[name];
+        const registerType = Parser.register[name];
         if (registerType) {
             const number = this.parseIntegerGroup();
             name += assertNodeType(number, "integer").value;
@@ -841,7 +841,7 @@ export default class Parser {
             let digit;
             let empty = true;
             let decimal = type !== "integer" && base === 10 ? 0 : -1;
-            while ((digit = digitToNumber[this.fetch().text]) != null &&
+            while ((digit = Parser.digitToNumber[this.fetch().text]) != null &&
                    digit < base && (digit >= 0 || !decimal)) {
                 empty = false;
                 if (digit === -1) {
@@ -1286,7 +1286,7 @@ export default class Parser {
         //   | <muglue variable><equals><muglue>
         // <equals> -> <optional spaces>|<optional spaces>=
         let name = this.fetch().text;
-        const registerType = register[name];
+        const registerType = Parser.register[name];
         if (registerType) {
             this.consume();
             const number = this.parseIntegerGroup();
