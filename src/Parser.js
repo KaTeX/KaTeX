@@ -3,7 +3,7 @@
 import functions from "./functions";
 import MacroExpander, {implicitCommands} from "./MacroExpander";
 import symbols, {ATOMS, extraLatin} from "./symbols";
-import {calculateSize, units} from "./units";
+import {calculateSize, units, zeroPt, zeroMu} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
@@ -957,15 +957,14 @@ export default class Parser {
             return dimen;
         }
         type = type === "muglue" ? "mudimen" : "dimen";
+        const defaultDimen = type === "mudimen" ? zeroMu : zeroPt;
         const stretch = this.consumeKeyword(["plus"]) != null
-            ? this.parseDimen("dimen", true).value
-            : {number: 0, unit: "pt"};
+            ? this.parseDimen(type, true).value : defaultDimen;
         const shrink = this.consumeKeyword(["minus"]) != null
-            ? this.parseDimen("dimen", true).value
-            : {number: 0, unit: "pt"};
+            ? this.parseDimen(type, true).value : defaultDimen;
         return {
             type: "glue",
-            mode: this.mode,
+            mode: type === "mudimen" ? "math" : "text",
             value: dimen.value,
             stretch,
             shrink,

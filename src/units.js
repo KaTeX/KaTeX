@@ -51,6 +51,9 @@ for (const unit in relativeUnit) {
 
 export type Measurement = {| number: number, unit: string |};
 
+export const zeroPt = {number: 0, unit: "pt"};
+export const zeroMu = {number: 0, unit: "mu"};
+
 /**
  * Determine whether the specified unit (either a string defining the unit
  * or a "dimen" parse node containing a unit field) is valid.
