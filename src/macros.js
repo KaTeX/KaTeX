@@ -198,6 +198,55 @@ defineMacro("\\char", function(context) {
     return `\\@char{${number}}`;
 });
 
+// \newcommand{\macro}[args]{definition}
+// \renewcommand{\macro}[args]{definition}
+// TODO: Optional arguments: \newcommand{\macro}[args][default]{definition}
+const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
+    let arg = context.consumeArgs(1)[0];
+    if (arg.length !== 1) {
+        throw new ParseError(
+            "\\newcommand's first argument must be a macro name");
+    }
+    const name = arg[0].text;
+
+    const exists = context.isDefined(name);
+    if (exists && !existsOK) {
+        throw new ParseError(`\\newcommand{${name}} attempting to redefine ` +
+            `${name}; use \\renewcommand`);
+    }
+    if (!exists && !nonexistsOK) {
+        throw new ParseError(`\\renewcommand{${name}} when command ${name} ` +
+            `does not yet exist; use \\newcommand`);
+    }
+
+    let numArgs = 0;
+    arg = context.consumeArgs(1)[0];
+    if (arg.length === 1 && arg[0].text === "[") {
+        let argText = '';
+        let token = context.expandNextToken();
+        while (token.text !== "]" && token.text !== "EOF") {
+            // TODO: Should properly expand arg, e.g., ignore {}s
+            argText += token.text;
+            token = context.expandNextToken();
+        }
+        if (!argText.match(/^\s*[0-9]+\s*$/)) {
+            throw new ParseError(`Invalid number of arguments: ${argText}`);
+        }
+        numArgs = parseInt(argText);
+        arg = context.consumeArgs(1)[0];
+    }
+
+    // Final arg is the expansion of the macro
+    context.macros.set(name, {
+        tokens: arg,
+        numArgs,
+    });
+    return '';
+};
+defineMacro("\\newcommand", (context) => newcommand(context, false, true));
+defineMacro("\\renewcommand", (context) => newcommand(context, true, false));
+defineMacro("\\providecommand", (context) => newcommand(context, true, true));
+
 //////////////////////////////////////////////////////////////////////
 // Grouping
 // \let\bgroup={ \let\egroup=}
