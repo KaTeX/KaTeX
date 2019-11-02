@@ -7,6 +7,8 @@
 
 export type Mode = "math" | "text";
 
+export type NumericType = "integer" | "dimen" | "glue" | "mudimen" | "muglue";
+
 // LaTeX argument type.
 //   - "dimen": A size-like thing, such as "1em" or "5ex"
 //   - "color": An html color, like "#abc" or "blue"
@@ -20,8 +22,8 @@ export type Mode = "math" | "text";
 //                 first argument is special and the second
 //                 argument is parsed normally)
 //   - Mode: Node group parsed in given mode.
-export type ArgType = "color" | "dimen" | "url" | "raw" | "original" | "hbox" |
-    "integer" | "dimen_primitive" | "dimen_or_blank" | Mode;
+export type ArgType = "color" | "size" | "url" | "raw" | "original" | "hbox" |
+    "size_or_blank" | NumericType | Mode;
 
 // LaTeX display style.
 export type StyleStr = "text" | "display" | "script" | "scriptscript";

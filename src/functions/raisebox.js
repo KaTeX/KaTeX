@@ -14,7 +14,7 @@ defineFunction({
     names: ["\\raisebox"],
     props: {
         numArgs: 2,
-        argTypes: ["dimen", "hbox"],
+        argTypes: ["size", "hbox"],
         allowedInText: true,
     },
     handler({parser}, args) {

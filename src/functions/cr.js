@@ -19,7 +19,7 @@ defineFunction({
     props: {
         numArgs: 0,
         numOptionalArgs: 1,
-        argTypes: ["dimen"],
+        argTypes: ["size"],
         allowedInText: true,
     },
 

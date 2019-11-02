@@ -293,10 +293,12 @@ describe("Lexer:", function() {
 
     describe("#_innerLexSize", function() {
         it("reject size without unit", function() {
-            expect`\rule{0}{2em}`.toFailWithParseError("Invalid unit");
+            expect`\rule{0}{2em}`.toFailWithParseError(
+                   "Invalid unit at position 8: \\rule{0}̲{2em}");
         });
         it("reject size with bogus unit", function() {
-            expect`\rule{1au}{2em}`.toFailWithParseError("Invalid unit");
+            expect`\rule{1au}{2em}`.toFailWithParseError(
+                   "Invalid unit at position 8: \\rule{1a̲u}{2em}");
         });
         it("reject size without number", function() {
             expect`\rule{em}{2em}`.toFailWithParseError(

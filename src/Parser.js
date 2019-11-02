@@ -18,7 +18,7 @@ import {Token} from "./Token";
 import type {ParseNode, AnyParseNode, SymbolParseNode, NumericParseNode,
     UnsupportedCmdParseNode} from "./parseNode";
 import type {Atom, Group} from "./symbols";
-import type {Mode, ArgType, BreakToken} from "./types";
+import type {Mode, ArgType, NumericType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
 import type {EnvSpec} from "./defineEnvironment";
 
@@ -51,8 +51,6 @@ import type {EnvSpec} from "./defineEnvironment";
  *
  * The functions return ParseNodes.
  */
-
-type NumericType = "integer" | "dimen" | "glue" | "mudimen" | "muglue";
 
 export default class Parser {
     mode: Mode;
@@ -576,10 +574,13 @@ export default class Parser {
                 return this.parseColorGroup(optional);
             case "integer":
                 return this.parseIntegerGroup();
+            case "size":
             case "dimen":
-            case "dimen_primitive":
-            case "dimen_or_blank":
-                return this.parseDimenGroup(optional, type, name);
+            case "mudimen":
+            case "glue":
+            case "muglue":
+            case "size_or_blank":
+                return this.parseSizeGroup(optional, type, name);
             case "url":
                 return this.parseUrlGroup(optional, consumeSpaces);
             case "math":
@@ -1021,37 +1022,40 @@ export default class Parser {
     /**
      * Parses a size specification, consisting of magnitude and unit.
      */
-    parseDimenGroup(
+    parseSizeGroup(
         optional: boolean,
         type: ArgType,
         name?: string
-    ): ?ParseNode<"dimen"> {
+    ): ?ParseNode<"dimen"> | ParseNode<"glue"> {
         // don't expand before parseStringGroup
-        if (type === "dimen_primitive") {
+        let primitive = type !== "size" && type !== "size_or_blank";
+        if (primitive) {
             this.gullet.consumeSpaces();
             const n = this.gullet.future();
-            if (n.text === "{" && !this.settings.useStrictBehavior("bracedDimen",
-                   "Size argument should not be enclosed in braces.", n)) {
-                type = "dimen";
+            if (n.text === "{" && !this.settings.useStrictBehavior("bracedSize",
+                    `Primitive ${type} should not be enclosed in braces.`, n)) {
+                primitive = false;
             }
         }
         // \\ in array environment uses \new@ifnextchar, which don't ignore spaces
         // This will become simpler with #2085
-        if (type !== "dimen_primitive" && ((name === "argument to '\\cr'" &&
-                this.gullet.future().text === " ") ||
+        if (!primitive && ((name === "argument to '\\cr'" &&
+                    this.gullet.future().text === " ") ||
                 this.gullet.scanArgument(optional) == null)) {
             return null;
         }
-        const res = type === "dimen_or_blank" && this.fetch().text === "EOF"
-            ? {
-                type: "dimen",
-                mode: this.mode,
-                value: {number: 0, unit: "blank"},
-            } : this.parseDimen();
-        if (type !== "dimen_primitive" ) {
+        let res;
+        if (type === "size_or_blank" && this.fetch().text === "EOF") {
+            res = Parser.defaultRegister["dimen"];
+        } else if (type === "glue" || type === "muglue") {
+            res = this.parseGlueGroup(type);
+        } else {
+            res = this.parseDimen(type === "mudimen" ? "mudimen" : "dimen");
+        }
+        if (!primitive) {
             this.expect("EOF");
         }
-        return assertNodeType(res, "dimen");
+        return res;
     }
 
     /**
