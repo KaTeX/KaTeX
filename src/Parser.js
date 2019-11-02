@@ -971,9 +971,17 @@ export default class Parser {
                 this.gullet.scanning = false;
                 return internal;
             }
-            const unit = this.consumeKeyword(units);
+            let unit = this.consumeKeyword(fil ? units.concat("fil") : units);
             if (unit == null) {
                 throw new ParseError("Invalid unit", this.fetch());
+            } else if (unit === "fil") { // fill and filll
+                this.gullet.scanning = true;
+                for (let i = 0; i < 2; i++) {
+                    if (this.fetch().text === "l") {
+                        unit += "l";
+                        this.consume();
+                    }
+                }
             } else if ((type === "mudimen") !== (unit === "mu")) {
                 this.settings.reportNonstrict("mathVsTextUnits",
                     `Expected ${type}, got ${unit} units`);
