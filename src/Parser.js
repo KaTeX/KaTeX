@@ -1363,7 +1363,7 @@ export default class Parser {
         return symbol;
     }
 
-    parseVariable(): ?ParseNode<"internal"> {
+    parseVariable(global?: boolean): ?ParseNode<"internal"> {
         // <simple assignment> -> <variable assignment>
         // <variable assignment> -> <integer variable><equals><number>
         //   | <dimen variable><equals><dimen>
@@ -1393,7 +1393,7 @@ export default class Parser {
             default:
                 throw new ParseError("Unknown register type");
         }
-        this.gullet.macros.set(variable.name, value);
+        this.gullet.macros.set(variable.name, value, global);
         return {
             type: "internal",
             mode: this.mode,
