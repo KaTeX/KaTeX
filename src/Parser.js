@@ -573,13 +573,13 @@ export default class Parser {
                 }
                 return this.parseColorGroup(optional);
             case "integer":
-                return this.parseIntegerGroup();
+                return this.parseIntegerOrVariable();
             case "size":
+            case "size_or_blank":
             case "dimen":
             case "mudimen":
             case "glue":
             case "muglue":
-            case "size_or_blank":
                 return this.parseSizeGroup(optional, type, name);
             case "url":
                 return this.parseUrlGroup(optional, consumeSpaces);
@@ -670,7 +670,7 @@ export default class Parser {
         const registerType = Parser.register[name];
         if (registerType) {
             this.consume();
-            const number = this.parseIntegerGroup();
+            const number = this.parseIntegerOrVariable();
             name += assertNodeType(number, "integer").value;
         }
         const value = this.gullet.macros.get(name);
@@ -692,7 +692,7 @@ export default class Parser {
         return null;
     }
 
-    consumeVariable(type: NumericType, intToDimen?: boolean): NumericParseNode {
+    getVariableValue(type: NumericType, intToDimen?: boolean): NumericParseNode {
         const variable = this.getVariable();
         if (variable == null) {
             throw new ParseError(`Expected a ${type} variable`);
@@ -839,7 +839,7 @@ export default class Parser {
      * <glue> -> <optional signs><internal glue>
      * <muglue> -> <optional signs><internal muglue>
      */
-    parseIntegerGroup(type: NumericType = "integer"): NumericParseNode  {
+    parseIntegerOrVariable(type: NumericType = "integer"): NumericParseNode  {
         this.gullet.scanning = true; // allow MacroExpander to return \relax
         // <optional signs> -> <optional spaces>
         //   | <optional signs><plus or minus><optional spaces>
@@ -864,7 +864,7 @@ export default class Parser {
         let base;
         if (token.text[0] === "\\") {
             this.gullet.scanning = false;
-            return this.consumeVariable(type);
+            return this.getVariableValue(type);
         } else if (token.text === "'") {
             // <normal integer> -> '<octal constant><one optional space>
             base = 8;
@@ -941,11 +941,11 @@ export default class Parser {
      * <dimen> -> <optional signs><unsigned dimen>
      * <mudimen> -> <optional signs><unsigned mudimen>
      */
-    parseDimen(
+    parseDimenOrVariable(
         type: NumericType = "dimen",
         fil?: boolean,
     ): ParseNode<"dimen"> | ParseNode<"glue"> {
-        const factor = this.parseIntegerGroup(type);
+        const factor = this.parseIntegerOrVariable(type);
         if (factor.type === "integer") {
             if (type === "glue") {
                 type = "dimen";
@@ -966,7 +966,7 @@ export default class Parser {
             let tok = this.fetch();
             if (tok.text[0] === "\\") {
                 const internal = assertNodeType(
-                    this.consumeVariable(type, true), "dimen");
+                    this.getVariableValue(type, true), "dimen");
                 internal.value.number *= number;
                 this.gullet.scanning = false;
                 return internal;
@@ -999,17 +999,17 @@ export default class Parser {
      * <muglue> -> <optional signs><internal muglue>
      *   | <mudimen><mustretch><mushrink>
      */
-    parseGlueGroup(type: NumericType = "glue"): ParseNode<"glue"> {
-        const dimen = this.parseDimen(type);
+    parseGlue(type: NumericType = "glue"): ParseNode<"glue"> {
+        const dimen = this.parseDimenOrVariable(type);
         if (dimen.type === "glue") {
             return dimen;
         }
         type = type === "muglue" ? "mudimen" : "dimen";
         const defaultDimen = type === "mudimen" ? zeroMu : zeroPt;
         const stretch = this.consumeKeyword(["plus"]) != null
-            ? this.parseDimen(type, true).value : defaultDimen;
+            ? this.parseDimenOrVariable(type, true).value : defaultDimen;
         const shrink = this.consumeKeyword(["minus"]) != null
-            ? this.parseDimen(type, true).value : defaultDimen;
+            ? this.parseDimenOrVariable(type, true).value : defaultDimen;
         return {
             type: "glue",
             mode: type === "mudimen" ? "math" : "text",
@@ -1048,9 +1048,10 @@ export default class Parser {
         if (type === "size_or_blank" && this.fetch().text === "EOF") {
             res = Parser.defaultRegister["dimen"];
         } else if (type === "glue" || type === "muglue") {
-            res = this.parseGlueGroup(type);
+            res = this.parseGlue(type);
         } else {
-            res = this.parseDimen(type === "mudimen" ? "mudimen" : "dimen");
+            res = this.parseDimenOrVariable(
+                type === "mudimen" ? "mudimen" : "dimen");
         }
         if (!primitive) {
             this.expect("EOF");
@@ -1147,7 +1148,7 @@ export default class Parser {
             // If there exists a function with this name, parse the function.
             // Otherwise, just return a nucleus
             result = this.parseFunction(breakOnTokenText, name, greediness) ||
-                this.parseSymbol() || this.parseRegister();
+                this.parseSymbol() || this.parseVariable();
             if (result == null && text[0] === "\\" &&
                     !implicitCommands.hasOwnProperty(text)) {
                 if (this.settings.throwOnError) {
@@ -1350,7 +1351,7 @@ export default class Parser {
         return symbol;
     }
 
-    parseRegister(): ?ParseNode<"internal"> {
+    parseVariable(): ?ParseNode<"internal"> {
         // <simple assignment> -> <variable assignment>
         // <variable assignment> -> <integer variable><equals><number>
         //   | <dimen variable><equals><dimen>
@@ -1368,14 +1369,14 @@ export default class Parser {
         let value;
         switch (variable.type) {
             case "integer":
-                value = this.parseIntegerGroup();
+                value = this.parseIntegerOrVariable();
                 break;
             case "dimen":
-                value = this.parseDimen();
+                value = this.parseDimenOrVariable();
                 break;
             case "glue":
             case "muglue":
-                value = this.parseGlueGroup(variable.type);
+                value = this.parseGlue(variable.type);
                 break;
             default:
                 throw new ParseError("Unknown register type");
