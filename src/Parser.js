@@ -641,7 +641,7 @@ export default class Parser {
         }
     }
 
-    consumeKeyword(keywords: string[]) {
+    consumeKeyword(keywords: string[]): ?string {
         this.gullet.scanning = true; // allow MacroExpander to return \relax
         this.consumeSpaces();
         const tokens = [];
@@ -744,8 +744,8 @@ export default class Parser {
             maxSize: Infinity,
             minRuleThickness: 0,
         });
-        value = calculateSize(value, options)
-            / calculateSize({number: 1, unit: "sp"}, options);
+        value = Math.round(calculateSize(value, options)
+            / calculateSize({number: 1, unit: "sp"}, options));
         return {
             type: "integer",
             mode: this.mode,
@@ -1046,7 +1046,11 @@ export default class Parser {
         }
         let res;
         if (type === "size_or_blank" && this.fetch().text === "EOF") {
-            res = Parser.defaultRegister["dimen"];
+            res = {
+                type: "dimen",
+                mode: this.mode,
+                value: {number: 0, unit: "blank"},
+            };
         } else if (type === "glue" || type === "muglue") {
             res = this.parseGlue(type);
         } else {
