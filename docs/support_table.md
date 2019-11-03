@@ -40,9 +40,9 @@ table td {
 |\\;|$a\;\;{b}$|a`\;\;{b}`|
 |_|$x_i$|`x_i`|
 |\\_|$\_$||
-|\\\`|$\text{\`{a}}$|<code>\text{\\'{a}}</code>|
+|\\\`|$\text{\`{a}}$|`\text{\\'{a}}`|
 |&#060;|$<$||
-|\\=|$\text{\={a}}$|<code>\text{\\={a}}</code>|
+|\\=|$\text{\={a}}$|`\text{\\={a}}`|
 | >|$>$||
 |\\>|$a\>\>{b}$|`a\>\>{b}`|
 |\[|$[$||
@@ -54,10 +54,10 @@ table td {
 |&#124;|$\vert$||
 |\\&#124;|$\Vert$||
 |~|$\text{no~no~no~breaks}$|`\text{no~no~no~breaks}`|
-|\\~|$\text{\~{a}}$|<code>\text{\\~{a}}</code>|
+|\\~|$\text{\~{a}}$|`\text{\\~{a}}`|
 |\\\\|$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |^|$x^i$|`x^i`|
-|\\^|$\text{\^{a}}$|<code>\text{\\^{a}}</code>|
+|\\^|$\text{\^{a}}$|`\text{\\^{a}}`|
 
 ## A
 
@@ -117,7 +117,7 @@ table td {
 |\backslash|$\backslash$||
 |\bar|$\bar{y}$|`\bar{y}`|
 |\barwedge|$\barwedge$||
-|\Bbb|$\Bbb{ABC}$|`\Bbb{ABC}`<br>KaTeX supports A-Z & k
+|\Bbb|$\Bbb{ABC}$|`\Bbb{ABC}`<br>KaTeX supports A-Z & k|
 |\Bbbk|$\Bbbk$||
 |\bbox|<span style="color:firebrick;">Not supported</span>||
 |\bcancel|$\bcancel{5}$|`\bcancel{5}`|
@@ -939,7 +939,7 @@ use `\ce` instead|
 |\smiley|<span style="color:firebrick;">Not supported</span>||
 |\sout|$\sout{abc}$|`\sout{abc}`|
 |\Space|<span style="color:firebrick;">Not supported</span>|see `\space`
-|\space|$a\space{b}$|`a\space{b}`|
+|\space|$a\space b$|`a\space b`|
 |\spades|$\spades$||
 |\spadesuit|$\spadesuit$||
 |\sphericalangle|$\sphericalangle$||
