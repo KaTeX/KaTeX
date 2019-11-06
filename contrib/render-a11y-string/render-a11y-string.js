@@ -656,7 +656,8 @@ const handleObject = (
         }
 
         case "html": {
-            throw new Error("KaTeX-a11y: html not implemented yet");
+            buildA11yStrings(tree.body, a11yStrings, atomType);
+            break;
         }
 
         default:
