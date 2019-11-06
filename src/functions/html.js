@@ -2,6 +2,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import {assertNodeType} from "../parseNode";
+import ParseError from "../ParseError";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -52,9 +53,11 @@ defineFunction({
                 const data = value.split(",");
                 for (let i = 0; i < data.length; i++) {
                     const keyVal = data[i].split("=");
-                    if (keyVal.length === 2) {
-                        attributes["data-" + keyVal[0].trim()] = keyVal[1].trim();
+                    if (keyVal.length !== 2) {
+                        throw new ParseError(
+                            "Error parsing key-value for \\htmlData");
                     }
+                    attributes["data-" + keyVal[0].trim()] = keyVal[1].trim();
                 }
 
                 trustContext = {
