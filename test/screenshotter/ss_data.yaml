@@ -145,6 +145,9 @@ GroupMacros:
         \endExp: \egroup
     tex: \startExp a+b\endExp
 HorizontalBraces: \overbrace{\displaystyle{\oint_S{\vec E\cdot\hat n\,\mathrm d a}}}^\text{emf} = \underbrace{\frac{q_{\text{enc}}}{\varepsilon_0}}_{\text{charge}}
+HTML:
+    tex: \htmlId{a}{a+}b\htmlStyle{color:red;}{+c}
+    nolatex: HTML extension not supported by LaTeX
 Includegraphics: |
     \def\logo{\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{../../website/static/img/khan-academy.png}}
     \def\logoB{\includegraphics[height=0.4em, totalheight=0.9em, width=0.9em, alt=KA logo]{../../website/static/img/khan-academy.png}}
