@@ -759,7 +759,7 @@ defineEnvironment({
         "cases",
         "dcases",
         "rcases",
-        "drcases"
+        "drcases",
     ],
     props: {
         numArgs: 0,
