@@ -2646,6 +2646,15 @@ describe("A cases environment", function() {
 
 });
 
+describe("An rcases environment", function() {
+
+    it("should build", function() {
+        expect`\begin{rcases} a &\text{if } b \\ c &\text{if } d \end{rcases}⇒…`
+            .toBuild();
+    });
+
+});
+
 describe("An aligned environment", function() {
 
     it("should parse its input", function() {

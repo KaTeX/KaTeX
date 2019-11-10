@@ -74,7 +74,11 @@ Cases: |
         a+1&\text{if }b\text{ is odd} \\
         a&\text{if }b=0 \\
         a-1&\text{otherwise}
-    \end{cases}
+    \end{cases} \\
+    \begin{rcases}
+        a &\text{if } b \\
+        c &\text{if } d
+    \end{rcases}⇒…
 Colors:
     tex: \blue{a}\textcolor{#0f0}{b}\textcolor{red}{c}
     nolatex: different syntax and different scope

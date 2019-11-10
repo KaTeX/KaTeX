@@ -338,6 +338,7 @@ use `\ce` instead|
 |\downdownarrows|$\downdownarrows$||
 |\downharpoonleft|$\downharpoonleft$||
 |\downharpoonright|$\downharpoonright$||
+|{drcases}|$\begin{drcases}a&\text{if }b\\c&\text{if }d\end{drcases}$|`\begin{drcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{drcases}`|
 
 ## E
 
@@ -847,6 +848,7 @@ use `\ce` instead|
 |\rBrace|$\rBrace$||
 |\rbrace|$\rbrace$||
 |\rbrack|$\rbrack$||
+|{rcases}|$\begin{rcases}a&\text{if }b\\c&\text{if }d\end{rcases}$|`\begin{rcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{rcases}`|
 |\rceil|$\rceil$||
 |\Re|$\Re$||
 |\real|$\real$||
