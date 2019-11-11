@@ -591,6 +591,7 @@ defineSymbol(math, main, spacing, "\u00a0", "\\space");
 // Ref: LaTeX Source 2e: \DeclareRobustCommand{\nobreakspace}{%
 defineSymbol(math, main, spacing, "\u00a0", "\\nobreakspace");
 defineSymbol(text, main, spacing, "\u00a0", "\\ ");
+defineSymbol(text, main, spacing, "\u00a0", " ");
 defineSymbol(text, main, spacing, "\u00a0", "~");
 defineSymbol(text, main, spacing, "\u00a0", "\\space");
 defineSymbol(text, main, spacing, "\u00a0", "\\nobreakspace");
@@ -692,7 +693,6 @@ defineSymbol(text, main, textord, "\u0131", "\\i", true);
 defineSymbol(text, main, textord, "\u0237", "\\j", true);
 defineSymbol(text, main, textord, "\u00df", "\\ss", true);
 defineSymbol(text, main, textord, "\u00e6", "\\ae", true);
-defineSymbol(text, main, textord, "\u00e6", "\\ae", true);
 defineSymbol(text, main, textord, "\u0153", "\\oe", true);
 defineSymbol(text, main, textord, "\u00f8", "\\o", true);
 defineSymbol(text, main, textord, "\u00c6", "\\AE", true);
@@ -744,10 +744,6 @@ defineSymbol(text, main, mathord, "\u00a3", "\\pounds");
 defineSymbol(text, main, mathord, "\u00a3", "\\textsterling", true);
 defineSymbol(math, ams, textord, "\u2720", "\\maltese");
 defineSymbol(text, ams, textord, "\u2720", "\\maltese");
-
-defineSymbol(text, main, spacing, "\u00a0", "\\ ");
-defineSymbol(text, main, spacing, "\u00a0", " ");
-defineSymbol(text, main, spacing, "\u00a0", "~");
 
 // There are lots of symbols which are the same, so we add them in afterwards.
 // All of these are textords in math mode
