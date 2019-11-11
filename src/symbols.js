@@ -720,17 +720,17 @@ export const ligatures = {
     "''": true,
 };
 
-defineSymbol(text, main, textord, "\u2013", "--");
+defineSymbol(text, main, textord, "\u2013", "--", true);
 defineSymbol(text, main, textord, "\u2013", "\\textendash");
-defineSymbol(text, main, textord, "\u2014", "---");
+defineSymbol(text, main, textord, "\u2014", "---", true);
 defineSymbol(text, main, textord, "\u2014", "\\textemdash");
-defineSymbol(text, main, textord, "\u2018", "`");
+defineSymbol(text, main, textord, "\u2018", "`", true);
 defineSymbol(text, main, textord, "\u2018", "\\textquoteleft");
-defineSymbol(text, main, textord, "\u2019", "'");
+defineSymbol(text, main, textord, "\u2019", "'", true);
 defineSymbol(text, main, textord, "\u2019", "\\textquoteright");
-defineSymbol(text, main, textord, "\u201c", "``");
+defineSymbol(text, main, textord, "\u201c", "``", true);
 defineSymbol(text, main, textord, "\u201c", "\\textquotedblleft");
-defineSymbol(text, main, textord, "\u201d", "''");
+defineSymbol(text, main, textord, "\u201d", "''", true);
 defineSymbol(text, main, textord, "\u201d", "\\textquotedblright");
 //  \degree from gensymb package
 defineSymbol(math, main, textord, "\u00b0", "\\degree", true);
@@ -886,11 +886,3 @@ for (let i = 0; i < extraLatin.length; i++) {
     defineSymbol(text, main, textord, ch, ch);
 }
 defineSymbol(text, main, textord, "ð", "ð");
-
-// Unicode versions of existing characters
-defineSymbol(text, main, textord, "\u2013", "–");
-defineSymbol(text, main, textord, "\u2014", "—");
-defineSymbol(text, main, textord, "\u2018", "‘");
-defineSymbol(text, main, textord, "\u2019", "’");
-defineSymbol(text, main, textord, "\u201c", "“");
-defineSymbol(text, main, textord, "\u201d", "”");
