@@ -546,28 +546,22 @@ defineSymbol(math, main, bin, "\u2228", "\\lor");
 defineSymbol(math, main, bin, "\u2227", "\\wedge", true);
 defineSymbol(math, main, bin, "\u2228", "\\vee", true);
 defineSymbol(math, main, textord, "\u221a", "\\surd");
-defineSymbol(math, main, open, "(", "(");
-defineSymbol(math, main, open, "[", "[");
 defineSymbol(math, main, open, "\u27e8", "\\langle", true);
 defineSymbol(math, main, open, "\u2223", "\\lvert");
 defineSymbol(math, main, open, "\u2225", "\\lVert");
-defineSymbol(math, main, close, ")", ")");
-defineSymbol(math, main, close, "]", "]");
 defineSymbol(math, main, close, "?", "?");
 defineSymbol(math, main, close, "!", "!");
 defineSymbol(math, main, close, "\u27e9", "\\rangle", true);
 defineSymbol(math, main, close, "\u2223", "\\rvert");
 defineSymbol(math, main, close, "\u2225", "\\rVert");
 defineSymbol(math, main, rel, "=", "=");
-defineSymbol(math, main, rel, "<", "<");
-defineSymbol(math, main, rel, ">", ">");
 defineSymbol(math, main, rel, ":", ":");
 defineSymbol(math, main, rel, "\u2248", "\\approx", true);
 defineSymbol(math, main, rel, "\u2245", "\\cong", true);
 defineSymbol(math, main, rel, "\u2265", "\\ge");
 defineSymbol(math, main, rel, "\u2265", "\\geq", true);
 defineSymbol(math, main, rel, "\u2190", "\\gets");
-defineSymbol(math, main, rel, ">", "\\gt");
+defineSymbol(math, main, rel, ">", "\\gt", true);
 defineSymbol(math, main, rel, "\u2208", "\\in", true);
 defineSymbol(math, main, rel, "\ue020", "\\@not");
 defineSymbol(math, main, rel, "\u2282", "\\subset", true);
@@ -580,7 +574,7 @@ defineSymbol(math, main, rel, "\u22a8", "\\models");
 defineSymbol(math, main, rel, "\u2190", "\\leftarrow", true);
 defineSymbol(math, main, rel, "\u2264", "\\le");
 defineSymbol(math, main, rel, "\u2264", "\\leq", true);
-defineSymbol(math, main, rel, "<", "\\lt");
+defineSymbol(math, main, rel, "<", "\\lt", true);
 defineSymbol(math, main, rel, "\u2192", "\\rightarrow", true);
 defineSymbol(math, main, rel, "\u2192", "\\to");
 defineSymbol(math, ams, rel, "\u2271", "\\ngeq", true);
@@ -623,14 +617,14 @@ defineSymbol(text, main, textord, "}", "\\}");
 defineSymbol(text, main, textord, "}", "\\textbraceright");
 defineSymbol(math, main, open, "{", "\\lbrace");
 defineSymbol(math, main, close, "}", "\\rbrace");
-defineSymbol(math, main, open, "[", "\\lbrack");
-defineSymbol(text, main, textord, "[", "\\lbrack");
-defineSymbol(math, main, close, "]", "\\rbrack");
-defineSymbol(text, main, textord, "]", "\\rbrack");
-defineSymbol(math, main, open, "(", "\\lparen");
-defineSymbol(math, main, close, ")", "\\rparen");
-defineSymbol(text, main, textord, "<", "\\textless"); // in T1 fontenc
-defineSymbol(text, main, textord, ">", "\\textgreater"); // in T1 fontenc
+defineSymbol(math, main, open, "[", "\\lbrack", true);
+defineSymbol(text, main, textord, "[", "\\lbrack", true);
+defineSymbol(math, main, close, "]", "\\rbrack", true);
+defineSymbol(text, main, textord, "]", "\\rbrack", true);
+defineSymbol(math, main, open, "(", "\\lparen", true);
+defineSymbol(math, main, close, ")", "\\rparen", true);
+defineSymbol(text, main, textord, "<", "\\textless", true); // in T1 fontenc
+defineSymbol(text, main, textord, ">", "\\textgreater", true); // in T1 fontenc
 defineSymbol(math, main, open, "\u230a", "\\lfloor", true);
 defineSymbol(math, main, close, "\u230b", "\\rfloor", true);
 defineSymbol(math, main, open, "\u2308", "\\lceil", true);
@@ -638,7 +632,7 @@ defineSymbol(math, main, close, "\u2309", "\\rceil", true);
 defineSymbol(math, main, textord, "\\", "\\backslash");
 defineSymbol(math, main, textord, "\u2223", "|");
 defineSymbol(math, main, textord, "\u2223", "\\vert");
-defineSymbol(text, main, textord, "|", "\\textbar"); // in T1 fontenc
+defineSymbol(text, main, textord, "|", "\\textbar", true); // in T1 fontenc
 defineSymbol(math, main, textord, "\u2225", "\\|");
 defineSymbol(math, main, textord, "\u2225", "\\Vert");
 defineSymbol(text, main, textord, "\u2225", "\\textbardbl");
@@ -754,7 +748,7 @@ for (let i = 0; i < mathTextSymbols.length; i++) {
 }
 
 // All of these are textords in text mode
-const textSymbols = "0123456789!@*()-=+[]<>|\";:?/.,";
+const textSymbols = "0123456789!@*()-=+\";:?/.,";
 for (let i = 0; i < textSymbols.length; i++) {
     const ch = textSymbols.charAt(i);
     defineSymbol(text, main, textord, ch, ch);
