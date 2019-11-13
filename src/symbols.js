@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable no-sparse-arrays */
 /**
  * This file holds a list of all no-argument functions and single-character
  * symbols (like 'a' or ';').
@@ -16,6 +17,56 @@
  * The outermost map in the table indicates what mode the symbols should be
  * accepted in (e.g. "math" or "text").
  */
+
+// The function g is a shorthand for `defineGlyph, and it adds an entry to
+// GlyphTable. It accepts a character and an optional string or object as
+// arguments. By default, it'll be called in `defineSymbol` and set the
+// value to the code point of the character. Then it will be looked up
+// against glyph lists to find its TeX glyph name in `makeFont`. However:
+// - if the name is missing or incorrect, the name can be provided:
+//  > g("\u2219", "bullet") or g("\u2223", {name: "bar"})
+// - if the name varies by TeX fonts, the name can be provided for each fonts:
+//  > g("\u2323", {msam: "smile"}) or g("\u2323", {msam: ["smile"]})
+// - if the glyph should be shifted or the right bearing should be set,
+//   their values can be provided via an array:
+//  > g("\u20d7", {cmmi: [, -653, 0, 153]}) // x, y, RBearing
+// - if the glyph doesn't exist in TeX, FontForge commands to generate it
+//   can be provided:
+//  > g("\u22c8", {'Main-Regular': ['Select(0u25B9)', ...]})
+// - the size suffix for cmex (math extensions) will be automatically added
+//   and shift values can be provided sequentially from smallest to largest
+//  > g("\u222e", {cmex: ["contintegral", 0, 805, 0, 1360]})
+// GlyphTable is used only when generating fonts and following export,
+// function and function calls will be stripped away using a Babel plugin,
+// so they will not be included in the distribution.
+// See lib/makeFont.js for more details.
+type Glyph = string | {[string]: string | (string | number | void)[]};
+export const GlyphTable: (number | Glyph)[] = []; // sparse array
+function g(name: string, glyph?: Glyph): string {
+    const code = name.charCodeAt(0);
+    let val = GlyphTable[code];
+    if (!glyph) {
+        if (val == null) {
+            GlyphTable[code] = code; // default to its code point
+        }
+    } else if (val != null && typeof val !== "number") {
+        // eslint-disable-next-line no-console
+        console.warn(`Merging definition ${JSON.stringify(glyph)
+            } into ${JSON.stringify(val)} for ${name}`);
+        if (typeof val === "string") {
+            val = {name: val};
+            GlyphTable[code] = val;
+        }
+        if (typeof glyph === "string") {
+            glyph = {name: glyph};
+        }
+        // eslint-disable-next-line transform-runtime-aliasing/no-transform-runtime-aliasing
+        Object.assign(val, glyph);
+    } else {
+        GlyphTable[code] = glyph;
+    }
+    return name;
+}
 
 import type {Mode} from "./types";
 
@@ -65,6 +116,10 @@ export function defineSymbol(
     if (acceptUnicodeChar && replace) {
         symbols[mode][replace] = symbols[mode][name];
     }
+
+    if (replace) {
+        g(replace);
+    }
 }
 
 // Some abbreviations for commonly used strings.
@@ -107,11 +162,45 @@ defineSymbol(math, main, rel, "\u226a", "\\ll", true);
 defineSymbol(math, main, rel, "\u226b", "\\gg", true);
 defineSymbol(math, main, rel, "\u224d", "\\asymp", true);
 defineSymbol(math, main, rel, "\u2225", "\\parallel");
-defineSymbol(math, main, rel, "\u22c8", "\\bowtie", true);
+defineSymbol(math, main, rel, g("\u22c8", {
+    'Main-Regular': [
+        'Select(0u25B9)', 'Copy()',
+        'Select(0u22C8)', 'Paste()',
+        'Select(0u25C3)', 'Copy()',
+        'Select(0u22C8)',
+        'PasteWithOffset(400,0)',
+        'SetRBearing(400,1)',
+        'RemoveOverlap()',
+    ],
+    'Main-Bold': [
+        'Select(0u25B9)', 'Copy()',
+        'Select(0u22C8)', 'Paste()',
+        'Select(0u25C3)', 'Copy()',
+        'Select(0u22C8)',
+        'PasteWithOffset(425,0)',
+        'SetRBearing(425,1)',
+        'RemoveOverlap()',
+    ],
+}), "\\bowtie", true);
 defineSymbol(math, main, rel, "\u2323", "\\smile", true);
 defineSymbol(math, main, rel, "\u2291", "\\sqsubseteq", true);
 defineSymbol(math, main, rel, "\u2292", "\\sqsupseteq", true);
-defineSymbol(math, main, rel, "\u2250", "\\doteq", true);
+defineSymbol(math, main, rel, g("\u2250", {
+    'Main-Regular': [
+        'Select(0u3D)', 'Copy()',
+        'Select(0u2250)', 'Paste()',
+        'Select(0u2E)', 'Copy()',
+        'Select(0u2250)',
+        'PasteWithOffset(251,550)',
+    ],
+    'Main-Bold': [
+        'Select(0u3D)', 'Copy()',
+        'Select(0u2250)', 'Paste()',
+        'Select(0u2E)', 'Copy()',
+        'Select(0u2250)',
+        'PasteWithOffset(288,550)',
+    ],
+}), "\\doteq", true);
 defineSymbol(math, main, rel, "\u2322", "\\frown", true);
 defineSymbol(math, main, rel, "\u220b", "\\ni", true);
 defineSymbol(math, main, rel, "\u221d", "\\propto", true);
@@ -130,7 +219,23 @@ defineSymbol(math, main, textord, "\u0026", "\\&");
 defineSymbol(text, main, textord, "\u0026", "\\&");
 defineSymbol(math, main, textord, "\u2135", "\\aleph", true);
 defineSymbol(math, main, textord, "\u2200", "\\forall", true);
-defineSymbol(math, main, textord, "\u210f", "\\hbar", true);
+defineSymbol(math, main, textord, g("\u210f", {
+    'Main-Regular': [
+        'Open("pfa/msbm10.pfa")',
+        'Select(0x7E)', 'Copy()',
+        'Open("otf/KaTeX_Main-Regular.otf")',
+        'Select(0u2220)', 'Paste()',
+    ],
+    'Main-Bold': [
+        'Open("pfa/msbm10.pfa")',
+        'Select(0x7F)', 'Copy()',
+        'Open("otf/KaTeX_Main-Bold.otf")',
+        'Select(0u2220)', 'Paste()',
+        'Select(0u2C9)', 'Copy()',
+        'Select(0u210F)', 'PasteWithOffset(0,0)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+}), "\\hbar", true);
 defineSymbol(math, main, textord, "\u2203", "\\exists", true);
 defineSymbol(math, main, textord, "\u2207", "\\nabla", true);
 defineSymbol(math, main, textord, "\u266d", "\\flat", true);
@@ -156,10 +261,70 @@ defineSymbol(text, main, textord, "\u2021", "\\ddag");
 defineSymbol(text, main, textord, "\u2021", "\\textdaggerdbl");
 
 // Large Delimiters
-defineSymbol(math, main, close, "\u23b1", "\\rmoustache", true);
-defineSymbol(math, main, open, "\u23b0", "\\lmoustache", true);
-defineSymbol(math, main, close, "\u27ef", "\\rgroup", true);
-defineSymbol(math, main, open, "\u27ee", "\\lgroup", true);
+defineSymbol(math, main, close, g("\u23b1", {
+    'Main-Regular': [
+        'Open("otf/KaTeX_Size4-Regular.otf")',
+        'Select(0u23AB)', 'Copy()',
+        'Select(0u23B8)', 'Paste()',
+        'Select(0u23A9)', 'Copy()',
+        'Select(0u23B8)',
+        'PasteWithOffset(0,0)',
+        'Scale(55,0,0)', 'RoundToInt()', 'Move(-38,250)',
+        'RemoveOverlap()', 'Simplify()',
+        'SetRBearing(-38,1)',
+        'Copy()', 'Clear()',
+        'Open("otf/KaTeX_Main-Regular.otf")',
+        'Select(0u23B1)', 'Paste()',
+    ],
+}), "\\rmoustache", true);
+defineSymbol(math, main, open, g("\u23b0", {
+    'Main-Regular': [
+        'Open("otf/KaTeX_Size4-Regular.otf")',
+        'Select(0u23A7)', 'Copy()',
+        'Select(0u23B8)', 'Paste()',
+        'Select(0u23AD)', 'Copy()',
+        'Select(0u23B8)',
+        'PasteWithOffset(0,0)',
+        'Scale(55,0,0)', 'RoundToInt()', 'Move(-38,250)',
+        'RemoveOverlap()', 'Simplify()',
+        'SetRBearing(-38,1)',
+        'Copy()', 'Clear()',
+        'Open("otf/KaTeX_Main-Regular.otf")',
+        'Select(0u23B0)', 'Paste()',
+    ],
+}), "\\lmoustache", true);
+defineSymbol(math, main, close, g("\u27ef", {
+    'Main-Regular': [
+        'Open("otf/KaTeX_Size4-Regular.otf")',
+        'Select(0u23AB)', 'Copy()',
+        'Select(0u23B8)', 'Paste()',
+        'Select(0u23AD)', 'Copy()',
+        'Select(0u23B8)',
+        'PasteWithOffset(1,0)',
+        'Scale(55,0,0)', 'RoundToInt()', 'Move(-38,250)',
+        'RemoveOverlap()', 'Simplify()',
+        'SetRBearing(-38,1)',
+        'Copy()', 'Clear()',
+        'Open("otf/KaTeX_Main-Regular.otf")',
+        'Select(0u27EF)', 'Paste()',
+    ],
+}), "\\rgroup", true);
+defineSymbol(math, main, open, g("\u27ee", {
+    'Main-Regular': [
+        'Open("otf/KaTeX_Size4-Regular.otf")',
+        'Select(0u23A7)', 'Copy()',
+        'Select(0u23B8)', 'Paste()',
+        'Select(0u23A9)', 'Copy()',
+        'Select(0u23B8)',
+        'PasteWithOffset(0,0)',
+        'Scale(55,0,0)', 'RoundToInt()', 'Move(-38,250)',
+        'RemoveOverlap()', 'Simplify()',
+        'SetRBearing(-38,1)',
+        'Copy()', 'Clear()',
+        'Open("otf/KaTeX_Main-Regular.otf")',
+        'Select(0u27EE)', 'Paste()',
+    ],
+}), "\\lgroup", true);
 
 // Binary Operators
 defineSymbol(math, main, bin, "\u2213", "\\mp", true);
@@ -168,29 +333,238 @@ defineSymbol(math, main, bin, "\u228e", "\\uplus", true);
 defineSymbol(math, main, bin, "\u2293", "\\sqcap", true);
 defineSymbol(math, main, bin, "\u2217", "\\ast");
 defineSymbol(math, main, bin, "\u2294", "\\sqcup", true);
-defineSymbol(math, main, bin, "\u25ef", "\\bigcirc");
-defineSymbol(math, main, bin, "\u2219", "\\bullet");
+defineSymbol(math, main, bin, g("\u25ef", "circlecopyrt"), "\\bigcirc");
+defineSymbol(math, main, bin, g("\u2219", "bullet"), "\\bullet");
 defineSymbol(math, main, bin, "\u2021", "\\ddagger");
 defineSymbol(math, main, bin, "\u2240", "\\wr", true);
 defineSymbol(math, main, bin, "\u2a3f", "\\amalg");
 defineSymbol(math, main, bin, "\u0026", "\\And");  // from amsmath
 
 // Arrow Symbols
-defineSymbol(math, main, rel, "\u27f5", "\\longleftarrow", true);
+defineSymbol(math, main, rel, g("\u27f5", {
+    'Main-Regular': [
+        'Select(0u2190)', 'Copy()',
+        'Select(0u27F5)', 'Paste()',
+        'Select(0u2212)', 'Copy()',
+        'Select(0u27F5)',
+        'PasteWithOffset(831,0)',
+        'SetRBearing(609,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+    'Main-Bold': [
+        'Select(0u2190)', 'Copy()',
+        'Select(0u27F5)', 'Paste()',
+        'Select(0u2212)', 'Copy()',
+        'Select(0u27F5)',
+        'PasteWithOffset(944,0)',
+        'SetRBearing(655,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+}), "\\longleftarrow", true);
 defineSymbol(math, main, rel, "\u21d0", "\\Leftarrow", true);
-defineSymbol(math, main, rel, "\u27f8", "\\Longleftarrow", true);
-defineSymbol(math, main, rel, "\u27f6", "\\longrightarrow", true);
+defineSymbol(math, main, rel, g("\u27f8", {
+    'Main-Regular': [
+        'Select(0u21D0)', 'Copy()',
+        'Select(0u27F8)', 'Paste()',
+        'Select(0u3D)', 'Copy()',
+        'Select(0u27F8)',
+        'PasteWithOffset(831,0)',
+        'SetRBearing(609,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+    'Main-Bold': [
+        'Select(0u21D0)', 'Copy()',
+        'Select(0u27F8)', 'Paste()',
+        'Select(0u3D)', 'Copy()',
+        'Select(0u27F8)',
+        'PasteWithOffset(975,0)',
+        'SetRBearing(718,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+}), "\\Longleftarrow", true);
+defineSymbol(math, main, rel, g("\u27f6", {
+    'Main-Regular': [
+        'Select(0u2212)', 'Copy()',
+        'Select(0u27F6)', 'Paste()',
+        'Select(0u2192)', 'Copy()',
+        'Select(0u27F6)',
+        'PasteWithOffset(609,0)',
+        'SetRBearing(860,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+    'Main-Bold': [
+        'Select(0u2212)', 'Copy()',
+        'Select(0u27F6)', 'Paste()',
+        'Select(0u2192)', 'Copy()',
+        'Select(0u27F6)',
+        'PasteWithOffset(688,0)',
+        'SetRBearing(939,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+}), "\\longrightarrow", true);
 defineSymbol(math, main, rel, "\u21d2", "\\Rightarrow", true);
-defineSymbol(math, main, rel, "\u27f9", "\\Longrightarrow", true);
+defineSymbol(math, main, rel, g("\u27f9", {
+    'Main-Regular': [
+        'Select(0u3D)', 'Copy()',
+        'Select(0u27F9)', 'Paste()',
+        'Select(0u21D2)', 'Copy()',
+        'Select(0u27F9)',
+        'PasteWithOffset(638,0)',
+        'SetRBearing(860,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+    'Main-Bold': [
+        'Select(0u3D)', 'Copy()',
+        'Select(0u27F9)', 'Paste()',
+        'Select(0u21D2)', 'Copy()',
+        'Select(0u27F9)',
+        'PasteWithOffset(720,0)',
+        'SetRBearing(976,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+
+}), "\\Longrightarrow", true);
 defineSymbol(math, main, rel, "\u2194", "\\leftrightarrow", true);
-defineSymbol(math, main, rel, "\u27f7", "\\longleftrightarrow", true);
+defineSymbol(math, main, rel, g("\u27f7", {
+    'Main-Regular': [
+        'Select(0u2190)', 'Copy()',
+        'Select(0u27F7)', 'Paste()',
+        'Select(0u2192)', 'Copy()',
+        'Select(0u27F7)',
+        'PasteWithOffset(859,0)',
+        'SetRBearing(859,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+    'Main-Bold': [
+        'Select(0u2190)', 'Copy()',
+        'Select(0u27F7)', 'Paste()',
+        'Select(0u2192)', 'Copy()',
+        'Select(0u27F7)',
+        'PasteWithOffset(976,0)',
+        'SetRBearing(976,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+}), "\\longleftrightarrow", true);
 defineSymbol(math, main, rel, "\u21d4", "\\Leftrightarrow", true);
-defineSymbol(math, main, rel, "\u27fa", "\\Longleftrightarrow", true);
-defineSymbol(math, main, rel, "\u21a6", "\\mapsto", true);
-defineSymbol(math, main, rel, "\u27fc", "\\longmapsto", true);
+defineSymbol(math, main, rel, g("\u27fa", {
+    'Main-Regular': [
+        'Select(0u21D0)', 'Copy()',
+        'Select(0u27FA)', 'Paste()',
+        'Select(0u21D2)', 'Copy()',
+        'Select(0u27FA)',
+        'PasteWithOffset(858,0)',
+        'SetRBearing(858,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+    'Main-Bold': [
+        'Select(0u21D0)', 'Copy()',
+        'Select(0u27FA)', 'Paste()',
+        'Select(0u21D2)', 'Copy()',
+        'Select(0u27FA)',
+        'PasteWithOffset(976,0)',
+        'SetRBearing(976,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+}), "\\Longleftrightarrow", true);
+defineSymbol(math, main, rel, g("\u21a6", {
+    'Main-Regular': [
+        'Select(0u2192)', 'Copy()',
+        'Select(0u21A6)', 'Paste()',
+        'Generate("otf/KaTeX_Main-Regular.otf")',
+        'Open("pfa/cmsy10.pfa")',
+        'Select(0x37)', 'Copy()',
+        'Open("otf/KaTeX_Main-Regular.otf")',
+        'Select(0u21A6)',
+        'PasteWithOffset(0,0)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+    'Main-Bold': [
+        'Select(0u2192)', 'Copy()',
+        'Select(0u21A6)', 'Paste()',
+        'Generate("otf/KaTeX_Main-Bold.otf")',
+        'Open("pfa/cmbsy10.pfa")',
+        'Select(0x37)', 'Copy()',
+        'Open("otf/KaTeX_Main-Bold.otf")',
+        'Select(0u21A6)',
+        'PasteWithOffset(0,0)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+}), "\\mapsto", true);
+defineSymbol(math, main, rel, g("\u27fc", {
+    'Main-Regular': [
+        'Select(0u27F6)', 'Copy()',
+        'Select(0u27FC)', 'Paste()',
+        'Generate("otf/KaTeX_Main-Regular.otf")',
+        'Open("pfa/cmsy10.pfa")',
+        'Select(0x37)', 'Copy()',
+        'Open("otf/KaTeX_Main-Regular.otf")',
+        'Select(0u27FC)',
+        'PasteWithOffset(0,0)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+    'Main-Bold': [
+        'Select(0u27F6)', 'Copy()',
+        'Select(0u27FC)', 'Paste()',
+        'Generate("otf/KaTeX_Main-Bold.otf")',
+        'Open("pfa/cmbsy10.pfa")',
+        'Select(0x37)', 'Copy()',
+        'Open("otf/KaTeX_Main-Bold.otf")',
+        'Select(0u27FC)',
+        'PasteWithOffset(0,0)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+}), "\\longmapsto", true);
 defineSymbol(math, main, rel, "\u2197", "\\nearrow", true);
-defineSymbol(math, main, rel, "\u21a9", "\\hookleftarrow", true);
-defineSymbol(math, main, rel, "\u21aa", "\\hookrightarrow", true);
+defineSymbol(math, main, rel, g("\u21a9", {
+    'Main-Regular': [
+        'Select(0u2190)', 'Copy()',
+        'Select(0u21A9)', 'Paste()',
+        'Generate("otf/KaTeX_Main-Regular.otf")',
+        'Open("pfa/cmmi10.pfa")',
+        'Select(0x2D)', 'Copy()',
+        'Open("otf/KaTeX_Main-Regular.otf")',
+        'Select(0u21A9)',
+        'PasteWithOffset(848,0)',
+        'SetRBearing(126,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+    'Main-Bold': [
+        'Select(0u2190)', 'Copy()',
+        'Select(0u21A9)', 'Paste()',
+        'Generate("otf/KaTeX_Main-Bold.otf")',
+        'Open("pfa/cmmib10.pfa")',
+        'Select(0x2D)', 'Copy()',
+        'Open("otf/KaTeX_Main-Bold.otf")',
+        'Select(0u21A9)',
+        'PasteWithOffset(965,0)',
+        'SetRBearing(132,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+}), "\\hookleftarrow", true);
+defineSymbol(math, main, rel, g("\u21aa", {
+    'Main-Regular': [
+        'Open("pfa/cmmi10.pfa")',
+        'Select(0x2C)', 'Copy()',
+        'Open("otf/KaTeX_Main-Regular.otf")',
+        'Select(0u21AA)', 'Paste()',
+        'Select(0u2192)', 'Copy()',
+        'Select(0u21AA)',
+        'PasteWithOffset(126,0)',
+        'SetRBearing(848,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+    'Main-Bold': [
+        'Open("pfa/cmmib10.pfa")',
+        'Select(0x2C)', 'Copy()',
+        'Open("otf/KaTeX_Main-Bold.otf")',
+        'Select(0u21AA)', 'Paste()',
+        'Select(0u2192)', 'Copy()',
+        'Select(0u21AA)',
+        'PasteWithOffset(132,0)',
+        'SetRBearing(963,1)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+}), "\\hookrightarrow", true);
 defineSymbol(math, main, rel, "\u2198", "\\searrow", true);
 defineSymbol(math, main, rel, "\u21bc", "\\leftharpoonup", true);
 defineSymbol(math, main, rel, "\u21c0", "\\rightharpoonup", true);
@@ -198,17 +572,34 @@ defineSymbol(math, main, rel, "\u2199", "\\swarrow", true);
 defineSymbol(math, main, rel, "\u21bd", "\\leftharpoondown", true);
 defineSymbol(math, main, rel, "\u21c1", "\\rightharpoondown", true);
 defineSymbol(math, main, rel, "\u2196", "\\nwarrow", true);
-defineSymbol(math, main, rel, "\u21cc", "\\rightleftharpoons", true);
+defineSymbol(math, main, rel, g("\u21cc", {
+    'Main-Regular': [
+        'Select(0u21BD)', 'Copy()',
+        'Select(0u21CC)', 'Paste()',
+        'Select(0u21C0)', 'Copy()',
+        'Select(0u21CC)',
+        'PasteWithOffset(0,160)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+    'Main-Bold': [
+        'Select(0u21BD)', 'Copy()',
+        'Select(0u21CC)', 'Paste()',
+        'Select(0u21C0)', 'Copy()',
+        'Select(0u21CC)',
+        'PasteWithOffset(0,200)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+}), "\\rightleftharpoons", true);
 
 // AMS Negated Binary Relations
 defineSymbol(math, ams, rel, "\u226e", "\\nless", true);
 // Symbol names preceeded by "@" each have a corresponding macro.
-defineSymbol(math, ams, rel, "\ue010", "\\@nleqslant");
-defineSymbol(math, ams, rel, "\ue011", "\\@nleqq");
+defineSymbol(math, ams, rel, g("\ue010", "notlessorslnteql"), "\\@nleqslant");
+defineSymbol(math, ams, rel, g("\ue011", "notlessdblequal"), "\\@nleqq");
 defineSymbol(math, ams, rel, "\u2a87", "\\lneq", true);
 defineSymbol(math, ams, rel, "\u2268", "\\lneqq", true);
-defineSymbol(math, ams, rel, "\ue00c", "\\@lvertneqq");
-defineSymbol(math, ams, rel, "\u22e6", "\\lnsim", true);
+defineSymbol(math, ams, rel, g("\ue00c", "lessornotequal"), "\\@lvertneqq");
+defineSymbol(math, ams, rel, g("\u22e6", "lessornotsimilar"), "\\lnsim", true);
 defineSymbol(math, ams, rel, "\u2a89", "\\lnapprox", true);
 defineSymbol(math, ams, rel, "\u2280", "\\nprec", true);
 // unicode-math maps \u22e0 to \npreccurlyeq. We'll use the AMS synonym.
@@ -216,23 +607,23 @@ defineSymbol(math, ams, rel, "\u22e0", "\\npreceq", true);
 defineSymbol(math, ams, rel, "\u22e8", "\\precnsim", true);
 defineSymbol(math, ams, rel, "\u2ab9", "\\precnapprox", true);
 defineSymbol(math, ams, rel, "\u2241", "\\nsim", true);
-defineSymbol(math, ams, rel, "\ue006", "\\@nshortmid");
+defineSymbol(math, ams, rel, g("\ue006", "notshortbar"), "\\@nshortmid");
 defineSymbol(math, ams, rel, "\u2224", "\\nmid", true);
 defineSymbol(math, ams, rel, "\u22ac", "\\nvdash", true);
 defineSymbol(math, ams, rel, "\u22ad", "\\nvDash", true);
 defineSymbol(math, ams, rel, "\u22ea", "\\ntriangleleft");
 defineSymbol(math, ams, rel, "\u22ec", "\\ntrianglelefteq", true);
 defineSymbol(math, ams, rel, "\u228a", "\\subsetneq", true);
-defineSymbol(math, ams, rel, "\ue01a", "\\@varsubsetneq");
+defineSymbol(math, ams, rel, g("\ue01a", "notsubsetoreql"), "\\@varsubsetneq");
 defineSymbol(math, ams, rel, "\u2acb", "\\subsetneqq", true);
-defineSymbol(math, ams, rel, "\ue017", "\\@varsubsetneqq");
+defineSymbol(math, ams, rel, g("\ue017", "subsetornoteql"), "\\@varsubsetneqq");
 defineSymbol(math, ams, rel, "\u226f", "\\ngtr", true);
-defineSymbol(math, ams, rel, "\ue00f", "\\@ngeqslant");
-defineSymbol(math, ams, rel, "\ue00e", "\\@ngeqq");
+defineSymbol(math, ams, rel, g("\ue00f", "notgreaterorslnteql"), "\\@ngeqslant");
+defineSymbol(math, ams, rel, g("\ue00e", "notgreaterdblequal"), "\\@ngeqq");
 defineSymbol(math, ams, rel, "\u2a88", "\\gneq", true);
 defineSymbol(math, ams, rel, "\u2269", "\\gneqq", true);
-defineSymbol(math, ams, rel, "\ue00d", "\\@gvertneqq");
-defineSymbol(math, ams, rel, "\u22e7", "\\gnsim", true);
+defineSymbol(math, ams, rel, g("\ue00d", "greaterornotequal"), "\\@gvertneqq");
+defineSymbol(math, ams, rel, g("\u22e7", "greaterornotsimilar"), "\\gnsim", true);
 defineSymbol(math, ams, rel, "\u2a8a", "\\gnapprox", true);
 defineSymbol(math, ams, rel, "\u2281", "\\nsucc", true);
 // unicode-math maps \u22e1 to \nsucccurlyeq. We'll use the AMS synonym.
@@ -240,21 +631,21 @@ defineSymbol(math, ams, rel, "\u22e1", "\\nsucceq", true);
 defineSymbol(math, ams, rel, "\u22e9", "\\succnsim", true);
 defineSymbol(math, ams, rel, "\u2aba", "\\succnapprox", true);
 // unicode-math maps \u2246 to \simneqq. We'll use the AMS synonym.
-defineSymbol(math, ams, rel, "\u2246", "\\ncong", true);
-defineSymbol(math, ams, rel, "\ue007", "\\@nshortparallel");
+defineSymbol(math, ams, rel, g("\u2246", "notapproxequal"), "\\ncong", true);
+defineSymbol(math, ams, rel, g("\ue007", "notshortparallel"), "\\@nshortparallel");
 defineSymbol(math, ams, rel, "\u2226", "\\nparallel", true);
 defineSymbol(math, ams, rel, "\u22af", "\\nVDash", true);
 defineSymbol(math, ams, rel, "\u22eb", "\\ntriangleright");
 defineSymbol(math, ams, rel, "\u22ed", "\\ntrianglerighteq", true);
-defineSymbol(math, ams, rel, "\ue018", "\\@nsupseteqq");
+defineSymbol(math, ams, rel, g("\ue018", "notsupersetordbleql"), "\\@nsupseteqq");
 defineSymbol(math, ams, rel, "\u228b", "\\supsetneq", true);
-defineSymbol(math, ams, rel, "\ue01b", "\\@varsupsetneq");
+defineSymbol(math, ams, rel, g("\ue01b", "notsupersetoreql"), "\\@varsupsetneq");
 defineSymbol(math, ams, rel, "\u2acc", "\\supsetneqq", true);
-defineSymbol(math, ams, rel, "\ue019", "\\@varsupsetneqq");
+defineSymbol(math, ams, rel, g("\ue019", "supersetornoteql"), "\\@varsupsetneqq");
 defineSymbol(math, ams, rel, "\u22ae", "\\nVdash", true);
 defineSymbol(math, ams, rel, "\u2ab5", "\\precneqq", true);
 defineSymbol(math, ams, rel, "\u2ab6", "\\succneqq", true);
-defineSymbol(math, ams, rel, "\ue016", "\\@nsubseteqq");
+defineSymbol(math, ams, rel, g("\ue016", "notsubsetordbleql"), "\\@nsubseteqq");
 defineSymbol(math, ams, bin, "\u22b4", "\\unlhd");
 defineSymbol(math, ams, bin, "\u22b5", "\\unrhd");
 
@@ -284,13 +675,13 @@ defineSymbol(math, ams, textord, "\u25b2", "\\blacktriangle");
 defineSymbol(math, ams, textord, "\u25bc", "\\blacktriangledown");
 defineSymbol(math, ams, textord, "\u25a0", "\\blacksquare");
 defineSymbol(math, ams, textord, "\u29eb", "\\blacklozenge");
-defineSymbol(math, ams, textord, "\u2605", "\\bigstar");
+defineSymbol(math, ams, textord, g("\u2605", "star"), "\\bigstar");
 defineSymbol(math, ams, textord, "\u2222", "\\sphericalangle", true);
 defineSymbol(math, ams, textord, "\u2201", "\\complement", true);
 // unicode-math maps U+F0 (ð) to \matheth. We map to AMS function \eth
 defineSymbol(math, ams, textord, "\u00f0", "\\eth", true);
-defineSymbol(math, ams, textord, "\u2571", "\\diagup");
-defineSymbol(math, ams, textord, "\u2572", "\\diagdown");
+defineSymbol(math, ams, textord, g("\u2571", "upslope"), "\\diagup");
+defineSymbol(math, ams, textord, g("\u2572", "downslope"), "\\diagdown");
 defineSymbol(math, ams, textord, "\u25a1", "\\square");
 defineSymbol(math, ams, textord, "\u25a1", "\\Box");
 defineSymbol(math, ams, textord, "\u25ca", "\\Diamond");
@@ -303,17 +694,17 @@ defineSymbol(text, ams, textord, "\u2713", "\\checkmark");
 // AMS Hebrew
 defineSymbol(math, ams, textord, "\u2136", "\\beth", true);
 defineSymbol(math, ams, textord, "\u2138", "\\daleth", true);
-defineSymbol(math, ams, textord, "\u2137", "\\gimel", true);
+defineSymbol(math, ams, textord, g("\u2137", "gimel"), "\\gimel", true);
 
 // AMS Greek
 defineSymbol(math, ams, textord, "\u03dd", "\\digamma", true);
-defineSymbol(math, ams, textord, "\u03f0", "\\varkappa");
+defineSymbol(math, ams, textord, g("\u03f0", "kappa"), "\\varkappa");
 
 // AMS Delimiters
-defineSymbol(math, ams, open, "\u250c", "\\@ulcorner", true);
-defineSymbol(math, ams, close, "\u2510", "\\@urcorner", true);
-defineSymbol(math, ams, open, "\u2514", "\\@llcorner", true);
-defineSymbol(math, ams, close, "\u2518", "\\@lrcorner", true);
+defineSymbol(math, ams, open, g("\u250c", "rightanglenw"), "\\@ulcorner", true);
+defineSymbol(math, ams, close, g("\u2510", "rightanglene"), "\\@urcorner", true);
+defineSymbol(math, ams, open, g("\u2514", "rightanglesw"), "\\@llcorner", true);
+defineSymbol(math, ams, close, g("\u2518", "rightanglese"), "\\@lrcorner", true);
 
 // AMS Binary Relations
 defineSymbol(math, ams, rel, "\u2266", "\\leqq", true);
@@ -323,7 +714,7 @@ defineSymbol(math, ams, rel, "\u2272", "\\lesssim", true);
 defineSymbol(math, ams, rel, "\u2a85", "\\lessapprox", true);
 defineSymbol(math, ams, rel, "\u224a", "\\approxeq", true);
 defineSymbol(math, ams, bin, "\u22d6", "\\lessdot");
-defineSymbol(math, ams, rel, "\u22d8", "\\lll", true);
+defineSymbol(math, ams, rel, g("\u22d8", "muchless"), "\\lll", true);
 defineSymbol(math, ams, rel, "\u2276", "\\lessgtr", true);
 defineSymbol(math, ams, rel, "\u22da", "\\lesseqgtr", true);
 defineSymbol(math, ams, rel, "\u2a8b", "\\lesseqqgtr", true);
@@ -338,13 +729,13 @@ defineSymbol(math, ams, rel, "\u228f", "\\sqsubset", true);
 defineSymbol(math, ams, rel, "\u227c", "\\preccurlyeq", true);
 defineSymbol(math, ams, rel, "\u22de", "\\curlyeqprec", true);
 defineSymbol(math, ams, rel, "\u227e", "\\precsim", true);
-defineSymbol(math, ams, rel, "\u2ab7", "\\precapprox", true);
-defineSymbol(math, ams, rel, "\u22b2", "\\vartriangleleft");
+defineSymbol(math, ams, rel, g("\u2ab7", "precedesorequal"), "\\precapprox", true);
+defineSymbol(math, ams, rel, g("\u22b2", "triangleleft"), "\\vartriangleleft");
 defineSymbol(math, ams, rel, "\u22b4", "\\trianglelefteq");
 defineSymbol(math, ams, rel, "\u22a8", "\\vDash", true);
 defineSymbol(math, ams, rel, "\u22aa", "\\Vvdash", true);
-defineSymbol(math, ams, rel, "\u2323", "\\smallsmile");
-defineSymbol(math, ams, rel, "\u2322", "\\smallfrown");
+defineSymbol(math, ams, rel, g("\u2323", {msam: "smile"}), "\\smallsmile");
+defineSymbol(math, ams, rel, g("\u2322", {msam: "frown"}), "\\smallfrown");
 defineSymbol(math, ams, rel, "\u224f", "\\bumpeq", true);
 defineSymbol(math, ams, rel, "\u224e", "\\Bumpeq", true);
 defineSymbol(math, ams, rel, "\u2267", "\\geqq", true);
@@ -353,12 +744,12 @@ defineSymbol(math, ams, rel, "\u2a96", "\\eqslantgtr", true);
 defineSymbol(math, ams, rel, "\u2273", "\\gtrsim", true);
 defineSymbol(math, ams, rel, "\u2a86", "\\gtrapprox", true);
 defineSymbol(math, ams, bin, "\u22d7", "\\gtrdot");
-defineSymbol(math, ams, rel, "\u22d9", "\\ggg", true);
+defineSymbol(math, ams, rel, g("\u22d9", "muchgreater"), "\\ggg", true);
 defineSymbol(math, ams, rel, "\u2277", "\\gtrless", true);
 defineSymbol(math, ams, rel, "\u22db", "\\gtreqless", true);
 defineSymbol(math, ams, rel, "\u2a8c", "\\gtreqqless", true);
 defineSymbol(math, ams, rel, "\u2256", "\\eqcirc", true);
-defineSymbol(math, ams, rel, "\u2257", "\\circeq", true);
+defineSymbol(math, ams, rel, g("\u2257", "circleequal"), "\\circeq", true);
 defineSymbol(math, ams, rel, "\u225c", "\\triangleq", true);
 defineSymbol(math, ams, rel, "\u223c", "\\thicksim");
 defineSymbol(math, ams, rel, "\u2248", "\\thickapprox");
@@ -368,12 +759,13 @@ defineSymbol(math, ams, rel, "\u2290", "\\sqsupset", true);
 defineSymbol(math, ams, rel, "\u227d", "\\succcurlyeq", true);
 defineSymbol(math, ams, rel, "\u22df", "\\curlyeqsucc", true);
 defineSymbol(math, ams, rel, "\u227f", "\\succsim", true);
-defineSymbol(math, ams, rel, "\u2ab8", "\\succapprox", true);
-defineSymbol(math, ams, rel, "\u22b3", "\\vartriangleright");
+defineSymbol(math, ams, rel, g("\u2ab8", "followsorequal"), "\\succapprox", true);
+defineSymbol(math, ams, rel, g("\u22b3", "triangleright"), "\\vartriangleright");
 defineSymbol(math, ams, rel, "\u22b5", "\\trianglerighteq");
 defineSymbol(math, ams, rel, "\u22a9", "\\Vdash", true);
-defineSymbol(math, ams, rel, "\u2223", "\\shortmid");
-defineSymbol(math, ams, rel, "\u2225", "\\shortparallel");
+defineSymbol(math, ams, rel, g("\u2223", {msbm: "barshort"}), "\\shortmid");
+defineSymbol(math, ams, rel, g("\u2225", {msbm: "parallelshort"}),
+    "\\shortparallel");
 defineSymbol(math, ams, rel, "\u226c", "\\between", true);
 defineSymbol(math, ams, rel, "\u22d4", "\\pitchfork", true);
 defineSymbol(math, ams, rel, "\u221d", "\\varpropto");
@@ -381,7 +773,7 @@ defineSymbol(math, ams, rel, "\u25c0", "\\blacktriangleleft");
 // unicode-math says that \therefore is a mathord atom.
 // We kept the amssymb atom type, which is rel.
 defineSymbol(math, ams, rel, "\u2234", "\\therefore", true);
-defineSymbol(math, ams, rel, "\u220d", "\\backepsilon");
+defineSymbol(math, ams, rel, g("\u220d", "epsiloninv"), "\\backepsilon");
 defineSymbol(math, ams, rel, "\u25b6", "\\blacktriangleright");
 // unicode-math says that \because is a mathord atom.
 // We kept the amssymb atom type, which is rel.
@@ -396,7 +788,8 @@ defineSymbol(math, ams, rel, "\u2251", "\\Doteq", true);
 
 // AMS Binary Operators
 defineSymbol(math, ams, bin, "\u2214", "\\dotplus", true);
-defineSymbol(math, ams, bin, "\u2216", "\\smallsetminus");
+defineSymbol(math, ams, bin, g("\u2216", {msbm: "integerdivide"}),
+    "\\smallsetminus");
 defineSymbol(math, ams, bin, "\u22d2", "\\Cap", true);
 defineSymbol(math, ams, bin, "\u22d3", "\\Cup", true);
 defineSymbol(math, ams, bin, "\u2a5e", "\\doublebarwedge", true);
@@ -409,9 +802,10 @@ defineSymbol(math, ams, bin, "\u22cb", "\\leftthreetimes", true);
 defineSymbol(math, ams, bin, "\u22cc", "\\rightthreetimes", true);
 defineSymbol(math, ams, bin, "\u22cf", "\\curlywedge", true);
 defineSymbol(math, ams, bin, "\u22ce", "\\curlyvee", true);
-defineSymbol(math, ams, bin, "\u229d", "\\circleddash", true);
+defineSymbol(math, ams, bin, g("\u229d", "circleminus"), "\\circleddash", true);
 defineSymbol(math, ams, bin, "\u229b", "\\circledast", true);
-defineSymbol(math, ams, bin, "\u22c5", "\\centerdot");
+defineSymbol(math, ams, bin, g("\u22c5", {msam: "squaresmallsolid"}),
+    "\\centerdot");
 defineSymbol(math, ams, bin, "\u22ba", "\\intercal", true);
 defineSymbol(math, ams, bin, "\u22d2", "\\doublecap");
 defineSymbol(math, ams, bin, "\u22d3", "\\doublecup");
@@ -420,10 +814,29 @@ defineSymbol(math, ams, bin, "\u22a0", "\\boxtimes", true);
 // AMS Arrows
 // Note: unicode-math maps \u21e2 to their own function \rightdasharrow.
 // We'll map it to AMS function \dashrightarrow. It produces the same atom.
-defineSymbol(math, ams, rel, "\u21e2", "\\dashrightarrow", true);
+defineSymbol(math, ams, rel, g("\u21e2", {
+    AMS: [
+        'Select(0u2212)', 'Copy()',
+        'Select(0u21E2)', 'Paste()',
+        'PasteWithOffset(417,0)',
+        'Select(0u2192)', 'Copy()',
+        'Select(0u21E2)', 'PasteWithOffset(834,0)',
+        'SetRBearing(834,1)',
+    ],
+}), "\\dashrightarrow", true);
 // unicode-math maps \u21e0 to \leftdasharrow. We'll use the AMS synonym.
-defineSymbol(math, ams, rel, "\u21e0", "\\dashleftarrow", true);
-defineSymbol(math, ams, rel, "\u21c7", "\\leftleftarrows", true);
+defineSymbol(math, ams, rel, g("\u21e0", {
+    AMS: [
+        'Select(0u2190)', 'Copy()',
+        'Select(0u21E0)', 'Paste()',
+        'Select(0u2212)', 'Copy()',
+        'Select(0u21E0)',
+        'PasteWithOffset(417,0)',
+        'PasteWithOffset(834,0)',
+        'SetRBearing(834,1)',
+    ],
+}), "\\dashleftarrow", true);
+defineSymbol(math, ams, rel, g("\u21c7", "dblarrowleft"), "\\leftleftarrows", true);
 defineSymbol(math, ams, rel, "\u21c6", "\\leftrightarrows", true);
 defineSymbol(math, ams, rel, "\u21da", "\\Lleftarrow", true);
 defineSymbol(math, ams, rel, "\u219e", "\\twoheadleftarrow", true);
@@ -439,7 +852,8 @@ defineSymbol(math, ams, rel, "\u21bf", "\\upharpoonleft", true);
 defineSymbol(math, ams, rel, "\u21c3", "\\downharpoonleft", true);
 defineSymbol(math, ams, rel, "\u22b8", "\\multimap", true);
 defineSymbol(math, ams, rel, "\u21ad", "\\leftrightsquigarrow", true);
-defineSymbol(math, ams, rel, "\u21c9", "\\rightrightarrows", true);
+defineSymbol(math, ams, rel, g("\u21c9", "dblarrowright"),
+    "\\rightrightarrows", true);
 defineSymbol(math, ams, rel, "\u21c4", "\\rightleftarrows", true);
 defineSymbol(math, ams, rel, "\u21a0", "\\twoheadrightarrow", true);
 defineSymbol(math, ams, rel, "\u21a3", "\\rightarrowtail", true);
@@ -462,10 +876,38 @@ defineSymbol(text, main, textord, "$", "\\$");
 defineSymbol(text, main, textord, "$", "\\textdollar");
 defineSymbol(math, main, textord, "%", "\\%");
 defineSymbol(text, main, textord, "%", "\\%");
-defineSymbol(math, main, textord, "_", "\\_");
+defineSymbol(math, main, textord, g("_", {
+    name: "endash",
+    cmr: [, 0, -310],
+    cmti: [, 0, -310],
+    cmbx: [, 0, -310],
+    cmbxti: [, 0, -310],
+    cmss: [, 0, -350],
+    cmssi: [, 0, -350],
+    cmssbx: [, 0, -350],
+    cmtt: "underscore",
+}), "\\_");
 defineSymbol(text, main, textord, "_", "\\_");
 defineSymbol(text, main, textord, "_", "\\textunderscore");
-defineSymbol(math, main, textord, "\u2220", "\\angle", true);
+defineSymbol(math, main, textord, g("\u2220", {
+    'Main-Regular': [
+        'Open("pfa/msam10.pfa")',
+        'Select(0x5C)', 'Copy()',
+        'Open("otf/KaTeX_Main-Regular.otf")',
+        'Select(0u2220)', 'Paste()',
+    ],
+    'Main-Bold': [
+        'Open("pfa/msam10.pfa")',
+        'Select(0x5C)', 'Copy()',
+        'Open("otf/KaTeX_Main-Bold.otf")',
+        'Select(0u2220)', 'Paste()',
+        'PasteWithOffset(0,10)',
+        'PasteWithOffset(0,20)',
+        'RemoveOverlap()', 'Simplify()',
+        'PasteWithOffset(10,0)',
+        'RemoveOverlap()', 'Simplify()',
+    ],
+}), "\\angle", true);
 defineSymbol(math, main, textord, "\u221e", "\\infty", true);
 defineSymbol(math, main, textord, "\u2032", "\\prime");
 defineSymbol(math, main, textord, "\u25b3", "\\triangle");
@@ -510,10 +952,13 @@ defineSymbol(math, main, mathord, "\u03b8", "\\theta", true);
 defineSymbol(math, main, mathord, "\u03b9", "\\iota", true);
 defineSymbol(math, main, mathord, "\u03ba", "\\kappa", true);
 defineSymbol(math, main, mathord, "\u03bb", "\\lambda", true);
-defineSymbol(math, main, mathord, "\u03bc", "\\mu", true);
+defineSymbol(math, main, mathord, g("\u03bc", "mu"), "\\mu", true);
 defineSymbol(math, main, mathord, "\u03bd", "\\nu", true);
 defineSymbol(math, main, mathord, "\u03be", "\\xi", true);
-defineSymbol(math, main, mathord, "\u03bf", "\\omicron", true);
+defineSymbol(math, main, mathord, g("\u03bf", {
+    cmmi: "o",
+    cmmib: "o",
+}), "\\omicron", true);
 defineSymbol(math, main, mathord, "\u03c0", "\\pi", true);
 defineSymbol(math, main, mathord, "\u03c1", "\\rho", true);
 defineSymbol(math, main, mathord, "\u03c3", "\\sigma", true);
@@ -532,19 +977,22 @@ defineSymbol(math, main, mathord, "\u03c6", "\\varphi", true);
 defineSymbol(math, main, bin, "\u2217", "*");
 defineSymbol(math, main, bin, "+", "+");
 defineSymbol(math, main, bin, "\u2212", "-");
-defineSymbol(math, main, bin, "\u22c5", "\\cdot", true);
-defineSymbol(math, main, bin, "\u2218", "\\circ");
+defineSymbol(math, main, bin, g("\u22c5", "periodcentered"), "\\cdot", true);
+defineSymbol(math, main, bin, g("\u2218", "openbullet"), "\\circ");
 defineSymbol(math, main, bin, "\u00f7", "\\div", true);
 defineSymbol(math, main, bin, "\u00b1", "\\pm", true);
 defineSymbol(math, main, bin, "\u00d7", "\\times", true);
 defineSymbol(math, main, bin, "\u2229", "\\cap", true);
 defineSymbol(math, main, bin, "\u222a", "\\cup", true);
-defineSymbol(math, main, bin, "\u2216", "\\setminus");
+defineSymbol(math, main, bin, g("\u2216", "backslash"), "\\setminus");
 defineSymbol(math, main, bin, "\u2227", "\\land");
 defineSymbol(math, main, bin, "\u2228", "\\lor");
 defineSymbol(math, main, bin, "\u2227", "\\wedge", true);
 defineSymbol(math, main, bin, "\u2228", "\\vee", true);
-defineSymbol(math, main, textord, "\u221a", "\\surd");
+defineSymbol(math, main, textord, g("\u221a", {
+    cmsy: [, 0, 760],
+    cmbsy: [, 0, 760],
+}), "\\surd");
 defineSymbol(math, main, open, "(", "(");
 defineSymbol(math, main, open, "[", "[");
 defineSymbol(math, main, open, "\u27e8", "\\langle", true);
@@ -562,20 +1010,60 @@ defineSymbol(math, main, rel, "<", "<");
 defineSymbol(math, main, rel, ">", ">");
 defineSymbol(math, main, rel, ":", ":");
 defineSymbol(math, main, rel, "\u2248", "\\approx", true);
-defineSymbol(math, main, rel, "\u2245", "\\cong", true);
+defineSymbol(math, main, rel, g("\u2245", {
+    'Main-Regular': [
+        'Select(0u223C)', 'Copy()',
+        'Select(0u2245)', 'Clear()',
+        'PasteWithOffset(0,222)',
+        'Select(0u3D)', 'Copy()',
+        'Select(0u2245)',
+        'PasteWithOffset(0,-111)',
+    ],
+    'Main-Bold': [
+        'Select(0u223C)', 'Copy()',
+        'Select(0u2245)', 'Clear()',
+        'PasteWithOffset(0,247)',
+        'Select(0u3D)', 'Copy()',
+        'Select(0u2245)',
+        'PasteWithOffset(0,-136)',
+    ],
+}), "\\cong", true);
 defineSymbol(math, main, rel, "\u2265", "\\ge");
 defineSymbol(math, main, rel, "\u2265", "\\geq", true);
 defineSymbol(math, main, rel, "\u2190", "\\gets");
 defineSymbol(math, main, rel, ">", "\\gt");
 defineSymbol(math, main, rel, "\u2208", "\\in", true);
-defineSymbol(math, main, rel, "\ue020", "\\@not");
+defineSymbol(math, main, rel, g("\ue020", {
+    name: "negationslash",
+    cmr: [,,, 778],
+    cmbx: [,,, 894],
+}), "\\@not");
 defineSymbol(math, main, rel, "\u2282", "\\subset", true);
 defineSymbol(math, main, rel, "\u2283", "\\supset", true);
 defineSymbol(math, main, rel, "\u2286", "\\subseteq", true);
 defineSymbol(math, main, rel, "\u2287", "\\supseteq", true);
 defineSymbol(math, ams, rel, "\u2288", "\\nsubseteq", true);
 defineSymbol(math, ams, rel, "\u2289", "\\nsupseteq", true);
-defineSymbol(math, main, rel, "\u22a8", "\\models");
+defineSymbol(math, main, rel, g("\u22a8", {
+    'Main-Regular': [
+        'Select(0u2223)', 'Copy()',
+        'Select(0u22A8)', 'Paste()',
+        'Select(0u3D)', 'Copy()',
+        'Select(0u22A8)',
+        'PasteWithOffset(89,0)',
+        'SetRBearing(589,1)',
+        'RemoveOverlap()',
+    ],
+    'Main-Bold': [
+        'Select(0u2223)', 'Copy()',
+        'Select(0u22A8)', 'Paste()',
+        'Select(0u3D)', 'Copy()',
+        'Select(0u22A8)',
+        'PasteWithOffset(89,0)',
+        'SetRBearing(655,1)',
+        'RemoveOverlap()',
+    ],
+}), "\\models");
 defineSymbol(math, main, rel, "\u2190", "\\leftarrow", true);
 defineSymbol(math, main, rel, "\u2264", "\\le");
 defineSymbol(math, main, rel, "\u2264", "\\leq", true);
@@ -611,8 +1099,8 @@ defineSymbol(math, main, bin, "\u25bd", "\\bigtriangledown");
 defineSymbol(math, main, bin, "\u2020", "\\dagger");
 defineSymbol(math, main, bin, "\u22c4", "\\diamond");
 defineSymbol(math, main, bin, "\u22c6", "\\star");
-defineSymbol(math, main, bin, "\u25c3", "\\triangleleft");
-defineSymbol(math, main, bin, "\u25b9", "\\triangleright");
+defineSymbol(math, main, bin, g("\u25c3", "triangleleft"), "\\triangleleft");
+defineSymbol(math, main, bin, g("\u25b9", "triangleright"), "\\triangleright");
 defineSymbol(math, main, open, "{", "\\{");
 defineSymbol(text, main, textord, "{", "\\{");
 defineSymbol(text, main, textord, "{", "\\textbraceleft");
@@ -634,57 +1122,182 @@ defineSymbol(math, main, close, "\u230b", "\\rfloor", true);
 defineSymbol(math, main, open, "\u2308", "\\lceil", true);
 defineSymbol(math, main, close, "\u2309", "\\rceil", true);
 defineSymbol(math, main, textord, "\\", "\\backslash");
-defineSymbol(math, main, textord, "\u2223", "|");
+defineSymbol(math, main, textord, g("\u2223", {
+    name: "bar",
+    cmex: ["vextendsingle", 0, 606],
+}), "|");
 defineSymbol(math, main, textord, "\u2223", "\\vert");
 defineSymbol(text, main, textord, "|", "\\textbar"); // in T1 fontenc
-defineSymbol(math, main, textord, "\u2225", "\\|");
+defineSymbol(math, main, textord, g("\u2225", {
+    cmex: ["vextenddouble", 0, 606],
+}), "\\|");
 defineSymbol(math, main, textord, "\u2225", "\\Vert");
 defineSymbol(text, main, textord, "\u2225", "\\textbardbl");
-defineSymbol(text, main, textord, "~", "\\textasciitilde");
+defineSymbol(text, main, textord, g("~", {
+    name: "tilde",
+    cmr: [, 0, -350],
+    cmti: [, 0, -350],
+    cmbx: [, 0, -350],
+    cmbxti: [, 0, -350],
+    cmss: [, 0, -350],
+    cmssi: [, 0, -350],
+    cmssbx: [, 0, -350],
+    cmtt: "asciitilde",
+}), "\\textasciitilde");
 defineSymbol(text, main, textord, "\\", "\\textbackslash");
-defineSymbol(text, main, textord, "^", "\\textasciicircum");
-defineSymbol(math, main, rel, "\u2191", "\\uparrow", true);
-defineSymbol(math, main, rel, "\u21d1", "\\Uparrow", true);
-defineSymbol(math, main, rel, "\u2193", "\\downarrow", true);
-defineSymbol(math, main, rel, "\u21d3", "\\Downarrow", true);
+defineSymbol(text, main, textord, g("^", {
+    name: "circumflex",
+    cmtt: "asciicircum",
+    eufm: "asciicircum",
+    eufb: "asciicircum",
+}), "\\textasciicircum");
+defineSymbol(math, main, rel, g("\u2191", {
+    cmex: ["arrowtp", 0, 600],
+}), "\\uparrow", true);
+defineSymbol(math, main, rel, g("\u21d1", {
+    cmex: ["arrowdbltp", 0, 600],
+}), "\\Uparrow", true);
+defineSymbol(math, main, rel, g("\u2193", {
+    cmex: ["arrowbt", 0, 600],
+}), "\\downarrow", true);
+defineSymbol(math, main, rel, g("\u21d3", {
+    cmex: ["arrowdblbt", 0, 600],
+}), "\\Downarrow", true);
 defineSymbol(math, main, rel, "\u2195", "\\updownarrow", true);
 defineSymbol(math, main, rel, "\u21d5", "\\Updownarrow", true);
-defineSymbol(math, main, op, "\u2210", "\\coprod");
-defineSymbol(math, main, op, "\u22c1", "\\bigvee");
-defineSymbol(math, main, op, "\u22c0", "\\bigwedge");
-defineSymbol(math, main, op, "\u2a04", "\\biguplus");
-defineSymbol(math, main, op, "\u22c2", "\\bigcap");
-defineSymbol(math, main, op, "\u22c3", "\\bigcup");
-defineSymbol(math, main, op, "\u222b", "\\int");
+defineSymbol(math, main, op, g("\u2210", {cmex: "coproduct"}), "\\coprod");
+defineSymbol(math, main, op, g("\u22c1", {cmex: "logicalor"}), "\\bigvee");
+defineSymbol(math, main, op, g("\u22c0", {cmex: "logicaland"}), "\\bigwedge");
+defineSymbol(math, main, op, g("\u2a04", {cmex: "unionmulti"}), "\\biguplus");
+defineSymbol(math, main, op, g("\u22c2", {cmex: "intersection"}), "\\bigcap");
+defineSymbol(math, main, op, g("\u22c3", {cmex: "union"}), "\\bigcup");
+defineSymbol(math, main, op, g("\u222b", {cmex: [, 0, 805, 0, 1360]}), "\\int");
 defineSymbol(math, main, op, "\u222b", "\\intop");
-defineSymbol(math, main, op, "\u222c", "\\iint");
-defineSymbol(math, main, op, "\u222d", "\\iiint");
+defineSymbol(math, main, op, g("\u222c", {
+    Size1: [
+        'Select(0u222B)', 'Copy()',
+        'Select(0u222C)', 'Paste()',
+        'PasteWithOffset(347,0)',
+        'SetRBearing(347,1)',
+    ],
+    Size2:[
+        'Select(0u222B)', 'Copy()',
+        'Select(0u222C)', 'Paste()',
+        'PasteWithOffset(528,0)',
+        'SetRBearing(528,1)',
+    ],
+}), "\\iint");
+defineSymbol(math, main, op, g("\u222d", {
+    Size1: [
+        'Select(0u222B)', 'Copy()',
+        'Select(0u222D)', 'Paste()',
+        'PasteWithOffset(347,0)',
+        'PasteWithOffset(694,0)',
+        'SetRBearing(694,1)',
+    ],
+    Size2:[
+        'Select(0u222B)', 'Copy()',
+        'Select(0u222D)', 'Paste()',
+        'PasteWithOffset(528,0)',
+        'PasteWithOffset(1036,0)',
+        'SetRBearing(1036,1)',
+    ],
+}), "\\iiint");
 defineSymbol(math, main, op, "\u220f", "\\prod");
 defineSymbol(math, main, op, "\u2211", "\\sum");
-defineSymbol(math, main, op, "\u2a02", "\\bigotimes");
-defineSymbol(math, main, op, "\u2a01", "\\bigoplus");
-defineSymbol(math, main, op, "\u2a00", "\\bigodot");
-defineSymbol(math, main, op, "\u222e", "\\oint");
+defineSymbol(math, main, op, g("\u2a02", {cmex: "circlemultiply"}), "\\bigotimes");
+defineSymbol(math, main, op, g("\u2a01", {cmex: "circleplus"}), "\\bigoplus");
+defineSymbol(math, main, op, g("\u2a00", {cmex: "circledot"}), "\\bigodot");
+defineSymbol(math, main, op, g("\u222e", {
+    cmex: ["contintegral", 0, 805, 0, 1360],
+}), "\\oint");
 defineSymbol(math, main, op, "\u222f", "\\oiint");
 defineSymbol(math, main, op, "\u2230", "\\oiiint");
-defineSymbol(math, main, op, "\u2a06", "\\bigsqcup");
+defineSymbol(math, main, op, g("\u2a06", {cmex: "unionsq"}), "\\bigsqcup");
 defineSymbol(math, main, op, "\u222b", "\\smallint");
 defineSymbol(text, main, inner, "\u2026", "\\textellipsis");
 defineSymbol(math, main, inner, "\u2026", "\\mathellipsis");
 defineSymbol(text, main, inner, "\u2026", "\\ldots", true);
-defineSymbol(math, main, inner, "\u2026", "\\ldots", true);
-defineSymbol(math, main, inner, "\u22ef", "\\@cdots", true);
-defineSymbol(math, main, inner, "\u22f1", "\\ddots", true);
-defineSymbol(math, main, textord, "\u22ee", "\\varvdots"); // \vdots is a macro
-defineSymbol(math, main, accent, "\u02ca", "\\acute");
-defineSymbol(math, main, accent, "\u02cb", "\\grave");
+defineSymbol(math, main, inner, g("\u2026", {
+    'Main-Regular': [
+        'Select(0u2E)', 'Copy()',
+        'Select(0u2026)', 'Paste()',
+        'PasteWithOffset(447,0)',
+        'PasteWithOffset(894,0)',
+        'SetRBearing(894,1)',
+    ],
+    'Main-Bold': [
+        'Select(0u2E)', 'Copy()',
+        'Select(0u2026)', 'Paste()',
+        'PasteWithOffset(488,0)',
+        'PasteWithOffset(976,0)',
+        'SetRBearing(976,1)',
+    ],
+}), "\\ldots", true);
+defineSymbol(math, main, inner, g("\u22ef", {
+    'Main-Regular': [
+        'Select(0u22C5)', 'Copy()',
+        'Select(0u22EF)', 'Paste()',
+        'PasteWithOffset(447,0)',
+        'PasteWithOffset(894,0)',
+        'SetRBearing(894,1)',
+    ],
+    'Main-Bold': [
+        'Select(0u22C5)', 'Copy()',
+        'Select(0u22EF)', 'Paste()',
+        'PasteWithOffset(488,0)',
+        'PasteWithOffset(976,0)',
+        'SetRBearing(976,1)',
+    ],
+}), "\\@cdots", true);
+defineSymbol(math, main, inner, g("\u22f1", {
+    'Main-Regular': [
+        'Select(0u2E)', 'Copy()',
+        'Select(0u22F1)', 'Clear()',
+        'PasteWithOffset(55,700)',
+        'PasteWithOffset(502,400)',
+        'PasteWithOffset(949,100)',
+        'SetRBearing(282,1)',
+    ],
+    'Main-Bold': [
+        'Select(0u2E)', 'Copy()',
+        'Select(0u22F1)', 'Clear()',
+        'PasteWithOffset(55,700)',
+        'PasteWithOffset(502,400)',
+        'PasteWithOffset(949,100)',
+        'SetRBearing(323,1)',
+    ],
+}), "\\ddots", true);
+defineSymbol(math, main, textord, g("\u22ee", {
+    'Main-Regular': [
+        'Select(0u2E)', 'Copy()',
+        'Select(0u22EE)', 'Clear()',
+        'PasteWithOffset(0,-30)',
+        'PasteWithOffset(0,380)',
+        'PasteWithOffset(0,780)',
+        'SetRBearing(-722,1)',
+    ],
+    'Main-Bold': [
+        'Select(0u2E)', 'Copy()',
+        'Select(0u22EE)', 'Clear()',
+        'PasteWithOffset(0,-30)',
+        'PasteWithOffset(0,380)',
+        'PasteWithOffset(0,780)',
+        'SetRBearing(-681,1)',
+    ],
+}), "\\varvdots"); // \vdots is a macro
+defineSymbol(math, main, accent, g("\u02ca", "acute"), "\\acute");
+defineSymbol(math, main, accent, g("\u02cb", "grave"), "\\grave");
 defineSymbol(math, main, accent, "\u00a8", "\\ddot");
 defineSymbol(math, main, accent, "\u007e", "\\tilde");
-defineSymbol(math, main, accent, "\u02c9", "\\bar");
+defineSymbol(math, main, accent, g("\u02c9", "macron"), "\\bar");
 defineSymbol(math, main, accent, "\u02d8", "\\breve");
 defineSymbol(math, main, accent, "\u02c7", "\\check");
 defineSymbol(math, main, accent, "\u005e", "\\hat");
-defineSymbol(math, main, accent, "\u20d7", "\\vec");
+defineSymbol(math, main, accent, g("\u20d7", {
+    cmmi: [, -653, 0, 153],
+    cmmib: [, -729, 0, 154],
+}), "\\vec");
 defineSymbol(math, main, accent, "\u02d9", "\\dot");
 defineSymbol(math, main, accent, "\u02da", "\\mathring");
 defineSymbol(math, main, mathord, "\u0131", "\\imath", true);
@@ -701,8 +1314,11 @@ defineSymbol(text, main, textord, "\u0152", "\\OE", true);
 defineSymbol(text, main, textord, "\u00d8", "\\O", true);
 defineSymbol(text, main, accent, "\u02ca", "\\'"); // acute
 defineSymbol(text, main, accent, "\u02cb", "\\`"); // grave
-defineSymbol(text, main, accent, "\u02c6", "\\^"); // circumflex
-defineSymbol(text, main, accent, "\u02dc", "\\~"); // tilde
+defineSymbol(text, main, accent, g("\u02c6", {
+    msbm: "hatwide",
+    cmex: "hat",
+}), "\\^"); // circumflex
+defineSymbol(text, main, accent, g("\u02dc", {msbm: "tildewide"}), "\\~"); // tilde
 defineSymbol(text, main, accent, "\u02c9", "\\="); // macron
 defineSymbol(text, main, accent, "\u02d8", "\\u"); // breve
 defineSymbol(text, main, accent, "\u02d9", "\\."); // dot above
@@ -733,7 +1349,16 @@ defineSymbol(text, main, textord, "\u201c", "\\textquotedblleft");
 defineSymbol(text, main, textord, "\u201d", "''");
 defineSymbol(text, main, textord, "\u201d", "\\textquotedblright");
 //  \degree from gensymb package
-defineSymbol(math, main, textord, "\u00b0", "\\degree", true);
+defineSymbol(math, main, textord, g("\u00b0", {
+    name: "ring",
+    cmr: [, -125, 0, -125],
+    cmti: [, -160, 0, -160],
+    cmbx: [, -147, 0, -147],
+    cmbxti: [, -160, 0],
+    cmss: [, -142, 0, -142],
+    cmssi: [, -113, 0, 113],
+    cmssbx: [, -58, 0, -58],
+}), "\\degree", true);
 defineSymbol(text, main, textord, "\u00b0", "\\degree");
 // \textdegree from inputenc package
 defineSymbol(text, main, textord, "\u00b0", "\\textdegree", true);
@@ -750,18 +1375,33 @@ defineSymbol(text, main, spacing, "\u00a0", "\\ ");
 defineSymbol(text, main, spacing, "\u00a0", " ");
 defineSymbol(text, main, spacing, "\u00a0", "~");
 
-// There are lots of symbols which are the same, so we add them in afterwards.
-// All of these are textords in math mode
-const mathTextSymbols = "0123456789/@.\"";
-for (let i = 0; i < mathTextSymbols.length; i++) {
-    const ch = mathTextSymbols.charAt(i);
-    defineSymbol(math, main, textord, ch, ch);
-}
+defineSymbol(math, main, textord, ".", ".");
+defineSymbol(math, main, textord, "/", "/");
+defineSymbol(math, main, textord, g('"', {
+    name: "quotedblright",
+    eufm: "quotedbl",
+    eufb: "quotedbl",
+}), '"');
+defineSymbol(math, main, textord, "@", "@");
+defineSymbol(text, main, textord, "*", "*");
 
+// There are lots of symbols which are the same, so we add them in afterwards.
 // All of these are textords in text mode
-const textSymbols = "0123456789!@*()-=+[]<>|\";:?/.,";
+const textSymbols = "!@()-=+[]<>|\";:?/.,";
 for (let i = 0; i < textSymbols.length; i++) {
     const ch = textSymbols.charAt(i);
+    defineSymbol(text, main, textord, ch, ch);
+}
+
+// Numerals are textords in both modes
+const numerals = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
+    'eight', 'nine'];
+for (let i = 0; i < 10; i++) {
+    const ch = i.toString();
+    defineSymbol(math, main, textord, g(ch, {
+        cmmi: numerals[i] + "oldstyle",
+        cmmib: numerals[i] + "oldstyle",
+    }), ch);
     defineSymbol(text, main, textord, ch, ch);
 }
 
@@ -894,3 +1534,78 @@ defineSymbol(text, main, textord, "\u2018", "‘");
 defineSymbol(text, main, textord, "\u2019", "’");
 defineSymbol(text, main, textord, "\u201c", "“");
 defineSymbol(text, main, textord, "\u201d", "”");
+
+g("\u0302", {
+    msbm: ["hatwide", -1889, 0],
+    // msbm: ["hatwider", -2333, 0],
+    cmex: ["hat", -556, 0, -1000, 0, -1444, 0],
+});
+g("\u0303", {
+    msbm: ["tildewide", -1889, 0],
+    // msbm: ["tildewider", -2333, 0],
+    cmex: ["tilde", -556, 0, -1000, 0, -1444, 0],
+});
+g("\u23d0", {cmex: ["arrowvertex", 0, 601]});
+g("\u2016", {cmex: ["arrowvertexdbl", 0, 601]});
+g("\u239b", {cmex: ["parenlefttp", 0, 1115]});
+g("\u239e", {cmex: ["parenrighttp", 0, 1115]});
+g("\u23a1", {cmex: ["bracketlefttp", 0, 1115]});
+g("\u23a4", {cmex: ["bracketrighttp", 0, 1115]});
+g("\u23a3", {cmex: ["bracketleftbt", 0, 1115]});
+g("\u23a6", {cmex: ["bracketrightbt", 0, 1115]});
+g("\u23a2", {cmex: ["bracketleftex", 0, 601]});
+g("\u23a5", {cmex: ["bracketrightex", 0, 601]});
+g("\u23a7", {cmex: ["bracelefttp", 0, 900]});
+g("\u23ab", {cmex: ["bracerighttp", 0, 900]});
+g("\u23a9", {cmex: "braceleftbt"});
+g("\u23ad", {cmex: "bracerightbt"});
+g("\u23a8", {cmex: ["braceleftmid", 0, 1115]});
+g("\u23ac", {cmex: ["bracerightmid", 0, 1115]});
+g("\u23aa", {cmex: ["braceex", 0, 300]});
+g("\u239d", {cmex: ["parenleftbt", 0, 1115]});
+g("\u23a0", {cmex: ["parenrightbt", 0, 1115]});
+g("\u239c", {cmex: ["parenleftex", 0, 600]});
+g("\u239f", {cmex: ["parenrightex", 0, 600]});
+g("\u23b7", {cmex: ["radicalbt", 0, 915]});
+g("\ue000", {cmex: ["radicalvertex", 0, 605]});
+g("\ue001", {cmex: ["radicaltp", 0, 565]});
+g("\ue150", {cmex: "bracehtipdownleft"});
+g("\ue151", {cmex: "bracehtipdownright"});
+g("\ue152", {cmex: "bracehtipupleft"});
+g("\ue153", {cmex: "bracehtipupright"});
+g("\ue153", {Size4: [ // braceext
+    'Open("lib/Extra.otf")',
+    'Select(0u5F)', 'Copy()',
+    'Open("otf/KaTeX_Size4-Regular.otf")',
+    'Select(0uE154)', 'Paste()',
+]});
+g("\u2002", { // spaceEn
+    'Main-Regular': ['SetRBearing(500)'],
+    'Main-Bold': ['SetRBearing(500)'],
+});
+g("\u2003", { // spaceEm
+    'Main-Regular': ['SetRBearing(999)'],
+    'Main-Bold': ['SetRBearing(999)'],
+});
+g("\u2004", { // space3
+    'Main-Regular': ['SetRBearing(333)'],
+    'Main-Bold': ['SetRBearing(333)'],
+});
+g("\u2005", { // space4
+    'Main-Regular': ['SetRBearing(250)'],
+    'Main-Bold': ['SetRBearing(250)'],
+});
+g("\u2006", { // space6
+    'Main-Regular': ['SetRBearing(167)'],
+    'Main-Bold': ['SetRBearing(167)'],
+});
+g("\u2009", { // thinspace
+    'Main-Regular': ['SetRBearing(167)'],
+    'Main-Bold': ['SetRBearing(167)'],
+});
+g("\u200a", { // hairspace
+    'Main-Regular': ['SetRBearing(83)'],
+    'Main-Bold': ['SetRBearing(83)'],
+});
+g("\u0020", {Typewriter: ['SetRBearing(525)']}); // space
+g("\u00a0", {Typewriter: ['SetRBearing(525)']}); // nbspace
