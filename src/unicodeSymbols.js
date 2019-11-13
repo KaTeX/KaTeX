@@ -2,8 +2,7 @@
 // whose purpose is to generate `unicodeSymbols` in Parser.js
 // In this way, only this module, and not the distribution/browser,
 // needs String's normalize function.
-require('@babel/register');
-const accents = require('./unicodeAccents').default;
+const accents = require('./unicodeAccents');
 
 const result = {};
 const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" +

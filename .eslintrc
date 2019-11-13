@@ -85,7 +85,7 @@
     },
     "overrides": [{
         "files": ["katex.js", "src/**/*.js", "contrib/**/*.js"],
-        "excludedFiles": ["*-spec.js", "unicodeSymbols.js"],
+        "excludedFiles": ["*-spec.js", "unicodeAccents.js", "unicodeSymbols.js"],
         "rules": {
             "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"],
             "transform-runtime-aliasing/no-transform-runtime-aliasing": [2, {
