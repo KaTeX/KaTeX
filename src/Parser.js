@@ -6,7 +6,7 @@ import symbols, {ATOMS, extraLatin} from "./symbols";
 import {validUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
-import unicodeSymbols from "./unicodeSymbols";
+import unicodeSymbols from /*preval*/ "./unicodeSymbols"; // pre-evaluate
 import {checkNodeType} from "./parseNode";
 import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer";
