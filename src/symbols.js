@@ -738,11 +738,11 @@ defineSymbol(text, main, textord, "\u00b0", "\\degree");
 // \textdegree from inputenc package
 defineSymbol(text, main, textord, "\u00b0", "\\textdegree", true);
 // TODO: In LaTeX, \pounds can generate a different character in text and math
-// mode, but among our fonts, only Main-Italic defines this character "163".
-defineSymbol(math, main, mathord, "\u00a3", "\\pounds");
-defineSymbol(math, main, mathord, "\u00a3", "\\mathsterling", true);
-defineSymbol(text, main, mathord, "\u00a3", "\\pounds");
-defineSymbol(text, main, mathord, "\u00a3", "\\textsterling", true);
+// mode, but among our fonts, only Main-Regular defines this character "163".
+defineSymbol(math, main, textord, "\u00a3", "\\pounds");
+defineSymbol(math, main, textord, "\u00a3", "\\mathsterling", true);
+defineSymbol(text, main, textord, "\u00a3", "\\pounds");
+defineSymbol(text, main, textord, "\u00a3", "\\textsterling", true);
 defineSymbol(math, ams, textord, "\u2720", "\\maltese");
 defineSymbol(text, ams, textord, "\u2720", "\\maltese");
 
