@@ -121,30 +121,6 @@ const mathsym = function(
 };
 
 /**
- * Determines which of the two font names (Main-Italic and Math-Italic) and
- * corresponding style tags (maindefault or mathit) to use for default math font,
- * depending on the symbol.
- */
-const mathdefault = function(
-    value: string,
-    mode: Mode,
-    options: Options,
-    classes: string[],
-): {| fontName: string, fontClass: string |} {
-    if (/[0-9]/.test(value.charAt(0))) {
-        return {
-            fontName: "Main-Italic",
-            fontClass: "mathit",
-        };
-    } else {
-        return {
-            fontName: "Math-Italic",
-            fontClass: "mathnormal",
-        };
-    }
-};
-
-/**
  * Determines which of the two font names (Main-Bold and Math-BoldItalic) and
  * corresponding style tags (mathbf or boldsymbol) to use for font "boldsymbol",
  * depending on the symbol.  Use this function instead of fontMap for font
@@ -156,7 +132,8 @@ const boldsymbol = function(
     options: Options,
     classes: string[],
 ): {| fontName: string, fontClass: string |} {
-    if (lookupSymbol(value, "Math-BoldItalic", mode).metrics) {
+    if (!(/[0-9]/.test(value.charAt(0))) &&
+            lookupSymbol(value, "Math-BoldItalic", mode).metrics) {
         return {
             fontName: "Math-BoldItalic",
             fontClass: "boldsymbol",
@@ -225,9 +202,8 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
 
     // Makes a symbol in the default font for mathords and textords.
     if (type === "mathord") {
-        const fontLookup = mathdefault(text, mode, options, classes);
-        return makeSymbol(text, fontLookup.fontName, mode, options,
-            classes.concat([fontLookup.fontClass]));
+        return makeSymbol(text, "Math-Italic", mode, options,
+            classes.concat(["mathnormal"]));
     } else if (type === "textord") {
         const font = symbols[mode][text] && symbols[mode][text].font;
         if (font === "ams") {
@@ -711,11 +687,9 @@ const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
         fontName: "Math-Italic",
     },
 
-    // Default math font and "boldsymbol" are missing because they require
-    // the use of several fonts: Main-Italic and Math-Italic for default
-    // math font and Math-BoldItalic and Main-Bold for "boldsymbol".
-    // This is handled by a special case in makeOrd which ends up calling
-    // mathdefault and boldsymbol.
+    // "boldsymbol" are missing because they require the use of several fonts:
+    // Math-BoldItalic and Main-Bold.  This is handled by a special case in
+    // makeOrd which ends up calling boldsymbol.
 
     // families
     "mathbb": {
