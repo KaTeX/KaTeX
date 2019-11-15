@@ -687,8 +687,10 @@ defineSymbol(math, main, accent, "\u005e", "\\hat");
 defineSymbol(math, main, accent, "\u20d7", "\\vec");
 defineSymbol(math, main, accent, "\u02d9", "\\dot");
 defineSymbol(math, main, accent, "\u02da", "\\mathring");
-defineSymbol(math, main, mathord, "\u0131", "\\imath", true);
-defineSymbol(math, main, mathord, "\u0237", "\\jmath", true);
+defineSymbol(math, main, mathord, "\ue131", "\\@imath"); // these differ from
+defineSymbol(math, main, mathord, "\ue237", "\\@jmath"); // \i, \j so use PUA
+defineSymbol(math, main, textord, "\u0131", "\u0131");
+defineSymbol(math, main, textord, "\u0237", "\u0237");
 defineSymbol(text, main, textord, "\u0131", "\\i", true);
 defineSymbol(text, main, textord, "\u0237", "\\j", true);
 defineSymbol(text, main, textord, "\u00df", "\\ss", true);

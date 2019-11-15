@@ -1833,7 +1833,7 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1859,7 +1859,7 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1885,7 +1885,7 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
