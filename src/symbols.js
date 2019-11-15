@@ -1315,10 +1315,24 @@ defineSymbol(text, main, textord, "\u00d8", "\\O", true);
 defineSymbol(text, main, accent, "\u02ca", "\\'"); // acute
 defineSymbol(text, main, accent, "\u02cb", "\\`"); // grave
 defineSymbol(text, main, accent, g("\u02c6", {
-    msbm: "hatwide",
+    Size4: [ // hatwide
+        'Open("pfa/msbm10.pfa")',
+        'Select(0x5B)', 'Copy()',
+        'Open("otf/KaTeX_Size4-Regular.otf")',
+        'Select(0u302)', 'Paste()',
+    ],
+    msbm: "hatwider",
     cmex: "hat",
 }), "\\^"); // circumflex
-defineSymbol(text, main, accent, g("\u02dc", {msbm: "tildewide"}), "\\~"); // tilde
+defineSymbol(text, main, accent, g("\u02dc", {
+    Size4: [ // tildewide
+        'Open("pfa/msbm10.pfa")',
+        'Select(0x5D)', 'Copy()',
+        'Open("otf/KaTeX_Size4-Regular.otf")',
+        'Select(0u303)', 'Paste()',
+    ],
+    msbm: "tildewider",
+}), "\\~"); // tilde
 defineSymbol(text, main, accent, "\u02c9", "\\="); // macron
 defineSymbol(text, main, accent, "\u02d8", "\\u"); // breve
 defineSymbol(text, main, accent, "\u02d9", "\\."); // dot above
@@ -1536,13 +1550,25 @@ defineSymbol(text, main, textord, "\u201c", "“");
 defineSymbol(text, main, textord, "\u201d", "”");
 
 g("\u0302", {
-    msbm: ["hatwide", -1889, 0],
-    // msbm: ["hatwider", -2333, 0],
+    Size4: [ // hatwide
+        'Open("pfa/msbm10.pfa")',
+        'Select(0x5B)', 'Copy()',
+        'Open("otf/KaTeX_Size4-Regular.otf")',
+        'Select(0u302)', 'Paste()',
+        'Move(-1889, 0)',
+    ],
+    msbm: ["hatwider", -2333, 0],
     cmex: ["hat", -556, 0, -1000, 0, -1444, 0],
 });
 g("\u0303", {
-    msbm: ["tildewide", -1889, 0],
-    // msbm: ["tildewider", -2333, 0],
+    Size4: [ // tildewide
+        'Open("pfa/msbm10.pfa")',
+        'Select(0x5D)', 'Copy()',
+        'Open("otf/KaTeX_Size4-Regular.otf")',
+        'Select(0u303)', 'Paste()',
+        'Move(-1889, 0)',
+    ],
+    msbm: ["tildewider", -2333, 0],
     cmex: ["tilde", -556, 0, -1000, 0, -1444, 0],
 });
 g("\u23d0", {cmex: ["arrowvertex", 0, 601]});
