@@ -751,11 +751,14 @@ defineEnvironment({
 // \left\{\begin{array}{@{}l@{\quad}l@{}} … \end{array}\right.
 // {dcases} is a {cases} environment where cells are set in \displaystyle,
 // as defined in mathtools.sty.
+// {rcases} is another mathtools environment. It's brace is on the right side.
 defineEnvironment({
     type: "array",
     names: [
         "cases",
         "dcases",
+        "rcases",
+        "drcases",
     ],
     props: {
         numArgs: 0,
@@ -785,8 +788,8 @@ defineEnvironment({
             type: "leftright",
             mode: context.mode,
             body: [res],
-            left: "\\{",
-            right: ".",
+            left: context.envName.indexOf("r") > -1 ? "." : "\\{",
+            right: context.envName.indexOf("r") > -1 ? "\\}" : ".",
             rightColor: undefined,
         };
     },

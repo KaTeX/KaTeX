@@ -17,8 +17,6 @@ export const assembleSupSub = (
     slant: number,
     baseShift: number,
 ): DomSpan => {
-    // IE 8 clips \int if it is in a display: inline-block. We wrap it
-    // in a new span so it is an inline, and works.
     base = buildCommon.makeSpan([], [base]);
     let sub;
     let sup;
