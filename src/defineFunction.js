@@ -1,6 +1,4 @@
 // @flow
-import {checkNodeType} from "./parseNode";
-
 import type Parser from "./Parser";
 import type {ParseNode, AnyParseNode, NodeType, UnsupportedCmdParseNode}
     from "./parseNode";
@@ -228,6 +226,5 @@ export function defineFunctionBuilders<NODETYPE: NodeType>({
 // Since the corresponding buildHTML/buildMathML function expects a
 // list of elements, we normalize for different kinds of arguments
 export const ordargument = function(arg: AnyParseNode): AnyParseNode[] {
-    const node = checkNodeType(arg, "ordgroup");
-    return node ? node.body : [arg];
+    return arg.type === "ordgroup" ? arg.body : [arg];
 };
