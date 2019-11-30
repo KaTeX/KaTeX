@@ -582,7 +582,7 @@ describe("An over/brace/brack parser", function() {
         expect(numer.body).toHaveLength(4);
     });
 
-    it("should create a demonimator from the atoms after \\over", function() {
+    it("should create a denominator from the atoms after \\over", function() {
         const parse = getParsed(complexOver)[0];
 
         const denom = parse.denom;
