@@ -183,6 +183,8 @@ table td {
 |\boxminus|$\boxminus$||
 |\boxplus|$\boxplus$||
 |\boxtimes|$\boxtimes$||
+|\bra|$\mathinner{\langle{\psi}|}$|`\ket{\psi}`|
+|\braket|$\mathinner{\langle{\phi|\psi}\rangle}$|`\braket{\phi|\psi}`|
 |\brace|${n\brace k}$|`{n\brace k}`|
 |\bracevert|<span style="color:firebrick;">Not supported</span>||
 |\brack|${n\brack k}$|`{n\brack k}`|
@@ -507,6 +509,8 @@ use `\ce` instead|
 |\KaTeX|$\KaTeX$||
 |\ker|$\ker$||
 |\kern|$I\kern-2.5pt R$|`I\kern-2.5pt R`|
+|\ket|$\mathinner{|{\psi}\rangle}$|`\ket{\psi}`|
+|\ketbra|$\mathinner{|{\phi}\rangle\langle{\psi}|}$|`\ketbbra{\phi}{\psi}`|
 |\Koppa|<span style="color:firebrick;">Not supported</span>||
 |\koppa|<span style="color:firebrick;">Not supported</span>||
 
