@@ -510,7 +510,7 @@ use `\ce` instead|
 |\ker|$\ker$||
 |\kern|$I\kern-2.5pt R$|`I\kern-2.5pt R`|
 |\ket|$\mathinner{|{\psi}\rangle}$|`\ket{\psi}`|
-|\ketbra|$\mathinner{|{\phi}\rangle\langle{\psi}|}$|`\ketbbra{\phi}{\psi}`|
+|\ketbra|$\mathinner{|{\phi}\rangle\langle{\psi}|}$|`\ketbra{\phi}{\psi}`|
 |\Koppa|<span style="color:firebrick;">Not supported</span>||
 |\koppa|<span style="color:firebrick;">Not supported</span>||
 
