@@ -4,8 +4,8 @@ not dead
 
 # Browsers with more than 0.1% global usage, excluding old browsers
 > 0.1%
-not chrome < 45
-not ie < 9
+not ie < 11
+not safari < 9
 
 # Currently maintained Node.js versions
 maintained node versions
