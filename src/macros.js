@@ -5,6 +5,7 @@
  */
 
 import fontMetricsData from "../submodules/katex-fonts/fontMetricsData";
+import functions from "./functions";
 import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
@@ -299,6 +300,28 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
 defineMacro("\\newcommand", (context) => newcommand(context, false, true));
 defineMacro("\\renewcommand", (context) => newcommand(context, true, false));
 defineMacro("\\providecommand", (context) => newcommand(context, true, true));
+
+// terminal (console) tools
+defineMacro("\\message", (context) => {
+    const arg = context.consumeArgs(1)[0];
+    // eslint-disable-next-line no-console
+    console.log(arg.reverse().map(token => token.text).join(""));
+    return '';
+});
+defineMacro("\\errmessage", (context) => {
+    const arg = context.consumeArgs(1)[0];
+    // eslint-disable-next-line no-console
+    console.error(arg.reverse().map(token => token.text).join(""));
+    return '';
+});
+defineMacro("\\show", (context) => {
+    const tok = context.popToken();
+    const name = tok.text;
+    // eslint-disable-next-line no-console
+    console.log(tok, context.macros.get(name), functions[name],
+        symbols.math[name], symbols.text[name]);
+    return '';
+});
 
 //////////////////////////////////////////////////////////////////////
 // Grouping

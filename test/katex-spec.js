@@ -3732,3 +3732,23 @@ describe("Extending katex by new fonts and symbols", function() {
         expect(katex.renderToString("۹۹^{۱۱}")).toMatchSnapshot();
     });
 });
+
+describe("debugging macros", () => {
+    describe("message", () => {
+        it("should print the argument using console.log", () => {
+            jest.spyOn(console, "log");
+            expect`\message{Hello, world}`.toParse();
+            // eslint-disable-next-line no-console
+            expect(console.log.mock.calls[0][0]).toEqual("Hello, world");
+        });
+    });
+
+    describe("errmessage", () => {
+        it("should print the argument using console.error", () => {
+            jest.spyOn(console, "error");
+            expect`\errmessage{Hello, world}`.toParse();
+            // eslint-disable-next-line no-console
+            expect(console.error.mock.calls[0][0]).toEqual("Hello, world");
+        });
+    });
+});
