@@ -624,6 +624,226 @@ exports[`A parser that does not throw on unsupported commands should properly es
 
 `;
 
+exports[`An HTML extension builder should not affect spacing 1`] = `
+[
+  {
+    "attributes": {
+      "id": "a"
+    },
+    "children": [
+      {
+        "classes": [
+          "mord",
+          "mathdefault"
+        ],
+        "depth": 0,
+        "height": 0.43056,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0.02778,
+        "style": {
+        },
+        "text": "x",
+        "width": 0.57153
+      },
+      {
+        "attributes": {
+        },
+        "children": [
+        ],
+        "classes": [
+          "mspace"
+        ],
+        "depth": 0,
+        "height": 0,
+        "maxFontSize": 0,
+        "style": {
+          "marginRight": "0.2222222222222222em"
+        }
+      },
+      {
+        "classes": [
+          "mbin"
+        ],
+        "depth": 0.08333,
+        "height": 0.58333,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0,
+        "style": {
+        },
+        "text": "+",
+        "width": 0.77778
+      },
+      {
+        "attributes": {
+        },
+        "children": [
+        ],
+        "classes": [
+          "mspace"
+        ],
+        "depth": 0,
+        "height": 0,
+        "maxFontSize": 0,
+        "style": {
+          "marginRight": "0.2222222222222222em"
+        }
+      }
+    ],
+    "classes": [
+      "enclosing"
+    ],
+    "depth": 0.08333,
+    "height": 0.58333,
+    "maxFontSize": 1,
+    "style": {
+    }
+  },
+  {
+    "classes": [
+      "mord",
+      "mathdefault"
+    ],
+    "depth": 0.19444,
+    "height": 0.43056,
+    "italic": 0.03588,
+    "maxFontSize": 1,
+    "skew": 0.05556,
+    "style": {
+    },
+    "text": "y",
+    "width": 0.49028
+  }
+]
+`;
+
+exports[`An HTML extension builder should render with trust and strict setting 1`] = `
+[
+  {
+    "attributes": {
+      "id": "bar"
+    },
+    "children": [
+      {
+        "classes": [
+          "mord",
+          "mathdefault"
+        ],
+        "depth": 0,
+        "height": 0.43056,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0.02778,
+        "style": {
+        },
+        "text": "x",
+        "width": 0.57153
+      }
+    ],
+    "classes": [
+      "enclosing"
+    ],
+    "depth": 0,
+    "height": 0.43056,
+    "maxFontSize": 1,
+    "style": {
+    }
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+      {
+        "classes": [
+          "mord",
+          "mathdefault"
+        ],
+        "depth": 0,
+        "height": 0.43056,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0.02778,
+        "style": {
+        },
+        "text": "x",
+        "width": 0.57153
+      }
+    ],
+    "classes": [
+      "enclosing",
+      "foo"
+    ],
+    "depth": 0,
+    "height": 0.43056,
+    "maxFontSize": 1,
+    "style": {
+    }
+  },
+  {
+    "attributes": {
+      "style": "color: red;"
+    },
+    "children": [
+      {
+        "classes": [
+          "mord",
+          "mathdefault"
+        ],
+        "depth": 0,
+        "height": 0.43056,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0.02778,
+        "style": {
+        },
+        "text": "x",
+        "width": 0.57153
+      }
+    ],
+    "classes": [
+      "enclosing"
+    ],
+    "depth": 0,
+    "height": 0.43056,
+    "maxFontSize": 1,
+    "style": {
+    }
+  },
+  {
+    "attributes": {
+      "data-bar": "b",
+      "data-foo": "a"
+    },
+    "children": [
+      {
+        "classes": [
+          "mord",
+          "mathdefault"
+        ],
+        "depth": 0,
+        "height": 0.43056,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0.02778,
+        "style": {
+        },
+        "text": "x",
+        "width": 0.57153
+      }
+    ],
+    "classes": [
+      "enclosing"
+    ],
+    "depth": 0,
+    "height": 0.43056,
+    "maxFontSize": 1,
+    "style": {
+    }
+  }
+]
+`;
+
 exports[`An implicit group parser within optional groups should work style commands \\sqrt[\\textstyle 3]{x} 1`] = `
 [
   {

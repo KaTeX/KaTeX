@@ -582,10 +582,10 @@ describe("An over/brace/brack parser", function() {
         expect(numer.body).toHaveLength(4);
     });
 
-    it("should create a demonimator from the atoms after \\over", function() {
+    it("should create a denominator from the atoms after \\over", function() {
         const parse = getParsed(complexOver)[0];
 
-        const denom = parse.numer;
+        const denom = parse.denom;
         expect(denom.body).toHaveLength(4);
     });
 
@@ -2011,6 +2011,36 @@ describe("An includegraphics builder", function() {
     });
 });
 
+describe("An HTML extension builder", function() {
+    const html =
+        "\\htmlId{bar}{x}\\htmlClass{foo}{x}\\htmlStyle{color: red;}{x}\\htmlData{foo=a, bar=b}{x}";
+    const trustNonStrictSettings = new Settings({trust: true, strict: false});
+    it("should not fail", function() {
+        expect(html).toBuild(trustNonStrictSettings);
+    });
+
+    it("should set HTML attributes", function() {
+        const built = getBuilt(html, trustNonStrictSettings);
+        expect(built[0].attributes.id).toMatch("bar");
+        expect(built[1].classes).toContain("foo");
+        expect(built[2].attributes.style).toMatch("color: red");
+        expect(built[3].attributes).toEqual({
+            "data-bar": "b",
+            "data-foo": "a",
+        });
+    });
+
+    it("should not affect spacing", function() {
+        const built = getBuilt("\\htmlId{a}{x+}y", trustNonStrictSettings);
+        expect(built).toMatchSnapshot();
+    });
+
+    it("should render with trust and strict setting", function() {
+        const built = getBuilt(html, trustNonStrictSettings);
+        expect(built).toMatchSnapshot();
+    });
+});
+
 describe("A bin builder", function() {
     it("should create mbins normally", function() {
         const built = getBuilt`x + y`;
@@ -2642,6 +2672,15 @@ describe("A cases environment", function() {
     it("should parse its input", function() {
         expect`f(a,b)=\begin{cases}a+1&\text{if }b\text{ is odd}\\a&\text{if }b=0\\a-1&\text{otherwise}\end{cases}`
             .toParse();
+    });
+
+});
+
+describe("An rcases environment", function() {
+
+    it("should build", function() {
+        expect`\begin{rcases} a &\text{if } b \\ c &\text{if } d \end{rcases}⇒…`
+            .toBuild();
     });
 
 });
@@ -3691,5 +3730,25 @@ describe("Extending katex by new fonts and symbols", function() {
     });
     it("Add new font class to new extended symbols", () => {
         expect(katex.renderToString("۹۹^{۱۱}")).toMatchSnapshot();
+    });
+});
+
+describe("debugging macros", () => {
+    describe("message", () => {
+        it("should print the argument using console.log", () => {
+            jest.spyOn(console, "log");
+            expect`\message{Hello, world}`.toParse();
+            // eslint-disable-next-line no-console
+            expect(console.log.mock.calls[0][0]).toEqual("Hello, world");
+        });
+    });
+
+    describe("errmessage", () => {
+        it("should print the argument using console.error", () => {
+            jest.spyOn(console, "error");
+            expect`\errmessage{Hello, world}`.toParse();
+            // eslint-disable-next-line no-console
+            expect(console.error.mock.calls[0][0]).toEqual("Hello, world");
+        });
     });
 });

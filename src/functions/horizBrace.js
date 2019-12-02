@@ -4,7 +4,7 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import stretchy from "../stretchy";
 import Style from "../Style";
-import {assertNodeType, checkNodeType} from "../parseNode";
+import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -20,15 +20,14 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
     // Pull out the `ParseNode<"horizBrace">` if `grp` is a "supsub" node.
     let supSubGroup;
     let group: ParseNode<"horizBrace">;
-    const supSub = checkNodeType(grp, "supsub");
-    if (supSub) {
+    if (grp.type === "supsub") {
         // Ref: LaTeX source2e: }}}}\limits}
         // i.e. LaTeX treats the brace similar to an op and passes it
         // with \limits, so we need to assign supsub style.
-        supSubGroup = supSub.sup ?
-            html.buildGroup(supSub.sup, options.havingStyle(style.sup()), options) :
-            html.buildGroup(supSub.sub, options.havingStyle(style.sub()), options);
-        group = assertNodeType(supSub.base, "horizBrace");
+        supSubGroup = grp.sup ?
+            html.buildGroup(grp.sup, options.havingStyle(style.sup()), options) :
+            html.buildGroup(grp.sub, options.havingStyle(style.sub()), options);
+        group = assertNodeType(grp.base, "horizBrace");
     } else {
         group = assertNodeType(grp, "horizBrace");
     }

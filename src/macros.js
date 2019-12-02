@@ -5,6 +5,7 @@
  */
 
 import fontMetricsData from "../submodules/katex-fonts/fontMetricsData";
+import functions from "./functions";
 import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
@@ -247,6 +248,28 @@ defineMacro("\\newcommand", (context) => newcommand(context, false, true));
 defineMacro("\\renewcommand", (context) => newcommand(context, true, false));
 defineMacro("\\providecommand", (context) => newcommand(context, true, true));
 
+// terminal (console) tools
+defineMacro("\\message", (context) => {
+    const arg = context.consumeArgs(1)[0];
+    // eslint-disable-next-line no-console
+    console.log(arg.reverse().map(token => token.text).join(""));
+    return '';
+});
+defineMacro("\\errmessage", (context) => {
+    const arg = context.consumeArgs(1)[0];
+    // eslint-disable-next-line no-console
+    console.error(arg.reverse().map(token => token.text).join(""));
+    return '';
+});
+defineMacro("\\show", (context) => {
+    const tok = context.popToken();
+    const name = tok.text;
+    // eslint-disable-next-line no-console
+    console.log(tok, context.macros.get(name), functions[name],
+        symbols.math[name], symbols.text[name]);
+    return '';
+});
+
 //////////////////////////////////////////////////////////////////////
 // Grouping
 // \let\bgroup={ \let\egroup=}
@@ -351,6 +374,13 @@ defineMacro("\u231F", "\\lrcorner");
 defineMacro("\u00A9", "\\copyright");
 defineMacro("\u00AE", "\\textregistered");
 defineMacro("\uFE0F", "\\textregistered");
+
+// The KaTeX fonts have corners at codepoints that don't match Unicode.
+// For MathML purposes, use the Unicode code point.
+defineMacro("\\ulcorner", "\\html@mathml{\\@ulcorner}{\\mathop{\\char\"231c}}");
+defineMacro("\\urcorner", "\\html@mathml{\\@urcorner}{\\mathop{\\char\"231d}}");
+defineMacro("\\llcorner", "\\html@mathml{\\@llcorner}{\\mathop{\\char\"231e}}");
+defineMacro("\\lrcorner", "\\html@mathml{\\@lrcorner}{\\mathop{\\char\"231f}}");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX_2ε
