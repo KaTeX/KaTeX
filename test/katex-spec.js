@@ -3156,6 +3156,11 @@ describe("A macro expander", function() {
         //expect`\gdef{\foo}{}`.not.toParse();
     });
 
+    it("\\def should be handled in Parser", () => {
+        expect`\gdef\foo{1}`.toParse(new Settings({maxExpand: 0}));
+        expect`2^\def\foo{1}2`.not.toParse();
+    });
+
     it("\\def works locally", () => {
         expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\def\\x{3}\\x}\\x}\\x")
             .toParseLike`1{2{3}2}1`;
@@ -3562,10 +3567,9 @@ describe("The maxSize setting", function() {
 
 describe("The maxExpand setting", () => {
     it("should prevent expansion", () => {
-        expect`\gdef\foo{1}\foo\foo`.toParse();
-        expect`\gdef\foo{1}\foo\foo`.toParse(new Settings({maxExpand: 2}));
-        expect`\gdef\foo{1}\foo\foo`.not.toParse(new Settings({maxExpand: 1}));
-        expect`\gdef\foo{1}\foo\foo`.not.toParse(new Settings({maxExpand: 0}));
+        expect`\gdef\foo{1}\foo`.toParse();
+        expect`\gdef\foo{1}\foo`.toParse(new Settings({maxExpand: 1}));
+        expect`\gdef\foo{1}\foo`.not.toParse(new Settings({maxExpand: 0}));
     });
 
     it("should prevent infinite loops", () => {
