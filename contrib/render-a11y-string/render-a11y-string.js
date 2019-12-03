@@ -656,6 +656,7 @@ const handleObject = (
         }
 
         case "internal": {
+            // internal nodes are never included in the parse tree
             break;
         }
 
