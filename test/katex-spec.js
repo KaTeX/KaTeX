@@ -3179,8 +3179,7 @@ describe("A macro expander", function() {
 
     it("\\global needs to followed by \\def", () => {
         expect`\global\def\foo{}\foo`.toParseLike``;
-        // TODO: This doesn't work yet; \global needs to expand argument.
-        //expect`\def\DEF{\def}\global\DEF\foo{}\foo`.toParseLike``;
+        expect`\def\DEF{\def}\global\DEF\foo{}\foo`.toParseLike``;
         expect`\global\foo`.not.toParse();
         expect`\global\bar x`.not.toParse();
     });
