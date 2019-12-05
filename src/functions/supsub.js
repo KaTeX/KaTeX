@@ -5,7 +5,6 @@ import {SymbolNode} from "../domTree";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import Style from "../Style";
-import {checkNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -197,12 +196,11 @@ defineFunctionBuilders({
         let isOver;
         let isSup;
 
-        const horizBrace = checkNodeType(group.base, "horizBrace");
-        if (horizBrace) {
+        if (group.base && group.base.type === "horizBrace") {
             isSup = !!group.sup;
-            if (isSup === horizBrace.isOver) {
+            if (isSup === group.base.isOver) {
                 isBrace = true;
-                isOver = horizBrace.isOver;
+                isOver = group.base.isOver;
             }
         }
 

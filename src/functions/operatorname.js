@@ -4,7 +4,7 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import {SymbolNode} from "../domTree";
 import {assembleSupSub} from "./utils/assembleSupSub";
-import {assertNodeType, checkNodeType} from "../parseNode";
+import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -21,14 +21,13 @@ export const htmlBuilder: HtmlBuilderSupSub<"operatorname"> = (grp, options) => 
     let subGroup;
     let hasLimits = false;
     let group: ParseNode<"operatorname">;
-    const supSub = checkNodeType(grp, "supsub");
-    if (supSub) {
+    if (grp.type === "supsub") {
         // If we have limits, supsub will pass us its group to handle. Pull
         // out the superscript and subscript and set the group to the op in
         // its base.
-        supGroup = supSub.sup;
-        subGroup = supSub.sub;
-        group = assertNodeType(supSub.base, "operatorname");
+        supGroup = grp.sup;
+        subGroup = grp.sub;
+        group = assertNodeType(grp.base, "operatorname");
         hasLimits = true;
     } else {
         group = assertNodeType(grp, "operatorname");
