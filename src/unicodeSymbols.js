@@ -1,10 +1,12 @@
+// @flow
 // This is an internal module, not part of the KaTeX distribution,
 // whose purpose is to generate `unicodeSymbols` in Parser.js
 // In this way, only this module, and not the distribution/browser,
-// needs String's normalize function.
+// needs String's normalize function. As this file is not transpiled,
+// Flow comment types syntax is used.
 const accents = require('./unicodeAccents');
 
-const result = {};
+const result /*: {[string]: string}*/ = {};
 const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" +
     "αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψωΓΔΘΛΞΠΣΥΦΨΩ";
 for (const letter of letters) {
