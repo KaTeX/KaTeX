@@ -302,6 +302,11 @@ type ParseNodeTypes = {
         size?: Measurement,
         token: ?Token,
     |},
+    "internal": {|
+        type: "internal",
+        mode: Mode,
+        loc?: ?SourceLocation,
+    |},
     "kern": {|
         type: "kern",
         mode: Mode,
