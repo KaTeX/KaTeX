@@ -168,7 +168,7 @@ const siteConfig = {
     copyright:
     'Copyright © ' +
     new Date().getFullYear() +
-    ' Khan Academy',
+    ' Khan Academy and other contributors',
 
     highlight: {
         // Highlight.js theme to use for syntax highlighting in code blocks

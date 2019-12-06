@@ -582,10 +582,10 @@ describe("An over/brace/brack parser", function() {
         expect(numer.body).toHaveLength(4);
     });
 
-    it("should create a demonimator from the atoms after \\over", function() {
+    it("should create a denominator from the atoms after \\over", function() {
         const parse = getParsed(complexOver)[0];
 
-        const denom = parse.numer;
+        const denom = parse.denom;
         expect(denom.body).toHaveLength(4);
     });
 
@@ -2005,6 +2005,36 @@ describe("An includegraphics builder", function() {
     });
 });
 
+describe("An HTML extension builder", function() {
+    const html =
+        "\\htmlId{bar}{x}\\htmlClass{foo}{x}\\htmlStyle{color: red;}{x}\\htmlData{foo=a, bar=b}{x}";
+    const trustNonStrictSettings = new Settings({trust: true, strict: false});
+    it("should not fail", function() {
+        expect(html).toBuild(trustNonStrictSettings);
+    });
+
+    it("should set HTML attributes", function() {
+        const built = getBuilt(html, trustNonStrictSettings);
+        expect(built[0].attributes.id).toMatch("bar");
+        expect(built[1].classes).toContain("foo");
+        expect(built[2].attributes.style).toMatch("color: red");
+        expect(built[3].attributes).toEqual({
+            "data-bar": "b",
+            "data-foo": "a",
+        });
+    });
+
+    it("should not affect spacing", function() {
+        const built = getBuilt("\\htmlId{a}{x+}y", trustNonStrictSettings);
+        expect(built).toMatchSnapshot();
+    });
+
+    it("should render with trust and strict setting", function() {
+        const built = getBuilt(html, trustNonStrictSettings);
+        expect(built).toMatchSnapshot();
+    });
+});
+
 describe("A bin builder", function() {
     it("should create mbins normally", function() {
         const built = getBuilt`x + y`;
@@ -2623,6 +2653,15 @@ describe("A cases environment", function() {
 
 });
 
+describe("An rcases environment", function() {
+
+    it("should build", function() {
+        expect`\begin{rcases} a &\text{if } b \\ c &\text{if } d \end{rcases}⇒…`
+            .toBuild();
+    });
+
+});
+
 describe("An aligned environment", function() {
 
     it("should parse its input", function() {
@@ -3094,6 +3133,11 @@ describe("A macro expander", function() {
         //expect`\gdef{\foo}{}`.not.toParse();
     });
 
+    it("\\def should be handled in Parser", () => {
+        expect`\gdef\foo{1}`.toParse(new Settings({maxExpand: 0}));
+        expect`2^\def\foo{1}2`.not.toParse();
+    });
+
     it("\\def works locally", () => {
         expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\def\\x{3}\\x}\\x}\\x")
             .toParseLike`1{2{3}2}1`;
@@ -3112,8 +3156,7 @@ describe("A macro expander", function() {
 
     it("\\global needs to followed by \\def", () => {
         expect`\global\def\foo{}\foo`.toParseLike``;
-        // TODO: This doesn't work yet; \global needs to expand argument.
-        //expect`\def\DEF{\def}\global\DEF\foo{}\foo`.toParseLike``;
+        expect`\def\DEF{\def}\global\DEF\foo{}\foo`.toParseLike``;
         expect`\global\foo`.not.toParse();
         expect`\global\bar x`.not.toParse();
     });
@@ -3501,8 +3544,7 @@ describe("The maxSize setting", function() {
 describe("The maxExpand setting", () => {
     it("should prevent expansion", () => {
         expect`\gdef\foo{1}\foo`.toParse();
-        expect`\gdef\foo{1}\foo`.toParse(new Settings({maxExpand: 2}));
-        expect`\gdef\foo{1}\foo`.not.toParse(new Settings({maxExpand: 1}));
+        expect`\gdef\foo{1}\foo`.toParse(new Settings({maxExpand: 1}));
         expect`\gdef\foo{1}\foo`.not.toParse(new Settings({maxExpand: 0}));
     });
 
@@ -3668,5 +3710,25 @@ describe("Extending katex by new fonts and symbols", function() {
     });
     it("Add new font class to new extended symbols", () => {
         expect(katex.renderToString("۹۹^{۱۱}")).toMatchSnapshot();
+    });
+});
+
+describe("debugging macros", () => {
+    describe("message", () => {
+        it("should print the argument using console.log", () => {
+            jest.spyOn(console, "log");
+            expect`\message{Hello, world}`.toParse();
+            // eslint-disable-next-line no-console
+            expect(console.log.mock.calls[0][0]).toEqual("Hello, world");
+        });
+    });
+
+    describe("errmessage", () => {
+        it("should print the argument using console.error", () => {
+            jest.spyOn(console, "error");
+            expect`\errmessage{Hello, world}`.toParse();
+            // eslint-disable-next-line no-console
+            expect(console.error.mock.calls[0][0]).toEqual("Hello, world");
+        });
     });
 });

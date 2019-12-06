@@ -270,6 +270,13 @@ type ParseNodeTypes = {
         href: string,
         body: AnyParseNode[],
     |},
+    "html": {|
+        type: "html",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        attributes: {[string]: string},
+        body: AnyParseNode[],
+    |},
     "htmlmathml": {|
         type: "htmlmathml",
         mode: Mode,
@@ -294,6 +301,11 @@ type ParseNodeTypes = {
         replaceWith: string,
         size?: Measurement,
         token: ?Token,
+    |},
+    "internal": {|
+        type: "internal",
+        mode: Mode,
+        loc?: ?SourceLocation,
     |},
     "kern": {|
         type: "kern",
@@ -441,66 +453,12 @@ export function assertNodeType<NODETYPE: NodeType>(
     node: ?AnyParseNode,
     type: NODETYPE,
 ): ParseNode<NODETYPE> {
-    const typedNode = checkNodeType(node, type);
-    if (!typedNode) {
+    if (!node || node.type !== type) {
         throw new Error(
             `Expected node of type ${type}, but got ` +
             (node ? `node of type ${node.type}` : String(node)));
     }
-    // $FlowFixMe: Unsure why.
-    return typedNode;
-}
-
-/**
- * Returns the node more strictly typed iff it is of the given type. Otherwise,
- * returns null.
- */
-export function checkNodeType<NODETYPE: NodeType>(
-    node: ?AnyParseNode,
-    type: NODETYPE,
-): ?ParseNode<NODETYPE> {
-    if (node && node.type === type) {
-        // The definition of ParseNode<TYPE> doesn't communicate to flow that
-        // `type: TYPE` (as that's not explicitly mentioned anywhere), though that
-        // happens to be true for all our value types.
-        // $FlowFixMe
-        return node;
-    }
-    return null;
-}
-
-/**
- * Asserts that the node is of the given type and returns it with stricter
- * typing. Throws if the node's type does not match.
- */
-export function assertAtomFamily(
-    node: ?AnyParseNode,
-    family: Atom,
-): ParseNode<"atom"> {
-    const typedNode = checkAtomFamily(node, family);
-    if (!typedNode) {
-        throw new Error(
-            `Expected node of type "atom" and family "${family}", but got ` +
-            (node ?
-                (node.type === "atom" ?
-                    `atom of family ${node.family}` :
-                    `node of type ${node.type}`) :
-                String(node)));
-    }
-    return typedNode;
-}
-
-/**
- * Returns the node more strictly typed iff it is of the given type. Otherwise,
- * returns null.
- */
-export function checkAtomFamily(
-    node: ?AnyParseNode,
-    family: Atom,
-): ?ParseNode<"atom"> {
-    return node && node.type === "atom" && node.family === family ?
-        node :
-        null;
+    return node;
 }
 
 /**
