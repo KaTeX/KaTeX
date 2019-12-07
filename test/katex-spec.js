@@ -2990,7 +2990,8 @@ describe("A macro expander", function() {
         expect`\expandafter\foo\noexpand\foo`.toParseLike("x",
             new Settings({macros: {"\\foo": "x"}}));
         expect`\noexpand\frac xy`.toParseLike`xy`;
-        expect`\noexpand\def\foo{xy}\foo`.toParseLike`xy`;
+        // TODO(ylem): #2085
+        // expect`\noexpand\def\foo{xy}\foo`.toParseLike`xy`;
     });
 
     it("should allow for space macro argument (text version)", function() {
