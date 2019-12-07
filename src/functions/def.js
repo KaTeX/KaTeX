@@ -18,7 +18,6 @@ const globalMap = {
 // <non-macro assignment> -> <simple assignment>|\global<non-macro assignment>
 // <macro assignment> -> <definition>|<prefix><macro assignment>
 // <prefix> -> \global|\long|\outer
-// There is no \par, so ignore \long
 defineFunction({
     type: "internal",
     names: [
@@ -33,6 +32,7 @@ defineFunction({
         parser.consumeSpaces();
         const token = parser.fetch();
         if (globalMap[token.text]) {
+            // KaTeX doesn't have \par, so ignore \long
             if (funcName === "\\global" || funcName === "\\\\globallong") {
                 token.text = globalMap[token.text];
             }
@@ -96,6 +96,10 @@ defineFunction({
     },
 });
 
+// <simple assignment> -> <let assignment>
+// <let assignment> -> \futurelet<control sequence><token><token>
+//     | \let<control sequence><equals><one optional space><token>
+// <equals> -> <optional spaces>|<optional spaces>=
 defineFunction({
     type: "internal",
     names: [
