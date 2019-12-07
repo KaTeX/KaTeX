@@ -66,11 +66,6 @@ export interface MacroContextInterface {
     expandMacro(name: string): Token[] | void;
 
     /**
-     * Fully expand the given token stream and return the resulting list of tokens
-     */
-    expandTokens(tokens: Token[]): Token[];
-
-    /**
      * Fully expand the given macro name and return the result as a string,
      * or return `undefined` if no such macro is defined.
      */
@@ -89,11 +84,6 @@ export interface MacroContextInterface {
      * `implicitCommands`.
      */
     isDefined(name: string): boolean;
-
-    /**
-     * Determine whether a command is expandable.
-     */
-    isExpandable(name: string): boolean;
 }
 
 /** Macro tokens (in reverse order). */
