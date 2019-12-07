@@ -5,6 +5,7 @@
  */
 
 import fontMetricsData from "../submodules/katex-fonts/fontMetricsData";
+import functions from "./functions";
 import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
@@ -102,12 +103,8 @@ export type MacroExpansion = {
     unexpandable?: boolean,
 };
 
-export type MacroFunction = {
-    (MacroContextInterface): string | MacroExpansion,
-    unexpandable?: boolean,
-}
-
-export type MacroDefinition = string | MacroExpansion | MacroFunction;
+export type MacroDefinition = string | MacroExpansion |
+    (MacroContextInterface => (string | MacroExpansion));
 export type MacroMap = {[string]: MacroDefinition};
 
 const builtinMacros: MacroMap = {};
@@ -116,15 +113,6 @@ export default builtinMacros;
 // This function might one day accept an additional argument and do more things.
 export function defineMacro(name: string, body: MacroDefinition) {
     builtinMacros[name] = body;
-}
-
-function defineMacroFunction(
-    name: string,
-    body: MacroFunction,
-    unexpandable: boolean,
-) {
-    body.unexpandable = unexpandable;
-    defineMacro(name, body);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -202,7 +190,7 @@ const digitToNumber = {
 //   \char`\x  -- character that cannot be written (e.g. %)
 // These all refer to characters from the font, so we turn them into special
 // calls to a function \@char dealt with in the Parser.
-defineMacroFunction("\\char", function(context) {
+defineMacro("\\char", function(context) {
     let token = context.popToken();
     let base;
     let number = '';
@@ -240,127 +228,6 @@ defineMacroFunction("\\char", function(context) {
     }
     return `\\@char{${number}}`;
 }, true);
-
-// Basic support for macro definitions: \def, \gdef, \edef, \xdef
-// <definition> -> <def><control sequence><definition text>
-// <def> -> \def|\gdef|\edef|\xdef
-// <definition text> -> <parameter text><left brace><balanced text><right brace>
-const def = (context, global: boolean, expand: boolean) => {
-    let arg = context.consumeArgs(1)[0];
-    if (arg.length !== 1) {
-        throw new ParseError("\\gdef's first argument must be a macro name");
-    }
-    const name = arg[0].text;
-    // Count argument specifiers, and check they are in the order #1 #2 ...
-    let numArgs = 0;
-    arg = context.consumeArgs(1)[0];
-    while (arg.length === 1 && arg[0].text === "#") {
-        arg = context.consumeArgs(1)[0];
-        if (arg.length !== 1) {
-            throw new ParseError(`Invalid argument number length "${arg.length}"`);
-        }
-        if (!(/^[1-9]$/.test(arg[0].text))) {
-            throw new ParseError(`Invalid argument number "${arg[0].text}"`);
-        }
-        numArgs++;
-        if (parseInt(arg[0].text) !== numArgs) {
-            throw new ParseError(`Argument number "${arg[0].text}" out of order`);
-        }
-        arg = context.consumeArgs(1)[0];
-    }
-    if (expand) {
-        arg = context.expandTokens(arg);
-        arg.reverse();
-    }
-    // Final arg is the expansion of the macro
-    context.macros.set(name, {
-        tokens: arg,
-        numArgs,
-    }, global);
-    return '';
-};
-defineMacroFunction("\\gdef", (context) => def(context, true, false), true);
-defineMacroFunction("\\def", (context) => def(context, false, false), true);
-defineMacroFunction("\\xdef", (context) => def(context, true, true), true);
-defineMacroFunction("\\edef", (context) => def(context, false, true), true);
-
-// <simple assignment> -> <let assignment>
-// <let assignment> -> \futurelet<control sequence><token><token>
-//     |\let<control sequence><equals><one optional space><token>
-// <equals> -> <optional spaces>|<optional spaces>=
-const letDef = (context, global: boolean, future: boolean) => {
-    let tok = context.popToken();
-    const name = tok.text;
-    if (/^(?:[\\{}$&#^_]|EOF)$/.test(name)) {
-        throw new ParseError("Expected a control sequence", tok);
-    }
-
-    const tokens = [];
-    if (future) {
-        tokens.unshift(context.popToken());
-    } else {
-        context.consumeSpaces();
-    }
-    tok = context.popToken();
-    if (future) {
-        tokens.unshift(tok);
-    } else if (tok.text === "=") { // consume optional equals
-        tok = context.popToken();
-        if (tok.text === " ") { // consume one optional space
-            tok = context.popToken();
-        }
-    }
-
-    const macro = context.macros.get(tok.text);
-    if (macro == null) {
-        // if macro is undefined at this moment, set noexpand to 2
-        // to not expand at that moment too and pass it to the parser
-        tok.noexpand = 2;
-    }
-    context.macros.set(name, macro || {
-        tokens: [tok],
-        numArgs: 0,
-        unexpandable: !context.isExpandable(tok.text),
-    }, global);
-    return {tokens, numArgs: 0};
-};
-defineMacroFunction("\\let", (context) => letDef(context, false, false), true);
-defineMacroFunction("\\futurelet", (context) => letDef(context, false, true), true);
-
-// <assignment> -> <non-macro assignment>|<macro assignment>
-// <non-macro assignment> -> <simple assignment>|\global<non-macro assignment>
-// <macro assignment> -> <definition>|<prefix><macro assignment>
-// <prefix> -> \global|\long|\outer
-const defPrefix = (context, global: boolean) => {
-    const next = context.consumeArgs(1)[0];
-    if (next.length !== 1) {
-        throw new ParseError("Invalid command after macro prefix");
-    }
-    const command = next[0].text;
-    // TODO: Should expand command
-    if (command === "\\global") {
-        return defPrefix(context, true);
-    } else if (command === "\\long") {
-        // KaTeX doesn't have \par, so ignore \long
-        return defPrefix(context, global);
-    } else if (command === "\\def") {
-        // \global\def is equivalent to \gdef
-        return def(context, global, false);
-    } else if (command === "\\edef") {
-        // \global\edef is equivalent to \xdef
-        return def(context, global, true);
-    } else if (command === "\\let") {
-        // TODO: throw an error if \long is used
-        return letDef(context, global, false);
-    } else if (command === "\\futurelet") {
-        // TODO: throw an error if \long is used
-        return letDef(context, global, true);
-    } else {
-        throw new ParseError(`Invalid command '${command}' after macro prefix`);
-    }
-};
-defineMacroFunction("\\global", (context) => defPrefix(context, true), true);
-defineMacroFunction("\\long", (context) => defPrefix(context, false), true);
 
 // \newcommand{\macro}[args]{definition}
 // \renewcommand{\macro}[args]{definition}
@@ -410,6 +277,28 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
 defineMacro("\\newcommand", (context) => newcommand(context, false, true));
 defineMacro("\\renewcommand", (context) => newcommand(context, true, false));
 defineMacro("\\providecommand", (context) => newcommand(context, true, true));
+
+// terminal (console) tools
+defineMacro("\\message", (context) => {
+    const arg = context.consumeArgs(1)[0];
+    // eslint-disable-next-line no-console
+    console.log(arg.reverse().map(token => token.text).join(""));
+    return '';
+});
+defineMacro("\\errmessage", (context) => {
+    const arg = context.consumeArgs(1)[0];
+    // eslint-disable-next-line no-console
+    console.error(arg.reverse().map(token => token.text).join(""));
+    return '';
+});
+defineMacro("\\show", (context) => {
+    const tok = context.popToken();
+    const name = tok.text;
+    // eslint-disable-next-line no-console
+    console.log(tok, context.macros.get(name), functions[name],
+        symbols.math[name], symbols.text[name]);
+    return '';
+});
 
 //////////////////////////////////////////////////////////////////////
 // Grouping
@@ -515,6 +404,13 @@ defineMacro("\u231F", "\\lrcorner");
 defineMacro("\u00A9", "\\copyright");
 defineMacro("\u00AE", "\\textregistered");
 defineMacro("\uFE0F", "\\textregistered");
+
+// The KaTeX fonts have corners at codepoints that don't match Unicode.
+// For MathML purposes, use the Unicode code point.
+defineMacro("\\ulcorner", "\\html@mathml{\\@ulcorner}{\\mathop{\\char\"231c}}");
+defineMacro("\\urcorner", "\\html@mathml{\\@urcorner}{\\mathop{\\char\"231d}}");
+defineMacro("\\llcorner", "\\html@mathml{\\@llcorner}{\\mathop{\\char\"231e}}");
+defineMacro("\\lrcorner", "\\html@mathml{\\@lrcorner}{\\mathop{\\char\"231f}}");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX_2ε

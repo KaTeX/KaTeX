@@ -40,9 +40,9 @@ table td {
 |\\;|$a\;\;{b}$|a`\;\;{b}`|
 |_|$x_i$|`x_i`|
 |\\_|$\_$||
-|\\\`|$\text{\`{a}}$|<code>\text{\\'{a}}</code>|
+|\\\`|$\text{\`{a}}$|`\text{\\'{a}}`|
 |&#060;|$<$||
-|\\=|$\text{\={a}}$|<code>\text{\\={a}}</code>|
+|\\=|$\text{\={a}}$|`\text{\\={a}}`|
 | >|$>$||
 |\\>|$a\>\>{b}$|`a\>\>{b}`|
 |\[|$[$||
@@ -54,10 +54,10 @@ table td {
 |&#124;|$\vert$||
 |\\&#124;|$\Vert$||
 |~|$\text{no~no~no~breaks}$|`\text{no~no~no~breaks}`|
-|\\~|$\text{\~{a}}$|<code>\text{\\~{a}}</code>|
+|\\~|$\text{\~{a}}$|`\text{\\~{a}}`|
 |\\\\|$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |^|$x^i$|`x^i`|
-|\\^|$\text{\^{a}}$|<code>\text{\\^{a}}</code>|
+|\\^|$\text{\^{a}}$|`\text{\\^{a}}`|
 
 ## A
 
@@ -117,7 +117,7 @@ table td {
 |\backslash|$\backslash$||
 |\bar|$\bar{y}$|`\bar{y}`|
 |\barwedge|$\barwedge$||
-|\Bbb|$\Bbb{ABC}$|`\Bbb{ABC}`<br>KaTeX supports A-Z & k
+|\Bbb|$\Bbb{ABC}$|`\Bbb{ABC}`<br>KaTeX supports A-Z & k|
 |\Bbbk|$\Bbbk$||
 |\bbox|<span style="color:firebrick;">Not supported</span>||
 |\bcancel|$\bcancel{5}$|`\bcancel{5}`|
@@ -338,6 +338,7 @@ use `\ce` instead|
 |\downdownarrows|$\downdownarrows$||
 |\downharpoonleft|$\downharpoonleft$||
 |\downharpoonright|$\downharpoonright$||
+|{drcases}|$\begin{drcases}a&\text{if }b\\c&\text{if }d\end{drcases}$|`\begin{drcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{drcases}`|
 
 ## E
 
@@ -460,6 +461,10 @@ use `\ce` instead|
 |\hskip|$w\hskip1em i\hskip2em d$|`w\hskip1em i\hskip2em d`|
 |\hslash|$\hslash$||
 |\hspace|$s\hspace7ex k$|`s\hspace7ex k`|
+|\htmlClass|$\htmlClass{foo}{x}$|`\htmlClass{foo}{x}` Must enable `trust` and disable `strict` [option](options.md)|
+|\htmlData|$\htmlData{foo=a, bar=b}{x}$|`\htmlData{foo=a, bar=b}{x}` Must enable `trust` and disable `strict` [option](options.md)|
+|\htmlId|$\htmlId{bar}{x}$|`\htmlId{bar}{x}` Must enable `trust` and disable `strict` [option](options.md)|
+|\htmlStyle|$\htmlStyle{color: red;}{x}$|`\htmlStyle{color: red;}{x}` Must enable `trust` and disable `strict` [option](options.md)|
 |\huge|$\huge huge$|`\huge huge`|
 |\Huge|$\Huge Huge$|`\Huge Huge`|
 
@@ -852,6 +857,7 @@ use `\ce` instead|
 |\rBrace|$\rBrace$||
 |\rbrace|$\rbrace$||
 |\rbrack|$\rbrack$||
+|{rcases}|$\begin{rcases}a&\text{if }b\\c&\text{if }d\end{rcases}$|`\begin{rcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{rcases}`|
 |\rceil|$\rceil$||
 |\Re|$\Re$||
 |\real|$\real$||
@@ -944,7 +950,7 @@ use `\ce` instead|
 |\smiley|<span style="color:firebrick;">Not supported</span>||
 |\sout|$\sout{abc}$|`\sout{abc}`|
 |\Space|<span style="color:firebrick;">Not supported</span>|see `\space`
-|\space|$a\space{b}$|`a\space{b}`|
+|\space|$a\space b$|`a\space b`|
 |\spades|$\spades$||
 |\spadesuit|$\spadesuit$||
 |\sphericalangle|$\sphericalangle$||

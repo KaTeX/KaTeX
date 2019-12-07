@@ -51,6 +51,11 @@ spread out over three different files [functions.js](src/functions.js),
 [buildHTML.js](src/buildHTML.js), [buildMathML.js](src/buildMathML.js) into a
 single file.  The goal is to have all functions use this new system.
 
+#### Macros
+
+Macros should be added in [src/macros.js](src/macros.js) using `defineMacro`.
+They are expanded in the "gullet" (`MacroExpander`).
+
 ## Testing
 
 Local testing can be done by running the webpack-dev-server using configuration
@@ -60,11 +65,6 @@ to start the server.
 This will host an interactive editor at
 [http://localhost:7936/](http://localhost:7936/) to play around with and test
 changes.
-
-webpack-dev-server 2.8.0 introduced a change which included ES6 keywords `const`
-and `let` within the scripts being served to the browser, and therefore doesn't
-support IE 9 and 10. If you want to test in IE 9 and 10, install version 2.7.1
-by running `yarn add webpack-dev-server@2.7.1`.
 
 #### Jest tests
 
@@ -114,10 +114,9 @@ with a new feature.
 
 #### Testing in other browsers
 
-KaTeX supports all major browsers, including IE 9 and newer. Unfortunately, it
+KaTeX supports all major browsers, including IE 11 and newer. Unfortunately, it
 is hard to test new changes in many browsers. If you can, please test your
-changes in as many browsers as possible. In particular, if you make CSS changes,
-try to test in IE 9, using [modern.ie](http://modern.ie) VMs.
+changes in as many browsers as possible.
 
 ## Building
 

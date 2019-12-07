@@ -215,6 +215,29 @@
         min-width: 2px;
     }
 
+    .vbox {
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        align-items: baseline;
+    }
+
+    .hbox {
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .thinbox {
+        display: inline-flex;
+        flex-direction: row;
+        width: 0;
+        max-width: 0; // necessary for Safari
+    }
+
     .msupsub {
         text-align: left;
     }
@@ -547,6 +570,7 @@
     .fcolorbox {
         box-sizing: border-box;
         border: 0.04em solid;         // \fboxrule = 0.4pt
+        border-color: inherit;
     }
 
     .cancel-pad {
@@ -595,4 +619,5 @@
 // Flush-left display math
 .katex-display.fleqn > .katex {
     text-align: left;
+    padding-left: 2em;
 }

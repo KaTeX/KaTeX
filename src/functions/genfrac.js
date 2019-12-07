@@ -4,7 +4,7 @@ import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import Style from "../Style";
-import {assertNodeType, assertAtomFamily, checkNodeType} from "../parseNode";
+import {assertNodeType} from "../parseNode";
 import {assert} from "../utils";
 
 import * as html from "../buildHTML";
@@ -382,17 +382,10 @@ defineFunction({
         const denom = args[5];
 
         // Look into the parse nodes to get the desired delimiters.
-        let leftNode = checkNodeType(args[0], "atom");
-        if (leftNode) {
-            leftNode = assertAtomFamily(args[0], "open");
-        }
-        const leftDelim = leftNode ? delimFromValue(leftNode.text) : null;
-
-        let rightNode = checkNodeType(args[1], "atom");
-        if (rightNode) {
-            rightNode = assertAtomFamily(args[1], "close");
-        }
-        const rightDelim = rightNode ? delimFromValue(rightNode.text) : null;
+        const leftDelim = args[0].type === "atom" && args[0].family === "open"
+            ? delimFromValue(args[0].text) : null;
+        const rightDelim = args[1].type === "atom" && args[1].family === "close"
+            ? delimFromValue(args[1].text) : null;
 
         const barNode = assertNodeType(args[2], "size");
         let hasBarLine;
@@ -409,14 +402,14 @@ defineFunction({
 
         // Find out if we want displaystyle, textstyle, etc.
         let size = "auto";
-        let styl = checkNodeType(args[3], "ordgroup");
-        if (styl) {
+        let styl = args[3];
+        if (styl.type === "ordgroup") {
             if (styl.body.length > 0) {
                 const textOrd = assertNodeType(styl.body[0], "textord");
                 size = stylArray[Number(textOrd.text)];
             }
         } else {
-            styl = assertNodeType(args[3], "textord");
+            styl = assertNodeType(styl, "textord");
             size = stylArray[Number(styl.text)];
         }
 

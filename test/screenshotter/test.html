@@ -71,6 +71,7 @@
         var settings = {
             displayMode: !!query["display"],
             throwOnError: !query["noThrow"],
+            strict: false,
             trust: true  // trust test inputs
         };
         if (query["errorColor"]) {
