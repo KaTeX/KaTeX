@@ -3265,6 +3265,7 @@ describe("A macro expander", function() {
     it("\\let copies the definition", () => {
         expect`\let\foo=\frac\def\frac{}\foo12`.toParseLike`\frac12`;
         expect`\def\foo{1}\let\bar\foo\def\foo{2}\bar`.toParseLike`1`;
+        expect`\let\foo=\kern\edef\bar{\foo1em}\let\kern=\relax\bar`.toParseLike`\kern1em`;
         expect`\let\foo{\frac\foo1}{2}`.toParseLike`\frac{1}{2}`;
         expect`\let\equals==a\equals b`.toParseLike`a=b`;
     });
