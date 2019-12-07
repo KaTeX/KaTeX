@@ -3274,10 +3274,6 @@ describe("A macro expander", function() {
         expect(tree).toMatchSnapshot();
     });
 
-    it("\\futurelet should parse correctly", () => {
-        expect`\futurelet\foo\frac1{2+\foo}`.toParseLike`\frac1{2+1}`;
-    });
-
     it("\\newcommand doesn't change settings.macros", () => {
         const macros = {};
         expect`\newcommand\foo{x^2}\foo+\foo`.toParse(new Settings({macros}));

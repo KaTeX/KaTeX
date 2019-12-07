@@ -300,7 +300,6 @@ Direct Input: $∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← �
 |                                      | `\edef\macroname#1#2…{definition to be expanded}`
 |                                      | `\xdef\macroname#1#2…{definition to be expanded}`
 |                                      | `\let\foo=\bar`
-|                                      | `\futurelet\foo\bar x`
 |                                      | `\global\def\macroname#1#2…{definition}`
 |                                      | `\newcommand\macroname[numargs]{definition}`
 |                                      | `\renewcommand\macroname[numargs]{definition}`
@@ -310,7 +309,7 @@ Macros can also be defined in the KaTeX [rendering options](options.md).
 
 Macros accept up to nine arguments: #1, #2, etc.
 
-`\gdef`, `\xdef`, `\global\def`, `\global\edef`, `\global\let`, and `\global\futurelet` will persist between math expressions.
+`\gdef`, `\xdef`, `\global\def`, `\global\edef`, and `\global\let` will persist between math expressions.
 
 KaTeX has no `\par`, so all macros are long by default and `\long` will be ignored.
 

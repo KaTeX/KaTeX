@@ -227,7 +227,7 @@ defineMacro("\\char", function(context) {
         }
     }
     return `\\@char{${number}}`;
-}, true);
+});
 
 // \newcommand{\macro}[args]{definition}
 // \renewcommand{\macro}[args]{definition}

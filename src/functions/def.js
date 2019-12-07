@@ -4,37 +4,51 @@ import ParseError from "../ParseError";
 import {assertNodeType} from "../parseNode";
 
 const globalMap = {
+    "\\global": "\\global",
+    "\\long": "\\\\globallong",
+    "\\\\globallong": "\\\\globallong",
     "\\def": "\\gdef",
     "\\gdef": "\\gdef",
+    "\\edef": "\\xdef",
+    "\\xdef": "\\xdef",
+    "\\let": "\\\\globallet",
 };
 
-// Basic support for macro definitions:
-//     \def\macro{expansion}
-//     \def\macro#1{expansion}
-//     \def\macro#1#2{expansion}
-//     \def\macro#1#2#3#4#5#6#7#8#9{expansion}
-// Also the \gdef and \global\def equivalents
+// <assignment> -> <non-macro assignment>|<macro assignment>
+// <non-macro assignment> -> <simple assignment>|\global<non-macro assignment>
+// <macro assignment> -> <definition>|<prefix><macro assignment>
+// <prefix> -> \global|\long|\outer
+// There is no \par, so ignore \long
 defineFunction({
     type: "internal",
-    names: ["\\global"],
+    names: [
+        "\\global", "\\long",
+        "\\\\globallong", // can’t be entered directly
+    ],
     props: {
         numArgs: 0,
         allowedInText: true,
     },
-    handler({parser}) {
+    handler({parser, funcName}) {
         parser.consumeSpaces();
         const token = parser.fetch();
         if (globalMap[token.text]) {
-            token.text = globalMap[token.text];
+            if (funcName === "\\global" || funcName === "\\\\globallong") {
+                token.text = globalMap[token.text];
+            }
             return assertNodeType(parser.parseFunction(), "internal");
         }
-        throw new ParseError(`Invalid token after \\global`, token);
+        throw new ParseError(`Invalid token after macro prefix`, token);
     },
 });
 
+// Basic support for macro definitions: \def, \gdef, \edef, \xdef
+// <definition> -> <def><control sequence><definition text>
+// <def> -> \def|\gdef|\edef|\xdef
+// <definition text> -> <parameter text><left brace><balanced text><right brace>
 defineFunction({
     type: "internal",
-    names: ["\\def", "\\gdef"],
+    names: ["\\def", "\\gdef", "\\edef", "\\xdef"],
     props: {
         numArgs: 0,
         allowedInText: true,
@@ -65,11 +79,60 @@ defineFunction({
             }
             arg = parser.gullet.consumeArgs(1)[0];
         }
+        if (funcName === "\\edef" || funcName === "\\xdef") {
+            arg = parser.gullet.expandTokens(arg);
+            arg.reverse();
+        }
         // Final arg is the expansion of the macro
         parser.gullet.macros.set(name, {
             tokens: arg,
             numArgs,
-        }, funcName === "\\gdef");
+        }, funcName === globalMap[funcName]);
+
+        return {
+            type: "internal",
+            mode: parser.mode,
+        };
+    },
+});
+
+defineFunction({
+    type: "internal",
+    names: [
+        "\\let",
+        "\\\\globallet", // can’t be entered directly
+    ],
+    props: {
+        numArgs: 0,
+        allowedInText: true,
+    },
+    handler({parser, funcName}) {
+        let tok = parser.gullet.popToken();
+        const name = tok.text;
+        if (/^(?:[\\{}$&#^_]|EOF)$/.test(name)) {
+            throw new ParseError("Expected a control sequence", tok);
+        }
+
+        parser.gullet.consumeSpaces();
+        tok = parser.gullet.popToken();
+        if (tok.text === "=") { // consume optional equals
+            tok = parser.gullet.popToken();
+            if (tok.text === " ") { // consume one optional space
+                tok = parser.gullet.popToken();
+            }
+        }
+
+        const macro = parser.gullet.macros.get(tok.text);
+        if (macro == null) {
+            // if macro is undefined at this moment, set noexpand to 2
+            // to not expand later too and pass it to the parser
+            tok.noexpand = 2;
+        }
+        parser.gullet.macros.set(name, macro || {
+            tokens: [tok],
+            numArgs: 0,
+            unexpandable: !parser.gullet.isExpandable(tok.text),
+        }, funcName === "\\\\globallet");
 
         return {
             type: "internal",
