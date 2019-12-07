@@ -126,17 +126,18 @@ defineFunction({
             }
         }
 
-        const macro = parser.gullet.macros.get(tok.text);
+        let macro = parser.gullet.macros.get(tok.text);
         if (macro == null) {
             // if macro is undefined at this moment, set noexpand to 2
-            // to not expand later too and pass it to the parser
+            // and unexpandable to not expand it later and pass to the parser
             tok.noexpand = 2;
+            macro = {
+                tokens: [tok],
+                numArgs: 0,
+                unexpandable: !parser.gullet.isExpandable(tok.text),
+            };
         }
-        parser.gullet.macros.set(name, macro || {
-            tokens: [tok],
-            numArgs: 0,
-            unexpandable: !parser.gullet.isExpandable(tok.text),
-        }, funcName === "\\\\globallet");
+        parser.gullet.macros.set(name, macro, funcName === "\\\\globallet");
 
         return {
             type: "internal",

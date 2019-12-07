@@ -182,6 +182,9 @@ export default class MacroExpander implements MacroContextInterface {
      * At the moment, macro expansion doesn't handle delimited macros,
      * i.e. things like those defined by \def\foo#1\end{…}.
      * See the TeX book page 202ff. for details on how those should behave.
+     *
+     * If expandOnly, only expandable tokens are expanded and an undefined
+     * control sequence results in an error.
      */
     expandOnce(expandOnly?: boolean): Token | Token[] {
         let topToken = this.popToken();
@@ -319,19 +322,14 @@ export default class MacroExpander implements MacroContextInterface {
      * argument count.  Or returns `null` if no such macro.
      */
     _getExpansion(name: string, expandOnly: ?boolean): ?MacroExpansion {
-        if (expandOnly) {
-            if (name[0] === "\\" && !this.isDefined(name)) {
-                throw new ParseError("Undefined control sequence: " + name);
-            } else if (!this.isExpandable(name)) {
-                return null;
-            }
-        }
-
         const definition = this.macros.get(name);
         if (definition == null) { // mainly checking for undefined here
+            if (expandOnly && name[0] === "\\" && !this.isDefined(name)) {
+                throw new ParseError("Undefined control sequence: " + name);
+            }
             return definition;
         }
-        const expansion =
+        let expansion =
             typeof definition === "function" ? definition(this) : definition;
         if (typeof expansion === "string") {
             let numArgs = 0;
@@ -349,8 +347,10 @@ export default class MacroExpander implements MacroContextInterface {
                 tok = bodyLexer.lex();
             }
             tokens.reverse(); // to fit in with stack using push and pop
-            const expanded = {tokens, numArgs};
-            return expanded;
+            expansion = {tokens, numArgs};
+        }
+        if (expandOnly && expansion.unexpandable) {
+            return null;
         }
         // $FlowIgnore
         return expansion;
