@@ -187,19 +187,8 @@ export default class MacroExpander implements MacroContextInterface {
      * control sequence results in an error.
      */
     expandOnce(expandOnly?: boolean): Token | Token[] {
-        let topToken = this.popToken();
-        let name = topToken.text;
-        if (name === "\\noexpand") {
-            // The expansion is the token itself; but that token is interpreted
-            // as if its meaning were ‘\relax’ if it is a control sequence that
-            // would ordinarily be expanded by TeX’s expansion rules.
-            topToken = this.popToken();
-            name = topToken.text;
-            if (this.isExpandable(name)) {
-                topToken.noexpand = 1;
-            }
-        }
-
+        const topToken = this.popToken();
+        const name = topToken.text;
         const expansion = !topToken.noexpand
             ? this._getExpansion(name, expandOnly) : null;
         if (expansion == null) { // Fully expanded

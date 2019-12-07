@@ -84,6 +84,11 @@ export interface MacroContextInterface {
      * `implicitCommands`.
      */
     isDefined(name: string): boolean;
+
+    /**
+     * Determine whether a command is expandable.
+     */
+    isExpandable(name: string): boolean;
 }
 
 /** Macro tokens (in reverse order). */
@@ -107,6 +112,17 @@ export function defineMacro(name: string, body: MacroDefinition) {
 
 //////////////////////////////////////////////////////////////////////
 // macro tools
+
+defineMacro("\\noexpand", function(context) {
+    // The expansion is the token itself; but that token is interpreted
+    // as if its meaning were ‘\relax’ if it is a control sequence that
+    // would ordinarily be expanded by TeX’s expansion rules.
+    const t = context.popToken();
+    if (context.isExpandable(t.text)) {
+        t.noexpand = 1;
+    }
+    return {tokens: [t], numArgs: 0};
+});
 
 defineMacro("\\expandafter", function(context) {
     // TeX first reads the token that comes immediately after \expandafter,
