@@ -18,15 +18,13 @@ import type {MacroContextInterface, MacroDefinition, MacroExpansion}
 import type Settings from "./Settings";
 
 // List of commands that act like macros but aren't defined as a macro,
-// function, or symbol.  Their value indicates whether or not it's expandable.
-// Used in `isDefined` and `isExpandable`.
+// function, or symbol.  Used in `isDefined`.
 export const implicitCommands = {
-    "\\relax": false,    // MacroExpander.js
-    "\\noexpand": true,  // MacroExpander.js
-    "^": false,          // Parser.js
-    "_": false,          // Parser.js
-    "\\limits": false,   // Parser.js
-    "\\nolimits": false, // Parser.js
+    "\\relax": true,     // MacroExpander.js
+    "^": true,           // Parser.js
+    "_": true,           // Parser.js
+    "\\limits": true,    // Parser.js
+    "\\nolimits": true,  // Parser.js
 };
 
 export default class MacroExpander implements MacroContextInterface {
@@ -286,7 +284,9 @@ export default class MacroExpander implements MacroContextInterface {
             const expanded = this.expandOnce(true);
             // expandOnce returns Token if and only if it's fully expanded.
             if (expanded instanceof Token) {
-                expanded.noexpand = 0;
+                if (expanded.noexpand === 1) { // \noexpand
+                    expanded.noexpand = 0;
+                }
                 output.push(this.stack.pop());
             }
         }
@@ -367,7 +367,6 @@ export default class MacroExpander implements MacroContextInterface {
         return macro != null ? typeof macro === "string"
                 || typeof macro === "function" || !macro.unexpandable
             // TODO(ylem): #2085
-            : functions.hasOwnProperty(name)/* && !functions[name].primitive*/
-                || implicitCommands[name];
+            : functions.hasOwnProperty(name)/* && !functions[name].primitive*/;
     }
 }
