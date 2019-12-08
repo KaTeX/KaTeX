@@ -461,6 +461,10 @@ use `\ce` instead|
 |\hskip|$w\hskip1em i\hskip2em d$|`w\hskip1em i\hskip2em d`|
 |\hslash|$\hslash$||
 |\hspace|$s\hspace7ex k$|`s\hspace7ex k`|
+|\htmlClass|$\htmlClass{foo}{x}$|`\htmlClass{foo}{x}` Must enable `trust` and disable `strict` [option](options.md)|
+|\htmlData|$\htmlData{foo=a, bar=b}{x}$|`\htmlData{foo=a, bar=b}{x}` Must enable `trust` and disable `strict` [option](options.md)|
+|\htmlId|$\htmlId{bar}{x}$|`\htmlId{bar}{x}` Must enable `trust` and disable `strict` [option](options.md)|
+|\htmlStyle|$\htmlStyle{color: red;}{x}$|`\htmlStyle{color: red;}{x}` Must enable `trust` and disable `strict` [option](options.md)|
 |\huge|$\huge huge$|`\huge huge`|
 |\Huge|$\Huge Huge$|`\Huge Huge`|
 

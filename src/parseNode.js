@@ -270,6 +270,13 @@ type ParseNodeTypes = {
         href: string,
         body: AnyParseNode[],
     |},
+    "html": {|
+        type: "html",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        attributes: {[string]: string},
+        body: AnyParseNode[],
+    |},
     "htmlmathml": {|
         type: "htmlmathml",
         mode: Mode,
@@ -294,6 +301,11 @@ type ParseNodeTypes = {
         replaceWith: string,
         size?: Measurement,
         token: ?Token,
+    |},
+    "internal": {|
+        type: "internal",
+        mode: Mode,
+        loc?: ?SourceLocation,
     |},
     "kern": {|
         type: "kern",
