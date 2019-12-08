@@ -113,8 +113,14 @@ or for just some URLs via the `trust` [option](options.md).
 | $\href{https://katex.org/}{\KaTeX}$ | `\href{https://katex.org/}{\KaTeX}` |
 | $\url{https://katex.org/}$ | `\url{https://katex.org/}` |
 | $\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://katex.org/img/khan-academy.png}$ | `\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://katex.org/img/khan-academy.png}` |
+| $\htmlId{bar}{x}$ | `\htmlId{bar}{x}` |
+| $\htmlClass{foo}{x}$ | `\htmlClass{foo}{x}` |
+| $\htmlStyle{color: red;}{x}$ | `\htmlStyle{color: red;}{x}` |
+| $\htmlData{foo=a, bar=b}{x}$ | `\htmlData{foo=a, bar=b}{x}` |
 
 `\includegraphics` supports `height`, `width`, `totalheight`, and `alt` in its first argument. `height` is required.
+
+HTML extension (`\html`-prefixed) commands are non-standard, so loosening `strict` option for `htmlExtension` is required.
 
 
 ## Letters and Unicode
@@ -503,6 +509,15 @@ Direct Input: $← ↑ → ↓ ↔ ↕ ↖ ↗ ↘ ↙ ↚ ↛ ↞ ↠ ↢ ↣ �
 |$\xlongequal{abc}$ `\xlongequal{abc}`
 
 Extensible arrows all can take an optional argument in the same manner<br>as `\xrightarrow[under]{over}`.
+
+## Special Notation
+
+**Bra-ket Notation**
+
+||||
+|:----------|:----------|:----------|
+|$\bra{\phi}$ `\bra{\phi}` |$\ket{\psi}$ `\ket{\psi}` |$\braket{\phi}{\psi}$ `\braket{\phi}{\psi}` |
+|$\Bra{\phi}$ `\Bra{\phi}` |$\Ket{\psi}$ `\Ket{\psi}` ||
 
 ## Style, Color, Size, and Font
 
