@@ -516,7 +516,7 @@ Extensible arrows all can take an optional argument in the same manner<br>as `\x
 
 ||||
 |:----------|:----------|:----------|
-|$\bra{\phi}$ `\bra{\phi}` |$\ket{\psi}$ `\ket{\psi}` |$\braket{\phi}{\psi}$ `\braket{\phi}{\psi}` |
+|$\bra{\phi}$ `\bra{\phi}` |$\ket{\psi}$ `\ket{\psi}` |$\braket{\phi|\psi}$ `\braket{\phi|\psi}` |
 |$\Bra{\phi}$ `\Bra{\phi}` |$\Ket{\psi}$ `\Ket{\psi}` ||
 
 ## Style, Color, Size, and Font
