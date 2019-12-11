@@ -395,6 +395,7 @@ use `\ce` instead|
 |\frac|$\frac a b$|`\frac a b`|
 |\frak|$\frak{AaBb}$|`\frak{AaBb}`|
 |\frown|$\frown$||
+|\futurelet|||
 
 ## G
 
