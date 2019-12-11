@@ -12,6 +12,7 @@ const globalMap = {
     "\\edef": "\\xdef",
     "\\xdef": "\\xdef",
     "\\let": "\\\\globallet",
+    "\\futurelet": "\\\\globalfuture",
 };
 
 const checkControlSequence = (tok) => {
@@ -20,6 +21,21 @@ const checkControlSequence = (tok) => {
         throw new ParseError("Expected a control sequence", tok);
     }
     return name;
+};
+
+const letCommand = (parser, name, tok, global) => {
+    let macro = parser.gullet.macros.get(tok.text);
+    if (macro == null) {
+    // if macro is undefined at this moment, set noexpand to 2
+    // and unexpandable to not expand it later and pass to the parser
+        tok.noexpand = 2;
+        macro = {
+            tokens: [tok],
+            numArgs: 0,
+            unexpandable: !parser.gullet.isExpandable(tok.text),
+        };
+    }
+    parser.gullet.macros.set(name, macro, global);
 };
 
 // <assignment> -> <non-macro assignment>|<macro assignment>
@@ -128,20 +144,31 @@ defineFunction({
                 tok = parser.gullet.popToken();
             }
         }
+        letCommand(parser, name, tok, funcName === "\\\\globallet");
+        return {
+            type: "internal",
+            mode: parser.mode,
+        };
+    },
+});
 
-        let macro = parser.gullet.macros.get(tok.text);
-        if (macro == null) {
-            // if macro is undefined at this moment, set noexpand to 2
-            // and unexpandable to not expand it later and pass to the parser
-            tok.noexpand = 2;
-            macro = {
-                tokens: [tok],
-                numArgs: 0,
-                unexpandable: !parser.gullet.isExpandable(tok.text),
-            };
-        }
-        parser.gullet.macros.set(name, macro, funcName === "\\\\globallet");
-
+defineFunction({
+    type: "internal",
+    names: [
+        "\\futurelet",
+        "\\\\globalfuture", // can’t be entered directly
+    ],
+    props: {
+        numArgs: 0,
+        allowedInText: true,
+    },
+    handler({parser, funcName}) {
+        const name = checkControlSequence(parser.gullet.popToken());
+        const middle = parser.gullet.popToken();
+        const tok = parser.gullet.popToken();
+        letCommand(parser, name, tok, funcName === "\\\\globalfuture");
+        parser.gullet.pushToken(tok);
+        parser.gullet.pushToken(middle);
         return {
             type: "internal",
             mode: parser.mode,
