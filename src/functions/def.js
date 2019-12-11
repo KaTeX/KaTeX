@@ -23,6 +23,17 @@ const checkControlSequence = (tok) => {
     return name;
 };
 
+const getRHS = (parser) => {
+    let tok = parser.gullet.popToken();
+    if (tok.text === "=") { // consume optional equals
+        tok = parser.gullet.popToken();
+        if (tok.text === " ") { // consume one optional space
+            tok = parser.gullet.popToken();
+        }
+    }
+    return tok;
+};
+
 const letCommand = (parser, name, tok, global) => {
     let macro = parser.gullet.macros.get(tok.text);
     if (macro == null) {
@@ -137,13 +148,7 @@ defineFunction({
     handler({parser, funcName}) {
         const name = checkControlSequence(parser.gullet.popToken());
         parser.gullet.consumeSpaces();
-        let tok = parser.gullet.popToken();
-        if (tok.text === "=") { // consume optional equals
-            tok = parser.gullet.popToken();
-            if (tok.text === " ") { // consume one optional space
-                tok = parser.gullet.popToken();
-            }
-        }
+        const tok = getRHS(parser);
         letCommand(parser, name, tok, funcName === "\\\\globallet");
         return {
             type: "internal",
