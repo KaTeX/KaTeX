@@ -14,6 +14,14 @@ const globalMap = {
     "\\let": "\\\\globallet",
 };
 
+const checkControlSequence = (tok) => {
+    const name = tok.text;
+    if (/^(?:[\\{}$&#^_]|EOF)$/.test(name)) {
+        throw new ParseError("Expected a control sequence", tok);
+    }
+    return name;
+};
+
 // <assignment> -> <non-macro assignment>|<macro assignment>
 // <non-macro assignment> -> <simple assignment>|\global<non-macro assignment>
 // <macro assignment> -> <definition>|<prefix><macro assignment>
@@ -111,14 +119,9 @@ defineFunction({
         allowedInText: true,
     },
     handler({parser, funcName}) {
-        let tok = parser.gullet.popToken();
-        const name = tok.text;
-        if (/^(?:[\\{}$&#^_]|EOF)$/.test(name)) {
-            throw new ParseError("Expected a control sequence", tok);
-        }
-
+        const name = checkControlSequence(parser.gullet.popToken());
         parser.gullet.consumeSpaces();
-        tok = parser.gullet.popToken();
+        let tok = parser.gullet.popToken();
         if (tok.text === "=") { // consume optional equals
             tok = parser.gullet.popToken();
             if (tok.text === " ") { // consume one optional space
