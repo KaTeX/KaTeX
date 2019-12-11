@@ -655,6 +655,16 @@ const handleObject = (
             break;
         }
 
+        case "internal": {
+            // internal nodes are never included in the parse tree
+            break;
+        }
+
+        case "html": {
+            buildA11yStrings(tree.body, a11yStrings, atomType);
+            break;
+        }
+
         default:
             (tree.type: empty);
             throw new Error("KaTeX a11y un-recognized type: " + tree.type);

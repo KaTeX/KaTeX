@@ -6,7 +6,7 @@ import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import {assertNodeType, assertSymbolNodeType} from "../parseNode";
-import {checkNodeType, checkSymbolNodeType} from "../parseNode";
+import {checkSymbolNodeType} from "../parseNode";
 import {calculateSize} from "../units";
 import utils from "../utils";
 
@@ -557,11 +557,10 @@ const alignedHandler = function(context, args) {
         mode: context.mode,
         body: [],
     };
-    const ordgroup = checkNodeType(args[0], "ordgroup");
-    if (ordgroup) {
+    if (args[0] && args[0].type === "ordgroup") {
         let arg0 = "";
-        for (let i = 0; i < ordgroup.body.length; i++) {
-            const textord = assertNodeType(ordgroup.body[i], "textord");
+        for (let i = 0; i < args[0].body.length; i++) {
+            const textord = assertNodeType(args[0].body[i], "textord");
             arg0 += textord.text;
         }
         numMaths = Number(arg0);
@@ -762,11 +761,14 @@ defineEnvironment({
 // \left\{\begin{array}{@{}l@{\quad}l@{}} … \end{array}\right.
 // {dcases} is a {cases} environment where cells are set in \displaystyle,
 // as defined in mathtools.sty.
+// {rcases} is another mathtools environment. It's brace is on the right side.
 defineEnvironment({
     type: "array",
     names: [
         "cases",
         "dcases",
+        "rcases",
+        "drcases",
     ],
     props: {
         numArgs: 0,
@@ -796,8 +798,8 @@ defineEnvironment({
             type: "leftright",
             mode: context.mode,
             body: [res],
-            left: "\\{",
-            right: ".",
+            left: context.envName.indexOf("r") > -1 ? "." : "\\{",
+            right: context.envName.indexOf("r") > -1 ? "\\}" : ".",
             rightColor: undefined,
         };
     },

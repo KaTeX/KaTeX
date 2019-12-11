@@ -4,7 +4,7 @@ import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import Style from "../Style";
-import {assertNodeType, assertAtomFamily, checkNodeType} from "../parseNode";
+import {assertNodeType} from "../parseNode";
 import {assert} from "../utils";
 
 import * as html from "../buildHTML";
@@ -382,17 +382,12 @@ defineFunction({
         const denom = args[5];
 
         // Look into the parse nodes to get the desired delimiters.
-        let leftNode = checkNodeType(normalizeArgument(args[0]), "atom");
-        if (leftNode) {
-            leftNode = assertAtomFamily(leftNode, "open");
-        }
-        const leftDelim = leftNode ? delimFromValue(leftNode.text) : null;
-
-        let rightNode = checkNodeType(normalizeArgument(args[1]), "atom");
-        if (rightNode) {
-            rightNode = assertAtomFamily(rightNode, "close");
-        }
-        const rightDelim = rightNode ? delimFromValue(rightNode.text) : null;
+        const leftNode = normalizeArgument(args[0]);
+        const leftDelim = leftNode.type === "atom" && leftNode.family === "open"
+            ? delimFromValue(leftNode.text) : null;
+        const rightNode = normalizeArgument(args[1]);
+        const rightDelim = rightNode.type === "atom" && rightNode.family === "close"
+            ? delimFromValue(rightNode.text) : null;
 
         const barNode = assertNodeType(args[2], "size");
         let hasBarLine;
@@ -409,14 +404,14 @@ defineFunction({
 
         // Find out if we want displaystyle, textstyle, etc.
         let size = "auto";
-        let styl = checkNodeType(args[3], "ordgroup");
-        if (styl) {
+        let styl = args[3];
+        if (styl.type === "ordgroup") {
             if (styl.body.length > 0) {
                 const textOrd = assertNodeType(styl.body[0], "textord");
                 size = stylArray[Number(textOrd.text)];
             }
         } else {
-            styl = assertNodeType(args[3], "textord");
+            styl = assertNodeType(styl, "textord");
             size = stylArray[Number(styl.text)];
         }
 

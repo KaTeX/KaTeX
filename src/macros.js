@@ -5,6 +5,7 @@
  */
 
 import fontMetricsData from "../submodules/katex-fonts/fontMetricsData";
+import functions from "./functions";
 import symbols from "./symbols";
 import utils from "./utils";
 import {Token} from "./Token";
@@ -35,6 +36,11 @@ export interface MacroContextInterface {
      * Remove and return the next unexpanded token.
      */
     popToken(): Token;
+
+    /**
+     * Consume all following space tokens, without expansion.
+     */
+    consumeSpaces(): void;
 
     /**
      * Expand the next token only once (if possible), and return the resulting
@@ -124,10 +130,12 @@ defineMacro("\\@secondoftwo", function(context) {
 });
 
 // LaTeX's \@ifnextchar{#1}{#2}{#3} looks ahead to the next (unexpanded)
-// symbol.  If it matches #1, then the macro expands to #2; otherwise, #3.
-// Note, however, that it does not consume the next symbol in either case.
+// symbol that isn't a space, consuming any spaces but not consuming the
+// first nonspace character.  If that nonspace character matches #1, then
+// the macro expands to #2; otherwise, it expands to #3.
 defineMacro("\\@ifnextchar", function(context) {
     const args = context.consumeArgs(3);  // symbol, if, else
+    context.consumeSpaces();
     const nextToken = context.future();
     if (args[0].length === 1 && args[0][0].text === nextToken.text) {
         return {tokens: args[1], numArgs: 0};
@@ -207,83 +215,6 @@ defineMacro("\\char", function(context) {
     return `\\@char{${number}}`;
 });
 
-// Basic support for macro definitions:
-//     \def\macro{expansion}
-//     \def\macro#1{expansion}
-//     \def\macro#1#2{expansion}
-//     \def\macro#1#2#3#4#5#6#7#8#9{expansion}
-// Also the \gdef and \global\def equivalents
-const def = (context, global: boolean) => {
-    let tok = context.popToken();
-    const name = tok.text;
-    if (/^(?:[\\{}$&#^_]|EOF)$/.test(name)) {
-        throw new ParseError("Expected a control sequence", tok);
-    }
-
-    let numArgs = 0;
-    let insert;
-    const delimiters = [[]];
-    // <parameter text> contains no braces
-    while (context.future().text !== "{") {
-        tok = context.popToken();
-        if (tok.text === "#") {
-            // If the very last character of the <parameter text> is #, so that
-            // this # is immediately followed by {, TeX will behave as if the {
-            // had been inserted at the right end of both the parameter text
-            // and the replacement text.
-            if (context.future().text === "{") {
-                insert = context.future();
-                delimiters[numArgs].push("{");
-                break;
-            }
-
-            // A parameter, the first appearance of # must be followed by 1,
-            // the next by 2, and so on; up to nine #’s are allowed
-            tok = context.popToken();
-            if (!(/^[1-9]$/.test(tok.text))) {
-                throw new ParseError(`Invalid argument number "${tok.text}"`);
-            }
-            if (parseInt(tok.text) !== numArgs + 1) {
-                throw new ParseError(`Argument number "${tok.text}" out of order`);
-            }
-            numArgs++;
-            delimiters.push([]);
-        } else if (tok.text === "EOF") {
-            throw new ParseError("Expected a macro definition");
-        } else {
-            delimiters[numArgs].push(tok.text);
-        }
-    }
-    // replacement text, enclosed in '{' and '}' and properly nested
-    const {tokens} = context.consumeArg();
-    if (insert) {
-        tokens.unshift(insert);
-    }
-
-    context.macros.set(name, {
-        tokens,
-        numArgs,
-        delimiters,
-    }, global);
-    return '';
-};
-defineMacro("\\gdef", (context) => def(context, true));
-defineMacro("\\def", (context) => def(context, false));
-defineMacro("\\global", (context) => {
-    const next = context.consumeArg().tokens;
-    if (next.length !== 1) {
-        throw new ParseError("Invalid command after \\global");
-    }
-    const command = next[0].text;
-    // TODO: Should expand command
-    if (command === "\\def") {
-        // \global\def is equivalent to \gdef
-        return def(context, true);
-    } else {
-        throw new ParseError(`Invalid command '${command}' after \\global`);
-    }
-});
-
 // \newcommand{\macro}[args]{definition}
 // \renewcommand{\macro}[args]{definition}
 // TODO: Optional arguments: \newcommand{\macro}[args][default]{definition}
@@ -332,6 +263,28 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
 defineMacro("\\newcommand", (context) => newcommand(context, false, true));
 defineMacro("\\renewcommand", (context) => newcommand(context, true, false));
 defineMacro("\\providecommand", (context) => newcommand(context, true, true));
+
+// terminal (console) tools
+defineMacro("\\message", (context) => {
+    const arg = context.consumeArgs(1)[0];
+    // eslint-disable-next-line no-console
+    console.log(arg.reverse().map(token => token.text).join(""));
+    return '';
+});
+defineMacro("\\errmessage", (context) => {
+    const arg = context.consumeArgs(1)[0];
+    // eslint-disable-next-line no-console
+    console.error(arg.reverse().map(token => token.text).join(""));
+    return '';
+});
+defineMacro("\\show", (context) => {
+    const tok = context.popToken();
+    const name = tok.text;
+    // eslint-disable-next-line no-console
+    console.log(tok, context.macros.get(name), functions[name],
+        symbols.math[name], symbols.text[name]);
+    return '';
+});
 
 //////////////////////////////////////////////////////////////////////
 // Grouping
@@ -437,6 +390,13 @@ defineMacro("\u231F", "\\lrcorner");
 defineMacro("\u00A9", "\\copyright");
 defineMacro("\u00AE", "\\textregistered");
 defineMacro("\uFE0F", "\\textregistered");
+
+// The KaTeX fonts have corners at codepoints that don't match Unicode.
+// For MathML purposes, use the Unicode code point.
+defineMacro("\\ulcorner", "\\html@mathml{\\@ulcorner}{\\mathop{\\char\"231c}}");
+defineMacro("\\urcorner", "\\html@mathml{\\@urcorner}{\\mathop{\\char\"231d}}");
+defineMacro("\\llcorner", "\\html@mathml{\\@llcorner}{\\mathop{\\char\"231e}}");
+defineMacro("\\lrcorner", "\\html@mathml{\\@lrcorner}{\\mathop{\\char\"231f}}");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX_2ε
