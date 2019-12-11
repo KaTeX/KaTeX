@@ -662,6 +662,12 @@ const handleObject = (
         }
 
         case "internal": {
+            // internal nodes are never included in the parse tree
+            break;
+        }
+
+        case "html": {
+            buildA11yStrings(tree.body, a11yStrings, atomType);
             break;
         }
 

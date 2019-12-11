@@ -9,9 +9,8 @@
 import ParseError from "./ParseError";
 import Style from "./Style";
 import buildCommon from "./buildCommon";
-import {Anchor} from "./domTree";
+import {Span, Anchor} from "./domTree";
 import utils from "./utils";
-import {checkNodeType} from "./parseNode";
 import {spacings, tightSpacings} from "./spacingData";
 import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";
 import {DocumentFragment} from "./tree";
@@ -83,11 +82,8 @@ export const buildExpression = function(
 
     let glueOptions = options;
     if (expression.length === 1) {
-        const node = checkNodeType(expression[0], "sizing") ||
-            checkNodeType(expression[0], "styling");
-        if (!node) {
-            // No match.
-        } else if (node.type === "sizing") {
+        const node = expression[0];
+        if (node.type === "sizing") {
             glueOptions = options.havingSize(node.size);
         } else if (node.type === "styling") {
             glueOptions = options.havingStyle(styleMap[node.style]);
@@ -189,8 +185,9 @@ const traverseNonSpaceNodes = function(
 // Check if given node is a partial group, i.e., does not affect spacing around.
 const checkPartialGroup = function(
     node: HtmlDomNode,
-): ?(DocumentFragment<HtmlDomNode> | Anchor) {
-    if (node instanceof DocumentFragment || node instanceof Anchor) {
+): ?(DocumentFragment<HtmlDomNode> | Anchor | DomSpan) {
+    if (node instanceof DocumentFragment || node instanceof Anchor
+        || (node instanceof Span && node.hasClass("enclosing"))) {
         return node;
     }
     return null;
@@ -292,10 +289,6 @@ function buildHTMLUnbreakable(children, options) {
     // Add strut, which ensures that the top of the HTML element falls at
     // the height of the expression, and the bottom of the HTML element
     // falls at the depth of the expression.
-    // We used to have separate top and bottom struts, where the bottom strut
-    // would like to use `vertical-align: top`, but in IE 9 this lowers the
-    // baseline of the box to the bottom of this strut (instead of staying in
-    // the normal place) so we use an absolute value for vertical-align instead.
     const strut = makeSpan(["strut"]);
     strut.style.height = (body.height + body.depth) + "em";
     strut.style.verticalAlign = -body.depth + "em";
