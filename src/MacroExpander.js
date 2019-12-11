@@ -187,9 +187,12 @@ export default class MacroExpander implements MacroContextInterface {
     expandOnce(expandOnly?: boolean): Token | Token[] {
         const topToken = this.popToken();
         const name = topToken.text;
-        const expansion = !topToken.noexpand
-            ? this._getExpansion(name, expandOnly) : null;
-        if (expansion == null) { // Fully expanded
+        const expansion = !topToken.noexpand ? this._getExpansion(name) : null;
+        if (expansion == null || (expandOnly && expansion.unexpandable)) {
+            if (expandOnly && expansion == null &&
+                    name[0] === "\\" && !this.isDefined(name)) {
+                throw new ParseError("Undefined control sequence: " + name);
+            }
             this.pushToken(topToken);
             return topToken;
         }
@@ -310,15 +313,12 @@ export default class MacroExpander implements MacroContextInterface {
      * Returns the expanded macro as a reversed array of tokens and a macro
      * argument count.  Or returns `null` if no such macro.
      */
-    _getExpansion(name: string, expandOnly: ?boolean): ?MacroExpansion {
+    _getExpansion(name: string): ?MacroExpansion {
         const definition = this.macros.get(name);
         if (definition == null) { // mainly checking for undefined here
-            if (expandOnly && name[0] === "\\" && !this.isDefined(name)) {
-                throw new ParseError("Undefined control sequence: " + name);
-            }
             return definition;
         }
-        let expansion =
+        const expansion =
             typeof definition === "function" ? definition(this) : definition;
         if (typeof expansion === "string") {
             let numArgs = 0;
@@ -336,12 +336,10 @@ export default class MacroExpander implements MacroContextInterface {
                 tok = bodyLexer.lex();
             }
             tokens.reverse(); // to fit in with stack using push and pop
-            expansion = {tokens, numArgs};
+            const expanded = {tokens, numArgs};
+            return expanded;
         }
-        if (expandOnly && expansion.unexpandable) {
-            return null;
-        }
-        // $FlowIgnore
+
         return expansion;
     }
 
