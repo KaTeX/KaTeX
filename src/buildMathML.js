@@ -17,7 +17,7 @@ import {MathNode, TextNode} from "./mathMLTree";
 import type Options from "./Options";
 import type {AnyParseNode, SymbolParseNode} from "./parseNode";
 import type {DomSpan} from "./domTree";
-import type {MathDomNode} from "./mathMLTree";
+import type {MathDomNode, documentFragment} from "./mathMLTree";
 import type {FontVariant, Mode} from "./types";
 
 /**
@@ -226,6 +226,48 @@ export const buildGroup = function(
     }
 };
 
+const setSoftLineBreaks = function(expression: MathNode[]): documentFragment {
+    // We want the expression to render with soft line breaks after
+    // each top-level binary or relational operator, per TeXbook p. 173.
+    // Break the expression into un-breakable blocks.
+    const blocks = [[]];
+    let canBeBIN = false; // The first token can't be an infix binary operator.
+    for (let i = 0; i < expression.length; i++) {
+        const node = expression[i];
+        blocks[blocks.length - 1].push(node);
+        if (node.type && node.type === "mo") {
+            const next = (i < expression.length - 1) ? expression[i + 1] : null;
+            const nextNodeIsNoBreak = next && next.type &&
+                (next.type === "mspace" || next.type === "mtext" ) &&
+                next.attributes.linebreak &&
+                next.attributes.linebreak === "nobreak";
+
+            if (canBeBIN && !node.attributes.stretchy &&
+                !node.attributes.separator && !nextNodeIsNoBreak) {
+                // Start a new block. (Insert a soft linebreak.)
+                blocks.push([]);
+            }
+
+            const isOpenDelimiter = node.attributes.stretchy &&
+                // $FlowFixMe
+                "([{⌈⌊⎰⌜⌞⟦⟨⟪⟬⟮⦃⦅".indexOf(node.children[0].text) > -1;
+            // Any operator that follows an open delimiter is unary.
+            canBeBIN = !(node.attributes.separator || isOpenDelimiter);
+        } else {
+            canBeBIN = true;
+        }
+    }
+    if (blocks[blocks.length - 1].length === 0) {
+        blocks.pop();
+    }
+    // Make each block into an <mrow>. They don't break.
+    const mrows = [];
+    for (let i = 0; i < blocks.length; i++) {
+        mrows.push(new mathMLTree.MathNode("mrow", blocks[i]));
+    }
+    return mathMLTree.newDocumentFragment(mrows);
+};
+
 /**
  * Takes a full parse tree and settings and builds a MathML representation of
  * it. In particular, we put the elements from building the parse tree into a
@@ -242,26 +284,16 @@ export default function buildMathML(
 ): DomSpan {
     const expression = buildExpression(tree, options);
 
-    // Wrap up the expression in an mrow so it is presented in the semantics
-    // tag correctly, unless it's a single <mrow> or <mtable>.
-    let wrapper;
-    if (expression.length === 1 && expression[0] instanceof MathNode &&
-        utils.contains(["mrow", "mtable"], expression[0].type)) {
-        wrapper = expression[0];
-    } else {
-        wrapper = new mathMLTree.MathNode("mrow", expression);
-    }
+    // If expression is not a single <mrow> or <mtable>, then set soft line breaks.
+    const topLevel = (
+            expression.length === 1 &&
+            expression[0] instanceof MathNode &&
+            utils.contains(["mrow", "mtable"], expression[0].type)
+        )
+        ? expression[0]
+        : setSoftLineBreaks(expression);
 
-    // Build a TeX annotation of the source
-    const annotation = new mathMLTree.MathNode(
-        "annotation", [new mathMLTree.TextNode(texExpression)]);
-
-    annotation.setAttribute("encoding", "application/x-tex");
-
-    const semantics = new mathMLTree.MathNode(
-        "semantics", [wrapper, annotation]);
-
-    const math = new mathMLTree.MathNode("math", [semantics]);
+    const math = new mathMLTree.MathNode("math", [topLevel]);
     math.setAttribute("xmlns", "http://www.w3.org/1998/Math/MathML");
 
     // You can't style <math> nodes, so we wrap the node in a span.
@@ -270,5 +302,10 @@ export default function buildMathML(
     // of span are expected to have more fields in `buildHtml` contexts.
     const wrapperClass = forMathmlOnly ? "katex" : "katex-mathml";
     // $FlowFixMe
-    return buildCommon.makeSpan([wrapperClass], [math]);
+    const wrapper = buildCommon.makeSpan([wrapperClass], [math]);
+
+    // Include the TeX source.
+    wrapper.setAttribute("data-tex", texExpression);
+
+    return wrapper;
 }

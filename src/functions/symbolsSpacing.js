@@ -61,9 +61,14 @@ defineFunctionBuilders({
         if (regularSpace.hasOwnProperty(group.text)) {
             node = new mathMLTree.MathNode(
                 "mtext", [new mathMLTree.TextNode("\u00a0")]);
+            if (regularSpace[group.text].className === "nobreak") {
+                node.setAttribute("linebreak", "nobreak");
+            }
         } else if (cssSpace.hasOwnProperty(group.text)) {
-            // CSS-based MathML spaces (\nobreak, \allowbreak) are ignored
-            return new mathMLTree.MathNode("mspace");
+            node = new mathMLTree.MathNode("mspace");
+            if (group.text === "\\nobreak") {
+                node.setAttribute("linebreak", "nobreak");
+            }
         } else {
             throw new ParseError(`Unknown type of space "${group.text}"`);
         }

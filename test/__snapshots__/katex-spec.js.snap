@@ -1059,31 +1059,28 @@ exports[`An includegraphics builder should render with trust setting 1`] = `
 exports[`Extending katex by new fonts and symbols Add new font class to new extended symbols 1`] = `
 
 <span class="katex">
-  <span class="katex-mathml">
+  <span class="katex-mathml"
+        data-tex="۹۹^{۱۱}"
+  >
     <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <semantics>
-        <mrow>
+      <mrow>
+        <mi mathvariant="normal">
+          ۹
+        </mi>
+        <msup>
           <mi mathvariant="normal">
             ۹
           </mi>
-          <msup>
+          <mrow>
             <mi mathvariant="normal">
-              ۹
+              ۱
             </mi>
-            <mrow>
-              <mi mathvariant="normal">
-                ۱
-              </mi>
-              <mi mathvariant="normal">
-                ۱
-              </mi>
-            </mrow>
-          </msup>
-        </mrow>
-        <annotation encoding="application/x-tex">
-          ۹۹^{۱۱}
-        </annotation>
-      </semantics>
+            <mi mathvariant="normal">
+              ۱
+            </mi>
+          </mrow>
+        </msup>
+      </mrow>
     </math>
   </span>
   <span class="katex-html"
@@ -1137,39 +1134,40 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
 exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel and mop 1`] = `
 
 <span class="katex">
-  <span class="katex-mathml">
+  <span class="katex-mathml"
+        data-tex="M = \\\\ a + \\\\ b \\\\ c"
+  >
     <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <semantics>
-        <mrow>
-          <mi>
-            M
-          </mi>
-          <mo>
-            =
-          </mo>
-          <mspace linebreak="newline">
-          </mspace>
-          <mi>
-            a
-          </mi>
-          <mo>
-            +
-          </mo>
-          <mspace linebreak="newline">
-          </mspace>
-          <mi>
-            b
-          </mi>
-          <mspace linebreak="newline">
-          </mspace>
-          <mi>
-            c
-          </mi>
-        </mrow>
-        <annotation encoding="application/x-tex">
-          M = \\\\ a + \\\\ b \\\\ c
-        </annotation>
-      </semantics>
+      <mrow>
+        <mi>
+          M
+        </mi>
+        <mo>
+          =
+        </mo>
+      </mrow>
+      <mrow>
+        <mspace linebreak="newline">
+        </mspace>
+        <mi>
+          a
+        </mi>
+        <mo>
+          +
+        </mo>
+      </mrow>
+      <mrow>
+        <mspace linebreak="newline">
+        </mspace>
+        <mi>
+          b
+        </mi>
+        <mspace linebreak="newline">
+        </mspace>
+        <mi>
+          c
+        </mi>
+      </mrow>
     </math>
   </span>
   <span class="katex-html"

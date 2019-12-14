@@ -3715,7 +3715,7 @@ describe("Internal __* interface", function() {
     it("__renderToHTMLTree renders same as renderToString sans MathML", () => {
         const tree = katex.__renderToHTMLTree(latex);
         const renderedSansMathML = rendered.replace(
-            /<span class="katex-mathml">.*?<\/span>/, '');
+            /<span class="katex-mathml"[^>]+>.*?<\/span>/, '');
         expect(tree.toMarkup()).toEqual(renderedSansMathML);
     });
 });
