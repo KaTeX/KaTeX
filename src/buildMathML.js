@@ -230,11 +230,12 @@ const setSoftLineBreaks = function(expression: MathNode[]): documentFragment {
     // We want the expression to render with soft line breaks after
     // each top-level binary or relational operator, per TeXbook p. 173.
     // Break the expression into un-breakable blocks.
-    const blocks = [[]];
+    const mrows = [];
+    let block = [];
     let canBeBIN = false; // The first token can't be an infix binary operator.
     for (let i = 0; i < expression.length; i++) {
         const node = expression[i];
-        blocks[blocks.length - 1].push(node);
+        block.push(node);
         if (node.type && node.type === "mo") {
             const next = (i < expression.length - 1) ? expression[i + 1] : null;
             const nextNodeIsNoBreak = next && next.type &&
@@ -245,7 +246,8 @@ const setSoftLineBreaks = function(expression: MathNode[]): documentFragment {
             if (canBeBIN && !node.attributes.stretchy &&
                 !node.attributes.separator && !nextNodeIsNoBreak) {
                 // Start a new block. (Insert a soft linebreak.)
-                blocks.push([]);
+                mrows.push(new mathMLTree.MathNode("mrow", block));
+                block = [];
             }
 
             const isOpenDelimiter = node.attributes.stretchy &&
@@ -257,13 +259,8 @@ const setSoftLineBreaks = function(expression: MathNode[]): documentFragment {
             canBeBIN = true;
         }
     }
-    if (blocks[blocks.length - 1].length === 0) {
-        blocks.pop();
-    }
-    // Make each block into an <mrow>. They don't break.
-    const mrows = [];
-    for (let i = 0; i < blocks.length; i++) {
-        mrows.push(new mathMLTree.MathNode("mrow", blocks[i]));
+    if (block.length > 0) {
+        mrows.push(new mathMLTree.MathNode("mrow", block));
     }
     return mathMLTree.newDocumentFragment(mrows);
 };
