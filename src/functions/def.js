@@ -27,6 +27,11 @@ defineFunction({
         if (globalMap[token.text]) {
             token.text = globalMap[token.text];
             return assertNodeType(parser.parseFunction(), "internal");
+        } else {
+            const variable = parser.parseVariable(true);
+            if (variable != null) {
+                return variable;
+            }
         }
         throw new ParseError(`Invalid token after \\global`, token);
     },
