@@ -3,13 +3,11 @@
 import functions from "./functions";
 import MacroExpander, {implicitCommands} from "./MacroExpander";
 import symbols, {ATOMS, extraLatin} from "./symbols";
-import {calculateSize, units, zeroPt, zeroMu} from "./units";
+import {convertSize, units, zeroPt, zeroMu} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import unicodeAccents from "./unicodeAccents";
 import unicodeSymbols from "./unicodeSymbols";
 import {assertNodeType} from "./parseNode";
-import Options from "./Options";
-import Style from "./Style";
 import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
@@ -744,15 +742,7 @@ export default class Parser {
         // <coerced integer> -> <internal dimen> | <internal glue>
         // An internal dimension can be “coerced” to be an integer
         // by assuming units of scaled points.
-        // TODO: use current Options
-        const options = new Options({
-            style: Style.TEXT,
-            size: 5,
-            maxSize: Infinity,
-            minRuleThickness: 0,
-        });
-        value = Math.round(calculateSize(value, options)
-            / calculateSize({number: 1, unit: "sp"}, options));
+        value = convertSize(value, "sp");
         return {
             type: "integer",
             mode: this.mode,

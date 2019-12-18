@@ -7,6 +7,7 @@
 
 import ParseError from "./ParseError";
 import Options from "./Options";
+import Style from "./Style";
 
 // This table gives the number of TeX pts in one of each *absolute* TeX unit.
 // Thus, multiplying a length by this number converts the length from units
@@ -110,4 +111,20 @@ export const calculateSize = function(
         }
     }
     return Math.min(sizeValue.number * scale, options.maxSize);
+};
+
+/*
+ * Convert a "dimen" parse node into the given unit.
+ */
+export const convertSize = function(
+        sizeValue: Measurement, unit: string): number {
+    // TODO: use current Options
+    const options = new Options({
+        style: Style.TEXT,
+        size: 5,
+        maxSize: Infinity,
+        minRuleThickness: 0,
+    });
+    return Math.round(calculateSize(sizeValue, options)
+        / calculateSize({number: 1, unit}, options));
 };
