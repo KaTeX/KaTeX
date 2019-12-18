@@ -674,7 +674,9 @@ export default class Parser {
         const value = this.gullet.macros.get(name);
         if (value != null && !value.tokens &&
                 typeof value !== "function" && typeof value !== "string") {
-            this.consume();
+            if (!registerType) {
+                this.consume();
+            }
             return {
                 name,
                 type: value.type === "glue" && value.mode === "math"
@@ -682,7 +684,6 @@ export default class Parser {
                 value,
             };
         } else if (registerType) { // sparse, TODO: consider using a TypedArray
-            this.consume();
             const defaultValue = Parser.defaultRegister[registerType];
             this.gullet.macros.set(name, defaultValue);
             return {name, type: registerType, value: defaultValue};
