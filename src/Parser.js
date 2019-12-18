@@ -15,6 +15,7 @@ import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
+import {multiplySize, multiply} from "./functions/arithmetic";
 import type {ParseNode, AnyParseNode, SymbolParseNode, NumericParseNode,
     UnsupportedCmdParseNode} from "./parseNode";
 import type {Atom, Group} from "./symbols";
@@ -666,8 +667,11 @@ export default class Parser {
         const registerType = Parser.register[name];
         if (registerType) {
             this.consume();
-            const number = this.parseIntegerOrVariable();
-            name += assertNodeType(number, "integer").value;
+            const number = assertNodeType(this.parseIntegerOrVariable(), "integer");
+            if (number.value < 0) {
+                throw new ParseError("Register number should be positive");
+            }
+            name += number.value;
         }
         const value = this.gullet.macros.get(name);
         if (value != null && !value.tokens &&
@@ -688,7 +692,11 @@ export default class Parser {
         return null;
     }
 
-    getVariableValue(type: NumericType, intToDimen?: boolean): NumericParseNode {
+    getVariableValue(
+        type: NumericType,
+        intToDimen: boolean,
+        negative?: boolean,
+    ): NumericParseNode {
         const variable = this.getVariable();
         if (variable == null) {
             throw new ParseError(`Expected a ${type} variable`);
@@ -699,7 +707,7 @@ export default class Parser {
             // <normal integer> -> <internal integer>
             // <normal dimen> -> <internal dimen>
             // <glue> -> <optional signs><internal glue>
-            return varValue;
+            return negative ? multiply(varValue, -1) : varValue;
         } else if (type[0] === "m" &&
                 (varType !== "glue" || varValue.mode === "text")) { // not a muglue
             throw new ParseError(`Can't coerce ${varType} into ${type}`);
@@ -710,11 +718,14 @@ export default class Parser {
                 throw new ParseError("Can't coerce integer into dimen");
             }
             value = {
-                number: varValue.positive ? varValue.value : -varValue.value,
+                number: varValue.value,
                 unit: "sp",
             };
         } else {
             value = varValue.value;
+        }
+        if (negative) {
+            value = multiplySize(value, -1);
         }
         if (type === "dimen" || type === "glue") {
             // <coerced dimen> -> <internal glue>
@@ -745,8 +756,7 @@ export default class Parser {
         return {
             type: "integer",
             mode: this.mode,
-            positive: value >= 0,
-            value: Math.abs(value),
+            value,
         };
     }
 
@@ -839,12 +849,12 @@ export default class Parser {
         this.gullet.scanning = true; // allow MacroExpander to return \relax
         // <optional signs> -> <optional spaces>
         //   | <optional signs><plus or minus><optional spaces>
-        let positive = true;
+        let negative = false;
         this.consumeSpaces();
         let token;
         while ((token = this.fetch()).text === "+" || token.text === "-") {
             if (token.text === "-") {
-                positive = !positive;
+                negative = !negative;
             }
             this.consume();
             this.consumeSpaces();
@@ -860,7 +870,7 @@ export default class Parser {
         let base;
         if (token.text[0] === "\\") {
             this.gullet.scanning = false;
-            return this.getVariableValue(type);
+            return this.getVariableValue(type, false, negative);
         } else if (token.text === "'") {
             // <normal integer> -> '<octal constant><one optional space>
             base = 8;
@@ -928,8 +938,7 @@ export default class Parser {
         return {
             type: "integer",
             mode: this.mode,
-            positive,
-            value: number,
+            value: negative ? -number : number,
         };
     }
 
@@ -956,7 +965,7 @@ export default class Parser {
             // <mu unit> -> <optional spaces><internal muglue>
             //   | mu<one optional space>
             this.gullet.scanning = true; // allow MacroExpander to return \relax
-            const number = factor.positive ? factor.value : -factor.value;
+            const number = factor.value;
 
             this.consumeSpaces();
             let tok = this.fetch();

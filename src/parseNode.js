@@ -107,7 +107,6 @@ type ParseNodeTypes = {
         type: "integer",
         mode: Mode,
         loc?: ?SourceLocation,
-        positive: boolean,
         value: number,
     |},
     "dimen": {|
