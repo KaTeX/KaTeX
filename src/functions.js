@@ -9,6 +9,7 @@ export default functions;
 // that object in this file instead of relying on side-effects.
 import "./functions/accent";
 import "./functions/accentunder";
+import "./functions/arithmetic";
 import "./functions/arrow";
 import "./functions/char";
 import "./functions/color";

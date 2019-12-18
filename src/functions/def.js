@@ -6,6 +6,9 @@ import {assertNodeType} from "../parseNode";
 const globalMap = {
     "\\def": "\\gdef",
     "\\gdef": "\\gdef",
+    "\\advance": "\\\\globaladvance",
+    "\\multiply": "\\\\globalmultiply",
+    "\\divide": "\\\\globaldivide",
 };
 
 // Basic support for macro definitions:
