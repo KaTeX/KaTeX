@@ -115,7 +115,7 @@ const renderMathInElement = function(elem, options) {
         {left: "\\[", right: "\\]", display: true},
     ];
     optionsCopy.ignoredTags = optionsCopy.ignoredTags || [
-        "script", "noscript", "style", "textarea", "pre", "code",
+        "script", "noscript", "style", "textarea", "pre", "code", "option",
     ];
     optionsCopy.ignoredClasses = optionsCopy.ignoredClasses || [];
     optionsCopy.errorCallback = optionsCopy.errorCallback || console.error;
