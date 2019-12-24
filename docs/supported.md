@@ -510,6 +510,15 @@ Direct Input: $← ↑ → ↓ ↔ ↕ ↖ ↗ ↘ ↙ ↚ ↛ ↞ ↠ ↢ ↣ �
 
 Extensible arrows all can take an optional argument in the same manner<br>as `\xrightarrow[under]{over}`.
 
+## Special Notation
+
+**Bra-ket Notation**
+
+||||
+|:----------|:----------|:----------|
+|$\bra{\phi}$ `\bra{\phi}` |$\ket{\psi}$ `\ket{\psi}` |$\braket{\phi\vert\psi}$ `\braket{\phi\vert\psi}` |
+|$\Bra{\phi}$ `\Bra{\phi}` |$\Ket{\psi}$ `\Ket{\psi}` ||
+
 ## Style, Color, Size, and Font
 
 **Class Assignment**
