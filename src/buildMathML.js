@@ -246,6 +246,7 @@ const setSoftLineBreaks = function(expression: MathNode[]): documentFragment {
             if (canBeBIN && !node.attributes.stretchy &&
                 !node.attributes.separator && !nextNodeIsNoBreak) {
                 // Start a new block. (Insert a soft linebreak.)
+                // TODO: Put any post-operator glue on same line as operator.
                 mrows.push(new mathMLTree.MathNode("mrow", block));
                 block = [];
             }
