@@ -272,6 +272,7 @@ defineFunction({
                 "mo", [mml.makeText(group.left, group.mode)]);
 
             leftNode.setAttribute("fence", "true");
+            leftNode.setAttribute("form", "prefix");
 
             inner.unshift(leftNode);
         }

@@ -250,9 +250,8 @@ const setSoftLineBreaks = function(expression: MathNode[]): documentFragment {
                 block = [];
             }
 
-            const isOpenDelimiter = node.attributes.stretchy &&
-                // $FlowFixMe
-                "([{⌈⌊⎰⌜⌞⟦⟨⟪⟬⟮⦃⦅".indexOf(node.children[0].text) > -1;
+            const isOpenDelimiter = node.attributes.form &&
+                node.attributes.form === "prefix";
             // Any operator that follows an open delimiter is unary.
             canBeBIN = !(node.attributes.separator || isOpenDelimiter);
         } else {
