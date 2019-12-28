@@ -877,10 +877,10 @@ defineEnvironment({
             const settings = context.parser.settings;
             if (!settings.displayMode) {
                 throw new ParseError(`{${context.envName}} cannot be used inline.`);
-            } else if (settings.strict === "warn" && !settings.topEnV) {
+            } else if (settings.strict === "warn" && !settings.topEnv) {
                 // eslint-disable-next-line no-console
                 console.log(`{${context.envName}} called from math mode.`);
-            } else if (settings.strict && !settings.topEnV) {
+            } else if (settings.strict && !settings.topEnv) {
                 throw new ParseError(`{${context.envName}} called from math mode.`);
             }
         }
