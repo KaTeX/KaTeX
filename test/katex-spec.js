@@ -2705,6 +2705,27 @@ describe("An aligned environment", function() {
     });
 });
 
+describe("A gather environment", function() {
+    const displayMode = new Settings({displayMode: true});
+
+    it("should fail outside display mode", () => {
+        expect`\begin{gather}a+b\\c+d\end{gather}`.not.toParse();
+    });
+
+    it("should fail outside display mode", () => {
+        expect`\begin{gather*}a+b\\c+d\end{gather*}`.not.toParse();
+    });
+
+    it("should build if in display mode", () => {
+        expect`\begin{gather}a+b\\c+d\end{gather}`.toBuild(displayMode);
+    });
+
+    it("should build if in display mode", () => {
+        expect`\begin{gather*}a+b\\c+d\end{gather*}`.toBuild(displayMode);
+    });
+
+});
+
 describe("operatorname support", function() {
     it("should not fail", function() {
         expect("\\operatorname{x*Π∑\\Pi\\sum\\frac a b}").toBuild();

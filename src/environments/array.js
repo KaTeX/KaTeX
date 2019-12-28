@@ -27,7 +27,7 @@ export type AlignSpec = { type: "separator", separator: string } | {
 };
 
 // Type to indicate column separation in MathML
-export type ColSeparationType = "align" | "alignat" | "small";
+export type ColSeparationType = "align" | "alignat" | "gather" | "small";
 
 function getHLines(parser: Parser): boolean[] {
     // Return an array. The array length = number of hlines.
@@ -52,12 +52,22 @@ function getHLines(parser: Parser): boolean[] {
  */
 function parseArray(
     parser: Parser,
-    {hskipBeforeAndAfter, addJot, cols, arraystretch, colSeparationType}: {|
+    {
+        hskipBeforeAndAfter,
+        addJot,
+        cols,
+        arraystretch,
+        colSeparationType,
+        addEqnNum,
+        leqno,
+    }: {|
         hskipBeforeAndAfter?: boolean,
         addJot?: boolean,
         cols?: AlignSpec[],
         arraystretch?: number,
         colSeparationType?: ColSeparationType,
+        addEqnNum?: boolean,
+        leqno?: boolean,
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
@@ -156,6 +166,8 @@ function parseArray(
         hskipBeforeAndAfter,
         hLinesBeforeRow,
         colSeparationType,
+        addEqnNum,
+        leqno,
     };
 }
 
@@ -283,6 +295,21 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     const cols = [];
     let colSep;
     let colDescrNum;
+
+    const eqnNumSpans = [];
+    if (group.addEqnNum) {
+        // An environment with automatic equation numbers.
+        // Create node(s) that will trigger CSS counter increment.
+        for (r = 0; r < nr; ++r) {
+            const rw = body[r];
+            const shift = rw.pos - offset;
+            const eqnTag = buildCommon.makeSpan(["eqn-num"], [], options);
+            eqnTag.depth = rw.depth;
+            eqnTag.height = rw.height;
+            eqnNumSpans.push({type: "elem", elem: eqnTag, shift});
+        }
+    }
+
     for (c = 0, colDescrNum = 0;
          // Continue while either there are more columns or more column
          // descriptions, so trailing separators don't get lost.
@@ -393,7 +420,16 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         }, options);
     }
 
-    return buildCommon.makeSpan(["mord"], [body], options);
+    if (!group.addEqnNum) {
+        return buildCommon.makeSpan(["mord"], [body], options);
+    } else {
+        let eqnNumCol = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: eqnNumSpans,
+        }, options);
+        eqnNumCol = buildCommon.makeSpan(["tag"], [eqnNumCol], options);
+        return buildCommon.makeFragment([body, eqnNumCol]);
+    }
 };
 
 const alignMap = {
@@ -403,14 +439,28 @@ const alignMap = {
 };
 
 const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
-    let table = new mathMLTree.MathNode(
-        "mtable", group.body.map(function(row) {
-            return new mathMLTree.MathNode(
-                "mtr", row.map(function(cell) {
-                    return new mathMLTree.MathNode(
-                        "mtd", [mml.buildGroup(cell, options)]);
-                }));
-        }));
+    const tbl = [];
+    const glue = new mathMLTree.MathNode("mtd", [], ["mtr-glue"]);
+    const tag = new mathMLTree.MathNode("mtd", [], ["mml-eqn-num"]);
+    for (let i = 0; i < group.body.length; i++) {
+        const rw = group.body[i];
+        const row = [];
+        for (let j = 0; j < rw.length; j++) {
+            row.push(new mathMLTree.MathNode("mtd",
+                [mml.buildGroup(rw[j], options)]));
+        }
+        if (group.addEqnNum) {
+            row.unshift(glue);
+            row.push(glue);
+            if (group.leqno) {
+                row.unshift(tag);
+            } else {
+                row.push(tag);
+            }
+        }
+        tbl.push(new mathMLTree.MathNode("mtr", row));
+    }
+    let table = new mathMLTree.MathNode("mtable", tbl);
 
     // Set column alignment, row spacing, column spacing, and
     // array lines by setting attributes on the table element.
@@ -487,7 +537,8 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
             spacing += i % 2 ? "0em " : "1em ";
         }
         table.setAttribute("columnspacing", spacing.trim());
-    } else if (group.colSeparationType === "alignat") {
+    } else if (group.colSeparationType === "alignat" ||
+        group.colSeparationType === "gather") {
         table.setAttribute("columnspacing", "0em");
     } else if (group.colSeparationType === "small") {
         table.setAttribute("columnspacing", "0.2778em");
@@ -817,17 +868,31 @@ defineEnvironment({
 // and contents are set in \displaystyle.
 defineEnvironment({
     type: "array",
-    names: ["gathered"],
+    names: ["gathered", "gather", "gather*"],
     props: {
         numArgs: 0,
     },
     handler(context) {
+        if (utils.contains(["gather", "gather*"], context.envName)) {
+            const settings = context.parser.settings;
+            if (!settings.displayMode) {
+                throw new ParseError(`{${context.envName}} cannot be used inline.`);
+            } else if (settings.strict === "warn" && !settings.topEnV) {
+                // eslint-disable-next-line no-console
+                console.log(`{${context.envName}} called from math mode.`);
+            } else if (settings.strict && !settings.topEnV) {
+                throw new ParseError(`{${context.envName}} called from math mode.`);
+            }
+        }
         const res = {
             cols: [{
                 type: "align",
                 align: "c",
             }],
             addJot: true,
+            colSeparationType: "gather",
+            addEqnNum: context.envName === "gather",
+            leqno: context.parser.settings.leqno,
         };
         return parseArray(context.parser, res, "display");
     },

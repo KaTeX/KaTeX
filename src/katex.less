@@ -621,3 +621,23 @@
     text-align: left;
     padding-left: 2em;
 }
+
+// Automatic equation numbers for some environments.
+// Use parallel counters for HTML and MathML.
+body {
+    counter-reset: katexEqnNo mmlEqnNo;
+}
+
+.eqn-num::before {
+    counter-increment: katexEqnNo;
+    content: "(" counter(katexEqnNo) ")";
+}
+
+.mml-eqn-num::before {
+    counter-increment: mmlEqnNo;
+    content: "(" counter(mmlEqnNo) ")";
+}
+
+.mtr-glue {
+    width: 50%;
+}

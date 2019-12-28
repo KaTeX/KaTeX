@@ -312,6 +312,12 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
     // Build the expression contained in the tree
     const expression = buildExpression(tree, options, true);
 
+    let eqnNum;
+    if (expression.length === 2 && expression[1].hasClass("tag")) {
+        // An environment with automatic equation numbers, e.g. {gather}.
+        eqnNum = expression.pop();
+    }
+
     const children = [];
 
     // Create one base node for each chunk between potential line breaks.
@@ -367,6 +373,8 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
         );
         tagChild.classes = ["tag"];
         children.push(tagChild);
+    } else if (eqnNum) {
+        children.push(eqnNum);
     }
 
     const htmlNode = makeSpan(["katex-html"], children);
