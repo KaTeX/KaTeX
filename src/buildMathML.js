@@ -235,22 +235,53 @@ const setSoftLineBreaks = function(expression: MathNode[]): documentFragment {
     let canBeBIN = false; // The first token can't be an infix binary operator.
     for (let i = 0; i < expression.length; i++) {
         const node = expression[i];
+        if (node.attributes && node.attributes.linebreak &&
+            node.attributes.linebreak === "newline") {
+            // Put a line break in its own top level node.
+            if (block.length > 0) {
+                mrows.push(new mathMLTree.MathNode("mrow", block));
+            }
+            mrows.push(node);
+            block = [];
+            canBeBIN = false;
+            continue;
+        }
         block.push(node);
         if (node.type && node.type === "mo") {
-            const next = (i < expression.length - 1) ? expression[i + 1] : null;
-            const nextNodeIsNoBreak = next && next.type &&
-                (next.type === "mspace" || next.type === "mtext" ) &&
-                next.attributes.linebreak &&
-                next.attributes.linebreak === "nobreak";
-
             if (canBeBIN && !node.attributes.stretchy &&
-                !node.attributes.separator && !nextNodeIsNoBreak) {
-                // Start a new block. (Insert a soft linebreak.)
-                // TODO: Put any post-operator glue on same line as operator.
-                mrows.push(new mathMLTree.MathNode("mrow", block));
-                block = [];
+                !node.attributes.separator) {
+                // Check if the following node is a \nobreak text node, e.g. "~""
+                const next = (i < expression.length - 1) ? expression[i + 1] : null;
+                let glueIsFreeOfNobreak = true;
+                if (!(next && next.type === "mtext" && next.attributes.linebreak &&
+                    next.attributes.linebreak === "nobreak")) {
+                    // We may need to start a new block.
+                    // First, put any post-operator glue on same line as operator.
+                    for (let j = i + 1; j < expression.length; j++) {
+                        const nd = expression[j];
+                        if (
+                            nd.type && nd.type === "mspace" &&
+                            !(nd.attributes.linebreak &&
+                            nd.attributes.linebreak === "newline")
+                        ) {
+                            block.push(nd);
+                            i += 1;
+                            if (nd.attributes && nd.attributes.linebreak &&
+                                nd.attributes.linebreak === "nobreak") {
+                                glueIsFreeOfNobreak = false;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                if (glueIsFreeOfNobreak) {
+                    // Start a new block. (Insert a soft linebreak.)
+                    mrows.push(new mathMLTree.MathNode("mrow", block));
+                    block = [];
+                }
+                canBeBIN = false;
             }
-
             const isOpenDelimiter = node.attributes.form &&
                 node.attributes.form === "prefix";
             // Any operator that follows an open delimiter is unary.

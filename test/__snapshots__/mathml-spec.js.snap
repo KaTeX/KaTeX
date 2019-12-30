@@ -260,9 +260,8 @@ exports[`A MathML builder should generate the right types of nodes 1`] = `
     <mn>
       1
     </mn>
-    <mtext>
-        
-    </mtext>
+    <mspace width="0.2777777777777778em">
+    </mspace>
     <mtext>
       a
     </mtext>
@@ -606,63 +605,44 @@ exports[`A MathML builder special spaces render specially 1`] = `
 
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mtext>
-       
-    </mtext>
-    <mtext>
-       
-    </mtext>
-    <mtext>
-       
-    </mtext>
-    <mtext>
-       
-    </mtext>
-    <mtext>
-       
-    </mtext>
-    <mtext>
-        
-    </mtext>
-    <mtext>
-        
-    </mtext>
-    <mtext>
-       ⁣
-    </mtext>
-    <mtext>
-       ⁣
-    </mtext>
-    <mtext>
-       ⁣
-    </mtext>
-    <mtext>
-       ⁣
-    </mtext>
-    <mtext>
-       
-    </mtext>
-    <mtext>
-       
-    </mtext>
-    <mtext>
-       
-    </mtext>
-    <mtext>
-        
-    </mtext>
-    <mtext>
-       ⁣
-    </mtext>
-    <mtext>
-       ⁣
-    </mtext>
-    <mtext>
-       ⁣
-    </mtext>
-    <mtext>
-       ⁣
-    </mtext>
+    <mspace width="0.16666666666666666em">
+    </mspace>
+    <mspace width="0.16666666666666666em">
+    </mspace>
+    <mspace width="0.2222222222222222em">
+    </mspace>
+    <mspace width="0.2222222222222222em">
+    </mspace>
+    <mspace width="0.2222222222222222em">
+    </mspace>
+    <mspace width="0.2777777777777778em">
+    </mspace>
+    <mspace width="0.2777777777777778em">
+    </mspace>
+    <mspace width="-0.16666666666666666em">
+    </mspace>
+    <mspace width="-0.16666666666666666em">
+    </mspace>
+    <mspace width="-0.2222222222222222em">
+    </mspace>
+    <mspace width="-0.2777777777777778em">
+    </mspace>
+    <mspace width="0.05555555555555555em">
+    </mspace>
+    <mspace width="0.16666666666666666em">
+    </mspace>
+    <mspace width="0.2222222222222222em">
+    </mspace>
+    <mspace width="0.2777777777777778em">
+    </mspace>
+    <mspace width="-0.05555555555555555em">
+    </mspace>
+    <mspace width="-0.16666666666666666em">
+    </mspace>
+    <mspace width="-0.2222222222222222em">
+    </mspace>
+    <mspace width="-0.2777777777777778em">
+    </mspace>
   </mrow>
 </math>
 

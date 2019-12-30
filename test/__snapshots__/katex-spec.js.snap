@@ -1146,9 +1146,9 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
           =
         </mo>
       </mrow>
+      <mspace linebreak="newline">
+      </mspace>
       <mrow>
-        <mspace linebreak="newline">
-        </mspace>
         <mi>
           a
         </mi>
@@ -1156,14 +1156,16 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
           +
         </mo>
       </mrow>
+      <mspace linebreak="newline">
+      </mspace>
       <mrow>
-        <mspace linebreak="newline">
-        </mspace>
         <mi>
           b
         </mi>
-        <mspace linebreak="newline">
-        </mspace>
+      </mrow>
+      <mspace linebreak="newline">
+      </mspace>
+      <mrow>
         <mi>
           c
         </mi>

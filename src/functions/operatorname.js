@@ -5,6 +5,7 @@ import mathMLTree from "../mathMLTree";
 import {SymbolNode} from "../domTree";
 import {assembleSupSub} from "./utils/assembleSupSub";
 import {assertNodeType} from "../parseNode";
+import {spaceCharacter} from "./kern";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -85,16 +86,22 @@ const mathmlBuilder: MathMLBuilder<"operatorname"> = (group, options) => {
     let isAllString = true;  // default
     for (let i = 0; i < expression.length; i++) {
         const node = expression[i];
-        if (node instanceof mathMLTree.SpaceNode) {
-            // Do nothing
-        } else if (node instanceof mathMLTree.MathNode) {
+        if (node instanceof mathMLTree.MathNode) {
             switch (node.type) {
                 case "mi":
                 case "mn":
                 case "ms":
-                case "mspace":
                 case "mtext":
                     break;  // Do nothing yet.
+                case "mspace": {
+                    if (node.attributes.width) {
+                        const width = node.attributes.width.replace("em", "");
+                        const ch = spaceCharacter(Number(width));
+                        expression[i] = new mathMLTree.MathNode("mtext",
+                            [new mathMLTree.TextNode(ch)]);
+                    }
+                }
+                    break;
                 case "mo": {
                     const child = node.children[0];
                     if (node.children.length === 1 &&

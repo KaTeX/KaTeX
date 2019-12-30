@@ -574,8 +574,6 @@ defineMacro("\\DOTSI", "\\relax");
 defineMacro("\\DOTSB", "\\relax");
 defineMacro("\\DOTSX", "\\relax");
 
-// TODO: Add MathML to all spacing functions.
-
 // Spacing, based on amsmath.sty's override of LaTeX defaults
 // \DeclareRobustCommand{\tmspace}[3]{%
 //   \ifmmode\mskip#1#2\else\kern#1#3\fi\relax}

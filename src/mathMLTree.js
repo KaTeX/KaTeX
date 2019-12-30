@@ -157,84 +157,8 @@ export class TextNode implements MathDomNode {
     }
 }
 
-/**
- * This node represents a space, but may render as <mspace.../> or as text,
- * depending on the width.
- */
-class SpaceNode implements MathDomNode {
-    width: number;
-    character: ?string;
-
-    /**
-     * Create a Space node with width given in CSS ems.
-     */
-    constructor(width: number) {
-        this.width = width;
-        // See https://www.w3.org/TR/2000/WD-MathML2-20000328/chapter6.html
-        // for a table of space-like characters.  We use Unicode
-        // representations instead of &LongNames; as it's not clear how to
-        // make the latter via document.createTextNode.
-        if (width >= 0.05555 && width <= 0.05556) {
-            this.character = "\u200a";           // &VeryThinSpace;
-        } else if (width >= 0.1666 && width <= 0.1667) {
-            this.character = "\u2009";           // &ThinSpace;
-        } else if (width >= 0.2222 && width <= 0.2223) {
-            this.character = "\u2005";           // &MediumSpace;
-        } else if (width >= 0.2777 && width <= 0.2778) {
-            this.character = "\u2005\u200a";     // &ThickSpace;
-        } else if (width >= -0.05556 && width <= -0.05555) {
-            this.character = "\u200a\u2063";     // &NegativeVeryThinSpace;
-        } else if (width >= -0.1667 && width <= -0.1666) {
-            this.character = "\u2009\u2063";     // &NegativeThinSpace;
-        } else if (width >= -0.2223 && width <= -0.2222) {
-            this.character = "\u205f\u2063";     // &NegativeMediumSpace;
-        } else if (width >= -0.2778 && width <= -0.2777) {
-            this.character = "\u2005\u2063";     // &NegativeThickSpace;
-        } else {
-            this.character = null;
-        }
-    }
-
-    /**
-     * Converts the math node into a MathML-namespaced DOM element.
-     */
-    toNode(): Node {
-        if (this.character) {
-            return document.createTextNode(this.character);
-        } else {
-            const node = document.createElementNS(
-                "http://www.w3.org/1998/Math/MathML", "mspace");
-            node.setAttribute("width", this.width + "em");
-            return node;
-        }
-    }
-
-    /**
-     * Converts the math node into an HTML markup string.
-     */
-    toMarkup(): string {
-        if (this.character) {
-            return `<mtext>${this.character}</mtext>`;
-        } else {
-            return `<mspace width="${this.width}em"/>`;
-        }
-    }
-
-    /**
-     * Converts the math node into a string, similar to innerText.
-     */
-    toText(): string {
-        if (this.character) {
-            return this.character;
-        } else {
-            return " ";
-        }
-    }
-}
-
 export default {
     MathNode,
     TextNode,
-    SpaceNode,
     newDocumentFragment,
 };
