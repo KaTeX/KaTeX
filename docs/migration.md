@@ -1,6 +1,6 @@
 ---
 id: migration
-title: Migration guide
+title: Migration Guide
 ---
 
 As of KaTeX 1.0, we've changed how MacroExpander and Parser work in order to close
