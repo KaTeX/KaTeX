@@ -93,7 +93,7 @@ adds its features by modifying the `katex` module.  So you can use KaTeX with
 mhchem in Node as follows:
 
 ```js
-require('katex/dist/contrib/mhchem.js'); // modify katex module
 const katex = require('katex');
+require('katex/dist/contrib/mhchem.js'); // modify katex module
 const html = katex.renderToString('\\ce{CO2 + C -> 2 C0}");
 ```
