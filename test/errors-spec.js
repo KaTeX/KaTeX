@@ -250,13 +250,23 @@ describe("functions.js:", function() {
     describe("delimiter functions", function() {
         it("reject invalid opening delimiters", function() {
             expect`\bigl 1 + 2 \bigr`.toFailWithParseError(
-                   "Invalid delimiter: '1' after '\\bigl' at position 7:" +
+                   "Invalid delimiter '1' after '\\bigl' at position 7:" +
                    " \\bigl 1̲ + 2 \\bigr");
         });
         it("reject invalid closing delimiters", function() {
             expect`\bigl(1+2\bigr=3`.toFailWithParseError(
-                   "Invalid delimiter: '=' after '\\bigr' at position 15:" +
+                   "Invalid delimiter '=' after '\\bigr' at position 15:" +
                    " \\bigl(1+2\\bigr=̲3");
+        });
+        it("reject group opening delimiters", function() {
+            expect`\bigl{(}1+2\bigr)3`.toFailWithParseError(
+                   "Invalid delimiter type 'ordgroup' at position 6:" +
+                   " \\bigl{̲(̲}̲1+2\\bigr)3");
+        });
+        it("reject group closing delimiters", function() {
+            expect`\bigl(1+2\bigr{)}3`.toFailWithParseError(
+                   "Invalid delimiter type 'ordgroup' at position 15:" +
+                   " \\bigl(1+2\\bigr{̲)̲}̲3");
         });
     });
 
