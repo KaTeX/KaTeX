@@ -966,6 +966,16 @@ defineMacro("\\argmin", "\\DOTSB\\operatorname*{arg\\,min}");
 defineMacro("\\argmax", "\\DOTSB\\operatorname*{arg\\,max}");
 defineMacro("\\plim", "\\DOTSB\\mathop{\\operatorname{plim}}\\limits");
 
+//////////////////////////////////////////////////////////////////////
+// braket.sty
+// http://ctan.math.washington.edu/tex-archive/macros/latex/contrib/braket/braket.pdf
+
+defineMacro("\\bra", "\\mathinner{\\langle{#1}|}");
+defineMacro("\\ket", "\\mathinner{|{#1}\\rangle}");
+defineMacro("\\braket", "\\mathinner{\\langle{#1}\\rangle}");
+defineMacro("\\Bra", "\\left\\langle#1\\right|");
+defineMacro("\\Ket", "\\left|#1\\right\\rangle");
+
 // Custom Khan Academy colors, should be moved to an optional package
 defineMacro("\\blue", "\\textcolor{##6495ed}{#1}");
 defineMacro("\\orange", "\\textcolor{##ffa500}{#1}");

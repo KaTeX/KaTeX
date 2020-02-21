@@ -3367,6 +3367,26 @@ describe("A macro expander", function() {
     it("should expand \\argmax as expected", () => {
         expect`\argmax`.toParseLike`\operatorname*{arg\,max}`;
     });
+
+    it("should expand \\bra as expected", () => {
+        expect`\bra{\phi}`.toParseLike`\mathinner{\langle{\phi}|}`;
+    });
+
+    it("should expand \\ket as expected", () => {
+        expect`\ket{\psi}`.toParseLike`\mathinner{|{\psi}\rangle}`;
+    });
+
+    it("should expand \\braket as expected", () => {
+        expect`\braket{\phi|\psi}`.toParseLike`\mathinner{\langle{\phi|\psi}\rangle}`;
+    });
+
+    it("should expand \\Bra as expected", () => {
+        expect`\Bra{\phi}`.toParseLike`\left\langle\phi\right|`;
+    });
+
+    it("should expand \\Ket as expected", () => {
+        expect`\Ket{\psi}`.toParseLike`\left|\psi\right\rangle`;
+    });
 });
 
 describe("\\tag support", function() {
