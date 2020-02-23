@@ -37,12 +37,13 @@ const getRHS = (parser) => {
 const letCommand = (parser, name, tok, global) => {
     let macro = parser.gullet.macros.get(tok.text);
     if (macro == null) {
-    // if macro is undefined at this moment, set noexpand to 2
-    // and unexpandable to not expand it later and pass to the parser
-        tok.noexpand = 2;
+        // don't expand it later even if a macro with the same name is defined
+        // e.g., \let\foo=\frac \def\frac{\relax} \frac12
+        tok.noexpand = true;
         macro = {
             tokens: [tok],
             numArgs: 0,
+            // reproduce the same behavior in expansion
             unexpandable: !parser.gullet.isExpandable(tok.text),
         };
     }
@@ -116,7 +117,7 @@ defineFunction({
         }
         if (funcName === "\\edef" || funcName === "\\xdef") {
             arg = parser.gullet.expandTokens(arg);
-            arg.reverse();
+            arg.reverse(); // to fit in with stack order
         }
         // Final arg is the expansion of the macro
         parser.gullet.macros.set(name, {
@@ -157,6 +158,7 @@ defineFunction({
     },
 });
 
+// ref: https://www.tug.org/TUGboat/tb09-3/tb22bechtolsheim.pdf
 defineFunction({
     type: "internal",
     names: [

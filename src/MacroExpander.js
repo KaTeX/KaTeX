@@ -181,15 +181,15 @@ export default class MacroExpander implements MacroContextInterface {
      * i.e. things like those defined by \def\foo#1\end{…}.
      * See the TeX book page 202ff. for details on how those should behave.
      *
-     * If expandOnly, only expandable tokens are expanded and an undefined
-     * control sequence results in an error.
+     * If expandableOnly, only expandable tokens are expanded and
+     * an undefined control sequence results in an error.
      */
-    expandOnce(expandOnly?: boolean): Token | Token[] {
+    expandOnce(expandableOnly?: boolean): Token | Token[] {
         const topToken = this.popToken();
         const name = topToken.text;
         const expansion = !topToken.noexpand ? this._getExpansion(name) : null;
-        if (expansion == null || (expandOnly && expansion.unexpandable)) {
-            if (expandOnly && expansion == null &&
+        if (expansion == null || (expandableOnly && expansion.unexpandable)) {
+            if (expandableOnly && expansion == null &&
                     name[0] === "\\" && !this.isDefined(name)) {
                 throw new ParseError("Undefined control sequence: " + name);
             }
@@ -254,7 +254,9 @@ export default class MacroExpander implements MacroContextInterface {
             if (expanded instanceof Token) {
                 // \relax stops the expansion, but shouldn't get returned (a
                 // null return value couldn't get implemented as a function).
-                if (expanded.text === "\\relax" || expanded.noexpand === 1) {
+                // the token after \noexpand is interpreted as if its meaning
+                // were ‘\relax’
+                if (expanded.text === "\\relax" || expanded.treatAsRelax) {
                     this.stack.pop();
                 } else {
                     return this.stack.pop();  // === expanded
@@ -284,11 +286,13 @@ export default class MacroExpander implements MacroContextInterface {
         const oldStackLength = this.stack.length;
         this.pushTokens(tokens);
         while (this.stack.length > oldStackLength) {
-            const expanded = this.expandOnce(true);
+            const expanded = this.expandOnce(true); // expand only expandable tokens
             // expandOnce returns Token if and only if it's fully expanded.
             if (expanded instanceof Token) {
-                if (expanded.noexpand === 1) { // \noexpand
-                    expanded.noexpand = 0;
+                if (expanded.treatAsRelax) {
+                    // the expansion of \noexpand is the token itself
+                    expanded.noexpand = false;
+                    expanded.treatAsRelax = false;
                 }
                 output.push(this.stack.pop());
             }

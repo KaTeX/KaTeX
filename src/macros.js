@@ -45,7 +45,7 @@ export interface MacroContextInterface {
     /**
      * Expand the next token only once if possible.
      */
-    expandOnce(expandOnly?: boolean): Token | Token[];
+    expandOnce(expandableOnly?: boolean): Token | Token[];
 
     /**
      * Expand the next token only once (if possible), and return the resulting
@@ -95,7 +95,7 @@ export interface MacroContextInterface {
 export type MacroExpansion = {
     tokens: Token[],
     numArgs: number,
-    unexpandable?: boolean,
+    unexpandable?: boolean, // used in \let
 };
 
 export type MacroDefinition = string | MacroExpansion |
@@ -119,7 +119,8 @@ defineMacro("\\noexpand", function(context) {
     // would ordinarily be expanded by TeX’s expansion rules.
     const t = context.popToken();
     if (context.isExpandable(t.text)) {
-        t.noexpand = 1;
+        t.noexpand = true;
+        t.treatAsRelax = true;
     }
     return {tokens: [t], numArgs: 0};
 });
@@ -131,7 +132,7 @@ defineMacro("\\expandafter", function(context) {
     // has an argument), replacing it by its expansion. Finally TeX puts
     // t back in front of that expansion.
     const t = context.popToken();
-    context.expandOnce(true);
+    context.expandOnce(true); // expand only an expandable token
     return {tokens: [t], numArgs: 0};
 });
 

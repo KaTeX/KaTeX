@@ -2980,17 +2980,22 @@ describe("A macro expander", function() {
             "\\foo": "#1+#2",
             "\\bar": "xy",
         }}));
+        expect`\def\foo{x}\def\bar{\def\foo{y}}\expandafter\bar\foo`.toParseLike`x`;
+        // \def is not expandable, i.e., \expandafter doesn't define the macro
         expect`\expandafter\foo\def\foo{x}`.not.toParse();
-        expect`\def\bar{\def\foo{}}\expandafter\bar\foo`.not.toParse();
     });
 
     it("should not expand if preceded by \\noexpand", function() {
+        // \foo is not expanded and interpreted as if its meaning were \relax
         expect`\noexpand\foo y`.toParseLike("y",
             new Settings({macros: {"\\foo": "x"}}));
+        // \noexpand is expandable, so the second \foo is not expanded
         expect`\expandafter\foo\noexpand\foo`.toParseLike("x",
             new Settings({macros: {"\\foo": "x"}}));
+        // \frac is a macro and therefore expandable
         expect`\noexpand\frac xy`.toParseLike`xy`;
         // TODO(ylem): #2085
+        // \def is not expandable, so is not affected by \noexpand
         // expect`\noexpand\def\foo{xy}\foo`.toParseLike`xy`;
     });
 
@@ -3177,9 +3182,11 @@ describe("A macro expander", function() {
 
     it("\\xdef should expand definition", function() {
         expect`\def\foo{a}\xdef\bar{\foo}\def\foo{}\bar`.toParseLike`a`;
+        // \def\noexpand\foo{} expands into \def\foo{}
         expect`\def\foo{a}\xdef\bar{\def\noexpand\foo{}}\foo\bar\foo`.toParseLike`a`;
-        expect`\def\foo{a}\xdef\bar{\expandafter\foo\noexpand\foo}\def\foo{b}\bar`
-            .toParseLike`ab`;
+        // \foo\noexpand\foo expands into a\foo
+        expect`\def\foo{a}\xdef\bar{\foo\noexpand\foo}\def\foo{b}\bar`.toParseLike`ab`;
+        // \foo is not defined
         expect`\xdef\bar{\foo}`.not.toParse();
     });
 
@@ -3266,11 +3273,17 @@ describe("A macro expander", function() {
         expect`\let\foo=\frac\def\frac{}\foo12`.toParseLike`\frac12`;
         expect`\def\foo{1}\let\bar\foo\def\foo{2}\bar`.toParseLike`1`;
         expect`\let\foo=\kern\edef\bar{\foo1em}\let\kern=\relax\bar`.toParseLike`\kern1em`;
+        // \foo = { (left brace)
         expect`\let\foo{\frac\foo1}{2}`.toParseLike`\frac{1}{2}`;
+        // \equals = = (equal sign)
         expect`\let\equals==a\equals b`.toParseLike`a=b`;
+        // \foo should not be expandable and not affected by \noexpand or \edef
+        expect`\let\foo=x\noexpand\foo`.toParseLike`x`;
+        expect`\let\foo=x\edef\bar{\foo}\def\foo{y}\bar`.toParseLike`y`;
     });
 
     it("\\let should consume one optional space after equals sign", () => {
+        // https://tex.stackexchange.com/questions/141166/let-foo-bar-vs-let-foo-bar-let-with-equals-sign
         expect`\def\:{\let\space= }\: \text{\space}`.toParseLike`\text{ }`;
         const tree = getParsed`\def\bold{\bgroup\bf\let\next= }\bold{a}`;
         expect(tree).toMatchSnapshot();
