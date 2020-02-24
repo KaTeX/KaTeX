@@ -3037,6 +3037,33 @@ describe("A macro expander", function() {
         }}));
     });
 
+    it("conditional should work", function() {
+        expect`\iftrue xyz \fi`.toParseLike`xyz`;
+        expect`\iffalse xyz \else abc \fi`.toParseLike`abc`;
+        expect`\def\bg{\iftrue{\else}\fi}\bg xyz}`.toParseLike`{xyz}`;
+        expect`\iffalse{\fi xyz\iffalse}\fi`.toParseLike`xyz`;
+        expect`\iffalse xyz \else \else abc \fi`.not.toParse();
+        expect`\ifmode xyz`.not.toParse();
+        expect`xyz \fi`.not.toParse();
+    });
+
+    it("\\ifx should work", function() {
+        expect`\ifx\foo\relax xyz \fi`.toParseLike`xyz`;
+        expect`\ifx\foo\bar xyz \fi`.toParseLike("xyz", new Settings({macros: {
+            "\\foo": "a",
+            "\\bar": "a",
+        }}));
+        expect`\def\foo{a}\ifx\foo a xyz \else abc \fi`.toParseLike`abc`;
+    });
+
+    it("\\if should work", function() {
+        expect`\if\displaystyle\mathbin xyz \fi`.toParseLike`xyz`;
+        expect`\if\foo a xyz \fi`.toParseLike("xyz", new Settings({macros: {
+            "\\foo": "a",
+        }}));
+        expect`\def\foo{aa}\if\foo xyz \fi`.toParseLike`xyz`;
+    });
+
     it("\\@firstoftwo should consume both, and avoid errors", function() {
         expect`\@firstoftwo{yes}{no}`.toParseLike`yes`;
         expect`\@firstoftwo{yes}{1'_2^3}`.toParseLike`yes`;

@@ -27,6 +27,11 @@ export interface MacroContextInterface {
     macros: Namespace<MacroDefinition>;
 
     /**
+     * Stack to keep track of \if...\fi nesting
+     */
+    conditional: boolean[];
+
+    /**
      * Returns the topmost token on the stack, without expanding it.
      * Similar in behavior to TeX's `\futurelet`.
      */
@@ -41,6 +46,12 @@ export interface MacroContextInterface {
      * Consume all following space tokens, without expansion.
      */
     consumeSpaces(): void;
+
+    /**
+     * Skips ahead (keeping track of \if...\fi nesting) until finding
+     * the \else, \or, or \fi that ends the skipped text.
+     */
+    skipConditionalText(): void;
 
     /**
      * Expand the next token only once (if possible), and return the resulting
@@ -91,10 +102,105 @@ export type MacroMap = {[string]: MacroDefinition};
 const builtinMacros: MacroMap = {};
 export default builtinMacros;
 
+export const conditionals = {};
+
 // This function might one day accept an additional argument and do more things.
 export function defineMacro(name: string, body: MacroDefinition) {
     builtinMacros[name] = body;
 }
+
+//////////////////////////////////////////////////////////////////////
+// conditionals
+function defineConditional(
+    name: string,
+    evaluate: MacroContextInterface => boolean
+) {
+    conditionals[name] = true;
+    // When an \if... is expanded, TeX reads ahead as far as necessary
+    // to determine whether the condition is true or false; and if false,
+    // it skips ahead (keeping track of \if...\fi nesting) until finding
+    // the \else, \or, or \fi that ends the skipped text.
+    defineMacro(name, function(context) {
+        const condition = evaluate(context);
+        context.conditional.push(condition);
+        if (!condition) {
+            context.skipConditionalText();
+        }
+        return '';
+    });
+}
+
+defineMacro("\\else", function(context) {
+    // Similarly, when \else is expanded, TeX reads to the end of any text
+    // that ought to be skipped.
+    if (!context.conditional[context.conditional.length - 1]) {
+        throw new ParseError("Extra \\else.");
+    }
+    context.skipConditionalText();
+    return '';
+});
+
+defineMacro("\\fi", function(context) {
+    if (context.conditional.length === 0) {
+        throw new ParseError("Extra \\fi.");
+    }
+    context.conditional.pop();
+    return '';
+});
+
+defineConditional("\\iftrue", () => true);
+defineConditional("\\iffalse", () => false);
+defineConditional("\\ifmmode", (context) => context.mode === 'math');
+
+const getComparand = (context, token, ifx) => {
+    // \ifx: The condition is true if (a) the two tokens are not macros, and
+    // they both represent the same (character code, category code) pair or
+    // the same TeX primitive; or if (b) the two tokens are macros, and they
+    // both have the same parameters and “top level” expansion.
+    // \if: The condition is true if the character codes are equal.
+    let text = token.text;
+    if (text === "EOF") {
+        throw new ParseError("Unexpected end of input");
+    }
+    const macro = context.macros.get(text);
+    if (text[0] === "\\" || macro != null) { // control sequence or active character
+        // If token is a control sequence, TeX considers it to have character
+        // code 256 and category code 16, unless the current equivalent of that
+        // control sequence has been \let equal to a non-active character token.
+        if (macro == null) {
+            if (!ifx || !context.isDefined(text)) {
+                return "\\relax";
+            }
+        /* TODO(ylem): \let, #2122
+        } else if (macro.unexpandable && macro.tokens[0].noexpand === 2) {
+            return macro.tokens[0].text; */
+        } else if (typeof macro === "string") {
+            return "0\n" + macro;
+        } else if (typeof macro === "function") {
+            return "0\n" + macro.toString();
+        } else { // TODO(ylem): delimiters, #2085
+            text = macro.numArgs + "\n" +
+                macro.tokens.map(token => token.text).join("");
+        }
+    }
+    return text;
+};
+
+defineConditional("\\if", (context) => {
+    // TeX will expand macros until two unexpandable tokens are found.
+    // TODO(ylem): #2123, context.scanning = true;
+    const t1 = getComparand(context, context.expandNextToken());
+    const t2 = getComparand(context, context.expandNextToken());
+    // context.scanning = false;
+    return t1 === t2;
+});
+
+defineConditional("\\ifx", (context) => {
+    // TeX does not expand control sequences when it looks at the two tokens.
+    const t1 = getComparand(context, context.popToken(), true);
+    const t2 = getComparand(context, context.popToken(), true);
+    return t1 === t2;
+});
 
 //////////////////////////////////////////////////////////////////////
 // macro tools
