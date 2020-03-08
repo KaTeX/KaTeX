@@ -3653,6 +3653,10 @@ describe("Symbols", function() {
         expect`A\;B\,C\nobreakspace \text{A\;B\,C\nobreakspace}`.toBuild(strictSettings);
     });
 
+    it("should build \\minuso", () => {
+        expect`\\minuso`.toBuild(strictSettings);
+    });
+
     it("should render ligature commands like their unicode characters", () => {
         expect`\text{\ae\AE\oe\OE\o\O\ss}`.toBuildLike(r`\text{æÆœŒøØß}`, strictSettings);
     });

@@ -391,7 +391,7 @@ SvgReset:
     # styles (like fill-opacity) are not inherited
     styles: 'display:block; width:500px;border:solid yellow 5px;padding:50px;background:#ccc;color:green;font-size:92px;transform:translate(100px,250px)rotate(-45deg);fill-opacity:0;stroke-width:40;stroke:blue;'
 Symbols1: |
-    \maltese\degree\pounds\$
+    \maltese\degree\pounds\$\minuso
     \text{\maltese\degree\pounds\textdollar}
 Tag:
     tex: \tag{$+$hi} \frac{x^2}{y}+x^{2^y}
