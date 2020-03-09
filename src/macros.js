@@ -847,9 +847,8 @@ defineMacro("\u2984", "\\rBrace"); // blackboard bold }
 
 // The stmaryrd function `\minuso` provides a "Plimsoll" symbol that
 // superimposes the characters \circ and mathminus. Used in chemistry.
-// TODO: A MathML `\minuso` that is not tightly bound to the KaTeX font.
-defineMacro("\\minuso", `{\\mathrlap{\\mathchoice{\\kern{0.145em}}{\\kern{0.145em}}
-{\\kern{0.1015em}}{\\kern{0.0725em}}\\circ}{-}}`);
+defineMacro("\\minuso", `\\html@mathml{{\\mathrlap{\\mathchoice{\\kern{0.145em}}
+{\\kern{0.145em}}{\\kern{0.1015em}}{\\kern{0.0725em}}\\circ}{-}}}{\u29B5}`);
 
 // TODO: Create variable sized versions of the last two items. I believe that
 // will require new font glyphs.
