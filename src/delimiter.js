@@ -373,11 +373,13 @@ const makeStackedDelim = function(
         }
     }
 
-    // To cover the gap create by the overlaps, insert one more repeat element,
-    // at a position that juts 0.005 above the bottom of the top element.
-    inners.push({type: "kern", size: shiftOfExtraElement});
-    inners.push(makeInner(repeat, font, mode));
-    inners.push(lap);
+    if (repeatCount > 0) {
+        // To cover the gap created by the overlaps, insert one more repeat element,
+        // at a position that juts 0.005 above the bottom of the top element.
+        inners.push({type: "kern", size: shiftOfExtraElement});
+        inners.push(makeInner(repeat, font, mode));
+        inners.push(lap);
+    }
 
     // Add the top symbol
     inners.push(makeInner(top, font, mode));
