@@ -25,7 +25,7 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 
 import {PathNode, SvgNode, SymbolNode} from "./domTree";
-import {sqrtPath} from "./svgGeometry";
+import {sqrtPath, tallParenPath} from "./svgGeometry";
 import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
@@ -37,6 +37,7 @@ import type {HtmlDomNode, DomSpan, SvgSpan} from "./domTree";
 import type {Mode} from "./types";
 import type {StyleInterface} from "./Style";
 import type {VListElem} from "./buildCommon";
+import type {TallParen} from "./svgGeometry";
 
 /**
  * Get the metrics for a given symbol and font, after transformation (i.e.
@@ -311,6 +312,9 @@ const makeStackedDelim = function(
     // Calcuate the minimal height that the delimiter can have.
     // It is at least the size of the top, bottom, and optional middle combined.
     const minHeight = topHeightTotal + bottomHeightTotal + middleHeightTotal;
+    if (minHeight > heightTotal) {
+        heightTotal = minHeight;
+    }
 
     // Compute the number of copies of the repeat symbol we will need
     const repeatCount = Math.max(0, Math.ceil(
@@ -330,6 +334,12 @@ const makeStackedDelim = function(
     }
     // Calculate the depth
     const depth = realHeightTotal / 2 - axisHeight;
+
+    if (delim === "(" || delim ===  ")" || delim ===  "\\lparen" ||
+        delim ===  "\\rparen") {
+        // We get better rendering from an SVG than from stacked glyphs.
+        return tallParen(delim, heightTotal, depth, options, classes);
+    }
 
     // This function differs from the TeX procedure in one way.
     // We shift each repeat element downwards by 0.005em, to prevent a gap
@@ -419,6 +429,31 @@ const sqrtSvg = function(
     });
 
     return buildCommon.makeSvgSpan(["hide-tail"], [svg], options);
+};
+
+const tallParen = function(
+    paren: TallParen,
+    heightTotal: number,
+    depth: number,
+    options: Options,
+    classes: string[],
+): SvgSpan {
+    heightTotal = heightTotal.toFixed(4);
+    const viewBoxHeight = heightTotal * 1000;
+    const path = tallParenPath(paren, viewBoxHeight);
+    const pathNode = new PathNode(name, path);
+    const svg = new SvgNode([pathNode], {
+        width: "0.875", // advance width, from font glyph
+        height: heightTotal,
+        viewBox: `0 0 875 ${viewBoxHeight}`,
+        preserveAspectRatio: "xMinYMin",
+    });
+    const span = buildCommon.makeSvgSpan([], [svg], options);
+    span.style.display = "inline-block";
+    span.style.verticalAlign = -depth + "em";
+    span.style.width = "0.875em";
+    span.style.height = heightTotal + "em";
+    return styleWrap(span, Style.TEXT, options, classes);
 };
 
 /**
