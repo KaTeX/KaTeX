@@ -312,9 +312,6 @@ const makeStackedDelim = function(
     // Calcuate the minimal height that the delimiter can have.
     // It is at least the size of the top, bottom, and optional middle combined.
     const minHeight = topHeightTotal + bottomHeightTotal + middleHeightTotal;
-    if (minHeight > heightTotal) {
-        heightTotal = minHeight;
-    }
 
     // Compute the number of copies of the repeat symbol we will need
     const repeatCount = Math.max(0, Math.ceil(
@@ -338,7 +335,7 @@ const makeStackedDelim = function(
     if (delim === "(" || delim ===  ")" || delim ===  "\\lparen" ||
         delim ===  "\\rparen") {
         // We get better rendering from an SVG than from stacked glyphs.
-        return tallParen(delim, heightTotal, depth, options, classes);
+        return tallParen(delim, realHeightTotal, depth, options, classes);
     }
 
     // This function differs from the TeX procedure in one way.
@@ -405,6 +402,31 @@ const makeStackedDelim = function(
         Style.TEXT, options, classes);
 };
 
+const tallParen = function(
+    paren: TallParen,
+    heightTotal: number,
+    depth: number,
+    options: Options,
+    classes: string[],
+): DomSpan {
+    heightTotal = Number(heightTotal.toFixed(4));
+    const viewBoxHeight = heightTotal * 1000;
+    const path = tallParenPath(paren, viewBoxHeight);
+    const pathNode = new PathNode(paren, path);
+    const svg = new SvgNode([pathNode], {
+        width: "0.875em", // advance width, from font glyph
+        height: heightTotal + "em",
+        viewBox: `0 0 875 ${viewBoxHeight}`,
+        preserveAspectRatio: "xMinYMin",
+    });
+    const span = buildCommon.makeSvgSpan(["tallparen"], [svg], options);
+    span.height = heightTotal - depth;
+    span.depth = depth;
+    span.style.height = heightTotal + "em";
+    span.style.verticalAlign = -depth + "em";
+    return styleWrap(span, Style.TEXT, options, classes);
+};
+
 // All surds have 0.08em padding above the viniculum inside the SVG.
 // That keeps browser span height rounding error from pinching the line.
 const vbPad = 80;   // padding above the surd, measured inside the viewBox.
@@ -429,31 +451,6 @@ const sqrtSvg = function(
     });
 
     return buildCommon.makeSvgSpan(["hide-tail"], [svg], options);
-};
-
-const tallParen = function(
-    paren: TallParen,
-    heightTotal: number,
-    depth: number,
-    options: Options,
-    classes: string[],
-): SvgSpan {
-    heightTotal = heightTotal.toFixed(4);
-    const viewBoxHeight = heightTotal * 1000;
-    const path = tallParenPath(paren, viewBoxHeight);
-    const pathNode = new PathNode(name, path);
-    const svg = new SvgNode([pathNode], {
-        width: "0.875", // advance width, from font glyph
-        height: heightTotal,
-        viewBox: `0 0 875 ${viewBoxHeight}`,
-        preserveAspectRatio: "xMinYMin",
-    });
-    const span = buildCommon.makeSvgSpan([], [svg], options);
-    span.style.display = "inline-block";
-    span.style.verticalAlign = -depth + "em";
-    span.style.width = "0.875em";
-    span.style.height = heightTotal + "em";
-    return styleWrap(span, Style.TEXT, options, classes);
 };
 
 /**
