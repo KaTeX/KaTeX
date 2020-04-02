@@ -297,6 +297,10 @@ Direct Input: $∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← �
 |:-------------------------------------|:------
 |$\def\foo{x^2} \foo + \foo$           | `\def\foo{x^2} \foo + \foo`
 |$\gdef\bar#1{#1^2} \bar{y} + \bar{y}$ | `\gdef\bar#1{#1^2} \bar{y} + \bar{y}`
+|                                      | `\edef\macroname#1#2…{definition to be expanded}`
+|                                      | `\xdef\macroname#1#2…{definition to be expanded}`
+|                                      | `\let\foo=\bar`
+|                                      | `\futurelet\foo\bar x`
 |                                      | `\global\def\macroname#1#2…{definition}`
 |                                      | `\newcommand\macroname[numargs]{definition}`
 |                                      | `\renewcommand\macroname[numargs]{definition}`
@@ -306,11 +310,13 @@ Macros can also be defined in the KaTeX [rendering options](options.md).
 
 Macros accept up to nine arguments: #1, #2, etc.
 
-`\gdef` and `\global\def` macros will persist between math expressions.
+`\gdef`, `\xdef`, `\global\def`, `\global\edef`, `\global\let`, and `\global\futurelet` will persist between math expressions.
+
+KaTeX has no `\par`, so all macros are long by default and `\long` will be ignored.
 
 Available functions include:
 
-`\char` `\mathchoice` `\TextOrMath` `\@ifstar` `\@ifnextchar` `\@firstoftwo` `\@secondoftwo` `\relax`
+`\char` `\mathchoice` `\TextOrMath` `\@ifstar` `\@ifnextchar` `\@firstoftwo` `\@secondoftwo` `\relax` `\expandafter` `\noexpand`
 
 @ is a valid character for commands, as if `\makeatletter` were in effect.
 
@@ -509,6 +515,15 @@ Direct Input: $← ↑ → ↓ ↔ ↕ ↖ ↗ ↘ ↙ ↚ ↛ ↞ ↠ ↢ ↣ �
 |$\xlongequal{abc}$ `\xlongequal{abc}`
 
 Extensible arrows all can take an optional argument in the same manner<br>as `\xrightarrow[under]{over}`.
+
+## Special Notation
+
+**Bra-ket Notation**
+
+||||
+|:----------|:----------|:----------|
+|$\bra{\phi}$ `\bra{\phi}` |$\ket{\psi}$ `\ket{\psi}` |$\braket{\phi\vert\psi}$ `\braket{\phi\vert\psi}` |
+|$\Bra{\phi}$ `\Bra{\phi}` |$\Ket{\psi}$ `\Ket{\psi}` ||
 
 ## Style, Color, Size, and Font
 

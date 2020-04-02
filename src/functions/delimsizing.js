@@ -62,11 +62,12 @@ function checkDelimiter(
     const symDelim = checkSymbolNodeType(delim);
     if (symDelim && utils.contains(delimiters, symDelim.text)) {
         return symDelim;
-    } else {
+    } else if (symDelim) {
         throw new ParseError(
-            "Invalid delimiter: '" +
-            (symDelim ? symDelim.text : JSON.stringify(delim)) +
-            "' after '" + context.funcName + "'", delim);
+            `Invalid delimiter '${symDelim.text}' after '${context.funcName}'`,
+            delim);
+    } else {
+        throw new ParseError(`Invalid delimiter type '${delim.type}'`, delim);
     }
 }
 
