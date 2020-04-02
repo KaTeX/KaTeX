@@ -28,6 +28,8 @@ You can provide an object of options as the last argument to [`katex.render` and
   - `"commentAtEnd"`: Use of `%` comment without a terminating newline.
     LaTeX would thereby comment out the end of math mode (e.g. `$`),
     causing an error.
+  - `"htmlExtension"`: Use of HTML extension (`\html`-prefixed) commands,
+    which are provieded for HTML manipulation.
 
   A second category of `errorCode`s never throw errors, but their strictness
   affects the behavior of KaTeX:
@@ -41,6 +43,10 @@ You can provide an object of options as the last argument to [`katex.render` and
   - `{command: "\\url", url, protocol}`
   - `{command: "\\href", url, protocol}`
   - `{command: "\\includegraphics", url, protocol}`
+  - `{command: "\\htmlClass", class}`
+  - `{command: "\\htmlId", id}`
+  - `{command: "\\htmlStyle", style}`
+  - `{command: "\\htmlData", attributes}`
 
   Here are some sample trust settings:
 

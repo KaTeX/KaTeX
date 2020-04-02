@@ -582,10 +582,10 @@ describe("An over/brace/brack parser", function() {
         expect(numer.body).toHaveLength(4);
     });
 
-    it("should create a demonimator from the atoms after \\over", function() {
+    it("should create a denominator from the atoms after \\over", function() {
         const parse = getParsed(complexOver)[0];
 
-        const denom = parse.numer;
+        const denom = parse.denom;
         expect(denom.body).toHaveLength(4);
     });
 
@@ -2011,6 +2011,36 @@ describe("An includegraphics builder", function() {
     });
 });
 
+describe("An HTML extension builder", function() {
+    const html =
+        "\\htmlId{bar}{x}\\htmlClass{foo}{x}\\htmlStyle{color: red;}{x}\\htmlData{foo=a, bar=b}{x}";
+    const trustNonStrictSettings = new Settings({trust: true, strict: false});
+    it("should not fail", function() {
+        expect(html).toBuild(trustNonStrictSettings);
+    });
+
+    it("should set HTML attributes", function() {
+        const built = getBuilt(html, trustNonStrictSettings);
+        expect(built[0].attributes.id).toMatch("bar");
+        expect(built[1].classes).toContain("foo");
+        expect(built[2].attributes.style).toMatch("color: red");
+        expect(built[3].attributes).toEqual({
+            "data-bar": "b",
+            "data-foo": "a",
+        });
+    });
+
+    it("should not affect spacing", function() {
+        const built = getBuilt("\\htmlId{a}{x+}y", trustNonStrictSettings);
+        expect(built).toMatchSnapshot();
+    });
+
+    it("should render with trust and strict setting", function() {
+        const built = getBuilt(html, trustNonStrictSettings);
+        expect(built).toMatchSnapshot();
+    });
+});
+
 describe("A bin builder", function() {
     it("should create mbins normally", function() {
         const built = getBuilt`x + y`;
@@ -2945,6 +2975,30 @@ describe("A macro expander", function() {
         }}));
     });
 
+    it("should delay expansion if preceded by \\expandafter", function() {
+        expect`\expandafter\foo\bar`.toParseLike("x+y", new Settings({macros: {
+            "\\foo": "#1+#2",
+            "\\bar": "xy",
+        }}));
+        expect`\def\foo{x}\def\bar{\def\foo{y}}\expandafter\bar\foo`.toParseLike`x`;
+        // \def is not expandable, i.e., \expandafter doesn't define the macro
+        expect`\expandafter\foo\def\foo{x}`.not.toParse();
+    });
+
+    it("should not expand if preceded by \\noexpand", function() {
+        // \foo is not expanded and interpreted as if its meaning were \relax
+        expect`\noexpand\foo y`.toParseLike("y",
+            new Settings({macros: {"\\foo": "x"}}));
+        // \noexpand is expandable, so the second \foo is not expanded
+        expect`\expandafter\foo\noexpand\foo`.toParseLike("x",
+            new Settings({macros: {"\\foo": "x"}}));
+        // \frac is a macro and therefore expandable
+        expect`\noexpand\frac xy`.toParseLike`xy`;
+        // TODO(ylem): #2085
+        // \def is not expandable, so is not affected by \noexpand
+        // expect`\noexpand\def\foo{xy}\foo`.toParseLike`xy`;
+    });
+
     it("should allow for space macro argument (text version)", function() {
         expect`\text{\foo\bar}`.toParseLike(r`\text{( )}`, new Settings({macros: {
             "\\foo": "(#1)",
@@ -3126,6 +3180,21 @@ describe("A macro expander", function() {
         //expect`\gdef{\foo}{}`.not.toParse();
     });
 
+    it("\\xdef should expand definition", function() {
+        expect`\def\foo{a}\xdef\bar{\foo}\def\foo{}\bar`.toParseLike`a`;
+        // \def\noexpand\foo{} expands into \def\foo{}
+        expect`\def\foo{a}\xdef\bar{\def\noexpand\foo{}}\foo\bar\foo`.toParseLike`a`;
+        // \foo\noexpand\foo expands into a\foo
+        expect`\def\foo{a}\xdef\bar{\foo\noexpand\foo}\def\foo{b}\bar`.toParseLike`ab`;
+        // \foo is not defined
+        expect`\xdef\bar{\foo}`.not.toParse();
+    });
+
+    it("\\def should be handled in Parser", () => {
+        expect`\gdef\foo{1}`.toParse(new Settings({maxExpand: 0}));
+        expect`2^\def\foo{1}2`.not.toParse();
+    });
+
     it("\\def works locally", () => {
         expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\def\\x{3}\\x}\\x}\\x")
             .toParseLike`1{2{3}2}1`;
@@ -3142,12 +3211,21 @@ describe("A macro expander", function() {
             "\\x\\def\\x{5}\\x}\\x").toParseLike`1{2{34}35}3`;
     });
 
-    it("\\global needs to followed by \\def", () => {
+    it("\\global needs to followed by macro prefixes, \\def or \\edef", () => {
         expect`\global\def\foo{}\foo`.toParseLike``;
-        // TODO: This doesn't work yet; \global needs to expand argument.
-        //expect`\def\DEF{\def}\global\DEF\foo{}\foo`.toParseLike``;
+        expect`\global\edef\foo{}\foo`.toParseLike``;
+        expect`\def\DEF{\def}\global\DEF\foo{}\foo`.toParseLike``;
+        expect`\global\global\def\foo{}\foo`.toParseLike``;
+        expect`\global\long\def\foo{}\foo`.toParseLike``;
         expect`\global\foo`.not.toParse();
         expect`\global\bar x`.not.toParse();
+    });
+
+    it("\\long needs to followed by macro prefixes, \\def or \\edef", () => {
+        expect`\long\def\foo{}\foo`.toParseLike``;
+        expect`\long\edef\foo{}\foo`.toParseLike``;
+        expect`\long\global\def\foo{}\foo`.toParseLike``;
+        expect`\long\foo`.not.toParse();
     });
 
     it("Macro arguments do not generate groups", () => {
@@ -3189,6 +3267,30 @@ describe("A macro expander", function() {
         const macros = {};
         expect`\gdef\foo{1}`.toParse(new Settings({macros, globalGroup: true}));
         expect(macros["\\foo"]).toBeTruthy();
+    });
+
+    it("\\let copies the definition", () => {
+        expect`\let\foo=\frac\def\frac{}\foo12`.toParseLike`\frac12`;
+        expect`\def\foo{1}\let\bar\foo\def\foo{2}\bar`.toParseLike`1`;
+        expect`\let\foo=\kern\edef\bar{\foo1em}\let\kern=\relax\bar`.toParseLike`\kern1em`;
+        // \foo = { (left brace)
+        expect`\let\foo{\frac\foo1}{2}`.toParseLike`\frac{1}{2}`;
+        // \equals = = (equal sign)
+        expect`\let\equals==a\equals b`.toParseLike`a=b`;
+        // \foo should not be expandable and not affected by \noexpand or \edef
+        expect`\let\foo=x\noexpand\foo`.toParseLike`x`;
+        expect`\let\foo=x\edef\bar{\foo}\def\foo{y}\bar`.toParseLike`y`;
+    });
+
+    it("\\let should consume one optional space after equals sign", () => {
+        // https://tex.stackexchange.com/questions/141166/let-foo-bar-vs-let-foo-bar-let-with-equals-sign
+        expect`\def\:{\let\space= }\: \text{\space}`.toParseLike`\text{ }`;
+        const tree = getParsed`\def\bold{\bgroup\bf\let\next= }\bold{a}`;
+        expect(tree).toMatchSnapshot();
+    });
+
+    it("\\futurelet should parse correctly", () => {
+        expect`\futurelet\foo\frac1{2+\foo}`.toParseLike`\frac1{2+1}`;
     });
 
     it("\\newcommand doesn't change settings.macros", () => {
@@ -3277,6 +3379,26 @@ describe("A macro expander", function() {
 
     it("should expand \\argmax as expected", () => {
         expect`\argmax`.toParseLike`\operatorname*{arg\,max}`;
+    });
+
+    it("should expand \\bra as expected", () => {
+        expect`\bra{\phi}`.toParseLike`\mathinner{\langle{\phi}|}`;
+    });
+
+    it("should expand \\ket as expected", () => {
+        expect`\ket{\psi}`.toParseLike`\mathinner{|{\psi}\rangle}`;
+    });
+
+    it("should expand \\braket as expected", () => {
+        expect`\braket{\phi|\psi}`.toParseLike`\mathinner{\langle{\phi|\psi}\rangle}`;
+    });
+
+    it("should expand \\Bra as expected", () => {
+        expect`\Bra{\phi}`.toParseLike`\left\langle\phi\right|`;
+    });
+
+    it("should expand \\Ket as expected", () => {
+        expect`\Ket{\psi}`.toParseLike`\left|\psi\right\rangle`;
     });
 });
 
@@ -3533,8 +3655,7 @@ describe("The maxSize setting", function() {
 describe("The maxExpand setting", () => {
     it("should prevent expansion", () => {
         expect`\gdef\foo{1}\foo`.toParse();
-        expect`\gdef\foo{1}\foo`.toParse(new Settings({maxExpand: 2}));
-        expect`\gdef\foo{1}\foo`.not.toParse(new Settings({maxExpand: 1}));
+        expect`\gdef\foo{1}\foo`.toParse(new Settings({maxExpand: 1}));
         expect`\gdef\foo{1}\foo`.not.toParse(new Settings({maxExpand: 0}));
     });
 
@@ -3700,5 +3821,25 @@ describe("Extending katex by new fonts and symbols", function() {
     });
     it("Add new font class to new extended symbols", () => {
         expect(katex.renderToString("۹۹^{۱۱}")).toMatchSnapshot();
+    });
+});
+
+describe("debugging macros", () => {
+    describe("message", () => {
+        it("should print the argument using console.log", () => {
+            jest.spyOn(console, "log");
+            expect`\message{Hello, world}`.toParse();
+            // eslint-disable-next-line no-console
+            expect(console.log.mock.calls[0][0]).toEqual("Hello, world");
+        });
+    });
+
+    describe("errmessage", () => {
+        it("should print the argument using console.error", () => {
+            jest.spyOn(console, "error");
+            expect`\errmessage{Hello, world}`.toParse();
+            // eslint-disable-next-line no-console
+            expect(console.error.mock.calls[0][0]).toEqual("Hello, world");
+        });
     });
 });

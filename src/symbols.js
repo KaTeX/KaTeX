@@ -287,8 +287,9 @@ defineSymbol(math, ams, textord, "\u29eb", "\\blacklozenge");
 defineSymbol(math, ams, textord, "\u2605", "\\bigstar");
 defineSymbol(math, ams, textord, "\u2222", "\\sphericalangle", true);
 defineSymbol(math, ams, textord, "\u2201", "\\complement", true);
-// unicode-math maps U+F0 (ð) to \matheth. We map to AMS function \eth
+// unicode-math maps U+F0 to \matheth. We map to AMS function \eth
 defineSymbol(math, ams, textord, "\u00f0", "\\eth", true);
+defineSymbol(text, main, textord, "\u00f0", "\u00f0");
 defineSymbol(math, ams, textord, "\u2571", "\\diagup");
 defineSymbol(math, ams, textord, "\u2572", "\\diagdown");
 defineSymbol(math, ams, textord, "\u25a1", "\\square");
@@ -545,28 +546,22 @@ defineSymbol(math, main, bin, "\u2228", "\\lor");
 defineSymbol(math, main, bin, "\u2227", "\\wedge", true);
 defineSymbol(math, main, bin, "\u2228", "\\vee", true);
 defineSymbol(math, main, textord, "\u221a", "\\surd");
-defineSymbol(math, main, open, "(", "(");
-defineSymbol(math, main, open, "[", "[");
 defineSymbol(math, main, open, "\u27e8", "\\langle", true);
 defineSymbol(math, main, open, "\u2223", "\\lvert");
 defineSymbol(math, main, open, "\u2225", "\\lVert");
-defineSymbol(math, main, close, ")", ")");
-defineSymbol(math, main, close, "]", "]");
 defineSymbol(math, main, close, "?", "?");
 defineSymbol(math, main, close, "!", "!");
 defineSymbol(math, main, close, "\u27e9", "\\rangle", true);
 defineSymbol(math, main, close, "\u2223", "\\rvert");
 defineSymbol(math, main, close, "\u2225", "\\rVert");
 defineSymbol(math, main, rel, "=", "=");
-defineSymbol(math, main, rel, "<", "<");
-defineSymbol(math, main, rel, ">", ">");
 defineSymbol(math, main, rel, ":", ":");
 defineSymbol(math, main, rel, "\u2248", "\\approx", true);
 defineSymbol(math, main, rel, "\u2245", "\\cong", true);
 defineSymbol(math, main, rel, "\u2265", "\\ge");
 defineSymbol(math, main, rel, "\u2265", "\\geq", true);
 defineSymbol(math, main, rel, "\u2190", "\\gets");
-defineSymbol(math, main, rel, ">", "\\gt");
+defineSymbol(math, main, rel, ">", "\\gt", true);
 defineSymbol(math, main, rel, "\u2208", "\\in", true);
 defineSymbol(math, main, rel, "\ue020", "\\@not");
 defineSymbol(math, main, rel, "\u2282", "\\subset", true);
@@ -579,7 +574,7 @@ defineSymbol(math, main, rel, "\u22a8", "\\models");
 defineSymbol(math, main, rel, "\u2190", "\\leftarrow", true);
 defineSymbol(math, main, rel, "\u2264", "\\le");
 defineSymbol(math, main, rel, "\u2264", "\\leq", true);
-defineSymbol(math, main, rel, "<", "\\lt");
+defineSymbol(math, main, rel, "<", "\\lt", true);
 defineSymbol(math, main, rel, "\u2192", "\\rightarrow", true);
 defineSymbol(math, main, rel, "\u2192", "\\to");
 defineSymbol(math, ams, rel, "\u2271", "\\ngeq", true);
@@ -590,6 +585,7 @@ defineSymbol(math, main, spacing, "\u00a0", "\\space");
 // Ref: LaTeX Source 2e: \DeclareRobustCommand{\nobreakspace}{%
 defineSymbol(math, main, spacing, "\u00a0", "\\nobreakspace");
 defineSymbol(text, main, spacing, "\u00a0", "\\ ");
+defineSymbol(text, main, spacing, "\u00a0", " ");
 defineSymbol(text, main, spacing, "\u00a0", "~");
 defineSymbol(text, main, spacing, "\u00a0", "\\space");
 defineSymbol(text, main, spacing, "\u00a0", "\\nobreakspace");
@@ -621,14 +617,14 @@ defineSymbol(text, main, textord, "}", "\\}");
 defineSymbol(text, main, textord, "}", "\\textbraceright");
 defineSymbol(math, main, open, "{", "\\lbrace");
 defineSymbol(math, main, close, "}", "\\rbrace");
-defineSymbol(math, main, open, "[", "\\lbrack");
-defineSymbol(text, main, textord, "[", "\\lbrack");
-defineSymbol(math, main, close, "]", "\\rbrack");
-defineSymbol(text, main, textord, "]", "\\rbrack");
-defineSymbol(math, main, open, "(", "\\lparen");
-defineSymbol(math, main, close, ")", "\\rparen");
-defineSymbol(text, main, textord, "<", "\\textless"); // in T1 fontenc
-defineSymbol(text, main, textord, ">", "\\textgreater"); // in T1 fontenc
+defineSymbol(math, main, open, "[", "\\lbrack", true);
+defineSymbol(text, main, textord, "[", "\\lbrack", true);
+defineSymbol(math, main, close, "]", "\\rbrack", true);
+defineSymbol(text, main, textord, "]", "\\rbrack", true);
+defineSymbol(math, main, open, "(", "\\lparen", true);
+defineSymbol(math, main, close, ")", "\\rparen", true);
+defineSymbol(text, main, textord, "<", "\\textless", true); // in T1 fontenc
+defineSymbol(text, main, textord, ">", "\\textgreater", true); // in T1 fontenc
 defineSymbol(math, main, open, "\u230a", "\\lfloor", true);
 defineSymbol(math, main, close, "\u230b", "\\rfloor", true);
 defineSymbol(math, main, open, "\u2308", "\\lceil", true);
@@ -636,7 +632,7 @@ defineSymbol(math, main, close, "\u2309", "\\rceil", true);
 defineSymbol(math, main, textord, "\\", "\\backslash");
 defineSymbol(math, main, textord, "\u2223", "|");
 defineSymbol(math, main, textord, "\u2223", "\\vert");
-defineSymbol(text, main, textord, "|", "\\textbar"); // in T1 fontenc
+defineSymbol(text, main, textord, "|", "\\textbar", true); // in T1 fontenc
 defineSymbol(math, main, textord, "\u2225", "\\|");
 defineSymbol(math, main, textord, "\u2225", "\\Vert");
 defineSymbol(text, main, textord, "\u2225", "\\textbardbl");
@@ -665,8 +661,6 @@ defineSymbol(math, main, op, "\u2a02", "\\bigotimes");
 defineSymbol(math, main, op, "\u2a01", "\\bigoplus");
 defineSymbol(math, main, op, "\u2a00", "\\bigodot");
 defineSymbol(math, main, op, "\u222e", "\\oint");
-defineSymbol(math, main, op, "\u222f", "\\oiint");
-defineSymbol(math, main, op, "\u2230", "\\oiiint");
 defineSymbol(math, main, op, "\u2a06", "\\bigsqcup");
 defineSymbol(math, main, op, "\u222b", "\\smallint");
 defineSymbol(text, main, inner, "\u2026", "\\textellipsis");
@@ -695,7 +689,6 @@ defineSymbol(text, main, textord, "\u0131", "\\i", true);
 defineSymbol(text, main, textord, "\u0237", "\\j", true);
 defineSymbol(text, main, textord, "\u00df", "\\ss", true);
 defineSymbol(text, main, textord, "\u00e6", "\\ae", true);
-defineSymbol(text, main, textord, "\u00e6", "\\ae", true);
 defineSymbol(text, main, textord, "\u0153", "\\oe", true);
 defineSymbol(text, main, textord, "\u00f8", "\\o", true);
 defineSymbol(text, main, textord, "\u00c6", "\\AE", true);
@@ -722,17 +715,17 @@ export const ligatures = {
     "''": true,
 };
 
-defineSymbol(text, main, textord, "\u2013", "--");
+defineSymbol(text, main, textord, "\u2013", "--", true);
 defineSymbol(text, main, textord, "\u2013", "\\textendash");
-defineSymbol(text, main, textord, "\u2014", "---");
+defineSymbol(text, main, textord, "\u2014", "---", true);
 defineSymbol(text, main, textord, "\u2014", "\\textemdash");
-defineSymbol(text, main, textord, "\u2018", "`");
+defineSymbol(text, main, textord, "\u2018", "`", true);
 defineSymbol(text, main, textord, "\u2018", "\\textquoteleft");
-defineSymbol(text, main, textord, "\u2019", "'");
+defineSymbol(text, main, textord, "\u2019", "'", true);
 defineSymbol(text, main, textord, "\u2019", "\\textquoteright");
-defineSymbol(text, main, textord, "\u201c", "``");
+defineSymbol(text, main, textord, "\u201c", "``", true);
 defineSymbol(text, main, textord, "\u201c", "\\textquotedblleft");
-defineSymbol(text, main, textord, "\u201d", "''");
+defineSymbol(text, main, textord, "\u201d", "''", true);
 defineSymbol(text, main, textord, "\u201d", "\\textquotedblright");
 //  \degree from gensymb package
 defineSymbol(math, main, textord, "\u00b0", "\\degree", true);
@@ -748,10 +741,6 @@ defineSymbol(text, main, textord, "\u00a3", "\\textsterling", true);
 defineSymbol(math, ams, textord, "\u2720", "\\maltese");
 defineSymbol(text, ams, textord, "\u2720", "\\maltese");
 
-defineSymbol(text, main, spacing, "\u00a0", "\\ ");
-defineSymbol(text, main, spacing, "\u00a0", " ");
-defineSymbol(text, main, spacing, "\u00a0", "~");
-
 // There are lots of symbols which are the same, so we add them in afterwards.
 // All of these are textords in math mode
 const mathTextSymbols = "0123456789/@.\"";
@@ -761,7 +750,7 @@ for (let i = 0; i < mathTextSymbols.length; i++) {
 }
 
 // All of these are textords in text mode
-const textSymbols = "0123456789!@*()-=+[]<>|\";:?/.,";
+const textSymbols = "0123456789!@*()-=+\";:?/.,";
 for (let i = 0; i < textSymbols.length; i++) {
     const ch = textSymbols.charAt(i);
     defineSymbol(text, main, textord, ch, ch);
@@ -881,18 +870,9 @@ for (let i = 0; i < 10; i++) {
 // but they are not actually in the font, nor are they supported by the
 // Unicode accent mechanism, so they fall back to Times font and look ugly.
 // TODO(edemaine): Fix this.
-export const extraLatin = "ÇÐÞçþ";
+export const extraLatin = "\u00c7\u00d0\u00de\u00e7\u00fe";
 for (let i = 0; i < extraLatin.length; i++) {
     const ch = extraLatin.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
-defineSymbol(text, main, textord, "ð", "ð");
-
-// Unicode versions of existing characters
-defineSymbol(text, main, textord, "\u2013", "–");
-defineSymbol(text, main, textord, "\u2014", "—");
-defineSymbol(text, main, textord, "\u2018", "‘");
-defineSymbol(text, main, textord, "\u2019", "’");
-defineSymbol(text, main, textord, "\u201c", "“");
-defineSymbol(text, main, textord, "\u201d", "”");
