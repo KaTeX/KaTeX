@@ -670,7 +670,7 @@ exports[`An HTML extension builder should not affect spacing 1`] = `
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
@@ -739,7 +739,7 @@ exports[`An HTML extension builder should not affect spacing 1`] = `
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0.19444,
     "height": 0.43056,
@@ -764,7 +764,7 @@ exports[`An HTML extension builder should render with trust and strict setting 1
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
@@ -793,7 +793,7 @@ exports[`An HTML extension builder should render with trust and strict setting 1
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
@@ -824,7 +824,7 @@ exports[`An HTML extension builder should render with trust and strict setting 1
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
@@ -855,7 +855,7 @@ exports[`An HTML extension builder should render with trust and strict setting 1
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
