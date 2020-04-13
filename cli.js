@@ -26,6 +26,9 @@ const program = require("commander")
         "Render math in display mode, which puts the math in display style " +
         "(so \\int and \\sum are large, for example), and centers the math " +
         "on the page on its own line.")
+    .option("--mode <mode>",
+        "either 'html', 'mathml' or 'htmlAndMathml'",
+        'htmlAndMathml')
     .option("--leqno",
         "Render display math in leqno style (left-justified tags).")
     .option("--fleqn",
@@ -123,10 +126,12 @@ function readInput() {
 }
 
 function writeOutput(input) {
+    options.outFile = options.output;
+    options.output = (options.mode) ? options.mode : null;
     const output = katex.renderToString(input, options) + "\n";
 
-    if (options.output) {
-        fs.writeFile(options.output, output, function(err) {
+    if (options.outFile) {
+        fs.writeFile(options.outFile, output, function(err) {
             if (err) {
                 return console.log(err);
             }
