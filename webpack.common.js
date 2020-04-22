@@ -128,9 +128,9 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                 {
                     test: /\.(ttf|woff|woff2)$/,
                     use: [{
-                        loader: 'file-loader',
+                        loader: "url-loader",
                         options: {
-                            name: 'fonts/[name].[ext]',
+                            limit: 500000,
                         },
                     }],
                 },

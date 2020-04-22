@@ -68,6 +68,7 @@
     "stylelint": "^9.10.1",
     "stylelint-config-standard": "^18.2.0",
     "terser-webpack-plugin": "^1.2.2",
+    "url-loader": "^4.1.0",
     "webpack": "^4.29.5",
     "webpack-bundle-analyzer": "^3.0.4",
     "webpack-cli": "^3.2.3",
@@ -92,20 +93,13 @@
     "prestart": "node src/unicodeMake.js",
     "start": "webpack-dev-server --hot --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
-    "build": "yarn prestart && rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c && webpack",
+    "build": "yarn prestart && rimraf dist/ && mkdirp dist && rollup -c && set USE_WOFF2=false && webpack",
     "watch": "yarn build --watch",
     "dist": "yarn test && yarn build && yarn dist:zip",
     "dist:zip": "rimraf katex/ katex.tar.gz katex.zip && cp -R dist katex && tar czf katex.tar.gz katex && zip -rq katex.zip katex && rimraf katex/"
   },
   "dependencies": {
     "commander": "^2.19.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn test:lint",
-      "post-merge": "git submodule update --init --recursive",
-      "post-checkout": "git submodule update --init --recursive"
-    }
   },
   "jest": {
     "collectCoverageFrom": [
