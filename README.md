@@ -1,7 +1,29 @@
 Hemos hecho este fork de la librería Katex por un problema que teníamos con las fuentes.
+
 Esta librería la necesita componentes y por lo tanto es una depencia que se instala en builder y product.
+
 La librería tiene un css que apunta a unas fuentes que lleva en una carpeta. Hasta aquí sin problema.
-El asunto es que al realizar el build tanto en builder como visor utilizamos una variable de entorno PUBLIC_URL que sirve para que CRA añada ese prefijo a todos los assets que se encuentre. Lo que sucede es que en ese PUBLIC_URL ponemos algo como @yield('content-builder-url') que es una keyword de blade porque luego lo sustituimos por una u otra url según el uso. Sobre todo en visor donde hay versiones para descargar o por url. El asunto es que ....
+
+El asunto es que al realizar el build tanto en builder como visor utilizamos una variable de entorno PUBLIC_URL que sirve para que CRA añada ese prefijo a todos los assets que se encuentre. Lo que sucede es que en ese PUBLIC_URL ponemos algo como @yield('content-builder-url') que es una keyword de blade porque luego lo sustituimos usando blade para distinguir usos de la cdn. En visor hay un @yield('content-viewer-url') que se sustituye via blade en ocasiones y cuando se va a hacer una distribución empaquetada se hace con una expresión regular. 
+El problema en ambos casos es que solo se hace en el index.html y no en los archivos css que es donde están las urls de las fuentes con lo que ese yield se queda sin reemplazar.
+
+La solución ha sido permitir que esta librería haga una compilación en la que las fuentes se incrusten. Al ir incrustadas se ha limitado a usar solo woff dado que al poner los requisitos de navegadores, ttf no se hace necesario y woff2 solo nos aporta más ligereza pero eso tiene sentido si solo te vas a descargar una de las versiones pero al ir incrustadas nos hemos quedado con woff que es compatible con todos los navegadores que sopotamos.
+
+Para clonar este proyecto hay que hacer:
+```
+git clone --recursive git@github.com:iseazy/KaTeX.git
+``` 
+porque lleva submodules
+
+Si tienes un mensaje de error de este tipo al usar comando git como commit,push, pull, checkout...
+```
+the input device is not a TTY
+```
+es porque se están ejecutando unos hooks de git y no te permite ver en la consola el resultado. Yo lo he solucionado a lo bruto renombrando la carpeta hooks que hay dentro de .git para evitar que se ejecuten los hooks. Seguramente haya una mejor solución.
+
+Tras hacer los cambios que necesites y pushearlo deberías generar una nueva release en github y actualizar ese número de versión en los package.json de builder y visor.
+
+ 
 
 
 # [<img src="https://katex.org/img/katex-logo-black.svg" width="130" alt="KaTeX">](https://katex.org/)
