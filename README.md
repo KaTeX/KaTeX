@@ -1,3 +1,9 @@
+Hemos hecho este fork de la librería Katex por un problema que teníamos con las fuentes.
+Esta librería la necesita componentes y por lo tanto es una depencia que se instala en builder y product.
+La librería tiene un css que apunta a unas fuentes que lleva en una carpeta. Hasta aquí sin problema.
+El asunto es que al realizar el build tanto en builder como visor utilizamos una variable de entorno PUBLIC_URL que sirve para que CRA añada ese prefijo a todos los assets que se encuentre. Lo que sucede es que en ese PUBLIC_URL ponemos algo como @yield('content-builder-url') que es una keyword de blade porque luego lo sustituimos por una u otra url según el uso. Sobre todo en visor donde hay versiones para descargar o por url. El asunto es que ....
+
+
 # [<img src="https://katex.org/img/katex-logo-black.svg" width="130" alt="KaTeX">](https://katex.org/)
 [![npm](https://img.shields.io/npm/v/katex.svg)](https://www.npmjs.com/package/katex)
 [![CircleCI](https://circleci.com/gh/KaTeX/KaTeX.svg?style=shield)](https://circleci.com/gh/KaTeX/KaTeX)
