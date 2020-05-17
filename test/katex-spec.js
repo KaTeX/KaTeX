@@ -1247,6 +1247,10 @@ describe("A begin/end parser", function() {
         expect`\begin{array}{cc}a&b\\c&d\end{array}`.toParse();
     });
 
+    it("should parse and build an empty environment", function() {
+        expect`\begin{aligned}\end{aligned}`.toBuild();
+    });
+
     it("should parse an environment with hlines", function() {
         expect`\begin{matrix}\hline a&b\\ \hline c&d\end{matrix}`.toParse();
         expect`\begin{matrix}\hdashline a&b\\ \hdashline c&d\end{matrix}`.toParse();

@@ -435,7 +435,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     let menclose = "";
     let align = "";
 
-    if (group.cols) {
+    if (group.cols && group.cols.length > 0) {
         // Find column alignment, column spacing, and  vertical lines.
         const cols = group.cols;
         let columnLines = "";
