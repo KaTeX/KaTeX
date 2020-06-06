@@ -74,6 +74,10 @@ defineFunction({
                         throw new ParseError(
                             "Error parsing key-value for \\htmlAttr");
                     }
+                    // Do not allow setting event handlers
+                    if (keyVal[0].trim().toLowerCase().startsWith("on")) {
+                        return parser.formatUnsupportedCmd(funcName);
+                    }
                     attributes[keyVal[0].trim()] = keyVal[1].trim();
                 }
 
