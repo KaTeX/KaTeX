@@ -108,3 +108,23 @@ instead taken from the `display` key of the corresponding entry in the
 The same `options.macros` object (which defaults to an empty object `{}`)
 is passed into several calls to `katex.render`, so that consecutive equations
 can build up shared macros by `\gdef`.
+
+If you want to use $...$ and $$...$$ for the Katex, you must have the fllowing configuration:
+
+```js
+  [
+    {left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false},
+  ]
+
+```
+
+Doesn't work below:
+
+```js
+  [
+    {left: "$", right: "$", display: false},
+    {left: "$$", right: "$$", display: true},
+  ]
+
+```
