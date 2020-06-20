@@ -737,7 +737,7 @@ defineEnvironment({
             arraystretch: 0.5,
         };
         res = parseArray(context.parser, res, "script");
-        if (res.body[0].length > 1) {
+        if (res.body.length > 0 &&  res.body[0].length > 1) {
             throw new ParseError("{subarray} can contain only one column");
         }
         return res;
