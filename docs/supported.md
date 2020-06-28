@@ -544,6 +544,9 @@ $\textcolor{#228B22}{F=ma}$ `\textcolor{#228B22}{F=ma}`<br>
 $\colorbox{aqua}{A}$ `\colorbox{aqua}{A}`<br>
 $\fcolorbox{red}{aqua}{A}$ `\fcolorbox{red}{aqua}{A}`
 
+Note that as in LaTeX, `\colorbox` & `\fcolorbox` renders its third argument as text. You need to switch back to math mode:
+$\colorbox{aqua}{$16 x^2$} `\colorbox{aqua}{$16 x^2$}`
+
 For color definition, KaTeX color functions will accept the standard HTML [predefined color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords). They will also accept an RGB argument in CSS hexa­decimal style. The "#" is optional before a six-digit specification.
 
 **Font**
