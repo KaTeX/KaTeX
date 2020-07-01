@@ -419,7 +419,7 @@ $\stackrel{!}{=}$ `\stackrel{!}{=}`
 | $\circeq$ `\circeq` | $\geqslant$ `\geqslant` | $\parallel$ `\parallel` | $\supset$ `\supset` |
 | $\colonapprox$ `\colonapprox` | $\gg$ `\gg` | $\perp$ `\perp` | $\supseteq$ `\supseteq` or `\supe` |
 | $\Colonapprox$ `\Colonapprox` | $\ggg$ `\ggg` | $\pitchfork$ `\pitchfork` | $\supseteqq$ `\supseteqq` |
-| $\coloneq$ `\coloneq` | $\gggtr$ `\gggtr` | $\prec$ `\prec` | $ | hickapprox$ `\thickapprox` |
+| $\coloneq$ `\coloneq` | $\gggtr$ `\gggtr` | $\prec$ `\prec` | $\thickapprox$ `\thickapprox` |
 | $\Coloneq$ `\Coloneq` | $\gt$ `\gt` | $\precapprox$ `\precapprox` | $\thicksim$ `\thicksim` |
 | $\coloneqq$ `\coloneqq` | $\gtrapprox$ `\gtrapprox` | $\preccurlyeq$ `\preccurlyeq` | $\trianglelefteq$ `\trianglelefteq` |
 | $\Coloneqq$ `\Coloneqq` | $\gtreqless$ `\gtreqless` | $\preceq$ `\preceq` | $\triangleq$ `\triangleq` |
