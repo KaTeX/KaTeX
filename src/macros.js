@@ -882,14 +882,19 @@ defineMacro("\\rBrace", "\\html@mathml{" +
 defineMacro("\u2983", "\\lBrace"); // blackboard bold {
 defineMacro("\u2984", "\\rBrace"); // blackboard bold }
 
+// TODO: Create variable sized versions of the last two items. I believe that
+// will require new font glyphs.
+
 // The stmaryrd function `\minuso` provides a "Plimsoll" symbol that
-// superimposes the characters \circ and mathminus. Used in chemistry.
+// superimposes the characters \circ and \mathminus. Used in chemistry.
 defineMacro("\\minuso", `\\mathbin{\\html@mathml{{\\mathrlap{\\mathchoice{
     \\kern{0.145em}}{\\kern{0.145em}}{\\kern{0.1015em}}{\\kern{0.0725em}}
     \\circ}{-}}}{\u29B5}}`);
-
-// TODO: Create variable sized versions of the last two items. I believe that
-// will require new font glyphs.
+defineMacro("\\minuso", "\\mathbin{\\html@mathml{" +
+    "{\\mathrlap{\\mathchoice{\\kern{0.145em}}{\\kern{0.145em}}" +
+    "{\\kern{0.1015em}}{\\kern{0.0725em}}\\circ}{-}}}" +
+    "{\\char`⦵}}");
+defineMacro("⦵", "\\minuso");
 
 //////////////////////////////////////////////////////////////////////
 // texvc.sty
