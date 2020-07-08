@@ -168,6 +168,7 @@
     .vlist-t {
         display: inline-table;
         table-layout: fixed;
+        border-collapse: collapse;
     }
 
     .vlist-r {
@@ -212,6 +213,29 @@
         font-size: 1px;
         width: 2px;
         min-width: 2px;
+    }
+
+    .vbox {
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        align-items: baseline;
+    }
+
+    .hbox {
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .thinbox {
+        display: inline-flex;
+        flex-direction: row;
+        width: 0;
+        max-width: 0; // necessary for Safari
     }
 
     .msupsub {
@@ -304,8 +328,6 @@
 
     .sizing,
     .fontsize-ensurer {
-        display: inline-block;
-
         @size1: 0.5;
         @size2: 0.6;
         @size3: 0.7;
@@ -548,6 +570,7 @@
     .fcolorbox {
         box-sizing: border-box;
         border: 0.04em solid;         // \fboxrule = 0.4pt
+        border-color: inherit;
     }
 
     .cancel-pad {
@@ -596,4 +619,5 @@
 // Flush-left display math
 .katex-display.fleqn > .katex {
     text-align: left;
+    padding-left: 2em;
 }

@@ -2,6 +2,11 @@
 id: issues
 title: Common Issues
 ---
+- Be sure to include `<!DOCTYPE html>` at the top of your HTML file, as
+  otherwise your browser will render in "[quirks mode](https://developer.mozilla.org/en-US/docs/Web/HTML/Quirks_Mode_and_Standards_Mode)"
+  which can cause KaTeX to sometimes render incorrectly.
+  This header is needed even inside `<iframe>`s
+  (which don't inherit the parent document's doctype).
 - Many Markdown preprocessors, such as the one that Jekyll and GitHub Pages use,
   have a "smart quotes" feature.  This changes `'` to `’` which is an issue for
   math containing primes, e.g. `f'`.  This can be worked around by defining a
@@ -17,6 +22,11 @@ title: Common Issues
 - MathJax defines `\color` to be like `\textcolor` by default; set KaTeX's
   `colorIsTextColor` option to `true` for this behavior.  KaTeX's default
   behavior matches MathJax with its `color.js` extension enabled.
+- Equivalents of MathJax `\class`, `\cssId`, and `\style` are `\htmlClass`,
+  `\htmlId`, and `\htmlStyle`, respectively, to avoid ambiguity.
+- Some symbols are defined using macro instead of `\DeclareMathSymbol` or similar
+  as in LaTeX. This may cause different behavior in expansion. They may expand
+  into multiple tokens and be affected by `\expandafter` and `\noexpand`.
 
 ## Troubleshooting
 

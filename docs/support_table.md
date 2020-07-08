@@ -40,9 +40,9 @@ table td {
 |\\;|$a\;\;{b}$|a`\;\;{b}`|
 |_|$x_i$|`x_i`|
 |\\_|$\_$||
-|\\\`|$\text{\`{a}}$|<code>\text{\\'{a}}</code>|
+|\\\`|$\text{\`{a}}$|`\text{\\'{a}}`|
 |&#060;|$<$||
-|\\=|$\text{\={a}}$|<code>\text{\\={a}}</code>|
+|\\=|$\text{\={a}}$|`\text{\\={a}}`|
 | >|$>$||
 |\\>|$a\>\>{b}$|`a\>\>{b}`|
 |\[|$[$||
@@ -54,10 +54,10 @@ table td {
 |&#124;|$\vert$||
 |\\&#124;|$\Vert$||
 |~|$\text{no~no~no~breaks}$|`\text{no~no~no~breaks}`|
-|\\~|$\text{\~{a}}$|<code>\text{\\~{a}}</code>|
+|\\~|$\text{\~{a}}$|`\text{\\~{a}}`|
 |\\\\|$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |^|$x^i$|`x^i`|
-|\\^|$\text{\^{a}}$|<code>\text{\\^{a}}</code>|
+|\\^|$\text{\^{a}}$|`\text{\\^{a}}`|
 
 ## A
 
@@ -117,7 +117,7 @@ table td {
 |\backslash|$\backslash$||
 |\bar|$\bar{y}$|`\bar{y}`|
 |\barwedge|$\barwedge$||
-|\Bbb|$\Bbb{ABC}$|`\Bbb{ABC}`<br>KaTeX supports A-Z & k
+|\Bbb|$\Bbb{ABC}$|`\Bbb{ABC}`<br>KaTeX supports A-Z & k|
 |\Bbbk|$\Bbbk$||
 |\bbox|<span style="color:firebrick;">Not supported</span>||
 |\bcancel|$\bcancel{5}$|`\bcancel{5}`|
@@ -183,6 +183,9 @@ table td {
 |\boxminus|$\boxminus$||
 |\boxplus|$\boxplus$||
 |\boxtimes|$\boxtimes$||
+|\Bra|$\left\langle\psi\right\|$|`\Bra{\psi}`|
+|\bra|$\mathinner{\langle{\psi}\|}$|`\bra{\psi}`|
+|\braket|$\mathinner{\langle{\phi\|\psi}\rangle}$|`\braket{\phi|\psi}`|
 |\brace|${n\brace k}$|`{n\brace k}`|
 |\bracevert|<span style="color:firebrick;">Not supported</span>||
 |\brack|${n\brack k}$|`{n\brack k}`|
@@ -198,7 +201,7 @@ table td {
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\C|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
-|\cal|<span style="color:firebrick;">Not supported</span>|See `\mathcal`
+|\cal|$\cal AaBb123$|`\cal AaBb123`|
 |\cancel|$\cancel{5}$|`\cancel{5}`|
 |\cancelto|<span style="color:firebrick;">Not supported</span>||
 |\Cap|$\Cap$||
@@ -338,11 +341,13 @@ use `\ce` instead|
 |\downdownarrows|$\downdownarrows$||
 |\downharpoonleft|$\downharpoonleft$||
 |\downharpoonright|$\downharpoonright$||
+|{drcases}|$\begin{drcases}a&\text{if }b\\c&\text{if }d\end{drcases}$|`\begin{drcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{drcases}`|
 
 ## E
 
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
+|\edef|$\def\foo{a}\edef\bar{\foo}\def\foo{}\bar$|`\def\foo{a}\edef\bar{\foo}\def\foo{}\bar`|
 |\ell|$\ell$||
 |\else|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
 |\em|<span style="color:firebrick;">Not supported</span>||
@@ -376,6 +381,7 @@ use `\ce` instead|
 |\exist|$\exist$||
 |\exists|$\exists$||
 |\exp|$\exp$||
+|\expandafter|||
 
 ## F
 
@@ -392,6 +398,7 @@ use `\ce` instead|
 |\frac|$\frac a b$|`\frac a b`|
 |\frak|$\frak{AaBb}$|`\frak{AaBb}`|
 |\frown|$\frown$||
+|\futurelet|||
 
 ## G
 
@@ -457,6 +464,10 @@ use `\ce` instead|
 |\hskip|$w\hskip1em i\hskip2em d$|`w\hskip1em i\hskip2em d`|
 |\hslash|$\hslash$||
 |\hspace|$s\hspace7ex k$|`s\hspace7ex k`|
+|\htmlClass|$\htmlClass{foo}{x}$|`\htmlClass{foo}{x}` Must enable `trust` and disable `strict` [option](options.md)|
+|\htmlData|$\htmlData{foo=a, bar=b}{x}$|`\htmlData{foo=a, bar=b}{x}` Must enable `trust` and disable `strict` [option](options.md)|
+|\htmlId|$\htmlId{bar}{x}$|`\htmlId{bar}{x}` Must enable `trust` and disable `strict` [option](options.md)|
+|\htmlStyle|$\htmlStyle{color: red;}{x}$|`\htmlStyle{color: red;}{x}` Must enable `trust` and disable `strict` [option](options.md)|
 |\huge|$\huge huge$|`\huge huge`|
 |\Huge|$\Huge Huge$|`\Huge Huge`|
 
@@ -480,6 +491,7 @@ use `\ce` instead|
 |\impliedby|$P\impliedby Q$|`P\impliedby Q`|
 |\implies|$P\implies Q$|`P\implies Q`|
 |\in|$\in$||
+|\includegraphics|$\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}$|`\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}` Requires `trust` [option](options.md)
 |\inf|$\inf$||
 |\infin|$\infin$||
 |\infty|$\infty$||
@@ -505,6 +517,8 @@ use `\ce` instead|
 |\KaTeX|$\KaTeX$||
 |\ker|$\ker$||
 |\kern|$I\kern-2.5pt R$|`I\kern-2.5pt R`|
+|\Ket|$\left\|\psi\right\rangle$|`\Ket{\psi}`|
+|\ket|$\mathinner{\|{\psi}\rangle}$|`\ket{\psi}`|
 |\Koppa|<span style="color:firebrick;">Not supported</span>||
 |\koppa|<span style="color:firebrick;">Not supported</span>||
 
@@ -560,7 +574,7 @@ use `\ce` instead|
 |\lesseqqgtr|$\lesseqqgtr$||
 |\lessgtr|$\lessgtr$||
 |\lesssim|$\lesssim$||
-|\let|<span style="color:firebrick;">Not supported</span>|[Issue #1413](https://github.com/KaTeX/KaTeX/issues/1413)|
+|\let|||
 |\lfloor|$\lfloor$||
 |\lg|$\lg$||
 |\lgroup|$\lgroup$||
@@ -584,6 +598,7 @@ use `\ce` instead|
 |\lnot|$\lnot$||
 |\lnsim|$\lnsim$||
 |\log|$\log$||
+|\long|||
 |\Longleftarrow|$\Longleftarrow$||
 |\longleftarrow|$\longleftarrow$||
 |\Longleftrightarrow|$\Longleftrightarrow$||
@@ -707,6 +722,7 @@ use `\ce` instead|
 |\nmid|$\nmid$||
 |\nobreak|||
 |\nobreakspace|$a\nobreakspace b$|`a\nobreakspace b`|
+|\noexpand|||
 |\nolimits|$\lim\nolimits_x$|`\lim\nolimits_x`|
 |\normalfont|<span style="color:firebrick;">Not supported</span>||
 |\normalsize|$\normalsize normalsize$|`\normalsize normalsize`|
@@ -760,7 +776,7 @@ use `\ce` instead|
 |\omicron|$\omicron$||
 |\ominus|$\ominus$||
 |\operatorname|$\operatorname{asin} x$|\operatorname{asin} x|
-|\operatorname\*|<span style="color:firebrick;">Not supported</span>|[Issue #1242](https://github.com/KaTeX/KaTeX/issues/1242)|
+|\operatorname\*|$\operatorname{asin}\limits_y x$|`\operatorname{asin}\limits_y x`|
 |\oplus|$\oplus$||
 |\or|<span style="color:firebrick;">Not supported</span>||
 |\oslash|$\oslash$||
@@ -846,6 +862,7 @@ use `\ce` instead|
 |\rBrace|$\rBrace$||
 |\rbrace|$\rbrace$||
 |\rbrack|$\rbrack$||
+|{rcases}|$\begin{rcases}a&\text{if }b\\c&\text{if }d\end{rcases}$|`\begin{rcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{rcases}`|
 |\rceil|$\rceil$||
 |\Re|$\Re$||
 |\real|$\real$||
@@ -938,7 +955,7 @@ use `\ce` instead|
 |\smiley|<span style="color:firebrick;">Not supported</span>||
 |\sout|$\sout{abc}$|`\sout{abc}`|
 |\Space|<span style="color:firebrick;">Not supported</span>|see `\space`
-|\space|$a\space{b}$|`a\space{b}`|
+|\space|$a\space b$|`a\space b`|
 |\spades|$\spades$||
 |\spadesuit|$\spadesuit$||
 |\sphericalangle|$\sphericalangle$||
@@ -1185,6 +1202,7 @@ use `\ce` instead|
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\xcancel|$\xcancel{ABC}$|`\xcancel{ABC}`|
+|\xdef|$\def\foo{a}\xdef\bar{\foo}\def\foo{}\bar$|`\def\foo{a}\xdef\bar{\foo}\def\foo{}\bar`|
 |\Xi|$\Xi$||
 |\xi|$\xi$||
 |\xhookleftarrow|$\xhookleftarrow{abc}$|`\xhookleftarrow{abc}`|

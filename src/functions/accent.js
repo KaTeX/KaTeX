@@ -4,7 +4,7 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
-import {assertNodeType, checkNodeType} from "../parseNode";
+import {assertNodeType} from "../parseNode";
 import {assertSpan, assertSymbolDomNode} from "../domTree";
 
 import * as html from "../buildHTML";
@@ -20,9 +20,8 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
     let base: AnyParseNode;
     let group: ParseNode<"accent">;
 
-    const supSub: ?ParseNode<"supsub"> = checkNodeType(grp, "supsub");
     let supSubGroup;
-    if (supSub) {
+    if (grp && grp.type === "supsub") {
         // If our base is a character box, and we have superscripts and
         // subscripts, the supsub will defer to us. In particular, we want
         // to attach the superscripts and subscripts to the inner body (so
@@ -32,18 +31,18 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
         // rendering that, while keeping track of where the accent is.
 
         // The real accent group is the base of the supsub group
-        group = assertNodeType(supSub.base, "accent");
+        group = assertNodeType(grp.base, "accent");
         // The character box is the base of the accent group
         base = group.base;
         // Stick the character box into the base of the supsub group
-        supSub.base = base;
+        grp.base = base;
 
         // Rerender the supsub group with its new base, and store that
         // result.
-        supSubGroup = assertSpan(html.buildGroup(supSub, options));
+        supSubGroup = assertSpan(html.buildGroup(grp, options));
 
         // reset original base
-        supSub.base = group;
+        grp.base = group;
     } else {
         group = assertNodeType(grp, "accent");
         base = group.base;
@@ -94,8 +93,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
             accent = buildCommon.staticSvg("vec", options);
             width = buildCommon.svgData.vec[1];
         } else {
-            accent = buildCommon.makeSymbol(
-                group.label, "Main-Regular", group.mode, options);
+            accent = buildCommon.makeOrd({mode: group.mode, text: group.label},
+                options, "textord");
+            accent = assertSymbolDomNode(accent);
             // Remove the italic correction of the accent, because it only serves to
             // shift the accent over to a place we don't want.
             accent.italic = 0;

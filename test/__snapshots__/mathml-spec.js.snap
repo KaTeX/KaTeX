@@ -327,7 +327,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
-      <munder>
+      <msub>
         <mo>
           <mi mathvariant="normal">
             lim sup
@@ -347,7 +347,7 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
             ∞
           </mi>
         </mrow>
-      </munder>
+      </msub>
     </mrow>
     <annotation encoding="application/x-tex">
       \\limsup_{x \\rightarrow \\infty}
@@ -359,7 +359,9 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
 
 exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} in displaymode correctly 1`] = `
 
-<math xmlns="http://www.w3.org/1998/Math/MathML">
+<math xmlns="http://www.w3.org/1998/Math/MathML"
+      display="block"
+>
   <semantics>
     <mrow>
       <munder>
@@ -618,9 +620,13 @@ exports[`A MathML builder should use <mpadded> for raisebox 1`] = `
   <semantics>
     <mrow>
       <mpadded voffset="0.25em">
-        <mtext>
-          b
-        </mtext>
+        <mstyle scriptlevel="0"
+                displaystyle="false"
+        >
+          <mtext>
+            b
+          </mtext>
+        </mstyle>
       </mpadded>
     </mrow>
     <annotation encoding="application/x-tex">
@@ -762,7 +768,9 @@ exports[`A MathML builder special spaces render specially 1`] = `
 
 exports[`A MathML builder tags use <mlabeledtr> 1`] = `
 
-<math xmlns="http://www.w3.org/1998/Math/MathML">
+<math xmlns="http://www.w3.org/1998/Math/MathML"
+      display="block"
+>
   <semantics>
     <mtable width="100%">
       <mtr>

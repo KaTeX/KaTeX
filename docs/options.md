@@ -10,7 +10,7 @@ You can provide an object of options as the last argument to [`katex.render` and
   - `mathml`: Outputs KaTeX in MathML only.
   - `htmlAndMathml`: Outputs HTML for visual rendering and includes MathML for accessibility. This is the default.
 - `leqno`: `boolean`. If `true`, display math has `\tag`s rendered on the left instead of the right, like `\usepackage[leqno]{amsmath}` in LaTeX.
-- `fleqn`: `boolean`. If `true`, display math renders flush left, like `\documentclass[fleqn]` in LaTeX.
+- `fleqn`: `boolean`. If `true`, display math renders flush left with a `2em` left margin, like `\documentclass[fleqn]` in LaTeX with the `amsmath` package.
 - `throwOnError`: `boolean`. If `true` (the default), KaTeX will throw a `ParseError` when it encounters an unsupported command or invalid LaTeX. If `false`, KaTeX will render unsupported commands as text, and render invalid LaTeX as its source code with hover text giving the error, in the color given by `errorColor`.
 - `errorColor`: `string`. A color string given in the format `"#XXX"` or `"#XXXXXX"`. This option determines the color that unsupported commands and invalid LaTeX are rendered in when `throwOnError` is set to `false`. (default: `#cc0000`)
 - `macros`: `object`. A collection of custom macros. Each macro is a property with a name like `\name` (written `"\\name"` in JavaScript) which maps to a string that describes the expansion of the macro, or a function that accepts an instance of `MacroExpander` as first argument and returns the expansion as a string. `MacroExpander` is an internal API and subject to non-backwards compatible changes. See [`src/macros.js`](https://github.com/KaTeX/KaTeX/blob/master/src/macros.js) for its usage. Single-character keys can also be included in which case the character will be redefined as the given macro (similar to TeX active characters). *This object will be modified* if the LaTeX code defines its own macros via `\gdef`, which enables consecutive calls to KaTeX to share state.
@@ -28,6 +28,8 @@ You can provide an object of options as the last argument to [`katex.render` and
   - `"commentAtEnd"`: Use of `%` comment without a terminating newline.
     LaTeX would thereby comment out the end of math mode (e.g. `$`),
     causing an error.
+  - `"htmlExtension"`: Use of HTML extension (`\html`-prefixed) commands,
+    which are provieded for HTML manipulation.
 
   A second category of `errorCode`s never throw errors, but their strictness
   affects the behavior of KaTeX:
@@ -41,6 +43,10 @@ You can provide an object of options as the last argument to [`katex.render` and
   - `{command: "\\url", url, protocol}`
   - `{command: "\\href", url, protocol}`
   - `{command: "\\includegraphics", url, protocol}`
+  - `{command: "\\htmlClass", class}`
+  - `{command: "\\htmlId", id}`
+  - `{command: "\\htmlStyle", style}`
+  - `{command: "\\htmlData", attributes}`
 
   Here are some sample trust settings:
 
@@ -51,6 +57,7 @@ You can provide an object of options as the last argument to [`katex.render` and
   - Allow all commands with specific protocols: `trust: (context) => ['http', 'https', '_relative'].includes(context.protocol)`
   - Allow all commands but forbid specific protocol: `trust: (context) => context.protocol !== 'file'`
   - Allow certain commands with specific protocols: `trust: (context) => ['\\url', '\\href'].includes(context.command) && ['http', 'https', '_relative'].includes(context.protocol)`
+- `globalGroup`: `boolean`  (default: `false`). Place KaTeX code in the global group. As a consequence, `\def` and `\newcommand` persist in `macros` across render calls. In LaTeX, constructs such as `\begin{equation}` and `$$` create a local group and prevent definitions from becoming visible outside of those blocks.
 
 For example:
 
