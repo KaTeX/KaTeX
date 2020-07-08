@@ -378,11 +378,12 @@ const makeStackedDelim = function(
     if ((repeat === "\u239c" || repeat === "\u239f") && repeatCount === 0) {
         // Parentheses need a short repeat element in order to avoid an overrun.
         // We'll make a 0.3em tall element from a SVG.
-        inners.push({type: "kern", size: -0.15});
+        const overlap = buildCommon.svgData.leftParenInner[2] / 2
+        inners.push({type: "kern", size: -overlap});
         const pathName = repeat === "\u239c" ? "leftParenInner" : "rightParenInner";
         const innerSpan = buildCommon.staticSvg(pathName, options);
         inners.push({type: "elem", elem: innerSpan});
-        inners.push({type: "kern", size: -0.15});
+        inners.push({type: "kern", size: -overlap});
     } else {
         inners.push({type: "kern", size: shiftOfExtraElement});
         inners.push(makeInner(repeat, font, mode));
