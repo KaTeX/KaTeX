@@ -70,8 +70,8 @@ nodes inside this element and render the math in them.
 object passed to `katex.render`](https://github.com/KaTeX/KaTeX/#rendering-options),
 in addition to two auto-render-specific keys:
 
-- `delimiters`: This is a list of delimiters to look for math. Each delimiter
-  has three properties:
+- `delimiters`: This is a list of delimiters to look for math, processed in
+  the same order as the list. Each delimiter has three properties:
 
     - `left`: A string which starts the math expression (i.e. the left delimiter).
     - `right`: A string which ends the math expression (i.e. the right delimiter).
@@ -86,6 +86,20 @@ in addition to two auto-render-specific keys:
     {left: "\\(", right: "\\)", display: false},
     {left: "\\[", right: "\\]", display: true}
   ]
+  ```
+
+  If you want to add support for inline math via `$...$`, be sure to list it
+  *after* `$$`, as in the following. (Because rules are processed in order,
+  putting a `$` rule first would catch `$$` as an empty math expression.)
+
+  ```js
+    [
+      {left: "$$", right: "$$", display: true},
+      {left: "$", right: "$", display: false},
+      {left: "\\(", right: "\\)", display: false},
+      {left: "\\[", right: "\\]", display: true}
+    ]
+
   ```
 
 - `ignoredTags`: This is a list of DOM node types to ignore when recursing
@@ -108,23 +122,3 @@ instead taken from the `display` key of the corresponding entry in the
 The same `options.macros` object (which defaults to an empty object `{}`)
 is passed into several calls to `katex.render`, so that consecutive equations
 can build up shared macros by `\gdef`.
-
-If you want to use $...$ and $$...$$ for the KaTex, you must have the fllowing configuration:
-
-```js
-  [
-    {left: "$$", right: "$$", display: true},
-    {left: "$", right: "$", display: false},
-  ]
-
-```
-
-Doesn't work below:
-
-```js
-  [
-    {left: "$", right: "$", display: false},
-    {left: "$$", right: "$$", display: true},
-  ]
-
-```
