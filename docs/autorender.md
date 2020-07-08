@@ -93,13 +93,12 @@ in addition to two auto-render-specific keys:
   putting a `$` rule first would catch `$$` as an empty math expression.)
 
   ```js
-    [
-      {left: "$$", right: "$$", display: true},
-      {left: "$", right: "$", display: false},
-      {left: "\\(", right: "\\)", display: false},
-      {left: "\\[", right: "\\]", display: true}
-    ]
-
+  [
+    {left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false},
+    {left: "\\[", right: "\\]", display: true}
+  ]
   ```
 
 - `ignoredTags`: This is a list of DOM node types to ignore when recursing
