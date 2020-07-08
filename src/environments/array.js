@@ -435,7 +435,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     let menclose = "";
     let align = "";
 
-    if (group.cols) {
+    if (group.cols && group.cols.length > 0) {
         // Find column alignment, column spacing, and  vertical lines.
         const cols = group.cols;
         let columnLines = "";
@@ -737,7 +737,7 @@ defineEnvironment({
             arraystretch: 0.5,
         };
         res = parseArray(context.parser, res, "script");
-        if (res.body[0].length > 1) {
+        if (res.body.length > 0 &&  res.body[0].length > 1) {
             throw new ParseError("{subarray} can contain only one column");
         }
         return res;
