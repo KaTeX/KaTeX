@@ -20,7 +20,8 @@ const getMathML = function(expr, settings = new Settings()) {
         maxSize: Infinity,
     });
 
-    const built = buildMathML(parseTree(expr, settings), expr, options);
+    const built = buildMathML(parseTree(expr, settings), expr, options,
+        settings.displayMode);
 
     // Strip off the surrounding <span>
     return built.children[0].toMarkup();
