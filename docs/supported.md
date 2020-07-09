@@ -631,9 +631,9 @@ In cases where KaTeX fonts do not have a bold glyph, `\pmb` can simulate one. Fo
 |$\circledR$ `\circledR`|$\diamondsuit$ `\diamondsuit`|$\heartsuit$ `\heartsuit`
 |$\text{\textregistered}$ `\text{\textregistered}`|$\diamonds$ `\diamonds`|$\hearts$ `\hearts`
 |$\circledS$ `\circledS`|$\spadesuit$ `\spadesuit`|$\spades$ `\spades`
-|$\text{\textcircled a}$ `\text{\textcircled a}`|$\maltese$ `\maltese`||
+|$\text{\textcircled a}$ `\text{\textcircled a}`|$\maltese$ `\maltese`|$\minuso$ `\minuso`|
 
-Direct Input: $£ ¥ ∇ ∞ · ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓ …  ⋮  ⋯  ⋱  !$ ‼
+Direct Input: $£ ¥ ∇ ∞ · ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓ …  ⋮  ⋯  ⋱  !$ ‼ ⦵
 
 ## Units
 
