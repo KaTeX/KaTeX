@@ -39,12 +39,13 @@ export const buildTree = function(
     const options = optionsFromSettings(settings);
     let katexNode;
     if (settings.output === "mathml") {
-        return  buildMathML(tree, expression, options, true);
+        return  buildMathML(tree, expression, options, settings.displayMode, true);
     } else if (settings.output === "html") {
         const htmlNode = buildHTML(tree, options);
         katexNode = buildCommon.makeSpan(["katex"], [htmlNode]);
     } else {
-        const mathMLNode = buildMathML(tree, expression, options, false);
+        const mathMLNode = buildMathML(tree, expression, options,
+            settings.displayMode, false);
         const htmlNode = buildHTML(tree, options);
         katexNode = buildCommon.makeSpan(["katex"], [mathMLNode, htmlNode]);
     }

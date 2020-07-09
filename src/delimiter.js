@@ -375,9 +375,20 @@ const makeStackedDelim = function(
 
     // To cover the gap create by the overlaps, insert one more repeat element,
     // at a position that juts 0.005 above the bottom of the top element.
-    inners.push({type: "kern", size: shiftOfExtraElement});
-    inners.push(makeInner(repeat, font, mode));
-    inners.push(lap);
+    if ((repeat === "\u239c" || repeat === "\u239f") && repeatCount === 0) {
+        // Parentheses need a short repeat element in order to avoid an overrun.
+        // We'll make a 0.3em tall element from a SVG.
+        const overlap = buildCommon.svgData.leftParenInner[2] / 2;
+        inners.push({type: "kern", size: -overlap});
+        const pathName = repeat === "\u239c" ? "leftParenInner" : "rightParenInner";
+        const innerSpan = buildCommon.staticSvg(pathName, options);
+        inners.push({type: "elem", elem: innerSpan});
+        inners.push({type: "kern", size: -overlap});
+    } else {
+        inners.push({type: "kern", size: shiftOfExtraElement});
+        inners.push(makeInner(repeat, font, mode));
+        inners.push(lap);
+    }
 
     // Add the top symbol
     inners.push(makeInner(top, font, mode));
