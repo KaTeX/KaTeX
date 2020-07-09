@@ -87,8 +87,8 @@ const users = [
     },
     {
         caption: 'Notable',
-        image: 'https://notable.md/static/images/logo_app.png',
-        infoLink: 'https://notable.md',
+        image: 'https://notable.app/static/images/logo_app.png',
+        infoLink: 'https://notable.app',
     },
     {
         caption: 'Observable',

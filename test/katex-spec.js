@@ -1247,6 +1247,10 @@ describe("A begin/end parser", function() {
         expect`\begin{array}{cc}a&b\\c&d\end{array}`.toParse();
     });
 
+    it("should parse and build an empty environment", function() {
+        expect`\begin{aligned}\end{aligned}`.toBuild();
+    });
+
     it("should parse an environment with hlines", function() {
         expect`\begin{matrix}\hline a&b\\ \hline c&d\end{matrix}`.toParse();
         expect`\begin{matrix}\hdashline a&b\\ \hdashline c&d\end{matrix}`.toParse();
@@ -2656,6 +2660,9 @@ describe("A substack function", function() {
     it("should accommodate macros in the argument", function() {
         expect`\sum_{\substack{ 0<i<\varPi \\ 0<j<\pi }}  P(i,j)`.toBuild();
     });
+    it("should accommodate an empty argument", function() {
+        expect`\sum_{\substack{}}  P(i,j)`.toBuild();
+    });
 
 });
 
@@ -2996,6 +3003,30 @@ describe("A macro expander", function() {
         }}));
     });
 
+    it("should delay expansion if preceded by \\expandafter", function() {
+        expect`\expandafter\foo\bar`.toParseLike("x+y", new Settings({macros: {
+            "\\foo": "#1+#2",
+            "\\bar": "xy",
+        }}));
+        expect`\def\foo{x}\def\bar{\def\foo{y}}\expandafter\bar\foo`.toParseLike`x`;
+        // \def is not expandable, i.e., \expandafter doesn't define the macro
+        expect`\expandafter\foo\def\foo{x}`.not.toParse();
+    });
+
+    it("should not expand if preceded by \\noexpand", function() {
+        // \foo is not expanded and interpreted as if its meaning were \relax
+        expect`\noexpand\foo y`.toParseLike("y",
+            new Settings({macros: {"\\foo": "x"}}));
+        // \noexpand is expandable, so the second \foo is not expanded
+        expect`\expandafter\foo\noexpand\foo`.toParseLike("x",
+            new Settings({macros: {"\\foo": "x"}}));
+        // \frac is a macro and therefore expandable
+        expect`\noexpand\frac xy`.toParseLike`xy`;
+        // TODO(ylem): #2085
+        // \def is not expandable, so is not affected by \noexpand
+        // expect`\noexpand\def\foo{xy}\foo`.toParseLike`xy`;
+    });
+
     it("should allow for space macro argument (text version)", function() {
         expect`\text{\foo\bar}`.toParseLike(r`\text{( )}`, new Settings({macros: {
             "\\foo": "(#1)",
@@ -3177,6 +3208,16 @@ describe("A macro expander", function() {
         //expect`\gdef{\foo}{}`.not.toParse();
     });
 
+    it("\\xdef should expand definition", function() {
+        expect`\def\foo{a}\xdef\bar{\foo}\def\foo{}\bar`.toParseLike`a`;
+        // \def\noexpand\foo{} expands into \def\foo{}
+        expect`\def\foo{a}\xdef\bar{\def\noexpand\foo{}}\foo\bar\foo`.toParseLike`a`;
+        // \foo\noexpand\foo expands into a\foo
+        expect`\def\foo{a}\xdef\bar{\foo\noexpand\foo}\def\foo{b}\bar`.toParseLike`ab`;
+        // \foo is not defined
+        expect`\xdef\bar{\foo}`.not.toParse();
+    });
+
     it("\\def should be handled in Parser", () => {
         expect`\gdef\foo{1}`.toParse(new Settings({maxExpand: 0}));
         expect`2^\def\foo{1}2`.not.toParse();
@@ -3198,11 +3239,21 @@ describe("A macro expander", function() {
             "\\x\\def\\x{5}\\x}\\x").toParseLike`1{2{34}35}3`;
     });
 
-    it("\\global needs to followed by \\def", () => {
+    it("\\global needs to followed by macro prefixes, \\def or \\edef", () => {
         expect`\global\def\foo{}\foo`.toParseLike``;
+        expect`\global\edef\foo{}\foo`.toParseLike``;
         expect`\def\DEF{\def}\global\DEF\foo{}\foo`.toParseLike``;
+        expect`\global\global\def\foo{}\foo`.toParseLike``;
+        expect`\global\long\def\foo{}\foo`.toParseLike``;
         expect`\global\foo`.not.toParse();
         expect`\global\bar x`.not.toParse();
+    });
+
+    it("\\long needs to followed by macro prefixes, \\def or \\edef", () => {
+        expect`\long\def\foo{}\foo`.toParseLike``;
+        expect`\long\edef\foo{}\foo`.toParseLike``;
+        expect`\long\global\def\foo{}\foo`.toParseLike``;
+        expect`\long\foo`.not.toParse();
     });
 
     it("Macro arguments do not generate groups", () => {
@@ -3244,6 +3295,30 @@ describe("A macro expander", function() {
         const macros = {};
         expect`\gdef\foo{1}`.toParse(new Settings({macros, globalGroup: true}));
         expect(macros["\\foo"]).toBeTruthy();
+    });
+
+    it("\\let copies the definition", () => {
+        expect`\let\foo=\frac\def\frac{}\foo12`.toParseLike`\frac12`;
+        expect`\def\foo{1}\let\bar\foo\def\foo{2}\bar`.toParseLike`1`;
+        expect`\let\foo=\kern\edef\bar{\foo1em}\let\kern=\relax\bar`.toParseLike`\kern1em`;
+        // \foo = { (left brace)
+        expect`\let\foo{\frac\foo1}{2}`.toParseLike`\frac{1}{2}`;
+        // \equals = = (equal sign)
+        expect`\let\equals==a\equals b`.toParseLike`a=b`;
+        // \foo should not be expandable and not affected by \noexpand or \edef
+        expect`\let\foo=x\noexpand\foo`.toParseLike`x`;
+        expect`\let\foo=x\edef\bar{\foo}\def\foo{y}\bar`.toParseLike`y`;
+    });
+
+    it("\\let should consume one optional space after equals sign", () => {
+        // https://tex.stackexchange.com/questions/141166/let-foo-bar-vs-let-foo-bar-let-with-equals-sign
+        expect`\def\:{\let\space= }\: \text{\space}`.toParseLike`\text{ }`;
+        const tree = getParsed`\def\bold{\bgroup\bf\let\next= }\bold{a}`;
+        expect(tree).toMatchSnapshot();
+    });
+
+    it("\\futurelet should parse correctly", () => {
+        expect`\futurelet\foo\frac1{2+\foo}`.toParseLike`\frac1{2+1}`;
     });
 
     it("\\newcommand doesn't change settings.macros", () => {
@@ -3672,6 +3747,10 @@ describe("Symbols", function() {
 
     it("should parse spacing functions in math or text mode", () => {
         expect`A\;B\,C\nobreakspace \text{A\;B\,C\nobreakspace}`.toBuild(strictSettings);
+    });
+
+    it("should build \\minuso", () => {
+        expect`\\minuso`.toBuild(strictSettings);
     });
 
     it("should render ligature commands like their unicode characters", () => {
