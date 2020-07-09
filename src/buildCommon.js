@@ -130,7 +130,7 @@ const mathsym = function(
 
 /**
  * Determines which of the two font names (Main-Italic and Math-Italic) and
- * corresponding style tags (maindefault or mathit) to use for default math font,
+ * corresponding style tags (mathdefault or mathit) to use for default math font,
  * depending on the symbol.
  */
 const mathdefault = function(
@@ -196,8 +196,10 @@ const boldsymbol = function(
     mode: Mode,
     options: Options,
     classes: string[],
+    type: "mathord" | "textord",
 ): {| fontName: string, fontClass: string |} {
-    if (lookupSymbol(value, "Math-BoldItalic", mode).metrics) {
+    if (type !== "textord" &&
+        lookupSymbol(value, "Math-BoldItalic", mode).metrics) {
         return {
             fontName: "Math-BoldItalic",
             fontClass: "boldsymbol",
@@ -238,7 +240,7 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
         let fontClasses;
         if (fontOrFamily === "boldsymbol" || fontOrFamily === "mathnormal") {
             const fontData = fontOrFamily === "boldsymbol"
-                ? boldsymbol(text, mode, options, classes)
+                ? boldsymbol(text, mode, options, classes, type)
                 : mathnormal(text, mode, options, classes);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
@@ -796,6 +798,8 @@ const svgData: {
     oiintSize2: ["oiintSize2", 1.472, 0.659],
     oiiintSize1: ["oiiintSize1", 1.304, 0.499],
     oiiintSize2: ["oiiintSize2", 1.98, 0.659],
+    leftParenInner: ["leftParenInner", 0.875, 0.3],
+    rightParenInner: ["rightParenInner", 0.875, 0.3],
 };
 
 const staticSvg = function(value: string, options: Options): SvgSpan {

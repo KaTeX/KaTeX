@@ -309,6 +309,7 @@ Direct Input: $∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← �
 Macros can also be defined in the KaTeX [rendering options](options.md).
 
 Macros accept up to nine arguments: #1, #2, etc.
+Delimiters (such as `\def\add#1+#2{#1\oplus#2}`) are not currently supported.
 
 `\gdef`, `\xdef`, `\global\def`, `\global\edef`, `\global\let`, and `\global\futurelet` will persist between math expressions.
 
@@ -632,9 +633,9 @@ In cases where KaTeX fonts do not have a bold glyph, `\pmb` can simulate one. Fo
 |$\circledR$ `\circledR`|$\diamondsuit$ `\diamondsuit`|$\heartsuit$ `\heartsuit`
 |$\text{\textregistered}$ `\text{\textregistered}`|$\diamonds$ `\diamonds`|$\hearts$ `\hearts`
 |$\circledS$ `\circledS`|$\spadesuit$ `\spadesuit`|$\spades$ `\spades`
-|$\text{\textcircled a}$ `\text{\textcircled a}`|$\maltese$ `\maltese`||
+|$\text{\textcircled a}$ `\text{\textcircled a}`|$\maltese$ `\maltese`|$\minuso$ `\minuso`|
 
-Direct Input: $£ ¥ ∇ ∞ · ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓ …  ⋮  ⋯  ⋱  !$ ‼
+Direct Input: $£ ¥ ∇ ∞ · ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓ …  ⋮  ⋯  ⋱  !$ ‼ ⦵
 
 ## Units
 
