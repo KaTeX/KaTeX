@@ -18,6 +18,7 @@ module.exports = api => {
             loose: true,
         }],
         "version-inline",
+        "preval",
     ];
 
     return {

@@ -57,7 +57,7 @@ nodes inside this element and render the math in them.
 
 `options` is an optional object argument that can have the same keys as [the
 object passed to `katex.render`](https://github.com/KaTeX/KaTeX/#rendering-options),
-in addition to two auto-render-specific keys:
+in addition to several auto-render-specific keys:
 
 - `delimiters`: This is a list of delimiters to look for math. Each delimiter
   has three properties:

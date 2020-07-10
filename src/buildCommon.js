@@ -131,9 +131,10 @@ const boldsymbol = function(
     mode: Mode,
     options: Options,
     classes: string[],
+    type: "mathord" | "textord",
 ): {| fontName: string, fontClass: string |} {
-    if (!(/[0-9]/.test(value.charAt(0))) &&
-            lookupSymbol(value, "Math-BoldItalic", mode).metrics) {
+    if (type !== "textord" &&
+        lookupSymbol(value, "Math-BoldItalic", mode).metrics) {
         return {
             fontName: "Math-BoldItalic",
             fontClass: "boldsymbol",
@@ -173,7 +174,7 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
         let fontName;
         let fontClasses;
         if (fontOrFamily === "boldsymbol") {
-            const fontData = boldsymbol(text, mode, options, classes);
+            const fontData = boldsymbol(text, mode, options, classes, type);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
         } else if (isFont) {
@@ -727,6 +728,8 @@ const svgData: {
     oiintSize2: ["oiintSize2", 1.472, 0.659],
     oiiintSize1: ["oiiintSize1", 1.304, 0.499],
     oiiintSize2: ["oiiintSize2", 1.98, 0.659],
+    leftParenInner: ["leftParenInner", 0.875, 0.3],
+    rightParenInner: ["rightParenInner", 0.875, 0.3],
 };
 
 const staticSvg = function(value: string, options: Options): SvgSpan {
