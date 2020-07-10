@@ -1,6 +1,8 @@
 // Mapping of Unicode accent characters to their LaTeX equivalent in text and
 // math mode (when they exist).
-export default {
+// This exports a CommonJS module, allowing to be required in unicodeSymbols
+// without transpiling.
+module.exports = {
     '\u0301': {text: "\\'", math: '\\acute'},
     '\u0300': {text: '\\`', math: '\\grave'},
     '\u0308': {text: '\\"', math: '\\ddot'},
