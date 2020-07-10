@@ -542,8 +542,10 @@ Other KaTeX color functions expect the content to be a function argument:
 
 $\textcolor{blue}{F=ma}$ `\textcolor{blue}{F=ma}`<br>
 $\textcolor{#228B22}{F=ma}$ `\textcolor{#228B22}{F=ma}`<br>
-$\colorbox{aqua}{A}$ `\colorbox{aqua}{A}`<br>
-$\fcolorbox{red}{aqua}{A}$ `\fcolorbox{red}{aqua}{A}`
+$\colorbox{aqua}{$F=ma$}$ `\colorbox{aqua}{$F=ma$}`<br>
+$\fcolorbox{red}{aqua}{$F=ma$}$ `\fcolorbox{red}{aqua}{$F=ma$}`
+
+Note that, as in LaTeX, `\colorbox` & `\fcolorbox` renders its third argument as text, so you may want to switch back to math mode with `$` as in the examples above.
 
 For color definition, KaTeX color functions will accept the standard HTML [predefined color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords). They will also accept an RGB argument in CSS hexa­decimal style. The "#" is optional before a six-digit specification.
 
