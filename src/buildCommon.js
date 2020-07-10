@@ -687,7 +687,7 @@ const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
         fontName: "Math-Italic",
     },
 
-    // "boldsymbol" are missing because they require the use of several fonts:
+    // "boldsymbol" is missing because they require the use of multiple fonts:
     // Math-BoldItalic and Main-Bold.  This is handled by a special case in
     // makeOrd which ends up calling boldsymbol.
 
