@@ -407,7 +407,7 @@ exports[`A MathML builder should render boldsymbol with the correct mathvariants
           <mi mathvariant="bold-italic">
             x
           </mi>
-          <mn mathvariant="bold-italic">
+          <mn mathvariant="bold">
             2
           </mn>
           <mi mathvariant="bold-italic">
@@ -416,10 +416,10 @@ exports[`A MathML builder should render boldsymbol with the correct mathvariants
           <mi mathvariant="bold-italic">
             ω
           </mi>
-          <mi mathvariant="bold-italic">
+          <mi mathvariant="bold">
             Ω
           </mi>
-          <mi mathvariant="bold-italic">
+          <mi mathvariant="bold">
             ı
           </mi>
           <mo mathvariant="bold-italic">
