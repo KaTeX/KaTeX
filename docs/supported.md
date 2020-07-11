@@ -113,10 +113,10 @@ or for just some URLs via the `trust` [option](options.md).
 | $\href{https://katex.org/}{\KaTeX}$ | `\href{https://katex.org/}{\KaTeX}` |
 | $\url{https://katex.org/}$ | `\url{https://katex.org/}` |
 | $\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://katex.org/img/khan-academy.png}$ | `\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://katex.org/img/khan-academy.png}` |
-| $\htmlId{bar}{x}$ | `\htmlId{bar}{x}` |
-| $\htmlClass{foo}{x}$ | `\htmlClass{foo}{x}` |
-| $\htmlStyle{color: red;}{x}$ | `\htmlStyle{color: red;}{x}` |
-| $\htmlData{foo=a, bar=b}{x}$ | `\htmlData{foo=a, bar=b}{x}` |
+| $\htmlId{bar}{x}$ <code>…&lt;span id="bar" class="enclosing"&gt;…x…&lt;/span&gt;…</code> | `\htmlId{bar}{x}` |
+| $\htmlClass{foo}{x}$ <code>…&lt;span class="enclosing foo"&gt;…x…&lt;/span&gt;…</code> | `\htmlClass{foo}{x}` |
+| $\htmlStyle{color: red;}{x}$ <code>…&lt;span style="color: red;" class="enclosing"&gt;…x…&lt;/span&gt;…</code> | `\htmlStyle{color: red;}{x}` |
+| $\htmlData{foo=a, bar=b}{x}$ <code>…&lt;span data-foo="a" data-bar="b" class="enclosing"&gt;…x…&lt;/span&gt;…</code> | `\htmlData{foo=a, bar=b}{x}` |
 
 `\includegraphics` supports `height`, `width`, `totalheight`, and `alt` in its first argument. `height` is required.
 
