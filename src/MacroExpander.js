@@ -249,12 +249,19 @@ export default class MacroExpander implements MacroContextInterface {
      * or the stack will be empty.
      *
      * Used to implement `expandAfterFuture` and `expandNextToken`.
+     *
+     * If expandableOnly, only expandable tokens are expanded and
+     * an undefined control sequence results in an error.
      */
-    expandOnce(): Token | Token[] {
+    expandOnce(expandableOnly?: boolean): Token | Token[] {
         const topToken = this.popToken();
         const name = topToken.text;
-        const expansion = this._getExpansion(name);
-        if (expansion == null) { // Fully expanded
+        const expansion = !topToken.noexpand ? this._getExpansion(name) : null;
+        if (expansion == null || (expandableOnly && expansion.unexpandable)) {
+            if (expandableOnly && expansion == null &&
+                    name[0] === "\\" && !this.isDefined(name)) {
+                throw new ParseError("Undefined control sequence: " + name);
+            }
             this.pushToken(topToken);
             return topToken;
         }
@@ -316,7 +323,9 @@ export default class MacroExpander implements MacroContextInterface {
             if (expanded instanceof Token) {
                 // \relax stops the expansion, but shouldn't get returned (a
                 // null return value couldn't get implemented as a function).
-                if (expanded.text === "\\relax") {
+                // the token after \noexpand is interpreted as if its meaning
+                // were ‘\relax’
+                if (expanded.text === "\\relax" || expanded.treatAsRelax) {
                     this.stack.pop();
                 } else {
                     return this.stack.pop();  // === expanded
@@ -334,16 +343,26 @@ export default class MacroExpander implements MacroContextInterface {
      * tokens, or return `undefined` if no such macro is defined.
      */
     expandMacro(name: string): Token[] | void {
-        if (!this.macros.get(name)) {
-            return undefined;
-        }
+        return this.macros.has(name)
+            ? this.expandTokens([new Token(name)]) : undefined;
+    }
+
+    /**
+     * Fully expand the given token stream and return the resulting list of tokens
+     */
+    expandTokens(tokens: Token[]): Token[] {
         const output = [];
         const oldStackLength = this.stack.length;
-        this.pushToken(new Token(name));
+        this.pushTokens(tokens);
         while (this.stack.length > oldStackLength) {
-            const expanded = this.expandOnce();
+            const expanded = this.expandOnce(true); // expand only expandable tokens
             // expandOnce returns Token if and only if it's fully expanded.
             if (expanded instanceof Token) {
+                if (expanded.treatAsRelax) {
+                    // the expansion of \noexpand is the token itself
+                    expanded.noexpand = false;
+                    expanded.treatAsRelax = false;
+                }
                 output.push(this.stack.pop());
             }
         }
@@ -409,5 +428,16 @@ export default class MacroExpander implements MacroContextInterface {
             symbols.math.hasOwnProperty(name) ||
             symbols.text.hasOwnProperty(name) ||
             implicitCommands.hasOwnProperty(name);
+    }
+
+    /**
+     * Determine whether a command is expandable.
+     */
+    isExpandable(name: string): boolean {
+        const macro = this.macros.get(name);
+        return macro != null ? typeof macro === "string"
+                || typeof macro === "function" || !macro.unexpandable
+            // TODO(ylem): #2085
+            : functions.hasOwnProperty(name)/* && !functions[name].primitive*/;
     }
 }

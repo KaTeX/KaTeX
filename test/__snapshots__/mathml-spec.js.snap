@@ -359,7 +359,9 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
 
 exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} in displaymode correctly 1`] = `
 
-<math xmlns="http://www.w3.org/1998/Math/MathML">
+<math xmlns="http://www.w3.org/1998/Math/MathML"
+      display="block"
+>
   <semantics>
     <mrow>
       <munder>
@@ -766,7 +768,9 @@ exports[`A MathML builder special spaces render specially 1`] = `
 
 exports[`A MathML builder tags use <mlabeledtr> 1`] = `
 
-<math xmlns="http://www.w3.org/1998/Math/MathML">
+<math xmlns="http://www.w3.org/1998/Math/MathML"
+      display="block"
+>
   <semantics>
     <mtable width="100%">
       <mtr>

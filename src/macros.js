@@ -43,6 +43,11 @@ export interface MacroContextInterface {
     consumeSpaces(): void;
 
     /**
+     * Expand the next token only once if possible.
+     */
+    expandOnce(expandableOnly?: boolean): Token | Token[];
+
+    /**
      * Expand the next token only once (if possible), and return the resulting
      * top token on the stack (without removing anything from the stack).
      * Similar in behavior to TeX's `\expandafter\futurelet`.
@@ -85,6 +90,11 @@ export interface MacroContextInterface {
      * `implicitCommands`.
      */
     isDefined(name: string): boolean;
+
+    /**
+     * Determine whether a command is expandable.
+     */
+    isExpandable(name: string): boolean;
 }
 
 export type MacroArg = {
@@ -98,6 +108,7 @@ export type MacroExpansion = {
     tokens: Token[],
     numArgs: number,
     delimiters?: string[][],
+    unexpandable?: boolean, // used in \let
 };
 
 export type MacroDefinition = string | MacroExpansion |
@@ -114,6 +125,29 @@ export function defineMacro(name: string, body: MacroDefinition) {
 
 //////////////////////////////////////////////////////////////////////
 // macro tools
+
+defineMacro("\\noexpand", function(context) {
+    // The expansion is the token itself; but that token is interpreted
+    // as if its meaning were ‘\relax’ if it is a control sequence that
+    // would ordinarily be expanded by TeX’s expansion rules.
+    const t = context.popToken();
+    if (context.isExpandable(t.text)) {
+        t.noexpand = true;
+        t.treatAsRelax = true;
+    }
+    return {tokens: [t], numArgs: 0};
+});
+
+defineMacro("\\expandafter", function(context) {
+    // TeX first reads the token that comes immediately after \expandafter,
+    // without expanding it; let’s call this token t. Then TeX reads the
+    // token that comes after t (and possibly more tokens, if that token
+    // has an argument), replacing it by its expansion. Finally TeX puts
+    // t back in front of that expansion.
+    const t = context.popToken();
+    context.expandOnce(true); // expand only an expandable token
+    return {tokens: [t], numArgs: 0};
+});
 
 // LaTeX's \@firstoftwo{#1}{#2} expands to #1, skipping #2
 // TeX source: \long\def\@firstoftwo#1#2{#1}
@@ -836,6 +870,8 @@ defineMacro("\\varsubsetneq", "\\html@mathml{\\@varsubsetneq}{⊊}");
 defineMacro("\\varsubsetneqq", "\\html@mathml{\\@varsubsetneqq}{⫋}");
 defineMacro("\\varsupsetneq", "\\html@mathml{\\@varsupsetneq}{⊋}");
 defineMacro("\\varsupsetneqq", "\\html@mathml{\\@varsupsetneqq}{⫌}");
+defineMacro("\\imath", "\\html@mathml{\\@imath}{\u0131}");
+defineMacro("\\jmath", "\\html@mathml{\\@jmath}{\u0237}");
 
 //////////////////////////////////////////////////////////////////////
 // stmaryrd and semantic
@@ -865,6 +901,14 @@ defineMacro("\u2984", "\\rBrace"); // blackboard bold }
 
 // TODO: Create variable sized versions of the last two items. I believe that
 // will require new font glyphs.
+
+// The stmaryrd function `\minuso` provides a "Plimsoll" symbol that
+// superimposes the characters \circ and \mathminus. Used in chemistry.
+defineMacro("\\minuso", "\\mathbin{\\html@mathml{" +
+    "{\\mathrlap{\\mathchoice{\\kern{0.145em}}{\\kern{0.145em}}" +
+    "{\\kern{0.1015em}}{\\kern{0.0725em}}\\circ}{-}}}" +
+    "{\\char`⦵}}");
+defineMacro("⦵", "\\minuso");
 
 //////////////////////////////////////////////////////////////////////
 // texvc.sty
