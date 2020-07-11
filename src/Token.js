@@ -23,6 +23,8 @@ export interface LexerInterface {input: string, tokenRegex: RegExp}
 export class Token {
     text: string;
     loc: ?SourceLocation;
+    noexpand: ?boolean; // don't expand the token
+    treatAsRelax: ?boolean; // used in \noexpand
 
     constructor(
         text: string,           // the text of this token

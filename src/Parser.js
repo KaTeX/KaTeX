@@ -5,14 +5,17 @@ import MacroExpander, {implicitCommands} from "./MacroExpander";
 import symbols, {ATOMS, extraLatin} from "./symbols";
 import {convertSize, units, zeroPt, zeroMu} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
-import unicodeAccents from "./unicodeAccents";
-import unicodeSymbols from "./unicodeSymbols";
 import {assertNodeType} from "./parseNode";
 import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
+
+// Pre-evaluate both modules as unicodeSymbols require String.normalize()
+import unicodeAccents from /*preval*/ "./unicodeAccents";
+import unicodeSymbols from /*preval*/ "./unicodeSymbols";
+
 import {multiplySize, multiply} from "./functions/arithmetic";
 import type {ParseNode, AnyParseNode, SymbolParseNode, NumericParseNode,
     UnsupportedCmdParseNode} from "./parseNode";

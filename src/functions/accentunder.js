@@ -37,8 +37,8 @@ defineFunction({
 
         // Generate the vlist, with the appropriate kerns
         const vlist = buildCommon.makeVList({
-            positionType: "bottom",
-            positionData: accentBody.height + kern,
+            positionType: "top",
+            positionData: innerGroup.height,
             children: [
                 {type: "elem", elem: accentBody, wrapperClasses: ["svg-align"]},
                 {type: "kern", size: kern},

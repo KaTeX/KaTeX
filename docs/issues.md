@@ -24,6 +24,9 @@ title: Common Issues
   behavior matches MathJax with its `color.js` extension enabled.
 - Equivalents of MathJax `\class`, `\cssId`, and `\style` are `\htmlClass`,
   `\htmlId`, and `\htmlStyle`, respectively, to avoid ambiguity.
+- Some symbols are defined using macro instead of `\DeclareMathSymbol` or similar
+  as in LaTeX. This may cause different behavior in expansion. They may expand
+  into multiple tokens and be affected by `\expandafter` and `\noexpand`.
 
 ## Troubleshooting
 
