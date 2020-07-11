@@ -147,6 +147,10 @@ export const sqrtPath = function(
 };
 
 export const path: {[string]: string} = {
+    // Two paths that cover gaps in built-up parentheses.
+    leftParenInner: `M291 0 H417 V300 H291 z`,
+    rightParenInner: `M457 0 H583 V300 H457 z`,
+
     // The doubleleftarrow geometry is from glyph U+21D0 in the font KaTeX Main
     doubleleftarrow: `M262 157
 l10-10c34-36 62.7-77 86-123 3.3-8 5-13.3 5-16 0-5.3-6.7-8-20-8-7.3

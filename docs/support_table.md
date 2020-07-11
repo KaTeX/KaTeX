@@ -183,6 +183,9 @@ table td {
 |\boxminus|$\boxminus$||
 |\boxplus|$\boxplus$||
 |\boxtimes|$\boxtimes$||
+|\Bra|$\left\langle\psi\right\|$|`\Bra{\psi}`|
+|\bra|$\mathinner{\langle{\psi}\|}$|`\bra{\psi}`|
+|\braket|$\mathinner{\langle{\phi\|\psi}\rangle}$|`\braket{\phi|\psi}`|
 |\brace|${n\brace k}$|`{n\brace k}`|
 |\bracevert|<span style="color:firebrick;">Not supported</span>||
 |\brack|${n\brack k}$|`{n\brack k}`|
@@ -344,6 +347,7 @@ use `\ce` instead|
 
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
+|\edef|$\def\foo{a}\edef\bar{\foo}\def\foo{}\bar$|`\def\foo{a}\edef\bar{\foo}\def\foo{}\bar`|
 |\ell|$\ell$||
 |\else|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
 |\em|<span style="color:firebrick;">Not supported</span>||
@@ -377,6 +381,7 @@ use `\ce` instead|
 |\exist|$\exist$||
 |\exists|$\exists$||
 |\exp|$\exp$||
+|\expandafter|||
 
 ## F
 
@@ -393,6 +398,7 @@ use `\ce` instead|
 |\frac|$\frac a b$|`\frac a b`|
 |\frak|$\frak{AaBb}$|`\frak{AaBb}`|
 |\frown|$\frown$||
+|\futurelet|||
 
 ## G
 
@@ -511,6 +517,8 @@ use `\ce` instead|
 |\KaTeX|$\KaTeX$||
 |\ker|$\ker$||
 |\kern|$I\kern-2.5pt R$|`I\kern-2.5pt R`|
+|\Ket|$\left\|\psi\right\rangle$|`\Ket{\psi}`|
+|\ket|$\mathinner{\|{\psi}\rangle}$|`\ket{\psi}`|
 |\Koppa|<span style="color:firebrick;">Not supported</span>||
 |\koppa|<span style="color:firebrick;">Not supported</span>||
 
@@ -566,7 +574,7 @@ use `\ce` instead|
 |\lesseqqgtr|$\lesseqqgtr$||
 |\lessgtr|$\lessgtr$||
 |\lesssim|$\lesssim$||
-|\let|<span style="color:firebrick;">Not supported</span>|[Issue #1413](https://github.com/KaTeX/KaTeX/issues/1413)|
+|\let|||
 |\lfloor|$\lfloor$||
 |\lg|$\lg$||
 |\lgroup|$\lgroup$||
@@ -590,6 +598,7 @@ use `\ce` instead|
 |\lnot|$\lnot$||
 |\lnsim|$\lnsim$||
 |\log|$\log$||
+|\long|||
 |\Longleftarrow|$\Longleftarrow$||
 |\longleftarrow|$\longleftarrow$||
 |\Longleftrightarrow|$\Longleftrightarrow$||
@@ -660,6 +669,7 @@ use `\ce` instead|
 |\mid|$\{x∈ℝ\mid x>0\}$|`\{x∈ℝ\mid x>0\}`|
 |\middle|$P\left(A\middle\vert B\right)$|`P\left(A\middle\vert B\right)`|
 |\min|$\min$||
+|\minuso|$\minuso$||
 |\mit|<span style="color:firebrick;">Not supported</span>|See `\mathit`|
 |\mkern|$a\mkern18mu b$|`a\mkern18mu b`|
 |\mmlToken|<span style="color:firebrick;">Not supported</span>||
@@ -713,6 +723,7 @@ use `\ce` instead|
 |\nmid|$\nmid$||
 |\nobreak|||
 |\nobreakspace|$a\nobreakspace b$|`a\nobreakspace b`|
+|\noexpand|||
 |\nolimits|$\lim\nolimits_x$|`\lim\nolimits_x`|
 |\normalfont|<span style="color:firebrick;">Not supported</span>||
 |\normalsize|$\normalsize normalsize$|`\normalsize normalsize`|
@@ -1192,6 +1203,7 @@ use `\ce` instead|
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\xcancel|$\xcancel{ABC}$|`\xcancel{ABC}`|
+|\xdef|$\def\foo{a}\xdef\bar{\foo}\def\foo{}\bar$|`\def\foo{a}\xdef\bar{\foo}\def\foo{}\bar`|
 |\Xi|$\Xi$||
 |\xi|$\xi$||
 |\xhookleftarrow|$\xhookleftarrow{abc}$|`\xhookleftarrow{abc}`|
