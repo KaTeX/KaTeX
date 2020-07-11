@@ -93,7 +93,7 @@ export const getVariant = function(
     if (font === "mathit") {
         return "italic";
     } else if (font === "boldsymbol") {
-        return "bold-italic";
+        return group.type === "textord" ? "mathbf" : "bold-italic";
     } else if (font === "mathbf") {
         return "bold";
     } else if (font === "mathbb") {
