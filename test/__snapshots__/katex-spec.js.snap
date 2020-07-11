@@ -137,7 +137,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -180,7 +180,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.69444,
@@ -268,7 +268,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -356,7 +356,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.69444,
@@ -459,7 +459,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -547,7 +547,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0.19444,
     "height": 0.69444,
@@ -670,7 +670,7 @@ exports[`An HTML extension builder should not affect spacing 1`] = `
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
@@ -739,7 +739,7 @@ exports[`An HTML extension builder should not affect spacing 1`] = `
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0.19444,
     "height": 0.43056,
@@ -764,7 +764,7 @@ exports[`An HTML extension builder should render with trust and strict setting 1
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
@@ -793,7 +793,7 @@ exports[`An HTML extension builder should render with trust and strict setting 1
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
@@ -824,7 +824,7 @@ exports[`An HTML extension builder should render with trust and strict setting 1
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
@@ -855,7 +855,7 @@ exports[`An HTML extension builder should render with trust and strict setting 1
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
@@ -1216,7 +1216,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
             style="height:0.68333em;vertical-align:0em;"
       >
       </span>
-      <span class="mord mathdefault"
+      <span class="mord mathnormal"
             style="margin-right:0.10903em;"
       >
         M
@@ -1236,7 +1236,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
             style="height:0.66666em;vertical-align:-0.08333em;"
       >
       </span>
-      <span class="mord mathdefault">
+      <span class="mord mathnormal">
         a
       </span>
       <span class="mspace"
@@ -1254,7 +1254,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
             style="height:0.69444em;vertical-align:0em;"
       >
       </span>
-      <span class="mord mathdefault">
+      <span class="mord mathnormal">
         b
       </span>
     </span>
@@ -1265,7 +1265,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
             style="height:0.43056em;vertical-align:0em;"
       >
       </span>
-      <span class="mord mathdefault">
+      <span class="mord mathnormal">
         c
       </span>
     </span>
@@ -1424,7 +1424,7 @@ exports[`href and url commands should not affect spacing around 1`] = `
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -1488,7 +1488,7 @@ exports[`href and url commands should not affect spacing around 1`] = `
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.69444,
