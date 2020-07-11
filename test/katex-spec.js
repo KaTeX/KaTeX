@@ -2999,9 +2999,8 @@ describe("A macro expander", function() {
             new Settings({macros: {"\\foo": "x"}}));
         // \frac is a macro and therefore expandable
         expect`\noexpand\frac xy`.toParseLike`xy`;
-        // TODO(ylem): #2085
         // \def is not expandable, so is not affected by \noexpand
-        // expect`\noexpand\def\foo{xy}\foo`.toParseLike`xy`;
+        expect`\noexpand\def\foo{xy}\foo`.toParseLike`xy`;
     });
 
     it("should allow for space macro argument (text version)", function() {
@@ -3279,7 +3278,7 @@ describe("A macro expander", function() {
         expect`\def\foo{1}\let\bar\foo\def\foo{2}\bar`.toParseLike`1`;
         expect`\let\foo=\kern\edef\bar{\foo1em}\let\kern=\relax\bar`.toParseLike`\kern1em`;
         // \foo = { (left brace)
-        expect`\let\foo{\frac\foo1}{2}`.toParseLike`\frac{1}{2}`;
+        expect`\let\foo{\sqrt\foo1}`.toParseLike`\sqrt{1}`;
         // \equals = = (equal sign)
         expect`\let\equals==a\equals b`.toParseLike`a=b`;
         // \foo should not be expandable and not affected by \noexpand or \edef

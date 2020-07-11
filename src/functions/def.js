@@ -88,6 +88,7 @@ defineFunction({
     props: {
         numArgs: 0,
         allowedInText: true,
+        primitive: true,
     },
     handler({parser, funcName}) {
         let tok = parser.gullet.popToken();
@@ -168,6 +169,7 @@ defineFunction({
     props: {
         numArgs: 0,
         allowedInText: true,
+        primitive: true,
     },
     handler({parser, funcName}) {
         const name = checkControlSequence(parser.gullet.popToken());
@@ -191,6 +193,7 @@ defineFunction({
     props: {
         numArgs: 0,
         allowedInText: true,
+        primitive: true,
     },
     handler({parser, funcName}) {
         const name = checkControlSequence(parser.gullet.popToken());
