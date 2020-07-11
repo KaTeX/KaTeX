@@ -13,6 +13,8 @@ describe("Screenshotter item", function() {
                     displayMode: item.display,
                     throwOnError: !item.noThrow,
                     errorColor: item.errorColor,
+                    strict: false,
+                    trust: true,  // trust test inputs
                 });
             });
         }
