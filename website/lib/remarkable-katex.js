@@ -1,5 +1,6 @@
 // https://github.com/bradhowes/remarkable-katex/blob/master/index.js
-// Modified here to require("../..") instead of require("katex").
+// Modified here to require("../..") instead of require("katex")
+// and add options {trust: true, strict: false}.
 
 /* MIT License
 
@@ -39,8 +40,8 @@ module.exports = (md, options) => {
    * Render the contents as KaTeX
    */
   const renderKatex = (source, displayMode) => katex.renderToString(source,
-                                                                    {displayMode: displayMode,
-                                                                     throwOnError: false});
+    {displayMode: displayMode, throwOnError: false,
+     trust: true, strict: false});
 
   /**
    * Parse '$$' as a block. Based off of similar method in remarkable.
