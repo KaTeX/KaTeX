@@ -137,7 +137,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -180,7 +180,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.69444,
@@ -268,7 +268,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -356,7 +356,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.69444,
@@ -459,7 +459,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -547,7 +547,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0.19444,
     "height": 0.69444,
@@ -558,6 +558,42 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     },
     "text": "f",
     "width": 0.48959
+  }
+]
+`;
+
+exports[`A macro expander \\let should consume one optional space after equals sign 1`] = `
+[
+  {
+    "type": "ordgroup",
+    "body": [
+      {
+        "type": "font",
+        "body": {
+          "type": "ordgroup",
+          "body": [
+            {
+              "type": "mathord",
+              "loc": {
+                "end": 39,
+                "lexer": {
+                  "input": "\\\\def\\\\bold{\\\\bgroup\\\\bf\\\\let\\\\next= }\\\\bold{a}",
+                  "lastIndex": 40
+                },
+                "start": 38
+              },
+              "mode": "math",
+              "text": "a"
+            }
+          ],
+          "mode": "math"
+        },
+        "font": "mathbf",
+        "mode": "math"
+      }
+    ],
+    "loc": null,
+    "mode": "math"
   }
 ]
 `;
@@ -622,6 +658,226 @@ exports[`A parser that does not throw on unsupported commands should properly es
   2^&amp;&quot;&lt;&gt;
 </span>
 
+`;
+
+exports[`An HTML extension builder should not affect spacing 1`] = `
+[
+  {
+    "attributes": {
+      "id": "a"
+    },
+    "children": [
+      {
+        "classes": [
+          "mord",
+          "mathnormal"
+        ],
+        "depth": 0,
+        "height": 0.43056,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0.02778,
+        "style": {
+        },
+        "text": "x",
+        "width": 0.57153
+      },
+      {
+        "attributes": {
+        },
+        "children": [
+        ],
+        "classes": [
+          "mspace"
+        ],
+        "depth": 0,
+        "height": 0,
+        "maxFontSize": 0,
+        "style": {
+          "marginRight": "0.2222222222222222em"
+        }
+      },
+      {
+        "classes": [
+          "mbin"
+        ],
+        "depth": 0.08333,
+        "height": 0.58333,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0,
+        "style": {
+        },
+        "text": "+",
+        "width": 0.77778
+      },
+      {
+        "attributes": {
+        },
+        "children": [
+        ],
+        "classes": [
+          "mspace"
+        ],
+        "depth": 0,
+        "height": 0,
+        "maxFontSize": 0,
+        "style": {
+          "marginRight": "0.2222222222222222em"
+        }
+      }
+    ],
+    "classes": [
+      "enclosing"
+    ],
+    "depth": 0.08333,
+    "height": 0.58333,
+    "maxFontSize": 1,
+    "style": {
+    }
+  },
+  {
+    "classes": [
+      "mord",
+      "mathnormal"
+    ],
+    "depth": 0.19444,
+    "height": 0.43056,
+    "italic": 0.03588,
+    "maxFontSize": 1,
+    "skew": 0.05556,
+    "style": {
+    },
+    "text": "y",
+    "width": 0.49028
+  }
+]
+`;
+
+exports[`An HTML extension builder should render with trust and strict setting 1`] = `
+[
+  {
+    "attributes": {
+      "id": "bar"
+    },
+    "children": [
+      {
+        "classes": [
+          "mord",
+          "mathnormal"
+        ],
+        "depth": 0,
+        "height": 0.43056,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0.02778,
+        "style": {
+        },
+        "text": "x",
+        "width": 0.57153
+      }
+    ],
+    "classes": [
+      "enclosing"
+    ],
+    "depth": 0,
+    "height": 0.43056,
+    "maxFontSize": 1,
+    "style": {
+    }
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+      {
+        "classes": [
+          "mord",
+          "mathnormal"
+        ],
+        "depth": 0,
+        "height": 0.43056,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0.02778,
+        "style": {
+        },
+        "text": "x",
+        "width": 0.57153
+      }
+    ],
+    "classes": [
+      "enclosing",
+      "foo"
+    ],
+    "depth": 0,
+    "height": 0.43056,
+    "maxFontSize": 1,
+    "style": {
+    }
+  },
+  {
+    "attributes": {
+      "style": "color: red;"
+    },
+    "children": [
+      {
+        "classes": [
+          "mord",
+          "mathnormal"
+        ],
+        "depth": 0,
+        "height": 0.43056,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0.02778,
+        "style": {
+        },
+        "text": "x",
+        "width": 0.57153
+      }
+    ],
+    "classes": [
+      "enclosing"
+    ],
+    "depth": 0,
+    "height": 0.43056,
+    "maxFontSize": 1,
+    "style": {
+    }
+  },
+  {
+    "attributes": {
+      "data-bar": "b",
+      "data-foo": "a"
+    },
+    "children": [
+      {
+        "classes": [
+          "mord",
+          "mathnormal"
+        ],
+        "depth": 0,
+        "height": 0.43056,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0.02778,
+        "style": {
+        },
+        "text": "x",
+        "width": 0.57153
+      }
+    ],
+    "classes": [
+      "enclosing"
+    ],
+    "depth": 0,
+    "height": 0.43056,
+    "maxFontSize": 1,
+    "style": {
+    }
+  }
+]
 `;
 
 exports[`An implicit group parser within optional groups should work style commands \\sqrt[\\textstyle 3]{x} 1`] = `
@@ -780,11 +1036,67 @@ exports[`An implicit group parser within optional groups should work with sizing
 ]
 `;
 
+exports[`An includegraphics builder should not render without trust setting 1`] = `
+[
+  {
+    "attributes": {
+    },
+    "children": [
+      {
+        "classes": [
+          "mord",
+          "",
+          ""
+        ],
+        "depth": 0.25,
+        "height": 0.75,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0,
+        "style": {
+          "color": "#cc0000"
+        },
+        "text": "\\\\includegraphics",
+        "width": 0.5
+      }
+    ],
+    "classes": [
+      "mord",
+      "text"
+    ],
+    "depth": 0.25,
+    "height": 0.75,
+    "maxFontSize": 1,
+    "style": {
+      "color": "#cc0000"
+    }
+  }
+]
+`;
+
+exports[`An includegraphics builder should render with trust setting 1`] = `
+[
+  {
+    "alt": "KA logo",
+    "classes": [
+      "mord"
+    ],
+    "depth": 0,
+    "height": 0.9,
+    "src": "https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png",
+    "style": {
+      "height": "0.9em",
+      "width": "0.9em"
+    }
+  }
+]
+`;
+
 exports[`Extending katex by new fonts and symbols Add new font class to new extended symbols 1`] = `
 
 <span class="katex">
   <span class="katex-mathml">
-    <math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
       <semantics>
         <mrow>
           <mi mathvariant="normal">
@@ -862,7 +1174,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
 
 <span class="katex">
   <span class="katex-mathml">
-    <math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
       <semantics>
         <mrow>
           <mi>
@@ -904,7 +1216,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
             style="height:0.68333em;vertical-align:0em;"
       >
       </span>
-      <span class="mord mathdefault"
+      <span class="mord mathnormal"
             style="margin-right:0.10903em;"
       >
         M
@@ -916,10 +1228,6 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
       <span class="mrel">
         =
       </span>
-      <span class="mspace"
-            style="margin-right:0.2777777777777778em;"
-      >
-      </span>
     </span>
     <span class="mspace newline">
     </span>
@@ -928,7 +1236,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
             style="height:0.66666em;vertical-align:-0.08333em;"
       >
       </span>
-      <span class="mord mathdefault">
+      <span class="mord mathnormal">
         a
       </span>
       <span class="mspace"
@@ -938,10 +1246,6 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
       <span class="mbin">
         +
       </span>
-      <span class="mspace"
-            style="margin-right:0.2222222222222222em;"
-      >
-      </span>
     </span>
     <span class="mspace newline">
     </span>
@@ -950,7 +1254,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
             style="height:0.69444em;vertical-align:0em;"
       >
       </span>
-      <span class="mord mathdefault">
+      <span class="mord mathnormal">
         b
       </span>
     </span>
@@ -961,7 +1265,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
             style="height:0.43056em;vertical-align:0em;"
       >
       </span>
-      <span class="mord mathdefault">
+      <span class="mord mathnormal">
         c
       </span>
     </span>
@@ -970,12 +1274,157 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
 
 `;
 
+exports[`href and url commands should allow all protocols when trust option is true 1`] = `
+[
+  {
+    "type": "href",
+    "body": [
+      {
+        "type": "mathord",
+        "loc": {
+          "end": 16,
+          "lexer": {
+            "input": "\\\\href{ftp://x}{foo}",
+            "lastIndex": 19
+          },
+          "start": 15
+        },
+        "mode": "math",
+        "text": "f"
+      },
+      {
+        "type": "mathord",
+        "loc": {
+          "end": 17,
+          "lexer": {
+            "input": "\\\\href{ftp://x}{foo}",
+            "lastIndex": 19
+          },
+          "start": 16
+        },
+        "mode": "math",
+        "text": "o"
+      },
+      {
+        "type": "mathord",
+        "loc": {
+          "end": 18,
+          "lexer": {
+            "input": "\\\\href{ftp://x}{foo}",
+            "lastIndex": 19
+          },
+          "start": 17
+        },
+        "mode": "math",
+        "text": "o"
+      }
+    ],
+    "href": "ftp://x",
+    "mode": "math"
+  }
+]
+`;
+
+exports[`href and url commands should allow explicitly allowed protocols 1`] = `
+[
+  {
+    "type": "href",
+    "body": [
+      {
+        "type": "mathord",
+        "loc": {
+          "end": 16,
+          "lexer": {
+            "input": "\\\\href{ftp://x}{foo}",
+            "lastIndex": 19
+          },
+          "start": 15
+        },
+        "mode": "math",
+        "text": "f"
+      },
+      {
+        "type": "mathord",
+        "loc": {
+          "end": 17,
+          "lexer": {
+            "input": "\\\\href{ftp://x}{foo}",
+            "lastIndex": 19
+          },
+          "start": 16
+        },
+        "mode": "math",
+        "text": "o"
+      },
+      {
+        "type": "mathord",
+        "loc": {
+          "end": 18,
+          "lexer": {
+            "input": "\\\\href{ftp://x}{foo}",
+            "lastIndex": 19
+          },
+          "start": 17
+        },
+        "mode": "math",
+        "text": "o"
+      }
+    ],
+    "href": "ftp://x",
+    "mode": "math"
+  }
+]
+`;
+
+exports[`href and url commands should forbid relative URLs when trust option is false 1`] = `
+[
+  {
+    "type": "color",
+    "body": [
+      {
+        "type": "text",
+        "body": [
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "\\\\"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "h"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "r"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "e"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "f"
+          }
+        ],
+        "mode": "math"
+      }
+    ],
+    "color": "#cc0000",
+    "mode": "math"
+  }
+]
+`;
+
 exports[`href and url commands should not affect spacing around 1`] = `
 [
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -1039,7 +1488,7 @@ exports[`href and url commands should not affect spacing around 1`] = `
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.69444,
@@ -1059,6 +1508,49 @@ exports[`href and url commands should not affect spacing around 1`] = `
     "maxFontSize": 1,
     "style": {
     }
+  }
+]
+`;
+
+exports[`href and url commands should not allow explicitly disallow protocols 1`] = `
+[
+  {
+    "type": "color",
+    "body": [
+      {
+        "type": "text",
+        "body": [
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "\\\\"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "h"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "r"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "e"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "f"
+          }
+        ],
+        "mode": "math"
+      }
+    ],
+    "color": "#cc0000",
+    "mode": "math"
   }
 ]
 `;

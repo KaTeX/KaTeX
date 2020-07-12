@@ -1,10 +1,9 @@
 // @flow
-import {checkNodeType} from "./parseNode";
-
 import type Parser from "./Parser";
-import type {ParseNode, AnyParseNode, NodeType} from "./parseNode";
+import type {ParseNode, AnyParseNode, NodeType, UnsupportedCmdParseNode}
+    from "./parseNode";
 import type Options from "./Options";
-import type {ArgType, BreakToken, Mode} from "./types";
+import type {ArgType, BreakToken} from "./types";
 import type {HtmlDomNode} from "./domTree";
 import type {Token} from "./Token";
 import type {MathDomNode} from "./mathMLTree";
@@ -21,7 +20,9 @@ export type FunctionHandler<NODETYPE: NodeType> = (
     context: FunctionContext,
     args: AnyParseNode[],
     optArgs: (?AnyParseNode)[],
-) => ParseNode<NODETYPE>;
+) => UnsupportedCmdParseNode | ParseNode<NODETYPE>;
+// Note: reverse the order of the return type union will cause a flow error.
+// See https://github.com/facebook/flow/issues/3663.
 
 export type HtmlBuilder<NODETYPE> = (ParseNode<NODETYPE>, Options) => HtmlDomNode;
 export type MathMLBuilder<NODETYPE> = (
@@ -82,14 +83,6 @@ export type FunctionPropSpec = {
 
     // Must be true if the function is an infix operator.
     infix?: boolean,
-
-    // Switch to the specified mode while consuming the command token.
-    // This is useful for commands that switch between math and text mode,
-    // for making sure that a switch happens early enough.  Note that the
-    // mode is switched immediately back to its original value after consuming
-    // the command token, so that the argument parsing and/or function handler
-    // can easily access the old mode while doing their own mode switching.
-    consumeMode?: ?Mode,
 };
 
 type FunctionDefSpec<NODETYPE: NodeType> = {|
@@ -135,7 +128,6 @@ export type FunctionSpec<NODETYPE: NodeType> = {|
     allowedInMath: boolean,
     numOptionalArgs: number,
     infix: boolean,
-    consumeMode: ?Mode,
 
     // FLOW TYPE NOTES: Doing either one of the following two
     //
@@ -176,7 +168,6 @@ export const _mathmlGroupBuilders: {[string]: MathMLBuilder<*>} = {};
 
 export default function defineFunction<NODETYPE: NodeType>({
     type,
-    nodeType,
     names,
     props,
     handler,
@@ -195,14 +186,9 @@ export default function defineFunction<NODETYPE: NodeType>({
             : props.allowedInMath,
         numOptionalArgs: props.numOptionalArgs || 0,
         infix: !!props.infix,
-        consumeMode: props.consumeMode,
         handler: handler,
     };
     for (let i = 0; i < names.length; ++i) {
-        // TODO: The value type of _functions should be a type union of all
-        // possible `FunctionSpec<>` possibilities instead of `FunctionSpec<*>`,
-        // which is an existential type.
-        // $FlowFixMe
         _functions[names[i]] = data;
     }
     if (type) {
@@ -240,6 +226,5 @@ export function defineFunctionBuilders<NODETYPE: NodeType>({
 // Since the corresponding buildHTML/buildMathML function expects a
 // list of elements, we normalize for different kinds of arguments
 export const ordargument = function(arg: AnyParseNode): AnyParseNode[] {
-    const node = checkNodeType(arg, "ordgroup");
-    return node ? node.body : [arg];
+    return arg.type === "ordgroup" ? arg.body : [arg];
 };

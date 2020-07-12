@@ -20,7 +20,8 @@ const getMathML = function(expr, settings = new Settings()) {
         maxSize: Infinity,
     });
 
-    const built = buildMathML(parseTree(expr, settings), expr, options);
+    const built = buildMathML(parseTree(expr, settings), expr, options,
+        settings.displayMode);
 
     // Strip off the surrounding <span>
     return built.children[0].toMarkup();
@@ -73,7 +74,9 @@ describe("A MathML builder", function() {
     });
 
     it('should set href attribute for href appropriately', () => {
-        expect(getMathML("\\href{http://example.org}{\\alpha}")).toMatchSnapshot();
+        expect(
+            getMathML("\\href{http://example.org}{\\alpha}", new Settings({trust: true})),
+        ).toMatchSnapshot();
         expect(getMathML("p \\Vdash \\beta \\href{http://example.org}{+ \\alpha} \\times \\gamma"));
     });
 

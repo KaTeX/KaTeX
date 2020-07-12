@@ -44,7 +44,7 @@ export const makeText = function(
  * Wrap the given array of nodes in an <mrow> node if needed, i.e.,
  * unless the array has length 1.  Always returns a single node.
  */
-export const makeRow = function(body: MathDomNode[]): MathDomNode {
+export const makeRow = function(body: $ReadOnlyArray<MathDomNode>): MathDomNode {
     if (body.length === 1) {
         return body[0];
     } else {
@@ -93,7 +93,20 @@ export const getVariant = function(
     if (font === "mathit") {
         return "italic";
     } else if (font === "boldsymbol") {
-        return "bold-italic";
+        return group.type === "textord" ? "bold" : "bold-italic";
+    } else if (font === "mathbf") {
+        return "bold";
+    } else if (font === "mathbb") {
+        return "double-struck";
+    } else if (font === "mathfrak") {
+        return "fraktur";
+    } else if (font === "mathscr" || font === "mathcal") {
+        // MathML makes no distinction between script and caligrahpic
+        return "script";
+    } else if (font === "mathsf") {
+        return "sans-serif";
+    } else if (font === "mathtt") {
+        return "monospace";
     }
 
     let text = group.text;
@@ -121,7 +134,19 @@ export const getVariant = function(
 export const buildExpression = function(
     expression: AnyParseNode[],
     options: Options,
-): MathDomNode[] {
+    isOrdgroup?: boolean,
+): MathNode[] {
+    if (expression.length === 1) {
+        const group = buildGroup(expression[0], options);
+        if (isOrdgroup && group instanceof MathNode && group.type === "mo") {
+            // When TeX writers want to suppress spacing on an operator,
+            // they often put the operator by itself inside braces.
+            group.setAttribute("lspace", "0em");
+            group.setAttribute("rspace", "0em");
+        }
+        return [group];
+    }
+
     const groups = [];
     let lastGroup;
     for (let i = 0; i < expression.length; i++) {
@@ -145,14 +170,24 @@ export const buildExpression = function(
                     lastGroup.children.push(...group.children);
                     continue;
                 }
+            } else if (lastGroup.type === 'mi' && lastGroup.children.length === 1) {
+                const lastChild = lastGroup.children[0];
+                if (lastChild instanceof TextNode && lastChild.text === '\u0338' &&
+                    (group.type === 'mo' || group.type === 'mi' ||
+                        group.type === 'mn')) {
+                    const child = group.children[0];
+                    if (child instanceof TextNode && child.text.length > 0) {
+                        // Overlay with combining character long solidus
+                        child.text = child.text.slice(0, 1) + "\u0338" +
+                            child.text.slice(1);
+                        groups.pop();
+                    }
+                }
             }
         }
         groups.push(group);
         lastGroup = group;
     }
-
-    // TODO(kevinb): combine \\not with mrels and mords
-
     return groups;
 };
 
@@ -163,8 +198,9 @@ export const buildExpression = function(
 export const buildExpressionRow = function(
     expression: AnyParseNode[],
     options: Options,
+    isOrdgroup?: boolean,
 ): MathDomNode {
-    return makeRow(buildExpression(expression, options));
+    return makeRow(buildExpression(expression, options, isOrdgroup));
 };
 
 /**
@@ -174,7 +210,7 @@ export const buildExpressionRow = function(
 export const buildGroup = function(
     group: ?AnyParseNode,
     options: Options,
-): MathDomNode {
+): MathNode {
     if (!group) {
         return new mathMLTree.MathNode("mrow");
     }
@@ -202,6 +238,8 @@ export default function buildMathML(
     tree: AnyParseNode[],
     texExpression: string,
     options: Options,
+    isDisplayMode: boolean,
+    forMathmlOnly: boolean,
 ): DomSpan {
     const expression = buildExpression(tree, options);
 
@@ -225,11 +263,16 @@ export default function buildMathML(
         "semantics", [wrapper, annotation]);
 
     const math = new mathMLTree.MathNode("math", [semantics]);
+    math.setAttribute("xmlns", "http://www.w3.org/1998/Math/MathML");
+    if (isDisplayMode) {
+        math.setAttribute("display", "block");
+    }
 
     // You can't style <math> nodes, so we wrap the node in a span.
     // NOTE: The span class is not typed to have <math> nodes as children, and
     // we don't want to make the children type more generic since the children
     // of span are expected to have more fields in `buildHtml` contexts.
+    const wrapperClass = forMathmlOnly ? "katex" : "katex-mathml";
     // $FlowFixMe
-    return buildCommon.makeSpan(["katex-mathml"], [math]);
+    return buildCommon.makeSpan([wrapperClass], [math]);
 }

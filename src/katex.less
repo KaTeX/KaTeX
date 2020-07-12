@@ -4,6 +4,9 @@
 // The mu unit is defined as 1/18 em
 @mu: 1/18em;
 
+// The version is dynamically set from package.json via webpack.common.js
+@version: "";
+
 .katex {
     font: normal 1.21em KaTeX_Main, Times New Roman, serif;
     line-height: 1.2;
@@ -14,9 +17,16 @@
     // Prevent a rendering bug that misplaces \vec in Chrome.
     text-rendering: auto;
 
+    // Insulate fraction bars and rules from CSS that sets border-color.
+    border-color: currentColor;
+
     // Prevent background resetting on elements in Windows's high-contrast
     // mode, while still allowing background/foreground setting on root .katex
     * { -ms-high-contrast-adjust: none !important; }
+
+    .katex-version::after {
+        content: @version;
+    }
 
     .katex-mathml {
         // Accessibility hack to only show to screen readers
@@ -74,7 +84,7 @@
     }
 
     // Math fonts.
-    .mathdefault {
+    .mathnormal {
         font-family: KaTeX_Math;
         font-style: italic;
     }
@@ -161,6 +171,7 @@
     .vlist-t {
         display: inline-table;
         table-layout: fixed;
+        border-collapse: collapse;
     }
 
     .vlist-r {
@@ -205,6 +216,29 @@
         font-size: 1px;
         width: 2px;
         min-width: 2px;
+    }
+
+    .vbox {
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        align-items: baseline;
+    }
+
+    .hbox {
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .thinbox {
+        display: inline-flex;
+        flex-direction: row;
+        width: 0;
+        max-width: 0; // necessary for Safari
     }
 
     .msupsub {
@@ -297,8 +331,6 @@
 
     .sizing,
     .fontsize-ensurer {
-        display: inline-block;
-
         @size1: 0.5;
         @size2: 0.6;
         @size3: 0.7;
@@ -402,13 +434,8 @@
     .mtable {
         .vertical-separator {
             display: inline-block;
-            margin: 0 -0.025em;
-            border-right: 0.05em solid;
+            // margin and border-right are set in Javascript
             min-width: 1px;  // Prevent Chrome from omitting a line.
-        }
-
-        .vs-dashed {
-            border-right: 0.05em dashed;
         }
 
         .arraycolsep {
@@ -594,4 +621,5 @@
 // Flush-left display math
 .katex-display.fleqn > .katex {
     text-align: left;
+    padding-left: 2em;
 }

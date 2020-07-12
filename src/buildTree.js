@@ -13,6 +13,7 @@ const optionsFromSettings = function(settings: Settings) {
     return new Options({
         style: (settings.displayMode ? Style.DISPLAY : Style.TEXT),
         maxSize: settings.maxSize,
+        minRuleThickness: settings.minRuleThickness,
     });
 };
 
@@ -36,12 +37,18 @@ export const buildTree = function(
     settings: Settings,
 ): DomSpan {
     const options = optionsFromSettings(settings);
-    const mathMLNode = buildMathML(tree, expression, options);
-    const htmlNode = buildHTML(tree, options);
-
-    const katexNode = buildCommon.makeSpan(["katex"], [
-        mathMLNode, htmlNode,
-    ]);
+    let katexNode;
+    if (settings.output === "mathml") {
+        return  buildMathML(tree, expression, options, settings.displayMode, true);
+    } else if (settings.output === "html") {
+        const htmlNode = buildHTML(tree, options);
+        katexNode = buildCommon.makeSpan(["katex"], [htmlNode]);
+    } else {
+        const mathMLNode = buildMathML(tree, expression, options,
+            settings.displayMode, false);
+        const htmlNode = buildHTML(tree, options);
+        katexNode = buildCommon.makeSpan(["katex"], [mathMLNode, htmlNode]);
+    }
 
     return displayWrap(katexNode, settings);
 };

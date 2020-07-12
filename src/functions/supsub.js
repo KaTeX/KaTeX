@@ -5,13 +5,13 @@ import {SymbolNode} from "../domTree";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import Style from "../Style";
-import {checkNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 import * as accent from "./accent";
 import * as horizBrace from "./horizBrace";
 import * as op from "./op";
+import * as operatorname from "./operatorname";
 
 import type Options from "../Options";
 import type {ParseNode} from "../parseNode";
@@ -39,6 +39,10 @@ const htmlBuilderDelegate = function(
             (options.style.size === Style.DISPLAY.size ||
             base.alwaysHandleSupSub);
         return delegate ? op.htmlBuilder : null;
+    } else if (base.type === "operatorname") {
+        const delegate = base.alwaysHandleSupSub &&
+            (options.style.size === Style.DISPLAY.size || base.limits);
+        return delegate ? operatorname.htmlBuilder : null;
     } else if (base.type === "accent") {
         return utils.isCharacterBox(base.base) ? accent.htmlBuilder : null;
     } else if (base.type === "horizBrace") {
@@ -192,16 +196,16 @@ defineFunctionBuilders({
         let isOver;
         let isSup;
 
-        const horizBrace = checkNodeType(group.base, "horizBrace");
-        if (horizBrace) {
+        if (group.base && group.base.type === "horizBrace") {
             isSup = !!group.sup;
-            if (isSup === horizBrace.isOver) {
+            if (isSup === group.base.isOver) {
                 isBrace = true;
-                isOver = horizBrace.isOver;
+                isOver = group.base.isOver;
             }
         }
 
-        if (group.base && group.base.type === "op") {
+        if (group.base &&
+            (group.base.type === "op" || group.base.type === "operatorname")) {
             group.base.parentIsSupSub = true;
         }
 
@@ -223,6 +227,10 @@ defineFunctionBuilders({
             if (base && base.type === "op" && base.limits &&
                 (options.style === Style.DISPLAY || base.alwaysHandleSupSub)) {
                 nodeType = "mover";
+            } else if (base && base.type === "operatorname" &&
+                base.alwaysHandleSupSub &&
+                (base.limits || options.style === Style.DISPLAY)) {
+                nodeType = "mover";
             } else {
                 nodeType = "msup";
             }
@@ -231,6 +239,10 @@ defineFunctionBuilders({
             if (base && base.type === "op" && base.limits &&
                 (options.style === Style.DISPLAY || base.alwaysHandleSupSub)) {
                 nodeType = "munder";
+            } else if (base && base.type === "operatorname" &&
+                base.alwaysHandleSupSub &&
+                (base.limits || options.style === Style.DISPLAY)) {
+                nodeType = "munder";
             } else {
                 nodeType = "msub";
             }
@@ -238,6 +250,10 @@ defineFunctionBuilders({
             const base = group.base;
             if (base && base.type === "op" && base.limits &&
                 options.style === Style.DISPLAY) {
+                nodeType = "munderover";
+            } else if (base && base.type === "operatorname" &&
+                base.alwaysHandleSupSub &&
+                (options.style === Style.DISPLAY || base.limits)) {
                 nodeType = "munderover";
             } else {
                 nodeType = "msubsup";

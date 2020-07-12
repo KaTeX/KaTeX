@@ -30,13 +30,9 @@ defineFunction({
         const rule = buildCommon.makeSpan(["mord", "rule"], [], options);
 
         // Calculate the shift, width, and height of the rule, and account for units
-        let shift = 0;
-        if (group.shift) {
-            shift = calculateSize(group.shift, options);
-        }
-
         const width = calculateSize(group.width, options);
         const height = calculateSize(group.height, options);
+        const shift = (group.shift) ? calculateSize(group.shift, options) : 0;
 
         // Style the rule to the right size
         rule.style.borderRightWidth = width + "em";
@@ -55,10 +51,25 @@ defineFunction({
         return rule;
     },
     mathmlBuilder(group, options) {
-        // TODO(emily): Figure out if there's an actual way to draw black boxes
-        // in MathML.
-        const node = new mathMLTree.MathNode("mrow");
+        const width = calculateSize(group.width, options);
+        const height = calculateSize(group.height, options);
+        const shift = (group.shift) ? calculateSize(group.shift, options) : 0;
+        const color = options.color && options.getColor() || "black";
 
-        return node;
+        const rule = new mathMLTree.MathNode("mspace");
+        rule.setAttribute("mathbackground", color);
+        rule.setAttribute("width", width + "em");
+        rule.setAttribute("height", height + "em");
+
+        const wrapper = new mathMLTree.MathNode("mpadded", [rule]);
+        if (shift >= 0) {
+            wrapper.setAttribute("height", "+" + shift + "em");
+        } else {
+            wrapper.setAttribute("height", shift + "em");
+            wrapper.setAttribute("depth", "+" + (-shift) + "em");
+        }
+        wrapper.setAttribute("voffset", shift + "em");
+
+        return wrapper;
     },
 });

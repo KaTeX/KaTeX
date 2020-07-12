@@ -12,7 +12,7 @@
 const users = [
     {
         caption: 'Khan Academy',
-        image: 'https://avatars0.githubusercontent.com/u/15455',
+        image: '/img/khan-academy.png',
         infoLink: 'https://www.khanacademy.org/',
     },
     {
@@ -86,9 +86,14 @@ const users = [
         infoLink: 'https://namu.wiki/',
     },
     {
+        caption: 'Notable',
+        image: 'https://notable.app/static/images/logo_app.png',
+        infoLink: 'https://notable.app',
+    },
+    {
         caption: 'Observable',
-        image: 'https://pbs.twimg.com/profile_images/970805785503477760/HfTZJiZo_400x400.jpg',
-        infoLink: 'https://beta.observablehq.com/',
+        image: 'https://avatars0.githubusercontent.com/u/30080011',
+        infoLink: 'https://observablehq.com/',
     },
     {
         caption: 'Quill',
@@ -116,6 +121,11 @@ const users = [
         infoLink: 'https://stackedit.io/',
     },
     {
+        caption: 'Tutti Quanti Shelf',
+        image: 'https://raw.githubusercontent.com/tonton-pixel/tutti-quanti-shelf/master/icons/icon.png',
+        infoLink: 'https://github.com/tonton-pixel/tutti-quanti-shelf/',
+    },
+    {
         caption: 'Vade Mecum Shelf',
         image: '/img/vade_mecum_shelf_logo.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
@@ -130,7 +140,7 @@ const siteConfig = {
 
     // Used for publishing and more
     projectName: 'KaTeX',
-    organizationName: 'Khan',
+    organizationName: 'KaTeX',
 
     headerLinks: [
         {href: '/#demo', label: 'Try'},
@@ -158,7 +168,7 @@ const siteConfig = {
     copyright:
     'Copyright © ' +
     new Date().getFullYear() +
-    ' Khan Academy',
+    ' Khan Academy and other contributors',
 
     highlight: {
         // Highlight.js theme to use for syntax highlighting in code blocks

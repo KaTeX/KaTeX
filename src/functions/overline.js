@@ -31,13 +31,14 @@ defineFunction({
         const line = buildCommon.makeLineSpan("overline-line", options);
 
         // Generate the vlist, with the appropriate kerns
+        const defaultRuleThickness = options.fontMetrics().defaultRuleThickness;
         const vlist = buildCommon.makeVList({
             positionType: "firstBaseline",
             children: [
                 {type: "elem", elem: innerGroup},
-                {type: "kern", size: 3 * line.height},
+                {type: "kern", size: 3 * defaultRuleThickness},
                 {type: "elem", elem: line},
-                {type: "kern", size: line.height},
+                {type: "kern", size: defaultRuleThickness},
             ],
         }, options);
 

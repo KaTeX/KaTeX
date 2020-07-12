@@ -22,7 +22,8 @@ const htmlBuilder = (group, options) => {
 };
 
 const mathmlBuilder = (group, options) => {
-    const inner = mml.buildExpression(group.body, options);
+    const inner = mml.buildExpression(group.body,
+        options.withColor(group.color));
 
     const node = new mathMLTree.MathNode("mstyle", inner);
 
@@ -54,42 +55,6 @@ defineFunction({
     mathmlBuilder,
 });
 
-// TODO(kevinb): define these using macros
-defineFunction({
-    type: "color",
-    names: [
-        "\\blue", "\\orange", "\\pink", "\\red",
-        "\\green", "\\gray", "\\purple",
-        "\\blueA", "\\blueB", "\\blueC", "\\blueD", "\\blueE",
-        "\\tealA", "\\tealB", "\\tealC", "\\tealD", "\\tealE",
-        "\\greenA", "\\greenB", "\\greenC", "\\greenD", "\\greenE",
-        "\\goldA", "\\goldB", "\\goldC", "\\goldD", "\\goldE",
-        "\\redA", "\\redB", "\\redC", "\\redD", "\\redE",
-        "\\maroonA", "\\maroonB", "\\maroonC", "\\maroonD", "\\maroonE",
-        "\\purpleA", "\\purpleB", "\\purpleC", "\\purpleD", "\\purpleE",
-        "\\mintA", "\\mintB", "\\mintC",
-        "\\grayA", "\\grayB", "\\grayC", "\\grayD", "\\grayE",
-        "\\grayF", "\\grayG", "\\grayH", "\\grayI",
-        "\\kaBlue", "\\kaGreen",
-    ],
-    props: {
-        numArgs: 1,
-        allowedInText: true,
-        greediness: 3,
-    },
-    handler({parser, funcName}, args) {
-        const body = args[0];
-        return {
-            type: "color",
-            mode: parser.mode,
-            color: "katex-" + funcName.slice(1),
-            body: ordargument(body),
-        };
-    },
-    htmlBuilder,
-    mathmlBuilder,
-});
-
 defineFunction({
     type: "color",
     names: ["\\color"],
@@ -102,7 +67,13 @@ defineFunction({
     handler({parser, breakOnTokenText}, args) {
         const color = assertNodeType(args[0], "color-token").color;
 
-        // If we see a styling function, parse out the implicit body
+        // Set macro \current@color in current namespace to store the current
+        // color, mimicking the behavior of color.sty.
+        // This is currently used just to correctly color a \right
+        // that follows a \color command.
+        parser.gullet.macros.set("\\current@color", color);
+
+        // Parse out the implicit body that should be colored.
         const body = parser.parseExpression(true, breakOnTokenText);
 
         return {
