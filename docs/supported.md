@@ -113,10 +113,10 @@ or for just some URLs via the `trust` [option](options.md).
 | $\href{https://katex.org/}{\KaTeX}$ | `\href{https://katex.org/}{\KaTeX}` |
 | $\url{https://katex.org/}$ | `\url{https://katex.org/}` |
 | $\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://katex.org/img/khan-academy.png}$ | `\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://katex.org/img/khan-academy.png}` |
-| $\htmlId{bar}{x}$ | `\htmlId{bar}{x}` |
-| $\htmlClass{foo}{x}$ | `\htmlClass{foo}{x}` |
-| $\htmlStyle{color: red;}{x}$ | `\htmlStyle{color: red;}{x}` |
-| $\htmlData{foo=a, bar=b}{x}$ | `\htmlData{foo=a, bar=b}{x}` |
+| $\htmlId{bar}{x}$ <code>…&lt;span id="bar" class="enclosing"&gt;…x…&lt;/span&gt;…</code> | `\htmlId{bar}{x}` |
+| $\htmlClass{foo}{x}$ <code>…&lt;span class="enclosing foo"&gt;…x…&lt;/span&gt;…</code> | `\htmlClass{foo}{x}` |
+| $\htmlStyle{color: red;}{x}$ <code>…&lt;span style="color: red;" class="enclosing"&gt;…x…&lt;/span&gt;…</code> | `\htmlStyle{color: red;}{x}` |
+| $\htmlData{foo=a, bar=b}{x}$ <code>…&lt;span data-foo="a" data-bar="b" class="enclosing"&gt;…x…&lt;/span&gt;…</code> | `\htmlData{foo=a, bar=b}{x}` |
 
 `\includegraphics` supports `height`, `width`, `totalheight`, and `alt` in its first argument. `height` is required.
 
@@ -542,8 +542,10 @@ Other KaTeX color functions expect the content to be a function argument:
 
 $\textcolor{blue}{F=ma}$ `\textcolor{blue}{F=ma}`<br>
 $\textcolor{#228B22}{F=ma}$ `\textcolor{#228B22}{F=ma}`<br>
-$\colorbox{aqua}{A}$ `\colorbox{aqua}{A}`<br>
-$\fcolorbox{red}{aqua}{A}$ `\fcolorbox{red}{aqua}{A}`
+$\colorbox{aqua}{$F=ma$}$ `\colorbox{aqua}{$F=ma$}`<br>
+$\fcolorbox{red}{aqua}{$F=ma$}$ `\fcolorbox{red}{aqua}{$F=ma$}`
+
+Note that, as in LaTeX, `\colorbox` & `\fcolorbox` renders its third argument as text, so you may want to switch back to math mode with `$` as in the examples above.
 
 For color definition, KaTeX color functions will accept the standard HTML [predefined color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords). They will also accept an RGB argument in CSS hexa­decimal style. The "#" is optional before a six-digit specification.
 

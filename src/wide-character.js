@@ -25,8 +25,8 @@ const wideLatinLetterData: Array<[string, string, string]> = [
     ["mathbf", "textbf", "Main-Bold"],                // A-Z bold upright
     ["mathbf", "textbf", "Main-Bold"],                // a-z bold upright
 
-    ["mathdefault", "textit", "Math-Italic"],         // A-Z italic
-    ["mathdefault", "textit", "Math-Italic"],         // a-z italic
+    ["mathnormal", "textit", "Math-Italic"],         // A-Z italic
+    ["mathnormal", "textit", "Math-Italic"],         // a-z italic
 
     ["boldsymbol", "boldsymbol", "Main-BoldItalic"],  // A-Z bold italic
     ["boldsymbol", "boldsymbol", "Main-BoldItalic"],  // a-z bold italic
