@@ -39,10 +39,9 @@ All notable changes to this project will be documented in this file. This CHANGE
 - Enable empty environment (#2258)
 - Enable an empty `\substack` (#2278)
 - Fix jagged parentheses (#2234)
-- `\boldsymbol` not italic for textords such as Greek (#2290)
+- `\boldsymbol` not italic for textords such as Greek (#2290, #2299)
 - Protect fraction bars from CSS border-color (#2292)
 - Reset to leftmost spacing mode after newline (#1841)
-- Set MathML of \boldsymbol{textord} to bold, not bold-italic (#2299)
 - Fix missing metrics for space (0x20) and no-break space (0xa0) (#2298)
 
 
