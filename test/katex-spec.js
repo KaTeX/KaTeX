@@ -1,8 +1,4 @@
 /* eslint max-len:0 */
-/* global expect: false */
-/* global it: false */
-/* global describe: false */
-/* global beforeAll: false */
 
 import buildMathML from "../src/buildMathML";
 import buildTree from "../src/buildTree";
