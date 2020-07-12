@@ -6,7 +6,6 @@ import environments from "../environments";
 
 // Environment delimiters. HTML/MathML rendering is defined in the corresponding
 // defineEnvironment definitions.
-// $FlowFixMe, "environment" handler returns an environment ParseNode
 defineFunction({
     type: "environment",
     names: ["\\begin", "\\end"],
@@ -14,6 +13,7 @@ defineFunction({
         numArgs: 1,
         argTypes: ["text"],
     },
+    // $FlowFixMe, "environment" handler returns an environment ParseNode
     handler({parser, funcName}, args) {
         const nameGroup = args[0];
         if (nameGroup.type !== "ordgroup") {
