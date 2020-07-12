@@ -33,8 +33,6 @@ Then, in the body, we use a `math/tex` script to typeset the equation `x+\sqrt{1
 </html>
 ```
 
-<!-- TODO: uncomment when releasing a new version
 ECMAScript module is also available:
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/mathtex-script-type.mjs" integrity="sha384-qc7HqE4GHbr2H9R+C8mTSdJmkkZ9E1bkIRyRrxMsoj3dcbGjILzoXJGcBGGns1bk" crossorigin="anonymous"></script>
-```` -->
