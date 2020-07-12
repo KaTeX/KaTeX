@@ -175,7 +175,7 @@ function startServer() {
             options: {
                 plugins: [['istanbul', {
                     include: ["src/**/*.js"],
-                    exclude: ["src/unicodeMake.js"],
+                    exclude: ["src/unicodeSymbols.js"],
                 }]],
             },
         };
