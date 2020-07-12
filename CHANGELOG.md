@@ -30,7 +30,7 @@ All notable changes to this project will be documented in this file. This CHANGE
 - Set `border-collapse: collapse` in vlist, fix misalignment in table (#2103)
 - `\@ifnextchar` consumes spaces (#2118)
 - Add spacing on left of fleqn display math (#2127)
-- Fix \boxed inherited color (#2130)
+- Fix `\boxed` inherited color (#2130)
 - Fix laps having visible width in Safari (#1919)
 - Improve MathML for corners (#1922)
 - `auto-render`: ignore "option" tags (#2180)
