@@ -1,6 +1,50 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [v0.12.0]
+### Added
+- `globalGroup` option to place definitions in global scope (#2091)
+- `\cal` (#2116)
+- `{rcases}` and `{drcases}` (#2149)
+- HTML extension (#2082)
+  - HTML extension can be enabled using `strict` and `trust` setting. See https://katex.org/docs/options.html for more details. **Please review its security implication before enabling the extension.**
+- `\message`, `\errmessage`, and `\show` for debugging (#2135)
+- bra-ket notation (#2162)
+- `\expandafter`, `\noexpand`, `\edef`, `\let`, and `\long` (#2122)
+- Support MathML display mode (#2220)
+- `\minuso` (#2213)
+
+### Changed
+- Update documentation (#2086, #2108, #2107, #2106, #2143, #2178, #2195, #2231, #2239, #2263, #2279, #2289, #2280. #2269, #2294, #2296, #2297)
+- `mathtex-script`: Use html 'defer' attribute (#2069)
+- `auto-render`: do not touch text nodes w/o formulas (#2154)
+- Move \global and \def to functions (#2138)
+- Cleanup font build scripts & font updates (#2155, #2171, #2156)
+  - **BREAKING CHANGE:** old-style numerals are now available via `\mathnormal` instead of `\mathcal`
+- Upgrade minimum development Node version to v10 (#2177)
+
+### Removed
+- **BREAKING CHANGE:** IE 9/10 support (#2136)
+
+### Fixed
+- Set `border-collapse: collapse` in vlist, fix misalignment in table (#2103)
+- `\@ifnextchar` consumes spaces (#2118)
+- Add spacing on left of fleqn display math (#2127)
+- Fix `\boxed` inherited color (#2130)
+- Fix laps having visible width in Safari (#1919)
+- Improve MathML for corners (#1922)
+- `auto-render`: ignore "option" tags (#2180)
+- Fix delimiter error message (#2186)
+- Fix under accent depth (#2252)
+- Enable empty environment (#2258)
+- Enable an empty `\substack` (#2278)
+- Fix jagged parentheses (#2234)
+- `\boldsymbol` not italic for textords such as Greek (#2290, #2299)
+- Protect fraction bars from CSS border-color (#2292)
+- Reset to leftmost spacing mode after newline (#1841)
+- Fix missing metrics for space (0x20) and no-break space (0xa0) (#2298)
+
+
 ## [v0.11.1]
 ### Changed
 - [Security] Bump mixin-deep from 1.3.1 to 1.3.2 (#2090)
