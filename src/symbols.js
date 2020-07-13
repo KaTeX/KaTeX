@@ -675,7 +675,7 @@ defineSymbol(math, ams, textord, "\u25b2", "\\blacktriangle");
 defineSymbol(math, ams, textord, "\u25bc", "\\blacktriangledown");
 defineSymbol(math, ams, textord, "\u25a0", "\\blacksquare");
 defineSymbol(math, ams, textord, "\u29eb", "\\blacklozenge");
-defineSymbol(math, ams, textord, g("\u2605", "star"), "\\bigstar");
+defineSymbol(math, ams, textord, g("\u2605", {msab: "star"}), "\\bigstar");
 defineSymbol(math, ams, textord, "\u2222", "\\sphericalangle", true);
 defineSymbol(math, ams, textord, "\u2201", "\\complement", true);
 // unicode-math maps U+F0 (ð) to \matheth. We map to AMS function \eth
@@ -730,7 +730,8 @@ defineSymbol(math, ams, rel, "\u227c", "\\preccurlyeq", true);
 defineSymbol(math, ams, rel, "\u22de", "\\curlyeqprec", true);
 defineSymbol(math, ams, rel, "\u227e", "\\precsim", true);
 defineSymbol(math, ams, rel, g("\u2ab7", "precedesorequal"), "\\precapprox", true);
-defineSymbol(math, ams, rel, g("\u22b2", "triangleleft"), "\\vartriangleleft");
+defineSymbol(math, ams, rel, g("\u22b2", {msam: "triangleleft"}),
+    "\\vartriangleleft");
 defineSymbol(math, ams, rel, "\u22b4", "\\trianglelefteq");
 defineSymbol(math, ams, rel, "\u22a8", "\\vDash", true);
 defineSymbol(math, ams, rel, "\u22aa", "\\Vvdash", true);
@@ -760,7 +761,8 @@ defineSymbol(math, ams, rel, "\u227d", "\\succcurlyeq", true);
 defineSymbol(math, ams, rel, "\u22df", "\\curlyeqsucc", true);
 defineSymbol(math, ams, rel, "\u227f", "\\succsim", true);
 defineSymbol(math, ams, rel, g("\u2ab8", "followsorequal"), "\\succapprox", true);
-defineSymbol(math, ams, rel, g("\u22b3", "triangleright"), "\\vartriangleright");
+defineSymbol(math, ams, rel, g("\u22b3", {msab: "triangleright"}),
+    "\\vartriangleright");
 defineSymbol(math, ams, rel, "\u22b5", "\\trianglerighteq");
 defineSymbol(math, ams, rel, "\u22a9", "\\Vdash", true);
 defineSymbol(math, ams, rel, g("\u2223", {msbm: "barshort"}), "\\shortmid");
