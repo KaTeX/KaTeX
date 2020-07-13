@@ -5,14 +5,16 @@ import MacroExpander, {implicitCommands} from "./MacroExpander";
 import symbols, {ATOMS, extraLatin} from "./symbols";
 import {validUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
-import unicodeAccents from "./unicodeAccents";
-import unicodeSymbols from "./unicodeSymbols";
-import {checkNodeType} from "./parseNode";
 import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
+
+// Pre-evaluate both modules as unicodeSymbols require String.normalize()
+import unicodeAccents from /*preval*/ "./unicodeAccents";
+import unicodeSymbols from /*preval*/ "./unicodeSymbols";
+
 import type {ParseNode, AnyParseNode, SymbolParseNode, UnsupportedCmdParseNode}
     from "./parseNode";
 import type {Atom, Group} from "./symbols";
@@ -185,6 +187,8 @@ export default class Parser {
             const atom = this.parseAtom(breakOnTokenText);
             if (!atom) {
                 break;
+            } else if (atom.type === "internal") {
+                continue;
             }
             body.push(atom);
         }
@@ -206,15 +210,14 @@ export default class Parser {
         let funcName;
 
         for (let i = 0; i < body.length; i++) {
-            const node = checkNodeType(body[i], "infix");
-            if (node) {
+            if (body[i].type === "infix") {
                 if (overIndex !== -1) {
                     throw new ParseError(
                         "only one infix operator per group",
-                        node.token);
+                        body[i].token);
                 }
                 overIndex = i;
-                funcName = node.replaceWith;
+                funcName = body[i].replaceWith;
             }
         }
 
@@ -329,21 +332,18 @@ export default class Parser {
 
             if (lex.text === "\\limits" || lex.text === "\\nolimits") {
                 // We got a limit control
-                let opNode = checkNodeType(base, "op");
-                if (opNode) {
+                if (base && base.type === "op") {
                     const limits = lex.text === "\\limits";
-                    opNode.limits = limits;
-                    opNode.alwaysHandleSupSub = true;
+                    base.limits = limits;
+                    base.alwaysHandleSupSub = true;
+                } else if (base && base.type === "operatorname"
+                        && base.alwaysHandleSupSub) {
+                    const limits = lex.text === "\\limits";
+                    base.limits = limits;
                 } else {
-                    opNode = checkNodeType(base, "operatorname");
-                    if (opNode && opNode.alwaysHandleSupSub) {
-                        const limits = lex.text === "\\limits";
-                        opNode.limits = limits;
-                    } else {
-                        throw new ParseError(
-                            "Limit controls must follow a math operator",
-                            lex);
-                    }
+                    throw new ParseError(
+                        "Limit controls must follow a math operator",
+                        lex);
                 }
                 this.consume();
             } else if (lex.text === "^") {
