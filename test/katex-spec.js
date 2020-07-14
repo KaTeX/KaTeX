@@ -1733,9 +1733,9 @@ describe("An HTML font tree-builder", function() {
         expect(markup).toContain("<span class=\"mord\">T</span>");
     });
 
-    it("should render \\textbf{R} with the correct font", function() {
-        const markup = katex.renderToString(r`\textbf{R}`);
-        expect(markup).toContain("<span class=\"mord textbf\">R</span>");
+    it("should render \\textbf{R } with the correct font", function() {
+        const markup = katex.renderToString(r`\textbf{R }`);
+        expect(markup).toContain("<span class=\"mord textbf\">R\u00a0</span>");
     });
 
     it("should render \\textmd{R} with the correct font", function() {
