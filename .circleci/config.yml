@@ -68,6 +68,16 @@ commands:
           # do not upload if screenshotter tests are skipped
           command: ./node_modules/.bin/codecov -F "<< parameters.flag >>"
 
+  screenshot:
+    parameters:
+      flags:
+        type: string
+        default: ""
+    steps:
+      - run:
+          name: Verify screenshots and generate diffs and new screenshots
+          command: node dockers/screenshotter/screenshotter.js -b $CIRCLE_JOB --verify --diff --new --coverage << parameters.flags >>
+
 jobs:
   test:
     docker:
@@ -103,6 +113,9 @@ jobs:
     parameters:
       browser:
         type: executor
+      browserstack:
+        type: string
+        default: ""
     executor: << parameters.browser >>
     steps:
       - checkout_repo
@@ -110,9 +123,32 @@ jobs:
           filter: '^docs/|^static/|^website/|^LICENSE|\.md$'
       - install_dependencies
 
-      - run:
-          name: Verify screenshots and generate diffs and new screenshots
-          command: node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new --coverage
+      - when:
+          condition: << parameters.browserstack >>
+          steps:
+            - run:
+                name : Download BrowserStack Local binary and start it
+                command : |
+                    wget "https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip"
+                    unzip BrowserStackLocal-linux-x64.zip
+                    ./BrowserStackLocal $BROWSERSTACK_KEY
+                background: true
+            - screenshot:
+                flags: |
+                  --selenium-url http://hub-cloud.browserstack.com/wd/hub --katex-ip bs-local.com \
+                  --selenium-capabilities "{
+                    << parameters.browserstack >>
+                    \"resolution\": \"1280x1024\",
+                    \"browserstack.user\": \"$BROWSERSTACK_USER\",
+                    \"browserstack.key\": \"$BROWSERSTACK_KEY\",
+                    \"browserstack.local\": true
+                  }"
+      - unless:
+          condition: << parameters.browserstack >>
+          steps:
+            - screenshot:
+                flags: --selenium-ip localhost
+
       - codecov:
           flag: screenshotter
       - store_artifacts:
