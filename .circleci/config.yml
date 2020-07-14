@@ -1,6 +1,9 @@
 version: 2.1
 
 executors:
+  node:
+    docker:
+      - image: circleci/node:10
   firefox:
     docker:
       - image: circleci/node:10
@@ -80,8 +83,7 @@ commands:
 
 jobs:
   test:
-    docker:
-      - image: circleci/node:10
+    executor: node
     steps:
       - run:
           name: Check whether the build is running on the main repository
@@ -168,3 +170,11 @@ workflows:
       - screenshotter:
           name: chrome
           browser: chrome
+      - screenshotter:
+          name: safari
+          browser: node
+          browserstack: |
+              \"browserName\": \"Safari\",
+              \"browser_version\": \"13.1\",
+              \"os\": \"OS X\",
+              \"os_version\": \"Catalina\",
