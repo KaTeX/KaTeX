@@ -114,9 +114,8 @@ with a new feature.
 
 #### Testing in other browsers
 
-KaTeX supports all major browsers, including IE 11 and newer. Unfortunately, it
-is hard to test new changes in many browsers. If you can, please test your
-changes in as many browsers as possible.
+KaTeX supports all major browsers. Unfortunately, it is hard to test new changes
+in many browsers. If you can, please test your changes in as many browsers as possible.
 
 ## Building
 

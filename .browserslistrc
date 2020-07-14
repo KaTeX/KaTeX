@@ -1,11 +1,8 @@
-# Last 2 versions of each browsers, excluding dead browsers (e.g., BlackBerry)
-last 2 versions
-not dead
-
-# Browsers with more than 0.1% global usage, excluding old browsers
-> 0.1%
-not ie < 11
-not safari < 9
+# Browsers with more than 0.2% global usage, excluding old browsers
+> 0.2%
+not ie < 12
+not chrome 49
+not samsung < 9
 
 # Currently maintained Node.js versions
 maintained node versions

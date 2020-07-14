@@ -2,7 +2,7 @@
 id: browser
 title: Browser
 ---
-> KaTeX supports all major browsers, including Chrome, Safari, Firefox, Opera, Edge, and IE 11.
+> KaTeX supports all major browsers, including Chrome, Safari, Firefox, Opera, and Edge.
 
 ## Starter template
 
