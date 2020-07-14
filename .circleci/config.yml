@@ -129,11 +129,13 @@ jobs:
           condition: << parameters.browserstack >>
           steps:
             - run:
-                name : Download BrowserStack Local binary and start it
-                command : |
+                name: Download BrowserStack Local binary
+                command: |
                     wget "https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip"
                     unzip BrowserStackLocal-linux-x64.zip
-                    ./BrowserStackLocal $BROWSERSTACK_KEY
+            - run:
+                name: Start BrowserStack Local
+                command: ./BrowserStackLocal --key $BROWSERSTACK_KEY
                 background: true
             - screenshot:
                 flags: |
