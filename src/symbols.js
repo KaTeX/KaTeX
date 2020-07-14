@@ -699,7 +699,7 @@ defineSymbol(math, ams, textord, g("\u2137", "gimel"), "\\gimel", true);
 
 // AMS Greek
 defineSymbol(math, ams, textord, "\u03dd", "\\digamma", true);
-defineSymbol(math, ams, textord, g("\u03f0", "kappa"), "\\varkappa");
+defineSymbol(math, ams, textord, g("\u03f0", {msbm: "kappa"}), "\\varkappa");
 
 // AMS Delimiters
 defineSymbol(math, ams, open, g("\u250c", "rightanglenw"), "\\@ulcorner", true);
@@ -1533,6 +1533,8 @@ for (let i = 0; i < extraLatin.length; i++) {
     defineSymbol(math, main, mathord, ch, ch);
     defineSymbol(text, main, textord, ch, ch);
 }
+
+g("\u00b8");
 
 g("\u0302", {
     Size4: [ // hatwide
