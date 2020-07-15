@@ -74,7 +74,7 @@ jobs:
 
       - checkout_repo
       - skip_if_only_changed:
-          filter: '^docs/|^LICENSE|\.md$'
+          filter: '^docs/|^LICENSE|\.md$|\.yml$'
       - install_dependencies
 
       - run:
@@ -98,7 +98,7 @@ jobs:
     steps:
       - checkout_repo
       - skip_if_only_changed:
-          filter: '^docs/|^static/|^website/|^LICENSE|\.md$'
+          filter: '^docs/|^static/|^website/|^LICENSE|\.md$|\.yml$'
       - install_dependencies
 
       - run:
