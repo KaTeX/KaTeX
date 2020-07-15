@@ -19,12 +19,6 @@ commands:
           command: |
               git submodule sync
               git submodule update --init --recursive
-      - run:
-          name: Get changed files
-          command: |
-              CHANGED=$(git diff --name-only << pipeline.git.base_revision >>...)
-              echo "$CHANGED"
-              echo "export CHANGED=\"$CHANGED\"" >> $BASH_ENV
 
   skip_if_only_changed:
     parameters:
@@ -33,7 +27,7 @@ commands:
     steps:
       - run:
           name: Skip tests if only "<< parameters.filter >>" are changed
-          command: echo "$CHANGED" | grep -qvE '<< parameters.filter >>' || circleci step halt
+          command: git diff --name-only << pipeline.git.base_revision >>... | grep -qvE '<< parameters.filter >>' || circleci step halt
 
   install_dependencies:
     steps:
