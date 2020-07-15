@@ -6,6 +6,7 @@
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=KaTeX/KaTeX)](https://dependabot.com)
 [![jsDelivr](https://data.jsdelivr.com/v1/package/npm/katex/badge?style=rounded)](https://www.jsdelivr.com/package/npm/katex)
 ![](https://img.badgesize.io/KaTeX/KaTeX/v0.12.0/dist/katex.min.js?compression=gzip)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/KaTeX/KaTeX)
 
 KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the web.
 
