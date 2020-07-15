@@ -165,3 +165,7 @@ workflows:
                 "os": "OS X",
                 "os_version": "Catalina"
               }
+          filters:
+            branches:
+              # Forked pull requests don't have access to Browserstack credentials
+              ignore: /pull\/[0-9]+/
