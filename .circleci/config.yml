@@ -135,7 +135,7 @@ jobs:
                     unzip BrowserStackLocal-linux-x64.zip
             - run:
                 name: Start BrowserStack Local
-                command: ./BrowserStackLocal --key $BROWSERSTACK_KEY
+                command: ./BrowserStackLocal --key $BROWSERSTACK_KEY --local-identifier $CIRCLE_BUILD_NUM
                 background: true
             - screenshot:
                 flags: |
@@ -145,7 +145,8 @@ jobs:
                     \"resolution\": \"1280x1024\",
                     \"browserstack.user\": \"$BROWSERSTACK_USER\",
                     \"browserstack.key\": \"$BROWSERSTACK_KEY\",
-                    \"browserstack.local\": true
+                    \"browserstack.local\": true,
+                    \"browserstack.localIdentifier\": \"$CIRCLE_BUILD_NUM\"
                   }"
       - unless:
           condition: << parameters.browserstack >>
