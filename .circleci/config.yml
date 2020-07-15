@@ -68,6 +68,16 @@ commands:
           # do not upload if screenshotter tests are skipped
           command: ./node_modules/.bin/codecov -F "<< parameters.flag >>"
 
+  screenshot:
+    parameters:
+      flags:
+        type: string
+        default: ""
+    steps:
+      - run:
+          name: Verify screenshots and generate diffs and new screenshots
+          command: node dockers/screenshotter/screenshotter.js -b $CIRCLE_JOB --verify --diff --new --coverage << parameters.flags >>
+
 jobs:
   test:
     docker:
@@ -103,6 +113,9 @@ jobs:
     parameters:
       browser:
         type: executor
+      browserstack:
+        type: string
+        default: ""
     executor: << parameters.browser >>
     steps:
       - checkout_repo
@@ -110,9 +123,17 @@ jobs:
           filter: '^docs/|^static/|^website/|^LICENSE|\.md$'
       - install_dependencies
 
-      - run:
-          name: Verify screenshots and generate diffs and new screenshots
-          command: node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new --coverage
+      - when:
+          condition: << parameters.browserstack >>
+          steps:
+            - screenshot:
+                flags: --browserstack --selenium-capabilities '<< parameters.browserstack >>'
+      - unless:
+          condition: << parameters.browserstack >>
+          steps:
+            - screenshot:
+                flags: --selenium-ip localhost
+
       - codecov:
           flag: screenshotter
       - store_artifacts:
