@@ -32,6 +32,7 @@
     "babel-plugin-version-inline": "^1.0.0",
     "benchmark": "^2.1.4",
     "browserslist": "^4.7.1",
+    "browserstack-local": "^1.4.5",
     "caniuse-lite": "^1.0.30001002",
     "codecov": "^3.2.0",
     "css-loader": "^3.0.0",
