@@ -683,8 +683,11 @@ defineSymbol(math, main, accent, "\u005e", "\\hat");
 defineSymbol(math, main, accent, "\u20d7", "\\vec");
 defineSymbol(math, main, accent, "\u02d9", "\\dot");
 defineSymbol(math, main, accent, "\u02da", "\\mathring");
-defineSymbol(math, main, mathord, "\u0131", "\\imath", true);
-defineSymbol(math, main, mathord, "\u0237", "\\jmath", true);
+// \imath and \jmath should be invariant to \mathrm, \mathbf, etc., so use PUA
+defineSymbol(math, main, mathord, "\ue131", "\\@imath");
+defineSymbol(math, main, mathord, "\ue237", "\\@jmath");
+defineSymbol(math, main, textord, "\u0131", "\u0131");
+defineSymbol(math, main, textord, "\u0237", "\u0237");
 defineSymbol(text, main, textord, "\u0131", "\\i", true);
 defineSymbol(text, main, textord, "\u0237", "\\j", true);
 defineSymbol(text, main, textord, "\u00df", "\\ss", true);
@@ -733,11 +736,11 @@ defineSymbol(text, main, textord, "\u00b0", "\\degree");
 // \textdegree from inputenc package
 defineSymbol(text, main, textord, "\u00b0", "\\textdegree", true);
 // TODO: In LaTeX, \pounds can generate a different character in text and math
-// mode, but among our fonts, only Main-Italic defines this character "163".
-defineSymbol(math, main, mathord, "\u00a3", "\\pounds");
-defineSymbol(math, main, mathord, "\u00a3", "\\mathsterling", true);
-defineSymbol(text, main, mathord, "\u00a3", "\\pounds");
-defineSymbol(text, main, mathord, "\u00a3", "\\textsterling", true);
+// mode, but among our fonts, only Main-Regular defines this character "163".
+defineSymbol(math, main, textord, "\u00a3", "\\pounds");
+defineSymbol(math, main, textord, "\u00a3", "\\mathsterling", true);
+defineSymbol(text, main, textord, "\u00a3", "\\pounds");
+defineSymbol(text, main, textord, "\u00a3", "\\textsterling", true);
 defineSymbol(math, ams, textord, "\u2720", "\\maltese");
 defineSymbol(text, ams, textord, "\u2720", "\\maltese");
 

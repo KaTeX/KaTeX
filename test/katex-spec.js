@@ -1737,9 +1737,9 @@ describe("An HTML font tree-builder", function() {
         expect(markup).toContain("<span class=\"mord\">T</span>");
     });
 
-    it("should render \\textbf{R} with the correct font", function() {
-        const markup = katex.renderToString(r`\textbf{R}`);
-        expect(markup).toContain("<span class=\"mord textbf\">R</span>");
+    it("should render \\textbf{R } with the correct font", function() {
+        const markup = katex.renderToString(r`\textbf{R }`);
+        expect(markup).toContain("<span class=\"mord textbf\">R\u00a0</span>");
     });
 
     it("should render \\textmd{R} with the correct font", function() {
@@ -1837,7 +1837,7 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1863,7 +1863,7 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1889,7 +1889,7 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 

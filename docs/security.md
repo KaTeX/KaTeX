@@ -13,7 +13,7 @@ A variety of options give finer control over the security of KaTeX
 with untrusted inputs; refer to [Options](options.md) for more details.
 * `maxSize` can prevent large width/height visual affronts.
 * `maxExpand` can prevent infinite macro loop attacks.
-* `trust` can allow certain commands that are not always safe (e.g., `\includegraphics`)
+* `trust` can allow certain commands that may load external resources or change HTML attributes and thus are not always safe (e.g., `\includegraphics` or `\htmlClass`)
 
 The error message thrown by KaTeX may contain unescaped LaTeX source code.
 See [Handling Errors](error.md) for more details.
