@@ -143,8 +143,9 @@ if [[ ! $PUBLISH ]]; then
         node update-sri.js "$VERSION" README.md contrib/*/README.md \
             docs/*.md docs/*.md.bak website/pages/index.html
 
-        # Generate a new version of the docs
+        # Generate a new version of the docs, store only latest docs only
         pushd website
+        rm -rf versioned_docs versioned_sidebars versions.json
         yarn run version "$VERSION"
         popd
 
