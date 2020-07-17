@@ -1,5 +1,6 @@
 // https://github.com/bradhowes/remarkable-katex/blob/master/index.js
-// Modified here to require("../..") instead of require("katex")
+// Modified here to support multiple KaTeX version and stylesheet inclusion
+// using remarkable-embed syntax {@katexVersion: version}
 // and add options {trust: true, strict: false}.
 
 /* MIT License
@@ -34,12 +35,31 @@ module.exports = (md, options) => {
   const opts = options || {};
   const delimiter = opts.delimiter || dollar;
   if (delimiter.length !== 1) throw 'invalid delimiter';
-  const katex = require("../../");
+  const katex = {
+      latest: require("katex"),
+      next: require("../../"),
+  };
+
+  let katexVersion = "next";
+  const remarkableEmbed = require('remarkable-embed');
+  const embed = new remarkableEmbed.Plugin;
+   // {@katexVersion: version}
+  embed.register('katexVersion', version => {
+      katexVersion = version;
+      if (version == "next") {
+          return '<link rel="stylesheet" href="/static/katex.min.css"/>';
+      }
+      // use CDN
+      return `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@${
+              katex[version].version
+          }/dist/katex.min.css" crossorigin="anonymous"/>`
+  });
+  md.use(embed.hook);
 
   /**
    * Render the contents as KaTeX
    */
-  const renderKatex = (source, displayMode) => katex.renderToString(source,
+  const renderKatex = (source, displayMode) => katex[katexVersion].renderToString(source,
     {displayMode: displayMode, throwOnError: false,
      trust: true, strict: false});
 

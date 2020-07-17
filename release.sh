@@ -134,9 +134,9 @@ if [[ ! $PUBLISH ]]; then
             rm -f package.json.bak
         fi
 
-        # Edit docs to use CSS from CDN
-        grep -l '/static/' docs/*.md | xargs sed -i.bak \
-            's|/static/\([^"]\+\)|https://cdn.jsdelivr.net/npm/katex@./dist/\1" integrity="sha384-\1" crossorigin="anonymous|'
+        # Edit docs to use the latest version
+        grep -l '{@katexVersion: next}' docs/*.md | xargs sed -i.bak \
+            's|{@katexVersion: next}|{@katexVersion: latest}|'
 
         # Update the version number in CDN URLs included in the README and the documentation,
         # and regenerate the Subresource Integrity hash for these files.
