@@ -22,8 +22,18 @@ fs.copySync('../dist/contrib/copy-tex.min.js', 'static/static/copy-tex.min.js');
 fs.copySync('../dist/contrib/mhchem.min.js', 'static/static/mhchem.min.js');
 
 
-// use KaTeX from CDN on the main page for Netlify production deploy
+// Netlify production deploy
 if (process.env.CONTEXT === 'production') {
+    // monkey patch docusaurus/lib/core/nav/HeaderNav.js to always link
+    // to the latest version page
+    let headerNav = fs.readFileSync(
+        'node_modules/docusaurus/lib/core/nav/HeaderNav.js', 'utf8');
+    headerNav = headerNav.replace(/const versionsLink =$/m,
+        'const versionsLink = this.props.url +');
+    fs.writeFileSync('node_modules/docusaurus/lib/core/nav/HeaderNav.js',
+        headerNav);
+
+    // use KaTeX from CDN on the main page
     const version = require('../versions.json')[0];
     let indexHtml = fs.readFileSync('pages/index.html', 'utf8');
     indexHtml = indexHtml.replace(/(["'])static\/(katex|fonts)/g,

@@ -15,6 +15,8 @@ const CWD = process.cwd();
 const {title, baseUrl, repoUrl} = require(`${CWD}/siteConfig.js`);
 const versions = fs.existsSync(`${CWD}/versions.json`)
     ? require(`${CWD}/versions.json`) : [];
+const oldVersions = fs.existsSync(`${CWD}/old-versions.json`)
+    ? require(`${CWD}/old-versions.json`) : [];
 
 function Versions(props) {
     const latestVersion = versions[0];
@@ -73,26 +75,21 @@ function Versions(props) {
             </p>
             <table className="versions">
               <tbody>
-                {versions.map(
+                {oldVersions.map(
                   version =>
-                    version !== latestVersion && (
-                      <tr key={version}>
-                        <th>{version}</th>
-                        <td>
-                          <a
-                            href={`${baseUrl}docs/${
-                              language
-                            }${version}/node.html`}>
-                            Documentation
-                          </a>
-                        </td>
-                        <td>
-                          <a href={`${repoUrl}/releases/tag/v${version}`}>
-                            Release Notes
-                          </a>
-                        </td>
-                      </tr>
-                    )
+                    <tr key={version.name}>
+                      <th>{version.name}</th>
+                      <td>
+                        <a href={`${version.url}docs/${language}`}>
+                          Documentation
+                        </a>
+                      </td>
+                      <td>
+                        <a href={`${repoUrl}/releases/tag/v${version.name}`}>
+                          Release Notes
+                        </a>
+                      </td>
+                    </tr>
                 )}
               </tbody>
             </table>

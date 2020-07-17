@@ -145,7 +145,10 @@ if [[ ! $PUBLISH ]]; then
 
         # Generate a new version of the docs, store only latest docs only
         pushd website
-        rm -rf versioned_docs versioned_sidebars versions.json
+        # Move the latest version to old-versions.json
+        sed -i.bak "2i\\
+  {\"name\": $(awk '{if (NR==2) {$1=$1; print}}' versions.json)}," old-versions.json
+        rm -rf versioned_docs versioned_sidebars versions.json old-versions.json.bak
         yarn run version "$VERSION"
         popd
 
@@ -165,7 +168,7 @@ if [[ ! $PUBLISH ]]; then
     # Make the commit and push
     git add package.json README.md contrib/*/README.md \
         docs website/pages/index.html website/versioned_docs/ \
-        website/versioned_sidebars/ website/versions.json
+        website/versioned_sidebars/ website/versions.json website/old-versions.json
     if [[ $BRANCH == @(v*-release) ]]; then
         git commit -n -m "Update SRI hashes"
     elif [[ ! $NEXT_VERSION ]]; then
@@ -177,6 +180,9 @@ if [[ ! $PUBLISH ]]; then
 
     echo ""
     echo "The automatic parts are done!"
+    echo "Find the url of the deployment for the latest version in"
+    echo "https://app.netlify.com/sites/katex/deploys?filter=master"
+    echo "and add it to 'website/old-versions.json'"
     echo "Now create a pull request against master from 'v$VERSION-release'"
     echo "Visit https://github.com/KaTeX/KaTeX/pulls to open a pull request."
     echo "After it gets merged, run './release.sh -p $VERSION'!"
