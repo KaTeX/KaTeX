@@ -99,6 +99,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             globalObject: "(typeof self !== 'undefined' ? self : this)",
             path: path.resolve(__dirname, 'dist'),
             publicPath: dev ? '/' : '',
+            ecmaVersion: 5,
         },
         module: {
             rules: [
