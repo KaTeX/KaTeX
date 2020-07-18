@@ -1,10 +1,11 @@
 // Update badge and CDN urls and subresource integrity hashes
 // Usage: node update-sri.js <VERSION> FILES...
+// To use the version from package.json, pass `package` as VERSION
 // To check SRI hashes, pass `check` as VERSION
 const fs = require("fs-extra");
 const sriToolbox = require("sri-toolbox");
 
-const version = process.argv[2];
+const version = process.argv[2] === "package" ? require("./package.json").version : process.argv[2];
 
 Promise.all(process.argv.slice(3).map(file =>
     fs.readFile(file, "utf8")

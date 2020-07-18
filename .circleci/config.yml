@@ -120,6 +120,15 @@ jobs:
           path: test/screenshotter/diff
           destination: diff
 
+  release:
+    executor: node
+    steps:
+      - checkout_repo
+      - install_dependencies
+      - run:
+          name: Run semantic-release
+          command: yarn run semantic-release --debug
+
 workflows:
   test:
     jobs:
@@ -144,3 +153,8 @@ workflows:
             branches:
               # Forked pull requests don't have access to Browserstack credentials
               ignore: /pull\/[0-9]+/
+      - release:
+          requires:
+            - test
+            - firefox
+            - chrome

@@ -1,5 +1,6 @@
 # [<img src="https://katex.org/img/katex-logo-black.svg" width="130" alt="KaTeX">](https://katex.org/)
 [![npm](https://img.shields.io/npm/v/katex.svg)](https://www.npmjs.com/package/katex)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![CircleCI](https://circleci.com/gh/KaTeX/KaTeX.svg?style=shield)](https://circleci.com/gh/KaTeX/KaTeX)
 [![codecov](https://codecov.io/gh/KaTeX/KaTeX/branch/master/graph/badge.svg)](https://codecov.io/gh/KaTeX/KaTeX)
 [![Join the chat at https://gitter.im/KaTeX/KaTeX](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/KaTeX/KaTeX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
