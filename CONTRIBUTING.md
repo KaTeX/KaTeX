@@ -145,6 +145,7 @@ Flow by running `yarn test:flow`. See [Flow](https://flow.org/) for more details
 
 ## Pull Requests
 
+ - PR title and description should follow [Angular Commit Message Conventions](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines)
  - link back to the original issue(s) whenever possible
  - new commands should be added to `docs/support_table.md` and `docs/supported.md`
  - commits should be squashed before merging
