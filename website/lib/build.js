@@ -21,6 +21,26 @@ fs.copySync('../dist/contrib/copy-tex.min.css', 'static/static/copy-tex.min.css'
 fs.copySync('../dist/contrib/copy-tex.min.js', 'static/static/copy-tex.min.js');
 fs.copySync('../dist/contrib/mhchem.min.js', 'static/static/mhchem.min.js');
 
+// get URLs for previous deployments of release commit
+if (process.env.NETLIFY_API_KEY) {
+    const NetlifyAPI = require('netlify');
+    const client = new NetlifyAPI(process.env.NETLIFY_API_KEY);
+
+    client.listSiteDeploys({site_id: 'f868b1d7-3130-44e8-ae1b-640f4ed3e401'})
+        .then(deploys => {
+            const versions = deploys.reduce((list, deploy) => {
+                if (deploy.context === "production" && deploy.state === "ready") {
+                    const m = /^v([\d.]+) release|^chore\(release\): ([\d.]+)/
+                        .exec(deploy.title);
+                    if (m) {
+                        list.push({name: m[1] || m[2], id: deploy.id});
+                    }
+                }
+                return list;
+            }, []).reverse();
+            fs.writeFileSync('prev-versions.json', JSON.stringify(versions));
+        });
+}
 
 // use KaTeX from CDN on the main page for Netlify production deploy
 if (process.env.CONTEXT === 'production') {
