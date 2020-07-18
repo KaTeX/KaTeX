@@ -74,11 +74,13 @@ defineFunction({
                         throw new ParseError(
                             "Error parsing key-value for \\htmlAttr");
                     }
-                    // Do not allow setting event handlers
-                    if (keyVal[0].trim().toLowerCase().startsWith("on")) {
+                    // allow "id", "class", "style" and "data-*" attributes only
+                    const key = keyVal[0].trim().toLowerCase();
+                    if (key !== "id" && key !== "class" && key !== "style" &&
+                        !key.startsWith("data-")) {
                         return parser.formatUnsupportedCmd(funcName);
                     }
-                    attributes[keyVal[0].trim()] = keyVal[1].trim();
+                    attributes[key] = keyVal[1].trim();
                 }
 
                 trustContext = {
