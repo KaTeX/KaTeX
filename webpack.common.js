@@ -97,7 +97,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             // Enable output modules to be used in browser or Node.
             // See: https://github.com/webpack/webpack/issues/6522
             globalObject: "(typeof self !== 'undefined' ? self : this)",
-            path: path.resolve(__dirname, 'dist'),
+            path: path.resolve(__dirname, 'build'),
             publicPath: dev ? '/' : '',
         },
         module: {

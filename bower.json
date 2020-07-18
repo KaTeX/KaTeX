@@ -25,6 +25,7 @@
     "/*.sh",
     "/package.json",
     "/Makefile",
+    "/build",
     "/test",
     "/src",
     "/contrib",

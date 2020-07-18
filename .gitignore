@@ -1,5 +1,6 @@
 katex.tar.gz
 katex.zip
+build
 node_modules
 npm-debug.log
 debug.log

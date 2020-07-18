@@ -2,6 +2,7 @@
 0.102.0
 
 [ignore]
+<PROJECT_ROOT>/build
 <PROJECT_ROOT>/dist
 
 [include]

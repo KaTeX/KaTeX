@@ -12,14 +12,14 @@ ${option.description}${((option.bool && option.defaultValue !== undefined)
     '### `-h, --help`\nOutput usage information', ''].join('\n'));
 
 // copy local built KaTeX
-fs.copySync('../dist/katex.min.js', 'static/static/katex.min.js');
-fs.copySync('../dist/katex.min.css', 'static/static/katex.min.css');
-fs.copySync('../dist/fonts', 'static/static/fonts');
+fs.copySync('../build/katex.min.js', 'static/static/katex.min.js');
+fs.copySync('../build/katex.min.css', 'static/static/katex.min.css');
+fs.copySync('../build/fonts', 'static/static/fonts');
 
 // copy local built KaTeX extensions
-fs.copySync('../dist/contrib/copy-tex.min.css', 'static/static/copy-tex.min.css');
-fs.copySync('../dist/contrib/copy-tex.min.js', 'static/static/copy-tex.min.js');
-fs.copySync('../dist/contrib/mhchem.min.js', 'static/static/mhchem.min.js');
+fs.copySync('../build/contrib/copy-tex.min.css', 'static/static/copy-tex.min.css');
+fs.copySync('../build/contrib/copy-tex.min.js', 'static/static/copy-tex.min.js');
+fs.copySync('../build/contrib/mhchem.min.js', 'static/static/mhchem.min.js');
 
 
 // use KaTeX from CDN on the main page for Netlify production deploy

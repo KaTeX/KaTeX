@@ -1,4 +1,5 @@
 **/node_modules/*
+build/*
 dist/*
 website/build/*
 website/lib/remarkable-katex.js

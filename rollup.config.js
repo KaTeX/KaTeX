@@ -8,7 +8,7 @@ process.env.NODE_ENV = 'esm';
 export default targets.map(({name, entry}) => ({
     input: entry.replace('.webpack', ''),
     output: {
-        file: `dist/${name}.mjs`,
+        file: `build/${name}.mjs`,
         format: 'es',
     },
     plugins: [
