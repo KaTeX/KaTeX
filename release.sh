@@ -125,7 +125,7 @@ if [[ ! $PUBLISH ]]; then
     rm -f package.json.bak
 
     # Build generated files
-    yarn build
+    yarn dist
 
     if [[ $BRANCH != @(v*-release) ]]; then
         if [ ! -z "$NEXT_VERSION" ]; then
@@ -163,7 +163,7 @@ if [[ ! $PUBLISH ]]; then
 
     # Make the commit and push
     git add package.json README.md contrib/*/README.md \
-        docs website/pages/index.html website/versioned_docs/ \
+        dist docs website/pages/index.html website/versioned_docs/ \
         website/versioned_sidebars/ website/versions.json
     if [[ $BRANCH == @(v*-release) ]]; then
         git commit -n -m "Update SRI hashes"
@@ -189,17 +189,11 @@ else
     sed -i.bak -E 's|"version": "[^"]+",|"version": "'$VERSION'",|' package.json
     rm -f package.json.bak
 
-    # Build generated files and add them to the repository
-    git clean -fdx dist
-    yarn dist
-    sed -i.bak -E '/^\/dist\/$/d' .gitignore
-    rm -f .gitignore.bak
-
     # Check Subresource Integrity hashes
     node update-sri.js check README.md contrib/*/README.md
 
     # Make the commit and tag, and push them.
-    git add package.json .gitignore dist/
+    git add package.json
     git commit -n -m "v$VERSION"
     git diff --stat --exit-code # check for uncommitted changes
     git tag -a "v$VERSION" -m "v$VERSION"

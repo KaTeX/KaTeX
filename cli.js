@@ -6,17 +6,7 @@
 
 /* eslint no-console:0 */
 
-let katex;
-try {
-    katex = require("./");
-} catch (e) {
-    console.error(
-        "KaTeX could not import, likely because dist/katex.js is missing.");
-    console.error("Please run 'yarn' and 'yarn build' before running");
-    console.error("cli.js from the KaTeX repository.");
-    console.error();
-    throw e;
-}
+const katex = require("./");
 const {version} = require("./package.json");
 const fs = require("fs");
 
