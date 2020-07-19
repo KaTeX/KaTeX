@@ -4,7 +4,6 @@ set -e -o pipefail
 shopt -s extglob
 
 VERSION=
-NEXT_VERSION=
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 ORIGIN=${ORIGIN:-origin}
 NARGS=0
@@ -19,14 +18,11 @@ usage() {
         shift
     done
     echo "Usage:"
-    echo "./release.sh [OPTIONS] <VERSION_TO_RELEASE> [NEXT_VERSION]"
+    echo "./release.sh [OPTIONS] <VERSION_TO_RELEASE>"
     echo ""
     echo "Options:"
     echo " --publish|-p: publish a release."
     echo " --dry-run|-n: only print commands, do not execute them."
-    echo ""
-    echo "You may omit NEXT_VERSION in order to avoid updating the version field"
-    echo "of the package.json."
     echo ""
     echo "Run this on the master branch. This will create a release branch."
     echo "Open a pull request and after it gets merged, run with --publish"
@@ -36,7 +32,7 @@ usage() {
     echo ""
     echo "Examples:"
     echo " When releasing a v0.6.3:"
-    echo "   ./release.sh 0.6.3 0.6.4"
+    echo "   ./release.sh 0.6.3"
     echo " Open a pull request from v0.6.3-release to master."
     echo " After it's merged:"
     echo "   ./release.sh -p 0.6.3"
@@ -67,7 +63,7 @@ while [ $# -gt 0 ]; do
                     NARGS=1
                     ;;
                 1)
-                    NEXT_VERSION="$1"
+                    # left for backward compatibility
                     NARGS=2
                     ;;
                 *)
@@ -97,10 +93,8 @@ if [[ $PUBLISH ]]; then
     echo "About to publish $VERSION from $BRANCH. "
 elif [[ $BRANCH == @(v*-release) ]]; then
     echo "About to update SRI hashes for $BRANCH. "
-elif [[ ! $NEXT_VERSION ]]; then
-    echo "About to release $VERSION from $BRANCH. "
 else
-    echo "About to release $VERSION from $BRANCH and bump to $NEXT_VERSION-pre."
+    echo "About to release $VERSION from $BRANCH. "
 fi
 if [[ $INSANE != 0 ]]; then
     read -r -p "$INSANE sanity check(s) failed, really proceed? [y/n] " CONFIRM
@@ -128,12 +122,6 @@ if [[ ! $PUBLISH ]]; then
     yarn dist
 
     if [[ $BRANCH != @(v*-release) ]]; then
-        if [ ! -z "$NEXT_VERSION" ]; then
-            # Edit package.json to the next version
-            sed -i.bak -E 's|"version": "[^"]+",|"version": "'$NEXT_VERSION'-pre",|' package.json
-            rm -f package.json.bak
-        fi
-
         # Edit docs to use CSS from CDN
         grep -l '/static/' docs/*.md | xargs sed -i.bak \
             's|/static/\([^"]\+\)|https://cdn.jsdelivr.net/npm/katex@./dist/\1" integrity="sha384-\1" crossorigin="anonymous|'
@@ -167,10 +155,8 @@ if [[ ! $PUBLISH ]]; then
         website/versioned_sidebars/ website/versions.json
     if [[ $BRANCH == @(v*-release) ]]; then
         git commit -n -m "Update SRI hashes"
-    elif [[ ! $NEXT_VERSION ]]; then
-        git commit -n -m "Release v$VERSION"
     else
-        git commit -n -m "Release v$VERSION" -m "Bump $BRANCH to v$NEXT_VERSION-pre"
+        git commit -n -m "Release v$VERSION"
     fi
     git push -u "$ORIGIN" "v$VERSION-release"
 
@@ -185,16 +171,10 @@ else
     # Make a new detached HEAD
     git checkout --detach
 
-    # Edit package.json to the right version
-    sed -i.bak -E 's|"version": "[^"]+",|"version": "'$VERSION'",|' package.json
-    rm -f package.json.bak
-
     # Check Subresource Integrity hashes
     node update-sri.js check README.md contrib/*/README.md
 
-    # Make the commit and tag, and push them.
-    git add package.json
-    git commit -n -m "v$VERSION"
+    # Make a tag and push
     git diff --stat --exit-code # check for uncommitted changes
     git tag -a "v$VERSION" -m "v$VERSION"
     git push "$ORIGIN" "v$VERSION"
