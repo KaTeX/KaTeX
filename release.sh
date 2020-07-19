@@ -168,14 +168,10 @@ if [[ ! $PUBLISH ]]; then
     echo "Note that if KaTeX source code is changed after running this script,"
     echo "you have to run the release script again."
 else
-    # Make a new detached HEAD
-    git checkout --detach
-
     # Check Subresource Integrity hashes
     node update-sri.js check README.md contrib/*/README.md
 
     # Make a tag and push
-    git diff --stat --exit-code # check for uncommitted changes
     git tag -a "v$VERSION" -m "v$VERSION"
     git push "$ORIGIN" "v$VERSION"
 
