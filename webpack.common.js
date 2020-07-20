@@ -47,7 +47,7 @@ const targets /*: Array<Target> */ = [
     },
     {
         name: 'contrib/render-a11y-string',
-        entry: './contrib/render-a11y-string/render-a11y-string.js',
+        entry: './contrib/render-a11y-string/render-a11y-string.ts',
     },
 ];
 
