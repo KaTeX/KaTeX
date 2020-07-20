@@ -187,7 +187,8 @@ const buildString = (
         a11yStrings.length > 0 &&
         // TODO(kevinb): check that the last item in a11yStrings is a string
         // I think we might be able to drop the nested arrays, which would make
-        // this easier to type - $FlowFixMe
+        // this easier to type
+        // @ts-ignore
         /^\d+$/.test(a11yStrings[a11yStrings.length - 1])
     ) {
         a11yStrings[a11yStrings.length - 1] += ret;
@@ -587,7 +588,7 @@ const handleObject = (
         // \neq and \ne are macros so we let "htmlmathml" render the mathmal
         // side of things and extract the text from that.
         const atomType = tree.mclass.slice(1);
-        // $FlowFixMe: drop the leading "m" from the values in mclass
+        // @ts-ignore: drop the leading "m" from the values in mclass
         buildA11yStrings(tree.body, a11yStrings, atomType);
         break;
     }

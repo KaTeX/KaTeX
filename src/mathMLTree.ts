@@ -38,9 +38,9 @@ export class MathNode implements MathDomNode {
     attributes: {
         [K in string]: string;
     };
-    children: ReadonlyArray<MathDomNode>;
+    children: Array<MathDomNode>;
 
-    constructor(type: MathNodeType, children?: ReadonlyArray<MathDomNode>) {
+    constructor(type: MathNodeType, children?: Array<MathDomNode>) {
         this.type = type;
         this.attributes = {};
         this.children = children || [];

@@ -104,7 +104,7 @@ defineFunction({
             }, options);
         }
 
-        // $FlowFixMe: Replace this with passing "svg-align" into makeVList.
+        // @ts-ignore: Replace this with passing "svg-align" into makeVList.
         vlist.children[0].children[0].children[1].classes.push("svg-align");
 
         return buildCommon.makeSpan(["mrel", "x-arrow"], [vlist], options);

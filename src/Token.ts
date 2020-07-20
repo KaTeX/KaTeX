@@ -24,13 +24,13 @@ export interface LexerInterface {
  */
 export class Token {
     text: string;
-    loc: SourceLocation | null;
-    noexpand: boolean | null; // don't expand the token
-    treatAsRelax: boolean | null; // used in \noexpand
+    loc: SourceLocation | null | undefined;
+    noexpand: boolean | undefined; // don't expand the token
+    treatAsRelax: boolean | undefined; // used in \noexpand
 
     constructor(
         text: string,           // the text of this token
-        loc: SourceLocation | null,
+        loc?: SourceLocation | null,
     ) {
         this.text = text;
         this.loc = loc;

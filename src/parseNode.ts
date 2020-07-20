@@ -473,7 +473,7 @@ export function assertSymbolNodeType(node: AnyParseNode | null): SymbolParseNode
  */
 export function checkSymbolNodeType(node: AnyParseNode | null): SymbolParseNode | null {
     if (node && (node.type === "atom" || NON_ATOMS.hasOwnProperty(node.type))) {
-        // $FlowFixMe
+        // @ts-ignore
         return node;
     }
     return null;

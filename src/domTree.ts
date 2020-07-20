@@ -61,7 +61,7 @@ const toNode = function(tagName: string): HTMLElement {
     // Apply inline styles
     for (const style in this.style) {
         if (this.style.hasOwnProperty(style)) {
-            // $FlowFixMe Flow doesn't seem to understand span.style's type.
+            // @ts-ignore Flow doesn't seem to understand span.style's type.
             node.style[style] = this.style[style];
         }
     }
@@ -306,7 +306,7 @@ export class Img implements VirtualNode {
         // Apply inline styles
         for (const style in this.style) {
             if (this.style.hasOwnProperty(style)) {
-                // $FlowFixMe
+                // @ts-ignore
                 node.style[style] = this.style[style];
             }
         }
@@ -419,7 +419,7 @@ export class SymbolNode implements HtmlDomNode {
         for (const style in this.style) {
             if (this.style.hasOwnProperty(style)) {
                 span = span || document.createElement("span");
-                // $FlowFixMe Flow doesn't seem to understand span.style's type.
+                // @ts-ignore Flow doesn't seem to understand span.style's type.
                 span.style[style] = this.style[style];
             }
         }

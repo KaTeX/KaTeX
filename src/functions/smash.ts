@@ -26,7 +26,7 @@ defineFunction({
             let letter = "";
             for (let i = 0; i < tbArg.body.length; ++i) {
                 const node = tbArg.body[i];
-                // $FlowFixMe: Not every node type has a `text` property.
+                // @ts-ignore: Not every node type has a `text` property.
                 letter = node.text;
                 if (letter === "t") {
                     smashHeight = true;

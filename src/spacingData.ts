@@ -16,21 +16,16 @@ const thickspace: Measurement = {
     unit: "mu",
 };
 
-// Making the type below exact with all optional fields doesn't work due to
-// - https://github.com/facebook/flow/issues/4582
-// - https://github.com/facebook/flow/issues/5688
-// However, since *all* fields are optional, $Shape<> works as suggested in 5688
-// above.
-export type Spacings = $Shape<{
-    mord: Measurement,
-    mop: Measurement,
-    mbin: Measurement,
-    mrel: Measurement,
-    mopen: Measurement,
-    mclose: Measurement,
-    mpunct: Measurement,
-    minner: Measurement
-}> & {};
+export type Spacings = {
+    mord?: Measurement,
+    mop?: Measurement,
+    mbin?: Measurement,
+    mrel?: Measurement,
+    mopen?: Measurement,
+    mclose?: Measurement,
+    mpunct?: Measurement,
+    minner?: Measurement
+};
 
 // Spacing relationships for display and text styles
 export const spacings: {

@@ -11,7 +11,7 @@ import { AnyParseNode } from "./parseNode";
  * about where in the source string the problem occurred.
  */
 class ParseError {
-    position: number | void;
+    position: number | undefined;
         // Error position based on passed-in Token or ParseNode.
 
     constructor(
@@ -61,15 +61,16 @@ class ParseError {
         // See http://stackoverflow.com/a/8460753
         const self = new Error(error);
         self.name = "ParseError";
-        // $FlowFixMe
+        // @ts-ignore
         self.__proto__ = ParseError.prototype;
-        // $FlowFixMe
+        // @ts-ignore
         self.position = start;
+        // @ts-ignore
         return self;
     }
 }
 
-// $FlowFixMe More hackery
+// @ts-ignore More hackery
 ParseError.prototype.__proto__ = Error.prototype;
 
 export default ParseError;

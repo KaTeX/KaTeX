@@ -59,7 +59,7 @@ export type EnvSpec<NODETYPE extends NodeType> = {
  * `Parser.js` requires this dictionary via `environments.js`.
  */
 export const _environments: {
-    [K in string]: EnvSpec<unknown>;
+    [K in string]: EnvSpec<any>;
 } = {};
 
 type EnvDefSpec<NODETYPE extends NodeType> = {
@@ -99,10 +99,6 @@ export default function defineEnvironment<NODETYPE extends NodeType>(
         handler,
     };
     for (let i = 0; i < names.length; ++i) {
-        // TODO: The value type of _environments should be a type union of all
-        // possible `EnvSpec<>` possibilities instead of `EnvSpec<*>`, which is
-        // an existential type.
-        // $FlowFixMe
         _environments[names[i]] = data;
     }
     if (htmlBuilder) {

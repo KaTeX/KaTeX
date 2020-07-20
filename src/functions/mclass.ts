@@ -8,15 +8,16 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import { ParseNode } from "../parseNode";
+import Options from "../Options";
 
 const makeSpan = buildCommon.makeSpan;
 
-function htmlBuilder(group: ParseNode<"mclass">, options) {
+function htmlBuilder(group: ParseNode<"mclass">, options: Options) {
     const elements = html.buildExpression(group.body, options, true);
     return makeSpan([group.mclass], elements, options);
 }
 
-function mathmlBuilder(group: ParseNode<"mclass">, options) {
+function mathmlBuilder(group: ParseNode<"mclass">, options: Options) {
     let node: mathMLTree.MathNode;
     const inner = mml.buildExpression(group.body, options);
 
@@ -160,4 +161,3 @@ defineFunction({
     htmlBuilder,
     mathmlBuilder,
 });
-

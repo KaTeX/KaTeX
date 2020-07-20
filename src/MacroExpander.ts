@@ -28,7 +28,7 @@ export const implicitCommands = {
 export default class MacroExpander implements MacroContextInterface {
     settings: Settings;
     expansionCount: number;
-    lexer: Lexer;
+    lexer!: Lexer;
     macros: Namespace<MacroDefinition>;
     stack: Token[];
     mode: Mode;
@@ -261,10 +261,6 @@ export default class MacroExpander implements MacroContextInterface {
                 }
             }
         }
-
-        // Flow unable to figure out that this pathway is impossible.
-        // https://github.com/facebook/flow/issues/4808
-        throw new Error(); // eslint-disable-line no-unreachable
     }
 
     /**

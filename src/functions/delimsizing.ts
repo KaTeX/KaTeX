@@ -201,7 +201,7 @@ defineFunction({
         for (let i = 0; i < inner.length; i++) {
             // Property `isMiddle` not defined on `span`. See comment in
             // "middle"'s htmlBuilder.
-            // $FlowFixMe
+            // @ts-ignore
             if (inner[i].isMiddle) {
                 hadMiddle = true;
             } else {
@@ -236,7 +236,7 @@ defineFunction({
                 const middleDelim = inner[i];
                 // Property `isMiddle` not defined on `span`. See comment in
                 // "middle"'s htmlBuilder.
-                // $FlowFixMe
+                // @ts-ignore
                 const isMiddle: IsMiddle = middleDelim.isMiddle;
                 if (isMiddle) {
                     // Apply the options that were active when \middle was called
@@ -325,7 +325,7 @@ defineFunction({
             // this file above.
             // TODO: Fix this violation of the `span` type and possibly rename
             // things since `isMiddle` sounds like a boolean, but is a struct.
-            // $FlowFixMe
+            // @ts-ignore
             middleDelim.isMiddle = isMiddle;
         }
         return middleDelim;

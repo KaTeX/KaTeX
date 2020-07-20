@@ -118,7 +118,7 @@ defineFunctionBuilders({
                 group.base && group.base.type === "op" && group.base.name &&
                 (group.base.name === "\\oiint" || group.base.name === "\\oiiint");
             if (base instanceof SymbolNode || isOiint) {
-                // $FlowFixMe
+                // @ts-ignore
                 marginLeft = -base.italic + "em";
             }
         }
@@ -261,4 +261,3 @@ defineFunctionBuilders({
         return node;
     },
 });
-

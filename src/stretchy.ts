@@ -187,7 +187,7 @@ const svgSpan = function(
             label)) {
             // Each type in the `if` statement corresponds to one of the ParseNode
             // types below. This narrowing is required to access `grp.base`.
-            // $FlowFixMe
+            // @ts-ignore
             const grp: ParseNode<"accent"> | ParseNode<"accentUnder"> = group;
             // There are four SVG images available for each function.
             // Choose a taller image when there are more characters.
@@ -245,7 +245,7 @@ const svgSpan = function(
             let widthClasses;
             let aligns;
             if (numSvgChildren === 1) {
-                // $FlowFixMe: All these cases must be of the 4-tuple type.
+                // @ts-ignore
                 const align1: string = data[3];
                 widthClasses = ["hide-tail"];
                 aligns = [align1];

@@ -188,7 +188,7 @@ const digitToNumber = {
 defineMacro("\\char", function(context) {
     let token = context.popToken();
     let base;
-    let number = '';
+    let number: number | string = '';
     if (token.text === "'") {
         base = 8;
         token = context.popToken();
@@ -227,7 +227,7 @@ defineMacro("\\char", function(context) {
 // \newcommand{\macro}[args]{definition}
 // \renewcommand{\macro}[args]{definition}
 // TODO: Optional arguments: \newcommand{\macro}[args][default]{definition}
-const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
+const newcommand = (context: MacroContextInterface, existsOK: boolean, nonexistsOK: boolean) => {
     let arg = context.consumeArgs(1)[0];
     if (arg.length !== 1) {
         throw new ParseError(

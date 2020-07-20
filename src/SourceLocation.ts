@@ -31,7 +31,7 @@ export default class SourceLocation {
         second?: {
             loc: SourceLocation | null
         }
-    ): SourceLocation | null {
+    ): SourceLocation | null | undefined {
         if (!second) {
             return first && first.loc;
         } else if (!first || !first.loc || !second.loc ||

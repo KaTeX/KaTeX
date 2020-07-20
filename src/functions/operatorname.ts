@@ -35,7 +35,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"operatorname"> = (grp, options) => 
     let base;
     if (group.body.length > 0) {
         const body = group.body.map(child => {
-            // $FlowFixMe: Check if the node has a string `text` property.
+            // @ts-ignore: Check if the node has a string `text` property.
             const childText = child.text;
             if (typeof childText === "string") {
                 return {
@@ -157,4 +157,3 @@ defineFunction({
     htmlBuilder,
     mathmlBuilder,
 });
-

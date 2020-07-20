@@ -55,7 +55,7 @@ export default class Parser {
     gullet: MacroExpander;
     settings: Settings;
     leftrightDepth: number;
-    nextToken: Token | null;
+    nextToken: Token | null | undefined;
 
     constructor(input: string, settings: Settings) {
         // Start in math mode
@@ -861,7 +861,7 @@ export default class Parser {
         let n = group.length - 1;
         for (let i = 0; i < n; ++i) {
             const a = group[i];
-            // $FlowFixMe: Not every node type has a `text` property.
+            // @ts-ignore: Not every node type has a `text` property.
             const v = a.text;
             if (v === "-" && group[i + 1].text === "-") {
                 if (i + 1 < n && group[i + 2].text === "-") {
@@ -958,7 +958,7 @@ export default class Parser {
             const loc = SourceLocation.range(nucleus);
             let s: SymbolParseNode;
             if (ATOMS.hasOwnProperty(group)) {
-                // $FlowFixMe
+                // @ts-ignore
                 const family: Atom = group;
                 s = {
                     type: "atom",
@@ -968,8 +968,8 @@ export default class Parser {
                     text,
                 };
             } else {
-                // $FlowFixMe
                 s = {
+                    // @ts-ignore
                     type: group,
                     mode: this.mode,
                     loc,

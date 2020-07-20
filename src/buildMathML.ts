@@ -198,8 +198,8 @@ export const buildGroup = function(group: AnyParseNode | null, options: Options)
 
     if (groupBuilders[group.type]) {
         // Call the groupBuilders function
-        // $FlowFixMe
         const result: MathDomNode = groupBuilders[group.type](group, options);
+        // @ts-ignore
         return result;
     } else {
         throw new ParseError(
@@ -254,6 +254,6 @@ export default function buildMathML(
     // we don't want to make the children type more generic since the children
     // of span are expected to have more fields in `buildHtml` contexts.
     const wrapperClass = forMathmlOnly ? "katex" : "katex-mathml";
-    // $FlowFixMe
+    // @ts-ignore
     return buildCommon.makeSpan([wrapperClass], [math]);
 }

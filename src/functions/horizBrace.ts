@@ -50,7 +50,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
                 {type: "elem", elem: braceBody},
             ],
         }, options);
-        // $FlowFixMe: Replace this with passing "svg-align" into makeVList.
+        // @ts-ignore: Replace this with passing "svg-align" into makeVList.
         vlist.children[0].children[0].children[1].classes.push("svg-align");
     } else {
         vlist = buildCommon.makeVList({
@@ -62,7 +62,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
                 {type: "elem", elem: body},
             ],
         }, options);
-        // $FlowFixMe: Replace this with passing "svg-align" into makeVList.
+        // @ts-ignore: Replace this with passing "svg-align" into makeVList.
         vlist.children[0].children[0].children[0].classes.push("svg-align");
     }
 

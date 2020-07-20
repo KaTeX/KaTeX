@@ -69,7 +69,7 @@ export class DocumentFragment<ChildType extends VirtualNode> implements HtmlDomN
     toText(): string {
         // To avoid this, we would subclass documentFragment separately for
         // MathML, but polyfills for subclassing is expensive per PR 1469.
-        // $FlowFixMe: Only works for ChildType = MathDomNode.
+        // @ts-ignore
         const toText = (child: ChildType): string => child.toText();
         return this.children.map(toText).join("");
     }

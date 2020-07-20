@@ -8,7 +8,7 @@ import { AnyParseNode } from "./parseNode";
 /**
  * Return whether an element is contained in a list
  */
-const contains = function(list: Array<T>, elem: T): boolean {
+const contains = function<T>(list: Array<T>, elem: T): boolean {
     return list.indexOf(elem) !== -1;
 };
 
@@ -16,7 +16,7 @@ const contains = function(list: Array<T>, elem: T): boolean {
  * Provide a default value if a setting is undefined
  * NOTE: Couldn't use `T` as the output type due to facebook/flow#5022.
  */
-const deflt = function(setting: T | void, defaultIfUndefined: T): unknown {
+const deflt = function<T>(setting: T | void, defaultIfUndefined: T): unknown {
     return setting === undefined ? defaultIfUndefined : setting;
 };
 
@@ -41,6 +41,7 @@ const ESCAPE_REGEX = /[&><"']/g;
  * Escapes text to prevent scripting attacks.
  */
 function escape(text: unknown): string {
+    // @ts-ignore
     return String(text).replace(ESCAPE_REGEX, match => ESCAPE_LOOKUP[match]);
 }
 
@@ -83,7 +84,7 @@ const isCharacterBox = function(group: AnyParseNode): boolean {
         baseElem.type === "atom";
 };
 
-export const assert = function(value: T | null): T {
+export const assert = function<T>(value: T | null): T {
     if (!value) {
         throw new Error('Expected non-null, but got ' + String(value));
     }

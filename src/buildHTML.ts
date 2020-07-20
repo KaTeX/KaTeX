@@ -151,7 +151,7 @@ const traverseNonSpaceNodes = function(
         const node = nodes[i];
         const partialGroup = checkPartialGroup(node);
         if (partialGroup) { // Recursive DFS
-            // $FlowFixMe: make nodes a $ReadOnlyArray by returning a new array
+            // @ts-ignore: make nodes a $ReadOnlyArray by returning a new array
             traverseNonSpaceNodes(partialGroup.children,
                 callback, prev, null, isRoot);
             continue;
@@ -243,7 +243,6 @@ export const buildGroup = function(group: AnyParseNode | null, options: Options,
 
     if (groupBuilders[group.type]) {
         // Call the groupBuilders function
-        // $FlowFixMe
         let groupNode: HtmlDomNode = groupBuilders[group.type](group, options);
 
         // If the size changed between the parent and the current group, account

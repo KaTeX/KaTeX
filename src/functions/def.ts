@@ -1,6 +1,8 @@
 import defineFunction from "../defineFunction";
 import ParseError from "../ParseError";
 import {assertNodeType} from "../parseNode";
+import Parser from "../Parser";
+import { Token } from "../Token";
 
 const globalMap = {
     "\\global": "\\global",
@@ -22,7 +24,7 @@ const checkControlSequence = (tok) => {
     return name;
 };
 
-const getRHS = (parser) => {
+const getRHS = (parser: Parser) => {
     let tok = parser.gullet.popToken();
     if (tok.text === "=") { // consume optional equals
         tok = parser.gullet.popToken();
@@ -33,7 +35,7 @@ const getRHS = (parser) => {
     return tok;
 };
 
-const letCommand = (parser, name, tok, global) => {
+const letCommand = (parser: Parser, name: any, tok: Token, global: boolean) => {
     let macro = parser.gullet.macros.get(tok.text);
     if (macro == null) {
         // don't expand it later even if a macro with the same name is defined

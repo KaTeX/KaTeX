@@ -10,7 +10,7 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 import {calculateSize} from "../units";
 
-const adjustStyle = (size, originalStyle) => {
+const adjustStyle = (size: string, originalStyle: any) => {
     // Figure out what style this fraction should be in based on the
     // function used
     let style = originalStyle;

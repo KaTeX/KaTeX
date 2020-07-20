@@ -61,6 +61,7 @@ export const calculateSize = function(sizeValue: Measurement, options: Options):
     let scale;
     if (sizeValue.unit in ptPerUnit) {
         // Absolute units
+        // @ts-ignore
         scale = ptPerUnit[sizeValue.unit]   // Convert unit to pt
            / options.fontMetrics().ptPerEm  // Convert pt to CSS em
            / options.sizeMultiplier;        // Unscale to make absolute units

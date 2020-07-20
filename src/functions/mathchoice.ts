@@ -6,8 +6,9 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import { ParseNode } from "../parseNode";
+import Options from "../Options";
 
-const chooseMathStyle = (group: ParseNode<"mathchoice">, options) => {
+const chooseMathStyle = (group: ParseNode<"mathchoice">, options: Options) => {
     switch (options.style.size) {
         case Style.DISPLAY.size: return group.display;
         case Style.TEXT.size: return group.text;
