@@ -7,6 +7,6 @@
  * [2] https://facebook.github.io/jest/docs/en/webpack.html
  */
 import './src/katex.less';
-import katex from './katex.js';
+import katex from './katex';
 
 export default katex;

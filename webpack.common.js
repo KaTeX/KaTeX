@@ -100,10 +100,13 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             path: path.resolve(__dirname, 'dist'),
             publicPath: dev ? '/' : '',
         },
+        resolve: {
+            extensions: ['.ts', '.js'],
+        },
         module: {
             rules: [
                 {
-                    test: /\.js$/,
+                    test: /\.(js|ts)$/,
                     exclude: /node_modules/,
                     use: 'babel-loader',
                 },

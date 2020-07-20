@@ -2,8 +2,8 @@
 /* global it: false */
 /* global describe: false */
 
-import symbols from '../src/symbols.js';
-import macros from '../src/macros.js';
+import symbols from '../src/symbols';
+import macros from '../src/macros';
 
 describe("Symbols and macros", () => {
     for (const macro in macros) {
