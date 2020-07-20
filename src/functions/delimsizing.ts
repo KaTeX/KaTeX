@@ -10,8 +10,8 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import Options from "../Options";
-import { AnyParseNode, ParseNode, SymbolParseNode } from "../parseNode";
-import { FunctionContext } from "../defineFunction";
+import {AnyParseNode, ParseNode, SymbolParseNode} from "../parseNode";
+import {FunctionContext} from "../defineFunction";
 
 // Extra data needed for the delimiter handler down below
 const delimiterSizes = {

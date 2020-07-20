@@ -8,8 +8,8 @@ import {assertNodeType} from "../parseNode";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import { HtmlBuilderSupSub, MathMLBuilder } from "../defineFunction";
-import { ParseNode } from "../parseNode";
+import {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
+import {ParseNode} from "../parseNode";
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "horizBrace", but
 // also "supsub" since an over/underbrace can affect super/subscripting.

@@ -13,9 +13,9 @@ import * as op from "./op";
 import * as operatorname from "./operatorname";
 
 import Options from "../Options";
-import { ParseNode } from "../parseNode";
-import { HtmlBuilder } from "../defineFunction";
-import { MathNodeType } from "../mathMLTree";
+import {ParseNode} from "../parseNode";
+import {HtmlBuilder} from "../defineFunction";
+import {MathNodeType} from "../mathMLTree";
 
 /**
  * Sometimes, groups perform special rules when they have superscripts or

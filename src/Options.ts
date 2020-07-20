@@ -6,8 +6,8 @@
  */
 
 import {getGlobalMetrics} from "./fontMetrics";
-import { FontMetrics } from "./fontMetrics";
-import { StyleInterface } from "./Style";
+import {FontMetrics} from "./fontMetrics";
+import {StyleInterface} from "./Style";
 
 const sizeStyleMap = [
     // Each element contains [textsize, scriptsize, scriptscriptsize].

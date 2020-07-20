@@ -3,7 +3,7 @@
  * files.
  */
 
-import { AnyParseNode } from "./parseNode";
+import {AnyParseNode} from "./parseNode";
 
 /**
  * Return whether an element is contained in a list

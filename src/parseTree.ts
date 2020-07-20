@@ -7,7 +7,7 @@ import Parser from "./Parser";
 import ParseError from "./ParseError";
 
 import Settings from "./Settings";
-import { AnyParseNode } from "./parseNode";
+import {AnyParseNode} from "./parseNode";
 
 /**
  * Parses an expression using a Parser, then returns the parsed result.

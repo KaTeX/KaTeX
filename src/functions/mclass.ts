@@ -2,12 +2,12 @@ import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
-import { AnyParseNode } from "../parseNode";
+import {AnyParseNode} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import { ParseNode } from "../parseNode";
+import {ParseNode} from "../parseNode";
 import Options from "../Options";
 
 const makeSpan = buildCommon.makeSpan;

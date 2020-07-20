@@ -7,7 +7,7 @@
  * the font information necessary to render it properly.
  */
 
-import { Mode } from "./types";
+import {Mode} from "./types";
 import ParseError from "./ParseError";
 
 /**

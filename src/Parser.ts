@@ -14,11 +14,11 @@ import {Token} from "./Token";
 import unicodeAccents from /*preval*/ "./unicodeAccents";
 import unicodeSymbols from /*preval*/ "./unicodeSymbols";
 
-import { ParseNode, AnyParseNode, SymbolParseNode, UnsupportedCmdParseNode } from "./parseNode";
-import { Atom, Group } from "./symbols";
-import { Mode, ArgType, BreakToken } from "./types";
-import { FunctionContext, FunctionSpec } from "./defineFunction";
-import { EnvSpec } from "./defineEnvironment";
+import {ParseNode, AnyParseNode, SymbolParseNode, UnsupportedCmdParseNode} from "./parseNode";
+import {Atom, Group} from "./symbols";
+import {Mode, ArgType, BreakToken} from "./types";
+import {FunctionContext, FunctionSpec} from "./defineFunction";
+import {EnvSpec} from "./defineEnvironment";
 
 /**
  * This file contains the parser used to parse out a TeX expression from the

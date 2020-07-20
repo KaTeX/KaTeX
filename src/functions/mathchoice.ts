@@ -5,7 +5,7 @@ import Style from "../Style";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import { ParseNode } from "../parseNode";
+import {ParseNode} from "../parseNode";
 import Options from "../Options";
 
 const chooseMathStyle = (group: ParseNode<"mathchoice">, options: Options) => {

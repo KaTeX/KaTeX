@@ -14,10 +14,10 @@ import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
 import {MathNode, TextNode} from "./mathMLTree";
 
 import Options from "./Options";
-import { AnyParseNode, SymbolParseNode } from "./parseNode";
-import { DomSpan } from "./domTree";
-import { MathDomNode } from "./mathMLTree";
-import { FontVariant, Mode } from "./types";
+import {AnyParseNode, SymbolParseNode} from "./parseNode";
+import {DomSpan} from "./domTree";
+import {MathDomNode} from "./mathMLTree";
+import {FontVariant, Mode} from "./types";
 
 /**
  * Takes a symbol and converts it into a MathML text node after performing

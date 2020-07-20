@@ -7,7 +7,7 @@ import utils from "../utils";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import { ParseNode } from "../parseNode";
+import {ParseNode} from "../parseNode";
 
 const htmlBuilder = (group: ParseNode<"font">, options) => {
     const font = group.font;

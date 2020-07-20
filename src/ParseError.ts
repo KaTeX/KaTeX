@@ -1,6 +1,6 @@
 import {Token} from "./Token";
 
-import { AnyParseNode } from "./parseNode";
+import {AnyParseNode} from "./parseNode";
 
 /**
  * This is the ParseError class, which is the main error thrown by KaTeX

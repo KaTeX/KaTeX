@@ -31,11 +31,11 @@ import symbols from "./symbols";
 import utils from "./utils";
 
 import Options from "./Options";
-import { CharacterMetrics } from "./fontMetrics";
-import { HtmlDomNode, DomSpan, SvgSpan } from "./domTree";
-import { Mode } from "./types";
-import { StyleInterface } from "./Style";
-import { VListElem } from "./buildCommon";
+import {CharacterMetrics} from "./fontMetrics";
+import {HtmlDomNode, DomSpan, SvgSpan} from "./domTree";
+import {Mode} from "./types";
+import {StyleInterface} from "./Style";
+import {VListElem} from "./buildCommon";
 
 /**
  * Get the metrics for a given symbol and font, after transformation (i.e.

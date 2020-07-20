@@ -9,8 +9,8 @@ import {assertSpan, assertSymbolDomNode} from "../domTree";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import { ParseNode, AnyParseNode } from "../parseNode";
-import { HtmlBuilderSupSub, MathMLBuilder } from "../defineFunction";
+import {ParseNode, AnyParseNode} from "../parseNode";
+import {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "accent", but
 // also "supsub" since an accent can affect super/subscripting.

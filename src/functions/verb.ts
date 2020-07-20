@@ -3,7 +3,7 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 
-import { ParseNode } from "../parseNode";
+import {ParseNode} from "../parseNode";
 
 defineFunction({
     type: "verb",

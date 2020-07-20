@@ -6,9 +6,9 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import Options from "../Options";
-import { AnyParseNode } from "../parseNode";
-import { HtmlBuilder } from "../defineFunction";
-import { documentFragment as HtmlDocumentFragment } from "../domTree";
+import {AnyParseNode} from "../parseNode";
+import {HtmlBuilder} from "../defineFunction";
+import {documentFragment as HtmlDocumentFragment} from "../domTree";
 
 export function sizingGroup(value: AnyParseNode[], options: Options, baseOptions: Options): HtmlDocumentFragment {
     const inner = html.buildExpression(value, options, false);

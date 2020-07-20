@@ -6,7 +6,7 @@ import stretchy from "../stretchy";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import { ParseNode } from "../parseNode";
+import {ParseNode} from "../parseNode";
 
 // Helper function
 const paddedNode = group => {

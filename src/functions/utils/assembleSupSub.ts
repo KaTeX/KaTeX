@@ -1,9 +1,9 @@
 import buildCommon from "../../buildCommon";
 import * as html from "../../buildHTML";
-import { StyleInterface } from "../../Style";
+import {StyleInterface} from "../../Style";
 import Options from "../../Options";
-import { DomSpan, SymbolNode } from "../../domTree";
-import { AnyParseNode } from "../../parseNode";
+import {DomSpan, SymbolNode} from "../../domTree";
+import {AnyParseNode} from "../../parseNode";
 
 // For an operator with limits, assemble the base, sup, and sub into a span.
 

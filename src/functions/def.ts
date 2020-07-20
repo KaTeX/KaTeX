@@ -2,7 +2,7 @@ import defineFunction from "../defineFunction";
 import ParseError from "../ParseError";
 import {assertNodeType} from "../parseNode";
 import Parser from "../Parser";
-import { Token } from "../Token";
+import {Token} from "../Token";
 
 const globalMap = {
     "\\global": "\\global",

@@ -1,11 +1,11 @@
 import defineFunction from "../defineFunction";
-import { Measurement } from "../units";
+import {Measurement} from "../units";
 import {calculateSize, validUnit} from "../units";
 import ParseError from "../ParseError";
 import {Img} from "../domTree";
 import mathMLTree from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
-import { CssStyle } from "../domTree";
+import {CssStyle} from "../domTree";
 
 const sizeData = function(str: string): Measurement {
     if (/^[-+]? *(\d+(\.\d*)?|\.\d+)$/.test(str)) {
