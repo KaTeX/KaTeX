@@ -78,11 +78,10 @@
   },
   "bin": "cli.js",
   "scripts": {
-    "test": "yarn test:lint && yarn test:flow && yarn test:jest",
+    "test": "yarn test:lint && yarn test:ts && yarn test:jest",
     "test:lint": "yarn test:lint:js && yarn test:lint:css",
     "test:lint:js": "eslint *.js src static test contrib dockers website",
     "test:lint:css": "stylelint src/katex.less static/main.css contrib/**/*.css website/static/**/*.css",
-    "test:flow": "flow",
     "test:ts": "tsc --noEmit",
     "test:jest": "jest",
     "test:jest:watch": "jest --watch",
