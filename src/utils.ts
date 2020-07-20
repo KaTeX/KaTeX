@@ -12,11 +12,7 @@ const contains = function<T>(list: Array<T>, elem: T): boolean {
     return list.indexOf(elem) !== -1;
 };
 
-/**
- * Provide a default value if a setting is undefined
- * NOTE: Couldn't use `T` as the output type due to facebook/flow#5022.
- */
-const deflt = function<T>(setting: T | void, defaultIfUndefined: T): unknown {
+const deflt = function<T>(setting: T | void, defaultIfUndefined: T): T {
     return setting === undefined ? defaultIfUndefined : setting;
 };
 
