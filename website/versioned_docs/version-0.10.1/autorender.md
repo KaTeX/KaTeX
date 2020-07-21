@@ -44,7 +44,6 @@ For example:
 </script>
 ```
 
-<!-- TODO: uncomment when releasing a new version
 ECMAScript module is also available:
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css" integrity="sha384-dbVIfZGuN1Yq7/1Ocstc1lUEm+AT+/rCkibIcC/OmWo5f0EA48Vf8CytHzGrSwbQ" crossorigin="anonymous">
@@ -52,7 +51,6 @@ ECMAScript module is also available:
     import renderMathInElement from "https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/contrib/auto-render.mjs";
     renderMathInElement(document.body);
 </script>
-```
 
 > You can use [`nomodule` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
 to provide a fallback for older browsers that do not support ES modules. -->
@@ -70,7 +68,7 @@ nodes inside this element and render the math in them.
 
 `options` is an optional object argument that can have the same keys as [the
 object passed to `katex.render`](https://github.com/KaTeX/KaTeX/#rendering-options),
-in addition to two auto-render-specific keys:
+in addition to several auto-render-specific keys:
 
 - `delimiters`: This is a list of delimiters to look for math. Each delimiter
   has three properties:

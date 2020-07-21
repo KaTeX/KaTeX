@@ -1737,9 +1737,9 @@ describe("An HTML font tree-builder", function() {
         expect(markup).toContain("<span class=\"mord\">T</span>");
     });
 
-    it("should render \\textbf{R} with the correct font", function() {
-        const markup = katex.renderToString(r`\textbf{R}`);
-        expect(markup).toContain("<span class=\"mord textbf\">R</span>");
+    it("should render \\textbf{R } with the correct font", function() {
+        const markup = katex.renderToString(r`\textbf{R }`);
+        expect(markup).toContain("<span class=\"mord textbf\">R\u00a0</span>");
     });
 
     it("should render \\textmd{R} with the correct font", function() {
@@ -1837,7 +1837,7 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1863,7 +1863,7 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1889,7 +1889,7 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -2659,6 +2659,9 @@ describe("A substack function", function() {
     });
     it("should accommodate macros in the argument", function() {
         expect`\sum_{\substack{ 0<i<\varPi \\ 0<j<\pi }}  P(i,j)`.toBuild();
+    });
+    it("should accommodate an empty argument", function() {
+        expect`\sum_{\substack{}}  P(i,j)`.toBuild();
     });
 
 });
@@ -3555,6 +3558,11 @@ describe("Unicode", function() {
         expect`∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙⟂⊨∌`.toBuild(strictSettings);
     });
 
+    it("should parse relations", function() {
+        // These characters are not in the KaTeX fonts. So they build with an error message.
+        expect`⊶⊷`.toParse();
+    });
+
     it("should build big operators", function() {
         expect`∏∐∑∫∬∭∮⋀⋁⋂⋃⨀⨁⨂⨄⨆`.toBuild(strictSettings);
     });
@@ -3723,6 +3731,10 @@ describe("Symbols", function() {
 
     it("should parse spacing functions in math or text mode", () => {
         expect`A\;B\,C\nobreakspace \text{A\;B\,C\nobreakspace}`.toBuild(strictSettings);
+    });
+
+    it("should build \\minuso", () => {
+        expect`\\minuso`.toBuild(strictSettings);
     });
 
     it("should render ligature commands like their unicode characters", () => {

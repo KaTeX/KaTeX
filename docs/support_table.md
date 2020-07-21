@@ -487,6 +487,7 @@ use `\ce` instead|
 |\iint|$\iint$||
 |\Im|$\Im$||
 |\image|$\image$||
+|\imageof|$\imageof$||
 |\imath|$\imath$||
 |\impliedby|$P\impliedby Q$|`P\impliedby Q`|
 |\implies|$P\implies Q$|`P\implies Q`|
@@ -669,6 +670,7 @@ use `\ce` instead|
 |\mid|$\{x∈ℝ\mid x>0\}$|`\{x∈ℝ\mid x>0\}`|
 |\middle|$P\left(A\middle\vert B\right)$|`P\left(A\middle\vert B\right)`|
 |\min|$\min$||
+|\minuso|$\minuso$||
 |\mit|<span style="color:firebrick;">Not supported</span>|See `\mathit`|
 |\mkern|$a\mkern18mu b$|`a\mkern18mu b`|
 |\mmlToken|<span style="color:firebrick;">Not supported</span>||
@@ -779,6 +781,7 @@ use `\ce` instead|
 |\operatorname\*|$\operatorname{asin}\limits_y x$|`\operatorname{asin}\limits_y x`|
 |\oplus|$\oplus$||
 |\or|<span style="color:firebrick;">Not supported</span>||
+|\origof|$\origof$||
 |\oslash|$\oslash$||
 |\otimes|$\otimes$||
 |\over|${a+1 \over b+2}+c$|`{a+1 \over b+2}+c`|
