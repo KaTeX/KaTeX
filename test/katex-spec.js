@@ -3554,6 +3554,11 @@ describe("Unicode", function() {
         expect`∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙⟂⊨∌`.toBuild(strictSettings);
     });
 
+    it("should parse relations", function() {
+        // These characters are not in the KaTeX fonts. So they build with an error message.
+        expect`⊶⊷`.toParse();
+    });
+
     it("should build big operators", function() {
         expect`∏∐∑∫∬∭∮⋀⋁⋂⋃⨀⨁⨂⨄⨆`.toBuild(strictSettings);
     });
