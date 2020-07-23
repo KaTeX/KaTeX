@@ -1,20 +1,28 @@
-import babel from 'rollup-plugin-babel';
-import alias from 'rollup-plugin-alias';
+import babel from '@rollup/plugin-babel';
+import alias from '@rollup/plugin-alias';
+import resolve from '@rollup/plugin-node-resolve';
 
-const {targets} = require('./webpack.common');
+const {extensions, targets} = require('./webpack.common');
 
 process.env.NODE_ENV = 'esm';
 
 export default targets.map(({name, entry}) => ({
-    input: entry.replace('.webpack.js', '.ts'),
+    input: entry.replace('katex.webpack.js', 'katex.ts')
+        .replace('.webpack.js', '.js'),
     output: {
         file: `dist/${name}.mjs`,
         format: 'es',
     },
     plugins: [
-        babel({runtimeHelpers: true}),
+        resolve({extensions}),
+        babel({
+            babelHelpers: 'runtime',
+            extensions,
+        }),
         alias({
-            katex: '../katex.mjs',
+            entries: [
+                {find: 'katex', replacement: '../katex.mjs'},
+            ],
         }),
     ],
     external: '../katex.mjs',

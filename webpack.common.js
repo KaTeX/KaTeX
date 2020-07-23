@@ -19,6 +19,8 @@ type Target = {|
 |};
 */
 
+const extensions = ['.ts', '.js'];
+
 /**
  * List of targets to build
  */
@@ -100,9 +102,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             path: path.resolve(__dirname, 'dist'),
             publicPath: dev ? '/' : '',
         },
-        resolve: {
-            extensions: ['.ts', '.js'],
-        },
+        resolve: {extensions},
         module: {
             rules: [
                 {
@@ -165,6 +165,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
 }
 
 module.exports = {
+    extensions,
     targets,
     createConfig,
 };

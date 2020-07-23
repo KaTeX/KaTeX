@@ -3,4 +3,4 @@
  * CSS modules natively, a separate entry point is used.
  */
 import './copy-tex.css';
-import './copy-tex.js';
+import './copy-tex';
