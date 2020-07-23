@@ -1,4 +1,3 @@
-// @flow
 const {targets, createConfig} = require('./webpack.common');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 

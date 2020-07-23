@@ -1,12 +1,10 @@
 {
     "parser": "babel-eslint",
     "plugins": [
-        "flowtype",
         "transform-runtime-aliasing"
     ],
     "extends": [
         "eslint:recommended",
-        "plugin:flowtype/recommended"
     ],
     "rules": {
         "arrow-spacing": 2,

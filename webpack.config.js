@@ -1,4 +1,3 @@
-// @flow
 const {targets, createConfig} = require('./webpack.common');
 
 module.exports = [ //                              dev   minify

@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-// @flow
 import renderA11yString from "../render-a11y-string";
 
 describe("renderA11yString", () => {
