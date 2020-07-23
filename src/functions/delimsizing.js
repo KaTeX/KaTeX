@@ -124,6 +124,9 @@ defineFunction({
             node.setAttribute("fence", "false");
         }
 
+        node.setAttribute("minsize", delimiter.sizeToMaxHeight[group.size] + "em");
+        node.setAttribute("maxsize", delimiter.sizeToMaxHeight[group.size] + "em");
+
         return node;
     },
 });

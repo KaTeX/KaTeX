@@ -69,6 +69,11 @@ describe("A MathML builder", function() {
         expect(getMathML("\\raisebox{0.25em}{b}")).toMatchSnapshot();
     });
 
+    it('should size delimiters correctly', () => {
+        expect(getMathML("(M) \\big(M\\big) \\Big(M\\Big) \\bigg(M\\bigg)" +
+        " \\Bigg(M\\Bigg)")).toMatchSnapshot();
+    });
+
     it('should use <menclose> for colorbox', () => {
         expect(getMathML("\\colorbox{red}{b}")).toMatchSnapshot();
     });

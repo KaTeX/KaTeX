@@ -590,6 +590,89 @@ exports[`A MathML builder should set href attribute for href appropriately 1`] =
 
 `;
 
+exports[`A MathML builder should size delimiters correctly 1`] = `
+
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <semantics>
+    <mrow>
+      <mo stretchy="false">
+        (
+      </mo>
+      <mi>
+        M
+      </mi>
+      <mo stretchy="false">
+        )
+      </mo>
+      <mo fence="false"
+          minsize="1.2em"
+          maxsize="1.2em"
+      >
+        (
+      </mo>
+      <mi>
+        M
+      </mi>
+      <mo fence="false"
+          minsize="1.2em"
+          maxsize="1.2em"
+      >
+        )
+      </mo>
+      <mo fence="false"
+          minsize="1.8em"
+          maxsize="1.8em"
+      >
+        (
+      </mo>
+      <mi>
+        M
+      </mi>
+      <mo fence="false"
+          minsize="1.8em"
+          maxsize="1.8em"
+      >
+        )
+      </mo>
+      <mo fence="false"
+          minsize="2.4em"
+          maxsize="2.4em"
+      >
+        (
+      </mo>
+      <mi>
+        M
+      </mi>
+      <mo fence="false"
+          minsize="2.4em"
+          maxsize="2.4em"
+      >
+        )
+      </mo>
+      <mo fence="false"
+          minsize="3em"
+          maxsize="3em"
+      >
+        (
+      </mo>
+      <mi>
+        M
+      </mi>
+      <mo fence="false"
+          minsize="3em"
+          maxsize="3em"
+      >
+        )
+      </mo>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      (M) \\big(M\\big) \\Big(M\\Big) \\bigg(M\\bigg) \\Bigg(M\\Bigg)
+    </annotation>
+  </semantics>
+</math>
+
+`;
+
 exports[`A MathML builder should use <menclose> for colorbox 1`] = `
 
 <math xmlns="http://www.w3.org/1998/Math/MathML">
