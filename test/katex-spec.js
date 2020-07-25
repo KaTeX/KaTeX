@@ -1,8 +1,4 @@
 /* eslint max-len:0 */
-/* global expect: false */
-/* global it: false */
-/* global describe: false */
-/* global beforeAll: false */
 
 import buildMathML from "../src/buildMathML";
 import buildTree from "../src/buildTree";
@@ -2465,6 +2461,24 @@ describe("A strike-through builder", function() {
     });
 });
 
+describe("A actuarial angle parser", function() {
+    it("should not fail in math mode", function() {
+        expect`a_{\angl{n}}`.toParse();
+    });
+    it("should fail in text mode", function() {
+        expect`\text{a_{\angl{n}}}`.not.toParse();
+    });
+});
+
+describe("A actuarial angle builder", function() {
+    it("should not fail", function() {
+        expect`a_{\angl{n}}`.toBuild();
+        expect`a_{\angl{n}i}`.toBuild();
+        expect`a_{\angl n}`.toBuild();
+        expect`a_\angln`.toBuild();
+    });
+});
+
 describe("A phantom parser", function() {
     it("should not fail", function() {
         expect`\phantom{x}`.toParse();
@@ -3556,6 +3570,11 @@ describe("Unicode", function() {
 
     it("should build relations", function() {
         expect`∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙⟂⊨∌`.toBuild(strictSettings);
+    });
+
+    it("should parse relations", function() {
+        // These characters are not in the KaTeX fonts. So they build with an error message.
+        expect`⊶⊷`.toParse();
     });
 
     it("should build big operators", function() {

@@ -588,6 +588,18 @@
         border-bottom-style: solid;
         border-bottom-width: 0.08em;
     }
+
+    .angl {
+        // from package actuarialangle, which is always used in a subscript.
+        box-sizing: border-content;
+        border-top: 0.049em solid;        // defaultRuleThickness in scriptstyle
+        border-right: 0.049em solid;      // ditto
+        margin-right: 0.03889em;          // 1 mu
+    }
+
+    .anglpad {
+        padding: 0 0.03889em 0 0.03889em; // pad 1mu left and right (in scriptstyle)
+    }
 }
 
 .katex-display {

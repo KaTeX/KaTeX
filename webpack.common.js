@@ -121,7 +121,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                         ...cssLoaders,
                         {
                             loader: 'less-loader',
-                            options: lessOptions,
+                            options: {lessOptions},
                         },
                     ],
                 },

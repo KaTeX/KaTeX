@@ -1,5 +1,3 @@
-/* global expect: false */
-
 import stringify from 'json-stable-stringify';
 import Lexer from "../src/Lexer";
 import ParseError from "../src/ParseError";

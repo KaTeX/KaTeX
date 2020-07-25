@@ -458,6 +458,7 @@ export function assertNodeType<NODETYPE: NodeType>(
             `Expected node of type ${type}, but got ` +
             (node ? `node of type ${node.type}` : String(node)));
     }
+    // $FlowFixMe, >=0.125
     return node;
 }
 

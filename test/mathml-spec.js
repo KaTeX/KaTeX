@@ -1,7 +1,3 @@
-/* global expect: false */
-/* global it: false */
-/* global describe: false */
-
 import buildMathML from "../src/buildMathML";
 import parseTree from "../src/parseTree";
 import Options from "../src/Options";
