@@ -131,7 +131,6 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                         loader: 'file-loader',
                         options: {
                             name: 'fonts/[name].[ext]',
-                            esModule: false,
                         },
                     }],
                 },
