@@ -855,6 +855,8 @@ defineMacro("\\varsubsetneq", "\\html@mathml{\\@varsubsetneq}{⊊}");
 defineMacro("\\varsubsetneqq", "\\html@mathml{\\@varsubsetneqq}{⫋}");
 defineMacro("\\varsupsetneq", "\\html@mathml{\\@varsupsetneq}{⊋}");
 defineMacro("\\varsupsetneqq", "\\html@mathml{\\@varsupsetneqq}{⫌}");
+defineMacro("\\imath", "\\html@mathml{\\@imath}{\u0131}");
+defineMacro("\\jmath", "\\html@mathml{\\@jmath}{\u0237}");
 
 //////////////////////////////////////////////////////////////////////
 // stmaryrd and semantic
@@ -984,6 +986,10 @@ defineMacro("\\ket", "\\mathinner{|{#1}\\rangle}");
 defineMacro("\\braket", "\\mathinner{\\langle{#1}\\rangle}");
 defineMacro("\\Bra", "\\left\\langle#1\\right|");
 defineMacro("\\Ket", "\\left|#1\\right\\rangle");
+
+//////////////////////////////////////////////////////////////////////
+// actuarialangle.dtx
+defineMacro("\\angln", "{\\angl n}");
 
 // Custom Khan Academy colors, should be moved to an optional package
 defineMacro("\\blue", "\\textcolor{##6495ed}{#1}");

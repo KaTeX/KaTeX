@@ -17,6 +17,9 @@
     // Prevent a rendering bug that misplaces \vec in Chrome.
     text-rendering: auto;
 
+    // Insulate fraction bars and rules from CSS that sets border-color.
+    border-color: currentColor;
+
     // Prevent background resetting on elements in Windows's high-contrast
     // mode, while still allowing background/foreground setting on root .katex
     * { -ms-high-contrast-adjust: none !important; }
@@ -81,7 +84,7 @@
     }
 
     // Math fonts.
-    .mathdefault {
+    .mathnormal {
         font-family: KaTeX_Math;
         font-style: italic;
     }
@@ -570,7 +573,6 @@
     .fcolorbox {
         box-sizing: border-box;
         border: 0.04em solid;         // \fboxrule = 0.4pt
-        border-color: inherit;
     }
 
     .cancel-pad {
@@ -585,6 +587,18 @@
     .sout {
         border-bottom-style: solid;
         border-bottom-width: 0.08em;
+    }
+
+    .angl {
+        // from package actuarialangle, which is always used in a subscript.
+        box-sizing: border-content;
+        border-top: 0.049em solid;        // defaultRuleThickness in scriptstyle
+        border-right: 0.049em solid;      // ditto
+        margin-right: 0.03889em;          // 1 mu
+    }
+
+    .anglpad {
+        padding: 0 0.03889em 0 0.03889em; // pad 1mu left and right (in scriptstyle)
     }
 }
 

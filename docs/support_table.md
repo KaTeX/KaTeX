@@ -84,7 +84,8 @@ table td {
 |\And|$\And$||
 |\and|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
 |\ang|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
-|\angl|<span style="color:firebrick;">Not supported</span>||
+|\angl|$a_{\angl n}$||
+|\angln|$a_\angln$||
 |\angle|$\angle$||
 |\approx|$\approx$||
 |\approxeq|$\approxeq$||
@@ -487,6 +488,7 @@ use `\ce` instead|
 |\iint|$\iint$||
 |\Im|$\Im$||
 |\image|$\image$||
+|\imageof|$\imageof$||
 |\imath|$\imath$||
 |\impliedby|$P\impliedby Q$|`P\impliedby Q`|
 |\implies|$P\implies Q$|`P\implies Q`|
@@ -780,6 +782,7 @@ use `\ce` instead|
 |\operatorname\*|$\operatorname{asin}\limits_y x$|`\operatorname{asin}\limits_y x`|
 |\oplus|$\oplus$||
 |\or|<span style="color:firebrick;">Not supported</span>||
+|\origof|$\origof$||
 |\oslash|$\oslash$||
 |\otimes|$\otimes$||
 |\over|${a+1 \over b+2}+c$|`{a+1 \over b+2}+c`|

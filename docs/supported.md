@@ -114,10 +114,10 @@ or for just some URLs via the `trust` [option](options.md).
 | $\href{https://katex.org/}{\KaTeX}$ | `\href{https://katex.org/}{\KaTeX}` |
 | $\url{https://katex.org/}$ | `\url{https://katex.org/}` |
 | $\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://katex.org/img/khan-academy.png}$ | `\includegraphics[height=0.8em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://katex.org/img/khan-academy.png}` |
-| $\htmlId{bar}{x}$ | `\htmlId{bar}{x}` |
-| $\htmlClass{foo}{x}$ | `\htmlClass{foo}{x}` |
-| $\htmlStyle{color: red;}{x}$ | `\htmlStyle{color: red;}{x}` |
-| $\htmlData{foo=a, bar=b}{x}$ | `\htmlData{foo=a, bar=b}{x}` |
+| $\htmlId{bar}{x}$ <code>…&lt;span id="bar" class="enclosing"&gt;…x…&lt;/span&gt;…</code> | `\htmlId{bar}{x}` |
+| $\htmlClass{foo}{x}$ <code>…&lt;span class="enclosing foo"&gt;…x…&lt;/span&gt;…</code> | `\htmlClass{foo}{x}` |
+| $\htmlStyle{color: red;}{x}$ <code>…&lt;span style="color: red;" class="enclosing"&gt;…x…&lt;/span&gt;…</code> | `\htmlStyle{color: red;}{x}` |
+| $\htmlData{foo=a, bar=b}{x}$ <code>…&lt;span data-foo="a" data-bar="b" class="enclosing"&gt;…x…&lt;/span&gt;…</code> | `\htmlData{foo=a, bar=b}{x}` |
 
 `\includegraphics` supports `height`, `width`, `totalheight`, and `alt` in its first argument. `height` is required.
 
@@ -208,6 +208,7 @@ For Persian composite characters, a user-supplied [plug-in](https://github.com/
 |$\bcancel{5}$ `\bcancel{5}` |$\underbrace{a+b+c}_{\text{note}}$ `\underbrace{a+b+c}_{\text{note}}`
 |$\xcancel{ABC}$ `\xcancel{ABC}`|$\not =$ `\not =`
 |$\sout{abc}$ `\sout{abc}`|$\boxed{\pi=\frac c d}$ `\boxed{\pi=\frac c d}`
+|$a_{\angl n}$ `$a_{\angl n}`|$a_\angln$ `a_\angln`
 
 `\tag{hi} x+y^{2x}`
 $$\tag{hi} x+y^{2x}$$
@@ -404,40 +405,40 @@ $\stackrel{!}{=}$ `\stackrel{!}{=}`
 
 |||||
 |:----------------------------|:--------------------------------|:--------------------------------|:-----
-|$=$ `=` |$\eqcirc$ `\eqcirc`  |$\lesseqgtr$ `\lesseqgtr`  |$\sqsupset$ `\sqsupset`
-|$<$ `<` |$\eqcolon$ `\eqcolon`|$\lesseqqgtr$ `\lesseqqgtr`|$\sqsupseteq$ `\sqsupseteq`
-|$>$ `>` |$\Eqcolon$ `\Eqcolon`|$\lessgtr$ `\lessgtr`|$\Subset$ `\Subset`
-|$:$ `:` |$\eqqcolon$ `\eqqcolon` |$\lesssim$ `\lesssim`|$\subset$ `\subset` or `\sub`
-|$\approx$ `\approx` |$\Eqqcolon$ `\Eqqcolon` |$\ll$ `\ll` |$\subseteq$ `\subseteq` or `\sube`
-|$\approxeq$ `\approxeq`|$\eqsim$ `\eqsim` |$\lll$ `\lll`  |$\subseteqq$ `\subseteqq`
-|$\asymp$ `\asymp`|$\eqslantgtr$ `\eqslantgtr`|$\llless$ `\llless`  |$\succ$ `\succ`
-|$\backepsilon$ `\backepsilon`|$\eqslantless$ `\eqslantless` |$\lt$ `\lt` |$\succapprox$ `\succapprox`
-|$\backsim$ `\backsim`  |$\equiv$ `\equiv` |$\mid$ `\mid`  |$\succcurlyeq$ `\succcurlyeq`
-|$\backsimeq$ `\backsimeq` |$\fallingdotseq$ `\fallingdotseq`|$\models$ `\models`  |$\succeq$ `\succeq`
-|$\between$ `\between`  |$\frown$ `\frown` |$\multimap$ `\multimap` |$\succsim$ `\succsim`
-|$\bowtie$ `\bowtie` |$\ge$ `\ge` |$\owns$ `\owns`|$\Supset$ `\Supset`
-|$\bumpeq$ `\bumpeq` |$\geq$ `\geq`  |$\parallel$ `\parallel` |$\supset$ `\supset`
-|$\Bumpeq$ `\Bumpeq` |$\geqq$ `\geqq`|$\perp$ `\perp`|$\supseteq$ `\supseteq` or `\supe`
-|$\circeq$ `\circeq` |$\geqslant$ `\geqslant` |$\pitchfork$ `\pitchfork`  |$\supseteqq$ `\supseteqq`
-|$\colonapprox$ `\colonapprox`|$\gg$ `\gg` |$\prec$ `\prec`|$\thickapprox$ `\thickapprox`
-|$\Colonapprox$ `\Colonapprox`|$\ggg$ `\ggg`  |$\precapprox$ `\precapprox`|$\thicksim$ `\thicksim`
-|$\coloneq$ `\coloneq`  |$\gggtr$ `\gggtr` |$\preccurlyeq$ `\preccurlyeq` |$\trianglelefteq$ `\trianglelefteq`
-|$\Coloneq$ `\Coloneq`  |$\gt$ `\gt` |$\preceq$ `\preceq`  |$\triangleq$ `\triangleq`
-|$\coloneqq$ `\coloneqq`|$\gtrapprox$ `\gtrapprox`  |$\precsim$ `\precsim`|$\trianglerighteq$ `\trianglerighteq`
-|$\Coloneqq$ `\Coloneqq`|$\gtreqless$ `\gtreqless`  |$\propto$ `\propto`  |$\varpropto$ `\varpropto`
-|$\colonsim$ `\colonsim`|$\gtreqqless$ `\gtreqqless`|$\risingdotseq$ `\risingdotseq`  |$\vartriangle$ `\vartriangle`
-|$\Colonsim$ `\Colonsim`|$\gtrless$ `\gtrless`|$\shortmid$ `\shortmid` |$\vartriangleleft$ `\vartriangleleft`
-|$\cong$ `\cong`  |$\gtrsim$ `\gtrsim`  |$\shortparallel$ `\shortparallel`|$\vartriangleright$ `\vartriangleright`
-|$\curlyeqprec$ `\curlyeqprec`|$\in$ `\in` or `\isin` |$\sim$ `\sim`  |$\vcentcolon$ `\vcentcolon`
-|$\curlyeqsucc$ `\curlyeqsucc`|$\Join$ `\Join`|$\simeq$ `\simeq` |$\vdash$ `\vdash`
-|$\dashv$ `\dashv`|$\le$ `\le` |$\smallfrown$ `\smallfrown`|$\vDash$ `\vDash`
-|$\dblcolon$ `\dblcolon`|$\leq$ `\leq`  |$\smallsmile$ `\smallsmile`|$\Vdash$ `\Vdash`
-|$\doteq$ `\doteq`|$\leqq$ `\leqq`|$\smile$ `\smile` |$\Vvdash$ `\Vvdash`
-|$\Doteq$ `\Doteq`|$\leqslant$ `\leqslant` |$\sqsubset$ `\sqsubset` |
-|$\doteqdot$ `\doteqdot`|$\lessapprox$ `\lessapprox`|$\sqsubseteq$ `\sqsubseteq`|
+| $=$ `=` | $\eqcirc$ `\eqcirc` | $\lessapprox$ `\lessapprox` | $\sqsubset$ `\sqsubset` |
+| $<$ `<` | $\eqcolon$ `\eqcolon` | $\lesseqgtr$ `\lesseqgtr` | $\sqsubseteq$ `\sqsubseteq` |
+| $>$ `>` | $\Eqcolon$ `\Eqcolon` | $\lesseqqgtr$ `\lesseqqgtr` | $\sqsupset$ `\sqsupset` |
+| $:$ `:` | $\eqqcolon$ `\eqqcolon` | $\lessgtr$ `\lessgtr` | $\sqsupseteq$ `\sqsupseteq` |
+| $\approx$ `\approx` | $\Eqqcolon$ `\Eqqcolon` | $\lesssim$ `\lesssim` | $\Subset$ `\Subset` |
+| $\approxeq$ `\approxeq` | $\eqsim$ `\eqsim` | $\ll$ `\ll` | $\subset$ `\subset` or `\sub` |
+| $\asymp$ `\asymp` | $\eqslantgtr$ `\eqslantgtr` | $\lll$ `\lll` | $\subseteq$ `\subseteq` or `\sube` |
+| $\backepsilon$ `\backepsilon` | $\eqslantless$ `\eqslantless` | $\llless$ `\llless` | $\subseteqq$ `\subseteqq` |
+| $\backsim$ `\backsim` | $\equiv$ `\equiv` | $\lt$ `\lt` | $\succ$ `\succ` |
+| $\backsimeq$ `\backsimeq` | $\fallingdotseq$ `\fallingdotseq` | $\mid$ `\mid` | $\succapprox$ `\succapprox` |
+| $\between$ `\between` | $\frown$ `\frown` | $\models$ `\models` | $\succcurlyeq$ `\succcurlyeq` |
+| $\bowtie$ `\bowtie` | $\ge$ `\ge` | $\multimap$ `\multimap` | $\succeq$ `\succeq` |
+| $\bumpeq$ `\bumpeq` | $\geq$ `\geq` | $\origof$ `\origof` | $\succsim$ `\succsim` |
+| $\Bumpeq$ `\Bumpeq` | $\geqq$ `\geqq` | $\owns$ `\owns` | $\Supset$ `\Supset` |
+| $\circeq$ `\circeq` | $\geqslant$ `\geqslant` | $\parallel$ `\parallel` | $\supset$ `\supset` |
+| $\colonapprox$ `\colonapprox` | $\gg$ `\gg` | $\perp$ `\perp` | $\supseteq$ `\supseteq` or `\supe` |
+| $\Colonapprox$ `\Colonapprox` | $\ggg$ `\ggg` | $\pitchfork$ `\pitchfork` | $\supseteqq$ `\supseteqq` |
+| $\coloneq$ `\coloneq` | $\gggtr$ `\gggtr` | $\prec$ `\prec` | $\thickapprox$ `\thickapprox` |
+| $\Coloneq$ `\Coloneq` | $\gt$ `\gt` | $\precapprox$ `\precapprox` | $\thicksim$ `\thicksim` |
+| $\coloneqq$ `\coloneqq` | $\gtrapprox$ `\gtrapprox` | $\preccurlyeq$ `\preccurlyeq` | $\trianglelefteq$ `\trianglelefteq` |
+| $\Coloneqq$ `\Coloneqq` | $\gtreqless$ `\gtreqless` | $\preceq$ `\preceq` | $\triangleq$ `\triangleq` |
+| $\colonsim$ `\colonsim` | $\gtreqqless$ `\gtreqqless` | $\precsim$ `\precsim` | $\trianglerighteq$ `\trianglerighteq` |
+| $\Colonsim$ `\Colonsim` | $\gtrless$ `\gtrless` | $\propto$ `\propto` | $\varpropto$ `\varpropto` |
+| $\cong$ `\cong` | $\gtrsim$ `\gtrsim` | $\risingdotseq$ `\risingdotseq` | $\vartriangle$ `\vartriangle` |
+| $\curlyeqprec$ `\curlyeqprec` | $\imageof$ `\imageof` | $\shortmid$ `\shortmid` | $\vartriangleleft$ `\vartriangleleft` |
+| $\curlyeqsucc$ `\curlyeqsucc` | $\in$ `\in` or `\isin` | $\shortparallel$ `\shortparallel` | $\vartriangleright$ `\vartriangleright` |
+| $\dashv$ `\dashv` | $\Join$ `\Join` | $\sim$ `\sim` | $\vcentcolon$ `\vcentcolon` |
+| $\dblcolon$ `\dblcolon` | $\le$ `\le` | $\simeq$ `\simeq` | $\vdash$ `\vdash` |
+| $\doteq$ `\doteq` | $\leq$ `\leq` | $\smallfrown$ `\smallfrown` | $\vDash$ `\vDash` |
+| $\Doteq$ `\Doteq` | $\leqq$ `\leqq` | $\smallsmile$ `\smallsmile` | $\Vdash$ `\Vdash` |
+| $\doteqdot$ `\doteqdot` | $\leqslant$ `\leqslant` | $\smile$ `\smile` | $\Vvdash$ `\Vvdash` |
 
 
-Direct Input: $= < > : ∈ ∋ ∝ ∼ ∽ ≂ ≃ ≅ ≈ ≊ ≍ ≎ ≏ ≐ ≑ ≒ ≓ ≖ ≗ ≜ ≡ ≤ ≥ ≦ ≧ ≫ ≬ ≳ ≷ ≺ ≻ ≼ ≽ ≾ ≿ ⊂ ⊃ ⊆ ⊇ ⊏ ⊐ ⊑ ⊒ ⊢ ⊣ ⊩ ⊪ ⊸ ⋈ ⋍ ⋐ ⋑ ⋔ ⋙ ⋛ ⋞ ⋟ ⌢ ⌣ ⩾ ⪆ ⪌ ⪕ ⪖ ⪯ ⪰ ⪷ ⪸ ⫅ ⫆ ≲ ⩽ ⪅ ≶ ⋚ ⪋ ⟂ ⊨$ `≔ ≕ ⩴`
+Direct Input: $= < > : ∈ ∋ ∝ ∼ ∽ ≂ ≃ ≅ ≈ ≊ ≍ ≎ ≏ ≐ ≑ ≒ ≓ ≖ ≗ ≜ ≡ ≤ ≥ ≦ ≧ ≫ ≬ ≳ ≷ ≺ ≻ ≼ ≽ ≾ ≿ ⊂ ⊃ ⊆ ⊇ ⊏ ⊐ ⊑ ⊒ ⊢ ⊣ ⊩ ⊪ ⊸ ⋈ ⋍ ⋐ ⋑ ⋔ ⋙ ⋛ ⋞ ⋟ ⌢ ⌣ ⩾ ⪆ ⪌ ⪕ ⪖ ⪯ ⪰ ⪷ ⪸ ⫅ ⫆ ≲ ⩽ ⪅ ≶ ⋚ ⪋ ⟂ ⊨ ⊶ ⊷$ `≔ ≕ ⩴`
 
 ### Negated Relations
 
@@ -543,8 +544,10 @@ Other KaTeX color functions expect the content to be a function argument:
 
 $\textcolor{blue}{F=ma}$ `\textcolor{blue}{F=ma}`<br>
 $\textcolor{#228B22}{F=ma}$ `\textcolor{#228B22}{F=ma}`<br>
-$\colorbox{aqua}{A}$ `\colorbox{aqua}{A}`<br>
-$\fcolorbox{red}{aqua}{A}$ `\fcolorbox{red}{aqua}{A}`
+$\colorbox{aqua}{$F=ma$}$ `\colorbox{aqua}{$F=ma$}`<br>
+$\fcolorbox{red}{aqua}{$F=ma$}$ `\fcolorbox{red}{aqua}{$F=ma$}`
+
+Note that, as in LaTeX, `\colorbox` & `\fcolorbox` renders its third argument as text, so you may want to switch back to math mode with `$` as in the examples above.
 
 For color definition, KaTeX color functions will accept the standard HTML [predefined color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords). They will also accept an RGB argument in CSS hexa­decimal style. The "#" is optional before a six-digit specification.
 

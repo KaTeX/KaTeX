@@ -1,5 +1,5 @@
 [version]
-0.102.0
+0.130.0
 
 [ignore]
 <PROJECT_ROOT>/dist
@@ -11,20 +11,3 @@
 [lints]
 
 [options]
-# $FlowFixMe
-# This suppression hould be used to suppress an issue that requires additional
-# effort to be resolved. That effort should be recorded in our issue tracking
-# system for follow-up. Usually, this suppression is added by tooling during
-# flow upgrades and should not be used directly by developers. If it is
-# necessary, make sure to raise the corresponding issue and add the issue
-# number to a TODO comment associated with the suppression.
-suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe
-
-# $FlowIgnore
-# Every now and then, flow cannot understand our code the way we can. We just
-# know better and we have to tell flow to trust us. Since this isn't something
-# we expect to "fix", we can annotate them to just have flow ignore them.
-# Using this suppression makes it clear that we know there's an error but it's
-# ok to ignore it. Make sure the suppression has associated commentary to state
-# why it's okay to ignore the flow error.
-suppress_comment=\\(.\\|\n\\)*\\$FlowIgnore

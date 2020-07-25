@@ -1,5 +1,6 @@
 **/node_modules/*
 dist/*
 website/build/*
+website/lib/remarkable-katex.js
 **/*.min.js
 contrib/mhchem/*

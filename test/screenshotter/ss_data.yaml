@@ -68,7 +68,11 @@ BoldSymbol: |
   \sum_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\omega}+ \boldsymbol{\int_\alpha^\beta} \boldsymbol{\Omega + {}} \\
   \boldsymbol{\lim_{x \to \infty} \log Ax2k\omega\Omega\imath+} \\
   x \boldsymbol{+} y \boldsymbol{=} z
-Boxed: \boxed{F=ma} \quad \boxed{ac}\color{magenta}{\boxed{F}}\boxed{F=mg}
+Boxed: | 
+  \begin{array}{l}
+    \boxed{F=ma} \quad \boxed{ac}\color{magenta}{\boxed{F}}\boxed{F=mg} \\[2em]
+    A_{\angl n} + B_{\angl g} + C_\angln
+  \end{array}
 Cases: |
     f(a,b)=\begin{cases}
         a+1&\text{if }b\text{ is odd} \\
