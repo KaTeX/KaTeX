@@ -76,6 +76,11 @@ const users = [
         infoLink: 'https://www.intmath.com/',
     },
     {
+        caption: 'Marker',
+        image: 'https://raw.githubusercontent.com/fabiocolacio/Marker/master/data/com.github.fabiocolacio.marker.svg',
+        infoLink: 'https://fabiocolacio.github.io/Marker/',
+    },
+    {
         caption: 'Messenger',
         image: 'https://en.facebookbrand.com/wp-content/uploads/2016/09/messenger_icon2.png',
         infoLink: 'https://www.messenger.com/',
@@ -157,6 +162,7 @@ const siteConfig = {
     favicon: '../favicon.ico',
 
     disableHeaderTitle: true,
+    scrollToTop: true,
 
     /* colors for website */
     colors: {
@@ -182,7 +188,6 @@ const siteConfig = {
 
     scripts: [
         'https://buttons.github.io/buttons.js',
-        '/js/scrollspy.js',
     ],
 
     separateCss: ['static/static', 'static\\static'],

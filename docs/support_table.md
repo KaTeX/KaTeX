@@ -84,7 +84,8 @@ table td {
 |\And|$\And$||
 |\and|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
 |\ang|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
-|\angl|<span style="color:firebrick;">Not supported</span>||
+|\angl|$a_{\angl n}$||
+|\angln|$a_\angln$||
 |\angle|$\angle$||
 |\approx|$\approx$||
 |\approxeq|$\approxeq$||
