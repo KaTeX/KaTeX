@@ -162,6 +162,7 @@ const siteConfig = {
     favicon: '../favicon.ico',
 
     disableHeaderTitle: true,
+    scrollToTop: true,
 
     /* colors for website */
     colors: {
@@ -187,7 +188,6 @@ const siteConfig = {
 
     scripts: [
         'https://buttons.github.io/buttons.js',
-        '/js/scrollspy.js',
     ],
 
     separateCss: ['static/static', 'static\\static'],
