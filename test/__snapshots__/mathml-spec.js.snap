@@ -557,7 +557,6 @@ exports[`A MathML builder should set href attribute for href appropriately 1`] =
 `;
 
 exports[`A MathML builder should size delimiters correctly 1`] = `
-
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
@@ -644,7 +643,6 @@ exports[`A MathML builder should size delimiters correctly 1`] = `
     </annotation>
   </semantics>
 </math>
-
 `;
 
 exports[`A MathML builder should use <menclose> for colorbox 1`] = `
