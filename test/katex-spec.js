@@ -1,8 +1,4 @@
 /* eslint max-len:0 */
-/* global expect: false */
-/* global it: false */
-/* global describe: false */
-/* global beforeAll: false */
 
 import buildMathML from "../src/buildMathML";
 import buildTree from "../src/buildTree";
@@ -1737,9 +1733,9 @@ describe("An HTML font tree-builder", function() {
         expect(markup).toContain("<span class=\"mord\">T</span>");
     });
 
-    it("should render \\textbf{R} with the correct font", function() {
-        const markup = katex.renderToString(r`\textbf{R}`);
-        expect(markup).toContain("<span class=\"mord textbf\">R</span>");
+    it("should render \\textbf{R } with the correct font", function() {
+        const markup = katex.renderToString(r`\textbf{R }`);
+        expect(markup).toContain("<span class=\"mord textbf\">R\u00a0</span>");
     });
 
     it("should render \\textmd{R} with the correct font", function() {
@@ -2462,6 +2458,24 @@ describe("A strike-through builder", function() {
         expect(getBuilt`\cancel +`[0].classes).not.toContain("mbin");
         expect(getBuilt`\cancel )^2`[0].classes).toContain("mord");
         expect(getBuilt`\cancel )^2`[0].classes).not.toContain("mclose");
+    });
+});
+
+describe("A actuarial angle parser", function() {
+    it("should not fail in math mode", function() {
+        expect`a_{\angl{n}}`.toParse();
+    });
+    it("should fail in text mode", function() {
+        expect`\text{a_{\angl{n}}}`.not.toParse();
+    });
+});
+
+describe("A actuarial angle builder", function() {
+    it("should not fail", function() {
+        expect`a_{\angl{n}}`.toBuild();
+        expect`a_{\angl{n}i}`.toBuild();
+        expect`a_{\angl n}`.toBuild();
+        expect`a_\angln`.toBuild();
     });
 });
 
@@ -3556,6 +3570,11 @@ describe("Unicode", function() {
 
     it("should build relations", function() {
         expect`∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙⟂⊨∌`.toBuild(strictSettings);
+    });
+
+    it("should parse relations", function() {
+        // These characters are not in the KaTeX fonts. So they build with an error message.
+        expect`⊶⊷`.toParse();
     });
 
     it("should build big operators", function() {

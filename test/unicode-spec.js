@@ -1,7 +1,4 @@
 /* eslint max-len:0 */
-/* global expect: false */
-/* global it: false */
-/* global describe: false */
 import Settings from "../src/Settings";
 import {scriptFromCodepoint, supportedCodepoint} from "../src/unicodeScripts";
 import {strictSettings, nonstrictSettings} from "./helpers";
@@ -116,6 +113,7 @@ describe("unicode", function() {
 
 describe("unicodeScripts", () => {
     const scriptRegExps = {
+        // eslint-disable-next-line no-misleading-character-class
         latin: /[\u0100-\u024f\u0300-\u036f]/,
         cyrillic: /[\u0400-\u04ff]/,
         brahmic: /[\u0900-\u109F]/,

@@ -219,6 +219,7 @@ export const buildGroup = function(
         // Call the groupBuilders function
         // $FlowFixMe
         const result: MathDomNode = groupBuilders[group.type](group, options);
+        // $FlowFixMe
         return result;
     } else {
         throw new ParseError(
