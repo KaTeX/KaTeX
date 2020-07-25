@@ -24,7 +24,7 @@ for browserTag in firefox:2.48.2 chrome:2.48.2; do
     container=$(docker run -d -P ${image})
     [[ ${container} ]] || continue
     echo "Container ${container:0:12} started, creating screenshots..."
-    if node "$(dirname "$0")"/screenshotter.js \
+    if yarn node "$(dirname "$0")"/screenshotter.js \
             --browser="${browser}" --container="${container}" "$@"; then
         res=Done
     else

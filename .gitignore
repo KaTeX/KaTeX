@@ -27,3 +27,16 @@ website/static/static/katex.*
 website/static/static/fonts
 website/static/static/copy-tex.*
 website/static/static/mhchem.*
+
+# https://yarnpkg.com/advanced/qa#which-files-should-be-gitignored
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+website/.yarn/*
+!website/.yarn/releases
+!website/.yarn/plugins
+!website/.yarn/sdks
+!website/.yarn/versions

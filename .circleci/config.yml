@@ -48,15 +48,16 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - yarn-deps-v3-{{ checksum "yarn.lock" }}
-            - yarn-deps-v3-
+            - yarn-deps-v5-{{ checksum "yarn.lock" }}
+            - yarn-deps-v5-
       - run:
           name: Install dependencies
-          command: yarn --frozen-lockfile
+          command: yarn --immutable
       - save_cache:
-          key: yarn-deps-v3-{{ checksum "yarn.lock" }}
+          key: yarn-deps-v5-{{ checksum "yarn.lock" }}
           paths:
-            - node_modules
+            - .yarn
+            - .pnp.js
 
   codecov:
     parameters:
@@ -66,7 +67,7 @@ commands:
       - run:
           name: Upload code coverage reports to Codecov
           # do not upload if screenshotter tests are skipped
-          command: ./node_modules/.bin/codecov -F "<< parameters.flag >>"
+          command: yarn codecov -F "<< parameters.flag >>"
 
 jobs:
   test:
@@ -112,7 +113,7 @@ jobs:
 
       - run:
           name: Verify screenshots and generate diffs and new screenshots
-          command: node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new --coverage
+          command: yarn node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new --coverage
       - codecov:
           flag: screenshotter
       - store_artifacts:
