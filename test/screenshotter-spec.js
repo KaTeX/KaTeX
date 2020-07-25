@@ -1,6 +1,3 @@
-/* global expect: false */
-/* global describe: false */
-/* global it: false */
 const data = require("./screenshotter/ss_data");
 
 describe("Screenshotter item", function() {
