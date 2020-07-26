@@ -2727,22 +2727,22 @@ describe("An aligned environment", function() {
 });
 
 describe("A gather environment", function() {
-    const displayMode = new Settings({displayMode: true});
+    const nonStrictDisplay = new Settings({displayMode: true, strict: false});
 
     it("should fail outside display mode", () => {
-        expect`\begin{gather}a+b\\c+d\end{gather}`.not.toParse();
+        expect`\begin{gather}a+b\\c+d\end{gather}`.not.toParse(nonstrictSettings);
     });
 
     it("should fail outside display mode", () => {
-        expect`\begin{gather*}a+b\\c+d\end{gather*}`.not.toParse();
+        expect`\begin{gather*}a+b\\c+d\end{gather*}`.not.toParse(nonstrictSettings);
     });
 
     it("should build if in display mode", () => {
-        expect`\begin{gather}a+b\\c+d\end{gather}`.toBuild(displayMode);
+        expect`\begin{gather}a+b\\c+d\end{gather}`.toBuild(nonStrictDisplay);
     });
 
     it("should build if in display mode", () => {
-        expect`\begin{gather*}a+b\\c+d\end{gather*}`.toBuild(displayMode);
+        expect`\begin{gather*}a+b\\c+d\end{gather*}`.toBuild(nonStrictDisplay);
     });
 
 });
@@ -3886,11 +3886,11 @@ describe("debugging macros", () => {
     });
 
     describe("errmessage", () => {
-        it("should print the argument using console.error", () => {
+        it("should print the argument using console.log", () => {
             jest.spyOn(console, "error");
             expect`\errmessage{Hello, world}`.toParse();
             // eslint-disable-next-line no-console
-            expect(console.error.mock.calls[0][0]).toEqual("Hello, world");
+            expect(console.log.mock.calls[0][0]).toEqual("Hello, world");
         });
     });
 });

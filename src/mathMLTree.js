@@ -116,7 +116,7 @@ export class MathNode implements MathDomNode {
         }
 
         if (this.classes.length > 0) {
-            markup += ` class ="${createClass(this.classes)}"`;
+            markup += ` class ="${utils.escape(createClass(this.classes))}"`;
         }
 
         markup += ">";
