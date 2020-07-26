@@ -3886,11 +3886,11 @@ describe("debugging macros", () => {
     });
 
     describe("errmessage", () => {
-        it("should print the argument using console.log", () => {
+        it("should print the argument using console.error", () => {
             jest.spyOn(console, "error");
             expect`\errmessage{Hello, world}`.toParse();
             // eslint-disable-next-line no-console
-            expect(console.log.mock.calls[0][0]).toEqual("Hello, world");
+            expect(console.error.mock.calls[0][0]).toEqual("Hello, world");
         });
     });
 });

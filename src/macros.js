@@ -295,7 +295,7 @@ defineMacro("\\message", (context) => {
 defineMacro("\\errmessage", (context) => {
     const arg = context.consumeArgs(1)[0];
     // eslint-disable-next-line no-console
-    console.log(arg.reverse().map(token => token.text).join(""));
+    console.error(arg.reverse().map(token => token.text).join(""));
     return '';
 });
 defineMacro("\\show", (context) => {
