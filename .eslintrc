@@ -1,11 +1,9 @@
 {
     "parser": "babel-eslint",
     "plugins": [
-        "flowtype"
     ],
     "extends": [
         "eslint:recommended",
-        "plugin:flowtype/recommended"
     ],
     "rules": {
         "arrow-spacing": 2,

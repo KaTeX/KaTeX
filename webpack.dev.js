@@ -1,4 +1,3 @@
-// @flow
 const {targets, createConfig} = require('./webpack.common');
 const path = require('path');
 const PORT = 7936;

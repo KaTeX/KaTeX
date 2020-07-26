@@ -21,11 +21,12 @@
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-transform-runtime": "^7.10.4",
     "@babel/preset-env": "^7.10.4",
-    "@babel/preset-flow": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
     "@babel/register": "^7.10.4",
     "@babel/runtime": "^7.10.4",
     "@rollup/plugin-alias": "^3.1.1",
     "@rollup/plugin-babel": "^5.0.4",
+    "@rollup/plugin-node-resolve": "^8.4.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.1.0",
     "babel-loader": "^8.0.5",
@@ -39,7 +40,6 @@
     "css-loader": "^4.0.0",
     "cssnano": "^4.1.10",
     "eslint": "^7.4.0",
-    "eslint-plugin-flowtype": "^5.2.0",
     "eslint-plugin-react": "^7.20.3",
     "file-loader": "^6.0.0",
     "flow-bin": "^0.130.0",
@@ -72,6 +72,7 @@
     "stylelint": "^13.6.1",
     "stylelint-config-standard": "^20.0.0",
     "terser-webpack-plugin": "^3.0.6",
+    "typescript": "^3.9.7",
     "webpack": "^4.44.0",
     "webpack-bundle-analyzer": "^3.0.4",
     "webpack-cli": "^3.2.3",
@@ -79,11 +80,11 @@
   },
   "bin": "cli.js",
   "scripts": {
-    "test": "yarn test:lint && yarn test:flow && yarn test:jest",
+    "test": "yarn test:lint && yarn test:ts && yarn test:jest",
     "test:lint": "yarn test:lint:js && yarn test:lint:css",
     "test:lint:js": "eslint *.js src static test contrib dockers website",
     "test:lint:css": "stylelint src/katex.less static/main.css contrib/**/*.css website/static/**/*.css",
-    "test:flow": "flow",
+    "test:ts": "tsc --noEmit",
     "test:jest": "jest",
     "test:jest:watch": "jest --watch",
     "test:jest:update": "jest --updateSnapshot",
@@ -128,10 +129,10 @@
     ],
     "testURL": "http://localhost/",
     "transform": {
-      "^.+\\.js$": "babel-jest"
+      "^.+\\.(js|ts)$": "babel-jest"
     },
     "moduleNameMapper": {
-      "^katex$": "<rootDir>/katex.js"
+      "^katex$": "<rootDir>/katex"
     }
   }
 }

@@ -92,9 +92,9 @@ jobs:
       - skip_if_only_changed:
           filter: '^static/|^website/'
       - run:
-          name: Run Flow and Jest tests
+          name: Run Typescript and Jest tests
           command: |
-              yarn test:flow
+              yarn test:ts
               yarn test:jest --coverage --runInBand
       - codecov:
           flag: test

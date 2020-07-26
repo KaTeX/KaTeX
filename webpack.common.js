@@ -1,4 +1,3 @@
-// @flow
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -11,18 +10,12 @@ const caniuse = require('caniuse-lite');
 // from the least supported to the most supported
 const fonts = ['woff2', 'woff', 'ttf'];
 
-/*::
-type Target = {|
-    name: string, // the name of output JS/CSS
-    entry: string, // the path to the entry point
-    library?: string // the name of the exported module
-|};
-*/
+const extensions = ['.ts', '.js'];
 
 /**
  * List of targets to build
  */
-const targets /*: Array<Target> */ = [
+const targets = [
     {
         name: 'katex',
         entry: './katex.webpack.js',
@@ -47,16 +40,15 @@ const targets /*: Array<Target> */ = [
     },
     {
         name: 'contrib/render-a11y-string',
-        entry: './contrib/render-a11y-string/render-a11y-string.js',
+        entry: './contrib/render-a11y-string/render-a11y-string.ts',
     },
 ];
 
 /**
  * Create a webpack config for given target
  */
-function createConfig(target /*: Target */, dev /*: boolean */,
-        minimize /*: boolean */) /*: Object */ {
-    const cssLoaders /*: Array<Object> */ = [{loader: 'css-loader'}];
+function createConfig(target, dev, minimize) {
+    const cssLoaders = [{loader: 'css-loader'}];
     if (minimize) {
         cssLoaders[0].options = {importLoaders: 1};
         cssLoaders.push({
@@ -100,10 +92,11 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             path: path.resolve(__dirname, 'dist'),
             publicPath: dev ? '/' : '',
         },
+        resolve: {extensions},
         module: {
             rules: [
                 {
-                    test: /\.js$/,
+                    test: /\.(js|ts)$/,
                     exclude: /node_modules/,
                     use: 'babel-loader',
                 },
@@ -162,6 +155,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
 }
 
 module.exports = {
+    extensions,
     targets,
     createConfig,
 };
