@@ -188,7 +188,8 @@ const buildString = (
         a11yStrings.length > 0 &&
         // TODO(kevinb): check that the last item in a11yStrings is a string
         // I think we might be able to drop the nested arrays, which would make
-        // this easier to type - $FlowFixMe
+        // this easier to type
+        // $FlowFixMe
         /^\d+$/.test(a11yStrings[a11yStrings.length - 1])
     ) {
         a11yStrings[a11yStrings.length - 1] += ret;
