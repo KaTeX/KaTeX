@@ -600,6 +600,20 @@
     .anglpad {
         padding: 0 0.03889em 0 0.03889em; // pad 1mu left and right (in scriptstyle)
     }
+
+    .eqn-num::before {
+        counter-increment: katexEqnNo;
+        content: "(" counter(katexEqnNo) ")";
+    }
+
+    .mml-eqn-num::before {
+        counter-increment: mmlEqnNo;
+        content: "(" counter(mmlEqnNo) ")";
+    }
+
+    .mtr-glue {
+        width: 50%;
+    }
 }
 
 .katex-display {
@@ -640,18 +654,4 @@
 // Use parallel counters for HTML and MathML.
 body {
     counter-reset: katexEqnNo mmlEqnNo;
-}
-
-.eqn-num::before {
-    counter-increment: katexEqnNo;
-    content: "(" counter(katexEqnNo) ")";
-}
-
-.mml-eqn-num::before {
-    counter-increment: mmlEqnNo;
-    content: "(" counter(mmlEqnNo) ")";
-}
-
-.mtr-glue {
-    width: 50%;
 }
