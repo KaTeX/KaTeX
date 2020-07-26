@@ -917,6 +917,7 @@ export default class Parser {
                     text,
                 };
             }
+            // $FlowFixMe
             symbol = s;
         } else if (text.charCodeAt(0) >= 0x80) { // no symbol for e.g. ^
             if (this.settings.strict) {
@@ -967,10 +968,12 @@ export default class Parser {
                     label: command,
                     isStretchy: false,
                     isShifty: true,
+                    // $FlowFixMe
                     base: symbol,
                 };
             }
         }
+        // $FlowFixMe
         return symbol;
     }
 }

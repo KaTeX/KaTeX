@@ -1,8 +1,3 @@
-/* global beforeEach: false */
-/* global expect: false */
-/* global it: false */
-/* global describe: false */
-
 import splitAtDelimiters from "../splitAtDelimiters";
 import renderMathInElement from "../auto-render";
 
