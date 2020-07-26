@@ -114,7 +114,7 @@ function createConfig(target, dev, minimize) {
                         ...cssLoaders,
                         {
                             loader: 'less-loader',
-                            options: lessOptions,
+                            options: {lessOptions},
                         },
                     ],
                 },

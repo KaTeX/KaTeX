@@ -1,7 +1,3 @@
-/* global expect: false */
-/* global it: false */
-/* global describe: false */
-
 import symbols from '../src/symbols';
 import macros from '../src/macros';
 

@@ -450,6 +450,7 @@ export function assertNodeType<NODETYPE extends NodeType>(node: AnyParseNode | n
             `Expected node of type ${type}, but got ` +
             (node ? `node of type ${node.type}` : String(node)));
     }
+    // $FlowFixMe, >=0.125
     return node;
 }
 

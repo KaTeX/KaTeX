@@ -1,7 +1,6 @@
 {
     "parser": "babel-eslint",
     "plugins": [
-        "transform-runtime-aliasing"
     ],
     "extends": [
         "eslint:recommended",
@@ -35,6 +34,7 @@
         "no-new": 2,
         "no-new-func": 2,
         "no-new-object": 2,
+        "no-prototype-builtins": 0,
         "no-spaced-func": 2,
         "no-this-before-super": 2,
         "no-throw-literal": 2,
@@ -85,11 +85,7 @@
         "files": ["katex.js", "src/**/*.js", "contrib/**/*.js"],
         "excludedFiles": ["*-spec.js", "unicodeAccents.js", "unicodeSymbols.js"],
         "rules": {
-            "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"],
-            "transform-runtime-aliasing/no-transform-runtime-aliasing": [2, {
-                "transformEnabled": false,
-                "ignore": ["parseInt", "parseFloat", "JSON.stringify"]
-            }]
+            "no-restricted-syntax": [2, "ForOfStatement", "ClassDeclaration[superClass]", "ClassExpression[superClass]"]
         },
         "env": {
             "node": false,

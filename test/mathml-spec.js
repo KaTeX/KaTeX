@@ -1,7 +1,3 @@
-/* global expect: false */
-/* global it: false */
-/* global describe: false */
-
 import buildMathML from "../src/buildMathML";
 import parseTree from "../src/parseTree";
 import Options from "../src/Options";
@@ -67,6 +63,11 @@ describe("A MathML builder", function() {
 
     it('should use <mpadded> for raisebox', () => {
         expect(getMathML("\\raisebox{0.25em}{b}")).toMatchSnapshot();
+    });
+
+    it('should size delimiters correctly', () => {
+        expect(getMathML("(M) \\big(M\\big) \\Big(M\\Big) \\bigg(M\\bigg)" +
+        " \\Bigg(M\\Bigg)")).toMatchSnapshot();
     });
 
     it('should use <menclose> for colorbox', () => {

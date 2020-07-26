@@ -301,12 +301,18 @@ const svgSpan = function(
     return span;
 };
 
-const encloseSpan = function(inner: HtmlDomNode, label: string, pad: number, options: Options): DomSpan | SvgSpan {
-    // Return an image span for \cancel, \bcancel, \xcancel, or \fbox
+const encloseSpan = function(
+    inner: HtmlDomNode,
+    label: string,
+    topPad: number,
+    bottomPad: number,
+    options: Options,
+): DomSpan | SvgSpan {
+    // Return an image span for \cancel, \bcancel, \xcancel, \fbox, or \angl
     let img;
-    const totalHeight = inner.height + inner.depth + 2 * pad;
+    const totalHeight = inner.height + inner.depth + topPad + bottomPad;
 
-    if (/fbox|color/.test(label)) {
+    if (/fbox|color|angl/.test(label)) {
         img = buildCommon.makeSpan(["stretchy", label], [], options);
 
         if (label === "fbox") {
