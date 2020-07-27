@@ -30,9 +30,6 @@ Aligned: |
         a &= 1 & b &= 2 \\
         3a &= 3 & 17b &= 34
     \end{aligned}
-Alignat:
-    tex: \begin{aligned}{3} a &= 1 & b &= 2 &c &= 3\\ 3a &= 3 & 17b &= 34 &\400c &= 1200 \end{aligned}
-    display: 1
 Alignedat: |
     \begin{alignedat}{3}
         a &= 1 & b &= 2 &\quad c &= 3\\
