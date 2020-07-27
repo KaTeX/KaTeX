@@ -22,26 +22,22 @@ AccentsText: |
     \text{\'A} & \text{\.A} & \text{\`A} & \text{\"A} & \text{\H{A}} & \text{\r{A}} \\
     \text{\.I İ} & \text{\H e e̋} & \text{\i ı}
     \end{array}
+Align:
+    tex: \begin{align}a &= 1 & b &= 2 \\ 3a &= 3 & 17b &= 34\end{align}
+    display: 1
 Aligned: |
-    \begin{align}
-        a &= 1 & b &= 2 \\
-        3a &= 3 & 17b &= 34
-    \end{align}
     \begin{aligned}
         a &= 1 & b &= 2 \\
         3a &= 3 & 17b &= 34
     \end{aligned}
-Alignedat:
-    tex: |
-        \begin{aligned}{3}
-            a &= 1 & b &= 2 &\quad c &= 3\\
-            3a &= 3 & 17b &= 34 &\quad 400c &= 1200
-        \end{aligned}
-        \begin{alignedat}{3}
-            a &= 1 & b &= 2 &\quad c &= 3\\
-            3a &= 3 & 17b &= 34 &\quad 400c &= 1200
-        \end{alignedat}
+Alignat:
+    tex: \begin{aligned}{3} a &= 1 & b &= 2 &\quad c &= 3\\ 3a &= 3 & 17b &= 34 &\quad 400c &= 1200 \end{aligned}
     display: 1
+Alignedat: |
+    \begin{alignedat}{3}
+        a &= 1 & b &= 2 &\quad c &= 3\\
+        3a &= 3 & 17b &= 34 &\quad 400c &= 1200
+    \end{alignedat}
 Arrays:
     tex: |
         \left(\begin{array}{|rl:c||}
