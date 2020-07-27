@@ -39,6 +39,8 @@ type ParseNodeTypes = {
         body: AnyParseNode[][], // List of rows in the (2D) array.
         rowGaps: (?Measurement)[],
         hLinesBeforeRow: Array<boolean[]>,
+        addEqnNum?: boolean,
+        leqno?: boolean,
     |},
     "color": {|
         type: "color",
