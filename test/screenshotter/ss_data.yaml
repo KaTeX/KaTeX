@@ -23,11 +23,19 @@ AccentsText: |
     \text{\.I İ} & \text{\H e e̋} & \text{\i ı}
     \end{array}
 Aligned: |
+    \begin{align}
+        a &= 1 & b &= 2 \\
+        3a &= 3 & 17b &= 34
+    \end{align}
     \begin{aligned}
         a &= 1 & b &= 2 \\
         3a &= 3 & 17b &= 34
     \end{aligned}
 Alignedat: |
+    \begin{aligned}{3}
+        a &= 1 & b &= 2 &\quad c &= 3\\
+        3a &= 3 & 17b &= 34 &\quad 400c &= 1200
+    \end{aligned}
     \begin{alignedat}{3}
         a &= 1 & b &= 2 &\quad c &= 3\\
         3a &= 3 & 17b &= 34 &\quad 400c &= 1200

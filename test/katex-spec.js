@@ -2726,25 +2726,26 @@ describe("An aligned environment", function() {
     });
 });
 
-describe("A gather environment", function() {
+describe("AMS environments", function() {
     const nonStrictDisplay = new Settings({displayMode: true, strict: false});
 
     it("should fail outside display mode", () => {
         expect`\begin{gather}a+b\\c+d\end{gather}`.not.toParse(nonstrictSettings);
-    });
-
-    it("should fail outside display mode", () => {
         expect`\begin{gather*}a+b\\c+d\end{gather*}`.not.toParse(nonstrictSettings);
+        expect`\begin{align}a&=b+c\\d+e&=f\end{align}`.not.toParse(nonstrictSettings);
+        expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.not.toParse(nonstrictSettings);
+        expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.not.toParse(nonstrictSettings);
+        expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.not.toParse(nonstrictSettings);
     });
 
-    it("should build if in display mode", () => {
+    it("should build if in non-strict display mode", () => {
         expect`\begin{gather}a+b\\c+d\end{gather}`.toBuild(nonStrictDisplay);
-    });
-
-    it("should build if in display mode", () => {
         expect`\begin{gather*}a+b\\c+d\end{gather*}`.toBuild(nonStrictDisplay);
+        expect`\begin{align}a&=b+c\\d+e&=f\end{align}`.toBuild(nonStrictDisplay);
+        expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.toBuild(nonStrictDisplay);
+        expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.toBuild(nonStrictDisplay);
+        expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.toBuild(nonStrictDisplay);
     });
-
 });
 
 describe("operatorname support", function() {
