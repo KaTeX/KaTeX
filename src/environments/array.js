@@ -577,10 +577,30 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     return table;
 };
 
-// Convenience function for aligned and alignedat environments.
+// Convenience function for align, align*, aligned, alignat, alignat*, alignedat.
 const alignedHandler = function(context, args) {
+    if (context.envName.indexOf("ed") === -1) {
+        // Check if this environment call is allowed.
+        const settings = context.parser.settings;
+        if (!settings.displayMode) {
+            throw new ParseError(`{${context.envName}} cannot be used inline.`);
+        } else if (settings.strict && !settings.topEnv) {
+            settings.reportNonstrict("textEnv",
+                `{${context.envName}} called from math mode.`);
+        }
+    }
     const cols = [];
-    const res = parseArray(context.parser, {cols, addJot: true}, "display");
+    const separationType = context.envName.indexOf("at") > -1 ? "alignat" : "align";
+    const res = parseArray(context.parser,
+        {
+            cols,
+            addJot: true,
+            addEqnNum: context.envName === "align" || context.envName === "alignat",
+            colSeparationType: separationType,
+            leqno: context.parser.settings.leqno,
+        },
+        "display"
+    );
 
     // Determining number of columns.
     // 1. If the first argument is given, we use it as a number of columns,
@@ -848,13 +868,15 @@ defineEnvironment({
     mathmlBuilder,
 });
 
-// An aligned environment is like the align* environment
-// except it operates within math mode.
+// In the align environment, one uses ampersands, &, to specify number of
+// columns in each row, and to locate spacing between each column.
+// align gets automatic numbering. align* and aligned do not.
+// The alignedat environment can be used in math mode.
 // Note that we assume \nomallineskiplimit to be zero,
 // so that \strut@ is the same as \strut.
 defineEnvironment({
     type: "array",
-    names: ["aligned"],
+    names: ["align", "align*", "aligned"],
     props: {
         numArgs: 0,
     },
@@ -903,10 +925,7 @@ defineEnvironment({
 // each columns.
 defineEnvironment({
     type: "array",
-    names: ["alignedat"],
-    // One for numbered and for unnumbered;
-    // but, KaTeX doesn't supports math numbering yet,
-    // they make no difference for now.
+    names: ["alignat", "alignat*", "alignedat"],
     props: {
         numArgs: 1,
     },

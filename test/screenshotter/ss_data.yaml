@@ -22,6 +22,9 @@ AccentsText: |
     \text{\'A} & \text{\.A} & \text{\`A} & \text{\"A} & \text{\H{A}} & \text{\r{A}} \\
     \text{\.I İ} & \text{\H e e̋} & \text{\i ı}
     \end{array}
+Align:
+    tex: \begin{align}a &= 1 & b &= 2 \\ 3a &= 3 & 17b &= 34\end{align}
+    display: 1
 Aligned: |
     \begin{aligned}
         a &= 1 & b &= 2 \\
