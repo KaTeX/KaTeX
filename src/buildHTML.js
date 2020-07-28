@@ -371,6 +371,10 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
         children.push(buildHTMLUnbreakable(parts, options));
     }
 
+    // KaTeX display mode uses flexbox CSS. Insert "glue", i.e. flex-grow: 1;
+    children.unshift(makeSpan(["glue"], []));
+    children.push(makeSpan(["glue"], []));
+
     // Now, if there was a tag, build it too and append it as a final child.
     let tagChild;
     if (tag) {

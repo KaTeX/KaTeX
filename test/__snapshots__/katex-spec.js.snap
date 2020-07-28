@@ -1122,6 +1122,8 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
   <span class="katex-html"
         aria-hidden="true"
   >
+    <span class="glue">
+    </span>
     <span class="base">
       <span class="strut"
             style="height:0.84425em;vertical-align:0em;"
@@ -1161,6 +1163,8 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
           </span>
         </span>
       </span>
+    </span>
+    <span class="glue">
     </span>
   </span>
 </span>
@@ -1206,6 +1210,8 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
   <span class="katex-html"
         aria-hidden="true"
   >
+    <span class="glue">
+    </span>
     <span class="base">
       <span class="strut"
             style="height:0.68333em;vertical-align:0em;"
@@ -1263,6 +1269,8 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
       <span class="mord mathnormal">
         c
       </span>
+    </span>
+    <span class="glue">
     </span>
   </span>
 </span>

@@ -411,6 +411,9 @@ Symbols1: |
 Tag:
     tex: \tag{$+$hi} \frac{x^2}{y}+x^{2^y}
     display: 1
+TagWrap:
+    tex: \tag{1} A = A = A = A = A = A = A = A = A = A = A = A = A = A = A = A = A
+    display: 1
 Text: \frac{a}{b}\text{c~ {ab} \ e}+fg
 TextSpace:
   \begin{array}{l}
