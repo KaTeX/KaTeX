@@ -622,17 +622,12 @@
     text-align: center;
 
     > .katex {
-        display: block;
-        text-align: center;
-        white-space: nowrap;
 
         > .katex-html {
-            display: block;
-            position: relative;
+            width: 100%;
 
             > .tag {
-                position: absolute;
-                right: 0;
+                float: right;
             }
         }
     }
@@ -640,8 +635,7 @@
 
 // Left-justified tags (default is right-justified)
 .katex-display.leqno > .katex > .katex-html > .tag {
-    left: 0;
-    right: auto;
+    float: left;
 }
 
 // Flush-left display math
