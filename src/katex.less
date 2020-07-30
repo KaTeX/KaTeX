@@ -622,26 +622,44 @@
     text-align: center;
 
     > .katex {
-        display: block;
-        text-align: center;
-        white-space: nowrap;
-
         > .katex-html {
             display: block;
             position: relative;
+            width: 100%;
 
-            > .tag {
+            :first-child {
+                white-space: nowrap;
+            }
+
+            > .eqn-tag {
+                // Allow overlap for {align}, {alignat}, and {gather}.
+                // The alternative is worse.
                 position: absolute;
                 right: 0;
             }
+
+            > .tag {
+                // Do not allow overlap for \tag.
+                float: right;
+            }
+        }
+
+        > .eqn-parent {
+            white-space: nowrap;
         }
     }
 }
 
 // Left-justified tags (default is right-justified)
-.katex-display.leqno > .katex > .katex-html > .tag {
-    left: 0;
-    right: auto;
+.katex-display.leqno > .katex > .katex-html {
+    > .eqn-tag {
+        left: 0;
+        right: auto;
+    }
+
+    > .tag {
+        float: left;
+    }
 }
 
 // Flush-left display math

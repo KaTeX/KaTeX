@@ -319,12 +319,12 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
     const expression = buildExpression(tree, options, "root");
 
     let eqnNum;
-    if (expression.length === 2 && expression[1].hasClass("tag")) {
+    if (expression.length === 2 && expression[1].hasClass("eqn-tag")) {
         // An environment with automatic equation numbers, e.g. {gather}.
         eqnNum = expression.pop();
     }
 
-    const children = [];
+    let children = [];
 
     // Create one base node for each chunk between potential line breaks.
     // The TeXBook [p.173] says "A formula will be broken only after a
@@ -378,12 +378,14 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
             buildExpression(tag, options, true)
         );
         tagChild.classes = ["tag"];
-        children.push(tagChild);
+        // Wrap children to prevent soft line break.
+        children = [makeSpan([], children), tagChild];
     } else if (eqnNum) {
         children.push(eqnNum);
     }
 
-    const htmlNode = makeSpan(["katex-html"], children);
+    const classes = eqnNum ? ["katex-html", "eqn-parent"] : ["katex-html"];
+    const htmlNode = makeSpan(classes, children);
     htmlNode.setAttribute("aria-hidden", "true");
 
     // Adjust the strut of the tag to be the maximum height of all children

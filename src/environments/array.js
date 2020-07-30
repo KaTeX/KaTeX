@@ -427,7 +427,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             positionType: "individualShift",
             children: eqnNumSpans,
         }, options);
-        eqnNumCol = buildCommon.makeSpan(["tag"], [eqnNumCol], options);
+        eqnNumCol = buildCommon.makeSpan(["eqn-tag"], [eqnNumCol], options);
         return buildCommon.makeFragment([body, eqnNumCol]);
     }
 };
