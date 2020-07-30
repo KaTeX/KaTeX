@@ -1041,7 +1041,7 @@
     source-map "^0.6.1"
     write-file-atomic "^3.0.0"
 
-"@jest/types@^26.1.0", "@jest/types@^26.2.0":
+"@jest/types@^26.2.0":
   version "26.2.0"
   resolved "https://registry.yarnpkg.com/@jest/types/-/types-26.2.0.tgz#b28ca1fb517a4eb48c0addea7fcd9edc4ab45721"
   integrity sha512-lvm3rJvctxd7+wxKSxxbzpDbr4FXDLaC57WEKdUIZ2cjTYuxYSc0zlyD7Z4Uqr5VdKxRUrtwIkiqBuvgf8uKJA==
@@ -5174,17 +5174,7 @@ jest-config@^26.2.1:
     micromatch "^4.0.2"
     pretty-format "^26.2.0"
 
-jest-diff@^26.1.0:
-  version "26.1.0"
-  resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-26.1.0.tgz#00a549bdc936c9691eb4dc25d1fbd78bf456abb2"
-  integrity sha512-GZpIcom339y0OXznsEKjtkfKxNdg7bVbEofK8Q6MnevTIiR1jNhDWKhRX6X0SDXJlwn3dy59nZ1z55fLkAqPWg==
-  dependencies:
-    chalk "^4.0.0"
-    diff-sequences "^26.0.0"
-    jest-get-type "^26.0.0"
-    pretty-format "^26.1.0"
-
-jest-diff@^26.2.0:
+jest-diff@^26.1.0, jest-diff@^26.2.0:
   version "26.2.0"
   resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-26.2.0.tgz#dee62c771adbb23ae585f3f1bd289a6e8ef4f298"
   integrity sha512-Wu4Aopi2nzCsHWLBlD48TgRy3Z7OsxlwvHNd1YSnHc7q1NJfrmyCPoUXrTIrydQOG5ApaYpsAsdfnMbJqV1/wQ==
@@ -7353,17 +7343,7 @@ prettier@^2.0.5:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.0.5.tgz#d6d56282455243f2f92cc1716692c08aa31522d4"
   integrity sha512-7PtVymN48hGcO4fGjybyBSIWDsLU4H4XlvOHfq91pz9kkGlonzwTfYkaIEwiRg/dAJF9YlbsduBAgtYLi+8cFg==
 
-pretty-format@^26.1.0:
-  version "26.1.0"
-  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-26.1.0.tgz#272b9cd1f1a924ab5d443dc224899d7a65cb96ec"
-  integrity sha512-GmeO1PEYdM+non4BKCj+XsPJjFOJIPnsLewqhDVoqY1xo0yNmDas7tC2XwpMrRAHR3MaE2hPo37deX5OisJ2Wg==
-  dependencies:
-    "@jest/types" "^26.1.0"
-    ansi-regex "^5.0.0"
-    ansi-styles "^4.0.0"
-    react-is "^16.12.0"
-
-pretty-format@^26.2.0:
+pretty-format@^26.1.0, pretty-format@^26.2.0:
   version "26.2.0"
   resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-26.2.0.tgz#83ecc8d7de676ff224225055e72bd64821cec4f1"
   integrity sha512-qi/8IuBu2clY9G7qCXgCdD1Bf9w+sXakdHTRToknzMtVy0g7c4MBWaZy7MfB7ndKZovRO6XRwJiAYqq+MC7SDA==
