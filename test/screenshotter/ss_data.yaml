@@ -129,6 +129,9 @@ Dots: |
       \cdots;\dots+\dots\int\dots,\dots \\
       \cdots{};\ldots+\ldots\int\ldots,\ldots
     \end{array}
+Equation:
+    tex: \begin{equation}\begin{split}a& =b+c-d \\ & \quad +e-f \\ & =g+h \\ & =i \end{split}\end{equation}
+    display: 1
 Exponents: a^{a^a_a}_{a^a_a}
 ExtensibleArrows: |
     \begin{array}{l}

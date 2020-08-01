@@ -2727,8 +2727,6 @@ describe("An aligned environment", function() {
 });
 
 describe("AMS environments", function() {
-    const nonStrictDisplay = new Settings({displayMode: true, strict: false});
-
     it("should fail outside display mode", () => {
         expect`\begin{gather}a+b\\c+d\end{gather}`.not.toParse(nonstrictSettings);
         expect`\begin{gather*}a+b\\c+d\end{gather*}`.not.toParse(nonstrictSettings);
@@ -2736,8 +2734,10 @@ describe("AMS environments", function() {
         expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.not.toParse(nonstrictSettings);
         expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.not.toParse(nonstrictSettings);
         expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.not.toParse(nonstrictSettings);
+        expect`\begin{equation}a=b+c\end{equation}`.not.toParse(nonstrictSettings);
     });
 
+    const nonStrictDisplay = new Settings({displayMode: true, strict: false});
     it("should build if in non-strict display mode", () => {
         expect`\begin{gather}a+b\\c+d\end{gather}`.toBuild(nonStrictDisplay);
         expect`\begin{gather*}a+b\\c+d\end{gather*}`.toBuild(nonStrictDisplay);
@@ -2745,6 +2745,18 @@ describe("AMS environments", function() {
         expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.toBuild(nonStrictDisplay);
         expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.toBuild(nonStrictDisplay);
         expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.toBuild(nonStrictDisplay);
+        expect`\begin{equation}a=b+c\end{equation}`.toBuild(nonStrictDisplay);
+        expect`\begin{equation}\begin{split}a &=b+c\\&=e+f\end{split}\end{equation}`.toBuild(nonStrictDisplay);
+    });
+
+    it("{equation} should fail if argument contains two rows.", () => {
+        expect`\begin{equation}a=\cr b+c\end{equation}`.not.toParse(nonStrictDisplay);
+    });
+    it("{equation} should fail if argument contains two columns.", () => {
+        expect`\begin{equation}a &=b+c\end{equation}`.not.toBuild(nonStrictDisplay);
+    });
+    it("{split} should fail if argument contains three columns.", () => {
+        expect`\begin{equation}\begin{split}a &=b &+c\\&=e &+f\end{split}\end{equation}`.not.toBuild(nonStrictDisplay);
     });
 });
 

@@ -59,6 +59,8 @@ function parseArray(
         arraystretch,
         colSeparationType,
         addEqnNum,
+        maxNumRows,
+        maxNumCols,
         leqno,
     }: {|
         hskipBeforeAndAfter?: boolean,
@@ -67,13 +69,19 @@ function parseArray(
         arraystretch?: number,
         colSeparationType?: ColSeparationType,
         addEqnNum?: boolean,
+        maxNumRows?: 1,
+        maxNumCols?: 1 | 2,
         leqno?: boolean,
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
     // Parse body of array with \\ temporarily mapped to \cr
     parser.gullet.beginGroup();
-    parser.gullet.macros.set("\\\\", "\\cr");
+    if (maxNumRows && maxNumRows === 1) {
+        parser.gullet.macros.set("\\\\", ""); // {equation} acts this way.
+    } else {
+        parser.gullet.macros.set("\\\\", "\\cr");
+    }
 
     // Get current arraystretch if it's not set by the environment
     if (!arraystretch) {
@@ -154,6 +162,7 @@ function parseArray(
     parser.gullet.endGroup();
     // End array group defining \\
     parser.gullet.endGroup();
+    parser.allowSplit = false;
 
     return {
         type: "array",
@@ -167,6 +176,7 @@ function parseArray(
         hLinesBeforeRow,
         colSeparationType,
         addEqnNum,
+        maxNumCols,
         leqno,
     };
 }
@@ -288,6 +298,10 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
         // Set a position for \hline(s), if any.
         setHLinePos(hLinesBeforeRow[r + 1]);
+    }
+
+    if (group.maxNumCols && nc > group.maxNumCols) {
+        throw new ParseError("Too many tab characters: &");
     }
 
     const offset = totalHeight / 2 + options.fontMetrics().axisHeight;
@@ -589,6 +603,10 @@ const alignedHandler = function(context, args) {
                 `{${context.envName}} called from math mode.`);
         }
     }
+    if (context.envName === "split" && !context.parser.allowSplit) {
+        throw new ParseError("The split environment can be used only " +
+        "inside the equation environment.");
+    }
     const cols = [];
     const separationType = context.envName.indexOf("at") > -1 ? "alignat" : "align";
     const res = parseArray(context.parser,
@@ -597,6 +615,7 @@ const alignedHandler = function(context, args) {
             addJot: true,
             addEqnNum: context.envName === "align" || context.envName === "alignat",
             colSeparationType: separationType,
+            maxNumCols: context.envName === "split" ? 2 : undefined,
             leqno: context.parser.settings.leqno,
         },
         "display"
@@ -876,7 +895,7 @@ defineEnvironment({
 // so that \strut@ is the same as \strut.
 defineEnvironment({
     type: "array",
-    names: ["align", "align*", "aligned"],
+    names: ["align", "align*", "aligned", "split"],
     props: {
         numArgs: 0,
     },
@@ -930,6 +949,37 @@ defineEnvironment({
         numArgs: 1,
     },
     handler: alignedHandler,
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+defineEnvironment({
+    type: "array",
+    names: ["equation", "equation*"],
+    props: {
+        numArgs: 0,
+    },
+    handler(context) {
+        const settings = context.parser.settings;
+        if (!settings.displayMode) {
+            throw new ParseError(`{${context.envName}} cannot be used inline.`);
+        } else if (settings.strict && !settings.topEnv) {
+            settings.reportNonstrict("textEnv",
+                `{${context.envName}} called from math mode.`);
+        }
+        const res = {
+            addEqnNum: context.envName === "equation",
+            maxNumRows: 1,
+            maxNumCols: 1,
+            leqno: context.parser.settings.leqno,
+        };
+        context.parser.allowSplit = true;
+        const equation = parseArray(context.parser, res, "display");
+        if (equation.body.length > 1) {
+            throw new ParseError("Misplaced \\cr.");
+        }
+        return equation;
+    },
     htmlBuilder,
     mathmlBuilder,
 });
