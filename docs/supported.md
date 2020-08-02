@@ -83,9 +83,12 @@ $( \big( \Big( \bigg( \Bigg($ `( \big( \Big( \bigg( \Bigg(`
 |$\begin{pmatrix} a & b \\ c & d \end{pmatrix}$ |`\begin{pmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{pmatrix}` |$\begin{bmatrix} a & b \\ c & d \end{bmatrix}$ | `\begin{bmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{bmatrix}`
 |$\begin{vmatrix} a & b \\ c & d \end{vmatrix}$ |`\begin{vmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{vmatrix}` |$\begin{Vmatrix} a & b \\ c & d \end{Vmatrix}$ |`\begin{Vmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{Vmatrix}`
 |$\begin{Bmatrix} a & b \\ c & d \end{Bmatrix}$ |`\begin{Bmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{Bmatrix}`|$\def\arraystretch{1.5}\begin{array}{c:c:c} a & b & c \\ \hline d & e & f \\ \hdashline g & h & i \end{array}$|`\def\arraystretch{1.5}`<br>&nbsp;&nbsp;&nbsp;`\begin{array}{c:c:c}`<br>&nbsp;&nbsp;&nbsp;`a & b & c \\ \hline`<br>&nbsp;&nbsp;&nbsp;`d & e & f \\`<br>&nbsp;&nbsp;&nbsp;`\hdashline`<br>&nbsp;&nbsp;&nbsp;`g & h & i`<br>`\end{array}`
-|$\begin{aligned} a&=b+c \\ d+e&=f \end{aligned}$ |`\begin{aligned}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{aligned}`|$\begin{alignedat}{2}10&x+&3&y=2\\3&x+&13&y=4\end{alignedat}$ |`\begin{alignedat}{2}`<br>&nbsp;&nbsp;&nbsp;`10&x+ &3&y = 2 \\`<br>&nbsp;&nbsp;&nbsp;` 3&x+&13&y = 4`<br>`\end{alignedat}`
-|$\begin{gathered} a=b \\ e=b+c \end{gathered}$ |`\begin{gathered}`<br>&nbsp;&nbsp;&nbsp;`a=b \\ `<br>&nbsp;&nbsp;&nbsp;`e=b+c`<br>`\end{gathered}`|$x = \begin{cases} a &\text{if } b \\ c &\text{if } d \end{cases}$ |`x = \begin{cases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{cases}`
-|$\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}$ | `\begin{smallmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{smallmatrix}` |$\begin{rcases} a &\text{if } b \\ c &\text{if } d \end{rcases}⇒…$ |`\begin{rcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{rcases}⇒…`|
+|$$\begin{align} a&=b+c \\ d+e&=f \end{align}$$ |`\begin{align}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{align}`|$$\begin{alignat}{2}10&x+&3&y=2\\3&x+&13&y=4\end{alignat}$$ |
+|$$\begin{align*} a&=b+c \\ d+e&=f \end{align*}$$ |`\begin{align*}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{align*}`|$\begin{aligned} a&=b+c \\ d+e&=f \end{aligned}$ |`\begin{aligned}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{aligned}`|
+`\begin{alignedat}{2}`<br>&nbsp;&nbsp;&nbsp;`10&x+ &3&y = 2 \\`<br>&nbsp;&nbsp;&nbsp;` 3&x+&13&y = 4`<br>`\end{alignedat}`|$\begin{alignedat}{2}10&x+&3&y=2\\3&x+&13&y=4\end{alignedat}$ |`\begin{alignedat}{2}`<br>&nbsp;&nbsp;&nbsp;`10&x+ &3&y = 2 \\`<br>&nbsp;&nbsp;&nbsp;` 3&x+&13&y = 4`<br>`\end{alignedat}`
+|$$\begin{gather} a=b \\ e=b+c \end{gather}$$ |`\begin{gather}`<br>&nbsp;&nbsp;&nbsp;`a=b \\ `<br>&nbsp;&nbsp;&nbsp;`e=b+c`<br>`\end{gather}`|$\begin{gathered} a=b \\ e=b+c \end{gathered}$ |`\begin{gathered}`<br>&nbsp;&nbsp;&nbsp;`a=b \\ `<br>&nbsp;&nbsp;&nbsp;`e=b+c`<br>`\end{gathered}`|
+|$x = \begin{cases} a &\text{if } b \\ c &\text{if } d \end{cases}$ |`x = \begin{cases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{cases}`|$\begin{rcases} a &\text{if } b \\ c &\text{if } d \end{rcases}⇒…$ |`\begin{rcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{rcases}⇒…`|
+|$\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}$ | `\begin{smallmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{smallmatrix}` |||
 
 </div>
 
@@ -207,6 +210,7 @@ For Persian composite characters, a user-supplied [plug-in](https://github.com/
 |$\bcancel{5}$ `\bcancel{5}` |$\underbrace{a+b+c}_{\text{note}}$ `\underbrace{a+b+c}_{\text{note}}`
 |$\xcancel{ABC}$ `\xcancel{ABC}`|$\not =$ `\not =`
 |$\sout{abc}$ `\sout{abc}`|$\boxed{\pi=\frac c d}$ `\boxed{\pi=\frac c d}`
+|$a_{\angl n}$ `$a_{\angl n}`|$a_\angln$ `a_\angln`
 
 `\tag{hi} x+y^{2x}`
 $$\tag{hi} x+y^{2x}$$
@@ -403,40 +407,40 @@ $\stackrel{!}{=}$ `\stackrel{!}{=}`
 
 |||||
 |:----------------------------|:--------------------------------|:--------------------------------|:-----
-|$=$ `=` |$\eqcirc$ `\eqcirc`  |$\lesseqgtr$ `\lesseqgtr`  |$\sqsupset$ `\sqsupset`
-|$<$ `<` |$\eqcolon$ `\eqcolon`|$\lesseqqgtr$ `\lesseqqgtr`|$\sqsupseteq$ `\sqsupseteq`
-|$>$ `>` |$\Eqcolon$ `\Eqcolon`|$\lessgtr$ `\lessgtr`|$\Subset$ `\Subset`
-|$:$ `:` |$\eqqcolon$ `\eqqcolon` |$\lesssim$ `\lesssim`|$\subset$ `\subset` or `\sub`
-|$\approx$ `\approx` |$\Eqqcolon$ `\Eqqcolon` |$\ll$ `\ll` |$\subseteq$ `\subseteq` or `\sube`
-|$\approxeq$ `\approxeq`|$\eqsim$ `\eqsim` |$\lll$ `\lll`  |$\subseteqq$ `\subseteqq`
-|$\asymp$ `\asymp`|$\eqslantgtr$ `\eqslantgtr`|$\llless$ `\llless`  |$\succ$ `\succ`
-|$\backepsilon$ `\backepsilon`|$\eqslantless$ `\eqslantless` |$\lt$ `\lt` |$\succapprox$ `\succapprox`
-|$\backsim$ `\backsim`  |$\equiv$ `\equiv` |$\mid$ `\mid`  |$\succcurlyeq$ `\succcurlyeq`
-|$\backsimeq$ `\backsimeq` |$\fallingdotseq$ `\fallingdotseq`|$\models$ `\models`  |$\succeq$ `\succeq`
-|$\between$ `\between`  |$\frown$ `\frown` |$\multimap$ `\multimap` |$\succsim$ `\succsim`
-|$\bowtie$ `\bowtie` |$\ge$ `\ge` |$\owns$ `\owns`|$\Supset$ `\Supset`
-|$\bumpeq$ `\bumpeq` |$\geq$ `\geq`  |$\parallel$ `\parallel` |$\supset$ `\supset`
-|$\Bumpeq$ `\Bumpeq` |$\geqq$ `\geqq`|$\perp$ `\perp`|$\supseteq$ `\supseteq` or `\supe`
-|$\circeq$ `\circeq` |$\geqslant$ `\geqslant` |$\pitchfork$ `\pitchfork`  |$\supseteqq$ `\supseteqq`
-|$\colonapprox$ `\colonapprox`|$\gg$ `\gg` |$\prec$ `\prec`|$\thickapprox$ `\thickapprox`
-|$\Colonapprox$ `\Colonapprox`|$\ggg$ `\ggg`  |$\precapprox$ `\precapprox`|$\thicksim$ `\thicksim`
-|$\coloneq$ `\coloneq`  |$\gggtr$ `\gggtr` |$\preccurlyeq$ `\preccurlyeq` |$\trianglelefteq$ `\trianglelefteq`
-|$\Coloneq$ `\Coloneq`  |$\gt$ `\gt` |$\preceq$ `\preceq`  |$\triangleq$ `\triangleq`
-|$\coloneqq$ `\coloneqq`|$\gtrapprox$ `\gtrapprox`  |$\precsim$ `\precsim`|$\trianglerighteq$ `\trianglerighteq`
-|$\Coloneqq$ `\Coloneqq`|$\gtreqless$ `\gtreqless`  |$\propto$ `\propto`  |$\varpropto$ `\varpropto`
-|$\colonsim$ `\colonsim`|$\gtreqqless$ `\gtreqqless`|$\risingdotseq$ `\risingdotseq`  |$\vartriangle$ `\vartriangle`
-|$\Colonsim$ `\Colonsim`|$\gtrless$ `\gtrless`|$\shortmid$ `\shortmid` |$\vartriangleleft$ `\vartriangleleft`
-|$\cong$ `\cong`  |$\gtrsim$ `\gtrsim`  |$\shortparallel$ `\shortparallel`|$\vartriangleright$ `\vartriangleright`
-|$\curlyeqprec$ `\curlyeqprec`|$\in$ `\in` or `\isin` |$\sim$ `\sim`  |$\vcentcolon$ `\vcentcolon`
-|$\curlyeqsucc$ `\curlyeqsucc`|$\Join$ `\Join`|$\simeq$ `\simeq` |$\vdash$ `\vdash`
-|$\dashv$ `\dashv`|$\le$ `\le` |$\smallfrown$ `\smallfrown`|$\vDash$ `\vDash`
-|$\dblcolon$ `\dblcolon`|$\leq$ `\leq`  |$\smallsmile$ `\smallsmile`|$\Vdash$ `\Vdash`
-|$\doteq$ `\doteq`|$\leqq$ `\leqq`|$\smile$ `\smile` |$\Vvdash$ `\Vvdash`
-|$\Doteq$ `\Doteq`|$\leqslant$ `\leqslant` |$\sqsubset$ `\sqsubset` |
-|$\doteqdot$ `\doteqdot`|$\lessapprox$ `\lessapprox`|$\sqsubseteq$ `\sqsubseteq`|
+| $=$ `=` | $\eqcirc$ `\eqcirc` | $\lessapprox$ `\lessapprox` | $\sqsubset$ `\sqsubset` |
+| $<$ `<` | $\eqcolon$ `\eqcolon` | $\lesseqgtr$ `\lesseqgtr` | $\sqsubseteq$ `\sqsubseteq` |
+| $>$ `>` | $\Eqcolon$ `\Eqcolon` | $\lesseqqgtr$ `\lesseqqgtr` | $\sqsupset$ `\sqsupset` |
+| $:$ `:` | $\eqqcolon$ `\eqqcolon` | $\lessgtr$ `\lessgtr` | $\sqsupseteq$ `\sqsupseteq` |
+| $\approx$ `\approx` | $\Eqqcolon$ `\Eqqcolon` | $\lesssim$ `\lesssim` | $\Subset$ `\Subset` |
+| $\approxeq$ `\approxeq` | $\eqsim$ `\eqsim` | $\ll$ `\ll` | $\subset$ `\subset` or `\sub` |
+| $\asymp$ `\asymp` | $\eqslantgtr$ `\eqslantgtr` | $\lll$ `\lll` | $\subseteq$ `\subseteq` or `\sube` |
+| $\backepsilon$ `\backepsilon` | $\eqslantless$ `\eqslantless` | $\llless$ `\llless` | $\subseteqq$ `\subseteqq` |
+| $\backsim$ `\backsim` | $\equiv$ `\equiv` | $\lt$ `\lt` | $\succ$ `\succ` |
+| $\backsimeq$ `\backsimeq` | $\fallingdotseq$ `\fallingdotseq` | $\mid$ `\mid` | $\succapprox$ `\succapprox` |
+| $\between$ `\between` | $\frown$ `\frown` | $\models$ `\models` | $\succcurlyeq$ `\succcurlyeq` |
+| $\bowtie$ `\bowtie` | $\ge$ `\ge` | $\multimap$ `\multimap` | $\succeq$ `\succeq` |
+| $\bumpeq$ `\bumpeq` | $\geq$ `\geq` | $\origof$ `\origof` | $\succsim$ `\succsim` |
+| $\Bumpeq$ `\Bumpeq` | $\geqq$ `\geqq` | $\owns$ `\owns` | $\Supset$ `\Supset` |
+| $\circeq$ `\circeq` | $\geqslant$ `\geqslant` | $\parallel$ `\parallel` | $\supset$ `\supset` |
+| $\colonapprox$ `\colonapprox` | $\gg$ `\gg` | $\perp$ `\perp` | $\supseteq$ `\supseteq` or `\supe` |
+| $\Colonapprox$ `\Colonapprox` | $\ggg$ `\ggg` | $\pitchfork$ `\pitchfork` | $\supseteqq$ `\supseteqq` |
+| $\coloneq$ `\coloneq` | $\gggtr$ `\gggtr` | $\prec$ `\prec` | $\thickapprox$ `\thickapprox` |
+| $\Coloneq$ `\Coloneq` | $\gt$ `\gt` | $\precapprox$ `\precapprox` | $\thicksim$ `\thicksim` |
+| $\coloneqq$ `\coloneqq` | $\gtrapprox$ `\gtrapprox` | $\preccurlyeq$ `\preccurlyeq` | $\trianglelefteq$ `\trianglelefteq` |
+| $\Coloneqq$ `\Coloneqq` | $\gtreqless$ `\gtreqless` | $\preceq$ `\preceq` | $\triangleq$ `\triangleq` |
+| $\colonsim$ `\colonsim` | $\gtreqqless$ `\gtreqqless` | $\precsim$ `\precsim` | $\trianglerighteq$ `\trianglerighteq` |
+| $\Colonsim$ `\Colonsim` | $\gtrless$ `\gtrless` | $\propto$ `\propto` | $\varpropto$ `\varpropto` |
+| $\cong$ `\cong` | $\gtrsim$ `\gtrsim` | $\risingdotseq$ `\risingdotseq` | $\vartriangle$ `\vartriangle` |
+| $\curlyeqprec$ `\curlyeqprec` | $\imageof$ `\imageof` | $\shortmid$ `\shortmid` | $\vartriangleleft$ `\vartriangleleft` |
+| $\curlyeqsucc$ `\curlyeqsucc` | $\in$ `\in` or `\isin` | $\shortparallel$ `\shortparallel` | $\vartriangleright$ `\vartriangleright` |
+| $\dashv$ `\dashv` | $\Join$ `\Join` | $\sim$ `\sim` | $\vcentcolon$ `\vcentcolon` |
+| $\dblcolon$ `\dblcolon` | $\le$ `\le` | $\simeq$ `\simeq` | $\vdash$ `\vdash` |
+| $\doteq$ `\doteq` | $\leq$ `\leq` | $\smallfrown$ `\smallfrown` | $\vDash$ `\vDash` |
+| $\Doteq$ `\Doteq` | $\leqq$ `\leqq` | $\smallsmile$ `\smallsmile` | $\Vdash$ `\Vdash` |
+| $\doteqdot$ `\doteqdot` | $\leqslant$ `\leqslant` | $\smile$ `\smile` | $\Vvdash$ `\Vvdash` |
 
 
-Direct Input: $= < > : ∈ ∋ ∝ ∼ ∽ ≂ ≃ ≅ ≈ ≊ ≍ ≎ ≏ ≐ ≑ ≒ ≓ ≖ ≗ ≜ ≡ ≤ ≥ ≦ ≧ ≫ ≬ ≳ ≷ ≺ ≻ ≼ ≽ ≾ ≿ ⊂ ⊃ ⊆ ⊇ ⊏ ⊐ ⊑ ⊒ ⊢ ⊣ ⊩ ⊪ ⊸ ⋈ ⋍ ⋐ ⋑ ⋔ ⋙ ⋛ ⋞ ⋟ ⌢ ⌣ ⩾ ⪆ ⪌ ⪕ ⪖ ⪯ ⪰ ⪷ ⪸ ⫅ ⫆ ≲ ⩽ ⪅ ≶ ⋚ ⪋ ⟂ ⊨$ `≔ ≕ ⩴`
+Direct Input: $= < > : ∈ ∋ ∝ ∼ ∽ ≂ ≃ ≅ ≈ ≊ ≍ ≎ ≏ ≐ ≑ ≒ ≓ ≖ ≗ ≜ ≡ ≤ ≥ ≦ ≧ ≫ ≬ ≳ ≷ ≺ ≻ ≼ ≽ ≾ ≿ ⊂ ⊃ ⊆ ⊇ ⊏ ⊐ ⊑ ⊒ ⊢ ⊣ ⊩ ⊪ ⊸ ⋈ ⋍ ⋐ ⋑ ⋔ ⋙ ⋛ ⋞ ⋟ ⌢ ⌣ ⩾ ⪆ ⪌ ⪕ ⪖ ⪯ ⪰ ⪷ ⪸ ⫅ ⫆ ≲ ⩽ ⪅ ≶ ⋚ ⪋ ⟂ ⊨ ⊶ ⊷$ `≔ ≕ ⩴`
 
 ### Negated Relations
 
@@ -537,8 +541,7 @@ Extensible arrows all can take an optional argument in the same manner<br>as `\x
 
 $\color{blue} F=ma$  `\color{blue} F=ma`
 
-Note that KaTeX `\color` acts like a switch. This aligns with LaTeX and differs from MathJax.
-Other KaTeX color functions expect the content to be a function argument:
+Note that `\color` acts like a switch. Other color functions expect the content to be a function argument:
 
 $\textcolor{blue}{F=ma}$ `\textcolor{blue}{F=ma}`<br>
 $\textcolor{#228B22}{F=ma}$ `\textcolor{#228B22}{F=ma}`<br>
