@@ -162,7 +162,6 @@ function parseArray(
     parser.gullet.endGroup();
     // End array group defining \\
     parser.gullet.endGroup();
-    parser.allowSplit = false;
 
     return {
         type: "array",
@@ -603,10 +602,6 @@ const alignedHandler = function(context, args) {
                 `{${context.envName}} called from math mode.`);
         }
     }
-    if (context.envName === "split" && !context.parser.allowSplit) {
-        throw new ParseError("The split environment can be used only " +
-        "inside the equation environment.");
-    }
     const cols = [];
     const separationType = context.envName.indexOf("at") > -1 ? "alignat" : "align";
     const res = parseArray(context.parser,
@@ -973,7 +968,6 @@ defineEnvironment({
             maxNumCols: 1,
             leqno: context.parser.settings.leqno,
         };
-        context.parser.allowSplit = true;
         const equation = parseArray(context.parser, res, "display");
         if (equation.body.length > 1) {
             throw new ParseError("Misplaced \\cr.");

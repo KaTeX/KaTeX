@@ -57,7 +57,6 @@ export default class Parser {
     gullet: MacroExpander;
     settings: Settings;
     leftrightDepth: number;
-    allowSplit: boolean;
     nextToken: ?Token;
 
     constructor(input: string, settings: Settings) {
@@ -70,8 +69,6 @@ export default class Parser {
         this.settings = settings;
         // Count leftright depth (for \middle errors)
         this.leftrightDepth = 0;
-        // The {split} environment is allowed only inside {equation}.
-        this.allowSplit = false;
     }
 
     /**
