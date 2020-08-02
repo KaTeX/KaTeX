@@ -130,6 +130,9 @@ function parseArray(
         row.push(cell);
         const next = parser.fetch().text;
         if (next === "&") {
+            if (maxNumCols && row.length === maxNumCols) {
+                throw new ParseError("Too many tab characters: &");
+            }
             parser.consume();
         } else if (next === "\\end") {
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
@@ -175,7 +178,6 @@ function parseArray(
         hLinesBeforeRow,
         colSeparationType,
         addEqnNum,
-        maxNumCols,
         leqno,
     };
 }
@@ -297,10 +299,6 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
         // Set a position for \hline(s), if any.
         setHLinePos(hLinesBeforeRow[r + 1]);
-    }
-
-    if (group.maxNumCols && nc > group.maxNumCols) {
-        throw new ParseError("Too many tab characters: &");
     }
 
     const offset = totalHeight / 2 + options.fontMetrics().axisHeight;

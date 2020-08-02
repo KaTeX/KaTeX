@@ -40,8 +40,6 @@ type ParseNodeTypes = {
         rowGaps: (?Measurement)[],
         hLinesBeforeRow: Array<boolean[]>,
         addEqnNum?: boolean,
-        maxNumRows?: 1,     // equation allows only 1 row.
-        maxNumCols?: 1 | 2, // equation: 1, split: 2.
         leqno?: boolean,
     |},
     "color": {|
