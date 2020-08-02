@@ -131,7 +131,8 @@ function parseArray(
         const next = parser.fetch().text;
         if (next === "&") {
             if (maxNumCols && row.length === maxNumCols) {
-                throw new ParseError("Too many tab characters: &");
+                throw new ParseError("Too many tab characters: &",
+                                     parser.nextToken);
             }
             parser.consume();
         } else if (next === "\\end") {
