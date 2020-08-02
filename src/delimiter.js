@@ -782,6 +782,7 @@ const makeLeftRightDelim = function(
 export default {
     sqrtImage: makeSqrtImage,
     sizedDelim: makeSizedDelim,
+    sizeToMaxHeight: sizeToMaxHeight,
     customSizedDelim: makeCustomSizedDelim,
     leftRightDelim: makeLeftRightDelim,
 };
