@@ -2760,6 +2760,9 @@ describe("AMS environments", function() {
     it("{split} should fail if argument contains three columns.", () => {
         expect`\begin{equation}\begin{split}a &=b &+c\\&=e &+f\end{split}\end{equation}`.not.toBuild(nonStrictDisplay);
     });
+    it("{array} should fail if body contains more columns than specification.", () => {
+        expect`\begin{array}{2}a & b & c\\d & e  f\end{array}`.not.toBuild(nonStrictDisplay);
+    });
 });
 
 describe("operatorname support", function() {

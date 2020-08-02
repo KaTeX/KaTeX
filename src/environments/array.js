@@ -59,7 +59,7 @@ function parseArray(
         arraystretch,
         colSeparationType,
         addEqnNum,
-        maxNumRows,
+        singleRow,
         maxNumCols,
         leqno,
     }: {|
@@ -69,15 +69,15 @@ function parseArray(
         arraystretch?: number,
         colSeparationType?: ColSeparationType,
         addEqnNum?: boolean,
-        maxNumRows?: 1,
-        maxNumCols?: 1 | 2,
+        singleRow?: boolean,
+        maxNumCols?: number,
         leqno?: boolean,
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
     // Parse body of array with \\ temporarily mapped to \cr
     parser.gullet.beginGroup();
-    if (maxNumRows && maxNumRows === 1) {
+    if (singleRow) {
         parser.gullet.macros.set("\\\\", ""); // {equation} acts this way.
     } else {
         parser.gullet.macros.set("\\\\", "\\cr");
@@ -159,6 +159,10 @@ function parseArray(
             throw new ParseError("Expected & or \\\\ or \\cr or \\end",
                                  parser.nextToken);
         }
+    }
+
+    if (singleRow && body.length > 1) {
+        throw new ParseError("Misplaced \\cr.");
     }
 
     // End cell group
@@ -724,6 +728,7 @@ defineEnvironment({
         const res = {
             cols,
             hskipBeforeAndAfter: true, // \@preamble in lttab.dtx
+            maxNumCols: cols.length,
         };
         return parseArray(context.parser, res, dCellStyle(context.envName));
     },
@@ -962,15 +967,11 @@ defineEnvironment({
         }
         const res = {
             addEqnNum: context.envName === "equation",
-            maxNumRows: 1,
+            singleRow: true,
             maxNumCols: 1,
             leqno: context.parser.settings.leqno,
         };
-        const equation = parseArray(context.parser, res, "display");
-        if (equation.body.length > 1) {
-            throw new ParseError("Misplaced \\cr.");
-        }
-        return equation;
+        return parseArray(context.parser, res, "display");
     },
     htmlBuilder,
     mathmlBuilder,
