@@ -541,8 +541,7 @@ Extensible arrows all can take an optional argument in the same manner<br>as `\x
 
 $\color{blue} F=ma$  `\color{blue} F=ma`
 
-Note that KaTeX `\color` acts like a switch. This aligns with LaTeX and differs from MathJax.
-Other KaTeX color functions expect the content to be a function argument:
+Note that `\color` acts like a switch. Other color functions expect the content to be a function argument:
 
 $\textcolor{blue}{F=ma}$ `\textcolor{blue}{F=ma}`<br>
 $\textcolor{#228B22}{F=ma}$ `\textcolor{#228B22}{F=ma}`<br>
