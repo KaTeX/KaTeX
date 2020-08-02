@@ -40,12 +40,15 @@ const htmlBuilder = (group, options) => {
             if (!isSingleChar) {
                 inner.classes.push("cancel-pad");
             }
+        } else if (label === "angl") {
+            inner.classes.push("anglpad");
         } else {
             inner.classes.push("boxpad");
         }
 
         // Add vertical padding
-        let vertPad = 0;
+        let topPad = 0;
+        let bottomPad = 0;
         let ruleThickness = 0;
         // ref: cancel package: \advance\totalheight2\p@ % "+2"
         if (/box/.test(label)) {
@@ -53,18 +56,30 @@ const htmlBuilder = (group, options) => {
                 options.fontMetrics().fboxrule, // default
                 options.minRuleThickness, // User override.
             );
-            vertPad = options.fontMetrics().fboxsep +
+            topPad = options.fontMetrics().fboxsep +
                 (label === "colorbox" ? 0 : ruleThickness);
+            bottomPad =  topPad;
+        } else if (label === "angl") {
+            ruleThickness = Math.max(
+                options.fontMetrics().defaultRuleThickness,
+                options.minRuleThickness
+            );
+            topPad = 4 * ruleThickness; // gap = 3 × line, plus the line itself.
+            bottomPad = Math.max(0, 0.25 - inner.depth);
         } else {
-            vertPad = isSingleChar ? 0.2 : 0;
+            topPad = isSingleChar ? 0.2 : 0;
+            bottomPad =  topPad;
         }
 
-        img = stretchy.encloseSpan(inner, label, vertPad, options);
+        img = stretchy.encloseSpan(inner, label, topPad, bottomPad, options);
         if (/fbox|boxed|fcolorbox/.test(label)) {
             img.style.borderStyle = "solid";
             img.style.borderWidth = `${ruleThickness}em`;
+        } else if (label === "angl" && ruleThickness !== 0.049) {
+            img.style.borderTopWidth = `${ruleThickness}em`;
+            img.style.borderRightWidth = `${ruleThickness}em`;
         }
-        imgShift = inner.depth + vertPad;
+        imgShift = inner.depth + bottomPad;
 
         if (group.backgroundColor) {
             img.style.backgroundColor = group.backgroundColor;
@@ -137,6 +152,9 @@ const mathmlBuilder = (group, options) => {
             break;
         case "\\fbox":
             node.setAttribute("notation", "box");
+            break;
+        case "\\angl":
+            node.setAttribute("notation", "actuarial");
             break;
         case "\\fcolorbox":
         case "\\colorbox":
@@ -252,4 +270,22 @@ defineFunction({
     },
     htmlBuilder,
     mathmlBuilder,
+});
+
+defineFunction({
+    type: "enclose",
+    names: ["\\angl"],
+    props: {
+        numArgs: 1,
+        argTypes: ["hbox"],
+        allowedInText: false,
+    },
+    handler({parser}, args) {
+        return {
+            type: "enclose",
+            mode: parser.mode,
+            label: "\\angl",
+            body: args[0],
+        };
+    },
 });

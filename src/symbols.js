@@ -438,6 +438,8 @@ defineSymbol(math, ams, rel, "\u21b0", "\\Lsh", true);
 defineSymbol(math, ams, rel, "\u21c8", "\\upuparrows", true);
 defineSymbol(math, ams, rel, "\u21bf", "\\upharpoonleft", true);
 defineSymbol(math, ams, rel, "\u21c3", "\\downharpoonleft", true);
+defineSymbol(math, main, rel, "\u22b6", "\\origof", true); // not in font
+defineSymbol(math, main, rel, "\u22b7", "\\imageof", true); // not in font
 defineSymbol(math, ams, rel, "\u22b8", "\\multimap", true);
 defineSymbol(math, ams, rel, "\u21ad", "\\leftrightsquigarrow", true);
 defineSymbol(math, ams, rel, "\u21c9", "\\rightrightarrows", true);
