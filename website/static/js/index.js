@@ -48,7 +48,7 @@ window.WebFontConfig = {
     }
 
     var katexOptions = ["displayMode", "leqno", "fleqn", "throwOnError",
-        "errorColor", "strict", "trust", "macros"].map(function(id) {
+        "errorColor", "strict", "output", "trust", "macros"].map(function(id) {
             var el = document.getElementById(id);
             if (el.type === "checkbox") {
                 if (typeof data[id] === "boolean" && !(id === "trust" && data[id] &&
