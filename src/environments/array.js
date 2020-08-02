@@ -163,7 +163,7 @@ function parseArray(
     }
 
     if (singleRow && body.length > 1) {
-        throw new ParseError("Misplaced \\cr.");
+        throw new ParseError("Misplaced \\cr.", parser.nextToken);
     }
 
     // End cell group
