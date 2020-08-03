@@ -1,8 +1,4 @@
 /* eslint max-len:0 */
-/* global expect: false */
-/* global it: false */
-/* global describe: false */
-/* global beforeAll: false */
 
 import buildMathML from "../src/buildMathML";
 import buildTree from "../src/buildTree";
@@ -2465,6 +2461,24 @@ describe("A strike-through builder", function() {
     });
 });
 
+describe("A actuarial angle parser", function() {
+    it("should not fail in math mode", function() {
+        expect`a_{\angl{n}}`.toParse();
+    });
+    it("should fail in text mode", function() {
+        expect`\text{a_{\angl{n}}}`.not.toParse();
+    });
+});
+
+describe("A actuarial angle builder", function() {
+    it("should not fail", function() {
+        expect`a_{\angl{n}}`.toBuild();
+        expect`a_{\angl{n}i}`.toBuild();
+        expect`a_{\angl n}`.toBuild();
+        expect`a_\angln`.toBuild();
+    });
+});
+
 describe("A phantom parser", function() {
     it("should not fail", function() {
         expect`\phantom{x}`.toParse();
@@ -2709,6 +2723,28 @@ describe("An aligned environment", function() {
     it("should not eat the last row when its first cell is empty", function() {
         const ae = getParsed`\begin{aligned}&E_1 & (1)\\&E_2 & (2)\\&E_3 & (3)\end{aligned}`[0];
         expect(ae.body).toHaveLength(3);
+    });
+});
+
+describe("AMS environments", function() {
+    const nonStrictDisplay = new Settings({displayMode: true, strict: false});
+
+    it("should fail outside display mode", () => {
+        expect`\begin{gather}a+b\\c+d\end{gather}`.not.toParse(nonstrictSettings);
+        expect`\begin{gather*}a+b\\c+d\end{gather*}`.not.toParse(nonstrictSettings);
+        expect`\begin{align}a&=b+c\\d+e&=f\end{align}`.not.toParse(nonstrictSettings);
+        expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.not.toParse(nonstrictSettings);
+        expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.not.toParse(nonstrictSettings);
+        expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.not.toParse(nonstrictSettings);
+    });
+
+    it("should build if in non-strict display mode", () => {
+        expect`\begin{gather}a+b\\c+d\end{gather}`.toBuild(nonStrictDisplay);
+        expect`\begin{gather*}a+b\\c+d\end{gather*}`.toBuild(nonStrictDisplay);
+        expect`\begin{align}a&=b+c\\d+e&=f\end{align}`.toBuild(nonStrictDisplay);
+        expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.toBuild(nonStrictDisplay);
+        expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.toBuild(nonStrictDisplay);
+        expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.toBuild(nonStrictDisplay);
     });
 });
 
@@ -3843,19 +3879,19 @@ describe("Extending katex by new fonts and symbols", function() {
 describe("debugging macros", () => {
     describe("message", () => {
         it("should print the argument using console.log", () => {
-            jest.spyOn(console, "log");
+            jest.spyOn(console, "log").mockImplementation();
             expect`\message{Hello, world}`.toParse();
             // eslint-disable-next-line no-console
-            expect(console.log.mock.calls[0][0]).toEqual("Hello, world");
+            expect(console.log).toHaveBeenCalledWith("Hello, world");
         });
     });
 
     describe("errmessage", () => {
         it("should print the argument using console.error", () => {
-            jest.spyOn(console, "error");
+            jest.spyOn(console, "error").mockImplementation();
             expect`\errmessage{Hello, world}`.toParse();
             // eslint-disable-next-line no-console
-            expect(console.error.mock.calls[0][0]).toEqual("Hello, world");
+            expect(console.error).toHaveBeenCalledWith("Hello, world");
         });
     });
 });

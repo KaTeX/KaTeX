@@ -1,5 +1,5 @@
-import babel from 'rollup-plugin-babel';
-import alias from 'rollup-plugin-alias';
+import babel from '@rollup/plugin-babel';
+import alias from '@rollup/plugin-alias';
 
 const {targets} = require('./webpack.common');
 
@@ -12,9 +12,11 @@ export default targets.map(({name, entry}) => ({
         format: 'es',
     },
     plugins: [
-        babel({runtimeHelpers: true}),
+        babel({babelHelpers: 'runtime'}),
         alias({
-            katex: '../katex.mjs',
+            entries: [
+                {find: 'katex', replacement: '../katex.mjs'},
+            ],
         }),
     ],
     external: '../katex.mjs',

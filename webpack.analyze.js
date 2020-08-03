@@ -1,5 +1,6 @@
 // @flow
 const {targets, createConfig} = require('./webpack.common');
+// $FlowIgnore
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 //                                                dev   minify
