@@ -2726,6 +2726,28 @@ describe("An aligned environment", function() {
     });
 });
 
+describe("AMS environments", function() {
+    const nonStrictDisplay = new Settings({displayMode: true, strict: false});
+
+    it("should fail outside display mode", () => {
+        expect`\begin{gather}a+b\\c+d\end{gather}`.not.toParse(nonstrictSettings);
+        expect`\begin{gather*}a+b\\c+d\end{gather*}`.not.toParse(nonstrictSettings);
+        expect`\begin{align}a&=b+c\\d+e&=f\end{align}`.not.toParse(nonstrictSettings);
+        expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.not.toParse(nonstrictSettings);
+        expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.not.toParse(nonstrictSettings);
+        expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.not.toParse(nonstrictSettings);
+    });
+
+    it("should build if in non-strict display mode", () => {
+        expect`\begin{gather}a+b\\c+d\end{gather}`.toBuild(nonStrictDisplay);
+        expect`\begin{gather*}a+b\\c+d\end{gather*}`.toBuild(nonStrictDisplay);
+        expect`\begin{align}a&=b+c\\d+e&=f\end{align}`.toBuild(nonStrictDisplay);
+        expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.toBuild(nonStrictDisplay);
+        expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.toBuild(nonStrictDisplay);
+        expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.toBuild(nonStrictDisplay);
+    });
+});
+
 describe("operatorname support", function() {
     it("should not fail", function() {
         expect("\\operatorname{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
@@ -3857,19 +3879,19 @@ describe("Extending katex by new fonts and symbols", function() {
 describe("debugging macros", () => {
     describe("message", () => {
         it("should print the argument using console.log", () => {
-            jest.spyOn(console, "log");
+            jest.spyOn(console, "log").mockImplementation();
             expect`\message{Hello, world}`.toParse();
             // eslint-disable-next-line no-console
-            expect(console.log.mock.calls[0][0]).toEqual("Hello, world");
+            expect(console.log).toHaveBeenCalledWith("Hello, world");
         });
     });
 
     describe("errmessage", () => {
         it("should print the argument using console.error", () => {
-            jest.spyOn(console, "error");
+            jest.spyOn(console, "error").mockImplementation();
             expect`\errmessage{Hello, world}`.toParse();
             // eslint-disable-next-line no-console
-            expect(console.error.mock.calls[0][0]).toEqual("Hello, world");
+            expect(console.error).toHaveBeenCalledWith("Hello, world");
         });
     });
 });
