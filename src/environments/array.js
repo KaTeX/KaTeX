@@ -29,6 +29,7 @@ export type AlignSpec = { type: "separator", separator: string } | {
 // Type to indicate column separation in MathML
 export type ColSeparationType = "align" | "alignat" | "gather" | "small";
 
+// Helper functions
 function getHLines(parser: Parser): boolean[] {
     // Return an array. The array length = number of hlines.
     // Each element in the array tells if the line is dashed.
@@ -43,6 +44,16 @@ function getHLines(parser: Parser): boolean[] {
     }
     return hlineInfo;
 }
+
+const validateAmsEnvironmentContext = context => {
+    const settings = context.parser.settings;
+    if (!settings.displayMode) {
+        throw new ParseError(`{${context.envName}} cannot be used inline.`);
+    } else if (settings.strict && !settings.topEnv) {
+        settings.reportNonstrict("textEnv",
+            `{${context.envName}} called from math mode.`);
+    }
+};
 
 /**
  * Parse the body of the environment, with rows delimited by \\ and
@@ -59,6 +70,8 @@ function parseArray(
         arraystretch,
         colSeparationType,
         addEqnNum,
+        singleRow,
+        maxNumCols,
         leqno,
     }: {|
         hskipBeforeAndAfter?: boolean,
@@ -67,13 +80,19 @@ function parseArray(
         arraystretch?: number,
         colSeparationType?: ColSeparationType,
         addEqnNum?: boolean,
+        singleRow?: boolean,
+        maxNumCols?: number,
         leqno?: boolean,
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
     // Parse body of array with \\ temporarily mapped to \cr
     parser.gullet.beginGroup();
-    parser.gullet.macros.set("\\\\", "\\cr");
+    if (singleRow) {
+        parser.gullet.macros.set("\\\\", ""); // {equation} acts this way.
+    } else {
+        parser.gullet.macros.set("\\\\", "\\cr");
+    }
 
     // Get current arraystretch if it's not set by the environment
     if (!arraystretch) {
@@ -122,6 +141,17 @@ function parseArray(
         row.push(cell);
         const next = parser.fetch().text;
         if (next === "&") {
+            if (maxNumCols && row.length === maxNumCols) {
+                if (singleRow || colSeparationType) {
+                    // {equation} or {split}
+                    throw new ParseError("Too many tab characters: &",
+                                        parser.nextToken);
+                } else {
+                    // {array} environment
+                    parser.settings.reportNonstrict("textEnv", "Too few columns " +
+                    "specified in the {array} column argument.");
+                }
+            }
             parser.consume();
         } else if (next === "\\end") {
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
@@ -136,6 +166,9 @@ function parseArray(
             }
             break;
         } else if (next === "\\cr") {
+            if (singleRow) {
+                throw new ParseError("Misplaced \\cr.", parser.nextToken);
+            }
             const cr = assertNodeType(parser.parseFunction(), "cr");
             rowGaps.push(cr.size);
 
@@ -580,14 +613,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
 // Convenience function for align, align*, aligned, alignat, alignat*, alignedat.
 const alignedHandler = function(context, args) {
     if (context.envName.indexOf("ed") === -1) {
-        // Check if this environment call is allowed.
-        const settings = context.parser.settings;
-        if (!settings.displayMode) {
-            throw new ParseError(`{${context.envName}} cannot be used inline.`);
-        } else if (settings.strict && !settings.topEnv) {
-            settings.reportNonstrict("textEnv",
-                `{${context.envName}} called from math mode.`);
-        }
+        validateAmsEnvironmentContext(context);
     }
     const cols = [];
     const separationType = context.envName.indexOf("at") > -1 ? "alignat" : "align";
@@ -597,6 +623,7 @@ const alignedHandler = function(context, args) {
             addJot: true,
             addEqnNum: context.envName === "align" || context.envName === "alignat",
             colSeparationType: separationType,
+            maxNumCols: context.envName === "split" ? 2 : undefined,
             leqno: context.parser.settings.leqno,
         },
         "display"
@@ -712,6 +739,7 @@ defineEnvironment({
         const res = {
             cols,
             hskipBeforeAndAfter: true, // \@preamble in lttab.dtx
+            maxNumCols: cols.length,
         };
         return parseArray(context.parser, res, dCellStyle(context.envName));
     },
@@ -876,7 +904,7 @@ defineEnvironment({
 // so that \strut@ is the same as \strut.
 defineEnvironment({
     type: "array",
-    names: ["align", "align*", "aligned"],
+    names: ["align", "align*", "aligned", "split"],
     props: {
         numArgs: 0,
     },
@@ -896,13 +924,7 @@ defineEnvironment({
     },
     handler(context) {
         if (utils.contains(["gather", "gather*"], context.envName)) {
-            const settings = context.parser.settings;
-            if (!settings.displayMode) {
-                throw new ParseError(`{${context.envName}} cannot be used inline.`);
-            } else if (settings.strict && !settings.topEnv) {
-                settings.reportNonstrict("textEnv",
-                    `{${context.envName}} called from math mode.`);
-            }
+            validateAmsEnvironmentContext(context);
         }
         const res = {
             cols: [{
@@ -930,6 +952,26 @@ defineEnvironment({
         numArgs: 1,
     },
     handler: alignedHandler,
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+defineEnvironment({
+    type: "array",
+    names: ["equation", "equation*"],
+    props: {
+        numArgs: 0,
+    },
+    handler(context) {
+        validateAmsEnvironmentContext(context);
+        const res = {
+            addEqnNum: context.envName === "equation",
+            singleRow: true,
+            maxNumCols: 1,
+            leqno: context.parser.settings.leqno,
+        };
+        return parseArray(context.parser, res, "display");
+    },
     htmlBuilder,
     mathmlBuilder,
 });
