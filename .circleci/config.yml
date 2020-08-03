@@ -74,7 +74,7 @@ jobs:
               yarn test:jest --coverage --runInBand
       - run:
           name: Upload code coverage reports to Codecov
-          command: ./node_modules/.bin/codecov
+          command: yarn codecov
 
   screenshotter:
     parameters:
