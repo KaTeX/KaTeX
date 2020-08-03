@@ -368,7 +368,8 @@ use `\ce` instead|
 |\eqcirc|$\eqcirc$||
 |\Eqcolon|$\Eqcolon$||
 |\eqcolon|$\eqcolon$||
-|{equation}|<span style="color:firebrick;">Not supported</span>|[Issue #445](https://github.com/KaTeX/KaTeX/issues/445)|
+|{equation}|$$\begin{equation}a = b + c\end{equation}$$|`\begin{equation}`<br>&nbsp;&nbsp;&nbsp;`a = b + c`<br>`\end{equation}`|
+|{equation*}|$$\begin{equation*}a = b + c\end{equation*}$$|`\begin{equation*}`<br>&nbsp;&nbsp;&nbsp;`a = b + c`<br>`\end{equation*}`|
 |{eqnarray}|<span style="color:firebrick;">Not supported</span>||
 |\Eqqcolon|$\Eqqcolon$||
 |\eqqcolon|$\eqqcolon$||
@@ -965,7 +966,7 @@ use `\ce` instead|
 |\spades|$\spades$||
 |\spadesuit|$\spadesuit$||
 |\sphericalangle|$\sphericalangle$||
-|{split}|<span style="color:firebrick;">Not supported</span>|[Issue #1345](https://github.com/KaTeX/KaTeX/issues/1345)|
+|{split}|$$\begin{equation}\begin{split}a &=b+c\\&=e+f\end{split}\end{equation}$$|`\begin{equation}`<br>`\begin{split}`<br>&nbsp;&nbsp;&nbsp;`a &=b+c\\`<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`&=e+f`<br>`\end{split}`<br>`\end{equation}`|
 |\sqcap|$\sqcap$||
 |\sqcup|$\sqcup$||
 |\square|$\square$||
