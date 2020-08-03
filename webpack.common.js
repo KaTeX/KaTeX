@@ -56,13 +56,15 @@ const targets /*: Array<Target> */ = [
  */
 function createConfig(target /*: Target */, dev /*: boolean */,
         minimize /*: boolean */) /*: Object */ {
-    const cssLoaders /*: Array<Object> */ = [{loader: 'css-loader'}];
+    const cssLoaders /*: Array<Object> */ = [{
+        loader: 'css-loader',
+        options: {importLoaders: 1},
+    }, {
+        loader: 'postcss-loader',
+        options: {plugins: [require('postcss-preset-env')()]},
+    }];
     if (minimize) {
-        cssLoaders[0].options = {importLoaders: 1};
-        cssLoaders.push({
-            loader: 'postcss-loader',
-            options: {plugins: [require('cssnano')()]},
-        });
+        cssLoaders[1].options.plugins.push(require('cssnano')());
     }
 
     const lessOptions = {modifyVars: {
