@@ -3879,19 +3879,19 @@ describe("Extending katex by new fonts and symbols", function() {
 describe("debugging macros", () => {
     describe("message", () => {
         it("should print the argument using console.log", () => {
-            jest.spyOn(console, "log");
+            jest.spyOn(console, "log").mockImplementation();
             expect`\message{Hello, world}`.toParse();
             // eslint-disable-next-line no-console
-            expect(console.log.mock.calls[0][0]).toEqual("Hello, world");
+            expect(console.log).toHaveBeenCalledWith("Hello, world");
         });
     });
 
     describe("errmessage", () => {
         it("should print the argument using console.error", () => {
-            jest.spyOn(console, "error");
+            jest.spyOn(console, "error").mockImplementation();
             expect`\errmessage{Hello, world}`.toParse();
             // eslint-disable-next-line no-console
-            expect(console.error.mock.calls[0][0]).toEqual("Hello, world");
+            expect(console.error).toHaveBeenCalledWith("Hello, world");
         });
     });
 });
