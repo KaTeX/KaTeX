@@ -73,9 +73,11 @@ table td {
 |\alef|$\alef$||
 |\alefsym|$\alefsym$||
 |\aleph|$\aleph$||
-|{align}|<span style="color:firebrick;">Not supported</span>|see `{aligned}`|
+|{align}|$$\begin{align}a&=b+c\\d+e&=f\end{align}$$|`\begin{align}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{align}`|
+|{align\*}|$$\begin{align*}a&=b+c\\d+e&=f\end{align*}$$|`\begin{align*}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{align*}`|
 |{aligned}|$\begin{aligned}a&=b+c\\d+e&=f\end{aligned}$|`\begin{aligned}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{aligned}`|
-|{alignat}|<span style="color:firebrick;">Not supported</span>|see `{alignedat}`|
+|{alignat}|$$\begin{alignat}{2}10&x+&3&y=2\\3&x+&13&y=4\end{alignat}$$|`\begin{alignat}{2}`<br>&nbsp;&nbsp;&nbsp;`10&x+ &3&y = 2 \\`<br>&nbsp;&nbsp;&nbsp;` 3&x+&13&y = 4`<br>`\end{alignat}`|
+|{alignat\*}|$$\begin{alignat*}{2}10&x+&3&y=2\\3&x+&13&y=4\end{alignat*}$$|`\begin{alignat*}{2}`<br>&nbsp;&nbsp;&nbsp;`10&x+ &3&y = 2 \\`<br>&nbsp;&nbsp;&nbsp;` 3&x+&13&y = 4`<br>`\end{alignat*}`|
 |{alignedat}|$\begin{alignedat}{2}10&x+&3&y=2\\3&x+&13&y=4\end{alignedat}$|`\begin{alignedat}{2}`<br>&nbsp;&nbsp;&nbsp;`10&x+ &3&y = 2 \\`<br>&nbsp;&nbsp;&nbsp;` 3&x+&13&y = 4`<br>`\end{alignedat}`|
 |\allowbreak|||
 |\Alpha|$\Alpha$||
@@ -408,7 +410,7 @@ use `\ce` instead|
 |\Game|$\Game$||
 |\Gamma|$\Gamma$||
 |\gamma|$\gamma$||
-|{gather}|<span style="color:firebrick;">Not supported</span>|see `{gathered}`|
+|{gather}|$$\begin{gather}a=b\\e=b+c\end{gather}$$|`\begin{gather}`<br>&nbsp;&nbsp;&nbsp;`a=b \\ `<br>&nbsp;&nbsp;&nbsp;`e=b+c`<br>`\end{gather}`|
 |{gathered}|$\begin{gathered}a=b\\e=b+c\end{gathered}$|`\begin{gathered}`<br>&nbsp;&nbsp;&nbsp;`a=b \\ `<br>&nbsp;&nbsp;&nbsp;`e=b+c`<br>`\end{gathered}`|
 |\gcd|$\gcd$||
 |\gdef|$\gdef\bar#1{#1^2} \bar{y} + \bar{y}$|`\gdef\bar#1{#1^2} \bar{y} + \bar{y}`|

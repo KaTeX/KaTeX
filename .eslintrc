@@ -93,6 +93,14 @@
             "node": false,
             "jest": false
         }
+    }, {
+        "files": ["website/**/*.js"],
+        "extends": [
+            "plugin:react/recommended"
+        ],
+        "rules": {
+            "react/prop-types": 0
+        }
     }],
     "root": true
 }

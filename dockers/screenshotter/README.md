@@ -21,7 +21,7 @@ are encouraged to reproduce the steps from `screenshotter.sh`
 manually.  Example run for Firefox:
 
     container=$(docker run -d -P selenium/standalone-firefox:2.46.0)
-    node dockers/screenshotter/screenshotter.js -b firefox -c ${container}
+    yarn node dockers/screenshotter/screenshotter.js -b firefox -c ${container}
     # possibly repeat the above command as often as you need, then eventually
     docker stop ${container}
     docker rm ${container}
@@ -33,7 +33,7 @@ For Chrome, simply replace both occurrences of `firefox` with `chrome`.
 It is possible to run `screenshotter.js` without the use of Docker:
 
     yarn add selenium-webdriver
-    node dockers/screenshotter/screenshotter.js
+    yarn node dockers/screenshotter/screenshotter.js
 
 This will generate screenshots using the Firefox installed on your system.
 Browsers other than Firefox can be targeted using the `--browser` option.
@@ -62,7 +62,7 @@ to specify a list of cases which are not being processed.
 
 Examples:
 
-    node dockers/screenshotter/screenshotter.js -i Sqrt,SqrtRoot
+    yarn node dockers/screenshotter/screenshotter.js -i Sqrt,SqrtRoot
     dockers/screenshotter/screenshotter.sh --exclude=GreekLetters
 
 # How to run screenshotter tests
