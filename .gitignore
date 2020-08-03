@@ -1,9 +1,7 @@
 katex.tar.gz
 katex.zip
 node_modules
-npm-debug.log
-debug.log
-local.log
+*.log
 last.png
 diff.png
 /.npm-install.stamp
