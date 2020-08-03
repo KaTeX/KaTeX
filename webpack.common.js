@@ -1,11 +1,17 @@
 // @flow
 const path = require('path');
+// $FlowIgnore
 const TerserPlugin = require('terser-webpack-plugin');
+// $FlowIgnore
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// $FlowIgnore
+const PnpWebpackPlugin = require('pnp-webpack-plugin');
 
 const {version} = require("./package.json");
 
+// $FlowIgnore
 const browserslist = require('browserslist')();
+// $FlowIgnore
 const caniuse = require('caniuse-lite');
 
 // from the least supported to the most supported
@@ -61,9 +67,11 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         options: {importLoaders: 1},
     }, {
         loader: 'postcss-loader',
+        // $FlowIgnore
         options: {plugins: [require('postcss-preset-env')()]},
     }];
     if (minimize) {
+        // $FlowIgnore
         cssLoaders[1].options.plugins.push(require('cssnano')());
     }
 
@@ -159,6 +167,12 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         },
         performance: {
             hints: false,
+        },
+        resolve: {
+            plugins: [PnpWebpackPlugin],
+        },
+        resolveLoader: {
+            plugins: [PnpWebpackPlugin.moduleLoader(module)],
         },
     };
 }

@@ -140,7 +140,7 @@ if [[ ! $PUBLISH ]]; then
 
         # Update the version number in CDN URLs included in the README and the documentation,
         # and regenerate the Subresource Integrity hash for these files.
-        node update-sri.js "$VERSION" README.md contrib/*/README.md \
+        yarn node update-sri.js "$VERSION" README.md contrib/*/README.md \
             docs/*.md docs/*.md.bak website/pages/index.html
 
         # Generate a new version of the docs
@@ -157,7 +157,7 @@ if [[ ! $PUBLISH ]]; then
         git checkout package.json
 
         # Regenerate the Subresource Integrity hash in the README and the documentation
-        node update-sri.js "$VERSION" README.md contrib/*/README.md \
+        yarn node update-sri.js "$VERSION" README.md contrib/*/README.md \
             docs/*.md website/pages/index.html website/versioned_docs/version-$VERSION/*.md
     fi
 
@@ -196,7 +196,7 @@ else
     rm -f .gitignore.bak
 
     # Check Subresource Integrity hashes
-    node update-sri.js check README.md contrib/*/README.md
+    yarn node update-sri.js check README.md contrib/*/README.md
 
     # Make the commit and tag, and push them.
     git add package.json .gitignore dist/
