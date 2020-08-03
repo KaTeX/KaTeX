@@ -24,7 +24,7 @@ for browserTag in firefox:3.141.59-20200525 chrome:3.141.59-20200525; do
     container=$(docker run -d -P ${image})
     [[ ${container} ]] || continue
     echo "Container ${container:0:12} started, creating screenshots..."
-    if node "$(dirname "$0")"/screenshotter.js \
+    if yarn node "$(dirname "$0")"/screenshotter.js \
             --browser="${browser}" --container="${container}" "$@"; then
         res=Done
     else
@@ -37,7 +37,7 @@ done
 
 if [[ $BROWSERSTACK_USER ]]; then
     echo "Creating screenshots for Safari..."
-    if node "$(dirname "$0")"/screenshotter.js \
+    if yarn node "$(dirname "$0")"/screenshotter.js \
             --browser=safari --browserstack --selenium-capabilities '{
                 "browserName": "Safari",
                 "browser_version": "13.1",

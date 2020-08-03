@@ -22,21 +22,6 @@ commands:
           command: |
               git submodule sync
               git submodule update --init --recursive
-      - run:
-          name: Get changed files
-          command: |
-              if [[ $CIRCLE_PULL_REQUEST ]]; then
-                BASE_COMMIT=$(curl -s -H "Authorization: token a61ecb2fc5b72da54431""1b3db3875c96854958a8" \
-                  https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$CIRCLE_PR_NUMBER \
-                  | jq -r ".base.sha | select(. != null)")...
-              else
-                BASE_COMMIT=HEAD^
-              fi
-              if [[ $BASE_COMMIT ]]; then
-                CHANGED=$(git diff --name-only $BASE_COMMIT)
-                echo "$CHANGED"
-                echo "export CHANGED=\"$CHANGED\"" >> $BASH_ENV
-              fi
 
   skip_if_only_changed:
     parameters:
@@ -45,31 +30,22 @@ commands:
     steps:
       - run:
           name: Skip tests if only "<< parameters.filter >>" are changed
-          command: echo "$CHANGED" | grep -qvE '<< parameters.filter >>' || circleci step halt
+          command: git diff --name-only << pipeline.git.base_revision >>... | grep -qvE '<< parameters.filter >>' || circleci step halt
 
   install_dependencies:
     steps:
       - restore_cache:
           keys:
-            - yarn-deps-v3-{{ checksum "yarn.lock" }}
-            - yarn-deps-v3-
+            - yarn-deps-v5-{{ checksum "yarn.lock" }}
+            - yarn-deps-v5-
       - run:
           name: Install dependencies
-          command: yarn --frozen-lockfile
+          command: yarn --immutable
       - save_cache:
-          key: yarn-deps-v3-{{ checksum "yarn.lock" }}
+          key: yarn-deps-v5-{{ checksum "yarn.lock" }}
           paths:
-            - node_modules
-
-  codecov:
-    parameters:
-      flag:
-        type: string
-    steps:
-      - run:
-          name: Upload code coverage reports to Codecov
-          # do not upload if screenshotter tests are skipped
-          command: ./node_modules/.bin/codecov -F "<< parameters.flag >>"
+            - .yarn
+            - .pnp.js
 
   screenshot:
     parameters:
@@ -79,7 +55,7 @@ commands:
     steps:
       - run:
           name: Verify screenshots and generate diffs and new screenshots
-          command: node dockers/screenshotter/screenshotter.js -b $CIRCLE_JOB --verify --diff --new --coverage << parameters.flags >>
+          command: yarn node dockers/screenshotter/screenshotter.js -b $CIRCLE_JOB --verify --diff --new << parameters.flags >>
 
 jobs:
   test:
@@ -108,8 +84,9 @@ jobs:
           command: |
               yarn test:flow
               yarn test:jest --coverage --runInBand
-      - codecov:
-          flag: test
+      - run:
+          name: Upload code coverage reports to Codecov
+          command: yarn codecov
 
   screenshotter:
     parameters:
@@ -136,8 +113,6 @@ jobs:
             - screenshot:
                 flags: --selenium-ip localhost
 
-      - codecov:
-          flag: screenshotter
       - store_artifacts:
           path: test/screenshotter/new
           destination: new
