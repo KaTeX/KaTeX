@@ -1,6 +1,9 @@
 version: 2.1
 
 executors:
+  node:
+    docker:
+      - image: circleci/node:10
   firefox:
     docker:
       - image: circleci/node:10
@@ -44,10 +47,19 @@ commands:
             - .yarn
             - .pnp.js
 
+  screenshot:
+    parameters:
+      flags:
+        type: string
+        default: ""
+    steps:
+      - run:
+          name: Verify screenshots and generate diffs and new screenshots
+          command: yarn node dockers/screenshotter/screenshotter.js -b $CIRCLE_JOB --verify --diff --new << parameters.flags >>
+
 jobs:
   test:
-    docker:
-      - image: circleci/node:10
+    executor: node
     steps:
       - run:
           name: Check whether the build is running on the main repository
@@ -80,6 +92,9 @@ jobs:
     parameters:
       browser:
         type: executor
+      browserstack:
+        type: string
+        default: ""
     executor: << parameters.browser >>
     steps:
       - checkout_repo
@@ -87,9 +102,17 @@ jobs:
           filter: '^docs/|^static/|^website/|^LICENSE|\.md$'
       - install_dependencies
 
-      - run:
-          name: Verify screenshots and generate diffs and new screenshots
-          command: yarn node dockers/screenshotter/screenshotter.js --selenium-ip localhost -b $CIRCLE_JOB --verify --diff --new
+      - when:
+          condition: << parameters.browserstack >>
+          steps:
+            - screenshot:
+                flags: --browserstack --selenium-capabilities '<< parameters.browserstack >>'
+      - unless:
+          condition: << parameters.browserstack >>
+          steps:
+            - screenshot:
+                flags: --selenium-ip localhost
+
       - store_artifacts:
           path: test/screenshotter/new
           destination: new
@@ -107,3 +130,17 @@ workflows:
       - screenshotter:
           name: chrome
           browser: chrome
+      - screenshotter:
+          name: safari
+          browser: node
+          browserstack: |
+              {
+                "browserName": "Safari",
+                "browser_version": "13.1",
+                "os": "OS X",
+                "os_version": "Catalina"
+              }
+          filters:
+            branches:
+              # Forked pull requests don't have access to Browserstack credentials
+              ignore: /pull\/[0-9]+/
