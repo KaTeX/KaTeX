@@ -29,6 +29,7 @@ export type AlignSpec = { type: "separator", separator: string } | {
 // Type to indicate column separation in MathML
 export type ColSeparationType = "align" | "alignat" | "gather" | "small";
 
+// Helper functions
 function getHLines(parser: Parser): boolean[] {
     // Return an array. The array length = number of hlines.
     // Each element in the array tells if the line is dashed.
@@ -43,6 +44,16 @@ function getHLines(parser: Parser): boolean[] {
     }
     return hlineInfo;
 }
+
+const validateAmsEnvironmentContext = context => {
+    const settings = context.parser.settings;
+    if (!settings.displayMode) {
+        throw new ParseError(`{${context.envName}} cannot be used inline.`);
+    } else if (settings.strict && !settings.topEnv) {
+        settings.reportNonstrict("textEnv",
+            `{${context.envName}} called from math mode.`);
+    }
+};
 
 /**
  * Parse the body of the environment, with rows delimited by \\ and
@@ -155,6 +166,9 @@ function parseArray(
             }
             break;
         } else if (next === "\\cr") {
+            if (singleRow) {
+                throw new ParseError("Misplaced \\cr.", parser.nextToken);
+            }
             const cr = assertNodeType(parser.parseFunction(), "cr");
             rowGaps.push(cr.size);
 
@@ -167,10 +181,6 @@ function parseArray(
             throw new ParseError("Expected & or \\\\ or \\cr or \\end",
                                  parser.nextToken);
         }
-    }
-
-    if (singleRow && body.length > 1) {
-        throw new ParseError("Misplaced \\cr.", parser.nextToken);
     }
 
     // End cell group
@@ -603,14 +613,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
 // Convenience function for align, align*, aligned, alignat, alignat*, alignedat.
 const alignedHandler = function(context, args) {
     if (context.envName.indexOf("ed") === -1) {
-        // Check if this environment call is allowed.
-        const settings = context.parser.settings;
-        if (!settings.displayMode) {
-            throw new ParseError(`{${context.envName}} cannot be used inline.`);
-        } else if (settings.strict && !settings.topEnv) {
-            settings.reportNonstrict("textEnv",
-                `{${context.envName}} called from math mode.`);
-        }
+        validateAmsEnvironmentContext(context);
     }
     const cols = [];
     const separationType = context.envName.indexOf("at") > -1 ? "alignat" : "align";
@@ -921,13 +924,7 @@ defineEnvironment({
     },
     handler(context) {
         if (utils.contains(["gather", "gather*"], context.envName)) {
-            const settings = context.parser.settings;
-            if (!settings.displayMode) {
-                throw new ParseError(`{${context.envName}} cannot be used inline.`);
-            } else if (settings.strict && !settings.topEnv) {
-                settings.reportNonstrict("textEnv",
-                    `{${context.envName}} called from math mode.`);
-            }
+            validateAmsEnvironmentContext(context);
         }
         const res = {
             cols: [{
@@ -966,13 +963,7 @@ defineEnvironment({
         numArgs: 0,
     },
     handler(context) {
-        const settings = context.parser.settings;
-        if (!settings.displayMode) {
-            throw new ParseError(`{${context.envName}} cannot be used inline.`);
-        } else if (settings.strict && !settings.topEnv) {
-            settings.reportNonstrict("textEnv",
-                `{${context.envName}} called from math mode.`);
-        }
+        validateAmsEnvironmentContext(context);
         const res = {
             addEqnNum: context.envName === "equation",
             singleRow: true,
