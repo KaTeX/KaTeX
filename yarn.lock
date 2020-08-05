@@ -7418,16 +7418,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-worker@npm:^26.1.0":
-  version: 26.1.0
-  resolution: "jest-worker@npm:26.1.0"
-  dependencies:
-    merge-stream: ^2.0.0
-    supports-color: ^7.0.0
-  checksum: ef0145e09e1966e4a05cb87b7df1a274994cc18753b3bdad8902dc275d60e0e236660eefb3d1bd2580ced1ea941a4627aefbaf2eb1ad4878704b2d7d60b62f5a
-  languageName: node
-  linkType: hard
-
 "jest-worker@npm:^26.2.1":
   version: 26.2.1
   resolution: "jest-worker@npm:26.2.1"
@@ -7747,7 +7737,7 @@ fsevents@^1.2.7:
     style-loader: ^1.2.1
     stylelint: ^13.6.1
     stylelint-config-standard: ^20.0.0
-    terser-webpack-plugin: ^3.0.6
+    terser-webpack-plugin: ^4.0.0
     webpack: ^4.44.0
     webpack-bundle-analyzer: ^3.0.4
     webpack-cli: ^3.2.3
@@ -12442,26 +12432,26 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"terser-webpack-plugin@npm:^3.0.6":
-  version: 3.0.8
-  resolution: "terser-webpack-plugin@npm:3.0.8"
+"terser-webpack-plugin@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "terser-webpack-plugin@npm:4.0.0"
   dependencies:
     cacache: ^15.0.5
     find-cache-dir: ^3.3.1
-    jest-worker: ^26.1.0
+    jest-worker: ^26.2.1
     p-limit: ^3.0.2
     schema-utils: ^2.6.6
     serialize-javascript: ^4.0.0
     source-map: ^0.6.1
-    terser: ^4.8.0
+    terser: ^5.0.0
     webpack-sources: ^1.4.3
   peerDependencies:
     webpack: ^4.0.0 || ^5.0.0
-  checksum: 484628900078357c3730587f87f1255ace31cfd704f1cf78d60266b4df121ab1410aaea1968e515f6356c60642ca775efdc21be60be8a7b529bd6aa950c41c5c
+  checksum: 213246310f464f8216a3b99cfb5333083369a89b2bc8d1e834315ac5fdc7411672ba617b0202cce055d0ea2a99bf3a5a78b13006251f6ab3c9b0b6911dfc6c95
   languageName: node
   linkType: hard
 
-"terser@npm:^4.1.2, terser@npm:^4.8.0":
+"terser@npm:^4.1.2":
   version: 4.8.0
   resolution: "terser@npm:4.8.0"
   dependencies:
@@ -12471,6 +12461,19 @@ fsevents@^1.2.7:
   bin:
     terser: bin/terser
   checksum: d7ab95898b40e2aa3513b02fc74f520f8e65072a19d7f687b8224af01512ad4d2227bc1375c22cd050f67eb1ca3e440b4f09652c5f48f13ed9ee81c0c26015a3
+  languageName: node
+  linkType: hard
+
+"terser@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "terser@npm:5.0.0"
+  dependencies:
+    commander: ^2.20.0
+    source-map: ~0.6.1
+    source-map-support: ~0.5.12
+  bin:
+    terser: bin/terser
+  checksum: 807c19a8f5c5d67fbf4c463251351b9c1dfd3297fa5bf1d6e455ff0be1d1a86364e66c05872d0222d39633d5b91867c8e74d4e7a75fb54d53a387dcf5bd4b3c8
   languageName: node
   linkType: hard
 
