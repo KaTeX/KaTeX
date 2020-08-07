@@ -16,16 +16,16 @@ jobs:
         node-version: '12'
     - name: Autofix lockfile
       run: |
-        # restore yarn.lock
+        # restore yarn.lock from the previous commit
         git checkout HEAD^ -- yarn.lock
-        
+
         # install yarn-plugin-deduplicate
         yarn plugin import https://raw.githubusercontent.com/eps1lon/yarn-plugin-deduplicate/latest/bin/%40yarnpkg/plugin-deduplicate.js
 
         # if package.json was not updated, upgrade the dependency
         git diff --name-only HEAD^ HEAD | grep -q 'package.json' || yarn up `git log -1 --pretty=%s | awk '{ print $3 }'`
 
-        # restore package.json
+        # restore package.json from the last commit
         git checkout HEAD -- package.json
 
         yarn install
