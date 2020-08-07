@@ -38,3 +38,4 @@ jobs:
         git config --global user.name 'dependabot[bot]'
         git config --global user.email 'support@github.com'
         git commit -m "Dependabot autofix [skip netlify]"
+        git push
