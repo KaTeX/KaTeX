@@ -36,6 +36,6 @@ jobs:
       run: |
         git add yarn.lock
         git config --global user.name 'dependabot[bot]'
-        git config --global user.email 'support@github.com'
+        git config --global user.email '49699333+dependabot[bot]@users.noreply.github.com'
         git commit -m "Dependabot autofix [skip netlify]"
         git push
