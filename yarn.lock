@@ -275,16 +275,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-split-export-declaration@npm:^7.10.4":
-  version: 7.10.4
-  resolution: "@babel/helper-split-export-declaration@npm:7.10.4"
-  dependencies:
-    "@babel/types": ^7.10.4
-  checksum: d8536faa40a026f57c48d18ac4e7e3979941af2164beb281aff96af5668984827b6a18f357b903ada6474357a24045b4d0c4409a77139b0207ea62bcdfc108e3
-  languageName: node
-  linkType: hard
-
-"@babel/helper-split-export-declaration@npm:^7.11.0":
+"@babel/helper-split-export-declaration@npm:^7.10.4, @babel/helper-split-export-declaration@npm:^7.11.0":
   version: 7.11.0
   resolution: "@babel/helper-split-export-declaration@npm:7.11.0"
   dependencies:
@@ -1193,11 +1184,11 @@ __metadata:
   linkType: hard
 
 "@babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
-  version: 7.11.0
-  resolution: "@babel/runtime@npm:7.11.0"
+  version: 7.11.2
+  resolution: "@babel/runtime@npm:7.11.2"
   dependencies:
     regenerator-runtime: ^0.13.4
-  checksum: 212e99737b26f7f0b5bd552dcfddccd82f1bcb61e3f564afb82b9cb61b72d613ae8c18c6f7006729e4ab3c4ab2b821f86c1f324033199c03936cfa9c0d413a5e
+  checksum: 2f127ad60a0f0568faa0044e5b48329d8166c7fd3a0a3ce774070010a1c441ebf5570f526dd6bb26e214fb1a01bb987ab6a4c3f60a00f04d02448939f4c61e1e
   languageName: node
   linkType: hard
 
@@ -2443,7 +2434,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"autoprefixer@npm:^9.6.1":
+"autoprefixer@npm:^9.6.1, autoprefixer@npm:^9.8.0":
   version: 9.8.6
   resolution: "autoprefixer@npm:9.8.6"
   dependencies:
@@ -2457,23 +2448,6 @@ __metadata:
   bin:
     autoprefixer: bin/autoprefixer
   checksum: b406d8047a97fcc39c9c6d208fd6f1974e5957800461d9a79457a3ecaca2c0ea090bd06f30c8653f48f751c31115c63a80502ff8c9a6bb7b8a5a5063021827d4
-  languageName: node
-  linkType: hard
-
-"autoprefixer@npm:^9.8.0":
-  version: 9.8.5
-  resolution: "autoprefixer@npm:9.8.5"
-  dependencies:
-    browserslist: ^4.12.0
-    caniuse-lite: ^1.0.30001097
-    colorette: ^1.2.0
-    normalize-range: ^0.1.2
-    num2fraction: ^1.2.2
-    postcss: ^7.0.32
-    postcss-value-parser: ^4.1.0
-  bin:
-    autoprefixer: bin/autoprefixer
-  checksum: 90c2b6b32801c5c58a4d6e540e554085bb00bac3599455110c6f65cfd6e31ab0d677a68c6a7ca02dc50f12f9a570802a85ec8009c3032a6bfd74a41b0d562be0
   languageName: node
   linkType: hard
 
@@ -3154,10 +3128,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30000981, caniuse-lite@npm:^1.0.30001093, caniuse-lite@npm:^1.0.30001097, caniuse-lite@npm:^1.0.30001102, caniuse-lite@npm:^1.0.30001109":
-  version: 1.0.30001109
-  resolution: "caniuse-lite@npm:1.0.30001109"
-  checksum: 303bab088035d107a4797813ee6946f2d613013497e5ab8db5f63e685bcd9ec84b00624b0bc38dd565f17dbdcdeda11db27be69e17c141b9f2479eb67dd89711
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30000981, caniuse-lite@npm:^1.0.30001093, caniuse-lite@npm:^1.0.30001102, caniuse-lite@npm:^1.0.30001109":
+  version: 1.0.30001111
+  resolution: "caniuse-lite@npm:1.0.30001111"
+  checksum: 24ef382fcf288a40ef2a18cd28914a39bb4441f763ad3bfe4a849aa94890c246caad3733c17487ac54fa6324f5acae760db60e4459367415dfe4d665d829e073
   languageName: node
   linkType: hard
 
@@ -3502,7 +3476,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"colorette@npm:^1.2.0, colorette@npm:^1.2.1":
+"colorette@npm:^1.2.1":
   version: 1.2.1
   resolution: "colorette@npm:1.2.1"
   checksum: 1cc21ad4b84777a424794f78b6bb6a44b614ae17dcea91762199339f8047598e6d981249eeef7ea588c99eaf062be8fcdcd4866c112998922ed854db6dde96f9
@@ -5353,12 +5327,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flow-bin@npm:^0.130.0":
-  version: 0.130.0
-  resolution: "flow-bin@npm:0.130.0"
+"flow-bin@npm:^0.131.0":
+  version: 0.131.0
+  resolution: "flow-bin@npm:0.131.0"
   bin:
     flow: cli.js
-  checksum: 720c430c71dfe9274bf26aba61abea39a43cc9173fc155dad07e43e610f2c7af3583c3138d6f4ecffc3b0ecd5739a8af22b4d02de61dbe6ea6417973b5a2bc66
+  checksum: 7d0d157a6a6372772c08d8d7425d8dd8b115ad25abf0cbc2b72b2ea6b4edb3c727b32141d1d3e310697cc3ce2a5390ee08269bf9d63c3d8ed1f8d761f4cc09af
   languageName: node
   linkType: hard
 
@@ -7418,16 +7392,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-worker@npm:^26.1.0":
-  version: 26.1.0
-  resolution: "jest-worker@npm:26.1.0"
-  dependencies:
-    merge-stream: ^2.0.0
-    supports-color: ^7.0.0
-  checksum: ef0145e09e1966e4a05cb87b7df1a274994cc18753b3bdad8902dc275d60e0e236660eefb3d1bd2580ced1ea941a4627aefbaf2eb1ad4878704b2d7d60b62f5a
-  languageName: node
-  linkType: hard
-
 "jest-worker@npm:^26.2.1":
   version: 26.2.1
   resolution: "jest-worker@npm:26.2.1"
@@ -7716,7 +7680,7 @@ fsevents@^1.2.7:
     eslint-plugin-flowtype: ^5.2.0
     eslint-plugin-react: ^7.20.3
     file-loader: ^6.0.0
-    flow-bin: ^0.130.0
+    flow-bin: ^0.131.0
     fs-extra: ^9.0.1
     husky: ^4.2.5
     istanbul-lib-coverage: ^3.0.0
@@ -7747,7 +7711,7 @@ fsevents@^1.2.7:
     style-loader: ^1.2.1
     stylelint: ^13.6.1
     stylelint-config-standard: ^20.0.0
-    terser-webpack-plugin: ^3.0.6
+    terser-webpack-plugin: ^4.0.0
     webpack: ^4.44.0
     webpack-bundle-analyzer: ^3.0.4
     webpack-cli: ^3.2.3
@@ -12442,26 +12406,26 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"terser-webpack-plugin@npm:^3.0.6":
-  version: 3.0.8
-  resolution: "terser-webpack-plugin@npm:3.0.8"
+"terser-webpack-plugin@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "terser-webpack-plugin@npm:4.0.0"
   dependencies:
     cacache: ^15.0.5
     find-cache-dir: ^3.3.1
-    jest-worker: ^26.1.0
+    jest-worker: ^26.2.1
     p-limit: ^3.0.2
     schema-utils: ^2.6.6
     serialize-javascript: ^4.0.0
     source-map: ^0.6.1
-    terser: ^4.8.0
+    terser: ^5.0.0
     webpack-sources: ^1.4.3
   peerDependencies:
     webpack: ^4.0.0 || ^5.0.0
-  checksum: 484628900078357c3730587f87f1255ace31cfd704f1cf78d60266b4df121ab1410aaea1968e515f6356c60642ca775efdc21be60be8a7b529bd6aa950c41c5c
+  checksum: 213246310f464f8216a3b99cfb5333083369a89b2bc8d1e834315ac5fdc7411672ba617b0202cce055d0ea2a99bf3a5a78b13006251f6ab3c9b0b6911dfc6c95
   languageName: node
   linkType: hard
 
-"terser@npm:^4.1.2, terser@npm:^4.8.0":
+"terser@npm:^4.1.2":
   version: 4.8.0
   resolution: "terser@npm:4.8.0"
   dependencies:
@@ -12471,6 +12435,19 @@ fsevents@^1.2.7:
   bin:
     terser: bin/terser
   checksum: d7ab95898b40e2aa3513b02fc74f520f8e65072a19d7f687b8224af01512ad4d2227bc1375c22cd050f67eb1ca3e440b4f09652c5f48f13ed9ee81c0c26015a3
+  languageName: node
+  linkType: hard
+
+"terser@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "terser@npm:5.0.0"
+  dependencies:
+    commander: ^2.20.0
+    source-map: ~0.6.1
+    source-map-support: ~0.5.12
+  bin:
+    terser: bin/terser
+  checksum: 807c19a8f5c5d67fbf4c463251351b9c1dfd3297fa5bf1d6e455ff0be1d1a86364e66c05872d0222d39633d5b91867c8e74d4e7a75fb54d53a387dcf5bd4b3c8
   languageName: node
   linkType: hard
 
