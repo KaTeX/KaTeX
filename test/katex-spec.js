@@ -2736,6 +2736,7 @@ describe("AMS environments", function() {
         expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.not.toParse(nonstrictSettings);
         expect`\begin{equation}a=b+c\end{equation}`.not.toParse(nonstrictSettings);
         expect`\begin{split}a &=b+c\\&=e+f\end{split}`.not.toParse(nonstrictSettings);
+        expect`\begin{CD}A @>a>> B \\@VbVV @AAcA\\C @= D\end{CD}`.not.toParse(nonstrictSettings);
     });
 
     const nonStrictDisplay = new Settings({displayMode: true, strict: false});
@@ -2749,6 +2750,7 @@ describe("AMS environments", function() {
         expect`\begin{equation}a=b+c\end{equation}`.toBuild(nonStrictDisplay);
         expect`\begin{equation}\begin{split}a &=b+c\\&=e+f\end{split}\end{equation}`.toBuild(nonStrictDisplay);
         expect`\begin{split}a &=b+c\\&=e+f\end{split}`.toBuild(nonStrictDisplay);
+        expect`\begin{CD}A @<a<< B @>>b> C @>>> D\\@. @| @AcAA @VVdV \\@. E @= F @>>> G\end{CD}`.toBuild(nonStrictDisplay);
     });
 
     it("{equation} should fail if argument contains two rows.", () => {

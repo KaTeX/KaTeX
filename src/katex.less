@@ -555,6 +555,10 @@
         padding: 0 0.5em;
     }
 
+    .cd-arrow-pad {
+        padding: 0 0.55556em 0 0.27778em;  // \;{#1}\;\;
+    }
+
     .x-arrow,
     .mover,
     .munder {
@@ -609,6 +613,25 @@
 
     .mtr-glue {
         width: 50%;
+    }
+
+    .cd-vert-arrow {
+        display: inline-block;
+        position: relative;
+    }
+
+    .cd-label-left {
+        display: inline-block;
+        position: absolute;
+        right: calc(50% + 0.3em);
+        text-align: left;
+    }
+
+    .cd-label-right {
+        display: inline-block;
+        position: absolute;
+        left: calc(50% + 0.3em);
+        text-align: right;
     }
 }
 

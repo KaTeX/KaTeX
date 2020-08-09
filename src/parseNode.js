@@ -41,6 +41,7 @@ type ParseNodeTypes = {
         hLinesBeforeRow: Array<boolean[]>,
         addEqnNum?: boolean,
         leqno?: boolean,
+        isCD?: boolean,
     |},
     "color": {|
         type: "color",
