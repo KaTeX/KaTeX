@@ -181,27 +181,20 @@ if [[ ! $PUBLISH ]]; then
     echo "After it gets merged, run './release.sh -p $VERSION'!"
     echo "Note that if KaTeX source code is changed after running this script,"
     echo "you have to run the release script again."
-else
-    # Make a new detached HEAD
-    git checkout --detach
 
+    git diff --stat --exit-code # check for uncommitted changes
+else
     # Edit package.json to the right version
     sed -i.bak -E 's|"version": "[^"]+",|"version": "'$VERSION'",|' package.json
     rm -f package.json.bak
 
-    # Build generated files and add them to the repository
-    git clean -fdx dist
+    # Build generated files
     yarn dist
-    sed -i.bak -E '/^\/dist\/$/d' .gitignore
-    rm -f .gitignore.bak
 
     # Check Subresource Integrity hashes
     yarn node update-sri.js check README.md contrib/*/README.md
 
-    # Make the commit and tag, and push them.
-    git add package.json .gitignore dist/
-    git commit -n -m "v$VERSION"
-    git diff --stat --exit-code # check for uncommitted changes
+    # Make the tag and push
     git tag -a "v$VERSION" -m "v$VERSION"
     git push "$ORIGIN" "v$VERSION"
 
@@ -215,8 +208,6 @@ else
     echo "Visit https://github.com/KaTeX/KaTeX/releases/new?tag=v$VERSION to edit the release notes."
     echo "Don't forget to upload katex.tar.gz and katex.zip to the release!"
 fi
-
-git diff --stat --exit-code # check for uncommitted changes
 
 if [[ $DRY_RUN ]]; then
     echo ""
