@@ -87,7 +87,7 @@ Cases: |
         c &\text{if } d
     \end{rcases}⇒…
 CD:
-  tex: \begin{CD} A @<a<< B @>>b> C @>>> D \\ @. @| @AcAA @VVdV \\ @. E @= F @>>> G \end{CD}
+  tex: \begin{CD} A @<a<< B @>>b> C \\ @| @AcAA @VVdV \\ D @= E @>>> F \end{CD}
   display: 1
 Colors:
     tex: \blue{a}\textcolor{#0f0}{b}\textcolor{red}{c}
