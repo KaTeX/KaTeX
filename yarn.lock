@@ -3821,8 +3821,8 @@ __metadata:
   linkType: hard
 
 "css-loader@npm:^4.0.0":
-  version: 4.2.0
-  resolution: "css-loader@npm:4.2.0"
+  version: 4.2.1
+  resolution: "css-loader@npm:4.2.1"
   dependencies:
     camelcase: ^6.0.0
     cssesc: ^3.0.0
@@ -3839,7 +3839,7 @@ __metadata:
     semver: ^7.3.2
   peerDependencies:
     webpack: ^4.27.0 || ^5.0.0
-  checksum: cb813eb5eeb46fb970e3d1d692ccdedcec5f1b16f7a6bd9e29284afb60e50b20fd982d229f993b6c2f3563824bbbd90cdb7dc536e252e51208cc46a79c1bcc80
+  checksum: bd8188efac141352371d3c87e90b6c5658018fa2e9438a22ad38e7a3896e492edb535ae7fe7e56e4c14e43ccc88fbb3a235a0929d4f9302bbf12215687edc9fa
   languageName: node
   linkType: hard
 
