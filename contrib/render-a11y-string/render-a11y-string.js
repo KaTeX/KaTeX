@@ -387,6 +387,15 @@ const handleObject = (
             break;
         }
 
+        case "phase": {
+            buildRegion(a11yStrings, function(a11yStrings) {
+                a11yStrings.push("start phase angle");
+                buildA11yStrings(tree.body, a11yStrings, atomType);
+                a11yStrings.push("end phase angle");
+            });
+            break;
+        }
+
         case "phantom": {
             a11yStrings.push("empty space");
             break;
