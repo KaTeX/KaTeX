@@ -212,6 +212,7 @@ For Persian composite characters, a user-supplied [plug-in](https://github.com/
 |$\xcancel{ABC}$ `\xcancel{ABC}`|$\not =$ `\not =`
 |$\sout{abc}$ `\sout{abc}`|$\boxed{\pi=\frac c d}$ `\boxed{\pi=\frac c d}`
 |$a_{\angl n}$ `$a_{\angl n}`|$a_\angln$ `a_\angln`
+|$\phase{-78^\circ}$`\phase{-78^\circ}` |
 
 `\tag{hi} x+y^{2x}`
 $$\tag{hi} x+y^{2x}$$

@@ -816,7 +816,7 @@ use `\ce` instead|
 |\partial|$\partial$||
 |\perp|$\perp$||
 |\phantom|$\Gamma^{\phantom{i}j}_{i\phantom{j}k}$|`\Gamma^{\phantom{i}j}_{i\phantom{j}k}`|
-|\phase|<span style="color:firebrick;">Not supported</span>||
+|\phase|$\phase{-78^\circ}$|`\phase{-78^\circ}`|
 |\Phi|$\Phi$||
 |\phi|$\phi$||
 |\Pi|$\Pi$||
