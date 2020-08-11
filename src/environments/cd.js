@@ -1,9 +1,14 @@
+// @flow
 import buildCommon from "../buildCommon";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
+import {assertSymbolNodeType} from "../parseNode";
 import ParseError from "../ParseError";
+
+import type Parser from "../Parser";
+import type {ParseNode, AnyParseNode} from "../parseNode";
 
 const cdArrow = {
     ">": "\\\\cdrightarrow",
@@ -19,12 +24,12 @@ const newCell = () => {
     return {type: "styling", body: [], mode: "math", style: "display"};
 };
 
-const isLabelEnd = (node: ParseNode, endChar: string): boolean => {
+const isLabelEnd = (node: AnyParseNode, endChar: string): boolean => {
     return ((node.type === "mathord" || node.type === "atom") &&
         node.text === endChar);
 };
 
-export function parseCD(parser: Parser): ParseNode<"CD"> {
+export function parseCD(parser: Parser): ParseNode<"array"> {
     // Get the array's parse nodes with \\ temporarily mapped to \cr.
     const parseNodes = [];
     parser.gullet.beginGroup();
@@ -64,7 +69,7 @@ export function parseCD(parser: Parser): ParseNode<"CD"> {
             } else {
                 // Parse node j is an "@", the start of an arrow.
                 row.push(cell);
-                const arrowChar = nodes[j + 1].text;
+                const arrowChar = assertSymbolNodeType(nodes[j + 1]).text;
                 const firstLabel = {type: "ordgroup", mode: "math", body: []};
                 const secondLabel = {type: "ordgroup", mode: "math", body: []};
                 if ("=|.".indexOf(arrowChar) > -1) {
@@ -103,7 +108,7 @@ export function parseCD(parser: Parser): ParseNode<"CD"> {
                     case "\\uparrow":
                     case "\\downarrow": {
                         const leftLabel = parser.callFunction(
-                            "\\\\cdleft", [firstLabel]
+                            "\\\\cdleft", [firstLabel], []
                         );
                         arrow = {
                             type: "atom",
@@ -111,16 +116,16 @@ export function parseCD(parser: Parser): ParseNode<"CD"> {
                             mode: "math",
                             family: "rel",
                         };
-                        arrow = parser.callFunction("\\Big", [arrow]);
+                        arrow = parser.callFunction("\\Big", [arrow], []);
                         const rightLabel = parser.callFunction(
-                            "\\\\cdright", [secondLabel]
+                            "\\\\cdright", [secondLabel], []
                         );
                         arrow = {
                             type: "ordgroup",
                             mode: "math",
                             body: [leftLabel, arrow, rightLabel],
                         };
-                        arrow = parser.callFunction("\\\\cdparent", [arrow]);
+                        arrow = parser.callFunction("\\\\cdparent", [arrow], []);
                         break;
                     }
                     case "\\\\cdlongequal":
@@ -128,10 +133,10 @@ export function parseCD(parser: Parser): ParseNode<"CD"> {
                         break;
                     case "\\Vert":
                         arrow = {type: "textord", text: "\\Vert", mode: "math"};
-                        arrow = parser.callFunction("\\Big", [arrow]);
+                        arrow = parser.callFunction("\\Big", [arrow], []);
                         break;
                     default:
-                        arrow = null;
+                        arrow = {type: "textord", text: " ", mode: "math"};
                 }
                 arrow = {
                     type: "styling",
@@ -189,9 +194,10 @@ defineFunction({
     props: {
         numArgs: 1,
     },
-    handler({funcName}, args) {
+    handler({parser, funcName}, args) {
         return {
             type: "cdlabel",
+            mode: parser.mode,
             side: funcName.slice(4),
             label: args[0],
         };
@@ -229,9 +235,10 @@ defineFunction({
     props: {
         numArgs: 1,
     },
-    handler({funcName}, args) {
+    handler({parser}, args) {
         return {
             type: "cdlabelparent",
+            mode: parser.mode,
             fragment: args[0],
         };
     },
