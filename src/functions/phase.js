@@ -79,7 +79,7 @@ defineFunction({
         const node = new mathMLTree.MathNode(
             "menclose", [mml.buildGroup(group.body, options)]
         );
-        node.setAttribute("notation", "phase");
+        node.setAttribute("notation", "phasorangle");
         return node;
     },
 });
