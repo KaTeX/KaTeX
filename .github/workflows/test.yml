@@ -101,6 +101,8 @@ jobs:
   screnshotter-safari:
     name: screenshotter (safari)
     runs-on: ubuntu-latest
+    # forked repo doesn't have access to browserstack credentials
+    if: github.repository_owner == 'KaTeX'
 
     steps:
     - uses: actions/checkout@v2
@@ -133,6 +135,9 @@ jobs:
             "os": "OS X",
             "os_version": "Catalina"
           }'
+      env:
+        BROWSERSTACK_USER: ${{ secrets.BROWSERSTACK_USER }}
+        BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
     - uses: actions/upload-artifact@v2
       if: failure()
