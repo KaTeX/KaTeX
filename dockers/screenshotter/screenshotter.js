@@ -153,7 +153,10 @@ function guessDockerIPs() {
     }
     // Native Docker on Linux or remote Docker daemon or similar
     const gatewayIP = cmd("docker", "inspect",
-      "-f", "{{.NetworkSettings.Gateway}}", opts.container);
+        "-f", "{{.NetworkSettings.Gateway}}", opts.container)
+      || cmd("docker", "inspect",
+        "-f", "{{range .NetworkSettings.Networks}}{{.Gateway}}{{end}}",
+        opts.container);
     seleniumIP = seleniumIP || gatewayIP;
     katexIP = katexIP || gatewayIP;
 }

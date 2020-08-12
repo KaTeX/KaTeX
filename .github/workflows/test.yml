@@ -1,0 +1,147 @@
+name: Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12'
+
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          .yarn/cache
+          .pnp.js
+        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
+        restore-keys: |
+          yarn-deps-v1-
+
+    - name: Install dependencies
+      run: yarn --immutable
+
+    - name: Lint code
+      run: yarn test:lint
+
+    - name: Run Flow
+      run: yarn test:flow
+      if: always()
+
+    - name: Run Jest tests
+      run: yarn test:jest --coverage
+      if: always()
+
+    - uses: codecov/codecov-action@v1
+
+  screenshotter:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        browser: [chrome, firefox]
+      fail-fast: false
+
+    services:
+      selenium:
+        image: selenium/standalone-${{ matrix.browser }}:3.141.59-20200525
+        ports:
+        - 4444:4444
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12'
+
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          .yarn/cache
+          .pnp.js
+        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
+        restore-keys: |
+          yarn-deps-v1-
+
+    - name: Install dependencies
+      run: yarn --immutable
+
+    - name: Verify screenshots and generate diffs and new screenshots
+      run: yarn node dockers/screenshotter/screenshotter.js -b ${{ matrix.browser }} -c ${{ job.services.selenium.id }} --verify --diff --new
+
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: new
+        path: test/screenshotter/new
+
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: diff
+        path: test/screenshotter/diff
+
+  screnshotter-safari:
+    name: screenshotter (safari)
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12'
+
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          .yarn/cache
+          .pnp.js
+        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
+        restore-keys: |
+          yarn-deps-v1-
+
+    - name: Install dependencies
+      run: yarn --immutable
+
+    - name: Verify screenshots and generate diffs and new screenshots
+      run: |
+          yarn node dockers/screenshotter/screenshotter.js -b safari --verify --diff --new --browserstack --selenium-capabilities '{
+            "browserName": "Safari",
+            "browser_version": "13.1",
+            "os": "OS X",
+            "os_version": "Catalina"
+          }'
+
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: new
+        path: test/screenshotter/new
+
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: diff
+        path: test/screenshotter/diff
