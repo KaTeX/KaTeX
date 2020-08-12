@@ -89,12 +89,6 @@ type ParseNodeTypes = {
         body: AnyParseNode[],
         semisimple?: boolean,
     |},
-    "phase": {|
-        type: "phase",
-        mode: Mode,
-        loc?: ?SourceLocation,
-        body: AnyParseNode,
-    |},
     "raw": {|
         type: "raw",
         mode: Mode,

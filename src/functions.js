@@ -34,7 +34,6 @@ import "./functions/operatorname";
 import "./functions/ordgroup";
 import "./functions/overline";
 import "./functions/phantom";
-import "./functions/phase";
 import "./functions/raisebox";
 import "./functions/rule";
 import "./functions/sizing";
