@@ -9,6 +9,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: |
+      !contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
+      !contains(toJSON(github.event.commits.*.message), '[ci skip]')
 
     steps:
     - uses: actions/checkout@v2
@@ -48,6 +51,9 @@ jobs:
 
   screenshotter:
     runs-on: ubuntu-latest
+    if: |
+      !contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
+      !contains(toJSON(github.event.commits.*.message), '[ci skip]')
 
     strategy:
       matrix:
@@ -102,7 +108,10 @@ jobs:
     name: screenshotter (safari)
     runs-on: ubuntu-latest
     # forked repo doesn't have access to browserstack credentials
-    if: github.repository_owner == 'KaTeX'
+    if: |
+      github.repository_owner == 'KaTeX' &&
+      !contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
+      !contains(toJSON(github.event.commits.*.message), '[ci skip]')
 
     steps:
     - uses: actions/checkout@v2
