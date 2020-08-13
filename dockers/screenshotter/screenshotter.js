@@ -10,6 +10,7 @@ const pako = require("pako");
 const path = require("path");
 const selenium = require("selenium-webdriver");
 const firefox = require("selenium-webdriver/firefox");
+const chrome = require("selenium-webdriver/chrome");
 
 const istanbulLibCoverage = require('istanbul-lib-coverage');
 const istanbulLibReport = require('istanbul-lib-report');
@@ -280,6 +281,8 @@ function buildDriver() {
         ffProfile.setPreference("browser.startup.page", 0);
         const ffOptions = new firefox.Options().setProfile(ffProfile);
         builder.setFirefoxOptions(ffOptions);
+    } else if (opts.browser == "chrome") {
+        builder.setChromeOptions(new chrome.Options().setProxy(null));
     }
     if (seleniumURL) {
         builder.usingServer(seleniumURL);
