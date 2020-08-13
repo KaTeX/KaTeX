@@ -66,9 +66,9 @@ if (typeof document !== "undefined") {
 const renderToString = function(
     expression: string,
     options: SettingsOptions,
-): string {
+): number {
     const markup = renderToDomTree(expression, options).toMarkup();
-    return markup;
+    return markup
 };
 
 /**
