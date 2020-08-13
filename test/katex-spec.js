@@ -2505,6 +2505,7 @@ describe("A phantom builder", function() {
         expect`\phantom{x^2}`.toBuild();
         expect`\phantom{x}^2`.toBuild();
         expect`\phantom x`.toBuild();
+        expect `\mathstrut`.toBuild();
 
         expect`\hphantom{x}`.toBuild();
         expect`\hphantom{x^2}`.toBuild();

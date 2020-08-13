@@ -268,7 +268,7 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 | `~`             | non-breaking space | `\negthinspace`      | – ³∕₁₈ em space
 | `\<space>`      | space              | `\negmedspace`       | – ⁴∕₁₈ em space
 | `\nobreakspace` | non-breaking space | `\negthickspace`     | – ⁵∕₁₈ em space
-| `\space`        | space              |
+| `\space`        | space              | `\mathstrut`         | `\vphantom{(}`
 
 </div>
 
