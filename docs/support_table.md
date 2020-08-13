@@ -659,7 +659,7 @@ use `\ce` instead|
 |\mathscr|$\mathscr{AB}$|`\mathscr{AaBb123}`<br>KaTeX supports A-Z|
 |\mathsf|$\mathsf{AaBb123}$|`\mathsf{AaBb123}`|
 |\mathsterling|$\mathsterling$||
-|\mathstrut|<span style="color:firebrick;">Not supported</span>||
+|\mathstrut|$\sqrt{\mathstrut a}$|`\sqrt{\mathstrut a}`|
 |\mathtip|<span style="color:firebrick;">Not supported</span>||
 |\mathtt|$\mathtt{AaBb123}$|`\mathtt{AaBb123}`|
 |\matrix|<span style="color:firebrick;">Not supported</span>|See `{matrix}`|
@@ -816,7 +816,7 @@ use `\ce` instead|
 |\partial|$\partial$||
 |\perp|$\perp$||
 |\phantom|$\Gamma^{\phantom{i}j}_{i\phantom{j}k}$|`\Gamma^{\phantom{i}j}_{i\phantom{j}k}`|
-|\phase|<span style="color:firebrick;">Not supported</span>||
+|\phase|$\phase{-78^\circ}$|`\phase{-78^\circ}`|
 |\Phi|$\Phi$||
 |\phi|$\phi$||
 |\Pi|$\Pi$||

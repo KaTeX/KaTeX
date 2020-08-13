@@ -2479,6 +2479,15 @@ describe("A actuarial angle builder", function() {
     });
 });
 
+describe("\\phase", function() {
+    it("should fail in text mode", function() {
+        expect`\text{\phase{-78.2^\circ}}`.not.toParse();
+    });
+    it("should not fail in math mode", function() {
+        expect`\phase{-78.2^\circ}`.toBuild();
+    });
+});
+
 describe("A phantom parser", function() {
     it("should not fail", function() {
         expect`\phantom{x}`.toParse();
@@ -2505,6 +2514,7 @@ describe("A phantom builder", function() {
         expect`\phantom{x^2}`.toBuild();
         expect`\phantom{x}^2`.toBuild();
         expect`\phantom x`.toBuild();
+        expect `\mathstrut`.toBuild();
 
         expect`\hphantom{x}`.toBuild();
         expect`\hphantom{x^2}`.toBuild();

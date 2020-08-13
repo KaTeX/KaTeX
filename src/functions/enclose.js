@@ -4,6 +4,9 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
+import {phasePath} from "../svgGeometry";
+import {PathNode, SvgNode} from "../domTree";
+import {calculateSize} from "../units";
 import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
@@ -11,14 +14,14 @@ import * as mml from "../buildMathML";
 
 
 const htmlBuilder = (group, options) => {
-    // \cancel, \bcancel, \xcancel, \sout, \fbox, \colorbox, \fcolorbox
+    // \cancel, \bcancel, \xcancel, \sout, \fbox, \colorbox, \fcolorbox, \phase
     // Some groups can return document fragments.  Handle those by wrapping
     // them in a span.
     const inner = buildCommon.wrapFragment(
         html.buildGroup(group.body, options), options);
 
     const label = group.label.substr(1);
-    const scale = options.sizeMultiplier;
+    let scale = options.sizeMultiplier;
     let img;
     let imgShift = 0;
 
@@ -33,6 +36,33 @@ const htmlBuilder = (group, options) => {
         img = buildCommon.makeSpan(["stretchy", "sout"]);
         img.height = options.fontMetrics().defaultRuleThickness / scale;
         imgShift = -0.5 * options.fontMetrics().xHeight;
+
+    } else if (label === "phase") {
+        // Set a couple of dimensions from the steinmetz package.
+        const lineWeight = calculateSize({number: 0.6, unit: "pt"}, options);
+        const clearance = calculateSize({number: 0.35, unit: "ex"}, options);
+
+        // Prevent size changes like \Huge from affecting line thickness
+        const newOptions = options.havingBaseSizing();
+        scale = scale / newOptions.sizeMultiplier;
+
+        const angleHeight = inner.height + inner.depth + lineWeight + clearance;
+        // Reserve a left pad for the angle.
+        inner.style.paddingLeft = (angleHeight / 2 + lineWeight) + "em";
+
+        // Create an SVG
+        const viewBoxHeight = Math.floor(1000 * angleHeight * scale);
+        const path = phasePath(viewBoxHeight);
+        const svgNode = new SvgNode([new PathNode("phase", path)], {
+            "width": "400em",
+            "height": `${viewBoxHeight / 1000}em`,
+            "viewBox": `0 0 400000 ${viewBoxHeight}`,
+            "preserveAspectRatio": "xMinYMin slice",
+        });
+        // Wrap it in a span with overflow: hidden.
+        img = buildCommon.makeSvgSpan(["hide-tail"], [svgNode], options);
+        img.style.height = angleHeight + "em";
+        imgShift = inner.depth + lineWeight + clearance;
 
     } else {
         // Add horizontal padding
@@ -100,6 +130,7 @@ const htmlBuilder = (group, options) => {
             ],
         }, options);
     } else {
+        const classes = /cancel|phase/.test(label) ? ["svg-align"] : [];
         vlist = buildCommon.makeVList({
             positionType: "individualShift",
             children: [
@@ -113,7 +144,7 @@ const htmlBuilder = (group, options) => {
                     type: "elem",
                     elem: img,
                     shift: imgShift,
-                    wrapperClasses: /cancel/.test(label) ? ["svg-align"] : [],
+                    wrapperClasses: classes,
                 },
             ],
         }, options);
@@ -146,6 +177,9 @@ const mathmlBuilder = (group, options) => {
             break;
         case "\\bcancel":
             node.setAttribute("notation", "downdiagonalstrike");
+            break;
+        case "\\phase":
+            node.setAttribute("notation", "phasorangle");
             break;
         case "\\sout":
             node.setAttribute("notation", "horizontalstrike");
@@ -255,11 +289,11 @@ defineFunction({
 
 defineFunction({
     type: "enclose",
-    names: ["\\cancel", "\\bcancel", "\\xcancel", "\\sout"],
+    names: ["\\cancel", "\\bcancel", "\\xcancel", "\\sout", "\\phase"],
     props: {
         numArgs: 1,
     },
-    handler({parser, funcName}, args, optArgs) {
+    handler({parser, funcName}, args) {
         const body = args[0];
         return {
             type: "enclose",

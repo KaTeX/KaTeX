@@ -151,6 +151,15 @@ describe("renderA11yString", () => {
         });
     });
 
+    describe("phase", () => {
+        test("\\phase", () => {
+            const result = renderA11yString("\\phase{a}");
+            expect(result).toMatchInlineSnapshot(
+                `"start phase angle, a, end phase angle"`,
+            );
+        });
+    });
+
     describe("exponents", () => {
         test("simple exponent", () => {
             const result = renderA11yString("e^x");
