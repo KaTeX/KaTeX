@@ -48,6 +48,8 @@ jobs:
       if: always()
 
     - uses: codecov/codecov-action@v1
+      with:
+        directory: ./coverage/
 
   screenshotter:
     runs-on: ubuntu-latest
@@ -78,7 +80,7 @@ jobs:
             browser_version: "13.1"
             os: OS X
             os_version: Catalina
-          
+
       fail-fast: false
 
     services: ${{ matrix.services }}
