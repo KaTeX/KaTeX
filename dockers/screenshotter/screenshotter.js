@@ -281,7 +281,7 @@ function buildDriver() {
         ffProfile.setPreference("browser.startup.page", 0);
         const ffOptions = new firefox.Options().setProfile(ffProfile);
         builder.setFirefoxOptions(ffOptions);
-    } else if (opts.browser == "chrome") {
+    } else if (opts.browser === "chrome") {
         builder.setChromeOptions(new chrome.Options().setProxy(null));
     }
     if (seleniumURL) {
