@@ -120,11 +120,11 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
-        name: new
+        name: new-${{ matrix.browser }}
         path: test/screenshotter/new
 
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
-        name: diff
+        name: diff-${{ matrix.browser }}
         path: test/screenshotter/diff
