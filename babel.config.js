@@ -1,5 +1,6 @@
 module.exports = api => {
     const isESMBuild = api.env("esm");
+    const isFontBuild = api.env("font");
 
     const presets = [
         ["@babel/env", {
@@ -20,6 +21,9 @@ module.exports = api => {
         "version-inline",
         "preval",
     ];
+    if (!isFontBuild) {
+        plugins.push("./lib/removeGlyphTable");
+    }
 
     return {
         presets,
