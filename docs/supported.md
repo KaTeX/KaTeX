@@ -393,9 +393,11 @@ Direct Input: $+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ 
 | $\cosec$ `\cosec`  | $\hom$ `\hom`  | $\tg$ `\tg`  | $\Pr$ `\Pr`  |
 | $\cosh$ `\cosh`| $\ker$ `\ker`  | $\th$ `\th`  | $\sup$ `\sup` |
 | $\cot$ `\cot` | $\lg$ `\lg`| $\argmax$ `\argmax` | $\argmin$ `\argmin` |
-| $\plim$ `\plim` | $\operatorname{f}$ `\operatorname{f}`| $\operatorname*{f}$ `\operatorname*{f}`| |
+| $\injlim$ `\injlim` | $\projlim$ `\projlim` | $\varlimsup$ `\varlimsup` | $\varliminf$ `\varliminf` |
+| $\plim$ `\plim` | $\varinjlim$ `\varinjlim` | $\varprojlim$ `\varprojlim` | | 
+| $\operatorname{f}$ `\operatorname{f}`| $\operatorname*{f}$ `\operatorname*{f}`| | |
 
-Functions on the right column of this table can take `\limits`.
+Functions in the right column and bottom three rows of this table can take `\limits`.
 
 ### \sqrt
 
