@@ -282,6 +282,7 @@ function buildDriver() {
         const ffOptions = new firefox.Options().setProfile(ffProfile);
         builder.setFirefoxOptions(ffOptions);
     } else if (opts.browser === "chrome") {
+        // https://stackoverflow.com/questions/48450594/selenium-timed-out-receiving-message-from-renderer
         const chrOptions = new chrome.Options().addArguments("--disable-gpu");
         builder.setChromeOptions(chrOptions);
     }
