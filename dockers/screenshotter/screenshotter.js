@@ -153,9 +153,10 @@ function guessDockerIPs() {
         return;
     }
     // Native Docker on Linux or remote Docker daemon or similar
-    const gatewayIP = cmd("docker", "inspect",
+    // https://docs.docker.com/engine/tutorials/networkingcontainers/
+    const gatewayIP = cmd("docker", "inspect", // using default bridge network
         "-f", "{{.NetworkSettings.Gateway}}", opts.container)
-      || cmd("docker", "inspect",
+      || cmd("docker", "inspect", // using own network
         "-f", "{{range .NetworkSettings.Networks}}{{.Gateway}}{{end}}",
         opts.container);
     seleniumIP = seleniumIP || gatewayIP;
