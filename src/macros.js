@@ -843,6 +843,15 @@ defineMacro("\\limsup", "\\DOTSB\\operatorname*{lim\\,sup}");
 defineMacro("\\liminf", "\\DOTSB\\operatorname*{lim\\,inf}");
 
 //////////////////////////////////////////////////////////////////////
+// From amsopn.sty
+defineMacro("\\injlim", "\\DOTSB\\operatorname*{int\\,lim}");
+defineMacro("\\projlim", "\\DOTSB\\operatorname*{proj\\,lim}");
+defineMacro("\\varlimsup", "\\DOTSB\\operatorname*{\\overline{lim}}");
+defineMacro("\\varliminf", "\\DOTSB\\operatorname*{\\underline{lim}}");
+defineMacro("\\varinjlim", "\\DOTSB\\operatorname*{\\underrightarrow{lim}}");
+defineMacro("\\varprojlim", "\\DOTSB\\operatorname*{\\underleftarrow{lim}}");
+
+//////////////////////////////////////////////////////////////////////
 // MathML alternates for KaTeX glyphs in the Unicode private area
 defineMacro("\\gvertneqq", "\\html@mathml{\\@gvertneqq}{\u2269}");
 defineMacro("\\lvertneqq", "\\html@mathml{\\@lvertneqq}{\u2268}");
