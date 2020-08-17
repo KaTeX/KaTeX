@@ -2479,6 +2479,15 @@ describe("A actuarial angle builder", function() {
     });
 });
 
+describe("\\phase", function() {
+    it("should fail in text mode", function() {
+        expect`\text{\phase{-78.2^\circ}}`.not.toParse();
+    });
+    it("should not fail in math mode", function() {
+        expect`\phase{-78.2^\circ}`.toBuild();
+    });
+});
+
 describe("A phantom parser", function() {
     it("should not fail", function() {
         expect`\phantom{x}`.toParse();
@@ -2505,6 +2514,7 @@ describe("A phantom builder", function() {
         expect`\phantom{x^2}`.toBuild();
         expect`\phantom{x}^2`.toBuild();
         expect`\phantom x`.toBuild();
+        expect `\mathstrut`.toBuild();
 
         expect`\hphantom{x}`.toBuild();
         expect`\hphantom{x^2}`.toBuild();
@@ -3431,6 +3441,16 @@ describe("A macro expander", function() {
         expect`\liminf`.toParseLike`\operatorname*{lim\,inf}`;
     });
 
+    it("should expand AMS log-like symbols as expected", () => {
+        expect`\injlim`.toParseLike`\operatorname*{int\,lim}`;
+        expect`\projlim`.toParseLike`\operatorname*{proj\,lim}`;
+        expect`\varlimsup`.toParseLike`\operatorname*{\overline{lim}}`;
+        expect`\varliminf`.toParseLike`\operatorname*{\underline{lim}}`;
+        expect`\varinjlim`.toParseLike`\operatorname*{\underrightarrow{lim}}`;
+        expect`\varinjlim`.toParseLike`\operatorname*{\underrightarrow{lim}}`;
+        expect`\varprojlim`.toParseLike`\operatorname*{\underleftarrow{lim}}`;
+    });
+
     it("should expand \\plim as expected", () => {
         expect`\plim`.toParseLike`\mathop{\operatorname{plim}}\limits`;
     });
@@ -3645,7 +3665,7 @@ describe("Unicode", function() {
     });
 
     it("should build binary operators", function() {
-        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
+        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝◯⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
     });
 
     it("should build delimiters", function() {

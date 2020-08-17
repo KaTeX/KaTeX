@@ -18,6 +18,9 @@ jobs:
         node-version: '12'
     - name: Autofix lockfile
       run: |
+        # change directory
+        cd .`git log -1 --pretty=%s | awk '{ print $9 }'`
+
         # restore yarn.lock from the previous commit
         git checkout HEAD^ -- yarn.lock
 
@@ -36,6 +39,7 @@ jobs:
         yarn deduplicate
     - name: Commit changes
       run: |
+        cd .`git log -1 --pretty=%s | awk '{ print $9 }'`
         git add yarn.lock
         git config --global user.name 'dependabot[bot]'
         git config --global user.email '49699333+dependabot[bot]@users.noreply.github.com'

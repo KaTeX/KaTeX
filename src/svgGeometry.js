@@ -98,6 +98,11 @@ s76,-153,76,-153s77,-151,77,-151c0.7,0.7,35.7,202,105,604c67.3,400.7,102,602.7,1
 606zM${1001 + extraViniculum} ${hLinePad}h400000v${40 + extraViniculum}H1017.7z`;
 };
 
+export const phasePath = function(y: number): string {
+    const x = y / 2;  // x coordinate at top of angle
+    return `M400000 ${y} H0 L${x} 0 l65 45 L145 ${y - 80} H400000z`;
+};
+
 const sqrtTall = function(
     extraViniculum: number,
     hLinePad: number,
