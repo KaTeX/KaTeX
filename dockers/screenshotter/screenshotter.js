@@ -282,7 +282,8 @@ function buildDriver() {
         const ffOptions = new firefox.Options().setProfile(ffProfile);
         builder.setFirefoxOptions(ffOptions);
     } else if (opts.browser === "chrome") {
-        builder.setChromeOptions(new chrome.Options().setProxy(null));
+        const chrOptions = new chrome.Options().addArguments("--disable-gpu");
+        builder.setChromeOptions(chrOptions);
     }
     if (seleniumURL) {
         builder.usingServer(seleniumURL);
