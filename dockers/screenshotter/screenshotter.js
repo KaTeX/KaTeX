@@ -10,6 +10,7 @@ const pako = require("pako");
 const path = require("path");
 const selenium = require("selenium-webdriver");
 const firefox = require("selenium-webdriver/firefox");
+const chrome = require("selenium-webdriver/chrome");
 
 const istanbulLibCoverage = require('istanbul-lib-coverage');
 const istanbulLibReport = require('istanbul-lib-report');
@@ -152,8 +153,12 @@ function guessDockerIPs() {
         return;
     }
     // Native Docker on Linux or remote Docker daemon or similar
-    const gatewayIP = cmd("docker", "inspect",
-      "-f", "{{.NetworkSettings.Gateway}}", opts.container);
+    // https://docs.docker.com/engine/tutorials/networkingcontainers/
+    const gatewayIP = cmd("docker", "inspect", // using default bridge network
+        "-f", "{{.NetworkSettings.Gateway}}", opts.container)
+      || cmd("docker", "inspect", // using own network
+        "-f", "{{range .NetworkSettings.Networks}}{{.Gateway}}{{end}}",
+        opts.container);
     seleniumIP = seleniumIP || gatewayIP;
     katexIP = katexIP || gatewayIP;
 }
@@ -277,6 +282,10 @@ function buildDriver() {
         ffProfile.setPreference("browser.startup.page", 0);
         const ffOptions = new firefox.Options().setProfile(ffProfile);
         builder.setFirefoxOptions(ffOptions);
+    } else if (opts.browser === "chrome") {
+        // https://stackoverflow.com/questions/48450594/selenium-timed-out-receiving-message-from-renderer
+        const chrOptions = new chrome.Options().addArguments("--disable-gpu");
+        builder.setChromeOptions(chrOptions);
     }
     if (seleniumURL) {
         builder.usingServer(seleniumURL);

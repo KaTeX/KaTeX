@@ -212,6 +212,7 @@ For Persian composite characters, a user-supplied [plug-in](https://github.com/
 |$\xcancel{ABC}$ `\xcancel{ABC}`|$\not =$ `\not =`
 |$\sout{abc}$ `\sout{abc}`|$\boxed{\pi=\frac c d}$ `\boxed{\pi=\frac c d}`
 |$a_{\angl n}$ `$a_{\angl n}`|$a_\angln$ `a_\angln`
+|$\phase{-78^\circ}$`\phase{-78^\circ}` |
 
 `\tag{hi} x+y^{2x}`
 $$\tag{hi} x+y^{2x}$$
@@ -268,7 +269,7 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 | `~`             | non-breaking space | `\negthinspace`      | – ³∕₁₈ em space
 | `\<space>`      | space              | `\negmedspace`       | – ⁴∕₁₈ em space
 | `\nobreakspace` | non-breaking space | `\negthickspace`     | – ⁵∕₁₈ em space
-| `\space`        | space              |
+| `\space`        | space              | `\mathstrut`         | `\vphantom{(}`
 
 </div>
 
@@ -362,7 +363,7 @@ Direct Input: $∫ ∬ ∭ ∮ ∏ ∐ ∑ ⋀ ⋁ ⋂ ⋃ ⨀ ⨁ ⨂ ⨄ ⨆$
 | $\Cap$ `\Cap`| $\doublecap$ `\doublecap`| $\oslash$ `\oslash`| $\wedge$ `\wedge`  |
 | $\cap$ `\cap`| $\doublecup$ `\doublecup`| $\pm$ `\pm` or `\plusmn` | $\wr$ `\wr`  |
 
-Direct Input: $+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ ⊖ ⊗ ⊘ ⊙ ⊚ ⊛ ⊝$
+Direct Input: $+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ ⊖ ⊗ ⊘ ⊙ ⊚ ⊛ ⊝ ◯$
 
 ### Fractions and Binomials
 
