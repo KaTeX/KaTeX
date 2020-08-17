@@ -180,7 +180,7 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request_target' # == 'push'
+    if: github.event_name == 'push'
     needs: [test, screenshotter]
 
     steps:
