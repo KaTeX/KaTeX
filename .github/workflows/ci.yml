@@ -160,6 +160,9 @@ jobs:
         BROWSERSTACK_USER: ${{ secrets.BROWSERSTACK_USER }}
         BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
+    - run: docker logs ${{ job.services.selenium.id }}
+      if: always() && matrix.services.selenium
+
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
