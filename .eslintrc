@@ -5,7 +5,8 @@
     ],
     "extends": [
         "eslint:recommended",
-        "plugin:flowtype/recommended"
+        "plugin:flowtype/recommended",
+        "plugin:actions/recommended"
     ],
     "rules": {
         "arrow-spacing": 2,
@@ -100,6 +101,11 @@
         ],
         "rules": {
             "react/prop-types": 0
+        }
+    }, {
+        "files": [".github/workflows/*.{yaml,yml}/**/*.js"],
+        "rules": {
+            "indent-legacy": [2, 4, {"SwitchCase": 1, "outerIIFEBody": 0}],
         }
     }],
     "root": true
