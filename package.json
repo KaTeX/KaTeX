@@ -83,7 +83,7 @@
   "scripts": {
     "test": "yarn test:lint && yarn test:flow && yarn test:jest",
     "test:lint": "yarn test:lint:js && yarn test:lint:css",
-    "test:lint:js": "eslint *.js src static test contrib dockers website",
+    "test:lint:js": "eslint .",
     "test:lint:css": "stylelint src/katex.less static/main.css contrib/**/*.css website/static/**/*.css",
     "test:flow": "flow",
     "test:jest": "jest",
