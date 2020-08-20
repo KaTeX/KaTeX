@@ -3119,6 +3119,10 @@ describe("A macro expander", function() {
         expect("\\underset{f}{\\rightarrow} Y").toBuild();
     });
 
+    it("should build \\arrowvert and \\Arrowvert", function() {
+        expect`\arrowvert a \Arrowvert \; \left\arrowvert \frac a b \right\Arrowvert`.toBuild();
+    });
+
     it("should build \\iff, \\implies, \\impliedby", function() {
         expect`X \iff Y`.toBuild();
         expect`X \implies Y`.toBuild();

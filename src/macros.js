@@ -364,6 +364,11 @@ defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 // \mathstrut from the TeXbook, p 360
 defineMacro("\\mathstrut", "\\vphantom{(}");
 
+// \arrowvert and \Arrowvert from the TeXbook, p 359.
+// TODO: Create the correct font glyphs and use them instead of these macros.
+defineMacro("\\arrowvert", "\\vert");
+defineMacro("\\Arrowvert", "\\Vert");
+
 // \not is defined by base/fontmath.ltx via
 // \DeclareMathSymbol{\not}{\mathrel}{symbols}{"36}
 // It's thus treated like a \mathrel, but defined by a symbol that has zero
