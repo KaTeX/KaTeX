@@ -39,6 +39,8 @@ jobs:
 
         # deduplicate lockfile
         yarn deduplicate
+      env:
+        YARN_ENABLE_SCRIPTS: 0 # disable postinstall scripts
     - name: Config Git
       run: |
         # use personal access token to allow triggering new workflow
