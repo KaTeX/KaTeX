@@ -105,6 +105,11 @@
   "dependencies": {
     "commander": "^6.0.0"
   },
+  "dependenciesMeta": {
+    "ejs": {
+      "built": false
+    }
+  },
   "husky": {
     "hooks": {
       "pre-commit": "yarn test:lint",

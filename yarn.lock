@@ -7644,6 +7644,9 @@ fsevents@^1.2.7:
     webpack-bundle-analyzer: ^3.0.4
     webpack-cli: ^3.2.3
     webpack-dev-server: ^3.2.0
+  dependenciesMeta:
+    ejs:
+      built: false
   bin:
     katex: cli.js
   languageName: unknown
