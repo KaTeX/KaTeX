@@ -39,7 +39,7 @@
     "css-loader": "^4.0.0",
     "cssnano": "^4.1.10",
     "eslint": "^7.4.0",
-    "eslint-plugin-actions": "^1.0.0",
+    "eslint-plugin-actions": "^1.0.1",
     "eslint-plugin-flowtype": "^5.2.0",
     "eslint-plugin-react": "^7.20.3",
     "file-loader": "^6.0.0",
