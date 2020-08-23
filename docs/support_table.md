@@ -454,7 +454,7 @@ use `\ce` instead|
 |\hat|$\hat{\theta}$|`\hat{\theta}`|
 |\hbar|$\hbar$||
 |\hbox|$\hbox{$x^2$}$|`\hbox{$x^2$}`|
-|\box to <dimen>| <span style="color:firebrick;">Not supported</span> ||
+|\hbox to <dimen>| <span style="color:firebrick;">Not supported</span> ||
 |\hdashline|$\begin{matrix}a&b\\ \hdashline c &d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`\hdashline`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |\hearts|$\hearts$||
 |\heartsuit|$\heartsuit$||
