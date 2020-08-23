@@ -538,11 +538,14 @@ export default class Parser {
                 return this.parseGroup(
                     name, optional, greediness, undefined, type, consumeSpaces);
             case "hbox": {
+                const boxIsUnecessary = /\\(lower|raise|vcenter)'$/.test(name) &&
+                    !this.settings.strict;
                 // hbox argument type wraps the argument in the equivalent of
                 // \hbox, which is like \text but switching to \textstyle size.
                 const group = this.parseGroup(name, optional, greediness,
-                    undefined, "text", consumeSpaces);
-                if (!group) {
+                    undefined, (boxIsUnecessary ? undefined : "text"),
+                    consumeSpaces);
+                if (boxIsUnecessary || !group) {
                     return group;
                 }
                 const styledGroup = {

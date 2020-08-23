@@ -8,7 +8,32 @@ import {calculateSize} from "../units";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-// Box manipulation
+// \raisebox, \raise, and \lower
+
+const htmlBuilder = (group, options) => {
+    const body = html.buildGroup(group.body, options);
+    let dy = calculateSize(group.dy, options);
+    if (group.funcName === "\\lower") {
+        dy *= -1;
+    }
+    return buildCommon.makeVList({
+        positionType: "shift",
+        positionData: -dy,
+        children: [{type: "elem", elem: body}],
+    }, options);
+};
+
+const mathmlBuilder = (group, options) => {
+    const node = new mathMLTree.MathNode(
+        "mpadded", [mml.buildGroup(group.body, options)]);
+    let dy = group.dy.number;
+    if (group.funcName === "\\lower") {
+        dy *= -1;
+    }
+    node.setAttribute("voffset", dy + group.dy.unit);
+    return node;
+};
+
 defineFunction({
     type: "raisebox",
     names: ["\\raisebox"],
@@ -17,31 +42,41 @@ defineFunction({
         argTypes: ["size", "hbox"],
         allowedInText: true,
     },
-    handler({parser}, args) {
+    handler({parser, funcName}, args) {
         const amount = assertNodeType(args[0], "size").value;
         const body = args[1];
         return {
             type: "raisebox",
             mode: parser.mode,
+            funcName,
             dy: amount,
             body,
         };
     },
-    htmlBuilder(group, options) {
-        const body = html.buildGroup(group.body, options);
-        const dy = calculateSize(group.dy, options);
-        return buildCommon.makeVList({
-            positionType: "shift",
-            positionData: -dy,
-            children: [{type: "elem", elem: body}],
-        }, options);
-    },
-    mathmlBuilder(group, options) {
-        const node = new mathMLTree.MathNode(
-            "mpadded", [mml.buildGroup(group.body, options)]);
-        const dy = group.dy.number + group.dy.unit;
-        node.setAttribute("voffset", dy);
-        return node;
-    },
+    htmlBuilder,
+    mathmlBuilder,
 });
 
+defineFunction({
+    type: "raisebox",
+    names: ["\\raise", "\\lower"],
+    props: {
+        numArgs: 2,
+        greediness: 0, // Less than the greediness of \hbox.
+        argTypes: ["size", "hbox"],
+        allowedInText: true,
+    },
+    handler({parser, funcName}, args) {
+        const amount = assertNodeType(args[0], "size").value;
+        const body = args[1];
+        return {
+            type: "raisebox",
+            mode: parser.mode,
+            funcName,
+            dy: amount,
+            body,
+        };
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
