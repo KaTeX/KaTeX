@@ -454,6 +454,7 @@ use `\ce` instead|
 |\hat|$\hat{\theta}$|`\hat{\theta}`|
 |\hbar|$\hbar$||
 |\hbox|$\hbox{$x^2$}$|`\hbox{$x^2$}`|
+|\box to <dimen>| <span style="color:firebrick;">Not supported</span> ||
 |\hdashline|$\begin{matrix}a&b\\ \hdashline c &d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`\hdashline`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |\hearts|$\hearts$||
 |\heartsuit|$\heartsuit$||
@@ -614,7 +615,7 @@ use `\ce` instead|
 |\looparrowleft|$\looparrowleft$||
 |\looparrowright|$\looparrowright$||
 |\lor|$\lor$||
-|\lower|$M\lower5pt\hbox{$M^2$}M$|`M\lower5pt\hbox{$M^2$}M`<br>TeX (strict) syntax|
+|\lower|$M\lower5pt{M^2}M$|`M\lower5pt\hbox{$M^2$}M`<br>TeX (strict) syntax|
 |\lower|$M\lower5pt{M^2}M$|`M\lower5pt{M^2}M`<br>non-strict syntax|
 |\lozenge|$\lozenge$||
 |\lparen|$\lparen$||
@@ -860,7 +861,7 @@ use `\ce` instead|
 |\quad|$a\quad\quad{b}$|`a\quad\quad{b}`|
 |\R|$\R$||
 |\r|$\text{\r{a}}$|`\text{\r{a}}`|
-|\raise|$M\raise3pt\hbox{$M^2$}M$|`M\raise3pt\hbox{$M^2$}M`<br>TeX (strict) syntax|
+|\raise|$M\raise3pt{M^2}M$|`M\raise3pt\hbox{$M^2$}M`<br>TeX (strict) syntax|
 |\raise|$M\raise3pt{M^2}M$|`M\raise3pt{M^2}M`<br>non-strict syntax|
 |\raisebox|$h\raisebox{2pt}{ighe}r$|`h\raisebox{2pt}{ighe}r`|
 |\rang|$\langle A\rang$|`\langle A\rang`|
@@ -1174,7 +1175,7 @@ use `\ce` instead|
 |\varUpsilon|$\varUpsilon$||
 |\varXi|$\varXi$||
 |\vcentcolon|$\vcentcolon$||
-|\vcenter|$a+\left(\vcenter{\hbox{$\frac{\frac a b}c$}}\right)$|`a+\left(\vcenter{\hbox{$\frac{\frac a b}c$}}\right)`<br>TeX (strict) syntax|
+|\vcenter|$a+\left(\vcenter{\frac{\frac a b}c}\right)$|`a+\left(\vcenter{\hbox{$\frac{\frac a b}c$}}\right)`<br>TeX (strict) syntax|
 |\vcenter|$a+\left(\vcenter{\frac{\frac a b}c}\right)$|`a+\left(\vcenter{\frac{\frac a b}c}\right)`<br>non-strict syntax|
 |\Vdash|$\Vdash$||
 |\vDash|$\vDash$||
