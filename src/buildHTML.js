@@ -296,8 +296,8 @@ function buildHTMLUnbreakable(children, options) {
     // the height of the expression, and the bottom of the HTML element
     // falls at the depth of the expression.
     const strut = makeSpan(["strut"]);
-    strut.style.height = (body.height + body.depth) + "em";
-    strut.style.verticalAlign = -body.depth + "em";
+    strut.style.height = utils.round(body.height + body.depth) + "em";
+    strut.style.verticalAlign = utils.round(-body.depth) + "em";
     body.children.unshift(strut);
 
     return body;
