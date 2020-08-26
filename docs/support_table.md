@@ -500,7 +500,7 @@ use `\ce` instead|
 |\inf|$\inf$||
 |\infin|$\infin$||
 |\infty|$\infty$||
-|\injlim|$\injlim$|`\injlim`|
+|\injlim|$\injlim$| `\injlim` |
 |\int|$\int$||
 |\intercal|$\intercal$||
 |\intop|$\intop$||
