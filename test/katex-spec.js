@@ -3442,7 +3442,7 @@ describe("A macro expander", function() {
     });
 
     it("should expand AMS log-like symbols as expected", () => {
-        expect`\injlim`.toParseLike`\operatorname*{int\,lim}`;
+        expect`\injlim`.toParseLike`\operatorname*{inj\,lim}`;
         expect`\projlim`.toParseLike`\operatorname*{proj\,lim}`;
         expect`\varlimsup`.toParseLike`\operatorname*{\overline{lim}}`;
         expect`\varliminf`.toParseLike`\operatorname*{\underline{lim}}`;
