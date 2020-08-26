@@ -9,6 +9,7 @@ import {SymbolNode, Anchor, Span, PathNode, SvgNode, createClass} from "./domTre
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols, {ligatures} from "./symbols";
 import {wideCharacterFont} from "./wide-character";
+import utils from "./utils";
 import {calculateSize} from "./units";
 import {DocumentFragment} from "./tree";
 
@@ -550,7 +551,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     }
     pstrutSize += 2;
     const pstrut = makeSpan(["pstrut"], []);
-    pstrut.style.height = pstrutSize + "em";
+    pstrut.style.height = utils.round(pstrutSize) + "em";
 
     // Create a new list of actual children at the correct offsets
     const realChildren = [];
@@ -581,6 +582,9 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
         minPos = Math.min(minPos, currPos);
         maxPos = Math.max(maxPos, currPos);
     }
+
+    minPos = utils.round(minPos);
+    maxPos = utils.round(maxPos);
 
     // The vlist contents go in a table-cell with `vertical-align:bottom`.
     // This cell's bottom edge will determine the containing table's baseline
