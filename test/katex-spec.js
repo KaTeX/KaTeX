@@ -3504,6 +3504,11 @@ describe("\\tag support", function() {
     it("should handle \\tag* like \\tag", () => {
         expect`\tag{hi}x+y`.toParseLike(r`\tag*{({hi})}x+y`, displayMode);
     });
+
+    it("should include a targetable HTML id that omits unsafe characters", () => {
+        const built = getBuilt(r`\tag{<hi} x+y`, displayMode);
+        expect(built).toMatchSnapshot();
+    });
 });
 
 describe("leqno and fleqn rendering options", () => {
