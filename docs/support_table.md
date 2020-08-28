@@ -1174,7 +1174,7 @@ use `\ce` instead|
 |\vartriangleright|$\vartriangleright$||
 |\varUpsilon|$\varUpsilon$||
 |\varXi|$\varXi$||
-|\vcentcolon|$\vcentcolon$||
+|\vcentcolon|$\mathrel{\vcentcolon =}$|`\mathrel{\vcentcolon =}`|
 |\vcenter|$a+\left(\vcenter{\frac{\frac a b}c}\right)$|`a+\left(\vcenter{\hbox{$\frac{\frac a b}c$}}\right)`<br>TeX (strict) syntax|
 |\vcenter|$a+\left(\vcenter{\frac{\frac a b}c}\right)$|`a+\left(\vcenter{\frac{\frac a b}c}\right)`<br>non-strict syntax|
 |\Vdash|$\Vdash$||
