@@ -2,7 +2,7 @@
 
 We welcome pull requests to KaTeX. If you'd like to add a new symbol, or try to
 tackle adding a larger feature, keep reading. If you have any questions, or want
-help solving a problem, feel free to stop by our [gitter channel](https://gitter.im/KaTeX/KaTeX).
+help solving a problem, feel free to stop by our [GitHub Discussions](https://github.com/KaTeX/KaTeX/discussions).
 
 ## Helpful contributions
 

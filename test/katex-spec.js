@@ -2479,6 +2479,15 @@ describe("A actuarial angle builder", function() {
     });
 });
 
+describe("\\phase", function() {
+    it("should fail in text mode", function() {
+        expect`\text{\phase{-78.2^\circ}}`.not.toParse();
+    });
+    it("should not fail in math mode", function() {
+        expect`\phase{-78.2^\circ}`.toBuild();
+    });
+});
+
 describe("A phantom parser", function() {
     it("should not fail", function() {
         expect`\phantom{x}`.toParse();
@@ -2505,6 +2514,7 @@ describe("A phantom builder", function() {
         expect`\phantom{x^2}`.toBuild();
         expect`\phantom{x}^2`.toBuild();
         expect`\phantom x`.toBuild();
+        expect `\mathstrut`.toBuild();
 
         expect`\hphantom{x}`.toBuild();
         expect`\hphantom{x^2}`.toBuild();
@@ -2727,8 +2737,6 @@ describe("An aligned environment", function() {
 });
 
 describe("AMS environments", function() {
-    const nonStrictDisplay = new Settings({displayMode: true, strict: false});
-
     it("should fail outside display mode", () => {
         expect`\begin{gather}a+b\\c+d\end{gather}`.not.toParse(nonstrictSettings);
         expect`\begin{gather*}a+b\\c+d\end{gather*}`.not.toParse(nonstrictSettings);
@@ -2736,8 +2744,11 @@ describe("AMS environments", function() {
         expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.not.toParse(nonstrictSettings);
         expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.not.toParse(nonstrictSettings);
         expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.not.toParse(nonstrictSettings);
+        expect`\begin{equation}a=b+c\end{equation}`.not.toParse(nonstrictSettings);
+        expect`\begin{split}a &=b+c\\&=e+f\end{split}`.not.toParse(nonstrictSettings);
     });
 
+    const nonStrictDisplay = new Settings({displayMode: true, strict: false});
     it("should build if in non-strict display mode", () => {
         expect`\begin{gather}a+b\\c+d\end{gather}`.toBuild(nonStrictDisplay);
         expect`\begin{gather*}a+b\\c+d\end{gather*}`.toBuild(nonStrictDisplay);
@@ -2745,6 +2756,22 @@ describe("AMS environments", function() {
         expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.toBuild(nonStrictDisplay);
         expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.toBuild(nonStrictDisplay);
         expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.toBuild(nonStrictDisplay);
+        expect`\begin{equation}a=b+c\end{equation}`.toBuild(nonStrictDisplay);
+        expect`\begin{equation}\begin{split}a &=b+c\\&=e+f\end{split}\end{equation}`.toBuild(nonStrictDisplay);
+        expect`\begin{split}a &=b+c\\&=e+f\end{split}`.toBuild(nonStrictDisplay);
+    });
+
+    it("{equation} should fail if argument contains two rows.", () => {
+        expect`\begin{equation}a=\cr b+c\end{equation}`.not.toParse(nonStrictDisplay);
+    });
+    it("{equation} should fail if argument contains two columns.", () => {
+        expect`\begin{equation}a &=b+c\end{equation}`.not.toBuild(nonStrictDisplay);
+    });
+    it("{split} should fail if argument contains three columns.", () => {
+        expect`\begin{equation}\begin{split}a &=b &+c\\&=e &+f\end{split}\end{equation}`.not.toBuild(nonStrictDisplay);
+    });
+    it("{array} should fail if body contains more columns than specification.", () => {
+        expect`\begin{array}{2}a & b & c\\d & e  f\end{array}`.not.toBuild(nonStrictDisplay);
     });
 });
 
@@ -3412,6 +3439,16 @@ describe("A macro expander", function() {
         expect`\liminf`.toParseLike`\operatorname*{lim\,inf}`;
     });
 
+    it("should expand AMS log-like symbols as expected", () => {
+        expect`\injlim`.toParseLike`\operatorname*{inj\,lim}`;
+        expect`\projlim`.toParseLike`\operatorname*{proj\,lim}`;
+        expect`\varlimsup`.toParseLike`\operatorname*{\overline{lim}}`;
+        expect`\varliminf`.toParseLike`\operatorname*{\underline{lim}}`;
+        expect`\varinjlim`.toParseLike`\operatorname*{\underrightarrow{lim}}`;
+        expect`\varinjlim`.toParseLike`\operatorname*{\underrightarrow{lim}}`;
+        expect`\varprojlim`.toParseLike`\operatorname*{\underleftarrow{lim}}`;
+    });
+
     it("should expand \\plim as expected", () => {
         expect`\plim`.toParseLike`\mathop{\operatorname{plim}}\limits`;
     });
@@ -3626,7 +3663,7 @@ describe("Unicode", function() {
     });
 
     it("should build binary operators", function() {
-        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
+        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝◯⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
     });
 
     it("should build delimiters", function() {
@@ -3879,19 +3916,19 @@ describe("Extending katex by new fonts and symbols", function() {
 describe("debugging macros", () => {
     describe("message", () => {
         it("should print the argument using console.log", () => {
-            jest.spyOn(console, "log");
+            jest.spyOn(console, "log").mockImplementation();
             expect`\message{Hello, world}`.toParse();
             // eslint-disable-next-line no-console
-            expect(console.log.mock.calls[0][0]).toEqual("Hello, world");
+            expect(console.log).toHaveBeenCalledWith("Hello, world");
         });
     });
 
     describe("errmessage", () => {
         it("should print the argument using console.error", () => {
-            jest.spyOn(console, "error");
+            jest.spyOn(console, "error").mockImplementation();
             expect`\errmessage{Hello, world}`.toParse();
             // eslint-disable-next-line no-console
-            expect(console.error.mock.calls[0][0]).toEqual("Hello, world");
+            expect(console.error).toHaveBeenCalledWith("Hello, world");
         });
     });
 });

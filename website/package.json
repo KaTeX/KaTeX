@@ -7,9 +7,13 @@
     "rename-version": "docusaurus-rename-version"
   },
   "devDependencies": {
-    "docusaurus": "^1.14.4",
+    "docusaurus": "^1.14.6",
     "fs-extra": "^9.0.1",
     "react": "^16.8.4"
   },
-  "dependencies": {}
+  "dependenciesMeta": {
+    "docusaurus": {
+      "unplugged": true
+    }
+  }
 }

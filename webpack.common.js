@@ -1,11 +1,17 @@
 // @flow
 const path = require('path');
+// $FlowIgnore
 const TerserPlugin = require('terser-webpack-plugin');
+// $FlowIgnore
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// $FlowIgnore
+const PnpWebpackPlugin = require('pnp-webpack-plugin');
 
 const {version} = require("./package.json");
 
+// $FlowIgnore
 const browserslist = require('browserslist')();
+// $FlowIgnore
 const caniuse = require('caniuse-lite');
 
 // from the least supported to the most supported
@@ -56,13 +62,17 @@ const targets /*: Array<Target> */ = [
  */
 function createConfig(target /*: Target */, dev /*: boolean */,
         minimize /*: boolean */) /*: Object */ {
-    const cssLoaders /*: Array<Object> */ = [{loader: 'css-loader'}];
+    const cssLoaders /*: Array<Object> */ = [{
+        loader: 'css-loader',
+        options: {importLoaders: 1},
+    }, {
+        loader: 'postcss-loader',
+        // $FlowIgnore
+        options: {plugins: [require('postcss-preset-env')()]},
+    }];
     if (minimize) {
-        cssLoaders[0].options = {importLoaders: 1};
-        cssLoaders.push({
-            loader: 'postcss-loader',
-            options: {plugins: [require('cssnano')()]},
-        });
+        // $FlowIgnore
+        cssLoaders[1].options.plugins.push(require('cssnano')());
     }
 
     const lessOptions = {modifyVars: {
@@ -157,6 +167,12 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         },
         performance: {
             hints: false,
+        },
+        resolve: {
+            plugins: [PnpWebpackPlugin],
+        },
+        resolveLoader: {
+            plugins: [PnpWebpackPlugin.moduleLoader(module)],
         },
     };
 }

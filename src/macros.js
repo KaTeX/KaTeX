@@ -361,6 +361,9 @@ defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
 defineMacro("\\rlap", "\\mathrlap{\\textrm{#1}}");
 defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 
+// \mathstrut from the TeXbook, p 360
+defineMacro("\\mathstrut", "\\vphantom{(}");
+
 // \not is defined by base/fontmath.ltx via
 // \DeclareMathSymbol{\not}{\mathrel}{symbols}{"36}
 // It's thus treated like a \mathrel, but defined by a symbol that has zero
@@ -838,6 +841,15 @@ defineMacro("\\approxcoloncolon",
 defineMacro("\\notni", "\\html@mathml{\\not\\ni}{\\mathrel{\\char`\u220C}}");
 defineMacro("\\limsup", "\\DOTSB\\operatorname*{lim\\,sup}");
 defineMacro("\\liminf", "\\DOTSB\\operatorname*{lim\\,inf}");
+
+//////////////////////////////////////////////////////////////////////
+// From amsopn.sty
+defineMacro("\\injlim", "\\DOTSB\\operatorname*{inj\\,lim}");
+defineMacro("\\projlim", "\\DOTSB\\operatorname*{proj\\,lim}");
+defineMacro("\\varlimsup", "\\DOTSB\\operatorname*{\\overline{lim}}");
+defineMacro("\\varliminf", "\\DOTSB\\operatorname*{\\underline{lim}}");
+defineMacro("\\varinjlim", "\\DOTSB\\operatorname*{\\underrightarrow{lim}}");
+defineMacro("\\varprojlim", "\\DOTSB\\operatorname*{\\underleftarrow{lim}}");
 
 //////////////////////////////////////////////////////////////////////
 // MathML alternates for KaTeX glyphs in the Unicode private area

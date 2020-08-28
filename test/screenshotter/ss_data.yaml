@@ -15,7 +15,7 @@
 
 Accents: \vec{A}\vec{x}\vec x^2\vec{x}_2^2\vec{A}^2\vec{xA}^2
 AccentsText: |
-    \begin{array}{l}
+    \begin{array}{lccccc}
     \text{\'\i} & \text{\.\i} & \text{\`\i} & \text{\"\i} & \text{\H\i} & \text{\r\i} \\
     \text{\'\j} & \text{\.\j} & \text{\`\j} & \text{\"\j} & \text{\H\j} & \text{\r\j} \\
     \text{\'a} & \text{\.a} & \text{\`a} & \text{\"a} & \text{\H{a}} & \text{\r{a}} \\
@@ -129,6 +129,9 @@ Dots: |
       \cdots;\dots+\dots\int\dots,\dots \\
       \cdots{};\ldots+\ldots\int\ldots,\ldots
     \end{array}
+Equation:
+    tex: \begin{equation}\begin{split}a& =b+c-d \\ & \quad +e-f \\ & =g+h \\ & =i \end{split}\end{equation}
+    display: 1
 Exponents: a^{a^a_a}_{a^a_a}
 ExtensibleArrows: |
     \begin{array}{l}
@@ -312,8 +315,10 @@ OverUnderset: |
     \end{array}
 Phantom: \begin{array}{l}
             \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x} \left(\vphantom{\int_t} zzz \right) \left( X \hphantom{\frac{\frac X X}{X}} \right)\\
-            \text{a \phantom{123}} b \hphantom{\frac{1}{2}}=c \vphantom{101112} d
+            \text{a \phantom{123}} b \hphantom{\frac{1}{2}}=c \vphantom{101112} d \\
+            \sqrt{\mathstrut a} + \sqrt{\mathstrut d}
          \end{array}
+Phase: 120\text{V}\phase{-78.2^\circ}\;\Large\phase{78.2^\circ}
 Pmb: \mu\pmb{\mu}\pmb{=}\mu\pmb{+}\mu
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2

@@ -9,10 +9,6 @@ const version = process.argv[2];
 Promise.all(process.argv.slice(3).map(file =>
     fs.readFile(file, "utf8")
     .then(body => {
-        // Replace size badge url
-        // eslint-disable-next-line max-len
-        body = body.replace(/(https:\/\/img\.badgesize\.io\/KaTeX\/KaTeX\/v)(?:.+)(\/dist\/katex\.min\.js\?compression=gzip)/g, `$1${version}$2`);
-
         // Replace CDN urls
         // 1 - url prefix: "http…/KaTeX/
         // 2 - opening quote: "

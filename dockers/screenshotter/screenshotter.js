@@ -10,10 +10,13 @@ const pako = require("pako");
 const path = require("path");
 const selenium = require("selenium-webdriver");
 const firefox = require("selenium-webdriver/firefox");
+const chrome = require("selenium-webdriver/chrome");
 
 const istanbulLibCoverage = require('istanbul-lib-coverage');
 const istanbulLibReport = require('istanbul-lib-report');
 const istanbulReports = require('istanbul-reports');
+
+const browserstack = require('browserstack-local');
 
 const webpack = require('webpack');
 const WebpackDevServer = require("webpack-dev-server");
@@ -59,6 +62,9 @@ const opts = require("commander")
         "Retry this many times before reporting failure", 5, parseInt)
     .option("--wait <secs>",
         "Wait this many seconds between page load and screenshot", parseFloat)
+    .option("--browserstack", "Use Browserstack. The username and access key"
+        + " should be set as enviroment variable BROWSERSTACK_USER and"
+        + " BROWSERSTACK_ACCESS_KEY")
     .parse(process.argv);
 
 let listOfCases;
@@ -80,6 +86,24 @@ let seleniumPort = opts.seleniumPort;
 let katexURL = opts.katexUrl;
 let katexIP = opts.katexIp;
 let katexPort = opts.katexPort;
+
+let bsLocal;
+if (opts.browserstack) {
+    // https://www.browserstack.com/automate/node
+    if (!seleniumURL) {
+        seleniumURL = "http://hub-cloud.browserstack.com/wd/hub";
+    }
+    // https://www.browserstack.com/local-testing/automate#test-localhost-websites
+    if (!katexIP && opts.browser === "safari") {
+        katexIP = "bs-local.com";
+    }
+    opts.seleniumCapabilities = Object.assign({
+        resolution: "1280x1024",
+        "browserstack.user": process.env.BROWSERSTACK_USER,
+        "browserstack.key": process.env.BROWSERSTACK_ACCESS_KEY,
+        "browserstack.local": true,
+    }, opts.seleniumCapabilities);
+}
 
 //////////////////////////////////////////////////////////////////////
 // Work out connection to selenium docker container
@@ -129,8 +153,12 @@ function guessDockerIPs() {
         return;
     }
     // Native Docker on Linux or remote Docker daemon or similar
-    const gatewayIP = cmd("docker", "inspect",
-      "-f", "{{.NetworkSettings.Gateway}}", opts.container);
+    // https://docs.docker.com/engine/tutorials/networkingcontainers/
+    const gatewayIP = cmd("docker", "inspect", // using default bridge network
+        "-f", "{{.NetworkSettings.Gateway}}", opts.container)
+      || cmd("docker", "inspect", // using own network
+        "-f", "{{range .NetworkSettings.Networks}}{{.Gateway}}{{end}}",
+        opts.container);
     seleniumIP = seleniumIP || gatewayIP;
     katexIP = katexIP || gatewayIP;
 }
@@ -188,7 +216,7 @@ function startServer() {
         devServer = wds;
         katexPort = port;
         attempts = 0;
-        process.nextTick(tryConnect);
+        process.nextTick(opts.browserstack ? startBrowserstackLocal : tryConnect);
     });
     server.on("error", function(err) {
         if (devServer !== null) { // error after we started listening
@@ -198,6 +226,21 @@ function startServer() {
         } else {
             process.nextTick(startServer);
         }
+    });
+}
+
+// Start Browserstack Local connection
+function startBrowserstackLocal() {
+    // unique identifier for the session
+    const localIdentifier = process.env.CIRCLE_BUILD_NUM || "p" + katexPort;
+    opts.seleniumCapabilities["browserstack.localIdentifier"] = localIdentifier;
+
+    bsLocal = new browserstack.Local();
+    bsLocal.start({localIdentifier}, function(err) {
+        if (err) {
+            throw err;
+        }
+        process.nextTick(tryConnect);
     });
 }
 
@@ -239,6 +282,10 @@ function buildDriver() {
         ffProfile.setPreference("browser.startup.page", 0);
         const ffOptions = new firefox.Options().setProfile(ffProfile);
         builder.setFirefoxOptions(ffOptions);
+    } else if (opts.browser === "chrome") {
+        // https://stackoverflow.com/questions/48450594/selenium-timed-out-receiving-message-from-renderer
+        const chrOptions = new chrome.Options().addArguments("--disable-gpu");
+        builder.setChromeOptions(chrOptions);
     }
     if (seleniumURL) {
         builder.usingServer(seleniumURL);
@@ -546,7 +593,13 @@ function takeScreenshot(key) {
     function done() {
         // devServer.close(cb) will take too long.
         driver.quit().then(() => {
-            process.exit(exitStatus);
+            if (bsLocal) {
+                bsLocal.stop(() => {
+                    process.exit(exitStatus);
+                });
+            } else {
+                process.exit(exitStatus);
+            }
         });
     }
 }
