@@ -222,6 +222,9 @@ defineFunction({
         if (group.side === "left") {
             label.setAttribute("lspace", "-1width");
         }
+        // We have to guess at vertical alignment. We know the arrow is 1.8em tall,
+        // But we don't know the height or depth of the label.
+        label.setAttribute("voffset", "0.7em");
         label = new mathMLTree.MathNode("mstyle", [label]);
         label.setAttribute("displaystyle", "false");
         label.setAttribute("scriptlevel", "1");
