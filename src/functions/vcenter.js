@@ -34,9 +34,8 @@ defineFunction({
         }, options);
     },
     mathmlBuilder(group, options) {
-        // There is no way to do this in MathML, short of a 2nd pass thru the doc.
-        // Add a class so that a second pass at runtime can easily find this node
-        // and set the voffset attribute to the correct value.
+        // There is no way to do this in MathML.
+        // TODO: Monitor MathML and update this code when possible.
         return new mathMLTree.MathNode(
             "mpadded", [mml.buildGroup(group.body, options)], ["katex-vcenter"]);
     },
