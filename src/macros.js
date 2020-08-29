@@ -844,7 +844,7 @@ defineMacro("\\liminf", "\\DOTSB\\operatorname*{lim\\,inf}");
 
 //////////////////////////////////////////////////////////////////////
 // From amsopn.sty
-defineMacro("\\injlim", "\\DOTSB\\operatorname*{int\\,lim}");
+defineMacro("\\injlim", "\\DOTSB\\operatorname*{inj\\,lim}");
 defineMacro("\\projlim", "\\DOTSB\\operatorname*{proj\\,lim}");
 defineMacro("\\varlimsup", "\\DOTSB\\operatorname*{\\overline{lim}}");
 defineMacro("\\varliminf", "\\DOTSB\\operatorname*{\\underline{lim}}");

@@ -58,7 +58,7 @@
     "json-stable-stringify": "^1.0.1",
     "jspngopt": "^0.2.0",
     "less": "^3.9.0",
-    "less-loader": "^6.2.0",
+    "less-loader": "^7.0.0",
     "mini-css-extract-plugin": "^0.10.0",
     "mkdirp": "^1.0.4",
     "pako": "^1.0.8",
