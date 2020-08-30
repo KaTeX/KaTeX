@@ -3105,9 +3105,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30000981, caniuse-lite@npm:^1.0.30001102, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001111":
-  version: 1.0.30001118
-  resolution: "caniuse-lite@npm:1.0.30001118"
-  checksum: 7a32929182a26f7b43cea14995db4872fb26c842d2718f67769a1169b4eba8340fc9d883c8d6db2f85267474bddb915592c19a3e379746ed3452a940e1a74e70
+  version: 1.0.30001119
+  resolution: "caniuse-lite@npm:1.0.30001119"
+  checksum: 9f50c22551035e107db9eef659847ea0bebfa4228cb978977274e4cfb0a1e807fb3d3c968b77b0575e70ad1c9a2f7637c905e0c14990f9730a7e487173e33579
   languageName: node
   linkType: hard
 
@@ -3326,13 +3326,6 @@ __metadata:
   dependencies:
     is-regexp: ^2.0.0
   checksum: 9a613954e000b1f95dc9d1e98f93124b830746d35844ac663c1f02e59d11d0d3c49e2156f25d3115cb744f462d9645ca9642693af7930549d5b557a06d7ec7b8
-  languageName: node
-  linkType: hard
-
-"clone@npm:^2.1.2":
-  version: 2.1.2
-  resolution: "clone@npm:2.1.2"
-  checksum: 85232d66015d2d703dc59812e30049931d97c7815bf70569ae4fb7a66be257f46fcf47040e4e7050966ca195a9e615d59d73ba9e39fc37eedba1a76865f27ab1
   languageName: node
   linkType: hard
 
@@ -3782,14 +3775,13 @@ __metadata:
   linkType: hard
 
 "css-loader@npm:^4.0.0":
-  version: 4.2.1
-  resolution: "css-loader@npm:4.2.1"
+  version: 4.2.2
+  resolution: "css-loader@npm:4.2.2"
   dependencies:
     camelcase: ^6.0.0
     cssesc: ^3.0.0
     icss-utils: ^4.1.1
     loader-utils: ^2.0.0
-    normalize-path: ^3.0.0
     postcss: ^7.0.32
     postcss-modules-extract-imports: ^2.0.0
     postcss-modules-local-by-default: ^3.0.3
@@ -3800,7 +3792,7 @@ __metadata:
     semver: ^7.3.2
   peerDependencies:
     webpack: ^4.27.0 || ^5.0.0
-  checksum: bd8188efac141352371d3c87e90b6c5658018fa2e9438a22ad38e7a3896e492edb535ae7fe7e56e4c14e43ccc88fbb3a235a0929d4f9302bbf12215687edc9fa
+  checksum: 73d83e7f4f0b6288802e654a108e2f7a0476d0504c41ac3718a92354cefa9c3fe25e462cdf262a3943efef73dc2ea12c1962f97bbda44807f6f81b4661717dcb
   languageName: node
   linkType: hard
 
@@ -4624,6 +4616,17 @@ __metadata:
     escodegen: bin/escodegen.js
     esgenerate: bin/esgenerate.js
   checksum: 548c5a83a81a51122f1006309a392e1412bb00657f15aca60f01f9d4553851bdaf0519d898fd3ee2bb46f116e03ee48757f4d9a28a7b58bc8c096fd4b33f6cbc
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-actions@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "eslint-plugin-actions@npm:1.0.1"
+  dependencies:
+    yaml: ^1.10.0
+  peerDependencies:
+    eslint: ^6.7.0 || ^7.0.0
+  checksum: a869d6bad48a0d405a4521aecdf6cbb2cc213566711e72e8d7d809529724455bc1981845a57a61ff790bcedf03b7bd792e9daf8b11637003cf096b4d74365c88
   languageName: node
   linkType: hard
 
@@ -7605,6 +7608,7 @@ fsevents@^1.2.7:
     css-loader: ^4.0.0
     cssnano: ^4.1.10
     eslint: ^7.4.0
+    eslint-plugin-actions: ^1.0.1
     eslint-plugin-flowtype: ^5.2.0
     eslint-plugin-react: ^7.20.3
     file-loader: ^6.0.0
@@ -7623,7 +7627,7 @@ fsevents@^1.2.7:
     json-stable-stringify: ^1.0.1
     jspngopt: ^0.2.0
     less: ^3.9.0
-    less-loader: ^6.2.0
+    less-loader: ^7.0.0
     mini-css-extract-plugin: ^0.10.0
     mkdirp: ^1.0.4
     pako: ^1.0.8
@@ -7695,6 +7699,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"klona@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "klona@npm:2.0.3"
+  checksum: 69df085420a280e8d2e8c6564e23ba2bee2a03e8ca5f51e9409276bb54c6178a74adee0f94c2fc62caa584e1d2109e679abd8cc4f1114fbcd9e2886b909e8e62
+  languageName: node
+  linkType: hard
+
 "known-css-properties@npm:^0.19.0":
   version: 0.19.0
   resolution: "known-css-properties@npm:0.19.0"
@@ -7702,21 +7713,21 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"less-loader@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "less-loader@npm:6.2.0"
+"less-loader@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "less-loader@npm:7.0.0"
   dependencies:
-    clone: ^2.1.2
-    less: ^3.11.3
+    klona: ^2.0.3
     loader-utils: ^2.0.0
     schema-utils: ^2.7.0
   peerDependencies:
+    less: ^3.5.0
     webpack: ^4.0.0 || ^5.0.0
-  checksum: 7f8c9a395faa57a278df6bb33f9a3b8e12eeb4161d8983a4778e06635ab2a22dfb6263bfcb78122187f9f83514babd7bdda54fa38d10ea9eefdf76e9cb8285a8
+  checksum: 0308e2d516dcad5d3079b64ff5c668f2d100b0b3a3642102fc3955dd1214a853b1a9638f0ea0e92717ad93fed4d3e632276beba72d32e783d8366943e477189a
   languageName: node
   linkType: hard
 
-"less@npm:^3.11.3, less@npm:^3.9.0":
+"less@npm:^3.9.0":
   version: 3.12.2
   resolution: "less@npm:3.12.2"
   dependencies:
@@ -10271,11 +10282,11 @@ fsevents@^1.2.7:
   linkType: hard
 
 "prettier@npm:^2.0.5":
-  version: 2.0.5
-  resolution: "prettier@npm:2.0.5"
+  version: 2.1.1
+  resolution: "prettier@npm:2.1.1"
   bin:
     prettier: bin-prettier.js
-  checksum: d249d89361870a29b20e8b268cb09e908490b8c9e21f70393d12a213701f29ba7e95b7f9ce0ad63929c16ce475176742481911737ae3da4a498873e4a3b90990
+  checksum: 420a807cda2d482388daa42379a7aaa1be629cb71f5792362a971a5ed1c6ff377d2e311818d24e9390a4a8a6eac3fda9ebe6975f2168efec893790c0497d8a93
   languageName: node
   linkType: hard
 
@@ -13553,7 +13564,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"yaml@npm:^1.7.2":
+"yaml@npm:^1.10.0, yaml@npm:^1.7.2":
   version: 1.10.0
   resolution: "yaml@npm:1.10.0"
   checksum: d4cc9f9724f8d0aebc2cf52e4e6aa7059f12d50deb54b5225d103462fb2af36e5c0bb419101ca4b1f0cd3b4db9e4139cf2c690e863ac6227648d39d6f4e2522c
