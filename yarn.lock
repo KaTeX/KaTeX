@@ -4619,6 +4619,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-actions@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "eslint-plugin-actions@npm:1.0.1"
+  dependencies:
+    yaml: ^1.10.0
+  peerDependencies:
+    eslint: ^6.7.0 || ^7.0.0
+  checksum: a869d6bad48a0d405a4521aecdf6cbb2cc213566711e72e8d7d809529724455bc1981845a57a61ff790bcedf03b7bd792e9daf8b11637003cf096b4d74365c88
+  languageName: node
+  linkType: hard
+
 "eslint-plugin-flowtype@npm:^5.2.0":
   version: 5.2.0
   resolution: "eslint-plugin-flowtype@npm:5.2.0"
@@ -7597,6 +7608,7 @@ fsevents@^1.2.7:
     css-loader: ^4.0.0
     cssnano: ^4.1.10
     eslint: ^7.4.0
+    eslint-plugin-actions: ^1.0.1
     eslint-plugin-flowtype: ^5.2.0
     eslint-plugin-react: ^7.20.3
     file-loader: ^6.0.0
@@ -13552,7 +13564,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"yaml@npm:^1.7.2":
+"yaml@npm:^1.10.0, yaml@npm:^1.7.2":
   version: 1.10.0
   resolution: "yaml@npm:1.10.0"
   checksum: d4cc9f9724f8d0aebc2cf52e4e6aa7059f12d50deb54b5225d103462fb2af36e5c0bb419101ca4b1f0cd3b4db9e4139cf2c690e863ac6227648d39d6f4e2522c
