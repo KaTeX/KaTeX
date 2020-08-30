@@ -189,7 +189,7 @@ class SpaceNode implements MathDomNode {
         // for a table of space-like characters.  We use Unicode
         // representations instead of &LongNames; as it's not clear how to
         // make the latter via document.createTextNode.
-        if (width >= 0.0555 && width <= 0.0556) {
+        if (width >= 0.05555 && width <= 0.05556) {
             this.character = "\u200a";           // &VeryThinSpace;
         } else if (width >= 0.1666 && width <= 0.1667) {
             this.character = "\u2009";           // &ThinSpace;
@@ -197,7 +197,7 @@ class SpaceNode implements MathDomNode {
             this.character = "\u2005";           // &MediumSpace;
         } else if (width >= 0.2777 && width <= 0.2778) {
             this.character = "\u2005\u200a";     // &ThickSpace;
-        } else if (width >= -0.0556 && width <= -0.0555) {
+        } else if (width >= -0.05556 && width <= -0.05555) {
             this.character = "\u200a\u2063";     // &NegativeVeryThinSpace;
         } else if (width >= -0.1667 && width <= -0.1666) {
             this.character = "\u2009\u2063";     // &NegativeThinSpace;
