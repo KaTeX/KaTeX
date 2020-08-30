@@ -37,7 +37,7 @@ defineFunction({
         // There is no way to do this in MathML.
         // TODO: Monitor MathML and update this code when possible.
         return new mathMLTree.MathNode(
-            "mpadded", [mml.buildGroup(group.body, options)], ["katex-vcenter"]);
+            "mpadded", [mml.buildGroup(group.body, options)], []);
     },
 });
 
