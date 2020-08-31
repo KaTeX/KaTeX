@@ -86,6 +86,11 @@ const users = [
         infoLink: 'https://www.messenger.com/',
     },
     {
+        caption: 'MonsterWriter',
+        image: 'https://www.monsterwriter.app/assets/logo.png',
+        infoLink: 'https://www.monsterwriter.app/',
+    },
+    {
         caption: 'namu.wiki',
         image: '/img/namuwiki_logo.png',
         infoLink: 'https://namu.wiki/',
