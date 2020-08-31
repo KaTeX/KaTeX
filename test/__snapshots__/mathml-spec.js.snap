@@ -688,6 +688,61 @@ exports[`A MathML builder should use <mpadded> for raisebox 1`] = `
 </math>
 `;
 
+exports[`A MathML builder should use <msupsub> for integrals 1`] = `
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <semantics>
+    <mrow>
+      <mstyle scriptlevel="0"
+              displaystyle="true"
+      >
+        <msubsup>
+          <mo>
+            ∫
+          </mo>
+          <mi>
+            a
+          </mi>
+          <mi>
+            b
+          </mi>
+        </msubsup>
+        <mo>
+          +
+        </mo>
+        <msubsup>
+          <mo>
+            ∯
+          </mo>
+          <mi>
+            a
+          </mi>
+          <mi>
+            b
+          </mi>
+        </msubsup>
+        <mo>
+          +
+        </mo>
+        <msubsup>
+          <mo>
+            ∰
+          </mo>
+          <mi>
+            a
+          </mi>
+          <mi>
+            b
+          </mi>
+        </msubsup>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\displaystyle\\int_a^b + \\oiint_a^b + \\oiiint_a^b
+    </annotation>
+  </semantics>
+</math>
+`;
+
 exports[`A MathML builder should use <msupsub> for regular operators 1`] = `
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>

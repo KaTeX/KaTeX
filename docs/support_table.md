@@ -102,8 +102,8 @@ table td {
 |{array}|$\begin{array}{cc}a&b\\c&d\end{array}$ | `\begin{array}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{array}`|
 |\array|<span style="color:firebrick;">Not supported</span>|see `{array}`|
 |\arraystretch|$\def\arraystretch{1.5}\begin{array}{cc}a&b\\c&d\end{array}$|`\def\arraystretch{1.5}`<br>`\begin{array}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{array}`|
-|\Arrowvert|<span style="color:firebrick;">Not supported</span>||
-|\arrowvert|<span style="color:firebrick;">Not supported</span>||
+|\Arrowvert|<span style="color:firebrick;">Not supported</span>|see `\Vert`|
+|\arrowvert|<span style="color:firebrick;">Not supported</span>|see `\vert`|
 |\ast|$\ast$||
 |\asymp|$\asymp$||
 |\atop|${a \atop b}$|`{a \atop b}`|
@@ -500,7 +500,7 @@ use `\ce` instead|
 |\inf|$\inf$||
 |\infin|$\infin$||
 |\infty|$\infty$||
-|\injlim|<span style="color:firebrick;">Not supported</span>||
+|\injlim|$\injlim$| `\injlim` |
 |\int|$\int$||
 |\intercal|$\intercal$||
 |\intop|$\intop$||
@@ -843,7 +843,7 @@ use `\ce` instead|
 |\precsim|$\precsim$||
 |\prime|$\prime$||
 |\prod|$\prod$||
-|\projlim|<span style="color:firebrick;">Not supported</span>||
+|\projlim|$\projlim$|`\projlim`|
 |\propto|$\propto$||
 |\providecommand|$\providecommand\greet{\text{Hello}} \greet$|`\providecommand\greet{\text{Hello}} \greet`|
 |\psi|$\psi$||
@@ -1141,18 +1141,18 @@ use `\ce` instead|
 |\varDelta|$\varDelta$||
 |\varepsilon|$\varepsilon$||
 |\varGamma|$\varGamma$||
-|\varinjlim|<span style="color:firebrick;">Not supported</span>||
+|\varinjlim|$\varinjlim$|`\varinjlim`|
 |\varkappa|$\varkappa$||
 |\varLambda|$\varLambda$||
-|\varliminf|<span style="color:firebrick;">Not supported</span>||
-|\varlimsup|<span style="color:firebrick;">Not supported</span>||
+|\varliminf|$\varliminf$|`\varliminf`|
+|\varlimsup|$\varlimsup$|`\varlimsup`|
 |\varnothing|$\varnothing$||
 |\varOmega|$\varOmega$||
 |\varPhi|$\varPhi$||
 |\varphi|$\varphi$||
 |\varPi|$\varPi$||
 |\varpi|$\varpi$||
-|\varprojlim|<span style="color:firebrick;">Not supported</span>||
+|\varprojlim|$\varprojlim$|`\varprojlim`|
 |\varpropto|$\varpropto$||
 |\varPsi|$\varPsi$||
 |\varPsi|$\varPsi$||

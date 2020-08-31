@@ -3439,6 +3439,16 @@ describe("A macro expander", function() {
         expect`\liminf`.toParseLike`\operatorname*{lim\,inf}`;
     });
 
+    it("should expand AMS log-like symbols as expected", () => {
+        expect`\injlim`.toParseLike`\operatorname*{inj\,lim}`;
+        expect`\projlim`.toParseLike`\operatorname*{proj\,lim}`;
+        expect`\varlimsup`.toParseLike`\operatorname*{\overline{lim}}`;
+        expect`\varliminf`.toParseLike`\operatorname*{\underline{lim}}`;
+        expect`\varinjlim`.toParseLike`\operatorname*{\underrightarrow{lim}}`;
+        expect`\varinjlim`.toParseLike`\operatorname*{\underrightarrow{lim}}`;
+        expect`\varprojlim`.toParseLike`\operatorname*{\underleftarrow{lim}}`;
+    });
+
     it("should expand \\plim as expected", () => {
         expect`\plim`.toParseLike`\mathop{\operatorname{plim}}\limits`;
     });
