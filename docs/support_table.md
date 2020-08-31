@@ -73,9 +73,11 @@ table td {
 |\alef|$\alef$||
 |\alefsym|$\alefsym$||
 |\aleph|$\aleph$||
-|{align}|<span style="color:firebrick;">Not supported</span>|see `{aligned}`|
+|{align}|$$\begin{align}a&=b+c\\d+e&=f\end{align}$$|`\begin{align}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{align}`|
+|{align\*}|$$\begin{align*}a&=b+c\\d+e&=f\end{align*}$$|`\begin{align*}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{align*}`|
 |{aligned}|$\begin{aligned}a&=b+c\\d+e&=f\end{aligned}$|`\begin{aligned}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{aligned}`|
-|{alignat}|<span style="color:firebrick;">Not supported</span>|see `{alignedat}`|
+|{alignat}|$$\begin{alignat}{2}10&x+&3&y=2\\3&x+&13&y=4\end{alignat}$$|`\begin{alignat}{2}`<br>&nbsp;&nbsp;&nbsp;`10&x+ &3&y = 2 \\`<br>&nbsp;&nbsp;&nbsp;` 3&x+&13&y = 4`<br>`\end{alignat}`|
+|{alignat\*}|$$\begin{alignat*}{2}10&x+&3&y=2\\3&x+&13&y=4\end{alignat*}$$|`\begin{alignat*}{2}`<br>&nbsp;&nbsp;&nbsp;`10&x+ &3&y = 2 \\`<br>&nbsp;&nbsp;&nbsp;` 3&x+&13&y = 4`<br>`\end{alignat*}`|
 |{alignedat}|$\begin{alignedat}{2}10&x+&3&y=2\\3&x+&13&y=4\end{alignedat}$|`\begin{alignedat}{2}`<br>&nbsp;&nbsp;&nbsp;`10&x+ &3&y = 2 \\`<br>&nbsp;&nbsp;&nbsp;` 3&x+&13&y = 4`<br>`\end{alignedat}`|
 |\allowbreak|||
 |\Alpha|$\Alpha$||
@@ -100,8 +102,8 @@ table td {
 |{array}|$\begin{array}{cc}a&b\\c&d\end{array}$ | `\begin{array}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{array}`|
 |\array|<span style="color:firebrick;">Not supported</span>|see `{array}`|
 |\arraystretch|$\def\arraystretch{1.5}\begin{array}{cc}a&b\\c&d\end{array}$|`\def\arraystretch{1.5}`<br>`\begin{array}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{array}`|
-|\Arrowvert|<span style="color:firebrick;">Not supported</span>||
-|\arrowvert|<span style="color:firebrick;">Not supported</span>||
+|\Arrowvert|<span style="color:firebrick;">Not supported</span>|see `\Vert`|
+|\arrowvert|<span style="color:firebrick;">Not supported</span>|see `\vert`|
 |\ast|$\ast$||
 |\asymp|$\asymp$||
 |\atop|${a \atop b}$|`{a \atop b}`|
@@ -366,7 +368,8 @@ use `\ce` instead|
 |\eqcirc|$\eqcirc$||
 |\Eqcolon|$\Eqcolon$||
 |\eqcolon|$\eqcolon$||
-|{equation}|<span style="color:firebrick;">Not supported</span>|[Issue #445](https://github.com/KaTeX/KaTeX/issues/445)|
+|{equation}|$$\begin{equation}a = b + c\end{equation}$$|`\begin{equation}`<br>&nbsp;&nbsp;&nbsp;`a = b + c`<br>`\end{equation}`|
+|{equation*}|$$\begin{equation*}a = b + c\end{equation*}$$|`\begin{equation*}`<br>&nbsp;&nbsp;&nbsp;`a = b + c`<br>`\end{equation*}`|
 |{eqnarray}|<span style="color:firebrick;">Not supported</span>||
 |\Eqqcolon|$\Eqqcolon$||
 |\eqqcolon|$\eqqcolon$||
@@ -408,7 +411,7 @@ use `\ce` instead|
 |\Game|$\Game$||
 |\Gamma|$\Gamma$||
 |\gamma|$\gamma$||
-|{gather}|<span style="color:firebrick;">Not supported</span>|see `{gathered}`|
+|{gather}|$$\begin{gather}a=b\\e=b+c\end{gather}$$|`\begin{gather}`<br>&nbsp;&nbsp;&nbsp;`a=b \\ `<br>&nbsp;&nbsp;&nbsp;`e=b+c`<br>`\end{gather}`|
 |{gathered}|$\begin{gathered}a=b\\e=b+c\end{gathered}$|`\begin{gathered}`<br>&nbsp;&nbsp;&nbsp;`a=b \\ `<br>&nbsp;&nbsp;&nbsp;`e=b+c`<br>`\end{gathered}`|
 |\gcd|$\gcd$||
 |\gdef|$\gdef\bar#1{#1^2} \bar{y} + \bar{y}$|`\gdef\bar#1{#1^2} \bar{y} + \bar{y}`|
@@ -497,7 +500,7 @@ use `\ce` instead|
 |\inf|$\inf$||
 |\infin|$\infin$||
 |\infty|$\infty$||
-|\injlim|<span style="color:firebrick;">Not supported</span>||
+|\injlim|$\injlim$| `\injlim` |
 |\int|$\int$||
 |\intercal|$\intercal$||
 |\intop|$\intop$||
@@ -656,7 +659,7 @@ use `\ce` instead|
 |\mathscr|$\mathscr{AB}$|`\mathscr{AaBb123}`<br>KaTeX supports A-Z|
 |\mathsf|$\mathsf{AaBb123}$|`\mathsf{AaBb123}`|
 |\mathsterling|$\mathsterling$||
-|\mathstrut|<span style="color:firebrick;">Not supported</span>||
+|\mathstrut|$\sqrt{\mathstrut a}$|`\sqrt{\mathstrut a}`|
 |\mathtip|<span style="color:firebrick;">Not supported</span>||
 |\mathtt|$\mathtt{AaBb123}$|`\mathtt{AaBb123}`|
 |\matrix|<span style="color:firebrick;">Not supported</span>|See `{matrix}`|
@@ -813,7 +816,7 @@ use `\ce` instead|
 |\partial|$\partial$||
 |\perp|$\perp$||
 |\phantom|$\Gamma^{\phantom{i}j}_{i\phantom{j}k}$|`\Gamma^{\phantom{i}j}_{i\phantom{j}k}`|
-|\phase|<span style="color:firebrick;">Not supported</span>||
+|\phase|$\phase{-78^\circ}$|`\phase{-78^\circ}`|
 |\Phi|$\Phi$||
 |\phi|$\phi$||
 |\Pi|$\Pi$||
@@ -840,7 +843,7 @@ use `\ce` instead|
 |\precsim|$\precsim$||
 |\prime|$\prime$||
 |\prod|$\prod$||
-|\projlim|<span style="color:firebrick;">Not supported</span>||
+|\projlim|$\projlim$|`\projlim`|
 |\propto|$\propto$||
 |\providecommand|$\providecommand\greet{\text{Hello}} \greet$|`\providecommand\greet{\text{Hello}} \greet`|
 |\psi|$\psi$||
@@ -963,7 +966,7 @@ use `\ce` instead|
 |\spades|$\spades$||
 |\spadesuit|$\spadesuit$||
 |\sphericalangle|$\sphericalangle$||
-|{split}|<span style="color:firebrick;">Not supported</span>|[Issue #1345](https://github.com/KaTeX/KaTeX/issues/1345)|
+|{split}|$$\begin{equation}\begin{split}a &=b+c\\&=e+f\end{split}\end{equation}$$|`\begin{equation}`<br>`\begin{split}`<br>&nbsp;&nbsp;&nbsp;`a &=b+c\\`<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`&=e+f`<br>`\end{split}`<br>`\end{equation}`|
 |\sqcap|$\sqcap$||
 |\sqcup|$\sqcup$||
 |\square|$\square$||
@@ -1138,18 +1141,18 @@ use `\ce` instead|
 |\varDelta|$\varDelta$||
 |\varepsilon|$\varepsilon$||
 |\varGamma|$\varGamma$||
-|\varinjlim|<span style="color:firebrick;">Not supported</span>||
+|\varinjlim|$\varinjlim$|`\varinjlim`|
 |\varkappa|$\varkappa$||
 |\varLambda|$\varLambda$||
-|\varliminf|<span style="color:firebrick;">Not supported</span>||
-|\varlimsup|<span style="color:firebrick;">Not supported</span>||
+|\varliminf|$\varliminf$|`\varliminf`|
+|\varlimsup|$\varlimsup$|`\varlimsup`|
 |\varnothing|$\varnothing$||
 |\varOmega|$\varOmega$||
 |\varPhi|$\varPhi$||
 |\varphi|$\varphi$||
 |\varPi|$\varPi$||
 |\varpi|$\varpi$||
-|\varprojlim|<span style="color:firebrick;">Not supported</span>||
+|\varprojlim|$\varprojlim$|`\varprojlim`|
 |\varpropto|$\varpropto$||
 |\varPsi|$\varPsi$||
 |\varPsi|$\varPsi$||

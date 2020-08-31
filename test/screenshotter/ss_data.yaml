@@ -15,13 +15,16 @@
 
 Accents: \vec{A}\vec{x}\vec x^2\vec{x}_2^2\vec{A}^2\vec{xA}^2
 AccentsText: |
-    \begin{array}{l}
+    \begin{array}{lccccc}
     \text{\'\i} & \text{\.\i} & \text{\`\i} & \text{\"\i} & \text{\H\i} & \text{\r\i} \\
     \text{\'\j} & \text{\.\j} & \text{\`\j} & \text{\"\j} & \text{\H\j} & \text{\r\j} \\
     \text{\'a} & \text{\.a} & \text{\`a} & \text{\"a} & \text{\H{a}} & \text{\r{a}} \\
     \text{\'A} & \text{\.A} & \text{\`A} & \text{\"A} & \text{\H{A}} & \text{\r{A}} \\
     \text{\.I İ} & \text{\H e e̋} & \text{\i ı}
     \end{array}
+Align:
+    tex: \begin{align}a &= 1 & b &= 2 \\ 3a &= 3 & 17b &= 34\end{align}
+    display: 1
 Aligned: |
     \begin{aligned}
         a &= 1 & b &= 2 \\
@@ -126,6 +129,9 @@ Dots: |
       \cdots;\dots+\dots\int\dots,\dots \\
       \cdots{};\ldots+\ldots\int\ldots,\ldots
     \end{array}
+Equation:
+    tex: \begin{equation}\begin{split}a& =b+c-d \\ & \quad +e-f \\ & =g+h \\ & =i \end{split}\end{equation}
+    display: 1
 Exponents: a^{a^a_a}_{a^a_a}
 ExtensibleArrows: |
     \begin{array}{l}
@@ -141,6 +147,9 @@ FractionTest: |
          \xrightarrow[\dfrac g h]{\displaystyle\frac g h} \; \xrightarrow [2.\, \dfrac c d] {1.\, \displaystyle\frac c d}
     \end{array}
 Functions: \sin\cos\tan\ln\log
+Gather:
+    tex: \begin{gather} a=\frac 1 2 \\ e=b+c \end{gather}
+    display: 1
 Gathered: |
     \begin{gathered}
       x = \frac{1}{2} \\
@@ -306,8 +315,10 @@ OverUnderset: |
     \end{array}
 Phantom: \begin{array}{l}
             \dfrac{1+\phantom{x^{\blue{2}}} = x}{1+x^{\blue{2}} = x} \left(\vphantom{\int_t} zzz \right) \left( X \hphantom{\frac{\frac X X}{X}} \right)\\
-            \text{a \phantom{123}} b \hphantom{\frac{1}{2}}=c \vphantom{101112} d
+            \text{a \phantom{123}} b \hphantom{\frac{1}{2}}=c \vphantom{101112} d \\
+            \sqrt{\mathstrut a} + \sqrt{\mathstrut d}
          \end{array}
+Phase: 120\text{V}\phase{-78.2^\circ}\;\Large\phase{78.2^\circ}
 Pmb: \mu\pmb{\mu}\pmb{=}\mu\pmb{+}\mu
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2

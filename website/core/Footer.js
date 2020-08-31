@@ -54,7 +54,7 @@ class Footer extends React.Component {
                 <a href={this.pageUrl('users.html', this.props.language)}>
                   Who is using KaTeX?
                 </a>
-                <a href="https://gitter.im/KaTeX/KaTeX">Gitter Chat</a>
+                <a href="https://github.com/KaTeX/KaTeX/discussions">GitHub Discussions</a>
                 <a
                   href="https://stackoverflow.com/questions/tagged/katex"
                   target="_blank"
