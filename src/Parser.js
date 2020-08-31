@@ -706,9 +706,9 @@ export default class Parser {
     }
 
     /**
-     * Parses an argument.
+     * Parses an argument with the mode specified.
      */
-    parseArgumentGroup(optional: boolean, mode?: Mode): ?AnyParseNode {
+    parseArgumentGroup(optional: boolean, mode?: Mode): ?ParseNode<"ordgroup"> {
         const argToken = this.gullet.scanArgument(optional);
         if (argToken == null) {
             return null;
@@ -720,6 +720,7 @@ export default class Parser {
 
         this.gullet.beginGroup();
         const expression = this.parseExpression(false, "EOF");
+        // TODO: find an alternative way to denote the end
         this.expect("EOF"); // expect the end of the argument
         this.gullet.endGroup();
         const result = {

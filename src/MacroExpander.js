@@ -212,11 +212,15 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
-     * Consume the specified number of arguments from the token stream,
-     * and return the resulting array of arguments.
+     * Consume the specified number of (delimited) arguments from the token
+     * stream and return the resulting array of arguments.
      */
     consumeArgs(numArgs: number, delimiters?: string[][]): Token[][] {
-        if (delimiters && delimiters[0].length > 0) {
+        if (delimiters) {
+            if (delimiters.length !== numArgs + 1) {
+                throw new ParseError(
+                    "The length of delimiters doesn't match the number of args!");
+            }
             const delims = delimiters[0];
             for (let i = 0; i < delims.length; i++) {
                 const tok = this.popToken();

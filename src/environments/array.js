@@ -87,11 +87,9 @@ function parseArray(
     style: StyleStr,
 ): ParseNode<"array"> {
     parser.gullet.beginGroup();
-    if (singleRow) {
-        parser.gullet.macros.set("\\\\", ""); // {equation} acts this way.
-    } else {
+    if (!singleRow) {
         // \cr is equivalent to \\ without the optional size argument (see below)
-        // TODO: provide helpful error when \cr is used outside the array environment
+        // TODO: provide helpful error when \cr is used outside array environment
         parser.gullet.macros.set("\\cr", "\\\\\\relax");
     }
 
@@ -122,7 +120,7 @@ function parseArray(
 
     while (true) {  // eslint-disable-line no-constant-condition
         // Parse each cell in its own group (namespace)
-        let cell = parser.parseExpression(false, "\\\\");
+        let cell = parser.parseExpression(false, singleRow ? "\\end" : "\\\\");
         parser.gullet.endGroup();
         parser.gullet.beginGroup();
 
@@ -192,7 +190,7 @@ function parseArray(
 
     // End cell group
     parser.gullet.endGroup();
-    // End array group defining \\
+    // End array group defining \cr
     parser.gullet.endGroup();
 
     return {
