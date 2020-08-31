@@ -84,7 +84,7 @@
     }
 
     // Math fonts.
-    .mathdefault {
+    .mathnormal {
         font-family: KaTeX_Math;
         font-style: italic;
     }
@@ -219,17 +219,13 @@
     }
 
     .vbox {
-        display: -ms-inline-flexbox;
         display: inline-flex;
-        -ms-flex-direction: column;
         flex-direction: column;
         align-items: baseline;
     }
 
     .hbox {
-        display: -ms-inline-flexbox;
         display: inline-flex;
-        -ms-flex-direction: row;
         flex-direction: row;
         width: 100%;
     }
@@ -588,6 +584,32 @@
         border-bottom-style: solid;
         border-bottom-width: 0.08em;
     }
+
+    .angl {
+        // from package actuarialangle, which is always used in a subscript.
+        box-sizing: border-content;
+        border-top: 0.049em solid;        // defaultRuleThickness in scriptstyle
+        border-right: 0.049em solid;      // ditto
+        margin-right: 0.03889em;          // 1 mu
+    }
+
+    .anglpad {
+        padding: 0 0.03889em 0 0.03889em; // pad 1mu left and right (in scriptstyle)
+    }
+
+    .eqn-num::before {
+        counter-increment: katexEqnNo;
+        content: "(" counter(katexEqnNo) ")";
+    }
+
+    .mml-eqn-num::before {
+        counter-increment: mmlEqnNo;
+        content: "(" counter(mmlEqnNo) ")";
+    }
+
+    .mtr-glue {
+        width: 50%;
+    }
 }
 
 .katex-display {
@@ -622,4 +644,10 @@
 .katex-display.fleqn > .katex {
     text-align: left;
     padding-left: 2em;
+}
+
+// Automatic equation numbers for some environments.
+// Use parallel counters for HTML and MathML.
+body {
+    counter-reset: katexEqnNo mmlEqnNo;
 }

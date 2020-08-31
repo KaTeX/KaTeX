@@ -6,7 +6,6 @@ import environments from "../environments";
 
 // Environment delimiters. HTML/MathML rendering is defined in the corresponding
 // defineEnvironment definitions.
-// $FlowFixMe, "environment" handler returns an environment ParseNode
 defineFunction({
     type: "environment",
     names: ["\\begin", "\\end"],
@@ -49,6 +48,7 @@ defineFunction({
                     `Mismatch: \\begin{${envName}} matched by \\end{${end.name}}`,
                     endNameToken);
             }
+            // $FlowFixMe, "environment" handler returns an environment ParseNode
             return result;
         }
 

@@ -61,7 +61,6 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             // No font glyphs yet, so use a glyph w/o the oval.
             // TODO: When font glyphs are available, delete this code.
             stash = group.name.substr(1);
-            // $FlowFixMe
             group.name = stash === "oiint" ? "\\iint" : "\\iiint";
         }
 
@@ -82,7 +81,6 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
                     {type: "elem", elem: oval, shift: large ? 0.08 : 0},
                 ],
             }, options);
-            // $FlowFixMe
             group.name = "\\" + stash;
             base.classes.unshift("mop");
             // $FlowFixMe
@@ -101,8 +99,6 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     } else {
         // Otherwise, this is a text operator. Build the text from the
         // operator's name.
-        // TODO(emily): Add a space in the middle of some of these
-        // operators, like \limsup
         const output = [];
         for (let i = 1; i < group.name.length; i++) {
             output.push(buildCommon.mathsym(group.name[i], group.mode, options));

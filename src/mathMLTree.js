@@ -11,6 +11,7 @@
 
 import utils from "./utils";
 import {DocumentFragment} from "./tree";
+import {createClass} from "./domTree";
 
 import type {VirtualNode} from "./tree";
 
@@ -47,11 +48,17 @@ export class MathNode implements MathDomNode {
     type: MathNodeType;
     attributes: {[string]: string};
     children: $ReadOnlyArray<MathDomNode>;
+    classes: string[];
 
-    constructor(type: MathNodeType, children?: $ReadOnlyArray<MathDomNode>) {
+    constructor(
+        type: MathNodeType,
+        children?: $ReadOnlyArray<MathDomNode>,
+        classes?: string[]
+    ) {
         this.type = type;
         this.attributes = {};
         this.children = children || [];
+        this.classes = classes || [];
     }
 
     /**
@@ -82,6 +89,10 @@ export class MathNode implements MathDomNode {
             }
         }
 
+        if (this.classes.length > 0) {
+            node.className = createClass(this.classes);
+        }
+
         for (let i = 0; i < this.children.length; i++) {
             node.appendChild(this.children[i].toNode());
         }
@@ -102,6 +113,10 @@ export class MathNode implements MathDomNode {
                 markup += utils.escape(this.attributes[attr]);
                 markup += "\"";
             }
+        }
+
+        if (this.classes.length > 0) {
+            markup += ` class ="${utils.escape(createClass(this.classes))}"`;
         }
 
         markup += ">";

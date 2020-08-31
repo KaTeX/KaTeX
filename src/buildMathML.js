@@ -93,7 +93,7 @@ export const getVariant = function(
     if (font === "mathit") {
         return "italic";
     } else if (font === "boldsymbol") {
-        return "bold-italic";
+        return group.type === "textord" ? "bold" : "bold-italic";
     } else if (font === "mathbf") {
         return "bold";
     } else if (font === "mathbb") {
@@ -219,6 +219,7 @@ export const buildGroup = function(
         // Call the groupBuilders function
         // $FlowFixMe
         const result: MathDomNode = groupBuilders[group.type](group, options);
+        // $FlowFixMe
         return result;
     } else {
         throw new ParseError(

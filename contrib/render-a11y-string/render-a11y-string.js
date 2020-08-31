@@ -188,7 +188,8 @@ const buildString = (
         a11yStrings.length > 0 &&
         // TODO(kevinb): check that the last item in a11yStrings is a string
         // I think we might be able to drop the nested arrays, which would make
-        // this easier to type - $FlowFixMe
+        // this easier to type
+        // $FlowFixMe
         /^\d+$/.test(a11yStrings[a11yStrings.length - 1])
     ) {
         a11yStrings[a11yStrings.length - 1] += ret;
@@ -531,6 +532,13 @@ const handleObject = (
                     regionStrings.push("start strikeout");
                     buildA11yStrings(tree.body, regionStrings, atomType);
                     regionStrings.push("end strikeout");
+                });
+                break;
+            } else if (/phase/.test(tree.label)) {
+                buildRegion(a11yStrings, function(regionStrings) {
+                    regionStrings.push("start phase angle");
+                    buildA11yStrings(tree.body, regionStrings, atomType);
+                    regionStrings.push("end phase angle");
                 });
                 break;
             }

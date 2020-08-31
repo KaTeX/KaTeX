@@ -137,7 +137,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -180,7 +180,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.69444,
@@ -268,7 +268,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -356,7 +356,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.69444,
@@ -459,7 +459,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -547,7 +547,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0.19444,
     "height": 0.69444,
@@ -650,14 +650,12 @@ exports[`A parser that does not throw on unsupported commands should build katex
 `;
 
 exports[`A parser that does not throw on unsupported commands should properly escape LaTeX in errors 1`] = `
-
 <span class="katex-error"
       title="ParseError: KaTeX parse error: Expected group after &#x27;^&#x27; at position 2: 2^̲&amp;&quot;&lt;&gt;"
       style="color:#933"
 >
   2^&amp;&quot;&lt;&gt;
 </span>
-
 `;
 
 exports[`An HTML extension builder should not affect spacing 1`] = `
@@ -670,7 +668,7 @@ exports[`An HTML extension builder should not affect spacing 1`] = `
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
@@ -739,7 +737,7 @@ exports[`An HTML extension builder should not affect spacing 1`] = `
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0.19444,
     "height": 0.43056,
@@ -764,7 +762,7 @@ exports[`An HTML extension builder should render with trust and strict setting 1
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
@@ -793,7 +791,7 @@ exports[`An HTML extension builder should render with trust and strict setting 1
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
@@ -824,7 +822,7 @@ exports[`An HTML extension builder should render with trust and strict setting 1
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
@@ -855,7 +853,7 @@ exports[`An HTML extension builder should render with trust and strict setting 1
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.43056,
@@ -1093,7 +1091,6 @@ exports[`An includegraphics builder should render with trust setting 1`] = `
 `;
 
 exports[`Extending katex by new fonts and symbols Add new font class to new extended symbols 1`] = `
-
 <span class="katex">
   <span class="katex-mathml">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1167,11 +1164,9 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
     </span>
   </span>
 </span>
-
 `;
 
 exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel and mop 1`] = `
-
 <span class="katex">
   <span class="katex-mathml">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1216,7 +1211,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
             style="height:0.68333em;vertical-align:0em;"
       >
       </span>
-      <span class="mord mathdefault"
+      <span class="mord mathnormal"
             style="margin-right:0.10903em;"
       >
         M
@@ -1228,10 +1223,6 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
       <span class="mrel">
         =
       </span>
-      <span class="mspace"
-            style="margin-right:0.2777777777777778em;"
-      >
-      </span>
     </span>
     <span class="mspace newline">
     </span>
@@ -1240,7 +1231,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
             style="height:0.66666em;vertical-align:-0.08333em;"
       >
       </span>
-      <span class="mord mathdefault">
+      <span class="mord mathnormal">
         a
       </span>
       <span class="mspace"
@@ -1250,10 +1241,6 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
       <span class="mbin">
         +
       </span>
-      <span class="mspace"
-            style="margin-right:0.2222222222222222em;"
-      >
-      </span>
     </span>
     <span class="mspace newline">
     </span>
@@ -1262,7 +1249,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
             style="height:0.69444em;vertical-align:0em;"
       >
       </span>
-      <span class="mord mathdefault">
+      <span class="mord mathnormal">
         b
       </span>
     </span>
@@ -1273,13 +1260,12 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
             style="height:0.43056em;vertical-align:0em;"
       >
       </span>
-      <span class="mord mathdefault">
+      <span class="mord mathnormal">
         c
       </span>
     </span>
   </span>
 </span>
-
 `;
 
 exports[`href and url commands should allow all protocols when trust option is true 1`] = `
@@ -1432,7 +1418,7 @@ exports[`href and url commands should not affect spacing around 1`] = `
   {
     "classes": [
       "mord",
-      "mathdefault"
+      "mathnormal"
     ],
     "depth": 0,
     "height": 0.43056,
@@ -1496,7 +1482,7 @@ exports[`href and url commands should not affect spacing around 1`] = `
       {
         "classes": [
           "mord",
-          "mathdefault"
+          "mathnormal"
         ],
         "depth": 0,
         "height": 0.69444,
