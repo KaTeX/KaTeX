@@ -47,8 +47,8 @@ const users = [
     },
     {
         caption: 'Gatsby',
-        image: 'https://www.gatsbyjs.org/monogram.svg',
-        infoLink: 'https://www.gatsbyjs.org/',
+        image: 'https://www.gatsbyjs.com/Gatsby-Monogram.svg',
+        infoLink: 'https://www.gatsbyjs.com/',
     },
     {
         caption: 'Gitter',
