@@ -358,7 +358,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
          c < nc || colDescrNum < colDescriptions.length;
          ++c, ++colDescrNum) {
 
-        let colDescr = colDescriptions[colDescrNum] || colDescriptions[0] || {};
+        let colDescr = colDescriptions[colDescrNum] || {};
 
         let firstSeparator = true;
         while (colDescr.type === "separator") {
@@ -390,7 +390,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             }
 
             colDescrNum++;
-            colDescr = colDescriptions[colDescrNum] || colDescriptions[0] || {};
+            colDescr = colDescriptions[colDescrNum] || {};
             firstSeparator = false;
         }
 
@@ -829,8 +829,11 @@ defineEnvironment({
             hskipBeforeAndAfter: false,
             cols: [{type: "align", align: colAlign}],
         };
-        const res: ParseNode<"array"> =
-            parseArray(parser, payload, "text");
+        const res: ParseNode<"array"> = parseArray(parser, payload, "text");
+        // Populate cols with the correct number of column alignment specs.
+        res.cols = new Array(res.body[0].length).fill(
+            {type: "align", align: colAlign}
+        );
         return delimiters ? {
             type: "leftright",
             mode: context.mode,
