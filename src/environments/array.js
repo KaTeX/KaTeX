@@ -55,6 +55,15 @@ const validateAmsEnvironmentContext = context => {
     }
 };
 
+const delimiterMap = {
+    "matrix": null,
+    "pmatrix": ["(", ")"],
+    "bmatrix": ["[", "]"],
+    "Bmatrix": ["\\{", "\\}"],
+    "vmatrix": ["|", "|"],
+    "Vmatrix": ["\\Vert", "\\Vert"],
+};
+
 /**
  * Parse the body of the environment, with rows delimited by \\ and
  * columns delimited by &, and create a nested list in row-major order
@@ -349,7 +358,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
          c < nc || colDescrNum < colDescriptions.length;
          ++c, ++colDescrNum) {
 
-        let colDescr = colDescriptions[colDescrNum] || {};
+        let colDescr = colDescriptions[colDescrNum] || colDescriptions[0] || {};
 
         let firstSeparator = true;
         while (colDescr.type === "separator") {
@@ -381,7 +390,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             }
 
             colDescrNum++;
-            colDescr = colDescriptions[colDescrNum] || {};
+            colDescr = colDescriptions[colDescrNum] || colDescriptions[0] || {};
             firstSeparator = false;
         }
 
@@ -763,18 +772,65 @@ defineEnvironment({
         numArgs: 0,
     },
     handler(context) {
-        const delimiters = {
-            "matrix": null,
-            "pmatrix": ["(", ")"],
-            "bmatrix": ["[", "]"],
-            "Bmatrix": ["\\{", "\\}"],
-            "vmatrix": ["|", "|"],
-            "Vmatrix": ["\\Vert", "\\Vert"],
-        }[context.envName];
+        const delimiters = delimiterMap[context.envName];
         // \hskip -\arraycolsep in amsmath
         const payload = {hskipBeforeAndAfter: false};
         const res: ParseNode<"array"> =
             parseArray(context.parser, payload, dCellStyle(context.envName));
+        return delimiters ? {
+            type: "leftright",
+            mode: context.mode,
+            body: [res],
+            left: delimiters[0],
+            right: delimiters[1],
+            rightColor: undefined, // \right uninfluenced by \color in array
+        } : res;
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+// The mathtools package adds starred versions of some AMS matrix environments.
+// These have an optional argument to choose left|center|right justification.
+defineEnvironment({
+    type: "array",
+    names: [
+        "matrix*",
+        "pmatrix*",
+        "bmatrix*",
+        "Bmatrix*",
+        "vmatrix*",
+        "Vmatrix*",
+    ],
+    props: {
+        numArgs: 0,
+    },
+    handler(context) {
+        const delimiters = delimiterMap[context.envName.slice(0, -1)];
+        let colAlign = "c"
+        // Parse the optional alignment argument.
+        const parser = context.parser;
+        parser.consumeSpaces();
+        if (parser.fetch().text === "[") {
+            parser.consume();
+            parser.consumeSpaces();
+            colAlign = parser.fetch().text;
+            if ("lcr".indexOf(colAlign) === -1) {
+                throw new ParseError("Expected l or c or r", parser.nextToken);
+            }
+            parser.consume();
+            parser.consumeSpaces();
+            if (parser.fetch().text !== "]") {
+                throw new ParseError("Expected ]", parser.nextToken);
+            }
+            parser.consume();
+        }
+        const payload = {
+            hskipBeforeAndAfter: false,
+            cols: [{type: "align", align: colAlign}],
+        };
+        const res: ParseNode<"array"> =
+            parseArray(parser, payload, "text");
         return delimiters ? {
             type: "leftright",
             mode: context.mode,
