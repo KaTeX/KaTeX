@@ -807,7 +807,7 @@ defineEnvironment({
     },
     handler(context) {
         const delimiters = delimiterMap[context.envName.slice(0, -1)];
-        let colAlign = "c"
+        let colAlign = "c";
         // Parse the optional alignment argument.
         const parser = context.parser;
         parser.consumeSpaces();

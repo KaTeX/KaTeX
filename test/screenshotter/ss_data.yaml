@@ -364,6 +364,7 @@ SqrtRoot: |
         \Huge \sqrt[3]{M} + x^{\sqrt[3] a}
     \end{array}
 StackRel: a \stackrel{?}{=} b \stackrel{\text{def}}{=} c
+StarMatrix: \begin{pmatrix*}[l] a & -1 \\ -1 & d \end{pmatrix*} \; \begin{pmatrix*}[r] a & -1 \\ -1 & d \end{pmatrix*}
 StretchyAccent: |
     \begin{array}{l}
         \overrightarrow{AB} \quad \overleftarrow{AB} \quad \Overrightarrow{AB} \quad \overleftrightarrow{AB} \quad \overgroup{AB} \\
