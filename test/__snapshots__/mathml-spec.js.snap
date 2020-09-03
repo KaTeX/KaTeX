@@ -834,9 +834,8 @@ exports[`A MathML builder special spaces render specially 1`] = `
       <mtext>
          ⁣
       </mtext>
-      <mtext>
-         
-      </mtext>
+      <mspace width="0.0556em">
+      </mspace>
       <mtext>
          
       </mtext>
@@ -846,9 +845,8 @@ exports[`A MathML builder special spaces render specially 1`] = `
       <mtext>
           
       </mtext>
-      <mtext>
-         ⁣
-      </mtext>
+      <mspace width="-0.0556em">
+      </mspace>
       <mtext>
          ⁣
       </mtext>

@@ -7,6 +7,7 @@
 
 import ParseError from "./ParseError";
 import Options from "./Options";
+import utils from "./utils";
 
 // This table gives the number of TeX pts in one of each *absolute* TeX unit.
 // Thus, multiplying a length by this number converts the length from units
@@ -94,5 +95,5 @@ export const calculateSize = function(
             scale *= unitOptions.sizeMultiplier / options.sizeMultiplier;
         }
     }
-    return Math.min(sizeValue.number * scale, options.maxSize);
+    return utils.round(Math.min(sizeValue.number * scale, options.maxSize));
 };
