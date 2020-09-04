@@ -10,7 +10,7 @@ This extension isn't part of core KaTeX, so the script should be separately incl
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/mhchem.min.js" integrity="sha384-5gCAXJ0ZgozlShOzzT0OWArn7yCPGWVIvgo+BAd8NUKbCmulrJiQuCVR9cHlPHeG"  crossorigin="anonymous"></script>
 ```
 
-If you remove the `defer` attribute from the `<script src="https://../katex.min.js">` tag, then you must also remove it from the `mhchem` tag. `mhchem.js` and `katex.js` must synchronize.
+If you remove the `defer` attribute from this tag, then you must also remove the `defer` attribute from the `<script src="https://../katex.min.js">` tag.
 
 ### Syntax
 
