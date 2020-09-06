@@ -1353,8 +1353,7 @@ describe("A TeX-compliant parser", function() {
         expect`x_`.not.toParse();
     });
 
-    // TODO(ylem): #2085
-    /* it("should fail when arguments require arguments", function() {
+    it("should fail when arguments require arguments", function() {
         const badArguments = [
             r`\frac \frac x y z`,
             r`\frac x \frac y z`,
@@ -1374,7 +1373,7 @@ describe("A TeX-compliant parser", function() {
         for (let i = 0; i < badArguments.length; i++) {
             expect(badArguments[i]).not.toParse();
         }
-    }); */
+    });
 
     it("should work when the arguments have braces", function() {
         const goodArguments = [
@@ -1587,9 +1586,9 @@ describe("A font parser", function() {
         expect(body[0].font).toEqual("mathbb");
     });
 
-    // it("should not parse a series of font commands", function() {
-    //     expect`\mathbb \mathrm R`.not.toParse();
-    // });
+    it("should not parse a series of font commands", function() {
+        expect`\mathbb \mathrm R`.not.toParse();
+    });
 
     it("should nest fonts correctly", function() {
         const bf = getParsed`\mathbf{a\mathrm{b}c}`[0];
