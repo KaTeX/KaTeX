@@ -55,15 +55,6 @@ const validateAmsEnvironmentContext = context => {
     }
 };
 
-const delimiterMap = {
-    "matrix": null,
-    "pmatrix": ["(", ")"],
-    "bmatrix": ["[", "]"],
-    "Bmatrix": ["\\{", "\\}"],
-    "vmatrix": ["|", "|"],
-    "Vmatrix": ["\\Vert", "\\Vert"],
-};
-
 /**
  * Parse the body of the environment, with rows delimited by \\ and
  * columns delimited by &, and create a nested list in row-major order
@@ -758,6 +749,8 @@ defineEnvironment({
 
 // The matrix environments of amsmath builds on the array environment
 // of LaTeX, which is discussed above.
+// The mathtools package adds starred versions of the same environments.
+// These have an optional argument to choose left|center|right justification.
 defineEnvironment({
     type: "array",
     names: [
@@ -767,34 +760,6 @@ defineEnvironment({
         "Bmatrix",
         "vmatrix",
         "Vmatrix",
-    ],
-    props: {
-        numArgs: 0,
-    },
-    handler(context) {
-        const delimiters = delimiterMap[context.envName];
-        // \hskip -\arraycolsep in amsmath
-        const payload = {hskipBeforeAndAfter: false};
-        const res: ParseNode<"array"> =
-            parseArray(context.parser, payload, dCellStyle(context.envName));
-        return delimiters ? {
-            type: "leftright",
-            mode: context.mode,
-            body: [res],
-            left: delimiters[0],
-            right: delimiters[1],
-            rightColor: undefined, // \right uninfluenced by \color in array
-        } : res;
-    },
-    htmlBuilder,
-    mathmlBuilder,
-});
-
-// The mathtools package adds starred versions of some AMS matrix environments.
-// These have an optional argument to choose left|center|right justification.
-defineEnvironment({
-    type: "array",
-    names: [
         "matrix*",
         "pmatrix*",
         "bmatrix*",
@@ -806,34 +771,41 @@ defineEnvironment({
         numArgs: 0,
     },
     handler(context) {
-        const delimiters = delimiterMap[context.envName.slice(0, -1)];
+        const delimiters = {
+            "matrix": null,
+            "pmatrix": ["(", ")"],
+            "bmatrix": ["[", "]"],
+            "Bmatrix": ["\\{", "\\}"],
+            "vmatrix": ["|", "|"],
+            "Vmatrix": ["\\Vert", "\\Vert"],
+        }[context.envName.replace("*", "")];
+        // \hskip -\arraycolsep in amsmath
+        const payload = {hskipBeforeAndAfter: false};
         let colAlign = "c";
-        // Parse the optional alignment argument.
-        const parser = context.parser;
-        parser.consumeSpaces();
-        if (parser.fetch().text === "[") {
-            parser.consume();
+        const isStar = context.envName.charAt(context.envName.length - 1) === "*";
+        if (isStar) {
+            // Parse the optional alignment argument.
+            const parser = context.parser;
             parser.consumeSpaces();
-            colAlign = parser.fetch().text;
-            if ("lcr".indexOf(colAlign) === -1) {
-                throw new ParseError("Expected l or c or r", parser.nextToken);
+            if (parser.fetch().text === "[") {
+                parser.consume();
+                parser.consumeSpaces();
+                colAlign = parser.fetch().text;
+                if ("lcr".indexOf(colAlign) === -1) {
+                    throw new ParseError("Expected l or c or r", parser.nextToken);
+                }
+                parser.consume();
+                parser.consumeSpaces();
+                parser.expect("]");
+                parser.consume();
             }
-            parser.consume();
-            parser.consumeSpaces();
-            if (parser.fetch().text !== "]") {
-                throw new ParseError("Expected ]", parser.nextToken);
-            }
-            parser.consume();
         }
-        const payload = {
-            hskipBeforeAndAfter: false,
-            cols: [{type: "align", align: colAlign}],
-        };
-        const res: ParseNode<"array"> = parseArray(parser, payload, "text");
-        // Populate cols with the correct number of column alignment specs.
-        res.cols = new Array(res.body[0].length).fill(
-            {type: "align", align: colAlign}
-        );
+        const res: ParseNode<"array"> =
+            parseArray(context.parser, payload, dCellStyle(context.envName));
+        if (isStar) {
+            // Populate cols with the correct number of column alignment specs.
+            res.cols = [{type: "align", align: colAlign}];
+        }
         return delimiters ? {
             type: "leftright",
             mode: context.mode,
