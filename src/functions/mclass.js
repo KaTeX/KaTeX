@@ -65,6 +65,7 @@ defineFunction({
     ],
     props: {
         numArgs: 1,
+        primitive: true,
     },
     handler({parser, funcName}, args) {
         const body = args[0];
@@ -106,7 +107,7 @@ defineFunction({
             type: "mclass",
             mode: parser.mode,
             mclass: binrelClass(args[0]),
-            body: [args[1]],
+            body: ordargument(args[1]),
             isCharacterBox: utils.isCharacterBox(args[1]),
         };
     },
