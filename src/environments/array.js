@@ -172,6 +172,7 @@ function parseArray(
             // \def\math@cr@{\new@ifnextchar[\math@cr@@{\math@cr@@[\z@]}}
             // \def\math@cr@@[#1]{...\math@cr@@@...}
             // \def\math@cr@@@{\cr}
+            // \new@ifnextchar doesn't ignore spaces
             if (parser.gullet.future().text !== " ") {
                 size = parser.parseSizeGroup(true, "size");
             }

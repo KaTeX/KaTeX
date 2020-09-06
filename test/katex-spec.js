@@ -1052,9 +1052,11 @@ describe("A rule parser", function() {
 
 describe("A kern parser", function() {
     const emKern = r`\kern1em`;
-    const exKern = r`\kern1ex`;
-    const muKern = r`\mkern1mu`;
-    const abKern = r`a\kern1emb`;
+    const exKern = r`\kern 1 ex`;
+    const muKern = r`\mkern 1mu`;
+    const abKern1 = r`a\kern1emb`;
+    const abKern2 = r`a\kern-1emb`;
+    const abKern3 = r`a\kern-1em b`;
     const badUnitRule = r`\kern1au`;
     const noNumberRule = r`\kern em`;
 
@@ -1062,12 +1064,32 @@ describe("A kern parser", function() {
         const emParse = getParsed(emKern)[0];
         const exParse = getParsed(exKern)[0];
         const muParse = getParsed(muKern)[0];
-        const abParse = getParsed(abKern)[1];
+        const abParse1 = getParsed(abKern1)[1];
+        const abParse2 = getParsed(abKern2)[1];
+        const abParse3 = getParsed(abKern3)[1];
 
         expect(emParse.dimension.unit).toEqual("em");
         expect(exParse.dimension.unit).toEqual("ex");
         expect(muParse.dimension.unit).toEqual("mu");
-        expect(abParse.dimension.unit).toEqual("em");
+        expect(abParse1.dimension.unit).toEqual("em");
+        expect(abParse2.dimension.unit).toEqual("em");
+        expect(abParse3.dimension.unit).toEqual("em");
+    });
+
+    it("should parse elements on either side of a kern", function() {
+        const abParse1 = getParsed(abKern1);
+        const abParse2 = getParsed(abKern2);
+        const abParse3 = getParsed(abKern3);
+
+        expect(abParse1).toHaveLength(3);
+        expect(abParse1[0].text).toEqual("a");
+        expect(abParse1[2].text).toEqual("b");
+        expect(abParse2).toHaveLength(3);
+        expect(abParse2[0].text).toEqual("a");
+        expect(abParse2[2].text).toEqual("b");
+        expect(abParse3).toHaveLength(3);
+        expect(abParse3[0].text).toEqual("a");
+        expect(abParse3[2].text).toEqual("b");
     });
 
     it("should not parse invalid units", function() {
@@ -1083,6 +1105,16 @@ describe("A kern parser", function() {
     it("should parse positive sizes", function() {
         const parse = getParsed`\kern+1em`[0];
         expect(parse.dimension.number).toBeCloseTo(1);
+    });
+
+    it("should handle whitespace", function() {
+        const abKern = "a\\mkern\t-\r1  \n mu\nb";
+        const abParse = getParsed(abKern);
+
+        expect(abParse).toHaveLength(3);
+        expect(abParse[0].text).toEqual("a");
+        expect(abParse[1].dimension.unit).toEqual("mu");
+        expect(abParse[2].text).toEqual("b");
     });
 
     it("should not parse braced sizes in strict mode", function() {

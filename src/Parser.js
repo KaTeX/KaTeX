@@ -1017,13 +1017,10 @@ export default class Parser {
                 primitive = false;
             }
         }
-        // \\ in array environment uses \new@ifnextchar, which don't ignore spaces
-        // This will become simpler with #2085
-        if (!primitive && ((name === "argument to '\\cr'" &&
-                    this.gullet.future().text === " ") ||
-                this.gullet.scanArgument(optional) == null)) {
+        if (!primitive && this.gullet.scanArgument(optional) == null) {
             return null;
         }
+
         let res;
         if (type === "size_or_blank" && this.fetch().text === "EOF") {
             res = {

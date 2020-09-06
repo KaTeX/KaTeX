@@ -32,11 +32,6 @@ export type AnyParseNode = $Values<ParseNodeTypes>;
 
 // Map from `NodeType` to the corresponding `ParseNode`.
 type ParseNodeTypes = {
-    "internal": {|
-        type: "internal",
-        mode: Mode,
-        loc?: ?SourceLocation,
-    |},
     "array": {|
         type: "array",
         mode: Mode,

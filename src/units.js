@@ -38,17 +38,8 @@ const relativeUnit = {
     "mu": true,
 };
 
-export const units = [];
-for (const unit in ptPerUnit) {
-    if (ptPerUnit.hasOwnProperty(unit)) {
-        units.push(unit);
-    }
-}
-for (const unit in relativeUnit) {
-    if (relativeUnit.hasOwnProperty(unit)) {
-        units.push(unit);
-    }
-}
+export const units: string[] = Object.keys(ptPerUnit)
+    .concat(Object.keys(relativeUnit));
 
 export type Measurement = {| number: number, unit: string |};
 
