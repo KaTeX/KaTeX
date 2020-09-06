@@ -73,6 +73,12 @@ export interface MacroContextInterface {
     expandMacroAsText(name: string): string | void;
 
     /**
+     * Consume an argument from the token stream, and return the resulting array
+     * of tokens and start/end token.
+     */
+    consumeArg(delims?: ?string[]): MacroArg;
+
+    /**
      * Consume the specified number of arguments from the token stream,
      * and return the resulting array of arguments.
      */
@@ -194,7 +200,7 @@ defineMacro("\\TextOrMath", function(context) {
 // \renewcommand{\macro}[args]{definition}
 // TODO: Optional arguments: \newcommand{\macro}[args][default]{definition}
 const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
-    let arg = context.consumeArgs(1)[0];
+    let arg = context.consumeArg().tokens;
     if (arg.length !== 1) {
         throw new ParseError(
             "\\newcommand's first argument must be a macro name");
@@ -212,7 +218,7 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
     }
 
     let numArgs = 0;
-    arg = context.consumeArgs(1)[0];
+    arg = context.consumeArg().tokens;
     if (arg.length === 1 && arg[0].text === "[") {
         let argText = '';
         let token = context.expandNextToken();
@@ -225,7 +231,7 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
             throw new ParseError(`Invalid number of arguments: ${argText}`);
         }
         numArgs = parseInt(argText);
-        arg = context.consumeArgs(1)[0];
+        arg = context.consumeArg().tokens;
     }
 
     // Final arg is the expansion of the macro
@@ -314,6 +320,9 @@ defineMacro("\u00b7", "\\cdotp");
 defineMacro("\\llap", "\\mathllap{\\textrm{#1}}");
 defineMacro("\\rlap", "\\mathrlap{\\textrm{#1}}");
 defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
+
+// \mathstrut from the TeXbook, p 360
+defineMacro("\\mathstrut", "\\vphantom{(}");
 
 // \not is defined by base/fontmath.ltx via
 // \DeclareMathSymbol{\not}{\mathrel}{symbols}{"36}
@@ -647,8 +656,10 @@ defineMacro("\\pmb", "\\html@mathml{" +
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
 
-// \\ defaults to \newline, but changes to \cr within array environment
-defineMacro("\\\\", "\\newline");
+// \expandafter\let\expandafter\@normalcr
+//     \csname\expandafter\@gobble\string\\ \endcsname
+// \DeclareRobustCommand\newline{\@normalcr\relax}
+defineMacro("\\newline", "\\\\\\relax");
 
 // \def\TeX{T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX\@}
 // TODO: Doesn't normally work in math mode because \@ fails.  KaTeX doesn't
@@ -792,6 +803,15 @@ defineMacro("\\approxcoloncolon",
 defineMacro("\\notni", "\\html@mathml{\\not\\ni}{\\mathrel{\\char`\u220C}}");
 defineMacro("\\limsup", "\\DOTSB\\operatorname*{lim\\,sup}");
 defineMacro("\\liminf", "\\DOTSB\\operatorname*{lim\\,inf}");
+
+//////////////////////////////////////////////////////////////////////
+// From amsopn.sty
+defineMacro("\\injlim", "\\DOTSB\\operatorname*{inj\\,lim}");
+defineMacro("\\projlim", "\\DOTSB\\operatorname*{proj\\,lim}");
+defineMacro("\\varlimsup", "\\DOTSB\\operatorname*{\\overline{lim}}");
+defineMacro("\\varliminf", "\\DOTSB\\operatorname*{\\underline{lim}}");
+defineMacro("\\varinjlim", "\\DOTSB\\operatorname*{\\underrightarrow{lim}}");
+defineMacro("\\varprojlim", "\\DOTSB\\operatorname*{\\underleftarrow{lim}}");
 
 //////////////////////////////////////////////////////////////////////
 // MathML alternates for KaTeX glyphs in the Unicode private area

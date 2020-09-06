@@ -1,0 +1,21 @@
+tasks:
+  - init: yarn install
+    command: yarn start --sockPort 443
+  - openMode: split-right
+    command: echo "Run 'yarn test' to run tests."
+
+ports:
+  - port: 7936
+    onOpen: open-preview
+
+github:
+  # https://www.gitpod.io/docs/prebuilds/#configure-prebuilds
+  prebuilds:
+    pullRequestsFromForks: true
+
+vscode:
+  extensions:
+    - dbaeumer.vscode-eslint@2.1.8:02aHhbJ0Q4aGdjHXlTdVKg==
+    - flowtype.flow-for-vscode@1.5.0:AwOT6wgHTF43loZQCAUMLA==
+    - stylelint.vscode-stylelint@0.85.0:GjHxVXEBqt1ud+yaj0V9KQ==
+    - arcanis.vscode-zipfs@2.0.0:Jh27TSop+DJ1aYIf3ajnvA==

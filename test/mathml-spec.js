@@ -44,6 +44,11 @@ describe("A MathML builder", function() {
         expect(getMathML("\\displaystyle\\sum_a^b")).toMatchSnapshot();
     });
 
+    it('should use <msupsub> for integrals', () => {
+        expect(getMathML("\\displaystyle\\int_a^b + " +
+            "\\oiint_a^b + \\oiiint_a^b")).toMatchSnapshot();
+    });
+
     it('should use <msupsub> for regular operators', () => {
         expect(getMathML("\\textstyle\\sum_a^b")).toMatchSnapshot();
     });

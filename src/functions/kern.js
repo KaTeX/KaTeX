@@ -22,6 +22,7 @@ defineFunction({
     props: {
         numArgs: 1,
         argTypes: ["dimen"],
+        primitive: true,
         allowedInText: true,
     },
     handler,

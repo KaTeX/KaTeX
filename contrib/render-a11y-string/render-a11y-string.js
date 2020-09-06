@@ -534,6 +534,13 @@ const handleObject = (
                     regionStrings.push("end strikeout");
                 });
                 break;
+            } else if (/phase/.test(tree.label)) {
+                buildRegion(a11yStrings, function(regionStrings) {
+                    regionStrings.push("start phase angle");
+                    buildA11yStrings(tree.body, regionStrings, atomType);
+                    regionStrings.push("end phase angle");
+                });
+                break;
             }
             throw new Error(
                 `KaTeX-a11y: enclose node with ${tree.label} not supported yet`);

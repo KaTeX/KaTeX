@@ -99,8 +99,6 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     } else {
         // Otherwise, this is a text operator. Build the text from the
         // operator's name.
-        // TODO(emily): Add a space in the middle of some of these
-        // operators, like \limsup
         const output = [];
         for (let i = 1; i < group.name.length; i++) {
             output.push(buildCommon.mathsym(group.name[i], group.mode, options));
@@ -227,6 +225,7 @@ defineFunction({
     names: ["\\mathop"],
     props: {
         numArgs: 1,
+        primitive: true,
     },
     handler: ({parser}, args) => {
         const body = args[0];

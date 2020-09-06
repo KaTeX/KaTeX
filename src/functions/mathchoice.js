@@ -23,6 +23,7 @@ defineFunction({
     names: ["\\mathchoice"],
     props: {
         numArgs: 4,
+        primitive: true,
     },
     handler: ({parser}, args) => {
         return {
