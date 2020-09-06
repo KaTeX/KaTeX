@@ -786,6 +786,7 @@ defineEnvironment({
             cols: [{type: "align", align: colAlign}],
         };
         if (context.envName.charAt(context.envName.length - 1) === "*") {
+            // It's one of the mathtools starred functions.
             // Parse the optional alignment argument.
             const parser = context.parser;
             parser.consumeSpaces();
@@ -806,7 +807,9 @@ defineEnvironment({
         const res: ParseNode<"array"> =
             parseArray(context.parser, payload, dCellStyle(context.envName));
         // Populate cols with the correct number of column alignment specs.
-        res.cols = [{type: "align", align: colAlign}];
+        res.cols = new Array(res.body[0].length).fill(
+            {type: "align", align: colAlign}
+        );
         return delimiters ? {
             type: "leftright",
             mode: context.mode,

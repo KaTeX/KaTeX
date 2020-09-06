@@ -119,6 +119,10 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
       {
         "type": "align",
         "align": "c"
+      },
+      {
+        "type": "align",
+        "align": "c"
       }
     ],
     "hLinesBeforeRow": [
