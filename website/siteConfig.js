@@ -47,8 +47,8 @@ const users = [
     },
     {
         caption: 'Gatsby',
-        image: 'https://www.gatsbyjs.org/monogram.svg',
-        infoLink: 'https://www.gatsbyjs.org/',
+        image: 'https://www.gatsbyjs.com/Gatsby-Monogram.svg',
+        infoLink: 'https://www.gatsbyjs.com/',
     },
     {
         caption: 'Gitter',
@@ -84,6 +84,11 @@ const users = [
         caption: 'Messenger',
         image: 'https://en.facebookbrand.com/wp-content/uploads/2016/09/messenger_icon2.png',
         infoLink: 'https://www.messenger.com/',
+    },
+    {
+        caption: 'MonsterWriter',
+        image: 'https://www.monsterwriter.app/assets/logo.png',
+        infoLink: 'https://www.monsterwriter.app/',
     },
     {
         caption: 'namu.wiki',

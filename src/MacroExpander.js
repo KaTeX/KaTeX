@@ -13,7 +13,7 @@ import ParseError from "./ParseError";
 import Namespace from "./Namespace";
 import builtinMacros from "./macros";
 
-import type {MacroContextInterface, MacroDefinition, MacroExpansion}
+import type {MacroContextInterface, MacroDefinition, MacroExpansion, MacroArg}
     from "./macros";
 import type Settings from "./Settings";
 
@@ -109,6 +109,32 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
+     * Find an macro argument without expanding tokens and append the array of
+     * tokens to the token stack. Uses Token as a container for the result.
+     */
+    scanArgument(isOptional: boolean): ?Token {
+        let start;
+        let end;
+        let tokens;
+        if (isOptional) {
+            this.consumeSpaces(); // \@ifnextchar gobbles any space following it
+            if (this.future().text !== "[") {
+                return null;
+            }
+            start = this.popToken(); // don't include [ in tokens
+            ({tokens, end} = this.consumeArg(["]"]));
+        } else {
+            ({tokens, start, end} = this.consumeArg());
+        }
+
+        // indicate the end of an argument
+        this.pushToken(new Token("EOF", end.loc));
+
+        this.pushTokens(tokens);
+        return start.range(end, "");
+    }
+
+    /**
      * Consume all following space tokens, without expansion.
      */
     consumeSpaces() {
@@ -123,40 +149,91 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
-     * Consume the specified number of arguments from the token stream,
-     * and return the resulting array of arguments.
+     * Consume an argument from the token stream, and return the resulting array
+     * of tokens and start/end token.
      */
-    consumeArgs(numArgs: number): Token[][] {
-        const args: Token[][] = [];
-        // obtain arguments, either single token or balanced {…} group
-        for (let i = 0; i < numArgs; ++i) {
-            this.consumeSpaces();  // ignore spaces before each argument
-            const startOfArg = this.popToken();
-            if (startOfArg.text === "{") {
-                const arg: Token[] = [];
-                let depth = 1;
-                while (depth !== 0) {
-                    const tok = this.popToken();
-                    arg.push(tok);
-                    if (tok.text === "{") {
-                        ++depth;
-                    } else if (tok.text === "}") {
-                        --depth;
-                    } else if (tok.text === "EOF") {
-                        throw new ParseError(
-                            "End of input in macro argument",
-                            startOfArg);
-                    }
+    consumeArg(delims?: ?string[]): MacroArg {
+        // The argument for a delimited parameter is the shortest (possibly
+        // empty) sequence of tokens with properly nested {...} groups that is
+        // followed ... by this particular list of non-parameter tokens.
+        // The argument for an undelimited parameter is the next nonblank
+        // token, unless that token is ‘{’, when the argument will be the
+        // entire {...} group that follows.
+        const tokens: Token[] = [];
+        const isDelimited = delims && delims.length > 0;
+        if (!isDelimited) {
+            // Ignore spaces between arguments.  As the TeXbook says:
+            // "After you have said ‘\def\row#1#2{...}’, you are allowed to
+            //  put spaces between the arguments (e.g., ‘\row x n’), because
+            //  TeX doesn’t use single spaces as undelimited arguments."
+            this.consumeSpaces();
+        }
+        const start = this.future();
+        let tok;
+        let depth = 0;
+        let match = 0;
+        do {
+            tok = this.popToken();
+            tokens.push(tok);
+            if (tok.text === "{") {
+                ++depth;
+            } else if (tok.text === "}") {
+                --depth;
+                if (depth === -1) {
+                    throw new ParseError("Extra }", tok);
                 }
-                arg.pop(); // remove last }
-                arg.reverse(); // like above, to fit in with stack order
-                args[i] = arg;
-            } else if (startOfArg.text === "EOF") {
-                throw new ParseError(
-                    "End of input expecting macro argument");
-            } else {
-                args[i] = [startOfArg];
+            } else if (tok.text === "EOF") {
+                throw new ParseError("Unexpected end of input in a macro argument" +
+                    ", expected '" + (delims && isDelimited ? delims[match] : "}") +
+                    "'", tok);
             }
+            if (delims && isDelimited) {
+                if ((depth === 0 || (depth === 1 && delims[match] === "{")) &&
+                    tok.text === delims[match]) {
+                    ++match;
+                    if (match === delims.length) {
+                        // don't include delims in tokens
+                        tokens.splice(-match, match);
+                        break;
+                    }
+                } else {
+                    match = 0;
+                }
+            }
+        } while (depth !== 0 || isDelimited);
+        // If the argument found ... has the form ‘{<nested tokens>}’,
+        // ... the outermost braces enclosing the argument are removed
+        if (start.text === "{" && tokens[tokens.length - 1].text === "}") {
+            tokens.pop();
+            tokens.shift();
+        }
+        tokens.reverse(); // to fit in with stack order
+        return {tokens, start, end: tok};
+    }
+
+    /**
+     * Consume the specified number of (delimited) arguments from the token
+     * stream and return the resulting array of arguments.
+     */
+    consumeArgs(numArgs: number, delimiters?: string[][]): Token[][] {
+        if (delimiters) {
+            if (delimiters.length !== numArgs + 1) {
+                throw new ParseError(
+                    "The length of delimiters doesn't match the number of args!");
+            }
+            const delims = delimiters[0];
+            for (let i = 0; i < delims.length; i++) {
+                const tok = this.popToken();
+                if (delims[i] !== tok.text) {
+                    throw new ParseError(
+                        "Use of the macro doesn't match its definition", tok);
+                }
+            }
+        }
+
+        const args: Token[][] = [];
+        for (let i = 0; i < numArgs; i++) {
+            args.push(this.consumeArg(delimiters && delimiters[i + 1]).tokens);
         }
         return args;
     }
@@ -176,10 +253,6 @@ export default class MacroExpander implements MacroContextInterface {
      * or the stack will be empty.
      *
      * Used to implement `expandAfterFuture` and `expandNextToken`.
-     *
-     * At the moment, macro expansion doesn't handle delimited macros,
-     * i.e. things like those defined by \def\foo#1\end{…}.
-     * See the TeX book page 202ff. for details on how those should behave.
      *
      * If expandableOnly, only expandable tokens are expanded and
      * an undefined control sequence results in an error.
@@ -202,8 +275,8 @@ export default class MacroExpander implements MacroContextInterface {
                 "need to increase maxExpand setting");
         }
         let tokens = expansion.tokens;
+        const args = this.consumeArgs(expansion.numArgs, expansion.delimiters);
         if (expansion.numArgs) {
-            const args = this.consumeArgs(expansion.numArgs);
             // paste arguments in place of the placeholders
             tokens = tokens.slice(); // make a shallow copy
             for (let i = tokens.length - 1; i >= 0; --i) {
@@ -368,7 +441,6 @@ export default class MacroExpander implements MacroContextInterface {
         const macro = this.macros.get(name);
         return macro != null ? typeof macro === "string"
                 || typeof macro === "function" || !macro.unexpandable
-            // TODO(ylem): #2085
-            : functions.hasOwnProperty(name)/* && !functions[name].primitive*/;
+            : functions.hasOwnProperty(name) && !functions[name].primitive;
     }
 }

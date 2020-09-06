@@ -67,6 +67,9 @@ export type FunctionPropSpec = {
 
     // Must be true if the function is an infix operator.
     infix?: boolean,
+
+    // Whether or not the function is a TeX primitive.
+    primitive?: boolean,
 };
 
 type FunctionDefSpec<NODETYPE: NodeType> = {|
@@ -112,6 +115,7 @@ export type FunctionSpec<NODETYPE: NodeType> = {|
     allowedInMath: boolean,
     numOptionalArgs: number,
     infix: boolean,
+    primitive: boolean,
 
     // FLOW TYPE NOTES: Doing either one of the following two
     //
@@ -170,6 +174,7 @@ export default function defineFunction<NODETYPE: NodeType>({
             : props.allowedInMath,
         numOptionalArgs: props.numOptionalArgs || 0,
         infix: !!props.infix,
+        primitive: !!props.primitive,
         handler: handler,
     };
     for (let i = 0; i < names.length; ++i) {
@@ -206,6 +211,10 @@ export function defineFunctionBuilders<NODETYPE: NodeType>({
         mathmlBuilder,
     });
 }
+
+export const normalizeArgument = function(arg: AnyParseNode): AnyParseNode {
+    return arg.type === "ordgroup" && arg.body.length === 1 ? arg.body[0] : arg;
+};
 
 // Since the corresponding buildHTML/buildMathML function expects a
 // list of elements, we normalize for different kinds of arguments

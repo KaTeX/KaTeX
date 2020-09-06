@@ -1,5 +1,5 @@
 // @flow
-import defineFunction from "../defineFunction";
+import defineFunction, {normalizeArgument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
@@ -405,10 +405,12 @@ defineFunction({
         const denom = args[5];
 
         // Look into the parse nodes to get the desired delimiters.
-        const leftDelim = args[0].type === "atom" && args[0].family === "open"
-            ? delimFromValue(args[0].text) : null;
-        const rightDelim = args[1].type === "atom" && args[1].family === "close"
-            ? delimFromValue(args[1].text) : null;
+        const leftNode = normalizeArgument(args[0]);
+        const leftDelim = leftNode.type === "atom" && leftNode.family === "open"
+            ? delimFromValue(leftNode.text) : null;
+        const rightNode = normalizeArgument(args[1]);
+        const rightDelim = rightNode.type === "atom" && rightNode.family === "close"
+            ? delimFromValue(rightNode.text) : null;
 
         const barNode = assertNodeType(args[2], "size");
         let hasBarLine;

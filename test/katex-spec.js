@@ -1275,8 +1275,13 @@ describe("A begin/end parser", function() {
         expect(m2).toParse();
     });
 
-    it("should allow \\cr as a line terminator", function() {
+    it("should allow \\cr and \\\\ as a line terminator", function() {
         expect`\begin{matrix}a&b\cr c&d\end{matrix}`.toParse();
+        expect`\begin{matrix}a&b\\c&d\end{matrix}`.toParse();
+    });
+
+    it("should not allow \\cr to scan for an optional size argument", function() {
+        expect`\begin{matrix}a&b\cr[c]&d\end{matrix}`.toParse();
     });
 
     it("should eat a final newline", function() {
@@ -1310,6 +1315,16 @@ describe("A sqrt parser", function() {
 
     it("should build sized square roots", function() {
         expect("\\Large\\sqrt[3]{x}").toBuild();
+    });
+
+    it("should expand argument if optional argument doesn't exist", function() {
+        expect("\\sqrt\\foo").toParseLike("\\sqrt123",
+            new Settings({macros: {"\\foo": "123"}}));
+    });
+
+    it("should not expand argument if optional argument exists", function() {
+        expect("\\sqrt[2]\\foo").toParseLike("\\sqrt[2]{123}",
+            new Settings({macros: {"\\foo": "123"}}));
     });
 });
 
@@ -2861,11 +2876,6 @@ describe("href and url commands", function() {
 });
 
 describe("A raw text parser", function() {
-    it("should not not parse a mal-formed string", function() {
-        // In the next line, the first character passed to \includegraphics is a
-        // Unicode combining character. So this is a test that the parser will catch a bad string.
-        expect("\\includegraphics[\u030aheight=0.8em, totalheight=0.9em, width=0.9em]{" + "https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").not.toParse();
-    });
     it("should return null for a omitted optional string", function() {
         expect("\\includegraphics{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").toParse();
     });
@@ -3016,10 +3026,15 @@ describe("A macro expander", function() {
     });
 
     it("should allow for macro argument", function() {
-        expect`\foo\bar`.toParseLike("(x)", new Settings({macros: {
+        expect`\foo\bar`.toParseLike("(xyz)", new Settings({macros: {
             "\\foo": "(#1)",
-            "\\bar": "x",
+            "\\bar": "xyz",
         }}));
+    });
+
+    it("should allow properly nested group for macro argument", function() {
+        expect`\foo{e^{x_{12}+3}}`.toParseLike("(e^{x_{12}+3})",
+            new Settings({macros: {"\\foo": "(#1)"}}));
     });
 
     it("should delay expansion if preceded by \\expandafter", function() {
@@ -3041,9 +3056,8 @@ describe("A macro expander", function() {
             new Settings({macros: {"\\foo": "x"}}));
         // \frac is a macro and therefore expandable
         expect`\noexpand\frac xy`.toParseLike`xy`;
-        // TODO(ylem): #2085
         // \def is not expandable, so is not affected by \noexpand
-        // expect`\noexpand\def\foo{xy}\foo`.toParseLike`xy`;
+        expect`\noexpand\def\foo{xy}\foo`.toParseLike`xy`;
     });
 
     it("should allow for space macro argument (text version)", function() {
@@ -3081,15 +3095,11 @@ describe("A macro expander", function() {
         }}));
     });
 
-    // TODO: The following is not currently possible to get working, given that
-    // functions and macros are dealt with separately.
-/*
     it("should allow for space function arguments", function() {
         expect`\frac\bar\bar`.toParseLike(r`\frac{}{}`, new Settings({macros: {
             "\\bar": " ",
         }}));
     });
-*/
 
     it("should build \\overset and \\underset", function() {
         expect`\overset{f}{\rightarrow} Y`.toBuild();
@@ -3199,32 +3209,36 @@ describe("A macro expander", function() {
         expect`\varsubsetneqq\varsupsetneq\varsupsetneqq`.toBuild();
     });
 
-    // TODO(edemaine): This doesn't work yet.  Parses like `\text text`,
-    // which doesn't treat all four letters as an argument.
-    //it("\\TextOrMath should work in a macro passed to \\text", function() {
-    //    expect`\text\mode`.toParseLike(r`\text{text}`, new Settings({macros:
-    //        {"\\mode": "\\TextOrMath{text}{math}"}});
-    //});
+    it("\\TextOrMath should work in a macro passed to \\text", function() {
+        expect`\text\mode`.toParseLike(r`\text{text}`, new Settings({macros:
+            {"\\mode": "\\TextOrMath{text}{math}"}}));
+    });
 
     it("\\gdef defines macros", function() {
         expect`\gdef\foo{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
-        expect`\gdef{\foo}{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
-        expect`\gdef\foo{hi}\foo+\text{\foo}`.toParseLike`hi+\text{hi}`;
+        expect`\gdef\foo{hi}\foo+\text\foo`.toParseLike`hi+\text{hi}`;
         expect`\gdef\foo#1{hi #1}\text{\foo{Alice}, \foo{Bob}}`
             .toParseLike`\text{hi Alice, hi Bob}`;
         expect`\gdef\foo#1#2{(#1,#2)}\foo 1 2+\foo 3 4`.toParseLike`(1,2)+(3,4)`;
         expect`\gdef\foo#2{}`.not.toParse();
+        expect`\gdef\foo#a{}`.not.toParse();
         expect`\gdef\foo#1#3{}`.not.toParse();
         expect`\gdef\foo#1#2#3#4#5#6#7#8#9{}`.toParse();
         expect`\gdef\foo#1#2#3#4#5#6#7#8#9#10{}`.not.toParse();
-        expect`\gdef\foo#{}`.not.toParse();
-        expect`\gdef\foo\bar`.toParse();
+        expect`\gdef\foo1`.not.toParse();
+        expect`\gdef{\foo}{}`.not.toParse();
+        expect`\gdef\foo\bar`.not.toParse();
         expect`\gdef{\foo\bar}{}`.not.toParse();
         expect`\gdef{}{}`.not.toParse();
-        // TODO: These shouldn't work, but `1` and `{1}` are currently treated
-        // the same, as are `\foo` and `{\foo}`.
-        //expect`\gdef\foo1`.not.toParse();
-        //expect`\gdef{\foo}{}`.not.toParse();
+    });
+
+    it("\\gdef defines macros with delimited parameter", function() {
+        expect`\gdef\foo|#1||{#1}\text{\foo| x y ||}`.toParseLike`\text{ x y }`;
+        expect`\gdef\foo#1|#2{#1+#2}\foo 1 2 |34`.toParseLike`12+34`;
+        expect`\gdef\foo#1#{#1}\foo1^{23}`.toParseLike`1^{23}`;
+        expect`\gdef\foo|{}\foo`.not.toParse();
+        expect`\gdef\foo#1|{#1}\foo1`.not.toParse();
+        expect`\gdef\foo#1|{#1}\foo1}|`.not.toParse();
     });
 
     it("\\xdef should expand definition", function() {
@@ -3321,7 +3335,7 @@ describe("A macro expander", function() {
         expect`\def\foo{1}\let\bar\foo\def\foo{2}\bar`.toParseLike`1`;
         expect`\let\foo=\kern\edef\bar{\foo1em}\let\kern=\relax\bar`.toParseLike`\kern1em`;
         // \foo = { (left brace)
-        expect`\let\foo{\frac\foo1}{2}`.toParseLike`\frac{1}{2}`;
+        expect`\let\foo{\sqrt\foo1}`.toParseLike`\sqrt{1}`;
         // \equals = = (equal sign)
         expect`\let\equals==a\equals b`.toParseLike`a=b`;
         // \foo should not be expandable and not affected by \noexpand or \edef
@@ -3511,9 +3525,9 @@ describe("\\@binrel automatic bin/rel/ord", () => {
         expect("L\\@binrel+xR").toParseLike("L\\mathbin xR");
         expect("L\\@binrel=xR").toParseLike("L\\mathrel xR");
         expect("L\\@binrel xxR").toParseLike("L\\mathord xR");
-        expect("L\\@binrel{+}{x}R").toParseLike("L\\mathbin{{x}}R");
-        expect("L\\@binrel{=}{x}R").toParseLike("L\\mathrel{{x}}R");
-        expect("L\\@binrel{x}{x}R").toParseLike("L\\mathord{{x}}R");
+        expect("L\\@binrel{+}{x}R").toParseLike("L\\mathbin{x}R");
+        expect("L\\@binrel{=}{x}R").toParseLike("L\\mathrel{x}R");
+        expect("L\\@binrel{x}{x}R").toParseLike("L\\mathord{x}R");
     });
 
     it("should base on just first character in group", () => {
@@ -3749,19 +3763,16 @@ describe("The \\mathchoice function", function() {
 });
 
 describe("Newlines via \\\\ and \\newline", function() {
-    it("should build \\\\ and \\newline the same", () => {
+    it("should build \\\\ without the optional argument and \\newline the same", () => {
         expect`hello \\ world`.toBuildLike`hello \newline world`;
-        expect`hello \\[1ex] world`.toBuildLike(
-            "hello \\newline[1ex] world");
+    });
+
+    it("should not allow \\newline to scan for an optional size argument", () => {
+        expect`hello \newline[w]orld`.toBuild();
     });
 
     it("should not allow \\cr at top level", () => {
         expect`hello \cr world`.not.toBuild();
-    });
-
-    it("array redefines and resets \\\\", () => {
-        expect`a\\b\begin{matrix}x&y\\z&w\end{matrix}\\c`
-            .toParseLike`a\newline b\begin{matrix}x&y\cr z&w\end{matrix}\newline c`;
     });
 
     it("\\\\ causes newline, even after mrel and mop", () => {
