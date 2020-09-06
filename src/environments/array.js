@@ -780,10 +780,12 @@ defineEnvironment({
             "Vmatrix": ["\\Vert", "\\Vert"],
         }[context.envName.replace("*", "")];
         // \hskip -\arraycolsep in amsmath
-        const payload = {hskipBeforeAndAfter: false};
         let colAlign = "c";
-        const isStar = context.envName.charAt(context.envName.length - 1) === "*";
-        if (isStar) {
+        const payload = {
+            hskipBeforeAndAfter: false,
+            cols: [{type: "align", align: colAlign}],
+        };
+        if (context.envName.charAt(context.envName.length - 1) === "*") {
             // Parse the optional alignment argument.
             const parser = context.parser;
             parser.consumeSpaces();
@@ -798,14 +800,13 @@ defineEnvironment({
                 parser.consumeSpaces();
                 parser.expect("]");
                 parser.consume();
+                payload.cols = [{type: "align", align: colAlign}];
             }
         }
         const res: ParseNode<"array"> =
             parseArray(context.parser, payload, dCellStyle(context.envName));
-        if (isStar) {
-            // Populate cols with the correct number of column alignment specs.
-            res.cols = [{type: "align", align: colAlign}];
-        }
+        // Populate cols with the correct number of column alignment specs.
+        res.cols = [{type: "align", align: colAlign}];
         return delimiters ? {
             type: "leftright",
             mode: context.mode,
