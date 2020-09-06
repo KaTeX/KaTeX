@@ -15,6 +15,7 @@ defineFunction({
     props: {
         numArgs: 1,
         argTypes: ["size"],
+        primitive: true,
         allowedInText: true,
     },
     handler({parser, funcName}, args) {

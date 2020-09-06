@@ -13,7 +13,6 @@ defineFunction({
         numArgs: 1,
         argTypes: ["text"],
     },
-    // $FlowFixMe, "environment" handler returns an environment ParseNode
     handler({parser, funcName}, args) {
         const nameGroup = args[0];
         if (nameGroup.type !== "ordgroup") {
@@ -49,6 +48,7 @@ defineFunction({
                     `Mismatch: \\begin{${envName}} matched by \\end{${end.name}}`,
                     endNameToken);
             }
+            // $FlowFixMe, "environment" handler returns an environment ParseNode
             return result;
         }
 

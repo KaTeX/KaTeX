@@ -47,8 +47,6 @@ defineFunctionBuilders({
         if (group.mode === 'text') {
             node = new mathMLTree.MathNode("mtext", [text]);
         } else if (/[0-9]/.test(group.text)) {
-            // TODO(kevinb) merge adjacent <mn> nodes
-            // do it as a post processing step
             node = new mathMLTree.MathNode("mn", [text]);
         } else if (group.text === "\\prime") {
             node = new mathMLTree.MathNode("mo", [text]);

@@ -1,5 +1,5 @@
 // @flow
-import defineFunction from "../defineFunction";
+import defineFunction, {normalizeArgument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
@@ -218,7 +218,7 @@ defineFunction({
         numArgs: 1,
     },
     handler: (context, args) => {
-        const base = args[0];
+        const base = normalizeArgument(args[0]);
 
         const isStretchy = !NON_STRETCHY_ACCENT_REGEX.test(context.funcName);
         const isShifty = !isStretchy ||
@@ -250,6 +250,7 @@ defineFunction({
         numArgs: 1,
         allowedInText: true,
         allowedInMath: false,
+        argTypes: ["primitive"],
     },
     handler: (context, args) => {
         const base = args[0];
