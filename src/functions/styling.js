@@ -22,6 +22,7 @@ defineFunction({
     props: {
         numArgs: 0,
         allowedInText: true,
+        primitive: true,
     },
     handler({breakOnTokenText, funcName, parser}, args) {
         // parse out the implicit body

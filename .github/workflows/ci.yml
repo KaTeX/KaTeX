@@ -21,6 +21,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
+        persist-credentials: false # minimize exposure and prevent accidental pushes
 
     - name: Use Node.js 12.x
       uses: actions/setup-node@v1
@@ -39,6 +40,8 @@ jobs:
 
     - name: Install dependencies
       run: yarn --immutable
+      env:
+        YARN_ENABLE_SCRIPTS: 0 # disable postinstall scripts
 
     - name: Lint code
       run: yarn test:lint
@@ -126,6 +129,7 @@ jobs:
       if: github.event_name != 'pull_request_target'
       with:
         submodules: recursive
+        persist-credentials: false # minimize exposure and prevent accidental pushes
     - uses: actions/checkout@v2
       if: github.event_name == 'pull_request_target'
       with:
@@ -152,6 +156,8 @@ jobs:
 
     - name: Install dependencies
       run: yarn --immutable
+      env:
+        YARN_ENABLE_SCRIPTS: 0 # disable postinstall scripts
 
     - name: Verify screenshots and generate diffs and new screenshots
       run: yarn node dockers/screenshotter/screenshotter.js -b ${{ matrix.browser }} --verify --diff --new -c ${{ job.services.selenium.id }}

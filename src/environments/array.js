@@ -86,12 +86,11 @@ function parseArray(
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
-    // Parse body of array with \\ temporarily mapped to \cr
     parser.gullet.beginGroup();
-    if (singleRow) {
-        parser.gullet.macros.set("\\\\", ""); // {equation} acts this way.
-    } else {
-        parser.gullet.macros.set("\\\\", "\\cr");
+    if (!singleRow) {
+        // \cr is equivalent to \\ without the optional size argument (see below)
+        // TODO: provide helpful error when \cr is used outside array environment
+        parser.gullet.macros.set("\\cr", "\\\\\\relax");
     }
 
     // Get current arraystretch if it's not set by the environment
@@ -121,7 +120,7 @@ function parseArray(
 
     while (true) {  // eslint-disable-line no-constant-condition
         // Parse each cell in its own group (namespace)
-        let cell = parser.parseExpression(false, "\\cr");
+        let cell = parser.parseExpression(false, singleRow ? "\\end" : "\\\\");
         parser.gullet.endGroup();
         parser.gullet.beginGroup();
 
@@ -165,12 +164,18 @@ function parseArray(
                 hLinesBeforeRow.push([]);
             }
             break;
-        } else if (next === "\\cr") {
-            if (singleRow) {
-                throw new ParseError("Misplaced \\cr.", parser.nextToken);
+        } else if (next === "\\\\") {
+            parser.consume();
+            let size;
+            // \def\Let@{\let\\\math@cr}
+            // \def\math@cr{...\math@cr@}
+            // \def\math@cr@{\new@ifnextchar[\math@cr@@{\math@cr@@[\z@]}}
+            // \def\math@cr@@[#1]{...\math@cr@@@...}
+            // \def\math@cr@@@{\cr}
+            if (parser.gullet.future().text !== " ") {
+                size = parser.parseSizeGroup(true);
             }
-            const cr = assertNodeType(parser.parseFunction(), "cr");
-            rowGaps.push(cr.size);
+            rowGaps.push(size ? size.value : null);
 
             // check for \hline(s) following the row separator
             hLinesBeforeRow.push(getHLines(parser));
@@ -185,7 +190,7 @@ function parseArray(
 
     // End cell group
     parser.gullet.endGroup();
-    // End array group defining \\
+    // End array group defining \cr
     parser.gullet.endGroup();
 
     return {
