@@ -1300,6 +1300,17 @@ describe("A begin/end parser", function() {
         const parse = getParsed`\def\arraystretch{1.5}\begin{matrix}a&b\\c&d\end{matrix}`;
         expect(parse).toMatchSnapshot();
     });
+
+    it("should allow an optional argument in {matrix*} and company.", function() {
+        expect("\\begin{matrix*}[r] a & -1 \\\\ -1 & d \\end{matrix*}").toBuild();
+        expect("\\begin{pmatrix*}[r] a & -1 \\\\ -1 & d \\end{pmatrix*}").toBuild();
+        expect("\\begin{bmatrix*}[r] a & -1 \\\\ -1 & d \\end{bmatrix*}").toBuild();
+        expect("\\begin{Bmatrix*}[r] a & -1 \\\\ -1 & d \\end{Bmatrix*}").toBuild();
+        expect("\\begin{vmatrix*}[r] a & -1 \\\\ -1 & d \\end{vmatrix*}").toBuild();
+        expect("\\begin{Vmatrix*}[r] a & -1 \\\\ -1 & d \\end{Vmatrix*}").toBuild();
+        expect("\\begin{matrix*} a & -1 \\\\ -1 & d \\end{matrix*}").toBuild();
+        expect("\\begin{matrix*}[] a & -1 \\\\ -1 & d \\end{matrix*}").not.toParse();
+    });
 });
 
 describe("A sqrt parser", function() {

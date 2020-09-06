@@ -93,7 +93,9 @@ $( \big( \Big( \bigg( \Bigg($ `( \big( \Big( \bigg( \Bigg(`
 
 </div>
 
-KaTeX also supports `darray`, `dcases`, and `drcases`.
+KaTeX also supports `darray`, `dcases`, and `drcases`, which apply `displaystyle`.
+
+And KaTeX supports `matrix*`, `pmatrix*`, `bmatrix*`, `Bmatrix*`, `vmatrix*`, and `Vmatrix*`, which take an optional argument to set column alignment, as in `\begin{matrix}[1]`, `\begin{matrix}[c]`, or `\begin{matrix}[r]`.
 
 Acceptable line separators include: `\\`, `\cr`, `\\[distance]`, and `\cr[distance]`. *Distance* can be written with any of the [KaTeX units](#units).
 
