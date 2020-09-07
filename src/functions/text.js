@@ -48,7 +48,7 @@ defineFunction({
     props: {
         numArgs: 1,
         argTypes: ["text"],
-        greediness: 2,
+        allowedInArgument: true,
         allowedInText: true,
     },
     handler({parser, funcName}, args) {

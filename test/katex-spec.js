@@ -849,13 +849,6 @@ describe("A color parser", function() {
         expect(newColorExpression).toParse();
     });
 
-    it("should have correct greediness", function() {
-        expect`\textcolor{red}a`.toParse();
-        expect`\textcolor{red}{\text{a}}`.toParse();
-        expect`\textcolor{red}\text{a}`.not.toParse();
-        expect`\textcolor{red}\frac12`.not.toParse();
-    });
-
     it("should use one-argument \\color by default", function() {
         expect(oldColorExpression).toParseLike`\textcolor{#fA6}{xy}`;
     });
@@ -1619,7 +1612,7 @@ describe("A font parser", function() {
         expect(bf.body.body[2].text).toEqual("c");
     });
 
-    it("should have the correct greediness", function() {
+    it("should be allowed in the argument", function() {
         expect`e^\mathbf{x}`.toParse();
     });
 
