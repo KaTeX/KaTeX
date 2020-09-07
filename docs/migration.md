@@ -10,7 +10,7 @@ some gaps between KaTeX and LaTeX and therefore there may be breaking changes.
 Tokens will not be expanded while parsing a macro argument. For example, `\frac\foo\foo`,
 where the `\foo` is defined as `12`, will be parsed as `\frac{12}{12}`, not
 `\frac{1}{2}12`. To expand the argument before parsing, `\expandafter` can
-be used` like `\expandafter\frac\foo\foo`.
+be used like `\expandafter\frac\foo\foo`.
 
 ## `\def`
 `\def` no longer accepts a control sequence enclosed in braces. For example,
