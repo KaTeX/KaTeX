@@ -1612,7 +1612,7 @@ describe("A font parser", function() {
         expect(bf.body.body[2].text).toEqual("c");
     });
 
-    it("should have the correct greediness", function() {
+    it("should be allowed in the argument", function() {
         expect`e^\mathbf{x}`.toParse();
     });
 
