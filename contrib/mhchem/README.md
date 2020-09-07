@@ -7,8 +7,10 @@ This extension adds to KaTeX the `\ce` and `\pu` functions from the [mhchem](htt
 This extension isn't part of core KaTeX, so the script should be separately included. Write the following line into the HTML page's `<head>`. Place it *after* the line that calls `katex.js`.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/mhchem.min.js" integrity="sha384-5gCAXJ0ZgozlShOzzT0OWArn7yCPGWVIvgo+BAd8NUKbCmulrJiQuCVR9cHlPHeG"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/mhchem.min.js" integrity="sha384-5gCAXJ0ZgozlShOzzT0OWArn7yCPGWVIvgo+BAd8NUKbCmulrJiQuCVR9cHlPHeG"  crossorigin="anonymous"></script>
 ```
+
+If you remove the `defer` attribute from this tag, then you must also remove the `defer` attribute from the `<script src="https://../katex.min.js">` tag.
 
 ### Syntax
 
