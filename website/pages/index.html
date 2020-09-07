@@ -62,9 +62,9 @@
             </a>
           </div>
           <textarea id="demo-input" spellcheck="false">
-% \f is defined as f(#1) using the macro
-\f{x} = \int_{-\infty}^\infty
-    \hat \f\xi\,e^{2 \pi i \xi x}
+% \f is defined as #1f(#2) using the macro
+\f\relax{x} = \int_{-\infty}^\infty
+    \f\hat\xi,e^{2 \pi i \xi x}
     \,d\xi</textarea>
         </div>
         <div class="demo-right">
@@ -181,7 +181,7 @@
       <h4><label for="macros">macros</label></h4>
       <textarea id="macros" placeholder="JSON">
 {
-    "\\f": "f(#1)"
+    "\\f": "#1f(#2)"
 }</textarea>
 
       <h3>Editor Options</h3>
